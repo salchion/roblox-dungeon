@@ -1,5 +1,5 @@
 -- WeaponService (ServerScriptService > Modules 안의 ModuleScript, 이름: WeaponService)
--- 무기 강화 + 무기 외형 생성.
+-- 무기(총) 강화 + 무기 외형 생성.
 -- 무기는 서버에서 만들어 캐릭터에 장착하기 때문에 로비의 모든 플레이어에게 그대로 보인다.
 -- 강화 레벨(WeaponLevel)이 오를수록 색상 / 크기 / 재질 / 파티클 / 궤적 / 빛이 달라진다.
 
@@ -40,12 +40,13 @@ local function newPart(name, size, color, material, parent)
 	return part
 end
 
--- 레벨에 맞는 무기(Tool)를 만든다. 칼날 방향은 손잡이의 -Z (팔을 뻗은 방향).
+-- 레벨에 맞는 무기(Tool, 총)를 만든다. 총구 방향은 손잡이의 -Z (팔을 뻗은 방향).
 local function buildTool(level)
 	local tier = Config.GetWeaponTier(level)
 	local scale = Config.GetWeaponScale(level)
-	local bladeLength = 3 * scale
+	local barrelLength = 1.8 * scale
 	local colorSeq = tier.Rainbow and RAINBOW or ColorSequence.new(tier.Color)
+	local dark = Color3.fromRGB(45, 45, 55)
 
 	local tool = Instance.new("Tool")
 	tool.Name = "Weapon"
@@ -53,25 +54,33 @@ local function buildTool(level)
 	tool.RequiresHandle = true
 	tool.ToolTip = string.format("+%d %s", level, tier.Name)
 
-	local handle = newPart("Handle", Vector3.new(0.35, 0.35, 1.1), Color3.fromRGB(80, 55, 35), Enum.Material.Wood, tool)
+	-- 몸체(손에 쥐는 부분)
+	local handle = newPart("Handle", Vector3.new(0.4, 0.6, 1.4), dark, Enum.Material.Metal, tool)
 
-	local guard = newPart("Guard", Vector3.new(1.0 * scale, 0.22, 0.3), tier.Color:Lerp(Color3.new(0, 0, 0), 0.35), Enum.Material.Metal, tool)
-	guard.CFrame = handle.CFrame * CFrame.new(0, 0, -0.6)
-	weld(handle, guard)
+	-- 손잡이 그립
+	local grip = newPart("Grip", Vector3.new(0.35, 0.9, 0.4), Color3.fromRGB(80, 55, 35), Enum.Material.Wood, tool)
+	grip.CFrame = handle.CFrame * CFrame.new(0, -0.7, 0.4) * CFrame.Angles(math.rad(-12), 0, 0)
+	weld(handle, grip)
 
-	local blade = newPart("Blade", Vector3.new(0.22 * scale, 0.55 * scale, bladeLength), tier.Color, tier.Material, tool)
-	blade.CFrame = handle.CFrame * CFrame.new(0, 0, -(0.7 + bladeLength / 2))
-	weld(handle, blade)
+	-- 총열: 강화할수록 길어지고 색/재질이 변함
+	local barrel = newPart("Barrel", Vector3.new(0.3 * scale, 0.3 * scale, barrelLength), tier.Color, tier.Material, tool)
+	barrel.CFrame = handle.CFrame * CFrame.new(0, 0.05, -(0.7 + barrelLength / 2))
+	weld(handle, barrel)
+
+	-- 몸체 위 장식 띠 (등급 색)
+	local stripe = newPart("Stripe", Vector3.new(0.44, 0.12, 0.9), tier.Color, tier.Material, tool)
+	stripe.CFrame = handle.CFrame * CFrame.new(0, 0.34, 0.1)
+	weld(handle, stripe)
 
 	local tip = Instance.new("Attachment")
 	tip.Name = "Tip"
-	tip.Position = Vector3.new(0, 0, -bladeLength / 2)
-	tip.Parent = blade
+	tip.Position = Vector3.new(0, 0, -barrelLength / 2)
+	tip.Parent = barrel
 
 	local base = Instance.new("Attachment")
 	base.Name = "Base"
-	base.Position = Vector3.new(0, 0, bladeLength / 2)
-	base.Parent = blade
+	base.Position = Vector3.new(0, 0, barrelLength / 2)
+	base.Parent = barrel
 
 	if tier.Particles > 0 then
 		local emitter = Instance.new("ParticleEmitter")
@@ -87,7 +96,7 @@ local function buildTool(level)
 		})
 		emitter.LightEmission = 1
 		emitter.Color = colorSeq
-		emitter.Parent = blade
+		emitter.Parent = barrel
 	end
 
 	if tier.Trail then
@@ -102,7 +111,7 @@ local function buildTool(level)
 		})
 		trail.LightEmission = 1
 		trail.FaceCamera = true
-		trail.Parent = blade
+		trail.Parent = barrel
 	end
 
 	if tier.Light > 0 then
@@ -110,7 +119,7 @@ local function buildTool(level)
 		light.Range = tier.Light
 		light.Brightness = 1.5
 		light.Color = tier.Rainbow and Color3.fromRGB(255, 255, 255) or tier.Color
-		light.Parent = blade
+		light.Parent = barrel
 	end
 
 	return tool
@@ -190,8 +199,8 @@ end
 function Weapon.GetTipPosition(player)
 	local character = player.Character
 	local tool = character and character:FindFirstChild("Weapon")
-	local blade = tool and tool:FindFirstChild("Blade")
-	local tip = blade and blade:FindFirstChild("Tip")
+	local barrel = tool and tool:FindFirstChild("Barrel")
+	local tip = barrel and barrel:FindFirstChild("Tip")
 	return tip and tip.WorldPosition or nil
 end
 

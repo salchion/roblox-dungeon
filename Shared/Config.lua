@@ -114,12 +114,12 @@ Config.Weapon = {
 	-- 레벨 구간별 외형. MinLevel 이상이면 해당 외형이 적용됨.
 	-- Particles: 초당 파티클 수 / Trail: 궤적 / Light: 빛 범위 / Rainbow: 무지개 이펙트
 	Tiers = {
-		{ MinLevel = 0,  Name = "낡은 철검",   Color = Color3.fromRGB(165, 165, 175), Material = Enum.Material.Metal,  Particles = 0,  Trail = false, Light = 0 },
-		{ MinLevel = 3,  Name = "강철검",      Color = Color3.fromRGB(90, 160, 255),  Material = Enum.Material.Metal,  Particles = 6,  Trail = false, Light = 0 },
-		{ MinLevel = 6,  Name = "마력검",      Color = Color3.fromRGB(175, 95, 255),  Material = Enum.Material.Glass,  Particles = 12, Trail = true,  Light = 0 },
-		{ MinLevel = 9,  Name = "황금 성검",   Color = Color3.fromRGB(255, 200, 50),  Material = Enum.Material.Neon,   Particles = 22, Trail = true,  Light = 10 },
-		{ MinLevel = 12, Name = "불꽃의 검",   Color = Color3.fromRGB(255, 70, 40),   Material = Enum.Material.Neon,   Particles = 40, Trail = true,  Light = 16 },
-		{ MinLevel = 15, Name = "전설의 무지개검", Color = Color3.fromRGB(255, 255, 255), Material = Enum.Material.Neon, Particles = 60, Trail = true,  Light = 20, Rainbow = true },
+		{ MinLevel = 0,  Name = "낡은 권총",   Color = Color3.fromRGB(165, 165, 175), Material = Enum.Material.Metal,  Particles = 0,  Trail = false, Light = 0 },
+		{ MinLevel = 3,  Name = "강철 권총",      Color = Color3.fromRGB(90, 160, 255),  Material = Enum.Material.Metal,  Particles = 6,  Trail = false, Light = 0 },
+		{ MinLevel = 6,  Name = "마력 라이플",      Color = Color3.fromRGB(175, 95, 255),  Material = Enum.Material.Glass,  Particles = 12, Trail = true,  Light = 0 },
+		{ MinLevel = 9,  Name = "황금 캐논",   Color = Color3.fromRGB(255, 200, 50),  Material = Enum.Material.Neon,   Particles = 22, Trail = true,  Light = 10 },
+		{ MinLevel = 12, Name = "불꽃의 건",   Color = Color3.fromRGB(255, 70, 40),   Material = Enum.Material.Neon,   Particles = 40, Trail = true,  Light = 16 },
+		{ MinLevel = 15, Name = "전설의 무지개 건", Color = Color3.fromRGB(255, 255, 255), Material = Enum.Material.Neon, Particles = 60, Trail = true,  Light = 20, Rainbow = true },
 	},
 }
 
