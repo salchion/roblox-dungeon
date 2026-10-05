@@ -19,10 +19,10 @@ local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon
 
 local folder
 if RunService:IsServer() then
-	folder = ReplicatedStorage:FindFirstChild("Remotes")
+	folder = ReplicatedStorage:FindFirstChild("RemoteEvents")
 	if not folder then
 		folder = Instance.new("Folder")
-		folder.Name = "Remotes"
+		folder.Name = "RemoteEvents"
 		for _, name in ipairs(NAMES) do
 			local remote = Instance.new("RemoteEvent")
 			remote.Name = name
@@ -31,7 +31,7 @@ if RunService:IsServer() then
 		folder.Parent = ReplicatedStorage
 	end
 else
-	folder = ReplicatedStorage:WaitForChild("Remotes")
+	folder = ReplicatedStorage:WaitForChild("RemoteEvents")
 end
 
 return setmetatable({}, {
