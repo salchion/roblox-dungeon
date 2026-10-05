@@ -10,6 +10,8 @@ Config.StartGold = 300 -- 처음 접속했을 때 지급되는 골드
 ------------------------------------------------------------
 Config.Player = {
 	BaseHealth = 100,
+	WalkSpeed = 16,
+	RunSpeed = 28,          -- Shift를 누르고 있을 때
 	BaseDamage = 10,        -- 무기 +0 기준 데미지
 	BaseCooldown = 0.35,    -- 기본 공격 간격(초)
 	AttackRange = 300,      -- 사거리
@@ -114,12 +116,40 @@ Config.Weapon = {
 	-- 레벨 구간별 외형. MinLevel 이상이면 해당 외형이 적용됨.
 	-- Particles: 초당 파티클 수 / Trail: 궤적 / Light: 빛 범위 / Rainbow: 무지개 이펙트
 	Tiers = {
-		{ MinLevel = 0,  Name = "낡은 권총",   Color = Color3.fromRGB(165, 165, 175), Material = Enum.Material.Metal,  Particles = 0,  Trail = false, Light = 0 },
-		{ MinLevel = 3,  Name = "강철 권총",      Color = Color3.fromRGB(90, 160, 255),  Material = Enum.Material.Metal,  Particles = 6,  Trail = false, Light = 0 },
-		{ MinLevel = 6,  Name = "마력 라이플",      Color = Color3.fromRGB(175, 95, 255),  Material = Enum.Material.Glass,  Particles = 12, Trail = true,  Light = 0 },
-		{ MinLevel = 9,  Name = "황금 캐논",   Color = Color3.fromRGB(255, 200, 50),  Material = Enum.Material.Neon,   Particles = 22, Trail = true,  Light = 10 },
-		{ MinLevel = 12, Name = "불꽃의 건",   Color = Color3.fromRGB(255, 70, 40),   Material = Enum.Material.Neon,   Particles = 40, Trail = true,  Light = 16 },
-		{ MinLevel = 15, Name = "전설의 무지개 건", Color = Color3.fromRGB(255, 255, 255), Material = Enum.Material.Neon, Particles = 60, Trail = true,  Light = 20, Rainbow = true },
+		-- Shot: 발사체 외형. Style(Ball/Bolt/Orb/Cannon/Fire/Rainbow) / Size / Length(Bolt만) / Speed(초당 거리) / Impact(착탄 시 터지는 입자 수)
+		{ MinLevel = 0,  Name = "낡은 권총",       Color = Color3.fromRGB(165, 165, 175), Material = Enum.Material.Metal, Particles = 0,  Trail = false, Light = 0,
+			Shot = { Style = "Ball", Size = 0.6, Speed = 260, Impact = 0 } },
+		{ MinLevel = 3,  Name = "강철 권총",       Color = Color3.fromRGB(90, 160, 255),  Material = Enum.Material.Metal, Particles = 6,  Trail = false, Light = 0,
+			Shot = { Style = "Bolt", Size = 0.35, Length = 3, Speed = 320, Impact = 6 } },
+		{ MinLevel = 6,  Name = "마력 라이플",     Color = Color3.fromRGB(175, 95, 255),  Material = Enum.Material.Glass, Particles = 12, Trail = true,  Light = 0,
+			Shot = { Style = "Orb", Size = 1.3, Speed = 190, Impact = 14 } },
+		{ MinLevel = 9,  Name = "황금 캐논",       Color = Color3.fromRGB(255, 200, 50),  Material = Enum.Material.Neon,  Particles = 22, Trail = true,  Light = 10,
+			Shot = { Style = "Cannon", Size = 2.4, Speed = 140, Impact = 30 } },
+		{ MinLevel = 12, Name = "불꽃의 건",       Color = Color3.fromRGB(255, 70, 40),   Material = Enum.Material.Neon,  Particles = 40, Trail = true,  Light = 16,
+			Shot = { Style = "Fire", Size = 2.0, Speed = 160, Impact = 40 } },
+		{ MinLevel = 15, Name = "전설의 무지개 건", Color = Color3.fromRGB(255, 255, 255), Material = Enum.Material.Neon,  Particles = 60, Trail = true,  Light = 20, Rainbow = true,
+			Shot = { Style = "Rainbow", Size = 2.2, Speed = 170, Impact = 60 } },
+	},
+}
+
+------------------------------------------------------------
+-- 로비 허수아비 (때릴 때마다 골드). 획득 골드 = GoldPerHit x Multiplier
+-- RequiredLevel: 이 무기 강화 레벨 이상이어야 골드가 들어옴 (0이면 제한 없음)
+-- List 순서대로 훈련장에 1~10번 허수아비가 놓인다.
+------------------------------------------------------------
+Config.Dummy = {
+	GoldPerHit = 1,
+	List = {
+		{ Multiplier = 1,   RequiredLevel = 0 },
+		{ Multiplier = 1.5, RequiredLevel = 0 },
+		{ Multiplier = 2,   RequiredLevel = 1 },
+		{ Multiplier = 3,   RequiredLevel = 2 },
+		{ Multiplier = 4,   RequiredLevel = 3 },
+		{ Multiplier = 6,   RequiredLevel = 5 },
+		{ Multiplier = 8,   RequiredLevel = 7 },
+		{ Multiplier = 12,  RequiredLevel = 9 },
+		{ Multiplier = 18,  RequiredLevel = 12 },
+		{ Multiplier = 30,  RequiredLevel = 15 },
 	},
 }
 

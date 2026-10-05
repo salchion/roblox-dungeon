@@ -20,12 +20,14 @@ local Party = require(Modules:WaitForChild("PartyService"))
 local Lobby = require(Modules:WaitForChild("LobbyService"))
 local Dungeon = require(Modules:WaitForChild("DungeonService"))
 local Data = require(Modules:WaitForChild("DataService"))
+local Dummy = require(Modules:WaitForChild("DummyService"))
 
 ------------------------------------------------------------
 -- 로비 / 게이트 / 강화대
 ------------------------------------------------------------
 local lobby = Lobby.Build()
 Dungeon.Init(lobby.SpawnCFrame)
+Dummy.Build(Vector3.new(-62, 0, 0)) -- 허수아비 훈련장
 
 -- 던전 게이트: 파티가 있으면 파티장만 입장 가능 (검사는 Dungeon.Start 안에서)
 lobby.GatePrompt.Triggered:Connect(function(player)
@@ -161,13 +163,15 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint)
 	if offset.Magnitude < 0.5 then return end
 	local direction = offset.Unit
 
-	local endPosition = Dungeon.Shoot(player, origin, direction) -- 던전 밖이면 nil
+	-- 던전 안이면 몬스터, 로비면 허수아비를 판정 (둘 다 아니면 nil)
+	local endPosition = Dungeon.Shoot(player, origin, direction) or Dummy.Shoot(player, origin, direction)
 	endPosition = endPosition or (origin + direction * Config.Player.AttackRange)
 
+	-- 무기 등급마다 모양이 다른 발사체가 날아감
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local tier = Config.GetWeaponTier(level)
 	local color = tier.Rainbow and Color3.fromHSV((now * 0.5) % 1, 0.8, 1) or tier.Color
-	Effects.Tracer(Weapon.GetTipPosition(player) or origin, endPosition, color, 0.15 + level * 0.02)
+	Effects.Shot(Weapon.GetTipPosition(player) or origin, endPosition, tier.Shot, color, tier.Rainbow)
 	Weapon.PlaySwing(player)
 end)
 

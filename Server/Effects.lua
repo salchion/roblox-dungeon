@@ -2,6 +2,7 @@
 -- 총알 궤적, 데미지 숫자, 강화 버스트 같은 짧은 시각 효과
 
 local Debris = game:GetService("Debris")
+local TweenService = game:GetService("TweenService")
 
 local Effects = {}
 
@@ -18,6 +19,126 @@ function Effects.Tracer(from, to, color, thickness)
 	beam.CFrame = CFrame.lookAt(from, to) * CFrame.new(0, 0, -distance / 2)
 	beam.Parent = workspace
 	Debris:AddItem(beam, 0.08)
+end
+
+local RAINBOW = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 60, 60)),
+	ColorSequenceKeypoint.new(0.2, Color3.fromRGB(255, 220, 60)),
+	ColorSequenceKeypoint.new(0.4, Color3.fromRGB(80, 255, 100)),
+	ColorSequenceKeypoint.new(0.6, Color3.fromRGB(60, 220, 255)),
+	ColorSequenceKeypoint.new(0.8, Color3.fromRGB(90, 90, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 255)),
+})
+local FIRE = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 240, 120)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 50, 20)),
+})
+
+-- 무기 등급별로 모양이 다른 발사체가 날아가는 연출 (판정은 이미 서버에서 끝난 상태, 보이기만 하는 것)
+-- shot = Config.Weapon.Tiers[n].Shot
+function Effects.Shot(from, to, shot, color, rainbow)
+	local distance = (to - from).Magnitude
+	if distance < 0.5 then return end
+
+	local part = Instance.new("Part")
+	part.Anchored = true
+	part.CanCollide = false
+	part.CanQuery = false
+	part.CanTouch = false
+	part.Material = Enum.Material.Neon
+	part.Color = color
+	if shot.Style == "Bolt" then
+		part.Size = Vector3.new(shot.Size, shot.Size, shot.Length) -- 길쭉한 탄
+	else
+		part.Shape = Enum.PartType.Ball
+		part.Size = Vector3.new(shot.Size, shot.Size, shot.Size)
+	end
+	part.CFrame = CFrame.lookAt(from, to)
+	part.Parent = workspace
+
+	local colorSeq = rainbow and RAINBOW or ColorSequence.new(color)
+	if shot.Style == "Fire" then
+		colorSeq = FIRE
+	end
+
+	-- 꼬리(궤적)
+	local a0 = Instance.new("Attachment")
+	a0.Position = Vector3.new(0, shot.Size / 2, 0)
+	a0.Parent = part
+	local a1 = Instance.new("Attachment")
+	a1.Position = Vector3.new(0, -shot.Size / 2, 0)
+	a1.Parent = part
+	local trail = Instance.new("Trail")
+	trail.Attachment0 = a0
+	trail.Attachment1 = a1
+	trail.Lifetime = shot.Style == "Ball" and 0.1 or 0.3
+	trail.Color = colorSeq
+	trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(1, 1) })
+	trail.LightEmission = 1
+	trail.FaceCamera = true
+	trail.Parent = part
+
+	-- 등급별 입자: 불꽃은 불길, 마법은 반짝이, 무지개는 무지개 가루
+	local rate = ({ Orb = 40, Cannon = 25, Fire = 90, Rainbow = 80 })[shot.Style]
+	if rate then
+		local emitter = Instance.new("ParticleEmitter")
+		emitter.Rate = rate
+		emitter.Lifetime = NumberRange.new(0.3, 0.6)
+		emitter.Speed = NumberRange.new(1, shot.Style == "Fire" and 6 or 3)
+		emitter.SpreadAngle = Vector2.new(180, 180)
+		emitter.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, shot.Size * 0.6), NumberSequenceKeypoint.new(1, 0) })
+		emitter.LightEmission = 1
+		emitter.Color = colorSeq
+		emitter.Parent = part
+	end
+
+	local duration = math.clamp(distance / shot.Speed, 0.03, 1.2)
+	local tween = TweenService:Create(part, TweenInfo.new(duration, Enum.EasingStyle.Linear), {
+		CFrame = CFrame.lookAt(to, to + (to - from)),
+	})
+	tween.Completed:Connect(function()
+		part.Transparency = 1
+		for _, child in ipairs(part:GetChildren()) do
+			if child:IsA("ParticleEmitter") then
+				child.Enabled = false
+			end
+		end
+		if shot.Impact > 0 then
+			Effects.Burst(to, color, shot.Impact)
+		end
+		Debris:AddItem(part, 0.5)
+	end)
+	tween:Play()
+end
+
+-- 임의 색의 떠오르는 글자 (골드 획득 등)
+function Effects.FloatText(position, text, color)
+	local anchor = Instance.new("Part")
+	anchor.Anchored = true
+	anchor.CanCollide = false
+	anchor.CanQuery = false
+	anchor.Transparency = 1
+	anchor.Size = Vector3.new(0.2, 0.2, 0.2)
+	anchor.Position = position
+	anchor.Parent = workspace
+
+	local gui = Instance.new("BillboardGui")
+	gui.Size = UDim2.new(0, 140, 0, 36)
+	gui.AlwaysOnTop = true
+	gui.Parent = anchor
+
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(1, 0, 1, 0)
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.GothamBold
+	label.TextScaled = true
+	label.TextStrokeTransparency = 0
+	label.Text = text
+	label.TextColor3 = color
+	label.Parent = gui
+
+	TweenService:Create(anchor, TweenInfo.new(0.7), { Position = position + Vector3.new(0, 3, 0) }):Play()
+	Debris:AddItem(anchor, 0.7)
 end
 
 function Effects.DamageNumber(position, amount, isCrit)

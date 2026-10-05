@@ -689,6 +689,27 @@ refreshEnhance()
 local holding = false
 local nextAttack = 0
 
+-- Shift를 누르고 있는 동안 달리기 (이동속도 + 시야각 살짝 넓어짐)
+local sprinting = false
+
+local function applySpeed()
+	local character = player.Character
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	if humanoid then
+		humanoid.WalkSpeed = sprinting and Config.Player.RunSpeed or Config.Player.WalkSpeed
+	end
+end
+
+player.CharacterAdded:Connect(function(character)
+	character:WaitForChild("Humanoid")
+	applySpeed()
+end)
+
+RunService.RenderStepped:Connect(function(dt)
+	local target = sprinting and 80 or 70
+	camera.FieldOfView += (target - camera.FieldOfView) * math.min(1, dt * 8)
+end)
+
 local function getAimPoint(screenPosition)
 	local ray = camera:ViewportPointToRay(screenPosition.X, screenPosition.Y)
 	local params = RaycastParams.new()
@@ -724,6 +745,9 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		holding = true
+	elseif input.KeyCode == Enum.KeyCode.LeftShift then
+		sprinting = true
+		applySpeed()
 	elseif input.UserInputType == Enum.UserInputType.Touch then
 		local inset = GuiService:GetGuiInset()
 		attack(Vector2.new(input.Position.X, input.Position.Y) + inset)
@@ -739,6 +763,9 @@ end)
 UserInputService.InputEnded:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		holding = false
+	elseif input.KeyCode == Enum.KeyCode.LeftShift then
+		sprinting = false
+		applySpeed()
 	end
 end)
 
