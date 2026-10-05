@@ -1,427 +1,190 @@
 -- GameServer (ServerScriptService 안의 Script)
--- 몬스터가 갈수록 커지고, 플레이어는 맞힐수록 데미지가 오르고, 킬하면 스탯 포인트를 얻는 프로토타입
+-- 게임 전체의 진입점. 로비 생성, 플레이어 세팅, 공격 처리, 강화 요청, 던전 입장을 서로 연결한다.
+--
+-- 구조 (자세한 배치는 README.md 참고)
+--   ReplicatedStorage:      Config, Remotes (ModuleScript)
+--   ServerScriptService:    GameServer (이 Script) + Modules 폴더(Effects, WeaponService, PartyService,
+--                           LobbyService, DungeonService, DataService)
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
-local Debris = game:GetService("Debris")
+local ServerScriptService = game:GetService("ServerScriptService")
+
+local Config = require(ReplicatedStorage:WaitForChild("Config"))
+local Remotes = require(ReplicatedStorage:WaitForChild("Remotes")) -- RemoteEvent 들이 여기서 만들어짐
+
+local Modules = ServerScriptService:WaitForChild("Modules")
+local Effects = require(Modules:WaitForChild("Effects"))
+local Weapon = require(Modules:WaitForChild("WeaponService"))
+local Party = require(Modules:WaitForChild("PartyService"))
+local Lobby = require(Modules:WaitForChild("LobbyService"))
+local Dungeon = require(Modules:WaitForChild("DungeonService"))
+local Data = require(Modules:WaitForChild("DataService"))
 
 ------------------------------------------------------------
--- 밸런스 설정값 (여기 숫자만 바꿔가며 조절하면 됨)
+-- 로비 / 게이트 / 강화대
 ------------------------------------------------------------
-local CONFIG = {
-	BaseDamage = 10,        -- 시작 데미지
-	HitsPerDamageUp = 5,    -- 몇 번 맞힐 때마다 데미지 +1
-	BaseCooldown = 0.35,    -- 기본 공격 간격(초)
-	AttackRange = 300,      -- 사거리
-	MaxMonsters = 3,        -- 동시에 존재하는 몬스터 수
-	SpawnDistance = 70,     -- 맵 중앙에서 몬스터가 나타나는 거리
-	CritPerPoint = 0.03,    -- 치명타 포인트당 확률 +3% (치명타 = 2배)
-	MaxCritPoints = 20,     -- 치명타 최대 60%
-	SpeedPerPoint = 0.08,   -- 공격속도 포인트당 +8%
-	HealthPerPoint = 15,    -- 최대 체력 포인트당 +15
-}
+local lobby = Lobby.Build()
+Dungeon.Init(lobby.SpawnCFrame)
 
--- 몬스터 레벨별 능력치: 레벨이 오를수록 커지고 단단해짐
-local function getMonsterStats(level)
-	return {
-		Size = math.min(3 + (level - 1) * 0.8, 40),
-		MaxHealth = math.floor(40 * 1.22 ^ (level - 1)),
-		Speed = 10,
-		ShotDamage = 8 + level * 2,
-		ShotInterval = math.max(1.2, 2.6 - level * 0.05),
-		ShotSpeed = 45,
-	}
-end
+-- 던전 게이트: 파티가 있으면 파티장만 입장 가능 (검사는 Dungeon.Start 안에서)
+lobby.GatePrompt.Triggered:Connect(function(player)
+	Dungeon.Start(player)
+end)
 
-------------------------------------------------------------
--- 기본 준비
-------------------------------------------------------------
-local monsterLevel = 1      -- 다음에 나올 몬스터 레벨 (킬할 때마다 +1)
-local monsters = {}         -- [몬스터 Part] = 몬스터 데이터
-local projectiles = {}      -- 날아가는 몬스터 공격들
-local lastAttack = {}       -- [플레이어] = 마지막 공격 시각
-
-local monstersFolder = Instance.new("Folder")
-monstersFolder.Name = "Monsters"
-monstersFolder.Parent = workspace
-
-local attackEvent = Instance.new("RemoteEvent")
-attackEvent.Name = "Attack"
-attackEvent.Parent = ReplicatedStorage
-
-local upgradeEvent = Instance.new("RemoteEvent")
-upgradeEvent.Name = "Upgrade"
-upgradeEvent.Parent = ReplicatedStorage
+lobby.AnvilPrompt.Triggered:Connect(function(player)
+	if player:GetAttribute("Zone") == "Lobby" then
+		Remotes.OpenEnhance:FireClient(player)
+	end
+end)
 
 ------------------------------------------------------------
 -- 플레이어
 ------------------------------------------------------------
-local function getMaxHealth(player)
-	return 100 + player:GetAttribute("HealthPoints") * CONFIG.HealthPerPoint
-end
-
 local function onCharacterAdded(player, character)
 	local humanoid = character:WaitForChild("Humanoid")
-	humanoid.MaxHealth = getMaxHealth(player)
+	humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None -- 기본 이름표 대신 무기 레벨이 보이는 이름표 사용
+	humanoid.MaxHealth = Dungeon.GetMaxHealth(player)
 	humanoid.Health = humanoid.MaxHealth
+
+	Dungeon.OnCharacterAdded(player, character)
+
+	character:WaitForChild("Head")
+	Weapon.Refresh(player)
 end
 
 local function setupPlayer(player)
-	player.CameraMode = Enum.CameraMode.LockFirstPerson -- 1인칭 고정
+	-- 3인칭 카메라 (1인칭으로 들어가지 못하게 최소 거리를 둠)
+	player.CameraMode = Enum.CameraMode.Classic
+	player.CameraMinZoomDistance = 8
+	player.CameraMaxZoomDistance = 60
 
+	player:SetAttribute("Zone", "Lobby")
+	player:SetAttribute("PartyId", 0)
+	player:SetAttribute("Gold", 0)
+	player:SetAttribute("WeaponLevel", 0)
+	for _, attribute in pairs(Config.StatAttributes) do
+		player:SetAttribute(attribute, 0)
+	end
+	player:SetAttribute("StatPoints", 0)
+
+	-- 리더보드에 골드 / 무기 강화 수치 표시
 	local leaderstats = Instance.new("Folder")
 	leaderstats.Name = "leaderstats"
 	leaderstats.Parent = player
 
-	local damage = Instance.new("IntValue")
-	damage.Name = "Damage"
-	damage.Value = CONFIG.BaseDamage
-	damage.Parent = leaderstats
+	local goldValue = Instance.new("IntValue")
+	goldValue.Name = "Gold"
+	goldValue.Parent = leaderstats
 
-	local kills = Instance.new("IntValue")
-	kills.Name = "Kills"
-	kills.Parent = leaderstats
+	local weaponValue = Instance.new("IntValue")
+	weaponValue.Name = "Weapon"
+	weaponValue.Parent = leaderstats
 
-	player:SetAttribute("HitCount", 0)
-	player:SetAttribute("StatPoints", 0)
-	player:SetAttribute("CritPoints", 0)
-	player:SetAttribute("SpeedPoints", 0)
-	player:SetAttribute("HealthPoints", 0)
+	player:GetAttributeChangedSignal("Gold"):Connect(function()
+		goldValue.Value = player:GetAttribute("Gold") or 0
+	end)
+	player:GetAttributeChangedSignal("WeaponLevel"):Connect(function()
+		weaponValue.Value = player:GetAttribute("WeaponLevel") or 0
+		Weapon.Refresh(player) -- 강화 즉시 무기 외형 변경 (모든 플레이어에게 보임)
+	end)
+	player:GetAttributeChangedSignal("PartyId"):Connect(function()
+		Weapon.UpdateNameplate(player)
+	end)
 
 	player.CharacterAdded:Connect(function(character)
 		onCharacterAdded(player, character)
 	end)
 	if player.Character then
-		onCharacterAdded(player, player.Character)
+		task.spawn(onCharacterAdded, player, player.Character)
+	end
+
+	-- 저장된 데이터 적용 (DataStore 대기 중에도 캐릭터는 이미 스폰될 수 있음)
+	local saved = Data.Load(player)
+	if player.Parent then
+		player:SetAttribute("Gold", saved.Gold)
+		player:SetAttribute("WeaponLevel", saved.WeaponLevel)
 	end
 end
 
 Players.PlayerAdded:Connect(setupPlayer)
 for _, player in ipairs(Players:GetPlayers()) do
-	setupPlayer(player)
+	task.spawn(setupPlayer, player)
 end
+
+local lastAttack = {}
 
 Players.PlayerRemoving:Connect(function(player)
 	lastAttack[player] = nil
+	Party.OnPlayerRemoving(player)
+	Dungeon.OnPlayerRemoving(player)
+	Data.Save(player)
+	Data.Forget(player)
 end)
 
-local function getAliveParts(player)
+task.spawn(function()
+	while true do
+		task.wait(60)
+		for _, player in ipairs(Players:GetPlayers()) do
+			Data.Save(player)
+		end
+	end
+end)
+
+game:BindToClose(function()
+	for _, player in ipairs(Players:GetPlayers()) do
+		task.spawn(Data.Save, player)
+	end
+	task.wait(2)
+end)
+
+------------------------------------------------------------
+-- 공격: 클라이언트는 마우스가 가리키는 지점만 보내고, 맞았는지는 서버가 판정한다.
+-- 로비에서도 쏠 수 있다 (무기 이펙트 자랑용, 데미지 없음).
+------------------------------------------------------------
+Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint)
+	if typeof(aimPoint) ~= "Vector3" or aimPoint ~= aimPoint then return end -- NaN 방어
+
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-	if root and humanoid and humanoid.Health > 0 then
-		return root, humanoid
-	end
-	return nil
-end
-
-local function getNearestTarget(position)
-	local nearest, nearestDist = nil, math.huge
-	for _, player in ipairs(Players:GetPlayers()) do
-		local root = getAliveParts(player)
-		if root then
-			local dist = (root.Position - position).Magnitude
-			if dist < nearestDist then
-				nearest, nearestDist = root, dist
-			end
-		end
-	end
-	return nearest, nearestDist
-end
-
-------------------------------------------------------------
--- 이펙트 (총알 궤적, 데미지 숫자)
-------------------------------------------------------------
-local function drawTracer(from, to)
-	local distance = (to - from).Magnitude
-	if distance < 0.1 then return end
-	local beam = Instance.new("Part")
-	beam.Anchored = true
-	beam.CanCollide = false
-	beam.CanQuery = false
-	beam.Material = Enum.Material.Neon
-	beam.Color = Color3.fromRGB(255, 255, 150)
-	beam.Size = Vector3.new(0.15, 0.15, distance)
-	beam.CFrame = CFrame.lookAt(from, to) * CFrame.new(0, 0, -distance / 2)
-	beam.Parent = workspace
-	Debris:AddItem(beam, 0.06)
-end
-
-local function showDamageNumber(position, amount, isCrit)
-	local anchor = Instance.new("Part")
-	anchor.Anchored = true
-	anchor.CanCollide = false
-	anchor.CanQuery = false
-	anchor.Transparency = 1
-	anchor.Size = Vector3.new(0.2, 0.2, 0.2)
-	anchor.Position = position
-	anchor.Parent = workspace
-
-	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.new(0, 90, 0, 40)
-	gui.AlwaysOnTop = true
-	gui.Parent = anchor
-
-	local label = Instance.new("TextLabel")
-	label.Size = UDim2.new(1, 0, 1, 0)
-	label.BackgroundTransparency = 1
-	label.Font = Enum.Font.GothamBold
-	label.TextScaled = true
-	label.TextStrokeTransparency = 0
-	label.Text = isCrit and (amount .. "!") or tostring(amount)
-	label.TextColor3 = isCrit and Color3.fromRGB(255, 220, 60) or Color3.new(1, 1, 1)
-	label.Parent = gui
-
-	Debris:AddItem(anchor, 0.5)
-end
-
-------------------------------------------------------------
--- 몬스터
-------------------------------------------------------------
-local function createHealthBar(part, level)
-	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.new(0, 120, 0, 28)
-	gui.StudsOffset = Vector3.new(0, part.Size.Y / 2 + 1.5, 0)
-	gui.AlwaysOnTop = true
-	gui.Parent = part
-
-	local label = Instance.new("TextLabel")
-	label.Size = UDim2.new(1, 0, 0.5, 0)
-	label.BackgroundTransparency = 1
-	label.Font = Enum.Font.GothamBold
-	label.TextScaled = true
-	label.TextColor3 = Color3.new(1, 1, 1)
-	label.TextStrokeTransparency = 0
-	label.Text = "Lv." .. level
-	label.Parent = gui
-
-	local back = Instance.new("Frame")
-	back.Size = UDim2.new(1, 0, 0.4, 0)
-	back.Position = UDim2.new(0, 0, 0.6, 0)
-	back.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	back.BorderSizePixel = 0
-	back.Parent = gui
-
-	local fill = Instance.new("Frame")
-	fill.Size = UDim2.new(1, 0, 1, 0)
-	fill.BackgroundColor3 = Color3.fromRGB(230, 60, 60)
-	fill.BorderSizePixel = 0
-	fill.Parent = back
-
-	return fill
-end
-
-local function spawnMonster()
-	local level = monsterLevel
-	local stats = getMonsterStats(level)
-	local angle = math.random() * math.pi * 2
-
-	local part = Instance.new("Part")
-	part.Name = "Monster"
-	part.Shape = Enum.PartType.Ball
-	part.Size = Vector3.new(stats.Size, stats.Size, stats.Size)
-	part.Anchored = true
-	part.CanCollide = false
-	part.Color = Color3.fromRGB(120, 40, 160)
-	part.Position = Vector3.new(
-		math.cos(angle) * CONFIG.SpawnDistance,
-		stats.Size / 2,
-		math.sin(angle) * CONFIG.SpawnDistance
-	)
-	part.Parent = monstersFolder
-
-	monsters[part] = {
-		Level = level,
-		Stats = stats,
-		Health = stats.MaxHealth,
-		HealthFill = createHealthBar(part, level),
-		NextShot = os.clock() + stats.ShotInterval,
-		BaseColor = part.Color,
-	}
-end
-
-local function fireProjectile(monster, data, targetPosition)
-	local size = math.max(1.5, data.Stats.Size / 4)
-	local ball = Instance.new("Part")
-	ball.Shape = Enum.PartType.Ball
-	ball.Size = Vector3.new(size, size, size)
-	ball.Anchored = true
-	ball.CanCollide = false
-	ball.CanQuery = false
-	ball.Material = Enum.Material.Neon
-	ball.Color = Color3.fromRGB(255, 120, 30)
-	ball.Position = monster.Position
-	ball.Parent = workspace
-
-	table.insert(projectiles, {
-		Part = ball,
-		Direction = (targetPosition - monster.Position).Unit,
-		Speed = data.Stats.ShotSpeed,
-		Damage = data.Stats.ShotDamage,
-		Radius = size / 2,
-		Expire = os.clock() + 4,
-	})
-end
-
-local function damageMonster(player, part, data, amount, isCrit, hitPosition)
-	data.Health -= amount
-	data.HealthFill.Size = UDim2.new(math.max(data.Health, 0) / data.Stats.MaxHealth, 0, 1, 0)
-	showDamageNumber(hitPosition, amount, isCrit)
-
-	if data.Health <= 0 then
-		monsters[part] = nil
-		part:Destroy()
-		monsterLevel += 1
-		-- 킬 보상: 특수 스탯 포인트
-		player.leaderstats.Kills.Value += 1
-		player:SetAttribute("StatPoints", player:GetAttribute("StatPoints") + 1)
-	end
-end
-
-------------------------------------------------------------
--- 플레이어 공격 처리 (판정은 서버에서)
-------------------------------------------------------------
-attackEvent.OnServerEvent:Connect(function(player, direction)
-	if typeof(direction) ~= "Vector3" or direction.Magnitude < 0.5 then return end
+	if not root or not humanoid or humanoid.Health <= 0 then return end
 
 	local now = os.clock()
-	local cooldown = CONFIG.BaseCooldown / (1 + player:GetAttribute("SpeedPoints") * CONFIG.SpeedPerPoint)
+	local speedPoints = player:GetAttribute("SpeedPoints") or 0
+	local cooldown = Config.Player.BaseCooldown / (1 + speedPoints * Config.Player.SpeedPerPoint)
 	if now - (lastAttack[player] or 0) < cooldown * 0.9 then return end -- 연타 제한 (네트워크 오차 10% 허용)
 	lastAttack[player] = now
 
-	local character = player.Character
-	local head = character and character:FindFirstChild("Head")
-	local _, humanoid = getAliveParts(player)
-	if not head or not humanoid then return end
+	local origin = root.Position + Vector3.new(0, 1.5, 0)
+	local offset = aimPoint - origin
+	if offset.Magnitude < 0.5 then return end
+	local direction = offset.Unit
 
-	local params = RaycastParams.new()
-	params.FilterType = Enum.RaycastFilterType.Include
-	params.FilterDescendantsInstances = { monstersFolder }
+	local endPosition = Dungeon.Shoot(player, origin, direction) -- 던전 밖이면 nil
+	endPosition = endPosition or (origin + direction * Config.Player.AttackRange)
 
-	local origin = head.Position
-	local result = workspace:Raycast(origin, direction.Unit * CONFIG.AttackRange, params)
-	local endPosition = result and result.Position or (origin + direction.Unit * CONFIG.AttackRange)
-	drawTracer(origin + Vector3.new(0, -0.6, 0) + head.CFrame.RightVector * 0.8, endPosition)
-
-	if not result then return end
-	local part = result.Instance
-	local data = monsters[part]
-	if not data then return end
-
-	local damage = player.leaderstats.Damage.Value
-	local isCrit = math.random() < player:GetAttribute("CritPoints") * CONFIG.CritPerPoint
-	if isCrit then
-		damage *= 2
-	end
-
-	-- 맞힐 때마다 조금씩 데미지 성장
-	local hits = player:GetAttribute("HitCount") + 1
-	player:SetAttribute("HitCount", hits)
-	if hits % CONFIG.HitsPerDamageUp == 0 then
-		player.leaderstats.Damage.Value += 1
-	end
-
-	damageMonster(player, part, data, damage, isCrit, result.Position)
+	local level = player:GetAttribute("WeaponLevel") or 0
+	local tier = Config.GetWeaponTier(level)
+	local color = tier.Rainbow and Color3.fromHSV((now * 0.5) % 1, 0.8, 1) or tier.Color
+	Effects.Tracer(Weapon.GetTipPosition(player) or origin, endPosition, color, 0.15 + level * 0.02)
+	Weapon.PlaySwing(player)
 end)
 
 ------------------------------------------------------------
--- 스탯 포인트 투자 (1: 치명타, 2: 공격속도, 3: 최대체력)
+-- 무기 강화
 ------------------------------------------------------------
-local UPGRADE_ATTRIBUTES = {
-	Crit = "CritPoints",
-	Speed = "SpeedPoints",
-	Health = "HealthPoints",
-}
+local lastEnhance = {}
 
-upgradeEvent.OnServerEvent:Connect(function(player, statName)
-	local attribute = UPGRADE_ATTRIBUTES[statName]
-	if not attribute then return end
-
-	local points = player:GetAttribute("StatPoints")
-	if points <= 0 then return end
-	if attribute == "CritPoints" and player:GetAttribute("CritPoints") >= CONFIG.MaxCritPoints then return end
-
-	player:SetAttribute("StatPoints", points - 1)
-	player:SetAttribute(attribute, player:GetAttribute(attribute) + 1)
-
-	if attribute == "HealthPoints" then
-		local _, humanoid = getAliveParts(player)
-		if humanoid then
-			humanoid.MaxHealth = getMaxHealth(player)
-			humanoid.Health += CONFIG.HealthPerPoint
-		end
-	end
-end)
-
-------------------------------------------------------------
--- 매 프레임: 몬스터 이동/공격, 투사체 이동/명중
-------------------------------------------------------------
-RunService.Heartbeat:Connect(function(dt)
+Remotes.Enhance.OnServerEvent:Connect(function(player)
 	local now = os.clock()
+	if now - (lastEnhance[player] or 0) < 0.25 then return end
+	lastEnhance[player] = now
 
-	for part, data in pairs(monsters) do
-		local target, distance = getNearestTarget(part.Position)
-		if target then
-			-- 일정 거리까지만 다가옴 (덩치가 클수록 멀리서 멈춤)
-			local keepDistance = data.Stats.Size + 12
-			if distance > keepDistance then
-				local flatTarget = Vector3.new(target.Position.X, part.Position.Y, target.Position.Z)
-				local move = flatTarget - part.Position
-				if move.Magnitude > 0.1 then
-					part.Position += move.Unit * data.Stats.Speed * dt
-				end
-			end
-
-			if now >= data.NextShot then
-				data.NextShot = now + data.Stats.ShotInterval
-				-- 예고: 0.4초 동안 노랗게 빛난 뒤 발사 → 보고 피할 수 있게
-				part.Color = Color3.fromRGB(255, 220, 80)
-				task.delay(0.4, function()
-					if not monsters[part] then return end
-					part.Color = data.BaseColor
-					local currentTarget = getNearestTarget(part.Position)
-					if currentTarget then
-						fireProjectile(part, data, currentTarget.Position)
-					end
-				end)
-			end
-		end
-	end
-
-	for i = #projectiles, 1, -1 do
-		local projectile = projectiles[i]
-		projectile.Part.Position += projectile.Direction * projectile.Speed * dt
-
-		local hit = false
-		for _, player in ipairs(Players:GetPlayers()) do
-			local root, humanoid = getAliveParts(player)
-			if root and (root.Position - projectile.Part.Position).Magnitude < projectile.Radius + 2 then
-				humanoid:TakeDamage(projectile.Damage)
-				hit = true
-				break
-			end
-		end
-
-		if hit or now > projectile.Expire then
-			projectile.Part:Destroy()
-			table.remove(projectiles, i)
-		end
-	end
+	local ok, message = Weapon.Enhance(player)
+	Remotes.Enhance:FireClient(player, ok, message)
 end)
 
-------------------------------------------------------------
--- 몬스터 스폰 루프
-------------------------------------------------------------
-task.spawn(function()
-	while true do
-		local count = 0
-		for _ in pairs(monsters) do
-			count += 1
-		end
-		if count < CONFIG.MaxMonsters and #Players:GetPlayers() > 0 then
-			spawnMonster()
-		end
-		task.wait(3)
-	end
+Players.PlayerRemoving:Connect(function(player)
+	lastEnhance[player] = nil
 end)
