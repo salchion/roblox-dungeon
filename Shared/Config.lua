@@ -153,6 +153,22 @@ Config.Dummy = {
 	},
 }
 
+------------------------------------------------------------
+-- 소리. 값은 Roblox 오디오 에셋 ID(숫자). 0이면 그 소리는 재생하지 않음.
+-- (Creator Store > 오디오 에서 고른 소리의 ID를 복사해 넣으면 됨. README 참고)
+------------------------------------------------------------
+Config.Audio = {
+	MusicVolume = 0.4,
+	Music = {
+		Lobby = 0,      -- 로비 배경음악
+		Dungeon = 0,    -- 던전(웨이브) 배경음악
+		Boss = 0,       -- 보스전 배경음악
+	},
+	Shot = 0,           -- 총 쏘는 소리 (무기가 강해질수록 낮고 묵직하게 재생됨)
+	ShotVolume = 0.5,
+	EnhanceSuccess = 0, -- 강화 성공 소리
+}
+
 function Config.GetWeaponTier(level)
 	local tiers = Config.Weapon.Tiers
 	for i = #tiers, 1, -1 do

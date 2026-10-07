@@ -50,3 +50,11 @@
 
 ## 밸런스 조절
 `Shared/Config.lua` 의 숫자만 바꾸면 됩니다 (웨이브 수, 스탯 효과, 강화 비용/확률, 몬스터/보스 능력치 등).
+
+## 소리 넣는 법
+`Shared/Config.lua` 의 `Config.Audio` 에 Roblox 오디오 에셋 ID(숫자)를 넣으면 된다. 0이면 재생하지 않는다.
+1. Studio 우측 `도구 상자`(또는 Creator Store) → **오디오** 탭에서 마음에 드는 소리를 고른다
+2. 소리를 눌러 ID(주소 끝의 숫자)를 복사한다
+3. `Music.Lobby` / `Music.Dungeon` / `Music.Boss`(배경음악), `Shot`(총소리), `EnhanceSuccess`(강화 성공음)에 붙여넣는다
+
+내 게임에서 쓸 수 있는 소리(Roblox 공식 제공 또는 내가 올린 것)만 재생된다. 재생이 안 되면 그 소리가 비공개 오디오일 수 있으니 다른 소리를 골라보자.

@@ -10,6 +10,8 @@ local UserInputService = game:GetService("UserInputService")
 local GuiService = game:GetService("GuiService")
 local StarterGui = game:GetService("StarterGui")
 local RunService = game:GetService("RunService")
+local SoundService = game:GetService("SoundService")
+local TweenService = game:GetService("TweenService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
@@ -543,6 +545,54 @@ end)
 
 local dungeonState = nil
 
+------------------------------------------------------------
+-- 배경음악: Config.Audio.Music 에 소리 ID를 넣으면 로비 / 던전 / 보스전마다 부드럽게 바뀐다
+------------------------------------------------------------
+local tracks = {}
+for name, id in pairs(Config.Audio.Music) do
+	if id ~= 0 then
+		local sound = Instance.new("Sound")
+		sound.Name = "Music_" .. name
+		sound.SoundId = "rbxassetid://" .. id
+		sound.Looped = true
+		sound.Volume = 0
+		sound.Parent = SoundService
+		tracks[name] = sound
+	end
+end
+
+local currentMusic = nil
+local function playMusic(name)
+	if name == currentMusic then return end
+	currentMusic = name
+	for trackName, sound in pairs(tracks) do
+		if trackName == name then
+			if not sound.IsPlaying then
+				sound:Play()
+			end
+			TweenService:Create(sound, TweenInfo.new(1.5), { Volume = Config.Audio.MusicVolume }):Play()
+		else
+			local fade = TweenService:Create(sound, TweenInfo.new(1.5), { Volume = 0 })
+			fade.Completed:Connect(function()
+				if currentMusic ~= trackName then
+					sound:Pause()
+				end
+			end)
+			fade:Play()
+		end
+	end
+end
+
+local function updateMusic()
+	if currentZone() == "Lobby" then
+		playMusic("Lobby")
+	elseif dungeonState and dungeonState.Phase == "Boss" then
+		playMusic("Boss")
+	else
+		playMusic("Dungeon")
+	end
+end
+
 local function refreshStats()
 	local points = player:GetAttribute("StatPoints") or 0
 	statPoints.Text = string.format("스탯 포인트: %d", points)
@@ -629,6 +679,7 @@ Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
 		dungeonState = data
 		refreshBanner()
 		refreshStats()
+		updateMusic()
 	elseif action == "Result" then
 		showResult(data)
 	end
@@ -666,6 +717,7 @@ local function refreshZone()
 	refreshStats()
 	refreshBanner()
 	queuePartyRefresh()
+	updateMusic()
 end
 
 player.AttributeChanged:Connect(function(attribute)

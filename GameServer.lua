@@ -172,7 +172,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint)
 	local tier = Config.GetWeaponTier(level)
 	local color = tier.Rainbow and Color3.fromHSV((now * 0.5) % 1, 0.8, 1) or tier.Color
 	Effects.Shot(Weapon.GetTipPosition(player) or origin, endPosition, tier.Shot, color, tier.Rainbow)
-	Weapon.PlaySwing(player)
+	Weapon.PlayShot(player)
 end)
 
 ------------------------------------------------------------

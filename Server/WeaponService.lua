@@ -6,6 +6,9 @@
 local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Config"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 
+local Debris = game:GetService("Debris")
+local TweenService = game:GetService("TweenService")
+
 local Weapon = {}
 
 local RAINBOW = ColorSequence.new({
@@ -81,6 +84,30 @@ local function buildTool(level)
 	base.Name = "Base"
 	base.Position = Vector3.new(0, 0, barrelLength / 2)
 	base.Parent = barrel
+
+	-- 총구 화염 (발사할 때 Weapon.PlayShot 에서 잠깐 터짐)
+	local muzzle = Instance.new("ParticleEmitter")
+	muzzle.Name = "Muzzle"
+	muzzle.Rate = 0
+	muzzle.Lifetime = NumberRange.new(0.06, 0.12)
+	muzzle.Speed = NumberRange.new(4, 10)
+	muzzle.SpreadAngle = Vector2.new(25, 25)
+	muzzle.EmissionDirection = Enum.NormalId.Front
+	muzzle.LightEmission = 1
+	muzzle.Size = NumberSequence.new({
+		NumberSequenceKeypoint.new(0, 0.9 * scale),
+		NumberSequenceKeypoint.new(1, 0),
+	})
+	muzzle.Color = colorSeq
+	muzzle.Parent = tip
+
+	local flash = Instance.new("PointLight")
+	flash.Name = "MuzzleLight"
+	flash.Enabled = false
+	flash.Range = 12
+	flash.Brightness = 3
+	flash.Color = tier.Rainbow and Color3.fromRGB(255, 255, 255) or tier.Color
+	flash.Parent = tip
 
 	if tier.Particles > 0 then
 		local emitter = Instance.new("ParticleEmitter")
@@ -204,15 +231,68 @@ function Weapon.GetTipPosition(player)
 	return tip and tip.WorldPosition or nil
 end
 
--- 기본 애니메이터의 휘두르기 모션을 재생
-function Weapon.PlaySwing(player)
+-- 사운드 재생 (ID가 0이면 아무것도 안 함)
+local function playSoundAt(parent, soundId, volume, pitch)
+	if not soundId or soundId == 0 then return end
+	local sound = Instance.new("Sound")
+	sound.SoundId = "rbxassetid://" .. soundId
+	sound.Volume = volume
+	sound.PlaybackSpeed = pitch or 1
+	sound.RollOffMaxDistance = 90
+	sound.Parent = parent
+	sound:Play()
+	Debris:AddItem(sound, 3)
+end
+
+-- 발사 연출: 칼 휘두르기 대신 총구 화염 + 반동(총이 뒤로 살짝 밀림) + 발사음.
+-- 팔은 기본 애니메이션의 "무기를 앞으로 든 자세"를 그대로 유지한다.
+function Weapon.PlayShot(player)
 	local character = player.Character
 	local tool = character and character:FindFirstChild("Weapon")
-	if not tool then return end
-	local anim = Instance.new("StringValue")
-	anim.Name = "toolanim"
-	anim.Value = "Slash"
-	anim.Parent = tool
+	local barrel = tool and tool:FindFirstChild("Barrel")
+	local tip = barrel and barrel:FindFirstChild("Tip")
+	if not tip then return end
+
+	local muzzle = tip:FindFirstChild("Muzzle")
+	if muzzle then
+		muzzle:Emit(6)
+	end
+	local light = tip:FindFirstChild("MuzzleLight")
+	if light then
+		light.Enabled = true
+		task.delay(0.05, function()
+			if light.Parent then
+				light.Enabled = false
+			end
+		end)
+	end
+
+	-- 반동: 손과 총을 잇는 RightGrip의 위치를 잠깐 뒤로 밀었다가 되돌림
+	local hand = character:FindFirstChild("RightHand") or character:FindFirstChild("Right Arm")
+	local grip = hand and hand:FindFirstChild("RightGrip")
+	if grip then
+		local rest = grip:GetAttribute("RestC1")
+		if not rest then
+			rest = grip.C1
+			grip:SetAttribute("RestC1", rest)
+		end
+		local kick = TweenService:Create(grip, TweenInfo.new(0.04), { C1 = rest * CFrame.Angles(math.rad(6), 0, 0) * CFrame.new(0, 0, -0.35) })
+		kick.Completed:Connect(function()
+			if grip.Parent then
+				TweenService:Create(grip, TweenInfo.new(0.1), { C1 = rest }):Play()
+			end
+		end)
+		kick:Play()
+	end
+
+	-- 무기가 강할수록 낮고 묵직한 소리
+	local tierIndex = 1
+	for i, t in ipairs(Config.Weapon.Tiers) do
+		if t == Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0) then
+			tierIndex = i
+		end
+	end
+	playSoundAt(barrel, Config.Audio.Shot, Config.Audio.ShotVolume, 1.25 - 0.09 * (tierIndex - 1))
 end
 
 ------------------------------------------------------------
@@ -241,6 +321,7 @@ function Weapon.Enhance(player)
 		player:SetAttribute("WeaponLevel", level + 1) -- 외형 갱신은 WeaponLevel 변경 감지에서 처리
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if root then
+			playSoundAt(root, Config.Audio.EnhanceSuccess, 0.8, 1)
 			Effects.Burst(root.Position, Config.GetWeaponTier(level + 1).Color, 30 + level * 4)
 		end
 		return true, string.format("강화 성공! +%d", level + 1)
