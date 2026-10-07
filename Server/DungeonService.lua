@@ -12,6 +12,8 @@ local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Party = require(script.Parent:WaitForChild("PartyService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
+local Level = require(script.Parent:WaitForChild("LevelService"))
+local MonsterTypes = require(script.Parent:WaitForChild("MonsterTypes"))
 
 local D = Config.Dungeon
 local P = Config.Player
@@ -51,6 +53,7 @@ end
 
 function Dungeon.GetMaxHealth(player)
 	return P.BaseHealth + (player:GetAttribute("HealthPoints") or 0) * P.HealthPerPoint + (player:GetAttribute("GearHealth") or 0)
+		+ Config.GetLevelHealth(player:GetAttribute("Level") or 1)
 end
 
 -- 최대 체력을 스탯에 맞게 갱신하고 heal 만큼 회복 (math.huge면 완전 회복)
@@ -94,6 +97,14 @@ local function giveGold(run, amount)
 	for _, member in ipairs(run.Members) do
 		member:SetAttribute("Gold", (member:GetAttribute("Gold") or 0) + amount)
 		run.Earned[member] = (run.Earned[member] or 0) + amount
+	end
+end
+
+-- 파티원 모두에게 경험치 (던전 종류 x 난이도 배율 적용)
+local function giveXp(run, amount)
+	amount = math.floor(amount * run.GoldMult + 0.5)
+	for _, member in ipairs(run.Members) do
+		Level.AddXP(member, amount)
 	end
 end
 
@@ -230,21 +241,25 @@ local function registerMonster(run, part, stats, text, barWidth, extra)
 end
 
 local function spawnMonster(run, level, position)
+	-- 던전 종류마다 나오는 몬스터 종류가 다르다 (Config.Dungeon.Types[..].MonsterPool)
+	local typeKey = MonsterTypes.Pick(run.Type.MonsterPool)
+	local def = MonsterTypes.Defs[typeKey]
+
 	local stats = Config.Monster.GetStats(level)
 	stats.MaxHealth = math.floor(stats.MaxHealth * D.GetHealthScale(run.PartySize) * run.Difficulty.HealthMult)
 	stats.ShotDamage = math.floor(stats.ShotDamage * run.Difficulty.DamageMult)
+	MonsterTypes.ApplyDef(typeKey, stats)
 
-	local part = Instance.new("Part")
-	part.Name = "Monster"
-	part.Shape = Enum.PartType.Ball
-	part.Size = Vector3.new(stats.Size, stats.Size, stats.Size)
-	part.Anchored = true
-	part.CanCollide = false
-	part.Color = run.Type.MonsterColor
-	part.Position = position or ringPosition(run, stats.Size)
-	part.Parent = run.MonstersFolder
+	local color = def.Color:Lerp(run.Type.MonsterColor, 0.25)
+	local part = MonsterTypes.Build(typeKey, stats.Size, color, position or ringPosition(run, stats.Size), run.MonstersFolder)
 
-	registerMonster(run, part, stats, "Lv." .. level, 120, nil)
+	registerMonster(run, part, stats, string.format("Lv.%d %s", level, def.Name), 140, {
+		TypeKey = typeKey,
+		Def = def,
+		Level = level,
+		Phase = math.random() * math.pi * 2,
+		NextAttack = os.clock() + stats.ShotInterval,
+	})
 end
 
 local function spawnBoss(run)
@@ -316,16 +331,6 @@ local function getNearestTarget(run, position)
 		end
 	end
 	return nearest, nearestDist
-end
-
--- 예고(색 변경) 후 지정 시간 뒤에 action 실행. 그 사이 몬스터가 죽거나 던전이 끝났으면 취소.
-local function telegraph(run, part, data, color, delay, action)
-	part.Color = color
-	task.delay(delay, function()
-		if run.Monsters[part] ~= data or run.Phase == "Ended" then return end
-		part.Color = data.BaseColor
-		action()
-	end)
 end
 
 local function rotateY(vector, degrees)
@@ -507,6 +512,7 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 	run.MonsterCount -= 1
 	part:Destroy()
 	giveGold(run, data.Stats.Gold)
+	giveXp(run, data.IsBoss and Config.Xp.DungeonBoss or Config.Xp.DungeonPerMonsterLevel * data.Level)
 	Quest.Add(player, "Kills", 1)
 	if data.IsBoss then
 		run.BossDead = true
@@ -528,19 +534,19 @@ local function stepRun(run, dt)
 	local now = os.clock()
 
 	for part, data in pairs(run.Monsters) do
-		local target, distance = getNearestTarget(run, part.Position)
-		if target then
-			local keepDistance = data.Stats.Size + 12
-			if distance > keepDistance then
-				local flatTarget = Vector3.new(target.Position.X, part.Position.Y, target.Position.Z)
-				local move = flatTarget - part.Position
-				if move.Magnitude > 0.1 then
-					part.Position += move.Unit * data.Stats.Speed * dt
+		if data.IsBoss then
+			-- 보스: 천천히 다가오면서, 패턴을 하나 골라 끝까지 실행한 뒤 잠깐 쉬고 다음 패턴
+			local target, distance = getNearestTarget(run, part.Position)
+			if target then
+				local keepDistance = data.Stats.Size + 12
+				if distance > keepDistance then
+					local flatTarget = Vector3.new(target.Position.X, part.Position.Y, target.Position.Z)
+					local move = flatTarget - part.Position
+					if move.Magnitude > 0.1 then
+						part.Position += move.Unit * data.Stats.Speed * dt
+					end
 				end
-			end
 
-			if data.IsBoss then
-				-- 보스: 패턴을 하나 골라 끝까지 실행한 뒤 잠깐 쉬고 다음 패턴
 				if not data.Casting and now >= data.NextPattern then
 					data.Casting = true
 					local name = pickBossPattern(run, data)
@@ -551,17 +557,10 @@ local function stepRun(run, dt)
 						data.NextPattern = os.clock() + (data.Enraged and 1.6 or 2.6)
 					end)
 				end
-			elseif now >= data.NextShot then
-				data.NextShot = now + data.Stats.ShotInterval
-				-- 예고: 0.4초 동안 노랗게 빛난 뒤 발사 -> 보고 피할 수 있게
-				telegraph(run, part, data, Color3.fromRGB(255, 220, 80), 0.4, function()
-					local current = getNearestTarget(run, part.Position)
-					if current then
-						local size = math.max(1.5, data.Stats.Size / 4)
-						fireProjectile(run, part.Position, current.Position - part.Position, data.Stats.ShotSpeed, data.Stats.ShotDamage, size)
-					end
-				end)
 			end
+		else
+			-- 일반 몬스터: 종류(슬라임/독충/박쥐/마법사/골렘/멧돼지/폭탄병)마다 움직임과 공격이 다르다
+			MonsterTypes.Update(run.Ctx, part, data, dt, now)
 		end
 	end
 
@@ -602,6 +601,7 @@ function Dungeon.ComputeDamage(player)
 	local weaponType = Config.GetPlayerWeapon(player)
 	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
 	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel) * weaponType.DamageMult
+		* Config.GetLevelDamageMult(player:GetAttribute("Level") or 1)
 	local chance = math.min(0.9, (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint
 		+ (player:GetAttribute("GearCrit") or 0) + (weaponType.CritBonus or 0))
 	local isCrit = math.random() < chance
@@ -725,6 +725,7 @@ local function finish(run, victory)
 
 	if victory then
 		giveGold(run, D.VictoryGold)
+		giveXp(run, Config.Xp.DungeonClear)
 		for _, member in ipairs(run.Members) do
 			Quest.Add(member, "DungeonClears", 1)
 		end
@@ -831,6 +832,7 @@ local function runLoop(run)
 		if not waitFor(run, function() return run.MonsterCount <= 0 end) then return end
 
 		giveGold(run, D.WaveClearGold * wave)
+		giveXp(run, Config.Xp.WaveClear * wave)
 		if not statPhase(run) then return end
 	end
 
@@ -907,6 +909,37 @@ function Dungeon.Start(player, typeKey, diffKey)
 	}
 	nextRunId += 1
 	runs[run.Id] = run
+
+	-- 몬스터 AI(MonsterTypes)가 던전 환경을 다루는 데 쓰는 함수들
+	run.Ctx = {
+		FloorY = run.Origin.Y,
+		GetTarget = function(position)
+			return getNearestTarget(run, position)
+		end,
+		Fire = function(origin, direction, speed, damage, size, color)
+			fireProjectile(run, origin, direction, speed, damage, size, color)
+		end,
+		Players = function()
+			local list = {}
+			for _, member in ipairs(run.Members) do
+				local root, humanoid = getAliveParts(member)
+				if root then
+					table.insert(list, { Root = root, Humanoid = humanoid })
+				end
+			end
+			return list
+		end,
+		Alive = function(part, data)
+			return run.Monsters[part] == data and run.Phase ~= "Ended"
+		end,
+		Kill = function(part, data)
+			if run.Monsters[part] == data then
+				run.Monsters[part] = nil
+				run.MonsterCount -= 1
+				part:Destroy()
+			end
+		end,
+	}
 	buildArena(run)
 
 	for _, member in ipairs(members) do

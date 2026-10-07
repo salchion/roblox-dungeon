@@ -23,6 +23,7 @@ local Dummy = require(Modules:WaitForChild("DummyService"))
 local Dungeon = require(Modules:WaitForChild("DungeonService"))
 local Field = require(Modules:WaitForChild("FieldService"))
 local Quest = require(Modules:WaitForChild("QuestService"))
+local Level = require(Modules:WaitForChild("LevelService"))
 local Rank = require(Modules:WaitForChild("RankService"))
 local Data = require(Modules:WaitForChild("DataService"))
 
@@ -77,7 +78,8 @@ local function updatePower(player)
 		player:GetAttribute("SpeedPoints") or 0,
 		player:GetAttribute("GearHealth") or 0,
 		player:GetAttribute("GearCrit") or 0,
-		player:GetAttribute("WeaponType") or "Pistol"
+		player:GetAttribute("WeaponType") or "Pistol",
+		player:GetAttribute("Level") or 1
 	))
 end
 
@@ -106,6 +108,7 @@ local function setupPlayer(player)
 	player:SetAttribute("MaxZone", 0)
 	player:SetAttribute("Power", 0)
 	player:SetAttribute("Title", "")
+	Level.Load(player, 1, 0)
 	for _, attribute in pairs(Config.StatAttributes) do
 		player:SetAttribute(attribute, 0)
 	end
@@ -134,6 +137,7 @@ local function setupPlayer(player)
 		Weapon.UpdateNameplate(player)
 		Quest.Refresh(player)
 	end)
+	addStat("Lv", "Level")
 	addStat("Gold", "Gold")
 	addStat("Weapon", "WeaponLevel")
 	addStat("Tickets", "Tickets")
@@ -173,6 +177,12 @@ local function setupPlayer(player)
 	player:GetAttributeChangedSignal("Title"):Connect(function()
 		Weapon.UpdateNameplate(player)
 	end)
+	-- 레벨이 오르면 최대 체력(완전 회복) / 전투력 / 이름표 / 업적 갱신
+	player:GetAttributeChangedSignal("Level"):Connect(function()
+		Dungeon.RefreshMaxHealth(player)
+		updatePower(player)
+		Quest.Refresh(player)
+	end)
 	for _, slot in ipairs(Config.Gear.Slots) do
 		player:GetAttributeChangedSignal("Gear_" .. slot.Key .. "_R"):Connect(function()
 			Quest.Refresh(player)
@@ -197,6 +207,7 @@ local function setupPlayer(player)
 			player:SetAttribute("WUnlock_" .. key, saved.Weapons.Unlocked[key] == true)
 		end
 		player:SetAttribute("WeaponType", saved.Weapons.Type)
+		Level.Load(player, saved.Level, saved.XP)
 		syncWeaponLevel(player)
 		Gear.Load(player, saved.Gear)
 		Quest.Load(player, saved.Quest)

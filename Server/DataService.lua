@@ -43,7 +43,7 @@ end
 
 function Data.Load(player)
 	local defaults = {
-		Gold = Config.StartGold, WeaponLevel = 0, Tickets = 0, MaxZone = 0, Gear = {},
+		Gold = Config.StartGold, WeaponLevel = 0, Tickets = 0, MaxZone = 0, Gear = {}, Level = 1, XP = 0,
 		Weapons = { Type = "Pistol", Unlocked = {}, Levels = {} }, Quest = nil,
 	}
 	if not store then return defaults end
@@ -61,6 +61,8 @@ function Data.Load(player)
 					Tickets = math.max(0, math.floor(tonumber(saved.Tickets) or 0)),
 					MaxZone = math.clamp(math.floor(tonumber(saved.MaxZone) or 0), 0, Config.Field.ZoneCount),
 					Gear = typeof(saved.Gear) == "table" and saved.Gear or {},
+					Level = math.clamp(math.floor(tonumber(saved.Level) or 1), 1, Config.Level.Max),
+					XP = math.max(0, math.floor(tonumber(saved.XP) or 0)),
 					Weapons = parseWeapons(saved),
 					Quest = typeof(saved.Quest) == "table" and saved.Quest or nil,
 				}
@@ -92,6 +94,8 @@ function Data.Save(player)
 		WeaponLevel = player:GetAttribute("WeaponLevel") or 0,
 		Tickets = player:GetAttribute("Tickets") or 0,
 		MaxZone = player:GetAttribute("MaxZone") or 0,
+		Level = player:GetAttribute("Level") or 1,
+		XP = player:GetAttribute("XP") or 0,
 		Gear = gear,
 		Weapons = weapons,
 		Quest = Quest.Serialize(player),

@@ -111,6 +111,20 @@
       "name": "RankService",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "Server/LevelService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "LevelService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Server/MonsterTypes.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "MonsterTypes",
+      "class": "ModuleScript",
+      "overwrite": true
     }
   ]
 }

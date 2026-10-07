@@ -268,6 +268,17 @@ Config.Field = {
 	BossRespawn = 120,
 	BossTickets = 2,           -- 필드 보스 처치 시 주변 플레이어에게 지급
 	ZoneNames = { "초원", "숲", "황무지", "사막", "설원", "화산", "암흑 지대", "심연" },
+	-- 구역별로 나오는 몬스터 종류와 비중 (MonsterTypes.lua 의 Defs 이름)
+	ZonePools = {
+		{ Slime = 5, Bat = 2 },
+		{ Slime = 3, Spitter = 3, Bat = 2 },
+		{ Spitter = 3, Charger = 3, Golem = 1 },
+		{ Charger = 3, Bomber = 3, Spitter = 2 },
+		{ Mage = 3, Golem = 2, Bat = 3 },
+		{ Bomber = 3, Charger = 3, Mage = 2 },
+		{ Mage = 3, Golem = 2, Charger = 2, Bomber = 2 },
+		{ Mage = 2, Golem = 3, Charger = 3, Bomber = 3, Spitter = 1 },
+	},
 	ZoneColors = {
 		Color3.fromRGB(90, 150, 80), Color3.fromRGB(50, 110, 60), Color3.fromRGB(140, 115, 80), Color3.fromRGB(215, 190, 120),
 		Color3.fromRGB(225, 235, 245), Color3.fromRGB(95, 55, 50), Color3.fromRGB(55, 45, 75), Color3.fromRGB(35, 30, 50),
@@ -295,16 +306,17 @@ end
 ------------------------------------------------------------
 -- 전투력: 머리 위 이름표 / 리더보드에 표시되어 강함을 과시할 수 있다
 ------------------------------------------------------------
-function Config.GetPower(weaponLevel, critPoints, speedPoints, gearHealth, gearCrit, typeKey)
+function Config.GetPower(weaponLevel, critPoints, speedPoints, gearHealth, gearCrit, typeKey, level)
 	local P = Config.Player
+	level = level or 1
 	local weaponType = Config.WeaponTypes[typeKey or "Pistol"] or Config.WeaponTypes.Pistol
 	local pellets = weaponType.Pellets > 1 and weaponType.Pellets * 0.6 or 1
 	local typeFactor = weaponType.DamageMult * pellets / weaponType.Cooldown
-	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel)
+	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel) * Config.GetLevelDamageMult(level)
 	local crit = math.min(0.9, (critPoints or 0) * P.CritPerPoint + (gearCrit or 0) + (weaponType.CritBonus or 0))
 	local rate = 1 / (P.BaseCooldown / (1 + (speedPoints or 0) * P.SpeedPerPoint))
 	local dps = damage * (1 + crit * (P.CritMultiplier - 1)) * rate * typeFactor
-	return math.floor(dps * 10 + (gearHealth or 0) * 0.5)
+	return math.floor(dps * 10 + ((gearHealth or 0) + Config.GetLevelHealth(level)) * 0.5)
 end
 
 ------------------------------------------------------------
@@ -360,6 +372,7 @@ Config.Dungeon.Types = {
 		Floor = { Color = Color3.fromRGB(70, 60, 50), Material = Enum.Material.Slate },
 		Wall = { Color = Color3.fromRGB(55, 45, 40), Material = Enum.Material.Brick },
 		Torch = Color3.fromRGB(255, 150, 70),
+		MonsterPool = { Slime = 4, Spitter = 3, Bat = 3 },
 		Boss = { Name = "고블린 왕", Color = Color3.fromRGB(70, 130, 50), HealthMult = 1, DamageMult = 1, Weights = { Fan = 3, Ring = 2, Spiral = 1, Meteor = 2 } },
 	},
 	Ice = {
@@ -368,6 +381,7 @@ Config.Dungeon.Types = {
 		Floor = { Color = Color3.fromRGB(190, 220, 240), Material = Enum.Material.Ice },
 		Wall = { Color = Color3.fromRGB(120, 160, 200), Material = Enum.Material.Glacier },
 		Torch = Color3.fromRGB(120, 200, 255),
+		MonsterPool = { Slime = 2, Spitter = 2, Mage = 3, Golem = 2 },
 		Boss = { Name = "서리 군주", Color = Color3.fromRGB(90, 170, 240), HealthMult = 1.6, DamageMult = 1.2, Weights = { Fan = 1, Ring = 3, Spiral = 3, Meteor = 1 } },
 	},
 	Fire = {
@@ -376,6 +390,7 @@ Config.Dungeon.Types = {
 		Floor = { Color = Color3.fromRGB(60, 35, 35), Material = Enum.Material.Basalt },
 		Wall = { Color = Color3.fromRGB(90, 40, 30), Material = Enum.Material.CrackedLava },
 		Torch = Color3.fromRGB(255, 90, 40),
+		MonsterPool = { Charger = 3, Bomber = 3, Mage = 2, Golem = 2 },
 		Boss = { Name = "화염의 군주", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Fan = 1, Ring = 1, Spiral = 2, Meteor = 4 } },
 	},
 }
@@ -414,9 +429,44 @@ Config.Achievements = {
 	{ Id = "weapon15",   Name = "전설의 대장장이", Desc = "무기 +%d 달성",               Stat = "WeaponLevel",   Goal = 15,    Reward = { Tickets = 5 },              Title = "전설의 대장장이" },
 	{ Id = "legend",     Name = "행운아",          Desc = "전설 등급 장비 획득",         Stat = "BestRarity",    Goal = 4,     Reward = { Tickets = 3 },              Title = "행운아" },
 	{ Id = "myth",       Name = "신화의 주인",     Desc = "신화 등급 장비 획득",         Stat = "BestRarity",    Goal = 5,     Reward = { Tickets = 8 },              Title = "신화의 주인" },
+	{ Id = "level10",    Name = "성장하는 모험가", Desc = "캐릭터 레벨 %d 달성",         Stat = "Level",         Goal = 10,    Reward = { Gold = 1000 },              Title = "모험가" },
+	{ Id = "level25",    Name = "숙련된 전사",     Desc = "캐릭터 레벨 %d 달성",         Stat = "Level",         Goal = 25,    Reward = { Tickets = 3 },              Title = "숙련자" },
+	{ Id = "level50",    Name = "전설의 용사",     Desc = "캐릭터 레벨 %d 달성",         Stat = "Level",         Goal = 50,    Reward = { Tickets = 10 },             Title = "전설의 용사" },
 	{ Id = "power1000",  Name = "강자",            Desc = "전투력 %d 달성",              Stat = "Power",         Goal = 1000,  Reward = { Gold = 1500 },              Title = "강자" },
 	{ Id = "power10000", Name = "초월자",          Desc = "전투력 %d 달성",              Stat = "Power",         Goal = 10000, Reward = { Tickets = 10 },             Title = "초월자" },
 }
+
+------------------------------------------------------------
+-- 캐릭터 레벨: 몬스터를 잡으면 경험치(XP). 레벨이 오르면 최대 체력과 공격력이 늘고 체력이 가득 찬다.
+------------------------------------------------------------
+Config.Level = {
+	Max = 50,
+	HealthPerLevel = 8,     -- 레벨당 최대 체력 +8
+	DamagePerLevel = 0.03,  -- 레벨당 공격력 +3%
+}
+
+Config.Xp = {
+	FieldPerMonsterLevel = 4,    -- 필드 일반 몬스터: 몬스터 레벨 x 4
+	DungeonPerMonsterLevel = 3,  -- 던전 몬스터: 몬스터 레벨 x 3 (던전 종류/난이도 배율이 곱해짐)
+	EliteMult = 4,               -- 엘리트는 x4
+	FieldBoss = 600,
+	DungeonBoss = 400,
+	WaveClear = 25,              -- 웨이브 클리어: 25 x 웨이브 번호
+	DungeonClear = 150,
+}
+
+-- level -> level+1 에 필요한 XP
+function Config.GetXpNeeded(level)
+	return math.floor(50 * level ^ 1.75)
+end
+
+function Config.GetLevelDamageMult(level)
+	return 1 + Config.Level.DamagePerLevel * (level - 1)
+end
+
+function Config.GetLevelHealth(level)
+	return (level - 1) * Config.Level.HealthPerLevel
+end
 
 function Config.GetWeaponTier(level)
 	local tiers = Config.Weapon.Tiers

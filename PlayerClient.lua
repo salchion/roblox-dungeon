@@ -110,7 +110,7 @@ local gui = create("ScreenGui", { Name = "HUD", ResetOnSpawn = false, IgnoreGuiI
 ------------------------------------------------------------
 -- 공통: 상단 좌측 정보, 알림
 ------------------------------------------------------------
-local infoPanel = makePanel({ Size = UDim2.new(0, 240, 0, 126), Position = UDim2.new(0, 16, 0, 16) }, gui)
+local infoPanel = makePanel({ Size = UDim2.new(0, 240, 0, 150), Position = UDim2.new(0, 16, 0, 16) }, gui)
 local infoLabel = makeLabel({
 	Size = UDim2.new(1, -20, 1, -16),
 	Position = UDim2.new(0, 10, 0, 8),
@@ -118,6 +118,17 @@ local infoLabel = makeLabel({
 	TextYAlignment = Enum.TextYAlignment.Top,
 	RichText = true,
 }, infoPanel)
+
+-- 경험치 막대 (정보 패널 맨 아래)
+local xpBack = create("Frame", {
+	Size = UDim2.new(1, -20, 0, 7), Position = UDim2.new(0, 10, 1, -14),
+	BackgroundColor3 = Color3.fromRGB(45, 45, 60), BorderSizePixel = 0,
+}, infoPanel)
+rounded(xpBack, 4)
+local xpFill = create("Frame", {
+	Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(110, 200, 255), BorderSizePixel = 0,
+}, xpBack)
+rounded(xpFill, 4)
 
 local toastLabel = makeLabel({
 	Size = UDim2.new(0, 460, 0, 40),
@@ -844,8 +855,15 @@ local function refreshInfo()
 	local name, color = weaponText(level)
 	local zone = currentZone()
 	local zoneText = zone == "Lobby" and "로비" or zone == "Dungeon" and "던전" or string.format("필드 (최고 %d구역)", player:GetAttribute("MaxZone") or 0)
+	local characterLevel = player:GetAttribute("Level") or 1
+	local xp = player:GetAttribute("XP") or 0
+	local xpNeeded = player:GetAttribute("XPNeeded") or 1
+	local maxed = characterLevel >= Config.Level.Max
+	xpFill.Size = UDim2.new(maxed and 1 or math.clamp(xp / xpNeeded, 0, 1), 0, 1, 0)
 	infoLabel.Text = string.format(
-		"💰 <font color='#ffd966'>%d G</font>   🎫 <font color='#d9a6ff'>%d</font>\n⚡ 전투력 <font color='#ffe16e'>%d</font>\n⚔ <font color='#%s'>%s</font>\n📍 %s",
+		"🎖 <font color='#8fd8ff'>Lv.%d</font>  <font size='12' color='#aaaacc'>%s</font>\n💰 <font color='#ffd966'>%d G</font>   🎫 <font color='#d9a6ff'>%d</font>\n⚡ 전투력 <font color='#ffe16e'>%d</font>\n⚔ <font color='#%s'>%s</font>\n📍 %s",
+		characterLevel,
+		maxed and "MAX" or string.format("%d / %d XP", xp, xpNeeded),
 		player:GetAttribute("Gold") or 0,
 		player:GetAttribute("Tickets") or 0,
 		player:GetAttribute("Power") or 0,
@@ -1285,13 +1303,17 @@ end
 
 local function buildCharacterTab()
 	local weaponType = Config.GetPlayerWeapon(player)
-	local health = Config.Player.BaseHealth + (player:GetAttribute("HealthPoints") or 0) * Config.Player.HealthPerPoint + (player:GetAttribute("GearHealth") or 0)
+	local health = Config.Player.BaseHealth + (player:GetAttribute("HealthPoints") or 0) * Config.Player.HealthPerPoint + (player:GetAttribute("GearHealth") or 0) + Config.GetLevelHealth(player:GetAttribute("Level") or 1)
 	local crit = ((player:GetAttribute("CritPoints") or 0) * Config.Player.CritPerPoint + (player:GetAttribute("GearCrit") or 0) + (weaponType.CritBonus or 0)) * 100
 	local speed = Config.Player.WalkSpeed + (player:GetAttribute("GearSpeed") or 0)
 
-	local summary = newRow(118)
+	local summary = newRow(142)
+	local menuLevel = player:GetAttribute("Level") or 1
 	rowText(summary, string.format(
-		"⚡ 전투력 <font color='#ffe16e'>%d</font>\n❤ 최대 체력 %d    🎯 치명타 확률 %.1f%%    💨 이동속도 %.1f\n💰 %d G    🎫 티켓 %d장\n🏔 필드 최고 %d구역 돌파    🏰 던전 클리어 %d회",
+		"🎖 <font color='#8fd8ff'>Lv.%d</font>  (%s)   공격력 +%d%% · 체력 +%d\n⚡ 전투력 <font color='#ffe16e'>%d</font>\n❤ 최대 체력 %d    🎯 치명타 확률 %.1f%%    💨 이동속도 %.1f\n💰 %d G    🎫 티켓 %d장\n🏔 필드 최고 %d구역 돌파    🏰 던전 클리어 %d회",
+		menuLevel,
+		menuLevel >= Config.Level.Max and "MAX" or string.format("%d / %d XP", player:GetAttribute("XP") or 0, player:GetAttribute("XPNeeded") or 1),
+		math.floor((Config.GetLevelDamageMult(menuLevel) - 1) * 100 + 0.5), Config.GetLevelHealth(menuLevel),
 		player:GetAttribute("Power") or 0, health, crit, speed,
 		player:GetAttribute("Gold") or 0, player:GetAttribute("Tickets") or 0,
 		player:GetAttribute("MaxZone") or 0, questState and questState.Stats and questState.Stats.DungeonClears or 0
@@ -1465,7 +1487,7 @@ local function toggleMenu()
 end
 
 makeButton({
-	Size = UDim2.new(0, 110, 0, 32), Position = UDim2.new(0, 16, 0, 150), Text = "📋 메뉴 (I)", TextSize = 14,
+	Size = UDim2.new(0, 110, 0, 32), Position = UDim2.new(0, 16, 0, 174), Text = "📋 메뉴 (I)", TextSize = 14,
 	BackgroundColor3 = Color3.fromRGB(60, 70, 120),
 }, gui, toggleMenu)
 

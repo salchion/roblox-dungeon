@@ -15,6 +15,8 @@ local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
+local Level = require(script.Parent:WaitForChild("LevelService"))
+local MonsterTypes = require(script.Parent:WaitForChild("MonsterTypes"))
 
 local F = Config.Field
 local TOP = 0.05
@@ -280,6 +282,7 @@ end
 local function spawnMonster(zone, kind)
 	local stats, text, color, barWidth
 	local level = F.GetZoneLevel(zone)
+	local typeKey, def, xpLevel
 
 	if kind == "Boss" then
 		local boss = F.Boss
@@ -288,15 +291,24 @@ local function spawnMonster(zone, kind)
 			ShotInterval = boss.ShotInterval, ShotSpeed = boss.ShotSpeed, Gold = boss.Gold,
 		}
 		text, color, barWidth = "👑 " .. boss.Name, Color3.fromRGB(255, 120, 120), 300
-	elseif kind == "Elite" then
-		stats = Config.Monster.GetStats(level + 2)
-		stats.MaxHealth = math.floor(stats.MaxHealth * F.EliteMultiplier)
-		stats.Size = stats.Size * 1.5
-		stats.Gold *= 4
-		text, color, barWidth = string.format("★ 엘리트 Lv.%d", level + 2), Color3.fromRGB(255, 220, 90), 160
 	else
-		stats = Config.Monster.GetStats(level)
-		text, color, barWidth = "Lv." .. level, Color3.new(1, 1, 1), 120
+		-- 구역마다 나오는 몬스터 종류가 다르다 (Config.Field.ZonePools)
+		typeKey = MonsterTypes.Pick(F.ZonePools[zone])
+		def = MonsterTypes.Defs[typeKey]
+		if kind == "Elite" then
+			xpLevel = level + 2
+			stats = Config.Monster.GetStats(xpLevel)
+			MonsterTypes.ApplyDef(typeKey, stats)
+			stats.MaxHealth = math.floor(stats.MaxHealth * F.EliteMultiplier)
+			stats.Size = stats.Size * 1.5
+			stats.Gold *= 4
+			text, color, barWidth = string.format("★ 엘리트 Lv.%d %s", xpLevel, def.Name), Color3.fromRGB(255, 220, 90), 190
+		else
+			xpLevel = level
+			stats = Config.Monster.GetStats(level)
+			MonsterTypes.ApplyDef(typeKey, stats)
+			text, color, barWidth = string.format("Lv.%d %s", level, def.Name), Color3.new(1, 1, 1), 140
+		end
 	end
 
 	local x0, x1 = zoneBounds(zone)
@@ -311,33 +323,41 @@ local function spawnMonster(zone, kind)
 		)
 	end
 
-	local part = Instance.new("Part")
-	part.Name = kind == "Boss" and "FieldBoss" or "FieldMonster"
-	part.Shape = Enum.PartType.Ball
-	part.Size = Vector3.new(stats.Size, stats.Size, stats.Size)
-	part.Anchored = true
-	part.CanCollide = false
-	part.Position = position
+	local part
 	if kind == "Boss" then
+		part = Instance.new("Part")
+		part.Name = "FieldBoss"
+		part.Shape = Enum.PartType.Ball
+		part.Size = Vector3.new(stats.Size, stats.Size, stats.Size)
+		part.Anchored = true
+		part.CanCollide = false
+		part.Position = position
 		part.Color = Color3.fromRGB(150, 25, 45)
 		part.Material = Enum.Material.Neon
-	elseif kind == "Elite" then
-		part.Color = Color3.fromRGB(230, 180, 40)
-		part.Material = Enum.Material.Neon
+		part.Parent = monstersFolder
 	else
-		part.Color = Color3.fromHSV((0.78 - zone * 0.09) % 1, 0.55, 0.75)
+		local baseColor = def.Color:Lerp(F.ZoneColors[zone], 0.2)
+		if kind == "Elite" then
+			baseColor = def.Color:Lerp(Color3.fromRGB(240, 190, 50), 0.45)
+		end
+		part = MonsterTypes.Build(typeKey, stats.Size, baseColor, position, monstersFolder)
+		part.Name = "FieldMonster"
 	end
-	part.Parent = monstersFolder
 
 	monsters[part] = {
 		Zone = zone,
 		Kind = kind,
 		Level = level,
+		XpLevel = xpLevel,
+		TypeKey = typeKey,
+		Def = def,
+		Phase = math.random() * math.pi * 2,
 		Stats = stats,
 		Health = stats.MaxHealth,
 		MaxHealth = stats.MaxHealth,
 		HealthFill = createHealthBar(part, text, barWidth, color),
 		Home = position,
+		NextAttack = os.clock() + stats.ShotInterval,
 		NextShot = os.clock() + stats.ShotInterval,
 		NextRing = os.clock() + 7,
 		BaseColor = part.Color,
@@ -381,6 +401,14 @@ local function reward(player, data, part)
 	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
 	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2, 0), string.format("+%d G", gold), Color3.fromRGB(255, 220, 90))
 
+	local xp
+	if data.Kind == "Boss" then
+		xp = Config.Xp.FieldBoss
+	else
+		xp = Config.Xp.FieldPerMonsterLevel * data.XpLevel * (data.Kind == "Elite" and Config.Xp.EliteMult or 1)
+	end
+	Level.AddXP(player, xp)
+
 	Quest.Add(player, "Kills", 1)
 	if data.Kind == "Elite" then
 		Quest.Add(player, "EliteKills", 1)
@@ -401,6 +429,7 @@ local function reward(player, data, part)
 				other:SetAttribute("Tickets", (other:GetAttribute("Tickets") or 0) + F.BossTickets)
 				if other ~= player then
 					Quest.Add(other, "BossKills", 1)
+					Level.AddXP(other, Config.Xp.FieldBoss)
 				end
 				notify(other, string.format("👑 필드 보스 처치! 티켓 +%d", F.BossTickets))
 			end
@@ -449,6 +478,38 @@ end
 ------------------------------------------------------------
 -- 매 프레임: 몬스터 AI / 투사체 / 구역 갱신
 ------------------------------------------------------------
+-- 몬스터 AI(MonsterTypes)가 필드 환경을 다루는 데 쓰는 함수들
+local fieldCtx = {
+	FloorY = TOP,
+	GetTarget = nearestFieldPlayer,
+	Fire = function(origin, direction, speed, damage, size, color)
+		fireProjectile(origin, direction, speed, damage, size, color)
+	end,
+	Players = function()
+		local list = {}
+		for _, player in ipairs(Players:GetPlayers()) do
+			if player:GetAttribute("Zone") == "Field" then
+				local root, humanoid = getAliveParts(player)
+				if root then
+					table.insert(list, { Root = root, Humanoid = humanoid })
+				end
+			end
+		end
+		return list
+	end,
+	Alive = function(part, data)
+		return monsters[part] == data
+	end,
+	Kill = function(part, data) -- 자폭 등 보상 없이 사라짐 (다시 나타남)
+		if monsters[part] ~= data then return end
+		monsters[part] = nil
+		part:Destroy()
+		task.delay(F.RespawnTime, function()
+			spawnMonster(data.Zone, data.Kind)
+		end)
+	end,
+}
+
 local function stepMonsters(dt)
 	local now = os.clock()
 	for part, data in pairs(monsters) do
@@ -459,41 +520,42 @@ local function stepMonsters(dt)
 		if target and distance <= range and fromHome <= F.LeashRange * 1.5 then
 			data.Aggro = true
 
-			local keepDistance = data.Stats.Size / 2 + 16
-			if distance > keepDistance then
-				local flatTarget = Vector3.new(target.Position.X, part.Position.Y, target.Position.Z)
-				local move = flatTarget - part.Position
-				if move.Magnitude > 0.1 then
-					part.Position += move.Unit * data.Stats.Speed * dt
+			if data.Kind ~= "Boss" then
+				-- 일반 몬스터 / 엘리트: 종류별 움직임과 공격
+				MonsterTypes.Update(fieldCtx, part, data, dt, now)
+			else
+				local keepDistance = data.Stats.Size / 2 + 16
+				if distance > keepDistance then
+					local flatTarget = Vector3.new(target.Position.X, part.Position.Y, target.Position.Z)
+					local move = flatTarget - part.Position
+					if move.Magnitude > 0.1 then
+						part.Position += move.Unit * data.Stats.Speed * dt
+					end
 				end
-			end
 
-			if now >= data.NextShot then
-				data.NextShot = now + data.Stats.ShotInterval
-				telegraph(part, data, Color3.fromRGB(255, 220, 80), 0.4, function()
-					local current = nearestFieldPlayer(part.Position)
-					if not current then return end
-					local direction = current.Position - part.Position
-					if data.Kind == "Boss" then
+				if now >= data.NextShot then
+					data.NextShot = now + data.Stats.ShotInterval
+					telegraph(part, data, Color3.fromRGB(255, 220, 80), 0.4, function()
+						local current = nearestFieldPlayer(part.Position)
+						if not current then return end
+						local direction = current.Position - part.Position
 						for _, angle in ipairs({ -20, -10, 0, 10, 20 }) do
 							fireProjectile(part.Position, rotateY(direction.Unit, angle), data.Stats.ShotSpeed, data.Stats.ShotDamage, 3, Color3.fromRGB(255, 80, 60))
 						end
-					else
-						fireProjectile(part.Position, direction, data.Stats.ShotSpeed, data.Stats.ShotDamage, math.max(1.5, data.Stats.Size / 4))
-					end
-				end)
-			end
+					end)
+				end
 
-			-- 보스: 주기적으로 전방위 탄막
-			if data.Kind == "Boss" and now >= data.NextRing then
-				data.NextRing = now + 7
-				telegraph(part, data, Color3.new(1, 1, 1), 0.8, function()
-					for i = 0, 15 do
-						local angle = (i / 16) * math.pi * 2
-						local direction = Vector3.new(math.cos(angle), 0, math.sin(angle))
-						fireProjectile(Vector3.new(part.Position.X, TOP + 3, part.Position.Z) + direction * (part.Size.X / 2 + 1), direction, 30, math.floor(data.Stats.ShotDamage * 0.7), 2.4, Color3.fromRGB(255, 180, 60))
-					end
-				end)
+				-- 보스: 주기적으로 전방위 탄막
+				if now >= data.NextRing then
+					data.NextRing = now + 7
+					telegraph(part, data, Color3.new(1, 1, 1), 0.8, function()
+						for i = 0, 15 do
+							local angle = (i / 16) * math.pi * 2
+							local direction = Vector3.new(math.cos(angle), 0, math.sin(angle))
+							fireProjectile(Vector3.new(part.Position.X, TOP + 3, part.Position.Z) + direction * (part.Size.X / 2 + 1), direction, 30, math.floor(data.Stats.ShotDamage * 0.7), 2.4, Color3.fromRGB(255, 180, 60))
+						end
+					end)
+				end
 			end
 		else
 			-- 목표가 없거나 멀어지면 제자리로 돌아가서 체력을 회복
