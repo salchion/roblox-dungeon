@@ -613,7 +613,7 @@ end)
 
 makeLabel({
 	Size = UDim2.new(0, 560, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -16),
-	Text = "북쪽 던전 게이트 · 서쪽 허수아비 훈련장 · 동쪽 끝 사냥 필드   |   Shift 달리기 · Q 슬라이딩 · R 자동공격 · I 메뉴",
+	Text = "북쪽 던전 게이트 · 서쪽 허수아비 훈련장 · 동쪽 끝 사냥 필드   |   Shift 달리기 · Q 슬라이딩 · R 자동공격 · I 메뉴 · M 음악",
 	TextSize = 14, TextColor3 = Color3.fromRGB(220, 220, 235), TextStrokeTransparency = 0.5,
 }, lobbyFrame)
 
@@ -718,7 +718,16 @@ for name, id in pairs(Config.Audio.Music) do
 	end
 end
 
+if next(tracks) == nil and RunService:IsStudio() then
+	print("[음악] 배경음악이 비어 있어요. ReplicatedStorage > AudioIds 스크립트에 오디오 ID(숫자)를 적으면 로비 / 필드 / 던전 / 보스 음악이 나와요. (README의 '소리 넣는 법' 참고)")
+end
+
+local musicEnabled = true   -- M 키로 켜고 끈다
 local currentMusic = nil
+local function musicVolume()
+	return musicEnabled and Config.Audio.MusicVolume or 0
+end
+
 local function playMusic(name)
 	if name == currentMusic then return end
 	currentMusic = name
@@ -727,7 +736,7 @@ local function playMusic(name)
 			if not sound.IsPlaying then
 				sound:Play()
 			end
-			TweenService:Create(sound, TweenInfo.new(1.5), { Volume = Config.Audio.MusicVolume }):Play()
+			TweenService:Create(sound, TweenInfo.new(1.5), { Volume = musicVolume() }):Play()
 		else
 			local fade = TweenService:Create(sound, TweenInfo.new(1.5), { Volume = 0 })
 			fade.Completed:Connect(function()
@@ -738,6 +747,16 @@ local function playMusic(name)
 			fade:Play()
 		end
 	end
+end
+
+local function toggleMusic()
+	musicEnabled = not musicEnabled
+	for name, sound in pairs(tracks) do
+		if name == currentMusic then
+			TweenService:Create(sound, TweenInfo.new(0.4), { Volume = musicVolume() }):Play()
+		end
+	end
+	toast(musicEnabled and "🔊 배경음악 켜짐 (M)" or "🔇 배경음악 꺼짐 (M)")
 end
 
 local function updateMusic()
@@ -2118,6 +2137,8 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 		toggleAuto()
 	elseif input.KeyCode == Enum.KeyCode.I then
 		toggleMenu()
+	elseif input.KeyCode == Enum.KeyCode.M then
+		toggleMusic()
 	elseif input.UserInputType == Enum.UserInputType.Touch then
 		local inset = GuiService:GetGuiInset()
 		attack(Vector2.new(input.Position.X, input.Position.Y) + inset)

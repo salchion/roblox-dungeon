@@ -107,6 +107,65 @@ local function makeFountain(position, parent)
 	spray.Parent = top
 end
 
+-- 마을을 둘러싸는 성벽 + 바깥의 거대한 절벽: 마을 밖(필드 절벽, 허공)이 전혀 보이지 않게 한다.
+-- 동쪽에는 필드로 가는 통로(z -20 ~ 20)만 열어 둔다.
+local function buildPerimeter(folder)
+	local rng = Random.new(31)
+	local brick = Color3.fromRGB(125, 118, 110)
+	local rock = Color3.fromRGB(88, 86, 92)
+	local GAP = 22
+
+	local function solid(name, size, position, color, material)
+		return makePart({ Name = name, Size = size, Position = position, Color = color, Material = material or Enum.Material.Slate }, folder)
+	end
+
+	-- 1) 성벽 (높이 44, 두께 6): 북/남/서는 이어서, 동쪽은 통로를 비워둔다
+	local wallHeight, thickness = 44, 6
+	solid("TownWall", Vector3.new(HALF * 2 + thickness, wallHeight, thickness), Vector3.new(0, wallHeight / 2, -HALF), brick, Enum.Material.Brick)
+	solid("TownWall", Vector3.new(HALF * 2 + thickness, wallHeight, thickness), Vector3.new(0, wallHeight / 2, HALF), brick, Enum.Material.Brick)
+	solid("TownWall", Vector3.new(thickness, wallHeight, HALF * 2 + thickness), Vector3.new(-HALF, wallHeight / 2, 0), brick, Enum.Material.Brick)
+	local eastLength = HALF - GAP
+	solid("TownWall", Vector3.new(thickness, wallHeight, eastLength), Vector3.new(HALF, wallHeight / 2, GAP + eastLength / 2), brick, Enum.Material.Brick)
+	solid("TownWall", Vector3.new(thickness, wallHeight, eastLength), Vector3.new(HALF, wallHeight / 2, -(GAP + eastLength / 2)), brick, Enum.Material.Brick)
+
+	-- 2) 모서리 탑 + 횃불
+	for _, corner in ipairs({ Vector3.new(-HALF, 0, -HALF), Vector3.new(HALF, 0, -HALF), Vector3.new(-HALF, 0, HALF), Vector3.new(HALF, 0, HALF) }) do
+		makeDisc(corner + Vector3.new(0, 30, 0), 18, 60, brick, Enum.Material.Brick, folder)
+		local flame = makePart({
+			Name = "TowerFlame", Shape = Enum.PartType.Ball, Size = Vector3.new(4, 4, 4), Position = corner + Vector3.new(0, 64, 0),
+			Color = Color3.fromRGB(255, 150, 60), Material = Enum.Material.Neon, CanCollide = false,
+		}, folder)
+		addLight(flame, 40, 1.4, Color3.fromRGB(255, 170, 90))
+	end
+
+	-- 3) 성벽 뒤의 거대한 절벽 (높이 70~135, 들쭉날쭉)
+	local function cliffs(alongX, fixed, sign, skipGap, depthMax)
+		local t = -HALF - 30
+		while t < HALF + 30 do
+			local width = rng:NextNumber(30, 46)
+			local height = rng:NextNumber(70, 135)
+			local depth = rng:NextNumber(18, depthMax)
+			if not (skipGap and math.abs(t) < GAP + width / 2) then
+				local offset = sign * (fixed + depth / 2 + 2)
+				local size = alongX and Vector3.new(width, height, depth) or Vector3.new(depth, height, width)
+				local position = alongX and Vector3.new(t, height / 2, offset) or Vector3.new(offset, height / 2, t)
+				local shade = rng:NextNumber(-8, 8)
+				solid("Cliff", size, position, Color3.fromRGB(88 + shade, 86 + shade, 92 + shade), Enum.Material.Slate)
+			end
+			t += width * 0.8
+		end
+	end
+	cliffs(true, HALF, -1, false, 34)   -- 북
+	cliffs(true, HALF, 1, false, 34)    -- 남
+	cliffs(false, HALF, -1, false, 34)  -- 서
+	cliffs(false, HALF, 1, true, 16)    -- 동 (필드 쪽으로 튀어나가지 않게 얇게, 통로는 비움)
+
+	-- 4) 끊김 없는 뒷벽: 절벽 덩어리 사이로 바깥이 비치지 않게. (동쪽은 필드가 바로 붙어 있어서 뒷벽 없이 위 절벽만)
+	solid("CliffBack", Vector3.new(HALF * 2 + 200, 180, 8), Vector3.new(0, 90, -(HALF + 42)), rock)
+	solid("CliffBack", Vector3.new(HALF * 2 + 200, 180, 8), Vector3.new(0, 90, HALF + 42), rock)
+	solid("CliffBack", Vector3.new(8, 180, HALF * 2 + 200), Vector3.new(-(HALF + 42), 90, 0), rock)
+end
+
 -- 반환: { SpawnCFrame, GatePrompt, AnvilPrompt, GachaPrompt, WarpPrompt, DummyStart, RankBoardCFrame }
 function Lobby.Build()
 	local folder = Instance.new("Folder")
@@ -163,15 +222,8 @@ function Lobby.Build()
 	spawn.Duration = 0
 	spawn.Parent = folder
 
-	-- 로비 테두리 (보이지 않는 벽). 동쪽은 필드로 가는 입구(z -20 ~ 20)를 열어 둔다
-	local function wall(size, position)
-		makePart({ Name = "Wall", Size = size, Position = position, Transparency = 1 }, folder)
-	end
-	wall(Vector3.new(2, 40, HALF * 2), Vector3.new(-HALF, 20, 0))
-	wall(Vector3.new(HALF * 2, 40, 2), Vector3.new(0, 20, -HALF))
-	wall(Vector3.new(HALF * 2, 40, 2), Vector3.new(0, 20, HALF))
-	wall(Vector3.new(2, 40, HALF - 20), Vector3.new(HALF, 20, (HALF + 20) / 2))
-	wall(Vector3.new(2, 40, HALF - 20), Vector3.new(HALF, 20, -(HALF + 20) / 2))
+	-- 마을 테두리: 성벽 + 절벽 (안에서 바깥이 보이지 않게)
+	buildPerimeter(folder)
 
 	-- 가로등: 중앙로와 동서로 양옆
 	for z = -90, 50, 35 do
