@@ -171,7 +171,7 @@ end
 -- 로비: 무기 강화창
 ------------------------------------------------------------
 local enhancePanel = makePanel({
-	Size = UDim2.new(0, 380, 0, 330),
+	Size = UDim2.new(0, 400, 0, 480),
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Position = UDim2.new(0.5, 0, 0.5, 0),
 	Visible = false,
@@ -187,15 +187,65 @@ local enhanceWeapon = makeLabel({
 	Font = Enum.Font.GothamBlack, TextSize = 26,
 }, enhancePanel)
 
+-- 3D 미리보기: 지금 총 / 다음 진화 총 (WeaponPreviews 모델을 복제해서 보여준다)
+local function makePreview(parent, position, caption)
+	local frame = Instance.new("ViewportFrame")
+	frame.Size = UDim2.new(0, 170, 0, 100)
+	frame.Position = position
+	frame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+	frame.BorderSizePixel = 0
+	frame.Ambient = Color3.fromRGB(170, 170, 180)
+	frame.LightColor = Color3.new(1, 1, 1)
+	frame.Parent = parent
+	Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
+	local cam = Instance.new("Camera")
+	cam.FieldOfView = 40
+	cam.Parent = frame
+	frame.CurrentCamera = cam
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(1, 0, 0, 18)
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.GothamBold
+	label.TextSize = 13
+	label.TextColor3 = Color3.fromRGB(200, 200, 215)
+	label.Text = caption
+	label.Parent = frame
+	local shown
+	return function(typeKey, tierIndex)
+		if shown then
+			shown:Destroy()
+			shown = nil
+		end
+		local previews = ReplicatedStorage:FindFirstChild("WeaponPreviews")
+		local source = previews and previews:FindFirstChild(typeKey .. "_" .. tierIndex)
+		if not source then return end
+		shown = source:Clone()
+		shown.Parent = frame
+		local cf, size = shown:GetBoundingBox()
+		local d = math.max(size.X, size.Y, size.Z) * 1.6
+		cam.CFrame = CFrame.lookAt(cf.Position + Vector3.new(d, d * 0.25, d * 0.15), cf.Position)
+	end
+end
+local previewNow = makePreview(enhancePanel, UDim2.new(0, 14, 0, 90), "지금")
+local previewNext = makePreview(enhancePanel, UDim2.new(1, -184, 0, 90), "다음 진화")
+local previewNextName = makeLabel({
+	Size = UDim2.new(0, 170, 0, 20), Position = UDim2.new(1, -184, 0, 192),
+	TextSize = 14, Font = Enum.Font.GothamBold,
+}, enhancePanel)
+local previewNowName = makeLabel({
+	Size = UDim2.new(0, 170, 0, 20), Position = UDim2.new(0, 14, 0, 192),
+	TextSize = 14, Font = Enum.Font.GothamBold,
+}, enhancePanel)
+
 local enhanceInfo = makeLabel({
-	Size = UDim2.new(1, -40, 0, 130), Position = UDim2.new(0, 20, 0, 92),
+	Size = UDim2.new(1, -40, 0, 150), Position = UDim2.new(0, 20, 0, 218),
 	TextXAlignment = Enum.TextXAlignment.Left,
 	TextYAlignment = Enum.TextYAlignment.Top,
 	RichText = true,
 }, enhancePanel)
 
 local enhanceResult = makeLabel({
-	Size = UDim2.new(1, -24, 0, 28), Position = UDim2.new(0, 12, 0, 226),
+	Size = UDim2.new(1, -24, 0, 28), Position = UDim2.new(0, 12, 0, 376),
 	Font = Enum.Font.GothamBold, TextSize = 17,
 }, enhancePanel)
 
@@ -220,6 +270,23 @@ local function refreshEnhance()
 	enhanceWeapon.Text = name
 	enhanceWeapon.TextColor3 = color
 
+	local typeKey = player:GetAttribute("WeaponType") or "Pistol"
+	local tierIndex = Config.GetWeaponTierIndex(level)
+	local tiers = Config.Weapon.Tiers
+	previewNow(typeKey, tierIndex)
+	previewNowName.Text = Config.GetWeaponName(typeKey, level)
+	previewNowName.TextColor3 = tiers[tierIndex].Color
+	if tierIndex < #tiers then
+		local nextTier = tiers[tierIndex + 1]
+		previewNext(typeKey, tierIndex + 1)
+		previewNextName.Text = string.format("%s (+%d)", nextTier.Names[typeKey], nextTier.MinLevel)
+		previewNextName.TextColor3 = nextTier.Rainbow and Color3.fromRGB(255, 120, 255) or nextTier.Color
+	else
+		previewNext(typeKey, tierIndex)
+		previewNextName.Text = "최종 진화!"
+		previewNextName.TextColor3 = Color3.fromRGB(255, 217, 102)
+	end
+
 	local lines = {
 		string.format("공격력 배율  x%.1f", Config.GetDamageMultiplier(level)),
 		string.format("무기 크기      x%.2f", Config.GetWeaponScale(level)),
@@ -235,10 +302,9 @@ local function refreshEnhance()
 		table.insert(lines, string.format("\n강화 비용  <font color='#ffd966'>%d G</font>  (보유 %d G)", cost, gold))
 		table.insert(lines, string.format("성공 확률  %d%%  (실패해도 레벨은 유지)", math.floor(Config.GetEnhanceChance(level) * 100 + 0.5)))
 
-		local tiers = Config.Weapon.Tiers
 		for _, tier in ipairs(tiers) do
 			if tier.MinLevel > level then
-				table.insert(lines, string.format("다음 외형 변화: +%d %s", tier.MinLevel, tier.Name))
+				table.insert(lines, string.format("다음 진화: +%d  %s", tier.MinLevel, tier.Names[typeKey]))
 				break
 			end
 		end
@@ -1138,11 +1204,11 @@ local function weaponRange()
 	return Config.GetPlayerWeapon(player).Range
 end
 
--- 이 허수아비를 지금 무기 레벨로 때려서 골드를 받을 수 있는가?
+-- 이 허수아비를 지금 캐릭터 레벨로 때려서 골드를 받을 수 있는가?
 local function dummyUsable(model)
 	local index = tonumber(string.sub(model.Name, 6))
 	local info = index and Config.Dummy.List[index]
-	return info ~= nil and (player:GetAttribute("WeaponLevel") or 0) >= info.RequiredLevel
+	return info ~= nil and (player:GetAttribute("Level") or 1) >= info.RequiredLevel
 end
 
 -- 맞은 Instance 가 락온할 수 있는 대상(허수아비 / 필드 몬스터 / 던전 몬스터)이면 대상 정보를 만든다
@@ -1417,12 +1483,12 @@ local function buildWeaponTab()
 		local level = player:GetAttribute("WLvl_" .. key) or 0
 		local tier = Config.GetWeaponTier(level)
 
-		local row = newRow(84)
+		local row = newRow(100)
 		rowText(row, string.format(
 			"<font size='18'><b>%s</b></font>  <font color='#%s'>+%d %s</font>\n<font color='#bbbbcc'>%s</font>\n<font color='#bbbbcc'>한 발 x%.1f · 발사 간격 x%.1f · 탄 %d발 · 사거리 %d</font>",
 			weaponType.Name, hex(tier.Color), level, Config.GetWeaponName(key, level),
 			weaponType.Desc, weaponType.DamageMult, weaponType.Cooldown, weaponType.Pellets, weaponType.Range
-		), 14, 170)
+		) .. (Config.GetWeaponTierIndex(level) < #Config.Weapon.Tiers and string.format("\n<font color='#9ad7ff'>다음 진화: +%d %s (강화창에서 미리보기)</font>", Config.Weapon.Tiers[Config.GetWeaponTierIndex(level) + 1].MinLevel, Config.Weapon.Tiers[Config.GetWeaponTierIndex(level) + 1].Names[key]) or ""), 14, 170)
 
 		local label, color, action
 		if key == active then

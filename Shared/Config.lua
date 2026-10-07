@@ -10,8 +10,8 @@ Config.StartGold = 300 -- 처음 접속했을 때 지급되는 골드
 ------------------------------------------------------------
 Config.Player = {
 	BaseHealth = 100,
-	WalkSpeed = 16,
-	RunSpeed = 28,          -- Shift를 누르고 있을 때
+	WalkSpeed = 19,
+	RunSpeed = 32,          -- Shift를 누르고 있을 때
 	DashSpeed = 80,         -- Q 슬라이딩 시작 속도 (점점 느려지며 미끄러짐)
 	DashTime = 0.6,         -- 슬라이딩 지속 시간(초)
 	DashCooldown = 2.0,     -- 슬라이딩 재사용 대기시간(초)
@@ -117,44 +117,44 @@ Config.Weapon = {
 	CostGrowth = 1.3,
 	DamagePerLevel = 0.2,   -- 레벨당 데미지 +20%
 	SizePerLevel = 0.06,    -- 레벨당 크기 +6%
-	-- 레벨 구간별 외형. MinLevel 이상이면 해당 외형이 적용됨.
+	-- 레벨 구간별 외형. Form = 총 모양(진화), Names = 무기 종류별 이름. MinLevel 이상이면 해당 외형이 적용됨.
 	-- Particles: 초당 파티클 수 / Trail: 궤적 / Light: 빛 범위 / Rainbow: 무지개 이펙트
 	Tiers = {
 		-- Shot: 발사체 외형. Style(Ball/Bolt/Orb/Cannon/Fire/Rainbow) / Size / Length(Bolt만) / Speed(초당 거리) / Impact(착탄 시 터지는 입자 수)
-		{ MinLevel = 0,  Name = "낡은 권총", Prefix = "낡은",       Color = Color3.fromRGB(165, 165, 175), Material = Enum.Material.Metal, Particles = 0,  Trail = false, Light = 0,
+		{ MinLevel = 0,  Name = "낡은 권총", Prefix = "낡은", Form = "Basic", Names = { Pistol = "낡은 권총", Shotgun = "낡은 샷건", Sniper = "낡은 저격총" },       Color = Color3.fromRGB(165, 165, 175), Material = Enum.Material.Metal, Particles = 0,  Trail = false, Light = 0,
 			Shot = { Style = "Ball", Size = 0.6, Speed = 260, Impact = 0 } },
-		{ MinLevel = 3,  Name = "강철 권총", Prefix = "강철",       Color = Color3.fromRGB(90, 160, 255),  Material = Enum.Material.Metal, Particles = 6,  Trail = false, Light = 0,
+		{ MinLevel = 3,  Name = "강철 권총", Prefix = "강철", Form = "Steel", Names = { Pistol = "강철 리볼버", Shotgun = "강철 펌프 샷건", Sniper = "강철 볼트 저격총" },       Color = Color3.fromRGB(90, 160, 255),  Material = Enum.Material.Metal, Particles = 6,  Trail = false, Light = 0,
 			Shot = { Style = "Bolt", Size = 0.35, Length = 3, Speed = 320, Impact = 6 } },
-		{ MinLevel = 6,  Name = "마력 라이플", Prefix = "마력",     Color = Color3.fromRGB(175, 95, 255),  Material = Enum.Material.Glass, Particles = 12, Trail = true,  Light = 0,
+		{ MinLevel = 6,  Name = "마력 라이플", Prefix = "마력", Form = "Arcane", Names = { Pistol = "마력 라이플", Shotgun = "마력 스펠 샷건", Sniper = "마력 아케인 저격총" },     Color = Color3.fromRGB(175, 95, 255),  Material = Enum.Material.Glass, Particles = 12, Trail = true,  Light = 0,
 			Shot = { Style = "Orb", Size = 1.3, Speed = 190, Impact = 14 } },
-		{ MinLevel = 9,  Name = "황금 캐논", Prefix = "황금",       Color = Color3.fromRGB(255, 200, 50),  Material = Enum.Material.Neon,  Particles = 22, Trail = true,  Light = 10,
+		{ MinLevel = 9,  Name = "황금 캐논", Prefix = "황금", Form = "Cannon", Names = { Pistol = "황금 핸드캐논", Shotgun = "황금 슬러그 캐논", Sniper = "황금 대구경 저격총" },       Color = Color3.fromRGB(255, 200, 50),  Material = Enum.Material.Neon,  Particles = 22, Trail = true,  Light = 10,
 			Shot = { Style = "Cannon", Size = 2.4, Speed = 140, Impact = 30 } },
-		{ MinLevel = 12, Name = "불꽃의 건", Prefix = "불꽃의",       Color = Color3.fromRGB(255, 70, 40),   Material = Enum.Material.Neon,  Particles = 40, Trail = true,  Light = 16,
-			Shot = { Style = "Fire", Size = 2.0, Speed = 160, Impact = 40 } },
-		{ MinLevel = 15, Name = "전설의 무지개 건", Prefix = "전설의 무지개", Color = Color3.fromRGB(255, 255, 255), Material = Enum.Material.Neon,  Particles = 60, Trail = true,  Light = 20, Rainbow = true,
+		{ MinLevel = 12, Name = "불꽃의 건", Prefix = "불꽃의", Form = "Rocket", Names = { Pistol = "불꽃 로켓 런처", Shotgun = "불꽃 화염 샷건", Sniper = "불꽃 로켓 저격포" },       Color = Color3.fromRGB(255, 70, 40),   Material = Enum.Material.Neon,  Particles = 40, Trail = true,  Light = 16,
+			Shot = { Style = "Rocket", Size = 1.6, Length = 4, Speed = 150, Impact = 70 } },
+		{ MinLevel = 15, Name = "전설의 무지개 건", Prefix = "전설의 무지개", Form = "Rail", Names = { Pistol = "무지개 레일건", Shotgun = "무지개 플라즈마 샷건", Sniper = "무지개 레일 저격총" }, Color = Color3.fromRGB(255, 255, 255), Material = Enum.Material.Neon,  Particles = 60, Trail = true,  Light = 20, Rainbow = true,
 			Shot = { Style = "Rainbow", Size = 2.2, Speed = 170, Impact = 60 } },
 	},
 }
 
 ------------------------------------------------------------
 -- 로비 허수아비 (때릴 때마다 골드). 획득 골드 = GoldPerHit x Multiplier
--- RequiredLevel: 이 무기 강화 레벨 이상이어야 골드가 들어옴 (0이면 제한 없음)
+-- RequiredLevel: 이 캐릭터 레벨 이상이어야 골드가 들어옴 (무기 공격력과 무관)
 -- List 순서대로 훈련장에 1~10번 허수아비가 놓인다.
 ------------------------------------------------------------
 Config.Dummy = {
 	GoldPerHit = 1,
 	Spacing = 20,     -- 허수아비 간격 (1열로 나열)
 	List = {
-		{ Multiplier = 1,   RequiredLevel = 0 },
-		{ Multiplier = 1.5, RequiredLevel = 0 },
-		{ Multiplier = 2,   RequiredLevel = 1 },
-		{ Multiplier = 3,   RequiredLevel = 2 },
-		{ Multiplier = 4,   RequiredLevel = 3 },
-		{ Multiplier = 6,   RequiredLevel = 5 },
-		{ Multiplier = 8,   RequiredLevel = 7 },
-		{ Multiplier = 12,  RequiredLevel = 9 },
-		{ Multiplier = 18,  RequiredLevel = 12 },
-		{ Multiplier = 30,  RequiredLevel = 15 },
+		{ Multiplier = 1,    RequiredLevel = 1 },
+		{ Multiplier = 1.5,  RequiredLevel = 1 },
+		{ Multiplier = 2,    RequiredLevel = 3 },
+		{ Multiplier = 3,    RequiredLevel = 6 },
+		{ Multiplier = 4,    RequiredLevel = 10 },
+		{ Multiplier = 6,    RequiredLevel = 15 },
+		{ Multiplier = 8,    RequiredLevel = 21 },
+		{ Multiplier = 12,   RequiredLevel = 28 },
+		{ Multiplier = 18,   RequiredLevel = 36 },
+		{ Multiplier = 30,   RequiredLevel = 45 },
 	},
 }
 
@@ -367,7 +367,19 @@ end
 -- 무기 종류 + 강화 레벨에 따른 이름. 예: "황금 저격총"
 function Config.GetWeaponName(typeKey, level)
 	local weaponType = Config.WeaponTypes[typeKey] or Config.WeaponTypes.Pistol
-	return Config.GetWeaponTier(level).Prefix .. " " .. weaponType.Name
+	local tier = Config.GetWeaponTier(level)
+	return (tier.Names and tier.Names[typeKey]) or (tier.Prefix .. " " .. weaponType.Name)
+end
+
+-- 강화 레벨 -> 진화 단계 번호 (1~6)
+function Config.GetWeaponTierIndex(level)
+	local tiers = Config.Weapon.Tiers
+	for i = #tiers, 1, -1 do
+		if level >= tiers[i].MinLevel then
+			return i
+		end
+	end
+	return 1
 end
 
 ------------------------------------------------------------

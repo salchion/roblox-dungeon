@@ -47,7 +47,7 @@ function Effects.Shot(from, to, shot, color, rainbow)
 	part.CanTouch = false
 	part.Material = Enum.Material.Neon
 	part.Color = color
-	if shot.Style == "Bolt" then
+	if shot.Style == "Bolt" or shot.Style == "Rocket" then
 		part.Size = Vector3.new(shot.Size, shot.Size, shot.Length) -- 길쭉한 탄
 	else
 		part.Shape = Enum.PartType.Ball
@@ -57,7 +57,7 @@ function Effects.Shot(from, to, shot, color, rainbow)
 	part.Parent = workspace
 
 	local colorSeq = rainbow and RAINBOW or ColorSequence.new(color)
-	if shot.Style == "Fire" then
+	if shot.Style == "Fire" or shot.Style == "Rocket" then
 		colorSeq = FIRE
 	end
 
@@ -79,12 +79,12 @@ function Effects.Shot(from, to, shot, color, rainbow)
 	trail.Parent = part
 
 	-- 등급별 입자: 불꽃은 불길, 마법은 반짝이, 무지개는 무지개 가루
-	local rate = ({ Orb = 40, Cannon = 25, Fire = 90, Rainbow = 80 })[shot.Style]
+	local rate = ({ Orb = 40, Cannon = 25, Fire = 90, Rocket = 110, Rainbow = 80 })[shot.Style]
 	if rate then
 		local emitter = Instance.new("ParticleEmitter")
 		emitter.Rate = rate
 		emitter.Lifetime = NumberRange.new(0.3, 0.6)
-		emitter.Speed = NumberRange.new(1, shot.Style == "Fire" and 6 or 3)
+		emitter.Speed = NumberRange.new(1, (shot.Style == "Fire" or shot.Style == "Rocket") and 6 or 3)
 		emitter.SpreadAngle = Vector2.new(180, 180)
 		emitter.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, shot.Size * 0.6), NumberSequenceKeypoint.new(1, 0) })
 		emitter.LightEmission = 1

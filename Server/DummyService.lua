@@ -1,7 +1,7 @@
 -- DummyService (ServerScriptService > Modules 안의 ModuleScript, 이름: DummyService)
 -- 로비 허수아비 훈련장. 허수아비를 공격할 때마다 골드가 자동으로 들어온다 (줍기 없음).
 -- 1번(x1)부터 10번(x30)까지 한 줄로 나열되고, 배수가 높을수록 크고 화려하고 강해 보인다.
--- 허수아비마다 배율(Multiplier)과 필요 무기 레벨(RequiredLevel)이 다르다 -> Config.Dummy.List
+-- 허수아비마다 배율(Multiplier)과 필요 캐릭터 레벨(RequiredLevel)이 다르다 -> Config.Dummy.List
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -136,7 +136,7 @@ local function buildDummy(index, info, position)
 		}, model)
 	end
 
-	-- 이름표: 배율 + 필요 무기 레벨
+	-- 이름표: 배율 + 필요 캐릭터 레벨
 	local gui = Instance.new("BillboardGui")
 	gui.Size = UDim2.new(0, 210, 0, 62)
 	gui.StudsOffset = Vector3.new(0, 3.5 + 2.2 * s, 0)
@@ -161,7 +161,7 @@ local function buildDummy(index, info, position)
 	sub.TextScaled = true
 	sub.TextStrokeTransparency = 0.3
 	sub.TextColor3 = Color3.fromRGB(230, 230, 240)
-	sub.Text = info.RequiredLevel > 0 and string.format("무기 +%d 이상", info.RequiredLevel) or "제한 없음"
+	sub.Text = info.RequiredLevel > 1 and string.format("Lv.%d 이상", info.RequiredLevel) or "제한 없음"
 	sub.Parent = gui
 
 	model.Parent = folder
@@ -245,9 +245,9 @@ function Dummy.Shoot(player, origin, direction)
 
 	flash(data)
 
-	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
-	if weaponLevel < data.RequiredLevel then
-		Effects.FloatText(result.Position, string.format("🔒 무기 +%d 필요", data.RequiredLevel), Color3.fromRGB(190, 190, 200))
+	local charLevel = player:GetAttribute("Level") or 1
+	if charLevel < data.RequiredLevel then
+		Effects.FloatText(result.Position, string.format("🔒 Lv.%d 필요", data.RequiredLevel), Color3.fromRGB(190, 190, 200))
 		return result.Position
 	end
 

@@ -16,6 +16,7 @@ local Remotes = require(ReplicatedStorage:WaitForChild("Remotes")) -- RemoteEven
 local Modules = ServerScriptService:WaitForChild("Modules")
 local Effects = require(Modules:WaitForChild("Effects"))
 local Weapon = require(Modules:WaitForChild("WeaponService"))
+Weapon.BuildPreviews() -- 강화창 3D 미리보기용 총 모델 (ReplicatedStorage.WeaponPreviews)
 local Gear = require(Modules:WaitForChild("GearService"))
 local Party = require(Modules:WaitForChild("PartyService"))
 local Lobby = require(Modules:WaitForChild("LobbyService"))

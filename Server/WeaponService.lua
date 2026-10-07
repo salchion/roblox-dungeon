@@ -100,6 +100,53 @@ local function buildTool(level, typeKey)
 		weld(handle, stock)
 	end
 
+	-- 진화 단계(Form)별 추가 장식: 단계가 오를수록 총의 실루엣이 확 달라진다
+	local form = tier.Form
+	local function cyl(name, size, color, material, cf)
+		local p = newPart(name, size, color, material, tool)
+		p.Shape = Enum.PartType.Cylinder
+		p.CFrame = cf * CFrame.Angles(0, math.rad(90), 0) -- 원통 축을 총구 방향(Z)으로
+		weld(handle, p)
+		return p
+	end
+	local muzzleZ = -(0.7 + barrelLength)
+	if form == "Steel" then
+		cyl("Cylinder", Vector3.new(0.7, 0.75, 0.75), dark, Enum.Material.Metal, handle.CFrame * CFrame.new(0, 0.05, -0.2))
+	elseif form == "Arcane" then
+		local crystal = newPart("Crystal", Vector3.new(0.35, 0.35, 0.35) * scale, tier.Color, Enum.Material.Neon, tool)
+		crystal.CFrame = handle.CFrame * CFrame.new(0, 0.75, -0.3) * CFrame.Angles(math.rad(45), math.rad(45), 0)
+		weld(handle, crystal)
+		for side = -1, 1, 2 do
+			local fin = newPart("Fin", Vector3.new(0.08, 0.5, 1.1), tier.Color, Enum.Material.Glass, tool)
+			fin.CFrame = handle.CFrame * CFrame.new(side * 0.3, 0.1, muzzleZ * 0.45)
+			weld(handle, fin)
+		end
+	elseif form == "Cannon" then
+		cyl("MuzzleRing", Vector3.new(0.5, 0.75 * scale * thick, 0.75 * scale * thick), tier.Color, Enum.Material.Neon, handle.CFrame * CFrame.new(0, 0.05, muzzleZ + 0.2))
+		cyl("Drum", Vector3.new(0.9, 0.85, 0.85), dark, Enum.Material.Metal, handle.CFrame * CFrame.new(0, 0.55, 0.1))
+	elseif form == "Rocket" then
+		-- 어깨에 얹는 로켓 발사관 + 앞으로 튀어나온 탄두
+		cyl("Tube", Vector3.new(barrelLength * 0.9, 0.95 * scale, 0.95 * scale), dark, Enum.Material.Metal, handle.CFrame * CFrame.new(0, 0.05, -(0.7 + barrelLength * 0.45)))
+		local warhead = newPart("Warhead", Vector3.new(0.7, 0.7, 0.9) * scale, tier.Color, Enum.Material.Neon, tool)
+		warhead.Shape = Enum.PartType.Ball
+		warhead.CFrame = handle.CFrame * CFrame.new(0, 0.05, muzzleZ - 0.1)
+		weld(handle, warhead)
+		for i = 0, 3 do
+			local fin = newPart("RocketFin", Vector3.new(0.08, 0.6, 0.5), tier.Color, tier.Material, tool)
+			fin.CFrame = handle.CFrame * CFrame.new(0, 0.05, 0.9) * CFrame.Angles(0, 0, math.rad(i * 90)) * CFrame.new(0, 0.55, 0)
+			weld(handle, fin)
+		end
+	elseif form == "Rail" then
+		for side = -1, 1, 2 do
+			local rail = newPart("Rail", Vector3.new(0.12, 0.12, barrelLength * 1.1), tier.Color, Enum.Material.Neon, tool)
+			rail.CFrame = handle.CFrame * CFrame.new(side * 0.38, 0.05, -(0.7 + barrelLength * 0.55))
+			weld(handle, rail)
+		end
+		for i = 1, 3 do
+			cyl("Ring" .. i, Vector3.new(0.12, 1.1 * scale, 1.1 * scale), Color3.new(1, 1, 1), Enum.Material.Neon, handle.CFrame * CFrame.new(0, 0.05, -(0.7 + barrelLength * i / 4)))
+		end
+	end
+
 	local tip = Instance.new("Attachment")
 	tip.Name = "Tip"
 	tip.Position = Vector3.new(0, 0, -barrelLength / 2)
@@ -228,6 +275,39 @@ local function updateNameplate(player)
 end
 
 Weapon.UpdateNameplate = updateNameplate
+
+------------------------------------------------------------
+-- 진화 미리보기: 종류 x 단계별 총 모델을 ReplicatedStorage.WeaponPreviews 에 만들어 둔다
+-- (클라이언트가 복제해서 강화창 / 무기 탭의 3D 미리보기에 쓴다. 이름: <종류>_<단계번호>)
+------------------------------------------------------------
+function Weapon.BuildPreviews()
+	local rs = game:GetService("ReplicatedStorage")
+	local old = rs:FindFirstChild("WeaponPreviews")
+	if old then old:Destroy() end
+	local folder = Instance.new("Folder")
+	folder.Name = "WeaponPreviews"
+	for _, typeKey in ipairs(Config.WeaponTypes.Order) do
+		for index, tier in ipairs(Config.Weapon.Tiers) do
+			local tool = buildTool(tier.MinLevel, typeKey)
+			local model = Instance.new("Model")
+			model.Name = typeKey .. "_" .. index
+			for _, child in ipairs(tool:GetChildren()) do
+				child.Parent = model
+			end
+			model.PrimaryPart = model:FindFirstChild("Handle")
+			tool:Destroy()
+			for _, d in ipairs(model:GetDescendants()) do
+				if d:IsA("BasePart") then
+					d.Anchored = true
+				elseif d:IsA("PointLight") then
+					d:Destroy()
+				end
+			end
+			model.Parent = folder
+		end
+	end
+	folder.Parent = rs
+end
 
 ------------------------------------------------------------
 -- 장착 / 갱신
