@@ -10,6 +10,7 @@ local UserInputService = game:GetService("UserInputService")
 local GuiService = game:GetService("GuiService")
 local StarterGui = game:GetService("StarterGui")
 local RunService = game:GetService("RunService")
+local CollectionService = game:GetService("CollectionService")
 local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
 
@@ -2260,6 +2261,74 @@ RunService.RenderStepped:Connect(function(dt)
 		comboLabel.TextSize = math.clamp(24 + combo * 0.4, 24, 40)
 		local left = (player:GetAttribute("ComboUntil") or 0) - os.clock()
 		comboLabel.TextTransparency = left < 1 and 0.5 or 0
+	end
+end)
+
+------------------------------------------------------------
+-- 레이더: 주변 몬스터 위치를 원형 지도에 표시 (빨강 일반 / 노랑 엘리트 / 보라 보스 / 금색 황금 고블린)
+-- 위쪽 = 카메라가 보는 방향. 범위 밖 몬스터는 가장자리에 작게 표시된다.
+------------------------------------------------------------
+local RADAR_SIZE, RADAR_RANGE = 150, 100
+local radarFrame = create("Frame", {
+	Size = UDim2.new(0, RADAR_SIZE, 0, RADAR_SIZE), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -16, 1, -16),
+	BackgroundColor3 = Color3.fromRGB(14, 18, 28), BackgroundTransparency = 0.25, BorderSizePixel = 0, Visible = false,
+}, gui)
+create("UICorner", { CornerRadius = UDim.new(1, 0) }, radarFrame)
+create("UIStroke", { Color = Color3.fromRGB(110, 150, 220), Thickness = 2 }, radarFrame)
+create("Frame", { -- 나 (중앙)
+	Size = UDim2.new(0, 8, 0, 8), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+	BackgroundColor3 = Color3.fromRGB(90, 220, 255), BorderSizePixel = 0, ZIndex = 3,
+}, radarFrame)
+local radarDots = {}
+
+local function radarDot(index)
+	local dot = radarDots[index]
+	if not dot then
+		dot = create("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), BorderSizePixel = 0, ZIndex = 2 }, radarFrame)
+		create("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
+		radarDots[index] = dot
+	end
+	return dot
+end
+
+RunService.RenderStepped:Connect(function()
+	local zone = currentZone()
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	radarFrame.Visible = (zone == "Field" or zone == "Dungeon") and root ~= nil
+	if not radarFrame.Visible then return end
+
+	local look = camera.CFrame.LookVector
+	local yaw = math.atan2(look.X, -look.Z) -- 카메라가 -Z를 볼 때 0
+	local cosY, sinY = math.cos(yaw), math.sin(yaw)
+	local used = 0
+	for _, part in ipairs(CollectionService:GetTagged("Monster")) do
+		if part:IsDescendantOf(workspace) and used < 60 then
+			local offset = part.Position - root.Position
+			local rx = offset.X * cosY + offset.Z * sinY   -- 오른쪽
+			local ry = offset.X * sinY - offset.Z * cosY   -- 앞쪽 (+)
+			local dist = math.sqrt(rx * rx + ry * ry)
+			if dist < 400 then
+				used += 1
+				local clamped = dist > RADAR_RANGE
+				local scale = clamped and RADAR_RANGE / dist or 1
+				local px = 0.5 + (rx * scale) / RADAR_RANGE * 0.47
+				local py = 0.5 - (ry * scale) / RADAR_RANGE * 0.47
+				local dot = radarDot(used)
+				local size = CollectionService:HasTag(part, "RadarBoss") and 11 or (CollectionService:HasTag(part, "RadarGold") and 10 or 6)
+				if clamped then size = math.max(4, size - 2) end
+				dot.Size = UDim2.new(0, size, 0, size)
+				dot.Position = UDim2.new(px, 0, py, 0)
+				dot.BackgroundColor3 = CollectionService:HasTag(part, "RadarBoss") and Color3.fromRGB(190, 90, 255)
+					or CollectionService:HasTag(part, "RadarGold") and Color3.fromRGB(255, 215, 50)
+					or CollectionService:HasTag(part, "RadarElite") and Color3.fromRGB(255, 190, 60)
+					or Color3.fromRGB(255, 80, 80)
+				dot.BackgroundTransparency = clamped and 0.5 or 0
+				dot.Visible = true
+			end
+		end
+	end
+	for i = used + 1, #radarDots do
+		radarDots[i].Visible = false
 	end
 end)
 

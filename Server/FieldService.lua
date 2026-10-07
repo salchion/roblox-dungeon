@@ -15,6 +15,7 @@ local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+local CollectionService = game:GetService("CollectionService")
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
@@ -401,6 +402,8 @@ local function spawnMonster(zone, kind)
 		part.Color = Color3.fromRGB(150, 25, 45)
 		part.Material = Enum.Material.Neon
 		part.Parent = monstersFolder
+		CollectionService:AddTag(part, "Monster")
+		CollectionService:AddTag(part, "RadarBoss")
 	else
 		local baseColor = def.Color:Lerp(F.ZoneColors[zone], 0.2)
 		if kind == "Elite" then
@@ -408,6 +411,9 @@ local function spawnMonster(zone, kind)
 		end
 		part = MonsterTypes.Build(typeKey, stats.Size, baseColor, position, monstersFolder)
 		part.Name = "FieldMonster"
+		if kind == "Elite" then
+			CollectionService:AddTag(part, "RadarElite")
+		end
 	end
 
 	monsters[part] = {
@@ -488,7 +494,27 @@ local function rewardEvent(data, part)
 	end
 end
 
+-- 황금 고블린: 잡으면 골드 대박 + 전리품 3개
+local function rewardGoblin(player, data, part)
+	local gold = data.Stats.Gold
+	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
+	Effects.FloatText(part.Position + Vector3.new(0, 4, 0), string.format("💰 +%d G", gold), Color3.fromRGB(255, 225, 80))
+	Effects.Burst(part.Position, Color3.fromRGB(255, 215, 60), 90)
+	Level.AddXP(player, Config.Xp.FieldPerMonsterLevel * data.XpLevel * 6)
+	local position = dropPosition(part)
+	for _ = 1, 3 do
+		Loot.DropFor(player, position, "Elite", data.Zone)
+	end
+	Quest.Add(player, "Kills", 1)
+	Quest.Add(player, "GoblinKills", 1)
+	notify(player, string.format("💰 황금 고블린 처치! +%d G, 전리품 3개!", gold))
+end
+
 local function reward(player, data, part)
+	if data.Kind == "Goblin" then
+		rewardGoblin(player, data, part)
+		return
+	end
 	if data.Kind == "Event" then
 		rewardEvent(data, part)
 		return
@@ -548,6 +574,7 @@ local function killMonster(player, part, data)
 	reward(player, data, part)
 
 	local zone, kind = data.Zone, data.Kind
+	if kind == "Goblin" then return end -- 다시 나타나지 않는다 (다음 출현은 타이머)
 	if kind == "Event" then
 		activeEvent = nil -- 이벤트 보스는 다시 나타나지 않는다
 		return
@@ -650,9 +677,85 @@ local fieldCtx = {
 	end,
 }
 
+-- 황금 고블린 소환: 구역 하나에 나타나 플레이어에게서 도망친다. 일정 시간이 지나면 사라진다.
+local function spawnGoblin(zone)
+	local level = F.GetZoneLevel(zone)
+	local base = Config.Monster.GetStats(level)
+	local stats = {
+		Size = 5, MaxHealth = base.MaxHealth * 7, Speed = 26, ShotDamage = 0, ShotInterval = 99, ShotSpeed = 0,
+		Gold = base.Gold * 40,
+	}
+	local x0, x1 = zoneBounds(zone)
+	local position = Vector3.new(
+		math.random(math.floor(x0 + F.CampSafe + 60), math.floor(x1 - 40)), TOP + stats.Size / 2,
+		math.random(-F.Width / 2 + 30, F.Width / 2 - 30)
+	)
+	local part = Instance.new("Part")
+	part.Name = "GoldenGoblin"
+	part.Shape = Enum.PartType.Ball
+	part.Size = Vector3.new(stats.Size, stats.Size, stats.Size)
+	part.Anchored = true
+	part.CanCollide = false
+	part.Position = position
+	part.Color = Color3.fromRGB(255, 205, 40)
+	part.Material = Enum.Material.Neon
+	part.Parent = monstersFolder
+	CollectionService:AddTag(part, "Monster")
+	CollectionService:AddTag(part, "RadarGold")
+	local light = Instance.new("PointLight")
+	light.Range = 26
+	light.Brightness = 2
+	light.Color = part.Color
+	light.Parent = part
+
+	local data = {
+		Zone = zone, Kind = "Goblin", Goblin = true, Level = level, XpLevel = level + 2, Stats = stats,
+		Health = stats.MaxHealth, MaxHealth = stats.MaxHealth, Contrib = {},
+		HealthFill = createHealthBar(part, "💰 황금 고블린", 200, Color3.fromRGB(255, 225, 80)),
+		Home = position, Expire = os.clock() + 75, NextShot = math.huge, NextAttack = math.huge, NextRing = math.huge,
+		BaseColor = part.Color, Aggro = false, Phase = math.random() * 6,
+	}
+	monsters[part] = data
+	return part, data
+end
+
+-- 고블린 이동: 가까운 플레이어에게서 도망 (좌우로 흔들리며)
+local function stepGoblin(part, data, dt, now)
+	if now > data.Expire then
+		monsters[part] = nil
+		part:Destroy()
+		for _, player in ipairs(Players:GetPlayers()) do
+			if player:GetAttribute("Zone") == "Field" then
+				notify(player, "💨 황금 고블린이 도망쳐 버렸어요...")
+			end
+		end
+		return
+	end
+	local target, distance = nearestFieldPlayer(part.Position)
+	local flee = Vector3.zero
+	if target and distance < 80 then
+		local away = Vector3.new(part.Position.X - target.Position.X, 0, part.Position.Z - target.Position.Z)
+		if away.Magnitude > 0.1 then
+			local side = Vector3.new(-away.Unit.Z, 0, away.Unit.X)
+			flee = (away.Unit + side * math.sin(now * 3 + data.Phase) * 0.6).Unit * data.Stats.Speed * dt
+		end
+	end
+	local x0, x1 = zoneBounds(data.Zone)
+	local position = part.Position + flee
+	position = Vector3.new(
+		math.clamp(position.X, x0 + F.CampSafe + 10, x1 - 10), TOP + data.Stats.Size / 2 + math.abs(math.sin(now * 6)) * 1.2,
+		math.clamp(position.Z, -F.Width / 2 + 12, F.Width / 2 - 12)
+	)
+	part.Position = position
+end
+
 local function stepMonsters(dt)
 	local now = os.clock()
 	for part, data in pairs(monsters) do
+		if data.Goblin then
+			stepGoblin(part, data, dt, now)
+			continue
+		end
 		local target, distance = nearestFieldPlayer(part.Position)
 		local range = data.Aggro and F.LeashRange or F.AggroRange
 		local fromHome = (part.Position - data.Home).Magnitude
@@ -853,6 +956,8 @@ local function spawnEvent(zone)
 	part.Color = Color3.fromRGB(190, 60, 255)
 	part.Material = Enum.Material.Neon
 	part.Parent = monstersFolder
+	CollectionService:AddTag(part, "Monster")
+	CollectionService:AddTag(part, "RadarBoss")
 
 	-- 멀리서도 보이는 하늘로 솟는 빛기둥 (보스에 붙어서 같이 움직임)
 	local beam = Instance.new("Part")
@@ -931,6 +1036,33 @@ local function runEvents()
 	end
 end
 
+-- 황금 고블린 출현 타이머: 필드에 누군가 있으면 몇 분마다 한 마리
+local function runGoblins()
+	task.wait(90)
+	while true do
+		local maxZone, anyone = 1, false
+		for _, player in ipairs(Players:GetPlayers()) do
+			if player:GetAttribute("Zone") == "Field" then
+				anyone = true
+				maxZone = math.max(maxZone, player:GetAttribute("MaxZone") or 1)
+			end
+		end
+		if anyone then
+			local zone = math.random(1, math.min(maxZone, F.ZoneCount))
+			local part, data = spawnGoblin(zone)
+			for _, player in ipairs(Players:GetPlayers()) do
+				if player:GetAttribute("Zone") == "Field" then
+					notify(player, string.format("💰 구역 %d · %s 에 황금 고블린 출현! 잡으면 대박! (75초)", zone, F.ZoneNames[zone]))
+				end
+			end
+			while monsters[part] == data do
+				task.wait(1)
+			end
+		end
+		task.wait(math.random(150, 300))
+	end
+end
+
 function Field.Init(lobbySpawnCFrame)
 	lobbySpawn = lobbySpawnCFrame or lobbySpawn
 	buildWorld()
@@ -957,6 +1089,7 @@ function Field.Init(lobbySpawnCFrame)
 	end)
 
 	task.spawn(runEvents)
+	task.spawn(runGoblins)
 end
 
 return Field

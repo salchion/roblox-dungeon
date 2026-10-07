@@ -11,6 +11,7 @@ local Debris = game:GetService("Debris")
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
+local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
 local Field = require(script.Parent:WaitForChild("FieldService"))
 
@@ -163,6 +164,7 @@ function Skill.Use(player, skillKey, aimPoint)
 		return
 	end
 	cooldowns[skillKey] = now + S[skillKey].Cooldown
+	Quest.Add(player, "SkillUses", 1)
 	Remotes.Skill:FireClient(player, "Cast", skillKey)
 end
 

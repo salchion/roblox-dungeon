@@ -524,6 +524,8 @@ Config.Quests = {
 		{ Id = "boss",    Name = "보스 사냥",     Desc = "보스 %d마리 처치",              Stat = "BossKills",     Goal = 1,   Reward = { Tickets = 2 } },
 		{ Id = "enhance", Name = "대장장이",      Desc = "강화에 %d번 성공하기",          Stat = "Enhances",      Goal = 3,   Reward = { Gold = 500 } },
 		{ Id = "gacha",   Name = "운 시험",       Desc = "장비 뽑기를 %d번 하기",         Stat = "Rolls",         Goal = 2,   Reward = { Gold = 300 } },
+		{ Id = "goblin",  Name = "황금 사냥",     Desc = "황금 고블린 %d마리 처치",       Stat = "GoblinKills",   Goal = 1,   Reward = { Gold = 800, Tickets = 1 } },
+		{ Id = "skills",  Name = "스킬 연습",     Desc = "스킬을 %d번 사용하기",          Stat = "SkillUses",     Goal = 20,  Reward = { Gold = 400 } },
 		{ Id = "kills",   Name = "몬스터 청소",   Desc = "몬스터 %d마리 처치 (던전 포함)", Stat = "Kills",         Goal = 60,  Reward = { Gold = 500, TimeSkip = 300 } },
 	},
 }
@@ -535,6 +537,9 @@ Config.Achievements = {
 	{ Id = "dungeon1",   Name = "첫 던전",         Desc = "던전 %d회 클리어",            Stat = "DungeonClears", Goal = 1,     Reward = { Gold = 500, Tickets = 1 },  Title = "던전 입문자" },
 	{ Id = "dungeon10",  Name = "던전 단골",       Desc = "던전 %d회 클리어",            Stat = "DungeonClears", Goal = 10,    Reward = { Tickets = 3 },              Title = "던전 단골" },
 	{ Id = "dungeon50",  Name = "던전 마스터",     Desc = "던전 %d회 클리어",            Stat = "DungeonClears", Goal = 50,    Reward = { Tickets = 10 },             Title = "던전 마스터" },
+	{ Id = "goblin1",    Name = "황금 사냥꾼",     Desc = "황금 고블린 %d마리 처치",     Stat = "GoblinKills",   Goal = 1,     Reward = { Gold = 1000 },              Title = "행운의 사냥꾼" },
+	{ Id = "goblin20",   Name = "황금 도둑",       Desc = "황금 고블린 %d마리 처치",     Stat = "GoblinKills",   Goal = 20,    Reward = { Tickets = 5 },              Title = "황금 도둑" },
+	{ Id = "skill200",   Name = "스킬 마스터",     Desc = "스킬 %d회 사용",              Stat = "SkillUses",     Goal = 200,   Reward = { Tickets = 3 },              Title = "스킬 마스터" },
 	{ Id = "boss10",     Name = "보스 헌터",       Desc = "보스 %d마리 처치",            Stat = "BossKills",     Goal = 10,    Reward = { Tickets = 5 },              Title = "보스 헌터" },
 	{ Id = "zone4",      Name = "탐험가",          Desc = "필드 %d구역 돌파",            Stat = "MaxZone",       Goal = 4,     Reward = { Gold = 1000 },              Title = "탐험가" },
 	{ Id = "zone8",      Name = "심연의 정복자",   Desc = "필드 %d구역 돌파",            Stat = "MaxZone",       Goal = 8,     Reward = { Tickets = 5 },              Title = "심연의 정복자" },

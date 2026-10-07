@@ -14,6 +14,7 @@ local Party = require(script.Parent:WaitForChild("PartyService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Level = require(script.Parent:WaitForChild("LevelService"))
 local MonsterTypes = require(script.Parent:WaitForChild("MonsterTypes"))
+local CollectionService = game:GetService("CollectionService")
 local Combo = require(script.Parent:WaitForChild("ComboService"))
 local DungeonTerrain = require(script.Parent:WaitForChild("DungeonTerrain"))
 local Keys = require(script.Parent:WaitForChild("KeyService"))
@@ -265,6 +266,8 @@ local function spawnBoss(run)
 	part.Material = Enum.Material.Neon
 	part.Position = Vector3.new(run.Origin.X, groundAt(run, run.Origin.X, run.Origin.Z - D.SpawnRadius, run.Origin.Y + 10) + stats.Size / 2, run.Origin.Z - D.SpawnRadius)
 	part.Parent = run.MonstersFolder
+	CollectionService:AddTag(part, "Monster")
+	CollectionService:AddTag(part, "RadarBoss")
 
 	local data = registerMonster(run, part, stats, bossType.Name, 320, {
 		IsBoss = true,

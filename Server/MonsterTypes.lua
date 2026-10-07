@@ -113,6 +113,7 @@ function M.Build(typeKey, size, color, position, parent)
 	end
 	body.CFrame = CFrame.new(position)
 	body.Parent = parent
+	game:GetService("CollectionService"):AddTag(body, "Monster") -- 클라이언트 레이더용
 
 	local frontZ = def.Shape == "Ball" and size * 0.46 or size * 0.58
 
