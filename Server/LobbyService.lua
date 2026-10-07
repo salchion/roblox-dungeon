@@ -145,6 +145,13 @@ function Lobby.Build()
 	makeLabel(makePart({ Name = "PlazaSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(0, 20, 70), Transparency = 1, CanCollide = false, CanQuery = false }, folder),
 		"🏰 마을 광장", Color3.fromRGB(255, 240, 200), 0, 300, 70)
 
+	-- 기본 맵에 원래 있던 스폰 패드는 지운다 (남겨두면 플레이어가 엉뚱한 곳에서 시작할 수 있음)
+	for _, descendant in ipairs(workspace:GetDescendants()) do
+		if descendant:IsA("SpawnLocation") then
+			descendant:Destroy()
+		end
+	end
+
 	local spawn = Instance.new("SpawnLocation")
 	spawn.Name = "LobbySpawn"
 	spawn.Anchored = true
