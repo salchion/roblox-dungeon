@@ -164,39 +164,41 @@ local function updateNameplate(player)
 	if not gui then
 		gui = Instance.new("BillboardGui")
 		gui.Name = "Nameplate"
-		gui.Size = UDim2.new(0, 220, 0, 56)
-		gui.StudsOffset = Vector3.new(0, 2.8, 0)
-		gui.MaxDistance = 140
+		gui.Size = UDim2.new(0, 240, 0, 84)
+		gui.StudsOffset = Vector3.new(0, 3.2, 0)
+		gui.MaxDistance = 150
 		gui.Parent = head
 
-		local nameLabel = Instance.new("TextLabel")
-		nameLabel.Name = "PlayerName"
-		nameLabel.Size = UDim2.new(1, 0, 0.45, 0)
-		nameLabel.BackgroundTransparency = 1
-		nameLabel.Font = Enum.Font.GothamBold
-		nameLabel.TextScaled = true
-		nameLabel.TextColor3 = Color3.new(1, 1, 1)
-		nameLabel.TextStrokeTransparency = 0.3
-		nameLabel.Parent = gui
-
-		local weaponLabel = Instance.new("TextLabel")
-		weaponLabel.Name = "WeaponLevel"
-		weaponLabel.Size = UDim2.new(1, 0, 0.55, 0)
-		weaponLabel.Position = UDim2.new(0, 0, 0.45, 0)
-		weaponLabel.BackgroundTransparency = 1
-		weaponLabel.Font = Enum.Font.GothamBlack
-		weaponLabel.TextScaled = true
-		weaponLabel.TextStrokeTransparency = 0
-		weaponLabel.Parent = gui
+		local function addLabel(name, y, height, font)
+			local label = Instance.new("TextLabel")
+			label.Name = name
+			label.Size = UDim2.new(1, 0, height, 0)
+			label.Position = UDim2.new(0, 0, y, 0)
+			label.BackgroundTransparency = 1
+			label.Font = font
+			label.TextScaled = true
+			label.TextColor3 = Color3.new(1, 1, 1)
+			label.TextStrokeTransparency = 0.3
+			label.Parent = gui
+		end
+		addLabel("PlayerName", 0, 0.27, Enum.Font.GothamBold)
+		addLabel("Power", 0.27, 0.25, Enum.Font.GothamBlack)
+		addLabel("WeaponLevel", 0.52, 0.28, Enum.Font.GothamBlack)
+		addLabel("Zone", 0.8, 0.2, Enum.Font.GothamMedium)
 	end
 
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local tier = Config.GetWeaponTier(level)
 	local inParty = (player:GetAttribute("PartyId") or 0) ~= 0
+	local maxZone = player:GetAttribute("MaxZone") or 0
 
 	gui.PlayerName.Text = (inParty and "[파티] " or "") .. player.DisplayName
+	gui.Power.Text = string.format("⚡ 전투력 %d", player:GetAttribute("Power") or 0)
+	gui.Power.TextColor3 = Color3.fromRGB(255, 225, 110)
 	gui.WeaponLevel.Text = string.format("+%d %s", level, tier.Name)
 	gui.WeaponLevel.TextColor3 = tier.Rainbow and Color3.fromRGB(255, 120, 255) or tier.Color
+	gui.Zone.Text = maxZone > 0 and string.format("🏔 필드 %d구역 돌파", maxZone) or ""
+	gui.Zone.TextColor3 = Color3.fromRGB(150, 220, 255)
 end
 
 Weapon.UpdateNameplate = updateNameplate

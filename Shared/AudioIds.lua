@@ -6,6 +6,7 @@ return {
 	Lobby = 0,          -- 로비 배경음악
 	Dungeon = 0,        -- 던전(웨이브) 배경음악
 	Boss = 0,           -- 보스전 배경음악
+	Field = 0,          -- 필드 배경음악 (0이면 로비 음악이 계속 나옴)
 	Shot = 0,           -- 총 쏘는 소리
 	EnhanceSuccess = 0, -- 강화 성공 소리
 }

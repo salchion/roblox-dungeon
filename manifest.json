@@ -1,0 +1,18 @@
+{
+  "files": [
+    { "path": "Shared/Config.lua",          "parent": "ReplicatedStorage",                 "name": "Config",         "class": "ModuleScript", "overwrite": true },
+    { "path": "Shared/Remotes.lua",         "parent": "ReplicatedStorage",                 "name": "Remotes",        "class": "ModuleScript", "overwrite": true },
+    { "path": "Shared/AudioIds.lua",        "parent": "ReplicatedStorage",                 "name": "AudioIds",       "class": "ModuleScript", "overwrite": false },
+    { "path": "GameServer.lua",             "parent": "ServerScriptService",               "name": "GameServer",     "class": "Script",       "overwrite": true },
+    { "path": "Server/Effects.lua",         "parent": "ServerScriptService/Modules",       "name": "Effects",        "class": "ModuleScript", "overwrite": true },
+    { "path": "Server/WeaponService.lua",   "parent": "ServerScriptService/Modules",       "name": "WeaponService",  "class": "ModuleScript", "overwrite": true },
+    { "path": "Server/GearService.lua",     "parent": "ServerScriptService/Modules",       "name": "GearService",    "class": "ModuleScript", "overwrite": true },
+    { "path": "Server/PartyService.lua",    "parent": "ServerScriptService/Modules",       "name": "PartyService",   "class": "ModuleScript", "overwrite": true },
+    { "path": "Server/LobbyService.lua",    "parent": "ServerScriptService/Modules",       "name": "LobbyService",   "class": "ModuleScript", "overwrite": true },
+    { "path": "Server/DummyService.lua",    "parent": "ServerScriptService/Modules",       "name": "DummyService",   "class": "ModuleScript", "overwrite": true },
+    { "path": "Server/FieldService.lua",    "parent": "ServerScriptService/Modules",       "name": "FieldService",   "class": "ModuleScript", "overwrite": true },
+    { "path": "Server/DungeonService.lua",  "parent": "ServerScriptService/Modules",       "name": "DungeonService", "class": "ModuleScript", "overwrite": true },
+    { "path": "Server/DataService.lua",     "parent": "ServerScriptService/Modules",       "name": "DataService",    "class": "ModuleScript", "overwrite": true },
+    { "path": "PlayerClient.lua",           "parent": "StarterPlayer/StarterPlayerScripts", "name": "PlayerClient",   "class": "LocalScript",  "overwrite": true }
+  ]
+}

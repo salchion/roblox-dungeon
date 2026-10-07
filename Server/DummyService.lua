@@ -1,8 +1,8 @@
 -- DummyService (ServerScriptService > Modules 안의 ModuleScript, 이름: DummyService)
 -- 로비 허수아비 훈련장. 허수아비를 공격할 때마다 골드가 자동으로 들어온다 (줍기 없음).
+-- 1번(x1)부터 10번(x30)까지 한 줄로 나열되고, 배수가 높을수록 크고 화려하고 강해 보인다.
 -- 허수아비마다 배율(Multiplier)과 필요 무기 레벨(RequiredLevel)이 다르다 -> Config.Dummy.List
 
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
@@ -10,11 +10,22 @@ local Effects = require(script.Parent:WaitForChild("Effects"))
 
 local Dummy = {}
 
-local dummies = {}   -- [Model] = { Multiplier, RequiredLevel, Body, BaseColor, Flashing }
+local dummies = {}   -- [Model] = { Multiplier, RequiredLevel, Parts..., BaseColor, Flashing }
 local folder
 
-local STRAW = Color3.fromRGB(205, 175, 110)
-local HOT = Color3.fromRGB(255, 90, 60)
+-- 번호별 몸 색/재질: 짚 -> 나무 -> 강철 -> 금 -> 진홍 -> 마력
+local STYLES = {
+	{ Color = Color3.fromRGB(205, 175, 110), Material = Enum.Material.Fabric },
+	{ Color = Color3.fromRGB(190, 160, 100), Material = Enum.Material.Fabric },
+	{ Color = Color3.fromRGB(160, 120, 75), Material = Enum.Material.Wood },
+	{ Color = Color3.fromRGB(140, 105, 70), Material = Enum.Material.Wood },
+	{ Color = Color3.fromRGB(150, 155, 165), Material = Enum.Material.Metal },
+	{ Color = Color3.fromRGB(120, 140, 175), Material = Enum.Material.Metal },
+	{ Color = Color3.fromRGB(95, 140, 200), Material = Enum.Material.DiamondPlate },
+	{ Color = Color3.fromRGB(240, 190, 60), Material = Enum.Material.Foil },
+	{ Color = Color3.fromRGB(200, 40, 55), Material = Enum.Material.Neon },
+	{ Color = Color3.fromRGB(170, 70, 255), Material = Enum.Material.Neon },
+}
 
 local function newPart(props, parent)
 	local part = Instance.new("Part")
@@ -35,39 +46,115 @@ local function formatMultiplier(multiplier)
 	return string.format("%.1f", multiplier)
 end
 
+local function addGlow(part, color, range)
+	local light = Instance.new("PointLight")
+	light.Range = range
+	light.Brightness = 1.5
+	light.Color = color
+	light.Parent = part
+end
+
 local function buildDummy(index, info, position)
 	local model = Instance.new("Model")
 	model.Name = "Dummy" .. index
 
-	local tint = STRAW:Lerp(HOT, math.clamp((index - 1) / (#Config.Dummy.List - 1), 0, 1))
+	local style = STYLES[index] or STYLES[#STYLES]
+	local s = 1 + 0.12 * (index - 1)             -- 번호가 오를수록 커짐 (1.0 ~ 2.1배)
+	local V = function(x, y, z) return Vector3.new(x * s, y * s, z * s) end
+	local O = function(x, y, z) return position + Vector3.new(x * s, y * s, z * s) end
 	local wood = Color3.fromRGB(95, 65, 40)
+	local metal = Color3.fromRGB(70, 75, 85)
 
-	newPart({ Name = "Base", Size = Vector3.new(3.5, 0.5, 3.5), Position = position + Vector3.new(0, 0.25, 0), Color = Color3.fromRGB(80, 75, 70), Material = Enum.Material.Cobblestone }, model)
-	newPart({ Name = "Post", Size = Vector3.new(0.8, 7, 0.8), Position = position + Vector3.new(0, 3.5, 0), Color = wood, Material = Enum.Material.Wood }, model)
-	newPart({ Name = "Arms", Size = Vector3.new(6, 0.7, 0.7), Position = position + Vector3.new(0, 5.6, 0), Color = wood, Material = Enum.Material.Wood }, model)
-	local body = newPart({ Name = "Body", Size = Vector3.new(2.8, 3.4, 1.8), Position = position + Vector3.new(0, 4.6, 0), Color = tint, Material = Enum.Material.Fabric }, model)
-	local head = newPart({ Name = "Head", Shape = Enum.PartType.Ball, Size = Vector3.new(2.2, 2.2, 2.2), Position = position + Vector3.new(0, 7.2, 0), Color = tint, Material = Enum.Material.Fabric }, model)
+	-- 받침대 + 기둥 + 팔
+	newPart({ Name = "Base", Size = V(4, 0.6, 4), Position = O(0, 0.3, 0), Color = Color3.fromRGB(80, 75, 70), Material = Enum.Material.Cobblestone }, model)
+	newPart({ Name = "Post", Size = V(0.9, 7, 0.9), Position = O(0, 3.5, 0), Color = wood, Material = Enum.Material.Wood }, model)
+	newPart({ Name = "Arms", Size = V(6.4, 0.8, 0.8), Position = O(0, 5.7, 0), Color = wood, Material = Enum.Material.Wood }, model)
+
+	-- 몸통 / 머리 (맞을 때 번쩍이는 부분)
+	local body = newPart({ Name = "Body", Size = V(3, 3.6, 2), Position = O(0, 4.7, 0), Color = style.Color, Material = style.Material }, model)
+	local head = newPart({ Name = "Head", Shape = Enum.PartType.Ball, Size = V(2.3, 2.3, 2.3), Position = O(0, 7.4, 0), Color = style.Color, Material = style.Material }, model)
 	model.PrimaryPart = body
+	local flashParts = { body, head }
 
+	-- 4번~: 어깨 보호대
+	if index >= 4 then
+		for _, side in ipairs({ -1, 1 }) do
+			local pad = newPart({ Name = "Shoulder", Size = V(1.6, 1.0, 1.8), Position = O(side * 2.6, 5.9, 0), Color = metal, Material = Enum.Material.Metal }, model)
+			table.insert(flashParts, pad)
+		end
+	end
+
+	-- 6번~: 투구
+	if index >= 6 then
+		local helm = newPart({ Name = "Helm", Size = V(2.6, 1.3, 2.6), Position = O(0, 8.3, 0), Color = metal, Material = Enum.Material.Metal }, model)
+		table.insert(flashParts, helm)
+	end
+
+	-- 7번~: 뿔
+	if index >= 7 then
+		for _, side in ipairs({ -1, 1 }) do
+			local horn = newPart({
+				Name = "Horn", Size = V(0.5, 2.2, 0.5),
+				CFrame = CFrame.new(O(side * 1.3, 9.2, 0)) * CFrame.Angles(0, 0, math.rad(-side * 25)),
+				Color = Color3.fromRGB(235, 225, 200), Material = Enum.Material.SmoothPlastic,
+			}, model)
+			table.insert(flashParts, horn)
+		end
+	end
+
+	-- 8번~: 가슴 갑옷 + 빛나는 눈
+	if index >= 8 then
+		local plate = newPart({ Name = "Chest", Size = V(3.4, 2.4, 2.4), Position = O(0, 4.9, 0), Color = style.Color:Lerp(Color3.new(1, 1, 1), 0.2), Material = style.Material }, model)
+		table.insert(flashParts, plate)
+		for _, side in ipairs({ -0.5, 0.5 }) do
+			newPart({ Name = "Eye", Shape = Enum.PartType.Ball, Size = V(0.4, 0.4, 0.4), Position = O(side, 7.5, 1.1), Color = Color3.fromRGB(255, 240, 120), Material = Enum.Material.Neon, CanCollide = false }, model)
+		end
+	end
+
+	-- 9번~: 오라(불꽃 입자 + 빛)
+	if index >= 9 then
+		local aura = Instance.new("ParticleEmitter")
+		aura.Rate = index == 10 and 45 or 25
+		aura.Lifetime = NumberRange.new(0.8, 1.4)
+		aura.Speed = NumberRange.new(2, 5)
+		aura.SpreadAngle = Vector2.new(30, 30)
+		aura.EmissionDirection = Enum.NormalId.Top
+		aura.LightEmission = 1
+		aura.Color = ColorSequence.new(style.Color)
+		aura.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.2 * s), NumberSequenceKeypoint.new(1, 0) })
+		aura.Parent = body
+		addGlow(body, style.Color, 24)
+	end
+
+	-- 10번: 머리 위에 떠 있는 왕관 고리
+	if index == 10 then
+		newPart({
+			Name = "Crown", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.5, 4.2 * s, 4.2 * s),
+			CFrame = CFrame.new(O(0, 10.4, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+			Color = Color3.fromRGB(255, 220, 90), Material = Enum.Material.Neon, CanCollide = false,
+		}, model)
+	end
+
+	-- 이름표: 배율 + 필요 무기 레벨
 	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.new(0, 190, 0, 56)
-	gui.StudsOffset = Vector3.new(0, 3, 0)
-	gui.MaxDistance = 90
+	gui.Size = UDim2.new(0, 210, 0, 62)
+	gui.StudsOffset = Vector3.new(0, 3.5 + 2.2 * s, 0)
+	gui.MaxDistance = 100
 	gui.Parent = head
 
 	local title = Instance.new("TextLabel")
-	title.Size = UDim2.new(1, 0, 0.55, 0)
+	title.Size = UDim2.new(1, 0, 0.58, 0)
 	title.BackgroundTransparency = 1
 	title.Font = Enum.Font.GothamBlack
 	title.TextScaled = true
 	title.TextStrokeTransparency = 0
-	title.TextColor3 = tint:Lerp(Color3.new(1, 1, 1), 0.3)
+	title.TextColor3 = style.Color:Lerp(Color3.new(1, 1, 1), 0.35)
 	title.Text = string.format("x%s 허수아비", formatMultiplier(info.Multiplier))
 	title.Parent = gui
 
 	local sub = Instance.new("TextLabel")
-	sub.Size = UDim2.new(1, 0, 0.45, 0)
-	sub.Position = UDim2.new(0, 0, 0.55, 0)
+	sub.Size = UDim2.new(1, 0, 0.42, 0)
+	sub.Position = UDim2.new(0, 0, 0.58, 0)
 	sub.BackgroundTransparency = 1
 	sub.Font = Enum.Font.GothamMedium
 	sub.TextScaled = true
@@ -77,70 +164,64 @@ local function buildDummy(index, info, position)
 	sub.Parent = gui
 
 	model.Parent = folder
+
+	local baseColors = {}
+	for _, part in ipairs(flashParts) do
+		baseColors[part] = part.Color
+	end
 	dummies[model] = {
 		Multiplier = info.Multiplier,
 		RequiredLevel = info.RequiredLevel,
-		Body = body,
-		Head = head,
-		BaseColor = tint,
+		FlashParts = flashParts,
+		BaseColors = baseColors,
 		Flashing = false,
 	}
 end
 
--- center: 훈련장 중앙 위치. 5열 x 2행으로 허수아비 10개를 배치
-function Dummy.Build(center)
+-- start: 1번 허수아비 위치. +Z 방향으로 Config.Dummy.Spacing 간격으로 한 줄로 놓는다.
+function Dummy.Build(start)
 	folder = Instance.new("Folder")
 	folder.Name = "Dummies"
 	folder.Parent = workspace
 
-	local ground = newPart({
+	local count = #Config.Dummy.List
+	local spacing = Config.Dummy.Spacing
+	local length = spacing * (count - 1) + 24
+
+	newPart({
 		Name = "TrainingGround",
-		Size = Vector3.new(50, 0.3, 90),
-		Position = center + Vector3.new(0, 0.15, 0),
+		Size = Vector3.new(30, 0.3, length),
+		Position = start + Vector3.new(0, 0.15, spacing * (count - 1) / 2),
 		Color = Color3.fromRGB(125, 100, 70),
 		Material = Enum.Material.Ground,
 		CanCollide = false,
-	}, workspace)
-	ground.Parent = folder
-
-	local signAnchor = newPart({
-		Name = "SignAnchor",
-		Size = Vector3.new(1, 1, 1),
-		Position = center + Vector3.new(0, 14, -48),
-		Transparency = 1,
-		CanCollide = false,
-		CanQuery = false,
 	}, folder)
-	local signGui = Instance.new("BillboardGui")
-	signGui.Size = UDim2.new(0, 380, 0, 80)
-	signGui.MaxDistance = 200
-	signGui.Parent = signAnchor
-	local signLabel = Instance.new("TextLabel")
-	signLabel.Size = UDim2.new(1, 0, 1, 0)
-	signLabel.BackgroundTransparency = 1
-	signLabel.Font = Enum.Font.GothamBlack
-	signLabel.TextScaled = true
-	signLabel.TextStrokeTransparency = 0
-	signLabel.TextColor3 = Color3.fromRGB(255, 220, 120)
-	signLabel.Text = "🎯 허수아비 훈련장\n때릴 때마다 골드 자동 획득!"
-	signLabel.Parent = signGui
+
+	-- 바닥에 번호/배수가 보이는 화살표 띠: 아래로 갈수록 배수 UP
+	newPart({
+		Name = "ProgressStrip",
+		Size = Vector3.new(2, 0.35, length - 8),
+		Position = start + Vector3.new(14, 0.2, spacing * (count - 1) / 2),
+		Color = Color3.fromRGB(255, 215, 90),
+		Material = Enum.Material.Neon,
+		CanCollide = false,
+	}, folder)
 
 	for index, info in ipairs(Config.Dummy.List) do
-		local column = (index - 1) % 5
-		local row = (index - 1) // 5
-		local position = center + Vector3.new(row == 0 and 12 or -12, 0, -32 + column * 16)
-		buildDummy(index, info, position)
+		buildDummy(index, info, start + Vector3.new(0, 0, (index - 1) * spacing))
 	end
 end
 
 local function flash(data)
 	if data.Flashing then return end
 	data.Flashing = true
-	data.Body.Color = Color3.new(1, 1, 1)
-	data.Head.Color = Color3.new(1, 1, 1)
+	for _, part in ipairs(data.FlashParts) do
+		part.Color = Color3.new(1, 1, 1)
+	end
 	task.delay(0.08, function()
-		data.Body.Color = data.BaseColor
-		data.Head.Color = data.BaseColor
+		for _, part in ipairs(data.FlashParts) do
+			part.Color = data.BaseColors[part]
+		end
 		data.Flashing = false
 	end)
 end

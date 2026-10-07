@@ -50,7 +50,7 @@ local function getAliveParts(player)
 end
 
 function Dungeon.GetMaxHealth(player)
-	return P.BaseHealth + (player:GetAttribute("HealthPoints") or 0) * P.HealthPerPoint
+	return P.BaseHealth + (player:GetAttribute("HealthPoints") or 0) * P.HealthPerPoint + (player:GetAttribute("GearHealth") or 0)
 end
 
 -- 최대 체력을 스탯에 맞게 갱신하고 heal 만큼 회복 (math.huge면 완전 회복)
@@ -62,6 +62,11 @@ local function applyMaxHealth(player, heal)
 	if humanoid.Health > 0 then
 		humanoid.Health = math.min(humanoid.Health + (heal or 0), humanoid.MaxHealth)
 	end
+end
+
+-- 장비 변경 등으로 최대 체력이 달라졌을 때 (로비에서 호출)
+function Dungeon.RefreshMaxHealth(player)
+	applyMaxHealth(player, math.huge)
 end
 
 local function resetStats(player)
@@ -265,7 +270,9 @@ local function spawnBoss(run)
 	local data = registerMonster(run, part, stats, boss.Name, 320, {
 		IsBoss = true,
 		Enraged = false,
-		NextRing = os.clock() + boss.RingInterval,
+		NextPattern = os.clock() + 3,
+		Casting = false,
+		LastPattern = nil,
 	})
 	run.Boss = data
 	run.BossPart = part
@@ -321,26 +328,139 @@ local function rotateY(vector, degrees)
 	return CFrame.Angles(0, math.rad(degrees), 0):VectorToWorldSpace(vector)
 end
 
-local function bossAimedShot(run, part, data)
-	local target = getNearestTarget(run, part.Position)
-	if not target then return end
-	local direction = (target.Position - part.Position).Unit
-	local size = 3.5
-	for _, angle in ipairs({ -12, 0, 12 }) do
-		fireProjectile(run, part.Position, rotateY(direction, angle), data.Stats.ShotSpeed, data.Stats.ShotDamage, size, Color3.fromRGB(255, 80, 60))
+-- 보스 패턴 5종 (Fan / Ring / Spiral / Meteor + 광폭화 시 더 빨라짐).
+-- 아래 함수들은 task.spawn 안에서 실행되므로 task.wait 를 쓸 수 있고, 보스가 죽거나 던전이 끝나면 중단한다.
+local function bossAlive(run, part, data)
+	return run.Monsters[part] == data and run.Phase == "Boss"
+end
+
+-- 패턴 시작 전 예고: 보스 색을 잠깐 바꿈
+local function bossWarn(run, part, data, color, seconds)
+	part.Color = color
+	task.wait(seconds)
+	if bossAlive(run, part, data) then
+		part.Color = data.BaseColor
 	end
 end
 
-local function bossRing(run, part, data)
-	local count = Config.Boss.RingCount
-	local radius = part.Size.X / 2 + 1
-	local offset = math.random() * math.pi * 2
-	for i = 0, count - 1 do
-		local angle = offset + (i / count) * math.pi * 2
-		local direction = Vector3.new(math.cos(angle), 0, math.sin(angle))
-		local origin = Vector3.new(part.Position.X, run.Origin.Y + 3, part.Position.Z) + direction * radius
-		fireProjectile(run, origin, direction, 32, math.floor(data.Stats.ShotDamage * 0.7), 2.5, Color3.fromRGB(255, 180, 60))
+local function flatOrigin(run, part)
+	return Vector3.new(part.Position.X, run.Origin.Y + 3, part.Position.Z)
+end
+
+-- 1) 부채꼴 조준 연발: 가장 가까운 플레이어를 향해 5갈래 탄을 2~3번
+local function bossFan(run, part, data)
+	bossWarn(run, part, data, Color3.fromRGB(255, 220, 80), 0.5)
+	for _ = 1, data.Enraged and 3 or 2 do
+		if not bossAlive(run, part, data) then return end
+		local target = getNearestTarget(run, part.Position)
+		if not target then return end
+		local direction = (target.Position - part.Position).Unit
+		for _, angle in ipairs({ -24, -12, 0, 12, 24 }) do
+			fireProjectile(run, part.Position, rotateY(direction, angle), data.Stats.ShotSpeed, data.Stats.ShotDamage, 3.2, Color3.fromRGB(255, 80, 60))
+		end
+		task.wait(0.4)
 	end
+end
+
+-- 2) 전방위 탄막: 고리 모양 탄을 2번 (두 번째는 엇갈리게)
+local function bossRing(run, part, data)
+	bossWarn(run, part, data, Color3.new(1, 1, 1), 0.8)
+	local count = data.Enraged and 24 or Config.Boss.RingCount
+	local radius = part.Size.X / 2 + 1
+	for wave = 0, 1 do
+		if not bossAlive(run, part, data) then return end
+		local offset = wave * (math.pi / count)
+		for i = 0, count - 1 do
+			local angle = offset + (i / count) * math.pi * 2
+			local direction = Vector3.new(math.cos(angle), 0, math.sin(angle))
+			fireProjectile(run, flatOrigin(run, part) + direction * radius, direction, 32, math.floor(data.Stats.ShotDamage * 0.7), 2.5, Color3.fromRGB(255, 180, 60))
+		end
+		task.wait(0.6)
+	end
+end
+
+-- 3) 나선 탄막: 두 갈래 탄이 빙글빙글 돌며 계속 나옴
+local function bossSpiral(run, part, data)
+	bossWarn(run, part, data, Color3.fromRGB(190, 90, 255), 0.7)
+	local duration = data.Enraged and 4.5 or 3.2
+	local started = os.clock()
+	local angle = math.random() * math.pi * 2
+	while os.clock() - started < duration and bossAlive(run, part, data) do
+		for arm = 0, 1 do
+			local a = angle + arm * math.pi
+			local direction = Vector3.new(math.cos(a), 0, math.sin(a))
+			fireProjectile(run, flatOrigin(run, part) + direction * (part.Size.X / 2 + 1), direction, 30, math.floor(data.Stats.ShotDamage * 0.6), 2.2, Color3.fromRGB(190, 110, 255))
+		end
+		angle += 0.42
+		task.wait(0.09)
+	end
+end
+
+-- 4) 메테오: 플레이어 발밑에 붉은 원이 나타나고, 1.4초 뒤 폭발 (그 안에 서 있으면 큰 피해)
+local function bossMeteor(run, part, data)
+	part.Color = Color3.fromRGB(255, 120, 40)
+	local radius = 9
+	local markers = {}
+
+	for _, member in ipairs(run.Members) do
+		local root = getAliveParts(member)
+		if root then
+			for i = 1, data.Enraged and 3 or 2 do
+				local jitter = i == 1 and Vector3.zero or Vector3.new(math.random(-18, 18), 0, math.random(-18, 18))
+				local center = Vector3.new(root.Position.X, run.Origin.Y + 0.3, root.Position.Z) + jitter
+
+				local marker = Instance.new("Part")
+				marker.Shape = Enum.PartType.Cylinder
+				marker.Anchored = true
+				marker.CanCollide = false
+				marker.CanQuery = false
+				marker.CanTouch = false
+				marker.Material = Enum.Material.Neon
+				marker.Color = Color3.fromRGB(255, 50, 40)
+				marker.Transparency = 0.55
+				marker.Size = Vector3.new(0.4, radius * 2, radius * 2)
+				marker.CFrame = CFrame.new(center) * CFrame.Angles(0, 0, math.rad(90))
+				marker.Parent = run.Folder
+				table.insert(markers, { Part = marker, Center = center })
+			end
+		end
+	end
+
+	task.wait(1.4)
+	if bossAlive(run, part, data) then
+		part.Color = data.BaseColor
+		for _, marker in ipairs(markers) do
+			for _, member in ipairs(run.Members) do
+				local root, humanoid = getAliveParts(member)
+				if root then
+					local flat = Vector3.new(root.Position.X - marker.Center.X, 0, root.Position.Z - marker.Center.Z)
+					if flat.Magnitude <= radius then
+						humanoid:TakeDamage(math.floor(data.Stats.ShotDamage * 1.6))
+					end
+				end
+			end
+			Effects.Burst(marker.Center + Vector3.new(0, 2, 0), Color3.fromRGB(255, 120, 50), 40)
+		end
+	end
+	for _, marker in ipairs(markers) do
+		marker.Part:Destroy()
+	end
+end
+
+local BOSS_PATTERNS = { Fan = bossFan, Ring = bossRing, Spiral = bossSpiral, Meteor = bossMeteor }
+
+-- 직전과 같은 패턴은 피해서 고른다 (광폭화하면 나선/메테오 비중이 커짐)
+local function pickBossPattern(data)
+	local pool = { "Fan", "Ring", "Spiral", "Meteor" }
+	if data.Enraged then
+		table.insert(pool, "Spiral")
+		table.insert(pool, "Meteor")
+	end
+	local choice
+	repeat
+		choice = pool[math.random(#pool)]
+	until choice ~= data.LastPattern
+	return choice
 end
 
 local function enrageBoss(run, part, data)
@@ -376,6 +496,10 @@ local function damageMonster(run, part, data, amount, isCrit, hitPosition)
 		run.BossDead = true
 		run.Boss = nil
 		run.BossPart = nil
+		for _, member in ipairs(run.Members) do
+			member:SetAttribute("Tickets", (member:GetAttribute("Tickets") or 0) + Config.Boss.Tickets)
+			run.TicketsEarned[member] = (run.TicketsEarned[member] or 0) + Config.Boss.Tickets
+		end
 	end
 end
 
@@ -397,30 +521,27 @@ local function stepRun(run, dt)
 				end
 			end
 
-			if now >= data.NextShot then
-				local interval = data.Stats.ShotInterval * ((data.IsBoss and data.Enraged) and 0.6 or 1)
-				data.NextShot = now + interval
-				if data.IsBoss then
-					telegraph(run, part, data, Color3.fromRGB(255, 220, 80), 0.5, function()
-						bossAimedShot(run, part, data)
-					end)
-				else
-					-- 예고: 0.4초 동안 노랗게 빛난 뒤 발사 -> 보고 피할 수 있게
-					telegraph(run, part, data, Color3.fromRGB(255, 220, 80), 0.4, function()
-						local current = getNearestTarget(run, part.Position)
-						if current then
-							local size = math.max(1.5, data.Stats.Size / 4)
-							fireProjectile(run, part.Position, current.Position - part.Position, data.Stats.ShotSpeed, data.Stats.ShotDamage, size)
-						end
+			if data.IsBoss then
+				-- 보스: 패턴을 하나 골라 끝까지 실행한 뒤 잠깐 쉬고 다음 패턴
+				if not data.Casting and now >= data.NextPattern then
+					data.Casting = true
+					local name = pickBossPattern(data)
+					data.LastPattern = name
+					task.spawn(function()
+						BOSS_PATTERNS[name](run, part, data)
+						data.Casting = false
+						data.NextPattern = os.clock() + (data.Enraged and 1.6 or 2.6)
 					end)
 				end
-			end
-
-			if data.IsBoss and now >= data.NextRing then
-				local interval = Config.Boss.RingInterval * (data.Enraged and 0.6 or 1)
-				data.NextRing = now + interval
-				telegraph(run, part, data, Color3.new(1, 1, 1), 0.8, function()
-					bossRing(run, part, data)
+			elseif now >= data.NextShot then
+				data.NextShot = now + data.Stats.ShotInterval
+				-- 예고: 0.4초 동안 노랗게 빛난 뒤 발사 -> 보고 피할 수 있게
+				telegraph(run, part, data, Color3.fromRGB(255, 220, 80), 0.4, function()
+					local current = getNearestTarget(run, part.Position)
+					if current then
+						local size = math.max(1.5, data.Stats.Size / 4)
+						fireProjectile(run, part.Position, current.Position - part.Position, data.Stats.ShotSpeed, data.Stats.ShotDamage, size)
+					end
 				end)
 			end
 		end
@@ -458,6 +579,18 @@ end)
 ------------------------------------------------------------
 -- 플레이어 공격 (판정은 서버에서). 반환: 탄이 끝나는 지점
 ------------------------------------------------------------
+-- 공격 데미지 계산 (무기 강화 + 치명타 스탯/장갑). 던전 / 필드에서 같이 사용. 반환: 데미지, 치명타 여부
+function Dungeon.ComputeDamage(player)
+	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
+	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel)
+	local chance = math.min(0.9, (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint + (player:GetAttribute("GearCrit") or 0))
+	local isCrit = math.random() < chance
+	if isCrit then
+		damage *= P.CritMultiplier
+	end
+	return math.floor(damage + 0.5), isCrit
+end
+
 function Dungeon.Shoot(player, origin, direction)
 	local run = playerRun[player]
 	if not run or run.Destroyed then return nil end
@@ -471,13 +604,7 @@ function Dungeon.Shoot(player, origin, direction)
 
 	local data = result and run.Monsters[result.Instance]
 	if data then
-		local weaponLevel = player:GetAttribute("WeaponLevel") or 0
-		local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel)
-		local isCrit = math.random() < (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint
-		if isCrit then
-			damage *= P.CritMultiplier
-		end
-		damage = math.floor(damage + 0.5)
+		local damage, isCrit = Dungeon.ComputeDamage(player)
 		damageMonster(run, result.Instance, data, damage, isCrit, result.Position)
 	end
 
@@ -580,6 +707,7 @@ local function finish(run, victory)
 		Remotes.Dungeon:FireClient(member, "Result", {
 			Victory = victory,
 			Gold = run.Earned[member] or 0,
+			Tickets = run.TicketsEarned[member] or 0,
 			Wave = run.Wave,
 			TotalWaves = D.TotalWaves,
 			ReturnDelay = D.ReturnDelay,
@@ -735,6 +863,7 @@ function Dungeon.Start(player)
 		Projectiles = {},
 		Ready = {},
 		Earned = {},        -- [player] = 이번 판에서 번 골드
+		TicketsEarned = {}, -- [player] = 이번 판에서 얻은 장비 뽑기 티켓
 		BossDead = false,
 		Destroyed = false,
 	}

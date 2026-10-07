@@ -110,7 +110,7 @@ local gui = create("ScreenGui", { Name = "HUD", ResetOnSpawn = false, IgnoreGuiI
 ------------------------------------------------------------
 -- 공통: 상단 좌측 정보, 알림
 ------------------------------------------------------------
-local infoPanel = makePanel({ Size = UDim2.new(0, 230, 0, 78), Position = UDim2.new(0, 16, 0, 16) }, gui)
+local infoPanel = makePanel({ Size = UDim2.new(0, 240, 0, 126), Position = UDim2.new(0, 16, 0, 16) }, gui)
 local infoLabel = makeLabel({
 	Size = UDim2.new(1, -20, 1, -16),
 	Position = UDim2.new(0, 10, 0, 8),
@@ -246,6 +246,141 @@ Remotes.OpenEnhance.OnClientEvent:Connect(function()
 	enhanceResult.Text = ""
 	refreshEnhance()
 	enhancePanel.Visible = true
+end)
+
+------------------------------------------------------------
+-- 로비: 장비창 (갑옷 / 장갑 / 신발 강화 + 보스 티켓 뽑기)
+------------------------------------------------------------
+local gearPanel = makePanel({
+	Size = UDim2.new(0, 540, 0, 500),
+	AnchorPoint = Vector2.new(0.5, 0.5),
+	Position = UDim2.new(0.5, 0, 0.5, 0),
+	Visible = false,
+}, gui)
+
+makeLabel({
+	Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8),
+	Text = "🛡 장비 · 뽑기", Font = Enum.Font.GothamBlack, TextSize = 24,
+}, gearPanel)
+
+local gearMessage = makeLabel({
+	Size = UDim2.new(1, -24, 0, 40), Position = UDim2.new(0, 12, 0, 50),
+	Font = Enum.Font.GothamBold, TextSize = 16, RichText = true,
+}, gearPanel)
+
+local gearRows = {}
+for index, slot in ipairs(Config.Gear.Slots) do
+	local card = makePanel({
+		Size = UDim2.new(1, -24, 0, 88), Position = UDim2.new(0, 12, 0, 98 + (index - 1) * 96),
+		BackgroundColor3 = Color3.fromRGB(40, 40, 58),
+	}, gearPanel)
+	local nameLabel = makeLabel({
+		Size = UDim2.new(1, -150, 0, 26), Position = UDim2.new(0, 12, 0, 6),
+		Font = Enum.Font.GothamBlack, TextSize = 17, TextXAlignment = Enum.TextXAlignment.Left, RichText = true,
+	}, card)
+	local statLabel = makeLabel({
+		Size = UDim2.new(1, -150, 0, 22), Position = UDim2.new(0, 12, 0, 34),
+		TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, RichText = true,
+	}, card)
+	local costLabel = makeLabel({
+		Size = UDim2.new(1, -150, 0, 22), Position = UDim2.new(0, 12, 0, 58),
+		TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, RichText = true,
+		TextColor3 = Color3.fromRGB(200, 200, 215),
+	}, card)
+	local button = makeButton({
+		Size = UDim2.new(0, 120, 0, 34), Position = UDim2.new(1, -132, 0.5, -17), Text = "강화",
+	}, card, function()
+		Remotes.Gear:FireServer("Enhance", slot.Key)
+	end)
+	gearRows[slot.Key] = { Name = nameLabel, Stat = statLabel, Cost = costLabel, Button = button }
+end
+
+local gachaCard = makePanel({
+	Size = UDim2.new(1, -24, 0, 100), Position = UDim2.new(0, 12, 0, 390),
+	BackgroundColor3 = Color3.fromRGB(55, 40, 80),
+}, gearPanel)
+local ticketLabel = makeLabel({
+	Size = UDim2.new(0.5, -12, 0, 30), Position = UDim2.new(0, 12, 0, 8),
+	Font = Enum.Font.GothamBlack, TextSize = 19, TextXAlignment = Enum.TextXAlignment.Left,
+}, gachaCard)
+local rateParts = {}
+for index, rate in ipairs(Config.Gacha.Rates) do
+	table.insert(rateParts, string.format("%s %d%%", Config.Gear.RarityNames[index], rate))
+end
+makeLabel({
+	Size = UDim2.new(1, -24, 0, 46), Position = UDim2.new(0, 12, 0, 44),
+	Text = table.concat(rateParts, " · ") .. "\n같은 부위의 같거나 낮은 등급은 골드로 교환돼요. 티켓은 던전 보스 / 필드 보스에게서 나와요.",
+	TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(205, 200, 225),
+}, gachaCard)
+local rollButton = makeButton({
+	Size = UDim2.new(0, 180, 0, 34), Position = UDim2.new(1, -192, 0, 8),
+	Text = "🎫 뽑기 (티켓 1장)", BackgroundColor3 = Color3.fromRGB(150, 70, 230),
+}, gachaCard, function()
+	Remotes.Gear:FireServer("Roll")
+end)
+
+makeButton({
+	Size = UDim2.new(0, 64, 0, 28), Position = UDim2.new(1, -76, 0, 10), Text = "닫기", TextSize = 14, BackgroundColor3 = GRAY,
+}, gearPanel, function()
+	gearPanel.Visible = false
+end)
+
+local function refreshGear()
+	local gold = player:GetAttribute("Gold") or 0
+	local tickets = player:GetAttribute("Tickets") or 0
+	local maxLevel = Config.Gear.MaxLevel
+
+	for _, slot in ipairs(Config.Gear.Slots) do
+		local row = gearRows[slot.Key]
+		local rarity = player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0
+		local level = player:GetAttribute("Gear_" .. slot.Key .. "_L") or 0
+
+		if rarity <= 0 then
+			row.Name.Text = slot.Name .. " — 비어 있음"
+			row.Stat.Text = slot.StatName .. " 효과 · 뽑기로 얻을 수 있어요"
+			row.Cost.Text = ""
+			row.Button.Text = "—"
+			row.Button.BackgroundColor3 = GRAY
+		else
+			local color = Config.Gear.RarityColors[rarity]
+			row.Name.Text = string.format("<font color='#%s'>[%s] %s</font>  +%d", color:ToHex(), Config.Gear.RarityNames[rarity], slot.Names[rarity], level)
+			local statText = Config.FormatGearStat(slot.Key, Config.GetGearStat(slot.Key, rarity, level))
+			if level < maxLevel then
+				statText ..= "   →   " .. Config.FormatGearStat(slot.Key, Config.GetGearStat(slot.Key, rarity, level + 1))
+				local cost = Config.GetGearCost(slot.Key, rarity, level)
+				row.Cost.Text = string.format("강화 비용 <font color='#ffd966'>%d G</font> · 성공 %d%%", cost, math.floor(Config.GetGearEnhanceChance(level) * 100 + 0.5))
+				row.Button.Text = "강화"
+				row.Button.BackgroundColor3 = gold >= cost and GREEN or GRAY
+			else
+				row.Cost.Text = "최대 강화 단계!"
+				row.Button.Text = "MAX"
+				row.Button.BackgroundColor3 = GRAY
+			end
+			row.Stat.Text = statText
+		end
+	end
+
+	ticketLabel.Text = string.format("🎫 티켓 %d장", tickets)
+	rollButton.BackgroundColor3 = tickets > 0 and Color3.fromRGB(150, 70, 230) or GRAY
+end
+
+Remotes.Gear.OnClientEvent:Connect(function(action, result)
+	if action ~= "Result" then return end
+	local color
+	if result.Roll then
+		color = Config.Gear.RarityColors[result.Roll.Rarity]
+	else
+		color = result.Ok and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 130, 130)
+	end
+	gearMessage.Text = result.Message
+	gearMessage.TextColor3 = color
+	refreshGear()
+end)
+
+Remotes.OpenGear.OnClientEvent:Connect(function()
+	gearMessage.Text = ""
+	refreshGear()
+	gearPanel.Visible = true
 end)
 
 ------------------------------------------------------------
@@ -447,7 +582,7 @@ end)
 
 -- 로비 하단: 무기 강화 버튼 + 안내
 makeButton({
-	Size = UDim2.new(0, 150, 0, 44), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -64),
+	Size = UDim2.new(0, 150, 0, 44), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, -80, 1, -64),
 	Text = "🔨 무기 강화", TextSize = 17, BackgroundColor3 = Color3.fromRGB(200, 130, 40),
 }, lobbyFrame, function()
 	enhanceResult.Text = ""
@@ -455,9 +590,18 @@ makeButton({
 	enhancePanel.Visible = not enhancePanel.Visible
 end)
 
+makeButton({
+	Size = UDim2.new(0, 150, 0, 44), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 80, 1, -64),
+	Text = "🛡 장비 · 뽑기", TextSize = 17, BackgroundColor3 = Color3.fromRGB(150, 70, 230),
+}, lobbyFrame, function()
+	gearMessage.Text = ""
+	refreshGear()
+	gearPanel.Visible = not gearPanel.Visible
+end)
+
 makeLabel({
 	Size = UDim2.new(0, 560, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -16),
-	Text = "던전 게이트에서 파티장이 입장하면 파티원이 함께 이동해요.  마우스 클릭으로 무기 이펙트를 뽐내보세요!",
+	Text = "북쪽 던전 게이트 · 서쪽 허수아비 훈련장 · 동쪽 끝 사냥 필드.   Shift 달리기 / Q 대시 / 마우스 클릭 공격",
 	TextSize = 14, TextColor3 = Color3.fromRGB(220, 220, 235), TextStrokeTransparency = 0.5,
 }, lobbyFrame)
 
@@ -584,8 +728,11 @@ local function playMusic(name)
 end
 
 local function updateMusic()
-	if currentZone() == "Lobby" then
+	local zone = currentZone()
+	if zone == "Lobby" then
 		playMusic("Lobby")
+	elseif zone == "Field" then
+		playMusic(tracks.Field and "Field" or "Lobby")
 	elseif dungeonState and dungeonState.Phase == "Boss" then
 		playMusic("Boss")
 	else
@@ -666,8 +813,8 @@ local function showResult(result)
 		for remaining = result.ReturnDelay, 1, -1 do
 			if token ~= resultToken or not resultPanel.Visible then return end
 			resultInfo.Text = string.format(
-				"도달 웨이브 %d / %d\n획득 골드  +%d G\n%d초 후 로비로 이동",
-				result.Wave, result.TotalWaves, result.Gold, remaining
+				"도달 웨이브 %d / %d\n획득 골드  +%d G   🎫 티켓 +%d\n%d초 후 로비로 이동",
+				result.Wave, result.TotalWaves, result.Gold, result.Tickets or 0, remaining
 			)
 			task.wait(1)
 		end
@@ -691,26 +838,31 @@ end)
 local function refreshInfo()
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local name, color = weaponText(level)
+	local zone = currentZone()
+	local zoneText = zone == "Lobby" and "로비" or zone == "Dungeon" and "던전" or string.format("필드 (최고 %d구역)", player:GetAttribute("MaxZone") or 0)
 	infoLabel.Text = string.format(
-		"💰 <font color='#ffd966'>%d G</font>\n⚔ <font color='#%s'>%s</font>\n📍 %s",
+		"💰 <font color='#ffd966'>%d G</font>   🎫 <font color='#d9a6ff'>%d</font>\n⚡ 전투력 <font color='#ffe16e'>%d</font>\n⚔ <font color='#%s'>%s</font>\n📍 %s",
 		player:GetAttribute("Gold") or 0,
+		player:GetAttribute("Tickets") or 0,
+		player:GetAttribute("Power") or 0,
 		color:ToHex(),
 		name,
-		currentZone() == "Lobby" and "로비" or "던전"
+		zoneText
 	)
 end
 
 local function refreshZone()
 	local zone = currentZone()
-	lobbyFrame.Visible = zone == "Lobby"
+	lobbyFrame.Visible = zone ~= "Dungeon"
 	dungeonFrame.Visible = zone == "Dungeon"
-	if zone == "Lobby" then
+	if zone ~= "Dungeon" then
 		dungeonState = nil
 		resultToken += 1
 		resultPanel.Visible = false
 		bossBar.Visible = false
 	else
 		enhancePanel.Visible = false
+		gearPanel.Visible = false
 		invitePanel.Visible = false
 	end
 	refreshInfo()
@@ -730,6 +882,9 @@ player.AttributeChanged:Connect(function(attribute)
 	if enhancePanel.Visible then
 		refreshEnhance()
 	end
+	if gearPanel.Visible then
+		refreshGear()
+	end
 end)
 
 refreshZone()
@@ -748,8 +903,44 @@ local function applySpeed()
 	local character = player.Character
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 	if humanoid then
-		humanoid.WalkSpeed = sprinting and Config.Player.RunSpeed or Config.Player.WalkSpeed
+		local bonus = player:GetAttribute("GearSpeed") or 0 -- 신발 장비 효과
+		humanoid.WalkSpeed = (sprinting and Config.Player.RunSpeed or Config.Player.WalkSpeed) + bonus
 	end
+end
+
+player:GetAttributeChangedSignal("GearSpeed"):Connect(applySpeed)
+
+-- Q: 짧고 빠른 대시 (하이퍼 FPS 느낌의 회피). 이동 방향으로, 가만히 있으면 바라보는 방향으로.
+local lastDash = 0
+local function dash()
+	local now = os.clock()
+	if now - lastDash < Config.Player.DashCooldown then return end
+
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	if not root or not humanoid or humanoid.Health <= 0 then return end
+	lastDash = now
+
+	local direction = humanoid.MoveDirection
+	if direction.Magnitude < 0.1 then
+		direction = root.CFrame.LookVector
+	end
+	direction = Vector3.new(direction.X, 0, direction.Z).Unit
+
+	local attachment = Instance.new("Attachment")
+	attachment.Parent = root
+	local velocity = Instance.new("LinearVelocity")
+	velocity.Attachment0 = attachment
+	velocity.VelocityConstraintMode = Enum.VelocityConstraintMode.Vector
+	velocity.RelativeTo = Enum.ActuatorRelativeTo.World
+	velocity.MaxForce = math.huge
+	velocity.VectorVelocity = direction * Config.Player.DashSpeed
+	velocity.Parent = root
+	task.delay(Config.Player.DashTime, function()
+		velocity:Destroy()
+		attachment:Destroy()
+	end)
 end
 
 player.CharacterAdded:Connect(function(character)
@@ -800,6 +991,8 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	elseif input.KeyCode == Enum.KeyCode.LeftShift then
 		sprinting = true
 		applySpeed()
+	elseif input.KeyCode == Enum.KeyCode.Q then
+		dash()
 	elseif input.UserInputType == Enum.UserInputType.Touch then
 		local inset = GuiService:GetGuiInset()
 		attack(Vector2.new(input.Position.X, input.Position.Y) + inset)

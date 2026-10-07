@@ -10,12 +10,15 @@
 --                S->C  ("State", partyData|nil) ("Invite", inviterUserId, inviterName)
 --   Dungeon      C->S  ("Ready") ("Leave")
 --                S->C  ("State", stateTable) ("Result", resultTable)
+--   Gear         C->S  ("Enhance", slotKey) ("Roll")                    장비 강화 / 티켓 뽑기
+--                S->C  ("Result", { Ok, Message, Roll })             결과
+--   OpenGear     S->C  ()                                      뽑기 머신 사용 -> 장비창 열기
 --   Notify       S->C  (text)                                  화면 알림
 
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon", "Notify" }
+local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon", "Notify", "Gear", "OpenGear" }
 
 local folder
 if RunService:IsServer() then

@@ -12,6 +12,9 @@ Config.Player = {
 	BaseHealth = 100,
 	WalkSpeed = 16,
 	RunSpeed = 28,          -- Shift를 누르고 있을 때
+	DashSpeed = 95,         -- Q 대시 속도
+	DashTime = 0.16,        -- 대시 지속 시간(초)
+	DashCooldown = 2.5,     -- 대시 재사용 대기시간(초)
 	BaseDamage = 10,        -- 무기 +0 기준 데미지
 	BaseCooldown = 0.35,    -- 기본 공격 간격(초)
 	AttackRange = 300,      -- 사거리
@@ -102,6 +105,7 @@ Config.Boss = {
 	MinionLevel = 5,
 	Gold = 500,
 	Color = Color3.fromRGB(150, 20, 30),
+	Tickets = 3,             -- 보스 처치 시 파티원 모두에게 지급되는 장비 뽑기 티켓
 }
 
 ------------------------------------------------------------
@@ -139,6 +143,7 @@ Config.Weapon = {
 ------------------------------------------------------------
 Config.Dummy = {
 	GoldPerHit = 1,
+	Spacing = 20,     -- 허수아비 간격 (1열로 나열)
 	List = {
 		{ Multiplier = 1,   RequiredLevel = 0 },
 		{ Multiplier = 1.5, RequiredLevel = 0 },
@@ -166,11 +171,138 @@ Config.Audio = {
 		Lobby = ids.Lobby or 0,      -- 로비 배경음악
 		Dungeon = ids.Dungeon or 0,  -- 던전(웨이브) 배경음악
 		Boss = ids.Boss or 0,        -- 보스전 배경음악
+		Field = ids.Field or 0,      -- 필드 배경음악 (없으면 로비 음악)
 	},
 	Shot = ids.Shot or 0,            -- 총 쏘는 소리 (무기가 강해질수록 낮고 묵직하게 재생됨)
 	ShotVolume = 0.5,
 	EnhanceSuccess = ids.EnhanceSuccess or 0, -- 강화 성공 소리
 }
+
+------------------------------------------------------------
+-- 장비 (갑옷 / 장갑 / 신발): 보스 티켓으로 뽑기 -> 골드로 강화
+-- 등급(일반~신화)이 높을수록 효과가 크고, 강화 레벨이 오를수록 더 커짐
+------------------------------------------------------------
+Config.Gear = {
+	MaxLevel = 15,
+	LevelBonus = 0.08,   -- 강화 1레벨당 효과 +8%
+	RarityNames = { "일반", "희귀", "영웅", "전설", "신화" },
+	RarityColors = {
+		Color3.fromRGB(190, 190, 190),
+		Color3.fromRGB(90, 200, 120),
+		Color3.fromRGB(170, 90, 255),
+		Color3.fromRGB(255, 190, 40),
+		Color3.fromRGB(255, 70, 90),
+	},
+	RarityMaterials = {
+		Enum.Material.Leather,
+		Enum.Material.Metal,
+		Enum.Material.DiamondPlate,
+		Enum.Material.Foil,
+		Enum.Material.Neon,
+	},
+	RarityMult = { 1, 1.6, 2.5, 4, 6 },
+	Slots = {
+		{ Key = "Armor", Name = "갑옷", Stat = "Health", StatName = "최대 체력", Base = 40, BaseCost = 120,
+			Names = { "가죽 갑옷", "사슬 갑옷", "강철 갑옷", "미스릴 갑옷", "용린 갑옷" } },
+		{ Key = "Gloves", Name = "장갑", Stat = "Crit", StatName = "치명타 확률", Base = 0.02, BaseCost = 100,
+			Names = { "천 장갑", "가죽 장갑", "강철 건틀릿", "미스릴 건틀릿", "용발톱 건틀릿" } },
+		{ Key = "Boots", Name = "신발", Stat = "Speed", StatName = "이동 속도", Base = 0.6, BaseCost = 100,
+			Names = { "낡은 신발", "가죽 장화", "강철 부츠", "미스릴 부츠", "바람의 부츠" } },
+	},
+}
+
+function Config.GetGearSlot(key)
+	for _, slot in ipairs(Config.Gear.Slots) do
+		if slot.Key == key then
+			return slot
+		end
+	end
+	return nil
+end
+
+-- 등급(rarity 1~5)과 강화 레벨에 따른 효과 수치
+function Config.GetGearStat(slotKey, rarity, level)
+	if rarity <= 0 then return 0 end
+	local slot = Config.GetGearSlot(slotKey)
+	return slot.Base * Config.Gear.RarityMult[rarity] * (1 + Config.Gear.LevelBonus * level)
+end
+
+function Config.FormatGearStat(slotKey, value)
+	local slot = Config.GetGearSlot(slotKey)
+	if slot.Stat == "Health" then
+		return string.format("최대 체력 +%d", math.floor(value + 0.5))
+	elseif slot.Stat == "Crit" then
+		return string.format("치명타 확률 +%.1f%%", value * 100)
+	end
+	return string.format("이동 속도 +%.1f", value)
+end
+
+function Config.GetGearCost(slotKey, rarity, level)
+	local slot = Config.GetGearSlot(slotKey)
+	return math.floor(slot.BaseCost * (1 + 0.4 * (rarity - 1)) * 1.28 ^ level)
+end
+
+function Config.GetGearEnhanceChance(level)
+	return math.max(0.35, 1 - 0.045 * level)
+end
+
+Config.Gacha = {
+	Rates = { 55, 28, 12, 4, 1 },                  -- 일반 ~ 신화 (%)
+	DuplicateGold = { 40, 120, 400, 1500, 6000 },  -- 이미 같거나 더 좋은 장비가 있으면 골드로 교환
+}
+
+------------------------------------------------------------
+-- 필드: 로비 동쪽으로 길게 이어진 직선 사냥터. 오른쪽(동쪽)으로 갈수록 몬스터가 강해짐.
+------------------------------------------------------------
+Config.Field = {
+	StartX = 150,          -- 필드 시작 x좌표 (로비 동쪽 끝)
+	ZoneLength = 220,
+	ZoneCount = 8,
+	Width = 150,
+	MonstersPerZone = 6,
+	RespawnTime = 10,
+	AggroRange = 55,
+	LeashRange = 110,
+	EliteMultiplier = 5,       -- 엘리트 몬스터 체력 배율
+	EliteTicketChance = 0.2,   -- 엘리트 처치 시 티켓 획득 확률
+	BossRespawn = 120,
+	BossTickets = 2,           -- 필드 보스 처치 시 주변 플레이어에게 지급
+	ZoneNames = { "초원", "숲", "황무지", "사막", "설원", "화산", "암흑 지대", "심연" },
+	ZoneColors = {
+		Color3.fromRGB(90, 150, 80), Color3.fromRGB(50, 110, 60), Color3.fromRGB(140, 115, 80), Color3.fromRGB(215, 190, 120),
+		Color3.fromRGB(225, 235, 245), Color3.fromRGB(95, 55, 50), Color3.fromRGB(55, 45, 75), Color3.fromRGB(35, 30, 50),
+	},
+	ZoneMaterials = {
+		Enum.Material.Grass, Enum.Material.Grass, Enum.Material.Ground, Enum.Material.Sand,
+		Enum.Material.Snow, Enum.Material.Basalt, Enum.Material.Slate, Enum.Material.Slate,
+	},
+	Boss = {
+		Name = "필드의 지배자",
+		Size = 18,
+		MaxHealth = 6000,
+		Speed = 8,
+		ShotDamage = 28,
+		ShotInterval = 1.5,
+		ShotSpeed = 55,
+		Gold = 600,
+	},
+}
+
+function Config.Field.GetZoneLevel(zone)
+	return 1 + (zone - 1) * 3
+end
+
+------------------------------------------------------------
+-- 전투력: 머리 위 이름표 / 리더보드에 표시되어 강함을 과시할 수 있다
+------------------------------------------------------------
+function Config.GetPower(weaponLevel, critPoints, speedPoints, gearHealth, gearCrit)
+	local P = Config.Player
+	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel)
+	local crit = math.min(0.9, (critPoints or 0) * P.CritPerPoint + (gearCrit or 0))
+	local rate = 1 / (P.BaseCooldown / (1 + (speedPoints or 0) * P.SpeedPerPoint))
+	local dps = damage * (1 + crit * (P.CritMultiplier - 1)) * rate
+	return math.floor(dps * 10 + (gearHealth or 0) * 0.5)
+end
 
 function Config.GetWeaponTier(level)
 	local tiers = Config.Weapon.Tiers
