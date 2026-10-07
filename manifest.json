@@ -167,6 +167,13 @@
       "name": "SkillService",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "Server/DungeonTerrain.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "DungeonTerrain",
+      "class": "ModuleScript",
+      "overwrite": true
     }
   ]
 }

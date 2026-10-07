@@ -99,7 +99,7 @@ Config.Dungeon = {
 	VictoryGold = 400,       -- 보스 처치 보너스 골드
 	ReturnDelay = 8,         -- 던전 종료 후 로비 복귀까지 대기(초)
 
-	ArenaRadius = 90,
+	ArenaRadius = 140,       -- 지형 전체 반지름 (바깥 ~40은 산맥)
 	SpawnRadius = 65,        -- 몬스터가 나타나는 거리
 	ArenaOrigin = Vector3.new(0, 1500, 0), -- 던전 아레나는 로비/필드와 겹치지 않게 아주 높은 하늘 위에 만들어짐
 	ArenaSpacing = 500,      -- 파티별 아레나 간격
@@ -449,6 +449,7 @@ Config.Dungeon.Types = {
 		Floor = { Color = Color3.fromRGB(70, 60, 50), Material = Enum.Material.Slate },
 		Wall = { Color = Color3.fromRGB(55, 45, 40), Material = Enum.Material.Brick },
 		Torch = Color3.fromRGB(255, 150, 70),
+		Terrain = { Ground = Enum.Material.Mud, Mountain = Enum.Material.Rock, Accent = Enum.Material.Slate },
 		MonsterPool = { Slime = 4, Spitter = 3, Bat = 3 },
 		Boss = { Name = "고블린 왕", Color = Color3.fromRGB(70, 130, 50), HealthMult = 1, DamageMult = 1, Weights = { Fan = 3, Ring = 2, Spiral = 1, Meteor = 2 } },
 	},
@@ -458,6 +459,7 @@ Config.Dungeon.Types = {
 		Floor = { Color = Color3.fromRGB(190, 220, 240), Material = Enum.Material.Ice },
 		Wall = { Color = Color3.fromRGB(120, 160, 200), Material = Enum.Material.Glacier },
 		Torch = Color3.fromRGB(120, 200, 255),
+		Terrain = { Ground = Enum.Material.Snow, Mountain = Enum.Material.Glacier, Accent = Enum.Material.Ice },
 		MonsterPool = { Slime = 2, Spitter = 2, Mage = 3, Golem = 2 },
 		Boss = { Name = "서리 군주", Color = Color3.fromRGB(90, 170, 240), HealthMult = 1.6, DamageMult = 1.2, Weights = { Fan = 1, Ring = 3, Spiral = 3, Meteor = 1 } },
 	},
@@ -467,6 +469,7 @@ Config.Dungeon.Types = {
 		Floor = { Color = Color3.fromRGB(60, 35, 35), Material = Enum.Material.Basalt },
 		Wall = { Color = Color3.fromRGB(90, 40, 30), Material = Enum.Material.CrackedLava },
 		Torch = Color3.fromRGB(255, 90, 40),
+		Terrain = { Ground = Enum.Material.Basalt, Mountain = Enum.Material.Slate, Accent = Enum.Material.CrackedLava },
 		MonsterPool = { Charger = 3, Bomber = 3, Mage = 2, Golem = 2 },
 		Boss = { Name = "화염의 군주", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Fan = 1, Ring = 1, Spiral = 2, Meteor = 4 } },
 	},

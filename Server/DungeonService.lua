@@ -14,6 +14,7 @@ local Party = require(script.Parent:WaitForChild("PartyService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Level = require(script.Parent:WaitForChild("LevelService"))
 local MonsterTypes = require(script.Parent:WaitForChild("MonsterTypes"))
+local DungeonTerrain = require(script.Parent:WaitForChild("DungeonTerrain"))
 local Keys = require(script.Parent:WaitForChild("KeyService"))
 local Loot = require(script.Parent:WaitForChild("LootService"))
 
@@ -129,61 +130,17 @@ end
 local function buildArena(run)
 	local folder = Instance.new("Folder")
 	folder.Name = "Dungeon_" .. run.Id
-	local radius = D.ArenaRadius
-	local origin = run.Origin
-	local theme = run.Type
+	folder.Parent = workspace
 
-	local floor = Instance.new("Part")
-	floor.Name = "Floor"
-	floor.Shape = Enum.PartType.Cylinder
-	floor.Anchored = true
-	floor.Size = Vector3.new(2, radius * 2, radius * 2) -- 원기둥은 X축이 높이
-	floor.CFrame = CFrame.new(origin + Vector3.new(0, -1, 0)) * CFrame.Angles(0, 0, math.rad(90))
-	floor.Color = theme.Floor.Color
-	floor.Material = theme.Floor.Material
-	floor.Parent = folder
-
-	local segments = 24
-	local width = 2 * radius * math.tan(math.pi / segments) * 1.03
-	for i = 1, segments do
-		local angle = (i / segments) * math.pi * 2
-		local position = origin + Vector3.new(math.cos(angle) * radius, 20, math.sin(angle) * radius)
-
-		local wall = Instance.new("Part")
-		wall.Name = "Wall"
-		wall.Anchored = true
-		wall.Size = Vector3.new(width, 40, 2)
-		wall.CFrame = CFrame.lookAt(position, origin + Vector3.new(0, 20, 0))
-		wall.Color = theme.Wall.Color
-		wall.Material = theme.Wall.Material
-		wall.Transparency = 0.15
-		wall.Parent = folder
-
-		if i % 3 == 0 then
-			local torch = Instance.new("Part")
-			torch.Name = "Torch"
-			torch.Shape = Enum.PartType.Ball
-			torch.Anchored = true
-			torch.CanCollide = false
-			torch.Size = Vector3.new(2, 2, 2)
-			torch.Position = origin + Vector3.new(math.cos(angle) * (radius - 3), 8, math.sin(angle) * (radius - 3))
-			torch.Color = theme.Torch
-			torch.Material = Enum.Material.Neon
-			torch.Parent = folder
-
-			local light = Instance.new("PointLight")
-			light.Range = 36
-			light.Brightness = 1.5
-			light.Color = theme.Torch
-			light.Parent = torch
-		end
-	end
+	-- 산맥 / 언덕 / 구덩이 / 협곡 / 동굴로 이루어진 지형 (판마다 모양이 다름)
+	local terrain = DungeonTerrain.Build(run, run.Type, D, folder)
+	run.SpawnPoints = terrain.SpawnPoints
+	run.GroundY = terrain.GroundY
 
 	local monsters = Instance.new("Folder")
 	monsters.Name = "Monsters"
 	monsters.Parent = folder
 
-	folder.Parent = workspace
 	run.Folder = folder
 	run.MonstersFolder = monsters
 end
@@ -225,8 +182,17 @@ local function createHealthBar(part, text, width)
 end
 
 local function ringPosition(run, size)
+	local points = run.SpawnPoints
+	if points and #points > 0 then
+		return points[math.random(#points)] + Vector3.new(0, size / 2 + 0.5, 0)
+	end
 	local angle = math.random() * math.pi * 2
 	return run.Origin + Vector3.new(math.cos(angle) * D.SpawnRadius, size / 2, math.sin(angle) * D.SpawnRadius)
+end
+
+-- 이 위치 아래의 땅 높이 (지형이 울퉁불퉁하므로 raycast 로 구한다)
+local function groundAt(run, x, z, fromY)
+	return run.GroundY and run.GroundY(x, z, fromY) or run.Origin.Y
 end
 
 local function registerMonster(run, part, stats, text, barWidth, extra)
@@ -289,7 +255,7 @@ local function spawnBoss(run)
 	part.CanCollide = false
 	part.Color = bossType.Color
 	part.Material = Enum.Material.Neon
-	part.Position = run.Origin + Vector3.new(0, stats.Size / 2, -D.SpawnRadius)
+	part.Position = Vector3.new(run.Origin.X, groundAt(run, run.Origin.X, run.Origin.Z - D.SpawnRadius, run.Origin.Y + 10) + stats.Size / 2, run.Origin.Z - D.SpawnRadius)
 	part.Parent = run.MonstersFolder
 
 	local data = registerMonster(run, part, stats, bossType.Name, 320, {
@@ -359,7 +325,7 @@ local function bossWarn(run, part, data, color, seconds)
 end
 
 local function flatOrigin(run, part)
-	return Vector3.new(part.Position.X, run.Origin.Y + 3, part.Position.Z)
+	return Vector3.new(part.Position.X, groundAt(run, part.Position.X, part.Position.Z, part.Position.Y) + 3, part.Position.Z)
 end
 
 -- 1) 부채꼴 조준 연발: 가장 가까운 플레이어를 향해 5갈래 탄을 2~3번
@@ -422,7 +388,7 @@ local function bossMeteor(run, part, data)
 		if root then
 			for i = 1, data.Enraged and 3 or 2 do
 				local jitter = i == 1 and Vector3.zero or Vector3.new(math.random(-18, 18), 0, math.random(-18, 18))
-				local center = Vector3.new(root.Position.X, run.Origin.Y + 0.3, root.Position.Z) + jitter
+				local center = Vector3.new(root.Position.X + jitter.X, groundAt(run, root.Position.X + jitter.X, root.Position.Z + jitter.Z, root.Position.Y) + 0.3, root.Position.Z + jitter.Z)
 
 				local marker = Instance.new("Part")
 				marker.Shape = Enum.PartType.Cylinder
@@ -498,7 +464,7 @@ local function enrageBoss(run, part, data)
 		local position = part.Position + Vector3.new(math.cos(angle) * 20, 0, math.sin(angle) * 20)
 		local minionLevel = math.max(1, Config.Boss.MinionLevel + run.LevelBonus)
 		local minionStats = Config.Monster.GetStats(minionLevel)
-		spawnMonster(run, minionLevel, Vector3.new(position.X, run.Origin.Y + minionStats.Size / 2, position.Z))
+		spawnMonster(run, minionLevel, Vector3.new(position.X, groundAt(run, position.X, position.Z, position.Y) + minionStats.Size / 2, position.Z))
 	end
 end
 
@@ -552,6 +518,9 @@ local function stepRun(run, dt)
 						part.Position += move.Unit * data.Stats.Speed * dt
 					end
 				end
+				-- 보스도 땅 높이를 따라간다 (언덕 / 구덩이)
+				local bossGround = groundAt(run, part.Position.X, part.Position.Z, part.Position.Y)
+				part.Position = Vector3.new(part.Position.X, bossGround + data.Stats.Size / 2, part.Position.Z)
 
 				if not data.Casting and now >= data.NextPattern then
 					data.Casting = true
@@ -837,6 +806,7 @@ local function destroyRun(run)
 	end
 	run.Members = {}
 	run.Folder:Destroy()
+	DungeonTerrain.Clear(run, D)
 end
 
 local function finish(run, victory)
@@ -1077,6 +1047,9 @@ function Dungeon.Start(player, typeKey, diffKey)
 	-- 몬스터 AI(MonsterTypes)가 던전 환경을 다루는 데 쓰는 함수들
 	run.Ctx = {
 		FloorY = run.Origin.Y,
+		GroundY = function(x, z, fromY)
+			return run.GroundY and run.GroundY(x, z, fromY) or nil
+		end,
 		GetTarget = function(position)
 			return getNearestTarget(run, position)
 		end,

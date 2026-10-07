@@ -230,6 +230,14 @@ local function explode(ctx, part, data)
 	ctx.Kill(part, data)
 end
 
+-- 지형이 울퉁불퉁하면(ctx.GroundY 가 있으면) 몬스터를 땅 높이에 맞춘다. lift: 땅에서 더 띄울 높이(박쥐 등)
+local function snapToGround(ctx, position, size, lift)
+	if not ctx.GroundY then return position end
+	local ground = ctx.GroundY(position.X, position.Z, position.Y)
+	if not ground then return position end
+	return Vector3.new(position.X, ground + size / 2 + (lift or 0), position.Z)
+end
+
 function M.Update(ctx, part, data, dt, now)
 	local def = data.Def
 	local stats = data.Stats
@@ -243,6 +251,7 @@ function M.Update(ctx, part, data, dt, now)
 	-- 돌진 중: 정해둔 방향으로 곧장 달리면서 닿으면 피해 (한 번만)
 	if data.ChargeUntil and now < data.ChargeUntil then
 		position += data.ChargeDir * 75 * dt
+		position = snapToGround(ctx, position, stats.Size)
 		part.CFrame = CFrame.lookAt(position, position + data.ChargeDir)
 		if not data.ChargeHit then
 			for _, entry in ipairs(ctx.Players()) do
@@ -290,13 +299,21 @@ function M.Update(ctx, part, data, dt, now)
 		-- 좌우로 흔들리며 날아다니고 위아래로 출렁임
 		local side = Vector3.new(-direction.Z, 0, direction.X)
 		move += side * math.sin(now * 2 + data.Phase) * speed * 0.6 * dt
-		position = Vector3.new(position.X, ctx.FloorY + stats.Size / 2 + 4 + math.sin(now * 3 + data.Phase) * 1.4, position.Z)
+		local bob = 4 + math.sin(now * 3 + data.Phase) * 1.4
+		if ctx.GroundY then
+			position = snapToGround(ctx, position, stats.Size, bob)
+		else
+			position = Vector3.new(position.X, ctx.FloorY + stats.Size / 2 + bob, position.Z)
+		end
 	else -- Approach
 		if distance > stats.Size / 2 + def.Keep then
 			move = direction * speed * dt
 		end
 	end
 	position += move
+	if def.Move ~= "Hover" then
+		position = snapToGround(ctx, position, stats.Size)
+	end
 	part.CFrame = CFrame.lookAt(position, position + direction)
 
 	-- 공격
@@ -333,7 +350,7 @@ function M.Update(ctx, part, data, dt, now)
 			for i = 0, 7 do
 				local angle = offset + (i / 8) * math.pi * 2
 				local ringDirection = Vector3.new(math.cos(angle), 0, math.sin(angle))
-				local origin = Vector3.new(part.Position.X, ctx.FloorY + 3, part.Position.Z) + ringDirection * (stats.Size / 2 + 1)
+				local origin = Vector3.new(part.Position.X, (ctx.GroundY and ctx.GroundY(part.Position.X, part.Position.Z, part.Position.Y) or ctx.FloorY) + 3, part.Position.Z) + ringDirection * (stats.Size / 2 + 1)
 				ctx.Fire(origin, ringDirection, 26, math.max(1, math.floor(stats.ShotDamage * 0.8)), 2, Color3.fromRGB(150, 235, 255))
 			end
 		end)
