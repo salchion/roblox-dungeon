@@ -111,6 +111,19 @@ function Effects.Shot(from, to, shot, color, rainbow)
 	tween:Play()
 end
 
+-- 소리 한 번 재생 (soundId 가 0 이면 아무것도 안 함)
+function Effects.PlaySound(parent, soundId, volume, pitch)
+	if not soundId or soundId == 0 then return end
+	local sound = Instance.new("Sound")
+	sound.SoundId = "rbxassetid://" .. soundId
+	sound.Volume = volume or 0.8
+	sound.PlaybackSpeed = pitch or 1
+	sound.RollOffMaxDistance = 90
+	sound.Parent = parent
+	sound:Play()
+	Debris:AddItem(sound, 5)
+end
+
 -- 임의 색의 떠오르는 글자 (골드 획득 등)
 function Effects.FloatText(position, text, color)
 	local anchor = Instance.new("Part")

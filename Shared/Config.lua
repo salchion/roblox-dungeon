@@ -171,6 +171,7 @@ local defaultIds = {
 	Dungeon = 139997523791273, -- 던전(웨이브) 배경음악
 	Boss = 132347366936691,    -- 보스전 배경음악
 	Shot = 86531217997974,     -- 총 쏘는 소리
+	EnhanceSuccess = 119142651784821, -- 강화 성공 소리 (무기 / 장비)
 }
 for key, value in pairs(defaultIds) do
 	if not ids[key] or ids[key] == 0 then
