@@ -1167,6 +1167,8 @@ local function getAimPoint(screenPosition)
 	return ray.Origin + ray.Direction * 300, nil
 end
 
+local crosshairKick = 0 -- 쏠 때마다 조준점이 벌어졌다 돌아오는 연출용
+
 -- 월드 좌표를 향해 캐릭터를 돌려세우고 서버에 공격 요청
 local function fireAt(worldPoint)
 	local character = player.Character
@@ -1179,6 +1181,7 @@ local function fireAt(worldPoint)
 			root.CFrame = CFrame.lookAt(root.Position, root.Position + flat)
 		end
 	end
+	crosshairKick = 10
 	Remotes.Attack:FireServer(worldPoint)
 end
 
@@ -1667,5 +1670,64 @@ RunService.Heartbeat:Connect(function()
 			nextAttack = now + attackCooldown()
 			fireAt(lockTarget.Part.Position)
 		end
+	end
+end)
+
+------------------------------------------------------------
+-- 조준점: 마우스 화살표 대신 십자 격자 조준점이 마우스를 따라다닌다.
+--   쏠 때마다 살짝 벌어졌다 돌아오고, 자동 공격으로 대상을 잡으면 노란색이 된다.
+--   메뉴 창이 열려 있거나 버튼 위에 있을 땐 원래 화살표 마우스로 돌아온다.
+------------------------------------------------------------
+local hasMouse = UserInputService.MouseEnabled
+local playerGui = player:WaitForChild("PlayerGui")
+
+local crosshair = create("Frame", {
+	Name = "Crosshair", Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1, Visible = false, ZIndex = 100,
+}, gui)
+
+local function makeCrosshairPart(width, height)
+	local part = create("Frame", {
+		Size = UDim2.new(0, width, 0, height), AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundColor3 = Color3.new(1, 1, 1), BorderSizePixel = 0, ZIndex = 100,
+	}, crosshair)
+	create("UIStroke", { Color = Color3.new(0, 0, 0), Thickness = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, part)
+	return part
+end
+
+local barUp = makeCrosshairPart(2, 11)
+local barDown = makeCrosshairPart(2, 11)
+local barLeft = makeCrosshairPart(11, 2)
+local barRight = makeCrosshairPart(11, 2)
+local centerDot = makeCrosshairPart(3, 3)
+
+local function isMouseOverButton(position)
+	for _, object in ipairs(playerGui:GetGuiObjectsAtPosition(position.X, position.Y)) do
+		if object:IsA("GuiButton") and object.Visible then
+			return true
+		end
+	end
+	return false
+end
+
+RunService.RenderStepped:Connect(function(dt)
+	local modalOpen = menuPanel.Visible or enhancePanel.Visible or gearPanel.Visible or selectPanel.Visible
+	local position = UserInputService:GetMouseLocation()
+	local show = hasMouse and not modalOpen and player.Character ~= nil and not isMouseOverButton(position)
+
+	UserInputService.MouseIconEnabled = not show
+	crosshair.Visible = show
+	if not show then return end
+
+	crosshairKick = math.max(0, crosshairKick - dt * 55)
+	local gap = 7 + crosshairKick + (holding and 2 or 0)
+	local color = (autoMode and lockTarget) and Color3.fromRGB(255, 225, 90) or Color3.new(1, 1, 1)
+
+	crosshair.Position = UDim2.fromOffset(position.X, position.Y)
+	barUp.Position = UDim2.fromOffset(0, -gap - 5)
+	barDown.Position = UDim2.fromOffset(0, gap + 5)
+	barLeft.Position = UDim2.fromOffset(-gap - 5, 0)
+	barRight.Position = UDim2.fromOffset(gap + 5, 0)
+	for _, part in ipairs({ barUp, barDown, barLeft, barRight, centerDot }) do
+		part.BackgroundColor3 = color
 	end
 end)
