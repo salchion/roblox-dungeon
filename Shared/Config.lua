@@ -32,6 +32,37 @@ Config.StatAttributes = {   -- Upgrade 리모트가 받는 이름 -> 플레이�
 }
 
 ------------------------------------------------------------
+-- 던전 특성 (뱀파이어 서바이벌식): 웨이브 클리어마다 3개 중 1개를 골라 그 던전 동안만 쌓인다
+-- Attr: 플레이어 Attribute(스택 수) / Max: 최대 스택 / Special: 총알이 바뀌는 특수 특성(항상 1개 이상 후보에 포함)
+------------------------------------------------------------
+Config.Perks = {
+	Order = { "Multi", "Pierce", "Boom", "Chain", "Vamp", "Power", "Rapid", "Crit", "Vital" },
+	Multi  = { Name = "분산탄", Icon = "🔱", Attr = "PerkMulti", Max = 4, Special = true,
+		Desc = "한 번에 나가는 탄이 +1발, 부채꼴로 흩어져 나간다" },
+	Pierce = { Name = "관통탄", Icon = "➳", Attr = "PerkPierce", Max = 3, Special = true,
+		Desc = "탄이 적을 +1마리 더 관통한다" },
+	Boom   = { Name = "폭발탄", Icon = "💥", Attr = "PerkBoom", Max = 3, Special = true,
+		Desc = "맞은 적 주변에 폭발 (피해의 40%, 단계마다 범위 증가)" },
+	Chain  = { Name = "연쇄 번개", Icon = "⚡", Attr = "PerkChain", Max = 3, Special = true,
+		Desc = "맞은 적에게서 근처 적 +1마리로 번개가 튄다 (피해의 60%)" },
+	Vamp   = { Name = "흡혈", Icon = "🩸", Attr = "PerkVamp", Max = 3, Special = true,
+		Desc = "탄이 맞을 때마다 체력 +1 회복" },
+	Power  = { Name = "강타", Icon = "🔥", Attr = "PerkPower", Max = 6,
+		Desc = "공격력 +18%" },
+	Rapid  = { Name = "속사", Icon = "⏩", Attr = "SpeedPoints", Max = 10,
+		Desc = "공격 속도 +8%" },
+	Crit   = { Name = "급소", Icon = "🎯", Attr = "CritPoints", Max = 15,
+		Desc = "치명타 확률 +4%" },
+	Vital  = { Name = "강인함", Icon = "❤", Attr = "HealthPoints", Max = 10,
+		Desc = "최대 체력 +15, 즉시 회복" },
+	ChoiceCount = 3,
+	PowerPerStack = 0.18,
+	BoomRatio = 0.4,
+	ChainRatio = 0.6,
+	FanAngle = 7,           -- 분산탄 사이 각도(도)
+}
+
+------------------------------------------------------------
 -- 파티
 ------------------------------------------------------------
 Config.Party = {
@@ -46,7 +77,7 @@ Config.Dungeon = {
 	TotalWaves = 5,          -- 이 웨이브를 모두 깨면 보스 등장
 	StartCountdown = 5,      -- 입장 후 첫 웨이브까지 대기(초)
 	StatPhaseTime = 30,      -- 웨이브 클리어 후 스탯 분배 시간(초)
-	PointsPerWave = 3,       -- 웨이브 클리어마다 지급되는 스탯 포인트
+	PointsPerWave = 3,       -- (사용 안 함: 던전 특성 선택으로 대체됨)
 	WaveClearGold = 40,      -- 웨이브 클리어 보너스 골드 (x 웨이브 번호)
 	VictoryGold = 400,       -- 보스 처치 보너스 골드
 	ReturnDelay = 8,         -- 던전 종료 후 로비 복귀까지 대기(초)

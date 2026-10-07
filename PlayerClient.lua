@@ -709,24 +709,9 @@ local bossName = makeLabel({
 	Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 15, TextStrokeTransparency = 0.4,
 }, bossBar)
 
--- 스탯 패널
-local STATS = {
-	{
-		Key = "Crit", Attr = "CritPoints", Hotkey = Enum.KeyCode.One, Name = "치명타 확률",
-		Describe = function(points) return string.format("%d%%", math.floor(points * Config.Player.CritPerPoint * 100 + 0.5)) end,
-	},
-	{
-		Key = "Speed", Attr = "SpeedPoints", Hotkey = Enum.KeyCode.Two, Name = "공격 속도",
-		Describe = function(points) return string.format("+%d%%", math.floor(points * Config.Player.SpeedPerPoint * 100 + 0.5)) end,
-	},
-	{
-		Key = "Health", Attr = "HealthPoints", Hotkey = Enum.KeyCode.Three, Name = "최대 체력",
-		Describe = function(points) return tostring(Config.Player.BaseHealth + points * Config.Player.HealthPerPoint) end,
-	},
-}
-
+-- 특성 선택 패널 (웨이브 클리어마다 3개 중 1개, 숫자키 1/2/3)
 local statPanel = makePanel({
-	Size = UDim2.new(0, 330, 0, 226), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 16, 1, -16),
+	Size = UDim2.new(0, 380, 0, 330), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 16, 1, -16),
 }, dungeonFrame)
 local statStroke = create("UIStroke", { Color = Color3.fromRGB(255, 210, 90), Thickness = 0, Transparency = 0 }, statPanel)
 
@@ -735,24 +720,34 @@ local statPoints = makeLabel({
 	Font = Enum.Font.GothamBlack, TextSize = 19, TextXAlignment = Enum.TextXAlignment.Left,
 }, statPanel)
 
-local statRows = {}
-for index, stat in ipairs(STATS) do
-	local y = 42 + (index - 1) * 38
-	local label = makeLabel({
-		Size = UDim2.new(1, -70, 0, 32), Position = UDim2.new(0, 10, 0, y),
-		TextXAlignment = Enum.TextXAlignment.Left, TextSize = 15,
-	}, statPanel)
-	makeButton({
-		Size = UDim2.new(0, 44, 0, 32), Position = UDim2.new(1, -54, 0, y),
-		Text = "+", TextSize = 22,
+local perkOffer = {}   -- 지금 고를 수 있는 특성 키 목록 (서버가 보내준다)
+local perkCards = {}
+for index = 1, Config.Perks.ChoiceCount do
+	local y = 42 + (index - 1) * 62
+	local card = makeButton({
+		Size = UDim2.new(1, -20, 0, 56), Position = UDim2.new(0, 10, 0, y),
+		Text = "", BackgroundColor3 = Color3.fromRGB(48, 48, 70),
 	}, statPanel, function()
-		Remotes.Upgrade:FireServer(stat.Key)
+		local key = perkOffer[index]
+		if key then
+			Remotes.Upgrade:FireServer(key)
+		end
 	end)
-	statRows[stat] = label
+	local text = makeLabel({
+		Size = UDim2.new(1, -12, 1, 0), Position = UDim2.new(0, 8, 0, 0),
+		TextXAlignment = Enum.TextXAlignment.Left, TextSize = 14, RichText = true,
+	}, card)
+	perkCards[index] = { Button = card, Text = text }
 end
 
+local perkSummary = makeLabel({
+	Size = UDim2.new(1, -20, 0, 40), Position = UDim2.new(0, 10, 0, 230),
+	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+	TextSize = 13, RichText = true, TextColor3 = Color3.fromRGB(200, 200, 220),
+}, statPanel)
+
 local readyButton = makeButton({
-	Size = UDim2.new(1, -20, 0, 34), Position = UDim2.new(0, 10, 0, 160),
+	Size = UDim2.new(1, -20, 0, 34), Position = UDim2.new(0, 10, 0, 272),
 	Text = "준비 완료", BackgroundColor3 = GREEN, Visible = false,
 }, statPanel, function()
 	Remotes.Dungeon:FireServer("Ready")
@@ -839,14 +834,33 @@ local function updateMusic()
 end
 
 local function refreshStats()
-	local points = player:GetAttribute("StatPoints") or 0
-	statPoints.Text = string.format("스탯 포인트: %d", points)
-	statPoints.TextColor3 = points > 0 and Color3.fromRGB(255, 220, 90) or Color3.new(1, 1, 1)
-
-	for stat, label in pairs(statRows) do
-		local value = player:GetAttribute(stat.Attr) or 0
-		label.Text = string.format("[%d] %s  Lv.%d  (%s)", table.find({ Enum.KeyCode.One, Enum.KeyCode.Two, Enum.KeyCode.Three }, stat.Hotkey), stat.Name, value, stat.Describe(value))
+	if not (dungeonState and dungeonState.Phase == "StatPhase") then
+		perkOffer = {}
 	end
+	local picking = #perkOffer > 0
+	statPoints.Text = picking and "✨ 특성을 고르세요!" or "특성 (던전 동안만 유지)"
+	statPoints.TextColor3 = picking and Color3.fromRGB(255, 220, 90) or Color3.new(1, 1, 1)
+
+	for index, card in ipairs(perkCards) do
+		local key = perkOffer[index]
+		card.Button.Visible = key ~= nil
+		if key then
+			local perk = Config.Perks[key]
+			local stacks = player:GetAttribute(perk.Attr) or 0
+			card.Text.Text = string.format("<b>[%d] %s %s</b>  <font color='#ffd966'>Lv.%d → %d</font>\n<font color='#c8c8dc'>%s</font>",
+				index, perk.Icon, perk.Name, stacks, stacks + 1, perk.Desc)
+		end
+	end
+
+	local parts = {}
+	for _, key in ipairs(Config.Perks.Order) do
+		local perk = Config.Perks[key]
+		local stacks = player:GetAttribute(perk.Attr) or 0
+		if stacks > 0 then
+			table.insert(parts, string.format("%s%s %d", perk.Icon, perk.Name, stacks))
+		end
+	end
+	perkSummary.Text = #parts > 0 and ("내 특성: " .. table.concat(parts, "  ·  ")) or "내 특성: 아직 없음"
 
 	local inStatPhase = dungeonState and dungeonState.Phase == "StatPhase"
 	statStroke.Thickness = inStatPhase and 3 or 0
@@ -930,6 +944,9 @@ Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
 		refreshBanner()
 		refreshStats()
 		updateMusic()
+	elseif action == "Perks" then
+		perkOffer = data.Keys or {}
+		refreshStats()
 	elseif action == "Result" then
 		showResult(data)
 	elseif action == "OpenSelect" then
@@ -2209,10 +2226,10 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 		local inset = GuiService:GetGuiInset()
 		attack(Vector2.new(input.Position.X, input.Position.Y) + inset)
 	elseif currentZone() == "Dungeon" then
-		for _, stat in ipairs(STATS) do
-			if input.KeyCode == stat.Hotkey then
-				Remotes.Upgrade:FireServer(stat.Key)
-			end
+		local keys = { [Enum.KeyCode.One] = 1, [Enum.KeyCode.Two] = 2, [Enum.KeyCode.Three] = 3 }
+		local pick = perkOffer[keys[input.KeyCode] or 0]
+		if pick then
+			Remotes.Upgrade:FireServer(pick)
 		end
 	end
 end)

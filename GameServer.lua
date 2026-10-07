@@ -337,16 +337,29 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint)
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local tier = Config.GetWeaponTier(level)
 	local color = tier.Rainbow and Color3.fromHSV((now * 0.5) % 1, 0.8, 1) or tier.Color
+	local extra = player:GetAttribute("Zone") == "Dungeon" and (player:GetAttribute("PerkMulti") or 0) or 0
 	local shot = table.clone(tier.Shot)
 	shot.Size *= weaponType.ShotScale
 	shot.Speed *= weaponType.SpeedScale
-	if weaponType.Pellets > 1 then
+	if weaponType.Pellets + extra > 1 then
 		shot.Impact = math.floor(shot.Impact / 3)
 	end
 	local tipPosition = Weapon.GetTipPosition(player) or origin
 
-	for pellet = 1, weaponType.Pellets do
-		local direction = pellet == 1 and weaponType.Pellets == 1 and baseDirection or spreadDirection(baseDirection, weaponType.Spread)
+	-- 던전 특성 "분산탄": 탄이 +N발, 부채꼴로 흩어져 나간다 (권총류는 대칭 부채꼴, 샷건은 산탄이 더 늘어남)
+	local pellets = weaponType.Pellets + extra
+	local fanAngle = math.rad(Config.Perks.FanAngle)
+	for pellet = 1, pellets do
+		local direction
+		if weaponType.Pellets == 1 then
+			if pellets == 1 then
+				direction = baseDirection
+			else
+				direction = (CFrame.fromAxisAngle(Vector3.yAxis, (pellet - (pellets + 1) / 2) * fanAngle) * CFrame.new(baseDirection)).Position
+			end
+		else
+			direction = spreadDirection(baseDirection, weaponType.Spread)
+		end
 		local endPosition = Dungeon.Shoot(player, origin, direction)
 			or Field.Shoot(player, origin, direction)
 			or Dummy.Shoot(player, origin, direction)

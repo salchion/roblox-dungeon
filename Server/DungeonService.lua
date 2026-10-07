@@ -28,7 +28,10 @@ local usedSlots = {}     -- [slot] = true
 local nextRunId = 1
 local lobbySpawn = CFrame.new(0, 4, 25)
 
-local STAT_ATTRIBUTES = { "StatPoints", "CritPoints", "SpeedPoints", "HealthPoints" }
+local STAT_ATTRIBUTES = { "StatPoints" }
+for _, perkKey in ipairs(Config.Perks.Order) do
+	table.insert(STAT_ATTRIBUTES, Config.Perks[perkKey].Attr)
+end
 
 ------------------------------------------------------------
 -- 유틸
@@ -606,6 +609,7 @@ function Dungeon.ComputeDamage(player)
 	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel) * weaponType.DamageMult
 		* Config.GetLevelDamageMult(player:GetAttribute("Level") or 1)
 		* (1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0))
+		* (1 + (player:GetAttribute("PerkPower") or 0) * Config.Perks.PowerPerStack)
 	local chance = math.min(0.9, (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint
 		+ (player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0) + (weaponType.CritBonus or 0))
 	local isCrit = math.random() < chance
@@ -615,6 +619,7 @@ function Dungeon.ComputeDamage(player)
 	return math.max(1, math.floor(damage + 0.5)), isCrit
 end
 
+-- 던전 특성 효과(관통 / 폭발 / 연쇄 / 흡혈)를 포함한 사격
 function Dungeon.Shoot(player, origin, direction)
 	local run = playerRun[player]
 	if not run or run.Destroyed then return nil end
@@ -624,13 +629,73 @@ function Dungeon.Shoot(player, origin, direction)
 	params.FilterDescendantsInstances = { run.MonstersFolder }
 
 	local range = Config.GetPlayerWeapon(player).Range
-	local result = workspace:Raycast(origin, direction * range, params)
-	local endPosition = result and result.Position or (origin + direction * range)
+	local pierce = player:GetAttribute("PerkPierce") or 0
+	local boom = player:GetAttribute("PerkBoom") or 0
+	local chain = player:GetAttribute("PerkChain") or 0
+	local vamp = player:GetAttribute("PerkVamp") or 0
 
-	local data = result and run.Monsters[result.Instance]
-	if data then
+	local endPosition = origin + direction * range
+	local skipped = {}
+	for _ = 1, 1 + pierce do
+		local result = workspace:Raycast(origin, direction * range, params)
+		if not result then break end
+		endPosition = result.Position
+		local part = result.Instance
+		local data = run.Monsters[part]
+		if not data then break end
+
 		local damage, isCrit = Dungeon.ComputeDamage(player)
-		damageMonster(run, player, result.Instance, data, damage, isCrit, result.Position)
+		local hitPosition = result.Position
+		damageMonster(run, player, part, data, damage, isCrit, hitPosition)
+
+		if vamp > 0 then
+			local _, humanoid = getAliveParts(player)
+			if humanoid then
+				humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + vamp)
+			end
+		end
+
+		-- 폭발: 맞은 지점 주변 적에게 피해
+		if boom > 0 then
+			local radius = 8 + boom * 4
+			Effects.Burst(hitPosition, Color3.fromRGB(255, 140, 50), 10 + boom * 8)
+			for otherPart, otherData in pairs(run.Monsters) do
+				if otherPart ~= part and otherPart.Parent and (otherPart.Position - hitPosition).Magnitude <= radius + otherPart.Size.X / 2 then
+					damageMonster(run, player, otherPart, otherData, math.max(1, math.floor(damage * Config.Perks.BoomRatio)), false, otherPart.Position)
+				end
+			end
+		end
+
+		-- 연쇄 번개: 가장 가까운 다른 적들에게 튄다
+		if chain > 0 then
+			local candidates = {}
+			for otherPart in pairs(run.Monsters) do
+				if otherPart ~= part and otherPart.Parent then
+					local dist = (otherPart.Position - hitPosition).Magnitude
+					if dist <= 40 then
+						table.insert(candidates, { Part = otherPart, Dist = dist })
+					end
+				end
+			end
+			table.sort(candidates, function(a, b) return a.Dist < b.Dist end)
+			for k = 1, math.min(chain, #candidates) do
+				local target = candidates[k].Part
+				local targetData = run.Monsters[target]
+				if targetData then
+					Effects.Tracer(hitPosition, target.Position, Color3.fromRGB(120, 200, 255), 0.35)
+					damageMonster(run, player, target, targetData, math.max(1, math.floor(damage * Config.Perks.ChainRatio)), false, target.Position)
+				end
+			end
+		end
+
+		-- 다음 관통 대상을 찾기 위해 이 몬스터를 잠깐 판정에서 뺀다 (몬스터가 죽어 사라졌으면 필요 없음)
+		if part.Parent then
+			part.CanQuery = false
+			table.insert(skipped, part)
+		end
+	end
+	for _, part in ipairs(skipped) do
+		part.CanQuery = true
 	end
 
 	return endPosition
@@ -639,24 +704,66 @@ end
 ------------------------------------------------------------
 -- 스탯 분배 (던전 안에서만 / 스탯 포인트가 있을 때)
 ------------------------------------------------------------
-function Dungeon.Upgrade(player, statName)
-	if not playerRun[player] or typeof(statName) ~= "string" then return end
-	local attribute = Config.StatAttributes[statName]
-	if not attribute then return end
+local function perkStacks(player, perkKey)
+	return player:GetAttribute(Config.Perks[perkKey].Attr) or 0
+end
 
-	local points = player:GetAttribute("StatPoints") or 0
-	if points <= 0 then return end
-	if attribute == "CritPoints" and (player:GetAttribute("CritPoints") or 0) >= P.MaxCritPoints then
-		notify(player, "치명타 확률은 최대치예요!")
-		return
+local function perkMaxed(player, perkKey)
+	local perk = Config.Perks[perkKey]
+	local max = perk.Max
+	if perk.Attr == "CritPoints" then
+		max = math.min(max, P.MaxCritPoints)
 	end
+	return perkStacks(player, perkKey) >= max
+end
 
-	player:SetAttribute("StatPoints", points - 1)
-	player:SetAttribute(attribute, (player:GetAttribute(attribute) or 0) + 1)
+-- 웨이브 클리어 후 보여줄 특성 후보 3개 (특수 특성은 최소 1개 포함)
+local function rollOffer(player)
+	local specials, normals = {}, {}
+	for _, key in ipairs(Config.Perks.Order) do
+		if not perkMaxed(player, key) then
+			table.insert(Config.Perks[key].Special and specials or normals, key)
+		end
+	end
+	local offer = {}
+	local function take(list)
+		if #list == 0 then return end
+		table.insert(offer, table.remove(list, math.random(#list)))
+	end
+	take(specials)
+	local pool = table.clone(specials)
+	for _, key in ipairs(normals) do
+		table.insert(pool, key)
+	end
+	while #offer < Config.Perks.ChoiceCount and #pool > 0 do
+		local key = table.remove(pool, math.random(#pool))
+		if not table.find(offer, key) then
+			table.insert(offer, key)
+		end
+	end
+	return offer
+end
 
-	if attribute == "HealthPoints" then
+local function applyPerk(player, perkKey)
+	local perk = Config.Perks[perkKey]
+	player:SetAttribute(perk.Attr, perkStacks(player, perkKey) + 1)
+	if perk.Attr == "HealthPoints" then
 		applyMaxHealth(player, P.HealthPerPoint)
 	end
+end
+
+-- 특성 선택 (스탯 분배 시간에 후보 중 하나)
+function Dungeon.Upgrade(player, perkKey)
+	local run = playerRun[player]
+	if not run or run.Phase ~= "StatPhase" or typeof(perkKey) ~= "string" then return end
+	local offer = run.Offers and run.Offers[player]
+	if not offer or not table.find(offer, perkKey) then return end
+	if perkMaxed(player, perkKey) then return end
+
+	run.Offers[player] = nil -- 한 번만 고를 수 있다
+	applyPerk(player, perkKey)
+	Remotes.Dungeon:FireClient(player, "Perks", { Keys = {} })
+	notify(player, string.format("%s %s 선택!", Config.Perks[perkKey].Icon, Config.Perks[perkKey].Name))
 end
 
 Remotes.Upgrade.OnServerEvent:Connect(Dungeon.Upgrade)
@@ -814,15 +921,26 @@ local function statPhase(run)
 	run.PhaseEnd = os.clock() + D.StatPhaseTime
 	run.Ready = {}
 
+	run.Offers = {}
 	for _, member in ipairs(run.Members) do
-		member:SetAttribute("StatPoints", (member:GetAttribute("StatPoints") or 0) + D.PointsPerWave)
 		applyMaxHealth(member, math.huge)
+		local offer = rollOffer(member)
+		run.Offers[member] = offer
+		Remotes.Dungeon:FireClient(member, "Perks", { Keys = offer })
 	end
-	notifyAll(run, string.format("웨이브 %d 클리어! 스탯 포인트 +%d (%d초)", run.Wave, D.PointsPerWave, D.StatPhaseTime))
+	notifyAll(run, string.format("웨이브 %d 클리어! 특성을 하나 고르세요 (%d초)", run.Wave, D.StatPhaseTime))
 
-	return waitFor(run, function()
+	local ok = waitFor(run, function()
 		return os.clock() >= run.PhaseEnd or allReady(run)
 	end)
+	-- 고르지 못한 사람은 후보 중 하나가 자동 선택된다
+	for _, member in ipairs(run.Members) do
+		local offer = run.Offers and run.Offers[member]
+		if offer and #offer > 0 then
+			Dungeon.Upgrade(member, offer[math.random(#offer)])
+		end
+	end
+	return ok
 end
 
 local function runLoop(run)
@@ -1037,6 +1155,11 @@ Remotes.Dungeon.OnServerEvent:Connect(function(player, action, typeKey, diffKey)
 	elseif action == "Ready" then
 		local run = playerRun[player]
 		if run and run.Phase == "StatPhase" then
+			local offer = run.Offers and run.Offers[player]
+			if offer and #offer > 0 then
+				notify(player, "먼저 특성을 하나 골라주세요! (1 / 2 / 3)")
+				return
+			end
 			run.Ready[player] = true
 		end
 	elseif action == "Leave" then
