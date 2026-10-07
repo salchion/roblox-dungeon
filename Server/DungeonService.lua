@@ -619,6 +619,26 @@ function Dungeon.ComputeDamage(player)
 	return math.max(1, math.floor(damage + 0.5)), isCrit
 end
 
+-- 범위 피해: center 주변 radius 안의 모든 적에게 damage 를 준다 (스킬용). 맞은 위치 목록 반환
+function Dungeon.AreaDamage(player, center, radius, damage)
+	local run = playerRun[player]
+	if not run or run.Destroyed then return nil end
+	local targets = {}
+	for part, data in pairs(run.Monsters) do
+		if part.Parent and (part.Position - center).Magnitude <= radius + part.Size.X / 2 then
+			table.insert(targets, { Part = part, Data = data })
+		end
+	end
+	local positions = {}
+	for _, target in ipairs(targets) do
+		if run.Monsters[target.Part] then
+			table.insert(positions, target.Part.Position)
+			damageMonster(run, player, target.Part, target.Data, damage, false, target.Part.Position)
+		end
+	end
+	return positions
+end
+
 -- 던전 특성 효과(관통 / 폭발 / 연쇄 / 흡혈)를 포함한 사격
 function Dungeon.Shoot(player, origin, direction)
 	local run = playerRun[player]

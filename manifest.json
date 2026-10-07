@@ -160,6 +160,13 @@
       "name": "GrowthService",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "Server/SkillService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "SkillService",
+      "class": "ModuleScript",
+      "overwrite": true
     }
   ]
 }

@@ -23,6 +23,7 @@ local Lobby = require(Modules:WaitForChild("LobbyService"))
 local Dummy = require(Modules:WaitForChild("DummyService"))
 local Dungeon = require(Modules:WaitForChild("DungeonService"))
 local Field = require(Modules:WaitForChild("FieldService"))
+local Skill = require(Modules:WaitForChild("SkillService"))
 local Quest = require(Modules:WaitForChild("QuestService"))
 local Level = require(Modules:WaitForChild("LevelService"))
 local Rank = require(Modules:WaitForChild("RankService"))
@@ -141,6 +142,7 @@ local function setupPlayer(player)
 		player:SetAttribute(attribute, 0)
 	end
 	player:SetAttribute("StatPoints", 0)
+	Skill.Reset(player)
 
 	player:SetAttribute("RespawnZone", 0)
 	player:SetAttribute("Keys", 0)
@@ -367,6 +369,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint)
 		Effects.Shot(tipPosition, endPosition, shot, color, tier.Rainbow)
 	end
 	Weapon.PlayShot(player)
+	Skill.AddCharge(player, Config.Skills.ChargePerShot)
 end)
 
 ------------------------------------------------------------

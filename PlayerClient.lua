@@ -1340,7 +1340,7 @@ local function attack(screenPosition)
 		local target = resolveTarget(instance)
 		if target then
 			if target.Kind == "Dummy" and not dummyUsable(target.Instance) then
-				toast("🔒 이 허수아비는 무기 레벨이 더 필요해요")
+				toast("🔒 이 허수아비는 캐릭터 레벨이 더 필요해요")
 			else
 				lockTarget = target
 				updateLockVisual()
@@ -2206,6 +2206,77 @@ end)
 --   마우스: 조준 방향 공격(누르고 있으면 연사) / R: 자동 공격(락온) / Q: 슬라이딩 / Shift: 달리기
 --   I: 메뉴 / 던전 안: 숫자키 1 2 3 스탯 투자
 ------------------------------------------------------------
+------------------------------------------------------------
+-- 스킬 (E 방벽 / F 충격파 / C 응급 치료 / V 궁극기): 하단 스킬바 + 쿨타임 표시
+------------------------------------------------------------
+local skillByKey = {}
+local skillSlots = {}
+local skillReadyAt = {}   -- [skillKey] = 이 시각(os.clock) 이후 사용 가능
+local skillBar = create("Frame", {
+	Size = UDim2.new(0, 4 * 68, 0, 64), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
+	BackgroundTransparency = 1, Visible = false,
+}, gui)
+for index, skillKey in ipairs(Config.Skills.Order) do
+	local cfg = Config.Skills[skillKey]
+	skillByKey[Enum.KeyCode[cfg.KeyCode]] = skillKey
+	local slot = create("Frame", {
+		Size = UDim2.new(0, 62, 0, 62), Position = UDim2.new(0, (index - 1) * 68, 0, 0),
+		BackgroundColor3 = Color3.fromRGB(28, 28, 42), BorderSizePixel = 0,
+	}, skillBar)
+	rounded(slot)
+	create("UIStroke", { Color = skillKey == "Ult" and Color3.fromRGB(255, 90, 90) or Color3.fromRGB(110, 150, 220), Thickness = 2 }, slot)
+	makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = cfg.Icon, TextSize = 24 }, slot)
+	makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 34), Text = cfg.Name, TextSize = 10 }, slot)
+	makeLabel({ Size = UDim2.new(0, 18, 0, 16), Position = UDim2.new(0, 3, 0, 3), Text = cfg.Key, TextSize = 12, Font = Enum.Font.GothamBlack,
+		TextColor3 = Color3.fromRGB(255, 220, 90) }, slot)
+	local cover = create("Frame", {
+		Size = UDim2.new(1, 0, 0, 0), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 0, 1, 0),
+		BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.45, BorderSizePixel = 0,
+	}, slot)
+	rounded(cover)
+	local timer = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 20, Font = Enum.Font.GothamBlack }, slot)
+	skillSlots[skillKey] = { Cover = cover, Timer = timer }
+end
+
+local function useSkill(skillKey)
+	local zone = currentZone()
+	if zone ~= "Field" and zone ~= "Dungeon" then
+		toast("스킬은 필드와 던전에서만 쓸 수 있어요.")
+		return
+	end
+	if os.clock() < (skillReadyAt[skillKey] or 0) then return end
+	Remotes.Skill:FireServer("Use", skillKey, getAimPoint(UserInputService:GetMouseLocation()))
+end
+
+Remotes.Skill.OnClientEvent:Connect(function(action, skillKey)
+	if action == "Cast" and Config.Skills[skillKey] then
+		skillReadyAt[skillKey] = os.clock() + Config.Skills[skillKey].Cooldown
+	end
+end)
+
+RunService.RenderStepped:Connect(function()
+	local zone = currentZone()
+	skillBar.Visible = zone == "Field" or zone == "Dungeon"
+	if not skillBar.Visible then return end
+	for skillKey, slot in pairs(skillSlots) do
+		local cfg = Config.Skills[skillKey]
+		local remain = (skillReadyAt[skillKey] or 0) - os.clock()
+		if skillKey == "Ult" then
+			local charge = player:GetAttribute("UltCharge") or 0
+			local full = charge >= cfg.Cost
+			slot.Cover.Size = UDim2.new(1, 0, 1 - math.clamp(charge / cfg.Cost, 0, 1), 0)
+			slot.Timer.Text = full and "" or string.format("%d%%", math.floor(charge))
+			slot.Timer.TextSize = 16
+		elseif remain > 0 then
+			slot.Cover.Size = UDim2.new(1, 0, math.clamp(remain / cfg.Cooldown, 0, 1), 0)
+			slot.Timer.Text = string.format("%.0f", math.ceil(remain))
+		else
+			slot.Cover.Size = UDim2.new(1, 0, 0, 0)
+			slot.Timer.Text = ""
+		end
+	end
+end)
+
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	if gameProcessed then return end
 
@@ -2214,6 +2285,8 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	elseif input.KeyCode == Enum.KeyCode.LeftShift then
 		sprinting = true
 		applySpeed()
+	elseif skillByKey[input.KeyCode] then
+		useSkill(skillByKey[input.KeyCode])
 	elseif input.KeyCode == Enum.KeyCode.Q then
 		slide()
 	elseif input.KeyCode == Enum.KeyCode.R then
