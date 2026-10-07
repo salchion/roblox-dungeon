@@ -689,7 +689,7 @@ makeLabel({
 local dungeonFrame = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Visible = false }, gui)
 
 local banner = makePanel({
-	Size = UDim2.new(0, 360, 0, 74), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 16),
+	Size = UDim2.new(0, 420, 0, 96), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 16),
 }, dungeonFrame)
 local bannerTitle = makeLabel({
 	Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 6),
@@ -699,9 +699,13 @@ local bannerSub = makeLabel({
 	Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0, 0, 0, 44),
 	TextSize = 16, TextColor3 = Color3.fromRGB(210, 210, 230),
 }, banner)
+local bannerMutator = makeLabel({
+	Size = UDim2.new(1, -16, 0, 20), Position = UDim2.new(0, 8, 0, 70),
+	TextSize = 13, TextColor3 = Color3.fromRGB(255, 205, 100), Font = Enum.Font.GothamBold,
+}, banner)
 
 local bossBar = makePanel({
-	Size = UDim2.new(0, 460, 0, 26), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 100), Visible = false,
+	Size = UDim2.new(0, 460, 0, 26), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 120), Visible = false,
 }, dungeonFrame)
 local bossFill = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(200, 40, 50), BorderSizePixel = 0 }, bossBar)
 rounded(bossFill)
@@ -875,6 +879,7 @@ local function refreshBanner()
 	banner.Visible = state ~= nil and state.Phase ~= "Ended"
 	bossBar.Visible = state ~= nil and state.BossRatio ~= nil
 	if not state then return end
+	bannerMutator.Text = state.MutatorText or ""
 
 	if state.BossRatio then
 		bossFill.Size = UDim2.new(math.clamp(state.BossRatio, 0, 1), 0, 1, 0)
@@ -2207,7 +2212,59 @@ end)
 --   I: 메뉴 / 던전 안: 숫자키 1 2 3 스탯 투자
 ------------------------------------------------------------
 ------------------------------------------------------------
--- 스킬 (E 방벽 / F 충격파 / C 응급 치료 / V 궁극기): 하단 스킬바 + 쿨타임 표시
+-- 전투 피드백: 피격 시 화면이 붉게 번쩍임 / 체력이 낮으면 붉은 경고 / 연속 처치 콤보 표시
+------------------------------------------------------------
+local hurtFlash = create("Frame", {
+	Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(220, 20, 20), BackgroundTransparency = 1,
+	BorderSizePixel = 0, ZIndex = 0, Active = false,
+}, gui)
+local flashStrength = 0
+local lowHealthRatio = 1
+
+local comboLabel = makeLabel({
+	Size = UDim2.new(0, 260, 0, 60), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -24, 0.4, 0),
+	Font = Enum.Font.GothamBlack, TextSize = 30, TextXAlignment = Enum.TextXAlignment.Right, Visible = false,
+	TextColor3 = Color3.fromRGB(255, 190, 60), TextStrokeTransparency = 0.2,
+}, gui)
+
+local function watchHealth(character)
+	local humanoid = character:WaitForChild("Humanoid", 10)
+	if not humanoid then return end
+	local last = humanoid.Health
+	humanoid.HealthChanged:Connect(function(health)
+		if health < last - 0.5 then
+			flashStrength = math.clamp(flashStrength + (last - health) / humanoid.MaxHealth * 3 + 0.25, 0, 0.6)
+		end
+		last = health
+		lowHealthRatio = health / math.max(1, humanoid.MaxHealth)
+	end)
+end
+if player.Character then
+	task.spawn(watchHealth, player.Character)
+end
+player.CharacterAdded:Connect(watchHealth)
+
+RunService.RenderStepped:Connect(function(dt)
+	flashStrength = math.max(0, flashStrength - dt * 1.4)
+	local pulse = 0
+	if lowHealthRatio < 0.3 and lowHealthRatio > 0 then
+		pulse = (0.12 + 0.1 * math.sin(os.clock() * 6)) * (1 - lowHealthRatio / 0.3)
+	end
+	hurtFlash.BackgroundTransparency = 1 - math.max(flashStrength, pulse)
+
+	local combo = player:GetAttribute("Combo") or 0
+	comboLabel.Visible = combo >= 2
+	if combo >= 2 then
+		local bonus = math.min(Config.Combo.MaxStacks, combo) * Config.Combo.DamagePerStack
+		comboLabel.Text = string.format("🔥 콤보 x%d\n공격력 +%d%%", combo, math.floor(bonus * 100 + 0.5))
+		comboLabel.TextSize = math.clamp(24 + combo * 0.4, 24, 40)
+		local left = (player:GetAttribute("ComboUntil") or 0) - os.clock()
+		comboLabel.TextTransparency = left < 1 and 0.5 or 0
+	end
+end)
+
+------------------------------------------------------------
+-- 스킬 (Z 방벽 / F 충격파 / C 응급 치료 / V 궁극기): 하단 스킬바 + 쿨타임 표시
 ------------------------------------------------------------
 local skillByKey = {}
 local skillSlots = {}

@@ -14,6 +14,7 @@ local Party = require(script.Parent:WaitForChild("PartyService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Level = require(script.Parent:WaitForChild("LevelService"))
 local MonsterTypes = require(script.Parent:WaitForChild("MonsterTypes"))
+local Combo = require(script.Parent:WaitForChild("ComboService"))
 local DungeonTerrain = require(script.Parent:WaitForChild("DungeonTerrain"))
 local Keys = require(script.Parent:WaitForChild("KeyService"))
 local Loot = require(script.Parent:WaitForChild("LootService"))
@@ -221,6 +222,13 @@ local function spawnMonster(run, level, position)
 	stats.MaxHealth = math.floor(stats.MaxHealth * D.GetHealthScale(run.PartySize) * run.Difficulty.HealthMult)
 	stats.ShotDamage = math.floor(stats.ShotDamage * run.Difficulty.DamageMult)
 	MonsterTypes.ApplyDef(typeKey, stats)
+	local mutator = run.Mutator
+	if mutator then -- 던전 변이 (거대화 / 신속 / 떼거지 / 황금 / 광폭)
+		stats.MaxHealth = math.floor(stats.MaxHealth * (mutator.HealthMult or 1))
+		stats.ShotDamage = math.floor(stats.ShotDamage * (mutator.DamageMult or 1))
+		stats.Speed *= mutator.SpeedMult or 1
+		stats.ShotInterval *= mutator.IntervalMult or 1
+	end
 
 	local color = def.Color:Lerp(run.Type.MonsterColor, 0.25)
 	local part = MonsterTypes.Build(typeKey, stats.Size, color, position or ringPosition(run, stats.Size), run.MonstersFolder)
@@ -482,7 +490,10 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 
 	run.Monsters[part] = nil
 	run.MonsterCount -= 1
+	Effects.Burst(part.Position, part.Color, data.IsBoss and 80 or 22)
+	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 2, 0), string.format("+%d G", math.floor(data.Stats.Gold * run.GoldMult + 0.5)), Color3.fromRGB(255, 220, 90))
 	part:Destroy()
+	Combo.Kill(player)
 	giveGold(run, data.Stats.Gold)
 	giveXp(run, data.IsBoss and Config.Xp.DungeonBoss or Config.Xp.DungeonPerMonsterLevel * data.Level)
 	Quest.Add(player, "Kills", 1)
@@ -579,6 +590,7 @@ function Dungeon.ComputeDamage(player)
 		* Config.GetLevelDamageMult(player:GetAttribute("Level") or 1)
 		* (1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0))
 		* (1 + (player:GetAttribute("PerkPower") or 0) * Config.Perks.PowerPerStack)
+		* Combo.GetDamageMult(player)
 	local chance = math.min(0.9, (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint
 		+ (player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0) + (weaponType.CritBonus or 0))
 	local isCrit = math.random() < chance
@@ -778,6 +790,7 @@ local function broadcast(run)
 		TimeLeft = run.PhaseEnd and math.max(0, math.ceil(run.PhaseEnd - os.clock())) or 0,
 		ReadyCount = readyCount,
 		MemberCount = #run.Members,
+		MutatorText = run.Mutator and string.format("%s %s — %s", run.Mutator.Icon, run.Mutator.Name, run.Mutator.Desc) or nil,
 		BossName = run.Boss and run.BossName or nil,
 		BossRatio = run.Boss and math.max(run.Boss.Health, 0) / run.Boss.MaxHealth or nil,
 	}
@@ -887,7 +900,7 @@ local function waitFor(run, predicate)
 end
 
 local function spawnWave(run, wave)
-	local count = D.GetMonsterCount(wave, run.PartySize)
+	local count = math.floor(D.GetMonsterCount(wave, run.PartySize) * (run.Mutator and run.Mutator.CountMult or 1))
 	local level = math.max(1, D.GetWaveMonsterLevel(wave) + run.LevelBonus)
 	for _ = 1, count do
 		if run.Destroyed or run.Phase == "Ended" then return end
@@ -935,6 +948,9 @@ end
 
 local function runLoop(run)
 	run.Phase = "Starting"
+	if run.Mutator then
+		notifyAll(run, string.format("%s 이번 던전 변이: %s — %s", run.Mutator.Icon, run.Mutator.Name, run.Mutator.Desc))
+	end
 	run.PhaseEnd = os.clock() + D.StartCountdown
 	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
 
@@ -1041,6 +1057,12 @@ function Dungeon.Start(player, typeKey, diffKey)
 		GoldMult = dungeonType.GoldMult * difficulty.GoldMult,
 		LevelBonus = dungeonType.LevelOffset + difficulty.LevelOffset,
 	}
+	-- 던전 변이: 확률로 한 가지가 붙는다 (위험 + 보상)
+	if math.random() < D.MutatorChance then
+		local key = D.Mutators.Order[math.random(#D.Mutators.Order)]
+		run.Mutator = D.Mutators[key]
+		run.GoldMult *= run.Mutator.GoldMult or 1
+	end
 	nextRunId += 1
 	runs[run.Id] = run
 

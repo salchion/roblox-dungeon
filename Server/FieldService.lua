@@ -20,6 +20,7 @@ local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Level = require(script.Parent:WaitForChild("LevelService"))
 local MonsterTypes = require(script.Parent:WaitForChild("MonsterTypes"))
+local Combo = require(script.Parent:WaitForChild("ComboService"))
 local Loot = require(script.Parent:WaitForChild("LootService"))
 
 local F = Config.Field
@@ -541,7 +542,9 @@ end
 
 local function killMonster(player, part, data)
 	monsters[part] = nil
+	Effects.Burst(part.Position, part.Color, data.Kind == "Boss" and 80 or 22)
 	part:Destroy()
+	Combo.Kill(player)
 	reward(player, data, part)
 
 	local zone, kind = data.Zone, data.Kind

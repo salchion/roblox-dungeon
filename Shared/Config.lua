@@ -32,6 +32,39 @@ Config.StatAttributes = {   -- Upgrade 리모트가 받는 이름 -> 플레이�
 }
 
 ------------------------------------------------------------
+-- 연속 처치 콤보 / 출석 보상 / 던전 변이(매번 달라지는 규칙)
+------------------------------------------------------------
+Config.Combo = {
+	Window = 4,           -- 다음 처치까지 허용 시간(초)
+	DamagePerStack = 0.01,
+	MaxStacks = 50,       -- 최대 +50% 공격력
+	UltPerKill = 4,       -- 처치마다 궁극기 게이지
+}
+
+Config.Daily = {
+	Rewards = { -- 연속 출석 1~7일차 (이후 반복)
+		{ Gold = 300 },
+		{ Gold = 500, Keys = 1 },
+		{ Gold = 800, Tickets = 1 },
+		{ Gold = 1200, Keys = 1 },
+		{ Gold = 1800, Tickets = 1 },
+		{ Gold = 2500, Keys = 2 },
+		{ Gold = 5000, Tickets = 3, Keys = 2 },
+	},
+}
+
+-- 던전마다 확률로 붙는 변이: 위험이 커지면 보상도 커진다
+Config.Dungeon.MutatorChance = 0.65
+Config.Dungeon.Mutators = {
+	Order = { "Giant", "Swift", "Swarm", "Golden", "Furious" },
+	Giant = { Name = "거대화", Icon = "🗿", Desc = "몬스터 체력 x1.6, 보상 x1.5", HealthMult = 1.6, GoldMult = 1.5 },
+	Swift = { Name = "신속", Icon = "💨", Desc = "몬스터 이동/공격이 빠름, 보상 x1.3", SpeedMult = 1.5, IntervalMult = 0.7, GoldMult = 1.3 },
+	Swarm = { Name = "떼거지", Icon = "🐀", Desc = "몬스터 수 x1.6 (체력 x0.7), 보상 x1.4", CountMult = 1.6, HealthMult = 0.7, GoldMult = 1.4 },
+	Golden = { Name = "황금의 날", Icon = "💰", Desc = "골드/경험치 x2, 몬스터 체력 x1.2", HealthMult = 1.2, GoldMult = 2 },
+	Furious = { Name = "광폭", Icon = "😡", Desc = "몬스터 공격력 x1.5, 보상 x1.5", DamageMult = 1.5, GoldMult = 1.5 },
+}
+
+------------------------------------------------------------
 -- 액티브 스킬 (오버워치 느낌): 필드 / 던전에서 사용. Z 방벽 · F 충격파 · C 응급 치료 · V 궁극기(게이지)
 -- 스킬 데미지 = 일반 공격 데미지 x Mult. 궁극기는 공격할수록(발사 1회 = +ChargePerShot) 게이지가 찬다.
 ------------------------------------------------------------
