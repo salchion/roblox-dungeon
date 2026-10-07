@@ -14,6 +14,8 @@ local Party = require(script.Parent:WaitForChild("PartyService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Level = require(script.Parent:WaitForChild("LevelService"))
 local MonsterTypes = require(script.Parent:WaitForChild("MonsterTypes"))
+local Keys = require(script.Parent:WaitForChild("KeyService"))
+local Loot = require(script.Parent:WaitForChild("LootService"))
 
 local D = Config.Dungeon
 local P = Config.Player
@@ -54,6 +56,7 @@ end
 function Dungeon.GetMaxHealth(player)
 	return P.BaseHealth + (player:GetAttribute("HealthPoints") or 0) * P.HealthPerPoint + (player:GetAttribute("GearHealth") or 0)
 		+ Config.GetLevelHealth(player:GetAttribute("Level") or 1)
+		+ (player:GetAttribute("TrainHealth") or 0)
 end
 
 -- 최대 체력을 스탯에 맞게 갱신하고 heal 만큼 회복 (math.huge면 완전 회복)
@@ -602,8 +605,9 @@ function Dungeon.ComputeDamage(player)
 	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
 	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel) * weaponType.DamageMult
 		* Config.GetLevelDamageMult(player:GetAttribute("Level") or 1)
+		* (1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0))
 	local chance = math.min(0.9, (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint
-		+ (player:GetAttribute("GearCrit") or 0) + (weaponType.CritBonus or 0))
+		+ (player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0) + (weaponType.CritBonus or 0))
 	local isCrit = math.random() < chance
 	if isCrit then
 		damage *= P.CritMultiplier
@@ -728,6 +732,7 @@ local function finish(run, victory)
 		giveXp(run, Config.Xp.DungeonClear)
 		for _, member in ipairs(run.Members) do
 			Quest.Add(member, "DungeonClears", 1)
+			run.LootLines[member] = Loot.DungeonChest(member, run.TypeKey, run.DiffKey) -- 보스 상자: 장비 아이템
 		end
 	end
 	for _, member in ipairs(run.Members) do
@@ -735,6 +740,7 @@ local function finish(run, victory)
 			Victory = victory,
 			Gold = run.Earned[member] or 0,
 			Tickets = run.TicketsEarned[member] or 0,
+			Loot = run.LootLines[member] or {},
 			Wave = run.Wave,
 			TotalWaves = run.TotalWaves,
 			TypeName = run.Type.Name,
@@ -852,8 +858,10 @@ end
 function Dungeon.Start(player, typeKey, diffKey)
 	if player:GetAttribute("Zone") ~= "Lobby" then return end
 
-	local dungeonType = D.Types[typeKey or "Cave"]
-	local difficulty = D.Difficulties[diffKey or "Normal"]
+	typeKey = typeKey or "Cave"
+	diffKey = diffKey or "Normal"
+	local dungeonType = D.Types[typeKey]
+	local difficulty = D.Difficulties[diffKey]
 	if not dungeonType or not dungeonType.Waves or not difficulty or not difficulty.HealthMult then return end -- "Order" 같은 잘못된 키 방어
 
 	local party = Party.GetParty(player)
@@ -870,6 +878,18 @@ function Dungeon.Start(player, typeKey, diffKey)
 	end
 	if not table.find(members, player) then return end
 
+	-- 던전 입장 제한: 열쇠 (파티원 모두 필요). 시간이 지나면 자동으로 차오른다.
+	local keyCost = difficulty.KeyCost or 1
+	for _, member in ipairs(members) do
+		if not Keys.Has(member, keyCost) then
+			notify(player, string.format("%s 님의 던전 열쇠가 부족해요. (필요 %d개)", member.DisplayName, keyCost))
+			if member ~= player then
+				notify(member, "던전 열쇠가 부족해서 파티가 입장하지 못했어요.")
+			end
+			return
+		end
+	end
+
 	local slot
 	for i = 0, D.MaxArenas - 1 do
 		if not usedSlots[i] then
@@ -882,6 +902,9 @@ function Dungeon.Start(player, typeKey, diffKey)
 		return
 	end
 	usedSlots[slot] = true
+	for _, member in ipairs(members) do
+		Keys.Spend(member, keyCost)
+	end
 
 	local run = {
 		Id = nextRunId,
@@ -901,6 +924,9 @@ function Dungeon.Start(player, typeKey, diffKey)
 		BossDead = false,
 		Destroyed = false,
 		Type = dungeonType,
+		TypeKey = typeKey,
+		DiffKey = diffKey,
+		LootLines = {},
 		Difficulty = difficulty,
 		TotalWaves = dungeonType.Waves,
 		BossName = dungeonType.Boss.Name,

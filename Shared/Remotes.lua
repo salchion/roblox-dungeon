@@ -17,12 +17,19 @@
 --                S->C  ("State", { Daily, Achievements, Titles, Equipped, Stats })
 --   Rank         C->S  ("Request")   S->C  ("List", { { Name, Power }... })
 --   Weapon       C->S  ("Equip", typeKey) ("Buy", typeKey)             무기 종류 장착 / 구매
+--   Inventory    C->S  ("Request") ("Equip", id) ("Scrap", id) ("Reroll", id) ("ScrapBelow", rarity) ("AutoScrap", rarity)
+--                S->C  ("State", { Items, Capacity, Essence, AutoScrap })
+--   Loot         S->C  ("Drop", id, position, rarity, name) ("Gone", id)   내 전리품 빔 (개인 전리품)
+--   Warp         C->S  ("Go", zone)  zone 0 = 로비         S->C  ("Open")   캠프/게이트 워프 메뉴
+--   Shop         C->S  ("Buy", kind, key) ("Aura", key)    kind = "Pass" | "Product"
+--   Growth       C->S  ("Request") ("Train", stat) ("Gate") ("Skip", "Train", stat) ("Skip", "Gate")   훈련소 / 돌파 / 시간 단축
+--                S->C  ("State", { Levels, Jobs, Slots, GatePassed, GateJob, TimeSkip, ServerTime })
 --   Notify       S->C  (text)                                  화면 알림
 
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon", "Notify", "Gear", "OpenGear", "Quest", "Rank", "Weapon" }
+local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon", "Notify", "Gear", "OpenGear", "Quest", "Rank", "Weapon", "Inventory", "Loot", "Warp", "Shop", "Growth" }
 
 local folder
 if RunService:IsServer() then

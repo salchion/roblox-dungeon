@@ -125,6 +125,41 @@
       "name": "MonsterTypes",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "Server/InventoryService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "InventoryService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Server/LootService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "LootService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Server/KeyService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "KeyService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Server/MonetizationService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "MonetizationService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Server/GrowthService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "GrowthService",
+      "class": "ModuleScript",
+      "overwrite": true
     }
   ]
 }

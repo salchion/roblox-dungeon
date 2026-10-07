@@ -1,8 +1,11 @@
 -- FieldService (ServerScriptService > Modules 안의 ModuleScript, 이름: FieldService)
 -- 로비 동쪽으로 길게 이어진 직선 사냥 필드. 모든 플레이어가 함께 쓰는 열린 공간이다.
 --   * 8개 구역(초원 -> 숲 -> 황무지 -> 사막 -> 설원 -> 화산 -> 암흑 지대 -> 심연), 동쪽으로 갈수록 몬스터가 강해짐
---   * 구역마다 일반 몬스터 + 엘리트(★) 1마리. 처치하면 골드, 엘리트는 확률로 티켓
---   * 맨 끝에 필드 보스 (처치하면 주변 플레이어에게 티켓)
+--   * 구역 하나하나가 아주 넓다 (Config.Field.ZoneLength x Width). 구역마다 일반 몬스터 + 엘리트(★) 여러 마리
+--   * 몬스터가 장비 아이템을 떨어뜨린다 (개인 전리품, LootService). 구역이 깊을수록 높은 등급
+--   * 구역마다 입구에 캠프: 안전지대 + 워프 + 죽었을 때 부활 지점
+--   * 공개 이벤트: 일정 시간마다 침공 보스가 나타나고, 같이 싸운 사람은 전리품을 받는다
+--   * 맨 끝에 필드 보스 (처치하면 주변 플레이어에게 티켓 + 전리품)
 --   * 어디까지 갔는지(MaxZone)가 머리 위 이름표에 남아 강함을 과시할 수 있다
 -- 플레이어의 Zone Attribute 는 x좌표로 "Lobby" / "Field" 가 자동 전환된다 (던전 안에 있는 사람은 건드리지 않음).
 
@@ -17,6 +20,7 @@ local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Level = require(script.Parent:WaitForChild("LevelService"))
 local MonsterTypes = require(script.Parent:WaitForChild("MonsterTypes"))
+local Loot = require(script.Parent:WaitForChild("LootService"))
 
 local F = Config.Field
 local TOP = 0.05
@@ -26,6 +30,9 @@ local Field = {}
 local monsters = {}      -- [Part] = 몬스터 데이터
 local projectiles = {}
 local worldFolder, monstersFolder
+local campCFrames = {}      -- [zone] = 캠프 부활/워프 위치
+local lobbySpawn = CFrame.new(0, 5, 102)
+local activeEvent = nil     -- { Part, Data }
 
 ------------------------------------------------------------
 -- 유틸
@@ -44,12 +51,19 @@ local function getAliveParts(player)
 	return nil
 end
 
+-- 각 구역 입구의 캠프 주변 / 로비 쪽은 안전지대: 몬스터가 노리지 않고 탄도 맞지 않는다
+local function isSafe(position)
+	local relative = position.X - F.StartX
+	if relative < 0 then return true end
+	return relative % F.ZoneLength < F.CampSafe
+end
+
 local function nearestFieldPlayer(position)
 	local nearest, nearestDist = nil, math.huge
 	for _, player in ipairs(Players:GetPlayers()) do
 		if player:GetAttribute("Zone") == "Field" then
 			local root = getAliveParts(player)
-			if root then
+			if root and not isSafe(root.Position) then
 				local dist = (root.Position - position).Magnitude
 				if dist < nearestDist then
 					nearest, nearestDist = root, dist
@@ -105,8 +119,8 @@ end
 local function decorateZone(zone, rng)
 	local x0, x1 = zoneBounds(zone)
 	local half = F.Width / 2
-	for _ = 1, 14 do
-		local x = rng:NextNumber(x0 + 12, x1 - 12)
+	for _ = 1, 90 do
+		local x = rng:NextNumber(x0 + F.CampSafe + 10, x1 - 12)
 		local z = rng:NextNumber(-half + 6, half - 6)
 		local position = Vector3.new(x, TOP, z)
 
@@ -192,6 +206,56 @@ local function buildCanyon(rng, totalLength, half)
 	end
 end
 
+-- 구역 입구 캠프: 안전지대 + 워프 비콘 + 부활 지점
+local function buildCamp(zone, x0)
+	local center = Vector3.new(x0 + 40, TOP, 0)
+	local accent = F.ZoneColors[zone]:Lerp(Color3.fromRGB(255, 255, 255), 0.35)
+
+	makePart({
+		Name = "CampFloor", Shape = Enum.PartType.Cylinder, Size = Vector3.new(1, 64, 64),
+		CFrame = CFrame.new(center + Vector3.new(0, 0.5, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Color3.fromRGB(120, 112, 100), Material = Enum.Material.Cobblestone,
+	}, worldFolder)
+
+	local beacon = makePart({
+		Name = "CampBeacon", Size = Vector3.new(3, 26, 3), Position = center + Vector3.new(0, 13, 0),
+		Color = accent, Material = Enum.Material.Neon,
+	}, worldFolder)
+	local light = Instance.new("PointLight")
+	light.Range = 45
+	light.Brightness = 1.6
+	light.Color = accent
+	light.Parent = beacon
+	makeSign(beacon, string.format("⛺ 구역 %d 캠프\n안전지대 · 워프", zone), Color3.fromRGB(255, 240, 200), 18)
+
+	for index = 0, 3 do
+		local angle = math.rad(index * 90 + 45)
+		local post = center + Vector3.new(math.cos(angle) * 24, 0, math.sin(angle) * 24)
+		makePart({ Name = "CampPost", Size = Vector3.new(1, 8, 1), Position = post + Vector3.new(0, 4, 0), Color = Color3.fromRGB(70, 50, 38), Material = Enum.Material.Wood }, worldFolder)
+		local flame = makePart({
+			Name = "CampFlame", Shape = Enum.PartType.Ball, Size = Vector3.new(2, 2, 2), Position = post + Vector3.new(0, 9, 0),
+			Color = Color3.fromRGB(255, 150, 60), Material = Enum.Material.Neon, CanCollide = false,
+		}, worldFolder)
+		local flameLight = Instance.new("PointLight")
+		flameLight.Range = 26
+		flameLight.Color = Color3.fromRGB(255, 170, 90)
+		flameLight.Parent = flame
+	end
+
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.ActionText = "워프 / 캠프"
+	prompt.ObjectText = string.format("구역 %d 캠프", zone)
+	prompt.HoldDuration = 0
+	prompt.MaxActivationDistance = 18
+	prompt.RequiresLineOfSight = false
+	prompt.Parent = beacon
+	prompt.Triggered:Connect(function(player)
+		Remotes.Warp:FireClient(player, "Open")
+	end)
+
+	campCFrames[zone] = CFrame.new(x0 + 40, TOP + 4, 16)
+end
+
 local function buildWorld()
 	worldFolder = Instance.new("Folder")
 	worldFolder.Name = "Field"
@@ -223,6 +287,7 @@ local function buildWorld()
 		makeSign(beam, string.format("구역 %d · %s\n몬스터 Lv.%d", zone, F.ZoneNames[zone], F.GetZoneLevel(zone)), Color3.fromRGB(255, 240, 190), 8)
 
 		decorateZone(zone, rng)
+		buildCamp(zone, x0)
 	end
 
 	buildCanyon(rng, totalLength, half)
@@ -317,9 +382,9 @@ local function spawnMonster(zone, kind)
 		position = Vector3.new(x1 - 45, TOP + stats.Size / 2, 0)
 	else
 		position = Vector3.new(
-			math.random(math.floor(x0 + 25), math.floor(x1 - 25)),
+			math.random(math.floor(x0 + F.CampSafe + 40), math.floor(x1 - 25)),
 			TOP + stats.Size / 2,
-			math.random(-F.Width / 2 + 20, F.Width / 2 - 20)
+			math.random(-F.Width / 2 + 25, F.Width / 2 - 25)
 		)
 	end
 
@@ -345,6 +410,7 @@ local function spawnMonster(zone, kind)
 	end
 
 	monsters[part] = {
+		BossLike = kind == "Boss",
 		Zone = zone,
 		Kind = kind,
 		Level = level,
@@ -396,7 +462,37 @@ local function telegraph(part, data, color, delay, action)
 	end)
 end
 
+local function dropPosition(part)
+	return Vector3.new(part.Position.X, TOP, part.Position.Z)
+end
+
+-- 공개 이벤트 보스 보상: 충분히 싸운(체력의 3% 이상 피해) 참가자 모두에게 골드 / 경험치 / 티켓 / 전리품
+local function rewardEvent(data, part)
+	local position = dropPosition(part)
+	local rewarded = 0
+	for player, damage in pairs(data.Contrib) do
+		if player.Parent and damage >= data.MaxHealth * Config.Events.ContribMin then
+			rewarded += 1
+			player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + data.Stats.Gold)
+			player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + 1)
+			Level.AddXP(player, Config.Xp.FieldBoss * 1.5)
+			Quest.Add(player, "BossKills", 1)
+			Quest.Add(player, "Kills", 1)
+			Loot.DropFor(player, position, "Event", data.Zone)
+			notify(player, string.format("⚔ 공개 이벤트 승리! 전리품이 떨어졌어요 (+%d G, 🎫 +1)", data.Stats.Gold))
+		end
+	end
+	for _, other in ipairs(Players:GetPlayers()) do
+		notify(other, string.format("🏆 침공 사령관 격파! (참여 %d명)", rewarded))
+	end
+end
+
 local function reward(player, data, part)
+	if data.Kind == "Event" then
+		rewardEvent(data, part)
+		return
+	end
+
 	local gold = data.Stats.Gold
 	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
 	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2, 0), string.format("+%d G", gold), Color3.fromRGB(255, 220, 90))
@@ -418,6 +514,11 @@ local function reward(player, data, part)
 		Quest.Add(player, "FieldKills", 1)
 	end
 
+	-- 장비 전리품 (개인 전리품: 처치한 본인에게만 보임)
+	if data.Kind ~= "Boss" then
+		Loot.DropFor(player, dropPosition(part), data.Kind, data.Zone)
+	end
+
 	if data.Kind == "Elite" and math.random() < F.EliteTicketChance then
 		player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + 1)
 		notify(player, "🎫 엘리트에게서 장비 뽑기 티켓을 얻었어요!")
@@ -427,11 +528,12 @@ local function reward(player, data, part)
 			local root = getAliveParts(other)
 			if other:GetAttribute("Zone") == "Field" and root and (root.Position - bossPosition).Magnitude <= 160 then
 				other:SetAttribute("Tickets", (other:GetAttribute("Tickets") or 0) + F.BossTickets)
+				Loot.DropFor(other, dropPosition(part), "Boss", data.Zone)
 				if other ~= player then
 					Quest.Add(other, "BossKills", 1)
 					Level.AddXP(other, Config.Xp.FieldBoss)
 				end
-				notify(other, string.format("👑 필드 보스 처치! 티켓 +%d", F.BossTickets))
+				notify(other, string.format("👑 필드 보스 처치! 티켓 +%d, 전리품이 떨어졌어요", F.BossTickets))
 			end
 		end
 	end
@@ -443,6 +545,10 @@ local function killMonster(player, part, data)
 	reward(player, data, part)
 
 	local zone, kind = data.Zone, data.Kind
+	if kind == "Event" then
+		activeEvent = nil -- 이벤트 보스는 다시 나타나지 않는다
+		return
+	end
 	task.delay(kind == "Boss" and F.BossRespawn or F.RespawnTime, function()
 		spawnMonster(zone, kind)
 	end)
@@ -466,6 +572,9 @@ function Field.Shoot(player, origin, direction)
 	if data then
 		local damage, isCrit = Dungeon.ComputeDamage(player)
 		data.Health -= damage
+		if data.Contrib then
+			data.Contrib[player] = (data.Contrib[player] or 0) + damage
+		end
 		data.HealthFill.Size = UDim2.new(math.max(data.Health, 0) / data.MaxHealth, 0, 1, 0)
 		Effects.DamageNumber(result.Position, damage, isCrit)
 		if data.Health <= 0 then
@@ -490,7 +599,7 @@ local fieldCtx = {
 		for _, player in ipairs(Players:GetPlayers()) do
 			if player:GetAttribute("Zone") == "Field" then
 				local root, humanoid = getAliveParts(player)
-				if root then
+				if root and not isSafe(root.Position) then
 					table.insert(list, { Root = root, Humanoid = humanoid })
 				end
 			end
@@ -520,7 +629,7 @@ local function stepMonsters(dt)
 		if target and distance <= range and fromHome <= F.LeashRange * 1.5 then
 			data.Aggro = true
 
-			if data.Kind ~= "Boss" then
+			if not data.BossLike then
 				-- 일반 몬스터 / 엘리트: 종류별 움직임과 공격
 				MonsterTypes.Update(fieldCtx, part, data, dt, now)
 			else
@@ -581,7 +690,7 @@ local function stepProjectiles(dt)
 		for _, player in ipairs(Players:GetPlayers()) do
 			if player:GetAttribute("Zone") == "Field" then
 				local root, humanoid = getAliveParts(player)
-				if root and (root.Position - projectile.Part.Position).Magnitude < projectile.Radius + 2 then
+				if root and not isSafe(root.Position) and (root.Position - projectile.Part.Position).Magnitude < projectile.Radius + 2 then
 					humanoid:TakeDamage(projectile.Damage)
 					hit = true
 					break
@@ -624,14 +733,184 @@ local function updateZones()
 	end
 end
 
-function Field.Init()
+------------------------------------------------------------
+-- 워프 / 부활 (캠프)
+------------------------------------------------------------
+function Field.ZoneOf(player)
+	if player:GetAttribute("Zone") ~= "Field" then return 0 end
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	return root and zoneOfX(root.Position.X) or 0
+end
+
+-- 필드에서 죽으면 가장 가까웠던 구역의 캠프에서 부활 (로비로 돌아가 다시 걸어오지 않아도 됨)
+function Field.RespawnAtCamp(player, character, zone)
+	local camp = campCFrames[zone]
+	if not camp then return end
+	local root = character:WaitForChild("HumanoidRootPart", 5)
+	if root then
+		character:PivotTo(camp)
+		player:SetAttribute("Zone", "Field")
+	end
+end
+
+local lastWarp = {}
+
+-- zone 0 = 로비, 1~8 = 해당 구역 캠프 (도달한 구역까지만)
+local function warp(player, zone)
+	local now = os.clock()
+	if now - (lastWarp[player] or 0) < 3 then return end
+	if typeof(zone) ~= "number" or zone % 1 ~= 0 or zone < 0 or zone > F.ZoneCount then return end
+	if player:GetAttribute("Zone") == "Dungeon" then
+		notify(player, "던전 안에서는 워프할 수 없어요.")
+		return
+	end
+	local root = getAliveParts(player)
+	if not root then return end
+
+	if zone >= 1 and zone > math.max(1, player:GetAttribute("MaxZone") or 0) then
+		notify(player, "아직 도달하지 않은 구역이에요. 걸어서 먼저 가보세요!")
+		return
+	end
+
+	lastWarp[player] = now
+	if zone == 0 then
+		player.Character:PivotTo(lobbySpawn)
+		player:SetAttribute("Zone", "Lobby")
+		notify(player, "마을로 돌아왔어요.")
+	else
+		player.Character:PivotTo(campCFrames[zone])
+		player:SetAttribute("Zone", "Field")
+		notify(player, string.format("⛺ 구역 %d · %s 캠프로 이동!", zone, F.ZoneNames[zone]))
+	end
+end
+
+Remotes.Warp.OnServerEvent:Connect(function(player, action, zone)
+	if action == "Go" then
+		warp(player, zone)
+	end
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+	lastWarp[player] = nil
+end)
+
+------------------------------------------------------------
+-- 공개 이벤트: 침공 사령관
+------------------------------------------------------------
+local function spawnEvent(zone)
+	local level = F.GetZoneLevel(zone) + 3
+	local base = Config.Monster.GetStats(level)
+	local stats = {
+		Size = 15, MaxHealth = base.MaxHealth * 80, Speed = 7, ShotDamage = math.floor(base.ShotDamage * 1.3),
+		ShotInterval = 1.4, ShotSpeed = 55, Gold = base.Gold * 30,
+	}
+
+	local x0, x1 = zoneBounds(zone)
+	local position = Vector3.new(
+		math.random(math.floor(x0 + 200), math.floor(x1 - 80)),
+		TOP + stats.Size / 2,
+		math.random(-F.Width / 2 + 70, F.Width / 2 - 70)
+	)
+
+	local part = Instance.new("Part")
+	part.Name = "EventBoss"
+	part.Shape = Enum.PartType.Ball
+	part.Size = Vector3.new(stats.Size, stats.Size, stats.Size)
+	part.Anchored = true
+	part.CanCollide = false
+	part.Position = position
+	part.Color = Color3.fromRGB(190, 60, 255)
+	part.Material = Enum.Material.Neon
+	part.Parent = monstersFolder
+
+	-- 멀리서도 보이는 하늘로 솟는 빛기둥 (보스에 붙어서 같이 움직임)
+	local beam = Instance.new("Part")
+	beam.Size = Vector3.new(3, 420, 3)
+	beam.Color = Color3.fromRGB(200, 90, 255)
+	beam.Material = Enum.Material.Neon
+	beam.Transparency = 0.45
+	beam.CanCollide = false
+	beam.CanQuery = false
+	beam.CanTouch = false
+	beam.Massless = true
+	beam.CFrame = part.CFrame * CFrame.new(0, 210, 0)
+	local weld = Instance.new("WeldConstraint")
+	weld.Part0 = part
+	weld.Part1 = beam
+	weld.Parent = beam
+	beam.Parent = part
+
+	local data = {
+		BossLike = true,
+		Kind = "Event",
+		Zone = zone,
+		Level = level,
+		XpLevel = level,
+		Stats = stats,
+		Health = stats.MaxHealth,
+		MaxHealth = stats.MaxHealth,
+		HealthFill = createHealthBar(part, string.format("⚔ %s (구역 %d)", Config.Events.Name, zone), 320, Color3.fromRGB(230, 150, 255)),
+		Home = position,
+		NextAttack = os.clock() + 3,
+		NextShot = os.clock() + 3,
+		NextRing = os.clock() + 6,
+		BaseColor = part.Color,
+		Aggro = false,
+		Contrib = {},
+	}
+	monsters[part] = data
+	return part, data
+end
+
+local function runEvents()
+	task.wait(Config.Events.FirstDelay)
+	while true do
+		-- 필드에 사람이 있을 때만 이벤트를 연다 (도달한 구역 중에서 무작위)
+		local maxZone, anyone = 1, false
+		for _, player in ipairs(Players:GetPlayers()) do
+			if player:GetAttribute("Zone") == "Field" then
+				anyone = true
+				maxZone = math.max(maxZone, player:GetAttribute("MaxZone") or 1)
+			end
+		end
+
+		if anyone then
+			local zone = math.random(1, math.min(maxZone, F.ZoneCount))
+			local part, data = spawnEvent(zone)
+			activeEvent = { Part = part, Data = data }
+			for _, player in ipairs(Players:GetPlayers()) do
+				notify(player, string.format("⚔ [공개 이벤트] 구역 %d · %s 에 %s 출현! 하늘의 보라색 빛기둥을 따라가세요!", zone, F.ZoneNames[zone], Config.Events.Name))
+			end
+
+			local expire = os.clock() + Config.Events.Lifetime
+			while monsters[part] == data and os.clock() < expire do
+				task.wait(1)
+			end
+			if monsters[part] == data then
+				monsters[part] = nil
+				part:Destroy()
+				activeEvent = nil
+				for _, player in ipairs(Players:GetPlayers()) do
+					notify(player, "침공 사령관이 사라졌어요...")
+				end
+			end
+		end
+
+		task.wait(math.random(Config.Events.MinInterval, Config.Events.MaxInterval))
+	end
+end
+
+function Field.Init(lobbySpawnCFrame)
+	lobbySpawn = lobbySpawnCFrame or lobbySpawn
 	buildWorld()
 
 	for zone = 1, F.ZoneCount do
 		for _ = 1, F.MonstersPerZone do
 			spawnMonster(zone, "Normal")
 		end
-		spawnMonster(zone, "Elite")
+		for _ = 1, F.ElitesPerZone do
+			spawnMonster(zone, "Elite")
+		end
 	end
 	spawnMonster(F.ZoneCount, "Boss")
 
@@ -645,6 +924,8 @@ function Field.Init()
 			updateZones()
 		end
 	end)
+
+	task.spawn(runEvents)
 end
 
 return Field

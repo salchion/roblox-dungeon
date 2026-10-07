@@ -25,7 +25,13 @@ local Field = require(Modules:WaitForChild("FieldService"))
 local Quest = require(Modules:WaitForChild("QuestService"))
 local Level = require(Modules:WaitForChild("LevelService"))
 local Rank = require(Modules:WaitForChild("RankService"))
+local Inventory = require(Modules:WaitForChild("InventoryService"))
+local Keys = require(Modules:WaitForChild("KeyService"))
+local Growth = require(Modules:WaitForChild("GrowthService"))
+local Monetization = require(Modules:WaitForChild("MonetizationService"))
 local Data = require(Modules:WaitForChild("DataService"))
+
+Monetization.SaveHook = Data.Save -- 결제 영수증 처리 때 "저장 성공"을 확인하는 데 사용
 
 ------------------------------------------------------------
 -- 로비 / 게이트 / 강화대 / 뽑기 머신 / 허수아비 / 랭킹판 / 필드
@@ -34,7 +40,7 @@ local lobby = Lobby.Build()
 Dungeon.Init(lobby.SpawnCFrame)
 Dummy.Build(lobby.DummyStart)
 Rank.Init(lobby.RankBoardCFrame)
-Field.Init()
+Field.Init(lobby.SpawnCFrame)
 
 -- 던전 게이트: 파티장(또는 솔로)에게 던전 종류 / 난이도 선택창을 띄운다
 lobby.GatePrompt.Triggered:Connect(function(player)
@@ -44,6 +50,13 @@ end)
 lobby.AnvilPrompt.Triggered:Connect(function(player)
 	if player:GetAttribute("Zone") == "Lobby" then
 		Remotes.OpenEnhance:FireClient(player)
+	end
+end)
+
+-- 필드 입구: 도달한 구역의 캠프로 바로 워프하는 메뉴
+lobby.WarpPrompt.Triggered:Connect(function(player)
+	if player:GetAttribute("Zone") ~= "Dungeon" then
+		Remotes.Warp:FireClient(player, "Open")
 	end
 end)
 
@@ -64,10 +77,23 @@ local function onCharacterAdded(player, character)
 
 	Dungeon.OnCharacterAdded(player, character)
 
+	-- 필드에서 죽었다면 가장 가까웠던 구역의 캠프에서 부활
+	local respawnZone = player:GetAttribute("RespawnZone") or 0
+	if respawnZone > 0 then
+		player:SetAttribute("RespawnZone", 0)
+		Field.RespawnAtCamp(player, character, respawnZone)
+	end
+	humanoid.Died:Connect(function()
+		if player:GetAttribute("Zone") == "Field" then
+			player:SetAttribute("RespawnZone", Field.ZoneOf(player))
+		end
+	end)
+
 	character:WaitForChild("Head")
 	Weapon.Refresh(player)
 	task.wait(0.2) -- 몸 부위가 다 붙은 뒤 장비 외형을 씌운다
 	Gear.ApplyVisuals(player)
+	Monetization.ApplyAura(player) -- 꾸미기 오라
 end
 
 -- 전투력 = 무기(종류+강화) + 스탯 + 장비 (이름표 / 리더보드 / 랭킹에 표시)
@@ -76,10 +102,11 @@ local function updatePower(player)
 		player:GetAttribute("WeaponLevel") or 0,
 		player:GetAttribute("CritPoints") or 0,
 		player:GetAttribute("SpeedPoints") or 0,
-		player:GetAttribute("GearHealth") or 0,
-		player:GetAttribute("GearCrit") or 0,
+		(player:GetAttribute("GearHealth") or 0) + (player:GetAttribute("TrainHealth") or 0),
+		(player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0),
 		player:GetAttribute("WeaponType") or "Pistol",
-		player:GetAttribute("Level") or 1
+		player:GetAttribute("Level") or 1,
+		(player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0)
 	))
 end
 
@@ -114,6 +141,11 @@ local function setupPlayer(player)
 	end
 	player:SetAttribute("StatPoints", 0)
 
+	player:SetAttribute("RespawnZone", 0)
+	player:SetAttribute("Keys", 0)
+	player:SetAttribute("GatePassed", 0)
+	player:SetAttribute("TimeSkip", 0)
+	player:SetAttribute("KeyNext", 0)
 	Gear.Load(player, nil) -- 빈 장비로 시작 (저장 데이터는 아래에서 덮어씀)
 	Gear.Watch(player)
 
@@ -158,7 +190,7 @@ local function setupPlayer(player)
 		Weapon.Refresh(player) -- 강화 즉시 무기 외형 변경 (모든 플레이어에게 보임)
 		updatePower(player)
 	end)
-	for _, attribute in ipairs({ "CritPoints", "SpeedPoints", "GearHealth", "GearCrit" }) do
+	for _, attribute in ipairs({ "CritPoints", "SpeedPoints", "GearHealth", "GearCrit", "GearDamage", "TrainHealth", "TrainCrit", "TrainDamage" }) do
 		player:GetAttributeChangedSignal(attribute):Connect(function()
 			updatePower(player)
 		end)
@@ -166,6 +198,9 @@ local function setupPlayer(player)
 	-- 장비로 최대 체력이 바뀌면 바로 반영
 	player:GetAttributeChangedSignal("GearHealth"):Connect(function()
 		Dungeon.RefreshMaxHealth(player)
+	end)
+	player:GetAttributeChangedSignal("TrainHealth"):Connect(function()
+		Dungeon.RefreshMaxHealth(player) -- 훈련소 체력 단련
 	end)
 	player:GetAttributeChangedSignal("PartyId"):Connect(function()
 		Weapon.UpdateNameplate(player)
@@ -176,6 +211,9 @@ local function setupPlayer(player)
 	end)
 	player:GetAttributeChangedSignal("Title"):Connect(function()
 		Weapon.UpdateNameplate(player)
+	end)
+	player:GetAttributeChangedSignal("Aura"):Connect(function()
+		Monetization.ApplyAura(player)
 	end)
 	-- 레벨이 오르면 최대 체력(완전 회복) / 전투력 / 이름표 / 업적 갱신
 	player:GetAttributeChangedSignal("Level"):Connect(function()
@@ -209,7 +247,10 @@ local function setupPlayer(player)
 		player:SetAttribute("WeaponType", saved.Weapons.Type)
 		Level.Load(player, saved.Level, saved.XP)
 		syncWeaponLevel(player)
-		Gear.Load(player, saved.Gear)
+		Monetization.Load(player, saved.Monetization)  -- 가방 칸 / 열쇠 보관량 등 BM 효과가 먼저 반영돼야 함
+		Inventory.Load(player, saved.Inventory, saved.Gear) -- 예전 저장 형식의 장비는 아이템으로 이어받음
+		Keys.Load(player, saved.KeysData and saved.KeysData.Keys, saved.KeysData and saved.KeysData.Base)
+		Growth.Load(player, saved.Growth) -- 훈련소 / 돌파 (오프라인 중 끝난 것도 완료 처리)
 		Quest.Load(player, saved.Quest)
 		updatePower(player)
 	end
@@ -235,6 +276,10 @@ Players.PlayerRemoving:Connect(function(player)
 	Data.Save(player)
 	Data.Forget(player)
 	Quest.Forget(player)
+	Inventory.Forget(player)
+	Keys.Forget(player)
+	Monetization.Forget(player)
+	Growth.Forget(player)
 end)
 
 task.spawn(function()

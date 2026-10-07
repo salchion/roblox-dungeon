@@ -107,7 +107,7 @@ local function makeFountain(position, parent)
 	spray.Parent = top
 end
 
--- 반환: { SpawnCFrame, GatePrompt, AnvilPrompt, GachaPrompt, DummyStart, RankBoardCFrame }
+-- 반환: { SpawnCFrame, GatePrompt, AnvilPrompt, GachaPrompt, WarpPrompt, DummyStart, RankBoardCFrame }
 function Lobby.Build()
 	local folder = Instance.new("Folder")
 	folder.Name = "Lobby"
@@ -293,6 +293,15 @@ function Lobby.Build()
 	local beam = makePart({ Name = "FieldBeam", Size = Vector3.new(5, 5, 45), Position = fieldGate + Vector3.new(0, 27, 0), Color = gateStone, Material = Enum.Material.Cobblestone }, folder)
 	makeLabel(beam, "▶ 사냥 필드 (동쪽)\n오른쪽으로 갈수록 강한 몬스터!", Color3.fromRGB(190, 255, 180), 8, 340, 76)
 
+	-- 도달한 필드 구역 캠프로 바로 워프 (캠프의 비콘에서도 같은 메뉴가 열린다)
+	local warpPrompt = Instance.new("ProximityPrompt")
+	warpPrompt.ActionText = "필드 워프"
+	warpPrompt.ObjectText = "필드 입구"
+	warpPrompt.HoldDuration = 0
+	warpPrompt.MaxActivationDistance = 24
+	warpPrompt.RequiresLineOfSight = false
+	warpPrompt.Parent = beam
+
 	-- 허수아비 훈련장 입구 표지 (서쪽, 실제 허수아비는 DummyService 가 놓는다)
 	local trainingSign = makePart({ Name = "TrainingSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(-100, 22, -108), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
 	makeLabel(trainingSign, "🎯 허수아비 훈련장\n▼ 아래로 갈수록 배수 UP", Color3.fromRGB(255, 220, 120), 0, 360, 80)
@@ -302,6 +311,7 @@ function Lobby.Build()
 		GatePrompt = gatePrompt,
 		AnvilPrompt = anvilPrompt,
 		GachaPrompt = gachaPrompt,
+		WarpPrompt = warpPrompt,
 		DummyStart = Vector3.new(-100, TOP, -92),
 		RankBoardCFrame = CFrame.lookAt(Vector3.new(-52, TOP + 16.5, 100), Vector3.new(0, TOP + 16.5, 72)),
 	}

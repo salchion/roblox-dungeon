@@ -9,6 +9,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+local Growth = require(script.Parent:WaitForChild("GrowthService"))
 
 local Quest = {}
 
@@ -101,6 +102,9 @@ local function applyReward(player, reward)
 	if reward.Tickets then
 		player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + reward.Tickets)
 	end
+	if reward.TimeSkip then
+		Growth.AddTimeSkip(player, reward.TimeSkip)
+	end
 end
 
 local function rewardText(reward)
@@ -110,6 +114,9 @@ local function rewardText(reward)
 	end
 	if reward.Tickets then
 		table.insert(parts, string.format("🎫 %d", reward.Tickets))
+	end
+	if reward.TimeSkip then
+		table.insert(parts, string.format("⏱ %d분", reward.TimeSkip // 60))
 	end
 	return table.concat(parts, " + ")
 end
@@ -228,6 +235,18 @@ function Quest.Serialize(player)
 		Stats = state.Stats, Day = state.Day, Progress = state.Progress,
 		Claimed = state.Claimed, AchClaimed = state.AchClaimed, Equipped = state.Equipped,
 	}
+end
+
+-- 업적을 달성했는지 (오라 해금 등에서 사용)
+function Quest.IsDone(player, achievementId)
+	local state = states[player]
+	if not state then return false end
+	for _, achievement in ipairs(Config.Achievements) do
+		if achievement.Id == achievementId then
+			return achievementDone(player, state, achievement)
+		end
+	end
+	return false
 end
 
 function Quest.Forget(player)

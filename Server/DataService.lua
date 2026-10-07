@@ -6,6 +6,10 @@ local DataStoreService = game:GetService("DataStoreService")
 
 local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Config"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
+local Inventory = require(script.Parent:WaitForChild("InventoryService"))
+local Keys = require(script.Parent:WaitForChild("KeyService"))
+local Monetization = require(script.Parent:WaitForChild("MonetizationService"))
+local Growth = require(script.Parent:WaitForChild("GrowthService"))
 
 local Data = {}
 
@@ -45,6 +49,7 @@ function Data.Load(player)
 	local defaults = {
 		Gold = Config.StartGold, WeaponLevel = 0, Tickets = 0, MaxZone = 0, Gear = {}, Level = 1, XP = 0,
 		Weapons = { Type = "Pistol", Unlocked = {}, Levels = {} }, Quest = nil,
+		Inventory = nil, Keys = nil, Monetization = nil, Growth = nil,
 	}
 	if not store then return defaults end
 
@@ -65,6 +70,10 @@ function Data.Load(player)
 					XP = math.max(0, math.floor(tonumber(saved.XP) or 0)),
 					Weapons = parseWeapons(saved),
 					Quest = typeof(saved.Quest) == "table" and saved.Quest or nil,
+					Inventory = typeof(saved.Inventory) == "table" and saved.Inventory or nil,
+					KeysData = typeof(saved.Keys) == "table" and saved.Keys or nil,
+					Monetization = typeof(saved.Monetization) == "table" and saved.Monetization or nil,
+					Growth = typeof(saved.Growth) == "table" and saved.Growth or nil,
 				}
 			end
 			return defaults
@@ -75,15 +84,10 @@ function Data.Load(player)
 	return defaults
 end
 
+-- 저장 성공 여부를 돌려준다 (결제 영수증 처리가 "저장된 뒤에만 완료"로 쓰려고)
 function Data.Save(player)
-	if not store or not loaded[player] then return end
-	local gear = {}
-	for _, slot in ipairs(Config.Gear.Slots) do
-		gear[slot.Key] = {
-			R = player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0,
-			L = player:GetAttribute("Gear_" .. slot.Key .. "_L") or 0,
-		}
-	end
+	if not store then return true end -- DataStore 를 못 쓰는 환경(Studio API 꺼짐)에서는 저장 없이 진행
+	if not loaded[player] then return false end
 	local weapons = { Type = player:GetAttribute("WeaponType") or "Pistol", Unlocked = {}, Levels = {} }
 	for _, key in ipairs(Config.WeaponTypes.Order) do
 		weapons.Levels[key] = player:GetAttribute("WLvl_" .. key) or 0
@@ -96,7 +100,10 @@ function Data.Save(player)
 		MaxZone = player:GetAttribute("MaxZone") or 0,
 		Level = player:GetAttribute("Level") or 1,
 		XP = player:GetAttribute("XP") or 0,
-		Gear = gear,
+		Inventory = Inventory.Serialize(player),
+		Keys = Keys.Serialize(player),
+		Monetization = Monetization.Serialize(player),
+		Growth = Growth.Serialize(player),
 		Weapons = weapons,
 		Quest = Quest.Serialize(player),
 	}
@@ -106,6 +113,7 @@ function Data.Save(player)
 	if not ok then
 		warn("[Data] 저장 실패:", player.Name, err)
 	end
+	return ok
 end
 
 function Data.Forget(player)

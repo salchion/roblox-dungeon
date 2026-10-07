@@ -9,6 +9,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
+local Inventory = require(script.Parent:WaitForChild("InventoryService"))
 
 local G = Config.Gear
 
@@ -34,9 +35,15 @@ local function recompute(player)
 		local level = player:GetAttribute(lAttr(slot.Key)) or 0
 		totals[slot.Stat] += Config.GetGearStat(slot.Key, rarity, level)
 	end
-	player:SetAttribute("GearHealth", math.floor(totals.Health + 0.5))
-	player:SetAttribute("GearCrit", totals.Crit)
-	player:SetAttribute("GearSpeed", totals.Speed)
+
+	-- 장착한 아이템의 랜덤 옵션 (체력 / 치명타 / 속도 / 공격력 / 경험치 / 행운)
+	local affix = Inventory.GetTotals(player)
+	player:SetAttribute("GearHealth", math.floor(totals.Health + affix.Health + 0.5))
+	player:SetAttribute("GearCrit", totals.Crit + affix.Crit)
+	player:SetAttribute("GearSpeed", totals.Speed + affix.Speed)
+	player:SetAttribute("GearDamage", affix.Damage)
+	player:SetAttribute("GearXp", affix.Xp)
+	player:SetAttribute("GearLuck", affix.Luck)
 end
 
 ------------------------------------------------------------
@@ -135,12 +142,13 @@ function Gear.Enhance(player, slotKey)
 		return false, "알 수 없는 부위예요."
 	end
 
-	local rarity = player:GetAttribute(rAttr(slotKey)) or 0
-	if rarity <= 0 then
-		return false, slot.Name .. " 장비가 없어요. 먼저 뽑기로 얻어주세요."
+	local equipped = Inventory.GetEquipped(player, slotKey)
+	if not equipped then
+		return false, slot.Name .. " 장비가 없어요. 필드에서 얻거나 뽑기로 얻어주세요."
 	end
+	local rarity = equipped.Rarity
 
-	local level = player:GetAttribute(lAttr(slotKey)) or 0
+	local level = equipped.Level
 	if level >= G.MaxLevel then
 		return false, "이미 최대 강화 단계예요!"
 	end
@@ -153,7 +161,7 @@ function Gear.Enhance(player, slotKey)
 	player:SetAttribute("Gold", gold - cost)
 
 	if math.random() < Config.GetGearEnhanceChance(level) then
-		player:SetAttribute(lAttr(slotKey), level + 1)
+		Inventory.SetLevel(player, slotKey, level + 1) -- 아이템의 강화 레벨 + 능력치 / 외형 갱신
 		Quest.Add(player, "Enhances", 1)
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if root then
@@ -165,10 +173,9 @@ function Gear.Enhance(player, slotKey)
 end
 
 ------------------------------------------------------------
--- 뽑기: 티켓 1장 -> 무작위 부위 + 무작위 등급.
---   현재 장비보다 등급이 높으면 교체 (강화 레벨은 그대로 이어받음)
---   같거나 낮으면 골드로 교환
--- 반환: ok, message, roll = { Slot, Rarity, Equipped, Gold }
+-- 뽑기: 티켓 1장 -> 무작위 부위 + 무작위 등급의 장비 아이템(랜덤 옵션 포함)
+--   빈 부위면 바로 장착, 아니면 가방에 들어간다 (자동 분해 설정이면 분해)
+-- 반환: ok, message, roll = { Slot, Rarity, Equipped, Status, Gold }
 ------------------------------------------------------------
 function Gear.Roll(player)
 	if player:GetAttribute("Zone") ~= "Lobby" then
@@ -193,27 +200,23 @@ function Gear.Roll(player)
 	end
 
 	local slot = G.Slots[math.random(#G.Slots)]
-	local current = player:GetAttribute(rAttr(slot.Key)) or 0
-	local itemName = slot.Names[rarity]
-	local rarityName = G.RarityNames[rarity]
+	local item = Inventory.NewItem(slot.Key, rarity, 0)
+	local status, _, essence, gold = Inventory.Add(player, item)
 
-	local result = { Slot = slot.Key, Rarity = rarity, Equipped = false, Gold = 0 }
+	local name = string.format("[%s] %s", G.RarityNames[rarity], slot.Names[rarity])
 	local message
-	if rarity > current then
-		player:SetAttribute(rAttr(slot.Key), rarity)
-		result.Equipped = true
-		message = string.format("[%s] %s 획득! 장착했어요.", rarityName, itemName)
+	if status == "Equipped" then
+		message = name .. " 획득! 장착했어요."
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if root then
 			Effects.Burst(root.Position, G.RarityColors[rarity], 20 + rarity * 12)
 		end
+	elseif status == "Bag" then
+		message = name .. " 획득! 가방에 넣었어요. (I → 가방에서 장착)"
 	else
-		local gold = Config.Gacha.DuplicateGold[rarity]
-		player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
-		result.Gold = gold
-		message = string.format("[%s] %s... 이미 더 좋은 장비가 있어 +%d G 로 교환!", rarityName, itemName, gold)
+		message = string.format("%s... 자동 분해! 에센스 +%d, %d G", name, essence or 0, gold or 0)
 	end
-	return true, message, result
+	return true, message, { Slot = slot.Key, Rarity = rarity, Equipped = status == "Equipped", Status = status, Gold = gold or 0 }
 end
 
 return Gear

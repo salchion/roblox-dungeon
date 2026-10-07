@@ -110,7 +110,7 @@ local gui = create("ScreenGui", { Name = "HUD", ResetOnSpawn = false, IgnoreGuiI
 ------------------------------------------------------------
 -- 공통: 상단 좌측 정보, 알림
 ------------------------------------------------------------
-local infoPanel = makePanel({ Size = UDim2.new(0, 240, 0, 150), Position = UDim2.new(0, 16, 0, 16) }, gui)
+local infoPanel = makePanel({ Size = UDim2.new(0, 240, 0, 176), Position = UDim2.new(0, 16, 0, 16) }, gui)
 local infoLabel = makeLabel({
 	Size = UDim2.new(1, -20, 1, -16),
 	Position = UDim2.new(0, 10, 0, 8),
@@ -799,13 +799,13 @@ end
 
 -- 결과 화면
 local resultPanel = makePanel({
-	Size = UDim2.new(0, 400, 0, 220), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.45, 0), Visible = false,
+	Size = UDim2.new(0, 460, 0, 340), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.45, 0), Visible = false,
 }, dungeonFrame)
 local resultTitle = makeLabel({
 	Size = UDim2.new(1, 0, 0, 56), Position = UDim2.new(0, 0, 0, 12), Font = Enum.Font.GothamBlack, TextSize = 36,
 }, resultPanel)
 local resultInfo = makeLabel({
-	Size = UDim2.new(1, -20, 0, 70), Position = UDim2.new(0, 10, 0, 72), TextSize = 18,
+	Size = UDim2.new(1, -20, 0, 200), Position = UDim2.new(0, 10, 0, 72), TextSize = 17, RichText = true, TextYAlignment = Enum.TextYAlignment.Top,
 }, resultPanel)
 makeButton({
 	Size = UDim2.new(0, 200, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
@@ -825,9 +825,14 @@ local function showResult(result)
 	task.spawn(function()
 		for remaining = result.ReturnDelay, 1, -1 do
 			if token ~= resultToken or not resultPanel.Visible then return end
+			local lootLines = {}
+			for _, entry in ipairs(result.Loot or {}) do
+				table.insert(lootLines, string.format("<font color='#%s' size='15'>%s</font>", Config.Gear.RarityColors[entry.Rarity]:ToHex(), entry.Text))
+			end
 			resultInfo.Text = string.format(
-				"도달 웨이브 %d / %d\n획득 골드  +%d G   🎫 티켓 +%d\n%d초 후 로비로 이동",
-				result.Wave, result.TotalWaves, result.Gold, result.Tickets or 0, remaining
+				"도달 웨이브 %d / %d\n획득 골드  +%d G   🎫 티켓 +%d\n%s\n%d초 후 로비로 이동",
+				result.Wave, result.TotalWaves, result.Gold, result.Tickets or 0,
+				#lootLines > 0 and ("<b>📦 보스 상자</b>\n" .. table.concat(lootLines, "\n")) or "", remaining
 			)
 			task.wait(1)
 		end
@@ -855,23 +860,44 @@ local function refreshInfo()
 	local name, color = weaponText(level)
 	local zone = currentZone()
 	local zoneText = zone == "Lobby" and "로비" or zone == "Dungeon" and "던전" or string.format("필드 (최고 %d구역)", player:GetAttribute("MaxZone") or 0)
+
 	local characterLevel = player:GetAttribute("Level") or 1
 	local xp = player:GetAttribute("XP") or 0
 	local xpNeeded = player:GetAttribute("XPNeeded") or 1
 	local maxed = characterLevel >= Config.Level.Max
-	xpFill.Size = UDim2.new(maxed and 1 or math.clamp(xp / xpNeeded, 0, 1), 0, 1, 0)
+	local blocked = not maxed and characterLevel >= Config.GetLevelCap(player:GetAttribute("GatePassed") or 0)
+	xpFill.Size = UDim2.new((maxed or blocked) and 1 or math.clamp(xp / xpNeeded, 0, 1), 0, 1, 0)
+	xpFill.BackgroundColor3 = blocked and Color3.fromRGB(255, 170, 60) or Color3.fromRGB(110, 200, 255)
+	local xpText = maxed and "MAX" or blocked and "돌파 필요!" or string.format("%d / %d XP", xp, xpNeeded)
+
+	local keys = player:GetAttribute("Keys") or 0
+	local keyCap = Config.Keys.Max + (player:GetAttribute("KeyCapBonus") or 0)
+	local keyNext = player:GetAttribute("KeyNext") or 0
+	local keyText = "가득"
+	if keys < keyCap and keyNext > 0 then
+		keyText = Config.FormatDuration(keyNext - os.time())
+	end
+
 	infoLabel.Text = string.format(
-		"🎖 <font color='#8fd8ff'>Lv.%d</font>  <font size='12' color='#aaaacc'>%s</font>\n💰 <font color='#ffd966'>%d G</font>   🎫 <font color='#d9a6ff'>%d</font>\n⚡ 전투력 <font color='#ffe16e'>%d</font>\n⚔ <font color='#%s'>%s</font>\n📍 %s",
-		characterLevel,
-		maxed and "MAX" or string.format("%d / %d XP", xp, xpNeeded),
-		player:GetAttribute("Gold") or 0,
-		player:GetAttribute("Tickets") or 0,
+		"🎖 <font color='#8fd8ff'>Lv.%d</font>  <font size='12' color='#aaaacc'>%s</font>\n💰 <font color='#ffd966'>%d G</font>   🎫 <font color='#d9a6ff'>%d</font>\n🗝 <font color='#a6f0c8'>%d/%d</font> <font size='12' color='#aaaacc'>(%s)</font>\n⚡ 전투력 <font color='#ffe16e'>%d</font>\n⚔ <font color='#%s'>%s</font>\n📍 %s",
+		characterLevel, xpText,
+		player:GetAttribute("Gold") or 0, player:GetAttribute("Tickets") or 0,
+		keys, keyCap, keyText,
 		player:GetAttribute("Power") or 0,
-		color:ToHex(),
-		name,
-		zoneText
+		color:ToHex(), name, zoneText
 	)
 end
+
+-- 열쇠 회복 시간이 흐르는 걸 보여주려고 1초마다 정보를 갱신
+task.spawn(function()
+	while true do
+		task.wait(1)
+		local keys = player:GetAttribute("Keys") or 0
+		if keys < Config.Keys.Max + (player:GetAttribute("KeyCapBonus") or 0) then
+			refreshInfo()
+		end
+	end
+end)
 
 local function refreshZone()
 	local zone = currentZone()
@@ -928,12 +954,13 @@ local function applySpeed()
 	local character = player.Character
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 	if humanoid then
-		local bonus = player:GetAttribute("GearSpeed") or 0 -- 신발 장비 효과
+		local bonus = (player:GetAttribute("GearSpeed") or 0) + (player:GetAttribute("TrainSpeed") or 0) -- 신발 장비 + 신속 단련
 		humanoid.WalkSpeed = (sprinting and Config.Player.RunSpeed or Config.Player.WalkSpeed) + bonus
 	end
 end
 
 player:GetAttributeChangedSignal("GearSpeed"):Connect(applySpeed)
+player:GetAttributeChangedSignal("TrainSpeed"):Connect(applySpeed)
 
 -- Q: 슬라이딩. 이동 방향(가만히 있으면 바라보는 방향)으로 빠르게 미끄러지다가 점점 느려진다.
 -- 발밑에 먼지가 일고 몸에서 꼬리가 남는다.
@@ -1241,7 +1268,7 @@ local questState = nil   -- 서버가 보내준 퀘스트/업적/칭호 상태
 local rankList = {}      -- 서버가 보내준 전투력 랭킹
 
 local menuPanel = makePanel({
-	Size = UDim2.new(0, 680, 0, 560),
+	Size = UDim2.new(0, 880, 0, 600),
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Position = UDim2.new(0.5, 0, 0.5, 0),
 	Visible = false,
@@ -1260,10 +1287,13 @@ end)
 
 local TABS = {
 	{ Key = "Character", Name = "캐릭터" },
+	{ Key = "Inventory", Name = "가방" },
 	{ Key = "Weapon", Name = "무기" },
+	{ Key = "Growth", Name = "성장" },
 	{ Key = "Quest", Name = "퀘스트" },
 	{ Key = "Ach", Name = "업적" },
 	{ Key = "Rank", Name = "랭킹" },
+	{ Key = "Shop", Name = "상점" },
 }
 local currentTab = "Character"
 local tabButtons = {}
@@ -1439,6 +1469,287 @@ local function buildRankTab()
 	end
 end
 
+local inventoryState = nil   -- 가방 (서버가 보내준 아이템 목록)
+local growthState = nil      -- 훈련소 / 돌파 상태
+local growthReceivedAt = 0   -- growthState 를 받은 시각(os.clock) - 남은 시간 계산용
+
+local SLOT_NAMES = {}
+for _, slot in ipairs(Config.Gear.Slots) do
+	SLOT_NAMES[slot.Key] = slot.Name
+end
+
+local function buildInventoryTab()
+	local state = inventoryState
+	if not state then
+		local row = newRow(36)
+		rowText(row, "<font color='#888888'>가방을 불러오는 중...</font>")
+		return
+	end
+
+	local header = newRow(70)
+	rowText(header, string.format(
+		"🎒 가방 <b>%d / %d</b>      ✨ 에센스 <font color='#9ad7ff'>%d</font>\n<font size='13' color='#bbbbcc'>장비는 필드 몬스터가 떨어뜨려요. 자동 분해를 켜 두면 낮은 등급은 줍자마자 분해돼서 편해요.</font>",
+		state.BagCount, state.Capacity, state.Essence
+	), 15, 320)
+	makeButton({
+		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -310, 0, 8),
+		Text = "자동 분해: " .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 13, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
+	}, header, function()
+		Remotes.Inventory:FireServer("AutoScrap", (state.AutoScrap + 1) % 4)
+	end)
+	makeButton({
+		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -156, 0, 8),
+		Text = "희귀 이하 일괄 분해", TextSize = 13, BackgroundColor3 = RED,
+	}, header, function()
+		Remotes.Inventory:FireServer("ScrapBelow", 2)
+	end)
+
+	local equippedScore = {}
+	for _, item in ipairs(state.Items) do
+		if item.Equipped then
+			equippedScore[item.Slot] = item.Score
+		end
+	end
+
+	if #state.Items == 0 then
+		local row = newRow(40)
+		rowText(row, "<font color='#888888'>아직 장비가 없어요. 필드에서 몬스터를 잡아보세요!</font>")
+	end
+
+	for _, item in ipairs(state.Items) do
+		local color = Config.Gear.RarityColors[item.Rarity]
+		local slot = Config.GetGearSlot(item.Slot)
+		local upgrade = ""
+		if not item.Equipped and equippedScore[item.Slot] and item.Score > equippedScore[item.Slot] then
+			upgrade = string.format("  <font color='#78ff8c'>▲ +%d</font>", item.Score - equippedScore[item.Slot])
+		end
+
+		local lines = {
+			string.format("<font color='#%s' size='16'><b>[%s] %s</b></font>  +%d   <font color='#aaaacc' size='12'>%s · 점수 %d</font>%s",
+				hex(color), Config.Gear.RarityNames[item.Rarity], slot.Names[item.Rarity], item.Level, slot.Name, item.Score, upgrade),
+			"<font size='13' color='#ddddee'>기본  " .. Config.FormatGearStat(item.Slot, Config.GetGearStat(item.Slot, item.Rarity, item.Level)) .. "</font>",
+		}
+		for _, affix in ipairs(item.Affixes) do
+			table.insert(lines, "<font size='13' color='#9ad7ff'>◆ " .. Config.FormatAffix(affix.Stat, affix.Value) .. "</font>")
+		end
+
+		local row = newRow(math.max(112, 24 + 19 * #lines), item.Equipped and Color3.fromRGB(38, 52, 44) or nil)
+		rowText(row, table.concat(lines, "\n"), 14, 150)
+
+		if item.Equipped then
+			makeButton({
+				Size = UDim2.new(0, 124, 0, 28), Position = UDim2.new(1, -136, 0, 8), Text = "장착 중", TextSize = 13, BackgroundColor3 = GRAY,
+			}, row)
+		else
+			makeButton({
+				Size = UDim2.new(0, 124, 0, 28), Position = UDim2.new(1, -136, 0, 8), Text = "장착", TextSize = 14, BackgroundColor3 = GREEN,
+			}, row, function()
+				Remotes.Inventory:FireServer("Equip", item.Id)
+			end)
+			makeButton({
+				Size = UDim2.new(0, 124, 0, 28), Position = UDim2.new(1, -136, 0, 40), Text = "분해", TextSize = 14, BackgroundColor3 = RED,
+			}, row, function()
+				Remotes.Inventory:FireServer("Scrap", item.Id)
+			end)
+		end
+		if #item.Affixes > 0 then
+			makeButton({
+				Size = UDim2.new(0, 124, 0, 28), Position = UDim2.new(1, -136, 0, 72),
+				Text = string.format("옵션 재굴림 ✨%d", Config.Inventory.RerollEssence[item.Rarity]), TextSize = 12, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
+			}, row, function()
+				Remotes.Inventory:FireServer("Reroll", item.Id)
+			end)
+		end
+	end
+end
+
+-- 서버가 보낸 시점 기준으로 남은 시간 계산 (내 PC 시계와 서버 시계가 달라도 정확)
+local function growthRemaining(endAt)
+	return endAt - (growthState.ServerTime + (os.clock() - growthReceivedAt))
+end
+
+local function buildGrowthTab()
+	local state = growthState
+	if not state then
+		local row = newRow(36)
+		rowText(row, "<font color='#888888'>불러오는 중...</font>")
+		return
+	end
+
+	local header = newRow(78)
+	rowText(header, string.format(
+		"⏱ 시간 단축권 <font color='#ffe16e'><b>%s</b></font> 보유      🏋 훈련 슬롯 <b>%d / %d</b> 사용 중\n<font size='13' color='#bbbbcc'>훈련과 돌파는 시간이 지나면 저절로 끝나요 (접속하지 않아도 흘러요). 시간 단축권으로 기다리는 시간을 줄일 수 있고, 퀘스트로도 조금씩 얻어요. 돈을 쓰지 않아도 모두 도달할 수 있어요.</font>",
+		Config.FormatDuration(state.TimeSkip), #state.Jobs, state.Slots
+	), 15, 24)
+
+	sectionTitle("🏋 훈련소 — 영구적으로 강해져요")
+	for _, stat in ipairs(Config.Growth.Stats.Order) do
+		local def = Config.Growth.Stats[stat]
+		local level = state.Levels[stat] or 0
+		local job
+		for _, candidate in ipairs(state.Jobs) do
+			if candidate.Stat == stat then
+				job = candidate
+			end
+		end
+
+		local current = Config.FormatTrainEffect(stat, level)
+		local nextText = level < Config.Growth.MaxLevel and ("  →  " .. Config.FormatTrainEffect(stat, level + 1)) or "  (최대)"
+		local status
+		if job then
+			status = string.format("<font color='#ffd966'>훈련 중 · 남은 시간 %s</font>", Config.FormatDuration(growthRemaining(job.EndAt)))
+		elseif level >= Config.Growth.MaxLevel then
+			status = "<font color='#78ff8c'>최대 단계!</font>"
+		else
+			status = string.format("<font color='#bbbbcc'>필요 시간 %s · 💰 %d G</font>", Config.FormatDuration(Config.GetTrainTime(level)), Config.GetTrainGold(level))
+		end
+
+		local row = newRow(84)
+		rowText(row, string.format("<font size='17'><b>%s %s</b></font>  Lv.%d / %d\n<font color='#ddddee'>%s%s</font>\n%s",
+			def.Icon, def.Name, level, Config.Growth.MaxLevel, current, nextText, status), 14, 190)
+
+		if job then
+			makeButton({
+				Size = UDim2.new(0, 160, 0, 34), Position = UDim2.new(1, -172, 0.5, -17),
+				Text = "⏱ 단축권 사용", TextSize = 14, BackgroundColor3 = state.TimeSkip > 0 and Color3.fromRGB(200, 130, 40) or GRAY,
+			}, row, function()
+				Remotes.Growth:FireServer("Skip", "Train", stat)
+			end)
+		elseif level < Config.Growth.MaxLevel then
+			makeButton({
+				Size = UDim2.new(0, 160, 0, 34), Position = UDim2.new(1, -172, 0.5, -17),
+				Text = "훈련 시작", TextSize = 15, BackgroundColor3 = GREEN,
+			}, row, function()
+				Remotes.Growth:FireServer("Train", stat)
+			end)
+		end
+	end
+
+	sectionTitle("🚧 돌파 — 레벨이 막히는 구간을 넘어요")
+	local gateIndex
+	for index, gate in ipairs(Config.Growth.Gates) do
+		if gate > state.GatePassed then
+			gateIndex = index
+			break
+		end
+	end
+
+	local gateRow = newRow(92)
+	if not gateIndex then
+		rowText(gateRow, "<font color='#78ff8c'>모든 돌파를 마쳤어요! 최대 레벨까지 자유롭게 성장할 수 있어요.</font>")
+	else
+		local gateLevel = Config.Growth.Gates[gateIndex]
+		local myLevel = player:GetAttribute("Level") or 1
+		local text
+		if state.GateJob then
+			text = string.format("<font size='17'><b>레벨 %d 돌파 중</b></font>\n<font color='#ffd966'>남은 시간 %s</font>", state.GateJob.Level, Config.FormatDuration(growthRemaining(state.GateJob.EndAt)))
+		else
+			text = string.format("<font size='17'><b>레벨 %d 돌파</b></font>   (현재 Lv.%d)\n<font color='#bbbbcc'>필요 시간 %s · 💰 %d G</font>\n<font size='13' color='#bbbbcc'>%s</font>",
+				gateLevel, myLevel, Config.FormatDuration(Config.Growth.GateTime[gateIndex]), Config.Growth.GateGold[gateIndex],
+				myLevel >= gateLevel and "지금 돌파할 수 있어요!" or string.format("레벨 %d 에 도달하면 돌파할 수 있어요", gateLevel))
+		end
+		rowText(gateRow, text, 14, 190)
+
+		if state.GateJob then
+			makeButton({
+				Size = UDim2.new(0, 160, 0, 34), Position = UDim2.new(1, -172, 0.5, -17),
+				Text = "⏱ 단축권 사용", TextSize = 14, BackgroundColor3 = state.TimeSkip > 0 and Color3.fromRGB(200, 130, 40) or GRAY,
+			}, gateRow, function()
+				Remotes.Growth:FireServer("Skip", "Gate")
+			end)
+		else
+			makeButton({
+				Size = UDim2.new(0, 160, 0, 34), Position = UDim2.new(1, -172, 0.5, -17),
+				Text = "돌파 시작", TextSize = 15, BackgroundColor3 = myLevel >= gateLevel and GREEN or GRAY,
+			}, gateRow, function()
+				Remotes.Growth:FireServer("Gate")
+			end)
+		end
+	end
+end
+
+local function auraUnlockText(aura)
+	local unlock = aura.Unlock
+	if unlock == "Free" then return "기본 제공" end
+	if unlock.Ach then
+		for _, achievement in ipairs(Config.Achievements) do
+			if achievement.Id == unlock.Ach then
+				return "업적 달성: " .. achievement.Name
+			end
+		end
+	end
+	if unlock.Pass then return Config.Shop.Passes[unlock.Pass].Name .. " 전용" end
+	if unlock.Product then return "상점 상품: " .. Config.Shop.Products[unlock.Product].Name end
+	return ""
+end
+
+local function shopButtonLabel(id)
+	if id > 0 then return "구매", GREEN end
+	if RunService:IsStudio() then return "테스트 지급", Color3.fromRGB(200, 130, 40) end
+	return "준비 중", GRAY
+end
+
+local function buildShopTab()
+	local note = newRow(52)
+	rowText(note, "<font size='13' color='#bbbbcc'>상점은 <b>시간을 줄여주는 것</b>과 편의, 꾸미기를 팔아요. 돈을 쓰지 않아도 모든 성장에 도달할 수 있고, 장비는 필드에서 직접 얻어야 해요.</font>", 13)
+
+	sectionTitle("⭐ 패스")
+	for _, key in ipairs(Config.Shop.PassOrder) do
+		local def = Config.Shop.Passes[key]
+		local owned = key == "VIP" and player:GetAttribute("Vip") == true
+		local row = newRow(76)
+		rowText(row, string.format("<font size='17'><b>%s</b></font>\n<font size='13' color='#bbbbcc'>%s</font>", def.Name, def.Desc), 14, 170)
+		local label, color = shopButtonLabel(def.PassId)
+		makeButton({
+			Size = UDim2.new(0, 130, 0, 34), Position = UDim2.new(1, -142, 0.5, -17),
+			Text = owned and "보유 중" or label, TextSize = 14, BackgroundColor3 = owned and GRAY or color,
+		}, row, function()
+			if not owned then
+				Remotes.Shop:FireServer("Buy", "Pass", key)
+			end
+		end)
+	end
+
+	sectionTitle("🛍 상품")
+	local now = os.time()
+	for _, key in ipairs(Config.Shop.ProductOrder) do
+		local def = Config.Shop.Products[key]
+		local extra = ""
+		if def.Grant.XpBoost and (player:GetAttribute("XpBoostUntil") or 0) > now then
+			extra = string.format("  <font color='#78ff8c'>적용 중 %s</font>", Config.FormatDuration(player:GetAttribute("XpBoostUntil") - now))
+		elseif def.Grant.LuckBoost and (player:GetAttribute("LuckBoostUntil") or 0) > now then
+			extra = string.format("  <font color='#78ff8c'>적용 중 %s</font>", Config.FormatDuration(player:GetAttribute("LuckBoostUntil") - now))
+		end
+		local row = newRow(66)
+		rowText(row, string.format("<font size='16'><b>%s</b></font>%s\n<font size='13' color='#bbbbcc'>%s</font>", def.Name, extra, def.Desc), 14, 170)
+		local label, color = shopButtonLabel(def.ProductId)
+		makeButton({
+			Size = UDim2.new(0, 130, 0, 32), Position = UDim2.new(1, -142, 0.5, -16), Text = label, TextSize = 14, BackgroundColor3 = color,
+		}, row, function()
+			Remotes.Shop:FireServer("Buy", "Product", key)
+		end)
+	end
+
+	sectionTitle("✨ 오라 (꾸미기 · 능력치 없음 · 다른 플레이어에게도 보여요)")
+	local current = player:GetAttribute("Aura") or ""
+	for _, key in ipairs(Config.Auras.Order) do
+		local aura = Config.Auras[key]
+		local owned = player:GetAttribute("AuraOwned_" .. key) == true
+		local row = newRow(56)
+		rowText(row, string.format("<font color='#%s' size='16'><b>%s</b></font>\n<font size='13' color='#bbbbcc'>%s</font>",
+			hex(aura.Color), aura.Name, owned and "보유 중" or ("🔒 " .. auraUnlockText(aura))), 14, 170)
+		if owned then
+			local equipped = current == key
+			makeButton({
+				Size = UDim2.new(0, 130, 0, 30), Position = UDim2.new(1, -142, 0.5, -15),
+				Text = equipped and "해제" or "장착", TextSize = 14, BackgroundColor3 = equipped and RED or GREEN,
+			}, row, function()
+				Remotes.Shop:FireServer("Aura", equipped and "" or key)
+			end)
+		end
+	end
+end
+
 local function refreshMenu()
 	for _, tab in ipairs(TABS) do
 		tabButtons[tab.Key].BackgroundColor3 = tab.Key == currentTab and Color3.fromRGB(70, 110, 220) or GRAY
@@ -1448,6 +1759,12 @@ local function refreshMenu()
 	rowOrder = 0
 	if currentTab == "Character" then
 		buildCharacterTab()
+	elseif currentTab == "Inventory" then
+		buildInventoryTab()
+	elseif currentTab == "Growth" then
+		buildGrowthTab()
+	elseif currentTab == "Shop" then
+		buildShopTab()
 	elseif currentTab == "Weapon" then
 		buildWeaponTab()
 	elseif currentTab == "Quest" then
@@ -1467,13 +1784,17 @@ local function selectTab(key)
 		Remotes.Quest:FireServer("Request")
 	elseif key == "Rank" then
 		Remotes.Rank:FireServer("Request")
+	elseif key == "Inventory" then
+		Remotes.Inventory:FireServer("Request")
+	elseif key == "Growth" then
+		Remotes.Growth:FireServer("Request")
 	end
 	refreshMenu()
 end
 
 for index, tab in ipairs(TABS) do
 	tabButtons[tab.Key] = makeButton({
-		Size = UDim2.new(0, 124, 0, 34), Position = UDim2.new(0, 14 + (index - 1) * 130, 0, 52), Text = tab.Name, TextSize = 16,
+		Size = UDim2.new(0, 100, 0, 34), Position = UDim2.new(0, 14 + (index - 1) * 106, 0, 52), Text = tab.Name, TextSize = 15,
 	}, menuPanel, function()
 		selectTab(tab.Key)
 	end)
@@ -1487,7 +1808,7 @@ local function toggleMenu()
 end
 
 makeButton({
-	Size = UDim2.new(0, 110, 0, 32), Position = UDim2.new(0, 16, 0, 174), Text = "📋 메뉴 (I)", TextSize = 14,
+	Size = UDim2.new(0, 110, 0, 32), Position = UDim2.new(0, 16, 0, 200), Text = "📋 메뉴 (I)", TextSize = 14,
 	BackgroundColor3 = Color3.fromRGB(60, 70, 120),
 }, gui, toggleMenu)
 
@@ -1495,6 +1816,35 @@ Remotes.Quest.OnClientEvent:Connect(function(action, data)
 	if action == "State" then
 		questState = data
 		if menuPanel.Visible then
+			refreshMenu()
+		end
+	end
+end)
+
+Remotes.Inventory.OnClientEvent:Connect(function(action, data)
+	if action == "State" then
+		inventoryState = data
+		if menuPanel.Visible and currentTab == "Inventory" then
+			refreshMenu()
+		end
+	end
+end)
+
+Remotes.Growth.OnClientEvent:Connect(function(action, data)
+	if action == "State" then
+		growthState = data
+		growthReceivedAt = os.clock()
+		if menuPanel.Visible and (currentTab == "Growth" or currentTab == "Character") then
+			refreshMenu()
+		end
+	end
+end)
+
+-- 남은 시간 / 부스터 시간이 흐르는 탭은 1초마다 갱신
+task.spawn(function()
+	while true do
+		task.wait(1)
+		if menuPanel.Visible and (currentTab == "Growth" or currentTab == "Shop") then
 			refreshMenu()
 		end
 	end
@@ -1571,7 +1921,7 @@ for index, key in ipairs(Config.Dungeon.Difficulties.Order) do
 	local info = Config.Dungeon.Difficulties[key]
 	difficultyButtons[key] = makeButton({
 		Size = UDim2.new(0, 200, 0, 40), Position = UDim2.new(0, 14 + (index - 1) * 212, 0, 262),
-		Text = info.Name, TextSize = 18, BackgroundColor3 = GRAY,
+		Text = string.format("%s  🗝%d", info.Name, info.KeyCost), TextSize = 18, BackgroundColor3 = GRAY,
 	}, selectPanel, function()
 		selectedDifficulty = key
 		refreshSelect()
@@ -1595,10 +1945,11 @@ function refreshSelect()
 	local dungeonType = Config.Dungeon.Types[selectedType]
 	local difficulty = Config.Dungeon.Difficulties[selectedDifficulty]
 	summaryLabel.Text = string.format(
-		"<b>%s · %s</b>\n웨이브 %d개 → 보스 <font color='#ff9a9a'>%s</font>\n권장 전투력 <font color='#ffe16e'>%d</font>  (내 전투력 %d)\n골드 보상 x%.1f    보스 처치 시 🎫 티켓 %d장",
+		"<b>%s · %s</b>\n웨이브 %d개 → 보스 <font color='#ff9a9a'>%s</font>\n권장 전투력 <font color='#ffe16e'>%d</font>  (내 전투력 %d)\n골드 x%.1f · 티켓 %d장 · 보스 상자 장비 %d개\n🗝 열쇠 <b>%d개</b> 필요 (보유 %d개) — 시간이 지나면 저절로 차요",
 		dungeonType.Name, difficulty.Name, dungeonType.Waves, dungeonType.Boss.Name,
 		dungeonType.RecommendedPower, player:GetAttribute("Power") or 0,
-		dungeonType.GoldMult * difficulty.GoldMult, difficulty.Tickets
+		dungeonType.GoldMult * difficulty.GoldMult, difficulty.Tickets, Config.Loot.DungeonChestCount,
+		difficulty.KeyCost, player:GetAttribute("Keys") or 0
 	)
 end
 
@@ -1628,6 +1979,124 @@ player:GetAttributeChangedSignal("Zone"):Connect(function()
 	end
 	lockTarget = nil
 	updateLockVisual()
+end)
+
+------------------------------------------------------------
+-- 전리품 빔 (개인 전리품): 내가 잡은 몬스터가 떨어뜨린 아이템만 내 화면에 보인다.
+-- 가까이 가면 자동으로 주워지고, 등급이 높을수록 빔이 굵고 화려하다.
+------------------------------------------------------------
+local lootFolder = Instance.new("Folder")
+lootFolder.Name = "LootBeams"
+lootFolder.Parent = workspace
+
+local lootDrops = {}   -- [id] = { Beam, Cube, Base, Time }
+
+Remotes.Loot.OnClientEvent:Connect(function(action, id, position, rarity, itemName)
+	if action == "Drop" then
+		local color = Config.Gear.RarityColors[rarity]
+		local width = 0.5 + rarity * 0.35
+
+		local beam = create("Part", {
+			Anchored = true, CanCollide = false, CanQuery = false, CanTouch = false,
+			Material = Enum.Material.Neon, Color = color, Transparency = 0.4,
+			Size = Vector3.new(width, 60, width), Position = position + Vector3.new(0, 30, 0),
+		}, lootFolder)
+
+		local base = position + Vector3.new(0, 3, 0)
+		local cube = create("Part", {
+			Anchored = true, CanCollide = false, CanQuery = false, CanTouch = false,
+			Material = Enum.Material.Neon, Color = color,
+			Size = Vector3.new(1.4 + rarity * 0.2, 1.4 + rarity * 0.2, 1.4 + rarity * 0.2), Position = base,
+		}, lootFolder)
+
+		local gui = create("BillboardGui", { Size = UDim2.new(0, 220, 0, 30), StudsOffset = Vector3.new(0, 3, 0), AlwaysOnTop = true, MaxDistance = 150 }, cube)
+		makeLabel({
+			Size = UDim2.new(1, 0, 1, 0), Text = string.format("[%s] %s", Config.Gear.RarityNames[rarity], itemName),
+			Font = Enum.Font.GothamBold, TextSize = 16, TextColor3 = color, TextStrokeTransparency = 0,
+		}, gui)
+
+		lootDrops[id] = { Beam = beam, Cube = cube, Base = base, Time = 0 }
+	elseif action == "Gone" then
+		local drop = lootDrops[id]
+		if drop then
+			drop.Beam:Destroy()
+			drop.Cube:Destroy()
+			lootDrops[id] = nil
+		end
+	end
+end)
+
+RunService.RenderStepped:Connect(function(dt)
+	for _, drop in pairs(lootDrops) do
+		drop.Time += dt
+		drop.Cube.CFrame = CFrame.new(drop.Base + Vector3.new(0, math.sin(drop.Time * 3) * 0.5, 0)) * CFrame.Angles(drop.Time * 2, drop.Time * 3, 0)
+	end
+end)
+
+------------------------------------------------------------
+-- 워프 메뉴: 필드 캠프 비콘 / 필드 입구에서 열린다. 마을이나 도달한 구역의 캠프로 바로 이동.
+------------------------------------------------------------
+local warpPanel = makePanel({
+	Size = UDim2.new(0, 440, 0, 520),
+	AnchorPoint = Vector2.new(0.5, 0.5),
+	Position = UDim2.new(0.5, 0, 0.5, 0),
+	Visible = false,
+}, gui)
+
+makeLabel({
+	Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8),
+	Text = "⛺ 워프", Font = Enum.Font.GothamBlack, TextSize = 24,
+}, warpPanel)
+makeLabel({
+	Size = UDim2.new(1, -28, 0, 36), Position = UDim2.new(0, 14, 0, 44),
+	Text = "도달한 구역의 캠프로 이동할 수 있어요. 필드에서 죽으면 가까웠던 캠프에서 부활해요.",
+	TextSize = 13, TextColor3 = Color3.fromRGB(190, 190, 210),
+}, warpPanel)
+
+local warpList = create("Frame", { Size = UDim2.new(1, -28, 1, -140), Position = UDim2.new(0, 14, 0, 84), BackgroundTransparency = 1 }, warpPanel)
+create("UIListLayout", { Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder }, warpList)
+
+makeButton({
+	Size = UDim2.new(1, -28, 0, 36), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 14, 1, -14),
+	Text = "닫기", TextSize = 16, BackgroundColor3 = GRAY,
+}, warpPanel, function()
+	warpPanel.Visible = false
+end)
+
+local function refreshWarp()
+	clearChildren(warpList)
+	local reached = math.max(1, player:GetAttribute("MaxZone") or 0)
+
+	local function addRow(order, text, unlocked, zone)
+		makeButton({
+			Size = UDim2.new(1, 0, 0, 36), LayoutOrder = order, Text = text, TextSize = 15,
+			BackgroundColor3 = unlocked and Color3.fromRGB(60, 90, 160) or GRAY, TextXAlignment = Enum.TextXAlignment.Left,
+		}, warpList, function()
+			if unlocked then
+				warpPanel.Visible = false
+				Remotes.Warp:FireServer("Go", zone)
+			end
+		end)
+	end
+
+	addRow(0, "  🏠 마을 (로비)", true, 0)
+	for zone = 1, Config.Field.ZoneCount do
+		local unlocked = zone <= reached
+		addRow(zone, string.format("  %s 구역 %d · %s   (몬스터 Lv.%d)", unlocked and "⛺" or "🔒", zone, Config.Field.ZoneNames[zone], Config.Field.GetZoneLevel(zone)), unlocked, zone)
+	end
+end
+
+player:GetAttributeChangedSignal("Zone"):Connect(function()
+	if currentZone() == "Dungeon" then
+		warpPanel.Visible = false
+	end
+end)
+
+Remotes.Warp.OnClientEvent:Connect(function(action)
+	if action == "Open" then
+		refreshWarp()
+		warpPanel.Visible = true
+	end
 end)
 
 ------------------------------------------------------------
@@ -1732,7 +2201,7 @@ local function isMouseOverButton(position)
 end
 
 RunService.RenderStepped:Connect(function(dt)
-	local modalOpen = menuPanel.Visible or enhancePanel.Visible or gearPanel.Visible or selectPanel.Visible
+	local modalOpen = menuPanel.Visible or enhancePanel.Visible or gearPanel.Visible or selectPanel.Visible or warpPanel.Visible
 	local position = UserInputService:GetMouseLocation()
 	local show = hasMouse and not modalOpen and player.Character ~= nil and not isMouseOverButton(position)
 

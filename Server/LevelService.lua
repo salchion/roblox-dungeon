@@ -27,22 +27,46 @@ function Level.Load(player, level, xp)
 	setLevel(player, level, xp)
 end
 
+-- 경험치 배율: 장비 옵션(경험치 획득) + VIP 보너스, 경험치 부스터가 켜져 있으면 x2
+local function xpMultiplier(player)
+	local mult = 1 + (player:GetAttribute("GearXp") or 0)
+	if player:GetAttribute("Vip") then
+		mult += Config.Shop.Vip.XpBonus
+	end
+	if (player:GetAttribute("XpBoostUntil") or 0) > os.time() then
+		mult *= Config.Shop.XpBoostMult
+	end
+	return mult
+end
+
 function Level.AddXP(player, amount)
-	amount = math.floor(amount)
+	amount = math.floor(amount * xpMultiplier(player) + 0.5)
 	if amount <= 0 then return end
 
 	local level = player:GetAttribute("Level") or 1
 	if level >= Config.Level.Max then return end
 	local xp = (player:GetAttribute("XP") or 0) + amount
 
+	-- 돌파가 필요한 레벨(Config.Growth.Gates)에서는 더 오르지 못하고 경험치 막대만 가득 찬 채 기다린다
+	local cap = Config.GetLevelCap(player:GetAttribute("GatePassed") or 0)
+
 	local gained = 0
-	while level < Config.Level.Max and xp >= Config.GetXpNeeded(level) do
+	while level < cap and xp >= Config.GetXpNeeded(level) do
 		xp -= Config.GetXpNeeded(level)
 		level += 1
 		gained += 1
 	end
 	if level >= Config.Level.Max then
 		xp = 0
+	elseif level >= cap then
+		xp = math.min(xp, Config.GetXpNeeded(level))
+		if not player:GetAttribute("GateBlocked") then
+			player:SetAttribute("GateBlocked", true)
+			Remotes.Notify:FireClient(player, string.format("🚧 레벨 %d 에서 막혔어요! 메뉴(I) → 성장 탭에서 돌파를 진행하세요.", level))
+		end
+	end
+	if gained > 0 then
+		player:SetAttribute("GateBlocked", false)
 	end
 
 	local character = player.Character
