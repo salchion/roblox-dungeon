@@ -8,17 +8,21 @@
 --   OpenEnhance  S->C  ()                                      모루(강화대) 사용 -> 강화창 열기
 --   Party        C->S  ("Invite", userId) ("Accept", userId) ("Decline", userId) ("Leave") ("Kick", userId)
 --                S->C  ("State", partyData|nil) ("Invite", inviterUserId, inviterName)
---   Dungeon      C->S  ("Ready") ("Leave")
---                S->C  ("State", stateTable) ("Result", resultTable)
+--   Dungeon      C->S  ("Ready") ("Leave") ("Start", typeKey, difficultyKey)
+--                S->C  ("State", stateTable) ("Result", resultTable) ("OpenSelect")
 --   Gear         C->S  ("Enhance", slotKey) ("Roll")                    장비 강화 / 티켓 뽑기
 --                S->C  ("Result", { Ok, Message, Roll })             결과
 --   OpenGear     S->C  ()                                      뽑기 머신 사용 -> 장비창 열기
+--   Quest        C->S  ("Request") ("Claim", questId) ("ClaimAch", achievementId) ("Title", titleOrNil)
+--                S->C  ("State", { Daily, Achievements, Titles, Equipped, Stats })
+--   Rank         C->S  ("Request")   S->C  ("List", { { Name, Power }... })
+--   Weapon       C->S  ("Equip", typeKey) ("Buy", typeKey)             무기 종류 장착 / 구매
 --   Notify       S->C  (text)                                  화면 알림
 
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon", "Notify", "Gear", "OpenGear" }
+local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon", "Notify", "Gear", "OpenGear", "Quest", "Rank", "Weapon" }
 
 local folder
 if RunService:IsServer() then

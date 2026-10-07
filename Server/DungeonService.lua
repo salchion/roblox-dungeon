@@ -11,6 +11,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Party = require(script.Parent:WaitForChild("PartyService"))
+local Quest = require(script.Parent:WaitForChild("QuestService"))
 
 local D = Config.Dungeon
 local P = Config.Player
@@ -89,6 +90,7 @@ local function arenaSpawnCFrame(run)
 end
 
 local function giveGold(run, amount)
+	amount = math.floor(amount * run.GoldMult + 0.5)
 	for _, member in ipairs(run.Members) do
 		member:SetAttribute("Gold", (member:GetAttribute("Gold") or 0) + amount)
 		run.Earned[member] = (run.Earned[member] or 0) + amount
@@ -112,6 +114,7 @@ local function buildArena(run)
 	folder.Name = "Dungeon_" .. run.Id
 	local radius = D.ArenaRadius
 	local origin = run.Origin
+	local theme = run.Type
 
 	local floor = Instance.new("Part")
 	floor.Name = "Floor"
@@ -119,8 +122,8 @@ local function buildArena(run)
 	floor.Anchored = true
 	floor.Size = Vector3.new(2, radius * 2, radius * 2) -- 원기둥은 X축이 높이
 	floor.CFrame = CFrame.new(origin + Vector3.new(0, -1, 0)) * CFrame.Angles(0, 0, math.rad(90))
-	floor.Color = Color3.fromRGB(70, 65, 75)
-	floor.Material = Enum.Material.Slate
+	floor.Color = theme.Floor.Color
+	floor.Material = theme.Floor.Material
 	floor.Parent = folder
 
 	local segments = 24
@@ -134,8 +137,8 @@ local function buildArena(run)
 		wall.Anchored = true
 		wall.Size = Vector3.new(width, 40, 2)
 		wall.CFrame = CFrame.lookAt(position, origin + Vector3.new(0, 20, 0))
-		wall.Color = Color3.fromRGB(45, 40, 55)
-		wall.Material = Enum.Material.Brick
+		wall.Color = theme.Wall.Color
+		wall.Material = theme.Wall.Material
 		wall.Transparency = 0.15
 		wall.Parent = folder
 
@@ -147,14 +150,14 @@ local function buildArena(run)
 			torch.CanCollide = false
 			torch.Size = Vector3.new(2, 2, 2)
 			torch.Position = origin + Vector3.new(math.cos(angle) * (radius - 3), 8, math.sin(angle) * (radius - 3))
-			torch.Color = Color3.fromRGB(255, 140, 60)
+			torch.Color = theme.Torch
 			torch.Material = Enum.Material.Neon
 			torch.Parent = folder
 
 			local light = Instance.new("PointLight")
 			light.Range = 36
 			light.Brightness = 1.5
-			light.Color = Color3.fromRGB(255, 160, 90)
+			light.Color = theme.Torch
 			light.Parent = torch
 		end
 	end
@@ -228,7 +231,8 @@ end
 
 local function spawnMonster(run, level, position)
 	local stats = Config.Monster.GetStats(level)
-	stats.MaxHealth = math.floor(stats.MaxHealth * D.GetHealthScale(run.PartySize))
+	stats.MaxHealth = math.floor(stats.MaxHealth * D.GetHealthScale(run.PartySize) * run.Difficulty.HealthMult)
+	stats.ShotDamage = math.floor(stats.ShotDamage * run.Difficulty.DamageMult)
 
 	local part = Instance.new("Part")
 	part.Name = "Monster"
@@ -236,7 +240,7 @@ local function spawnMonster(run, level, position)
 	part.Size = Vector3.new(stats.Size, stats.Size, stats.Size)
 	part.Anchored = true
 	part.CanCollide = false
-	part.Color = Color3.fromRGB(120, 40, 160)
+	part.Color = run.Type.MonsterColor
 	part.Position = position or ringPosition(run, stats.Size)
 	part.Parent = run.MonstersFolder
 
@@ -245,11 +249,12 @@ end
 
 local function spawnBoss(run)
 	local boss = Config.Boss
+	local bossType = run.Type.Boss
 	local stats = {
 		Size = boss.Size,
-		MaxHealth = math.floor(boss.MaxHealth * D.GetHealthScale(run.PartySize)),
+		MaxHealth = math.floor(boss.MaxHealth * D.GetHealthScale(run.PartySize) * bossType.HealthMult * run.Difficulty.HealthMult),
 		Speed = boss.Speed,
-		ShotDamage = boss.ShotDamage,
+		ShotDamage = math.floor(boss.ShotDamage * bossType.DamageMult * run.Difficulty.DamageMult),
 		ShotInterval = boss.ShotInterval,
 		ShotSpeed = boss.ShotSpeed,
 		Gold = boss.Gold,
@@ -261,12 +266,12 @@ local function spawnBoss(run)
 	part.Size = Vector3.new(stats.Size, stats.Size, stats.Size)
 	part.Anchored = true
 	part.CanCollide = false
-	part.Color = boss.Color
+	part.Color = bossType.Color
 	part.Material = Enum.Material.Neon
 	part.Position = run.Origin + Vector3.new(0, stats.Size / 2, -D.SpawnRadius)
 	part.Parent = run.MonstersFolder
 
-	local data = registerMonster(run, part, stats, boss.Name, 320, {
+	local data = registerMonster(run, part, stats, bossType.Name, 320, {
 		IsBoss = true,
 		Enraged = false,
 		NextPattern = os.clock() + 3,
@@ -448,34 +453,45 @@ end
 
 local BOSS_PATTERNS = { Fan = bossFan, Ring = bossRing, Spiral = bossSpiral, Meteor = bossMeteor }
 
--- 직전과 같은 패턴은 피해서 고른다 (광폭화하면 나선/메테오 비중이 커짐)
-local function pickBossPattern(data)
-	local pool = { "Fan", "Ring", "Spiral", "Meteor" }
-	if data.Enraged then
-		table.insert(pool, "Spiral")
-		table.insert(pool, "Meteor")
+-- 던전 종류마다 패턴 비중이 다르다 (Config.Dungeon.Types[..].Boss.Weights).
+-- 직전과 같은 패턴은 피하고, 광폭화하면 나선 / 메테오 비중이 커진다.
+local function pickBossPattern(run, data)
+	local weights = run.Type.Boss.Weights
+	local entries, total = {}, 0
+	for name, weight in pairs(weights) do
+		if name ~= data.LastPattern then
+			if data.Enraged and (name == "Spiral" or name == "Meteor") then
+				weight *= 1.7
+			end
+			table.insert(entries, { Name = name, Weight = weight })
+			total += weight
+		end
 	end
-	local choice
-	repeat
-		choice = pool[math.random(#pool)]
-	until choice ~= data.LastPattern
-	return choice
+	local roll = math.random() * total
+	for _, entry in ipairs(entries) do
+		roll -= entry.Weight
+		if roll <= 0 then
+			return entry.Name
+		end
+	end
+	return entries[#entries].Name
 end
 
 local function enrageBoss(run, part, data)
 	data.Enraged = true
 	data.BaseColor = Color3.fromRGB(255, 60, 20)
 	part.Color = data.BaseColor
-	notifyAll(run, "⚠ " .. Config.Boss.Name .. "이(가) 분노했다!")
+	notifyAll(run, "⚠ " .. run.BossName .. "이(가) 분노했다!")
 	for _ = 1, Config.Boss.MinionCount do
 		local angle = math.random() * math.pi * 2
 		local position = part.Position + Vector3.new(math.cos(angle) * 20, 0, math.sin(angle) * 20)
-		local minionStats = Config.Monster.GetStats(Config.Boss.MinionLevel)
-		spawnMonster(run, Config.Boss.MinionLevel, Vector3.new(position.X, run.Origin.Y + minionStats.Size / 2, position.Z))
+		local minionLevel = math.max(1, Config.Boss.MinionLevel + run.LevelBonus)
+		local minionStats = Config.Monster.GetStats(minionLevel)
+		spawnMonster(run, minionLevel, Vector3.new(position.X, run.Origin.Y + minionStats.Size / 2, position.Z))
 	end
 end
 
-local function damageMonster(run, part, data, amount, isCrit, hitPosition)
+local function damageMonster(run, player, part, data, amount, isCrit, hitPosition)
 	data.Health -= amount
 	data.HealthFill.Size = UDim2.new(math.max(data.Health, 0) / data.MaxHealth, 0, 1, 0)
 	Effects.DamageNumber(hitPosition, amount, isCrit)
@@ -491,13 +507,16 @@ local function damageMonster(run, part, data, amount, isCrit, hitPosition)
 	run.MonsterCount -= 1
 	part:Destroy()
 	giveGold(run, data.Stats.Gold)
+	Quest.Add(player, "Kills", 1)
 	if data.IsBoss then
 		run.BossDead = true
 		run.Boss = nil
 		run.BossPart = nil
+		local tickets = run.Difficulty.Tickets
 		for _, member in ipairs(run.Members) do
-			member:SetAttribute("Tickets", (member:GetAttribute("Tickets") or 0) + Config.Boss.Tickets)
-			run.TicketsEarned[member] = (run.TicketsEarned[member] or 0) + Config.Boss.Tickets
+			member:SetAttribute("Tickets", (member:GetAttribute("Tickets") or 0) + tickets)
+			run.TicketsEarned[member] = (run.TicketsEarned[member] or 0) + tickets
+			Quest.Add(member, "BossKills", 1)
 		end
 	end
 end
@@ -524,7 +543,7 @@ local function stepRun(run, dt)
 				-- 보스: 패턴을 하나 골라 끝까지 실행한 뒤 잠깐 쉬고 다음 패턴
 				if not data.Casting and now >= data.NextPattern then
 					data.Casting = true
-					local name = pickBossPattern(data)
+					local name = pickBossPattern(run, data)
 					data.LastPattern = name
 					task.spawn(function()
 						BOSS_PATTERNS[name](run, part, data)
@@ -580,14 +599,16 @@ end)
 ------------------------------------------------------------
 -- 공격 데미지 계산 (무기 강화 + 치명타 스탯/장갑). 던전 / 필드에서 같이 사용. 반환: 데미지, 치명타 여부
 function Dungeon.ComputeDamage(player)
+	local weaponType = Config.GetPlayerWeapon(player)
 	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
-	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel)
-	local chance = math.min(0.9, (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint + (player:GetAttribute("GearCrit") or 0))
+	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel) * weaponType.DamageMult
+	local chance = math.min(0.9, (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint
+		+ (player:GetAttribute("GearCrit") or 0) + (weaponType.CritBonus or 0))
 	local isCrit = math.random() < chance
 	if isCrit then
 		damage *= P.CritMultiplier
 	end
-	return math.floor(damage + 0.5), isCrit
+	return math.max(1, math.floor(damage + 0.5)), isCrit
 end
 
 function Dungeon.Shoot(player, origin, direction)
@@ -598,13 +619,14 @@ function Dungeon.Shoot(player, origin, direction)
 	params.FilterType = Enum.RaycastFilterType.Include
 	params.FilterDescendantsInstances = { run.MonstersFolder }
 
-	local result = workspace:Raycast(origin, direction * P.AttackRange, params)
-	local endPosition = result and result.Position or (origin + direction * P.AttackRange)
+	local range = Config.GetPlayerWeapon(player).Range
+	local result = workspace:Raycast(origin, direction * range, params)
+	local endPosition = result and result.Position or (origin + direction * range)
 
 	local data = result and run.Monsters[result.Instance]
 	if data then
 		local damage, isCrit = Dungeon.ComputeDamage(player)
-		damageMonster(run, result.Instance, data, damage, isCrit, result.Position)
+		damageMonster(run, player, result.Instance, data, damage, isCrit, result.Position)
 	end
 
 	return endPosition
@@ -649,12 +671,14 @@ local function broadcast(run)
 	local state = {
 		Phase = run.Phase,
 		Wave = run.Wave,
-		TotalWaves = D.TotalWaves,
+		TotalWaves = run.TotalWaves,
+		TypeName = run.Type.Name,
+		DifficultyName = run.Difficulty.Name,
 		MonstersLeft = run.MonsterCount,
 		TimeLeft = run.PhaseEnd and math.max(0, math.ceil(run.PhaseEnd - os.clock())) or 0,
 		ReadyCount = readyCount,
 		MemberCount = #run.Members,
-		BossName = run.Boss and Config.Boss.Name or nil,
+		BossName = run.Boss and run.BossName or nil,
 		BossRatio = run.Boss and math.max(run.Boss.Health, 0) / run.Boss.MaxHealth or nil,
 	}
 	for _, member in ipairs(run.Members) do
@@ -701,6 +725,9 @@ local function finish(run, victory)
 
 	if victory then
 		giveGold(run, D.VictoryGold)
+		for _, member in ipairs(run.Members) do
+			Quest.Add(member, "DungeonClears", 1)
+		end
 	end
 	for _, member in ipairs(run.Members) do
 		Remotes.Dungeon:FireClient(member, "Result", {
@@ -708,7 +735,9 @@ local function finish(run, victory)
 			Gold = run.Earned[member] or 0,
 			Tickets = run.TicketsEarned[member] or 0,
 			Wave = run.Wave,
-			TotalWaves = D.TotalWaves,
+			TotalWaves = run.TotalWaves,
+			TypeName = run.Type.Name,
+			DifficultyName = run.Difficulty.Name,
 			ReturnDelay = D.ReturnDelay,
 		})
 	end
@@ -755,7 +784,7 @@ end
 
 local function spawnWave(run, wave)
 	local count = D.GetMonsterCount(wave, run.PartySize)
-	local level = D.GetWaveMonsterLevel(wave)
+	local level = math.max(1, D.GetWaveMonsterLevel(wave) + run.LevelBonus)
 	for _ = 1, count do
 		if run.Destroyed or run.Phase == "Ended" then return end
 		spawnMonster(run, level)
@@ -794,7 +823,7 @@ local function runLoop(run)
 	run.PhaseEnd = os.clock() + D.StartCountdown
 	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
 
-	for wave = 1, D.TotalWaves do
+	for wave = 1, run.TotalWaves do
 		run.Wave = wave
 		run.Phase = "Wave"
 		run.PhaseEnd = nil
@@ -808,7 +837,7 @@ local function runLoop(run)
 	-- 모든 웨이브 클리어 -> 보스
 	run.Phase = "Boss"
 	run.PhaseEnd = nil
-	notifyAll(run, "⚠ " .. Config.Boss.Name .. "이(가) 나타났다!")
+	notifyAll(run, "⚠ " .. run.BossName .. "이(가) 나타났다!")
 	spawnBoss(run)
 	if not waitFor(run, function() return run.BossDead end) then return end
 
@@ -818,8 +847,12 @@ end
 ------------------------------------------------------------
 -- 입장 (던전 게이트에서 호출). 파티가 있으면 파티장만 가능, 없으면 혼자 입장.
 ------------------------------------------------------------
-function Dungeon.Start(player)
+function Dungeon.Start(player, typeKey, diffKey)
 	if player:GetAttribute("Zone") ~= "Lobby" then return end
+
+	local dungeonType = D.Types[typeKey or "Cave"]
+	local difficulty = D.Difficulties[diffKey or "Normal"]
+	if not dungeonType or not dungeonType.Waves or not difficulty or not difficulty.HealthMult then return end -- "Order" 같은 잘못된 키 방어
 
 	local party = Party.GetParty(player)
 	if party and party.Leader ~= player then
@@ -865,6 +898,12 @@ function Dungeon.Start(player)
 		TicketsEarned = {}, -- [player] = 이번 판에서 얻은 장비 뽑기 티켓
 		BossDead = false,
 		Destroyed = false,
+		Type = dungeonType,
+		Difficulty = difficulty,
+		TotalWaves = dungeonType.Waves,
+		BossName = dungeonType.Boss.Name,
+		GoldMult = dungeonType.GoldMult * difficulty.GoldMult,
+		LevelBonus = dungeonType.LevelOffset + difficulty.LevelOffset,
 	}
 	nextRunId += 1
 	runs[run.Id] = run
@@ -920,8 +959,23 @@ function Dungeon.OnPlayerRemoving(player)
 	end
 end
 
-Remotes.Dungeon.OnServerEvent:Connect(function(player, action)
-	if action == "Ready" then
+-- 던전 게이트: 파티장(또는 솔로)에게 던전 종류 / 난이도 선택창을 띄운다
+function Dungeon.OpenSelect(player)
+	if player:GetAttribute("Zone") ~= "Lobby" then return end
+	local party = Party.GetParty(player)
+	if party and party.Leader ~= player then
+		notify(player, "파티장만 던전에 입장시킬 수 있어요.")
+		return
+	end
+	Remotes.Dungeon:FireClient(player, "OpenSelect")
+end
+
+Remotes.Dungeon.OnServerEvent:Connect(function(player, action, typeKey, diffKey)
+	if action == "Start" then
+		if typeof(typeKey) == "string" and typeof(diffKey) == "string" then
+			Dungeon.Start(player, typeKey, diffKey)
+		end
+	elseif action == "Ready" then
 		local run = playerRun[player]
 		if run and run.Phase == "StatPhase" then
 			run.Ready[player] = true

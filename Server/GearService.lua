@@ -8,6 +8,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
+local Quest = require(script.Parent:WaitForChild("QuestService"))
 
 local G = Config.Gear
 
@@ -153,6 +154,7 @@ function Gear.Enhance(player, slotKey)
 
 	if math.random() < Config.GetGearEnhanceChance(level) then
 		player:SetAttribute(lAttr(slotKey), level + 1)
+		Quest.Add(player, "Enhances", 1)
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if root then
 			Effects.Burst(root.Position, G.RarityColors[rarity], 30)
@@ -177,6 +179,7 @@ function Gear.Roll(player)
 		return false, "티켓이 없어요. 보스를 잡으면 얻을 수 있어요!"
 	end
 	player:SetAttribute("Tickets", tickets - 1)
+	Quest.Add(player, "Rolls", 1)
 
 	local roll = math.random() * 100
 	local rarity = 1

@@ -1,10 +1,10 @@
 -- GameServer (ServerScriptService 안의 Script)
--- 게임 전체의 진입점. 로비 / 필드 / 던전, 플레이어 세팅, 공격 처리, 무기·장비 강화 요청을 서로 연결한다.
+-- 게임 전체의 진입점. 로비 / 필드 / 던전, 플레이어 세팅, 공격 처리, 무기·장비 요청을 서로 연결한다.
 --
--- 구조 (자세한 배치는 README.md 참고)
+-- 구조 (자세한 배치는 README.md / manifest.json 참고)
 --   ReplicatedStorage:      Config, Remotes, AudioIds (ModuleScript)
 --   ServerScriptService:    GameServer (이 Script) + Modules 폴더(Effects, WeaponService, GearService, PartyService,
---                           LobbyService, DummyService, FieldService, DungeonService, DataService)
+--                           LobbyService, DummyService, FieldService, DungeonService, QuestService, RankService, DataService)
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -22,19 +22,22 @@ local Lobby = require(Modules:WaitForChild("LobbyService"))
 local Dummy = require(Modules:WaitForChild("DummyService"))
 local Dungeon = require(Modules:WaitForChild("DungeonService"))
 local Field = require(Modules:WaitForChild("FieldService"))
+local Quest = require(Modules:WaitForChild("QuestService"))
+local Rank = require(Modules:WaitForChild("RankService"))
 local Data = require(Modules:WaitForChild("DataService"))
 
 ------------------------------------------------------------
--- 로비 / 게이트 / 강화대 / 뽑기 머신 / 허수아비 / 필드
+-- 로비 / 게이트 / 강화대 / 뽑기 머신 / 허수아비 / 랭킹판 / 필드
 ------------------------------------------------------------
 local lobby = Lobby.Build()
 Dungeon.Init(lobby.SpawnCFrame)
 Dummy.Build(lobby.DummyStart)
+Rank.Init(lobby.RankBoardCFrame)
 Field.Init()
 
--- 던전 게이트: 파티가 있으면 파티장만 입장 가능 (검사는 Dungeon.Start 안에서)
+-- 던전 게이트: 파티장(또는 솔로)에게 던전 종류 / 난이도 선택창을 띄운다
 lobby.GatePrompt.Triggered:Connect(function(player)
-	Dungeon.Start(player)
+	Dungeon.OpenSelect(player)
 end)
 
 lobby.AnvilPrompt.Triggered:Connect(function(player)
@@ -66,15 +69,22 @@ local function onCharacterAdded(player, character)
 	Gear.ApplyVisuals(player)
 end
 
--- 전투력 = 무기 강화 + 스탯 + 장비 (이름표 / 리더보드에 표시)
+-- 전투력 = 무기(종류+강화) + 스탯 + 장비 (이름표 / 리더보드 / 랭킹에 표시)
 local function updatePower(player)
 	player:SetAttribute("Power", Config.GetPower(
 		player:GetAttribute("WeaponLevel") or 0,
 		player:GetAttribute("CritPoints") or 0,
 		player:GetAttribute("SpeedPoints") or 0,
 		player:GetAttribute("GearHealth") or 0,
-		player:GetAttribute("GearCrit") or 0
+		player:GetAttribute("GearCrit") or 0,
+		player:GetAttribute("WeaponType") or "Pistol"
 	))
+end
+
+-- 현재 들고 있는 무기 종류의 강화 레벨을 WeaponLevel 로 맞춘다 (나머지 시스템은 WeaponLevel 만 보면 됨)
+local function syncWeaponLevel(player)
+	local typeKey = player:GetAttribute("WeaponType") or "Pistol"
+	player:SetAttribute("WeaponLevel", player:GetAttribute("WLvl_" .. typeKey) or 0)
 end
 
 local function setupPlayer(player)
@@ -88,8 +98,14 @@ local function setupPlayer(player)
 	player:SetAttribute("Gold", 0)
 	player:SetAttribute("Tickets", 0)
 	player:SetAttribute("WeaponLevel", 0)
+	player:SetAttribute("WeaponType", "Pistol")
+	for _, key in ipairs(Config.WeaponTypes.Order) do
+		player:SetAttribute("WLvl_" .. key, 0)
+		player:SetAttribute("WUnlock_" .. key, key == "Pistol")
+	end
 	player:SetAttribute("MaxZone", 0)
 	player:SetAttribute("Power", 0)
+	player:SetAttribute("Title", "")
 	for _, attribute in pairs(Config.StatAttributes) do
 		player:SetAttribute(attribute, 0)
 	end
@@ -114,14 +130,28 @@ local function setupPlayer(player)
 			end
 		end)
 	end
-	addStat("전투력", "Power", function() Weapon.UpdateNameplate(player) end)
+	addStat("전투력", "Power", function()
+		Weapon.UpdateNameplate(player)
+		Quest.Refresh(player)
+	end)
 	addStat("Gold", "Gold")
 	addStat("Weapon", "WeaponLevel")
 	addStat("Tickets", "Tickets")
 
-	-- 무기 강화 즉시 무기 외형 변경 (모든 플레이어에게 보임) + 전투력 갱신
+	-- 무기 종류 / 강화 레벨 / 모델 / 전투력 동기화
+	player:GetAttributeChangedSignal("WeaponType"):Connect(function()
+		syncWeaponLevel(player)
+		Weapon.Refresh(player) -- 종류가 바뀌면 레벨이 같아도 모델이 달라진다
+		updatePower(player)
+	end)
+	for _, key in ipairs(Config.WeaponTypes.Order) do
+		player:GetAttributeChangedSignal("WLvl_" .. key):Connect(function()
+			syncWeaponLevel(player)
+			Quest.Refresh(player)
+		end)
+	end
 	player:GetAttributeChangedSignal("WeaponLevel"):Connect(function()
-		Weapon.Refresh(player)
+		Weapon.Refresh(player) -- 강화 즉시 무기 외형 변경 (모든 플레이어에게 보임)
 		updatePower(player)
 	end)
 	for _, attribute in ipairs({ "CritPoints", "SpeedPoints", "GearHealth", "GearCrit" }) do
@@ -138,7 +168,16 @@ local function setupPlayer(player)
 	end)
 	player:GetAttributeChangedSignal("MaxZone"):Connect(function()
 		Weapon.UpdateNameplate(player)
+		Quest.Refresh(player)
 	end)
+	player:GetAttributeChangedSignal("Title"):Connect(function()
+		Weapon.UpdateNameplate(player)
+	end)
+	for _, slot in ipairs(Config.Gear.Slots) do
+		player:GetAttributeChangedSignal("Gear_" .. slot.Key .. "_R"):Connect(function()
+			Quest.Refresh(player)
+		end)
+	end
 
 	player.CharacterAdded:Connect(function(character)
 		onCharacterAdded(player, character)
@@ -153,8 +192,14 @@ local function setupPlayer(player)
 		player:SetAttribute("Gold", saved.Gold)
 		player:SetAttribute("Tickets", saved.Tickets)
 		player:SetAttribute("MaxZone", saved.MaxZone)
-		player:SetAttribute("WeaponLevel", saved.WeaponLevel)
+		for _, key in ipairs(Config.WeaponTypes.Order) do
+			player:SetAttribute("WLvl_" .. key, saved.Weapons.Levels[key] or 0)
+			player:SetAttribute("WUnlock_" .. key, saved.Weapons.Unlocked[key] == true)
+		end
+		player:SetAttribute("WeaponType", saved.Weapons.Type)
+		syncWeaponLevel(player)
 		Gear.Load(player, saved.Gear)
+		Quest.Load(player, saved.Quest)
 		updatePower(player)
 	end
 end
@@ -167,15 +212,18 @@ end
 local lastAttack = {}
 local lastEnhance = {}
 local lastGear = {}
+local lastWeapon = {}
 
 Players.PlayerRemoving:Connect(function(player)
 	lastAttack[player] = nil
 	lastEnhance[player] = nil
 	lastGear[player] = nil
+	lastWeapon[player] = nil
 	Party.OnPlayerRemoving(player)
 	Dungeon.OnPlayerRemoving(player)
 	Data.Save(player)
 	Data.Forget(player)
+	Quest.Forget(player)
 end)
 
 task.spawn(function()
@@ -195,9 +243,19 @@ game:BindToClose(function()
 end)
 
 ------------------------------------------------------------
--- 공격: 클라이언트는 마우스가 가리키는 지점만 보내고, 맞았는지는 서버가 판정한다.
+-- 공격: 클라이언트는 조준 지점만 보내고, 맞았는지는 서버가 판정한다.
 --   던전 -> 몬스터 / 필드 -> 필드 몬스터 / 로비 -> 허수아비 (골드)
+-- 무기 종류에 따라 공격 속도 / 탄 수 / 퍼짐 / 사거리가 다르다 (Config.WeaponTypes)
 ------------------------------------------------------------
+local function spreadDirection(direction, degrees)
+	if degrees <= 0 then
+		return direction
+	end
+	local yaw = math.rad((math.random() - 0.5) * degrees)
+	local pitch = math.rad((math.random() - 0.5) * degrees * 0.6)
+	return (CFrame.lookAt(Vector3.zero, direction) * CFrame.Angles(pitch, yaw, 0)).LookVector
+end
+
 Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint)
 	if typeof(aimPoint) ~= "Vector3" or aimPoint ~= aimPoint then return end -- NaN 방어
 
@@ -206,32 +264,43 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint)
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 	if not root or not humanoid or humanoid.Health <= 0 then return end
 
+	local weaponType = Config.GetPlayerWeapon(player)
 	local now = os.clock()
 	local speedPoints = player:GetAttribute("SpeedPoints") or 0
-	local cooldown = Config.Player.BaseCooldown / (1 + speedPoints * Config.Player.SpeedPerPoint)
+	local cooldown = Config.Player.BaseCooldown * weaponType.Cooldown / (1 + speedPoints * Config.Player.SpeedPerPoint)
 	if now - (lastAttack[player] or 0) < cooldown * 0.9 then return end -- 연타 제한 (네트워크 오차 10% 허용)
 	lastAttack[player] = now
 
 	local origin = root.Position + Vector3.new(0, 1.5, 0)
 	local offset = aimPoint - origin
 	if offset.Magnitude < 0.5 then return end
-	local direction = offset.Unit
+	local baseDirection = offset.Unit
 
-	local endPosition = Dungeon.Shoot(player, origin, direction)
-		or Field.Shoot(player, origin, direction)
-		or Dummy.Shoot(player, origin, direction)
-	endPosition = endPosition or (origin + direction * Config.Player.AttackRange)
-
-	-- 무기 등급마다 모양이 다른 발사체가 날아감
+	-- 무기 등급마다 모양이 다른 발사체 (무기 종류별로 크기 / 속도 보정)
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local tier = Config.GetWeaponTier(level)
 	local color = tier.Rainbow and Color3.fromHSV((now * 0.5) % 1, 0.8, 1) or tier.Color
-	Effects.Shot(Weapon.GetTipPosition(player) or origin, endPosition, tier.Shot, color, tier.Rainbow)
+	local shot = table.clone(tier.Shot)
+	shot.Size *= weaponType.ShotScale
+	shot.Speed *= weaponType.SpeedScale
+	if weaponType.Pellets > 1 then
+		shot.Impact = math.floor(shot.Impact / 3)
+	end
+	local tipPosition = Weapon.GetTipPosition(player) or origin
+
+	for pellet = 1, weaponType.Pellets do
+		local direction = pellet == 1 and weaponType.Pellets == 1 and baseDirection or spreadDirection(baseDirection, weaponType.Spread)
+		local endPosition = Dungeon.Shoot(player, origin, direction)
+			or Field.Shoot(player, origin, direction)
+			or Dummy.Shoot(player, origin, direction)
+		endPosition = endPosition or (origin + direction * weaponType.Range)
+		Effects.Shot(tipPosition, endPosition, shot, color, tier.Rainbow)
+	end
 	Weapon.PlayShot(player)
 end)
 
 ------------------------------------------------------------
--- 무기 강화 / 장비 강화 / 장비 뽑기
+-- 무기 강화 / 무기 종류 구매·장착 / 장비 강화·뽑기
 ------------------------------------------------------------
 Remotes.Enhance.OnServerEvent:Connect(function(player)
 	local now = os.clock()
@@ -240,6 +309,27 @@ Remotes.Enhance.OnServerEvent:Connect(function(player)
 
 	local ok, message = Weapon.Enhance(player)
 	Remotes.Enhance:FireClient(player, ok, message)
+end)
+
+Remotes.Weapon.OnServerEvent:Connect(function(player, action, typeKey)
+	local now = os.clock()
+	if now - (lastWeapon[player] or 0) < 0.25 then return end
+	lastWeapon[player] = now
+	if typeof(typeKey) ~= "string" then return end
+
+	local ok, message
+	if action == "Equip" then
+		ok, message = Weapon.Equip(player, typeKey)
+	elseif action == "Buy" then
+		if player:GetAttribute("Zone") ~= "Lobby" then
+			ok, message = false, "무기 구매는 로비에서만 할 수 있어요."
+		else
+			ok, message = Weapon.Buy(player, typeKey)
+		end
+	else
+		return
+	end
+	Remotes.Notify:FireClient(player, (ok and "✅ " or "⚠ ") .. message)
 end)
 
 Remotes.Gear.OnServerEvent:Connect(function(player, action, arg)

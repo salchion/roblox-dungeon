@@ -14,6 +14,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
+local Quest = require(script.Parent:WaitForChild("QuestService"))
 
 local F = Config.Field
 local TOP = 0.05
@@ -145,6 +146,50 @@ local function decorateZone(zone, rng)
 	end
 end
 
+-- 계곡: 필드 양옆을 높고 거대한 절벽으로 막아서 바깥이 전혀 보이지 않게 한다
+local function buildCanyon(rng, totalLength, half)
+	local endX = F.StartX + totalLength
+
+	-- 뒤에 깔아두는 끊김 없는 절벽 벽 (절벽 덩어리 사이로 바깥이 비치지 않게)
+	for _, side in ipairs({ -1, 1 }) do
+		makePart({
+			Name = "CanyonBack", Size = Vector3.new(totalLength + 120, 170, 8),
+			Position = Vector3.new(F.StartX + totalLength / 2, 85, side * (half + 34)),
+			Color = Color3.fromRGB(55, 50, 58), Material = Enum.Material.Slate,
+		}, worldFolder)
+
+		-- 구역 색을 띤 크고 울퉁불퉁한 절벽 덩어리들
+		local x = F.StartX - 10
+		while x < endX + 20 do
+			local zone = zoneOfX(math.clamp(x, F.StartX, endX - 1))
+			local width = rng:NextNumber(34, 52)
+			local height = rng:NextNumber(70, 135)
+			local depth = rng:NextNumber(18, 30)
+			local inner = half + rng:NextNumber(-4, 4)
+			makePart({
+				Name = "Cliff", Size = Vector3.new(width, height, depth),
+				CFrame = CFrame.new(x, height / 2 - 2, side * (inner + depth / 2)) * CFrame.Angles(0, math.rad(rng:NextNumber(-6, 6)), 0),
+				Color = F.ZoneColors[zone]:Lerp(Color3.fromRGB(70, 65, 72), 0.55),
+				Material = Enum.Material.Slate,
+			}, worldFolder)
+			x += width * 0.8
+		end
+	end
+
+	-- 필드 끝 / 로비에서 들어오는 통로 양옆도 절벽으로 막는다
+	makePart({
+		Name = "CanyonEnd", Size = Vector3.new(40, 170, F.Width + 90),
+		Position = Vector3.new(endX + 20, 85, 0), Color = Color3.fromRGB(35, 30, 45), Material = Enum.Material.Slate,
+	}, worldFolder)
+	for _, side in ipairs({ -1, 1 }) do
+		makePart({
+			Name = "CanyonGate", Size = Vector3.new(34, 80, 50),
+			Position = Vector3.new(F.StartX - 16, 40, side * (21 + 25)),
+			Color = Color3.fromRGB(95, 110, 85), Material = Enum.Material.Slate,
+		}, worldFolder)
+	end
+end
+
 local function buildWorld()
 	worldFolder = Instance.new("Folder")
 	worldFolder.Name = "Field"
@@ -177,6 +222,8 @@ local function buildWorld()
 
 		decorateZone(zone, rng)
 	end
+
+	buildCanyon(rng, totalLength, half)
 
 	-- 필드 가장자리 보이지 않는 벽 (옆면 / 끝 / 로비 쪽 입구 통로)
 	local function wall(size, position)
@@ -334,6 +381,15 @@ local function reward(player, data, part)
 	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
 	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2, 0), string.format("+%d G", gold), Color3.fromRGB(255, 220, 90))
 
+	Quest.Add(player, "Kills", 1)
+	if data.Kind == "Elite" then
+		Quest.Add(player, "EliteKills", 1)
+	elseif data.Kind == "Boss" then
+		Quest.Add(player, "BossKills", 1)
+	else
+		Quest.Add(player, "FieldKills", 1)
+	end
+
 	if data.Kind == "Elite" and math.random() < F.EliteTicketChance then
 		player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + 1)
 		notify(player, "🎫 엘리트에게서 장비 뽑기 티켓을 얻었어요!")
@@ -343,6 +399,9 @@ local function reward(player, data, part)
 			local root = getAliveParts(other)
 			if other:GetAttribute("Zone") == "Field" and root and (root.Position - bossPosition).Magnitude <= 160 then
 				other:SetAttribute("Tickets", (other:GetAttribute("Tickets") or 0) + F.BossTickets)
+				if other ~= player then
+					Quest.Add(other, "BossKills", 1)
+				end
 				notify(other, string.format("👑 필드 보스 처치! 티켓 +%d", F.BossTickets))
 			end
 		end
@@ -370,8 +429,9 @@ function Field.Shoot(player, origin, direction)
 	params.FilterType = Enum.RaycastFilterType.Include
 	params.FilterDescendantsInstances = { monstersFolder }
 
-	local result = workspace:Raycast(origin, direction * Config.Player.AttackRange, params)
-	local endPosition = result and result.Position or (origin + direction * Config.Player.AttackRange)
+	local range = Config.GetPlayerWeapon(player).Range
+	local result = workspace:Raycast(origin, direction * range, params)
+	local endPosition = result and result.Position or (origin + direction * range)
 
 	local data = result and monsters[result.Instance]
 	if data then

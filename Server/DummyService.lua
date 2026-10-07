@@ -7,6 +7,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
+local Quest = require(script.Parent:WaitForChild("QuestService"))
 
 local Dummy = {}
 
@@ -234,7 +235,8 @@ function Dummy.Shoot(player, origin, direction)
 	params.FilterType = Enum.RaycastFilterType.Include
 	params.FilterDescendantsInstances = { folder }
 
-	local result = workspace:Raycast(origin, direction * Config.Player.AttackRange, params)
+	local weaponType = Config.GetPlayerWeapon(player)
+	local result = workspace:Raycast(origin, direction * weaponType.Range, params)
 	if not result then return nil end
 
 	local model = result.Instance:FindFirstAncestorOfClass("Model")
@@ -249,8 +251,10 @@ function Dummy.Shoot(player, origin, direction)
 		return result.Position
 	end
 
-	local gold = math.max(1, math.floor(Config.Dummy.GoldPerHit * data.Multiplier + 0.5))
+	-- 무기 종류별 한 발 위력(DamageMult)에 비례: 샷건은 6발이 나가므로 한 발당 0.5, 저격총은 4
+	local gold = math.max(1, math.floor(Config.Dummy.GoldPerHit * data.Multiplier * weaponType.DamageMult + 0.5))
 	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
+	Quest.Add(player, "DummyHits", 1)
 	Effects.FloatText(result.Position, string.format("+%d G", gold), Color3.fromRGB(255, 220, 90))
 	return result.Position
 end

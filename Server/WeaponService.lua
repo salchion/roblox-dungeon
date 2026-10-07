@@ -1,10 +1,11 @@
 -- WeaponService (ServerScriptService > Modules 안의 ModuleScript, 이름: WeaponService)
--- 무기(총) 강화 + 무기 외형 생성.
+-- 무기(총) 종류(권총 / 샷건 / 저격총) + 강화 + 무기 외형 생성.
 -- 무기는 서버에서 만들어 캐릭터에 장착하기 때문에 로비의 모든 플레이어에게 그대로 보인다.
 -- 강화 레벨(WeaponLevel)이 오를수록 색상 / 크기 / 재질 / 파티클 / 궤적 / 빛이 달라진다.
 
 local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Config"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
+local Quest = require(script.Parent:WaitForChild("QuestService"))
 
 local Debris = game:GetService("Debris")
 local TweenService = game:GetService("TweenService")
@@ -44,10 +45,12 @@ local function newPart(name, size, color, material, parent)
 end
 
 -- 레벨에 맞는 무기(Tool, 총)를 만든다. 총구 방향은 손잡이의 -Z (팔을 뻗은 방향).
-local function buildTool(level)
+local function buildTool(level, typeKey)
 	local tier = Config.GetWeaponTier(level)
 	local scale = Config.GetWeaponScale(level)
-	local barrelLength = 1.8 * scale
+	local weaponType = Config.WeaponTypes[typeKey] or Config.WeaponTypes.Pistol
+	local thick = weaponType.BarrelThickness
+	local barrelLength = 1.8 * scale * weaponType.BarrelLength
 	local colorSeq = tier.Rainbow and RAINBOW or ColorSequence.new(tier.Color)
 	local dark = Color3.fromRGB(45, 45, 55)
 
@@ -55,7 +58,7 @@ local function buildTool(level)
 	tool.Name = "Weapon"
 	tool.CanBeDropped = false
 	tool.RequiresHandle = true
-	tool.ToolTip = string.format("+%d %s", level, tier.Name)
+	tool.ToolTip = string.format("+%d %s", level, Config.GetWeaponName(typeKey, level))
 
 	-- 몸체(손에 쥐는 부분)
 	local handle = newPart("Handle", Vector3.new(0.4, 0.6, 1.4), dark, Enum.Material.Metal, tool)
@@ -66,7 +69,7 @@ local function buildTool(level)
 	weld(handle, grip)
 
 	-- 총열: 강화할수록 길어지고 색/재질이 변함
-	local barrel = newPart("Barrel", Vector3.new(0.3 * scale, 0.3 * scale, barrelLength), tier.Color, tier.Material, tool)
+	local barrel = newPart("Barrel", Vector3.new(0.3 * scale * thick, 0.3 * scale * thick, barrelLength), tier.Color, tier.Material, tool)
 	barrel.CFrame = handle.CFrame * CFrame.new(0, 0.05, -(0.7 + barrelLength / 2))
 	weld(handle, barrel)
 
@@ -74,6 +77,28 @@ local function buildTool(level)
 	local stripe = newPart("Stripe", Vector3.new(0.44, 0.12, 0.9), tier.Color, tier.Material, tool)
 	stripe.CFrame = handle.CFrame * CFrame.new(0, 0.34, 0.1)
 	weld(handle, stripe)
+
+	-- 무기 종류별 모양
+	if typeKey == "Shotgun" then
+		-- 쌍열 총신 + 펌프 손잡이
+		local lower = newPart("BarrelLower", Vector3.new(0.3 * scale * thick, 0.3 * scale * thick, barrelLength), tier.Color, tier.Material, tool)
+		lower.CFrame = handle.CFrame * CFrame.new(0, 0.05 - 0.42 * scale * thick, -(0.7 + barrelLength / 2))
+		weld(handle, lower)
+		local pump = newPart("Pump", Vector3.new(0.5 * scale, 0.5 * scale, 0.9), Color3.fromRGB(80, 55, 35), Enum.Material.Wood, tool)
+		pump.CFrame = handle.CFrame * CFrame.new(0, -0.25, -(0.9 + barrelLength * 0.3))
+		weld(handle, pump)
+	elseif typeKey == "Sniper" then
+		-- 조준경 + 개머리판
+		local scope = newPart("Scope", Vector3.new(0.4, 0.4, 1.3), dark, Enum.Material.Metal, tool)
+		scope.CFrame = handle.CFrame * CFrame.new(0, 0.55, -0.1)
+		weld(handle, scope)
+		local lens = newPart("Lens", Vector3.new(0.34, 0.34, 0.08), tier.Color, Enum.Material.Neon, tool)
+		lens.CFrame = handle.CFrame * CFrame.new(0, 0.55, -0.78)
+		weld(handle, lens)
+		local stock = newPart("Stock", Vector3.new(0.4, 0.6, 1.2), Color3.fromRGB(80, 55, 35), Enum.Material.Wood, tool)
+		stock.CFrame = handle.CFrame * CFrame.new(0, -0.05, 1.2)
+		weld(handle, stock)
+	end
 
 	local tip = Instance.new("Attachment")
 	tip.Name = "Tip"
@@ -192,10 +217,11 @@ local function updateNameplate(player)
 	local inParty = (player:GetAttribute("PartyId") or 0) ~= 0
 	local maxZone = player:GetAttribute("MaxZone") or 0
 
-	gui.PlayerName.Text = (inParty and "[파티] " or "") .. player.DisplayName
+	local title = player:GetAttribute("Title") or ""
+	gui.PlayerName.Text = (inParty and "[파티] " or "") .. (title ~= "" and ("『" .. title .. "』 ") or "") .. player.DisplayName
 	gui.Power.Text = string.format("⚡ 전투력 %d", player:GetAttribute("Power") or 0)
 	gui.Power.TextColor3 = Color3.fromRGB(255, 225, 110)
-	gui.WeaponLevel.Text = string.format("+%d %s", level, tier.Name)
+	gui.WeaponLevel.Text = string.format("+%d %s", level, Config.GetWeaponName(player:GetAttribute("WeaponType") or "Pistol", level))
 	gui.WeaponLevel.TextColor3 = tier.Rainbow and Color3.fromRGB(255, 120, 255) or tier.Color
 	gui.Zone.Text = maxZone > 0 and string.format("🏔 필드 %d구역 돌파", maxZone) or ""
 	gui.Zone.TextColor3 = Color3.fromRGB(150, 220, 255)
@@ -216,7 +242,7 @@ function Weapon.Attach(player)
 		old:Destroy()
 	end
 
-	local tool = buildTool(player:GetAttribute("WeaponLevel") or 0)
+	local tool = buildTool(player:GetAttribute("WeaponLevel") or 0, player:GetAttribute("WeaponType") or "Pistol")
 	humanoid:EquipTool(tool)
 end
 
@@ -306,7 +332,8 @@ function Weapon.Enhance(player)
 		return false, "무기 강화는 로비에서만 할 수 있어요."
 	end
 
-	local level = player:GetAttribute("WeaponLevel") or 0
+	local typeKey = player:GetAttribute("WeaponType") or "Pistol"
+	local level = player:GetAttribute("WLvl_" .. typeKey) or 0
 	if level >= Config.Weapon.MaxLevel then
 		return false, "이미 최대 강화 단계입니다!"
 	end
@@ -320,7 +347,9 @@ function Weapon.Enhance(player)
 	player:SetAttribute("Gold", gold - cost)
 
 	if math.random() < Config.GetEnhanceChance(level) then
-		player:SetAttribute("WeaponLevel", level + 1) -- 외형 갱신은 WeaponLevel 변경 감지에서 처리
+		-- 이 무기 종류의 레벨을 올리면 GameServer 가 WeaponLevel(현재 무기 레벨)을 맞춰주고 외형도 갱신한다
+		player:SetAttribute("WLvl_" .. typeKey, level + 1)
+		Quest.Add(player, "Enhances", 1)
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if root then
 			playSoundAt(root, Config.Audio.EnhanceSuccess, 0.8, 1)
@@ -329,6 +358,42 @@ function Weapon.Enhance(player)
 		return true, string.format("강화 성공! +%d", level + 1)
 	end
 	return false, "강화 실패... (골드만 사라졌어요)"
+end
+
+------------------------------------------------------------
+-- 무기 종류 구매 / 장착 (로비에서만). 각 무기는 강화 레벨이 따로 저장된다.
+------------------------------------------------------------
+local function isUnlocked(player, typeKey)
+	return typeKey == "Pistol" or player:GetAttribute("WUnlock_" .. typeKey) == true
+end
+
+function Weapon.Equip(player, typeKey)
+	if player:GetAttribute("Zone") ~= "Lobby" then
+		return false, "무기 교체는 로비에서만 할 수 있어요."
+	end
+	local weaponType = Config.WeaponTypes[typeKey]
+	if not weaponType or not weaponType.UnlockCost then return false, "알 수 없는 무기예요." end
+	if not isUnlocked(player, typeKey) then
+		return false, weaponType.Name .. "을(를) 먼저 구매해야 해요."
+	end
+	player:SetAttribute("WeaponType", typeKey)
+	return true, weaponType.Name .. " 장착!"
+end
+
+function Weapon.Buy(player, typeKey)
+	local weaponType = Config.WeaponTypes[typeKey]
+	if not weaponType or not weaponType.UnlockCost then return false, "알 수 없는 무기예요." end
+	if isUnlocked(player, typeKey) then
+		return false, "이미 가지고 있는 무기예요."
+	end
+	local gold = player:GetAttribute("Gold") or 0
+	if gold < weaponType.UnlockCost then
+		return false, string.format("골드가 부족해요. (%d G 필요)", weaponType.UnlockCost)
+	end
+	player:SetAttribute("Gold", gold - weaponType.UnlockCost)
+	player:SetAttribute("WUnlock_" .. typeKey, true)
+	player:SetAttribute("WeaponType", typeKey)
+	return true, weaponType.Name .. " 구매 완료! 바로 장착했어요."
 end
 
 return Weapon

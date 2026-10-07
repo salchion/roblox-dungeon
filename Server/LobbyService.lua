@@ -107,7 +107,7 @@ local function makeFountain(position, parent)
 	spray.Parent = top
 end
 
--- 반환: { SpawnCFrame, GatePrompt, AnvilPrompt, GachaPrompt, DummyStart }
+-- 반환: { SpawnCFrame, GatePrompt, AnvilPrompt, GachaPrompt, DummyStart, RankBoardCFrame }
 function Lobby.Build()
 	local folder = Instance.new("Folder")
 	folder.Name = "Lobby"
@@ -303,6 +303,7 @@ function Lobby.Build()
 		AnvilPrompt = anvilPrompt,
 		GachaPrompt = gachaPrompt,
 		DummyStart = Vector3.new(-100, TOP, -92),
+		RankBoardCFrame = CFrame.lookAt(Vector3.new(-52, TOP + 16.5, 100), Vector3.new(0, TOP + 16.5, 72)),
 	}
 end
 

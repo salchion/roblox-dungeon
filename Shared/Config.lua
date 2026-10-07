@@ -12,9 +12,9 @@ Config.Player = {
 	BaseHealth = 100,
 	WalkSpeed = 16,
 	RunSpeed = 28,          -- Shift를 누르고 있을 때
-	DashSpeed = 95,         -- Q 대시 속도
-	DashTime = 0.16,        -- 대시 지속 시간(초)
-	DashCooldown = 2.5,     -- 대시 재사용 대기시간(초)
+	DashSpeed = 80,         -- Q 슬라이딩 시작 속도 (점점 느려지며 미끄러짐)
+	DashTime = 0.6,         -- 슬라이딩 지속 시간(초)
+	DashCooldown = 2.0,     -- 슬라이딩 재사용 대기시간(초)
 	BaseDamage = 10,        -- 무기 +0 기준 데미지
 	BaseCooldown = 0.35,    -- 기본 공격 간격(초)
 	AttackRange = 300,      -- 사거리
@@ -53,7 +53,7 @@ Config.Dungeon = {
 
 	ArenaRadius = 90,
 	SpawnRadius = 65,        -- 몬스터가 나타나는 거리
-	ArenaOrigin = Vector3.new(3000, 0, 0), -- 던전 아레나는 로비에서 멀리 떨어진 곳에 만들어짐
+	ArenaOrigin = Vector3.new(0, 1500, 0), -- 던전 아레나는 로비/필드와 겹치지 않게 아주 높은 하늘 위에 만들어짐
 	ArenaSpacing = 500,      -- 파티별 아레나 간격
 	MaxArenas = 8,           -- 동시에 열 수 있는 던전 수
 }
@@ -121,17 +121,17 @@ Config.Weapon = {
 	-- Particles: 초당 파티클 수 / Trail: 궤적 / Light: 빛 범위 / Rainbow: 무지개 이펙트
 	Tiers = {
 		-- Shot: 발사체 외형. Style(Ball/Bolt/Orb/Cannon/Fire/Rainbow) / Size / Length(Bolt만) / Speed(초당 거리) / Impact(착탄 시 터지는 입자 수)
-		{ MinLevel = 0,  Name = "낡은 권총",       Color = Color3.fromRGB(165, 165, 175), Material = Enum.Material.Metal, Particles = 0,  Trail = false, Light = 0,
+		{ MinLevel = 0,  Name = "낡은 권총", Prefix = "낡은",       Color = Color3.fromRGB(165, 165, 175), Material = Enum.Material.Metal, Particles = 0,  Trail = false, Light = 0,
 			Shot = { Style = "Ball", Size = 0.6, Speed = 260, Impact = 0 } },
-		{ MinLevel = 3,  Name = "강철 권총",       Color = Color3.fromRGB(90, 160, 255),  Material = Enum.Material.Metal, Particles = 6,  Trail = false, Light = 0,
+		{ MinLevel = 3,  Name = "강철 권총", Prefix = "강철",       Color = Color3.fromRGB(90, 160, 255),  Material = Enum.Material.Metal, Particles = 6,  Trail = false, Light = 0,
 			Shot = { Style = "Bolt", Size = 0.35, Length = 3, Speed = 320, Impact = 6 } },
-		{ MinLevel = 6,  Name = "마력 라이플",     Color = Color3.fromRGB(175, 95, 255),  Material = Enum.Material.Glass, Particles = 12, Trail = true,  Light = 0,
+		{ MinLevel = 6,  Name = "마력 라이플", Prefix = "마력",     Color = Color3.fromRGB(175, 95, 255),  Material = Enum.Material.Glass, Particles = 12, Trail = true,  Light = 0,
 			Shot = { Style = "Orb", Size = 1.3, Speed = 190, Impact = 14 } },
-		{ MinLevel = 9,  Name = "황금 캐논",       Color = Color3.fromRGB(255, 200, 50),  Material = Enum.Material.Neon,  Particles = 22, Trail = true,  Light = 10,
+		{ MinLevel = 9,  Name = "황금 캐논", Prefix = "황금",       Color = Color3.fromRGB(255, 200, 50),  Material = Enum.Material.Neon,  Particles = 22, Trail = true,  Light = 10,
 			Shot = { Style = "Cannon", Size = 2.4, Speed = 140, Impact = 30 } },
-		{ MinLevel = 12, Name = "불꽃의 건",       Color = Color3.fromRGB(255, 70, 40),   Material = Enum.Material.Neon,  Particles = 40, Trail = true,  Light = 16,
+		{ MinLevel = 12, Name = "불꽃의 건", Prefix = "불꽃의",       Color = Color3.fromRGB(255, 70, 40),   Material = Enum.Material.Neon,  Particles = 40, Trail = true,  Light = 16,
 			Shot = { Style = "Fire", Size = 2.0, Speed = 160, Impact = 40 } },
-		{ MinLevel = 15, Name = "전설의 무지개 건", Color = Color3.fromRGB(255, 255, 255), Material = Enum.Material.Neon,  Particles = 60, Trail = true,  Light = 20, Rainbow = true,
+		{ MinLevel = 15, Name = "전설의 무지개 건", Prefix = "전설의 무지개", Color = Color3.fromRGB(255, 255, 255), Material = Enum.Material.Neon,  Particles = 60, Trail = true,  Light = 20, Rainbow = true,
 			Shot = { Style = "Rainbow", Size = 2.2, Speed = 170, Impact = 60 } },
 	},
 }
@@ -295,14 +295,128 @@ end
 ------------------------------------------------------------
 -- 전투력: 머리 위 이름표 / 리더보드에 표시되어 강함을 과시할 수 있다
 ------------------------------------------------------------
-function Config.GetPower(weaponLevel, critPoints, speedPoints, gearHealth, gearCrit)
+function Config.GetPower(weaponLevel, critPoints, speedPoints, gearHealth, gearCrit, typeKey)
 	local P = Config.Player
+	local weaponType = Config.WeaponTypes[typeKey or "Pistol"] or Config.WeaponTypes.Pistol
+	local pellets = weaponType.Pellets > 1 and weaponType.Pellets * 0.6 or 1
+	local typeFactor = weaponType.DamageMult * pellets / weaponType.Cooldown
 	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel)
-	local crit = math.min(0.9, (critPoints or 0) * P.CritPerPoint + (gearCrit or 0))
+	local crit = math.min(0.9, (critPoints or 0) * P.CritPerPoint + (gearCrit or 0) + (weaponType.CritBonus or 0))
 	local rate = 1 / (P.BaseCooldown / (1 + (speedPoints or 0) * P.SpeedPerPoint))
-	local dps = damage * (1 + crit * (P.CritMultiplier - 1)) * rate
+	local dps = damage * (1 + crit * (P.CritMultiplier - 1)) * rate * typeFactor
 	return math.floor(dps * 10 + (gearHealth or 0) * 0.5)
 end
+
+------------------------------------------------------------
+-- 무기 종류: 각각 강화 레벨이 따로 있고, 골드로 구매하면 로비에서 바꿔 들 수 있다
+--   DamageMult: 한 발 데미지 배율 / Cooldown: 공격 간격 배율 / Pellets: 한 번에 나가는 탄 수 / Spread: 퍼짐(도)
+--   Range: 사거리 / CritBonus: 치명타 확률 추가 / ShotScale, SpeedScale: 발사체 크기 / 속도 배율
+------------------------------------------------------------
+Config.WeaponTypes = {
+	Order = { "Pistol", "Shotgun", "Sniper" },
+	Pistol = {
+		Name = "권총", UnlockCost = 0, DamageMult = 1, Cooldown = 1, Range = 300, Pellets = 1, Spread = 0,
+		ShotScale = 1, SpeedScale = 1, BarrelLength = 1, BarrelThickness = 1,
+		Desc = "균형 잡힌 기본 무기",
+	},
+	Shotgun = {
+		Name = "샷건", UnlockCost = 2500, DamageMult = 0.5, Cooldown = 1.6, Range = 90, Pellets = 6, Spread = 9,
+		ShotScale = 0.55, SpeedScale = 1, BarrelLength = 0.75, BarrelThickness = 1.5,
+		Desc = "근거리에서 6발이 퍼져 나가는 산탄 (사거리 90)",
+	},
+	Sniper = {
+		Name = "저격총", UnlockCost = 5000, DamageMult = 4, Cooldown = 3, Range = 600, Pellets = 1, Spread = 0,
+		ShotScale = 1.4, SpeedScale = 2.4, CritBonus = 0.25, BarrelLength = 1.9, BarrelThickness = 0.7,
+		Desc = "느리지만 한 방이 강력, 치명타 +25%, 사거리 600",
+	},
+}
+
+function Config.GetPlayerWeapon(player)
+	return Config.WeaponTypes[player:GetAttribute("WeaponType") or "Pistol"] or Config.WeaponTypes.Pistol
+end
+
+-- 무기 종류 + 강화 레벨에 따른 이름. 예: "황금 저격총"
+function Config.GetWeaponName(typeKey, level)
+	local weaponType = Config.WeaponTypes[typeKey] or Config.WeaponTypes.Pistol
+	return Config.GetWeaponTier(level).Prefix .. " " .. weaponType.Name
+end
+
+------------------------------------------------------------
+-- 던전 종류 / 난이도 (던전 게이트에서 파티장이 고른다)
+------------------------------------------------------------
+Config.Dungeon.Difficulties = {
+	Order = { "Easy", "Normal", "Hard" },
+	Easy = { Name = "쉬움", HealthMult = 0.7, DamageMult = 0.7, GoldMult = 0.8, Tickets = 2, LevelOffset = -2, Color = Color3.fromRGB(120, 220, 130) },
+	Normal = { Name = "보통", HealthMult = 1, DamageMult = 1, GoldMult = 1, Tickets = 3, LevelOffset = 0, Color = Color3.fromRGB(255, 220, 110) },
+	Hard = { Name = "어려움", HealthMult = 1.8, DamageMult = 1.5, GoldMult = 2, Tickets = 5, LevelOffset = 4, Color = Color3.fromRGB(255, 100, 100) },
+}
+
+-- Boss.Weights: 보스 패턴 비중 (Fan 부채꼴 / Ring 전방위 / Spiral 나선 / Meteor 메테오)
+Config.Dungeon.Types = {
+	Order = { "Cave", "Ice", "Fire" },
+	Cave = {
+		Name = "고블린 동굴", Desc = "어둡고 좁은 동굴. 입문용 던전", Waves = 5, LevelOffset = 0, GoldMult = 1, RecommendedPower = 0,
+		MonsterColor = Color3.fromRGB(110, 160, 70),
+		Floor = { Color = Color3.fromRGB(70, 60, 50), Material = Enum.Material.Slate },
+		Wall = { Color = Color3.fromRGB(55, 45, 40), Material = Enum.Material.Brick },
+		Torch = Color3.fromRGB(255, 150, 70),
+		Boss = { Name = "고블린 왕", Color = Color3.fromRGB(70, 130, 50), HealthMult = 1, DamageMult = 1, Weights = { Fan = 3, Ring = 2, Spiral = 1, Meteor = 2 } },
+	},
+	Ice = {
+		Name = "얼음 성채", Desc = "얼어붙은 성. 나선 탄막이 매서운 중급 던전", Waves = 6, LevelOffset = 6, GoldMult = 1.6, RecommendedPower = 400,
+		MonsterColor = Color3.fromRGB(110, 200, 240),
+		Floor = { Color = Color3.fromRGB(190, 220, 240), Material = Enum.Material.Ice },
+		Wall = { Color = Color3.fromRGB(120, 160, 200), Material = Enum.Material.Glacier },
+		Torch = Color3.fromRGB(120, 200, 255),
+		Boss = { Name = "서리 군주", Color = Color3.fromRGB(90, 170, 240), HealthMult = 1.6, DamageMult = 1.2, Weights = { Fan = 1, Ring = 3, Spiral = 3, Meteor = 1 } },
+	},
+	Fire = {
+		Name = "화염 신전", Desc = "용암의 신전. 메테오가 쏟아지는 고급 던전", Waves = 7, LevelOffset = 12, GoldMult = 2.5, RecommendedPower = 1200,
+		MonsterColor = Color3.fromRGB(240, 100, 50),
+		Floor = { Color = Color3.fromRGB(60, 35, 35), Material = Enum.Material.Basalt },
+		Wall = { Color = Color3.fromRGB(90, 40, 30), Material = Enum.Material.CrackedLava },
+		Torch = Color3.fromRGB(255, 90, 40),
+		Boss = { Name = "화염의 군주", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Fan = 1, Ring = 1, Spiral = 2, Meteor = 4 } },
+	},
+}
+
+------------------------------------------------------------
+-- 일일 퀘스트 / 업적 / 칭호
+--   Stat 은 카운터(DummyHits, FieldKills, EliteKills, Kills, BossKills, DungeonClears, Enhances, Rolls)
+--   또는 현재 값(MaxZone, WeaponLevel, BestRarity, Power)
+--   업적을 달성하면 Title(칭호)이 열리고 이름표에 달 수 있다
+------------------------------------------------------------
+Config.Quests = {
+	DailyCount = 4,   -- 하루에 나오는 퀘스트 수 (아래 Pool 에서 날짜마다 무작위 선택)
+	Pool = {
+		{ Id = "dummy",   Name = "허수아비 연습", Desc = "허수아비를 %d번 때리기",       Stat = "DummyHits",     Goal = 300, Reward = { Gold = 300 } },
+		{ Id = "field",   Name = "필드 사냥",     Desc = "필드 몬스터 %d마리 처치",       Stat = "FieldKills",    Goal = 30,  Reward = { Gold = 400 } },
+		{ Id = "elite",   Name = "엘리트 사냥꾼", Desc = "엘리트 몬스터 %d마리 처치",     Stat = "EliteKills",    Goal = 3,   Reward = { Tickets = 1 } },
+		{ Id = "dungeon", Name = "던전 도전",     Desc = "던전 %d번 클리어",              Stat = "DungeonClears", Goal = 1,   Reward = { Gold = 600, Tickets = 1 } },
+		{ Id = "boss",    Name = "보스 사냥",     Desc = "보스 %d마리 처치",              Stat = "BossKills",     Goal = 1,   Reward = { Tickets = 2 } },
+		{ Id = "enhance", Name = "대장장이",      Desc = "강화에 %d번 성공하기",          Stat = "Enhances",      Goal = 3,   Reward = { Gold = 500 } },
+		{ Id = "gacha",   Name = "운 시험",       Desc = "장비 뽑기를 %d번 하기",         Stat = "Rolls",         Goal = 2,   Reward = { Gold = 300 } },
+		{ Id = "kills",   Name = "몬스터 청소",   Desc = "몬스터 %d마리 처치 (던전 포함)", Stat = "Kills",         Goal = 60,  Reward = { Gold = 500 } },
+	},
+}
+
+Config.Achievements = {
+	{ Id = "dummy100",   Name = "초보 사수",       Desc = "허수아비 %d회 타격",          Stat = "DummyHits",     Goal = 100,   Reward = { Gold = 200 },               Title = "초보 사수" },
+	{ Id = "dummy2000",  Name = "허수아비 학살자", Desc = "허수아비 %d회 타격",          Stat = "DummyHits",     Goal = 2000,  Reward = { Gold = 1500 },              Title = "허수아비 학살자" },
+	{ Id = "kills500",   Name = "사냥꾼",          Desc = "몬스터 %d마리 처치",          Stat = "Kills",         Goal = 500,   Reward = { Gold = 1500 },              Title = "사냥꾼" },
+	{ Id = "dungeon1",   Name = "첫 던전",         Desc = "던전 %d회 클리어",            Stat = "DungeonClears", Goal = 1,     Reward = { Gold = 500, Tickets = 1 },  Title = "던전 입문자" },
+	{ Id = "dungeon10",  Name = "던전 단골",       Desc = "던전 %d회 클리어",            Stat = "DungeonClears", Goal = 10,    Reward = { Tickets = 3 },              Title = "던전 단골" },
+	{ Id = "dungeon50",  Name = "던전 마스터",     Desc = "던전 %d회 클리어",            Stat = "DungeonClears", Goal = 50,    Reward = { Tickets = 10 },             Title = "던전 마스터" },
+	{ Id = "boss10",     Name = "보스 헌터",       Desc = "보스 %d마리 처치",            Stat = "BossKills",     Goal = 10,    Reward = { Tickets = 5 },              Title = "보스 헌터" },
+	{ Id = "zone4",      Name = "탐험가",          Desc = "필드 %d구역 돌파",            Stat = "MaxZone",       Goal = 4,     Reward = { Gold = 1000 },              Title = "탐험가" },
+	{ Id = "zone8",      Name = "심연의 정복자",   Desc = "필드 %d구역 돌파",            Stat = "MaxZone",       Goal = 8,     Reward = { Tickets = 5 },              Title = "심연의 정복자" },
+	{ Id = "weapon10",   Name = "강화의 달인",     Desc = "무기 +%d 달성",               Stat = "WeaponLevel",   Goal = 10,    Reward = { Gold = 2000 },              Title = "강화의 달인" },
+	{ Id = "weapon15",   Name = "전설의 대장장이", Desc = "무기 +%d 달성",               Stat = "WeaponLevel",   Goal = 15,    Reward = { Tickets = 5 },              Title = "전설의 대장장이" },
+	{ Id = "legend",     Name = "행운아",          Desc = "전설 등급 장비 획득",         Stat = "BestRarity",    Goal = 4,     Reward = { Tickets = 3 },              Title = "행운아" },
+	{ Id = "myth",       Name = "신화의 주인",     Desc = "신화 등급 장비 획득",         Stat = "BestRarity",    Goal = 5,     Reward = { Tickets = 8 },              Title = "신화의 주인" },
+	{ Id = "power1000",  Name = "강자",            Desc = "전투력 %d 달성",              Stat = "Power",         Goal = 1000,  Reward = { Gold = 1500 },              Title = "강자" },
+	{ Id = "power10000", Name = "초월자",          Desc = "전투력 %d 달성",              Stat = "Power",         Goal = 10000, Reward = { Tickets = 10 },             Title = "초월자" },
+}
 
 function Config.GetWeaponTier(level)
 	local tiers = Config.Weapon.Tiers
