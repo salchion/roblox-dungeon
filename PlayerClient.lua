@@ -1322,10 +1322,24 @@ local function resolveTarget(instance)
 	return nil
 end
 
+-- 화면 안에 있고(뒤쪽 / 화면 밖 제외) 사이에 벽이 없어서 실제로 "보이는" 대상인가
+local function isTargetVisible(target, root)
+	local position = target.Part.Position
+	local _, onScreen = camera:WorldToViewportPoint(position)
+	if not onScreen then return false end
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	params.FilterDescendantsInstances = { player.Character }
+	local origin = root.Position + Vector3.new(0, 1.5, 0)
+	local result = workspace:Raycast(origin, position - origin, params)
+	return result == nil or result.Instance == target.Part or result.Instance:IsDescendantOf(target.Instance)
+end
+
 local function isTargetValid(target, root)
 	if not target or not target.Instance.Parent or not target.Part.Parent then return false end
 	if target.Kind == "Dummy" and not dummyUsable(target.Instance) then return false end
-	return (target.Part.Position - root.Position).Magnitude <= weaponRange() * 0.95
+	if (target.Part.Position - root.Position).Magnitude > weaponRange() * 0.95 then return false end
+	return isTargetVisible(target, root)
 end
 
 -- 지금 구역에서 때릴 수 있는 가장 가까운 대상
