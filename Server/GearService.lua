@@ -435,7 +435,6 @@ function Gear.Enhance(player, slotKey)
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if root then
 			Effects.Burst(root.Position, G.RarityColors[rarity], 30)
-			Effects.PlaySound(root, Config.Audio.EnhanceSuccess, 0.8, 1)
 		end
 		return true, string.format("%s 강화 성공! +%d", slot.Name, level + 1)
 	end

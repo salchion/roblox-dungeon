@@ -42,6 +42,27 @@ local SPECS = {
 	LevelUp = { Base = "EnhanceSuccess", Pitch = 1.0, Volume = 1.0, Length = 1.4, Fx = { { "reverb", { DecayTime = 1.8, WetLevel = -5 } } },
 		Layers = { { Pitch = 1.5, Volume = 0.7, Delay = 0.12 }, { Pitch = 2.0, Volume = 0.5, Delay = 0.26 } } },
 }
+
+-- 강화 / 뽑기 연출음 (UI 에서 재생)
+SPECS.Enh_Hammer  = { Base = "Shot", Pitch = 0.5, Volume = 1.0, Length = 0.18, Fx = { { "distortion", { Level = 0.45 } } },
+	Layers = { { Pitch = 1.8, Volume = 0.35, Delay = 0.01 } } }                       -- 모루를 내려치는 "쾅"
+SPECS.Enh_Success = { Base = "EnhanceSuccess", Pitch = 1.0, Volume = 0.9, Length = 0.8, Fx = { { "reverb", { DecayTime = 1.0, WetLevel = -8 } } },
+	Layers = { { Pitch = 1.5, Volume = 0.45, Delay = 0.07 } } }                        -- 성공 "띵~" (단계가 오를수록 음이 높아진다)
+SPECS.Enh_Fail    = { Base = "Shot", Pitch = 0.3, Volume = 0.9, Length = 0.55, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -6 } }, { "eq", { HighGain = -20, MidGain = -4 } } } } -- 둔탁하게 "툭..."
+SPECS.Enh_Evolve  = { Base = "EnhanceSuccess", Pitch = 0.9, Volume = 1.1, Length = 2.0, Fx = { { "reverb", { DecayTime = 2.4, WetLevel = -3 } } },
+	Layers = { { Pitch = 1.13, Volume = 0.8, Delay = 0.12 }, { Pitch = 1.35, Volume = 0.8, Delay = 0.24 }, { Pitch = 1.8, Volume = 0.9, Delay = 0.36 }, { Pitch = 0.45, Volume = 1.0, Delay = 0.0 } } }
+SPECS.Gacha_Drop  = { Base = "Shot", Pitch = 0.6, Volume = 0.8, Length = 0.25, Fx = { { "reverb", { DecayTime = 0.8, WetLevel = -8 } } } }   -- 캡슐 낙하 "텅"
+SPECS.Gacha_Tick  = { Base = "Shot", Pitch = 3.2, Volume = 0.45, Length = 0.07 }                                                      -- 흔들릴 때 "틱틱"
+SPECS.Gacha_Card  = { Base = "EnhanceSuccess", Pitch = 1.3, Volume = 0.5, Length = 0.25 }                                            -- 10연 카드 한 장씩
+local POP_PITCHES = { 1.0, 1.26, 1.5, 2.0, 2.52 }
+for rarity = 1, 5 do                                                                                                                   -- 퍽! 등급이 높을수록 음이 더 많이 쌓인다
+	local layers = {}
+	for i = 2, rarity do
+		table.insert(layers, { Pitch = POP_PITCHES[i], Volume = 0.65, Delay = (i - 1) * 0.1 })
+	end
+	SPECS["Gacha_Pop" .. rarity] = { Base = "EnhanceSuccess", Pitch = POP_PITCHES[1], Volume = 0.8 + rarity * 0.08, Length = 0.9 + rarity * 0.2,
+		Fx = { { "reverb", { DecayTime = 0.8 + rarity * 0.4, WetLevel = -7 + rarity } } }, Layers = layers }
+end
 SoundBank.Specs = SPECS
 
 local EFFECT_CLASS = {

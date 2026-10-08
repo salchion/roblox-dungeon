@@ -16,6 +16,8 @@ local TweenService = game:GetService("TweenService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
+local sfxParent = game:GetService("SoundService")
 
 local player = Players.LocalPlayer
 local camera = workspace.CurrentCamera
@@ -360,6 +362,7 @@ local enhanceButton = makeButton({
 	local swing = TweenService:Create(hammer, TweenInfo.new(0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Rotation = 25, Position = UDim2.new(0.5, 20, 0, 190) })
 	swing:Play()
 	swing.Completed:Connect(function()
+		SoundBank.Play(sfxParent, "Enh_Hammer")
 		for i = 1, 8 do
 			local spark = create("Frame", {
 				Size = UDim2.new(0, 8, 0, 8), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 205),
@@ -474,6 +477,24 @@ Remotes.Enhance.OnClientEvent:Connect(function(ok, message, summary)
 	local oldTier = E.EnhanceShownTier
 	refreshEnhance()
 	local evolved = oldTier ~= nil and E.EnhanceShownTier ~= nil and E.EnhanceShownTier > oldTier
+	-- 결과 소리: 성공은 단계가 오를수록 음이 높아지고, 진화는 화음, 실패는 둔탁하게
+	do
+		local level = player:GetAttribute("WeaponLevel") or 0
+		local tierNow = Config.GetWeaponTier(level)
+		local stageFrac = (level - tierNow.MinLevel) / math.max(1, tierNow.Steps)
+		if evolved then
+			SoundBank.Play(sfxParent, "Enh_Evolve")
+		elseif summary and summary.Attempts and summary.Attempts > 1 then
+			for i = 1, math.min(8, summary.Successes or 0) do
+				task.delay((i - 1) * 0.09, function() SoundBank.Play(sfxParent, "Enh_Success", { Pitch = 0.85 + 0.06 * i }) end)
+			end
+			if (summary.Successes or 0) == 0 then SoundBank.Play(sfxParent, "Enh_Fail") end
+		elseif ok then
+			SoundBank.Play(sfxParent, "Enh_Success", { Pitch = 0.85 + 0.75 * stageFrac })
+		else
+			SoundBank.Play(sfxParent, "Enh_Fail")
+		end
+	end
 	-- 결과 큰 글자: 성공 / 실패 / 진화
 	enhanceBanner.Visible = true
 	enhanceBanner.Position = UDim2.new(0.5, 0, 0, 200)
@@ -762,6 +783,10 @@ Remotes.Gear.OnClientEvent:Connect(function(action, result)
 	end
 	gearMessage.Text = result.Message
 	gearMessage.TextColor3 = color
+	if not result.Roll then -- 장비 강화 결과음 (뽑기는 아래 뽑기 연출이 따로 소리를 낸다)
+		SoundBank.Play(sfxParent, "Enh_Hammer")
+		task.delay(0.12, function() SoundBank.Play(sfxParent, result.Ok and "Enh_Success" or "Enh_Fail") end)
+	end
 	task.delay(0.3, function() if gearHooks.Rebuild then gearHooks.Rebuild() end end)
 	refreshGear()
 end)
@@ -807,14 +832,20 @@ do
 			local band = create("Frame", { Size = UDim2.new(1, 0, 0, 8), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 0, 0.5, 0), BackgroundColor3 = Color3.fromRGB(90, 90, 120), BorderSizePixel = 0, ZIndex = 63 }, capsule)
 			create("Frame", { Size = UDim2.new(0, 22, 0, 22), Position = UDim2.new(0.2, 0, 0.18, 0), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.35, BorderSizePixel = 0, ZIndex = 63 }, capsule)
 			fade(capsule, { Position = UDim2.new(0.5, 0, 0.5, 0) }, 0.5, Enum.EasingStyle.Bounce)
+			task.delay(0.4, function() SoundBank.Play(sfxParent, "Gacha_Drop") end)
 			pause(0.55)
 
 			-- 2) 흔들림 + 높은 등급일수록 캡슐 테두리에 등급 색이 새어 나온다 (두근두근)
 			local shakeTime = SHAKE[rarity]
 			local started = os.clock()
 			local hintColor = rarity >= 3 and color or Color3.fromRGB(190, 190, 210)
+			local nextTick = 0
 			while not skipped and root.Parent and os.clock() - started < shakeTime do
 				local t = (os.clock() - started) / shakeTime
+				if os.clock() >= nextTick then -- 점점 빨라지는 틱틱 소리
+					nextTick = os.clock() + 0.2 - 0.12 * t
+					SoundBank.Play(sfxParent, "Gacha_Tick", { Pitch = 0.8 + t * 0.8 })
+				end
 				capsule.Rotation = math.sin((os.clock() - started) * 40) * (6 + t * 14)
 				capStroke.Color = Color3.fromRGB(160, 160, 190):Lerp(hintColor, t)
 				capStroke.Thickness = 4 + t * (rarity >= 3 and 10 or 3)
@@ -825,6 +856,8 @@ do
 
 			-- 3) 퍽! 터지며 빛 고리 + 번쩍임 + 카드
 			capsule:Destroy()
+			SoundBank.Play(sfxParent, "Gacha_Pop" .. rarity)
+			if rarity >= 4 then SoundBank.Play(sfxParent, "Skill_Ult", { Volume = 0.5 }) end
 			for i = 1, math.max(1, rarity - 1) do
 				task.delay((i - 1) * 0.18, function()
 					if not root.Parent then return end
@@ -850,6 +883,7 @@ do
 					counts[r.Rarity] = (counts[r.Rarity] or 0) + 1
 					task.delay((index - 1) * 0.1, function()
 						if not root.Parent then return end
+						SoundBank.Play(sfxParent, "Gacha_Card", { Pitch = 0.9 + 0.12 * r.Rarity })
 						local col, row = (index - 1) % 5, (index - 1) // 5
 						local rc = Config.Gear.RarityColors[r.Rarity]
 						local cx, cy = 66 + col * 132, 122 + row * 158
@@ -3654,8 +3688,6 @@ end
 Remotes.Hit.OnClientEvent:Connect(function(isCrit, killed)
 	hitMarker = killed and 0.3 or 0.18
 	hitMarkerCrit = isCrit or killed
-	local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
-	local sfxParent = game:GetService("SoundService")
 	if killed then
 		shake = math.max(shake, 0.5)
 		-- 연속 처치할수록 처치음이 점점 높아진다 (콤보가 쌓이는 쾌감)

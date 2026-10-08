@@ -693,7 +693,6 @@ function Weapon.Enhance(player)
 		end
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if root then
-			playSoundAt(root, Config.Audio.EnhanceSuccess, 0.8, 1)
 			Effects.Burst(root.Position, after.Color, evolved and 120 or 30)
 			if evolved then
 				Effects.FloatText(root.Position + Vector3.new(0, 5, 0), "⭐ " .. after.Name, after.Color)
