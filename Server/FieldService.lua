@@ -130,6 +130,21 @@ local function zoneOfX(x)
 	return math.clamp(math.floor((x - F.StartX) / F.ZoneLength) + 1, 1, F.ZoneCount)
 end
 
+-- 구역마다 "1층 → 2층"으로 올라갔다 내려오는 단차가 있다 (구역 입구 / 캠프는 항상 0층). 몬스터 / 전리품 높이도 이 함수를 쓴다.
+-- 점 목록 {구역 안 x 거리, 높이}: 평지 → 경사로 → 1층(7) → 경사로 → 2층(14) → 내려옴
+local FLOOR_POINTS = { { 0, 0 }, { 120, 0 }, { 160, 7 }, { 300, 7 }, { 340, 14 }, { 480, 14 }, { 520, 7 }, { 600, 7 }, { 640, 0 }, { 700, 0 } }
+local function floorAt(x)
+	local offset = (x - F.StartX) % F.ZoneLength
+	for i = 2, #FLOOR_POINTS do
+		local a, b = FLOOR_POINTS[i - 1], FLOOR_POINTS[i]
+		if offset <= b[1] then
+			local t = (offset - a[1]) / math.max(1e-6, b[1] - a[1])
+			return TOP + a[2] + (b[2] - a[2]) * t
+		end
+	end
+	return TOP
+end
+
 local function makePart(props, parent)
 	local part = Instance.new("Part")
 	part.Anchored = true
@@ -169,7 +184,7 @@ local function decorateZone(zone, rng)
 	for _ = 1, 90 do
 		local x = rng:NextNumber(x0 + F.CampSafe + 10, x1 - 12)
 		local z = rng:NextNumber(-half + 6, half - 6)
-		local position = Vector3.new(x, TOP, z)
+		local position = Vector3.new(x, floorAt(x), z)
 
 		if zone <= 2 or zone == 5 then
 			-- 나무 (설원은 눈 덮인 나무)
@@ -482,13 +497,34 @@ local function buildWorld()
 
 	for zone = 1, F.ZoneCount do
 		local x0 = zoneBounds(zone)
-		makePart({
-			Name = "Ground" .. zone,
-			Size = Vector3.new(F.ZoneLength, 2, F.Width),
-			Position = Vector3.new(x0 + F.ZoneLength / 2, TOP - 1, 0),
-			Color = F.ZoneColors[zone],
-			Material = F.ZoneMaterials[zone],
-		}, worldFolder)
+		-- 바닥: 평지 / 경사로 조각을 이어 붙인 "층" 지형
+		for i = 2, #FLOOR_POINTS do
+			local a, b = FLOOR_POINTS[i - 1], FLOOR_POINTS[i]
+			local length = b[1] - a[1]
+			local ax, bx = x0 + a[1], x0 + b[1]
+			local tint = F.ZoneColors[zone]:Lerp(Color3.new(1, 1, 1), 0.07 * math.max(a[2], b[2]) / 7)
+			if a[2] == b[2] then
+				local top = TOP + a[2]
+				makePart({
+					Name = "Ground" .. zone, Size = Vector3.new(length, top + 1.95, F.Width),
+					Position = Vector3.new((ax + bx) / 2, (top - 1.95) / 2, 0), Color = tint, Material = F.ZoneMaterials[zone],
+				}, worldFolder)
+			else -- 경사로: 기울어진 판 (위 표면이 두 높이를 잇는다) + 아래를 메우는 받침
+				local ha, hb = TOP + a[2], TOP + b[2]
+				local angle = math.atan2(hb - ha, length)
+				local slabLength = math.sqrt(length * length + (hb - ha) ^ 2)
+				local midX, midH = (ax + bx) / 2, (ha + hb) / 2
+				makePart({
+					Name = "Ramp" .. zone, Size = Vector3.new(slabLength, 2, F.Width),
+					CFrame = CFrame.new(midX + math.sin(angle), midH - math.cos(angle), 0) * CFrame.Angles(0, 0, angle),
+					Color = tint, Material = F.ZoneMaterials[zone],
+				}, worldFolder)
+				makePart({
+					Name = "RampFill" .. zone, Size = Vector3.new(length, math.min(ha, hb) + 1.95, F.Width),
+					Position = Vector3.new(midX, (math.min(ha, hb) - 1.95) / 2, 0), Color = tint, Material = F.ZoneMaterials[zone],
+				}, worldFolder)
+			end
+		end
 
 		buildGateway(zone, x0)
 
@@ -618,13 +654,10 @@ local function spawnMonster(zone, kind)
 	local x0, x1 = zoneBounds(zone)
 	local position
 	if kind == "Boss" then
-		position = Vector3.new(x1 - 45, TOP + stats.Size / 2, 0)
+		position = Vector3.new(x1 - 45, floorAt(x1 - 45) + stats.Size / 2, 0)
 	else
-		position = Vector3.new(
-			freeX(math.floor(x0 + F.CampSafe + 40), math.floor(x1 - 25)),
-			TOP + stats.Size / 2,
-			math.random(-F.Width / 2 + 25, F.Width / 2 - 25)
-		)
+		local spawnX = freeX(math.floor(x0 + F.CampSafe + 40), math.floor(x1 - 25))
+		position = Vector3.new(spawnX, floorAt(spawnX) + stats.Size / 2, math.random(-F.Width / 2 + 25, F.Width / 2 - 25))
 	end
 
 	local part
@@ -707,7 +740,7 @@ local function telegraph(part, data, color, delay, action)
 end
 
 local function dropPosition(part)
-	return Vector3.new(part.Position.X, TOP, part.Position.Z)
+	return Vector3.new(part.Position.X, floorAt(part.Position.X), part.Position.Z)
 end
 
 -- 공개 이벤트 보스 보상: 충분히 싸운(체력의 3% 이상 피해) 참가자 모두에게 골드 / 경험치 / 티켓 / 전리품
@@ -970,6 +1003,7 @@ end
 -- 몬스터 AI(MonsterTypes)가 필드 환경을 다루는 데 쓰는 함수들
 local fieldCtx = {
 	FloorY = TOP,
+	GroundY = function(x) return floorAt(x) end, -- 층 지형에 맞춰 몬스터 높이를 잡는다
 	Walkable = walkableAt,
 	LineOfSight = function(a, b)
 		return (segmentClear(a, b))
@@ -1030,10 +1064,8 @@ local function spawnGoblin(zone)
 		Gold = base.Gold * 40,
 	}
 	local x0, x1 = zoneBounds(zone)
-	local position = Vector3.new(
-		freeX(math.floor(x0 + F.CampSafe + 60), math.floor(x1 - 40)), TOP + stats.Size / 2,
-		math.random(-F.Width / 2 + 30, F.Width / 2 - 30)
-	)
+	local goblinX = freeX(math.floor(x0 + F.CampSafe + 60), math.floor(x1 - 40))
+	local position = Vector3.new(goblinX, floorAt(goblinX) + stats.Size / 2, math.random(-F.Width / 2 + 30, F.Width / 2 - 30))
 	local part = Instance.new("Part")
 	part.Name = "GoldenGoblin"
 	part.Shape = Enum.PartType.Ball
@@ -1087,7 +1119,7 @@ local function stepGoblin(part, data, dt, now)
 	local x0, x1 = zoneBounds(data.Zone)
 	local position = part.Position + flee
 	position = Vector3.new(
-		math.clamp(position.X, x0 + F.CampSafe + 10, x1 - 10), TOP + data.Stats.Size / 2 + math.abs(math.sin(now * 6)) * 1.2,
+		math.clamp(position.X, x0 + F.CampSafe + 10, x1 - 10), floorAt(math.clamp(position.X, x0 + F.CampSafe + 10, x1 - 10)) + data.Stats.Size / 2 + math.abs(math.sin(now * 6)) * 1.2,
 		math.clamp(position.Z, -F.Width / 2 + 12, F.Width / 2 - 12)
 	)
 	part.Position = position
@@ -1144,7 +1176,7 @@ local function stepMonsters(dt)
 						for i = 0, 15 do
 							local angle = (i / 16) * math.pi * 2
 							local direction = Vector3.new(math.cos(angle), 0, math.sin(angle))
-							fireProjectile(Vector3.new(part.Position.X, TOP + 3, part.Position.Z) + direction * (part.Size.X / 2 + 1), direction, 30, math.floor(data.Stats.ShotDamage * 0.7), 2.4, Color3.fromRGB(255, 180, 60))
+							fireProjectile(Vector3.new(part.Position.X, floorAt(part.Position.X) + 3, part.Position.Z) + direction * (part.Size.X / 2 + 1), direction, 30, math.floor(data.Stats.ShotDamage * 0.7), 2.4, Color3.fromRGB(255, 180, 60))
 						end
 					end)
 				end
@@ -1307,11 +1339,8 @@ local function spawnEvent(zone)
 	}
 
 	local x0, x1 = zoneBounds(zone)
-	local position = Vector3.new(
-		freeX(math.floor(x0 + 200), math.floor(x1 - 80)),
-		TOP + stats.Size / 2,
-		math.random(-F.Width / 2 + 70, F.Width / 2 - 70)
-	)
+	local eventX = freeX(math.floor(x0 + 200), math.floor(x1 - 80))
+	local position = Vector3.new(eventX, floorAt(eventX) + stats.Size / 2, math.random(-F.Width / 2 + 70, F.Width / 2 - 70))
 
 	local part = Instance.new("Part")
 	part.Name = "EventBoss"
