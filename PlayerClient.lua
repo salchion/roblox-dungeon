@@ -1042,7 +1042,7 @@ end)
 -- (무기 강화 / 장비 뽑기는 광장의 모루 / 뽑기 기계 앞에서만 한다. 화면 하단 버튼은 없앴다)
 
 makeLabel({
-	Name = "ControlsHint", Size = UDim2.new(0, 560, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -16),
+	Name = "ControlsHint", Size = UDim2.new(0, 560, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -78),
 	Text = "북쪽 던전 게이트 · 서쪽 허수아비 훈련장 · 동쪽 끝 사냥 필드   |   Shift 달리기 · Q 대시 · R 자동공격 · I 메뉴 · M 음악",
 	TextSize = 14, TextColor3 = Color3.fromRGB(220, 220, 235), TextStrokeTransparency = 0.5,
 }, lobbyFrame)
@@ -1851,6 +1851,53 @@ player:GetAttributeChangedSignal("AutoOffTick"):Connect(function()
 	end
 end)
 
+-- 자동 공격(R) 안내: (1) 언제나 화면에 보이는 "R 자동 공격" 버튼(눌러도 켜짐, 켜지면 초록), (2) 처음에는 화면 한가운데에 큼직한 안내
+do
+	local autoButton = makeButton({
+		Size = UDim2.new(0, 140, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0.5, 150, 1, -14),
+		Text = "", BackgroundColor3 = Color3.fromRGB(34, 36, 58),
+	}, gui, toggleAuto)
+	local autoStroke = create("UIStroke", { Color = Color3.fromRGB(120, 130, 190), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, autoButton)
+	local keycap = create("Frame", { Size = UDim2.new(0, 34, 0, 34), Position = UDim2.new(0, 10, 0.5, -17), BackgroundColor3 = Color3.fromRGB(235, 235, 245), BorderSizePixel = 0 }, autoButton)
+	rounded(keycap, 8)
+	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "R", TextSize = 22, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 30, 50) }, keycap)
+	local autoText = makeLabel({
+		Size = UDim2.new(1, -54, 1, -6), Position = UDim2.new(0, 50, 0, 3), TextSize = 14, Font = Enum.Font.GothamBold, RichText = true,
+		TextXAlignment = Enum.TextXAlignment.Left,
+	}, autoButton)
+
+	local hint = create("Frame", {
+		Size = UDim2.new(0, 400, 0, 120), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.6, 0),
+		BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.15, BorderSizePixel = 0, Visible = false, ZIndex = 30,
+	}, gui)
+	rounded(hint, 16)
+	create("UIStroke", { Color = Color3.fromRGB(255, 225, 110), Thickness = 3 }, hint)
+	local bigKey = create("Frame", { Size = UDim2.new(0, 84, 0, 84), Position = UDim2.new(0, 18, 0.5, -42), BackgroundColor3 = Color3.fromRGB(245, 245, 252), BorderSizePixel = 0, ZIndex = 31 }, hint)
+	rounded(bigKey, 16)
+	create("UIStroke", { Color = Color3.fromRGB(255, 200, 70), Thickness = 4 }, bigKey)
+	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "R", TextSize = 60, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 30, 50), ZIndex = 32 }, bigKey)
+	makeLabel({
+		Size = UDim2.new(1, -130, 1, -16), Position = UDim2.new(0, 118, 0, 8), RichText = true, TextSize = 20, ZIndex = 31, TextXAlignment = Enum.TextXAlignment.Left,
+		Text = UserInputService.TouchEnabled and "<b>자동 공격!</b>\n<font size='15' color='#cfd3ea'>오른쪽 아래 <b>R 자동 공격</b> 버튼을 누르면\n알아서 쏴 줘요</font>" or "<b>자동 공격!</b>\n<font size='15' color='#cfd3ea'><b>R 키</b>를 누르면 가까운 적을\n알아서 조준해서 쏴 줘요</font>",
+	}, hint)
+	TweenService:Create(bigKey, TweenInfo.new(0.55, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Size = UDim2.new(0, 94, 0, 94), Position = UDim2.new(0, 13, 0.5, -47) }):Play()
+
+	local shownAt = os.clock() + 4   -- 접속 4초 뒤에 한 번 보여 준다
+	local used = false
+	RunService.RenderStepped:Connect(function()
+		if autoMode then used = true end
+		autoStroke.Color = autoMode and Color3.fromRGB(110, 255, 150) or Color3.fromRGB(120, 130, 190)
+		autoStroke.Thickness = autoMode and 3 or 2
+		autoButton.BackgroundColor3 = autoMode and Color3.fromRGB(32, 70, 52) or Color3.fromRGB(34, 36, 58)
+		autoText.Text = autoMode and "<font color='#8fffb0'><b>자동 공격</b>\nON</font>" or "<b>자동 공격</b>\n<font color='#9aa0c8'>OFF</font>"
+		local zone = currentZone()
+		autoButton.Visible = zone == "Lobby" or zone == "Field" or zone == "Dungeon"
+		-- 첫 안내: 한 번도 안 써 봤으면 큼직하게 (쓰거나 40초가 지나면 사라진다)
+		local showHint = not used and os.clock() > shownAt and os.clock() < shownAt + 40 and zone ~= "Dungeon" and not (settings.MenuPanel and settings.MenuPanel.Visible)
+		hint.Visible = showHint
+	end)
+end
+
 local function attackCooldown()
 	local speedPoints = player:GetAttribute("SpeedPoints") or 0
 	return Config.Player.BaseCooldown * Config.GetPlayerWeapon(player).Cooldown / (1 + speedPoints * Config.Player.SpeedPerPoint)
@@ -1895,6 +1942,7 @@ local menuPanel = makePanel({
 	Position = UDim2.new(0.5, 0, 0.5, 0),
 	Visible = false,
 }, gui)
+settings.MenuPanel = menuPanel
 
 makeLabel({
 	Size = UDim2.new(1, -90, 0, 36), Position = UDim2.new(0, 16, 0, 8),
