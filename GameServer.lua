@@ -25,6 +25,7 @@ local Dungeon = require(Modules:WaitForChild("DungeonService"))
 local Field = require(Modules:WaitForChild("FieldService"))
 local Skill = require(Modules:WaitForChild("SkillService"))
 local Daily = require(Modules:WaitForChild("DailyService"))
+local Meta = require(Modules:WaitForChild("MetaService"))
 local Quest = require(Modules:WaitForChild("QuestService"))
 local Level = require(Modules:WaitForChild("LevelService"))
 local Rank = require(Modules:WaitForChild("RankService"))
@@ -94,6 +95,7 @@ local function onCharacterAdded(player, character)
 
 	character:WaitForChild("Head")
 	Weapon.Refresh(player)
+	Meta.RefreshPetModel(player)
 	task.wait(0.2) -- 몸 부위가 다 붙은 뒤 장비 외형을 씌운다
 	Gear.ApplyVisuals(player)
 	Monetization.ApplyAura(player) -- 꾸미기 오라
@@ -144,6 +146,7 @@ local function setupPlayer(player)
 	end
 	player:SetAttribute("StatPoints", 0)
 	Skill.Reset(player)
+	Meta.Init(player) -- 저장 데이터를 읽기 전에도 스킬 레벨 등 기본값 보장
 
 	player:SetAttribute("RespawnZone", 0)
 	player:SetAttribute("Keys", 0)
@@ -257,6 +260,7 @@ local function setupPlayer(player)
 		Growth.Load(player, saved.Growth) -- 훈련소 / 돌파 (오프라인 중 끝난 것도 완료 처리)
 		Quest.Load(player, saved.Quest)
 		Daily.Load(player, saved.Daily) -- 출석 보상 (하루 한 번 자동 지급)
+		Meta.Load(player, saved.Meta)   -- 스킬 레벨 / 펫 / 무한의 탑 기록
 		updatePower(player)
 	end
 end
@@ -286,6 +290,7 @@ Players.PlayerRemoving:Connect(function(player)
 	Monetization.Forget(player)
 	Growth.Forget(player)
 	Daily.Forget(player)
+	Meta.Forget(player)
 end)
 
 task.spawn(function()

@@ -188,6 +188,13 @@
       "name": "DailyService",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "Server/MetaService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "MetaService",
+      "class": "ModuleScript",
+      "overwrite": true
     }
   ]
 }

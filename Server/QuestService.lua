@@ -19,6 +19,8 @@ local COUNTERS = { "DummyHits", "FieldKills", "EliteKills", "Kills", "BossKills"
 local function readLive(player, stat)
 	if stat == "MaxZone" then
 		return player:GetAttribute("MaxZone") or 0
+	elseif stat == "TowerBest" then
+		return player:GetAttribute("TowerBest") or 0
 	elseif stat == "Level" then
 		return player:GetAttribute("Level") or 1
 	elseif stat == "Power" then

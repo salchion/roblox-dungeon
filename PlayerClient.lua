@@ -891,11 +891,11 @@ local function refreshBanner()
 		bannerTitle.Text = string.format("%s 입장!", state.TypeName or "던전")
 		bannerSub.Text = string.format("[%s] %d초 후 첫 웨이브 시작", state.DifficultyName or "", state.TimeLeft)
 	elseif state.Phase == "Wave" then
-		bannerTitle.Text = string.format("웨이브 %d / %d", state.Wave, state.TotalWaves)
+		bannerTitle.Text = state.TotalWaves == 0 and string.format("🏯 %d층", state.Wave) or string.format("웨이브 %d / %d", state.Wave, state.TotalWaves)
 		bannerSub.Text = string.format("%s · %s · 남은 몬스터 %d", state.TypeName or "", state.DifficultyName or "", state.MonstersLeft)
 	elseif state.Phase == "StatPhase" then
 		bannerTitle.Text = string.format("스탯 분배  %d초", state.TimeLeft)
-		bannerSub.Text = state.Wave >= state.TotalWaves and "웨이브 클리어! 다음은 보스전!" or string.format("웨이브 %d 클리어! 스탯을 올리세요", state.Wave)
+		bannerSub.Text = (state.TotalWaves ~= 0 and state.Wave >= state.TotalWaves) and "웨이브 클리어! 다음은 보스전!" or string.format("웨이브 %d 클리어! 스탯을 올리세요", state.Wave)
 	elseif state.Phase == "Boss" then
 		bannerTitle.Text = "BOSS"
 		bannerSub.Text = string.format("남은 몬스터: %d", state.MonstersLeft)
@@ -935,8 +935,8 @@ local function showResult(result)
 				table.insert(lootLines, string.format("<font color='#%s' size='15'>%s</font>", Config.Gear.RarityColors[entry.Rarity]:ToHex(), entry.Text))
 			end
 			resultInfo.Text = string.format(
-				"도달 웨이브 %d / %d\n획득 골드  +%d G   🎫 티켓 +%d\n%s\n%d초 후 로비로 이동",
-				result.Wave, result.TotalWaves, result.Gold, result.Tickets or 0,
+				"%s\n획득 골드  +%d G   🎫 티켓 +%d\n%s\n%d초 후 로비로 이동",
+				result.TotalWaves == 0 and string.format("🏯 도달 %d층 (최고 %d층)", result.Wave, player:GetAttribute("TowerBest") or 0) or string.format("도달 웨이브 %d / %d", result.Wave, result.TotalWaves), result.Gold, result.Tickets or 0,
 				#lootLines > 0 and ("<b>📦 보스 상자</b>\n" .. table.concat(lootLines, "\n")) or "", remaining
 			)
 			task.wait(1)
@@ -1062,13 +1062,14 @@ local function applySpeed()
 	local character = player.Character
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 	if humanoid then
-		local bonus = (player:GetAttribute("GearSpeed") or 0) + (player:GetAttribute("TrainSpeed") or 0) -- 신발 장비 + 신속 단련
+		local bonus = (player:GetAttribute("GearSpeed") or 0) + (player:GetAttribute("TrainSpeed") or 0) + (player:GetAttribute("PetSpeed") or 0) -- 신발 장비 + 신속 단련
 		humanoid.WalkSpeed = (sprinting and Config.Player.RunSpeed or Config.Player.WalkSpeed) + bonus
 	end
 end
 
 player:GetAttributeChangedSignal("GearSpeed"):Connect(applySpeed)
 player:GetAttributeChangedSignal("TrainSpeed"):Connect(applySpeed)
+player:GetAttributeChangedSignal("PetSpeed"):Connect(applySpeed)
 
 -- Q: 슬라이딩. 이동 방향(가만히 있으면 바라보는 방향)으로 빠르게 미끄러지다가 점점 느려진다.
 -- 발밑에 먼지가 일고 몸에서 꼬리가 남는다.
@@ -1401,6 +1402,8 @@ local TABS = {
 	{ Key = "Inventory", Name = "가방" },
 	{ Key = "Weapon", Name = "무기" },
 	{ Key = "Growth", Name = "성장" },
+	{ Key = "Skill", Name = "스킬" },
+	{ Key = "Pet", Name = "펫" },
 	{ Key = "Quest", Name = "퀘스트" },
 	{ Key = "Ach", Name = "업적" },
 	{ Key = "Rank", Name = "랭킹" },
@@ -1883,7 +1886,87 @@ local function buildShopTab()
 	end
 end
 
-local function refreshMenu()
+local metaState = nil
+local refreshMenu
+
+local function buildSkillTab()
+	sectionTitle("⚔ 스킬 강화 — 골드로 레벨업. 레벨이 오를수록 강해지고 쿨타임이 줄어요. (필드/던전에서 Z F C V)")
+	local U = Config.SkillUpgrade
+	for _, key in ipairs(Config.Skills.Order) do
+		local cfg = Config.Skills[key]
+		local level = metaState and metaState.Skills[key] or 1
+		local lv = level - 1
+		local detail
+		if key == "Barrier" then
+			detail = string.format("지속 %.1f초", cfg.Duration + U.BarrierDuration * lv)
+		elseif key == "Blast" then
+			detail = string.format("범위 %.1f · 공격력 x%.2f", cfg.Radius + U.BlastRadius * lv, cfg.Mult * (1 + U.BlastMult * lv))
+		elseif key == "Heal" then
+			detail = string.format("체력 %d%% 회복", math.floor((cfg.Ratio + U.HealRatio * lv) * 100 + 0.5))
+		else
+			detail = string.format("공격력 x%.2f (게이지 %d)", cfg.Mult * (1 + U.UltMult * lv), cfg.Cost)
+		end
+		local row = newRow(74)
+		rowText(row, string.format("<font size='17'><b>[%s] %s %s</b></font>  <font color='#ffd966'>Lv.%d / %d</font>\n<font color='#bbbbcc'>%s</font>\n<font color='#9ad7ff'>%s · 쿨타임 %.1f초</font>",
+			cfg.Key, cfg.Icon, cfg.Name, level, U.MaxLevel, cfg.Desc, detail, cfg.Cooldown * (1 - U.CooldownPerLevel * lv)), 14, 190)
+		local maxed = level >= U.MaxLevel
+		makeButton({
+			Size = UDim2.new(0, 150, 0, 34), Position = UDim2.new(1, -162, 0.5, -17),
+			Text = maxed and "MAX" or string.format("강화 %d G", Config.GetSkillUpgradeCost(level)),
+			BackgroundColor3 = maxed and GRAY or GREEN,
+		}, row, function()
+			if not maxed then
+				Remotes.Meta:FireServer("SkillUp", key)
+			end
+		end)
+	end
+end
+
+local function buildPetTab()
+	local owned = metaState and metaState.Owned or {}
+	local equipped = metaState and metaState.Equipped
+	local P = Config.Pets
+	local header = newRow(64)
+	rowText(header, string.format("🥚 펫 알을 부화시켜 펫을 모아요. 같은 펫이 또 나오면 펫 레벨 업 (최대 %d)\n<font color='#bbbbcc' size='13'>장착한 펫은 캐릭터를 따라다니며 능력치를 줘요. 알 부화는 로비에서만 가능.</font>", P.MaxLevel), 14, 210)
+	makeButton({
+		Size = UDim2.new(0, 190, 0, 40), Position = UDim2.new(1, -202, 0.5, -20),
+		Text = string.format("🥚 알 부화 %d G", P.EggCost), BackgroundColor3 = Color3.fromRGB(200, 130, 40), TextSize = 15,
+	}, header, function()
+		Remotes.Meta:FireServer("Hatch")
+	end)
+
+	for _, key in ipairs(P.Order) do
+		local pet = P[key]
+		local level = owned[key]
+		local color = P.RarityColors[pet.Rarity]
+		local row = newRow(58, level and Color3.fromRGB(40, 40, 58) or Color3.fromRGB(30, 30, 40))
+		if level then
+			rowText(row, string.format("<font color='#%s' size='16'><b>[%s] %s</b></font>  <font color='#ffd966'>Lv.%d</font>\n<font color='#9ad7ff'>%s</font>",
+				hex(color), P.RarityNames[pet.Rarity], pet.Name, level, Config.FormatPetStat(key, level)), 14, 150)
+			local isEquipped = equipped == key
+			makeButton({
+				Size = UDim2.new(0, 120, 0, 32), Position = UDim2.new(1, -132, 0.5, -16),
+				Text = isEquipped and "해제" or "장착", BackgroundColor3 = isEquipped and RED or GREEN,
+			}, row, function()
+				Remotes.Meta:FireServer("Equip", isEquipped and "" or key)
+			end)
+		else
+			rowText(row, string.format("<font color='#777788' size='16'><b>[%s] ???</b></font>\n<font color='#666677'>아직 못 얻었어요 · %s</font>",
+				P.RarityNames[pet.Rarity], Config.FormatPetStat(key, 1)), 14, 150)
+		end
+	end
+end
+
+Remotes.Meta.OnClientEvent:Connect(function(action, data)
+	if action == "State" then
+		metaState = data
+		if menuPanel.Visible and (currentTab == "Skill" or currentTab == "Pet") then
+			refreshMenu()
+		end
+	end
+end)
+
+function refreshMenu()
 	for _, tab in ipairs(TABS) do
 		tabButtons[tab.Key].BackgroundColor3 = tab.Key == currentTab and Color3.fromRGB(70, 110, 220) or GRAY
 	end
@@ -1900,6 +1983,10 @@ local function refreshMenu()
 		buildShopTab()
 	elseif currentTab == "Weapon" then
 		buildWeaponTab()
+	elseif currentTab == "Skill" then
+		buildSkillTab()
+	elseif currentTab == "Pet" then
+		buildPetTab()
 	elseif currentTab == "Quest" then
 		sectionTitle("📅 오늘의 일일 퀘스트 (매일 바뀌어요)")
 		buildProgressRows(questState and questState.Daily, "Claim", false)
@@ -1921,13 +2008,15 @@ local function selectTab(key)
 		Remotes.Inventory:FireServer("Request")
 	elseif key == "Growth" then
 		Remotes.Growth:FireServer("Request")
+	elseif key == "Skill" or key == "Pet" then
+		Remotes.Meta:FireServer("Request")
 	end
 	refreshMenu()
 end
 
 for index, tab in ipairs(TABS) do
 	tabButtons[tab.Key] = makeButton({
-		Size = UDim2.new(0, 100, 0, 34), Position = UDim2.new(0, 14 + (index - 1) * 106, 0, 52), Text = tab.Name, TextSize = 15,
+		Size = UDim2.new(0, 80, 0, 34), Position = UDim2.new(0, 14 + (index - 1) * 85, 0, 52), Text = tab.Name, TextSize = 14,
 	}, menuPanel, function()
 		selectTab(tab.Key)
 	end)
@@ -2013,7 +2102,7 @@ local selectedType = "Cave"
 local selectedDifficulty = "Normal"
 
 local selectPanel = makePanel({
-	Size = UDim2.new(0, 660, 0, 500),
+	Size = UDim2.new(0, 890, 0, 500),
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Position = UDim2.new(0.5, 0, 0.5, 0),
 	Visible = false,
@@ -2037,8 +2126,8 @@ for index, key in ipairs(Config.Dungeon.Types.Order) do
 	create("UIStroke", { Color = info.Torch, Thickness = 0, Name = "Stroke" }, card)
 	makeLabel({
 		Size = UDim2.new(1, -16, 1, -12), Position = UDim2.new(0, 8, 0, 6), RichText = true,
-		Text = string.format("<font size='20'><b>%s</b></font>\n\n<font color='#bbbbcc' size='13'>%s</font>\n\n웨이브 %d + 보스\n권장 전투력 %d",
-			info.Name, info.Desc, info.Waves, info.RecommendedPower),
+		Text = string.format("<font size='20'><b>%s</b></font>\n\n<font color='#bbbbcc' size='13'>%s</font>\n\n%s\n권장 전투력 %d",
+			info.Name, info.Desc, info.Endless and "웨이브 ∞ (최고 층 도전)" or ("웨이브 " .. info.Waves .. " + 보스"), info.RecommendedPower),
 		TextSize = 15, TextYAlignment = Enum.TextYAlignment.Top,
 	}, card)
 	typeCards[key] = card
@@ -2078,8 +2167,8 @@ function refreshSelect()
 	local dungeonType = Config.Dungeon.Types[selectedType]
 	local difficulty = Config.Dungeon.Difficulties[selectedDifficulty]
 	summaryLabel.Text = string.format(
-		"<b>%s · %s</b>\n웨이브 %d개 → 보스 <font color='#ff9a9a'>%s</font>\n권장 전투력 <font color='#ffe16e'>%d</font>  (내 전투력 %d)\n골드 x%.1f · 티켓 %d장 · 보스 상자 장비 %d개\n🗝 열쇠 <b>%d개</b> 필요 (보유 %d개) — 시간이 지나면 저절로 차요",
-		dungeonType.Name, difficulty.Name, dungeonType.Waves, dungeonType.Boss.Name,
+		"<b>%s · %s</b>\n%s → 보스 <font color='#ff9a9a'>%s</font>\n권장 전투력 <font color='#ffe16e'>%d</font>  (내 전투력 %d)\n골드 x%.1f · 티켓 %d장 · 보스 상자 장비 %d개\n🗝 열쇠 <b>%d개</b> 필요 (보유 %d개) — 시간이 지나면 저절로 차요",
+		dungeonType.Name, difficulty.Name, dungeonType.Endless and "끝없는 웨이브 (나의 최고 층 " .. (player:GetAttribute("TowerBest") or 0) .. ")" or ("웨이브 " .. dungeonType.Waves .. "개"), dungeonType.Boss.Name,
 		dungeonType.RecommendedPower, player:GetAttribute("Power") or 0,
 		dungeonType.GoldMult * difficulty.GoldMult, difficulty.Tickets, Config.Loot.DungeonChestCount,
 		difficulty.KeyCost, player:GetAttribute("Keys") or 0

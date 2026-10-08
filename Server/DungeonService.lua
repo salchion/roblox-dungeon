@@ -16,6 +16,7 @@ local Level = require(script.Parent:WaitForChild("LevelService"))
 local MonsterTypes = require(script.Parent:WaitForChild("MonsterTypes"))
 local CollectionService = game:GetService("CollectionService")
 local Combo = require(script.Parent:WaitForChild("ComboService"))
+local Meta = require(script.Parent:WaitForChild("MetaService"))
 local DungeonTerrain = require(script.Parent:WaitForChild("DungeonTerrain"))
 local Keys = require(script.Parent:WaitForChild("KeyService"))
 local Loot = require(script.Parent:WaitForChild("LootService"))
@@ -592,11 +593,11 @@ function Dungeon.ComputeDamage(player)
 	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
 	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel) * weaponType.DamageMult
 		* Config.GetLevelDamageMult(player:GetAttribute("Level") or 1)
-		* (1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0))
+		* (1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0) + (player:GetAttribute("PetDamage") or 0))
 		* (1 + (player:GetAttribute("PerkPower") or 0) * Config.Perks.PowerPerStack)
 		* Combo.GetDamageMult(player)
 	local chance = math.min(0.9, (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint
-		+ (player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0) + (weaponType.CritBonus or 0))
+		+ (player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0) + (player:GetAttribute("PetCrit") or 0) + (weaponType.CritBonus or 0))
 	local isCrit = math.random() < chance
 	if isCrit then
 		damage *= P.CritMultiplier
@@ -904,7 +905,7 @@ local function waitFor(run, predicate)
 end
 
 local function spawnWave(run, wave)
-	local count = math.floor(D.GetMonsterCount(wave, run.PartySize) * (run.Mutator and run.Mutator.CountMult or 1))
+	local count = math.min(36, math.floor(D.GetMonsterCount(wave, run.PartySize) * (run.Mutator and run.Mutator.CountMult or 1)))
 	local level = math.max(1, D.GetWaveMonsterLevel(wave) + run.LevelBonus)
 	for _ = 1, count do
 		if run.Destroyed or run.Phase == "Ended" then return end
@@ -950,6 +951,31 @@ local function statPhase(run)
 	return ok
 end
 
+-- 무한의 탑: 쓰러질 때까지 웨이브가 계속된다. 클리어한 층이 기록되고, 5층마다 티켓.
+local function towerLoop(run)
+	local wave = 0
+	while not run.Destroyed and run.Phase ~= "Ended" do
+		wave += 1
+		run.Wave = wave
+		run.Phase = "Wave"
+		run.PhaseEnd = nil
+		spawnWave(run, wave)
+		if not waitFor(run, function() return run.MonsterCount <= 0 end) then return end
+
+		giveGold(run, D.WaveClearGold * wave)
+		giveXp(run, Config.Xp.WaveClear * wave)
+		for _, member in ipairs(run.Members) do
+			Meta.RecordTower(member, wave)
+			if wave % 5 == 0 then
+				member:SetAttribute("Tickets", (member:GetAttribute("Tickets") or 0) + 1)
+				run.TicketsEarned[member] = (run.TicketsEarned[member] or 0) + 1
+			end
+		end
+		notifyAll(run, wave % 5 == 0 and string.format("🏯 %d층 돌파! 티켓 +1", wave) or string.format("🏯 %d층 돌파!", wave))
+		if not statPhase(run) then return end
+	end
+end
+
 local function runLoop(run)
 	run.Phase = "Starting"
 	if run.Mutator then
@@ -957,6 +983,11 @@ local function runLoop(run)
 	end
 	run.PhaseEnd = os.clock() + D.StartCountdown
 	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
+
+	if run.Type.Endless then
+		towerLoop(run)
+		return
+	end
 
 	for wave = 1, run.TotalWaves do
 		run.Wave = wave

@@ -71,6 +71,12 @@ local function damageAt(player, center, radius, mult)
 	return Dungeon.AreaDamage(player, center, radius, damage) or Field.AreaDamage(player, center, radius, damage) or {}
 end
 
+local U = Config.SkillUpgrade
+
+local function skillLevel(player, key)
+	return math.clamp(player:GetAttribute("SkillLv_" .. key) or 1, 1, U.MaxLevel)
+end
+
 local handlers = {}
 
 handlers.Barrier = function(player, root, humanoid, character)
@@ -79,7 +85,7 @@ handlers.Barrier = function(player, root, humanoid, character)
 	local field = Instance.new("ForceField")
 	field.Visible = true
 	field.Parent = character
-	Debris:AddItem(field, S.Barrier.Duration)
+	Debris:AddItem(field, S.Barrier.Duration + U.BarrierDuration * (skillLevel(player, "Barrier") - 1))
 	Effects.Burst(root.Position, Color3.fromRGB(120, 200, 255), 25)
 	ring(root.Position, 7, Color3.fromRGB(120, 200, 255), 0.5)
 	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), "🛡 방벽!", Color3.fromRGB(150, 220, 255))
@@ -88,14 +94,16 @@ end
 
 handlers.Blast = function(player, root, _, _, aimPoint)
 	local cfg = S.Blast
+	local lv = skillLevel(player, "Blast") - 1
 	local offset = aimPoint - root.Position
 	if offset.Magnitude > cfg.Range then
 		aimPoint = root.Position + offset.Unit * cfg.Range
 	end
-	ring(aimPoint, cfg.Radius, Color3.fromRGB(255, 160, 60), 0.45)
+	local radius = cfg.Radius + U.BlastRadius * lv
+	ring(aimPoint, radius, Color3.fromRGB(255, 160, 60), 0.45)
 	Effects.Burst(aimPoint, Color3.fromRGB(255, 190, 90), 60)
 	Effects.Tracer(root.Position + Vector3.new(0, 1.5, 0), aimPoint, Color3.fromRGB(255, 200, 100), 0.5)
-	damageAt(player, aimPoint, cfg.Radius, cfg.Mult)
+	damageAt(player, aimPoint, radius, cfg.Mult * (1 + U.BlastMult * lv))
 	return true
 end
 
@@ -106,7 +114,7 @@ handlers.Heal = function(player, root)
 		local otherRoot, otherHumanoid = aliveParts(other)
 		local sameParty = other == player or (partyId ~= 0 and other:GetAttribute("PartyId") == partyId)
 		if otherRoot and sameParty and (otherRoot.Position - root.Position).Magnitude <= cfg.Radius then
-			otherHumanoid.Health = math.min(otherHumanoid.MaxHealth, otherHumanoid.Health + otherHumanoid.MaxHealth * cfg.Ratio)
+			otherHumanoid.Health = math.min(otherHumanoid.MaxHealth, otherHumanoid.Health + otherHumanoid.MaxHealth * (cfg.Ratio + U.HealRatio * (skillLevel(player, "Heal") - 1)))
 			Effects.Burst(otherRoot.Position, Color3.fromRGB(110, 255, 150), 25)
 			Effects.FloatText(otherRoot.Position + Vector3.new(0, 4, 0), "💚 회복", Color3.fromRGB(130, 255, 160))
 		end
@@ -124,7 +132,7 @@ handlers.Ult = function(player, root)
 	Effects.FloatText(root.Position + Vector3.new(0, 5, 0), "🎯 데드아이!", Color3.fromRGB(255, 90, 90))
 	ring(root.Position, cfg.Radius, Color3.fromRGB(255, 70, 70), 0.9)
 	local from = root.Position + Vector3.new(0, 1.5, 0)
-	local positions = damageAt(player, root.Position, cfg.Radius, cfg.Mult)
+	local positions = damageAt(player, root.Position, cfg.Radius, cfg.Mult * (1 + U.UltMult * (skillLevel(player, "Ult") - 1)))
 	for _, position in ipairs(positions) do
 		Effects.Tracer(from, position, Color3.fromRGB(255, 80, 80), 0.4)
 		Effects.Burst(position, Color3.fromRGB(255, 80, 80), 20)
@@ -163,7 +171,8 @@ function Skill.Use(player, skillKey, aimPoint)
 		end
 		return
 	end
-	local cooldown = S[skillKey].Cooldown * (1 - math.min(0.6, (player:GetAttribute("GearHaste") or 0) + (player:GetAttribute("SkillHaste") or 0)))
+	local haste = (player:GetAttribute("GearHaste") or 0) + (player:GetAttribute("PetHaste") or 0) + U.CooldownPerLevel * (skillLevel(player, skillKey) - 1)
+	local cooldown = S[skillKey].Cooldown * (1 - math.min(0.6, haste))
 	cooldowns[skillKey] = now + cooldown
 	Effects.PlaySound(root, Config.Audio.Skill, 0.7, skillKey == "Ult" and 0.8 or 1)
 	Quest.Add(player, "SkillUses", 1)

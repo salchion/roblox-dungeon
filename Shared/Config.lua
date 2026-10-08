@@ -32,6 +32,58 @@ Config.StatAttributes = {   -- Upgrade 리모트가 받는 이름 -> 플레이�
 }
 
 ------------------------------------------------------------
+-- 스킬 강화 (골드) / 펫 (알 부화) / 무한의 탑 기록
+------------------------------------------------------------
+Config.SkillUpgrade = {
+	MaxLevel = 10,
+	BaseCost = 400,
+	CostGrowth = 1.5,
+	CooldownPerLevel = 0.025,   -- 레벨당 쿨타임 -2.5%
+	-- 레벨당 증가량 (스킬마다 다름)
+	BarrierDuration = 0.4,      -- 방벽 지속시간 +0.4초
+	BlastMult = 0.18,           -- 충격파 피해 +18% (기본 대비)
+	BlastRadius = 0.8,          -- 충격파 범위 +0.8
+	HealRatio = 0.03,           -- 치료량 +3%p
+	UltMult = 0.15,             -- 궁극기 피해 +15%
+}
+function Config.GetSkillUpgradeCost(level)
+	return math.floor(Config.SkillUpgrade.BaseCost * Config.SkillUpgrade.CostGrowth ^ (level - 1))
+end
+
+-- 펫: 알을 골드로 부화 -> 같은 펫이 또 나오면 펫 레벨업(최대 5). 하나를 장착하면 따라다니며 능력치를 준다.
+-- Stat: Damage(공격력) / Crit(치명타) / Xp(경험치) / Speed(이동속도) / Haste(스킬 쿨타임 감소)
+Config.Pets = {
+	EggCost = 4000,
+	MaxLevel = 5,
+	LevelBonus = 0.5,   -- 펫 레벨 1당 효과 +50% (기본 대비)
+	RarityNames = { "일반", "희귀", "영웅", "전설" },
+	RarityWeights = { 55, 30, 12, 3 },
+	RarityColors = { Color3.fromRGB(190, 190, 200), Color3.fromRGB(90, 170, 255), Color3.fromRGB(190, 110, 255), Color3.fromRGB(255, 180, 50) },
+	Order = { "Slimey", "Foxy", "Batty", "Rocky", "Sprite", "Dragon", "Phoenix", "Star" },
+	Slimey = { Name = "말랑 슬라임", Rarity = 1, Color = Color3.fromRGB(110, 220, 120), Stat = "Xp", Value = 0.06 },
+	Foxy = { Name = "꼬마 여우", Rarity = 1, Color = Color3.fromRGB(255, 160, 80), Stat = "Speed", Value = 1.5 },
+	Batty = { Name = "박쥐 친구", Rarity = 2, Color = Color3.fromRGB(150, 110, 200), Stat = "Crit", Value = 0.03 },
+	Rocky = { Name = "돌멩이 골렘", Rarity = 2, Color = Color3.fromRGB(150, 150, 160), Stat = "Damage", Value = 0.05 },
+	Sprite = { Name = "빛의 정령", Rarity = 3, Color = Color3.fromRGB(150, 230, 255), Stat = "Haste", Value = 0.06 },
+	Dragon = { Name = "아기 용", Rarity = 3, Color = Color3.fromRGB(255, 90, 70), Stat = "Damage", Value = 0.09 },
+	Phoenix = { Name = "불사조", Rarity = 4, Color = Color3.fromRGB(255, 140, 40), Stat = "Crit", Value = 0.06 },
+	Star = { Name = "별똥별 요정", Rarity = 4, Color = Color3.fromRGB(255, 240, 120), Stat = "Damage", Value = 0.14 },
+}
+function Config.GetPetValue(key, level)
+	local pet = Config.Pets[key]
+	return pet.Value * (1 + Config.Pets.LevelBonus * (level - 1))
+end
+function Config.FormatPetStat(key, level)
+	local pet = Config.Pets[key]
+	local value = Config.GetPetValue(key, level)
+	local names = { Damage = "공격력", Crit = "치명타 확률", Xp = "경험치", Speed = "이동속도", Haste = "스킬 쿨타임 감소" }
+	if pet.Stat == "Speed" then
+		return string.format("%s +%.1f", names[pet.Stat], value)
+	end
+	return string.format("%s +%d%%", names[pet.Stat], math.floor(value * 100 + 0.5))
+end
+
+------------------------------------------------------------
 -- 연속 처치 콤보 / 출석 보상 / 던전 변이(매번 달라지는 규칙)
 ------------------------------------------------------------
 Config.Combo = {
@@ -478,7 +530,7 @@ Config.Dungeon.Difficulties = {
 
 -- Boss.Weights: 보스 패턴 비중 (Fan 부채꼴 / Ring 전방위 / Spiral 나선 / Meteor 메테오)
 Config.Dungeon.Types = {
-	Order = { "Cave", "Ice", "Fire" },
+	Order = { "Cave", "Ice", "Fire", "Tower" },
 	Cave = {
 		Name = "고블린 동굴", Desc = "어둡고 좁은 동굴. 입문용 던전", Waves = 5, LevelOffset = 0, GoldMult = 1, RecommendedPower = 0,
 		MonsterColor = Color3.fromRGB(110, 160, 70),
@@ -508,6 +560,17 @@ Config.Dungeon.Types = {
 		Terrain = { Ground = Enum.Material.Basalt, Mountain = Enum.Material.Slate, Accent = Enum.Material.CrackedLava },
 		MonsterPool = { Charger = 3, Bomber = 3, Mage = 2, Golem = 2 },
 		Boss = { Name = "화염의 군주", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Fan = 1, Ring = 1, Spiral = 2, Meteor = 4 } },
+	},
+	-- 무한의 탑: 끝이 없는 웨이브. 층(웨이브)이 오를수록 강해지고, 쓰러질 때까지 도전. 최고 층이 기록으로 남는다.
+	Tower = {
+		Name = "무한의 탑", Desc = "끝없이 이어지는 웨이브. 최고 층 기록에 도전! 5층마다 티켓", Waves = 0, Endless = true, LevelOffset = 4, GoldMult = 1.5, RecommendedPower = 600,
+		MonsterColor = Color3.fromRGB(190, 120, 255),
+		Floor = { Color = Color3.fromRGB(60, 50, 80), Material = Enum.Material.Slate },
+		Wall = { Color = Color3.fromRGB(70, 55, 100), Material = Enum.Material.Slate },
+		Torch = Color3.fromRGB(190, 120, 255),
+		Terrain = { Ground = Enum.Material.Slate, Mountain = Enum.Material.Basalt, Accent = Enum.Material.Glacier },
+		MonsterPool = { Slime = 2, Spitter = 2, Bat = 2, Mage = 2, Golem = 1, Charger = 2, Bomber = 2 },
+		Boss = { Name = "탑의 수호자", Color = Color3.fromRGB(180, 100, 255), HealthMult = 1, DamageMult = 1, Weights = { Fan = 1, Ring = 1, Spiral = 1, Meteor = 1 } },
 	},
 }
 
@@ -543,6 +606,8 @@ Config.Achievements = {
 	{ Id = "goblin1",    Name = "황금 사냥꾼",     Desc = "황금 고블린 %d마리 처치",     Stat = "GoblinKills",   Goal = 1,     Reward = { Gold = 1000 },              Title = "행운의 사냥꾼" },
 	{ Id = "goblin20",   Name = "황금 도둑",       Desc = "황금 고블린 %d마리 처치",     Stat = "GoblinKills",   Goal = 20,    Reward = { Tickets = 5 },              Title = "황금 도둑" },
 	{ Id = "skill200",   Name = "스킬 마스터",     Desc = "스킬 %d회 사용",              Stat = "SkillUses",     Goal = 200,   Reward = { Tickets = 3 },              Title = "스킬 마스터" },
+	{ Id = "tower10",    Name = "탑의 도전자",     Desc = "무한의 탑 %d층 도달",         Stat = "TowerBest",     Goal = 10,    Reward = { Tickets = 3 },              Title = "탑의 도전자" },
+	{ Id = "tower30",    Name = "탑의 정복자",     Desc = "무한의 탑 %d층 도달",         Stat = "TowerBest",     Goal = 30,    Reward = { Tickets = 10 },             Title = "탑의 정복자" },
 	{ Id = "boss10",     Name = "보스 헌터",       Desc = "보스 %d마리 처치",            Stat = "BossKills",     Goal = 10,    Reward = { Tickets = 5 },              Title = "보스 헌터" },
 	{ Id = "zone4",      Name = "탐험가",          Desc = "필드 %d구역 돌파",            Stat = "MaxZone",       Goal = 4,     Reward = { Gold = 1000 },              Title = "탐험가" },
 	{ Id = "zone8",      Name = "심연의 정복자",   Desc = "필드 %d구역 돌파",            Stat = "MaxZone",       Goal = 8,     Reward = { Tickets = 5 },              Title = "심연의 정복자" },
