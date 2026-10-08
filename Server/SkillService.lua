@@ -201,15 +201,16 @@ handlers.Ult = function(player, root, _, character)
 	player:SetAttribute("UltCharge", 0)
 
 	local origin = root.Position
-	local totalMult = cfg.Mult * (1 + U.UltMult * (skillLevel(player, "Ult") - 1))
+	local totalMult = (cfg.Mult or 8) * (1 + (U.UltMult or 0.15) * (skillLevel(player, "Ult") - 1))
 	-- 범위 안의 모든 적을 "동시에" 집중 포격한다: 조준 표시 -> 충격파 -> 전원에게 동시에 빔이 쏟아지는 일제 사격 14회 -> 마지막 대폭발
 	local volleys, volleyGap = 14, 0.07
 	local perShot = math.max(1, math.floor(Dungeon.ComputeDamage(player) * totalMult / volleys))
 
 	local field = Instance.new("ForceField")
+	field.Name = "DeadeyeShield"
 	field.Visible = false
+	Debris:AddItem(field, 0.6 + volleys * volleyGap + 1.2) -- 먼저 수명을 정해 둔다 (오류가 나도 영구 무적이 되지 않게)
 	field.Parent = character
-	Debris:AddItem(field, 0.6 + volleys * volleyGap + 1.2)
 	player:SetAttribute("DeadeyeActive", true)
 	Remotes.Notify:FireClient(player, string.format("🎯 데드아이! %d마리 일제 포격", #targets))
 	Effects.FloatText(origin + Vector3.new(0, 6, 0), "🎯 데드아이!", Color3.fromRGB(255, 90, 90))
@@ -305,6 +306,7 @@ handlers.Ult = function(player, root, _, character)
 			player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 		end)
 		if not bodyOk then
+			if field.Parent then field:Destroy() end
 			warn("[Deadeye] error: " .. tostring(bodyErr))
 			Remotes.Notify:FireClient(player, "데드아이 오류: " .. tostring(bodyErr))
 			player:SetAttribute("DeadeyeActive", false)
