@@ -480,118 +480,224 @@ end -- (강화창 do 블록 끝)
 ------------------------------------------------------------
 -- 로비: 장비창 (갑옷 / 장갑 / 신발 강화 + 보스 티켓 뽑기)
 ------------------------------------------------------------
-local gearPanel = makePanel({
-	Size = UDim2.new(0, 780, 0, 500),
+-- 장비 · 뽑기 창 (RPG식): 가운데 3D 캐릭터 + 양옆 장비 칸 6개(등급 색 윤곽선) + 오른쪽 선택한 장비 강화 + 아래 큰 뽑기 버튼
+local gearHooks = {}   -- 장비 창 안의 함수를 바깥에서 부르기 위한 표 (Rebuild: 캐릭터 3D 다시 복제)
+local gearPanel   -- (아래 do 블록에서 만든다)
+local gearMessage
+local refreshGear
+do
+local GEAR_ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
+local LEFT_SLOTS = { "Helmet", "Armor", "Gloves" }
+local RIGHT_SLOTS = { "Necklace", "Ring", "Boots" }
+local state = { Selected = "Armor", Boxes = {} }
+
+gearPanel = makePanel({
+	Size = UDim2.new(0, 760, 0, 560),
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Position = UDim2.new(0.5, 0, 0.5, 0),
+	BackgroundColor3 = Color3.fromRGB(28, 22, 42), BackgroundTransparency = 0.05,
 	Visible = false,
 }, gui)
+create("UIStroke", { Color = Color3.fromRGB(190, 120, 255), Thickness = 3 }, gearPanel)
+create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(70, 46, 100), Color3.fromRGB(22, 18, 34)), Rotation = 90 }, gearPanel)
 
 makeLabel({
 	Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8),
-	Text = "🛡 장비 · 뽑기", Font = Enum.Font.GothamBlack, TextSize = 24,
+	Text = "🛡 장비 · 뽑기", Font = Enum.Font.GothamBlack, TextSize = 24, TextColor3 = Color3.fromRGB(235, 200, 255),
 }, gearPanel)
-
-local gearMessage = makeLabel({
-	Size = UDim2.new(1, -24, 0, 40), Position = UDim2.new(0, 12, 0, 50),
-	Font = Enum.Font.GothamBold, TextSize = 16, RichText = true,
-}, gearPanel)
-
-local gearRows = {}
-for index, slot in ipairs(Config.Gear.Slots) do
-	local card = makePanel({
-		Size = UDim2.new(0.5, -18, 0, 88), Position = UDim2.new(((index - 1) % 2) * 0.5, ((index - 1) % 2 == 0) and 12 or 6, 0, 98 + ((index - 1) // 2) * 96),
-		BackgroundColor3 = Color3.fromRGB(40, 40, 58),
-	}, gearPanel)
-	local nameLabel = makeLabel({
-		Size = UDim2.new(1, -150, 0, 26), Position = UDim2.new(0, 12, 0, 6),
-		Font = Enum.Font.GothamBlack, TextSize = 17, TextXAlignment = Enum.TextXAlignment.Left, RichText = true,
-	}, card)
-	local statLabel = makeLabel({
-		Size = UDim2.new(1, -150, 0, 22), Position = UDim2.new(0, 12, 0, 34),
-		TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, RichText = true,
-	}, card)
-	local costLabel = makeLabel({
-		Size = UDim2.new(1, -150, 0, 22), Position = UDim2.new(0, 12, 0, 58),
-		TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, RichText = true,
-		TextColor3 = Color3.fromRGB(200, 200, 215),
-	}, card)
-	local button = makeButton({
-		Size = UDim2.new(0, 120, 0, 34), Position = UDim2.new(1, -132, 0.5, -17), Text = "강화",
-	}, card, function()
-		Remotes.Gear:FireServer("Enhance", slot.Key)
-	end)
-	gearRows[slot.Key] = { Name = nameLabel, Stat = statLabel, Cost = costLabel, Button = button }
-end
-
-local gachaCard = makePanel({
-	Size = UDim2.new(1, -24, 0, 100), Position = UDim2.new(0, 12, 0, 390),
-	BackgroundColor3 = Color3.fromRGB(55, 40, 80),
-}, gearPanel)
-local ticketLabel = makeLabel({
-	Size = UDim2.new(0.5, -12, 0, 30), Position = UDim2.new(0, 12, 0, 8),
-	Font = Enum.Font.GothamBlack, TextSize = 19, TextXAlignment = Enum.TextXAlignment.Left,
-}, gachaCard)
-local rateParts = {}
-for index, rate in ipairs(Config.Gacha.Rates) do
-	table.insert(rateParts, string.format("%s %d%%", Config.Gear.RarityNames[index], rate))
-end
-makeLabel({
-	Size = UDim2.new(1, -24, 0, 46), Position = UDim2.new(0, 12, 0, 44),
-	Text = table.concat(rateParts, " · ") .. "\n같은 부위의 같거나 낮은 등급은 골드로 교환돼요. 티켓은 던전 보스 / 필드 보스에게서 나와요.",
-	TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(205, 200, 225),
-}, gachaCard)
-local rollButton = makeButton({
-	Size = UDim2.new(0, 180, 0, 34), Position = UDim2.new(1, -192, 0, 8),
-	Text = "🎫 뽑기 (티켓 1장)", BackgroundColor3 = Color3.fromRGB(150, 70, 230),
-}, gachaCard, function()
-	Remotes.Gear:FireServer("Roll")
-end)
-
 makeButton({
-	Size = UDim2.new(0, 64, 0, 28), Position = UDim2.new(1, -76, 0, 10), Text = "닫기", TextSize = 14, BackgroundColor3 = GRAY,
+	Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -74, 0, 12), Text = "닫기", TextSize = 15, BackgroundColor3 = Color3.fromRGB(110, 60, 70),
 }, gearPanel, function()
 	gearPanel.Visible = false
 end)
 
-local function refreshGear()
+-- 가운데: 3D 캐릭터 (천천히 돈다)
+local viewport = create("ViewportFrame", {
+	Size = UDim2.new(0, 210, 0, 330), Position = UDim2.new(0, 135, 0, 54), BackgroundColor3 = Color3.fromRGB(26, 24, 44), BorderSizePixel = 0,
+	Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1),
+}, gearPanel)
+rounded(viewport, 12)
+create("UIStroke", { Color = Color3.fromRGB(150, 110, 220), Thickness = 2 }, viewport)
+local cam = create("Camera", { FieldOfView = 38 }, viewport)
+viewport.CurrentCamera = cam
+local clone, pivot
+local function rebuildCharacter()
+	if clone then clone:Destroy() clone = nil end
+	local character = player.Character
+	if not character then return end
+	character.Archivable = true
+	clone = character:Clone()
+	for _, descendant in ipairs(clone:GetDescendants()) do
+		if descendant:IsA("Script") or descendant:IsA("LocalScript") or descendant:IsA("BillboardGui") or descendant:IsA("ForceField") then
+			descendant:Destroy()
+		elseif descendant:IsA("BasePart") then
+			descendant.Anchored = true
+		end
+	end
+	clone.Parent = viewport
+	pivot = clone:GetPivot()
+end
+RunService.RenderStepped:Connect(function(dt)
+	if not gearPanel.Visible or not clone or not pivot then return end
+	state.Spin = (state.Spin or 0) + dt * 0.9
+	clone:PivotTo(CFrame.new(pivot.Position) * CFrame.Angles(0, state.Spin, 0))
+	cam.CFrame = CFrame.lookAt(pivot.Position + Vector3.new(0, 1.2, 12.5), pivot.Position + Vector3.new(0, 0.4, 0))
+end)
+local powerLabel = makeLabel({
+	Size = UDim2.new(0, 210, 0, 24), Position = UDim2.new(0, 135, 0, 390), TextSize = 16, Font = Enum.Font.GothamBlack,
+	TextColor3 = Color3.fromRGB(255, 225, 110),
+}, gearPanel)
+
+-- 장비 칸 6개 (눌러서 선택)
+local function makeSlotBox(slotKey, x, y)
+	local box = create("TextButton", {
+		Size = UDim2.new(0, 104, 0, 100), Position = UDim2.new(0, x, 0, y), BackgroundColor3 = Color3.fromRGB(34, 32, 54), BorderSizePixel = 0, Text = "", AutoButtonColor = false,
+	}, gearPanel)
+	rounded(box, 12)
+	local stroke = create("UIStroke", { Color = Color3.fromRGB(90, 90, 120), Thickness = 2 }, box)
+	local icon = makeLabel({ Size = UDim2.new(1, 0, 0, 44), Position = UDim2.new(0, 0, 0, 6), TextSize = 32 }, box)
+	local name = makeLabel({ Size = UDim2.new(1, -6, 0, 30), Position = UDim2.new(0, 3, 0, 48), TextSize = 11, Font = Enum.Font.GothamBold, TextWrapped = true }, box)
+	local level = makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 1, -20), TextSize = 13, Font = Enum.Font.GothamBlack }, box)
+	box.Activated:Connect(function()
+		state.Selected = slotKey
+		refreshGear()
+	end)
+	state.Boxes[slotKey] = { Box = box, Stroke = stroke, Icon = icon, Name = name, Level = level }
+end
+for index, slotKey in ipairs(LEFT_SLOTS) do makeSlotBox(slotKey, 18, 54 + (index - 1) * 112) end
+for index, slotKey in ipairs(RIGHT_SLOTS) do makeSlotBox(slotKey, 358, 54 + (index - 1) * 112) end
+
+-- 오른쪽: 선택한 장비 + 강화
+local detail = create("Frame", { Size = UDim2.new(0, 262, 0, 336), Position = UDim2.new(1, -278, 0, 54), BackgroundColor3 = Color3.fromRGB(24, 22, 40), BorderSizePixel = 0 }, gearPanel)
+rounded(detail, 12)
+local detailStroke = create("UIStroke", { Color = Color3.fromRGB(110, 90, 160), Thickness = 2 }, detail)
+local detailText = makeLabel({
+	Size = UDim2.new(1, -20, 0, 214), Position = UDim2.new(0, 10, 0, 10), RichText = true, TextSize = 14,
+	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+}, detail)
+local enhanceSlotButton = makeButton({
+	Size = UDim2.new(1, -24, 0, 50), Position = UDim2.new(0, 12, 1, -112), Text = "강화", TextSize = 18, Font = Enum.Font.GothamBlack, BackgroundColor3 = GREEN,
+}, detail, function()
+	Remotes.Gear:FireServer("Enhance", state.Selected)
+end)
+create("UIStroke", { Color = Color3.fromRGB(190, 255, 190), Thickness = 2 }, enhanceSlotButton)
+gearMessage = makeLabel({
+	Size = UDim2.new(1, -16, 0, 40), Position = UDim2.new(0, 8, 1, -54), Font = Enum.Font.GothamBold, TextSize = 14, RichText = true,
+}, detail)
+
+-- 아래: 뽑기 (큰 버튼 + 확률)
+local gachaBar = create("Frame", { Size = UDim2.new(1, -36, 0, 128), Position = UDim2.new(0, 18, 1, -142), BackgroundColor3 = Color3.fromRGB(58, 38, 92), BorderSizePixel = 0 }, gearPanel)
+rounded(gachaBar, 14)
+create("UIStroke", { Color = Color3.fromRGB(255, 210, 120), Thickness = 2 }, gachaBar)
+create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(110, 60, 170), Color3.fromRGB(48, 30, 80)), Rotation = 0 }, gachaBar)
+local ticketLabel = makeLabel({
+	Size = UDim2.new(0.5, 0, 0, 34), Position = UDim2.new(0, 20, 0, 10), Font = Enum.Font.GothamBlack, TextSize = 22, TextXAlignment = Enum.TextXAlignment.Left,
+}, gachaBar)
+local rateParts = {}
+for index, rate in ipairs(Config.Gacha.Rates) do
+	table.insert(rateParts, string.format("<font color='#%s'>%s %d%%</font>", Config.Gear.RarityColors[index]:ToHex(), Config.Gear.RarityNames[index], rate))
+end
+makeLabel({
+	Size = UDim2.new(0.62, 0, 0, 60), Position = UDim2.new(0, 20, 0, 52), RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+	Text = table.concat(rateParts, "  ") .. "\n<font color='#c9c0e0'>같거나 낮은 등급은 골드로 교환 · 티켓은 던전 / 필드 보스에게서 나와요</font>",
+}, gachaBar)
+local rollButton = makeButton({
+	Size = UDim2.new(0, 230, 0, 80), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -18, 0.5, 0),
+	Text = "🎰 뽑기!\n티켓 1장", TextSize = 24, Font = Enum.Font.GothamBlack, BackgroundColor3 = Color3.fromRGB(165, 70, 245),
+}, gachaBar, function()
+	Remotes.Gear:FireServer("Roll")
+end)
+create("UIStroke", { Color = Color3.fromRGB(255, 225, 140), Thickness = 3 }, rollButton)
+rollButton.ClipsDescendants = true
+local rollShimmer = create("Frame", {
+	Size = UDim2.new(0, 40, 1.8, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(-0.2, 0, 0.5, 0), Rotation = 20,
+	BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.7, BorderSizePixel = 0, ZIndex = 3,
+}, rollButton)
+task.spawn(function()
+	while gearPanel.Parent do
+		if gearPanel.Visible and (player:GetAttribute("Tickets") or 0) > 0 then
+			rollShimmer.Position = UDim2.new(-0.1, 0, 0.5, 0)
+			TweenService:Create(rollShimmer, TweenInfo.new(0.9, Enum.EasingStyle.Quad), { Position = UDim2.new(1.1, 0, 0.5, 0) }):Play()
+		end
+		task.wait(2)
+	end
+end)
+
+function refreshGear()
 	local gold = player:GetAttribute("Gold") or 0
 	local tickets = player:GetAttribute("Tickets") or 0
 	local maxLevel = Config.Gear.MaxLevel
+	if not clone and gearPanel.Visible then rebuildCharacter() end
 
 	for _, slot in ipairs(Config.Gear.Slots) do
-		local row = gearRows[slot.Key]
+		local ui = state.Boxes[slot.Key]
 		local rarity = player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0
 		local level = player:GetAttribute("Gear_" .. slot.Key .. "_L") or 0
-
-		if rarity <= 0 then
-			row.Name.Text = slot.Name .. " — 비어 있음"
-			row.Stat.Text = slot.StatName .. " 효과 · 뽑기로 얻을 수 있어요"
-			row.Cost.Text = ""
-			row.Button.Text = "—"
-			row.Button.BackgroundColor3 = GRAY
-		else
+		ui.Icon.Text = GEAR_ICONS[slot.Key] or "?"
+		if rarity > 0 then
 			local color = Config.Gear.RarityColors[rarity]
-			row.Name.Text = string.format("<font color='#%s'>[%s] %s</font>  +%d", color:ToHex(), Config.Gear.RarityNames[rarity], slot.Names[rarity], level)
-			local statText = Config.FormatGearStat(slot.Key, Config.GetGearStat(slot.Key, rarity, level))
-			if level < maxLevel then
-				statText ..= "   →   " .. Config.FormatGearStat(slot.Key, Config.GetGearStat(slot.Key, rarity, level + 1))
-				local cost = Config.GetGearCost(slot.Key, rarity, level)
-				row.Cost.Text = string.format("강화 비용 <font color='#ffd966'>%d G</font> · 성공 %d%%", cost, math.floor(Config.GetGearEnhanceChance(level) * 100 + 0.5))
-				row.Button.Text = "강화"
-				row.Button.BackgroundColor3 = gold >= cost and GREEN or GRAY
-			else
-				row.Cost.Text = "최대 강화 단계!"
-				row.Button.Text = "MAX"
-				row.Button.BackgroundColor3 = GRAY
-			end
-			row.Stat.Text = statText
+			ui.Stroke.Color = color
+			ui.Stroke.Thickness = (slot.Key == state.Selected) and 5 or ({ 2, 2, 3, 3.5, 4 })[rarity]
+			ui.Name.Text = slot.Names[rarity]
+			ui.Name.TextColor3 = color
+			ui.Level.Text = string.format("+%d", level)
+			ui.Level.TextColor3 = Color3.new(1, 1, 1)
+			ui.Icon.TextTransparency = 0
+		else
+			ui.Stroke.Color = (slot.Key == state.Selected) and Color3.fromRGB(255, 225, 120) or Color3.fromRGB(90, 90, 120)
+			ui.Stroke.Thickness = (slot.Key == state.Selected) and 4 or 2
+			ui.Name.Text = slot.Name .. " 비어 있음"
+			ui.Name.TextColor3 = Color3.fromRGB(130, 130, 150)
+			ui.Level.Text = ""
+			ui.Icon.TextTransparency = 0.6
 		end
+		ui.Box.BackgroundColor3 = slot.Key == state.Selected and Color3.fromRGB(52, 48, 82) or Color3.fromRGB(34, 32, 54)
 	end
 
+	-- 선택한 장비 설명 + 강화
+	local slot = Config.GetGearSlot(state.Selected)
+	local rarity = player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0
+	local level = player:GetAttribute("Gear_" .. slot.Key .. "_L") or 0
+	if rarity <= 0 then
+		detailText.Text = string.format("<font size='18'><b>%s</b></font>\n<font color='#9a9ab5'>비어 있어요</font>\n\n%s 효과\n<font color='#c9c0e0'>아래 뽑기로 장비를 얻거나, 필드에서 떨어진 장비를 가방(I)에서 장착하세요.</font>", slot.Name, slot.StatName)
+		enhanceSlotButton.Text = "—"
+		enhanceSlotButton.BackgroundColor3 = GRAY
+		detailStroke.Color = Color3.fromRGB(110, 90, 160)
+	else
+		local color = Config.Gear.RarityColors[rarity]
+		detailStroke.Color = color
+		local lines = {
+			string.format("<font size='18'><b><font color='#%s'>[%s] %s</font></b></font>  <b>+%d</b>", color:ToHex(), Config.Gear.RarityNames[rarity], slot.Names[rarity], level),
+			"",
+			"<font color='#c9c0e0'>" .. slot.StatName .. "</font>",
+		}
+		local now = Config.FormatGearStat(slot.Key, Config.GetGearStat(slot.Key, rarity, level))
+		if level < maxLevel then
+			local cost = Config.GetGearCost(slot.Key, rarity, level)
+			local chance = math.floor(Config.GetGearEnhanceChance(level) * 100 + 0.5)
+			table.insert(lines, string.format("<b>%s</b>\n<font color='#78ff8c'>▶ %s</font>", now, Config.FormatGearStat(slot.Key, Config.GetGearStat(slot.Key, rarity, level + 1))))
+			table.insert(lines, "")
+			table.insert(lines, string.format("성공 확률 <b><font color='#%s'>%d%%</font></b>   <font size='12' color='#aaaabb'>(실패해도 유지)</font>", chance >= 80 and "78ff8c" or (chance >= 60 and "ffd966" or "ff9a6e"), chance))
+			enhanceSlotButton.Text = string.format("💰 %d G   강화", cost)
+			enhanceSlotButton.BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62)
+		else
+			table.insert(lines, "<b>" .. now .. "</b>")
+			table.insert(lines, "\n<font color='#ffd966'>최대 강화 단계!</font>")
+			enhanceSlotButton.Text = "MAX"
+			enhanceSlotButton.BackgroundColor3 = GRAY
+		end
+		detailText.Text = table.concat(lines, "\n")
+	end
+
+	powerLabel.Text = string.format("⚡ 전투력 %d", player:GetAttribute("Power") or 0)
 	ticketLabel.Text = string.format("🎫 티켓 %d장", tickets)
-	rollButton.BackgroundColor3 = tickets > 0 and Color3.fromRGB(150, 70, 230) or GRAY
+	rollButton.BackgroundColor3 = tickets > 0 and Color3.fromRGB(165, 70, 245) or Color3.fromRGB(80, 70, 100)
+	state.Rebuild = rebuildCharacter
 end
+-- 뽑기 / 강화 결과로 외형이 바뀌므로 캐릭터를 다시 복제해서 보여준다
+state.Reopen = function() rebuildCharacter() end
+gearHooks.Rebuild = rebuildCharacter
+end -- (장비 창 do 블록 끝)
 
 Remotes.Gear.OnClientEvent:Connect(function(action, result)
 	if action ~= "Result" then return end
@@ -603,6 +709,7 @@ Remotes.Gear.OnClientEvent:Connect(function(action, result)
 	end
 	gearMessage.Text = result.Message
 	gearMessage.TextColor3 = color
+	task.delay(0.3, function() if gearHooks.Rebuild then gearHooks.Rebuild() end end)
 	refreshGear()
 end)
 
@@ -730,8 +837,9 @@ end
 
 Remotes.OpenGear.OnClientEvent:Connect(function()
 	gearMessage.Text = ""
-	refreshGear()
 	gearPanel.Visible = true
+	if gearHooks.Rebuild then gearHooks.Rebuild() end
+	refreshGear()
 end)
 
 ------------------------------------------------------------

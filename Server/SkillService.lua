@@ -1,3 +1,8 @@
+	-- 공속 한계를 뚫은 난사: 적이 적어도 총 48발 이상, 한 발 간격은 0.03초 (화다다다다!). 전체 피해량은 그대로 나눠 맞는다.
+	local shotsPer = math.max(cfg.ShotsPerTarget, math.ceil(48 / #targets))
+	local perShot = math.max(1, math.floor(Dungeon.ComputeDamage(player) * totalMult / shotsPer))
+	local lockGap = 0.14
+
 -- SkillService (ServerScriptService > Modules 안의 ModuleScript, 이름: SkillService)
 -- 액티브 스킬: 응급 치료 / 궁극기(데드아이). (방벽 / 충격파 핸들러는 남아 있지만 Config.Skills.Order 에 없어 쓰이지 않는다)
 -- 쿨타임과 게이지는 서버가 검사하고, 클라이언트는 키를 눌렀다고 알려주기만 한다.
@@ -144,7 +149,7 @@ handlers.Ult = function(player, root, _, character)
 	local field = Instance.new("ForceField")
 	field.Visible = false
 	field.Parent = character
-	Debris:AddItem(field, #targets * lockGap + 1.0 + #targets * cfg.ShotsPerTarget * cfg.ShotGap + 0.6)
+	Debris:AddItem(field, #targets * lockGap + 1.0 + #targets * shotsPer * cfg.ShotGap + 0.6)
 	player:SetAttribute("DeadeyeActive", true)
 	Effects.FloatText(origin + Vector3.new(0, 6, 0), "🎯 데드아이!", Color3.fromRGB(255, 90, 90))
 	ring(origin, cfg.Radius * 0.7, Color3.fromRGB(255, 70, 70), 0.9)
@@ -176,24 +181,51 @@ handlers.Ult = function(player, root, _, character)
 		end
 		task.wait(0.7) -- 모두 고정된 뒤 숨을 고르는 짧은 정적
 
-		-- 2) 난사: 락온한 적들을 돌아가며 연속으로 쏜다
-		for _ = 1, cfg.ShotsPerTarget do
+		-- 2) 난사: 락온한 적들을 돌아가며 초고속으로 쏟아붓는다 (총구 섬광 + 흔들림 + 몸이 적을 향해 돌아간다)
+		local fired = 0
+		for _ = 1, shotsPer do
 			for index, part in ipairs(targets) do
 				if not player.Parent then return end
-				local ok = part.Parent and (Dungeon.HitPart(player, part, perShot) or Field.HitPart(player, part, perShot))
-				if ok then
-					local from = root.Parent and root.Position + Vector3.new(0, 1.5, 0) or origin
-					Effects.Tracer(from, part.Position, Color3.fromRGB(255, 220, 120), 0.12)
-					Effects.Burst(part.Position, Color3.fromRGB(255, 90, 70), 8)
+				local alive = part.Parent and (Dungeon.HitPart(player, part, perShot) or Field.HitPart(player, part, perShot))
+				if alive and root.Parent then
+					fired += 1
+					local from = root.Position + Vector3.new(0, 1.5, 0)
+					local jitter = Vector3.new(math.random() - 0.5, math.random() - 0.5, math.random() - 0.5) * (part.Size.X * 0.5)
+					Effects.Tracer(from, part.Position + jitter, fired % 2 == 0 and Color3.fromRGB(255, 220, 120) or Color3.fromRGB(255, 120, 90), 0.1)
+					if fired % 2 == 0 then
+						Effects.Burst(part.Position + jitter, Color3.fromRGB(255, 110, 70), 5)
+					end
+					if fired % 3 == 0 then -- 총소리 / 화면 흔들림은 3발마다 (연속음이 되도록)
+						Effects.PlaySound(root, Config.Audio.Shot, 0.5, 1.15 + math.random() * 0.3)
+						player:SetAttribute("ShakeStrength", 0.22)
+						player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+					end
+					if fired % 4 == 1 then
+						local flash = Instance.new("Part")
+						flash.Anchored, flash.CanCollide, flash.CanQuery, flash.CanTouch = true, false, false, false
+						flash.Shape = Enum.PartType.Ball
+						flash.Material = Enum.Material.Neon
+						flash.Color = Color3.fromRGB(255, 230, 140)
+						flash.Size = Vector3.new(2.4, 2.4, 2.4)
+						flash.Position = from + (part.Position - from).Unit * 2.5
+						flash.Parent = workspace
+						TweenService:Create(flash, TweenInfo.new(0.1), { Size = Vector3.new(0.2, 0.2, 0.2), Transparency = 1 }):Play()
+						Debris:AddItem(flash, 0.15)
+					end
 					local label = markers[index] and markers[index]:FindFirstChildOfClass("TextLabel")
 					if label then label.TextColor3 = Color3.fromRGB(255, 255, 255) end
+					-- 몸이 쏘는 적 쪽으로 돌아간다 (지금 쏘는 느낌)
+					local flat = Vector3.new(part.Position.X - root.Position.X, 0, part.Position.Z - root.Position.Z)
+					if flat.Magnitude > 0.5 then
+						root.CFrame = CFrame.lookAt(root.Position, root.Position + flat)
+					end
 				end
 				task.wait(cfg.ShotGap)
 			end
 		end
 		for _, gui in pairs(markers) do gui:Destroy() end
 		player:SetAttribute("DeadeyeActive", false)
-		player:SetAttribute("ShakeStrength", 0.7)
+		player:SetAttribute("ShakeStrength", 0.9)
 		player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	end)
 	return true
