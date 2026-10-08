@@ -23,13 +23,14 @@ local LIMBS = {
 	Armor = { "UpperTorso", "Torso" },
 	Gloves = { "LeftHand", "RightHand", "Left Arm", "Right Arm" },
 	Boots = { "LeftFoot", "RightFoot", "Left Leg", "Right Leg" },
+	Helmet = { "Head" }, -- 반지 / 목걸이는 캐릭터 몸에 씌우지 않는다 (인벤토리 3D 화면에서 확인)
 }
 
 ------------------------------------------------------------
 -- 능력치 계산
 ------------------------------------------------------------
 local function recompute(player)
-	local totals = { Health = 0, Crit = 0, Speed = 0 }
+	local totals = { Health = 0, Crit = 0, Speed = 0, Damage = 0, Haste = 0, Luck = 0 }
 	for _, slot in ipairs(G.Slots) do
 		local rarity = player:GetAttribute(rAttr(slot.Key)) or 0
 		local level = player:GetAttribute(lAttr(slot.Key)) or 0
@@ -41,10 +42,10 @@ local function recompute(player)
 	player:SetAttribute("GearHealth", math.floor(totals.Health + affix.Health + 0.5))
 	player:SetAttribute("GearCrit", totals.Crit + affix.Crit)
 	player:SetAttribute("GearSpeed", totals.Speed + affix.Speed)
-	player:SetAttribute("GearDamage", affix.Damage)
+	player:SetAttribute("GearDamage", affix.Damage + totals.Damage)
 	player:SetAttribute("GearXp", affix.Xp)
-	player:SetAttribute("GearLuck", affix.Luck)
-	player:SetAttribute("GearHaste", math.min(0.6, affix.Haste))
+	player:SetAttribute("GearLuck", affix.Luck + totals.Luck)
+	player:SetAttribute("GearHaste", math.min(0.6, affix.Haste + totals.Haste))
 	player:SetAttribute("GearShot", math.floor(affix.Shot + 0.5))
 end
 
@@ -57,7 +58,7 @@ function Gear.ApplyVisuals(player)
 
 	for _, slot in ipairs(G.Slots) do
 		local rarity = player:GetAttribute(rAttr(slot.Key)) or 0
-		for _, limbName in ipairs(LIMBS[slot.Key]) do
+		for _, limbName in ipairs(LIMBS[slot.Key] or {}) do
 			local limb = character:FindFirstChild(limbName)
 			if limb then
 				local old = limb:FindFirstChild("GearVisual_" .. slot.Key)
@@ -73,6 +74,7 @@ function Gear.ApplyVisuals(player)
 					shell.CFrame = limb.CFrame
 					shell.Color = color
 					shell.Material = G.RarityMaterials[rarity]
+					shell.Transparency = slot.Key == "Helmet" and 0.4 or 0 -- 투구는 얼굴이 비치게
 					shell.CanCollide = false
 					shell.CanQuery = false
 					shell.CanTouch = false

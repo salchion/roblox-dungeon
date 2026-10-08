@@ -342,7 +342,7 @@ end)
 -- 로비: 장비창 (갑옷 / 장갑 / 신발 강화 + 보스 티켓 뽑기)
 ------------------------------------------------------------
 local gearPanel = makePanel({
-	Size = UDim2.new(0, 540, 0, 500),
+	Size = UDim2.new(0, 780, 0, 500),
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Position = UDim2.new(0.5, 0, 0.5, 0),
 	Visible = false,
@@ -361,7 +361,7 @@ local gearMessage = makeLabel({
 local gearRows = {}
 for index, slot in ipairs(Config.Gear.Slots) do
 	local card = makePanel({
-		Size = UDim2.new(1, -24, 0, 88), Position = UDim2.new(0, 12, 0, 98 + (index - 1) * 96),
+		Size = UDim2.new(0.5, -18, 0, 88), Position = UDim2.new(((index - 1) % 2) * 0.5, ((index - 1) % 2 == 0) and 12 or 6, 0, 98 + ((index - 1) // 2) * 96),
 		BackgroundColor3 = Color3.fromRGB(40, 40, 58),
 	}, gearPanel)
 	local nameLabel = makeLabel({
@@ -1675,7 +1675,7 @@ local function buildInventoryTab()
 	local selectedId = menuContent:GetAttribute("SelectedItem")
 	local selected = selectedId and byId[selectedId]
 	if not selected then
-		selected = equipped.Armor or equipped.Gloves or equipped.Boots or bag[1]
+		selected = equipped.Armor or equipped.Helmet or equipped.Gloves or equipped.Boots or equipped.Ring or equipped.Necklace or bag[1]
 	end
 
 	-- 등급 테두리: 등급이 높을수록 굵고 밝고, 영웅 이상은 숨 쉬듯 빛나며, 신화는 무지개가 돈다
@@ -1698,14 +1698,14 @@ local function buildInventoryTab()
 		return stroke
 	end
 
-	local SLOT_ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Weapon = "🔫" }
+	local SLOT_ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Weapon = "🔫", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
 
 	-- ===== 위쪽: 캐릭터(가운데 3D) + 장비 칸(양옆) + 선택한 아이템 설명 =====
-	local top = newRow(360, Color3.fromRGB(30, 32, 46))
+	local top = newRow(420, Color3.fromRGB(30, 32, 46))
 
 	-- 3D 캐릭터: 지금 입고 있는 모습 그대로 복제해서 보여주고, 천천히 돈다
 	local viewport = create("ViewportFrame", {
-		Size = UDim2.new(0, 230, 0, 300), Position = UDim2.new(0, 108, 0, 12), BackgroundColor3 = Color3.fromRGB(20, 22, 34), BorderSizePixel = 0,
+		Size = UDim2.new(0, 230, 0, 330), Position = UDim2.new(0, 108, 0, 12), BackgroundColor3 = Color3.fromRGB(20, 22, 34), BorderSizePixel = 0,
 		Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1),
 	}, top)
 	rounded(viewport, 10)
@@ -1737,7 +1737,7 @@ local function buildInventoryTab()
 			cam.CFrame = CFrame.lookAt(pivot.Position + Vector3.new(0, 1.2, 12.5), pivot.Position + Vector3.new(0, 0.4, 0))
 		end)
 	end
-	makeLabel({ Size = UDim2.new(0, 230, 0, 22), Position = UDim2.new(0, 108, 0, 316), Text = string.format("⚡ 전투력 %d", player:GetAttribute("Power") or 0), TextSize = 16, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, top)
+	makeLabel({ Size = UDim2.new(0, 230, 0, 22), Position = UDim2.new(0, 108, 0, 350), Text = string.format("⚡ 전투력 %d", player:GetAttribute("Power") or 0), TextSize = 16, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, top)
 
 	-- 장비 칸 4개: 왼쪽(무기 / 장갑), 오른쪽(갑옷 / 신발)
 	local function slotBox(slotKey, x, y)
@@ -1773,10 +1773,14 @@ local function buildInventoryTab()
 		end
 		return box
 	end
-	slotBox("Weapon", 10, 50)
-	slotBox("Gloves", 10, 156)
-	slotBox("Armor", 350, 50)
-	slotBox("Boots", 350, 156)
+	-- 왼쪽: 투구 / 갑옷 / 장갑   오른쪽: 목걸이 / 반지 / 신발   오른쪽 아래: 무기
+	slotBox("Helmet", 10, 12)
+	slotBox("Armor", 10, 108)
+	slotBox("Gloves", 10, 204)
+	slotBox("Necklace", 350, 12)
+	slotBox("Ring", 350, 108)
+	slotBox("Boots", 350, 204)
+	slotBox("Weapon", 350, 300)
 
 	-- 선택한 아이템 설명
 	local detail = create("Frame", { Size = UDim2.new(1, -462, 1, -24), Position = UDim2.new(0, 450, 0, 12), BackgroundColor3 = Color3.fromRGB(24, 26, 38), BorderSizePixel = 0 }, top)

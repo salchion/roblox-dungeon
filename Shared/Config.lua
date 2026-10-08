@@ -470,6 +470,12 @@ Config.Gear = {
 			Names = { "천 장갑", "가죽 장갑", "강철 건틀릿", "미스릴 건틀릿", "용발톱 건틀릿" } },
 		{ Key = "Boots", Name = "신발", Stat = "Speed", StatName = "이동 속도", Base = 0.6, BaseCost = 100,
 			Names = { "낡은 신발", "가죽 장화", "강철 부츠", "미스릴 부츠", "바람의 부츠" } },
+		{ Key = "Helmet", Name = "투구", Stat = "Damage", StatName = "공격력", Base = 0.03, BaseCost = 130,
+			Names = { "가죽 모자", "철 투구", "강철 투구", "미스릴 투구", "용뿔 왕관" } },
+		{ Key = "Ring", Name = "반지", Stat = "Haste", StatName = "스킬 쿨타임 감소", Base = 0.02, BaseCost = 140,
+			Names = { "구리 반지", "은 반지", "금 반지", "보석 반지", "시간의 반지" } },
+		{ Key = "Necklace", Name = "목걸이", Stat = "Luck", StatName = "행운", Base = 0.05, BaseCost = 140,
+			Names = { "끈 목걸이", "은 목걸이", "금 목걸이", "보석 목걸이", "별빛 목걸이" } },
 	},
 }
 
@@ -493,10 +499,11 @@ function Config.FormatGearStat(slotKey, value)
 	local slot = Config.GetGearSlot(slotKey)
 	if slot.Stat == "Health" then
 		return string.format("최대 체력 +%d", math.floor(value + 0.5))
-	elseif slot.Stat == "Crit" then
-		return string.format("치명타 확률 +%.1f%%", value * 100)
+	elseif slot.Stat == "Speed" then
+		return string.format("이동 속도 +%.1f", value)
 	end
-	return string.format("이동 속도 +%.1f", value)
+	-- 나머지는 비율(%) 효과: 치명타 확률 / 공격력 / 스킬 쿨타임 감소 / 행운 ...
+	return string.format("%s +%.1f%%", slot.StatName, value * 100)
 end
 
 function Config.GetGearCost(slotKey, rarity, level)
