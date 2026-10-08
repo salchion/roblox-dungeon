@@ -1665,6 +1665,7 @@ local function slide()
 		settings.DashRefillAt = now + P.DashCooldown
 	end
 	settings.DashCharges -= 1
+	SoundBank.Play(sfxParent, "Dash")
 	sliding = true
 
 	local direction = humanoid.MoveDirection

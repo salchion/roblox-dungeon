@@ -13,6 +13,7 @@ local TweenService = game:GetService("TweenService")
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Kit = require(ReplicatedStorage:WaitForChild("ClientKit"))
+local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 local create, rounded, makePanel, makeLabel, makeButton = Kit.create, Kit.rounded, Kit.makePanel, Kit.makeLabel, Kit.makeButton
 
 local player = Players.LocalPlayer
@@ -207,10 +208,11 @@ Remotes.Loot.OnClientEvent:Connect(function(action, id, position, rarity, itemNa
 			Font = Enum.Font.GothamBold, TextSize = 16, TextColor3 = color, TextStrokeTransparency = 0,
 		}, gui)
 
-		lootDrops[id] = { Beam = beam, Cube = cube, Base = base, Time = 0 }
+		lootDrops[id] = { Beam = beam, Cube = cube, Base = base, Time = 0, Rarity = rarity }
 	elseif action == "Gone" then
 		local drop = lootDrops[id]
 		if drop then
+			SoundBank.Play(game:GetService("SoundService"), "Pickup", { Pitch = 0.85 + 0.1 * (drop.Rarity or 1) })
 			drop.Beam:Destroy()
 			drop.Cube:Destroy()
 			lootDrops[id] = nil
@@ -251,7 +253,6 @@ end
 -- 사운드 테스트 창 (Studio 전용, K 키): 항목별 소리를 들어 보고, 후보 소리 ID 를 항목에 걸어 미리 들어 본다.
 -- 마음에 드는 조합은 [출력으로 내보내기] 로 AudioIds 에 붙여 넣을 줄을 만든다.
 if game:GetService("RunService"):IsStudio() then
-	local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 	local panel = makePanel({ Size = UDim2.new(0, 560, 0, 520), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false, ZIndex = 80, BackgroundTransparency = 0.05 }, gui)
 	makeLabel({ Size = UDim2.new(1, -20, 0, 30), Position = UDim2.new(0, 10, 0, 8), Text = "🔊 사운드 테스트 (Studio 전용 · K 키로 열고 닫기)", Font = Enum.Font.GothamBlack, TextSize = 18, ZIndex = 81, TextXAlignment = Enum.TextXAlignment.Left }, panel)
 	local idBox = create("TextBox", { Size = UDim2.new(1, -150, 0, 32), Position = UDim2.new(0, 10, 0, 44), PlaceholderText = "후보 소리 ID(숫자) 붙여넣기", Text = "", ClearTextOnFocus = false,

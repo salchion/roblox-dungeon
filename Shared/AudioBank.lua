@@ -6,4 +6,11 @@
 return {
 	Shot_Smg = 133095953198600, -- 기관단총 발사
 	Skill_Heal = 136612911524402, -- 응급 치료 스킬
+	Hit = 3748776946,             -- 적중
+	Kill = 98731043228812,        -- 적 처치 (enemy defeat)
+	Enh_Success = 73627822697931, -- 강화 성공 (upgrade success)
+	Enh_Hammer = 9125819216,      -- 강화 망치 (metal clang)
+	Skill_Ult = 70952641415058,   -- 데드아이 발동 (power up charge)
+	Dash = 90661028523798,        -- 대시 (dash whoosh)
+	Pickup = 107673144903206,     -- 전리품 줍기 (loot pickup)
 }

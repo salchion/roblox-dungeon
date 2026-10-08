@@ -17,7 +17,7 @@ local SoundBank = {}
 local SPECS = {
 	-- 무기 종류별 총소리 (Shot 소리를 가공)
 	Shot_Pistol   = { Base = "Shot", Pitch = 1.15, Volume = 1.0, Length = 0.7 },
-	Shot_Smg      = { Base = "Shot", Pitch = 1.5, Volume = 0.55, Length = 0.35 },
+	Shot_Smg      = { Base = "Shot", CustomLength = 0.9, Pitch = 1.5, Volume = 0.55, Length = 0.35 },
 	Shot_Revolver = { Base = "Shot", Pitch = 0.82, Volume = 1.2, Length = 1.3, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -4 } } } },
 	Shot_Rifle    = { Base = "Shot", Pitch = 1.0, Volume = 0.9, Length = 0.9, Fx = { { "reverb", { DecayTime = 0.8, WetLevel = -9 } } } },
 	Shot_Shotgun  = { Base = "Shot", Pitch = 0.7, Volume = 1.3, Length = 1.0, Fx = { { "distortion", { Level = 0.35 } } },
@@ -30,43 +30,46 @@ local SPECS = {
 	Shot_Rail     = { Base = "Shot", Pitch = 1.9, Volume = 1.0, Length = 1.0, Fx = { { "chorus", { Depth = 0.8, Mix = 0.7 } }, { "echo", { Delay = 0.07, Feedback = 0.45, WetLevel = -5 } } },
 		Layers = { { Pitch = 0.9, Volume = 0.6, Delay = 0.02 } } },
 	-- 적중 / 처치 / 치명타 (짧고 선명하게)
-	Hit  = { Base = "Shot", Pitch = 3.0, Volume = 0.5, Length = 0.09 },
-	Crit = { Base = "EnhanceSuccess", Pitch = 2.3, Volume = 0.6, Length = 0.28 },
-	Kill = { Base = "EnhanceSuccess", Pitch = 1.5, Volume = 0.7, Length = 0.35, Fx = { { "reverb", { DecayTime = 0.6, WetLevel = -10 } } } },
+	Hit  = { Base = "Shot", CustomLength = 0.6, Pitch = 3.0, Volume = 0.5, Length = 0.09 },
+	Crit = { Base = "Enh_Success", Pitch = 1.9, Volume = 0.6, Length = 0.3, CustomLength = 0.8 },
+	Kill = { Base = "EnhanceSuccess", CustomLength = 1.2, Pitch = 1.5, Volume = 0.7, Length = 0.35, Fx = { { "reverb", { DecayTime = 0.6, WetLevel = -10 } } } },
 	-- 스킬 / 폭발 / 레벨업
-	Skill_Heal = { Base = "EnhanceSuccess", Pitch = 1.1, Volume = 0.8, Length = 0.9, Fx = { { "reverb", { DecayTime = 1.6, WetLevel = -6 } } } },
-	Skill_Ult  = { Base = "Shot", Pitch = 0.4, Volume = 1.6, Length = 1.8, Fx = { { "reverb", { DecayTime = 3.0, WetLevel = -2 } }, { "distortion", { Level = 0.4 } } },
+	Skill_Heal = { CustomLength = 2.5, Base = "Enh_Success", Pitch = 1.1, Volume = 0.8, Length = 0.9, Fx = { { "reverb", { DecayTime = 1.6, WetLevel = -6 } } } },
+	Skill_Ult  = { Base = "Shot", CustomLength = 3.0, Pitch = 0.4, Volume = 1.6, Length = 1.8, Fx = { { "reverb", { DecayTime = 3.0, WetLevel = -2 } }, { "distortion", { Level = 0.4 } } },
 		Layers = { { Pitch = 1.6, Volume = 0.6, Delay = 0.08 } } },
 	UltShot = { Base = "Shot", Pitch = 1.4, Volume = 0.8, Length = 0.3, Fx = { { "chorus", { Depth = 0.5, Mix = 0.5 } } } },
-	Boom    = { Base = "Shot", Pitch = 0.42, Volume = 1.5, Length = 1.1, Fx = { { "distortion", { Level = 0.55 } }, { "reverb", { DecayTime = 1.8, WetLevel = -4 } } } },
-	LevelUp = { Base = "EnhanceSuccess", Pitch = 1.0, Volume = 1.0, Length = 1.4, Fx = { { "reverb", { DecayTime = 1.8, WetLevel = -5 } } },
+	Boom    = { Base = "Enh_Hammer", Pitch = 0.45, Volume = 1.5, Length = 1.1, Fx = { { "distortion", { Level = 0.55 } }, { "reverb", { DecayTime = 1.8, WetLevel = -4 } } } },
+	LevelUp = { Base = "Enh_Success", Pitch = 1.0, Volume = 1.0, Length = 1.4, Fx = { { "reverb", { DecayTime = 1.8, WetLevel = -5 } } },
 		Layers = { { Pitch = 1.5, Volume = 0.7, Delay = 0.12 }, { Pitch = 2.0, Volume = 0.5, Delay = 0.26 } } },
 }
 
 -- 강화 / 뽑기 연출음 (UI 에서 재생)
-SPECS.Enh_Hammer  = { Base = "Shot", Pitch = 0.5, Volume = 1.0, Length = 0.18, Fx = { { "distortion", { Level = 0.45 } } },
+SPECS.Enh_Hammer  = { Base = "Shot", CustomLength = 1.5, Pitch = 0.5, Volume = 1.0, Length = 0.18, Fx = { { "distortion", { Level = 0.45 } } },
 	Layers = { { Pitch = 1.8, Volume = 0.35, Delay = 0.01 } } }                       -- 모루를 내려치는 "쾅"
-SPECS.Enh_Success = { Base = "EnhanceSuccess", Pitch = 1.0, Volume = 0.9, Length = 0.8, Fx = { { "reverb", { DecayTime = 1.0, WetLevel = -8 } } },
+SPECS.Enh_Success = { Base = "EnhanceSuccess", CustomLength = 1.6, Pitch = 1.0, Volume = 0.9, Length = 0.8, Fx = { { "reverb", { DecayTime = 1.0, WetLevel = -8 } } },
 	Layers = { { Pitch = 1.5, Volume = 0.45, Delay = 0.07 } } }                        -- 성공 "띵~" (단계가 오를수록 음이 높아진다)
-SPECS.Enh_Fail    = { Base = "Shot", Pitch = 0.3, Volume = 0.9, Length = 0.55, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -6 } }, { "eq", { HighGain = -20, MidGain = -4 } } } } -- 둔탁하게 "툭..."
-SPECS.Enh_Evolve  = { Base = "EnhanceSuccess", Pitch = 0.9, Volume = 1.1, Length = 2.0, Fx = { { "reverb", { DecayTime = 2.4, WetLevel = -3 } } },
+SPECS.Enh_Fail    = { Base = "Enh_Hammer", Pitch = 0.55, Volume = 0.8, Length = 0.6, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -6 } }, { "eq", { HighGain = -20, MidGain = -4 } } } } -- 둔탁하게 "툭..."
+SPECS.Enh_Evolve  = { Base = "Enh_Success", Pitch = 0.9, Volume = 1.1, Length = 2.0, Fx = { { "reverb", { DecayTime = 2.4, WetLevel = -3 } } },
 	Layers = { { Pitch = 1.13, Volume = 0.8, Delay = 0.12 }, { Pitch = 1.35, Volume = 0.8, Delay = 0.24 }, { Pitch = 1.8, Volume = 0.9, Delay = 0.36 }, { Pitch = 0.45, Volume = 1.0, Delay = 0.0 } } }
-SPECS.Gacha_Drop  = { Base = "Shot", Pitch = 0.6, Volume = 0.8, Length = 0.25, Fx = { { "reverb", { DecayTime = 0.8, WetLevel = -8 } } } }   -- 캡슐 낙하 "텅"
-SPECS.Gacha_Tick  = { Base = "Shot", Pitch = 3.2, Volume = 0.45, Length = 0.07 }                                                      -- 흔들릴 때 "틱틱"
-SPECS.Gacha_Card  = { Base = "EnhanceSuccess", Pitch = 1.3, Volume = 0.5, Length = 0.25 }                                            -- 10연 카드 한 장씩
+SPECS.Gacha_Drop  = { Base = "Enh_Hammer", Pitch = 0.9, Volume = 0.6, Length = 0.3, Fx = { { "reverb", { DecayTime = 0.8, WetLevel = -8 } } } }   -- 캡슐 낙하 "텅"
+SPECS.Gacha_Tick  = { Base = "Hit", Pitch = 1.3, Volume = 0.7, Length = 0.1, CustomLength = 0.2 }                                                      -- 흔들릴 때 "틱틱"
+SPECS.Gacha_Card  = { Base = "Kill", Pitch = 1.2, Volume = 0.5, Length = 0.25 }                                            -- 10연 카드 한 장씩
+SPECS.Dash   = { Base = "Shot", Pitch = 0.35, Volume = 0.6, Length = 0.4, CustomLength = 1.0, Fx = { { "eq", { HighGain = -12 } } } }  -- 대시 "슈웅"
+SPECS.Pickup = { Base = "Enh_Success", Pitch = 2.2, Volume = 0.5, Length = 0.25, CustomLength = 1.0 }                        -- 전리품 줍기 "팅"
 local POP_PITCHES = { 1.0, 1.26, 1.5, 2.0, 2.52 }
 for rarity = 1, 5 do                                                                                                                   -- 퍽! 등급이 높을수록 음이 더 많이 쌓인다
 	local layers = {}
 	for i = 2, rarity do
 		table.insert(layers, { Pitch = POP_PITCHES[i], Volume = 0.65, Delay = (i - 1) * 0.1 })
 	end
-	SPECS["Gacha_Pop" .. rarity] = { Base = "EnhanceSuccess", Pitch = POP_PITCHES[1], Volume = 0.8 + rarity * 0.08, Length = 0.9 + rarity * 0.2,
+	SPECS["Gacha_Pop" .. rarity] = { Base = "Enh_Success", Pitch = POP_PITCHES[1], Volume = 0.8 + rarity * 0.08, Length = 0.9 + rarity * 0.2,
 		Fx = { { "reverb", { DecayTime = 0.8 + rarity * 0.4, WetLevel = -7 + rarity } } }, Layers = layers }
 end
 SoundBank.Specs = SPECS
 
 -- 사운드 테스트 창(Studio 에서 K 키)에 보이는 항목별 설명
 SoundBank.Descriptions = {
+	Dash = "대시 (Q)", Pickup = "전리품 줍기",
 	Shot_Pistol = "권총 발사", Shot_Smg = "기관단총 발사", Shot_Revolver = "리볼버 발사", Shot_Rifle = "라이플 발사", Shot_Shotgun = "샷건 발사",
 	Shot_Flamer = "화염방사기 발사", Shot_Cannon = "플라즈마 캐논 발사", Shot_Sniper = "저격총 발사", Shot_Rocket = "로켓 런처 발사", Shot_Rail = "레일건 발사",
 	Hit = "적을 맞췄을 때 (짧게)", Crit = "치명타", Kill = "적 처치 (연속 처치할수록 높아짐)",
@@ -78,7 +81,7 @@ SoundBank.Descriptions = {
 SoundBank.Order = {
 	"Shot_Pistol", "Shot_Smg", "Shot_Revolver", "Shot_Rifle", "Shot_Shotgun", "Shot_Flamer", "Shot_Cannon", "Shot_Sniper", "Shot_Rocket", "Shot_Rail",
 	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_Ult", "UltShot", "Boom", "LevelUp",
-	"Enh_Hammer", "Enh_Success", "Enh_Fail", "Enh_Evolve", "Gacha_Drop", "Gacha_Tick", "Gacha_Card",
+	"Dash", "Pickup", "Enh_Hammer", "Enh_Success", "Enh_Fail", "Enh_Evolve", "Gacha_Drop", "Gacha_Tick", "Gacha_Card",
 	"Gacha_Pop1", "Gacha_Pop2", "Gacha_Pop3", "Gacha_Pop4", "Gacha_Pop5",
 }
 
@@ -108,7 +111,8 @@ local function idFor(key, spec)
 	if bank and bank[key] and bank[key] ~= 0 then
 		return bank[key], true
 	end
-	local base = Config.Audio[spec.Base]
+	-- 기본 소리(Base)는 내가 넣은 다른 항목(Bank)도 될 수 있다: 예) 폭발음은 강화 망치 소리를 낮게 가공
+	local base = (bank and bank[spec.Base] and bank[spec.Base] ~= 0 and bank[spec.Base]) or Config.Audio[spec.Base]
 	if base and base ~= 0 then
 		return base, false
 	end
@@ -143,6 +147,7 @@ function SoundBank.Play(parent, key, opts)
 	local baseVolume = 0.35 * volumeScale
 	local pitch = custom and (opts.Pitch or 1) or spec.Pitch * (opts.Pitch or 1)
 	local length = spec.Length or 1
+	if custom then length = spec.CustomLength or 2 end -- 내가 넣은 소리는 자연스러운 꼬리를 살리고, 너무 길 때만 끊는다
 	local main = playOne(parent, id, baseVolume, pitch, length, opts.Name, not custom and spec.Fx or nil)
 	if not custom then
 		for _, layer in ipairs(spec.Layers or {}) do
