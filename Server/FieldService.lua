@@ -1304,6 +1304,26 @@ end
 
 local lastWarp = {}
 
+-- 필드 밖으로 튕겨 나간 플레이어(대시 / 물리 버그로 벽 밖이나 허공)를 마을로 되돌린다
+local function rescueOutOfBounds()
+	local half = F.Width / 2
+	local endX = F.StartX + F.ZoneLength * F.ZoneCount + 60
+	for _, player in ipairs(Players:GetPlayers()) do
+		if player:GetAttribute("Zone") == "Field" then
+			local root = getAliveParts(player)
+			if root then
+				local p = root.Position
+				if p.Y > TOP + 95 or p.Y < TOP - 40 or math.abs(p.Z) > half + 30 or p.X > endX then
+					root.AssemblyLinearVelocity = Vector3.zero
+					player.Character:PivotTo(lobbySpawn)
+					player:SetAttribute("Zone", "Lobby")
+					notify(player, "필드 밖으로 튕겨 나가서 마을로 돌아왔어요.")
+				end
+			end
+		end
+	end
+end
+
 -- zone 0 = 로비, 1~8 = 해당 구역 캠프 (도달한 구역까지만)
 local function warp(player, zone)
 	local now = os.clock()
@@ -1497,6 +1517,7 @@ function Field.Init(lobbySpawnCFrame)
 		if zoneTimer >= 0.4 then
 			zoneTimer = 0
 			updateZones()
+			rescueOutOfBounds()
 		end
 	end)
 

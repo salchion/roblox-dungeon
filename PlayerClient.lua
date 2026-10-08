@@ -1620,7 +1620,14 @@ local function slide()
 		direction = root.CFrame.LookVector
 	end
 	direction = Vector3.new(direction.X, 0, direction.Z).Unit
-	local airborne = humanoid.FloorMaterial == Enum.Material.Air
+	-- 진짜로 공중일 때만 높이 고정 (계단 위에서 FloorMaterial 이 잠깐 Air 가 되는 걸로 오판하면 대시가 위로 튕겨 나간다)
+	local airborne = false
+	if humanoid.FloorMaterial == Enum.Material.Air then
+		local params = RaycastParams.new()
+		params.FilterDescendantsInstances = { character }
+		params.FilterType = Enum.RaycastFilterType.Exclude
+		airborne = workspace:Raycast(root.Position, Vector3.new(0, -8, 0), params) == nil
+	end
 
 	local attachment = Instance.new("Attachment")
 	attachment.Parent = root
