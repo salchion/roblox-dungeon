@@ -490,7 +490,7 @@ function Lobby.Build()
 	anvilPrompt.ActionText = "무기 강화"
 	anvilPrompt.ObjectText = "대장간"
 	anvilPrompt.HoldDuration = 0
-	anvilPrompt.MaxActivationDistance = 14
+	anvilPrompt.MaxActivationDistance = 18
 	anvilPrompt.RequiresLineOfSight = false
 	anvilPrompt.Parent = anvilPart
 
@@ -498,7 +498,7 @@ function Lobby.Build()
 	gachaPrompt.ActionText = "장비 뽑기 / 강화"
 	gachaPrompt.ObjectText = "뽑기 상점"
 	gachaPrompt.HoldDuration = 0
-	gachaPrompt.MaxActivationDistance = 14
+	gachaPrompt.MaxActivationDistance = 18
 	gachaPrompt.RequiresLineOfSight = false
 	gachaPrompt.Parent = gachaBody
 
