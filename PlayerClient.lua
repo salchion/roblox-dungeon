@@ -168,175 +168,257 @@ local function weaponText(level)
 end
 
 ------------------------------------------------------------
--- 로비: 무기 강화창
+-- 로비: 무기 강화창 (모바일 게임식): 가운데 큰 메달 안에서 무기가 돌고, 단계 칸이 채워지고, 큰 강화 버튼 + 망치 연출
 ------------------------------------------------------------
-local enhancePanel = makePanel({
-	Size = UDim2.new(0, 400, 0, 480),
+local enhancePanel   -- (아래 do 블록 안에서 만든다: 지역 변수 개수 제한 때문에 블록으로 감쌌다)
+local refreshEnhance
+do
+local E = {} -- 이 블록 안에서만 쓰는 상태 (EnhanceBusy / EnhanceShownTier / EnhanceAffordable)
+enhancePanel = makePanel({
+	Size = UDim2.new(0, 400, 0, 560),
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Position = UDim2.new(0.5, 0, 0.5, 0),
+	BackgroundColor3 = Color3.fromRGB(26, 22, 36), BackgroundTransparency = 0.05,
 	Visible = false,
 }, gui)
+create("UIStroke", { Color = Color3.fromRGB(255, 190, 80), Thickness = 3 }, enhancePanel)
+create("UIGradient", {
+	Color = ColorSequence.new(Color3.fromRGB(70, 48, 90), Color3.fromRGB(22, 20, 32)), Rotation = 90,
+}, enhancePanel)
 
 makeLabel({
-	Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8),
-	Text = "🔨 무기 강화", Font = Enum.Font.GothamBlack, TextSize = 24,
+	Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 8),
+	Text = "🔨 무기 강화", Font = Enum.Font.GothamBlack, TextSize = 24, TextColor3 = Color3.fromRGB(255, 220, 130),
 }, enhancePanel)
-
-local enhanceWeapon = makeLabel({
-	Size = UDim2.new(1, -24, 0, 36), Position = UDim2.new(0, 12, 0, 50),
-	Font = Enum.Font.GothamBlack, TextSize = 26,
-}, enhancePanel)
-
--- 3D 미리보기: 지금 총 / 다음 진화 총 (WeaponPreviews 모델을 복제해서 보여준다)
-local function makePreview(parent, position, caption)
-	local frame = Instance.new("ViewportFrame")
-	frame.Size = UDim2.new(0, 170, 0, 100)
-	frame.Position = position
-	frame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
-	frame.BorderSizePixel = 0
-	frame.Ambient = Color3.fromRGB(170, 170, 180)
-	frame.LightColor = Color3.new(1, 1, 1)
-	frame.Parent = parent
-	Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
-	local cam = Instance.new("Camera")
-	cam.FieldOfView = 40
-	cam.Parent = frame
-	frame.CurrentCamera = cam
-	local label = Instance.new("TextLabel")
-	label.Size = UDim2.new(1, 0, 0, 18)
-	label.BackgroundTransparency = 1
-	label.Font = Enum.Font.GothamBold
-	label.TextSize = 13
-	label.TextColor3 = Color3.fromRGB(200, 200, 215)
-	label.Text = caption
-	label.Parent = frame
-	local shown
-	return function(typeKey, tierIndex)
-		if shown then
-			shown:Destroy()
-			shown = nil
-		end
-		local previews = ReplicatedStorage:FindFirstChild("WeaponPreviews")
-		local source = previews and previews:FindFirstChild("W" .. tierIndex)
-		if not source then return end
-		shown = source:Clone()
-		shown.Parent = frame
-		local cf, size = shown:GetBoundingBox()
-		local d = math.max(size.X, size.Y, size.Z) * 1.6
-		cam.CFrame = CFrame.lookAt(cf.Position + Vector3.new(d, d * 0.25, d * 0.15), cf.Position)
-	end
-end
-local previewNow = makePreview(enhancePanel, UDim2.new(0, 14, 0, 90), "지금")
-local previewNext = makePreview(enhancePanel, UDim2.new(1, -184, 0, 90), "다음 진화")
-local previewNextName = makeLabel({
-	Size = UDim2.new(0, 170, 0, 20), Position = UDim2.new(1, -184, 0, 192),
-	TextSize = 14, Font = Enum.Font.GothamBold,
-}, enhancePanel)
-local previewNowName = makeLabel({
-	Size = UDim2.new(0, 170, 0, 20), Position = UDim2.new(0, 14, 0, 192),
-	TextSize = 14, Font = Enum.Font.GothamBold,
-}, enhancePanel)
-
-local enhanceInfo = makeLabel({
-	Size = UDim2.new(1, -40, 0, 150), Position = UDim2.new(0, 20, 0, 218),
-	TextXAlignment = Enum.TextXAlignment.Left,
-	TextYAlignment = Enum.TextYAlignment.Top,
-	RichText = true,
-}, enhancePanel)
-
-local enhanceResult = makeLabel({
-	Size = UDim2.new(1, -24, 0, 28), Position = UDim2.new(0, 12, 0, 376),
-	Font = Enum.Font.GothamBold, TextSize = 17,
-}, enhancePanel)
-
-local enhanceButton = makeButton({
-	Size = UDim2.new(0, 170, 0, 44), Position = UDim2.new(0, 20, 1, -58),
-	Text = "강화하기", TextSize = 18, BackgroundColor3 = GREEN,
-}, enhancePanel, function()
-	Remotes.Enhance:FireServer()
-end)
-
 makeButton({
-	Size = UDim2.new(0, 170, 0, 44), Position = UDim2.new(1, -190, 1, -58),
-	Text = "닫기", TextSize = 18, BackgroundColor3 = GRAY,
+	Size = UDim2.new(0, 34, 0, 34), Position = UDim2.new(1, -44, 0, 10), Text = "✕", TextSize = 18, BackgroundColor3 = Color3.fromRGB(110, 60, 70),
 }, enhancePanel, function()
 	enhancePanel.Visible = false
 end)
 
-local function refreshEnhance()
+local enhanceWeapon = makeLabel({
+	Size = UDim2.new(1, -24, 0, 30), Position = UDim2.new(0, 12, 0, 50),
+	Font = Enum.Font.GothamBlack, TextSize = 22, TextWrapped = true,
+}, enhancePanel)
+
+-- 메달: 등급 색 고리 + 뒤에서 도는 빛 + 안에서 천천히 도는 무기 3D 모델
+local medal = create("Frame", {
+	Size = UDim2.new(0, 230, 0, 230), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 86),
+	BackgroundColor3 = Color3.fromRGB(34, 30, 52), BorderSizePixel = 0,
+}, enhancePanel)
+create("UICorner", { CornerRadius = UDim.new(1, 0) }, medal)
+local medalStroke = create("UIStroke", { Color = Color3.fromRGB(255, 200, 90), Thickness = 5 }, medal)
+local medalGlow = create("Frame", {
+	Size = UDim2.new(1.18, 0, 1.18, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+	BackgroundColor3 = Color3.fromRGB(255, 200, 90), BackgroundTransparency = 0.82, BorderSizePixel = 0, ZIndex = 0,
+}, medal)
+create("UICorner", { CornerRadius = UDim.new(1, 0) }, medalGlow)
+local medalGradient = create("UIGradient", {
+	Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(0.5, 0.9), NumberSequenceKeypoint.new(1, 0.2) }),
+}, medalGlow)
+
+local medalView = create("ViewportFrame", {
+	Size = UDim2.new(0.86, 0, 0.86, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+	BackgroundTransparency = 1, Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1), ZIndex = 2,
+}, medal)
+local medalCam = create("Camera", { FieldOfView = 36 }, medalView)
+medalView.CurrentCamera = medalCam
+local medalModel, medalCenter, medalReach
+local function showMedalWeapon(tierIndex)
+	if medalModel then medalModel:Destroy() medalModel = nil end
+	local previews = ReplicatedStorage:FindFirstChild("WeaponPreviews")
+	local source = previews and previews:FindFirstChild("W" .. tierIndex)
+	if not source then return end
+	medalModel = source:Clone()
+	medalModel.Parent = medalView
+	local cf, size = medalModel:GetBoundingBox()
+	medalCenter, medalReach = cf.Position, math.max(size.X, size.Y, size.Z)
+end
+RunService.RenderStepped:Connect(function()
+	if not enhancePanel.Visible then return end
+	local t = os.clock()
+	medalGradient.Rotation = (t * 40) % 360
+	medalGlow.BackgroundTransparency = 0.78 + 0.08 * math.sin(t * 2.2)
+	if medalModel and medalCenter then -- 무기가 천천히 돈다 (카메라가 주위를 도는 방식)
+		local angle = t * 0.9
+		local d = medalReach * 1.7
+		medalCam.CFrame = CFrame.lookAt(medalCenter + Vector3.new(math.sin(angle) * d, d * 0.28, math.cos(angle) * d), medalCenter)
+	end
+end)
+
+-- 큰 "+N" 단계 숫자 / 단계 칸 (이 무기가 진화하기까지)
+local enhanceStage = makeLabel({
+	Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 322), Font = Enum.Font.GothamBlack, TextSize = 34,
+}, enhancePanel)
+local segmentBar = create("Frame", {
+	Size = UDim2.new(1, -60, 0, 14), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 366), BackgroundTransparency = 1,
+}, enhancePanel)
+create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder }, segmentBar)
+local enhanceNext = makeLabel({
+	Size = UDim2.new(1, -30, 0, 22), Position = UDim2.new(0, 15, 0, 386), TextSize = 14, RichText = true,
+}, enhancePanel)
+
+-- 변화 비교 (공격력 → 다음 단계) + 성공 확률
+local enhanceInfo = makeLabel({
+	Size = UDim2.new(1, -40, 0, 50), Position = UDim2.new(0, 20, 0, 414), TextSize = 15, RichText = true,
+	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+}, enhancePanel)
+
+-- 결과 연출용 큰 글자 (SUCCESS / FAIL / 진화!)
+local enhanceBanner = makeLabel({
+	Size = UDim2.new(1, 0, 0, 56), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 200),
+	Font = Enum.Font.GothamBlack, TextSize = 44, TextStrokeTransparency = 0, Visible = false, ZIndex = 8,
+}, enhancePanel)
+local enhanceResult = makeLabel({
+	Size = UDim2.new(1, -24, 0, 22), Position = UDim2.new(0, 12, 0, 468), Font = Enum.Font.GothamBold, TextSize = 14,
+}, enhancePanel)
+
+local hammer = makeLabel({
+	Size = UDim2.new(0, 70, 0, 70), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 70, 0, 150),
+	Text = "🔨", TextSize = 56, Visible = false, ZIndex = 9, Rotation = -50,
+}, enhancePanel)
+
+local enhanceButton = makeButton({
+	Size = UDim2.new(1, -40, 0, 54), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
+	Text = "강화하기", TextSize = 22, Font = Enum.Font.GothamBlack, BackgroundColor3 = GREEN,
+}, enhancePanel, function()
+	if E.EnhanceBusy then return end
+	E.EnhanceBusy = true
+	-- 망치가 내려친다 -> 메달이 흔들리고 불꽃이 튄다 (결과는 서버가 알려주면 이어서 표시)
+	hammer.Visible = true
+	hammer.Rotation = -50
+	local swing = TweenService:Create(hammer, TweenInfo.new(0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Rotation = 25, Position = UDim2.new(0.5, 20, 0, 190) })
+	swing:Play()
+	swing.Completed:Connect(function()
+		for i = 1, 8 do
+			local spark = create("Frame", {
+				Size = UDim2.new(0, 8, 0, 8), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 205),
+				BackgroundColor3 = i % 2 == 0 and Color3.fromRGB(255, 220, 110) or Color3.fromRGB(255, 140, 60), BorderSizePixel = 0, ZIndex = 7,
+			}, enhancePanel)
+			create("UICorner", { CornerRadius = UDim.new(1, 0) }, spark)
+			local angle = (i / 8) * math.pi * 2
+			TweenService:Create(spark, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+				Position = UDim2.new(0.5, math.cos(angle) * 130, 0, 205 + math.sin(angle) * 110), BackgroundTransparency = 1,
+			}):Play()
+			game:GetService("Debris"):AddItem(spark, 0.5)
+		end
+		-- 메달 흔들림
+		task.spawn(function()
+			local base = medal.Position
+			for i = 1, 6 do
+				medal.Position = base + UDim2.new(0, (i % 2 == 0 and 1 or -1) * (8 - i), 0, 0)
+				task.wait(0.03)
+			end
+			medal.Position = base
+		end)
+		Remotes.Enhance:FireServer()
+		task.delay(0.15, function() hammer.Visible = false end)
+		task.delay(0.9, function() E.EnhanceBusy = false end)
+	end)
+end)
+create("UIStroke", { Color = Color3.fromRGB(190, 255, 190), Thickness = 2 }, enhanceButton)
+
+function refreshEnhance()
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local gold = player:GetAttribute("Gold") or 0
-	local name, color = weaponText(level)
-	enhanceWeapon.Text = name
-	enhanceWeapon.TextColor3 = color
-
 	local typeKey = player:GetAttribute("WeaponType") or "Pistol"
 	local tierIndex = Config.GetWeaponTierIndex(level)
 	local tiers = Config.Weapon.Tiers
-	previewNow(typeKey, tierIndex)
-	previewNowName.Text = Config.GetWeaponName(typeKey, level)
-	previewNowName.TextColor3 = tiers[tierIndex].Color
-	if tierIndex < #tiers then
-		local nextTier = tiers[tierIndex + 1]
-		previewNext(typeKey, tierIndex + 1)
-		previewNextName.Text = string.format("%s (%d/%d)", nextTier.Name, nextTier.Index, #tiers)
-		previewNextName.TextColor3 = nextTier.Rainbow and Color3.fromRGB(255, 120, 255) or nextTier.Color
-	else
-		previewNext(typeKey, tierIndex)
-		previewNextName.Text = "마지막 무기!"
-		previewNextName.TextColor3 = Color3.fromRGB(255, 217, 102)
+	local tier = tiers[tierIndex]
+	local stage = Config.GetWeaponStage(level)
+	local color = tier.Rainbow and Color3.fromRGB(255, 120, 255) or tier.Color
+
+	enhanceWeapon.Text = string.format("[%d/%d] %s", tier.Index, #tiers, Config.GetWeaponName(typeKey, level))
+	enhanceWeapon.TextColor3 = color
+	medalStroke.Color = color
+	medalGlow.BackgroundColor3 = color
+	if E.EnhanceShownTier ~= tierIndex then
+		E.EnhanceShownTier = tierIndex
+		showMedalWeapon(tierIndex)
 	end
 
-	local lines = {
-		string.format("공격력 배율  x%.2f", Config.GetDamageMultiplier(level)),
-		string.format("무기 크기      x%.2f", Config.GetWeaponScale(level)),
-	}
+	enhanceStage.Text = string.format("+%d", stage)
+	enhanceStage.TextColor3 = color
+	for _, child in ipairs(segmentBar:GetChildren()) do
+		if child:IsA("Frame") then child:Destroy() end
+	end
+	for i = 1, tier.Steps do
+		local seg = create("Frame", {
+			Size = UDim2.new(1 / tier.Steps, -4, 1, 0), LayoutOrder = i, BorderSizePixel = 0,
+			BackgroundColor3 = i <= stage and color or Color3.fromRGB(55, 52, 72),
+		}, segmentBar)
+		create("UICorner", { CornerRadius = UDim.new(0, 4) }, seg)
+	end
 
 	if level >= Config.Weapon.MaxLevel then
-		table.insert(lines, "\n<font color='#ffd966'>마지막 무기를 최대로 강화했어요!</font>")
+		enhanceNext.Text = "<font color='#ffd966'>마지막 무기를 최대로 강화했어요!</font>"
+		enhanceInfo.Text = ""
 		enhanceButton.Text = "MAX"
 		enhanceButton.BackgroundColor3 = GRAY
-	else
-		local cost = Config.GetEnhanceCost(level)
-		table.insert(lines, string.format("공격력 배율 다음 단계  x%.2f", Config.GetDamageMultiplier(level + 1)))
-		-- 강화하면 무엇이 달라지는지: 단계마다 총에 링이 생기고 탄이 커지고, 마지막 단계를 넘으면 새 무기
-		local curTier = Config.GetWeaponTier(level)
-		local stageNow = Config.GetWeaponStage(level)
-		table.insert(lines, string.format("<font color='#9ad7ff'>이 무기 단계 %s  (+%d/%d)</font>", Config.StageBar(level), stageNow, curTier.Steps))
-		table.insert(lines, "<font color='#bbbbcc'>강화할 때마다: 공격력 증가 · 총에 빛나는 링 추가 · 발사체가 조금 커져요</font>")
-		table.insert(lines, string.format("\n강화 비용  <font color='#ffd966'>%d G</font>  (보유 %d G)", cost, gold))
-		table.insert(lines, string.format("성공 확률  %d%%  (실패해도 단계는 유지)", math.floor(Config.GetEnhanceChance(level) * 100 + 0.5)))
-
-		if tierIndex < #tiers then
-			local nextTier = tiers[tierIndex + 1]
-			table.insert(lines, string.format("<font color='#9ad7ff'>다음 무기 [%s] 까지 %d단계 — %s</font>", nextTier.Name, nextTier.MinLevel - level, Config.WeaponTypes[nextTier.Class].Desc))
-		end
-		enhanceButton.Text = "강화하기"
-		enhanceButton.BackgroundColor3 = gold >= cost and GREEN or GRAY
+		return
 	end
-	enhanceInfo.Text = table.concat(lines, "\n")
+	local cost = Config.GetEnhanceCost(level)
+	local chance = math.floor(Config.GetEnhanceChance(level) * 100 + 0.5)
+	if tierIndex < #tiers then
+		local nextTier = tiers[tierIndex + 1]
+		enhanceNext.Text = string.format("▶ <b>%d단계</b> 더 하면 <font color='#9ad7ff'><b>%s</b></font> 로 진화!", nextTier.MinLevel - level, nextTier.Name)
+	else
+		enhanceNext.Text = ""
+	end
+	enhanceInfo.Text = string.format("공격력  <b>x%.2f</b> <font color='#78ff8c'>▶ x%.2f</font>\n성공 확률  <font color='#%s'><b>%d%%</b></font>   <font size='12' color='#aaaabb'>(실패해도 단계 유지)</font>",
+		Config.GetDamageMultiplier(level), Config.GetDamageMultiplier(level + 1), chance >= 80 and "78ff8c" or (chance >= 60 and "ffd966" or "ff9a6e"), chance)
+	local affordable = gold >= cost
+	enhanceButton.Text = string.format("🪙 %s   강화", tostring(cost))
+	enhanceButton.BackgroundColor3 = affordable and GREEN or Color3.fromRGB(95, 60, 62)
+	E.EnhanceAffordable = affordable
 end
 
-Remotes.Enhance.OnClientEvent:Connect(function(ok, message)
-	if ok then -- 성공하면 다음 진화까지 남은 단계를 알려줘서 "하나만 더" 하고 싶게 만든다
-		local level = player:GetAttribute("WeaponLevel") or 0
-		for _, tier in ipairs(Config.Weapon.Tiers) do
-			if tier.MinLevel > level then
-				message = string.format("%s  ✨ %s 까지 %d단계!", message, tier.Name, tier.MinLevel - level)
-				break
-			end
-		end
+-- 강화 버튼이 눌러볼 만하면 살짝 숨 쉬듯 커졌다 작아진다
+RunService.RenderStepped:Connect(function()
+	if enhancePanel.Visible and E.EnhanceAffordable and not E.EnhanceBusy then
+		local pulse = 1 + 0.02 * math.sin(os.clock() * 4)
+		enhanceButton.Size = UDim2.new(1, -40 - (pulse - 1) * -300, 0, 54)
 	end
+end)
+
+Remotes.Enhance.OnClientEvent:Connect(function(ok, message)
+	local oldTier = E.EnhanceShownTier
+	refreshEnhance()
+	local evolved = oldTier ~= nil and E.EnhanceShownTier ~= nil and E.EnhanceShownTier > oldTier
+	-- 결과 큰 글자: 성공 / 실패 / 진화
+	enhanceBanner.Visible = true
+	enhanceBanner.Position = UDim2.new(0.5, 0, 0, 200)
+	enhanceBanner.TextTransparency = 0
+	enhanceBanner.TextStrokeTransparency = 0
+	if evolved then
+		enhanceBanner.Text = "✨ 진화! ✨"
+		enhanceBanner.TextColor3 = Color3.fromRGB(255, 225, 100)
+		medalStroke.Thickness = 12
+		TweenService:Create(medalStroke, TweenInfo.new(0.7), { Thickness = 5 }):Play()
+	elseif ok then
+		enhanceBanner.Text = "SUCCESS!"
+		enhanceBanner.TextColor3 = Color3.fromRGB(120, 255, 140)
+		medalStroke.Thickness = 9
+		TweenService:Create(medalStroke, TweenInfo.new(0.5), { Thickness = 5 }):Play()
+	else
+		enhanceBanner.Text = "FAIL"
+		enhanceBanner.TextColor3 = Color3.fromRGB(255, 120, 120)
+	end
+	TweenService:Create(enhanceBanner, TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		Position = UDim2.new(0.5, 0, 0, 150), TextTransparency = 1, TextStrokeTransparency = 1,
+	}):Play()
+	task.delay(1, function() enhanceBanner.Visible = false end)
 	enhanceResult.Text = message
 	enhanceResult.TextColor3 = ok and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 130, 130)
-	refreshEnhance()
 end)
 
 Remotes.OpenEnhance.OnClientEvent:Connect(function()
 	enhanceResult.Text = ""
+	E.EnhanceShownTier = nil
 	refreshEnhance()
 	enhancePanel.Visible = true
 end)
+end -- (강화창 do 블록 끝)
 
 ------------------------------------------------------------
 -- 로비: 장비창 (갑옷 / 장갑 / 신발 강화 + 보스 티켓 뽑기)
