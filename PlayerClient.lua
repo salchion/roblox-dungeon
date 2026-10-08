@@ -2937,24 +2937,63 @@ local function buildShopTab()
 		end)
 	end
 
-	sectionTitle("✨ 오라 (꾸미기 · 능력치 없음 · 다른 플레이어에게도 보여요)")
-	local current = player:GetAttribute("Aura") or ""
-	for _, key in ipairs(Config.Auras.Order) do
-		local aura = Config.Auras[key]
-		local owned = player:GetAttribute("AuraOwned_" .. key) == true
-		local row = newRow(56)
-		rowText(row, string.format("<font color='#%s' size='16'><b>%s</b></font>\n<font size='13' color='#bbbbcc'>%s</font>",
-			hex(aura.Color), aura.Name, owned and "보유 중" or ("🔒 " .. auraUnlockText(aura))), 14, 170)
-		if owned then
-			local equipped = current == key
+	-- 꾸미기 3종: 오라 / 깃발 / 탈것. 각 줄에 [미리보기] (5초 동안 내 캐릭터에 입혀서 보여준다) + [장착]
+	local Cosmetics = require(game:GetService("ReplicatedStorage"):WaitForChild("Cosmetics"))
+	local function previewCosmetic(kind, key, name)
+		local character = player.Character
+		if not character then return end
+		settings.PreviewToken = (settings.PreviewToken or 0) + 1
+		local token = settings.PreviewToken
+		local panel = settings.MenuPanel
+		if panel then panel.Visible = false end
+		-- 실제로 장착 중인 같은 종류는 잠깐 숨기고 미리보기를 보여준다
+		Cosmetics.Clear(character, kind)
+		Cosmetics.Build(kind, key, character, true)
+		toast(string.format("👀 [%s] 미리보기 5초!", name))
+		task.delay(5, function()
+			if settings.PreviewToken ~= token then return end
+			Cosmetics.Clear(character, kind, true)
+			local equipped = player:GetAttribute(kind) or ""
+			if equipped ~= "" and Config[kind == "Aura" and "Auras" or (kind == "Banner" and "Banners" or "Mounts")][equipped] then
+				Cosmetics.Build(kind, equipped, character)
+			end
+			if panel then panel.Visible = true end
+		end)
+	end
+	local function cosmeticSection(title, kind, tableName)
+		sectionTitle(title)
+		local list = Config[tableName]
+		local current = player:GetAttribute(kind) or ""
+		for _, key in ipairs(list.Order) do
+			local item = list[key]
+			local owned = player:GetAttribute(kind .. "Owned_" .. key) == true
+			local row = newRow(60)
+			rowText(row, string.format("<font color='#%s' size='16'><b>%s</b></font>\n<font size='13' color='#bbbbcc'>%s</font>",
+				hex(item.Color), item.Name, owned and "보유 중" or ("🔒 " .. auraUnlockText(item))), 14, 290)
 			makeButton({
-				Size = UDim2.new(0, 130, 0, 30), Position = UDim2.new(1, -142, 0.5, -15),
-				Text = equipped and "해제" or "장착", TextSize = 14, BackgroundColor3 = equipped and RED or GREEN,
+				Size = UDim2.new(0, 124, 0, 30), Position = UDim2.new(1, -274, 0.5, -15),
+				Text = "👀 미리보기", TextSize = 14, BackgroundColor3 = Color3.fromRGB(70, 90, 160),
 			}, row, function()
-				Remotes.Shop:FireServer("Aura", equipped and "" or key)
+				previewCosmetic(kind, key, item.Name)
 			end)
+			if owned then
+				local equipped = current == key
+				makeButton({
+					Size = UDim2.new(0, 124, 0, 30), Position = UDim2.new(1, -142, 0.5, -15),
+					Text = equipped and "해제" or "장착", TextSize = 14, BackgroundColor3 = equipped and RED or GREEN,
+				}, row, function()
+					if kind == "Aura" then
+						Remotes.Shop:FireServer("Aura", equipped and "" or key)
+					else
+						Remotes.Shop:FireServer("Cosmetic", kind, equipped and "" or key)
+					end
+				end)
+			end
 		end
 	end
+	cosmeticSection("✨ 오라 (꾸미기 · 능력치 없음 · 다른 플레이어에게도 보여요)", "Aura", "Auras")
+	cosmeticSection("🚩 깃발 (등 뒤에 꽂는 꾸미기 · 능력치 없음)", "Banner", "Banners")
+	cosmeticSection("🛹 탈것 (발밑에 떠 있는 꾸미기 · 능력치 / 이동속도 없음)", "Mount", "Mounts")
 end
 
 local metaState = nil
@@ -3068,6 +3107,11 @@ function refreshMenu()
 	end
 end
 settings.RefreshMenu = refreshMenu
+for _, cosmeticKind in ipairs({ "Aura", "Banner", "Mount" }) do
+	player:GetAttributeChangedSignal(cosmeticKind):Connect(function()
+		if currentTab == "Shop" and menuPanel.Visible then refreshMenu() end
+	end)
+end
 
 local function selectTab(key)
 	currentTab = key

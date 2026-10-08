@@ -23,6 +23,7 @@ local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Keys = require(script.Parent:WaitForChild("KeyService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Growth = require(script.Parent:WaitForChild("GrowthService"))
+local Cosmetics = require(ReplicatedStorage:WaitForChild("Cosmetics"))
 
 local S = Config.Shop
 
@@ -40,17 +41,27 @@ end
 ------------------------------------------------------------
 -- 오라 / Attribute 반영
 ------------------------------------------------------------
-local function isAuraOwned(player, state, key)
-	local aura = Config.Auras[key]
-	if not aura then return false end
+-- 꾸미기 종류별 설정표 / 해금 기록의 키 (오라는 예전 저장 형식 그대로 key 만, 깃발 / 탈것은 "Banner_Key" 형태)
+local COSMETIC_TABLE = { Aura = Config.Auras, Banner = Config.Banners, Mount = Config.Mounts }
+local function unlockKey(kind, key)
+	return kind == "Aura" and key or (kind .. "_" .. key)
+end
+
+local function isCosmeticOwned(player, state, kind, key)
+	local aura = COSMETIC_TABLE[kind] and COSMETIC_TABLE[kind][key]
+	if not aura or key == "Order" then return false end
 	local unlock = aura.Unlock
 	if unlock == "Free" then return true end
-	if state.AuraUnlocked[key] then return true end
+	if state.AuraUnlocked[unlockKey(kind, key)] then return true end
 	if typeof(unlock) == "table" then
 		if unlock.Ach then return Quest.IsDone(player, unlock.Ach) end
 		if unlock.Pass then return state.Passes[unlock.Pass] == true end
 	end
 	return false
+end
+
+local function isAuraOwned(player, state, key)
+	return isCosmeticOwned(player, state, "Aura", key)
 end
 
 local function applyAttributes(player, state)
@@ -70,41 +81,30 @@ local function applyAttributes(player, state)
 		state.Aura = ""
 	end
 	player:SetAttribute("Aura", state.Aura)
+
+	for _, kind in ipairs({ "Banner", "Mount" }) do
+		for _, key in ipairs(COSMETIC_TABLE[kind].Order) do
+			player:SetAttribute(kind .. "Owned_" .. key, isCosmeticOwned(player, state, kind, key))
+		end
+		if state[kind] ~= "" and not isCosmeticOwned(player, state, kind, state[kind]) then
+			state[kind] = ""
+		end
+		player:SetAttribute(kind, state[kind])
+	end
 end
 
 -- 캐릭터에 오라 효과를 붙인다 (다른 플레이어에게도 보임 = 꾸미기/과시). 캐릭터 생성 / 오라 변경 때 호출.
 function Monetization.ApplyAura(player)
 	local character = player.Character
-	local root = character and character:FindFirstChild("HumanoidRootPart")
-	if not root then return end
-
-	local old = root:FindFirstChild("AuraEmitter")
-	if old then old:Destroy() end
-	local oldLight = root:FindFirstChild("AuraLight")
-	if oldLight then oldLight:Destroy() end
-
-	local aura = Config.Auras[player:GetAttribute("Aura") or ""]
-	if not aura then return end
-
-	local emitter = Instance.new("ParticleEmitter")
-	emitter.Name = "AuraEmitter"
-	emitter.Shape = Enum.ParticleEmitterShape.Cylinder
-	emitter.Rate = 16
-	emitter.Lifetime = NumberRange.new(1, 1.6)
-	emitter.Speed = NumberRange.new(1, 3)
-	emitter.SpreadAngle = Vector2.new(25, 25)
-	emitter.EmissionDirection = Enum.NormalId.Top
-	emitter.LightEmission = 1
-	emitter.Color = ColorSequence.new(aura.Color)
-	emitter.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.7), NumberSequenceKeypoint.new(1, 0) })
-	emitter.Parent = root
-
-	local light = Instance.new("PointLight")
-	light.Name = "AuraLight"
-	light.Range = 12
-	light.Brightness = 0.8
-	light.Color = aura.Color
-	light.Parent = root
+	if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+	for _, kind in ipairs({ "Aura", "Banner", "Mount" }) do
+		local key = player:GetAttribute(kind) or ""
+		if COSMETIC_TABLE[kind][key] and key ~= "Order" then
+			Cosmetics.Build(kind, key, character)
+		else
+			Cosmetics.Clear(character, kind)
+		end
+	end
 end
 
 ------------------------------------------------------------
@@ -139,6 +139,12 @@ function Monetization.Grant(player, grant)
 	if grant.Aura then
 		state.AuraUnlocked[grant.Aura] = true
 	end
+	if grant.Banner then
+		state.AuraUnlocked["Banner_" .. grant.Banner] = true
+	end
+	if grant.Mount then
+		state.AuraUnlocked["Mount_" .. grant.Mount] = true
+	end
 	applyAttributes(player, state)
 end
 
@@ -146,7 +152,7 @@ end
 -- 저장 / 불러오기
 ------------------------------------------------------------
 function Monetization.Load(player, saved)
-	local state = { Bag = 0, TrainSlot = 0, XpBoostUntil = 0, LuckBoostUntil = 0, AuraUnlocked = {}, Aura = "", Receipts = {}, Passes = {} }
+	local state = { Bag = 0, TrainSlot = 0, XpBoostUntil = 0, LuckBoostUntil = 0, AuraUnlocked = {}, Aura = "", Banner = "", Mount = "", Receipts = {}, Passes = {} }
 	if typeof(saved) == "table" then
 		state.Bag = math.max(0, math.floor(tonumber(saved.Bag) or 0))
 		state.TrainSlot = math.max(0, math.floor(tonumber(saved.TrainSlot) or 0))
@@ -154,6 +160,8 @@ function Monetization.Load(player, saved)
 		state.LuckBoostUntil = tonumber(saved.LuckBoostUntil) or 0
 		if typeof(saved.AuraUnlocked) == "table" then state.AuraUnlocked = saved.AuraUnlocked end
 		if typeof(saved.Aura) == "string" then state.Aura = saved.Aura end
+		if typeof(saved.Banner) == "string" then state.Banner = saved.Banner end
+		if typeof(saved.Mount) == "string" then state.Mount = saved.Mount end
 		if typeof(saved.Receipts) == "table" then state.Receipts = saved.Receipts end
 	end
 	states[player] = state
@@ -177,7 +185,7 @@ function Monetization.Serialize(player)
 	if not state then return nil end
 	return {
 		Bag = state.Bag, TrainSlot = state.TrainSlot, XpBoostUntil = state.XpBoostUntil, LuckBoostUntil = state.LuckBoostUntil,
-		AuraUnlocked = state.AuraUnlocked, Aura = state.Aura, Receipts = state.Receipts,
+		AuraUnlocked = state.AuraUnlocked, Aura = state.Aura, Banner = state.Banner, Mount = state.Mount, Receipts = state.Receipts,
 	}
 end
 
@@ -207,6 +215,22 @@ Remotes.Shop.OnServerEvent:Connect(function(player, action, kind, key)
 			state.Aura = auraKey
 		else
 			notify(player, "⚠ 아직 얻지 못한 오라예요.")
+			return
+		end
+		applyAttributes(player, state)
+		Monetization.ApplyAura(player)
+		return
+	end
+
+	if action == "Cosmetic" then
+		-- kind = "Banner" | "Mount" (오라는 위의 "Aura" 동작), key = 이름 ("" 이면 해제)
+		if (kind ~= "Banner" and kind ~= "Mount") or typeof(key) ~= "string" then return end
+		if key == "" then
+			state[kind] = ""
+		elseif isCosmeticOwned(player, state, kind, key) then
+			state[kind] = key
+		else
+			notify(player, "⚠ 아직 얻지 못한 꾸미기예요.")
 			return
 		end
 		applyAttributes(player, state)

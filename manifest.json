@@ -15,6 +15,13 @@
       "overwrite": true
     },
     {
+      "path": "Shared/Cosmetics.lua",
+      "parent": "ReplicatedStorage",
+      "name": "Cosmetics",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Shared/AudioIds.lua",
       "parent": "ReplicatedStorage",
       "name": "AudioIds",

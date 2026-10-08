@@ -1061,9 +1061,12 @@ Config.Shop = {
 		TimeSkip8h = { Name = "시간 단축권 8시간", Desc = "훈련 / 돌파 대기 시간을 8시간 줄여요", ProductId = 0, Grant = { TimeSkip = 28800 } },
 		TrainSlot = { Name = "훈련 슬롯 +1", Desc = "영구 적용 · 동시에 하나 더 훈련", ProductId = 0, Grant = { TrainSlot = 1 } },
 		AuraVoid = { Name = "공허의 오라", Desc = "꾸미기 전용 (능력치 없음)", ProductId = 0, Grant = { Aura = "Void" } },
+		BannerDragon = { Name = "용의 깃발", Desc = "등 뒤에 꽂는 꾸미기 깃발 (능력치 없음)", ProductId = 0, Grant = { Banner = "Dragon" } },
+		MountCarpet = { Name = "마법 양탄자", Desc = "발밑에 떠 있는 탈것 꾸미기 (능력치 없음)", ProductId = 0, Grant = { Mount = "Carpet" } },
+		MountPhoenix = { Name = "불사조", Desc = "불꽃 날개 탈것 꾸미기 (능력치 없음)", ProductId = 0, Grant = { Mount = "Phoenix" } },
 	},
 	PassOrder = { "VIP" },
-	ProductOrder = { "TimeSkip1h", "TimeSkip8h", "TrainSlot", "KeyPack", "XpBooster", "LuckBooster", "BagPlus", "TicketPack", "AuraVoid" },
+	ProductOrder = { "TimeSkip1h", "TimeSkip8h", "TrainSlot", "KeyPack", "XpBooster", "LuckBooster", "BagPlus", "TicketPack", "AuraVoid", "BannerDragon", "MountCarpet", "MountPhoenix" },
 	-- VIP 효과 (코드에서 읽는 값). TrainTime: 훈련/돌파 시간 단축 비율
 	Vip = { XpBonus = 0.2, KeyCap = 2, KeyRegen = 0.3, Bag = 20, TrainSlots = 1, TrainTime = 0.2 },
 	XpBoostMult = 2,
@@ -1079,6 +1082,22 @@ Config.Auras = {
 	Flame = { Name = "불꽃 오라", Color = Color3.fromRGB(255, 110, 50), Unlock = { Ach = "boss10" } },
 	Gold = { Name = "황금 오라", Color = Color3.fromRGB(255, 215, 90), Unlock = { Pass = "VIP" } },
 	Void = { Name = "공허의 오라", Color = Color3.fromRGB(170, 70, 255), Unlock = { Product = "AuraVoid" } },
+}
+
+-- 깃발: 등 뒤에 꽂는 꾸미기. 탈것: 발밑에 떠 있는 꾸미기 (둘 다 능력치 / 이동속도 없음, 다른 플레이어에게도 보임)
+Config.Banners = {
+	Order = { "Scout", "Hero", "Gold", "Dragon" },
+	Scout = { Name = "수련생 깃발", Color = Color3.fromRGB(90, 150, 255), Unlock = "Free" },
+	Hero = { Name = "용사의 깃발", Color = Color3.fromRGB(230, 70, 70), Unlock = { Ach = "zone4" } },
+	Gold = { Name = "황금 깃발", Color = Color3.fromRGB(255, 205, 70), Unlock = { Pass = "VIP" } },
+	Dragon = { Name = "용의 깃발", Color = Color3.fromRGB(150, 60, 230), Sparks = true, Unlock = { Product = "BannerDragon" } },
+}
+Config.Mounts = {
+	Order = { "Board", "Cloud", "Carpet", "Phoenix" },
+	Board = { Name = "호버보드", Color = Color3.fromRGB(80, 220, 255), Style = "Board", Unlock = "Free" },
+	Cloud = { Name = "구름", Color = Color3.fromRGB(190, 225, 255), Style = "Cloud", Unlock = { Ach = "boss10" } },
+	Carpet = { Name = "마법 양탄자", Color = Color3.fromRGB(190, 50, 90), Style = "Carpet", Unlock = { Product = "MountCarpet" } },
+	Phoenix = { Name = "불사조", Color = Color3.fromRGB(255, 100, 40), Style = "Phoenix", Unlock = { Product = "MountPhoenix" } },
 }
 
 ------------------------------------------------------------

@@ -244,9 +244,11 @@ local function setupPlayer(player)
 	player:GetAttributeChangedSignal("Title"):Connect(function()
 		Weapon.UpdateNameplate(player)
 	end)
-	player:GetAttributeChangedSignal("Aura"):Connect(function()
-		Monetization.ApplyAura(player)
-	end)
+	for _, cosmeticKind in ipairs({ "Aura", "Banner", "Mount" }) do
+		player:GetAttributeChangedSignal(cosmeticKind):Connect(function()
+			Monetization.ApplyAura(player)
+		end)
+	end
 	-- 레벨이 오르면 최대 체력(완전 회복) / 전투력 / 이름표 / 업적 갱신
 	player:GetAttributeChangedSignal("Level"):Connect(function()
 		Dungeon.RefreshMaxHealth(player)
