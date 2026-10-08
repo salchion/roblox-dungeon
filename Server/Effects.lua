@@ -22,6 +22,39 @@ function Effects.Tracer(from, to, color, thickness)
 	Debris:AddItem(beam, 0.08)
 end
 
+-- 투사체 모양 만들기 (부모는 호출한 쪽이 정한다). style: Orb(구) / Spear(긴 창) / Dart(가는 침) / Shard(마름모 파편)
+function Effects.MakeProjectile(origin, direction, size, color, style)
+	local part = Instance.new("Part")
+	part.Anchored = true
+	part.CanCollide = false
+	part.CanQuery = false
+	part.CanTouch = false
+	part.Material = Enum.Material.Neon
+	part.Color = color or Color3.fromRGB(255, 120, 30)
+	local look = CFrame.lookAt(origin, origin + direction.Unit)
+	if style == "Spear" then
+		part.Size = Vector3.new(size * 0.45, size * 0.45, size * 3.6)
+		part.CFrame = look
+		part.Color = part.Color:Lerp(Color3.new(1, 1, 1), 0.35)
+	elseif style == "Dart" then
+		part.Size = Vector3.new(size * 0.3, size * 0.3, size * 2.4)
+		part.CFrame = look
+	elseif style == "Shard" then
+		part.Size = Vector3.new(size * 0.9, size * 0.9, size * 1.9)
+		part.CFrame = look * CFrame.Angles(0, 0, math.rad(45))
+	else
+		part.Shape = Enum.PartType.Ball
+		part.Size = Vector3.new(size, size, size)
+		part.Position = origin
+	end
+	local light = Instance.new("PointLight")
+	light.Range = 8
+	light.Brightness = 1.2
+	light.Color = part.Color
+	light.Parent = part
+	return part
+end
+
 local RAINBOW = ColorSequence.new({
 	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 60, 60)),
 	ColorSequenceKeypoint.new(0.2, Color3.fromRGB(255, 220, 60)),

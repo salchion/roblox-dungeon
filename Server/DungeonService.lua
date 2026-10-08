@@ -393,16 +393,8 @@ local function spawnBoss(run)
 	run.BossPart = part
 end
 
-local function fireProjectile(run, origin, direction, speed, damage, size, color)
-	local ball = Instance.new("Part")
-	ball.Shape = Enum.PartType.Ball
-	ball.Size = Vector3.new(size, size, size)
-	ball.Anchored = true
-	ball.CanCollide = false
-	ball.CanQuery = false
-	ball.Material = Enum.Material.Neon
-	ball.Color = color or Color3.fromRGB(255, 120, 30)
-	ball.Position = origin
+local function fireProjectile(run, origin, direction, speed, damage, size, color, style)
+	local ball = Effects.MakeProjectile(origin, direction, size, color, style)
 	ball.Parent = run.Folder
 
 	table.insert(run.Projectiles, {
@@ -1718,8 +1710,8 @@ function Dungeon.Start(player, typeKey, diffKey)
 		GetTarget = function(position)
 			return getNearestTarget(run, position)
 		end,
-		Fire = function(origin, direction, speed, damage, size, color)
-			fireProjectile(run, origin, direction, speed, damage, size, color)
+		Fire = function(origin, direction, speed, damage, size, color, style)
+			fireProjectile(run, origin, direction, speed, damage, size, color, style)
 		end,
 		Players = function()
 			local list = {}

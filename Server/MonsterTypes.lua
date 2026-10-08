@@ -17,6 +17,8 @@
 --   ctx.Kill(part, data)                          보상 없이 제거 (자폭용)
 --   ctx.FloorY                                     바닥 높이
 
+local TweenService = game:GetService("TweenService")
+local Debris = game:GetService("Debris")
 local Effects = require(script.Parent:WaitForChild("Effects"))
 
 local M = {}
@@ -31,22 +33,22 @@ M.Defs = {
 	Spitter = {
 		Name = "가시 독충", Shape = "Ball", Color = Color3.fromRGB(165, 80, 215), Material = Enum.Material.SmoothPlastic,
 		SizeMult = 0.95, SpeedMult = 1.1, HealthMult = 0.9, DamageMult = 0.7, IntervalMult = 1.3, ShotSpeedMult = 1, GoldMult = 1.1,
-		Attack = "Fan", Move = "Approach", Keep = 20, Range = 85, Spikes = true,
+		Attack = "Fan", Style = "Shard", Move = "Approach", Keep = 20, Range = 85, Spikes = true,
 	},
 	Bat = {
 		Name = "박쥐", Shape = "Ball", Color = Color3.fromRGB(85, 60, 120), Material = Enum.Material.SmoothPlastic,
 		SizeMult = 0.6, SpeedMult = 2.2, HealthMult = 0.55, DamageMult = 0.6, IntervalMult = 0.7, ShotSpeedMult = 1.3, GoldMult = 0.9,
-		Attack = "Single", Move = "Hover", Keep = 16, Range = 70, Wings = true,
+		Attack = "Burst", Style = "Dart", Move = "Hover", Keep = 16, Range = 70, Wings = true,
 	},
 	Mage = {
 		Name = "마법사 유령", Shape = "Ball", Color = Color3.fromRGB(130, 225, 255), Material = Enum.Material.Neon, Transparency = 0.25,
 		SizeMult = 0.9, SpeedMult = 0.9, HealthMult = 0.8, DamageMult = 0.7, IntervalMult = 2.4, ShotSpeedMult = 0.8, GoldMult = 1.4,
-		Attack = "Ring", Move = "Keep", Keep = 30, Range = 90, Halo = true,
+		Attack = "Mortar", Move = "Keep", Keep = 30, Range = 95, Halo = true,
 	},
 	Golem = {
 		Name = "바위 골렘", Shape = "Block", Color = Color3.fromRGB(125, 120, 115), Material = Enum.Material.Slate,
 		SizeMult = 1.3, SpeedMult = 0.5, HealthMult = 2.2, DamageMult = 1.8, IntervalMult = 1.8, ShotSpeedMult = 0.55, GoldMult = 1.7,
-		Attack = "Heavy", Move = "Approach", Keep = 16, Range = 80, Core = true,
+		Attack = "Slam", Move = "Approach", Keep = 12, Range = 80, Core = true,
 	},
 	Charger = {
 		Name = "돌진 멧돼지", Shape = "Block", Color = Color3.fromRGB(155, 100, 65), Material = Enum.Material.Wood,
@@ -62,27 +64,27 @@ M.Defs = {
 	Imp = {
 		Name = "저격 임프", Shape = "Ball", Color = Color3.fromRGB(200, 60, 90), Material = Enum.Material.SmoothPlastic,
 		SizeMult = 0.7, SpeedMult = 0.9, HealthMult = 0.6, DamageMult = 1.3, IntervalMult = 1.6, ShotSpeedMult = 2.6, GoldMult = 1.3,
-		Attack = "Single", Move = "Keep", Keep = 55, Range = 130, Horns = true,
+		Attack = "Single", Style = "Spear", Move = "Keep", Keep = 55, Range = 130, Horns = true,
 	},
 	Knight = {
 		Name = "방패 기사", Shape = "Block", Color = Color3.fromRGB(120, 140, 175), Material = Enum.Material.Metal,
 		SizeMult = 1.15, SpeedMult = 0.7, HealthMult = 2.6, DamageMult = 1.1, IntervalMult = 1.4, ShotSpeedMult = 0.9, GoldMult = 1.8,
-		Attack = "Fan", Move = "Approach", Keep = 8, Range = 60, Shield = true,
+		Attack = "Fan", Style = "Spear", Move = "Approach", Keep = 8, Range = 60, Shield = true,
 	},
 	Turret = {
 		Name = "마법 포탑", Shape = "Block", Color = Color3.fromRGB(90, 95, 110), Material = Enum.Material.Metal,
 		SizeMult = 1.0, SpeedMult = 0, HealthMult = 1.7, DamageMult = 1.0, IntervalMult = 0.8, ShotSpeedMult = 1.2, GoldMult = 1.4,
-		Attack = "Fan", Move = "Static", Keep = 0, Range = 110, Barrel = true,
+		Attack = "Beam", Move = "Static", Keep = 0, Range = 110, Barrel = true,
 	},
 	Spider = {
 		Name = "독거미", Shape = "Ball", Color = Color3.fromRGB(60, 50, 60), Material = Enum.Material.SmoothPlastic,
 		SizeMult = 0.75, SpeedMult = 1.9, HealthMult = 0.8, DamageMult = 0.8, IntervalMult = 0.6, ShotSpeedMult = 1.2, GoldMult = 1.0,
-		Attack = "Single", Move = "Rush", Keep = 0, Range = 45, Legs = true,
+		Attack = "Burst", Style = "Dart", Move = "Rush", Keep = 0, Range = 45, Legs = true,
 	},
 	Wisp = {
 		Name = "도깨비불", Shape = "Ball", Color = Color3.fromRGB(120, 255, 200), Material = Enum.Material.Neon, Transparency = 0.3,
 		SizeMult = 0.55, SpeedMult = 2.4, HealthMult = 0.45, DamageMult = 0.7, IntervalMult = 0.9, ShotSpeedMult = 1.4, GoldMult = 1.1,
-		Attack = "Fan", Move = "Hover", Keep = 22, Range = 80, Flame = true,
+		Attack = "Burst", Style = "Orb", Move = "Hover", Keep = 22, Range = 80, Flame = true,
 	},
 	Totem = {
 		Name = "저주 토템", Shape = "Block", Color = Color3.fromRGB(130, 90, 60), Material = Enum.Material.Wood,
@@ -481,6 +483,123 @@ local function snapToGround(ctx, position, size, lift)
 	return Vector3.new(position.X, ground + size / 2 + (lift or 0), position.Z)
 end
 
+
+-- 바닥 높이
+local function groundOf(ctx, position)
+	if ctx.GroundY then
+		return ctx.GroundY(position.X, position.Z, position.Y) or ctx.FloorY
+	end
+	return ctx.FloorY
+end
+
+-- 점 p 에서 선분 a-b 까지의 평면 거리
+local function distToSegment(p, a, b)
+	local ab = Vector3.new(b.X - a.X, 0, b.Z - a.Z)
+	local ap = Vector3.new(p.X - a.X, 0, p.Z - a.Z)
+	local t = math.clamp(ap:Dot(ab) / math.max(ab:Dot(ab), 0.001), 0, 1)
+	local closest = ab * t
+	return (ap - closest).Magnitude
+end
+
+local function disc(position, diameter, color, transparency)
+	local d = Instance.new("Part")
+	d.Anchored, d.CanCollide, d.CanQuery, d.CanTouch = true, false, false, false
+	d.Shape = Enum.PartType.Cylinder
+	d.Material = Enum.Material.Neon
+	d.Color = color
+	d.Transparency = transparency
+	d.Size = Vector3.new(0.4, diameter, diameter)
+	d.CFrame = CFrame.new(position) * CFrame.Angles(0, 0, math.rad(90))
+	d.Parent = workspace
+	return d
+end
+
+-- 박격포: 바닥에 붉은 경고 원이 차오르다가 하늘에서 운석이 떨어져 폭발 (원 밖으로 피하면 안 맞는다)
+local function meteor(ctx, spot, stats, owner, ownerData)
+	local ground = groundOf(ctx, spot)
+	local radius = 9
+	local delay = 1.2
+	local ring = disc(Vector3.new(spot.X, ground + 0.3, spot.Z), radius * 2, Color3.fromRGB(255, 60, 50), 0.7)
+	local fill = disc(Vector3.new(spot.X, ground + 0.35, spot.Z), 1, Color3.fromRGB(255, 90, 60), 0.4)
+	TweenService:Create(fill, TweenInfo.new(delay, Enum.EasingStyle.Linear), { Size = Vector3.new(0.4, radius * 2, radius * 2) }):Play()
+	local rock = Instance.new("Part")
+	rock.Anchored, rock.CanCollide, rock.CanQuery, rock.CanTouch = true, false, false, false
+	rock.Shape = Enum.PartType.Ball
+	rock.Material = Enum.Material.Neon
+	rock.Color = Color3.fromRGB(255, 140, 50)
+	rock.Size = Vector3.new(5, 5, 5)
+	rock.Position = Vector3.new(spot.X, ground + 70, spot.Z)
+	rock.Parent = workspace
+	TweenService:Create(rock, TweenInfo.new(delay, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Position = Vector3.new(spot.X, ground + 2, spot.Z) }):Play()
+	task.delay(delay, function()
+		rock:Destroy()
+		ring:Destroy()
+		fill:Destroy()
+		local center = Vector3.new(spot.X, ground, spot.Z)
+		Effects.Burst(center + Vector3.new(0, 2, 0), Color3.fromRGB(255, 140, 50), 40)
+		local boom = disc(center + Vector3.new(0, 0.5, 0), 2, Color3.fromRGB(255, 170, 70), 0.3)
+		TweenService:Create(boom, TweenInfo.new(0.35), { Size = Vector3.new(0.4, radius * 2.2, radius * 2.2), Transparency = 1 }):Play()
+		Debris:AddItem(boom, 0.4)
+		for _, entry in ipairs(ctx.Players()) do
+			local p = entry.Root.Position
+			if Vector3.new(p.X - spot.X, 0, p.Z - spot.Z).Magnitude <= radius then
+				entry.Humanoid:TakeDamage(math.floor(stats.ShotDamage * 1.2))
+			end
+		end
+	end)
+end
+
+-- 충격파: 발밑에서 고리가 퍼진다. 점프해서 넘으면 안 맞는다
+local function shockwave(ctx, part, stats)
+	local origin = part.Position
+	local ground = groundOf(ctx, origin)
+	local radius = 24
+	local wave = disc(Vector3.new(origin.X, ground + 0.4, origin.Z), 2, Color3.fromRGB(255, 190, 90), 0.2)
+	TweenService:Create(wave, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.8, radius * 2, radius * 2), Transparency = 0.9 }):Play()
+	Debris:AddItem(wave, 0.55)
+	Effects.Burst(Vector3.new(origin.X, ground + 1, origin.Z), Color3.fromRGB(190, 170, 140), 25)
+	task.delay(0.25, function()
+		for _, entry in ipairs(ctx.Players()) do
+			local p = entry.Root.Position
+			local flatDist = Vector3.new(p.X - origin.X, 0, p.Z - origin.Z).Magnitude
+			if flatDist <= radius and p.Y - groundOf(ctx, p) < 5 then
+				entry.Humanoid:TakeDamage(math.floor(stats.ShotDamage * 1.1))
+			end
+		end
+	end)
+end
+
+-- 레이저: 가는 붉은 선이 잠깐 조준한 뒤 굵은 빛줄기가 쏟아진다 (선에서 벗어나면 안 맞는다)
+local function laser(ctx, part, data, stats, aimDir, range)
+	local origin = part.Position
+	local target = origin + aimDir * range
+	local length = range
+	local function lineAt(thickness, color, transparency)
+		local line = Instance.new("Part")
+		line.Anchored, line.CanCollide, line.CanQuery, line.CanTouch = true, false, false, false
+		line.Material = Enum.Material.Neon
+		line.Color = color
+		line.Transparency = transparency
+		line.Size = Vector3.new(thickness, thickness, length)
+		line.CFrame = CFrame.lookAt(origin, target) * CFrame.new(0, 0, -length / 2)
+		line.Parent = workspace
+		return line
+	end
+	local warn = lineAt(0.5, Color3.fromRGB(255, 60, 60), 0.35)
+	task.delay(0.9, function()
+		warn:Destroy()
+		if not ctx.Alive(part, data) then return end
+		local beam = lineAt(5, Color3.fromRGB(255, 240, 200), 0.1)
+		TweenService:Create(beam, TweenInfo.new(0.35), { Transparency = 1, Size = Vector3.new(1, 1, length) }):Play()
+		Debris:AddItem(beam, 0.4)
+		for _, entry in ipairs(ctx.Players()) do
+			if distToSegment(entry.Root.Position, origin, target) <= 3.5 then
+				entry.Humanoid:TakeDamage(math.floor(stats.ShotDamage * 1.6))
+			end
+		end
+	end)
+end
+
 function M.Update(ctx, part, data, dt, now)
 	local def = data.Def
 	local stats = data.Stats
@@ -606,7 +725,7 @@ function M.Update(ctx, part, data, dt, now)
 		telegraph(ctx, part, data, Color3.fromRGB(255, 220, 80), 0.4, function()
 			local current = ctx.GetTarget(part.Position)
 			if current then
-				ctx.Fire(part.Position, current.Position - part.Position, stats.ShotSpeed, stats.ShotDamage, math.max(1.5, stats.Size / 4))
+				ctx.Fire(part.Position, current.Position - part.Position, stats.ShotSpeed, stats.ShotDamage, math.max(1.5, stats.Size / 4), nil, def.Style)
 			end
 		end)
 
@@ -616,7 +735,7 @@ function M.Update(ctx, part, data, dt, now)
 			if not current then return end
 			local aim = (current.Position - part.Position).Unit
 			for _, angle in ipairs({ -15, 0, 15 }) do
-				ctx.Fire(part.Position, rotateY(aim, angle), stats.ShotSpeed, stats.ShotDamage, math.max(1.3, stats.Size / 4), Color3.fromRGB(210, 120, 255))
+				ctx.Fire(part.Position, rotateY(aim, angle), stats.ShotSpeed, stats.ShotDamage, math.max(1.3, stats.Size / 4), Color3.fromRGB(210, 120, 255), def.Style)
 			end
 		end)
 
@@ -638,6 +757,50 @@ function M.Update(ctx, part, data, dt, now)
 				ctx.Fire(part.Position, current.Position - part.Position, stats.ShotSpeed, stats.ShotDamage, math.max(3.5, stats.Size / 2.5), Color3.fromRGB(255, 130, 40))
 			end
 		end)
+
+	elseif def.Attack == "Burst" then
+		telegraph(ctx, part, data, Color3.fromRGB(255, 220, 80), 0.3, function()
+			for i = 0, 2 do
+				task.delay(i * 0.13, function()
+					if not ctx.Alive(part, data) then return end
+					local current = ctx.GetTarget(part.Position)
+					if current then
+						ctx.Fire(part.Position, current.Position - part.Position, stats.ShotSpeed * 1.25, math.max(1, math.floor(stats.ShotDamage * 0.7)), math.max(1.2, stats.Size / 4), nil, def.Style)
+					end
+				end)
+			end
+		end)
+
+	elseif def.Attack == "Mortar" then
+		telegraph(ctx, part, data, Color3.fromRGB(255, 120, 80), 0.5, function()
+			for i = 0, 2 do
+				task.delay(i * 0.35, function()
+					if not ctx.Alive(part, data) then return end
+					local current = ctx.GetTarget(part.Position)
+					if not current then return end
+					local base = current.Position
+					meteor(ctx, base + Vector3.new((math.random() - 0.5) * 16, 0, (math.random() - 0.5) * 16), stats)
+				end)
+			end
+		end)
+
+	elseif def.Attack == "Slam" then
+		if distance > 34 then
+			telegraph(ctx, part, data, Color3.fromRGB(255, 150, 60), 0.7, function()
+				local current = ctx.GetTarget(part.Position)
+				if current then
+					ctx.Fire(part.Position, current.Position - part.Position, stats.ShotSpeed, stats.ShotDamage, math.max(3.5, stats.Size / 2.5), Color3.fromRGB(255, 130, 40))
+				end
+			end)
+		else
+			telegraph(ctx, part, data, Color3.fromRGB(255, 190, 70), 0.8, function()
+				shockwave(ctx, part, stats)
+			end)
+		end
+
+	elseif def.Attack == "Beam" then
+		data.NextAttack = now + stats.ShotInterval * 2
+		laser(ctx, part, data, stats, direction, def.Range)
 
 	elseif def.Attack == "Charge" then
 		data.NextAttack = now + 4

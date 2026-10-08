@@ -718,16 +718,8 @@ local function spawnMonster(zone, kind)
 	}
 end
 
-local function fireProjectile(origin, direction, speed, damage, size, color)
-	local ball = Instance.new("Part")
-	ball.Shape = Enum.PartType.Ball
-	ball.Size = Vector3.new(size, size, size)
-	ball.Anchored = true
-	ball.CanCollide = false
-	ball.CanQuery = false
-	ball.Material = Enum.Material.Neon
-	ball.Color = color or Color3.fromRGB(255, 120, 30)
-	ball.Position = origin
+local function fireProjectile(origin, direction, speed, damage, size, color, style)
+	local ball = Effects.MakeProjectile(origin, direction, size, color, style)
 	ball.Parent = worldFolder
 
 	table.insert(projectiles, {
@@ -1037,8 +1029,8 @@ local fieldCtx = {
 		return nil
 	end,
 	GetTarget = nearestFieldPlayer,
-	Fire = function(origin, direction, speed, damage, size, color)
-		fireProjectile(origin, direction, speed, damage, size, color)
+	Fire = function(origin, direction, speed, damage, size, color, style)
+		fireProjectile(origin, direction, speed, damage, size, color, style)
 	end,
 	Players = function()
 		local list = {}
