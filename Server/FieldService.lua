@@ -130,6 +130,12 @@ local function zoneOfX(x)
 	return math.clamp(math.floor((x - F.StartX) / F.ZoneLength) + 1, 1, F.ZoneCount)
 end
 
+-- 관문을 열지 않은 구역의 몬스터는 관문 너머에서 때릴 수 없다 (자동공격 / 스킬로 벽 너머를 잡는 것 방지)
+local function canHitZone(player, x)
+	local allowed = math.min(F.ZoneCount, (player:GetAttribute("ClearedZone") or 0) + 1)
+	return zoneOfX(x) <= allowed
+end
+
 -- 구역마다 넓은 계단으로 층을 올라갔다 내려온다 (구역 입구 / 캠프는 항상 0층). 계단은 맵 폭 전체라 좁은 길이 없다.
 local STEP_RISE, STEP_DEPTH = 1.2, 2.6
 -- 넓은 계단을 세 번 연달아 올라 정상(+48)까지 간 뒤, 긴 내리막 계단으로 다시 내려온다 (계속 올라가는 느낌)
@@ -891,7 +897,7 @@ function Field.TargetsIn(player, center, radius, limit)
 	if player:GetAttribute("Zone") ~= "Field" then return nil end
 	local list = {}
 	for part in pairs(monsters) do
-		if part.Parent and (part.Position - center).Magnitude <= radius + part.Size.X / 2 then
+		if part.Parent and (part.Position - center).Magnitude <= radius + part.Size.X / 2 and canHitZone(player, part.Position.X) then
 			table.insert(list, part)
 		end
 	end
@@ -903,6 +909,7 @@ end
 function Field.HitPart(player, part, damage)
 	local data = monsters[part]
 	if not data or not part.Parent then return false end
+	if not canHitZone(player, part.Position.X) then return false end
 	data.Health -= damage
 	data.LastHit = os.clock()
 	if data.Contrib then
@@ -920,7 +927,7 @@ function Field.AreaDamage(player, center, radius, damage)
 	if player:GetAttribute("Zone") ~= "Field" then return nil end
 	local targets = {}
 	for part, data in pairs(monsters) do
-		if part.Parent and (part.Position - center).Magnitude <= radius + part.Size.X / 2 then
+		if part.Parent and (part.Position - center).Magnitude <= radius + part.Size.X / 2 and canHitZone(player, part.Position.X) then
 			table.insert(targets, { Part = part, Data = data })
 		end
 	end
@@ -961,6 +968,9 @@ function Field.Shoot(player, origin, direction)
 	end
 
 	local data = result and monsters[result.Instance]
+	if data and not canHitZone(player, result.Instance.Position.X) then
+		return endPosition -- 닫힌 관문 너머: 탄이 벽에 막힌다
+	end
 	if data then
 		player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1) -- 궁극기 게이지는 실제로 맞혔을 때만 찬다
 		local damage, isCrit = Dungeon.ComputeDamage(player)
@@ -1501,10 +1511,11 @@ function Field.Init(lobbySpawnCFrame)
 	buildWorld()
 
 	for zone = 1, F.ZoneCount do
-		for _ = 1, F.MonstersPerZone do
+		local countMult = F.ZoneCountMult and F.ZoneCountMult[zone] or 1 -- 구역이 올라갈수록 몬스터가 더 많다
+		for _ = 1, math.floor(F.MonstersPerZone * countMult + 0.5) do
 			spawnMonster(zone, "Normal")
 		end
-		for _ = 1, F.ElitesPerZone do
+		for _ = 1, math.floor(F.ElitesPerZone * countMult + 0.5) do
 			spawnMonster(zone, "Elite")
 		end
 	end
