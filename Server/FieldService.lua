@@ -649,6 +649,12 @@ local function spawnMonster(zone, kind)
 			MonsterTypes.ApplyDef(typeKey, stats)
 			text, color, barWidth = string.format("Lv.%d %s", level, def.Name), Color3.new(1, 1, 1), 140
 		end
+		-- 구역 난이도 배율: 구역이 넘어가면 몬스터가 확 강해진다 (체력 / 공격력 / 속도) 대신 보상도 크게 오른다
+		local danger = F.ZoneDanger
+		stats.MaxHealth = math.floor(stats.MaxHealth * danger.Health[zone])
+		stats.ShotDamage = math.max(1, math.floor(stats.ShotDamage * danger.Damage[zone]))
+		stats.Speed *= danger.Speed[zone]
+		stats.Gold = math.floor(stats.Gold * danger.Reward[zone])
 	end
 
 	local x0, x1 = zoneBounds(zone)
@@ -1226,6 +1232,7 @@ end
 
 -- x좌표로 로비 / 필드 구역을 판별하고, 가장 멀리 간 구역(MaxZone)을 기록
 local lastGateNotice = {}
+local lastZoneSeen = {}
 local function updateZones()
 	for _, player in ipairs(Players:GetPlayers()) do
 		local zone = player:GetAttribute("Zone")
@@ -1255,6 +1262,19 @@ local function updateZones()
 								allowed, F.Gate.KillsNeeded[allowed] or 0, player:GetAttribute("GateKills") or 0, F.Gate.KillsNeeded[allowed] or 0))
 						end
 						fieldZone = allowed
+					end
+					-- 새 구역에 들어서면 큰 경고 배너 (난이도가 얼마나 뛰는지 숫자로 보여준다)
+					if fieldZone ~= lastZoneSeen[player] then
+						local previous = lastZoneSeen[player] or 0
+						lastZoneSeen[player] = fieldZone
+						if fieldZone >= 2 and fieldZone > previous then
+							local danger = F.ZoneDanger
+							Remotes.Banner:FireClient(player, "Zone", {
+								Zone = fieldZone, Name = F.ZoneNames[fieldZone], Level = F.GetZoneLevel(fieldZone), Stars = fieldZone,
+								HealthMult = danger.Health[fieldZone] / danger.Health[fieldZone - 1], DamageMult = danger.Damage[fieldZone] / danger.Damage[fieldZone - 1],
+								RewardMult = danger.Reward[fieldZone] / danger.Reward[fieldZone - 1],
+							})
+						end
 					end
 					if fieldZone > (player:GetAttribute("MaxZone") or 0) then
 						player:SetAttribute("MaxZone", fieldZone)

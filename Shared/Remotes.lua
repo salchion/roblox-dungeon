@@ -25,11 +25,12 @@
 --   Growth       C->S  ("Request") ("Train", stat) ("Gate") ("Skip", "Train", stat) ("Skip", "Gate")   훈련소 / 돌파 / 시간 단축
 --                S->C  ("State", { Levels, Jobs, Slots, GatePassed, GateJob, TimeSkip, ServerTime })
 --   Notify       S->C  (text)                                  화면 알림
+--   Banner       S->C  ("Zone", { Zone, Name, Stars, HealthMult, DamageMult, RewardMult })   구역에 들어설 때 뜨는 큰 경고 배너
 
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon", "Notify", "Gear", "OpenGear", "Quest", "Rank", "Weapon", "Inventory", "Loot", "Warp", "Shop", "Growth", "Skill", "Hit", "Meta", "Tutorial" }
+local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon", "Notify", "Gear", "OpenGear", "Quest", "Rank", "Weapon", "Inventory", "Loot", "Warp", "Shop", "Growth", "Skill", "Hit", "Meta", "Tutorial", "Banner" }
 
 local folder
 if RunService:IsServer() then

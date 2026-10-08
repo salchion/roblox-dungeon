@@ -1042,7 +1042,7 @@ end)
 -- (무기 강화 / 장비 뽑기는 광장의 모루 / 뽑기 기계 앞에서만 한다. 화면 하단 버튼은 없앴다)
 
 makeLabel({
-	Size = UDim2.new(0, 560, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -16),
+	Name = "ControlsHint", Size = UDim2.new(0, 560, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -16),
 	Text = "북쪽 던전 게이트 · 서쪽 허수아비 훈련장 · 동쪽 끝 사냥 필드   |   Shift 달리기 · Q 대시 · R 자동공격 · I 메뉴 · M 음악",
 	TextSize = 14, TextColor3 = Color3.fromRGB(220, 220, 235), TextStrokeTransparency = 0.5,
 }, lobbyFrame)
@@ -1408,6 +1408,9 @@ local function refreshZone()
 	local zone = currentZone()
 	lobbyFrame.Visible = zone ~= "Dungeon"
 	dungeonFrame.Visible = zone == "Dungeon"
+	-- 조작 안내 글자는 로비에서만 (필드에서는 아래의 스킬바와 겹쳐서 안 보이므로 숨긴다)
+	local hint = lobbyFrame:FindFirstChild("ControlsHint")
+	if hint then hint.Visible = zone == "Lobby" end
 	-- 무기 강화 / 장비 뽑기 버튼은 로비에서만 (필드 / 던전에서는 숨기고, 열려 있던 창도 닫는다)
 	for _, child in ipairs(lobbyFrame:GetChildren()) do
 		if child.Name == "LobbyOnlyButton" then
@@ -3419,6 +3422,43 @@ do
 		end
 	end
 	player:GetAttributeChangedSignal("DeadeyeActive"):Connect(apply)
+end
+
+-- 구역 경고 배너: 새 구역에 들어서면 붉은 번쩍임 + 큰 글자가 쾅 하고 내려앉는다 (난이도가 얼마나 뛰는지 숫자로)
+do
+	Remotes.Banner.OnClientEvent:Connect(function(action, info)
+		if action ~= "Zone" then return end
+		local old = gui:FindFirstChild("ZoneBanner")
+		if old then old:Destroy() end
+		local root = create("Frame", { Name = "ZoneBanner", Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, ZIndex = 55, Active = false }, gui)
+		local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(220, 30, 40), BackgroundTransparency = 0.55, BorderSizePixel = 0, ZIndex = 55 }, root)
+		TweenService:Create(flash, TweenInfo.new(0.9), { BackgroundTransparency = 1 }):Play()
+		local band = create("Frame", { Size = UDim2.new(1, 0, 0, 150), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 0, 0.3, 0), BackgroundColor3 = Color3.fromRGB(10, 6, 14), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 56 }, root)
+		TweenService:Create(band, TweenInfo.new(0.25), { BackgroundTransparency = 0.25 }):Play()
+		local title = makeLabel({
+			Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0, 0, 0, 10), Text = string.format("⚠ 구역 %d · %s ⚠", info.Zone, info.Name),
+			Font = Enum.Font.GothamBlack, TextSize = 120, TextColor3 = Color3.fromRGB(255, 90, 80), TextStrokeTransparency = 0, ZIndex = 57, TextTransparency = 1,
+		}, band)
+		TweenService:Create(title, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { TextSize = 50, TextTransparency = 0 }):Play()
+		local stars = {}
+		for i = 1, 8 do table.insert(stars, i <= info.Stars and "★" or "☆") end
+		makeLabel({
+			Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 80), Text = "위험도 " .. table.concat(stars), TextSize = 20, Font = Enum.Font.GothamBold,
+			TextColor3 = Color3.fromRGB(255, 200, 90), ZIndex = 57,
+		}, band)
+		makeLabel({
+			Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 110), RichText = true, TextSize = 18, ZIndex = 57,
+			Text = string.format("몬스터 체력 <font color='#ff8c7a'><b>x%.1f</b></font> · 공격력 <font color='#ff8c7a'><b>x%.1f</b></font>   |   보상 <font color='#8cff9c'><b>x%.1f</b></font>   (Lv.%d~)", info.HealthMult, info.DamageMult, info.RewardMult, info.Level),
+		}, band)
+		task.delay(3.2, function()
+			if not root.Parent then return end
+			TweenService:Create(band, TweenInfo.new(0.5), { BackgroundTransparency = 1 }):Play()
+			for _, child in ipairs(band:GetChildren()) do
+				if child:IsA("TextLabel") then TweenService:Create(child, TweenInfo.new(0.5), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play() end
+			end
+			game:GetService("Debris"):AddItem(root, 0.6)
+		end)
+	end)
 end
 
 -- 대시(Q) 칸: 스킬처럼 쿨타임 / 남은 횟수가 보인다 (칸을 눌러도 대시)

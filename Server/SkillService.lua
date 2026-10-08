@@ -112,6 +112,52 @@ handlers.Blast = function(player, root, _, _, aimPoint)
 	return true
 end
 
+-- 힐: 초록 + (십자가)들이 사방에서 떠오르고, 발밑에서 치유의 빛 기둥과 고리가 번진다 (회복 숫자와 함께)
+local function healVisual(position)
+	for i = 1, 9 do
+		task.delay((i - 1) * 0.06, function()
+			local anchor = Instance.new("Part")
+			anchor.Anchored, anchor.CanCollide, anchor.CanQuery, anchor.CanTouch = true, false, false, false
+			anchor.Transparency = 1
+			anchor.Size = Vector3.new(0.5, 0.5, 0.5)
+			local angle = math.random() * math.pi * 2
+			local radius = 1 + math.random() * 2.2
+			anchor.Position = position + Vector3.new(math.cos(angle) * radius, -1 + math.random() * 1.5, math.sin(angle) * radius)
+			anchor.Parent = workspace
+			local gui = Instance.new("BillboardGui")
+			gui.Size = UDim2.fromOffset(46, 46)
+			gui.AlwaysOnTop = true
+			gui.Parent = anchor
+			local plus = Instance.new("TextLabel")
+			plus.Size = UDim2.fromScale(1, 1)
+			plus.BackgroundTransparency = 1
+			plus.Text = "+"
+			plus.TextScaled = true
+			plus.Font = Enum.Font.GothamBlack
+			plus.TextColor3 = Color3.fromRGB(110, 255, 150)
+			plus.TextStrokeColor3 = Color3.fromRGB(20, 120, 60)
+			plus.TextStrokeTransparency = 0
+			plus.Parent = gui
+			TweenService:Create(anchor, TweenInfo.new(1.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = anchor.Position + Vector3.new(0, 6 + math.random() * 2, 0) }):Play()
+			TweenService:Create(plus, TweenInfo.new(1.1), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+			TweenService:Create(gui, TweenInfo.new(1.1), { Size = UDim2.fromOffset(70, 70) }):Play()
+			Debris:AddItem(anchor, 1.2)
+		end)
+	end
+	-- 발밑에서 올라오는 초록 빛 기둥
+	local column = Instance.new("Part")
+	column.Anchored, column.CanCollide, column.CanQuery, column.CanTouch = true, false, false, false
+	column.Shape = Enum.PartType.Cylinder
+	column.Material = Enum.Material.Neon
+	column.Color = Color3.fromRGB(110, 255, 150)
+	column.Transparency = 0.55
+	column.Size = Vector3.new(8, 5, 5)
+	column.CFrame = CFrame.new(position - Vector3.new(0, 1, 0) + Vector3.new(0, 4, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	column.Parent = workspace
+	TweenService:Create(column, TweenInfo.new(0.8), { Size = Vector3.new(12, 1, 1), Transparency = 1 }):Play()
+	Debris:AddItem(column, 0.9)
+end
+
 handlers.Heal = function(player, root)
 	local cfg = S.Heal
 	local partyId = player:GetAttribute("PartyId") or 0
@@ -119,12 +165,15 @@ handlers.Heal = function(player, root)
 		local otherRoot, otherHumanoid = aliveParts(other)
 		local sameParty = other == player or (partyId ~= 0 and other:GetAttribute("PartyId") == partyId)
 		if otherRoot and sameParty and (otherRoot.Position - root.Position).Magnitude <= cfg.Radius then
-			otherHumanoid.Health = math.min(otherHumanoid.MaxHealth, otherHumanoid.Health + otherHumanoid.MaxHealth * (cfg.Ratio + U.HealRatio * (skillLevel(player, "Heal") - 1)))
-			Effects.Burst(otherRoot.Position, Color3.fromRGB(110, 255, 150), 25)
-			Effects.FloatText(otherRoot.Position + Vector3.new(0, 4, 0), "💚 회복", Color3.fromRGB(130, 255, 160))
+			local amount = otherHumanoid.MaxHealth * (cfg.Ratio + U.HealRatio * (skillLevel(player, "Heal") - 1))
+			otherHumanoid.Health = math.min(otherHumanoid.MaxHealth, otherHumanoid.Health + amount)
+			Effects.Burst(otherRoot.Position, Color3.fromRGB(110, 255, 150), 18)
+			Effects.FloatText(otherRoot.Position + Vector3.new(0, 4, 0), string.format("💚 +%d", math.floor(amount)), Color3.fromRGB(130, 255, 160))
+			healVisual(otherRoot.Position)
 		end
 	end
-	ring(root.Position, cfg.Radius * 0.6, Color3.fromRGB(110, 255, 150), 0.6)
+	ring(root.Position, cfg.Radius * 0.6, Color3.fromRGB(110, 255, 150), 0.7)
+	ring(root.Position, cfg.Radius * 0.35, Color3.fromRGB(220, 255, 230), 0.5)
 	return true
 end
 
