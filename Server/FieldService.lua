@@ -1549,34 +1549,177 @@ local function runGoblins()
 	end
 end
 
--- 습격: 필드에서 싸우는 플레이어 주변에 일정 시간마다 몬스터 떼가 사방에서 몰려온다 (가만히 있으면 둘러싸인다)
+-- 공습: 경보가 울리고 하늘을 가로지르는 폭격기가 지나가며 폭탄을 떨어뜨린다. 바닥에 붉은 원이 먼저 나타나니 그 밖으로 피한다.
+local function airRaid(player, zone)
+	local root = getAliveParts(player)
+	if not root then return end
+	notify(player, "🚨 공습 경보! 하늘의 폭격기를 보세요 — 바닥의 붉은 원에서 벗어나세요!")
+	player:SetAttribute("ShakeStrength", 0.35)
+	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+	local TweenService = game:GetService("TweenService")
+	local Debris = game:GetService("Debris")
+	local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
+
+	local level = F.GetZoneLevel(zone)
+	local stats = Config.Monster.GetStats(level)
+	local damage = math.max(5, math.floor(stats.ShotDamage * F.ZoneDanger.Damage[zone] * 1.8))
+	local center = root.Position
+	local heading = math.random() < 0.5 and 1 or -1
+	local axis = Vector3.new(math.random() < 0.5 and 1 or 0, 0, 0)
+	if axis.Magnitude == 0 then axis = Vector3.new(0, 0, 1) end
+	axis *= heading
+	local lateral = Vector3.new(-axis.Z, 0, axis.X)
+	local altitude = 85
+	local startPos = Vector3.new(center.X, center.Y + altitude, center.Z) - axis * 170
+	local speed = 95
+
+	-- 폭격기: 어두운 몸체 + 날개 + 깜빡이는 붉은 등
+	local plane = Instance.new("Model")
+	plane.Name = "RaidBomber"
+	local function body(size, offset, color, material)
+		local p = Instance.new("Part")
+		p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch = true, false, false, false
+		p.Size = size
+		p.Color = color
+		p.Material = material or Enum.Material.Metal
+		p.CFrame = CFrame.lookAt(startPos, startPos + axis) * CFrame.new(offset)
+		p.Parent = plane
+		return p
+	end
+	local hull = body(Vector3.new(5, 4, 22), Vector3.zero, Color3.fromRGB(45, 48, 58))
+	body(Vector3.new(30, 0.8, 7), Vector3.new(0, 0, 2), Color3.fromRGB(55, 58, 70))
+	body(Vector3.new(10, 0.8, 4), Vector3.new(0, 1.2, 10), Color3.fromRGB(55, 58, 70))
+	body(Vector3.new(0.8, 5, 4), Vector3.new(0, 2.5, 10), Color3.fromRGB(55, 58, 70))
+	for _, side in ipairs({ -1, 1 }) do
+		local light = body(Vector3.new(1.2, 1.2, 1.2), Vector3.new(side * 14.5, 0.6, 1), Color3.fromRGB(255, 60, 50), Enum.Material.Neon)
+		local glow = Instance.new("PointLight")
+		glow.Range = 30
+		glow.Color = Color3.fromRGB(255, 60, 50)
+		glow.Brightness = 3
+		glow.Parent = light
+	end
+	plane.PrimaryPart = hull
+	plane.Parent = workspace
+	Debris:AddItem(plane, 8)
+
+	local started = os.clock()
+	local travel = 340 / speed
+	local bombs = 8 + math.min(6, zone)
+	local dropped = 0
+	task.spawn(function()
+		while os.clock() - started < travel and plane.Parent do
+			local t = (os.clock() - started) / travel
+			plane:PivotTo(CFrame.lookAt(startPos + axis * 340 * t, startPos + axis * 340 * t + axis))
+			-- 비행 구간의 가운데 부분에서 폭탄을 떨어뜨린다
+			local due = math.floor(math.clamp((t - 0.25) / 0.5, 0, 1) * bombs + 0.001)
+			while dropped < due do
+				dropped += 1
+				local planePos = startPos + axis * 340 * t
+				local lateralOffset = (math.random() - 0.5) * 70
+				local spot = Vector3.new(planePos.X, 0, planePos.Z) + lateral * lateralOffset + axis * 18
+				if dropped % 3 == 1 then -- 세 발에 한 발은 플레이어 위치를 노린다
+					local target = getAliveParts(player)
+					if target then spot = Vector3.new(target.Position.X, 0, target.Position.Z) end
+				end
+				local ground = floorAt(spot.X)
+				local radius = 11
+				local marker = Instance.new("Part")
+				marker.Anchored, marker.CanCollide, marker.CanQuery, marker.CanTouch = true, false, false, false
+				marker.Shape = Enum.PartType.Cylinder
+				marker.Material = Enum.Material.Neon
+				marker.Color = Color3.fromRGB(255, 50, 40)
+				marker.Transparency = 0.55
+				marker.Size = Vector3.new(0.4, radius * 2, radius * 2)
+				marker.CFrame = CFrame.new(spot.X, ground + 0.4, spot.Z) * CFrame.Angles(0, 0, math.rad(90))
+				marker.Parent = workspace
+				local fuse = 1.5
+				local bomb = Instance.new("Part")
+				bomb.Anchored, bomb.CanCollide, bomb.CanQuery, bomb.CanTouch = true, false, false, false
+				bomb.Shape = Enum.PartType.Ball
+				bomb.Material = Enum.Material.Neon
+				bomb.Color = Color3.fromRGB(255, 140, 50)
+				bomb.Size = Vector3.new(3.2, 3.2, 3.2)
+				bomb.Position = planePos - Vector3.new(0, 2, 0)
+				bomb.Parent = workspace
+				TweenService:Create(bomb, TweenInfo.new(fuse, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Position = Vector3.new(spot.X, ground + 1.5, spot.Z) }):Play()
+				local trail = Instance.new("ParticleEmitter")
+				trail.Rate = 40
+				trail.Lifetime = NumberRange.new(0.3, 0.6)
+				trail.Speed = NumberRange.new(0, 2)
+				trail.LightEmission = 1
+				trail.Color = ColorSequence.new(Color3.fromRGB(255, 190, 80), Color3.fromRGB(255, 80, 30))
+				trail.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 2.4), NumberSequenceKeypoint.new(1, 0) })
+				trail.Parent = bomb
+				task.delay(fuse, function()
+					bomb:Destroy()
+					marker:Destroy()
+					local at = Vector3.new(spot.X, ground, spot.Z)
+					Effects.Burst(at + Vector3.new(0, 2, 0), Color3.fromRGB(255, 140, 50), 36)
+					local boom = Instance.new("Part")
+					boom.Anchored, boom.CanCollide, boom.CanQuery, boom.CanTouch = true, false, false, false
+					boom.Shape = Enum.PartType.Ball
+					boom.Material = Enum.Material.Neon
+					boom.Color = Color3.fromRGB(255, 170, 70)
+					boom.Transparency = 0.3
+					boom.Size = Vector3.new(2, 2, 2)
+					boom.Position = at + Vector3.new(0, 2, 0)
+					boom.Parent = workspace
+					TweenService:Create(boom, TweenInfo.new(0.4), { Size = Vector3.new(radius * 2.2, radius * 2.2, radius * 2.2), Transparency = 1 }):Play()
+					Debris:AddItem(boom, 0.5)
+					SoundBank.Play(boom, "Boom", { Volume = 0.9 })
+					for _, other in ipairs(Players:GetPlayers()) do
+						local otherRoot, humanoid = getAliveParts(other)
+						if otherRoot and other:GetAttribute("Zone") == "Field" and not isSafe(otherRoot.Position) then
+							local flat = Vector3.new(otherRoot.Position.X - at.X, 0, otherRoot.Position.Z - at.Z)
+							if flat.Magnitude <= radius and otherRoot.Position.Y - ground < 8 then
+								humanoid:TakeDamage(damage)
+							end
+						end
+					end
+				end)
+			end
+			task.wait(0.03)
+		end
+		plane:Destroy()
+	end)
+end
+
+-- 습격 / 공습: 필드에서 싸우는 플레이어에게 일정 시간마다 갑자기 닥친다 (가만히 있으면 위험하다)
+--   습격 = 사방에서 몬스터 떼가 몰려온다 / 공습 = 하늘에서 폭격기가 폭탄을 떨어뜨린다
 local function runAmbush()
-	task.wait(30)
+	task.wait(20)
 	while true do
-		task.wait(math.random(35, 55))
+		task.wait(math.random(18, 32))
 		for _, player in ipairs(Players:GetPlayers()) do
 			if player:GetAttribute("Zone") == "Field" then
 				local root = getAliveParts(player)
 				if root and not isSafe(root.Position) then
 					local zone = zoneOfX(root.Position.X)
-					local alive = 0
-					for _, data in pairs(monsters) do
-						if data.Ambush then alive += 1 end
-					end
-					if alive <= 12 and zone <= math.min(F.ZoneCount, (player:GetAttribute("ClearedZone") or 0) + 1) then
-						notify(player, "⚠ 습격! 사방에서 몬스터 떼가 몰려온다!")
-						player:SetAttribute("ShakeStrength", 0.5)
-						player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
-						local count = 5 + math.min(5, zone)
-						local spawned = 0
-						for _ = 1, count * 3 do
-							if spawned >= count then break end
-							local angle = math.random() * math.pi * 2
-							local distance = 42 + math.random() * 16
-							local at = root.Position + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
-							if walkableAt(at.X, at.Z) and not isSafe(at) and zoneOfX(at.X) == zone then
-								spawnMonster(zone, "Normal", at, true)
-								spawned += 1
+					local allowed = zone <= math.min(F.ZoneCount, (player:GetAttribute("ClearedZone") or 0) + 1)
+					if allowed and zone >= 1 then
+						if math.random() < 0.4 then
+							task.spawn(airRaid, player, zone)
+						else
+							local alive = 0
+							for _, data in pairs(monsters) do
+								if data.Ambush then alive += 1 end
+							end
+							if alive <= 14 then
+								notify(player, "⚠ 습격! 사방에서 몬스터 떼가 몰려온다!")
+								player:SetAttribute("ShakeStrength", 0.5)
+								player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+								local count = 6 + math.min(6, zone)
+								local spawned = 0
+								for _ = 1, count * 3 do
+									if spawned >= count then break end
+									local angle = math.random() * math.pi * 2
+									local distance = 42 + math.random() * 16
+									local at = root.Position + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
+									if walkableAt(at.X, at.Z) and not isSafe(at) and zoneOfX(at.X) == zone then
+										spawnMonster(zone, "Normal", at, true)
+										spawned += 1
+									end
+								end
 							end
 						end
 					end
