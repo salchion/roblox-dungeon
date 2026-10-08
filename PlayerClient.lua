@@ -191,7 +191,7 @@ makeLabel({
 	Text = "🔨 무기 강화", Font = Enum.Font.GothamBlack, TextSize = 24, TextColor3 = Color3.fromRGB(255, 220, 130),
 }, enhancePanel)
 makeButton({
-	Size = UDim2.new(0, 34, 0, 34), Position = UDim2.new(1, -44, 0, 10), Text = "✕", TextSize = 18, BackgroundColor3 = Color3.fromRGB(110, 60, 70),
+	Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -74, 0, 12), Text = "닫기", TextSize = 15, BackgroundColor3 = Color3.fromRGB(110, 60, 70),
 }, enhancePanel, function()
 	enhancePanel.Visible = false
 end)
@@ -217,9 +217,39 @@ local medalGradient = create("UIGradient", {
 	Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(0.5, 0.9), NumberSequenceKeypoint.new(1, 0.2) }),
 }, medalGlow)
 
+-- 화려하게: 메달 뒤에서 도는 빛줄기 + 반짝이는 별 + 테두리 무지개 흐름 + 제목 그라데이션
+E.Rays = {}
+for i = 1, 14 do
+	local ray = create("Frame", {
+		Size = UDim2.new(0, 10, 0, 190), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 0.5, 0),
+		BackgroundColor3 = Color3.fromRGB(255, 220, 130), BackgroundTransparency = 0.82, BorderSizePixel = 0, ZIndex = 0,
+	}, medal)
+	create("UIGradient", { Rotation = 90, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.5, 0.2), NumberSequenceKeypoint.new(1, 1) }) }, ray)
+	E.Rays[i] = ray
+end
+E.Stars = {}
+for i = 1, 16 do
+	local dot = 3 + (i % 3) * 2
+	local star = create("Frame", {
+		Size = UDim2.new(0, dot, 0, dot), Position = UDim2.new(math.random(), 0, math.random(), 0),
+		BackgroundColor3 = Color3.fromRGB(255, 235, 170), BackgroundTransparency = 0.5, BorderSizePixel = 0, ZIndex = 1,
+	}, enhancePanel)
+	create("UICorner", { CornerRadius = UDim.new(1, 0) }, star)
+	E.Stars[i] = { Label = star, Phase = math.random() * 6.28, Speed = 1.5 + math.random() * 2 }
+end
+local rim = enhancePanel:FindFirstChildOfClass("UIStroke")
+if rim then
+	E.RimGradient = create("UIGradient", {
+		Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 200, 80)), ColorSequenceKeypoint.new(0.35, Color3.fromRGB(255, 120, 200)),
+			ColorSequenceKeypoint.new(0.7, Color3.fromRGB(120, 200, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 200, 80)),
+		}),
+	}, rim)
+end
+
 local medalView = create("ViewportFrame", {
 	Size = UDim2.new(0.86, 0, 0.86, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
-	BackgroundTransparency = 1, Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1), ZIndex = 2,
+	BackgroundTransparency = 1, Ambient = Color3.fromRGB(235, 235, 245), LightColor = Color3.fromRGB(255, 250, 235), LightDirection = Vector3.new(-0.4, -0.7, -0.6), ZIndex = 2,
 }, medal)
 local medalCam = create("Camera", { FieldOfView = 36 }, medalView)
 medalView.CurrentCamera = medalCam
@@ -239,9 +269,17 @@ RunService.RenderStepped:Connect(function()
 	local t = os.clock()
 	medalGradient.Rotation = (t * 40) % 360
 	medalGlow.BackgroundTransparency = 0.78 + 0.08 * math.sin(t * 2.2)
+	for i, ray in ipairs(E.Rays) do
+		ray.Rotation = (i - 1) * (360 / #E.Rays) + t * 14
+		ray.BackgroundTransparency = 0.78 + 0.1 * math.sin(t * 2 + i)
+	end
+	for _, star in ipairs(E.Stars) do
+		star.Label.BackgroundTransparency = 0.25 + 0.7 * (0.5 + 0.5 * math.sin(t * star.Speed + star.Phase))
+	end
+	if E.RimGradient then E.RimGradient.Rotation = (t * 60) % 360 end
 	if medalModel and medalCenter then -- 무기가 천천히 돈다 (카메라가 주위를 도는 방식)
 		local angle = t * 0.9
-		local d = medalReach * 1.7
+		local d = medalReach * 1.35
 		medalCam.CFrame = CFrame.lookAt(medalCenter + Vector3.new(math.sin(angle) * d, d * 0.28, math.cos(angle) * d), medalCenter)
 	end
 end)
@@ -317,6 +355,20 @@ local enhanceButton = makeButton({
 	end)
 end)
 create("UIStroke", { Color = Color3.fromRGB(190, 255, 190), Thickness = 2 }, enhanceButton)
+enhanceButton.ClipsDescendants = true
+E.Shimmer = create("Frame", {
+	Size = UDim2.new(0, 36, 1.8, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(-0.2, 0, 0.5, 0), Rotation = 20,
+	BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.7, BorderSizePixel = 0, ZIndex = 3,
+}, enhanceButton)
+task.spawn(function() -- 버튼 위로 빛이 주기적으로 훑고 지나간다
+	while enhancePanel.Parent do
+		if enhancePanel.Visible then
+			E.Shimmer.Position = UDim2.new(-0.1, 0, 0.5, 0)
+			TweenService:Create(E.Shimmer, TweenInfo.new(0.9, Enum.EasingStyle.Quad), { Position = UDim2.new(1.1, 0, 0.5, 0) }):Play()
+		end
+		task.wait(2.2)
+	end
+end)
 
 function refreshEnhance()
 	local level = player:GetAttribute("WeaponLevel") or 0
@@ -339,6 +391,11 @@ function refreshEnhance()
 
 	enhanceStage.Text = string.format("+%d", stage)
 	enhanceStage.TextColor3 = color
+	if E.LastStage and E.LastStage ~= stage then -- 단계가 바뀌면 숫자가 톡 튀어 오른다
+		enhanceStage.TextSize = 54
+		TweenService:Create(enhanceStage, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { TextSize = 34 }):Play()
+	end
+	E.LastStage = stage
 	for _, child in ipairs(segmentBar:GetChildren()) do
 		if child:IsA("Frame") then child:Destroy() end
 	end
@@ -368,7 +425,7 @@ function refreshEnhance()
 	enhanceInfo.Text = string.format("공격력  <b>x%.2f</b> <font color='#78ff8c'>▶ x%.2f</font>\n성공 확률  <font color='#%s'><b>%d%%</b></font>   <font size='12' color='#aaaabb'>(실패해도 단계 유지)</font>",
 		Config.GetDamageMultiplier(level), Config.GetDamageMultiplier(level + 1), chance >= 80 and "78ff8c" or (chance >= 60 and "ffd966" or "ff9a6e"), chance)
 	local affordable = gold >= cost
-	enhanceButton.Text = string.format("🪙 %s   강화", tostring(cost))
+	enhanceButton.Text = string.format("💰 %s G   강화하기", tostring(cost))
 	enhanceButton.BackgroundColor3 = affordable and GREEN or Color3.fromRGB(95, 60, 62)
 	E.EnhanceAffordable = affordable
 end
