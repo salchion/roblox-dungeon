@@ -318,7 +318,7 @@ local hammer = makeLabel({
 
 local enhanceButton = makeButton({
 	Size = UDim2.new(1, -40, 0, 54), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
-	Text = "강화하기", TextSize = 22, Font = Enum.Font.GothamBlack, BackgroundColor3 = GREEN,
+	Text = "강화하기", TextSize = 22, Font = Enum.Font.GothamBold, BackgroundColor3 = GREEN,
 }, enhancePanel, function()
 	if E.EnhanceBusy then return end
 	E.EnhanceBusy = true
@@ -354,7 +354,7 @@ local enhanceButton = makeButton({
 		task.delay(0.9, function() E.EnhanceBusy = false end)
 	end)
 end)
-create("UIStroke", { Color = Color3.fromRGB(190, 255, 190), Thickness = 2 }, enhanceButton)
+create("UIStroke", { Color = Color3.fromRGB(190, 255, 190), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 2 }, enhanceButton)
 enhanceButton.ClipsDescendants = true
 E.Shimmer = create("Frame", {
 	Size = UDim2.new(0, 36, 1.8, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(-0.2, 0, 0.5, 0), Rotation = 20,
@@ -576,11 +576,11 @@ local detailText = makeLabel({
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 }, detail)
 local enhanceSlotButton = makeButton({
-	Size = UDim2.new(1, -24, 0, 50), Position = UDim2.new(0, 12, 1, -112), Text = "강화", TextSize = 18, Font = Enum.Font.GothamBlack, BackgroundColor3 = GREEN,
+	Size = UDim2.new(1, -24, 0, 50), Position = UDim2.new(0, 12, 1, -112), Text = "강화", TextSize = 18, Font = Enum.Font.GothamBold, BackgroundColor3 = GREEN,
 }, detail, function()
 	Remotes.Gear:FireServer("Enhance", state.Selected)
 end)
-create("UIStroke", { Color = Color3.fromRGB(190, 255, 190), Thickness = 2 }, enhanceSlotButton)
+create("UIStroke", { Color = Color3.fromRGB(190, 255, 190), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 2 }, enhanceSlotButton)
 gearMessage = makeLabel({
 	Size = UDim2.new(1, -16, 0, 40), Position = UDim2.new(0, 8, 1, -54), Font = Enum.Font.GothamBold, TextSize = 14, RichText = true,
 }, detail)
@@ -603,11 +603,11 @@ makeLabel({
 }, gachaBar)
 local rollButton = makeButton({
 	Size = UDim2.new(0, 230, 0, 80), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -18, 0.5, 0),
-	Text = "🎰 뽑기!\n티켓 1장", TextSize = 24, Font = Enum.Font.GothamBlack, BackgroundColor3 = Color3.fromRGB(165, 70, 245),
+	Text = "🎰 뽑기!\n티켓 1장", TextSize = 24, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(165, 70, 245),
 }, gachaBar, function()
 	Remotes.Gear:FireServer("Roll")
 end)
-create("UIStroke", { Color = Color3.fromRGB(255, 225, 140), Thickness = 3 }, rollButton)
+create("UIStroke", { Color = Color3.fromRGB(255, 225, 140), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 3 }, rollButton)
 rollButton.ClipsDescendants = true
 local rollShimmer = create("Frame", {
 	Size = UDim2.new(0, 40, 1.8, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(-0.2, 0, 0.5, 0), Rotation = 20,
