@@ -293,7 +293,7 @@ end
 
 Config.Boss = {
 	Name = "던전의 군주",
-	Size = 24,
+	Size = 30,
 	MaxHealth = 2500,        -- 1인 기준 (파티 인원 배율 추가)
 	Speed = 6,
 	ShotDamage = 22,
@@ -714,7 +714,7 @@ Config.Dungeon.Types = {
 		Torch = Color3.fromRGB(255, 150, 70),
 		Terrain = { Ground = Enum.Material.Mud, Mountain = Enum.Material.Rock, Accent = Enum.Material.Slate },
 		MonsterPool = { Slime = 4, Spitter = 3, Bat = 3, Spider = 2, Imp = 1 },
-		Boss = { Name = "고블린 왕", Color = Color3.fromRGB(70, 130, 50), HealthMult = 1, DamageMult = 1, Weights = { Fan = 3, Ring = 2, Spiral = 1, Meteor = 2, Slam = 2, Summon = 1 } },
+		Boss = { Name = "고블린 왕", Color = Color3.fromRGB(70, 130, 50), HealthMult = 1, DamageMult = 1, Weights = { Fan = 3, Ring = 2, Spiral = 1, Meteor = 2, Slam = 2, Summon = 1, Lanes = 2.5, Sweep = 2, SideAdds = 1 } },
 	},
 	Ice = {
 		Name = "얼음 성채", Desc = "얼어붙은 성. 나선 탄막이 매서운 중급 던전", Waves = 6, LevelOffset = 6, GoldMult = 1.6, RecommendedPower = 400,
@@ -724,7 +724,7 @@ Config.Dungeon.Types = {
 		Torch = Color3.fromRGB(120, 200, 255),
 		Terrain = { Ground = Enum.Material.Snow, Mountain = Enum.Material.Glacier, Accent = Enum.Material.Ice },
 		MonsterPool = { Slime = 2, Spitter = 2, Mage = 3, Golem = 2, Wisp = 2, Knight = 2, Turret = 1 },
-		Boss = { Name = "서리 군주", Color = Color3.fromRGB(90, 170, 240), HealthMult = 1.6, DamageMult = 1.2, Weights = { Fan = 1, Ring = 3, Spiral = 3, Meteor = 1, Slam = 2, Summon = 2 } },
+		Boss = { Name = "서리 군주", Color = Color3.fromRGB(90, 170, 240), HealthMult = 1.6, DamageMult = 1.2, Weights = { Fan = 1, Ring = 3, Spiral = 3, Meteor = 1, Slam = 2, Summon = 2, Lanes = 2.5, Sweep = 2.5, SideAdds = 1.5 } },
 	},
 	Fire = {
 		Name = "화염 신전", Desc = "용암의 신전. 메테오가 쏟아지는 고급 던전", Waves = 7, LevelOffset = 12, GoldMult = 2.5, RecommendedPower = 1200,
@@ -734,7 +734,7 @@ Config.Dungeon.Types = {
 		Torch = Color3.fromRGB(255, 90, 40),
 		Terrain = { Ground = Enum.Material.Basalt, Mountain = Enum.Material.Slate, Accent = Enum.Material.CrackedLava },
 		MonsterPool = { Charger = 3, Bomber = 3, Mage = 2, Golem = 2, Imp = 2, Totem = 1, Spider = 2 },
-		Boss = { Name = "화염의 군주", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Fan = 1, Ring = 1, Spiral = 2, Meteor = 4, Slam = 3, Summon = 1 } },
+		Boss = { Name = "화염의 군주", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Fan = 1, Ring = 1, Spiral = 2, Meteor = 4, Slam = 3, Summon = 1, Lanes = 3, Sweep = 3, SideAdds = 1 } },
 	},
 	-- 무한의 탑: 끝이 없는 웨이브. 층(웨이브)이 오를수록 강해지고, 쓰러질 때까지 도전. 최고 층이 기록으로 남는다.
 	Tower = {
@@ -745,7 +745,7 @@ Config.Dungeon.Types = {
 		Torch = Color3.fromRGB(190, 120, 255),
 		Terrain = { Ground = Enum.Material.Slate, Mountain = Enum.Material.Basalt, Accent = Enum.Material.Glacier },
 		MonsterPool = { Slime = 2, Spitter = 2, Bat = 2, Mage = 2, Golem = 1, Charger = 2, Bomber = 2, Spider = 2, Imp = 2, Knight = 2, Turret = 1, Wisp = 2, Totem = 1 },
-		Boss = { Name = "탑의 수호자", Color = Color3.fromRGB(180, 100, 255), HealthMult = 1, DamageMult = 1, Weights = { Fan = 1, Ring = 1, Spiral = 1, Meteor = 1, Slam = 2, Summon = 2 } },
+		Boss = { Name = "탑의 수호자", Color = Color3.fromRGB(180, 100, 255), HealthMult = 1, DamageMult = 1, Weights = { Fan = 1, Ring = 1, Spiral = 1, Meteor = 1, Slam = 2, Summon = 2, Lanes = 2, Sweep = 2, SideAdds = 1.5 } },
 	},
 }
 

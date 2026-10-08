@@ -364,6 +364,12 @@ local function spawnMonster(run, level, position)
 
 	local color = def.Color:Lerp(run.Type.MonsterColor, 0.25)
 	local part = MonsterTypes.Build(typeKey, stats.Size, color, position or ringPosition(run, stats.Size), run.MonstersFolder)
+	-- 던전 분위기: 몬스터마다 던전 색의 은은한 빛을 두른다 (어두운 동굴에서도 실루엣이 보이게)
+	local glow = Instance.new("PointLight")
+	glow.Range = 10 + stats.Size
+	glow.Brightness = 0.9
+	glow.Color = run.Type.Torch or color
+	glow.Parent = part
 
 	return registerMonster(run, part, stats, string.format("Lv.%d %s", level, def.Name), 140, {
 		TypeKey = typeKey,
@@ -372,6 +378,71 @@ local function spawnMonster(run, level, position)
 		Phase = math.random() * math.pi * 2,
 		NextAttack = os.clock() + stats.ShotInterval,
 	})
+end
+
+-- 보스 외형: 단순한 공이 아니라 뿔 / 날개 / 눈 / 가시 / 꼬리 / 가슴의 룬이 달린 거대한 군주 (앞은 -Z, 보스는 항상 가장 가까운 플레이어를 바라본다)
+local function decorateBoss(part, size, glow)
+	local dark = part.Color:Lerp(Color3.new(0, 0, 0), 0.55)
+	part.Material = Enum.Material.Slate
+	part.Color = dark
+	local function piece(shape, sx, sy, sz, x, y, z, color, material, rx, ry, rz, transparency)
+		local p = Instance.new("Part")
+		p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.Massless = false, false, false, false, true
+		p.Shape = shape
+		p.Size = Vector3.new(math.max(0.1, sx), math.max(0.1, sy), math.max(0.1, sz))
+		p.Color = color
+		p.Material = material
+		p.Transparency = transparency or 0
+		p.CFrame = part.CFrame * CFrame.new(x, y, z) * CFrame.Angles(math.rad(rx or 0), math.rad(ry or 0), math.rad(rz or 0))
+		local weld = Instance.new("WeldConstraint")
+		weld.Part0 = part
+		weld.Part1 = p
+		weld.Parent = p
+		p.Parent = part
+		return p
+	end
+	local S = size
+	local Ball, Block = Enum.PartType.Ball, Enum.PartType.Block
+	local Neon, Metal, Slate = Enum.Material.Neon, Enum.Material.Metal, Enum.Material.Slate
+	local bone = Color3.fromRGB(215, 205, 185)
+	-- 눈 / 가슴 룬 / 이마의 보석
+	for _, side in ipairs({ -1, 1 }) do
+		piece(Ball, S * 0.13, S * 0.13, S * 0.13, side * S * 0.2, S * 0.18, -S * 0.45, Color3.fromRGB(255, 240, 120), Neon)
+		-- 뿔 (휘어진 두 마디)
+		piece(Block, S * 0.1, S * 0.42, S * 0.1, side * S * 0.28, S * 0.52, -S * 0.08, bone, Slate, 0, 0, side * -22)
+		piece(Block, S * 0.08, S * 0.3, S * 0.08, side * S * 0.42, S * 0.8, -S * 0.12, bone, Slate, -15, 0, side * -48)
+		-- 어깨 갑옷
+		piece(Ball, S * 0.34, S * 0.34, S * 0.34, side * S * 0.52, S * 0.2, 0, dark:Lerp(Color3.new(1, 1, 1), 0.12), Metal)
+		-- 날개 (뼈대 + 빛나는 막)
+		piece(Block, S * 1.0, S * 0.07, S * 0.09, side * S * 0.95, S * 0.52, S * 0.28, bone, Slate, 0, 0, side * 28)
+		piece(Block, S * 0.95, S * 0.04, S * 0.65, side * S * 0.92, S * 0.4, S * 0.4, glow, Neon, 0, 0, side * 28, 0.4)
+		piece(Block, S * 0.7, S * 0.04, S * 0.5, side * S * 0.78, S * 0.14, S * 0.62, glow, Neon, 0, 0, side * 20, 0.5)
+	end
+	piece(Ball, S * 0.24, S * 0.24, S * 0.24, 0, S * 0.02, -S * 0.5, glow, Neon)
+	piece(Ball, S * 0.12, S * 0.12, S * 0.12, 0, S * 0.36, -S * 0.42, Color3.fromRGB(255, 70, 90), Neon)
+	-- 등 가시
+	for i = 0, 4 do
+		piece(Block, S * 0.09, S * (0.34 - i * 0.04), S * 0.09, 0, S * (0.5 - i * 0.07), S * (0.05 + i * 0.12), bone, Slate, 25 + i * 8, 0, 0)
+	end
+	-- 꼬리 (뒤쪽으로 점점 가늘어지는 구슬 + 끝의 불꽃)
+	for i = 1, 4 do
+		piece(Ball, S * (0.32 - i * 0.05), S * (0.32 - i * 0.05), S * (0.32 - i * 0.05), 0, -S * 0.1 * i, S * (0.45 + i * 0.22), dark, Slate)
+	end
+	local tip = piece(Ball, S * 0.22, S * 0.22, S * 0.22, 0, -S * 0.5, S * 1.45, glow, Neon)
+	local fire = Instance.new("ParticleEmitter")
+	fire.Rate = 40
+	fire.Lifetime = NumberRange.new(0.4, 0.9)
+	fire.Speed = NumberRange.new(3, 8)
+	fire.SpreadAngle = Vector2.new(35, 35)
+	fire.LightEmission = 1
+	fire.Color = ColorSequence.new(glow, Color3.fromRGB(255, 240, 160))
+	fire.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, S * 0.12), NumberSequenceKeypoint.new(1, 0) })
+	fire.Parent = tip
+	local halo = Instance.new("PointLight")
+	halo.Range = S * 1.6
+	halo.Brightness = 2
+	halo.Color = glow
+	halo.Parent = part
 end
 
 local function spawnBoss(run)
@@ -398,6 +469,7 @@ local function spawnBoss(run)
 	local bossSpot = run.BossPos or (run.Origin + Vector3.new(0, 0, -D.SpawnRadius))
 	part.Position = Vector3.new(bossSpot.X, groundAt(run, bossSpot.X, bossSpot.Z, run.Origin.Y + 10) + stats.Size / 2, bossSpot.Z)
 	part.Parent = run.MonstersFolder
+	decorateBoss(part, stats.Size, bossType.Color:Lerp(run.BossVariant.Color, 0.45):Lerp(Color3.fromRGB(255, 190, 90), 0.35))
 	CollectionService:AddTag(part, "Monster")
 	CollectionService:AddTag(part, "RadarBoss")
 
@@ -618,7 +690,165 @@ local function bossSummon(run, part, data)
 	notifyAll(run, "👹 " .. run.BossName .. "이(가) 부하를 불러냈다!")
 end
 
-local BOSS_PATTERNS = { Fan = bossFan, Ring = bossRing, Spiral = bossSpiral, Meteor = bossMeteor, Slam = bossSlam, Summon = bossSummon }
+-- 7) 화염 줄기 (디아블로 벨리알식): 보스 앞에 붉은 줄기 여러 개가 예고된 뒤 불길이 치솟는다. 줄기 "사이"로 피하고, 두 번째는 줄기 위치가 어긋난다
+local function bossLanes(run, part, data)
+	bossWarn(run, part, data, Color3.fromRGB(255, 120, 50), 0.5)
+	if not bossAlive(run, part, data) then return end
+	local target = getNearestTarget(run, part.Position)
+	if not target then return end
+	local origin = Vector3.new(part.Position.X, groundAt(run, part.Position.X, part.Position.Z, part.Position.Y) + 0.3, part.Position.Z)
+	local dir = Vector3.new(target.Position.X - origin.X, 0, target.Position.Z - origin.Z)
+	dir = dir.Magnitude > 1 and dir.Unit or Vector3.new(-1, 0, 0)
+	local perp = Vector3.new(-dir.Z, 0, dir.X)
+	local width, length = 9, 120
+	for wave = 0, 1 do
+		if not bossAlive(run, part, data) then return end
+		local strips = {}
+		for k = -3, 3 do
+			local offset = k * 18 + wave * 9
+			local center = origin + dir * (length / 2 + part.Size.X * 0.4) + perp * offset
+			local strip = Instance.new("Part")
+			strip.Anchored, strip.CanCollide, strip.CanQuery, strip.CanTouch = true, false, false, false
+			strip.Material = Enum.Material.Neon
+			strip.Color = Color3.fromRGB(255, 60, 40)
+			strip.Transparency = 0.6
+			strip.Size = Vector3.new(width, 0.4, length)
+			strip.CFrame = CFrame.lookAt(center, center + dir)
+			strip.Parent = run.Folder
+			table.insert(strips, strip)
+		end
+		task.wait(1.5)
+		if not bossAlive(run, part, data) then
+			for _, strip in ipairs(strips) do strip:Destroy() end
+			return
+		end
+		for _, strip in ipairs(strips) do
+			strip.Color = Color3.fromRGB(255, 170, 60)
+			strip.Transparency = 0.1
+			strip.Size = Vector3.new(width, 6, length)
+			strip.CFrame = strip.CFrame * CFrame.new(0, 3, 0)
+			TweenService:Create(strip, TweenInfo.new(0.45), { Transparency = 1 }):Play()
+			Effects.Burst(strip.Position, Color3.fromRGB(255, 140, 50), 18)
+			Debris:AddItem(strip, 0.5)
+		end
+		for _, member in ipairs(run.Members) do
+			local root, humanoid = getAliveParts(member)
+			if root then
+				local flat = Vector3.new(root.Position.X - origin.X, 0, root.Position.Z - origin.Z)
+				local along = flat:Dot(dir)
+				local lateral = flat:Dot(perp)
+				local height = root.Position.Y - groundAt(run, root.Position.X, root.Position.Z, root.Position.Y)
+				if along > 0 and along < length + part.Size.X and height < 7 then
+					for k = -3, 3 do
+						if math.abs(lateral - (k * 18 + wave * 9)) < width / 2 then
+							humanoid:TakeDamage(math.floor(data.Stats.ShotDamage * 1.5))
+							break
+						end
+					end
+				end
+			end
+		end
+		task.wait(0.4)
+	end
+end
+
+-- 8) 회전 레이저 (엔더 드래곤식 브레스): 가는 붉은 선이 방향을 잡은 뒤 굵은 빛줄기가 부채꼴로 휩쓴다. 빛줄기를 따라 돌거나 뒤로 빠져서 피한다
+local function bossSweep(run, part, data)
+	bossWarn(run, part, data, Color3.fromRGB(255, 80, 80), 0.4)
+	if not bossAlive(run, part, data) then return end
+	local target = getNearestTarget(run, part.Position)
+	if not target then return end
+	local origin = Vector3.new(part.Position.X, groundAt(run, part.Position.X, part.Position.Z, part.Position.Y) + 2, part.Position.Z)
+	local toTarget = Vector3.new(target.Position.X - origin.X, 0, target.Position.Z - origin.Z)
+	local baseAngle = math.atan2(toTarget.Z, toTarget.X)
+	local sign = math.random() < 0.5 and -1 or 1
+	local span = math.rad(100)
+	local length = 130
+	local beam = Instance.new("Part")
+	beam.Anchored, beam.CanCollide, beam.CanQuery, beam.CanTouch = true, false, false, false
+	beam.Material = Enum.Material.Neon
+	beam.Parent = run.Folder
+	local function place(angle, thickness, color, transparency)
+		local dir = Vector3.new(math.cos(angle), 0, math.sin(angle))
+		beam.Color = color
+		beam.Transparency = transparency
+		beam.Size = Vector3.new(thickness, thickness, length)
+		beam.CFrame = CFrame.lookAt(origin, origin + dir) * CFrame.new(0, 0, -length / 2)
+		return dir
+	end
+	local startAngle = baseAngle - sign * span / 2
+	place(startAngle, 0.6, Color3.fromRGB(255, 60, 60), 0.35) -- 예고선
+	task.wait(1.0)
+	local duration = data.Enraged and 3.2 or 4.0
+	local started = os.clock()
+	local lastHit = {}
+	while bossAlive(run, part, data) do
+		local t = (os.clock() - started) / duration
+		if t >= 1 then break end
+		local angle = startAngle + sign * span * t
+		local dir = place(angle, 6, Color3.fromRGB(255, 230, 170), 0.1)
+		for _, member in ipairs(run.Members) do
+			local root, humanoid = getAliveParts(member)
+			if root and os.clock() - (lastHit[member] or 0) > 0.5 then
+				local flat = Vector3.new(root.Position.X - origin.X, 0, root.Position.Z - origin.Z)
+				local along = flat:Dot(dir)
+				local lateral = (flat - dir * along).Magnitude
+				local height = root.Position.Y - groundAt(run, root.Position.X, root.Position.Z, root.Position.Y)
+				if along > 0 and along < length and lateral < 3.8 and height < 6 then
+					lastHit[member] = os.clock()
+					humanoid:TakeDamage(math.floor(data.Stats.ShotDamage * 0.9))
+					Effects.Burst(root.Position, Color3.fromRGB(255, 200, 120), 15)
+				end
+			end
+		end
+		task.wait(0.03)
+	end
+	beam:Destroy()
+end
+
+-- 9) 양옆 부하 소환: 보스방 좌우 가장자리에서 빛기둥이 솟으며 쫄병이 몰려나와 중앙으로 달려든다 (체력 75 / 50 / 25% 에서도 자동 발동)
+local function bossSideAdds(run, part, data, announce)
+	if not bossAlive(run, part, data) then return end
+	local center = run.BossPos or part.Position
+	if announce then
+		notifyAll(run, "⚠ " .. run.BossName .. "의 부하들이 양옆에서 몰려온다!")
+	end
+	local level = math.max(1, Config.Boss.MinionLevel + run.LevelBonus + 1)
+	local spots = {}
+	for _, side in ipairs({ -1, 1 }) do
+		for i = 1, 3 do
+			local x, z = center.X - 48 + i * 22, center.Z + side * (62 - i * 4)
+			if walkable(run, x, z) then
+				table.insert(spots, Vector3.new(x, 0, z))
+			end
+		end
+	end
+	for _, spot in ipairs(spots) do
+		local ground = groundAt(run, spot.X, spot.Z, run.Origin.Y + 10)
+		local column = Instance.new("Part")
+		column.Anchored, column.CanCollide, column.CanQuery, column.CanTouch = true, false, false, false
+		column.Material = Enum.Material.Neon
+		column.Color = Color3.fromRGB(190, 90, 255)
+		column.Transparency = 0.5
+		column.Size = Vector3.new(5, 60, 5)
+		column.Position = Vector3.new(spot.X, ground + 30, spot.Z)
+		column.Parent = run.Folder
+		TweenService:Create(column, TweenInfo.new(1.0), { Transparency = 1 }):Play()
+		Debris:AddItem(column, 1.1)
+	end
+	task.wait(1.0)
+	if not bossAlive(run, part, data) then return end
+	for _, spot in ipairs(spots) do
+		if run.MonsterCount >= 24 then break end
+		local stats = Config.Monster.GetStats(level)
+		local ground = groundAt(run, spot.X, spot.Z, run.Origin.Y + 10)
+		spawnMonster(run, level, Vector3.new(spot.X, ground + stats.Size / 2, spot.Z))
+		Effects.Burst(Vector3.new(spot.X, ground + 2, spot.Z), Color3.fromRGB(190, 90, 255), 20)
+	end
+end
+
+local BOSS_PATTERNS = { Fan = bossFan, Ring = bossRing, Spiral = bossSpiral, Meteor = bossMeteor, Slam = bossSlam, Summon = bossSummon,
+	Lanes = bossLanes, Sweep = bossSweep, SideAdds = function(run, part, data) bossSideAdds(run, part, data, true) end }
 
 -- 던전 종류마다 패턴 비중이 다르다 (Config.Dungeon.Types[..].Boss.Weights).
 -- 직전과 같은 패턴은 피하고, 광폭화하면 나선 / 메테오 비중이 커진다.
@@ -670,6 +900,16 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 		if data.IsBoss and not data.Enraged and data.Health / data.MaxHealth <= Config.Boss.EnrageRatio then
 			enrageBoss(run, part, data)
 		end
+		-- 체력 75 / 50 / 25% 를 지날 때마다 양옆에서 부하가 몰려온다
+		if data.IsBoss then
+			local ratio = data.Health / data.MaxHealth
+			local phases = { 0.75, 0.5, 0.25 }
+			data.PhaseIndex = data.PhaseIndex or 0
+			while data.PhaseIndex < #phases and ratio <= phases[data.PhaseIndex + 1] do
+				data.PhaseIndex += 1
+				task.spawn(bossSideAdds, run, part, data, true)
+			end
+		end
 		return
 	end
 
@@ -720,7 +960,13 @@ local function stepRun(run, dt)
 				end
 				-- 보스도 땅 높이를 따라간다 (언덕 / 구덩이)
 				local bossGround = groundAt(run, part.Position.X, part.Position.Z, part.Position.Y)
-				part.Position = Vector3.new(part.Position.X, bossGround + data.Stats.Size / 2, part.Position.Z)
+				local bossAt = Vector3.new(part.Position.X, bossGround + data.Stats.Size / 2, part.Position.Z)
+				local faceAt = Vector3.new(target.Position.X, bossAt.Y, target.Position.Z)
+				if (faceAt - bossAt).Magnitude > 1 then
+					part.CFrame = CFrame.lookAt(bossAt, faceAt) -- 항상 플레이어를 바라본다 (날개 / 뿔 / 꼬리가 같이 돈다)
+				else
+					part.Position = bossAt
+				end
 
 				if not data.Casting and now >= data.NextPattern then
 					data.Casting = true
