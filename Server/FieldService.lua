@@ -635,6 +635,7 @@ function Field.Shoot(player, origin, direction)
 		end
 		data.HealthFill.Size = UDim2.new(math.max(data.Health, 0) / data.MaxHealth, 0, 1, 0)
 		Effects.DamageNumber(result.Position, damage, isCrit)
+		Effects.Hit(player, result.Instance, isCrit, data.Health <= 0)
 		if data.Health <= 0 then
 			killMonster(player, result.Instance, data)
 		end

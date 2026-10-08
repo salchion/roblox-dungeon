@@ -164,6 +164,7 @@ function Skill.Use(player, skillKey, aimPoint)
 		return
 	end
 	cooldowns[skillKey] = now + S[skillKey].Cooldown
+	Effects.PlaySound(root, Config.Audio.Skill, 0.7, skillKey == "Ult" and 0.8 or 1)
 	Quest.Add(player, "SkillUses", 1)
 	Remotes.Skill:FireClient(player, "Cast", skillKey)
 end

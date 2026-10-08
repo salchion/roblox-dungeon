@@ -272,6 +272,9 @@ Config.Audio = {
 	Shot = ids.Shot or 0,            -- 총 쏘는 소리 (무기가 강해질수록 낮고 묵직하게 재생됨)
 	ShotVolume = 0.5,
 	EnhanceSuccess = ids.EnhanceSuccess or 0, -- 강화 성공 소리
+	Hit = ids.Hit or 0,              -- 적중음
+	Kill = ids.Kill or 0,            -- 처치음
+	Skill = ids.Skill or 0,          -- 스킬음
 }
 
 ------------------------------------------------------------

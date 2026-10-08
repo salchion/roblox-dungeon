@@ -483,6 +483,7 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 	data.Health -= amount
 	data.HealthFill.Size = UDim2.new(math.max(data.Health, 0) / data.MaxHealth, 0, 1, 0)
 	Effects.DamageNumber(hitPosition, amount, isCrit)
+	Effects.Hit(player, part, isCrit, data.Health <= 0)
 
 	if data.Health > 0 then
 		if data.IsBoss and not data.Enraged and data.Health / data.MaxHealth <= Config.Boss.EnrageRatio then

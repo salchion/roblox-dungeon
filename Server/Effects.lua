@@ -2,6 +2,7 @@
 -- 총알 궤적, 데미지 숫자, 강화 버스트 같은 짧은 시각 효과
 
 local Debris = game:GetService("Debris")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
 local Effects = {}
@@ -109,6 +110,23 @@ function Effects.Shot(from, to, shot, color, rainbow)
 		Debris:AddItem(part, 0.5)
 	end)
 	tween:Play()
+end
+
+-- 타격감: 맞은 몬스터가 하얗게 번쩍이고, 쏜 사람에게는 적중 표시(Hit)를 보낸다 (치명타 / 처치는 더 크게)
+function Effects.Hit(player, part, isCrit, killed)
+	if player and player.Parent then
+		local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+		Remotes.Hit:FireClient(player, isCrit == true, killed == true)
+	end
+	if killed or not part or not part.Parent then return end
+	local original = part.Color
+	if original == Color3.new(1, 1, 1) then return end
+	part.Color = Color3.new(1, 1, 1)
+	task.delay(0.06, function()
+		if part.Parent and part.Color == Color3.new(1, 1, 1) then
+			part.Color = original
+		end
+	end)
 end
 
 -- 소리 한 번 재생 (soundId 가 0 이면 아무것도 안 함)

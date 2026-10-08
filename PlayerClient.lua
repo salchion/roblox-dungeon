@@ -1320,6 +1320,9 @@ local function getAimPoint(screenPosition)
 	return ray.Origin + ray.Direction * 300, nil
 end
 
+local hitMarker = 0      -- 적중 시 조준점이 색을 바꾸는 시간
+local hitMarkerCrit = false
+local shake = 0          -- 카메라 흔들림 세기
 local crosshairKick = 0 -- 쏠 때마다 조준점이 벌어졌다 돌아오는 연출용
 
 -- 월드 좌표를 향해 캐릭터를 돌려세우고 서버에 공격 요청
@@ -2515,6 +2518,11 @@ RunService.RenderStepped:Connect(function(dt)
 	crosshairKick = math.max(0, crosshairKick - dt * 55)
 	local gap = 7 + crosshairKick + (holding and 2 or 0)
 	local color = (autoMode and lockTarget) and Color3.fromRGB(255, 225, 90) or Color3.new(1, 1, 1)
+	hitMarker = math.max(0, hitMarker - dt)
+	if hitMarker > 0 then
+		color = hitMarkerCrit and Color3.fromRGB(255, 70, 60) or Color3.fromRGB(255, 200, 70)
+		gap += 4 * (hitMarker / 0.18)
+	end
 
 	crosshair.Position = UDim2.fromOffset(position.X, position.Y)
 	barUp.Position = UDim2.fromOffset(0, -gap - 5)
@@ -2524,4 +2532,39 @@ RunService.RenderStepped:Connect(function(dt)
 	for _, part in ipairs({ barUp, barDown, barLeft, barRight, centerDot }) do
 		part.BackgroundColor3 = color
 	end
+end)
+
+------------------------------------------------------------
+-- 타격감: 적중 표시 / 적중음 / 치명타·처치 시 카메라 흔들림
+------------------------------------------------------------
+local function playUiSound(id, volume, pitch)
+	if not id or id == 0 then return end
+	local sound = Instance.new("Sound")
+	sound.SoundId = "rbxassetid://" .. id
+	sound.Volume = volume
+	sound.PlaybackSpeed = pitch
+	sound.Parent = game:GetService("SoundService")
+	sound:Play()
+	game:GetService("Debris"):AddItem(sound, 3)
+end
+
+Remotes.Hit.OnClientEvent:Connect(function(isCrit, killed)
+	hitMarker = killed and 0.3 or 0.18
+	hitMarkerCrit = isCrit or killed
+	if killed then
+		shake = math.max(shake, 0.5)
+		playUiSound(Config.Audio.Kill, 0.6, 1)
+	elseif isCrit then
+		shake = math.max(shake, 0.25)
+		playUiSound(Config.Audio.Hit, 0.5, 1.25)
+	else
+		playUiSound(Config.Audio.Hit, 0.35, 1)
+	end
+end)
+
+RunService:BindToRenderStep("HitShake", Enum.RenderPriority.Camera.Value + 1, function(dt)
+	if shake <= 0.01 then return end
+	shake = math.max(0, shake - dt * 2.5)
+	local amount = shake * 0.012
+	camera.CFrame = camera.CFrame * CFrame.Angles((math.random() - 0.5) * amount, (math.random() - 0.5) * amount, 0)
 end)
