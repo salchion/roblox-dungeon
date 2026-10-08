@@ -398,7 +398,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint)
 			or Field.Shoot(player, origin, direction)
 			or Dummy.Shoot(player, origin, direction)
 		endPosition = endPosition or (origin + direction * weaponType.Range)
-		Effects.Shot(tipPosition, endPosition, shot, color, tier.Rainbow)
+		Effects.Shot(tipPosition, endPosition, shot, color, tier.Rainbow, tier.Class)
 	end
 	Weapon.PlayShot(player)
 	Skill.AddCharge(player, Config.Skills.ChargePerShot)

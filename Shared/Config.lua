@@ -670,7 +670,7 @@ Config.WeaponTypes = {
 		Desc = "일직선으로 적을 3마리까지 관통하는 초고속 탄",
 	},
 	Flamer = {
-		Name = "화염방사기", Form = "Flamer", DamageMult = 0.233, Cooldown = 0.35, Range = 60, Pellets = 3, Spread = 12,
+		Name = "화염방사기", Form = "Flamer", DamageMult = 0.1, Cooldown = 0.2, Range = 55, Pellets = 4, Spread = 16,
 		ShotScale = 0.9, SpeedScale = 0.6, BarrelLength = 0.7, BarrelThickness = 1.4,
 		Desc = "짧은 거리에서 불길을 뿜는 근접 무기 (사거리 60)",
 	},

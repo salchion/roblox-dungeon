@@ -70,9 +70,30 @@ local FIRE = ColorSequence.new({
 
 -- 무기 등급별로 모양이 다른 발사체가 날아가는 연출 (판정은 이미 서버에서 끝난 상태, 보이기만 하는 것)
 -- shot = Config.Weapon.Tiers[n].Shot
-function Effects.Shot(from, to, shot, color, rainbow)
+-- 무기 종류별 탄 모양: 이름과 어울리게 (화염방사기는 불길, 레일건은 가늘고 긴 빛줄기, 로켓은 꼬리 달린 로켓 ...)
+local CLASS_LOOK = {
+	Flamer = { Style = "Fire", SizeMul = 2.0, Color = Color3.fromRGB(255, 150, 50), Transparency = 0.4, Impact = 2 },
+	Rocket = { Style = "Rocket", Length = 4.5, Impact = 20 },
+	Cannon = { Style = "Orb", SizeMul = 1.25 },
+	Rail = { Style = "Bolt", Length = 16, SizeMul = 0.7, Color = Color3.fromRGB(150, 230, 255), Impact = 8 },
+	Sniper = { Style = "Bolt", Length = 8, SizeMul = 0.8, Impact = 6 },
+	Rifle = { Style = "Bolt", Length = 3.5 },
+	Smg = { Style = "Bolt", Length = 2 },
+	Shotgun = { Style = "Ball", SizeMul = 0.9 },
+}
+
+function Effects.Shot(from, to, shot, color, rainbow, class)
 	local distance = (to - from).Magnitude
 	if distance < 0.5 then return end
+	local look = class and CLASS_LOOK[class]
+	if look then
+		shot = table.clone(shot)
+		shot.Style = look.Style or shot.Style
+		shot.Length = look.Length or shot.Length or 3
+		shot.Size *= look.SizeMul or 1
+		shot.Impact = look.Impact or shot.Impact
+		color = look.Color or color
+	end
 
 	local part = Instance.new("Part")
 	part.Anchored = true
@@ -81,6 +102,7 @@ function Effects.Shot(from, to, shot, color, rainbow)
 	part.CanTouch = false
 	part.Material = Enum.Material.Neon
 	part.Color = color
+	if look and look.Transparency then part.Transparency = look.Transparency end
 	if shot.Style == "Bolt" or shot.Style == "Rocket" then
 		part.Size = Vector3.new(shot.Size, shot.Size, shot.Length) -- 길쭉한 탄
 	else
