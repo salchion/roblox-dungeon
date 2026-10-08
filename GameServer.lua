@@ -28,6 +28,7 @@ local Daily = require(Modules:WaitForChild("DailyService"))
 local Meta = require(Modules:WaitForChild("MetaService"))
 local Tutorial = require(Modules:WaitForChild("TutorialService"))
 local EventService = require(Modules:WaitForChild("EventService"))
+local Showcase = require(Modules:WaitForChild("ShowcaseService"))
 local Quest = require(Modules:WaitForChild("QuestService"))
 local Level = require(Modules:WaitForChild("LevelService"))
 local Rank = require(Modules:WaitForChild("RankService"))
@@ -63,6 +64,7 @@ Tutorial.SetTargets({ -- 튜토리얼 미션 표지 위치
 Dungeon.Init(lobby.SpawnCFrame)
 Dummy.Build(lobby.DummyStart)
 Rank.Init(lobby.RankBoardCFrame)
+Showcase.Init(lobby.RankBoardCFrame) -- 랭킹판 앞 명예의 전당 (최강 3명)
 Field.Init(lobby.SpawnCFrame)
 EventService.Start() -- 주기적 골든 타임
 

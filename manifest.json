@@ -223,6 +223,13 @@
       "name": "EventService",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "Server/ShowcaseService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "ShowcaseService",
+      "class": "ModuleScript",
+      "overwrite": true
     }
   ]
 }

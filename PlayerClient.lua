@@ -316,6 +316,16 @@ local function refreshEnhance()
 end
 
 Remotes.Enhance.OnClientEvent:Connect(function(ok, message)
+	if ok then -- 성공하면 다음 진화까지 남은 단계를 알려줘서 "하나만 더" 하고 싶게 만든다
+		local typeKey = player:GetAttribute("WeaponType") or "Pistol"
+		local level = (player:GetAttribute("WLvl_" .. typeKey) or 0)
+		for _, tier in ipairs(Config.Weapon.Tiers) do
+			if tier.MinLevel > level then
+				message = string.format("%s  ✨ %s 까지 %d단계!", message, tier.Names[typeKey], tier.MinLevel - level)
+				break
+			end
+		end
+	end
 	enhanceResult.Text = message
 	enhanceResult.TextColor3 = ok and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 130, 130)
 	refreshEnhance()

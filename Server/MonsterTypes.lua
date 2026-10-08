@@ -58,6 +58,37 @@ M.Defs = {
 		SizeMult = 0.8, SpeedMult = 2, HealthMult = 0.6, DamageMult = 2.5, IntervalMult = 1, ShotSpeedMult = 1, GoldMult = 0.8,
 		Attack = "Explode", Move = "Rush", Keep = 0, Range = 999, Fuse = true,
 	},
+	-- ===== 신규 몬스터 =====
+	Imp = {
+		Name = "저격 임프", Shape = "Ball", Color = Color3.fromRGB(200, 60, 90), Material = Enum.Material.SmoothPlastic,
+		SizeMult = 0.7, SpeedMult = 0.9, HealthMult = 0.6, DamageMult = 1.3, IntervalMult = 1.6, ShotSpeedMult = 2.6, GoldMult = 1.3,
+		Attack = "Single", Move = "Keep", Keep = 55, Range = 130, Horns = true,
+	},
+	Knight = {
+		Name = "방패 기사", Shape = "Block", Color = Color3.fromRGB(120, 140, 175), Material = Enum.Material.Metal,
+		SizeMult = 1.15, SpeedMult = 0.7, HealthMult = 2.6, DamageMult = 1.1, IntervalMult = 1.4, ShotSpeedMult = 0.9, GoldMult = 1.8,
+		Attack = "Fan", Move = "Approach", Keep = 8, Range = 60, Shield = true,
+	},
+	Turret = {
+		Name = "마법 포탑", Shape = "Block", Color = Color3.fromRGB(90, 95, 110), Material = Enum.Material.Metal,
+		SizeMult = 1.0, SpeedMult = 0, HealthMult = 1.7, DamageMult = 1.0, IntervalMult = 0.8, ShotSpeedMult = 1.2, GoldMult = 1.4,
+		Attack = "Fan", Move = "Static", Keep = 0, Range = 110, Barrel = true,
+	},
+	Spider = {
+		Name = "독거미", Shape = "Ball", Color = Color3.fromRGB(60, 50, 60), Material = Enum.Material.SmoothPlastic,
+		SizeMult = 0.75, SpeedMult = 1.9, HealthMult = 0.8, DamageMult = 0.8, IntervalMult = 0.6, ShotSpeedMult = 1.2, GoldMult = 1.0,
+		Attack = "Single", Move = "Rush", Keep = 0, Range = 45, Legs = true,
+	},
+	Wisp = {
+		Name = "도깨비불", Shape = "Ball", Color = Color3.fromRGB(120, 255, 200), Material = Enum.Material.Neon, Transparency = 0.3,
+		SizeMult = 0.55, SpeedMult = 2.4, HealthMult = 0.45, DamageMult = 0.7, IntervalMult = 0.9, ShotSpeedMult = 1.4, GoldMult = 1.1,
+		Attack = "Fan", Move = "Hover", Keep = 22, Range = 80, Flame = true,
+	},
+	Totem = {
+		Name = "저주 토템", Shape = "Block", Color = Color3.fromRGB(130, 90, 60), Material = Enum.Material.Wood,
+		SizeMult = 1.2, SpeedMult = 0, HealthMult = 2.2, DamageMult = 0.9, IntervalMult = 1.8, ShotSpeedMult = 0.7, GoldMult = 1.8,
+		Attack = "Ring", Move = "Static", Keep = 0, Range = 100, Totem = true,
+	},
 }
 
 -- 가중치 표(pool)에서 하나 고른다. 예: { Slime = 4, Bat = 2 }
@@ -181,6 +212,58 @@ function M.Build(typeKey, size, color, position, parent)
 		end
 	end
 
+	if def.Horns then
+		for _, side in ipairs({ -1, 1 }) do
+			decorate(Enum.PartType.Block, Vector3.new(size * 0.12, size * 0.5, size * 0.12),
+				CFrame.new(side * size * 0.28, size * 0.55, 0) * CFrame.Angles(0, 0, math.rad(side * -20)), Color3.fromRGB(40, 20, 30), Enum.Material.SmoothPlastic)
+		end
+	end
+
+	if def.Shield then
+		decorate(Enum.PartType.Block, Vector3.new(size * 0.9, size * 1.05, size * 0.12),
+			CFrame.new(0, 0, -frontZ - size * 0.1), Color3.fromRGB(190, 200, 225), Enum.Material.Metal)
+		decorate(Enum.PartType.Ball, Vector3.new(size * 0.25, size * 0.25, size * 0.25),
+			CFrame.new(0, 0, -frontZ - size * 0.2), Color3.fromRGB(255, 200, 60), Enum.Material.Neon)
+	end
+
+	if def.Barrel then
+		decorate(Enum.PartType.Block, Vector3.new(size * 0.25, size * 0.25, size * 0.9),
+			CFrame.new(0, size * 0.2, -frontZ - size * 0.3), Color3.fromRGB(50, 52, 64), Enum.Material.Metal)
+		decorate(Enum.PartType.Ball, Vector3.new(size * 0.35, size * 0.35, size * 0.35),
+			CFrame.new(0, size * 0.2, -frontZ - size * 0.75), Color3.fromRGB(150, 110, 255), Enum.Material.Neon)
+	end
+
+	if def.Legs then
+		for i = 0, 3 do
+			for _, side in ipairs({ -1, 1 }) do
+				decorate(Enum.PartType.Block, Vector3.new(size * 0.7, size * 0.07, size * 0.07),
+					CFrame.new(side * size * 0.55, -size * 0.1, (i - 1.5) * size * 0.22) * CFrame.Angles(0, math.rad((i - 1.5) * 12), math.rad(side * -25)),
+					Color3.fromRGB(30, 25, 35), Enum.Material.SmoothPlastic)
+			end
+		end
+	end
+
+	if def.Flame then
+		local glow = Instance.new("ParticleEmitter")
+		glow.Rate = 45
+		glow.Lifetime = NumberRange.new(0.4, 0.8)
+		glow.Speed = NumberRange.new(1, 3)
+		glow.SpreadAngle = Vector2.new(180, 180)
+		glow.LightEmission = 1
+		glow.Color = ColorSequence.new(Color3.fromRGB(120, 255, 200))
+		glow.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, size * 0.5), NumberSequenceKeypoint.new(1, 0) })
+		glow.Parent = body
+	end
+
+	if def.Totem then
+		for i = 1, 2 do
+			decorate(Enum.PartType.Block, Vector3.new(size * 0.8, size * 0.35, size * 0.8),
+				CFrame.new(0, size * (0.3 + 0.35 * i), 0), i == 1 and Color3.fromRGB(110, 75, 50) or Color3.fromRGB(150, 60, 60), Enum.Material.Wood)
+		end
+		decorate(Enum.PartType.Ball, Vector3.new(size * 0.3, size * 0.3, size * 0.3),
+			CFrame.new(0, size * 1.25, 0), Color3.fromRGB(255, 80, 80), Enum.Material.Neon)
+	end
+
 	if def.Fuse then
 		local fuse = decorate(Enum.PartType.Ball, Vector3.new(size * 0.25, size * 0.25, size * 0.25),
 			CFrame.new(0, size * 0.55, 0), Color3.fromRGB(255, 160, 40), Enum.Material.Neon)
@@ -293,6 +376,8 @@ function M.Update(ctx, part, data, dt, now)
 		elseif distance > def.Keep + 6 then
 			move = direction * speed * dt
 		end
+	elseif def.Move == "Static" then
+		-- 포탑 / 토템: 제자리에서 조준만 한다
 	elseif def.Move == "Hover" then
 		if distance > def.Keep then
 			move = direction * speed * dt
