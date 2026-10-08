@@ -111,7 +111,7 @@ local gui = create("ScreenGui", { Name = "HUD", ResetOnSpawn = false, IgnoreGuiI
 ------------------------------------------------------------
 -- 공통: 상단 좌측 정보, 알림
 ------------------------------------------------------------
-local infoPanel = makePanel({ Size = UDim2.new(0, 240, 0, 176), Position = UDim2.new(0, 16, 0, 16) }, gui)
+local infoPanel = makePanel({ Size = UDim2.new(0, 240, 0, 176), Position = UDim2.new(0, 16, 0, 60) }, gui) -- (Roblox 상단 버튼과 겹치지 않게 아래로)
 local infoLabel = makeLabel({
 	Size = UDim2.new(1, -20, 1, -16),
 	Position = UDim2.new(0, 10, 0, 8),
@@ -2070,7 +2070,7 @@ local function toggleMenu()
 end
 
 makeButton({
-	Size = UDim2.new(0, 110, 0, 32), Position = UDim2.new(0, 16, 0, 200), Text = "📋 메뉴 (I)", TextSize = 14,
+	Size = UDim2.new(0, 110, 0, 32), Position = UDim2.new(0, 16, 0, 244), Text = "📋 메뉴 (I)", TextSize = 14,
 	BackgroundColor3 = Color3.fromRGB(60, 70, 120),
 }, gui, toggleMenu)
 
@@ -2807,7 +2807,7 @@ workspace.DescendantAdded:Connect(function(instance)
 end)
 
 makeButton({
-	Size = UDim2.new(0, 110, 0, 32), Position = UDim2.new(0, 16, 0, 238), Text = "❓ 도움말 (H)", TextSize = 14,
+	Size = UDim2.new(0, 110, 0, 32), Position = UDim2.new(0, 16, 0, 282), Text = "❓ 도움말 (H)", TextSize = 14,
 	BackgroundColor3 = Color3.fromRGB(60, 90, 100),
 }, gui, toggleHelp)
 

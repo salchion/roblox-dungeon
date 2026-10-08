@@ -26,7 +26,7 @@ end
 
 local panel = Instance.new("Frame")
 panel.Size = UDim2.new(0, 260, 0, 66)
-panel.Position = UDim2.new(0, 16, 0, 282)
+panel.Position = UDim2.new(0, 16, 0, 326)
 panel.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 panel.BackgroundTransparency = 0.2
 panel.BorderSizePixel = 0

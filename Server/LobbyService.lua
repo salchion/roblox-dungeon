@@ -123,52 +123,26 @@ local function decoratePlaza(parent, center, avoid)
 	rim.CanCollide = false
 	rim.CanQuery = false
 
-	-- 광장 가장자리 기둥 12개 (색이 무지개처럼 이어지는 빛 구슬)
-	for i = 0, 11 do
-		local angle = i / 12 * math.pi * 2
-		local position = center + Vector3.new(math.cos(angle) * 37, 0, math.sin(angle) * 37)
-		-- 허수아비 훈련장(서쪽)과 광장 안쪽이 가려지지 않게, 북쪽 가장자리 쪽 기둥만 세운다
-		local blocked = not (position.Z < center.Z - 20 and math.abs(position.X - center.X) < 26)
+	-- 광장 가장자리의 낮은 등불 (높이 3.5): 시야를 가리지 않고 은은하게 분위기만 낸다
+	for i = 0, 15 do
+		local angle = i / 16 * math.pi * 2
+		local position = center + Vector3.new(math.cos(angle) * 36, 0, math.sin(angle) * 36)
+		local blocked = false
 		for _, spot in ipairs(avoid) do
 			if (Vector3.new(position.X, 0, position.Z) - Vector3.new(spot.X, 0, spot.Z)).Magnitude < spot.R then
 				blocked = true
 			end
 		end
 		if not blocked then
-			local color = Color3.fromHSV(i / 12, 0.55, 1)
-			makePart({ Name = "PlazaPillar", Size = Vector3.new(3, 14, 3), Position = position + Vector3.new(0, 7, 0), Color = Color3.fromRGB(235, 232, 225), Material = Enum.Material.Marble }, parent)
-			makePart({ Name = "PillarCap", Size = Vector3.new(4.4, 1.2, 4.4), Position = position + Vector3.new(0, 14.6, 0), Color = Color3.fromRGB(200, 170, 90), Material = Enum.Material.Metal }, parent)
-			local orb = makePart({
-				Name = "PillarOrb", Shape = Enum.PartType.Ball, Size = Vector3.new(3.2, 3.2, 3.2), Position = position + Vector3.new(0, 17, 0),
+			local color = Color3.fromHSV(i / 16, 0.45, 1)
+			makePart({ Name = "Bollard", Size = Vector3.new(1.4, 2.4, 1.4), Position = position + Vector3.new(0, 1.2, 0), Color = Color3.fromRGB(70, 72, 88), Material = Enum.Material.Metal }, parent)
+			local lamp = makePart({
+				Name = "BollardLamp", Shape = Enum.PartType.Ball, Size = Vector3.new(1.8, 1.8, 1.8), Position = position + Vector3.new(0, 3.2, 0),
 				Color = color, Material = Enum.Material.Neon, CanCollide = false,
 			}, parent)
-			addLight(orb, 24, 1.4, color)
+			addLight(lamp, 14, 1, color)
 		end
 	end
-
-	-- 분수 둘레를 천천히 도는 수정 8개
-	local crystals = {}
-	for i = 1, 8 do
-		local color = Color3.fromHSV(i / 8, 0.6, 1)
-		local crystal = makePart({
-			Name = "FloatingCrystal", Size = Vector3.new(1.6, 3, 1.6), Position = center + Vector3.new(0, 6, 0), Color = color,
-			Material = Enum.Material.Neon, CanCollide = false, CanQuery = false,
-		}, parent)
-		addLight(crystal, 16, 1, color)
-		crystals[i] = crystal
-	end
-	task.spawn(function()
-		while parent.Parent do
-			local t = os.clock()
-			for i, crystal in ipairs(crystals) do
-				local angle = t * 0.5 + i / #crystals * math.pi * 2
-				local bob = math.sin(t * 1.6 + i) * 1.4
-				crystal.CFrame = CFrame.new(center + Vector3.new(math.cos(angle) * 14, 5 + bob, math.sin(angle) * 14))
-					* CFrame.Angles(t * 0.8 + i, t * 1.1, 0)
-			end
-			task.wait(0.05)
-		end
-	end)
 
 	-- 하늘에서 천천히 내려오는 반짝이 가루
 	local sky = makePart({ Name = "PlazaSparkles", Size = Vector3.new(70, 1, 70), Position = center + Vector3.new(0, 38, 0), Transparency = 1, CanCollide = false, CanQuery = false }, parent)
@@ -316,8 +290,6 @@ function Lobby.Build()
 		{ X = 0, Z = 102, R = 12 },   -- 스폰
 		{ X = -40, Z = 92, R = 20 },  -- 랭킹판 / 명예의 전당
 	})
-	makeLabel(makePart({ Name = "PlazaSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(0, 20, 70), Transparency = 1, CanCollide = false, CanQuery = false }, folder),
-		"🏰 마을 광장", Color3.fromRGB(255, 240, 200), 0, 300, 70)
 
 	-- 기본 맵에 원래 있던 스폰 패드는 지운다 (남겨두면 플레이어가 엉뚱한 곳에서 시작할 수 있음)
 	for _, descendant in ipairs(workspace:GetDescendants()) do
@@ -468,18 +440,64 @@ function Lobby.Build()
 
 	-- 필드 입구 (동쪽 끝)
 	local fieldGate = Vector3.new(HALF - 6, TOP, 0)
-	local gateStone = Color3.fromRGB(80, 90, 70)
-	makePart({ Name = "FieldPillarL", Size = Vector3.new(5, 26, 5), Position = fieldGate + Vector3.new(0, 13, -20), Color = gateStone, Material = Enum.Material.Cobblestone }, folder)
-	makePart({ Name = "FieldPillarR", Size = Vector3.new(5, 26, 5), Position = fieldGate + Vector3.new(0, 13, 20), Color = gateStone, Material = Enum.Material.Cobblestone }, folder)
-	local beam = makePart({ Name = "FieldBeam", Size = Vector3.new(5, 5, 45), Position = fieldGate + Vector3.new(0, 27, 0), Color = gateStone, Material = Enum.Material.Cobblestone }, folder)
-	makeLabel(beam, "▶ 사냥 필드 (동쪽)\n오른쪽으로 갈수록 강한 몬스터!", Color3.fromRGB(190, 255, 180), 8, 340, 76)
+	local gateStone = Color3.fromRGB(70, 85, 70)
+	local green = Color3.fromRGB(120, 255, 160)
+	-- 양쪽 탑 (높이 46): 멀리서도 보이는 큰 문
+	for _, side in ipairs({ -1, 1 }) do
+		local tower = fieldGate + Vector3.new(0, 0, side * 24)
+		makePart({ Name = "FieldTower", Size = Vector3.new(10, 46, 10), Position = tower + Vector3.new(0, 23, 0), Color = gateStone, Material = Enum.Material.Cobblestone }, folder)
+		makePart({ Name = "FieldTowerCap", Size = Vector3.new(13, 3, 13), Position = tower + Vector3.new(0, 47.5, 0), Color = Color3.fromRGB(50, 60, 50), Material = Enum.Material.Slate }, folder)
+		local flame = makePart({ Name = "FieldBrazier", Shape = Enum.PartType.Ball, Size = Vector3.new(5, 5, 5), Position = tower + Vector3.new(0, 52, 0), Color = Color3.fromRGB(120, 255, 170), Material = Enum.Material.Neon, CanCollide = false }, folder)
+		addLight(flame, 60, 3, green)
+		local torchFire = Instance.new("ParticleEmitter")
+		torchFire.Rate = 40
+		torchFire.Lifetime = NumberRange.new(0.8, 1.4)
+		torchFire.Speed = NumberRange.new(4, 9)
+		torchFire.SpreadAngle = Vector2.new(25, 25)
+		torchFire.LightEmission = 1
+		torchFire.Color = ColorSequence.new(Color3.fromRGB(170, 255, 200), Color3.fromRGB(60, 200, 120))
+		torchFire.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 3), NumberSequenceKeypoint.new(1, 0) })
+		torchFire.Parent = flame
+		-- 세로로 흐르는 빛 줄 (룬)
+		makePart({ Name = "FieldRune", Size = Vector3.new(1, 36, 2), Position = tower + Vector3.new(-5.2, 22, 0), Color = green, Material = Enum.Material.Neon, CanCollide = false }, folder)
+	end
+	local beam = makePart({ Name = "FieldBeam", Size = Vector3.new(9, 8, 58), Position = fieldGate + Vector3.new(0, 40, 0), Color = gateStone, Material = Enum.Material.Cobblestone }, folder)
+	makePart({ Name = "FieldBeamGlow", Size = Vector3.new(9.4, 1.2, 58.4), Position = fieldGate + Vector3.new(0, 35.4, 0), Color = green, Material = Enum.Material.Neon, CanCollide = false }, folder)
+	makeLabel(beam, "🏔 사냥 필드 ▶ 동쪽\n갈수록 강한 몬스터 · 전리품!", Color3.fromRGB(190, 255, 190), 10, 420, 90)
+
+	-- 문 사이를 채우는 반투명 빛의 막 (지나가면 필드)
+	local veil = makePart({ Name = "FieldVeil", Size = Vector3.new(1, 36, 40), Position = fieldGate + Vector3.new(0, 18, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.82, CanCollide = false, CanQuery = false }, folder)
+	local mist = Instance.new("ParticleEmitter")
+	mist.Rate = 30
+	mist.Lifetime = NumberRange.new(2, 3)
+	mist.Speed = NumberRange.new(2, 5)
+	mist.SpreadAngle = Vector2.new(60, 60)
+	mist.EmissionDirection = Enum.NormalId.Right
+	mist.Shape = Enum.ParticleEmitterShape.Box
+	mist.LightEmission = 1
+	mist.Color = ColorSequence.new(green)
+	mist.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.2), NumberSequenceKeypoint.new(1, 0) })
+	mist.Parent = veil
+
+	-- 광장에서 필드 문까지 이어지는 바닥 화살표(빛나는 ▶ 띠): 어디로 가야 하는지 한눈에
+	for step = 0, 11 do
+		local x = 52 + step * 6
+		local chevron = makePart({
+			Name = "FieldChevron", Size = Vector3.new(3, 0.2, 7), Position = Vector3.new(x, TOP + 0.4, 0),
+			Color = green, Material = Enum.Material.Neon, CanCollide = false, CanQuery = false, Transparency = 0.25,
+		}, folder)
+		chevron.CFrame = CFrame.new(chevron.Position) * CFrame.Angles(0, math.rad(45), 0)
+		local chevron2 = chevron:Clone()
+		chevron2.CFrame = CFrame.new(chevron.Position) * CFrame.Angles(0, math.rad(-45), 0)
+		chevron2.Parent = folder
+	end
 
 	-- 도달한 필드 구역 캠프로 바로 워프 (캠프의 비콘에서도 같은 메뉴가 열린다)
 	local warpPrompt = Instance.new("ProximityPrompt")
 	warpPrompt.ActionText = "필드 워프"
 	warpPrompt.ObjectText = "필드 입구"
 	warpPrompt.HoldDuration = 0
-	warpPrompt.MaxActivationDistance = 24
+	warpPrompt.MaxActivationDistance = 40
 	warpPrompt.RequiresLineOfSight = false
 	warpPrompt.Parent = beam
 
