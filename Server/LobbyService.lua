@@ -527,7 +527,7 @@ function Lobby.Build()
 	end
 	local beam = makePart({ Name = "FieldBeam", Size = Vector3.new(9, 8, 58), Position = fieldGate + Vector3.new(0, 40, 0), Color = gateStone, Material = Enum.Material.Cobblestone }, folder)
 	makePart({ Name = "FieldBeamGlow", Size = Vector3.new(9.4, 1.2, 58.4), Position = fieldGate + Vector3.new(0, 35.4, 0), Color = green, Material = Enum.Material.Neon, CanCollide = false }, folder)
-	makeLabel(beam, "🏔 사냥 필드 ▶ 동쪽\n갈수록 강한 몬스터!", Color3.fromRGB(190, 255, 190), 10, 380, 80, 160)
+	makeLabel(beam, "🏔 사냥 필드 입구", Color3.fromRGB(190, 255, 190), 10, 300, 56, 110)
 
 	-- 문 사이를 채우는 반투명 빛의 막 (지나가면 필드)
 	local veil = makePart({ Name = "FieldVeil", Size = Vector3.new(1, 36, 40), Position = fieldGate + Vector3.new(0, 18, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.82, CanCollide = false, CanQuery = false }, folder)
@@ -554,6 +554,53 @@ function Lobby.Build()
 		local chevron2 = chevron:Clone()
 		chevron2.CFrame = CFrame.new(chevron.Position) * CFrame.Angles(0, math.rad(-45), 0)
 		chevron2.Parent = folder
+	end
+
+	-- 필드로 가는 "길"의 느낌: 광장 갈림길의 이정표 + 필드 쪽으로 이어지는 등불 가로수 길 + 멀리서도 보이는 빛기둥 + 문 앞 고리
+	-- 1) 갈림길 이정표 (중앙 교차로 한켠): 동쪽 필드 / 북쪽 던전 / 서쪽 훈련장 화살표 판
+	do
+		local post = makePart({ Name = "CrossPost", Size = Vector3.new(1.2, 12, 1.2), Position = Vector3.new(13, 6, 13), Color = Color3.fromRGB(95, 65, 40), Material = Enum.Material.Wood }, folder)
+		local boards = {
+			{ Text = "▶ 사냥 필드 (동쪽)", Y = 11, Color = Color3.fromRGB(70, 140, 80), Dir = 1 },
+			{ Text = "▲ 던전 게이트 (북쪽)", Y = 8.4, Color = Color3.fromRGB(120, 85, 160), Dir = 0 },
+			{ Text = "◀ 허수아비 훈련장 (서쪽)", Y = 5.8, Color = Color3.fromRGB(170, 120, 60), Dir = -1 },
+		}
+		for _, board in ipairs(boards) do
+			local plank = makePart({ Name = "CrossBoard", Size = Vector3.new(9, 2.2, 0.5), Position = Vector3.new(13 + board.Dir * 3.2, board.Y, 13), Color = board.Color, Material = Enum.Material.Wood }, folder)
+			makeLabel(plank, board.Text, Color3.fromRGB(255, 250, 225), 0, 240, 36, 70)
+		end
+	end
+
+	-- 2) 필드로 이어지는 길가의 등불 (필드 문에 가까울수록 초록빛이 짙어진다) + 깃발
+	for step = 0, 9 do
+		local x = 30 + step * 10
+		for _, side in ipairs({ -1, 1 }) do
+			local fade = step / 9
+			local lampColor = Color3.fromRGB(255, 225, 160):Lerp(green, fade)
+			makePart({ Name = "RoadPost", Size = Vector3.new(0.7, 7, 0.7), Position = Vector3.new(x, 3.5, side * 9), Color = Color3.fromRGB(60, 56, 70), Material = Enum.Material.Metal }, folder)
+			local bulb = makePart({ Name = "RoadLamp", Shape = Enum.PartType.Ball, Size = Vector3.new(1.6, 1.6, 1.6), Position = Vector3.new(x, 7.6, side * 9), Color = lampColor, Material = Enum.Material.Neon, CanCollide = false }, folder)
+			addLight(bulb, 22, 1.1, lampColor)
+			if step % 2 == 1 then
+				makePart({ Name = "RoadBanner", Size = Vector3.new(0.3, 4, 2.4), Position = Vector3.new(x, 5.4, side * 9.8), Color = green:Lerp(Color3.fromRGB(30, 80, 50), 0.4), Material = Enum.Material.Fabric, CanCollide = false }, folder)
+			end
+		end
+	end
+
+	-- 3) 문 위로 솟는 빛기둥: 마을 어디서든 "저쪽이 필드"라는 게 보인다
+	local pillar = makePart({ Name = "FieldBeacon", Size = Vector3.new(14, 320, 14), Position = fieldGate + Vector3.new(0, 160, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.88, CanCollide = false, CanQuery = false }, folder)
+	addLight(pillar, 80, 1.2, green)
+
+	-- 4) 문 앞의 큰 빛 고리 (통과하는 느낌)
+	for ring = 1, 3 do
+		for index = 0, 19 do
+			local angle = index / 20 * math.pi * 2
+			local radius = 12 + ring * 2.5
+			local piece = makePart({
+				Name = "FieldRing", Size = Vector3.new(1, 2.4, 2.4), Position = fieldGate + Vector3.new(-6 - ring * 3, 17 + math.sin(angle) * radius, math.cos(angle) * radius),
+				Color = green, Material = Enum.Material.Neon, CanCollide = false, CanQuery = false, Transparency = 0.15 + ring * 0.15,
+			}, folder)
+			piece.CFrame = CFrame.new(piece.Position) * CFrame.Angles(angle, 0, 0)
+		end
 	end
 
 	-- 도달한 필드 구역 캠프로 바로 워프 (캠프의 비콘에서도 같은 메뉴가 열린다)
