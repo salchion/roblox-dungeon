@@ -12,6 +12,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Level = require(script.Parent:WaitForChild("LevelService"))
+local Event = require(script.Parent:WaitForChild("EventService"))
 
 local Meta = {}
 
@@ -212,6 +213,9 @@ function Meta.RecordTower(player, floor)
 	if not state or floor <= state.Tower then return end
 	state.Tower = floor
 	player:SetAttribute("TowerBest", floor)
+	if floor % 10 == 0 then
+		Event.Announce(string.format("📢 %s 님이 무한의 탑 %d층에 도달했어요!", player.DisplayName, floor))
+	end
 	Meta.Push(player)
 end
 
@@ -286,6 +290,9 @@ local function hatch(player)
 	if not level then
 		state.Owned[key] = 1
 		message = string.format("🥚 [%s] %s 부화!", Config.Pets.RarityNames[pet.Rarity], pet.Name)
+		if pet.Rarity >= 4 then
+			Event.Announce(string.format("📢 %s 님이 전설 펫 [%s]을(를) 부화했어요!", player.DisplayName, pet.Name))
+		end
 		if not state.Equipped then
 			state.Equipped = key
 		end

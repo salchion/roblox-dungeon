@@ -209,6 +209,20 @@
       "name": "TutorialClient",
       "class": "LocalScript",
       "overwrite": true
+    },
+    {
+      "path": "GoalClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "GoalClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
+      "path": "Server/EventService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "EventService",
+      "class": "ModuleScript",
+      "overwrite": true
     }
   ]
 }

@@ -29,6 +29,7 @@ local function send(player)
 	if not state or not player.Parent then return end
 	local step = Steps[state.Step]
 	player:SetAttribute("TutorialFree", step ~= nil and step.FreeEnhance == true)
+	player:SetAttribute("TutorialActive", step ~= nil)
 	if not step then
 		Remotes.Tutorial:FireClient(player, "Done")
 		return

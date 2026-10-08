@@ -27,6 +27,7 @@ local Skill = require(Modules:WaitForChild("SkillService"))
 local Daily = require(Modules:WaitForChild("DailyService"))
 local Meta = require(Modules:WaitForChild("MetaService"))
 local Tutorial = require(Modules:WaitForChild("TutorialService"))
+local EventService = require(Modules:WaitForChild("EventService"))
 local Quest = require(Modules:WaitForChild("QuestService"))
 local Level = require(Modules:WaitForChild("LevelService"))
 local Rank = require(Modules:WaitForChild("RankService"))
@@ -63,6 +64,7 @@ Dungeon.Init(lobby.SpawnCFrame)
 Dummy.Build(lobby.DummyStart)
 Rank.Init(lobby.RankBoardCFrame)
 Field.Init(lobby.SpawnCFrame)
+EventService.Start() -- 주기적 골든 타임
 
 -- 던전 게이트: 파티장(또는 솔로)에게 던전 종류 / 난이도 선택창을 띄운다
 lobby.GatePrompt.Triggered:Connect(function(player)

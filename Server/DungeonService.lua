@@ -103,7 +103,7 @@ local function arenaSpawnCFrame(run)
 end
 
 local function giveGold(run, amount)
-	amount = math.floor(amount * run.GoldMult + 0.5)
+	amount = math.floor(amount * run.GoldMult * (Config.IsGoldenTime() and Config.Golden.GoldMult or 1) + 0.5)
 	for _, member in ipairs(run.Members) do
 		member:SetAttribute("Gold", (member:GetAttribute("Gold") or 0) + amount)
 		run.Earned[member] = (run.Earned[member] or 0) + amount

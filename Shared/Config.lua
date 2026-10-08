@@ -84,6 +84,20 @@ function Config.FormatPetStat(key, level)
 end
 
 ------------------------------------------------------------
+-- 골든 타임: 주기적으로 짧은 시간 동안 경험치 / 골드 보너스 (서버 전체)
+------------------------------------------------------------
+Config.Golden = {
+	FirstDelay = 420,    -- 서버 시작 후 첫 골든 타임까지 (초)
+	Interval = 1500,     -- 골든 타임이 끝난 뒤 다음까지 (초)
+	Duration = 300,      -- 지속 시간 (초)
+	XpMult = 2,
+	GoldMult = 1.5,
+}
+function Config.IsGoldenTime()
+	return (workspace:GetAttribute("GoldenUntil") or 0) > os.time()
+end
+
+------------------------------------------------------------
 -- 튜토리얼 미션 (처음 1~5분): 쉬운 목표 -> 즉시 보상을 계속 이어서 보여준다
 -- Target: TutorialService.SetTargets 로 넘겨주는 위치 키 (Dummy / Anvil / Gacha / Field / Gate)
 -- FreeEnhance: 이 미션 동안 무기 강화가 공짜 + 100% 성공

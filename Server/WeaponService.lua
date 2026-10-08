@@ -6,6 +6,7 @@
 local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Config"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
+local Event = require(script.Parent:WaitForChild("EventService"))
 
 local Debris = game:GetService("Debris")
 local TweenService = game:GetService("TweenService")
@@ -433,6 +434,11 @@ function Weapon.Enhance(player)
 		-- 이 무기 종류의 레벨을 올리면 GameServer 가 WeaponLevel(현재 무기 레벨)을 맞춰주고 외형도 갱신한다
 		player:SetAttribute("WLvl_" .. typeKey, level + 1)
 		Quest.Add(player, "Enhances", 1)
+		-- 무기가 새 단계로 진화하면 서버 전체에 자랑 (3단계 이상)
+		local newIndex = Config.GetWeaponTierIndex(level + 1)
+		if newIndex > Config.GetWeaponTierIndex(level) and newIndex >= 3 then
+			Event.Announce(string.format("📢 %s 님의 무기가 [%s]로 진화했어요!", player.DisplayName, Config.GetWeaponName(typeKey, level + 1)))
+		end
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if root then
 			playSoundAt(root, Config.Audio.EnhanceSuccess, 0.8, 1)

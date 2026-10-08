@@ -30,6 +30,9 @@ end
 -- 경험치 배율: 장비 옵션(경험치 획득) + VIP 보너스, 경험치 부스터가 켜져 있으면 x2
 local function xpMultiplier(player)
 	local mult = 1 + (player:GetAttribute("GearXp") or 0) + (player:GetAttribute("PetXp") or 0)
+	if Config.IsGoldenTime() then
+		mult *= Config.Golden.XpMult
+	end
 	if player:GetAttribute("Vip") then
 		mult += Config.Shop.Vip.XpBonus
 	end
