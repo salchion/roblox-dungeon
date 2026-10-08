@@ -2875,3 +2875,15 @@ do
 	fit()
 	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fit)
 end
+
+-- 메뉴 키(I): Roblox 기본 카메라가 I / O 키를 "확대 / 축소"에 쓰고 있어서 입력이 먼저 가로채질 수 있다.
+-- 더 높은 우선순위로 직접 등록해서 I 가 항상 메뉴를 열도록 한다.
+do
+	local ContextActionService = game:GetService("ContextActionService")
+	ContextActionService:BindActionAtPriority("DungeonMenuToggle", function(_, state)
+		if state == Enum.UserInputState.Begin then
+			toggleMenu()
+		end
+		return Enum.ContextActionResult.Sink
+	end, false, Enum.ContextActionPriority.High.Value, Enum.KeyCode.I)
+end
