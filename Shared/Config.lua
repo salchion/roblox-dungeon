@@ -389,6 +389,7 @@ Config.Weapon.MaxLevel = totalSteps - 1 -- 마지막 무기까지 강화한 단�
 ------------------------------------------------------------
 Config.Dummy = {
 	GoldPerHit = 2,
+	EraGoldMult = 1.4,     -- 무기 세대(10종 단위)가 오를 때마다 허수아비 골드 x1.4 (업그레이드할수록 골드도 늘게)
 	Spacing = 20,     -- 허수아비 간격 (1열로 나열)
 	List = {
 		{ Multiplier = 1,    RequiredLevel = 1 },

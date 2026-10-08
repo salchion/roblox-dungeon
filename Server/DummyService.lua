@@ -252,7 +252,11 @@ function Dummy.Shoot(player, origin, direction)
 	end
 
 	-- 무기 종류별 한 발 위력(DamageMult)에 비례: 샷건은 6발이 나가므로 한 발당 0.5, 저격총은 4
-	local gold = math.max(1, math.floor(Config.Dummy.GoldPerHit * data.Multiplier * weaponType.DamageMult + 0.5))
+	-- 초당 골드가 무기를 바꿔도 줄지 않게: 한 발 위력(DamageMult)에 비례하고, 산탄류는 펠릿이 전부 맞아도 과하게 늘지 않게
+	-- 한 알당 x0.6 (위력표가 "펠릿 60% 명중"을 전제로 잡혀 있다). 10종(한 세대)이 지날 때마다 x1.4 — 무기 위력이 세대마다 x1.4 로 오르는 것과 맞춰서, 다음 세대 첫 무기가 앞 세대 마지막 무기보다 항상 더 준다.
+	local pelletFactor = weaponType.Pellets > 1 and 0.6 or 1
+	local tierBonus = Config.Dummy.EraGoldMult ^ (Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0).Era - 1)
+	local gold = math.max(1, math.floor(Config.Dummy.GoldPerHit * data.Multiplier * weaponType.DamageMult * pelletFactor * tierBonus + 0.5))
 	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
 	Quest.Add(player, "DummyHits", 1)
 	Effects.FloatText(result.Position, string.format("+%d G", gold), Color3.fromRGB(255, 220, 90))
