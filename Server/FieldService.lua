@@ -147,9 +147,9 @@ end
 ------------------------------------------------------------
 local function makeSign(part, text, color, offsetY)
 	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.new(0, 360, 0, 90)
+	gui.Size = UDim2.new(0, 320, 0, 64)
 	gui.StudsOffset = Vector3.new(0, offsetY, 0)
-	gui.MaxDistance = 220
+	gui.MaxDistance = 160
 	gui.Parent = part
 
 	local label = Instance.new("TextLabel")
@@ -273,7 +273,7 @@ local function buildCamp(zone, x0)
 	light.Brightness = 1.6
 	light.Color = accent
 	light.Parent = beacon
-	makeSign(beacon, string.format("⛺ 구역 %d 캠프\n안전지대 · 워프", zone), Color3.fromRGB(255, 240, 200), 18)
+	makeSign(beacon, "⛺ 캠프 · 워프", Color3.fromRGB(255, 240, 200), 18)
 
 	for index = 0, 3 do
 		local angle = math.rad(index * 90 + 45)
@@ -303,6 +303,145 @@ local function buildCamp(zone, x0)
 	campCFrames[zone] = CFrame.new(x0 + 40, TOP + 4, 16)
 end
 
+-- 구역 관문: 구역마다 컨셉이 다른 성문 / 입구. 문은 활짝 열려 있고, 이름 / 컨셉 / 몬스터 레벨이 위에 걸려 있다.
+--   1 초원 목책 문 · 2 숲속 고성 정문 · 3 무너진 요새 · 4 사막 신전 · 5 얼음 궁전 · 6 용암 요새 · 7 암흑 성 · 8 심연의 문
+local GATE_THEMES = {
+	{ Tag = "🌾 모험의 시작", Wall = Color3.fromRGB(140, 105, 70), Mat = Enum.Material.Wood, Accent = Color3.fromRGB(255, 205, 90), Height = 24, Crenel = false },
+	{ Tag = "🏰 숲속 고성 정문", Wall = Color3.fromRGB(105, 125, 105), Mat = Enum.Material.Brick, Accent = Color3.fromRGB(120, 230, 130), Height = 34, Crenel = true },
+	{ Tag = "🏚 무너진 요새 관문", Wall = Color3.fromRGB(120, 105, 90), Mat = Enum.Material.Cobblestone, Accent = Color3.fromRGB(255, 170, 80), Height = 30, Crenel = true },
+	{ Tag = "🏜 사막 신전 입구", Wall = Color3.fromRGB(205, 175, 110), Mat = Enum.Material.Sandstone, Accent = Color3.fromRGB(255, 215, 70), Height = 32, Crenel = false },
+	{ Tag = "❄ 얼음 궁전 성문", Wall = Color3.fromRGB(180, 215, 235), Mat = Enum.Material.Ice, Accent = Color3.fromRGB(130, 220, 255), Height = 34, Crenel = true },
+	{ Tag = "🌋 용암 요새 관문", Wall = Color3.fromRGB(70, 45, 42), Mat = Enum.Material.Basalt, Accent = Color3.fromRGB(255, 110, 40), Height = 34, Crenel = true },
+	{ Tag = "🦇 암흑 성 정문", Wall = Color3.fromRGB(45, 38, 62), Mat = Enum.Material.Slate, Accent = Color3.fromRGB(170, 100, 255), Height = 40, Crenel = true },
+	{ Tag = "🌀 심연의 문", Wall = Color3.fromRGB(28, 24, 40), Mat = Enum.Material.Slate, Accent = Color3.fromRGB(255, 70, 130), Height = 40, Crenel = false },
+}
+
+local function buildGateway(zone, x0)
+	local theme = GATE_THEMES[zone]
+	local half = F.Width / 2
+	local open = 56            -- 열린 통로 폭 (로비 쪽 통로 40보다 넓게)
+	local H = theme.Height
+	local thick = 8
+	local accent = theme.Accent
+
+	local function part(name, size, position, color, material, extra)
+		local props = { Name = name, Size = size, Position = position, Color = color or theme.Wall, Material = material or theme.Mat }
+		for key, value in pairs(extra or {}) do
+			props[key] = value
+		end
+		if props.CFrame then
+			props.Position = nil -- CFrame 이 위치를 정한다 (둘 다 있으면 적용 순서가 불확실)
+		end
+		return makePart(props, worldFolder)
+	end
+	local function torch(position)
+		local flame = part("GateFlame", Vector3.new(2.4, 2.4, 2.4), position, accent, Enum.Material.Neon, { Shape = Enum.PartType.Ball, CanCollide = false })
+		local light = Instance.new("PointLight")
+		light.Range = 36
+		light.Brightness = 1.6
+		light.Color = accent
+		light.Parent = flame
+	end
+
+	for _, side in ipairs({ -1, 1 }) do
+		-- 성벽 + 흉벽
+		local length = half - open / 2
+		local zc = side * (open / 2 + length / 2)
+		part("GateWall", Vector3.new(thick, H, length), Vector3.new(x0 + 2, H / 2, zc))
+		if theme.Crenel then
+			for z = open / 2 + 8, half - 4, 12 do
+				part("Crenel", Vector3.new(thick, 4, 6), Vector3.new(x0 + 2, H + 2, side * z))
+			end
+		end
+
+		-- 문루(탑) + 지붕 띠 + 창
+		local towerZ = side * (open / 2 + 8)
+		part("GateTower", Vector3.new(16, H + 14, 16), Vector3.new(x0 + 2, (H + 14) / 2, towerZ))
+		part("TowerCap", Vector3.new(19, 3, 19), Vector3.new(x0 + 2, H + 15.5, towerZ), accent, Enum.Material.Neon)
+		part("TowerWindow", Vector3.new(1, 7, 3.5), Vector3.new(x0 + 10.4, H * 0.72, towerZ), accent, Enum.Material.Neon, { CanCollide = false })
+		part("TowerWindow", Vector3.new(1, 7, 3.5), Vector3.new(x0 - 6.4, H * 0.72, towerZ), accent, Enum.Material.Neon, { CanCollide = false })
+		torch(Vector3.new(x0 + 11, 15, side * (open / 2 - 1)))
+
+		-- 활짝 열린 문짝: 통로 가장자리에 경첩을 두고 안쪽(+x)으로 거의 활짝 젖혀 놓는다
+		if zone ~= 8 then
+			local hinge = Vector3.new(x0 + 2, 0, side * (open / 2 - 0.5))
+			local angle = math.rad(78)
+			local doorLength = 26
+			local vector = Vector3.new(math.sin(angle), 0, -side * math.cos(angle)) * doorLength
+			local center = hinge + vector / 2 + Vector3.new(0, H * 0.45, 0)
+			part("GateDoor", Vector3.new(2, H * 0.9, doorLength), center, theme.Wall:Lerp(Color3.fromRGB(60, 45, 35), 0.5), Enum.Material.Wood,
+				{ CFrame = CFrame.lookAt(center, center + vector) })
+			-- 문짝 장식 띠
+			part("DoorBand", Vector3.new(2.2, 2, doorLength), center + Vector3.new(0, H * 0.25, 0), accent, Enum.Material.Neon,
+				{ CFrame = CFrame.lookAt(center + Vector3.new(0, H * 0.25, 0), center + Vector3.new(0, H * 0.25, 0) + vector), CanCollide = false })
+		end
+	end
+
+	-- 상인방(문 위 가로보) + 컨셉 장식
+	if zone ~= 8 then
+		part("GateLintel", Vector3.new(thick, 7, open + 2), Vector3.new(x0 + 2, H - 0.5, 0))
+		part("LintelGlow", Vector3.new(thick + 0.4, 1.2, open + 2.4), Vector3.new(x0 + 2, H - 4.5, 0), accent, Enum.Material.Neon, { CanCollide = false })
+	end
+
+	if zone == 1 then -- 목책: 문 앞뒤로 말뚝 울타리 + 깃발
+		for _, side in ipairs({ -1, 1 }) do
+			for index = 0, 5 do
+				part("Fence", Vector3.new(1.4, 6, 1.4), Vector3.new(x0 + 14 + index * 7, 3, side * (open / 2 + 14)))
+			end
+			part("FenceRail", Vector3.new(42, 1, 0.8), Vector3.new(x0 + 35, 4.5, side * (open / 2 + 14)))
+			part("Banner", Vector3.new(0.4, 9, 5), Vector3.new(x0 + 2, H + 6, side * (open / 2 + 8)), Color3.fromRGB(210, 70, 60), Enum.Material.Fabric, { CanCollide = false })
+		end
+	elseif zone == 2 then -- 이끼 낀 성: 덩굴 + 녹색 깃발
+		for _, side in ipairs({ -1, 1 }) do
+			part("Banner", Vector3.new(0.4, 14, 6), Vector3.new(x0 + 11, H - 4, side * (open / 2 + 8)), Color3.fromRGB(50, 130, 70), Enum.Material.Fabric, { CanCollide = false })
+			part("Moss", Vector3.new(thick + 0.3, 6, 22), Vector3.new(x0 + 2, H - 3, side * (open / 2 + 30)), Color3.fromRGB(60, 120, 60), Enum.Material.Grass, { CanCollide = false })
+		end
+	elseif zone == 3 then -- 폐허: 부러진 기둥 + 잔해
+		for _, side in ipairs({ -1, 1 }) do
+			part("BrokenPillar", Vector3.new(5, 16, 5), Vector3.new(x0 - 8, 8, side * (open / 2 + 28)), nil, nil, { CFrame = CFrame.new(x0 - 8, 8, side * (open / 2 + 28)) * CFrame.Angles(0, 0.4, math.rad(side * 14)) })
+			part("Rubble", Vector3.new(7, 3.5, 6), Vector3.new(x0 + 16, 1.7, side * (open / 2 + 6)), nil, nil, { CFrame = CFrame.new(x0 + 16, 1.7, side * (open / 2 + 6)) * CFrame.Angles(0.2, 0.8, 0.1) })
+		end
+	elseif zone == 4 then -- 사막 신전: 오벨리스크
+		for _, side in ipairs({ -1, 1 }) do
+			part("Obelisk", Vector3.new(6, 42, 6), Vector3.new(x0 - 12, 21, side * (open / 2 + 34)))
+			part("ObeliskTip", Vector3.new(4, 6, 4), Vector3.new(x0 - 12, 45, side * (open / 2 + 34)), accent, Enum.Material.Neon)
+		end
+	elseif zone == 5 then -- 얼음 궁전: 기울어진 얼음 첨탑
+		for _, side in ipairs({ -1, 1 }) do
+			for index = 1, 3 do
+				local z = side * (open / 2 + 18 + index * 9)
+				local height = 14 + index * 4
+				part("IceSpike", Vector3.new(4, height, 4), Vector3.new(x0 + 6, height / 2, z), Color3.fromRGB(190, 230, 250), Enum.Material.Ice,
+					{ CFrame = CFrame.new(x0 + 6, height / 2, z) * CFrame.Angles(0, 0, math.rad(side * -10)), Transparency = 0.25 })
+			end
+		end
+	elseif zone == 6 then -- 용암 요새: 바닥 용암 줄기 + 불기둥
+		for _, side in ipairs({ -1, 1 }) do
+			part("LavaStream", Vector3.new(30, 0.4, 7), Vector3.new(x0 + 22, 0.25, side * (open / 2 + 5)), accent, Enum.Material.Neon, { CanCollide = false })
+			torch(Vector3.new(x0 - 6, 22, side * (open / 2 + 20)))
+		end
+	elseif zone == 7 then -- 암흑 성: 보랏빛 룬과 박쥐 깃발
+		for _, side in ipairs({ -1, 1 }) do
+			part("Banner", Vector3.new(0.4, 18, 6), Vector3.new(x0 + 11, H - 2, side * (open / 2 + 8)), Color3.fromRGB(60, 25, 90), Enum.Material.Fabric, { CanCollide = false })
+			part("FloatRune", Vector3.new(4, 4, 4), Vector3.new(x0 + 6, H + 26, side * 16), accent, Enum.Material.Neon, { CanCollide = false, CFrame = CFrame.new(x0 + 6, H + 26, side * 16) * CFrame.Angles(0.8, 0.6, 0.3) })
+		end
+	elseif zone == 8 then -- 심연의 문: 거대한 고리 + 빛나는 막
+		local segments = 18
+		local radius = 30
+		for index = 0, segments - 1 do
+			local angle = index / segments * math.pi * 2
+			local position = Vector3.new(x0 + 2, 32 + math.sin(angle) * radius, math.cos(angle) * radius)
+			part("PortalRing", Vector3.new(4, 7, 7), position, accent, Enum.Material.Neon, { CanCollide = false,
+				CFrame = CFrame.new(position) * CFrame.Angles(angle, 0, 0) })
+		end
+		part("PortalVeil", Vector3.new(1, 50, 56), Vector3.new(x0 + 2, 27, 0), accent, Enum.Material.Neon, { Transparency = 0.85, CanCollide = false, CanQuery = false })
+	end
+
+	-- 간판: 구역 이름 + 컨셉 + 몬스터 레벨
+	local signPart = part("GateSign", Vector3.new(1, 1, 1), Vector3.new(x0 + 2, H + 24, 0), accent, Enum.Material.Neon, { Transparency = 1, CanCollide = false, CanQuery = false })
+	makeSign(signPart, string.format("구역 %d · %s\n%s · 몬스터 Lv.%d", zone, F.ZoneNames[zone], theme.Tag, F.GetZoneLevel(zone)), Color3.fromRGB(255, 240, 190), 0)
+end
+
 local function buildWorld()
 	worldFolder = Instance.new("Folder")
 	worldFolder.Name = "Field"
@@ -326,12 +465,7 @@ local function buildWorld()
 			Material = F.ZoneMaterials[zone],
 		}, worldFolder)
 
-		-- 구역 입구 아치: 이름 + 몬스터 레벨
-		local stone = F.ZoneColors[zone]:Lerp(Color3.fromRGB(50, 50, 60), 0.6)
-		makePart({ Name = "ArchL", Size = Vector3.new(5, 32, 5), Position = Vector3.new(x0 + 2, 16, -half + 3), Color = stone, Material = Enum.Material.Granite }, worldFolder)
-		makePart({ Name = "ArchR", Size = Vector3.new(5, 32, 5), Position = Vector3.new(x0 + 2, 16, half - 3), Color = stone, Material = Enum.Material.Granite }, worldFolder)
-		local beam = makePart({ Name = "ArchBeam", Size = Vector3.new(5, 5, F.Width), Position = Vector3.new(x0 + 2, 34, 0), Color = stone, Material = Enum.Material.Granite, CanCollide = false }, worldFolder)
-		makeSign(beam, string.format("구역 %d · %s\n몬스터 Lv.%d", zone, F.ZoneNames[zone], F.GetZoneLevel(zone)), Color3.fromRGB(255, 240, 190), 8)
+		buildGateway(zone, x0)
 
 		decorateZone(zone, rng)
 		buildCamp(zone, x0)
