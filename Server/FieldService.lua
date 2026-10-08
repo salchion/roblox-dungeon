@@ -137,23 +137,22 @@ local function canHitZone(player, x)
 end
 
 -- 구역마다 넓은 계단으로 층을 올라갔다 내려온다 (구역 입구 / 캠프는 항상 0층). 계단은 맵 폭 전체라 좁은 길이 없다.
-local STEP_RISE, STEP_DEPTH = 1.2, 2.6
--- 넓은 계단을 세 번 연달아 올라 정상(+48)까지 간 뒤, 긴 내리막 계단으로 다시 내려온다 (계속 올라가는 느낌)
-local STAIRS = { { At = 110, Rise = 16 }, { At = 250, Rise = 16 }, { At = 390, Rise = 16 }, { At = 520, Rise = -48 } }
-local FLOOR_SEGMENTS = {}   -- { A = 구역 안 x 시작, B = 끝, H = 높이, Kind = "Floor" | "Step", Stair = 계단 정보 }
+-- 계단 대신 완만한 "경사로": 작은 단차를 오르내릴 때 캐릭터가 위로 튕겨 나가는 문제를 없앴다 (경사가 약 14~22도라서 부드럽게 걷는다)
+-- 세 번 연달아 올라 정상(+48)까지 간 뒤, 긴 내리막으로 다시 내려온다 (계속 올라가는 느낌). 구역 입구 / 캠프는 항상 0층.
+local STAIRS = {
+	{ At = 110, Rise = 16, Run = 56 },
+	{ At = 250, Rise = 16, Run = 56 },
+	{ At = 390, Rise = 16, Run = 56 },
+	{ At = 520, Rise = -48, Run = 120 },
+}
+local FLOOR_SEGMENTS = {}   -- { A = 구역 안 x 시작, B = 끝, H = 높이, Kind = "Floor" | "Step"(경사로), Stair = 경사로 정보 }
 do
 	local height, cursor = 0, 0
 	for _, stair in ipairs(STAIRS) do
 		table.insert(FLOOR_SEGMENTS, { A = cursor, B = stair.At, H = height, Kind = "Floor" })
-		local count = math.ceil(math.abs(stair.Rise) / STEP_RISE)
-		stair.Count = count
-		stair.Run = count * STEP_DEPTH
 		stair.From = height
 		stair.Hi = math.max(height, height + stair.Rise)
-		for i = 1, count do
-			local a = stair.At + (i - 1) * STEP_DEPTH
-			table.insert(FLOOR_SEGMENTS, { A = a, B = a + STEP_DEPTH, H = height + stair.Rise * i / count, Kind = "Step", Stair = stair, First = i == 1 })
-		end
+		table.insert(FLOOR_SEGMENTS, { A = stair.At, B = stair.At + stair.Run, H = height, Kind = "Step", Stair = stair, First = true })
 		height += stair.Rise
 		cursor = stair.At + stair.Run
 		stair.Top = height
@@ -164,6 +163,11 @@ local function floorAt(x)
 	local offset = (x - F.StartX) % F.ZoneLength
 	for _, segment in ipairs(FLOOR_SEGMENTS) do
 		if offset < segment.B then
+			if segment.Kind == "Step" then
+				local stair = segment.Stair
+				local t = math.clamp((offset - stair.At) / stair.Run, 0, 1)
+				return TOP + stair.From + stair.Rise * t -- 경사로 위의 높이 (몬스터 / 전리품이 경사를 따라간다)
+			end
 			return TOP + segment.H
 		end
 	end
@@ -533,16 +537,26 @@ local function buildWorld()
 				}, worldFolder)
 			else
 				local stair = segment.Stair
-				-- 계단 한 칸 (좁은 통로)
+				-- 경사로: 비스듬한 두꺼운 판 + 아래쪽을 받치는 바닥 덩어리 (표면은 시작 / 끝 높이에 딱 맞는다)
+				local startY, endY = TOP + stair.From, TOP + stair.From + stair.Rise
+				local length = math.sqrt(stair.Run * stair.Run + stair.Rise * stair.Rise)
+				local angle = math.atan2(stair.Rise, stair.Run)
+				local thickness = 6
+				local midX, midY = x0 + stair.At + stair.Run / 2, (startY + endY) / 2
+				-- 표면에서 두께의 절반만큼 아래(법선 반대 방향)로 중심을 내린다
+				local center = Vector3.new(midX + math.sin(angle) * thickness / 2, midY - math.cos(angle) * thickness / 2, 0)
 				makePart({
-					Name = "Stair" .. zone, Size = Vector3.new(STEP_DEPTH, top + 1.95, F.Width),
-					Position = Vector3.new(x0 + (segment.A + segment.B) / 2, (top - 1.95) / 2, 0),
-					Color = Color3.fromRGB(205, 195, 180), Material = Enum.Material.Cobblestone,
+					Name = "Ramp" .. zone, Size = Vector3.new(length, thickness, F.Width),
+					CFrame = CFrame.new(center) * CFrame.Angles(0, 0, angle),
+					Color = Color3.fromRGB(205, 195, 180):Lerp(F.ZoneColors[zone], 0.3), Material = Enum.Material.Cobblestone,
 				}, worldFolder)
-				if segment.First then
-					for dx = 0, stair.Run, 14 do
-						table.insert(baffleXs, x0 + stair.At + dx)
-					end
+				local lowY = math.min(startY, endY)
+				makePart({
+					Name = "RampBase" .. zone, Size = Vector3.new(stair.Run, math.max(0.5, lowY - thickness + 1.95), F.Width),
+					Position = Vector3.new(midX, (lowY - thickness - 1.95) / 2, 0), Color = F.ZoneColors[zone], Material = F.ZoneMaterials[zone],
+				}, worldFolder)
+				for dx = 0, stair.Run, 14 do
+					table.insert(baffleXs, x0 + stair.At + dx)
 				end
 			end
 		end
