@@ -1977,7 +1977,7 @@ do
 	}, hint)
 	TweenService:Create(bigKey, TweenInfo.new(0.55, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Size = UDim2.new(0, 94, 0, 94), Position = UDim2.new(0, 13, 0.5, -47) }):Play()
 
-	local shownAt = os.clock() + 4   -- 접속 4초 뒤에 한 번 보여 준다
+	local shownAt = os.clock() + 9   -- 접속 4초 뒤에 한 번 보여 준다
 	local used = false
 	RunService.RenderStepped:Connect(function()
 		if autoMode then used = true end
@@ -3567,14 +3567,10 @@ do
 	player:GetAttributeChangedSignal("DeadeyeActive"):Connect(apply)
 end
 
--- 내 체력바: 화면 아래 중앙(스킬바 위)에 큰 막대 + 캐릭터 발밑에 작은 막대
+-- 내 체력바: 캐릭터 발밑에만 표시
 do
-	local bar = create("Frame", { Name = "MyHealth", Size = UDim2.new(0, 420, 0, 22), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -128), BackgroundColor3 = Color3.fromRGB(20, 10, 14), BorderSizePixel = 0, ZIndex = 20 }, gui)
-	create("UICorner", { CornerRadius = UDim.new(0, 8) }, bar)
-	create("UIStroke", { Color = Color3.fromRGB(255, 255, 255), Thickness = 2, Transparency = 0.3 }, bar)
-	local fill = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(70, 220, 100), BorderSizePixel = 0, ZIndex = 21 }, bar)
-	create("UICorner", { CornerRadius = UDim.new(0, 8) }, fill)
-	local text = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "", Font = Enum.Font.GothamBlack, TextSize = 16, TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 0.4, ZIndex = 22 }, bar)
+	local fill = { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(70, 220, 100) }
+	local text = { Text = "" }
 	local feet
 	local function update()
 		local character = player.Character
@@ -3588,18 +3584,20 @@ do
 		if root and (not feet or feet.Parent ~= root) then
 			if feet then feet:Destroy() end
 			feet = Instance.new("BillboardGui")
-			feet.Size = UDim2.fromOffset(110, 12)
+			feet.Size = UDim2.fromOffset(130, 18)
 			feet.StudsOffset = Vector3.new(0, -3.6, 0)
 			feet.AlwaysOnTop = true
 			feet.Parent = root
 			local back = create("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.fromRGB(20, 10, 14), BorderSizePixel = 0 }, feet)
 			create("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 1.5 }, back)
 			create("Frame", { Name = "Fill", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.fromRGB(70, 220, 100), BorderSizePixel = 0 }, back)
+			makeLabel({ Name = "HP", Size = UDim2.fromScale(1, 1), Text = "", Font = Enum.Font.GothamBlack, TextSize = 13, TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 0.2, ZIndex = 3 }, back)
 		end
 		local f = feet and feet:FindFirstChild("Fill", true)
 		if f then
 			f.Size = UDim2.fromScale(ratio, 1)
 			f.BackgroundColor3 = fill.BackgroundColor3
+			feet:FindFirstChild("HP", true).Text = text.Text
 		end
 	end
 	RunService.Heartbeat:Connect(update)

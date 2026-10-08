@@ -99,7 +99,34 @@ local function placeBeacon(position, name)
 	}, billboard)
 end
 
+-- 새 미션이 시작되면 화면 중앙에 큼직한 카드로 먼저 보여준다 (상단 바는 눈에 잘 안 띄어서)
+local lastPopupIndex = 0
+local function popupMission()
+	local card = create("Frame", {
+		Size = UDim2.new(0, 520, 0, 150), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.36, 0),
+		BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.1, BorderSizePixel = 0, ZIndex = 30,
+	}, gui)
+	rounded(card, 18)
+	local cardStroke = create("UIStroke", { Color = Color3.fromRGB(255, 225, 110), Thickness = 4 }, card)
+	label({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 10), TextSize = 26, Font = Enum.Font.GothamBlack, RichText = true, ZIndex = 31,
+		Text = string.format("<font color='#ffd966'>🎯 미션 %d/%d</font>", current.Index, current.Total) }, card)
+	label({ Size = UDim2.new(1, -40, 0, 80), Position = UDim2.new(0, 20, 0, 56), TextSize = 24, Font = Enum.Font.GothamBold, TextWrapped = true, ZIndex = 31,
+		Text = current.Text }, card)
+	card.Size = UDim2.new(0, 400, 0, 110)
+	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.new(0, 520, 0, 150) }):Play()
+	TweenService:Create(cardStroke, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 8 }):Play()
+	task.delay(4.5, function()
+		TweenService:Create(card, TweenInfo.new(0.4), { Position = UDim2.new(0.5, 0, 0, 45), Size = UDim2.new(0, 300, 0, 60), BackgroundTransparency = 1 }):Play()
+		task.wait(0.4)
+		card:Destroy()
+	end)
+end
+
 local function refresh()
+	if current and current.Index ~= lastPopupIndex then
+		lastPopupIndex = current.Index
+		popupMission()
+	end
 	if not current then
 		objective.Visible = false
 		return
