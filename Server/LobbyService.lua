@@ -502,11 +502,6 @@ function Lobby.Build()
 	warpPrompt.RequiresLineOfSight = false
 	warpPrompt.Parent = beam
 
-	-- 광장 서쪽 길가의 이정표: 허수아비 훈련장 방향 (광장에서 바로 보이게)
-	makePart({ Name = "SignPost", Size = Vector3.new(1, 9, 1), Position = Vector3.new(-30, 4.5, 100), Color = Color3.fromRGB(95, 65, 40), Material = Enum.Material.Wood }, folder)
-	local signBoard = makePart({ Name = "SignBoard", Size = Vector3.new(14, 4, 0.6), Position = Vector3.new(-30, 9, 100), Color = Color3.fromRGB(120, 85, 50), Material = Enum.Material.Wood }, folder)
-	makeLabel(signBoard, "🎯 허수아비 훈련장  ◀ 서쪽", Color3.fromRGB(255, 235, 170), 3.4, 280, 50, 60)
-
 	-- 허수아비 훈련장 입구 표지 (서쪽, 실제 허수아비는 DummyService 가 놓는다)
 	local trainingSign = makePart({ Name = "TrainingSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(-100, 24, 100), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
 	makeLabel(trainingSign, "🎯 허수아비 훈련장\n▲ 북쪽으로 갈수록 배수 UP", Color3.fromRGB(255, 220, 120), 0, 340, 76, 110)

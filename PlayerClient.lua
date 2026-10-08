@@ -1508,6 +1508,33 @@ end
 local questState = nil   -- 서버가 보내준 퀘스트/업적/칭호 상태
 local rankList = {}      -- 서버가 보내준 전투력 랭킹
 
+-- 화면 오른쪽의 작은 전투력 랭킹 (로비 / 필드에서 항상 보인다. 광장의 랭킹판을 대신한다)
+do
+	local mini = makePanel({
+		Size = UDim2.new(0, 270, 0, 138), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0, 444),
+	}, lobbyFrame)
+	makeLabel({
+		Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 6), Text = "🏆 전투력 랭킹",
+		Font = Enum.Font.GothamBlack, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 120),
+	}, mini)
+	local body = makeLabel({
+		Size = UDim2.new(1, -20, 1, -32), Position = UDim2.new(0, 10, 0, 28), RichText = true, TextSize = 13,
+		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = "집계 중...",
+	}, mini)
+	Remotes.Rank.OnClientEvent:Connect(function(action, data)
+		if action ~= "List" then return end
+		local lines = {}
+		for index = 1, math.min(5, #data) do
+			local entry = data[index]
+			local medal = index == 1 and "🥇" or index == 2 and "🥈" or index == 3 and "🥉" or (index .. ".")
+			local mine = entry.Name == player.DisplayName
+			table.insert(lines, string.format("%s <font color='#%s'>%s</font>  <font color='#ffe16e'>⚡%d</font>", medal, mine and "78ff8c" or "ffffff", entry.Name, entry.Power))
+		end
+		body.Text = #lines > 0 and table.concat(lines, "\n") or "아직 기록이 없어요"
+	end)
+	Remotes.Rank:FireServer("Request")
+end
+
 local menuPanel = makePanel({
 	Size = UDim2.new(0, 880, 0, 600),
 	AnchorPoint = Vector2.new(0.5, 0.5),
@@ -1801,7 +1828,7 @@ local function buildProgressRows(entries, remoteAction, showTitle)
 end
 
 local function buildRankTab()
-	sectionTitle("🏆 전투력 랭킹 TOP 10 (광장의 랭킹판과 같아요)")
+	sectionTitle("🏆 전투력 랭킹 TOP 10 (화면 오른쪽 작은 랭킹과 같아요)")
 	if #rankList == 0 then
 		local row = newRow(36)
 		rowText(row, "<font color='#888888'>집계 중이에요...</font>")

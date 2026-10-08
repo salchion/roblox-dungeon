@@ -23,7 +23,7 @@ end
 
 local rankList = {}      -- { { Name, Power }... } 가장 최근에 계산한 TOP
 local nameCache = {}     -- [userId] = 이름
-local boardLabel
+local boardLabel = nil
 
 local function nameOf(userId)
 	local online = Players:GetPlayerByUserId(userId)
@@ -104,45 +104,9 @@ local function refresh()
 	Remotes.Rank:FireAllClients("List", rankList)
 end
 
--- 로비 광장의 랭킹판을 세운다. cframe: 랭킹판 앞면이 향할 위치/방향
+-- 랭킹 집계를 시작한다 (cframe 은 예전 호환용으로 받기만 한다)
 function Rank.Init(cframe)
-	local folder = workspace:FindFirstChild("Lobby") or workspace
-
-	local board = Instance.new("Part")
-	board.Name = "RankBoard"
-	board.Anchored = true
-	board.Size = Vector3.new(26, 16, 1)
-	board.CFrame = cframe
-	board.Color = Color3.fromRGB(35, 30, 50)
-	board.Material = Enum.Material.SmoothPlastic
-	board.Parent = folder
-
-	for _, side in ipairs({ -1, 1 }) do
-		local post = Instance.new("Part")
-		post.Name = "RankPost"
-		post.Anchored = true
-		post.Size = Vector3.new(1.5, 10, 1.5)
-		post.CFrame = cframe * CFrame.new(side * 12, -11, 0)
-		post.Color = Color3.fromRGB(80, 60, 45)
-		post.Material = Enum.Material.Wood
-		post.Parent = folder
-	end
-
-	local gui = Instance.new("SurfaceGui")
-	gui.Face = Enum.NormalId.Front
-	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
-	gui.PixelsPerStud = 40
-	gui.Parent = board
-
-	boardLabel = Instance.new("TextLabel")
-	boardLabel.Size = UDim2.new(1, 0, 1, 0)
-	boardLabel.BackgroundTransparency = 1
-	boardLabel.Font = Enum.Font.GothamBold
-	boardLabel.TextScaled = true
-	boardLabel.TextColor3 = Color3.fromRGB(255, 230, 140)
-	boardLabel.Text = "랭킹 집계 중..."
-	boardLabel.Parent = gui
-
+	-- (3D 랭킹판은 없앴다: 랭킹은 화면 오른쪽 작은 패널과 메뉴 랭킹 탭, 하늘의 명예의 전당으로 보인다)
 	task.spawn(function()
 		task.wait(5) -- 접속한 플레이어의 전투력이 계산된 뒤 첫 집계
 		while true do
