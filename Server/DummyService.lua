@@ -138,9 +138,9 @@ local function buildDummy(index, info, position)
 
 	-- 이름표: 배율 + 필요 캐릭터 레벨
 	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.new(0, 210, 0, 62)
+	gui.Size = UDim2.new(0, 150, 0, 46)
 	gui.StudsOffset = Vector3.new(0, 3.5 + 2.2 * s, 0)
-	gui.MaxDistance = 100
+	gui.MaxDistance = 55 -- 가까이 가야 배수/필요 레벨이 보인다 (작은 화면에서 글자 겹침 방지)
 	gui.Parent = head
 
 	local title = Instance.new("TextLabel")

@@ -34,11 +34,12 @@ local function makeDisc(position, diameter, thickness, color, material, parent)
 	}, parent)
 end
 
-local function makeLabel(part, text, color, offsetY, width, height)
+-- maxDistance: 이 거리 안에서만 글자가 보인다 (작은 화면에서 멀리 있는 글자들이 겹치는 것을 막는다)
+local function makeLabel(part, text, color, offsetY, width, height, maxDistance)
 	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.new(0, width or 280, 0, height or 64)
+	gui.Size = UDim2.new(0, (width or 280) * 0.75, 0, (height or 64) * 0.75)
 	gui.StudsOffset = Vector3.new(0, offsetY, 0)
-	gui.MaxDistance = 160
+	gui.MaxDistance = maxDistance or 70
 	gui.Parent = part
 
 	local label = Instance.new("TextLabel")
@@ -373,12 +374,11 @@ function Lobby.Build()
 		swirl.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.8), NumberSequenceKeypoint.new(1, 0) })
 		swirl.Parent = portal
 
-		makeLabel(portal, string.format("⚔ %s\n[%s] · Lv.%d 이상\n🗝 열쇠 %d개 · 권장 전투력 %d",
-			dungeonType.Name, difficulty.Name, entry.MinLevel, difficulty.KeyCost or 1, dungeonType.RecommendedPower), difficulty.Color, 17, 320, 86)
+		makeLabel(portal, string.format("⚔ %s\n[%s] Lv.%d+", dungeonType.Name, difficulty.Name, entry.MinLevel), difficulty.Color, 17, 260, 64, 45)
 
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText = "입장 (Lv." .. entry.MinLevel .. ")"
-		prompt.ObjectText = dungeonType.Name .. " · " .. difficulty.Name
+		prompt.ObjectText = string.format("%s · %s · 🗝%d · 권장 전투력 %d", dungeonType.Name, difficulty.Name, difficulty.KeyCost or 1, dungeonType.RecommendedPower)
 		prompt.HoldDuration = 0.8
 		prompt.MaxActivationDistance = 14
 		prompt.RequiresLineOfSight = false
@@ -463,7 +463,7 @@ function Lobby.Build()
 	end
 	local beam = makePart({ Name = "FieldBeam", Size = Vector3.new(9, 8, 58), Position = fieldGate + Vector3.new(0, 40, 0), Color = gateStone, Material = Enum.Material.Cobblestone }, folder)
 	makePart({ Name = "FieldBeamGlow", Size = Vector3.new(9.4, 1.2, 58.4), Position = fieldGate + Vector3.new(0, 35.4, 0), Color = green, Material = Enum.Material.Neon, CanCollide = false }, folder)
-	makeLabel(beam, "🏔 사냥 필드 ▶ 동쪽\n갈수록 강한 몬스터 · 전리품!", Color3.fromRGB(190, 255, 190), 10, 420, 90)
+	makeLabel(beam, "🏔 사냥 필드 ▶ 동쪽\n갈수록 강한 몬스터!", Color3.fromRGB(190, 255, 190), 10, 380, 80, 160)
 
 	-- 문 사이를 채우는 반투명 빛의 막 (지나가면 필드)
 	local veil = makePart({ Name = "FieldVeil", Size = Vector3.new(1, 36, 40), Position = fieldGate + Vector3.new(0, 18, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.82, CanCollide = false, CanQuery = false }, folder)
@@ -504,11 +504,11 @@ function Lobby.Build()
 	-- 광장 서쪽 길가의 이정표: 허수아비 훈련장 방향 (광장에서 바로 보이게)
 	makePart({ Name = "SignPost", Size = Vector3.new(1, 9, 1), Position = Vector3.new(-30, 4.5, 100), Color = Color3.fromRGB(95, 65, 40), Material = Enum.Material.Wood }, folder)
 	local signBoard = makePart({ Name = "SignBoard", Size = Vector3.new(14, 4, 0.6), Position = Vector3.new(-30, 9, 100), Color = Color3.fromRGB(120, 85, 50), Material = Enum.Material.Wood }, folder)
-	makeLabel(signBoard, "🎯 허수아비 훈련장  ◀ 서쪽", Color3.fromRGB(255, 235, 170), 3.4, 280, 50)
+	makeLabel(signBoard, "🎯 허수아비 훈련장  ◀ 서쪽", Color3.fromRGB(255, 235, 170), 3.4, 280, 50, 60)
 
 	-- 허수아비 훈련장 입구 표지 (서쪽, 실제 허수아비는 DummyService 가 놓는다)
 	local trainingSign = makePart({ Name = "TrainingSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(-100, 24, 100), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
-	makeLabel(trainingSign, "🎯 허수아비 훈련장\n▲ 북쪽으로 갈수록 배수 UP", Color3.fromRGB(255, 220, 120), 0, 360, 80)
+	makeLabel(trainingSign, "🎯 허수아비 훈련장\n▲ 북쪽으로 갈수록 배수 UP", Color3.fromRGB(255, 220, 120), 0, 340, 76, 110)
 
 	return {
 		SpawnCFrame = CFrame.new(0, 5, 102),

@@ -267,9 +267,9 @@ local function updateNameplate(player)
 	if not gui then
 		gui = Instance.new("BillboardGui")
 		gui.Name = "Nameplate"
-		gui.Size = UDim2.new(0, 240, 0, 84)
+		gui.Size = UDim2.new(0, 190, 0, 68)
 		gui.StudsOffset = Vector3.new(0, 3.2, 0)
-		gui.MaxDistance = 150
+		gui.MaxDistance = 70
 		gui.Parent = head
 
 		local function addLabel(name, y, height, font)
