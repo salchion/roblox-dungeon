@@ -247,3 +247,60 @@ do
 		lastCombo = combo
 	end)
 end
+
+-- 사운드 테스트 창 (Studio 전용, K 키): 항목별 소리를 들어 보고, 후보 소리 ID 를 항목에 걸어 미리 들어 본다.
+-- 마음에 드는 조합은 [출력으로 내보내기] 로 AudioIds 에 붙여 넣을 줄을 만든다.
+if game:GetService("RunService"):IsStudio() then
+	local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
+	local panel = makePanel({ Size = UDim2.new(0, 560, 0, 520), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false, ZIndex = 80, BackgroundTransparency = 0.05 }, gui)
+	makeLabel({ Size = UDim2.new(1, -20, 0, 30), Position = UDim2.new(0, 10, 0, 8), Text = "🔊 사운드 테스트 (Studio 전용 · K 키로 열고 닫기)", Font = Enum.Font.GothamBlack, TextSize = 18, ZIndex = 81, TextXAlignment = Enum.TextXAlignment.Left }, panel)
+	local idBox = create("TextBox", { Size = UDim2.new(1, -150, 0, 32), Position = UDim2.new(0, 10, 0, 44), PlaceholderText = "후보 소리 ID(숫자) 붙여넣기", Text = "", ClearTextOnFocus = false,
+		BackgroundColor3 = Color3.fromRGB(40, 42, 62), TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamMedium, TextSize = 15, BorderSizePixel = 0, ZIndex = 81 }, panel)
+	rounded(idBox, 6)
+	local function playRaw(id)
+		local sound = Instance.new("Sound")
+		sound.SoundId = "rbxassetid://" .. id
+		sound.Volume = 0.6
+		sound.Parent = game:GetService("SoundService")
+		sound:Play()
+		game:GetService("Debris"):AddItem(sound, 6)
+	end
+	makeButton({ Size = UDim2.new(0, 130, 0, 32), Position = UDim2.new(1, -140, 0, 44), Text = "▶ 이 ID 그대로", TextSize = 14, ZIndex = 81 }, panel, function()
+		local id = tonumber(idBox.Text)
+		if id then playRaw(id) end
+	end)
+	local list = create("ScrollingFrame", { Size = UDim2.new(1, -20, 1, -130), Position = UDim2.new(0, 10, 0, 84), BackgroundTransparency = 1, BorderSizePixel = 0,
+		ScrollBarThickness = 6, AutomaticCanvasSize = Enum.AutomaticSize.Y, CanvasSize = UDim2.new(0, 0, 0, 0), ZIndex = 81 }, panel)
+	create("UIListLayout", { Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder }, list)
+	local chosen = {} -- 항목 -> 내가 걸어 본 ID
+	for order, key in ipairs(SoundBank.Order) do
+		local row = create("Frame", { Size = UDim2.new(1, -8, 0, 34), BackgroundColor3 = Color3.fromRGB(34, 36, 54), BorderSizePixel = 0, LayoutOrder = order, ZIndex = 81 }, list)
+		rounded(row, 6)
+		makeLabel({ Size = UDim2.new(1, -250, 1, 0), Position = UDim2.new(0, 8, 0, 0), Text = string.format("%s  <font color='#9aa0c8'>%s</font>", key, SoundBank.Descriptions[key] or ""), RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 82 }, row)
+		makeButton({ Size = UDim2.new(0, 70, 0, 26), Position = UDim2.new(1, -240, 0.5, -13), Text = "▶ 지금", TextSize = 13, ZIndex = 82, BackgroundColor3 = Color3.fromRGB(70, 110, 220) }, row, function()
+			SoundBank.Play(game:GetService("SoundService"), key)
+		end)
+		makeButton({ Size = UDim2.new(0, 160, 0, 26), Position = UDim2.new(1, -162, 0.5, -13), Text = "▶ 내 ID 걸어서", TextSize = 13, ZIndex = 82, BackgroundColor3 = Color3.fromRGB(60, 150, 100) }, row, function()
+			local id = tonumber(idBox.Text)
+			if id then
+				chosen[key] = id
+				Config.Audio.Bank[key] = id -- 이번 플레이 동안만 이 항목의 소리를 내 ID 로 바꿔서 들어 본다
+				SoundBank.Play(game:GetService("SoundService"), key)
+			end
+		end)
+	end
+	makeButton({ Size = UDim2.new(1, -20, 0, 34), Position = UDim2.new(0, 10, 1, -44), Text = "📋 고른 조합을 출력창으로 내보내기 (AudioIds 에 붙여넣기)", TextSize = 14, ZIndex = 81, BackgroundColor3 = Color3.fromRGB(190, 110, 40) }, panel, function()
+		local parts = {}
+		for key, id in pairs(chosen) do
+			table.insert(parts, string.format("%s = %d", key, id))
+		end
+		table.sort(parts)
+		print("[사운드] AudioIds 의 return { ... } 안에 이 줄을 추가하세요:\n\tBank = { " .. table.concat(parts, ", ") .. " },")
+	end)
+	UserInputService.InputBegan:Connect(function(input, processed)
+		if processed or UserInputService:GetFocusedTextBox() then return end
+		if input.KeyCode == Enum.KeyCode.K then
+			panel.Visible = not panel.Visible
+		end
+	end)
+end

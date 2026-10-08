@@ -65,6 +65,23 @@ for rarity = 1, 5 do                                                            
 end
 SoundBank.Specs = SPECS
 
+-- 사운드 테스트 창(Studio 에서 K 키)에 보이는 항목별 설명
+SoundBank.Descriptions = {
+	Shot_Pistol = "권총 발사", Shot_Smg = "기관단총 발사", Shot_Revolver = "리볼버 발사", Shot_Rifle = "라이플 발사", Shot_Shotgun = "샷건 발사",
+	Shot_Flamer = "화염방사기 발사", Shot_Cannon = "플라즈마 캐논 발사", Shot_Sniper = "저격총 발사", Shot_Rocket = "로켓 런처 발사", Shot_Rail = "레일건 발사",
+	Hit = "적을 맞췄을 때 (짧게)", Crit = "치명타", Kill = "적 처치 (연속 처치할수록 높아짐)",
+	Skill_Heal = "응급 치료 사용", Skill_Ult = "데드아이 발동", UltShot = "데드아이 연사 한 발", Boom = "몬스터 폭발 / 충격파 / 운석",
+	LevelUp = "레벨업", Enh_Hammer = "강화: 망치 내려치기", Enh_Success = "강화 성공 (단계가 오를수록 높아짐)", Enh_Fail = "강화 실패",
+	Enh_Evolve = "무기 진화", Gacha_Drop = "뽑기: 캡슐 낙하", Gacha_Tick = "뽑기: 흔들리는 틱틱", Gacha_Card = "10연 뽑기: 카드 한 장",
+	Gacha_Pop1 = "뽑기 결과: 일반", Gacha_Pop2 = "뽑기 결과: 희귀", Gacha_Pop3 = "뽑기 결과: 영웅", Gacha_Pop4 = "뽑기 결과: 전설", Gacha_Pop5 = "뽑기 결과: 신화",
+}
+SoundBank.Order = {
+	"Shot_Pistol", "Shot_Smg", "Shot_Revolver", "Shot_Rifle", "Shot_Shotgun", "Shot_Flamer", "Shot_Cannon", "Shot_Sniper", "Shot_Rocket", "Shot_Rail",
+	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_Ult", "UltShot", "Boom", "LevelUp",
+	"Enh_Hammer", "Enh_Success", "Enh_Fail", "Enh_Evolve", "Gacha_Drop", "Gacha_Tick", "Gacha_Card",
+	"Gacha_Pop1", "Gacha_Pop2", "Gacha_Pop3", "Gacha_Pop4", "Gacha_Pop5",
+}
+
 local EFFECT_CLASS = {
 	reverb = "ReverbSoundEffect", echo = "EchoSoundEffect", distortion = "DistortionSoundEffect",
 	chorus = "ChorusSoundEffect", pitchshift = "PitchShiftSoundEffect", eq = "EqualizerSoundEffect",
