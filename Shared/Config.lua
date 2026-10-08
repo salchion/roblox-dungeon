@@ -444,6 +444,7 @@ Config.Audio = {
 	Hit = ids.Hit or 0,              -- 적중음
 	Kill = ids.Kill or 0,            -- 처치음
 	Skill = ids.Skill or 0,          -- 스킬음
+	Bank = ids.Bank or {},           -- 소리별 직접 지정 ID (AudioIds 에  Bank = { Shot_Rail = 123 }  처럼 적으면 SoundBank 의 가공음 대신 사용)
 }
 
 ------------------------------------------------------------

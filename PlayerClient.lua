@@ -3654,14 +3654,18 @@ end
 Remotes.Hit.OnClientEvent:Connect(function(isCrit, killed)
 	hitMarker = killed and 0.3 or 0.18
 	hitMarkerCrit = isCrit or killed
+	local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
+	local sfxParent = game:GetService("SoundService")
 	if killed then
 		shake = math.max(shake, 0.5)
-		playUiSound(Config.Audio.Kill, 0.6, 1)
+		-- 연속 처치할수록 처치음이 점점 높아진다 (콤보가 쌓이는 쾌감)
+		local combo = player:GetAttribute("Combo") or 0
+		SoundBank.Play(sfxParent, "Kill", { Pitch = 1 + math.min(0.7, combo * 0.02) })
 	elseif isCrit then
 		shake = math.max(shake, 0.25)
-		playUiSound(Config.Audio.Hit, 0.5, 1.25)
+		SoundBank.Play(sfxParent, "Crit")
 	else
-		playUiSound(Config.Audio.Hit, 0.35, 1)
+		SoundBank.Play(sfxParent, "Hit", { Pitch = 0.9 + math.random() * 0.25 })
 	end
 end)
 

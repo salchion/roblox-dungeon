@@ -4,6 +4,7 @@
 -- 강화 레벨(WeaponLevel)이 오를수록 색상 / 크기 / 재질 / 파티클 / 궤적 / 빛이 달라진다.
 
 local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Config"))
+local SoundBank = require(game:GetService("ReplicatedStorage"):WaitForChild("SoundBank"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Event = require(script.Parent:WaitForChild("EventService"))
@@ -647,8 +648,13 @@ function Weapon.PlayShot(player)
 	end
 
 	-- 무기가 강할수록 낮고 묵직한 소리
-	local era = Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0).Era
-	playSoundAt(barrel, Config.Audio.Shot, Config.Audio.ShotVolume, math.max(0.5, 1.25 - 0.08 * (era - 1)), "GunShot")
+	-- 무기 종류마다 다른 소리 (SoundBank: 같은 기본 소리를 피치 / 잔향 / 왜곡 / 겹치기로 가공). 세대가 높을수록 살짝 낮고 묵직하게
+	local tier = Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0)
+	local eraFactor = math.max(0.8, 1.08 - 0.03 * (tier.Era - 1))
+	local played = SoundBank.Play(barrel, "Shot_" .. tier.Class, { Pitch = eraFactor, Name = "GunShot" })
+	if not played then
+		playSoundAt(barrel, Config.Audio.Shot, Config.Audio.ShotVolume, math.max(0.5, 1.25 - 0.08 * (tier.Era - 1)), "GunShot")
+	end
 end
 
 ------------------------------------------------------------

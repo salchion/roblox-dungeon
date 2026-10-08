@@ -1,0 +1,128 @@
+-- SoundBank (ReplicatedStorage 안의 ModuleScript, 이름: SoundBank)
+-- 소리 한 곳 관리: 무기 종류마다 / 상황마다 소리가 다르게 들리게 한다.
+--   * 내가 AudioIds 에 적은 기본 소리(Shot, EnhanceSuccess, ...) 하나를 "피치 / 길이 / 잔향 / 에코 / 왜곡 / 겹치기" 로 가공해서 여러 소리를 만든다.
+--   * 소리 ID 가 따로 있으면 그걸 우선 쓴다: AudioIds 에  Bank = { Shot_Rail = 123456, Kill = 987654 }  처럼 적으면 된다 (키 이름은 아래 SPECS 참고).
+--   * SoundBank.Play(부모, "Shot_Rocket", { Pitch = 배율, Volume = 배율, Name = "GunShot" })
+-- 서버(총소리 / 스킬 / 폭발)와 클라이언트(적중음 / 처치음)가 같이 쓴다.
+
+local Debris = game:GetService("Debris")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Config = require(ReplicatedStorage:WaitForChild("Config"))
+
+local SoundBank = {}
+
+-- Base: Config.Audio 의 어떤 기본 소리를 가공할지 / Pitch: 재생 속도(높을수록 가늘고 빠름) / Volume: 배율 / Length: 이 시간(초) 뒤에 끊는다
+-- Fx: 효과 목록 { 종류, 속성표 } / Layers: 겹쳐 울리는 소리 { Pitch, Volume, Delay }
+local SPECS = {
+	-- 무기 종류별 총소리 (Shot 소리를 가공)
+	Shot_Pistol   = { Base = "Shot", Pitch = 1.15, Volume = 1.0, Length = 0.7 },
+	Shot_Smg      = { Base = "Shot", Pitch = 1.5, Volume = 0.55, Length = 0.35 },
+	Shot_Revolver = { Base = "Shot", Pitch = 0.82, Volume = 1.2, Length = 1.3, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -4 } } } },
+	Shot_Rifle    = { Base = "Shot", Pitch = 1.0, Volume = 0.9, Length = 0.9, Fx = { { "reverb", { DecayTime = 0.8, WetLevel = -9 } } } },
+	Shot_Shotgun  = { Base = "Shot", Pitch = 0.7, Volume = 1.3, Length = 1.0, Fx = { { "distortion", { Level = 0.35 } } },
+		Layers = { { Pitch = 0.5, Volume = 0.9, Delay = 0 }, { Pitch = 1.3, Volume = 0.5, Delay = 0.03 } } },
+	Shot_Flamer   = { Base = "Shot", Pitch = 0.6, Volume = 0.7, Length = 0.4, Fx = { { "chorus", { Depth = 0.7, Mix = 0.6 } }, { "distortion", { Level = 0.3 } } } },
+	Shot_Cannon   = { Base = "Shot", Pitch = 0.62, Volume = 1.3, Length = 1.5, Fx = { { "reverb", { DecayTime = 2.2, WetLevel = -3 } }, { "pitchshift", { Octave = 0.85 } } } },
+	Shot_Sniper   = { Base = "Shot", Pitch = 0.8, Volume = 1.3, Length = 2.0, Fx = { { "reverb", { DecayTime = 2.8, WetLevel = -3 } }, { "echo", { Delay = 0.22, Feedback = 0.3, WetLevel = -8 } } } },
+	Shot_Rocket   = { Base = "Shot", Pitch = 0.55, Volume = 1.4, Length = 1.5, Fx = { { "distortion", { Level = 0.5 } }, { "echo", { Delay = 0.15, Feedback = 0.35, WetLevel = -6 } } },
+		Layers = { { Pitch = 0.4, Volume = 1.0, Delay = 0.12 } } },
+	Shot_Rail     = { Base = "Shot", Pitch = 1.9, Volume = 1.0, Length = 1.0, Fx = { { "chorus", { Depth = 0.8, Mix = 0.7 } }, { "echo", { Delay = 0.07, Feedback = 0.45, WetLevel = -5 } } },
+		Layers = { { Pitch = 0.9, Volume = 0.6, Delay = 0.02 } } },
+	-- 적중 / 처치 / 치명타 (짧고 선명하게)
+	Hit  = { Base = "Shot", Pitch = 3.0, Volume = 0.5, Length = 0.09 },
+	Crit = { Base = "EnhanceSuccess", Pitch = 2.3, Volume = 0.6, Length = 0.28 },
+	Kill = { Base = "EnhanceSuccess", Pitch = 1.5, Volume = 0.7, Length = 0.35, Fx = { { "reverb", { DecayTime = 0.6, WetLevel = -10 } } } },
+	-- 스킬 / 폭발 / 레벨업
+	Skill_Heal = { Base = "EnhanceSuccess", Pitch = 1.1, Volume = 0.8, Length = 0.9, Fx = { { "reverb", { DecayTime = 1.6, WetLevel = -6 } } } },
+	Skill_Ult  = { Base = "Shot", Pitch = 0.4, Volume = 1.6, Length = 1.8, Fx = { { "reverb", { DecayTime = 3.0, WetLevel = -2 } }, { "distortion", { Level = 0.4 } } },
+		Layers = { { Pitch = 1.6, Volume = 0.6, Delay = 0.08 } } },
+	UltShot = { Base = "Shot", Pitch = 1.4, Volume = 0.8, Length = 0.3, Fx = { { "chorus", { Depth = 0.5, Mix = 0.5 } } } },
+	Boom    = { Base = "Shot", Pitch = 0.42, Volume = 1.5, Length = 1.1, Fx = { { "distortion", { Level = 0.55 } }, { "reverb", { DecayTime = 1.8, WetLevel = -4 } } } },
+	LevelUp = { Base = "EnhanceSuccess", Pitch = 1.0, Volume = 1.0, Length = 1.4, Fx = { { "reverb", { DecayTime = 1.8, WetLevel = -5 } } },
+		Layers = { { Pitch = 1.5, Volume = 0.7, Delay = 0.12 }, { Pitch = 2.0, Volume = 0.5, Delay = 0.26 } } },
+}
+SoundBank.Specs = SPECS
+
+local EFFECT_CLASS = {
+	reverb = "ReverbSoundEffect", echo = "EchoSoundEffect", distortion = "DistortionSoundEffect",
+	chorus = "ChorusSoundEffect", pitchshift = "PitchShiftSoundEffect", eq = "EqualizerSoundEffect",
+}
+
+local function addEffects(sound, fxList)
+	for _, fx in ipairs(fxList or {}) do
+		local className = EFFECT_CLASS[fx[1]]
+		if className then
+			local ok, effect = pcall(Instance.new, className)
+			if ok and effect then
+				for property, value in pairs(fx[2] or {}) do
+					pcall(function() effect[property] = value end)
+				end
+				effect.Parent = sound
+			end
+		end
+	end
+end
+
+-- 키에 해당하는 소리 ID: 직접 적은 Bank ID 가 먼저, 없으면 기본 소리(Base)를 가공
+local function idFor(key, spec)
+	local bank = Config.Audio.Bank
+	if bank and bank[key] and bank[key] ~= 0 then
+		return bank[key], true
+	end
+	local base = Config.Audio[spec.Base]
+	if base and base ~= 0 then
+		return base, false
+	end
+	return nil, false
+end
+
+local function playOne(parent, id, volume, pitch, length, name, fx)
+	local sound = Instance.new("Sound")
+	sound.Name = name or "Sfx"
+	sound.SoundId = "rbxassetid://" .. id
+	sound.Volume = volume
+	sound.PlaybackSpeed = pitch
+	sound.RollOffMaxDistance = 90
+	addEffects(sound, fx)
+	sound.Parent = parent
+	sound:Play()
+	Debris:AddItem(sound, length + 0.2)
+	return sound
+end
+
+-- opts: Pitch(배율) / Volume(배율) / Name(소리 이름; 총소리는 "GunShot" 으로 두면 설정창 볼륨이 적용된다)
+function SoundBank.Play(parent, key, opts)
+	local spec = SPECS[key]
+	if not spec or not parent then return end
+	local id, custom = idFor(key, spec)
+	if not id then return end
+	opts = opts or {}
+	local volumeScale = (opts.Volume or 1) * spec.Volume
+	if string.sub(key, 1, 4) == "Shot" then
+		volumeScale *= Config.Audio.ShotVolume / 0.3 -- 총소리 기본 크기 설정(ShotVolume)을 그대로 따른다
+	end
+	local baseVolume = 0.35 * volumeScale
+	local pitch = custom and (opts.Pitch or 1) or spec.Pitch * (opts.Pitch or 1)
+	local length = spec.Length or 1
+	local main = playOne(parent, id, baseVolume, pitch, length, opts.Name, not custom and spec.Fx or nil)
+	if not custom then
+		for _, layer in ipairs(spec.Layers or {}) do
+			task.delay(layer.Delay or 0, function()
+				if parent.Parent then
+					playOne(parent, id, baseVolume * (layer.Volume or 1), layer.Pitch * (opts.Pitch or 1), length, opts.Name, nil)
+				end
+			end)
+		end
+	end
+	-- 길이를 넘는 꼬리는 잘라 낸다 (짧고 또렷하게)
+	task.delay(length, function()
+		if main.Parent then
+			main.Volume = main.Volume * 0.5
+			task.delay(0.15, function() if main.Parent then main:Stop() end end)
+		end
+	end)
+	return main
+end
+
+return SoundBank

@@ -8,6 +8,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 
 local Level = {}
@@ -85,6 +86,7 @@ function Level.AddXP(player, amount)
 			level, Config.Level.HealthPerLevel * gained, math.floor(Config.Level.DamagePerLevel * 100 * gained + 0.5)))
 		if root then
 			Effects.Burst(root.Position, Color3.fromRGB(255, 225, 110), 60)
+			SoundBank.Play(root, "LevelUp")
 		end
 	end
 end

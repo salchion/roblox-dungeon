@@ -10,6 +10,7 @@ local Debris = game:GetService("Debris")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
@@ -275,7 +276,7 @@ handlers.Ult = function(player, root, _, character)
 					TweenService:Create(flash, TweenInfo.new(0.12), { Size = Vector3.new(0.5, 0.5, 0.5), Transparency = 1 }):Play()
 					Debris:AddItem(flash, 0.2)
 					if volley % 3 == 1 then
-						Effects.PlaySound(root, Config.Audio.Shot, 0.6, 1.1 + math.random() * 0.3)
+						SoundBank.Play(root, "UltShot", { Pitch = 0.9 + math.random() * 0.4, Name = "GunShot" })
 						ring(root.Position, cfg.Radius * (0.4 + 0.6 * volley / volleys), Color3.fromRGB(255, 120, 80), 0.35)
 					end
 					player:SetAttribute("ShakeStrength", 0.18)
@@ -350,7 +351,7 @@ function Skill.Use(player, skillKey, aimPoint)
 	local haste = (player:GetAttribute("GearHaste") or 0) + (player:GetAttribute("PetHaste") or 0) + U.CooldownPerLevel * (skillLevel(player, skillKey) - 1)
 	local cooldown = S[skillKey].Cooldown * (1 - math.min(0.6, haste))
 	cooldowns[skillKey] = now + cooldown
-	Effects.PlaySound(root, Config.Audio.Skill, 0.7, skillKey == "Ult" and 0.8 or 1)
+	SoundBank.Play(root, skillKey == "Ult" and "Skill_Ult" or "Skill_Heal")
 	Quest.Add(player, "SkillUses", 1)
 	Remotes.Skill:FireClient(player, "Cast", skillKey, cooldown)
 end

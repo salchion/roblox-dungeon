@@ -20,6 +20,7 @@
 local TweenService = game:GetService("TweenService")
 local Debris = game:GetService("Debris")
 local Effects = require(script.Parent:WaitForChild("Effects"))
+local SoundBank = require(game:GetService("ReplicatedStorage"):WaitForChild("SoundBank"))
 
 local M = {}
 
@@ -540,6 +541,7 @@ local function meteor(ctx, spot, stats, owner, ownerData)
 		local boom = disc(center + Vector3.new(0, 0.5, 0), 2, Color3.fromRGB(255, 170, 70), 0.3)
 		TweenService:Create(boom, TweenInfo.new(0.35), { Size = Vector3.new(0.4, radius * 2.2, radius * 2.2), Transparency = 1 }):Play()
 		Debris:AddItem(boom, 0.4)
+		SoundBank.Play(boom, "Boom", { Volume = 0.8 })
 		for _, entry in ipairs(ctx.Players()) do
 			local p = entry.Root.Position
 			if Vector3.new(p.X - spot.X, 0, p.Z - spot.Z).Magnitude <= radius then
@@ -558,6 +560,7 @@ local function shockwave(ctx, part, stats)
 	TweenService:Create(wave, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.8, radius * 2, radius * 2), Transparency = 0.9 }):Play()
 	Debris:AddItem(wave, 0.55)
 	Effects.Burst(Vector3.new(origin.X, ground + 1, origin.Z), Color3.fromRGB(190, 170, 140), 25)
+	SoundBank.Play(wave, "Boom", { Volume = 0.7, Pitch = 1.1 })
 	task.delay(0.25, function()
 		for _, entry in ipairs(ctx.Players()) do
 			local p = entry.Root.Position
