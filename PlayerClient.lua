@@ -1349,9 +1349,14 @@ local function findNearestTarget(root)
 
 	local function consider(target)
 		if isTargetValid(target, root) then
+			-- 점수 = 화면 중앙(조준점)에서 떨어진 정도 + 거리 약간. 내가 보고 있는 쪽의 적이 우선이고, 비슷하면 가까운 적.
+			local screen = camera:WorldToViewportPoint(target.Part.Position)
+			local viewport = camera.ViewportSize
+			local fromCenter = (Vector2.new(screen.X, screen.Y) - viewport / 2).Magnitude / viewport.Y -- 0 = 정중앙
 			local distance = (target.Part.Position - root.Position).Magnitude
-			if distance < bestDistance then
-				best, bestDistance = target, distance
+			local score = fromCenter * 100 + distance * 0.35
+			if score < bestDistance then
+				best, bestDistance = target, score
 			end
 		end
 	end
