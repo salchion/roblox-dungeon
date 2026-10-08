@@ -287,8 +287,8 @@ function Lobby.Build()
 	makeDisc(Vector3.new(0, TOP + 0.1, 70), 70, 0.2, Color3.fromRGB(205, 195, 165), Enum.Material.Marble, folder).CanCollide = false
 	makeFountain(Vector3.new(0, TOP, 70), folder)
 	decoratePlaza(folder, Vector3.new(0, TOP, 70), {
-		{ X = 32, Z = 92, R = 16 },   -- 강화대
-		{ X = 36, Z = 58, R = 16 },   -- 뽑기 머신
+		{ X = -26, Z = 34, R = 20 },  -- 대장간
+		{ X = 26, Z = 34, R = 20 },   -- 뽑기 상점
 		{ X = 0, Z = 102, R = 12 },   -- 스폰
 		{ X = -40, Z = 92, R = 20 },  -- 랭킹판 / 명예의 전당
 	})
@@ -388,56 +388,119 @@ function Lobby.Build()
 	end
 	local gatePrompt = gates[1].Prompt
 
-	-- 무기 강화대 (모루): 동쪽
-	local anvilPos = Vector3.new(32, TOP, 92) -- 스폰 바로 옆 광장 (처음부터 눈에 들어오게)
-	makeDisc(anvilPos + Vector3.new(0, 0.2, 0), 22, 0.4, Color3.fromRGB(110, 100, 90), Enum.Material.Cobblestone, folder)
-	makePart({ Name = "AnvilBase", Size = Vector3.new(6, 2, 4), Position = anvilPos + Vector3.new(0, 1.2, 0), Color = Color3.fromRGB(45, 45, 50), Material = Enum.Material.Metal }, folder)
-	local anvil = makePart({ Name = "Anvil", Size = Vector3.new(8, 2, 3), Position = anvilPos + Vector3.new(0, 3.2, 0), Color = Color3.fromRGB(70, 70, 80), Material = Enum.Material.Metal }, folder)
-	local ember = makePart({ Name = "Ember", Size = Vector3.new(2, 0.4, 2), Position = anvilPos + Vector3.new(0, 4.4, 0), Color = Color3.fromRGB(255, 120, 40), Material = Enum.Material.Neon, CanCollide = false }, folder)
-	local fire = Instance.new("ParticleEmitter")
-	fire.Rate = 15
-	fire.Lifetime = NumberRange.new(0.5, 1)
-	fire.Speed = NumberRange.new(3, 6)
-	fire.SpreadAngle = Vector2.new(25, 25)
-	fire.LightEmission = 1
-	fire.Color = ColorSequence.new(Color3.fromRGB(255, 160, 60))
-	fire.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5), NumberSequenceKeypoint.new(1, 0) })
-	fire.Parent = ember
-	addLight(ember, 18, 1, Color3.fromRGB(255, 150, 70))
-	makeLabel(anvil, "🔨 무기 강화", Color3.fromRGB(255, 210, 120), 6)
+	-- 상점가: 광장에서 북쪽 중앙로로 올라가는 길 양옆에 가게 두 곳이 마주 보고 서 있다.
+	--   왼쪽 대장간(무기 강화) / 오른쪽 장비 뽑기 상점. 지붕 + 줄무늬 차양 + 간판 + 카운터 + 등불 + 소품으로 "마을 가게" 느낌.
+	local function makeStall(center, roofA, roofB, signText, signColor, props)
+		local base = CFrame.lookAt(center, Vector3.new(0, center.Y, center.Z)) -- 앞면(-Z)이 중앙로를 향한다
+		local function part(name, size, offset, color, material, extra)
+			local data = { Name = name, Size = size, CFrame = base * CFrame.new(offset), Color = color, Material = material or Enum.Material.Wood }
+			for key, value in pairs(extra or {}) do data[key] = value end
+			return makePart(data, folder)
+		end
+		local wood = Color3.fromRGB(110, 78, 50)
+		local darkWood = Color3.fromRGB(80, 56, 38)
+		part("StallFloor", Vector3.new(20, 0.6, 16), Vector3.new(0, 0.3, 0), Color3.fromRGB(135, 100, 68), Enum.Material.WoodPlanks)
+		part("StallBack", Vector3.new(20, 11, 0.8), Vector3.new(0, 6, 7.6), Color3.fromRGB(150, 120, 90), Enum.Material.Brick)
+		for _, side in ipairs({ -1, 1 }) do
+			part("StallPost", Vector3.new(0.9, 12, 0.9), Vector3.new(side * 9.6, 6, -7.4), wood)
+			part("StallSide", Vector3.new(0.8, 11, 15), Vector3.new(side * 9.8, 6, 0), Color3.fromRGB(150, 120, 90), Enum.Material.Brick)
+		end
+		part("StallBeam", Vector3.new(21, 0.9, 1), Vector3.new(0, 11.8, -7.4), darkWood)
+		-- 줄무늬 차양 (두 색이 번갈아): 앞쪽이 낮게 기울어져 처마처럼 내려온다
+		for i = 0, 9 do
+			local stripe = part("Awning", Vector3.new(2.1, 0.5, 18), Vector3.new(-9.45 + i * 2.1, 12.4, 0), i % 2 == 0 and roofA or roofB, Enum.Material.Fabric,
+				{ CFrame = base * CFrame.new(-9.45 + i * 2.1, 12.4, -0.8) * CFrame.Angles(math.rad(-10), 0, 0) })
+			stripe.Name = "Awning"
+			part("AwningFringe", Vector3.new(2.1, 1.4, 0.3), Vector3.new(-9.45 + i * 2.1, 10.6, -9.6), i % 2 == 0 and roofA or roofB, Enum.Material.Fabric,
+				{ CanCollide = false })
+		end
+		-- 카운터 + 손님 쪽 장식
+		part("Counter", Vector3.new(14, 3.2, 2.2), Vector3.new(0, 2.2, -6), wood)
+		part("CounterTop", Vector3.new(14.8, 0.5, 3), Vector3.new(0, 3.95, -6), darkWood)
+		-- 걸려 있는 간판 + 양옆 등불
+		local sign = part("StallSign", Vector3.new(11, 3.2, 0.5), Vector3.new(0, 9.6, -9.9), Color3.fromRGB(70, 48, 32), Enum.Material.Wood)
+		part("SignRopeL", Vector3.new(0.15, 1.6, 0.15), Vector3.new(-4.5, 11.2, -9.9), Color3.fromRGB(200, 190, 160), Enum.Material.Fabric, { CanCollide = false })
+		part("SignRopeR", Vector3.new(0.15, 1.6, 0.15), Vector3.new(4.5, 11.2, -9.9), Color3.fromRGB(200, 190, 160), Enum.Material.Fabric, { CanCollide = false })
+		makeLabel(sign, signText, signColor, 0, 360, 80, 90)
+		for _, side in ipairs({ -1, 1 }) do
+			local lantern = part("StallLantern", Vector3.new(1.4, 1.8, 1.4), Vector3.new(side * 9.6, 8.5, -8.6), Color3.fromRGB(255, 200, 110), Enum.Material.Neon, { CanCollide = false })
+			addLight(lantern, 24, 1.3, Color3.fromRGB(255, 205, 130))
+		end
+		-- 가게 앞 소품: 나무 상자 / 통
+		part("Crate", Vector3.new(2.6, 2.6, 2.6), Vector3.new(-8, 1.9, -3.2), wood, Enum.Material.Wood, { CFrame = base * CFrame.new(-8, 1.9, -3.2) * CFrame.Angles(0, 0.3, 0) })
+		part("Crate", Vector3.new(2, 2, 2), Vector3.new(-8, 3.8, -3.4), darkWood, Enum.Material.Wood, { CFrame = base * CFrame.new(-8, 3.8, -3.4) * CFrame.Angles(0, -0.2, 0) })
+		part("Barrel", Vector3.new(3, 2.6, 2.6), Vector3.new(8, 1.9, -3), Color3.fromRGB(120, 85, 55), Enum.Material.Wood, { Shape = Enum.PartType.Cylinder, CFrame = base * CFrame.new(8, 1.9, -3) * CFrame.Angles(0, 0, math.rad(90)) })
+		-- 바닥 돌길 (가게 앞 보도)
+		part("StallPavement", Vector3.new(22, 0.35, 8), Vector3.new(0, 0.2, -12), Color3.fromRGB(150, 140, 125), Enum.Material.Cobblestone, { CanCollide = false })
+		if props then props(base, part) end
+		return base
+	end
+
+	-- 대장간 (왼쪽 / 서): 모루 + 화로 + 무기 걸이
+	local forgeCenter = Vector3.new(-26, TOP, 34)
+	local anvilPart
+	makeStall(forgeCenter, Color3.fromRGB(190, 70, 55), Color3.fromRGB(235, 225, 205), "🔨 대장간 · 무기 강화", Color3.fromRGB(255, 210, 120), function(base, part)
+		part("AnvilBase", Vector3.new(4, 2.2, 3), Vector3.new(0, 1.7, 1), Color3.fromRGB(45, 45, 50), Enum.Material.Metal)
+		anvilPart = part("Anvil", Vector3.new(7, 1.8, 2.8), Vector3.new(0, 3.7, 1), Color3.fromRGB(78, 78, 90), Enum.Material.Metal)
+		local ember = part("Ember", Vector3.new(2, 0.4, 2), Vector3.new(5.5, 3.3, 3.5), Color3.fromRGB(255, 120, 40), Enum.Material.Neon, { CanCollide = false })
+		local fire = Instance.new("ParticleEmitter")
+		fire.Rate = 18
+		fire.Lifetime = NumberRange.new(0.5, 1)
+		fire.Speed = NumberRange.new(3, 6)
+		fire.SpreadAngle = Vector2.new(25, 25)
+		fire.LightEmission = 1
+		fire.Color = ColorSequence.new(Color3.fromRGB(255, 160, 60))
+		fire.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.6), NumberSequenceKeypoint.new(1, 0) })
+		fire.Parent = ember
+		addLight(ember, 22, 1.4, Color3.fromRGB(255, 150, 70))
+		part("Forge", Vector3.new(5, 4.4, 4), Vector3.new(5.5, 2.6, 4.5), Color3.fromRGB(95, 80, 75), Enum.Material.Brick) -- 화로
+		part("Chimney", Vector3.new(2, 8, 2), Vector3.new(5.5, 9, 6), Color3.fromRGB(80, 66, 62), Enum.Material.Brick)
+		for i = -1, 1 do -- 벽에 걸린 칼
+			part("WallSword", Vector3.new(0.3, 4.4, 0.15), Vector3.new(-6 + i * 1.6, 7, 7.1), Color3.fromRGB(200, 205, 215), Enum.Material.Metal, { CanCollide = false })
+			part("WallHilt", Vector3.new(1.2, 0.3, 0.2), Vector3.new(-6 + i * 1.6, 5, 7.1), Color3.fromRGB(150, 110, 60), Enum.Material.Wood, { CanCollide = false })
+		end
+	end)
+
+	-- 뽑기 상점 (오른쪽 / 동): 반짝이는 뽑기 머신 + 선반
+	local shopCenter = Vector3.new(26, TOP, 34)
+	local gachaBody
+	makeStall(shopCenter, Color3.fromRGB(120, 70, 200), Color3.fromRGB(255, 225, 150), "🎰 장비 뽑기 상점", Color3.fromRGB(255, 225, 140), function(base, part)
+		part("GachaBase", Vector3.new(8, 2, 6), Vector3.new(0, 1.6, 1.5), Color3.fromRGB(60, 40, 90), Enum.Material.Metal)
+		gachaBody = part("GachaBody", Vector3.new(7, 8, 5), Vector3.new(0, 6.6, 1.5), Color3.fromRGB(150, 70, 230), Enum.Material.SmoothPlastic)
+		part("GachaGlass", Vector3.new(5, 4.6, 0.6), Vector3.new(0, 7.2, -1.2), Color3.fromRGB(180, 230, 255), Enum.Material.Glass, { Transparency = 0.4, CanCollide = false })
+		local dome = part("GachaDome", Vector3.new(5.6, 5.6, 5.6), Vector3.new(0, 12, 1.5), Color3.fromRGB(255, 220, 110), Enum.Material.Neon, { Shape = Enum.PartType.Ball, CanCollide = false })
+		addLight(dome, 28, 1.5, Color3.fromRGB(255, 220, 130))
+		local sparkle = Instance.new("ParticleEmitter")
+		sparkle.Rate = 20
+		sparkle.Lifetime = NumberRange.new(0.8, 1.4)
+		sparkle.Speed = NumberRange.new(2, 5)
+		sparkle.SpreadAngle = Vector2.new(180, 180)
+		sparkle.LightEmission = 1
+		sparkle.Color = ColorSequence.new(Color3.fromRGB(255, 230, 140))
+		sparkle.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5), NumberSequenceKeypoint.new(1, 0) })
+		sparkle.Parent = dome
+		for _, side in ipairs({ -1, 1 }) do -- 벽 선반 위의 상품(빛나는 상자 / 포션)
+			part("Shelf", Vector3.new(5, 0.4, 2), Vector3.new(side * 6.8, 6.5, 6.2), Color3.fromRGB(110, 78, 50), Enum.Material.Wood)
+			part("ShelfItem", Vector3.new(1.4, 1.4, 1.4), Vector3.new(side * 7.8, 7.4, 6.2), side < 0 and Color3.fromRGB(90, 170, 255) or Color3.fromRGB(255, 130, 220), Enum.Material.Neon, { CanCollide = false })
+			part("ShelfItem", Vector3.new(1.2, 1.8, 1.2), Vector3.new(side * 5.8, 7.6, 6.2), Color3.fromRGB(120, 255, 170), Enum.Material.Neon, { CanCollide = false })
+		end
+	end)
 
 	local anvilPrompt = Instance.new("ProximityPrompt")
 	anvilPrompt.ActionText = "무기 강화"
-	anvilPrompt.ObjectText = "강화대"
+	anvilPrompt.ObjectText = "대장간"
 	anvilPrompt.HoldDuration = 0
 	anvilPrompt.MaxActivationDistance = 14
-	anvilPrompt.Parent = anvil
-
-	-- 장비 뽑기 머신 (티켓): 동쪽
-	local gachaPos = Vector3.new(36, TOP, 58)
-	makeDisc(gachaPos + Vector3.new(0, 0.2, 0), 24, 0.4, Color3.fromRGB(80, 60, 110), Enum.Material.Basalt, folder)
-	makePart({ Name = "GachaBase", Size = Vector3.new(8, 2, 6), Position = gachaPos + Vector3.new(0, 1.2, 0), Color = Color3.fromRGB(60, 40, 90), Material = Enum.Material.Metal }, folder)
-	local body = makePart({ Name = "GachaBody", Size = Vector3.new(7, 9, 5), Position = gachaPos + Vector3.new(0, 6.7, 0), Color = Color3.fromRGB(150, 70, 230), Material = Enum.Material.SmoothPlastic }, folder)
-	makePart({ Name = "GachaGlass", Size = Vector3.new(5, 5, 0.6), Position = gachaPos + Vector3.new(0, 7.5, 2.6), Color = Color3.fromRGB(180, 230, 255), Material = Enum.Material.Glass, Transparency = 0.4, CanCollide = false }, folder)
-	local dome = makePart({ Name = "GachaDome", Shape = Enum.PartType.Ball, Size = Vector3.new(6, 6, 6), Position = gachaPos + Vector3.new(0, 12.5, 0), Color = Color3.fromRGB(255, 220, 110), Material = Enum.Material.Neon, CanCollide = false }, folder)
-	addLight(dome, 28, 1.5, Color3.fromRGB(255, 220, 130))
-	local sparkle = Instance.new("ParticleEmitter")
-	sparkle.Rate = 20
-	sparkle.Lifetime = NumberRange.new(0.8, 1.4)
-	sparkle.Speed = NumberRange.new(2, 5)
-	sparkle.SpreadAngle = Vector2.new(180, 180)
-	sparkle.LightEmission = 1
-	sparkle.Color = ColorSequence.new(Color3.fromRGB(255, 230, 140))
-	sparkle.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5), NumberSequenceKeypoint.new(1, 0) })
-	sparkle.Parent = dome
-	makeLabel(body, "🎰 장비 뽑기 · 강화\n(보스 티켓 1장)", Color3.fromRGB(255, 225, 140), 11, 300, 72)
+	anvilPrompt.RequiresLineOfSight = false
+	anvilPrompt.Parent = anvilPart
 
 	local gachaPrompt = Instance.new("ProximityPrompt")
 	gachaPrompt.ActionText = "장비 뽑기 / 강화"
-	gachaPrompt.ObjectText = "장비 머신"
+	gachaPrompt.ObjectText = "뽑기 상점"
 	gachaPrompt.HoldDuration = 0
 	gachaPrompt.MaxActivationDistance = 14
-	gachaPrompt.Parent = body
+	gachaPrompt.RequiresLineOfSight = false
+	gachaPrompt.Parent = gachaBody
 
 	-- 필드 입구 (동쪽 끝)
 	local fieldGate = Vector3.new(HALF - 6, TOP, 0)
