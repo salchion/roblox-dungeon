@@ -32,93 +32,59 @@ end
 
 local layouts = {}
 
--- 동굴 군락: 방 5~6개가 이어진다
-layouts.Cavern = function(rng, limit)
+-- 모든 배치는 +X 방향으로 "쭉 나아가는" 긴 띠 모양이다: 시작방(x=0) -> ... -> 보스방(x=length).
+-- length 만큼 앞으로 이어지고, 좌우(Z)로는 완만하게만 흔들린다.
+
+-- 동굴 군락: 크고 작은 방 8~10개가 통로로 이어진다 (방마다 크기 / 좌우 위치가 다름)
+layouts.Cavern = function(rng, length, sway)
 	local circles = {}
-	local count = rng:NextInteger(7, 9)
 	local rooms = {}
-	local angle = rng:NextNumber(0, math.pi * 2)
-	local pos = polar(angle + math.pi, limit * 0.7)
-	local heading = angle + rng:NextNumber(-0.5, 0.5)
-	local previousR, start, boss
+	local count = rng:NextInteger(8, 10)
+	local spacing = length / (count - 1)
+	local z = 0
+	local previous, start, boss
 	for i = 1, count do
-		local r = (i == 1 and 36) or (i == count and 48) or rng:NextNumber(28, 42)
-		if previousR then
-			local step = (r + previousR) * 0.62
-			heading += rng:NextNumber(-0.6, 0.6) -- 앞으로 쭉 이어지되 완만하게 꺾인다
-			local candidate = pos + polar(heading, step)
-			if candidate.Magnitude > limit then -- 가장자리로 벗어나면 중심 쪽으로 방향 보정
-				heading = math.atan2(-pos.Z, -pos.X) + rng:NextNumber(-0.5, 0.5)
-				candidate = pos + polar(heading, step)
-			end
-			chain(circles, pos, candidate, 15, rng) -- 방 사이 통로 (넓게)
-			pos = candidate
+		local r = (i == 1 and 36) or (i == count and 50) or rng:NextNumber(28, 42)
+		z = math.clamp(z + rng:NextNumber(-sway * 0.7, sway * 0.7), -sway, sway)
+		if i == 1 or i == count then z = 0 end
+		local pos = Vector3.new((i - 1) * spacing + (i > 1 and i < count and rng:NextNumber(-12, 12) or 0), 0, z)
+		if previous then
+			chain(circles, previous, pos, 15, rng) -- 방 사이 통로
 		end
 		table.insert(circles, { Pos = pos, R = r })
 		table.insert(rooms, { Pos = pos, R = r })
 		if i == 1 then start = pos end
 		if i == count then boss = pos end
-		previousR = r
+		previous = pos
 	end
 	return { Circles = circles, Rooms = rooms, Start = start, Boss = boss, Name = "동굴 군락" }
 end
 
--- 협곡 길: 한쪽에서 반대쪽까지 사인 곡선으로 휘어진 긴 길
-layouts.Canyon = function(rng, limit)
+-- 협곡 길: 사인 곡선으로 굽이치는 긴 길 + 길 중간중간 넓은 방
+layouts.Canyon = function(rng, length, sway)
 	local circles = {}
-	local angle = rng:NextNumber(0, math.pi * 2)
-	local startPos = polar(angle, limit * 0.78)
-	local bossPos = polar(angle + math.pi + rng:NextNumber(-0.4, 0.4), limit * 0.78)
-	local along = bossPos - startPos
-	local side = Vector3.new(-along.Z, 0, along.X).Unit
-	local waves = rng:NextInteger(2, 3)
-	local amplitude = rng:NextNumber(30, 48) * (rng:NextNumber() < 0.5 and 1 or -1)
-	local steps = math.floor(along.Magnitude / 7)
+	local startPos = Vector3.new(0, 0, 0)
+	local bossPos = Vector3.new(length, 0, 0)
+	local waves = rng:NextInteger(3, 4)
+	local amplitude = sway * rng:NextNumber(0.6, 1) * (rng:NextNumber() < 0.5 and 1 or -1)
+	local function at(t)
+		return Vector3.new(length * t, 0, math.sin(t * math.pi * waves) * amplitude * math.sin(t * math.pi))
+	end
+	local steps = math.floor(length / 7)
 	for i = 0, steps do
-		local t = i / steps
-		local p = startPos:Lerp(bossPos, t) + side * math.sin(t * math.pi * waves) * amplitude * math.sin(t * math.pi)
-		table.insert(circles, { Pos = p, R = 15 + rng:NextNumber(-1.5, 2.5) })
+		table.insert(circles, { Pos = at(i / steps), R = 15 + rng:NextNumber(-1.5, 2.5) })
 	end
 	table.insert(circles, { Pos = startPos, R = 36 })
-	table.insert(circles, { Pos = bossPos, R = 48 })
+	table.insert(circles, { Pos = bossPos, R = 50 })
 	local rooms = { { Pos = startPos, R = 36 } }
-	for _, t in ipairs({ 0.14, 0.28, 0.42, 0.57, 0.72, 0.86 }) do -- 중간 넓은 방 (전투 / 이벤트가 열리는 곳)
-		local p = startPos:Lerp(bossPos, t) + side * math.sin(t * math.pi * waves) * amplitude * math.sin(t * math.pi)
+	for _, t in ipairs({ 0.11, 0.23, 0.35, 0.47, 0.59, 0.71, 0.83 }) do -- 중간 넓은 방 (전투 / 이벤트가 열리는 곳)
+		local p = at(t)
 		local r = rng:NextNumber(26, 34)
 		table.insert(circles, { Pos = p, R = r })
 		table.insert(rooms, { Pos = p, R = r })
 	end
-	table.insert(rooms, { Pos = bossPos, R = 48 })
+	table.insert(rooms, { Pos = bossPos, R = 50 })
 	return { Circles = circles, Rooms = rooms, Start = startPos, Boss = bossPos, Name = "구불구불한 협곡 길" }
-end
-
--- 허브와 갈래: 가운데 광장 + 방사형 길 3~4개 (각 끝에 방, 그중 하나가 보스방)
-layouts.Hub = function(rng, limit)
-	local circles = {}
-	local hub = Vector3.zero
-	table.insert(circles, { Pos = hub, R = 38 })
-	local arms = rng:NextInteger(3, 4)
-	local offset = rng:NextNumber(0, math.pi * 2)
-	local bossArm = rng:NextInteger(1, arms)
-	local boss
-	local rooms = { { Pos = hub, R = 38 } }
-	local bossRoom
-	for i = 1, arms do
-		local angle = offset + (i / arms) * math.pi * 2 + rng:NextNumber(-0.25, 0.25)
-		local distance = limit * rng:NextNumber(0.62, 0.74)
-		local roomPos = polar(angle, distance)
-		chain(circles, polar(angle, 30), roomPos, 11, rng)
-		local r = i == bossArm and 44 or rng:NextNumber(24, 32)
-		table.insert(circles, { Pos = roomPos, R = r })
-		if i == bossArm then
-			boss = roomPos
-			bossRoom = { Pos = roomPos, R = r }
-		else
-			table.insert(rooms, { Pos = roomPos, R = r })
-		end
-	end
-	table.insert(rooms, bossRoom) -- 보스방이 마지막
-	return { Circles = circles, Rooms = rooms, Start = hub, Boss = boss, Name = "허브와 갈래 길" }
 end
 
 local LAYOUT_ORDER = { "Cavern", "Canyon" } -- 모두 입구에서 보스방까지 한 줄로 이어지는 길
@@ -130,22 +96,22 @@ local LAYOUT_ORDER = { "Cavern", "Canyon" } -- 모두 입구에서 보스방까�
 ------------------------------------------------------------
 function DungeonTerrain.Build(run, theme, D, folder)
 	local origin = run.Origin
-	local radius = D.ArenaRadius
+	local length = D.ArenaLength   -- 시작방 -> 보스방 거리 (+X 방향으로 쭉)
+	local halfWidth = D.ArenaWidth / 2
 	local mats = theme.Terrain
 	local rng = Random.new(run.Id * 7919 + math.floor(os.clock() * 1000) % 99991)
 	local y0 = origin.Y
-	local limit = radius - 38 -- 방 중심이 놓일 수 있는 최대 거리
 
-	local layout = layouts[LAYOUT_ORDER[rng:NextInteger(1, #LAYOUT_ORDER)]](rng, limit)
+	local layout = layouts[LAYOUT_ORDER[rng:NextInteger(1, #LAYOUT_ORDER)]](rng, length, halfWidth - 70)
 	local function world(relative)
 		return Vector3.new(origin.X + relative.X, y0, origin.Z + relative.Z)
 	end
 
 	-- 1) 암반 덩어리: 바닥 아래부터 절벽 높이까지 가득 채운다
-	Terrain:FillCylinder(CFrame.new(origin.X, y0 + (WALL_HEIGHT - 12) / 2, origin.Z), WALL_HEIGHT + 12, radius + 20, mats.Mountain)
+	Terrain:FillBlock(CFrame.new(origin.X + length / 2, y0 + (WALL_HEIGHT - 12) / 2, origin.Z), Vector3.new(length + 160, WALL_HEIGHT + 12, D.ArenaWidth), mats.Mountain)
 	-- 일부 구간은 보조 재질로 (절벽에 얼룩무늬)
-	for _ = 1, 10 do
-		local p = world(polar(rng:NextNumber(0, math.pi * 2), rng:NextNumber(radius * 0.5, radius)))
+	for _ = 1, 24 do
+		local p = world(Vector3.new(rng:NextNumber(-40, length + 40), 0, rng:NextNumber(-halfWidth, halfWidth)))
 		Terrain:FillBall(Vector3.new(p.X, y0 + rng:NextNumber(5, 50), p.Z), rng:NextNumber(12, 22), mats.Accent)
 	end
 
@@ -213,21 +179,22 @@ function DungeonTerrain.Build(run, theme, D, folder)
 		end
 	end
 
-	-- 6) 보이지 않는 외벽 (절벽 위로 넘어가는 걸 막는 안전장치)
-	local segments = 24
-	local width = 2 * (radius + 14) * math.tan(math.pi / segments) * 1.06
-	for i = 1, segments do
-		local angle = (i / segments) * math.pi * 2
+	-- 6) 보이지 않는 외벽 (절벽 위로 넘어가는 걸 막는 안전장치): 긴 상자 둘레 4면
+	local function invisibleWall(size, position)
 		local wall = Instance.new("Part")
 		wall.Name = "Wall"
 		wall.Anchored = true
 		wall.Transparency = 1
 		wall.CanQuery = false
-		wall.Size = Vector3.new(width, 260, 4)
-		local position = origin + polar(angle, radius + 14) + Vector3.new(0, 100, 0)
-		wall.CFrame = CFrame.lookAt(position, Vector3.new(origin.X, position.Y, origin.Z))
+		wall.Size = size
+		wall.Position = position
 		wall.Parent = folder
 	end
+	local cx = origin.X + length / 2
+	invisibleWall(Vector3.new(length + 200, 260, 4), Vector3.new(cx, y0 + 100, origin.Z + halfWidth + 2))
+	invisibleWall(Vector3.new(length + 200, 260, 4), Vector3.new(cx, y0 + 100, origin.Z - halfWidth - 2))
+	invisibleWall(Vector3.new(4, 260, D.ArenaWidth + 8), Vector3.new(origin.X - 82, y0 + 100, origin.Z))
+	invisibleWall(Vector3.new(4, 260, D.ArenaWidth + 8), Vector3.new(origin.X + length + 82, y0 + 100, origin.Z))
 
 	local function groundY(x, z, fromY)
 		local result = workspace:Raycast(Vector3.new(x, (fromY or (y0 + 6)) + 8, z), Vector3.new(0, -80, 0), params)
@@ -281,8 +248,7 @@ end
 
 -- 판이 끝나면 지형을 지운다 (아레나가 차지한 상자를 통째로 비움)
 function DungeonTerrain.Clear(run, D)
-	local size = (D.ArenaRadius + 60) * 2
-	Terrain:FillBlock(CFrame.new(run.Origin.X, run.Origin.Y + 40, run.Origin.Z), Vector3.new(size, 200, size), AIR)
+	Terrain:FillBlock(CFrame.new(run.Origin.X + D.ArenaLength / 2, run.Origin.Y + 40, run.Origin.Z), Vector3.new(D.ArenaLength + 240, 200, D.ArenaWidth + 60), AIR)
 end
 
 return DungeonTerrain

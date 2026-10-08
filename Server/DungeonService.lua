@@ -1625,7 +1625,7 @@ function Dungeon.Start(player, typeKey, diffKey)
 	local run = {
 		Id = nextRunId,
 		Slot = slot,
-		Origin = D.ArenaOrigin + Vector3.new(slot * D.ArenaSpacing, 0, 0),
+		Origin = D.ArenaOrigin + Vector3.new(0, 0, slot * D.ArenaSpacing),
 		Members = members,
 		PartySize = #members,
 		Phase = "Starting",

@@ -727,7 +727,7 @@ local bossName = makeLabel({
 
 -- 특성 선택 패널 (웨이브 클리어마다 3개 중 1개, 숫자키 1/2/3)
 local statPanel = makePanel({
-	Size = UDim2.new(0, 380, 0, 330), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 16, 1, -16),
+	Size = UDim2.new(0, 380, 0, 170), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 16, 1, -16),
 }, dungeonFrame)
 local statStroke = create("UIStroke", { Color = Color3.fromRGB(255, 210, 90), Thickness = 0, Transparency = 0 }, statPanel)
 
@@ -738,32 +738,48 @@ local statPoints = makeLabel({
 
 local perkOffer = {}   -- 지금 고를 수 있는 특성 키 목록 (서버가 보내준다)
 local perkCards = {}
+-- 특성 카드: 화면 가운데 아래에 큼직한 카드 3장이 가로로 뜬다 (큰 아이콘 + 이름 + 설명, 숫자키 1/2/3 또는 클릭)
+local pickFrame = create("Frame", {
+	Size = UDim2.new(0, 640, 0, 214), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -150),
+	BackgroundTransparency = 1, Visible = false,
+}, dungeonFrame)
+makeLabel({
+	Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 0), Text = "✨ 특성을 고르세요!  (숫자키 1 / 2 / 3 또는 클릭)",
+	Font = Enum.Font.GothamBlack, TextSize = 18, TextColor3 = Color3.fromRGB(255, 225, 100), TextStrokeTransparency = 0.3,
+}, pickFrame)
 for index = 1, Config.Perks.ChoiceCount do
-	local y = 42 + (index - 1) * 62
 	local card = makeButton({
-		Size = UDim2.new(1, -20, 0, 56), Position = UDim2.new(0, 10, 0, y),
-		Text = "", BackgroundColor3 = Color3.fromRGB(48, 48, 70),
-	}, statPanel, function()
+		Size = UDim2.new(0, 200, 0, 176), Position = UDim2.new(0, (index - 1) * 220, 0, 34),
+		Text = "", BackgroundColor3 = Color3.fromRGB(38, 40, 62),
+	}, pickFrame, function()
 		local key = perkOffer[index]
 		if key then
 			Remotes.Upgrade:FireServer(key)
 		end
 	end)
-	local text = makeLabel({
-		Size = UDim2.new(1, -12, 1, 0), Position = UDim2.new(0, 8, 0, 0),
-		TextXAlignment = Enum.TextXAlignment.Left, TextSize = 14, RichText = true,
+	create("UIStroke", { Color = Color3.fromRGB(255, 210, 90), Thickness = 2, Transparency = 0.2 }, card)
+	local icon = makeLabel({
+		Size = UDim2.new(1, 0, 0, 52), Position = UDim2.new(0, 0, 0, 16), TextSize = 40,
 	}, card)
-	perkCards[index] = { Button = card, Text = text }
+	local text = makeLabel({
+		Size = UDim2.new(1, -16, 1, -72), Position = UDim2.new(0, 8, 0, 70),
+		TextSize = 14, RichText = true, TextWrapped = true, TextYAlignment = Enum.TextYAlignment.Top,
+	}, card)
+	makeLabel({
+		Size = UDim2.new(0, 26, 0, 26), Position = UDim2.new(0, 6, 0, 6), Text = tostring(index),
+		Font = Enum.Font.GothamBlack, TextSize = 16, TextColor3 = Color3.fromRGB(255, 225, 100),
+	}, card)
+	perkCards[index] = { Button = card, Text = text, Icon = icon }
 end
 
 local perkSummary = makeLabel({
-	Size = UDim2.new(1, -20, 0, 40), Position = UDim2.new(0, 10, 0, 230),
+	Size = UDim2.new(1, -20, 0, 40), Position = UDim2.new(0, 10, 0, 40),
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 	TextSize = 13, RichText = true, TextColor3 = Color3.fromRGB(200, 200, 220),
 }, statPanel)
 
 local readyButton = makeButton({
-	Size = UDim2.new(1, -20, 0, 34), Position = UDim2.new(0, 10, 0, 272),
+	Size = UDim2.new(1, -20, 0, 34), Position = UDim2.new(0, 10, 0, 84),
 	Text = "준비 완료", BackgroundColor3 = GREEN, Visible = false,
 }, statPanel, function()
 	Remotes.Dungeon:FireServer("Ready")
@@ -859,14 +875,16 @@ local function refreshStats()
 	statPoints.Text = picking and "✨ 특성을 고르세요!" or "특성 (던전 동안만 유지)"
 	statPoints.TextColor3 = picking and Color3.fromRGB(255, 220, 90) or Color3.new(1, 1, 1)
 
+	pickFrame.Visible = picking
 	for index, card in ipairs(perkCards) do
 		local key = perkOffer[index]
 		card.Button.Visible = key ~= nil
 		if key then
 			local perk = Config.Perks[key]
 			local stacks = player:GetAttribute(perk.Attr) or 0
-			card.Text.Text = string.format("<b>[%d] %s %s</b>  <font color='#ffd966'>Lv.%d → %d</font>\n<font color='#c8c8dc'>%s</font>",
-				index, perk.Icon, perk.Name, stacks, stacks + 1, perk.Desc)
+			card.Icon.Text = perk.Icon
+			card.Text.Text = string.format("<b><font size='17'>%s</font></b>\n<font color='#ffd966'>Lv.%d → %d</font>\n<font color='#c8c8dc'>%s</font>",
+				perk.Name, stacks, stacks + 1, perk.Desc)
 		end
 	end
 
@@ -1338,7 +1356,9 @@ end
 local function isTargetValid(target, root)
 	if not target or not target.Instance.Parent or not target.Part.Parent then return false end
 	if target.Kind == "Dummy" and not dummyUsable(target.Instance) then return false end
-	if (target.Part.Position - root.Position).Magnitude > weaponRange() * 0.95 then return false end
+	-- 던전은 몬스터가 방마다 잠들어 있으니, 가까이(깨어나는 거리) 있는 것만 자동 조준한다
+	local reach = currentZone() == "Dungeon" and math.min(weaponRange() * 0.95, 80) or weaponRange() * 0.95
+	if (target.Part.Position - root.Position).Magnitude > reach then return false end
 	return isTargetVisible(target, root)
 end
 
