@@ -98,8 +98,8 @@ end
 
 local function arenaSpawnCFrame(run)
 	local angle = math.random() * math.pi * 2
-	local offset = Vector3.new(math.cos(angle) * 6, 4, math.sin(angle) * 6)
-	return CFrame.new(run.Origin + offset)
+	local offset = Vector3.new(math.cos(angle) * 6, 5, math.sin(angle) * 6)
+	return CFrame.new((run.StartPos or run.Origin) + offset)
 end
 
 local function giveGold(run, amount)
@@ -138,6 +138,9 @@ local function buildArena(run)
 	-- 산맥 / 언덕 / 구덩이 / 협곡 / 동굴로 이루어진 지형 (판마다 모양이 다름)
 	local terrain = DungeonTerrain.Build(run, run.Type, D, folder)
 	run.SpawnPoints = terrain.SpawnPoints
+	run.StartPos = terrain.StartPos
+	run.BossPos = terrain.BossPos
+	run.LayoutName = terrain.LayoutName
 	run.GroundY = terrain.GroundY
 
 	local monsters = Instance.new("Folder")
@@ -265,7 +268,8 @@ local function spawnBoss(run)
 	part.CanCollide = false
 	part.Color = bossType.Color
 	part.Material = Enum.Material.Neon
-	part.Position = Vector3.new(run.Origin.X, groundAt(run, run.Origin.X, run.Origin.Z - D.SpawnRadius, run.Origin.Y + 10) + stats.Size / 2, run.Origin.Z - D.SpawnRadius)
+	local bossSpot = run.BossPos or (run.Origin + Vector3.new(0, 0, -D.SpawnRadius))
+	part.Position = Vector3.new(bossSpot.X, groundAt(run, bossSpot.X, bossSpot.Z, run.Origin.Y + 10) + stats.Size / 2, bossSpot.Z)
 	part.Parent = run.MonstersFolder
 	CollectionService:AddTag(part, "Monster")
 	CollectionService:AddTag(part, "RadarBoss")
@@ -455,7 +459,7 @@ local function bossSlam(run, part, data)
 	ring.Transparency = 0.35
 	ring.Parent = run.Folder
 	local hit = {}
-	local radius, speed, maxRadius = 6, 48, D.ArenaRadius - 30
+	local radius, speed, maxRadius = 6, 48, 70
 	local last = os.clock()
 	while radius < maxRadius and bossAlive(run, part, data) do
 		local now = os.clock()
@@ -1053,6 +1057,9 @@ end
 
 local function runLoop(run)
 	run.Phase = "Starting"
+	if run.LayoutName then
+		notifyAll(run, "🗺 이번 던전 지형: " .. run.LayoutName .. " (들어갈 때마다 달라져요)")
+	end
 	if run.Mutator then
 		notifyAll(run, string.format("%s 이번 던전 변이: %s — %s", run.Mutator.Icon, run.Mutator.Name, run.Mutator.Desc))
 	end
