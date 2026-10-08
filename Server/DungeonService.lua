@@ -138,7 +138,8 @@ local function buildArena(run)
 	folder.Parent = workspace
 
 	-- 산맥 / 언덕 / 구덩이 / 협곡 / 동굴로 이루어진 지형 (판마다 모양이 다름)
-	local terrain = DungeonTerrain.Build(run, run.Type, D, folder)
+	local terrain = DungeonTerrain.BuildColosseum(run, run.Type, D, folder)
+	run.ArenaCenter = terrain.Center
 	run.SpawnPoints = terrain.SpawnPoints
 	run.Circles = terrain.Circles
 	run.AllSpawns = terrain.SpawnPoints
@@ -809,7 +810,7 @@ end
 -- 9) 양옆 부하 소환: 보스방 좌우 가장자리에서 빛기둥이 솟으며 쫄병이 몰려나와 중앙으로 달려든다 (체력 75 / 50 / 25% 에서도 자동 발동)
 local function bossSideAdds(run, part, data, announce)
 	if not bossAlive(run, part, data) then return end
-	local center = run.BossPos or part.Position
+	local center = run.ArenaCenter or run.BossPos or part.Position
 	if announce then
 		notifyAll(run, "⚠ " .. run.BossName .. "의 부하들이 양옆에서 몰려온다!")
 	end
@@ -1723,6 +1724,34 @@ local function countByRoom(run)
 	return counts
 end
 
+-- 콜로세움 진행: 중앙에서 버티며 웨이브마다 사방의 문에서 몰려오는 몬스터를 처치 -> 특성 선택 -> ... -> 보스
+local function colosseumLoop(run)
+	run.PhaseEnd = os.clock() + D.StartCountdown
+	notifyAll(run, "🏟 콜로세움! 사방의 문에서 몬스터가 몰려옵니다. 중앙에서 버티며 처치하세요!")
+	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
+	run.PhaseEnd = nil
+
+	for wave = 1, run.TotalWaves do
+		run.Wave = wave
+		run.Phase = "Wave"
+		run.StageText = nil
+		notifyAll(run, string.format("⚔ 웨이브 %d / %d 시작!", wave, run.TotalWaves))
+		spawnWave(run, wave)
+		if not waitFor(run, function() return run.MonsterCount <= 0 end) then return end
+		giveGold(run, D.WaveClearGold * wave)
+		giveXp(run, Config.Xp.WaveClear * wave)
+		notifyAll(run, string.format("✅ 웨이브 %d / %d 클리어!", wave, run.TotalWaves))
+		if not statPhase(run) then return end
+	end
+
+	run.Phase = "Boss"
+	run.StageText = nil
+	notifyAll(run, "⚠ " .. run.BossName .. "이(가) 나타났다! 공격을 피하며 쓰러뜨리세요!")
+	spawnBoss(run)
+	if not waitFor(run, function() return run.BossDead == true end) then return end
+	finish(run, true)
+end
+
 local function runLoop(run)
 	run.Phase = "Starting"
 	if run.LayoutName then
@@ -1736,6 +1765,10 @@ local function runLoop(run)
 		run.PhaseEnd = os.clock() + D.StartCountdown
 		if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
 		towerLoop(run)
+		return
+	end
+	if not run.Rooms then -- 콜로세움 (방이 없는 한 판짜리 투기장)
+		colosseumLoop(run)
 		return
 	end
 

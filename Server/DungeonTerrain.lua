@@ -246,8 +246,151 @@ function DungeonTerrain.Build(run, theme, D, folder)
 	}
 end
 
+
+------------------------------------------------------------
+-- 콜로세움: 둥근 투기장 하나. 중앙에서 버티며 사방의 문에서 쏟아져 나오는 몬스터를 막아 낸다 (뱀서 느낌).
+--   바닥 지름 약 220 / 돌벽 + 관중석 + 8개의 출입문 + 횃불 / 가운데 제단. 길 / 방 / 언덕 없이 한 판의 평평한 모래 바닥이라 몬스터가 안 보이거나 막히는 일이 없다.
+-- 반환 형식은 Build 와 같다 (Circles 는 걸을 수 있는 원 하나).
+------------------------------------------------------------
+function DungeonTerrain.BuildColosseum(run, theme, D, folder)
+	local origin = run.Origin
+	local mats = theme.Terrain
+	local y0 = origin.Y
+	local R = 110
+	local center = Vector3.new(origin.X + 140, y0, origin.Z)
+	local rng = Random.new(run.Id * 7919 + math.floor(os.clock() * 1000) % 99991)
+
+	-- 1) 암반 덩어리를 채우고 둥근 투기장을 파낸 뒤 바닥을 깐다
+	Terrain:FillBlock(CFrame.new(center.X, y0 + (WALL_HEIGHT - 12) / 2, center.Z), Vector3.new(R * 2 + 140, WALL_HEIGHT + 12, R * 2 + 140), mats.Mountain)
+	Terrain:FillCylinder(CFrame.new(center.X, y0 + WALL_HEIGHT / 2 + 2, center.Z), WALL_HEIGHT + 4, R + 2, AIR)
+	Terrain:FillCylinder(CFrame.new(center.X, y0 - 2, center.Z), 4, R + 2, mats.Ground)
+
+	local stone = Color3.fromRGB(122, 116, 108):Lerp(theme.MonsterColor or Color3.new(1, 1, 1), 0.12)
+	local dark = stone:Lerp(Color3.new(0, 0, 0), 0.45)
+	local function part(name, size, cframe, color, material, props)
+		local p = Instance.new("Part")
+		p.Name = name
+		p.Anchored = true
+		p.Size = size
+		p.CFrame = cframe
+		p.Color = color
+		p.Material = material or Enum.Material.Slate
+		for key, value in pairs(props or {}) do
+			p[key] = value
+		end
+		p.Parent = folder
+		return p
+	end
+
+	-- 2) 돌벽 (바깥으로 점점 높아지는 관중석 3단) + 8개의 출입문 + 횃불
+	local SEGMENTS = 48
+	local gateEvery = SEGMENTS / 8
+	local segmentWidth = 2 * math.pi * (R + 3) / SEGMENTS + 0.6
+	for i = 0, SEGMENTS - 1 do
+		local angle = (i / SEGMENTS) * math.pi * 2
+		local radial = Vector3.new(math.cos(angle), 0, math.sin(angle))
+		local isGate = i % gateEvery == 0
+		for tier = 1, 3 do
+			local radius = R + 3 + (tier - 1) * 7
+			local height = isGate and tier == 1 and 10 or (14 + tier * 12)
+			local position = center + radial * radius + Vector3.new(0, height / 2, 0)
+			part("Stand" .. tier, Vector3.new(segmentWidth, height, 7), CFrame.lookAt(position, position + radial) , tier == 1 and stone or stone:Lerp(dark, 0.25 * tier), tier == 1 and Enum.Material.Brick or Enum.Material.Slate)
+		end
+		if isGate then
+			-- 출입문: 어두운 아치 + 테마색 테두리 (여기서 몬스터가 나온다)
+			local gatePos = center + radial * (R + 1.5)
+			part("GateDark", Vector3.new(segmentWidth * 0.7, 16, 2), CFrame.lookAt(gatePos + Vector3.new(0, 8, 0), gatePos + Vector3.new(0, 8, 0) + radial), Color3.fromRGB(12, 10, 14), Enum.Material.SmoothPlastic, { CanCollide = false })
+			local frame = part("GateGlow", Vector3.new(segmentWidth * 0.85, 1, 2.4), CFrame.lookAt(gatePos + Vector3.new(0, 16.5, 0), gatePos + Vector3.new(0, 16.5, 0) + radial), theme.Torch, Enum.Material.Neon, { CanCollide = false })
+			local light = Instance.new("PointLight")
+			light.Range = 34
+			light.Brightness = 1.6
+			light.Color = theme.Torch
+			light.Parent = frame
+		elseif i % 3 == 1 then
+			-- 횃불 기둥
+			local base = center + radial * (R - 1.5)
+			part("TorchPost", Vector3.new(1.6, 9, 1.6), CFrame.new(base + Vector3.new(0, 4.5, 0)), dark, Enum.Material.Metal, { CanCollide = false })
+			local flame = part("Torch", Vector3.new(2, 2, 2), CFrame.new(base + Vector3.new(0, 10, 0)), theme.Torch, Enum.Material.Neon, { CanCollide = false, Shape = Enum.PartType.Ball })
+			local light = Instance.new("PointLight")
+			light.Range = 40
+			light.Brightness = 2
+			light.Color = theme.Torch
+			light.Parent = flame
+			local fire = Instance.new("ParticleEmitter")
+			fire.Rate = 18
+			fire.Lifetime = NumberRange.new(0.5, 1)
+			fire.Speed = NumberRange.new(2, 5)
+			fire.SpreadAngle = Vector2.new(20, 20)
+			fire.EmissionDirection = Enum.NormalId.Top
+			fire.LightEmission = 1
+			fire.Color = ColorSequence.new(theme.Torch, Color3.fromRGB(255, 240, 170))
+			fire.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.6), NumberSequenceKeypoint.new(1, 0) })
+			fire.Parent = flame
+		end
+	end
+
+	-- 3) 보이지 않는 높은 벽 (돌벽 위로 넘어가지 못하게)
+	for i = 0, 23 do
+		local angle = (i / 24) * math.pi * 2
+		local radial = Vector3.new(math.cos(angle), 0, math.sin(angle))
+		local position = center + radial * (R + 2) + Vector3.new(0, 130, 0)
+		part("Barrier", Vector3.new(2 * math.pi * (R + 2) / 24 + 1, 260, 3), CFrame.lookAt(position, position + radial), Color3.new(1, 1, 1), Enum.Material.SmoothPlastic, { Transparency = 1, CanQuery = false })
+	end
+
+	-- 4) 바닥 장식: 테마색 동심원 고리 + 가운데 제단(밟고 서는 곳) + 방사형 문양
+	for index, radius in ipairs({ 30, 62, 94 }) do
+		part("FloorRing", Vector3.new(0.3, radius * 2, radius * 2), CFrame.new(center + Vector3.new(0, 0.2, 0)) * CFrame.Angles(0, 0, math.rad(90)), theme.Torch:Lerp(Color3.new(0, 0, 0), 0.5), Enum.Material.Neon, { Shape = Enum.PartType.Cylinder, CanCollide = false, Transparency = 0.82 - index * 0.04, CanQuery = false })
+	end
+	part("Dais", Vector3.new(0.5, 26, 26), CFrame.new(center + Vector3.new(0, 0.35, 0)) * CFrame.Angles(0, 0, math.rad(90)), stone, Enum.Material.Marble, { Shape = Enum.PartType.Cylinder, CanCollide = false, CanQuery = false })
+	local glow = part("DaisGlow", Vector3.new(0.6, 20, 20), CFrame.new(center + Vector3.new(0, 0.5, 0)) * CFrame.Angles(0, 0, math.rad(90)), theme.Torch, Enum.Material.Neon, { Shape = Enum.PartType.Cylinder, CanCollide = false, Transparency = 0.55, CanQuery = false })
+	local daisLight = Instance.new("PointLight")
+	daisLight.Range = 50
+	daisLight.Brightness = 1.2
+	daisLight.Color = theme.Torch
+	daisLight.Parent = glow
+	for i = 0, 7 do
+		local angle = (i / 8) * math.pi * 2
+		local dir = Vector3.new(math.cos(angle), 0, math.sin(angle))
+		part("FloorSpoke", Vector3.new(0.25, 3, R - 40), CFrame.lookAt(center + dir * ((R + 6) / 2 + 12) + Vector3.new(0, 0.25, 0), center + dir * 200 + Vector3.new(0, 0.25, 0)), theme.Torch:Lerp(Color3.new(0, 0, 0), 0.4), Enum.Material.Neon, { CanCollide = false, Transparency = 0.8, CanQuery = false })
+	end
+
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Include
+	params.FilterDescendantsInstances = { Terrain }
+	local function groundY(x, z, fromY)
+		local result = workspace:Raycast(Vector3.new(x, (fromY or (y0 + 6)) + 8, z), Vector3.new(0, -80, 0), params)
+		if result and result.Position.Y > y0 - 14 and result.Position.Y < y0 + 18 then
+			return result.Position.Y
+		end
+		return nil
+	end
+
+	-- 5) 몬스터 출현 지점: 가장자리 안쪽의 고리 (출입문 앞) / 보스는 동쪽 큰 문 앞
+	local spawnPoints = {}
+	for i = 0, 47 do
+		local angle = (i / 48) * math.pi * 2
+		local radius = R - 14 + rng:NextNumber(-4, 4)
+		table.insert(spawnPoints, Vector3.new(center.X + math.cos(angle) * radius, y0, center.Z + math.sin(angle) * radius))
+	end
+	local startPos = center + Vector3.new(0, 0, 0)
+	local bossPos = center + Vector3.new(R - 34, 0, 0)
+
+	return {
+		Circles = { { X = center.X, Z = center.Z, R = R - 1 } },
+		SpawnPoints = spawnPoints,
+		Rooms = nil,
+		GroundY = groundY,
+		StartPos = startPos,
+		BossPos = bossPos,
+		LayoutName = "콜로세움 (중앙에서 버티세요!)",
+		Center = center,
+	}
+end
+
 -- 판이 끝나면 지형을 지운다 (아레나가 차지한 상자를 통째로 비움)
 function DungeonTerrain.Clear(run, D)
+	-- 콜로세움(원형, 중심이 Origin + 140) 과 예전 긴 길 지형 둘 다 지운다
+	Terrain:FillBlock(CFrame.new(run.Origin.X + 140, run.Origin.Y + 40, run.Origin.Z), Vector3.new(420, 200, 420), AIR)
 	Terrain:FillBlock(CFrame.new(run.Origin.X + D.ArenaLength / 2, run.Origin.Y + 40, run.Origin.Z), Vector3.new(D.ArenaLength + 240, 200, D.ArenaWidth + 60), AIR)
 end
 
