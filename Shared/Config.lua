@@ -162,15 +162,15 @@ Config.Dungeon.Mutators = {
 -- 스킬 데미지 = 일반 공격 데미지 x Mult. 궁극기는 공격할수록(발사 1회 = +ChargePerShot) 게이지가 찬다.
 ------------------------------------------------------------
 Config.Skills = {
-	Order = { "Barrier", "Blast", "Heal", "Ult" },
+	Order = { "Heal", "Ult" }, -- 방벽 / 충격파는 임팩트가 약해서 뺐다 (정의만 남겨둠)
 	Barrier = { Name = "에너지 방벽", Icon = "🛡", Key = "Z", KeyCode = "Z", Cooldown = 14, Duration = 3,
 		Desc = "3초 동안 모든 피해를 막는 방벽" },
 	Blast = { Name = "충격파", Icon = "💥", Key = "F", KeyCode = "F", Cooldown = 8, Radius = 16, Range = 90, Mult = 3,
 		Desc = "조준한 곳에 폭발 (범위 16, 공격력 x3)" },
 	Heal = { Name = "응급 치료", Icon = "💚", Key = "C", KeyCode = "C", Cooldown = 20, Radius = 40, Ratio = 0.35,
 		Desc = "나와 주변 파티원의 체력 35% 회복" },
-	Ult = { Name = "데드아이", Icon = "🎯", Key = "V", KeyCode = "V", Cooldown = 3, Radius = 110, Mult = 6, Cost = 100,
-		Desc = "궁극기: 주변 모든 적을 표식 후 한 번에 저격 (공격력 x6)" },
+	Ult = { Name = "데드아이", Icon = "🎯", Key = "V", KeyCode = "V", Cooldown = 3, Radius = 110, Mult = 8, Cost = 100,
+		Desc = "궁극기: 게이지가 가득 차면 사용! 주변 모든 적에게 하늘에서 빛기둥이 내리꽂힌다 (공격력 x6)" },
 	ChargePerShot = 1.4,
 }
 

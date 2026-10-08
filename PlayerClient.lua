@@ -1554,15 +1554,95 @@ local function buildWeaponTab()
 	local stage = Config.GetWeaponStage(level)
 	sectionTitle(string.format("🔫 무기 도감 — 무기마다 정해진 횟수만큼 강화하면 다음 무기로 자동 진화해요 (총 %d종)", #tiers))
 
-	local header = newRow(112)
+	local header = newRow(250)
 	local classInfo = Config.WeaponTypes[current.Class]
 	local nextTier = tiers[current.Index + 1]
-	rowText(header, string.format(
-		"<font size='20'><b><font color='#%s'>[%d/%d] %s</font></b></font>  <font color='#ffd966'>+%d / %d</font>  %s\n<font color='#bbbbcc'>%s</font>\n<font color='#bbbbcc'>한 발 x%.2f · 발사 간격 x%.2f · 탄 %d발 · 사거리 %d</font>\n%s",
-		hex(current.Color), current.Index, #tiers, current.Name, stage, current.Steps, Config.StageBar(level), classInfo.Desc,
-		classInfo.DamageMult, classInfo.Cooldown, classInfo.Pellets, classInfo.Range,
-		nextTier and string.format("<font color='#9ad7ff'>%d번 더 강화하면 [%s]로 진화 — %s</font>", current.Steps - stage, nextTier.Name, Config.WeaponTypes[nextTier.Class].Desc) or "<font color='#ffd966'>마지막 무기예요!</font>"
-	), 14, 24)
+
+	-- 왼쪽: 지금 무기 3D 모델 + 발사체 시연 (총구에서 실제 탄 모양이 날아가는 걸 반복해서 보여준다)
+	do
+		local viewport = create("ViewportFrame", {
+			Size = UDim2.new(0, 250, 0, 226), Position = UDim2.new(0, 12, 0, 12), BackgroundColor3 = Color3.fromRGB(20, 22, 34), BorderSizePixel = 0,
+			Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1),
+		}, header)
+		rounded(viewport, 10)
+		create("UIStroke", { Color = current.Color, Thickness = 2 }, viewport)
+		local cam = create("Camera", { FieldOfView = 40 }, viewport)
+		viewport.CurrentCamera = cam
+		local previews = ReplicatedStorage:FindFirstChild("WeaponPreviews")
+		local source = previews and previews:FindFirstChild("W" .. current.Index)
+		if source then
+			local model = source:Clone()
+			model.Parent = viewport
+			local handle = model.PrimaryPart or model:FindFirstChildWhichIsA("BasePart")
+			local cf, size = model:GetBoundingBox()
+			local reach = math.max(size.X, size.Y, size.Z)
+			local dir = handle and handle.CFrame.LookVector or Vector3.new(0, 0, -1) -- 총구 방향
+			local side = handle and handle.CFrame.RightVector or Vector3.new(1, 0, 0)
+			local muzzle = cf.Position + dir * (size.Z / 2 + 0.2)
+			-- 총구가 오른쪽을 향하도록 카메라를 둔다
+			local camPos = cf.Position + side * reach * 1.7 * (dir:Cross(Vector3.yAxis).Unit:Dot(side) >= 0 and -1 or 1) + Vector3.new(0, reach * 0.2, 0)
+			cam.CFrame = CFrame.lookAt(camPos, cf.Position + dir * reach * 0.9)
+			local shot = current.Shot or { Style = "Ball", Size = 0.6, Speed = 260 }
+			local bolt = shot.Style == "Bolt" or shot.Style == "Rocket"
+			local bullet = Instance.new("Part")
+			bullet.Anchored, bullet.CanCollide = true, false
+			bullet.Material = Enum.Material.Neon
+			bullet.Color = current.Color
+			bullet.Shape = bolt and Enum.PartType.Block or Enum.PartType.Ball
+			local thick = math.clamp(shot.Size * 0.22, 0.12, 0.9)
+			bullet.Size = bolt and Vector3.new(thick, thick, math.clamp((shot.Length or 3) * 0.35, 0.6, 2.4)) or Vector3.new(thick * 1.6, thick * 1.6, thick * 1.6)
+			bullet.Parent = viewport
+			local pellets = classInfo.Pellets
+			local extra = {}
+			for i = 2, math.min(pellets, 6) do -- 산탄: 여러 발이 퍼져 나간다
+				extra[i] = bullet:Clone()
+				extra[i].Parent = viewport
+			end
+			local clock = 0
+			local connection
+			connection = RunService.RenderStepped:Connect(function(dt)
+				if not viewport:IsDescendantOf(game) then
+					connection:Disconnect()
+					return
+				end
+				clock += dt
+				local period = math.clamp(classInfo.Cooldown * 1.0, 0.6, 1.6) -- 발사 간격에 비례해서 반복
+				local t = (clock % period) / period
+				local travel = t * reach * 2.6
+				bullet.CFrame = CFrame.lookAt(muzzle + dir * travel, muzzle + dir * (travel + 1))
+				bullet.Transparency = t > 0.85 and (t - 0.85) / 0.15 or 0
+				for i, part in pairs(extra) do
+					local angle = math.rad(((i - 1) / math.max(1, math.min(pellets, 6) - 1) - 0.5) * 2 * 28)
+					local fan = (CFrame.Angles(0, angle, 0)):VectorToWorldSpace(dir)
+					part.CFrame = CFrame.lookAt(muzzle + fan * travel, muzzle + fan * (travel + 1))
+					part.Transparency = bullet.Transparency
+				end
+			end)
+		end
+		makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 1, -22), Text = "발사 시연", TextSize = 11, TextColor3 = Color3.fromRGB(150, 160, 190) }, viewport)
+	end
+
+	-- 오른쪽: 공격 방식 설명 (한 번에 몇 발 / 얼마나 빨리 / 맞으면 어떻게 되는지)
+	local SHOT_NAMES = { Ball = "작은 탄환", Bolt = "빛줄기 탄", Orb = "에너지 구체", Cannon = "대형 포탄", Fire = "불꽃 덩이", Rocket = "로켓탄", Rainbow = "무지개 광구" }
+	local shotInfo = current.Shot or { Style = "Ball" }
+	local behavior = {}
+	if classInfo.Pellets > 1 then table.insert(behavior, string.format("한 번에 %d발이 부채꼴로 퍼짐", classInfo.Pellets)) end
+	if classInfo.Splash then table.insert(behavior, string.format("맞은 곳이 폭발 (범위 %d)", classInfo.Splash)) end
+	if classInfo.Pierce then table.insert(behavior, string.format("적 %d마리까지 관통", classInfo.Pierce + 1)) end
+	if (classInfo.CritBonus or 0) > 0 then table.insert(behavior, string.format("치명타 +%d%%", math.floor(classInfo.CritBonus * 100 + 0.5))) end
+	if #behavior == 0 then table.insert(behavior, "곧게 날아가 한 마리를 맞힘") end
+	local rate = 1 / math.max(0.05, classInfo.Cooldown * Config.Player.BaseCooldown)
+	makeLabel({
+		Size = UDim2.new(1, -290, 1, -20), Position = UDim2.new(0, 274, 0, 10), RichText = true, TextSize = 14,
+		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+		Text = string.format(
+			"<font size='20'><b><font color='#%s'>[%d/%d] %s</font></b></font>  <font color='#ffd966'>+%d / %d</font>\n%s\n<font color='#bbbbcc'>%s</font>\n\n<b>🔫 공격 방식</b>\n<font color='#dfe6ff'>• 탄 모양: %s\n• %s\n• 초당 약 %.1f발 · 한 발 x%.2f · 사거리 %d</font>\n\n%s",
+			hex(current.Color), current.Index, #tiers, current.Name, stage, current.Steps, Config.StageBar(level), classInfo.Desc,
+			SHOT_NAMES[shotInfo.Style] or "탄환", table.concat(behavior, " · "),
+			rate, classInfo.DamageMult, classInfo.Range,
+			nextTier and string.format("<font color='#9ad7ff'>%d번 더 강화하면 [%s]로 진화\n→ %s</font>", current.Steps - stage, nextTier.Name, Config.WeaponTypes[nextTier.Class].Desc) or "<font color='#ffd966'>마지막 무기예요!</font>"
+		),
+	}, header)
 
 	-- 도감: 지나온 무기 / 지금 / 앞으로 만날 무기 (모두 이름이 보여서 "저걸 갖고 싶다"가 생기게)
 	for _, tier in ipairs(tiers) do
@@ -2068,7 +2148,7 @@ end
 local metaState = nil
 
 local function buildSkillTab()
-	sectionTitle("⚔ 스킬 강화 — 골드로 레벨업. 레벨이 오를수록 강해지고 쿨타임이 줄어요. (필드/던전에서 Z F C V)")
+	sectionTitle("⚔ 스킬 강화 — 골드로 레벨업. 레벨이 오를수록 강해지고 쿨타임이 줄어요. (필드/던전에서 C 치료 · V 궁극기)")
 	local U = Config.SkillUpgrade
 	for _, key in ipairs(Config.Skills.Order) do
 		local cfg = Config.Skills[key]
@@ -2629,7 +2709,7 @@ end)
 end
 
 ------------------------------------------------------------
--- 스킬 (Z 방벽 / F 충격파 / C 응급 치료 / V 궁극기): 하단 스킬바 + 쿨타임 표시
+-- 스킬 (C 응급 치료 / V 궁극기): 하단 스킬바 + 쿨타임 표시
 ------------------------------------------------------------
 local useSkill
 local skillByKey = {}
@@ -2637,7 +2717,7 @@ local skillSlots = {}
 local skillCooldownTotal = {}
 local skillReadyAt = {}   -- [skillKey] = 이 시각(os.clock) 이후 사용 가능
 local skillBar = create("Frame", {
-	Size = UDim2.new(0, 4 * 68, 0, 64), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
+	Size = UDim2.new(0, #Config.Skills.Order * 68, 0, 64), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
 	BackgroundTransparency = 1, Visible = false,
 }, gui)
 for index, skillKey in ipairs(Config.Skills.Order) do
@@ -2648,7 +2728,7 @@ for index, skillKey in ipairs(Config.Skills.Order) do
 		BackgroundColor3 = Color3.fromRGB(28, 28, 42), BorderSizePixel = 0,
 	}, skillBar)
 	rounded(slot)
-	create("UIStroke", { Color = skillKey == "Ult" and Color3.fromRGB(255, 90, 90) or Color3.fromRGB(110, 150, 220), Thickness = 2 }, slot)
+	local slotStroke = create("UIStroke", { Color = skillKey == "Ult" and Color3.fromRGB(255, 90, 90) or Color3.fromRGB(110, 150, 220), Thickness = 2 }, slot)
 	makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = cfg.Icon, TextSize = 24 }, slot)
 	makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 34), Text = cfg.Name, TextSize = 10 }, slot)
 	makeLabel({ Size = UDim2.new(0, 18, 0, 16), Position = UDim2.new(0, 3, 0, 3), Text = cfg.Key, TextSize = 12, Font = Enum.Font.GothamBlack,
@@ -2665,7 +2745,7 @@ for index, skillKey in ipairs(Config.Skills.Order) do
 			useSkill(skillKey)
 		end)
 	end
-	skillSlots[skillKey] = { Cover = cover, Timer = timer }
+	skillSlots[skillKey] = { Cover = cover, Timer = timer, Stroke = slotStroke }
 end
 
 function useSkill(skillKey)
@@ -2698,6 +2778,9 @@ RunService.RenderStepped:Connect(function()
 			slot.Cover.Size = UDim2.new(1, 0, 1 - math.clamp(charge / cfg.Cost, 0, 1), 0)
 			slot.Timer.Text = full and "" or string.format("%d%%", math.floor(charge))
 			slot.Timer.TextSize = 16
+			-- 가득 차면 테두리가 두껍게 깜빡여서 "지금 쓸 수 있다"를 알려준다
+			slot.Stroke.Thickness = full and (3 + 2 * math.abs(math.sin(os.clock() * 5))) or 2
+			slot.Stroke.Color = full and Color3.fromRGB(255, 225, 90) or Color3.fromRGB(255, 90, 90)
 		elseif remain > 0 then
 			slot.Cover.Size = UDim2.new(1, 0, math.clamp(remain / (skillCooldownTotal[skillKey] or cfg.Cooldown), 0, 1), 0)
 			slot.Timer.Text = string.format("%.0f", math.ceil(remain))
@@ -2896,7 +2979,7 @@ makeLabel({
 	Text = table.concat({
 		"<b>이동/공격</b>  WASD 이동 · Shift 달리기 · Q 슬라이딩 · 마우스 클릭(누르고 있으면 연사) 공격",
 		"<b>자동 공격</b>  R — 가장 가까운 적을 자동으로 조준 (적을 클릭하면 그 대상으로 고정)",
-		"<b>스킬</b>  Z 방벽 · F 충격파 · C 응급 치료 · V 궁극기(게이지 100%)  — 필드/던전에서 사용",
+		"<b>스킬</b>  C 응급 치료 · V 궁극기(적을 공격해 게이지 100%를 채우면 사용)  — 필드/던전에서 사용",
 		"<b>메뉴</b>  I — 가방 · 무기 · 성장 · 스킬 · 펫 · 퀘스트 · 업적 · 랭킹 · 상점",
 		"<b>음악</b>  M — 켜기/끄기",
 		"",

@@ -1,5 +1,5 @@
 -- SkillService (ServerScriptService > Modules 안의 ModuleScript, 이름: SkillService)
--- 오버워치 느낌의 액티브 스킬: 에너지 방벽 / 충격파 / 응급 치료 / 궁극기(데드아이)
+-- 액티브 스킬: 응급 치료 / 궁극기(데드아이). (방벽 / 충격파 핸들러는 남아 있지만 Config.Skills.Order 에 없어 쓰이지 않는다)
 -- 쿨타임과 게이지는 서버가 검사하고, 클라이언트는 키를 눌렀다고 알려주기만 한다.
 -- 궁극기 게이지는 Attribute "UltCharge"(0~100) 로 클라이언트에 보인다.
 
@@ -126,17 +126,59 @@ end
 handlers.Ult = function(player, root)
 	local cfg = S.Ult
 	if (player:GetAttribute("UltCharge") or 0) < cfg.Cost then
-		return false, "궁극기 게이지가 부족해요!"
+		return false, "궁극기 게이지가 부족해요! (적을 공격하면 차올라요)"
 	end
 	player:SetAttribute("UltCharge", 0)
-	Effects.FloatText(root.Position + Vector3.new(0, 5, 0), "🎯 데드아이!", Color3.fromRGB(255, 90, 90))
-	ring(root.Position, cfg.Radius, Color3.fromRGB(255, 70, 70), 0.9)
-	local from = root.Position + Vector3.new(0, 1.5, 0)
-	local positions = damageAt(player, root.Position, cfg.Radius, cfg.Mult * (1 + U.UltMult * (skillLevel(player, "Ult") - 1)))
-	for _, position in ipairs(positions) do
-		Effects.Tracer(from, position, Color3.fromRGB(255, 80, 80), 0.4)
-		Effects.Burst(position, Color3.fromRGB(255, 80, 80), 20)
+	local origin = root.Position
+	Effects.FloatText(origin + Vector3.new(0, 6, 0), "🎯 데드아이!", Color3.fromRGB(255, 90, 90))
+	Effects.Burst(origin, Color3.fromRGB(255, 220, 120), 60)
+
+	-- 1) 시전 연출: 바닥에서 퍼지는 겹겹의 충격 고리 + 하늘로 솟는 빛 + 화면 흔들림
+	for i = 1, 3 do
+		task.delay((i - 1) * 0.12, function()
+			ring(origin, cfg.Radius * (0.5 + i * 0.25), i == 2 and Color3.fromRGB(255, 220, 120) or Color3.fromRGB(255, 70, 70), 0.9)
+		end)
 	end
+	local aura = Instance.new("Part")
+	aura.Anchored, aura.CanCollide, aura.CanQuery, aura.CanTouch = true, false, false, false
+	aura.Shape = Enum.PartType.Cylinder
+	aura.Material = Enum.Material.Neon
+	aura.Color = Color3.fromRGB(255, 120, 90)
+	aura.Transparency = 0.5
+	aura.Size = Vector3.new(160, 6, 6)
+	aura.CFrame = CFrame.new(origin + Vector3.new(0, 80, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	aura.Parent = workspace
+	TweenService:Create(aura, TweenInfo.new(0.7), { Size = Vector3.new(160, 1, 1), Transparency = 1 }):Play()
+	Debris:AddItem(aura, 0.8)
+	player:SetAttribute("ShakeStrength", 0.8)
+	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+
+	-- 2) 잠깐 뜸을 들인 뒤(표식) 모든 적에게 빛기둥이 한꺼번에 내리꽂힌다
+	local mult = cfg.Mult * (1 + U.UltMult * (skillLevel(player, "Ult") - 1))
+	task.delay(0.5, function()
+		if not player.Parent then return end
+		local positions = damageAt(player, origin, cfg.Radius, mult)
+		for _, position in ipairs(positions) do
+			local pillar = Instance.new("Part")
+			pillar.Anchored, pillar.CanCollide, pillar.CanQuery, pillar.CanTouch = true, false, false, false
+			pillar.Shape = Enum.PartType.Cylinder
+			pillar.Material = Enum.Material.Neon
+			pillar.Color = Color3.fromRGB(255, 80, 70)
+			pillar.Transparency = 0.15
+			pillar.Size = Vector3.new(120, 7, 7)
+			pillar.CFrame = CFrame.new(position + Vector3.new(0, 60, 0)) * CFrame.Angles(0, 0, math.rad(90))
+			pillar.Parent = workspace
+			TweenService:Create(pillar, TweenInfo.new(0.6), { Size = Vector3.new(120, 1, 1), Transparency = 1 }):Play()
+			Debris:AddItem(pillar, 0.7)
+			ring(position, 9, Color3.fromRGB(255, 120, 80), 0.5)
+			Effects.Burst(position, Color3.fromRGB(255, 100, 70), 45)
+		end
+		player:SetAttribute("ShakeStrength", 1.4)
+		player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+		if #positions == 0 then
+			Effects.FloatText(origin + Vector3.new(0, 4, 0), "근처에 적이 없었어요...", Color3.fromRGB(200, 200, 200))
+		end
+	end)
 	return true
 end
 
@@ -144,7 +186,7 @@ local lastRequest = {}
 
 -- skillKey: "Barrier" | "Blast" | "Heal" | "Ult"
 function Skill.Use(player, skillKey, aimPoint)
-	if typeof(skillKey) ~= "string" or not S[skillKey] or skillKey == "Order" or not handlers[skillKey] then return end
+	if typeof(skillKey) ~= "string" or not table.find(S.Order, skillKey) or not handlers[skillKey] then return end
 	local zone = player:GetAttribute("Zone")
 	if zone ~= "Field" and zone ~= "Dungeon" then
 		Remotes.Notify:FireClient(player, "스킬은 필드와 던전에서만 쓸 수 있어요.")
