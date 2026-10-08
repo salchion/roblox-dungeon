@@ -130,16 +130,32 @@ local function zoneOfX(x)
 	return math.clamp(math.floor((x - F.StartX) / F.ZoneLength) + 1, 1, F.ZoneCount)
 end
 
--- 구역마다 "1층 → 2층"으로 올라갔다 내려오는 단차가 있다 (구역 입구 / 캠프는 항상 0층). 몬스터 / 전리품 높이도 이 함수를 쓴다.
--- 점 목록 {구역 안 x 거리, 높이}: 평지 → 경사로 → 1층(7) → 경사로 → 2층(14) → 내려옴
-local FLOOR_POINTS = { { 0, 0 }, { 120, 0 }, { 160, 7 }, { 300, 7 }, { 340, 14 }, { 480, 14 }, { 520, 7 }, { 600, 7 }, { 640, 0 }, { 700, 0 } }
+-- 구역마다 진짜 "계단"으로 1층 → 2층을 올라갔다 내려온다 (구역 입구 / 캠프는 항상 0층). 몬스터 / 전리품 높이도 이 함수를 쓴다.
+-- 평지(층) → 계단(한 칸 STEP_RISE 높이, STEP_DEPTH 깊이, 폭 전체) → 평지 ...
+local STEP_RISE, STEP_DEPTH = 1.2, 2.6
+local STAIRS = { { At = 130, Rise = 8 }, { At = 320, Rise = 8 }, { At = 490, Rise = -8 }, { At = 620, Rise = -8 } }
+local FLOOR_SEGMENTS = {}   -- { A = 구역 안 x 시작, B = 끝, H = 높이, Kind = "Floor" | "Step" }
+do
+	local height, cursor = 0, 0
+	for _, stair in ipairs(STAIRS) do
+		table.insert(FLOOR_SEGMENTS, { A = cursor, B = stair.At, H = height, Kind = "Floor" })
+		local count = math.ceil(math.abs(stair.Rise) / STEP_RISE)
+		for i = 1, count do
+			local a = stair.At + (i - 1) * STEP_DEPTH
+			table.insert(FLOOR_SEGMENTS, { A = a, B = a + STEP_DEPTH, H = height + stair.Rise * i / count, Kind = "Step" })
+		end
+		height += stair.Rise
+		cursor = stair.At + count * STEP_DEPTH
+		stair.Run = count * STEP_DEPTH
+		stair.Top = height
+	end
+	table.insert(FLOOR_SEGMENTS, { A = cursor, B = F.ZoneLength, H = height, Kind = "Floor" })
+end
 local function floorAt(x)
 	local offset = (x - F.StartX) % F.ZoneLength
-	for i = 2, #FLOOR_POINTS do
-		local a, b = FLOOR_POINTS[i - 1], FLOOR_POINTS[i]
-		if offset <= b[1] then
-			local t = (offset - a[1]) / math.max(1e-6, b[1] - a[1])
-			return TOP + a[2] + (b[2] - a[2]) * t
+	for _, segment in ipairs(FLOOR_SEGMENTS) do
+		if offset < segment.B then
+			return TOP + segment.H
 		end
 	end
 	return TOP
@@ -497,35 +513,29 @@ local function buildWorld()
 
 	for zone = 1, F.ZoneCount do
 		local x0 = zoneBounds(zone)
-		-- 바닥: 평지 / 경사로 조각을 이어 붙인 "층" 지형
-		for i = 2, #FLOOR_POINTS do
-			local a, b = FLOOR_POINTS[i - 1], FLOOR_POINTS[i]
-			local length = b[1] - a[1]
-			local ax, bx = x0 + a[1], x0 + b[1]
-			local tint = F.ZoneColors[zone]:Lerp(Color3.new(1, 1, 1), 0.07 * math.max(a[2], b[2]) / 7)
-			if a[2] == b[2] then
-				local top = TOP + a[2]
-				makePart({
-					Name = "Ground" .. zone, Size = Vector3.new(length, top + 1.95, F.Width),
-					Position = Vector3.new((ax + bx) / 2, (top - 1.95) / 2, 0), Color = tint, Material = F.ZoneMaterials[zone],
-				}, worldFolder)
-			else -- 경사로: 기울어진 판 (위 표면이 두 높이를 잇는다) + 아래를 메우는 받침
-				local ha, hb = TOP + a[2], TOP + b[2]
-				local angle = math.atan2(hb - ha, length)
-				local slabLength = math.sqrt(length * length + (hb - ha) ^ 2)
-				local midX, midH = (ax + bx) / 2, (ha + hb) / 2
-				makePart({
-					Name = "Ramp" .. zone, Size = Vector3.new(slabLength, 2, F.Width),
-					CFrame = CFrame.new(midX + math.sin(angle), midH - math.cos(angle), 0) * CFrame.Angles(0, 0, angle),
-					Color = tint, Material = F.ZoneMaterials[zone],
-				}, worldFolder)
-				makePart({
-					Name = "RampFill" .. zone, Size = Vector3.new(length, math.min(ha, hb) + 1.95, F.Width),
-					Position = Vector3.new(midX, (math.min(ha, hb) - 1.95) / 2, 0), Color = tint, Material = F.ZoneMaterials[zone],
-				}, worldFolder)
+		-- 바닥: 평지(층) 블록 + 계단 한 칸 한 칸 (폭 전체). 높은 층일수록 살짝 밝아져서 "층"이 구분된다
+		for _, segment in ipairs(FLOOR_SEGMENTS) do
+			local top = TOP + segment.H
+			local tint = F.ZoneColors[zone]:Lerp(Color3.new(1, 1, 1), 0.08 * segment.H / 8)
+			if segment.Kind == "Step" then
+				tint = tint:Lerp(Color3.fromRGB(215, 205, 190), 0.35) -- 계단은 돌 색
+			end
+			makePart({
+				Name = segment.Kind == "Step" and ("Stair" .. zone) or ("Ground" .. zone),
+				Size = Vector3.new(segment.B - segment.A, top + 1.95, F.Width),
+				Position = Vector3.new(x0 + (segment.A + segment.B) / 2, (top - 1.95) / 2, 0),
+				Color = tint, Material = segment.Kind == "Step" and Enum.Material.Cobblestone or F.ZoneMaterials[zone],
+			}, worldFolder)
+		end
+		-- 층 표지판: 계단 꼭대기마다 "▲ 2층 / ▲ 3층" (내려가는 쪽은 "▼ 1층")
+		do
+			local level = 1
+			for _, stair in ipairs(STAIRS) do
+				level += stair.Rise > 0 and 1 or -1
+				local signPart = makePart({ Name = "FloorSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(x0 + stair.At + stair.Run + 8, TOP + stair.Top + 9, 0), Transparency = 1, CanCollide = false, CanQuery = false }, worldFolder)
+				makeSign(signPart, string.format("%s %d층", stair.Rise > 0 and "▲" or "▼", level), stair.Rise > 0 and Color3.fromRGB(190, 255, 190) or Color3.fromRGB(255, 220, 160), 0)
 			end
 		end
-
 		buildGateway(zone, x0)
 
 		decorateZone(zone, rng)

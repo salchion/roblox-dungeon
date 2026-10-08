@@ -105,15 +105,15 @@ local function onCharacterAdded(player, character)
 
 	Dungeon.OnCharacterAdded(player, character)
 
-	-- 필드에서 죽었다면 가장 가까웠던 구역의 캠프에서 부활
-	local respawnZone = player:GetAttribute("RespawnZone") or 0
-	if respawnZone > 0 then
-		player:SetAttribute("RespawnZone", 0)
-		Field.RespawnAtCamp(player, character, respawnZone)
+	-- 필드에서 죽으면 로비(마을)로 귀환한다: 기본 스폰 위치에서 다시 시작 (진행한 구역 / 관문 / 아이템은 그대로)
+	if player:GetAttribute("DiedInField") then
+		player:SetAttribute("DiedInField", nil)
+		player:SetAttribute("Zone", "Lobby")
+		Remotes.Notify:FireClient(player, "💀 쓰러져서 마을로 돌아왔어요. 장비를 정비하고 다시 도전하세요!")
 	end
 	humanoid.Died:Connect(function()
 		if player:GetAttribute("Zone") == "Field" then
-			player:SetAttribute("RespawnZone", Field.ZoneOf(player))
+			player:SetAttribute("DiedInField", true)
 		end
 	end)
 
