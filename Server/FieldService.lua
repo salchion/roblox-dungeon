@@ -602,6 +602,7 @@ function Field.AreaDamage(player, center, radius, damage)
 		if monsters[target.Part] == data then
 			table.insert(positions, target.Part.Position)
 			data.Health -= damage
+			data.LastHit = os.clock()
 			if data.Contrib then
 				data.Contrib[player] = (data.Contrib[player] or 0) + damage
 			end
@@ -637,6 +638,7 @@ function Field.Shoot(player, origin, direction)
 					and (otherPart.Position - result.Position).Magnitude <= splash + otherPart.Size.X / 2 then
 					local splashDamage = math.max(1, math.floor(damage * 0.5))
 					otherData.Health -= splashDamage
+					otherData.LastHit = os.clock()
 					if otherData.Contrib then
 						otherData.Contrib[player] = (otherData.Contrib[player] or 0) + splashDamage
 					end
@@ -650,6 +652,7 @@ function Field.Shoot(player, origin, direction)
 			Effects.Burst(result.Position, Color3.fromRGB(255, 160, 60), 40)
 		end
 		data.Health -= damage
+		data.LastHit = os.clock() -- 맞은 몬스터는 멀리서 맞아도 깨어나 반응하고, 한동안 체력을 되찾지 않는다
 		if data.Contrib then
 			data.Contrib[player] = (data.Contrib[player] or 0) + damage
 		end
@@ -780,8 +783,10 @@ local function stepMonsters(dt)
 		local target, distance = nearestFieldPlayer(part.Position)
 		local range = data.Aggro and F.LeashRange or F.AggroRange
 		local fromHome = (part.Position - data.Home).Magnitude
+		-- 최근에 맞았으면(저격 / 장거리 사격 포함) 거리와 상관없이 깨어나서 반응한다
+		local recentlyHit = data.LastHit ~= nil and now - data.LastHit < 8
 
-		if target and distance <= range and fromHome <= F.LeashRange * 1.5 then
+		if target and (distance <= range or recentlyHit) and fromHome <= F.LeashRange * 1.5 then
 			data.Aggro = true
 
 			if not data.BossLike then
@@ -821,6 +826,9 @@ local function stepMonsters(dt)
 					end)
 				end
 			end
+		elseif recentlyHit then
+			-- 너무 멀리 끌려 나왔지만 아직 맞고 있는 중: 체력을 회복하지 않고 가만히 있는다
+			data.Aggro = true
 		else
 			-- 목표가 없거나 멀어지면 제자리로 돌아가서 체력을 회복
 			data.Aggro = false

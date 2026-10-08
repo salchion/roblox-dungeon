@@ -279,17 +279,33 @@ function Lobby.Build()
 	-- 바닥 (잔디) + 동쪽 필드로 이어지는 다리
 	makePart({
 		Name = "Floor", Size = Vector3.new(HALF * 2, 2, HALF * 2), Position = Vector3.new(0, TOP - 1, 0),
-		Color = Color3.fromRGB(95, 150, 85), Material = Enum.Material.Grass,
+		Color = Color3.fromRGB(78, 82, 98), Material = Enum.Material.Slate,
 	}, folder)
+	-- 바닥 타일: 큰 정사각 석판을 번갈아 깔아서 풀밭이 아니라 "돌로 포장된 마을"처럼 보이게 한다
+	do
+		local tile = 20
+		local count = HALF * 2 // tile
+		for ix = 0, count - 1 do
+			for iz = 0, count - 1 do
+				local dark = (ix + iz) % 2 == 0
+				makePart({
+					Name = "FloorTile", Size = Vector3.new(tile - 0.6, 0.1, tile - 0.6),
+					Position = Vector3.new(-HALF + tile * (ix + 0.5), TOP + 0.04, -HALF + tile * (iz + 0.5)),
+					Color = dark and Color3.fromRGB(96, 100, 118) or Color3.fromRGB(112, 116, 134),
+					Material = Enum.Material.Slate, CanCollide = false, CanQuery = false,
+				}, folder)
+			end
+		end
+	end
 	makePart({
 		Name = "FieldBridge", Size = Vector3.new(32, 2, 40), Position = Vector3.new(HALF + 4, TOP - 1, 0),
 		Color = Color3.fromRGB(150, 140, 120), Material = Enum.Material.Cobblestone,
 	}, folder)
 
 	-- 길 (남북 중앙로 + 동서로)
-	local pathColor = Color3.fromRGB(190, 175, 140)
-	makePart({ Name = "PathNS", Size = Vector3.new(18, 0.2, 206), Position = Vector3.new(0, TOP + 0.1, -10), Color = pathColor, Material = Enum.Material.Cobblestone, CanCollide = false }, folder)
-	makePart({ Name = "PathEW", Size = Vector3.new(260, 0.2, 14), Position = Vector3.new(0, TOP + 0.1, 0), Color = pathColor, Material = Enum.Material.Cobblestone, CanCollide = false }, folder)
+	local pathColor = Color3.fromRGB(205, 195, 175)
+	makePart({ Name = "PathNS", Size = Vector3.new(18, 0.2, 206), Position = Vector3.new(0, TOP + 0.1, -10), Color = pathColor, Material = Enum.Material.Marble, CanCollide = false }, folder)
+	makePart({ Name = "PathEW", Size = Vector3.new(260, 0.2, 14), Position = Vector3.new(0, TOP + 0.1, 0), Color = pathColor, Material = Enum.Material.Marble, CanCollide = false }, folder)
 
 	-- 남쪽 광장: 스폰 + 분수
 	makeDisc(Vector3.new(0, TOP + 0.1, 70), 70, 0.2, Color3.fromRGB(205, 195, 165), Enum.Material.Marble, folder).CanCollide = false

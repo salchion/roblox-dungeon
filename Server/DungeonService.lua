@@ -544,6 +544,7 @@ end
 
 local function damageMonster(run, player, part, data, amount, isCrit, hitPosition)
 	data.Health -= amount
+	data.Awake = true -- 맞은 몬스터는 거리와 상관없이 깨어난다
 	data.HealthFill.Size = UDim2.new(math.max(data.Health, 0) / data.MaxHealth, 0, 1, 0)
 	Effects.DamageNumber(hitPosition, amount, isCrit)
 	Effects.Hit(player, part, isCrit, data.Health <= 0)
