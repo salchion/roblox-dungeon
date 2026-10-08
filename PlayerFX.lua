@@ -54,35 +54,85 @@ do
 	player:GetAttributeChangedSignal("DeadeyeActive"):Connect(apply)
 end
 
--- 구역별 분위기: 로비는 해 질 녘(서버가 설정), 필드 / 던전은 예전처럼 밝은 낮 (어두워서 안 보이는 일이 없게)
+-- 구역별 분위기: 로비는 해 질 녘(서버가 설정), 던전은 밝은 낮, 필드는 구역(1~8)마다 하늘 / 안개 / 빛 색이 달라진다
 do
 	local Lighting = game:GetService("Lighting")
 	local DAY = { ClockTime = 14, Brightness = 2.2, Ambient = Color3.fromRGB(70, 70, 70), OutdoorAmbient = Color3.fromRGB(70, 70, 70), ExposureCompensation = 0 }
+	-- 필드 구역별 하늘: 시간대 / 밝기 / 주변광 / 안개 색 / 안개 농도
+	local FIELD_THEMES = {
+		{ ClockTime = 14, Brightness = 2.4, Ambient = Color3.fromRGB(90, 90, 90), OutdoorAmbient = Color3.fromRGB(112, 112, 112), Fog = Color3.fromRGB(200, 225, 255), Density = 0.22 },   -- 초원: 맑은 낮
+		{ ClockTime = 11, Brightness = 1.9, Ambient = Color3.fromRGB(60, 82, 70), OutdoorAmbient = Color3.fromRGB(88, 108, 96), Fog = Color3.fromRGB(150, 205, 175), Density = 0.35 }, -- 숲: 초록 안개
+		{ ClockTime = 16.5, Brightness = 2.2, Ambient = Color3.fromRGB(104, 86, 70), OutdoorAmbient = Color3.fromRGB(132, 112, 92), Fog = Color3.fromRGB(212, 182, 150), Density = 0.34 }, -- 황무지: 먼지
+		{ ClockTime = 13, Brightness = 2.6, Ambient = Color3.fromRGB(132, 116, 82), OutdoorAmbient = Color3.fromRGB(162, 142, 102), Fog = Color3.fromRGB(255, 226, 172), Density = 0.4 }, -- 사막: 뜨거운 낮
+		{ ClockTime = 10, Brightness = 2.3, Ambient = Color3.fromRGB(96, 106, 128), OutdoorAmbient = Color3.fromRGB(132, 148, 172), Fog = Color3.fromRGB(218, 238, 255), Density = 0.42 }, -- 설원: 차가운 흰 안개
+		{ ClockTime = 18.5, Brightness = 1.6, Ambient = Color3.fromRGB(98, 52, 42), OutdoorAmbient = Color3.fromRGB(124, 62, 46), Fog = Color3.fromRGB(255, 150, 100), Density = 0.46 }, -- 화산: 붉은 노을
+		{ ClockTime = 21, Brightness = 1.3, Ambient = Color3.fromRGB(58, 46, 88), OutdoorAmbient = Color3.fromRGB(84, 68, 124), Fog = Color3.fromRGB(150, 110, 230), Density = 0.46 }, -- 암흑 지대: 보랏빛 밤
+		{ ClockTime = 23, Brightness = 1.1, Ambient = Color3.fromRGB(64, 32, 74), OutdoorAmbient = Color3.fromRGB(90, 42, 100), Fog = Color3.fromRGB(255, 100, 180), Density = 0.5 }, -- 심연: 분홍 어둠
+	}
 	local dusk = nil
+	local fieldIndex = 0
+	local function applyField(index)
+		local theme = FIELD_THEMES[index]
+		if not theme then return end
+		fieldIndex = index
+		TweenService:Create(Lighting, TweenInfo.new(1.6), {
+			ClockTime = theme.ClockTime, Brightness = theme.Brightness, Ambient = theme.Ambient, OutdoorAmbient = theme.OutdoorAmbient, ExposureCompensation = 0,
+		}):Play()
+		local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
+		if atmosphere then
+			TweenService:Create(atmosphere, TweenInfo.new(1.6), { Color = theme.Fog, Density = theme.Density }):Play()
+		end
+	end
 	local function apply()
 		local zone = player:GetAttribute("Zone")
 		local grade = Lighting:FindFirstChild("LobbyGrade")
 		local bloom = Lighting:FindFirstChild("LobbyBloom")
 		if zone == "Lobby" then
 			if dusk then
-				TweenService:Create(Lighting, TweenInfo.new(0.8), dusk):Play()
+				TweenService:Create(Lighting, TweenInfo.new(0.8), dusk.Lighting):Play()
+				local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
+				if atmosphere and dusk.Atmosphere then
+					TweenService:Create(atmosphere, TweenInfo.new(0.8), dusk.Atmosphere):Play()
+				end
 			end
+			fieldIndex = 0
 			if grade then grade.Enabled = true end
 			if bloom then bloom.Enabled = true end
 		elseif zone == "Field" or zone == "Dungeon" then
 			if not dusk then
+				local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
 				dusk = {
-					ClockTime = Lighting.ClockTime, Brightness = Lighting.Brightness, Ambient = Lighting.Ambient,
-					OutdoorAmbient = Lighting.OutdoorAmbient, ExposureCompensation = Lighting.ExposureCompensation,
+					Lighting = {
+						ClockTime = Lighting.ClockTime, Brightness = Lighting.Brightness, Ambient = Lighting.Ambient,
+						OutdoorAmbient = Lighting.OutdoorAmbient, ExposureCompensation = Lighting.ExposureCompensation,
+					},
+					Atmosphere = atmosphere and { Color = atmosphere.Color, Density = atmosphere.Density } or nil,
 				}
 			end
-			TweenService:Create(Lighting, TweenInfo.new(0.8), DAY):Play()
+			if zone == "Dungeon" then
+				TweenService:Create(Lighting, TweenInfo.new(0.8), DAY):Play()
+				fieldIndex = 0
+			end
 			if grade then grade.Enabled = false end
 			if bloom then bloom.Enabled = false end
 		end
 	end
 	player:GetAttributeChangedSignal("Zone"):Connect(apply)
 	task.defer(apply)
+	-- 필드 안에서는 지금 서 있는 구역을 보고 하늘을 바꾼다
+	task.spawn(function()
+		while true do
+			task.wait(0.5)
+			if player:GetAttribute("Zone") == "Field" then
+				local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+				if root then
+					local F = Config.Field
+					local index = math.clamp(math.floor((root.Position.X - F.StartX) / F.ZoneLength) + 1, 1, F.ZoneCount)
+					if index ~= fieldIndex then applyField(index) end
+				end
+			end
+		end
+	end)
 end
 
 -- 내 체력바: 캐릭터 발밑에만 표시
@@ -302,6 +352,55 @@ if game:GetService("RunService"):IsStudio() then
 		if processed or UserInputService:GetFocusedTextBox() then return end
 		if input.KeyCode == Enum.KeyCode.K then
 			panel.Visible = not panel.Visible
+		end
+	end)
+end
+
+-- 구역 분위기 입자: 필드에서는 플레이어 주변에 구역마다 다른 것이 떠다닌다 (꽃가루 / 반딧불 / 먼지 / 모래바람 / 눈 / 불씨 / 보랏빛 가루 / 분홍 포자)
+do
+	local THEMES = {
+		{ Color = Color3.fromRGB(255, 240, 150), Rate = 14, Size = 0.5, Speed = 2, Life = 7, Drift = true, Height = 18 },   -- 초원: 꽃가루
+		{ Color = Color3.fromRGB(150, 255, 150), Rate = 16, Size = 0.5, Speed = 1.5, Life = 8, Drift = true, Height = 8, Glow = true }, -- 숲: 반딧불
+		{ Color = Color3.fromRGB(190, 165, 130), Rate = 20, Size = 1.2, Speed = 6, Life = 6, Drift = true, Height = 6 },      -- 황무지: 먼지
+		{ Color = Color3.fromRGB(240, 215, 160), Rate = 34, Size = 1.1, Speed = 14, Life = 5, Drift = true, Height = 4 },     -- 사막: 모래바람
+		{ Color = Color3.fromRGB(255, 255, 255), Rate = 70, Size = 0.55, Speed = 6, Life = 7, Height = 38, Fall = true },      -- 설원: 눈
+		{ Color = Color3.fromRGB(255, 150, 60), Rate = 36, Size = 0.6, Speed = 7, Life = 5, Height = -2, Rise = true, Glow = true }, -- 화산: 불씨
+		{ Color = Color3.fromRGB(190, 130, 255), Rate = 22, Size = 0.6, Speed = 2.5, Life = 7, Drift = true, Height = 8, Glow = true }, -- 암흑 지대: 보랏빛 가루
+		{ Color = Color3.fromRGB(255, 90, 170), Rate = 26, Size = 0.7, Speed = 3, Life = 7, Height = -2, Rise = true, Glow = true },  -- 심연: 분홍 포자
+	}
+	local holder = create("Part", { Name = "AmbienceEmitter", Anchored = true, CanCollide = false, CanQuery = false, CanTouch = false, Transparency = 1, Size = Vector3.new(90, 1, 90) }, workspace)
+	local emitters = {}
+	for index, theme in ipairs(THEMES) do
+		local e = Instance.new("ParticleEmitter")
+		e.Enabled = false
+		e.Rate = theme.Rate
+		e.Lifetime = NumberRange.new(theme.Life * 0.7, theme.Life)
+		e.Speed = NumberRange.new(theme.Speed * 0.5, theme.Speed)
+		e.SpreadAngle = Vector2.new(theme.Fall and 8 or 40, theme.Fall and 8 or 40)
+		e.EmissionDirection = theme.Rise and Enum.NormalId.Top or (theme.Fall and Enum.NormalId.Bottom or Enum.NormalId.Front)
+		e.LightEmission = theme.Glow and 1 or 0.2
+		e.Color = ColorSequence.new(theme.Color)
+		e.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(0.2, theme.Size), NumberSequenceKeypoint.new(1, 0) })
+		e.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.2, 0.2), NumberSequenceKeypoint.new(1, 1) })
+		e.Rotation = NumberRange.new(0, 360)
+		e.Parent = holder
+		emitters[index] = e
+	end
+	local active = 0
+	RunService.Heartbeat:Connect(function()
+		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		local index = 0
+		if root and player:GetAttribute("Zone") == "Field" then
+			local F = Config.Field
+			index = math.clamp(math.floor((root.Position.X - F.StartX) / F.ZoneLength) + 1, 1, F.ZoneCount)
+		end
+		if index ~= active then
+			if emitters[active] then emitters[active].Enabled = false end
+			if emitters[index] then emitters[index].Enabled = true end
+			active = index
+		end
+		if root and THEMES[index] then
+			holder.Position = root.Position + Vector3.new(0, THEMES[index].Height, 0)
 		end
 	end)
 end
