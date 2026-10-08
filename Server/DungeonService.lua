@@ -138,6 +138,8 @@ local function buildArena(run)
 	-- 산맥 / 언덕 / 구덩이 / 협곡 / 동굴로 이루어진 지형 (판마다 모양이 다름)
 	local terrain = DungeonTerrain.Build(run, run.Type, D, folder)
 	run.SpawnPoints = terrain.SpawnPoints
+	run.AllSpawns = terrain.SpawnPoints
+	run.Rooms = terrain.Rooms
 	run.StartPos = terrain.StartPos
 	run.BossPos = terrain.BossPos
 	run.LayoutName = terrain.LayoutName
@@ -251,10 +253,10 @@ local function spawnBoss(run)
 	local boss = Config.Boss
 	local bossType = run.Type.Boss
 	local stats = {
-		Size = boss.Size,
-		MaxHealth = math.floor(boss.MaxHealth * D.GetHealthScale(run.PartySize) * bossType.HealthMult * run.Difficulty.HealthMult),
-		Speed = boss.Speed,
-		ShotDamage = math.floor(boss.ShotDamage * bossType.DamageMult * run.Difficulty.DamageMult),
+		Size = boss.Size * run.BossVariant.SizeMult,
+		MaxHealth = math.floor(boss.MaxHealth * D.GetHealthScale(run.PartySize) * bossType.HealthMult * run.Difficulty.HealthMult * run.BossVariant.HealthMult),
+		Speed = boss.Speed * run.BossVariant.SpeedMult,
+		ShotDamage = math.floor(boss.ShotDamage * bossType.DamageMult * run.Difficulty.DamageMult * run.BossVariant.DamageMult),
 		ShotInterval = boss.ShotInterval,
 		ShotSpeed = boss.ShotSpeed,
 		Gold = boss.Gold,
@@ -266,7 +268,7 @@ local function spawnBoss(run)
 	part.Size = Vector3.new(stats.Size, stats.Size, stats.Size)
 	part.Anchored = true
 	part.CanCollide = false
-	part.Color = bossType.Color
+	part.Color = bossType.Color:Lerp(run.BossVariant.Color, 0.45)
 	part.Material = Enum.Material.Neon
 	local bossSpot = run.BossPos or (run.Origin + Vector3.new(0, 0, -D.SpawnRadius))
 	part.Position = Vector3.new(bossSpot.X, groundAt(run, bossSpot.X, bossSpot.Z, run.Origin.Y + 10) + stats.Size / 2, bossSpot.Z)
@@ -274,7 +276,7 @@ local function spawnBoss(run)
 	CollectionService:AddTag(part, "Monster")
 	CollectionService:AddTag(part, "RadarBoss")
 
-	local data = registerMonster(run, part, stats, bossType.Name, 320, {
+	local data = registerMonster(run, part, stats, run.BossName, 320, {
 		IsBoss = true,
 		Enraged = false,
 		NextPattern = os.clock() + 3,
@@ -507,6 +509,7 @@ local function pickBossPattern(run, data)
 	local weights = run.Type.Boss.Weights
 	local entries, total = {}, 0
 	for name, weight in pairs(weights) do
+		weight *= run.BossVariant.Weights[name] or 1
 		if name ~= data.LastPattern then
 			if data.Enraged and (name == "Spiral" or name == "Meteor") then
 				weight *= 1.7
@@ -874,6 +877,7 @@ local function broadcast(run)
 		TimeLeft = run.PhaseEnd and math.max(0, math.ceil(run.PhaseEnd - os.clock())) or 0,
 		ReadyCount = readyCount,
 		MemberCount = #run.Members,
+		StageText = run.StageText,
 		MutatorText = run.Mutator and string.format("%s %s — %s", run.Mutator.Icon, run.Mutator.Name, run.Mutator.Desc) or nil,
 		BossName = run.Boss and run.BossName or nil,
 		BossRatio = run.Boss and math.max(run.Boss.Health, 0) / run.Boss.MaxHealth or nil,
@@ -926,7 +930,11 @@ local function finish(run, victory)
 		giveXp(run, Config.Xp.DungeonClear)
 		for _, member in ipairs(run.Members) do
 			Quest.Add(member, "DungeonClears", 1)
-			run.LootLines[member] = Loot.DungeonChest(member, run.TypeKey, run.DiffKey) -- 보스 상자: 장비 아이템
+			local lines = run.LootLines[member] or {}
+			for _, line in ipairs(Loot.DungeonChest(member, run.TypeKey, run.DiffKey)) do -- 보스 상자: 장비 아이템
+				table.insert(lines, line)
+			end
+			run.LootLines[member] = lines
 		end
 	end
 	for _, member in ipairs(run.Members) do
@@ -1055,11 +1063,180 @@ local function towerLoop(run)
 	end
 end
 
+------------------------------------------------------------
+-- 방 진행 (로그라이크식): 방을 하나씩 이동하며 전투 / 이벤트를 치르고 마지막에 보스방
+------------------------------------------------------------
+local function setWaypoint(run, position, name)
+	for _, member in ipairs(run.Members) do
+		Remotes.Tutorial:FireClient(member, "Waypoint", { Pos = position, Name = name })
+	end
+end
+
+local function clearWaypoint(run)
+	for _, member in ipairs(run.Members) do
+		Remotes.Tutorial:FireClient(member, "WaypointClear")
+	end
+end
+
+local function anyoneIn(run, room, ratio)
+	for _, member in ipairs(run.Members) do
+		local root = getAliveParts(member)
+		if root then
+			local flat = Vector3.new(root.Position.X - room.Pos.X, 0, root.Position.Z - room.Pos.Z).Magnitude
+			if flat <= room.R * ratio then
+				return true
+			end
+		end
+	end
+	return false
+end
+
+-- 다음 방으로 이동: 빛기둥이 방을 가리키고, 누군가 들어가면(또는 60초 뒤) 진행
+local function enterRoom(run, room, label)
+	run.SpawnPoints = (room.Spawns and #room.Spawns > 0) and room.Spawns or run.AllSpawns
+	run.RoomPos = room.Pos
+	if anyoneIn(run, room, 0.7) then return true end
+	run.Phase = "Moving"
+	run.StageText = label or "다음 방으로 이동하세요"
+	run.PhaseEnd = os.clock() + 60
+	setWaypoint(run, room.Pos + Vector3.new(0, 4, 0), label or "다음 방")
+	local ok = waitFor(run, function()
+		return anyoneIn(run, room, 0.7) or os.clock() >= run.PhaseEnd
+	end)
+	clearWaypoint(run)
+	run.PhaseEnd = nil
+	return ok
+end
+
+-- 이벤트 1) 보물방: 상자에 다가가면 열린다 (장비 + 골드)
+local function eventTreasure(run, room, wave)
+	run.Phase = "Event"
+	run.StageText = D.Events.Treasure.Name
+	local chest = Instance.new("Part")
+	chest.Name = "TreasureChest"
+	chest.Anchored = true
+	chest.CanCollide = false
+	chest.Size = Vector3.new(5, 4, 4)
+	chest.Color = Color3.fromRGB(255, 200, 60)
+	chest.Material = Enum.Material.Neon
+	chest.Position = room.Pos + Vector3.new(0, groundAt(run, room.Pos.X, room.Pos.Z, room.Pos.Y + 10) - room.Pos.Y + 2.5, 0)
+	chest.Parent = run.Folder
+	local light = Instance.new("PointLight")
+	light.Range = 30
+	light.Brightness = 3
+	light.Color = chest.Color
+	light.Parent = chest
+	notifyAll(run, D.Events.Treasure.Name .. " — " .. D.Events.Treasure.Desc)
+
+	local opened = os.clock() + 45
+	local ok = waitFor(run, function()
+		for _, member in ipairs(run.Members) do
+			local root = getAliveParts(member)
+			if root and (root.Position - chest.Position).Magnitude < 14 then
+				return true
+			end
+		end
+		return os.clock() >= opened
+	end)
+	if not ok then
+		chest:Destroy()
+		return false
+	end
+	Effects.Burst(chest.Position, Color3.fromRGB(255, 220, 90), 120)
+	chest:Destroy()
+	giveGold(run, D.WaveClearGold * wave * 3)
+	for _, member in ipairs(run.Members) do
+		local lines = run.LootLines[member] or {}
+		for _, line in ipairs(Loot.DungeonChest(member, run.TypeKey, run.DiffKey, 1)) do
+			table.insert(lines, line)
+		end
+		run.LootLines[member] = lines
+	end
+	notifyAll(run, "💎 보물 상자를 열었어요! 장비와 골드를 얻었어요 (결과 화면에서 확인)")
+	return true
+end
+
+-- 이벤트 2) 함정방: 운석 비. 끝까지 버티면 골드 + 특성
+local function eventTrap(run, room, wave)
+	run.Phase = "Event"
+	run.StageText = D.Events.Trap.Name
+	notifyAll(run, D.Events.Trap.Name .. " — " .. D.Events.Trap.Desc)
+	task.wait(2)
+	local level = math.max(1, D.GetWaveMonsterLevel(wave) + run.LevelBonus)
+	local damage = math.floor(Config.Monster.GetStats(level).ShotDamage * 1.5 * run.Difficulty.DamageMult)
+	for _ = 1, 9 do
+		if run.Destroyed or run.Phase == "Ended" then return false end
+		if allDown(run) then
+			finish(run, false)
+			return false
+		end
+		local markers = {}
+		for _, member in ipairs(run.Members) do
+			local root = getAliveParts(member)
+			if root then
+				local jitter = Vector3.new(math.random(-7, 7), 0, math.random(-7, 7))
+				local x, z = root.Position.X + jitter.X, root.Position.Z + jitter.Z
+				local center = Vector3.new(x, groundAt(run, x, z, root.Position.Y) + 0.3, z)
+				local marker = Instance.new("Part")
+				marker.Shape = Enum.PartType.Cylinder
+				marker.Anchored = true
+				marker.CanCollide = false
+				marker.CanQuery = false
+				marker.Size = Vector3.new(0.4, 18, 18)
+				marker.CFrame = CFrame.new(center) * CFrame.Angles(0, 0, math.rad(90))
+				marker.Color = Color3.fromRGB(255, 60, 40)
+				marker.Material = Enum.Material.Neon
+				marker.Transparency = 0.5
+				marker.Parent = run.Folder
+				table.insert(markers, { Part = marker, Center = center })
+			end
+		end
+		task.wait(1.2)
+		for _, marker in ipairs(markers) do
+			for _, member in ipairs(run.Members) do
+				local root, humanoid = getAliveParts(member)
+				if root then
+					local flat = Vector3.new(root.Position.X - marker.Center.X, 0, root.Position.Z - marker.Center.Z).Magnitude
+					if flat <= 9 then
+						humanoid:TakeDamage(damage)
+					end
+				end
+			end
+			Effects.Burst(marker.Center + Vector3.new(0, 2, 0), Color3.fromRGB(255, 120, 50), 35)
+			marker.Part:Destroy()
+		end
+		task.wait(0.5)
+	end
+	giveGold(run, D.WaveClearGold * wave * 2)
+	giveXp(run, Config.Xp.WaveClear * wave)
+	notifyAll(run, "☄ 함정방 돌파! 보너스 골드를 얻었어요")
+	return statPhase(run)
+end
+
+-- 이벤트 3) 휴식방: 체력 완전 회복 + 특성 한 번 더
+local function eventRest(run, room, wave)
+	run.Phase = "Event"
+	run.StageText = D.Events.Rest.Name
+	for _, member in ipairs(run.Members) do
+		applyMaxHealth(member, math.huge)
+		local root = getAliveParts(member)
+		if root then
+			Effects.Burst(root.Position, Color3.fromRGB(110, 220, 255), 50)
+		end
+	end
+	notifyAll(run, D.Events.Rest.Name .. " — " .. D.Events.Rest.Desc)
+	task.wait(1.5)
+	return statPhase(run)
+end
+
+local EVENT_HANDLERS = { Treasure = eventTreasure, Trap = eventTrap, Rest = eventRest }
+
 local function runLoop(run)
 	run.Phase = "Starting"
 	if run.LayoutName then
 		notifyAll(run, "🗺 이번 던전 지형: " .. run.LayoutName .. " (들어갈 때마다 달라져요)")
 	end
+	notifyAll(run, string.format("👹 이번 보스: %s — %s", run.BossName, run.BossVariant.Desc))
 	if run.Mutator then
 		notifyAll(run, string.format("%s 이번 던전 변이: %s — %s", run.Mutator.Icon, run.Mutator.Name, run.Mutator.Desc))
 	end
@@ -1071,21 +1248,50 @@ local function runLoop(run)
 		return
 	end
 
+	-- 진행 순서 만들기: 전투 웨이브 사이사이에 이벤트 방 (웨이브 2 뒤, 5웨이브 이상이면 끝에서 두 번째 뒤)
+	local rooms = run.Rooms
+	local combatRooms = {}
+	for index = 2, #rooms - 1 do
+		table.insert(combatRooms, rooms[index])
+	end
+	if #combatRooms == 0 then
+		combatRooms = rooms
+	end
+	local eventPool = table.clone(D.Events.Order)
+	local stages = {}
 	for wave = 1, run.TotalWaves do
-		run.Wave = wave
-		run.Phase = "Wave"
-		run.PhaseEnd = nil
-		spawnWave(run, wave)
-		if not waitFor(run, function() return run.MonsterCount <= 0 end) then return end
-
-		giveGold(run, D.WaveClearGold * wave)
-		giveXp(run, Config.Xp.WaveClear * wave)
-		if not statPhase(run) then return end
+		table.insert(stages, { Kind = "Combat", Wave = wave })
+		if run.TotalWaves >= 4 and (wave == 2 or (run.TotalWaves >= 5 and wave == run.TotalWaves - 1)) and #eventPool > 0 then
+			table.insert(stages, { Kind = table.remove(eventPool, math.random(#eventPool)), Wave = wave })
+		end
 	end
 
-	-- 모든 웨이브 클리어 -> 보스
+	for index, stage in ipairs(stages) do
+		local room = combatRooms[(index - 1) % #combatRooms + 1]
+		if stage.Kind == "Combat" then
+			run.Wave = stage.Wave
+			if not enterRoom(run, room, "다음 방으로 이동하세요 (웨이브 " .. stage.Wave .. ")") then return end
+			run.StageText = nil
+			run.Phase = "Wave"
+			run.PhaseEnd = nil
+			spawnWave(run, stage.Wave)
+			if not waitFor(run, function() return run.MonsterCount <= 0 end) then return end
+
+			giveGold(run, D.WaveClearGold * stage.Wave)
+			giveXp(run, Config.Xp.WaveClear * stage.Wave)
+			if not statPhase(run) then return end
+		else
+			if not enterRoom(run, room, D.Events[stage.Kind].Name .. " 로 이동하세요") then return end
+			if not EVENT_HANDLERS[stage.Kind](run, room, stage.Wave) then return end
+		end
+		run.StageText = nil
+	end
+
+	-- 보스방으로 이동 -> 보스
+	if not enterRoom(run, rooms[#rooms], "보스방으로 이동하세요!") then return end
 	run.Phase = "Boss"
 	run.PhaseEnd = nil
+	run.StageText = nil
 	notifyAll(run, "⚠ " .. run.BossName .. "이(가) 나타났다!")
 	spawnBoss(run)
 	if not waitFor(run, function() return run.BossDead end) then return end
@@ -1170,10 +1376,12 @@ function Dungeon.Start(player, typeKey, diffKey)
 		LootLines = {},
 		Difficulty = difficulty,
 		TotalWaves = dungeonType.Waves,
+		BossVariant = D.BossVariants[D.BossVariants.Order[math.random(#D.BossVariants.Order)]],
 		BossName = dungeonType.Boss.Name,
 		GoldMult = dungeonType.GoldMult * difficulty.GoldMult,
 		LevelBonus = dungeonType.LevelOffset + difficulty.LevelOffset,
 	}
+	run.BossName = run.BossVariant.Prefix .. " " .. run.BossName -- 보스 변종 (매번 다름)
 	-- 던전 변이: 확률로 한 가지가 붙는다 (위험 + 보상)
 	if math.random() < D.MutatorChance then
 		local key = D.Mutators.Order[math.random(#D.Mutators.Order)]

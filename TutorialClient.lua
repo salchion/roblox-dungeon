@@ -60,6 +60,8 @@ local barFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3
 rounded(barFill)
 local barText = label({ Size = UDim2.new(1, 0, 1, 0), TextSize = 11, Font = Enum.Font.GothamBold }, barBack)
 
+local waypoint = nil    -- 던전 안에서 다음 방을 가리키는 빛기둥 (하늘색)
+local waypointLabel = nil
 local current = nil     -- 지금 미션 정보
 local beacon = nil      -- 목표 위치의 빛기둥 Part
 local beaconLabel = nil
@@ -109,7 +111,45 @@ local function refresh()
 	objective.Visible = true
 end
 
+local function clearWaypoint()
+	if waypoint then
+		waypoint:Destroy()
+		waypoint = nil
+		waypointLabel = nil
+	end
+end
+
+local function placeWaypoint(position, name)
+	clearWaypoint()
+	waypoint = Instance.new("Part")
+	waypoint.Name = "RoomWaypoint"
+	waypoint.Anchored = true
+	waypoint.CanCollide = false
+	waypoint.CanQuery = false
+	waypoint.CanTouch = false
+	waypoint.Material = Enum.Material.Neon
+	waypoint.Color = Color3.fromRGB(110, 210, 255)
+	waypoint.Transparency = 0.5
+	waypoint.Size = Vector3.new(3, 160, 3)
+	waypoint.Position = position + Vector3.new(0, 70, 0)
+	waypoint.Parent = workspace
+	local billboard = create("BillboardGui", {
+		Size = UDim2.new(0, 240, 0, 50), StudsOffset = Vector3.new(0, -60, 0), AlwaysOnTop = true, MaxDistance = 100000,
+	}, waypoint)
+	waypointLabel = label({
+		Size = UDim2.new(1, 0, 1, 0), TextSize = 20, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0,
+		TextColor3 = Color3.fromRGB(150, 225, 255), Text = "▼ " .. (name or "다음 방"),
+	}, billboard)
+end
+
 Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
+	if action == "Waypoint" then
+		placeWaypoint(data.Pos, data.Name)
+		return
+	elseif action == "WaypointClear" then
+		clearWaypoint()
+		return
+	end
 	if action == "Step" then
 		local newStep = current == nil or current.Index ~= data.Index
 		current = data
@@ -127,6 +167,14 @@ Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 end)
 
 RunService.RenderStepped:Connect(function()
+	if waypoint and waypointLabel then
+		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		if root then
+			local flat = Vector3.new(root.Position.X - waypoint.Position.X, 0, root.Position.Z - waypoint.Position.Z).Magnitude
+			waypointLabel.Text = string.format("▼ 다음 방  %dm", math.floor(flat + 0.5))
+			waypoint.Transparency = flat < 30 and 0.85 or 0.5
+		end
+	end
 	-- 던전 안에서는 던전 UI 와 겹치지 않게 숨긴다
 	objective.Visible = current ~= nil and player:GetAttribute("Zone") ~= "Dungeon"
 	if beacon and beaconLabel and current then

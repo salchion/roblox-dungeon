@@ -161,6 +161,28 @@ Config.Skills = {
 }
 
 ------------------------------------------------------------
+-- 보스 변종: 던전에 들어갈 때마다 하나가 뽑혀 보스의 성격이 달라진다
+-- Weights: 기본 패턴 비중에 곱해지는 배율 (Fan Ring Spiral Meteor Slam Summon)
+Config.Dungeon.BossVariants = {
+	Order = { "Berserk", "Arcane", "Titan", "Summoner" },
+	Berserk = { Prefix = "광폭한", Color = Color3.fromRGB(255, 60, 40), SpeedMult = 1.8, DamageMult = 1.2, HealthMult = 0.9, SizeMult = 0.9,
+		Weights = { Fan = 1.5, Slam = 2.5 }, Desc = "빠르고 거칠다" },
+	Arcane = { Prefix = "비전의", Color = Color3.fromRGB(150, 90, 255), SpeedMult = 1, DamageMult = 1.1, HealthMult = 1, SizeMult = 1,
+		Weights = { Spiral = 2.5, Meteor = 2.5 }, Desc = "탄막과 운석을 쏟아낸다" },
+	Titan = { Prefix = "거대한", Color = Color3.fromRGB(150, 150, 160), SpeedMult = 0.8, DamageMult = 1, HealthMult = 1.5, SizeMult = 1.3,
+		Weights = { Slam = 3, Ring = 1.5 }, Desc = "느리지만 단단하고 충격파가 강하다" },
+	Summoner = { Prefix = "군단장", Color = Color3.fromRGB(110, 220, 120), SpeedMult = 1, DamageMult = 1, HealthMult = 0.9, SizeMult = 1,
+		Weights = { Summon = 4 }, Desc = "부하를 끊임없이 불러낸다" },
+}
+
+-- 방 이벤트: 전투 사이에 끼어드는 특별한 방
+Config.Dungeon.Events = {
+	Order = { "Treasure", "Trap", "Rest" },
+	Treasure = { Name = "💎 보물방", Desc = "보물 상자가 있어요! 가까이 가면 열려요" },
+	Trap = { Name = "☄ 함정방", Desc = "운석이 쏟아져요! 빨간 원을 피하세요 (끝까지 버티면 보상)" },
+	Rest = { Name = "⛲ 휴식방", Desc = "샘물이 체력을 모두 회복시켜 줘요 + 특성 한 번 더" },
+}
+
 -- 던전 특성 (뱀파이어 서바이벌식): 웨이브 클리어마다 3개 중 1개를 골라 그 던전 동안만 쌓인다
 -- Attr: 플레이어 Attribute(스택 수) / Max: 최대 스택 / Special: 총알이 바뀌는 특수 특성(항상 1개 이상 후보에 포함)
 ------------------------------------------------------------

@@ -901,6 +901,12 @@ local function refreshBanner()
 	elseif state.Phase == "StatPhase" then
 		bannerTitle.Text = string.format("스탯 분배  %d초", state.TimeLeft)
 		bannerSub.Text = (state.TotalWaves ~= 0 and state.Wave >= state.TotalWaves) and "웨이브 클리어! 다음은 보스전!" or string.format("웨이브 %d 클리어! 스탯을 올리세요", state.Wave)
+	elseif state.Phase == "Moving" then
+		bannerTitle.Text = state.StageText or "다음 방으로 이동하세요"
+		bannerSub.Text = "하늘색 빛기둥을 따라가세요"
+	elseif state.Phase == "Event" then
+		bannerTitle.Text = state.StageText or "이벤트 방"
+		bannerSub.Text = "특별한 방이에요!"
 	elseif state.Phase == "Boss" then
 		bannerTitle.Text = "BOSS"
 		bannerSub.Text = string.format("남은 몬스터: %d", state.MonstersLeft)

@@ -124,12 +124,12 @@ end
 ------------------------------------------------------------
 -- 던전 보스 상자: 바로 가방으로. 반환: 화면에 보여줄 줄 목록 { { Text, Rarity }... }
 ------------------------------------------------------------
-function Loot.DungeonChest(player, typeKey, difficultyKey)
+function Loot.DungeonChest(player, typeKey, difficultyKey, count)
 	local row = (L.DungeonRarityRow[typeKey] or 3) + (L.DungeonDifficultyRow[difficultyKey] or 0)
 	row = math.clamp(row, 1, #L.ZoneRarity)
 
 	local lines = {}
-	for _ = 1, L.DungeonChestCount do
+	for _ = 1, count or L.DungeonChestCount do
 		local item = Loot.RollItem(player, row, "DungeonBoss")
 		local status, _, essence, gold = Inventory.Add(player, item)
 		local label = itemLabel(item)

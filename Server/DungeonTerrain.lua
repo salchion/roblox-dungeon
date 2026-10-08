@@ -35,7 +35,8 @@ local layouts = {}
 -- 동굴 군락: 방 5~6개가 이어진다
 layouts.Cavern = function(rng, limit)
 	local circles = {}
-	local count = rng:NextInteger(5, 6)
+	local count = rng:NextInteger(6, 8)
+	local rooms = {}
 	local angle = rng:NextNumber(0, math.pi * 2)
 	local pos = polar(angle + math.pi, limit * 0.7)
 	local heading = angle + rng:NextNumber(-0.5, 0.5)
@@ -54,11 +55,12 @@ layouts.Cavern = function(rng, limit)
 			pos = candidate
 		end
 		table.insert(circles, { Pos = pos, R = r })
+		table.insert(rooms, { Pos = pos, R = r })
 		if i == 1 then start = pos end
 		if i == count then boss = pos end
 		previousR = r
 	end
-	return { Circles = circles, Start = start, Boss = boss, Name = "동굴 군락" }
+	return { Circles = circles, Rooms = rooms, Start = start, Boss = boss, Name = "동굴 군락" }
 end
 
 -- 협곡 길: 한쪽에서 반대쪽까지 사인 곡선으로 휘어진 긴 길
@@ -79,11 +81,15 @@ layouts.Canyon = function(rng, limit)
 	end
 	table.insert(circles, { Pos = startPos, R = 34 })
 	table.insert(circles, { Pos = bossPos, R = 46 })
-	for _, t in ipairs({ 0.35, 0.65 }) do -- 중간 넓은 방
+	local rooms = { { Pos = startPos, R = 34 } }
+	for _, t in ipairs({ 0.2, 0.4, 0.6, 0.8 }) do -- 중간 넓은 방 (전투 / 이벤트가 열리는 곳)
 		local p = startPos:Lerp(bossPos, t) + side * math.sin(t * math.pi * waves) * amplitude * math.sin(t * math.pi)
-		table.insert(circles, { Pos = p, R = rng:NextNumber(22, 30) })
+		local r = rng:NextNumber(22, 30)
+		table.insert(circles, { Pos = p, R = r })
+		table.insert(rooms, { Pos = p, R = r })
 	end
-	return { Circles = circles, Start = startPos, Boss = bossPos, Name = "구불구불한 협곡 길" }
+	table.insert(rooms, { Pos = bossPos, R = 46 })
+	return { Circles = circles, Rooms = rooms, Start = startPos, Boss = bossPos, Name = "구불구불한 협곡 길" }
 end
 
 -- 허브와 갈래: 가운데 광장 + 방사형 길 3~4개 (각 끝에 방, 그중 하나가 보스방)
@@ -95,6 +101,8 @@ layouts.Hub = function(rng, limit)
 	local offset = rng:NextNumber(0, math.pi * 2)
 	local bossArm = rng:NextInteger(1, arms)
 	local boss
+	local rooms = { { Pos = hub, R = 38 } }
+	local bossRoom
 	for i = 1, arms do
 		local angle = offset + (i / arms) * math.pi * 2 + rng:NextNumber(-0.25, 0.25)
 		local distance = limit * rng:NextNumber(0.62, 0.74)
@@ -102,9 +110,15 @@ layouts.Hub = function(rng, limit)
 		chain(circles, polar(angle, 30), roomPos, 11, rng)
 		local r = i == bossArm and 44 or rng:NextNumber(24, 32)
 		table.insert(circles, { Pos = roomPos, R = r })
-		if i == bossArm then boss = roomPos end
+		if i == bossArm then
+			boss = roomPos
+			bossRoom = { Pos = roomPos, R = r }
+		else
+			table.insert(rooms, { Pos = roomPos, R = r })
+		end
 	end
-	return { Circles = circles, Start = hub, Boss = boss, Name = "허브와 갈래 길" }
+	table.insert(rooms, bossRoom) -- 보스방이 마지막
+	return { Circles = circles, Rooms = rooms, Start = hub, Boss = boss, Name = "허브와 갈래 길" }
 end
 
 local LAYOUT_ORDER = { "Cavern", "Canyon", "Hub" }
@@ -225,6 +239,21 @@ function DungeonTerrain.Build(run, theme, D, folder)
 	end
 
 	-- 7) 몬스터 출현 지점: 방과 길 안의 평평한 땅 (입구 근처는 제외)
+	-- 방마다 출현 지점 (방 순서대로 진행하며 그 방에서만 몬스터가 나온다)
+	local roomData = {}
+	for _, room in ipairs(layout.Rooms) do
+		local entry = { Pos = world(room.Pos), R = room.R, Spawns = {} }
+		for _ = 1, 40 do
+			if #entry.Spawns >= 14 then break end
+			local p = entry.Pos + polar(rng:NextNumber(0, math.pi * 2), rng:NextNumber(room.R * 0.15, room.R * 0.8))
+			local result = workspace:Raycast(Vector3.new(p.X, y0 + 14, p.Z), Vector3.new(0, -50, 0), params)
+			if result and result.Normal.Y > 0.9 and result.Position.Y > y0 - 1.5 and result.Position.Y < y0 + 14 then
+				table.insert(entry.Spawns, result.Position)
+			end
+		end
+		table.insert(roomData, entry)
+	end
+
 	local spawnPoints = {}
 	local tries = 0
 	while #spawnPoints < 48 and tries < 600 do
@@ -240,7 +269,7 @@ function DungeonTerrain.Build(run, theme, D, folder)
 	end
 
 	return {
-		SpawnPoints = spawnPoints, GroundY = groundY, StartPos = startPos, BossPos = bossPos, LayoutName = layout.Name,
+		SpawnPoints = spawnPoints, Rooms = roomData, GroundY = groundY, StartPos = startPos, BossPos = bossPos, LayoutName = layout.Name,
 	}
 end
 
