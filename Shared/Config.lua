@@ -14,7 +14,7 @@ Config.Player = {
 	RunSpeed = 32,          -- Shift를 누르고 있을 때
 	DashSpeed = 135,        -- Q 대시 속도 (순간 폭발적으로 튀어 나감)
 	DashTime = 0.24,        -- 대시 지속 시간(초): 짧고 굵게
-	DashCooldown = 1.1,     -- 대시 1회 충전에 걸리는 시간(초)
+	DashCooldown = 3.0,     -- 대시 1회 충전에 걸리는 시간(초) = 대시 쿨타임
 	DashCharges = 2,        -- 연속으로 쓸 수 있는 횟수 (공중에서도 가능)
 	BaseDamage = 10,        -- 무기 +0 기준 데미지
 	BaseCooldown = 0.35,    -- 기본 공격 간격(초)

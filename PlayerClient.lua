@@ -1202,8 +1202,8 @@ player:GetAttributeChangedSignal("PetSpeed"):Connect(applySpeed)
 -- Q: 대시. 이동 방향(가만히 있으면 바라보는 방향)으로 순간 폭발적으로 튀어 나간다. 공중에서도 쓸 수 있고
 -- (공중에선 높이가 유지된 채 수평으로 휙), 최대 DashCharges 번까지 연속으로 쓸 수 있다. 쓴 만큼 시간이 지나면 하나씩 충전.
 -- 연출: 잔상(몸 모양 유령) + 바람 줄기 + 화면 FOV 확 벌어짐.
-local dashCharges = Config.Player.DashCharges
-local dashRefillAt = 0
+settings.DashCharges = Config.Player.DashCharges  -- 남은 대시 횟수 (스킬바에 표시)
+settings.DashRefillAt = 0                        -- 다음 충전 시각
 
 local function spawnAfterimage(character, color)
 	for _, part in ipairs(character:GetChildren()) do
@@ -1226,21 +1226,16 @@ local function slide()
 	if sliding then return end
 	local now = os.clock()
 	local P = Config.Player
-	-- 충전 계산: 마지막 사용 이후 DashCooldown 마다 1개씩 돌아온다
-	if dashCharges < P.DashCharges and now >= dashRefillAt then
-		dashCharges = math.min(P.DashCharges, dashCharges + 1 + math.floor((now - dashRefillAt) / P.DashCooldown))
-		dashRefillAt = now + P.DashCooldown
-	end
-	if dashCharges <= 0 then return end
+	if settings.DashCharges <= 0 then return end
 
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 	if not root or not humanoid or humanoid.Health <= 0 then return end
-	if dashCharges == P.DashCharges then
-		dashRefillAt = now + P.DashCooldown
+	if settings.DashCharges == P.DashCharges then -- 가득 찬 상태에서 처음 쓰면 충전 타이머 시작
+		settings.DashRefillAt = now + P.DashCooldown
 	end
-	dashCharges -= 1
+	settings.DashCharges -= 1
 	sliding = true
 
 	local direction = humanoid.MoveDirection
@@ -2939,14 +2934,14 @@ local skillSlots = {}
 local skillCooldownTotal = {}
 local skillReadyAt = {}   -- [skillKey] = 이 시각(os.clock) 이후 사용 가능
 local skillBar = create("Frame", {
-	Size = UDim2.new(0, #Config.Skills.Order * 68, 0, 64), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
+	Size = UDim2.new(0, (#Config.Skills.Order + 1) * 68, 0, 64), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
 	BackgroundTransparency = 1, Visible = false,
 }, gui)
 for index, skillKey in ipairs(Config.Skills.Order) do
 	local cfg = Config.Skills[skillKey]
 	skillByKey[Enum.KeyCode[cfg.KeyCode]] = skillKey
 	local slot = create("Frame", {
-		Size = UDim2.new(0, 62, 0, 62), Position = UDim2.new(0, (index - 1) * 68, 0, 0),
+		Size = UDim2.new(0, 62, 0, 62), Position = UDim2.new(0, index * 68, 0, 0),
 		BackgroundColor3 = Color3.fromRGB(28, 28, 42), BorderSizePixel = 0,
 	}, skillBar)
 	rounded(slot)
@@ -2968,6 +2963,44 @@ for index, skillKey in ipairs(Config.Skills.Order) do
 		end)
 	end
 	skillSlots[skillKey] = { Cover = cover, Timer = timer, Stroke = slotStroke }
+end
+
+-- 대시(Q) 칸: 스킬처럼 쿨타임 / 남은 횟수가 보인다 (칸을 눌러도 대시)
+do
+	local slot = create("Frame", { Size = UDim2.new(0, 62, 0, 62), Position = UDim2.new(0, 0, 0, 0), BackgroundColor3 = Color3.fromRGB(28, 28, 42), BorderSizePixel = 0 }, skillBar)
+	rounded(slot)
+	create("UIStroke", { Color = Color3.fromRGB(120, 210, 255), Thickness = 2 }, slot)
+	makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = "💨", TextSize = 24 }, slot)
+	makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 34), Text = "대시", TextSize = 10 }, slot)
+	makeLabel({ Size = UDim2.new(0, 18, 0, 16), Position = UDim2.new(0, 3, 0, 3), Text = "Q", TextSize = 12, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 220, 90) }, slot)
+	local cover = create("Frame", { Size = UDim2.new(1, 0, 0, 0), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.45, BorderSizePixel = 0 }, slot)
+	rounded(cover)
+	local charges = makeLabel({ Size = UDim2.new(0, 20, 0, 18), Position = UDim2.new(1, -22, 0, 3), TextSize = 14, Font = Enum.Font.GothamBlack }, slot)
+	local timer = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 20, Font = Enum.Font.GothamBlack }, slot)
+	if UserInputService.TouchEnabled then
+		create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", ZIndex = 5 }, slot).Activated:Connect(function()
+			slide()
+		end)
+	end
+	RunService.RenderStepped:Connect(function()
+		local P = Config.Player
+		local now = os.clock()
+		-- 충전: 쿨타임(DashCooldown)마다 1회씩 돌아온다 (로비에서도 계속 돈다)
+		if settings.DashCharges < P.DashCharges and now >= settings.DashRefillAt then
+			settings.DashCharges += 1
+			settings.DashRefillAt = settings.DashCharges < P.DashCharges and now + P.DashCooldown or 0
+		end
+		charges.Text = tostring(settings.DashCharges)
+		charges.TextColor3 = settings.DashCharges > 0 and Color3.fromRGB(150, 230, 255) or Color3.fromRGB(255, 120, 120)
+		if settings.DashCharges < P.DashCharges then
+			local remain = settings.DashRefillAt - now
+			cover.Size = UDim2.new(1, 0, settings.DashCharges == 0 and math.clamp(remain / P.DashCooldown, 0, 1) or 0.25, 0)
+			timer.Text = settings.DashCharges == 0 and string.format("%.1f", math.max(0, remain)) or ""
+		else
+			cover.Size = UDim2.new(1, 0, 0, 0)
+			timer.Text = ""
+		end
+	end)
 end
 
 function useSkill(skillKey)

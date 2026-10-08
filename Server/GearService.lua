@@ -18,14 +18,6 @@ local Gear = {}
 local function rAttr(key) return "Gear_" .. key .. "_R" end
 local function lAttr(key) return "Gear_" .. key .. "_L" end
 
--- 부위별로 외형을 덧씌울 신체 부위 (R15 / R6 이름을 모두 적어둠)
-local LIMBS = {
-	Armor = { "UpperTorso", "Torso" },
-	Gloves = { "LeftHand", "RightHand", "Left Arm", "Right Arm" },
-	Boots = { "LeftFoot", "RightFoot", "Left Leg", "Right Leg" },
-	Helmet = { "Head" }, -- 반지 / 목걸이는 캐릭터 몸에 씌우지 않는다 (인벤토리 3D 화면에서 확인)
-}
-
 ------------------------------------------------------------
 -- 능력치 계산
 ------------------------------------------------------------
@@ -50,53 +42,185 @@ local function recompute(player)
 end
 
 ------------------------------------------------------------
--- 캐릭터 외형: 등급 색 / 재질의 갑옷 조각을 신체 부위에 씌운다
+-- 캐릭터 외형: 부위마다 모양이 다른 장식을 몸에 붙인다 (R15 / R6 모두)
+--   투구: 머리띠 + 윗판 + (뿔 / 볏 / 보석 / 후광)   갑옷: 가슴판 + 어깨 갑옷 + 허리띠 + (망토)
+--   장갑: 건틀릿 + 손목 띠 + (징)   신발: 부츠 + 정강이 보호대 + (날개)   반지: 손가락 반지 + 보석   목걸이: 사슬 + 펜던트
+-- 등급이 오를수록 장식이 늘어나고 빛난다. 부위별 Folder "GearVisual_<부위>" 에 모아 두었다가 다시 만들 때 통째로 지운다.
 ------------------------------------------------------------
+local function firstOf(character, ...)
+	for _, name in ipairs({ ... }) do
+		local found = character:FindFirstChild(name)
+		if found then return found end
+	end
+	return nil
+end
+
+local function attach(folder, limb, spec)
+	local part = Instance.new("Part")
+	part.Name = "Gear"
+	part.Size = spec.Size
+	part.Color = spec.Color
+	part.Material = spec.Material or Enum.Material.Metal
+	part.Transparency = spec.Transparency or 0
+	part.CanCollide = false
+	part.CanQuery = false
+	part.CanTouch = false
+	part.Massless = true
+	if spec.Shape then part.Shape = spec.Shape end
+	part.CFrame = limb.CFrame * (spec.Offset or CFrame.new())
+	local weld = Instance.new("WeldConstraint")
+	weld.Part0 = limb
+	weld.Part1 = part
+	weld.Parent = part
+	part.Parent = folder
+	return part
+end
+
+local CYL = CFrame.Angles(0, 0, math.rad(90)) -- 원기둥을 세운다 (Roblox 원기둥은 X 축이 길이)
+
+local builders = {}
+
+builders.Helmet = function(character, folder, r, color, material)
+	local head = character:FindFirstChild("Head")
+	if not head then return end
+	local hs = head.Size
+	local dark = color:Lerp(Color3.fromRGB(30, 30, 40), 0.55)
+	-- 머리띠 + 윗판
+	attach(folder, head, { Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.38, hs.X * 1.18, hs.Z * 1.18), Offset = CFrame.new(0, hs.Y * 0.3, 0) * CYL, Color = color, Material = material })
+	attach(folder, head, { Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.3, hs.X * 1.1, hs.Z * 1.1), Offset = CFrame.new(0, hs.Y * 0.58, 0) * CYL, Color = dark, Material = material })
+	if r >= 2 then -- 양옆 뿔 (등급이 오르면 커진다)
+		local horn = 0.6 + r * 0.25
+		for _, side in ipairs({ -1, 1 }) do
+			attach(folder, head, { Size = Vector3.new(0.25, horn, 0.25), Offset = CFrame.new(side * hs.X * 0.62, hs.Y * 0.5 + horn * 0.3, 0) * CFrame.Angles(0, 0, math.rad(side * -28)), Color = color, Material = material })
+		end
+	end
+	if r >= 3 then -- 앞뒤로 달리는 볏
+		attach(folder, head, { Size = Vector3.new(0.18, 0.7 + r * 0.12, hs.Z * 1.25), Offset = CFrame.new(0, hs.Y * 0.8, 0), Color = color, Material = Enum.Material.Neon })
+	end
+	if r >= 4 then -- 이마 보석
+		attach(folder, head, { Shape = Enum.PartType.Ball, Size = Vector3.new(0.34, 0.34, 0.34), Offset = CFrame.new(0, hs.Y * 0.36, -hs.Z * 0.62), Color = color, Material = Enum.Material.Neon })
+	end
+	if r >= 5 then -- 후광
+		attach(folder, head, { Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.12, hs.X * 1.9, hs.Z * 1.9), Offset = CFrame.new(0, hs.Y * 1.5, 0) * CYL, Color = color, Material = Enum.Material.Neon, Transparency = 0.15 })
+	end
+end
+
+builders.Armor = function(character, folder, r, color, material)
+	local torso = firstOf(character, "UpperTorso", "Torso")
+	if not torso then return end
+	local ts = torso.Size
+	local dark = color:Lerp(Color3.fromRGB(30, 30, 40), 0.5)
+	-- 가슴판 (몸통보다 살짝 크고, 위쪽이 넓다) + 중앙 보석
+	attach(folder, torso, { Size = Vector3.new(ts.X * 1.12, ts.Y * 0.82, ts.Z * 1.18), Offset = CFrame.new(0, ts.Y * 0.06, 0), Color = color, Material = material })
+	attach(folder, torso, { Size = Vector3.new(ts.X * 1.16, 0.22, ts.Z * 1.22), Offset = CFrame.new(0, -ts.Y * 0.42, 0), Color = dark, Material = Enum.Material.Metal }) -- 허리띠
+	attach(folder, torso, { Shape = Enum.PartType.Ball, Size = Vector3.new(0.42, 0.42, 0.2), Offset = CFrame.new(0, ts.Y * 0.14, -ts.Z * 0.62), Color = color, Material = Enum.Material.Neon })
+	if r >= 2 then -- 어깨 갑옷
+		for _, name in ipairs({ { "LeftUpperArm", "Left Arm" }, { "RightUpperArm", "Right Arm" } }) do
+			local arm = firstOf(character, name[1], name[2])
+			if arm then
+				attach(folder, arm, { Shape = Enum.PartType.Ball, Size = Vector3.new(arm.Size.X * 1.55, arm.Size.X * 1.25, arm.Size.X * 1.55), Offset = CFrame.new(0, arm.Size.Y * 0.4, 0), Color = color, Material = material })
+				if r >= 3 then -- 어깨 가시
+					attach(folder, arm, { Size = Vector3.new(0.22, 0.6 + r * 0.12, 0.22), Offset = CFrame.new(0, arm.Size.Y * 0.4 + 0.65, 0), Color = color, Material = Enum.Material.Neon })
+				end
+			end
+		end
+	end
+	if r >= 4 then -- 망토
+		attach(folder, torso, { Size = Vector3.new(ts.X * 1.05, ts.Y * 1.7, 0.14), Offset = CFrame.new(0, -ts.Y * 0.55, ts.Z * 0.66) * CFrame.Angles(math.rad(8), 0, 0), Color = dark, Material = Enum.Material.Fabric })
+		attach(folder, torso, { Size = Vector3.new(ts.X * 1.05, 0.18, 0.18), Offset = CFrame.new(0, ts.Y * 0.32, ts.Z * 0.64), Color = color, Material = Enum.Material.Neon })
+	end
+end
+
+builders.Gloves = function(character, folder, r, color, material)
+	local dark = color:Lerp(Color3.fromRGB(30, 30, 40), 0.5)
+	for _, names in ipairs({ { "LeftHand", "Left Arm" }, { "RightHand", "Right Arm" } }) do
+		local hand = firstOf(character, names[1], names[2])
+		if hand then
+			local hs = hand.Size
+			local drop = hand.Name:find("Arm") and -hs.Y * 0.32 or 0 -- R6 는 팔 아래쪽이 손
+			attach(folder, hand, { Size = Vector3.new(hs.X * 1.18, math.min(hs.Y, 1.1) * 1.05, hs.Z * 1.18), Offset = CFrame.new(0, drop, 0), Color = color, Material = material })
+			attach(folder, hand, { Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.3, hs.X * 1.45, hs.Z * 1.45), Offset = CFrame.new(0, drop + 0.5, 0) * CYL, Color = dark, Material = Enum.Material.Metal })
+			if r >= 3 then -- 손등 징
+				for i = -1, 1 do
+					attach(folder, hand, { Shape = Enum.PartType.Ball, Size = Vector3.new(0.2, 0.2, 0.2), Offset = CFrame.new(i * hs.X * 0.3, drop - 0.1, -hs.Z * 0.6), Color = color, Material = Enum.Material.Neon })
+				end
+			end
+		end
+	end
+end
+
+builders.Boots = function(character, folder, r, color, material)
+	local dark = color:Lerp(Color3.fromRGB(30, 30, 40), 0.5)
+	for _, names in ipairs({ { "LeftFoot", "Left Leg", "LeftLowerLeg" }, { "RightFoot", "Right Leg", "RightLowerLeg" } }) do
+		local foot = firstOf(character, names[1], names[2])
+		if foot then
+			local fs = foot.Size
+			local drop = foot.Name:find("Leg") and -fs.Y * 0.36 or 0 -- R6 는 다리 아래쪽이 발
+			attach(folder, foot, { Size = Vector3.new(fs.X * 1.18, math.min(fs.Y, 1) * 1.1, fs.Z * 1.22), Offset = CFrame.new(0, drop, -0.04), Color = color, Material = material })
+			attach(folder, foot, { Size = Vector3.new(fs.X * 1.1, 0.16, fs.Z * 1.26), Offset = CFrame.new(0, drop - 0.42, -0.04), Color = dark, Material = Enum.Material.Metal }) -- 밑창
+			if r >= 2 then -- 정강이 보호대 (R15 만)
+				local shin = character:FindFirstChild(names[3])
+				if shin and shin ~= foot then
+					attach(folder, shin, { Size = Vector3.new(shin.Size.X * 1.14, shin.Size.Y * 0.62, shin.Size.Z * 1.14), Offset = CFrame.new(0, -shin.Size.Y * 0.1, 0), Color = color, Material = material })
+				end
+			end
+			if r >= 4 then -- 발목 날개
+				for _, side in ipairs({ -1, 1 }) do
+					attach(folder, foot, { Size = Vector3.new(0.1, 0.9, 0.5), Offset = CFrame.new(side * fs.X * 0.62, drop + 0.5, 0.25) * CFrame.Angles(math.rad(-25), 0, math.rad(side * 24)), Color = color, Material = Enum.Material.Neon })
+				end
+			end
+		end
+	end
+end
+
+builders.Ring = function(character, folder, r, color, material)
+	local hand = firstOf(character, "RightHand", "Right Arm")
+	if not hand then return end
+	local hs = hand.Size
+	local drop = hand.Name:find("Arm") and -hs.Y * 0.3 or 0
+	attach(folder, hand, { Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.16, hs.X * 1.28, hs.Z * 1.28), Offset = CFrame.new(0, drop - 0.12, 0) * CYL, Color = color, Material = Enum.Material.Metal })
+	attach(folder, hand, { Shape = Enum.PartType.Ball, Size = Vector3.new(0.34, 0.34, 0.34) * (0.8 + r * 0.12), Offset = CFrame.new(hs.X * 0.66, drop - 0.12, 0), Color = color, Material = Enum.Material.Neon })
+end
+
+builders.Necklace = function(character, folder, r, color, material)
+	local torso = firstOf(character, "UpperTorso", "Torso")
+	if not torso then return end
+	local ts = torso.Size
+	attach(folder, torso, { Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.14, ts.X * 0.92, ts.Z * 1.12), Offset = CFrame.new(0, ts.Y * 0.4, 0) * CYL, Color = color, Material = Enum.Material.Metal })
+	attach(folder, torso, { Shape = Enum.PartType.Ball, Size = Vector3.new(0.46, 0.5, 0.3) * (0.8 + r * 0.1), Offset = CFrame.new(0, ts.Y * 0.18, -ts.Z * 0.62), Color = color, Material = Enum.Material.Neon })
+end
+
 function Gear.ApplyVisuals(player)
 	local character = player.Character
 	if not character then return end
 
 	for _, slot in ipairs(G.Slots) do
+		local old = character:FindFirstChild("GearVisual_" .. slot.Key)
+		if old then
+			old:Destroy()
+		end
+
 		local rarity = player:GetAttribute(rAttr(slot.Key)) or 0
-		for _, limbName in ipairs(LIMBS[slot.Key] or {}) do
-			local limb = character:FindFirstChild(limbName)
-			if limb then
-				local old = limb:FindFirstChild("GearVisual_" .. slot.Key)
-				if old then
-					old:Destroy()
-				end
+		local build = builders[slot.Key]
+		if rarity > 0 and build then
+			local color = G.RarityColors[rarity]
+			local folder = Instance.new("Folder")
+			folder.Name = "GearVisual_" .. slot.Key
+			folder.Parent = character
+			build(character, folder, rarity, color, G.RarityMaterials[rarity])
 
-				if rarity > 0 then
-					local color = G.RarityColors[rarity]
-					local shell = Instance.new("Part")
-					shell.Name = "GearVisual_" .. slot.Key
-					shell.Size = limb.Size * 1.12 + Vector3.new(0.04, 0.04, 0.04)
-					shell.CFrame = limb.CFrame
-					shell.Color = color
-					shell.Material = G.RarityMaterials[rarity]
-					shell.Transparency = slot.Key == "Helmet" and 0.4 or 0 -- 투구는 얼굴이 비치게
-					shell.CanCollide = false
-					shell.CanQuery = false
-					shell.CanTouch = false
-					shell.Massless = true
-
-					local weld = Instance.new("WeldConstraint")
-					weld.Part0 = limb
-					weld.Part1 = shell
-					weld.Parent = shell
-					shell.Parent = limb
-
-					if rarity >= 4 then
-						local sparkle = Instance.new("ParticleEmitter")
-						sparkle.Rate = rarity == 5 and 14 or 7
-						sparkle.Lifetime = NumberRange.new(0.5, 1)
-						sparkle.Speed = NumberRange.new(0.5, 2)
-						sparkle.SpreadAngle = Vector2.new(180, 180)
-						sparkle.LightEmission = 1
-						sparkle.Color = ColorSequence.new(color)
-						sparkle.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 0) })
-						sparkle.Parent = shell
-					end
+			if rarity >= 4 then -- 전설 이상: 반짝이는 입자
+				local first = folder:FindFirstChildWhichIsA("BasePart")
+				if first then
+					local sparkle = Instance.new("ParticleEmitter")
+					sparkle.Rate = rarity == 5 and 14 or 7
+					sparkle.Lifetime = NumberRange.new(0.5, 1)
+					sparkle.Speed = NumberRange.new(0.5, 2)
+					sparkle.SpreadAngle = Vector2.new(180, 180)
+					sparkle.LightEmission = 1
+					sparkle.Color = ColorSequence.new(color)
+					sparkle.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 0) })
+					sparkle.Parent = first
 				end
 			end
 		end
