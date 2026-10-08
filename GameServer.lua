@@ -26,6 +26,7 @@ local Field = require(Modules:WaitForChild("FieldService"))
 local Skill = require(Modules:WaitForChild("SkillService"))
 local Daily = require(Modules:WaitForChild("DailyService"))
 local Meta = require(Modules:WaitForChild("MetaService"))
+local Tutorial = require(Modules:WaitForChild("TutorialService"))
 local Quest = require(Modules:WaitForChild("QuestService"))
 local Level = require(Modules:WaitForChild("LevelService"))
 local Rank = require(Modules:WaitForChild("RankService"))
@@ -41,6 +42,23 @@ Monetization.SaveHook = Data.Save -- 결제 영수증 처리 때 "저장 성공"
 -- 로비 / 게이트 / 강화대 / 뽑기 머신 / 허수아비 / 랭킹판 / 필드
 ------------------------------------------------------------
 local lobby = Lobby.Build()
+
+local function promptPosition(prompt)
+	local parent = prompt.Parent
+	if parent:IsA("Attachment") then
+		return parent.WorldPosition
+	elseif parent:IsA("BasePart") then
+		return parent.Position
+	end
+	return parent:GetPivot().Position
+end
+Tutorial.SetTargets({ -- 튜토리얼 미션 표지 위치
+	Dummy = lobby.DummyStart + Vector3.new(0, 4, 0),
+	Anvil = promptPosition(lobby.AnvilPrompt),
+	Gacha = promptPosition(lobby.GachaPrompt),
+	Field = promptPosition(lobby.WarpPrompt),
+	Gate = promptPosition(lobby.GatePrompt),
+})
 Dungeon.Init(lobby.SpawnCFrame)
 Dummy.Build(lobby.DummyStart)
 Rank.Init(lobby.RankBoardCFrame)
@@ -261,6 +279,7 @@ local function setupPlayer(player)
 		Quest.Load(player, saved.Quest)
 		Daily.Load(player, saved.Daily) -- 출석 보상 (하루 한 번 자동 지급)
 		Meta.Load(player, saved.Meta)   -- 스킬 레벨 / 펫 / 무한의 탑 기록
+		Tutorial.Load(player, saved.Tutorial) -- 처음 1~5분 가이드 미션
 		updatePower(player)
 	end
 end
@@ -291,6 +310,7 @@ Players.PlayerRemoving:Connect(function(player)
 	Growth.Forget(player)
 	Daily.Forget(player)
 	Meta.Forget(player)
+	Tutorial.Forget(player)
 end)
 
 task.spawn(function()

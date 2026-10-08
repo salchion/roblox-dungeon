@@ -2721,7 +2721,7 @@ end
 
 do
 ------------------------------------------------------------
--- 도움말 / 설정 (H 키 또는 왼쪽 버튼). 접속하면 처음에 한 번 자동으로 열린다.
+-- 도움말 / 설정 (H 키 또는 왼쪽 버튼). 처음 안내는 튜토리얼 미션이 맡는다.
 ------------------------------------------------------------
 local helpPanel = makePanel({
 	Size = UDim2.new(0, 560, 0, 520), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
@@ -2780,7 +2780,5 @@ makeButton({
 	BackgroundColor3 = Color3.fromRGB(60, 90, 100),
 }, gui, toggleHelp)
 
-task.delay(3, function()
-	helpPanel.Visible = true
-end)
+
 end

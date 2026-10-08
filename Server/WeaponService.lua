@@ -419,7 +419,9 @@ function Weapon.Enhance(player)
 		return false, "이미 최대 강화 단계입니다!"
 	end
 
-	local cost = Config.GetEnhanceCost(level)
+	-- 튜토리얼 미션 중에는 +3까지 무료 + 100% 성공
+	local free = player:GetAttribute("TutorialFree") == true and level < 3
+	local cost = free and 0 or Config.GetEnhanceCost(level)
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
 		return false, string.format("골드가 부족합니다. (%d 필요)", cost)
@@ -427,7 +429,7 @@ function Weapon.Enhance(player)
 
 	player:SetAttribute("Gold", gold - cost)
 
-	if math.random() < Config.GetEnhanceChance(level) then
+	if free or math.random() < Config.GetEnhanceChance(level) then
 		-- 이 무기 종류의 레벨을 올리면 GameServer 가 WeaponLevel(현재 무기 레벨)을 맞춰주고 외형도 갱신한다
 		player:SetAttribute("WLvl_" .. typeKey, level + 1)
 		Quest.Add(player, "Enhances", 1)

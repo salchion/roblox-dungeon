@@ -84,6 +84,28 @@ function Config.FormatPetStat(key, level)
 end
 
 ------------------------------------------------------------
+-- 튜토리얼 미션 (처음 1~5분): 쉬운 목표 -> 즉시 보상을 계속 이어서 보여준다
+-- Target: TutorialService.SetTargets 로 넘겨주는 위치 키 (Dummy / Anvil / Gacha / Field / Gate)
+-- FreeEnhance: 이 미션 동안 무기 강화가 공짜 + 100% 성공
+------------------------------------------------------------
+Config.Tutorial = {
+	Steps = {
+		{ Text = "마우스를 눌러 허수아비를 쏘세요! (R 키 = 자동 조준)", Stat = "DummyHits", Goal = 8, Target = "Dummy", TargetName = "허수아비",
+			Reward = { Gold = 300 } },
+		{ Text = "모루에서 무기를 강화하세요! (무료)", Stat = "Enhances", Goal = 1, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
+			Reward = { Gold = 200 } },
+		{ Text = "한 번 더 강화! +3이 되면 총이 진화해요", Stat = "Enhances", Goal = 2, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
+			Reward = { Tickets = 1, Gold = 300 } },
+		{ Text = "뽑기 머신에서 장비를 뽑아보세요! (티켓 1장)", Stat = "Rolls", Goal = 1, Target = "Gacha", TargetName = "뽑기 머신",
+			Reward = { Gold = 1500 } },
+		{ Text = "동쪽 필드로 나가서 몬스터 5마리를 처치하세요!", Stat = "Kills", Goal = 5, Target = "Field", TargetName = "필드 입구",
+			Reward = { Gold = 1000, Keys = 1, Tickets = 1, Xp = 150 } },
+		{ Text = "열쇠를 얻었어요! 북쪽 게이트에서 던전에 도전해보세요", Stat = "DungeonClears", Goal = 1, Target = "Gate", TargetName = "던전 게이트",
+			Reward = { Gold = 3000, Tickets = 2 } },
+	},
+}
+
+------------------------------------------------------------
 -- 환생(프레스티지): 최고 레벨에서 레벨을 1로 되돌리고 영구 공격력 보너스를 얻는다
 ------------------------------------------------------------
 Config.Prestige = { Max = 10, DamagePerRank = 0.05 }
@@ -280,7 +302,7 @@ Config.Weapon = {
 -- List 순서대로 훈련장에 1~10번 허수아비가 놓인다.
 ------------------------------------------------------------
 Config.Dummy = {
-	GoldPerHit = 1,
+	GoldPerHit = 2,
 	Spacing = 20,     -- 허수아비 간격 (1열로 나열)
 	List = {
 		{ Multiplier = 1,    RequiredLevel = 1 },
@@ -634,6 +656,8 @@ Config.Achievements = {
 ------------------------------------------------------------
 Config.Level = {
 	Max = 50,
+	EarlyBoostUntil = 6,    -- 이 레벨까지는 경험치 x3 (처음 몇 분 안에 레벨업이 연달아 터지게)
+	EarlyBoost = 3,
 	HealthPerLevel = 8,     -- 레벨당 최대 체력 +8
 	DamagePerLevel = 0.03,  -- 레벨당 공격력 +3%
 }

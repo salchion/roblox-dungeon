@@ -195,6 +195,20 @@
       "name": "MetaService",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "Server/TutorialService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "TutorialService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "TutorialClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "TutorialClient",
+      "class": "LocalScript",
+      "overwrite": true
     }
   ]
 }

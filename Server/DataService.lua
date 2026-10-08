@@ -12,6 +12,7 @@ local Monetization = require(script.Parent:WaitForChild("MonetizationService"))
 local Growth = require(script.Parent:WaitForChild("GrowthService"))
 local Daily = require(script.Parent:WaitForChild("DailyService"))
 local Meta = require(script.Parent:WaitForChild("MetaService"))
+local Tutorial = require(script.Parent:WaitForChild("TutorialService"))
 
 local Data = {}
 
@@ -51,7 +52,7 @@ function Data.Load(player)
 	local defaults = {
 		Gold = Config.StartGold, WeaponLevel = 0, Tickets = 0, MaxZone = 0, Gear = {}, Level = 1, XP = 0,
 		Weapons = { Type = "Pistol", Unlocked = {}, Levels = {} }, Quest = nil,
-		Inventory = nil, Keys = nil, Monetization = nil, Growth = nil, Daily = nil, Meta = nil,
+		Inventory = nil, Keys = nil, Monetization = nil, Growth = nil, Daily = nil, Meta = nil, Tutorial = nil,
 	}
 	if not store then return defaults end
 
@@ -78,6 +79,7 @@ function Data.Load(player)
 					Growth = typeof(saved.Growth) == "table" and saved.Growth or nil,
 					Daily = typeof(saved.Daily) == "table" and saved.Daily or nil,
 					Meta = typeof(saved.Meta) == "table" and saved.Meta or nil,
+					Tutorial = typeof(saved.Tutorial) == "table" and saved.Tutorial or nil,
 				}
 			end
 			return defaults
@@ -110,6 +112,7 @@ function Data.Save(player)
 		Growth = Growth.Serialize(player),
 		Daily = Daily.Serialize(player),
 		Meta = Meta.Serialize(player),
+		Tutorial = Tutorial.Serialize(player),
 		Weapons = weapons,
 		Quest = Quest.Serialize(player),
 	}

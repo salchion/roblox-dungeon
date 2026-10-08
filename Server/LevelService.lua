@@ -40,10 +40,10 @@ local function xpMultiplier(player)
 end
 
 function Level.AddXP(player, amount)
-	amount = math.floor(amount * xpMultiplier(player) + 0.5)
-	if amount <= 0 then return end
-
 	local level = player:GetAttribute("Level") or 1
+	local early = level <= Config.Level.EarlyBoostUntil and Config.Level.EarlyBoost or 1 -- 초반 레벨업 가속
+	amount = math.floor(amount * xpMultiplier(player) * early + 0.5)
+	if amount <= 0 then return end
 	if level >= Config.Level.Max then return end
 	local xp = (player:GetAttribute("XP") or 0) + amount
 

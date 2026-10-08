@@ -188,6 +188,9 @@ end
 ------------------------------------------------------------
 -- 외부 API
 ------------------------------------------------------------
+-- 카운터 증가 이벤트를 듣고 싶은 다른 서비스(튜토리얼 등)가 여기에 함수를 등록한다: fn(player, stat, amount)
+Quest.Listeners = {}
+
 -- 카운터 증가 (오늘의 퀘스트 진행도도 같이 오름)
 function Quest.Add(player, stat, amount)
 	local state = states[player]
@@ -202,6 +205,9 @@ function Quest.Add(player, stat, amount)
 		end
 	end
 	Quest.Push(player)
+	for _, listener in ipairs(Quest.Listeners) do
+		listener(player, stat, amount)
+	end
 end
 
 -- 현재 값 기준 Stat(전투력, 무기 레벨 등)이 바뀌었을 때 호출: 칭호/화면 갱신
