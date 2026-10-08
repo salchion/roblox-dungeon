@@ -2747,7 +2747,7 @@ do
 local helpPanel = makePanel({
 	Size = UDim2.new(0, 560, 0, 580), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
 }, gui)
-makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8), Text = "❓ 도움말 / ⚙ 설정", Font = Enum.Font.GothamBlack, TextSize = 22 }, helpPanel)
+makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8), Text = "⚙ 설정 / ❓ 도움말", Font = Enum.Font.GothamBlack, TextSize = 22 }, helpPanel)
 makeLabel({
 	Size = UDim2.new(1, -40, 0, 280), Position = UDim2.new(0, 20, 0, 50), RichText = true, TextSize = 14,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
@@ -2857,7 +2857,7 @@ workspace.DescendantAdded:Connect(function(instance)
 end)
 
 makeButton({
-	Size = UDim2.new(0, 110, 0, 32), Position = UDim2.new(0, 16, 0, 282), Text = "❓ 도움말 (H)", TextSize = 14,
+	Size = UDim2.new(0, 110, 0, 32), Position = UDim2.new(0, 16, 0, 282), Text = "⚙ 설정 (H)", TextSize = 14,
 	BackgroundColor3 = Color3.fromRGB(60, 90, 100),
 }, gui, toggleHelp)
 
