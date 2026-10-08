@@ -3621,19 +3621,23 @@ do
 		lastHealth = humanoid.Health
 		fill.Size = UDim2.new(ratio, 0, 1, 0)
 		fill.BackgroundColor3 = ratio > 0.5 and Color3.fromRGB(70, 220, 100) or ratio > 0.25 and Color3.fromRGB(255, 200, 60) or Color3.fromRGB(255, 70, 70)
-		text.Text = string.format("❤ %d / %d", math.ceil(humanoid.Health), math.ceil(humanoid.MaxHealth))
+		text.Text = string.format("%d / %d", math.ceil(humanoid.Health), math.ceil(humanoid.MaxHealth))
 		local root = character:FindFirstChild("HumanoidRootPart")
 		if root and (not feet or feet.Parent ~= root) then
 			if feet then feet:Destroy() end
 			feet = Instance.new("BillboardGui")
-			feet.Size = UDim2.fromOffset(130, 18)
-			feet.StudsOffset = Vector3.new(0, -3.6, 0)
+			feet.Size = UDim2.fromOffset(140, 16)
+			feet.StudsOffset = Vector3.new(0, -3.7, 0)
 			feet.AlwaysOnTop = true
 			feet.Parent = root
-			local back = create("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.fromRGB(20, 10, 14), BorderSizePixel = 0 }, feet)
-			create("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 1.5 }, back)
-			create("Frame", { Name = "Fill", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.fromRGB(70, 220, 100), BorderSizePixel = 0 }, back)
-			makeLabel({ Name = "HP", Size = UDim2.fromScale(1, 1), Text = "", Font = Enum.Font.GothamBlack, TextSize = 13, TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 0.2, ZIndex = 3 }, back)
+			-- 왼쪽 HUD 패널과 같은 어두운 남색 + 둥근 모서리, 채움은 그라데이션으로 부드럽게
+			local back = create("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.25, BorderSizePixel = 0, ClipsDescendants = true }, feet)
+			create("UICorner", { CornerRadius = UDim.new(0.5, 0) }, back)
+			create("UIStroke", { Color = Color3.fromRGB(120, 130, 190), Thickness = 1.2, Transparency = 0.35 }, back)
+			local inner = create("Frame", { Name = "Fill", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.fromRGB(70, 220, 100), BorderSizePixel = 0 }, back)
+			create("UICorner", { CornerRadius = UDim.new(0.5, 0) }, inner)
+			create("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(170, 170, 170)) }, inner)
+			makeLabel({ Name = "HP", Size = UDim2.fromScale(1, 1), Text = "", Font = Enum.Font.GothamBold, TextSize = 11, TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 0.35, ZIndex = 3 }, back)
 		end
 		local f = feet and feet:FindFirstChild("Fill", true)
 		if f then
