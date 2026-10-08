@@ -268,7 +268,7 @@ local function updateNameplate(player)
 		gui = Instance.new("BillboardGui")
 		gui.Name = "Nameplate"
 		gui.Size = UDim2.new(0, 190, 0, 68)
-		gui.StudsOffset = Vector3.new(0, 3.2, 0)
+		gui.StudsOffset = Vector3.new(0, 5, 0) -- 머리 위로 높이 (총 / 조준점과 겹치지 않게)
 		gui.MaxDistance = 70
 		gui.Parent = head
 

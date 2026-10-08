@@ -32,9 +32,9 @@ local function makeLabel(parent, offsetY)
 	part.Position = parent.Position + Vector3.new(0, offsetY, 0)
 	part.Parent = folder
 	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.new(0, 260, 0, 70)
+	gui.Size = UDim2.new(0, 190, 0, 62)
 	gui.AlwaysOnTop = false
-	gui.MaxDistance = 90
+	gui.MaxDistance = 40 -- 가까이 와야 읽힌다 (멀리서 다른 글자와 겹치는 것 방지)
 	gui.Parent = part
 	local label = Instance.new("TextLabel")
 	label.Size = UDim2.new(1, 0, 1, 0)
@@ -79,9 +79,9 @@ function Showcase.Init(boardCFrame)
 
 		slots[rank] = {
 			Pedestal = pedestal, Look = look, Key = nil, Model = nil, Weapon = nil,
-			Label = makeLabel(pedestal, heights[rank] / 2 + 10.5),
+			Label = makeLabel(pedestal, heights[rank] / 2 + 15), -- 아바타 머리 위로 높이 띄운다
 		}
-		slots[rank].Label.Text = MEDAL[rank] .. " 비어 있음\n<font size='14'>도전자를 기다려요!</font>"
+		slots[rank].Label.Text = MEDAL[rank] .. " 비어 있음"
 	end
 
 	task.spawn(function()
@@ -114,7 +114,7 @@ local function buildSlot(rank, player)
 	slot.Key = string.format("%d_%d_%s_%d", player.UserId, power // 25, typeKey, level)
 
 	local prestige = player:GetAttribute("Prestige") or 0
-	slot.Label.Text = string.format("%s %s%s\n<font size='15' color='#ffe16e'>⚡ %d</font> <font size='13'>Lv.%d</font>\n<font size='13' color='#9ad7ff'>%s</font>",
+	slot.Label.Text = string.format("%s %s%s\n<font color='#ffe16e'>⚡ %d</font> Lv.%d\n<font color='#9ad7ff'>%s</font>",
 		MEDAL[rank], prestige > 0 and ("🌟" .. prestige .. " ") or "", player.DisplayName, power, player:GetAttribute("Level") or 1,
 		Config.FormatWeapon(level))
 
@@ -183,7 +183,7 @@ function Showcase.Refresh()
 			end
 		elseif slot.Key ~= nil then
 			clearSlot(slot)
-			slot.Label.Text = MEDAL[rank] .. " 비어 있음\n<font size='14'>도전자를 기다려요!</font>"
+			slot.Label.Text = MEDAL[rank] .. " 비어 있음"
 		end
 	end
 end
