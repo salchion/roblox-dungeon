@@ -1383,10 +1383,19 @@ local function findNearestTarget(root)
 
 	if zone == "Lobby" then
 		local dummies = workspace:FindFirstChild("Dummies")
+		local bestDummy = -1
 		if dummies then
 			for _, model in ipairs(dummies:GetChildren()) do
 				if model:IsA("Model") and model.PrimaryPart then
-					consider({ Kind = "Dummy", Instance = model, Part = model.PrimaryPart })
+					-- 허수아비는 "내 레벨로 칠 수 있는 가장 높은 레벨"(보상 배율이 큰 쪽)을 우선한다
+					local target = { Kind = "Dummy", Instance = model, Part = model.PrimaryPart }
+					if isTargetValid(target, root) then
+						local order = tonumber(string.sub(model.Name, 6)) or 0
+						if order > bestDummy then
+							bestDummy = order
+							best = target
+						end
+					end
 				end
 			end
 		end
@@ -1591,6 +1600,17 @@ local function buildCharacterTab()
 				Config.Gear.RarityNames[rarity], slot.Names[rarity], gearLevel,
 				Config.FormatGearStat(slot.Key, Config.GetGearStat(slot.Key, rarity, gearLevel))))
 		end
+	end
+
+	sectionTitle("📖 스탯 설명")
+	do
+		local glossary = {}
+		for _, key in ipairs({ "Health", "Crit", "Speed", "Damage", "Xp", "Luck", "Haste", "Shot" }) do
+			local info = Config.StatDesc[key]
+			table.insert(glossary, string.format("<b>%s</b>  <font color='#bbbbcc'>%s</font>", info.Name, info.Desc))
+		end
+		local row = newRow(#glossary * 22 + 16)
+		rowText(row, table.concat(glossary, "\n"), 13)
 	end
 
 	do -- 환생
@@ -1885,7 +1905,7 @@ local function buildInventoryTab()
 		end
 		clone.Parent = viewport
 		local pivot = clone:GetPivot()
-		local spin = 0
+		local spin = settings.InvSpin or 0 -- 메뉴가 갱신돼 다시 그려져도 회전 각도를 이어간다
 		local connection
 		connection = RunService.RenderStepped:Connect(function(dt)
 			if not viewport:IsDescendantOf(game) then
@@ -1893,6 +1913,7 @@ local function buildInventoryTab()
 				return
 			end
 			spin += dt * 0.9
+			settings.InvSpin = spin
 			clone:PivotTo(CFrame.new(pivot.Position) * CFrame.Angles(0, spin, 0))
 			cam.CFrame = CFrame.lookAt(pivot.Position + Vector3.new(0, 1.2, 12.5), pivot.Position + Vector3.new(0, 0.4, 0))
 		end)
@@ -1952,10 +1973,13 @@ local function buildInventoryTab()
 		local lines = {
 			string.format("<font color='#%s' size='18'><b>[%s] %s</b></font>  +%d", hex(color), Config.Gear.RarityNames[selected.Rarity], slot.Names[selected.Rarity], selected.Level),
 			string.format("<font color='#aaaacc' size='12'>%s · 점수 %d%s</font>", slot.Name, selected.Score, selected.Equipped and " · 장착 중" or ""),
-			"<font size='13' color='#ddddee'>기본  " .. Config.FormatGearStat(selected.Slot, Config.GetGearStat(selected.Slot, selected.Rarity, selected.Level)) .. "</font>",
+			"<font size='13' color='#ddddee'>기본  " .. Config.FormatGearStat(selected.Slot, Config.GetGearStat(selected.Slot, selected.Rarity, selected.Level)) .. "</font>"
+				.. (Config.StatDesc[slot.Stat] and ("\n<font size='11' color='#8a8aa8'>   → " .. Config.StatDesc[slot.Stat].Desc .. "</font>") or ""),
 		}
 		for _, affix in ipairs(selected.Affixes) do
-			table.insert(lines, "<font size='13' color='#9ad7ff'>◆ " .. Config.FormatAffix(affix.Stat, affix.Value) .. "</font>")
+			local info = Config.StatDesc[affix.Stat]
+			table.insert(lines, "<font size='13' color='#9ad7ff'>◆ " .. Config.FormatAffix(affix.Stat, affix.Value) .. "</font>"
+				.. (info and ("\n<font size='11' color='#8a8aa8'>   → " .. info.Desc .. "</font>") or ""))
 		end
 		if selected.Unique and Config.Uniques[selected.Unique] then
 			table.insert(lines, "<font size='13' color='#ffb84d'>✦ 유니크: " .. Config.Uniques[selected.Unique].Desc .. "</font>")
@@ -3195,18 +3219,16 @@ end
 
 -- 건즈식 이동: 2단 점프 (공중에서 점프 키를 한 번 더 누르면 한 번 더 뛴다)
 do
-	local jumpsUsed = 0
-	local MAX_JUMPS = 2
-	local lastJump = 0
+	local jd = { Used = 0, Last = 0 } -- (지역 변수 개수 제한 때문에 표 하나로 묶음)
 
 	local function bindCharacter(character)
 		local humanoid = character:WaitForChild("Humanoid", 10)
 		local root = character:WaitForChild("HumanoidRootPart", 10)
 		if not humanoid or not root then return end
-		jumpsUsed = 0
+		jd.Used = 0
 		humanoid.StateChanged:Connect(function(_, new)
 			if new == Enum.HumanoidStateType.Landed or new == Enum.HumanoidStateType.Running or new == Enum.HumanoidStateType.Climbing then
-				jumpsUsed = 0
+				jd.Used = 0
 			end
 		end)
 	end
@@ -3215,21 +3237,21 @@ do
 	end
 	player.CharacterAdded:Connect(bindCharacter)
 
-	UserInputService.JumpRequest:Connect(function()
+	-- 공중 판정은 "발밑이 비었는가"(FloorMaterial)로 한다. (Humanoid 상태 이름은 점프 직후 / 오르막 등에서 어긋나기 쉬움)
+	-- 스페이스 키 입력(InputBegan)과 JumpRequest(모바일 점프 버튼) 둘 다 받고, 0.2초 안의 중복은 무시한다.
+	jd.Try = function()
 		local character = player.Character
 		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 		local root = character and character:FindFirstChild("HumanoidRootPart")
 		if not humanoid or not root or humanoid.Health <= 0 then return end
-		local state = humanoid:GetState()
-		local inAir = state == Enum.HumanoidStateType.Freefall or state == Enum.HumanoidStateType.Jumping
-		if not inAir then
-			jumpsUsed = 0
+		if humanoid.FloorMaterial ~= Enum.Material.Air then
+			jd.Used = 0
 			return
 		end
 		local now = os.clock()
-		if jumpsUsed >= MAX_JUMPS - 1 or now - lastJump < 0.2 then return end
-		jumpsUsed += 1
-		lastJump = now
+		if jd.Used >= 1 or now - jd.Last < 0.2 then return end
+		jd.Used += 1
+		jd.Last = now
 		local velocity = root.AssemblyLinearVelocity
 		root.AssemblyLinearVelocity = Vector3.new(velocity.X, 52, velocity.Z)
 		humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
@@ -3247,5 +3269,19 @@ do
 		ring.Parent = workspace
 		TweenService:Create(ring, TweenInfo.new(0.4), { Size = Vector3.new(0.3, 11, 11), Transparency = 1 }):Play()
 		game:GetService("Debris"):AddItem(ring, 0.5)
+	end
+
+	UserInputService.InputBegan:Connect(function(input, gameProcessed)
+		if not gameProcessed and input.KeyCode == Enum.KeyCode.Space then
+			jd.Try()
+		end
+	end)
+	UserInputService.JumpRequest:Connect(jd.Try)
+	RunService.Heartbeat:Connect(function() -- 땅에 닿아 있으면 점프 횟수 회복
+		local character = player.Character
+		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+		if humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then
+			jd.Used = 0
+		end
 	end)
 end

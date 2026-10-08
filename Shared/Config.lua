@@ -879,6 +879,18 @@ function Config.FormatBonus(stat, value)
 	return string.format("%s +%d%%", name, math.floor(value * 100 + 0.5))
 end
 
+-- 스탯 설명 (인벤토리 / 정보 탭에서 "이게 뭔데?"를 풀어준다)
+Config.StatDesc = {
+	Health = { Name = "최대 체력", Desc = "버틸 수 있는 피해량. 높을수록 덜 죽어요" },
+	Crit = { Name = "치명타 확률", Desc = "공격이 치명타(피해 2배)로 터질 확률" },
+	Speed = { Name = "이동 속도", Desc = "걷고 달리는 속도" },
+	Damage = { Name = "공격력", Desc = "내 모든 공격(총·스킬)의 피해량이 늘어나요" },
+	Xp = { Name = "경험치 획득", Desc = "몬스터를 잡을 때 경험치를 더 받아 레벨업이 빨라져요" },
+	Luck = { Name = "행운", Desc = "필드 몬스터가 떨어뜨리는 장비가 높은 등급(영웅 이상)으로 나올 확률이 올라가요" },
+	Haste = { Name = "스킬 쿨타임 감소", Desc = "응급 치료 · 궁극기를 더 자주 쓸 수 있어요 (최대 60%)" },
+	Shot = { Name = "추가 탄", Desc = "한 번 쏠 때 나가는 탄이 늘어나요 (부채꼴)" },
+}
+
 function Config.FormatAffix(stat, value)
 	local def = Config.Inventory.Affixes[stat]
 	if def.Percent then
