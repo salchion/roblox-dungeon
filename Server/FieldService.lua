@@ -962,6 +962,7 @@ function Field.Shoot(player, origin, direction)
 
 	local data = result and monsters[result.Instance]
 	if data then
+		player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1) -- 궁극기 게이지는 실제로 맞혔을 때만 찬다
 		local damage, isCrit = Dungeon.ComputeDamage(player)
 		-- 로켓 런처 / 플라즈마 캐논: 맞은 곳 주변 적에게도 피해
 		local splash = Config.GetPlayerWeapon(player).Splash

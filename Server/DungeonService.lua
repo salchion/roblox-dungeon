@@ -883,6 +883,7 @@ function Dungeon.Shoot(player, origin, direction)
 		local damage, isCrit = Dungeon.ComputeDamage(player)
 		local hitPosition = result.Position
 		damageMonster(run, player, part, data, damage, isCrit, hitPosition)
+		player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1) -- 궁극기 게이지는 실제로 맞혔을 때만 찬다
 
 		if vamp > 0 then
 			local _, humanoid = getAliveParts(player)

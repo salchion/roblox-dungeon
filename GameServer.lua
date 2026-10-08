@@ -382,6 +382,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint)
 
 	-- 던전 특성 "분산탄": 탄이 +N발, 부채꼴로 흩어져 나간다 (권총류는 대칭 부채꼴, 샷건은 산탄이 더 늘어남)
 	local pellets = weaponType.Pellets + extra
+	local hitsBefore = player:GetAttribute("HitTick") or 0
 	local fanAngle = math.rad(Config.Perks.FanAngle)
 	for pellet = 1, pellets do
 		local direction
@@ -401,7 +402,10 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint)
 		Effects.Shot(tipPosition, endPosition, shot, color, tier.Rainbow, tier.Class)
 	end
 	Weapon.PlayShot(player)
-	Skill.AddCharge(player, Config.Skills.ChargePerShot)
+	-- 궁극기 게이지: 몬스터를 실제로 맞혔을 때만 찬다 (허공에 쏴서는 안 참)
+	if (player:GetAttribute("HitTick") or 0) > hitsBefore then
+		Skill.AddCharge(player, Config.Skills.ChargePerShot)
+	end
 end)
 
 ------------------------------------------------------------
