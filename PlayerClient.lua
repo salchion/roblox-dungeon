@@ -670,24 +670,7 @@ Remotes.Party.OnClientEvent:Connect(function(action, a, b)
 	end
 end)
 
--- 로비 하단: 무기 강화 버튼 + 안내
-makeButton({
-	Size = UDim2.new(0, 150, 0, 44), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, -80, 1, -64),
-	Name = "LobbyOnlyButton", Text = "🔨 무기 강화", TextSize = 17, BackgroundColor3 = Color3.fromRGB(200, 130, 40),
-}, lobbyFrame, function()
-	enhanceResult.Text = ""
-	refreshEnhance()
-	enhancePanel.Visible = not enhancePanel.Visible
-end)
-
-makeButton({
-	Size = UDim2.new(0, 150, 0, 44), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 80, 1, -64),
-	Name = "LobbyOnlyButton", Text = "🛡 장비 · 뽑기", TextSize = 17, BackgroundColor3 = Color3.fromRGB(150, 70, 230),
-}, lobbyFrame, function()
-	gearMessage.Text = ""
-	refreshGear()
-	gearPanel.Visible = not gearPanel.Visible
-end)
+-- (무기 강화 / 장비 뽑기는 광장의 모루 / 뽑기 기계 앞에서만 한다. 화면 하단 버튼은 없앴다)
 
 makeLabel({
 	Size = UDim2.new(0, 560, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -16),
