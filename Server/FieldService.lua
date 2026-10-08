@@ -30,6 +30,25 @@ local TOP = 0.05
 local Field = {}
 
 local monsters = {}      -- [Part] = 몬스터 데이터
+local baffleXs = {}      -- 시선을 막는 "꺾임 벽"의 x 위치 (몬스터가 벽 속에 나타나지 않게 피하는 용도)
+
+-- x 범위 안에서 꺾임 벽 위가 아닌 곳을 무작위로 고른다
+local function freeX(minX, maxX)
+	for _ = 1, 12 do
+		local x = math.random(minX, maxX)
+		local blocked = false
+		for _, wallX in ipairs(baffleXs) do
+			if math.abs(x - wallX) < 18 then
+				blocked = true
+				break
+			end
+		end
+		if not blocked then
+			return x
+		end
+	end
+	return math.random(minX, maxX)
+end
 local projectiles = {}
 local worldFolder, monstersFolder
 local campCFrames = {}      -- [zone] = 캠프 부활/워프 위치
@@ -292,6 +311,37 @@ local function buildWorld()
 		buildCamp(zone, x0)
 	end
 
+	-- 꺾임 벽: 구역마다 벽 3개가 길을 가로막고, 틈이 위쪽 / 아래쪽 가장자리에 번갈아 뚫려 있다.
+	-- 길이 ㄹ 자로 꺾이는 느낌이 나고, 멀리 있는 몬스터가 한눈에 다 보이지 않는다.
+	do
+		local gapSize = 64
+		local side = 1
+		for zone = 1, F.ZoneCount do
+			local x0 = zoneBounds(zone)
+			for _, offset in ipairs({ 230, 400, 570 }) do
+				local wallLength = F.Width - gapSize
+				local height = 110
+				makePart({
+					Name = "Baffle", Size = Vector3.new(22, height, wallLength),
+					Position = Vector3.new(x0 + offset, height / 2 - 2, -side * gapSize / 2),
+					Color = F.ZoneColors[zone]:Lerp(Color3.fromRGB(70, 65, 72), 0.5), Material = Enum.Material.Slate,
+				}, worldFolder)
+				-- 틈 쪽을 알리는 빛 기둥 (이쪽으로 지나가라는 표시)
+				local marker = makePart({
+					Name = "BaffleGlow", Size = Vector3.new(3, 30, 3), Position = Vector3.new(x0 + offset, 15, side * (half - gapSize / 2)),
+					Color = F.ZoneColors[zone]:Lerp(Color3.new(1, 1, 1), 0.55), Material = Enum.Material.Neon, CanCollide = false,
+				}, worldFolder)
+				local glow = Instance.new("PointLight")
+				glow.Range = 40
+				glow.Brightness = 1.4
+				glow.Color = marker.Color
+				glow.Parent = marker
+				table.insert(baffleXs, x0 + offset)
+				side = -side
+			end
+		end
+	end
+
 	buildCanyon(rng, totalLength, half)
 
 	-- 필드 가장자리 보이지 않는 벽 (옆면 / 끝 / 로비 쪽 입구 통로)
@@ -316,7 +366,7 @@ local function createHealthBar(part, text, width, color)
 	gui.Size = UDim2.new(0, width, 0, 28)
 	gui.StudsOffset = Vector3.new(0, part.Size.Y / 2 + 1.5, 0)
 	gui.AlwaysOnTop = true
-	gui.MaxDistance = 200
+	gui.MaxDistance = 110 -- 멀리 있는 몬스터 체력바가 다 보이지 않게
 	gui.Parent = part
 
 	local label = Instance.new("TextLabel")
@@ -384,7 +434,7 @@ local function spawnMonster(zone, kind)
 		position = Vector3.new(x1 - 45, TOP + stats.Size / 2, 0)
 	else
 		position = Vector3.new(
-			math.random(math.floor(x0 + F.CampSafe + 40), math.floor(x1 - 25)),
+			freeX(math.floor(x0 + F.CampSafe + 40), math.floor(x1 - 25)),
 			TOP + stats.Size / 2,
 			math.random(-F.Width / 2 + 25, F.Width / 2 - 25)
 		)
@@ -711,7 +761,7 @@ local function spawnGoblin(zone)
 	}
 	local x0, x1 = zoneBounds(zone)
 	local position = Vector3.new(
-		math.random(math.floor(x0 + F.CampSafe + 60), math.floor(x1 - 40)), TOP + stats.Size / 2,
+		freeX(math.floor(x0 + F.CampSafe + 60), math.floor(x1 - 40)), TOP + stats.Size / 2,
 		math.random(-F.Width / 2 + 30, F.Width / 2 - 30)
 	)
 	local part = Instance.new("Part")
@@ -970,7 +1020,7 @@ local function spawnEvent(zone)
 
 	local x0, x1 = zoneBounds(zone)
 	local position = Vector3.new(
-		math.random(math.floor(x0 + 200), math.floor(x1 - 80)),
+		freeX(math.floor(x0 + 200), math.floor(x1 - 80)),
 		TOP + stats.Size / 2,
 		math.random(-F.Width / 2 + 70, F.Width / 2 - 70)
 	)
