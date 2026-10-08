@@ -372,9 +372,10 @@ function Weapon.GetTipPosition(player)
 end
 
 -- 사운드 재생 (ID가 0이면 아무것도 안 함)
-local function playSoundAt(parent, soundId, volume, pitch)
+local function playSoundAt(parent, soundId, volume, pitch, name)
 	if not soundId or soundId == 0 then return end
 	local sound = Instance.new("Sound")
+	sound.Name = name or "Sfx" -- 총소리는 "GunShot": 클라이언트가 이 이름을 보고 내 설정 볼륨을 적용한다
 	sound.SoundId = "rbxassetid://" .. soundId
 	sound.Volume = volume
 	sound.PlaybackSpeed = pitch or 1
@@ -427,7 +428,7 @@ function Weapon.PlayShot(player)
 
 	-- 무기가 강할수록 낮고 묵직한 소리
 	local era = Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0).Era
-	playSoundAt(barrel, Config.Audio.Shot, Config.Audio.ShotVolume, math.max(0.5, 1.25 - 0.08 * (era - 1)))
+	playSoundAt(barrel, Config.Audio.Shot, Config.Audio.ShotVolume, math.max(0.5, 1.25 - 0.08 * (era - 1)), "GunShot")
 end
 
 ------------------------------------------------------------

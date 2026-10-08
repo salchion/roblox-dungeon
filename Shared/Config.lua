@@ -433,7 +433,7 @@ Config.Audio = {
 		Field = ids.Field or 0,      -- 필드 배경음악 (없으면 로비 음악)
 	},
 	Shot = ids.Shot or 0,            -- 총 쏘는 소리 (무기가 강해질수록 낮고 묵직하게 재생됨)
-	ShotVolume = 0.5,
+	ShotVolume = 0.3,
 	EnhanceSuccess = ids.EnhanceSuccess or 0, -- 강화 성공 소리
 	Hit = ids.Hit or 0,              -- 적중음
 	Kill = ids.Kill or 0,            -- 처치음

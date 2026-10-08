@@ -800,7 +800,7 @@ if next(tracks) == nil and RunService:IsStudio() then
 end
 
 -- 설정창에서 바꾸는 값
-local settings = { Shake = true, Radar = true }
+local settings = { Shake = true, Radar = true, ShotVolume = 1 }
 local toggleHelp -- 도움말/설정창 (아래에서 정의)
 
 local musicEnabled = true   -- M 키로 켜고 끈다
@@ -2745,7 +2745,7 @@ do
 -- 도움말 / 설정 (H 키 또는 왼쪽 버튼). 처음 안내는 튜토리얼 미션이 맡는다.
 ------------------------------------------------------------
 local helpPanel = makePanel({
-	Size = UDim2.new(0, 560, 0, 520), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
+	Size = UDim2.new(0, 560, 0, 580), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
 }, gui)
 makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8), Text = "❓ 도움말 / ⚙ 설정", Font = Enum.Font.GothamBlack, TextSize = 22 }, helpPanel)
 makeLabel({
@@ -2784,8 +2784,11 @@ settingButton(340, function() return string.format("🔊 배경음악 볼륨: %d
 		end
 	end
 end)
-settingButton(380, function() return "📳 화면 흔들림: " .. (settings.Shake and "켜짐" or "꺼짐") end, function() settings.Shake = not settings.Shake end)
-settingButton(420, function() return "📡 레이더: " .. (settings.Radar and "켜짐" or "꺼짐") end, function() settings.Radar = not settings.Radar end)
+settingButton(380, function() return string.format("🔫 총소리 볼륨: %d%%  (클릭할 때마다 변경, 0 = 끄기)", math.floor(settings.ShotVolume * 100 + 0.5)) end, function()
+	settings.ShotVolume = settings.ShotVolume >= 1.5 and 0 or settings.ShotVolume + 0.25
+end)
+settingButton(420, function() return "📳 화면 흔들림: " .. (settings.Shake and "켜짐" or "꺼짐") end, function() settings.Shake = not settings.Shake end)
+settingButton(460, function() return "📡 레이더: " .. (settings.Radar and "켜짐" or "꺼짐") end, function() settings.Radar = not settings.Radar end)
 makeButton({
 	Size = UDim2.new(0, 160, 0, 36), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14), Text = "닫기 (H)", BackgroundColor3 = GRAY,
 }, helpPanel, function()
@@ -2795,6 +2798,13 @@ end)
 function toggleHelp()
 	helpPanel.Visible = not helpPanel.Visible
 end
+
+-- 총소리 볼륨: 서버가 만든 "GunShot" 소리가 생길 때 내 설정 배율을 곱한다 (0이면 끔)
+workspace.DescendantAdded:Connect(function(instance)
+	if instance:IsA("Sound") and instance.Name == "GunShot" then
+		instance.Volume = instance.Volume * settings.ShotVolume
+	end
+end)
 
 makeButton({
 	Size = UDim2.new(0, 110, 0, 32), Position = UDim2.new(0, 16, 0, 238), Text = "❓ 도움말 (H)", TextSize = 14,

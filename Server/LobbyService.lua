@@ -86,12 +86,12 @@ local function makeTree(position, rng, parent)
 end
 
 local function makeFountain(position, parent)
-	makeDisc(position + Vector3.new(0, 1, 0), 22, 2, Color3.fromRGB(150, 150, 160), Enum.Material.Marble, parent)
-	makeDisc(position + Vector3.new(0, 1.6, 0), 19, 1.2, Color3.fromRGB(70, 150, 230), Enum.Material.Glass, parent).Transparency = 0.35
-	makePart({ Name = "FountainPillar", Size = Vector3.new(3, 8, 3), Position = position + Vector3.new(0, 4, 0), Color = Color3.fromRGB(180, 180, 190), Material = Enum.Material.Marble }, parent)
+	makeDisc(position + Vector3.new(0, 1, 0), 18, 2, Color3.fromRGB(150, 150, 160), Enum.Material.Marble, parent)
+	makeDisc(position + Vector3.new(0, 1.6, 0), 15, 1.2, Color3.fromRGB(70, 150, 230), Enum.Material.Glass, parent).Transparency = 0.35
+	makePart({ Name = "FountainPillar", Size = Vector3.new(2.4, 4, 2.4), Position = position + Vector3.new(0, 2, 0), Color = Color3.fromRGB(180, 180, 190), Material = Enum.Material.Marble }, parent)
 	local top = makePart({
 		Name = "FountainTop", Shape = Enum.PartType.Ball, Size = Vector3.new(4, 4, 4),
-		Position = position + Vector3.new(0, 9, 0), Color = Color3.fromRGB(120, 200, 255),
+		Position = position + Vector3.new(0, 5, 0), Color = Color3.fromRGB(120, 200, 255),
 		Material = Enum.Material.Neon, CanCollide = false,
 	}, parent)
 	addLight(top, 26, 1.2, Color3.fromRGB(120, 200, 255))
@@ -127,7 +127,8 @@ local function decoratePlaza(parent, center, avoid)
 	for i = 0, 11 do
 		local angle = i / 12 * math.pi * 2
 		local position = center + Vector3.new(math.cos(angle) * 37, 0, math.sin(angle) * 37)
-		local blocked = false
+		-- 허수아비 훈련장(서쪽)과 광장 안쪽이 가려지지 않게, 북쪽 가장자리 쪽 기둥만 세운다
+		local blocked = not (position.Z < center.Z - 20 and math.abs(position.X - center.X) < 26)
 		for _, spot in ipairs(avoid) do
 			if (Vector3.new(position.X, 0, position.Z) - Vector3.new(spot.X, 0, spot.Z)).Magnitude < spot.R then
 				blocked = true
@@ -150,7 +151,7 @@ local function decoratePlaza(parent, center, avoid)
 	for i = 1, 8 do
 		local color = Color3.fromHSV(i / 8, 0.6, 1)
 		local crystal = makePart({
-			Name = "FloatingCrystal", Size = Vector3.new(2.4, 4.4, 2.4), Position = center + Vector3.new(0, 14, 0), Color = color,
+			Name = "FloatingCrystal", Size = Vector3.new(1.6, 3, 1.6), Position = center + Vector3.new(0, 6, 0), Color = color,
 			Material = Enum.Material.Neon, CanCollide = false, CanQuery = false,
 		}, parent)
 		addLight(crystal, 16, 1, color)
@@ -162,7 +163,7 @@ local function decoratePlaza(parent, center, avoid)
 			for i, crystal in ipairs(crystals) do
 				local angle = t * 0.5 + i / #crystals * math.pi * 2
 				local bob = math.sin(t * 1.6 + i) * 1.4
-				crystal.CFrame = CFrame.new(center + Vector3.new(math.cos(angle) * 19, 14 + bob, math.sin(angle) * 19))
+				crystal.CFrame = CFrame.new(center + Vector3.new(math.cos(angle) * 14, 5 + bob, math.sin(angle) * 14))
 					* CFrame.Angles(t * 0.8 + i, t * 1.1, 0)
 			end
 			task.wait(0.05)
@@ -466,9 +467,14 @@ function Lobby.Build()
 	warpPrompt.RequiresLineOfSight = false
 	warpPrompt.Parent = beam
 
+	-- 광장 서쪽 길가의 이정표: 허수아비 훈련장 방향 (광장에서 바로 보이게)
+	makePart({ Name = "SignPost", Size = Vector3.new(1, 9, 1), Position = Vector3.new(-30, 4.5, 100), Color = Color3.fromRGB(95, 65, 40), Material = Enum.Material.Wood }, folder)
+	local signBoard = makePart({ Name = "SignBoard", Size = Vector3.new(14, 4, 0.6), Position = Vector3.new(-30, 9, 100), Color = Color3.fromRGB(120, 85, 50), Material = Enum.Material.Wood }, folder)
+	makeLabel(signBoard, "🎯 허수아비 훈련장  ◀ 서쪽", Color3.fromRGB(255, 235, 170), 3.4, 280, 50)
+
 	-- 허수아비 훈련장 입구 표지 (서쪽, 실제 허수아비는 DummyService 가 놓는다)
-	local trainingSign = makePart({ Name = "TrainingSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(-100, 22, -108), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
-	makeLabel(trainingSign, "🎯 허수아비 훈련장\n▼ 아래로 갈수록 배수 UP", Color3.fromRGB(255, 220, 120), 0, 360, 80)
+	local trainingSign = makePart({ Name = "TrainingSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(-100, 24, 100), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
+	makeLabel(trainingSign, "🎯 허수아비 훈련장\n▲ 북쪽으로 갈수록 배수 UP", Color3.fromRGB(255, 220, 120), 0, 360, 80)
 
 	return {
 		SpawnCFrame = CFrame.new(0, 5, 102),
