@@ -138,6 +138,7 @@ local function buildArena(run)
 	-- 산맥 / 언덕 / 구덩이 / 협곡 / 동굴로 이루어진 지형 (판마다 모양이 다름)
 	local terrain = DungeonTerrain.Build(run, run.Type, D, folder)
 	run.SpawnPoints = terrain.SpawnPoints
+	run.Circles = terrain.Circles
 	run.AllSpawns = terrain.SpawnPoints
 	run.Rooms = terrain.Rooms
 	run.StartPos = terrain.StartPos
@@ -196,6 +197,36 @@ local function ringPosition(run, size)
 	end
 	local angle = math.random() * math.pi * 2
 	return run.Origin + Vector3.new(math.cos(angle) * D.SpawnRadius, size / 2, math.sin(angle) * D.SpawnRadius)
+end
+
+-- 걸을 수 있는 곳인가: 길 / 방(원)들의 합집합 안쪽. 그 밖은 절벽이라 몬스터와 탄이 지나가지 못한다.
+local function walkable(run, x, z)
+	local circles = run.Circles
+	if not circles then return true end
+	for _, c in ipairs(circles) do
+		local dx, dz = x - c.X, z - c.Z
+		local r = c.R - 0.5
+		if dx * dx + dz * dz <= r * r then
+			return true
+		end
+	end
+	return false
+end
+
+-- a -> b 선분이 절벽에 막히는가. 막히지 않으면 true, 막히면 false 와 마지막으로 열려 있던 지점을 돌려준다.
+local function segmentClear(run, a, b)
+	local delta = b - a
+	local distance = delta.Magnitude
+	local steps = math.ceil(distance / 4)
+	local lastOpen = a
+	for i = 1, steps do
+		local p = a + delta * (i / steps)
+		if not walkable(run, p.X, p.Z) then
+			return false, lastOpen
+		end
+		lastOpen = p
+	end
+	return true, b
 end
 
 -- 이 위치 아래의 땅 높이 (지형이 울퉁불퉁하므로 raycast 로 구한다)
@@ -594,7 +625,11 @@ local function stepRun(run, dt)
 					local flatTarget = Vector3.new(target.Position.X, part.Position.Y, target.Position.Z)
 					local move = flatTarget - part.Position
 					if move.Magnitude > 0.1 then
-						part.Position += move.Unit * data.Stats.Speed * dt
+						local step = move.Unit * data.Stats.Speed * dt
+						local nextPos = part.Position + step
+						if walkable(run, nextPos.X, nextPos.Z) then
+							part.Position += step
+						end
 					end
 				end
 				-- 보스도 땅 높이를 따라간다 (언덕 / 구덩이)
@@ -632,7 +667,12 @@ local function stepRun(run, dt)
 		projectile.Part.Position += projectile.Direction * projectile.Speed * dt
 
 		local hit = false
+		-- 절벽에 닿은 탄은 사라진다 (벽 너머로 공격이 들어오지 않게)
+		if not walkable(run, projectile.Part.Position.X, projectile.Part.Position.Z) then
+			hit = true
+		end
 		for _, member in ipairs(run.Members) do
+			if hit then break end
 			local root, humanoid = getAliveParts(member)
 			if root and (root.Position - projectile.Part.Position).Magnitude < projectile.Radius + 2 then
 				humanoid:TakeDamage(projectile.Damage)
@@ -734,6 +774,13 @@ function Dungeon.Shoot(player, origin, direction)
 	local vamp = player:GetAttribute("PerkVamp") or 0
 
 	local endPosition = origin + direction * range
+	do -- 사정거리 끝까지 가는 도중 절벽이 있으면 거기서 멈춘다
+		local clear, stopAt = segmentClear(run, origin, endPosition)
+		if not clear then
+			endPosition = stopAt
+			range = (stopAt - origin).Magnitude
+		end
+	end
 	local skipped = {}
 	for _ = 1, 1 + pierce do
 		local result = workspace:Raycast(origin, direction * range, params)
@@ -1468,6 +1515,12 @@ function Dungeon.Start(player, typeKey, diffKey)
 		FloorY = run.Origin.Y,
 		GroundY = function(x, z, fromY)
 			return run.GroundY and run.GroundY(x, z, fromY) or nil
+		end,
+		Walkable = function(x, z)
+			return walkable(run, x, z)
+		end,
+		LineOfSight = function(a, b)
+			return (segmentClear(run, a, b))
 		end,
 		GetTarget = function(position)
 			return getNearestTarget(run, position)

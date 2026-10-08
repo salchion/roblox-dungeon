@@ -268,8 +268,14 @@ function DungeonTerrain.Build(run, theme, D, folder)
 		end
 	end
 
+	local worldCircles = {}
+	for _, circle in ipairs(layout.Circles) do
+		local p = world(circle.Pos)
+		table.insert(worldCircles, { X = p.X, Z = p.Z, R = circle.R })
+	end
+
 	return {
-		SpawnPoints = spawnPoints, Rooms = roomData, GroundY = groundY, StartPos = startPos, BossPos = bossPos, LayoutName = layout.Name,
+		Circles = worldCircles, SpawnPoints = spawnPoints, Rooms = roomData, GroundY = groundY, StartPos = startPos, BossPos = bossPos, LayoutName = layout.Name,
 	}
 end
 

@@ -2887,3 +2887,60 @@ do
 		return Enum.ContextActionResult.Sink
 	end, false, Enum.ContextActionPriority.High.Value, Enum.KeyCode.I)
 end
+
+-- 건즈식 이동: 2단 점프 (공중에서 점프 키를 한 번 더 누르면 한 번 더 뛴다)
+do
+	local jumpsUsed = 0
+	local MAX_JUMPS = 2
+	local lastJump = 0
+
+	local function bindCharacter(character)
+		local humanoid = character:WaitForChild("Humanoid", 10)
+		local root = character:WaitForChild("HumanoidRootPart", 10)
+		if not humanoid or not root then return end
+		jumpsUsed = 0
+		humanoid.StateChanged:Connect(function(_, new)
+			if new == Enum.HumanoidStateType.Landed or new == Enum.HumanoidStateType.Running or new == Enum.HumanoidStateType.Climbing then
+				jumpsUsed = 0
+			end
+		end)
+	end
+	if player.Character then
+		task.spawn(bindCharacter, player.Character)
+	end
+	player.CharacterAdded:Connect(bindCharacter)
+
+	UserInputService.JumpRequest:Connect(function()
+		local character = player.Character
+		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+		local root = character and character:FindFirstChild("HumanoidRootPart")
+		if not humanoid or not root or humanoid.Health <= 0 then return end
+		local state = humanoid:GetState()
+		local inAir = state == Enum.HumanoidStateType.Freefall or state == Enum.HumanoidStateType.Jumping
+		if not inAir then
+			jumpsUsed = 0
+			return
+		end
+		local now = os.clock()
+		if jumpsUsed >= MAX_JUMPS - 1 or now - lastJump < 0.2 then return end
+		jumpsUsed += 1
+		lastJump = now
+		local velocity = root.AssemblyLinearVelocity
+		root.AssemblyLinearVelocity = Vector3.new(velocity.X, 52, velocity.Z)
+		humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
+		-- 공중에서 한 번 더 뛴 표시: 발밑에 퍼지는 고리
+		local ring = Instance.new("Part")
+		ring.Shape = Enum.PartType.Cylinder
+		ring.Anchored = true
+		ring.CanCollide = false
+		ring.CanQuery = false
+		ring.Material = Enum.Material.Neon
+		ring.Color = Color3.fromRGB(150, 220, 255)
+		ring.Transparency = 0.3
+		ring.Size = Vector3.new(0.3, 3, 3)
+		ring.CFrame = CFrame.new(root.Position - Vector3.new(0, 2.8, 0)) * CFrame.Angles(0, 0, math.rad(90))
+		ring.Parent = workspace
+		TweenService:Create(ring, TweenInfo.new(0.4), { Size = Vector3.new(0.3, 11, 11), Transparency = 1 }):Play()
+		game:GetService("Debris"):AddItem(ring, 0.5)
+	end)
+end

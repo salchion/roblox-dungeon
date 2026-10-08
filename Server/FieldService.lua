@@ -31,6 +31,32 @@ local Field = {}
 
 local monsters = {}      -- [Part] = 몬스터 데이터
 local baffleXs = {}      -- 시선을 막는 "꺾임 벽"의 x 위치 (몬스터가 벽 속에 나타나지 않게 피하는 용도)
+local baffleRects = {}   -- 꺾임 벽이 차지한 사각형 { X0, X1, Z0, Z1 } (몬스터 / 탄 / 사격이 벽을 통과하지 못하게 하는 용도)
+
+-- 걸을 수 있는 곳인가 (꺾임 벽 안쪽이 아닌 곳)
+local function walkableAt(x, z)
+	for _, rect in ipairs(baffleRects) do
+		if x >= rect.X0 - 1.5 and x <= rect.X1 + 1.5 and z >= rect.Z0 and z <= rect.Z1 then
+			return false
+		end
+	end
+	return true
+end
+
+-- a -> b 선분이 벽에 막히는가. 막히지 않으면 true, 막히면 false 와 마지막으로 열려 있던 지점
+local function segmentClear(a, b)
+	local delta = b - a
+	local steps = math.ceil(delta.Magnitude / 4)
+	local lastOpen = a
+	for i = 1, steps do
+		local p = a + delta * (i / steps)
+		if not walkableAt(p.X, p.Z) then
+			return false, lastOpen
+		end
+		lastOpen = p
+	end
+	return true, b
+end
 
 -- x 범위 안에서 꺾임 벽 위가 아닌 곳을 무작위로 고른다
 local function freeX(minX, maxX)
@@ -337,6 +363,8 @@ local function buildWorld()
 				glow.Color = marker.Color
 				glow.Parent = marker
 				table.insert(baffleXs, x0 + offset)
+				local zCenter = -side * gapSize / 2
+				table.insert(baffleRects, { X0 = x0 + offset - 11, X1 = x0 + offset + 11, Z0 = zCenter - wallLength / 2, Z1 = zCenter + wallLength / 2 })
 				side = -side
 			end
 		end
@@ -676,6 +704,11 @@ function Field.Shoot(player, origin, direction)
 	local range = Config.GetPlayerWeapon(player).Range
 	local result = workspace:Raycast(origin, direction * range, params)
 	local endPosition = result and result.Position or (origin + direction * range)
+	-- 도중에 벽이 있으면 거기서 멈추고 맞히지 못한다
+	local clear, stopAt = segmentClear(origin, endPosition)
+	if not clear then
+		return stopAt
+	end
 
 	local data = result and monsters[result.Instance]
 	if data then
@@ -722,6 +755,10 @@ end
 -- 몬스터 AI(MonsterTypes)가 필드 환경을 다루는 데 쓰는 함수들
 local fieldCtx = {
 	FloorY = TOP,
+	Walkable = walkableAt,
+	LineOfSight = function(a, b)
+		return (segmentClear(a, b))
+	end,
 	GetTarget = nearestFieldPlayer,
 	Fire = function(origin, direction, speed, damage, size, color)
 		fireProjectile(origin, direction, speed, damage, size, color)
@@ -848,7 +885,10 @@ local function stepMonsters(dt)
 					local flatTarget = Vector3.new(target.Position.X, part.Position.Y, target.Position.Z)
 					local move = flatTarget - part.Position
 					if move.Magnitude > 0.1 then
-						part.Position += move.Unit * data.Stats.Speed * dt
+						local step = move.Unit * data.Stats.Speed * dt
+						if walkableAt(part.Position.X + step.X, part.Position.Z + step.Z) then
+							part.Position += step
+						end
 					end
 				end
 
@@ -899,8 +939,9 @@ local function stepProjectiles(dt)
 		local projectile = projectiles[i]
 		projectile.Part.Position += projectile.Direction * projectile.Speed * dt
 
-		local hit = false
+		local hit = not walkableAt(projectile.Part.Position.X, projectile.Part.Position.Z) -- 벽에 닿은 탄은 사라진다
 		for _, player in ipairs(Players:GetPlayers()) do
+			if hit then break end
 			if player:GetAttribute("Zone") == "Field" then
 				local root, humanoid = getAliveParts(player)
 				if root and not isSafe(root.Position) and (root.Position - projectile.Part.Position).Magnitude < projectile.Radius + 2 then

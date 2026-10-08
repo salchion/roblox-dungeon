@@ -306,7 +306,8 @@ local function explode(ctx, part, data)
 	local center = part.Position
 	local damage = data.Stats.ShotDamage
 	for _, entry in ipairs(ctx.Players()) do
-		if (entry.Root.Position - center).Magnitude <= 16 then
+		-- 벽 너머에서는 폭발 피해를 주지 않는다
+		if (entry.Root.Position - center).Magnitude <= 16 and (not ctx.LineOfSight or ctx.LineOfSight(center, entry.Root.Position)) then
 			entry.Humanoid:TakeDamage(damage)
 		end
 	end
@@ -334,7 +335,12 @@ function M.Update(ctx, part, data, dt, now)
 
 	-- 돌진 중: 정해둔 방향으로 곧장 달리면서 닿으면 피해 (한 번만)
 	if data.ChargeUntil and now < data.ChargeUntil then
-		position += data.ChargeDir * 75 * dt
+		local chargeNext = position + data.ChargeDir * 75 * dt
+		if not ctx.Walkable or ctx.Walkable(chargeNext.X, chargeNext.Z) then
+			position = chargeNext
+		else
+			data.ChargeUntil = nil -- 벽에 부딪히면 돌진이 끝난다
+		end
 		position = snapToGround(ctx, position, stats.Size)
 		part.CFrame = CFrame.lookAt(position, position + data.ChargeDir)
 		if not data.ChargeHit then
@@ -396,6 +402,20 @@ function M.Update(ctx, part, data, dt, now)
 			move = direction * speed * dt
 		end
 	end
+	-- 벽 / 절벽은 지나가지 못한다 (막히면 그 방향으로는 움직이지 않는다)
+	if ctx.Walkable then
+		local nextPosition = position + move
+		if not ctx.Walkable(nextPosition.X, nextPosition.Z) then
+			-- 한 축씩 따로 시도해서 벽을 따라 미끄러지듯 움직인다
+			if ctx.Walkable(nextPosition.X, position.Z) then
+				move = Vector3.new(move.X, move.Y, 0)
+			elseif ctx.Walkable(position.X, nextPosition.Z) then
+				move = Vector3.new(0, move.Y, move.Z)
+			else
+				move = Vector3.zero
+			end
+		end
+	end
 	position += move
 	if def.Move ~= "Hover" then
 		position = snapToGround(ctx, position, stats.Size)
@@ -410,6 +430,8 @@ function M.Update(ctx, part, data, dt, now)
 		return
 	end
 	if distance > def.Range or now < data.NextAttack then return end
+	-- 벽 너머로는 공격하지 않는다
+	if ctx.LineOfSight and not ctx.LineOfSight(part.Position, target.Position) then return end
 	data.NextAttack = now + stats.ShotInterval
 
 	if def.Attack == "Single" then
