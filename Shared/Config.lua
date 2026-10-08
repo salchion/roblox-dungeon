@@ -416,7 +416,7 @@ for key, value in pairs(defaultIds) do
 end
 
 Config.Audio = {
-	MusicVolume = 0.4,
+	MusicVolume = 0.18,
 	Music = {
 		Lobby = ids.Lobby or 0,      -- 로비 배경음악
 		Dungeon = ids.Dungeon or 0,  -- 던전(웨이브) 배경음악
