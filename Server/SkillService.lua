@@ -1,8 +1,3 @@
-	-- 공속 한계를 뚫은 난사: 적이 적어도 총 48발 이상, 한 발 간격은 0.03초 (화다다다다!). 전체 피해량은 그대로 나눠 맞는다.
-	local shotsPer = math.max(cfg.ShotsPerTarget, math.ceil(48 / #targets))
-	local perShot = math.max(1, math.floor(Dungeon.ComputeDamage(player) * totalMult / shotsPer))
-	local lockGap = 0.14
-
 -- SkillService (ServerScriptService > Modules 안의 ModuleScript, 이름: SkillService)
 -- 액티브 스킬: 응급 치료 / 궁극기(데드아이). (방벽 / 충격파 핸들러는 남아 있지만 Config.Skills.Order 에 없어 쓰이지 않는다)
 -- 쿨타임과 게이지는 서버가 검사하고, 클라이언트는 키를 눌렀다고 알려주기만 한다.
@@ -192,7 +187,9 @@ handlers.Ult = function(player, root, _, character)
 
 	local origin = root.Position
 	local totalMult = cfg.Mult * (1 + U.UltMult * (skillLevel(player, "Ult") - 1))
-	local perShot = math.max(1, math.floor(Dungeon.ComputeDamage(player) * totalMult / cfg.ShotsPerTarget))
+	-- 공속 한계를 뚫은 난사: 적이 적어도 총 48발 이상, 한 발 간격은 0.03초 (화다다다다!). 전체 피해량은 그대로 나눠 맞는다.
+	local shotsPer = math.max(cfg.ShotsPerTarget, math.ceil(48 / #targets))
+	local perShot = math.max(1, math.floor(Dungeon.ComputeDamage(player) * totalMult / shotsPer))
 	local lockGap = 0.14
 
 	local field = Instance.new("ForceField")
