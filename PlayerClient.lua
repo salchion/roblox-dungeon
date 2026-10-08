@@ -1623,6 +1623,7 @@ local function buildRankTab()
 	end
 end
 
+local refreshMenu -- (메뉴 다시 그리기: 아래에서 정의)
 local inventoryState = nil   -- 가방 (서버가 보내준 아이템 목록)
 local growthState = nil      -- 훈련소 / 돌파 상태
 local growthReceivedAt = 0   -- growthState 를 받은 시각(os.clock) - 남은 시간 계산용
@@ -1640,101 +1641,235 @@ local function buildInventoryTab()
 		return
 	end
 
-	local header = newRow(70)
+	local header = newRow(56)
 	rowText(header, string.format(
-		"🎒 가방 <b>%d / %d</b>      ✨ 에센스 <font color='#9ad7ff'>%d</font>\n<font size='13' color='#bbbbcc'>장비는 필드 몬스터가 떨어뜨려요. 자동 분해를 켜 두면 낮은 등급은 줍자마자 분해돼서 편해요.</font>",
+		"🎒 가방 <b>%d / %d</b>      ✨ 에센스 <font color='#9ad7ff'>%d</font>\n<font size='13' color='#bbbbcc'>칸을 누르면 자세히 보여요. 자동 분해를 켜 두면 낮은 등급은 줍자마자 분해돼요.</font>",
 		state.BagCount, state.Capacity, state.Essence
 	), 15, 320)
 	makeButton({
-		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -310, 0, 8),
+		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -310, 0, 14),
 		Text = "자동 분해: " .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 13, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
 	}, header, function()
 		Remotes.Inventory:FireServer("AutoScrap", (state.AutoScrap + 1) % 4)
 	end)
 	makeButton({
-		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -156, 0, 8),
+		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -156, 0, 14),
 		Text = "희귀 이하 일괄 분해", TextSize = 13, BackgroundColor3 = RED,
 	}, header, function()
 		Remotes.Inventory:FireServer("ScrapBelow", 2)
 	end)
 
-	local equippedScore = {}
-	local setCounts = {}
+	-- 장착 중인 장비 / 가방 장비 구분 + 세트 착용 수
+	local equipped, bag, setCounts, byId = {}, {}, {}, {}
 	for _, item in ipairs(state.Items) do
+		byId[item.Id] = item
 		if item.Equipped then
-			equippedScore[item.Slot] = item.Score
+			equipped[item.Slot] = item
 			if item.Set then
 				setCounts[item.Set] = (setCounts[item.Set] or 0) + 1
 			end
+		else
+			table.insert(bag, item)
 		end
 	end
-
-	if #state.Items == 0 then
-		local row = newRow(40)
-		rowText(row, "<font color='#888888'>아직 장비가 없어요. 필드에서 몬스터를 잡아보세요!</font>")
+	local selectedId = menuContent:GetAttribute("SelectedItem")
+	local selected = selectedId and byId[selectedId]
+	if not selected then
+		selected = equipped.Armor or equipped.Gloves or equipped.Boots or bag[1]
 	end
 
-	for _, item in ipairs(state.Items) do
-		local color = Config.Gear.RarityColors[item.Rarity]
-		local slot = Config.GetGearSlot(item.Slot)
-		local upgrade = ""
-		if not item.Equipped and equippedScore[item.Slot] and item.Score > equippedScore[item.Slot] then
-			upgrade = string.format("  <font color='#78ff8c'>▲ +%d</font>", item.Score - equippedScore[item.Slot])
-		elseif not item.Equipped and equippedScore[item.Slot] and item.Score < equippedScore[item.Slot] then
-			upgrade = string.format("  <font color='#ff8c8c'>▼ %d</font>", item.Score - equippedScore[item.Slot])
+	-- 등급 테두리: 등급이 높을수록 굵고 밝고, 영웅 이상은 숨 쉬듯 빛나며, 신화는 무지개가 돈다
+	local function rarityOutline(frame, rarity, thick)
+		local color = Config.Gear.RarityColors[rarity]
+		local stroke = create("UIStroke", { Color = color, Thickness = thick or ({ 2, 2, 3, 3.5, 4.5 })[rarity], ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame)
+		if rarity >= 3 then
+			TweenService:Create(stroke, TweenInfo.new(rarity >= 4 and 0.9 or 1.4, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = rarity >= 4 and 0.55 or 0.4 }):Play()
 		end
+		if rarity >= 5 then
+			local gradient = create("UIGradient", {
+				Color = ColorSequence.new({
+					ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 80, 80)), ColorSequenceKeypoint.new(0.2, Color3.fromRGB(255, 220, 80)),
+					ColorSequenceKeypoint.new(0.4, Color3.fromRGB(90, 255, 120)), ColorSequenceKeypoint.new(0.6, Color3.fromRGB(80, 220, 255)),
+					ColorSequenceKeypoint.new(0.8, Color3.fromRGB(150, 100, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 80)),
+				}),
+			}, stroke)
+			TweenService:Create(gradient, TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1), { Rotation = 360 }):Play()
+		end
+		return stroke
+	end
 
-		local tagText = ""
-		if item.Unique and Config.Uniques[item.Unique] then
-			tagText = string.format("  <font color='#ffb84d'>✦%s</font>", Config.Uniques[item.Unique].Name)
+	local SLOT_ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Weapon = "🔫" }
+
+	-- ===== 위쪽: 캐릭터(가운데 3D) + 장비 칸(양옆) + 선택한 아이템 설명 =====
+	local top = newRow(360, Color3.fromRGB(30, 32, 46))
+
+	-- 3D 캐릭터: 지금 입고 있는 모습 그대로 복제해서 보여주고, 천천히 돈다
+	local viewport = create("ViewportFrame", {
+		Size = UDim2.new(0, 230, 0, 300), Position = UDim2.new(0, 108, 0, 12), BackgroundColor3 = Color3.fromRGB(20, 22, 34), BorderSizePixel = 0,
+		Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1),
+	}, top)
+	rounded(viewport, 10)
+	create("UIStroke", { Color = Color3.fromRGB(90, 110, 170), Thickness = 2 }, viewport)
+	local cam = create("Camera", { FieldOfView = 38 }, viewport)
+	viewport.CurrentCamera = cam
+	local character = player.Character
+	if character then
+		character.Archivable = true
+		local clone = character:Clone()
+		for _, descendant in ipairs(clone:GetDescendants()) do
+			if descendant:IsA("Script") or descendant:IsA("LocalScript") or descendant:IsA("BillboardGui") or descendant:IsA("ForceField") then
+				descendant:Destroy()
+			elseif descendant:IsA("BasePart") then
+				descendant.Anchored = true
+			end
 		end
+		clone.Parent = viewport
+		local pivot = clone:GetPivot()
+		local spin = 0
+		local connection
+		connection = RunService.RenderStepped:Connect(function(dt)
+			if not viewport:IsDescendantOf(game) then
+				connection:Disconnect()
+				return
+			end
+			spin += dt * 0.9
+			clone:PivotTo(CFrame.new(pivot.Position) * CFrame.Angles(0, spin, 0))
+			cam.CFrame = CFrame.lookAt(pivot.Position + Vector3.new(0, 1.2, 12.5), pivot.Position + Vector3.new(0, 0.4, 0))
+		end)
+	end
+	makeLabel({ Size = UDim2.new(0, 230, 0, 22), Position = UDim2.new(0, 108, 0, 316), Text = string.format("⚡ 전투력 %d", player:GetAttribute("Power") or 0), TextSize = 16, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, top)
+
+	-- 장비 칸 4개: 왼쪽(무기 / 장갑), 오른쪽(갑옷 / 신발)
+	local function slotBox(slotKey, x, y)
+		local item = equipped[slotKey]
+		local rarity = item and item.Rarity or 0
+		local box = makeButton({
+			Size = UDim2.new(0, 88, 0, 88), Position = UDim2.new(0, x, 0, y), Text = "",
+			BackgroundColor3 = item and Color3.fromRGB(46, 48, 68) or Color3.fromRGB(34, 34, 48), AutoButtonColor = true,
+		}, top, function()
+			if item then
+				menuContent:SetAttribute("SelectedItem", item.Id)
+				refreshMenu()
+			end
+		end)
+		rounded(box, 10)
+		if slotKey == "Weapon" then
+			local tier = Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0)
+			rarityOutline(box, 4, 3.5).Color = tier.Color
+			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 6), Text = "🔫", TextSize = 32 }, box)
+			makeLabel({ Size = UDim2.new(1, -6, 0, 36), Position = UDim2.new(0, 3, 0, 46), Text = tier.Name, TextSize = 12, TextWrapped = true, TextColor3 = tier.Color, Font = Enum.Font.GothamBold }, box)
+		elseif item then
+			rarityOutline(box, rarity)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 4), Text = SLOT_ICONS[slotKey], TextSize = 32 }, box)
+			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 44), Text = Config.GetGearSlot(slotKey).Names[rarity], TextSize = 11, TextColor3 = Config.Gear.RarityColors[rarity], Font = Enum.Font.GothamBold }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 64), Text = string.format("+%d", item.Level), TextSize = 13, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, box)
+			if item.Unique then
+				makeLabel({ Size = UDim2.new(0, 16, 0, 16), Position = UDim2.new(1, -18, 0, 2), Text = "✦", TextSize = 14, TextColor3 = Color3.fromRGB(255, 184, 77) }, box)
+			end
+		else
+			create("UIStroke", { Color = Color3.fromRGB(70, 70, 90), Thickness = 1.5 }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 10), Text = SLOT_ICONS[slotKey], TextSize = 30, TextTransparency = 0.6 }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 0, 56), Text = "비어 있음", TextSize = 12, TextColor3 = Color3.fromRGB(120, 120, 140) }, box)
+		end
+		return box
+	end
+	slotBox("Weapon", 10, 50)
+	slotBox("Gloves", 10, 156)
+	slotBox("Armor", 350, 50)
+	slotBox("Boots", 350, 156)
+
+	-- 선택한 아이템 설명
+	local detail = create("Frame", { Size = UDim2.new(1, -462, 1, -24), Position = UDim2.new(0, 450, 0, 12), BackgroundColor3 = Color3.fromRGB(24, 26, 38), BorderSizePixel = 0 }, top)
+	rounded(detail, 10)
+	if selected then
+		local color = Config.Gear.RarityColors[selected.Rarity]
+		rarityOutline(detail, selected.Rarity)
+		local slot = Config.GetGearSlot(selected.Slot)
 		local lines = {
-			string.format("<font color='#%s' size='16'><b>[%s] %s</b></font>" .. tagText .. "  +%d   <font color='#aaaacc' size='12'>%s · 점수 %d</font>%s",
-				hex(color), Config.Gear.RarityNames[item.Rarity], slot.Names[item.Rarity], item.Level, slot.Name, item.Score, upgrade),
-			"<font size='13' color='#ddddee'>기본  " .. Config.FormatGearStat(item.Slot, Config.GetGearStat(item.Slot, item.Rarity, item.Level)) .. "</font>",
+			string.format("<font color='#%s' size='18'><b>[%s] %s</b></font>  +%d", hex(color), Config.Gear.RarityNames[selected.Rarity], slot.Names[selected.Rarity], selected.Level),
+			string.format("<font color='#aaaacc' size='12'>%s · 점수 %d%s</font>", slot.Name, selected.Score, selected.Equipped and " · 장착 중" or ""),
+			"<font size='13' color='#ddddee'>기본  " .. Config.FormatGearStat(selected.Slot, Config.GetGearStat(selected.Slot, selected.Rarity, selected.Level)) .. "</font>",
 		}
-		for _, affix in ipairs(item.Affixes) do
+		for _, affix in ipairs(selected.Affixes) do
 			table.insert(lines, "<font size='13' color='#9ad7ff'>◆ " .. Config.FormatAffix(affix.Stat, affix.Value) .. "</font>")
 		end
-		if item.Unique and Config.Uniques[item.Unique] then
-			table.insert(lines, "<font size='13' color='#ffb84d'>✦ 유니크: " .. Config.Uniques[item.Unique].Desc .. "</font>")
+		if selected.Unique and Config.Uniques[selected.Unique] then
+			table.insert(lines, "<font size='13' color='#ffb84d'>✦ 유니크: " .. Config.Uniques[selected.Unique].Desc .. "</font>")
 		end
-		if item.Set and Config.Sets[item.Set] then
-			local setDef = Config.Sets[item.Set]
-			local have = setCounts[item.Set] or 0
+		if selected.Set and Config.Sets[selected.Set] then
+			local setDef = Config.Sets[selected.Set]
 			local b2, b3 = {}, {}
 			for _, b in ipairs(setDef.Bonuses[2]) do table.insert(b2, Config.FormatBonus(b.Stat, b.Value)) end
 			for _, b in ipairs(setDef.Bonuses[3]) do table.insert(b3, Config.FormatBonus(b.Stat, b.Value)) end
-			table.insert(lines, string.format("<font size='13' color='#%s'>◈ 세트 [%s] 착용 %d/3 · 2부위: %s · 3부위: %s</font>",
-				hex(setDef.Color), setDef.Name, have, table.concat(b2, ", "), table.concat(b3, ", ")))
+			table.insert(lines, string.format("<font size='12' color='#%s'>◈ 세트 [%s] %d/3\n  2부위: %s\n  3부위: %s</font>", hex(setDef.Color), setDef.Name, setCounts[selected.Set] or 0, table.concat(b2, ", "), table.concat(b3, ", ")))
 		end
-
-		local row = newRow(math.max(112, 24 + 19 * #lines), item.Equipped and Color3.fromRGB(38, 52, 44) or nil)
-		rowText(row, table.concat(lines, "\n"), 14, 150)
-
-		if item.Equipped then
+		-- 지금 장착한 같은 부위 장비와 비교
+		local current = equipped[selected.Slot]
+		if current and current.Id ~= selected.Id then
+			local diff = selected.Score - current.Score
+			table.insert(lines, diff >= 0 and string.format("<font color='#78ff8c'>장착 중인 것보다 ▲ +%d</font>", diff) or string.format("<font color='#ff8c8c'>장착 중인 것보다 ▼ %d</font>", diff))
+		end
+		makeLabel({
+			Size = UDim2.new(1, -20, 1, -64), Position = UDim2.new(0, 10, 0, 8), Text = table.concat(lines, "\n"), TextSize = 14, RichText = true,
+			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+		}, detail)
+		if not selected.Equipped then
+			makeButton({ Size = UDim2.new(0, 96, 0, 30), Position = UDim2.new(0, 10, 1, -40), Text = "장착", TextSize = 14, BackgroundColor3 = GREEN }, detail, function()
+				Remotes.Inventory:FireServer("Equip", selected.Id)
+			end)
+			makeButton({ Size = UDim2.new(0, 96, 0, 30), Position = UDim2.new(0, 112, 1, -40), Text = "분해", TextSize = 14, BackgroundColor3 = RED }, detail, function()
+				Remotes.Inventory:FireServer("Scrap", selected.Id)
+			end)
+		end
+		if #selected.Affixes > 0 then
 			makeButton({
-				Size = UDim2.new(0, 124, 0, 28), Position = UDim2.new(1, -136, 0, 8), Text = "장착 중", TextSize = 13, BackgroundColor3 = GRAY,
-			}, row)
+				Size = UDim2.new(0, 120, 0, 30), Position = UDim2.new(1, -130, 1, -40),
+				Text = string.format("재굴림 ✨%d", Config.Inventory.RerollEssence[selected.Rarity]), TextSize = 12, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
+			}, detail, function()
+				Remotes.Inventory:FireServer("Reroll", selected.Id)
+			end)
+		end
+	else
+		makeLabel({ Size = UDim2.new(1, -20, 1, -20), Position = UDim2.new(0, 10, 0, 10), Text = "장비가 없어요.\n필드에서 몬스터를 잡거나 뽑기로 얻어보세요!", TextSize = 15, TextColor3 = Color3.fromRGB(150, 150, 170) }, detail)
+	end
+
+	-- ===== 아래쪽: 가방 칸(격자) =====
+	sectionTitle(string.format("🎒 가방 (%d / %d) — 칸을 누르면 위에 자세히 나와요", state.BagCount, state.Capacity))
+	local columns = 10
+	local rowsNeeded = math.max(1, math.ceil(#bag / columns))
+	local gridRow = newRow(rowsNeeded * 76 + 14)
+	if #bag == 0 then
+		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "가방이 비어 있어요", TextSize = 15, TextColor3 = Color3.fromRGB(130, 130, 150) }, gridRow)
+	end
+	create("UIGridLayout", { CellSize = UDim2.new(0, 68, 0, 68), CellPadding = UDim2.new(0, 8, 0, 8), SortOrder = Enum.SortOrder.LayoutOrder }, gridRow)
+	create("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingLeft = UDim.new(0, 10) }, gridRow)
+	for order, item in ipairs(bag) do
+		local tile = makeButton({
+			Text = "", LayoutOrder = order,
+			BackgroundColor3 = (selected and selected.Id == item.Id) and Color3.fromRGB(70, 74, 104) or Color3.fromRGB(42, 44, 62), AutoButtonColor = true,
+		}, gridRow, function()
+			menuContent:SetAttribute("SelectedItem", item.Id)
+			refreshMenu()
+		end)
+		rounded(tile, 8)
+		rarityOutline(tile, item.Rarity, (selected and selected.Id == item.Id) and 5 or nil)
+		makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = SLOT_ICONS[item.Slot], TextSize = 26 }, tile)
+		makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 36), Text = string.format("+%d", item.Level), TextSize = 12, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, tile)
+		local equippedItem = equipped[item.Slot]
+		local compare = ""
+		if equippedItem then
+			compare = item.Score > equippedItem.Score and "▲" or (item.Score < equippedItem.Score and "▼" or "")
 		else
-			makeButton({
-				Size = UDim2.new(0, 124, 0, 28), Position = UDim2.new(1, -136, 0, 8), Text = "장착", TextSize = 14, BackgroundColor3 = GREEN,
-			}, row, function()
-				Remotes.Inventory:FireServer("Equip", item.Id)
-			end)
-			makeButton({
-				Size = UDim2.new(0, 124, 0, 28), Position = UDim2.new(1, -136, 0, 40), Text = "분해", TextSize = 14, BackgroundColor3 = RED,
-			}, row, function()
-				Remotes.Inventory:FireServer("Scrap", item.Id)
-			end)
+			compare = "▲"
 		end
-		if #item.Affixes > 0 then
-			makeButton({
-				Size = UDim2.new(0, 124, 0, 28), Position = UDim2.new(1, -136, 0, 72),
-				Text = string.format("옵션 재굴림 ✨%d", Config.Inventory.RerollEssence[item.Rarity]), TextSize = 12, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
-			}, row, function()
-				Remotes.Inventory:FireServer("Reroll", item.Id)
-			end)
+		if compare ~= "" then
+			makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(1, -16, 0, 3), Text = compare, TextSize = 12, TextColor3 = compare == "▲" and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 120, 120), Font = Enum.Font.GothamBlack }, tile)
+		end
+		if item.Unique then
+			makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0, 2, 0, 3), Text = "✦", TextSize = 12, TextColor3 = Color3.fromRGB(255, 184, 77) }, tile)
+		end
+		if item.Set then
+			makeLabel({ Size = UDim2.new(1, 0, 0, 12), Position = UDim2.new(0, 0, 1, -14), Text = "세트", TextSize = 10, TextColor3 = Config.Sets[item.Set].Color, Font = Enum.Font.GothamBold }, tile)
 		end
 	end
 end
@@ -1927,7 +2062,6 @@ local function buildShopTab()
 end
 
 local metaState = nil
-local refreshMenu
 
 local function buildSkillTab()
 	sectionTitle("⚔ 스킬 강화 — 골드로 레벨업. 레벨이 오를수록 강해지고 쿨타임이 줄어요. (필드/던전에서 Z F C V)")
