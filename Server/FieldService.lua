@@ -629,7 +629,7 @@ local function createHealthBar(part, text, width, color)
 end
 
 -- kind: "Normal" / "Elite" / "Boss"
-local function spawnMonster(zone, kind)
+local function spawnMonster(zone, kind, at, ambush)
 	local stats, text, color, barWidth
 	local level = F.GetZoneLevel(zone)
 	local typeKey, def, xpLevel
@@ -674,6 +674,9 @@ local function spawnMonster(zone, kind)
 	else
 		local spawnX = freeX(math.floor(x0 + F.CampSafe + 40), math.floor(x1 - 25))
 		position = Vector3.new(spawnX, floorAt(spawnX) + stats.Size / 2, math.random(-F.Width / 2 + 25, F.Width / 2 - 25))
+		if at then -- 습격: 플레이어 주변에 바로 나타난다
+			position = Vector3.new(at.X, floorAt(at.X) + stats.Size / 2, at.Z)
+		end
 	end
 
 	local part
@@ -721,6 +724,8 @@ local function spawnMonster(zone, kind)
 		NextRing = os.clock() + 7,
 		BaseColor = part.Color,
 		Aggro = false,
+		Ambush = ambush == true,
+		LastHit = ambush and os.clock() or nil, -- 습격으로 나온 몬스터는 처음부터 플레이어를 노린다
 	}
 end
 
@@ -877,8 +882,11 @@ local function killMonster(player, part, data)
 	part:Destroy()
 	Combo.Kill(player)
 	reward(player, data, part)
+	-- 처치 연출: 금화가 사방으로 튄다
+	Effects.Burst(part.Position + Vector3.new(0, 2, 0), Color3.fromRGB(255, 215, 90), data.Kind == "Boss" and 60 or 14)
 
 	local zone, kind = data.Zone, data.Kind
+	if data.Ambush then return end -- 습격 몬스터는 다시 생기지 않는다
 	if kind == "Goblin" then return end -- 다시 나타나지 않는다 (다음 출현은 타이머)
 	if kind == "Event" then
 		activeEvent = nil -- 이벤트 보스는 다시 나타나지 않는다
@@ -994,6 +1002,27 @@ function Field.Shoot(player, origin, direction)
 				end
 			end
 			Effects.Burst(result.Position, Color3.fromRGB(255, 160, 60), 40)
+		end
+		-- 무리 어그로: 처음 맞은 몬스터 주변 몬스터들이 같이 달려든다 (한 마리 건드리면 떼로 몰려온다)
+		if not data.LastHit or os.clock() - data.LastHit > 8 then
+			local woken = 0
+			for otherPart, otherData in pairs(monsters) do
+				if woken >= 8 then break end
+				if otherData ~= data and otherPart.Parent and not otherData.BossLike and (otherPart.Position - result.Instance.Position).Magnitude < 38 then
+					otherData.LastHit = os.clock()
+					woken += 1
+				end
+			end
+		end
+		-- 타격감: 맞으면 살짝 뒤로 밀린다
+		if not data.BossLike and data.Kind ~= "Event" then
+			local away = Vector3.new(result.Instance.Position.X - origin.X, 0, result.Instance.Position.Z - origin.Z)
+			if away.Magnitude > 0.1 then
+				local pushed = result.Instance.Position + away.Unit * 1.3
+				if walkableAt(pushed.X, pushed.Z) then
+					result.Instance.Position = pushed
+				end
+			end
 		end
 		data.Health -= damage
 		data.LastHit = os.clock() -- 맞은 몬스터는 멀리서 맞아도 깨어나 반응하고, 한동안 체력을 되찾지 않는다
@@ -1506,6 +1535,43 @@ local function runGoblins()
 	end
 end
 
+-- 습격: 필드에서 싸우는 플레이어 주변에 일정 시간마다 몬스터 떼가 사방에서 몰려온다 (가만히 있으면 둘러싸인다)
+local function runAmbush()
+	task.wait(30)
+	while true do
+		task.wait(math.random(35, 55))
+		for _, player in ipairs(Players:GetPlayers()) do
+			if player:GetAttribute("Zone") == "Field" then
+				local root = getAliveParts(player)
+				if root and not isSafe(root.Position) then
+					local zone = zoneOfX(root.Position.X)
+					local alive = 0
+					for _, data in pairs(monsters) do
+						if data.Ambush then alive += 1 end
+					end
+					if alive <= 12 and zone <= math.min(F.ZoneCount, (player:GetAttribute("ClearedZone") or 0) + 1) then
+						notify(player, "⚠ 습격! 사방에서 몬스터 떼가 몰려온다!")
+						player:SetAttribute("ShakeStrength", 0.5)
+						player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+						local count = 5 + math.min(5, zone)
+						local spawned = 0
+						for _ = 1, count * 3 do
+							if spawned >= count then break end
+							local angle = math.random() * math.pi * 2
+							local distance = 42 + math.random() * 16
+							local at = root.Position + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
+							if walkableAt(at.X, at.Z) and not isSafe(at) and zoneOfX(at.X) == zone then
+								spawnMonster(zone, "Normal", at, true)
+								spawned += 1
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
 function Field.Init(lobbySpawnCFrame)
 	lobbySpawn = lobbySpawnCFrame or lobbySpawn
 	buildWorld()
@@ -1535,6 +1601,7 @@ function Field.Init(lobbySpawnCFrame)
 
 	task.spawn(runEvents)
 	task.spawn(runGoblins)
+	task.spawn(runAmbush)
 end
 
 return Field

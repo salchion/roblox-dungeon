@@ -225,3 +225,25 @@ RunService.RenderStepped:Connect(function(dt)
 	end
 end)
 
+
+-- 연속 처치 이정표: 10 / 25 / 50 / 100 / 200 연속 처치 때 큰 글자가 쾅! 하고 뜬다 (박진감)
+do
+	local milestones = { [10] = "🔥 10 연속 처치!", [25] = "⚡ 25 연속 처치!!", [50] = "💥 50 연속 처치!!!", [100] = "👑 100 연속 처치!!!!", [200] = "🌋 200 연속 — 전설!" }
+	local lastCombo = 0
+	player:GetAttributeChangedSignal("Combo"):Connect(function()
+		local combo = player:GetAttribute("Combo") or 0
+		if combo > lastCombo and milestones[combo] then
+			local label = makeLabel({
+				Size = UDim2.new(1, 0, 0, 90), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.32, 0),
+				Text = milestones[combo], Font = Enum.Font.GothamBlack, TextSize = 28, TextColor3 = Color3.fromRGB(255, 220, 90),
+				TextStrokeTransparency = 0, ZIndex = 60,
+			}, gui)
+			TweenService:Create(label, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { TextSize = 62 }):Play()
+			task.delay(0.9, function()
+				TweenService:Create(label, TweenInfo.new(0.5), { TextTransparency = 1, TextStrokeTransparency = 1, Position = UDim2.new(0.5, 0, 0.26, 0) }):Play()
+			end)
+			task.delay(1.5, function() label:Destroy() end)
+		end
+		lastCombo = combo
+	end)
+end
