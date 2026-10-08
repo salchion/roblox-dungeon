@@ -315,16 +315,14 @@ Config.Boss = {
 Config.Weapon = {
 	WeaponCount = 100,
 	BaseCost = 100,
-	CostGrowth = 1.03,      -- 강화 1회마다 비용 x1.03 (단계 전체가 하나의 사다리)
+	CostGrowth = 1.0118,    -- 강화 1회마다 비용 x1.0118 (단계가 820까지 늘어서, 끝 비용은 예전과 비슷하게 맞춘 값)
+	LevelScale = 326 / 820, -- 위력 / 크기 / 성공률 공식은 이 비율로 줄인 "유효 단계"를 쓴다 (단계가 많아져도 최종 위력은 그대로)
 }
 -- 무기 하나가 가진 강화 단계 수: 처음 무기들은 오래 키우고(첫 무기 10단계), 뒤로 갈수록 빨리 넘어간다
 -- (이 무기의 마지막 단계에서 강화에 성공하면 다음 무기로 진화)
 function Config.Weapon.StepsFor(index)
-	if index <= 1 then return 10 end
-	if index <= 3 then return 7 end
-	if index <= 6 then return 5 end
-	if index <= 12 then return 4 end
-	return 3
+	if index <= 10 then return 10 end -- 처음 10개 무기는 10단계씩
+	return 8                          -- 이후 무기도 전부 8단계 (5강화로 휙 넘어가지 않게)
 end
 
 -- 무기 사다리: 10개 시대 x 10개 종류 = 100종. 시대마다 색 / 재질 / 효과 / 발사체가 크게 바뀌고,
@@ -358,6 +356,19 @@ local CLASS_NAMES = {
 	Pistol = "권총", Revolver = "리볼버", Smg = "기관단총", Shotgun = "샷건", Rifle = "라이플",
 	Sniper = "저격총", Rocket = "로켓 런처", Rail = "레일건", Flamer = "화염방사기", Cannon = "플라즈마 캐논",
 }
+-- 무기 이름: 종류 x 시대마다 전부 다른 이름 (접두사만 바뀌는 게 아니라 무기 자체가 다른 이름 / 다른 모양)
+local WEAPON_NAMES = {
+	Pistol = { "녹슨 권총", "강철 피스톨", "마력 핸드캐논", "황금 에이스", "불꽃 점화기", "서리송곳 권총", "번개 방아쇠", "그림자 송곳니", "용송곳니 피스톨", "신화의 아스트라" },
+	Smg = { "녹슨 기관단총", "강철 연발총", "마력 속삭임 SMG", "황금 폭풍 SMG", "화염 연사기", "서리 연사기", "방전 기관단총", "그림자 연사기", "용염 기관단총", "신화의 스프레이" },
+	Revolver = { "녹슨 리볼버", "강철 육혈포", "마력 마그넘", "황금 헌터", "인페르노 리볼버", "얼음깨기 리볼버", "천둥 리볼버", "저주받은 리볼버", "용의 마그넘", "이터널 리볼버" },
+	Rifle = { "녹슨 라이플", "강철 카빈", "마력 소총", "황금 레인저", "불꽃 라이플", "서리 소총", "전격 라이플", "그림자 라이플", "용린 라이플", "신화의 은하 라이플" },
+	Shotgun = { "녹슨 샷건", "강철 펌프 샷건", "마력 쌍열 샷건", "황금 파쇄총", "화염 산탄총", "빙하 산탄총", "번개 산탄총", "학살자 샷건", "용의 산탄포", "신화의 산탄포" },
+	Flamer = { "녹슨 화염방사기", "강철 분사기", "마력 불꽃 분사기", "황금 용광로", "불꽃 인페르노 토치", "서리 불꽃 분사기", "플라즈마 토치", "지옥불 분사기", "용의 숨결", "별의 화염" },
+	Cannon = { "녹슨 플라즈마 캐논", "강철 대포", "마력 캐논", "황금 대포", "화산포", "빙결포", "천둥포", "암흑 캐논", "용포", "별 파괴포" },
+	Sniper = { "녹슨 저격총", "강철 장거리 저격총", "마력 저격총", "황금 독수리 저격총", "불꽃 저격총", "설원 저격총", "번개 저격총", "암살자의 저격총", "용안 저격총", "은하 저격총" },
+	Rocket = { "녹슨 로켓 런처", "강철 바주카", "마력 런처", "황금 미사일", "화염 로켓", "빙결 미사일", "번개 미사일", "암흑 미사일", "용의 로켓", "혜성 런처" },
+	Rail = { "녹슨 레일건", "강철 가우스 건", "마력 레일건", "황금 레일건", "불꽃 레일건", "서리 레일건", "전자기 레일건", "공허 레일건", "용핵 레일건", "신화의 레일건" },
+}
 
 -- Tiers[i] = i번째 무기 (MinLevel = 이 무기가 되는 최소 강화 단계). 이름은 시대 + 종류.
 Config.Weapon.Tiers = {}
@@ -368,7 +379,7 @@ for index = 1, Config.Weapon.WeaponCount do
 	local inEra = (index - 1) % #CLASS_ORDER -- 0~9: 시대 안에서 뒤로 갈수록 탄이 조금씩 커진다
 	local shot = table.clone(era.Shot)
 	shot.Size *= 1 + 0.04 * inEra
-	local name = era.Prefix .. " " .. CLASS_NAMES[class]
+	local name = WEAPON_NAMES[class][(index - 1) // #CLASS_ORDER + 1]
 	local entry = {
 		Index = index, MinLevel = totalSteps, Steps = Config.Weapon.StepsFor(index),
 		Name = name, Prefix = era.Prefix, Class = class, Era = (index - 1) // #CLASS_ORDER + 1,
@@ -1184,18 +1195,19 @@ end
 
 -- level -> level+1 강화 성공 확률 (실패해도 단계는 내려가지 않고 골드만 소모)
 function Config.GetEnhanceChance(level)
-	return math.max(0.5, 0.95 - 0.0015 * level)
+	return math.max(0.5, 0.95 - 0.0015 * level * Config.Weapon.LevelScale)
 end
 
 -- 공격력 배율: 단계가 오를수록 가파르게 + 시대가 바뀔 때마다 한 번 더 (시대 안에서 무기 종류가 바뀌어도 항상 "더 세졌다"가 느껴지게)
 function Config.GetDamageMultiplier(level)
 	local era = Config.GetWeaponTier(level).Era
-	return (1 + 0.04 * level + 0.00012 * level * level) * 1.4 ^ (era - 1)
+	local effective = level * Config.Weapon.LevelScale -- 단계가 820까지 늘어도 최종 위력은 예전(326단계)과 같다
+	return (1 + 0.04 * effective + 0.00012 * effective * effective) * 1.4 ^ (era - 1)
 end
 
 -- 무기 모형 크기 배율 (너무 커지지 않게 완만하게)
 function Config.GetWeaponScale(level)
-	return 1 + 0.22 * math.log(1 + level)
+	return 1 + 0.22 * math.log(1 + level * Config.Weapon.LevelScale)
 end
 
 return Config
