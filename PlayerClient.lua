@@ -3567,6 +3567,37 @@ do
 	player:GetAttributeChangedSignal("DeadeyeActive"):Connect(apply)
 end
 
+-- 구역별 분위기: 로비는 해 질 녘(서버가 설정), 필드 / 던전은 예전처럼 밝은 낮 (어두워서 안 보이는 일이 없게)
+do
+	local Lighting = game:GetService("Lighting")
+	local DAY = { ClockTime = 14, Brightness = 2.2, Ambient = Color3.fromRGB(70, 70, 70), OutdoorAmbient = Color3.fromRGB(70, 70, 70), ExposureCompensation = 0 }
+	local dusk = nil
+	local function apply()
+		local zone = player:GetAttribute("Zone")
+		local grade = Lighting:FindFirstChild("LobbyGrade")
+		local bloom = Lighting:FindFirstChild("LobbyBloom")
+		if zone == "Lobby" then
+			if dusk then
+				TweenService:Create(Lighting, TweenInfo.new(0.8), dusk):Play()
+			end
+			if grade then grade.Enabled = true end
+			if bloom then bloom.Enabled = true end
+		elseif zone == "Field" or zone == "Dungeon" then
+			if not dusk then
+				dusk = {
+					ClockTime = Lighting.ClockTime, Brightness = Lighting.Brightness, Ambient = Lighting.Ambient,
+					OutdoorAmbient = Lighting.OutdoorAmbient, ExposureCompensation = Lighting.ExposureCompensation,
+				}
+			end
+			TweenService:Create(Lighting, TweenInfo.new(0.8), DAY):Play()
+			if grade then grade.Enabled = false end
+			if bloom then bloom.Enabled = false end
+		end
+	end
+	player:GetAttributeChangedSignal("Zone"):Connect(apply)
+	task.defer(apply)
+end
+
 -- 내 체력바: 캐릭터 발밑에만 표시
 do
 	local fill = { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(70, 220, 100) }
