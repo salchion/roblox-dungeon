@@ -644,17 +644,6 @@ function Config.GetWeaponName(_typeKey, level)
 	return Config.GetWeaponTier(level).Name
 end
 
--- 강화 레벨 -> 진화 단계 번호 (1~6)
-function Config.GetWeaponTierIndex(level)
-	local tiers = Config.Weapon.Tiers
-	for i = #tiers, 1, -1 do
-		if level >= tiers[i].MinLevel then
-			return i
-		end
-	end
-	return 1
-end
-
 ------------------------------------------------------------
 -- 던전 종류 / 난이도 (던전 게이트에서 파티장이 고른다)
 ------------------------------------------------------------
