@@ -240,7 +240,7 @@ local function spawnMonster(run, level, position)
 	local color = def.Color:Lerp(run.Type.MonsterColor, 0.25)
 	local part = MonsterTypes.Build(typeKey, stats.Size, color, position or ringPosition(run, stats.Size), run.MonstersFolder)
 
-	registerMonster(run, part, stats, string.format("Lv.%d %s", level, def.Name), 140, {
+	return registerMonster(run, part, stats, string.format("Lv.%d %s", level, def.Name), 140, {
 		TypeKey = typeKey,
 		Def = def,
 		Level = level,
@@ -613,7 +613,16 @@ local function stepRun(run, dt)
 			end
 		else
 			-- 일반 몬스터: 종류(슬라임/독충/박쥐/마법사/골렘/멧돼지/폭탄병)마다 움직임과 공격이 다르다
-			MonsterTypes.Update(run.Ctx, part, data, dt, now)
+			-- 방에 미리 배치된 몬스터는 플레이어가 가까이 올 때까지 가만히 있다 (한 번 깨어나면 계속 추격)
+			if data.RoomIndex and not data.Awake then
+				local _, nearDist = getNearestTarget(run, part.Position)
+				if nearDist <= 70 then
+					data.Awake = true
+				end
+			end
+			if not data.RoomIndex or data.Awake then
+				MonsterTypes.Update(run.Ctx, part, data, dt, now)
+			end
 		end
 	end
 
@@ -1094,23 +1103,6 @@ local function anyoneIn(run, room, ratio)
 	return false
 end
 
--- 다음 방으로 이동: 빛기둥이 방을 가리키고, 누군가 들어가면(또는 60초 뒤) 진행
-local function enterRoom(run, room, label)
-	run.SpawnPoints = (room.Spawns and #room.Spawns > 0) and room.Spawns or run.AllSpawns
-	run.RoomPos = room.Pos
-	if anyoneIn(run, room, 0.7) then return true end
-	run.Phase = "Moving"
-	run.StageText = label or "다음 방으로 이동하세요"
-	run.PhaseEnd = os.clock() + 60
-	setWaypoint(run, room.Pos + Vector3.new(0, 4, 0), label or "다음 방")
-	local ok = waitFor(run, function()
-		return anyoneIn(run, room, 0.7) or os.clock() >= run.PhaseEnd
-	end)
-	clearWaypoint(run)
-	run.PhaseEnd = nil
-	return ok
-end
-
 -- 이벤트 1) 보물방: 상자에 다가가면 열린다 (장비 + 골드)
 local function eventTreasure(run, room, wave)
 	run.Phase = "Event"
@@ -1234,6 +1226,19 @@ end
 
 local EVENT_HANDLERS = { Treasure = eventTreasure, Trap = eventTrap, Rest = eventRest }
 
+-- 던전 진행 (앞으로 쭉 가는 구조): 입구에서 보스방까지 길이 이어지고, 방마다 몬스터 무리 / 이벤트가 미리 배치돼 있다.
+-- 몬스터는 가까이 가면 깨어나서 덤비고, 방의 몬스터를 모두 잡으면 구역 클리어(보상 + 특성 선택).
+-- 마지막 방에 들어서면 보스가 나타난다. 하늘색 빛기둥은 "다음에 갈 곳"을 알려주는 길잡이일 뿐 꼭 밟을 필요는 없다.
+local function countByRoom(run)
+	local counts = {}
+	for _, data in pairs(run.Monsters) do
+		if data.RoomIndex then
+			counts[data.RoomIndex] = (counts[data.RoomIndex] or 0) + 1
+		end
+	end
+	return counts
+end
+
 local function runLoop(run)
 	run.Phase = "Starting"
 	if run.LayoutName then
@@ -1251,55 +1256,118 @@ local function runLoop(run)
 		return
 	end
 
-	-- 진행 순서 만들기: 전투 웨이브 사이사이에 이벤트 방 (웨이브 2 뒤, 5웨이브 이상이면 끝에서 두 번째 뒤)
+	-- 방 계획: 시작방(1) / 중간 방들(전투 + 이벤트) / 보스방(마지막)
 	local rooms = run.Rooms
-	local combatRooms = {}
+	local inner = #rooms - 2
+	local eventKinds = {}
+	if inner >= 3 then
+		local pool = table.clone(D.Events.Order)
+		local slots = { math.max(2, math.floor(inner * 0.4 + 0.5)) }
+		if inner >= 6 then
+			table.insert(slots, math.floor(inner * 0.8 + 0.5))
+		end
+		for _, slot in ipairs(slots) do
+			if not eventKinds[slot + 1] and #pool > 0 then
+				eventKinds[slot + 1] = table.remove(pool, math.random(#pool))
+			end
+		end
+	end
+
+	local combatRooms = {}   -- 방 번호 목록
 	for index = 2, #rooms - 1 do
-		table.insert(combatRooms, rooms[index])
+		if not eventKinds[index] then
+			table.insert(combatRooms, index)
+		end
 	end
-	if #combatRooms == 0 then
-		combatRooms = rooms
-	end
-	local eventPool = table.clone(D.Events.Order)
-	local stages = {}
-	for wave = 1, run.TotalWaves do
-		table.insert(stages, { Kind = "Combat", Wave = wave })
-		if run.TotalWaves >= 4 and (wave == 2 or (run.TotalWaves >= 5 and wave == run.TotalWaves - 1)) and #eventPool > 0 then
-			table.insert(stages, { Kind = table.remove(eventPool, math.random(#eventPool)), Wave = wave })
+	run.TotalWaves = #combatRooms
+
+	-- 전투 방마다 몬스터를 미리 배치 (뒤쪽 방일수록 강하고 많다)
+	for order, index in ipairs(combatRooms) do
+		local room = rooms[index]
+		room.WaveNo = order
+		room.Combat = true
+		run.SpawnPoints = (room.Spawns and #room.Spawns > 0) and room.Spawns or run.AllSpawns
+		local count = math.min(14, math.floor(D.GetMonsterCount(order, run.PartySize) * (run.Mutator and run.Mutator.CountMult or 1)))
+		local level = math.max(1, D.GetWaveMonsterLevel(order) + run.LevelBonus)
+		for _ = 1, count do
+			local data = spawnMonster(run, level)
+			data.RoomIndex = index
 		end
 	end
 
-	for index, stage in ipairs(stages) do
-		local room = combatRooms[(index - 1) % #combatRooms + 1]
-		if stage.Kind == "Combat" then
-			run.Wave = stage.Wave
-			if not enterRoom(run, room, "다음 방으로 이동하세요 (웨이브 " .. stage.Wave .. ")") then return end
-			run.StageText = nil
-			run.Phase = "Wave"
-			run.PhaseEnd = nil
-			spawnWave(run, stage.Wave)
-			if not waitFor(run, function() return run.MonsterCount <= 0 end) then return end
-
-			giveGold(run, D.WaveClearGold * stage.Wave)
-			giveXp(run, Config.Xp.WaveClear * stage.Wave)
-			if not statPhase(run) then return end
-		else
-			if not enterRoom(run, room, D.Events[stage.Kind].Name .. " 로 이동하세요") then return end
-			if not EVENT_HANDLERS[stage.Kind](run, room, stage.Wave) then return end
-		end
-		run.StageText = nil
-	end
-
-	-- 보스방으로 이동 -> 보스
-	if not enterRoom(run, rooms[#rooms], "보스방으로 이동하세요!") then return end
-	run.Phase = "Boss"
+	run.Phase = "Wave"
+	run.Wave = 1
 	run.PhaseEnd = nil
-	run.StageText = nil
-	notifyAll(run, "⚠ " .. run.BossName .. "이(가) 나타났다!")
-	spawnBoss(run)
-	if not waitFor(run, function() return run.BossDead end) then return end
+	local cleared = 0
+	local bossSpawned = false
+	local lastWaypoint = nil
+	notifyAll(run, "⚔ 앞으로 나아가며 몬스터를 처치하세요! 하늘색 빛기둥이 다음 목적지를 알려줘요.")
 
-	finish(run, true)
+	while not run.Destroyed and run.Phase ~= "Ended" do
+		-- 전멸하면 실패
+		if allDown(run) then
+			finish(run, false)
+			return
+		end
+
+		local counts = countByRoom(run)
+		for index = 2, #rooms - 1 do
+			local room = rooms[index]
+			-- 구역 클리어: 이 방의 몬스터를 모두 잡았다
+			if room.Combat and not room.Cleared and (counts[index] or 0) == 0 then
+				room.Cleared = true
+				cleared += 1
+				run.Wave = math.min(cleared + 1, run.TotalWaves)
+				giveGold(run, D.WaveClearGold * room.WaveNo)
+				giveXp(run, Config.Xp.WaveClear * room.WaveNo)
+				notifyAll(run, string.format("✅ 구역 %d / %d 클리어!", cleared, run.TotalWaves))
+				if not statPhase(run) then return end
+				run.Phase = "Wave"
+				run.StageText = nil
+			end
+			-- 이벤트 방: 처음 들어서면 시작
+			local kind = eventKinds[index]
+			if kind and not room.Entered and anyoneIn(run, room, 0.85) then
+				room.Entered = true
+				room.Cleared = true
+				if not EVENT_HANDLERS[kind](run, room, math.max(1, cleared)) then return end
+				run.Phase = "Wave"
+				run.StageText = nil
+			end
+		end
+
+		-- 보스방에 들어서면 보스 등장
+		local bossRoom = rooms[#rooms]
+		if not bossSpawned and anyoneIn(run, bossRoom, 0.8) then
+			bossSpawned = true
+			run.Phase = "Boss"
+			run.StageText = nil
+			clearWaypoint(run)
+			notifyAll(run, "⚠ " .. run.BossName .. "이(가) 나타났다!")
+			spawnBoss(run)
+		end
+		if bossSpawned and run.BossDead then
+			finish(run, true)
+			return
+		end
+
+		-- 길잡이: 아직 끝내지 않은 가장 가까운 앞쪽 방 (없으면 보스방)
+		if not bossSpawned then
+			local target = #rooms
+			for index = 2, #rooms - 1 do
+				local room = rooms[index]
+				if not room.Cleared and not room.Entered then
+					target = index
+					break
+				end
+			end
+			if target ~= lastWaypoint then
+				lastWaypoint = target
+				setWaypoint(run, rooms[target].Pos + Vector3.new(0, 4, 0), target == #rooms and "보스방" or "다음 구역")
+			end
+		end
+		task.wait(0.3)
+	end
 end
 
 ------------------------------------------------------------

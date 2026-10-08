@@ -899,8 +899,8 @@ local function refreshBanner()
 		bannerTitle.Text = string.format("%s 입장!", state.TypeName or "던전")
 		bannerSub.Text = string.format("[%s] %d초 후 첫 웨이브 시작", state.DifficultyName or "", state.TimeLeft)
 	elseif state.Phase == "Wave" then
-		bannerTitle.Text = state.TotalWaves == 0 and string.format("🏯 %d층", state.Wave) or string.format("웨이브 %d / %d", state.Wave, state.TotalWaves)
-		bannerSub.Text = string.format("%s · %s · 남은 몬스터 %d", state.TypeName or "", state.DifficultyName or "", state.MonstersLeft)
+		bannerTitle.Text = state.TotalWaves == 0 and string.format("🏯 %d층", state.Wave) or string.format("구역 %d / %d", state.Wave, state.TotalWaves)
+		bannerSub.Text = string.format("%s · %s · 남은 몬스터 %d · 앞으로 쭉!", state.TypeName or "", state.DifficultyName or "", state.MonstersLeft)
 	elseif state.Phase == "StatPhase" then
 		bannerTitle.Text = string.format("특성 선택  %d초", state.TimeLeft)
 		bannerSub.Text = (state.TotalWaves ~= 0 and state.Wave >= state.TotalWaves) and "웨이브 클리어! 다음은 보스전!" or string.format("웨이브 %d 클리어! 특성 카드를 고르세요 (1 / 2 / 3)", state.Wave)

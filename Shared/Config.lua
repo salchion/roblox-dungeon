@@ -249,10 +249,10 @@ local dungeonBase = {
 	VictoryGold = 400,       -- 보스 처치 보너스 골드
 	ReturnDelay = 8,         -- 던전 종료 후 로비 복귀까지 대기(초)
 
-	ArenaRadius = 140,       -- 지형 전체 반지름 (바깥 ~40은 산맥)
+	ArenaRadius = 170,       -- 지형 전체 반지름 (앞으로 쭉 이어지는 긴 길이 들어갈 만큼 넓게)
 	SpawnRadius = 65,        -- 몬스터가 나타나는 거리
 	ArenaOrigin = Vector3.new(0, 1500, 0), -- 던전 아레나는 로비/필드와 겹치지 않게 아주 높은 하늘 위에 만들어짐
-	ArenaSpacing = 500,      -- 파티별 아레나 간격
+	ArenaSpacing = 620,      -- 파티별 아레나 간격
 	MaxArenas = 8,           -- 동시에 열 수 있는 던전 수
 }
 for key, value in pairs(dungeonBase) do -- 위쪽(특성 / 변이 / 이벤트)에서 먼저 만든 Config.Dungeon 에 기본 값을 합친다

@@ -2,7 +2,7 @@
 -- 로그라이크식 던전 지형: 들어갈 때마다 "배치 유형"과 모양이 무작위로 새로 만들어진다.
 --   동굴 군락  : 크고 작은 방이 구불구불 이어진 동굴 (방마다 모양이 다름)
 --   협곡 길    : 좁은 길이 길게 꺾이며 이어지고 양 끝에 넓은 방 (한쪽 끝 = 입구, 반대쪽 끝 = 보스방)
---   허브와 갈래: 가운데 광장에서 여러 갈래 길이 뻗어 각각 방으로 이어짐
+--   (모두 입구에서 보스방까지 "앞으로 쭉" 이어지는 한 줄 구조)
 -- 원리: 거대한 암반 덩어리(Terrain)를 먼저 채우고, 원기둥 모양 빈 공간을 이어 붙여 길과 방을 파낸다.
 --       위가 뚫린 절벽 지형이라 사방이 가려지고, 안에 언덕(올라가기)과 구덩이(떨어지기)가 흩어진다.
 
@@ -35,23 +35,23 @@ local layouts = {}
 -- 동굴 군락: 방 5~6개가 이어진다
 layouts.Cavern = function(rng, limit)
 	local circles = {}
-	local count = rng:NextInteger(6, 8)
+	local count = rng:NextInteger(7, 9)
 	local rooms = {}
 	local angle = rng:NextNumber(0, math.pi * 2)
 	local pos = polar(angle + math.pi, limit * 0.7)
 	local heading = angle + rng:NextNumber(-0.5, 0.5)
 	local previousR, start, boss
 	for i = 1, count do
-		local r = (i == 1 and 34) or (i == count and 46) or rng:NextNumber(24, 40)
+		local r = (i == 1 and 36) or (i == count and 48) or rng:NextNumber(28, 42)
 		if previousR then
 			local step = (r + previousR) * 0.62
-			heading += rng:NextNumber(-1.1, 1.1)
+			heading += rng:NextNumber(-0.6, 0.6) -- 앞으로 쭉 이어지되 완만하게 꺾인다
 			local candidate = pos + polar(heading, step)
 			if candidate.Magnitude > limit then -- 가장자리로 벗어나면 중심 쪽으로 방향 보정
 				heading = math.atan2(-pos.Z, -pos.X) + rng:NextNumber(-0.5, 0.5)
 				candidate = pos + polar(heading, step)
 			end
-			chain(circles, pos, candidate, 11, rng) -- 방 사이 통로
+			chain(circles, pos, candidate, 15, rng) -- 방 사이 통로 (넓게)
 			pos = candidate
 		end
 		table.insert(circles, { Pos = pos, R = r })
@@ -77,18 +77,18 @@ layouts.Canyon = function(rng, limit)
 	for i = 0, steps do
 		local t = i / steps
 		local p = startPos:Lerp(bossPos, t) + side * math.sin(t * math.pi * waves) * amplitude * math.sin(t * math.pi)
-		table.insert(circles, { Pos = p, R = 11 + rng:NextNumber(-1.5, 2.5) })
+		table.insert(circles, { Pos = p, R = 15 + rng:NextNumber(-1.5, 2.5) })
 	end
-	table.insert(circles, { Pos = startPos, R = 34 })
-	table.insert(circles, { Pos = bossPos, R = 46 })
-	local rooms = { { Pos = startPos, R = 34 } }
-	for _, t in ipairs({ 0.2, 0.4, 0.6, 0.8 }) do -- 중간 넓은 방 (전투 / 이벤트가 열리는 곳)
+	table.insert(circles, { Pos = startPos, R = 36 })
+	table.insert(circles, { Pos = bossPos, R = 48 })
+	local rooms = { { Pos = startPos, R = 36 } }
+	for _, t in ipairs({ 0.14, 0.28, 0.42, 0.57, 0.72, 0.86 }) do -- 중간 넓은 방 (전투 / 이벤트가 열리는 곳)
 		local p = startPos:Lerp(bossPos, t) + side * math.sin(t * math.pi * waves) * amplitude * math.sin(t * math.pi)
-		local r = rng:NextNumber(22, 30)
+		local r = rng:NextNumber(26, 34)
 		table.insert(circles, { Pos = p, R = r })
 		table.insert(rooms, { Pos = p, R = r })
 	end
-	table.insert(rooms, { Pos = bossPos, R = 46 })
+	table.insert(rooms, { Pos = bossPos, R = 48 })
 	return { Circles = circles, Rooms = rooms, Start = startPos, Boss = bossPos, Name = "구불구불한 협곡 길" }
 end
 
@@ -121,7 +121,7 @@ layouts.Hub = function(rng, limit)
 	return { Circles = circles, Rooms = rooms, Start = hub, Boss = boss, Name = "허브와 갈래 길" }
 end
 
-local LAYOUT_ORDER = { "Cavern", "Canyon", "Hub" }
+local LAYOUT_ORDER = { "Cavern", "Canyon" } -- 모두 입구에서 보스방까지 한 줄로 이어지는 길
 
 ------------------------------------------------------------
 -- 지형 만들기
