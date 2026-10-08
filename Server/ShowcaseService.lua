@@ -17,11 +17,6 @@ local folder
 local MEDAL = { "🥇", "🥈", "🥉" }
 local MEDAL_COLORS = { Color3.fromRGB(255, 215, 60), Color3.fromRGB(205, 210, 220), Color3.fromRGB(205, 140, 80) }
 
-local function groundAt(position)
-	local result = workspace:Raycast(Vector3.new(position.X, 60, position.Z), Vector3.new(0, -120, 0))
-	return result and result.Position.Y or position.Y
-end
-
 local function makeLabel(parent, offsetY, maxDistance)
 	local part = Instance.new("Part")
 	part.Anchored = true
@@ -48,8 +43,11 @@ local function makeLabel(parent, offsetY, maxDistance)
 	return label
 end
 
--- 공중에 떠 있는 "하늘의 명예의 전당": 광장 북쪽 하늘에 순위별 떠 있는 발판 위에 랭커 아바타가 크게 서 있고
--- 이름 / 전투력 / 무기가 머리 위에 보인다. 어디서든 올려다보면 보인다.
+-- 북쪽 성벽의 "명예의 전당": 던전 게이트들 바로 위, 성벽 안쪽 면에 순위별 벽감(받침대 + 뒷판)이 튀어나와 있고
+-- 랭커 아바타가 광장 쪽을 보고 크게 서 있다. 게이트로 걸어가다 보면 자연스럽게 눈에 들어온다.
+-- 이름 / 전투력 / 무기가 머리 위에 보인다. (성벽 높이는 LobbyService 에서 북쪽만 높게 만든다)
+local WALL_FACE_Z = -127 -- 북쪽 성벽 안쪽 면
+
 function Showcase.Init(_boardCFrame)
 	folder = Instance.new("Folder")
 	folder.Name = "Showcase"
@@ -58,45 +56,65 @@ function Showcase.Init(_boardCFrame)
 	local look = Vector3.new(0, 0, 1) -- 광장(남쪽)을 바라본다
 	-- 가운데가 1등(가장 높음), 좌우가 2등(왼쪽) / 3등(오른쪽)
 	local spots = {
-		Vector3.new(0, 58, 34),
-		Vector3.new(-32, 47, 38),
-		Vector3.new(32, 47, 38),
+		Vector3.new(0, 46, WALL_FACE_Z + 5),
+		Vector3.new(-38, 38, WALL_FACE_Z + 5),
+		Vector3.new(38, 38, WALL_FACE_Z + 5),
 	}
 	for rank = 1, 3 do
 		local spot = spots[rank]
-		local ground = groundAt(spot)
+		local color = MEDAL_COLORS[rank]
+
+		-- 벽에 붙은 뒷판 (어두운 판 + 순위 색 테두리)
+		local backdrop = Instance.new("Part")
+		backdrop.Name = "Backdrop" .. rank
+		backdrop.Anchored = true
+		backdrop.Size = Vector3.new(26, 34, 1)
+		backdrop.Position = Vector3.new(spot.X, spot.Y + 12, WALL_FACE_Z + 0.5)
+		backdrop.Color = Color3.fromRGB(26, 24, 40)
+		backdrop.Material = Enum.Material.Slate
+		backdrop.Parent = folder
+		for _, edge in ipairs({
+			{ Vector3.new(26.6, 0.8, 1.4), Vector3.new(0, 17, 0) },
+			{ Vector3.new(26.6, 0.8, 1.4), Vector3.new(0, -17, 0) },
+			{ Vector3.new(0.8, 34, 1.4), Vector3.new(-13, 0, 0) },
+			{ Vector3.new(0.8, 34, 1.4), Vector3.new(13, 0, 0) },
+		}) do
+			local trim = Instance.new("Part")
+			trim.Anchored = true
+			trim.CanCollide = false
+			trim.Size = edge[1]
+			trim.Position = backdrop.Position + edge[2]
+			trim.Color = color
+			trim.Material = Enum.Material.Neon
+			trim.Parent = folder
+		end
+
+		-- 아바타가 서는 받침대 (벽에서 튀어나온 돌 선반)
 		local platform = Instance.new("Part")
-		platform.Name = "SkyPlatform" .. rank
-		platform.Shape = Enum.PartType.Cylinder
+		platform.Name = "Ledge" .. rank
 		platform.Anchored = true
-		platform.Size = Vector3.new(2, 18, 18)
-		platform.CFrame = CFrame.new(spot) * CFrame.Angles(0, 0, math.rad(90))
-		platform.Color = MEDAL_COLORS[rank]
-		platform.Material = Enum.Material.Neon
+		platform.Size = Vector3.new(18, 2, 10)
+		platform.Position = Vector3.new(spot.X, spot.Y - 1, WALL_FACE_Z + 5)
+		platform.Color = Color3.fromRGB(70, 66, 84)
+		platform.Material = Enum.Material.Granite
 		platform.Parent = folder
+		local lip = Instance.new("Part")
+		lip.Anchored = true
+		lip.CanCollide = false
+		lip.Size = Vector3.new(18.4, 0.4, 0.5)
+		lip.Position = platform.Position + Vector3.new(0, 0.9, 5)
+		lip.Color = color
+		lip.Material = Enum.Material.Neon
+		lip.Parent = folder
 		local glow = Instance.new("PointLight")
-		glow.Range = 40
-		glow.Brightness = 1.6
-		glow.Color = MEDAL_COLORS[rank]
-		glow.Parent = platform
-		-- 발판 아래로 내려오는 빛줄기 (지상에서도 어디에 떠 있는지 보인다)
-		local beamLength = spot.Y - ground
-		local beam = Instance.new("Part")
-		beam.Name = "SkyBeam" .. rank
-		beam.Shape = Enum.PartType.Cylinder
-		beam.Anchored = true
-		beam.CanCollide = false
-		beam.CanQuery = false
-		beam.Size = Vector3.new(beamLength, 5, 5)
-		beam.CFrame = CFrame.new(spot.X, ground + beamLength / 2, spot.Z) * CFrame.Angles(0, 0, math.rad(90))
-		beam.Color = MEDAL_COLORS[rank]
-		beam.Material = Enum.Material.Neon
-		beam.Transparency = 0.86
-		beam.Parent = folder
+		glow.Range = 45
+		glow.Brightness = 2
+		glow.Color = color
+		glow.Parent = backdrop
 
 		slots[rank] = {
-			Platform = platform, Top = spot + Vector3.new(0, 1, 0), Scale = 2.4, Look = look, Key = nil, Model = nil, Weapon = nil,
-			Label = makeLabel(platform, 22, 420),
+			Platform = platform, Top = spot, Scale = 2.8, Look = look, Key = nil, Model = nil, Weapon = nil,
+			Label = makeLabel(platform, 27, 420),
 		}
 		slots[rank].Label.Text = MEDAL[rank] .. " 비어 있음"
 	end
@@ -143,7 +161,7 @@ local function buildSlot(rank, player)
 	if source then
 		local weapon = source:Clone()
 		weapon:ScaleTo(slot.Scale)
-		local weaponSpot = top + Vector3.new(11, 8, 0) -- 아바타 옆 허공에 크게 떠 있다
+		local weaponSpot = top + Vector3.new(0, 9, 0) + Vector3.new(11, 0, 0) -- 아바타 옆에 크게 떠 있다
 		weapon:PivotTo(CFrame.lookAt(weaponSpot, weaponSpot + slot.Look) * CFrame.Angles(0, math.rad(90), 0))
 		for _, descendant in ipairs(weapon:GetDescendants()) do
 			if descendant:IsA("BasePart") then
@@ -180,7 +198,7 @@ local function buildSlot(rank, player)
 		model.Name = "ShowcaseAvatar"
 		model.Parent = folder
 		model:ScaleTo(slot.Scale)
-		local standAt = top + Vector3.new(0, 3.2 * slot.Scale, 0)
+		local standAt = top + Vector3.new(0, 3.2 * slot.Scale, 1)
 		model:PivotTo(CFrame.lookAt(standAt, standAt + slot.Look))
 		slot.Model = model
 	end)

@@ -189,7 +189,8 @@ local function buildPerimeter(folder)
 
 	-- 1) 성벽 (높이 44, 두께 6): 북/남/서는 이어서, 동쪽은 통로를 비워둔다
 	local wallHeight, thickness = 44, 6
-	solid("TownWall", Vector3.new(HALF * 2 + thickness, wallHeight, thickness), Vector3.new(0, wallHeight / 2, -HALF), brick, Enum.Material.Brick)
+	local northHeight = 80 -- 북쪽 성벽은 명예의 전당(랭커 전시)을 걸 수 있게 높다
+	solid("TownWall", Vector3.new(HALF * 2 + thickness, northHeight, thickness), Vector3.new(0, northHeight / 2, -HALF), brick, Enum.Material.Brick)
 	solid("TownWall", Vector3.new(HALF * 2 + thickness, wallHeight, thickness), Vector3.new(0, wallHeight / 2, HALF), brick, Enum.Material.Brick)
 	solid("TownWall", Vector3.new(thickness, wallHeight, HALF * 2 + thickness), Vector3.new(-HALF, wallHeight / 2, 0), brick, Enum.Material.Brick)
 	local eastLength = HALF - GAP

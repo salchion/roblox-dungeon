@@ -691,7 +691,7 @@ end)
 
 makeLabel({
 	Size = UDim2.new(0, 560, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -16),
-	Text = "북쪽 던전 게이트 · 서쪽 허수아비 훈련장 · 동쪽 끝 사냥 필드   |   Shift 달리기 · Q 슬라이딩 · R 자동공격 · I 메뉴 · M 음악",
+	Text = "북쪽 던전 게이트 · 서쪽 허수아비 훈련장 · 동쪽 끝 사냥 필드   |   Shift 달리기 · Q 대시 · R 자동공격 · I 메뉴 · M 음악",
 	TextSize = 14, TextColor3 = Color3.fromRGB(220, 220, 235), TextStrokeTransparency = 0.5,
 }, lobbyFrame)
 
@@ -1076,7 +1076,7 @@ local holding = false
 local nextAttack = 0
 
 ------------------------------------------------------------
--- Shift 달리기 / Q 슬라이딩
+-- Shift 달리기 / Q 대시
 ------------------------------------------------------------
 local sprinting = false
 local sliding = false
@@ -1094,19 +1094,48 @@ player:GetAttributeChangedSignal("GearSpeed"):Connect(applySpeed)
 player:GetAttributeChangedSignal("TrainSpeed"):Connect(applySpeed)
 player:GetAttributeChangedSignal("PetSpeed"):Connect(applySpeed)
 
--- Q: 슬라이딩. 이동 방향(가만히 있으면 바라보는 방향)으로 빠르게 미끄러지다가 점점 느려진다.
--- 발밑에 먼지가 일고 몸에서 꼬리가 남는다.
-local lastSlide = 0
+-- Q: 대시. 이동 방향(가만히 있으면 바라보는 방향)으로 순간 폭발적으로 튀어 나간다. 공중에서도 쓸 수 있고
+-- (공중에선 높이가 유지된 채 수평으로 휙), 최대 DashCharges 번까지 연속으로 쓸 수 있다. 쓴 만큼 시간이 지나면 하나씩 충전.
+-- 연출: 잔상(몸 모양 유령) + 바람 줄기 + 화면 FOV 확 벌어짐.
+local dashCharges = Config.Player.DashCharges
+local dashRefillAt = 0
+
+local function spawnAfterimage(character, color)
+	for _, part in ipairs(character:GetChildren()) do
+		if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" and part.Transparency < 0.9 then
+			local ghost = Instance.new("Part")
+			ghost.Anchored, ghost.CanCollide, ghost.CanQuery, ghost.CanTouch = true, false, false, false
+			ghost.Size = part.Size * 1.05
+			ghost.CFrame = part.CFrame
+			ghost.Material = Enum.Material.Neon
+			ghost.Color = color
+			ghost.Transparency = 0.45
+			ghost.Parent = workspace
+			TweenService:Create(ghost, TweenInfo.new(0.35), { Transparency = 1, Size = part.Size * 0.6 }):Play()
+			game:GetService("Debris"):AddItem(ghost, 0.4)
+		end
+	end
+end
+
 local function slide()
 	if sliding then return end
 	local now = os.clock()
-	if now - lastSlide < Config.Player.DashCooldown then return end
+	local P = Config.Player
+	-- 충전 계산: 마지막 사용 이후 DashCooldown 마다 1개씩 돌아온다
+	if dashCharges < P.DashCharges and now >= dashRefillAt then
+		dashCharges = math.min(P.DashCharges, dashCharges + 1 + math.floor((now - dashRefillAt) / P.DashCooldown))
+		dashRefillAt = now + P.DashCooldown
+	end
+	if dashCharges <= 0 then return end
 
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 	if not root or not humanoid or humanoid.Health <= 0 then return end
-	lastSlide = now
+	if dashCharges == P.DashCharges then
+		dashRefillAt = now + P.DashCooldown
+	end
+	dashCharges -= 1
 	sliding = true
 
 	local direction = humanoid.MoveDirection
@@ -1114,80 +1143,92 @@ local function slide()
 		direction = root.CFrame.LookVector
 	end
 	direction = Vector3.new(direction.X, 0, direction.Z).Unit
+	local airborne = humanoid.FloorMaterial == Enum.Material.Air
 
 	local attachment = Instance.new("Attachment")
 	attachment.Parent = root
 
-	-- 수평으로만 속도를 주고 세로(중력)는 그대로 둔다
+	-- 땅에서는 중력 그대로, 공중에서는 높이를 유지한 채 수평으로 쏜다 (건즈식 공중 대시)
 	local velocity = Instance.new("LinearVelocity")
 	velocity.Attachment0 = attachment
 	velocity.VelocityConstraintMode = Enum.VelocityConstraintMode.Vector
 	velocity.RelativeTo = Enum.ActuatorRelativeTo.World
 	velocity.ForceLimitMode = Enum.ForceLimitMode.PerAxis
-	velocity.MaxAxesForce = Vector3.new(math.huge, 0, math.huge)
-	velocity.VectorVelocity = direction * Config.Player.DashSpeed
+	velocity.MaxAxesForce = Vector3.new(math.huge, airborne and math.huge or 0, math.huge)
+	velocity.VectorVelocity = direction * P.DashSpeed
 	velocity.Parent = root
 
-	-- 먼지 + 꼬리 (내 화면에서만 보임)
-	local dustAttachment = Instance.new("Attachment")
-	dustAttachment.Position = Vector3.new(0, -2.6, 0)
-	dustAttachment.Parent = root
-	local dust = Instance.new("ParticleEmitter")
-	dust.Rate = 90
-	dust.Lifetime = NumberRange.new(0.3, 0.6)
-	dust.Speed = NumberRange.new(2, 6)
-	dust.SpreadAngle = Vector2.new(60, 60)
-	dust.Color = ColorSequence.new(Color3.fromRGB(220, 215, 200))
-	dust.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 1) })
-	dust.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.2), NumberSequenceKeypoint.new(1, 3) })
-	dust.Parent = dustAttachment
-
+	-- 바람 줄기 (몸 뒤로 길게)
 	local trailTop = Instance.new("Attachment")
-	trailTop.Position = Vector3.new(0, 1.4, 0)
+	trailTop.Position = Vector3.new(0, 1.6, 0)
 	trailTop.Parent = root
 	local trailBottom = Instance.new("Attachment")
-	trailBottom.Position = Vector3.new(0, -2.4, 0)
+	trailBottom.Position = Vector3.new(0, -2.6, 0)
 	trailBottom.Parent = root
 	local trail = Instance.new("Trail")
 	trail.Attachment0 = trailTop
 	trail.Attachment1 = trailBottom
-	trail.Lifetime = 0.3
-	trail.LightEmission = 0.6
-	trail.Color = ColorSequence.new(Color3.fromRGB(190, 225, 255))
-	trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 1) })
+	trail.Lifetime = 0.35
+	trail.LightEmission = 1
+	trail.Color = ColorSequence.new(Color3.fromRGB(160, 230, 255), Color3.fromRGB(255, 255, 255))
+	trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(1, 1) })
 	trail.Parent = root
+
+	-- 출발 먼지 / 충격
+	local puff = Instance.new("Attachment")
+	puff.Position = Vector3.new(0, -2.6, 0)
+	puff.Parent = root
+	local dust = Instance.new("ParticleEmitter")
+	dust.Rate = 0
+	dust.Lifetime = NumberRange.new(0.3, 0.6)
+	dust.Speed = NumberRange.new(8, 18)
+	dust.SpreadAngle = Vector2.new(70, 70)
+	dust.Color = ColorSequence.new(Color3.fromRGB(235, 235, 245))
+	dust.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) })
+	dust.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.6), NumberSequenceKeypoint.new(1, 4) })
+	dust.Parent = puff
+	dust:Emit(airborne and 14 or 26)
 
 	local autoRotate = humanoid.AutoRotate
 	humanoid.AutoRotate = false
 	root.CFrame = CFrame.lookAt(root.Position, root.Position + direction)
 
 	local started = os.clock()
+	local lastGhost = 0
 	local connection
 	local function finish()
 		connection:Disconnect()
 		velocity:Destroy()
 		attachment:Destroy()
-		dust.Enabled = false
 		trail.Enabled = false
 		if humanoid.Parent then
 			humanoid.AutoRotate = autoRotate
 		end
+		-- 끝났을 때 속도를 조금 남겨서 뚝 멈추지 않고 이어 달리게 한다
+		if root.Parent then
+			local vertical = root.AssemblyLinearVelocity.Y
+			root.AssemblyLinearVelocity = direction * P.RunSpeed * 1.1 + Vector3.new(0, vertical, 0)
+		end
 		sliding = false
-		task.delay(0.7, function()
-			dustAttachment:Destroy()
+		task.delay(0.6, function()
+			puff:Destroy()
 			trail:Destroy()
 			trailTop:Destroy()
 			trailBottom:Destroy()
 		end)
 	end
 	connection = RunService.Heartbeat:Connect(function()
-		local t = (os.clock() - started) / Config.Player.DashTime
+		local t = (os.clock() - started) / P.DashTime
 		if t >= 1 or not root.Parent or humanoid.Health <= 0 then
 			finish()
 			return
 		end
-		-- 처음엔 빠르게, 갈수록 느려지며 미끄러지는 느낌
-		velocity.VectorVelocity = direction * (Config.Player.DashSpeed * (1 - t) ^ 1.6 + 6)
+		-- 시작은 폭발적으로, 끝은 부드럽게 (ease-out)
+		velocity.VectorVelocity = direction * (P.DashSpeed * (1 - t * t * 0.7))
+		if os.clock() - lastGhost > 0.035 then
+			lastGhost = os.clock()
+			spawnAfterimage(character, airborne and Color3.fromRGB(255, 190, 120) or Color3.fromRGB(120, 210, 255))
+		end
 	end)
 end
 
@@ -1198,7 +1239,7 @@ player.CharacterAdded:Connect(function(character)
 end)
 
 RunService.RenderStepped:Connect(function(dt)
-	local target = sliding and 92 or sprinting and 80 or 70
+	local target = sliding and 108 or sprinting and 80 or 70
 	camera.FieldOfView += (target - camera.FieldOfView) * math.min(1, dt * 8)
 end)
 
@@ -2581,7 +2622,7 @@ end)
 
 ------------------------------------------------------------
 -- 입력
---   마우스: 조준 방향 공격(누르고 있으면 연사) / R: 자동 공격(락온) / Q: 슬라이딩 / Shift: 달리기
+--   마우스: 조준 방향 공격(누르고 있으면 연사) / R: 자동 공격(락온) / Q: 대시 / Shift: 달리기
 --   I: 메뉴 / 던전 안: 숫자키 1 2 3 스탯 투자
 ------------------------------------------------------------
 do
@@ -2977,7 +3018,7 @@ makeLabel({
 	Size = UDim2.new(1, -40, 0, 280), Position = UDim2.new(0, 20, 0, 50), RichText = true, TextSize = 14,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 	Text = table.concat({
-		"<b>이동/공격</b>  WASD 이동 · Shift 달리기 · Q 슬라이딩 · 마우스 클릭(누르고 있으면 연사) 공격",
+		"<b>이동/공격</b>  WASD 이동 · Shift 달리기 · Q 대시 · 마우스 클릭(누르고 있으면 연사) 공격",
 		"<b>자동 공격</b>  R — 가장 가까운 적을 자동으로 조준 (적을 클릭하면 그 대상으로 고정)",
 		"<b>스킬</b>  C 응급 치료 · V 궁극기(적을 공격해 게이지 100%를 채우면 사용)  — 필드/던전에서 사용",
 		"<b>메뉴</b>  I — 가방 · 무기 · 성장 · 스킬 · 펫 · 퀘스트 · 업적 · 랭킹 · 상점",
