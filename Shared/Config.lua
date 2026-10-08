@@ -170,8 +170,8 @@ Config.Skills = {
 		Desc = "조준한 곳에 폭발 (범위 16, 공격력 x3)" },
 	Heal = { Name = "응급 치료", Icon = "💚", Key = "C", KeyCode = "C", Cooldown = 20, Radius = 40, Ratio = 0.35,
 		Desc = "나와 주변 파티원의 체력 35% 회복" },
-	Ult = { Name = "데드아이", Icon = "🎯", Key = "V", KeyCode = "V", Cooldown = 3, Radius = 110, Mult = 8, Cost = 100,
-		Desc = "궁극기: 게이지가 가득 차면 사용! 주변 모든 적에게 하늘에서 빛기둥이 내리꽂힌다 (공격력 x6)" },
+	Ult = { Name = "데드아이", Icon = "🎯", Key = "V", KeyCode = "V", Cooldown = 3, Radius = 110, Mult = 8, Cost = 100, ShotsPerTarget = 3, ShotGap = 0.05,
+		Desc = "궁극기: 게이지가 가득 차면 사용! 주변 적을 하나씩 딱 락인한 뒤 전부에게 연속 난사한다 (최대 12마리, 공격력 x8)" },
 	ChargePerShot = 1.4,
 }
 

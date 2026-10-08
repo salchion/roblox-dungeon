@@ -2012,19 +2012,27 @@ local function buildInventoryTab()
 		return
 	end
 
-	local header = newRow(56)
-	rowText(header, string.format(
+	local header = newRow(92)
+	local headerText = rowText(header, string.format(
 		"🎒 가방 <b>%d / %d</b>      ✨ 에센스 <font color='#9ad7ff'>%d</font>\n<font size='13' color='#bbbbcc'>칸을 누르면 자세히 보여요. 자동 분해를 켜 두면 낮은 등급은 줍자마자 분해돼요.</font>",
 		state.BagCount, state.Capacity, state.Essence
-	), 15, 320)
+	), 15, 24)
+	headerText.Size = UDim2.new(1, -24, 0, 50)
+	headerText.TextYAlignment = Enum.TextYAlignment.Top
 	makeButton({
-		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -310, 0, 14),
+		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -318, 0, 56),
 		Text = "자동 분해: " .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 13, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
 	}, header, function()
 		Remotes.Inventory:FireServer("AutoScrap", (state.AutoScrap + 1) % 4)
 	end)
 	makeButton({
-		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -156, 0, 14),
+		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -474, 0, 56),
+		Text = "⚡ 최고 장비 자동 장착", TextSize = 13, BackgroundColor3 = GREEN,
+	}, header, function()
+		Remotes.Inventory:FireServer("AutoEquip")
+	end)
+	makeButton({
+		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -162, 0, 56),
 		Text = "희귀 이하 일괄 분해", TextSize = 13, BackgroundColor3 = RED,
 	}, header, function()
 		Remotes.Inventory:FireServer("ScrapBelow", 2)

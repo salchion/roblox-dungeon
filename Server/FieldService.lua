@@ -852,6 +852,35 @@ end
 -- 플레이어 공격 (판정은 서버에서). 필드 밖이면 nil
 ------------------------------------------------------------
 -- 범위 피해 (스킬용). 맞은 위치 목록 반환
+function Field.TargetsIn(player, center, radius, limit)
+	if player:GetAttribute("Zone") ~= "Field" then return nil end
+	local list = {}
+	for part in pairs(monsters) do
+		if part.Parent and (part.Position - center).Magnitude <= radius + part.Size.X / 2 then
+			table.insert(list, part)
+		end
+	end
+	table.sort(list, function(a, b) return (a.Position - center).Magnitude < (b.Position - center).Magnitude end)
+	while #list > (limit or 12) do table.remove(list) end
+	return list
+end
+
+function Field.HitPart(player, part, damage)
+	local data = monsters[part]
+	if not data or not part.Parent then return false end
+	data.Health -= damage
+	data.LastHit = os.clock()
+	if data.Contrib then
+		data.Contrib[player] = (data.Contrib[player] or 0) + damage
+	end
+	data.HealthFill.Size = UDim2.new(math.max(data.Health, 0) / data.MaxHealth, 0, 1, 0)
+	Effects.DamageNumber(part.Position, damage, false)
+	if data.Health <= 0 then
+		killMonster(player, part, data)
+	end
+	return true
+end
+
 function Field.AreaDamage(player, center, radius, damage)
 	if player:GetAttribute("Zone") ~= "Field" then return nil end
 	local targets = {}

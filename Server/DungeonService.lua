@@ -795,6 +795,29 @@ function Dungeon.ComputeDamage(player)
 end
 
 -- 범위 피해: center 주변 radius 안의 모든 적에게 damage 를 준다 (스킬용). 맞은 위치 목록 반환
+-- 범위 안의 몬스터(가까운 순) 목록 / 한 마리만 공격 (궁극기 락온 난사용)
+function Dungeon.TargetsIn(player, center, radius, limit)
+	local run = playerRun[player]
+	if not run or run.Destroyed then return nil end
+	local list = {}
+	for part in pairs(run.Monsters) do
+		if part.Parent and (part.Position - center).Magnitude <= radius + part.Size.X / 2 then
+			table.insert(list, part)
+		end
+	end
+	table.sort(list, function(a, b) return (a.Position - center).Magnitude < (b.Position - center).Magnitude end)
+	while #list > (limit or 12) do table.remove(list) end
+	return list
+end
+
+function Dungeon.HitPart(player, part, damage)
+	local run = playerRun[player]
+	local data = run and run.Monsters[part]
+	if not data or not part.Parent then return false end
+	damageMonster(run, player, part, data, damage, false, part.Position)
+	return true
+end
+
 function Dungeon.AreaDamage(player, center, radius, damage)
 	local run = playerRun[player]
 	if not run or run.Destroyed then return nil end

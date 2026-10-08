@@ -242,6 +242,35 @@ function Inventory.Equip(player, id)
 	return true, string.format("[%s] %s 장착!", G.RarityNames[item.Rarity], Inventory.ItemName(item))
 end
 
+-- 부위마다 점수가 가장 높은 아이템을 자동으로 장착한다 (빈 칸 채우기 포함). 바뀐 부위 수를 돌려준다.
+function Inventory.AutoEquipBest(player, emptyOnly)
+	local state = states[player]
+	if not state then return 0 end
+	if player:GetAttribute("Zone") == "Dungeon" then
+		return 0, "던전 안에서는 장비를 바꿀 수 없어요."
+	end
+	local best = {}      -- [slotKey] = { Id, Score }
+	for id, item in pairs(state.Items) do
+		local score = Config.GetItemScore(item)
+		local current = best[item.Slot]
+		if not current or score > current.Score then
+			best[item.Slot] = { Id = id, Score = score }
+		end
+	end
+	local changed = 0
+	for slotKey, pick in pairs(best) do
+		if state.Equipped[slotKey] ~= pick.Id and (not emptyOnly or not state.Equipped[slotKey]) then
+			state.Equipped[slotKey] = pick.Id
+			changed += 1
+		end
+	end
+	if changed > 0 then
+		applyEquipAttributes(player, state)
+		Inventory.Push(player)
+	end
+	return changed
+end
+
 function Inventory.Scrap(player, id)
 	local state = states[player]
 	local item = state and state.Items[id]
@@ -379,6 +408,7 @@ function Inventory.Load(player, saved, legacyGear)
 	end
 
 	states[player] = state
+	Inventory.AutoEquipBest(player, true) -- 접속했을 때 빈 칸이 있고 가방에 맞는 장비가 있으면 자동으로 채운다
 	applyEquipAttributes(player, state)
 	Inventory.Push(player)
 end
@@ -427,6 +457,15 @@ Remotes.Inventory.OnServerEvent:Connect(function(player, action, arg)
 		ok, message = Inventory.Reroll(player, arg)
 	elseif action == "ScrapBelow" and typeof(arg) == "number" then
 		ok, message = Inventory.ScrapBelow(player, arg)
+	elseif action == "AutoEquip" then
+		local changed, reason = Inventory.AutoEquipBest(player)
+		if reason then
+			ok, message = false, reason
+		elseif changed > 0 then
+			ok, message = true, string.format("가장 좋은 장비로 %d부위를 자동 장착했어요!", changed)
+		else
+			ok, message = true, "이미 모든 부위에 가장 좋은 장비를 끼고 있어요."
+		end
 	elseif action == "AutoScrap" and typeof(arg) == "number" then
 		Inventory.SetAutoScrap(player, arg)
 		return

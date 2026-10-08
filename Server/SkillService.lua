@@ -123,61 +123,78 @@ handlers.Heal = function(player, root)
 	return true
 end
 
-handlers.Ult = function(player, root)
+-- 궁극기 데드아이: 범위 안의 적을 하나씩 "딱" 락온(빨간 조준 표시가 줄어들며 고정)한 뒤, 락온한 전원에게 연속으로 난사한다.
+-- 락온하는 동안 무적(ForceField) + 화면이 붉게 변한다 (클라이언트가 DeadeyeActive Attribute 를 보고 연출).
+handlers.Ult = function(player, root, _, character)
 	local cfg = S.Ult
 	if (player:GetAttribute("UltCharge") or 0) < cfg.Cost then
 		return false, "궁극기 게이지가 부족해요! (적을 공격하면 차올라요)"
 	end
-	player:SetAttribute("UltCharge", 0)
-	local origin = root.Position
-	Effects.FloatText(origin + Vector3.new(0, 6, 0), "🎯 데드아이!", Color3.fromRGB(255, 90, 90))
-	Effects.Burst(origin, Color3.fromRGB(255, 220, 120), 60)
-
-	-- 1) 시전 연출: 바닥에서 퍼지는 겹겹의 충격 고리 + 하늘로 솟는 빛 + 화면 흔들림
-	for i = 1, 3 do
-		task.delay((i - 1) * 0.12, function()
-			ring(origin, cfg.Radius * (0.5 + i * 0.25), i == 2 and Color3.fromRGB(255, 220, 120) or Color3.fromRGB(255, 70, 70), 0.9)
-		end)
+	local targets = Dungeon.TargetsIn(player, root.Position, cfg.Radius, 12) or Field.TargetsIn(player, root.Position, cfg.Radius, 12)
+	if not targets or #targets == 0 then
+		return false, "범위 안에 적이 없어요! (게이지는 그대로예요)"
 	end
-	local aura = Instance.new("Part")
-	aura.Anchored, aura.CanCollide, aura.CanQuery, aura.CanTouch = true, false, false, false
-	aura.Shape = Enum.PartType.Cylinder
-	aura.Material = Enum.Material.Neon
-	aura.Color = Color3.fromRGB(255, 120, 90)
-	aura.Transparency = 0.5
-	aura.Size = Vector3.new(160, 6, 6)
-	aura.CFrame = CFrame.new(origin + Vector3.new(0, 80, 0)) * CFrame.Angles(0, 0, math.rad(90))
-	aura.Parent = workspace
-	TweenService:Create(aura, TweenInfo.new(0.7), { Size = Vector3.new(160, 1, 1), Transparency = 1 }):Play()
-	Debris:AddItem(aura, 0.8)
-	player:SetAttribute("ShakeStrength", 0.8)
-	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+	player:SetAttribute("UltCharge", 0)
 
-	-- 2) 잠깐 뜸을 들인 뒤(표식) 모든 적에게 빛기둥이 한꺼번에 내리꽂힌다
-	local mult = cfg.Mult * (1 + U.UltMult * (skillLevel(player, "Ult") - 1))
-	task.delay(0.5, function()
-		if not player.Parent then return end
-		local positions = damageAt(player, origin, cfg.Radius, mult)
-		for _, position in ipairs(positions) do
-			local pillar = Instance.new("Part")
-			pillar.Anchored, pillar.CanCollide, pillar.CanQuery, pillar.CanTouch = true, false, false, false
-			pillar.Shape = Enum.PartType.Cylinder
-			pillar.Material = Enum.Material.Neon
-			pillar.Color = Color3.fromRGB(255, 80, 70)
-			pillar.Transparency = 0.15
-			pillar.Size = Vector3.new(120, 7, 7)
-			pillar.CFrame = CFrame.new(position + Vector3.new(0, 60, 0)) * CFrame.Angles(0, 0, math.rad(90))
-			pillar.Parent = workspace
-			TweenService:Create(pillar, TweenInfo.new(0.6), { Size = Vector3.new(120, 1, 1), Transparency = 1 }):Play()
-			Debris:AddItem(pillar, 0.7)
-			ring(position, 9, Color3.fromRGB(255, 120, 80), 0.5)
-			Effects.Burst(position, Color3.fromRGB(255, 100, 70), 45)
+	local origin = root.Position
+	local totalMult = cfg.Mult * (1 + U.UltMult * (skillLevel(player, "Ult") - 1))
+	local perShot = math.max(1, math.floor(Dungeon.ComputeDamage(player) * totalMult / cfg.ShotsPerTarget))
+	local lockGap = 0.14
+
+	local field = Instance.new("ForceField")
+	field.Visible = false
+	field.Parent = character
+	Debris:AddItem(field, #targets * lockGap + 1.0 + #targets * cfg.ShotsPerTarget * cfg.ShotGap + 0.6)
+	player:SetAttribute("DeadeyeActive", true)
+	Effects.FloatText(origin + Vector3.new(0, 6, 0), "🎯 데드아이!", Color3.fromRGB(255, 90, 90))
+	ring(origin, cfg.Radius * 0.7, Color3.fromRGB(255, 70, 70), 0.9)
+
+	task.spawn(function()
+		-- 1) 락온: 적마다 큰 조준 표시가 쏙 줄어들며 고정된다
+		local markers = {}
+		for index, part in ipairs(targets) do
+			if not part.Parent then continue end
+			local gui = Instance.new("BillboardGui")
+			gui.Size = UDim2.fromOffset(150, 150)
+			gui.AlwaysOnTop = true
+			gui.StudsOffset = Vector3.new(0, part.Size.Y / 2 + 1, 0)
+			gui.Parent = part
+			local label = Instance.new("TextLabel")
+			label.Size = UDim2.fromScale(1, 1)
+			label.BackgroundTransparency = 1
+			label.Text = "◎"
+			label.TextScaled = true
+			label.Font = Enum.Font.GothamBlack
+			label.TextColor3 = Color3.fromRGB(255, 70, 70)
+			label.TextStrokeTransparency = 0.3
+			label.Parent = gui
+			TweenService:Create(gui, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.fromOffset(46, 46) }):Play()
+			Effects.Tracer(root.Position + Vector3.new(0, 1.5, 0), part.Position, Color3.fromRGB(255, 80, 80), 0.18)
+			markers[index] = gui
+			Debris:AddItem(gui, 4)
+			task.wait(lockGap)
 		end
-		player:SetAttribute("ShakeStrength", 1.4)
+		task.wait(0.7) -- 모두 고정된 뒤 숨을 고르는 짧은 정적
+
+		-- 2) 난사: 락온한 적들을 돌아가며 연속으로 쏜다
+		for _ = 1, cfg.ShotsPerTarget do
+			for index, part in ipairs(targets) do
+				if not player.Parent then return end
+				local ok = part.Parent and (Dungeon.HitPart(player, part, perShot) or Field.HitPart(player, part, perShot))
+				if ok then
+					local from = root.Parent and root.Position + Vector3.new(0, 1.5, 0) or origin
+					Effects.Tracer(from, part.Position, Color3.fromRGB(255, 220, 120), 0.12)
+					Effects.Burst(part.Position, Color3.fromRGB(255, 90, 70), 8)
+					local label = markers[index] and markers[index]:FindFirstChildOfClass("TextLabel")
+					if label then label.TextColor3 = Color3.fromRGB(255, 255, 255) end
+				end
+				task.wait(cfg.ShotGap)
+			end
+		end
+		for _, gui in pairs(markers) do gui:Destroy() end
+		player:SetAttribute("DeadeyeActive", false)
+		player:SetAttribute("ShakeStrength", 0.7)
 		player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
-		if #positions == 0 then
-			Effects.FloatText(origin + Vector3.new(0, 4, 0), "근처에 적이 없었어요...", Color3.fromRGB(200, 200, 200))
-		end
 	end)
 	return true
 end
