@@ -44,6 +44,8 @@ local function recompute(player)
 	player:SetAttribute("GearDamage", affix.Damage)
 	player:SetAttribute("GearXp", affix.Xp)
 	player:SetAttribute("GearLuck", affix.Luck)
+	player:SetAttribute("GearHaste", math.min(0.6, affix.Haste))
+	player:SetAttribute("GearShot", math.floor(affix.Shot + 0.5))
 end
 
 ------------------------------------------------------------

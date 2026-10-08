@@ -44,7 +44,16 @@ local function newAffixes(rarity)
 end
 
 function Inventory.NewItem(slotKey, rarity, level)
-	return { Slot = slotKey, Rarity = rarity, Level = level or 0, Affixes = newAffixes(rarity) }
+	local item = { Slot = slotKey, Rarity = rarity, Level = level or 0, Affixes = newAffixes(rarity) }
+	-- 세트 / 유니크 (높은 등급에서만)
+	if rarity == 5 and math.random() < Config.Uniques.Chance then
+		item.Unique = Config.Uniques.Order[math.random(#Config.Uniques.Order)]
+	end
+	local setChance = Config.Sets.SetChance[rarity]
+	if setChance and math.random() < setChance then
+		item.Set = Config.Sets.Order[math.random(#Config.Sets.Order)]
+	end
+	return item
 end
 
 function Inventory.ItemName(item)
@@ -89,14 +98,34 @@ end
 
 -- 장착 중인 아이템들의 랜덤 옵션 합계
 function Inventory.GetTotals(player)
-	local totals = { Health = 0, Crit = 0, Speed = 0, Damage = 0, Xp = 0, Luck = 0 }
+	local totals = { Health = 0, Crit = 0, Speed = 0, Damage = 0, Xp = 0, Luck = 0, Haste = 0, Shot = 0 }
 	local state = states[player]
 	if not state then return totals end
+	local setCounts = {}
 	for _, slot in ipairs(G.Slots) do
 		local item = state.Items[state.Equipped[slot.Key]]
 		if item then
 			for _, affix in ipairs(item.Affixes) do
 				totals[affix.Stat] += affix.Value
+			end
+			if item.Unique and Config.Uniques[item.Unique] then
+				for _, effect in ipairs(Config.Uniques[item.Unique].Effects) do
+					totals[effect.Stat] += effect.Value
+				end
+			end
+			if item.Set then
+				setCounts[item.Set] = (setCounts[item.Set] or 0) + 1
+			end
+		end
+	end
+	-- 세트 보너스: 2부위 / 3부위 (3부위면 2부위 보너스도 함께)
+	for setKey, count in pairs(setCounts) do
+		local def = Config.Sets[setKey]
+		for pieces = 2, 3 do
+			if count >= pieces and def.Bonuses[pieces] then
+				for _, bonus in ipairs(def.Bonuses[pieces]) do
+					totals[bonus.Stat] += bonus.Value
+				end
 			end
 		end
 	end
@@ -115,7 +144,7 @@ local function buildPayload(player, state)
 	local items = {}
 	for id, item in pairs(state.Items) do
 		table.insert(items, {
-			Id = id, Slot = item.Slot, Rarity = item.Rarity, Level = item.Level,
+			Id = id, Slot = item.Slot, Rarity = item.Rarity, Level = item.Level, Set = item.Set, Unique = item.Unique,
 			Affixes = item.Affixes, Score = Config.GetItemScore(item), Equipped = equippedIds[id] == true,
 		})
 	end
@@ -180,7 +209,7 @@ function Inventory.Add(player, item)
 		return "Equipped", item
 	end
 
-	if item.Rarity <= state.AutoScrap then
+	if item.Rarity <= state.AutoScrap and not item.Set and not item.Unique then
 		local essence, gold = giveScrap(player, state, item)
 		Inventory.Push(player)
 		return "Scrapped", item, essence, gold
@@ -312,6 +341,8 @@ function Inventory.Load(player, saved, legacyGear)
 						table.insert(item.Affixes, { Stat = affix.S, Value = tonumber(affix.V) })
 					end
 				end
+				if Config.Sets[entry.Set] and entry.Set ~= "Order" and Config.Sets[entry.Set].Bonuses then item.Set = entry.Set end
+				if Config.Uniques[entry.Unique] and entry.Unique ~= "Order" and Config.Uniques[entry.Unique].Effects then item.Unique = entry.Unique end
 				if item.Id > 0 and not state.Items[item.Id] then
 					state.Items[item.Id] = item
 					state.NextId = math.max(state.NextId, item.Id)
@@ -359,7 +390,7 @@ function Inventory.Serialize(player)
 		for _, affix in ipairs(item.Affixes) do
 			table.insert(affixes, { S = affix.Stat, V = affix.Value })
 		end
-		table.insert(items, { Id = item.Id, Slot = item.Slot, Rarity = item.Rarity, Level = item.Level, Affixes = affixes })
+		table.insert(items, { Id = item.Id, Slot = item.Slot, Rarity = item.Rarity, Level = item.Level, Affixes = affixes, Set = item.Set, Unique = item.Unique })
 	end
 	return { Items = items, Equipped = state.Equipped, Essence = state.Essence, AutoScrap = state.AutoScrap }
 end

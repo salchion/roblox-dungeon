@@ -163,10 +163,11 @@ function Skill.Use(player, skillKey, aimPoint)
 		end
 		return
 	end
-	cooldowns[skillKey] = now + S[skillKey].Cooldown
+	local cooldown = S[skillKey].Cooldown * (1 - math.min(0.6, (player:GetAttribute("GearHaste") or 0) + (player:GetAttribute("SkillHaste") or 0)))
+	cooldowns[skillKey] = now + cooldown
 	Effects.PlaySound(root, Config.Audio.Skill, 0.7, skillKey == "Ult" and 0.8 or 1)
 	Quest.Add(player, "SkillUses", 1)
-	Remotes.Skill:FireClient(player, "Cast", skillKey)
+	Remotes.Skill:FireClient(player, "Cast", skillKey, cooldown)
 end
 
 Remotes.Skill.OnServerEvent:Connect(function(player, action, skillKey, aimPoint)

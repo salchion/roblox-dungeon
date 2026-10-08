@@ -342,7 +342,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint)
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local tier = Config.GetWeaponTier(level)
 	local color = tier.Rainbow and Color3.fromHSV((now * 0.5) % 1, 0.8, 1) or tier.Color
-	local extra = player:GetAttribute("Zone") == "Dungeon" and (player:GetAttribute("PerkMulti") or 0) or 0
+	local extra = (player:GetAttribute("Zone") == "Dungeon" and (player:GetAttribute("PerkMulti") or 0) or 0) + (player:GetAttribute("GearShot") or 0)
 	local shot = table.clone(tier.Shot)
 	shot.Size *= weaponType.ShotScale
 	shot.Speed *= weaponType.SpeedScale

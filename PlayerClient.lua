@@ -1616,9 +1616,13 @@ local function buildInventoryTab()
 	end)
 
 	local equippedScore = {}
+	local setCounts = {}
 	for _, item in ipairs(state.Items) do
 		if item.Equipped then
 			equippedScore[item.Slot] = item.Score
+			if item.Set then
+				setCounts[item.Set] = (setCounts[item.Set] or 0) + 1
+			end
 		end
 	end
 
@@ -1633,15 +1637,33 @@ local function buildInventoryTab()
 		local upgrade = ""
 		if not item.Equipped and equippedScore[item.Slot] and item.Score > equippedScore[item.Slot] then
 			upgrade = string.format("  <font color='#78ff8c'>▲ +%d</font>", item.Score - equippedScore[item.Slot])
+		elseif not item.Equipped and equippedScore[item.Slot] and item.Score < equippedScore[item.Slot] then
+			upgrade = string.format("  <font color='#ff8c8c'>▼ %d</font>", item.Score - equippedScore[item.Slot])
 		end
 
+		local tagText = ""
+		if item.Unique and Config.Uniques[item.Unique] then
+			tagText = string.format("  <font color='#ffb84d'>✦%s</font>", Config.Uniques[item.Unique].Name)
+		end
 		local lines = {
-			string.format("<font color='#%s' size='16'><b>[%s] %s</b></font>  +%d   <font color='#aaaacc' size='12'>%s · 점수 %d</font>%s",
+			string.format("<font color='#%s' size='16'><b>[%s] %s</b></font>" .. tagText .. "  +%d   <font color='#aaaacc' size='12'>%s · 점수 %d</font>%s",
 				hex(color), Config.Gear.RarityNames[item.Rarity], slot.Names[item.Rarity], item.Level, slot.Name, item.Score, upgrade),
 			"<font size='13' color='#ddddee'>기본  " .. Config.FormatGearStat(item.Slot, Config.GetGearStat(item.Slot, item.Rarity, item.Level)) .. "</font>",
 		}
 		for _, affix in ipairs(item.Affixes) do
 			table.insert(lines, "<font size='13' color='#9ad7ff'>◆ " .. Config.FormatAffix(affix.Stat, affix.Value) .. "</font>")
+		end
+		if item.Unique and Config.Uniques[item.Unique] then
+			table.insert(lines, "<font size='13' color='#ffb84d'>✦ 유니크: " .. Config.Uniques[item.Unique].Desc .. "</font>")
+		end
+		if item.Set and Config.Sets[item.Set] then
+			local setDef = Config.Sets[item.Set]
+			local have = setCounts[item.Set] or 0
+			local b2, b3 = {}, {}
+			for _, b in ipairs(setDef.Bonuses[2]) do table.insert(b2, Config.FormatBonus(b.Stat, b.Value)) end
+			for _, b in ipairs(setDef.Bonuses[3]) do table.insert(b3, Config.FormatBonus(b.Stat, b.Value)) end
+			table.insert(lines, string.format("<font size='13' color='#%s'>◈ 세트 [%s] 착용 %d/3 · 2부위: %s · 3부위: %s</font>",
+				hex(setDef.Color), setDef.Name, have, table.concat(b2, ", "), table.concat(b3, ", ")))
 		end
 
 		local row = newRow(math.max(112, 24 + 19 * #lines), item.Equipped and Color3.fromRGB(38, 52, 44) or nil)
@@ -2340,6 +2362,7 @@ end)
 ------------------------------------------------------------
 local skillByKey = {}
 local skillSlots = {}
+local skillCooldownTotal = {}
 local skillReadyAt = {}   -- [skillKey] = 이 시각(os.clock) 이후 사용 가능
 local skillBar = create("Frame", {
 	Size = UDim2.new(0, 4 * 68, 0, 64), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
@@ -2377,9 +2400,10 @@ local function useSkill(skillKey)
 	Remotes.Skill:FireServer("Use", skillKey, getAimPoint(UserInputService:GetMouseLocation()))
 end
 
-Remotes.Skill.OnClientEvent:Connect(function(action, skillKey)
+Remotes.Skill.OnClientEvent:Connect(function(action, skillKey, cooldown)
 	if action == "Cast" and Config.Skills[skillKey] then
-		skillReadyAt[skillKey] = os.clock() + Config.Skills[skillKey].Cooldown
+		skillCooldownTotal[skillKey] = cooldown or Config.Skills[skillKey].Cooldown
+		skillReadyAt[skillKey] = os.clock() + skillCooldownTotal[skillKey]
 	end
 end)
 
@@ -2397,7 +2421,7 @@ RunService.RenderStepped:Connect(function()
 			slot.Timer.Text = full and "" or string.format("%d%%", math.floor(charge))
 			slot.Timer.TextSize = 16
 		elseif remain > 0 then
-			slot.Cover.Size = UDim2.new(1, 0, math.clamp(remain / cfg.Cooldown, 0, 1), 0)
+			slot.Cover.Size = UDim2.new(1, 0, math.clamp(remain / (skillCooldownTotal[skillKey] or cfg.Cooldown), 0, 1), 0)
 			slot.Timer.Text = string.format("%.0f", math.ceil(remain))
 		else
 			slot.Cover.Size = UDim2.new(1, 0, 0, 0)

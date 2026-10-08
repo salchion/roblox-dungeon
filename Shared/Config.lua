@@ -614,6 +614,44 @@ Config.Inventory = {
 	},
 }
 
+-- 세트 장비 (영웅 등급 이상에 붙을 수 있음): 같은 세트 2부위 / 3부위를 끼면 보너스
+-- Bonuses[2], Bonuses[3] = { {Stat, Value}, ... }   Stat: Health Crit Speed Damage Xp Luck + Haste(스킬 쿨타임 감소) Shot(탄 +N발)
+Config.Sets = {
+	Order = { "Hunter", "Guardian", "Gale", "Sage" },
+	SetChance = { [3] = 0.30, [4] = 0.45, [5] = 0.60 }, -- 등급별로 세트가 붙을 확률
+	Hunter = { Name = "사냥꾼의 증표", Color = Color3.fromRGB(255, 170, 70),
+		Bonuses = { [2] = { { Stat = "Damage", Value = 0.08 } }, [3] = { { Stat = "Crit", Value = 0.10 }, { Stat = "Damage", Value = 0.07 } } } },
+	Guardian = { Name = "수호자의 맹세", Color = Color3.fromRGB(110, 190, 255),
+		Bonuses = { [2] = { { Stat = "Health", Value = 120 } }, [3] = { { Stat = "Health", Value = 250 }, { Stat = "Haste", Value = 0.10 } } } },
+	Gale = { Name = "질풍의 바람", Color = Color3.fromRGB(120, 255, 170),
+		Bonuses = { [2] = { { Stat = "Speed", Value = 2 } }, [3] = { { Stat = "Speed", Value = 3 }, { Stat = "Haste", Value = 0.15 } } } },
+	Sage = { Name = "현자의 지혜", Color = Color3.fromRGB(200, 140, 255),
+		Bonuses = { [2] = { { Stat = "Xp", Value = 0.15 } }, [3] = { { Stat = "Xp", Value = 0.25 }, { Stat = "Luck", Value = 0.25 } } } },
+}
+
+-- 유니크 (신화 등급에서만, 일정 확률): 플레이 방식을 바꾸는 고정 효과
+Config.Uniques = {
+	Order = { "Split", "Chrono", "Slayer", "Fortune" },
+	Chance = 0.30,
+	Split = { Name = "분열의 총탄", Desc = "발사하는 탄이 +1발", Effects = { { Stat = "Shot", Value = 1 } } },
+	Chrono = { Name = "시간 왜곡", Desc = "스킬 쿨타임 -25%", Effects = { { Stat = "Haste", Value = 0.25 } } },
+	Slayer = { Name = "학살자", Desc = "공격력 +25%", Effects = { { Stat = "Damage", Value = 0.25 } } },
+	Fortune = { Name = "행운의 별", Desc = "행운 +50%, 경험치 +30%", Effects = { { Stat = "Luck", Value = 0.5 }, { Stat = "Xp", Value = 0.3 } } },
+}
+
+Config.BonusNames = { Health = "최대 체력", Crit = "치명타 확률", Speed = "이동 속도", Damage = "공격력", Xp = "경험치", Luck = "행운", Haste = "스킬 쿨타임 감소", Shot = "탄 수" }
+function Config.FormatBonus(stat, value)
+	local name = Config.BonusNames[stat] or stat
+	if stat == "Health" then
+		return string.format("%s +%d", name, math.floor(value + 0.5))
+	elseif stat == "Speed" then
+		return string.format("%s +%.1f", name, value)
+	elseif stat == "Shot" then
+		return string.format("%s +%d", name, math.floor(value + 0.5))
+	end
+	return string.format("%s +%d%%", name, math.floor(value * 100 + 0.5))
+end
+
 function Config.FormatAffix(stat, value)
 	local def = Config.Inventory.Affixes[stat]
 	if def.Percent then
@@ -633,6 +671,8 @@ function Config.GetItemScore(item)
 			score += affix.Value / def.Base * 12
 		end
 	end
+	if item.Unique then score += 80 end
+	if item.Set then score += 30 end
 	return math.floor(score)
 end
 
