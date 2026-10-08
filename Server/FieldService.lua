@@ -130,23 +130,27 @@ local function zoneOfX(x)
 	return math.clamp(math.floor((x - F.StartX) / F.ZoneLength) + 1, 1, F.ZoneCount)
 end
 
--- 구역마다 진짜 "계단"으로 1층 → 2층을 올라갔다 내려온다 (구역 입구 / 캠프는 항상 0층). 몬스터 / 전리품 높이도 이 함수를 쓴다.
--- 평지(층) → 계단(한 칸 STEP_RISE 높이, STEP_DEPTH 깊이, 폭 전체) → 평지 ...
-local STEP_RISE, STEP_DEPTH = 1.2, 2.6
-local STAIRS = { { At = 130, Rise = 8 }, { At = 320, Rise = 8 }, { At = 490, Rise = -8 }, { At = 620, Rise = -8 } }
-local FLOOR_SEGMENTS = {}   -- { A = 구역 안 x 시작, B = 끝, H = 높이, Kind = "Floor" | "Step" }
+-- 구역마다 "좁은 계단통"으로 1층 → 2층 → 3층을 높이 올라갔다 내려온다 (구역 입구 / 캠프는 항상 0층).
+-- 층 사이는 폭 전체가 높은 절벽 벽이고, 그 한가운데에 폭 STAIR_LANE 짜리 좁은 계단 통로만 뚫려 있다 (아파트 계단 느낌).
+-- 계단통 안은 몬스터가 못 들어오고 총도 못 쏜다 (안전한 이동 구간). 몬스터 / 전리품 높이는 floorAt 이 층 높이를 돌려준다.
+local STEP_RISE, STEP_DEPTH, STAIR_LANE = 1.2, 2.6, 14
+local STAIRS = { { At = 120, Rise = 24 }, { At = 320, Rise = 24 }, { At = 500, Rise = -24 }, { At = 600, Rise = -24 } }
+local FLOOR_SEGMENTS = {}   -- { A = 구역 안 x 시작, B = 끝, H = 높이, Kind = "Floor" | "Step", Stair = 계단 정보 }
 do
 	local height, cursor = 0, 0
 	for _, stair in ipairs(STAIRS) do
 		table.insert(FLOOR_SEGMENTS, { A = cursor, B = stair.At, H = height, Kind = "Floor" })
 		local count = math.ceil(math.abs(stair.Rise) / STEP_RISE)
+		stair.Count = count
+		stair.Run = count * STEP_DEPTH
+		stair.From = height
+		stair.Hi = math.max(height, height + stair.Rise)
 		for i = 1, count do
 			local a = stair.At + (i - 1) * STEP_DEPTH
-			table.insert(FLOOR_SEGMENTS, { A = a, B = a + STEP_DEPTH, H = height + stair.Rise * i / count, Kind = "Step" })
+			table.insert(FLOOR_SEGMENTS, { A = a, B = a + STEP_DEPTH, H = height + stair.Rise * i / count, Kind = "Step", Stair = stair, First = i == 1 })
 		end
 		height += stair.Rise
-		cursor = stair.At + count * STEP_DEPTH
-		stair.Run = count * STEP_DEPTH
+		cursor = stair.At + stair.Run
 		stair.Top = height
 	end
 	table.insert(FLOOR_SEGMENTS, { A = cursor, B = F.ZoneLength, H = height, Kind = "Floor" })
@@ -155,7 +159,7 @@ local function floorAt(x)
 	local offset = (x - F.StartX) % F.ZoneLength
 	for _, segment in ipairs(FLOOR_SEGMENTS) do
 		if offset < segment.B then
-			return TOP + segment.H
+			return TOP + (segment.Kind == "Step" and segment.Stair.Hi or segment.H)
 		end
 	end
 	return TOP
@@ -247,8 +251,8 @@ local function buildCanyon(rng, totalLength, half)
 	-- 뒤에 깔아두는 끊김 없는 절벽 벽 (절벽 덩어리 사이로 바깥이 비치지 않게)
 	for _, side in ipairs({ -1, 1 }) do
 		makePart({
-			Name = "CanyonBack", Size = Vector3.new(totalLength + 120, 170, 8),
-			Position = Vector3.new(F.StartX + totalLength / 2, 85, side * (half + 34)),
+			Name = "CanyonBack", Size = Vector3.new(totalLength + 120, 240, 8),
+			Position = Vector3.new(F.StartX + totalLength / 2, 120, side * (half + 34)),
 			Color = Color3.fromRGB(55, 50, 58), Material = Enum.Material.Slate,
 		}, worldFolder)
 
@@ -257,7 +261,7 @@ local function buildCanyon(rng, totalLength, half)
 		while x < endX + 20 do
 			local zone = zoneOfX(math.clamp(x, F.StartX, endX - 1))
 			local width = rng:NextNumber(34, 52)
-			local height = rng:NextNumber(70, 135)
+			local height = rng:NextNumber(120, 200)
 			local depth = rng:NextNumber(18, 30)
 			local inner = half + rng:NextNumber(-4, 4)
 			makePart({
@@ -272,8 +276,8 @@ local function buildCanyon(rng, totalLength, half)
 
 	-- 필드 끝 / 로비에서 들어오는 통로 양옆도 절벽으로 막는다
 	makePart({
-		Name = "CanyonEnd", Size = Vector3.new(40, 170, F.Width + 90),
-		Position = Vector3.new(endX + 20, 85, 0), Color = Color3.fromRGB(35, 30, 45), Material = Enum.Material.Slate,
+		Name = "CanyonEnd", Size = Vector3.new(40, 240, F.Width + 90),
+		Position = Vector3.new(endX + 20, 120, 0), Color = Color3.fromRGB(35, 30, 45), Material = Enum.Material.Slate,
 	}, worldFolder)
 	for _, side in ipairs({ -1, 1 }) do
 		makePart({
@@ -513,27 +517,61 @@ local function buildWorld()
 
 	for zone = 1, F.ZoneCount do
 		local x0 = zoneBounds(zone)
-		-- 바닥: 평지(층) 블록 + 계단 한 칸 한 칸 (폭 전체). 높은 층일수록 살짝 밝아져서 "층"이 구분된다
+		-- 바닥: 평지(층) 블록 + 좁은 계단통(양옆은 높은 벽, 가운데 폭 14 계단). 높은 층일수록 살짝 밝아져서 "층"이 구분된다
 		for _, segment in ipairs(FLOOR_SEGMENTS) do
 			local top = TOP + segment.H
-			local tint = F.ZoneColors[zone]:Lerp(Color3.new(1, 1, 1), 0.08 * segment.H / 8)
-			if segment.Kind == "Step" then
-				tint = tint:Lerp(Color3.fromRGB(215, 205, 190), 0.35) -- 계단은 돌 색
+			local tint = F.ZoneColors[zone]:Lerp(Color3.new(1, 1, 1), 0.08 * segment.H / 24)
+			if segment.Kind == "Floor" then
+				makePart({
+					Name = "Ground" .. zone, Size = Vector3.new(segment.B - segment.A, top + 1.95, F.Width),
+					Position = Vector3.new(x0 + (segment.A + segment.B) / 2, (top - 1.95) / 2, 0), Color = tint, Material = F.ZoneMaterials[zone],
+				}, worldFolder)
+			else
+				local stair = segment.Stair
+				-- 계단 한 칸 (좁은 통로)
+				makePart({
+					Name = "Stair" .. zone, Size = Vector3.new(STEP_DEPTH, top + 1.95, STAIR_LANE),
+					Position = Vector3.new(x0 + (segment.A + segment.B) / 2, (top - 1.95) / 2, 0),
+					Color = Color3.fromRGB(205, 195, 180), Material = Enum.Material.Cobblestone,
+				}, worldFolder)
+				if segment.First then
+					-- 계단통 양옆 벽: 높은 쪽 층 높이까지 솟은 석벽 (폭 전체에서 통로만 비워 둔다)
+					local sideWidth = (F.Width - STAIR_LANE) / 2
+					for _, side in ipairs({ -1, 1 }) do
+						makePart({
+							Name = "StairWall" .. zone, Size = Vector3.new(stair.Run, TOP + stair.Hi + 1.95, sideWidth),
+							Position = Vector3.new(x0 + stair.At + stair.Run / 2, (TOP + stair.Hi - 1.95) / 2, side * (STAIR_LANE / 2 + sideWidth / 2)),
+							Color = F.ZoneColors[zone]:Lerp(Color3.fromRGB(120, 112, 105), 0.6), Material = Enum.Material.Brick,
+						}, worldFolder)
+					end
+					-- 몬스터 / 탄이 계단통 안으로 들어가지 못하게 하는 막힌 구간 + 몬스터 소환 회피
+					table.insert(baffleRects, { X0 = x0 + stair.At, X1 = x0 + stair.At + stair.Run, Z0 = -half, Z1 = half, Solid = true })
+					for dx = 0, stair.Run, 14 do
+						table.insert(baffleXs, x0 + stair.At + dx)
+					end
+				end
+				-- 계단통 안을 밝히는 등불 (5칸마다 한쪽 벽에)
+				if (math.floor((segment.A - segment.Stair.At) / STEP_DEPTH) % 5) == 2 then
+					local side = ((segment.A // 13) % 2 == 0) and 1 or -1
+					local lamp = makePart({
+						Name = "StairLamp", Size = Vector3.new(0.8, 1.6, 0.8), Position = Vector3.new(x0 + (segment.A + segment.B) / 2, top + 5.5, side * (STAIR_LANE / 2 - 0.6)),
+						Color = Color3.fromRGB(255, 215, 140), Material = Enum.Material.Neon, CanCollide = false,
+					}, worldFolder)
+					local glow = Instance.new("PointLight")
+					glow.Range = 22
+					glow.Brightness = 1.4
+					glow.Color = Color3.fromRGB(255, 215, 140)
+					glow.Parent = lamp
+				end
 			end
-			makePart({
-				Name = segment.Kind == "Step" and ("Stair" .. zone) or ("Ground" .. zone),
-				Size = Vector3.new(segment.B - segment.A, top + 1.95, F.Width),
-				Position = Vector3.new(x0 + (segment.A + segment.B) / 2, (top - 1.95) / 2, 0),
-				Color = tint, Material = segment.Kind == "Step" and Enum.Material.Cobblestone or F.ZoneMaterials[zone],
-			}, worldFolder)
 		end
-		-- 층 표지판: 계단 꼭대기마다 "▲ 2층 / ▲ 3층" (내려가는 쪽은 "▼ 1층")
+		-- 층 표지판: 계단 입구마다 "▲ 2층 / ▲ 3층 계단" (내려가는 쪽은 "▼ 1층 계단")
 		do
 			local level = 1
 			for _, stair in ipairs(STAIRS) do
 				level += stair.Rise > 0 and 1 or -1
-				local signPart = makePart({ Name = "FloorSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(x0 + stair.At + stair.Run + 8, TOP + stair.Top + 9, 0), Transparency = 1, CanCollide = false, CanQuery = false }, worldFolder)
-				makeSign(signPart, string.format("%s %d층", stair.Rise > 0 and "▲" or "▼", level), stair.Rise > 0 and Color3.fromRGB(190, 255, 190) or Color3.fromRGB(255, 220, 160), 0)
+				local signPart = makePart({ Name = "FloorSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(x0 + stair.At - 6, TOP + stair.From + 11, 0), Transparency = 1, CanCollide = false, CanQuery = false }, worldFolder)
+				makeSign(signPart, string.format("%s %d층 계단 (%d 높이)", stair.Rise > 0 and "▲" or "▼", level, math.abs(stair.Rise)), stair.Rise > 0 and Color3.fromRGB(190, 255, 190) or Color3.fromRGB(255, 220, 160), 0)
 			end
 		end
 		buildGateway(zone, x0)
@@ -582,9 +620,9 @@ local function buildWorld()
 		makePart({ Name = "Wall", Size = size, Position = position, Transparency = 1 }, worldFolder)
 	end
 	local centerX = F.StartX + totalLength / 2
-	wall(Vector3.new(totalLength + 4, 50, 2), Vector3.new(centerX, 25, half + 1))
-	wall(Vector3.new(totalLength + 4, 50, 2), Vector3.new(centerX, 25, -half - 1))
-	wall(Vector3.new(2, 50, F.Width), Vector3.new(F.StartX + totalLength + 1, 25, 0))
+	wall(Vector3.new(totalLength + 4, 240, 2), Vector3.new(centerX, 120, half + 1))
+	wall(Vector3.new(totalLength + 4, 240, 2), Vector3.new(centerX, 120, -half - 1))
+	wall(Vector3.new(2, 240, F.Width), Vector3.new(F.StartX + totalLength + 1, 120, 0))
 	wall(Vector3.new(2, 50, half - 20), Vector3.new(F.StartX - 1, 25, (half + 20) / 2))
 	wall(Vector3.new(2, 50, half - 20), Vector3.new(F.StartX - 1, 25, -(half + 20) / 2))
 	wall(Vector3.new(26, 50, 2), Vector3.new(F.StartX - 14, 25, 21))
@@ -1030,7 +1068,7 @@ local fieldCtx = {
 		if clear then return nil end
 		local half = F.Width / 2
 		for _, rect in ipairs(baffleRects) do
-			if blockedAt.X >= rect.X0 - 6 and blockedAt.X <= rect.X1 + 6 then
+			if not rect.Solid and blockedAt.X >= rect.X0 - 6 and blockedAt.X <= rect.X1 + 6 then
 				local gapZ
 				if rect.Z1 < half - 1 then
 					gapZ = (rect.Z1 + half) / 2 -- 벽 위쪽 끝에 틈

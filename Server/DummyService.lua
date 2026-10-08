@@ -1,7 +1,7 @@
 -- DummyService (ServerScriptService > Modules 안의 ModuleScript, 이름: DummyService)
 -- 로비 허수아비 훈련장. 허수아비를 공격할 때마다 골드가 자동으로 들어온다 (줍기 없음).
 -- 1번(x1)부터 10번(x30)까지 한 줄로 나열되고, 배수가 높을수록 크고 화려하고 강해 보인다.
--- 허수아비마다 배율(Multiplier)과 필요 캐릭터 레벨(RequiredLevel)이 다르다 -> Config.Dummy.List
+-- 더미마다 이름 / 배율(Multiplier) / 방어력(RequiredPower: 필요 전투력)이 다르다 -> Config.Dummy.List
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -136,32 +136,43 @@ local function buildDummy(index, info, position)
 		}, model)
 	end
 
-	-- 이름표: 배율 + 필요 캐릭터 레벨
+	-- 보스 더미: 어깨 가시 + 붉은 눈 + 떠 있는 파편으로 "진짜 보스 같은" 위압감
+	if info.Boss then
+		for i = -2, 2 do
+			newPart({ Name = "Spike", Size = V(0.4, 1.8, 0.4), CFrame = CFrame.new(O(i * 1.1, 6.7, -1.1)) * CFrame.Angles(math.rad(-20), 0, 0), Color = Color3.fromRGB(235, 225, 200), Material = Enum.Material.SmoothPlastic }, model)
+		end
+		for i = 1, 5 do
+			local a = i / 5 * math.pi * 2
+			newPart({ Name = "Shard", Size = V(0.5, 1.2, 0.5), CFrame = CFrame.new(O(math.cos(a) * 4, 6 + math.sin(a * 2), math.sin(a) * 4)) * CFrame.Angles(a, a, 0), Color = Color3.fromRGB(255, 60, 70), Material = Enum.Material.Neon, CanCollide = false }, model)
+		end
+	end
+
+	-- 이름표: 이름 + 배율 / 방어력(필요 전투력)
 	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.new(0, 150, 0, 46)
+	gui.Size = UDim2.new(0, 190, 0, 52)
 	gui.StudsOffset = Vector3.new(0, 3.5 + 2.2 * s, 0)
-	gui.MaxDistance = 55 -- 가까이 가야 배수/필요 레벨이 보인다 (작은 화면에서 글자 겹침 방지)
+	gui.MaxDistance = 55 -- 가까이 가야 이름 / 방어력이 보인다 (작은 화면에서 글자 겹침 방지)
 	gui.Parent = head
 
 	local title = Instance.new("TextLabel")
-	title.Size = UDim2.new(1, 0, 0.58, 0)
+	title.Size = UDim2.new(1, 0, 0.55, 0)
 	title.BackgroundTransparency = 1
 	title.Font = Enum.Font.GothamBlack
 	title.TextScaled = true
 	title.TextStrokeTransparency = 0
 	title.TextColor3 = style.Color:Lerp(Color3.new(1, 1, 1), 0.35)
-	title.Text = string.format("x%s 허수아비", formatMultiplier(info.Multiplier))
+	title.Text = info.Name
 	title.Parent = gui
 
 	local sub = Instance.new("TextLabel")
-	sub.Size = UDim2.new(1, 0, 0.42, 0)
-	sub.Position = UDim2.new(0, 0, 0.58, 0)
+	sub.Size = UDim2.new(1, 0, 0.45, 0)
+	sub.Position = UDim2.new(0, 0, 0.55, 0)
 	sub.BackgroundTransparency = 1
-	sub.Font = Enum.Font.GothamMedium
+	sub.Font = Enum.Font.GothamBold
 	sub.TextScaled = true
 	sub.TextStrokeTransparency = 0.3
 	sub.TextColor3 = Color3.fromRGB(230, 230, 240)
-	sub.Text = info.RequiredLevel > 1 and string.format("Lv.%d 이상", info.RequiredLevel) or "제한 없음"
+	sub.Text = info.RequiredPower > 0 and string.format("🛡 전투력 %s 필요 · 골드 x%s", tostring(info.RequiredPower), formatMultiplier(info.Multiplier)) or string.format("골드 x%s", formatMultiplier(info.Multiplier))
 	sub.Parent = gui
 
 	model.Parent = folder
@@ -172,7 +183,8 @@ local function buildDummy(index, info, position)
 	end
 	dummies[model] = {
 		Multiplier = info.Multiplier,
-		RequiredLevel = info.RequiredLevel,
+		RequiredPower = info.RequiredPower,
+		Name = info.Name,
 		FlashParts = flashParts,
 		BaseColors = baseColors,
 		Flashing = false,
@@ -245,9 +257,11 @@ function Dummy.Shoot(player, origin, direction)
 
 	flash(data)
 
-	local charLevel = player:GetAttribute("Level") or 1
-	if charLevel < data.RequiredLevel then
-		Effects.FloatText(result.Position, string.format("🔒 Lv.%d 필요", data.RequiredLevel), Color3.fromRGB(190, 190, 200))
+	-- 방어력: 내 전투력이 모자라면 공격이 튕겨 나간다 (골드 없음)
+	local power = player:GetAttribute("Power") or 0
+	if power < data.RequiredPower then
+		Effects.FloatText(result.Position, string.format("🛡 튕겨 나가요! 전투력 %d 필요 (지금 %d)", data.RequiredPower, power), Color3.fromRGB(255, 130, 120))
+		Effects.Burst(result.Position, Color3.fromRGB(190, 195, 210), 6)
 		return result.Position
 	end
 

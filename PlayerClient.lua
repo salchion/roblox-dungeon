@@ -1651,7 +1651,7 @@ local function targetName(target)
 	if target.Kind == "Dummy" then
 		local index = tonumber(string.sub(target.Instance.Name, 6))
 		local info = index and Config.Dummy.List[index]
-		return info and string.format("x%s 허수아비", tostring(info.Multiplier)) or "허수아비"
+		return info and info.Name or "허수아비"
 	end
 	return "몬스터"
 end
@@ -1674,11 +1674,11 @@ local function weaponRange()
 	return Config.GetPlayerWeapon(player).Range
 end
 
--- 이 허수아비를 지금 캐릭터 레벨로 때려서 골드를 받을 수 있는가?
+-- 이 더미를 지금 내 전투력으로 때려서 골드를 받을 수 있는가? (방어력보다 전투력이 낮으면 튕겨 나간다)
 local function dummyUsable(model)
 	local index = tonumber(string.sub(model.Name, 6))
 	local info = index and Config.Dummy.List[index]
-	return info ~= nil and (player:GetAttribute("Level") or 1) >= info.RequiredLevel
+	return info ~= nil and (player:GetAttribute("Power") or 0) >= info.RequiredPower
 end
 
 -- 맞은 Instance 가 락온할 수 있는 대상(허수아비 / 필드 몬스터 / 던전 몬스터)이면 대상 정보를 만든다
@@ -1826,7 +1826,7 @@ local function attack(screenPosition)
 		local target = resolveTarget(instance)
 		if target then
 			if target.Kind == "Dummy" and not dummyUsable(target.Instance) then
-				toast("🔒 이 허수아비는 캐릭터 레벨이 더 필요해요")
+				toast("🛡 이 더미는 방어력이 높아서 지금 전투력으로는 공격이 튕겨 나가요")
 			else
 				lockTarget = target
 				updateLockVisual()
@@ -3506,6 +3506,27 @@ function useSkill(skillKey)
 		return
 	end
 	if os.clock() < (skillReadyAt[skillKey] or 0) then return end
+	if skillKey == "Ult" then -- 범위 안에 적이 없으면 서버가 거절하니, 미리 눈에 띄게 알려 준다
+		if (player:GetAttribute("UltCharge") or 0) < Config.Skills.Ult.Cost then
+			toast("🎯 궁극기 게이지가 아직 부족해요! (적을 공격하면 차올라요)")
+			return
+		end
+		local character = player.Character
+		local root = character and character:FindFirstChild("HumanoidRootPart")
+		local found = false
+		if root then
+			for _, monster in ipairs(game:GetService("CollectionService"):GetTagged("Monster")) do
+				if monster:IsA("BasePart") and (monster.Position - root.Position).Magnitude <= Config.Skills.Ult.Radius + 5 then
+					found = true
+					break
+				end
+			end
+		end
+		if not found then
+			toast("🎯 데드아이: 반경 " .. Config.Skills.Ult.Radius .. " 안에 적이 있어야 락온할 수 있어요! (캠프 근처는 안전지대라 적이 없어요)")
+			return
+		end
+	end
 	Remotes.Skill:FireServer("Use", skillKey, getAimPoint(UserInputService:GetMouseLocation()))
 end
 
@@ -3735,7 +3756,7 @@ makeLabel({
 		"<b>음악</b>  M — 켜기/끄기",
 		"",
 		"<b>🎯 게임 흐름</b>",
-		"1. 로비 허수아비로 골드를 벌어 무기를 강화하세요 (허수아비는 캐릭터 레벨로 열려요)",
+		"1. 로비 허수아비로 골드를 벌어 무기를 강화하세요 (훈련 더미는 방어력이 있어서 전투력이 모자라면 튕겨 나가요)",
 		"2. 동쪽 <b>필드</b>에서 몬스터를 잡아 장비를 얻고 레벨을 올리세요 (황금 고블린을 놓치지 마세요!)",
 		"3. 북쪽 <b>던전</b>은 열쇠가 필요해요. 웨이브마다 특성 카드를 고르고, 보스 상자에서 장비를 얻어요",
 		"4. 성장 탭에서 훈련을 걸어두고, 장비 세트/유니크를 모아 전투력을 키우세요",
