@@ -237,6 +237,27 @@
       "name": "ShowcaseService",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "Shared/ClientKit.lua",
+      "parent": "ReplicatedStorage",
+      "name": "ClientKit",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/FireDemo.lua",
+      "parent": "ReplicatedStorage",
+      "name": "FireDemo",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "PlayerFX.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "PlayerFX",
+      "class": "LocalScript",
+      "overwrite": true
     }
   ]
 }

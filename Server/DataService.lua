@@ -53,6 +53,24 @@ local function parseWeapons(saved)
 	return result
 end
 
+-- 무기 단계 이전: 저장할 때 "몇 번째 무기 / 그 무기의 몇 번째 단계 / 그 무기의 총 단계 수"를 같이 적어 둔다.
+-- 나중에 무기 단계 수(Config.Weapon.StepsFor)를 바꿔서 숫자가 어긋나면, 같은 무기를 유지하고 단계는 비율로 옮긴다.
+local function migrateWeaponLevel(saved)
+	local level = math.max(tonumber(saved.WeaponLevel) or 0, parseWeapons(saved).Best)
+	local tierIndex = tonumber(saved.WeaponTier)
+	local tier = tierIndex and Config.Weapon.Tiers[tierIndex]
+	if tier then
+		local inRange = level >= tier.MinLevel and level < tier.MinLevel + tier.Steps
+		local savedSteps = tonumber(saved.WeaponSteps)
+		if not inRange or (savedSteps and savedSteps ~= tier.Steps) then
+			local step = math.max(0, tonumber(saved.WeaponStep) or 0)
+			local fraction = step / math.max(1, savedSteps or tier.Steps)
+			level = tier.MinLevel + math.min(tier.Steps - 1, math.floor(fraction * tier.Steps + 0.0001))
+		end
+	end
+	return math.clamp(math.floor(level), 0, Config.Weapon.MaxLevel)
+end
+
 function Data.Load(player)
 	local defaults = {
 		Gold = Config.StartGold, WeaponLevel = 0, Tickets = 0, MaxZone = 0, ClearedZone = 0, Gear = {}, Level = 1, XP = 0,
@@ -70,7 +88,7 @@ function Data.Load(player)
 			if typeof(saved) == "table" then
 				return {
 					Gold = tonumber(saved.Gold) or defaults.Gold,
-					WeaponLevel = math.clamp(math.max(tonumber(saved.WeaponLevel) or 0, parseWeapons(saved).Best), 0, Config.Weapon.MaxLevel),
+					WeaponLevel = migrateWeaponLevel(saved),
 					Tickets = math.max(0, math.floor(tonumber(saved.Tickets) or 0)),
 					MaxZone = math.clamp(math.floor(tonumber(saved.MaxZone) or 0), 0, Config.Field.ZoneCount),
 					-- 관문을 연 구역 수. 예전 저장(관문 도입 전)은 도달했던 구역까지 이미 열린 것으로 본다
@@ -102,9 +120,14 @@ function Data.Save(player)
 	if not store then return true end -- DataStore 를 못 쓰는 환경(Studio API 꺼짐)에서는 저장 없이 진행
 	if not loaded[player] then return false end
 	local weapons = { Type = player:GetAttribute("WeaponType") or "Pistol", Unlocked = {}, Levels = {} } -- (예전 호환용: 지금은 WeaponLevel 하나만 쓴다)
+	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
+	local weaponTier = Config.GetWeaponTier(weaponLevel)
 	local payload = {
 		Gold = player:GetAttribute("Gold") or 0,
-		WeaponLevel = player:GetAttribute("WeaponLevel") or 0,
+		WeaponLevel = weaponLevel,
+		WeaponTier = weaponTier.Index,                       -- 몇 번째 무기
+		WeaponStep = weaponLevel - weaponTier.MinLevel,      -- 그 무기 안의 단계
+		WeaponSteps = weaponTier.Steps,                      -- 그 무기의 총 단계 수 (나중에 바뀌어도 비율로 옮기려고)
 		Tickets = player:GetAttribute("Tickets") or 0,
 		MaxZone = player:GetAttribute("MaxZone") or 0,
 		ClearedZone = player:GetAttribute("ClearedZone") or 0,
