@@ -85,25 +85,18 @@ end
 local function pickGoal()
 	local candidates = {}
 	local gold = player:GetAttribute("Gold") or 0
-	local typeKey = player:GetAttribute("WeaponType") or "Pistol"
 	local level = player:GetAttribute("WeaponLevel") or 0
 
 	-- 무기 진화
 	if level < Config.Weapon.MaxLevel then
-		local nextTier
-		for _, tier in ipairs(Config.Weapon.Tiers) do
-			if tier.MinLevel > level then
-				nextTier = tier
-				break
-			end
-		end
+		local nextTier = Config.Weapon.Tiers[Config.GetWeaponTierIndex(level) + 1]
 		if nextTier then
 			local cost = 0
 			for l = level, nextTier.MinLevel - 1 do
 				cost += Config.GetEnhanceCost(l)
 			end
 			table.insert(candidates, {
-				Text = string.format("🔫 다음 진화 <font color='#ffd966'>%s</font> (+%d)\n강화 비용 %s G · 보유 %s G", nextTier.Names[typeKey], nextTier.MinLevel, comma(cost), comma(gold)),
+				Text = string.format("🔫 다음 무기 <font color='#ffd966'>%s</font> (%d/%d)\n강화 비용 %s G · 보유 %s G", nextTier.Name, nextTier.Index, Config.Weapon.WeaponCount, comma(cost), comma(gold)),
 				Ratio = math.min(1, gold / cost), Priority = 1,
 			})
 		end

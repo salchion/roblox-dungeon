@@ -164,8 +164,7 @@ end
 
 local function weaponText(level)
 	local tier = Config.GetWeaponTier(level)
-	local typeKey = player:GetAttribute("WeaponType") or "Pistol"
-	return string.format("+%d %s", level, Config.GetWeaponName(typeKey, level)), tier.Color
+	return Config.FormatWeapon(level), tier.Color
 end
 
 ------------------------------------------------------------
@@ -218,7 +217,7 @@ local function makePreview(parent, position, caption)
 			shown = nil
 		end
 		local previews = ReplicatedStorage:FindFirstChild("WeaponPreviews")
-		local source = previews and previews:FindFirstChild(typeKey .. "_" .. tierIndex)
+		local source = previews and previews:FindFirstChild("W" .. tierIndex)
 		if not source then return end
 		shown = source:Clone()
 		shown.Parent = frame
@@ -280,11 +279,11 @@ local function refreshEnhance()
 	if tierIndex < #tiers then
 		local nextTier = tiers[tierIndex + 1]
 		previewNext(typeKey, tierIndex + 1)
-		previewNextName.Text = string.format("%s (+%d)", nextTier.Names[typeKey], nextTier.MinLevel)
+		previewNextName.Text = string.format("%s (%d/%d)", nextTier.Name, nextTier.Index, #tiers)
 		previewNextName.TextColor3 = nextTier.Rainbow and Color3.fromRGB(255, 120, 255) or nextTier.Color
 	else
 		previewNext(typeKey, tierIndex)
-		previewNextName.Text = "최종 진화!"
+		previewNextName.Text = "마지막 무기!"
 		previewNextName.TextColor3 = Color3.fromRGB(255, 217, 102)
 	end
 
@@ -294,20 +293,18 @@ local function refreshEnhance()
 	}
 
 	if level >= Config.Weapon.MaxLevel then
-		table.insert(lines, "\n<font color='#ffd966'>최대 강화 단계입니다!</font>")
+		table.insert(lines, "\n<font color='#ffd966'>마지막 무기를 최대로 강화했어요!</font>")
 		enhanceButton.Text = "MAX"
 		enhanceButton.BackgroundColor3 = GRAY
 	else
 		local cost = Config.GetEnhanceCost(level)
 		table.insert(lines, string.format("공격력 배율 다음 단계  x%.1f", Config.GetDamageMultiplier(level + 1)))
 		table.insert(lines, string.format("\n강화 비용  <font color='#ffd966'>%d G</font>  (보유 %d G)", cost, gold))
-		table.insert(lines, string.format("성공 확률  %d%%  (실패해도 레벨은 유지)", math.floor(Config.GetEnhanceChance(level) * 100 + 0.5)))
+		table.insert(lines, string.format("성공 확률  %d%%  (실패해도 단계는 유지)", math.floor(Config.GetEnhanceChance(level) * 100 + 0.5)))
 
-		for _, tier in ipairs(tiers) do
-			if tier.MinLevel > level then
-				table.insert(lines, string.format("다음 진화: +%d  %s", tier.MinLevel, tier.Names[typeKey]))
-				break
-			end
+		if tierIndex < #tiers then
+			local nextTier = tiers[tierIndex + 1]
+			table.insert(lines, string.format("<font color='#9ad7ff'>다음 무기 [%s] 까지 %d단계</font>", nextTier.Name, nextTier.MinLevel - level))
 		end
 		enhanceButton.Text = "강화하기"
 		enhanceButton.BackgroundColor3 = gold >= cost and GREEN or GRAY
@@ -317,11 +314,10 @@ end
 
 Remotes.Enhance.OnClientEvent:Connect(function(ok, message)
 	if ok then -- 성공하면 다음 진화까지 남은 단계를 알려줘서 "하나만 더" 하고 싶게 만든다
-		local typeKey = player:GetAttribute("WeaponType") or "Pistol"
-		local level = (player:GetAttribute("WLvl_" .. typeKey) or 0)
+		local level = player:GetAttribute("WeaponLevel") or 0
 		for _, tier in ipairs(Config.Weapon.Tiers) do
 			if tier.MinLevel > level then
-				message = string.format("%s  ✨ %s 까지 %d단계!", message, tier.Names[typeKey], tier.MinLevel - level)
+				message = string.format("%s  ✨ %s 까지 %d단계!", message, tier.Name, tier.MinLevel - level)
 				break
 			end
 		end
@@ -1539,36 +1535,30 @@ local function buildCharacterTab()
 end
 
 local function buildWeaponTab()
-	sectionTitle("무기 종류 — 종류마다 강화 레벨이 따로 있어요. 구매/교체는 로비에서만 가능해요.")
-	local active = player:GetAttribute("WeaponType") or "Pistol"
-	for _, key in ipairs(Config.WeaponTypes.Order) do
-		local weaponType = Config.WeaponTypes[key]
-		local unlocked = key == "Pistol" or player:GetAttribute("WUnlock_" .. key) == true
-		local level = player:GetAttribute("WLvl_" .. key) or 0
-		local tier = Config.GetWeaponTier(level)
+	local level = player:GetAttribute("WeaponLevel") or 0
+	local tiers = Config.Weapon.Tiers
+	local current = Config.GetWeaponTier(level)
+	local stage = Config.GetWeaponStage(level)
+	sectionTitle(string.format("🔫 무기 도감 — 강화하면 %d단계마다 다음 무기로 자동 진화해요 (총 %d종)", Config.Weapon.StepsPerWeapon, #tiers))
 
-		local row = newRow(100)
-		rowText(row, string.format(
-			"<font size='18'><b>%s</b></font>  <font color='#%s'>+%d %s</font>\n<font color='#bbbbcc'>%s</font>\n<font color='#bbbbcc'>한 발 x%.1f · 발사 간격 x%.1f · 탄 %d발 · 사거리 %d</font>",
-			weaponType.Name, hex(tier.Color), level, Config.GetWeaponName(key, level),
-			weaponType.Desc, weaponType.DamageMult, weaponType.Cooldown, weaponType.Pellets, weaponType.Range
-		) .. (Config.GetWeaponTierIndex(level) < #Config.Weapon.Tiers and string.format("\n<font color='#9ad7ff'>다음 진화: +%d %s (강화창에서 미리보기)</font>", Config.Weapon.Tiers[Config.GetWeaponTierIndex(level) + 1].MinLevel, Config.Weapon.Tiers[Config.GetWeaponTierIndex(level) + 1].Names[key]) or ""), 14, 170)
+	local header = newRow(86)
+	local classInfo = Config.WeaponTypes[current.Class]
+	rowText(header, string.format(
+		"<font size='20'><b><font color='#%s'>[%d/%d] %s</font></b></font>  +%d\n<font color='#bbbbcc'>%s</font>\n<font color='#bbbbcc'>한 발 x%.1f · 발사 간격 x%.2f · 탄 %d발 · 사거리 %d</font>",
+		hex(current.Color), current.Index, #tiers, current.Name, stage, classInfo.Desc,
+		classInfo.DamageMult, classInfo.Cooldown, classInfo.Pellets, classInfo.Range
+	), 14, 24)
 
-		local label, color, action
-		if key == active then
-			label, color = "장착 중", GRAY
-		elseif unlocked then
-			label, color, action = "장착", GREEN, "Equip"
-		else
-			label, color, action = string.format("구매 %d G", weaponType.UnlockCost), Color3.fromRGB(200, 130, 40), "Buy"
-		end
-		makeButton({
-			Size = UDim2.new(0, 130, 0, 34), Position = UDim2.new(1, -142, 0.5, -17), Text = label, BackgroundColor3 = color,
-		}, row, function()
-			if action then
-				Remotes.Weapon:FireServer(action, key)
-			end
-		end)
+	-- 도감: 지나온 무기 / 지금 / 앞으로 만날 무기 (모두 이름이 보여서 "저걸 갖고 싶다"가 생기게)
+	for _, tier in ipairs(tiers) do
+		local owned = tier.Index < current.Index
+		local isCurrent = tier.Index == current.Index
+		local row = newRow(34, isCurrent and Color3.fromRGB(45, 70, 50) or (owned and Color3.fromRGB(34, 38, 48) or Color3.fromRGB(28, 28, 38)))
+		local classOf = Config.WeaponTypes[tier.Class]
+		local mark = isCurrent and "▶" or (owned and "✔" or "🔒")
+		local nameColor = (owned or isCurrent) and hex(tier.Color) or "777788"
+		rowText(row, string.format("%s  <font color='#aaaabb'>%d.</font> <font color='#%s'><b>%s</b></font>   <font size='12' color='#8888aa'>%s · +%d 단계부터</font>",
+			mark, tier.Index, nameColor, tier.Name, classOf.Name, tier.MinLevel), 14, 24)
 	end
 end
 

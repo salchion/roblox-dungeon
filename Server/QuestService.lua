@@ -28,11 +28,7 @@ local function readLive(player, stat)
 	elseif stat == "Power" then
 		return player:GetAttribute("Power") or 0
 	elseif stat == "WeaponLevel" then
-		local best = 0
-		for _, key in ipairs(Config.WeaponTypes.Order) do
-			best = math.max(best, player:GetAttribute("WLvl_" .. key) or 0)
-		end
-		return best
+		return player:GetAttribute("WeaponLevel") or 0
 	elseif stat == "BestRarity" then
 		local best = 0
 		for _, slot in ipairs(Config.Gear.Slots) do

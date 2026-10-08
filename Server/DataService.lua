@@ -45,6 +45,11 @@ local function parseWeapons(saved)
 	if typeof(weapons.Type) == "string" and result.Unlocked[weapons.Type] then
 		result.Type = weapons.Type
 	end
+	-- 예전 저장(무기 종류별 레벨)은 가장 높은 레벨을 이어받는다
+	result.Best = 0
+	for _, level in pairs(result.Levels) do
+		result.Best = math.max(result.Best, level)
+	end
 	return result
 end
 
@@ -65,7 +70,7 @@ function Data.Load(player)
 			if typeof(saved) == "table" then
 				return {
 					Gold = tonumber(saved.Gold) or defaults.Gold,
-					WeaponLevel = math.clamp(tonumber(saved.WeaponLevel) or 0, 0, Config.Weapon.MaxLevel),
+					WeaponLevel = math.clamp(math.max(tonumber(saved.WeaponLevel) or 0, parseWeapons(saved).Best), 0, Config.Weapon.MaxLevel),
 					Tickets = math.max(0, math.floor(tonumber(saved.Tickets) or 0)),
 					MaxZone = math.clamp(math.floor(tonumber(saved.MaxZone) or 0), 0, Config.Field.ZoneCount),
 					Gear = typeof(saved.Gear) == "table" and saved.Gear or {},
@@ -94,11 +99,7 @@ end
 function Data.Save(player)
 	if not store then return true end -- DataStore 를 못 쓰는 환경(Studio API 꺼짐)에서는 저장 없이 진행
 	if not loaded[player] then return false end
-	local weapons = { Type = player:GetAttribute("WeaponType") or "Pistol", Unlocked = {}, Levels = {} }
-	for _, key in ipairs(Config.WeaponTypes.Order) do
-		weapons.Levels[key] = player:GetAttribute("WLvl_" .. key) or 0
-		weapons.Unlocked[key] = key == "Pistol" or player:GetAttribute("WUnlock_" .. key) == true
-	end
+	local weapons = { Type = player:GetAttribute("WeaponType") or "Pistol", Unlocked = {}, Levels = {} } -- (예전 호환용: 지금은 WeaponLevel 하나만 쓴다)
 	local payload = {
 		Gold = player:GetAttribute("Gold") or 0,
 		WeaponLevel = player:GetAttribute("WeaponLevel") or 0,

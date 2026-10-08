@@ -137,10 +137,10 @@ local function updatePower(player)
 	))
 end
 
--- 현재 들고 있는 무기 종류의 강화 레벨을 WeaponLevel 로 맞춘다 (나머지 시스템은 WeaponLevel 만 보면 됨)
+-- 무기는 강화 단계(WeaponLevel) 하나로 정해진다. 그 단계의 무기 종류(권총 / 리볼버 / ...)를 WeaponType 으로 맞춘다.
 local function syncWeaponLevel(player)
-	local typeKey = player:GetAttribute("WeaponType") or "Pistol"
-	player:SetAttribute("WeaponLevel", player:GetAttribute("WLvl_" .. typeKey) or 0)
+	local level = player:GetAttribute("WeaponLevel") or 0
+	player:SetAttribute("WeaponType", Config.GetWeaponTier(level).Class)
 end
 
 local function setupPlayer(player)
@@ -155,10 +155,6 @@ local function setupPlayer(player)
 	player:SetAttribute("Tickets", 0)
 	player:SetAttribute("WeaponLevel", 0)
 	player:SetAttribute("WeaponType", "Pistol")
-	for _, key in ipairs(Config.WeaponTypes.Order) do
-		player:SetAttribute("WLvl_" .. key, 0)
-		player:SetAttribute("WUnlock_" .. key, key == "Pistol")
-	end
 	player:SetAttribute("MaxZone", 0)
 	player:SetAttribute("Power", 0)
 	player:SetAttribute("Title", "")
@@ -203,19 +199,10 @@ local function setupPlayer(player)
 	addStat("Weapon", "WeaponLevel")
 	addStat("Tickets", "Tickets")
 
-	-- 무기 종류 / 강화 레벨 / 모델 / 전투력 동기화
-	player:GetAttributeChangedSignal("WeaponType"):Connect(function()
-		syncWeaponLevel(player)
-		Weapon.Refresh(player) -- 종류가 바뀌면 레벨이 같아도 모델이 달라진다
-		updatePower(player)
-	end)
-	for _, key in ipairs(Config.WeaponTypes.Order) do
-		player:GetAttributeChangedSignal("WLvl_" .. key):Connect(function()
-			syncWeaponLevel(player)
-			Quest.Refresh(player)
-		end)
-	end
+	-- 강화 단계 / 무기 종류 / 모델 / 전투력 동기화
 	player:GetAttributeChangedSignal("WeaponLevel"):Connect(function()
+		syncWeaponLevel(player) -- 단계가 오르면 무기(종류)가 바뀔 수 있다
+		Quest.Refresh(player)
 		Weapon.Refresh(player) -- 강화 즉시 무기 외형 변경 (모든 플레이어에게 보임)
 		updatePower(player)
 	end)
@@ -269,13 +256,9 @@ local function setupPlayer(player)
 		player:SetAttribute("Gold", saved.Gold)
 		player:SetAttribute("Tickets", saved.Tickets)
 		player:SetAttribute("MaxZone", saved.MaxZone)
-		for _, key in ipairs(Config.WeaponTypes.Order) do
-			player:SetAttribute("WLvl_" .. key, saved.Weapons.Levels[key] or 0)
-			player:SetAttribute("WUnlock_" .. key, saved.Weapons.Unlocked[key] == true)
-		end
-		player:SetAttribute("WeaponType", saved.Weapons.Type)
-		Level.Load(player, saved.Level, saved.XP)
+		player:SetAttribute("WeaponLevel", saved.WeaponLevel)
 		syncWeaponLevel(player)
+		Level.Load(player, saved.Level, saved.XP)
 		Monetization.Load(player, saved.Monetization)  -- 가방 칸 / 열쇠 보관량 등 BM 효과가 먼저 반영돼야 함
 		Inventory.Load(player, saved.Inventory, saved.Gear) -- 예전 저장 형식의 장비는 아이템으로 이어받음
 		Keys.Load(player, saved.KeysData and saved.KeysData.Keys, saved.KeysData and saved.KeysData.Base)

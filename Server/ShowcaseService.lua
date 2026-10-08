@@ -116,13 +116,13 @@ local function buildSlot(rank, player)
 	local prestige = player:GetAttribute("Prestige") or 0
 	slot.Label.Text = string.format("%s %s%s\n<font size='15' color='#ffe16e'>⚡ %d</font> <font size='13'>Lv.%d</font>\n<font size='13' color='#9ad7ff'>%s</font>",
 		MEDAL[rank], prestige > 0 and ("🌟" .. prestige .. " ") or "", player.DisplayName, power, player:GetAttribute("Level") or 1,
-		Config.GetWeaponName(typeKey, level))
+		Config.FormatWeapon(level))
 
 	local top = slot.Pedestal.Position + Vector3.new(0, slot.Pedestal.Size.Y / 2, 0)
 
 	-- 무기 모형 (진화 단계 미리보기 모델 복제)
 	local previews = ReplicatedStorage:FindFirstChild("WeaponPreviews")
-	local source = previews and previews:FindFirstChild(typeKey .. "_" .. Config.GetWeaponTierIndex(level))
+	local source = previews and previews:FindFirstChild("W" .. Config.GetWeaponTierIndex(level))
 	if source then
 		local weapon = source:Clone()
 		weapon:PivotTo(CFrame.lookAt(top + Vector3.new(0, 7, 0) + slot.Look * 0, top + Vector3.new(0, 7, 0) + slot.Look) * CFrame.Angles(0, math.rad(90), 0) * CFrame.new(0, 0, 0))

@@ -629,6 +629,26 @@ function Field.Shoot(player, origin, direction)
 	local data = result and monsters[result.Instance]
 	if data then
 		local damage, isCrit = Dungeon.ComputeDamage(player)
+		-- 로켓 런처 / 플라즈마 캐논: 맞은 곳 주변 적에게도 피해
+		local splash = Config.GetPlayerWeapon(player).Splash
+		if splash then
+			for otherPart, otherData in pairs(monsters) do
+				if otherPart ~= result.Instance and otherPart.Parent and not otherData.Goblin
+					and (otherPart.Position - result.Position).Magnitude <= splash + otherPart.Size.X / 2 then
+					local splashDamage = math.max(1, math.floor(damage * 0.5))
+					otherData.Health -= splashDamage
+					if otherData.Contrib then
+						otherData.Contrib[player] = (otherData.Contrib[player] or 0) + splashDamage
+					end
+					otherData.HealthFill.Size = UDim2.new(math.max(otherData.Health, 0) / otherData.MaxHealth, 0, 1, 0)
+					Effects.DamageNumber(otherPart.Position, splashDamage, false)
+					if otherData.Health <= 0 then
+						killMonster(player, otherPart, otherData)
+					end
+				end
+			end
+			Effects.Burst(result.Position, Color3.fromRGB(255, 160, 60), 40)
+		end
 		data.Health -= damage
 		if data.Contrib then
 			data.Contrib[player] = (data.Contrib[player] or 0) + damage

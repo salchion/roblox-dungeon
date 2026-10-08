@@ -59,7 +59,7 @@ local function buildTool(level, typeKey)
 	tool.Name = "Weapon"
 	tool.CanBeDropped = false
 	tool.RequiresHandle = true
-	tool.ToolTip = string.format("+%d %s", level, Config.GetWeaponName(typeKey, level))
+	tool.ToolTip = Config.FormatWeapon(level)
 
 	-- 몸체(손에 쥐는 부분)
 	local handle = newPart("Handle", Vector3.new(0.4, 0.6, 1.4), dark, Enum.Material.Metal, tool)
@@ -102,7 +102,7 @@ local function buildTool(level, typeKey)
 	end
 
 	-- 진화 단계(Form)별 추가 장식: 단계가 오를수록 총의 실루엣이 확 달라진다
-	local form = tier.Form
+	local form = weaponType.Form
 	local function cyl(name, size, color, material, cf)
 		local p = newPart(name, size, color, material, tool)
 		p.Shape = Enum.PartType.Cylinder
@@ -137,6 +137,27 @@ local function buildTool(level, typeKey)
 			fin.CFrame = handle.CFrame * CFrame.new(0, 0.05, 0.9) * CFrame.Angles(0, 0, math.rad(i * 90)) * CFrame.new(0, 0.55, 0)
 			weld(handle, fin)
 		end
+	elseif form == "Smg" then
+		-- 탄창 + 짧은 개머리판
+		local mag = newPart("Magazine", Vector3.new(0.35, 1.1, 0.5), dark, Enum.Material.Metal, tool)
+		mag.CFrame = handle.CFrame * CFrame.new(0, -0.95, -0.35) * CFrame.Angles(math.rad(8), 0, 0)
+		weld(handle, mag)
+		local stock = newPart("SmgStock", Vector3.new(0.3, 0.45, 0.8), dark, Enum.Material.Metal, tool)
+		stock.CFrame = handle.CFrame * CFrame.new(0, 0, 1.0)
+		weld(handle, stock)
+	elseif form == "Rifle" then
+		-- 긴 개머리판 + 위쪽 레일
+		local stock = newPart("RifleStock", Vector3.new(0.38, 0.55, 1.3), Color3.fromRGB(80, 55, 35), Enum.Material.Wood, tool)
+		stock.CFrame = handle.CFrame * CFrame.new(0, -0.05, 1.25)
+		weld(handle, stock)
+		local rail = newPart("TopRail", Vector3.new(0.18, 0.12, 1.6), tier.Color, Enum.Material.Neon, tool)
+		rail.CFrame = handle.CFrame * CFrame.new(0, 0.45, -0.3)
+		weld(handle, rail)
+	elseif form == "Flamer" then
+		-- 연료 탱크 + 노즐
+		cyl("Tank", Vector3.new(1.4, 0.7, 0.7), dark, Enum.Material.Metal, handle.CFrame * CFrame.new(0, 0.6, 0.3))
+		local nozzle = cyl("Nozzle", Vector3.new(0.35, 0.8 * scale, 0.8 * scale), tier.Color, Enum.Material.Neon, handle.CFrame * CFrame.new(0, 0.05, muzzleZ + 0.1))
+		nozzle.Name = "Nozzle"
 	elseif form == "Rail" then
 		for side = -1, 1, 2 do
 			local rail = newPart("Rail", Vector3.new(0.12, 0.12, barrelLength * 1.1), tier.Color, Enum.Material.Neon, tool)
@@ -270,7 +291,7 @@ local function updateNameplate(player)
 	local prestige = player:GetAttribute("Prestige") or 0
 	gui.Power.Text = string.format("%sLv.%d  ⚡ 전투력 %d", prestige > 0 and ("🌟" .. prestige .. " ") or "", player:GetAttribute("Level") or 1, player:GetAttribute("Power") or 0)
 	gui.Power.TextColor3 = Color3.fromRGB(255, 225, 110)
-	gui.WeaponLevel.Text = string.format("+%d %s", level, Config.GetWeaponName(player:GetAttribute("WeaponType") or "Pistol", level))
+	gui.WeaponLevel.Text = Config.FormatWeapon(level)
 	gui.WeaponLevel.TextColor3 = tier.Rainbow and Color3.fromRGB(255, 120, 255) or tier.Color
 	gui.Zone.Text = maxZone > 0 and string.format("🏔 필드 %d구역 돌파", maxZone) or ""
 	gui.Zone.TextColor3 = Color3.fromRGB(150, 220, 255)
@@ -288,11 +309,11 @@ function Weapon.BuildPreviews()
 	if old then old:Destroy() end
 	local folder = Instance.new("Folder")
 	folder.Name = "WeaponPreviews"
-	for _, typeKey in ipairs(Config.WeaponTypes.Order) do
+	do
 		for index, tier in ipairs(Config.Weapon.Tiers) do
-			local tool = buildTool(tier.MinLevel, typeKey)
+			local tool = buildTool(tier.MinLevel, tier.Class)
 			local model = Instance.new("Model")
-			model.Name = typeKey .. "_" .. index
+			model.Name = "W" .. index
 			for _, child in ipairs(tool:GetChildren()) do
 				child.Parent = model
 			end
@@ -396,13 +417,8 @@ function Weapon.PlayShot(player)
 	end
 
 	-- 무기가 강할수록 낮고 묵직한 소리
-	local tierIndex = 1
-	for i, t in ipairs(Config.Weapon.Tiers) do
-		if t == Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0) then
-			tierIndex = i
-		end
-	end
-	playSoundAt(barrel, Config.Audio.Shot, Config.Audio.ShotVolume, 1.25 - 0.09 * (tierIndex - 1))
+	local era = Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0).Era
+	playSoundAt(barrel, Config.Audio.Shot, Config.Audio.ShotVolume, math.max(0.5, 1.25 - 0.08 * (era - 1)))
 end
 
 ------------------------------------------------------------
@@ -414,10 +430,9 @@ function Weapon.Enhance(player)
 		return false, "무기 강화는 로비에서만 할 수 있어요."
 	end
 
-	local typeKey = player:GetAttribute("WeaponType") or "Pistol"
-	local level = player:GetAttribute("WLvl_" .. typeKey) or 0
+	local level = player:GetAttribute("WeaponLevel") or 0
 	if level >= Config.Weapon.MaxLevel then
-		return false, "이미 최대 강화 단계입니다!"
+		return false, "마지막 무기를 최대로 강화했어요!"
 	end
 
 	-- 튜토리얼 미션 중에는 +3까지 무료 + 100% 성공
@@ -431,58 +446,38 @@ function Weapon.Enhance(player)
 	player:SetAttribute("Gold", gold - cost)
 
 	if free or math.random() < Config.GetEnhanceChance(level) then
-		-- 이 무기 종류의 레벨을 올리면 GameServer 가 WeaponLevel(현재 무기 레벨)을 맞춰주고 외형도 갱신한다
-		player:SetAttribute("WLvl_" .. typeKey, level + 1)
+		-- 단계가 오르면 GameServer 가 무기 종류를 맞추고 모델도 갱신한다. 마지막 단계를 넘으면 다음 무기로 진화한다.
+		player:SetAttribute("WeaponLevel", level + 1)
 		Quest.Add(player, "Enhances", 1)
-		-- 무기가 새 단계로 진화하면 서버 전체에 자랑 (3단계 이상)
-		local newIndex = Config.GetWeaponTierIndex(level + 1)
-		if newIndex > Config.GetWeaponTierIndex(level) and newIndex >= 3 then
-			Event.Announce(string.format("📢 %s 님의 무기가 [%s]로 진화했어요!", player.DisplayName, Config.GetWeaponName(typeKey, level + 1)))
+		local before, after = Config.GetWeaponTier(level), Config.GetWeaponTier(level + 1)
+		local evolved = after.Index > before.Index
+		-- 무기가 바뀌면 서버 전체에 자랑 (시대가 바뀌거나 10번째 무기마다)
+		if evolved and (after.Era > before.Era or after.Index % 10 == 0) and after.Index >= 4 then
+			Event.Announce(string.format("📢 %s 님의 무기가 [%s]로 진화했어요! (%d/%d)", player.DisplayName, after.Name, after.Index, Config.Weapon.WeaponCount))
 		end
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if root then
 			playSoundAt(root, Config.Audio.EnhanceSuccess, 0.8, 1)
-			Effects.Burst(root.Position, Config.GetWeaponTier(level + 1).Color, 30 + level * 4)
+			Effects.Burst(root.Position, after.Color, evolved and 120 or 30)
+			if evolved then
+				Effects.FloatText(root.Position + Vector3.new(0, 5, 0), "⭐ " .. after.Name, after.Color)
+			end
 		end
-		return true, string.format("강화 성공! +%d", level + 1)
+		if evolved then
+			return true, string.format("🎉 진화! %s (%d/%d)", after.Name, after.Index, Config.Weapon.WeaponCount)
+		end
+		return true, string.format("강화 성공! +%d", Config.GetWeaponStage(level + 1))
 	end
 	return false, "강화 실패... (골드만 사라졌어요)"
 end
 
-------------------------------------------------------------
--- 무기 종류 구매 / 장착 (로비에서만). 각 무기는 강화 레벨이 따로 저장된다.
-------------------------------------------------------------
-local function isUnlocked(player, typeKey)
-	return typeKey == "Pistol" or player:GetAttribute("WUnlock_" .. typeKey) == true
+-- (예전 무기 종류 구매 / 장착은 없어졌다: 무기는 강화 단계에 따라 자동으로 진화한다)
+function Weapon.Equip()
+	return false, "무기는 강화하면 자동으로 다음 무기로 진화해요!"
 end
 
-function Weapon.Equip(player, typeKey)
-	if player:GetAttribute("Zone") ~= "Lobby" then
-		return false, "무기 교체는 로비에서만 할 수 있어요."
-	end
-	local weaponType = Config.WeaponTypes[typeKey]
-	if not weaponType or not weaponType.UnlockCost then return false, "알 수 없는 무기예요." end
-	if not isUnlocked(player, typeKey) then
-		return false, weaponType.Name .. "을(를) 먼저 구매해야 해요."
-	end
-	player:SetAttribute("WeaponType", typeKey)
-	return true, weaponType.Name .. " 장착!"
-end
-
-function Weapon.Buy(player, typeKey)
-	local weaponType = Config.WeaponTypes[typeKey]
-	if not weaponType or not weaponType.UnlockCost then return false, "알 수 없는 무기예요." end
-	if isUnlocked(player, typeKey) then
-		return false, "이미 가지고 있는 무기예요."
-	end
-	local gold = player:GetAttribute("Gold") or 0
-	if gold < weaponType.UnlockCost then
-		return false, string.format("골드가 부족해요. (%d G 필요)", weaponType.UnlockCost)
-	end
-	player:SetAttribute("Gold", gold - weaponType.UnlockCost)
-	player:SetAttribute("WUnlock_" .. typeKey, true)
-	player:SetAttribute("WeaponType", typeKey)
-	return true, weaponType.Name .. " 구매 완료! 바로 장착했어요."
+function Weapon.Buy()
+	return false, "무기는 강화하면 자동으로 다음 무기로 진화해요!"
 end
 
 return Weapon

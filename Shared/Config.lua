@@ -108,7 +108,7 @@ Config.Tutorial = {
 			Reward = { Gold = 300 } },
 		{ Text = "모루에서 무기를 강화하세요! (무료)", Stat = "Enhances", Goal = 1, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
 			Reward = { Gold = 200 } },
-		{ Text = "한 번 더 강화! +3이 되면 총이 진화해요", Stat = "Enhances", Goal = 2, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
+		{ Text = "한 번 더 강화! 3번째 강화에 성공하면 새로운 무기로 진화해요", Stat = "Enhances", Goal = 2, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
 			Reward = { Tickets = 1, Gold = 300 } },
 		{ Text = "뽑기 머신에서 장비를 뽑아보세요! (티켓 1장)", Stat = "Rolls", Goal = 1, Target = "Gacha", TargetName = "뽑기 머신",
 			Reward = { Gold = 1500 } },
@@ -123,6 +123,8 @@ Config.Tutorial = {
 -- 환생(프레스티지): 최고 레벨에서 레벨을 1로 되돌리고 영구 공격력 보너스를 얻는다
 ------------------------------------------------------------
 Config.Prestige = { Max = 10, DamagePerRank = 0.05 }
+
+Config.Dungeon = {} -- 아래에서 여러 블록이 채우고, "던전" 절에서 기본 값이 합쳐진다
 
 ------------------------------------------------------------
 -- 연속 처치 콤보 / 출석 보상 / 던전 변이(매번 달라지는 규칙)
@@ -238,7 +240,7 @@ Config.Party = {
 ------------------------------------------------------------
 -- 던전
 ------------------------------------------------------------
-Config.Dungeon = {
+local dungeonBase = {
 	TotalWaves = 5,          -- 이 웨이브를 모두 깨면 보스 등장
 	StartCountdown = 5,      -- 입장 후 첫 웨이브까지 대기(초)
 	StatPhaseTime = 30,      -- 웨이브 클리어 후 스탯 분배 시간(초)
@@ -253,6 +255,9 @@ Config.Dungeon = {
 	ArenaSpacing = 500,      -- 파티별 아레나 간격
 	MaxArenas = 8,           -- 동시에 열 수 있는 던전 수
 }
+for key, value in pairs(dungeonBase) do -- 위쪽(특성 / 변이 / 이벤트)에서 먼저 만든 Config.Dungeon 에 기본 값을 합친다
+	Config.Dungeon[key] = value
+end
 
 -- 웨이브별 몬스터 마릿수 (파티 인원이 많을수록 늘어남)
 function Config.Dungeon.GetMonsterCount(wave, partySize)
@@ -308,29 +313,63 @@ Config.Boss = {
 -- 무기 강화
 ------------------------------------------------------------
 Config.Weapon = {
-	MaxLevel = 15,
+	StepsPerWeapon = 3,     -- 한 무기당 강화 단계 수 (+0, +1, +2 다음 강화에 성공하면 다음 무기로 진화)
+	WeaponCount = 100,
 	BaseCost = 100,
-	CostGrowth = 1.3,
-	DamagePerLevel = 0.2,   -- 레벨당 데미지 +20%
-	SizePerLevel = 0.06,    -- 레벨당 크기 +6%
-	-- 레벨 구간별 외형. Form = 총 모양(진화), Names = 무기 종류별 이름. MinLevel 이상이면 해당 외형이 적용됨.
-	-- Particles: 초당 파티클 수 / Trail: 궤적 / Light: 빛 범위 / Rainbow: 무지개 이펙트
-	Tiers = {
-		-- Shot: 발사체 외형. Style(Ball/Bolt/Orb/Cannon/Fire/Rainbow) / Size / Length(Bolt만) / Speed(초당 거리) / Impact(착탄 시 터지는 입자 수)
-		{ MinLevel = 0,  Name = "낡은 권총", Prefix = "낡은", Form = "Basic", Names = { Pistol = "낡은 권총", Shotgun = "낡은 샷건", Sniper = "낡은 저격총" },       Color = Color3.fromRGB(165, 165, 175), Material = Enum.Material.Metal, Particles = 0,  Trail = false, Light = 0,
-			Shot = { Style = "Ball", Size = 0.6, Speed = 260, Impact = 0 } },
-		{ MinLevel = 3,  Name = "강철 권총", Prefix = "강철", Form = "Steel", Names = { Pistol = "강철 리볼버", Shotgun = "강철 펌프 샷건", Sniper = "강철 볼트 저격총" },       Color = Color3.fromRGB(90, 160, 255),  Material = Enum.Material.Metal, Particles = 6,  Trail = false, Light = 0,
-			Shot = { Style = "Bolt", Size = 0.35, Length = 3, Speed = 320, Impact = 6 } },
-		{ MinLevel = 6,  Name = "마력 라이플", Prefix = "마력", Form = "Arcane", Names = { Pistol = "마력 라이플", Shotgun = "마력 스펠 샷건", Sniper = "마력 아케인 저격총" },     Color = Color3.fromRGB(175, 95, 255),  Material = Enum.Material.Glass, Particles = 12, Trail = true,  Light = 0,
-			Shot = { Style = "Orb", Size = 1.3, Speed = 190, Impact = 14 } },
-		{ MinLevel = 9,  Name = "황금 캐논", Prefix = "황금", Form = "Cannon", Names = { Pistol = "황금 핸드캐논", Shotgun = "황금 슬러그 캐논", Sniper = "황금 대구경 저격총" },       Color = Color3.fromRGB(255, 200, 50),  Material = Enum.Material.Neon,  Particles = 22, Trail = true,  Light = 10,
-			Shot = { Style = "Cannon", Size = 2.4, Speed = 140, Impact = 30 } },
-		{ MinLevel = 12, Name = "불꽃의 건", Prefix = "불꽃의", Form = "Rocket", Names = { Pistol = "불꽃 로켓 런처", Shotgun = "불꽃 화염 샷건", Sniper = "불꽃 로켓 저격포" },       Color = Color3.fromRGB(255, 70, 40),   Material = Enum.Material.Neon,  Particles = 40, Trail = true,  Light = 16,
-			Shot = { Style = "Rocket", Size = 1.6, Length = 4, Speed = 150, Impact = 70 } },
-		{ MinLevel = 15, Name = "전설의 무지개 건", Prefix = "전설의 무지개", Form = "Rail", Names = { Pistol = "무지개 레일건", Shotgun = "무지개 플라즈마 샷건", Sniper = "무지개 레일 저격총" }, Color = Color3.fromRGB(255, 255, 255), Material = Enum.Material.Neon,  Particles = 60, Trail = true,  Light = 20, Rainbow = true,
-			Shot = { Style = "Rainbow", Size = 2.2, Speed = 170, Impact = 60 } },
-	},
+	CostGrowth = 1.03,      -- 강화 1회마다 비용 x1.03 (단계 전체가 하나의 사다리)
 }
+Config.Weapon.MaxLevel = Config.Weapon.StepsPerWeapon * Config.Weapon.WeaponCount - 1 -- 299: 마지막 무기까지
+
+-- 무기 사다리: 10개 시대 x 10개 종류 = 100종. 시대마다 색 / 재질 / 효과 / 발사체가 크게 바뀌고,
+-- 시대 안에서는 권총 -> 리볼버 -> 기관단총 -> 샷건 -> 라이플 -> 저격총 -> 로켓 런처 -> 레일건 -> 화염방사기 -> 플라즈마 캐논 순서로 바뀐다.
+-- Shot: 발사체 외형. Style(Ball/Bolt/Orb/Cannon/Fire/Rocket/Rainbow) / Size / Length(Bolt/Rocket) / Speed(초당 거리) / Impact(착탄 입자 수)
+local ERAS = {
+	{ Prefix = "녹슨",   Color = Color3.fromRGB(165, 165, 175), Material = Enum.Material.Metal,  Particles = 0,  Trail = false, Light = 0,
+		Shot = { Style = "Ball", Size = 0.6, Speed = 260, Impact = 0 } },
+	{ Prefix = "강철",   Color = Color3.fromRGB(90, 160, 255),  Material = Enum.Material.Metal,  Particles = 6,  Trail = false, Light = 0,
+		Shot = { Style = "Bolt", Size = 0.35, Length = 3, Speed = 320, Impact = 6 } },
+	{ Prefix = "마력",   Color = Color3.fromRGB(175, 95, 255),  Material = Enum.Material.Glass,  Particles = 12, Trail = true,  Light = 0,
+		Shot = { Style = "Orb", Size = 1.3, Speed = 190, Impact = 14 } },
+	{ Prefix = "황금",   Color = Color3.fromRGB(255, 200, 50),  Material = Enum.Material.Neon,   Particles = 22, Trail = true,  Light = 10,
+		Shot = { Style = "Cannon", Size = 2.4, Speed = 140, Impact = 30 } },
+	{ Prefix = "불꽃",   Color = Color3.fromRGB(255, 70, 40),   Material = Enum.Material.Neon,   Particles = 40, Trail = true,  Light = 16,
+		Shot = { Style = "Rocket", Size = 1.6, Length = 4, Speed = 150, Impact = 70 } },
+	{ Prefix = "빙결",   Color = Color3.fromRGB(140, 225, 255), Material = Enum.Material.Ice,    Particles = 30, Trail = true,  Light = 14,
+		Shot = { Style = "Bolt", Size = 0.5, Length = 4.5, Speed = 360, Impact = 40 } },
+	{ Prefix = "번개",   Color = Color3.fromRGB(255, 240, 90),  Material = Enum.Material.Neon,   Particles = 45, Trail = true,  Light = 18,
+		Shot = { Style = "Bolt", Size = 0.45, Length = 7, Speed = 440, Impact = 50 } },
+	{ Prefix = "암흑",   Color = Color3.fromRGB(100, 50, 160),  Material = Enum.Material.Neon,   Particles = 50, Trail = true,  Light = 14,
+		Shot = { Style = "Orb", Size = 1.9, Speed = 200, Impact = 55 } },
+	{ Prefix = "용의",   Color = Color3.fromRGB(255, 120, 60),  Material = Enum.Material.Neon,   Particles = 55, Trail = true,  Light = 20,
+		Shot = { Style = "Fire", Size = 2.4, Speed = 180, Impact = 80 } },
+	{ Prefix = "신화의", Color = Color3.fromRGB(255, 255, 255), Material = Enum.Material.Neon,   Particles = 70, Trail = true,  Light = 24, Rainbow = true,
+		Shot = { Style = "Rainbow", Size = 2.6, Speed = 190, Impact = 90 } },
+}
+local CLASS_ORDER = { "Pistol", "Revolver", "Smg", "Shotgun", "Rifle", "Sniper", "Rocket", "Rail", "Flamer", "Cannon" }
+local CLASS_NAMES = {
+	Pistol = "권총", Revolver = "리볼버", Smg = "기관단총", Shotgun = "샷건", Rifle = "라이플",
+	Sniper = "저격총", Rocket = "로켓 런처", Rail = "레일건", Flamer = "화염방사기", Cannon = "플라즈마 캐논",
+}
+
+-- Tiers[i] = i번째 무기 (MinLevel = 이 무기가 되는 최소 강화 단계). 이름은 시대 + 종류.
+Config.Weapon.Tiers = {}
+for index = 1, Config.Weapon.WeaponCount do
+	local era = ERAS[(index - 1) // #CLASS_ORDER + 1]
+	local class = CLASS_ORDER[(index - 1) % #CLASS_ORDER + 1]
+	local inEra = (index - 1) % #CLASS_ORDER -- 0~9: 시대 안에서 뒤로 갈수록 탄이 조금씩 커진다
+	local shot = table.clone(era.Shot)
+	shot.Size *= 1 + 0.04 * inEra
+	local name = era.Prefix .. " " .. CLASS_NAMES[class]
+	local entry = {
+		Index = index, MinLevel = (index - 1) * Config.Weapon.StepsPerWeapon,
+		Name = name, Prefix = era.Prefix, Class = class, Era = (index - 1) // #CLASS_ORDER + 1,
+		Color = era.Color, Material = era.Material, Particles = era.Particles, Trail = era.Trail, Light = era.Light,
+		Rainbow = era.Rainbow, Shot = shot,
+	}
+	-- 예전 코드가 tier.Names[종류] 로 이름을 찾는 곳이 있어서, 어떤 키로 찾아도 이 무기 이름을 돌려준다
+	entry.Names = setmetatable({}, { __index = function() return name end })
+	Config.Weapon.Tiers[index] = entry
+end
 
 ------------------------------------------------------------
 -- 로비 허수아비 (때릴 때마다 골드). 획득 골드 = GoldPerHit x Multiplier
@@ -541,33 +580,68 @@ end
 --   Range: 사거리 / CritBonus: 치명타 확률 추가 / ShotScale, SpeedScale: 발사체 크기 / 속도 배율
 ------------------------------------------------------------
 Config.WeaponTypes = {
-	Order = { "Pistol", "Shotgun", "Sniper" },
+	Order = { "Pistol", "Revolver", "Smg", "Shotgun", "Rifle", "Sniper", "Rocket", "Rail", "Flamer", "Cannon" },
 	Pistol = {
-		Name = "권총", UnlockCost = 0, DamageMult = 1, Cooldown = 1, Range = 300, Pellets = 1, Spread = 0,
+		Name = "권총", Form = "Basic", DamageMult = 1, Cooldown = 1, Range = 300, Pellets = 1, Spread = 0,
 		ShotScale = 1, SpeedScale = 1, BarrelLength = 1, BarrelThickness = 1,
 		Desc = "균형 잡힌 기본 무기",
 	},
+	Revolver = {
+		Name = "리볼버", Form = "Steel", DamageMult = 2.4, Cooldown = 2, Range = 320, Pellets = 1, Spread = 0,
+		ShotScale = 1.15, SpeedScale = 1.1, CritBonus = 0.1, BarrelLength = 0.9, BarrelThickness = 1.2,
+		Desc = "느리지만 묵직한 한 방, 치명타 +10%",
+	},
+	Smg = {
+		Name = "기관단총", Form = "Smg", DamageMult = 0.35, Cooldown = 0.3, Range = 220, Pellets = 1, Spread = 0,
+		ShotScale = 0.7, SpeedScale = 1.1, BarrelLength = 0.8, BarrelThickness = 0.9,
+		Desc = "엄청난 연사 속도로 쏟아붓는 총",
+	},
 	Shotgun = {
-		Name = "샷건", UnlockCost = 2500, DamageMult = 0.5, Cooldown = 1.6, Range = 90, Pellets = 6, Spread = 9,
+		Name = "샷건", Form = "Basic", DamageMult = 0.5, Cooldown = 1.6, Range = 90, Pellets = 6, Spread = 9,
 		ShotScale = 0.55, SpeedScale = 1, BarrelLength = 0.75, BarrelThickness = 1.5,
 		Desc = "근거리에서 6발이 퍼져 나가는 산탄 (사거리 90)",
 	},
+	Rifle = {
+		Name = "라이플", Form = "Rifle", DamageMult = 0.7, Cooldown = 0.65, Range = 400, Pellets = 1, Spread = 0,
+		ShotScale = 0.9, SpeedScale = 1.4, CritBonus = 0.05, BarrelLength = 1.4, BarrelThickness = 0.9,
+		Desc = "멀리까지 정확한 중속 연사",
+	},
 	Sniper = {
-		Name = "저격총", UnlockCost = 5000, DamageMult = 4, Cooldown = 3, Range = 600, Pellets = 1, Spread = 0,
+		Name = "저격총", Form = "Basic", DamageMult = 4, Cooldown = 3, Range = 600, Pellets = 1, Spread = 0,
 		ShotScale = 1.4, SpeedScale = 2.4, CritBonus = 0.25, BarrelLength = 1.9, BarrelThickness = 0.7,
 		Desc = "느리지만 한 방이 강력, 치명타 +25%, 사거리 600",
 	},
+	Rocket = {
+		Name = "로켓 런처", Form = "Rocket", DamageMult = 5, Cooldown = 3.5, Range = 350, Pellets = 1, Spread = 0, Splash = 12,
+		ShotScale = 1.8, SpeedScale = 0.55, BarrelLength = 1.3, BarrelThickness = 1.6,
+		Desc = "맞은 곳이 폭발해서 주변 적에게도 피해 (범위 12)",
+	},
+	Rail = {
+		Name = "레일건", Form = "Rail", DamageMult = 6, Cooldown = 4.5, Range = 700, Pellets = 1, Spread = 0, Pierce = 2,
+		ShotScale = 1.2, SpeedScale = 3, BarrelLength = 1.6, BarrelThickness = 0.8,
+		Desc = "일직선으로 적을 3마리까지 관통하는 초고속 탄",
+	},
+	Flamer = {
+		Name = "화염방사기", Form = "Flamer", DamageMult = 0.2, Cooldown = 0.35, Range = 60, Pellets = 3, Spread = 12,
+		ShotScale = 0.9, SpeedScale = 0.6, BarrelLength = 0.7, BarrelThickness = 1.4,
+		Desc = "짧은 거리에서 불길을 뿜는 근접 무기 (사거리 60)",
+	},
+	Cannon = {
+		Name = "플라즈마 캐논", Form = "Cannon", DamageMult = 3, Cooldown = 2.4, Range = 380, Pellets = 1, Spread = 0, Splash = 7,
+		ShotScale = 1.5, SpeedScale = 0.8, BarrelLength = 1.1, BarrelThickness = 1.8,
+		Desc = "큼직한 플라즈마 탄, 맞은 곳 주변에 작은 폭발 (범위 7)",
+	},
 }
 
+-- 지금 들고 있는 무기의 종류 능력치 (무기는 강화 단계에 따라 자동으로 바뀐다)
 function Config.GetPlayerWeapon(player)
-	return Config.WeaponTypes[player:GetAttribute("WeaponType") or "Pistol"] or Config.WeaponTypes.Pistol
+	local tier = Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0)
+	return Config.WeaponTypes[tier.Class] or Config.WeaponTypes.Pistol
 end
 
--- 무기 종류 + 강화 레벨에 따른 이름. 예: "황금 저격총"
-function Config.GetWeaponName(typeKey, level)
-	local weaponType = Config.WeaponTypes[typeKey] or Config.WeaponTypes.Pistol
-	local tier = Config.GetWeaponTier(level)
-	return (tier.Names and tier.Names[typeKey]) or (tier.Prefix .. " " .. weaponType.Name)
+-- 무기 이름 (typeKey 는 예전 호환용으로 무시: 이름은 강화 단계로만 정해진다)
+function Config.GetWeaponName(_typeKey, level)
+	return Config.GetWeaponTier(level).Name
 end
 
 -- 강화 레벨 -> 진화 단계 번호 (1~6)
@@ -676,8 +750,9 @@ Config.Achievements = {
 	{ Id = "boss10",     Name = "보스 헌터",       Desc = "보스 %d마리 처치",            Stat = "BossKills",     Goal = 10,    Reward = { Tickets = 5 },              Title = "보스 헌터" },
 	{ Id = "zone4",      Name = "탐험가",          Desc = "필드 %d구역 돌파",            Stat = "MaxZone",       Goal = 4,     Reward = { Gold = 1000 },              Title = "탐험가" },
 	{ Id = "zone8",      Name = "심연의 정복자",   Desc = "필드 %d구역 돌파",            Stat = "MaxZone",       Goal = 8,     Reward = { Tickets = 5 },              Title = "심연의 정복자" },
-	{ Id = "weapon10",   Name = "강화의 달인",     Desc = "무기 +%d 달성",               Stat = "WeaponLevel",   Goal = 10,    Reward = { Gold = 2000 },              Title = "강화의 달인" },
-	{ Id = "weapon15",   Name = "전설의 대장장이", Desc = "무기 +%d 달성",               Stat = "WeaponLevel",   Goal = 15,    Reward = { Tickets = 5 },              Title = "전설의 대장장이" },
+	{ Id = "weapon10",   Name = "무기 수집가",     Desc = "무기 강화 %d단계 달성 (무기 약 10번째)", Stat = "WeaponLevel",   Goal = 27,    Reward = { Gold = 2000 },              Title = "강화의 달인" },
+	{ Id = "weapon50",   Name = "전설을 쥔 자",    Desc = "무기 강화 %d단계 달성 (무기 약 50번째)", Stat = "WeaponLevel",   Goal = 147,   Reward = { Tickets = 6 },              Title = "전설을 쥔 자" },
+	{ Id = "weapon15",   Name = "전설의 대장장이", Desc = "마지막 무기까지 강화 (%d단계)",       Stat = "WeaponLevel",   Goal = 299,   Reward = { Tickets = 20 },             Title = "전설의 대장장이" },
 	{ Id = "legend",     Name = "행운아",          Desc = "전설 등급 장비 획득",         Stat = "BestRarity",    Goal = 4,     Reward = { Tickets = 3 },              Title = "행운아" },
 	{ Id = "myth",       Name = "신화의 주인",     Desc = "신화 등급 장비 획득",         Stat = "BestRarity",    Goal = 5,     Reward = { Tickets = 8 },              Title = "신화의 주인" },
 	{ Id = "level10",    Name = "성장하는 모험가", Desc = "캐릭터 레벨 %d 달성",         Stat = "Level",         Goal = 10,    Reward = { Gold = 1000 },              Title = "모험가" },
@@ -976,30 +1051,44 @@ end
 
 function Config.GetWeaponTier(level)
 	local tiers = Config.Weapon.Tiers
-	for i = #tiers, 1, -1 do
-		if level >= tiers[i].MinLevel then
-			return tiers[i]
-		end
-	end
-	return tiers[1]
+	local index = math.clamp((math.floor(level or 0)) // Config.Weapon.StepsPerWeapon + 1, 1, #tiers)
+	return tiers[index]
 end
 
--- level -> level+1 강화 비용
+-- 강화 단계 -> 지금 몇 번째 무기인지 (1~100)
+function Config.GetWeaponTierIndex(level)
+	return Config.GetWeaponTier(level).Index
+end
+
+-- 지금 무기 안에서의 강화 단계 (0 ~ StepsPerWeapon-1). 마지막 단계에서 강화에 성공하면 다음 무기로 바뀐다.
+function Config.GetWeaponStage(level)
+	return math.floor(level or 0) % Config.Weapon.StepsPerWeapon
+end
+
+-- 화면에 보이는 무기 표시: "[12/100] 불꽃 리볼버 +1"
+function Config.FormatWeapon(level)
+	local tier = Config.GetWeaponTier(level)
+	return string.format("[%d/%d] %s +%d", tier.Index, Config.Weapon.WeaponCount, tier.Name, Config.GetWeaponStage(level))
+end
+
+-- level -> level+1 강화 비용 (사다리 전체에서 조금씩 올라간다)
 function Config.GetEnhanceCost(level)
 	return math.floor(Config.Weapon.BaseCost * Config.Weapon.CostGrowth ^ level)
 end
 
--- level -> level+1 강화 성공 확률 (실패해도 레벨은 내려가지 않고 골드만 소모)
+-- level -> level+1 강화 성공 확률 (실패해도 단계는 내려가지 않고 골드만 소모)
 function Config.GetEnhanceChance(level)
-	return math.max(0.4, 1 - 0.04 * level)
+	return math.max(0.5, 0.95 - 0.0015 * level)
 end
 
+-- 공격력 배율: 단계가 오를수록 가파르게 (마지막 무기에서 약 90배)
 function Config.GetDamageMultiplier(level)
-	return 1 + Config.Weapon.DamagePerLevel * level
+	return 1 + 0.12 * level + 0.0006 * level * level
 end
 
+-- 무기 모형 크기 배율 (너무 커지지 않게 완만하게)
 function Config.GetWeaponScale(level)
-	return 1 + Config.Weapon.SizePerLevel * level
+	return 1 + 0.22 * math.log(1 + level)
 end
 
 return Config

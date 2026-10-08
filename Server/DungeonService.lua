@@ -716,8 +716,9 @@ function Dungeon.Shoot(player, origin, direction)
 	params.FilterType = Enum.RaycastFilterType.Include
 	params.FilterDescendantsInstances = { run.MonstersFolder }
 
-	local range = Config.GetPlayerWeapon(player).Range
-	local pierce = player:GetAttribute("PerkPierce") or 0
+	local weaponType = Config.GetPlayerWeapon(player)
+	local range = weaponType.Range
+	local pierce = (player:GetAttribute("PerkPierce") or 0) + (weaponType.Pierce or 0) -- 레일건 등 무기 고유 관통
 	local boom = player:GetAttribute("PerkBoom") or 0
 	local chain = player:GetAttribute("PerkChain") or 0
 	local vamp = player:GetAttribute("PerkVamp") or 0
@@ -743,9 +744,11 @@ function Dungeon.Shoot(player, origin, direction)
 			end
 		end
 
-		-- 폭발: 맞은 지점 주변 적에게 피해
-		if boom > 0 then
-			local radius = 8 + boom * 4
+		-- 폭발: 맞은 지점 주변 적에게 피해 (폭발탄 특성 + 로켓 런처 / 플라즈마 캐논 고유 폭발)
+		local splash = weaponType.Splash or 0
+		if boom > 0 or splash > 0 then
+			local radius = math.max(boom > 0 and (8 + boom * 4) or 0, splash)
+			boom = math.max(boom, 1)
 			Effects.Burst(hitPosition, Color3.fromRGB(255, 140, 50), 10 + boom * 8)
 			for otherPart, otherData in pairs(run.Monsters) do
 				if otherPart ~= part and otherPart.Parent and (otherPart.Position - hitPosition).Magnitude <= radius + otherPart.Size.X / 2 then
