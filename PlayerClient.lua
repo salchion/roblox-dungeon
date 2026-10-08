@@ -2224,6 +2224,26 @@ do
 		cam.CFrame = CFrame.lookAt(Vector3.new(7.8, 1.6, 22), Vector3.new(7.8, -0.2, 0))
 
 		local shot = shown.Shot or { Style = "Ball", Size = 0.6, Speed = 260 }
+		-- 실제 전투와 같은 무기 종류별 탄 모양 (서버 Effects.Shot 의 CLASS_LOOK 과 맞춘다)
+		local CLASS_LOOK = {
+			Flamer = { Style = "Fire", SizeMul = 2.0, Color = Color3.fromRGB(255, 150, 50), Transparency = 0.4 },
+			Rocket = { Style = "Rocket", Length = 4.5 },
+			Cannon = { Style = "Orb", SizeMul = 1.25 },
+			Rail = { Style = "Bolt", Length = 16, SizeMul = 0.7, Color = Color3.fromRGB(150, 230, 255) },
+			Sniper = { Style = "Bolt", Length = 8, SizeMul = 0.8 },
+			Rifle = { Style = "Bolt", Length = 3.5 },
+			Smg = { Style = "Bolt", Length = 2 },
+			Shotgun = { Style = "Ball", SizeMul = 0.9 },
+		}
+		local look = CLASS_LOOK[shown.Class]
+		local shownColor = shown.Color
+		if look then
+			shot = table.clone(shot)
+			shot.Style = look.Style or shot.Style
+			shot.Length = look.Length or shot.Length or 3
+			shot.Size *= look.SizeMul or 1
+			shownColor = look.Color or shownColor
+		end
 		local style = shot.Style
 		local bolt = style == "Bolt" or style == "Rocket"
 		local speed = math.clamp(shot.Speed * SHOT_SPEED_SCALE, 34, 100)
@@ -2237,9 +2257,10 @@ do
 			local part = Instance.new("Part")
 			part.Anchored, part.CanCollide, part.CanQuery = true, false, false
 			part.Material = Enum.Material.Neon
-			part.Color = shown.Color
+			part.Color = shownColor
+			part.Transparency = 1
 			part.Shape = bolt and Enum.PartType.Block or Enum.PartType.Ball
-			part.Size = bolt and Vector3.new(math.clamp((shot.Length or 3) * 0.35, 1, 3.4), thick * 0.5, thick * 0.5) or Vector3.new(thick, thick, thick)
+			part.Size = bolt and Vector3.new(math.clamp((shot.Length or 3) * 0.35, 1, 5.6), thick * 0.5, thick * 0.5) or Vector3.new(thick, thick, thick)
 			part.Transparency = 1
 			part.Parent = viewport
 			local dir = Vector3.new(math.cos(offsetAngle), math.sin(offsetAngle) * 0.5, math.sin(offsetAngle) * 0.9).Unit
@@ -2308,8 +2329,9 @@ do
 				else
 					b.Part.Transparency = 0
 					b.Pos += b.Dir * speed * dt
-					local color = style == "Rainbow" and Color3.fromHSV((clock * 1.4) % 1, 0.8, 1) or (flamer and Color3.fromRGB(255, 140 + math.random(0, 80), 50) or shown.Color)
+					local color = style == "Rainbow" and Color3.fromHSV((clock * 1.4) % 1, 0.8, 1) or (flamer and Color3.fromRGB(255, 140 + math.random(0, 80), 50) or shownColor)
 					b.Part.Color = color
+					b.Part.Transparency = look and look.Transparency or 0
 					b.Part.CFrame = CFrame.lookAt(b.Pos, b.Pos + b.Dir)
 					if style == "Rocket" then -- 연기 꼬리
 						table.insert(fx, { Part = stagePart(Enum.PartType.Ball, Vector3.new(0.5, 0.5, 0.5), b.Pos - b.Dir * 1.2, Color3.fromRGB(190, 190, 200), Enum.Material.SmoothPlastic), Vel = Vector3.zero, Life = 0.3, Max = 0.3 })
@@ -2319,7 +2341,7 @@ do
 						table.remove(bullets, i)
 						hitFlash = 1
 						burst(Vector3.new(targetX - 2, b.Pos.Y, b.Pos.Z), math.clamp(4 + (shot.Impact or 10) // 6, 4, 14), color, 10)
-						if classInfo.Splash then splashRing(slime.Position, classInfo.Splash * 0.5, shown.Color) end
+						if classInfo.Splash then splashRing(slime.Position, classInfo.Splash * 0.5, shownColor) end
 					end
 				end
 			end
