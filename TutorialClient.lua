@@ -161,11 +161,12 @@ local function placeWaypoint(position, name)
 	waypoint.Material = Enum.Material.Neon
 	waypoint.Color = Color3.fromRGB(110, 210, 255)
 	waypoint.Transparency = 0.5
-	waypoint.Size = Vector3.new(3, 160, 3)
-	waypoint.Position = position + Vector3.new(0, 70, 0)
+	waypoint.Size = Vector3.new(1.4, 70, 1.4)
+	waypoint.Transparency = 0.6
+	waypoint.Position = position + Vector3.new(0, 35, 0)
 	waypoint.Parent = workspace
 	local billboard = create("BillboardGui", {
-		Size = UDim2.new(0, 240, 0, 50), StudsOffset = Vector3.new(0, -60, 0), AlwaysOnTop = true, MaxDistance = 100000,
+		Size = UDim2.new(0, 240, 0, 50), StudsOffset = Vector3.new(0, -26, 0), AlwaysOnTop = true, MaxDistance = 100000,
 	}, waypoint)
 	waypointLabel = label({
 		Size = UDim2.new(1, 0, 1, 0), TextSize = 20, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0,
@@ -203,7 +204,7 @@ RunService.RenderStepped:Connect(function()
 		if root then
 			local flat = Vector3.new(root.Position.X - waypoint.Position.X, 0, root.Position.Z - waypoint.Position.Z).Magnitude
 			waypointLabel.Text = string.format("▼ 다음 방  %dm", math.floor(flat + 0.5))
-			waypoint.Transparency = flat < 30 and 0.85 or 0.5
+			waypoint.Transparency = flat < 30 and 0.92 or 0.6
 		end
 	end
 	-- 던전 안에서는 던전 UI 와 겹치지 않게 숨긴다

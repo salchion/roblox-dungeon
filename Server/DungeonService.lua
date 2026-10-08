@@ -167,6 +167,25 @@ local function createHealthBar(part, text, width)
 	gui.MaxDistance = 110
 	gui.Parent = part
 
+	-- 벽 너머에서도 "저쪽에 몬스터가 있다"는 걸 알 수 있는 작은 붉은 화살표 (멀리서도 보이고 벽을 뚫고 보인다)
+	local marker = Instance.new("BillboardGui")
+	marker.Name = "FoeMarker"
+	marker.Size = UDim2.fromOffset(26, 26)
+	marker.StudsOffset = Vector3.new(0, part.Size.Y / 2 + 6, 0)
+	marker.AlwaysOnTop = true
+	marker.MaxDistance = 260
+	marker.Parent = part
+	local arrow = Instance.new("TextLabel")
+	arrow.Size = UDim2.fromScale(1, 1)
+	arrow.BackgroundTransparency = 1
+	arrow.Text = "▼"
+	arrow.Font = Enum.Font.GothamBlack
+	arrow.TextScaled = true
+	arrow.TextColor3 = Color3.fromRGB(255, 80, 70)
+	arrow.TextStrokeTransparency = 0.2
+	arrow.TextTransparency = 0.15
+	arrow.Parent = marker
+
 	local label = Instance.new("TextLabel")
 	label.Size = UDim2.new(1, 0, 0.5, 0)
 	label.BackgroundTransparency = 1
@@ -719,7 +738,7 @@ local function stepRun(run, dt)
 			-- 방에 미리 배치된 몬스터는 플레이어가 가까이 올 때까지 가만히 있다 (한 번 깨어나면 계속 추격)
 			if data.RoomIndex and not data.Awake then
 				local _, nearDist = getNearestTarget(run, part.Position)
-				if nearDist <= 70 then
+				if nearDist <= 100 then
 					data.Awake = true
 				end
 			end
