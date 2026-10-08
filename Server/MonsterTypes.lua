@@ -332,6 +332,16 @@ function M.Update(ctx, part, data, dt, now)
 	local toTarget = flat(target.Position - part.Position)
 	local direction = toTarget.Magnitude > 0.1 and toTarget.Unit or Vector3.new(0, 0, -1)
 	local position = part.Position
+	-- 벽 때문에 플레이어가 안 보이면 곧장 가지 않고 길(방 사이 통로 / 벽의 틈)을 따라 돌아서 간다
+	if ctx.NextStep and ctx.LineOfSight and not ctx.LineOfSight(position, target.Position) then
+		local waypoint = ctx.NextStep(data, position, target.Position)
+		if waypoint then
+			local toWaypoint = flat(waypoint - position)
+			if toWaypoint.Magnitude > 0.5 then
+				direction = toWaypoint.Unit
+			end
+		end
+	end
 
 	-- 돌진 중: 정해둔 방향으로 곧장 달리면서 닿으면 피해 (한 번만)
 	if data.ChargeUntil and now < data.ChargeUntil then

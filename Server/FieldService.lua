@@ -759,6 +759,24 @@ local fieldCtx = {
 	LineOfSight = function(a, b)
 		return (segmentClear(a, b))
 	end,
+	-- 꺾임 벽이 막고 있으면 그 벽의 틈(위 / 아래 가장자리)을 먼저 지나가도록 안내한다
+	NextStep = function(_, from, to)
+		local clear, blockedAt = segmentClear(from, to)
+		if clear then return nil end
+		local half = F.Width / 2
+		for _, rect in ipairs(baffleRects) do
+			if blockedAt.X >= rect.X0 - 6 and blockedAt.X <= rect.X1 + 6 then
+				local gapZ
+				if rect.Z1 < half - 1 then
+					gapZ = (rect.Z1 + half) / 2 -- 벽 위쪽 끝에 틈
+				else
+					gapZ = (-half + rect.Z0) / 2 -- 벽 아래쪽 끝에 틈
+				end
+				return Vector3.new((rect.X0 + rect.X1) / 2, from.Y, gapZ)
+			end
+		end
+		return nil
+	end,
 	GetTarget = nearestFieldPlayer,
 	Fire = function(origin, direction, speed, damage, size, color)
 		fireProjectile(origin, direction, speed, damage, size, color)

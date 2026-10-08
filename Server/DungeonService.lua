@@ -15,6 +15,8 @@ local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Level = require(script.Parent:WaitForChild("LevelService"))
 local MonsterTypes = require(script.Parent:WaitForChild("MonsterTypes"))
 local CollectionService = game:GetService("CollectionService")
+local TweenService = game:GetService("TweenService")
+local Debris = game:GetService("Debris")
 local Combo = require(script.Parent:WaitForChild("ComboService"))
 local Meta = require(script.Parent:WaitForChild("MetaService"))
 local DungeonTerrain = require(script.Parent:WaitForChild("DungeonTerrain"))
@@ -227,6 +229,78 @@ local function segmentClear(run, a, b)
 		lastOpen = p
 	end
 	return true, b
+end
+
+-- 길 안내: 방 / 길(원)들이 서로 겹쳐서 이어진 그래프에서 from 이 있는 원 -> to 가 있는 원까지 최단 경로를 찾고,
+-- 다음에 갈 원의 중심을 돌려준다. (벽에 막혀 곧장 갈 수 없을 때 몬스터가 길을 따라 돌아가게 한다)
+local function circleIndexAt(run, x, z)
+	local best, bestScore = nil, math.huge
+	for index, c in ipairs(run.Circles) do
+		local dx, dz = x - c.X, z - c.Z
+		local score = math.sqrt(dx * dx + dz * dz) - c.R -- 안쪽이면 음수
+		if score < bestScore then
+			best, bestScore = index, score
+		end
+	end
+	return best
+end
+
+local function buildAdjacency(run)
+	local circles = run.Circles
+	local adjacency = {}
+	for i = 1, #circles do
+		adjacency[i] = {}
+	end
+	for i = 1, #circles do
+		local a = circles[i]
+		for j = i + 1, #circles do
+			local b = circles[j]
+			local dx, dz = a.X - b.X, a.Z - b.Z
+			if math.sqrt(dx * dx + dz * dz) < a.R + b.R - 4 then
+				table.insert(adjacency[i], j)
+				table.insert(adjacency[j], i)
+			end
+		end
+	end
+	return adjacency
+end
+
+local function nextStep(run, data, from, to)
+	if not run.Circles or #run.Circles == 0 then return nil end
+	local now = os.clock()
+	if data.NavUntil and now < data.NavUntil and data.NavTarget then
+		return data.NavTarget
+	end
+	run.Adjacency = run.Adjacency or buildAdjacency(run)
+	local start = circleIndexAt(run, from.X, from.Z)
+	local goal = circleIndexAt(run, to.X, to.Z)
+	if not start or not goal then return nil end
+	if start == goal then
+		data.NavTarget = Vector3.new(to.X, from.Y, to.Z)
+	else
+		-- 너비 우선 탐색
+		local previous = { [start] = false }
+		local queue, head = { start }, 1
+		while head <= #queue and previous[goal] == nil do
+			local current = queue[head]
+			head += 1
+			for _, neighbor in ipairs(run.Adjacency[current]) do
+				if previous[neighbor] == nil then
+					previous[neighbor] = current
+					table.insert(queue, neighbor)
+				end
+			end
+		end
+		if previous[goal] == nil then return nil end
+		local step = goal
+		while previous[step] ~= start and previous[step] ~= false do
+			step = previous[step]
+		end
+		local c = run.Circles[step]
+		data.NavTarget = Vector3.new(c.X, from.Y, c.Z)
+	end
+	data.NavUntil = now + 0.35
+	return data.NavTarget
 end
 
 -- 이 위치 아래의 땅 높이 (지형이 울퉁불퉁하므로 raycast 로 구한다)
@@ -1199,57 +1273,133 @@ local function eventTreasure(run, room, wave)
 	return true
 end
 
--- 이벤트 2) 함정방: 운석 비. 끝까지 버티면 골드 + 특성
+-- 이벤트 2) 함정방: 하늘에서 운석이 떨어진다. 바닥의 붉은 원이 점점 커지고, 다 커지면 운석이 꽂힌다.
+-- 라운드가 갈수록 운석이 많아진다. 끝까지 버티면 골드 + 특성.
 local function eventTrap(run, room, wave)
 	run.Phase = "Event"
 	run.StageText = D.Events.Trap.Name
 	notifyAll(run, D.Events.Trap.Name .. " — " .. D.Events.Trap.Desc)
-	task.wait(2)
 	local level = math.max(1, D.GetWaveMonsterLevel(wave) + run.LevelBonus)
-	local damage = math.floor(Config.Monster.GetStats(level).ShotDamage * 1.5 * run.Difficulty.DamageMult)
-	for _ = 1, 9 do
+	local damage = math.floor(Config.Monster.GetStats(level).ShotDamage * 1.6 * run.Difficulty.DamageMult)
+	local rounds = 12
+	local radius = 10
+	task.wait(2)
+
+	local function shake(strength)
+		for _, member in ipairs(run.Members) do
+			member:SetAttribute("ShakeStrength", strength)
+			member:SetAttribute("ShakeTick", (member:GetAttribute("ShakeTick") or 0) + 1)
+		end
+	end
+
+	for round = 1, rounds do
 		if run.Destroyed or run.Phase == "Ended" then return false end
 		if allDown(run) then
 			finish(run, false)
 			return false
 		end
-		local markers = {}
+		run.StageText = string.format("☄ 함정방  운석 %d / %d  — 계속 움직이세요!", round, rounds)
+
+		-- 이번 라운드의 낙하 지점: 각 플레이어 근처 + 방 안 무작위 (뒤 라운드일수록 많다)
+		local centers = {}
 		for _, member in ipairs(run.Members) do
 			local root = getAliveParts(member)
 			if root then
-				local jitter = Vector3.new(math.random(-7, 7), 0, math.random(-7, 7))
-				local x, z = root.Position.X + jitter.X, root.Position.Z + jitter.Z
-				local center = Vector3.new(x, groundAt(run, x, z, root.Position.Y) + 0.3, z)
-				local marker = Instance.new("Part")
-				marker.Shape = Enum.PartType.Cylinder
-				marker.Anchored = true
-				marker.CanCollide = false
-				marker.CanQuery = false
-				marker.Size = Vector3.new(0.4, 18, 18)
-				marker.CFrame = CFrame.new(center) * CFrame.Angles(0, 0, math.rad(90))
-				marker.Color = Color3.fromRGB(255, 60, 40)
-				marker.Material = Enum.Material.Neon
-				marker.Transparency = 0.5
-				marker.Parent = run.Folder
-				table.insert(markers, { Part = marker, Center = center })
+				table.insert(centers, root.Position + Vector3.new(math.random(-6, 6), 0, math.random(-6, 6)))
+				for _ = 1, round // 4 do
+					local angle = math.random() * math.pi * 2
+					local dist = math.random() * room.R * 0.7
+					table.insert(centers, room.Pos + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist))
+				end
 			end
 		end
-		task.wait(1.2)
-		for _, marker in ipairs(markers) do
+
+		local strikes = {}
+		for _, position in ipairs(centers) do
+			local x, z = position.X, position.Z
+			local groundY = groundAt(run, x, z, room.Pos.Y + 10)
+			local center = Vector3.new(x, groundY + 0.3, z)
+
+			local marker = Instance.new("Part") -- 바닥의 경고 원 (바깥 고리 + 점점 차오르는 안쪽 원)
+			marker.Shape = Enum.PartType.Cylinder
+			marker.Anchored = true
+			marker.CanCollide = false
+			marker.CanQuery = false
+			marker.Size = Vector3.new(0.3, radius * 2, radius * 2)
+			marker.CFrame = CFrame.new(center) * CFrame.Angles(0, 0, math.rad(90))
+			marker.Color = Color3.fromRGB(255, 70, 40)
+			marker.Material = Enum.Material.Neon
+			marker.Transparency = 0.75
+			marker.Parent = run.Folder
+			local fill = Instance.new("Part")
+			fill.Shape = Enum.PartType.Cylinder
+			fill.Anchored = true
+			fill.CanCollide = false
+			fill.CanQuery = false
+			fill.Size = Vector3.new(0.4, 1, 1)
+			fill.CFrame = CFrame.new(center + Vector3.new(0, 0.1, 0)) * CFrame.Angles(0, 0, math.rad(90))
+			fill.Color = Color3.fromRGB(255, 200, 60)
+			fill.Material = Enum.Material.Neon
+			fill.Transparency = 0.35
+			fill.Parent = run.Folder
+			TweenService:Create(fill, TweenInfo.new(1.4, Enum.EasingStyle.Linear), { Size = Vector3.new(0.4, radius * 2, radius * 2) }):Play()
+
+			local meteor = Instance.new("Part") -- 하늘에서 떨어지는 불덩이
+			meteor.Shape = Enum.PartType.Ball
+			meteor.Anchored = true
+			meteor.CanCollide = false
+			meteor.CanQuery = false
+			meteor.Size = Vector3.new(7, 7, 7)
+			meteor.Color = Color3.fromRGB(255, 120, 40)
+			meteor.Material = Enum.Material.Neon
+			meteor.Position = center + Vector3.new(math.random(-10, 10), 85, math.random(-10, 10))
+			meteor.Parent = run.Folder
+			local trail = Instance.new("ParticleEmitter")
+			trail.Rate = 80
+			trail.Lifetime = NumberRange.new(0.4, 0.8)
+			trail.Speed = NumberRange.new(2, 6)
+			trail.SpreadAngle = Vector2.new(180, 180)
+			trail.LightEmission = 1
+			trail.Color = ColorSequence.new(Color3.fromRGB(255, 220, 90), Color3.fromRGB(255, 60, 20))
+			trail.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 4), NumberSequenceKeypoint.new(1, 0) })
+			trail.Parent = meteor
+			local light = Instance.new("PointLight")
+			light.Range = 40
+			light.Brightness = 3
+			light.Color = Color3.fromRGB(255, 140, 60)
+			light.Parent = meteor
+			TweenService:Create(meteor, TweenInfo.new(1.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Position = center + Vector3.new(0, 3, 0) }):Play()
+
+			table.insert(strikes, { Center = center, Marker = marker, Fill = fill, Meteor = meteor })
+		end
+
+		task.wait(1.45)
+		-- 충돌: 큰 폭발 + 화면 흔들림 + 피해, 바닥에 그을린 자국이 잠깐 남는다
+		for _, strike in ipairs(strikes) do
 			for _, member in ipairs(run.Members) do
 				local root, humanoid = getAliveParts(member)
 				if root then
-					local flat = Vector3.new(root.Position.X - marker.Center.X, 0, root.Position.Z - marker.Center.Z).Magnitude
-					if flat <= 9 then
+					local flatDist = Vector3.new(root.Position.X - strike.Center.X, 0, root.Position.Z - strike.Center.Z).Magnitude
+					if flatDist <= radius then
 						humanoid:TakeDamage(damage)
 					end
 				end
 			end
-			Effects.Burst(marker.Center + Vector3.new(0, 2, 0), Color3.fromRGB(255, 120, 50), 35)
-			marker.Part:Destroy()
+			Effects.Burst(strike.Center + Vector3.new(0, 2, 0), Color3.fromRGB(255, 130, 50), 90)
+			Effects.Burst(strike.Center + Vector3.new(0, 4, 0), Color3.fromRGB(255, 230, 120), 40)
+			strike.Meteor:Destroy()
+			strike.Fill:Destroy()
+			strike.Marker.Color = Color3.fromRGB(40, 20, 20) -- 그을린 자국
+			strike.Marker.Material = Enum.Material.Slate
+			strike.Marker.Transparency = 0.2
+			Debris:AddItem(strike.Marker, 3)
 		end
-		task.wait(0.5)
+		if #strikes > 0 then
+			shake(0.7)
+		end
+		task.wait(0.35)
 	end
+	run.StageText = D.Events.Trap.Name
 	giveGold(run, D.WaveClearGold * wave * 2)
 	giveXp(run, Config.Xp.WaveClear * wave)
 	notifyAll(run, "☄ 함정방 돌파! 보너스 골드를 얻었어요")
@@ -1521,6 +1671,9 @@ function Dungeon.Start(player, typeKey, diffKey)
 		end,
 		LineOfSight = function(a, b)
 			return (segmentClear(run, a, b))
+		end,
+		NextStep = function(data, from, to)
+			return nextStep(run, data, from, to)
 		end,
 		GetTarget = function(position)
 			return getNearestTarget(run, position)

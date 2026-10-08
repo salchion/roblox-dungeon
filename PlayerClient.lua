@@ -2729,7 +2729,11 @@ Remotes.Hit.OnClientEvent:Connect(function(isCrit, killed)
 	end
 end)
 
-RunService:BindToRenderStep("HitShake", Enum.RenderPriority.Camera.Value + 1, function(dt)
+player:GetAttributeChangedSignal("ShakeTick"):Connect(function() -- 서버가 보내는 화면 흔들림 (운석 충돌 등)
+		shake = math.max(shake, player:GetAttribute("ShakeStrength") or 0.5)
+	end)
+
+	RunService:BindToRenderStep("HitShake", Enum.RenderPriority.Camera.Value + 1, function(dt)
 	if shake <= 0.01 or not settings.Shake then
 		shake = 0
 		return
