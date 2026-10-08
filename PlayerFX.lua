@@ -28,20 +28,20 @@ do
 	tint.Parent = Lighting
 	local vignette = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Visible = false, ZIndex = 40, Active = false }, gui)
 	for _, edge in ipairs({
-		{ Size = UDim2.new(1, 0, 0.22, 0), Position = UDim2.new(0, 0, 0, 0), Rotation = 90 },
-		{ Size = UDim2.new(1, 0, 0.22, 0), Position = UDim2.new(0, 0, 0.78, 0), Rotation = 270 },
-		{ Size = UDim2.new(0.16, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0), Rotation = 0 },
-		{ Size = UDim2.new(0.16, 0, 1, 0), Position = UDim2.new(0.84, 0, 0, 0), Rotation = 180 },
+		{ Size = UDim2.new(1, 0, 0.12, 0), Position = UDim2.new(0, 0, 0, 0), Rotation = 90 },
+		{ Size = UDim2.new(1, 0, 0.12, 0), Position = UDim2.new(0, 0, 0.88, 0), Rotation = 270 },
+		{ Size = UDim2.new(0.09, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0), Rotation = 0 },
+		{ Size = UDim2.new(0.09, 0, 1, 0), Position = UDim2.new(0.91, 0, 0, 0), Rotation = 180 },
 	}) do
 		local frame = create("Frame", { Size = edge.Size, Position = edge.Position, BackgroundColor3 = Color3.fromRGB(200, 20, 30), BorderSizePixel = 0 }, vignette)
-		create("UIGradient", { Rotation = edge.Rotation, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.35), NumberSequenceKeypoint.new(1, 1) }) }, frame)
+		create("UIGradient", { Rotation = edge.Rotation, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.7), NumberSequenceKeypoint.new(1, 1) }) }, frame)
 	end
 	local function apply()
 		local on = player:GetAttribute("DeadeyeActive") == true
 		vignette.Visible = on
 		if on then
 			tint.Enabled = true
-			TweenService:Create(tint, TweenInfo.new(0.3), { Saturation = -0.55, Contrast = 0.18, Brightness = -0.04, TintColor = Color3.fromRGB(255, 150, 150) }):Play()
+			TweenService:Create(tint, TweenInfo.new(0.3), { Saturation = -0.2, Contrast = 0.06, Brightness = 0, TintColor = Color3.fromRGB(255, 205, 205) }):Play()
 		else
 			local tween = TweenService:Create(tint, TweenInfo.new(0.4), { Saturation = 0, Contrast = 0, Brightness = 0, TintColor = Color3.new(1, 1, 1) })
 			tween:Play()

@@ -1741,7 +1741,7 @@ player.CharacterAdded:Connect(function(character)
 end)
 
 RunService.RenderStepped:Connect(function(dt)
-	local target = player:GetAttribute("DeadeyeActive") and 52 or (sliding and 108 or sprinting and 80 or 70) -- 데드아이: 줌인
+	local target = player:GetAttribute("DeadeyeActive") and 62 or (sliding and 108 or sprinting and 80 or 70) -- 데드아이: 줌인
 	camera.FieldOfView += (target - camera.FieldOfView) * math.min(1, dt * 8)
 end)
 
@@ -3464,10 +3464,10 @@ Remotes.Skill.OnClientEvent:Connect(function(action, skillKey, cooldown)
 		skillReadyAt[skillKey] = os.clock() + skillCooldownTotal[skillKey]
 		if skillKey == "Ult" then
 			-- 서버 연출과 별개로, 발동한 순간 화면 전체가 붉게 번쩍이고 큰 글자가 뜬다 (확실히 "나갔다"는 피드백)
-			local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 40, 40), BackgroundTransparency = 0.35, BorderSizePixel = 0, ZIndex = 58, Active = false }, gui)
-			TweenService:Create(flash, TweenInfo.new(0.7), { BackgroundTransparency = 1 }):Play()
-			task.delay(0.8, function() flash:Destroy() end)
-			local big = makeLabel({ Size = UDim2.new(1, 0, 0, 120), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.3, 0), Text = "◎ DEADEYE ◎", Font = Enum.Font.GothamBlack, TextSize = 110, TextColor3 = Color3.fromRGB(255, 60, 60), TextStrokeTransparency = 0, ZIndex = 60 }, gui)
+			local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 70, 60), BackgroundTransparency = 0.8, BorderSizePixel = 0, ZIndex = 58, Active = false }, gui)
+			TweenService:Create(flash, TweenInfo.new(0.4), { BackgroundTransparency = 1 }):Play()
+			task.delay(0.5, function() flash:Destroy() end)
+			local big = makeLabel({ Size = UDim2.new(1, 0, 0, 120), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.3, 0), Text = "◎ DEADEYE ◎", Font = Enum.Font.GothamBlack, TextSize = 64, TextColor3 = Color3.fromRGB(255, 60, 60), TextStrokeTransparency = 0, ZIndex = 60 }, gui)
 			TweenService:Create(big, TweenInfo.new(1.6), { TextTransparency = 1, TextStrokeTransparency = 1, Position = UDim2.new(0.5, 0, 0.24, 0) }):Play()
 			task.delay(1.7, function() big:Destroy() end)
 		end

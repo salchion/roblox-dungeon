@@ -202,9 +202,9 @@ handlers.Ult = function(player, root, _, character)
 	player:SetAttribute("UltCharge", 0)
 
 	local origin = root.Position
-	local totalMult = (cfg.Mult or 8) * (1 + (U.UltMult or 0.15) * (skillLevel(player, "Ult") - 1))
+	local totalMult = (cfg.Mult or 8) * 0.75 * (1 + (U.UltMult or 0.15) * (skillLevel(player, "Ult") - 1))
 	-- 범위 안의 모든 적을 "동시에" 집중 포격한다: 조준 표시 -> 충격파 -> 전원에게 동시에 빔이 쏟아지는 일제 사격 14회 -> 마지막 대폭발
-	local volleys, volleyGap = 14, 0.07
+	local volleys, volleyGap = 30, 0.045
 	local perShot = math.max(1, math.floor(Dungeon.ComputeDamage(player) * totalMult / volleys))
 
 	local field = Instance.new("ForceField")
@@ -257,7 +257,7 @@ handlers.Ult = function(player, root, _, character)
 						pcall(function()
 							local jitter = Vector3.new(math.random() - 0.5, math.random() - 0.5, math.random() - 0.5) * (part.Size.X * 0.5)
 							thickBeam(from, part.Position + jitter, (fired % 2 == 0) and Color3.fromRGB(255, 235, 120) or Color3.fromRGB(255, 110, 80), 1.1, 0.18)
-							Effects.Burst(part.Position + jitter, Color3.fromRGB(255, 110, 70), 8)
+							if volley % 2 == 0 then Effects.Burst(part.Position + jitter, Color3.fromRGB(255, 110, 70), 6) end
 							local label = markers[index] and markers[index]:FindFirstChildOfClass("TextLabel")
 							if label then label.TextColor3 = Color3.fromRGB(255, 255, 255) end
 						end)
@@ -274,11 +274,11 @@ handlers.Ult = function(player, root, _, character)
 					flash.Parent = workspace
 					TweenService:Create(flash, TweenInfo.new(0.12), { Size = Vector3.new(0.5, 0.5, 0.5), Transparency = 1 }):Play()
 					Debris:AddItem(flash, 0.2)
-					if volley % 2 == 1 then
+					if volley % 3 == 1 then
 						Effects.PlaySound(root, Config.Audio.Shot, 0.6, 1.1 + math.random() * 0.3)
 						ring(root.Position, cfg.Radius * (0.4 + 0.6 * volley / volleys), Color3.fromRGB(255, 120, 80), 0.35)
 					end
-					player:SetAttribute("ShakeStrength", 0.3)
+					player:SetAttribute("ShakeStrength", 0.18)
 					player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 					local nearest = targets[1]
 					if nearest and nearest.Parent then
