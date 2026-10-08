@@ -1838,6 +1838,173 @@ local function buildCharacterTab()
 	end
 end
 
+-- 무기 발사 시연 (무기 탭): 총 3D 모델 + 앞에 선 슬라임 몬스터를 향해 실제 탄 모양이 날아가 맞고 터지는 걸 반복해서 보여준다.
+-- 내가 못 끼는 무기도 도감에서 누르면 똑같이 볼 수 있다.
+do
+	local SHOT_SPEED_SCALE = 0.25
+	settings.BuildFireDemo = function(viewport, shown, classInfo)
+		local cam = create("Camera", { FieldOfView = 40 }, viewport)
+		viewport.CurrentCamera = cam
+		local previews = ReplicatedStorage:FindFirstChild("WeaponPreviews")
+		local source = previews and previews:FindFirstChild("W" .. shown.Index)
+		if not source then return end
+
+		-- 무대: 바닥 + 슬라임 표적
+		local function stagePart(shape, size, position, color, material)
+			local part = Instance.new("Part")
+			part.Anchored, part.CanCollide, part.CanQuery = true, false, false
+			part.Shape = shape
+			part.Size = size
+			part.Position = position
+			part.Color = color
+			part.Material = material or Enum.Material.SmoothPlastic
+			part.Parent = viewport
+			return part
+		end
+		stagePart(Enum.PartType.Block, Vector3.new(60, 0.4, 24), Vector3.new(8, -2.3, 0), Color3.fromRGB(46, 50, 70), Enum.Material.Slate)
+		local targetX = 16
+		local slimeColor = Color3.fromRGB(110, 220, 120)
+		local slime = stagePart(Enum.PartType.Ball, Vector3.new(4, 3.4, 4), Vector3.new(targetX, -0.4, 0), slimeColor)
+		for _, z in ipairs({ -0.7, 0.7 }) do
+			stagePart(Enum.PartType.Ball, Vector3.new(0.5, 0.6, 0.5), Vector3.new(targetX - 1.8, 0.2, z), Color3.new(0, 0, 0))
+		end
+
+		-- 총: 총구가 +X 를 보게 눕히고 5 스터드 길이로 맞춘다
+		local model = source:Clone()
+		model.Parent = viewport
+		local _, size0 = model:GetBoundingBox()
+		model:ScaleTo(5 / math.max(size0.X, size0.Y, size0.Z))
+		local pivotBase = CFrame.lookAt(Vector3.new(0, 0, 0), Vector3.new(1, 0, 0))
+		model:PivotTo(pivotBase)
+		local gcf, gsize = model:GetBoundingBox()
+		local muzzle = Vector3.new(gcf.Position.X + gsize.X / 2, gcf.Position.Y, 0)
+		cam.CFrame = CFrame.lookAt(Vector3.new(7.8, 1.6, 22), Vector3.new(7.8, -0.2, 0))
+
+		local shot = shown.Shot or { Style = "Ball", Size = 0.6, Speed = 260 }
+		local style = shot.Style
+		local bolt = style == "Bolt" or style == "Rocket"
+		local speed = math.clamp(shot.Speed * SHOT_SPEED_SCALE, 34, 100)
+		local thick = math.clamp(shot.Size * 0.5, 0.3, 1.6)
+		local pellets = math.min(classInfo.Pellets, 5)
+		local period = math.clamp(classInfo.Cooldown * 0.9, 0.5, 1.9)
+		local flamer = style == "Fire"
+
+		local bullets, fx = {}, {}
+		local function spawnBullet(offsetAngle, delay)
+			local part = Instance.new("Part")
+			part.Anchored, part.CanCollide, part.CanQuery = true, false, false
+			part.Material = Enum.Material.Neon
+			part.Color = shown.Color
+			part.Shape = bolt and Enum.PartType.Block or Enum.PartType.Ball
+			part.Size = bolt and Vector3.new(math.clamp((shot.Length or 3) * 0.35, 1, 3.4), thick * 0.5, thick * 0.5) or Vector3.new(thick, thick, thick)
+			part.Transparency = 1
+			part.Parent = viewport
+			local dir = Vector3.new(math.cos(offsetAngle), math.sin(offsetAngle) * 0.5, math.sin(offsetAngle) * 0.9).Unit
+			table.insert(bullets, { Part = part, Dir = dir, Pos = muzzle, Delay = delay or 0 })
+		end
+		local function burst(position, count, color, speedMax)
+			for _ = 1, count do
+				local p = Instance.new("Part")
+				p.Anchored, p.CanCollide, p.CanQuery = true, false, false
+				p.Material = Enum.Material.Neon
+				p.Color = color
+				p.Size = Vector3.new(0.35, 0.35, 0.35)
+				p.Position = position
+				p.Parent = viewport
+				local v = Vector3.new(math.random() * 2 - 1, math.random() * 1.6 - 0.2, math.random() * 2 - 1).Unit * (speedMax * (0.4 + math.random() * 0.6))
+				table.insert(fx, { Part = p, Vel = v, Life = 0.45, Max = 0.45 })
+			end
+		end
+		local function splashRing(position, radius, color)
+			local p = Instance.new("Part")
+			p.Anchored, p.CanCollide, p.CanQuery = true, false, false
+			p.Shape = Enum.PartType.Ball
+			p.Material = Enum.Material.Neon
+			p.Color = color
+			p.Transparency = 0.4
+			p.Size = Vector3.new(1, 1, 1)
+			p.Position = position
+			p.Parent = viewport
+			table.insert(fx, { Part = p, Vel = Vector3.zero, Life = 0.4, Max = 0.4, Grow = radius * 2 })
+		end
+
+		local clock = settings.DemoClock or 0
+		local lastShot = -10
+		local hitFlash = 0
+		local recoil = 0
+		local connection
+		connection = RunService.RenderStepped:Connect(function(dt)
+			if not viewport:IsDescendantOf(game) then
+				connection:Disconnect()
+				return
+			end
+			clock += dt
+			settings.DemoClock = clock
+			-- 발사
+			if clock - lastShot >= period then
+				lastShot = clock
+				recoil = 1
+				local flash = stagePart(Enum.PartType.Ball, Vector3.new(1.3, 1.3, 1.3), muzzle + Vector3.new(0.4, 0, 0), Color3.fromRGB(255, 240, 170), Enum.Material.Neon)
+				table.insert(fx, { Part = flash, Vel = Vector3.zero, Life = 0.08, Max = 0.08 })
+				if flamer then
+					for i = 0, 4 do spawnBullet(0, i * 0.05) end
+				elseif pellets > 1 then
+					for i = 1, pellets do spawnBullet(((i - 1) / (pellets - 1) - 0.5) * 0.28, 0) end
+				else
+					spawnBullet(0, 0)
+				end
+			end
+			-- 반동
+			recoil = math.max(0, recoil - dt * 6)
+			model:PivotTo(pivotBase * CFrame.new(0, 0, recoil * 0.35))
+			-- 탄 이동 / 명중
+			for i = #bullets, 1, -1 do
+				local b = bullets[i]
+				if b.Delay > 0 then
+					b.Delay -= dt
+				else
+					b.Part.Transparency = 0
+					b.Pos += b.Dir * speed * dt
+					local color = style == "Rainbow" and Color3.fromHSV((clock * 1.4) % 1, 0.8, 1) or (flamer and Color3.fromRGB(255, 140 + math.random(0, 80), 50) or shown.Color)
+					b.Part.Color = color
+					b.Part.CFrame = CFrame.lookAt(b.Pos, b.Pos + b.Dir)
+					if style == "Rocket" then -- 연기 꼬리
+						table.insert(fx, { Part = stagePart(Enum.PartType.Ball, Vector3.new(0.5, 0.5, 0.5), b.Pos - b.Dir * 1.2, Color3.fromRGB(190, 190, 200), Enum.Material.SmoothPlastic), Vel = Vector3.zero, Life = 0.3, Max = 0.3 })
+					end
+					if b.Pos.X >= targetX - 2.1 then
+						b.Part:Destroy()
+						table.remove(bullets, i)
+						hitFlash = 1
+						burst(Vector3.new(targetX - 2, b.Pos.Y, b.Pos.Z), math.clamp(4 + (shot.Impact or 10) // 6, 4, 14), color, 10)
+						if classInfo.Splash then splashRing(slime.Position, classInfo.Splash * 0.5, shown.Color) end
+					end
+				end
+			end
+			-- 표적 반응 (맞으면 번쩍하고 찌그러진다)
+			hitFlash = math.max(0, hitFlash - dt * 7)
+			slime.Color = slimeColor:Lerp(Color3.new(1, 1, 1), hitFlash)
+			slime.Size = Vector3.new(4 - hitFlash * 0.5, 3.4 + hitFlash * 0.3, 4 - hitFlash * 0.5)
+			slime.Position = Vector3.new(targetX + hitFlash * 0.4, -0.4, 0)
+			-- 파편 / 효과
+			for i = #fx, 1, -1 do
+				local e = fx[i]
+				e.Life -= dt
+				if e.Life <= 0 then
+					e.Part:Destroy()
+					table.remove(fx, i)
+				else
+					e.Part.Position += e.Vel * dt
+					e.Part.Transparency = math.clamp(1 - e.Life / e.Max, 0, 1)
+					if e.Grow then
+						local d = 1 + e.Grow * (1 - e.Life / e.Max)
+						e.Part.Size = Vector3.new(d, d, d)
+					end
+				end
+			end
+		end)
+	end
+end
+
 local function buildWeaponTab()
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local tiers = Config.Weapon.Tiers
@@ -1845,77 +2012,26 @@ local function buildWeaponTab()
 	local stage = Config.GetWeaponStage(level)
 	sectionTitle(string.format("🔫 무기 도감 — 무기마다 정해진 횟수만큼 강화하면 다음 무기로 자동 진화해요 (총 %d종)", #tiers))
 
-	local header = newRow(250)
-	local classInfo = Config.WeaponTypes[current.Class]
-	local nextTier = tiers[current.Index + 1]
+	-- 도감에서 누른 무기(없으면 지금 내 무기)를 보여준다. 내가 못 끼는 무기도 눌러서 발사 모습을 볼 수 있다.
+	local shown = tiers[settings.PreviewTier or current.Index] or current
+	local isMine = shown.Index == current.Index
+	local classInfo = Config.WeaponTypes[shown.Class]
+	local nextTier = tiers[shown.Index + 1]
 
-	-- 왼쪽: 지금 무기 3D 모델 + 발사체 시연 (총구에서 실제 탄 모양이 날아가는 걸 반복해서 보여준다)
+	local header = newRow(262)
 	do
 		local viewport = create("ViewportFrame", {
-			Size = UDim2.new(0, 250, 0, 226), Position = UDim2.new(0, 12, 0, 12), BackgroundColor3 = Color3.fromRGB(20, 22, 34), BorderSizePixel = 0,
+			Size = UDim2.new(0, 270, 0, 238), Position = UDim2.new(0, 12, 0, 12), BackgroundColor3 = Color3.fromRGB(24, 26, 42), BorderSizePixel = 0,
 			Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1),
 		}, header)
 		rounded(viewport, 10)
-		create("UIStroke", { Color = current.Color, Thickness = 2 }, viewport)
-		local cam = create("Camera", { FieldOfView = 40 }, viewport)
-		viewport.CurrentCamera = cam
-		local previews = ReplicatedStorage:FindFirstChild("WeaponPreviews")
-		local source = previews and previews:FindFirstChild("W" .. current.Index)
-		if source then
-			local model = source:Clone()
-			model.Parent = viewport
-			local handle = model.PrimaryPart or model:FindFirstChildWhichIsA("BasePart")
-			local cf, size = model:GetBoundingBox()
-			local reach = math.max(size.X, size.Y, size.Z)
-			local dir = handle and handle.CFrame.LookVector or Vector3.new(0, 0, -1) -- 총구 방향
-			local side = handle and handle.CFrame.RightVector or Vector3.new(1, 0, 0)
-			local muzzle = cf.Position + dir * (size.Z / 2 + 0.2)
-			-- 총구가 오른쪽을 향하도록 카메라를 둔다
-			local camPos = cf.Position + side * reach * 1.7 * (dir:Cross(Vector3.yAxis).Unit:Dot(side) >= 0 and -1 or 1) + Vector3.new(0, reach * 0.2, 0)
-			cam.CFrame = CFrame.lookAt(camPos, cf.Position + dir * reach * 0.9)
-			local shot = current.Shot or { Style = "Ball", Size = 0.6, Speed = 260 }
-			local bolt = shot.Style == "Bolt" or shot.Style == "Rocket"
-			local bullet = Instance.new("Part")
-			bullet.Anchored, bullet.CanCollide = true, false
-			bullet.Material = Enum.Material.Neon
-			bullet.Color = current.Color
-			bullet.Shape = bolt and Enum.PartType.Block or Enum.PartType.Ball
-			local thick = math.clamp(shot.Size * 0.22, 0.12, 0.9)
-			bullet.Size = bolt and Vector3.new(thick, thick, math.clamp((shot.Length or 3) * 0.35, 0.6, 2.4)) or Vector3.new(thick * 1.6, thick * 1.6, thick * 1.6)
-			bullet.Parent = viewport
-			local pellets = classInfo.Pellets
-			local extra = {}
-			for i = 2, math.min(pellets, 6) do -- 산탄: 여러 발이 퍼져 나간다
-				extra[i] = bullet:Clone()
-				extra[i].Parent = viewport
-			end
-			local clock = 0
-			local connection
-			connection = RunService.RenderStepped:Connect(function(dt)
-				if not viewport:IsDescendantOf(game) then
-					connection:Disconnect()
-					return
-				end
-				clock += dt
-				local period = math.clamp(classInfo.Cooldown * 1.0, 0.6, 1.6) -- 발사 간격에 비례해서 반복
-				local t = (clock % period) / period
-				local travel = t * reach * 2.6
-				bullet.CFrame = CFrame.lookAt(muzzle + dir * travel, muzzle + dir * (travel + 1))
-				bullet.Transparency = t > 0.85 and (t - 0.85) / 0.15 or 0
-				for i, part in pairs(extra) do
-					local angle = math.rad(((i - 1) / math.max(1, math.min(pellets, 6) - 1) - 0.5) * 2 * 28)
-					local fan = (CFrame.Angles(0, angle, 0)):VectorToWorldSpace(dir)
-					part.CFrame = CFrame.lookAt(muzzle + fan * travel, muzzle + fan * (travel + 1))
-					part.Transparency = bullet.Transparency
-				end
-			end)
-		end
-		makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 1, -22), Text = "발사 시연", TextSize = 11, TextColor3 = Color3.fromRGB(150, 160, 190) }, viewport)
+		create("UIStroke", { Color = shown.Rainbow and Color3.fromRGB(255, 120, 255) or shown.Color, Thickness = 2 }, viewport)
+		settings.BuildFireDemo(viewport, shown, classInfo)
+		makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 1, -22), Text = isMine and "내 무기 · 발사 시연" or "👀 미리보기 · 발사 시연", TextSize = 11, TextColor3 = Color3.fromRGB(170, 180, 210) }, viewport)
 	end
 
-	-- 오른쪽: 공격 방식 설명 (한 번에 몇 발 / 얼마나 빨리 / 맞으면 어떻게 되는지)
 	local SHOT_NAMES = { Ball = "작은 탄환", Bolt = "빛줄기 탄", Orb = "에너지 구체", Cannon = "대형 포탄", Fire = "불꽃 덩이", Rocket = "로켓탄", Rainbow = "무지개 광구" }
-	local shotInfo = current.Shot or { Style = "Ball" }
+	local shotInfo = shown.Shot or { Style = "Ball" }
 	local behavior = {}
 	if classInfo.Pellets > 1 then table.insert(behavior, string.format("한 번에 %d발이 부채꼴로 퍼짐", classInfo.Pellets)) end
 	if classInfo.Splash then table.insert(behavior, string.format("맞은 곳이 폭발 (범위 %d)", classInfo.Splash)) end
@@ -1923,15 +2039,23 @@ local function buildWeaponTab()
 	if (classInfo.CritBonus or 0) > 0 then table.insert(behavior, string.format("치명타 +%d%%", math.floor(classInfo.CritBonus * 100 + 0.5))) end
 	if #behavior == 0 then table.insert(behavior, "곧게 날아가 한 마리를 맞힘") end
 	local rate = 1 / math.max(0.05, classInfo.Cooldown * Config.Player.BaseCooldown)
+	local status
+	if isMine then
+		status = string.format("<font color='#ffd966'>+%d / %d</font>  %s", stage, shown.Steps, Config.StageBar(level))
+	elseif shown.Index < current.Index then
+		status = "<font color='#78ff8c'>✔ 이미 지나온 무기</font>"
+	else
+		status = string.format("<font color='#ff9a6e'>🔒 +%d 단계부터 (앞으로 %d단계)</font>", shown.MinLevel, math.max(0, shown.MinLevel - level))
+	end
 	makeLabel({
-		Size = UDim2.new(1, -290, 1, -20), Position = UDim2.new(0, 274, 0, 10), RichText = true, TextSize = 14,
+		Size = UDim2.new(1, -306, 1, -20), Position = UDim2.new(0, 294, 0, 10), RichText = true, TextSize = 14,
 		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 		Text = string.format(
-			"<font size='20'><b><font color='#%s'>[%d/%d] %s</font></b></font>  <font color='#ffd966'>+%d / %d</font>\n%s\n<font color='#bbbbcc'>%s</font>\n\n<b>🔫 공격 방식</b>\n<font color='#dfe6ff'>• 탄 모양: %s\n• %s\n• 초당 약 %.1f발 · 한 발 x%.2f · 사거리 %d</font>\n\n%s",
-			hex(current.Color), current.Index, #tiers, current.Name, stage, current.Steps, Config.StageBar(level), classInfo.Desc,
+			"<font size='20'><b><font color='#%s'>[%d/%d] %s</font></b></font>\n%s\n<font color='#bbbbcc'>%s</font>\n\n<b>🔫 공격 방식</b>\n<font color='#dfe6ff'>• 탄 모양: %s\n• %s\n• 초당 약 %.1f발 · 한 발 x%.2f · 사거리 %d</font>\n\n%s",
+			hex(shown.Rainbow and Color3.fromRGB(255, 120, 255) or shown.Color), shown.Index, #tiers, shown.Name, status, classInfo.Desc,
 			SHOT_NAMES[shotInfo.Style] or "탄환", table.concat(behavior, " · "),
 			rate, classInfo.DamageMult, classInfo.Range,
-			nextTier and string.format("<font color='#9ad7ff'>%d번 더 강화하면 [%s]로 진화\n→ %s</font>", current.Steps - stage, nextTier.Name, Config.WeaponTypes[nextTier.Class].Desc) or "<font color='#ffd966'>마지막 무기예요!</font>"
+			nextTier and string.format("<font color='#9ad7ff'>다음 진화 → %s\n(%s)</font>", nextTier.Name, Config.WeaponTypes[nextTier.Class].Desc) or "<font color='#ffd966'>마지막 무기예요!</font>"
 		),
 	}, header)
 
@@ -1945,6 +2069,16 @@ local function buildWeaponTab()
 		local nameColor = (owned or isCurrent) and hex(tier.Color) or "777788"
 		rowText(row, string.format("%s  <font color='#aaaabb'>%d.</font> <font color='#%s'><b>%s</b></font>   <font size='12' color='#8888aa'>%s · +%d 단계부터</font>",
 			mark, tier.Index, nameColor, tier.Name, classOf.Name, tier.MinLevel), 14, 24)
+		-- 눌러서 그 무기의 발사 시연을 위에서 본다 (선택한 줄은 테두리)
+		if (settings.PreviewTier or current.Index) == tier.Index then
+			create("UIStroke", { Color = Color3.fromRGB(255, 225, 120), Thickness = 2 }, row)
+		end
+		local pick = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", ZIndex = 5 }, row)
+		pick.Activated:Connect(function()
+			settings.PreviewTier = tier.Index
+			settings.DemoClock = 0
+			settings.RefreshMenu()
+		end)
 	end
 end
 
@@ -2561,6 +2695,7 @@ function refreshMenu()
 		buildRankTab()
 	end
 end
+settings.RefreshMenu = refreshMenu
 
 local function selectTab(key)
 	currentTab = key
