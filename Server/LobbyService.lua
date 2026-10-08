@@ -4,6 +4,7 @@
 -- 직접 만든 맵을 쓰고 싶다면 이 파일 대신 맵을 놓고 반환값(SpawnCFrame, GatePrompt, AnvilPrompt, GachaPrompt, DummyStart)만 맞춰주면 된다.
 
 local Lighting = game:GetService("Lighting")
+local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Config"))
 
 local Lobby = {}
 
@@ -341,7 +342,7 @@ function Lobby.Build()
 		local onEdge = math.max(math.abs(x), math.abs(z)) > HALF - 28
 		local nearWest = x < -80 and math.abs(z) < 105
 		local nearEastGate = x > HALF - 35 and math.abs(z) < 28
-		local nearNorthGate = math.abs(x) < 30 and z < -HALF + 40
+		local nearNorthGate = z < -HALF + 45
 		local nearPlaza = math.abs(x) < 40 and z > 40
 		if onEdge and not nearWest and not nearEastGate and not nearNorthGate and not nearPlaza then
 			makeTree(Vector3.new(x, TOP, z), rng, folder)
@@ -349,39 +350,53 @@ function Lobby.Build()
 	end
 
 	-- 던전 게이트 (북쪽 끝)
-	local gatePos = Vector3.new(0, TOP, -HALF + 22)
+	-- 던전 게이트 8개: 북쪽 성벽 앞에 나란히. 던전마다 입구가 따로 있고, 필요 레벨이 낮은 순서(서쪽 -> 동쪽)로 어려워진다.
+	local gates = {}
 	local stone = Color3.fromRGB(55, 50, 70)
-	makeDisc(gatePos + Vector3.new(0, 0.3, 14), 50, 0.6, Color3.fromRGB(70, 60, 90), Enum.Material.Basalt, folder)
-	makePart({ Name = "GatePillarL", Size = Vector3.new(5, 30, 5), Position = gatePos + Vector3.new(-12, 15, 0), Color = stone, Material = Enum.Material.Granite }, folder)
-	makePart({ Name = "GatePillarR", Size = Vector3.new(5, 30, 5), Position = gatePos + Vector3.new(12, 15, 0), Color = stone, Material = Enum.Material.Granite }, folder)
-	makePart({ Name = "GateBeam", Size = Vector3.new(30, 5, 5), Position = gatePos + Vector3.new(0, 32, 0), Color = stone, Material = Enum.Material.Granite }, folder)
+	local listCount = #Config.Dungeon.List
+	local spacing = 26
+	makePart({ Name = "GatePlaza", Size = Vector3.new(spacing * listCount + 10, 0.3, 40), Position = Vector3.new(0, TOP + 0.15, -HALF + 30), Color = Color3.fromRGB(70, 60, 90), Material = Enum.Material.Basalt, CanCollide = false }, folder)
+	for index, entry in ipairs(Config.Dungeon.List) do
+		local dungeonType = Config.Dungeon.Types[entry.Type]
+		local difficulty = Config.Dungeon.Difficulties[entry.Diff]
+		local x = (index - (listCount + 1) / 2) * spacing
+		local gatePos = Vector3.new(x, TOP, -HALF + 22)
+		local color = dungeonType.Torch
+		makePart({ Name = "GatePillarL", Size = Vector3.new(3.5, 24, 3.5), Position = gatePos + Vector3.new(-8.5, 12, 0), Color = stone, Material = Enum.Material.Granite }, folder)
+		makePart({ Name = "GatePillarR", Size = Vector3.new(3.5, 24, 3.5), Position = gatePos + Vector3.new(8.5, 12, 0), Color = stone, Material = Enum.Material.Granite }, folder)
+		makePart({ Name = "GateBeam", Size = Vector3.new(21, 3.5, 3.5), Position = gatePos + Vector3.new(0, 25.5, 0), Color = stone, Material = Enum.Material.Granite }, folder)
+		makePart({ Name = "GateRune", Size = Vector3.new(6, 2, 3.8), Position = gatePos + Vector3.new(0, 25.5, 0), Color = difficulty.Color, Material = Enum.Material.Neon }, folder)
 
-	local portal = makePart({
-		Name = "DungeonGate", Size = Vector3.new(19, 30, 1), Position = gatePos + Vector3.new(0, 15, 0),
-		Color = Color3.fromRGB(150, 70, 255), Material = Enum.Material.Neon, Transparency = 0.35, CanCollide = false,
-	}, folder)
-	addLight(portal, 45, 2, Color3.fromRGB(170, 90, 255))
+		local portal = makePart({
+			Name = "DungeonGate" .. index, Size = Vector3.new(14, 24, 1), Position = gatePos + Vector3.new(0, 12, 0),
+			Color = color, Material = Enum.Material.Neon, Transparency = 0.4, CanCollide = false,
+		}, folder)
+		addLight(portal, 36, 1.8, color)
 
-	local swirl = Instance.new("ParticleEmitter")
-	swirl.Rate = 40
-	swirl.Lifetime = NumberRange.new(1, 2)
-	swirl.Speed = NumberRange.new(1, 4)
-	swirl.SpreadAngle = Vector2.new(180, 180)
-	swirl.Shape = Enum.ParticleEmitterShape.Box
-	swirl.LightEmission = 1
-	swirl.Color = ColorSequence.new(Color3.fromRGB(200, 140, 255))
-	swirl.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.9), NumberSequenceKeypoint.new(1, 0) })
-	swirl.Parent = portal
+		local swirl = Instance.new("ParticleEmitter")
+		swirl.Rate = 30
+		swirl.Lifetime = NumberRange.new(1, 2)
+		swirl.Speed = NumberRange.new(1, 4)
+		swirl.SpreadAngle = Vector2.new(180, 180)
+		swirl.Shape = Enum.ParticleEmitterShape.Box
+		swirl.LightEmission = 1
+		swirl.Color = ColorSequence.new(color)
+		swirl.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.8), NumberSequenceKeypoint.new(1, 0) })
+		swirl.Parent = portal
 
-	makeLabel(portal, "⚔ 던전 게이트 ⚔\n(파티장만 입장)", Color3.fromRGB(230, 190, 255), 20, 300, 72)
+		makeLabel(portal, string.format("⚔ %s\n[%s] · Lv.%d 이상\n🗝 열쇠 %d개 · 권장 전투력 %d",
+			dungeonType.Name, difficulty.Name, entry.MinLevel, difficulty.KeyCost or 1, dungeonType.RecommendedPower), difficulty.Color, 17, 320, 86)
 
-	local gatePrompt = Instance.new("ProximityPrompt")
-	gatePrompt.ActionText = "던전 입장"
-	gatePrompt.ObjectText = "던전 게이트"
-	gatePrompt.HoldDuration = 1
-	gatePrompt.MaxActivationDistance = 18
-	gatePrompt.RequiresLineOfSight = false
-	gatePrompt.Parent = portal
+		local prompt = Instance.new("ProximityPrompt")
+		prompt.ActionText = "입장 (Lv." .. entry.MinLevel .. ")"
+		prompt.ObjectText = dungeonType.Name .. " · " .. difficulty.Name
+		prompt.HoldDuration = 0.8
+		prompt.MaxActivationDistance = 14
+		prompt.RequiresLineOfSight = false
+		prompt.Parent = portal
+		table.insert(gates, { Prompt = prompt, Index = index })
+	end
+	local gatePrompt = gates[1].Prompt
 
 	-- 무기 강화대 (모루): 동쪽
 	local anvilPos = Vector3.new(32, TOP, 92) -- 스폰 바로 옆 광장 (처음부터 눈에 들어오게)
@@ -457,7 +472,8 @@ function Lobby.Build()
 
 	return {
 		SpawnCFrame = CFrame.new(0, 5, 102),
-		GatePrompt = gatePrompt,
+		GatePrompt = gatePrompt, -- (호환용: 첫 번째 게이트)
+		Gates = gates,
 		AnvilPrompt = anvilPrompt,
 		GachaPrompt = gachaPrompt,
 		WarpPrompt = warpPrompt,

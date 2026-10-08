@@ -709,6 +709,19 @@ Config.Dungeon.Types = {
 	},
 }
 
+-- 던전 목록: 던전마다 입구(게이트)가 따로 있고, 캐릭터 레벨이 되면 난이도 순서대로 입장할 수 있다 (메뉴에서 고르지 않는다)
+-- Type / Diff: 위의 던전 종류 / 난이도 조합. MinLevel: 입장에 필요한 캐릭터 레벨 (파티원 모두).
+Config.Dungeon.List = {
+	{ Type = "Cave", Diff = "Easy", MinLevel = 1 },
+	{ Type = "Cave", Diff = "Normal", MinLevel = 8 },
+	{ Type = "Ice", Diff = "Easy", MinLevel = 14 },
+	{ Type = "Ice", Diff = "Normal", MinLevel = 20 },
+	{ Type = "Fire", Diff = "Easy", MinLevel = 26 },
+	{ Type = "Fire", Diff = "Normal", MinLevel = 32 },
+	{ Type = "Fire", Diff = "Hard", MinLevel = 40 },
+	{ Type = "Tower", Diff = "Normal", MinLevel = 10 },
+}
+
 ------------------------------------------------------------
 -- 일일 퀘스트 / 업적 / 칭호
 --   Stat 은 카운터(DummyHits, FieldKills, EliteKills, Kills, BossKills, DungeonClears, Enhances, Rolls)

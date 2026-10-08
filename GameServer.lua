@@ -69,9 +69,11 @@ Field.Init(lobby.SpawnCFrame)
 EventService.Start() -- 주기적 골든 타임
 
 -- 던전 게이트: 파티장(또는 솔로)에게 던전 종류 / 난이도 선택창을 띄운다
-lobby.GatePrompt.Triggered:Connect(function(player)
-	Dungeon.OpenSelect(player)
-end)
+for _, gate in ipairs(lobby.Gates) do -- 던전마다 게이트가 따로 있다
+	gate.Prompt.Triggered:Connect(function(player)
+		Dungeon.StartGate(player, gate.Index)
+	end)
+end
 
 lobby.AnvilPrompt.Triggered:Connect(function(player)
 	if player:GetAttribute("Zone") == "Lobby" then

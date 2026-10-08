@@ -1548,6 +1548,26 @@ function Dungeon.OnPlayerRemoving(player)
 end
 
 -- 던전 게이트: 파티장(또는 솔로)에게 던전 종류 / 난이도 선택창을 띄운다
+-- 로비의 던전 게이트(Config.Dungeon.List[index])에서 입장: 레벨 확인 후 바로 시작한다
+function Dungeon.StartGate(player, index)
+	if player:GetAttribute("Zone") ~= "Lobby" then return end
+	local entry = typeof(index) == "number" and D.List[index]
+	if not entry then return end
+	local party = Party.GetParty(player)
+	if party and party.Leader ~= player then
+		notify(player, "파티장만 던전에 입장시킬 수 있어요.")
+		return
+	end
+	local who = party and party.Members or { player }
+	for _, member in ipairs(who) do
+		if (member:GetAttribute("Level") or 1) < entry.MinLevel then
+			notify(player, string.format("%s 님은 레벨이 부족해요. (이 던전은 Lv.%d 이상)", member.DisplayName, entry.MinLevel))
+			return
+		end
+	end
+	Dungeon.Start(player, entry.Type, entry.Diff)
+end
+
 function Dungeon.OpenSelect(player)
 	if player:GetAttribute("Zone") ~= "Lobby" then return end
 	local party = Party.GetParty(player)
