@@ -265,6 +265,13 @@
       "name": "SoundBank",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "Shared/AudioBank.lua",
+      "parent": "ReplicatedStorage",
+      "name": "AudioBank",
+      "class": "ModuleScript",
+      "overwrite": true
     }
   ]
 }

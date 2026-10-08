@@ -430,6 +430,23 @@ for key, value in pairs(defaultIds) do
 	end
 end
 
+-- 항목별 효과음 ID: AudioBank(업데이트로 관리) 위에 AudioIds 의 Bank(직접 적은 값)를 덮어쓴다
+local bankIds = {}
+do
+	local bankModule = script.Parent:FindFirstChild("AudioBank")
+	local okBank, bank = pcall(function() return bankModule and require(bankModule) or {} end)
+	if okBank and typeof(bank) == "table" then
+		for key, value in pairs(bank) do
+			bankIds[key] = value
+		end
+	end
+	if typeof(ids.Bank) == "table" then
+		for key, value in pairs(ids.Bank) do
+			bankIds[key] = value
+		end
+	end
+end
+
 Config.Audio = {
 	MusicVolume = 0.18,
 	Music = {
@@ -444,7 +461,7 @@ Config.Audio = {
 	Hit = ids.Hit or 0,              -- 적중음
 	Kill = ids.Kill or 0,            -- 처치음
 	Skill = ids.Skill or 0,          -- 스킬음
-	Bank = ids.Bank or {},           -- 소리별 직접 지정 ID (AudioIds 에  Bank = { Shot_Rail = 123 }  처럼 적으면 SoundBank 의 가공음 대신 사용)
+	Bank = bankIds,                  -- 소리별 직접 지정 ID (AudioBank 스크립트 + AudioIds 의 Bank. 있으면 SoundBank 의 가공음 대신 사용)
 }
 
 ------------------------------------------------------------
