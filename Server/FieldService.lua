@@ -437,6 +437,30 @@ local function buildGateway(zone, x0)
 		part("PortalVeil", Vector3.new(1, 50, 56), Vector3.new(x0 + 2, 27, 0), accent, Enum.Material.Neon, { Transparency = 0.85, CanCollide = false, CanQuery = false })
 	end
 
+	-- 관문 봉인막: 구역 2부터. 보이는 모습은 클라이언트(GoalClient)가 내 진행도에 맞춰 열고 닫는다 (서버는 위치로 막는다)
+	if zone >= 2 then
+		local seal = part("GateSeal", Vector3.new(1, H - 4, open), Vector3.new(x0 - 1, (H - 4) / 2, 0), accent, Enum.Material.Neon,
+			{ Transparency = 0.45, CanCollide = false, CanQuery = false })
+		seal:SetAttribute("SealZone", zone)
+		CollectionService:AddTag(seal, "ZoneSeal")
+		local gui = Instance.new("BillboardGui")
+		gui.Name = "SealGui"
+		gui.Size = UDim2.new(0, 300, 0, 70)
+		gui.StudsOffset = Vector3.new(-6, 0, 0)
+		gui.MaxDistance = 140
+		gui.Parent = seal
+		local label = Instance.new("TextLabel")
+		label.Name = "Text"
+		label.Size = UDim2.new(1, 0, 1, 0)
+		label.BackgroundTransparency = 1
+		label.Font = Enum.Font.GothamBold
+		label.TextScaled = true
+		label.TextColor3 = Color3.new(1, 1, 1)
+		label.TextStrokeTransparency = 0
+		label.Text = "🔒"
+		label.Parent = gui
+	end
+
 	-- 간판: 구역 이름 + 컨셉 + 몬스터 레벨
 	local signPart = part("GateSign", Vector3.new(1, 1, 1), Vector3.new(x0 + 2, H + 24, 0), accent, Enum.Material.Neon, { Transparency = 1, CanCollide = false, CanQuery = false })
 	makeSign(signPart, string.format("구역 %d · %s\n%s · 몬스터 Lv.%d", zone, F.ZoneNames[zone], theme.Tag, F.GetZoneLevel(zone)), Color3.fromRGB(255, 240, 190), 0)
@@ -722,6 +746,31 @@ local function rewardGoblin(player, data, part)
 	notify(player, string.format("💰 황금 고블린 처치! +%d G, 전리품 3개!", gold))
 end
 
+-- 구역 관문: 지금 막 열어야 하는 구역(ClearedZone+1)에서 몬스터를 처치하면 진행도가 오르고, 다 채우면 다음 구역이 열린다
+local function gateProgress(player, data)
+	local cleared = player:GetAttribute("ClearedZone") or 0
+	local frontier = cleared + 1
+	local needed = F.Gate.KillsNeeded[frontier]
+	if not needed or data.Zone ~= frontier then return end
+	local weight = data.Kind == "Elite" and F.Gate.EliteWeight or (data.Kind == "Boss" and F.Gate.BossWeight or 1)
+	local kills = (player:GetAttribute("GateKills") or 0) + weight
+	if kills < needed then
+		player:SetAttribute("GateKills", kills)
+		return
+	end
+	player:SetAttribute("GateKills", 0)
+	player:SetAttribute("ClearedZone", frontier)
+	local gold = F.Gate.RewardGold * frontier
+	local tickets = F.Gate.RewardTickets + (frontier >= 3 and 1 or 0)
+	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
+	player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + tickets)
+	notify(player, string.format("🔓 구역 %d 관문 개방! 구역 %d · %s (으)로 갈 수 있어요  — 보상 💰%d G · 🎫%d장", frontier + 1, frontier + 1, F.ZoneNames[frontier + 1], gold, tickets))
+	local root = getAliveParts(player)
+	if root then
+		Effects.Burst(root.Position, Color3.fromRGB(255, 225, 100), 60)
+	end
+end
+
 local function reward(player, data, part)
 	if data.Kind == "Goblin" then
 		rewardGoblin(player, data, part)
@@ -744,6 +793,7 @@ local function reward(player, data, part)
 	end
 	Level.AddXP(player, xp)
 
+	gateProgress(player, data)
 	Quest.Add(player, "Kills", 1)
 	if data.Kind == "Elite" then
 		Quest.Add(player, "EliteKills", 1)
@@ -1112,6 +1162,7 @@ local function stepProjectiles(dt)
 end
 
 -- x좌표로 로비 / 필드 구역을 판별하고, 가장 멀리 간 구역(MaxZone)을 기록
+local lastGateNotice = {}
 local function updateZones()
 	for _, player in ipairs(Players:GetPlayers()) do
 		local zone = player:GetAttribute("Zone")
@@ -1129,6 +1180,19 @@ local function updateZones()
 
 				if inField then
 					local fieldZone = zoneOfX(root.Position.X)
+					-- 관문이 잠긴 구역에는 못 들어간다: 관문 앞으로 되돌려 보낸다
+					local allowed = math.min(F.ZoneCount, (player:GetAttribute("ClearedZone") or 0) + 1)
+					if fieldZone > allowed then
+						local lockedX = zoneBounds(allowed + 1)
+						player.Character:PivotTo(CFrame.new(lockedX - 12, TOP + 4, root.Position.Z))
+						root.AssemblyLinearVelocity = Vector3.zero
+						if os.clock() - (lastGateNotice[player] or 0) > 3 then
+							lastGateNotice[player] = os.clock()
+							notify(player, string.format("🔒 관문이 닫혀 있어요! 구역 %d 몬스터를 %d마리 처치하세요 (%d/%d)",
+								allowed, F.Gate.KillsNeeded[allowed] or 0, player:GetAttribute("GateKills") or 0, F.Gate.KillsNeeded[allowed] or 0))
+						end
+						fieldZone = allowed
+					end
 					if fieldZone > (player:GetAttribute("MaxZone") or 0) then
 						player:SetAttribute("MaxZone", fieldZone)
 						notify(player, string.format("🏔 구역 %d · %s 돌파!", fieldZone, F.ZoneNames[fieldZone]))
@@ -1173,7 +1237,7 @@ local function warp(player, zone)
 	local root = getAliveParts(player)
 	if not root then return end
 
-	if zone >= 1 and zone > math.max(1, player:GetAttribute("MaxZone") or 0) then
+	if zone >= 1 and zone > math.max(1, math.min(player:GetAttribute("MaxZone") or 0, (player:GetAttribute("ClearedZone") or 0) + 1)) then
 		notify(player, "아직 도달하지 않은 구역이에요. 걸어서 먼저 가보세요!")
 		return
 	end

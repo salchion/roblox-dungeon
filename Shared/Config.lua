@@ -540,6 +540,15 @@ Config.Field = {
 	EliteTicketChance = 0.2,   -- 엘리트 처치 시 티켓 획득 확률
 	BossRespawn = 120,
 	BossTickets = 2,           -- 필드 보스 처치 시 주변 플레이어에게 지급
+	-- 구역 관문: 다음 구역으로 가려면 "지금 구역"에서 몬스터를 정해진 수만큼 처치해야 열린다 (엘리트 x3, 보스 x10)
+	-- 열면 보상(골드 / 티켓)을 받고, 다음 구역은 몬스터 보상이 크고 장비 등급이 높아진다.
+	Gate = {
+		KillsNeeded = { 20, 25, 30, 35, 40, 45, 50 }, -- [n] = 구역 n 의 관문(구역 n+1 입구)을 열기 위한 처치 수
+		EliteWeight = 3,
+		BossWeight = 10,
+		RewardGold = 400,      -- x 구역 번호
+		RewardTickets = 1,     -- 구역 3부터 +1
+	},
 	ZoneNames = { "초원", "숲", "황무지", "사막", "설원", "화산", "암흑 지대", "심연" },
 	-- 구역별로 나오는 몬스터 종류와 비중 (MonsterTypes.lua 의 Defs 이름)
 	ZonePools = {

@@ -55,7 +55,7 @@ end
 
 function Data.Load(player)
 	local defaults = {
-		Gold = Config.StartGold, WeaponLevel = 0, Tickets = 0, MaxZone = 0, Gear = {}, Level = 1, XP = 0,
+		Gold = Config.StartGold, WeaponLevel = 0, Tickets = 0, MaxZone = 0, ClearedZone = 0, Gear = {}, Level = 1, XP = 0,
 		Weapons = { Type = "Pistol", Unlocked = {}, Levels = {} }, Quest = nil,
 		Inventory = nil, Keys = nil, Monetization = nil, Growth = nil, Daily = nil, Meta = nil, Tutorial = nil,
 	}
@@ -73,6 +73,8 @@ function Data.Load(player)
 					WeaponLevel = math.clamp(math.max(tonumber(saved.WeaponLevel) or 0, parseWeapons(saved).Best), 0, Config.Weapon.MaxLevel),
 					Tickets = math.max(0, math.floor(tonumber(saved.Tickets) or 0)),
 					MaxZone = math.clamp(math.floor(tonumber(saved.MaxZone) or 0), 0, Config.Field.ZoneCount),
+					-- 관문을 연 구역 수. 예전 저장(관문 도입 전)은 도달했던 구역까지 이미 열린 것으로 본다
+					ClearedZone = math.clamp(math.floor(tonumber(saved.ClearedZone) or math.max(0, (tonumber(saved.MaxZone) or 0) - 1)), 0, Config.Field.ZoneCount - 1),
 					Gear = typeof(saved.Gear) == "table" and saved.Gear or {},
 					Level = math.clamp(math.floor(tonumber(saved.Level) or 1), 1, Config.Level.Max),
 					XP = math.max(0, math.floor(tonumber(saved.XP) or 0)),
@@ -105,6 +107,7 @@ function Data.Save(player)
 		WeaponLevel = player:GetAttribute("WeaponLevel") or 0,
 		Tickets = player:GetAttribute("Tickets") or 0,
 		MaxZone = player:GetAttribute("MaxZone") or 0,
+		ClearedZone = player:GetAttribute("ClearedZone") or 0,
 		Level = player:GetAttribute("Level") or 1,
 		XP = player:GetAttribute("XP") or 0,
 		Inventory = Inventory.Serialize(player),

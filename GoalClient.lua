@@ -115,6 +115,18 @@ local function pickGoal()
 		end
 	end
 
+	-- 다음 구역 관문
+	local cleared = player:GetAttribute("ClearedZone") or 0
+	local needed = Config.Field.Gate.KillsNeeded[cleared + 1]
+	if needed then
+		local kills = player:GetAttribute("GateKills") or 0
+		local gold = Config.Field.Gate.RewardGold * (cleared + 1)
+		table.insert(candidates, {
+			Text = string.format("🚪 구역 %d 관문 열기\n구역 %d 몬스터 처치 %d / %d · 보상 %s G + 티켓", cleared + 2, cleared + 1, kills, needed, comma(gold)),
+			Ratio = math.min(0.9, kills / needed), Priority = 1,
+		})
+	end
+
 	-- 지금 바로 쓸 수 있는 것
 	if (player:GetAttribute("Keys") or 0) >= 1 then
 		table.insert(candidates, { Text = string.format("🗝 던전 열쇠 %d개!\n북쪽 게이트에서 던전에 도전하세요", player:GetAttribute("Keys")), Ratio = 0.95, Priority = 3 })
@@ -147,6 +159,27 @@ RunService.RenderStepped:Connect(function()
 		end
 
 		local left = (workspace:GetAttribute("GoldenUntil") or 0) - os.time()
+		-- 관문 봉인막: 내 진행도에 맞춰 열려 보이게 / 닫혀 보이게 (내 화면에서만)
+		local clearedNow = player:GetAttribute("ClearedZone") or 0
+		for _, seal in ipairs(game:GetService("CollectionService"):GetTagged("ZoneSeal")) do
+			local sealZone = seal:GetAttribute("SealZone") or 0
+			local open = clearedNow >= sealZone - 1
+			seal.Transparency = open and 1 or 0.45
+			local sealGui = seal:FindFirstChild("SealGui")
+			local sealText = sealGui and sealGui:FindFirstChild("Text")
+			if sealGui then
+				sealGui.Enabled = not open
+			end
+			if sealText and not open then
+				local need = Config.Field.Gate.KillsNeeded[sealZone - 1] or 0
+				if sealZone - 1 == clearedNow + 1 then
+					sealText.Text = string.format("🔒 구역 %d · %s 봉인\n구역 %d 몬스터 %d / %d 처치", sealZone, Config.Field.ZoneNames[sealZone], sealZone - 1, player:GetAttribute("GateKills") or 0, need)
+				else
+					sealText.Text = string.format("🔒 구역 %d · %s 봉인\n먼저 이전 관문을 여세요", sealZone, Config.Field.ZoneNames[sealZone])
+				end
+			end
+		end
+
 		local untilNext = (workspace:GetAttribute("GoldenNext") or 0) - os.time()
 		golden.Visible = (left > 0 or untilNext > 0) and zone ~= "Dungeon"
 		if left > 0 then
