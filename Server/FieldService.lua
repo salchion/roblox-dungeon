@@ -539,8 +539,9 @@ local function buildWorld()
 					local sideWidth = (F.Width - STAIR_LANE) / 2
 					for _, side in ipairs({ -1, 1 }) do
 						makePart({
-							Name = "StairWall" .. zone, Size = Vector3.new(stair.Run, TOP + stair.Hi + 1.95, sideWidth),
-							Position = Vector3.new(x0 + stair.At + stair.Run / 2, (TOP + stair.Hi - 1.95) / 2, side * (STAIR_LANE / 2 + sideWidth / 2)),
+							-- 벽 윗면은 올라설 수 없게 층 높이보다 40 더 높이 솟게 한다 (윗면이 걸을 수 있는 "죽은 구역"이 되지 않게)
+							Name = "StairWall" .. zone, Size = Vector3.new(stair.Run, TOP + stair.Hi + 41.95, sideWidth),
+							Position = Vector3.new(x0 + stair.At + stair.Run / 2, (TOP + stair.Hi + 40 - 1.95) / 2, side * (STAIR_LANE / 2 + sideWidth / 2)),
 							Color = F.ZoneColors[zone]:Lerp(Color3.fromRGB(120, 112, 105), 0.6), Material = Enum.Material.Brick,
 						}, worldFolder)
 					end
@@ -563,15 +564,6 @@ local function buildWorld()
 					glow.Color = Color3.fromRGB(255, 215, 140)
 					glow.Parent = lamp
 				end
-			end
-		end
-		-- 층 표지판: 계단 입구마다 "▲ 2층 / ▲ 3층 계단" (내려가는 쪽은 "▼ 1층 계단")
-		do
-			local level = 1
-			for _, stair in ipairs(STAIRS) do
-				level += stair.Rise > 0 and 1 or -1
-				local signPart = makePart({ Name = "FloorSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(x0 + stair.At - 6, TOP + stair.From + 11, 0), Transparency = 1, CanCollide = false, CanQuery = false }, worldFolder)
-				makeSign(signPart, string.format("%s %d층 계단 (%d 높이)", stair.Rise > 0 and "▲" or "▼", level, math.abs(stair.Rise)), stair.Rise > 0 and Color3.fromRGB(190, 255, 190) or Color3.fromRGB(255, 220, 160), 0)
 			end
 		end
 		buildGateway(zone, x0)

@@ -657,12 +657,12 @@ end
 ------------------------------------------------------------
 function Weapon.Enhance(player)
 	if player:GetAttribute("Zone") ~= "Lobby" then
-		return false, "무기 강화는 로비에서만 할 수 있어요."
+		return false, "무기 강화는 로비에서만 할 수 있어요.", true
 	end
 
 	local level = player:GetAttribute("WeaponLevel") or 0
 	if level >= Config.Weapon.MaxLevel then
-		return false, "마지막 무기를 최대로 강화했어요!"
+		return false, "마지막 무기를 최대로 강화했어요!", true
 	end
 
 	-- 튜토리얼 미션 중에는 +3까지 무료 + 100% 성공
@@ -670,7 +670,7 @@ function Weapon.Enhance(player)
 	local cost = free and 0 or Config.GetEnhanceCost(level)
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
-		return false, string.format("골드가 부족합니다. (%d 필요)", cost)
+		return false, string.format("골드가 부족합니다. (%d 필요)", cost), true
 	end
 
 	player:SetAttribute("Gold", gold - cost)
@@ -694,11 +694,11 @@ function Weapon.Enhance(player)
 			end
 		end
 		if evolved then
-			return true, string.format("🎉 진화! %s (%d/%d)", after.Name, after.Index, Config.Weapon.WeaponCount)
+			return true, string.format("🎉 진화! %s (%d/%d)", after.Name, after.Index, Config.Weapon.WeaponCount), false, true, cost
 		end
-		return true, string.format("강화 성공! +%d/%d", Config.GetWeaponStage(level + 1), after.Steps)
+		return true, string.format("강화 성공! +%d/%d", Config.GetWeaponStage(level + 1), after.Steps), false, false, cost
 	end
-	return false, "강화 실패... (골드만 사라졌어요)"
+	return false, "강화 실패... (골드만 사라졌어요)", false, false, cost
 end
 
 -- (예전 무기 종류 구매 / 장착은 없어졌다: 무기는 강화 단계에 따라 자동으로 진화한다)

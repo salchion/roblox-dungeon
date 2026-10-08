@@ -316,9 +316,23 @@ local hammer = makeLabel({
 	Text = "🔨", TextSize = 56, Visible = false, ZIndex = 9, Rotation = -50,
 }, enhancePanel)
 
+local function enhanceMany(count)
+	if E.EnhanceBusy then return end
+	E.EnhanceBusy = true
+	Remotes.Enhance:FireServer(count)
+	task.delay(1.1, function() E.EnhanceBusy = false end)
+end
+local enhanceTen = makeButton({
+	Size = UDim2.new(0, 80, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 214, 1, -14),
+	Text = "x10\n강화", TextSize = 16, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(60, 120, 200),
+}, enhancePanel, function() enhanceMany(10) end)
+local enhanceMax = makeButton({
+	Size = UDim2.new(0, 80, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 302, 1, -14),
+	Text = "최대\n강화", TextSize = 16, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(190, 110, 40),
+}, enhancePanel, function() enhanceMany(50) end)
 local enhanceButton = makeButton({
-	Size = UDim2.new(1, -40, 0, 54), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
-	Text = "강화하기", TextSize = 22, Font = Enum.Font.GothamBold, BackgroundColor3 = GREEN,
+	Size = UDim2.new(0, 186, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 20, 1, -14),
+	Text = "강화하기", TextSize = 18, Font = Enum.Font.GothamBold, BackgroundColor3 = GREEN,
 }, enhancePanel, function()
 	if E.EnhanceBusy then return end
 	E.EnhanceBusy = true
@@ -425,7 +439,7 @@ function refreshEnhance()
 	enhanceInfo.Text = string.format("공격력  <b>x%.2f</b> <font color='#78ff8c'>▶ x%.2f</font>\n성공 확률  <font color='#%s'><b>%d%%</b></font>   <font size='12' color='#aaaabb'>(실패해도 단계 유지)</font>",
 		Config.GetDamageMultiplier(level), Config.GetDamageMultiplier(level + 1), chance >= 80 and "78ff8c" or (chance >= 60 and "ffd966" or "ff9a6e"), chance)
 	local affordable = gold >= cost
-	enhanceButton.Text = string.format("💰 %s G   강화하기", tostring(cost))
+	enhanceButton.Text = string.format("💰 %s G\n강화하기", tostring(cost))
 	enhanceButton.BackgroundColor3 = affordable and GREEN or Color3.fromRGB(95, 60, 62)
 	E.EnhanceAffordable = affordable
 end
@@ -434,11 +448,11 @@ end
 RunService.RenderStepped:Connect(function()
 	if enhancePanel.Visible and E.EnhanceAffordable and not E.EnhanceBusy then
 		local pulse = 1 + 0.02 * math.sin(os.clock() * 4)
-		enhanceButton.Size = UDim2.new(1, -40 - (pulse - 1) * -300, 0, 54)
+		enhanceButton.Size = UDim2.new(0, 186 + (pulse - 1) * 300, 0, 54)
 	end
 end)
 
-Remotes.Enhance.OnClientEvent:Connect(function(ok, message)
+Remotes.Enhance.OnClientEvent:Connect(function(ok, message, summary)
 	local oldTier = E.EnhanceShownTier
 	refreshEnhance()
 	local evolved = oldTier ~= nil and E.EnhanceShownTier ~= nil and E.EnhanceShownTier > oldTier
@@ -452,6 +466,12 @@ Remotes.Enhance.OnClientEvent:Connect(function(ok, message)
 		enhanceBanner.TextColor3 = Color3.fromRGB(255, 225, 100)
 		medalStroke.Thickness = 12
 		TweenService:Create(medalStroke, TweenInfo.new(0.7), { Thickness = 5 }):Play()
+	elseif summary and summary.Attempts > 1 then
+		enhanceBanner.Text = string.format("%d연 강화! 성공 %d", summary.Attempts, summary.Successes)
+		enhanceBanner.TextColor3 = ok and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 160, 120)
+		enhanceBanner.TextSize = 34
+		medalStroke.Thickness = 9
+		TweenService:Create(medalStroke, TweenInfo.new(0.5), { Thickness = 5 }):Play()
 	elseif ok then
 		enhanceBanner.Text = "SUCCESS!"
 		enhanceBanner.TextColor3 = Color3.fromRGB(120, 255, 140)
@@ -598,14 +618,21 @@ for index, rate in ipairs(Config.Gacha.Rates) do
 	table.insert(rateParts, string.format("<font color='#%s'>%s %d%%</font>", Config.Gear.RarityColors[index]:ToHex(), Config.Gear.RarityNames[index], rate))
 end
 makeLabel({
-	Size = UDim2.new(0.62, 0, 0, 60), Position = UDim2.new(0, 20, 0, 52), RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+	Size = UDim2.new(0.44, 0, 0, 60), Position = UDim2.new(0, 20, 0, 52), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 	Text = table.concat(rateParts, "  ") .. "\n<font color='#c9c0e0'>같거나 낮은 등급은 골드로 교환 · 티켓은 던전 / 필드 보스에게서 나와요</font>",
 }, gachaBar)
-local rollButton = makeButton({
-	Size = UDim2.new(0, 230, 0, 80), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -18, 0.5, 0),
-	Text = "🎰 뽑기!\n티켓 1장", TextSize = 24, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(165, 70, 245),
+local rollOne = makeButton({
+	Size = UDim2.new(0, 176, 0, 80), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -218, 0.5, 0),
+	Text = "🎰 뽑기 x1\n티켓 1장", TextSize = 20, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(120, 80, 210),
 }, gachaBar, function()
-	Remotes.Gear:FireServer("Roll")
+	Remotes.Gear:FireServer("Roll", 1)
+end)
+create("UIStroke", { Color = Color3.fromRGB(190, 170, 255), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 2 }, rollOne)
+local rollButton = makeButton({
+	Size = UDim2.new(0, 200, 0, 80), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -14, 0.5, 0),
+	Text = "🎰 10연 뽑기!\n티켓 10장", TextSize = 22, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(165, 70, 245),
+}, gachaBar, function()
+	Remotes.Gear:FireServer("Roll", 10)
 end)
 create("UIStroke", { Color = Color3.fromRGB(255, 225, 140), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 3 }, rollButton)
 rollButton.ClipsDescendants = true
@@ -692,6 +719,14 @@ function refreshGear()
 	powerLabel.Text = string.format("⚡ 전투력 %d", player:GetAttribute("Power") or 0)
 	ticketLabel.Text = string.format("🎫 티켓 %d장", tickets)
 	rollButton.BackgroundColor3 = tickets > 0 and Color3.fromRGB(165, 70, 245) or Color3.fromRGB(80, 70, 100)
+	rollOne.BackgroundColor3 = tickets > 0 and Color3.fromRGB(120, 80, 210) or Color3.fromRGB(80, 70, 100)
+	if tickets >= 10 then
+		rollButton.Text = "🎰 10연 뽑기!\n티켓 10장"
+	elseif tickets > 1 then
+		rollButton.Text = string.format("🎰 전부 뽑기!\n티켓 %d장", tickets)
+	else
+		rollButton.Text = "🎰 10연 뽑기\n티켓 10장 필요"
+	end
 	state.Rebuild = rebuildCharacter
 end
 -- 뽑기 / 강화 결과로 외형이 바뀌므로 캐릭터를 다시 복제해서 보여준다
@@ -722,6 +757,7 @@ do
 	Remotes.Gear.OnClientEvent:Connect(function(action, result)
 		local roll = action == "Result" and result.Roll
 		if not roll then return end
+		local multi = result.Rolls ~= nil and #result.Rolls > 1
 		local old = gui:FindFirstChild("GachaReveal")
 		if old then old:Destroy() end
 
@@ -785,6 +821,65 @@ do
 			end
 			local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = rarity == 5 and Color3.new(1, 1, 1) or color, BackgroundTransparency = rarity >= 3 and 0.2 or 0.65, BorderSizePixel = 0, ZIndex = 70 }, root)
 			fade(flash, { BackgroundTransparency = 1 }, 0.5)
+
+			if multi then
+				-- 10연 결과: 카드가 화다닥 한 장씩 튀어나온다 (높은 등급은 빛 고리 + 무지개 테두리)
+				local grid = create("Frame", { Size = UDim2.new(0, 660, 0, 380), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 62 }, root)
+				makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 0), Text = string.format("🎰 %d연 뽑기 결과", #result.Rolls), TextSize = 26, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 230, 150), ZIndex = 63 }, grid)
+				local counts = {}
+				local STATUS = { Equipped = "장착!", Bag = "가방" }
+				for index, r in ipairs(result.Rolls) do
+					counts[r.Rarity] = (counts[r.Rarity] or 0) + 1
+					task.delay((index - 1) * 0.1, function()
+						if not root.Parent then return end
+						local col, row = (index - 1) % 5, (index - 1) // 5
+						local rc = Config.Gear.RarityColors[r.Rarity]
+						local cx, cy = 66 + col * 132, 122 + row * 158
+						local cardM = create("Frame", {
+							Size = UDim2.new(0, 10, 0, 10), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy),
+							BackgroundColor3 = Color3.fromRGB(24, 22, 36), BorderSizePixel = 0, ZIndex = 63,
+						}, grid)
+						rounded(cardM, 12)
+						local st = create("UIStroke", { Color = rc, Thickness = ({ 2, 2, 3, 4, 5 })[r.Rarity] }, cardM)
+						if r.Rarity == 5 then
+							local g = create("UIGradient", { Color = ColorSequence.new({
+								ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 80, 80)), ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 230, 80)),
+								ColorSequenceKeypoint.new(0.66, Color3.fromRGB(80, 220, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(220, 90, 255)),
+							}) }, st)
+							task.spawn(function()
+								local rot = 0
+								while cardM.Parent do rot += 8 g.Rotation = rot task.wait() end
+							end)
+						end
+						fade(cardM, { Size = UDim2.new(0, 120, 0, 146) }, 0.3, Enum.EasingStyle.Back)
+						makeLabel({ Size = UDim2.new(1, 0, 0, 56), Position = UDim2.new(0, 0, 0, 10), Text = ICONS[r.Slot] or "🎁", TextSize = 42, ZIndex = 64 }, cardM)
+						makeLabel({ Size = UDim2.new(1, -8, 0, 34), Position = UDim2.new(0, 4, 0, 64), Text = r.Name or "", TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = rc, ZIndex = 64 }, cardM)
+						makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 100), Text = string.format("★ %s", Config.Gear.RarityNames[r.Rarity]), TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = rc, ZIndex = 64 }, cardM)
+						makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 1, -20), Text = STATUS[r.Status] or "분해", TextSize = 12, TextColor3 = Color3.fromRGB(190, 190, 210), ZIndex = 64 }, cardM)
+						if r.Rarity >= 3 then -- 영웅 이상은 카드 뒤로 빛 고리가 퍼진다
+							local ringM = create("Frame", { Size = UDim2.new(0, 40, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy), BackgroundTransparency = 1, ZIndex = 61 }, grid)
+							create("UICorner", { CornerRadius = UDim.new(1, 0) }, ringM)
+							local rs = create("UIStroke", { Color = rc, Thickness = 6 }, ringM)
+							fade(ringM, { Size = UDim2.new(0, 260, 0, 260) }, 0.6)
+							fade(rs, { Transparency = 1, Thickness = 1 }, 0.6)
+						end
+					end)
+				end
+				pause(#result.Rolls * 0.1 + 0.4)
+				local parts = {}
+				for rarity = 5, 1, -1 do
+					if counts[rarity] then
+						table.insert(parts, string.format("<font color='#%s'>%s %d</font>", Config.Gear.RarityColors[rarity]:ToHex(), Config.Gear.RarityNames[rarity], counts[rarity]))
+					end
+				end
+				makeLabel({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 1, -26), RichText = true, Text = table.concat(parts, "   ") .. "   <font color='#aaaabb' size='13'>(눌러서 닫기)</font>", TextSize = 18, Font = Enum.Font.GothamBold, ZIndex = 63 }, grid)
+				skipped = false
+				pause(6)
+				if not root.Parent then return end
+				fade(root, { BackgroundTransparency = 1 }, 0.25)
+				game:GetService("Debris"):AddItem(root, 0.3)
+				return
+			end
 
 			local card = create("Frame", {
 				Size = UDim2.new(0, 60, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),

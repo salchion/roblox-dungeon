@@ -395,13 +395,41 @@ end)
 ------------------------------------------------------------
 -- 무기 강화 / 무기 종류 구매·장착 / 장비 강화·뽑기
 ------------------------------------------------------------
-Remotes.Enhance.OnServerEvent:Connect(function(player)
+Remotes.Enhance.OnServerEvent:Connect(function(player, count)
 	local now = os.clock()
 	if now - (lastEnhance[player] or 0) < 0.25 then return end
 	lastEnhance[player] = now
 
-	local ok, message = Weapon.Enhance(player)
-	Remotes.Enhance:FireClient(player, ok, message)
+	count = typeof(count) == "number" and math.clamp(math.floor(count), 1, 50) or 1
+	if count == 1 then
+		local ok, message = Weapon.Enhance(player)
+		Remotes.Enhance:FireClient(player, ok, message)
+		return
+	end
+
+	-- 여러 번 연속 강화 (골드가 모일 때 한 번에): 골드가 떨어지거나 무기가 진화하면 거기서 멈춘다 (진화한 새 무기를 보게)
+	local attempts, successes, spent, evolvedMessage, lastMessage = 0, 0, 0, nil, ""
+	for _ = 1, count do
+		local ok, message, stop, evolved, cost = Weapon.Enhance(player)
+		if stop then
+			lastMessage = message
+			break
+		end
+		attempts += 1
+		spent += cost or 0
+		lastMessage = message
+		if ok then successes += 1 end
+		if evolved then
+			evolvedMessage = message
+			break
+		end
+	end
+	if attempts == 0 then
+		Remotes.Enhance:FireClient(player, false, lastMessage)
+		return
+	end
+	local summary = string.format("%d회 강화: 성공 %d / 실패 %d  (골드 -%d)", attempts, successes, attempts - successes, spent)
+	Remotes.Enhance:FireClient(player, successes > 0, evolvedMessage or summary, { Attempts = attempts, Successes = successes, Spent = spent, Evolved = evolvedMessage ~= nil, Summary = summary })
 end)
 
 Remotes.Weapon.OnServerEvent:Connect(function(player, action, typeKey)
@@ -434,7 +462,33 @@ Remotes.Gear.OnServerEvent:Connect(function(player, action, arg)
 		local ok, message = Gear.Enhance(player, arg)
 		Remotes.Gear:FireClient(player, "Result", { Ok = ok, Message = message })
 	elseif action == "Roll" then
-		local ok, message, roll = Gear.Roll(player)
-		Remotes.Gear:FireClient(player, "Result", { Ok = ok, Message = message, Roll = roll })
+		local count = typeof(arg) == "number" and math.clamp(math.floor(arg), 1, 10) or 1
+		if count == 1 then
+			local ok, message, roll = Gear.Roll(player)
+			Remotes.Gear:FireClient(player, "Result", { Ok = ok, Message = message, Roll = roll })
+		else
+			-- 여러 개 동시에 뽑기 (최대 10연): 티켓이 모자라면 있는 만큼만 뽑는다
+			local rolls, failMessage = {}, nil
+			for _ = 1, count do
+				local ok, message, roll = Gear.Roll(player)
+				if not ok then
+					failMessage = message
+					break
+				end
+				table.insert(rolls, roll)
+			end
+			if #rolls == 0 then
+				Remotes.Gear:FireClient(player, "Result", { Ok = false, Message = failMessage or "뽑을 수 없어요." })
+			else
+				local best = rolls[1]
+				for _, roll in ipairs(rolls) do
+					if roll.Rarity > best.Rarity then best = roll end
+				end
+				Remotes.Gear:FireClient(player, "Result", {
+					Ok = true, Roll = best, Rolls = rolls,
+					Message = string.format("%d회 뽑기 완료! 최고 등급: %s", #rolls, Config.Gear.RarityNames[best.Rarity]),
+				})
+			end
+		end
 	end
 end)
