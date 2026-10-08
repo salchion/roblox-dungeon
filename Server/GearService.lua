@@ -221,7 +221,7 @@ function Gear.Roll(player)
 	else
 		message = string.format("%s... 자동 분해! 에센스 +%d, %d G", name, essence or 0, gold or 0)
 	end
-	return true, message, { Slot = slot.Key, Rarity = rarity, Equipped = status == "Equipped", Status = status, Gold = gold or 0 }
+	return true, message, { Slot = slot.Key, Rarity = rarity, Name = slot.Names[rarity], Equipped = status == "Equipped", Status = status, Gold = gold or 0 }
 end
 
 return Gear

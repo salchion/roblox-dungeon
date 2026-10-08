@@ -467,6 +467,100 @@ Remotes.Gear.OnClientEvent:Connect(function(action, result)
 	refreshGear()
 end)
 
+-- 뽑기 연출: 영웅 이상이 나오면 화면이 어두워지고 카드가 튀어나온다 (등급이 높을수록 길고 화려하게). 아무 곳이나 누르면 닫힌다.
+do
+	local ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
+	Remotes.Gear.OnClientEvent:Connect(function(action, result)
+		local roll = action == "Result" and result.Roll
+		if not roll or roll.Rarity < 3 then return end
+		local old = gui:FindFirstChild("GachaReveal")
+		if old then old:Destroy() end
+
+		local rarity = roll.Rarity
+		local color = Config.Gear.RarityColors[rarity]
+		local hold = ({ 1.5, 2.2, 3.0 })[rarity - 2]
+		local root = create("TextButton", {
+			Name = "GachaReveal", Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 1,
+			Text = "", AutoButtonColor = false, ZIndex = 60,
+		}, gui)
+		local function fade(object, goal, time, style)
+			TweenService:Create(object, TweenInfo.new(time, style or Enum.EasingStyle.Quad, Enum.EasingDirection.Out), goal):Play()
+		end
+		fade(root, { BackgroundTransparency = 0.3 }, 0.25)
+
+		-- 퍼져 나가는 빛 고리 (등급이 높을수록 많이)
+		for i = 1, rarity - 1 do
+			task.delay((i - 1) * 0.22, function()
+				if not root.Parent then return end
+				local ring = create("Frame", {
+					Size = UDim2.new(0, 40, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+					BackgroundTransparency = 1, ZIndex = 61,
+				}, root)
+				create("UICorner", { CornerRadius = UDim.new(1, 0) }, ring)
+				create("UIStroke", { Color = color, Thickness = 8 }, ring)
+				fade(ring, { Size = UDim2.new(0, 900, 0, 900) }, 0.9)
+				local stroke = ring:FindFirstChildOfClass("UIStroke")
+				fade(stroke, { Transparency = 1, Thickness = 1 }, 0.9)
+			end)
+		end
+
+		-- 번쩍임
+		local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = rarity == 5 and Color3.new(1, 1, 1) or color, BackgroundTransparency = 0.3, BorderSizePixel = 0, ZIndex = 70 }, root)
+		fade(flash, { BackgroundTransparency = 1 }, 0.5)
+
+		-- 카드
+		local card = create("Frame", {
+			Size = UDim2.new(0, 60, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+			BackgroundColor3 = Color3.fromRGB(24, 22, 36), BorderSizePixel = 0, ZIndex = 62,
+		}, root)
+		rounded(card, 16)
+		local stroke = create("UIStroke", { Color = color, Thickness = 5 }, card)
+		if rarity == 5 then -- 신화: 무지개 테두리가 돈다
+			local gradient = create("UIGradient", {
+				Color = ColorSequence.new({
+					ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 80, 80)), ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 230, 80)),
+					ColorSequenceKeypoint.new(0.66, Color3.fromRGB(80, 220, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(220, 90, 255)),
+				}),
+			}, stroke)
+			task.spawn(function()
+				local rotation = 0
+				while root.Parent do
+					rotation += 6
+					gradient.Rotation = rotation
+					task.wait()
+				end
+			end)
+		end
+		fade(card, { Size = UDim2.new(0, 340, 0, 220) }, 0.45, Enum.EasingStyle.Back)
+
+		task.delay(0.3, function()
+			if not root.Parent then return end
+			makeLabel({ Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0, 0, 0, 14), Text = ICONS[roll.Slot] or "🎁", TextSize = 56, ZIndex = 63 }, card)
+			makeLabel({
+				Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 92), Text = string.format("★ %s ★", Config.Gear.RarityNames[rarity]),
+				TextSize = rarity >= 4 and 30 or 26, Font = Enum.Font.GothamBlack, TextColor3 = color, ZIndex = 63,
+			}, card)
+			makeLabel({
+				Size = UDim2.new(1, -20, 0, 30), Position = UDim2.new(0, 10, 0, 134), Text = roll.Name or "", TextSize = 20,
+				Font = Enum.Font.GothamBold, ZIndex = 63,
+			}, card)
+			makeLabel({
+				Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 1, -28), Text = roll.Equipped and "장착했어요!" or "가방에 넣었어요",
+				TextSize = 13, TextColor3 = Color3.fromRGB(190, 190, 210), ZIndex = 63,
+			}, card)
+		end)
+
+		local function close()
+			if not root.Parent then return end
+			fade(root, { BackgroundTransparency = 1 }, 0.25)
+			fade(card, { Size = UDim2.new(0, 60, 0, 40) }, 0.25)
+			game:GetService("Debris"):AddItem(root, 0.3)
+		end
+		root.Activated:Connect(close)
+		task.delay(hold, close)
+	end)
+end
+
 Remotes.OpenGear.OnClientEvent:Connect(function()
 	gearMessage.Text = ""
 	refreshGear()
