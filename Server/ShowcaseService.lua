@@ -22,7 +22,7 @@ local function groundAt(position)
 	return result and result.Position.Y or position.Y
 end
 
-local function makeLabel(parent, offsetY)
+local function makeLabel(parent, offsetY, maxDistance)
 	local part = Instance.new("Part")
 	part.Anchored = true
 	part.CanCollide = false
@@ -32,9 +32,9 @@ local function makeLabel(parent, offsetY)
 	part.Position = parent.Position + Vector3.new(0, offsetY, 0)
 	part.Parent = folder
 	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.new(0, 190, 0, 62)
+	gui.Size = UDim2.new(0, 260, 0, 84)
 	gui.AlwaysOnTop = false
-	gui.MaxDistance = 40 -- 가까이 와야 읽힌다 (멀리서 다른 글자와 겹치는 것 방지)
+	gui.MaxDistance = maxDistance or 40
 	gui.Parent = part
 	local label = Instance.new("TextLabel")
 	label.Size = UDim2.new(1, 0, 1, 0)
@@ -48,38 +48,55 @@ local function makeLabel(parent, offsetY)
 	return label
 end
 
-function Showcase.Init(boardCFrame)
+-- 공중에 떠 있는 "하늘의 명예의 전당": 광장 북쪽 하늘에 순위별 떠 있는 발판 위에 랭커 아바타가 크게 서 있고
+-- 이름 / 전투력 / 무기가 머리 위에 보인다. 어디서든 올려다보면 보인다.
+function Showcase.Init(_boardCFrame)
 	folder = Instance.new("Folder")
 	folder.Name = "Showcase"
 	folder.Parent = workspace:FindFirstChild("Lobby") or workspace
 
-	local look = Vector3.new(boardCFrame.LookVector.X, 0, boardCFrame.LookVector.Z).Unit
-	local right = look:Cross(Vector3.yAxis)
-	local base = Vector3.new(boardCFrame.Position.X, 0, boardCFrame.Position.Z) + look * 16
-
-	-- 가운데가 1등, 좌우가 2등 / 3등 (2등이 왼쪽)
-	local offsets = { 0, -10, 10 }
-	local heights = { 4.5, 3.2, 2.4 }
+	local look = Vector3.new(0, 0, 1) -- 광장(남쪽)을 바라본다
+	-- 가운데가 1등(가장 높음), 좌우가 2등(왼쪽) / 3등(오른쪽)
+	local spots = {
+		Vector3.new(0, 58, 34),
+		Vector3.new(-32, 47, 38),
+		Vector3.new(32, 47, 38),
+	}
 	for rank = 1, 3 do
-		local position = base + right * offsets[rank]
-		local ground = groundAt(position)
-		local pedestal = Instance.new("Part")
-		pedestal.Name = "Pedestal" .. rank
-		pedestal.Anchored = true
-		pedestal.Size = Vector3.new(7, heights[rank], 7)
-		pedestal.Position = Vector3.new(position.X, ground + heights[rank] / 2, position.Z)
-		pedestal.Color = MEDAL_COLORS[rank]
-		pedestal.Material = Enum.Material.Marble
-		pedestal.Parent = folder
+		local spot = spots[rank]
+		local ground = groundAt(spot)
+		local platform = Instance.new("Part")
+		platform.Name = "SkyPlatform" .. rank
+		platform.Shape = Enum.PartType.Cylinder
+		platform.Anchored = true
+		platform.Size = Vector3.new(2, 18, 18)
+		platform.CFrame = CFrame.new(spot) * CFrame.Angles(0, 0, math.rad(90))
+		platform.Color = MEDAL_COLORS[rank]
+		platform.Material = Enum.Material.Neon
+		platform.Parent = folder
 		local glow = Instance.new("PointLight")
-		glow.Range = 18
-		glow.Brightness = 1.2
+		glow.Range = 40
+		glow.Brightness = 1.6
 		glow.Color = MEDAL_COLORS[rank]
-		glow.Parent = pedestal
+		glow.Parent = platform
+		-- 발판 아래로 내려오는 빛줄기 (지상에서도 어디에 떠 있는지 보인다)
+		local beamLength = spot.Y - ground
+		local beam = Instance.new("Part")
+		beam.Name = "SkyBeam" .. rank
+		beam.Shape = Enum.PartType.Cylinder
+		beam.Anchored = true
+		beam.CanCollide = false
+		beam.CanQuery = false
+		beam.Size = Vector3.new(beamLength, 5, 5)
+		beam.CFrame = CFrame.new(spot.X, ground + beamLength / 2, spot.Z) * CFrame.Angles(0, 0, math.rad(90))
+		beam.Color = MEDAL_COLORS[rank]
+		beam.Material = Enum.Material.Neon
+		beam.Transparency = 0.86
+		beam.Parent = folder
 
 		slots[rank] = {
-			Pedestal = pedestal, Look = look, Key = nil, Model = nil, Weapon = nil,
-			Label = makeLabel(pedestal, heights[rank] / 2 + 15), -- 아바타 머리 위로 높이 띄운다
+			Platform = platform, Top = spot + Vector3.new(0, 1, 0), Scale = 2.4, Look = look, Key = nil, Model = nil, Weapon = nil,
+			Label = makeLabel(platform, 22, 420),
 		}
 		slots[rank].Label.Text = MEDAL[rank] .. " 비어 있음"
 	end
@@ -118,14 +135,16 @@ local function buildSlot(rank, player)
 		MEDAL[rank], prestige > 0 and ("🌟" .. prestige .. " ") or "", player.DisplayName, power, player:GetAttribute("Level") or 1,
 		Config.FormatWeapon(level))
 
-	local top = slot.Pedestal.Position + Vector3.new(0, slot.Pedestal.Size.Y / 2, 0)
+	local top = slot.Top
 
 	-- 무기 모형 (진화 단계 미리보기 모델 복제)
 	local previews = ReplicatedStorage:FindFirstChild("WeaponPreviews")
 	local source = previews and previews:FindFirstChild("W" .. Config.GetWeaponTierIndex(level))
 	if source then
 		local weapon = source:Clone()
-		weapon:PivotTo(CFrame.lookAt(top + Vector3.new(0, 7, 0) + slot.Look * 0, top + Vector3.new(0, 7, 0) + slot.Look) * CFrame.Angles(0, math.rad(90), 0) * CFrame.new(0, 0, 0))
+		weapon:ScaleTo(slot.Scale)
+		local weaponSpot = top + Vector3.new(11, 8, 0) -- 아바타 옆 허공에 크게 떠 있다
+		weapon:PivotTo(CFrame.lookAt(weaponSpot, weaponSpot + slot.Look) * CFrame.Angles(0, math.rad(90), 0))
 		for _, descendant in ipairs(weapon:GetDescendants()) do
 			if descendant:IsA("BasePart") then
 				descendant.Anchored = true
@@ -160,7 +179,9 @@ local function buildSlot(rank, player)
 		end
 		model.Name = "ShowcaseAvatar"
 		model.Parent = folder
-		model:PivotTo(CFrame.lookAt(top + Vector3.new(0, 3.2, 0), top + Vector3.new(0, 3.2, 0) + slot.Look))
+		model:ScaleTo(slot.Scale)
+		local standAt = top + Vector3.new(0, 3.2 * slot.Scale, 0)
+		model:PivotTo(CFrame.lookAt(standAt, standAt + slot.Look))
 		slot.Model = model
 	end)
 end
