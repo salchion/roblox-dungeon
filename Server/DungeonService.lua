@@ -163,7 +163,8 @@ local function createHealthBar(part, text, width)
 	local gui = Instance.new("BillboardGui")
 	gui.Size = UDim2.new(0, width, 0, 28)
 	gui.StudsOffset = Vector3.new(0, part.Size.Y / 2 + 1.5, 0)
-	gui.AlwaysOnTop = true
+	gui.AlwaysOnTop = false -- 절벽 / 벽 너머의 몬스터 체력바가 비쳐 보이지 않게 (같은 방 / 시야 안에서만 보임)
+	gui.MaxDistance = 110
 	gui.Parent = part
 
 	local label = Instance.new("TextLabel")
