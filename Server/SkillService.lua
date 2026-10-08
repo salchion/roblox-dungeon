@@ -16,6 +16,7 @@ local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
 local Field = require(script.Parent:WaitForChild("FieldService"))
 
 local S = Config.Skills
+print("[SkillService] 최신 버전 로드됨 (데드아이 일제 포격 v3)")
 
 local Skill = {}
 
