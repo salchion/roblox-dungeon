@@ -1428,8 +1428,8 @@ makeButton({
 end)
 
 local TABS = {
-	{ Key = "Character", Name = "캐릭터" },
-	{ Key = "Inventory", Name = "가방" },
+	{ Key = "Inventory", Name = "캐릭터" }, -- 3D 캐릭터 + 장비 칸 + 가방 (메뉴를 열면 가장 먼저 보인다)
+	{ Key = "Character", Name = "정보" },
 	{ Key = "Weapon", Name = "무기" },
 	{ Key = "Growth", Name = "성장" },
 	{ Key = "Skill", Name = "스킬" },
@@ -1439,7 +1439,7 @@ local TABS = {
 	{ Key = "Rank", Name = "랭킹" },
 	{ Key = "Shop", Name = "상점" },
 }
-local currentTab = "Character"
+local currentTab = "Inventory"
 local tabButtons = {}
 
 local menuContent = create("ScrollingFrame", {
