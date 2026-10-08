@@ -2776,19 +2776,69 @@ local function settingButton(y, labelFn, onClick)
 		button.Text = labelFn()
 	end)
 end
-settingButton(340, function() return string.format("🔊 배경음악 볼륨: %d%%  (클릭할 때마다 변경)", math.floor(musicScale * 100 + 0.5)) end, function()
-	musicScale = musicScale >= 1.5 and 0 or musicScale + 0.25
+-- 슬라이더: 막대를 클릭하거나 드래그해서 0% ~ 200% 사이를 1% 단위로 조절한다
+local function settingSlider(y, title, getValue, setValue)
+	local maxValue = 2
+	local caption = makeLabel({
+		Size = UDim2.new(1, -40, 0, 18), Position = UDim2.new(0, 20, 0, y), TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left,
+	}, helpPanel)
+	local bar = create("Frame", {
+		Size = UDim2.new(1, -40, 0, 12), Position = UDim2.new(0, 20, 0, y + 22), BackgroundColor3 = Color3.fromRGB(55, 65, 100), BorderSizePixel = 0,
+	}, helpPanel)
+	rounded(bar, 6)
+	local fill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(110, 170, 255), BorderSizePixel = 0 }, bar)
+	rounded(fill, 6)
+	local knob = create("Frame", {
+		Size = UDim2.new(0, 18, 0, 18), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, 0, 0.5, 0),
+		BackgroundColor3 = Color3.new(1, 1, 1), BorderSizePixel = 0, ZIndex = 3,
+	}, bar)
+	rounded(knob, 9)
+
+	local function refresh()
+		local value = getValue()
+		local ratio = math.clamp(value / maxValue, 0, 1)
+		fill.Size = UDim2.new(ratio, 0, 1, 0)
+		knob.Position = UDim2.new(ratio, 0, 0.5, 0)
+		caption.Text = string.format("%s: %d%%", title, math.floor(value * 100 + 0.5))
+	end
+	local function setFromX(x)
+		local ratio = math.clamp((x - bar.AbsolutePosition.X) / math.max(1, bar.AbsoluteSize.X), 0, 1)
+		setValue(math.floor(ratio * maxValue * 100 + 0.5) / 100)
+		refresh()
+	end
+	local dragging = false
+	bar.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			setFromX(input.Position.X)
+		end
+	end)
+	UserInputService.InputChanged:Connect(function(input)
+		if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			setFromX(input.Position.X)
+		end
+	end)
+	UserInputService.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = false
+		end
+	end)
+	refresh()
+end
+
+settingSlider(334, "🔊 배경음악 볼륨", function() return musicScale end, function(value)
+	musicScale = value
 	for name, sound in pairs(tracks) do
 		if name == currentMusic then
 			sound.Volume = musicVolume()
 		end
 	end
 end)
-settingButton(380, function() return string.format("🔫 총소리 볼륨: %d%%  (클릭할 때마다 변경, 0 = 끄기)", math.floor(settings.ShotVolume * 100 + 0.5)) end, function()
-	settings.ShotVolume = settings.ShotVolume >= 1.5 and 0 or settings.ShotVolume + 0.25
+settingSlider(380, "🔫 총소리 볼륨", function() return settings.ShotVolume end, function(value)
+	settings.ShotVolume = value
 end)
-settingButton(420, function() return "📳 화면 흔들림: " .. (settings.Shake and "켜짐" or "꺼짐") end, function() settings.Shake = not settings.Shake end)
-settingButton(460, function() return "📡 레이더: " .. (settings.Radar and "켜짐" or "꺼짐") end, function() settings.Radar = not settings.Radar end)
+settingButton(428, function() return "📳 화면 흔들림: " .. (settings.Shake and "켜짐" or "꺼짐") end, function() settings.Shake = not settings.Shake end)
+settingButton(468, function() return "📡 레이더: " .. (settings.Radar and "켜짐" or "꺼짐") end, function() settings.Radar = not settings.Radar end)
 makeButton({
 	Size = UDim2.new(0, 160, 0, 36), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14), Text = "닫기 (H)", BackgroundColor3 = GRAY,
 }, helpPanel, function()
