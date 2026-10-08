@@ -266,7 +266,8 @@ local function updateNameplate(player)
 
 	local title = player:GetAttribute("Title") or ""
 	gui.PlayerName.Text = (inParty and "[파티] " or "") .. (title ~= "" and ("『" .. title .. "』 ") or "") .. player.DisplayName
-	gui.Power.Text = string.format("Lv.%d  ⚡ 전투력 %d", player:GetAttribute("Level") or 1, player:GetAttribute("Power") or 0)
+	local prestige = player:GetAttribute("Prestige") or 0
+	gui.Power.Text = string.format("%sLv.%d  ⚡ 전투력 %d", prestige > 0 and ("🌟" .. prestige .. " ") or "", player:GetAttribute("Level") or 1, player:GetAttribute("Power") or 0)
 	gui.Power.TextColor3 = Color3.fromRGB(255, 225, 110)
 	gui.WeaponLevel.Text = string.format("+%d %s", level, Config.GetWeaponName(player:GetAttribute("WeaponType") or "Pistol", level))
 	gui.WeaponLevel.TextColor3 = tier.Rainbow and Color3.fromRGB(255, 120, 255) or tier.Color

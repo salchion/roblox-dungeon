@@ -440,7 +440,62 @@ local function bossMeteor(run, part, data)
 	end
 end
 
-local BOSS_PATTERNS = { Fan = bossFan, Ring = bossRing, Spiral = bossSpiral, Meteor = bossMeteor }
+-- 5) 대지 강타: 보스를 중심으로 충격파 고리가 퍼져 나간다. 땅에 닿아 있으면 맞으니 고리가 올 때 점프!
+local function bossSlam(run, part, data)
+	bossWarn(run, part, data, Color3.fromRGB(255, 70, 50), 0.8)
+	if not bossAlive(run, part, data) then return end
+	local center = Vector3.new(part.Position.X, groundAt(run, part.Position.X, part.Position.Z, part.Position.Y), part.Position.Z)
+	local ring = Instance.new("Part")
+	ring.Shape = Enum.PartType.Cylinder
+	ring.Anchored = true
+	ring.CanCollide = false
+	ring.CanQuery = false
+	ring.Material = Enum.Material.Neon
+	ring.Color = Color3.fromRGB(255, 90, 60)
+	ring.Transparency = 0.35
+	ring.Parent = run.Folder
+	local hit = {}
+	local radius, speed, maxRadius = 6, 48, D.ArenaRadius - 30
+	local last = os.clock()
+	while radius < maxRadius and bossAlive(run, part, data) do
+		local now = os.clock()
+		radius += speed * (now - last)
+		last = now
+		ring.Size = Vector3.new(1.2, radius * 2, radius * 2)
+		ring.CFrame = CFrame.new(center + Vector3.new(0, 0.6, 0)) * CFrame.Angles(0, 0, math.rad(90))
+		for _, member in ipairs(run.Members) do
+			local root, humanoid = getAliveParts(member)
+			if root and not hit[member] then
+				local flatDist = Vector3.new(root.Position.X - center.X, 0, root.Position.Z - center.Z).Magnitude
+				local height = root.Position.Y - groundAt(run, root.Position.X, root.Position.Z, root.Position.Y)
+				if math.abs(flatDist - radius) < 3 and height < 4.5 then
+					hit[member] = true
+					humanoid:TakeDamage(math.floor(data.Stats.ShotDamage * 1.3))
+					Effects.Burst(root.Position, Color3.fromRGB(255, 90, 60), 25)
+				end
+			end
+		end
+		task.wait(0.03)
+	end
+	ring:Destroy()
+end
+
+-- 6) 소환: 쫄병을 불러낸다 (이미 몬스터가 많으면 생략)
+local function bossSummon(run, part, data)
+	bossWarn(run, part, data, Color3.fromRGB(190, 90, 255), 0.7)
+	if not bossAlive(run, part, data) or run.MonsterCount >= 14 then return end
+	local level = math.max(1, Config.Boss.MinionLevel + run.LevelBonus + 2)
+	for i = 1, data.Enraged and 5 or 3 do
+		local angle = (i / 5) * math.pi * 2 + math.random()
+		local x, z = part.Position.X + math.cos(angle) * 22, part.Position.Z + math.sin(angle) * 22
+		local stats = Config.Monster.GetStats(level)
+		spawnMonster(run, level, Vector3.new(x, groundAt(run, x, z, part.Position.Y) + stats.Size / 2, z))
+		Effects.Burst(Vector3.new(x, part.Position.Y, z), Color3.fromRGB(190, 90, 255), 20)
+	end
+	notifyAll(run, "👹 " .. run.BossName .. "이(가) 부하를 불러냈다!")
+end
+
+local BOSS_PATTERNS = { Fan = bossFan, Ring = bossRing, Spiral = bossSpiral, Meteor = bossMeteor, Slam = bossSlam, Summon = bossSummon }
 
 -- 던전 종류마다 패턴 비중이 다르다 (Config.Dungeon.Types[..].Boss.Weights).
 -- 직전과 같은 패턴은 피하고, 광폭화하면 나선 / 메테오 비중이 커진다.
@@ -596,6 +651,8 @@ function Dungeon.ComputeDamage(player)
 		* (1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0) + (player:GetAttribute("PetDamage") or 0))
 		* (1 + (player:GetAttribute("PerkPower") or 0) * Config.Perks.PowerPerStack)
 		* Combo.GetDamageMult(player)
+		* (1 + (player:GetAttribute("Prestige") or 0) * Config.Prestige.DamagePerRank)
+		* Dungeon.PartyBonus(player)
 	local chance = math.min(0.9, (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint
 		+ (player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0) + (player:GetAttribute("PetCrit") or 0) + (weaponType.CritBonus or 0))
 	local isCrit = math.random() < chance
@@ -623,6 +680,24 @@ function Dungeon.AreaDamage(player, center, radius, damage)
 		end
 	end
 	return positions
+end
+
+-- 파티 시너지: 가까이 있는 파티원 1명당 공격력 +4% (최대 3명)
+function Dungeon.PartyBonus(player)
+	local partyId = player:GetAttribute("PartyId") or 0
+	if partyId == 0 then return 1 end
+	local root = getAliveParts(player)
+	if not root then return 1 end
+	local count = 0
+	for _, other in ipairs(game:GetService("Players"):GetPlayers()) do
+		if other ~= player and other:GetAttribute("PartyId") == partyId and other:GetAttribute("Zone") == player:GetAttribute("Zone") then
+			local otherRoot = getAliveParts(other)
+			if otherRoot and (otherRoot.Position - root.Position).Magnitude <= 70 then
+				count += 1
+			end
+		end
+	end
+	return 1 + math.min(3, count) * 0.04
 end
 
 -- 던전 특성 효과(관통 / 폭발 / 연쇄 / 흡혈)를 포함한 사격

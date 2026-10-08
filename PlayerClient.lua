@@ -788,10 +788,15 @@ if next(tracks) == nil and RunService:IsStudio() then
 	print("[음악] 배경음악이 비어 있어요. ReplicatedStorage > AudioIds 스크립트에 오디오 ID(숫자)를 적으면 로비 / 필드 / 던전 / 보스 음악이 나와요. (README의 '소리 넣는 법' 참고)")
 end
 
+-- 설정창에서 바꾸는 값
+local settings = { Shake = true, Radar = true }
+local toggleHelp -- 도움말/설정창 (아래에서 정의)
+
 local musicEnabled = true   -- M 키로 켜고 끈다
 local currentMusic = nil
+local musicScale = 1       -- 설정창에서 조절 (0 ~ 1.5)
 local function musicVolume()
-	return musicEnabled and Config.Audio.MusicVolume or 0
+	return musicEnabled and Config.Audio.MusicVolume * musicScale or 0
 end
 
 local function playMusic(name)
@@ -1481,6 +1486,20 @@ local function buildCharacterTab()
 				Config.Gear.RarityNames[rarity], slot.Names[rarity], gearLevel,
 				Config.FormatGearStat(slot.Key, Config.GetGearStat(slot.Key, rarity, gearLevel))))
 		end
+	end
+
+	do -- 환생
+		local prestige = player:GetAttribute("Prestige") or 0
+		local ready = (player:GetAttribute("Level") or 1) >= Config.Level.Max and prestige < Config.Prestige.Max
+		local row = newRow(64)
+		rowText(row, string.format("🌟 <b>환생 %d / %d</b>  (영구 공격력 +%d%%)\n<font size='13' color='#bbbbcc'>레벨 %d 에서 환생하면 레벨이 1로 돌아가고 영구 공격력 +%d%%. 장비/무기/돌파는 그대로예요. (로비에서)</font>",
+			prestige, Config.Prestige.Max, math.floor(prestige * Config.Prestige.DamagePerRank * 100 + 0.5), Config.Level.Max, Config.Prestige.DamagePerRank * 100), 14, 190)
+		makeButton({
+			Size = UDim2.new(0, 160, 0, 36), Position = UDim2.new(1, -172, 0.5, -18),
+			Text = prestige >= Config.Prestige.Max and "MAX" or "환생하기", BackgroundColor3 = ready and Color3.fromRGB(200, 150, 40) or GRAY,
+		}, row, function()
+			Remotes.Meta:FireServer("Prestige")
+		end)
 	end
 
 	sectionTitle("칭호 (업적을 달성하면 해금, 머리 위 이름표에 표시)")
@@ -2326,6 +2345,7 @@ end)
 --   마우스: 조준 방향 공격(누르고 있으면 연사) / R: 자동 공격(락온) / Q: 슬라이딩 / Shift: 달리기
 --   I: 메뉴 / 던전 안: 숫자키 1 2 3 스탯 투자
 ------------------------------------------------------------
+do
 ------------------------------------------------------------
 -- 전투 피드백: 피격 시 화면이 붉게 번쩍임 / 체력이 낮으면 붉은 경고 / 연속 처치 콤보 표시
 ------------------------------------------------------------
@@ -2377,7 +2397,9 @@ RunService.RenderStepped:Connect(function(dt)
 		comboLabel.TextTransparency = left < 1 and 0.5 or 0
 	end
 end)
+end
 
+do
 ------------------------------------------------------------
 -- 레이더: 주변 몬스터 위치를 원형 지도에 표시 (빨강 일반 / 노랑 엘리트 / 보라 보스 / 금색 황금 고블린)
 -- 위쪽 = 카메라가 보는 방향. 범위 밖 몬스터는 가장자리에 작게 표시된다.
@@ -2408,7 +2430,7 @@ end
 RunService.RenderStepped:Connect(function()
 	local zone = currentZone()
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-	radarFrame.Visible = (zone == "Field" or zone == "Dungeon") and root ~= nil
+	radarFrame.Visible = settings.Radar and (zone == "Field" or zone == "Dungeon") and root ~= nil
 	if not radarFrame.Visible then return end
 
 	local look = camera.CFrame.LookVector
@@ -2445,10 +2467,12 @@ RunService.RenderStepped:Connect(function()
 		radarDots[i].Visible = false
 	end
 end)
+end
 
 ------------------------------------------------------------
 -- 스킬 (Z 방벽 / F 충격파 / C 응급 치료 / V 궁극기): 하단 스킬바 + 쿨타임 표시
 ------------------------------------------------------------
+local useSkill
 local skillByKey = {}
 local skillSlots = {}
 local skillCooldownTotal = {}
@@ -2476,10 +2500,16 @@ for index, skillKey in ipairs(Config.Skills.Order) do
 	}, slot)
 	rounded(cover)
 	local timer = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 20, Font = Enum.Font.GothamBlack }, slot)
+	if UserInputService.TouchEnabled then -- 모바일: 스킬 칸을 눌러서 사용
+		local tap = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", ZIndex = 5 }, slot)
+		tap.Activated:Connect(function()
+			useSkill(skillKey)
+		end)
+	end
 	skillSlots[skillKey] = { Cover = cover, Timer = timer }
 end
 
-local function useSkill(skillKey)
+function useSkill(skillKey)
 	local zone = currentZone()
 	if zone ~= "Field" and zone ~= "Dungeon" then
 		toast("스킬은 필드와 던전에서만 쓸 수 있어요.")
@@ -2527,6 +2557,8 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	elseif input.KeyCode == Enum.KeyCode.LeftShift then
 		sprinting = true
 		applySpeed()
+	elseif input.KeyCode == Enum.KeyCode.H then
+		toggleHelp()
 	elseif skillByKey[input.KeyCode] then
 		useSkill(skillByKey[input.KeyCode])
 	elseif input.KeyCode == Enum.KeyCode.Q then
@@ -2647,6 +2679,7 @@ RunService.RenderStepped:Connect(function(dt)
 	end
 end)
 
+do
 ------------------------------------------------------------
 -- 타격감: 적중 표시 / 적중음 / 치명타·처치 시 카메라 흔들림
 ------------------------------------------------------------
@@ -2676,8 +2709,78 @@ Remotes.Hit.OnClientEvent:Connect(function(isCrit, killed)
 end)
 
 RunService:BindToRenderStep("HitShake", Enum.RenderPriority.Camera.Value + 1, function(dt)
-	if shake <= 0.01 then return end
+	if shake <= 0.01 or not settings.Shake then
+		shake = 0
+		return
+	end
 	shake = math.max(0, shake - dt * 2.5)
 	local amount = shake * 0.012
 	camera.CFrame = camera.CFrame * CFrame.Angles((math.random() - 0.5) * amount, (math.random() - 0.5) * amount, 0)
 end)
+end
+
+do
+------------------------------------------------------------
+-- 도움말 / 설정 (H 키 또는 왼쪽 버튼). 접속하면 처음에 한 번 자동으로 열린다.
+------------------------------------------------------------
+local helpPanel = makePanel({
+	Size = UDim2.new(0, 560, 0, 520), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
+}, gui)
+makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8), Text = "❓ 도움말 / ⚙ 설정", Font = Enum.Font.GothamBlack, TextSize = 22 }, helpPanel)
+makeLabel({
+	Size = UDim2.new(1, -40, 0, 280), Position = UDim2.new(0, 20, 0, 50), RichText = true, TextSize = 14,
+	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+	Text = table.concat({
+		"<b>이동/공격</b>  WASD 이동 · Shift 달리기 · Q 슬라이딩 · 마우스 클릭(누르고 있으면 연사) 공격",
+		"<b>자동 공격</b>  R — 가장 가까운 적을 자동으로 조준 (적을 클릭하면 그 대상으로 고정)",
+		"<b>스킬</b>  Z 방벽 · F 충격파 · C 응급 치료 · V 궁극기(게이지 100%)  — 필드/던전에서 사용",
+		"<b>메뉴</b>  I — 가방 · 무기 · 성장 · 스킬 · 펫 · 퀘스트 · 업적 · 랭킹 · 상점",
+		"<b>음악</b>  M — 켜기/끄기",
+		"",
+		"<b>🎯 게임 흐름</b>",
+		"1. 로비 허수아비로 골드를 벌어 무기를 강화하세요 (허수아비는 캐릭터 레벨로 열려요)",
+		"2. 동쪽 <b>필드</b>에서 몬스터를 잡아 장비를 얻고 레벨을 올리세요 (황금 고블린을 놓치지 마세요!)",
+		"3. 북쪽 <b>던전</b>은 열쇠가 필요해요. 웨이브마다 특성 카드를 고르고, 보스 상자에서 장비를 얻어요",
+		"4. 성장 탭에서 훈련을 걸어두고, 장비 세트/유니크를 모아 전투력을 키우세요",
+		"5. 최고 레벨이 되면 <b>환생</b>으로 영구 보너스를 받고 다시 도전할 수 있어요",
+	}, "\n"),
+}, helpPanel)
+
+local function settingButton(y, labelFn, onClick)
+	local button
+	button = makeButton({
+		Size = UDim2.new(1, -40, 0, 32), Position = UDim2.new(0, 20, 0, y), Text = labelFn(), TextSize = 14, BackgroundColor3 = Color3.fromRGB(55, 65, 100),
+	}, helpPanel, function()
+		onClick()
+		button.Text = labelFn()
+	end)
+end
+settingButton(340, function() return string.format("🔊 배경음악 볼륨: %d%%  (클릭할 때마다 변경)", math.floor(musicScale * 100 + 0.5)) end, function()
+	musicScale = musicScale >= 1.5 and 0 or musicScale + 0.25
+	for name, sound in pairs(tracks) do
+		if name == currentMusic then
+			sound.Volume = musicVolume()
+		end
+	end
+end)
+settingButton(380, function() return "📳 화면 흔들림: " .. (settings.Shake and "켜짐" or "꺼짐") end, function() settings.Shake = not settings.Shake end)
+settingButton(420, function() return "📡 레이더: " .. (settings.Radar and "켜짐" or "꺼짐") end, function() settings.Radar = not settings.Radar end)
+makeButton({
+	Size = UDim2.new(0, 160, 0, 36), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14), Text = "닫기 (H)", BackgroundColor3 = GRAY,
+}, helpPanel, function()
+	helpPanel.Visible = false
+end)
+
+function toggleHelp()
+	helpPanel.Visible = not helpPanel.Visible
+end
+
+makeButton({
+	Size = UDim2.new(0, 110, 0, 32), Position = UDim2.new(0, 16, 0, 238), Text = "❓ 도움말 (H)", TextSize = 14,
+	BackgroundColor3 = Color3.fromRGB(60, 90, 100),
+}, gui, toggleHelp)
+
+task.delay(3, function()
+	helpPanel.Visible = true
+end)
+end

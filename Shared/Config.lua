@@ -84,6 +84,11 @@ function Config.FormatPetStat(key, level)
 end
 
 ------------------------------------------------------------
+-- 환생(프레스티지): 최고 레벨에서 레벨을 1로 되돌리고 영구 공격력 보너스를 얻는다
+------------------------------------------------------------
+Config.Prestige = { Max = 10, DamagePerRank = 0.05 }
+
+------------------------------------------------------------
 -- 연속 처치 콤보 / 출석 보상 / 던전 변이(매번 달라지는 규칙)
 ------------------------------------------------------------
 Config.Combo = {
@@ -539,7 +544,7 @@ Config.Dungeon.Types = {
 		Torch = Color3.fromRGB(255, 150, 70),
 		Terrain = { Ground = Enum.Material.Mud, Mountain = Enum.Material.Rock, Accent = Enum.Material.Slate },
 		MonsterPool = { Slime = 4, Spitter = 3, Bat = 3 },
-		Boss = { Name = "고블린 왕", Color = Color3.fromRGB(70, 130, 50), HealthMult = 1, DamageMult = 1, Weights = { Fan = 3, Ring = 2, Spiral = 1, Meteor = 2 } },
+		Boss = { Name = "고블린 왕", Color = Color3.fromRGB(70, 130, 50), HealthMult = 1, DamageMult = 1, Weights = { Fan = 3, Ring = 2, Spiral = 1, Meteor = 2, Slam = 2, Summon = 1 } },
 	},
 	Ice = {
 		Name = "얼음 성채", Desc = "얼어붙은 성. 나선 탄막이 매서운 중급 던전", Waves = 6, LevelOffset = 6, GoldMult = 1.6, RecommendedPower = 400,
@@ -549,7 +554,7 @@ Config.Dungeon.Types = {
 		Torch = Color3.fromRGB(120, 200, 255),
 		Terrain = { Ground = Enum.Material.Snow, Mountain = Enum.Material.Glacier, Accent = Enum.Material.Ice },
 		MonsterPool = { Slime = 2, Spitter = 2, Mage = 3, Golem = 2 },
-		Boss = { Name = "서리 군주", Color = Color3.fromRGB(90, 170, 240), HealthMult = 1.6, DamageMult = 1.2, Weights = { Fan = 1, Ring = 3, Spiral = 3, Meteor = 1 } },
+		Boss = { Name = "서리 군주", Color = Color3.fromRGB(90, 170, 240), HealthMult = 1.6, DamageMult = 1.2, Weights = { Fan = 1, Ring = 3, Spiral = 3, Meteor = 1, Slam = 2, Summon = 2 } },
 	},
 	Fire = {
 		Name = "화염 신전", Desc = "용암의 신전. 메테오가 쏟아지는 고급 던전", Waves = 7, LevelOffset = 12, GoldMult = 2.5, RecommendedPower = 1200,
@@ -559,7 +564,7 @@ Config.Dungeon.Types = {
 		Torch = Color3.fromRGB(255, 90, 40),
 		Terrain = { Ground = Enum.Material.Basalt, Mountain = Enum.Material.Slate, Accent = Enum.Material.CrackedLava },
 		MonsterPool = { Charger = 3, Bomber = 3, Mage = 2, Golem = 2 },
-		Boss = { Name = "화염의 군주", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Fan = 1, Ring = 1, Spiral = 2, Meteor = 4 } },
+		Boss = { Name = "화염의 군주", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Fan = 1, Ring = 1, Spiral = 2, Meteor = 4, Slam = 3, Summon = 1 } },
 	},
 	-- 무한의 탑: 끝이 없는 웨이브. 층(웨이브)이 오를수록 강해지고, 쓰러질 때까지 도전. 최고 층이 기록으로 남는다.
 	Tower = {
@@ -570,7 +575,7 @@ Config.Dungeon.Types = {
 		Torch = Color3.fromRGB(190, 120, 255),
 		Terrain = { Ground = Enum.Material.Slate, Mountain = Enum.Material.Basalt, Accent = Enum.Material.Glacier },
 		MonsterPool = { Slime = 2, Spitter = 2, Bat = 2, Mage = 2, Golem = 1, Charger = 2, Bomber = 2 },
-		Boss = { Name = "탑의 수호자", Color = Color3.fromRGB(180, 100, 255), HealthMult = 1, DamageMult = 1, Weights = { Fan = 1, Ring = 1, Spiral = 1, Meteor = 1 } },
+		Boss = { Name = "탑의 수호자", Color = Color3.fromRGB(180, 100, 255), HealthMult = 1, DamageMult = 1, Weights = { Fan = 1, Ring = 1, Spiral = 1, Meteor = 1, Slam = 2, Summon = 2 } },
 	},
 }
 
@@ -608,6 +613,8 @@ Config.Achievements = {
 	{ Id = "skill200",   Name = "스킬 마스터",     Desc = "스킬 %d회 사용",              Stat = "SkillUses",     Goal = 200,   Reward = { Tickets = 3 },              Title = "스킬 마스터" },
 	{ Id = "tower10",    Name = "탑의 도전자",     Desc = "무한의 탑 %d층 도달",         Stat = "TowerBest",     Goal = 10,    Reward = { Tickets = 3 },              Title = "탑의 도전자" },
 	{ Id = "tower30",    Name = "탑의 정복자",     Desc = "무한의 탑 %d층 도달",         Stat = "TowerBest",     Goal = 30,    Reward = { Tickets = 10 },             Title = "탑의 정복자" },
+	{ Id = "prestige1",  Name = "다시 태어난 자",   Desc = "환생 %d회",                    Stat = "Prestige",      Goal = 1,     Reward = { Tickets = 5 },              Title = "환생자" },
+	{ Id = "prestige5",  Name = "윤회의 달인",     Desc = "환생 %d회",                    Stat = "Prestige",      Goal = 5,     Reward = { Tickets = 15 },             Title = "윤회의 달인" },
 	{ Id = "boss10",     Name = "보스 헌터",       Desc = "보스 %d마리 처치",            Stat = "BossKills",     Goal = 10,    Reward = { Tickets = 5 },              Title = "보스 헌터" },
 	{ Id = "zone4",      Name = "탐험가",          Desc = "필드 %d구역 돌파",            Stat = "MaxZone",       Goal = 4,     Reward = { Gold = 1000 },              Title = "탐험가" },
 	{ Id = "zone8",      Name = "심연의 정복자",   Desc = "필드 %d구역 돌파",            Stat = "MaxZone",       Goal = 8,     Reward = { Tickets = 5 },              Title = "심연의 정복자" },

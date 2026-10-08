@@ -11,6 +11,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
+local Level = require(script.Parent:WaitForChild("LevelService"))
 
 local Meta = {}
 
@@ -137,7 +138,7 @@ end
 -- 클라이언트로 상태 보내기
 ------------------------------------------------------------
 local function buildPayload(state)
-	return { Skills = state.Skills, Owned = state.Owned, Equipped = state.Equipped, Tower = state.Tower }
+	return { Skills = state.Skills, Owned = state.Owned, Equipped = state.Equipped, Tower = state.Tower, Prestige = state.Prestige }
 end
 
 function Meta.Push(player)
@@ -157,7 +158,7 @@ local function syncSkillAttributes(player, state)
 end
 
 function Meta.Load(player, saved)
-	local state = { Skills = {}, Owned = {}, Equipped = nil, Tower = 0 }
+	local state = { Skills = {}, Owned = {}, Equipped = nil, Tower = 0, Prestige = 0 }
 	for _, key in ipairs(Config.Skills.Order) do
 		local level = typeof(saved) == "table" and typeof(saved.Skills) == "table" and tonumber(saved.Skills[key]) or 1
 		state.Skills[key] = math.clamp(math.floor(level), 1, Config.SkillUpgrade.MaxLevel)
@@ -175,11 +176,13 @@ function Meta.Load(player, saved)
 			state.Equipped = saved.Equipped
 		end
 		state.Tower = math.max(0, math.floor(tonumber(saved.Tower) or 0))
+		state.Prestige = math.clamp(math.floor(tonumber(saved.Prestige) or 0), 0, Config.Prestige.Max)
 	end
 	states[player] = state
 	syncSkillAttributes(player, state)
 	applyPetStats(player, state)
 	player:SetAttribute("TowerBest", state.Tower)
+	player:SetAttribute("Prestige", state.Prestige)
 	Meta.RefreshPetModel(player)
 	Meta.Push(player)
 end
@@ -187,7 +190,7 @@ end
 function Meta.Serialize(player)
 	local state = states[player]
 	if not state then return nil end
-	return { Skills = state.Skills, Owned = state.Owned, Equipped = state.Equipped or "", Tower = state.Tower }
+	return { Skills = state.Skills, Owned = state.Owned, Equipped = state.Equipped or "", Tower = state.Tower, Prestige = state.Prestige }
 end
 
 function Meta.Forget(player)
@@ -318,6 +321,33 @@ local function equipPet(player, key)
 	Meta.Push(player)
 end
 
+-- 환생: 최고 레벨에서 레벨을 1로 되돌리고 영구 공격력 보너스를 얻는다 (장비 / 무기 / 돌파 진행은 그대로)
+local function prestige(player)
+	local state = states[player]
+	if not state then return end
+	if player:GetAttribute("Zone") ~= "Lobby" then
+		notify(player, "환생은 로비에서만 할 수 있어요.")
+		return
+	end
+	if (player:GetAttribute("Level") or 1) < Config.Level.Max then
+		notify(player, string.format("레벨 %d 에서 환생할 수 있어요.", Config.Level.Max))
+		return
+	end
+	if state.Prestige >= Config.Prestige.Max then
+		notify(player, "이미 최대 환생 단계예요!")
+		return
+	end
+	state.Prestige += 1
+	player:SetAttribute("Prestige", state.Prestige)
+	Level.Load(player, 1, 0)
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if root then
+		Effects.Burst(root.Position + Vector3.new(0, 3, 0), Color3.fromRGB(255, 230, 120), 120)
+	end
+	notify(player, string.format("🌟 환생 %d단계! 영구 공격력 +%d%% (총 +%d%%)", state.Prestige, Config.Prestige.DamagePerRank * 100, state.Prestige * Config.Prestige.DamagePerRank * 100))
+	Meta.Push(player)
+end
+
 local last = {}
 Players.PlayerRemoving:Connect(function(player)
 	last[player] = nil
@@ -331,6 +361,8 @@ Remotes.Meta.OnServerEvent:Connect(function(player, action, arg)
 		Meta.Push(player)
 	elseif action == "SkillUp" then
 		upgradeSkill(player, arg)
+	elseif action == "Prestige" then
+		prestige(player)
 	elseif action == "Hatch" then
 		hatch(player)
 	elseif action == "Equip" then
