@@ -1952,7 +1952,7 @@ local function buildInventoryTab()
 		elseif item then
 			rarityOutline(box, rarity)
 			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 4), Text = SLOT_ICONS[slotKey], TextSize = 32 }, box)
-			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 44), Text = Config.GetGearSlot(slotKey).Names[rarity], TextSize = 11, TextColor3 = Config.Gear.RarityColors[rarity], Font = Enum.Font.GothamBold }, box)
+			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 44), Text = Config.ItemDisplayName(item), TextSize = 11, TextWrapped = true, TextColor3 = Config.Gear.RarityColors[rarity], Font = Enum.Font.GothamBold }, box)
 			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 64), Text = string.format("+%d", item.Level), TextSize = 13, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, box)
 			if item.Unique then
 				makeLabel({ Size = UDim2.new(0, 16, 0, 16), Position = UDim2.new(1, -18, 0, 2), Text = "✦", TextSize = 14, TextColor3 = Color3.fromRGB(255, 184, 77) }, box)
@@ -1981,7 +1981,7 @@ local function buildInventoryTab()
 		rarityOutline(detail, selected.Rarity)
 		local slot = Config.GetGearSlot(selected.Slot)
 		local lines = {
-			string.format("<font color='#%s' size='18'><b>[%s] %s</b></font>  +%d", hex(color), Config.Gear.RarityNames[selected.Rarity], slot.Names[selected.Rarity], selected.Level),
+			string.format("<font color='#%s' size='18'><b>[%s] %s</b></font>  +%d", hex(color), Config.Gear.RarityNames[selected.Rarity], Config.ItemDisplayName(selected), selected.Level),
 			string.format("<font color='#aaaacc' size='12'>%s · 점수 %d%s</font>", slot.Name, selected.Score, selected.Equipped and " · 장착 중" or ""),
 			"<font size='13' color='#ddddee'>기본  " .. Config.FormatGearStat(selected.Slot, Config.GetGearStat(selected.Slot, selected.Rarity, selected.Level)) .. "</font>"
 				.. (Config.StatDesc[slot.Stat] and ("\n<font size='11' color='#8a8aa8'>   → " .. Config.StatDesc[slot.Stat].Desc .. "</font>") or ""),
@@ -1999,6 +1999,9 @@ local function buildInventoryTab()
 			local b2, b3 = {}, {}
 			for _, b in ipairs(setDef.Bonuses[2]) do table.insert(b2, Config.FormatBonus(b.Stat, b.Value)) end
 			for _, b in ipairs(setDef.Bonuses[3]) do table.insert(b3, Config.FormatBonus(b.Stat, b.Value)) end
+			if setDef.Zone then
+				table.insert(lines, string.format("<font size='12' color='#%s'><b>📍 구역 %d · %s 에서만 떨어지는 전용 장비!</b></font>", hex(setDef.Color), setDef.Zone, Config.Field.ZoneNames[setDef.Zone]))
+			end
 			table.insert(lines, string.format("<font size='12' color='#%s'>◈ 세트 [%s] %d/3\n  2부위: %s\n  3부위: %s</font>", hex(setDef.Color), setDef.Name, setCounts[selected.Set] or 0, table.concat(b2, ", "), table.concat(b3, ", ")))
 		end
 		-- 지금 장착한 같은 부위 장비와 비교
@@ -2676,7 +2679,8 @@ local function refreshWarp()
 	addRow(0, "  🏠 마을 (로비)", true, 0)
 	for zone = 1, Config.Field.ZoneCount do
 		local unlocked = zone <= reached
-		addRow(zone, string.format("  %s 구역 %d · %s   (몬스터 Lv.%d)", unlocked and "⛺" or "🔒", zone, Config.Field.ZoneNames[zone], Config.Field.GetZoneLevel(zone)), unlocked, zone)
+		local zoneSet = Config.Sets[Config.Sets.ZoneKeys[zone]]
+		addRow(zone, string.format("  %s 구역 %d · %s   (몬스터 Lv.%d)  %s %s 세트", unlocked and "⛺" or "🔒", zone, Config.Field.ZoneNames[zone], Config.Field.GetZoneLevel(zone), zoneSet.Icon, zoneSet.Name), unlocked, zone)
 	end
 end
 

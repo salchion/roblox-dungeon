@@ -866,6 +866,46 @@ Config.Sets = {
 }
 
 -- 유니크 (신화 등급에서만, 일정 확률): 플레이 방식을 바꾸는 고정 효과
+-- 구역 전용 세트: 필드 구역마다 그 구역에서만 떨어지는 장비 세트가 있다. 이름 앞에 구역 이름이 붙고 같은 세트 2 / 3부위를 끼면 보너스.
+-- (구역 N 의 일반 / 엘리트 / 보스 드랍 중 ZoneSetChance 확률로 그 구역 세트 장비가 나온다 -> 갖고 싶으면 그 구역으로 가야 한다)
+Config.Sets.ZoneSetChance = 0.5
+Config.Sets.ZoneKeys = {}
+do
+	local zoneSets = {
+		{ Name = "초원의 수호", Prefix = "초원", Color = Color3.fromRGB(130, 220, 110), Icon = "🌾",
+			B2 = { { Stat = "Health", Value = 80 } }, B3 = { { Stat = "Health", Value = 150 }, { Stat = "Speed", Value = 1.5 } } },
+		{ Name = "숲의 축복", Prefix = "숲", Color = Color3.fromRGB(80, 200, 120), Icon = "🌲",
+			B2 = { { Stat = "Xp", Value = 0.10 } }, B3 = { { Stat = "Xp", Value = 0.18 }, { Stat = "Luck", Value = 0.15 } } },
+		{ Name = "폐허의 의지", Prefix = "폐허", Color = Color3.fromRGB(200, 170, 120), Icon = "🏚",
+			B2 = { { Stat = "Damage", Value = 0.06 } }, B3 = { { Stat = "Damage", Value = 0.10 }, { Stat = "Health", Value = 150 } } },
+		{ Name = "사막의 태양", Prefix = "사막", Color = Color3.fromRGB(255, 210, 90), Icon = "🏜",
+			B2 = { { Stat = "Crit", Value = 0.06 } }, B3 = { { Stat = "Crit", Value = 0.10 }, { Stat = "Damage", Value = 0.06 } } },
+		{ Name = "서리의 숨결", Prefix = "서리", Color = Color3.fromRGB(150, 225, 255), Icon = "❄",
+			B2 = { { Stat = "Haste", Value = 0.08 } }, B3 = { { Stat = "Haste", Value = 0.12 }, { Stat = "Health", Value = 200 } } },
+		{ Name = "용암의 심장", Prefix = "용암", Color = Color3.fromRGB(255, 110, 50), Icon = "🌋",
+			B2 = { { Stat = "Damage", Value = 0.10 } }, B3 = { { Stat = "Damage", Value = 0.15 }, { Stat = "Crit", Value = 0.08 } } },
+		{ Name = "암흑의 서약", Prefix = "암흑", Color = Color3.fromRGB(180, 110, 255), Icon = "🦇",
+			B2 = { { Stat = "Luck", Value = 0.20 } }, B3 = { { Stat = "Luck", Value = 0.30 }, { Stat = "Damage", Value = 0.10 } } },
+		{ Name = "심연의 지배", Prefix = "심연", Color = Color3.fromRGB(255, 80, 140), Icon = "🌀",
+			B2 = { { Stat = "Damage", Value = 0.15 } }, B3 = { { Stat = "Damage", Value = 0.22 }, { Stat = "Haste", Value = 0.15 }, { Stat = "Shot", Value = 1 } } },
+	}
+	for zone, def in ipairs(zoneSets) do
+		local key = "Zone" .. zone
+		Config.Sets[key] = { Name = def.Name, Prefix = def.Prefix, Icon = def.Icon, Color = def.Color, Zone = zone, Bonuses = { [2] = def.B2, [3] = def.B3 } }
+		Config.Sets.ZoneKeys[zone] = key
+	end
+end
+
+-- 아이템 이름 (구역 전용 세트면 앞에 구역 이름: "[용암] 화염 투구")
+function Config.ItemDisplayName(item)
+	local name = Config.GetGearSlot(item.Slot).Names[item.Rarity]
+	local set = item.Set and Config.Sets[item.Set]
+	if set and set.Prefix then
+		return string.format("%s %s %s", set.Icon, set.Prefix, name)
+	end
+	return name
+end
+
 Config.Uniques = {
 	Order = { "Split", "Chrono", "Slayer", "Fortune" },
 	Chance = 0.30,

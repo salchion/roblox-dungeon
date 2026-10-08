@@ -59,10 +59,10 @@ local function kindMultiplier(kind)
 	return 1
 end
 
-function Loot.RollItem(player, row, kind)
+function Loot.RollItem(player, row, kind, zoneIndex)
 	local rarity = rollRarity(row, luckOf(player), kindMultiplier(kind))
 	local slot = G.Slots[math.random(#G.Slots)]
-	return Inventory.NewItem(slot.Key, rarity, 0)
+	return Inventory.NewItem(slot.Key, rarity, 0, zoneIndex)
 end
 
 local function itemLabel(item)
@@ -81,7 +81,7 @@ function Loot.DropFor(player, position, kind, zoneIndex)
 	drops[player] = drops[player] or {}
 	for _ = 1, count do
 		if math.random() < chance then
-			local item = Loot.RollItem(player, row, kind)
+			local item = Loot.RollItem(player, row, kind, zoneIndex) -- 필드 드랍: 그 구역 전용 세트가 섞여 나온다
 			nextDropId += 1
 			local scatter = count > 1 and Vector3.new(math.random(-7, 7), 0, math.random(-7, 7)) or Vector3.zero
 			local spot = position + scatter

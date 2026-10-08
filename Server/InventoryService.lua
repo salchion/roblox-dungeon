@@ -43,21 +43,24 @@ local function newAffixes(rarity)
 	return list
 end
 
-function Inventory.NewItem(slotKey, rarity, level)
+function Inventory.NewItem(slotKey, rarity, level, zoneIndex)
 	local item = { Slot = slotKey, Rarity = rarity, Level = level or 0, Affixes = newAffixes(rarity) }
 	-- 세트 / 유니크 (높은 등급에서만)
 	if rarity == 5 and math.random() < Config.Uniques.Chance then
 		item.Unique = Config.Uniques.Order[math.random(#Config.Uniques.Order)]
 	end
 	local setChance = Config.Sets.SetChance[rarity]
-	if setChance and math.random() < setChance then
+	local zoneSet = zoneIndex and Config.Sets.ZoneKeys[zoneIndex]
+	if zoneSet and math.random() < Config.Sets.ZoneSetChance then
+		item.Set = zoneSet -- 그 필드 구역에서만 나오는 구역 전용 세트
+	elseif setChance and math.random() < setChance then
 		item.Set = Config.Sets.Order[math.random(#Config.Sets.Order)]
 	end
 	return item
 end
 
 function Inventory.ItemName(item)
-	return Config.GetGearSlot(item.Slot).Names[item.Rarity]
+	return Config.ItemDisplayName(item)
 end
 
 function Inventory.Capacity(player)

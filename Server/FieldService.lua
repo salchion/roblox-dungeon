@@ -147,7 +147,7 @@ end
 ------------------------------------------------------------
 local function makeSign(part, text, color, offsetY)
 	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.new(0, 320, 0, 64)
+	gui.Size = UDim2.new(0, 360, 0, 90)
 	gui.StudsOffset = Vector3.new(0, offsetY, 0)
 	gui.MaxDistance = 160
 	gui.Parent = part
@@ -445,7 +445,7 @@ local function buildGateway(zone, x0)
 		CollectionService:AddTag(seal, "ZoneSeal")
 		local gui = Instance.new("BillboardGui")
 		gui.Name = "SealGui"
-		gui.Size = UDim2.new(0, 300, 0, 70)
+		gui.Size = UDim2.new(0, 340, 0, 90)
 		gui.StudsOffset = Vector3.new(-6, 0, 0)
 		gui.MaxDistance = 140
 		gui.Parent = seal
@@ -463,7 +463,8 @@ local function buildGateway(zone, x0)
 
 	-- 간판: 구역 이름 + 컨셉 + 몬스터 레벨
 	local signPart = part("GateSign", Vector3.new(1, 1, 1), Vector3.new(x0 + 2, H + 24, 0), accent, Enum.Material.Neon, { Transparency = 1, CanCollide = false, CanQuery = false })
-	makeSign(signPart, string.format("구역 %d · %s\n%s · 몬스터 Lv.%d", zone, F.ZoneNames[zone], theme.Tag, F.GetZoneLevel(zone)), Color3.fromRGB(255, 240, 190), 0)
+	local zoneSet = Config.Sets[Config.Sets.ZoneKeys[zone]]
+	makeSign(signPart, string.format("구역 %d · %s\n%s · 몬스터 Lv.%d\n%s 여기서만 드랍: %s 세트", zone, F.ZoneNames[zone], theme.Tag, F.GetZoneLevel(zone), zoneSet.Icon, zoneSet.Name), Color3.fromRGB(255, 240, 190), 0)
 end
 
 local function buildWorld()
@@ -764,7 +765,8 @@ local function gateProgress(player, data)
 	local tickets = F.Gate.RewardTickets + (frontier >= 3 and 1 or 0)
 	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
 	player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + tickets)
-	notify(player, string.format("🔓 구역 %d 관문 개방! 구역 %d · %s (으)로 갈 수 있어요  — 보상 💰%d G · 🎫%d장", frontier + 1, frontier + 1, F.ZoneNames[frontier + 1], gold, tickets))
+	local nextSet = Config.Sets[Config.Sets.ZoneKeys[frontier + 1]]
+	notify(player, string.format("🔓 구역 %d 관문 개방! 보상 💰%d G · 🎫%d장  — %s · %s 에서만 %s %s 세트 장비가 나와요!", frontier + 1, gold, tickets, F.ZoneNames[frontier + 1], F.ZoneNames[frontier + 1], nextSet.Icon, nextSet.Name))
 	local root = getAliveParts(player)
 	if root then
 		Effects.Burst(root.Position, Color3.fromRGB(255, 225, 100), 60)
