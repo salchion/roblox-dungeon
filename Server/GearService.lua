@@ -118,7 +118,7 @@ builders.Armor = function(character, folder, r, color, material)
 		for _, name in ipairs({ { "LeftUpperArm", "Left Arm" }, { "RightUpperArm", "Right Arm" } }) do
 			local arm = firstOf(character, name[1], name[2])
 			if arm then
-				attach(folder, arm, { Shape = Enum.PartType.Ball, Size = Vector3.new(arm.Size.X * 1.55, arm.Size.X * 1.25, arm.Size.X * 1.55), Offset = CFrame.new(0, arm.Size.Y * 0.4, 0), Color = color, Material = material })
+				attach(folder, arm, { Shape = Enum.PartType.Ball, Size = Vector3.new(arm.Size.X * 1.3, arm.Size.X * 0.95, arm.Size.X * 1.3), Offset = CFrame.new(0, arm.Size.Y * 0.4, 0), Color = color, Material = material })
 				if r >= 3 then -- 어깨 가시
 					attach(folder, arm, { Size = Vector3.new(0.22, 0.6 + r * 0.12, 0.22), Offset = CFrame.new(0, arm.Size.Y * 0.4 + 0.65, 0), Color = color, Material = Enum.Material.Neon })
 				end
@@ -207,7 +207,12 @@ function Gear.ApplyVisuals(player)
 			local folder = Instance.new("Folder")
 			folder.Name = "GearVisual_" .. slot.Key
 			folder.Parent = character
-			build(character, folder, rarity, color, G.RarityMaterials[rarity])
+			-- 큰 부품까지 Neon 이면 번쩍이는 덩어리처럼 보이니, 본체는 금속으로 하고 빛나는 건 작은 장식(보석 / 띠)만 Neon 으로 쓴다
+			local material = G.RarityMaterials[rarity]
+			if material == Enum.Material.Neon then
+				material = Enum.Material.Metal
+			end
+			build(character, folder, rarity, color, material)
 
 			if rarity >= 4 then -- 전설 이상: 반짝이는 입자
 				local first = folder:FindFirstChildWhichIsA("BasePart")
