@@ -169,6 +169,15 @@ local function buildTool(level, typeKey)
 		end
 	end
 
+	-- 강화 단계가 오를수록 총열에 빛나는 링이 하나씩 늘어난다 (강화할 때마다 눈에 보이는 변화)
+	local stage = Config.GetWeaponStage(level)
+	for i = 1, math.min(stage, 8) do
+		local ringPart = newPart("StageRing" .. i, Vector3.new(0.14, 0.62 * scale * thick, 0.62 * scale * thick), tier.Color, Enum.Material.Neon, tool)
+		ringPart.Shape = Enum.PartType.Cylinder
+		ringPart.CFrame = handle.CFrame * CFrame.new(0, 0.05, -(0.7 + barrelLength * (0.1 + 0.8 * i / 9))) * CFrame.Angles(0, math.rad(90), 0)
+		weld(handle, ringPart)
+	end
+
 	local tip = Instance.new("Attachment")
 	tip.Name = "Tip"
 	tip.Position = Vector3.new(0, 0, -barrelLength / 2)
@@ -466,7 +475,7 @@ function Weapon.Enhance(player)
 		if evolved then
 			return true, string.format("🎉 진화! %s (%d/%d)", after.Name, after.Index, Config.Weapon.WeaponCount)
 		end
-		return true, string.format("강화 성공! +%d", Config.GetWeaponStage(level + 1))
+		return true, string.format("강화 성공! +%d/%d", Config.GetWeaponStage(level + 1), after.Steps)
 	end
 	return false, "강화 실패... (골드만 사라졌어요)"
 end

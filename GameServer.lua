@@ -356,7 +356,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint)
 	local color = tier.Rainbow and Color3.fromHSV((now * 0.5) % 1, 0.8, 1) or tier.Color
 	local extra = (player:GetAttribute("Zone") == "Dungeon" and (player:GetAttribute("PerkMulti") or 0) or 0) + (player:GetAttribute("GearShot") or 0)
 	local shot = table.clone(tier.Shot)
-	shot.Size *= weaponType.ShotScale
+	shot.Size *= weaponType.ShotScale * (1 + 0.04 * Config.GetWeaponStage(level)) -- 강화 단계마다 발사체가 조금씩 커진다
 	shot.Speed *= weaponType.SpeedScale
 	if weaponType.Pellets + extra > 1 then
 		shot.Impact = math.floor(shot.Impact / 3)

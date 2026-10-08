@@ -461,7 +461,7 @@ function Lobby.Build()
 		AnvilPrompt = anvilPrompt,
 		GachaPrompt = gachaPrompt,
 		WarpPrompt = warpPrompt,
-		DummyStart = Vector3.new(-100, TOP, -92),
+		DummyStart = Vector3.new(-100, TOP, 88), -- 1번 허수아비가 스폰에서 가장 가깝고, 북쪽으로 갈수록 배수가 오른다
 		RankBoardCFrame = CFrame.lookAt(Vector3.new(-52, TOP + 16.5, 100), Vector3.new(0, TOP + 16.5, 72)),
 	}
 end

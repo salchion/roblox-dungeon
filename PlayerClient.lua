@@ -288,7 +288,7 @@ local function refreshEnhance()
 	end
 
 	local lines = {
-		string.format("공격력 배율  x%.1f", Config.GetDamageMultiplier(level)),
+		string.format("공격력 배율  x%.2f", Config.GetDamageMultiplier(level)),
 		string.format("무기 크기      x%.2f", Config.GetWeaponScale(level)),
 	}
 
@@ -298,13 +298,18 @@ local function refreshEnhance()
 		enhanceButton.BackgroundColor3 = GRAY
 	else
 		local cost = Config.GetEnhanceCost(level)
-		table.insert(lines, string.format("공격력 배율 다음 단계  x%.1f", Config.GetDamageMultiplier(level + 1)))
+		table.insert(lines, string.format("공격력 배율 다음 단계  x%.2f", Config.GetDamageMultiplier(level + 1)))
+		-- 강화하면 무엇이 달라지는지: 단계마다 총에 링이 생기고 탄이 커지고, 마지막 단계를 넘으면 새 무기
+		local curTier = Config.GetWeaponTier(level)
+		local stageNow = Config.GetWeaponStage(level)
+		table.insert(lines, string.format("<font color='#9ad7ff'>이 무기 단계 %s  (+%d/%d)</font>", Config.StageBar(level), stageNow, curTier.Steps))
+		table.insert(lines, "<font color='#bbbbcc'>강화할 때마다: 공격력 증가 · 총에 빛나는 링 추가 · 발사체가 조금 커져요</font>")
 		table.insert(lines, string.format("\n강화 비용  <font color='#ffd966'>%d G</font>  (보유 %d G)", cost, gold))
 		table.insert(lines, string.format("성공 확률  %d%%  (실패해도 단계는 유지)", math.floor(Config.GetEnhanceChance(level) * 100 + 0.5)))
 
 		if tierIndex < #tiers then
 			local nextTier = tiers[tierIndex + 1]
-			table.insert(lines, string.format("<font color='#9ad7ff'>다음 무기 [%s] 까지 %d단계</font>", nextTier.Name, nextTier.MinLevel - level))
+			table.insert(lines, string.format("<font color='#9ad7ff'>다음 무기 [%s] 까지 %d단계 — %s</font>", nextTier.Name, nextTier.MinLevel - level, Config.WeaponTypes[nextTier.Class].Desc))
 		end
 		enhanceButton.Text = "강화하기"
 		enhanceButton.BackgroundColor3 = gold >= cost and GREEN or GRAY
@@ -1547,14 +1552,16 @@ local function buildWeaponTab()
 	local tiers = Config.Weapon.Tiers
 	local current = Config.GetWeaponTier(level)
 	local stage = Config.GetWeaponStage(level)
-	sectionTitle(string.format("🔫 무기 도감 — 강화하면 %d단계마다 다음 무기로 자동 진화해요 (총 %d종)", Config.Weapon.StepsPerWeapon, #tiers))
+	sectionTitle(string.format("🔫 무기 도감 — 무기마다 정해진 횟수만큼 강화하면 다음 무기로 자동 진화해요 (총 %d종)", #tiers))
 
-	local header = newRow(86)
+	local header = newRow(112)
 	local classInfo = Config.WeaponTypes[current.Class]
+	local nextTier = tiers[current.Index + 1]
 	rowText(header, string.format(
-		"<font size='20'><b><font color='#%s'>[%d/%d] %s</font></b></font>  +%d\n<font color='#bbbbcc'>%s</font>\n<font color='#bbbbcc'>한 발 x%.1f · 발사 간격 x%.2f · 탄 %d발 · 사거리 %d</font>",
-		hex(current.Color), current.Index, #tiers, current.Name, stage, classInfo.Desc,
-		classInfo.DamageMult, classInfo.Cooldown, classInfo.Pellets, classInfo.Range
+		"<font size='20'><b><font color='#%s'>[%d/%d] %s</font></b></font>  <font color='#ffd966'>+%d / %d</font>  %s\n<font color='#bbbbcc'>%s</font>\n<font color='#bbbbcc'>한 발 x%.2f · 발사 간격 x%.2f · 탄 %d발 · 사거리 %d</font>\n%s",
+		hex(current.Color), current.Index, #tiers, current.Name, stage, current.Steps, Config.StageBar(level), classInfo.Desc,
+		classInfo.DamageMult, classInfo.Cooldown, classInfo.Pellets, classInfo.Range,
+		nextTier and string.format("<font color='#9ad7ff'>%d번 더 강화하면 [%s]로 진화 — %s</font>", current.Steps - stage, nextTier.Name, Config.WeaponTypes[nextTier.Class].Desc) or "<font color='#ffd966'>마지막 무기예요!</font>"
 	), 14, 24)
 
 	-- 도감: 지나온 무기 / 지금 / 앞으로 만날 무기 (모두 이름이 보여서 "저걸 갖고 싶다"가 생기게)

@@ -96,7 +96,7 @@ local function complete(player, state, step)
 	state.Step += 1
 	state.Progress = 0
 	if state.Step > #Steps then
-		Remotes.Notify:FireClient(player, "🎉 튜토리얼 완료! 이제부터는 자유롭게 모험하세요. (도움말: H)")
+		Remotes.Notify:FireClient(player, "🎉 튜토리얼 완료! 열쇠가 생겼으니 북쪽 던전에도 도전해보세요. (도움말: H)")
 	end
 	send(player)
 end

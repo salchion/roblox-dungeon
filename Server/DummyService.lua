@@ -179,7 +179,7 @@ local function buildDummy(index, info, position)
 	}
 end
 
--- start: 1번 허수아비 위치. +Z 방향으로 Config.Dummy.Spacing 간격으로 한 줄로 놓는다.
+-- start: 1번 허수아비 위치(스폰에서 가장 가까운 쪽). -Z 방향(북쪽)으로 Config.Dummy.Spacing 간격으로 한 줄로 놓는다.
 function Dummy.Build(start)
 	folder = Instance.new("Folder")
 	folder.Name = "Dummies"
@@ -192,7 +192,7 @@ function Dummy.Build(start)
 	newPart({
 		Name = "TrainingGround",
 		Size = Vector3.new(30, 0.3, length),
-		Position = start + Vector3.new(0, 0.15, spacing * (count - 1) / 2),
+		Position = start + Vector3.new(0, 0.15, -spacing * (count - 1) / 2),
 		Color = Color3.fromRGB(125, 100, 70),
 		Material = Enum.Material.Ground,
 		CanCollide = false,
@@ -202,14 +202,14 @@ function Dummy.Build(start)
 	newPart({
 		Name = "ProgressStrip",
 		Size = Vector3.new(2, 0.35, length - 8),
-		Position = start + Vector3.new(14, 0.2, spacing * (count - 1) / 2),
+		Position = start + Vector3.new(14, 0.2, -spacing * (count - 1) / 2),
 		Color = Color3.fromRGB(255, 215, 90),
 		Material = Enum.Material.Neon,
 		CanCollide = false,
 	}, folder)
 
 	for index, info in ipairs(Config.Dummy.List) do
-		buildDummy(index, info, start + Vector3.new(0, 0, (index - 1) * spacing))
+		buildDummy(index, info, start + Vector3.new(0, 0, -(index - 1) * spacing))
 	end
 end
 
