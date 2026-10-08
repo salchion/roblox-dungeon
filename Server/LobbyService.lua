@@ -117,10 +117,10 @@ local function decoratePlaza(parent, center, avoid)
 		local ring = makeDisc(center + Vector3.new(0, 0.3, 0), diameter, 0.12, ringColors[index], Enum.Material.Neon, parent)
 		ring.CanCollide = false
 		ring.CanQuery = false
-		ring.Transparency = 0.45
+		ring.Transparency = 0.88
 	end
 	-- 분수 테두리 빛
-	local rim = makeDisc(center + Vector3.new(0, 2.25, 0), 23, 0.2, Color3.fromRGB(120, 210, 255), Enum.Material.Neon, parent)
+	local rim = makeDisc(center + Vector3.new(0, 2.25, 0), 23, 0.2, Color3.fromRGB(70, 140, 190), Enum.Material.Neon, parent)
 	rim.CanCollide = false
 	rim.CanQuery = false
 
@@ -242,20 +242,40 @@ function Lobby.Build()
 	folder.Parent = workspace
 
 	-- 하늘 / 분위기
-	Lighting.ClockTime = 14
-	Lighting.Brightness = 2.2
+	-- 어두운 밤 분위기: 하늘은 깊은 남색, 빛은 등불과 네온에서만 은은하게
+	Lighting.ClockTime = 20.5
+	Lighting.Brightness = 0.9
+	Lighting.Ambient = Color3.fromRGB(38, 40, 62)
+	Lighting.OutdoorAmbient = Color3.fromRGB(52, 56, 84)
+	Lighting.ExposureCompensation = -0.2
+	Lighting.EnvironmentDiffuseScale = 0.4
+	Lighting.EnvironmentSpecularScale = 0.4
+	if not Lighting:FindFirstChild("LobbyBloom") then
+		local bloom = Instance.new("BloomEffect")
+		bloom.Name = "LobbyBloom"
+		bloom.Intensity = 0.35
+		bloom.Size = 20
+		bloom.Threshold = 1.6
+		bloom.Parent = Lighting
+		local grade = Instance.new("ColorCorrectionEffect")
+		grade.Name = "LobbyGrade"
+		grade.Saturation = 0.1
+		grade.Contrast = 0.12
+		grade.TintColor = Color3.fromRGB(225, 225, 255)
+		grade.Parent = Lighting
+	end
 	if not Lighting:FindFirstChildOfClass("Atmosphere") then
 		local atmosphere = Instance.new("Atmosphere")
-		atmosphere.Density = 0.25
+		atmosphere.Density = 0.35
 		atmosphere.Offset = 0.2
-		atmosphere.Color = Color3.fromRGB(200, 215, 235)
+		atmosphere.Color = Color3.fromRGB(70, 78, 120)
 		atmosphere.Parent = Lighting
 	end
 
 	-- 바닥 (잔디) + 동쪽 필드로 이어지는 다리
 	makePart({
 		Name = "Floor", Size = Vector3.new(HALF * 2, 2, HALF * 2), Position = Vector3.new(0, TOP - 1, 0),
-		Color = Color3.fromRGB(78, 82, 98), Material = Enum.Material.Slate,
+		Color = Color3.fromRGB(40, 42, 56), Material = Enum.Material.Slate,
 	}, folder)
 	-- 바닥 타일: 큰 정사각 석판을 번갈아 깔아서 풀밭이 아니라 "돌로 포장된 마을"처럼 보이게 한다
 	do
@@ -267,7 +287,7 @@ function Lobby.Build()
 				makePart({
 					Name = "FloorTile", Size = Vector3.new(tile - 0.6, 0.1, tile - 0.6),
 					Position = Vector3.new(-HALF + tile * (ix + 0.5), TOP + 0.04, -HALF + tile * (iz + 0.5)),
-					Color = dark and Color3.fromRGB(96, 100, 118) or Color3.fromRGB(112, 116, 134),
+					Color = dark and Color3.fromRGB(52, 55, 72) or Color3.fromRGB(62, 66, 86),
 					Material = Enum.Material.Slate, CanCollide = false, CanQuery = false,
 				}, folder)
 			end
