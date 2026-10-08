@@ -634,7 +634,7 @@ function Lobby.Build()
 
 	-- 허수아비 훈련장 입구 표지 (서쪽, 실제 허수아비는 DummyService 가 놓는다)
 	local trainingSign = makePart({ Name = "TrainingSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(-100, 24, 100), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
-	makeLabel(trainingSign, "🎯 허수아비 훈련장\n▲ 북쪽으로 갈수록 배수 UP", Color3.fromRGB(255, 220, 120), 0, 340, 76, 110)
+	makeLabel(trainingSign, "🎯 허수아비 훈련장\n전투력이 높을수록 골드 UP", Color3.fromRGB(255, 220, 120), 0, 340, 76, 110)
 
 	return {
 		SpawnCFrame = CFrame.new(0, 5, 102),
@@ -643,7 +643,7 @@ function Lobby.Build()
 		AnvilPrompt = anvilPrompt,
 		GachaPrompt = gachaPrompt,
 		WarpPrompt = warpPrompt,
-		DummyStart = Vector3.new(-100, TOP, 88), -- 1번 허수아비가 스폰에서 가장 가깝고, 북쪽으로 갈수록 배수가 오른다
+		DummyStart = Vector3.new(-100, TOP, 88), -- 허수아비 하나가 서는 자리
 		RankBoardCFrame = CFrame.lookAt(Vector3.new(-52, TOP + 16.5, 100), Vector3.new(0, TOP + 16.5, 72)),
 	}
 end

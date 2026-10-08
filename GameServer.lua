@@ -419,6 +419,9 @@ Remotes.Enhance.OnServerEvent:Connect(function(player, count)
 	lastEnhance[player] = now
 
 	count = typeof(count) == "number" and math.clamp(math.floor(count), 1, 50) or 1
+	if player:GetAttribute("TutorialActive") then
+		count = 1 -- 튜토리얼 중에는 한 번씩만 (x10 / 최대 강화는 튜토리얼이 끝난 뒤)
+	end
 	if count == 1 then
 		local ok, message = Weapon.Enhance(player)
 		Remotes.Enhance:FireClient(player, ok, message)

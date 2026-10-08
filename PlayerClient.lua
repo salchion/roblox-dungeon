@@ -317,6 +317,10 @@ local hammer = makeLabel({
 }, enhancePanel)
 
 local function enhanceMany(count)
+	if player:GetAttribute("TutorialActive") then
+		toast("🔒 튜토리얼이 끝나면 x10 / 최대 강화를 쓸 수 있어요. 지금은 [강화하기]로 한 번씩!")
+		return
+	end
 	if E.EnhanceBusy then return end
 	E.EnhanceBusy = true
 	Remotes.Enhance:FireServer(count)
@@ -330,6 +334,20 @@ local enhanceMax = makeButton({
 	Size = UDim2.new(0, 80, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 302, 1, -14),
 	Text = "최대\n강화", TextSize = 16, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(190, 110, 40),
 }, enhancePanel, function() enhanceMany(50) end)
+do
+	local function lockMany()
+		local locked = player:GetAttribute("TutorialActive") == true
+		for _, button in ipairs({ enhanceTen, enhanceMax }) do
+			button.AutoButtonColor = not locked
+			button.BackgroundTransparency = locked and 0.6 or 0
+			button.TextTransparency = locked and 0.5 or 0
+		end
+		enhanceTen.Text = locked and "🔒\nx10" or "x10\n강화"
+		enhanceMax.Text = locked and "🔒\n최대" or "최대\n강화"
+	end
+	player:GetAttributeChangedSignal("TutorialActive"):Connect(lockMany)
+	lockMany()
+end
 local enhanceButton = makeButton({
 	Size = UDim2.new(0, 186, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 20, 1, -14),
 	Text = "강화하기", TextSize = 18, Font = Enum.Font.GothamBold, BackgroundColor3 = GREEN,

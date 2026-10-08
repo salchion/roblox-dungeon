@@ -394,27 +394,17 @@ end
 Config.Weapon.MaxLevel = totalSteps - 1 -- 마지막 무기까지 강화한 단계
 
 ------------------------------------------------------------
--- 로비 허수아비 (때릴 때마다 골드). 획득 골드 = GoldPerHit x Multiplier
--- RequiredPower: 내 전투력이 이 값 이상이어야 공격이 들어가서 골드가 들어옴 (낮으면 튕겨 나감)
--- List 순서대로 훈련장에 1~10번 허수아비가 놓인다.
+-- 로비 허수아비 (때릴 때마다 골드): 허수아비는 하나. 내 전투력이 높을수록 한 대당 골드가 많이 나온다.
+--   획득 골드 = GoldPerHit x (1 + (전투력 / PowerRef) ^ PowerExp) x 무기 한 발 위력 x 무기 세대 보너스
 ------------------------------------------------------------
 Config.Dummy = {
 	GoldPerHit = 2,
 	EraGoldMult = 1.4,     -- 무기 세대(10종 단위)가 오를 때마다 허수아비 골드 x1.4 (업그레이드할수록 골드도 늘게)
-	Spacing = 20,     -- 허수아비 간격 (1열로 나열)
-	-- 훈련용 더미: 방어력(RequiredPower)보다 내 전투력이 낮으면 공격이 튕겨 나가서 골드를 못 번다. 앞으로 갈수록 단단하고 보상이 크다.
-	-- 마지막은 보스 더미 (Boss = true): 아주 크고 단단하지만 골드가 가장 많다.
+	PowerRef = 600,        -- 전투력 기준값 (이 값일 때 배율 약 x2)
+	PowerExp = 0.55,       -- 전투력이 오를수록 골드가 어떻게 늘어나는지 (1 이면 정비례, 작을수록 완만)
+	-- 허수아비는 하나. 이름 / 기본 배율만 있다 (방어력 없음: 누구나 때려서 골드를 번다)
 	List = {
-		{ Name = "짚 허수아비",       Multiplier = 1,    RequiredPower = 0 },
-		{ Name = "나무 말뚝",         Multiplier = 1.5,  RequiredPower = 400 },
-		{ Name = "가죽 갑옷 더미",    Multiplier = 2,    RequiredPower = 800 },
-		{ Name = "철판 훈련 인형",    Multiplier = 3,    RequiredPower = 1800 },
-		{ Name = "강철 기사 더미",    Multiplier = 4,    RequiredPower = 4000 },
-		{ Name = "마력 방벽 인형",    Multiplier = 6,    RequiredPower = 9000 },
-		{ Name = "황금 갑주 더미",    Multiplier = 8,    RequiredPower = 20000 },
-		{ Name = "용린 수호 인형",    Multiplier = 12,   RequiredPower = 45000 },
-		{ Name = "암흑 수호 더미",    Multiplier = 18,   RequiredPower = 110000 },
-		{ Name = "👑 보스 더미",      Multiplier = 40,   RequiredPower = 250000, Boss = true },
+		{ Name = "황금 훈련 허수아비", Multiplier = 1, RequiredPower = 0 },
 	},
 }
 

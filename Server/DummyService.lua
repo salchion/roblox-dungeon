@@ -55,9 +55,9 @@ local function addGlow(part, color, range)
 	light.Parent = part
 end
 
-local function buildDummy(index, info, position)
+local function buildDummy(index, info, position, nameIndex)
 	local model = Instance.new("Model")
-	model.Name = "Dummy" .. index
+	model.Name = "Dummy" .. (nameIndex or index)
 
 	local style = STYLES[index] or STYLES[#STYLES]
 	local s = 1 + 0.12 * (index - 1)             -- 번호가 오를수록 커짐 (1.0 ~ 2.1배)
@@ -172,7 +172,7 @@ local function buildDummy(index, info, position)
 	sub.TextScaled = true
 	sub.TextStrokeTransparency = 0.3
 	sub.TextColor3 = Color3.fromRGB(230, 230, 240)
-	sub.Text = info.RequiredPower > 0 and string.format("🛡 전투력 %s 필요 · 골드 x%s", tostring(info.RequiredPower), formatMultiplier(info.Multiplier)) or string.format("골드 x%s", formatMultiplier(info.Multiplier))
+	sub.Text = "💰 전투력이 높을수록 골드 UP"
 	sub.Parent = gui
 
 	model.Parent = folder
@@ -191,38 +191,29 @@ local function buildDummy(index, info, position)
 	}
 end
 
--- start: 1번 허수아비 위치(스폰에서 가장 가까운 쪽). -Z 방향(북쪽)으로 Config.Dummy.Spacing 간격으로 한 줄로 놓는다.
+-- start: 허수아비 위치. 허수아비는 하나만 놓고, 주변은 훈련장 바닥 + 빛나는 원으로 꾸민다.
 function Dummy.Build(start)
 	folder = Instance.new("Folder")
 	folder.Name = "Dummies"
 	folder.Parent = workspace
 
-	local count = #Config.Dummy.List
-	local spacing = Config.Dummy.Spacing
-	local length = spacing * (count - 1) + 24
-
 	newPart({
 		Name = "TrainingGround",
-		Size = Vector3.new(30, 0.3, length),
-		Position = start + Vector3.new(0, 0.15, -spacing * (count - 1) / 2),
+		Size = Vector3.new(34, 0.3, 34),
+		Position = start + Vector3.new(0, 0.15, 0),
 		Color = Color3.fromRGB(125, 100, 70),
 		Material = Enum.Material.Ground,
 		CanCollide = false,
 	}, folder)
-
-	-- 바닥에 번호/배수가 보이는 화살표 띠: 아래로 갈수록 배수 UP
-	newPart({
-		Name = "ProgressStrip",
-		Size = Vector3.new(2, 0.35, length - 8),
-		Position = start + Vector3.new(14, 0.2, -spacing * (count - 1) / 2),
-		Color = Color3.fromRGB(255, 215, 90),
-		Material = Enum.Material.Neon,
-		CanCollide = false,
+	local ring = newPart({
+		Name = "TrainingRing", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.3, 26, 26),
+		CFrame = CFrame.new(start + Vector3.new(0, 0.35, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Color3.fromRGB(255, 215, 90), Material = Enum.Material.Neon, CanCollide = false, Transparency = 0.75,
 	}, folder)
+	addGlow(ring, Color3.fromRGB(255, 215, 90), 30)
 
-	for index, info in ipairs(Config.Dummy.List) do
-		buildDummy(index, info, start + Vector3.new(0, 0, -(index - 1) * spacing))
-	end
+	-- 허수아비 하나: 8번 모양(어깨 보호대 / 투구 / 뿔 / 가슴 갑옷 / 빛나는 눈)을 써서 크고 듬직하게. 이름은 Dummy1.
+	buildDummy(8, Config.Dummy.List[1], start, 1)
 end
 
 local function flash(data)
@@ -257,7 +248,7 @@ function Dummy.Shoot(player, origin, direction)
 
 	flash(data)
 
-	-- 방어력: 내 전투력이 모자라면 공격이 튕겨 나간다 (골드 없음)
+	-- (방어력이 있는 허수아비가 남아 있을 때만) 내 전투력이 모자라면 공격이 튕겨 나간다
 	local power = player:GetAttribute("Power") or 0
 	if power < data.RequiredPower then
 		Effects.FloatText(result.Position, string.format("🛡 튕겨 나가요! 전투력 %d 필요 (지금 %d)", data.RequiredPower, power), Color3.fromRGB(255, 130, 120))
@@ -270,7 +261,9 @@ function Dummy.Shoot(player, origin, direction)
 	-- 한 알당 x0.6 (위력표가 "펠릿 60% 명중"을 전제로 잡혀 있다). 10종(한 세대)이 지날 때마다 x1.4 — 무기 위력이 세대마다 x1.4 로 오르는 것과 맞춰서, 다음 세대 첫 무기가 앞 세대 마지막 무기보다 항상 더 준다.
 	local pelletFactor = weaponType.Pellets > 1 and 0.6 or 1
 	local tierBonus = Config.Dummy.EraGoldMult ^ (Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0).Era - 1)
-	local gold = math.max(1, math.floor(Config.Dummy.GoldPerHit * data.Multiplier * weaponType.DamageMult * pelletFactor * tierBonus + 0.5))
+	-- 전투력이 높을수록 한 대당 골드가 늘어난다 (허수아비가 하나라서 "세지면 더 많이 번다"로 성장을 보여준다)
+	local powerScale = 1 + (power / Config.Dummy.PowerRef) ^ Config.Dummy.PowerExp
+	local gold = math.max(1, math.floor(Config.Dummy.GoldPerHit * data.Multiplier * powerScale * weaponType.DamageMult * pelletFactor * tierBonus + 0.5))
 	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
 	Quest.Add(player, "DummyHits", 1)
 	Effects.FloatText(result.Position, string.format("+%d G", gold), Color3.fromRGB(255, 220, 90))
