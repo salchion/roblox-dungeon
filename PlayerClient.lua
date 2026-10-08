@@ -2249,7 +2249,7 @@ do
 		local speed = math.clamp(shot.Speed * SHOT_SPEED_SCALE, 34, 100)
 		local thick = math.clamp(shot.Size * 0.5, 0.3, 1.6)
 		local pellets = math.min(classInfo.Pellets, 5)
-		local period = math.clamp(classInfo.Cooldown * 0.9, 0.5, 1.9)
+		local period = math.clamp(classInfo.Cooldown * 0.9, 0.36, 1.3)
 		local flamer = style == "Fire"
 
 		local bullets, fx = {}, {}

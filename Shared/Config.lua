@@ -635,52 +635,53 @@ Config.WeaponTypes = {
 		Desc = "균형 잡힌 기본 무기",
 	},
 	Revolver = {
-		Name = "리볼버", Form = "Steel", DamageMult = 1.728, Cooldown = 1.6, Range = 320, Pellets = 1, Spread = 0,
+		Name = "리볼버", Form = "Steel", DamageMult = 1.08, Cooldown = 1.0, Range = 320, Pellets = 1, Spread = 0,
 		ShotScale = 1.15, SpeedScale = 1.1, CritBonus = 0.1, BarrelLength = 0.9, BarrelThickness = 1.2,
 		Desc = "느리지만 묵직한 한 방, 치명타 +10%",
 	},
 	Smg = {
-		Name = "기관단총", Form = "Smg", DamageMult = 0.312, Cooldown = 0.3, Range = 220, Pellets = 1, Spread = 0,
+		Name = "기관단총", Form = "Smg", DamageMult = 0.416, Cooldown = 0.4, Range = 220, Pellets = 1, Spread = 0,
 		ShotScale = 0.7, SpeedScale = 1.1, BarrelLength = 0.8, BarrelThickness = 0.9,
 		Desc = "엄청난 연사 속도로 쏟아붓는 총",
 	},
 	Shotgun = {
-		Name = "샷건", Form = "Basic", DamageMult = 0.516, Cooldown = 1.6, Range = 90, Pellets = 6, Spread = 9,
+		Name = "샷건", Form = "Basic", DamageMult = 0.387, Cooldown = 1.2, Range = 90, Pellets = 6, Spread = 9,
 		ShotScale = 0.55, SpeedScale = 1, BarrelLength = 0.75, BarrelThickness = 1.5,
 		Desc = "근거리에서 6발이 퍼져 나가는 산탄 (사거리 90)",
 	},
 	Rifle = {
-		Name = "라이플", Form = "Rifle", DamageMult = 0.728, Cooldown = 0.65, Range = 400, Pellets = 1, Spread = 0,
+		Name = "라이플", Form = "Rifle", DamageMult = 0.84, Cooldown = 0.75, Range = 400, Pellets = 1, Spread = 0,
 		ShotScale = 0.9, SpeedScale = 1.4, CritBonus = 0.05, BarrelLength = 1.4, BarrelThickness = 0.9,
 		Desc = "멀리까지 정확한 중속 연사",
 	},
 	Sniper = {
-		Name = "저격총", Form = "Basic", DamageMult = 2.816, Cooldown = 2.2, Range = 600, Pellets = 1, Spread = 0,
+		Name = "저격총", Form = "Basic", DamageMult = 1.792, Cooldown = 1.4, Range = 600, Pellets = 1, Spread = 0,
 		ShotScale = 1.4, SpeedScale = 2.4, CritBonus = 0.25, BarrelLength = 1.9, BarrelThickness = 0.7,
 		Desc = "느리지만 한 방이 강력, 치명타 +25%, 사거리 600",
 	},
 	Rocket = {
-		Name = "로켓 런처", Form = "Rocket", DamageMult = 3.432, Cooldown = 2.6, Range = 350, Pellets = 1, Spread = 0, Splash = 12,
+		Name = "로켓 런처", Form = "Rocket", DamageMult = 1.848, Cooldown = 1.4, Range = 350, Pellets = 1, Spread = 0, Splash = 12,
 		ShotScale = 1.8, SpeedScale = 0.55, BarrelLength = 1.3, BarrelThickness = 1.6,
 		Desc = "맞은 곳이 폭발해서 주변 적에게도 피해 (범위 12)",
 	},
 	Rail = {
-		Name = "레일건", Form = "Rail", DamageMult = 4.08, Cooldown = 3.0, Range = 700, Pellets = 1, Spread = 0, Pierce = 2,
+		Name = "레일건", Form = "Rail", DamageMult = 1.904, Cooldown = 1.4, Range = 700, Pellets = 1, Spread = 0, Pierce = 2,
 		ShotScale = 1.2, SpeedScale = 3, BarrelLength = 1.6, BarrelThickness = 0.8,
 		Desc = "일직선으로 적을 3마리까지 관통하는 초고속 탄",
 	},
 	Flamer = {
-		Name = "화염방사기", Form = "Flamer", DamageMult = 0.1, Cooldown = 0.2, Range = 55, Pellets = 4, Spread = 16,
+		Name = "화염방사기", Form = "Flamer", DamageMult = 0.2, Cooldown = 0.4, Range = 55, Pellets = 4, Spread = 16,
 		ShotScale = 0.9, SpeedScale = 0.6, BarrelLength = 0.7, BarrelThickness = 1.4,
 		Desc = "짧은 거리에서 불길을 뿜는 근접 무기 (사거리 60)",
 	},
 	Cannon = {
-		Name = "플라즈마 캐논", Form = "Cannon", DamageMult = 2.48, Cooldown = 2.0, Range = 380, Pellets = 1, Spread = 0, Splash = 7,
+		Name = "플라즈마 캐논", Form = "Cannon", DamageMult = 1.488, Cooldown = 1.2, Range = 380, Pellets = 1, Spread = 0, Splash = 7,
 		ShotScale = 1.5, SpeedScale = 0.8, BarrelLength = 1.1, BarrelThickness = 1.8,
 		Desc = "큼직한 플라즈마 탄, 맞은 곳 주변에 작은 폭발 (범위 7)",
 	},
 }
 
+-- (무기 종류끼리 연사 속도 차이를 줄였다: 초당 약 2~7발. 초당 피해량(DPS)은 그대로 유지하도록 한 발 피해를 맞췄다)
 -- 지금 들고 있는 무기의 종류 능력치 (무기는 강화 단계에 따라 자동으로 바뀐다)
 function Config.GetPlayerWeapon(player)
 	local tier = Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0)
