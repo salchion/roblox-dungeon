@@ -212,6 +212,7 @@ handlers.Ult = function(player, root, _, character)
 	field.Parent = character
 	Debris:AddItem(field, #targets * lockGap + 1.0 + #targets * shotsPer * cfg.ShotGap + 0.6)
 	player:SetAttribute("DeadeyeActive", true)
+	Remotes.Notify:FireClient(player, string.format("🎯 데드아이! %d마리 락온", #targets))
 	Effects.FloatText(origin + Vector3.new(0, 6, 0), "🎯 데드아이!", Color3.fromRGB(255, 90, 90))
 	ring(origin, cfg.Radius * 0.7, Color3.fromRGB(255, 70, 70), 0.9)
 
@@ -283,7 +284,10 @@ handlers.Ult = function(player, root, _, character)
 						root.CFrame = CFrame.lookAt(root.Position, root.Position + flat)
 					end
 					end)
-					if not fxOk then warn("[Deadeye] fx error: " .. tostring(fxErr)) end
+					if not fxOk then
+						warn("[Deadeye] fx error: " .. tostring(fxErr))
+						if fired == 1 then Remotes.Notify:FireClient(player, "데드아이 연출 오류: " .. tostring(fxErr)) end
+					end
 				end
 				task.wait(cfg.ShotGap)
 			end
@@ -295,6 +299,7 @@ handlers.Ult = function(player, root, _, character)
 		end)
 		if not bodyOk then
 			warn("[Deadeye] error: " .. tostring(bodyErr))
+			Remotes.Notify:FireClient(player, "데드아이 오류: " .. tostring(bodyErr))
 			player:SetAttribute("DeadeyeActive", false)
 		end
 	end)

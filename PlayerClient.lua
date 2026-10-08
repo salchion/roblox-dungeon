@@ -3603,16 +3603,6 @@ do
 	RunService.Heartbeat:Connect(update)
 end
 
--- 데드아이 발동 문구
-do
-	player:GetAttributeChangedSignal("DeadeyeActive"):Connect(function()
-		if player:GetAttribute("DeadeyeActive") ~= true then return end
-		local label = makeLabel({ Size = UDim2.new(1, 0, 0, 120), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.3, 0), Text = "◎ DEADEYE ◎", Font = Enum.Font.GothamBlack, TextSize = 110, TextColor3 = Color3.fromRGB(255, 60, 60), TextStrokeTransparency = 0, ZIndex = 60 }, gui)
-		TweenService:Create(label, TweenInfo.new(1.6), { TextTransparency = 1, TextStrokeTransparency = 1, Position = UDim2.new(0.5, 0, 0.24, 0) }):Play()
-		task.delay(1.7, function() label:Destroy() end)
-	end)
-end
-
 -- 구역 경고 배너: 새 구역에 들어서면 붉은 번쩍임 + 큰 글자가 쾅 하고 내려앉는다 (난이도가 얼마나 뛰는지 숫자로)
 do
 	Remotes.Banner.OnClientEvent:Connect(function(action, info)
@@ -3723,6 +3713,15 @@ Remotes.Skill.OnClientEvent:Connect(function(action, skillKey, cooldown)
 	if action == "Cast" and Config.Skills[skillKey] then
 		skillCooldownTotal[skillKey] = cooldown or Config.Skills[skillKey].Cooldown
 		skillReadyAt[skillKey] = os.clock() + skillCooldownTotal[skillKey]
+		if skillKey == "Ult" then
+			-- 서버 연출과 별개로, 발동한 순간 화면 전체가 붉게 번쩍이고 큰 글자가 뜬다 (확실히 "나갔다"는 피드백)
+			local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 40, 40), BackgroundTransparency = 0.35, BorderSizePixel = 0, ZIndex = 58, Active = false }, gui)
+			TweenService:Create(flash, TweenInfo.new(0.7), { BackgroundTransparency = 1 }):Play()
+			task.delay(0.8, function() flash:Destroy() end)
+			local big = makeLabel({ Size = UDim2.new(1, 0, 0, 120), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.3, 0), Text = "◎ DEADEYE ◎", Font = Enum.Font.GothamBlack, TextSize = 110, TextColor3 = Color3.fromRGB(255, 60, 60), TextStrokeTransparency = 0, ZIndex = 60 }, gui)
+			TweenService:Create(big, TweenInfo.new(1.6), { TextTransparency = 1, TextStrokeTransparency = 1, Position = UDim2.new(0.5, 0, 0.24, 0) }):Play()
+			task.delay(1.7, function() big:Destroy() end)
+		end
 	end
 end)
 
