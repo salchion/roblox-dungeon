@@ -172,6 +172,21 @@ handlers.Heal = function(player, root)
 	return true
 end
 
+-- 데드아이 전용 굵은 빔 (기본 Tracer 는 너무 가늘고 짧아서 안 보였다)
+local function thickBeam(from, to, color, thickness, life)
+	local distance = (to - from).Magnitude
+	if distance < 0.1 then return end
+	local beam = Instance.new("Part")
+	beam.Anchored, beam.CanCollide, beam.CanQuery, beam.CanTouch = true, false, false, false
+	beam.Material = Enum.Material.Neon
+	beam.Color = color
+	beam.Size = Vector3.new(thickness, thickness, distance)
+	beam.CFrame = CFrame.lookAt(from, to) * CFrame.new(0, 0, -distance / 2)
+	beam.Parent = workspace
+	TweenService:Create(beam, TweenInfo.new(life), { Transparency = 1, Size = Vector3.new(thickness * 0.2, thickness * 0.2, distance) }):Play()
+	Debris:AddItem(beam, life + 0.05)
+end
+
 -- 궁극기 데드아이: 범위 안의 적을 하나씩 "딱" 락온(빨간 조준 표시가 줄어들며 고정)한 뒤, 락온한 전원에게 연속으로 난사한다.
 -- 락온하는 동안 무적(ForceField) + 화면이 붉게 변한다 (클라이언트가 DeadeyeActive Attribute 를 보고 연출).
 handlers.Ult = function(player, root, _, character)
@@ -201,6 +216,7 @@ handlers.Ult = function(player, root, _, character)
 	ring(origin, cfg.Radius * 0.7, Color3.fromRGB(255, 70, 70), 0.9)
 
 	task.spawn(function()
+		local bodyOk, bodyErr = pcall(function()
 		-- 1) 락온: 적마다 큰 조준 표시가 쏙 줄어들며 고정된다
 		local markers = {}
 		for index, part in ipairs(targets) do
@@ -220,7 +236,7 @@ handlers.Ult = function(player, root, _, character)
 			label.TextStrokeTransparency = 0.3
 			label.Parent = gui
 			TweenService:Create(gui, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.fromOffset(46, 46) }):Play()
-			Effects.Tracer(root.Position + Vector3.new(0, 1.5, 0), part.Position, Color3.fromRGB(255, 80, 80), 0.18)
+			thickBeam(root.Position + Vector3.new(0, 1.5, 0), part.Position, Color3.fromRGB(255, 60, 60), 0.9, 0.5)
 			markers[index] = gui
 			Debris:AddItem(gui, 4)
 			task.wait(lockGap)
@@ -235,9 +251,10 @@ handlers.Ult = function(player, root, _, character)
 				local alive = part.Parent and (Dungeon.HitPart(player, part, perShot) or Field.HitPart(player, part, perShot))
 				if alive and root.Parent then
 					fired += 1
+					local fxOk, fxErr = pcall(function()
 					local from = root.Position + Vector3.new(0, 1.5, 0)
 					local jitter = Vector3.new(math.random() - 0.5, math.random() - 0.5, math.random() - 0.5) * (part.Size.X * 0.5)
-					Effects.Tracer(from, part.Position + jitter, fired % 2 == 0 and Color3.fromRGB(255, 220, 120) or Color3.fromRGB(255, 120, 90), 0.1)
+					thickBeam(from, part.Position + jitter, fired % 2 == 0 and Color3.fromRGB(255, 235, 120) or Color3.fromRGB(255, 110, 80), 1.1, 0.16)
 					if fired % 2 == 0 then
 						Effects.Burst(part.Position + jitter, Color3.fromRGB(255, 110, 70), 5)
 					end
@@ -252,7 +269,7 @@ handlers.Ult = function(player, root, _, character)
 						flash.Shape = Enum.PartType.Ball
 						flash.Material = Enum.Material.Neon
 						flash.Color = Color3.fromRGB(255, 230, 140)
-						flash.Size = Vector3.new(2.4, 2.4, 2.4)
+						flash.Size = Vector3.new(5, 5, 5)
 						flash.Position = from + (part.Position - from).Unit * 2.5
 						flash.Parent = workspace
 						TweenService:Create(flash, TweenInfo.new(0.1), { Size = Vector3.new(0.2, 0.2, 0.2), Transparency = 1 }):Play()
@@ -265,6 +282,8 @@ handlers.Ult = function(player, root, _, character)
 					if flat.Magnitude > 0.5 then
 						root.CFrame = CFrame.lookAt(root.Position, root.Position + flat)
 					end
+					end)
+					if not fxOk then warn("[Deadeye] fx error: " .. tostring(fxErr)) end
 				end
 				task.wait(cfg.ShotGap)
 			end
@@ -273,6 +292,11 @@ handlers.Ult = function(player, root, _, character)
 		player:SetAttribute("DeadeyeActive", false)
 		player:SetAttribute("ShakeStrength", 0.9)
 		player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+		end)
+		if not bodyOk then
+			warn("[Deadeye] error: " .. tostring(bodyErr))
+			player:SetAttribute("DeadeyeActive", false)
+		end
 	end)
 	return true
 end

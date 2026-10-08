@@ -3567,6 +3567,54 @@ do
 	player:GetAttributeChangedSignal("DeadeyeActive"):Connect(apply)
 end
 
+-- 내 체력바: 화면 아래 중앙(스킬바 위)에 큰 막대 + 캐릭터 발밑에 작은 막대
+do
+	local bar = create("Frame", { Name = "MyHealth", Size = UDim2.new(0, 420, 0, 22), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -128), BackgroundColor3 = Color3.fromRGB(20, 10, 14), BorderSizePixel = 0, ZIndex = 20 }, gui)
+	create("UICorner", { CornerRadius = UDim.new(0, 8) }, bar)
+	create("UIStroke", { Color = Color3.fromRGB(255, 255, 255), Thickness = 2, Transparency = 0.3 }, bar)
+	local fill = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(70, 220, 100), BorderSizePixel = 0, ZIndex = 21 }, bar)
+	create("UICorner", { CornerRadius = UDim.new(0, 8) }, fill)
+	local text = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "", Font = Enum.Font.GothamBlack, TextSize = 16, TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 0.4, ZIndex = 22 }, bar)
+	local feet
+	local function update()
+		local character = player.Character
+		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+		if not humanoid then return end
+		local ratio = math.clamp(humanoid.Health / math.max(1, humanoid.MaxHealth), 0, 1)
+		fill.Size = UDim2.new(ratio, 0, 1, 0)
+		fill.BackgroundColor3 = ratio > 0.5 and Color3.fromRGB(70, 220, 100) or ratio > 0.25 and Color3.fromRGB(255, 200, 60) or Color3.fromRGB(255, 70, 70)
+		text.Text = string.format("❤ %d / %d", math.ceil(humanoid.Health), math.ceil(humanoid.MaxHealth))
+		local root = character:FindFirstChild("HumanoidRootPart")
+		if root and (not feet or feet.Parent ~= root) then
+			if feet then feet:Destroy() end
+			feet = Instance.new("BillboardGui")
+			feet.Size = UDim2.fromOffset(110, 12)
+			feet.StudsOffset = Vector3.new(0, -3.6, 0)
+			feet.AlwaysOnTop = true
+			feet.Parent = root
+			local back = create("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.fromRGB(20, 10, 14), BorderSizePixel = 0 }, feet)
+			create("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 1.5 }, back)
+			create("Frame", { Name = "Fill", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.fromRGB(70, 220, 100), BorderSizePixel = 0 }, back)
+		end
+		local f = feet and feet:FindFirstChild("Fill", true)
+		if f then
+			f.Size = UDim2.fromScale(ratio, 1)
+			f.BackgroundColor3 = fill.BackgroundColor3
+		end
+	end
+	RunService.Heartbeat:Connect(update)
+end
+
+-- 데드아이 발동 문구
+do
+	player:GetAttributeChangedSignal("DeadeyeActive"):Connect(function()
+		if player:GetAttribute("DeadeyeActive") ~= true then return end
+		local label = makeLabel({ Size = UDim2.new(1, 0, 0, 120), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.3, 0), Text = "◎ DEADEYE ◎", Font = Enum.Font.GothamBlack, TextSize = 110, TextColor3 = Color3.fromRGB(255, 60, 60), TextStrokeTransparency = 0, ZIndex = 60 }, gui)
+		TweenService:Create(label, TweenInfo.new(1.6), { TextTransparency = 1, TextStrokeTransparency = 1, Position = UDim2.new(0.5, 0, 0.24, 0) }):Play()
+		task.delay(1.7, function() label:Destroy() end)
+	end)
+end
+
 -- 구역 경고 배너: 새 구역에 들어서면 붉은 번쩍임 + 큰 글자가 쾅 하고 내려앉는다 (난이도가 얼마나 뛰는지 숫자로)
 do
 	Remotes.Banner.OnClientEvent:Connect(function(action, info)

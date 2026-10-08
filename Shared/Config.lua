@@ -172,7 +172,7 @@ Config.Skills = {
 		Desc = "나와 주변 파티원의 체력 35% 회복" },
 	Ult = { Name = "데드아이", Icon = "🎯", Key = "V", KeyCode = "V", Cooldown = 3, Radius = 110, Mult = 8, Cost = 100, ShotsPerTarget = 8, ShotGap = 0.03,
 		Desc = "궁극기: 게이지가 가득 차면 사용! 주변 적을 하나씩 딱 락인한 뒤 공속 한계를 뚫고 전부에게 화다다다다 난사한다 (최대 12마리, 공격력 x8)" },
-	ChargePerShot = 1.4,
+	ChargePerShot = 4,
 }
 
 ------------------------------------------------------------

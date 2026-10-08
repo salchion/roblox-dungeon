@@ -130,11 +130,10 @@ local function zoneOfX(x)
 	return math.clamp(math.floor((x - F.StartX) / F.ZoneLength) + 1, 1, F.ZoneCount)
 end
 
--- 구역마다 "좁은 계단통"으로 1층 → 2층 → 3층을 높이 올라갔다 내려온다 (구역 입구 / 캠프는 항상 0층).
--- 층 사이는 폭 전체가 높은 절벽 벽이고, 그 한가운데에 폭 STAIR_LANE 짜리 좁은 계단 통로만 뚫려 있다 (아파트 계단 느낌).
--- 계단통 안은 몬스터가 못 들어오고 총도 못 쏜다 (안전한 이동 구간). 몬스터 / 전리품 높이는 floorAt 이 층 높이를 돌려준다.
-local STEP_RISE, STEP_DEPTH, STAIR_LANE = 1.2, 2.6, 14
-local STAIRS = { { At = 120, Rise = 24 }, { At = 320, Rise = 24 }, { At = 500, Rise = -24 }, { At = 600, Rise = -24 } }
+-- 구역마다 넓은 계단으로 층을 올라갔다 내려온다 (구역 입구 / 캠프는 항상 0층). 계단은 맵 폭 전체라 좁은 길이 없다.
+local STEP_RISE, STEP_DEPTH = 1.2, 2.6
+-- 넓은 계단을 세 번 연달아 올라 정상(+48)까지 간 뒤, 긴 내리막 계단으로 다시 내려온다 (계속 올라가는 느낌)
+local STAIRS = { { At = 110, Rise = 16 }, { At = 250, Rise = 16 }, { At = 390, Rise = 16 }, { At = 520, Rise = -48 } }
 local FLOOR_SEGMENTS = {}   -- { A = 구역 안 x 시작, B = 끝, H = 높이, Kind = "Floor" | "Step", Stair = 계단 정보 }
 do
 	local height, cursor = 0, 0
@@ -159,7 +158,7 @@ local function floorAt(x)
 	local offset = (x - F.StartX) % F.ZoneLength
 	for _, segment in ipairs(FLOOR_SEGMENTS) do
 		if offset < segment.B then
-			return TOP + (segment.Kind == "Step" and segment.Stair.Hi or segment.H)
+			return TOP + segment.H
 		end
 	end
 	return TOP
@@ -530,39 +529,14 @@ local function buildWorld()
 				local stair = segment.Stair
 				-- 계단 한 칸 (좁은 통로)
 				makePart({
-					Name = "Stair" .. zone, Size = Vector3.new(STEP_DEPTH, top + 1.95, STAIR_LANE),
+					Name = "Stair" .. zone, Size = Vector3.new(STEP_DEPTH, top + 1.95, F.Width),
 					Position = Vector3.new(x0 + (segment.A + segment.B) / 2, (top - 1.95) / 2, 0),
 					Color = Color3.fromRGB(205, 195, 180), Material = Enum.Material.Cobblestone,
 				}, worldFolder)
 				if segment.First then
-					-- 계단통 양옆 벽: 높은 쪽 층 높이까지 솟은 석벽 (폭 전체에서 통로만 비워 둔다)
-					local sideWidth = (F.Width - STAIR_LANE) / 2
-					for _, side in ipairs({ -1, 1 }) do
-						makePart({
-							-- 벽 윗면은 올라설 수 없게 층 높이보다 40 더 높이 솟게 한다 (윗면이 걸을 수 있는 "죽은 구역"이 되지 않게)
-							Name = "StairWall" .. zone, Size = Vector3.new(stair.Run, TOP + stair.Hi + 41.95, sideWidth),
-							Position = Vector3.new(x0 + stair.At + stair.Run / 2, (TOP + stair.Hi + 40 - 1.95) / 2, side * (STAIR_LANE / 2 + sideWidth / 2)),
-							Color = F.ZoneColors[zone]:Lerp(Color3.fromRGB(120, 112, 105), 0.6), Material = Enum.Material.Brick,
-						}, worldFolder)
-					end
-					-- 몬스터 / 탄이 계단통 안으로 들어가지 못하게 하는 막힌 구간 + 몬스터 소환 회피
-					table.insert(baffleRects, { X0 = x0 + stair.At, X1 = x0 + stair.At + stair.Run, Z0 = -half, Z1 = half, Solid = true })
 					for dx = 0, stair.Run, 14 do
 						table.insert(baffleXs, x0 + stair.At + dx)
 					end
-				end
-				-- 계단통 안을 밝히는 등불 (5칸마다 한쪽 벽에)
-				if (math.floor((segment.A - segment.Stair.At) / STEP_DEPTH) % 5) == 2 then
-					local side = ((segment.A // 13) % 2 == 0) and 1 or -1
-					local lamp = makePart({
-						Name = "StairLamp", Size = Vector3.new(0.8, 1.6, 0.8), Position = Vector3.new(x0 + (segment.A + segment.B) / 2, top + 5.5, side * (STAIR_LANE / 2 - 0.6)),
-						Color = Color3.fromRGB(255, 215, 140), Material = Enum.Material.Neon, CanCollide = false,
-					}, worldFolder)
-					local glow = Instance.new("PointLight")
-					glow.Range = 22
-					glow.Brightness = 1.4
-					glow.Color = Color3.fromRGB(255, 215, 140)
-					glow.Parent = lamp
 				end
 			end
 		end
@@ -575,7 +549,7 @@ local function buildWorld()
 	-- 꺾임 벽: 구역마다 벽 3개가 길을 가로막고, 틈이 위쪽 / 아래쪽 가장자리에 번갈아 뚫려 있다.
 	-- 길이 ㄹ 자로 꺾이는 느낌이 나고, 멀리 있는 몬스터가 한눈에 다 보이지 않는다.
 	do
-		local gapSize = 64
+		local gapSize = 130
 		local side = 1
 		for zone = 1, F.ZoneCount do
 			local x0 = zoneBounds(zone)
@@ -587,16 +561,6 @@ local function buildWorld()
 					Position = Vector3.new(x0 + offset, height / 2 - 2, -side * gapSize / 2),
 					Color = F.ZoneColors[zone]:Lerp(Color3.fromRGB(70, 65, 72), 0.5), Material = Enum.Material.Slate,
 				}, worldFolder)
-				-- 틈 쪽을 알리는 빛 기둥 (이쪽으로 지나가라는 표시)
-				local marker = makePart({
-					Name = "BaffleGlow", Size = Vector3.new(3, 30, 3), Position = Vector3.new(x0 + offset, 15, side * (half - gapSize / 2)),
-					Color = F.ZoneColors[zone]:Lerp(Color3.new(1, 1, 1), 0.55), Material = Enum.Material.Neon, CanCollide = false,
-				}, worldFolder)
-				local glow = Instance.new("PointLight")
-				glow.Range = 40
-				glow.Brightness = 1.4
-				glow.Color = marker.Color
-				glow.Parent = marker
 				table.insert(baffleXs, x0 + offset)
 				local zCenter = -side * gapSize / 2
 				table.insert(baffleRects, { X0 = x0 + offset - 11, X1 = x0 + offset + 11, Z0 = zCenter - wallLength / 2, Z1 = zCenter + wallLength / 2 })
