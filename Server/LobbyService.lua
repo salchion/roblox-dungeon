@@ -107,6 +107,97 @@ local function makeFountain(position, parent)
 	spray.Parent = top
 end
 
+-- 광장 꾸미기: 빛나는 바닥 고리 / 무지개 기둥 / 떠도는 수정 / 반짝이 가루 / 스폰 패드
+local function decoratePlaza(parent, center, avoid)
+	-- 바닥의 빛나는 고리 (금색 / 청록 / 분홍)
+	local ringColors = { Color3.fromRGB(255, 215, 90), Color3.fromRGB(90, 230, 255), Color3.fromRGB(255, 130, 220) }
+	for index, diameter in ipairs({ 66, 54, 42 }) do
+		local ring = makeDisc(center + Vector3.new(0, 0.3, 0), diameter, 0.12, ringColors[index], Enum.Material.Neon, parent)
+		ring.CanCollide = false
+		ring.CanQuery = false
+		ring.Transparency = 0.45
+	end
+	-- 분수 테두리 빛
+	local rim = makeDisc(center + Vector3.new(0, 2.25, 0), 23, 0.2, Color3.fromRGB(120, 210, 255), Enum.Material.Neon, parent)
+	rim.CanCollide = false
+	rim.CanQuery = false
+
+	-- 광장 가장자리 기둥 12개 (색이 무지개처럼 이어지는 빛 구슬)
+	for i = 0, 11 do
+		local angle = i / 12 * math.pi * 2
+		local position = center + Vector3.new(math.cos(angle) * 37, 0, math.sin(angle) * 37)
+		local blocked = false
+		for _, spot in ipairs(avoid) do
+			if (Vector3.new(position.X, 0, position.Z) - Vector3.new(spot.X, 0, spot.Z)).Magnitude < spot.R then
+				blocked = true
+			end
+		end
+		if not blocked then
+			local color = Color3.fromHSV(i / 12, 0.55, 1)
+			makePart({ Name = "PlazaPillar", Size = Vector3.new(3, 14, 3), Position = position + Vector3.new(0, 7, 0), Color = Color3.fromRGB(235, 232, 225), Material = Enum.Material.Marble }, parent)
+			makePart({ Name = "PillarCap", Size = Vector3.new(4.4, 1.2, 4.4), Position = position + Vector3.new(0, 14.6, 0), Color = Color3.fromRGB(200, 170, 90), Material = Enum.Material.Metal }, parent)
+			local orb = makePart({
+				Name = "PillarOrb", Shape = Enum.PartType.Ball, Size = Vector3.new(3.2, 3.2, 3.2), Position = position + Vector3.new(0, 17, 0),
+				Color = color, Material = Enum.Material.Neon, CanCollide = false,
+			}, parent)
+			addLight(orb, 24, 1.4, color)
+		end
+	end
+
+	-- 분수 둘레를 천천히 도는 수정 8개
+	local crystals = {}
+	for i = 1, 8 do
+		local color = Color3.fromHSV(i / 8, 0.6, 1)
+		local crystal = makePart({
+			Name = "FloatingCrystal", Size = Vector3.new(2.4, 4.4, 2.4), Position = center + Vector3.new(0, 14, 0), Color = color,
+			Material = Enum.Material.Neon, CanCollide = false, CanQuery = false,
+		}, parent)
+		addLight(crystal, 16, 1, color)
+		crystals[i] = crystal
+	end
+	task.spawn(function()
+		while parent.Parent do
+			local t = os.clock()
+			for i, crystal in ipairs(crystals) do
+				local angle = t * 0.5 + i / #crystals * math.pi * 2
+				local bob = math.sin(t * 1.6 + i) * 1.4
+				crystal.CFrame = CFrame.new(center + Vector3.new(math.cos(angle) * 19, 14 + bob, math.sin(angle) * 19))
+					* CFrame.Angles(t * 0.8 + i, t * 1.1, 0)
+			end
+			task.wait(0.05)
+		end
+	end)
+
+	-- 하늘에서 천천히 내려오는 반짝이 가루
+	local sky = makePart({ Name = "PlazaSparkles", Size = Vector3.new(70, 1, 70), Position = center + Vector3.new(0, 38, 0), Transparency = 1, CanCollide = false, CanQuery = false }, parent)
+	local sparkle = Instance.new("ParticleEmitter")
+	sparkle.Rate = 22
+	sparkle.Lifetime = NumberRange.new(7, 9)
+	sparkle.Speed = NumberRange.new(2, 4)
+	sparkle.EmissionDirection = Enum.NormalId.Bottom
+	sparkle.Shape = Enum.ParticleEmitterShape.Box
+	sparkle.Acceleration = Vector3.new(0, -1, 0)
+	sparkle.LightEmission = 1
+	sparkle.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 225, 120)),
+		ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 150, 230)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(130, 220, 255)),
+	})
+	sparkle.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.6), NumberSequenceKeypoint.new(1, 0.2) })
+	sparkle.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.15, 0.1), NumberSequenceKeypoint.new(1, 1) })
+	sparkle.Parent = sky
+
+	-- 스폰 자리: 빛나는 환영 패드
+	local pad = makeDisc(Vector3.new(0, TOP + 0.35, 102), 16, 0.12, Color3.fromRGB(110, 230, 255), Enum.Material.Neon, parent)
+	pad.CanCollide = false
+	pad.CanQuery = false
+	pad.Transparency = 0.35
+	local padInner = makeDisc(Vector3.new(0, TOP + 0.4, 102), 9, 0.12, Color3.fromRGB(255, 255, 255), Enum.Material.Neon, parent)
+	padInner.CanCollide = false
+	padInner.CanQuery = false
+	padInner.Transparency = 0.6
+end
+
 -- 마을을 둘러싸는 성벽 + 바깥의 거대한 절벽: 마을 밖(필드 절벽, 허공)이 전혀 보이지 않게 한다.
 -- 동쪽에는 필드로 가는 통로(z -20 ~ 20)만 열어 둔다.
 local function buildPerimeter(folder)
@@ -201,6 +292,12 @@ function Lobby.Build()
 	-- 남쪽 광장: 스폰 + 분수
 	makeDisc(Vector3.new(0, TOP + 0.1, 70), 70, 0.2, Color3.fromRGB(205, 195, 165), Enum.Material.Marble, folder).CanCollide = false
 	makeFountain(Vector3.new(0, TOP, 70), folder)
+	decoratePlaza(folder, Vector3.new(0, TOP, 70), {
+		{ X = 32, Z = 92, R = 16 },   -- 강화대
+		{ X = 36, Z = 58, R = 16 },   -- 뽑기 머신
+		{ X = 0, Z = 102, R = 12 },   -- 스폰
+		{ X = -40, Z = 92, R = 20 },  -- 랭킹판 / 명예의 전당
+	})
 	makeLabel(makePart({ Name = "PlazaSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(0, 20, 70), Transparency = 1, CanCollide = false, CanQuery = false }, folder),
 		"🏰 마을 광장", Color3.fromRGB(255, 240, 200), 0, 300, 70)
 
@@ -287,7 +384,7 @@ function Lobby.Build()
 	gatePrompt.Parent = portal
 
 	-- 무기 강화대 (모루): 동쪽
-	local anvilPos = Vector3.new(62, TOP, 42)
+	local anvilPos = Vector3.new(32, TOP, 92) -- 스폰 바로 옆 광장 (처음부터 눈에 들어오게)
 	makeDisc(anvilPos + Vector3.new(0, 0.2, 0), 22, 0.4, Color3.fromRGB(110, 100, 90), Enum.Material.Cobblestone, folder)
 	makePart({ Name = "AnvilBase", Size = Vector3.new(6, 2, 4), Position = anvilPos + Vector3.new(0, 1.2, 0), Color = Color3.fromRGB(45, 45, 50), Material = Enum.Material.Metal }, folder)
 	local anvil = makePart({ Name = "Anvil", Size = Vector3.new(8, 2, 3), Position = anvilPos + Vector3.new(0, 3.2, 0), Color = Color3.fromRGB(70, 70, 80), Material = Enum.Material.Metal }, folder)
@@ -312,7 +409,7 @@ function Lobby.Build()
 	anvilPrompt.Parent = anvil
 
 	-- 장비 뽑기 머신 (티켓): 동쪽
-	local gachaPos = Vector3.new(62, TOP, -28)
+	local gachaPos = Vector3.new(36, TOP, 58)
 	makeDisc(gachaPos + Vector3.new(0, 0.2, 0), 24, 0.4, Color3.fromRGB(80, 60, 110), Enum.Material.Basalt, folder)
 	makePart({ Name = "GachaBase", Size = Vector3.new(8, 2, 6), Position = gachaPos + Vector3.new(0, 1.2, 0), Color = Color3.fromRGB(60, 40, 90), Material = Enum.Material.Metal }, folder)
 	local body = makePart({ Name = "GachaBody", Size = Vector3.new(7, 9, 5), Position = gachaPos + Vector3.new(0, 6.7, 0), Color = Color3.fromRGB(150, 70, 230), Material = Enum.Material.SmoothPlastic }, folder)

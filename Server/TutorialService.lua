@@ -72,6 +72,9 @@ end
 
 local function complete(player, state, step)
 	local reward = step.Reward
+	if step.Stat == "DummyHits" then -- 허수아비 미션이 끝나면 자동 공격(R)을 꺼 달라고 클라이언트에 알린다
+		player:SetAttribute("AutoOffTick", (player:GetAttribute("AutoOffTick") or 0) + 1)
+	end
 	if reward.Gold then
 		player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + reward.Gold)
 	end

@@ -1386,6 +1386,13 @@ local function toggleAuto()
 	toast(autoMode and "🔒 자동 공격 ON — 허수아비/몬스터를 직접 클릭하면 그 대상으로 고정돼요 (R로 끄기)" or "자동 공격 OFF")
 end
 
+-- 튜토리얼 허수아비 미션이 끝나면 서버가 알려준다 -> 자동 공격이 켜져 있으면 끈다
+player:GetAttributeChangedSignal("AutoOffTick"):Connect(function()
+	if autoMode then
+		toggleAuto()
+	end
+end)
+
 local function attackCooldown()
 	local speedPoints = player:GetAttribute("SpeedPoints") or 0
 	return Config.Player.BaseCooldown * Config.GetPlayerWeapon(player).Cooldown / (1 + speedPoints * Config.Player.SpeedPerPoint)
