@@ -719,7 +719,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		end
 	end
 
-	monsters[part] = {
+	local newData = {
 		BossLike = kind == "Boss",
 		Zone = zone,
 		Kind = kind,
@@ -741,6 +741,8 @@ local function spawnMonster(zone, kind, at, ambush)
 		Ambush = ambush == true,
 		LastHit = ambush and os.clock() or nil, -- 습격으로 나온 몬스터는 처음부터 플레이어를 노린다
 	}
+	monsters[part] = newData
+	return part, newData
 end
 
 local function fireProjectile(origin, direction, speed, damage, size, color, style)
@@ -1184,6 +1186,27 @@ end
 local function stepMonsters(dt)
 	local now = os.clock()
 	for part, data in pairs(monsters) do
+		if data.Falling then
+			-- 공습 낙하병: 낙하산을 펴고 하늘에서 내려온다. 땅에 닿으면 충격으로 주변이 피해를 입고 그때부터 싸운다
+			local landY = floorAt(part.Position.X) + data.Stats.Size / 2
+			local newY = math.max(landY, part.Position.Y - 48 * dt)
+			part.Position = Vector3.new(part.Position.X, newY, part.Position.Z)
+			if newY <= landY + 0.01 then
+				data.Falling = nil
+				local chute = part:FindFirstChild("Chute")
+				if chute then chute:Destroy() end
+				local at = Vector3.new(part.Position.X, landY, part.Position.Z)
+				Effects.Burst(at, Color3.fromRGB(230, 210, 170), 24)
+				for _, other in ipairs(Players:GetPlayers()) do
+					local otherRoot, humanoid = getAliveParts(other)
+					if otherRoot and other:GetAttribute("Zone") == "Field" and not isSafe(otherRoot.Position)
+						and (Vector3.new(otherRoot.Position.X, 0, otherRoot.Position.Z) - Vector3.new(at.X, 0, at.Z)).Magnitude < 8 then
+						humanoid:TakeDamage(math.max(3, math.floor(data.Stats.ShotDamage * 0.8)))
+					end
+				end
+			end
+			continue
+		end
 		if data.Goblin then
 			stepGoblin(part, data, dt, now)
 			continue
@@ -1601,6 +1624,39 @@ local function airRaid(player, zone)
 	plane.PrimaryPart = hull
 	plane.Parent = workspace
 	Debris:AddItem(plane, 8)
+
+	-- 폭격기가 지나가는 중간에 낙하산 부대가 투하된다: 플레이어 주변 하늘에서 몬스터가 내려온다
+	task.delay(1.3, function()
+		local target = getAliveParts(player)
+		if not target then return end
+		local count = 3 + math.min(4, zone // 2 + 1)
+		for _ = 1, count do
+			local angle = math.random() * math.pi * 2
+			local distance = 16 + math.random() * 30
+			local at = target.Position + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
+			if walkableAt(at.X, at.Z) and not isSafe(at) and zoneOfX(at.X) == zone then
+				local part, data = spawnMonster(zone, "Normal", at, true)
+				if part and data then
+					data.Falling = true
+					local drop = floorAt(at.X) + 90
+					part.Position = Vector3.new(at.X, drop, at.Z)
+					local canopy = Instance.new("Part")
+					canopy.Name = "Chute"
+					canopy.Anchored, canopy.CanCollide, canopy.CanQuery, canopy.CanTouch, canopy.Massless = false, false, false, false, true
+					canopy.Shape = Enum.PartType.Ball
+					canopy.Size = Vector3.new(data.Stats.Size * 2.4, data.Stats.Size * 1.2, data.Stats.Size * 2.4)
+					canopy.Color = Color3.fromRGB(235, 90, 70)
+					canopy.Material = Enum.Material.Fabric
+					canopy.CFrame = part.CFrame * CFrame.new(0, data.Stats.Size * 1.6, 0)
+					local weld = Instance.new("WeldConstraint")
+					weld.Part0 = part
+					weld.Part1 = canopy
+					weld.Parent = canopy
+					canopy.Parent = part
+				end
+			end
+		end
+	end)
 
 	local started = os.clock()
 	local travel = 340 / speed
