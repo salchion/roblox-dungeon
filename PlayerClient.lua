@@ -3572,11 +3572,22 @@ do
 	local fill = { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(70, 220, 100) }
 	local text = { Text = "" }
 	local feet
+	local lastHealth
 	local function update()
 		local character = player.Character
 		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 		if not humanoid then return end
 		local ratio = math.clamp(humanoid.Health / math.max(1, humanoid.MaxHealth), 0, 1)
+		-- 맞으면 화면 가장자리가 붉게 번쩍이고 -피해량이 뜬다 (맞고 있는지 한눈에)
+		if lastHealth and humanoid.Health < lastHealth - 0.5 then
+			local hurt = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 20, 20), BackgroundTransparency = 0.78, BorderSizePixel = 0, ZIndex = 45, Active = false }, gui)
+			TweenService:Create(hurt, TweenInfo.new(0.35), { BackgroundTransparency = 1 }):Play()
+			task.delay(0.4, function() hurt:Destroy() end)
+			local lost = makeLabel({ Size = UDim2.new(0, 200, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.55, 0), Text = string.format("-%d", math.ceil(lastHealth - humanoid.Health)), Font = Enum.Font.GothamBlack, TextSize = 34, TextColor3 = Color3.fromRGB(255, 80, 80), TextStrokeTransparency = 0, ZIndex = 46 }, gui)
+			TweenService:Create(lost, TweenInfo.new(0.7), { Position = UDim2.new(0.5, 0, 0.47, 0), TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+			task.delay(0.8, function() lost:Destroy() end)
+		end
+		lastHealth = humanoid.Health
 		fill.Size = UDim2.new(ratio, 0, 1, 0)
 		fill.BackgroundColor3 = ratio > 0.5 and Color3.fromRGB(70, 220, 100) or ratio > 0.25 and Color3.fromRGB(255, 200, 60) or Color3.fromRGB(255, 70, 70)
 		text.Text = string.format("❤ %d / %d", math.ceil(humanoid.Health), math.ceil(humanoid.MaxHealth))
