@@ -103,6 +103,18 @@ local function onCharacterAdded(player, character)
 	humanoid.MaxHealth = Dungeon.GetMaxHealth(player)
 	humanoid.Health = humanoid.MaxHealth
 
+	-- 로블록스 기본 체력 자동 회복(초당 1%)을 끈다: 필드에서는 힐 스킬로만 회복. 마을(로비)에서는 천천히 가득 찬다
+	task.spawn(function()
+		local regen = character:WaitForChild("Health", 3)
+		if regen then regen:Destroy() end
+		while character.Parent and humanoid.Health > 0 do
+			if player:GetAttribute("Zone") == "Lobby" and humanoid.Health < humanoid.MaxHealth then
+				humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * 0.1)
+			end
+			task.wait(1)
+		end
+	end)
+
 	Dungeon.OnCharacterAdded(player, character)
 
 	-- 필드에서 죽으면 로비(마을)로 귀환한다: 기본 스폰 위치에서 다시 시작 (진행한 구역 / 관문 / 아이템은 그대로)
