@@ -549,73 +549,103 @@ Remotes.Gear.OnClientEvent:Connect(function(action, result)
 	refreshGear()
 end)
 
--- 뽑기 연출: 영웅 이상이 나오면 화면이 어두워지고 카드가 튀어나온다 (등급이 높을수록 길고 화려하게). 아무 곳이나 누르면 닫힌다.
+-- 뽑기 연출 (모든 등급): 캡슐이 툭 떨어지고 → 덜덜 흔들리다가(높은 등급일수록 오래, 색이 새어 나옴) → 퍽 터지며 카드가 나온다.
+-- 아무 곳이나 누르면 건너뛴다.
 do
 	local ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
+	local SHAKE = { 0.35, 0.5, 0.85, 1.25, 1.7 }  -- 등급별 흔들리는 시간
+	local HOLD = { 1.0, 1.1, 1.6, 2.2, 3.0 }       -- 카드 유지 시간
 	Remotes.Gear.OnClientEvent:Connect(function(action, result)
 		local roll = action == "Result" and result.Roll
-		if not roll or roll.Rarity < 3 then return end
+		if not roll then return end
 		local old = gui:FindFirstChild("GachaReveal")
 		if old then old:Destroy() end
 
 		local rarity = roll.Rarity
 		local color = Config.Gear.RarityColors[rarity]
-		local hold = ({ 1.5, 2.2, 3.0 })[rarity - 2]
 		local root = create("TextButton", {
 			Name = "GachaReveal", Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 1,
 			Text = "", AutoButtonColor = false, ZIndex = 60,
 		}, gui)
-		local function fade(object, goal, time, style)
-			TweenService:Create(object, TweenInfo.new(time, style or Enum.EasingStyle.Quad, Enum.EasingDirection.Out), goal):Play()
+		local skipped = false
+		root.Activated:Connect(function() skipped = true end)
+		local function fade(object, goal, time, style, direction)
+			TweenService:Create(object, TweenInfo.new(time, style or Enum.EasingStyle.Quad, direction or Enum.EasingDirection.Out), goal):Play()
 		end
-		fade(root, { BackgroundTransparency = 0.3 }, 0.25)
-
-		-- 퍼져 나가는 빛 고리 (등급이 높을수록 많이)
-		for i = 1, rarity - 1 do
-			task.delay((i - 1) * 0.22, function()
-				if not root.Parent then return end
-				local ring = create("Frame", {
-					Size = UDim2.new(0, 40, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
-					BackgroundTransparency = 1, ZIndex = 61,
-				}, root)
-				create("UICorner", { CornerRadius = UDim.new(1, 0) }, ring)
-				create("UIStroke", { Color = color, Thickness = 8 }, ring)
-				fade(ring, { Size = UDim2.new(0, 900, 0, 900) }, 0.9)
-				local stroke = ring:FindFirstChildOfClass("UIStroke")
-				fade(stroke, { Transparency = 1, Thickness = 1 }, 0.9)
-			end)
+		local function pause(seconds) -- 건너뛰기를 누르면 바로 끝나는 대기
+			local untilTime = os.clock() + seconds
+			while not skipped and root.Parent and os.clock() < untilTime do task.wait() end
 		end
+		fade(root, { BackgroundTransparency = 0.35 }, 0.2)
 
-		-- 번쩍임
-		local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = rarity == 5 and Color3.new(1, 1, 1) or color, BackgroundTransparency = 0.3, BorderSizePixel = 0, ZIndex = 70 }, root)
-		fade(flash, { BackgroundTransparency = 1 }, 0.5)
+		task.spawn(function()
+			-- 1) 캡슐 낙하
+			local capsule = create("Frame", {
+				Size = UDim2.new(0, 96, 0, 96), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, -80),
+				BackgroundColor3 = Color3.fromRGB(235, 235, 245), BorderSizePixel = 0, ZIndex = 62,
+			}, root)
+			create("UICorner", { CornerRadius = UDim.new(1, 0) }, capsule)
+			local capStroke = create("UIStroke", { Color = Color3.fromRGB(160, 160, 190), Thickness = 4 }, capsule)
+			local band = create("Frame", { Size = UDim2.new(1, 0, 0, 8), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 0, 0.5, 0), BackgroundColor3 = Color3.fromRGB(90, 90, 120), BorderSizePixel = 0, ZIndex = 63 }, capsule)
+			create("Frame", { Size = UDim2.new(0, 22, 0, 22), Position = UDim2.new(0.2, 0, 0.18, 0), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.35, BorderSizePixel = 0, ZIndex = 63 }, capsule)
+			fade(capsule, { Position = UDim2.new(0.5, 0, 0.5, 0) }, 0.5, Enum.EasingStyle.Bounce)
+			pause(0.55)
 
-		-- 카드
-		local card = create("Frame", {
-			Size = UDim2.new(0, 60, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
-			BackgroundColor3 = Color3.fromRGB(24, 22, 36), BorderSizePixel = 0, ZIndex = 62,
-		}, root)
-		rounded(card, 16)
-		local stroke = create("UIStroke", { Color = color, Thickness = 5 }, card)
-		if rarity == 5 then -- 신화: 무지개 테두리가 돈다
-			local gradient = create("UIGradient", {
-				Color = ColorSequence.new({
-					ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 80, 80)), ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 230, 80)),
-					ColorSequenceKeypoint.new(0.66, Color3.fromRGB(80, 220, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(220, 90, 255)),
-				}),
-			}, stroke)
-			task.spawn(function()
-				local rotation = 0
-				while root.Parent do
-					rotation += 6
-					gradient.Rotation = rotation
-					task.wait()
-				end
-			end)
-		end
-		fade(card, { Size = UDim2.new(0, 340, 0, 220) }, 0.45, Enum.EasingStyle.Back)
+			-- 2) 흔들림 + 높은 등급일수록 캡슐 테두리에 등급 색이 새어 나온다 (두근두근)
+			local shakeTime = SHAKE[rarity]
+			local started = os.clock()
+			local hintColor = rarity >= 3 and color or Color3.fromRGB(190, 190, 210)
+			while not skipped and root.Parent and os.clock() - started < shakeTime do
+				local t = (os.clock() - started) / shakeTime
+				capsule.Rotation = math.sin((os.clock() - started) * 40) * (6 + t * 14)
+				capStroke.Color = Color3.fromRGB(160, 160, 190):Lerp(hintColor, t)
+				capStroke.Thickness = 4 + t * (rarity >= 3 and 10 or 3)
+				capsule.Position = UDim2.new(0.5, math.sin(os.clock() * 55) * t * 6, 0.5, 0)
+				task.wait()
+			end
+			if not root.Parent then return end
 
-		task.delay(0.3, function()
+			-- 3) 퍽! 터지며 빛 고리 + 번쩍임 + 카드
+			capsule:Destroy()
+			for i = 1, math.max(1, rarity - 1) do
+				task.delay((i - 1) * 0.18, function()
+					if not root.Parent then return end
+					local ring = create("Frame", {
+						Size = UDim2.new(0, 40, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 61,
+					}, root)
+					create("UICorner", { CornerRadius = UDim.new(1, 0) }, ring)
+					local stroke = create("UIStroke", { Color = color, Thickness = 8 }, ring)
+					fade(ring, { Size = UDim2.new(0, 900, 0, 900) }, 0.9)
+					fade(stroke, { Transparency = 1, Thickness = 1 }, 0.9)
+				end)
+			end
+			local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = rarity == 5 and Color3.new(1, 1, 1) or color, BackgroundTransparency = rarity >= 3 and 0.2 or 0.65, BorderSizePixel = 0, ZIndex = 70 }, root)
+			fade(flash, { BackgroundTransparency = 1 }, 0.5)
+
+			local card = create("Frame", {
+				Size = UDim2.new(0, 60, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+				BackgroundColor3 = Color3.fromRGB(24, 22, 36), BorderSizePixel = 0, ZIndex = 62,
+			}, root)
+			rounded(card, 16)
+			local stroke = create("UIStroke", { Color = color, Thickness = 5 }, card)
+			if rarity == 5 then
+				local gradient = create("UIGradient", {
+					Color = ColorSequence.new({
+						ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 80, 80)), ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 230, 80)),
+						ColorSequenceKeypoint.new(0.66, Color3.fromRGB(80, 220, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(220, 90, 255)),
+					}),
+				}, stroke)
+				task.spawn(function()
+					local rotation = 0
+					while root.Parent do
+						rotation += 6
+						gradient.Rotation = rotation
+						task.wait()
+					end
+				end)
+			end
+			fade(card, { Size = UDim2.new(0, 340, 0, 220) }, 0.45, Enum.EasingStyle.Back)
+			pause(0.3)
 			if not root.Parent then return end
 			makeLabel({ Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0, 0, 0, 14), Text = ICONS[roll.Slot] or "🎁", TextSize = 56, ZIndex = 63 }, card)
 			makeLabel({
@@ -630,16 +660,14 @@ do
 				Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 1, -28), Text = roll.Equipped and "장착했어요!" or "가방에 넣었어요",
 				TextSize = 13, TextColor3 = Color3.fromRGB(190, 190, 210), ZIndex = 63,
 			}, card)
-		end)
 
-		local function close()
+			skipped = false -- 카드가 뜬 뒤에는 한 번 더 누르면 닫힌다
+			pause(HOLD[rarity])
 			if not root.Parent then return end
 			fade(root, { BackgroundTransparency = 1 }, 0.25)
 			fade(card, { Size = UDim2.new(0, 60, 0, 40) }, 0.25)
 			game:GetService("Debris"):AddItem(root, 0.3)
-		end
-		root.Activated:Connect(close)
-		task.delay(hold, close)
+		end)
 	end)
 end
 
@@ -1059,9 +1087,13 @@ local function refreshStats()
 
 	local inStatPhase = dungeonState and dungeonState.Phase == "StatPhase"
 	statStroke.Thickness = inStatPhase and 3 or 0
-	readyButton.Visible = inStatPhase == true
+	-- "준비 완료" 버튼은 없앴다: 특성을 고르면 자동으로 준비된다. 파티가 여럿일 때만 기다리는 중 표시.
+	readyButton.Active = false
+	readyButton.AutoButtonColor = false
+	readyButton.BackgroundColor3 = GRAY
+	readyButton.Visible = inStatPhase == true and not picking and (dungeonState.MemberCount or 1) > 1
 	if inStatPhase then
-		readyButton.Text = string.format("준비 완료 (%d/%d)", dungeonState.ReadyCount, dungeonState.MemberCount)
+		readyButton.Text = string.format("✔ 선택 완료 — 다른 파티원 기다리는 중 (%d/%d)", dungeonState.ReadyCount, dungeonState.MemberCount)
 	end
 end
 

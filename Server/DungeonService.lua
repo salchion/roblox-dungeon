@@ -1007,6 +1007,7 @@ function Dungeon.Upgrade(player, perkKey)
 	if perkMaxed(player, perkKey) then return end
 
 	run.Offers[player] = nil -- 한 번만 고를 수 있다
+	run.Ready[player] = true -- 고르면 자동으로 준비 완료 (버튼을 따로 누르지 않는다)
 	applyPerk(player, perkKey)
 	Remotes.Dungeon:FireClient(player, "Perks", { Keys = {} })
 	notify(player, string.format("%s %s 선택!", Config.Perks[perkKey].Icon, Config.Perks[perkKey].Name))
@@ -1186,6 +1187,9 @@ local function statPhase(run)
 	local ok = waitFor(run, function()
 		return os.clock() >= run.PhaseEnd or allReady(run)
 	end)
+	if ok and allReady(run) then
+		task.wait(1.0) -- 다 골랐으면 잠깐 선택 연출을 보여준 뒤 자동으로 다음 구역으로
+	end
 	-- 고르지 못한 사람은 후보 중 하나가 자동 선택된다
 	for _, member in ipairs(run.Members) do
 		local offer = run.Offers and run.Offers[member]
@@ -1513,6 +1517,15 @@ local function runLoop(run)
 		for _ = 1, count do
 			local data = spawnMonster(run, level)
 			data.RoomIndex = index
+		end
+	end
+
+	-- (확인용) 몬스터를 몇 마리 어느 방에 깔았는지 알려준다
+	do
+		local firstCombat = rooms[combatRooms[1] or 2]
+		local startRoom = rooms[1]
+		if firstCombat and startRoom then
+			notifyAll(run, string.format("🧭 전투 구역 %d개 · 몬스터 %d마리 배치 (첫 전투 방까지 %dm)", #combatRooms, run.MonsterCount or 0, (firstCombat.Pos - startRoom.Pos).Magnitude))
 		end
 	end
 
