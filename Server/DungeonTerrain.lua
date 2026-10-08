@@ -39,17 +39,17 @@ local layouts = {}
 layouts.Cavern = function(rng, length, sway)
 	local circles = {}
 	local rooms = {}
-	local count = rng:NextInteger(8, 10)
+	local count = rng:NextInteger(6, 7)
 	local spacing = length / (count - 1)
 	local z = 0
 	local previous, start, boss
 	for i = 1, count do
-		local r = (i == 1 and 36) or (i == count and 50) or rng:NextNumber(28, 42)
-		z = math.clamp(z + rng:NextNumber(-sway * 0.7, sway * 0.7), -sway, sway)
+		local r = (i == 1 and 40) or (i == count and 80) or rng:NextNumber(42, 54)
+		z = math.clamp(z + rng:NextNumber(-sway * 0.45, sway * 0.45), -sway * 0.7, sway * 0.7)
 		if i == 1 or i == count then z = 0 end
 		local pos = Vector3.new((i - 1) * spacing + (i > 1 and i < count and rng:NextNumber(-12, 12) or 0), 0, z)
 		if previous then
-			chain(circles, previous, pos, 15, rng) -- 방 사이 통로
+			chain(circles, previous, pos, 26, rng) -- 방 사이 통로 (넓게: 피하기 쉽도록)
 		end
 		table.insert(circles, { Pos = pos, R = r })
 		table.insert(rooms, { Pos = pos, R = r })
@@ -65,25 +65,25 @@ layouts.Canyon = function(rng, length, sway)
 	local circles = {}
 	local startPos = Vector3.new(0, 0, 0)
 	local bossPos = Vector3.new(length, 0, 0)
-	local waves = rng:NextInteger(3, 4)
-	local amplitude = sway * rng:NextNumber(0.6, 1) * (rng:NextNumber() < 0.5 and 1 or -1)
+	local waves = rng:NextInteger(2, 3)
+	local amplitude = sway * rng:NextNumber(0.4, 0.7) * (rng:NextNumber() < 0.5 and 1 or -1)
 	local function at(t)
 		return Vector3.new(length * t, 0, math.sin(t * math.pi * waves) * amplitude * math.sin(t * math.pi))
 	end
 	local steps = math.floor(length / 7)
 	for i = 0, steps do
-		table.insert(circles, { Pos = at(i / steps), R = 15 + rng:NextNumber(-1.5, 2.5) })
+		table.insert(circles, { Pos = at(i / steps), R = 26 + rng:NextNumber(-1.5, 2.5) })
 	end
-	table.insert(circles, { Pos = startPos, R = 36 })
-	table.insert(circles, { Pos = bossPos, R = 50 })
-	local rooms = { { Pos = startPos, R = 36 } }
-	for _, t in ipairs({ 0.11, 0.23, 0.35, 0.47, 0.59, 0.71, 0.83 }) do -- 중간 넓은 방 (전투 / 이벤트가 열리는 곳)
+	table.insert(circles, { Pos = startPos, R = 40 })
+	table.insert(circles, { Pos = bossPos, R = 80 })
+	local rooms = { { Pos = startPos, R = 40 } }
+	for _, t in ipairs({ 0.2, 0.4, 0.6, 0.78 }) do -- 중간 넓은 방 (전투 / 이벤트가 열리는 곳)
 		local p = at(t)
-		local r = rng:NextNumber(26, 34)
+		local r = rng:NextNumber(42, 52)
 		table.insert(circles, { Pos = p, R = r })
 		table.insert(rooms, { Pos = p, R = r })
 	end
-	table.insert(rooms, { Pos = bossPos, R = 50 })
+	table.insert(rooms, { Pos = bossPos, R = 80 })
 	return { Circles = circles, Rooms = rooms, Start = startPos, Boss = bossPos, Name = "구불구불한 협곡 길" }
 end
 
@@ -133,14 +133,14 @@ function DungeonTerrain.Build(run, theme, D, folder)
 			or (Vector3.new(p.X, 0, p.Z) - Vector3.new(bossPos.X, 0, bossPos.Z)).Magnitude < 34 + margin
 	end
 
-	-- 4) 방 안의 언덕(올라가기) / 구덩이(떨어지기): 큰 방에만, 입구와 보스방 중앙은 비워둔다
+	-- 4) (비활성) 방 안의 언덕 / 구덩이: 지형을 단순하게 하려고 만들지 않는다
 	local rooms = {}
 	for _, circle in ipairs(layout.Circles) do
 		if circle.R >= 22 then
 			table.insert(rooms, circle)
 		end
 	end
-	for _, circle in ipairs(rooms) do
+	for _, circle in ipairs({}) do -- (단순한 지형을 위해 언덕 / 구덩이는 만들지 않는다)
 		for _ = 1, 2 do
 			local p = world(circle.Pos) + polar(rng:NextNumber(0, math.pi * 2), rng:NextNumber(0, circle.R * 0.55))
 			local r = rng:NextNumber(8, 14)
