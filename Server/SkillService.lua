@@ -187,14 +187,14 @@ local function thickBeam(from, to, color, thickness, life)
 	Debris:AddItem(beam, life + 0.05)
 end
 
--- 궁극기 데드아이: 범위 안의 적을 하나씩 "딱" 락온(빨간 조준 표시가 줄어들며 고정)한 뒤, 락온한 전원에게 연속으로 난사한다.
--- 락온하는 동안 무적(ForceField) + 화면이 붉게 변한다 (클라이언트가 DeadeyeActive Attribute 를 보고 연출).
+-- 궁극기 데드아이: 범위 안의 모든 적(최대 40마리)을 한꺼번에 락온하고 전원에게 동시에 일제 포격 + 충격파 + 대폭발.
+-- 포격 동안 무적(ForceField) + 화면이 붉게 변한다 (클라이언트가 DeadeyeActive Attribute 를 보고 연출).
 handlers.Ult = function(player, root, _, character)
 	local cfg = S.Ult
 	if (player:GetAttribute("UltCharge") or 0) < cfg.Cost then
 		return false, "궁극기 게이지가 부족해요! (적을 공격하면 차올라요)"
 	end
-	local targets = Dungeon.TargetsIn(player, root.Position, cfg.Radius, 12) or Field.TargetsIn(player, root.Position, cfg.Radius, 12)
+	local targets = Dungeon.TargetsIn(player, root.Position, cfg.Radius, 40) or Field.TargetsIn(player, root.Position, cfg.Radius, 40)
 	if not targets or #targets == 0 then
 		return false, "범위 안에 적이 없어요! (게이지는 그대로예요)"
 	end
@@ -202,100 +202,107 @@ handlers.Ult = function(player, root, _, character)
 
 	local origin = root.Position
 	local totalMult = cfg.Mult * (1 + U.UltMult * (skillLevel(player, "Ult") - 1))
-	-- 공속 한계를 뚫은 난사: 적이 적어도 총 48발 이상, 한 발 간격은 0.03초 (화다다다다!). 전체 피해량은 그대로 나눠 맞는다.
-	local shotsPer = math.max(cfg.ShotsPerTarget, math.ceil(48 / #targets))
-	local perShot = math.max(1, math.floor(Dungeon.ComputeDamage(player) * totalMult / shotsPer))
-	local lockGap = 0.14
+	-- 범위 안의 모든 적을 "동시에" 집중 포격한다: 조준 표시 -> 충격파 -> 전원에게 동시에 빔이 쏟아지는 일제 사격 14회 -> 마지막 대폭발
+	local volleys, volleyGap = 14, 0.07
+	local perShot = math.max(1, math.floor(Dungeon.ComputeDamage(player) * totalMult / volleys))
 
 	local field = Instance.new("ForceField")
 	field.Visible = false
 	field.Parent = character
-	Debris:AddItem(field, #targets * lockGap + 1.0 + #targets * shotsPer * cfg.ShotGap + 0.6)
+	Debris:AddItem(field, 0.6 + volleys * volleyGap + 1.2)
 	player:SetAttribute("DeadeyeActive", true)
-	Remotes.Notify:FireClient(player, string.format("🎯 데드아이! %d마리 락온", #targets))
+	Remotes.Notify:FireClient(player, string.format("🎯 데드아이! %d마리 일제 포격", #targets))
 	Effects.FloatText(origin + Vector3.new(0, 6, 0), "🎯 데드아이!", Color3.fromRGB(255, 90, 90))
-	ring(origin, cfg.Radius * 0.7, Color3.fromRGB(255, 70, 70), 0.9)
+	ring(origin, cfg.Radius, Color3.fromRGB(255, 70, 70), 0.8)
+	ring(origin, cfg.Radius * 0.6, Color3.fromRGB(255, 200, 90), 0.6)
 
 	task.spawn(function()
 		local bodyOk, bodyErr = pcall(function()
-		-- 1) 락온: 적마다 큰 조준 표시가 쏙 줄어들며 고정된다
-		local markers = {}
-		for index, part in ipairs(targets) do
-			if not part.Parent then continue end
-			local gui = Instance.new("BillboardGui")
-			gui.Size = UDim2.fromOffset(150, 150)
-			gui.AlwaysOnTop = true
-			gui.StudsOffset = Vector3.new(0, part.Size.Y / 2 + 1, 0)
-			gui.Parent = part
-			local label = Instance.new("TextLabel")
-			label.Size = UDim2.fromScale(1, 1)
-			label.BackgroundTransparency = 1
-			label.Text = "◎"
-			label.TextScaled = true
-			label.Font = Enum.Font.GothamBlack
-			label.TextColor3 = Color3.fromRGB(255, 70, 70)
-			label.TextStrokeTransparency = 0.3
-			label.Parent = gui
-			TweenService:Create(gui, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.fromOffset(46, 46) }):Play()
-			thickBeam(root.Position + Vector3.new(0, 1.5, 0), part.Position, Color3.fromRGB(255, 60, 60), 0.9, 0.5)
-			markers[index] = gui
-			Debris:AddItem(gui, 4)
-			task.wait(lockGap)
-		end
-		task.wait(0.7) -- 모두 고정된 뒤 숨을 고르는 짧은 정적
-
-		-- 2) 난사: 락온한 적들을 돌아가며 초고속으로 쏟아붓는다 (총구 섬광 + 흔들림 + 몸이 적을 향해 돌아간다)
-		local fired = 0
-		for _ = 1, shotsPer do
+			-- 1) 전원 동시 락온: 조준 표시가 한꺼번에 쏙 줄어들며 고정 + 가는 빨간 선이 전원에게 뻗는다
+			local markers = {}
 			for index, part in ipairs(targets) do
-				if not player.Parent then return end
-				local alive = part.Parent and (Dungeon.HitPart(player, part, perShot) or Field.HitPart(player, part, perShot))
-				if alive and root.Parent then
-					fired += 1
-					local fxOk, fxErr = pcall(function()
-					local from = root.Position + Vector3.new(0, 1.5, 0)
-					local jitter = Vector3.new(math.random() - 0.5, math.random() - 0.5, math.random() - 0.5) * (part.Size.X * 0.5)
-					thickBeam(from, part.Position + jitter, fired % 2 == 0 and Color3.fromRGB(255, 235, 120) or Color3.fromRGB(255, 110, 80), 1.1, 0.16)
-					if fired % 2 == 0 then
-						Effects.Burst(part.Position + jitter, Color3.fromRGB(255, 110, 70), 5)
-					end
-					if fired % 3 == 0 then -- 총소리 / 화면 흔들림은 3발마다 (연속음이 되도록)
-						Effects.PlaySound(root, Config.Audio.Shot, 0.5, 1.15 + math.random() * 0.3)
-						player:SetAttribute("ShakeStrength", 0.22)
-						player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
-					end
-					if fired % 4 == 1 then
-						local flash = Instance.new("Part")
-						flash.Anchored, flash.CanCollide, flash.CanQuery, flash.CanTouch = true, false, false, false
-						flash.Shape = Enum.PartType.Ball
-						flash.Material = Enum.Material.Neon
-						flash.Color = Color3.fromRGB(255, 230, 140)
-						flash.Size = Vector3.new(5, 5, 5)
-						flash.Position = from + (part.Position - from).Unit * 2.5
-						flash.Parent = workspace
-						TweenService:Create(flash, TweenInfo.new(0.1), { Size = Vector3.new(0.2, 0.2, 0.2), Transparency = 1 }):Play()
-						Debris:AddItem(flash, 0.15)
-					end
-					local label = markers[index] and markers[index]:FindFirstChildOfClass("TextLabel")
-					if label then label.TextColor3 = Color3.fromRGB(255, 255, 255) end
-					-- 몸이 쏘는 적 쪽으로 돌아간다 (지금 쏘는 느낌)
-					local flat = Vector3.new(part.Position.X - root.Position.X, 0, part.Position.Z - root.Position.Z)
-					if flat.Magnitude > 0.5 then
-						root.CFrame = CFrame.lookAt(root.Position, root.Position + flat)
-					end
-					end)
-					if not fxOk then
-						warn("[Deadeye] fx error: " .. tostring(fxErr))
-						if fired == 1 then Remotes.Notify:FireClient(player, "데드아이 연출 오류: " .. tostring(fxErr)) end
+				if not part.Parent then continue end
+				local gui = Instance.new("BillboardGui")
+				gui.Size = UDim2.fromOffset(160, 160)
+				gui.AlwaysOnTop = true
+				gui.StudsOffset = Vector3.new(0, part.Size.Y / 2 + 1, 0)
+				gui.Parent = part
+				local label = Instance.new("TextLabel")
+				label.Size = UDim2.fromScale(1, 1)
+				label.BackgroundTransparency = 1
+				label.Text = "◎"
+				label.TextScaled = true
+				label.Font = Enum.Font.GothamBlack
+				label.TextColor3 = Color3.fromRGB(255, 70, 70)
+				label.TextStrokeTransparency = 0.3
+				label.Parent = gui
+				TweenService:Create(gui, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.fromOffset(50, 50) }):Play()
+				thickBeam(root.Position + Vector3.new(0, 1.5, 0), part.Position, Color3.fromRGB(255, 60, 60), 0.5, 0.5)
+				markers[index] = gui
+				Debris:AddItem(gui, 4)
+			end
+			task.wait(0.6)
+
+			-- 2) 일제 사격: 매 회마다 살아 있는 전원에게 동시에 굵은 빔 + 폭발. 몸은 가장 가까운 적을 향한다
+			local fired = 0
+			for volley = 1, volleys do
+				if not player.Parent or not root.Parent then return end
+				local from = root.Position + Vector3.new(0, 1.5, 0)
+				for index, part in ipairs(targets) do
+					local alive = part.Parent and (Dungeon.HitPart(player, part, perShot) or Field.HitPart(player, part, perShot))
+					if alive then
+						fired += 1
+						pcall(function()
+							local jitter = Vector3.new(math.random() - 0.5, math.random() - 0.5, math.random() - 0.5) * (part.Size.X * 0.5)
+							thickBeam(from, part.Position + jitter, (fired % 2 == 0) and Color3.fromRGB(255, 235, 120) or Color3.fromRGB(255, 110, 80), 1.1, 0.18)
+							Effects.Burst(part.Position + jitter, Color3.fromRGB(255, 110, 70), 8)
+							local label = markers[index] and markers[index]:FindFirstChildOfClass("TextLabel")
+							if label then label.TextColor3 = Color3.fromRGB(255, 255, 255) end
+						end)
 					end
 				end
-				task.wait(cfg.ShotGap)
+				pcall(function()
+					local flash = Instance.new("Part")
+					flash.Anchored, flash.CanCollide, flash.CanQuery, flash.CanTouch = true, false, false, false
+					flash.Shape = Enum.PartType.Ball
+					flash.Material = Enum.Material.Neon
+					flash.Color = Color3.fromRGB(255, 230, 140)
+					flash.Size = Vector3.new(7, 7, 7)
+					flash.Position = from
+					flash.Parent = workspace
+					TweenService:Create(flash, TweenInfo.new(0.12), { Size = Vector3.new(0.5, 0.5, 0.5), Transparency = 1 }):Play()
+					Debris:AddItem(flash, 0.2)
+					if volley % 2 == 1 then
+						Effects.PlaySound(root, Config.Audio.Shot, 0.6, 1.1 + math.random() * 0.3)
+						ring(root.Position, cfg.Radius * (0.4 + 0.6 * volley / volleys), Color3.fromRGB(255, 120, 80), 0.35)
+					end
+					player:SetAttribute("ShakeStrength", 0.3)
+					player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+					local nearest = targets[1]
+					if nearest and nearest.Parent then
+						local flat = Vector3.new(nearest.Position.X - root.Position.X, 0, nearest.Position.Z - root.Position.Z)
+						if flat.Magnitude > 0.5 then
+							root.CFrame = CFrame.lookAt(root.Position, root.Position + flat)
+						end
+					end
+				end)
+				task.wait(volleyGap)
 			end
-		end
-		for _, gui in pairs(markers) do gui:Destroy() end
-		player:SetAttribute("DeadeyeActive", false)
-		player:SetAttribute("ShakeStrength", 0.9)
-		player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+
+			-- 3) 마무리 대폭발: 락온했던 모든 위치에서 한꺼번에 터진다
+			pcall(function()
+				for _, part in ipairs(targets) do
+					if part.Parent then
+						Effects.Burst(part.Position, Color3.fromRGB(255, 200, 90), 16)
+						ring(part.Position, 14, Color3.fromRGB(255, 120, 60), 0.5)
+					end
+				end
+				ring(root.Position, cfg.Radius * 1.1, Color3.fromRGB(255, 240, 200), 0.6)
+			end)
+			for _, gui in pairs(markers) do gui:Destroy() end
+			player:SetAttribute("DeadeyeActive", false)
+			player:SetAttribute("ShakeStrength", 0.9)
+			player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 		end)
 		if not bodyOk then
 			warn("[Deadeye] error: " .. tostring(bodyErr))
