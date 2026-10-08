@@ -1447,10 +1447,9 @@ local function runLoop(run)
 	if run.Mutator then
 		notifyAll(run, string.format("%s 이번 던전 변이: %s — %s", run.Mutator.Icon, run.Mutator.Name, run.Mutator.Desc))
 	end
-	run.PhaseEnd = os.clock() + D.StartCountdown
-	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
-
 	if run.Type.Endless then
+		run.PhaseEnd = os.clock() + D.StartCountdown
+		if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
 		towerLoop(run)
 		return
 	end
@@ -1493,6 +1492,10 @@ local function runLoop(run)
 			data.RoomIndex = index
 		end
 	end
+
+	-- 몬스터는 카운트다운 전에 미리 깔아둔다 (카운트다운 중에 앞으로 뛰어나가도 뒤에서 몬스터가 생기지 않게)
+	run.PhaseEnd = os.clock() + D.StartCountdown
+	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
 
 	run.Phase = "Wave"
 	run.Wave = 1
