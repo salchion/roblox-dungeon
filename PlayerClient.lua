@@ -850,9 +850,6 @@ local function updateMusic()
 end
 
 local function refreshStats()
-	if not (dungeonState and dungeonState.Phase == "StatPhase") then
-		perkOffer = {}
-	end
 	local picking = #perkOffer > 0
 	statPoints.Text = picking and "✨ 특성을 고르세요!" or "특성 (던전 동안만 유지)"
 	statPoints.TextColor3 = picking and Color3.fromRGB(255, 220, 90) or Color3.new(1, 1, 1)
@@ -905,8 +902,8 @@ local function refreshBanner()
 		bannerTitle.Text = state.TotalWaves == 0 and string.format("🏯 %d층", state.Wave) or string.format("웨이브 %d / %d", state.Wave, state.TotalWaves)
 		bannerSub.Text = string.format("%s · %s · 남은 몬스터 %d", state.TypeName or "", state.DifficultyName or "", state.MonstersLeft)
 	elseif state.Phase == "StatPhase" then
-		bannerTitle.Text = string.format("스탯 분배  %d초", state.TimeLeft)
-		bannerSub.Text = (state.TotalWaves ~= 0 and state.Wave >= state.TotalWaves) and "웨이브 클리어! 다음은 보스전!" or string.format("웨이브 %d 클리어! 스탯을 올리세요", state.Wave)
+		bannerTitle.Text = string.format("특성 선택  %d초", state.TimeLeft)
+		bannerSub.Text = (state.TotalWaves ~= 0 and state.Wave >= state.TotalWaves) and "웨이브 클리어! 다음은 보스전!" or string.format("웨이브 %d 클리어! 특성 카드를 고르세요 (1 / 2 / 3)", state.Wave)
 	elseif state.Phase == "Moving" then
 		bannerTitle.Text = state.StageText or "다음 방으로 이동하세요"
 		bannerSub.Text = "하늘색 빛기둥을 따라가세요"
@@ -964,6 +961,10 @@ end
 Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
 	if action == "State" then
 		dungeonState = data
+		-- 특성 고르는 시간이 아니면 후보를 지운다 (Perks 이벤트가 State 보다 먼저 도착해도 지워지지 않도록 여기서만 처리)
+		if data.Phase ~= "StatPhase" then
+			perkOffer = {}
+		end
 		refreshBanner()
 		refreshStats()
 		updateMusic()
