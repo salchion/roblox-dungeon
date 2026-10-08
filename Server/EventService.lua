@@ -23,6 +23,7 @@ end
 
 function Event.Start()
 	task.spawn(function()
+		workspace:SetAttribute("GoldenNext", os.time() + Config.Golden.FirstDelay) -- 클라이언트의 "다음 골든 타임까지" 표시용
 		task.wait(Config.Golden.FirstDelay)
 		while true do
 			if #Players:GetPlayers() > 0 then
@@ -31,6 +32,7 @@ function Event.Start()
 				task.wait(Config.Golden.Duration)
 				announce("골든 타임이 끝났어요. 다음 골든 타임을 기대해주세요!")
 			end
+			workspace:SetAttribute("GoldenNext", os.time() + Config.Golden.Interval)
 			task.wait(Config.Golden.Interval)
 		end
 	end)

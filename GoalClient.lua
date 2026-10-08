@@ -147,9 +147,16 @@ RunService.RenderStepped:Connect(function()
 		end
 
 		local left = (workspace:GetAttribute("GoldenUntil") or 0) - os.time()
-		golden.Visible = left > 0 and zone ~= "Dungeon"
+		local untilNext = (workspace:GetAttribute("GoldenNext") or 0) - os.time()
+		golden.Visible = (left > 0 or untilNext > 0) and zone ~= "Dungeon"
 		if left > 0 then
+			golden.BackgroundColor3 = Color3.fromRGB(70, 50, 10)
+			golden.TextColor3 = Color3.fromRGB(255, 220, 90)
 			golden.Text = string.format("🌟 골든 타임! 경험치 x%d · 골드 x%.1f  (%d:%02d)", Config.Golden.XpMult, Config.Golden.GoldMult, math.floor(left / 60), left % 60)
+		elseif untilNext > 0 then -- 평소에는 작게 "다음 골든 타임까지"를 보여줘서 기다릴 이유를 만든다
+			golden.BackgroundColor3 = Color3.fromRGB(30, 30, 44)
+			golden.TextColor3 = Color3.fromRGB(190, 190, 210)
+			golden.Text = string.format("⏳ 다음 골든 타임까지 %d:%02d  (경험치 x%d · 골드 x%.1f)", math.floor(untilNext / 60), untilNext % 60, Config.Golden.XpMult, Config.Golden.GoldMult)
 		end
 	end
 end)

@@ -673,7 +673,7 @@ end)
 -- 로비 하단: 무기 강화 버튼 + 안내
 makeButton({
 	Size = UDim2.new(0, 150, 0, 44), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, -80, 1, -64),
-	Text = "🔨 무기 강화", TextSize = 17, BackgroundColor3 = Color3.fromRGB(200, 130, 40),
+	Name = "LobbyOnlyButton", Text = "🔨 무기 강화", TextSize = 17, BackgroundColor3 = Color3.fromRGB(200, 130, 40),
 }, lobbyFrame, function()
 	enhanceResult.Text = ""
 	refreshEnhance()
@@ -682,7 +682,7 @@ end)
 
 makeButton({
 	Size = UDim2.new(0, 150, 0, 44), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 80, 1, -64),
-	Text = "🛡 장비 · 뽑기", TextSize = 17, BackgroundColor3 = Color3.fromRGB(150, 70, 230),
+	Name = "LobbyOnlyButton", Text = "🛡 장비 · 뽑기", TextSize = 17, BackgroundColor3 = Color3.fromRGB(150, 70, 230),
 }, lobbyFrame, function()
 	gearMessage.Text = ""
 	refreshGear()
@@ -1052,6 +1052,16 @@ local function refreshZone()
 	local zone = currentZone()
 	lobbyFrame.Visible = zone ~= "Dungeon"
 	dungeonFrame.Visible = zone == "Dungeon"
+	-- 무기 강화 / 장비 뽑기 버튼은 로비에서만 (필드 / 던전에서는 숨기고, 열려 있던 창도 닫는다)
+	for _, child in ipairs(lobbyFrame:GetChildren()) do
+		if child.Name == "LobbyOnlyButton" then
+			child.Visible = zone == "Lobby"
+		end
+	end
+	if zone ~= "Lobby" then
+		enhancePanel.Visible = false
+		gearPanel.Visible = false
+	end
 	if zone ~= "Dungeon" then
 		dungeonState = nil
 		resultToken += 1
