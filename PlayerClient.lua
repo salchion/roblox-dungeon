@@ -2813,3 +2813,15 @@ makeButton({
 
 
 end
+
+-- 화면이 작을 때(Studio에서 창이 끼어 있을 때 등) UI 전체를 자동으로 줄여서 잘리지 않게 한다
+do
+	local uiScale = Instance.new("UIScale")
+	uiScale.Parent = gui
+	local function fit()
+		local viewport = workspace.CurrentCamera.ViewportSize
+		uiScale.Scale = math.clamp(math.min(viewport.X / 1100, viewport.Y / 720), 0.55, 1)
+	end
+	fit()
+	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fit)
+end
