@@ -1746,6 +1746,25 @@ local function stepMonsters(dt)
 	end
 end
 
+-- 아슬아슬한 회피(NEAR MISS): 대시 중에 탄 / 폭격이 몸 바로 옆을 스치면 보상 - 데드아이 게이지 + 잠깐 동안 공격이 전부 치명타
+local nearMissAt = {}
+local function isDashing(root)
+	local v = root.AssemblyLinearVelocity
+	return Vector3.new(v.X, 0, v.Z).Magnitude > 50 -- 걷기 / 달리기보다 훨씬 빠른 속도 = 대시 (DashSpeed 135)
+end
+local function awardNearMiss(player, root)
+	local now = os.clock()
+	if now - (nearMissAt[player] or 0) < 0.7 then return end
+	local streak = (now - (nearMissAt[player] or 0) < 6) and ((player:GetAttribute("NearMissStreak") or 0) + 1) or 1
+	nearMissAt[player] = now
+	player:SetAttribute("NearMissStreak", streak)
+	local charge = player:GetAttribute("UltCharge") or 0
+	player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, charge + 10 + math.min(streak, 4) * 3))
+	player:SetAttribute("NearMissUntil", now + 4) -- 4초 동안 공격이 전부 치명타 (DungeonService.ComputeDamage 가 읽는다)
+	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), streak > 1 and string.format("NEAR MISS! x%d", streak) or "NEAR MISS!", Color3.fromRGB(120, 255, 255))
+	Remotes.Banner:FireClient(player, "NearMiss", { Streak = streak })
+end
+
 local function stepProjectiles(dt)
 	local now = os.clock()
 	for i = #projectiles, 1, -1 do
@@ -1757,10 +1776,19 @@ local function stepProjectiles(dt)
 			if hit then break end
 			if player:GetAttribute("Zone") == "Field" then
 				local root, humanoid = getAliveParts(player)
-				if root and not isSafe(root.Position) and (root.Position - projectile.Part.Position).Magnitude < projectile.Radius + 2 then
-					humanoid:TakeDamage(projectile.Damage)
-					hit = true
-					break
+				if root and not isSafe(root.Position) then
+					local gap = (root.Position - projectile.Part.Position).Magnitude
+					if gap < projectile.Radius + 2 then
+						humanoid:TakeDamage(projectile.Damage)
+						hit = true
+						break
+					elseif gap < projectile.Radius + 8 and isDashing(root) then -- 닿지는 않았지만 아슬아슬하게 스치며 대시
+						projectile.NearMissed = projectile.NearMissed or {}
+						if not projectile.NearMissed[player] then
+							projectile.NearMissed[player] = true
+							awardNearMiss(player, root)
+						end
+					end
 				end
 			end
 		end
@@ -2630,10 +2658,15 @@ local function doomWave(player, zone)
 			Effects.Burst(at + Vector3.new(0, 2, 0), rgb(255, 90, 60), 60)
 			shake(0.6)
 			local r2, h2 = getAliveParts(player)
-			if r2 and h2.Health > 0 and (Vector3.new(r2.Position.X, center.Y, r2.Position.Z) - at).Magnitude <= radius then
-				local dmg = math.min(h2.MaxHealth * percent, h2.Health - 1)
-				if dmg > 0 then h2:TakeDamage(dmg) end
-				notify(player, "💥 군주의 공격에 맞았다!")
+			if r2 and h2.Health > 0 then
+				local gap = (Vector3.new(r2.Position.X, center.Y, r2.Position.Z) - at).Magnitude
+				if gap <= radius then
+					local dmg = math.min(h2.MaxHealth * percent, h2.Health - 1)
+					if dmg > 0 then h2:TakeDamage(dmg) end
+					notify(player, "💥 군주의 공격에 맞았다!")
+				elseif gap <= radius + 10 and isDashing(r2) then
+					awardNearMiss(player, r2) -- 경고 원 바로 밖으로 대시로 빠져나갔다
+				end
 			end
 		end)
 	end

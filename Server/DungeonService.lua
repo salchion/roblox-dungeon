@@ -1057,7 +1057,7 @@ function Dungeon.ComputeDamage(player)
 		* Dungeon.PartyBonus(player)
 	local chance = math.min(0.9, (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint
 		+ (player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0) + (player:GetAttribute("PetCrit") or 0) + (weaponType.CritBonus or 0))
-	local isCrit = math.random() < chance
+	local isCrit = os.clock() < (player:GetAttribute("NearMissUntil") or 0) or math.random() < chance -- NEAR MISS 보상: 4초간 전부 치명타
 	if isCrit then
 		damage *= P.CritMultiplier
 	end

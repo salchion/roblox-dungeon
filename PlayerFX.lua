@@ -186,6 +186,46 @@ do
 	RunService.Heartbeat:Connect(update)
 end
 
+-- NEAR MISS: 아슬아슬하게 피했을 때 시야가 순간 좁아지며(줌) 화면이 청록으로 번쩍이고 큰 글자가 튀어나온다
+-- (Roblox 는 게임 전체를 느리게 만들 수 없어서, 슬로모션 대신 줌 + 색 번쩍임으로 "시간이 멈칫"하는 느낌을 낸다)
+do
+	local Lighting = game:GetService("Lighting")
+	local pulse = Lighting:FindFirstChild("NearMissPulse") or Instance.new("ColorCorrectionEffect")
+	pulse.Name = "NearMissPulse"
+	pulse.Enabled = false
+	pulse.Parent = Lighting
+	Remotes.Banner.OnClientEvent:Connect(function(action, info)
+		if action ~= "NearMiss" then return end
+		pulse.Enabled = true
+		pulse.Saturation, pulse.Contrast, pulse.TintColor = -0.55, 0.25, Color3.fromRGB(190, 255, 255)
+		TweenService:Create(pulse, TweenInfo.new(0.45, Enum.EasingStyle.Quad), { Saturation = 0, Contrast = 0, TintColor = Color3.new(1, 1, 1) }):Play()
+		task.delay(0.5, function() pulse.Enabled = false end)
+		local fov = camera.FieldOfView
+		camera.FieldOfView = fov - 9
+		TweenService:Create(camera, TweenInfo.new(0.4, Enum.EasingStyle.Quad), { FieldOfView = fov }):Play()
+		local streak = info and info.Streak or 1
+		local text = makeLabel({
+			Size = UDim2.new(0, 520, 0, 70), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.3, 0),
+			Text = streak > 1 and string.format("⚡ NEAR MISS!  x%d", streak) or "⚡ NEAR MISS!", TextSize = 46, Font = Enum.Font.GothamBlack,
+			TextColor3 = Color3.fromRGB(120, 255, 255), TextStrokeTransparency = 0, ZIndex = 60,
+		}, gui)
+		local sub = makeLabel({
+			Size = UDim2.new(0, 520, 0, 28), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.3, 46),
+			Text = "데드아이 게이지 +  ·  4초간 전부 치명타!", TextSize = 18, Font = Enum.Font.GothamBold,
+			TextColor3 = Color3.fromRGB(255, 240, 160), TextStrokeTransparency = 0, ZIndex = 60,
+		}, gui)
+		text.Size = UDim2.new(0, 340, 0, 46)
+		TweenService:Create(text, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.new(0, 520, 0, 70) }):Play()
+		task.delay(0.9, function()
+			TweenService:Create(text, TweenInfo.new(0.35), { TextTransparency = 1, TextStrokeTransparency = 1, Position = UDim2.new(0.5, 0, 0.26, 0) }):Play()
+			TweenService:Create(sub, TweenInfo.new(0.35), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+			task.wait(0.4)
+			text:Destroy()
+			sub:Destroy()
+		end)
+	end)
+end
+
 -- 구역 경고 배너: 새 구역에 들어서면 붉은 번쩍임 + 큰 글자가 쾅 하고 내려앉는다 (난이도가 얼마나 뛰는지 숫자로)
 do
 	Remotes.Banner.OnClientEvent:Connect(function(action, info)
