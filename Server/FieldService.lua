@@ -2825,7 +2825,6 @@ local function updateBossFight()
 			if not lesson then
 				lesson = { Base = player:GetAttribute("WeakHitTick") or 0, NextHint = os.clock() + 6 }
 				weakLesson[player] = lesson
-				player:SetAttribute("AutoOffTick", (player:GetAttribute("AutoOffTick") or 0) + 1) -- 자동 공격은 약점을 못 맞히니 꺼 준다
 			end
 			if not lesson.Taught then
 				if (player:GetAttribute("WeakHitTick") or 0) > lesson.Base then
@@ -3429,8 +3428,9 @@ local function updateDoom()
 					state = { Since = os.clock() }
 					doomTimers[player] = state
 				end
-				if not state.Fired and doomReady[player] and os.clock() - doomReady[player] >= 1 then
+				if not state.Fired and doomReady[player] and os.clock() - doomReady[player] >= 2.5 then
 					state.Fired = true
+					Loot.CollectAll(player) -- 소환 결투로 끌려가기 전에, 바닥에 남은 전리품을 모두 챙겨 준다 (못 줍고 잡혀가지 않게)
 					state.FiredAt = os.clock()
 					local doomZone = zoneOfX(root.Position.X)
 					task.spawn(function() -- 오래 걸리는 연출이라 필드 업데이트 루프를 막지 않게 따로 돌린다

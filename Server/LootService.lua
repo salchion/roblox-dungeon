@@ -121,6 +121,17 @@ local function collect(player, drop)
 	end
 end
 
+-- 바닥에 남은 내 전리품을 전부 바로 받는다 (예: 튜토리얼 소환 결투로 끌려가기 직전)
+function Loot.CollectAll(player)
+	local list = drops[player]
+	if not list then return end
+	for id, drop in pairs(list) do
+		list[id] = nil
+		Remotes.Loot:FireClient(player, "Gone", id)
+		collect(player, drop)
+	end
+end
+
 ------------------------------------------------------------
 -- 던전 보스 상자: 바로 가방으로. 반환: 화면에 보여줄 줄 목록 { { Text, Rarity }... }
 ------------------------------------------------------------
