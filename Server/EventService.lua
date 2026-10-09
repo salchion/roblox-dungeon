@@ -1,6 +1,5 @@
 -- EventService (ServerScriptService > Modules 안의 ModuleScript, 이름: EventService)
--- 주기적인 "골든 타임": 몇 분 동안 경험치/골드 보너스. 다 같이 접속해서 달리는 시간을 만든다 (희소성 + 시간 압박).
--- workspace Attribute "GoldenUntil"(os.time) 이 미래면 진행 중. Config.IsGoldenTime() 으로 어디서든 확인한다.
+-- 서버 전체 알림(Announce): 무기 진화 / 심연 기록 같은 자랑거리를 모두에게 알린다.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -21,21 +20,7 @@ function Event.Announce(text)
 	announce(text)
 end
 
-function Event.Start()
-	task.spawn(function()
-		workspace:SetAttribute("GoldenNext", os.time() + Config.Golden.FirstDelay) -- 클라이언트의 "다음 골든 타임까지" 표시용
-		task.wait(Config.Golden.FirstDelay)
-		while true do
-			if #Players:GetPlayers() > 0 then
-				workspace:SetAttribute("GoldenUntil", os.time() + Config.Golden.Duration)
-				announce(string.format("🌟 골든 타임 시작! %d분 동안 경험치 x%d, 골드 x%.1f!", Config.Golden.Duration / 60, Config.Golden.XpMult, Config.Golden.GoldMult))
-				task.wait(Config.Golden.Duration)
-				announce("골든 타임이 끝났어요. 다음 골든 타임을 기대해주세요!")
-			end
-			workspace:SetAttribute("GoldenNext", os.time() + Config.Golden.Interval)
-			task.wait(Config.Golden.Interval)
-		end
-	end)
-end
+-- (예전의 주기적 골든 타임은 밸런스를 잡기 어려워서 없앴다. 알림만 남아 있다)
+function Event.Start() end
 
 return Event

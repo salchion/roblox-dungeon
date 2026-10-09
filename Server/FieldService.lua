@@ -1401,7 +1401,7 @@ local function reward(player, data, part)
 		return
 	end
 
-	local gold = math.floor(data.Stats.Gold * (Config.IsGoldenTime() and Config.Golden.GoldMult or 1) + 0.5)
+	local gold = math.floor(data.Stats.Gold + 0.5)
 	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + math.floor(gold * Config.GoldBonus(player) + 0.5))
 	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2, 0), string.format("+%d G", gold), Color3.fromRGB(255, 220, 90))
 

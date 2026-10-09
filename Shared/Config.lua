@@ -87,20 +87,6 @@ function Config.FormatPetStat(key, level)
 end
 
 ------------------------------------------------------------
--- 골든 타임: 주기적으로 짧은 시간 동안 경험치 / 골드 보너스 (서버 전체)
-------------------------------------------------------------
-Config.Golden = {
-	FirstDelay = 420,    -- 서버 시작 후 첫 골든 타임까지 (초)
-	Interval = 1500,     -- 골든 타임이 끝난 뒤 다음까지 (초)
-	Duration = 300,      -- 지속 시간 (초)
-	XpMult = 2,
-	GoldMult = 1.5,
-}
-function Config.IsGoldenTime()
-	return (workspace:GetAttribute("GoldenUntil") or 0) > os.time()
-end
-
-------------------------------------------------------------
 -- 튜토리얼 미션 (처음 1~5분): 쉬운 목표 -> 즉시 보상을 계속 이어서 보여준다
 -- Target: TutorialService.SetTargets 로 넘겨주는 위치 키 (Dummy / Anvil / Gacha / Field / Gate)
 -- FreeEnhance: 이 미션 동안 무기 강화가 공짜 + 100% 성공
@@ -693,11 +679,11 @@ Config.Field = {
 		{ Slime = 5, Bat = 2, Spider = 1 },
 		{ Slime = 3, Spitter = 3, Bat = 2, Spider = 2, Wisp = 1 },
 		{ Spitter = 3, Charger = 3, Golem = 1, Imp = 2, Turret = 1, Healer = 1 },
-		{ Charger = 3, Bomber = 3, Spitter = 2, Spider = 2, Imp = 2, Knight = 1, Healer = 1 },
-		{ Mage = 3, Golem = 2, Bat = 3, Knight = 2, Wisp = 2 },
+		{ Charger = 3, Bomber = 3, Spitter = 2, Spider = 2, Imp = 2, Healer = 1 },
+		{ Mage = 3, Golem = 2, Bat = 3, Wisp = 2 },
 		{ Bomber = 3, Charger = 3, Mage = 2, Turret = 2, Totem = 1 },
-		{ Mage = 3, Golem = 2, Charger = 2, Bomber = 2, Knight = 2, Imp = 2, Totem = 1 },
-		{ Mage = 2, Golem = 3, Charger = 3, Bomber = 3, Spitter = 1, Knight = 2, Turret = 2, Totem = 2, Wisp = 2 },
+		{ Mage = 3, Golem = 2, Charger = 2, Bomber = 2, Imp = 2, Totem = 1 },
+		{ Mage = 2, Golem = 3, Charger = 3, Bomber = 3, Spitter = 1, Turret = 2, Totem = 2, Wisp = 2 },
 	},
 	ZoneColors = {
 		Color3.fromRGB(90, 150, 80), Color3.fromRGB(50, 110, 60), Color3.fromRGB(140, 115, 80), Color3.fromRGB(215, 190, 120),
@@ -882,7 +868,7 @@ Config.Dungeon.Types = {
 		Wall = { Color = Color3.fromRGB(120, 160, 200), Material = Enum.Material.Glacier },
 		Torch = Color3.fromRGB(120, 200, 255),
 		Terrain = { Ground = Enum.Material.Snow, Mountain = Enum.Material.Glacier, Accent = Enum.Material.Ice },
-		MonsterPool = { Spitter = 3, Mage = 4, Turret = 2, Wisp = 3, Knight = 3, Golem = 1, Healer = 2 },
+		MonsterPool = { Spitter = 3, Mage = 4, Turret = 2, Wisp = 3, Golem = 1, Healer = 2 },
 		Boss = { Name = "서리 군주", Color = Color3.fromRGB(90, 170, 240), HealthMult = 1.6, DamageMult = 1.2, Weights = { Fan = 2, Ring = 4, Spiral = 4.5, Meteor = 0.5, Slam = 1, Summon = 1, Lanes = 1.5, Sweep = 2, SideAdds = 0.5 } },
 	},
 	Fire = {
@@ -892,7 +878,7 @@ Config.Dungeon.Types = {
 		Wall = { Color = Color3.fromRGB(90, 40, 30), Material = Enum.Material.CrackedLava },
 		Torch = Color3.fromRGB(255, 90, 40),
 		Terrain = { Ground = Enum.Material.Basalt, Mountain = Enum.Material.Slate, Accent = Enum.Material.CrackedLava },
-		MonsterPool = { Charger = 4, Bomber = 4, Imp = 2, Golem = 2, Spider = 1, Totem = 1, Knight = 2, Healer = 1 },
+		MonsterPool = { Charger = 4, Bomber = 4, Imp = 2, Golem = 2, Spider = 1, Totem = 1, Healer = 1 },
 		Boss = { Name = "화염의 군주", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Fan = 0.5, Ring = 0.5, Spiral = 0.5, Meteor = 5, Slam = 4, Summon = 0.5, Lanes = 3, Sweep = 3.5, SideAdds = 0.5 } },
 	},
 }
@@ -905,7 +891,7 @@ Config.Dungeon.Types.Rift = {
 	Wall = { Color = Color3.fromRGB(80, 40, 100), Material = Enum.Material.Slate },
 	Torch = Color3.fromRGB(255, 80, 150),
 	Terrain = { Ground = Enum.Material.Slate, Mountain = Enum.Material.Basalt, Accent = Enum.Material.Glacier },
-	MonsterPool = { Slime = 2, Spitter = 2, Bat = 2, Mage = 2, Golem = 1, Charger = 2, Bomber = 2, Spider = 2, Imp = 2, Knight = 2, Turret = 1, Wisp = 2, Totem = 1 },
+	MonsterPool = { Slime = 2, Spitter = 2, Bat = 2, Mage = 2, Golem = 1, Charger = 2, Bomber = 2, Spider = 2, Imp = 2, Turret = 1, Wisp = 2, Totem = 1 },
 	Boss = { Name = "심연의 문지기", Color = Color3.fromRGB(255, 80, 150), HealthMult = 1, DamageMult = 1, Weights = { Fan = 1, Ring = 1, Spiral = 1, Meteor = 1, Slam = 2, Summon = 2, Lanes = 2, Sweep = 2, SideAdds = 1.5 } },
 }
 

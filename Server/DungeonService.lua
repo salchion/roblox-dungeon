@@ -134,7 +134,7 @@ local function arenaSpawnCFrame(run)
 end
 
 local function giveGold(run, amount)
-	amount = math.floor(amount * run.GoldMult * Config.Economy.DungeonGoldMult * (Config.IsGoldenTime() and Config.Golden.GoldMult or 1) + 0.5)
+	amount = math.floor(amount * run.GoldMult * Config.Economy.DungeonGoldMult + 0.5)
 	for _, member in ipairs(run.Members) do
 		local bonus = math.floor(amount * Config.GoldBonus(member) + 0.5) -- 환생 골드 보너스
 		member:SetAttribute("Gold", (member:GetAttribute("Gold") or 0) + bonus)

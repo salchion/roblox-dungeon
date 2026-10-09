@@ -1,7 +1,6 @@
 -- GoalClient (StarterPlayer > StarterPlayerScripts 안의 LocalScript, 이름: GoalClient)
 -- "다음 목표" 패널: 지금 가장 가까운(또는 바로 할 수 있는) 목표를 항상 한 줄로 보여준다.
 --   -> 세션을 끝낼 때도 "하나만 더 하면…" 하는 미완 목표가 남도록 (재방문 동기)
--- + 골든 타임(주기적 2배 이벤트) 남은 시간 표시
 -- 모든 값은 서버가 설정한 플레이어 Attribute 에서 읽는다 (서버 호출 없음).
 
 local Players = game:GetService("Players")
@@ -60,26 +59,6 @@ barFill.BackgroundColor3 = Color3.fromRGB(110, 210, 255)
 barFill.BorderSizePixel = 0
 barFill.Parent = barBack
 addCorner(barFill, 5)
-
--- 골든 타임 배너 (화면 위쪽 가운데)
-local golden = Instance.new("TextLabel")
-golden.Size = UDim2.new(0, 480, 0, 34)
-golden.AnchorPoint = Vector2.new(0.5, 0)
-golden.Position = UDim2.new(0.5, 0, 0, 88)
-golden.BackgroundColor3 = Color3.fromRGB(70, 50, 10)
-golden.BackgroundTransparency = 0.08
-golden.BorderSizePixel = 0
-golden.Font = Enum.Font.GothamBlack
-golden.TextSize = 18
-golden.TextColor3 = Color3.fromRGB(255, 220, 90)
-golden.Visible = false
-golden.Parent = gui
-addCorner(golden, 8)
-local goldenStroke = Instance.new("UIStroke")
-goldenStroke.Thickness = 2
-goldenStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border -- 기본값은 글자 테두리라서 글씨가 뭉개졌다: 상자 테두리로만 쓴다
-goldenStroke.Color = Color3.fromRGB(255, 200, 70)
-goldenStroke.Parent = golden
 
 local function comma(n)
 	local s = tostring(math.floor(n))
@@ -383,7 +362,6 @@ RunService.RenderStepped:Connect(function()
 			barFill.BackgroundColor3 = goal.Ratio >= 1 and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(110, 210, 255)
 		end
 
-		local left = (workspace:GetAttribute("GoldenUntil") or 0) - os.time()
 		-- 관문 봉인막: 내 진행도에 맞춰 열려 보이게 / 닫혀 보이게 (내 화면에서만)
 		local clearedNow = player:GetAttribute("ClearedZone") or 0
 		for _, seal in ipairs(game:GetService("CollectionService"):GetTagged("ZoneSeal")) do
@@ -404,20 +382,6 @@ RunService.RenderStepped:Connect(function()
 					sealText.Text = string.format("🔒 구역 %d · %s 봉인\n먼저 이전 관문을 여세요", sealZone, Config.Field.ZoneNames[sealZone])
 				end
 			end
-		end
-
-		local untilNext = (workspace:GetAttribute("GoldenNext") or 0) - os.time()
-		golden.Visible = (left > 0 or untilNext > 0) and zone ~= "Dungeon"
-		if left > 0 then
-			golden.BackgroundColor3 = Color3.fromRGB(110, 78, 10)
-			golden.TextColor3 = Color3.fromRGB(255, 236, 130)
-			goldenStroke.Color = Color3.fromRGB(255, 210, 80)
-			golden.Text = string.format("🌟 골든 타임! 경험치 x%d · 골드 x%.1f  (%d:%02d)", Config.Golden.XpMult, Config.Golden.GoldMult, math.floor(left / 60), left % 60)
-		elseif untilNext > 0 then -- 평소에는 작게 "다음 골든 타임까지"를 보여줘서 기다릴 이유를 만든다
-			golden.BackgroundColor3 = Color3.fromRGB(34, 36, 56)
-			golden.TextColor3 = Color3.fromRGB(225, 228, 245)
-			goldenStroke.Color = Color3.fromRGB(110, 120, 170)
-			golden.Text = string.format("⏳ 다음 골든 타임까지 %d:%02d  (경험치 x%d · 골드 x%.1f)", math.floor(untilNext / 60), untilNext % 60, Config.Golden.XpMult, Config.Golden.GoldMult)
 		end
 	end
 end)
