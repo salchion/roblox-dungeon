@@ -1391,8 +1391,22 @@ local function killMonster(player, part, data)
 		activeEvent = nil -- 이벤트 보스는 다시 나타나지 않는다
 		return
 	end
-	task.delay(kind == "Boss" and F.BossRespawn or F.RespawnTime, function()
+	local delay = F.RespawnTime
+	if kind == "Boss" then
+		delay = (F.BossRespawnByZone and F.BossRespawnByZone[zone]) or F.BossRespawn
+		workspace:SetAttribute("BossNext_" .. zone, os.time() + delay) -- 다음 군주 등장 시각 (화면 표시용)
+	end
+	task.delay(delay, function()
 		spawnMonster(zone, kind)
+		if kind == "Boss" then
+			workspace:SetAttribute("BossNext_" .. zone, 0)
+			for _, other in ipairs(Players:GetPlayers()) do -- 그 구역에 있는 사람들에게 알린다
+				local root = getAliveParts(other)
+				if other:GetAttribute("Zone") == "Field" and root and zoneOfX(root.Position.X) == zone then
+					notify(other, string.format("👑 구역 %d · %s의 군주가 다시 나타났어요!", zone, F.ZoneNames[zone]))
+				end
+			end
+		end
 	end)
 end
 
