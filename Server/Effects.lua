@@ -82,9 +82,11 @@ local CLASS_LOOK = {
 	Shotgun = { Style = "Ball", SizeMul = 0.9 },
 }
 
-function Effects.Shot(from, to, shot, color, rainbow, class)
+function Effects.Shot(from, to, shot, color, rainbow, class, era)
 	local distance = (to - from).Magnitude
 	if distance < 0.5 then return end
+	era = era or 1
+	local eraStyle = shot.Style -- 시대(등급)가 정하는 탄의 "성격": 불꽃 / 얼음 / 번개 / 암흑 / 용 / 무지개 ... (모양은 무기 종류가 정한다)
 	local look = class and CLASS_LOOK[class]
 	if look then
 		shot = table.clone(shot)
@@ -113,21 +115,22 @@ function Effects.Shot(from, to, shot, color, rainbow, class)
 	part.Parent = workspace
 
 	local colorSeq = rainbow and RAINBOW or ColorSequence.new(color)
-	if shot.Style == "Fire" or shot.Style == "Rocket" then
-		colorSeq = FIRE
+	if shot.Style == "Fire" or shot.Style == "Rocket" or eraStyle == "Fire" or eraStyle == "Rocket" then
+		colorSeq = rainbow and RAINBOW or FIRE
 	end
 
 	-- 꼬리(궤적)
+	local trailWidth = shot.Size * (1 + 0.12 * era) -- 시대가 높을수록 꼬리가 굵고 길다
 	local a0 = Instance.new("Attachment")
-	a0.Position = Vector3.new(0, shot.Size / 2, 0)
+	a0.Position = Vector3.new(0, trailWidth / 2, 0)
 	a0.Parent = part
 	local a1 = Instance.new("Attachment")
-	a1.Position = Vector3.new(0, -shot.Size / 2, 0)
+	a1.Position = Vector3.new(0, -trailWidth / 2, 0)
 	a1.Parent = part
 	local trail = Instance.new("Trail")
 	trail.Attachment0 = a0
 	trail.Attachment1 = a1
-	trail.Lifetime = shot.Style == "Ball" and 0.1 or 0.3
+	trail.Lifetime = math.min(0.55, (shot.Style == "Ball" and 0.08 or 0.14) + 0.03 * era)
 	trail.Color = colorSeq
 	trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(1, 1) })
 	trail.LightEmission = 1
@@ -135,8 +138,12 @@ function Effects.Shot(from, to, shot, color, rainbow, class)
 	trail.Parent = part
 
 	-- 등급별 입자: 불꽃은 불길, 마법은 반짝이, 무지개는 무지개 가루
-	local rate = ({ Orb = 40, Cannon = 25, Fire = 90, Rocket = 110, Rainbow = 80 })[shot.Style]
+	local rate = ({ Orb = 40, Cannon = 25, Fire = 90, Rocket = 110, Rainbow = 80 })[eraStyle] or ({ Orb = 40, Cannon = 25, Fire = 90, Rocket = 110 })[shot.Style]
+	if not rate and era >= 2 then
+		rate = 6 + era * 4 -- 시대가 올라가면 평범한 탄에도 점점 더 많은 반짝임이 붙는다
+	end
 	if rate then
+		rate = rate * (0.6 + 0.1 * era)
 		local emitter = Instance.new("ParticleEmitter")
 		emitter.Rate = rate
 		emitter.Lifetime = NumberRange.new(0.3, 0.6)
@@ -146,6 +153,17 @@ function Effects.Shot(from, to, shot, color, rainbow, class)
 		emitter.LightEmission = 1
 		emitter.Color = colorSeq
 		emitter.Parent = part
+	end
+
+	if era >= 3 then -- 3시대부터 탄이 스스로 빛난다 (밤에도 눈에 띈다)
+		local light = Instance.new("PointLight")
+		light.Range = 5 + era * 2
+		light.Brightness = 0.7 + 0.1 * era
+		light.Color = color
+		light.Parent = part
+	end
+	if era >= 2 then -- 발사하는 순간 총구에서 시대 색의 불꽃이 터진다 (높은 시대일수록 크게)
+		Effects.Burst(from, color, 2 + era)
 	end
 
 	local duration = math.clamp(distance / shot.Speed, 0.03, 1.2)

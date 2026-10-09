@@ -401,7 +401,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint)
 			or Field.Shoot(player, origin, direction)
 			or Dummy.Shoot(player, origin, direction)
 		endPosition = endPosition or (origin + direction * weaponType.Range)
-		Effects.Shot(tipPosition, endPosition, shot, color, tier.Rainbow, tier.Class)
+		Effects.Shot(tipPosition, endPosition, shot, color, tier.Rainbow, tier.Class, tier.Era)
 	end
 	Weapon.PlayShot(player)
 	-- 궁극기 게이지: 몬스터를 실제로 맞혔을 때만 찬다 (허공에 쏴서는 안 참)

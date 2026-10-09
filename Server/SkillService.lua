@@ -244,9 +244,9 @@ handlers.Ult = function(player, root, _, character)
 				markers[index] = gui
 				Debris:AddItem(gui, 4)
 			end
-			task.wait(0.6)
+			task.wait(0.25) -- 짧게 조준만 하고 바로 쏜다 (움직이면서 쓸 수 있게 몸을 멈추거나 돌리지 않는다)
 
-			-- 2) 일제 사격: 매 회마다 살아 있는 전원에게 동시에 굵은 빔 + 폭발. 몸은 가장 가까운 적을 향한다
+			-- 2) 일제 사격: 매 회마다 살아 있는 전원에게 동시에 굵은 빔 + 폭발. 몸은 그대로 두고 움직일 수 있다
 			local fired = 0
 			for volley = 1, volleys do
 				if not player.Parent or not root.Parent then return end
@@ -281,13 +281,6 @@ handlers.Ult = function(player, root, _, character)
 					end
 					player:SetAttribute("ShakeStrength", 0.18)
 					player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
-					local nearest = targets[1]
-					if nearest and nearest.Parent then
-						local flat = Vector3.new(nearest.Position.X - root.Position.X, 0, nearest.Position.Z - root.Position.Z)
-						if flat.Magnitude > 0.5 then
-							root.CFrame = CFrame.lookAt(root.Position, root.Position + flat)
-						end
-					end
 				end)
 				task.wait(volleyGap)
 			end

@@ -60,6 +60,7 @@ do
 			Smg = { Style = "Bolt", Length = 2 },
 			Shotgun = { Style = "Ball", SizeMul = 0.9 },
 		}
+		local eraStyle = shot.Style
 		local look = CLASS_LOOK[shown.Class]
 		local shownColor = shown.Color
 		if look then
@@ -72,7 +73,8 @@ do
 		local style = shot.Style
 		local bolt = style == "Bolt" or style == "Rocket"
 		local speed = math.clamp(shot.Speed * SHOT_SPEED_SCALE, 34, 100)
-		local thick = math.clamp(shot.Size * 0.5, 0.3, 1.6)
+		local era = shown.Era or 1
+		local thick = math.clamp(shot.Size * 0.5 * (1 + 0.07 * era), 0.3, 2.0) -- 시대가 높을수록 탄이 굵다
 		local pellets = math.min(classInfo.Pellets, 5)
 		local period = math.clamp(classInfo.Cooldown * 0.9, 0.36, 1.3)
 		local flamer = style == "Fire"
@@ -87,6 +89,13 @@ do
 			part.Shape = bolt and Enum.PartType.Block or Enum.PartType.Ball
 			part.Size = bolt and Vector3.new(math.clamp((shot.Length or 3) * 0.35, 1, 5.6), thick * 0.5, thick * 0.5) or Vector3.new(thick, thick, thick)
 			part.Transparency = 1
+			if era >= 3 then
+				local light = Instance.new("PointLight")
+				light.Range = 4 + era
+				light.Brightness = 1
+				light.Color = shownColor
+				light.Parent = part
+			end
 			part.Parent = viewport
 			local dir = Vector3.new(math.cos(offsetAngle), math.sin(offsetAngle) * 0.5, math.sin(offsetAngle) * 0.9).Unit
 			table.insert(bullets, { Part = part, Dir = dir, Pos = muzzle, Delay = delay or 0 })
@@ -154,7 +163,7 @@ do
 				else
 					b.Part.Transparency = 0
 					b.Pos += b.Dir * speed * dt
-					local color = style == "Rainbow" and Color3.fromHSV((clock * 1.4) % 1, 0.8, 1) or (flamer and Color3.fromRGB(255, 140 + math.random(0, 80), 50) or shownColor)
+					local color = (style == "Rainbow" or eraStyle == "Rainbow") and Color3.fromHSV((clock * 1.4) % 1, 0.8, 1) or (flamer and Color3.fromRGB(255, 140 + math.random(0, 80), 50) or shownColor)
 					b.Part.Color = color
 					b.Part.Transparency = look and look.Transparency or 0
 					b.Part.CFrame = CFrame.lookAt(b.Pos, b.Pos + b.Dir)

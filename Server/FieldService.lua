@@ -1559,6 +1559,7 @@ local function stepMonsters(dt)
 						local step = move.Unit * data.Stats.Speed * dt
 						if walkableAt(part.Position.X + step.X, part.Position.Z + step.Z) then
 							part.Position += step
+							part.Position = Vector3.new(part.Position.X, floorAt(part.Position.X) + data.Stats.Size / 2, part.Position.Z)
 						end
 					end
 				end
@@ -1596,6 +1597,8 @@ local function stepMonsters(dt)
 			local toHome = Vector3.new(data.Home.X - part.Position.X, 0, data.Home.Z - part.Position.Z)
 			if toHome.Magnitude > 1 then
 				part.Position += toHome.Unit * data.Stats.Speed * 1.5 * dt
+				-- 돌아가는 길에도 층 높이를 따라간다 (경사를 오르내릴 때 땅에 파묻히거나 허공에 뜨지 않게)
+				part.Position = Vector3.new(part.Position.X, floorAt(part.Position.X) + data.Stats.Size / 2, part.Position.Z)
 			elseif data.Health < data.MaxHealth then
 				data.Health = data.MaxHealth
 				data.HealthFill.Size = UDim2.new(1, 0, 1, 0)
