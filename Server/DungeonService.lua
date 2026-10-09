@@ -1002,7 +1002,7 @@ local function enrageBoss(run, part, data)
 end
 
 local augOnHit, augOnKill -- 어그먼트 효과 (아래 Dungeon.ComputeDamage 뒤에서 정의)
-local function damageMonster(run, player, part, data, amount, isCrit, hitPosition)
+local function damageMonster(run, player, part, data, amount, isCrit, hitPosition, quiet)
 	local shooterRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if shooterRoot and data.Def and data.Def.Shield then -- 방패 기사: 정면 공격은 막힌다
 		local factor = MonsterTypes.ShieldFactor(part, data, shooterRoot.Position)
@@ -1020,8 +1020,10 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 	if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.5) end -- 연습 표적은 쓰러지지 않는다
 	data.Awake = true -- 맞은 몬스터는 거리와 상관없이 깨어난다
 	data.HealthFill.Size = UDim2.new(math.max(data.Health, 0) / data.MaxHealth, 0, 1, 0)
-	Effects.DamageNumber(hitPosition, amount, isCrit)
-	Effects.Hit(player, part, isCrit, data.Health <= 0)
+	if not quiet then -- 칼날 / 불길처럼 자주 들어가는 틱 피해는 숫자 / 소리를 생략한다 (화면과 서버 부담)
+		Effects.DamageNumber(hitPosition, amount, isCrit)
+		Effects.Hit(player, part, isCrit, data.Health <= 0)
+	end
 
 	if augOnHit then augOnHit(run, player, part, data, amount, isCrit) end
 	if data.Health > 0 then
@@ -1296,11 +1298,11 @@ local function augDamage(player)
 	return (Dungeon.ComputeDamage(player))
 end
 
-local function hitMonster(run, player, entry, amount)
+local function hitMonster(run, player, entry, amount, quiet)
 	if run.HitFn then -- 필드: 필드 몬스터에게 피해를 주는 함수를 따로 받는다
-		run.HitFn(player, entry, amount)
+		run.HitFn(player, entry, amount, quiet)
 	elseif run.Monsters[entry.Part] == entry.Data then
-		damageMonster(run, player, entry.Part, entry.Data, math.max(1, math.floor(amount)), false, entry.Part.Position)
+		damageMonster(run, player, entry.Part, entry.Data, math.max(1, math.floor(amount)), false, entry.Part.Position, quiet)
 	end
 end
 
@@ -1391,7 +1393,7 @@ local function makeFlame(run, player, position, radius, seconds, damage)
 		local untilAt = os.clock() + seconds
 		while pad.Parent and os.clock() < untilAt and not run.Destroyed and run.Phase ~= "Ended" do
 			for _, entry in ipairs(nearestMonsters(run, position, radius, 8)) do
-				hitMonster(run, player, entry, damage)
+				hitMonster(run, player, entry, damage, true)
 			end
 			task.wait(0.5)
 		end
@@ -1606,7 +1608,7 @@ local function startAugLoop(run)
 							if part.Parent and data.Health > 0 then
 								for _, p in ipairs(positions) do
 									if (part.Position - p).Magnitude <= 5 + part.Size.X / 2 then
-										hitMonster(run, member, { Part = part, Data = data }, damage)
+										hitMonster(run, member, { Part = part, Data = data }, damage, true)
 										sfxAt(run, part.Position, "Aug_Blade", nil, 0.18)
 										if synergy(member, "BladeMissile") and math.random() < 0.12 then
 											for _, entry in ipairs(nearestMonsters(run, part.Position, 60, 1, part)) do

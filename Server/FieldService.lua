@@ -120,16 +120,28 @@ local function isSafe(position)
 	return position.X - F.ZoneStart(F.ZoneOfX(position.X)) < F.CampSafe
 end
 
+-- 필드에 있는 살아 있는 플레이어 목록: 몬스터 수백 마리가 매 프레임 "가장 가까운 플레이어"를 물으므로 0.05초마다 한 번만 다시 만든다
+local fieldRoots, fieldRootsAt = {}, 0
 local function nearestFieldPlayer(position)
-	local nearest, nearestDist = nil, math.huge
-	for _, player in ipairs(Players:GetPlayers()) do
-		if player:GetAttribute("Zone") == "Field" then
-			local root = getAliveParts(player)
-			if root and not isSafe(root.Position) then
-				local dist = (root.Position - position).Magnitude
-				if dist < nearestDist then
-					nearest, nearestDist = root, dist
+	local now = os.clock()
+	if now - fieldRootsAt > 0.05 then
+		fieldRootsAt = now
+		table.clear(fieldRoots)
+		for _, player in ipairs(Players:GetPlayers()) do
+			if player:GetAttribute("Zone") == "Field" then
+				local root = getAliveParts(player)
+				if root and not isSafe(root.Position) then
+					table.insert(fieldRoots, root)
 				end
+			end
+		end
+	end
+	local nearest, nearestDist = nil, math.huge
+	for _, root in ipairs(fieldRoots) do
+		if root.Parent then
+			local dist = (root.Position - position).Magnitude
+			if dist < nearestDist then
+				nearest, nearestDist = root, dist
 			end
 		end
 	end
@@ -3575,7 +3587,7 @@ local function runAmbush()
 end
 
 -- 세트 효과가 필드 몬스터에게 주는 피해 (미사일 / 번개 / 칼날 / 폭발 ... 가 모두 이 함수를 지난다)
-local function fieldAugHit(player, entry, amount)
+local function fieldAugHit(player, entry, amount, quiet)
 	local part, data = entry.Part, entry.Data
 	if monsters[part] ~= data or data.Health <= 0 or data.Invincible then return end
 	amount = math.max(1, math.floor(amount))
@@ -3583,8 +3595,10 @@ local function fieldAugHit(player, entry, amount)
 	data.LastHit = os.clock()
 	if data.Contrib then data.Contrib[player] = (data.Contrib[player] or 0) + amount end
 	data.HealthFill.Size = UDim2.new(math.max(data.Health, 0) / data.MaxHealth, 0, 1, 0)
-	Effects.DamageNumber(part.Position, amount, false)
-	Effects.Hit(player, part, false, data.Health <= 0)
+	if not quiet then
+		Effects.DamageNumber(part.Position, amount, false)
+		Effects.Hit(player, part, false, data.Health <= 0)
+	end
 	Dungeon.AugOnHit(augRun, player, part, data, amount, false)
 	if data.Health <= 0 then
 		killMonster(player, part, data)
