@@ -610,3 +610,18 @@ do
 		end)
 	end)
 end
+
+-- 대시 감지: 대시(속도 약 135)를 쓰면 서버에 알려 준다. 첫 위기 안내(대시 한 줄)를 이미 대시를 쓰는 사람에게는 안 띄우려는 용도.
+do
+	local lastReport = 0
+	RunService.Heartbeat:Connect(function()
+		local character = player.Character
+		local root = character and character:FindFirstChild("HumanoidRootPart")
+		if not root then return end
+		local velocity = root.AssemblyLinearVelocity
+		if Vector3.new(velocity.X, 0, velocity.Z).Magnitude > 85 and os.clock() - lastReport > 3 then
+			lastReport = os.clock()
+			Remotes.Tutorial:FireServer("Dashed")
+		end
+	end)
+end

@@ -40,6 +40,7 @@ local Data = require(Modules:WaitForChild("DataService"))
 local Rift = require(Modules:WaitForChild("RiftService"))
 local Advice = require(Modules:WaitForChild("AdviceService"))
 local Idle = require(Modules:WaitForChild("IdleService"))
+local Journey = require(Modules:WaitForChild("JourneyService"))
 
 Monetization.SaveHook = Data.Save -- 결제 영수증 처리 때 "저장 성공"을 확인하는 데 사용
 
@@ -70,6 +71,14 @@ Rank.Init(lobby.RankBoardCFrame)
 Showcase.Init(lobby.RankBoardCFrame) -- 랭킹판 앞 명예의 전당 (최강 3명)
 Field.Init(lobby.SpawnCFrame)
 Rift.Init(lobby.RiftPrompt) -- 심연 도전 포탈
+do -- 튜토리얼 이후 안내 (구역 2 / 심연 / 새 던전 게이트 표지, 전투 중 첫 위기 한 줄)
+	local gatePositions = {}
+	for _, gate in ipairs(lobby.Gates) do
+		gatePositions[gate.Index] = promptPosition(gate.Prompt)
+	end
+	Journey.Init({ Field = promptPosition(lobby.WarpPrompt), Rift = promptPosition(lobby.RiftPrompt), Gates = gatePositions })
+	Journey.Start()
+end
 Idle.Init(lobby.DummyStart) -- 방치 수입 (훈련장 원 안 자동 사격 + 오프라인 적립)
 EventService.Start() -- 주기적 골든 타임
 
@@ -303,6 +312,7 @@ local function setupPlayer(player)
 		Meta.Load(player, saved.Meta)   -- 스킬 레벨 / 펫 / 무한의 탑 기록
 		Tutorial.Load(player, saved.Tutorial) -- 처음 1~5분 가이드 미션
 		Idle.OnJoin(player) -- 자리를 비운 동안 쌓인 방치 골드
+		Journey.OnJoin(player) -- 이미 본 안내 기록
 		updatePower(player)
 	end
 end

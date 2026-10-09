@@ -15,6 +15,7 @@ local Meta = require(script.Parent:WaitForChild("MetaService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Growth = require(script.Parent:WaitForChild("GrowthService"))
 local Event = require(script.Parent:WaitForChild("EventService"))
+local Journey = require(script.Parent:WaitForChild("JourneyService"))
 
 local R = Config.Rift
 
@@ -81,6 +82,7 @@ end
 local function canPlay(player)
 	if player:GetAttribute("Zone") ~= "Lobby" then return false, "마을에서만 할 수 있어요." end
 	if player:GetAttribute("TutorialActive") then return false, "🔒 튜토리얼 미션을 모두 끝내면 열려요!" end
+	if not Journey.RiftOpen(player) then return false, "🔒 던전을 한 번 클리어하면 심연이 열려요!" end
 	local state = stateOf(player)
 	if not state then return false, "잠시 후 다시 시도해주세요." end
 	if state.Used >= R.FreeAttempts then return false, "오늘의 도전 횟수를 모두 썼어요. 내일 다시 오세요!" end
@@ -177,6 +179,10 @@ function Rift.Init(prompt)
 		prompt.Triggered:Connect(function(player)
 			if player:GetAttribute("TutorialActive") then
 				notify(player, "🔒 튜토리얼 미션을 모두 끝내면 열려요!")
+				return
+			end
+			if not Journey.RiftOpen(player) then
+				notify(player, "🔒 던전을 한 번 클리어하면 심연이 열려요!")
 				return
 			end
 			push(player, true)

@@ -300,6 +300,13 @@
       "name": "IdleService",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "Server/JourneyService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "JourneyService",
+      "class": "ModuleScript",
+      "overwrite": true
     }
   ]
 }
