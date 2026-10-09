@@ -534,6 +534,19 @@ Remotes.OpenEnhance.OnClientEvent:Connect(function()
 	refreshEnhance()
 	enhancePanel.Visible = true
 end)
+
+-- 튜토리얼: 강화 미션이 끝나 다음 미션(모루가 목표가 아닌 것)으로 넘어가면 강화창을 자동으로 닫는다
+local lastStepIndex = 0
+Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
+	if action ~= "Step" then return end
+	local advanced = data.Index > lastStepIndex and lastStepIndex > 0
+	lastStepIndex = data.Index
+	if advanced and data.TargetName ~= "모루" and enhancePanel.Visible then
+		task.delay(1.2, function() -- 강화 성공 연출을 잠깐 보여준 뒤
+			enhancePanel.Visible = false
+		end)
+	end
+end)
 end -- (강화창 do 블록 끝)
 
 ------------------------------------------------------------
