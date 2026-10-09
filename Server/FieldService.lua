@@ -1018,6 +1018,10 @@ local function buildWorld()
 	wall(Vector3.new(2, 50, half - 20), Vector3.new(F.StartX - 1, 25, -(half + 20) / 2))
 	wall(Vector3.new(26, 50, 2), Vector3.new(F.StartX - 14, 25, 21))
 	wall(Vector3.new(26, 50, 2), Vector3.new(F.StartX - 14, 25, -21))
+
+	-- 구역별 분위기 장식 (충돌 없는 장식 + 바닥 무늬, 실패해도 게임은 계속)
+	local okDecor, decorErr = pcall(function() require(script.Parent:WaitForChild("FieldDecor")).Build(worldFolder, { FloorAt = floorAt, ZoneBounds = zoneBounds, Width = F.Width, Blocked = propBlocked }) end)
+	if not okDecor then warn("FieldDecor 실패: " .. tostring(decorErr)) end
 end
 
 ------------------------------------------------------------

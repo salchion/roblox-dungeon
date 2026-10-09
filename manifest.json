@@ -78,6 +78,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/FieldDecor.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "FieldDecor",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/FieldService.lua",
       "parent": "ServerScriptService/Modules",
       "name": "FieldService",
