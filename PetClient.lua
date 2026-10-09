@@ -80,7 +80,7 @@ end
 
 local function rebuild()
 	for _, child in ipairs(scroll:GetChildren()) do
-		if child:IsA("Frame") then child:Destroy() end
+		if not child:IsA("UIListLayout") then child:Destroy() end -- (제목 글자도 같이 지운다: 안 지우면 다시 그릴 때마다 줄이 쌓인다)
 	end
 	order = 0
 	local pet = state and state.Pet
@@ -181,8 +181,17 @@ Remotes.Meta.OnClientEvent:Connect(function(action, data)
 		if panel.Visible then rebuild() end
 	end
 end)
+local lastAfford = nil
 player:GetAttributeChangedSignal("Gold"):Connect(function()
-	if panel.Visible then rebuild() end -- 골드가 모이면 버튼이 초록색으로
+	if not panel.Visible then return end
+	-- 골드가 1씩 늘 때마다 다시 그리지 않는다: 살 수 있는지 여부가 바뀔 때만 (버튼이 초록 / 붉은색으로)
+	local pet = state and state.Pet
+	local cost = (pet and pet.Unlocked) and (pet.Level < P.MaxLevel and Config.GetPetLevelCost(pet.Level) or math.huge) or P.UnlockCost
+	local afford = (player:GetAttribute("Gold") or 0) >= cost
+	if afford ~= lastAfford then
+		lastAfford = afford
+		rebuild()
+	end
 end)
 
 local function toggle(open)
