@@ -50,22 +50,26 @@ end
 
 local function makePanel(props, parent)
 	local base = {
-		BackgroundColor3 = Color3.fromRGB(20, 20, 30),
-		BackgroundTransparency = 0.2,
+		BackgroundColor3 = Color3.fromRGB(16, 18, 30),
+		BackgroundTransparency = 0.1,
 		BorderSizePixel = 0,
 	}
 	for key, value in pairs(props) do
 		base[key] = value
 	end
 	local frame = create("Frame", base, parent)
-	rounded(frame)
+	-- 통일 스타일: 큰 패널 12 / 줄(행) 8, 색을 따로 안 준 패널은 HUD 카드와 같은 남색 테두리
+	rounded(frame, (not props.BackgroundColor3 or (props.Size and props.Size.Y.Offset >= 100)) and 12 or 8)
+	if not props.BackgroundColor3 then
+		create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame)
+	end
 	return frame
 end
 
 local function makeLabel(props, parent)
 	local base = {
 		BackgroundTransparency = 1,
-		TextColor3 = Color3.new(1, 1, 1),
+		TextColor3 = Color3.fromRGB(240, 242, 250),
 		Font = Enum.Font.GothamMedium,
 		TextSize = 16,
 		TextWrapped = true,
@@ -78,8 +82,8 @@ end
 
 local function makeButton(props, parent, onClick)
 	local base = {
-		BackgroundColor3 = Color3.fromRGB(70, 110, 220),
-		TextColor3 = Color3.new(1, 1, 1),
+		BackgroundColor3 = Color3.fromRGB(62, 96, 196),
+		TextColor3 = Color3.fromRGB(240, 242, 250),
 		Font = Enum.Font.GothamBold,
 		TextSize = 15,
 		AutoButtonColor = true,
@@ -89,7 +93,7 @@ local function makeButton(props, parent, onClick)
 		base[key] = value
 	end
 	local button = create("TextButton", base, parent)
-	rounded(button, 6)
+	rounded(button, 8)
 	if onClick then
 		button.Activated:Connect(onClick)
 	end
@@ -104,9 +108,9 @@ local function clearChildren(container)
 	end
 end
 
-local GREEN = Color3.fromRGB(60, 170, 90)
-local RED = Color3.fromRGB(200, 70, 70)
-local GRAY = Color3.fromRGB(70, 70, 85)
+local GREEN = Color3.fromRGB(56, 156, 98)
+local RED = Color3.fromRGB(196, 78, 82)
+local GRAY = Color3.fromRGB(54, 58, 82)
 
 local gui = create("ScreenGui", { Name = "HUD", ResetOnSpawn = false, IgnoreGuiInset = true }, player:WaitForChild("PlayerGui"))
 
@@ -139,8 +143,8 @@ local toastLabel = makeLabel({
 	Size = UDim2.new(0, 400, 0, 74),
 	AnchorPoint = Vector2.new(0, 1),
 	Position = UDim2.new(0, -430, 1, -250),
-	BackgroundColor3 = Color3.fromRGB(20, 20, 30),
-	BackgroundTransparency = 0.1,
+	BackgroundColor3 = Color3.fromRGB(16, 18, 30),
+	BackgroundTransparency = 0.08,
 	Font = Enum.Font.GothamBold,
 	TextSize = 16,
 	TextWrapped = true,
@@ -148,8 +152,8 @@ local toastLabel = makeLabel({
 	Visible = false,
 }, gui)
 create("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 10) }, toastLabel)
-create("UIStroke", { Color = Color3.fromRGB(255, 225, 110), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, toastLabel)
-rounded(toastLabel)
+create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, toastLabel)
+rounded(toastLabel, 12)
 
 local toastToken = 0
 local function toast(text)
@@ -190,10 +194,10 @@ enhancePanel = makePanel({
 	Size = UDim2.new(0, 400, 0, 560),
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Position = UDim2.new(0.5, 0, 0.5, 0),
-	BackgroundColor3 = Color3.fromRGB(26, 22, 36), BackgroundTransparency = 0.05,
+	BackgroundColor3 = Color3.fromRGB(18, 20, 34), BackgroundTransparency = 0.05,
 	Visible = false,
 }, gui)
-create("UIStroke", { Color = Color3.fromRGB(255, 190, 80), Thickness = 3 }, enhancePanel)
+create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 2, Transparency = 0.2 }, enhancePanel)
 create("UIGradient", {
 	Color = ColorSequence.new(Color3.fromRGB(70, 48, 90), Color3.fromRGB(22, 20, 32)), Rotation = 90,
 }, enhancePanel)
@@ -603,10 +607,10 @@ gearPanel = makePanel({
 	Size = UDim2.new(0, 760, 0, 560),
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Position = UDim2.new(0.5, 0, 0.5, 0),
-	BackgroundColor3 = Color3.fromRGB(28, 22, 42), BackgroundTransparency = 0.05,
+	BackgroundColor3 = Color3.fromRGB(18, 20, 34), BackgroundTransparency = 0.05,
 	Visible = false,
 }, gui)
-create("UIStroke", { Color = Color3.fromRGB(190, 120, 255), Thickness = 3 }, gearPanel)
+create("UIStroke", { Color = Color3.fromRGB(150, 130, 230), Thickness = 2, Transparency = 0.2 }, gearPanel)
 create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(70, 46, 100), Color3.fromRGB(22, 18, 34)), Rotation = 90 }, gearPanel)
 
 makeLabel({
@@ -1229,7 +1233,7 @@ local function refreshParty()
 	clearChildren(memberList)
 	if partyData then
 		for index, member in ipairs(partyData.Members) do
-			local row = makePanel({ Size = UDim2.new(1, 0, 0, 30), LayoutOrder = index, BackgroundColor3 = Color3.fromRGB(45, 45, 65) }, memberList)
+			local row = makePanel({ Size = UDim2.new(1, 0, 0, 30), LayoutOrder = index, BackgroundColor3 = Color3.fromRGB(36, 39, 58) }, memberList)
 			local isLeader = member.UserId == partyData.Leader
 			local target = Players:GetPlayerByUserId(member.UserId)
 			local level = target and target:GetAttribute("WeaponLevel") or 0
@@ -1262,7 +1266,7 @@ local function refreshParty()
 		if other ~= player and other:GetAttribute("Zone") == "Lobby" then
 			order += 1
 			local inParty = (other:GetAttribute("PartyId") or 0) ~= 0
-			local row = makePanel({ Size = UDim2.new(1, 0, 0, 30), LayoutOrder = order, BackgroundColor3 = Color3.fromRGB(45, 45, 65) }, playerList)
+			local row = makePanel({ Size = UDim2.new(1, 0, 0, 30), LayoutOrder = order, BackgroundColor3 = Color3.fromRGB(36, 39, 58) }, playerList)
 			makeLabel({
 				Size = UDim2.new(1, -64, 1, 0), Position = UDim2.new(0, 8, 0, 0),
 				Text = string.format("%s  (+%d)", other.DisplayName, other:GetAttribute("WeaponLevel") or 0),
@@ -2296,7 +2300,7 @@ local menuPanel = makePanel({
 	Visible = false,
 }, gui)
 settings.MenuPanel = menuPanel
-create("UIStroke", { Color = Color3.fromRGB(110, 140, 255), Thickness = 2, Transparency = 0.2 }, menuPanel)
+create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35 }, menuPanel)
 
 makeLabel({
 	Size = UDim2.new(1, -90, 0, 36), Position = UDim2.new(0, 16, 0, 8),
@@ -2336,7 +2340,7 @@ local function newRow(height, color)
 	rowOrder += 1
 	return makePanel({
 		Size = UDim2.new(1, -10, 0, height), LayoutOrder = rowOrder,
-		BackgroundColor3 = color or Color3.fromRGB(34, 38, 58),
+		BackgroundColor3 = color or Color3.fromRGB(36, 39, 58),
 	}, menuContent)
 end
 
@@ -2349,8 +2353,8 @@ local function rowText(row, text, size, rightMargin)
 end
 
 local function sectionTitle(text)
-	local row = newRow(30, Color3.fromRGB(26, 30, 48))
-	rowText(row, "<font color='#ffd966'><b>" .. text .. "</b></font>", 16)
+	local row = newRow(30, Color3.fromRGB(26, 28, 42))
+	rowText(row, "<font color='#e1c476'><b>" .. text .. "</b></font>", 16)
 end
 
 local function hex(color)
@@ -3180,8 +3184,8 @@ end)
 function refreshMenu()
 	for _, tab in ipairs(TABS) do
 		local active = tab.Key == currentTab
-		tabButtons[tab.Key].BackgroundColor3 = active and Color3.fromRGB(80, 125, 255) or Color3.fromRGB(44, 48, 68)
-		tabButtons[tab.Key].TextColor3 = active and Color3.new(1, 1, 1) or Color3.fromRGB(170, 176, 200)
+		tabButtons[tab.Key].BackgroundColor3 = active and Color3.fromRGB(70, 104, 206) or Color3.fromRGB(34, 38, 58)
+		tabButtons[tab.Key].TextColor3 = active and Color3.fromRGB(255, 232, 160) or Color3.fromRGB(170, 176, 200)
 		tabButtons[tab.Key].Font = active and Enum.Font.GothamBlack or Enum.Font.GothamBold
 	end
 
