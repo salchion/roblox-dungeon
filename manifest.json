@@ -344,6 +344,13 @@
       "overwrite": true
     },
     {
+      "path": "MonsterSmoothClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "MonsterSmoothClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "FxClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "FxClient",
