@@ -1378,84 +1378,21 @@ local bossName = makeLabel({
 	Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 15, TextStrokeTransparency = 0.4,
 }, bossBar)
 
--- 특성 선택 패널 (웨이브 클리어마다 3개 중 1개, 숫자키 1/2/3)
+-- 내 특성 요약 패널 (랜덤 보너스로 쌓인 특성을 보여준다)
 local statPanel = makePanel({
 	Size = UDim2.new(0, 380, 0, 170), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 16, 1, -16),
 }, dungeonFrame)
-local statStroke = create("UIStroke", { Color = Color3.fromRGB(255, 210, 90), Thickness = 0, Transparency = 0 }, statPanel)
 
 local statPoints = makeLabel({
 	Size = UDim2.new(1, -20, 0, 28), Position = UDim2.new(0, 10, 0, 8),
 	Font = Enum.Font.GothamBlack, TextSize = 19, TextXAlignment = Enum.TextXAlignment.Left,
 }, statPanel)
 
-local perkOffer = {}   -- 지금 고를 수 있는 특성 키 목록 (서버가 보내준다)
-local perkCards = {}
--- 특성 카드: 화면 가운데 아래에 큼직한 카드 3장이 가로로 뜬다 (큰 아이콘 + 이름 + 설명, 숫자키 1/2/3 또는 클릭)
-local pickFrame = create("Frame", {
-	Size = UDim2.new(0, 640, 0, 214), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -150),
-	BackgroundTransparency = 1, Visible = false,
-}, dungeonFrame)
-makeLabel({
-	Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 0), Text = "✨ 특성을 고르세요!  (숫자키 1 / 2 / 3 또는 클릭)",
-	Font = Enum.Font.GothamBlack, TextSize = 18, TextColor3 = Color3.fromRGB(255, 225, 100), TextStrokeTransparency = 0.3,
-}, pickFrame)
-for index = 1, Config.Perks.ChoiceCount do
-	local card = makeButton({
-		Size = UDim2.new(0, 200, 0, 176), Position = UDim2.new(0, (index - 1) * 220, 0, 34),
-		Text = "", BackgroundColor3 = Color3.fromRGB(38, 40, 62),
-	}, pickFrame, function()
-		local key = perkOffer[index]
-		if key then
-			Remotes.Upgrade:FireServer(key)
-			-- 고른 순간의 손맛: 카드가 번쩍 커지고 효과음, 나머지는 어두워진다
-			local picked = perkCards[index]
-			SoundBank.Play(sfxParent, "Enh_Success")
-			picked.Button.BackgroundColor3 = Color3.fromRGB(255, 240, 170)
-			TweenService:Create(picked.Scale, TweenInfo.new(0.18, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1.25 }):Play()
-			for other, entry in ipairs(perkCards) do
-				if other ~= index then TweenService:Create(entry.Button, TweenInfo.new(0.2), { BackgroundTransparency = 0.8 }):Play() end
-			end
-		end
-	end)
-	local cardScale = create("UIScale", { Scale = 1 }, card)
-	local cardStroke = create("UIStroke", { Color = Color3.fromRGB(255, 210, 90), Thickness = 2, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
-	local icon = makeLabel({
-		Size = UDim2.new(1, 0, 0, 52), Position = UDim2.new(0, 0, 0, 16), TextSize = 40,
-	}, card)
-	local text = makeLabel({
-		Size = UDim2.new(1, -16, 1, -72), Position = UDim2.new(0, 8, 0, 70),
-		TextSize = 14, RichText = true, TextWrapped = true, TextYAlignment = Enum.TextYAlignment.Top,
-	}, card)
-	makeLabel({
-		Size = UDim2.new(0, 26, 0, 26), Position = UDim2.new(0, 6, 0, 6), Text = tostring(index),
-		Font = Enum.Font.GothamBlack, TextSize = 16, TextColor3 = Color3.fromRGB(255, 225, 100),
-	}, card)
-	perkCards[index] = { Button = card, Text = text, Icon = icon, Scale = cardScale, Stroke = cardStroke }
-end
-
-task.spawn(function() -- 고르는 동안 카드 테두리가 두근두근 반짝인다
-	while true do
-		task.wait()
-		if pickFrame.Visible then
-			local pulse = 2.5 + 1.5 * math.sin(os.clock() * 7)
-			for _, card in ipairs(perkCards) do card.Stroke.Thickness = pulse end
-		end
-	end
-end)
-
 local perkSummary = makeLabel({
 	Size = UDim2.new(1, -20, 0, 40), Position = UDim2.new(0, 10, 0, 40),
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 	TextSize = 13, RichText = true, TextColor3 = Color3.fromRGB(200, 200, 220),
 }, statPanel)
-
-local readyButton = makeButton({
-	Size = UDim2.new(1, -20, 0, 34), Position = UDim2.new(0, 10, 0, 84),
-	Text = "준비 완료", BackgroundColor3 = GREEN, Visible = false,
-}, statPanel, function()
-	Remotes.Dungeon:FireServer("Ready")
-end)
 
 makeButton({
 	Size = UDim2.new(1, -20, 0, 24), Position = UDim2.new(0, 10, 1, -30),
@@ -1562,35 +1499,8 @@ player:GetAttributeChangedSignal("BossFight"):Connect(function() updateMusic() e
 player:GetAttributeChangedSignal("InDoomArena"):Connect(function() updateMusic() end)
 
 local function refreshStats()
-	local picking = #perkOffer > 0
-	statPoints.Text = picking and "✨ 특성을 고르세요!" or "특성 (던전 동안만 유지)"
-	statPoints.TextColor3 = picking and Color3.fromRGB(255, 220, 90) or Color3.new(1, 1, 1)
-
-	local justOpened = picking and not pickFrame.Visible
-	pickFrame.Visible = picking
-	for index, card in ipairs(perkCards) do
-		local key = perkOffer[index]
-		card.Button.Visible = key ~= nil
-		if key then
-			local perk = Config.Perks[key]
-			card.Stroke.Color = perk.Special and Color3.fromRGB(255, 190, 60) or Color3.fromRGB(120, 190, 255)
-			if justOpened then -- 카드가 튕겨 나오며 차례로 등장 (특수 특성은 금색)
-				card.Button.BackgroundColor3 = perk.Special and Color3.fromRGB(70, 56, 30) or Color3.fromRGB(38, 40, 62)
-				card.Button.BackgroundTransparency = 0
-				card.Scale.Scale = 0.2
-				card.Button.Rotation = (index - 2) * 5
-				task.delay((index - 1) * 0.09, function()
-					TweenService:Create(card.Scale, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
-					TweenService:Create(card.Button, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Rotation = 0 }):Play()
-					SoundBank.Play(sfxParent, "Gacha_Drop")
-				end)
-			end
-			local stacks = player:GetAttribute(perk.Attr) or 0
-			card.Icon.Text = perk.Icon
-			card.Text.Text = string.format("<b><font size='17'>%s</font></b>\n<font color='#ffd966'>Lv.%d → %d</font>\n<font color='#c8c8dc'>%s</font>",
-				perk.Name, stacks, stacks + 1, perk.Desc)
-		end
-	end
+	statPoints.Text = "특성 (던전 동안만 유지)"
+	statPoints.TextColor3 = Color3.new(1, 1, 1)
 
 	local parts = {}
 	for _, key in ipairs(Config.Perks.Order) do
@@ -1601,17 +1511,6 @@ local function refreshStats()
 		end
 	end
 	perkSummary.Text = #parts > 0 and ("내 특성: " .. table.concat(parts, "  ·  ")) or "내 특성: 아직 없음"
-
-	local inStatPhase = dungeonState and dungeonState.Phase == "StatPhase"
-	statStroke.Thickness = inStatPhase and 3 or 0
-	-- "준비 완료" 버튼은 없앴다: 특성을 고르면 자동으로 준비된다. 파티가 여럿일 때만 기다리는 중 표시.
-	readyButton.Active = false
-	readyButton.AutoButtonColor = false
-	readyButton.BackgroundColor3 = GRAY
-	readyButton.Visible = inStatPhase == true and not picking and (dungeonState.MemberCount or 1) > 1
-	if inStatPhase then
-		readyButton.Text = string.format("✔ 선택 완료 — 다른 파티원 기다리는 중 (%d/%d)", dungeonState.ReadyCount, dungeonState.MemberCount)
-	end
 end
 
 local function refreshBanner()
@@ -1715,16 +1614,9 @@ end
 Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
 	if action == "State" then
 		dungeonState = data
-		-- 특성 고르는 시간이 아니면 후보를 지운다 (Perks 이벤트가 State 보다 먼저 도착해도 지워지지 않도록 여기서만 처리)
-		if data.Phase ~= "StatPhase" then
-			perkOffer = {}
-		end
 		refreshBanner()
 		refreshStats()
 		updateMusic()
-	elseif action == "Perks" then
-		perkOffer = data.Keys or {}
-		refreshStats()
 	elseif action == "Result" then
 		showResult(data)
 	elseif action == "OpenSelect" then
@@ -3831,12 +3723,6 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	elseif input.UserInputType == Enum.UserInputType.Touch then
 		local inset = GuiService:GetGuiInset()
 		attack(Vector2.new(input.Position.X, input.Position.Y) + inset)
-	elseif currentZone() == "Dungeon" then
-		local keys = { [Enum.KeyCode.One] = 1, [Enum.KeyCode.Two] = 2, [Enum.KeyCode.Three] = 3 }
-		local pick = perkOffer[keys[input.KeyCode] or 0]
-		if pick then
-			Remotes.Upgrade:FireServer(pick)
-		end
 	end
 end)
 
