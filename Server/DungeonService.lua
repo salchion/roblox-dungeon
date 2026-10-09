@@ -482,8 +482,44 @@ local function spawnBoss(run)
 		Casting = false,
 		LastPattern = nil,
 	})
+	-- 약점 구슬: 보스 주위를 도는 노란 구슬. 직접 조준해서 맞히면 3배 치명타 + 데드아이 게이지 (자동 조준은 몸통을 노린다)
+	local orb = Instance.new("Part")
+	orb.Name = "WeakPoint"
+	orb.Shape = Enum.PartType.Ball
+	orb.Size = Vector3.new(4.2, 4.2, 4.2)
+	orb.Anchored = true
+	orb.CanCollide = false
+	orb.CanQuery = false
+	orb.CanTouch = false
+	orb.Color = Color3.fromRGB(255, 235, 80)
+	orb.Material = Enum.Material.Neon
+	orb.Position = part.Position
+	orb.Parent = part
+	local orbLight = Instance.new("PointLight")
+	orbLight.Color = Color3.fromRGB(255, 235, 80)
+	orbLight.Range = 22
+	orbLight.Brightness = 2.5
+	orbLight.Parent = orb
+	local orbGui = Instance.new("BillboardGui")
+	orbGui.Size = UDim2.new(0, 70, 0, 28)
+	orbGui.StudsOffset = Vector3.new(0, 3.4, 0)
+	orbGui.MaxDistance = 140
+	orbGui.Parent = orb
+	local orbText = Instance.new("TextLabel")
+	orbText.Size = UDim2.new(1, 0, 1, 0)
+	orbText.BackgroundTransparency = 1
+	orbText.Font = Enum.Font.GothamBlack
+	orbText.TextScaled = true
+	orbText.TextColor3 = Color3.fromRGB(255, 240, 120)
+	orbText.TextStrokeTransparency = 0
+	orbText.Text = "🎯 약점"
+	orbText.Parent = orbGui
+	data.WeakPart = orb
 	run.Boss = data
 	run.BossPart = part
+	for _, member in ipairs(run.Members) do
+		Remotes.Tutorial:FireClient(member, "Prompt", { Key = "🎯", Title = "약점을 노려라!", Text = "보스 주위를 도는 노란 구슬을 직접 조준해서 클릭하면 3배 치명타 + 데드아이 게이지!", Duration = 7, Top = true })
+	end
 end
 
 local function fireProjectile(run, origin, direction, speed, damage, size, color, style)
@@ -1018,6 +1054,11 @@ local function stepRun(run, dt)
 	end
 
 	for part, data in pairs(run.Monsters) do
+		if data.WeakPart and data.WeakPart.Parent then -- 약점 구슬: 보스 몸 주위를 돌며 위아래로 흔들린다
+			local radius = part.Size.X / 2 + 3
+			local angle = now * 1.5
+			data.WeakPart.Position = part.Position + Vector3.new(math.cos(angle) * radius, math.sin(now * 0.9) * radius * 0.35, math.sin(angle) * radius)
+		end
 		if data.Static then continue end -- 연습 표적: 가만히 서 있다
 		if data.IsBoss then
 			-- 보스: 천천히 다가오면서, 패턴을 하나 골라 끝까지 실행한 뒤 잠깐 쉬고 다음 패턴
@@ -1239,6 +1280,17 @@ function Dungeon.Shoot(player, origin, direction)
 
 		local damage, isCrit = Dungeon.ComputeDamage(player)
 		local hitPosition = result.Position
+		if data.WeakPart and data.WeakPart.Parent then -- 탄이 지나간 선이 약점 구슬에 닿으면 3배 치명타
+			local ab = result.Position - origin
+			local t = math.clamp((data.WeakPart.Position - origin):Dot(ab) / math.max(ab:Dot(ab), 0.001), 0, 1)
+			if (origin + ab * t - data.WeakPart.Position).Magnitude <= data.WeakPart.Size.X * 0.8 then
+				damage = math.floor(damage * 3)
+				isCrit = true
+				player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 6))
+				Effects.FloatText(data.WeakPart.Position + Vector3.new(0, 3, 0), "🎯 약점 명중!", Color3.fromRGB(255, 240, 90))
+				Effects.Burst(data.WeakPart.Position, Color3.fromRGB(255, 235, 80), 24)
+			end
+		end
 		damageMonster(run, player, part, data, damage, isCrit, hitPosition)
 		player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1) -- 궁극기 게이지는 실제로 맞혔을 때만 찬다
 
