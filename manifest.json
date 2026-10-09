@@ -323,6 +323,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/NpcService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "NpcService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "HudClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "HudClient",

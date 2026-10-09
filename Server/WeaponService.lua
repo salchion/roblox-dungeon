@@ -677,6 +677,9 @@ function Weapon.Enhance(player)
 	end
 
 	-- 튜토리얼 미션 중에는 +3까지 무료 + 100% 성공
+	if player:GetAttribute("TutorialFree") == true and level >= 3 then -- 무료 강화는 딱 3번: 미션이 넘어가는 짧은 사이에 광클해서 골드로 한 번 더 강화되지 않게 막는다
+		return false, "✨ 무료 강화는 여기까지! 다음 미션을 확인해요", true
+	end
 	local free = player:GetAttribute("TutorialFree") == true and level < 3
 	local cost = free and 0 or Config.GetEnhanceCost(level)
 	local sure = free

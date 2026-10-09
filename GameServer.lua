@@ -42,6 +42,7 @@ local Rift = require(Modules:WaitForChild("RiftService"))
 local Advice = require(Modules:WaitForChild("AdviceService"))
 local Idle = require(Modules:WaitForChild("IdleService"))
 local Journey = require(Modules:WaitForChild("JourneyService"))
+local Npc = require(Modules:WaitForChild("NpcService"))
 
 Monetization.SaveHook = Data.Save -- 결제 영수증 처리 때 "저장 성공"을 확인하는 데 사용
 
@@ -69,6 +70,18 @@ Tutorial.SetTargets({ -- 튜토리얼 미션 표지 위치
 Dungeon.Init(lobby.SpawnCFrame)
 Dummy.Build(lobby.DummyStart)
 Dummy.BuildRest(lobby.RestStart) -- 휴식 구역 (방치 수입)
+Npc.Init(lobby.DummyStart.Y, { -- 시설마다 NPC 가 서서 말을 건다 (허공에 대고 말하는 느낌을 없애려고)
+	{ Name = "톰", Title = "🔨 대장장이", Position = promptPosition(lobby.AnvilPrompt), Shirt = Color3.fromRGB(150, 98, 60), Pants = Color3.fromRGB(70, 56, 48), Hat = "cap", Accent = Color3.fromRGB(110, 70, 44), Prop = "hammer",
+		Lines = { "쾅쾅! 무기를 두드려 볼까?", "강화하다 보면 더 강한 무기로 진화해!", "실패해도 단계는 안 내려가니까 걱정 마!" } },
+	{ Name = "루나", Title = "🎰 뽑기 상인", Position = promptPosition(lobby.GachaPrompt), Shirt = Color3.fromRGB(120, 80, 170), Pants = Color3.fromRGB(60, 44, 90), Hat = "wizard", Accent = Color3.fromRGB(150, 100, 210), Prop = "staff",
+		Lines = { "티켓 있어? 행운을 시험해 봐!", "10연 뽑기엔 가끔 좋은 게 숨어 있대.", "세트 장비는 필드에서 모아야 맞출 수 있어!" } },
+	{ Name = "카이", Title = "🛡 필드 문지기", Position = promptPosition(lobby.WarpPrompt), Shirt = Color3.fromRGB(110, 120, 140), Pants = Color3.fromRGB(70, 74, 90), Hat = "helmet", Accent = Color3.fromRGB(190, 60, 60), Prop = "spear",
+		Lines = { "필드는 위험해. 군주를 쓰러뜨리면 다음 구역이 열려.", "Q 대시로 탄을 아슬아슬하게 피해 봐!", "준비됐으면 문으로 가!" } },
+	{ Name = "벨", Title = "🗝 던전 안내원", Position = promptPosition(lobby.GatePrompt), Shirt = Color3.fromRGB(70, 110, 100), Pants = Color3.fromRGB(46, 62, 60), Hat = "hood", Accent = Color3.fromRGB(60, 96, 90), Prop = "lantern",
+		Lines = { "던전은 하루 무료 입장이 있어.", "던전마다 몬스터도 보스도 달라!", "열쇠는 필드 군주가 줘." } },
+	{ Name = "미라", Title = "🌀 심연 관리인", Position = promptPosition(lobby.RiftPrompt), Shirt = Color3.fromRGB(150, 60, 120), Pants = Color3.fromRGB(70, 36, 66), Hat = "hood", Accent = Color3.fromRGB(190, 70, 150), Prop = "staff",
+		Lines = { "필드를 정복한 자만 심연에 들어갈 수 있어.", "깊이 들어갈수록 보상이 커져.", "기록이 곧 소탕 보상이야." } },
+})
 Rank.Init(lobby.RankBoardCFrame)
 Showcase.Init(lobby.RankBoardCFrame) -- 랭킹판 앞 명예의 전당 (최강 3명)
 Field.Init(lobby.SpawnCFrame)
