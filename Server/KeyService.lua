@@ -31,6 +31,10 @@ end
 
 local function tick(player)
 	if not bases[player] then return end
+	if Config.Keys.RegenSeconds <= 0 then -- 시간 회복 없음 (필드 군주 드랍 / 보상으로만 늘어난다)
+		player:SetAttribute("KeyNext", 0)
+		return
+	end
 	local keys = player:GetAttribute("Keys") or 0
 	local cap = maxKeys(player)
 	local now = os.time()

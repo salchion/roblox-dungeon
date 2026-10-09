@@ -19,6 +19,7 @@ local CollectionService = game:GetService("CollectionService")
 local TweenService = game:GetService("TweenService")
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
+local Keys = require(script.Parent:WaitForChild("KeyService"))
 local Meta = require(script.Parent:WaitForChild("MetaService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Level = require(script.Parent:WaitForChild("LevelService"))
@@ -1302,6 +1303,14 @@ local function reward(player, data, part)
 	elseif data.Kind == "Boss" then
 		local bossPosition = part.Position
 		for _, other in ipairs(Players:GetPlayers()) do
+			if other:GetAttribute("Zone") == "Field" and getAliveParts(other) and math.random() < Config.Keys.BossDropChance then -- 던전 열쇠: 낮은 확률
+				local rootForKey = getAliveParts(other)
+				if rootForKey and (rootForKey.Position - bossPosition).Magnitude <= 160 then
+					Keys.Add(other, 1)
+					notify(other, "🗝 던전 열쇠를 얻었어요! (군주 드랍) — 무료 입장을 다 써도 던전에 들어갈 수 있어요")
+					Effects.FloatText(rootForKey.Position + Vector3.new(0, 6, 0), "🗝 던전 열쇠!", Color3.fromRGB(160, 255, 200))
+				end
+			end
 			local root = getAliveParts(other)
 			if other:GetAttribute("Zone") == "Field" and root and (root.Position - bossPosition).Magnitude <= 160 then
 				other:SetAttribute("Tickets", (other:GetAttribute("Tickets") or 0) + F.BossTickets)

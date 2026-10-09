@@ -5,6 +5,7 @@
 -- 스탯 포인트(치명타/공격속도/최대체력)는 그 판에서만 유효하고, 던전을 나가면 초기화된다.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
@@ -945,6 +946,41 @@ end
 ------------------------------------------------------------
 -- 매 프레임: 몬스터 이동/공격, 투사체 이동/명중
 ------------------------------------------------------------
+-- 하루 무료 입장 (MetaService 의 Rift 기록에 같이 저장): { DungeonDay, DungeonUsed }
+local function freeState(player)
+	local state = Meta.GetRift(player)
+	if not state then return nil end
+	local day = math.floor(os.time() / 86400)
+	if state.DungeonDay ~= day then
+		state.DungeonDay = day
+		state.DungeonUsed = 0
+	end
+	return state
+end
+function Dungeon.FreeLeft(player)
+	local state = freeState(player)
+	if not state then return 0 end
+	return math.max(0, Config.Keys.FreeDaily - (state.DungeonUsed or 0))
+end
+function Dungeon.UseFree(player)
+	local state = freeState(player)
+	if state then
+		state.DungeonUsed = (state.DungeonUsed or 0) + 1
+		player:SetAttribute("DungeonFree", Dungeon.FreeLeft(player))
+	end
+end
+task.spawn(function() -- 접속 직후 / 날짜가 바뀔 때 화면 표시용 값을 맞춘다
+	while true do
+		for _, member in ipairs(Players:GetPlayers()) do
+			local left = Dungeon.FreeLeft(member)
+			if member:GetAttribute("DungeonFree") ~= left then
+				member:SetAttribute("DungeonFree", left)
+			end
+		end
+		task.wait(10)
+	end
+end)
+
 local nearMissAt = {}
 local dashSeenAt = {}
 function Dungeon.AwardNearMiss(run, player, root)
@@ -2198,11 +2234,14 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode)
 
 	-- 던전 입장 제한: 열쇠 (파티원 모두 필요). 시간이 지나면 자동으로 차오른다.
 	local keyCost = riftMode and 0 or (difficulty.KeyCost or 1) -- 심연 도전은 열쇠 대신 하루 도전 횟수를 쓴다 (RiftService 가 관리)
+	local useFree = {}
 	for _, member in ipairs(members) do
-		if not Keys.Has(member, keyCost) then
-			notify(player, string.format("%s 님의 던전 열쇠가 부족해요. (필요 %d개)", member.DisplayName, keyCost))
+		if keyCost > 0 and Dungeon.FreeLeft(member) > 0 then
+			useFree[member] = true -- 오늘의 무료 입장 사용 (열쇠 소모 없음)
+		elseif not Keys.Has(member, keyCost) then
+			notify(player, string.format("%s 님은 오늘의 무료 입장을 다 썼고 열쇠도 부족해요. (필요 %d개) 필드 구역 군주를 잡으면 낮은 확률로 열쇠가 나와요", member.DisplayName, keyCost))
 			if member ~= player then
-				notify(member, "던전 열쇠가 부족해서 파티가 입장하지 못했어요.")
+				notify(member, "무료 입장 / 열쇠가 부족해서 파티가 입장하지 못했어요.")
 			end
 			return
 		end
@@ -2221,7 +2260,12 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode)
 	end
 	usedSlots[slot] = true
 	for _, member in ipairs(members) do
-		Keys.Spend(member, keyCost)
+		if useFree[member] then
+			Dungeon.UseFree(member)
+			notify(member, string.format("🎟 오늘의 무료 입장 사용! (남은 횟수 %d / %d)", Dungeon.FreeLeft(member), Config.Keys.FreeDaily))
+		else
+			Keys.Spend(member, keyCost)
+		end
 	end
 
 	local run = {

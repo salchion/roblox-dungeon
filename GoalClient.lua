@@ -133,8 +133,8 @@ local function pickGoal()
 	end
 
 	-- 지금 바로 쓸 수 있는 것
-	if (player:GetAttribute("Keys") or 0) >= 1 then
-		table.insert(candidates, { Text = string.format("🗝 던전 열쇠 %d개!\n북쪽 게이트에서 던전에 도전하세요", player:GetAttribute("Keys")), Ratio = 0.95, Priority = 3 })
+	if (player:GetAttribute("DungeonFree") or 0) >= 1 or (player:GetAttribute("Keys") or 0) >= 1 then
+		table.insert(candidates, { Text = string.format("🎟 오늘 무료 입장 %d회 · 🗝 열쇠 %d개!\n북쪽 게이트에서 던전에 도전하세요", player:GetAttribute("DungeonFree") or 0, player:GetAttribute("Keys") or 0), Ratio = 0.95, Priority = 3 })
 	end
 	if (player:GetAttribute("Tickets") or 0) >= 1 then
 		table.insert(candidates, { Text = string.format("🎫 티켓 %d장!\n뽑기 머신에서 장비를 뽑아보세요", player:GetAttribute("Tickets")), Ratio = 0.97, Priority = 4 })

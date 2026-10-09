@@ -1556,16 +1556,13 @@ local function refreshInfo()
 	local keys = player:GetAttribute("Keys") or 0
 	local keyCap = Config.Keys.Max + (player:GetAttribute("KeyCapBonus") or 0)
 	local keyNext = player:GetAttribute("KeyNext") or 0
-	local keyText = "가득"
-	if keys < keyCap and keyNext > 0 then
-		keyText = Config.FormatDuration(keyNext - os.time())
-	end
+	local keyText = string.format("오늘 무료 %d/%d", player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily)
 
 	infoLabel.Text = string.format(
-		"🎖 <font color='#8fd8ff'>Lv.%d</font>  <font size='12' color='#aaaacc'>%s</font>\n💰 <font color='#ffd966'>%d G</font>   🎫 <font color='#d9a6ff'>%d</font>\n🗝 <font color='#a6f0c8'>%d/%d</font> <font size='12' color='#aaaacc'>(%s)</font>\n⚡ 전투력 <font color='#ffe16e'>%d</font>\n⚔ <font color='#%s'>%s</font>\n📍 %s",
+		"🎖 <font color='#8fd8ff'>Lv.%d</font>  <font size='12' color='#aaaacc'>%s</font>\n💰 <font color='#ffd966'>%d G</font>   🎫 <font color='#d9a6ff'>%d</font>\n🗝 <font color='#a6f0c8'>%d</font> <font size='12' color='#aaaacc'>(%s)</font>\n⚡ 전투력 <font color='#ffe16e'>%d</font>\n⚔ <font color='#%s'>%s</font>\n📍 %s",
 		characterLevel, xpText,
 		player:GetAttribute("Gold") or 0, player:GetAttribute("Tickets") or 0,
-		keys, keyCap, keyText,
+		keys, keyText,
 		player:GetAttribute("Power") or 0,
 		color:ToHex(), name, zoneText
 	)
@@ -3229,11 +3226,11 @@ function refreshSelect()
 	local dungeonType = Config.Dungeon.Types[selectedType]
 	local difficulty = Config.Dungeon.Difficulties[selectedDifficulty]
 	summaryLabel.Text = string.format(
-		"<b>%s · %s</b>\n%s → 보스 <font color='#ff9a9a'>%s</font>\n권장 전투력 <font color='#ffe16e'>%d</font>  (내 전투력 %d)\n골드 x%.1f · 티켓 %d장 · 보스 상자 장비 %d개\n🗝 열쇠 <b>%d개</b> 필요 (보유 %d개) — 시간이 지나면 저절로 차요",
+		"<b>%s · %s</b>\n%s → 보스 <font color='#ff9a9a'>%s</font>\n권장 전투력 <font color='#ffe16e'>%d</font>  (내 전투력 %d)\n골드 x%.1f · 티켓 %d장 · 보스 상자 장비 %d개\n🎟 오늘 무료 입장 <b>%d / %d회</b> · 다 쓰면 🗝 열쇠 %d개 필요 (보유 %d개)\n열쇠는 필드 구역 군주를 잡으면 낮은 확률로 나와요",
 		dungeonType.Name, difficulty.Name, dungeonType.Endless and "끝없는 웨이브 (나의 최고 층 " .. (player:GetAttribute("TowerBest") or 0) .. ")" or ("웨이브 " .. dungeonType.Waves .. "개"), dungeonType.Boss.Name,
 		dungeonType.RecommendedPower, player:GetAttribute("Power") or 0,
 		dungeonType.GoldMult * difficulty.GoldMult, difficulty.Tickets, Config.Loot.DungeonChestCount,
-		difficulty.KeyCost, player:GetAttribute("Keys") or 0
+		player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily, difficulty.KeyCost, player:GetAttribute("Keys") or 0
 	)
 end
 
