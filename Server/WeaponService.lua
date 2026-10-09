@@ -682,7 +682,7 @@ function Weapon.Enhance(player)
 	end
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
-		return false, string.format("골드가 부족합니다. (%d 필요)", cost), true
+		return false, string.format("💰 골드가 부족해요. (%d 필요) 허수아비 훈련장 / 필드 사냥 / 던전 / 심연 소탕으로 골드를 벌어요", cost), true
 	end
 
 	player:SetAttribute("Gold", gold - cost)

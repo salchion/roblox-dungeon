@@ -117,20 +117,8 @@ Config.Tutorial = {
 		{ Text = "동쪽 필드로 나가서 첫 구역의 군주(👑)를 쓰러뜨리세요! ...어딘가 불길한 기운이 느껴져요. 무슨 일이 일어날지도 몰라요. 조심하세요!", Stat = "FieldDeaths", Goal = 1, Target = "Field", TargetName = "필드 입구", Doom = true,
 			Reward = { Gold = 300, Keys = 1, Xp = 100 } },
 		{ Text = "아직 너무 약해요! 메뉴(I) → 성장 탭에서 훈련을 시작하세요. 훈련하면 영구적으로 강해져요", Stat = "Trains", Goal = 1, Highlight = "Menu",
-			-- 완료한 뒤 차례로: 방치(시간으로 자라는 것)가 무엇인지 알려준다
-			Outro = {
-				{ Key = "⏱", Title = "훈련은 저절로 끝나요", Text = "방금 시작한 훈련은 시간이 지나면 저절로 끝나요. 게임을 꺼 둬도 시간은 흘러요", Duration = 7 },
-				{ Key = "🎫", Title = "시간 단축권", Text = "퀘스트나 상점에서 얻는 시간 단축권을 쓰면 바로 끝낼 수 있어요. 슬롯이 비면 또 훈련을 걸어 두세요", Duration = 7 },
-			},
 			Reward = { Gold = 400, Xp = 100 } },
 		{ Text = "북쪽 던전 게이트에서 던전에 들어가 웨이브를 2번 막아내세요! (열쇠 1개, 달성 후 던전에서 나오면 티켓 10장 보상!)", Stat = "DungeonWaves", Goal = 2, Target = "Gate", TargetName = "던전 게이트", AfterDungeon = true,
-			-- 던전을 처음 소개하는 안내 카드 (이 미션이 시작될 때 차례로 한 번): 성장을 배운 직후 "장비를 얻는 곳"으로 던전을 알려준다
-			Intro = {
-				{ Key = "🏰", Title = "던전이란?", Text = "북쪽 성벽의 문으로 들어가는 전투 공간이에요. 웨이브를 막아내고 보스를 쓰러뜨리면 장비 티켓과 보스 상자(장비)를 얻어요", Duration = 8 },
-				{ Key = "🎟", Title = "하루 무료 입장 3번", Text = "던전은 하루에 3번까지 무료로 들어갈 수 있어요. 매일 초기화돼요", Duration = 7 },
-				{ Key = "🗝", Title = "더 들어가고 싶다면?", Text = "무료 입장을 다 쓰면 열쇠가 필요해요. 열쇠는 필드 구역 군주(👑)를 쓰러뜨리면 낮은 확률로 나와요", Duration = 8 },
-				{ Key = "🚪", Title = "문마다 난이도가 달라요", Text = "오른쪽 문일수록 강하고 보상이 커요. 문이 더 크고 어둡고 불길이 거세져요. 지금은 맨 왼쪽 문부터 시작해요!", Duration = 8 },
-			},
 			Reward = { Tickets = 10, Gold = 600, Xp = 200 } },
 		{ Text = "🎰 뽑기 머신에서 10연 뽑기를 하세요! (티켓 10장) — 장비가 한꺼번에 강해져요", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Hero",
 			Reward = { Gold = 500 } },
@@ -138,12 +126,6 @@ Config.Tutorial = {
 		{ Text = "💰 던전에서 모은 골드로 무기를 강화해서 {무기}까지 진화시키세요! 연사가 확 달라져서 필드가 쉬워져요", Stat = "Enhances", Goal = 10, EvolveToTier = 3, Target = "Anvil", TargetName = "모루",
 			Reward = { Tickets = 2, Xp = 150 } },
 		{ Text = "이제 다시 필드로! 강해진 힘으로 몬스터 15마리를 처치하세요", Stat = "Kills", Goal = 15, Target = "Field", TargetName = "필드 입구",
-			Outro = {
-				{ Key = "🎉", Title = "튜토리얼 끝!", Text = "이제 직접 키워 봐요. 앞으로는 군주를 쓰러뜨려 다음 구역을 열고, 장비와 무기를 키워서 더 깊은 구역으로 가요", Duration = 8 },
-				{ Key = "📅", Title = "매일 할 일", Text = "🌀 동쪽 광장 분홍 포탈에서 심연 도전(소탕) · 🏰 던전 무료 입장 3번 · 📋 일일 퀘스트 (메뉴 I)", Duration = 8 },
-				{ Key = "💤", Title = "방치 요소", Text = "⏱ 훈련 슬롯을 항상 채워 두기 · ⚡ 심연 소탕은 내 최고 점수가 기준! 직접 점수를 올릴수록 방치 보상이 커져요", Duration = 8 },
-				{ Key = "🌟", Title = "먼 목표", Text = "구역 8 심연의 군주 → 최고 레벨 → 환생(영구 공격력 + 골드 획득량). 이제 마음껏 즐겨요!", Duration = 8 },
-			},
 			Reward = { Gold = 1000, Keys = 1, Tickets = 2, Xp = 300 } },
 	},
 }

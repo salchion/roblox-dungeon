@@ -324,7 +324,9 @@ end
 local activePrompt = nil
 local function showPrompt(data)
 	if activePrompt then activePrompt:Destroy() end
-	local card = create("Frame", { Size = UDim2.new(0, 460, 0, 110), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, data.Top and 0.2 or 0.66, 0),
+	-- 던전 / 필드 안(Top)에서는 화면 왼쪽 가운데에 둔다: 위쪽 던전 배너, 가운데 캐릭터 / 이름표, 아래 특성 / 스킬 바와 겹치지 않는 빈 자리
+	local card = create("Frame", { Size = UDim2.new(0, data.Top and 400 or 460, 0, data.Top and 130 or 110), AnchorPoint = data.Top and Vector2.new(0, 0.5) or Vector2.new(0.5, 0.5),
+		Position = data.Top and UDim2.new(0, 14, 0.5, 0) or UDim2.new(0.5, 0, 0.66, 0),
 		BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.05, BorderSizePixel = 0, ZIndex = 70 }, gui)
 	activePrompt = card
 	rounded(card, 16)
@@ -335,7 +337,7 @@ local function showPrompt(data)
 	label({ Size = UDim2.new(1, 0, 1, 0), Text = data.Key or "?", TextSize = 52, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 34, 50), TextStrokeTransparency = 1, ZIndex = 72 }, keycap)
 	label({ Size = UDim2.new(1, -120, 0, 34), Position = UDim2.new(0, 108, 0, 12), Text = data.Title or "", TextSize = 24, Font = Enum.Font.GothamBlack,
 		TextColor3 = Color3.fromRGB(255, 225, 110), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 71 }, card)
-	label({ Size = UDim2.new(1, -120, 0, 52), Position = UDim2.new(0, 108, 0, 46), Text = data.Text or "", TextSize = 17, Font = Enum.Font.GothamBold, TextWrapped = true,
+	label({ Size = UDim2.new(1, -120, 0, data.Top and 76 or 52), Position = UDim2.new(0, 108, 0, 46), Text = data.Text or "", TextSize = data.Top and 16 or 17, Font = Enum.Font.GothamBold, TextWrapped = true,
 		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 71 }, card)
 	task.delay(data.Duration or 7, function()
 		if card.Parent then

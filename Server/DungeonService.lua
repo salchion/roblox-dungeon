@@ -13,6 +13,7 @@ local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Party = require(script.Parent:WaitForChild("PartyService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
+local Advice = require(script.Parent:WaitForChild("AdviceService"))
 local Level = require(script.Parent:WaitForChild("LevelService"))
 local MonsterTypes = require(script.Parent:WaitForChild("MonsterTypes"))
 local CollectionService = game:GetService("CollectionService")
@@ -1544,6 +1545,9 @@ local function finish(run, victory)
 		end
 	end
 	for _, member in ipairs(run.Members) do
+		if not victory then
+			task.delay(2, function() Advice.AfterDefeat(member) end) -- 던전에서 졌을 때: 지금 부족한 것 / 안 쓴 것 조언
+		end
 		Remotes.Dungeon:FireClient(member, "Result", {
 			Victory = victory,
 			Gold = run.Earned[member] or 0,

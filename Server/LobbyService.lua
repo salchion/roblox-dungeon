@@ -36,8 +36,9 @@ local function makeDisc(position, diameter, thickness, color, material, parent)
 end
 
 -- maxDistance: 이 거리 안에서만 글자가 보인다 (작은 화면에서 멀리 있는 글자들이 겹치는 것을 막는다)
-local function makeLabel(part, text, color, offsetY, width, height, maxDistance)
+local function makeLabel(part, text, color, offsetY, width, height, maxDistance, alwaysOnTop)
 	local gui = Instance.new("BillboardGui")
+	gui.AlwaysOnTop = alwaysOnTop == true -- 지붕 / 벽에 가려 글자가 잘리지 않게(가게 간판용)
 	gui.Size = UDim2.new(0, (width or 280) * 0.75, 0, (height or 64) * 0.75)
 	gui.StudsOffset = Vector3.new(0, offsetY, 0)
 	gui.MaxDistance = maxDistance or 70
@@ -596,7 +597,7 @@ function Lobby.Build()
 		local sign = part("StallSign", Vector3.new(11, 3.2, 0.5), Vector3.new(0, 9.6, -9.9), Color3.fromRGB(70, 48, 32), Enum.Material.Wood)
 		part("SignRopeL", Vector3.new(0.15, 1.6, 0.15), Vector3.new(-4.5, 11.2, -9.9), Color3.fromRGB(200, 190, 160), Enum.Material.Fabric, { CanCollide = false })
 		part("SignRopeR", Vector3.new(0.15, 1.6, 0.15), Vector3.new(4.5, 11.2, -9.9), Color3.fromRGB(200, 190, 160), Enum.Material.Fabric, { CanCollide = false })
-		makeLabel(sign, signText, signColor, 0, 320, 72, 62)
+		makeLabel(sign, signText, signColor, 3.4, 360, 80, 70, true) -- 지붕 위로 띄우고 항상 보이게: 가게 이름이 지붕에 가려 잘리던 문제
 		for _, side in ipairs({ -1, 1 }) do
 			local lantern = part("StallLantern", Vector3.new(1.4, 1.8, 1.4), Vector3.new(side * 9.6, 8.5, -8.6), Color3.fromRGB(255, 200, 110), Enum.Material.Neon, { CanCollide = false })
 			addLight(lantern, 24, 1.3, Color3.fromRGB(255, 205, 130))

@@ -286,6 +286,13 @@
       "name": "RiftClient",
       "class": "LocalScript",
       "overwrite": true
+    },
+    {
+      "path": "Server/AdviceService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "AdviceService",
+      "class": "ModuleScript",
+      "overwrite": true
     }
   ]
 }

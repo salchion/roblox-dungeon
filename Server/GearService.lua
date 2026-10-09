@@ -488,7 +488,7 @@ function Gear.Enhance(player, slotKey)
 	local cost = Config.GetGearCost(slotKey, rarity, level)
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
-		return false, string.format("골드가 부족해요. (%d 필요)", cost)
+		return false, string.format("💰 골드가 부족해요. (%d 필요) 허수아비 훈련장 / 필드 사냥 / 던전 / 심연 소탕으로 골드를 벌어요", cost)
 	end
 	player:SetAttribute("Gold", gold - cost)
 
@@ -515,7 +515,7 @@ function Gear.Roll(player, forced)
 	end
 	local tickets = player:GetAttribute("Tickets") or 0
 	if tickets < 1 then
-		return false, "티켓이 없어요. 보스를 잡으면 얻을 수 있어요!"
+		return false, "🎫 티켓이 없어요! 던전을 클리어하거나, 필드 군주·엘리트를 잡거나, 일일 퀘스트를 하면 얻을 수 있어요"
 	end
 	player:SetAttribute("Tickets", tickets - 1)
 	Quest.Add(player, "Rolls", 1)

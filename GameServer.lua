@@ -38,6 +38,7 @@ local Growth = require(Modules:WaitForChild("GrowthService"))
 local Monetization = require(Modules:WaitForChild("MonetizationService"))
 local Data = require(Modules:WaitForChild("DataService"))
 local Rift = require(Modules:WaitForChild("RiftService"))
+local Advice = require(Modules:WaitForChild("AdviceService"))
 
 Monetization.SaveHook = Data.Save -- 결제 영수증 처리 때 "저장 성공"을 확인하는 데 사용
 
@@ -131,6 +132,7 @@ local function onCharacterAdded(player, character)
 		else
 			Remotes.Notify:FireClient(player, "💀 쓰러져서 마을로 돌아왔어요. 장비를 정비하고 다시 도전하세요!")
 		end
+		task.delay(1.5, function() Advice.AfterDefeat(player) end) -- 쓰러진 직후: 지금 남은 골드 / 티켓 / 빈 장비 / 빈 훈련 슬롯을 알려준다
 	end
 	humanoid.Died:Connect(function()
 		if player:GetAttribute("Zone") == "Field" then

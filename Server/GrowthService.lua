@@ -223,6 +223,13 @@ function Growth.Skip(player, kind, stat)
 	Growth.Push(player)
 end
 
+-- 비어 있는 훈련 슬롯 수 (훈련을 안 걸어 둔 칸) - 조언 서비스가 "훈련을 걸어 두세요"를 말할 때 쓴다
+function Growth.IdleSlots(player)
+	local state = states[player]
+	if not state then return 0 end
+	return math.max(0, slotsOf(player) - #state.Jobs)
+end
+
 function Growth.AddTimeSkip(player, seconds)
 	player:SetAttribute("TimeSkip", (player:GetAttribute("TimeSkip") or 0) + seconds)
 	Growth.Push(player)
