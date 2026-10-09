@@ -16,6 +16,7 @@ local gui = Instance.new("ScreenGui")
 gui.Name = "TutorialHUD"
 gui.ResetOnSpawn = false
 gui.IgnoreGuiInset = true
+gui.DisplayOrder = 60 -- 강화창 / 메뉴 같은 창 위에 떠서 미션 안내가 가려지지 않게
 gui.Parent = player:WaitForChild("PlayerGui")
 
 local function create(className, props, parent)
@@ -105,8 +106,8 @@ local activeCard = nil
 local function popupMission()
 	if activeCard then activeCard:Destroy() end -- 이전 카드가 남아 글자가 겹치지 않게
 	local card = create("Frame", {
-		Size = UDim2.new(0, 520, 0, 150), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.36, 0),
-		BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.1, BorderSizePixel = 0, ZIndex = 30,
+		Size = UDim2.new(0, 520, 0, 150), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.22, 0),
+		BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.02, BorderSizePixel = 0, ZIndex = 30,
 	}, gui)
 	activeCard = card
 	rounded(card, 18)
@@ -196,6 +197,27 @@ Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 		clearBeacon()
 		refresh()
 	end
+end)
+
+-- 시점 둘러보기 미션: 카메라가 좌우로 돈 각도를 모아서 30도(= 10%)마다 서버에 알린다
+local lastYaw, lookAccum = nil, 0
+RunService.RenderStepped:Connect(function()
+	local camera = workspace.CurrentCamera
+	if not (current and current.Look ~= false and current.Index == 1 and camera) then
+		lastYaw, lookAccum = nil, 0
+		return
+	end
+	local look = camera.CFrame.LookVector
+	local yaw = math.atan2(look.X, look.Z)
+	if lastYaw then
+		local delta = math.abs(math.atan2(math.sin(yaw - lastYaw), math.cos(yaw - lastYaw)))
+		lookAccum += math.deg(delta)
+		while lookAccum >= 30 do
+			lookAccum -= 30
+			Remotes.Tutorial:FireServer("Look")
+		end
+	end
+	lastYaw = yaw
 end)
 
 RunService.RenderStepped:Connect(function()

@@ -24,10 +24,25 @@ function Tutorial.SetTargets(map)
 	targets = map
 end
 
+-- 시점 둘러보기 미션 동안은 몸을 고정한다 (카메라만 돌릴 수 있다)
+local function applyFreeze(player)
+	local step = Steps[states[player] and states[player].Step or 0]
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if not root then return end
+	if step and step.Look then
+		root.Anchored = true
+		player:SetAttribute("TutorialFrozen", true)
+	elseif player:GetAttribute("TutorialFrozen") then
+		root.Anchored = false
+		player:SetAttribute("TutorialFrozen", false)
+	end
+end
+
 local function send(player)
 	local state = states[player]
 	if not state or not player.Parent then return end
 	local step = Steps[state.Step]
+	applyFreeze(player)
 	player:SetAttribute("TutorialFree", step ~= nil and step.FreeEnhance == true)
 	player:SetAttribute("TutorialActive", step ~= nil)
 	player:SetAttribute("TutorialDoom", step ~= nil and step.Doom == true) -- 필드 "압도적인 습격" 장면 (쓰러지면 성장 단계로 이어진다)
@@ -44,7 +59,9 @@ end
 function Tutorial.Load(player, saved)
 	local state
 	if typeof(saved) == "table" then
-		state = { Step = math.clamp(math.floor(tonumber(saved.Step) or 1), 1, #Steps + 1), Progress = math.max(0, math.floor(tonumber(saved.Progress) or 0)) }
+		local savedStep = math.floor(tonumber(saved.Step) or 1)
+		if saved.V ~= 2 then savedStep += 1 end -- 예전 저장본: 맨 앞에 "둘러보기" 미션이 추가되어 한 칸씩 밀린다
+		state = { Step = math.clamp(savedStep, 1, #Steps + 1), Progress = math.max(0, math.floor(tonumber(saved.Progress) or 0)) }
 	elseif (player:GetAttribute("Level") or 1) >= 5 then
 		state = { Step = #Steps + 1, Progress = 0 } -- 이미 진행한 유저는 건너뜀
 	else
@@ -52,13 +69,18 @@ function Tutorial.Load(player, saved)
 	end
 	states[player] = state
 	send(player)
+	player.CharacterAdded:Connect(function()
+		task.wait(0.5)
+		if states[player] then applyFreeze(player) end
+	end)
 	player:GetAttributeChangedSignal("TrainTick"):Connect(function()
 		Quest.Add(player, "Trains", 1)
 	end)
 end
 
 function Tutorial.Serialize(player)
-	return states[player] or { Step = #Steps + 1, Progress = 0 }
+	local state = states[player] or { Step = #Steps + 1, Progress = 0 }
+	return { Step = state.Step, Progress = state.Progress, V = 2 }
 end
 
 function Tutorial.Forget(player)
@@ -116,5 +138,15 @@ Quest.Listeners[#Quest.Listeners + 1] = function(player, stat, amount)
 		send(player)
 	end
 end
+
+-- 클라이언트가 시점을 10% 돌릴 때마다 한 번씩 알려온다
+Remotes.Tutorial.OnServerEvent:Connect(function(player, action)
+	if action ~= "Look" then return end
+	local state = states[player]
+	local step = state and Steps[state.Step]
+	if step and step.Look then
+		Quest.Add(player, "Look", 1)
+	end
+end)
 
 return Tutorial

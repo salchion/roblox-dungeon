@@ -105,6 +105,9 @@ end
 ------------------------------------------------------------
 Config.Tutorial = {
 	Steps = {
+		-- 첫 미션: 언덕 위에서 마을을 한 바퀴 둘러본다 (이동은 잠겨 있고 시점만 돌릴 수 있다). Goal = 10단계 (한 바퀴 ≈ 300°)
+		{ Text = "👀 마을을 둘러보세요! 마우스 우클릭을 누른 채 돌리거나 ◀ ▶ 키로 시점을 한 바퀴 돌려보세요 (이동은 잠시 잠겨요)", Stat = "Look", Goal = 10, Look = true,
+			Reward = { Gold = 50 } },
 		{ Text = "마우스를 눌러 허수아비를 쏘세요! (R 키 = 자동 조준)", Stat = "DummyHits", Goal = 8, Target = "Dummy", TargetName = "허수아비",
 			Reward = { Gold = 100 } },
 		{ Text = "모루에서 무기를 강화하세요! (처음 3번은 무료)", Stat = "Enhances", Goal = 1, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
