@@ -236,6 +236,11 @@ RunService.RenderStepped:Connect(function()
 		if root then
 			local flat = Vector3.new(root.Position.X - beacon.Position.X, 0, root.Position.Z - beacon.Position.Z).Magnitude
 			beaconLabel.Text = string.format("▼ %s  %dm", current.TargetName or "목표", math.floor(flat + 0.5))
+			-- 메뉴 / 강화창이 화면을 가려도 상단 바에서 방향과 거리를 알 수 있게 한다 (북쪽 = -Z, 동쪽 = +X)
+			local dx, dz = beacon.Position.X - root.Position.X, beacon.Position.Z - root.Position.Z
+			local compass = { "동", "남동", "남", "남서", "서", "북서", "북", "북동" }
+			local index = math.floor((math.atan2(dz, dx) / (math.pi / 4)) % 8 + 0.5) % 8 + 1
+			barText.Text = string.format("%d / %d     📍 %s  %s쪽 %dm", current.Progress, current.Goal, current.TargetName or "목표", compass[index], math.floor(flat + 0.5))
 			beacon.Transparency = flat < 40 and 0.85 or 0.35 -- 가까워지면 투명하게 (시야 방해 방지)
 		end
 	end

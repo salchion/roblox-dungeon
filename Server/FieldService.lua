@@ -1023,6 +1023,9 @@ local function spawnMonster(zone, kind, at, ambush)
 	local position
 	if kind == "Boss" then
 		position = Vector3.new(x1 - 45, floorAt(x1 - 45) + stats.Size / 2, 0)
+		if at then -- 튜토리얼 "압도적인 존재": 플레이어 눈앞에서 나타난다
+			position = Vector3.new(at.X, floorAt(at.X) + stats.Size / 2, at.Z)
+		end
 	else
 		local spawnX = freeX(math.floor(x0 + F.CampSafe + 40), math.floor(x1 - 25))
 		position = Vector3.new(spawnX, floorAt(spawnX) + stats.Size / 2, math.random(-F.Width / 2 + 25, F.Width / 2 - 25))
@@ -2216,9 +2219,35 @@ local doomTimers = {}
 local function doomWave(player, zone)
 	local root = getAliveParts(player)
 	if not root then return end
-	notify(player, "⚠⚠ 압도적인 기운! 사방에서 강력한 몬스터 떼가 몰려온다!!")
+	notify(player, "⚠⚠ 땅이 울린다... 거대한 무언가가 모습을 드러냈다!! (지금은 도저히 이길 수 없어요)")
 	player:SetAttribute("ShakeStrength", 0.9)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+	-- 눈에 보이는 정체: 훨씬 크고 강한 구역 군주급 괴물이 멀리서 나타나 다가온다 (이 녀석에게 쓰러진다)
+	for _ = 1, 60 do
+		local angle = math.random() * math.pi * 2
+		local distance = 55 + math.random() * 15
+		local at = root.Position + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
+		if walkableAt(at.X, at.Z) and not isSafe(at) and zoneOfX(at.X) == zone then
+			local part, data = spawnMonster(zone, "Boss", at, true)
+			if part and data then
+				data.Doom = true
+				data.Stats.ShotDamage = math.floor(data.Stats.ShotDamage * 4)
+				data.Stats.Speed *= 1.25
+				data.Aggro = true
+				data.Health, data.MaxHealth = 1e9, 1e9
+				data.Stats.MaxHealth = 1e9
+				part.Size *= 1.4
+				if data.HealthFill and data.HealthFill.Parent then
+					local label = data.HealthFill.Parent:FindFirstChildWhichIsA("TextLabel", true)
+					if label then label.Text = "💀 심연의 포식자" end
+				end
+			end
+			break
+		end
+	end
+	task.wait(3)
+	root = getAliveParts(player)
+	if not root then return end
 	local spawned = 0
 	for _ = 1, 60 do
 		if spawned >= 12 then break end
@@ -2254,7 +2283,7 @@ local function updateDoom()
 					state.FiredAt = os.clock()
 					doomWave(player, zoneOfX(root.Position.X))
 				end
-				if state.Fired and os.clock() - state.FiredAt >= 16 and humanoid.Health > 0 then
+				if state.Fired and os.clock() - state.FiredAt >= 30 and humanoid.Health > 0 then
 					notify(player, "💀 압도적인 힘에 쓰러졌어요...")
 					humanoid.Health = 0
 				end
