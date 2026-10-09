@@ -488,3 +488,93 @@ Remotes.Fx.OnClientEvent:Connect(function(batch)
 		end
 	end
 end)
+
+------------------------------------------------------------
+-- 몬스터 사망 연출 ("K"): 조각이 튀며 흩어지고 영혼 연기가 피어오른다. 조각은 풀링 + 동시 개수 상한.
+------------------------------------------------------------
+local MAX_SHARDS = 90
+local shardPool, shards = {}, {}
+-- 종류별 영혼 색 / 조각 모양 / 재질 (표에 없으면 몸 색 + 네모 조각)
+local DEATH_LOOK = {
+	Slime = { Soul = Color3.fromRGB(150, 255, 140), Round = true, Material = Enum.Material.Glass },
+	Spitter = { Soul = Color3.fromRGB(210, 150, 255), Round = false, Material = Enum.Material.SmoothPlastic },
+	Bat = { Soul = Color3.fromRGB(170, 130, 230), Round = false, Material = Enum.Material.SmoothPlastic },
+	Mage = { Soul = Color3.fromRGB(170, 240, 255), Round = true, Material = Enum.Material.Neon },
+	Golem = { Soul = Color3.fromRGB(255, 170, 90), Round = false, Material = Enum.Material.Slate, Heavy = true },
+	Charger = { Soul = Color3.fromRGB(255, 160, 110), Round = false, Material = Enum.Material.Wood },
+	Bomber = { Soul = Color3.fromRGB(255, 190, 90), Round = true, Material = Enum.Material.Metal },
+	Imp = { Soul = Color3.fromRGB(255, 110, 140), Round = false, Material = Enum.Material.SmoothPlastic },
+	Knight = { Soul = Color3.fromRGB(200, 220, 255), Round = false, Material = Enum.Material.Metal, Heavy = true },
+	Turret = { Soul = Color3.fromRGB(180, 150, 255), Round = false, Material = Enum.Material.Metal },
+	Spider = { Soul = Color3.fromRGB(255, 100, 100), Round = false, Material = Enum.Material.SmoothPlastic },
+	Wisp = { Soul = Color3.fromRGB(150, 255, 220), Round = true, Material = Enum.Material.Neon },
+	Healer = { Soul = Color3.fromRGB(170, 255, 200), Round = true, Material = Enum.Material.Neon },
+	Totem = { Soul = Color3.fromRGB(255, 130, 110), Round = false, Material = Enum.Material.Wood, Heavy = true },
+}
+
+local function getShard()
+	local part = table.remove(shardPool)
+	if part then return part end
+	part = Instance.new("Part")
+	part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch = true, false, false, false
+	part.CastShadow = false
+	return part
+end
+
+local function deathBurst(event) -- { "K", position, color, size, typeKey }
+	local position, color, size = event[2], event[3], math.clamp(event[4] or 4, 1, 40)
+	local look = DEATH_LOOK[event[5]] or {}
+	color = typeof(color) == "Color3" and color or WHITE
+	local soul = look.Soul or color:Lerp(WHITE, 0.5)
+	local count = math.clamp(math.floor(5 + size * 1.2), 6, 16)
+	for _ = 1, count do
+		if #shards >= MAX_SHARDS then break end
+		local part = getShard()
+		local s = size * (0.1 + math.random() * 0.14)
+		part.Shape = look.Round and Enum.PartType.Ball or Enum.PartType.Block
+		part.Material = look.Material or Enum.Material.SmoothPlastic
+		part.Color = color
+		part.Transparency = 0
+		part.Size = Vector3.new(s, s * (look.Round and 1 or 0.7), s)
+		local spread = Vector3.new(math.random() - 0.5, 0, math.random() - 0.5) * size * 0.4
+		part.CFrame = CFrame.new(position + spread) * CFrame.Angles(math.random() * 6, math.random() * 6, 0)
+		part.Parent = fxFolder
+		local speed = (look.Heavy and 9 or 15) + math.random() * 10
+		local angle = math.random() * math.pi * 2
+		table.insert(shards, {
+			Part = part, Size = part.Size, Born = os.clock(), Life = 0.7 + math.random() * 0.4,
+			Velocity = Vector3.new(math.cos(angle) * speed, 10 + math.random() * 12, math.sin(angle) * speed),
+			Spin = Vector3.new(math.random() * 10 - 5, math.random() * 10 - 5, math.random() * 10 - 5),
+			FloorY = position.Y - size * 0.45,
+		})
+	end
+	-- 영혼 연기 (풀링된 입자 재사용)
+	burst(position + Vector3.new(0, size * 0.3, 0), soul, math.clamp(math.floor(size * 3), 10, 40))
+end
+
+game:GetService("RunService").RenderStepped:Connect(function(dt)
+	if #shards == 0 then return end
+	local now = os.clock()
+	for i = #shards, 1, -1 do
+		local shard = shards[i]
+		local age = now - shard.Born
+		local part = shard.Part
+		if age >= shard.Life then
+			part.Parent = nil
+			if #shardPool < 60 then table.insert(shardPool, part) else part:Destroy() end
+			table.remove(shards, i)
+		else
+			local velocity = shard.Velocity - Vector3.new(0, 55 * dt, 0)
+			local nextPosition = part.Position + velocity * dt
+			if nextPosition.Y < shard.FloorY then -- 바닥에 닿으면 통통 튀고 속도가 줄어든다
+				nextPosition = Vector3.new(nextPosition.X, shard.FloorY, nextPosition.Z)
+				velocity = Vector3.new(velocity.X * 0.6, math.abs(velocity.Y) * 0.35, velocity.Z * 0.6)
+			end
+			shard.Velocity = velocity
+			part.Size = shard.Size * math.max(0.15, 1 - age / shard.Life) -- 점점 작아지며 사라진다
+			part.CFrame = CFrame.new(nextPosition) * (part.CFrame - part.Position) * CFrame.Angles(shard.Spin.X * dt, shard.Spin.Y * dt, shard.Spin.Z * dt)
+		end
+	end
+end)
+
+HANDLERS.K = deathBurst

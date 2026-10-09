@@ -1511,6 +1511,7 @@ local function killMonster(player, part, data)
 		doomReady[player] = os.clock() -- 튜토리얼: 첫 구역 군주를 쓰러뜨리면 잠시 뒤 불길한 기운이 덮친다
 	end
 	Effects.Burst(part.Position, part.Color, data.Kind == "Boss" and 80 or 22)
+	Effects.MonsterDeath(part, data) -- 조각 / 영혼 연기 (클라이언트)
 	part:Destroy()
 	Combo.Kill(player)
 	reward(player, data, part)
