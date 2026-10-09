@@ -549,3 +549,54 @@ do
 		end
 	end)
 end
+
+-- 필드로 걸어가는 길의 대시 힌트: "필드 입구" 미션 중 마을에서 걷고 있으면(대시를 아직 안 썼으면) 왼쪽 옆에 작게 "Q = 대시로 빨리 가요!" 가 떠 있다.
+-- 대시를 쓰거나 필드에 들어서면 사라진다. (가운데 시야를 가리지 않는 측면 표시)
+do
+	local tip = create("Frame", {
+		Size = UDim2.new(0, 330, 0, 64), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, -360, 1, -262),
+		BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.1, BorderSizePixel = 0, ZIndex = 68, Visible = false,
+	}, gui)
+	rounded(tip, 14)
+	create("UIStroke", { Color = Color3.fromRGB(120, 220, 255), Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, tip)
+	local cap = create("Frame", { Size = UDim2.new(0, 46, 0, 46), Position = UDim2.new(0, 10, 0.5, -23), BackgroundColor3 = Color3.fromRGB(245, 245, 250), BorderSizePixel = 0, ZIndex = 69 }, tip)
+	rounded(cap, 10)
+	label({ Size = UDim2.new(1, 0, 1, 0), Text = "Q", TextSize = 32, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 34, 50), TextStrokeTransparency = 1, ZIndex = 70 }, cap)
+	label({ Size = UDim2.new(1, -72, 0, 24), Position = UDim2.new(0, 66, 0, 8), Text = "대시로 빨리 가요!", TextSize = 20, Font = Enum.Font.GothamBlack,
+		TextColor3 = Color3.fromRGB(150, 230, 255), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 69 }, tip)
+	label({ Size = UDim2.new(1, -72, 0, 22), Position = UDim2.new(0, 66, 0, 34), Text = "Q 키를 누르면 방향으로 순간 가속", TextSize = 14, Font = Enum.Font.GothamBold,
+		TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 69 }, tip)
+	local shown = false
+	local movingSince = nil
+	local dashedStep = nil
+	local function setShown(on)
+		if on == shown then return end
+		shown = on
+		if on then tip.Visible = true end
+		TweenService:Create(tip, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, on and 14 or -360, 1, -262) }):Play()
+		if not on then task.delay(0.4, function() if not shown then tip.Visible = false end end) end
+	end
+	RunService.Heartbeat:Connect(function()
+		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		local step = current
+		local relevant = root ~= nil and step ~= nil and step.TargetName == "필드 입구" and player:GetAttribute("Zone") == "Lobby"
+		if not relevant then
+			movingSince = nil
+			setShown(false)
+			return
+		end
+		local velocity = root.AssemblyLinearVelocity
+		local speed = Vector3.new(velocity.X, 0, velocity.Z).Magnitude
+		if speed > 85 then dashedStep = step.Index end -- 대시를 썼다
+		if dashedStep == step.Index then
+			setShown(false)
+			return
+		end
+		if speed > 10 then
+			movingSince = movingSince or os.clock()
+		else
+			movingSince = nil
+		end
+		setShown(movingSince ~= nil and os.clock() - movingSince > 1.2)
+	end)
+end
