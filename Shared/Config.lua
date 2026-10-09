@@ -122,6 +122,13 @@ Config.Tutorial = {
 		{ Text = "아직 너무 약해요! 메뉴(I) → 성장 탭에서 훈련을 시작하세요. 훈련하면 영구적으로 강해져요", Stat = "Trains", Goal = 1, Highlight = "Menu",
 			Reward = { Gold = 400, Xp = 100 } },
 		{ Text = "북쪽 던전 게이트에서 던전에 들어가 웨이브를 2번 막아내세요! (열쇠 1개, 달성 후 던전에서 나오면 티켓 10장 보상!)", Stat = "DungeonWaves", Goal = 2, Target = "Gate", TargetName = "던전 게이트", AfterDungeon = true,
+			-- 던전을 처음 소개하는 안내 카드 (이 미션이 시작될 때 차례로 한 번): 성장을 배운 직후 "장비를 얻는 곳"으로 던전을 알려준다
+			Intro = {
+				{ Key = "🏰", Title = "던전이란?", Text = "북쪽 성벽의 문으로 들어가는 전투 공간이에요. 웨이브를 막아내고 보스를 쓰러뜨리면 장비 티켓과 보스 상자(장비)를 얻어요", Duration = 8 },
+				{ Key = "🎟", Title = "하루 무료 입장 3번", Text = "던전은 하루에 3번까지 무료로 들어갈 수 있어요. 매일 초기화돼요", Duration = 7 },
+				{ Key = "🗝", Title = "더 들어가고 싶다면?", Text = "무료 입장을 다 쓰면 열쇠가 필요해요. 열쇠는 필드 구역 군주(👑)를 쓰러뜨리면 낮은 확률로 나와요", Duration = 8 },
+				{ Key = "🚪", Title = "문마다 난이도가 달라요", Text = "오른쪽 문일수록 강하고 보상이 커요. 문이 더 크고 어둡고 불길이 거세져요. 지금은 맨 왼쪽 문부터 시작해요!", Duration = 8 },
+			},
 			Reward = { Tickets = 10, Gold = 600, Xp = 200 } },
 		{ Text = "🎰 뽑기 머신에서 10연 뽑기를 하세요! (티켓 10장) — 장비가 한꺼번에 강해져요", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Hero",
 			Reward = { Gold = 500 } },

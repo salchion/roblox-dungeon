@@ -71,6 +71,19 @@ local function send(player)
 	if step and step.EvolveToTier and Config.Weapon.Tiers[step.EvolveToTier] then
 		text = string.gsub(text, "{무기}", Config.Weapon.Tiers[step.EvolveToTier].Name)
 	end
+	-- 미션 소개 카드(Intro): 이 미션이 처음 시작될 때 한 번 차례로 보여준다 (던전에 들어가면 중단)
+	if step and step.Intro and state.IntroShown ~= state.Step then
+		state.IntroShown = state.Step
+		local introStep = state.Step
+		task.spawn(function()
+			task.wait(2)
+			for _, card in ipairs(step.Intro) do
+				if states[player] ~= state or state.Step ~= introStep or player:GetAttribute("Zone") ~= "Lobby" then return end
+				Remotes.Tutorial:FireClient(player, "Prompt", { Key = card.Key, Title = card.Title, Text = card.Text, Duration = card.Duration or 7 })
+				task.wait((card.Duration or 7) + 0.8)
+			end
+		end)
+	end
 	-- 던전 미션이 나오기 전에는 던전에 들어갈 수 없다
 	local dungeonStep = #Steps + 1
 	for index, candidate in ipairs(Steps) do
