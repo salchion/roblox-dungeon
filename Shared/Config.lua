@@ -1046,12 +1046,12 @@ Config.Level = {
 -- 언제든 마음대로 빼서 다시 넣을 수 있다 (무료). 한 스탯에 몰빵해도 되고 골고루 나눠도 된다.
 Config.LevelStats = {
 	PointsPerLevel = 1,
-	Order = { "Move", "Range", "Double", "Haste", "Loot" },
+	Order = { "Move", "Range", "Double", "Haste", "CritDmg" },
 	Move  = { Name = "이동 속도",   Icon = "👟", Per = 0.3,  Desc = "포인트당 이동 속도 +0.3" },
 	Range = { Name = "사정거리",    Icon = "🎯", Per = 0.04, Desc = "포인트당 무기 사정거리 +4%" },
 	Double = { Name = "더블샷", Icon = "🔫", Per = 0.007, Desc = "포인트당 +0.7% 확률로 한 발 더 \"따-땅\" 연달아 나감", Note = "더블샷: 쏠 때마다 확률로 같은 사격이 0.09초 뒤에 한 번 더 나가요 (위력은 같아요). 49포인트를 모두 넣으면 약 34%." },
 	Haste = { Name = "스킬 쿨타임", Icon = "⏱", Per = 0.01, Desc = "포인트당 스킬 쿨타임 -1%" },
-	Loot  = { Name = "전리품 흡수", Icon = "🧲", Per = 1.0,  Desc = "포인트당 전리품이 빨려 들어오는 범위 +1" },
+	CritDmg = { Name = "치명 피해", Icon = "💥", Per = 0.015, Desc = "포인트당 치명타 피해 +1.5%p (기본 2배)", Note = "치명 피해: 치명타가 터질 때 더 아프게 박혀요. 49포인트를 모두 넣으면 치명타가 2배 -> 약 2.7배. 치명타 확률 장비 / 펫 / 더블샷과 같이 쓰면 큰 한 방 빌드가 돼요." },
 	OtherExtraShotValue = 0.5, -- 장비 옵션 / 던전 특성으로 늘어난 탄 한 발의 가치 (예전에는 100%여서 탄이 늘면 딜이 그대로 배수로 늘었다)
 }
 function Config.GetLevelStatPoints(level)
@@ -1068,7 +1068,7 @@ function Config.LevelStatText(key, points)
 	elseif key == "Range" then return string.format("사정거리 +%d%%", math.floor(value * 100 + 0.5))
 	elseif key == "Double" then return string.format("더블샷 확률 %.1f%%", value * 100)
 	elseif key == "Haste" then return string.format("쿨타임 -%d%%", math.floor(value * 100 + 0.5))
-	else return string.format("흡수 범위 +%d", math.floor(value + 0.5)) end
+	else return string.format("치명타 피해 +%d%%p", math.floor(value * 100 + 0.5)) end
 end
 -- 무기 사정거리 (레벨 스탯 반영)
 function Config.GetRange(player, weaponType)

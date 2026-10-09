@@ -172,7 +172,7 @@ RunService.Heartbeat:Connect(function(dt)
 	local now = os.clock()
 	for player, list in pairs(drops) do
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-		local radius = math.max(L.PickupRadius, player:GetAttribute("PetLoot") or 0) + (player:GetAttribute("LvLoot") or 0) -- 펫 자동 루팅(레벨 5 / 12) + 레벨 스탯
+		local radius = math.max(L.PickupRadius, player:GetAttribute("PetLoot") or 0) -- 펫 자동 루팅(레벨 5 / 12) + 레벨 스탯
 		for id, drop in pairs(list) do
 			if now > drop.Expire then
 				list[id] = nil

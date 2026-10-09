@@ -1,8 +1,8 @@
 -- LevelStatService (ServerScriptService > Modules 안의 ModuleScript, 이름: LevelStatService)
--- 레벨 스탯: 레벨이 오를 때마다 포인트 1개. 공격력 / 체력이 아니라 이동 속도 / 사정거리 / 더블샷 / 스킬 쿨타임 / 전리품 흡수에만 쓴다.
+-- 레벨 스탯: 레벨이 오를 때마다 포인트 1개. 공격력 / 체력이 아니라 이동 속도 / 사정거리 / 더블샷 / 스킬 쿨타임 / 치명 피해에만 쓴다.
 --   * 언제든 무료로 빼고 다시 넣을 수 있다 (몰빵 가능)
 --   * 배분은 MetaService 의 Rift 표 안 LvStats 에 저장된다
---   * 효과는 플레이어 Attribute 로 알린다: LvMove / LvRange / LvDouble / LvHaste / LvLoot (다른 서비스가 읽어 쓴다), LvPointsLeft, LvPts_<키>
+--   * 효과는 플레이어 Attribute 로 알린다: LvMove / LvRange / LvDouble / LvHaste / LvCritDmg (다른 서비스가 읽어 쓴다), LvPointsLeft, LvPts_<키>
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -46,7 +46,7 @@ local function apply(player, announce)
 	player:SetAttribute("LvRange", Config.LevelStatValue("Range", stats.Range))
 	player:SetAttribute("LvDouble", Config.LevelStatValue("Double", stats.Double))
 	player:SetAttribute("LvHaste", math.min(0.5, Config.LevelStatValue("Haste", stats.Haste)))
-	player:SetAttribute("LvLoot", Config.LevelStatValue("Loot", stats.Loot))
+	player:SetAttribute("LvCritDmg", Config.LevelStatValue("CritDmg", stats.CritDmg))
 	local left = total - spent(stats)
 	player:SetAttribute("LvPointsLeft", left)
 	if announce and lastPoints[player] and total > lastPoints[player] then

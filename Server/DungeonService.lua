@@ -1298,7 +1298,7 @@ function Dungeon.ComputeDamage(player)
 		+ (player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0) + (player:GetAttribute("PetCrit") or 0) + (weaponType.CritBonus or 0))
 	local isCrit = os.clock() < (player:GetAttribute("NearMissUntil") or 0) or math.random() < chance -- NEAR MISS 보상: 4초간 전부 치명타
 	if isCrit then
-		damage *= P.CritMultiplier
+		damage *= P.CritMultiplier + (player:GetAttribute("LvCritDmg") or 0)
 	end
 	return math.max(1, math.floor(damage + 0.5)), isCrit
 end
