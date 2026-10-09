@@ -182,6 +182,10 @@ function Growth.StartGate(player)
 	local duration = math.floor(R.GateTime[gateIndex] * timeMultiplier(player))
 	state.GateJob = { Level = gateLevel, EndAt = os.time() + duration }
 	notify(player, string.format("🌟 레벨 %d 돌파 시작! (%s)", gateLevel, Config.FormatDuration(duration)))
+	if gateIndex == 1 then -- 첫 돌파는 30분이라 너무 길다: 같은 시간만큼 단축권을 선물해서 바로 끝낼 수 있게 한다
+		Growth.AddTimeSkip(player, duration)
+		notify(player, string.format("🎁 첫 돌파 선물! 시간 단축권 %s 지급 — 성장 탭의 [단축권 사용]을 누르면 바로 끝나요!", Config.FormatDuration(duration)))
+	end
 	Growth.Push(player)
 end
 
