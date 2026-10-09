@@ -56,6 +56,8 @@ local function send(player)
 	})
 end
 
+local complete -- 아래에서 정의 (Load 안의 콜백이 쓴다)
+
 function Tutorial.Load(player, saved)
 	local state
 	if typeof(saved) == "table" then
@@ -69,6 +71,17 @@ function Tutorial.Load(player, saved)
 	end
 	states[player] = state
 	send(player)
+	player:GetAttributeChangedSignal("Zone"):Connect(function()
+		local current = states[player]
+		local step = current and Steps[current.Step]
+		if step and step.AfterDungeon and current.Progress >= step.Goal and player:GetAttribute("Zone") ~= "Dungeon" then
+			task.wait(1) -- 마을로 돌아와 화면이 자리 잡은 뒤 보상
+			if states[player] == current and Steps[current.Step] == step then
+				current.Notified = nil
+				complete(player, current, step)
+			end
+		end
+	end)
 	player.CharacterAdded:Connect(function()
 		task.wait(0.5)
 		if states[player] then applyFreeze(player) end
@@ -96,7 +109,7 @@ local function rewardText(reward)
 	return table.concat(parts, " + ")
 end
 
-local function complete(player, state, step)
+function complete(player, state, step)
 	local reward = step.Reward
 	if step.Stat == "DummyHits" then -- 허수아비 미션이 끝나면 자동 공격(R)을 꺼 달라고 클라이언트에 알린다
 		player:SetAttribute("AutoOffTick", (player:GetAttribute("AutoOffTick") or 0) + 1)
@@ -133,7 +146,17 @@ Quest.Listeners[#Quest.Listeners + 1] = function(player, stat, amount)
 	if not step or step.Stat ~= stat then return end
 	state.Progress += amount
 	if state.Progress >= step.Goal then
-		complete(player, state, step)
+		if step.AfterDungeon and player:GetAttribute("Zone") == "Dungeon" then
+			-- 던전 안에서는 보상 / 다음 미션을 미루고, 던전에서 나왔을 때 한꺼번에 준다
+			state.Progress = step.Goal
+			if not state.Notified then
+				state.Notified = true
+				Remotes.Notify:FireClient(player, "✅ 목표 달성! 던전에서 나가면 보상을 받아요 (티켓 10장)")
+			end
+			send(player)
+		else
+			complete(player, state, step)
+		end
 	else
 		send(player)
 	end

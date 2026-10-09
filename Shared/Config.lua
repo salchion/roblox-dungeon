@@ -121,7 +121,7 @@ Config.Tutorial = {
 			Reward = { Gold = 300, Keys = 1, Xp = 100 } },
 		{ Text = "아직 너무 약해요! 메뉴(I) → 성장 탭에서 훈련을 시작하세요. 훈련하면 영구적으로 강해져요", Stat = "Trains", Goal = 1,
 			Reward = { Gold = 400, Xp = 100 } },
-		{ Text = "북쪽 던전 게이트에서 던전에 들어가 웨이브를 2번 막아내세요! (열쇠 1개, 던전에서는 장비 티켓을 얻어요)", Stat = "DungeonWaves", Goal = 2, Target = "Gate", TargetName = "던전 게이트",
+		{ Text = "북쪽 던전 게이트에서 던전에 들어가 웨이브를 2번 막아내세요! (열쇠 1개, 달성 후 던전에서 나오면 티켓 10장 보상!)", Stat = "DungeonWaves", Goal = 2, Target = "Gate", TargetName = "던전 게이트", AfterDungeon = true,
 			Reward = { Tickets = 10, Gold = 600, Xp = 200 } },
 		{ Text = "🎰 뽑기 머신에서 10연 뽑기를 하세요! (티켓 10장) — 장비가 한꺼번에 강해져요", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "뽑기 머신",
 			Reward = { Gold = 500 } },
