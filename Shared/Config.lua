@@ -115,17 +115,13 @@ Config.Tutorial = {
 			Reward = { Gold = 300 } },
 		-- 이야기: 필드는 아직 너무 강하다 -> 쓰러져서 마을로 -> 성장(훈련) -> 던전에서 장비 -> 10연 뽑기 -> 다시 필드는 쉽다
 		{ Text = "동쪽 필드로 나가서 첫 구역의 군주(👑)를 쓰러뜨리세요! ...어딘가 불길한 기운이 느껴져요. 무슨 일이 일어날지도 몰라요. 조심하세요!", Stat = "FieldDeaths", Goal = 1, Target = "Field", TargetName = "필드 입구", Doom = true,
-			Reward = { Gold = 300, Keys = 1, Xp = 100 } },
-		{ Text = "아직 너무 약해요! 메뉴(I) → 성장 탭에서 훈련을 시작하세요. 훈련하면 영구적으로 강해져요", Stat = "Trains", Goal = 1, Highlight = "Menu",
-			Reward = { Gold = 400, Xp = 100 } },
-		{ Text = "🏰 던전에서 장비와 장비 티켓을 얻을 수 있어요! 북쪽 던전 게이트로 가서 웨이브를 2번 막아내세요 (나오면 티켓 10장 보상!)", Stat = "DungeonWaves", Goal = 2, Target = "Gate", TargetName = "던전 게이트", AfterDungeon = true,
-			Reward = { Tickets = 10, Gold = 600, Xp = 200 } },
-		{ Text = "🎰 뽑기 머신에서 10연 뽑기를 하세요! (티켓 10장) — 장비가 한꺼번에 강해져요", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Hero",
-			Reward = { Gold = 500 } },
+			Reward = { Gold = 4000, Tickets = 10, Keys = 1, Xp = 150 } }, -- 쓰러져도 전리품(재화)은 남는다 -> 아래 미션에서 바로 쓰게 한다
+		{ Text = "💀 쓰러졌지만 전리품은 남았어요! 장비와 재화를 모으면 더 강해져요. 뽑기 머신에서 10연 뽑기를 하세요 (티켓 10장)", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Hero",
+			Reward = { Gold = 500, Xp = 100 } },
 		-- EvolveToTier: 이 번째 무기(3 = 기관단총)가 될 때까지 필요한 강화 횟수를 미션이 시작될 때 계산해서 목표로 쓴다. {무기} = 그 무기 이름
-		{ Text = "💰 던전에서 모은 골드로 무기를 강화해서 {무기}까지 진화시키세요! 연사가 확 달라져서 필드가 쉬워져요", Stat = "Enhances", Goal = 10, EvolveToTier = 3, Target = "Anvil", TargetName = "모루",
+		{ Text = "💰 모은 골드로 무기를 강화해서 {무기}까지 진화시키세요! 연사가 확 달라져서 필드가 쉬워져요", Stat = "Enhances", Goal = 10, EvolveToTier = 3, Target = "Anvil", TargetName = "모루",
 			Reward = { Tickets = 2, Xp = 150 } },
-		{ Text = "이제 다시 필드로! 강해진 힘으로 몬스터 15마리를 처치하세요", Stat = "Kills", Goal = 15, Target = "Field", TargetName = "필드 입구",
+		{ Text = "마지막! 메뉴(I) → 성장 탭에서 훈련을 시작하세요. 자리를 비워도 계속 강해져요 (던전 / 필드에서도 장비와 재화를 얻어요)", Stat = "Trains", Goal = 1, Highlight = "Menu",
 			Reward = { Gold = 1000, Keys = 1, Tickets = 2, Xp = 300 } },
 	},
 }

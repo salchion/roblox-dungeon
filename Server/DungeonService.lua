@@ -2590,39 +2590,6 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode)
 		pivotTo(member, arenaSpawnCFrame(run))
 	end
 
-	-- 튜토리얼 첫 던전: 거의 무적 (체력이 30% 아래로 떨어지면 60%로 되살리고 잠깐 보호막. 이번 판은 절대 지지 않게)
-	for _, member in ipairs(members) do
-		if member:GetAttribute("TutorialDungeonGuard") then
-			task.spawn(function()
-				local told = false
-				while not run.Destroyed and run.Phase ~= "Ended" and playerRun[member] == run do
-					local root, humanoid = getAliveParts(member)
-					if root and humanoid.Health > 0 and humanoid.Health < humanoid.MaxHealth * 0.3 then
-						humanoid.Health = humanoid.MaxHealth * 0.6
-						local shield = Instance.new("ForceField")
-						shield.Parent = member.Character
-						game:GetService("Debris"):AddItem(shield, 2)
-						Effects.Burst(root.Position, Color3.fromRGB(120, 220, 255), 40)
-						if not told then
-							told = true
-							notify(member, "🛡 튜토리얼 보호! 이번 던전에서는 쓰러지지 않아요. 마음껏 연습해보세요!")
-						end
-					end
-					task.wait(0.1)
-				end
-			end)
-		end
-	end
-
-	-- 처음 던전에 들어가면 진짜 웨이브 전에 "연습장"에서 조작을 직접 해본다 (한 번만, 저장됨): 조준 -> 대시 -> NEAR MISS(시간 정지) -> 궁극기
-	for _, member in ipairs(members) do
-		local rift = Meta.GetRift(member)
-		if rift and not rift.DungeonTip and not run.DrillMember and not riftMode then
-			rift.DungeonTip = true
-			run.DrillMember = member
-		end
-	end
-
 	task.spawn(function()
 		while not run.Destroyed do
 			broadcast(run)
