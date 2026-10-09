@@ -31,8 +31,8 @@ local Journey = require(script.Parent:WaitForChild("JourneyService"))
 
 local F = Config.Field
 local TOP = 0.05
-local routeBeat = {} -- [player] = 튜토리얼 첫 구역 길목에서 이미 터진 사건 번호
-local doomReady = {} -- [player] = 첫 구역 군주를 쓰러뜨린 시각 (튜토리얼 소환 결투의 시작 신호)
+local routeBeat = setmetatable({}, { __mode = "k" }) -- [player] = 튜토리얼 첫 구역 길목에서 이미 터진 사건 번호
+local doomReady = setmetatable({}, { __mode = "k" }) -- [player] = 첫 구역 군주를 쓰러뜨린 시각 (튜토리얼 소환 결투의 시작 신호)
 
 local Field = {}
 
@@ -2287,10 +2287,10 @@ local function stepProjectiles(dt)
 end
 
 -- x좌표로 로비 / 필드 구역을 판별하고, 가장 멀리 간 구역(MaxZone)을 기록
-local lastGateNotice = {}
-local lastZoneSeen = {}
+local lastGateNotice = setmetatable({}, { __mode = "k" })
+local lastZoneSeen = setmetatable({}, { __mode = "k" })
 local lordPing = {}
-local tutorialLords = {} -- [player] = 튜토리얼용 첫 구역 군주 (입구 가까이에서 바로 나타난다)
+local tutorialLords = setmetatable({}, { __mode = "k" }) -- [player] = 튜토리얼용 첫 구역 군주 (입구 가까이에서 바로 나타난다)
 
 -- 튜토리얼 첫 구역 군주: 1구역이 작아서(길이 340) 구역 끝의 군주 한 마리가 입구에서 가깝다. 별도 군주를 또 만들지 않고 이 군주를 길잡이로 가리킨다.
 local function worldLordOfZone1()
@@ -2432,7 +2432,7 @@ function Field.RespawnAtCamp(player, character, zone)
 	end
 end
 
-local lastWarp = {}
+local lastWarp = setmetatable({}, { __mode = "k" })
 
 -- 필드 밖으로 튕겨 나간 플레이어(대시 / 물리 버그로 벽 밖이나 허공)를 마을로 되돌린다
 local function rescueOutOfBounds()
@@ -2798,8 +2798,8 @@ end
 -- 보스(구역 군주 / 이벤트 보스)가 나를 노리고 있으면 BossFight 가 켜진다 -> 클라이언트가 음악을 던전(전투) 곡으로 바꾼다
 local powerWarnedAt = {}
 local weakTipShown = {}
-local rescueAt = {} -- [player] = 튜토리얼 군주전에서 위험할 때 마지막으로 보호막을 받은 시각
-local weakLesson = {} -- [player] = { Base = 시작할 때 약점 명중 수, Taught = 약점을 맞힌 뒤 설명까지 끝났는지, NextHint = 다음 힌트 시각 }
+local rescueAt = setmetatable({}, { __mode = "k" }) -- [player] = 튜토리얼 군주전에서 위험할 때 마지막으로 보호막을 받은 시각
+local weakLesson = setmetatable({}, { __mode = "k" }) -- [player] = { Base = 시작할 때 약점 명중 수, Taught = 약점을 맞힌 뒤 설명까지 끝났는지, NextHint = 다음 힌트 시각 }
 local function updateBossFight()
 	for _, player in ipairs(Players:GetPlayers()) do
 		local fighting = false
@@ -2888,7 +2888,7 @@ end
 
 -- 튜토리얼 "압도적인 습격": 첫 필드 방문 때 잠깐 싸우게 한 뒤, 사방에서 훨씬 강한 몬스터 떼가 몰려와 필연적으로 쓰러지게 한다.
 -- (쓰러지면 마을로 돌아가고, 다음 미션이 "훈련 -> 던전 -> 10연 뽑기 -> 다시 필드(이제 쉽다)" 로 이어진다)
-local doomTimers = {}
+local doomTimers = setmetatable({}, { __mode = "k" })
 -- 최후의 군주 모델: 갑옷 몸통 + 뿔 달린 머리 + 후광 + 칼날 날개 + 거대한 주먹 + 가슴 코어. 몸통(Body)만 맞는다(나머지는 장식).
 local function rgb(r, g, b) return Color3.fromRGB(r, g, b) end
 

@@ -15,8 +15,8 @@ local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Journey = {}
 
 local positions = {}  -- { Field = Vector3, Rift = Vector3, Gates = { [index] = Vector3 } }
-local lastBeat = {}   -- [player] = 마지막으로 마을 안내를 보낸 시각 (너무 자주 안 뜨게)
-local dashedAt = {}   -- [player] = 마지막으로 대시한 시각 (클라이언트가 알려 줌)
+local lastBeat = setmetatable({}, { __mode = "k" })   -- [player] = 마지막으로 마을 안내를 보낸 시각 (너무 자주 안 뜨게)
+local dashedAt = setmetatable({}, { __mode = "k" })   -- [player] = 마지막으로 대시한 시각 (클라이언트가 알려 줌)
 
 local function hintsOf(player)
 	local rift = Meta.GetRift(player)

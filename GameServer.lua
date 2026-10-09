@@ -350,10 +350,10 @@ for _, player in ipairs(Players:GetPlayers()) do
 	task.spawn(setupPlayer, player)
 end
 
-local lastAttack = {}
-local lastEnhance = {}
-local lastGear = {}
-local lastWeapon = {}
+local lastAttack = setmetatable({}, { __mode = "k" })
+local lastEnhance = setmetatable({}, { __mode = "k" })
+local lastGear = setmetatable({}, { __mode = "k" })
+local lastWeapon = setmetatable({}, { __mode = "k" })
 
 Players.PlayerRemoving:Connect(function(player)
 	lastAttack[player] = nil

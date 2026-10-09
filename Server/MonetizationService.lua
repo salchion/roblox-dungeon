@@ -213,7 +213,7 @@ end
 ------------------------------------------------------------
 -- 구매 요청 (클라이언트 상점 탭)
 ------------------------------------------------------------
-local lastRequest = {}
+local lastRequest = setmetatable({}, { __mode = "k" })
 
 Remotes.Shop.OnServerEvent:Connect(function(player, action, kind, key)
 	local state = states[player]

@@ -293,7 +293,7 @@ end
 ------------------------------------------------------------
 -- 요청 처리 / 완료 확인 루프
 ------------------------------------------------------------
-local lastRequest = {}
+local lastRequest = setmetatable({}, { __mode = "k" })
 
 Remotes.Growth.OnServerEvent:Connect(function(player, action, arg1, arg2)
 	if action == "Request" then

@@ -343,7 +343,7 @@ local function prestige(player)
 	Meta.Push(player)
 end
 
-local last = {}
+local last = setmetatable({}, { __mode = "k" })
 Players.PlayerRemoving:Connect(function(player)
 	last[player] = nil
 end)

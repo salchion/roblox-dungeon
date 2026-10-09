@@ -501,7 +501,7 @@ end
 ------------------------------------------------------------
 -- 클라이언트 요청
 ------------------------------------------------------------
-local lastRequest = {}
+local lastRequest = setmetatable({}, { __mode = "k" })
 
 Remotes.Inventory.OnServerEvent:Connect(function(player, action, arg, arg2)
 	if action == "Request" then

@@ -307,7 +307,7 @@ local function showDps(model, data, player, damage)
 	data.DpsLabel.Text = string.format("%s\n<font color='#ffd966'>DPS %s</font>  <font size='14' color='#aab4d8'>최고 %s</font>", player.DisplayName, fmt(dps), fmt(log.Best))
 end
 
-local goldRemainder = {} -- [player] = 아직 지급하지 못한 소수점 골드
+local goldRemainder = setmetatable({}, { __mode = "k" }) -- [player] = 아직 지급하지 못한 소수점 골드
 
 function Dummy.Shoot(player, origin, direction)
 	if not folder or player:GetAttribute("Zone") ~= "Lobby" then return nil end

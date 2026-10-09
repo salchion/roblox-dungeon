@@ -20,8 +20,8 @@ local I = Config.Idle
 local Idle = {}
 
 local dummyCenter = nil
-local remainder = {}   -- [player] = 아직 지급하지 못한 소수점 골드
-local pending = {}     -- [player] = { Gold, Since } 3초 모아서 한 번에 글자로 보여준다
+local remainder = setmetatable({}, { __mode = "k" })   -- [player] = 아직 지급하지 못한 소수점 골드
+local pending = setmetatable({}, { __mode = "k" })     -- [player] = { Gold, Since } 3초 모아서 한 번에 글자로 보여준다
 
 -- 방치 배율 (영구 + VIP + 부스터)
 function Idle.Multiplier(player)

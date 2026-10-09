@@ -48,7 +48,7 @@ local function selectedDepth(player, state)
 	return math.clamp(state.Depth or 1, 1, unlockedDepth(player, state))
 end
 
-local activeDepth = {} -- [player] = 지금 도전 중인 깊이
+local activeDepth = setmetatable({}, { __mode = "k" }) -- [player] = 지금 도전 중인 깊이
 
 local function push(player, openPanel)
 	local state = stateOf(player)

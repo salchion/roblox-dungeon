@@ -3581,7 +3581,12 @@ local function radarDot(index)
 	return dot
 end
 
-RunService.RenderStepped:Connect(function()
+local radarClock = 0
+local radarState = {} -- [점] = { 크기, 색, 흐림 }: 바뀐 속성만 다시 쓴다 (매 프레임 수십 개를 덮어쓰지 않게)
+RunService.RenderStepped:Connect(function(dt)
+	radarClock += dt
+	if radarClock < 0.05 then return end -- 레이더는 초당 20번만 갱신해도 충분하다
+	radarClock = 0
 	local zone = currentZone()
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	radarFrame.Visible = settings.Radar and (zone == "Field" or zone == "Dungeon") and root ~= nil
@@ -3604,16 +3609,30 @@ RunService.RenderStepped:Connect(function()
 				local px = 0.5 + (rx * scale) / RADAR_RANGE * 0.47
 				local py = 0.5 - (ry * scale) / RADAR_RANGE * 0.47
 				local dot = radarDot(used)
-				local size = CollectionService:HasTag(part, "RadarBoss") and 11 or (CollectionService:HasTag(part, "RadarGold") and 10 or 6)
+				local boss, gold = CollectionService:HasTag(part, "RadarBoss"), CollectionService:HasTag(part, "RadarGold")
+				local size = boss and 11 or (gold and 10 or 6)
 				if clamped then size = math.max(4, size - 2) end
-				dot.Size = UDim2.new(0, size, 0, size)
 				dot.Position = UDim2.new(px, 0, py, 0)
-				dot.BackgroundColor3 = CollectionService:HasTag(part, "RadarBoss") and Color3.fromRGB(190, 90, 255)
-					or CollectionService:HasTag(part, "RadarGold") and Color3.fromRGB(255, 215, 50)
-					or CollectionService:HasTag(part, "RadarElite") and Color3.fromRGB(255, 190, 60)
-					or Color3.fromRGB(255, 80, 80)
-				dot.BackgroundTransparency = clamped and 0.5 or 0
-				dot.Visible = true
+				local cache = radarState[dot]
+				if not cache then
+					cache = {}
+					radarState[dot] = cache
+				end
+				if cache.Size ~= size then
+					cache.Size = size
+					dot.Size = UDim2.new(0, size, 0, size)
+				end
+				local color = boss and Color3.fromRGB(190, 90, 255) or gold and Color3.fromRGB(255, 215, 50)
+					or CollectionService:HasTag(part, "RadarElite") and Color3.fromRGB(255, 190, 60) or Color3.fromRGB(255, 80, 80)
+				if cache.Color ~= color then
+					cache.Color = color
+					dot.BackgroundColor3 = color
+				end
+				if cache.Clamped ~= clamped then
+					cache.Clamped = clamped
+					dot.BackgroundTransparency = clamped and 0.5 or 0
+				end
+				if not dot.Visible then dot.Visible = true end
 			end
 		end
 	end

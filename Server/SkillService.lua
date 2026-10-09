@@ -21,7 +21,7 @@ print("[SkillService] 최신 버전 로드됨 (데드아이 일제 포격 v3)")
 
 local Skill = {}
 
-local readyAt = {} -- [player] = { [skillKey] = os.clock() 이후에 사용 가능 }
+local readyAt = setmetatable({}, { __mode = "k" }) -- [player] = { [skillKey] = os.clock() 이후에 사용 가능 }
 
 Players.PlayerRemoving:Connect(function(player)
 	readyAt[player] = nil
@@ -292,7 +292,7 @@ handlers.Ult = function(player, root, _, character)
 	return true
 end
 
-local lastRequest = {}
+local lastRequest = setmetatable({}, { __mode = "k" })
 
 -- skillKey: "Barrier" | "Blast" | "Heal" | "Ult"
 function Skill.Use(player, skillKey, aimPoint)

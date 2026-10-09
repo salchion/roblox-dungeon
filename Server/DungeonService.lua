@@ -608,11 +608,21 @@ local function fireProjectile(run, origin, direction, speed, damage, size, color
 	})
 end
 
+-- 몬스터 수십 마리가 매 프레임 "가장 가까운 플레이어"를 묻는다: 살아 있는 몸 목록은 0.05초마다 한 번만 다시 만든다
 local function getNearestTarget(run, position)
+	local now = os.clock()
+	local cache = run.TargetCache
+	if not cache or now - cache.At > 0.05 then
+		cache = { At = now, Roots = {} }
+		for _, member in ipairs(run.Members) do
+			local root = getAliveParts(member)
+			if root then table.insert(cache.Roots, root) end
+		end
+		run.TargetCache = cache
+	end
 	local nearest, nearestDist = nil, math.huge
-	for _, member in ipairs(run.Members) do
-		local root = getAliveParts(member)
-		if root then
+	for _, root in ipairs(cache.Roots) do
+		if root.Parent then
 			local dist = (root.Position - position).Magnitude
 			if dist < nearestDist then
 				nearest, nearestDist = root, dist
