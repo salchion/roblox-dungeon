@@ -2741,7 +2741,16 @@ local function updateDoom()
 				if not state.Fired and os.clock() - state.Since >= 9 then
 					state.Fired = true
 					state.FiredAt = os.clock()
-					doomWave(player, zoneOfX(root.Position.X))
+					local doomZone = zoneOfX(root.Position.X)
+					task.spawn(function() -- 오래 걸리는 연출이라 필드 업데이트 루프를 막지 않게 따로 돌린다
+						local ok, err = pcall(doomWave, player, doomZone)
+						if not ok then
+							warn("[Doom] 소환 결투 오류: " .. tostring(err))
+							player:SetAttribute("InDoomArena", nil)
+							local r = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+							if r then r.Anchored = false end
+						end
+					end)
 				end
 				if state.Fired and os.clock() - state.FiredAt >= 70 and humanoid.Health > 0 then
 					notify(player, "💀 압도적인 힘에 쓰러졌어요...")
