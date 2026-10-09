@@ -125,6 +125,8 @@ Config.Tutorial = {
 			Reward = { Tickets = 10, Gold = 600, Xp = 200 } },
 		{ Text = "🎰 뽑기 머신에서 10연 뽑기를 하세요! (티켓 10장) — 장비가 한꺼번에 강해져요", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Hero",
 			Reward = { Gold = 500 } },
+		{ Text = "💰 던전에서 모은 골드로 무기를 강화하세요! 골드를 쓴 만큼 강해져서 필드가 쉬워져요 (3번 성공)", Stat = "Enhances", Goal = 3, Target = "Anvil", TargetName = "모루",
+			Reward = { Tickets = 1, Xp = 100 } },
 		{ Text = "이제 다시 필드로! 강해진 힘으로 몬스터 15마리를 처치하세요", Stat = "Kills", Goal = 15, Target = "Field", TargetName = "필드 입구",
 			Reward = { Gold = 1000, Keys = 1, Tickets = 2, Xp = 300 } },
 	},
