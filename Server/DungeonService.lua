@@ -2191,6 +2191,27 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode)
 		pivotTo(member, arenaSpawnCFrame(run))
 	end
 
+	-- 처음 던전에 들어가면 조작법을 차례로 알려준다 (한 번만, 저장됨): 수동 조준 -> 대시 / NEAR MISS -> 궁극기
+	for _, member in ipairs(members) do
+		local rift = Meta.GetRift(member)
+		if rift and not rift.DungeonTip and not member:GetAttribute("TutorialActive") then
+			rift.DungeonTip = true
+			task.spawn(function()
+				local tips = {
+					{ Key = "🖱", Title = "직접 조준해서 쏴요!", Text = "마우스로 조준하고 클릭하면 원하는 적을 정확히 맞혀요. 자동 공격(R)은 편하지만 가장 가까운 적만 노려요", Duration = 7 },
+					{ Key = "Q", Title = "대시로 NEAR MISS!", Text = "적의 탄이 몸을 스치기 직전에 Q 대시로 빠져나가면 NEAR MISS! 데드아이 게이지가 차고 4초간 전부 치명타예요", Duration = 8 },
+					{ Key = "V", Title = "궁극기 데드아이", Text = "공격하면 게이지가 차요. 가득 차면 V 키로 주변 적을 한꺼번에 난사해요 (피격 무적!)", Duration = 7 },
+				}
+				task.wait(4)
+				for _, tip in ipairs(tips) do
+					if run.Destroyed or playerRun[member] ~= run then return end
+					Remotes.Tutorial:FireClient(member, "Prompt", tip)
+					task.wait(tip.Duration + 1.5)
+				end
+			end)
+		end
+	end
+
 	task.spawn(function()
 		while not run.Destroyed do
 			broadcast(run)
