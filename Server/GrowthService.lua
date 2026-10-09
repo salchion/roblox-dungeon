@@ -139,6 +139,7 @@ function Growth.StartTrain(player, stat)
 	local duration = math.floor(Config.GetTrainTime(level) * timeMultiplier(player))
 	table.insert(state.Jobs, { Stat = stat, EndAt = os.time() + duration })
 	notify(player, string.format("%s 훈련 시작! (%s)", R.Stats[stat].Name, Config.FormatDuration(duration)))
+	player:SetAttribute("TrainTick", (player:GetAttribute("TrainTick") or 0) + 1) -- 튜토리얼이 "훈련 시작"을 알아채는 신호
 	Growth.Push(player)
 end
 

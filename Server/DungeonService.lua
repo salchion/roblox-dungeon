@@ -1753,6 +1753,9 @@ local function colosseumLoop(run)
 		giveGold(run, D.WaveClearGold * wave)
 		giveXp(run, Config.Xp.WaveClear * wave)
 		notifyAll(run, string.format("✅ 웨이브 %d / %d 클리어!", wave, run.TotalWaves))
+		for _, member in ipairs(run.Members) do
+			Quest.Add(member, "DungeonWaves", 1)
+		end
 		if not statPhase(run) then return end
 	end
 

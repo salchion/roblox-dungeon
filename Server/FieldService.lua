@@ -2122,6 +2122,71 @@ local function cleanOrphans()
 	end
 end
 
+-- 튜토리얼 "압도적인 습격": 첫 필드 방문 때 잠깐 싸우게 한 뒤, 사방에서 훨씬 강한 몬스터 떼가 몰려와 필연적으로 쓰러지게 한다.
+-- (쓰러지면 마을로 돌아가고, 다음 미션이 "훈련 -> 던전 -> 10연 뽑기 -> 다시 필드(이제 쉽다)" 로 이어진다)
+local doomTimers = {}
+local function doomWave(player, zone)
+	local root = getAliveParts(player)
+	if not root then return end
+	notify(player, "⚠⚠ 압도적인 기운! 사방에서 강력한 몬스터 떼가 몰려온다!!")
+	player:SetAttribute("ShakeStrength", 0.9)
+	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+	local spawned = 0
+	for _ = 1, 60 do
+		if spawned >= 12 then break end
+		local angle = math.random() * math.pi * 2
+		local distance = 22 + math.random() * 16
+		local at = root.Position + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
+		if walkableAt(at.X, at.Z) and not isSafe(at) and zoneOfX(at.X) == zone then
+			local part, data = spawnMonster(zone, "Normal", at, true)
+			if part and data then
+				data.Doom = true
+				data.Stats.ShotDamage = math.floor(data.Stats.ShotDamage * 5)
+				data.Stats.Speed *= 1.2
+				spawned += 1
+			end
+		end
+	end
+end
+
+local function updateDoom()
+	local anyDoom = false
+	for _, player in ipairs(Players:GetPlayers()) do
+		if player:GetAttribute("TutorialDoom") and player:GetAttribute("Zone") == "Field" then
+			local root, humanoid = getAliveParts(player)
+			if root and not isSafe(root.Position) then
+				anyDoom = true
+				local state = doomTimers[player]
+				if not state then
+					state = { Since = os.clock() }
+					doomTimers[player] = state
+				end
+				if not state.Fired and os.clock() - state.Since >= 9 then
+					state.Fired = true
+					state.FiredAt = os.clock()
+					doomWave(player, zoneOfX(root.Position.X))
+				end
+				if state.Fired and os.clock() - state.FiredAt >= 16 and humanoid.Health > 0 then
+					notify(player, "💀 압도적인 힘에 쓰러졌어요...")
+					humanoid.Health = 0
+				end
+			else
+				doomTimers[player] = nil
+			end
+		else
+			doomTimers[player] = nil
+		end
+	end
+	if not anyDoom then
+		for part, data in pairs(monsters) do
+			if data.Doom then
+				monsters[part] = nil
+				part:Destroy()
+			end
+		end
+	end
+end
+
 -- 습격 / 공습: 필드에서 싸우는 플레이어에게 일정 시간마다 갑자기 닥친다 (가만히 있으면 위험하다)
 --   습격 = 사방에서 몬스터 떼가 몰려온다 / 공습 = 하늘에서 폭격기가 폭탄을 떨어뜨린다
 local function runAmbush()
@@ -2195,6 +2260,7 @@ function Field.Init(lobbySpawnCFrame)
 			updateZones()
 			rescueOutOfBounds()
 			updateBossFight()
+			updateDoom()
 			orphanTimer += 0.4
 			if orphanTimer >= 2 then
 				orphanTimer = 0

@@ -121,11 +121,20 @@ local function onCharacterAdded(player, character)
 	if player:GetAttribute("DiedInField") then
 		player:SetAttribute("DiedInField", nil)
 		player:SetAttribute("Zone", "Lobby")
-		Remotes.Notify:FireClient(player, "💀 쓰러져서 마을로 돌아왔어요. 장비를 정비하고 다시 도전하세요!")
+		if player:GetAttribute("TutorialDoomed") then
+			player:SetAttribute("TutorialDoomed", nil)
+			Remotes.Notify:FireClient(player, "💀 아직 너무 약해요! 마을에서 강해져서 돌아오세요 — 훈련(성장)으로 영구 강화, 던전에서 장비 획득!")
+		else
+			Remotes.Notify:FireClient(player, "💀 쓰러져서 마을로 돌아왔어요. 장비를 정비하고 다시 도전하세요!")
+		end
 	end
 	humanoid.Died:Connect(function()
 		if player:GetAttribute("Zone") == "Field" then
 			player:SetAttribute("DiedInField", true)
+			if player:GetAttribute("TutorialDoom") then
+				player:SetAttribute("TutorialDoomed", true)
+			end
+			Quest.Add(player, "FieldDeaths", 1)
 		end
 	end)
 

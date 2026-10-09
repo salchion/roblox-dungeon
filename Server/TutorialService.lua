@@ -30,6 +30,7 @@ local function send(player)
 	local step = Steps[state.Step]
 	player:SetAttribute("TutorialFree", step ~= nil and step.FreeEnhance == true)
 	player:SetAttribute("TutorialActive", step ~= nil)
+	player:SetAttribute("TutorialDoom", step ~= nil and step.Doom == true) -- 필드 "압도적인 습격" 장면 (쓰러지면 성장 단계로 이어진다)
 	if not step then
 		Remotes.Tutorial:FireClient(player, "Done")
 		return
@@ -51,6 +52,9 @@ function Tutorial.Load(player, saved)
 	end
 	states[player] = state
 	send(player)
+	player:GetAttributeChangedSignal("TrainTick"):Connect(function()
+		Quest.Add(player, "Trains", 1)
+	end)
 end
 
 function Tutorial.Serialize(player)
