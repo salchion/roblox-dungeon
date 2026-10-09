@@ -598,6 +598,9 @@ local function playSoundAt(parent, soundId, volume, pitch, name)
 	Debris:AddItem(sound, 3)
 end
 
+local shotCount, lastShotSound = setmetatable({}, { __mode = "k" }), setmetatable({}, { __mode = "k" }) -- 발사음 변주용
+local SHOT_PITCH_PATTERN = { 1.0, 0.94, 1.06, 0.98 }
+
 -- 발사 연출: 칼 휘두르기 대신 총구 화염 + 반동(총이 뒤로 살짝 밀림) + 발사음.
 -- 팔은 기본 애니메이션의 "무기를 앞으로 든 자세"를 그대로 유지한다.
 function Weapon.PlayShot(player)
@@ -643,9 +646,19 @@ function Weapon.PlayShot(player)
 	-- 무기 종류마다 다른 소리 (SoundBank: 같은 기본 소리를 피치 / 잔향 / 왜곡 / 겹치기로 가공). 세대가 높을수록 살짝 낮고 묵직하게
 	local tier = Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0)
 	local eraFactor = math.max(0.8, 1.08 - 0.03 * (tier.Era - 1))
-	local played = SoundBank.Play(barrel, "Shot_" .. tier.Class, { Pitch = eraFactor, Name = "GunShot" })
+	-- 똑같은 소리가 "탕탕탕탕" 반복되지 않게: 쏠 때마다 높낮이 / 크기가 조금씩 달라지고(네 박자 패턴 + 무작위),
+	-- 아주 빠르게 연사할 때는 일부 발사음을 건너뛰거나 작게 해서 소리가 뭉개지지 않고 리듬이 생긴다
+	local now = os.clock()
+	local count = (shotCount[player] or 0) + 1
+	shotCount[player] = count
+	local gap = now - (lastShotSound[player] or 0)
+	if gap < 0.1 and count % 2 == 0 then return end -- 초고속 연사: 두 발에 한 발만 소리를 낸다
+	lastShotSound[player] = now
+	local pitch = eraFactor * SHOT_PITCH_PATTERN[count % #SHOT_PITCH_PATTERN + 1] * (0.95 + math.random() * 0.1)
+	local volume = (count % 4 == 1 and 1.1 or 0.9) * (0.9 + math.random() * 0.2) * (gap < 0.2 and 0.85 or 1)
+	local played = SoundBank.Play(barrel, "Shot_" .. tier.Class, { Pitch = pitch, Volume = volume, Name = "GunShot" })
 	if not played then
-		playSoundAt(barrel, Config.Audio.Shot, Config.Audio.ShotVolume, math.max(0.5, 1.25 - 0.08 * (tier.Era - 1)), "GunShot")
+		playSoundAt(barrel, Config.Audio.Shot, Config.Audio.ShotVolume * volume, math.max(0.5, 1.25 - 0.08 * (tier.Era - 1)) * pitch / eraFactor, "GunShot")
 	end
 end
 

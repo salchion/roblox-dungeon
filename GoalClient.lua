@@ -25,7 +25,7 @@ end
 
 local panel = Instance.new("Frame")
 panel.Size = UDim2.new(0, 260, 0, 66)
-panel.Position = UDim2.new(0, 16, 0, 326)
+panel.Position = UDim2.new(0, 16, 0, 288)
 panel.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 panel.BackgroundTransparency = 0.2
 panel.BorderSizePixel = 0
@@ -72,7 +72,7 @@ local questPanel = Instance.new("TextButton") -- 누르면 완료된 퀘스트 �
 questPanel.Text = ""
 questPanel.AutoButtonColor = false
 questPanel.Size = UDim2.new(0, 260, 0, 30)
-questPanel.Position = UDim2.new(0, -300, 0, 326)
+questPanel.Position = UDim2.new(0, -300, 0, 288)
 questPanel.BackgroundColor3 = Color3.fromRGB(20, 22, 34)
 questPanel.BackgroundTransparency = 0.12
 questPanel.BorderSizePixel = 0
@@ -336,7 +336,7 @@ RunService.RenderStepped:Connect(function()
 	local questOn = player:GetAttribute("QuestHud") == true and zone ~= "Dungeon" and dailyList ~= nil
 	questPanel.Visible = questOn
 	if questOn then
-		local targetY = panel.Visible and 402 or (player:GetAttribute("TutorialCardUp") and 326 + 116 + 8 or 326)
+		local targetY = panel.Visible and (288 + 76) or (player:GetAttribute("TutorialCardUp") and 288 + 116 + 8 or 288)
 		if not questShown then -- 처음 나타날 때: 왼쪽에서 튕겨 들어온다
 			questShown = true
 			refreshQuests()

@@ -3277,7 +3277,7 @@ end
 
 do -- 상태 카드(HudClient)와 같은 어두운 남색 + 은은한 테두리
 	local menuButton = makeButton({
-		Size = UDim2.new(0, 110, 0, 32), Position = UDim2.new(0, 16, 0, 244), Text = "📋 메뉴 (I)", TextSize = 14,
+		Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 16, 0, 244), Text = "📋 메뉴(I)", TextSize = 12,
 		BackgroundColor3 = Color3.fromRGB(34, 40, 70),
 	}, gui, toggleMenu)
 	create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, menuButton)
@@ -4088,7 +4088,7 @@ end)
 
 do
 	local helpButton = makeButton({
-		Size = UDim2.new(0, 110, 0, 32), Position = UDim2.new(0, 16, 0, 282), Text = "⚙ 설정 (H)", TextSize = 14,
+		Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 98, 0, 244), Text = "⚙ 설정(H)", TextSize = 12,
 		BackgroundColor3 = Color3.fromRGB(34, 40, 70),
 	}, gui, toggleHelp)
 	create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, helpButton)

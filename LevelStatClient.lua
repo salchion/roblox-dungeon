@@ -48,8 +48,8 @@ end
 -- 오른쪽의 "스탯" 버튼 (안 쓴 포인트가 있으면 개수 배지)
 -- 왼쪽 위 상태 카드 아래, 메뉴 / 설정 버튼 옆에 둔다. 안 쓴 포인트가 있으면 반짝이며 숫자 배지가 뜬다.
 local pill = button({
-	Size = UDim2.new(0, 112, 0, 32), Position = UDim2.new(0, 132, 0, 244),
-	BackgroundColor3 = Color3.fromRGB(34, 38, 60), Text = "✨ 스탯 (T)", TextSize = 14,
+	Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 180, 0, 244),
+	BackgroundColor3 = Color3.fromRGB(34, 38, 60), Text = "✨ 스탯(T)", TextSize = 12,
 }, gui, function() end)
 local pillStroke = make("UIStroke", { Color = Color3.fromRGB(150, 160, 255), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, pill)
 local badge = label({

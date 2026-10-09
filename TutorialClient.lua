@@ -44,7 +44,7 @@ local function label(props, parent)
 end
 
 -- 미션 카드: 화면 왼쪽(다른 패널들과 같은 줄)에 계속 떠 있는 섹션 카드 (목표 / 진행 막대가 늘 같은 자리에 보인다)
-local CARD_POSITION = UDim2.new(0, 16, 0, 326)
+local CARD_POSITION = UDim2.new(0, 16, 0, 288)
 local CARD_SIZE = UDim2.new(0, 260, 0, 116)
 local objective = create("Frame", {
 	Size = CARD_SIZE, Position = CARD_POSITION,
@@ -130,7 +130,7 @@ local function popupMission()
 	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.new(0, 520, 0, 150) }):Play()
 	TweenService:Create(cardStroke, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 8 }):Play()
 	task.delay(4.5, function()
-		TweenService:Create(card, TweenInfo.new(0.4), { Position = UDim2.new(0, 146, 0, 326 + 58), Size = UDim2.new(0, 260, 0, 116), BackgroundTransparency = 1 }):Play() -- 왼쪽 미션 카드 자리로 빨려 들어간다
+		TweenService:Create(card, TweenInfo.new(0.4), { Position = UDim2.new(0, 146, 0, 288 + 58), Size = UDim2.new(0, 260, 0, 116), BackgroundTransparency = 1 }):Play() -- 왼쪽 미션 카드 자리로 빨려 들어간다
 		task.wait(0.4)
 		card:Destroy()
 		if activeCard == card then activeCard = nil end
