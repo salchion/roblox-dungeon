@@ -58,6 +58,7 @@ end
 
 -- 효과음: 내가 소리 ID 를 넣은 항목만 재생한다 (SoundBank.Has). 자주 나는 소리는 gap 초 안에 한 번만.
 local sfxLast = {}
+local MAX_RUN_PROJECTILES = 300 -- 던전 한 판에서 동시에 날아다니는 적 탄 상한 (넘치면 가장 오래된 탄부터 지운다)
 local function sfxAt(run, position, key, opts, gap)
 	if not SoundBank.Has(key) then return end
 	local now = os.clock()
@@ -600,6 +601,10 @@ end
 local function fireProjectile(run, origin, direction, speed, damage, size, color, style)
 	local ball = Effects.SpawnProjectile(origin, direction, speed, size, color, style, 5) -- 부품 없이 숫자로만 (그리기는 클라이언트)
 
+	if #run.Projectiles >= MAX_RUN_PROJECTILES then
+		local oldest = table.remove(run.Projectiles, 1)
+		oldest.Part:Destroy()
+	end
 	table.insert(run.Projectiles, {
 		Part = ball,
 		Direction = direction.Unit,
@@ -1121,8 +1126,8 @@ task.spawn(function() -- 접속 직후 / 날짜가 바뀔 때 화면 표시용 �
 	end
 end)
 
-local nearMissAt = {}
-local dashSeenAt = {}
+local nearMissAt = setmetatable({}, { __mode = "k" })
+local dashSeenAt = setmetatable({}, { __mode = "k" })
 function Dungeon.AwardNearMiss(run, player, root)
 	local now = os.clock()
 	if now - (nearMissAt[player] or 0) < 0.7 then return end
@@ -1204,7 +1209,8 @@ local function stepRun(run, dt)
 		else
 			-- 일반 몬스터: 종류(슬라임/독충/박쥐/마법사/골렘/멧돼지/폭탄병)마다 움직임과 공격이 다르다
 			-- 방에 미리 배치된 몬스터는 플레이어가 가까이 올 때까지 가만히 있다 (한 번 깨어나면 계속 추격)
-			if data.RoomIndex and not data.Awake then
+			if data.RoomIndex and not data.Awake and now >= (data.WakeCheckAt or 0) then
+				data.WakeCheckAt = now + 0.15 -- 잠든 몬스터는 0.15초마다 한 번만 거리를 잰다
 				local _, nearDist = getNearestTarget(run, part.Position)
 				if nearDist <= 100 then
 					data.Awake = true
@@ -1216,6 +1222,14 @@ local function stepRun(run, dt)
 		end
 	end
 
+	local memberParts -- 이 프레임의 생존 멤버 목록 (탄이 있을 때만, 탄마다 다시 조회하지 않는다)
+	if #run.Projectiles > 0 then
+		memberParts = {}
+		for _, member in ipairs(run.Members) do
+			local root, humanoid = getAliveParts(member)
+			if root then memberParts[#memberParts + 1] = { Member = member, Root = root, Humanoid = humanoid } end
+		end
+	end
 	for i = #run.Projectiles, 1, -1 do
 		local projectile = run.Projectiles[i]
 		projectile.Part.Position += projectile.Direction * projectile.Speed * dt
@@ -1225,10 +1239,10 @@ local function stepRun(run, dt)
 		if not walkable(run, projectile.Part.Position.X, projectile.Part.Position.Z) then
 			hit = true
 		end
-		for _, member in ipairs(run.Members) do
+		for _, entry in ipairs(memberParts) do
 			if hit then break end
-			local root, humanoid = getAliveParts(member)
-			if root then
+			local member, root, humanoid = entry.Member, entry.Root, entry.Humanoid
+			if humanoid.Health > 0 then
 				local gap = (root.Position - projectile.Part.Position).Magnitude
 				if gap < projectile.Radius + 2 then
 					humanoid:TakeDamage(projectile.Damage)

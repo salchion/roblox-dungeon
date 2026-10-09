@@ -43,13 +43,19 @@ local function getBurst()
 	return { Part = anchor, Emitter = emitter }
 end
 
+local MAX_ACTIVE_BURSTS, MAX_ACTIVE_TEXTS = 70, 110
+local activeBursts, activeTexts = 0, 0
+
 local function burst(position, color, count)
+	if activeBursts >= MAX_ACTIVE_BURSTS then return end -- 동시 폭발 상한: 넘치면 새 것을 건너뛴다
+	activeBursts += 1
 	local entry = getBurst()
 	entry.Part.Position = position
 	entry.Part.Parent = fxFolder
 	entry.Emitter.Color = ColorSequence.new(color)
 	entry.Emitter:Emit(math.min(count or 40, 120))
 	task.delay(1.4, function()
+		activeBursts -= 1
 		entry.Part.Parent = nil
 		if #burstPool < 40 then table.insert(burstPool, entry) else entry.Part:Destroy() end
 	end)
@@ -76,6 +82,8 @@ local function getText()
 end
 
 local function showText(position, text, color, size, lifetime, rise)
+	if activeTexts >= MAX_ACTIVE_TEXTS then return end
+	activeTexts += 1
 	local entry = getText()
 	entry.Gui.Size = size
 	entry.Label.Text = text
@@ -86,6 +94,7 @@ local function showText(position, text, color, size, lifetime, rise)
 		TweenService:Create(entry.Part, TweenInfo.new(lifetime), { Position = position + Vector3.new(0, rise, 0) }):Play()
 	end
 	task.delay(lifetime, function()
+		activeTexts -= 1
 		entry.Part.Parent = nil
 		if #textPool < 60 then table.insert(textPool, entry) else entry.Part:Destroy() end
 	end)
@@ -478,10 +487,20 @@ local HANDLERS = {
 	R = ring, Z = bolt, M = missile, L = flame, E = meteor, O = orbit,
 }
 
+-- 한 배치(한 프레임)에서 종류별로 그릴 수 있는 최대 개수: 넘치는 것은 건너뛴다 (지우기 "X" / 끄기 "O" / 번쩍임 "H" 는 제한 없음)
+local BATCH_LIMIT = { G = 10, T = 48, R = 16, Z = 12, M = 12, L = 8, E = 8, K = 14, P = 100, S = 100, B = 60 }
 Remotes.Fx.OnClientEvent:Connect(function(batch)
 	if typeof(batch) ~= "table" then return end
+	local used = {}
 	for _, event in ipairs(batch) do
-		local handler = HANDLERS[event[1]]
+		local kind = event[1]
+		local handler = HANDLERS[kind]
+		local limit = BATCH_LIMIT[kind]
+		if limit then
+			local n = (used[kind] or 0) + 1
+			used[kind] = n
+			if n > limit then handler = nil end
+		end
 		if handler then
 			local ok, err = pcall(handler, event)
 			if not ok and game:GetService("RunService"):IsStudio() then warn("[Fx] " .. tostring(err)) end

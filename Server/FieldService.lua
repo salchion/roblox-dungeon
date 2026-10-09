@@ -1301,7 +1301,12 @@ local function spawnMonster(zone, kind, at, ambush)
 	return part, newData
 end
 
+local MAX_FIELD_PROJECTILES = 450 -- 동시에 날아다니는 적 탄 상한: 넘치면 가장 오래된 탄부터 지운다
 local function fireProjectile(origin, direction, speed, damage, size, color, style)
+	if #projectiles >= MAX_FIELD_PROJECTILES then
+		local oldest = table.remove(projectiles, 1)
+		oldest.Part:Destroy()
+	end
 	local ball = Effects.SpawnProjectile(origin, direction, speed, size, color, style, 5) -- 부품 없이 숫자로만 (그리기는 클라이언트)
 
 	table.insert(projectiles, {
@@ -2107,6 +2112,21 @@ local function stepMonsters(dt)
 		-- 최근에 맞았으면(저격 / 장거리 사격 포함) 거리와 상관없이 깨어나서 반응한다
 		local recentlyHit = data.LastHit ~= nil and now - data.LastHit < 8
 
+		-- 멀리(120+) 떨어져 잠든 몬스터는 4틱에 한 번만 갱신한다 (쌓인 dt 로 한꺼번에: 제자리 복귀 / 회복은 같은 속도)
+		if not data.Aggro and not recentlyHit and (not target or distance > 120) then
+			local tick = (data.FarTick or 0) + 1
+			data.FarDt = (data.FarDt or 0) + dt
+			if tick < 4 then
+				data.FarTick = tick
+				continue
+			end
+			data.FarTick = 0
+			dt = data.FarDt
+			data.FarDt = 0
+		else
+			data.FarTick, data.FarDt = nil, nil
+		end
+
 		if target and (distance <= range or recentlyHit) and fromHome <= F.LeashRange * 1.5 then
 			data.Aggro = true
 
@@ -2229,8 +2249,8 @@ local function stepMonsters(dt)
 end
 
 -- 아슬아슬한 회피(NEAR MISS): 대시 중에 탄 / 폭격이 몸 바로 옆을 스치면 보상 - 데드아이 게이지 + 잠깐 동안 공격이 전부 치명타
-local nearMissAt = {}
-local dashSeenAt = {}
+local nearMissAt = setmetatable({}, { __mode = "k" })
+local dashSeenAt = setmetatable({}, { __mode = "k" })
 local function isDashing(root, player)
 	-- 대시 중이거나 방금(0.6초 안에) 대시했으면 인정한다: 탄이 스치는 순간 대시가 막 끝났어도 NEAR MISS (후한 판정)
 	local v = root.AssemblyLinearVelocity
@@ -2258,16 +2278,27 @@ end
 
 local function stepProjectiles(dt)
 	local now = os.clock()
+	if #projectiles == 0 then return end
+	-- 탄마다 모든 플레이어를 다시 조회하지 않도록 이 프레임의 대상 목록을 한 번만 만든다
+	local targets = {}
+	for _, player in ipairs(Players:GetPlayers()) do
+		if player:GetAttribute("Zone") == "Field" then
+			local root, humanoid = getAliveParts(player)
+			if root and not isSafe(root.Position) then
+				targets[#targets + 1] = { Player = player, Root = root, Humanoid = humanoid }
+			end
+		end
+	end
 	for i = #projectiles, 1, -1 do
 		local projectile = projectiles[i]
 		projectile.Part.Position += projectile.Direction * projectile.Speed * dt
 
 		local hit = not walkableAt(projectile.Part.Position.X, projectile.Part.Position.Z) -- 벽에 닿은 탄은 사라진다
-		for _, player in ipairs(Players:GetPlayers()) do
+		for _, target in ipairs(targets) do
 			if hit then break end
-			if player:GetAttribute("Zone") == "Field" then
-				local root, humanoid = getAliveParts(player)
-				if root and not isSafe(root.Position) then
+			local player, root, humanoid = target.Player, target.Root, target.Humanoid
+			do
+				if humanoid.Health > 0 then
 					local gap = (root.Position - projectile.Part.Position).Magnitude
 					if gap < projectile.Radius + 2 then
 						humanoid:TakeDamage(player:GetAttribute("TutorialDoom") and math.max(1, math.floor(projectile.Damage * 0.5)) or projectile.Damage) -- 튜토리얼 중에는 맞는 피해가 절반
@@ -2294,7 +2325,7 @@ end
 -- x좌표로 로비 / 필드 구역을 판별하고, 가장 멀리 간 구역(MaxZone)을 기록
 local lastGateNotice = setmetatable({}, { __mode = "k" })
 local lastZoneSeen = setmetatable({}, { __mode = "k" })
-local lordPing = {}
+local lordPing = setmetatable({}, { __mode = "k" })
 local tutorialLords = setmetatable({}, { __mode = "k" }) -- [player] = 튜토리얼용 첫 구역 군주 (입구 가까이에서 바로 나타난다)
 
 -- 튜토리얼 첫 구역 군주: 1구역이 작아서(길이 340) 구역 끝의 군주 한 마리가 입구에서 가깝다. 별도 군주를 또 만들지 않고 이 군주를 길잡이로 가리킨다.
@@ -2801,8 +2832,8 @@ local function airRaid(player, zone)
 end
 
 -- 보스(구역 군주 / 이벤트 보스)가 나를 노리고 있으면 BossFight 가 켜진다 -> 클라이언트가 음악을 던전(전투) 곡으로 바꾼다
-local powerWarnedAt = {}
-local weakTipShown = {}
+local powerWarnedAt = setmetatable({}, { __mode = "k" })
+local weakTipShown = setmetatable({}, { __mode = "k" })
 local rescueAt = setmetatable({}, { __mode = "k" }) -- [player] = 튜토리얼 군주전에서 위험할 때 마지막으로 보호막을 받은 시각
 local weakLesson = setmetatable({}, { __mode = "k" }) -- [player] = { Base = 시작할 때 약점 명중 수, Taught = 약점을 맞힌 뒤 설명까지 끝났는지, NextHint = 다음 힌트 시각 }
 local function updateBossFight()

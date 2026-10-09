@@ -19,11 +19,24 @@ local FX_RANGE = 280   -- 이 거리 안에 있는 플레이어에게만 보낸�
 local FX_BATCH_MAX = 160
 local queues = setmetatable({}, { __mode = "k" }) -- [player] = { event... }
 
-local function emit(position, event)
+-- 플레이어 위치는 프레임당 한 번만 읽는다 (emit 이 한 프레임에 수백 번 불려도 FindFirstChild 는 플레이어당 1번)
+local rootCache, rootCacheAt = {}, -1
+local function refreshRoots()
+	local now = os.clock()
+	if now - rootCacheAt < 0.016 then return end
+	rootCacheAt = now
+	table.clear(rootCache)
 	for _, player in ipairs(Players:GetPlayers()) do
 		local character = player.Character
 		local root = character and character:FindFirstChild("HumanoidRootPart")
-		if root and (not position or (root.Position - position).Magnitude <= FX_RANGE) then
+		if root then rootCache[player] = root.Position end
+	end
+end
+
+local function emit(position, event)
+	refreshRoots()
+	for player, rootPos in pairs(rootCache) do
+		if not position or (rootPos - position).Magnitude <= FX_RANGE then
 			local queue = queues[player]
 			if not queue then
 				queue = {}
