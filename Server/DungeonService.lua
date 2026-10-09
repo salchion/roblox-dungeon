@@ -2194,19 +2194,64 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode)
 	-- 처음 던전에 들어가면 조작법을 차례로 알려준다 (한 번만, 저장됨): 수동 조준 -> 대시 / NEAR MISS -> 궁극기
 	for _, member in ipairs(members) do
 		local rift = Meta.GetRift(member)
-		if rift and not rift.DungeonTip and not member:GetAttribute("TutorialActive") then
+		if rift and not rift.DungeonTip then -- 첫 던전은 튜토리얼 미션 중이므로 튜토리얼 상태와 상관없이 띄운다
 			rift.DungeonTip = true
 			task.spawn(function()
-				local tips = {
-					{ Key = "🖱", Title = "직접 조준해서 쏴요!", Text = "마우스로 조준하고 클릭하면 원하는 적을 정확히 맞혀요. 자동 공격(R)은 편하지만 가장 가까운 적만 노려요", Duration = 7 },
-					{ Key = "Q", Title = "대시로 NEAR MISS!", Text = "적의 탄이 몸을 스치기 직전에 Q 대시로 빠져나가면 NEAR MISS! 데드아이 게이지가 차고 4초간 전부 치명타예요", Duration = 8 },
-					{ Key = "V", Title = "궁극기 데드아이", Text = "공격하면 게이지가 차요. 가득 차면 V 키로 주변 적을 한꺼번에 난사해요 (피격 무적!)", Duration = 7 },
-				}
-				task.wait(4)
-				for _, tip in ipairs(tips) do
-					if run.Destroyed or playerRun[member] ~= run then return end
-					Remotes.Tutorial:FireClient(member, "Prompt", tip)
-					task.wait(tip.Duration + 1.5)
+				-- 직접 해보는 미니 튜토리얼: 각 단계는 실제로 해야 넘어간다 (25초 안에 못 하면 건너뜀)
+				local function alive()
+					return not run.Destroyed and run.Phase ~= "Ended" and playerRun[member] == run and member.Parent ~= nil
+				end
+				local function show(key, title, text, duration)
+					Remotes.Tutorial:FireClient(member, "Prompt", { Key = key, Title = title, Text = text, Duration = duration or 30 })
+				end
+				local function step(key, title, text, isDone)
+					show(key, title, text, 30)
+					local waited = 0
+					while alive() and waited < 25 do
+						if isDone() then
+							show("✅", "좋아요!", "잘했어요! 다음으로 넘어가요", 1.6)
+							task.wait(2)
+							return true
+						end
+						task.wait(0.2)
+						waited += 0.2
+					end
+					return false
+				end
+				local function dashing()
+					local root = getAliveParts(member)
+					if not root then return false end
+					local v = root.AssemblyLinearVelocity
+					return Vector3.new(v.X, 0, v.Z).Magnitude > 50
+				end
+				task.wait(D.StartCountdown + 3) -- 첫 웨이브가 시작된 뒤에
+
+				local hitsAtStart = member:GetAttribute("HitTick") or 0
+				if not alive() then return end
+				step("🖱", "① 직접 조준해서 쏴요! (0/5)", "마우스로 몬스터를 조준하고 클릭해서 5번 맞혀보세요. 자동 공격(R)은 편하지만 가장 가까운 적만 노려요", function()
+					return (member:GetAttribute("HitTick") or 0) - hitsAtStart >= 5
+				end)
+
+				if not alive() then return end
+				local dashed = false
+				step("Q", "② Q 키로 대시!", "Q 키를 눌러 앞으로 돌진해보세요. 몬스터 탄을 피하는 데 써요", function()
+					dashed = dashed or dashing()
+					return dashed
+				end)
+
+				if not alive() then return end
+				local missAt = member:GetAttribute("NearMissUntil") or 0
+				step("⚡", "③ NEAR MISS 도전!", "몬스터가 쏜 탄이 몸을 스치기 직전에 Q 대시로 빠져나가 보세요! 성공하면 데드아이 게이지 + 4초간 전부 치명타", function()
+					return (member:GetAttribute("NearMissUntil") or 0) > missAt
+				end)
+
+				if not alive() then return end
+				member:SetAttribute("UltCharge", Config.Skills.Ult.Cost) -- 연습용으로 게이지를 가득 채워 준다
+				step("V", "④ 궁극기 데드아이!", "게이지가 가득 찼어요! V 키를 눌러 주변 적을 한꺼번에 난사해보세요 (사용 중에는 피격 무적)", function()
+					return member:GetAttribute("DeadeyeActive") == true
+				end)
+				if alive() then
+					show("🎉", "연습 끝!", "이제 던전 보스를 쓰러뜨려 보세요. 행운을 빌어요!", 4)
 				end
 			end)
 		end
