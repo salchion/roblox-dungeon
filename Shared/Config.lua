@@ -544,6 +544,11 @@ Config.Audio = {
 	Skill = ids.Skill or 0,          -- 스킬음
 	Bank = bankIds,                  -- 소리별 직접 지정 ID (AudioBank 스크립트 + AudioIds 의 Bank. 있으면 SoundBank 의 가공음 대신 사용)
 }
+-- 배경음악은 숫자 하나 대신 목록 { 111, 222, 333 } 으로 적을 수 있다: 곡이 끝나면 다음(다른) 곡이 이어진다 (AudioIds 에서).
+-- 필드는 Field1 ~ Field8 로 구역마다 다른 곡도 가능 (없으면 Field).
+for zone = 1, 8 do
+	Config.Audio.Music["Field" .. zone] = ids["Field" .. zone] or 0
+end
 
 ------------------------------------------------------------
 -- 장비 (갑옷 / 장갑 / 신발): 보스 티켓으로 뽑기 -> 골드로 강화

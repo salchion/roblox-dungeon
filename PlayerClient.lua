@@ -1453,15 +1453,37 @@ local openDungeonSelect -- 던전 선택창 (아래에서 정의)
 -- 배경음악: Config.Audio.Music 에 소리 ID를 넣으면 로비 / 던전 / 보스전마다 부드럽게 바뀐다
 ------------------------------------------------------------
 local tracks = {}
-for name, id in pairs(Config.Audio.Music) do
-	if id ~= 0 then
+local playlists = {} -- [이름] = { 오디오 ID... } (곡이 여러 개면 끝날 때마다 다른 곡으로 바뀐다)
+local function nextInPlaylist(name, sound)
+	local list = playlists[name]
+	if not list or #list < 2 then return end
+	local current = sound.SoundId
+	local pick
+	repeat pick = "rbxassetid://" .. list[math.random(#list)] until pick ~= current
+	sound.SoundId = pick
+	sound:Play()
+end
+for name, value in pairs(Config.Audio.Music) do
+	local list = {}
+	if typeof(value) == "table" then
+		for _, id in ipairs(value) do
+			if id ~= 0 then table.insert(list, id) end
+		end
+	elseif value ~= 0 then
+		list[1] = value
+	end
+	if #list > 0 then
 		local sound = Instance.new("Sound")
 		sound.Name = "Music_" .. name
-		sound.SoundId = "rbxassetid://" .. id
-		sound.Looped = true
+		sound.SoundId = "rbxassetid://" .. list[math.random(#list)]
+		sound.Looped = #list == 1
 		sound.Volume = 0
 		sound.Parent = SoundService
 		tracks[name] = sound
+		if #list > 1 then
+			playlists[name] = list
+			sound.Ended:Connect(function() nextInPlaylist(name, sound) end)
+		end
 	end
 end
 
@@ -1532,7 +1554,9 @@ local function updateMusic()
 		if player:GetAttribute("BossFight") then
 			playMusic(tracks.Dungeon and "Dungeon" or (tracks.Field and "Field" or "Lobby")) -- 보스가 나를 노리면 던전 전투 곡으로 바뀐다
 		else
-			playMusic(tracks.Field and "Field" or "Lobby")
+			local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+			local zoneKey = root and ("Field" .. Config.Field.ZoneOfX(root.Position.X))
+			playMusic((zoneKey and tracks[zoneKey]) and zoneKey or (tracks.Field and "Field" or "Lobby")) -- 구역 전용 곡이 있으면 그 곡
 		end
 	elseif dungeonState and dungeonState.Phase == "Boss" then
 		playMusic("Boss")
@@ -1542,6 +1566,12 @@ local function updateMusic()
 end
 player:GetAttributeChangedSignal("BossFight"):Connect(function() updateMusic() end)
 player:GetAttributeChangedSignal("InDoomArena"):Connect(function() updateMusic() end)
+task.spawn(function() -- 필드에서 구역 경계를 넘으면 그 구역 곡으로 (같은 곡이면 아무 일도 안 한다)
+	while true do
+		task.wait(2)
+		if currentZone() == "Field" then updateMusic() end
+	end
+end)
 
 local function refreshStats()
 	statPoints.Text = "특성 (던전 동안만 유지)"
