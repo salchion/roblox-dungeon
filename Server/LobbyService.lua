@@ -653,6 +653,7 @@ function Lobby.Build()
 			addLight(bulb, 45, 2, Color3.fromRGB(255, 225, 140))
 		end
 		buildSignpost(Vector3.new(16, 0, 13), 2)
+		buildSignpost(Vector3.new(0, TOP + HILL_H, 99), 2) -- 처음 시작하는 언덕 끝에서 바로 눈앞에 보이는 큰 이정표 (경사로 위쪽 공중이라 길을 막지 않는다)
 		buildSignpost(Vector3.new(24, 0, 50), 2.4) -- 언덕에서 내려오면 눈앞에 크게 보이는 두 번째 이정표
 	end
 
