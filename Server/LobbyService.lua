@@ -866,7 +866,7 @@ function Lobby.Build()
 	warpPrompt.Parent = beam
 
 	-- 허수아비 훈련장 입구 표지 (서쪽, 실제 허수아비는 DummyService 가 놓는다)
-	local trainingSign = makePart({ Name = "TrainingSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(-52, 24, 100), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
+	local trainingSign = makePart({ Name = "TrainingSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(-34, 24, 72), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
 	makeLabel(trainingSign, "🎯 허수아비 훈련장\n전투력이 높을수록 골드 UP", Color3.fromRGB(255, 220, 120), 0, 340, 76, 110)
 
 	-- 쨍한 느낌 줄이기: 네온 부품은 색을 살짝 가라앉히고, 조명은 약하게 (은은하게 빛나는 정도)
@@ -889,7 +889,7 @@ function Lobby.Build()
 		GachaPrompt = gachaPrompt,
 		WarpPrompt = warpPrompt,
 		RiftPrompt = riftPrompt,
-		DummyStart = Vector3.new(-52, TOP, 90), -- 허수아비 하나가 서는 자리
+		DummyStart = Vector3.new(-34, TOP, 62), -- 허수아비 하나가 서는 자리
 		RankBoardCFrame = CFrame.lookAt(Vector3.new(-52, TOP + 16.5, 100), Vector3.new(0, TOP + 16.5, 72)),
 	}
 end
