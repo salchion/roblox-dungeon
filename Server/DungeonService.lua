@@ -22,6 +22,7 @@ local Debris = game:GetService("Debris")
 local Combo = require(script.Parent:WaitForChild("ComboService"))
 local Meta = require(script.Parent:WaitForChild("MetaService"))
 local DungeonTerrain = require(script.Parent:WaitForChild("DungeonTerrain"))
+local DungeonDecor = require(script.Parent:WaitForChild("DungeonDecor")) -- 테마 장식 (동굴 / 얼음 / 화염)
 local Keys = require(script.Parent:WaitForChild("KeyService"))
 local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 local Loot = require(script.Parent:WaitForChild("LootService"))
@@ -177,6 +178,7 @@ local function buildArena(run)
 
 	run.Folder = folder
 	run.MonstersFolder = monsters
+	DungeonDecor.Decorate(run, run.TypeKey, nil) -- 테마 장식 (충돌 / 판정 없음)
 end
 
 ------------------------------------------------------------
