@@ -31,6 +31,7 @@ local Inventory = require(script.Parent:WaitForChild("InventoryService"))
 local F = Config.Field
 local TOP = 0.05
 local routeBeat = {} -- [player] = 튜토리얼 첫 구역 길목에서 이미 터진 사건 번호
+local doomFail = {} -- [player] = true: 군주를 못 잡고 쓰러지기 직전에 끌려간 경우 (대사만 다르다)
 local doomReady = {} -- [player] = 첫 구역 군주를 쓰러뜨린 시각 (튜토리얼 소환 결투의 시작 신호)
 
 local Field = {}
@@ -2814,6 +2815,9 @@ local function doomWave(player, zone)
 	if not root then return end
 	player:SetAttribute("InDoomArena", true) -- 납치 연출로 높이 올라가도 "필드 밖으로 튕김" / 구역 판별에 걸리지 않게 처음부터 켠다
 	notify(player, "⚠⚠ 압도적인 기운... 무언가가 당신을 부른다!!")
+	local failed = doomFail[player]
+	doomFail[player] = nil
+	Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "최후의 군주", Text = failed and "...그 정도 힘으로 내 영토에 들어오다니. 내가 직접 상대해주마." or "...군주를 쓰러뜨리다니, 강하구나. 이제 내가 직접 상대해주마.", Duration = 5, Top = true })
 	player:SetAttribute("ShakeStrength", 0.9)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	local TweenService = game:GetService("TweenService")
@@ -3225,6 +3229,11 @@ local function doomWave(player, zone)
 		player:SetAttribute("InDoomArena", nil)
 		arena:Destroy()
 		Remotes.Tutorial:FireClient(player, "Cinema", "End")
+		task.wait(2)
+		if player.Parent then -- 쓰러진 직후: 지금 강해질 수 있는 방법을 한눈에 알려준다
+			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "💪", Title = "쓰러져도 강해질 수 있어요!",
+				Text = "🎰 티켓으로 장비 뽑기  ·  🔨 골드로 무기 강화(진화)  ·  🏋 훈련으로 영구 성장\n전리품(골드 4000 / 티켓 10장)을 방금 받았어요. 먼저 뽑기 머신으로!", Duration = 10 })
+		end
 	end)
 end
 
@@ -3235,6 +3244,12 @@ local function updateDoom()
 			anyDoom = true -- 소환 결투 중에는 군주 / 연출을 건드리지 않는다
 		elseif player:GetAttribute("TutorialDoom") and player:GetAttribute("Zone") == "Field" then
 			local root, humanoid = getAliveParts(player)
+			if root and humanoid.Health < humanoid.MaxHealth * 0.3 and not doomReady[player] and not isSafe(root.Position) then
+				-- 군주를 못 잡고 쓰러지기 직전: 그대로 죽는 대신 최후의 군주가 직접 나선다 (같은 소환 결투로 이어진다)
+				doomFail[player] = true
+				doomReady[player] = os.clock() - 1
+				humanoid.Health = humanoid.MaxHealth
+			end
 			if root and not isSafe(root.Position) then
 				anyDoom = true
 				local state = doomTimers[player]
