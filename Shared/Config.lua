@@ -508,6 +508,7 @@ Config.Audio = {
 		Dungeon = ids.Dungeon or 0,  -- 던전(웨이브) 배경음악
 		Boss = ids.Boss or 0,        -- 보스전 배경음악
 		Field = ids.Field or 0,      -- 필드 배경음악 (없으면 로비 음악)
+		Doom = ids.Doom or 0,        -- 최후의 군주와의 결투 음악 (0이면 보스전 음악을 더 빠르게 틀어 준다)
 	},
 	Shot = ids.Shot or 0,            -- 총 쏘는 소리 (무기가 강해질수록 낮고 묵직하게 재생됨)
 	ShotVolume = 0.3,

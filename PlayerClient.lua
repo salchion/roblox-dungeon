@@ -1517,6 +1517,19 @@ end
 
 local function updateMusic()
 	local zone = currentZone()
+	if tracks.Boss then tracks.Boss.PlaybackSpeed = 1 end
+	if player:GetAttribute("InDoomArena") then
+		-- 최후의 군주와의 결투: 전용 음악(Doom)이 있으면 그걸, 없으면 보스전 음악을 더 빠르고 급하게
+		if tracks.Doom then
+			playMusic("Doom")
+		elseif tracks.Boss then
+			tracks.Boss.PlaybackSpeed = 1.12
+			playMusic("Boss")
+		else
+			playMusic(tracks.Dungeon and "Dungeon" or "Lobby")
+		end
+		return
+	end
 	if zone == "Lobby" then
 		playMusic("Lobby")
 	elseif zone == "Field" then
@@ -1532,6 +1545,7 @@ local function updateMusic()
 	end
 end
 player:GetAttributeChangedSignal("BossFight"):Connect(function() updateMusic() end)
+player:GetAttributeChangedSignal("InDoomArena"):Connect(function() updateMusic() end)
 
 local function refreshStats()
 	local picking = #perkOffer > 0
