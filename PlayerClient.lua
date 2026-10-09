@@ -133,25 +133,35 @@ local xpFill = create("Frame", {
 }, xpBack)
 rounded(xpFill, 4)
 
+-- 알림(토스트)은 화면 가운데 위가 아니라 왼쪽 아래 "툴팁 자리"에 뜬다 (안내 카드 바로 위). 가운데 시야와 미션 / 배너를 가리지 않는다.
+-- 던전에서는 왼쪽 아래 특성 패널 위로 올라간다.
 local toastLabel = makeLabel({
-	Size = UDim2.new(0, 460, 0, 40),
-	AnchorPoint = Vector2.new(0.5, 0),
-	Position = UDim2.new(0.5, 0, 0, 132), -- 골든 타임 배너(88~122) 바로 아래: 겹치지 않게
+	Size = UDim2.new(0, 400, 0, 74),
+	AnchorPoint = Vector2.new(0, 1),
+	Position = UDim2.new(0, -430, 1, -250),
 	BackgroundColor3 = Color3.fromRGB(20, 20, 30),
-	BackgroundTransparency = 0.12,
+	BackgroundTransparency = 0.1,
 	Font = Enum.Font.GothamBold,
-	TextSize = 18,
+	TextSize = 16,
+	TextWrapped = true,
+	TextXAlignment = Enum.TextXAlignment.Left,
 	Visible = false,
 }, gui)
+create("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 10) }, toastLabel)
+create("UIStroke", { Color = Color3.fromRGB(255, 225, 110), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, toastLabel)
 rounded(toastLabel)
 
 local toastToken = 0
 local function toast(text)
 	toastToken += 1
 	local token = toastToken
+	local base = (player:GetAttribute("Zone") == "Dungeon") and 210 or 112
+	local y = -(base + 138)
 	toastLabel.Text = text
+	toastLabel.Position = UDim2.new(0, -430, 1, y)
 	toastLabel.Visible = true
-	task.delay(3.5, function()
+	TweenService:Create(toastLabel, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, 14, 1, y) }):Play()
+	task.delay(4, function()
 		if token == toastToken then
 			toastLabel.Visible = false
 		end

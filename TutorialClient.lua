@@ -325,12 +325,14 @@ local activePrompt = nil
 local function showPrompt(data)
 	if activePrompt then activePrompt:Destroy() end
 	-- 안내 카드는 항상 화면 왼쪽 아래 측면에 둔다: 가운데(캐릭터 / 몬스터 / 조준점)를 가리지 않고, 위쪽 배너 / 아래 스킬 바와도 겹치지 않는다
+	local sideBase = (player:GetAttribute("Zone") == "Dungeon") and 210 or 112 -- 던전에서는 왼쪽 아래 특성 패널 위
+	player:SetAttribute("SidePromptUp", true)
 	local card = create("Frame", { Size = UDim2.new(0, 400, 0, 130), AnchorPoint = Vector2.new(0, 1),
-		Position = UDim2.new(0, -420, 1, -112),
+		Position = UDim2.new(0, -420, 1, -sideBase),
 		BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.05, BorderSizePixel = 0, ZIndex = 70 }, gui)
 	activePrompt = card
 	rounded(card, 16)
-	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, 14, 1, -112) }):Play() -- 왼쪽에서 스르륵 들어온다
+	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, 14, 1, -sideBase) }):Play() -- 왼쪽에서 스르륵 들어온다
 	local cardStroke = create("UIStroke", { Color = Color3.fromRGB(255, 225, 110), Thickness = 4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
 	TweenService:Create(cardStroke, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 8 }):Play()
 	local keycap = create("Frame", { Size = UDim2.new(0, 78, 0, 78), Position = UDim2.new(0, 16, 0.5, -39), BackgroundColor3 = Color3.fromRGB(245, 245, 250), BorderSizePixel = 0, ZIndex = 71 }, card)
@@ -346,7 +348,10 @@ local function showPrompt(data)
 			task.wait(0.4)
 			card:Destroy()
 		end
-		if activePrompt == card then activePrompt = nil end
+		if activePrompt == card then
+			activePrompt = nil
+			player:SetAttribute("SidePromptUp", false)
+		end
 	end)
 end
 
@@ -554,7 +559,7 @@ end
 -- 대시를 쓰거나 필드에 들어서면 사라진다. (가운데 시야를 가리지 않는 측면 표시)
 do
 	local tip = create("Frame", {
-		Size = UDim2.new(0, 330, 0, 64), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, -360, 1, -262),
+		Size = UDim2.new(0, 330, 0, 64), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, -360, 1, -112),
 		BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.1, BorderSizePixel = 0, ZIndex = 68, Visible = false,
 	}, gui)
 	rounded(tip, 14)
@@ -573,13 +578,13 @@ do
 		if on == shown then return end
 		shown = on
 		if on then tip.Visible = true end
-		TweenService:Create(tip, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, on and 14 or -360, 1, -262) }):Play()
+		TweenService:Create(tip, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, on and 14 or -360, 1, -112) }):Play()
 		if not on then task.delay(0.4, function() if not shown then tip.Visible = false end end) end
 	end
 	RunService.Heartbeat:Connect(function()
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		local step = current
-		local relevant = root ~= nil and step ~= nil and step.TargetName == "필드 입구" and player:GetAttribute("Zone") == "Lobby"
+		local relevant = root ~= nil and step ~= nil and step.TargetName == "필드 입구" and player:GetAttribute("Zone") == "Lobby" and not player:GetAttribute("SidePromptUp")
 		if not relevant then
 			movingSince = nil
 			setShown(false)

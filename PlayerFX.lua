@@ -629,20 +629,20 @@ do
 		if diff == 0 then return end
 		local up = diff > 0
 		local color = up and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(255, 130, 120)
-		local holder = create("Frame", { Size = UDim2.new(0, 420, 0, 74), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.34, 0), BackgroundTransparency = 1, ZIndex = 60 }, gui)
+		local holder = create("Frame", { Size = UDim2.new(0, 300, 0, 74), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 14, 1, -(((player:GetAttribute("Zone") == "Dungeon") and 210 or 112) + 232)), BackgroundTransparency = 1, ZIndex = 60 }, gui)
 		local main = makeLabel({
-			Size = UDim2.new(1, 0, 0, 44), Text = string.format("⚡ 전투력 %s%d %s", up and "+" or "", diff, up and "▲" or "▼"),
-			Font = Enum.Font.GothamBlack, TextSize = 34, TextColor3 = color, TextStrokeTransparency = 0.2, ZIndex = 61, TextTransparency = 1,
+			Size = UDim2.new(1, 0, 0, 44), Text = string.format("⚡ 전투력 %s%d %s", up and "+" or "", diff, up and "▲" or "▼"), TextXAlignment = Enum.TextXAlignment.Left,
+			Font = Enum.Font.GothamBlack, TextSize = 28, TextColor3 = color, TextStrokeTransparency = 0.2, ZIndex = 61, TextTransparency = 1,
 		}, holder)
 		local sub = makeLabel({
 			Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 44), Text = string.format("%d  →  %d", fromPower, toPower),
-			Font = Enum.Font.GothamBold, TextSize = 20, TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 0.3, ZIndex = 61, TextTransparency = 1,
+			Font = Enum.Font.GothamBold, TextSize = 18, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 0.3, ZIndex = 61, TextTransparency = 1,
 		}, holder)
 		local scale = create("UIScale", { Scale = 0.6 }, holder)
 		TweenService:Create(scale, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
 		TweenService:Create(main, TweenInfo.new(0.2), { TextTransparency = 0 }):Play()
 		TweenService:Create(sub, TweenInfo.new(0.2), { TextTransparency = 0 }):Play()
-		TweenService:Create(holder, TweenInfo.new(1.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = UDim2.new(0.5, 0, 0.28, 0) }):Play()
+		TweenService:Create(holder, TweenInfo.new(1.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = holder.Position - UDim2.new(0, 0, 0, 36) }):Play()
 		task.delay(1.3, function()
 			TweenService:Create(main, TweenInfo.new(0.4), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
 			TweenService:Create(sub, TweenInfo.new(0.4), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
