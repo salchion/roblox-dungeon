@@ -478,6 +478,21 @@ local function flat(vector)
 end
 
 -- 잠깐 색을 바꿔 예고한 뒤 action 실행 (그 사이 죽었으면 취소)
+-- 빙빙 돌며 피하는 플레이도 맞도록: 정면 탄 옆으로 양쪽 "옆 탄"을 같이 쏜다.
+-- 가만히 서 있으면 옆 탄은 몸 옆을 스치고(정면만 피하면 됨), 옆으로 돌며 달리면 옆 탄이 길목을 막는다.
+local FLANK_ANGLE = 13
+local function fireFlanked(ctx, part, target, speed, damage, size, color, style)
+	local aim = target.Position - part.Position
+	if aim.Magnitude < 0.1 then return end
+	aim = aim.Unit
+	ctx.Fire(part.Position, aim, speed, damage, size, color, style)
+	if (target.Position - part.Position).Magnitude < 10 then return end -- 너무 가까우면 옆 탄은 의미 없다
+	local sideDamage = math.max(1, math.floor(damage * 0.7))
+	for _, angle in ipairs({ -FLANK_ANGLE, FLANK_ANGLE }) do
+		ctx.Fire(part.Position, rotateY(aim, angle), speed, sideDamage, size * 0.85, color, style)
+	end
+end
+
 local function telegraph(ctx, part, data, color, delay, action)
 	part.Color = color
 	task.delay(delay, function()
@@ -804,7 +819,7 @@ function M.Update(ctx, part, data, dt, now)
 		telegraph(ctx, part, data, Color3.fromRGB(255, 220, 80), 0.4, function()
 			local current = ctx.GetTarget(part.Position)
 			if current then
-				ctx.Fire(part.Position, current.Position - part.Position, stats.ShotSpeed, stats.ShotDamage, math.max(1.5, stats.Size / 4), nil, def.Style)
+				fireFlanked(ctx, part, current, stats.ShotSpeed, stats.ShotDamage, math.max(1.5, stats.Size / 4), nil, def.Style)
 			end
 		end)
 
@@ -833,7 +848,7 @@ function M.Update(ctx, part, data, dt, now)
 		telegraph(ctx, part, data, Color3.fromRGB(255, 150, 60), 0.7, function()
 			local current = ctx.GetTarget(part.Position)
 			if current then
-				ctx.Fire(part.Position, current.Position - part.Position, stats.ShotSpeed, stats.ShotDamage, math.max(3.5, stats.Size / 2.5), Color3.fromRGB(255, 130, 40))
+				fireFlanked(ctx, part, current, stats.ShotSpeed, stats.ShotDamage, math.max(3.5, stats.Size / 2.5), Color3.fromRGB(255, 130, 40))
 			end
 		end)
 
@@ -844,7 +859,7 @@ function M.Update(ctx, part, data, dt, now)
 					if not ctx.Alive(part, data) then return end
 					local current = ctx.GetTarget(part.Position)
 					if current then
-						ctx.Fire(part.Position, current.Position - part.Position, stats.ShotSpeed * 1.25, math.max(1, math.floor(stats.ShotDamage * 0.7)), math.max(1.2, stats.Size / 4), nil, def.Style)
+						ctx.Fire(part.Position, rotateY((current.Position - part.Position).Unit, (i - 1) * 9), stats.ShotSpeed * 1.25, math.max(1, math.floor(stats.ShotDamage * 0.7)), math.max(1.2, stats.Size / 4), nil, def.Style)
 					end
 				end)
 			end
@@ -868,7 +883,7 @@ function M.Update(ctx, part, data, dt, now)
 			telegraph(ctx, part, data, Color3.fromRGB(255, 150, 60), 0.7, function()
 				local current = ctx.GetTarget(part.Position)
 				if current then
-					ctx.Fire(part.Position, current.Position - part.Position, stats.ShotSpeed, stats.ShotDamage, math.max(3.5, stats.Size / 2.5), Color3.fromRGB(255, 130, 40))
+					fireFlanked(ctx, part, current, stats.ShotSpeed, stats.ShotDamage, math.max(3.5, stats.Size / 2.5), Color3.fromRGB(255, 130, 40))
 				end
 			end)
 		else

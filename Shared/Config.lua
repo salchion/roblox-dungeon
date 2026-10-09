@@ -56,6 +56,8 @@ end
 Config.Pets = {
 	EggCost = 4000,
 	MaxLevel = 5,
+	AutoLootRarity = 3, -- 이 등급(영웅) 이상 펫을 장착하면 넓은 범위의 전리품이 자동으로 빨려 들어온다
+	AutoLootRadius = 55,
 	LevelBonus = 0.5,   -- 펫 레벨 1당 효과 +50% (기본 대비)
 	RarityNames = { "일반", "희귀", "영웅", "전설" },
 	RarityWeights = { 55, 30, 12, 3 },

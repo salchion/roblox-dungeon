@@ -161,11 +161,14 @@ RunService.Heartbeat:Connect(function(dt)
 	local now = os.clock()
 	for player, list in pairs(drops) do
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		local petKey = player:GetAttribute("PetKey")
+		local pet = petKey and petKey ~= "" and Config.Pets[petKey]
+		local radius = (pet and pet.Rarity >= Config.Pets.AutoLootRarity) and Config.Pets.AutoLootRadius or L.PickupRadius -- 고등급 펫: 자동 루팅
 		for id, drop in pairs(list) do
 			if now > drop.Expire then
 				list[id] = nil
 				Remotes.Loot:FireClient(player, "Gone", id)
-			elseif root and (root.Position - drop.Position).Magnitude <= L.PickupRadius then
+			elseif root and (root.Position - drop.Position).Magnitude <= radius then
 				list[id] = nil
 				Remotes.Loot:FireClient(player, "Gone", id)
 				collect(player, drop)
