@@ -1485,7 +1485,7 @@ local function spawnGoblin(zone)
 	local level = F.GetZoneLevel(zone)
 	local base = Config.Monster.GetStats(level)
 	local stats = {
-		Size = 5, MaxHealth = base.MaxHealth * 7, Speed = 26, ShotDamage = 0, ShotInterval = 99, ShotSpeed = 0,
+		Size = 7, MaxHealth = base.MaxHealth * 7, Speed = 26, ShotDamage = 0, ShotInterval = 99, ShotSpeed = 0,
 		Gold = base.Gold * 40,
 	}
 	local x0, x1 = zoneBounds(zone)
@@ -1504,10 +1504,62 @@ local function spawnGoblin(zone)
 	CollectionService:AddTag(part, "Monster")
 	CollectionService:AddTag(part, "RadarGold")
 	local light = Instance.new("PointLight")
-	light.Range = 26
-	light.Brightness = 2
+	light.Range = 48
+	light.Brightness = 3.5
 	light.Color = part.Color
 	light.Parent = part
+
+	-- 눈에 확 띄게: 하늘까지 닿는 금빛 기둥 + 금화 / 반짝이 입자 + 왕관 + 눈 + 돈자루 + 어디서든 보이는 큰 이름표
+	local function piece(shape, size, offset, color, material)
+		local p = Instance.new("Part")
+		p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.Massless = false, false, false, false, true
+		p.Shape = shape
+		p.Size = size
+		p.Color = color
+		p.Material = material
+		p.CFrame = part.CFrame * CFrame.new(offset)
+		local weld = Instance.new("WeldConstraint")
+		weld.Part0 = part
+		weld.Part1 = p
+		weld.Parent = p
+		p.Parent = part
+		return p
+	end
+	local gold = Color3.fromRGB(255, 215, 60)
+	local beacon = piece(Enum.PartType.Block, Vector3.new(3, 220, 3), Vector3.new(0, 110, 0), gold, Enum.Material.Neon)
+	beacon.Transparency = 0.55
+	for i = -1, 1 do
+		piece(Enum.PartType.Block, Vector3.new(0.8, 2.6, 0.8), Vector3.new(i * 1.5, stats.Size / 2 + 1, 0), gold, Enum.Material.Neon) -- 왕관 뿔
+	end
+	piece(Enum.PartType.Block, Vector3.new(4.6, 0.8, 4.6), Vector3.new(0, stats.Size / 2 - 0.2, 0), Color3.fromRGB(255, 240, 150), Enum.Material.Neon) -- 왕관 띠
+	for _, side in ipairs({ -1, 1 }) do
+		piece(Enum.PartType.Ball, Vector3.new(1.1, 1.1, 1.1), Vector3.new(side * 1.2, 0.6, -stats.Size / 2 + 0.3), Color3.fromRGB(30, 20, 10), Enum.Material.SmoothPlastic)
+	end
+	piece(Enum.PartType.Ball, Vector3.new(4.2, 4.2, 4.2), Vector3.new(0, -0.5, stats.Size / 2 + 1), Color3.fromRGB(150, 100, 40), Enum.Material.Fabric) -- 돈자루
+	local coins = Instance.new("ParticleEmitter")
+	coins.Rate = 28
+	coins.Lifetime = NumberRange.new(0.8, 1.6)
+	coins.Speed = NumberRange.new(4, 9)
+	coins.SpreadAngle = Vector2.new(180, 180)
+	coins.LightEmission = 1
+	coins.Color = ColorSequence.new(gold, Color3.fromRGB(255, 250, 200))
+	coins.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.4), NumberSequenceKeypoint.new(1, 0) })
+	coins.Parent = part
+	local label = Instance.new("BillboardGui")
+	label.Size = UDim2.fromOffset(280, 64)
+	label.StudsOffset = Vector3.new(0, stats.Size / 2 + 8, 0)
+	label.AlwaysOnTop = true
+	label.MaxDistance = 700
+	label.Parent = part
+	local labelText = Instance.new("TextLabel")
+	labelText.Size = UDim2.fromScale(1, 1)
+	labelText.BackgroundTransparency = 1
+	labelText.Text = "💰 황금 고블린!"
+	labelText.Font = Enum.Font.GothamBlack
+	labelText.TextScaled = true
+	labelText.TextColor3 = Color3.fromRGB(255, 232, 100)
+	labelText.TextStrokeTransparency = 0
+	labelText.Parent = label
 
 	local data = {
 		Zone = zone, Kind = "Goblin", Goblin = true, Level = level, XpLevel = level + 2, Stats = stats,
@@ -1542,11 +1594,27 @@ local function stepGoblin(part, data, dt, now)
 		end
 	end
 	local x0, x1 = zoneBounds(data.Zone)
-	local position = part.Position + flee
-	position = Vector3.new(
-		math.clamp(position.X, x0 + F.CampSafe + 10, x1 - 10), floorAt(math.clamp(position.X, x0 + F.CampSafe + 10, x1 - 10)) + data.Stats.Size / 2 + math.abs(math.sin(now * 6)) * 1.2,
-		math.clamp(position.Z, -F.Width / 2 + 12, F.Width / 2 - 12)
-	)
+	local function clampPosition(p)
+		local cx = math.clamp(p.X, x0 + F.CampSafe + 10, x1 - 10)
+		return Vector3.new(cx, floorAt(cx) + data.Stats.Size / 2 + math.abs(math.sin(now * 6)) * 1.2, math.clamp(p.Z, -F.Width / 2 + 12, F.Width / 2 - 12))
+	end
+	-- 벽(꺾임 벽 / 절벽 / 경사로 옆)을 뚫지 않는다: 가려는 방향이 막혀 있으면 옆으로 미끄러지거나 다른 방향을 고른다
+	local function passable(a, b)
+		return walkableAt(b.X, b.Z) and (segmentClear(Vector3.new(a.X, 0, a.Z), Vector3.new(b.X, 0, b.Z)))
+	end
+	local position = clampPosition(part.Position + flee)
+	if flee.Magnitude > 0 and not passable(part.Position, position) then
+		local chosen
+		for _, angle in ipairs({ 55, -55, 100, -100, 150, -150 }) do
+			local rotated = CFrame.Angles(0, math.rad(angle), 0):VectorToWorldSpace(flee)
+			local candidate = clampPosition(part.Position + rotated)
+			if passable(part.Position, candidate) then
+				chosen = candidate
+				break
+			end
+		end
+		position = chosen or part.Position
+	end
 	part.Position = position
 end
 
