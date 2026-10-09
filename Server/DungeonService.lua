@@ -2086,7 +2086,6 @@ local function drillLoop(run)
 	decorateBoss(part, 18, Color3.fromRGB(255, 160, 90))
 	local data = registerMonster(run, part, stats, "연습 표적 (보스 크기)", 260, { Static = true, Invincible = true, TypeKey = "Slime", Def = slime, Level = 1, Phase = 0, NextAttack = 1e9 })
 	run.MonsterCount -= 1 -- 웨이브 계산에 넣지 않는다
-	data.WeakPart = makeWeakOrb(part) -- 약점 구슬 연습용
 	member:SetAttribute("AutoOffTick", (member:GetAttribute("AutoOffTick") or 0) + 1) -- 자동 공격이 켜져 있으면 끈다 (직접 조준 연습)
 	task.wait(3)
 
@@ -2096,20 +2095,14 @@ local function drillLoop(run)
 		show("🖱", "① 직접 조준해서 쏴요!", "마우스로 표적을 조준하고 직접 클릭해서 5번 맞혀보세요. (자동 공격은 꺼 뒀어요)", 40)
 		if wait(90, function() return (member:GetAttribute("ManualHitTick") or 0) - start >= 5 end) then ok() end
 	end
-	-- ② 약점 사격
+	-- ② 대시
 	if alive() then
-		local start = member:GetAttribute("WeakHitTick") or 0
-		show("🎯", "② 노란 약점을 맞혀요! (3번)", "표적(보스) 몸 주위를 빙글빙글 도는 노란 빛 구슬이 약점이에요! 마우스로 구슬을 직접 조준해서 클릭하세요. 맞히면 약점이 노출돼서 4초 동안 받는 피해가 3배! + 데드아이 게이지 (자동 공격으로는 안 돼요)", 40)
-		if wait(90, function() return (member:GetAttribute("WeakHitTick") or 0) - start >= 3 end) then ok("약점 사격 좋아요! 보스에게도 똑같이 노려요") end
-	end
-	-- ③ 대시
-	if alive() then
-		show("Q", "③ Q 키로 대시!", "Q 키를 눌러 앞으로 돌진해보세요. 쏘는 탄을 피하는 데 써요", 40)
+		show("Q", "② Q 키로 대시!", "Q 키를 눌러 앞으로 돌진해보세요. 쏘는 탄을 피하는 데 써요", 40)
 		if wait(40, dashing) then ok("대시 좋아요! 이제 탄을 피해볼 거예요") end
 	end
-	-- ④ NEAR MISS (각본): 눈에 잘 띄는 경고 레이저 -> 큰 미사일 -> 가까워지면 시간 정지 -> Q
+	-- ③ NEAR MISS (각본): 눈에 잘 띄는 경고 레이저 -> 큰 미사일 -> 가까워지면 시간 정지 -> Q
 	if alive() then
-		show("⚡", "④ 미사일이 날아와요!", "표적이 큰 붉은 미사일을 쏴요! 가까워지면 시간이 멈추니까, 그때 Q 대시로 피해보세요", 5)
+		show("⚡", "③ 미사일이 날아와요!", "표적이 큰 붉은 미사일을 쏴요! 가까워지면 시간이 멈추니까, 그때 Q 대시로 피해보세요", 5)
 		task.wait(2.0)
 		local root = getAliveParts(member)
 		if root and run.Monsters[part] == data then
@@ -2182,7 +2175,7 @@ local function drillLoop(run)
 	end
 	-- ④-b 레이저 (각본): 표적이 나를 향해 레이저를 조준한다 -> 발사 직전에 시간 정지 -> Q 대시로 선 밖으로 -> 레이저 발사 (선에서 벗어난 채 스치면 NEAR MISS)
 	if alive() then
-		show("🔴", "⑤ 이번엔 레이저예요!", "표적이 붉은 레이저로 나를 조준해요. 발사 직전에 시간이 멈추면 Q 대시로 레이저 선 밖으로 빠져나가세요!", 5)
+		show("🔴", "④ 이번엔 레이저예요!", "표적이 붉은 레이저로 나를 조준해요. 발사 직전에 시간이 멈추면 Q 대시로 레이저 선 밖으로 빠져나가세요!", 5)
 		task.wait(2.0)
 		local root = getAliveParts(member)
 		if root and run.Monsters[part] == data then
@@ -2263,7 +2256,7 @@ local function drillLoop(run)
 	-- ④ 궁극기
 	if alive() then
 		member:SetAttribute("UltCharge", Config.Skills.Ult.Cost)
-		show("V", "⑥ 궁극기 데드아이!", "게이지가 가득 찼어요! V 키를 눌러 표적을 난사해보세요 (사용 중에는 피격 무적)", 40)
+		show("V", "⑤ 궁극기 데드아이!", "게이지가 가득 찼어요! V 키를 눌러 표적을 난사해보세요 (사용 중에는 피격 무적)", 40)
 		if wait(40, function() return member:GetAttribute("DeadeyeActive") == true end) then
 			task.wait(2.5)
 			ok("멋져요! 이제 진짜 던전이에요")
