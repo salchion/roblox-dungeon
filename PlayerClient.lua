@@ -1002,6 +1002,19 @@ Remotes.OpenGear.OnClientEvent:Connect(function()
 	refreshGear()
 end)
 
+-- 튜토리얼: 뽑기 미션이 끝나 다음 미션으로 넘어가면 장비 / 뽑기창을 자동으로 닫는다 (결과를 볼 시간을 준 뒤)
+local lastGearStep = 0
+Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
+	if action ~= "Step" then return end
+	local advanced = data.Index > lastGearStep and lastGearStep > 0
+	lastGearStep = data.Index
+	if advanced and data.TargetName ~= "뽑기 머신" and gearPanel.Visible then
+		task.delay(3, function()
+			gearPanel.Visible = false
+		end)
+	end
+end)
+
 ------------------------------------------------------------
 -- 로비: 파티 패널
 ------------------------------------------------------------
