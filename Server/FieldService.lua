@@ -2112,21 +2112,6 @@ local function stepMonsters(dt)
 		-- 최근에 맞았으면(저격 / 장거리 사격 포함) 거리와 상관없이 깨어나서 반응한다
 		local recentlyHit = data.LastHit ~= nil and now - data.LastHit < 8
 
-		-- 멀리(120+) 떨어져 잠든 몬스터는 4틱에 한 번만 갱신한다 (쌓인 dt 로 한꺼번에: 제자리 복귀 / 회복은 같은 속도)
-		if not data.Aggro and not recentlyHit and (not target or distance > 120) then
-			local tick = (data.FarTick or 0) + 1
-			data.FarDt = (data.FarDt or 0) + dt
-			if tick < 4 then
-				data.FarTick = tick
-				continue
-			end
-			data.FarTick = 0
-			dt = data.FarDt
-			data.FarDt = 0
-		else
-			data.FarTick, data.FarDt = nil, nil
-		end
-
 		if target and (distance <= range or recentlyHit) and fromHome <= F.LeashRange * 1.5 then
 			data.Aggro = true
 
