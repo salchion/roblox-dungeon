@@ -182,8 +182,9 @@ Config.Skills = {
 		Desc = "조준한 곳에 폭발 (범위 16, 공격력 x3)" },
 	Heal = { Name = "응급 치료", Icon = "💚", Key = "C", KeyCode = "C", Cooldown = 30, Radius = 40, Ratio = 0.2,
 		Desc = "나와 주변 파티원의 체력 20% 회복" },
-	Ult = { Name = "데드아이", Icon = "🎯", Key = "V", KeyCode = "V", Cooldown = 3, Radius = 110, Mult = 8, Cost = 100, ShotsPerTarget = 8, ShotGap = 0.03,
-		Desc = "궁극기: 게이지가 가득 차면 사용! 주변 적을 하나씩 딱 락인한 뒤 공속 한계를 뚫고 전부에게 화다다다다 난사한다 (최대 12마리, 공격력 x8)" },
+	Ult = { Name = "데드아이", Icon = "🎯", Key = "V", KeyCode = "V", Cooldown = 3, Radius = 110, Mult = 8, Cost = 100, MaxTargets = 12, Volleys = 12, VolleyGap = 0.09, -- 대상 수 / 일제 사격 횟수를 줄여 렉을 막는다 (빔 / 피해 숫자 / 폭발 효과가 대상 x 횟수만큼 생긴다)
+		ShotsPerTarget = 8, ShotGap = 0.03,
+		Desc = "궁극기: 게이지가 가득 차면 사용! 주변 적을 하나씩 딱 락인한 뒤 공속 한계를 뚫고 전부에게 화다다다다 난사한다 (가까운 최대 12마리, 공격력 x8)" },
 	ChargePerShot = 4,
 }
 

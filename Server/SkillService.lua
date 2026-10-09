@@ -189,14 +189,14 @@ local function thickBeam(from, to, color, thickness, life)
 	Debris:AddItem(beam, life + 0.05)
 end
 
--- 궁극기 데드아이: 범위 안의 모든 적(최대 40마리)을 한꺼번에 락온하고 전원에게 동시에 일제 포격 + 충격파 + 대폭발.
+-- 궁극기 데드아이: 범위 안의 모든 적(가까운 최대 12마리)을 한꺼번에 락온하고 전원에게 동시에 일제 포격 + 충격파 + 대폭발.
 -- 포격 동안 무적(ForceField) + 화면이 붉게 변한다 (클라이언트가 DeadeyeActive Attribute 를 보고 연출).
 handlers.Ult = function(player, root, _, character)
 	local cfg = S.Ult
 	if (player:GetAttribute("UltCharge") or 0) < cfg.Cost then
 		return false, "궁극기 게이지가 부족해요! (적을 공격하면 차올라요)"
 	end
-	local targets = Dungeon.TargetsIn(player, root.Position, cfg.Radius, 40) or Field.TargetsIn(player, root.Position, cfg.Radius, 40)
+	local targets = Dungeon.TargetsIn(player, root.Position, cfg.Radius, cfg.MaxTargets or 12) or Field.TargetsIn(player, root.Position, cfg.Radius, cfg.MaxTargets or 12)
 	if not targets or #targets == 0 then
 		return false, "범위 안에 적이 없어요! (게이지는 그대로예요)"
 	end
@@ -205,7 +205,7 @@ handlers.Ult = function(player, root, _, character)
 	local origin = root.Position
 	local totalMult = (cfg.Mult or 8) * 0.75 * (1 + (U.UltMult or 0.15) * (skillLevel(player, "Ult") - 1))
 	-- 범위 안의 모든 적을 "동시에" 집중 포격한다: 조준 표시 -> 충격파 -> 전원에게 동시에 빔이 쏟아지는 일제 사격 14회 -> 마지막 대폭발
-	local volleys, volleyGap = 30, 0.045
+	local volleys, volleyGap = cfg.Volleys or 12, cfg.VolleyGap or 0.09
 	-- 데드아이는 "한 발 피해"가 아니라 무기의 초당 피해 계수(WeaponDpsFactor)에 맞춘다: 한 발 위력이 작은 연사 무기로 진화해도 데드아이가 약해지지 않게
 	local weaponType = Config.GetPlayerWeapon(player)
 	local baseShot = Dungeon.ComputeDamage(player) / weaponType.DamageMult * Config.WeaponDpsFactor(weaponType)

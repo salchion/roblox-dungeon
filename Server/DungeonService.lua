@@ -1241,7 +1241,11 @@ function Dungeon.TargetsIn(player, center, radius, limit)
 			table.insert(list, part)
 		end
 	end
-	table.sort(list, function(a, b) return (a.Position - center).Magnitude < (b.Position - center).Magnitude end)
+	table.sort(list, function(a, b)
+		local aBoss, bBoss = run.Monsters[a] and run.Monsters[a].IsBoss, run.Monsters[b] and run.Monsters[b].IsBoss
+		if aBoss ~= bBoss then return aBoss == true end -- 보스는 대상이 제한돼도 항상 포함
+		return (a.Position - center).Magnitude < (b.Position - center).Magnitude
+	end)
 	while #list > (limit or 12) do table.remove(list) end
 	return list
 end
