@@ -36,7 +36,7 @@ local usedSlots = {}     -- [slot] = true
 local nextRunId = 1
 local lobbySpawn = CFrame.new(0, 4, 25)
 
-local STAT_ATTRIBUTES = { "StatPoints" }
+local STAT_ATTRIBUTES = { "StatPoints", "AugMissile", "AugNova", "AugOrbit", "AugStorm" }
 for _, perkKey in ipairs(Config.Perks.Order) do
 	table.insert(STAT_ATTRIBUTES, Config.Perks[perkKey].Attr)
 end
@@ -90,6 +90,11 @@ local function resetStats(player)
 	for _, attribute in ipairs(STAT_ATTRIBUTES) do
 		player:SetAttribute(attribute, 0)
 	end
+	local character = player.Character
+	local aura = character and character:FindFirstChild("AugAura")
+	if aura then aura:Destroy() end
+	local auraFx = character and character:FindFirstChild("HumanoidRootPart") and character.HumanoidRootPart:FindFirstChild("AugAuraFx")
+	if auraFx then auraFx:Destroy() end
 	applyMaxHealth(player, math.huge)
 end
 
@@ -980,6 +985,7 @@ local function enrageBoss(run, part, data)
 	end
 end
 
+local augOnHit, augOnKill -- 어그먼트 효과 (아래 Dungeon.ComputeDamage 뒤에서 정의)
 local function damageMonster(run, player, part, data, amount, isCrit, hitPosition)
 	local shooterRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if shooterRoot and data.Def and data.Def.Shield then -- 방패 기사: 정면 공격은 막힌다
@@ -1000,6 +1006,7 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 	Effects.DamageNumber(hitPosition, amount, isCrit)
 	Effects.Hit(player, part, isCrit, data.Health <= 0)
 
+	if augOnHit then augOnHit(run, player, part, data, amount, isCrit) end
 	if data.Health > 0 then
 		if data.IsBoss and not data.Enraged and data.Health / data.MaxHealth <= Config.Boss.EnrageRatio then
 			enrageBoss(run, part, data)
@@ -1019,6 +1026,7 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 
 	run.Monsters[part] = nil
 	run.MonsterCount -= 1
+	if augOnKill then augOnKill(run, player, part.Position) end
 	Effects.Burst(part.Position, part.Color, data.IsBoss and 80 or 22)
 	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 2, 0), string.format("+%d G", math.floor(data.Stats.Gold * run.GoldMult * Config.Economy.DungeonGoldMult + 0.5)), Color3.fromRGB(255, 220, 90))
 	part:Destroy()
@@ -1247,6 +1255,239 @@ function Dungeon.ComputeDamage(player)
 		damage *= P.CritMultiplier
 	end
 	return math.max(1, math.floor(damage + 0.5)), isCrit
+end
+
+------------------------------------------------------------
+-- 어그먼트 (랜덤 강화 중 "플레이 방식이 바뀌는" 효과): 크리 미사일 / 처치 폭발 / 회전 칼날 / 낙뢰
+--   각각 최대 3단계. 몸에 색이 다른 오라가 생기고, 효과마다 눈에 보이는 연출이 따른다.
+------------------------------------------------------------
+local function nearestMonsters(run, position, radius, limit, exclude)
+	local list = {}
+	for part, data in pairs(run.Monsters) do
+		if part ~= exclude and part.Parent and data.Health > 0 then
+			local distance = (part.Position - position).Magnitude
+			if distance <= radius then table.insert(list, { Part = part, Data = data, D = distance }) end
+		end
+	end
+	table.sort(list, function(a, b) return a.D < b.D end)
+	while #list > limit do table.remove(list) end
+	return list
+end
+
+local function augDamage(player)
+	return (Dungeon.ComputeDamage(player))
+end
+
+local function hitMonster(run, player, entry, amount)
+	if run.Monsters[entry.Part] == entry.Data then
+		damageMonster(run, player, entry.Part, entry.Data, math.max(1, math.floor(amount)), false, entry.Part.Position)
+	end
+end
+
+local function launchMissile(run, player, from, entry, amount)
+	local ball = Instance.new("Part")
+	ball.Shape = Enum.PartType.Ball
+	ball.Size = Vector3.new(1.6, 1.6, 1.6)
+	ball.Material = Enum.Material.Neon
+	ball.Color = Color3.fromRGB(255, 160, 70)
+	ball.Anchored, ball.CanCollide, ball.CanQuery, ball.CanTouch = true, false, false, false
+	ball.Position = from
+	ball.Parent = run.Folder
+	local a0 = Instance.new("Attachment")
+	a0.Position = Vector3.new(0, 0.6, 0)
+	a0.Parent = ball
+	local a1 = Instance.new("Attachment")
+	a1.Position = Vector3.new(0, -0.6, 0)
+	a1.Parent = ball
+	local trail = Instance.new("Trail")
+	trail.Attachment0, trail.Attachment1 = a0, a1
+	trail.Lifetime = 0.35
+	trail.Color = ColorSequence.new(Color3.fromRGB(255, 220, 120), Color3.fromRGB(255, 80, 40))
+	trail.Transparency = NumberSequence.new(0, 1)
+	trail.LightEmission = 1
+	trail.Parent = ball
+	local target = entry.Part.Position
+	local mid = from:Lerp(target, 0.5) + Vector3.new((math.random() - 0.5) * 14, 10 + math.random() * 6, (math.random() - 0.5) * 14) -- 휘어서 날아간다
+	local started = os.clock()
+	local duration = 0.4
+	task.spawn(function()
+		while ball.Parent and os.clock() - started < duration do
+			local t = (os.clock() - started) / duration
+			local live = entry.Part.Parent and entry.Part.Position or target
+			local p = from:Lerp(mid, t):Lerp(mid:Lerp(live, t), t) -- 2차 곡선
+			ball.Position = p
+			task.wait()
+		end
+		if ball.Parent then
+			local position = entry.Part.Parent and entry.Part.Position or target
+			Effects.Burst(position, Color3.fromRGB(255, 150, 60), 22)
+			ball:Destroy()
+			hitMonster(run, player, entry, amount)
+		end
+	end)
+end
+
+local function shockRing(run, position, radius, color)
+	local ring = Instance.new("Part")
+	ring.Shape = Enum.PartType.Cylinder
+	ring.Size = Vector3.new(0.5, 2, 2)
+	ring.CFrame = CFrame.new(position + Vector3.new(0, 0.5, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	ring.Material = Enum.Material.Neon
+	ring.Color = color
+	ring.Transparency = 0.25
+	ring.Anchored, ring.CanCollide, ring.CanQuery, ring.CanTouch = true, false, false, false
+	ring.Parent = run.Folder
+	TweenService:Create(ring, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.5, radius * 2, radius * 2), Transparency = 1 }):Play()
+	Debris:AddItem(ring, 0.5)
+end
+
+local augDepth = 0
+augOnHit = function(run, player, part, data, amount, isCrit)
+	local level = player:GetAttribute("AugMissile") or 0
+	if level <= 0 or not isCrit or augDepth > 0 then return end
+	-- 치명타: 맞은 곳에서 추가 미사일 (1 + 단계 발) 이 주변 적에게 휘어 날아간다
+	local from = part.Position + Vector3.new(0, 3, 0)
+	for _, entry in ipairs(nearestMonsters(run, part.Position, 70, 1 + level, part)) do
+		launchMissile(run, player, from, entry, amount * 0.6)
+	end
+end
+
+augOnKill = function(run, player, position)
+	local level = player:GetAttribute("AugNova") or 0
+	if level <= 0 or augDepth > 1 then return end
+	augDepth += 1
+	local radius = 12 + 3 * level
+	shockRing(run, position, radius, Color3.fromRGB(255, 110, 70))
+	Effects.Burst(position + Vector3.new(0, 2, 0), Color3.fromRGB(255, 150, 70), 40)
+	local damage = augDamage(player) * (1.2 + 0.6 * level)
+	for _, entry in ipairs(nearestMonsters(run, position, radius, 8)) do
+		hitMonster(run, player, entry, damage)
+	end
+	augDepth -= 1
+end
+
+local function setAura(player, color)
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if not root then return end
+	local aura = character:FindFirstChild("AugAura")
+	if not aura then
+		aura = Instance.new("Highlight")
+		aura.Name = "AugAura"
+		aura.FillTransparency = 0.8
+		aura.OutlineTransparency = 0.1
+		aura.DepthMode = Enum.HighlightDepthMode.Occluded
+		aura.Parent = character
+		local fx = Instance.new("ParticleEmitter")
+		fx.Name = "AugAuraFx"
+		fx.Rate = 24
+		fx.Lifetime = NumberRange.new(0.6, 1.1)
+		fx.Speed = NumberRange.new(2, 5)
+		fx.SpreadAngle = Vector2.new(180, 180)
+		fx.EmissionDirection = Enum.NormalId.Top
+		fx.LightEmission = 1
+		fx.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.9), NumberSequenceKeypoint.new(1, 0) })
+		fx.Parent = root
+	end
+	aura.FillColor, aura.OutlineColor = color, color
+	local fx = root:FindFirstChild("AugAuraFx")
+	if fx then fx.Color = ColorSequence.new(color) end
+	-- 새 어그먼트를 얻은 순간: 몸에서 빛이 퍼진다
+	shockRing({ Folder = player.Character }, root.Position, 14, color)
+	Effects.Burst(root.Position, color, 60)
+end
+
+-- 회전 칼날 / 낙뢰: 던전이 진행되는 동안 계속 도는 효과 루프
+local function startAugLoop(run)
+	task.spawn(function()
+		local blades, nextTick, nextStorm = {}, {}, {}
+		while not run.Destroyed and run.Phase ~= "Ended" do
+			local now = os.clock()
+			for _, member in ipairs(run.Members) do
+				local root = getAliveParts(member)
+				local orbit = member:GetAttribute("AugOrbit") or 0
+				local list = blades[member]
+				if not root or orbit <= 0 then
+					if list then
+						for _, blade in ipairs(list) do blade:Destroy() end
+						blades[member] = nil
+					end
+				else
+					local count = 2 + orbit
+					if not list or #list ~= count then
+						if list then for _, blade in ipairs(list) do blade:Destroy() end end
+						list = {}
+						for _ = 1, count do
+							local blade = Instance.new("Part")
+							blade.Size = Vector3.new(0.7, 0.4, 5)
+							blade.Material = Enum.Material.Neon
+							blade.Color = Color3.fromRGB(120, 235, 255)
+							blade.Anchored, blade.CanCollide, blade.CanQuery, blade.CanTouch = true, false, false, false
+							blade.Parent = run.Folder
+							local trail = Instance.new("Trail")
+							local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
+							a0.Position, a1.Position = Vector3.new(0, 0, -2.5), Vector3.new(0, 0, 2.5)
+							a0.Parent, a1.Parent = blade, blade
+							trail.Attachment0, trail.Attachment1 = a0, a1
+							trail.Lifetime = 0.25
+							trail.Color = ColorSequence.new(Color3.fromRGB(170, 245, 255))
+							trail.Transparency = NumberSequence.new(0.2, 1)
+							trail.LightEmission = 1
+							trail.Parent = blade
+							table.insert(list, blade)
+						end
+						blades[member] = list
+					end
+					local radius = 9
+					local positions = {}
+					for index, blade in ipairs(list) do
+						local angle = now * 5 + index * (2 * math.pi / count)
+						local p = root.Position + Vector3.new(math.cos(angle) * radius, 0.5, math.sin(angle) * radius)
+						blade.CFrame = CFrame.new(p, p + Vector3.new(-math.sin(angle), 0, math.cos(angle)))
+						table.insert(positions, p)
+					end
+					if now >= (nextTick[member] or 0) then
+						nextTick[member] = now + 0.3
+						local damage = augDamage(member) * (0.45 + 0.2 * orbit)
+						for part, data in pairs(run.Monsters) do
+							if part.Parent and data.Health > 0 then
+								for _, p in ipairs(positions) do
+									if (part.Position - p).Magnitude <= 5 + part.Size.X / 2 then
+										hitMonster(run, member, { Part = part, Data = data }, damage)
+										break
+									end
+								end
+							end
+						end
+					end
+				end
+				-- 낙뢰
+				local storm = member:GetAttribute("AugStorm") or 0
+				if root and storm > 0 and now >= (nextStorm[member] or 0) then
+					nextStorm[member] = now + math.max(1.2, 3.4 - 0.5 * storm)
+					for _, entry in ipairs(nearestMonsters(run, root.Position, 75, 2 + storm)) do
+						local top = entry.Part.Position + Vector3.new(0, 70, 0)
+						local bolt = Instance.new("Part")
+						bolt.Material = Enum.Material.Neon
+						bolt.Color = Color3.fromRGB(255, 245, 140)
+						bolt.Anchored, bolt.CanCollide, bolt.CanQuery, bolt.CanTouch = true, false, false, false
+						local length = (top - entry.Part.Position).Magnitude
+						bolt.Size = Vector3.new(1.4, 1.4, length)
+						bolt.CFrame = CFrame.lookAt((top + entry.Part.Position) / 2, entry.Part.Position)
+						bolt.Parent = run.Folder
+						TweenService:Create(bolt, TweenInfo.new(0.3), { Transparency = 1, Size = Vector3.new(0.2, 0.2, length) }):Play()
+						Debris:AddItem(bolt, 0.35)
+						Effects.Burst(entry.Part.Position, Color3.fromRGB(255, 240, 120), 24)
+						hitMonster(run, member, entry, augDamage(member) * (1.5 + 0.5 * storm))
+					end
+				end
+			end
+			task.wait(0.05)
+		end
+		for _, list in pairs(blades) do
+			for _, blade in ipairs(list) do blade:Destroy() end
+		end
+	end)
 end
 
 -- 범위 피해: center 주변 radius 안의 모든 적에게 damage 를 준다 (스킬용). 맞은 위치 목록 반환
@@ -1689,6 +1930,9 @@ local function applyBuff(run, member, buff)
 		for _, key in ipairs(buff.Combo) do
 			if not perkMaxed(member, key) then applyPerk(member, key) end
 		end
+	elseif buff.Effect == "Aug" then
+		member:SetAttribute(buff.Attr, math.min(buff.Max or 3, (member:GetAttribute(buff.Attr) or 0) + 1))
+		setAura(member, buff.Color)
 	elseif buff.Effect == "Heal" then
 		applyMaxHealth(member, math.huge)
 	elseif buff.Effect == "Shield" then
@@ -1725,6 +1969,7 @@ local function rollBonus(run, penaltyChance, forceSpecial)
 		local buff = pickWeighted(Config.RunBuffs, function(entry)
 			if forceSpecial and not entry.Special then return false end
 			if entry.Perk then return not perkMaxed(member, entry.Perk) end
+			if entry.Attr then return (member:GetAttribute(entry.Attr) or 0) < (entry.Max or 3) end
 			return true
 		end)
 		if buff then applyBuff(run, member, buff) end
@@ -1770,6 +2015,7 @@ end
 -- 버티기 진행: 웨이브 없이 정해진 시간 동안 몬스터가 계속 몰려오고(점점 빨라진다), 중간중간 랜덤 강화 / 패널티가 터진다.
 -- 끝까지 버티면 보스가 나타난다. (심연 도전과 비슷하지만 점수제가 아니라 보스 / 보상이 있는 일반 던전)
 local function surviveLoop(run)
+	startAugLoop(run)
 	run.PhaseEnd = os.clock() + D.StartCountdown
 	notifyAll(run, "🛡 몰려오는 몬스터를 처치하세요! 너무 많이 쌓이면 압도당해 실패, 끝까지 버티면 보스가 나타나요")
 	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end

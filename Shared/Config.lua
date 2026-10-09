@@ -286,6 +286,11 @@ Config.Dungeon.BonusInterval = 10    -- 이 간격(초)마다 랜덤 강화 / �
 -- 랜덤 강화 (고르지 않고 무작위로 하나 걸린다. Perk = 기존 특성을 Stacks 단계만큼 올림 / Weight = 나올 확률 가중치)
 Config.RunBuffs = {
 	{ Icon = "➳",  Name = "관통탄",       Desc = "탄이 적을 +1마리 더 관통",           Perk = "Pierce", Special = true },
+	-- ★ 어그먼트: 수치가 아니라 "플레이 방식"이 바뀌는 강화 (필드에서는 볼 수 없는 추가 효과가 눈에 보인다). 최대 Max 단계까지 쌓인다.
+	{ Icon = "🚀", Name = "크리 미사일", Desc = "치명타가 터질 때마다 추가 미사일이 날아가 주변 적을 터뜨려요",   Effect = "Aug", Attr = "AugMissile", Max = 3, Color = Color3.fromRGB(255, 150, 60),  Special = true, Weight = 1.6 },
+	{ Icon = "☄", Name = "처치 폭발",   Desc = "적을 처치하면 그 자리에서 큰 폭발이 일어나 주변 적에게 번져요",   Effect = "Aug", Attr = "AugNova",    Max = 3, Color = Color3.fromRGB(255, 80, 70),   Special = true, Weight = 1.6 },
+	{ Icon = "🌀", Name = "회전 칼날",   Desc = "몸 주위를 도는 칼날이 닿는 적을 계속 베어요",                     Effect = "Aug", Attr = "AugOrbit",   Max = 3, Color = Color3.fromRGB(110, 230, 255), Special = true, Weight = 1.6 },
+	{ Icon = "⛈", Name = "낙뢰",        Desc = "주기적으로 하늘에서 번개가 가까운 적들에게 내리쳐요",             Effect = "Aug", Attr = "AugStorm",   Max = 3, Color = Color3.fromRGB(255, 240, 110), Special = true, Weight = 1.6 },
 	{ Icon = "💥", Name = "폭발탄",       Desc = "맞은 적 주변이 폭발",                Perk = "Boom",   Special = true },
 	{ Icon = "⚡", Name = "연쇄 번개",    Desc = "맞은 적에게서 번개가 튄다",          Perk = "Chain",  Special = true },
 	{ Icon = "🩸", Name = "흡혈",         Desc = "맞힐 때마다 체력 회복",              Perk = "Vamp",   Special = true },
