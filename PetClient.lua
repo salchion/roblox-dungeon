@@ -102,7 +102,13 @@ local function rebuild()
 		for _, fn in ipairs(P.Functions) do
 			if fn.Level > pet.Level then nextFn = fn break end
 		end
-		label({ Size = UDim2.new(1, -90, 0, 18), Position = UDim2.new(0, 72, 0, 36), Text = nextFn and string.format("다음 기능: Lv.%d %s %s", nextFn.Level, nextFn.Icon, nextFn.Name) or "모든 기능이 열렸어요!", TextSize = 12, TextColor3 = Color3.fromRGB(190, 200, 235) }, head)
+		local reachText = ""
+		if nextFn then -- 다음 기능까지 몇 레벨 / 골드가 드는지
+			local total = 0
+			for lv = pet.Level, nextFn.Level - 1 do total += Config.GetPetLevelCost(lv) end
+			reachText = string.format("  (%d레벨 · 약 %s G)", nextFn.Level - pet.Level, comma(total))
+		end
+		label({ Size = UDim2.new(1, -90, 0, 18), Position = UDim2.new(0, 72, 0, 36), Text = nextFn and string.format("▶ 다음 기능: Lv.%d %s %s%s", nextFn.Level, nextFn.Icon, nextFn.Name, reachText) or "모든 기능이 열렸어요!", TextSize = 12, TextColor3 = Color3.fromRGB(255, 225, 140) }, head)
 		if pet.Level < P.MaxLevel then
 			local cost = Config.GetPetLevelCost(pet.Level)
 			button({ Size = UDim2.new(0, 230, 0, 34), Position = UDim2.new(0, 12, 1, -42), BackgroundColor3 = gold >= cost and Color3.fromRGB(60, 130, 80) or Color3.fromRGB(95, 60, 62),
@@ -115,9 +121,20 @@ local function rebuild()
 	-- 2) 기능 목록 (레벨별로 열린다)
 	label({ Size = UDim2.new(1, 0, 0, 22), Text = "  ⚙ 기능 (레벨이 오를수록 늘어나요)", TextSize = 14, TextColor3 = Color3.fromRGB(255, 225, 140), LayoutOrder = (function() order += 1 return order end)() }, scroll)
 	local level = pet and pet.Unlocked and pet.Level or 0
+	local nextLevel
+	for _, fn in ipairs(P.Functions) do
+		if fn.Level > level then nextLevel = fn.Level break end
+	end
 	for _, fn in ipairs(P.Functions) do
 		local open = level >= fn.Level
-		local r = row(40, open and Color3.fromRGB(34, 52, 44) or Color3.fromRGB(32, 34, 48))
+		local isNext = fn.Level == nextLevel
+		local r = row(40, open and Color3.fromRGB(34, 52, 44) or (isNext and Color3.fromRGB(58, 50, 28) or Color3.fromRGB(32, 34, 48)))
+		if isNext then
+			make("UIStroke", { Color = Color3.fromRGB(255, 215, 100), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, r)
+			label({ Size = UDim2.new(0, 70, 0, 16), Position = UDim2.new(1, -78, 0, 4), Text = "▶ 다음!", TextSize = 12, TextColor3 = Color3.fromRGB(255, 225, 110), TextXAlignment = Enum.TextXAlignment.Right }, r)
+		elseif open then
+			label({ Size = UDim2.new(0, 70, 0, 16), Position = UDim2.new(1, -78, 0, 4), Text = "✔ 열림", TextSize = 11, TextColor3 = Color3.fromRGB(130, 255, 170), TextXAlignment = Enum.TextXAlignment.Right }, r)
+		end
 		label({ Size = UDim2.new(0, 56, 1, 0), Position = UDim2.new(0, 8, 0, 0), Text = string.format("Lv.%d", fn.Level), TextSize = 14, TextColor3 = open and Color3.fromRGB(130, 255, 170) or Color3.fromRGB(150, 155, 185) }, r)
 		label({ Size = UDim2.new(1, -76, 0, 20), Position = UDim2.new(0, 66, 0, 3), Text = string.format("%s %s", fn.Icon, fn.Name), TextSize = 14, TextColor3 = open and Color3.new(1, 1, 1) or Color3.fromRGB(165, 170, 195) }, r)
 		label({ Size = UDim2.new(1, -76, 0, 16), Position = UDim2.new(0, 66, 0, 21), Text = fn.Desc, TextSize = 11, TextColor3 = open and Color3.fromRGB(190, 235, 205) or Color3.fromRGB(130, 135, 165), TextTruncate = Enum.TextTruncate.AtEnd }, r)
