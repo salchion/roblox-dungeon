@@ -61,12 +61,12 @@ local pulse = game:GetService("TweenService"):Create(pillStroke, TweenInfo.new(0
 
 -- 창
 local panel = make("Frame", {
-	Size = UDim2.new(0, 460, 0, 420), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+	Size = UDim2.new(0, 460, 0, 452), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
 	BackgroundColor3 = Color3.fromRGB(26, 28, 42), BorderSizePixel = 0, Visible = false,
 }, gui)
 make("UICorner", { CornerRadius = UDim.new(0, 12) }, panel)
 make("UIStroke", { Color = Color3.fromRGB(150, 160, 255), Thickness = 2 }, panel)
-make("UISizeConstraint", { MaxSize = Vector2.new(460, 420) }, panel)
+make("UISizeConstraint", { MaxSize = Vector2.new(460, 452) }, panel)
 
 label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "✨ 레벨 스탯", TextSize = 22, TextXAlignment = Enum.TextXAlignment.Left }, panel)
 local pointsLabel = label({ Size = UDim2.new(1, -32, 0, 22), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 15, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, panel)
@@ -81,7 +81,7 @@ for index, key in ipairs(LS.Order) do
 	make("UICorner", { CornerRadius = UDim.new(0, 8) }, row)
 	label({ Size = UDim2.new(0, 34, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = def.Icon, TextSize = 24 }, row)
 	label({ Size = UDim2.new(0, 160, 0, 22), Position = UDim2.new(0, 44, 0, 4), Text = def.Name, TextSize = 15, TextXAlignment = Enum.TextXAlignment.Left }, row)
-	local valueLabel = label({ Size = UDim2.new(0, 190, 0, 18), Position = UDim2.new(0, 44, 0, 27), Text = "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(150, 235, 190) }, row)
+	local valueLabel = label({ Size = UDim2.new(0, 216, 0, 18), Position = UDim2.new(0, 44, 0, 27), Text = "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(150, 235, 190), TextTruncate = Enum.TextTruncate.AtEnd }, row)
 	local countLabel = label({ Size = UDim2.new(0, 36, 1, 0), Position = UDim2.new(1, -168, 0, 0), Text = "0", TextSize = 18, TextColor3 = Color3.fromRGB(255, 225, 110) }, row)
 	button({ Size = UDim2.new(0, 30, 0, 32), Position = UDim2.new(1, -132, 0.5, -16), BackgroundColor3 = Color3.fromRGB(110, 60, 70), Text = "−" }, row, function()
 		Remotes.LevelStat:FireServer("Sub", key, 1)
@@ -95,6 +95,7 @@ for index, key in ipairs(LS.Order) do
 	rows[key] = { Value = valueLabel, Count = countLabel }
 end
 
+label({ Size = UDim2.new(1, -32, 0, 30), Position = UDim2.new(0, 16, 0, 376), Text = LS.Shots.Note or "", TextSize = 11, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
 button({ Size = UDim2.new(0, 150, 0, 32), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 1, -42), BackgroundColor3 = Color3.fromRGB(120, 70, 70), Text = "전부 초기화 (무료)", TextSize = 13 }, panel, function()
 	Remotes.LevelStat:FireServer("Reset")
 end)
