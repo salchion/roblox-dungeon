@@ -2204,6 +2204,11 @@ local function toggleAuto()
 	toast(autoMode and "🔒 자동 공격 ON — 허수아비/몬스터를 직접 클릭하면 그 대상으로 고정돼요 (R로 끄기)" or "자동 공격 OFF")
 end
 
+-- 마을(로비)로 돌아오면 자동 공격을 끈다 (마을에서는 쏠 일이 없다)
+player:GetAttributeChangedSignal("Zone"):Connect(function()
+	if autoMode and player:GetAttribute("Zone") == "Lobby" then toggleAuto() end
+end)
+
 -- 튜토리얼 허수아비 미션이 끝나면 서버가 알려준다 -> 자동 공격이 켜져 있으면 끈다
 player:GetAttributeChangedSignal("AutoOffTick"):Connect(function()
 	if autoMode then
