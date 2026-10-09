@@ -330,7 +330,10 @@ local function pickGoal()
 	if (player:GetAttribute("DungeonFree") or 0) >= 1 or (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0) >= 1 then
 		table.insert(candidates, { Text = string.format("🎟 오늘 무료 입장 %d회 · 🗝 열쇠 %d개!\n북쪽 게이트에서 던전에 도전하세요", player:GetAttribute("DungeonFree") or 0, (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0)), Ratio = 0.95, Priority = 3 })
 	end
-	if (player:GetAttribute("ClearedZone") or 0) >= Config.Field.ZoneCount - 1 and not player:GetAttribute("TutorialActive") then
+	if (player:GetAttribute("ClearedZone") or 0) >= Config.Field.ZoneCount - 1 and not player:GetAttribute("HintDone_FieldClear") and not player:GetAttribute("TutorialActive") then
+		table.insert(candidates, { Text = "👑 마지막 8구역의 군주를 쓰러뜨려요!\n필드를 정복하면 끝없는 심연이 열려요", Ratio = 0.95, Priority = 3 })
+	end
+	if player:GetAttribute("HintDone_FieldClear") and not player:GetAttribute("TutorialActive") then
 		table.insert(candidates, { Text = string.format("🌀 필드 정복! 이제 심연이에요\n마을 포털에서 심연 깊이 %d 에 도전하세요 (깊을수록 보상 x배)", player:GetAttribute("RiftUnlocked") or 1), Ratio = 0.98, Priority = 3 })
 	end
 	if (player:GetAttribute("Tickets") or 0) >= 1 then

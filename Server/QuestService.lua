@@ -58,7 +58,7 @@ local function statValue(player, state, stat)
 end
 
 -- 오늘의 퀘스트: 날짜를 시드로 해서 모든 플레이어가 같은 퀘스트를 받는다
-local function todaysQuests(day)
+local function todaysQuests(day, player)
 	local rng = Random.new(day)
 	local indices = {}
 	for i = 1, #Config.Quests.Pool do
@@ -70,8 +70,10 @@ local function todaysQuests(day)
 	end
 	-- 던전 / 강화 퀘스트는 항상 포함한다 (처음 접속한 날부터 "던전에 가고 장비를 강화한다"가 자연스럽게 눈에 들어오게)
 	local list, used = {}, {}
+	local riftOpen = player == nil or player:GetAttribute("HintDone_FieldClear") == true
 	for _, quest in ipairs(Config.Quests.Pool) do
-		if quest.Always then
+		if quest.Stat == "RiftRuns" and not riftOpen then used[quest.Id] = true end -- 심연이 열리기 전에는 심연 퀘스트가 나오지 않는다
+		if quest.Always and not used[quest.Id] then
 			table.insert(list, quest)
 			used[quest.Id] = true
 		end
@@ -138,7 +140,7 @@ local function buildPayload(player, state)
 	ensureDay(state)
 
 	local daily = {}
-	for _, quest in ipairs(todaysQuests(state.Day)) do
+	for _, quest in ipairs(todaysQuests(state.Day, player)) do
 		local progress = state.Progress[quest.Id] or 0
 		table.insert(daily, {
 			Id = quest.Id, Name = quest.Name, Desc = string.format(quest.Desc, quest.Goal),
@@ -207,7 +209,7 @@ function Quest.Add(player, stat, amount)
 	ensureDay(state)
 
 	state.Stats[stat] = (state.Stats[stat] or 0) + amount
-	for _, quest in ipairs(todaysQuests(state.Day)) do
+	for _, quest in ipairs(todaysQuests(state.Day, player)) do
 		if quest.Stat == stat then
 			state.Progress[quest.Id] = (state.Progress[quest.Id] or 0) + amount
 		end
@@ -293,7 +295,7 @@ Remotes.Quest.OnServerEvent:Connect(function(player, action, arg)
 		Quest.Push(player)
 
 	elseif action == "Claim" and typeof(arg) == "string" then
-		for _, quest in ipairs(todaysQuests(state.Day)) do
+		for _, quest in ipairs(todaysQuests(state.Day, player)) do
 			if quest.Id == arg then
 				if state.Claimed[quest.Id] then return end
 				if (state.Progress[quest.Id] or 0) < quest.Goal then return end

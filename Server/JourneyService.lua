@@ -37,9 +37,10 @@ function Journey.Mark(player, key)
 	player:SetAttribute("HintDone_" .. key, true)
 end
 
--- 심연은 첫 던전을 클리어하면 열린다 (이미 진행한 사람은 레벨 / 구역 조건으로 열린 것으로 본다)
+-- 심연은 필드 8구역을 끝까지 밀고(마지막 구역의 군주를 쓰러뜨리고) 나면 열린다. 이야기(필드)가 끝난 뒤의 끝없는 후반 콘텐츠.
+-- (이미 심연 기록이 있는 사람은 그대로 열려 있다)
 function Journey.RiftOpen(player)
-	return Journey.IsDone(player, "DungeonClear") or (player:GetAttribute("Level") or 1) >= 10 or (player:GetAttribute("ClearedZone") or 0) >= 1
+	return Journey.IsDone(player, "FieldClear")
 end
 
 local function prompt(player, key, title, text, duration)
@@ -75,7 +76,7 @@ local function townBeat(player, now)
 	if Journey.RiftOpen(player) and not Journey.IsDone(player, "RiftOpen") then
 		Journey.Mark(player, "RiftOpen")
 		lastBeat[player] = now
-		prompt(player, "🌀", "심연 도전이 열렸어요!", "마을의 보라색 포털에서 점수에 도전해요. 하루 3번 무료이고, 기록이 곧 소탕 보상이에요. 깊이는 필드를 밀수록 열려요.")
+		prompt(player, "🌀", "필드 정복! 심연이 열렸어요!", "마을의 보라색 포털에서 끝없는 심연에 도전해요. 하루 3번 무료이고, 깊이 들어갈수록 보상이 커지고, 기록이 곧 소탕 보상이에요.")
 		beacon(player, positions.Rift, "심연 포털")
 		return
 	end
@@ -153,6 +154,10 @@ function Journey.OnJoin(player)
 		if zone == "Lobby" and lastZone == "Dungeon" then lastBeat[player] = os.clock() end
 		lastZone = zone
 	end)
+	local rift = Meta.GetRift(player)
+	if rift and not hints.FieldClear and ((rift.Best or 0) > 0 or (rift.DepthDone or 0) > 0) then
+		hints.FieldClear = true -- 이미 심연을 해 본 사람은 그대로 열어 둔다
+	end
 	for key, value in pairs(hints) do
 		if value == true then player:SetAttribute("HintDone_" .. key, true) end
 	end

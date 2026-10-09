@@ -27,6 +27,7 @@ local MonsterTypes = require(script.Parent:WaitForChild("MonsterTypes"))
 local Combo = require(script.Parent:WaitForChild("ComboService"))
 local Loot = require(script.Parent:WaitForChild("LootService"))
 local Inventory = require(script.Parent:WaitForChild("InventoryService"))
+local Journey = require(script.Parent:WaitForChild("JourneyService"))
 
 local F = Config.Field
 local TOP = 0.05
@@ -1352,6 +1353,10 @@ end
 
 -- 구역 관문: 지금 막 열어야 하는 구역(ClearedZone+1)에서 몬스터를 처치하면 진행도가 오르고, 다 채우면 다음 구역이 열린다
 local function gateProgress(player, data)
+	if data.Kind == "Boss" and data.Zone == F.ZoneCount and not Journey.IsDone(player, "FieldClear") then
+		Journey.Mark(player, "FieldClear") -- 마지막 구역의 군주: 필드(이야기) 정복 -> 심연이 열린다
+		notify(player, "🏆 필드 정복! 마지막 군주를 쓰러뜨렸어요 — 마을 포털에서 끝없는 심연이 열렸어요!")
+	end
 	local cleared = player:GetAttribute("ClearedZone") or 0
 	local frontier = cleared + 1
 	local needed = F.Gate.KillsNeeded[frontier]
