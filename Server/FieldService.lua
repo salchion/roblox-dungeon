@@ -2321,6 +2321,7 @@ end
 local function doomWave(player, zone)
 	local root, humanoid = getAliveParts(player)
 	if not root then return end
+	player:SetAttribute("InDoomArena", true) -- 납치 연출로 높이 올라가도 "필드 밖으로 튕김" / 구역 판별에 걸리지 않게 처음부터 켠다
 	notify(player, "⚠⚠ 압도적인 기운... 무언가가 당신을 부른다!!")
 	player:SetAttribute("ShakeStrength", 0.9)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
@@ -2393,7 +2394,10 @@ local function doomWave(player, zone)
 		abduction:Destroy()
 	end
 	root, humanoid = getAliveParts(player)
-	if not root or humanoid.Health <= 0 then return end
+	if not root or humanoid.Health <= 0 then
+		player:SetAttribute("InDoomArena", nil)
+		return
+	end
 	root.Anchored = false
 	local center = Vector3.new(0, 420, 1500)
 	local arena = Instance.new("Folder")
@@ -2413,10 +2417,10 @@ local function doomWave(player, zone)
 		part.Parent = arena
 		return part
 	end
-	disc("DoomFloor", 150, 2, 0, rgb(28, 14, 26), Enum.Material.Basalt)
+	disc("DoomFloor", 150, 2, 0, rgb(196, 190, 208), Enum.Material.Marble) -- 밝은 대리석: 붉은 경고 원이 또렷하게 보이게
 	disc("DoomRim", 154, 0.4, 1.1, rgb(255, 60, 60), Enum.Material.Neon, 0.4)
-	disc("DoomRune", 90, 0.2, 1.2, rgb(255, 110, 50), Enum.Material.Neon, 0.7)
-	disc("DoomRuneInner", 46, 0.2, 1.3, rgb(255, 200, 90), Enum.Material.Neon, 0.6)
+	disc("DoomRune", 90, 0.2, 1.2, rgb(60, 50, 90), Enum.Material.SmoothPlastic, 0.55)
+	disc("DoomRuneInner", 46, 0.2, 1.3, rgb(120, 110, 150), Enum.Material.SmoothPlastic, 0.5)
 
 	-- 둘레 보이지 않는 높은 벽 (뛰어내릴 수 없게) + 둘레를 둘러싼 검은 첨탑과 불꽃 + 하늘의 붉은 달
 	for index = 0, 23 do
