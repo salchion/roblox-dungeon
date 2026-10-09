@@ -405,7 +405,7 @@ end)
 local lastYaw, lookAccum = nil, 0
 RunService.RenderStepped:Connect(function()
 	local camera = workspace.CurrentCamera
-	if not (current and current.Look ~= false and current.Index == 1 and camera) then
+	if not (current and current.Look == true and camera) then
 		lastYaw, lookAccum = nil, 0
 		return
 	end

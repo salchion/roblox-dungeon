@@ -109,7 +109,7 @@ local function send(player)
 	end
 	Remotes.Tutorial:FireClient(player, "Step", {
 		Index = state.Step, Total = #Steps, Text = text, Progress = state.Progress, Goal = goal,
-		Target = targets[step.Target], TargetName = step.TargetName, Highlight = step.Highlight,
+		Target = targets[step.Target], TargetName = step.TargetName, Highlight = step.Highlight, Look = step.Look == true,
 	})
 end
 
@@ -122,6 +122,7 @@ function Tutorial.Load(player, saved)
 		local version = tonumber(saved.V) or 1
 		if version < 2 then savedStep += 1 end -- 예전 저장본: 맨 앞에 "둘러보기" 미션이 추가되어 한 칸씩 밀린다
 		if version < 3 and savedStep >= 10 then savedStep += 1 end -- 마지막 필드 미션 앞에 "골드로 강화" 미션이 끼어들었다
+		if version < 4 then savedStep = math.max(1, savedStep - 1) end -- 맨 앞의 "마을 둘러보기"(이동 잠금) 미션을 없앴다: 바로 쏘면서 시작한다
 		state = { Step = math.clamp(savedStep, 1, #Steps + 1), Progress = math.max(0, math.floor(tonumber(saved.Progress) or 0)) }
 	elseif (player:GetAttribute("Level") or 1) >= 5 then
 		state = { Step = #Steps + 1, Progress = 0 } -- 이미 진행한 유저는 건너뜀
@@ -177,7 +178,7 @@ end
 
 function Tutorial.Serialize(player)
 	local state = states[player] or { Step = #Steps + 1, Progress = 0 }
-	return { Step = state.Step, Progress = state.Progress, V = 3 }
+	return { Step = state.Step, Progress = state.Progress, V = 4 }
 end
 
 function Tutorial.Forget(player)

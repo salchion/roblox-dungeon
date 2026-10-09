@@ -105,17 +105,7 @@ end
 ------------------------------------------------------------
 Config.Tutorial = {
 	Steps = {
-		-- 첫 미션: 언덕 위에서 마을을 한 바퀴 둘러본다 (이동은 잠겨 있고 시점만 돌릴 수 있다). Goal = 10단계 (한 바퀴 ≈ 300°)
-		{ Text = "👀 마을을 둘러보세요! 마우스 우클릭을 누른 채 돌리거나 ◀ ▶ 키로 시점을 한 바퀴 돌려보세요 (이동은 잠시 잠겨요)", Stat = "Look", Goal = 10, Look = true, MinSeconds = 26,
-			-- 게임 소개 카드 (이동이 잠긴 동안 읽는다): 어떤 게임인지 / 조작 / 강해지는 길 / 방치
-			Intro = {
-				{ Key = "🎮", Title = "어서 와요!", Text = "몬스터를 쏴서 강해지고, 구역마다 있는 군주를 쓰러뜨려 가장 끝의 심연(구역 8)까지 나아가는 슈터 RPG예요", Duration = 6 },
-				{ Key = "🖱", Title = "조작은 간단해요", Text = "마우스 클릭 = 조준 사격 · R = 자동 공격 · Q = 대시 · V = 궁극기. 하나씩 직접 해볼 거예요", Duration = 6 },
-				{ Key = "📈", Title = "이렇게 강해져요", Text = "무기 강화 → 장비 뽑기 → 성장(훈련) → 던전 → 환생. 군주를 쓰러뜨릴 때마다 새 구역이 열려요", Duration = 6 },
-				{ Key = "💤", Title = "방치로도 자라요", Text = "훈련은 접속하지 않아도 시간이 지나면 저절로 끝나고, 심연 도전은 한 번 해두면 소탕으로 매일 보상을 받아요", Duration = 6 },
-			},
-			Reward = { Gold = 50 } },
-		{ Text = "마우스를 눌러 허수아비를 쏘세요! (R 키 = 자동 조준)", Stat = "DummyHits", Goal = 8, Target = "Dummy", TargetName = "허수아비",
+		{ Text = "🎯 눈앞의 허수아비를 쏘세요! 마우스 클릭으로 사격해요 (R 키 = 자동 조준)", Stat = "DummyHits", Goal = 8, Target = "Dummy", TargetName = "허수아비",
 			Reward = { Gold = 100 } },
 		{ Text = "모루에서 무기를 강화하세요! (처음 3번은 무료)", Stat = "Enhances", Goal = 1, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
 			Reward = { Gold = 50 } },

@@ -216,6 +216,12 @@ function Dummy.Build(start)
 	buildDummy(8, Config.Dummy.List[1], start, 1)
 end
 
+-- 시작 언덕 바로 아래에 놓는 첫 허수아비: 접속하자마자 눈앞에서 쏘면서 시작한다 (훈련장까지 가지 않아도 된다)
+function Dummy.BuildStarter(position)
+	if not folder then return end
+	buildDummy(8, Config.Dummy.List[1], position, 2)
+end
+
 local function flash(data)
 	if data.Flashing then return end
 	data.Flashing = true
