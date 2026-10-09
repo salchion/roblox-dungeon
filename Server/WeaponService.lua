@@ -656,10 +656,7 @@ function Weapon.PlayShot(player)
 	lastShotSound[player] = now
 	local pitch = eraFactor * SHOT_PITCH_PATTERN[count % #SHOT_PITCH_PATTERN + 1] * (0.92 + math.random() * 0.16)
 	local volume = (count % 4 == 1 and 1.2 or 0.85) * (0.85 + math.random() * 0.3) * (gap < 0.2 and 0.85 or 1)
-	local played = SoundBank.Play(barrel, "Shot_" .. tier.Class, { Pitch = pitch, Volume = volume, Name = "GunShot" })
-	if not played then
-		playSoundAt(barrel, Config.Audio.Shot, Config.Audio.ShotVolume * volume, math.max(0.5, 1.25 - 0.08 * (tier.Era - 1)) * pitch / eraFactor, "GunShot")
-	end
+	Effects.GunSound(barrel.Position, tier.Class, pitch, volume, tier.Era) -- 소리는 근처 플레이어 화면에서 재생 (서버가 소리 부품을 만들지 않는다)
 end
 
 ------------------------------------------------------------

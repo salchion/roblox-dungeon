@@ -9,6 +9,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+local Config = require(ReplicatedStorage:WaitForChild("Config"))
+local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 
 local fxFolder = Instance.new("Folder")
 fxFolder.Name = "ClientFx"
@@ -275,6 +277,28 @@ local function tracer(event)
 	Debris:AddItem(beam, 0.08)
 end
 
+-- 총소리 { "G", 위치, 무기 종류, 높낮이, 크기, 세대 }: 소리 이름이 "GunShot" 이면 PlayerClient 가 내 설정 볼륨을 곱한다
+local function gunSound(event)
+	local anchor = Instance.new("Part")
+	anchor.Anchored, anchor.CanCollide, anchor.CanQuery, anchor.CanTouch = true, false, false, false
+	anchor.Transparency = 1
+	anchor.Size = Vector3.new(0.2, 0.2, 0.2)
+	anchor.Position = event[2]
+	anchor.Parent = fxFolder
+	Debris:AddItem(anchor, 3.5)
+	local played = SoundBank.Play(anchor, "Shot_" .. tostring(event[3]), { Pitch = event[4], Volume = event[5], Name = "GunShot" })
+	if not played and Config.Audio.Shot and Config.Audio.Shot ~= 0 then -- 무기 종류별 소리가 없으면 기본 총소리를 가공해서
+		local sound = Instance.new("Sound")
+		sound.Name = "GunShot"
+		sound.SoundId = "rbxassetid://" .. Config.Audio.Shot
+		sound.Volume = Config.Audio.ShotVolume * (event[5] or 1)
+		sound.PlaybackSpeed = math.max(0.5, 1.25 - 0.08 * ((event[6] or 1) - 1)) * ((event[4] or 1) / math.max(0.8, 1.08 - 0.03 * ((event[6] or 1) - 1)))
+		sound.RollOffMaxDistance = 90
+		sound.Parent = anchor
+		sound:Play()
+	end
+end
+
 local FLOAT_SIZE, DAMAGE_SIZE = UDim2.new(0, 140, 0, 36), UDim2.new(0, 90, 0, 40)
 local HANDLERS = {
 	S = playShot,
@@ -287,6 +311,7 @@ local HANDLERS = {
 		showText(event[2], event[4] and (tostring(event[3]) .. "!") or tostring(event[3]), event[4] and Color3.fromRGB(255, 220, 60) or WHITE, DAMAGE_SIZE, 0.5, nil)
 	end,
 	H = function(event) flash(event[2]) end,
+	G = gunSound,
 }
 
 Remotes.Fx.OnClientEvent:Connect(function(batch)

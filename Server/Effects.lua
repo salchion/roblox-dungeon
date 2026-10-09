@@ -235,6 +235,11 @@ function Effects.PlaySound(parent, soundId, volume, pitch)
 	Debris:AddItem(sound, 5)
 end
 
+-- 총소리: 소리 부품도 서버가 만들지 않고, 쏜 위치 / 무기 종류 / 높낮이 / 크기만 보낸다 (각자 화면에서 재생)
+function Effects.GunSound(position, class, pitch, volume, era)
+	emit(position, { "G", position, class, pitch, volume, era })
+end
+
 -- 임의 색의 떠오르는 글자 (골드 획득 등)
 function Effects.FloatText(position, text, color)
 	emit(position, { "F", position, text, color })
