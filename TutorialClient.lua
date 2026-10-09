@@ -240,7 +240,18 @@ RunService.RenderStepped:Connect(function()
 			local dx, dz = beacon.Position.X - root.Position.X, beacon.Position.Z - root.Position.Z
 			local compass = { "동", "남동", "남", "남서", "서", "북서", "북", "북동" }
 			local index = math.floor((math.atan2(dz, dx) / (math.pi / 4)) % 8 + 0.5) % 8 + 1
-			barText.Text = string.format("%d / %d     📍 %s  %s쪽 %dm", current.Progress, current.Goal, current.TargetName or "목표", compass[index], math.floor(flat + 0.5))
+			local where = compass[index] .. "쪽"
+			local camera = workspace.CurrentCamera
+			if flat < 45 and camera then -- 가까우면 보는 방향 기준으로 "바로 앞 / 뒤 / 왼쪽 / 오른쪽"
+				local rel = camera.CFrame:VectorToObjectSpace(Vector3.new(dx, 0, dz))
+				local angle = math.deg(math.atan2(rel.X, -rel.Z))
+				if math.abs(angle) <= 45 then where = "바로 앞에"
+				elseif math.abs(angle) >= 135 then where = "바로 뒤에"
+				elseif angle > 0 then where = "오른쪽에"
+				else where = "왼쪽에" end
+				where = where .. " 있어요!"
+			end
+			barText.Text = string.format("%d / %d     📍 %s  %s %dm", current.Progress, current.Goal, current.TargetName or "목표", where, math.floor(flat + 0.5))
 			beacon.Transparency = flat < 40 and 0.85 or 0.35 -- 가까워지면 투명하게 (시야 방해 방지)
 		end
 	end
