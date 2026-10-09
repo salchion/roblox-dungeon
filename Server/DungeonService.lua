@@ -1273,6 +1273,7 @@ function Dungeon.ComputeDamage(player)
 		* Combo.GetDamageMult(player)
 		* (1 + (player:GetAttribute("Prestige") or 0) * Config.Prestige.DamagePerRank)
 		* Dungeon.PartyBonus(player)
+		* (player:GetAttribute("ShotDmgScale") or 1) -- 레벨 스탯 추가 탄: 발당 피해 감소 (사격 중에만 적용)
 	local chance = math.min(0.9, (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint
 		+ (player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0) + (player:GetAttribute("PetCrit") or 0) + (weaponType.CritBonus or 0))
 	local isCrit = os.clock() < (player:GetAttribute("NearMissUntil") or 0) or math.random() < chance -- NEAR MISS 보상: 4초간 전부 치명타
@@ -1734,7 +1735,7 @@ function Dungeon.Shoot(player, origin, direction)
 	params.FilterDescendantsInstances = { run.MonstersFolder }
 
 	local weaponType = Config.GetPlayerWeapon(player)
-	local range = weaponType.Range
+	local range = Config.GetRange(player, weaponType)
 	local pierce = (player:GetAttribute("PerkPierce") or 0) + (weaponType.Pierce or 0) -- 레일건 등 무기 고유 관통
 	local boom = player:GetAttribute("PerkBoom") or 0
 	local chain = player:GetAttribute("PerkChain") or 0

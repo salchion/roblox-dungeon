@@ -1812,7 +1812,7 @@ local function applySpeed()
 	local character = player.Character
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 	if humanoid then
-		local bonus = (player:GetAttribute("GearSpeed") or 0) + (player:GetAttribute("TrainSpeed") or 0) + (player:GetAttribute("PetSpeed") or 0) -- 신발 장비 + 신속 단련
+		local bonus = (player:GetAttribute("GearSpeed") or 0) + (player:GetAttribute("TrainSpeed") or 0) + (player:GetAttribute("PetSpeed") or 0) + (player:GetAttribute("LvMove") or 0) -- 신발 장비 + 신속 단련 + 레벨 스탯
 		humanoid.WalkSpeed = (sprinting and Config.Player.RunSpeed or Config.Player.WalkSpeed) + bonus
 	end
 end
@@ -2019,7 +2019,7 @@ local function updateLockVisual()
 end
 
 local function weaponRange()
-	return Config.GetPlayerWeapon(player).Range
+	return Config.GetRange(player, Config.GetPlayerWeapon(player))
 end
 
 -- 이 더미를 지금 내 전투력으로 때려서 골드를 받을 수 있는가? (방어력보다 전투력이 낮으면 튕겨 나간다)

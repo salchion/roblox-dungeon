@@ -163,7 +163,7 @@ RunService.Heartbeat:Connect(function(dt)
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		local petKey = player:GetAttribute("PetKey")
 		local pet = petKey and petKey ~= "" and Config.Pets[petKey]
-		local radius = (pet and pet.Rarity >= Config.Pets.AutoLootRarity) and Config.Pets.AutoLootRadius or L.PickupRadius -- 고등급 펫: 자동 루팅
+		local radius = ((pet and pet.Rarity >= Config.Pets.AutoLootRarity) and Config.Pets.AutoLootRadius or L.PickupRadius) + (player:GetAttribute("LvLoot") or 0) -- 고등급 펫: 자동 루팅
 		for id, drop in pairs(list) do
 			if now > drop.Expire then
 				list[id] = nil

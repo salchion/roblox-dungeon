@@ -1606,7 +1606,7 @@ function Field.Shoot(player, origin, direction)
 	params.FilterType = Enum.RaycastFilterType.Include
 	params.FilterDescendantsInstances = { monstersFolder }
 
-	local range = Config.GetPlayerWeapon(player).Range
+	local range = Config.GetRange(player, Config.GetPlayerWeapon(player))
 	local result = workspace:Raycast(origin, direction * range, params)
 	-- 약점 구슬을 직접 맞힌 경우: 보스를 맞힌 것으로 바꾸고 "약점 명중"으로 처리한다
 	local weakDirect = false

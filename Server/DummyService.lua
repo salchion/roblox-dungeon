@@ -269,7 +269,7 @@ function Dummy.Shoot(player, origin, direction)
 	params.FilterDescendantsInstances = { folder }
 
 	local weaponType = Config.GetPlayerWeapon(player)
-	local result = workspace:Raycast(origin, direction * weaponType.Range, params)
+	local result = workspace:Raycast(origin, direction * Config.GetRange(player, weaponType), params)
 	if not result then return nil end
 
 	local model = result.Instance:FindFirstAncestorOfClass("Model")

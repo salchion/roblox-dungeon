@@ -35,6 +35,7 @@ local Rank = require(Modules:WaitForChild("RankService"))
 local Inventory = require(Modules:WaitForChild("InventoryService"))
 local Keys = require(Modules:WaitForChild("KeyService"))
 local Growth = require(Modules:WaitForChild("GrowthService"))
+local LevelStat = require(Modules:WaitForChild("LevelStatService"))
 local Monetization = require(Modules:WaitForChild("MonetizationService"))
 local Data = require(Modules:WaitForChild("DataService"))
 local Rift = require(Modules:WaitForChild("RiftService"))
@@ -321,6 +322,7 @@ local function setupPlayer(player)
 		Quest.Load(player, saved.Quest)
 		Daily.Load(player, saved.Daily) -- 출석 보상 (하루 한 번 자동 지급)
 		Meta.Load(player, saved.Meta)   -- 스킬 레벨 / 펫 / 무한의 탑 기록
+		LevelStat.Refresh(player)       -- 레벨 스탯 (이동 속도 / 사정거리 / 투사체 ...) 효과 반영
 		Tutorial.Load(player, saved.Tutorial) -- 처음 1~5분 가이드 미션
 		Idle.OnJoin(player) -- 자리를 비운 동안 쌓인 방치 골드
 		Journey.OnJoin(player) -- 이미 본 안내 기록
@@ -352,6 +354,7 @@ Players.PlayerRemoving:Connect(function(player)
 	Keys.Forget(player)
 	Monetization.Forget(player)
 	Growth.Forget(player)
+	LevelStat.Forget(player)
 	Daily.Forget(player)
 	Meta.Forget(player)
 	Tutorial.Forget(player)
@@ -411,7 +414,8 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local tier = Config.GetWeaponTier(level)
 	local color = tier.Rainbow and Color3.fromHSV((now * 0.5) % 1, 0.8, 1) or tier.Color
-	local extra = (player:GetAttribute("Zone") == "Dungeon" and (player:GetAttribute("PerkMulti") or 0) or 0) + (player:GetAttribute("GearShot") or 0)
+	local lvExtra = player:GetAttribute("LvShots") or 0 -- 레벨 스탯으로 늘어난 탄 (한 발이 약해서 합계 피해는 +40%/발)
+	local extra = (player:GetAttribute("Zone") == "Dungeon" and (player:GetAttribute("PerkMulti") or 0) or 0) + (player:GetAttribute("GearShot") or 0) + lvExtra
 	local shot = table.clone(tier.Shot)
 	shot.Size *= weaponType.ShotScale * (1 + 0.04 * Config.GetWeaponStage(level)) -- 강화 단계마다 발사체가 조금씩 커진다
 	shot.Speed *= weaponType.SpeedScale
@@ -422,6 +426,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 
 	-- 던전 특성 "분산탄": 탄이 +N발, 부채꼴로 흩어져 나간다 (권총류는 대칭 부채꼴, 샷건은 산탄이 더 늘어남)
 	local pellets = weaponType.Pellets + extra
+	player:SetAttribute("ShotDmgScale", lvExtra > 0 and (pellets - lvExtra + lvExtra * Config.LevelStats.ExtraShotValue) / pellets or 1)
 	local hitsBefore = player:GetAttribute("HitTick") or 0
 	local isManual = manual == true
 	player:SetAttribute("ShotManual", isManual) -- Dungeon / Field.Shoot 이 읽는다: 약점 보너스는 직접 조준한 탄에만
@@ -440,9 +445,10 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 		local endPosition = Dungeon.Shoot(player, origin, direction)
 			or Field.Shoot(player, origin, direction)
 			or Dummy.Shoot(player, origin, direction)
-		endPosition = endPosition or (origin + direction * weaponType.Range)
+		endPosition = endPosition or (origin + direction * Config.GetRange(player, weaponType))
 		Effects.Shot(tipPosition, endPosition, shot, color, tier.Rainbow, tier.Class, tier.Era)
 	end
+	player:SetAttribute("ShotDmgScale", 1)
 	Weapon.PlayShot(player)
 	if isManual and (player:GetAttribute("HitTick") or 0) > hitsBefore then
 		player:SetAttribute("ManualHitTick", (player:GetAttribute("ManualHitTick") or 0) + 1) -- 연습장 "직접 조준" 판정

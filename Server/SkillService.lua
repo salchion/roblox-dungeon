@@ -323,7 +323,7 @@ function Skill.Use(player, skillKey, aimPoint)
 		end
 		return
 	end
-	local haste = (player:GetAttribute("GearHaste") or 0) + (player:GetAttribute("PetHaste") or 0) + U.CooldownPerLevel * (skillLevel(player, skillKey) - 1)
+	local haste = (player:GetAttribute("GearHaste") or 0) + (player:GetAttribute("PetHaste") or 0) + (player:GetAttribute("LvHaste") or 0) + U.CooldownPerLevel * (skillLevel(player, skillKey) - 1)
 	local cooldown = S[skillKey].Cooldown * (1 - math.min(0.6, haste))
 	cooldowns[skillKey] = now + cooldown
 	SoundBank.Play(root, skillKey == "Ult" and "Skill_Ult" or "Skill_Heal")

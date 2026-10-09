@@ -302,6 +302,20 @@
       "overwrite": true
     },
     {
+      "path": "Server/LevelStatService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "LevelStatService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "LevelStatClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "LevelStatClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/JourneyService.lua",
       "parent": "ServerScriptService/Modules",
       "name": "JourneyService",
