@@ -3163,8 +3163,8 @@ local function buildPetTab()
 	local owned = metaState and metaState.Owned or {}
 	local equipped = metaState and metaState.Equipped
 	local P = Config.Pets
-	local header = newRow(64)
-	rowText(header, string.format("🥚 펫 알을 부화시켜 펫을 모아요. 같은 펫이 또 나오면 펫 레벨 업 (최대 %d)\n<font color='#bbbbcc' size='13'>장착한 펫은 캐릭터를 따라다니며 능력치를 줘요. 알 부화는 로비에서만 가능.</font>", P.MaxLevel), 14, 210)
+	local header = newRow(84)
+	rowText(header, string.format("🥚 펫 알을 부화시켜 펫을 모아요. 같은 펫이 또 나오면 펫 레벨 업 (최대 %d)\n<font color='#bbbbcc' size='13'>장착한 펫은 캐릭터를 따라다니며 능력치를 줘요. 알 부화는 로비에서만 가능.\n🧲 <b>자동 루팅</b>: %s 이상 펫을 장착하거나, 어떤 펫이든 Lv.%d 이 되면 전리품이 알아서 빨려 들어와요!</font>", P.MaxLevel, P.RarityNames[P.AutoLootRarity], P.AutoLootLevel), 14, 210)
 	makeButton({
 		Size = UDim2.new(0, 190, 0, 40), Position = UDim2.new(1, -202, 0.5, -20),
 		Text = string.format("🥚 알 부화 %d G", P.EggCost), BackgroundColor3 = Color3.fromRGB(200, 130, 40), TextSize = 15,
@@ -3179,7 +3179,7 @@ local function buildPetTab()
 		local row = newRow(58, level and Color3.fromRGB(40, 40, 58) or Color3.fromRGB(30, 30, 40))
 		if level then
 			rowText(row, string.format("<font color='#%s' size='16'><b>[%s] %s</b></font>  <font color='#ffd966'>Lv.%d</font>\n<font color='#9ad7ff'>%s</font>",
-				hex(color), P.RarityNames[pet.Rarity], pet.Name, level, Config.FormatPetStat(key, level)), 14, 150)
+				hex(color), P.RarityNames[pet.Rarity], pet.Name, level, Config.FormatPetStat(key, level) .. ((pet.Rarity >= P.AutoLootRarity or level >= P.AutoLootLevel) and "   🧲 자동 루팅" or "")), 14, 150)
 			local isEquipped = equipped == key
 			makeButton({
 				Size = UDim2.new(0, 120, 0, 32), Position = UDim2.new(1, -132, 0.5, -16),

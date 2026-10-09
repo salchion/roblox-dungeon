@@ -163,7 +163,15 @@ RunService.Heartbeat:Connect(function(dt)
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		local petKey = player:GetAttribute("PetKey")
 		local pet = petKey and petKey ~= "" and Config.Pets[petKey]
-		local radius = ((pet and pet.Rarity >= Config.Pets.AutoLootRarity) and Config.Pets.AutoLootRadius or L.PickupRadius) + (player:GetAttribute("LvLoot") or 0) -- 고등급 펫: 자동 루팅
+		local base = L.PickupRadius
+		if pet then -- 펫 자동 루팅: 높은 등급 펫은 넓게, 등급이 낮아도 펫 레벨이 높으면 조금 넓게
+			if pet.Rarity >= Config.Pets.AutoLootRarity then
+				base = Config.Pets.AutoLootRadius
+			elseif (player:GetAttribute("PetLevel") or 0) >= Config.Pets.AutoLootLevel then
+				base = Config.Pets.AutoLootLevelRadius
+			end
+		end
+		local radius = base + (player:GetAttribute("LvLoot") or 0) -- 고등급 펫: 자동 루팅
 		for id, drop in pairs(list) do
 			if now > drop.Expire then
 				list[id] = nil
