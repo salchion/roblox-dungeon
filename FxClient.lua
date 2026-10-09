@@ -110,17 +110,170 @@ local RAINBOW = ColorSequence.new({
 })
 local FIRE = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 240, 120)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 50, 20)) })
 local CLASS_LOOK = {
-	Flamer = { Style = "Fire", SizeMul = 2.0, Color = Color3.fromRGB(255, 150, 50), Transparency = 0.4, Impact = 2 },
-	Rocket = { Style = "Rocket", Length = 4.5, Impact = 20 },
-	Cannon = { Style = "Orb", SizeMul = 1.25 },
-	Rail = { Style = "Bolt", Length = 16, SizeMul = 0.7, Color = Color3.fromRGB(150, 230, 255), Impact = 8 },
-	Sniper = { Style = "Bolt", Length = 8, SizeMul = 0.8, Impact = 6 },
+	Revolver = { Style = "Ball", SizeMul = 1.35, Impact = 10 }, -- 묵직한 한 발
+	Smg = { Style = "Bolt", Length = 1.6, SizeMul = 0.55 }, -- 가늘고 짧은 연사 탄
 	Rifle = { Style = "Bolt", Length = 3.5 },
-	Smg = { Style = "Bolt", Length = 2 },
-	Shotgun = { Style = "Ball", SizeMul = 0.9 },
+	Shotgun = { Style = "Ball", SizeMul = 0.55 }, -- 작은 산탄 알갱이
 }
+-- 로켓 / 레일건 / 저격총 / 캐논 / 화염방사기는 아래 SPECIAL 이 따로 그린다
 local RATE_ERA = { Orb = 40, Cannon = 25, Fire = 90, Rocket = 110, Rainbow = 80 }
 local RATE_STYLE = { Orb = 40, Cannon = 25, Fire = 90, Rocket = 110 }
+
+
+------------------------------------------------------------
+-- 무기 종류별 전용 탄 (로켓은 진짜 로켓, 레일건은 빔, 저격총은 긴 줄기, 캐논은 플라즈마 구, 화염방사기는 불덩이)
+------------------------------------------------------------
+local function solid(parent, size, color, material, offset, transparency, shape)
+	local part = Instance.new("Part")
+	part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch, part.Massless = false, false, false, false, true
+	part.Material = material or Enum.Material.Neon
+	part.Color = color
+	part.Transparency = transparency or 0
+	if shape then part.Shape = shape end
+	part.Size = size
+	part.CFrame = parent.CFrame * offset
+	local weld = Instance.new("WeldConstraint")
+	weld.Part0, weld.Part1 = parent, part
+	weld.Parent = part
+	part.Parent = parent
+	return part
+end
+
+local function rootPart(cf, size, color, material, shape, transparency)
+	local part = Instance.new("Part")
+	part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch = true, false, false, false
+	part.Material = material or Enum.Material.Neon
+	part.Color = color
+	part.Transparency = transparency or 0
+	if shape then part.Shape = shape end
+	part.Size = size
+	part.CFrame = cf
+	part.Parent = fxFolder
+	return part
+end
+
+local function addEmitter(part, color, rate, size, lifetime, speed, transparencyEnd)
+	local emitter = Instance.new("ParticleEmitter")
+	emitter.Rate = rate
+	emitter.Lifetime = NumberRange.new(lifetime * 0.6, lifetime)
+	emitter.Speed = NumberRange.new(0, speed)
+	emitter.SpreadAngle = Vector2.new(180, 180)
+	emitter.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, size), NumberSequenceKeypoint.new(1, 0) })
+	emitter.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(1, transparencyEnd or 1) })
+	emitter.LightEmission = 1
+	emitter.Color = ColorSequence.new(color)
+	emitter.Parent = part
+	return emitter
+end
+
+local function fly(part, from, to, speed, minTime, onDone)
+	local distance = (to - from).Magnitude
+	local duration = math.clamp(distance / speed, minTime or 0.03, 1.2)
+	local tween = TweenService:Create(part, TweenInfo.new(duration, Enum.EasingStyle.Linear), { CFrame = CFrame.lookAt(to, to + (to - from)) })
+	tween.Completed:Connect(function()
+		onDone()
+		activeShots -= 1
+	end)
+	tween:Play()
+end
+
+local SPECIAL = {}
+
+-- 로켓: 몸통 + 빨간 머리 + 꼬리 날개 + 불꽃 분사 + 연기 꼬리, 닿으면 큰 폭발
+SPECIAL.Rocket = function(from, to, size, speed, color, era)
+	local s = math.clamp(size, 0.8, 2.0)
+	local cf = CFrame.lookAt(from, to)
+	local body = rootPart(cf, Vector3.new(s * 0.55, s * 0.55, s * 2.6), Color3.fromRGB(205, 208, 215), Enum.Material.Metal)
+	solid(body, Vector3.new(s * 0.5, s * 0.5, s * 0.9), Color3.fromRGB(215, 60, 50), Enum.Material.Metal, CFrame.new(0, 0, -s * 1.6))
+	solid(body, Vector3.new(s * 0.12, s * 1.3, s * 0.7), color, Enum.Material.Neon, CFrame.new(0, 0, s * 1.0))
+	solid(body, Vector3.new(s * 1.3, s * 0.12, s * 0.7), color, Enum.Material.Neon, CFrame.new(0, 0, s * 1.0))
+	local flame = solid(body, Vector3.new(s * 0.5, s * 0.5, s * 1.4), Color3.fromRGB(255, 170, 60), Enum.Material.Neon, CFrame.new(0, 0, s * 2.0), 0.15)
+	local smoke = addEmitter(flame, Color3.fromRGB(190, 190, 195), 55, s * 0.9, 0.7, 1.5, 1)
+	smoke.LightEmission = 0.1
+	addEmitter(flame, Color3.fromRGB(255, 140, 40), 40, s * 0.55, 0.25, 3)
+	local light = Instance.new("PointLight")
+	light.Range, light.Brightness, light.Color = 9 + era, 1.4, Color3.fromRGB(255, 160, 70)
+	light.Parent = flame
+	burst(from, Color3.fromRGB(190, 190, 195), 6) -- 발사 연기
+	fly(body, from, to, speed, 0.05, function()
+		burst(to, Color3.fromRGB(255, 150, 50), 36)
+		burst(to, color, 14)
+		local blast = rootPart(CFrame.new(to), Vector3.new(2, 2, 2), Color3.fromRGB(255, 190, 90), Enum.Material.Neon, Enum.PartType.Ball, 0.2)
+		TweenService:Create(blast, TweenInfo.new(0.3), { Size = Vector3.new(12, 12, 12), Transparency = 1 }):Play()
+		Debris:AddItem(blast, 0.4)
+		body:Destroy()
+	end)
+end
+
+-- 레일건: 순식간에 지나가는 얇은 빔 (남았다가 사라진다) + 도착점 충격 고리
+SPECIAL.Rail = function(from, to, size, _, color)
+	local length = (to - from).Magnitude
+	local mid = (from + to) / 2
+	local cf = CFrame.lookAt(mid, to)
+	local core = rootPart(cf, Vector3.new(size * 0.3, size * 0.3, length), Color3.fromRGB(235, 250, 255), Enum.Material.Neon)
+	local aura = rootPart(cf, Vector3.new(size * 1.1, size * 1.1, length), color, Enum.Material.Neon, nil, 0.65)
+	TweenService:Create(core, TweenInfo.new(0.28), { Size = Vector3.new(0.05, 0.05, length), Transparency = 1 }):Play()
+	TweenService:Create(aura, TweenInfo.new(0.35), { Size = Vector3.new(size * 0.1, size * 0.1, length), Transparency = 1 }):Play()
+	Debris:AddItem(core, 0.4)
+	Debris:AddItem(aura, 0.45)
+	burst(from, color, 5)
+	burst(to, color, 12)
+	local ringPart = rootPart(CFrame.new(to) * CFrame.Angles(0, 0, math.rad(90)), Vector3.new(0.2, 1, 1), color, Enum.Material.Neon, Enum.PartType.Cylinder, 0.2)
+	TweenService:Create(ringPart, TweenInfo.new(0.25), { Size = Vector3.new(0.2, 9, 9), Transparency = 1 }):Play()
+	Debris:AddItem(ringPart, 0.3)
+	activeShots += 1
+	task.delay(0.35, function() activeShots -= 1 end)
+end
+
+-- 저격총: 아주 빠른 흰 줄기 + 지나간 자리에 남는 가는 궤적선
+SPECIAL.Sniper = function(from, to, size, speed, color)
+	local length = (to - from).Magnitude
+	local cf = CFrame.lookAt(from, to)
+	local slug = rootPart(cf, Vector3.new(size * 0.4, size * 0.4, 9), Color3.fromRGB(245, 250, 255), Enum.Material.Neon)
+	local line = rootPart(CFrame.lookAt((from + to) / 2, to), Vector3.new(size * 0.18, size * 0.18, length), color, Enum.Material.Neon, nil, 0.4)
+	TweenService:Create(line, TweenInfo.new(0.4), { Size = Vector3.new(0.03, 0.03, length), Transparency = 1 }):Play()
+	Debris:AddItem(line, 0.45)
+	burst(from, color, 3)
+	fly(slug, from, to, math.max(speed, 700), 0.03, function()
+		burst(to, color, 10)
+		slug:Destroy()
+	end)
+end
+
+-- 캐논: 속이 환한 플라즈마 구 (바깥 막이 펄럭이며 입자를 흘린다), 닿으면 커다란 섬광
+SPECIAL.Cannon = function(from, to, size, speed, color, era)
+	local s = math.clamp(size, 1.2, 4.5)
+	local core = rootPart(CFrame.lookAt(from, to), Vector3.new(s, s, s), Color3.fromRGB(255, 255, 255):Lerp(color, 0.35), Enum.Material.Neon, Enum.PartType.Ball)
+	local shell = solid(core, Vector3.new(s * 1.8, s * 1.8, s * 1.8), color, Enum.Material.Neon, CFrame.identity, 0.62, Enum.PartType.Ball)
+	addEmitter(core, color, 45, s * 0.7, 0.45, 3)
+	local light = Instance.new("PointLight")
+	light.Range, light.Brightness, light.Color = 10 + era * 2, 1.5, color
+	light.Parent = core
+	TweenService:Create(shell, TweenInfo.new(0.18, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Size = Vector3.new(s * 2.3, s * 2.3, s * 2.3) }):Play()
+	burst(from, color, 6)
+	fly(core, from, to, speed, 0.05, function()
+		burst(to, color, 28)
+		local blast = rootPart(CFrame.new(to), Vector3.new(s, s, s), color, Enum.Material.Neon, Enum.PartType.Ball, 0.3)
+		TweenService:Create(blast, TweenInfo.new(0.28), { Size = Vector3.new(s * 5, s * 5, s * 5), Transparency = 1 }):Play()
+		Debris:AddItem(blast, 0.35)
+		core:Destroy()
+	end)
+end
+
+-- 화염방사기: 날아가며 점점 커지는 불덩이 (멀리까지 가지 않고 가까운 곳에서 꺼진다)
+SPECIAL.Flamer = function(from, to, size, speed, color)
+	local reach = math.min((to - from).Magnitude, 62)
+	local stop = from + (to - from).Unit * reach
+	local s = math.clamp(size, 1.0, 3.5)
+	local fire = rootPart(CFrame.lookAt(from, to), Vector3.new(s * 0.8, s * 0.8, s * 0.8), Color3.fromRGB(255, 190, 70), Enum.Material.Neon, Enum.PartType.Ball, 0.25)
+	addEmitter(fire, Color3.fromRGB(255, 120, 30), 70, s * 0.9, 0.5, 4)
+	local duration = math.clamp(reach / math.max(speed, 60), 0.12, 0.8)
+	TweenService:Create(fire, TweenInfo.new(duration, Enum.EasingStyle.Linear), { Size = Vector3.new(s * 3.4, s * 3.4, s * 3.4), Transparency = 0.8, Color = Color3.fromRGB(255, 70, 20) }):Play()
+	fly(fire, from, stop, speed, 0.12, function()
+		burst(stop, Color3.fromRGB(255, 130, 40), 6)
+		fire:Destroy()
+	end)
+end
 
 -- event = { "S", from, to, size, speed, impact, style, length, color, rainbow, class, era }
 local function playShot(event)
@@ -131,6 +284,12 @@ local function playShot(event)
 	local distance = (to - from).Magnitude
 	if distance < 0.5 then return end
 	local style = eraStyle
+	local special = class and SPECIAL[class]
+	if special then
+		activeShots += 1 -- (fly 가 끝나면 스스로 줄인다)
+		special(from, to, size, speed, color, era)
+		return
+	end
 	local look = class and CLASS_LOOK[class]
 	if look then
 		style = look.Style or style
