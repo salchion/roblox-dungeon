@@ -219,8 +219,6 @@ handlers.Ult = function(player, root, _, character)
 	player:SetAttribute("DeadeyeActive", true)
 	Remotes.Notify:FireClient(player, string.format("🎯 데드아이! %d마리 일제 포격", #targets))
 	Effects.FloatText(origin + Vector3.new(0, 6, 0), "🎯 데드아이!", Color3.fromRGB(255, 90, 90))
-	ring(origin, cfg.Radius, Color3.fromRGB(255, 70, 70), 0.8)
-	ring(origin, cfg.Radius * 0.6, Color3.fromRGB(255, 200, 90), 0.6)
 
 	task.spawn(function()
 		local bodyOk, bodyErr = pcall(function()
@@ -260,31 +258,16 @@ handlers.Ult = function(player, root, _, character)
 						fired += 1
 						pcall(function()
 							local jitter = Vector3.new(math.random() - 0.5, math.random() - 0.5, math.random() - 0.5) * (part.Size.X * 0.5)
-							thickBeam(from, part.Position + jitter, (fired % 2 == 0) and Color3.fromRGB(255, 235, 120) or Color3.fromRGB(255, 110, 80), 1.1, 0.18)
+							thickBeam(from, part.Position + jitter, (fired % 2 == 0) and Color3.fromRGB(255, 240, 150) or Color3.fromRGB(120, 230, 255), 0.55, 0.14) -- 가늘고 빠른 예광탄
 							if volley % 2 == 0 then Effects.Burst(part.Position + jitter, Color3.fromRGB(255, 110, 70), 6) end
 							local label = markers[index] and markers[index]:FindFirstChildOfClass("TextLabel")
 							if label then label.TextColor3 = Color3.fromRGB(255, 255, 255) end
 						end)
 					end
 				end
-				pcall(function()
-					local flash = Instance.new("Part")
-					flash.Anchored, flash.CanCollide, flash.CanQuery, flash.CanTouch = true, false, false, false
-					flash.Shape = Enum.PartType.Ball
-					flash.Material = Enum.Material.Neon
-					flash.Color = Color3.fromRGB(255, 230, 140)
-					flash.Size = Vector3.new(7, 7, 7)
-					flash.Position = from
-					flash.Parent = workspace
-					TweenService:Create(flash, TweenInfo.new(0.12), { Size = Vector3.new(0.5, 0.5, 0.5), Transparency = 1 }):Play()
-					Debris:AddItem(flash, 0.2)
-					if volley % 3 == 1 then
-						SoundBank.Play(root, "UltShot", { Pitch = 0.9 + math.random() * 0.4, Name = "GunShot" })
-						ring(root.Position, cfg.Radius * (0.4 + 0.6 * volley / volleys), Color3.fromRGB(255, 120, 80), 0.35)
-					end
-					player:SetAttribute("ShakeStrength", 0.18)
-					player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
-				end)
+				if volley % 3 == 1 then -- 화면 번쩍임 / 흔들림 / 링 없이 소리만 (탄이 쏟아지는 느낌에 집중)
+					pcall(function() SoundBank.Play(root, "UltShot", { Pitch = 0.9 + math.random() * 0.4, Name = "GunShot" }) end)
+				end
 				task.wait(volleyGap)
 			end
 
@@ -293,15 +276,11 @@ handlers.Ult = function(player, root, _, character)
 				for _, part in ipairs(targets) do
 					if part.Parent then
 						Effects.Burst(part.Position, Color3.fromRGB(255, 200, 90), 16)
-						ring(part.Position, 14, Color3.fromRGB(255, 120, 60), 0.5)
 					end
 				end
-				ring(root.Position, cfg.Radius * 1.1, Color3.fromRGB(255, 240, 200), 0.6)
 			end)
 			for _, gui in pairs(markers) do gui:Destroy() end
 			player:SetAttribute("DeadeyeActive", false)
-			player:SetAttribute("ShakeStrength", 0.9)
-			player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 		end)
 		if not bodyOk then
 			if field.Parent then field:Destroy() end

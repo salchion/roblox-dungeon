@@ -663,8 +663,8 @@ Config.Field = {
 	ZonePools = {
 		{ Slime = 5, Bat = 2, Spider = 1 },
 		{ Slime = 3, Spitter = 3, Bat = 2, Spider = 2, Wisp = 1 },
-		{ Spitter = 3, Charger = 3, Golem = 1, Imp = 2, Turret = 1 },
-		{ Charger = 3, Bomber = 3, Spitter = 2, Spider = 2, Imp = 2 },
+		{ Spitter = 3, Charger = 3, Golem = 1, Imp = 2, Turret = 1, Healer = 1 },
+		{ Charger = 3, Bomber = 3, Spitter = 2, Spider = 2, Imp = 2, Knight = 1, Healer = 1 },
 		{ Mage = 3, Golem = 2, Bat = 3, Knight = 2, Wisp = 2 },
 		{ Bomber = 3, Charger = 3, Mage = 2, Turret = 2, Totem = 1 },
 		{ Mage = 3, Golem = 2, Charger = 2, Bomber = 2, Knight = 2, Imp = 2, Totem = 1 },
@@ -843,7 +843,7 @@ Config.Dungeon.Types = {
 		Wall = { Color = Color3.fromRGB(55, 45, 40), Material = Enum.Material.Brick },
 		Torch = Color3.fromRGB(255, 150, 70),
 		Terrain = { Ground = Enum.Material.Mud, Mountain = Enum.Material.Rock, Accent = Enum.Material.Slate },
-		MonsterPool = { Slime = 4, Bat = 3, Spider = 3, Imp = 2, Spitter = 1 },
+		MonsterPool = { Slime = 4, Bat = 3, Spider = 3, Imp = 2, Spitter = 1, Healer = 1 },
 		Boss = { Name = "고블린 왕", Color = Color3.fromRGB(70, 130, 50), HealthMult = 1, DamageMult = 1, Weights = { Fan = 2, Ring = 1, Spiral = 0.5, Meteor = 0.5, Slam = 1.5, Summon = 4, Lanes = 1.5, Sweep = 1, SideAdds = 3.5 } },
 	},
 	Ice = {
@@ -853,7 +853,7 @@ Config.Dungeon.Types = {
 		Wall = { Color = Color3.fromRGB(120, 160, 200), Material = Enum.Material.Glacier },
 		Torch = Color3.fromRGB(120, 200, 255),
 		Terrain = { Ground = Enum.Material.Snow, Mountain = Enum.Material.Glacier, Accent = Enum.Material.Ice },
-		MonsterPool = { Spitter = 3, Mage = 4, Turret = 2, Wisp = 3, Knight = 2, Golem = 1 },
+		MonsterPool = { Spitter = 3, Mage = 4, Turret = 2, Wisp = 3, Knight = 3, Golem = 1, Healer = 2 },
 		Boss = { Name = "서리 군주", Color = Color3.fromRGB(90, 170, 240), HealthMult = 1.6, DamageMult = 1.2, Weights = { Fan = 2, Ring = 4, Spiral = 4.5, Meteor = 0.5, Slam = 1, Summon = 1, Lanes = 1.5, Sweep = 2, SideAdds = 0.5 } },
 	},
 	Fire = {
@@ -863,7 +863,7 @@ Config.Dungeon.Types = {
 		Wall = { Color = Color3.fromRGB(90, 40, 30), Material = Enum.Material.CrackedLava },
 		Torch = Color3.fromRGB(255, 90, 40),
 		Terrain = { Ground = Enum.Material.Basalt, Mountain = Enum.Material.Slate, Accent = Enum.Material.CrackedLava },
-		MonsterPool = { Charger = 4, Bomber = 4, Imp = 2, Golem = 2, Spider = 1, Totem = 1 },
+		MonsterPool = { Charger = 4, Bomber = 4, Imp = 2, Golem = 2, Spider = 1, Totem = 1, Knight = 2, Healer = 1 },
 		Boss = { Name = "화염의 군주", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Fan = 0.5, Ring = 0.5, Spiral = 0.5, Meteor = 5, Slam = 4, Summon = 0.5, Lanes = 3, Sweep = 3.5, SideAdds = 0.5 } },
 	},
 }

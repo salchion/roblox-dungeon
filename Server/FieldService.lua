@@ -1493,6 +1493,11 @@ function Field.HitPart(player, part, damage)
 	if not canHitZone(player, part.Position.X) then return false end
 	if data.ExposedUntil and os.clock() < data.ExposedUntil then damage = math.floor(damage * 3) end -- 약점 노출 중 x3
 	if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then damage = damage * (player:GetAttribute("TutorialRetryBuff") and 8 or 4) end
+	local shooterRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if shooterRoot and data.Def and data.Def.Shield then -- 방패 기사: 정면 공격은 막힌다
+		local factor = MonsterTypes.ShieldFactor(part, data, shooterRoot.Position)
+		if factor < 1 then damage = math.max(1, math.floor(damage * factor)) end
+	end
 	if data.Invincible then damage = 1 end
 	data.Health -= damage
 	if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
@@ -1631,6 +1636,13 @@ function Field.Shoot(player, origin, direction)
 				end
 			end
 		end
+		if data.Def and data.Def.Shield then -- 방패 기사: 정면 공격은 막힌다 (뒤 / 옆에서 쏴야 한다)
+			local factor = MonsterTypes.ShieldFactor(result.Instance, data, origin)
+			if factor < 1 then
+				damage = math.max(1, math.floor(damage * factor))
+				Effects.FloatText(result.Position + Vector3.new(0, 3, 0), "🛡 막힘! 뒤로 돌아가요", Color3.fromRGB(200, 215, 240))
+			end
+		end
 		data.Health -= damage
 		data.LastHit = os.clock() -- 맞은 몬스터는 멀리서 맞아도 깨어나 반응하고, 한동안 체력을 되찾지 않는다
 		if data.Contrib then
@@ -1691,6 +1703,7 @@ local fieldCtx = {
 		end
 		return list
 	end,
+	Monsters = function() return monsters end,
 	Alive = function(part, data)
 		return monsters[part] == data
 	end,

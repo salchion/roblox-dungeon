@@ -38,18 +38,9 @@ do
 		create("UIGradient", { Rotation = edge.Rotation, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.7), NumberSequenceKeypoint.new(1, 1) }) }, frame)
 	end
 	local function apply()
-		local on = player:GetAttribute("DeadeyeActive") == true
-		vignette.Visible = on
-		if on then
-			tint.Enabled = true
-			TweenService:Create(tint, TweenInfo.new(0.3), { Saturation = -0.2, Contrast = 0.06, Brightness = 0, TintColor = Color3.fromRGB(255, 205, 205) }):Play()
-		else
-			local tween = TweenService:Create(tint, TweenInfo.new(0.4), { Saturation = 0, Contrast = 0, Brightness = 0, TintColor = Color3.new(1, 1, 1) })
-			tween:Play()
-			tween.Completed:Connect(function()
-				if player:GetAttribute("DeadeyeActive") ~= true then tint.Enabled = false end
-			end)
-		end
+		-- 데드아이 중 화면이 붉게 물들거나 가장자리가 어두워지는 효과는 없앴다 (너무 번쩍여서): 탄과 락온 표시로만 연출한다
+		vignette.Visible = false
+		tint.Enabled = false
 	end
 	player:GetAttributeChangedSignal("DeadeyeActive"):Connect(apply)
 end

@@ -981,6 +981,14 @@ local function enrageBoss(run, part, data)
 end
 
 local function damageMonster(run, player, part, data, amount, isCrit, hitPosition)
+	local shooterRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if shooterRoot and data.Def and data.Def.Shield then -- 방패 기사: 정면 공격은 막힌다
+		local factor = MonsterTypes.ShieldFactor(part, data, shooterRoot.Position)
+		if factor < 1 then
+			amount = math.max(1, math.floor(amount * factor))
+			Effects.FloatText(hitPosition + Vector3.new(0, 3, 0), "🛡 막힘! 뒤로 돌아가요", Color3.fromRGB(200, 215, 240))
+		end
+	end
 	if data.ExposedUntil and os.clock() < data.ExposedUntil then -- 약점 노출 중: 보스가 받는 피해 x3
 		amount = math.floor(amount * 3)
 		isCrit = true
@@ -2036,6 +2044,7 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth)
 			end
 			return list
 		end,
+		Monsters = function() return run.Monsters end,
 		Alive = function(part, data)
 			return run.Monsters[part] == data and run.Phase ~= "Ended"
 		end,

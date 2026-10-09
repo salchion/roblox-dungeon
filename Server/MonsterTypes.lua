@@ -87,12 +87,28 @@ M.Defs = {
 		SizeMult = 0.55, SpeedMult = 2.4, HealthMult = 0.45, DamageMult = 0.7, IntervalMult = 0.9, ShotSpeedMult = 1.4, GoldMult = 1.1,
 		Attack = "Burst", Style = "Orb", Move = "Hover", Keep = 22, Range = 80, Flame = true,
 	},
+	Healer = {
+		Name = "치유 사제", Shape = "Ball", Color = Color3.fromRGB(110, 255, 170), Material = Enum.Material.Neon, Transparency = 0.2,
+		SizeMult = 0.95, SpeedMult = 0.8, HealthMult = 1.0, DamageMult = 0.5, IntervalMult = 2.2, ShotSpeedMult = 0.8, GoldMult = 2.2,
+		Attack = "Heal", Style = "Orb", Move = "Keep", Keep = 34, Range = 60, Halo = true,
+	},
 	Totem = {
 		Name = "저주 토템", Shape = "Block", Color = Color3.fromRGB(130, 90, 60), Material = Enum.Material.Wood,
 		SizeMult = 1.2, SpeedMult = 0, HealthMult = 2.2, DamageMult = 0.9, IntervalMult = 1.8, ShotSpeedMult = 0.7, GoldMult = 1.8,
 		Attack = "Ring", Move = "Static", Keep = 0, Range = 100, Totem = true,
 	},
 }
+
+-- 방패 기사: 정면에서 맞는 공격은 거의 막힌다 (뒤 / 옆에서 쏴야 제대로 들어간다). 막히면 0.12, 아니면 1.
+function M.ShieldFactor(part, data, fromPosition)
+	local def = data.Def
+	if not def or not def.Shield then return 1 end
+	local facing = data.Facing or part.CFrame.LookVector
+	local toShooter = Vector3.new(fromPosition.X - part.Position.X, 0, fromPosition.Z - part.Position.Z)
+	local flatFacing = Vector3.new(facing.X, 0, facing.Z)
+	if toShooter.Magnitude < 0.1 or flatFacing.Magnitude < 0.1 then return 1 end
+	return (flatFacing.Unit:Dot(toShooter.Unit) > 0.25) and 0.12 or 1
+end
 
 -- 가중치 표(pool)에서 하나 고른다. 예: { Slime = 4, Bat = 2 }
 function M.Pick(pool)
@@ -297,8 +313,8 @@ Looks.Knight = function(S, c, d)
 		d(BLOCK, S * 0.2, S * 0.5, S * 0.2, side * S * 0.5, -S * 0.02, 0, c, Metal, { Tint = true })  -- 팔
 		d(BLOCK, S * 0.24, S * 0.42, S * 0.24, side * S * 0.18, -S * 0.5 + S * 0.08, 0, c, Metal, { Tint = true }) -- 다리
 	end
-	d(BLOCK, S * 0.55, S * 0.75, S * 0.08, -S * 0.2, S * 0.02, -S * 0.36, Color3.fromRGB(190, 200, 225), Metal) -- 방패
-	d(BALL, S * 0.2, S * 0.2, S * 0.06, -S * 0.2, S * 0.1, -S * 0.42, gold, Neon)
+	d(BLOCK, S * 1.0, S * 0.95, S * 0.1, 0, S * 0.02, -S * 0.52, Color3.fromRGB(190, 200, 225), Metal) -- 정면을 가리는 큰 방패 (정면 공격은 거의 안 들어간다, 뒤로 돌아가서 쏴야 함)
+	d(BALL, S * 0.28, S * 0.28, S * 0.06, 0, S * 0.1, -S * 0.6, gold, Neon)
 	d(BLOCK, S * 0.06, S * 0.8, S * 0.04, S * 0.52, S * 0.1, -S * 0.2, Color3.fromRGB(215, 220, 230), Metal, { Rx = -20 }) -- 검
 	d(BLOCK, S * 0.2, S * 0.05, S * 0.05, S * 0.52, -S * 0.2, -S * 0.12, gold, Metal)
 end
@@ -361,6 +377,14 @@ Looks.Wisp = function(S, c, d) -- 도깨비불: 불꽃 핵 + 꼬리불 + 도는 
 	glow.Parent = d.Body
 end
 
+Looks.Healer = function(S, c, d) -- 치유 사제: 빛나는 몸 + 후광 + 머리 위의 초록 십자
+	local green = Color3.fromRGB(120, 255, 170)
+	d(BALL, S * 0.8, S * 0.9, S * 0.8, 0, 0, 0, c, Neon, { Tint = true, T = 0.2 })
+	d(CYL, S * 0.06, S * 0.95, S * 0.95, 0, S * 0.62, 0, Color3.fromRGB(220, 255, 235), Neon, { Rz = 90 })
+	d(BLOCK, S * 0.12, S * 0.5, S * 0.12, 0, S * 1.05, 0, green, Neon)
+	d(BLOCK, S * 0.5, S * 0.12, S * 0.12, 0, S * 1.05, 0, green, Neon)
+	eyes(d, S, S * 0.1, -S * 0.36, 0.17, Color3.fromRGB(255, 255, 255), 0.14)
+end
 Looks.Totem = function(S, c, d)
 	local dark, red = c:Lerp(BLACK, 0.35), Color3.fromRGB(190, 60, 60)
 	d(BLOCK, S * 0.75, S * 0.5, S * 0.75, 0, -S * 0.3, 0, c, Wood, { Tint = true })                  -- 아래 토막
@@ -727,7 +751,42 @@ function M.Update(ctx, part, data, dt, now)
 			position += Vector3.new(0, math.abs(math.sin(now * 6 + data.Phase)) * hop, 0)
 		end
 	end
-	part.CFrame = CFrame.lookAt(position, position + direction)
+	local lookDirection = direction
+	if def.Shield then
+		-- 방패 기사: 몸을 천천히(초당 약 60도) 돌려서 정면이 플레이어를 향한다 -> 옆 / 뒤로 빠르게 돌아가면 방패 없는 곳을 때릴 수 있다
+		local facing = data.Facing or direction
+		local delta = math.atan2(direction.X, direction.Z) - math.atan2(facing.X, facing.Z)
+		delta = (delta + math.pi) % (2 * math.pi) - math.pi
+		facing = CFrame.Angles(0, math.clamp(delta, -1.05 * dt, 1.05 * dt), 0):VectorToWorldSpace(facing)
+		data.Facing = facing
+		lookDirection = facing
+	end
+	part.CFrame = CFrame.lookAt(position, position + lookDirection)
+
+	-- 치유 사제: 일정 간격마다 주변 아군(보스 제외)의 체력을 채운다. 먼저 잡아야 하는 몬스터.
+	if def.Attack == "Heal" then
+		if now >= (data.NextHeal or 0) and ctx.Monsters then
+			data.NextHeal = now + 2.5
+			local healed = 0
+			for otherPart, otherData in pairs(ctx.Monsters()) do
+				if healed >= 5 then break end
+				if otherPart ~= part and otherPart.Parent and not otherData.BossLike and not otherData.IsBoss and otherData.Health > 0 and otherData.Health < otherData.MaxHealth
+					and (otherPart.Position - part.Position).Magnitude <= 34 then
+					local amount = math.max(1, math.floor(otherData.MaxHealth * 0.12))
+					otherData.Health = math.min(otherData.MaxHealth, otherData.Health + amount)
+					otherData.HealthFill.Size = UDim2.new(math.max(otherData.Health, 0) / otherData.MaxHealth, 0, 1, 0)
+					Effects.Burst(otherPart.Position, Color3.fromRGB(120, 255, 170), 8)
+					Effects.FloatText(otherPart.Position + Vector3.new(0, otherPart.Size.Y / 2 + 2, 0), "+" .. amount, Color3.fromRGB(120, 255, 170))
+					healed += 1
+				end
+			end
+			if healed > 0 then
+				part.Color = Color3.fromRGB(255, 255, 255)
+				task.delay(0.25, function() if part.Parent then part.Color = data.BaseColor end end)
+			end
+		end
+		return
+	end
 
 	-- 공격
 	if def.Attack == "Explode" then
