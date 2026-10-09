@@ -625,3 +625,60 @@ do
 		end
 	end)
 end
+
+-- 전투력 변화 표시: 강화 / 장비 교체 / 훈련 등으로 전투력이 바뀌면 "⚡ 전투력 +131 ▲  (1077 → 1208)" 이 잠깐 떠오른다.
+-- (마을에서만. 짧은 시간에 여러 번 바뀌면 한 번에 합쳐서 보여 준다)
+do
+	local last = nil
+	local from = nil
+	local token = 0
+	local joinedAt = os.clock()
+	local function show(fromPower, toPower)
+		local diff = toPower - fromPower
+		if diff == 0 then return end
+		local up = diff > 0
+		local color = up and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(255, 130, 120)
+		local holder = create("Frame", { Size = UDim2.new(0, 420, 0, 74), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.34, 0), BackgroundTransparency = 1, ZIndex = 60 }, gui)
+		local main = makeLabel({
+			Size = UDim2.new(1, 0, 0, 44), Text = string.format("⚡ 전투력 %s%d %s", up and "+" or "", diff, up and "▲" or "▼"),
+			Font = Enum.Font.GothamBlack, TextSize = 34, TextColor3 = color, TextStrokeTransparency = 0.2, ZIndex = 61, TextTransparency = 1,
+		}, holder)
+		local sub = makeLabel({
+			Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 44), Text = string.format("%d  →  %d", fromPower, toPower),
+			Font = Enum.Font.GothamBold, TextSize = 20, TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 0.3, ZIndex = 61, TextTransparency = 1,
+		}, holder)
+		local scale = create("UIScale", { Scale = 0.6 }, holder)
+		TweenService:Create(scale, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+		TweenService:Create(main, TweenInfo.new(0.2), { TextTransparency = 0 }):Play()
+		TweenService:Create(sub, TweenInfo.new(0.2), { TextTransparency = 0 }):Play()
+		TweenService:Create(holder, TweenInfo.new(1.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = UDim2.new(0.5, 0, 0.28, 0) }):Play()
+		task.delay(1.3, function()
+			TweenService:Create(main, TweenInfo.new(0.4), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+			TweenService:Create(sub, TweenInfo.new(0.4), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+			task.wait(0.45)
+			holder:Destroy()
+		end)
+		if up then SoundBank.Play(workspace, "Enh_Success", { Pitch = 1.25 }) end
+	end
+	player:GetAttributeChangedSignal("Power"):Connect(function()
+		local power = player:GetAttribute("Power") or 0
+		if last == nil or os.clock() - joinedAt < 4 then
+			last = power
+			return
+		end
+		if player:GetAttribute("Zone") ~= "Lobby" then
+			last = power
+			return
+		end
+		from = from or last
+		last = power
+		token += 1
+		local mine = token
+		task.delay(0.35, function() -- 연속으로 바뀌면 마지막 값만 한 번에
+			if token ~= mine then return end
+			local startPower = from
+			from = nil
+			if startPower and startPower ~= last then show(startPower, last) end
+		end)
+	end)
+end
