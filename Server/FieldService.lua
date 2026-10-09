@@ -16,6 +16,7 @@ local RunService = game:GetService("RunService")
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local CollectionService = game:GetService("CollectionService")
+local TweenService = game:GetService("TweenService")
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
 local Meta = require(script.Parent:WaitForChild("MetaService"))
@@ -1011,7 +1012,7 @@ local function spawnMonster(zone, kind, at, ambush)
 			Gold = math.floor(boss.Gold * danger.Reward[zone]),
 		}
 		xpLevel = bossLevel
-		text, color, barWidth = string.format("👑 %s의 군주 (구역 %d)", F.ZoneNames[zone], zone), Color3.fromRGB(255, 120, 120), 320
+		text, color, barWidth = string.format("👑 %s의 군주 (구역 %d) · 권장 ⚡%d", F.ZoneNames[zone], zone, F.BossPower[zone] or 0), Color3.fromRGB(255, 120, 120), 360
 	else
 		-- 구역마다 나오는 몬스터 종류가 다르다 (Config.Field.ZonePools)
 		typeKey = MonsterTypes.Pick(F.ZonePools[zone])
@@ -1054,6 +1055,7 @@ local function spawnMonster(zone, kind, at, ambush)
 	end
 
 	local part
+	local weakOrb
 	if kind == "Boss" then
 		part = Instance.new("Part")
 		part.Name = "FieldBoss"
@@ -1066,6 +1068,38 @@ local function spawnMonster(zone, kind, at, ambush)
 		part.Material = Enum.Material.Neon
 		part.Parent = monstersFolder
 		Effects.DecorateBoss(part, stats.Size, F.ZoneColors[zone]:Lerp(Color3.fromRGB(255, 120, 70), 0.6))
+		-- 약점 구슬: 보스 주위를 도는 노란 구슬. 직접 조준해서 맞히면 3배 치명타 (자동 조준은 몸통을 노린다)
+		weakOrb = Instance.new("Part")
+		weakOrb.Name = "WeakPoint"
+		weakOrb.Shape = Enum.PartType.Ball
+		weakOrb.Size = Vector3.new(4.2, 4.2, 4.2)
+		weakOrb.Anchored = true
+		weakOrb.CanCollide = false
+		weakOrb.CanQuery = false
+		weakOrb.CanTouch = false
+		weakOrb.Color = Color3.fromRGB(255, 235, 80)
+		weakOrb.Material = Enum.Material.Neon
+		weakOrb.Position = part.Position
+		weakOrb.Parent = part
+		local orbLight = Instance.new("PointLight")
+		orbLight.Color = Color3.fromRGB(255, 235, 80)
+		orbLight.Range = 22
+		orbLight.Brightness = 2.5
+		orbLight.Parent = weakOrb
+		local orbGui = Instance.new("BillboardGui")
+		orbGui.Size = UDim2.new(0, 70, 0, 28)
+		orbGui.StudsOffset = Vector3.new(0, 3.4, 0)
+		orbGui.MaxDistance = 120
+		orbGui.Parent = weakOrb
+		local orbText = Instance.new("TextLabel")
+		orbText.Size = UDim2.new(1, 0, 1, 0)
+		orbText.BackgroundTransparency = 1
+		orbText.Font = Enum.Font.GothamBlack
+		orbText.TextScaled = true
+		orbText.TextColor3 = Color3.fromRGB(255, 240, 120)
+		orbText.TextStrokeTransparency = 0
+		orbText.Text = "🎯 약점"
+		orbText.Parent = orbGui
 		CollectionService:AddTag(part, "Monster")
 		CollectionService:AddTag(part, "RadarBoss")
 	else
@@ -1102,6 +1136,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		Ambush = ambush == true,
 		LastHit = ambush and os.clock() or nil, -- 습격으로 나온 몬스터는 처음부터 플레이어를 노린다
 	}
+	newData.WeakPart = weakOrb
 	monsters[part] = newData
 	return part, newData
 end
@@ -1392,6 +1427,18 @@ function Field.Shoot(player, origin, direction)
 		player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1) -- 궁극기 게이지는 실제로 맞혔을 때만 찬다
 		local damage, isCrit = Dungeon.ComputeDamage(player)
 		if data.Invincible then damage, isCrit = 1, false end -- 최후의 군주: 맞는 느낌만 (피해는 1)
+		-- 약점 구슬: 탄이 지나간 선이 구슬에 닿으면 3배 치명타 + 데드아이 게이지
+		if data.WeakPart and data.WeakPart.Parent and not data.Invincible then
+			local ab = result.Position - origin
+			local t = math.clamp((data.WeakPart.Position - origin):Dot(ab) / math.max(ab:Dot(ab), 0.001), 0, 1)
+			if (origin + ab * t - data.WeakPart.Position).Magnitude <= data.WeakPart.Size.X * 0.8 then
+				damage = math.floor(damage * 3)
+				isCrit = true
+				player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 6))
+				Effects.FloatText(data.WeakPart.Position + Vector3.new(0, 3, 0), "🎯 약점 명중!", Color3.fromRGB(255, 240, 90))
+				Effects.Burst(data.WeakPart.Position, Color3.fromRGB(255, 235, 80), 24)
+			end
+		end
 		-- 로켓 런처 / 플라즈마 캐논: 맞은 곳 주변 적에게도 피해
 		local splash = Config.GetPlayerWeapon(player).Splash
 		if splash then
@@ -1645,9 +1692,149 @@ local function stepGoblin(part, data, dt, now)
 	part.Position = position
 end
 
+-- 구역 군주 패턴 (기본 부채꼴 사격 + 전방위 탄막에 더해서 돌려 쓴다): 내려찍기 / 돌진 / 나선 탄막.
+-- 체력이 절반 아래면 "격노": 패턴 간격이 짧아지고 한 번에 두 개씩 나온다.
+local function playersNear(position, radius)
+	local list = {}
+	for _, player in ipairs(Players:GetPlayers()) do
+		if player:GetAttribute("Zone") == "Field" then
+			local root, humanoid = getAliveParts(player)
+			if root and humanoid.Health > 0 and not isSafe(root.Position) then
+				local flat = Vector3.new(root.Position.X - position.X, 0, root.Position.Z - position.Z)
+				if flat.Magnitude <= radius then
+					table.insert(list, { Root = root, Humanoid = humanoid })
+				end
+			end
+		end
+	end
+	return list
+end
+
+local function bossCue(part, text, color)
+	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 4, 0), text, color)
+end
+
+local function bossSlam(part, data)
+	local target = nearestFieldPlayer(part.Position)
+	if not target then return end
+	bossCue(part, "⚠ 내려찍기!", Color3.fromRGB(255, 120, 80))
+	local spots = { Vector3.new(target.Position.X, 0, target.Position.Z) }
+	if data.Enraged then
+		table.insert(spots, spots[1] + Vector3.new(16, 0, 10))
+		table.insert(spots, spots[1] + Vector3.new(-16, 0, -10))
+	end
+	for _, spot in ipairs(spots) do
+		local radius = 12
+		local warn = Instance.new("Part")
+		warn.Shape = Enum.PartType.Cylinder
+		warn.Size = Vector3.new(0.3, radius * 2, radius * 2)
+		warn.CFrame = CFrame.new(spot.X, floorAt(spot.X) + 0.3, spot.Z) * CFrame.Angles(0, 0, math.rad(90))
+		warn.Anchored = true
+		warn.CanCollide = false
+		warn.CanQuery = false
+		warn.Material = Enum.Material.Neon
+		warn.Color = Color3.fromRGB(255, 50, 50)
+		warn.Transparency = 0.55
+		warn.Parent = worldFolder
+		TweenService:Create(warn, TweenInfo.new(1.2), { Transparency = 0.1 }):Play()
+		task.delay(1.2, function()
+			warn:Destroy()
+			if monsters[part] ~= data then return end
+			Effects.Burst(Vector3.new(spot.X, floorAt(spot.X) + 2, spot.Z), Color3.fromRGB(255, 140, 70), 60)
+			for _, entry in ipairs(playersNear(spot, radius)) do
+				entry.Humanoid:TakeDamage(math.floor(data.Stats.ShotDamage * 1.4))
+			end
+		end)
+	end
+end
+
+local function bossCharge(part, data)
+	local target = nearestFieldPlayer(part.Position)
+	if not target then return end
+	local direction = Vector3.new(target.Position.X - part.Position.X, 0, target.Position.Z - part.Position.Z)
+	if direction.Magnitude < 1 then return end
+	direction = direction.Unit
+	bossCue(part, "⚠ 돌진!", Color3.fromRGB(255, 200, 70))
+	local length = 64
+	local warn = Instance.new("Part")
+	warn.Size = Vector3.new(10, 0.3, length)
+	warn.CFrame = CFrame.lookAt(Vector3.new(part.Position.X, floorAt(part.Position.X) + 0.3, part.Position.Z) + direction * (length / 2), Vector3.new(part.Position.X, floorAt(part.Position.X) + 0.3, part.Position.Z) + direction * length)
+	warn.Anchored = true
+	warn.CanCollide = false
+	warn.CanQuery = false
+	warn.Material = Enum.Material.Neon
+	warn.Color = Color3.fromRGB(255, 70, 40)
+	warn.Transparency = 0.55
+	warn.Parent = worldFolder
+	TweenService:Create(warn, TweenInfo.new(1.0), { Transparency = 0.1 }):Play()
+	data.BusyUntil = os.clock() + 2.0
+	task.delay(1.0, function()
+		warn:Destroy()
+		if monsters[part] ~= data then return end
+		local hitOnce = {}
+		local radius = data.Stats.Size / 2 + 2
+		for _ = 1, 12 do -- 약 0.5초 동안 돌진 (64칸)
+			if monsters[part] ~= data then return end
+			local nx, nz = part.Position.X + direction.X * length / 12, part.Position.Z + direction.Z * length / 12
+			local zx0, zx1 = zoneBounds(data.Zone)
+			if not walkableAt(nx, nz, radius) or nx < zx0 + F.CampSafe + radius or nx > zx1 - radius - 4 or math.abs(nz) > F.Width / 2 - radius - 4 then break end
+			part.CFrame = CFrame.lookAt(Vector3.new(nx, floorAt(nx) + data.Stats.Size / 2, nz), Vector3.new(nx + direction.X, floorAt(nx) + data.Stats.Size / 2, nz + direction.Z))
+			for _, entry in ipairs(playersNear(part.Position, radius + 4)) do
+				if not hitOnce[entry.Humanoid] then
+					hitOnce[entry.Humanoid] = true
+					entry.Humanoid:TakeDamage(math.floor(data.Stats.ShotDamage * 1.6))
+					Effects.Burst(entry.Root.Position, Color3.fromRGB(255, 200, 90), 30)
+				end
+			end
+			task.wait(0.04)
+		end
+	end)
+end
+
+local function bossSpiral(part, data)
+	bossCue(part, "⚠ 나선 탄막!", Color3.fromRGB(255, 160, 255))
+	data.BusyUntil = os.clock() + 0.4
+	task.spawn(function()
+		local started = os.clock()
+		local arms = data.Enraged and 3 or 2
+		while os.clock() - started < 2.6 and monsters[part] == data do
+			local t = os.clock() - started
+			for arm = 0, arms - 1 do
+				local angle = t * 3.4 + arm * (math.pi * 2 / arms)
+				local direction = Vector3.new(math.cos(angle), 0, math.sin(angle))
+				fireProjectile(Vector3.new(part.Position.X, floorAt(part.Position.X) + 3, part.Position.Z) + direction * (part.Size.X / 2 + 1), direction, 24, math.floor(data.Stats.ShotDamage * 0.5), 2.2, Color3.fromRGB(255, 120, 220))
+			end
+			task.wait(0.08)
+		end
+	end)
+end
+
+local bossPatterns = { { Fn = bossSlam, Weight = 3, Name = "slam" }, { Fn = bossCharge, Weight = 2, Name = "charge" }, { Fn = bossSpiral, Weight = 2, Name = "spiral" } }
+local function pickBossPattern(data)
+	local total = 0
+	for _, entry in ipairs(bossPatterns) do
+		if entry.Name ~= data.LastPattern then total += entry.Weight end
+	end
+	local roll = math.random() * total
+	for _, entry in ipairs(bossPatterns) do
+		if entry.Name ~= data.LastPattern then
+			roll -= entry.Weight
+			if roll <= 0 then
+				return entry
+			end
+		end
+	end
+	return bossPatterns[1]
+end
+
 local function stepMonsters(dt)
 	local now = os.clock()
 	for part, data in pairs(monsters) do
+		if data.WeakPart and data.WeakPart.Parent then -- 약점 구슬: 보스 몸 주위를 돌며 위아래로 흔들린다
+			local radius = part.Size.X / 2 + 3
+			local angle = now * 1.5 + data.Phase
+			data.WeakPart.Position = part.Position + Vector3.new(math.cos(angle) * radius, math.sin(now * 0.9) * radius * 0.35, math.sin(angle) * radius)
+		end
 		if data.Static then continue end -- 소환 결투의 군주: 제자리에서 연출만 한다
 		if data.Falling then
 			-- 공습 낙하병: 낙하산을 펴고 하늘에서 내려온다. 땅에 닿으면 충격으로 주변이 피해를 입고 그때부터 싸운다
@@ -1688,7 +1875,7 @@ local function stepMonsters(dt)
 				MonsterTypes.Update(fieldCtx, part, data, dt, now)
 			else
 				local keepDistance = data.Stats.Size / 2 + 16
-				if distance > keepDistance then
+				if distance > keepDistance and now >= (data.BusyUntil or 0) then
 					local flatTarget = Vector3.new(target.Position.X, part.Position.Y, target.Position.Z)
 					local move = flatTarget - part.Position
 					if move.Magnitude > 0.1 then
@@ -1727,6 +1914,28 @@ local function stepMonsters(dt)
 						end
 					end)
 				end
+
+				-- 체력이 절반 아래면 격노
+				if not data.Enraged and data.Health / data.MaxHealth <= 0.5 then
+					data.Enraged = true
+					Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 6, 0), "😡 격노!", Color3.fromRGB(255, 70, 70))
+					Effects.Burst(part.Position, Color3.fromRGB(255, 70, 70), 80)
+				end
+				-- 다양한 패턴: 내려찍기 / 돌진 / 나선 탄막을 번갈아 (격노하면 더 자주, 두 개씩)
+				if now >= (data.NextPattern or now + 3) and now >= (data.BusyUntil or 0) then
+					data.NextPattern = now + (data.Enraged and 4.2 or 6.5)
+					local entry = pickBossPattern(data)
+					data.LastPattern = entry.Name
+					entry.Fn(part, data)
+					if data.Enraged then
+						task.delay(1.0, function()
+							if monsters[part] == data then
+								local second = pickBossPattern(data)
+								if second.Name ~= "charge" then second.Fn(part, data) end
+							end
+						end)
+					end
+				end
 			end
 		elseif recentlyHit then
 			-- 너무 멀리 끌려 나왔지만 아직 맞고 있는 중: 체력을 회복하지 않고 가만히 있는다
@@ -1749,9 +1958,15 @@ end
 
 -- 아슬아슬한 회피(NEAR MISS): 대시 중에 탄 / 폭격이 몸 바로 옆을 스치면 보상 - 데드아이 게이지 + 잠깐 동안 공격이 전부 치명타
 local nearMissAt = {}
-local function isDashing(root)
+local dashSeenAt = {}
+local function isDashing(root, player)
+	-- 대시 중이거나 방금(0.6초 안에) 대시했으면 인정한다: 탄이 스치는 순간 대시가 막 끝났어도 NEAR MISS (후한 판정)
 	local v = root.AssemblyLinearVelocity
-	return Vector3.new(v.X, 0, v.Z).Magnitude > 50 -- 걷기 / 달리기보다 훨씬 빠른 속도 = 대시 (DashSpeed 135)
+	local now = os.clock()
+	if Vector3.new(v.X, 0, v.Z).Magnitude > 50 then
+		dashSeenAt[player] = now
+	end
+	return now - (dashSeenAt[player] or -10) < 0.6
 end
 local function awardNearMiss(player, root)
 	local now = os.clock()
@@ -1786,7 +2001,7 @@ local function stepProjectiles(dt)
 						humanoid:TakeDamage(projectile.Damage)
 						hit = true
 						break
-					elseif gap < projectile.Radius + 8 and isDashing(root) then -- 닿지는 않았지만 아슬아슬하게 스치며 대시
+					elseif gap < projectile.Radius + 14 and isDashing(root, player) then -- 닿지는 않았지만 아슬아슬하게 스치며 대시
 						projectile.NearMissed = projectile.NearMissed or {}
 						if not projectile.NearMissed[player] then
 							projectile.NearMissed[player] = true
@@ -2242,15 +2457,19 @@ local function airRaid(player, zone)
 end
 
 -- 보스(구역 군주 / 이벤트 보스)가 나를 노리고 있으면 BossFight 가 켜진다 -> 클라이언트가 음악을 던전(전투) 곡으로 바꾼다
+local powerWarnedAt = {}
+local weakTipShown = {}
 local function updateBossFight()
 	for _, player in ipairs(Players:GetPlayers()) do
 		local fighting = false
+		local bossZone
 		if player:GetAttribute("Zone") == "Field" then
 			local root = getAliveParts(player)
 			if root then
 				for part, data in pairs(monsters) do
-					if data.BossLike and data.Aggro and part.Parent and (part.Position - root.Position).Magnitude < 150 then
+					if data.BossLike and not data.Static and data.Aggro and part.Parent and (part.Position - root.Position).Magnitude < 150 then
 						fighting = true
+						bossZone = data.Zone
 						break
 					end
 				end
@@ -2258,6 +2477,20 @@ local function updateBossFight()
 		end
 		if player:GetAttribute("BossFight") ~= fighting then
 			player:SetAttribute("BossFight", fighting)
+			if fighting and bossZone and not player:GetAttribute("TutorialActive") then
+				-- 군주를 만나면: 전투력이 모자라면 무기 강화를 권하고(골드 사용처), 처음이면 약점 구슬 사용법을 알려준다
+				local recommended = F.BossPower[bossZone] or 0
+				local power = player:GetAttribute("Power") or 0
+				if power < recommended * 0.85 and os.clock() - (powerWarnedAt[player] or -999) > 90 then
+					powerWarnedAt[player] = os.clock()
+					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "⚒", Title = string.format("전투력 부족! (내 %d / 권장 %d)", power, recommended),
+						Text = "마을 대장간에서 골드로 무기를 강화하면 전투력이 올라요. 강화하고 다시 도전하면 훨씬 쉬워요!", Duration = 9 })
+				elseif not weakTipShown[player] then
+					weakTipShown[player] = true
+					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🎯", Title = "약점을 노려라!",
+						Text = "보스 주위를 도는 노란 구슬을 직접 조준해서 맞히면 3배 치명타 + 데드아이 게이지!", Duration = 8 })
+				end
+			end
 		end
 	end
 end
@@ -2668,7 +2901,7 @@ local function doomWave(player, zone)
 					local dmg = math.min(h2.MaxHealth * percent, h2.Health - 1)
 					if dmg > 0 then h2:TakeDamage(dmg) end
 					notify(player, "💥 군주의 공격에 맞았다!")
-				elseif gap <= radius + 10 and isDashing(r2) then
+				elseif gap <= radius + 16 and isDashing(r2, player) then
 					awardNearMiss(player, r2) -- 경고 원 바로 밖으로 대시로 빠져나갔다
 				end
 			end

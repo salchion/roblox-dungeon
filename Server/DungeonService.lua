@@ -945,6 +945,7 @@ end
 -- 매 프레임: 몬스터 이동/공격, 투사체 이동/명중
 ------------------------------------------------------------
 local nearMissAt = {}
+local dashSeenAt = {}
 function Dungeon.AwardNearMiss(run, player, root)
 	local now = os.clock()
 	if now - (nearMissAt[player] or 0) < 0.7 then return end
@@ -1050,9 +1051,12 @@ local function stepRun(run, dt)
 					humanoid:TakeDamage(projectile.Damage)
 					hit = true
 					break
-				elseif gap < projectile.Radius + 8 then -- 아슬아슬하게 스치며 대시: NEAR MISS (필드와 같은 보상 + 심연 도전 점수)
+				elseif gap < projectile.Radius + 14 then -- 아슬아슬하게 스치며 대시: NEAR MISS (필드와 같은 보상 + 심연 도전 점수). 방금(0.6초 안) 대시했어도 인정
 					local v = root.AssemblyLinearVelocity
 					if Vector3.new(v.X, 0, v.Z).Magnitude > 50 then
+						dashSeenAt[member] = os.clock()
+					end
+					if os.clock() - (dashSeenAt[member] or -10) < 0.6 then
 						projectile.NearMissed = projectile.NearMissed or {}
 						if not projectile.NearMissed[member] then
 							projectile.NearMissed[member] = true
@@ -1502,10 +1506,20 @@ end
 local function spawnWave(run, wave)
 	local count = math.min(36, math.floor(D.GetMonsterCount(wave, run.PartySize) * (run.Mutator and run.Mutator.CountMult or 1)))
 	local level = math.max(1, D.GetWaveMonsterLevel(wave) + run.LevelBonus)
-	for _ = 1, count do
-		if run.Destroyed or run.Phase == "Ended" then return end
-		spawnMonster(run, level)
-		task.wait(0.2)
+	-- 한 마리씩 야금야금 나오면 맛이 떨어진다: 세 번에 나눠 "우르르" 한꺼번에 쏟아낸다 (그룹 사이 0.7초)
+	local groups = count >= 6 and 3 or 1
+	local perGroup = math.ceil(count / groups)
+	local spawned = 0
+	for group = 1, groups do
+		for _ = 1, perGroup do
+			if spawned >= count then break end
+			if run.Destroyed or run.Phase == "Ended" then return end
+			spawnMonster(run, level)
+			spawned += 1
+		end
+		if group < groups then
+			task.wait(0.7)
+		end
 	end
 end
 
