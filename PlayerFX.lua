@@ -463,3 +463,23 @@ do
 		end
 	end)
 end
+
+-- 필드 입구 큰 간판("사냥 필드 입구"): 멀리서는 방향을 알려 주지만, 문 가까이 오거나 필드에 들어오면 화면을 가리지 않게 숨긴다
+task.spawn(function()
+	local sign
+	while true do
+		task.wait(0.25)
+		if not sign or not sign.Parent then
+			local holder = workspace:FindFirstChild("FieldGateSign", true)
+			sign = holder and holder:FindFirstChildOfClass("BillboardGui")
+		end
+		if sign and sign.Parent then
+			local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+			local anchor = sign.Parent
+			if root and anchor:IsA("BasePart") then
+				local flat = Vector3.new(root.Position.X - anchor.Position.X, 0, root.Position.Z - anchor.Position.Z).Magnitude
+				sign.Enabled = player:GetAttribute("Zone") == "Lobby" and flat > 90
+			end
+		end
+	end
+end)
