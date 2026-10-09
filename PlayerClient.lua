@@ -1992,7 +1992,7 @@ local shake = 0          -- 카메라 흔들림 세기
 local crosshairKick = 0 -- 쏠 때마다 조준점이 벌어졌다 돌아오는 연출용
 
 -- 월드 좌표를 향해 캐릭터를 돌려세우고 서버에 공격 요청
-local function fireAt(worldPoint)
+local function fireAt(worldPoint, manual)
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	if not root then return end
@@ -2004,7 +2004,7 @@ local function fireAt(worldPoint)
 		end
 	end
 	crosshairKick = 10
-	Remotes.Attack:FireServer(worldPoint)
+	Remotes.Attack:FireServer(worldPoint, manual == true) -- manual: 직접 클릭해서 쏜 것 (자동 공격과 구분: 약점 / 연습 판정용)
 end
 
 local function attack(screenPosition)
@@ -2022,7 +2022,7 @@ local function attack(screenPosition)
 			end
 		end
 	end
-	fireAt(point)
+	fireAt(point, true)
 end
 
 local function toggleAuto()

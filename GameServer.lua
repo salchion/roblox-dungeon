@@ -361,7 +361,7 @@ local function spreadDirection(direction, degrees)
 	return (CFrame.lookAt(Vector3.zero, direction) * CFrame.Angles(pitch, yaw, 0)).LookVector
 end
 
-Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint)
+Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 	if typeof(aimPoint) ~= "Vector3" or aimPoint ~= aimPoint then return end -- NaN 방어
 
 	local character = player.Character
@@ -397,6 +397,8 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint)
 	-- 던전 특성 "분산탄": 탄이 +N발, 부채꼴로 흩어져 나간다 (권총류는 대칭 부채꼴, 샷건은 산탄이 더 늘어남)
 	local pellets = weaponType.Pellets + extra
 	local hitsBefore = player:GetAttribute("HitTick") or 0
+	local isManual = manual == true
+	player:SetAttribute("ShotManual", isManual) -- Dungeon / Field.Shoot 이 읽는다: 약점 보너스는 직접 조준한 탄에만
 	local fanAngle = math.rad(Config.Perks.FanAngle)
 	for pellet = 1, pellets do
 		local direction
@@ -416,6 +418,9 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint)
 		Effects.Shot(tipPosition, endPosition, shot, color, tier.Rainbow, tier.Class, tier.Era)
 	end
 	Weapon.PlayShot(player)
+	if isManual and (player:GetAttribute("HitTick") or 0) > hitsBefore then
+		player:SetAttribute("ManualHitTick", (player:GetAttribute("ManualHitTick") or 0) + 1) -- 연습장 "직접 조준" 판정
+	end
 	-- 궁극기 게이지: 몬스터를 실제로 맞혔을 때만 찬다 (허공에 쏴서는 안 참)
 	if (player:GetAttribute("HitTick") or 0) > hitsBefore then
 		Skill.AddCharge(player, Config.Skills.ChargePerShot)

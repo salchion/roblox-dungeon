@@ -1437,13 +1437,14 @@ function Field.Shoot(player, origin, direction)
 		local damage, isCrit = Dungeon.ComputeDamage(player)
 		if data.Invincible then damage, isCrit = 1, false end -- 최후의 군주: 맞는 느낌만 (피해는 1)
 		-- 약점 구슬: 탄이 지나간 선이 구슬에 닿으면 3배 치명타 + 데드아이 게이지
-		if data.WeakPart and data.WeakPart.Parent and not data.Invincible then
+		if data.WeakPart and data.WeakPart.Parent and not data.Invincible and player:GetAttribute("ShotManual") == true then -- 직접 조준한 탄만
 			local ab = result.Position - origin
 			local t = math.clamp((data.WeakPart.Position - origin):Dot(ab) / math.max(ab:Dot(ab), 0.001), 0, 1)
 			if (origin + ab * t - data.WeakPart.Position).Magnitude <= data.WeakPart.Size.X * 0.8 then
 				damage = math.floor(damage * 3)
 				isCrit = true
 				player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 6))
+				player:SetAttribute("WeakHitTick", (player:GetAttribute("WeakHitTick") or 0) + 1)
 				Effects.FloatText(data.WeakPart.Position + Vector3.new(0, 3, 0), "🎯 약점 명중!", Color3.fromRGB(255, 240, 90))
 				Effects.Burst(data.WeakPart.Position, Color3.fromRGB(255, 235, 80), 24)
 			end
@@ -2497,7 +2498,7 @@ local function updateBossFight()
 				elseif not weakTipShown[player] then
 					weakTipShown[player] = true
 					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🎯", Title = "약점을 노려라!",
-						Text = "보스 주위를 도는 노란 구슬을 직접 조준해서 맞히면 3배 치명타 + 데드아이 게이지!", Duration = 8 })
+						Text = "보스 주위를 도는 노란 구슬을 마우스로 직접 조준해서 클릭하면 3배 치명타 + 데드아이 게이지! (자동 공격으로는 안 돼요)", Duration = 8 })
 				end
 			end
 		end

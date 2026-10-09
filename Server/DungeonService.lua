@@ -447,6 +447,42 @@ local function decorateBoss(part, size, glow)
 	halo.Parent = part
 end
 
+-- 약점 구슬: 보스 주위를 도는 노란 구슬. 직접 조준해서 맞히면 3배 치명타 + 데드아이 게이지 (자동 조준은 몸통을 노린다)
+local function makeWeakOrb(part)
+	local orb = Instance.new("Part")
+	orb.Name = "WeakPoint"
+	orb.Shape = Enum.PartType.Ball
+	orb.Size = Vector3.new(4.2, 4.2, 4.2)
+	orb.Anchored = true
+	orb.CanCollide = false
+	orb.CanQuery = false
+	orb.CanTouch = false
+	orb.Color = Color3.fromRGB(255, 235, 80)
+	orb.Material = Enum.Material.Neon
+	orb.Position = part.Position
+	orb.Parent = part
+	local orbLight = Instance.new("PointLight")
+	orbLight.Color = Color3.fromRGB(255, 235, 80)
+	orbLight.Range = 22
+	orbLight.Brightness = 2.5
+	orbLight.Parent = orb
+	local orbGui = Instance.new("BillboardGui")
+	orbGui.Size = UDim2.new(0, 70, 0, 28)
+	orbGui.StudsOffset = Vector3.new(0, 3.4, 0)
+	orbGui.MaxDistance = 140
+	orbGui.Parent = orb
+	local orbText = Instance.new("TextLabel")
+	orbText.Size = UDim2.new(1, 0, 1, 0)
+	orbText.BackgroundTransparency = 1
+	orbText.Font = Enum.Font.GothamBlack
+	orbText.TextScaled = true
+	orbText.TextColor3 = Color3.fromRGB(255, 240, 120)
+	orbText.TextStrokeTransparency = 0
+	orbText.Text = "🎯 약점"
+	orbText.Parent = orbGui
+	return orb
+end
+
 local function spawnBoss(run)
 	local boss = Config.Boss
 	local bossType = run.Type.Boss
@@ -482,43 +518,12 @@ local function spawnBoss(run)
 		Casting = false,
 		LastPattern = nil,
 	})
-	-- 약점 구슬: 보스 주위를 도는 노란 구슬. 직접 조준해서 맞히면 3배 치명타 + 데드아이 게이지 (자동 조준은 몸통을 노린다)
-	local orb = Instance.new("Part")
-	orb.Name = "WeakPoint"
-	orb.Shape = Enum.PartType.Ball
-	orb.Size = Vector3.new(4.2, 4.2, 4.2)
-	orb.Anchored = true
-	orb.CanCollide = false
-	orb.CanQuery = false
-	orb.CanTouch = false
-	orb.Color = Color3.fromRGB(255, 235, 80)
-	orb.Material = Enum.Material.Neon
-	orb.Position = part.Position
-	orb.Parent = part
-	local orbLight = Instance.new("PointLight")
-	orbLight.Color = Color3.fromRGB(255, 235, 80)
-	orbLight.Range = 22
-	orbLight.Brightness = 2.5
-	orbLight.Parent = orb
-	local orbGui = Instance.new("BillboardGui")
-	orbGui.Size = UDim2.new(0, 70, 0, 28)
-	orbGui.StudsOffset = Vector3.new(0, 3.4, 0)
-	orbGui.MaxDistance = 140
-	orbGui.Parent = orb
-	local orbText = Instance.new("TextLabel")
-	orbText.Size = UDim2.new(1, 0, 1, 0)
-	orbText.BackgroundTransparency = 1
-	orbText.Font = Enum.Font.GothamBlack
-	orbText.TextScaled = true
-	orbText.TextColor3 = Color3.fromRGB(255, 240, 120)
-	orbText.TextStrokeTransparency = 0
-	orbText.Text = "🎯 약점"
-	orbText.Parent = orbGui
+	local orb = makeWeakOrb(part)
 	data.WeakPart = orb
 	run.Boss = data
 	run.BossPart = part
 	for _, member in ipairs(run.Members) do
-		Remotes.Tutorial:FireClient(member, "Prompt", { Key = "🎯", Title = "약점을 노려라!", Text = "보스 주위를 도는 노란 구슬을 직접 조준해서 클릭하면 3배 치명타 + 데드아이 게이지!", Duration = 7, Top = true })
+		Remotes.Tutorial:FireClient(member, "Prompt", { Key = "🎯", Title = "약점을 노려라!", Text = "보스 주위를 도는 노란 구슬을 마우스로 직접 조준해서 클릭하면 3배 치명타 + 데드아이 게이지! (자동 공격으로는 안 돼요)", Duration = 7, Top = true })
 	end
 end
 
@@ -1280,13 +1285,14 @@ function Dungeon.Shoot(player, origin, direction)
 
 		local damage, isCrit = Dungeon.ComputeDamage(player)
 		local hitPosition = result.Position
-		if data.WeakPart and data.WeakPart.Parent then -- 탄이 지나간 선이 약점 구슬에 닿으면 3배 치명타
+		if data.WeakPart and data.WeakPart.Parent and player:GetAttribute("ShotManual") == true then -- 탄이 지나간 선이 약점 구슬에 닿으면 3배 치명타 (직접 조준한 탄만)
 			local ab = result.Position - origin
 			local t = math.clamp((data.WeakPart.Position - origin):Dot(ab) / math.max(ab:Dot(ab), 0.001), 0, 1)
 			if (origin + ab * t - data.WeakPart.Position).Magnitude <= data.WeakPart.Size.X * 0.8 then
 				damage = math.floor(damage * 3)
 				isCrit = true
 				player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 6))
+				player:SetAttribute("WeakHitTick", (player:GetAttribute("WeakHitTick") or 0) + 1)
 				Effects.FloatText(data.WeakPart.Position + Vector3.new(0, 3, 0), "🎯 약점 명중!", Color3.fromRGB(255, 240, 90))
 				Effects.Burst(data.WeakPart.Position, Color3.fromRGB(255, 235, 80), 24)
 			end
@@ -2020,36 +2026,106 @@ local function drillLoop(run)
 	local part = MonsterTypes.Build("Slime", 6, Color3.fromRGB(110, 220, 120), Vector3.new(base.X, groundAt(run, base.X, base.Z, base.Y) + 3, base.Z), run.MonstersFolder)
 	local data = registerMonster(run, part, stats, "연습 표적", 140, { Static = true, Invincible = true, TypeKey = "Slime", Def = slime, Level = 1, Phase = 0, NextAttack = 1e9 })
 	run.MonsterCount -= 1 -- 웨이브 계산에 넣지 않는다
+	data.WeakPart = makeWeakOrb(part) -- 약점 구슬 연습용
+	member:SetAttribute("AutoOffTick", (member:GetAttribute("AutoOffTick") or 0) + 1) -- 자동 공격이 켜져 있으면 끈다 (직접 조준 연습)
 	task.wait(3)
 
-	-- ① 직접 조준
+	-- ① 직접 조준 (자동 공격은 안 센다: 마우스로 직접 클릭한 탄만)
 	if alive() then
-		local start = member:GetAttribute("HitTick") or 0
-		show("🖱", "① 직접 조준해서 쏴요!", "마우스로 표적을 조준하고 클릭해서 5번 맞혀보세요. 자동 공격(R)은 가장 가까운 적만 노려요", 40)
-		if wait(60, function() return (member:GetAttribute("HitTick") or 0) - start >= 5 end) then ok() end
+		local start = member:GetAttribute("ManualHitTick") or 0
+		show("🖱", "① 직접 조준해서 쏴요!", "마우스로 표적을 조준하고 직접 클릭해서 5번 맞혀보세요. (자동 공격은 꺼 뒀어요)", 40)
+		if wait(90, function() return (member:GetAttribute("ManualHitTick") or 0) - start >= 5 end) then ok() end
 	end
-	-- ② 대시
+	-- ② 약점 사격
 	if alive() then
-		show("Q", "② Q 키로 대시!", "Q 키를 눌러 앞으로 돌진해보세요. 쏘는 탄을 피하는 데 써요", 40)
+		local start = member:GetAttribute("WeakHitTick") or 0
+		show("🎯", "② 노란 약점을 맞혀요! (3번)", "표적 주위를 도는 노란 구슬을 직접 조준해서 클릭하세요! 맞히면 3배 치명타 + 데드아이 게이지. 자동 공격으로는 안 돼요", 40)
+		if wait(90, function() return (member:GetAttribute("WeakHitTick") or 0) - start >= 3 end) then ok("약점 사격 좋아요! 보스에게도 똑같이 노려요") end
+	end
+	-- ③ 대시
+	if alive() then
+		show("Q", "③ Q 키로 대시!", "Q 키를 눌러 앞으로 돌진해보세요. 쏘는 탄을 피하는 데 써요", 40)
 		if wait(40, dashing) then ok("대시 좋아요! 이제 탄을 피해볼 거예요") end
 	end
-	-- ③ NEAR MISS (각본)
+	-- ④ NEAR MISS (각본): 눈에 잘 띄는 경고 레이저 -> 큰 미사일 -> 가까워지면 시간 정지 -> Q
 	if alive() then
-		show("⚡", "③ 미사일이 날아와요!", "표적이 미사일을 쏴요. 가까워지면 시간이 멈추니까, 그때 Q 대시로 피해보세요", 4)
-		task.wait(2.5)
+		show("⚡", "④ 미사일이 날아와요!", "붉은 레이저가 나를 조준해요! 미사일이 가까워지면 시간이 멈추니까, 그때 Q 대시로 피해보세요", 5)
+		task.wait(1.0)
 		local root = getAliveParts(member)
 		if root and run.Monsters[part] == data then
-			local origin = part.Position + Vector3.new(0, 1, 0)
-			local direction = Vector3.new(root.Position.X - origin.X, 0, root.Position.Z - origin.Z)
-			direction = direction.Magnitude > 1 and direction.Unit or Vector3.new(0, 0, 1)
+			local origin = part.Position + Vector3.new(0, 4, 0)
+			local aimAt = root.Position
+			local aim = Vector3.new(aimAt.X - origin.X, 0, aimAt.Z - origin.Z)
+			local direction = aim.Magnitude > 1 and aim.Unit or Vector3.new(0, 0, 1)
+			-- 경고 레이저: 표적에서 나를 향해 길게 뻗는 붉은 선 (발사 직전 2초 동안 깜빡인다)
+			local laserLength = 80
+			local laser = Instance.new("Part")
+			laser.Anchored = true
+			laser.CanCollide = false
+			laser.CanQuery = false
+			laser.Material = Enum.Material.Neon
+			laser.Color = Color3.fromRGB(255, 40, 40)
+			laser.Transparency = 0.3
+			laser.Size = Vector3.new(0.7, 0.7, laserLength)
+			laser.CFrame = CFrame.lookAt(origin + direction * (laserLength / 2), origin + direction * laserLength)
+			laser.Parent = run.Folder
+			local laserGui = Instance.new("BillboardGui")
+			laserGui.Size = UDim2.new(0, 160, 0, 40)
+			laserGui.StudsOffset = Vector3.new(0, 3, 0)
+			laserGui.AlwaysOnTop = true
+			laserGui.Parent = laser
+			local laserText = Instance.new("TextLabel")
+			laserText.Size = UDim2.new(1, 0, 1, 0)
+			laserText.BackgroundTransparency = 1
+			laserText.Font = Enum.Font.GothamBlack
+			laserText.TextScaled = true
+			laserText.TextColor3 = Color3.fromRGB(255, 90, 90)
+			laserText.TextStrokeTransparency = 0
+			laserText.Text = "⚠ 레이저 조준!"
+			laserText.Parent = laserGui
+			for flash = 1, 8 do
+				laser.Transparency = flash % 2 == 0 and 0.15 or 0.6
+				task.wait(0.25)
+			end
+			laser:Destroy()
+
 			local speed = 18
-			fireProjectile(run, origin, direction, speed, 0, 4, Color3.fromRGB(255, 70, 70), "Orb") -- 피해 0: 맞아도 아프지 않다
+			fireProjectile(run, origin, direction, speed, 0, 6, Color3.fromRGB(255, 70, 70), "Orb") -- 큰 붉은 구체 (피해 0: 맞아도 아프지 않다)
 			local missile = run.Projectiles[#run.Projectiles]
 			missile.Expire = os.clock() + 90
+			missile.Part.Position = origin
+			-- 눈에 잘 띄게: 진한 빛 + 꼬리 입자 + 위에 떠 있는 경고 글자
+			local missileGui = Instance.new("BillboardGui")
+			missileGui.Size = UDim2.new(0, 150, 0, 40)
+			missileGui.StudsOffset = Vector3.new(0, 5, 0)
+			missileGui.AlwaysOnTop = true
+			missileGui.Parent = missile.Part
+			local missileText = Instance.new("TextLabel")
+			missileText.Size = UDim2.new(1, 0, 1, 0)
+			missileText.BackgroundTransparency = 1
+			missileText.Font = Enum.Font.GothamBlack
+			missileText.TextScaled = true
+			missileText.TextColor3 = Color3.fromRGB(255, 120, 120)
+			missileText.TextStrokeTransparency = 0
+			missileText.Text = "⚠ 미사일"
+			missileText.Parent = missileGui
+			local trail = Instance.new("ParticleEmitter")
+			trail.Rate = 40
+			trail.Lifetime = NumberRange.new(0.4, 0.8)
+			trail.Speed = NumberRange.new(0, 2)
+			trail.LightEmission = 1
+			trail.Color = ColorSequence.new(Color3.fromRGB(255, 100, 60))
+			trail.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 4), NumberSequenceKeypoint.new(1, 0) })
+			trail.Parent = missile.Part
+			local missileLight = missile.Part:FindFirstChildOfClass("PointLight")
+			if missileLight then
+				missileLight.Range = 24
+				missileLight.Brightness = 3
+			end
 			local frozen = false
-			wait(14, function()
+			wait(20, function()
 				local r = getAliveParts(member)
-				if r and missile.Part.Parent and (r.Position - missile.Part.Position).Magnitude <= 30 then
+				if r and missile.Part.Parent and (r.Position - missile.Part.Position).Magnitude <= 34 then
 					frozen = true
 					return true
 				end
@@ -2058,7 +2134,7 @@ local function drillLoop(run)
 			if frozen and alive() then
 				missile.Speed = 0
 				Remotes.Tutorial:FireClient(member, "Freeze", true)
-				show("Q", "⏸ 지금이에요! Q 키로 대시!", "미사일이 멈췄어요! 옆으로 Q 대시를 눌러 아슬아슬하게 피하면 NEAR MISS!", 40)
+				show("Q", "⏸ 지금이에요! 옆으로 Q 대시!", "미사일이 멈췄어요! 방향 키로 옆을 향한 채 Q를 눌러서 아슬아슬하게 피하면 NEAR MISS!", 40)
 				local missAt = member:GetAttribute("NearMissUntil") or 0
 				wait(25, dashing)
 				missile.Speed = speed * 1.3
