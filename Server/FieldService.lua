@@ -1746,6 +1746,10 @@ end
 local fieldCtx = {
 	FloorY = TOP,
 	GroundY = function(x) return floorAt(x) end, -- 층 지형에 맞춰 몬스터 높이를 잡는다
+	Slope = function(x, size) -- 몸 앞뒤 높이 차로 경사 각도를 구한다 (경사로 위에서 몸을 기울이는 데 쓴다)
+		local half = math.max(2, size * 0.5)
+		return math.clamp(math.atan2(floorAt(x + half) - floorAt(x - half), half * 2), -0.6, 0.6)
+	end,
 	Walkable = walkableAt,
 	LineOfSight = function(a, b)
 		return (segmentClear(a, b))

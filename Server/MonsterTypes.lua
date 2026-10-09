@@ -521,6 +521,12 @@ local function snapToGround(ctx, position, size, lift)
 end
 
 
+-- 경사 위에서는 몸을 경사에 맞춰 눕힌다 (큰 몬스터가 경사에 파묻히거나 허공에 뜨지 않게). ctx.Slope(x, size) = 라디안 (필드만 제공)
+local function slopeTilt(ctx, position, size)
+	local angle = ctx.Slope and ctx.Slope(position.X, size) or 0
+	return CFrame.new(position) * CFrame.Angles(0, 0, angle) * CFrame.new(-position)
+end
+
 -- 바닥 높이
 local function groundOf(ctx, position)
 	if ctx.GroundY then
@@ -668,7 +674,7 @@ function M.Update(ctx, part, data, dt, now)
 			data.ChargeUntil = nil -- 벽에 부딪히면 돌진이 끝난다
 		end
 		position = snapToGround(ctx, position, stats.Size)
-		part.CFrame = CFrame.lookAt(position, position + data.ChargeDir)
+		part.CFrame = slopeTilt(ctx, position, stats.Size) * CFrame.lookAt(position, position + data.ChargeDir)
 		if not data.ChargeHit then
 			for _, entry in ipairs(ctx.Players()) do
 				if (flat(entry.Root.Position - position)).Magnitude <= stats.Size / 2 + 3 then
@@ -684,7 +690,7 @@ function M.Update(ctx, part, data, dt, now)
 
 	-- 돌진 준비 동작 중에는 제자리에서 대상을 노려본다
 	if data.WindupUntil and now < data.WindupUntil then
-		part.CFrame = CFrame.lookAt(position, position + direction) * bodyTilt(data, def, now, dt, false)
+		part.CFrame = slopeTilt(ctx, position, stats.Size) * CFrame.lookAt(position, position + direction) * bodyTilt(data, def, now, dt, false)
 		return
 	end
 
@@ -774,7 +780,7 @@ function M.Update(ctx, part, data, dt, now)
 		data.Facing = facing
 		lookDirection = facing
 	end
-	part.CFrame = CFrame.lookAt(position, position + lookDirection) * bodyTilt(data, def, now, dt, moving)
+	part.CFrame = ((def.Move == "Hover") and CFrame.identity or slopeTilt(ctx, position, stats.Size)) * CFrame.lookAt(position, position + lookDirection) * bodyTilt(data, def, now, dt, moving)
 
 	-- 치유 사제: 일정 간격마다 주변 아군(보스 제외)의 체력을 채운다. 먼저 잡아야 하는 몬스터.
 	if def.Attack == "Heal" then
