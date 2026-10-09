@@ -1037,11 +1037,48 @@ local function createHealthBar(part, text, width, color)
 	return fill
 end
 
+-- 구역 안의 "구간": 한 구역을 3등분해서 구간마다 주력 몬스터 2종이 많이 나온다 (같은 구역도 걸어 들어갈수록 구성이 달라진다)
+local function segmentOf(zone, x)
+	local x0, x1 = zoneBounds(zone)
+	local start = x0 + F.CampSafe
+	return math.clamp(math.floor((x - start) / math.max(1, x1 - start) * 3) + 1, 1, 3)
+end
+
+local segmentFeatureCache = {}
+local function segmentFeatures(zone, segment)
+	local id = zone * 10 + segment
+	if segmentFeatureCache[id] then return segmentFeatureCache[id] end
+	local keys = {}
+	for key in pairs(F.ZonePools[zone]) do table.insert(keys, key) end
+	table.sort(keys)
+	local rng = Random.new(zone * 7919 + segment * 104729)
+	local picked = {}
+	for _ = 1, math.min(2, #keys) do
+		local index = rng:NextInteger(1, #keys)
+		table.insert(picked, table.remove(keys, index))
+	end
+	segmentFeatureCache[id] = picked
+	return picked
+end
+
+local function pickTypeAt(zone, x)
+	local features = segmentFeatures(zone, segmentOf(zone, x))
+	local pool = {}
+	for key, weight in pairs(F.ZonePools[zone]) do
+		pool[key] = weight * 0.6
+	end
+	for _, key in ipairs(features) do
+		pool[key] = (F.ZonePools[zone][key] or 1) * 3.2
+	end
+	return MonsterTypes.Pick(pool)
+end
+
 -- kind: "Normal" / "Elite" / "Boss"
 local function spawnMonster(zone, kind, at, ambush)
 	local stats, text, color, barWidth
 	local level = F.GetZoneLevel(zone)
 	local typeKey, def, xpLevel
+	local preX -- 일반 / 엘리트 몬스터가 태어날 X (구간에 맞는 종류를 고르기 위해 먼저 정한다)
 
 	if kind == "Boss" then
 		-- 구역마다 하나씩 있는 구역 보스: 그 구역 몬스터 레벨 기준으로 체력 / 공격력이 훨씬 세고 크다. 관문을 열려면 이 보스를 쓰러뜨려야 한다.
@@ -1062,7 +1099,14 @@ local function spawnMonster(zone, kind, at, ambush)
 		text, color, barWidth = string.format("👑 %s의 군주 (구역 %d) · 권장 ⚡%d", F.ZoneNames[zone], zone, F.BossPower[zone] or 0), Color3.fromRGB(255, 120, 120), 360
 	else
 		-- 구역마다 나오는 몬스터 종류가 다르다 (Config.Field.ZonePools)
-		typeKey = MonsterTypes.Pick(F.ZonePools[zone])
+		if at then
+			preX = at.X
+		else
+			local bx0, bx1 = zoneBounds(zone)
+			local nearEntrance = math.random() < 0.45
+			preX = nearEntrance and freeX(math.floor(bx0 + F.CampSafe + 12), math.floor(bx0 + F.CampSafe + 110)) or freeX(math.floor(bx0 + F.CampSafe + 40), math.floor(bx1 - 25))
+		end
+		typeKey = pickTypeAt(zone, preX)
 		def = MonsterTypes.Defs[typeKey]
 		if kind == "Elite" then
 			xpLevel = level + 2
@@ -1111,8 +1155,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		end
 	else
 		-- 필드에 나서자마자 바로 싸움이 시작되도록: 몬스터의 절반 가까이는 캠프 안전지대 바로 바깥(입구 근처)에 모여 있다
-		local nearEntrance = math.random() < 0.45
-		local spawnX = nearEntrance and freeX(math.floor(x0 + F.CampSafe + 12), math.floor(x0 + F.CampSafe + 110)) or freeX(math.floor(x0 + F.CampSafe + 40), math.floor(x1 - 25))
+		local spawnX = preX or freeX(math.floor(x0 + F.CampSafe + 40), math.floor(x1 - 25))
 		position = Vector3.new(spawnX, floorAt(spawnX) + stats.Size / 2, math.random(-F.Width / 2 + 25, F.Width / 2 - 25))
 		if at then -- 습격: 플레이어 주변에 바로 나타난다
 			position = Vector3.new(at.X, floorAt(at.X) + stats.Size / 2, at.Z)
@@ -3390,8 +3433,84 @@ end
 
 -- 습격 / 공습: 필드에서 싸우는 플레이어에게 일정 시간마다 갑자기 닥친다 (가만히 있으면 위험하다)
 --   습격 = 사방에서 몬스터 떼가 몰려온다 / 공습 = 하늘에서 폭격기가 폭탄을 떨어뜨린다
+-- 주변에서 떨어진 걷기 가능한 자리를 찾는다
+local function ringSpot(root, zone, minDistance, maxDistance)
+	for _ = 1, 8 do
+		local angle = math.random() * math.pi * 2
+		local distance = minDistance + math.random() * (maxDistance - minDistance)
+		local at = root.Position + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
+		if walkableAt(at.X, at.Z) and not isSafe(at) and zoneOfX(at.X) == zone then return at end
+	end
+	return nil
+end
+
+local function ambushCount()
+	local alive = 0
+	for _, data in pairs(monsters) do
+		if data.Ambush then alive += 1 end
+	end
+	return alive
+end
+
+-- 필드 랜덤 이벤트: 몇십 초마다 한 가지가 터진다. 같은 이벤트가 연달아 나오지 않는다.
+local FIELD_EVENTS = {
+	{ Key = "Raid",    Weight = 2.5 },  -- 공습 (폭격기 + 낙하산 부대)
+	{ Key = "Ambush",  Weight = 3 },    -- 사방 습격
+	{ Key = "Elite",   Weight = 2.2 },  -- 엘리트 부대 습격
+	{ Key = "Stampede", Weight = 2.6 }, -- 몬스터 대이동 (한 줄로 몰려온다)
+}
+
+local function eventAmbush(player, root, zone)
+	notify(player, "⚠ 습격! 사방에서 몬스터 떼가 몰려온다!")
+	player:SetAttribute("ShakeStrength", 0.5)
+	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+	local count = 6 + math.min(6, zone)
+	for _ = 1, count do
+		local at = ringSpot(root, zone, 42, 58)
+		if at then spawnMonster(zone, "Normal", at, true) end
+	end
+end
+
+local function eventElite(player, root, zone)
+	notify(player, "👑 엘리트 부대 출현! 정예 몬스터들이 다가온다 — 쓰러뜨리면 짭짤해요!")
+	player:SetAttribute("ShakeStrength", 0.4)
+	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+	for _ = 1, 3 + zone // 3 do
+		local at = ringSpot(root, zone, 46, 62)
+		if at then spawnMonster(zone, "Elite", at, true) end
+	end
+end
+
+-- 대이동: 한쪽에서 몬스터가 줄지어 빠르게 몰려온다 (옆으로 비켜서 한 줄로 쓸어버리는 재미)
+local function eventStampede(player, root, zone)
+	local dirX = math.random() < 0.5 and 1 or -1
+	local center = root.Position + Vector3.new(dirX * 70, 0, 0)
+	if not walkableAt(center.X, center.Z) or zoneOfX(center.X) ~= zone then
+		dirX = -dirX
+		center = root.Position + Vector3.new(dirX * 70, 0, 0)
+	end
+	if zoneOfX(center.X) ~= zone then return false end
+	notify(player, string.format("🐃 몬스터 대이동! %s쪽에서 줄지어 달려온다 — 옆으로 비켜서 쓸어버려요!", dirX > 0 and "오른" or "왼"))
+	player:SetAttribute("ShakeStrength", 0.35)
+	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+	local count = 9 + math.min(6, zone)
+	for index = 1, count do
+		local z = math.clamp(root.Position.Z + (index - (count + 1) / 2) * 7, -F.Width / 2 + 20, F.Width / 2 - 20)
+		local at = Vector3.new(center.X + math.random(-6, 6), 0, z)
+		if walkableAt(at.X, at.Z) and not isSafe(at) and zoneOfX(at.X) == zone then
+			local part, data = spawnMonster(zone, "Normal", at, true)
+			if part and data and data.Stats then
+				data.Aggro = true
+				data.Stats.Speed *= 1.35
+			end
+		end
+	end
+	return true
+end
+
 local function runAmbush()
 	task.wait(20)
+	local lastEvent = setmetatable({}, { __mode = "k" })
 	while true do
 		task.wait(math.random(18, 32))
 		for _, player in ipairs(Players:GetPlayers()) do
@@ -3401,29 +3520,28 @@ local function runAmbush()
 					local zone = zoneOfX(root.Position.X)
 					local allowed = zone <= math.min(F.ZoneCount, (player:GetAttribute("ClearedZone") or 0) + 1)
 					if allowed and zone >= 1 then
-						if math.random() < 0.4 then
-							task.spawn(airRaid, player, zone)
-						else
-							local alive = 0
-							for _, data in pairs(monsters) do
-								if data.Ambush then alive += 1 end
+						local total = 0
+						for _, entry in ipairs(FIELD_EVENTS) do
+							if entry.Key ~= lastEvent[player] then total += entry.Weight end
+						end
+						local roll, picked = math.random() * total, nil
+						for _, entry in ipairs(FIELD_EVENTS) do
+							if entry.Key ~= lastEvent[player] then
+								roll -= entry.Weight
+								if roll <= 0 then picked = entry.Key break end
 							end
-							if alive <= 14 then
-								notify(player, "⚠ 습격! 사방에서 몬스터 떼가 몰려온다!")
-								player:SetAttribute("ShakeStrength", 0.5)
-								player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
-								local count = 6 + math.min(6, zone)
-								local spawned = 0
-								for _ = 1, count * 3 do
-									if spawned >= count then break end
-									local angle = math.random() * math.pi * 2
-									local distance = 42 + math.random() * 16
-									local at = root.Position + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
-									if walkableAt(at.X, at.Z) and not isSafe(at) and zoneOfX(at.X) == zone then
-										spawnMonster(zone, "Normal", at, true)
-										spawned += 1
-									end
-								end
+						end
+						if picked == "Raid" then
+							lastEvent[player] = picked
+							task.spawn(airRaid, player, zone)
+						elseif ambushCount() <= 14 then
+							lastEvent[player] = picked
+							if picked == "Ambush" then
+								eventAmbush(player, root, zone)
+							elseif picked == "Elite" then
+								eventElite(player, root, zone)
+							elseif picked == "Stampede" then
+								eventStampede(player, root, zone)
 							end
 						end
 					end
@@ -3472,6 +3590,32 @@ function Field.Init(lobbySpawnCFrame)
 
 	task.spawn(runEvents)
 	task.spawn(runGoblins)
+	task.spawn(function() -- 구간이 바뀌면 "이 구간엔 이런 몬스터가 많아요" 알림 (같은 구역도 구간마다 구성이 달라진다)
+		local lastKey = setmetatable({}, { __mode = "k" })
+		while true do
+			task.wait(1)
+			for _, player in ipairs(Players:GetPlayers()) do
+				if player:GetAttribute("Zone") == "Field" then
+					local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+					if root and not isSafe(root.Position) then
+						local zone = F.ZoneOfX(root.Position.X)
+						local key = zone * 10 + segmentOf(zone, root.Position.X)
+						if lastKey[player] ~= key then
+							local first = lastKey[player] == nil
+							lastKey[player] = key
+							if not first then
+								local names = {}
+								for _, typeKey in ipairs(segmentFeatures(zone, key % 10)) do
+									table.insert(names, MonsterTypes.Defs[typeKey].Name)
+								end
+								notify(player, string.format("📍 %d구역 %d구간 — %s이(가) 많은 곳", zone, key % 10, table.concat(names, " · ")))
+							end
+						end
+					end
+				end
+			end
+		end
+	end)
 	task.spawn(runAmbush)
 end
 
