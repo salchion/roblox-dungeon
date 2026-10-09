@@ -2226,12 +2226,19 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode)
 					return not run.Destroyed and run.Phase ~= "Ended" and playerRun[member] == run and member.Parent ~= nil
 				end
 				local function show(key, title, text, duration)
-					Remotes.Tutorial:FireClient(member, "Prompt", { Key = key, Title = title, Text = text, Duration = duration or 30 })
+					Remotes.Tutorial:FireClient(member, "Prompt", { Key = key, Title = title, Text = text, Duration = duration or 30, Top = true })
 				end
 				local function step(key, title, text, isDone)
 					show(key, title, text, 30)
 					local waited = 0
 					while alive() and waited < 25 do
+						if run.Phase == "StatPhase" then -- 특성 고르는 동안은 카드를 숨기고 멈춘다 (화면이 겹쳐서 안 보이므로). 끝나면 다시 보여준다
+							Remotes.Tutorial:FireClient(member, "PromptHide")
+							while alive() and run.Phase == "StatPhase" do
+								task.wait(0.3)
+							end
+							show(key, title, text, 30)
+						end
 						if isDone() then
 							show("✅", "좋아요!", "잘했어요! 다음으로 넘어가요", 1.6)
 							task.wait(2)

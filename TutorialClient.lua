@@ -323,7 +323,7 @@ end
 local activePrompt = nil
 local function showPrompt(data)
 	if activePrompt then activePrompt:Destroy() end
-	local card = create("Frame", { Size = UDim2.new(0, 460, 0, 110), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.66, 0),
+	local card = create("Frame", { Size = UDim2.new(0, 460, 0, 110), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, data.Top and 0.2 or 0.66, 0),
 		BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.05, BorderSizePixel = 0, ZIndex = 70 }, gui)
 	activePrompt = card
 	rounded(card, 16)
@@ -350,6 +350,12 @@ Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 	if action == "Prompt" then
 		showPrompt(data)
 		return
+	elseif action == "PromptHide" then
+		if activePrompt then
+			activePrompt:Destroy()
+			activePrompt = nil
+		end
+		return
 	end
 	if action == "Step" then
 		runHighlight(data.Highlight)
@@ -360,7 +366,7 @@ Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 		cinemaPlay(data)
 		return
 	end
-	if action == "Prompt" then return end -- 키 안내 카드는 위쪽 핸들러가 처리한다 (미션 표시는 건드리지 않는다)
+	if action == "Prompt" or action == "PromptHide" then return end -- 키 안내 카드는 위쪽 핸들러가 처리한다 (미션 표시는 건드리지 않는다)
 	if action == "Waypoint" then
 		placeWaypoint(data.Pos, data.Name)
 		return
