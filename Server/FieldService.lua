@@ -146,29 +146,63 @@ end
 -- 구역마다 넓은 계단으로 층을 올라갔다 내려온다 (구역 입구 / 캠프는 항상 0층). 계단은 맵 폭 전체라 좁은 길이 없다.
 -- 계단 대신 완만한 "경사로": 작은 단차를 오르내릴 때 캐릭터가 위로 튕겨 나가는 문제를 없앴다 (경사가 약 14~22도라서 부드럽게 걷는다)
 -- 세 번 연달아 올라 정상(+48)까지 간 뒤, 긴 내리막으로 다시 내려온다 (계속 올라가는 느낌). 구역 입구 / 캠프는 항상 0층.
-local STAIRS = {
-	{ At = 110, Rise = 16, Run = 56 },
-	{ At = 250, Rise = 16, Run = 56 },
-	{ At = 390, Rise = 16, Run = 56 },
-	{ At = 520, Rise = -48, Run = 120 },
+-- 구역마다 구조가 완전히 다르다 (지루하지 않게): Stairs = 경사로(At 시작 x / Rise 높이 변화 / Run 길이), Baffles = 길을 막는 벽
+--   Baffles 종류: Edge = 한쪽 가장자리에서 벽이 뻗고 반대쪽이 열린 틈(Gap) / Center = 가운데 벽, 양옆이 열려 있음(Gap 씩)
+-- 한 구역의 경사로는 올라간 만큼 내려와서 구역 끝(관문 / 캠프)은 항상 0층이다. 첫 경사로는 캠프 안전지대(70) 뒤에서 시작한다.
+local ZONE_LAYOUTS = {
+	{ -- 1 초원: 완만한 언덕 하나, 탁 트인 길 (입문)
+		Stairs = { { At = 140, Rise = 10, Run = 40 }, { At = 420, Rise = -10, Run = 40 } },
+		Baffles = { { Offset = 300, Side = 1, Gap = 190 }, { Offset = 520, Side = -1, Gap = 190 } },
+	},
+	{ -- 2 숲: 좁은 지그재그 숲길 (네 번 꺾인다) + 끝에 작은 언덕
+		Stairs = { { At = 540, Rise = 12, Run = 40 }, { At = 620, Rise = -12, Run = 40 } },
+		Baffles = { { Offset = 160, Side = 1, Gap = 85 }, { Offset = 270, Side = -1, Gap = 85 }, { Offset = 380, Side = 1, Gap = 85 }, { Offset = 490, Side = -1, Gap = 85 } },
+	},
+	{ -- 3 황무지: 계단식 고원 (두 번 올라 높은 대지 -> 한 번에 길게 내려옴) + 가운데 바위 기둥
+		Stairs = { { At = 110, Rise = 22, Run = 60 }, { At = 330, Rise = 22, Run = 60 }, { At = 480, Rise = -44, Run = 110 } },
+		Baffles = { { Offset = 250, Type = "Center", Gap = 110 }, { Offset = 420, Type = "Center", Gap = 110 }, { Offset = 640, Type = "Center", Gap = 120 } },
+	},
+	{ -- 4 사막: 출렁이는 모래언덕 (오르락내리락 6번) + 낮은 벽 두 개
+		Stairs = { { At = 110, Rise = 14, Run = 40 }, { At = 200, Rise = -14, Run = 40 }, { At = 300, Rise = 18, Run = 50 }, { At = 410, Rise = -18, Run = 50 }, { At = 520, Rise = 14, Run = 40 }, { At = 600, Rise = -14, Run = 40 } },
+		Baffles = { { Offset = 255, Side = 1, Gap = 170 }, { Offset = 470, Side = -1, Gap = 170 } },
+	},
+	{ -- 5 설원: 길고 가파른 눈 덮인 비탈을 한 번에 오르는 고원 + 정상에서 겹쳐진 벽
+		Stairs = { { At = 100, Rise = 60, Run = 250 }, { At = 520, Rise = -60, Run = 140 } },
+		Baffles = { { Offset = 400, Side = 1, Gap = 130 }, { Offset = 470, Side = -1, Gap = 130 } },
+	},
+	{ -- 6 화산: 용암 계단 (크기가 점점 커지는 세 개의 언덕 = 세 번 오르내림)
+		Stairs = { { At = 100, Rise = 20, Run = 50 }, { At = 180, Rise = -20, Run = 50 }, { At = 270, Rise = 26, Run = 60 }, { At = 370, Rise = -26, Run = 60 }, { At = 470, Rise = 32, Run = 70 }, { At = 590, Rise = -32, Run = 70 } },
+		Baffles = { { Offset = 230, Side = 1, Gap = 150 }, { Offset = 445, Side = -1, Gap = 150 } },
+	},
+	{ -- 7 암흑 지대: 요새 미로 (좁은 틈의 벽 다섯 개 + 가운데 벽) + 성채 단차
+		Stairs = { { At = 120, Rise = 16, Run = 40 }, { At = 620, Rise = -16, Run = 40 } },
+		Baffles = { { Offset = 190, Side = 1, Gap = 100 }, { Offset = 270, Side = -1, Gap = 100 }, { Offset = 350, Side = 1, Gap = 100 }, { Offset = 430, Side = -1, Gap = 100 }, { Offset = 510, Side = 1, Gap = 100 }, { Offset = 580, Type = "Center", Gap = 120 } },
+	},
+	{ -- 8 심연: 중앙 대지(높은 언덕) 하나 + 정상의 기둥, 입구는 탁 트임
+		Stairs = { { At = 150, Rise = 36, Run = 90 }, { At = 440, Rise = -36, Run = 90 } },
+		Baffles = { { Offset = 330, Type = "Center", Gap = 110 }, { Offset = 600, Side = 1, Gap = 150 } },
+	},
 }
-local FLOOR_SEGMENTS = {}   -- { A = 구역 안 x 시작, B = 끝, H = 높이, Kind = "Floor" | "Step"(경사로), Stair = 경사로 정보 }
-do
+local ZONE_SEGMENTS = {} -- [zone] = { { A, B, H, Kind = "Floor" | "Step", Stair } ... }
+for zone, layout in ipairs(ZONE_LAYOUTS) do
+	local segments = {}
 	local height, cursor = 0, 0
-	for _, stair in ipairs(STAIRS) do
-		table.insert(FLOOR_SEGMENTS, { A = cursor, B = stair.At, H = height, Kind = "Floor" })
+	for _, stair in ipairs(layout.Stairs) do
+		table.insert(segments, { A = cursor, B = stair.At, H = height, Kind = "Floor" })
 		stair.From = height
 		stair.Hi = math.max(height, height + stair.Rise)
-		table.insert(FLOOR_SEGMENTS, { A = stair.At, B = stair.At + stair.Run, H = height, Kind = "Step", Stair = stair, First = true })
+		table.insert(segments, { A = stair.At, B = stair.At + stair.Run, H = height, Kind = "Step", Stair = stair, First = true })
 		height += stair.Rise
 		cursor = stair.At + stair.Run
 		stair.Top = height
 	end
-	table.insert(FLOOR_SEGMENTS, { A = cursor, B = F.ZoneLength, H = height, Kind = "Floor" })
+	table.insert(segments, { A = cursor, B = F.ZoneLength, H = height, Kind = "Floor" })
+	ZONE_SEGMENTS[zone] = segments
 end
 local function floorAt(x)
+	local zone = math.clamp(math.floor((x - F.StartX) / F.ZoneLength) + 1, 1, F.ZoneCount)
 	local offset = (x - F.StartX) % F.ZoneLength
-	for _, segment in ipairs(FLOOR_SEGMENTS) do
+	for _, segment in ipairs(ZONE_SEGMENTS[zone] or ZONE_SEGMENTS[1]) do
 		if offset < segment.B then
 			if segment.Kind == "Step" then
 				local stair = segment.Stair
@@ -216,12 +250,13 @@ end
 
 -- ===== 구역 꾸미기 (구역마다 완전히 다른 지형지물 + 그 구역의 랜드마크 하나) =====
 -- 장식은 대부분 충돌이 없거나 작아서 길을 막지 않는다. 경사로 / 꺾임 벽 / 캠프 근처에는 놓지 않는다.
-local function propBlocked(offset)
-	for _, stair in ipairs(STAIRS) do
+local function propBlocked(zone, offset)
+	local layout = ZONE_LAYOUTS[zone] or ZONE_LAYOUTS[1]
+	for _, stair in ipairs(layout.Stairs) do
 		if offset > stair.At - 10 and offset < stair.At + stair.Run + 10 then return true end
 	end
-	for _, wall in ipairs({ 230, 400, 570 }) do
-		if math.abs(offset - wall) < 20 then return true end
+	for _, wall in ipairs(layout.Baffles) do
+		if math.abs(offset - wall.Offset) < 20 then return true end
 	end
 	return false
 end
@@ -500,7 +535,7 @@ local function decorateZone(zone, rng)
 		return entries[1][2]
 	end
 	local function place(builder, cx, cz)
-		if propBlocked(cx - x0) then return false end
+		if propBlocked(zone, cx - x0) then return false end
 		builder(Vector3.new(cx, floorAt(cx), cz))
 		return true
 	end
@@ -878,7 +913,7 @@ local function buildWorld()
 	for zone = 1, F.ZoneCount do
 		local x0 = zoneBounds(zone)
 		-- 바닥: 평지(층) 블록 + 좁은 계단통(양옆은 높은 벽, 가운데 폭 14 계단). 높은 층일수록 살짝 밝아져서 "층"이 구분된다
-		for _, segment in ipairs(FLOOR_SEGMENTS) do
+		for _, segment in ipairs(ZONE_SEGMENTS[zone]) do
 			local top = TOP + segment.H
 			local tint = F.ZoneColors[zone]:Lerp(Color3.new(1, 1, 1), 0.08 * segment.H / 24)
 			if segment.Kind == "Floor" then
@@ -917,25 +952,35 @@ local function buildWorld()
 		buildCamp(zone, x0)
 	end
 
-	-- 꺾임 벽: 구역마다 벽 3개가 길을 가로막고, 틈이 위쪽 / 아래쪽 가장자리에 번갈아 뚫려 있다.
-	-- 길이 ㄹ 자로 꺾이는 느낌이 나고, 멀리 있는 몬스터가 한눈에 다 보이지 않는다.
+	-- 꺾임 벽: 구역마다 벽의 개수 / 종류 / 틈의 크기가 다르다 (ZONE_LAYOUTS). 길이 꺾이거나 갈라져서 한눈에 다 보이지 않는다.
 	do
-		local gapSize = 130
-		local side = 1
 		for zone = 1, F.ZoneCount do
 			local x0 = zoneBounds(zone)
-			for _, offset in ipairs({ 230, 400, 570 }) do
-				local wallLength = F.Width - gapSize
+			for _, wallSpec in ipairs(ZONE_LAYOUTS[zone].Baffles) do
+				local offset, gapSize = wallSpec.Offset, wallSpec.Gap
 				local height = 110
-				makePart({
-					Name = "Baffle", Size = Vector3.new(22, height, wallLength),
-					Position = Vector3.new(x0 + offset, height / 2 - 2, -side * gapSize / 2),
-					Color = F.ZoneColors[zone]:Lerp(Color3.fromRGB(70, 65, 72), 0.5), Material = Enum.Material.Slate,
-				}, worldFolder)
-				table.insert(baffleXs, x0 + offset)
-				local zCenter = -side * gapSize / 2
-				table.insert(baffleRects, { X0 = x0 + offset - 11, X1 = x0 + offset + 11, Z0 = zCenter - wallLength / 2, Z1 = zCenter + wallLength / 2 })
-				side = -side
+				local color = F.ZoneColors[zone]:Lerp(Color3.fromRGB(70, 65, 72), 0.5)
+				-- 이 위치의 땅 높이만큼 벽을 올려 세운다 (언덕 위에 서 있는 벽)
+				local base = floorAt(x0 + offset) - TOP
+				if wallSpec.Type == "Center" then
+					local wallLength = F.Width - gapSize * 2
+					makePart({
+						Name = "Baffle", Size = Vector3.new(22, height, wallLength), Position = Vector3.new(x0 + offset, base + height / 2 - 2, 0),
+						Color = color, Material = Enum.Material.Slate,
+					}, worldFolder)
+					table.insert(baffleXs, x0 + offset)
+					table.insert(baffleRects, { X0 = x0 + offset - 11, X1 = x0 + offset + 11, Z0 = -wallLength / 2, Z1 = wallLength / 2 })
+				else
+					local side = wallSpec.Side or 1
+					local wallLength = F.Width - gapSize
+					local zCenter = -side * gapSize / 2
+					makePart({
+						Name = "Baffle", Size = Vector3.new(22, height, wallLength), Position = Vector3.new(x0 + offset, base + height / 2 - 2, zCenter),
+						Color = color, Material = Enum.Material.Slate,
+					}, worldFolder)
+					table.insert(baffleXs, x0 + offset)
+					table.insert(baffleRects, { X0 = x0 + offset - 11, X1 = x0 + offset + 11, Z0 = zCenter - wallLength / 2, Z1 = zCenter + wallLength / 2 })
+				end
 			end
 		end
 	end
