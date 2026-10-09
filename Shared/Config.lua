@@ -754,7 +754,7 @@ Config.WeaponTypes = {
 	Shotgun = {
 		Name = "샷건", Form = "Basic", DamageMult = 0.387, Cooldown = 1.2, Range = 90, Pellets = 6, Spread = 9,
 		ShotScale = 0.55, SpeedScale = 1, BarrelLength = 0.75, BarrelThickness = 1.5,
-		Desc = "근거리에서 6발이 퍼져 나가는 산탄 (사거리 90)",
+		Desc = "6발이 부채꼴로 퍼져 나가는 산탄 (멀수록 덜 맞아요)",
 	},
 	Rifle = {
 		Name = "라이플", Form = "Rifle", DamageMult = 0.84, Cooldown = 0.75, Range = 400, Pellets = 1, Spread = 0,
@@ -764,7 +764,7 @@ Config.WeaponTypes = {
 	Sniper = {
 		Name = "저격총", Form = "Basic", DamageMult = 1.792, Cooldown = 1.4, Range = 600, Pellets = 1, Spread = 0,
 		ShotScale = 1.4, SpeedScale = 2.4, CritBonus = 0.25, BarrelLength = 1.9, BarrelThickness = 0.7,
-		Desc = "느리지만 한 방이 강력, 치명타 +25%, 사거리 600",
+		Desc = "느리지만 한 방이 강력, 치명타 +25%",
 	},
 	Rocket = {
 		Name = "로켓 런처", Form = "Rocket", DamageMult = 1.848, Cooldown = 1.4, Range = 350, Pellets = 1, Spread = 0, Splash = 12,
@@ -779,7 +779,7 @@ Config.WeaponTypes = {
 	Flamer = {
 		Name = "화염방사기", Form = "Flamer", DamageMult = 0.2, Cooldown = 0.4, Range = 55, Pellets = 4, Spread = 16,
 		ShotScale = 0.9, SpeedScale = 0.6, BarrelLength = 0.7, BarrelThickness = 1.4,
-		Desc = "짧은 거리에서 불길을 뿜는 근접 무기 (사거리 60)",
+		Desc = "불길을 부채꼴로 뿜는 무기 (멀수록 덜 맞아요)",
 	},
 	Cannon = {
 		Name = "플라즈마 캐논", Form = "Cannon", DamageMult = 1.488, Cooldown = 1.2, Range = 380, Pellets = 1, Spread = 0, Splash = 7,
@@ -797,9 +797,25 @@ end
 
 -- (무기 종류끼리 연사 속도 차이를 줄였다: 초당 약 2~7발. 초당 피해량(DPS)은 그대로 유지하도록 한 발 피해를 맞췄다)
 -- 지금 들고 있는 무기의 종류 능력치 (무기는 강화 단계에 따라 자동으로 바뀐다)
+-- 사거리는 무기 종류(권총 / 샷건 ...)가 아니라 "몇 번째 무기인가"로 정한다: 강해질수록(무기가 진화할수록) 사거리가 줄어드는 일이 없게 (게임적 허용).
+-- 무기 번호가 오를수록 280 -> 약 680 (최대 700). 샷건 / 화염방사기는 사거리가 길어진 대신 탄이 퍼져서 멀리서는 덜 맞는다.
+function Config.GetTierRange(tier)
+	return math.min(700, 280 + 4 * tier.Index)
+end
+
+local tierWeapons = {} -- [무기 번호] = 종류 능력치 + 그 무기 번호의 사거리
+function Config.GetTierWeapon(tier)
+	local cached = tierWeapons[tier.Index]
+	if not cached then
+		cached = table.clone(Config.WeaponTypes[tier.Class] or Config.WeaponTypes.Pistol)
+		cached.Range = Config.GetTierRange(tier)
+		tierWeapons[tier.Index] = cached
+	end
+	return cached
+end
+
 function Config.GetPlayerWeapon(player)
-	local tier = Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0)
-	return Config.WeaponTypes[tier.Class] or Config.WeaponTypes.Pistol
+	return Config.GetTierWeapon(Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0))
 end
 
 -- 무기 이름 (typeKey 는 예전 호환용으로 무시: 이름은 강화 단계로만 정해진다)

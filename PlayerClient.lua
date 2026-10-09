@@ -2458,7 +2458,7 @@ local function buildWeaponTab()
 			"<font size='20'><b><font color='#%s'>[%d/%d] %s</font></b></font>\n%s\n<font color='#bbbbcc'>%s</font>\n\n<b>🔫 공격 방식</b>\n<font color='#dfe6ff'>• 탄 모양: %s\n• %s\n• 초당 약 %.1f발 · 한 발 x%.2f · 사거리 %d</font>\n\n%s",
 			hex(shown.Rainbow and Color3.fromRGB(255, 120, 255) or shown.Color), shown.Index, #tiers, shown.Name, status, classInfo.Desc,
 			SHOT_NAMES[shotInfo.Style] or "탄환", table.concat(behavior, " · "),
-			rate, classInfo.DamageMult, classInfo.Range,
+			rate, classInfo.DamageMult, Config.GetTierRange(shown),
 			nextTier and string.format("<font color='#9ad7ff'>다음 진화 → %s\n(%s)</font>", nextTier.Name, Config.WeaponTypes[nextTier.Class].Desc) or "<font color='#ffd966'>마지막 무기예요!</font>"
 		),
 	}, header)
