@@ -116,7 +116,7 @@ Config.Tutorial = {
 		-- 이야기: 필드는 아직 너무 강하다 -> 쓰러져서 마을로 -> 성장(훈련) -> 던전에서 장비 -> 10연 뽑기 -> 다시 필드는 쉽다
 		{ Text = "동쪽 필드로 나가서 첫 구역의 군주(👑)를 쓰러뜨리세요! ...어딘가 불길한 기운이 느껴져요. 무슨 일이 일어날지도 몰라요. 조심하세요!", Stat = "FieldDeaths", Goal = 1, Target = "Field", TargetName = "필드 입구", Doom = true,
 			Reward = { Gold = 4000, Tickets = 10, Keys = 1, Xp = 150 } }, -- 쓰러져도 전리품(재화)은 남는다 -> 아래 미션에서 바로 쓰게 한다
-		{ Text = "💀 쓰러졌지만 전리품은 남았어요! 장비와 재화를 모으면 더 강해져요. 뽑기 머신에서 10연 뽑기를 하세요 (티켓 10장)", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Hero",
+		{ Text = "💀 쓰러졌지만 전리품은 남았어요! 장비와 재화를 모으면 더 강해져요. 뽑기 머신에서 10연 뽑기를 하세요 (티켓 10장)", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Hero", ShowQuests = true, -- 여기서부터 화면에 오늘의 퀘스트가 나타나고 던전 게이트가 열린다
 			Reward = { Gold = 500, Xp = 100 } },
 		-- EvolveToTier: 이 번째 무기(3 = 기관단총)가 될 때까지 필요한 강화 횟수를 미션이 시작될 때 계산해서 목표로 쓴다. {무기} = 그 무기 이름
 		{ Text = "💰 모은 골드로 무기를 강화해서 {무기}까지 진화시키세요! 연사가 확 달라져서 필드가 쉬워져요", Stat = "Enhances", Goal = 10, EvolveToTier = 3, Target = "Anvil", TargetName = "모루",
@@ -254,7 +254,7 @@ Config.Party = {
 local dungeonBase = {
 	TotalWaves = 5,          -- 이 웨이브를 모두 깨면 보스 등장
 	StartCountdown = 5,      -- 입장 후 첫 웨이브까지 대기(초)
-	StatPhaseTime = 15,      -- 웨이브 클리어 후 특성 고르는 제한 시간(초). 모두 고르면 바로 다음으로, 시간이 지나면 자동 선택
+	StatPhaseTime = 8,       -- 웨이브 클리어 후 특성 고르는 제한 시간(초). 모두 고르면 바로 다음으로, 시간이 지나면 자동 선택
 	PointsPerWave = 3,       -- (사용 안 함: 던전 특성 선택으로 대체됨)
 	WaveClearGold = 40,      -- 웨이브 클리어 보너스 골드 (x 웨이브 번호)
 	VictoryGold = 400,       -- 보스 처치 보너스 골드
@@ -836,9 +836,9 @@ Config.Quests = {
 		{ Id = "dummy",   Name = "허수아비 연습", Desc = "허수아비를 %d번 때리기",       Stat = "DummyHits",     Goal = 300, Reward = { Gold = 300 } },
 		{ Id = "field",   Name = "필드 사냥",     Desc = "필드 몬스터 %d마리 처치",       Stat = "FieldKills",    Goal = 30,  Reward = { Gold = 400, TimeSkip = 300 } },
 		{ Id = "elite",   Name = "엘리트 사냥꾼", Desc = "엘리트 몬스터 %d마리 처치",     Stat = "EliteKills",    Goal = 3,   Reward = { Tickets = 1 } },
-		{ Id = "dungeon", Name = "던전 도전",     Desc = "던전 %d번 클리어",              Stat = "DungeonClears", Goal = 1,   Reward = { Gold = 600, Tickets = 1, TimeSkip = 600 } },
+		{ Id = "dungeon", Name = "던전 도전",     Desc = "던전 %d번 클리어",              Stat = "DungeonClears", Goal = 1,   Reward = { Gold = 600, Tickets = 1, TimeSkip = 600 }, Always = true },
 		{ Id = "boss",    Name = "보스 사냥",     Desc = "보스 %d마리 처치",              Stat = "BossKills",     Goal = 1,   Reward = { Tickets = 2 } },
-		{ Id = "enhance", Name = "대장장이",      Desc = "강화에 %d번 성공하기",          Stat = "Enhances",      Goal = 3,   Reward = { Gold = 500 } },
+		{ Id = "enhance", Name = "대장장이",      Desc = "강화에 %d번 성공하기",          Stat = "Enhances",      Goal = 3,   Reward = { Gold = 500 }, Always = true },
 		{ Id = "gacha",   Name = "운 시험",       Desc = "장비 뽑기를 %d번 하기",         Stat = "Rolls",         Goal = 2,   Reward = { Gold = 300 } },
 		{ Id = "goblin",  Name = "황금 사냥",     Desc = "황금 고블린 %d마리 처치",       Stat = "GoblinKills",   Goal = 1,   Reward = { Gold = 800, Tickets = 1 } },
 		{ Id = "skills",  Name = "스킬 연습",     Desc = "스킬을 %d번 사용하기",          Stat = "SkillUses",     Goal = 20,  Reward = { Gold = 400 } },

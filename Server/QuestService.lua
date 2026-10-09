@@ -67,9 +67,18 @@ local function todaysQuests(day)
 		local j = rng:NextInteger(1, i)
 		indices[i], indices[j] = indices[j], indices[i]
 	end
-	local list = {}
-	for i = 1, math.min(Config.Quests.DailyCount, #indices) do
-		table.insert(list, Config.Quests.Pool[indices[i]])
+	-- 던전 / 강화 퀘스트는 항상 포함한다 (처음 접속한 날부터 "던전에 가고 장비를 강화한다"가 자연스럽게 눈에 들어오게)
+	local list, used = {}, {}
+	for _, quest in ipairs(Config.Quests.Pool) do
+		if quest.Always then
+			table.insert(list, quest)
+			used[quest.Id] = true
+		end
+	end
+	for i = 1, #indices do
+		if #list >= Config.Quests.DailyCount then break end
+		local quest = Config.Quests.Pool[indices[i]]
+		if not used[quest.Id] then table.insert(list, quest) end
 	end
 	return list
 end

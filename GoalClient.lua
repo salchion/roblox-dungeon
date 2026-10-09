@@ -86,6 +86,89 @@ local function comma(n)
 	return (s:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
 end
 
+-- 오늘의 퀘스트 패널: 튜토리얼에서 최종 군주에게 쓰러져 마을로 돌아온 뒤에야 나타난다 (QuestHud). 던전 / 강화 퀘스트가 항상 들어 있다.
+local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+local TweenService = game:GetService("TweenService")
+local questPanel = Instance.new("Frame")
+questPanel.Size = UDim2.new(0, 260, 0, 30)
+questPanel.Position = UDim2.new(0, -300, 0, 326)
+questPanel.BackgroundColor3 = Color3.fromRGB(20, 22, 34)
+questPanel.BackgroundTransparency = 0.12
+questPanel.BorderSizePixel = 0
+questPanel.Visible = false
+questPanel.Parent = gui
+addCorner(questPanel, 8)
+local questStroke = Instance.new("UIStroke")
+questStroke.Color = Color3.fromRGB(255, 205, 90)
+questStroke.Thickness = 2
+questStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+questStroke.Parent = questPanel
+local questLabel = Instance.new("TextLabel")
+questLabel.Size = UDim2.new(1, -16, 1, -8)
+questLabel.Position = UDim2.new(0, 8, 0, 4)
+questLabel.BackgroundTransparency = 1
+questLabel.Font = Enum.Font.GothamBold
+questLabel.TextSize = 13
+questLabel.TextColor3 = Color3.new(1, 1, 1)
+questLabel.TextXAlignment = Enum.TextXAlignment.Left
+questLabel.TextYAlignment = Enum.TextYAlignment.Top
+questLabel.RichText = true
+questLabel.Parent = questPanel
+local dailyList = nil
+local questShown = false
+local beaconDone = false
+local beacon, beaconStart = nil, 0
+
+Remotes.Quest.OnClientEvent:Connect(function(action, data)
+	if action == "State" then dailyList = data.Daily end
+end)
+
+task.defer(function() Remotes.Quest:FireServer("Request") end) -- 퀘스트 상태를 한 번 더 요청 (스크립트 시작 순서 때문에 놓칠 수 있다)
+
+local function refreshQuests()
+	if not dailyList then return end
+	local lines = { "<font color='#ffd966'><b>📋 오늘의 퀘스트</b></font>" }
+	for _, quest in ipairs(dailyList) do
+		local done = quest.Progress >= quest.Goal
+		if quest.Claimed then
+			table.insert(lines, string.format("<font color='#7a7f95'>✔ %s</font>", quest.Desc))
+		elseif done then
+			table.insert(lines, string.format("<font color='#78ff8c'>✅ %s — 메뉴(I)에서 받기!</font>", quest.Desc))
+		else
+			table.insert(lines, string.format("• %s <font color='#ffd966'>%d/%d</font>", quest.Desc, quest.Progress, quest.Goal))
+		end
+	end
+	questLabel.Text = table.concat(lines, "\n")
+	questPanel.Size = UDim2.new(0, 260, 0, 12 + 18 * #lines)
+end
+
+-- 던전 게이트에 은은한 빛기둥: 설명 없이 시선이 그쪽으로 가게 한다 (처음 던전에 들어가면 사라진다)
+local function updateBeacon(active)
+	if not active or beaconDone then
+		if beacon then beacon:Destroy() beacon = nil end
+		return
+	end
+	if not beacon then
+		local gate = workspace:FindFirstChild("DungeonGate1", true)
+		if not gate then return end
+		beacon = Instance.new("Part")
+		beacon.Name = "GateBeacon"
+		beacon.Shape = Enum.PartType.Cylinder
+		beacon.Size = Vector3.new(260, 7, 7)
+		beacon.CFrame = CFrame.new(gate.Position + Vector3.new(0, 125, 0)) * CFrame.Angles(0, 0, math.rad(90))
+		beacon.Anchored = true
+		beacon.CanCollide = false
+		beacon.CanQuery = false
+		beacon.CastShadow = false
+		beacon.Material = Enum.Material.Neon
+		beacon.Color = Color3.fromRGB(255, 190, 80)
+		beacon.Parent = workspace
+		beaconStart = os.clock()
+	end
+	beacon.Transparency = 0.6 + 0.2 * math.sin((os.clock() - beaconStart) * 3)
+	if os.clock() - beaconStart > 240 then beaconDone = true end
+end
+
 -- 지금 보여줄 목표 후보를 모두 만들고 (달성 비율이 가장 높은 것) 하나를 고른다
 local function pickGoal()
 	local candidates = {}
@@ -155,10 +238,27 @@ RunService.RenderStepped:Connect(function()
 	local zone = player:GetAttribute("Zone")
 	-- 튜토리얼 중에는 미션 바가 목표를 안내하므로 숨김. 던전 안에서도 숨김
 	panel.Visible = not player:GetAttribute("TutorialActive") and zone ~= "Dungeon"
+	if zone == "Dungeon" then beaconDone = true end
+
+	local questOn = player:GetAttribute("QuestHud") == true and zone ~= "Dungeon" and dailyList ~= nil
+	questPanel.Visible = questOn
+	if questOn then
+		local targetY = panel.Visible and 402 or 326
+		if not questShown then -- 처음 나타날 때: 왼쪽에서 튕겨 들어온다
+			questShown = true
+			refreshQuests()
+			questPanel.Position = UDim2.new(0, -300, 0, targetY)
+			TweenService:Create(questPanel, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, 16, 0, targetY) }):Play()
+		elseif questPanel.Position.X.Offset > 0 then
+			questPanel.Position = UDim2.new(0, 16, 0, targetY)
+		end
+	end
+	updateBeacon(questOn and zone == "Lobby")
 
 	local now = os.clock()
 	if now - last >= 0.5 then
 		last = now
+		if questPanel.Visible then refreshQuests() end
 		local goal = pickGoal()
 		if goal then
 			titleLabel.Text = goal.Text

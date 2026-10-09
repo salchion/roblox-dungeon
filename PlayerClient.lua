@@ -1311,9 +1311,18 @@ for index = 1, Config.Perks.ChoiceCount do
 		local key = perkOffer[index]
 		if key then
 			Remotes.Upgrade:FireServer(key)
+			-- 고른 순간의 손맛: 카드가 번쩍 커지고 효과음, 나머지는 어두워진다
+			local picked = perkCards[index]
+			SoundBank.Play(sfxParent, "Enh_Success")
+			picked.Button.BackgroundColor3 = Color3.fromRGB(255, 240, 170)
+			TweenService:Create(picked.Scale, TweenInfo.new(0.18, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1.25 }):Play()
+			for other, entry in ipairs(perkCards) do
+				if other ~= index then TweenService:Create(entry.Button, TweenInfo.new(0.2), { BackgroundTransparency = 0.8 }):Play() end
+			end
 		end
 	end)
-	create("UIStroke", { Color = Color3.fromRGB(255, 210, 90), Thickness = 2, Transparency = 0.2 }, card)
+	local cardScale = create("UIScale", { Scale = 1 }, card)
+	local cardStroke = create("UIStroke", { Color = Color3.fromRGB(255, 210, 90), Thickness = 2, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
 	local icon = makeLabel({
 		Size = UDim2.new(1, 0, 0, 52), Position = UDim2.new(0, 0, 0, 16), TextSize = 40,
 	}, card)
@@ -1325,8 +1334,18 @@ for index = 1, Config.Perks.ChoiceCount do
 		Size = UDim2.new(0, 26, 0, 26), Position = UDim2.new(0, 6, 0, 6), Text = tostring(index),
 		Font = Enum.Font.GothamBlack, TextSize = 16, TextColor3 = Color3.fromRGB(255, 225, 100),
 	}, card)
-	perkCards[index] = { Button = card, Text = text, Icon = icon }
+	perkCards[index] = { Button = card, Text = text, Icon = icon, Scale = cardScale, Stroke = cardStroke }
 end
+
+task.spawn(function() -- 고르는 동안 카드 테두리가 두근두근 반짝인다
+	while true do
+		task.wait()
+		if pickFrame.Visible then
+			local pulse = 2.5 + 1.5 * math.sin(os.clock() * 7)
+			for _, card in ipairs(perkCards) do card.Stroke.Thickness = pulse end
+		end
+	end
+end)
 
 local perkSummary = makeLabel({
 	Size = UDim2.new(1, -20, 0, 40), Position = UDim2.new(0, 10, 0, 40),
@@ -1436,12 +1455,25 @@ local function refreshStats()
 	statPoints.Text = picking and "✨ 특성을 고르세요!" or "특성 (던전 동안만 유지)"
 	statPoints.TextColor3 = picking and Color3.fromRGB(255, 220, 90) or Color3.new(1, 1, 1)
 
+	local justOpened = picking and not pickFrame.Visible
 	pickFrame.Visible = picking
 	for index, card in ipairs(perkCards) do
 		local key = perkOffer[index]
 		card.Button.Visible = key ~= nil
 		if key then
 			local perk = Config.Perks[key]
+			card.Stroke.Color = perk.Special and Color3.fromRGB(255, 190, 60) or Color3.fromRGB(120, 190, 255)
+			if justOpened then -- 카드가 튕겨 나오며 차례로 등장 (특수 특성은 금색)
+				card.Button.BackgroundColor3 = perk.Special and Color3.fromRGB(70, 56, 30) or Color3.fromRGB(38, 40, 62)
+				card.Button.BackgroundTransparency = 0
+				card.Scale.Scale = 0.2
+				card.Button.Rotation = (index - 2) * 5
+				task.delay((index - 1) * 0.09, function()
+					TweenService:Create(card.Scale, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+					TweenService:Create(card.Button, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Rotation = 0 }):Play()
+					SoundBank.Play(sfxParent, "Gacha_Drop")
+				end)
+			end
 			local stacks = player:GetAttribute(perk.Attr) or 0
 			card.Icon.Text = perk.Icon
 			card.Text.Text = string.format("<b><font size='17'>%s</font></b>\n<font color='#ffd966'>Lv.%d → %d</font>\n<font color='#c8c8dc'>%s</font>",

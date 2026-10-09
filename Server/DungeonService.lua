@@ -1465,6 +1465,13 @@ function Dungeon.Upgrade(player, perkKey)
 	applyPerk(player, perkKey)
 	Remotes.Dungeon:FireClient(player, "Perks", { Keys = {} })
 	notify(player, string.format("%s %s 선택!", Config.Perks[perkKey].Icon, Config.Perks[perkKey].Name))
+	local pickRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if pickRoot then -- 고른 순간의 손맛: 몸에서 빛이 터지고 특성 이름이 크게 뜬다
+		local special = Config.Perks[perkKey].Special
+		local pickColor = special and Color3.fromRGB(255, 190, 60) or Color3.fromRGB(120, 200, 255)
+		Effects.Burst(pickRoot.Position, pickColor, special and 90 or 55)
+		Effects.FloatText(pickRoot.Position + Vector3.new(0, 7, 0), string.format("%s %s +1!", Config.Perks[perkKey].Icon, Config.Perks[perkKey].Name), pickColor)
+	end
 end
 
 Remotes.Upgrade.OnServerEvent:Connect(Dungeon.Upgrade)

@@ -90,8 +90,13 @@ local function send(player)
 			return states[player] == state and (state.Step == introStep or step.MinSeconds ~= nil) and player:GetAttribute("Zone") == "Lobby"
 		end, 2)
 	end
-	-- 튜토리얼이 끝나기 전에는 던전에 들어갈 수 없다 (필드 군주 -> 최종 군주에게 패배 -> 재화로 성장, 이 흐름으로 끝난다)
-	player:SetAttribute("TutorialDungeonLocked", step ~= nil)
+	-- 최종 군주에게 쓰러져 마을로 돌아온 뒤(ShowQuests 미션부터)에 오늘의 퀘스트가 화면에 나타나고 던전 게이트가 열린다
+	local questStep = #Steps + 1
+	for index, candidate in ipairs(Steps) do
+		if candidate.ShowQuests then questStep = index break end
+	end
+	player:SetAttribute("QuestHud", step == nil or state.Step >= questStep)
+	player:SetAttribute("TutorialDungeonLocked", step ~= nil and state.Step < questStep)
 	player:SetAttribute("TutorialRoll", step and step.RollMode or nil) -- 미션 중 뽑기 보정: Lowest = 항상 일반 / Hero = 10연에 영웅 1개 확정 (전설 이상 없음)
 	player:SetAttribute("TutorialDoom", step ~= nil and step.Doom == true) -- 필드 "압도적인 습격" 장면 (쓰러지면 성장 단계로 이어진다)
 	if not step then
