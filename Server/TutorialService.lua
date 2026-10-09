@@ -45,6 +45,23 @@ local function send(player)
 	applyFreeze(player)
 	player:SetAttribute("TutorialFree", step ~= nil and step.FreeEnhance == true)
 	player:SetAttribute("TutorialActive", step ~= nil)
+	-- 무기 진화 미션: 목표 무기가 될 때까지 필요한 강화 횟수를 이 미션이 시작될 때 한 번 계산한다
+	if step and step.EvolveToTier and state.DynFor ~= state.Step then
+		local tier = Config.Weapon.Tiers[step.EvolveToTier]
+		local need = tier and (tier.MinLevel - (player:GetAttribute("WeaponLevel") or 0)) or 0
+		state.DynFor = state.Step
+		if need <= 0 then
+			state.DynGoal = 1
+			task.defer(function() Quest.Add(player, step.Stat, 1) end) -- 이미 그 무기 이상이면 바로 완료
+		else
+			state.DynGoal = need + state.Progress -- (다시 접속했다면 이미 한 횟수는 목표에 더해 준다)
+		end
+	end
+	local goal = (state and state.DynGoal) or (step and step.Goal)
+	local text = step and step.Text
+	if step and step.EvolveToTier and Config.Weapon.Tiers[step.EvolveToTier] then
+		text = string.gsub(text, "{무기}", Config.Weapon.Tiers[step.EvolveToTier].Name)
+	end
 	-- 던전 미션이 나오기 전에는 던전에 들어갈 수 없다
 	local dungeonStep = #Steps + 1
 	for index, candidate in ipairs(Steps) do
@@ -62,7 +79,7 @@ local function send(player)
 		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "Q", Title = "대시로 빠르게!", Text = "Q 키를 누르면 앞으로 돌진해요. 동쪽 필드까지 빠르게 갈 수 있고, 적 탄을 아슬아슬하게 피하면 NEAR MISS 보너스!", Duration = 8 })
 	end
 	Remotes.Tutorial:FireClient(player, "Step", {
-		Index = state.Step, Total = #Steps, Text = step.Text, Progress = state.Progress, Goal = step.Goal,
+		Index = state.Step, Total = #Steps, Text = text, Progress = state.Progress, Goal = goal,
 		Target = targets[step.Target], TargetName = step.TargetName, Highlight = step.Highlight,
 	})
 end
@@ -173,6 +190,7 @@ function complete(player, state, step)
 	Remotes.Notify:FireClient(player, string.format("✅ 미션 완료! 보상: %s", rewardText(reward)))
 	state.Step += 1
 	state.Progress = 0
+	state.DynGoal = nil
 	if state.Step > #Steps then
 		Remotes.Notify:FireClient(player, "🎉 튜토리얼 완료! 열쇠가 생겼으니 북쪽 던전에도 도전해보세요. (설정/도움말: H)")
 	end
@@ -184,7 +202,7 @@ Quest.Listeners[#Quest.Listeners + 1] = function(player, stat, amount)
 	local step = state and Steps[state.Step]
 	if not step or step.Stat ~= stat then return end
 	state.Progress += amount
-	if state.Progress >= step.Goal then
+	if state.Progress >= (state.DynGoal or step.Goal) then
 		if step.AfterDungeon and player:GetAttribute("Zone") == "Dungeon" then
 			-- 던전 안에서는 보상 / 다음 미션을 미루고, 던전에서 나왔을 때 한꺼번에 준다
 			state.Progress = step.Goal
