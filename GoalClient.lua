@@ -169,6 +169,70 @@ local function updateBeacon(active)
 	if os.clock() - beaconStart > 240 then beaconDone = true end
 end
 
+-- 처음 던전을 마치고 돌아오면 한 번: "다음 목표(전투력)"와 "무엇으로 강해지는가" 한 장 (서버가 Growth 이벤트로 보낸다)
+local guide = Instance.new("Frame")
+guide.Size = UDim2.new(0, 420, 0, 320)
+guide.AnchorPoint = Vector2.new(0.5, 0.5)
+guide.Position = UDim2.new(0.5, 0, 0.5, 0)
+guide.BackgroundColor3 = Color3.fromRGB(20, 22, 36)
+guide.BackgroundTransparency = 0.06
+guide.BorderSizePixel = 0
+guide.Visible = false
+guide.ZIndex = 50
+guide.Parent = gui
+addCorner(guide, 14)
+local guideStroke = Instance.new("UIStroke")
+guideStroke.Color = Color3.fromRGB(255, 205, 90)
+guideStroke.Thickness = 3
+guideStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+guideStroke.Parent = guide
+local guideScale = Instance.new("UIScale")
+guideScale.Parent = guide
+local guideText = Instance.new("TextLabel")
+guideText.Size = UDim2.new(1, -28, 1, -64)
+guideText.Position = UDim2.new(0, 14, 0, 10)
+guideText.BackgroundTransparency = 1
+guideText.Font = Enum.Font.GothamBold
+guideText.TextSize = 14
+guideText.TextColor3 = Color3.new(1, 1, 1)
+guideText.TextXAlignment = Enum.TextXAlignment.Left
+guideText.TextYAlignment = Enum.TextYAlignment.Top
+guideText.RichText = true
+guideText.ZIndex = 51
+guideText.Parent = guide
+local guideClose = Instance.new("TextButton")
+guideClose.Size = UDim2.new(1, -28, 0, 40)
+guideClose.Position = UDim2.new(0, 14, 1, -50)
+guideClose.BackgroundColor3 = Color3.fromRGB(60, 170, 90)
+guideClose.BorderSizePixel = 0
+guideClose.Font = Enum.Font.GothamBlack
+guideClose.TextSize = 18
+guideClose.TextColor3 = Color3.new(1, 1, 1)
+guideClose.Text = "좋아요, 강해지러 가자!"
+guideClose.ZIndex = 51
+guideClose.Parent = guide
+addCorner(guideClose, 8)
+guideClose.Activated:Connect(function() guide.Visible = false end)
+Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
+	if action ~= "Growth" then return end
+	local lines = { "<font size='20' color='#ffd966'><b>💪 더 강해지는 법</b></font>" }
+	local gap = data.Need - data.Power
+	if gap > 0 then
+		table.insert(lines, string.format("<font color='#9ad7ff'>🎯 목표: 구역 %d 군주 격파</font>  <font size='12' color='#c9c0e0'>(권장 전투력 %s · 내 전투력 %s)</font>", data.Zone, comma(data.Need), comma(data.Power)))
+	else
+		table.insert(lines, string.format("<font color='#78ff8c'>🎯 구역 %d 군주에 도전할 준비 완료!</font>  <font size='12' color='#c9c0e0'>(권장 %s · 내 %s)</font>", data.Zone, comma(data.Need), comma(data.Power)))
+	end
+	table.insert(lines, "")
+	for _, source in ipairs(data.Sources) do
+		table.insert(lines, string.format("%s <b>%s</b> — %s\n      <font size='12' color='#ffd966'>%s</font>", source.Icon, source.Name, source.Desc, source.Status))
+	end
+	guideText.Text = table.concat(lines, "\n")
+	guide.Visible = true
+	guideScale.Scale = 0.6
+	TweenService:Create(guideScale, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	task.delay(45, function() guide.Visible = false end)
+end)
+
 -- 지금 보여줄 목표 후보를 모두 만들고 (달성 비율이 가장 높은 것) 하나를 고른다
 local function pickGoal()
 	local candidates = {}

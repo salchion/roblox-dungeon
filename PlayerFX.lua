@@ -483,3 +483,130 @@ task.spawn(function()
 		end
 	end
 end)
+
+-- 무기 진화 연출: 무기가 다음 단계(새 무기)로 바뀌는 순간 화면이 어두워지고 → 빛줄기가 퍼지며 → 이전 무기가 부서지고 → 새 무기 이름이 쾅 하고 박힌다.
+-- (강화창의 "진화!" 글자는 그대로 두고 그 위에 겹쳐 연출한다. 아무 곳이나 누르면 닫힌다)
+do
+	local evolveGui = create("ScreenGui", { Name = "EvolveFx", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 100 }, player:WaitForChild("PlayerGui"))
+	local shownTier = nil
+	local playing = false
+
+	local function shake(strength)
+		player:SetAttribute("ShakeStrength", strength)
+		player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+	end
+
+	local function play(oldName, newName, newIndex)
+		if playing then return end
+		playing = true
+		local skipped = false
+		local root = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 1, Text = "", AutoButtonColor = false, ZIndex = 1 }, evolveGui)
+		root.Activated:Connect(function() skipped = true end)
+		local function pause(seconds)
+			local untilTime = os.clock() + seconds
+			while not skipped and root.Parent and os.clock() < untilTime do task.wait() end
+		end
+		TweenService:Create(root, TweenInfo.new(0.35), { BackgroundTransparency = 0.25 }):Play()
+
+		-- 중앙 빛 + 회전하는 빛줄기
+		local center = create("Frame", { Size = UDim2.new(0, 0, 0, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.46, 0), BackgroundTransparency = 1, ZIndex = 2 }, root)
+		local glow = create("Frame", { Size = UDim2.new(0, 60, 0, 60), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = Color3.fromRGB(255, 225, 120), BackgroundTransparency = 0.3, BorderSizePixel = 0, ZIndex = 2 }, center)
+		create("UICorner", { CornerRadius = UDim.new(1, 0) }, glow)
+		local rays = {}
+		for i = 1, 10 do
+			local ray = create("Frame", {
+				Size = UDim2.new(0, 14, 0, 0), AnchorPoint = Vector2.new(0.5, 1), BackgroundColor3 = Color3.fromRGB(255, 235, 150),
+				BackgroundTransparency = 0.35, BorderSizePixel = 0, Rotation = i * 36, ZIndex = 2,
+			}, center)
+			table.insert(rays, ray)
+		end
+		local spin = 0
+		local spinning = true
+		task.spawn(function()
+			while spinning and root.Parent do
+				spin += 0.8
+				center.Rotation = spin
+				task.wait()
+			end
+		end)
+		SoundBank.Play(workspace, "Enh_Evolve")
+		TweenService:Create(glow, TweenInfo.new(1.1, Enum.EasingStyle.Quad), { Size = UDim2.new(0, 360, 0, 360), BackgroundTransparency = 0.6 }):Play()
+		for _, ray in ipairs(rays) do
+			TweenService:Create(ray, TweenInfo.new(1.1, Enum.EasingStyle.Quad), { Size = UDim2.new(0, 14, 0, 520) }):Play()
+		end
+		shake(0.35)
+
+		-- 이전 무기 이름이 흔들리다가 부서진다
+		local oldLabel = makeLabel({
+			Size = UDim2.new(0, 520, 0, 50), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.46, 0),
+			Text = oldName, Font = Enum.Font.GothamBlack, TextSize = 34, TextColor3 = Color3.fromRGB(210, 210, 225), TextStrokeTransparency = 0.3, ZIndex = 5,
+		}, root)
+		for i = 1, 12 do
+			if skipped then break end
+			oldLabel.Position = UDim2.new(0.5, math.random(-8, 8), 0.46, math.random(-6, 6))
+			task.wait(0.07)
+		end
+		-- 폭발: 번쩍 + 파편
+		local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(1, 1, 1), BorderSizePixel = 0, ZIndex = 20 }, root)
+		TweenService:Create(flash, TweenInfo.new(0.7), { BackgroundTransparency = 1 }):Play()
+		SoundBank.Play(workspace, "Enh_Success", { Pitch = 1.6 })
+		shake(1)
+		oldLabel:Destroy()
+		for i = 1, 22 do
+			local angle = math.rad(i * (360 / 22) + math.random(-8, 8))
+			local distance = math.random(180, 420)
+			local spark = create("Frame", {
+				Size = UDim2.new(0, math.random(8, 16), 0, math.random(8, 16)), AnchorPoint = Vector2.new(0.5, 0.5),
+				Position = UDim2.new(0.5, 0, 0.46, 0), BackgroundColor3 = Color3.fromRGB(255, math.random(190, 240), math.random(70, 130)), BorderSizePixel = 0, ZIndex = 6, Rotation = math.random(0, 90),
+			}, root)
+			TweenService:Create(spark, TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+				Position = UDim2.new(0.5, math.cos(angle) * distance, 0.46, math.sin(angle) * distance), BackgroundTransparency = 1,
+			}):Play()
+		end
+
+		-- 새 무기 이름이 쾅 하고 박힌다
+		local title = makeLabel({
+			Size = UDim2.new(0, 560, 0, 30), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.34, 0),
+			Text = "✨ 무기 진화! ✨", Font = Enum.Font.GothamBlack, TextSize = 24, TextColor3 = Color3.fromRGB(255, 225, 100), TextStrokeTransparency = 0.2, ZIndex = 7, TextTransparency = 1,
+		}, root)
+		local name = makeLabel({
+			Size = UDim2.new(0, 640, 0, 80), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.46, 0),
+			Text = newName, Font = Enum.Font.GothamBlack, TextSize = 54, TextColor3 = Color3.fromRGB(255, 245, 190), TextStrokeTransparency = 0, ZIndex = 7,
+		}, root)
+		local nameScale = create("UIScale", { Scale = 3 }, name)
+		TweenService:Create(nameScale, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+		TweenService:Create(title, TweenInfo.new(0.4), { TextTransparency = 0 }):Play()
+		local sub = makeLabel({
+			Size = UDim2.new(0, 560, 0, 26), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.56, 0),
+			Text = string.format("%d번째 무기  ·  공격력 / 연사가 크게 달라졌어요", newIndex), Font = Enum.Font.GothamBold, TextSize = 16,
+			TextColor3 = Color3.fromRGB(215, 215, 235), TextStrokeTransparency = 0.4, ZIndex = 7, TextTransparency = 1,
+		}, root)
+		task.delay(0.5, function() if sub.Parent then TweenService:Create(sub, TweenInfo.new(0.4), { TextTransparency = 0 }):Play() end end)
+		task.delay(0.3, function() shake(0.6) end)
+		pause(2.6)
+		spinning = false
+		TweenService:Create(root, TweenInfo.new(0.4), { BackgroundTransparency = 1 }):Play()
+		for _, child in ipairs(root:GetDescendants()) do
+			if child:IsA("TextLabel") then TweenService:Create(child, TweenInfo.new(0.4), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play() end
+		end
+		task.wait(0.45)
+		root:Destroy()
+		playing = false
+	end
+
+	local function tierIndexNow()
+		return Config.GetWeaponTierIndex(player:GetAttribute("WeaponLevel") or 0)
+	end
+	task.defer(function()
+		while player.Parent and player:GetAttribute("WeaponLevel") == nil do task.wait(0.5) end
+		shownTier = tierIndexNow()
+		player:GetAttributeChangedSignal("WeaponLevel"):Connect(function()
+			local now = tierIndexNow()
+			local before = shownTier
+			shownTier = now
+			if before and now > before and Config.Weapon.Tiers[now] and Config.Weapon.Tiers[before] then
+				task.delay(0.6, function() play(Config.Weapon.Tiers[before].Name, Config.Weapon.Tiers[now].Name, now) end)
+			end
+		end)
+	end)
+end

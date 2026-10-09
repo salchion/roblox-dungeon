@@ -1589,7 +1589,13 @@ local function finish(run, victory)
 	broadcast(run)
 
 	task.delay(D.ReturnDelay, function()
+		local members = table.clone(run.Members)
 		destroyRun(run)
+		if not run.RiftMode then
+			for _, member in ipairs(members) do -- 처음 던전을 마치고 돌아오면 한 번: 다음 목표 + 강해지는 방법
+				task.delay(3, function() if member.Parent then Advice.GrowthGuide(member) end end)
+			end
+		end
 	end)
 end
 
