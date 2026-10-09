@@ -176,6 +176,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/DungeonDecor.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "DungeonDecor",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/DungeonTerrain.lua",
       "parent": "ServerScriptService/Modules",
       "name": "DungeonTerrain",
