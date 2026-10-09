@@ -434,30 +434,78 @@ function Lobby.Build()
 		local difficulty = Config.Dungeon.Difficulties[entry.Diff]
 		local x = (index - (listCount + 1) / 2) * spacing
 		local gatePos = Vector3.new(x, TOP, -HALF + 22)
-		local color = dungeonType.Torch
-		makePart({ Name = "GatePillarL", Size = Vector3.new(3.5, 24, 3.5), Position = gatePos + Vector3.new(-8.5, 12, 0), Color = stone, Material = Enum.Material.Granite }, folder)
-		makePart({ Name = "GatePillarR", Size = Vector3.new(3.5, 24, 3.5), Position = gatePos + Vector3.new(8.5, 12, 0), Color = stone, Material = Enum.Material.Granite }, folder)
-		makePart({ Name = "GateBeam", Size = Vector3.new(21, 3.5, 3.5), Position = gatePos + Vector3.new(0, 25.5, 0), Color = stone, Material = Enum.Material.Granite }, folder)
-		makePart({ Name = "GateRune", Size = Vector3.new(6, 2, 3.8), Position = gatePos + Vector3.new(0, 25.5, 0), Color = difficulty.Color, Material = Enum.Material.Neon }, folder)
+		-- 오른쪽으로 갈수록 무서워진다: t = 0(맨 왼쪽, 입문) ~ 1(맨 오른쪽, 최고 난이도). 문이 점점 커지고 어두워지고 붉어지며 가시 / 해골 / 불꽃 / 연기가 붙는다.
+		local t = (index - 1) / math.max(1, listCount - 1)
+		local dread = Color3.fromRGB(170, 20, 40)
+		local color = dungeonType.Torch:Lerp(dread, t * 0.75)
+		local gateStone = Color3.fromRGB(105, 98, 115):Lerp(Color3.fromRGB(20, 14, 24), t)
+		local stoneMat = t > 0.55 and Enum.Material.Basalt or Enum.Material.Granite
+		local H = 24 + 20 * t      -- 문 높이 24 -> 44
+		local pillar = 3.5 + 2.5 * t
+		makePart({ Name = "GatePillarL", Size = Vector3.new(pillar, H, pillar), Position = gatePos + Vector3.new(-8.5, H / 2, 0), Color = gateStone, Material = stoneMat }, folder)
+		makePart({ Name = "GatePillarR", Size = Vector3.new(pillar, H, pillar), Position = gatePos + Vector3.new(8.5, H / 2, 0), Color = gateStone, Material = stoneMat }, folder)
+		makePart({ Name = "GateBeam", Size = Vector3.new(21 + 2 * t, 3.5 + 2 * t, 3.5 + 2 * t), Position = gatePos + Vector3.new(0, H + 1.5, 0), Color = gateStone, Material = stoneMat }, folder)
+		makePart({ Name = "GateRune", Size = Vector3.new(6, 2, 3.8 + 2 * t), Position = gatePos + Vector3.new(0, H + 1.5, 0), Color = difficulty.Color:Lerp(dread, t * 0.5), Material = Enum.Material.Neon }, folder)
+		-- 가시: 위쪽으로 뻗은 뿔 (뒤로 갈수록 많고 길다)
+		local spikes = math.floor(t * 7)
+		for spike = 1, spikes do
+			local across = (spike / (spikes + 1) - 0.5) * 22
+			makePart({ Name = "GateSpike", Size = Vector3.new(1.2, 4 + 6 * t, 1.2), Position = gatePos + Vector3.new(across, H + 5 + 3 * t, 0), Color = Color3.fromRGB(30, 22, 30), Material = Enum.Material.Basalt }, folder)
+		end
+		-- 해골 표식: 해골 수 = 위험도 단계
+		local skulls = 1 + math.floor(t * 4)
+		local skullPart = makePart({ Name = "GateSkull", Size = Vector3.new(1, 1, 1), Position = gatePos + Vector3.new(0, H + 10 + 6 * t, 0), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
+		makeLabel(skullPart, string.rep("☠", skulls), Color3.fromRGB(255, 255, 255):Lerp(Color3.fromRGB(255, 60, 70), t), 0, 80 + skulls * 34, 60, 120)
+		-- 기둥 불꽃 (오른쪽 절반)
+		if t >= 0.5 then
+			for _, side in ipairs({ -1, 1 }) do
+				local flamePart = makePart({ Name = "GateFlame", Shape = Enum.PartType.Ball, Size = Vector3.new(2.4, 2.4, 2.4), Position = gatePos + Vector3.new(side * 8.5, H + 2, 0), Color = Color3.fromRGB(255, 70, 40), Material = Enum.Material.Neon, CanCollide = false }, folder)
+				local fire = Instance.new("Fire")
+				fire.Size = 8 + 6 * t
+				fire.Heat = 10
+				fire.Color = Color3.fromRGB(255, 90, 40)
+				fire.SecondaryColor = Color3.fromRGB(150, 15, 25)
+				fire.Parent = flamePart
+				addLight(flamePart, 30, 2, Color3.fromRGB(255, 80, 40))
+			end
+		end
+		-- 문 앞 바닥에 번지는 붉은 기운
+		if t > 0.2 then
+			local glow = makeDisc(gatePos + Vector3.new(0, 0.35, 8), 20 + 6 * t, 0.12, Color3.fromRGB(180, 20, 40), Enum.Material.Neon, folder)
+			glow.CanCollide = false
+			glow.Transparency = 0.75 - 0.35 * t
+		end
 
 		local portal = makePart({
-			Name = "DungeonGate" .. index, Size = Vector3.new(14, 24, 1), Position = gatePos + Vector3.new(0, 12, 0),
-			Color = color, Material = Enum.Material.Neon, Transparency = 0.4, CanCollide = false,
+			Name = "DungeonGate" .. index, Size = Vector3.new(14, H, 1), Position = gatePos + Vector3.new(0, H / 2, 0),
+			Color = color, Material = Enum.Material.Neon, Transparency = 0.4 - 0.15 * t, CanCollide = false,
 		}, folder)
-		addLight(portal, 36, 1.8, color)
+		addLight(portal, 36 + 20 * t, 1.8 + 1.2 * t, color)
 
 		local swirl = Instance.new("ParticleEmitter")
-		swirl.Rate = 30
+		swirl.Rate = 30 + 40 * t
 		swirl.Lifetime = NumberRange.new(1, 2)
-		swirl.Speed = NumberRange.new(1, 4)
+		swirl.Speed = NumberRange.new(1, 4 + 6 * t)
 		swirl.SpreadAngle = Vector2.new(180, 180)
 		swirl.Shape = Enum.ParticleEmitterShape.Box
 		swirl.LightEmission = 1
 		swirl.Color = ColorSequence.new(color)
-		swirl.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.8), NumberSequenceKeypoint.new(1, 0) })
+		swirl.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.8 + t), NumberSequenceKeypoint.new(1, 0) })
 		swirl.Parent = portal
+		if t >= 0.35 then -- 뒤쪽 문에서는 어두운 연기가 흘러나온다
+			local smoke = Instance.new("ParticleEmitter")
+			smoke.Rate = 12 + 20 * t
+			smoke.Lifetime = NumberRange.new(2, 4)
+			smoke.Speed = NumberRange.new(2, 5)
+			smoke.EmissionDirection = Enum.NormalId.Front
+			smoke.SpreadAngle = Vector2.new(25, 25)
+			smoke.Color = ColorSequence.new(Color3.fromRGB(25, 12, 30))
+			smoke.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 3), NumberSequenceKeypoint.new(1, 9) })
+			smoke.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.4), NumberSequenceKeypoint.new(1, 1) })
+			smoke.Parent = portal
+		end
 
-		makeLabel(portal, string.format("⚔ %s\n[%s] Lv.%d+", dungeonType.Name, difficulty.Name, entry.MinLevel), difficulty.Color, 17, 260, 64, 45)
+		makeLabel(portal, string.format("⚔ %s\n[%s] Lv.%d+", dungeonType.Name, difficulty.Name, entry.MinLevel), difficulty.Color, 17, 260, 64, 70)
 
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText = "입장 (Lv." .. entry.MinLevel .. ")"

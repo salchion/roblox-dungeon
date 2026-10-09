@@ -67,6 +67,13 @@ local function attach(folder, limb, spec)
 	part.CanTouch = false
 	part.Massless = true
 	if spec.Shape then part.Shape = spec.Shape end
+	-- 네모난 느낌을 줄이기 위해 각진 판은 모서리가 둥근 모양(Head 메시)으로 만든다. 얇은 날 / 띠는 그대로 둔다.
+	if not spec.Shape and spec.Round ~= false and math.min(spec.Size.X, spec.Size.Y, spec.Size.Z) >= 0.5 then
+		local mesh = Instance.new("SpecialMesh")
+		mesh.MeshType = Enum.MeshType.Head
+		mesh.Scale = Vector3.new(1.25, 1.25, 1.25)
+		mesh.Parent = part
+	end
 	part.CFrame = limb.CFrame * (spec.Offset or CFrame.new())
 	local weld = Instance.new("WeldConstraint")
 	weld.Part0 = limb
