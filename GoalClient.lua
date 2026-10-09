@@ -170,25 +170,37 @@ end
 
 -- 방치 수입 표시: 휴식 구역에서 방치 중일 때 초당 골드와 배율 (BM 배율이 올라가면 눈에 보인다)
 local idleLabel = Instance.new("TextLabel")
-idleLabel.Size = UDim2.new(0, 360, 0, 28)
+idleLabel.Size = UDim2.new(0, 420, 0, 46)
 idleLabel.AnchorPoint = Vector2.new(0.5, 0)
 idleLabel.Position = UDim2.new(0.5, 0, 0, 128)
 idleLabel.BackgroundColor3 = Color3.fromRGB(26, 30, 48)
 idleLabel.BackgroundTransparency = 0.15
 idleLabel.BorderSizePixel = 0
 idleLabel.Font = Enum.Font.GothamBold
-idleLabel.TextSize = 15
+idleLabel.TextSize = 14
 idleLabel.TextColor3 = Color3.fromRGB(255, 225, 120)
 idleLabel.RichText = true
 idleLabel.Visible = false
 idleLabel.Parent = gui
 addCorner(idleLabel, 8)
+local function commas(n)
+	local text = tostring(math.floor(n or 0))
+	return (text:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
+end
 RunService.Heartbeat:Connect(function()
-	local on = player:GetAttribute("IdleActive") == true and player:GetAttribute("Zone") == "Lobby"
-	idleLabel.Visible = on
-	if on then
-		local mult = player:GetAttribute("IdleMultTotal") or 1
-		idleLabel.Text = string.format("💤 방치 수입  +%s G/초   <font color='#9ad7ff'>x%.2f</font>", tostring(player:GetAttribute("IdleRate") or 0), mult)
+	local inLobby = player:GetAttribute("Zone") == "Lobby" and player:GetAttribute("Level") ~= nil
+	local capHours = player:GetAttribute("IdleCapHours")
+	idleLabel.Visible = inLobby and capHours ~= nil
+	if idleLabel.Visible then
+		local line2 = string.format("🌙 자리를 비우면 최대 %s시간  ·  가득 차면 <font color='#8fffb0'>%s G</font>", tostring(math.floor(capHours * 10 + 0.5) / 10), commas(player:GetAttribute("IdleFullGold")))
+		if player:GetAttribute("IdleActive") == true then
+			local mult = player:GetAttribute("IdleMultTotal") or 1
+			idleLabel.Text = string.format("💤 방치 수입  +%s G/초   <font color='#9ad7ff'>x%.2f</font>\n%s", tostring(player:GetAttribute("IdleRate") or 0), mult, line2)
+		else
+			idleLabel.Text = line2
+			idleLabel.Size = UDim2.new(0, 420, 0, 28)
+		end
+		if player:GetAttribute("IdleActive") == true then idleLabel.Size = UDim2.new(0, 420, 0, 46) end
 	end
 end)
 

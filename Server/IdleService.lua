@@ -72,6 +72,9 @@ function Idle.Init(center)
 				local rate = Idle.Rate(player)
 				player:SetAttribute("IdleRate", math.floor(rate * 10) / 10)
 				player:SetAttribute("IdleMultTotal", Idle.Multiplier(player))
+				local capHours = capSeconds(player) / 3600
+				player:SetAttribute("IdleCapHours", capHours) -- 자리를 비웠을 때 쌓이는 최대 시간
+				player:SetAttribute("IdleFullGold", math.floor(capHours * 3600 * rate * I.OfflineEfficiency)) -- 한도까지 가득 찼을 때 받는 골드
 				if isActive then
 					local owed = (remainder[player] or 0) + rate
 					local gold = math.floor(owed)
