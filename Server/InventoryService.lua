@@ -242,6 +242,25 @@ function Inventory.Equip(player, id)
 	return true, string.format("[%s] %s 장착!", G.RarityNames[item.Rarity], Inventory.ItemName(item))
 end
 
+-- 가방에 지금 끼고 있는 것보다 점수가 높은 아이템이 있는 부위 수 (뽑기 직후 "자동 장착" 팝업용)
+function Inventory.CountUpgrades(player)
+	local state = states[player]
+	if not state then return 0 end
+	local best = {}
+	for id, item in pairs(state.Items) do
+		if not isEquipped(state, id) then
+			local score = Config.GetItemScore(item)
+			if not best[item.Slot] or score > best[item.Slot] then best[item.Slot] = score end
+		end
+	end
+	local count = 0
+	for slotKey, score in pairs(best) do
+		local equipped = state.Items[state.Equipped[slotKey]]
+		if not equipped or score > Config.GetItemScore(equipped) then count += 1 end
+	end
+	return count
+end
+
 -- 부위마다 점수가 가장 높은 아이템을 자동으로 장착한다 (빈 칸 채우기 포함). 바뀐 부위 수를 돌려준다.
 function Inventory.AutoEquipBest(player, emptyOnly)
 	local state = states[player]

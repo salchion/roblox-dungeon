@@ -804,6 +804,37 @@ Remotes.Gear.OnClientEvent:Connect(function(action, result)
 	refreshGear()
 end)
 
+-- 뽑기로 지금 끼고 있는 것보다 좋은 장비가 나오면 "강한 장비로 자동 장착" 버튼이 떠오른다 (누르면 부위마다 가장 좋은 장비로 교체)
+do
+	local popup = create("Frame", {
+		Name = "UpgradePopup", Size = UDim2.new(0, 330, 0, 84), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 96),
+		BackgroundColor3 = Color3.fromRGB(28, 40, 34), BorderSizePixel = 0, Visible = false, ZIndex = 80,
+	}, gui)
+	rounded(popup, 14)
+	create("UIStroke", { Color = Color3.fromRGB(120, 255, 150), Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, popup)
+	local popupText = makeLabel({ Size = UDim2.new(1, -20, 0, 26), Position = UDim2.new(0, 10, 0, 6), Font = Enum.Font.GothamBlack, TextSize = 17, ZIndex = 81 }, popup)
+	local popupButton = makeButton({
+		Size = UDim2.new(1, -24, 0, 38), Position = UDim2.new(0, 12, 0, 38), Text = "⬆ 강한 장비로 자동 장착", TextSize = 18,
+		Font = Enum.Font.GothamBlack, BackgroundColor3 = Color3.fromRGB(60, 190, 100), ZIndex = 81,
+	}, popup)
+	local shownAt = 0
+	local function hide() popup.Visible = false end
+	popupButton.Activated:Connect(function()
+		Remotes.Inventory:FireServer("AutoEquip")
+		hide()
+	end)
+	Remotes.Gear.OnClientEvent:Connect(function(action, result)
+		if action ~= "Result" or not result.Roll or (result.Upgrades or 0) <= 0 then return end
+		task.delay(1.8, function() -- 뽑기 연출이 끝날 즈음 떠오른다
+			popupText.Text = string.format("🔥 더 좋은 장비가 나왔어요! (%d부위)", result.Upgrades)
+			popup.Visible = true
+			shownAt = os.clock()
+			local mine = shownAt
+			task.delay(14, function() if shownAt == mine then hide() end end)
+		end)
+	end)
+end
+
 -- 뽑기 연출 (모든 등급): 캡슐이 툭 떨어지고 → 덜덜 흔들리다가(높은 등급일수록 오래, 색이 새어 나옴) → 퍽 터지며 카드가 나온다.
 -- 아무 곳이나 누르면 건너뛴다.
 do

@@ -505,7 +505,7 @@ Remotes.Gear.OnServerEvent:Connect(function(player, action, arg)
 		local count = typeof(arg) == "number" and math.clamp(math.floor(arg), 1, 10) or 1
 		if count == 1 then
 			local ok, message, roll = Gear.Roll(player)
-			Remotes.Gear:FireClient(player, "Result", { Ok = ok, Message = message, Roll = roll })
+			Remotes.Gear:FireClient(player, "Result", { Ok = ok, Message = message, Roll = roll, Upgrades = ok and Inventory.CountUpgrades(player) or 0 })
 		else
 			-- 여러 개 동시에 뽑기 (최대 10연): 티켓이 모자라면 있는 만큼만 뽑는다
 			local rolls, failMessage = {}, nil
@@ -526,7 +526,7 @@ Remotes.Gear.OnServerEvent:Connect(function(player, action, arg)
 					if roll.Rarity > best.Rarity then best = roll end
 				end
 				Remotes.Gear:FireClient(player, "Result", {
-					Ok = true, Roll = best, Rolls = rolls,
+					Ok = true, Roll = best, Rolls = rolls, Upgrades = Inventory.CountUpgrades(player),
 					Message = string.format("%d회 뽑기 완료! 최고 등급: %s", #rolls, Config.Gear.RarityNames[best.Rarity]),
 				})
 			end
