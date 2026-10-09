@@ -105,7 +105,7 @@ end
 ------------------------------------------------------------
 Config.Tutorial = {
 	Steps = {
-		{ Text = "🎯 눈앞의 허수아비를 쏘세요! 마우스 클릭으로 사격해요 (R 키 = 자동 조준)", Stat = "DummyHits", Goal = 8, Target = "Dummy", TargetName = "허수아비",
+		{ Text = "🎯 대장간 옆 훈련장의 허수아비를 쏘세요! 마우스 클릭으로 사격해요 (R 키 = 자동 조준)", Stat = "DummyHits", Goal = 8, Target = "Dummy", TargetName = "허수아비",
 			Reward = { Gold = 100 } },
 		{ Text = "모루에서 무기를 강화하세요! (처음 3번은 무료)", Stat = "Enhances", Goal = 1, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
 			Reward = { Gold = 50 } },

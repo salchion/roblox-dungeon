@@ -57,7 +57,7 @@ local function promptPosition(prompt)
 	return parent:GetPivot().Position
 end
 Tutorial.SetTargets({ -- 튜토리얼 미션 표지 위치
-	Dummy = Vector3.new(lobby.SpawnCFrame.Position.X, lobby.SpawnCFrame.Position.Y - 0.7, lobby.SpawnCFrame.Position.Z - 13), -- 첫 허수아비는 시작 언덕 위, 스폰 패드 바로 앞 (아래 Dummy.BuildStarter)
+	Dummy = lobby.DummyStart + Vector3.new(0, 1, 0), -- 대장간 옆 훈련장의 큰 허수아비
 	Anvil = promptPosition(lobby.AnvilPrompt),
 	Gacha = promptPosition(lobby.GachaPrompt),
 	Field = promptPosition(lobby.WarpPrompt),
@@ -65,7 +65,6 @@ Tutorial.SetTargets({ -- 튜토리얼 미션 표지 위치
 })
 Dungeon.Init(lobby.SpawnCFrame)
 Dummy.Build(lobby.DummyStart)
-Dummy.BuildStarter(Vector3.new(lobby.SpawnCFrame.Position.X, lobby.SpawnCFrame.Position.Y - 4.7, lobby.SpawnCFrame.Position.Z - 13)) -- 시작하자마자 눈앞(13 앞, 같은 언덕 위)에서 쏘는 허수아비
 Rank.Init(lobby.RankBoardCFrame)
 Showcase.Init(lobby.RankBoardCFrame) -- 랭킹판 앞 명예의 전당 (최강 3명)
 Field.Init(lobby.SpawnCFrame)

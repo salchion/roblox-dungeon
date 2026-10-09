@@ -55,12 +55,12 @@ local function addGlow(part, color, range)
 	light.Parent = part
 end
 
-local function buildDummy(index, info, position, nameIndex)
+local function buildDummy(index, info, position, nameIndex, bigScale)
 	local model = Instance.new("Model")
 	model.Name = "Dummy" .. (nameIndex or index)
 
 	local style = STYLES[index] or STYLES[#STYLES]
-	local s = 1 + 0.12 * (index - 1)             -- 번호가 오를수록 커짐 (1.0 ~ 2.1배)
+	local s = (1 + 0.12 * (index - 1)) * (bigScale or 1) -- 번호가 오를수록 커짐 (1.0 ~ 2.1배)
 	local V = function(x, y, z) return Vector3.new(x * s, y * s, z * s) end
 	local O = function(x, y, z) return position + Vector3.new(x * s, y * s, z * s) end
 	local wood = Color3.fromRGB(95, 65, 40)
@@ -213,13 +213,7 @@ function Dummy.Build(start)
 	addGlow(ring, Color3.fromRGB(255, 215, 90), 30)
 
 	-- 허수아비 하나: 8번 모양(어깨 보호대 / 투구 / 뿔 / 가슴 갑옷 / 빛나는 눈)을 써서 크고 듬직하게. 이름은 Dummy1.
-	buildDummy(8, Config.Dummy.List[1], start, 1)
-end
-
--- 시작 언덕 바로 아래에 놓는 첫 허수아비: 접속하자마자 눈앞에서 쏘면서 시작한다 (훈련장까지 가지 않아도 된다)
-function Dummy.BuildStarter(position)
-	if not folder then return end
-	buildDummy(8, Config.Dummy.List[1], position, 2)
+	buildDummy(8, Config.Dummy.List[1], start, 1, 1.7) -- 멀리서도 눈에 띄도록 1.7배 크기
 end
 
 local function flash(data)
