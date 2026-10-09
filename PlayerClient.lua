@@ -3588,7 +3588,7 @@ end)
 
 RunService.RenderStepped:Connect(function()
 	local zone = currentZone()
-	skillBar.Visible = zone == "Field" or zone == "Dungeon"
+	skillBar.Visible = zone == "Lobby" or zone == "Field" or zone == "Dungeon"
 	if not skillBar.Visible then return end
 	for skillKey, slot in pairs(skillSlots) do
 		local cfg = Config.Skills[skillKey]
