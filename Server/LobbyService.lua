@@ -10,7 +10,7 @@ local Lobby = {}
 
 local HALF = 130            -- 로비는 -130 ~ +130 의 정사각형
 local TOP = 0.05            -- 바닥 윗면 높이 (기본 Baseplate 와 겹쳐 깜빡이는 것 방지)
-local HILL_Z, HILL_H, HILL_R = 112, 14, 18 -- 시작 언덕: 마을 남쪽 끝의 높은 언덕 (여기서 마을 전체가 내려다보인다)
+local HILL_Z, HILL_H, HILL_R = 112, 28, 18 -- 시작 언덕: 마을 남쪽 끝의 높은 언덕 (여기서 마을 전체가 내려다보인다)
 
 local function makePart(props, parent)
 	local part = Instance.new("Part")
@@ -312,8 +312,8 @@ function Lobby.Build()
 		{ X = -76, Z = 118, R = 20 }, -- 뽑기 상점
 		{ X = -76, Z = 88, R = 28 },  -- 작업 광장
 		{ X = 0, Z = HILL_Z, R = 36 },   -- 시작 언덕
-		{ X = -22, Z = 84, R = 20 },     -- 왼쪽 경사로
-		{ X = 22, Z = 84, R = 20 },      -- 오른쪽 경사로
+		{ X = -34, Z = 72, R = 26 },     -- 왼쪽 경사로
+		{ X = 34, Z = 72, R = 26 },      -- 오른쪽 경사로
 		{ X = -40, Z = 92, R = 20 },  -- 랭킹판 / 명예의 전당
 	})
 
@@ -333,12 +333,6 @@ function Lobby.Build()
 		makePart({ Name = "HillGrass", Shape = Enum.PartType.Cylinder, Size = Vector3.new(1, HILL_R * 2 + 2, HILL_R * 2 + 2),
 			CFrame = CFrame.new(center + Vector3.new(0, TOP + HILL_H - 0.25, 0)) * CFrame.Angles(0, 0, math.rad(90)),
 			Color = Color3.fromRGB(88, 130, 84), Material = Enum.Material.Grass }, folder)
-		-- 가장자리 돌 난간 (뒤로 떨어지지 않게 남쪽 반원만): 낮은 돌기둥들
-		for i = 0, 10 do
-			local angle = math.rad(110 + i * 14) -- 남쪽(+Z) 쪽 호
-			local pos = center + Vector3.new(math.cos(angle + math.pi / 2) * (HILL_R - 0.6), 0, math.sin(angle + math.pi / 2) * (HILL_R - 0.6))
-			makePart({ Name = "HillRail", Size = Vector3.new(2, 2.6, 2), Position = Vector3.new(pos.X, TOP + HILL_H + 1.3, pos.Z), Color = Color3.fromRGB(150, 146, 140), Material = Enum.Material.Cobblestone }, folder)
-		end
 		makeLamp(Vector3.new(-11, TOP + HILL_H, HILL_Z + 6), folder)
 		makeLamp(Vector3.new(11, TOP + HILL_H, HILL_Z + 6), folder)
 		-- 경사로: 언덕 가장자리(y = HILL_H)에서 광장 가장자리(y = 0)까지 비스듬히 내려간다
@@ -352,7 +346,7 @@ function Lobby.Build()
 				Color = Color3.fromRGB(205, 195, 175), Material = Enum.Material.Cobblestone }, folder)
 		end
 		for _, side in ipairs({ -1, 1 }) do
-			ramp(Vector3.new(side * 9.8, TOP + HILL_H, HILL_Z - 15.1), Vector3.new(side * 34, TOP, 72), 12)
+			ramp(Vector3.new(side * 9.8, TOP + HILL_H, HILL_Z - 15.1), Vector3.new(side * 54, TOP, 44), 14)
 			-- 경사로 양옆 가로등
 			makeLamp(Vector3.new(side * 18, TOP + 8, 94), folder)
 		end

@@ -176,6 +176,19 @@ builders.Armor = function(character, folder, tier, glow, t)
 	attach(folder, torso, { Size = Vector3.new(ts.X * 1.1, ts.Y * 0.82, ts.Z * 1.16), Offset = CFrame.new(0, ts.Y * 0.06, 0), Color = t.main, Material = t.mat })
 	attach(folder, torso, { Size = Vector3.new(ts.X * 1.14, 0.22, ts.Z * 1.2), Offset = CFrame.new(0, -ts.Y * 0.42, 0), Color = t.trim, Material = Enum.Material.Metal }) -- 허리띠
 	attach(folder, torso, { Size = Vector3.new(0.32, 0.32, 0.12), Offset = CFrame.new(0, -ts.Y * 0.42, -ts.Z * 0.62), Color = tier >= 3 and glow or t.trim, Material = tier >= 4 and Enum.Material.Neon or Enum.Material.Metal }) -- 버클
+	-- 둥근 어깨 갑옷 / 목 칼라 / 가슴 문장: 네모난 상자처럼 보이지 않게 곡선 장식을 더한다
+	if tier >= 2 then
+		for _, a in ipairs(arms) do
+			local w = a.Limb.Size.X
+			attach(folder, a.Limb, { Shape = Enum.PartType.Ball, Size = Vector3.new(w * 1.45, w * 1.2, w * 1.45), Offset = CFrame.new(a.Side * 0.04, a.Limb.Size.Y * 0.38, 0), Color = t.main, Material = t.mat })
+			attach(folder, a.Limb, { Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.16, w * 1.3, w * 1.3), Offset = CFrame.new(0, a.Limb.Size.Y * 0.1, 0) * CYL, Color = t.trim, Material = Enum.Material.Metal })
+		end
+		attach(folder, torso, { Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.3, ts.X * 0.7, ts.Z * 1.0), Offset = CFrame.new(0, ts.Y * 0.46, 0) * CYL, Color = t.trim, Material = Enum.Material.Metal })
+		attach(folder, torso, { Size = Vector3.new(0.5, 0.5, 0.12), Offset = CFrame.new(0, ts.Y * 0.14, -ts.Z * 0.64) * CFrame.Angles(0, 0, math.rad(45)), Color = tier >= 3 and glow or t.trim, Material = tier >= 3 and Enum.Material.Neon or Enum.Material.Metal })
+		for _, side in ipairs({ -1, 1 }) do
+			attach(folder, torso, { Size = Vector3.new(0.1, ts.Y * 0.8, ts.Z * 1.2), Offset = CFrame.new(side * ts.X * 0.55, ts.Y * 0.04, 0), Color = t.trim, Material = Enum.Material.Metal })
+		end
+	end
 	if tier == 1 then
 		for _, side in ipairs({ -1, 1 }) do -- X 자 가슴 끈
 			attach(folder, torso, { Size = Vector3.new(0.18, ts.Y * 0.95, 0.1), Offset = CFrame.new(side * ts.X * 0.18, ts.Y * 0.05, -ts.Z * 0.6) * CFrame.Angles(0, 0, math.rad(side * 28)), Color = t.trim, Material = Enum.Material.Leather })
@@ -350,6 +363,16 @@ function Gear.ApplyVisuals(player)
 			local palette = TIERS[slot.Key] and TIERS[slot.Key][rarity]
 			build(character, folder, rarity, glow, palette)
 
+			if rarity >= 4 then -- 전설 이상: 윤곽 빛
+				local outline = Instance.new("Highlight")
+				outline.Adornee = folder
+				outline.FillTransparency = 1
+				outline.OutlineColor = glow
+				outline.OutlineTransparency = rarity == 5 and 0.1 or 0.35
+				outline.DepthMode = Enum.HighlightDepthMode.Occluded
+				outline.Parent = folder
+			end
+
 			if rarity >= 4 then -- 전설 이상: 반짝이는 입자
 				local first = folder:FindFirstChildWhichIsA("BasePart")
 				if first then
@@ -365,6 +388,39 @@ function Gear.ApplyVisuals(player)
 				end
 			end
 		end
+	end
+
+	-- 세트 효과: 고급(3등급) 이상 장비를 3개 이상 끼면 몸 전체에 은은한 기운
+	local oldAura = character:FindFirstChild("GearAura", true)
+	if oldAura then oldAura:Destroy() end
+	local count, best = 0, 0
+	for _, slot in ipairs(G.Slots) do
+		local r = player:GetAttribute(rAttr(slot.Key)) or 0
+		if r >= 3 then count += 1 end
+		best = math.max(best, r)
+	end
+	local root = character:FindFirstChild("HumanoidRootPart")
+	if count >= 3 and root then
+		local color = G.RarityColors[best]
+		local aura = Instance.new("Attachment")
+		aura.Name = "GearAura"
+		aura.Parent = root
+		local fx = Instance.new("ParticleEmitter")
+		fx.Rate = 10 + count * 4
+		fx.Lifetime = NumberRange.new(0.8, 1.4)
+		fx.Speed = NumberRange.new(1, 3)
+		fx.Acceleration = Vector3.new(0, 4, 0)
+		fx.SpreadAngle = Vector2.new(180, 180)
+		fx.LightEmission = 1
+		fx.Color = ColorSequence.new(color)
+		fx.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.35), NumberSequenceKeypoint.new(1, 0) })
+		fx.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) })
+		fx.Parent = aura
+		local light = Instance.new("PointLight")
+		light.Color = color
+		light.Range = 8 + count
+		light.Brightness = 1.2
+		light.Parent = aura
 	end
 end
 
