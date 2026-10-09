@@ -1629,7 +1629,7 @@ local function showResult(result)
 			end
 			resultInfo.Text = string.format(
 				"%s\n획득 골드  +%d G   🎫 티켓 +%d\n%s\n%d초 후 로비로 이동",
-				result.Endless and string.format("🏯 도달 %d층 (최고 %d층)", result.Wave, player:GetAttribute("TowerBest") or 0) or (result.Victory and "끝까지 버텨서 보스 격파!" or "버티지 못했어요"), result.Gold, result.Tickets or 0,
+				(result.Victory and "끝까지 버텨서 보스 격파!" or "버티지 못했어요"), result.Gold, result.Tickets or 0,
 				#lootLines > 0 and ("<b>📦 보스 상자</b>\n" .. table.concat(lootLines, "\n")) or "", remaining
 			)
 			task.wait(1)
@@ -3302,7 +3302,7 @@ for index, key in ipairs(Config.Dungeon.Types.Order) do
 	makeLabel({
 		Size = UDim2.new(1, -16, 1, -12), Position = UDim2.new(0, 8, 0, 6), RichText = true,
 		Text = string.format("<font size='20'><b>%s</b></font>\n\n<font color='#bbbbcc' size='13'>%s</font>\n\n%s\n권장 전투력 %d",
-			info.Name, info.Desc, info.Endless and "끝없는 도전 (최고 층 기록)" or (string.format("%d초 버티기 + 보스", Config.Dungeon.GetSurviveSeconds(info.Waves))), info.RecommendedPower),
+			info.Name, info.Desc, string.format("%d초 버티기 + 보스", Config.Dungeon.GetSurviveSeconds(info.Waves)), info.RecommendedPower),
 		TextSize = 15, TextYAlignment = Enum.TextYAlignment.Top,
 	}, card)
 	typeCards[key] = card
@@ -3343,7 +3343,7 @@ function refreshSelect()
 	local difficulty = Config.Dungeon.Difficulties[selectedDifficulty]
 	summaryLabel.Text = string.format(
 		"<b>%s · %s</b>\n%s → 보스 <font color='#ff9a9a'>%s</font>\n권장 전투력 <font color='#ffe16e'>%d</font>  (내 전투력 %d)\n골드 x%.1f · 티켓 %d장 · 보스 상자 장비 %d개\n🎟 오늘 무료 입장 <b>%d / %d회</b> · 다 쓰면 <b>%s %d개</b> 필요 (보유 %d개, 더 높은 열쇠도 가능)\n열쇠는 필드 구역 군주가 줘요: 앞 구역 🗝 쉬움 · 중간 🔑 보통 · 뒤 구역 🏆 어려움",
-		dungeonType.Name, difficulty.Name, dungeonType.Endless and "끝없는 웨이브 (나의 최고 층 " .. (player:GetAttribute("TowerBest") or 0) .. ")" or (string.format("%d초 버티기", Config.Dungeon.GetSurviveSeconds(dungeonType.Waves))), dungeonType.Boss.Name,
+		dungeonType.Name, difficulty.Name, string.format("%d초 버티기", Config.Dungeon.GetSurviveSeconds(dungeonType.Waves)), dungeonType.Boss.Name,
 		dungeonType.RecommendedPower, player:GetAttribute("Power") or 0,
 		dungeonType.GoldMult * difficulty.GoldMult, difficulty.Tickets, Config.Loot.DungeonChestCount,
 		player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily, Config.Keys.TierNames[difficulty.KeyTier or 1], difficulty.KeyCost,

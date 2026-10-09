@@ -57,6 +57,7 @@ local function push(player, openPanel)
 	local best = state.Bests and state.Bests[depth] or 0
 	local tier = Config.GetRiftTier(best)
 	player:SetAttribute("RiftUnlocked", unlockedDepth(player, state)) -- "다음 목표" 패널이 읽는다
+	player:SetAttribute("RiftDepthDone", state.DepthDone or 0) -- 업적("심연 깊이 N 돌파")이 읽는다
 	Remotes.Rift:FireClient(player, openPanel and "Open" or "State", {
 		Best = best, Left = math.max(0, R.FreeAttempts - state.Used), Max = R.FreeAttempts,
 		TierName = best > 0 and tier.Name or "기록 없음", TierIcon = best > 0 and tier.Icon or "❔",

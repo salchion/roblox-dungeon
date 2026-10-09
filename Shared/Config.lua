@@ -798,7 +798,7 @@ Config.Dungeon.Difficulties = {
 
 -- Boss.Weights: 보스 패턴 비중 (Fan 부채꼴 / Ring 전방위 / Spiral 나선 / Meteor 메테오)
 Config.Dungeon.Types = {
-	Order = { "Cave", "Ice", "Fire", "Tower" },
+	Order = { "Cave", "Ice", "Fire" },
 	Cave = {
 		Name = "고블린 동굴", Desc = "어둡고 좁은 동굴. 입문용 던전", Waves = 5, LevelOffset = 0, GoldMult = 1, RecommendedPower = 0,
 		MonsterColor = Color3.fromRGB(110, 160, 70),
@@ -828,17 +828,6 @@ Config.Dungeon.Types = {
 		Terrain = { Ground = Enum.Material.Basalt, Mountain = Enum.Material.Slate, Accent = Enum.Material.CrackedLava },
 		MonsterPool = { Charger = 3, Bomber = 3, Mage = 2, Golem = 2, Imp = 2, Totem = 1, Spider = 2 },
 		Boss = { Name = "화염의 군주", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Fan = 1, Ring = 1, Spiral = 2, Meteor = 4, Slam = 3, Summon = 1, Lanes = 3, Sweep = 3, SideAdds = 1 } },
-	},
-	-- 무한의 탑: 끝이 없는 웨이브. 층(웨이브)이 오를수록 강해지고, 쓰러질 때까지 도전. 최고 층이 기록으로 남는다.
-	Tower = {
-		Name = "무한의 탑", Desc = "끝없이 이어지는 웨이브. 최고 층 기록에 도전! 5층마다 티켓", Waves = 0, Endless = true, LevelOffset = 4, GoldMult = 1.5, RecommendedPower = 600,
-		MonsterColor = Color3.fromRGB(190, 120, 255),
-		Floor = { Color = Color3.fromRGB(60, 50, 80), Material = Enum.Material.Slate },
-		Wall = { Color = Color3.fromRGB(70, 55, 100), Material = Enum.Material.Slate },
-		Torch = Color3.fromRGB(190, 120, 255),
-		Terrain = { Ground = Enum.Material.Slate, Mountain = Enum.Material.Basalt, Accent = Enum.Material.Glacier },
-		MonsterPool = { Slime = 2, Spitter = 2, Bat = 2, Mage = 2, Golem = 1, Charger = 2, Bomber = 2, Spider = 2, Imp = 2, Knight = 2, Turret = 1, Wisp = 2, Totem = 1 },
-		Boss = { Name = "탑의 수호자", Color = Color3.fromRGB(180, 100, 255), HealthMult = 1, DamageMult = 1, Weights = { Fan = 1, Ring = 1, Spiral = 1, Meteor = 1, Slam = 2, Summon = 2, Lanes = 2, Sweep = 2, SideAdds = 1.5 } },
 	},
 }
 
@@ -911,7 +900,6 @@ Config.Dungeon.List = {
 	{ Type = "Fire", Diff = "Easy", MinLevel = 26 },
 	{ Type = "Fire", Diff = "Normal", MinLevel = 32 },
 	{ Type = "Fire", Diff = "Hard", MinLevel = 40 },
-	{ Type = "Tower", Diff = "Normal", MinLevel = 10 },
 }
 
 ------------------------------------------------------------
@@ -949,8 +937,8 @@ Config.Achievements = {
 	{ Id = "skill200",   Name = "스킬 마스터",     Desc = "스킬 %d회 사용",              Stat = "SkillUses",     Goal = 200,   Reward = { Tickets = 3 },              Title = "스킬 마스터" },
 	{ Id = "rift2500",   Name = "심연의 도전자",   Desc = "심연 도전 %d점 달성",         Stat = "RiftBest",      Goal = 2500,  Reward = { Tickets = 4 },              Title = "심연의 도전자" },
 	{ Id = "rift9000",   Name = "한계 돌파자",     Desc = "심연 도전 %d점 달성",         Stat = "RiftBest",      Goal = 9000,  Reward = { Tickets = 12 },             Title = "한계 돌파자" },
-	{ Id = "tower10",    Name = "탑의 도전자",     Desc = "무한의 탑 %d층 도달",         Stat = "TowerBest",     Goal = 10,    Reward = { Tickets = 3 },              Title = "탑의 도전자" },
-	{ Id = "tower30",    Name = "탑의 정복자",     Desc = "무한의 탑 %d층 도달",         Stat = "TowerBest",     Goal = 30,    Reward = { Tickets = 10 },             Title = "탑의 정복자" },
+	{ Id = "riftdepth5",  Name = "심연 탐험가",     Desc = "심연 깊이 %d 돌파",           Stat = "RiftDepth",     Goal = 5,     Reward = { Tickets = 3 },              Title = "심연 탐험가" },
+	{ Id = "riftdepth15", Name = "심연 개척자",     Desc = "심연 깊이 %d 돌파",           Stat = "RiftDepth",     Goal = 15,    Reward = { Tickets = 10 },             Title = "심연 개척자" },
 	{ Id = "prestige1",  Name = "다시 태어난 자",   Desc = "환생 %d회",                    Stat = "Prestige",      Goal = 1,     Reward = { Tickets = 5 },              Title = "환생자" },
 	{ Id = "prestige5",  Name = "윤회의 달인",     Desc = "환생 %d회",                    Stat = "Prestige",      Goal = 5,     Reward = { Tickets = 15 },             Title = "윤회의 달인" },
 	{ Id = "boss10",     Name = "보스 헌터",       Desc = "보스 %d마리 처치",            Stat = "BossKills",     Goal = 10,    Reward = { Tickets = 5 },              Title = "보스 헌터" },

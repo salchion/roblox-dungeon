@@ -185,7 +185,6 @@ function Meta.Load(player, saved)
 	states[player] = state
 	syncSkillAttributes(player, state)
 	applyPetStats(player, state)
-	player:SetAttribute("TowerBest", state.Tower)
 	player:SetAttribute("Prestige", state.Prestige)
 	player:SetAttribute("RiftBest", state.Rift.Best)
 	Meta.RefreshPetModel(player)
@@ -216,17 +215,6 @@ end
 function Meta.GetRift(player)
 	local state = states[player]
 	return state and state.Rift or nil
-end
-
-function Meta.RecordTower(player, floor)
-	local state = states[player]
-	if not state or floor <= state.Tower then return end
-	state.Tower = floor
-	player:SetAttribute("TowerBest", floor)
-	if floor % 10 == 0 then
-		Event.Announce(string.format("📢 %s 님이 무한의 탑 %d층에 도달했어요!", player.DisplayName, floor))
-	end
-	Meta.Push(player)
 end
 
 ------------------------------------------------------------

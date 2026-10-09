@@ -1542,7 +1542,7 @@ local function finish(run, victory)
 			Tickets = run.TicketsEarned[member] or 0,
 			Loot = run.LootLines[member] or {},
 			Wave = run.Wave,
-			TotalWaves = run.TotalWaves, Endless = run.Type.Endless == true,
+			TotalWaves = run.TotalWaves,
 			TypeName = run.Type.Name,
 			DifficultyName = run.Difficulty.Name,
 			ReturnDelay = D.ReturnDelay,
@@ -1726,43 +1726,6 @@ local function rollBonus(run, penaltyChance)
 	end
 end
 
--- 웨이브 클리어 후(탑 / 이벤트방): 잠깐 숨 돌리는 사이 랜덤 보너스가 터진다 (선택은 없다)
-local function statPhase(run)
-	run.Phase = "StatPhase"
-	run.PhaseEnd = os.clock() + 2.5
-	run.Ready = {}
-	for _, member in ipairs(run.Members) do
-		applyMaxHealth(member, math.huge)
-	end
-	rollBonus(run, 0.5)
-	return waitFor(run, function() return os.clock() >= run.PhaseEnd end)
-end
-
--- 무한의 탑: 쓰러질 때까지 웨이브가 계속된다. 클리어한 층이 기록되고, 5층마다 티켓.
-local function towerLoop(run)
-	local wave = 0
-	while not run.Destroyed and run.Phase ~= "Ended" do
-		wave += 1
-		run.Wave = wave
-		run.Phase = "Wave"
-		run.PhaseEnd = nil
-		spawnWave(run, wave)
-		if not waitFor(run, function() return run.MonsterCount <= 0 end) then return end
-
-		giveGold(run, D.WaveClearGold * wave)
-		giveXp(run, Config.Xp.WaveClear * wave)
-		for _, member in ipairs(run.Members) do
-			Meta.RecordTower(member, wave)
-			if wave % 5 == 0 then
-				member:SetAttribute("Tickets", (member:GetAttribute("Tickets") or 0) + 1)
-				run.TicketsEarned[member] = (run.TicketsEarned[member] or 0) + 1
-			end
-		end
-		notifyAll(run, wave % 5 == 0 and string.format("🏯 %d층 돌파! 티켓 +1", wave) or string.format("🏯 %d층 돌파!", wave))
-		if not statPhase(run) then return end
-	end
-end
-
 -- 가장 가까운 살아 있는 플레이어 주변의 몬스터 등장 지점들 (minD ~ maxD 거리). 웨이브 없이 계속 쏟아내는 용도.
 local function nearSpawnPoints(run, minD, maxD)
 	local sum, n = Vector3.zero, 0
@@ -1917,12 +1880,6 @@ local function runLoop(run)
 	end
 	if run.RiftMode then
 		riftLoop(run)
-		return
-	end
-	if run.Type.Endless then
-		run.PhaseEnd = os.clock() + D.StartCountdown
-		if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
-		towerLoop(run)
 		return
 	end
 	surviveLoop(run)
