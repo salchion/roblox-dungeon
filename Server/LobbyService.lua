@@ -246,18 +246,18 @@ function Lobby.Build()
 	-- 하늘 / 분위기
 	-- 해 질 녘 분위기: 앞은 또렷하게 보이되 전체적으로 차분하고 어둑한 톤 (등불 / 네온이 은은하게 돋보인다)
 	Lighting.ClockTime = 18.2
-	Lighting.Brightness = 1.55
+	Lighting.Brightness = 1.2
 	Lighting.Ambient = Color3.fromRGB(95, 98, 128)
 	Lighting.OutdoorAmbient = Color3.fromRGB(125, 128, 165)
-	Lighting.ExposureCompensation = 0.15
+	Lighting.ExposureCompensation = -0.15
 	Lighting.EnvironmentDiffuseScale = 0.6
 	Lighting.EnvironmentSpecularScale = 0.5
 	do
 		local bloom = Lighting:FindFirstChild("LobbyBloom") or Instance.new("BloomEffect")
 		bloom.Name = "LobbyBloom"
-		bloom.Intensity = 0.1
-		bloom.Size = 20
-		bloom.Threshold = 2.4
+		bloom.Intensity = 0.04
+		bloom.Size = 16
+		bloom.Threshold = 3.2
 		bloom.Parent = Lighting
 		local grade = Lighting:FindFirstChild("LobbyGrade") or Instance.new("ColorCorrectionEffect")
 		grade.Name = "LobbyGrade"
@@ -871,10 +871,16 @@ function Lobby.Build()
 	-- 쨍한 느낌 줄이기: 네온 부품은 색을 살짝 가라앉히고, 조명은 약하게 (은은하게 빛나는 정도)
 	for _, descendant in ipairs(folder:GetDescendants()) do
 		if descendant:IsA("PointLight") then
-			descendant.Brightness *= 0.55
-			descendant.Range *= 0.85
+			descendant.Brightness *= 0.4
+			descendant.Range *= 0.8
 		elseif descendant:IsA("BasePart") and descendant.Material == Enum.Material.Neon and descendant.Transparency < 0.6 then
-			descendant.Color = descendant.Color:Lerp(Color3.fromRGB(95, 95, 115), 0.32)
+			-- 전구 / 등불 / 장식 공은 눈이 아픈 네온 대신 은은한 불투명 재질 + 따뜻한 색으로 (빛은 PointLight 가 맡는다)
+			if descendant.Shape == Enum.PartType.Ball and (string.find(descendant.Name, "Lamp") or string.find(descendant.Name, "Bulb") or string.find(descendant.Name, "Lantern") or string.find(descendant.Name, "Flame")) then
+				descendant.Material = Enum.Material.SmoothPlastic
+				descendant.Color = descendant.Color:Lerp(Color3.fromRGB(235, 190, 120), 0.4):Lerp(Color3.fromRGB(70, 66, 76), 0.25)
+			else
+				descendant.Color = descendant.Color:Lerp(Color3.fromRGB(90, 90, 110), 0.5)
+			end
 		elseif descendant:IsA("ParticleEmitter") then
 			descendant.LightEmission = math.min(descendant.LightEmission, 0.55)
 		end
