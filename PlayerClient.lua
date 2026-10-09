@@ -880,11 +880,20 @@ do
 			end
 			if token ~= mine then return end
 			local buff = data.Buff
+			if buff and buff.Special then -- 레어: 화면이 금빛으로 번쩍 + 흔들림 + 팝업이 커진다
+				local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 215, 120), BackgroundTransparency = 0.55, BorderSizePixel = 0, ZIndex = 74 }, gui)
+				TweenService:Create(flash, TweenInfo.new(0.55), { BackgroundTransparency = 1 }):Play()
+				game:GetService("Debris"):AddItem(flash, 0.6)
+				player:SetAttribute("ShakeStrength", 0.35)
+				player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+				SoundBank.Play(sfxParent, "Gacha_Card")
+				TweenService:Create(popScale, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1.22 }):Play()
+			end
 			if buff then
 				local special = buff.Special
 				local color = special and Color3.fromRGB(255, 195, 70) or Color3.fromRGB(110, 210, 255)
 				buffHalf.Icon.Text = buff.Icon
-				buffHalf.Title.Text = "✨ " .. buff.Name
+				buffHalf.Title.Text = (buff.Special and (data.Jackpot and "🌟 확정 레어! " or "★ 레어 ") or "✨ ") .. buff.Name
 				buffHalf.Title.TextColor3 = color
 				buffHalf.Desc.Text = buff.Desc
 				buffHalf.Stroke.Color = color

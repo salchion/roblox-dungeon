@@ -281,7 +281,7 @@ Config.Dungeon.BossHealthBase = 2.0      -- 버티기 던전 보스 체력 배�
 Config.Dungeon.BossHealthPerBonus = 0.12 -- 버티는 동안 터진 랜덤 보너스 1번당 보스 체력 +12% (패널티로 강해진 적 체력 배율도 같이 곱해진다)
 Config.Dungeon.MonsterLimit = 40     -- 버티기 중 동시에 살아 있는 몬스터가 이 수(파티면 인원에 비례해 늘어남)를 넘기면 위험, OverrunSeconds 동안 못 줄이면 실패
 Config.Dungeon.OverrunSeconds = 6
-Config.Dungeon.BonusInterval = 15    -- 이 간격(초)마다 랜덤 강화 / 랜덤 패널티가 터진다 (선택 없이 자동 적용)
+Config.Dungeon.BonusInterval = 10    -- 이 간격(초)마다 랜덤 강화 / 랜덤 패널티가 터진다 (선택 없이 자동 적용)
 
 -- 랜덤 강화 (고르지 않고 무작위로 하나 걸린다. Perk = 기존 특성을 Stacks 단계만큼 올림 / Weight = 나올 확률 가중치)
 Config.RunBuffs = {
@@ -378,11 +378,11 @@ Config.Boss = {
 ------------------------------------------------------------
 Config.Economy = {
 	IncomeBase = 1500,        -- 공격력 배율 1.0(처음 무기)일 때 열심히 플레이한 분당 골드
-	StepMinutesEarly = 0.27,  -- 초반 무기 강화 한 단계에 걸리길 바라는 분 (15단계 = 약 4분)
-	StepMinutesLate = 0.6,    -- 강화 단계 LateLevel 이후 (10단계 = 약 6분)
+	StepMinutesEarly = 0.4,   -- 초반 무기 강화 한 단계에 걸리길 바라는 분 (15단계 = 약 4분)
+	StepMinutesLate = 0.9,    -- 강화 단계 LateLevel 이후 (10단계 = 약 6분)
 	LateLevel = 600,
-	FieldGoldMult = 4.5,      -- 필드 몬스터 처치 골드 배율 (구역 보상표 x 이 값)
-	DungeonGoldMult = 0.7,    -- 던전 골드 배율 (던전은 처치 수가 많아서 낮춘다)
+	FieldGoldMult = 3.5,      -- 필드 몬스터 처치 골드 배율 (구역 보상표 x 이 값)
+	DungeonGoldMult = 0.6,    -- 던전 골드 배율 (던전은 처치 수가 많아서 낮춘다)
 }
 
 Config.Weapon = {
@@ -821,34 +821,34 @@ Config.Dungeon.Difficulties = {
 Config.Dungeon.Types = {
 	Order = { "Cave", "Ice", "Fire" },
 	Cave = {
-		Name = "고블린 동굴", Desc = "어둡고 좁은 동굴. 입문용 던전", Waves = 5, LevelOffset = 0, GoldMult = 1, RecommendedPower = 0,
+		Name = "고블린 동굴", Desc = "🐀 떼거지! 약하지만 엄청 많이 몰려오고, 고블린 왕은 부하를 끊임없이 불러내요 (입문용)", Theme = { Health = 0.8, Damage = 0.9, Speed = 1.0, Spawn = 1.35, Burst = 1.3 }, Waves = 5, LevelOffset = 0, GoldMult = 1, RecommendedPower = 0,
 		MonsterColor = Color3.fromRGB(110, 160, 70),
 		Floor = { Color = Color3.fromRGB(70, 60, 50), Material = Enum.Material.Slate },
 		Wall = { Color = Color3.fromRGB(55, 45, 40), Material = Enum.Material.Brick },
 		Torch = Color3.fromRGB(255, 150, 70),
 		Terrain = { Ground = Enum.Material.Mud, Mountain = Enum.Material.Rock, Accent = Enum.Material.Slate },
-		MonsterPool = { Slime = 4, Spitter = 3, Bat = 3, Spider = 2, Imp = 1 },
-		Boss = { Name = "고블린 왕", Color = Color3.fromRGB(70, 130, 50), HealthMult = 1, DamageMult = 1, Weights = { Fan = 3, Ring = 2, Spiral = 1, Meteor = 2, Slam = 2, Summon = 1, Lanes = 2.5, Sweep = 2, SideAdds = 1 } },
+		MonsterPool = { Slime = 4, Bat = 3, Spider = 3, Imp = 2, Spitter = 1 },
+		Boss = { Name = "고블린 왕", Color = Color3.fromRGB(70, 130, 50), HealthMult = 1, DamageMult = 1, Weights = { Fan = 2, Ring = 1, Spiral = 0.5, Meteor = 0.5, Slam = 1.5, Summon = 4, Lanes = 1.5, Sweep = 1, SideAdds = 3.5 } },
 	},
 	Ice = {
-		Name = "얼음 성채", Desc = "얼어붙은 성. 나선 탄막이 매서운 중급 던전", Waves = 6, LevelOffset = 6, GoldMult = 1.6, RecommendedPower = 400,
+		Name = "얼음 성채", Desc = "❄ 탄막 지옥! 멀리서 쏘는 적이 많고, 서리 군주는 나선 / 전방위 탄막을 쏟아내요 (중급)", Theme = { Health = 1.0, Damage = 1.2, Speed = 0.9, Spawn = 0.9, Burst = 1.0 }, Waves = 6, LevelOffset = 6, GoldMult = 1.6, RecommendedPower = 400,
 		MonsterColor = Color3.fromRGB(110, 200, 240),
 		Floor = { Color = Color3.fromRGB(190, 220, 240), Material = Enum.Material.Ice },
 		Wall = { Color = Color3.fromRGB(120, 160, 200), Material = Enum.Material.Glacier },
 		Torch = Color3.fromRGB(120, 200, 255),
 		Terrain = { Ground = Enum.Material.Snow, Mountain = Enum.Material.Glacier, Accent = Enum.Material.Ice },
-		MonsterPool = { Slime = 2, Spitter = 2, Mage = 3, Golem = 2, Wisp = 2, Knight = 2, Turret = 1 },
-		Boss = { Name = "서리 군주", Color = Color3.fromRGB(90, 170, 240), HealthMult = 1.6, DamageMult = 1.2, Weights = { Fan = 1, Ring = 3, Spiral = 3, Meteor = 1, Slam = 2, Summon = 2, Lanes = 2.5, Sweep = 2.5, SideAdds = 1.5 } },
+		MonsterPool = { Spitter = 3, Mage = 4, Turret = 2, Wisp = 3, Knight = 2, Golem = 1 },
+		Boss = { Name = "서리 군주", Color = Color3.fromRGB(90, 170, 240), HealthMult = 1.6, DamageMult = 1.2, Weights = { Fan = 2, Ring = 4, Spiral = 4.5, Meteor = 0.5, Slam = 1, Summon = 1, Lanes = 1.5, Sweep = 2, SideAdds = 0.5 } },
 	},
 	Fire = {
-		Name = "화염 신전", Desc = "용암의 신전. 메테오가 쏟아지는 고급 던전", Waves = 7, LevelOffset = 12, GoldMult = 2.5, RecommendedPower = 1200,
+		Name = "화염 신전", Desc = "🔥 돌진과 폭발! 달려드는 적이 단단하고 빠르고, 화염의 군주는 메테오와 충격파를 퍼부어요 (고급)", Theme = { Health = 1.25, Damage = 1.0, Speed = 1.15, Spawn = 1.0, Burst = 1.0 }, Waves = 7, LevelOffset = 12, GoldMult = 2.5, RecommendedPower = 1200,
 		MonsterColor = Color3.fromRGB(240, 100, 50),
 		Floor = { Color = Color3.fromRGB(60, 35, 35), Material = Enum.Material.Basalt },
 		Wall = { Color = Color3.fromRGB(90, 40, 30), Material = Enum.Material.CrackedLava },
 		Torch = Color3.fromRGB(255, 90, 40),
 		Terrain = { Ground = Enum.Material.Basalt, Mountain = Enum.Material.Slate, Accent = Enum.Material.CrackedLava },
-		MonsterPool = { Charger = 3, Bomber = 3, Mage = 2, Golem = 2, Imp = 2, Totem = 1, Spider = 2 },
-		Boss = { Name = "화염의 군주", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Fan = 1, Ring = 1, Spiral = 2, Meteor = 4, Slam = 3, Summon = 1, Lanes = 3, Sweep = 3, SideAdds = 1 } },
+		MonsterPool = { Charger = 4, Bomber = 4, Imp = 2, Golem = 2, Spider = 1, Totem = 1 },
+		Boss = { Name = "화염의 군주", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Fan = 0.5, Ring = 0.5, Spiral = 0.5, Meteor = 5, Slam = 4, Summon = 0.5, Lanes = 3, Sweep = 3.5, SideAdds = 0.5 } },
 	},
 }
 

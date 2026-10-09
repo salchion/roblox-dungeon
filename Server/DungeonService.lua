@@ -365,6 +365,12 @@ local function spawnMonster(run, level, position)
 		stats.Speed *= mutator.SpeedMult or 1
 		stats.ShotInterval *= mutator.IntervalMult or 1
 	end
+	local theme = run.Type.Theme -- 던전마다 몬스터 성격이 다르다 (동굴 = 떼거지 / 성채 = 탄막 / 신전 = 돌진)
+	if theme then
+		stats.MaxHealth = math.floor(stats.MaxHealth * theme.Health)
+		stats.ShotDamage = math.max(1, math.floor(stats.ShotDamage * theme.Damage))
+		stats.Speed *= theme.Speed
+	end
 	if run.DepthScale then -- 심연 깊이: 구역(필드)과 같은 방식으로 체력 / 공격력 / 속도가 확 뛴다
 		stats.MaxHealth = math.floor(stats.MaxHealth * run.DepthScale.Health)
 		stats.ShotDamage = math.max(1, math.floor(stats.ShotDamage * run.DepthScale.Damage))
@@ -1704,11 +1710,12 @@ local function applyPenalty(run, pen)
 	run.GoldMult *= 1 + (pen.Gold or 0)
 end
 
-local function rollBonus(run, penaltyChance)
+local function rollBonus(run, penaltyChance, forceSpecial)
 	local pen = math.random() < penaltyChance and pickWeighted(Config.RunPenalties) or nil
 	if pen then applyPenalty(run, pen) end
 	for _, member in ipairs(run.Members) do
 		local buff = pickWeighted(Config.RunBuffs, function(entry)
+			if forceSpecial and not entry.Special then return false end
 			if entry.Perk then return not perkMaxed(member, entry.Perk) end
 			return true
 		end)
@@ -1721,6 +1728,7 @@ local function rollBonus(run, penaltyChance)
 		end
 		Remotes.Dungeon:FireClient(member, "Roll", {
 			Buff = buff and { Icon = buff.Icon, Name = buff.Name, Desc = buff.Desc, Special = buff.Special == true } or nil,
+			Jackpot = forceSpecial == true,
 			Penalty = pen and { Icon = pen.Icon, Name = pen.Name, Desc = pen.Desc, Gold = math.floor((pen.Gold or 0) * 100) } or nil,
 		})
 	end
@@ -1767,8 +1775,8 @@ local function surviveLoop(run)
 	run.TotalWaves = 0
 	run.Wave = 1
 	local nextSpawn = startedAt
-	local nextBonus = startedAt + 8 -- 첫 보너스는 일찍: 시작하자마자 "뭔가 터진다"
-	run.NextBonusAt, run.BonusSpan = nextBonus, 8
+	local nextBonus = startedAt + 6 -- 첫 보너스는 일찍: 시작하자마자 "뭔가 터진다"
+	run.NextBonusAt, run.BonusSpan = nextBonus, 6
 	local bonusCount = 0
 	local partyScale = 1 + 0.5 * (run.PartySize - 1)
 	-- 몬스터가 한도를 넘어 쌓이면 졌다: 가만히 버티기만 해서는 클리어할 수 없다 (한도를 넘긴 채 OverrunSeconds 가 지나면 실패)
@@ -1803,12 +1811,13 @@ local function surviveLoop(run)
 			if run.MonsterCount < cap then
 				run.SpawnPoints = nearSpawnPoints(run, 22, 75) or run.AllSpawns
 				local level = math.max(1, D.GetWaveMonsterLevel(run.Wave) + run.LevelBonus)
-				local burst = (now - startedAt < 1) and 7 or math.random(3, 4) -- 시작하자마자 우르르
+				local theme = run.Type.Theme or { Spawn = 1, Burst = 1 }
+				local burst = math.floor(((now - startedAt < 1) and 7 or math.random(3, 4)) * theme.Burst + 0.5) -- 시작하자마자 우르르 (던전 성격에 따라 많거나 적다)
 				for _ = 1, burst do
 					spawnMonster(run, level)
 				end
 			end
-			nextSpawn = now + (2.0 - 0.7 * progress) / (run.PenCount or 1)
+			nextSpawn = now + (2.0 - 0.7 * progress) / ((run.PenCount or 1) * ((run.Type.Theme and run.Type.Theme.Spawn) or 1))
 		end
 
 		if now >= nextBonus then
@@ -1820,7 +1829,7 @@ local function surviveLoop(run)
 			for _, member in ipairs(run.Members) do
 				Quest.Add(member, "DungeonWaves", 1)
 			end
-			rollBonus(run, bonusCount >= 2 and 0.6 or 0.3)
+			rollBonus(run, bonusCount >= 2 and 0.6 or 0.3, bonusCount % 3 == 0) -- 3번에 한 번은 레어 확정
 		end
 		task.wait(0.25)
 	end

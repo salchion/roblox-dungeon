@@ -3,7 +3,7 @@
 사용: python3 Tools/economy_model.py   (Config.lua 의 값을 바꾸면 아래 상수도 같이 바꿔서 다시 돌려 본다)
 """
 LS = 326 / 1090                 # Config.Weapon.LevelScale
-INCOME_BASE, EARLY, LATE, LATE_LEVEL = 1500, 0.27, 0.6, 600
+INCOME_BASE, EARLY, LATE, LATE_LEVEL = 1500, 0.4, 0.9, 600
 IDLE_FRACTION, MANUAL_FRACTION = 0.34, 0.11  # Config.Idle.Fraction / Config.Dummy.ManualFraction (활동 수입 대비 비율)
 BASE_DAMAGE, BASE_COOLDOWN = 10, 0.35
 ORDER = ["Pistol", "Smg", "Revolver", "Rifle", "Shotgun", "Flamer", "Cannon", "Sniper", "Rocket", "Rail"]
