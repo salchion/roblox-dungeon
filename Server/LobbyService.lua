@@ -626,15 +626,15 @@ function Lobby.Build()
 			{ Text = "◀ 허수아비 훈련장 (서쪽)", Y = 5, Color = Color3.fromRGB(170, 120, 60), Dir = -1 },
 		}
 		-- 판 앞뒤 양쪽 면에 글자를 붙인다 (어느 쪽에서 봐도 읽히고, 판에 가려 잘리지 않는다)
-		local function buildSignpost(origin)
-			makePart({ Name = "CrossPost", Size = Vector3.new(1.4, 14, 1.4), Position = origin + Vector3.new(0, 7, 0), Color = Color3.fromRGB(95, 65, 40), Material = Enum.Material.Wood }, folder)
+		local function buildSignpost(origin, scale)
+			makePart({ Name = "CrossPost", Size = Vector3.new(2.2 * scale, 14 * scale, 2.2 * scale), Position = origin + Vector3.new(0, 7 * scale, 0), Color = Color3.fromRGB(95, 65, 40), Material = Enum.Material.Wood }, folder)
 			for _, board in ipairs(boards) do
-				local plank = makePart({ Name = "CrossBoard", Size = Vector3.new(12, 2.8, 0.6), Position = origin + Vector3.new(board.Dir * 4.4, board.Y + 1, 0), Color = board.Color, Material = Enum.Material.Wood }, folder)
+				local plank = makePart({ Name = "CrossBoard", Size = Vector3.new(12 * scale, 2.8 * scale, 0.8), Position = origin + Vector3.new(board.Dir * 4.4 * scale, (board.Y + 1) * scale, 0), Color = board.Color, Material = Enum.Material.Wood }, folder)
 				for _, face in ipairs({ Enum.NormalId.Front, Enum.NormalId.Back }) do
 					local surface = Instance.new("SurfaceGui")
 					surface.Face = face
 					surface.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
-					surface.PixelsPerStud = 50
+					surface.PixelsPerStud = 40
 					surface.LightInfluence = 0
 					surface.Parent = plank
 					local text = Instance.new("TextLabel")
@@ -649,11 +649,11 @@ function Lobby.Build()
 				end
 			end
 			-- 멀리서도 보이게 꼭대기 등불
-			local bulb = makePart({ Name = "CrossLamp", Shape = Enum.PartType.Ball, Size = Vector3.new(2, 2, 2), Position = origin + Vector3.new(0, 15.5, 0), Color = Color3.fromRGB(255, 225, 140), Material = Enum.Material.Neon, CanCollide = false }, folder)
-			addLight(bulb, 30, 1.4, Color3.fromRGB(255, 225, 140))
+			local bulb = makePart({ Name = "CrossLamp", Shape = Enum.PartType.Ball, Size = Vector3.new(2.6 * scale, 2.6 * scale, 2.6 * scale), Position = origin + Vector3.new(0, 15.5 * scale, 0), Color = Color3.fromRGB(255, 225, 140), Material = Enum.Material.Neon, CanCollide = false }, folder)
+			addLight(bulb, 45, 2, Color3.fromRGB(255, 225, 140))
 		end
-		buildSignpost(Vector3.new(13, 0, 13))
-		buildSignpost(Vector3.new(16, 0, 52)) -- 언덕에서 내려오면 바로 보이는 두 번째 이정표
+		buildSignpost(Vector3.new(16, 0, 13), 2)
+		buildSignpost(Vector3.new(24, 0, 50), 2.4) -- 언덕에서 내려오면 눈앞에 크게 보이는 두 번째 이정표
 	end
 
 	-- 2) 필드로 이어지는 길가의 등불 (필드 문에 가까울수록 초록빛이 짙어진다) + 깃발
