@@ -308,8 +308,9 @@ function Lobby.Build()
 	makeDisc(Vector3.new(0, TOP + 0.1, 70), 70, 0.2, Color3.fromRGB(205, 195, 165), Enum.Material.Marble, folder).CanCollide = false
 	makeFountain(Vector3.new(0, TOP, 70), folder)
 	decoratePlaza(folder, Vector3.new(0, TOP, 70), {
-		{ X = -26, Z = 34, R = 20 },  -- 대장간
-		{ X = 26, Z = 34, R = 20 },   -- 뽑기 상점
+		{ X = -76, Z = 58, R = 20 },  -- 대장간
+		{ X = -76, Z = 118, R = 20 }, -- 뽑기 상점
+		{ X = -76, Z = 88, R = 28 },  -- 작업 광장
 		{ X = 0, Z = HILL_Z, R = 36 },   -- 시작 언덕
 		{ X = -22, Z = 84, R = 20 },     -- 왼쪽 경사로
 		{ X = 22, Z = 84, R = 20 },      -- 오른쪽 경사로
@@ -447,8 +448,8 @@ function Lobby.Build()
 
 	-- 상점가: 광장에서 북쪽 중앙로로 올라가는 길 양옆에 가게 두 곳이 마주 보고 서 있다.
 	--   왼쪽 대장간(무기 강화) / 오른쪽 장비 뽑기 상점. 지붕 + 줄무늬 차양 + 간판 + 카운터 + 등불 + 소품으로 "마을 가게" 느낌.
-	local function makeStall(center, roofA, roofB, signText, signColor, props)
-		local base = CFrame.lookAt(center, Vector3.new(0, center.Y, center.Z)) -- 앞면(-Z)이 중앙로를 향한다
+	local function makeStall(center, roofA, roofB, signText, signColor, props, lookTarget)
+		local base = CFrame.lookAt(center, lookTarget or Vector3.new(0, center.Y, center.Z)) -- 앞면(-Z)이 lookTarget(기본: 중앙로)을 향한다
 		local function part(name, size, offset, color, material, extra)
 			local data = { Name = name, Size = size, CFrame = base * CFrame.new(offset), Color = color, Material = material or Enum.Material.Wood }
 			for key, value in pairs(extra or {}) do data[key] = value end
@@ -494,7 +495,9 @@ function Lobby.Build()
 	end
 
 	-- 대장간 (왼쪽 / 서): 모루 + 화로 + 무기 걸이
-	local forgeCenter = Vector3.new(-26, TOP, 34)
+	-- (서쪽 "작업 광장": 허수아비 훈련장 - 대장간 - 뽑기 상점이 한 광장을 둘러싸서, 허수아비 앞에서 두 가게가 바로 보인다)
+	local workshop = Vector3.new(-76, TOP, 88)
+	local forgeCenter = Vector3.new(-76, TOP, 58)
 	local anvilPart
 	makeStall(forgeCenter, Color3.fromRGB(190, 70, 55), Color3.fromRGB(235, 225, 205), "🔨 대장간 · 무기 강화", Color3.fromRGB(255, 210, 120), function(base, part)
 		part("AnvilBase", Vector3.new(4, 2.2, 3), Vector3.new(0, 1.7, 1), Color3.fromRGB(45, 45, 50), Enum.Material.Metal)
@@ -516,10 +519,10 @@ function Lobby.Build()
 			part("WallSword", Vector3.new(0.3, 4.4, 0.15), Vector3.new(-6 + i * 1.6, 7, 7.1), Color3.fromRGB(200, 205, 215), Enum.Material.Metal, { CanCollide = false })
 			part("WallHilt", Vector3.new(1.2, 0.3, 0.2), Vector3.new(-6 + i * 1.6, 5, 7.1), Color3.fromRGB(150, 110, 60), Enum.Material.Wood, { CanCollide = false })
 		end
-	end)
+	end, workshop)
 
 	-- 뽑기 상점 (오른쪽 / 동): 반짝이는 뽑기 머신 + 선반
-	local shopCenter = Vector3.new(26, TOP, 34)
+	local shopCenter = Vector3.new(-76, TOP, 118)
 	local gachaBody
 	makeStall(shopCenter, Color3.fromRGB(120, 70, 200), Color3.fromRGB(255, 225, 150), "🎰 장비 뽑기 상점", Color3.fromRGB(255, 225, 140), function(base, part)
 		part("GachaBase", Vector3.new(8, 2, 6), Vector3.new(0, 1.6, 1.5), Color3.fromRGB(60, 40, 90), Enum.Material.Metal)
@@ -541,7 +544,14 @@ function Lobby.Build()
 			part("ShelfItem", Vector3.new(1.4, 1.4, 1.4), Vector3.new(side * 7.8, 7.4, 6.2), side < 0 and Color3.fromRGB(90, 170, 255) or Color3.fromRGB(255, 130, 220), Enum.Material.Neon, { CanCollide = false })
 			part("ShelfItem", Vector3.new(1.2, 1.8, 1.2), Vector3.new(side * 5.8, 7.6, 6.2), Color3.fromRGB(120, 255, 170), Enum.Material.Neon, { CanCollide = false })
 		end
-	end)
+	end, workshop)
+
+	-- 작업 광장 바닥 + 마을 중앙 광장에서 이어지는 길 + 가로등
+	makeDisc(workshop + Vector3.new(0, 0.12, 0), 50, 0.2, Color3.fromRGB(196, 186, 168), Enum.Material.Cobblestone, folder).CanCollide = false
+	makePart({ Name = "PathWorkshop", Size = Vector3.new(46, 0.2, 9), Position = Vector3.new(-56, TOP + 0.12, 82), Color = Color3.fromRGB(205, 195, 175), Material = Enum.Material.Marble, CanCollide = false }, folder)
+	for _, lampOffset in ipairs({ Vector3.new(-18, 0, -6), Vector3.new(18, 0, -6), Vector3.new(-18, 0, 6), Vector3.new(18, 0, 6) }) do
+		makeLamp(workshop + lampOffset, folder)
+	end
 
 	local anvilPrompt = Instance.new("ProximityPrompt")
 	anvilPrompt.ActionText = "무기 강화"
