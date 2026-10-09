@@ -30,7 +30,7 @@
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon", "Notify", "Gear", "OpenGear", "Quest", "Rank", "Weapon", "Inventory", "Loot", "Warp", "Shop", "Growth", "Skill", "Hit", "Meta", "Tutorial", "Banner" }
+local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon", "Notify", "Gear", "OpenGear", "Quest", "Rank", "Weapon", "Inventory", "Loot", "Warp", "Shop", "Growth", "Rift", "Skill", "Hit", "Meta", "Tutorial", "Banner" }
 
 local folder
 if RunService:IsServer() then

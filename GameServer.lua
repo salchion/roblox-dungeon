@@ -37,6 +37,7 @@ local Keys = require(Modules:WaitForChild("KeyService"))
 local Growth = require(Modules:WaitForChild("GrowthService"))
 local Monetization = require(Modules:WaitForChild("MonetizationService"))
 local Data = require(Modules:WaitForChild("DataService"))
+local Rift = require(Modules:WaitForChild("RiftService"))
 
 Monetization.SaveHook = Data.Save -- 결제 영수증 처리 때 "저장 성공"을 확인하는 데 사용
 
@@ -66,6 +67,7 @@ Dummy.Build(lobby.DummyStart)
 Rank.Init(lobby.RankBoardCFrame)
 Showcase.Init(lobby.RankBoardCFrame) -- 랭킹판 앞 명예의 전당 (최강 3명)
 Field.Init(lobby.SpawnCFrame)
+Rift.Init(lobby.RiftPrompt) -- 심연 도전 포탈
 EventService.Start() -- 주기적 골든 타임
 
 -- 던전 게이트: 파티장(또는 솔로)에게 던전 종류 / 난이도 선택창을 띄운다

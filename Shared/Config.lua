@@ -770,6 +770,43 @@ Config.Dungeon.Types = {
 	},
 }
 
+-- 심연 도전(점수 도전): 90초 동안 버티며 점수를 쌓는다. 최고 점수가 "소탕" 보상의 한계를 정한다 (방치 + 손맛)
+Config.Dungeon.Types.Rift = {
+	Name = "심연 도전", Desc = "90초 점수 도전! 처치 + 콤보 + 아슬아슬한 회피로 점수를 쌓아요", Waves = 0, Endless = true, TimeLimit = 90, LevelOffset = 4, GoldMult = 1, RecommendedPower = 0,
+	MonsterColor = Color3.fromRGB(255, 80, 150),
+	Floor = { Color = Color3.fromRGB(46, 30, 66), Material = Enum.Material.Slate },
+	Wall = { Color = Color3.fromRGB(80, 40, 100), Material = Enum.Material.Slate },
+	Torch = Color3.fromRGB(255, 80, 150),
+	Terrain = { Ground = Enum.Material.Slate, Mountain = Enum.Material.Basalt, Accent = Enum.Material.Glacier },
+	MonsterPool = { Slime = 2, Spitter = 2, Bat = 2, Mage = 2, Golem = 1, Charger = 2, Bomber = 2, Spider = 2, Imp = 2, Knight = 2, Turret = 1, Wisp = 2, Totem = 1 },
+	Boss = { Name = "심연의 문지기", Color = Color3.fromRGB(255, 80, 150), HealthMult = 1, DamageMult = 1, Weights = { Fan = 1, Ring = 1, Spiral = 1, Meteor = 1, Slam = 2, Summon = 2, Lanes = 2, Sweep = 2, SideAdds = 1.5 } },
+}
+
+Config.Rift = {
+	Duration = 90,        -- 도전 시간(초)
+	FreeAttempts = 3,     -- 하루 무료 도전(또는 소탕) 횟수 (UTC 날짜 기준 초기화)
+	SweepRate = 0.7,      -- 소탕 보상 = 내 최고 점수 등급 보상의 70%
+	KillScore = 10,       -- 처치 1마리 기본 점수 (+ 현재 콤보, 최대 60)
+	NearMissScore = 60,   -- NEAR MISS(대시로 아슬아슬하게 피하기) 1회
+	WaveBonus = 100,      -- 웨이브 클리어 보너스 x 웨이브 번호
+	BossScore = 200,
+	Tiers = {             -- 점수 등급별 보상 (직접 도전의 보상 = 그 판의 등급 / 소탕 = 최고 점수 등급의 70%)
+		{ Min = 0,    Name = "브론즈",   Icon = "🥉", Gold = 200,   Tickets = 0, TimeSkip = 0 },
+		{ Min = 500,  Name = "실버",     Icon = "🥈", Gold = 600,   Tickets = 0, TimeSkip = 300 },
+		{ Min = 1200, Name = "골드",     Icon = "🥇", Gold = 1500,  Tickets = 1, TimeSkip = 600 },
+		{ Min = 2500, Name = "플래티넘", Icon = "💠", Gold = 3500,  Tickets = 2, TimeSkip = 900 },
+		{ Min = 5000, Name = "다이아",   Icon = "💎", Gold = 8000,  Tickets = 4, TimeSkip = 1800 },
+		{ Min = 9000, Name = "마스터",   Icon = "👑", Gold = 15000, Tickets = 6, TimeSkip = 3600 },
+	},
+}
+function Config.GetRiftTier(score)
+	local tier = Config.Rift.Tiers[1]
+	for _, candidate in ipairs(Config.Rift.Tiers) do
+		if score >= candidate.Min then tier = candidate end
+	end
+	return tier
+end
+
 -- 던전 목록: 던전마다 입구(게이트)가 따로 있고, 캐릭터 레벨이 되면 난이도 순서대로 입장할 수 있다 (메뉴에서 고르지 않는다)
 -- Type / Diff: 위의 던전 종류 / 난이도 조합. MinLevel: 입장에 필요한 캐릭터 레벨 (파티원 모두).
 Config.Dungeon.List = {
@@ -801,6 +838,7 @@ Config.Quests = {
 		{ Id = "gacha",   Name = "운 시험",       Desc = "장비 뽑기를 %d번 하기",         Stat = "Rolls",         Goal = 2,   Reward = { Gold = 300 } },
 		{ Id = "goblin",  Name = "황금 사냥",     Desc = "황금 고블린 %d마리 처치",       Stat = "GoblinKills",   Goal = 1,   Reward = { Gold = 800, Tickets = 1 } },
 		{ Id = "skills",  Name = "스킬 연습",     Desc = "스킬을 %d번 사용하기",          Stat = "SkillUses",     Goal = 20,  Reward = { Gold = 400 } },
+		{ Id = "rift",    Name = "심연 도전",     Desc = "심연 도전(소탕 포함) %d번 하기", Stat = "RiftRuns",      Goal = 2,   Reward = { Gold = 700, TimeSkip = 600 } },
 		{ Id = "kills",   Name = "몬스터 청소",   Desc = "몬스터 %d마리 처치 (던전 포함)", Stat = "Kills",         Goal = 60,  Reward = { Gold = 500, TimeSkip = 300 } },
 	},
 }
@@ -815,6 +853,8 @@ Config.Achievements = {
 	{ Id = "goblin1",    Name = "황금 사냥꾼",     Desc = "황금 고블린 %d마리 처치",     Stat = "GoblinKills",   Goal = 1,     Reward = { Gold = 1000 },              Title = "행운의 사냥꾼" },
 	{ Id = "goblin20",   Name = "황금 도둑",       Desc = "황금 고블린 %d마리 처치",     Stat = "GoblinKills",   Goal = 20,    Reward = { Tickets = 5 },              Title = "황금 도둑" },
 	{ Id = "skill200",   Name = "스킬 마스터",     Desc = "스킬 %d회 사용",              Stat = "SkillUses",     Goal = 200,   Reward = { Tickets = 3 },              Title = "스킬 마스터" },
+	{ Id = "rift2500",   Name = "심연의 도전자",   Desc = "심연 도전 %d점 달성",         Stat = "RiftBest",      Goal = 2500,  Reward = { Tickets = 4 },              Title = "심연의 도전자" },
+	{ Id = "rift9000",   Name = "한계 돌파자",     Desc = "심연 도전 %d점 달성",         Stat = "RiftBest",      Goal = 9000,  Reward = { Tickets = 12 },             Title = "한계 돌파자" },
 	{ Id = "tower10",    Name = "탑의 도전자",     Desc = "무한의 탑 %d층 도달",         Stat = "TowerBest",     Goal = 10,    Reward = { Tickets = 3 },              Title = "탑의 도전자" },
 	{ Id = "tower30",    Name = "탑의 정복자",     Desc = "무한의 탑 %d층 도달",         Stat = "TowerBest",     Goal = 30,    Reward = { Tickets = 10 },             Title = "탑의 정복자" },
 	{ Id = "prestige1",  Name = "다시 태어난 자",   Desc = "환생 %d회",                    Stat = "Prestige",      Goal = 1,     Reward = { Tickets = 5 },              Title = "환생자" },

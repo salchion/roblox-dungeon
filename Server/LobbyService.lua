@@ -311,6 +311,7 @@ function Lobby.Build()
 		{ X = -76, Z = 58, R = 20 },  -- 대장간
 		{ X = -76, Z = 118, R = 20 }, -- 뽑기 상점
 		{ X = -76, Z = 88, R = 28 },  -- 작업 광장
+		{ X = 78, Z = 90, R = 26 },   -- 심연 도전 포탈
 		{ X = 0, Z = HILL_Z, R = 36 },   -- 시작 언덕
 		{ X = -34, Z = 72, R = 26 },     -- 왼쪽 경사로
 		{ X = 34, Z = 72, R = 26 },      -- 오른쪽 경사로
@@ -362,6 +363,35 @@ function Lobby.Build()
 	spawn.Neutral = true
 	spawn.Duration = 0
 	spawn.Parent = folder
+
+	-- 심연 도전 포탈 (동쪽 광장, 서쪽 작업 광장의 맞은편): 하루 3회 점수 도전 + 소탕. 눈에 띄는 분홍 빛 고리와 빛기둥
+	local riftPrompt
+	do
+		local rift = Vector3.new(78, TOP, 90)
+		local pink = Color3.fromRGB(255, 80, 170)
+		makeDisc(rift + Vector3.new(0, 0.1, 0), 26, 0.4, Color3.fromRGB(46, 30, 66), Enum.Material.Slate, folder)
+		makeDisc(rift + Vector3.new(0, 0.35, 0), 22, 0.15, pink, Enum.Material.Neon, folder).CanCollide = false
+		for index = 0, 23 do
+			local angle = index / 24 * math.pi * 2
+			local position = rift + Vector3.new(0, 10 + math.sin(angle) * 9, math.cos(angle) * 9)
+			local piece = makePart({ Name = "RiftRing", Size = Vector3.new(1.4, 2.6, 2.6), Position = position, Color = pink, Material = Enum.Material.Neon, CanCollide = false, CanQuery = false }, folder)
+			piece.CFrame = CFrame.new(position) * CFrame.Angles(angle, 0, 0)
+		end
+		makePart({ Name = "RiftVeil", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.6, 17, 17), Position = rift + Vector3.new(0, 10, 0),
+			Color = Color3.fromRGB(190, 60, 255), Material = Enum.Material.Neon, Transparency = 0.55, CanCollide = false, CanQuery = false }, folder)
+		local beam = makePart({ Name = "RiftBeacon", Size = Vector3.new(6, 220, 6), Position = rift + Vector3.new(0, 110, 0), Color = pink, Material = Enum.Material.Neon,
+			Transparency = 0.88, CanCollide = false, CanQuery = false }, folder)
+		addLight(beam, 60, 1.2, pink)
+		local pedestal = makePart({ Name = "RiftPedestal", Size = Vector3.new(4, 3, 4), Position = rift + Vector3.new(-9, 1.5, 0), Color = Color3.fromRGB(60, 40, 90), Material = Enum.Material.Slate }, folder)
+		makeLabel(pedestal, "🌀 심연 도전\n하루 3회 · 최고 점수가 소탕 보상을 정해요!", Color3.fromRGB(255, 180, 230), 6, 420, 90, 140)
+		riftPrompt = Instance.new("ProximityPrompt")
+		riftPrompt.ActionText = "도전 / 소탕"
+		riftPrompt.ObjectText = "🌀 심연 도전"
+		riftPrompt.HoldDuration = 0
+		riftPrompt.MaxActivationDistance = 16
+		riftPrompt.RequiresLineOfSight = false
+		riftPrompt.Parent = pedestal
+	end
 
 	-- 마을 테두리: 성벽 + 절벽 (안에서 바깥이 보이지 않게)
 	buildPerimeter(folder)
@@ -759,6 +789,7 @@ function Lobby.Build()
 		AnvilPrompt = anvilPrompt,
 		GachaPrompt = gachaPrompt,
 		WarpPrompt = warpPrompt,
+		RiftPrompt = riftPrompt,
 		DummyStart = Vector3.new(-100, TOP, 88), -- 허수아비 하나가 서는 자리
 		RankBoardCFrame = CFrame.lookAt(Vector3.new(-52, TOP + 16.5, 100), Vector3.new(0, TOP + 16.5, 72)),
 	}

@@ -159,7 +159,7 @@ local function syncSkillAttributes(player, state)
 end
 
 function Meta.Load(player, saved)
-	local state = { Skills = {}, Owned = {}, Equipped = nil, Tower = 0, Prestige = 0 }
+	local state = { Skills = {}, Owned = {}, Equipped = nil, Tower = 0, Prestige = 0, Rift = { Best = 0, Day = 0, Used = 0 } }
 	for _, key in ipairs(Config.Skills.Order) do
 		local level = typeof(saved) == "table" and typeof(saved.Skills) == "table" and tonumber(saved.Skills[key]) or 1
 		state.Skills[key] = math.clamp(math.floor(level), 1, Config.SkillUpgrade.MaxLevel)
@@ -178,12 +178,16 @@ function Meta.Load(player, saved)
 		end
 		state.Tower = math.max(0, math.floor(tonumber(saved.Tower) or 0))
 		state.Prestige = math.clamp(math.floor(tonumber(saved.Prestige) or 0), 0, Config.Prestige.Max)
+		if typeof(saved.Rift) == "table" then
+			state.Rift = { Best = math.max(0, math.floor(tonumber(saved.Rift.Best) or 0)), Day = math.floor(tonumber(saved.Rift.Day) or 0), Used = math.max(0, math.floor(tonumber(saved.Rift.Used) or 0)) }
+		end
 	end
 	states[player] = state
 	syncSkillAttributes(player, state)
 	applyPetStats(player, state)
 	player:SetAttribute("TowerBest", state.Tower)
 	player:SetAttribute("Prestige", state.Prestige)
+	player:SetAttribute("RiftBest", state.Rift.Best)
 	Meta.RefreshPetModel(player)
 	Meta.Push(player)
 end
@@ -191,7 +195,7 @@ end
 function Meta.Serialize(player)
 	local state = states[player]
 	if not state then return nil end
-	return { Skills = state.Skills, Owned = state.Owned, Equipped = state.Equipped or "", Tower = state.Tower, Prestige = state.Prestige }
+	return { Skills = state.Skills, Owned = state.Owned, Equipped = state.Equipped or "", Tower = state.Tower, Prestige = state.Prestige, Rift = state.Rift }
 end
 
 function Meta.Forget(player)
@@ -208,6 +212,12 @@ end
 ------------------------------------------------------------
 -- 무한의 탑 기록
 ------------------------------------------------------------
+-- 심연 도전 기록 (RiftService 가 읽고 쓴다): { Best, Day, Used }
+function Meta.GetRift(player)
+	local state = states[player]
+	return state and state.Rift or nil
+end
+
 function Meta.RecordTower(player, floor)
 	local state = states[player]
 	if not state or floor <= state.Tower then return end

@@ -920,6 +920,11 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 2, 0), string.format("+%d G", math.floor(data.Stats.Gold * run.GoldMult + 0.5)), Color3.fromRGB(255, 220, 90))
 	part:Destroy()
 	Combo.Kill(player)
+	if run.Score then -- 심연 도전 점수: 처치 + 현재 콤보 (최대 60) + 보스
+		local R = Config.Rift
+		run.Score[player] = (run.Score[player] or 0) + R.KillScore + math.min(player:GetAttribute("Combo") or 0, 60) + (data.IsBoss and R.BossScore or 0)
+		player:SetAttribute("RiftScore", math.floor(run.Score[player]))
+	end
 	giveGold(run, data.Stats.Gold)
 	giveXp(run, data.IsBoss and Config.Xp.DungeonBoss or Config.Xp.DungeonPerMonsterLevel * data.Level)
 	Quest.Add(player, "Kills", 1)
@@ -939,6 +944,23 @@ end
 ------------------------------------------------------------
 -- 매 프레임: 몬스터 이동/공격, 투사체 이동/명중
 ------------------------------------------------------------
+local nearMissAt = {}
+function Dungeon.AwardNearMiss(run, player, root)
+	local now = os.clock()
+	if now - (nearMissAt[player] or 0) < 0.7 then return end
+	local streak = (now - (nearMissAt[player] or 0) < 6) and ((player:GetAttribute("NearMissStreak") or 0) + 1) or 1
+	nearMissAt[player] = now
+	player:SetAttribute("NearMissStreak", streak)
+	player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 10 + math.min(streak, 4) * 3))
+	player:SetAttribute("NearMissUntil", now + 4)
+	if run.Score then
+		run.Score[player] = (run.Score[player] or 0) + Config.Rift.NearMissScore * math.min(streak, 5)
+		player:SetAttribute("RiftScore", math.floor(run.Score[player]))
+	end
+	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), streak > 1 and string.format("NEAR MISS! x%d", streak) or "NEAR MISS!", Color3.fromRGB(120, 255, 255))
+	Remotes.Banner:FireClient(player, "NearMiss", { Streak = streak })
+end
+
 local function stepRun(run, dt)
 	local now = os.clock()
 
@@ -1019,10 +1041,22 @@ local function stepRun(run, dt)
 		for _, member in ipairs(run.Members) do
 			if hit then break end
 			local root, humanoid = getAliveParts(member)
-			if root and (root.Position - projectile.Part.Position).Magnitude < projectile.Radius + 2 then
-				humanoid:TakeDamage(projectile.Damage)
-				hit = true
-				break
+			if root then
+				local gap = (root.Position - projectile.Part.Position).Magnitude
+				if gap < projectile.Radius + 2 then
+					humanoid:TakeDamage(projectile.Damage)
+					hit = true
+					break
+				elseif gap < projectile.Radius + 8 then -- 아슬아슬하게 스치며 대시: NEAR MISS (필드와 같은 보상 + 심연 도전 점수)
+					local v = root.AssemblyLinearVelocity
+					if Vector3.new(v.X, 0, v.Z).Magnitude > 50 then
+						projectile.NearMissed = projectile.NearMissed or {}
+						if not projectile.NearMissed[member] then
+							projectile.NearMissed[member] = true
+							Dungeon.AwardNearMiss(run, member, root)
+						end
+					end
+				end
 			end
 		end
 
@@ -1313,6 +1347,10 @@ local function broadcast(run)
 		BossRatio = run.Boss and math.max(run.Boss.Health, 0) / run.Boss.MaxHealth or nil,
 	}
 	for _, member in ipairs(run.Members) do
+		if run.RiftMode and run.Phase ~= "Ended" then
+			member:SetAttribute("RiftScore", math.floor(run.Score[member] or 0))
+			member:SetAttribute("RiftLeft", run.RiftEndAt and math.max(0, math.ceil(run.RiftEndAt - os.clock())) or Config.Rift.Duration)
+		end
 		Remotes.Dungeon:FireClient(member, "State", state)
 	end
 end
@@ -1322,6 +1360,8 @@ end
 ------------------------------------------------------------
 local function returnToLobby(player)
 	playerRun[player] = nil
+	player:SetAttribute("RiftLeft", 0)
+	player:SetAttribute("RiftScore", 0)
 	player:SetAttribute("Zone", "Lobby")
 	resetStats(player)
 	pivotTo(player, lobbySpawn)
@@ -1387,6 +1427,37 @@ local function finish(run, victory)
 	end)
 end
 
+-- 심연 도전 종료: 점수로 등급을 매기고 (RiftService 가 보상 / 기록) 결과 카드를 보낸다. 시간이 끝나거나 전멸하면 호출된다.
+Dungeon.OnRiftFinished = nil -- RiftService 가 채운다: function(player, score) -> { Gold, Tickets, TimeSkip, Tier, Best, NewBest }
+local function riftFinish(run)
+	if run.Phase == "Ended" then return end
+	run.Phase = "Ended"
+	run.PhaseEnd = nil
+	for part in pairs(run.Monsters) do
+		part:Destroy()
+	end
+	run.Monsters = {}
+	run.MonsterCount = 0
+	for _, projectile in ipairs(run.Projectiles) do
+		projectile.Part:Destroy()
+	end
+	run.Projectiles = {}
+	for _, member in ipairs(run.Members) do
+		local score = math.floor(run.Score[member] or 0)
+		local info = Dungeon.OnRiftFinished and Dungeon.OnRiftFinished(member, score) or {}
+		member:SetAttribute("RiftLeft", 0)
+		Remotes.Dungeon:FireClient(member, "Result", {
+			Victory = true, Gold = info.Gold or 0, Tickets = info.Tickets or 0, Loot = {}, Wave = run.Wave, TotalWaves = 0,
+			TypeName = run.Type.Name, DifficultyName = "", ReturnDelay = D.ReturnDelay,
+			Rift = { Score = score, Tier = info.Tier, TierIcon = info.TierIcon, Best = info.Best, NewBest = info.NewBest, TimeSkip = info.TimeSkip or 0 },
+		})
+	end
+	broadcast(run)
+	task.delay(D.ReturnDelay, function()
+		destroyRun(run)
+	end)
+end
+
 function Dungeon.Leave(player)
 	local run = playerRun[player]
 	if not run then return end
@@ -1413,7 +1484,11 @@ local function waitFor(run, predicate)
 			return true
 		end
 		if (run.Phase == "Wave" or run.Phase == "Boss") and allDown(run) then
-			finish(run, false)
+			if run.RiftMode then
+				riftFinish(run) -- 쓰러져도 그때까지 쌓은 점수로 정산
+			else
+				finish(run, false)
+			end
 			return false
 		end
 		task.wait(0.25)
@@ -1767,6 +1842,35 @@ local function colosseumLoop(run)
 	finish(run, true)
 end
 
+-- 심연 도전: 시간제한 안에 웨이브를 이어서 상대한다 (특성 선택 없음). 점수는 처치 / 콤보 / NEAR MISS / 웨이브 보너스.
+local function riftLoop(run)
+	run.PhaseEnd = os.clock() + D.StartCountdown
+	notifyAll(run, string.format("🌀 심연 도전! %d초 동안 최대한 많이 처치하고 아슬아슬하게 피해서 점수를 쌓으세요!", Config.Rift.Duration))
+	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
+	run.PhaseEnd = nil
+	run.RiftEndAt = os.clock() + Config.Rift.Duration
+	local wave = 0
+	while not run.Destroyed and run.Phase ~= "Ended" do
+		wave += 1
+		run.Wave = wave
+		run.Phase = "Wave"
+		run.Spawning = true
+		task.spawn(function()
+			spawnWave(run, wave)
+			run.Spawning = false
+		end)
+		local ok = waitFor(run, function() return (run.MonsterCount <= 0 and not run.Spawning) or os.clock() >= run.RiftEndAt end)
+		if not ok then return end
+		if os.clock() >= run.RiftEndAt then break end
+		for _, member in ipairs(run.Members) do
+			run.Score[member] = (run.Score[member] or 0) + Config.Rift.WaveBonus * wave
+			member:SetAttribute("RiftScore", math.floor(run.Score[member]))
+		end
+		notifyAll(run, string.format("✅ 웨이브 %d 클리어! 보너스 +%d", wave, Config.Rift.WaveBonus * wave))
+	end
+	riftFinish(run)
+end
+
 local function runLoop(run)
 	run.Phase = "Starting"
 	if run.LayoutName then
@@ -1775,6 +1879,10 @@ local function runLoop(run)
 	notifyAll(run, string.format("👹 이번 보스: %s — %s", run.BossName, run.BossVariant.Desc))
 	if run.Mutator then
 		notifyAll(run, string.format("%s 이번 던전 변이: %s — %s", run.Mutator.Icon, run.Mutator.Name, run.Mutator.Desc))
+	end
+	if run.RiftMode then
+		riftLoop(run)
+		return
 	end
 	if run.Type.Endless then
 		run.PhaseEnd = os.clock() + D.StartCountdown
@@ -1917,7 +2025,7 @@ end
 ------------------------------------------------------------
 -- 입장 (던전 게이트에서 호출). 파티가 있으면 파티장만 가능, 없으면 혼자 입장.
 ------------------------------------------------------------
-function Dungeon.Start(player, typeKey, diffKey)
+function Dungeon.Start(player, typeKey, diffKey, riftMode)
 	if player:GetAttribute("Zone") ~= "Lobby" then return end
 	if player:GetAttribute("TutorialDungeonLocked") then
 		notify(player, "🔒 아직 던전에 들어갈 수 없어요. 튜토리얼 미션을 먼저 진행해주세요!")
@@ -1930,7 +2038,10 @@ function Dungeon.Start(player, typeKey, diffKey)
 	local difficulty = D.Difficulties[diffKey]
 	if not dungeonType or not dungeonType.Waves or not difficulty or not difficulty.HealthMult then return end -- "Order" 같은 잘못된 키 방어
 
-	local party = Party.GetParty(player)
+	local party = nil
+	if not riftMode then
+		party = Party.GetParty(player) -- 심연 도전은 혼자 한다
+	end
 	if party and party.Leader ~= player then
 		notify(player, "파티장만 던전에 입장시킬 수 있어요.")
 		return
@@ -1945,7 +2056,7 @@ function Dungeon.Start(player, typeKey, diffKey)
 	if not table.find(members, player) then return end
 
 	-- 던전 입장 제한: 열쇠 (파티원 모두 필요). 시간이 지나면 자동으로 차오른다.
-	local keyCost = difficulty.KeyCost or 1
+	local keyCost = riftMode and 0 or (difficulty.KeyCost or 1) -- 심연 도전은 열쇠 대신 하루 도전 횟수를 쓴다 (RiftService 가 관리)
 	for _, member in ipairs(members) do
 		if not Keys.Has(member, keyCost) then
 			notify(player, string.format("%s 님의 던전 열쇠가 부족해요. (필요 %d개)", member.DisplayName, keyCost))
@@ -1989,6 +2100,8 @@ function Dungeon.Start(player, typeKey, diffKey)
 		TicketsEarned = {}, -- [player] = 이번 판에서 얻은 장비 뽑기 티켓
 		BossDead = false,
 		Destroyed = false,
+		RiftMode = riftMode == true,
+		Score = riftMode == true and {} or nil,
 		Type = dungeonType,
 		TypeKey = typeKey,
 		DiffKey = diffKey,
@@ -2141,7 +2254,7 @@ end
 
 Remotes.Dungeon.OnServerEvent:Connect(function(player, action, typeKey, diffKey)
 	if action == "Start" then
-		if typeof(typeKey) == "string" and typeof(diffKey) == "string" then
+		if typeof(typeKey) == "string" and typeof(diffKey) == "string" and typeKey ~= "Rift" then -- 심연 도전은 RiftService 만 시작할 수 있다
 			Dungeon.Start(player, typeKey, diffKey)
 		end
 	elseif action == "Ready" then

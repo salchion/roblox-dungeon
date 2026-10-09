@@ -13,7 +13,7 @@ local Growth = require(script.Parent:WaitForChild("GrowthService"))
 
 local Quest = {}
 
-local COUNTERS = { "DummyHits", "FieldKills", "EliteKills", "Kills", "BossKills", "DungeonClears", "Enhances", "Rolls", "GoblinKills", "SkillUses", "FieldDeaths", "Trains", "DungeonWaves" }
+local COUNTERS = { "DummyHits", "FieldKills", "EliteKills", "Kills", "BossKills", "DungeonClears", "Enhances", "Rolls", "GoblinKills", "SkillUses", "FieldDeaths", "Trains", "DungeonWaves", "RiftRuns" }
 
 -- 카운터가 아니라 플레이어의 현재 값을 읽는 Stat
 local function readLive(player, stat)
@@ -23,6 +23,8 @@ local function readLive(player, stat)
 		return player:GetAttribute("Prestige") or 0
 	elseif stat == "TowerBest" then
 		return player:GetAttribute("TowerBest") or 0
+	elseif stat == "RiftBest" then
+		return player:GetAttribute("RiftBest") or 0
 	elseif stat == "Level" then
 		return player:GetAttribute("Level") or 1
 	elseif stat == "Power" then

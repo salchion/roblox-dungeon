@@ -272,6 +272,20 @@
       "name": "AudioBank",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "Server/RiftService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "RiftService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "RiftClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "RiftClient",
+      "class": "LocalScript",
+      "overwrite": true
     }
   ]
 }
