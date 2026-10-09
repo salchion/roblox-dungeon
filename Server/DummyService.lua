@@ -208,9 +208,8 @@ function Dummy.Build(start)
 	local ring = newPart({
 		Name = "TrainingRing", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.3, 26, 26),
 		CFrame = CFrame.new(start + Vector3.new(0, 0.35, 0)) * CFrame.Angles(0, 0, math.rad(90)),
-		Color = Color3.fromRGB(255, 215, 90), Material = Enum.Material.Neon, CanCollide = false, Transparency = 0.75,
+		Color = Color3.fromRGB(255, 215, 90), Material = Enum.Material.Neon, CanCollide = false, CanQuery = false, Transparency = 1, -- (눈에 안 보이는 받침: 안내판만 붙인다)
 	}, folder)
-	addGlow(ring, Color3.fromRGB(255, 215, 90), 30)
 
 	-- 훈련장 안내판
 	local signGui = Instance.new("BillboardGui")
@@ -355,9 +354,8 @@ function Dummy.BuildRest(position)
 	local ring = newPart({
 		Name = "RestRing", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.3, 30, 30),
 		CFrame = CFrame.new(position + Vector3.new(0, 0.35, 0)) * CFrame.Angles(0, 0, math.rad(90)),
-		Color = Color3.fromRGB(120, 210, 230), Material = Enum.Material.Neon, CanCollide = false, Transparency = 0.8,
+		Color = Color3.fromRGB(120, 210, 230), Material = Enum.Material.Neon, CanCollide = false, CanQuery = false, Transparency = 1,
 	}, folder)
-	addGlow(ring, Color3.fromRGB(120, 210, 230), 28)
 
 	-- 모닥불: 돌 + 장작 + 불
 	for i = 1, 8 do
