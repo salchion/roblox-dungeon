@@ -96,7 +96,7 @@ local CUSTOM_ONLY = {
 	Event_Stampede = { Volume = 1.0, CustomLength = 3.0 }, -- 몬스터 대이동 (발굽 소리 / 뿔피리)
 	Event_Elite   = { Volume = 1.0, CustomLength = 2.5 }, -- 엘리트 부대 출현 (나팔)
 	Event_Goblin  = { Volume = 0.9, CustomLength = 2.0 }, -- 황금 고블린 출현 (반짝 / 동전)
-	Event_Boss    = { Volume = 1.0, CustomLength = 2.2, CustomPitch = 0.6 }, -- 침공 사령관 출현 (공개 이벤트)
+	Event_Boss    = { Volume = 1.0, CustomLength = 2.2, CustomPitch = 0.6 }, -- 거신 출현 (공개 이벤트)
 	Boss_Spawn    = { Volume = 1.2, CustomLength = 2.5, CustomPitch = 0.5 }, -- 던전 보스 등장 (포효)
 	Boss_Enrage   = { Volume = 1.2, CustomLength = 2.5 }, -- 보스 격노
 	-- 진행
@@ -133,7 +133,7 @@ SoundBank.Descriptions = {
 	Aug_Get = "어그먼트 획득", Aug_Synergy = "어그먼트 시너지 발동", Aug_Missile = "크리 미사일 발사", Aug_MissileHit = "미사일 명중", Aug_Nova = "처치 폭발",
 	Aug_Blade = "회전 칼날 베기", Aug_Storm = "낙뢰", Aug_MeteorFall = "유성 낙하", Aug_MeteorHit = "유성 착탄", Aug_Flame = "화염 지대", Aug_Execute = "처형", Aug_Pulse = "수호 파동",
 	Buff_Get = "일반 강화 획득", Penalty_Get = "패널티 발동", Player_Hurt = "내가 맞음", Low_Health = "체력 위험", Warn_Overrun = "몬스터 한도 경고", Shield_Block = "방패에 막힘",
-	Event_Siren = "공습 사이렌", Event_Stampede = "몬스터 대이동", Event_Elite = "엘리트 부대 출현", Event_Goblin = "황금 고블린 출현", Event_Boss = "침공 사령관 출현",
+	Event_Siren = "공습 사이렌", Event_Stampede = "몬스터 대이동", Event_Elite = "엘리트 부대 출현", Event_Goblin = "황금 고블린 출현", Event_Boss = "거신 출현",
 	Boss_Spawn = "던전 보스 등장", Boss_Enrage = "보스 격노", Dungeon_Start = "던전 시작", Dungeon_Clear = "던전 클리어", Dungeon_Fail = "던전 실패", Quest_Claim = "퀘스트 보상 수령", Rare_Drop = "희귀 장비 획득",
 	Gacha_Pop1 = "뽑기 결과: 일반", Gacha_Pop2 = "뽑기 결과: 희귀", Gacha_Pop3 = "뽑기 결과: 영웅", Gacha_Pop4 = "뽑기 결과: 전설", Gacha_Pop5 = "뽑기 결과: 신화",
 }

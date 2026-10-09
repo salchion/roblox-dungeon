@@ -49,7 +49,7 @@ Bank = {
 | Event_Stampede | 몬스터 대이동 (발굽 / 뿔피리) |
 | Event_Elite | 엘리트 부대 출현 (나팔) |
 | Event_Goblin | 황금 고블린 출현 (반짝 + 동전) |
-| Event_Boss | 침공 사령관 출현 |
+| Event_Boss | 거신 출현 |
 | Boss_Spawn / Boss_Enrage | 던전 보스 등장(포효) / 격노 |
 | Dungeon_Start / Dungeon_Clear / Dungeon_Fail | 던전 시작 / 클리어(팡파르) / 실패 |
 | Quest_Claim | 퀘스트 · 업적 보상 수령 (동전) |

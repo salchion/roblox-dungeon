@@ -56,6 +56,58 @@ function Effects.MakeProjectile(origin, direction, size, color, style)
 end
 
 -- 거대한 군주 외형(뿔 / 날개 / 꼬리 / 눈). 던전 보스와 필드 구역 보스가 같이 쓴다
+-- 거신(필드 월드 보스): 이끼 낀 거대한 돌 거인. 몸통 구체가 판정이고, 머리 / 어깨 / 팔 / 가슴의 용암 핵은 장식(맞지 않는다).
+function Effects.DecorateGolem(part, size, glow)
+	local stone = Color3.fromRGB(108, 100, 94)
+	part.Material = Enum.Material.Slate
+	part.Color = stone
+	local function piece(shape, sx, sy, sz, x, y, z, color, material, rx, ry, rz, transparency)
+		local p = Instance.new("Part")
+		p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.Massless = false, false, false, false, true
+		p.Shape = shape
+		p.Size = Vector3.new(math.max(0.1, sx), math.max(0.1, sy), math.max(0.1, sz))
+		p.Color = color
+		p.Material = material
+		p.Transparency = transparency or 0
+		p.CFrame = part.CFrame * CFrame.new(x, y, z) * CFrame.Angles(math.rad(rx or 0), math.rad(ry or 0), math.rad(rz or 0))
+		local weld = Instance.new("WeldConstraint")
+		weld.Part0 = part
+		weld.Part1 = p
+		weld.Parent = p
+		p.Parent = part
+		return p
+	end
+	local S = size
+	local Ball, Block = Enum.PartType.Ball, Enum.PartType.Block
+	local Neon, Slate, Grass = Enum.Material.Neon, Enum.Material.Slate, Enum.Material.Grass
+	local darkStone = stone:Lerp(Color3.new(0, 0, 0), 0.25)
+	local moss = Color3.fromRGB(80, 120, 60)
+	-- 머리: 네모난 돌덩이 + 용암 눈 + 이끼 + 돌 왕관
+	piece(Block, S * 0.5, S * 0.4, S * 0.46, 0, S * 0.66, -S * 0.1, darkStone, Slate)
+	piece(Block, S * 0.52, S * 0.08, S * 0.48, 0, S * 0.88, -S * 0.1, moss, Grass)
+	for _, side in ipairs({ -1, 1 }) do
+		piece(Block, S * 0.11, S * 0.07, S * 0.05, side * S * 0.12, S * 0.68, -S * 0.34, glow, Neon)
+		piece(Ball, S * 0.56, S * 0.56, S * 0.56, side * S * 0.66, S * 0.26, 0, darkStone, Slate) -- 어깨 바위
+		piece(Block, S * 0.1, S * 0.3, S * 0.1, side * S * 0.66, S * 0.62, 0, stone:Lerp(Color3.new(1, 1, 1), 0.2), Slate, 0, 0, side * 12) -- 어깨 뾰족 돌
+		piece(Block, S * 0.3, S * 0.78, S * 0.3, side * S * 0.74, -S * 0.2, 0, stone, Slate, 0, 0, side * -6) -- 팔
+		piece(Ball, S * 0.46, S * 0.46, S * 0.46, side * S * 0.78, -S * 0.66, 0, darkStone, Slate) -- 주먹
+		piece(Block, S * 0.08, S * 0.5, S * 0.06, side * S * 0.74, -S * 0.2, -S * 0.15, glow, Neon, 0, 0, 0, 0.35) -- 팔의 용암 균열
+	end
+	-- 가슴의 용암 핵 + 갈라진 균열
+	piece(Ball, S * 0.3, S * 0.3, S * 0.3, 0, S * 0.12, -S * 0.46, glow, Neon)
+	piece(Block, S * 0.06, S * 0.7, S * 0.05, S * 0.18, 0, -S * 0.46, glow, Neon, 0, 0, 22, 0.3)
+	piece(Block, S * 0.06, S * 0.6, S * 0.05, -S * 0.2, -S * 0.05, -S * 0.46, glow, Neon, 0, 0, -28, 0.3)
+	-- 등과 몸의 이끼 바위
+	for _, spot in ipairs({ { 0.2, 0.5, 0.3 }, { -0.3, 0.45, 0.2 }, { 0.05, 0.1, 0.5 }, { -0.1, -0.3, 0.42 } }) do
+		piece(Block, S * 0.2, S * 0.16, S * 0.2, S * spot[1], S * spot[2], S * spot[3], moss, Grass, 15, 25, 10)
+	end
+	local light = Instance.new("PointLight")
+	light.Color = glow
+	light.Range = S * 1.6
+	light.Brightness = 2
+	light.Parent = part
+end
+
 function Effects.DecorateBoss(part, size, glow)
 	local dark = part.Color:Lerp(Color3.new(0, 0, 0), 0.55)
 	part.Material = Enum.Material.Slate

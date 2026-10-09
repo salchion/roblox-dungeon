@@ -1325,12 +1325,13 @@ local function rewardEvent(data, part)
 			Quest.Add(player, "BossKills", 1)
 			Quest.Add(player, "Kills", 1)
 			Loot.DropFor(player, position, "Event", data.Zone)
+			Loot.DropFor(player, position, "Event", data.Zone) -- 월드 보스: 장비를 두 번 떨어뜨린다
 			Inventory.AddShards(player, data.Zone, Config.Sets.Imprint.DropEvent)
-			notify(player, string.format("⚔ 공개 이벤트 승리! 전리품이 떨어졌어요 (+%d G, 🎫 +1)", data.Stats.Gold))
+			notify(player, string.format("🗿 거신 격파 보상! 장비 + 세트 조각 + 🎫 +1 + %d G", data.Stats.Gold))
 		end
 	end
 	for _, other in ipairs(Players:GetPlayers()) do
-		notify(other, string.format("🏆 침공 사령관 격파! (참여 %d명)", rewarded))
+		notify(other, string.format("🏆 거신 격파! 모두의 힘으로 쓰러뜨렸어요 (보상 받은 사람 %d명)", rewarded))
 	end
 end
 
@@ -2049,7 +2050,7 @@ end
 local function stepMonsters(dt)
 	local now = os.clock()
 	for part, data in pairs(monsters) do
-		if data.Beam and data.Beam.Parent then data.Beam.CFrame = CFrame.new(part.Position + Vector3.new(0, 210, 0)) end -- 침공 사령관 빛기둥은 항상 몸 위에
+		if data.Beam and data.Beam.Parent then data.Beam.CFrame = CFrame.new(part.Position + Vector3.new(0, 210, 0)) end -- 거신 빛기둥은 항상 몸 위에
 		if data.WeakPart and data.WeakPart.Parent then -- 약점 구슬: 보스 몸 주위를 돌며 위아래로 흔들린다
 			local radius = part.Size.X / 2 + 7 -- 보스 몸(날개 / 뿔 장식 포함) 밖으로 충분히 떨어져 돈다
 			local angle = now * 1.5 + data.Phase
@@ -2479,13 +2480,13 @@ Players.PlayerRemoving:Connect(function(player)
 end)
 
 ------------------------------------------------------------
--- 공개 이벤트: 침공 사령관
+-- 공개 이벤트: 거신
 ------------------------------------------------------------
 local function spawnEvent(zone)
 	local level = F.GetZoneLevel(zone) + 3
 	local base = Config.Monster.GetStats(level)
 	local stats = {
-		Size = 15, MaxHealth = base.MaxHealth * 80, Speed = 7, ShotDamage = math.floor(base.ShotDamage * 1.3),
+		Size = 20, MaxHealth = base.MaxHealth * 80, Speed = 7, ShotDamage = math.floor(base.ShotDamage * 1.3),
 		ShotInterval = 1.4, ShotSpeed = 55, Gold = base.Gold * 30,
 	}
 
@@ -2500,16 +2501,17 @@ local function spawnEvent(zone)
 	part.Anchored = true
 	part.CanCollide = false
 	part.Position = position
-	part.Color = Color3.fromRGB(190, 60, 255)
-	part.Material = Enum.Material.Neon
+	part.Color = Color3.fromRGB(108, 100, 94)
+	part.Material = Enum.Material.Slate
 	part.Parent = monstersFolder
+	Effects.DecorateGolem(part, stats.Size, Color3.fromRGB(255, 140, 50)) -- 이끼 낀 용암 돌 거인
 	CollectionService:AddTag(part, "Monster")
 	CollectionService:AddTag(part, "RadarBoss")
 
 	-- 멀리서도 보이는 하늘로 솟는 빛기둥 (보스에 붙어서 같이 움직임)
 	local beam = Instance.new("Part")
 	beam.Size = Vector3.new(3, 420, 3)
-	beam.Color = Color3.fromRGB(200, 90, 255)
+	beam.Color = Color3.fromRGB(255, 160, 70)
 	beam.Material = Enum.Material.Neon
 	beam.Transparency = 0.45
 	beam.CanCollide = false
@@ -2529,7 +2531,7 @@ local function spawnEvent(zone)
 		Stats = stats,
 		Health = stats.MaxHealth,
 		MaxHealth = stats.MaxHealth,
-		HealthFill = createHealthBar(part, string.format("⚔ %s (구역 %d)", Config.Events.Name, zone), 320, Color3.fromRGB(230, 150, 255)),
+		HealthFill = createHealthBar(part, string.format("🗿 %s · 월드 보스 (구역 %d)", Config.Events.Name, zone), 360, Color3.fromRGB(255, 190, 110)),
 		Home = position,
 		NextAttack = os.clock() + 3,
 		NextShot = os.clock() + 3,
@@ -2561,7 +2563,7 @@ local function runEvents()
 			activeEvent = { Part = part, Data = data }
 			for _, player in ipairs(Players:GetPlayers()) do
 				playSfx(player, "Event_Boss")
-				notify(player, string.format("⚔ [공개 이벤트] 구역 %d · %s 에 %s 출현! 하늘의 보라색 빛기둥을 따라가세요!", zone, F.ZoneNames[zone], Config.Events.Name))
+				notify(player, string.format("🗿 [월드 보스] 구역 %d · %s 에 %s 출현! 주황색 빛기둥을 따라가 모두 함께 쓰러뜨리면 장비 + 세트 조각 + 티켓 보상!", zone, F.ZoneNames[zone], Config.Events.Name))
 			end
 
 			local expire = os.clock() + Config.Events.Lifetime
@@ -2573,7 +2575,7 @@ local function runEvents()
 				part:Destroy()
 				activeEvent = nil
 				for _, player in ipairs(Players:GetPlayers()) do
-					notify(player, "침공 사령관이 사라졌어요...")
+					notify(player, "거신이 땅속으로 사라졌어요... (다음 출현을 기다려요)")
 				end
 			end
 		end
@@ -2797,7 +2799,7 @@ local function updateBossFight()
 						fighting = true
 						bossZone = data.Zone
 						bossKind = data.Kind
-						if data.Kind == "Boss" then break end -- 지역 군주가 가까이 있으면 군주를 기준으로 (침공 사령관보다 우선)
+						if data.Kind == "Boss" then break end -- 지역 군주가 가까이 있으면 군주를 기준으로 (거신보다 우선)
 					end
 				end
 			end
@@ -2842,7 +2844,7 @@ local function updateBossFight()
 				Remotes.Tutorial:FireClient(player, "Prompt", { Key = "💪", Title = "일회성 힘이 깃들었어요!", Text = "군주에게 주는 피해가 크게 늘었고 궁극기가 가득 찼어요. V 키 데드아이와 노란 구슬 약점으로 이번엔 쓰러뜨려요!", Duration = 9 })
 			elseif fighting and bossKind == "Event" and not player:GetAttribute("TutorialActive") and not weakTipShown[player .. "_event"] then
 				weakTipShown[player] = weakTipShown[player]
-				Remotes.Tutorial:FireClient(player, "Prompt", { Key = "⚔", Title = "침공 사령관!", Text = "같이 싸운 사람 모두에게 전리품이 나와요. 멀리서 탄을 피하며 계속 쏘세요!", Duration = 7 })
+				Remotes.Tutorial:FireClient(player, "Prompt", { Key = "⚔", Title = "거신!", Text = "같이 싸운 사람 모두에게 전리품이 나와요. 멀리서 탄을 피하며 계속 쏘세요!", Duration = 7 })
 			elseif fighting and bossKind == "Boss" and bossZone and not player:GetAttribute("TutorialActive") then
 				-- 지역 군주를 만나면: 전투력이 모자라면 무기 강화를 권하고(골드 사용처), 처음이면 약점 구슬 사용법을 알려준다
 				local recommended = F.BossPower[bossZone] or 0
