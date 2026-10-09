@@ -286,21 +286,8 @@ function Dummy.Shoot(player, origin, direction)
 		return result.Position
 	end
 
-	-- 직접 쏠 때 골드는 "무기 단계(공격력 배율)"에 비례하고, 한 발 간격 / 탄 수로 나눠서 연사 / 산탄 무기가 따로 더 벌지 않는다.
-	-- 분당 수입 = ManualFraction x IncomeBase x 공격력 배율 (경제 기준표: ECONOMY.md). 소수점은 모아 두었다가 정수가 되면 지급한다.
-	local E = Config.Economy
-	local perMinute = Config.Dummy.ManualFraction * E.IncomeBase * Config.GetDamageMultiplier(player:GetAttribute("WeaponLevel") or 0) * data.Multiplier
-	local perShot = perMinute / 60 * Config.Player.BaseCooldown * weaponType.Cooldown / math.max(1, weaponType.Pellets)
-	local owed = (goldRemainder[player] or 0) + perShot
-	local gold = math.floor(owed)
-	goldRemainder[player] = owed - gold
-	if gold < 1 then
-		Quest.Add(player, "DummyHits", 1)
-		return result.Position
-	end
-	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
+	-- 직접 쏴서는 골드를 받지 않는다 (골드는 방치 수입 / 필드 / 던전에서): 연습장은 연습과 방치용이다
 	Quest.Add(player, "DummyHits", 1)
-	Effects.FloatText(result.Position, string.format("+%d G", gold), Color3.fromRGB(255, 220, 90))
 	return result.Position
 end
 
