@@ -41,7 +41,7 @@ local SPECS = {
 	Skill_Ult  = { Base = "Shot", CustomLength = 3.0, Pitch = 0.4, Volume = 1.6, Length = 1.8, Fx = { { "reverb", { DecayTime = 3.0, WetLevel = -2 } }, { "distortion", { Level = 0.4 } } },
 		Layers = { { Pitch = 1.6, Volume = 0.6, Delay = 0.08 } } },
 	UltShot = { Base = "Shot", Pitch = 1.4, Volume = 0.8, Length = 0.3, Fx = { { "chorus", { Depth = 0.5, Mix = 0.5 } } } },
-	Boom    = { Base = "Enh_Hammer", Pitch = 0.45, Volume = 1.5, Length = 1.1, Fx = { { "distortion", { Level = 0.55 } }, { "reverb", { DecayTime = 1.8, WetLevel = -4 } } } },
+	Boom    = { CustomLength = 1.6, Base = "Enh_Hammer", Pitch = 0.45, Volume = 1.5, Length = 1.1, Fx = { { "distortion", { Level = 0.55 } }, { "reverb", { DecayTime = 1.8, WetLevel = -4 } } } },
 	LevelUp = { Base = "Enh_Success", Pitch = 1.0, Volume = 1.0, Length = 1.4, Fx = { { "reverb", { DecayTime = 1.8, WetLevel = -5 } } },
 		Layers = { { Pitch = 1.5, Volume = 0.7, Delay = 0.12 }, { Pitch = 2.0, Volume = 0.5, Delay = 0.26 } } },
 }
@@ -72,20 +72,20 @@ end
 --   (Volume = 음량 배율 / CustomLength = 이 시간(초)이 지나면 끊는다. 소리가 너무 크거나 길면 여기 숫자를 줄이면 된다.)
 local CUSTOM_ONLY = {
 	-- 어그먼트
-	Aug_Get       = { Volume = 1.0, CustomLength = 1.6 }, -- 어그먼트를 얻는 순간 (몸에서 빛이 퍼진다)
-	Aug_Synergy   = { Volume = 1.1, CustomLength = 2.2 }, -- 시너지 발동
-	Aug_Missile   = { Volume = 0.7, CustomLength = 1.0 }, -- 치명타 미사일 발사
-	Aug_MissileHit = { Volume = 0.6, CustomLength = 0.8 }, -- 미사일 명중
-	Aug_Nova      = { Volume = 0.9, CustomLength = 1.4 }, -- 처치 폭발
+	Aug_Get       = { Volume = 1.0, CustomLength = 1.6, CustomPitch = 1.0 }, -- 어그먼트를 얻는 순간 (몸에서 빛이 퍼진다)
+	Aug_Synergy   = { Volume = 1.1, CustomLength = 2.2, CustomPitch = 1.0 }, -- 시너지 발동
+	Aug_Missile   = { Volume = 0.7, CustomLength = 1.0, CustomPitch = 1.0 }, -- 치명타 미사일 발사
+	Aug_MissileHit = { Volume = 0.35, CustomLength = 0.5, CustomPitch = 1.8 }, -- 미사일 명중
+	Aug_Nova      = { Volume = 0.7, CustomLength = 1.2, CustomPitch = 1.2 }, -- 처치 폭발
 	Aug_Blade     = { Volume = 0.5, CustomLength = 0.6 }, -- 회전 칼날이 벨 때 (자주 난다: 짧게)
 	Aug_Storm     = { Volume = 1.0, CustomLength = 1.8 }, -- 낙뢰 (천둥)
-	Aug_MeteorFall = { Volume = 0.9, CustomLength = 1.4 }, -- 유성이 떨어지는 소리
-	Aug_MeteorHit = { Volume = 1.3, CustomLength = 2.2 }, -- 유성 착탄 (큰 폭발)
+	Aug_MeteorFall = { Volume = 0.8, CustomLength = 1.4, CustomPitch = 0.5 }, -- 유성이 떨어지는 소리
+	Aug_MeteorHit = { Volume = 1.3, CustomLength = 2.0, CustomPitch = 0.7 }, -- 유성 착탄 (큰 폭발)
 	Aug_Flame     = { Volume = 0.6, CustomLength = 1.2 }, -- 불길이 생길 때
-	Aug_Execute   = { Volume = 0.9, CustomLength = 1.2 }, -- 처형
-	Aug_Pulse     = { Volume = 0.9, CustomLength = 1.4 }, -- 수호 파동
-	Buff_Get      = { Volume = 0.9, CustomLength = 1.4 }, -- 일반 랜덤 강화를 얻을 때
-	Penalty_Get   = { Volume = 0.9, CustomLength = 1.4 }, -- 랜덤 패널티가 걸릴 때 (불길한 소리)
+	Aug_Execute   = { Volume = 0.5, CustomLength = 0.6, CustomPitch = 1.5 }, -- 처형
+	Aug_Pulse     = { Volume = 0.6, CustomLength = 1.0, CustomPitch = 1.5 }, -- 수호 파동
+	Buff_Get      = { Volume = 0.7, CustomLength = 1.0, CustomPitch = 1.25 }, -- 일반 랜덤 강화를 얻을 때
+	Penalty_Get   = { Volume = 0.8, CustomLength = 1.4, CustomPitch = 0.55 }, -- 랜덤 패널티가 걸릴 때 (불길한 소리)
 	-- 위기 / 경고
 	Player_Hurt   = { Volume = 0.8, CustomLength = 0.6 }, -- 내가 맞았을 때
 	Low_Health    = { Volume = 0.8, CustomLength = 1.0 }, -- 체력이 25% 아래일 때 (심장 소리 / 삐-)
@@ -96,15 +96,15 @@ local CUSTOM_ONLY = {
 	Event_Stampede = { Volume = 1.0, CustomLength = 3.0 }, -- 몬스터 대이동 (발굽 소리 / 뿔피리)
 	Event_Elite   = { Volume = 1.0, CustomLength = 2.5 }, -- 엘리트 부대 출현 (나팔)
 	Event_Goblin  = { Volume = 0.9, CustomLength = 2.0 }, -- 황금 고블린 출현 (반짝 / 동전)
-	Event_Boss    = { Volume = 1.1, CustomLength = 3.0 }, -- 침공 사령관 출현 (공개 이벤트)
-	Boss_Spawn    = { Volume = 1.2, CustomLength = 3.0 }, -- 던전 보스 등장 (포효)
+	Event_Boss    = { Volume = 1.0, CustomLength = 2.2, CustomPitch = 0.6 }, -- 침공 사령관 출현 (공개 이벤트)
+	Boss_Spawn    = { Volume = 1.2, CustomLength = 2.5, CustomPitch = 0.5 }, -- 던전 보스 등장 (포효)
 	Boss_Enrage   = { Volume = 1.2, CustomLength = 2.5 }, -- 보스 격노
 	-- 진행
-	Dungeon_Start = { Volume = 1.0, CustomLength = 2.5 }, -- 던전 시작
-	Dungeon_Clear = { Volume = 1.2, CustomLength = 4.0 }, -- 던전 클리어 (팡파르)
+	Dungeon_Start = { Volume = 0.8, CustomLength = 1.4, CustomPitch = 0.85 }, -- 던전 시작
+	Dungeon_Clear = { Volume = 1.2, CustomLength = 3.0, CustomPitch = 0.9 }, -- 던전 클리어 (팡파르)
 	Dungeon_Fail  = { Volume = 1.0, CustomLength = 3.0 }, -- 던전 실패
-	Quest_Claim   = { Volume = 0.9, CustomLength = 1.6 }, -- 퀘스트 / 업적 보상 수령 (동전)
-	Rare_Drop     = { Volume = 1.0, CustomLength = 2.2 }, -- 희귀 이상 장비 획득
+	Quest_Claim   = { Volume = 0.6, CustomLength = 1.0, CustomPitch = 1.5 }, -- 퀘스트 / 업적 보상 수령 (동전)
+	Rare_Drop     = { Volume = 0.8, CustomLength = 1.8, CustomPitch = 1.15 }, -- 희귀 이상 장비 획득
 }
 for key, spec in pairs(CUSTOM_ONLY) do
 	SPECS[key] = spec
@@ -208,7 +208,7 @@ function SoundBank.Play(parent, key, opts)
 		volumeScale *= Config.Audio.ShotVolume / 0.3 -- 총소리 기본 크기 설정(ShotVolume)을 그대로 따른다
 	end
 	local baseVolume = 0.35 * volumeScale
-	local pitch = custom and (opts.Pitch or 1) or spec.Pitch * (opts.Pitch or 1)
+	local pitch = custom and (opts.Pitch or 1) * (spec.CustomPitch or 1) or spec.Pitch * (opts.Pitch or 1) -- CustomPitch: 같은 소리를 여러 항목에 재사용할 때 높낮이를 달리한다
 	local length = spec.Length or 1
 	if custom then length = spec.CustomLength or 2 end -- 내가 넣은 소리는 자연스러운 꼬리를 살리고, 너무 길 때만 끊는다
 	local main = playOne(parent, id, baseVolume, pitch, length, opts.Name, not custom and spec.Fx or nil)
