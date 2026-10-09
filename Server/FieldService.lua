@@ -1092,6 +1092,22 @@ local function spawnMonster(zone, kind, at, ambush)
 	local position
 	if kind == "Boss" then
 		position = Vector3.new(x1 - 45, floorAt(x1 - 45) + stats.Size / 2, 0)
+		if not at then
+			-- 구역 끝의 벽(기둥)에 몸이 끼어서 태어나지 않게: 몸 크기만큼 벽에서 떨어진 자리를 찾는다 (뒤로 물러나며 가운데 / 위 / 아래 순서로)
+			local radius = stats.Size / 2 + 2
+			local found = false
+			for back = 0, 300, 10 do
+				local x = x1 - 45 - back
+				for _, z in ipairs({ 0, F.Width * 0.3, -F.Width * 0.3 }) do
+					if walkableAt(x, z, radius) then
+						position = Vector3.new(x, floorAt(x) + stats.Size / 2, z)
+						found = true
+						break
+					end
+				end
+				if found then break end
+			end
+		end
 		if at then -- 튜토리얼 "압도적인 존재": 플레이어 눈앞에서 나타난다
 			position = Vector3.new(at.X, floorAt(at.X) + stats.Size / 2, at.Z)
 		end
@@ -2011,14 +2027,46 @@ local function stepMonsters(dt)
 					local flatTarget = Vector3.new(target.Position.X, part.Position.Y, target.Position.Z)
 					local move = flatTarget - part.Position
 					if move.Magnitude > 0.1 then
-						local step = move.Unit * data.Stats.Speed * dt
+						local speed = data.Stats.Speed * dt
+						local step = move.Unit * speed
 						local radius = data.Stats.Size / 2 + 2
 						local zx0, zx1 = zoneBounds(data.Zone)
-						local nx = math.clamp(part.Position.X + step.X, zx0 + F.CampSafe + radius, zx1 - radius - 4) -- 구역 끝 벽 / 옆 절벽에도 몸이 끼지 않게
-						local nz = math.clamp(part.Position.Z + step.Z, -F.Width / 2 + radius + 4, F.Width / 2 - radius - 4)
-						if walkableAt(nx, nz, radius) then
-							local newPos = Vector3.new(nx, floorAt(nx) + data.Stats.Size / 2, nz)
-							part.CFrame = CFrame.lookAt(newPos, Vector3.new(target.Position.X, newPos.Y, target.Position.Z)) -- 항상 플레이어를 바라본다
+						local half = F.Width / 2
+						local pos = part.Position
+						local function place(dx, dz) -- 구역 끝 벽 / 옆 절벽에도 몸이 끼지 않게 범위를 자르고, 걸을 수 있으면 이동
+							local nx = math.clamp(pos.X + dx, zx0 + F.CampSafe + radius, zx1 - radius - 4)
+							local nz = math.clamp(pos.Z + dz, -half + radius + 4, half - radius - 4)
+							if walkableAt(nx, nz, radius) then
+								local newPos = Vector3.new(nx, floorAt(nx) + data.Stats.Size / 2, nz)
+								part.CFrame = CFrame.lookAt(newPos, Vector3.new(target.Position.X, newPos.Y, target.Position.Z)) -- 항상 플레이어를 바라본다
+								return true
+							end
+							return false
+						end
+						local moved = place(step.X, step.Z) or place(step.X, 0) or place(0, step.Z) -- 벽에 막히면 벽을 따라 미끄러진다
+						if not moved then
+							-- 정면이 벽: 벽의 틈(가까운 쪽 끝)으로 돌아간다. 이미 벽 안쪽 여유 공간에 끼어 있으면 먼저 빼낸다.
+							for _, rect in ipairs(baffleRects) do
+								if pos.X >= rect.X0 - radius - 30 and pos.X <= rect.X1 + radius + 30 then
+									if not walkableAt(pos.X, pos.Z, radius) then
+										local wallCenterX = (rect.X0 + rect.X1) / 2
+										moved = place((pos.X < wallCenterX and -1 or 1) * speed * 2, 0)
+									else
+										local upper = rect.Z1 < half - 1 and (rect.Z1 + half) / 2 or nil
+										local lower = rect.Z0 > -half + 1 and (-half + rect.Z0) / 2 or nil
+										local gapZ = upper
+										if upper and lower then
+											gapZ = math.abs(upper - pos.Z) < math.abs(lower - pos.Z) and upper or lower
+										elseif not upper then
+											gapZ = lower
+										end
+										if gapZ then
+											moved = place(0, (gapZ > pos.Z and 1 or -1) * speed)
+										end
+									end
+									if moved then break end
+								end
+							end
 						end
 					end
 				end

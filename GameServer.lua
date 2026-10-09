@@ -402,6 +402,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 	local isManual = manual == true
 	player:SetAttribute("ShotManual", isManual) -- Dungeon / Field.Shoot 이 읽는다: 약점 보너스는 직접 조준한 탄에만
 	local fanAngle = math.rad(Config.Perks.FanAngle)
+	local expectedDamage = Dungeon.ExpectedShotDamage(player) -- 허수아비 골드가 탄 하나의 실제 위력에 비례하도록 넘겨준다
 	for pellet = 1, pellets do
 		local direction
 		if weaponType.Pellets == 1 then
@@ -415,7 +416,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 		end
 		local endPosition = Dungeon.Shoot(player, origin, direction)
 			or Field.Shoot(player, origin, direction)
-			or Dummy.Shoot(player, origin, direction)
+			or Dummy.Shoot(player, origin, direction, expectedDamage)
 		endPosition = endPosition or (origin + direction * weaponType.Range)
 		Effects.Shot(tipPosition, endPosition, shot, color, tier.Rainbow, tier.Class, tier.Era)
 	end

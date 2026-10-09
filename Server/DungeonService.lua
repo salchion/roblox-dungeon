@@ -1210,6 +1210,21 @@ end)
 ------------------------------------------------------------
 -- 플레이어 공격 (판정은 서버에서). 반환: 탄이 끝나는 지점
 ------------------------------------------------------------
+-- 한 발의 "기대 피해량" (치명타 확률을 평균으로 반영한 값, 무작위 없음): 허수아비 골드처럼 "진짜 얼마나 세졌나"에 비례해야 하는 곳에서 쓴다.
+-- (탄 수 / 연사 속도 / 강화 / 시대 / 장비 / 훈련 / 환생이 전부 이 값 x 발사 횟수에 들어가서, 골드가 초당 피해량에 비례한다)
+function Dungeon.ExpectedShotDamage(player)
+	local weaponType = Config.GetPlayerWeapon(player)
+	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
+	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel) * weaponType.DamageMult
+		* Config.GetLevelDamageMult(player:GetAttribute("Level") or 1)
+		* (1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0) + (player:GetAttribute("PetDamage") or 0))
+		* (1 + (player:GetAttribute("PerkPower") or 0) * Config.Perks.PowerPerStack)
+		* (1 + (player:GetAttribute("Prestige") or 0) * Config.Prestige.DamagePerRank)
+	local chance = math.min(0.9, (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint
+		+ (player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0) + (player:GetAttribute("PetCrit") or 0) + (weaponType.CritBonus or 0))
+	return damage * (1 + chance * (P.CritMultiplier - 1))
+end
+
 -- 공격 데미지 계산 (무기 강화 + 치명타 스탯/장갑). 던전 / 필드에서 같이 사용. 반환: 데미지, 치명타 여부
 function Dungeon.ComputeDamage(player)
 	local weaponType = Config.GetPlayerWeapon(player)

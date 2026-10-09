@@ -109,7 +109,7 @@ Config.Tutorial = {
 			Reward = { Gold = 100 } },
 		{ Text = "모루에서 무기를 강화하세요! (처음 3번은 무료)", Stat = "Enhances", Goal = 1, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
 			Reward = { Gold = 50 } },
-		{ Text = "계속 강화해보세요! 강화할수록 무기가 강해져요 (권총은 10번 강화하면 더 강한 다음 무기로 진화)", Stat = "Enhances", Goal = 2, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
+		{ Text = "계속 강화해보세요! 강화할수록 무기가 강해져요 (여러 번 강화하면 더 강한 다음 무기로 진화)", Stat = "Enhances", Goal = 2, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
 			Reward = { Tickets = 1, Gold = 100 } },
 		{ Text = "뽑기 머신에서 장비를 뽑아보세요! (티켓 1장)", Stat = "Rolls", Goal = 1, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Lowest",
 			Reward = { Gold = 300 } },
@@ -370,14 +370,17 @@ Config.Boss = {
 Config.Weapon = {
 	WeaponCount = 100,
 	BaseCost = 100,
-	CostGrowth = 1.0118,    -- 강화 1회마다 비용 x1.0118 (단계가 820까지 늘어서, 끝 비용은 예전과 비슷하게 맞춘 값)
-	LevelScale = 326 / 820, -- 위력 / 크기 / 성공률 공식은 이 비율로 줄인 "유효 단계"를 쓴다 (단계가 많아져도 최종 위력은 그대로)
+	CostGrowth = 1.00886,   -- 강화 1회마다 비용 x1.00886 (총 1090단계 끝 비용은 예전 820단계 때와 비슷하게 맞춘 값: 1.0118 ^ (820 / 1090))
+	LevelScale = 326 / 1090, -- 위력 / 크기 / 성공률 공식은 이 비율로 줄인 "유효 단계"를 쓴다 (단계가 많아져도 최종 위력은 그대로). 1090 = 아래 StepsFor 의 총합
+	EarlyCostBoost = 2,     -- 초반 비용 가산: 0단계에서 비용이 (1 + 2) = 3배, EarlyCostLevels 단계에 걸쳐 1배로 줄어든다 (초반에 무기가 휙휙 바뀌지 않게)
+	EarlyCostLevels = 300,
 }
 -- 무기 하나가 가진 강화 단계 수: 처음 무기들은 오래 키우고(첫 무기 10단계), 뒤로 갈수록 빨리 넘어간다
 -- (이 무기의 마지막 단계에서 강화에 성공하면 다음 무기로 진화)
 function Config.Weapon.StepsFor(index)
-	if index <= 10 then return 10 end -- 처음 10개 무기는 10단계씩
-	return 8                          -- 이후 무기도 전부 8단계 (5강화로 휙 넘어가지 않게)
+	if index <= 10 then return 15 end -- 처음 10개 무기는 15단계씩 (초반에 무기가 너무 빨리 바뀌지 않게)
+	if index <= 30 then return 12 end -- 11~30번째 무기는 12단계씩
+	return 10                         -- 이후 무기는 10단계씩. 총합 = 150 + 240 + 700 = 1090 (LevelScale 의 1090 과 맞춘다)
 end
 
 -- 무기 사다리: 10개 시대 x 10개 종류 = 100종. 시대마다 색 / 재질 / 효과 / 발사체가 크게 바뀌고,
@@ -454,6 +457,7 @@ Config.Weapon.MaxLevel = totalSteps - 1 -- 마지막 무기까지 강화한 단�
 ------------------------------------------------------------
 Config.Dummy = {
 	GoldPerHit = 2,
+	GoldPerDamage = 0.25,  -- 허수아비 골드 = 이 값 x 탄 하나의 기대 피해량 (초당 골드가 초당 피해량에 정비례). 시작 권총(피해 약 10) = 한 발 약 2.5G
 	EraGoldMult = 1.4,     -- 무기 세대(10종 단위)가 오를 때마다 허수아비 골드 x1.4 (업그레이드할수록 골드도 늘게)
 	PowerRef = 600,        -- 전투력 기준값 (이 값일 때 배율 약 x2)
 	PowerExp = 0.55,       -- 전투력이 오를수록 골드가 어떻게 늘어나는지 (1 이면 정비례, 작을수록 완만)
@@ -1354,7 +1358,8 @@ end
 
 -- level -> level+1 강화 비용 (사다리 전체에서 조금씩 올라간다)
 function Config.GetEnhanceCost(level)
-	return math.floor(Config.Weapon.BaseCost * Config.Weapon.CostGrowth ^ level)
+	local early = 1 + Config.Weapon.EarlyCostBoost * math.max(0, 1 - level / Config.Weapon.EarlyCostLevels)
+	return math.floor(Config.Weapon.BaseCost * Config.Weapon.CostGrowth ^ level * early)
 end
 
 -- level -> level+1 강화 성공 확률 (실패해도 단계는 내려가지 않고 골드만 소모)

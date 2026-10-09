@@ -231,7 +231,9 @@ local function flash(data)
 end
 
 -- 로비에서 쏜 탄이 허수아비에 맞았는지 판정하고 골드를 지급. 반환: 탄이 끝나는 지점 (아무것도 안 맞으면 nil)
-function Dummy.Shoot(player, origin, direction)
+local goldRemainder = {} -- [player] = 아직 지급하지 못한 소수점 골드
+
+function Dummy.Shoot(player, origin, direction, shotDamage)
 	if not folder or player:GetAttribute("Zone") ~= "Lobby" then return nil end
 
 	local params = RaycastParams.new()
@@ -256,14 +258,15 @@ function Dummy.Shoot(player, origin, direction)
 		return result.Position
 	end
 
-	-- 무기 종류별 한 발 위력(DamageMult)에 비례: 샷건은 6발이 나가므로 한 발당 0.5, 저격총은 4
-	-- 초당 골드가 무기를 바꿔도 줄지 않게: 한 발 위력(DamageMult)에 비례하고, 산탄류는 펠릿이 전부 맞아도 과하게 늘지 않게
-	-- 한 알당 x0.6 (위력표가 "펠릿 60% 명중"을 전제로 잡혀 있다). 10종(한 세대)이 지날 때마다 x1.4 — 무기 위력이 세대마다 x1.4 로 오르는 것과 맞춰서, 다음 세대 첫 무기가 앞 세대 마지막 무기보다 항상 더 준다.
-	local pelletFactor = weaponType.Pellets > 1 and 0.6 or 1
-	local tierBonus = Config.Dummy.EraGoldMult ^ (Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0).Era - 1)
-	-- 전투력이 높을수록 한 대당 골드가 늘어난다 (허수아비가 하나라서 "세지면 더 많이 번다"로 성장을 보여준다)
-	local powerScale = 1 + (power / Config.Dummy.PowerRef) ^ Config.Dummy.PowerExp
-	local gold = math.max(1, math.floor(Config.Dummy.GoldPerHit * data.Multiplier * powerScale * weaponType.DamageMult * pelletFactor * tierBonus + 0.5))
+	-- 골드는 "탄 하나의 실제 기대 피해량"에 비례한다. 탄이 여러 발이든 연사가 빠르든 합치면 초당 피해량(DPS)에 비례해서,
+	-- 산탄 / 연사 무기가 따로 더 벌지 않고 "정말 세지면 그만큼 더 번다". (소수점은 모아 두었다가 정수가 되면 지급)
+	local owed = (goldRemainder[player] or 0) + Config.Dummy.GoldPerDamage * (shotDamage or 10) * data.Multiplier
+	local gold = math.floor(owed)
+	goldRemainder[player] = owed - gold
+	if gold < 1 then
+		Quest.Add(player, "DummyHits", 1)
+		return result.Position
+	end
 	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
 	Quest.Add(player, "DummyHits", 1)
 	Effects.FloatText(result.Position, string.format("+%d G", gold), Color3.fromRGB(255, 220, 90))
