@@ -452,21 +452,38 @@ function Lobby.Build()
 			local across = (spike / (spikes + 1) - 0.5) * 22
 			makePart({ Name = "GateSpike", Size = Vector3.new(1.2, 4 + 6 * t, 1.2), Position = gatePos + Vector3.new(across, H + 5 + 3 * t, 0), Color = Color3.fromRGB(30, 22, 30), Material = Enum.Material.Basalt }, folder)
 		end
-		-- 해골 표식: 해골 수 = 위험도 단계
-		local skulls = 1 + math.floor(t * 4)
-		local skullPart = makePart({ Name = "GateSkull", Size = Vector3.new(1, 1, 1), Position = gatePos + Vector3.new(0, H + 10 + 6 * t, 0), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
-		makeLabel(skullPart, string.rep("☠", skulls), Color3.fromRGB(255, 255, 255):Lerp(Color3.fromRGB(255, 60, 70), t), 0, 80 + skulls * 34, 60, 120)
-		-- 기둥 불꽃 (오른쪽 절반)
-		if t >= 0.5 then
+		-- 불꽃: 오른쪽(강한 던전)으로 갈수록 기둥 / 들보 / 바닥에서 불이 더 많이, 더 크게 타오른다
+		local function flame(position, size)
+			local holder = makePart({ Name = "GateFlame", Shape = Enum.PartType.Ball, Size = Vector3.new(1.6, 1.6, 1.6), Position = position, Color = Color3.fromRGB(255, 70, 40), Material = Enum.Material.Neon, Transparency = 0.3, CanCollide = false, CanQuery = false }, folder)
+			local fire = Instance.new("Fire")
+			fire.Size = size
+			fire.Heat = 10
+			fire.Color = Color3.fromRGB(255, 100, 40)
+			fire.SecondaryColor = Color3.fromRGB(150, 15, 25)
+			fire.Parent = holder
+			return holder
+		end
+		if t >= 0.15 then
 			for _, side in ipairs({ -1, 1 }) do
-				local flamePart = makePart({ Name = "GateFlame", Shape = Enum.PartType.Ball, Size = Vector3.new(2.4, 2.4, 2.4), Position = gatePos + Vector3.new(side * 8.5, H + 2, 0), Color = Color3.fromRGB(255, 70, 40), Material = Enum.Material.Neon, CanCollide = false }, folder)
-				local fire = Instance.new("Fire")
-				fire.Size = 8 + 6 * t
-				fire.Heat = 10
-				fire.Color = Color3.fromRGB(255, 90, 40)
-				fire.SecondaryColor = Color3.fromRGB(150, 15, 25)
-				fire.Parent = flamePart
-				addLight(flamePart, 30, 2, Color3.fromRGB(255, 80, 40))
+				local f = flame(gatePos + Vector3.new(side * 8.5, H + 2, 0), 6 + 10 * t)
+				addLight(f, 24 + 20 * t, 1.4 + 1.5 * t, Color3.fromRGB(255, 90, 40))
+			end
+		end
+		if t >= 0.35 then -- 기둥 옆면을 따라 불이 번진다
+			for _, side in ipairs({ -1, 1 }) do
+				for k = 1, math.floor(1 + t * 4) do
+					flame(gatePos + Vector3.new(side * 8.5, H * (k / (2 + t * 4)), 2.6), 5 + 6 * t)
+				end
+			end
+		end
+		if t >= 0.5 then -- 들보 위로 줄지어 타오른다
+			for k = 1, math.floor(2 + t * 5) do
+				flame(gatePos + Vector3.new(((k / (math.floor(2 + t * 5) + 1)) - 0.5) * 20, H + 3.5, 0), 6 + 8 * t)
+			end
+		end
+		if t >= 0.6 then -- 문 아래쪽 가장자리에서도 불길이 솟는다
+			for k = 1, math.floor(2 + t * 3) do
+				flame(gatePos + Vector3.new(((k / (math.floor(2 + t * 3) + 1)) - 0.5) * 13, 1.2, 1.5), 8 + 10 * t)
 			end
 		end
 		-- 문 앞 바닥에 번지는 붉은 기운
@@ -492,6 +509,34 @@ function Lobby.Build()
 		swirl.Color = ColorSequence.new(color)
 		swirl.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.8 + t), NumberSequenceKeypoint.new(1, 0) })
 		swirl.Parent = portal
+		-- 문(막) 가운데에서 불꽃이 튀어나온다: 강한 문일수록 더 많이, 더 멀리, 더 빠르게
+		local embers = Instance.new("ParticleEmitter")
+		embers.Rate = 6 + 110 * t
+		embers.Lifetime = NumberRange.new(0.7, 1.4)
+		embers.Speed = NumberRange.new(4 + 10 * t, 9 + 20 * t)
+		embers.EmissionDirection = Enum.NormalId.Front
+		embers.SpreadAngle = Vector2.new(35, 55)
+		embers.Acceleration = Vector3.new(0, 6 + 10 * t, 0)
+		embers.Shape = Enum.ParticleEmitterShape.Box
+		embers.LightEmission = 1
+		embers.Color = ColorSequence.new(Color3.fromRGB(255, 200, 90), Color3.fromRGB(255, 70, 30))
+		embers.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5 + 0.9 * t), NumberSequenceKeypoint.new(1, 0) })
+		embers.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 1) })
+		embers.Parent = portal
+		if t >= 0.5 then -- 뒤쪽 문은 막 자체가 일렁이며 불길이 번지는 느낌
+			local blaze = Instance.new("ParticleEmitter")
+			blaze.Rate = 25 * t
+			blaze.Lifetime = NumberRange.new(0.8, 1.6)
+			blaze.Speed = NumberRange.new(1, 4)
+			blaze.EmissionDirection = Enum.NormalId.Top
+			blaze.SpreadAngle = Vector2.new(20, 20)
+			blaze.Shape = Enum.ParticleEmitterShape.Box
+			blaze.LightEmission = 0.8
+			blaze.Color = ColorSequence.new(Color3.fromRGB(255, 120, 40), Color3.fromRGB(120, 10, 20))
+			blaze.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 3 + 4 * t), NumberSequenceKeypoint.new(1, 0) })
+			blaze.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 1) })
+			blaze.Parent = portal
+		end
 		if t >= 0.35 then -- 뒤쪽 문에서는 어두운 연기가 흘러나온다
 			local smoke = Instance.new("ParticleEmitter")
 			smoke.Rate = 12 + 20 * t

@@ -108,8 +108,9 @@ end
 local function giveGold(run, amount)
 	amount = math.floor(amount * run.GoldMult * (Config.IsGoldenTime() and Config.Golden.GoldMult or 1) + 0.5)
 	for _, member in ipairs(run.Members) do
-		member:SetAttribute("Gold", (member:GetAttribute("Gold") or 0) + amount)
-		run.Earned[member] = (run.Earned[member] or 0) + amount
+		local bonus = math.floor(amount * Config.GoldBonus(member) + 0.5) -- 환생 골드 보너스
+		member:SetAttribute("Gold", (member:GetAttribute("Gold") or 0) + bonus)
+		run.Earned[member] = (run.Earned[member] or 0) + bonus
 	end
 end
 
@@ -552,7 +553,7 @@ local function spawnBoss(run)
 	run.Boss = data
 	run.BossPart = part
 	for _, member in ipairs(run.Members) do
-		Remotes.Tutorial:FireClient(member, "Prompt", { Key = "🎯", Title = "약점을 노려라!", Text = "보스 주위를 도는 노란 구슬을 마우스로 직접 조준해서 클릭하면 3배 치명타 + 데드아이 게이지! (자동 공격으로는 안 돼요)", Duration = 7, Top = true })
+		Remotes.Tutorial:FireClient(member, "Prompt", { Key = "🎯", Title = "약점을 노려라!", Text = "보스 주위를 도는 노란 구슬을 마우스로 직접 조준해서 클릭하면 약점이 노출돼서 4초간 받는 피해 x3! + 데드아이 게이지 (자동 공격으로는 안 돼요)", Duration = 7, Top = true })
 	end
 end
 
@@ -962,6 +963,10 @@ local function enrageBoss(run, part, data)
 end
 
 local function damageMonster(run, player, part, data, amount, isCrit, hitPosition)
+	if data.ExposedUntil and os.clock() < data.ExposedUntil then -- 약점 노출 중: 보스가 받는 피해 x3
+		amount = math.floor(amount * 3)
+		isCrit = true
+	end
 	data.Health -= amount
 	if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.5) end -- 연습 표적은 쓰러지지 않는다
 	data.Awake = true -- 맞은 몬스터는 거리와 상관없이 깨어난다
@@ -1314,16 +1319,15 @@ function Dungeon.Shoot(player, origin, direction)
 
 		local damage, isCrit = Dungeon.ComputeDamage(player)
 		local hitPosition = result.Position
-		if data.WeakPart and data.WeakPart.Parent and player:GetAttribute("ShotManual") == true then -- 탄이 지나간 선이 약점 구슬에 닿으면 3배 치명타 (직접 조준한 탄만)
+		if data.WeakPart and data.WeakPart.Parent and not data.WeakHidden and player:GetAttribute("ShotManual") == true then -- 탄이 지나간 선이 약점 구슬에 닿으면 약점 노출 (직접 조준한 탄만)
 			local ab = result.Position - origin
 			local t = math.clamp((data.WeakPart.Position - origin):Dot(ab) / math.max(ab:Dot(ab), 0.001), 0, 1)
 			if (origin + ab * t - data.WeakPart.Position).Magnitude <= data.WeakPart.Size.X * 0.8 then
-				damage = math.floor(damage * 3)
-				isCrit = true
+				-- 이 공격만 세지는 게 아니라 약점이 노출되어 4초간 보스가 받는 모든 피해가 x3 (damageMonster 가 적용)
 				player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 6))
 				player:SetAttribute("WeakHitTick", (player:GetAttribute("WeakHitTick") or 0) + 1)
-				Effects.FloatText(data.WeakPart.Position + Vector3.new(0, 3, 0), "🎯 약점 명중!", Color3.fromRGB(255, 240, 90))
 				Effects.Burst(data.WeakPart.Position, Color3.fromRGB(255, 235, 80), 24)
+				Effects.ExposeBoss(part, data, 4)
 			end
 		end
 		damageMonster(run, player, part, data, damage, isCrit, hitPosition)
@@ -2079,7 +2083,7 @@ local function drillLoop(run)
 	-- ② 약점 사격
 	if alive() then
 		local start = member:GetAttribute("WeakHitTick") or 0
-		show("🎯", "② 노란 약점을 맞혀요! (3번)", "표적(보스) 몸 주위를 빙글빙글 도는 노란 빛 구슬이 약점이에요! 마우스로 구슬을 직접 조준해서 클릭하세요. 맞히면 3배 치명타 + 데드아이 게이지 (자동 공격으로는 안 돼요)", 40)
+		show("🎯", "② 노란 약점을 맞혀요! (3번)", "표적(보스) 몸 주위를 빙글빙글 도는 노란 빛 구슬이 약점이에요! 마우스로 구슬을 직접 조준해서 클릭하세요. 맞히면 약점이 노출돼서 4초 동안 받는 피해가 3배! + 데드아이 게이지 (자동 공격으로는 안 돼요)", 40)
 		if wait(90, function() return (member:GetAttribute("WeakHitTick") or 0) - start >= 3 end) then ok("약점 사격 좋아요! 보스에게도 똑같이 노려요") end
 	end
 	-- ③ 대시

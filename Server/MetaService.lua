@@ -361,7 +361,7 @@ local function prestige(player)
 	if root then
 		Effects.Burst(root.Position + Vector3.new(0, 3, 0), Color3.fromRGB(255, 230, 120), 120)
 	end
-	notify(player, string.format("🌟 환생 %d단계! 영구 공격력 +%d%% (총 +%d%%)", state.Prestige, Config.Prestige.DamagePerRank * 100, state.Prestige * Config.Prestige.DamagePerRank * 100))
+	notify(player, string.format("🌟 환생 %d단계! 영구 공격력 +%d%% · 골드 획득량 +%d%% (총 공격력 +%d%%, 골드 +%d%%)", state.Prestige, Config.Prestige.DamagePerRank * 100, Config.Prestige.GoldPerRank * 100, state.Prestige * Config.Prestige.DamagePerRank * 100, state.Prestige * Config.Prestige.GoldPerRank * 100))
 	Meta.Push(player)
 end
 

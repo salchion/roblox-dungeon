@@ -30,6 +30,7 @@ local Inventory = require(script.Parent:WaitForChild("InventoryService"))
 
 local F = Config.Field
 local TOP = 0.05
+local doomReady = {} -- [player] = 첫 구역 군주를 쓰러뜨린 시각 (튜토리얼 소환 결투의 시작 신호)
 
 local Field = {}
 
@@ -1176,7 +1177,7 @@ local function rewardEvent(data, part)
 	for player, damage in pairs(data.Contrib) do
 		if player.Parent and damage >= data.MaxHealth * Config.Events.ContribMin then
 			rewarded += 1
-			player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + data.Stats.Gold)
+			player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + math.floor(data.Stats.Gold * Config.GoldBonus(player) + 0.5))
 			player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + 1)
 			Level.AddXP(player, Config.Xp.FieldBoss * 1.5)
 			Quest.Add(player, "BossKills", 1)
@@ -1194,7 +1195,7 @@ end
 -- 황금 고블린: 잡으면 골드 대박 + 전리품 3개
 local function rewardGoblin(player, data, part)
 	local gold = data.Stats.Gold
-	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
+	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + math.floor(gold * Config.GoldBonus(player) + 0.5))
 	Effects.FloatText(part.Position + Vector3.new(0, 4, 0), string.format("💰 +%d G", gold), Color3.fromRGB(255, 225, 80))
 	Effects.Burst(part.Position, Color3.fromRGB(255, 215, 60), 90)
 	Level.AddXP(player, Config.Xp.FieldPerMonsterLevel * data.XpLevel * 6)
@@ -1233,7 +1234,7 @@ local function gateProgress(player, data)
 	player:SetAttribute("ClearedZone", frontier)
 	local gold = F.Gate.RewardGold * frontier
 	local tickets = F.Gate.RewardTickets + (frontier >= 3 and 1 or 0)
-	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
+	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + math.floor(gold * Config.GoldBonus(player) + 0.5))
 	player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + tickets)
 	local nextSet = Config.Sets[Config.Sets.ZoneKeys[frontier + 1]]
 	notify(player, string.format("🔓 구역 %d 관문 개방! 보상 💰%d G · 🎫%d장  — %s · %s 에서만 %s %s 세트 장비가 나와요!", frontier + 1, gold, tickets, F.ZoneNames[frontier + 1], F.ZoneNames[frontier + 1], nextSet.Icon, nextSet.Name))
@@ -1254,7 +1255,7 @@ local function reward(player, data, part)
 	end
 
 	local gold = math.floor(data.Stats.Gold * (Config.IsGoldenTime() and Config.Golden.GoldMult or 1) + 0.5)
-	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
+	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + math.floor(gold * Config.GoldBonus(player) + 0.5))
 	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2, 0), string.format("+%d G", gold), Color3.fromRGB(255, 220, 90))
 
 	local xp
@@ -1327,6 +1328,9 @@ end
 
 local function killMonster(player, part, data)
 	monsters[part] = nil
+	if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then
+		doomReady[player] = os.clock() -- 튜토리얼: 첫 구역 군주를 쓰러뜨리면 잠시 뒤 불길한 기운이 덮친다
+	end
 	Effects.Burst(part.Position, part.Color, data.Kind == "Boss" and 80 or 22)
 	part:Destroy()
 	Combo.Kill(player)
@@ -1367,6 +1371,8 @@ function Field.HitPart(player, part, damage)
 	local data = monsters[part]
 	if not data or not part.Parent then return false end
 	if not canHitZone(player, part.Position.X) then return false end
+	if data.ExposedUntil and os.clock() < data.ExposedUntil then damage = math.floor(damage * 3) end -- 약점 노출 중 x3
+	if data.BossLike and data.Zone == 1 and player:GetAttribute("TutorialDoom") then damage = damage * 4 end
 	if data.Invincible then damage = 1 end
 	data.Health -= damage
 	if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
@@ -1396,6 +1402,7 @@ function Field.AreaDamage(player, center, radius, damage)
 		if monsters[target.Part] == data then
 			table.insert(positions, target.Part.Position)
 			if data.Invincible then damage = 1 end
+			if data.ExposedUntil and os.clock() < data.ExposedUntil then damage = math.floor(damage * 3) end -- 약점 노출 중 x3
 			data.Health -= damage
 			if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
 			data.LastHit = os.clock()
@@ -1437,17 +1444,24 @@ function Field.Shoot(player, origin, direction)
 		local damage, isCrit = Dungeon.ComputeDamage(player)
 		if data.Invincible then damage, isCrit = 1, false end -- 최후의 군주: 맞는 느낌만 (피해는 1)
 		-- 약점 구슬: 탄이 지나간 선이 구슬에 닿으면 3배 치명타 + 데드아이 게이지
-		if data.WeakPart and data.WeakPart.Parent and not data.Invincible and player:GetAttribute("ShotManual") == true then -- 직접 조준한 탄만
+		if data.WeakPart and data.WeakPart.Parent and not data.WeakHidden and not data.Invincible and player:GetAttribute("ShotManual") == true then -- 직접 조준한 탄만
 			local ab = result.Position - origin
 			local t = math.clamp((data.WeakPart.Position - origin):Dot(ab) / math.max(ab:Dot(ab), 0.001), 0, 1)
 			if (origin + ab * t - data.WeakPart.Position).Magnitude <= data.WeakPart.Size.X * 0.8 then
-				damage = math.floor(damage * 3)
-				isCrit = true
+				-- 약점 명중: 이 공격만 세지는 게 아니라 약점이 "노출"되어 4초 동안 보스가 받는 모든 피해가 x3
 				player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 6))
 				player:SetAttribute("WeakHitTick", (player:GetAttribute("WeakHitTick") or 0) + 1)
-				Effects.FloatText(data.WeakPart.Position + Vector3.new(0, 3, 0), "🎯 약점 명중!", Color3.fromRGB(255, 240, 90))
 				Effects.Burst(data.WeakPart.Position, Color3.fromRGB(255, 235, 80), 24)
+				Effects.ExposeBoss(result.Instance, data, 4)
 			end
+		end
+		if data.ExposedUntil and os.clock() < data.ExposedUntil then
+			damage = math.floor(damage * 3)
+			isCrit = true
+		end
+		-- 첫 구역 군주는 튜토리얼 중에는 훨씬 약하게 (군주를 쓰러뜨려야 다음 장면이 이어진다)
+		if data.BossLike and data.Zone == 1 and player:GetAttribute("TutorialDoom") then
+			damage = damage * 4
 		end
 		-- 로켓 런처 / 플라즈마 캐논: 맞은 곳 주변 적에게도 피해
 		local splash = Config.GetPlayerWeapon(player).Splash
@@ -2498,7 +2512,7 @@ local function updateBossFight()
 				elseif not weakTipShown[player] then
 					weakTipShown[player] = true
 					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🎯", Title = "약점을 노려라!",
-						Text = "보스 주위를 도는 노란 구슬을 마우스로 직접 조준해서 클릭하면 3배 치명타 + 데드아이 게이지! (자동 공격으로는 안 돼요)", Duration = 8 })
+						Text = "보스 주위를 도는 노란 구슬을 마우스로 직접 조준해서 클릭하면 약점이 노출돼서 4초간 받는 피해 x3! + 데드아이 게이지 (자동 공격으로는 안 돼요)", Duration = 8 })
 				end
 			end
 		end
@@ -3065,7 +3079,7 @@ local function updateDoom()
 					state = { Since = os.clock() }
 					doomTimers[player] = state
 				end
-				if not state.Fired and os.clock() - state.Since >= 9 then
+				if not state.Fired and doomReady[player] and os.clock() - doomReady[player] >= 3 then
 					state.Fired = true
 					state.FiredAt = os.clock()
 					local doomZone = zoneOfX(root.Position.X)

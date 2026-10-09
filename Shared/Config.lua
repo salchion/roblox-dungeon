@@ -117,7 +117,7 @@ Config.Tutorial = {
 		{ Text = "뽑기 머신에서 장비를 뽑아보세요! (티켓 1장)", Stat = "Rolls", Goal = 1, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Lowest",
 			Reward = { Gold = 300 } },
 		-- 이야기: 필드는 아직 너무 강하다 -> 쓰러져서 마을로 -> 성장(훈련) -> 던전에서 장비 -> 10연 뽑기 -> 다시 필드는 쉽다
-		{ Text = "동쪽 필드로 나가서 몬스터와 싸워보세요! ...어딘가 불길한 기운이 느껴져요. 무슨 일이 일어날지도 몰라요. 조심하세요!", Stat = "FieldDeaths", Goal = 1, Target = "Field", TargetName = "필드 입구", Doom = true,
+		{ Text = "동쪽 필드로 나가서 첫 구역의 군주(👑)를 쓰러뜨리세요! ...어딘가 불길한 기운이 느껴져요. 무슨 일이 일어날지도 몰라요. 조심하세요!", Stat = "FieldDeaths", Goal = 1, Target = "Field", TargetName = "필드 입구", Doom = true,
 			Reward = { Gold = 300, Keys = 1, Xp = 100 } },
 		{ Text = "아직 너무 약해요! 메뉴(I) → 성장 탭에서 훈련을 시작하세요. 훈련하면 영구적으로 강해져요", Stat = "Trains", Goal = 1, Highlight = "Menu",
 			Reward = { Gold = 400, Xp = 100 } },
@@ -136,7 +136,11 @@ Config.Tutorial = {
 ------------------------------------------------------------
 -- 환생(프레스티지): 최고 레벨에서 레벨을 1로 되돌리고 영구 공격력 보너스를 얻는다
 ------------------------------------------------------------
-Config.Prestige = { Max = 10, DamagePerRank = 0.05 }
+-- 환생: 최고 레벨에서 레벨을 1로 되돌리는 대신 영구 보너스. 골드를 더 벌려면 환생한다 (영구 공격력 + 골드 획득량).
+Config.Prestige = { Max = 10, DamagePerRank = 0.05, GoldPerRank = 0.10 }
+function Config.GoldBonus(player)
+	return 1 + (player:GetAttribute("Prestige") or 0) * Config.Prestige.GoldPerRank
+end
 
 Config.Dungeon = {} -- 아래에서 여러 블록이 채우고, "던전" 절에서 기본 값이 합쳐진다
 
@@ -1201,7 +1205,7 @@ Config.Growth = {
 		Crit = { Name = "치명 단련", Icon = "🎯", Per = 0.004 },
 		Speed = { Name = "신속 단련", Icon = "💨", Per = 0.12 },
 	},
-	Gates = { 10, 20, 30, 40 },            -- 이 레벨에서 멈추고 돌파가 필요
+	Gates = {},                            -- (예전: 레벨 10 / 20 / 30 / 40 에서 멈추고 시간 돌파 -> 기다리는 느낌이라 없앴다. 이제 막힘 없이 성장하고 골드는 환생으로 더 번다)
 	GateTime = { 1800, 7200, 21600, 43200 }, -- 돌파 시간(초): 30분 / 2시간 / 6시간 / 12시간
 	GateGold = { 2000, 10000, 50000, 200000 },
 }

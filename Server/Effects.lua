@@ -366,4 +366,47 @@ function Effects.Burst(position, color, count)
 	Debris:AddItem(anchor, 1.5)
 end
 
+-- 약점 구슬 표시 / 숨김 (약점이 "노출"되는 동안에는 구슬이 사라진다)
+function Effects.SetWeakVisible(orb, visible)
+	if not orb then return end
+	for _, item in ipairs(orb:GetDescendants()) do
+		if item:IsA("BasePart") then
+			if item:GetAttribute("T0") == nil then item:SetAttribute("T0", item.Transparency) end
+			item.Transparency = visible and item:GetAttribute("T0") or 1
+		elseif item:IsA("BillboardGui") or item:IsA("PointLight") or item:IsA("ParticleEmitter") then
+			item.Enabled = visible
+		end
+	end
+	if orb:IsA("BasePart") then
+		if orb:GetAttribute("T0") == nil then orb:SetAttribute("T0", orb.Transparency) end
+		orb.Transparency = visible and orb:GetAttribute("T0") or 1
+	end
+end
+
+-- 약점 노출: duration 초 동안 보스가 받는 피해가 x3 (data.ExposedUntil 을 각 서비스의 피해 계산이 읽는다). 보스에 노란 윤곽 + 글자.
+function Effects.ExposeBoss(part, data, duration)
+	data.ExposedUntil = os.clock() + duration
+	if data.WeakPart then
+		data.WeakHidden = true
+		Effects.SetWeakVisible(data.WeakPart, false)
+	end
+	local outline = Instance.new("Highlight")
+	outline.Name = "ExposedOutline"
+	outline.Adornee = part
+	outline.FillColor = Color3.fromRGB(255, 220, 60)
+	outline.FillTransparency = 0.7
+	outline.OutlineColor = Color3.fromRGB(255, 240, 120)
+	outline.OutlineTransparency = 0
+	outline.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+	outline.Parent = part
+	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 6, 0), string.format("💥 약점 노출! %d초간 피해 x3", duration), Color3.fromRGB(255, 240, 90))
+	task.delay(duration, function()
+		if outline.Parent then outline:Destroy() end
+		if data.WeakPart and data.WeakPart.Parent then
+			data.WeakHidden = nil
+			Effects.SetWeakVisible(data.WeakPart, true)
+		end
+	end)
+end
+
 return Effects
