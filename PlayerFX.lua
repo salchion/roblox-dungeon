@@ -48,7 +48,14 @@ end
 -- 구역별 분위기: 로비는 해 질 녘(서버가 설정), 던전은 밝은 낮, 필드는 구역(1~8)마다 하늘 / 안개 / 빛 색이 달라진다
 do
 	local Lighting = game:GetService("Lighting")
-	local DAY = { ClockTime = 14, Brightness = 2.2, Ambient = Color3.fromRGB(70, 70, 70), OutdoorAmbient = Color3.fromRGB(70, 70, 70), ExposureCompensation = 0 }
+	-- 눈이 편하도록: 필드 / 던전은 채도와 대비를 살짝 낮춘 부드러운 색보정을 늘 켜 두고, 전체 밝기도 약간 낮춘다
+	local soft = Lighting:FindFirstChild("SoftGrade") or Instance.new("ColorCorrectionEffect")
+	soft.Name = "SoftGrade"
+	soft.Saturation = -0.12
+	soft.Contrast = -0.04
+	soft.TintColor = Color3.fromRGB(252, 249, 244)
+	soft.Parent = Lighting
+	local DAY = { ClockTime = 14, Brightness = 1.85, Ambient = Color3.fromRGB(70, 70, 70), OutdoorAmbient = Color3.fromRGB(70, 70, 70), ExposureCompensation = 0 }
 	-- 필드 구역별 하늘: 시간대 / 밝기 / 주변광 / 안개 색 / 안개 농도
 	local FIELD_THEMES = {
 		{ ClockTime = 14, Brightness = 2.4, Ambient = Color3.fromRGB(90, 90, 90), OutdoorAmbient = Color3.fromRGB(112, 112, 112), Fog = Color3.fromRGB(200, 225, 255), Density = 0.22 },   -- 초원: 맑은 낮
@@ -75,7 +82,7 @@ do
 		if not theme then return end
 		fieldIndex = index
 		TweenService:Create(Lighting, TweenInfo.new(1.6), {
-			ClockTime = theme.ClockTime, Brightness = theme.Brightness, Ambient = theme.Ambient, OutdoorAmbient = theme.OutdoorAmbient, ExposureCompensation = 0,
+			ClockTime = theme.ClockTime, Brightness = theme.Brightness * 0.86, Ambient = theme.Ambient, OutdoorAmbient = theme.OutdoorAmbient, ExposureCompensation = 0,
 		}):Play()
 		local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
 		if atmosphere then

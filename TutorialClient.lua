@@ -51,7 +51,7 @@ local objective = create("Frame", {
 	BackgroundColor3 = Color3.fromRGB(20, 20, 30), BackgroundTransparency = 0.12, BorderSizePixel = 0, Visible = false,
 }, gui)
 rounded(objective)
-local stroke = create("UIStroke", { Color = Color3.fromRGB(255, 210, 90), Thickness = 2 }, objective)
+local stroke = create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5 }, objective)
 local titleLabel = label({
 	Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 6), TextSize = 16, Font = Enum.Font.GothamBlack,
 	TextXAlignment = Enum.TextXAlignment.Left, RichText = true,
@@ -119,7 +119,7 @@ local function popupMission()
 	}, gui)
 	activeCard = card
 	rounded(card, 18)
-	local cardStroke = create("UIStroke", { Color = Color3.fromRGB(255, 225, 110), Thickness = 4 }, card)
+	local cardStroke = create("UIStroke", { Color = Color3.fromRGB(235, 208, 128), Thickness = 3 }, card)
 	label({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 10), TextSize = 26, Font = Enum.Font.GothamBlack, RichText = true, ZIndex = 31,
 		Text = string.format("<font color='#ffd966'>🎯 미션 %d/%d</font>", current.Index, current.Total) }, card)
 	label({ Size = UDim2.new(1, -40, 0, 56), Position = UDim2.new(0, 20, 0, 50), TextSize = 22, Font = Enum.Font.GothamBold, TextWrapped = true, TextTruncate = Enum.TextTruncate.AtEnd, ZIndex = 31,
@@ -128,7 +128,7 @@ local function popupMission()
 		Text = current.TargetName and ("📍 " .. current.TargetName) or "" }, card)
 	card.Size = UDim2.new(0, 400, 0, 110)
 	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.new(0, 520, 0, 150) }):Play()
-	TweenService:Create(cardStroke, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 8 }):Play()
+	TweenService:Create(cardStroke, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 5 }):Play()
 	task.delay(4.5, function()
 		TweenService:Create(card, TweenInfo.new(0.4), { Position = UDim2.new(0, 146, 0, 288 + 58), Size = UDim2.new(0, 260, 0, 116), BackgroundTransparency = 1 }):Play() -- 왼쪽 미션 카드 자리로 빨려 들어간다
 		task.wait(0.4)
