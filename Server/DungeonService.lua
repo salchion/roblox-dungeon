@@ -1056,6 +1056,7 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 	run.MonsterCount -= 1
 	if augOnKill then augOnKill(run, player, part.Position) end
 	Effects.Burst(part.Position, part.Color, data.IsBoss and 80 or 22)
+	Effects.MonsterDeath(part, data) -- 조각 / 영혼 연기 (클라이언트)
 	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 2, 0), string.format("+%d G", math.floor(data.Stats.Gold * run.GoldMult * Config.Economy.DungeonGoldMult + 0.5)), Color3.fromRGB(255, 220, 90))
 	part:Destroy()
 	Combo.Kill(player)

@@ -477,6 +477,27 @@ local function flat(vector)
 	return Vector3.new(vector.X, 0, vector.Z)
 end
 
+-- 몸 기울임(몸체 CFrame 에 곱하는 값 하나뿐이라 서버 부담이 없다): 이동 방향으로 숙이고, 숨 쉬듯 흔들리고, 공격 직전에는 뒤로 젖힌다.
+-- moving: 이번 프레임에 움직였는가
+local function bodyTilt(data, def, now, dt, moving)
+	local target
+	if data.RearUntil and now < data.RearUntil then
+		target = 0.38 -- 뒤로 젖힘 (앞쪽 = -Z, +X 회전이 머리를 뒤로 넘긴다)
+	elseif moving then
+		target = def.Move == "Hover" and -0.1 or -0.14
+	else
+		target = 0
+	end
+	local lean = (data.Lean or 0) + (target - (data.Lean or 0)) * math.min(1, dt * 10)
+	data.Lean = lean
+	local sway = 0
+	if def.Move ~= "Static" then
+		sway = math.sin(now * (moving and 6 or 2) + (data.Phase or 0)) * (moving and 0.07 or 0.025) -- 걸음 / 숨쉬기 좌우 흔들림
+	end
+	local breath = (moving or def.Move == "Static") and 0 or math.sin(now * 2.2 + (data.Phase or 0)) * 0.03
+	return CFrame.Angles(lean + breath, 0, sway)
+end
+
 -- 잠깐 색을 바꿔 예고한 뒤 action 실행 (그 사이 죽었으면 취소)
 -- 빙빙 돌며 피하는 플레이도 맞도록: 정면 탄 옆으로 양쪽 "옆 탄"을 같이 쏜다.
 -- 가만히 서 있으면 옆 탄은 몸 옆을 스치고(정면만 피하면 됨), 옆으로 돌며 달리면 옆 탄이 길목을 막는다.
@@ -495,6 +516,7 @@ end
 
 local function telegraph(ctx, part, data, color, delay, action)
 	part.Color = color
+	data.RearUntil = os.clock() + delay -- 공격 직전: 몸을 뒤로 젖힌다 (Update 의 기울임이 읽는다)
 	task.delay(delay, function()
 		if not ctx.Alive(part, data) then return end
 		part.Color = data.BaseColor
@@ -687,7 +709,7 @@ function M.Update(ctx, part, data, dt, now)
 
 	-- 돌진 준비 동작 중에는 제자리에서 대상을 노려본다
 	if data.WindupUntil and now < data.WindupUntil then
-		part.CFrame = CFrame.lookAt(position, position + direction)
+		part.CFrame = CFrame.lookAt(position, position + direction) * bodyTilt(data, def, now, dt, false)
 		return
 	end
 
@@ -758,6 +780,7 @@ function M.Update(ctx, part, data, dt, now)
 		end
 	end
 	position += move
+	local moving = move.X ~= 0 or move.Z ~= 0
 	if def.Move ~= "Hover" then
 		position = snapToGround(ctx, position, stats.Size)
 		-- 통통 튀며 다가온다 (걷는 느낌보다 훨씬 역동적): 종류마다 튀는 높이가 다르다
@@ -776,7 +799,7 @@ function M.Update(ctx, part, data, dt, now)
 		data.Facing = facing
 		lookDirection = facing
 	end
-	part.CFrame = CFrame.lookAt(position, position + lookDirection)
+	part.CFrame = CFrame.lookAt(position, position + lookDirection) * bodyTilt(data, def, now, dt, moving)
 
 	-- 치유 사제: 일정 간격마다 주변 아군(보스 제외)의 체력을 채운다. 먼저 잡아야 하는 몬스터.
 	if def.Attack == "Heal" then

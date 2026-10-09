@@ -303,4 +303,13 @@ function Effects.ExposeBoss(part, data, duration)
 	end)
 end
 
+-- 몬스터 사망 연출: 조각이 흩어지고 영혼 연기가 피어오른다 (그리는 건 FxClient 의 "K"). 종류별 색 / 모양은 typeKey 로 정한다
+-- data: 던전 / 필드의 몬스터 데이터 (TypeKey / BaseColor / Stats.Size 를 읽는다. 없어도 안전)
+function Effects.MonsterDeath(part, data)
+	if not part then return end
+	local stats = data and data.Stats
+	local size = (stats and stats.Size) or part.Size.Y
+	emit(part.Position, { "K", part.Position, (data and data.BaseColor) or part.Color, size, data and data.TypeKey })
+end
+
 return Effects
