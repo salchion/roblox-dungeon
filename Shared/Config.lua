@@ -115,6 +115,7 @@ Config.Tutorial = {
 			Reward = { Gold = 300 } },
 		-- 이야기: 필드는 아직 너무 강하다 -> 쓰러져서 마을로 -> 성장(훈련) -> 던전에서 장비 -> 10연 뽑기 -> 다시 필드는 쉽다
 		{ Text = "동쪽 필드로 나가서 첫 구역의 군주(👑)를 쓰러뜨리세요! ...어딘가 불길한 기운이 느껴져요. 무슨 일이 일어날지도 몰라요. 조심하세요!", Stat = "FieldDeaths", Goal = 1, Target = "Field", TargetName = "필드 입구", Doom = true,
+			Intro = { { Key = "Q", Title = "Q 키: 대시!", Text = "필드로 나가기 전에 알아 두세요. Q 키를 누르면 가는 방향으로 순간적으로 빨라져요 (2번 연속, 3초마다 충전). 적의 탄을 아슬아슬하게 피하면 보너스!", Duration = 9 } },
 			Reward = { Gold = 4000, Tickets = 10, Keys = 1, Xp = 150 } }, -- 쓰러져도 전리품(재화)은 남는다 -> 아래 미션에서 바로 쓰게 한다
 		{ Text = "💀 쓰러졌지만 전리품은 남았어요! 장비와 재화를 모으면 더 강해져요. 뽑기 머신에서 10연 뽑기를 하세요 (티켓 10장)", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Hero", ShowQuests = true, -- 여기서부터 화면에 오늘의 퀘스트가 나타나고 던전 게이트가 열린다
 			Reward = { Gold = 500, Xp = 100 } },

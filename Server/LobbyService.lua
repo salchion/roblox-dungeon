@@ -309,9 +309,9 @@ function Lobby.Build()
 	makeDisc(Vector3.new(0, TOP + 0.1, 70), 70, 0.2, Color3.fromRGB(205, 195, 165), Enum.Material.Marble, folder).CanCollide = false
 	makeFountain(Vector3.new(0, TOP, 70), folder)
 	decoratePlaza(folder, Vector3.new(0, TOP, 70), {
-		{ X = -76, Z = 58, R = 20 },  -- 대장간
-		{ X = -76, Z = 118, R = 20 }, -- 뽑기 상점
-		{ X = -76, Z = 88, R = 28 },  -- 작업 광장
+		{ X = -72, Z = 28, R = 20 },  -- 대장간
+		{ X = 72, Z = 28, R = 20 },   -- 뽑기 상점
+		{ X = -30, Z = 28, R = 30 },  -- 훈련 구역
 		{ X = 78, Z = 90, R = 26 },   -- 심연 도전 포탈
 		{ X = 0, Z = HILL_Z, R = 36 },   -- 시작 언덕
 		{ X = -34, Z = 72, R = 26 },     -- 왼쪽 경사로
@@ -619,8 +619,8 @@ function Lobby.Build()
 
 	-- 대장간 (왼쪽 / 서): 모루 + 화로 + 무기 걸이
 	-- (서쪽 "작업 광장": 허수아비 훈련장 - 대장간 - 뽑기 상점이 한 광장을 둘러싸서, 허수아비 앞에서 두 가게가 바로 보인다)
-	local workshop = Vector3.new(-76, TOP, 88)
-	local forgeCenter = Vector3.new(-76, TOP, 58)
+	local workshop = Vector3.new(-30, TOP, 28) -- 훈련 / 강화 / 뽑기 구역: 스폰 언덕에서 북쪽을 보면 한눈에 들어오고 던전 길 쪽에 있다
+	local forgeCenter = Vector3.new(-72, TOP, 28)
 	local anvilPart
 	makeStall(forgeCenter, Color3.fromRGB(190, 70, 55), Color3.fromRGB(235, 225, 205), "🔨 대장간 · 무기 강화", Color3.fromRGB(255, 210, 120), function(base, part)
 		part("AnvilBase", Vector3.new(4, 2.2, 3), Vector3.new(0, 1.7, 1), Color3.fromRGB(45, 45, 50), Enum.Material.Metal)
@@ -645,7 +645,7 @@ function Lobby.Build()
 	end, workshop)
 
 	-- 뽑기 상점 (오른쪽 / 동): 반짝이는 뽑기 머신 + 선반
-	local shopCenter = Vector3.new(-76, TOP, 118)
+	local shopCenter = Vector3.new(72, TOP, 28)
 	local gachaBody
 	makeStall(shopCenter, Color3.fromRGB(120, 70, 200), Color3.fromRGB(255, 225, 150), "🎰 장비 뽑기 상점", Color3.fromRGB(255, 225, 140), function(base, part)
 		part("GachaBase", Vector3.new(8, 2, 6), Vector3.new(0, 1.6, 1.5), Color3.fromRGB(60, 40, 90), Enum.Material.Metal)
@@ -670,8 +670,7 @@ function Lobby.Build()
 	end, workshop)
 
 	-- 작업 광장 바닥 + 마을 중앙 광장에서 이어지는 길 + 가로등
-	makeDisc(workshop + Vector3.new(0, 0.12, 0), 50, 0.2, Color3.fromRGB(196, 186, 168), Enum.Material.Cobblestone, folder).CanCollide = false
-	makePart({ Name = "PathWorkshop", Size = Vector3.new(46, 0.2, 9), Position = Vector3.new(-56, TOP + 0.12, 82), Color = Color3.fromRGB(205, 195, 175), Material = Enum.Material.Marble, CanCollide = false }, folder)
+	makeDisc(workshop + Vector3.new(0, 0.12, 0), 32, 0.2, Color3.fromRGB(196, 186, 168), Enum.Material.Cobblestone, folder).CanCollide = false
 	for _, lampOffset in ipairs({ Vector3.new(-18, 0, -6), Vector3.new(18, 0, -6), Vector3.new(-18, 0, 6), Vector3.new(18, 0, 6) }) do
 		makeLamp(workshop + lampOffset, folder)
 	end
@@ -866,7 +865,7 @@ function Lobby.Build()
 	warpPrompt.Parent = beam
 
 	-- 허수아비 훈련장 입구 표지 (서쪽, 실제 허수아비는 DummyService 가 놓는다)
-	local trainingSign = makePart({ Name = "TrainingSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(-34, 24, 72), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
+	local trainingSign = makePart({ Name = "TrainingSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(-30, 24, 36), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
 	makeLabel(trainingSign, "🎯 허수아비 훈련장\n전투력이 높을수록 골드 UP", Color3.fromRGB(255, 220, 120), 0, 340, 76, 110)
 
 	-- 쨍한 느낌 줄이기: 네온 부품은 색을 살짝 가라앉히고, 조명은 약하게 (은은하게 빛나는 정도)
@@ -889,7 +888,7 @@ function Lobby.Build()
 		GachaPrompt = gachaPrompt,
 		WarpPrompt = warpPrompt,
 		RiftPrompt = riftPrompt,
-		DummyStart = Vector3.new(-34, TOP, 62), -- 허수아비 하나가 서는 자리
+		DummyStart = Vector3.new(-30, TOP, 28), -- 허수아비 하나가 서는 자리
 		RankBoardCFrame = CFrame.lookAt(Vector3.new(-52, TOP + 16.5, 100), Vector3.new(0, TOP + 16.5, 72)),
 	}
 end
