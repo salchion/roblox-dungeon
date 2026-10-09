@@ -206,7 +206,10 @@ handlers.Ult = function(player, root, _, character)
 	local totalMult = (cfg.Mult or 8) * 0.75 * (1 + (U.UltMult or 0.15) * (skillLevel(player, "Ult") - 1))
 	-- 범위 안의 모든 적을 "동시에" 집중 포격한다: 조준 표시 -> 충격파 -> 전원에게 동시에 빔이 쏟아지는 일제 사격 14회 -> 마지막 대폭발
 	local volleys, volleyGap = 30, 0.045
-	local perShot = math.max(1, math.floor(Dungeon.ComputeDamage(player) * totalMult / volleys))
+	-- 데드아이는 "한 발 피해"가 아니라 무기의 초당 피해 계수(WeaponDpsFactor)에 맞춘다: 한 발 위력이 작은 연사 무기로 진화해도 데드아이가 약해지지 않게
+	local weaponType = Config.GetPlayerWeapon(player)
+	local baseShot = Dungeon.ComputeDamage(player) / weaponType.DamageMult * Config.WeaponDpsFactor(weaponType)
+	local perShot = math.max(1, math.floor(baseShot * totalMult / volleys))
 
 	local field = Instance.new("ForceField")
 	field.Name = "DeadeyeShield"

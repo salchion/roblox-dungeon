@@ -109,7 +109,7 @@ Config.Tutorial = {
 			Reward = { Gold = 100 } },
 		{ Text = "모루에서 무기를 강화하세요! (처음 3번은 무료)", Stat = "Enhances", Goal = 1, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
 			Reward = { Gold = 50 } },
-		{ Text = "계속 강화해보세요! 강화할수록 총이 변해요 (권총은 10번 강화하면 다음 무기로 진화)", Stat = "Enhances", Goal = 2, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
+		{ Text = "계속 강화해보세요! 강화할수록 무기가 강해져요 (권총은 10번 강화하면 더 강한 다음 무기로 진화)", Stat = "Enhances", Goal = 2, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
 			Reward = { Tickets = 1, Gold = 100 } },
 		{ Text = "뽑기 머신에서 장비를 뽑아보세요! (티켓 1장)", Stat = "Rolls", Goal = 1, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Lowest",
 			Reward = { Gold = 300 } },
@@ -119,7 +119,7 @@ Config.Tutorial = {
 		{ Text = "💀 쓰러졌지만 전리품은 남았어요! 장비와 재화를 모으면 더 강해져요. 뽑기 머신에서 10연 뽑기를 하세요 (티켓 10장)", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Hero", ShowQuests = true, -- 여기서부터 화면에 오늘의 퀘스트가 나타나고 던전 게이트가 열린다
 			Reward = { Gold = 500, Xp = 100 } },
 		-- EvolveToTier: 이 번째 무기(3 = 기관단총)가 될 때까지 필요한 강화 횟수를 미션이 시작될 때 계산해서 목표로 쓴다. {무기} = 그 무기 이름
-		{ Text = "💰 모은 골드로 무기를 강화해서 {무기}까지 진화시키세요! 연사가 확 달라져서 필드가 쉬워져요", Stat = "Enhances", Goal = 10, EvolveToTier = 3, Target = "Anvil", TargetName = "모루",
+		{ Text = "💰 모은 골드로 무기를 강화해서 {무기}까지 진화시키세요! 무기가 한층 강해져서 필드가 쉬워져요", Stat = "Enhances", Goal = 10, EvolveToTier = 3, Target = "Anvil", TargetName = "모루",
 			Reward = { Tickets = 2, Xp = 150 } },
 		{ Text = "마지막! 메뉴(I) → 성장 탭에서 훈련을 시작하세요. 자리를 비워도 계속 강해져요 (던전 / 필드에서도 장비와 재화를 얻어요)", Stat = "Trains", Goal = 1, Highlight = "Menu",
 			Reward = { Gold = 1000, Keys = 1, Tickets = 2, Xp = 300 } },
@@ -380,7 +380,7 @@ function Config.Weapon.StepsFor(index)
 end
 
 -- 무기 사다리: 10개 시대 x 10개 종류 = 100종. 시대마다 색 / 재질 / 효과 / 발사체가 크게 바뀌고,
--- 시대 안에서는 권총 -> 리볼버 -> 기관단총 -> 샷건 -> 라이플 -> 저격총 -> 로켓 런처 -> 레일건 -> 화염방사기 -> 플라즈마 캐논 순서로 바뀐다.
+-- 시대 안에서는 권총 -> 기관단총 -> 리볼버 -> 라이플 -> 샷건 -> 화염방사기 -> 플라즈마 캐논 -> 저격총 -> 로켓 런처 -> 레일건 순서로 바뀐다 (CLASS_ORDER).
 -- Shot: 발사체 외형. Style(Ball/Bolt/Orb/Cannon/Fire/Rocket/Rainbow) / Size / Length(Bolt/Rocket) / Speed(초당 거리) / Impact(착탄 입자 수)
 local ERAS = {
 	{ Prefix = "녹슨",   Color = Color3.fromRGB(165, 165, 175), Material = Enum.Material.Metal,  Particles = 0,  Trail = false, Light = 0,
@@ -748,6 +748,13 @@ Config.WeaponTypes = {
 		Desc = "큼직한 플라즈마 탄, 맞은 곳 주변에 작은 폭발 (범위 7)",
 	},
 }
+
+-- 무기 종류의 "초당 피해 계수": 한 발 피해 x 탄 수 / 공격 간격 (산탄 / 화염은 60%만 맞는다고 계산 — 전투력 공식과 같은 가정).
+-- 종류 순서(권총 -> 기관단총 -> ... -> 레일건)대로 1.00 -> 1.36 으로 커지고, 시대가 바뀔 때 x1.4 가 붙어서 "공격 속도가 느려지는 무기"로 진화해도 DPS 는 항상 오른다.
+function Config.WeaponDpsFactor(weaponType)
+	local pellets = weaponType.Pellets > 1 and weaponType.Pellets * 0.6 or 1
+	return weaponType.DamageMult * pellets / weaponType.Cooldown
+end
 
 -- (무기 종류끼리 연사 속도 차이를 줄였다: 초당 약 2~7발. 초당 피해량(DPS)은 그대로 유지하도록 한 발 피해를 맞췄다)
 -- 지금 들고 있는 무기의 종류 능력치 (무기는 강화 단계에 따라 자동으로 바뀐다)

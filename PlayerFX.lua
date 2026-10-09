@@ -578,7 +578,7 @@ do
 		TweenService:Create(title, TweenInfo.new(0.4), { TextTransparency = 0 }):Play()
 		local sub = makeLabel({
 			Size = UDim2.new(0, 560, 0, 26), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.56, 0),
-			Text = string.format("%d번째 무기  ·  공격력 / 연사가 크게 달라졌어요", newIndex), Font = Enum.Font.GothamBold, TextSize = 16,
+			Text = string.format("%d번째 무기  ·  무기가 더 강해졌어요!", newIndex), Font = Enum.Font.GothamBold, TextSize = 16,
 			TextColor3 = Color3.fromRGB(215, 215, 235), TextStrokeTransparency = 0.4, ZIndex = 7, TextTransparency = 1,
 		}, root)
 		task.delay(0.5, function() if sub.Parent then TweenService:Create(sub, TweenInfo.new(0.4), { TextTransparency = 0 }):Play() end end)
