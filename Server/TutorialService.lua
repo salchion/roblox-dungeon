@@ -38,6 +38,18 @@ local function applyFreeze(player)
 	end
 end
 
+-- 안내 카드를 차례로 보여준다 (guard 가 false 를 돌려주면 중단)
+local function playCards(player, cards, guard, firstDelay)
+	task.spawn(function()
+		task.wait(firstDelay or 0)
+		for _, card in ipairs(cards) do
+			if not guard() then return end
+			Remotes.Tutorial:FireClient(player, "Prompt", { Key = card.Key, Title = card.Title, Text = card.Text, Duration = card.Duration or 7 })
+			task.wait((card.Duration or 7) + 0.8)
+		end
+	end)
+end
+
 local function send(player)
 	local state = states[player]
 	if not state or not player.Parent then return end
@@ -71,18 +83,13 @@ local function send(player)
 	if step and step.EvolveToTier and Config.Weapon.Tiers[step.EvolveToTier] then
 		text = string.gsub(text, "{무기}", Config.Weapon.Tiers[step.EvolveToTier].Name)
 	end
-	-- 미션 소개 카드(Intro): 이 미션이 처음 시작될 때 한 번 차례로 보여준다 (던전에 들어가면 중단)
+	-- 미션 소개 카드(Intro): 이 미션이 처음 시작될 때 한 번 차례로 보여준다 (던전에 들어가면 중단. 첫 미션은 MinSeconds 동안 끝까지 보여준다)
 	if step and step.Intro and state.IntroShown ~= state.Step then
 		state.IntroShown = state.Step
 		local introStep = state.Step
-		task.spawn(function()
-			task.wait(2)
-			for _, card in ipairs(step.Intro) do
-				if states[player] ~= state or state.Step ~= introStep or player:GetAttribute("Zone") ~= "Lobby" then return end
-				Remotes.Tutorial:FireClient(player, "Prompt", { Key = card.Key, Title = card.Title, Text = card.Text, Duration = card.Duration or 7 })
-				task.wait((card.Duration or 7) + 0.8)
-			end
-		end)
+		playCards(player, step.Intro, function()
+			return states[player] == state and (state.Step == introStep or step.MinSeconds ~= nil) and player:GetAttribute("Zone") == "Lobby"
+		end, 2)
 	end
 	-- 던전 미션이 나오기 전에는 던전에 들어갈 수 없다
 	local dungeonStep = #Steps + 1
@@ -121,6 +128,7 @@ function Tutorial.Load(player, saved)
 	else
 		state = { Step = 1, Progress = 0 }
 	end
+	state.StepStartedAt = os.clock()
 	states[player] = state
 	send(player)
 	player:GetAttributeChangedSignal("Zone"):Connect(function()
@@ -213,6 +221,12 @@ function complete(player, state, step)
 	state.Step += 1
 	state.Progress = 0
 	state.DynGoal = nil
+	state.StepStartedAt = os.clock()
+	if step.Outro then -- 완료한 뒤 차례로 안내 (방치 / 매일 할 일 등)
+		playCards(player, step.Outro, function()
+			return states[player] == state and player:GetAttribute("Zone") ~= "Dungeon"
+		end, 2.5)
+	end
 	if state.Step > #Steps then
 		Remotes.Notify:FireClient(player, "🎉 튜토리얼 완료! 열쇠가 생겼으니 북쪽 던전에도 도전해보세요. (설정/도움말: H)")
 	end
@@ -233,6 +247,19 @@ Quest.Listeners[#Quest.Listeners + 1] = function(player, stat, amount)
 				Remotes.Notify:FireClient(player, "✅ 목표 달성! 던전에서 나가면 보상을 받아요 (티켓 10장)")
 			end
 			send(player)
+		elseif step.MinSeconds and os.clock() - (state.StepStartedAt or 0) < step.MinSeconds then
+			-- 소개 카드를 다 읽을 시간이 지난 뒤에 완료한다
+			state.Progress = (state.DynGoal or step.Goal)
+			if not state.MinWaiting then
+				state.MinWaiting = true
+				send(player)
+				task.delay(step.MinSeconds - (os.clock() - (state.StepStartedAt or 0)), function()
+					state.MinWaiting = nil
+					if states[player] == state and Steps[state.Step] == step then
+						complete(player, state, step)
+					end
+				end)
+			end
 		else
 			complete(player, state, step)
 		end

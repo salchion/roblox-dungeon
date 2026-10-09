@@ -106,7 +106,14 @@ end
 Config.Tutorial = {
 	Steps = {
 		-- 첫 미션: 언덕 위에서 마을을 한 바퀴 둘러본다 (이동은 잠겨 있고 시점만 돌릴 수 있다). Goal = 10단계 (한 바퀴 ≈ 300°)
-		{ Text = "👀 마을을 둘러보세요! 마우스 우클릭을 누른 채 돌리거나 ◀ ▶ 키로 시점을 한 바퀴 돌려보세요 (이동은 잠시 잠겨요)", Stat = "Look", Goal = 10, Look = true,
+		{ Text = "👀 마을을 둘러보세요! 마우스 우클릭을 누른 채 돌리거나 ◀ ▶ 키로 시점을 한 바퀴 돌려보세요 (이동은 잠시 잠겨요)", Stat = "Look", Goal = 10, Look = true, MinSeconds = 26,
+			-- 게임 소개 카드 (이동이 잠긴 동안 읽는다): 어떤 게임인지 / 조작 / 강해지는 길 / 방치
+			Intro = {
+				{ Key = "🎮", Title = "어서 와요!", Text = "몬스터를 쏴서 강해지고, 구역마다 있는 군주를 쓰러뜨려 가장 끝의 심연(구역 8)까지 나아가는 슈터 RPG예요", Duration = 6 },
+				{ Key = "🖱", Title = "조작은 간단해요", Text = "마우스 클릭 = 조준 사격 · R = 자동 공격 · Q = 대시 · V = 궁극기. 하나씩 직접 해볼 거예요", Duration = 6 },
+				{ Key = "📈", Title = "이렇게 강해져요", Text = "무기 강화 → 장비 뽑기 → 성장(훈련) → 던전 → 환생. 군주를 쓰러뜨릴 때마다 새 구역이 열려요", Duration = 6 },
+				{ Key = "💤", Title = "방치로도 자라요", Text = "훈련은 접속하지 않아도 시간이 지나면 저절로 끝나고, 심연 도전은 한 번 해두면 소탕으로 매일 보상을 받아요", Duration = 6 },
+			},
 			Reward = { Gold = 50 } },
 		{ Text = "마우스를 눌러 허수아비를 쏘세요! (R 키 = 자동 조준)", Stat = "DummyHits", Goal = 8, Target = "Dummy", TargetName = "허수아비",
 			Reward = { Gold = 100 } },
@@ -120,6 +127,11 @@ Config.Tutorial = {
 		{ Text = "동쪽 필드로 나가서 첫 구역의 군주(👑)를 쓰러뜨리세요! ...어딘가 불길한 기운이 느껴져요. 무슨 일이 일어날지도 몰라요. 조심하세요!", Stat = "FieldDeaths", Goal = 1, Target = "Field", TargetName = "필드 입구", Doom = true,
 			Reward = { Gold = 300, Keys = 1, Xp = 100 } },
 		{ Text = "아직 너무 약해요! 메뉴(I) → 성장 탭에서 훈련을 시작하세요. 훈련하면 영구적으로 강해져요", Stat = "Trains", Goal = 1, Highlight = "Menu",
+			-- 완료한 뒤 차례로: 방치(시간으로 자라는 것)가 무엇인지 알려준다
+			Outro = {
+				{ Key = "⏱", Title = "훈련은 저절로 끝나요", Text = "방금 시작한 훈련은 시간이 지나면 저절로 끝나요. 게임을 꺼 둬도 시간은 흘러요", Duration = 7 },
+				{ Key = "🎫", Title = "시간 단축권", Text = "퀘스트나 상점에서 얻는 시간 단축권을 쓰면 바로 끝낼 수 있어요. 슬롯이 비면 또 훈련을 걸어 두세요", Duration = 7 },
+			},
 			Reward = { Gold = 400, Xp = 100 } },
 		{ Text = "북쪽 던전 게이트에서 던전에 들어가 웨이브를 2번 막아내세요! (열쇠 1개, 달성 후 던전에서 나오면 티켓 10장 보상!)", Stat = "DungeonWaves", Goal = 2, Target = "Gate", TargetName = "던전 게이트", AfterDungeon = true,
 			-- 던전을 처음 소개하는 안내 카드 (이 미션이 시작될 때 차례로 한 번): 성장을 배운 직후 "장비를 얻는 곳"으로 던전을 알려준다
@@ -136,6 +148,12 @@ Config.Tutorial = {
 		{ Text = "💰 던전에서 모은 골드로 무기를 강화해서 {무기}까지 진화시키세요! 연사가 확 달라져서 필드가 쉬워져요", Stat = "Enhances", Goal = 10, EvolveToTier = 3, Target = "Anvil", TargetName = "모루",
 			Reward = { Tickets = 2, Xp = 150 } },
 		{ Text = "이제 다시 필드로! 강해진 힘으로 몬스터 15마리를 처치하세요", Stat = "Kills", Goal = 15, Target = "Field", TargetName = "필드 입구",
+			Outro = {
+				{ Key = "🎉", Title = "튜토리얼 끝!", Text = "이제 직접 키워 봐요. 앞으로는 군주를 쓰러뜨려 다음 구역을 열고, 장비와 무기를 키워서 더 깊은 구역으로 가요", Duration = 8 },
+				{ Key = "📅", Title = "매일 할 일", Text = "🌀 동쪽 광장 분홍 포탈에서 심연 도전(소탕) · 🏰 던전 무료 입장 3번 · 📋 일일 퀘스트 (메뉴 I)", Duration = 8 },
+				{ Key = "💤", Title = "방치 요소", Text = "⏱ 훈련 슬롯을 항상 채워 두기 · ⚡ 심연 소탕은 내 최고 점수가 기준! 직접 점수를 올릴수록 방치 보상이 커져요", Duration = 8 },
+				{ Key = "🌟", Title = "먼 목표", Text = "구역 8 심연의 군주 → 최고 레벨 → 환생(영구 공격력 + 골드 획득량). 이제 마음껏 즐겨요!", Duration = 8 },
+			},
 			Reward = { Gold = 1000, Keys = 1, Tickets = 2, Xp = 300 } },
 	},
 }
