@@ -804,6 +804,89 @@ Remotes.Gear.OnClientEvent:Connect(function(action, result)
 	refreshGear()
 end)
 
+-- 던전 랜덤 보너스: 슬롯머신처럼 아이콘이 돌다가 [강화]와 (가끔) [패널티]가 정해진다. 고르는 건 없고 전투는 계속된다.
+do
+	local ICONS = { "🔱", "💥", "⚡", "🔥", "⏩", "🎯", "❤", "💚", "⭐", "💰", "🎫", "🌪" }
+	local PEN_ICONS = { "🪨", "😡", "💨", "🐺", "🔫", "☠" }
+	local popup = create("Frame", {
+		Name = "RollPopup", Size = UDim2.new(0, 460, 0, 96), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 160),
+		BackgroundColor3 = Color3.fromRGB(18, 20, 30), BackgroundTransparency = 0.1, BorderSizePixel = 0, Visible = false, ZIndex = 75,
+	}, gui)
+	rounded(popup, 14)
+	local popScale = create("UIScale", { Scale = 1 }, popup)
+	local function half(xScale, color)
+		local frame = create("Frame", {
+			Size = UDim2.new(0.5, -8, 1, -12), Position = UDim2.new(xScale, xScale == 0 and 6 or 2, 0, 6),
+			BackgroundColor3 = color, BackgroundTransparency = 0.75, BorderSizePixel = 0, ZIndex = 76,
+		}, popup)
+		rounded(frame, 10)
+		local stroke = create("UIStroke", { Color = color, Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame)
+		local icon = makeLabel({ Size = UDim2.new(0, 56, 1, 0), Position = UDim2.new(0, 4, 0, 0), TextSize = 38, ZIndex = 77 }, frame)
+		local title = makeLabel({
+			Size = UDim2.new(1, -66, 0, 24), Position = UDim2.new(0, 62, 0, 8), Font = Enum.Font.GothamBlack, TextSize = 17,
+			TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 77,
+		}, frame)
+		local desc = makeLabel({
+			Size = UDim2.new(1, -66, 0, 40), Position = UDim2.new(0, 62, 0, 32), TextSize = 12, TextWrapped = true,
+			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(215, 215, 230), ZIndex = 77,
+		}, frame)
+		return { Frame = frame, Stroke = stroke, Icon = icon, Title = title, Desc = desc }
+	end
+	local buffHalf = half(0, Color3.fromRGB(110, 210, 255))
+	local penHalf = half(0.5, Color3.fromRGB(255, 90, 80))
+	local token = 0
+	Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
+		if action ~= "Roll" then return end
+		token += 1
+		local mine = token
+		popup.Visible = true
+		popScale.Scale = 0.6
+		TweenService:Create(popScale, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+		buffHalf.Title.Text, buffHalf.Desc.Text = "강화 추첨 중…", ""
+		penHalf.Title.Text, penHalf.Desc.Text = "", ""
+		task.spawn(function()
+			for step = 1, 9 do -- 아이콘이 빠르게 돌아간다
+				if token ~= mine then return end
+				buffHalf.Icon.Text = ICONS[math.random(#ICONS)]
+				penHalf.Icon.Text = data.Penalty and PEN_ICONS[math.random(#PEN_ICONS)] or ""
+				SoundBank.Play(sfxParent, "Gacha_Tick")
+				task.wait(0.06 + step * 0.012)
+			end
+			if token ~= mine then return end
+			local buff = data.Buff
+			if buff then
+				local special = buff.Special
+				local color = special and Color3.fromRGB(255, 195, 70) or Color3.fromRGB(110, 210, 255)
+				buffHalf.Icon.Text = buff.Icon
+				buffHalf.Title.Text = "✨ " .. buff.Name
+				buffHalf.Title.TextColor3 = color
+				buffHalf.Desc.Text = buff.Desc
+				buffHalf.Stroke.Color = color
+				buffHalf.Frame.BackgroundColor3 = color
+			end
+			SoundBank.Play(sfxParent, "Enh_Success")
+			if data.Penalty then
+				penHalf.Icon.Text = data.Penalty.Icon
+				penHalf.Title.Text = "⚠ " .. data.Penalty.Name
+				penHalf.Title.TextColor3 = Color3.fromRGB(255, 130, 120)
+				penHalf.Desc.Text = string.format("%s · 대신 골드 +%d%%", data.Penalty.Desc, data.Penalty.Gold)
+				penHalf.Frame.Visible = true
+				task.delay(0.12, function() SoundBank.Play(sfxParent, "Enh_Fail") end)
+			else
+				penHalf.Icon.Text = "🍀"
+				penHalf.Title.Text = "패널티 없음!"
+				penHalf.Title.TextColor3 = Color3.fromRGB(150, 255, 170)
+				penHalf.Desc.Text = "이번엔 운이 좋았어요"
+			end
+			TweenService:Create(popScale, TweenInfo.new(0.12), { Scale = 1.08 }):Play()
+			task.wait(0.14)
+			TweenService:Create(popScale, TweenInfo.new(0.2, Enum.EasingStyle.Back), { Scale = 1 }):Play()
+			task.wait(3.2)
+			if token == mine then popup.Visible = false end
+		end)
+	end)
+end
+
 -- 뽑기로 지금 끼고 있는 것보다 좋은 장비가 나오면 "강한 장비로 자동 장착" 버튼이 떠오른다 (누르면 부위마다 가장 좋은 장비로 교체)
 do
 	local popup = create("Frame", {
@@ -1517,13 +1600,16 @@ local function refreshBanner()
 
 	if state.Phase == "Starting" then
 		bannerTitle.Text = string.format("%s 입장!", state.TypeName or "던전")
-		bannerSub.Text = string.format("[%s] %d초 후 첫 웨이브 시작", state.DifficultyName or "", state.TimeLeft)
+		bannerSub.Text = string.format("[%s] %d초 후 시작! 몰려오는 몬스터를 버텨요", state.DifficultyName or "", state.TimeLeft)
+	elseif state.Phase == "Wave" and state.SurviveLeft then
+		bannerTitle.Text = string.format("🛡 버텨라!  %d초", state.SurviveLeft)
+		bannerSub.Text = string.format("%s · %s · 남은 몬스터 %d · 끝까지 버티면 보스 등장!", state.TypeName or "", state.DifficultyName or "", state.MonstersLeft)
 	elseif state.Phase == "Wave" then
 		bannerTitle.Text = state.TotalWaves == 0 and string.format("🏯 %d층", state.Wave) or string.format("구역 %d / %d", state.Wave, state.TotalWaves)
 		bannerSub.Text = string.format("%s · %s · 남은 몬스터 %d · 앞으로 쭉!", state.TypeName or "", state.DifficultyName or "", state.MonstersLeft)
 	elseif state.Phase == "StatPhase" then
-		bannerTitle.Text = string.format("특성 선택  %d초", state.TimeLeft)
-		bannerSub.Text = (state.TotalWaves ~= 0 and state.Wave >= state.TotalWaves) and "웨이브 클리어! 다음은 보스전!" or string.format("웨이브 %d 클리어! 특성 카드를 고르세요 (1 / 2 / 3)", state.Wave)
+		bannerTitle.Text = "🎁 보너스 발동!"
+		bannerSub.Text = "랜덤 강화가 적용됐어요"
 	elseif state.Phase == "Moving" then
 		bannerTitle.Text = state.StageText or "다음 방으로 이동하세요"
 		bannerSub.Text = "하늘색 빛기둥을 따라가세요"
@@ -1570,7 +1656,7 @@ local function showResult(result)
 			end
 			resultInfo.Text = string.format(
 				"%s\n획득 골드  +%d G   🎫 티켓 +%d\n%s\n%d초 후 로비로 이동",
-				result.TotalWaves == 0 and string.format("🏯 도달 %d층 (최고 %d층)", result.Wave, player:GetAttribute("TowerBest") or 0) or string.format("도달 웨이브 %d / %d", result.Wave, result.TotalWaves), result.Gold, result.Tickets or 0,
+				result.Endless and string.format("🏯 도달 %d층 (최고 %d층)", result.Wave, player:GetAttribute("TowerBest") or 0) or (result.Victory and "끝까지 버텨서 보스 격파!" or "버티지 못했어요"), result.Gold, result.Tickets or 0,
 				#lootLines > 0 and ("<b>📦 보스 상자</b>\n" .. table.concat(lootLines, "\n")) or "", remaining
 			)
 			task.wait(1)
@@ -3250,7 +3336,7 @@ for index, key in ipairs(Config.Dungeon.Types.Order) do
 	makeLabel({
 		Size = UDim2.new(1, -16, 1, -12), Position = UDim2.new(0, 8, 0, 6), RichText = true,
 		Text = string.format("<font size='20'><b>%s</b></font>\n\n<font color='#bbbbcc' size='13'>%s</font>\n\n%s\n권장 전투력 %d",
-			info.Name, info.Desc, info.Endless and "웨이브 ∞ (최고 층 도전)" or ("웨이브 " .. info.Waves .. " + 보스"), info.RecommendedPower),
+			info.Name, info.Desc, info.Endless and "끝없는 도전 (최고 층 기록)" or (string.format("%d초 버티기 + 보스", info.Waves * Config.Dungeon.SurvivePerWave)), info.RecommendedPower),
 		TextSize = 15, TextYAlignment = Enum.TextYAlignment.Top,
 	}, card)
 	typeCards[key] = card
@@ -3291,7 +3377,7 @@ function refreshSelect()
 	local difficulty = Config.Dungeon.Difficulties[selectedDifficulty]
 	summaryLabel.Text = string.format(
 		"<b>%s · %s</b>\n%s → 보스 <font color='#ff9a9a'>%s</font>\n권장 전투력 <font color='#ffe16e'>%d</font>  (내 전투력 %d)\n골드 x%.1f · 티켓 %d장 · 보스 상자 장비 %d개\n🎟 오늘 무료 입장 <b>%d / %d회</b> · 다 쓰면 <b>%s %d개</b> 필요 (보유 %d개, 더 높은 열쇠도 가능)\n열쇠는 필드 구역 군주가 줘요: 앞 구역 🗝 쉬움 · 중간 🔑 보통 · 뒤 구역 🏆 어려움",
-		dungeonType.Name, difficulty.Name, dungeonType.Endless and "끝없는 웨이브 (나의 최고 층 " .. (player:GetAttribute("TowerBest") or 0) .. ")" or ("웨이브 " .. dungeonType.Waves .. "개"), dungeonType.Boss.Name,
+		dungeonType.Name, difficulty.Name, dungeonType.Endless and "끝없는 웨이브 (나의 최고 층 " .. (player:GetAttribute("TowerBest") or 0) .. ")" or (string.format("%d초 버티기", dungeonType.Waves * Config.Dungeon.SurvivePerWave)), dungeonType.Boss.Name,
 		dungeonType.RecommendedPower, player:GetAttribute("Power") or 0,
 		dungeonType.GoldMult * difficulty.GoldMult, difficulty.Tickets, Config.Loot.DungeonChestCount,
 		player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily, Config.Keys.TierNames[difficulty.KeyTier or 1], difficulty.KeyCost,
@@ -3871,7 +3957,7 @@ makeLabel({
 		"<b>🎯 게임 흐름</b>",
 		"1. 로비 허수아비로 골드를 벌어 무기를 강화하세요 (훈련 더미는 방어력이 있어서 전투력이 모자라면 튕겨 나가요)",
 		"2. 동쪽 <b>필드</b>에서 몬스터를 잡아 장비를 얻고 레벨을 올리세요 (황금 고블린을 놓치지 마세요!)",
-		"3. 북쪽 <b>던전</b>은 열쇠가 필요해요. 웨이브마다 특성 카드를 고르고, 보스 상자에서 장비를 얻어요",
+		"3. 북쪽 <b>던전</b>은 열쇠가 필요해요. 정해진 시간을 버티면 보스가 나와요. 중간중간 랜덤 강화(와 패널티)가 터지고, 보스 상자에서 장비를 얻어요",
 		"4. 성장 탭에서 훈련을 걸어두고, 장비 세트/유니크를 모아 전투력을 키우세요",
 		"5. 최고 레벨이 되면 <b>환생</b>으로 영구 보너스를 받고 다시 도전할 수 있어요",
 	}, "\n"),

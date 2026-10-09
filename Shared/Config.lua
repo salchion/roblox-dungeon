@@ -271,6 +271,45 @@ for key, value in pairs(dungeonBase) do -- 위쪽(특성 / 변이 / 이벤트)�
 	Config.Dungeon[key] = value
 end
 
+-- 던전 진행: 웨이브 없이 "버티기" (정해진 시간 동안 몬스터가 계속 몰려오고, 버티면 보스). 심연 도전(점수제)과 비슷하지만 보스와 보상이 있다.
+Config.Dungeon.SurvivePerWave = 22   -- 던전 종류의 Waves 수 x 이 초 = 버텨야 하는 시간 (고블린 동굴 110초 / 얼음 132초 / 화염 154초)
+Config.Dungeon.BonusInterval = 20    -- 이 간격(초)마다 랜덤 강화 / 랜덤 패널티가 터진다 (선택 없이 자동 적용)
+
+-- 랜덤 강화 (고르지 않고 무작위로 하나 걸린다. Perk = 기존 특성을 Stacks 단계만큼 올림 / Weight = 나올 확률 가중치)
+Config.RunBuffs = {
+	{ Icon = "🔱", Name = "분산탄",       Desc = "탄이 +1발 부채꼴로 나간다",          Perk = "Multi",  Special = true },
+	{ Icon = "➳",  Name = "관통탄",       Desc = "탄이 적을 +1마리 더 관통",           Perk = "Pierce", Special = true },
+	{ Icon = "💥", Name = "폭발탄",       Desc = "맞은 적 주변이 폭발",                Perk = "Boom",   Special = true },
+	{ Icon = "⚡", Name = "연쇄 번개",    Desc = "맞은 적에게서 번개가 튄다",          Perk = "Chain",  Special = true },
+	{ Icon = "🩸", Name = "흡혈",         Desc = "맞힐 때마다 체력 회복",              Perk = "Vamp",   Special = true },
+	{ Icon = "🔥", Name = "강타",         Desc = "공격력 +18%",                        Perk = "Power" },
+	{ Icon = "⏩", Name = "속사",         Desc = "공격 속도 +8%",                      Perk = "Rapid" },
+	{ Icon = "🎯", Name = "급소",         Desc = "치명타 확률 +4%",                    Perk = "Crit" },
+	{ Icon = "❤",  Name = "강인함",       Desc = "최대 체력 +15, 즉시 회복",           Perk = "Vital" },
+	{ Icon = "💢", Name = "대폭 강타",    Desc = "공격력 +36%!",                       Perk = "Power", Stacks = 2, Weight = 0.7, Special = true },
+	{ Icon = "🌪", Name = "총알 폭풍",    Desc = "공격 속도 +24%!",                    Perk = "Rapid", Stacks = 3, Weight = 0.7, Special = true },
+	{ Icon = "👁", Name = "저격수의 눈",  Desc = "치명타 확률 +12%!",                  Perk = "Crit",  Stacks = 3, Weight = 0.7, Special = true },
+	{ Icon = "🛡", Name = "강철 심장",    Desc = "최대 체력 +45, 즉시 회복!",          Perk = "Vital", Stacks = 3, Weight = 0.7, Special = true },
+	{ Icon = "✨", Name = "화력 집중",    Desc = "강타 + 속사 + 급소를 한꺼번에",      Combo = { "Power", "Rapid", "Crit" }, Weight = 0.8, Special = true },
+	{ Icon = "💚", Name = "완전 회복",    Desc = "체력이 가득 찬다",                   Effect = "Heal" },
+	{ Icon = "🔰", Name = "보호막",       Desc = "10초 동안 무적",                     Effect = "Shield" },
+	{ Icon = "⭐", Name = "궁극기 충전",  Desc = "궁극기 게이지가 가득 찬다",          Effect = "Ult", Weight = 0.8 },
+	{ Icon = "💰", Name = "황금 손",      Desc = "이번 던전 골드 +20%",                Effect = "Gold" },
+	{ Icon = "📘", Name = "경험의 샘",    Desc = "경험치를 듬뿍 얻는다",               Effect = "Xp" },
+	{ Icon = "🎫", Name = "행운의 티켓",  Desc = "장비 티켓 +1",                       Effect = "Ticket", Weight = 0.35, Special = true },
+}
+
+-- 랜덤 패널티 (적이 강해지는 대신 골드를 더 준다. 누적되지만 상한이 있다)
+Config.RunPenalties = {
+	{ Icon = "🪨", Name = "단단한 적",   Desc = "적 체력 +25%",           HealthMult = 1.25, Gold = 0.15 },
+	{ Icon = "😡", Name = "사나운 적",   Desc = "적 공격력 +30%",         DamageMult = 1.30, Gold = 0.15 },
+	{ Icon = "💨", Name = "빠른 적",     Desc = "적 이동 속도 +12%",      SpeedMult = 1.12, Gold = 0.15 },
+	{ Icon = "🐺", Name = "떼거지",      Desc = "적이 더 자주 몰려온다",   CountMult = 1.25, Gold = 0.20 },
+	{ Icon = "🔫", Name = "광속 사격",   Desc = "적 발사 간격 -15%",      IntervalMult = 0.85, Gold = 0.20 },
+	{ Icon = "🛡", Name = "철갑 군단",   Desc = "적 체력 +40%, 공격력 +10%", HealthMult = 1.40, DamageMult = 1.10, Gold = 0.30 },
+	{ Icon = "☠",  Name = "악몽의 기운", Desc = "적 체력/공격력 +15%, 속도 +5%", HealthMult = 1.15, DamageMult = 1.15, SpeedMult = 1.05, Gold = 0.30 },
+}
+
 -- 웨이브별 몬스터 마릿수 (파티 인원이 많을수록 늘어남)
 function Config.Dungeon.GetMonsterCount(wave, partySize)
 	return math.floor((2 + wave) * (1 + 0.5 * (partySize - 1)))

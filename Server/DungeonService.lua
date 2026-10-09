@@ -365,6 +365,12 @@ local function spawnMonster(run, level, position)
 		stats.Speed *= mutator.SpeedMult or 1
 		stats.ShotInterval *= mutator.IntervalMult or 1
 	end
+	if run.PenHealth then -- 랜덤 패널티로 누적된 적 강화
+		stats.MaxHealth = math.floor(stats.MaxHealth * run.PenHealth)
+		stats.ShotDamage = math.floor(stats.ShotDamage * run.PenDamage)
+		stats.Speed *= run.PenSpeed
+		stats.ShotInterval *= run.PenInterval
+	end
 
 	local color = def.Color:Lerp(run.Type.MonsterColor, 0.25)
 	local part = MonsterTypes.Build(typeKey, stats.Size, color, position or ringPosition(run, stats.Size), run.MonstersFolder)
@@ -1498,6 +1504,7 @@ local function broadcast(run)
 		ReadyCount = readyCount,
 		MemberCount = #run.Members,
 		StageText = run.StageText,
+		SurviveLeft = run.SurviveEnd and math.max(0, math.ceil(run.SurviveEnd - os.clock())) or nil,
 		MutatorText = run.Mutator and string.format("%s %s — %s", run.Mutator.Icon, run.Mutator.Name, run.Mutator.Desc) or nil,
 		BossName = run.Boss and run.BossName or nil,
 		BossRatio = run.Boss and math.max(run.Boss.Health, 0) / run.Boss.MaxHealth or nil,
@@ -1573,7 +1580,7 @@ local function finish(run, victory)
 			Tickets = run.TicketsEarned[member] or 0,
 			Loot = run.LootLines[member] or {},
 			Wave = run.Wave,
-			TotalWaves = run.TotalWaves,
+			TotalWaves = run.TotalWaves, Endless = run.Type.Endless == true,
 			TypeName = run.Type.Name,
 			DifficultyName = run.Difficulty.Name,
 			ReturnDelay = D.ReturnDelay,
@@ -1656,7 +1663,7 @@ local function waitFor(run, predicate)
 end
 
 local function spawnWave(run, wave)
-	local count = math.min(36, math.floor(D.GetMonsterCount(wave, run.PartySize) * (run.Mutator and run.Mutator.CountMult or 1)))
+	local count = math.min(36, math.floor(D.GetMonsterCount(wave, run.PartySize) * (run.Mutator and run.Mutator.CountMult or 1) * (run.PenCount or 1)))
 	local level = math.max(1, D.GetWaveMonsterLevel(wave) + run.LevelBonus)
 	-- 한 마리씩 야금야금 나오면 맛이 떨어진다: 세 번에 나눠 "우르르" 한꺼번에 쏟아낸다 (그룹 사이 0.7초)
 	local groups = count >= 6 and 3 or 1
@@ -1684,35 +1691,92 @@ local function allReady(run)
 	return #run.Members > 0
 end
 
--- 웨이브 클리어 후 스탯 분배 시간
-local function statPhase(run)
-	run.Phase = "StatPhase"
-	run.PhaseEnd = os.clock() + D.StatPhaseTime
-	run.Ready = {}
-
-	run.Offers = {}
-	for _, member in ipairs(run.Members) do
-		applyMaxHealth(member, math.huge)
-		local offer = rollOffer(member)
-		run.Offers[member] = offer
-		Remotes.Dungeon:FireClient(member, "Perks", { Keys = offer })
+-- 랜덤 보너스: 고르지 않고 무작위로 "강화" 하나가 모두에게 걸리고, 가끔 "패널티"(적이 강해지는 대신 골드 증가)가 같이 터진다.
+local function pickWeighted(list, allowed)
+	local total = 0
+	for _, entry in ipairs(list) do
+		if not allowed or allowed(entry) then total += entry.Weight or 1 end
 	end
-	notifyAll(run, string.format("웨이브 %d 클리어! 특성을 하나 고르세요 (%d초)", run.Wave, D.StatPhaseTime))
-
-	local ok = waitFor(run, function()
-		return os.clock() >= run.PhaseEnd or allReady(run)
-	end)
-	if ok and allReady(run) then
-		task.wait(1.0) -- 다 골랐으면 잠깐 선택 연출을 보여준 뒤 자동으로 다음 구역으로
-	end
-	-- 고르지 못한 사람은 후보 중 하나가 자동 선택된다
-	for _, member in ipairs(run.Members) do
-		local offer = run.Offers and run.Offers[member]
-		if offer and #offer > 0 then
-			Dungeon.Upgrade(member, offer[math.random(#offer)])
+	if total <= 0 then return nil end
+	local roll = math.random() * total
+	for _, entry in ipairs(list) do
+		if not allowed or allowed(entry) then
+			roll -= entry.Weight or 1
+			if roll <= 0 then return entry end
 		end
 	end
-	return ok
+end
+
+local function applyBuff(run, member, buff)
+	if buff.Perk then
+		for _ = 1, buff.Stacks or 1 do
+			if not perkMaxed(member, buff.Perk) then applyPerk(member, buff.Perk) end
+		end
+	elseif buff.Combo then
+		for _, key in ipairs(buff.Combo) do
+			if not perkMaxed(member, key) then applyPerk(member, key) end
+		end
+	elseif buff.Effect == "Heal" then
+		applyMaxHealth(member, math.huge)
+	elseif buff.Effect == "Shield" then
+		if member.Character then
+			local shield = Instance.new("ForceField")
+			shield.Parent = member.Character
+			game:GetService("Debris"):AddItem(shield, 10)
+		end
+	elseif buff.Effect == "Ult" then
+		member:SetAttribute("UltCharge", Config.Skills.Ult.Cost)
+	elseif buff.Effect == "Gold" then
+		run.GoldMult *= 1.2
+	elseif buff.Effect == "Xp" then
+		Level.AddXP(member, math.floor(Config.Xp.WaveClear * math.max(1, run.Wave or 1) * 2 * run.GoldMult + 0.5))
+	elseif buff.Effect == "Ticket" then
+		member:SetAttribute("Tickets", (member:GetAttribute("Tickets") or 0) + 1)
+		run.TicketsEarned[member] = (run.TicketsEarned[member] or 0) + 1
+	end
+end
+
+local function applyPenalty(run, pen)
+	run.PenHealth = math.min(3, (run.PenHealth or 1) * (pen.HealthMult or 1))
+	run.PenDamage = math.min(2.5, (run.PenDamage or 1) * (pen.DamageMult or 1))
+	run.PenSpeed = math.min(1.5, (run.PenSpeed or 1) * (pen.SpeedMult or 1))
+	run.PenCount = math.min(2, (run.PenCount or 1) * (pen.CountMult or 1))
+	run.PenInterval = math.max(0.6, (run.PenInterval or 1) * (pen.IntervalMult or 1))
+	run.GoldMult *= 1 + (pen.Gold or 0)
+end
+
+local function rollBonus(run, penaltyChance)
+	local pen = math.random() < penaltyChance and pickWeighted(Config.RunPenalties) or nil
+	if pen then applyPenalty(run, pen) end
+	for _, member in ipairs(run.Members) do
+		local buff = pickWeighted(Config.RunBuffs, function(entry)
+			if entry.Perk then return not perkMaxed(member, entry.Perk) end
+			return true
+		end)
+		if buff then applyBuff(run, member, buff) end
+		local root = getAliveParts(member)
+		if root and buff then
+			local color = buff.Special and Color3.fromRGB(255, 190, 60) or Color3.fromRGB(120, 220, 255)
+			Effects.Burst(root.Position, color, buff.Special and 90 or 55)
+			Effects.FloatText(root.Position + Vector3.new(0, 7, 0), string.format("%s %s!", buff.Icon, buff.Name), color)
+		end
+		Remotes.Dungeon:FireClient(member, "Roll", {
+			Buff = buff and { Icon = buff.Icon, Name = buff.Name, Desc = buff.Desc, Special = buff.Special == true } or nil,
+			Penalty = pen and { Icon = pen.Icon, Name = pen.Name, Desc = pen.Desc, Gold = math.floor((pen.Gold or 0) * 100) } or nil,
+		})
+	end
+end
+
+-- 웨이브 클리어 후(탑 / 이벤트방): 잠깐 숨 돌리는 사이 랜덤 보너스가 터진다 (선택은 없다)
+local function statPhase(run)
+	run.Phase = "StatPhase"
+	run.PhaseEnd = os.clock() + 2.5
+	run.Ready = {}
+	for _, member in ipairs(run.Members) do
+		applyMaxHealth(member, math.huge)
+	end
+	rollBonus(run, 0.5)
+	return waitFor(run, function() return os.clock() >= run.PhaseEnd end)
 end
 
 -- 무한의 탑: 쓰러질 때까지 웨이브가 계속된다. 클리어한 층이 기록되고, 5층마다 티켓.
@@ -1978,6 +2042,99 @@ local function countByRoom(run)
 		end
 	end
 	return counts
+end
+
+-- 가장 가까운 살아 있는 플레이어 주변의 몬스터 등장 지점들 (minD ~ maxD 거리). 웨이브 없이 계속 쏟아내는 용도.
+local function nearSpawnPoints(run, minD, maxD)
+	local sum, n = Vector3.zero, 0
+	for _, member in ipairs(run.Members) do
+		local root = getAliveParts(member)
+		if root then sum += root.Position n += 1 end
+	end
+	if n == 0 or not run.AllSpawns then return nil end
+	local center = sum / n
+	local list, all = {}, {}
+	for _, point in ipairs(run.AllSpawns) do
+		local d = Vector3.new(point.X - center.X, 0, point.Z - center.Z).Magnitude
+		table.insert(all, { Point = point, D = d })
+		if d >= minD and d <= maxD then table.insert(list, point) end
+	end
+	if #list < 3 then
+		table.sort(all, function(a, b) return a.D < b.D end)
+		list = {}
+		for _, entry in ipairs(all) do
+			if entry.D >= 10 and #list < 6 then table.insert(list, entry.Point) end
+		end
+	end
+	return list
+end
+
+-- 버티기 진행: 웨이브 없이 정해진 시간 동안 몬스터가 계속 몰려오고(점점 빨라진다), 중간중간 랜덤 강화 / 패널티가 터진다.
+-- 끝까지 버티면 보스가 나타난다. (심연 도전과 비슷하지만 점수제가 아니라 보스 / 보상이 있는 일반 던전)
+local function surviveLoop(run)
+	run.PhaseEnd = os.clock() + D.StartCountdown
+	notifyAll(run, "🛡 몰려오는 몬스터를 버텨내세요! 끝까지 버티면 보스가 나타나요")
+	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
+	run.PhaseEnd = nil
+
+	local waves = math.max(1, run.Type.Waves or 5)
+	local duration = math.max(60, waves * D.SurvivePerWave)
+	local startedAt = os.clock()
+	run.SurviveEnd = startedAt + duration
+	run.Phase = "Wave"
+	run.TotalWaves = 0
+	run.Wave = 1
+	local nextSpawn = startedAt
+	local nextBonus = startedAt + 9 -- 첫 보너스는 일찍: 시작하자마자 "뭔가 터진다"
+	local bonusCount = 0
+	local partyScale = 1 + 0.5 * (run.PartySize - 1)
+
+	while not run.Destroyed and run.Phase ~= "Ended" do
+		if allDown(run) then
+			finish(run, false)
+			return
+		end
+		local now = os.clock()
+		if now >= run.SurviveEnd then break end
+		local progress = (now - startedAt) / duration
+		run.Wave = 1 + math.floor(progress * waves)
+
+		if now >= nextSpawn then
+			local cap = math.floor((12 + 12 * progress) * partyScale)
+			if run.MonsterCount < cap then
+				run.SpawnPoints = nearSpawnPoints(run, 22, 75) or run.AllSpawns
+				local level = math.max(1, D.GetWaveMonsterLevel(run.Wave) + run.LevelBonus)
+				for _ = 1, math.random(2, 3) do
+					spawnMonster(run, level)
+				end
+			end
+			nextSpawn = now + (1.6 - 0.8 * progress) / (run.PenCount or 1)
+		end
+
+		if now >= nextBonus then
+			bonusCount += 1
+			nextBonus = now + D.BonusInterval
+			giveGold(run, D.WaveClearGold * bonusCount)
+			giveXp(run, Config.Xp.WaveClear * bonusCount)
+			for _, member in ipairs(run.Members) do
+				Quest.Add(member, "DungeonWaves", 1)
+			end
+			rollBonus(run, bonusCount >= 2 and 0.6 or 0.3)
+		end
+		task.wait(0.25)
+	end
+	if run.Destroyed or run.Phase == "Ended" then return end
+
+	-- 보스: 플레이어 가까이에서 등장
+	run.SurviveEnd = nil
+	run.Phase = "Boss"
+	run.StageText = nil
+	local spots = nearSpawnPoints(run, 35, 90)
+	if spots and #spots > 0 then run.BossPos = spots[math.random(#spots)] end
+	notifyAll(run, "⚠ " .. run.BossName .. "이(가) 나타났다! 공격을 피하며 쓰러뜨리세요!")
+	spawnBoss(run)
+	if not waitFor(run, function() return run.BossDead == true end) then return end
+	finish(run, true)
 end
 
 -- 콜로세움 진행: 중앙에서 버티며 웨이브마다 사방의 문에서 몰려오는 몬스터를 처치 -> 특성 선택 -> ... -> 보스
@@ -2305,136 +2462,7 @@ local function runLoop(run)
 		towerLoop(run)
 		return
 	end
-	if not run.Rooms then -- 콜로세움 (방이 없는 한 판짜리 투기장)
-		colosseumLoop(run)
-		return
-	end
-
-	-- 방 계획: 시작방(1) / 중간 방들(전투 + 이벤트) / 보스방(마지막)
-	local rooms = run.Rooms
-	local inner = #rooms - 2
-	local eventKinds = {}
-	if inner >= 3 then
-		local pool = table.clone(D.Events.Order)
-		local slots = { math.max(2, math.floor(inner * 0.4 + 0.5)) }
-		if inner >= 6 then
-			table.insert(slots, math.floor(inner * 0.8 + 0.5))
-		end
-		for _, slot in ipairs(slots) do
-			if not eventKinds[slot + 1] and #pool > 0 then
-				eventKinds[slot + 1] = table.remove(pool, math.random(#pool))
-			end
-		end
-	end
-
-	local combatRooms = {}   -- 방 번호 목록
-	for index = 2, #rooms - 1 do
-		if not eventKinds[index] then
-			table.insert(combatRooms, index)
-		end
-	end
-	run.TotalWaves = #combatRooms
-
-	-- 전투 방마다 몬스터를 미리 배치 (뒤쪽 방일수록 강하고 많다)
-	for order, index in ipairs(combatRooms) do
-		local room = rooms[index]
-		room.WaveNo = order
-		room.Combat = true
-		run.SpawnPoints = (room.Spawns and #room.Spawns > 0) and room.Spawns or run.AllSpawns
-		local count = math.min(14, math.floor(D.GetMonsterCount(order, run.PartySize) * (run.Mutator and run.Mutator.CountMult or 1)))
-		local level = math.max(1, D.GetWaveMonsterLevel(order) + run.LevelBonus)
-		for _ = 1, count do
-			local data = spawnMonster(run, level)
-			data.RoomIndex = index
-		end
-	end
-
-	-- (확인용) 몬스터를 몇 마리 어느 방에 깔았는지 알려준다
-	do
-		local firstCombat = rooms[combatRooms[1] or 2]
-		local startRoom = rooms[1]
-		if firstCombat and startRoom then
-			notifyAll(run, string.format("🧭 전투 구역 %d개 · 몬스터 %d마리 배치 (첫 전투 방까지 %dm)", #combatRooms, run.MonsterCount or 0, (firstCombat.Pos - startRoom.Pos).Magnitude))
-		end
-	end
-
-	-- 몬스터는 카운트다운 전에 미리 깔아둔다 (카운트다운 중에 앞으로 뛰어나가도 뒤에서 몬스터가 생기지 않게)
-	run.PhaseEnd = os.clock() + D.StartCountdown
-	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
-
-	run.Phase = "Wave"
-	run.Wave = 1
-	run.PhaseEnd = nil
-	local cleared = 0
-	local bossSpawned = false
-	local lastWaypoint = nil
-	notifyAll(run, "⚔ 앞으로 나아가며 몬스터를 처치하세요! 하늘색 빛기둥이 다음 목적지를 알려줘요.")
-
-	while not run.Destroyed and run.Phase ~= "Ended" do
-		-- 전멸하면 실패
-		if allDown(run) then
-			finish(run, false)
-			return
-		end
-
-		local counts = countByRoom(run)
-		for index = 2, #rooms - 1 do
-			local room = rooms[index]
-			-- 구역 클리어: 이 방의 몬스터를 모두 잡았다
-			if room.Combat and not room.Cleared and (counts[index] or 0) == 0 then
-				room.Cleared = true
-				cleared += 1
-				run.Wave = math.min(cleared + 1, run.TotalWaves)
-				giveGold(run, D.WaveClearGold * room.WaveNo)
-				giveXp(run, Config.Xp.WaveClear * room.WaveNo)
-				notifyAll(run, string.format("✅ 구역 %d / %d 클리어!", cleared, run.TotalWaves))
-				if not statPhase(run) then return end
-				run.Phase = "Wave"
-				run.StageText = nil
-			end
-			-- 이벤트 방: 처음 들어서면 시작
-			local kind = eventKinds[index]
-			if kind and not room.Entered and anyoneIn(run, room, 0.85) then
-				room.Entered = true
-				room.Cleared = true
-				if not EVENT_HANDLERS[kind](run, room, math.max(1, cleared)) then return end
-				run.Phase = "Wave"
-				run.StageText = nil
-			end
-		end
-
-		-- 보스방에 들어서면 보스 등장
-		local bossRoom = rooms[#rooms]
-		if not bossSpawned and anyoneIn(run, bossRoom, 0.8) then
-			bossSpawned = true
-			run.Phase = "Boss"
-			run.StageText = nil
-			clearWaypoint(run)
-			notifyAll(run, "⚠ " .. run.BossName .. "이(가) 나타났다!")
-			spawnBoss(run)
-		end
-		if bossSpawned and run.BossDead then
-			finish(run, true)
-			return
-		end
-
-		-- 길잡이: 아직 끝내지 않은 가장 가까운 앞쪽 방 (없으면 보스방)
-		if not bossSpawned then
-			local target = #rooms
-			for index = 2, #rooms - 1 do
-				local room = rooms[index]
-				if not room.Cleared and not room.Entered then
-					target = index
-					break
-				end
-			end
-			if target ~= lastWaypoint then
-				lastWaypoint = target
-				setWaypoint(run, rooms[target].Pos + Vector3.new(0, 4, 0), target == #rooms and "보스방" or "다음 구역")
-			end
-		end
-		task.wait(0.3)
-	end
+	surviveLoop(run)
 end
 
 ------------------------------------------------------------
