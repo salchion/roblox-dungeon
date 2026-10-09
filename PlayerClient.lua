@@ -2576,7 +2576,7 @@ local function buildInventoryTab()
 			for _, b in ipairs(setDef.Bonuses[2]) do table.insert(b2, Config.FormatBonus(b.Stat, b.Value)) end
 			for _, b in ipairs(setDef.Bonuses[3]) do table.insert(b3, Config.FormatBonus(b.Stat, b.Value)) end
 			if setDef.Zone then
-				table.insert(lines, string.format("<font size='12' color='#%s'><b>📍 구역 %d · %s 에서만 떨어지는 전용 장비!</b></font>", hex(setDef.Color), setDef.Zone, Config.Field.ZoneNames[setDef.Zone]))
+				table.insert(lines, string.format("<font size='12' color='#%s'><b>📍 구역 %d · %s 세트 — 그 구역에서 떨어지거나, 세트 조각으로 각인해서 얻어요!</b></font>", hex(setDef.Color), setDef.Zone, Config.Field.ZoneNames[setDef.Zone]))
 			end
 			table.insert(lines, string.format("<font size='12' color='#%s'>◈ 세트 [%s] %d/3\n  2부위: %s\n  3부위: %s</font>", hex(setDef.Color), setDef.Name, setCounts[selected.Set] or 0, table.concat(b2, ", "), table.concat(b3, ", ")))
 		end
@@ -2608,6 +2608,40 @@ local function buildInventoryTab()
 		end
 	else
 		makeLabel({ Size = UDim2.new(1, -20, 1, -20), Position = UDim2.new(0, 10, 0, 10), Text = "장비가 없어요.\n필드에서 몬스터를 잡거나 뽑기로 얻어보세요!", TextSize = 15, TextColor3 = Color3.fromRGB(150, 150, 170) }, detail)
+	end
+
+	-- ===== 세트 각인: 필드에서 모은 구역별 세트 조각으로 선택한 장비를 그 구역의 세트 장비로 바꾼다 =====
+	do
+		local imprintRow = newRow(150, Color3.fromRGB(28, 30, 44))
+		local cost = selected and Config.Sets.Imprint.Cost[selected.Rarity] or 0
+		makeLabel({
+			Size = UDim2.new(1, -20, 0, 44), Position = UDim2.new(0, 10, 0, 6), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, RichText = true, TextSize = 14,
+			Text = selected and string.format("<font size='16' color='#9fdcff'><b>🔹 세트 각인</b></font>  선택한 <b>%s</b> (필요 조각 <b>%d</b>)\n<font size='12' color='#aab0c8'>뽑기 장비는 세트가 안 붙어요. 필드에서 그 구역 몬스터를 잡아 <b>세트 조각</b>을 모으면 등급 · 강화 · 옵션은 그대로 두고 세트 장비로 바꿀 수 있어요. 구역마다 세트 효과가 달라요.</font>",
+				Config.ItemDisplayName(selected), cost) or "<font color='#aab0c8'>장비를 선택하면 세트 각인을 할 수 있어요.</font>",
+		}, imprintRow)
+		for zone = 1, Config.Field.ZoneCount do
+			local setDef = Config.Sets[Config.Sets.ZoneKeys[zone]]
+			local have = state.Shards and state.Shards[zone] or 0
+			local already = selected and selected.Set == Config.Sets.ZoneKeys[zone]
+			local enough = selected ~= nil and have >= cost and not already
+			local button = makeButton({
+				Size = UDim2.new(0, 96, 0, 84), Position = UDim2.new(0, 10 + (zone - 1) * 104, 0, 58), Text = "",
+				BackgroundColor3 = enough and Color3.fromRGB(46, 70, 100) or Color3.fromRGB(36, 38, 54), AutoButtonColor = enough,
+			}, imprintRow, function()
+				if selected and enough then
+					Remotes.Inventory:FireServer("Imprint", selected.Id, zone)
+				elseif selected and already then
+					toast("이미 그 세트예요.")
+				elseif selected then
+					toast(string.format("%s 구역 세트 조각이 부족해요 (%d / %d) — 그 구역 몬스터에게서 얻어요", Config.Field.ZoneNames[zone], have, cost))
+				end
+			end)
+			create("UIStroke", { Color = setDef.Color, Thickness = enough and 2.5 or 1, Transparency = enough and 0 or 0.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, button)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 28), Position = UDim2.new(0, 0, 0, 4), Text = setDef.Icon, TextSize = 24 }, button)
+			makeLabel({ Size = UDim2.new(1, -4, 0, 16), Position = UDim2.new(0, 2, 0, 32), Text = setDef.Name, TextSize = 11, TextColor3 = setDef.Color, Font = Enum.Font.GothamBold }, button)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 50), Text = string.format("🔹 %d / %d", have, cost), TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = enough and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(170, 170, 190) }, button)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 68), Text = already and "착용 세트" or (enough and "각인!" or ""), TextSize = 11, TextColor3 = Color3.fromRGB(255, 225, 110), Font = Enum.Font.GothamBold }, button)
+		end
 	end
 
 	-- ===== 아래쪽: 가방 칸(격자) =====

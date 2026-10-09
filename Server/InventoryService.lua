@@ -158,7 +158,7 @@ local function buildPayload(player, state)
 
 	return {
 		Items = items, Capacity = Inventory.Capacity(player), BagCount = bagCount(state),
-		Essence = state.Essence, AutoScrap = state.AutoScrap,
+		Essence = state.Essence, AutoScrap = state.AutoScrap, Shards = state.Shards,
 	}
 end
 
@@ -327,6 +327,42 @@ function Inventory.Reroll(player, id)
 	return true, "옵션 재굴림 완료!"
 end
 
+-- 세트 조각: 구역마다 따로 쌓인다 (FieldService 가 몬스터를 잡을 때 올려 준다)
+function Inventory.AddShards(player, zone, amount)
+	local state = states[player]
+	if not state or amount <= 0 then return end
+	local before = 0
+	for _, value in pairs(state.Shards) do before += value end
+	state.Shards[zone] = (state.Shards[zone] or 0) + amount
+	if before == 0 then
+		notify(player, "🔹 세트 조각을 얻었어요! 메뉴(I) → 가방에서 장비를 고르고 [세트 각인]을 하면 세트 장비로 바뀌어요.")
+	end
+	Inventory.Push(player)
+end
+
+-- 세트 각인: 아이템을 그 구역의 세트 장비로 바꾼다 (등급 / 강화 / 옵션 유지)
+function Inventory.Imprint(player, id, zone)
+	local state = states[player]
+	local item = state and state.Items[id]
+	if not item then return false, "그 아이템이 없어요." end
+	if typeof(zone) ~= "number" or zone % 1 ~= 0 or zone < 1 or zone > Config.Field.ZoneCount then return false, "잘못된 구역이에요." end
+	local setKey = Config.Sets.ZoneKeys[zone]
+	if item.Set == setKey then return false, "이미 그 세트예요." end
+	local cost = Config.Sets.Imprint.Cost[item.Rarity]
+	local have = state.Shards[zone] or 0
+	if have < cost then
+		return false, string.format("%s 구역 세트 조각이 부족해요. (%d / %d) — 그 구역 몬스터에게서 얻어요", Config.Field.ZoneNames[zone], have, cost)
+	end
+	state.Shards[zone] = have - cost
+	item.Set = setKey
+	if isEquipped(state, id) then
+		applyEquipAttributes(player, state)
+	end
+	Inventory.Push(player)
+	local set = Config.Sets[setKey]
+	return true, string.format("%s %s 세트 각인 완료! (같은 세트를 2 / 3부위 끼면 보너스)", set.Icon, set.Name)
+end
+
 -- 강화 레벨 변경 (GearService 의 장비 강화가 호출)
 function Inventory.SetLevel(player, slotKey, level)
 	local state = states[player]
@@ -357,7 +393,7 @@ end
 ------------------------------------------------------------
 -- saved: 저장된 Inventory 테이블. legacyGear: 예전 저장 형식({ Armor = { R, L }, ... })이면 아이템으로 바꿔서 이어받는다
 function Inventory.Load(player, saved, legacyGear)
-	local state = { Items = {}, NextId = 0, Equipped = {}, Essence = 0, AutoScrap = 1, Rev = 0 }
+	local state = { Items = {}, NextId = 0, Equipped = {}, Essence = 0, AutoScrap = 1, Rev = 0, Shards = {} }
 
 	if typeof(saved) == "table" and typeof(saved.Items) == "table" then
 		for _, entry in ipairs(saved.Items) do
@@ -392,6 +428,11 @@ function Inventory.Load(player, saved, legacyGear)
 		end
 		state.Essence = math.max(0, math.floor(tonumber(saved.Essence) or 0))
 		state.AutoScrap = math.clamp(math.floor(tonumber(saved.AutoScrap) or 1), 0, 3)
+		if typeof(saved.Shards) == "table" then
+			for zone = 1, Config.Field.ZoneCount do
+				state.Shards[zone] = math.max(0, math.floor(tonumber(saved.Shards[zone] or saved.Shards[tostring(zone)]) or 0))
+			end
+		end
 	elseif typeof(legacyGear) == "table" then
 		-- 예전 방식(부위당 장비 1개)에서 이어받기
 		for _, slot in ipairs(G.Slots) do
@@ -425,7 +466,11 @@ function Inventory.Serialize(player)
 		end
 		table.insert(items, { Id = item.Id, Slot = item.Slot, Rarity = item.Rarity, Level = item.Level, Affixes = affixes, Set = item.Set, Unique = item.Unique })
 	end
-	return { Items = items, Equipped = state.Equipped, Essence = state.Essence, AutoScrap = state.AutoScrap }
+	local shards = {}
+	for zone = 1, Config.Field.ZoneCount do
+		shards[tostring(zone)] = state.Shards[zone] or 0
+	end
+	return { Items = items, Equipped = state.Equipped, Essence = state.Essence, AutoScrap = state.AutoScrap, Shards = shards }
 end
 
 function Inventory.Forget(player)
@@ -438,7 +483,7 @@ end
 ------------------------------------------------------------
 local lastRequest = {}
 
-Remotes.Inventory.OnServerEvent:Connect(function(player, action, arg)
+Remotes.Inventory.OnServerEvent:Connect(function(player, action, arg, arg2)
 	if action == "Request" then
 		Inventory.Push(player)
 		return
@@ -455,6 +500,8 @@ Remotes.Inventory.OnServerEvent:Connect(function(player, action, arg)
 		ok, message = Inventory.Scrap(player, arg)
 	elseif action == "Reroll" and typeof(arg) == "number" then
 		ok, message = Inventory.Reroll(player, arg)
+	elseif action == "Imprint" and typeof(arg) == "number" and typeof(arg2) == "number" then
+		ok, message = Inventory.Imprint(player, arg, arg2)
 	elseif action == "ScrapBelow" and typeof(arg) == "number" then
 		ok, message = Inventory.ScrapBelow(player, arg)
 	elseif action == "AutoEquip" then
