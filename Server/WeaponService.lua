@@ -674,6 +674,12 @@ function Weapon.Enhance(player)
 	-- 튜토리얼 미션 중에는 +3까지 무료 + 100% 성공
 	local free = player:GetAttribute("TutorialFree") == true and level < 3
 	local cost = free and 0 or Config.GetEnhanceCost(level)
+	local sure = free
+	local tutorialCost = player:GetAttribute("TutorialEnhanceCost")
+	if tutorialCost and not free then -- 진화 미션: 비용을 낮추고 100% 성공
+		cost = math.min(cost, tutorialCost)
+		sure = true
+	end
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
 		return false, string.format("골드가 부족합니다. (%d 필요)", cost), true
@@ -681,7 +687,7 @@ function Weapon.Enhance(player)
 
 	player:SetAttribute("Gold", gold - cost)
 
-	if free or math.random() < Config.GetEnhanceChance(level) then
+	if sure or math.random() < Config.GetEnhanceChance(level) then
 		-- 단계가 오르면 GameServer 가 무기 종류를 맞추고 모델도 갱신한다. 마지막 단계를 넘으면 다음 무기로 진화한다.
 		player:SetAttribute("WeaponLevel", level + 1)
 		Quest.Add(player, "Enhances", 1)

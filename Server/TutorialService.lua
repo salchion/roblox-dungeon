@@ -57,6 +57,15 @@ local function send(player)
 			state.DynGoal = need + state.Progress -- (다시 접속했다면 이미 한 횟수는 목표에 더해 준다)
 		end
 	end
+	-- 진화 미션 중 강화: 100% 성공 + 던전에서 번 골드(약 5천)로 끝까지 갈 수 있게 1회 비용을 낮춘다 (WeaponService 가 읽는다)
+	if step and step.EvolveToTier and state.DynGoal and state.DynGoal > 1 then
+		local remaining = math.max(1, state.DynGoal - state.Progress)
+		player:SetAttribute("TutorialEnhanceCost", math.max(20, math.floor(4000 / math.max(remaining, state.DynGoal))))
+	else
+		player:SetAttribute("TutorialEnhanceCost", nil)
+	end
+	-- 첫 던전(웨이브 미션) 동안은 거의 무적: 체력이 바닥나면 한 번씩 되살려 준다 (DungeonService 가 읽는다)
+	player:SetAttribute("TutorialDungeonGuard", step ~= nil and step.Stat == "DungeonWaves")
 	local goal = (state and state.DynGoal) or (step and step.Goal)
 	local text = step and step.Text
 	if step and step.EvolveToTier and Config.Weapon.Tiers[step.EvolveToTier] then
