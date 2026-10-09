@@ -261,7 +261,7 @@ end
 
 local goldRemainder = {} -- [player] = 아직 지급하지 못한 소수점 골드
 
-function Dummy.Shoot(player, origin, direction, shotDamage)
+function Dummy.Shoot(player, origin, direction)
 	if not folder or player:GetAttribute("Zone") ~= "Lobby" then return nil end
 
 	local params = RaycastParams.new()
@@ -286,9 +286,12 @@ function Dummy.Shoot(player, origin, direction, shotDamage)
 		return result.Position
 	end
 
-	-- 골드는 "탄 하나의 실제 기대 피해량"에 비례한다. 탄이 여러 발이든 연사가 빠르든 합치면 초당 피해량(DPS)에 비례해서,
-	-- 산탄 / 연사 무기가 따로 더 벌지 않고 "정말 세지면 그만큼 더 번다". (소수점은 모아 두었다가 정수가 되면 지급)
-	local owed = (goldRemainder[player] or 0) + Config.Dummy.GoldPerDamage * (shotDamage or 10) * data.Multiplier
+	-- 직접 쏠 때 골드는 "무기 단계(공격력 배율)"에 비례하고, 한 발 간격 / 탄 수로 나눠서 연사 / 산탄 무기가 따로 더 벌지 않는다.
+	-- 분당 수입 = ManualFraction x IncomeBase x 공격력 배율 (경제 기준표: ECONOMY.md). 소수점은 모아 두었다가 정수가 되면 지급한다.
+	local E = Config.Economy
+	local perMinute = Config.Dummy.ManualFraction * E.IncomeBase * Config.GetDamageMultiplier(player:GetAttribute("WeaponLevel") or 0) * data.Multiplier
+	local perShot = perMinute / 60 * Config.Player.BaseCooldown * weaponType.Cooldown / math.max(1, weaponType.Pellets)
+	local owed = (goldRemainder[player] or 0) + perShot
 	local gold = math.floor(owed)
 	goldRemainder[player] = owed - gold
 	if gold < 1 then

@@ -369,13 +369,24 @@ Config.Boss = {
 ------------------------------------------------------------
 -- 무기 강화
 ------------------------------------------------------------
+------------------------------------------------------------
+-- 경제 기준표 (ECONOMY.md 참고): 모든 골드 수입 / 지출을 "내 공격력 배율(GetDamageMultiplier)" 하나에 맞춘다.
+--   활동 수입(분당) = IncomeBase x 공격력 배율   (필드 / 던전 / 방치 / 직접 허수아비가 이 값의 일정 비율이 되도록 계수를 맞춤)
+--   무기 강화 한 단계 비용 = IncomeBase x 공격력 배율 x 그 단계에 걸리길 바라는 분(StepMinutes)
+--   -> 강해질수록 수입도 비용도 같은 비율로 커져서, 무기 한 단계에 걸리는 시간(분)이 일정하다. (진화 한 번 = 단계 수 x 분)
+------------------------------------------------------------
+Config.Economy = {
+	IncomeBase = 1500,        -- 공격력 배율 1.0(처음 무기)일 때 열심히 플레이한 분당 골드
+	StepMinutesEarly = 0.27,  -- 초반 무기 강화 한 단계에 걸리길 바라는 분 (15단계 = 약 4분)
+	StepMinutesLate = 0.6,    -- 강화 단계 LateLevel 이후 (10단계 = 약 6분)
+	LateLevel = 600,
+	FieldGoldMult = 4.5,      -- 필드 몬스터 처치 골드 배율 (구역 보상표 x 이 값)
+	DungeonGoldMult = 0.7,    -- 던전 골드 배율 (던전은 처치 수가 많아서 낮춘다)
+}
+
 Config.Weapon = {
 	WeaponCount = 100,
-	BaseCost = 100,
-	CostGrowth = 1.00886,   -- 강화 1회마다 비용 x1.00886 (총 1090단계 끝 비용은 예전 820단계 때와 비슷하게 맞춘 값: 1.0118 ^ (820 / 1090))
 	LevelScale = 326 / 1090, -- 위력 / 크기 / 성공률 공식은 이 비율로 줄인 "유효 단계"를 쓴다 (단계가 많아져도 최종 위력은 그대로). 1090 = 아래 StepsFor 의 총합
-	EarlyCostBoost = 2,     -- 초반 비용 가산: 0단계에서 비용이 (1 + 2) = 3배, EarlyCostLevels 단계에 걸쳐 1배로 줄어든다 (초반에 무기가 휙휙 바뀌지 않게)
-	EarlyCostLevels = 300,
 }
 -- 무기 하나가 가진 강화 단계 수: 처음 무기들은 오래 키우고(첫 무기 10단계), 뒤로 갈수록 빨리 넘어간다
 -- (이 무기의 마지막 단계에서 강화에 성공하면 다음 무기로 진화)
@@ -459,7 +470,7 @@ Config.Weapon.MaxLevel = totalSteps - 1 -- 마지막 무기까지 강화한 단�
 ------------------------------------------------------------
 Config.Dummy = {
 	GoldPerHit = 2,
-	GoldPerDamage = 0.1,   -- 직접 쏠 때 허수아비 골드 = 이 값 x 탄 하나의 기대 피해량. 방치 수입(Config.Idle.GoldPerDamage)의 약 1/3 (직접 쏘기는 초반 체험용)
+	ManualFraction = 0.11, -- 직접 쏠 때 허수아비 골드(분당) = 이 값 x Economy.IncomeBase x 공격력 배율. 방치 수입의 약 1/3 (직접 쏘기는 초반 체험용). 탄 수 / 연사로 더 벌지 않는다
 	EraGoldMult = 1.4,     -- 무기 세대(10종 단위)가 오를 때마다 허수아비 골드 x1.4 (업그레이드할수록 골드도 늘게)
 	PowerRef = 600,        -- 전투력 기준값 (이 값일 때 배율 약 x2)
 	PowerExp = 0.55,       -- 전투력이 오를수록 골드가 어떻게 늘어나는지 (1 이면 정비례, 작을수록 완만)
@@ -1194,7 +1205,7 @@ Config.Events = {
 ------------------------------------------------------------
 -- 방치 수입 (허수아비 훈련장): 훈련장 원 안에 서 있으면 자동 사격 수입 + 접속을 끊어도 한도까지 적립. BM 은 "효율 / 한도"만 늘려 준다.
 Config.Idle = {
-	GoldPerDamage = 0.3,      -- 방치 골드/초 = 이 값 x 무기 초당 피해량(기대값) x 방치 배율
+	Fraction = 0.34,          -- 방치 수입(분당) = 이 값 x Economy.IncomeBase x 공격력 배율(무기 단계) x (1 + 장비/훈련/펫 공격력 보너스) x 환생 x 방치 배율. 활동 수입의 약 1/3
 	Radius = 18,              -- 훈련장 중심에서 이 거리 안에 있으면 방치 중
 	OfflineEfficiency = 0.6,  -- 오프라인 적립은 접속 중 방치의 60%
 	BaseCapHours = 2,         -- 오프라인 적립 한도 (기본)
@@ -1378,8 +1389,9 @@ end
 
 -- level -> level+1 강화 비용 (사다리 전체에서 조금씩 올라간다)
 function Config.GetEnhanceCost(level)
-	local early = 1 + Config.Weapon.EarlyCostBoost * math.max(0, 1 - level / Config.Weapon.EarlyCostLevels)
-	return math.floor(Config.Weapon.BaseCost * Config.Weapon.CostGrowth ^ level * early)
+	local E = Config.Economy
+	local minutes = E.StepMinutesEarly + (E.StepMinutesLate - E.StepMinutesEarly) * math.min(1, level / E.LateLevel)
+	return math.max(1, math.floor(E.IncomeBase * Config.GetDamageMultiplier(level) * minutes))
 end
 
 -- level -> level+1 강화 성공 확률 (실패해도 단계는 내려가지 않고 골드만 소모)

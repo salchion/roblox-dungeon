@@ -1,6 +1,6 @@
 -- IdleService (ServerScriptService > Modules 안의 ModuleScript, 이름: IdleService)
 -- 방치 수입: 허수아비 훈련장 원 안에 서 있으면 자동으로 쏘며 골드가 쌓이고(접속 중), 접속을 끊어도 일정 시간까지 쌓인다(오프라인 적립).
---   방치 골드/초 = Config.Idle.GoldPerDamage x 무기 초당 피해량(기대값) x 방치 배율
+--   방치 골드/분 = Config.Idle.Fraction x IncomeBase x 공격력 배율(무기 단계) x 장비/훈련 보너스 x 방치 배율
 --   방치 배율 = 1 + 영구 보너스(IdleMultBonus: 상품 단계 + VIP) + 부스터 활성 시 BoostBonus
 --   오프라인 적립 한도 = BaseCapHours + 상품(IdleCapHours) , 효율 = OfflineEfficiency
 -- 원칙: 돈은 "방치 효율 / 쌓이는 시간"만 늘려 준다 (안 써도 도달 가능). 직접 쏘는 수입은 방치의 약 1/3 (DummyService).
@@ -15,7 +15,6 @@ local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Dummy = require(script.Parent:WaitForChild("DummyService"))
 local Meta = require(script.Parent:WaitForChild("MetaService"))
-local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
 
 local I = Config.Idle
 local Idle = {}
@@ -33,18 +32,14 @@ function Idle.Multiplier(player)
 	return mult
 end
 
--- 무기 초당 피해량(기대값): 한 발 기대 피해 x 탄 수(산탄 / 화염은 60%) / 공격 간격
-local function damagePerSecond(player)
-	local weaponType = Config.GetPlayerWeapon(player)
-	local pellets = weaponType.Pellets > 1 and weaponType.Pellets * 0.6 or 1
-	local speedPoints = player:GetAttribute("SpeedPoints") or 0
-	local cooldown = Config.Player.BaseCooldown * weaponType.Cooldown / (1 + speedPoints * Config.Player.SpeedPerPoint)
-	return Dungeon.ExpectedShotDamage(player) * pellets / math.max(0.05, cooldown)
-end
-
--- 초당 방치 골드 (배율 포함)
+-- 초당 방치 골드: 무기 단계(공격력 배율)에 비례. 탄 수 / 연사 속도 / 레벨은 따로 반영하지 않는다 (경제 기준표와 같은 기준: ECONOMY.md)
 function Idle.Rate(player)
-	return I.GoldPerDamage * damagePerSecond(player) * Idle.Multiplier(player)
+	local E = Config.Economy
+	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
+	local bonus = 1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0) + (player:GetAttribute("PetDamage") or 0)
+	local prestige = 1 + (player:GetAttribute("Prestige") or 0) * Config.Prestige.DamagePerRank
+	local perMinute = I.Fraction * E.IncomeBase * Config.GetDamageMultiplier(weaponLevel) * bonus * prestige
+	return perMinute / 60 * Idle.Multiplier(player)
 end
 
 local function capSeconds(player)
@@ -134,12 +129,33 @@ function Idle.Forget(player)
 end
 
 if RunService:IsStudio() then
-	-- Studio 확인용: 1분마다 현재 방치 수입을 출력 (골드 밸런스를 맞출 때 쓴다)
+	-- Studio 확인용 골드 장부: 1분마다 "들어온 골드 / 쓴 골드"와 이론상 방치 수입을 출력한다 (경제 기준표 ECONOMY.md 와 비교해서 계수를 맞출 때 쓴다)
+	local ledger = {}
+	local function track(player)
+		local last = player:GetAttribute("Gold") or 0
+		ledger[player] = { In = 0, Out = 0 }
+		player:GetAttributeChangedSignal("Gold"):Connect(function()
+			local now = player:GetAttribute("Gold") or 0
+			local delta = now - last
+			last = now
+			local entry = ledger[player]
+			if not entry then return end
+			if delta > 0 then entry.In += delta else entry.Out -= delta end
+		end)
+	end
+	Players.PlayerAdded:Connect(track)
+	for _, player in ipairs(Players:GetPlayers()) do track(player) end
 	task.spawn(function()
 		while true do
 			task.wait(60)
 			for _, player in ipairs(Players:GetPlayers()) do
-				print(string.format("[방치] %s 초당 %.1f G (분당 %d G) · 배율 x%.2f · 무기 단계 %d", player.Name, Idle.Rate(player), math.floor(Idle.Rate(player) * 60), Idle.Multiplier(player), player:GetAttribute("WeaponLevel") or 0))
+				local entry = ledger[player]
+				if entry then
+					print(string.format("[골드 장부] %s · 최근 1분 수입 %d G / 지출 %d G · 이론 방치 %d G/분 (배율 x%.2f) · 공격력 배율 x%.2f · 다음 강화 비용 %d G",
+						player.Name, entry.In, entry.Out, math.floor(Idle.Rate(player) * 60), Idle.Multiplier(player),
+						Config.GetDamageMultiplier(player:GetAttribute("WeaponLevel") or 0), Config.GetEnhanceCost(player:GetAttribute("WeaponLevel") or 0)))
+					entry.In, entry.Out = 0, 0
+				end
 			end
 		end
 	end)

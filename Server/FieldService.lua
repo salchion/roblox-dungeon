@@ -1085,7 +1085,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		stats.MaxHealth = math.floor(stats.MaxHealth * danger.Health[zone])
 		stats.ShotDamage = math.max(1, math.floor(stats.ShotDamage * danger.Damage[zone]))
 		stats.Speed *= danger.Speed[zone]
-		stats.Gold = math.floor(stats.Gold * danger.Reward[zone])
+		stats.Gold = math.floor(stats.Gold * danger.Reward[zone] * Config.Economy.FieldGoldMult)
 	end
 
 	local x0, x1 = zoneBounds(zone)
