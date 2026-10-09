@@ -2204,6 +2204,35 @@ end
 -- x좌표로 로비 / 필드 구역을 판별하고, 가장 멀리 간 구역(MaxZone)을 기록
 local lastGateNotice = {}
 local lastZoneSeen = {}
+local tutorialLords = {} -- [player] = 튜토리얼용 첫 구역 군주 (입구 가까이에서 바로 나타난다)
+
+-- 튜토리얼 첫 구역 군주: 구역 끝까지 한참 걷게 하지 않고, 입구에서 조금만 나가면 바로 앞에 나타난다. 쉽게 잡을 수 있게 공격이 약하다.
+local function spawnTutorialLord(player, root)
+	local old = tutorialLords[player]
+	if old and old.Parent then
+		monsters[old] = nil
+		old:Destroy()
+	end
+	local at
+	for _, dx in ipairs({ 70, 85, 100, 55 }) do
+		for _, z in ipairs({ 0, 40, -40 }) do
+			local x = root.Position.X + dx
+			if walkableAt(x, z, 20) and not isSafe(Vector3.new(x, 0, z)) and zoneOfX(x) == 1 then
+				at = Vector3.new(x, 0, z)
+				break
+			end
+		end
+		if at then break end
+	end
+	at = at or Vector3.new(root.Position.X + 60, 0, 0)
+	local part, data = spawnMonster(1, "Boss", at, true)
+	if part and data then
+		data.Stats.ShotDamage = math.max(1, math.floor(data.Stats.ShotDamage * 0.4))
+		tutorialLords[player] = part
+		Remotes.Tutorial:FireClient(player, "Waypoint", { Pos = part.Position, Name = "👑 첫 구역 군주" })
+	end
+end
+
 local function updateZones()
 	for _, player in ipairs(Players:GetPlayers()) do
 		local zone = player:GetAttribute("Zone")
@@ -2217,14 +2246,6 @@ local function updateZones()
 					if newZone == "Lobby" then routeBeat[player] = nil end -- 마을로 돌아오면 길목 사건이 처음부터 다시
 					if newZone == "Field" then
 						notify(player, "필드 입장! 동쪽으로 갈수록 몬스터가 강해져요.")
-						if player:GetAttribute("TutorialDoom") then -- 첫 구역 군주 위치를 표지로 알려준다
-							for bossPart, bossData in pairs(monsters) do
-								if bossData.Kind == "Boss" and bossData.Zone == 1 and bossPart.Parent then
-									Remotes.Tutorial:FireClient(player, "Waypoint", { Pos = bossPart.Position, Name = "👑 첫 구역 군주" })
-									break
-								end
-							end
-						end
 					end
 				end
 
@@ -2265,23 +2286,23 @@ local function updateZones()
 							player:SetAttribute("ShakeStrength", strength)
 							player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 						end
-						if beat < 1 and offset >= 120 then
+						if beat < 1 and offset >= 85 then
 							routeBeat[player] = 1
 							notify(player, "🌿 풀숲이 이상하게 흔들린다...! 매복이다!")
 							rumble(0.5)
 							around("Normal", 7, 30, 46)
-						elseif beat < 2 and offset >= 300 then
+						elseif beat < 2 and offset >= 150 then
 							routeBeat[player] = 2
 							notify(player, "⚠ 강한 기운이 다가온다! 엘리트 몬스터다!")
 							rumble(0.7)
 							around("Elite", 1, 36, 46)
 							around("Normal", 4, 32, 48)
-						elseif beat < 3 and offset >= 520 then
+						elseif beat < 3 and offset >= 215 then
 							routeBeat[player] = 3
-							notify(player, "🔥 군주의 영역이 가까워진다... 호위병들이 몰려온다!")
+							notify(player, "👑 군주가 나타났다!! 호위병들과 함께 덮쳐온다!")
 							rumble(0.8)
-							around("Normal", 9, 30, 48)
-							around("Elite", 1, 40, 50)
+							around("Normal", 5, 30, 48)
+							spawnTutorialLord(player, root)
 						end
 					end
 					-- 새 구역에 들어서면 큰 경고 배너 (난이도가 얼마나 뛰는지 숫자로 보여준다)
@@ -2691,6 +2712,7 @@ end
 -- 보스(구역 군주 / 이벤트 보스)가 나를 노리고 있으면 BossFight 가 켜진다 -> 클라이언트가 음악을 던전(전투) 곡으로 바꾼다
 local powerWarnedAt = {}
 local weakTipShown = {}
+local rescueAt = {} -- [player] = 튜토리얼 군주전에서 위험할 때 마지막으로 보호막을 받은 시각
 local weakLesson = {} -- [player] = { Base = 시작할 때 약점 명중 수, Taught = 약점을 맞힌 뒤 설명까지 끝났는지, NextHint = 다음 힌트 시각 }
 local function updateBossFight()
 	for _, player in ipairs(Players:GetPlayers()) do
@@ -2729,6 +2751,18 @@ local function updateBossFight()
 			end
 		elseif not fighting then
 			weakLesson[player] = nil
+		end
+		-- 튜토리얼 첫 구역 군주전은 반드시 이겨야 다음 장면이 이어진다: 체력이 20% 아래로 떨어지면 보호막 + 회복 (20초에 한 번)
+		if fighting and bossKind == "Boss" and bossZone == 1 and player:GetAttribute("TutorialDoom") then
+			local _, humanoid = getAliveParts(player)
+			if humanoid and humanoid.Health < humanoid.MaxHealth * 0.2 and os.clock() - (rescueAt[player] or -999) > 20 then
+				rescueAt[player] = os.clock()
+				humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * 0.4)
+				local shield = Instance.new("ForceField")
+				shield.Parent = player.Character
+				game:GetService("Debris"):AddItem(shield, 4)
+				notify(player, "🛡 위험! 보호막이 감싸 주었어요. 지금이 기회예요!")
+			end
 		end
 		if player:GetAttribute("BossFight") ~= fighting then
 			player:SetAttribute("BossFight", fighting)
