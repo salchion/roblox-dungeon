@@ -366,7 +366,17 @@ Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 		cinemaPlay(data)
 		return
 	end
-	if action == "Prompt" or action == "PromptHide" then return end -- 키 안내 카드는 위쪽 핸들러가 처리한다 (미션 표시는 건드리지 않는다)
+	if action == "Freeze" then -- 연습장 NEAR MISS "시간 정지": 화면이 회색빛 푸른 톤으로 가라앉는다
+		cinema.Color.Enabled = true
+		if data then
+			TweenService:Create(cinema.Color, TweenInfo.new(0.25), { Saturation = -0.85, Contrast = 0.2, Brightness = -0.06, TintColor = Color3.fromRGB(190, 210, 255) }):Play()
+		else
+			TweenService:Create(cinema.Color, TweenInfo.new(0.4), { Saturation = 0, Contrast = 0, Brightness = 0, TintColor = Color3.new(1, 1, 1) }):Play()
+			task.delay(0.5, function() cinema.Color.Enabled = false end)
+		end
+		return
+	end
+	if action == "Prompt" or action == "PromptHide" or action == "Freeze" then return end -- 키 안내 카드는 위쪽 핸들러가 처리한다 (미션 표시는 건드리지 않는다)
 	if action == "Waypoint" then
 		placeWaypoint(data.Pos, data.Name)
 		return

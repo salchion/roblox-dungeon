@@ -892,6 +892,7 @@ end
 
 local function damageMonster(run, player, part, data, amount, isCrit, hitPosition)
 	data.Health -= amount
+	if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.5) end -- 연습 표적은 쓰러지지 않는다
 	data.Awake = true -- 맞은 몬스터는 거리와 상관없이 깨어난다
 	data.HealthFill.Size = UDim2.new(math.max(data.Health, 0) / data.MaxHealth, 0, 1, 0)
 	Effects.DamageNumber(hitPosition, amount, isCrit)
@@ -981,6 +982,7 @@ local function stepRun(run, dt)
 	end
 
 	for part, data in pairs(run.Monsters) do
+		if data.Static then continue end -- 연습 표적: 가만히 서 있다
 		if data.IsBoss then
 			-- 보스: 천천히 다가오면서, 패턴을 하나 골라 끝까지 실행한 뒤 잠깐 쉬고 다음 패턴
 			local target, distance = getNearestTarget(run, part.Position)
@@ -1888,6 +1890,123 @@ local function riftLoop(run)
 	riftFinish(run)
 end
 
+-- 첫 던전 연습장: 진짜 웨이브가 시작되기 전에 가만히 서 있는 표적으로 조작을 직접 해본다.
+-- NEAR MISS 는 "라이브에서 될 수도 안 될 수도 있다"는 문제를 없애려고 각본으로 보여준다: 표적이 느린 미사일을 쏘고, 가까워지면 미사일이 멈추고
+-- (시간 정지 연출) "Q를 누르세요" -> 대시하면 미사일이 풀려서 스쳐 지나가며 반드시 NEAR MISS 가 난다.
+local function drillLoop(run)
+	local member = run.DrillMember
+	local function alive()
+		return not run.Destroyed and run.Phase ~= "Ended" and playerRun[member] == run and member.Parent ~= nil
+	end
+	local function show(key, title, text, duration)
+		Remotes.Tutorial:FireClient(member, "Prompt", { Key = key, Title = title, Text = text, Duration = duration or 40, Top = true })
+	end
+	local function dashing()
+		local root = getAliveParts(member)
+		if not root then return false end
+		local v = root.AssemblyLinearVelocity
+		return Vector3.new(v.X, 0, v.Z).Magnitude > 50
+	end
+	local function ok(message)
+		show("✅", "좋아요!", message or "잘했어요! 다음으로 넘어가요", 1.6)
+		task.wait(2)
+	end
+	local function wait(limit, isDone)
+		local waited = 0
+		while alive() and waited < limit do
+			if isDone() then return true end
+			task.wait(0.1)
+			waited += 0.1
+		end
+		return false
+	end
+
+	run.Phase = "Drill"
+	notifyAll(run, "🎓 연습장! 진짜 던전 전에 조작을 연습해봐요")
+	-- 표적: 가만히 서 있고 쓰러지지 않는다
+	local base = (run.StartPos or run.Origin) + Vector3.new(0, 0, -26)
+	local stats = Config.Monster.GetStats(1)
+	stats.ShotInterval = 9999
+	stats.MaxHealth = 100000
+	local slime = MonsterTypes.Defs.Slime
+	local part = MonsterTypes.Build("Slime", 6, Color3.fromRGB(110, 220, 120), Vector3.new(base.X, groundAt(run, base.X, base.Z, base.Y) + 3, base.Z), run.MonstersFolder)
+	local data = registerMonster(run, part, stats, "연습 표적", 140, { Static = true, Invincible = true, TypeKey = "Slime", Def = slime, Level = 1, Phase = 0, NextAttack = 1e9 })
+	run.MonsterCount -= 1 -- 웨이브 계산에 넣지 않는다
+	task.wait(3)
+
+	-- ① 직접 조준
+	if alive() then
+		local start = member:GetAttribute("HitTick") or 0
+		show("🖱", "① 직접 조준해서 쏴요!", "마우스로 표적을 조준하고 클릭해서 5번 맞혀보세요. 자동 공격(R)은 가장 가까운 적만 노려요", 40)
+		if wait(60, function() return (member:GetAttribute("HitTick") or 0) - start >= 5 end) then ok() end
+	end
+	-- ② 대시
+	if alive() then
+		show("Q", "② Q 키로 대시!", "Q 키를 눌러 앞으로 돌진해보세요. 쏘는 탄을 피하는 데 써요", 40)
+		if wait(40, dashing) then ok("대시 좋아요! 이제 탄을 피해볼 거예요") end
+	end
+	-- ③ NEAR MISS (각본)
+	if alive() then
+		show("⚡", "③ 미사일이 날아와요!", "표적이 미사일을 쏴요. 가까워지면 시간이 멈추니까, 그때 Q 대시로 피해보세요", 4)
+		task.wait(2.5)
+		local root = getAliveParts(member)
+		if root and run.Monsters[part] == data then
+			local origin = part.Position + Vector3.new(0, 1, 0)
+			local direction = Vector3.new(root.Position.X - origin.X, 0, root.Position.Z - origin.Z)
+			direction = direction.Magnitude > 1 and direction.Unit or Vector3.new(0, 0, 1)
+			local speed = 18
+			fireProjectile(run, origin, direction, speed, 0, 4, Color3.fromRGB(255, 70, 70), "Orb") -- 피해 0: 맞아도 아프지 않다
+			local missile = run.Projectiles[#run.Projectiles]
+			missile.Expire = os.clock() + 90
+			local frozen = false
+			wait(14, function()
+				local r = getAliveParts(member)
+				if r and missile.Part.Parent and (r.Position - missile.Part.Position).Magnitude <= 30 then
+					frozen = true
+					return true
+				end
+				return false
+			end)
+			if frozen and alive() then
+				missile.Speed = 0
+				Remotes.Tutorial:FireClient(member, "Freeze", true)
+				show("Q", "⏸ 지금이에요! Q 키로 대시!", "미사일이 멈췄어요! 옆으로 Q 대시를 눌러 아슬아슬하게 피하면 NEAR MISS!", 40)
+				local missAt = member:GetAttribute("NearMissUntil") or 0
+				wait(25, dashing)
+				missile.Speed = speed * 1.3
+				Remotes.Tutorial:FireClient(member, "Freeze", false)
+				wait(4, function() return (member:GetAttribute("NearMissUntil") or 0) > missAt end)
+				if (member:GetAttribute("NearMissUntil") or 0) <= missAt and alive() then
+					local r = getAliveParts(member)
+					if r then Dungeon.AwardNearMiss(run, member, r) end -- 놓쳤어도 한 번은 보여준다
+				end
+				task.wait(1.2)
+				ok("이게 NEAR MISS! 데드아이 게이지가 차고 4초간 전부 치명타예요")
+			end
+			missile.Expire = 0
+		end
+	end
+	-- ④ 궁극기
+	if alive() then
+		member:SetAttribute("UltCharge", Config.Skills.Ult.Cost)
+		show("V", "④ 궁극기 데드아이!", "게이지가 가득 찼어요! V 키를 눌러 표적을 난사해보세요 (사용 중에는 피격 무적)", 40)
+		if wait(40, function() return member:GetAttribute("DeadeyeActive") == true end) then
+			task.wait(2.5)
+			ok("멋져요! 이제 진짜 던전이에요")
+		end
+	end
+	Remotes.Tutorial:FireClient(member, "PromptHide")
+	Remotes.Tutorial:FireClient(member, "Freeze", false)
+	-- 연습 표적 정리
+	if run.Monsters[part] == data then
+		run.Monsters[part] = nil
+		part:Destroy()
+	end
+	if alive() then
+		show("🎉", "연습 끝!", "이제 던전 몬스터를 쓰러뜨려 보세요. 행운을 빌어요!", 4)
+	end
+end
+
 local function runLoop(run)
 	run.Phase = "Starting"
 	if run.LayoutName then
@@ -1896,6 +2015,11 @@ local function runLoop(run)
 	notifyAll(run, string.format("👹 이번 보스: %s — %s", run.BossName, run.BossVariant.Desc))
 	if run.Mutator then
 		notifyAll(run, string.format("%s 이번 던전 변이: %s — %s", run.Mutator.Icon, run.Mutator.Name, run.Mutator.Desc))
+	end
+	if run.DrillMember then
+		drillLoop(run)
+		if run.Phase == "Ended" or run.Destroyed then return end
+		run.Phase = "Starting"
 	end
 	if run.RiftMode then
 		riftLoop(run)
@@ -2215,76 +2339,12 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode)
 		end
 	end
 
-	-- 처음 던전에 들어가면 조작법을 차례로 알려준다 (한 번만, 저장됨): 수동 조준 -> 대시 / NEAR MISS -> 궁극기
+	-- 처음 던전에 들어가면 진짜 웨이브 전에 "연습장"에서 조작을 직접 해본다 (한 번만, 저장됨): 조준 -> 대시 -> NEAR MISS(시간 정지) -> 궁극기
 	for _, member in ipairs(members) do
 		local rift = Meta.GetRift(member)
-		if rift and not rift.DungeonTip then -- 첫 던전은 튜토리얼 미션 중이므로 튜토리얼 상태와 상관없이 띄운다
+		if rift and not rift.DungeonTip and not run.DrillMember and not riftMode then
 			rift.DungeonTip = true
-			task.spawn(function()
-				-- 직접 해보는 미니 튜토리얼: 각 단계는 실제로 해야 넘어간다 (25초 안에 못 하면 건너뜀)
-				local function alive()
-					return not run.Destroyed and run.Phase ~= "Ended" and playerRun[member] == run and member.Parent ~= nil
-				end
-				local function show(key, title, text, duration)
-					Remotes.Tutorial:FireClient(member, "Prompt", { Key = key, Title = title, Text = text, Duration = duration or 30, Top = true })
-				end
-				local function step(key, title, text, isDone)
-					show(key, title, text, 30)
-					local waited = 0
-					while alive() and waited < 25 do
-						if run.Phase == "StatPhase" then -- 특성 고르는 동안은 카드를 숨기고 멈춘다 (화면이 겹쳐서 안 보이므로). 끝나면 다시 보여준다
-							Remotes.Tutorial:FireClient(member, "PromptHide")
-							while alive() and run.Phase == "StatPhase" do
-								task.wait(0.3)
-							end
-							show(key, title, text, 30)
-						end
-						if isDone() then
-							show("✅", "좋아요!", "잘했어요! 다음으로 넘어가요", 1.6)
-							task.wait(2)
-							return true
-						end
-						task.wait(0.2)
-						waited += 0.2
-					end
-					return false
-				end
-				local function dashing()
-					local root = getAliveParts(member)
-					if not root then return false end
-					local v = root.AssemblyLinearVelocity
-					return Vector3.new(v.X, 0, v.Z).Magnitude > 50
-				end
-				task.wait(D.StartCountdown + 3) -- 첫 웨이브가 시작된 뒤에
-
-				local hitsAtStart = member:GetAttribute("HitTick") or 0
-				if not alive() then return end
-				step("🖱", "① 직접 조준해서 쏴요! (0/5)", "마우스로 몬스터를 조준하고 클릭해서 5번 맞혀보세요. 자동 공격(R)은 편하지만 가장 가까운 적만 노려요", function()
-					return (member:GetAttribute("HitTick") or 0) - hitsAtStart >= 5
-				end)
-
-				if not alive() then return end
-				local dashed = false
-				step("Q", "② Q 키로 대시!", "Q 키를 눌러 앞으로 돌진해보세요. 몬스터 탄을 피하는 데 써요", function()
-					dashed = dashed or dashing()
-					return dashed
-				end)
-
-				if not alive() then return end
-				local missAt = member:GetAttribute("NearMissUntil") or 0
-				step("⚡", "③ NEAR MISS 도전!", "몬스터가 쏜 탄이 몸을 스치기 직전에 Q 대시로 빠져나가 보세요! 성공하면 데드아이 게이지 + 4초간 전부 치명타", function()
-					return (member:GetAttribute("NearMissUntil") or 0) > missAt
-				end)
-
-				if not alive() then return end
-				member:SetAttribute("UltCharge", Config.Skills.Ult.Cost) -- 연습용으로 게이지를 가득 채워 준다
-				step("V", "④ 궁극기 데드아이!", "게이지가 가득 찼어요! V 키를 눌러 주변 적을 한꺼번에 난사해보세요 (사용 중에는 피격 무적)", function()
-					return member:GetAttribute("DeadeyeActive") == true
-				end)
-				if alive() then
-					show("🎉", "연습 끝!", "이제 던전 보스를 쓰러뜨려 보세요. 행운을 빌어요!", 4)
-				end
-			end)
+			run.DrillMember = member
 		end
 	end
 
