@@ -402,7 +402,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 	local weaponType = Config.GetPlayerWeapon(player)
 	local now = os.clock()
 	local speedPoints = player:GetAttribute("SpeedPoints") or 0
-	local cooldown = Config.Player.BaseCooldown * weaponType.Cooldown / (1 + speedPoints * Config.Player.SpeedPerPoint)
+	local cooldown = Config.Player.BaseCooldown * weaponType.Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0))) -- 펫 가속 포함
 	if now - (lastAttack[player] or 0) < cooldown * 0.9 then return end -- 연타 제한 (네트워크 오차 10% 허용)
 	lastAttack[player] = now
 

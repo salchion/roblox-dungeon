@@ -1,9 +1,9 @@
 -- MetaService (ServerScriptService > Modules 안의 ModuleScript, 이름: MetaService)
 -- 캐릭터 성장 보조 시스템 세 가지를 한곳에서 관리한다.
 --   1) 스킬 강화: 골드로 스킬 레벨업 (SkillLv_<스킬> Attribute)
---   2) 펫: 알 부화 / 장착 / 따라다니는 펫 모델 + 능력치 (PetDamage, PetCrit, PetXp, PetSpeed, PetHaste Attribute)
+--   2) 펫: 골드로 펫 기능 열기 / 레벨업(기능이 하나씩 늘어남) / 외형 선택 (Pet* Attribute 로 효과를 알린다)
 --   3) 무한의 탑 최고 층 (TowerBest Attribute)
--- 저장: { Skills = {Barrier=1,...}, Pets = {Owned={Key=레벨}}, Equipped = "Key", Tower = 최고층 }
+-- 저장: { Skills = {...}, Pet = { Unlocked, Level, Look, Color }, Tower = 최고층, Prestige, Rift }
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -13,12 +13,11 @@ local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Level = require(script.Parent:WaitForChild("LevelService"))
 local Event = require(script.Parent:WaitForChild("EventService"))
+local PetModel = require(script.Parent:WaitForChild("PetModel"))
 
 local Meta = {}
 
 local states = {} -- [player] = { Skills, Owned, Equipped, Tower }
-
-local PET_STATS = { "Damage", "Crit", "Xp", "Speed", "Haste" }
 
 local function notify(player, text)
 	Remotes.Notify:FireClient(player, text)
@@ -27,18 +26,34 @@ end
 ------------------------------------------------------------
 -- 펫 능력치 / 모델
 ------------------------------------------------------------
+local PET_ATTRS = { "PetSpeed", "PetXp", "PetDamage", "PetCrit", "PetHaste", "PetAtkSpeed", "PetGold", "PetLoot", "PetGuard", "PetShoot" }
+
 local function applyPetStats(player, state)
-	for _, stat in ipairs(PET_STATS) do
-		player:SetAttribute("Pet" .. stat, 0)
+	for _, attr in ipairs(PET_ATTRS) do
+		player:SetAttribute(attr, 0)
 	end
-	local key = state.Equipped
-	local level = key and state.Owned[key]
-	if key and level and Config.Pets[key] then
-		local pet = Config.Pets[key]
-		player:SetAttribute("Pet" .. pet.Stat, Config.GetPetValue(key, level))
+	local pet = state.Pet
+	if pet.Unlocked then
+		for attr, value in pairs(Config.GetPetStats(pet.Level)) do
+			player:SetAttribute(attr, value)
+		end
 	end
-	player:SetAttribute("PetKey", key or "")
-	player:SetAttribute("PetLevel", (key and level) or 0)
+	player:SetAttribute("PetLevel", pet.Unlocked and pet.Level or 0)
+	player:SetAttribute("PetLook", pet.Look)
+end
+
+-- 이 외형을 쓸 수 있는가: 처음부터 / 필드 군주를 쓰러뜨림 / 칭호(업적)를 땀
+local function lookUnlocked(player, lookKey)
+	local look = Config.Pet.Looks[lookKey]
+	if not look then return false end
+	local rule = look.Unlock
+	if rule == "Free" then return true end
+	if rule.Zone then return (player:GetAttribute("ClearedZone") or 0) >= rule.Zone end
+	if rule.Ach then
+		local ok, Quest = pcall(function() return require(script.Parent:WaitForChild("QuestService")) end)
+		return ok and Quest.IsDone(player, rule.Ach) or false
+	end
+	return false
 end
 
 local function removePetModel(player)
@@ -53,60 +68,12 @@ function Meta.RefreshPetModel(player)
 	removePetModel(player)
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
-	if not state or not state.Equipped or not root then return end
-	local key = state.Equipped
-	local pet = Config.Pets[key]
-	if not pet then return end
-
-	local model = Instance.new("Model")
-	model.Name = "PetModel"
-
-	local body = Instance.new("Part")
-	body.Name = "Body"
-	body.Shape = Enum.PartType.Ball
-	body.Size = Vector3.new(1.8, 1.8, 1.8)
-	body.Color = pet.Color
-	body.Material = Enum.Material.Neon
-	body.CanCollide = false
-	body.CanQuery = false
-	body.CanTouch = false
-	body.Massless = true
+	if not state or not state.Pet.Unlocked or not root then return end
+	local pet = state.Pet
+	local color = Config.Pet.Colors[pet.Color] or Config.Pet.Colors[1]
+	local model = PetModel.Build(pet.Look, color)
+	local body = model.PrimaryPart
 	body.CFrame = root.CFrame * CFrame.new(3, 2.5, 3)
-	body.Parent = model
-
-	local light = Instance.new("PointLight")
-	light.Range = 12
-	light.Brightness = 1.5
-	light.Color = pet.Color
-	light.Parent = body
-
-	local sparkle = Instance.new("ParticleEmitter")
-	sparkle.Rate = 8 + pet.Rarity * 6
-	sparkle.Lifetime = NumberRange.new(0.5, 1)
-	sparkle.Speed = NumberRange.new(0.5, 1.5)
-	sparkle.SpreadAngle = Vector2.new(180, 180)
-	sparkle.LightEmission = 1
-	sparkle.Color = ColorSequence.new(pet.Color)
-	sparkle.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.4), NumberSequenceKeypoint.new(1, 0) })
-	sparkle.Parent = body
-
-	-- 눈 두 개 (귀여움)
-	for side = -1, 1, 2 do
-		local eye = Instance.new("Part")
-		eye.Shape = Enum.PartType.Ball
-		eye.Size = Vector3.new(0.35, 0.35, 0.35)
-		eye.Color = Color3.new(0, 0, 0)
-		eye.Material = Enum.Material.SmoothPlastic
-		eye.CanCollide = false
-		eye.CanQuery = false
-		eye.Massless = true
-		eye.CFrame = body.CFrame * CFrame.new(side * 0.35, 0.2, -0.75)
-		eye.Parent = model
-		local weld = Instance.new("WeldConstraint")
-		weld.Part0 = body
-		weld.Part1 = eye
-		weld.Parent = eye
-	end
 
 	local petAttachment = Instance.new("Attachment")
 	petAttachment.Parent = body
@@ -129,7 +96,6 @@ function Meta.RefreshPetModel(player)
 	orient.Responsiveness = 12
 	orient.Parent = body
 
-	model.PrimaryPart = body
 	model.Parent = character
 	pcall(function()
 		body:SetNetworkOwner(nil)
@@ -140,13 +106,19 @@ end
 -- 클라이언트로 상태 보내기
 ------------------------------------------------------------
 local function buildPayload(state)
-	return { Skills = state.Skills, Owned = state.Owned, Equipped = state.Equipped, Tower = state.Tower, Prestige = state.Prestige }
+	return { Skills = state.Skills, Pet = state.Pet, Tower = state.Tower, Prestige = state.Prestige }
 end
 
 function Meta.Push(player)
 	local state = states[player]
 	if state and player.Parent then
-		Remotes.Meta:FireClient(player, "State", buildPayload(state))
+		local payload = buildPayload(state)
+		local unlockedLooks = {}
+		for _, key in ipairs(Config.Pet.LookOrder) do
+			unlockedLooks[key] = lookUnlocked(player, key)
+		end
+		payload.UnlockedLooks = unlockedLooks
+		Remotes.Meta:FireClient(player, "State", payload)
 	end
 end
 
@@ -160,22 +132,27 @@ local function syncSkillAttributes(player, state)
 end
 
 function Meta.Load(player, saved)
-	local state = { Skills = {}, Owned = {}, Equipped = nil, Tower = 0, Prestige = 0, Rift = { Best = 0, Day = 0, Used = 0, Depth = 1, DepthDone = 0, Bests = {}, Hints = {}, LvStats = {} } }
+	local state = { Skills = {}, Pet = { Unlocked = false, Level = 1, Look = "Orb", Color = 1 }, Tower = 0, Prestige = 0, Rift = { Best = 0, Day = 0, Used = 0, Depth = 1, DepthDone = 0, Bests = {}, Hints = {}, LvStats = {} } }
 	for _, key in ipairs(Config.Skills.Order) do
 		local level = typeof(saved) == "table" and typeof(saved.Skills) == "table" and tonumber(saved.Skills[key]) or 1
 		state.Skills[key] = math.clamp(math.floor(level), 1, Config.SkillUpgrade.MaxLevel)
 	end
 	if typeof(saved) == "table" then
-		if typeof(saved.Owned) == "table" then
-			for _, key in ipairs(Config.Pets.Order) do
-				local level = tonumber(saved.Owned[key])
-				if level then
-					state.Owned[key] = math.clamp(math.floor(level), 1, Config.Pets.MaxLevel)
-				end
+		if typeof(saved.Pet) == "table" then
+			local p = saved.Pet
+			state.Pet.Unlocked = p.Unlocked == true
+			state.Pet.Level = math.clamp(math.floor(tonumber(p.Level) or 1), 1, Config.Pet.MaxLevel)
+			if typeof(p.Look) == "string" and Config.Pet.Looks[p.Look] then state.Pet.Look = p.Look end
+			state.Pet.Color = math.clamp(math.floor(tonumber(p.Color) or 1), 1, #Config.Pet.Colors)
+		elseif typeof(saved.Owned) == "table" then -- 예전 저장(알 부화 방식): 펫이 하나라도 있었으면 기능을 열어 주고, 가장 높은 레벨을 이어받는다
+			local best = 0
+			for _, level in pairs(saved.Owned) do
+				best = math.max(best, tonumber(level) or 0)
 			end
-		end
-		if typeof(saved.Equipped) == "string" and state.Owned[saved.Equipped] then
-			state.Equipped = saved.Equipped
+			if best > 0 then
+				state.Pet.Unlocked = true
+				state.Pet.Level = math.clamp(math.floor(best), 1, Config.Pet.MaxLevel)
+			end
 		end
 		state.Tower = math.max(0, math.floor(tonumber(saved.Tower) or 0))
 		state.Prestige = math.clamp(math.floor(tonumber(saved.Prestige) or 0), 0, Config.Prestige.Max)
@@ -195,7 +172,7 @@ end
 function Meta.Serialize(player)
 	local state = states[player]
 	if not state then return nil end
-	return { Skills = state.Skills, Owned = state.Owned, Equipped = state.Equipped or "", Tower = state.Tower, Prestige = state.Prestige, Rift = state.Rift }
+	return { Skills = state.Skills, Pet = state.Pet, Tower = state.Tower, Prestige = state.Prestige, Rift = state.Rift }
 end
 
 function Meta.Forget(player)
@@ -243,89 +220,101 @@ local function upgradeSkill(player, key)
 end
 
 ------------------------------------------------------------
--- 펫: 알 부화 / 장착
+-- 펫: 기능 열기 (골드 한 번) / 레벨업 (골드) / 외형 / 색
 ------------------------------------------------------------
-local function rollPet()
-	local weights = Config.Pets.RarityWeights
-	local total = 0
-	for _, w in ipairs(weights) do total += w end
-	local roll = math.random() * total
-	local rarity = 1
-	for i, w in ipairs(weights) do
-		roll -= w
-		if roll <= 0 then
-			rarity = i
-			break
-		end
-	end
-	local pool = {}
-	for _, key in ipairs(Config.Pets.Order) do
-		if Config.Pets[key].Rarity == rarity then
-			table.insert(pool, key)
-		end
-	end
-	return pool[math.random(#pool)]
-end
-
-local function hatch(player)
+local function unlockPet(player)
 	local state = states[player]
-	if not state then return end
-	if player:GetAttribute("Zone") ~= "Lobby" then
-		notify(player, "알 부화는 로비에서만 할 수 있어요.")
-		return
-	end
+	if not state or state.Pet.Unlocked then return end
+	local cost = Config.Pet.UnlockCost
 	local gold = player:GetAttribute("Gold") or 0
-	local cost = Config.Pets.EggCost
 	if gold < cost then
 		notify(player, string.format("골드가 부족해요. (%d G 필요)", cost))
 		return
 	end
 	player:SetAttribute("Gold", gold - cost)
-
-	local key = rollPet()
-	local pet = Config.Pets[key]
-	local level = state.Owned[key]
-	local message
-	if not level then
-		state.Owned[key] = 1
-		message = string.format("🥚 [%s] %s 부화!", Config.Pets.RarityNames[pet.Rarity], pet.Name)
-		if pet.Rarity >= 4 then
-			Event.Announce(string.format("📢 %s 님이 전설 펫 [%s]을(를) 부화했어요!", player.DisplayName, pet.Name))
-		end
-		if not state.Equipped then
-			state.Equipped = key
-		end
-	elseif level < Config.Pets.MaxLevel then
-		state.Owned[key] = level + 1
-		message = string.format("🥚 %s 또 나왔어요! 펫 레벨 %d!", pet.Name, level + 1)
-	else
-		player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + math.floor(cost * 0.5))
-		message = string.format("🥚 %s (최대 레벨) — 골드 %d G 환급", pet.Name, math.floor(cost * 0.5))
-	end
-	notify(player, message)
+	state.Pet.Unlocked = true
+	state.Pet.Level = 1
+	notify(player, "🐾 펫 기능이 열렸어요! 골드로 레벨을 올릴수록 새 기능이 생겨요. (외형은 군주를 쓰러뜨리거나 칭호를 따면 늘어나요)")
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if root then
-		Effects.Burst(root.Position + Vector3.new(0, 3, 0), Config.Pets.RarityColors[pet.Rarity], 25 + pet.Rarity * 15)
+		Effects.Burst(root.Position + Vector3.new(0, 3, 0), Color3.fromRGB(255, 220, 120), 80)
 	end
 	applyPetStats(player, state)
 	Meta.RefreshPetModel(player)
 	Meta.Push(player)
 end
 
-local function equipPet(player, key)
+local function levelUpPet(player)
 	local state = states[player]
-	if not state then return end
-	if key == "" then
-		state.Equipped = nil
-	elseif typeof(key) == "string" and key ~= "Order" and Config.Pets[key] and state.Owned[key] then
-		state.Equipped = key
-	else
+	if not state or not state.Pet.Unlocked then return end
+	local level = state.Pet.Level
+	if level >= Config.Pet.MaxLevel then
+		notify(player, "펫이 이미 최대 레벨이에요!")
 		return
 	end
+	local cost = Config.GetPetLevelCost(level)
+	local gold = player:GetAttribute("Gold") or 0
+	if gold < cost then
+		notify(player, string.format("골드가 부족해요. (%d G 필요)", cost))
+		return
+	end
+	player:SetAttribute("Gold", gold - cost)
+	state.Pet.Level = level + 1
+	local gained
+	for _, fn in ipairs(Config.Pet.Functions) do
+		if fn.Level == level + 1 then gained = fn end
+	end
+	notify(player, gained and string.format("🐾 펫 Lv.%d! 새 기능 %s %s — %s", level + 1, gained.Icon, gained.Name, gained.Desc) or string.format("🐾 펫 Lv.%d!", level + 1))
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if root then
+		Effects.Burst(root.Position + Vector3.new(0, 3, 0), Color3.fromRGB(255, 225, 120), gained and 70 or 30)
+	end
+	applyPetStats(player, state)
+	Meta.Push(player)
+end
+
+local function setPetLook(player, key)
+	local state = states[player]
+	if not state or not state.Pet.Unlocked then return end
+	if typeof(key) ~= "string" or not lookUnlocked(player, key) then
+		notify(player, "아직 열리지 않은 외형이에요.")
+		return
+	end
+	state.Pet.Look = key
 	applyPetStats(player, state)
 	Meta.RefreshPetModel(player)
 	Meta.Push(player)
 end
+
+local function setPetColor(player, index)
+	local state = states[player]
+	if not state or not state.Pet.Unlocked or typeof(index) ~= "number" then return end
+	state.Pet.Color = math.clamp(math.floor(index), 1, #Config.Pet.Colors)
+	Meta.RefreshPetModel(player)
+	Meta.Push(player)
+end
+
+-- 펫 수호: 체력이 25% 아래로 떨어지면 3초 동안 무적 (90초마다)
+local guardReady = setmetatable({}, { __mode = "k" })
+task.spawn(function()
+	while true do
+		task.wait(0.4)
+		local now = os.clock()
+		for _, player in ipairs(Players:GetPlayers()) do
+			if (player:GetAttribute("PetGuard") or 0) > 0 and now >= (guardReady[player] or 0) then
+				local character = player.Character
+				local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+				if humanoid and humanoid.Health > 0 and humanoid.Health / math.max(1, humanoid.MaxHealth) <= 0.25 and not character:FindFirstChildOfClass("ForceField") then
+					guardReady[player] = now + 90
+					local shield = Instance.new("ForceField")
+					shield.Parent = character
+					game:GetService("Debris"):AddItem(shield, 3)
+					notify(player, "🛡 펫의 수호! 3초 동안 무적이에요 (90초마다)")
+				end
+			end
+		end
+	end
+end)
 
 -- 환생: 최고 레벨에서 레벨을 1로 되돌리고 영구 공격력 보너스를 얻는다 (장비 / 무기 / 돌파 진행은 그대로)
 local function prestige(player)
@@ -369,10 +358,14 @@ Remotes.Meta.OnServerEvent:Connect(function(player, action, arg)
 		upgradeSkill(player, arg)
 	elseif action == "Prestige" then
 		prestige(player)
-	elseif action == "Hatch" then
-		hatch(player)
-	elseif action == "Equip" then
-		equipPet(player, arg)
+	elseif action == "PetUnlock" then
+		unlockPet(player)
+	elseif action == "PetLevel" then
+		levelUpPet(player)
+	elseif action == "PetLook" then
+		setPetLook(player, arg)
+	elseif action == "PetColor" then
+		setPetColor(player, arg)
 	end
 end)
 

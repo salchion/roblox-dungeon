@@ -51,41 +51,59 @@ function Config.GetSkillUpgradeCost(level)
 	return math.floor(Config.SkillUpgrade.BaseCost * Config.SkillUpgrade.CostGrowth ^ (level - 1))
 end
 
--- 펫: 알을 골드로 부화 -> 같은 펫이 또 나오면 펫 레벨업(최대 5). 하나를 장착하면 따라다니며 능력치를 준다.
--- Stat: Damage(공격력) / Crit(치명타) / Xp(경험치) / Speed(이동속도) / Haste(스킬 쿨타임 감소)
-Config.Pets = {
-	EggCost = 4000,
-	MaxLevel = 5,
-	AutoLootRarity = 3, -- 이 등급(영웅) 이상 펫을 장착하면 넓은 범위의 전리품이 자동으로 빨려 들어온다
-	AutoLootRadius = 55,
-	AutoLootLevel = 5,  -- 등급이 낮아도 펫 레벨이 이 이상이면 (좁은 범위의) 자동 루팅
-	AutoLootLevelRadius = 32,
-	LevelBonus = 0.5,   -- 펫 레벨 1당 효과 +50% (기본 대비)
-	RarityNames = { "일반", "희귀", "영웅", "전설" },
-	RarityWeights = { 55, 30, 12, 3 },
-	RarityColors = { Color3.fromRGB(190, 190, 200), Color3.fromRGB(90, 170, 255), Color3.fromRGB(190, 110, 255), Color3.fromRGB(255, 180, 50) },
-	Order = { "Slimey", "Foxy", "Batty", "Rocky", "Sprite", "Dragon", "Phoenix", "Star" },
-	Slimey = { Name = "말랑 슬라임", Rarity = 1, Color = Color3.fromRGB(110, 220, 120), Stat = "Xp", Value = 0.06 },
-	Foxy = { Name = "꼬마 여우", Rarity = 1, Color = Color3.fromRGB(255, 160, 80), Stat = "Speed", Value = 1.5 },
-	Batty = { Name = "박쥐 친구", Rarity = 2, Color = Color3.fromRGB(150, 110, 200), Stat = "Crit", Value = 0.03 },
-	Rocky = { Name = "돌멩이 골렘", Rarity = 2, Color = Color3.fromRGB(150, 150, 160), Stat = "Damage", Value = 0.05 },
-	Sprite = { Name = "빛의 정령", Rarity = 3, Color = Color3.fromRGB(150, 230, 255), Stat = "Haste", Value = 0.06 },
-	Dragon = { Name = "아기 용", Rarity = 3, Color = Color3.fromRGB(255, 90, 70), Stat = "Damage", Value = 0.09 },
-	Phoenix = { Name = "불사조", Rarity = 4, Color = Color3.fromRGB(255, 140, 40), Stat = "Crit", Value = 0.06 },
-	Star = { Name = "별똥별 요정", Rarity = 4, Color = Color3.fromRGB(255, 240, 120), Stat = "Damage", Value = 0.14 },
+-- 펫: 골드를 한 번 내서 "펫 기능"을 열면 따라다니는 동료가 생긴다. 골드로 레벨을 올릴 때마다 기능이 하나씩 늘어난다 (자동 루팅 / 공격 속도 / 보조 사격 ...).
+-- 외형은 능력과 상관없는 꾸미기: 필드 군주를 쓰러뜨리거나 칭호(업적)를 따면 새 외형이 열리고, 열린 외형 중에서 마음대로 고른다.
+Config.Pet = {
+	UnlockCost = 5000,       -- 펫 기능 열기 (한 번)
+	MaxLevel = 15,
+	LevelCostBase = 3000,    -- 레벨 1 -> 2 비용
+	LevelCostGrowth = 1.45,  -- 레벨이 오를수록 비용이 늘어난다
+	-- 기능: 그 레벨에 도달하면 열린다 (아래 레벨 기능이 모두 합쳐진다). Stats = 플레이어 Attribute 에 더해지는 값
+	Functions = {
+		{ Level = 1,  Icon = "🐾", Name = "동행",         Desc = "펫이 따라다녀요 · 이동 속도 +1",                 Stats = { PetSpeed = 1 } },
+		{ Level = 2,  Icon = "📘", Name = "배움",         Desc = "경험치 +5%",                                     Stats = { PetXp = 0.05 } },
+		{ Level = 3,  Icon = "💥", Name = "힘",           Desc = "공격력 +4%",                                     Stats = { PetDamage = 0.04 } },
+		{ Level = 5,  Icon = "🧲", Name = "자동 루팅",    Desc = "전리품이 반경 30 안에서 저절로 빨려 들어와요",  Stats = { PetLoot = 30 } },
+		{ Level = 7,  Icon = "🎯", Name = "집중",         Desc = "치명타 확률 +4%",                                Stats = { PetCrit = 0.04 } },
+		{ Level = 8,  Icon = "🛡", Name = "수호",         Desc = "체력이 25% 아래로 떨어지면 3초 무적 (90초마다)", Stats = { PetGuard = 1 } },
+		{ Level = 10, Icon = "⏩", Name = "가속",         Desc = "공격 속도 +10%",                                 Stats = { PetAtkSpeed = 0.10 } },
+		{ Level = 12, Icon = "🧲", Name = "넓은 루팅",    Desc = "자동 루팅 반경이 55로 늘어나요",                 Stats = { PetLoot = 25 } },
+		{ Level = 13, Icon = "🔫", Name = "보조 사격",    Desc = "펫이 1.6초마다 가까운 적에게 미사일을 쏴요",    Stats = { PetShoot = 1 } },
+		{ Level = 15, Icon = "✨", Name = "대각성",       Desc = "골드 획득 +10% · 스킬 쿨타임 -10%",              Stats = { PetGold = 0.10, PetHaste = 0.10 } },
+	},
+	-- 외형: Unlock = Free / { Zone = N } (필드 N구역 군주를 쓰러뜨림) / { Ach = 업적Id } (그 업적을 달성해 칭호를 얻음)
+	LookOrder = { "Orb", "Slime", "Fox", "Bat", "Golem", "Spirit", "Dragon", "Phoenix", "Star" },
+	Looks = {
+		Orb     = { Name = "빛구슬",     Icon = "🔮", Unlock = "Free", Hint = "처음부터" },
+		Slime   = { Name = "슬라임",     Icon = "🟢", Unlock = { Zone = 1 }, Hint = "구역 1 군주 처치" },
+		Fox     = { Name = "꼬마 여우",  Icon = "🦊", Unlock = { Zone = 2 }, Hint = "구역 2 군주 처치" },
+		Bat     = { Name = "박쥐",       Icon = "🦇", Unlock = { Zone = 3 }, Hint = "구역 3 군주 처치" },
+		Golem   = { Name = "돌 골렘",    Icon = "🪨", Unlock = { Zone = 4 }, Hint = "구역 4 군주 처치" },
+		Spirit  = { Name = "빛의 정령",  Icon = "🧚", Unlock = { Ach = "dungeon10" }, Hint = "칭호 『던전 단골』" },
+		Dragon  = { Name = "아기 용",    Icon = "🐲", Unlock = { Ach = "boss10" }, Hint = "칭호 『보스 헌터』" },
+		Phoenix = { Name = "불사조",     Icon = "🔥", Unlock = { Zone = 7 }, Hint = "구역 7 군주 처치" },
+		Star    = { Name = "별똥별",     Icon = "⭐", Unlock = { Ach = "zone8" }, Hint = "칭호 『심연의 정복자』" },
+	},
+	-- 색: 외형 위에 입히는 색 (처음 몇 개는 기본 제공)
+	Colors = {
+		Color3.fromRGB(150, 230, 255), Color3.fromRGB(255, 160, 80), Color3.fromRGB(110, 220, 120), Color3.fromRGB(190, 110, 255),
+		Color3.fromRGB(255, 110, 150), Color3.fromRGB(255, 225, 110), Color3.fromRGB(235, 235, 245), Color3.fromRGB(100, 140, 255),
+	},
 }
-function Config.GetPetValue(key, level)
-	local pet = Config.Pets[key]
-	return pet.Value * (1 + Config.Pets.LevelBonus * (level - 1))
+function Config.GetPetLevelCost(level)
+	return math.floor(Config.Pet.LevelCostBase * Config.Pet.LevelCostGrowth ^ (level - 1))
 end
-function Config.FormatPetStat(key, level)
-	local pet = Config.Pets[key]
-	local value = Config.GetPetValue(key, level)
-	local names = { Damage = "공격력", Crit = "치명타 확률", Xp = "경험치", Speed = "이동속도", Haste = "스킬 쿨타임 감소" }
-	if pet.Stat == "Speed" then
-		return string.format("%s +%.1f", names[pet.Stat], value)
+-- 이 레벨에서 켜지는 기능들의 능력치 합 { PetSpeed = ..., PetLoot = ... }
+function Config.GetPetStats(level)
+	local totals = {}
+	for _, fn in ipairs(Config.Pet.Functions) do
+		if fn.Level <= level then
+			for attr, value in pairs(fn.Stats) do
+				totals[attr] = (totals[attr] or 0) + value
+			end
+		end
 	end
-	return string.format("%s +%d%%", names[pet.Stat], math.floor(value * 100 + 0.5))
+	return totals
 end
 
 ------------------------------------------------------------
@@ -124,7 +142,7 @@ Config.Tutorial = {
 -- 환생: 최고 레벨에서 레벨을 1로 되돌리는 대신 영구 보너스. 골드를 더 벌려면 환생한다 (영구 공격력 + 골드 획득량).
 Config.Prestige = { Max = 10, DamagePerRank = 0.05, GoldPerRank = 0.10 }
 function Config.GoldBonus(player)
-	return 1 + (player:GetAttribute("Prestige") or 0) * Config.Prestige.GoldPerRank
+	return 1 + (player:GetAttribute("Prestige") or 0) * Config.Prestige.GoldPerRank + (player:GetAttribute("PetGold") or 0) -- 환생 + 펫(대각성)
 end
 
 Config.Dungeon = {} -- 아래에서 여러 블록이 채우고, "던전" 절에서 기본 값이 합쳐진다

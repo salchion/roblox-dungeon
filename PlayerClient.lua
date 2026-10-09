@@ -2251,7 +2251,7 @@ end
 
 local function attackCooldown()
 	local speedPoints = player:GetAttribute("SpeedPoints") or 0
-	return Config.Player.BaseCooldown * Config.GetPlayerWeapon(player).Cooldown / (1 + speedPoints * Config.Player.SpeedPerPoint)
+	return Config.Player.BaseCooldown * Config.GetPlayerWeapon(player).Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0))) -- 펫 가속 포함
 end
 
 ------------------------------------------------------------
@@ -2736,27 +2736,24 @@ local function buildInventoryTab()
 	slotBox("Ring", 350, 108)
 	slotBox("Boots", 350, 204)
 	slotBox("Weapon", 350, 300)
-	do -- 펫 칸: 장착한 펫을 한눈에 (누르면 펫 탭으로)
-		local petKey = player:GetAttribute("PetKey")
-		local pet = petKey and petKey ~= "" and Config.Pets[petKey]
-		local box = makeButton({ Size = UDim2.new(0, 88, 0, 88), Position = UDim2.new(0, 10, 0, 300), Text = "", BackgroundColor3 = pet and Color3.fromRGB(46, 48, 68) or Color3.fromRGB(34, 34, 48), AutoButtonColor = true }, top, function()
-			currentTab = "Pet"
-			Remotes.Meta:FireServer("Request")
-			refreshMenu()
+	do -- 펫 칸: 펫 레벨 / 외형을 한눈에 (누르면 펫 창)
+		local petLevel = player:GetAttribute("PetLevel") or 0
+		local look = Config.Pet.Looks[player:GetAttribute("PetLook") or "Orb"] or Config.Pet.Looks.Orb
+		local box = makeButton({ Size = UDim2.new(0, 88, 0, 88), Position = UDim2.new(0, 10, 0, 300), Text = "", BackgroundColor3 = petLevel > 0 and Color3.fromRGB(46, 48, 68) or Color3.fromRGB(34, 34, 48), AutoButtonColor = true }, top, function()
+			player:SetAttribute("OpenPet", os.clock())
 		end)
 		rounded(box, 10)
-		if pet then
-			create("UIStroke", { Color = pet.Color, Thickness = 2.5 }, box)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 4), Text = "🐾", TextSize = 30, TextColor3 = pet.Color }, box)
-			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 42), Text = pet.Name, TextSize = 11, TextWrapped = true, TextColor3 = pet.Color, Font = Enum.Font.GothamBold }, box)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 62), Text = string.format("Lv.%d", player:GetAttribute("PetLevel") or 1), TextSize = 13, Font = Enum.Font.GothamBlack }, box)
+		if petLevel > 0 then
+			create("UIStroke", { Color = Color3.fromRGB(255, 200, 90), Thickness = 2.5 }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 4), Text = look.Icon, TextSize = 30 }, box)
+			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 42), Text = look.Name, TextSize = 11, TextWrapped = true, Font = Enum.Font.GothamBold }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 62), Text = string.format("Lv.%d", petLevel), TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, box)
 		else
 			create("UIStroke", { Color = Color3.fromRGB(70, 70, 90), Thickness = 1.5 }, box)
 			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 8), Text = "🐾", TextSize = 30, TextTransparency = 0.6 }, box)
-			makeLabel({ Size = UDim2.new(1, -4, 0, 30), Position = UDim2.new(0, 2, 0, 52), Text = "펫 없음\n알 부화하기", TextSize = 11, TextWrapped = true, TextColor3 = Color3.fromRGB(150, 150, 175) }, box)
+			makeLabel({ Size = UDim2.new(1, -4, 0, 30), Position = UDim2.new(0, 2, 0, 52), Text = "펫 기능\n열기 (P)", TextSize = 11, TextWrapped = true, TextColor3 = Color3.fromRGB(150, 150, 175) }, box)
 		end
 	end
-
 	-- 선택한 아이템 설명
 	local detail = create("Frame", { Size = UDim2.new(1, -462, 1, -24), Position = UDim2.new(0, 450, 0, 12), BackgroundColor3 = Color3.fromRGB(24, 26, 38), BorderSizePixel = 0 }, top)
 	rounded(detail, 10)
@@ -3159,39 +3156,12 @@ local function buildSkillTab()
 	end
 end
 
-local function buildPetTab()
-	local owned = metaState and metaState.Owned or {}
-	local equipped = metaState and metaState.Equipped
-	local P = Config.Pets
-	local header = newRow(84)
-	rowText(header, string.format("🥚 펫 알을 부화시켜 펫을 모아요. 같은 펫이 또 나오면 펫 레벨 업 (최대 %d)\n<font color='#bbbbcc' size='13'>장착한 펫은 캐릭터를 따라다니며 능력치를 줘요. 알 부화는 로비에서만 가능.\n🧲 <b>자동 루팅</b>: %s 이상 펫을 장착하거나, 어떤 펫이든 Lv.%d 이 되면 전리품이 알아서 빨려 들어와요!</font>", P.MaxLevel, P.RarityNames[P.AutoLootRarity], P.AutoLootLevel), 14, 210)
-	makeButton({
-		Size = UDim2.new(0, 190, 0, 40), Position = UDim2.new(1, -202, 0.5, -20),
-		Text = string.format("🥚 알 부화 %d G", P.EggCost), BackgroundColor3 = Color3.fromRGB(200, 130, 40), TextSize = 15,
-	}, header, function()
-		Remotes.Meta:FireServer("Hatch")
+local function buildPetTab() -- 펫 창은 따로 있다 (PetClient): 기능 / 레벨업 / 외형 / 색
+	local row = newRow(96)
+	rowText(row, "🐾 <b>펫</b>: 골드로 펫 기능을 열고, 레벨을 올릴 때마다 새 기능이 생겨요 (자동 루팅 · 공격 속도 · 보조 사격 ...)\n<font color='#bbbbcc' size='13'>외형은 능력과 상관없는 꾸미기예요. 필드 군주를 쓰러뜨리거나 칭호를 따면 새 외형이 열려요.</font>", 14, 210)
+	makeButton({ Size = UDim2.new(0, 190, 0, 44), Position = UDim2.new(1, -202, 0.5, -22), Text = "🐾 펫 창 열기 (P)", TextSize = 16, BackgroundColor3 = Color3.fromRGB(200, 130, 40) }, row, function()
+		player:SetAttribute("OpenPet", os.clock())
 	end)
-
-	for _, key in ipairs(P.Order) do
-		local pet = P[key]
-		local level = owned[key]
-		local color = P.RarityColors[pet.Rarity]
-		local row = newRow(58, level and Color3.fromRGB(40, 40, 58) or Color3.fromRGB(30, 30, 40))
-		if level then
-			rowText(row, string.format("<font color='#%s' size='16'><b>[%s] %s</b></font>  <font color='#ffd966'>Lv.%d</font>\n<font color='#9ad7ff'>%s</font>",
-				hex(color), P.RarityNames[pet.Rarity], pet.Name, level, Config.FormatPetStat(key, level) .. ((pet.Rarity >= P.AutoLootRarity or level >= P.AutoLootLevel) and "   🧲 자동 루팅" or "")), 14, 150)
-			local isEquipped = equipped == key
-			makeButton({
-				Size = UDim2.new(0, 120, 0, 32), Position = UDim2.new(1, -132, 0.5, -16),
-				Text = isEquipped and "해제" or "장착", BackgroundColor3 = isEquipped and RED or GREEN,
-			}, row, function()
-				Remotes.Meta:FireServer("Equip", isEquipped and "" or key)
-			end)
-		else
-			rowText(row, string.format("<font color='#777788' size='16'><b>[%s] ???</b></font>\n<font color='#666677'>아직 못 얻었어요 · %s</font>",
-				P.RarityNames[pet.Rarity], Config.FormatPetStat(key, 1)), 14, 150)
-		end
-	end
 end
 
 Remotes.Meta.OnClientEvent:Connect(function(action, data)

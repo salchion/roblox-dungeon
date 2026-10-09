@@ -1549,7 +1549,7 @@ end
 -- 회전 칼날 / 낙뢰: 던전이 진행되는 동안 계속 도는 효과 루프
 local function startAugLoop(run)
 	task.spawn(function()
-		local blades, nextTick, nextStorm, nextMeteor, nextPulse = {}, {}, {}, {}, {}
+		local blades, nextTick, nextStorm, nextMeteor, nextPulse, nextPet = {}, {}, {}, {}, {}, {}
 		local nextAura = 0
 		while not run.Destroyed and run.Phase ~= "Ended" do
 			local now = os.clock()
@@ -1646,6 +1646,16 @@ local function startAugLoop(run)
 					if best then
 						local p = best.Part.Position
 						dropMeteor(run, member, Vector3.new(p.X, root.Position.Y - 2.5, p.Z), 14 + 2 * meteor, augDamage(member) * (2.2 + 0.8 * meteor), meteor)
+					end
+				end
+				-- 펫 보조 사격 (펫 레벨 기능): 1.6초마다 가까운 적 한 마리에게 미사일
+				if root and (member:GetAttribute("PetShoot") or 0) > 0 and now >= (nextPet[member] or 0) then
+					nextPet[member] = now + 1.6
+					local entries = nearestMonsters(run, root.Position, 80, 1)
+					if entries[1] then
+						local petModel = member.Character and member.Character:FindFirstChild("PetModel")
+						local from = petModel and petModel.PrimaryPart and petModel.PrimaryPart.Position or (root.Position + Vector3.new(3, 3, 3))
+						launchMissile(run, member, from, entries[1], augDamage(member) * 0.55)
 					end
 				end
 				-- 수호 파동: 몸에서 퍼져 나가며 쓸어내고 체력을 회복
