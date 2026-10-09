@@ -204,6 +204,25 @@ do
 		camera.FieldOfView = fov - 9
 		TweenService:Create(camera, TweenInfo.new(0.4, Enum.EasingStyle.Quad), { FieldOfView = fov }):Play()
 		local streak = info and info.Streak or 1
+		if info and info.First then -- 처음 한 번: NEAR MISS 가 뭔지 설명 카드
+			local card = makePanel({
+				Size = UDim2.new(0, 520, 0, 150), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.62, 0),
+				BackgroundColor3 = Color3.fromRGB(14, 24, 36), BackgroundTransparency = 0.03, ZIndex = 58,
+			}, gui)
+			create("UIStroke", { Color = Color3.fromRGB(120, 255, 255), Thickness = 4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
+			makeLabel({ Size = UDim2.new(1, -24, 0, 34), Position = UDim2.new(0, 12, 0, 8), Text = "⚡ NEAR MISS 란?", TextSize = 26, Font = Enum.Font.GothamBlack,
+				TextColor3 = Color3.fromRGB(120, 255, 255), ZIndex = 59 }, card)
+			makeLabel({ Size = UDim2.new(1, -32, 0, 96), Position = UDim2.new(0, 16, 0, 46), TextSize = 18, Font = Enum.Font.GothamBold, TextWrapped = true, RichText = true,
+				TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 59,
+				Text = "적의 탄이나 공격을 <font color='#78ffff'>대시(Q)로 아슬아슬하게 스치며 피하면</font> 발동해요!\n<font color='#ffe16e'>데드아이 게이지가 차오르고, 4초 동안 내 공격이 전부 치명타!</font>\n연속으로 성공하면 보너스가 커져요. (심연 도전에서는 점수도 올라요)" }, card)
+			task.delay(8, function()
+				if card.Parent then
+					TweenService:Create(card, TweenInfo.new(0.4), { BackgroundTransparency = 1 }):Play()
+					task.wait(0.4)
+					card:Destroy()
+				end
+			end)
+		end
 		local text = makeLabel({
 			Size = UDim2.new(0, 520, 0, 70), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.3, 0),
 			Text = streak > 1 and string.format("⚡ NEAR MISS!  x%d", streak) or "⚡ NEAR MISS!", TextSize = 46, Font = Enum.Font.GothamBlack,

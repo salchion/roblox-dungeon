@@ -18,6 +18,7 @@ local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local CollectionService = game:GetService("CollectionService")
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
+local Meta = require(script.Parent:WaitForChild("MetaService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Level = require(script.Parent:WaitForChild("LevelService"))
 local MonsterTypes = require(script.Parent:WaitForChild("MonsterTypes"))
@@ -1761,8 +1762,11 @@ local function awardNearMiss(player, root)
 	local charge = player:GetAttribute("UltCharge") or 0
 	player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, charge + 10 + math.min(streak, 4) * 3))
 	player:SetAttribute("NearMissUntil", now + 4) -- 4초 동안 공격이 전부 치명타 (DungeonService.ComputeDamage 가 읽는다)
+	local rift = Meta.GetRift(player) -- 처음 한 번만 NEAR MISS 설명 카드를 띄운다 (저장됨)
+	local firstTime = rift ~= nil and not rift.Tip
+	if rift then rift.Tip = true end
 	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), streak > 1 and string.format("NEAR MISS! x%d", streak) or "NEAR MISS!", Color3.fromRGB(120, 255, 255))
-	Remotes.Banner:FireClient(player, "NearMiss", { Streak = streak })
+	Remotes.Banner:FireClient(player, "NearMiss", { Streak = streak, First = firstTime })
 end
 
 local function stepProjectiles(dt)

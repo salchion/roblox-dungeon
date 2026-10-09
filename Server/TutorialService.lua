@@ -59,7 +59,7 @@ local function send(player)
 	end
 	if step.Doom and not state.DashTipShown then
 		state.DashTipShown = true
-		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "Q", Title = "대시로 빠르게!", Text = "Q 키를 누르면 앞으로 돌진해요. 동쪽 필드까지 빠르게 갈 수 있어요", Duration = 8 })
+		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "Q", Title = "대시로 빠르게!", Text = "Q 키를 누르면 앞으로 돌진해요. 동쪽 필드까지 빠르게 갈 수 있고, 적 탄을 아슬아슬하게 피하면 NEAR MISS 보너스!", Duration = 8 })
 	end
 	Remotes.Tutorial:FireClient(player, "Step", {
 		Index = state.Step, Total = #Steps, Text = step.Text, Progress = state.Progress, Goal = step.Goal,
