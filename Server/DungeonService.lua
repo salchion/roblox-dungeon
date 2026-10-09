@@ -36,7 +36,10 @@ local usedSlots = {}     -- [slot] = true
 local nextRunId = 1
 local lobbySpawn = CFrame.new(0, 4, 25)
 
-local STAT_ATTRIBUTES = { "StatPoints", "AugMissile", "AugNova", "AugOrbit", "AugStorm" }
+local STAT_ATTRIBUTES = { "StatPoints", "AugMissile", "AugNova", "AugOrbit", "AugStorm", "AugFlame", "AugExecute", "AugMeteor", "AugPulse" }
+for _, synKey in ipairs(Config.AugSynergies.Order) do
+	table.insert(STAT_ATTRIBUTES, "AugSyn_" .. synKey)
+end
 for _, perkKey in ipairs(Config.Perks.Order) do
 	table.insert(STAT_ATTRIBUTES, Config.Perks[perkKey].Attr)
 end
@@ -1342,7 +1345,112 @@ local function shockRing(run, position, radius, color)
 end
 
 local augDepth = 0
+local function synergy(player, key)
+	return player:GetAttribute("AugSyn_" .. key) == true
+end
+
+-- 불길 지대: 한동안 남아서 안에 있는 적을 계속 태운다
+local function makeFlame(run, player, position, radius, seconds, damage)
+	run.FlameCount = run.FlameCount or 0
+	if run.FlameCount >= 14 then return end
+	run.FlameCount += 1
+	local pad = Instance.new("Part")
+	pad.Shape = Enum.PartType.Cylinder
+	pad.Size = Vector3.new(0.4, radius * 2, radius * 2)
+	pad.CFrame = CFrame.new(position + Vector3.new(0, 0.3, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	pad.Material = Enum.Material.Neon
+	pad.Color = Color3.fromRGB(255, 120, 40)
+	pad.Transparency = 0.55
+	pad.Anchored, pad.CanCollide, pad.CanQuery, pad.CanTouch = true, false, false, false
+	pad.Parent = run.Folder
+	local fire = Instance.new("Fire")
+	fire.Size = math.max(6, radius)
+	fire.Heat = 8
+	fire.Parent = pad
+	task.spawn(function()
+		local untilAt = os.clock() + seconds
+		while pad.Parent and os.clock() < untilAt and not run.Destroyed and run.Phase ~= "Ended" do
+			for _, entry in ipairs(nearestMonsters(run, position, radius, 8)) do
+				hitMonster(run, player, entry, damage)
+			end
+			task.wait(0.5)
+		end
+		TweenService:Create(pad, TweenInfo.new(0.4), { Transparency = 1 }):Play()
+		Debris:AddItem(pad, 0.5)
+		run.FlameCount -= 1
+	end)
+end
+
+-- 번개 한 줄기
+local function strikeBolt(run, player, entry, damage)
+	local top = entry.Part.Position + Vector3.new(0, 70, 0)
+	local bolt = Instance.new("Part")
+	bolt.Material = Enum.Material.Neon
+	bolt.Color = Color3.fromRGB(255, 245, 140)
+	bolt.Anchored, bolt.CanCollide, bolt.CanQuery, bolt.CanTouch = true, false, false, false
+	local length = (top - entry.Part.Position).Magnitude
+	bolt.Size = Vector3.new(1.4, 1.4, length)
+	bolt.CFrame = CFrame.lookAt((top + entry.Part.Position) / 2, entry.Part.Position)
+	bolt.Parent = run.Folder
+	TweenService:Create(bolt, TweenInfo.new(0.3), { Transparency = 1, Size = Vector3.new(0.2, 0.2, length) }):Play()
+	Debris:AddItem(bolt, 0.35)
+	Effects.Burst(entry.Part.Position, Color3.fromRGB(255, 240, 120), 24)
+	hitMonster(run, player, entry, damage)
+end
+
+-- 유성: 경고 원 -> 낙하 -> 폭발
+local function dropMeteor(run, player, position, radius, damage, level)
+	local warn = Instance.new("Part")
+	warn.Shape = Enum.PartType.Cylinder
+	warn.Size = Vector3.new(0.3, radius * 2, radius * 2)
+	warn.CFrame = CFrame.new(position + Vector3.new(0, 0.4, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	warn.Material = Enum.Material.Neon
+	warn.Color = Color3.fromRGB(255, 80, 50)
+	warn.Transparency = 0.6
+	warn.Anchored, warn.CanCollide, warn.CanQuery, warn.CanTouch = true, false, false, false
+	warn.Parent = run.Folder
+	local rock = Instance.new("Part")
+	rock.Shape = Enum.PartType.Ball
+	rock.Size = Vector3.new(7, 7, 7)
+	rock.Material = Enum.Material.Neon
+	rock.Color = Color3.fromRGB(255, 150, 60)
+	rock.Anchored, rock.CanCollide, rock.CanQuery, rock.CanTouch = true, false, false, false
+	rock.Position = position + Vector3.new(14, 90, 10)
+	rock.Parent = run.Folder
+	local fire = Instance.new("Fire")
+	fire.Size = 14
+	fire.Parent = rock
+	TweenService:Create(rock, TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Position = position + Vector3.new(0, 3, 0) }):Play()
+	task.delay(0.9, function()
+		warn:Destroy()
+		rock:Destroy()
+		if run.Destroyed or run.Phase == "Ended" then return end
+		shockRing(run, position, radius, Color3.fromRGB(255, 150, 60))
+		Effects.Burst(position + Vector3.new(0, 3, 0), Color3.fromRGB(255, 160, 60), 70)
+		for _, entry in ipairs(nearestMonsters(run, position, radius, 12)) do
+			hitMonster(run, player, entry, damage)
+		end
+		if synergy(player, "StormEye") then -- 폭풍의 눈: 유성이 떨어질 때 번개가 추가로
+			for _, entry in ipairs(nearestMonsters(run, position, radius + 25, 3 + level)) do
+				strikeBolt(run, player, entry, augDamage(player) * 1.2)
+			end
+		end
+	end)
+end
+
 augOnHit = function(run, player, part, data, amount, isCrit)
+	-- 처형: 체력이 얼마 안 남은 일반 몬스터는 맞는 즉시 쓰러진다
+	local execLevel = player:GetAttribute("AugExecute") or 0
+	if execLevel > 0 and data.Health > 0 and not data.IsBoss and not data.Invincible and data.Health / data.MaxHealth <= 0.1 + 0.06 * execLevel then
+		data.Health = 0
+		Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 4, 0), "💀 처형!", Color3.fromRGB(215, 110, 255))
+		if synergy(player, "Reaper") and augDepth == 0 then
+			local from = part.Position + Vector3.new(0, 3, 0)
+			for _, entry in ipairs(nearestMonsters(run, part.Position, 70, 2, part)) do
+				launchMissile(run, player, from, entry, augDamage(player) * 0.8)
+			end
+		end
+	end
 	local level = player:GetAttribute("AugMissile") or 0
 	if level <= 0 or not isCrit or augDepth > 0 then return end
 	-- 치명타: 맞은 곳에서 추가 미사일 (1 + 단계 발) 이 주변 적에게 휘어 날아간다
@@ -1353,10 +1461,14 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 end
 
 augOnKill = function(run, player, position)
+	local flame = player:GetAttribute("AugFlame") or 0
+	if flame > 0 then -- 화염 지대: 쓰러진 자리에 불길
+		makeFlame(run, player, position, 7 + 2 * flame, (3 + flame) * (synergy(player, "Inferno") and 1.5 or 1), augDamage(player) * (0.25 + 0.1 * flame))
+	end
 	local level = player:GetAttribute("AugNova") or 0
 	if level <= 0 or augDepth > 1 then return end
 	augDepth += 1
-	local radius = 12 + 3 * level
+	local radius = (12 + 3 * level) * (synergy(player, "Inferno") and 1.3 or 1)
 	shockRing(run, position, radius, Color3.fromRGB(255, 110, 70))
 	Effects.Burst(position + Vector3.new(0, 2, 0), Color3.fromRGB(255, 150, 70), 40)
 	local damage = augDamage(player) * (1.2 + 0.6 * level)
@@ -1400,7 +1512,7 @@ end
 -- 회전 칼날 / 낙뢰: 던전이 진행되는 동안 계속 도는 효과 루프
 local function startAugLoop(run)
 	task.spawn(function()
-		local blades, nextTick, nextStorm = {}, {}, {}
+		local blades, nextTick, nextStorm, nextMeteor, nextPulse = {}, {}, {}, {}, {}
 		while not run.Destroyed and run.Phase ~= "Ended" do
 			local now = os.clock()
 			for _, member in ipairs(run.Members) do
@@ -1454,6 +1566,11 @@ local function startAugLoop(run)
 								for _, p in ipairs(positions) do
 									if (part.Position - p).Magnitude <= 5 + part.Size.X / 2 then
 										hitMonster(run, member, { Part = part, Data = data }, damage)
+										if synergy(member, "BladeMissile") and math.random() < 0.12 then
+											for _, entry in ipairs(nearestMonsters(run, part.Position, 60, 1, part)) do
+												launchMissile(run, member, part.Position + Vector3.new(0, 3, 0), entry, damage * 1.2)
+											end
+										end
 										break
 									end
 								end
@@ -1466,23 +1583,43 @@ local function startAugLoop(run)
 				if root and storm > 0 and now >= (nextStorm[member] or 0) then
 					nextStorm[member] = now + math.max(1.2, 3.4 - 0.5 * storm)
 					for _, entry in ipairs(nearestMonsters(run, root.Position, 75, 2 + storm)) do
-						local top = entry.Part.Position + Vector3.new(0, 70, 0)
-						local bolt = Instance.new("Part")
-						bolt.Material = Enum.Material.Neon
-						bolt.Color = Color3.fromRGB(255, 245, 140)
-						bolt.Anchored, bolt.CanCollide, bolt.CanQuery, bolt.CanTouch = true, false, false, false
-						local length = (top - entry.Part.Position).Magnitude
-						bolt.Size = Vector3.new(1.4, 1.4, length)
-						bolt.CFrame = CFrame.lookAt((top + entry.Part.Position) / 2, entry.Part.Position)
-						bolt.Parent = run.Folder
-						TweenService:Create(bolt, TweenInfo.new(0.3), { Transparency = 1, Size = Vector3.new(0.2, 0.2, length) }):Play()
-						Debris:AddItem(bolt, 0.35)
-						Effects.Burst(entry.Part.Position, Color3.fromRGB(255, 240, 120), 24)
-						hitMonster(run, member, entry, augDamage(member) * (1.5 + 0.5 * storm))
+						strikeBolt(run, member, entry, augDamage(member) * (1.5 + 0.5 * storm))
 					end
+				end
+				-- 유성우: 적이 가장 많이 모인 곳에
+				local meteor = member:GetAttribute("AugMeteor") or 0
+				if root and meteor > 0 and now >= (nextMeteor[member] or 0) then
+					nextMeteor[member] = now + math.max(3, 8.5 - 1.5 * meteor)
+					local candidates = nearestMonsters(run, root.Position, 90, 18)
+					local best, bestCount = nil, 0
+					for _, a in ipairs(candidates) do
+						local count = 0
+						for _, b in ipairs(candidates) do
+							if (a.Part.Position - b.Part.Position).Magnitude <= 14 then count += 1 end
+						end
+						if count > bestCount then best, bestCount = a, count end
+					end
+					if best then
+						local p = best.Part.Position
+						dropMeteor(run, member, Vector3.new(p.X, root.Position.Y - 2.5, p.Z), 14 + 2 * meteor, augDamage(member) * (2.2 + 0.8 * meteor), meteor)
+					end
+				end
+				-- 수호 파동: 몸에서 퍼져 나가며 쓸어내고 체력을 회복
+				local pulse = member:GetAttribute("AugPulse") or 0
+				if root and pulse > 0 and now >= (nextPulse[member] or 0) then
+					nextPulse[member] = now + math.max(3, 7 - pulse)
+					local radius = 16 + 2 * pulse
+					shockRing(run, root.Position - Vector3.new(0, 2.5, 0), radius, Color3.fromRGB(110, 255, 190))
+					Effects.Burst(root.Position, Color3.fromRGB(110, 255, 190), 40)
+					for _, entry in ipairs(nearestMonsters(run, root.Position, radius, 10)) do
+						hitMonster(run, member, entry, augDamage(member) * (0.8 + 0.4 * pulse))
+					end
+					local _, humanoid = getAliveParts(member)
+					if humanoid then humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * 0.03 * pulse) end
 				end
 			end
 			task.wait(0.05)
+
 		end
 		for _, list in pairs(blades) do
 			for _, blade in ipairs(list) do blade:Destroy() end
@@ -1933,6 +2070,21 @@ local function applyBuff(run, member, buff)
 	elseif buff.Effect == "Aug" then
 		member:SetAttribute(buff.Attr, math.min(buff.Max or 3, (member:GetAttribute(buff.Attr) or 0) + 1))
 		setAura(member, buff.Color)
+		for _, synKey in ipairs(Config.AugSynergies.Order) do
+			local syn = Config.AugSynergies[synKey]
+			if not synergy(member, synKey) then
+				local ok = true
+				for _, need in ipairs(syn.Need) do
+					if (member:GetAttribute(need) or 0) <= 0 then ok = false end
+				end
+				if ok then
+					member:SetAttribute("AugSyn_" .. synKey, true)
+					notify(member, string.format("%s 시너지 발동! 『%s』 — %s", syn.Icon, syn.Name, syn.Desc))
+					local root = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
+					if root then Effects.Burst(root.Position, Color3.fromRGB(255, 235, 140), 90) end
+				end
+			end
+		end
 	elseif buff.Effect == "Heal" then
 		applyMaxHealth(member, math.huge)
 	elseif buff.Effect == "Shield" then

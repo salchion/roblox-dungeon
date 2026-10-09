@@ -293,6 +293,10 @@ Config.RunBuffs = {
 	{ Icon = "☄", Name = "처치 폭발",   Desc = "적을 처치하면 그 자리에서 큰 폭발이 일어나 주변 적에게 번져요",   Effect = "Aug", Attr = "AugNova",    Max = 3, Color = Color3.fromRGB(255, 80, 70),   Special = true, Weight = 1.6 },
 	{ Icon = "🌀", Name = "회전 칼날",   Desc = "몸 주위를 도는 칼날이 닿는 적을 계속 베어요",                     Effect = "Aug", Attr = "AugOrbit",   Max = 3, Color = Color3.fromRGB(110, 230, 255), Special = true, Weight = 1.6 },
 	{ Icon = "⛈", Name = "낙뢰",        Desc = "주기적으로 하늘에서 번개가 가까운 적들에게 내리쳐요",             Effect = "Aug", Attr = "AugStorm",   Max = 3, Color = Color3.fromRGB(255, 240, 110), Special = true, Weight = 1.6 },
+	{ Icon = "🔥", Name = "화염 지대",   Desc = "적을 처치한 자리에 불길이 남아 지나가는 적을 태워요",             Effect = "Aug", Attr = "AugFlame",   Max = 3, Color = Color3.fromRGB(255, 130, 40),  Special = true, Weight = 1.3 },
+	{ Icon = "💀", Name = "처형",        Desc = "체력이 얼마 안 남은 적(보스 제외)은 맞는 즉시 처형돼요",         Effect = "Aug", Attr = "AugExecute", Max = 3, Color = Color3.fromRGB(210, 90, 255),  Special = true, Weight = 1.3 },
+	{ Icon = "🌠", Name = "유성우",      Desc = "적이 가장 많이 모인 곳에 주기적으로 유성이 떨어져요",             Effect = "Aug", Attr = "AugMeteor",  Max = 3, Color = Color3.fromRGB(255, 190, 90),  Special = true, Weight = 1.3 },
+	{ Icon = "🔔", Name = "수호 파동",   Desc = "주기적으로 몸에서 파동이 퍼져 주변 적을 쓸어내고 체력을 회복해요", Effect = "Aug", Attr = "AugPulse",   Max = 3, Color = Color3.fromRGB(110, 255, 190), Special = true, Weight = 1.3 },
 	{ Icon = "💥", Name = "폭발탄",       Desc = "맞은 적 주변이 폭발",                Perk = "Boom",   Special = true },
 	{ Icon = "⚡", Name = "연쇄 번개",    Desc = "맞은 적에게서 번개가 튄다",          Perk = "Chain",  Special = true },
 	{ Icon = "🩸", Name = "흡혈",         Desc = "맞힐 때마다 체력 회복",              Perk = "Vamp",   Special = true },
@@ -311,6 +315,15 @@ Config.RunBuffs = {
 	{ Icon = "💰", Name = "황금 손",      Desc = "이번 던전 골드 +20%",                Effect = "Gold" },
 	{ Icon = "📘", Name = "경험의 샘",    Desc = "경험치를 듬뿍 얻는다",               Effect = "Xp" },
 	{ Icon = "🎫", Name = "행운의 티켓",  Desc = "장비 티켓 +1",                       Effect = "Ticket", Weight = 0.35, Special = true },
+}
+
+-- 어그먼트 시너지: 두 어그먼트를 모두 가지면 숨은 추가 효과가 켜진다 (획득하는 순간 알림 + 오라 폭발)
+Config.AugSynergies = {
+	Order = { "Inferno", "StormEye", "BladeMissile", "Reaper" },
+	Inferno      = { Need = { "AugNova", "AugFlame" },      Icon = "🌋", Name = "불바다",    Desc = "처치 폭발이 30% 더 넓어지고 불길이 1.5배 오래 타요" },
+	StormEye     = { Need = { "AugStorm", "AugMeteor" },    Icon = "🌩", Name = "폭풍의 눈", Desc = "유성이 떨어질 때마다 주변 적에게 번개가 추가로 내리쳐요" },
+	BladeMissile = { Need = { "AugOrbit", "AugMissile" },   Icon = "🗡", Name = "추적 칼날", Desc = "칼날이 벨 때 가끔 미사일이 튀어나가요" },
+	Reaper       = { Need = { "AugExecute", "AugMissile" }, Icon = "☠", Name = "사신의 낫", Desc = "처형이 일어나면 미사일이 2발 터져 나가요" },
 }
 
 -- 랜덤 패널티 (적이 강해지는 대신 골드를 더 준다. 누적되지만 상한이 있다)
