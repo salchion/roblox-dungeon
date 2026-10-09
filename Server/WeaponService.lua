@@ -599,7 +599,7 @@ local function playSoundAt(parent, soundId, volume, pitch, name)
 end
 
 local shotCount, lastShotSound = setmetatable({}, { __mode = "k" }), setmetatable({}, { __mode = "k" }) -- 발사음 변주용
-local SHOT_PITCH_PATTERN = { 1.0, 0.94, 1.06, 0.98 }
+local SHOT_PITCH_PATTERN = { 1.0, 0.8, 1.2, 0.9, 1.12, 0.84, 1.26, 0.95 } -- 여덟 박자: 높고 낮음이 확실히 오르내린다
 
 -- 발사 연출: 칼 휘두르기 대신 총구 화염 + 반동(총이 뒤로 살짝 밀림) + 발사음.
 -- 팔은 기본 애니메이션의 "무기를 앞으로 든 자세"를 그대로 유지한다.
@@ -654,8 +654,8 @@ function Weapon.PlayShot(player)
 	local gap = now - (lastShotSound[player] or 0)
 	if gap < 0.1 and count % 2 == 0 then return end -- 초고속 연사: 두 발에 한 발만 소리를 낸다
 	lastShotSound[player] = now
-	local pitch = eraFactor * SHOT_PITCH_PATTERN[count % #SHOT_PITCH_PATTERN + 1] * (0.95 + math.random() * 0.1)
-	local volume = (count % 4 == 1 and 1.1 or 0.9) * (0.9 + math.random() * 0.2) * (gap < 0.2 and 0.85 or 1)
+	local pitch = eraFactor * SHOT_PITCH_PATTERN[count % #SHOT_PITCH_PATTERN + 1] * (0.92 + math.random() * 0.16)
+	local volume = (count % 4 == 1 and 1.2 or 0.85) * (0.85 + math.random() * 0.3) * (gap < 0.2 and 0.85 or 1)
 	local played = SoundBank.Play(barrel, "Shot_" .. tier.Class, { Pitch = pitch, Volume = volume, Name = "GunShot" })
 	if not played then
 		playSoundAt(barrel, Config.Audio.Shot, Config.Audio.ShotVolume * volume, math.max(0.5, 1.25 - 0.08 * (tier.Era - 1)) * pitch / eraFactor, "GunShot")
