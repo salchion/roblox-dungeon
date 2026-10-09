@@ -452,7 +452,7 @@ local function makeWeakOrb(part)
 	local orb = Instance.new("Part")
 	orb.Name = "WeakPoint"
 	orb.Shape = Enum.PartType.Ball
-	orb.Size = Vector3.new(4.2, 4.2, 4.2)
+	orb.Size = Vector3.new(5.2, 5.2, 5.2)
 	orb.Anchored = true
 	orb.CanCollide = false
 	orb.CanQuery = false
@@ -467,10 +467,39 @@ local function makeWeakOrb(part)
 	orbLight.Brightness = 2.5
 	orbLight.Parent = orb
 	local orbGui = Instance.new("BillboardGui")
-	orbGui.Size = UDim2.new(0, 70, 0, 28)
-	orbGui.StudsOffset = Vector3.new(0, 3.4, 0)
-	orbGui.MaxDistance = 140
+	orbGui.Size = UDim2.new(0, 120, 0, 36)
+	orbGui.StudsOffset = Vector3.new(0, 4.4, 0)
+	orbGui.MaxDistance = 200
+	orbGui.AlwaysOnTop = true
 	orbGui.Parent = orb
+	-- 눈에 확 띄게: 구슬을 감싸는 반투명 후광 + 반짝이는 입자 (몸통과 색이 다른 노란색)
+	local halo = Instance.new("Part")
+	halo.Name = "WeakHalo"
+	halo.Shape = Enum.PartType.Ball
+	halo.Size = Vector3.new(9, 9, 9)
+	halo.Anchored = false
+	halo.Massless = true
+	halo.CanCollide = false
+	halo.CanQuery = false
+	halo.CanTouch = false
+	halo.Material = Enum.Material.Neon
+	halo.Color = Color3.fromRGB(255, 220, 60)
+	halo.Transparency = 0.75
+	halo.CFrame = orb.CFrame
+	local haloWeld = Instance.new("WeldConstraint")
+	haloWeld.Part0 = orb
+	haloWeld.Part1 = halo
+	haloWeld.Parent = halo
+	halo.Parent = orb
+	local sparks = Instance.new("ParticleEmitter")
+	sparks.Rate = 18
+	sparks.Lifetime = NumberRange.new(0.5, 1)
+	sparks.Speed = NumberRange.new(2, 6)
+	sparks.SpreadAngle = Vector2.new(180, 180)
+	sparks.LightEmission = 1
+	sparks.Color = ColorSequence.new(Color3.fromRGB(255, 240, 120))
+	sparks.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.2), NumberSequenceKeypoint.new(1, 0) })
+	sparks.Parent = orb
 	local orbText = Instance.new("TextLabel")
 	orbText.Size = UDim2.new(1, 0, 1, 0)
 	orbText.BackgroundTransparency = 1
@@ -478,7 +507,7 @@ local function makeWeakOrb(part)
 	orbText.TextScaled = true
 	orbText.TextColor3 = Color3.fromRGB(255, 240, 120)
 	orbText.TextStrokeTransparency = 0
-	orbText.Text = "🎯 약점"
+	orbText.Text = "🎯 약점! 여길 맞혀요"
 	orbText.Parent = orbGui
 	return orb
 end
@@ -2018,13 +2047,24 @@ local function drillLoop(run)
 	run.Phase = "Drill"
 	notifyAll(run, "🎓 연습장! 진짜 던전 전에 조작을 연습해봐요")
 	-- 표적: 가만히 서 있고 쓰러지지 않는다
-	local base = (run.StartPos or run.Origin) + Vector3.new(0, 0, -26)
+	local base = (run.StartPos or run.Origin) + Vector3.new(0, 0, -36)
 	local stats = Config.Monster.GetStats(1)
 	stats.ShotInterval = 9999
 	stats.MaxHealth = 100000
+	stats.Size = 18 -- 보스처럼 큰 표적: 약점 구슬이 "몸 주위를 도는 것"이라는 걸 한눈에 알 수 있게
 	local slime = MonsterTypes.Defs.Slime
-	local part = MonsterTypes.Build("Slime", 6, Color3.fromRGB(110, 220, 120), Vector3.new(base.X, groundAt(run, base.X, base.Z, base.Y) + 3, base.Z), run.MonstersFolder)
-	local data = registerMonster(run, part, stats, "연습 표적", 140, { Static = true, Invincible = true, TypeKey = "Slime", Def = slime, Level = 1, Phase = 0, NextAttack = 1e9 })
+	local part = Instance.new("Part")
+	part.Name = "DrillTarget"
+	part.Shape = Enum.PartType.Ball
+	part.Size = Vector3.new(18, 18, 18)
+	part.Anchored = true
+	part.CanCollide = false
+	part.Color = Color3.fromRGB(150, 50, 80)
+	part.Material = Enum.Material.Neon
+	part.Position = Vector3.new(base.X, groundAt(run, base.X, base.Z, base.Y) + 9, base.Z)
+	part.Parent = run.MonstersFolder
+	decorateBoss(part, 18, Color3.fromRGB(255, 160, 90))
+	local data = registerMonster(run, part, stats, "연습 표적 (보스 크기)", 260, { Static = true, Invincible = true, TypeKey = "Slime", Def = slime, Level = 1, Phase = 0, NextAttack = 1e9 })
 	run.MonsterCount -= 1 -- 웨이브 계산에 넣지 않는다
 	data.WeakPart = makeWeakOrb(part) -- 약점 구슬 연습용
 	member:SetAttribute("AutoOffTick", (member:GetAttribute("AutoOffTick") or 0) + 1) -- 자동 공격이 켜져 있으면 끈다 (직접 조준 연습)
@@ -2039,7 +2079,7 @@ local function drillLoop(run)
 	-- ② 약점 사격
 	if alive() then
 		local start = member:GetAttribute("WeakHitTick") or 0
-		show("🎯", "② 노란 약점을 맞혀요! (3번)", "표적 주위를 도는 노란 구슬을 직접 조준해서 클릭하세요! 맞히면 3배 치명타 + 데드아이 게이지. 자동 공격으로는 안 돼요", 40)
+		show("🎯", "② 노란 약점을 맞혀요! (3번)", "표적(보스) 몸 주위를 빙글빙글 도는 노란 빛 구슬이 약점이에요! 마우스로 구슬을 직접 조준해서 클릭하세요. 맞히면 3배 치명타 + 데드아이 게이지 (자동 공격으로는 안 돼요)", 40)
 		if wait(90, function() return (member:GetAttribute("WeakHitTick") or 0) - start >= 3 end) then ok("약점 사격 좋아요! 보스에게도 똑같이 노려요") end
 	end
 	-- ③ 대시
