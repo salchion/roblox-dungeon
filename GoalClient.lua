@@ -136,8 +136,8 @@ local function pickGoal()
 	if (player:GetAttribute("Level") or 1) >= Config.Level.Max and (player:GetAttribute("Prestige") or 0) < Config.Prestige.Max then
 		table.insert(candidates, { Text = "🌟 최고 레벨 달성!\n환생하면 영구 공격력 + 골드 획득량이 늘어요 (메뉴 I → 정보)", Ratio = 0.99, Priority = 2 })
 	end
-	if (player:GetAttribute("DungeonFree") or 0) >= 1 or (player:GetAttribute("Keys") or 0) >= 1 then
-		table.insert(candidates, { Text = string.format("🎟 오늘 무료 입장 %d회 · 🗝 열쇠 %d개!\n북쪽 게이트에서 던전에 도전하세요", player:GetAttribute("DungeonFree") or 0, player:GetAttribute("Keys") or 0), Ratio = 0.95, Priority = 3 })
+	if (player:GetAttribute("DungeonFree") or 0) >= 1 or (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0) >= 1 then
+		table.insert(candidates, { Text = string.format("🎟 오늘 무료 입장 %d회 · 🗝 열쇠 %d개!\n북쪽 게이트에서 던전에 도전하세요", player:GetAttribute("DungeonFree") or 0, (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0)), Ratio = 0.95, Priority = 3 })
 	end
 	if (player:GetAttribute("Tickets") or 0) >= 1 then
 		table.insert(candidates, { Text = string.format("🎫 티켓 %d장!\n뽑기 머신에서 장비를 뽑아보세요", player:GetAttribute("Tickets")), Ratio = 0.97, Priority = 4 })

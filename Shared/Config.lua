@@ -737,9 +737,9 @@ end
 ------------------------------------------------------------
 Config.Dungeon.Difficulties = {
 	Order = { "Easy", "Normal", "Hard" },
-	Easy = { Name = "쉬움", HealthMult = 0.7, DamageMult = 0.7, GoldMult = 0.8, Tickets = 2, KeyCost = 1, LevelOffset = -2, Color = Color3.fromRGB(120, 220, 130) },
-	Normal = { Name = "보통", HealthMult = 1, DamageMult = 1, GoldMult = 1, Tickets = 3, KeyCost = 1, LevelOffset = 0, Color = Color3.fromRGB(255, 220, 110) },
-	Hard = { Name = "어려움", HealthMult = 1.8, DamageMult = 1.5, GoldMult = 2, Tickets = 5, KeyCost = 2, LevelOffset = 4, Color = Color3.fromRGB(255, 100, 100) },
+	Easy = { Name = "쉬움", KeyTier = 1, HealthMult = 0.7, DamageMult = 0.7, GoldMult = 0.8, Tickets = 2, KeyCost = 1, LevelOffset = -2, Color = Color3.fromRGB(120, 220, 130) },
+	Normal = { Name = "보통", KeyTier = 2, HealthMult = 1, DamageMult = 1, GoldMult = 1, Tickets = 3, KeyCost = 1, LevelOffset = 0, Color = Color3.fromRGB(255, 220, 110) },
+	Hard = { Name = "어려움", KeyTier = 3, HealthMult = 1.8, DamageMult = 1.5, GoldMult = 2, Tickets = 5, KeyCost = 1, LevelOffset = 4, Color = Color3.fromRGB(255, 100, 100) },
 }
 
 -- Boss.Weights: 보스 패턴 비중 (Fan 부채꼴 / Ring 전방위 / Spiral 나선 / Meteor 메테오)
@@ -1116,7 +1116,16 @@ Config.Keys = {
 	BossDropChance = 0.15,  -- (구역별 값이 없을 때 쓰는 기본값)
 	-- 구역별 열쇠 드랍 확률: 앞 구역 군주는 자주 나오는 대신 열쇠가 잘 안 나오고, 뒤 구역 군주는 드문 대신 잘 나온다 (앞 구역 반복 사냥으로 열쇠를 쓸어 담지 못하게)
 	BossDropByZone = { 0.04, 0.06, 0.09, 0.13, 0.18, 0.25, 0.33, 0.45 },
-	DailyDropCap = 8,       -- 하루에 군주 드랍으로 얻을 수 있는 열쇠 최대 개수 (UTC 날짜 기준)
+	DailyDropCap = 8,       -- (예전 값)
+	-- 열쇠는 던전 난이도와 같은 3단계: 쉬움 / 보통 / 어려움 열쇠. 앞 구역 군주는 낮은 단계, 뒤 구역 군주는 높은 단계 열쇠를 준다 (높은 열쇠는 낮은 난이도에도 쓸 수 있다).
+	TierNames = { "쉬움 열쇠", "보통 열쇠", "어려움 열쇠" },
+	TierIcons = { "🗝", "🔑", "🏆" },
+	DropByZone = {
+		{ Tier = 1, Chance = 0.10 }, { Tier = 1, Chance = 0.16 },
+		{ Tier = 2, Chance = 0.10 }, { Tier = 2, Chance = 0.15 }, { Tier = 2, Chance = 0.20 },
+		{ Tier = 3, Chance = 0.12 }, { Tier = 3, Chance = 0.18 }, { Tier = 3, Chance = 0.25 },
+	},
+	DailyDropCapByTier = { 8, 5, 3 }, -- 하루에 군주 드랍으로 얻을 수 있는 단계별 열쇠 최대 개수 (UTC 날짜 기준)
 }
 
 ------------------------------------------------------------

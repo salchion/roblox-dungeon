@@ -1350,22 +1350,25 @@ local function reward(player, data, part)
 	elseif data.Kind == "Boss" then
 		local bossPosition = part.Position
 		for _, other in ipairs(Players:GetPlayers()) do
-			local dropChance = (Config.Keys.BossDropByZone and Config.Keys.BossDropByZone[data.Zone]) or Config.Keys.BossDropChance
-			if other:GetAttribute("Zone") == "Field" and getAliveParts(other) and math.random() < dropChance then -- 던전 열쇠: 구역마다 확률이 다르다
+			local drop = Config.Keys.DropByZone and Config.Keys.DropByZone[data.Zone] or { Tier = 1, Chance = Config.Keys.BossDropChance }
+			if other:GetAttribute("Zone") == "Field" and getAliveParts(other) and math.random() < drop.Chance then -- 던전 열쇠: 구역마다 단계 / 확률이 다르다
 				local rootForKey = getAliveParts(other)
-				-- 하루 드랍 한도 (UTC 날짜 기준)
+				-- 하루 드랍 한도 (단계별, UTC 날짜 기준)
 				local riftState = Meta.GetRift(other)
 				local today = math.floor(os.time() / 86400)
 				if riftState and riftState.KeyDay ~= today then
 					riftState.KeyDay = today
-					riftState.KeyDrops = 0
+					riftState.KeyDropsTier = { 0, 0, 0 }
 				end
-				local capped = riftState ~= nil and (riftState.KeyDrops or 0) >= Config.Keys.DailyDropCap
+				riftState = riftState or {}
+				riftState.KeyDropsTier = riftState.KeyDropsTier or { 0, 0, 0 }
+				local capped = (riftState.KeyDropsTier[drop.Tier] or 0) >= (Config.Keys.DailyDropCapByTier[drop.Tier] or 0)
 				if rootForKey and not capped and (rootForKey.Position - bossPosition).Magnitude <= 160 then
-					if riftState then riftState.KeyDrops = (riftState.KeyDrops or 0) + 1 end
-					Keys.Add(other, 1)
-					notify(other, "🗝 던전 열쇠를 얻었어요! (군주 드랍) — 무료 입장을 다 써도 던전에 들어갈 수 있어요")
-					Effects.FloatText(rootForKey.Position + Vector3.new(0, 6, 0), "🗝 던전 열쇠!", Color3.fromRGB(160, 255, 200))
+					riftState.KeyDropsTier[drop.Tier] = (riftState.KeyDropsTier[drop.Tier] or 0) + 1
+					Keys.AddTier(other, drop.Tier, 1)
+					local name = Config.Keys.TierNames[drop.Tier]
+					notify(other, string.format("%s %s을(를) 얻었어요! (군주 드랍) — 무료 입장을 다 써도 해당 난이도 이하의 던전에 들어갈 수 있어요", Config.Keys.TierIcons[drop.Tier], name))
+					Effects.FloatText(rootForKey.Position + Vector3.new(0, 6, 0), Config.Keys.TierIcons[drop.Tier] .. " " .. name .. "!", Color3.fromRGB(160, 255, 200))
 				end
 			end
 			local root = getAliveParts(other)

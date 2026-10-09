@@ -554,7 +554,7 @@ function Lobby.Build()
 
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText = "입장 (Lv." .. entry.MinLevel .. ")"
-		prompt.ObjectText = string.format("%s · %s · 🗝%d · 권장 전투력 %d", dungeonType.Name, difficulty.Name, difficulty.KeyCost or 1, dungeonType.RecommendedPower)
+		prompt.ObjectText = string.format("%s · %s · %s · 권장 전투력 %d", dungeonType.Name, difficulty.Name, Config.Keys.TierIcons[difficulty.KeyTier or 1], dungeonType.RecommendedPower)
 		prompt.HoldDuration = 0.8
 		prompt.MaxActivationDistance = 14
 		prompt.RequiresLineOfSight = false

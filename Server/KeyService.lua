@@ -55,16 +55,50 @@ local function tick(player)
 	refreshNext(player)
 end
 
--- savedKeys 가 nil 이면 처음 접속한 플레이어: 시작 열쇠를 준다
-function Keys.Load(player, savedKeys, savedBase)
+-- 열쇠는 3단계: Keys(쉬움) / KeysNormal(보통) / KeysHard(어려움)
+local TIER_ATTRS = { "Keys", "KeysNormal", "KeysHard" }
+
+-- savedKeys 가 nil 이면 처음 접속한 플레이어: 시작 열쇠를 준다. savedTable = 저장된 전체(보통 / 어려움 열쇠 포함)
+function Keys.Load(player, savedKeys, savedBase, savedTable)
 	local keys = savedKeys == nil and Config.Keys.Start or math.max(0, math.floor(tonumber(savedKeys) or 0))
 	bases[player] = tonumber(savedBase) or os.time()
 	player:SetAttribute("Keys", keys)
+	player:SetAttribute("KeysNormal", typeof(savedTable) == "table" and math.max(0, math.floor(tonumber(savedTable.Normal) or 0)) or 0)
+	player:SetAttribute("KeysHard", typeof(savedTable) == "table" and math.max(0, math.floor(tonumber(savedTable.Hard) or 0)) or 0)
 	tick(player) -- 접속하지 않은 동안 쌓인 만큼 회복
 end
 
 function Keys.Serialize(player)
-	return { Keys = player:GetAttribute("Keys") or 0, Base = bases[player] or os.time() }
+	return { Keys = player:GetAttribute("Keys") or 0, Base = bases[player] or os.time(), Normal = player:GetAttribute("KeysNormal") or 0, Hard = player:GetAttribute("KeysHard") or 0 }
+end
+
+-- 단계 열쇠: tier 이상의 열쇠 합이 amount 이상이면 입장 가능 (높은 열쇠는 낮은 난이도에도 쓸 수 있다)
+function Keys.HasTier(player, tier, amount)
+	local total = 0
+	for t = tier, 3 do
+		total += player:GetAttribute(TIER_ATTRS[t]) or 0
+	end
+	return total >= amount
+end
+
+-- 필요한 단계 이상 중 가장 낮은 열쇠부터 쓴다
+function Keys.SpendTier(player, tier, amount)
+	if not Keys.HasTier(player, tier, amount) then return false end
+	for t = tier, 3 do
+		local have = player:GetAttribute(TIER_ATTRS[t]) or 0
+		local use = math.min(have, amount)
+		if use > 0 then
+			player:SetAttribute(TIER_ATTRS[t], have - use)
+			amount -= use
+		end
+		if amount <= 0 then break end
+	end
+	return true
+end
+
+function Keys.AddTier(player, tier, amount)
+	local attr = TIER_ATTRS[tier] or "Keys"
+	player:SetAttribute(attr, (player:GetAttribute(attr) or 0) + amount)
 end
 
 function Keys.Has(player, amount)

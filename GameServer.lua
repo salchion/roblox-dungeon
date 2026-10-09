@@ -292,7 +292,7 @@ local function setupPlayer(player)
 		Level.Load(player, saved.Level, saved.XP)
 		Monetization.Load(player, saved.Monetization)  -- 가방 칸 / 열쇠 보관량 등 BM 효과가 먼저 반영돼야 함
 		Inventory.Load(player, saved.Inventory, saved.Gear) -- 예전 저장 형식의 장비는 아이템으로 이어받음
-		Keys.Load(player, saved.KeysData and saved.KeysData.Keys, saved.KeysData and saved.KeysData.Base)
+		Keys.Load(player, saved.KeysData and saved.KeysData.Keys, saved.KeysData and saved.KeysData.Base, saved.KeysData)
 		Growth.Load(player, saved.Growth) -- 훈련소 / 돌파 (오프라인 중 끝난 것도 완료 처리)
 		Quest.Load(player, saved.Quest)
 		Daily.Load(player, saved.Daily) -- 출석 보상 (하루 한 번 자동 지급)
