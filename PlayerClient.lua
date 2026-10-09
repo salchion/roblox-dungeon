@@ -3406,7 +3406,7 @@ function refreshSelect()
 	summaryLabel.Text = string.format(
 		"<b>%s · %s</b>\n%s → 보스 <font color='#ff9a9a'>%s</font>\n권장 전투력 <font color='#ffe16e'>%d</font>  (내 전투력 %d)\n골드 x%.1f · 티켓 %d장 · 보스 상자 장비 %d개\n🎟 오늘 무료 입장 <b>%d / %d회</b> · 다 쓰면 <b>%s %d개</b> 필요 (보유 %d개, 더 높은 열쇠도 가능)\n열쇠는 필드 구역 군주가 줘요: 앞 구역 🗝 쉬움 · 중간 🔑 보통 · 뒤 구역 🏆 어려움",
 		dungeonType.Name, difficulty.Name, string.format("%d초 버티기", Config.Dungeon.GetSurviveSeconds(dungeonType.Waves)), dungeonType.Boss.Name,
-		dungeonType.RecommendedPower, player:GetAttribute("Power") or 0,
+		Config.DungeonPower(dungeonType, difficulty), player:GetAttribute("Power") or 0,
 		dungeonType.GoldMult * difficulty.GoldMult, difficulty.Tickets, Config.Loot.DungeonChestCount,
 		player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily, Config.Keys.TierNames[difficulty.KeyTier or 1], difficulty.KeyCost,
 		(function() local total = 0 for t = difficulty.KeyTier or 1, 3 do total += player:GetAttribute(({ "Keys", "KeysNormal", "KeysHard" })[t]) or 0 end return total end)()

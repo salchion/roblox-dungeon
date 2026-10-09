@@ -866,16 +866,21 @@ end
 ------------------------------------------------------------
 Config.Dungeon.Difficulties = {
 	Order = { "Easy", "Normal", "Hard" },
-	Easy = { Name = "쉬움", KeyTier = 1, HealthMult = 0.7, DamageMult = 0.7, GoldMult = 0.8, Tickets = 2, KeyCost = 1, LevelOffset = -2, Color = Color3.fromRGB(120, 220, 130) },
-	Normal = { Name = "보통", KeyTier = 2, HealthMult = 1, DamageMult = 1, GoldMult = 1, Tickets = 3, KeyCost = 1, LevelOffset = 0, Color = Color3.fromRGB(255, 220, 110) },
-	Hard = { Name = "어려움", KeyTier = 3, HealthMult = 1.8, DamageMult = 1.5, GoldMult = 2, Tickets = 5, KeyCost = 1, LevelOffset = 4, Color = Color3.fromRGB(255, 100, 100) },
+	Easy = { Name = "쉬움", PowerMult = 0.6, KeyTier = 1, HealthMult = 0.7, DamageMult = 0.7, GoldMult = 0.8, Tickets = 2, KeyCost = 1, LevelOffset = -2, Color = Color3.fromRGB(120, 220, 130) },
+	Normal = { Name = "보통", PowerMult = 1, KeyTier = 2, HealthMult = 1, DamageMult = 1, GoldMult = 1, Tickets = 3, KeyCost = 1, LevelOffset = 0, Color = Color3.fromRGB(255, 220, 110) },
+	Hard = { Name = "어려움", PowerMult = 2.2, KeyTier = 3, HealthMult = 1.8, DamageMult = 1.5, GoldMult = 2, Tickets = 5, KeyCost = 1, LevelOffset = 4, Color = Color3.fromRGB(255, 100, 100) },
 }
+
+-- 던전 권장 전투력 (난이도 배율 반영, 50 단위)
+function Config.DungeonPower(dungeonType, difficulty)
+	return math.floor((dungeonType.RecommendedPower or 0) * (difficulty.PowerMult or 1) / 50 + 0.5) * 50
+end
 
 -- Boss.Weights: 보스 패턴 비중 (Fan 부채꼴 / Ring 전방위 / Spiral 나선 / Meteor 메테오)
 Config.Dungeon.Types = {
 	Order = { "Cave", "Ice", "Fire" },
 	Cave = {
-		Name = "고블린 동굴", Desc = "🐀 떼거지! 약하지만 엄청 많이 몰려오고, 고블린 왕은 부하를 끊임없이 불러내요 (입문용)", Theme = { Health = 0.8, Damage = 0.9, Speed = 1.0, Spawn = 1.35, Burst = 1.3 }, Waves = 5, LevelOffset = 0, GoldMult = 1, RecommendedPower = 0,
+		Name = "고블린 동굴", Desc = "🐀 떼거지! 약하지만 엄청 많이 몰려오고, 고블린 왕은 부하를 끊임없이 불러내요 (입문용)", Theme = { Health = 0.8, Damage = 0.9, Speed = 1.0, Spawn = 1.35, Burst = 1.3 }, Waves = 5, LevelOffset = 0, GoldMult = 1, RecommendedPower = 700,
 		MonsterColor = Color3.fromRGB(110, 160, 70),
 		Floor = { Color = Color3.fromRGB(70, 60, 50), Material = Enum.Material.Slate },
 		Wall = { Color = Color3.fromRGB(55, 45, 40), Material = Enum.Material.Brick },
@@ -885,7 +890,7 @@ Config.Dungeon.Types = {
 		Boss = { Name = "고블린 왕", Color = Color3.fromRGB(70, 130, 50), HealthMult = 1, DamageMult = 1, Weights = { Fan = 2, Ring = 1, Spiral = 0.5, Meteor = 0.5, Slam = 1.5, Summon = 4, Lanes = 1.5, Sweep = 1, SideAdds = 3.5 } },
 	},
 	Ice = {
-		Name = "얼음 성채", Desc = "❄ 탄막 지옥! 멀리서 쏘는 적이 많고, 서리 군주는 나선 / 전방위 탄막을 쏟아내요 (중급)", Theme = { Health = 1.0, Damage = 1.2, Speed = 0.9, Spawn = 0.9, Burst = 1.0 }, Waves = 6, LevelOffset = 6, GoldMult = 1.6, RecommendedPower = 400,
+		Name = "얼음 성채", Desc = "❄ 탄막 지옥! 멀리서 쏘는 적이 많고, 서리 군주는 나선 / 전방위 탄막을 쏟아내요 (중급)", Theme = { Health = 1.0, Damage = 1.2, Speed = 0.9, Spawn = 0.9, Burst = 1.0 }, Waves = 6, LevelOffset = 6, GoldMult = 1.6, RecommendedPower = 2000,
 		MonsterColor = Color3.fromRGB(110, 200, 240),
 		Floor = { Color = Color3.fromRGB(190, 220, 240), Material = Enum.Material.Ice },
 		Wall = { Color = Color3.fromRGB(120, 160, 200), Material = Enum.Material.Glacier },
@@ -895,7 +900,7 @@ Config.Dungeon.Types = {
 		Boss = { Name = "서리 군주", Color = Color3.fromRGB(90, 170, 240), HealthMult = 1.6, DamageMult = 1.2, Weights = { Fan = 2, Ring = 4, Spiral = 4.5, Meteor = 0.5, Slam = 1, Summon = 1, Lanes = 1.5, Sweep = 2, SideAdds = 0.5 } },
 	},
 	Fire = {
-		Name = "화염 신전", Desc = "🔥 돌진과 폭발! 달려드는 적이 단단하고 빠르고, 화염의 군주는 메테오와 충격파를 퍼부어요 (고급)", Theme = { Health = 1.25, Damage = 1.0, Speed = 1.15, Spawn = 1.0, Burst = 1.0 }, Waves = 7, LevelOffset = 12, GoldMult = 2.5, RecommendedPower = 1200,
+		Name = "화염 신전", Desc = "🔥 돌진과 폭발! 달려드는 적이 단단하고 빠르고, 화염의 군주는 메테오와 충격파를 퍼부어요 (고급)", Theme = { Health = 1.25, Damage = 1.0, Speed = 1.15, Spawn = 1.0, Burst = 1.0 }, Waves = 7, LevelOffset = 12, GoldMult = 2.5, RecommendedPower = 4500,
 		MonsterColor = Color3.fromRGB(240, 100, 50),
 		Floor = { Color = Color3.fromRGB(60, 35, 35), Material = Enum.Material.Basalt },
 		Wall = { Color = Color3.fromRGB(90, 40, 30), Material = Enum.Material.CrackedLava },
