@@ -37,10 +37,7 @@ local usedSlots = {}     -- [slot] = true
 local nextRunId = 1
 local lobbySpawn = CFrame.new(0, 4, 25)
 
-local STAT_ATTRIBUTES = { "StatPoints", "AugMissile", "AugNova", "AugOrbit", "AugStorm", "AugFlame", "AugExecute", "AugMeteor", "AugPulse" }
-for _, synKey in ipairs(Config.AugSynergies.Order) do
-	table.insert(STAT_ATTRIBUTES, "AugSyn_" .. synKey)
-end
+local STAT_ATTRIBUTES = { "StatPoints" } -- (어그먼트 효과는 이제 세트 장비에서 오므로 던전 시작 / 끝에 초기화하지 않는다)
 for _, perkKey in ipairs(Config.Perks.Order) do
 	table.insert(STAT_ATTRIBUTES, Config.Perks[perkKey].Attr)
 end
@@ -112,11 +109,6 @@ local function resetStats(player)
 		player:SetAttribute(attribute, 0)
 	end
 	player:SetAttribute("DungeonVisual", "")
-	local character = player.Character
-	local aura = character and character:FindFirstChild("AugAura")
-	if aura then aura:Destroy() end
-	local auraFx = character and character:FindFirstChild("HumanoidRootPart") and character.HumanoidRootPart:FindFirstChild("AugAuraFx")
-	if auraFx then auraFx:Destroy() end
 	applyMaxHealth(player, math.huge)
 end
 
@@ -1290,7 +1282,7 @@ end
 local function nearestMonsters(run, position, radius, limit, exclude)
 	local list = {}
 	for part, data in pairs(run.Monsters) do
-		if part ~= exclude and part.Parent and data.Health > 0 then
+		if part ~= exclude and part.Parent and data.Health > 0 and not data.Invincible and not data.Static then
 			local distance = (part.Position - position).Magnitude
 			if distance <= radius then table.insert(list, { Part = part, Data = data, D = distance }) end
 		end
@@ -1305,7 +1297,9 @@ local function augDamage(player)
 end
 
 local function hitMonster(run, player, entry, amount)
-	if run.Monsters[entry.Part] == entry.Data then
+	if run.HitFn then -- 필드: 필드 몬스터에게 피해를 주는 함수를 따로 받는다
+		run.HitFn(player, entry, amount)
+	elseif run.Monsters[entry.Part] == entry.Data then
 		damageMonster(run, player, entry.Part, entry.Data, math.max(1, math.floor(amount)), false, entry.Part.Position)
 	end
 end
@@ -1470,7 +1464,7 @@ end
 augOnHit = function(run, player, part, data, amount, isCrit)
 	-- 처형: 체력이 얼마 안 남은 일반 몬스터는 맞는 즉시 쓰러진다
 	local execLevel = player:GetAttribute("AugExecute") or 0
-	if execLevel > 0 and data.Health > 0 and not data.IsBoss and not data.Invincible and data.Health / data.MaxHealth <= 0.1 + 0.06 * execLevel then
+	if execLevel > 0 and data.Health > 0 and not data.IsBoss and not data.BossLike and data.Kind ~= "Boss" and not data.Invincible and data.Health / data.MaxHealth <= 0.1 + 0.06 * execLevel then
 		data.Health = 0
 		Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 4, 0), "💀 처형!", Color3.fromRGB(215, 110, 255))
 		sfxAt(run, part.Position, "Aug_Execute", nil, 0.1)
@@ -1509,11 +1503,19 @@ augOnKill = function(run, player, position)
 	augDepth -= 1
 end
 
-local function setAura(player, color)
+-- 세트 효과 오라: 세트를 맞춘 동안 몸에 색이 다른 빛 / 입자가 감돈다 (AugAuraColor Attribute 를 따라간다)
+local function syncAura(player)
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	if not root then return end
+	local color = player:GetAttribute("AugAuraColor")
 	local aura = character:FindFirstChild("AugAura")
+	local fx = root:FindFirstChild("AugAuraFx")
+	if typeof(color) ~= "Color3" then
+		if aura then aura:Destroy() end
+		if fx then fx:Destroy() end
+		return
+	end
 	if not aura then
 		aura = Instance.new("Highlight")
 		aura.Name = "AugAura"
@@ -1521,7 +1523,9 @@ local function setAura(player, color)
 		aura.OutlineTransparency = 0.1
 		aura.DepthMode = Enum.HighlightDepthMode.Occluded
 		aura.Parent = character
-		local fx = Instance.new("ParticleEmitter")
+	end
+	if not fx then
+		fx = Instance.new("ParticleEmitter")
 		fx.Name = "AugAuraFx"
 		fx.Rate = 24
 		fx.Lifetime = NumberRange.new(0.6, 1.1)
@@ -1532,21 +1536,27 @@ local function setAura(player, color)
 		fx.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.9), NumberSequenceKeypoint.new(1, 0) })
 		fx.Parent = root
 	end
-	aura.FillColor, aura.OutlineColor = color, color
-	local fx = root:FindFirstChild("AugAuraFx")
-	if fx then fx.Color = ColorSequence.new(color) end
-	-- 새 어그먼트를 얻은 순간: 몸에서 빛이 퍼진다
-	shockRing({ Folder = player.Character }, root.Position, 14, color)
-	Effects.Burst(root.Position, color, 60)
+	if aura.FillColor ~= color then
+		aura.FillColor, aura.OutlineColor = color, color
+		fx.Color = ColorSequence.new(color)
+		shockRing({ Folder = character }, root.Position, 14, color) -- 새로 켜진 순간 몸에서 빛이 퍼진다
+		Effects.Burst(root.Position, color, 60)
+	end
 end
 
 -- 회전 칼날 / 낙뢰: 던전이 진행되는 동안 계속 도는 효과 루프
 local function startAugLoop(run)
 	task.spawn(function()
 		local blades, nextTick, nextStorm, nextMeteor, nextPulse = {}, {}, {}, {}, {}
+		local nextAura = 0
 		while not run.Destroyed and run.Phase ~= "Ended" do
 			local now = os.clock()
-			for _, member in ipairs(run.Members) do
+			local members = run.MembersFn and run.MembersFn() or run.Members
+			if now >= nextAura then
+				nextAura = now + 1
+				for _, member in ipairs(members) do syncAura(member) end
+			end
+			for _, member in ipairs(members) do
 				local root = getAliveParts(member)
 				local orbit = member:GetAttribute("AugOrbit") or 0
 				local list = blades[member]
@@ -1662,6 +1672,20 @@ end
 
 -- 범위 피해: center 주변 radius 안의 모든 적에게 damage 를 준다 (스킬용). 맞은 위치 목록 반환
 -- 범위 안의 몬스터(가까운 순) 목록 / 한 마리만 공격 (궁극기 락온 난사용)
+-- 세트 효과(어그먼트)를 필드에서도 쓰기 위한 입구: 필드가 "run 비슷한 표"를 만들어 넘기면 같은 효과가 작동한다
+function Dungeon.AugOnHit(run, player, part, data, amount, isCrit)
+	if augOnHit then augOnHit(run, player, part, data, amount, isCrit) end
+end
+function Dungeon.AugOnKill(run, player, position)
+	if augOnKill then augOnKill(run, player, position) end
+end
+function Dungeon.StartAugLoop(run)
+	startAugLoop(run)
+end
+function Dungeon.SyncAura(player)
+	syncAura(player)
+end
+
 function Dungeon.TargetsIn(player, center, radius, limit)
 	local run = playerRun[player]
 	if not run or run.Destroyed then return nil end
@@ -2107,27 +2131,6 @@ local function applyBuff(run, member, buff)
 	elseif buff.Combo then
 		for _, key in ipairs(buff.Combo) do
 			if not perkMaxed(member, key) then applyPerk(member, key) end
-		end
-	elseif buff.Effect == "Aug" then
-		member:SetAttribute(buff.Attr, math.min(buff.Max or 3, (member:GetAttribute(buff.Attr) or 0) + 1))
-		setAura(member, buff.Color)
-		for _, synKey in ipairs(Config.AugSynergies.Order) do
-			local syn = Config.AugSynergies[synKey]
-			if not synergy(member, synKey) then
-				local ok = true
-				for _, need in ipairs(syn.Need) do
-					if (member:GetAttribute(need) or 0) <= 0 then ok = false end
-				end
-				if ok then
-					member:SetAttribute("AugSyn_" .. synKey, true)
-					notify(member, string.format("%s 시너지 발동! 『%s』 — %s", syn.Icon, syn.Name, syn.Desc))
-					local root = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
-					if root then
-						Effects.Burst(root.Position, Color3.fromRGB(255, 235, 140), 90)
-						sfxAt(run, root.Position, "Aug_Synergy", nil, 0.5)
-					end
-				end
-			end
 		end
 	elseif buff.Effect == "Heal" then
 		applyMaxHealth(member, math.huge)

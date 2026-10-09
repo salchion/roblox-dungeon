@@ -1486,7 +1486,9 @@ local function reward(player, data, part)
 	end
 end
 
+local augRun -- 세트 효과(미사일 / 번개 / 칼날 ...)용 "run 비슷한 표": Field.Init 에서 만든다
 local function killMonster(player, part, data)
+	if augRun then Dungeon.AugOnKill(augRun, player, part.Position) end -- 처치 폭발 / 화염 지대 (monsters 에서 지우기 전: 자기 자신은 다시 맞지 않는다)
 	monsters[part] = nil
 	if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then
 		player:SetAttribute("TutorialRetryBuff", nil) -- 일회성 힘은 군주를 쓰러뜨리면 사라진다
@@ -1708,6 +1710,7 @@ function Field.Shoot(player, origin, direction)
 		data.HealthFill.Size = UDim2.new(math.max(data.Health, 0) / data.MaxHealth, 0, 1, 0)
 		Effects.DamageNumber(result.Position, damage, isCrit)
 		Effects.Hit(player, result.Instance, isCrit, data.Health <= 0)
+		if augRun then Dungeon.AugOnHit(augRun, player, result.Instance, data, damage, isCrit) end -- 크리 미사일 / 처형
 		if data.Health <= 0 then
 			killMonster(player, result.Instance, data)
 		end
@@ -3571,9 +3574,52 @@ local function runAmbush()
 	end
 end
 
+-- 세트 효과가 필드 몬스터에게 주는 피해 (미사일 / 번개 / 칼날 / 폭발 ... 가 모두 이 함수를 지난다)
+local function fieldAugHit(player, entry, amount)
+	local part, data = entry.Part, entry.Data
+	if monsters[part] ~= data or data.Health <= 0 or data.Invincible then return end
+	amount = math.max(1, math.floor(amount))
+	data.Health -= amount
+	data.LastHit = os.clock()
+	if data.Contrib then data.Contrib[player] = (data.Contrib[player] or 0) + amount end
+	data.HealthFill.Size = UDim2.new(math.max(data.Health, 0) / data.MaxHealth, 0, 1, 0)
+	Effects.DamageNumber(part.Position, amount, false)
+	Effects.Hit(player, part, false, data.Health <= 0)
+	Dungeon.AugOnHit(augRun, player, part, data, amount, false)
+	if data.Health <= 0 then
+		killMonster(player, part, data)
+	end
+end
+
 function Field.Init(lobbySpawnCFrame)
 	lobbySpawn = lobbySpawnCFrame or lobbySpawn
 	buildWorld()
+	do -- 세트 효과(어그먼트): 필드에서도 작동한다
+		local fx = Instance.new("Folder")
+		fx.Name = "FieldFx"
+		fx.Parent = workspace
+		augRun = {
+			Monsters = monsters, Folder = fx, Phase = "Wave", Destroyed = false, HitFn = fieldAugHit,
+			MembersFn = function()
+				local list = {}
+				for _, member in ipairs(Players:GetPlayers()) do
+					if member:GetAttribute("Zone") == "Field" and getAliveParts(member) and not isSafe(getAliveParts(member).Position) then
+						table.insert(list, member)
+					end
+				end
+				return list
+			end,
+		}
+		Dungeon.StartAugLoop(augRun)
+		task.spawn(function() -- 마을 / 던전에서도 세트 오라는 보이게 (1초마다 맞춘다)
+			while true do
+				task.wait(1)
+				for _, member in ipairs(Players:GetPlayers()) do
+					pcall(Dungeon.SyncAura, member)
+				end
+			end
+		end)
+	end
 
 	for zone = 1, F.ZoneCount do
 		local countMult = F.ZoneCountMult and F.ZoneCountMult[zone] or 1 -- 구역이 올라갈수록 몬스터가 더 많다

@@ -132,6 +132,7 @@ function Inventory.GetTotals(player)
 			end
 		end
 	end
+	totals.SetCounts = setCounts -- 세트별 장착 부위 수 (세트 효과 계산용)
 	return totals
 end
 

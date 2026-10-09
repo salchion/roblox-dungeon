@@ -278,15 +278,6 @@ Config.Dungeon.BonusInterval = 10    -- 이 간격(초)마다 랜덤 강화 / �
 -- 랜덤 강화 (고르지 않고 무작위로 하나 걸린다. Perk = 기존 특성을 Stacks 단계만큼 올림 / Weight = 나올 확률 가중치)
 Config.RunBuffs = {
 	{ Icon = "➳",  Name = "관통탄",       Desc = "탄이 적을 +1마리 더 관통",           Perk = "Pierce", Special = true },
-	-- ★ 어그먼트: 수치가 아니라 "플레이 방식"이 바뀌는 강화 (필드에서는 볼 수 없는 추가 효과가 눈에 보인다). 최대 Max 단계까지 쌓인다.
-	{ Icon = "🚀", Name = "크리 미사일", Desc = "치명타가 터질 때마다 추가 미사일이 날아가 주변 적을 터뜨려요",   Effect = "Aug", Attr = "AugMissile", Max = 3, Color = Color3.fromRGB(255, 150, 60),  Special = true, Weight = 1.6 },
-	{ Icon = "☄", Name = "처치 폭발",   Desc = "적을 처치하면 그 자리에서 큰 폭발이 일어나 주변 적에게 번져요",   Effect = "Aug", Attr = "AugNova",    Max = 3, Color = Color3.fromRGB(255, 80, 70),   Special = true, Weight = 1.6 },
-	{ Icon = "🌀", Name = "회전 칼날",   Desc = "몸 주위를 도는 칼날이 닿는 적을 계속 베어요",                     Effect = "Aug", Attr = "AugOrbit",   Max = 3, Color = Color3.fromRGB(110, 230, 255), Special = true, Weight = 1.6 },
-	{ Icon = "⛈", Name = "낙뢰",        Desc = "주기적으로 하늘에서 번개가 가까운 적들에게 내리쳐요",             Effect = "Aug", Attr = "AugStorm",   Max = 3, Color = Color3.fromRGB(255, 240, 110), Special = true, Weight = 1.6 },
-	{ Icon = "🔥", Name = "화염 지대",   Desc = "적을 처치한 자리에 불길이 남아 지나가는 적을 태워요",             Effect = "Aug", Attr = "AugFlame",   Max = 3, Color = Color3.fromRGB(255, 130, 40),  Special = true, Weight = 1.3 },
-	{ Icon = "💀", Name = "처형",        Desc = "체력이 얼마 안 남은 적(보스 제외)은 맞는 즉시 처형돼요",         Effect = "Aug", Attr = "AugExecute", Max = 3, Color = Color3.fromRGB(210, 90, 255),  Special = true, Weight = 1.3 },
-	{ Icon = "🌠", Name = "유성우",      Desc = "적이 가장 많이 모인 곳에 주기적으로 유성이 떨어져요",             Effect = "Aug", Attr = "AugMeteor",  Max = 3, Color = Color3.fromRGB(255, 190, 90),  Special = true, Weight = 1.3 },
-	{ Icon = "🔔", Name = "수호 파동",   Desc = "주기적으로 몸에서 파동이 퍼져 주변 적을 쓸어내고 체력을 회복해요", Effect = "Aug", Attr = "AugPulse",   Max = 3, Color = Color3.fromRGB(110, 255, 190), Special = true, Weight = 1.3 },
 	{ Icon = "💥", Name = "폭발탄",       Desc = "맞은 적 주변이 폭발",                Perk = "Boom",   Special = true },
 	{ Icon = "⚡", Name = "연쇄 번개",    Desc = "맞은 적에게서 번개가 튄다",          Perk = "Chain",  Special = true },
 	{ Icon = "🩸", Name = "흡혈",         Desc = "맞힐 때마다 체력 회복",              Perk = "Vamp",   Special = true },
@@ -307,7 +298,19 @@ Config.RunBuffs = {
 	{ Icon = "🎫", Name = "행운의 티켓",  Desc = "장비 티켓 +1",                       Effect = "Ticket", Weight = 0.35, Special = true },
 }
 
--- 어그먼트 시너지: 두 어그먼트를 모두 가지면 숨은 추가 효과가 켜진다 (획득하는 순간 알림 + 오라 폭발)
+-- 세트 효과 (구역 세트 2부위 = 1단계 / 3부위 = 3단계): 수치가 아니라 "플레이 방식"이 바뀌는 효과. 필드 / 던전 / 심연 어디서나 작동한다.
+Config.AugInfo = {
+	AugMissile = { Icon = "🚀", Name = "크리 미사일", Desc = "치명타가 터질 때마다 추가 미사일이 날아가 주변 적을 터뜨려요", Color = Color3.fromRGB(255, 150, 60) },
+	AugNova = { Icon = "☄", Name = "처치 폭발", Desc = "적을 처치하면 그 자리에서 큰 폭발이 일어나 주변 적에게 번져요", Color = Color3.fromRGB(255, 80, 70) },
+	AugOrbit = { Icon = "🌀", Name = "회전 칼날", Desc = "몸 주위를 도는 칼날이 닿는 적을 계속 베어요", Color = Color3.fromRGB(110, 230, 255) },
+	AugStorm = { Icon = "⛈", Name = "낙뢰", Desc = "주기적으로 하늘에서 번개가 가까운 적들에게 내리쳐요", Color = Color3.fromRGB(255, 240, 110) },
+	AugFlame = { Icon = "🔥", Name = "화염 지대", Desc = "적을 처치한 자리에 불길이 남아 지나가는 적을 태워요", Color = Color3.fromRGB(255, 130, 40) },
+	AugExecute = { Icon = "💀", Name = "처형", Desc = "체력이 얼마 안 남은 적(보스 제외)은 맞는 즉시 처형돼요", Color = Color3.fromRGB(210, 90, 255) },
+	AugMeteor = { Icon = "🌠", Name = "유성우", Desc = "적이 가장 많이 모인 곳에 주기적으로 유성이 떨어져요", Color = Color3.fromRGB(255, 190, 90) },
+	AugPulse = { Icon = "🔔", Name = "수호 파동", Desc = "주기적으로 몸에서 파동이 퍼져 주변 적을 쓸어내고 체력을 회복해요", Color = Color3.fromRGB(110, 255, 190) },
+}
+
+-- 세트 효과 시너지: 두 어그먼트를 모두 가지면 숨은 추가 효과가 켜진다 (획득하는 순간 알림 + 오라 폭발)
 Config.AugSynergies = {
 	Order = { "Inferno", "StormEye", "BladeMissile", "Reaper" },
 	Inferno      = { Need = { "AugNova", "AugFlame" },      Icon = "🌋", Name = "불바다",    Desc = "처치 폭발이 30% 더 넓어지고 불길이 1.5배 오래 타요" },
@@ -1026,7 +1029,7 @@ Config.LevelStats = {
 	Order = { "Move", "Range", "Shots", "Haste", "Loot" },
 	Move  = { Name = "이동 속도",   Icon = "👟", Per = 0.3,  Desc = "포인트당 이동 속도 +0.3" },
 	Range = { Name = "사정거리",    Icon = "🎯", Per = 0.04, Desc = "포인트당 무기 사정거리 +4%" },
-	Shots = { Name = "투사체",      Icon = "🔱", Step = 5,   Desc = "5포인트마다 탄이 +1발 (추가 탄은 약해서 합계 피해는 발당 +40%)" },
+	Shots = { Name = "투사체",      Icon = "🔱", Costs = { 8, 18, 30, 44 }, Desc = "누적 8 / 18 / 30 / 44 포인트마다 탄 +1발 (최대 +4발, 추가 탄은 약해서 합계 피해는 발당 +40%)" },
 	Haste = { Name = "스킬 쿨타임", Icon = "⏱", Per = 0.01, Desc = "포인트당 스킬 쿨타임 -1%" },
 	Loot  = { Name = "전리품 흡수", Icon = "🧲", Per = 1.0,  Desc = "포인트당 전리품이 빨려 들어오는 범위 +1" },
 	ExtraShotValue = 0.4,   -- 레벨 스탯으로 늘어난 탄 한 발의 가치 (경제가 깨지지 않게: 탄이 2배가 돼도 총 피해는 +40%)
@@ -1037,14 +1040,22 @@ end
 -- 포인트 -> 실제 효과 문자열 / 값
 function Config.LevelStatValue(key, points)
 	local def = Config.LevelStats[key]
-	if key == "Shots" then return math.floor(points / def.Step) end
+	if key == "Shots" then
+		local count = 0
+		for _, cost in ipairs(def.Costs) do
+			if points >= cost then count += 1 end
+		end
+		return count
+	end
 	return points * def.Per
 end
 function Config.LevelStatText(key, points)
 	local value = Config.LevelStatValue(key, points)
 	if key == "Move" then return string.format("이동 속도 +%.1f", value)
 	elseif key == "Range" then return string.format("사정거리 +%d%%", math.floor(value * 100 + 0.5))
-	elseif key == "Shots" then return string.format("탄 +%d발 (다음 +1발까지 %d)", value, Config.LevelStats.Shots.Step - points % Config.LevelStats.Shots.Step)
+	elseif key == "Shots" then
+		local nextCost = Config.LevelStats.Shots.Costs[value + 1]
+		return nextCost and string.format("탄 +%d발 (다음 +1발: %d포인트)", value, nextCost) or string.format("탄 +%d발 (최대)", value)
 	elseif key == "Haste" then return string.format("쿨타임 -%d%%", math.floor(value * 100 + 0.5))
 	else return string.format("흡수 범위 +%d", math.floor(value + 0.5)) end
 end
@@ -1130,6 +1141,9 @@ Config.Sets.Imprint = {
 	DropGoblin = 10,                       -- 황금 고블린
 	DropEvent = 20,                        -- 공개 이벤트 보스
 }
+-- 구역 세트마다 컨셉이 하나씩 있다: 그 세트를 2부위 이상 맞추면 그 효과가 켜진다 (2부위 1단계, 3부위 3단계)
+Config.Sets.ZoneAug = { "AugPulse", "AugOrbit", "AugStorm", "AugMissile", "AugNova", "AugFlame", "AugExecute", "AugMeteor" }
+Config.Sets.AugLevelByPieces = { [2] = 1, [3] = 3 }
 Config.Sets.ZoneKeys = {}
 do
 	local zoneSets = {
@@ -1152,7 +1166,7 @@ do
 	}
 	for zone, def in ipairs(zoneSets) do
 		local key = "Zone" .. zone
-		Config.Sets[key] = { Name = def.Name, Prefix = def.Prefix, Icon = def.Icon, Color = def.Color, Zone = zone, Bonuses = { [2] = def.B2, [3] = def.B3 } }
+		Config.Sets[key] = { Name = def.Name, Prefix = def.Prefix, Icon = def.Icon, Color = def.Color, Zone = zone, Bonuses = { [2] = def.B2, [3] = def.B3 }, Aug = Config.Sets.ZoneAug[zone] }
 		Config.Sets.ZoneKeys[zone] = key
 	end
 end

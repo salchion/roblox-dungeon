@@ -113,7 +113,7 @@ local gui = create("ScreenGui", { Name = "HUD", ResetOnSpawn = false, IgnoreGuiI
 ------------------------------------------------------------
 -- 공통: 상단 좌측 정보, 알림
 ------------------------------------------------------------
-local infoPanel = makePanel({ Size = UDim2.new(0, 240, 0, 176), Position = UDim2.new(0, 16, 0, 60) }, gui) -- (Roblox 상단 버튼과 겹치지 않게 아래로)
+local infoPanel = makePanel({ Size = UDim2.new(0, 240, 0, 176), Position = UDim2.new(0, 16, 0, 60), Visible = false }, gui) -- (예전 글자 패널: 이제 HudClient 의 카드가 대신한다. 값 계산 코드가 이 라벨을 쓰고 있어서 숨겨서만 둔다)
 local infoLabel = makeLabel({
 	Size = UDim2.new(1, -20, 1, -16),
 	Position = UDim2.new(0, 10, 0, 8),
@@ -2736,6 +2736,26 @@ local function buildInventoryTab()
 	slotBox("Ring", 350, 108)
 	slotBox("Boots", 350, 204)
 	slotBox("Weapon", 350, 300)
+	do -- 펫 칸: 장착한 펫을 한눈에 (누르면 펫 탭으로)
+		local petKey = player:GetAttribute("PetKey")
+		local pet = petKey and petKey ~= "" and Config.Pets[petKey]
+		local box = makeButton({ Size = UDim2.new(0, 88, 0, 88), Position = UDim2.new(0, 10, 0, 300), Text = "", BackgroundColor3 = pet and Color3.fromRGB(46, 48, 68) or Color3.fromRGB(34, 34, 48), AutoButtonColor = true }, top, function()
+			currentTab = "Pet"
+			Remotes.Meta:FireServer("Request")
+			refreshMenu()
+		end)
+		rounded(box, 10)
+		if pet then
+			create("UIStroke", { Color = pet.Color, Thickness = 2.5 }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 4), Text = "🐾", TextSize = 30, TextColor3 = pet.Color }, box)
+			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 42), Text = pet.Name, TextSize = 11, TextWrapped = true, TextColor3 = pet.Color, Font = Enum.Font.GothamBold }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 62), Text = string.format("Lv.%d", player:GetAttribute("PetLevel") or 1), TextSize = 13, Font = Enum.Font.GothamBlack }, box)
+		else
+			create("UIStroke", { Color = Color3.fromRGB(70, 70, 90), Thickness = 1.5 }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 8), Text = "🐾", TextSize = 30, TextTransparency = 0.6 }, box)
+			makeLabel({ Size = UDim2.new(1, -4, 0, 30), Position = UDim2.new(0, 2, 0, 52), Text = "펫 없음\n알 부화하기", TextSize = 11, TextWrapped = true, TextColor3 = Color3.fromRGB(150, 150, 175) }, box)
+		end
+	end
 
 	-- 선택한 아이템 설명
 	local detail = create("Frame", { Size = UDim2.new(1, -462, 1, -24), Position = UDim2.new(0, 450, 0, 12), BackgroundColor3 = Color3.fromRGB(24, 26, 38), BorderSizePixel = 0 }, top)
@@ -2767,6 +2787,10 @@ local function buildInventoryTab()
 				table.insert(lines, string.format("<font size='12' color='#%s'><b>📍 구역 %d · %s 세트 — 그 구역에서 떨어지거나, 세트 조각으로 각인해서 얻어요!</b></font>", hex(setDef.Color), setDef.Zone, Config.Field.ZoneNames[setDef.Zone]))
 			end
 			table.insert(lines, string.format("<font size='12' color='#%s'>◈ 세트 [%s] %d/3\n  2부위: %s\n  3부위: %s</font>", hex(setDef.Color), setDef.Name, setCounts[selected.Set] or 0, table.concat(b2, ", "), table.concat(b3, ", ")))
+				local augInfo = setDef.Aug and Config.AugInfo[setDef.Aug]
+				if augInfo then
+					table.insert(lines, string.format("<font size='12' color='#%s'><b>%s 세트 효과: %s</b> — 2부위 1단계 · 3부위 3단계\n  <font color='#cfd6f0'>%s</font></font>", hex(augInfo.Color), augInfo.Icon, augInfo.Name, augInfo.Desc))
+				end
 		end
 		-- 지금 장착한 같은 부위 장비와 비교
 		local current = equipped[selected.Slot]

@@ -309,6 +309,13 @@
       "overwrite": true
     },
     {
+      "path": "HudClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "HudClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "LevelStatClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "LevelStatClient",

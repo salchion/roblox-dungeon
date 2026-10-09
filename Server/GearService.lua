@@ -10,6 +10,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Inventory = require(script.Parent:WaitForChild("InventoryService"))
+local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 
 local G = Config.Gear
 
@@ -39,6 +40,35 @@ local function recompute(player)
 	player:SetAttribute("GearLuck", affix.Luck + totals.Luck)
 	player:SetAttribute("GearHaste", math.min(0.6, affix.Haste + totals.Haste))
 	player:SetAttribute("GearShot", math.floor(affix.Shot + 0.5))
+
+	-- 세트 효과: 구역 세트를 2부위 맞추면 1단계, 3부위면 3단계 (미사일 / 번개 / 칼날 / 폭발 ...). 필드 / 던전 / 심연 어디서나 작동한다.
+	local augLevels, bestLevel, auraColor = {}, 0, nil
+	for setKey, count in pairs(affix.SetCounts or {}) do
+		local def = Config.Sets[setKey]
+		if def and def.Aug then
+			local level = count >= 3 and Config.Sets.AugLevelByPieces[3] or (count >= 2 and Config.Sets.AugLevelByPieces[2] or 0)
+			if level > 0 then
+				augLevels[def.Aug] = level
+				if level > bestLevel then bestLevel, auraColor = level, Config.AugInfo[def.Aug].Color end
+			end
+		end
+	end
+	for attr in pairs(Config.AugInfo) do
+		player:SetAttribute(attr, augLevels[attr] or 0)
+	end
+	for _, synKey in ipairs(Config.AugSynergies.Order) do
+		local syn = Config.AugSynergies[synKey]
+		local active = true
+		for _, need in ipairs(syn.Need) do
+			if (augLevels[need] or 0) <= 0 then active = false end
+		end
+		local before = player:GetAttribute("AugSyn_" .. synKey)
+		player:SetAttribute("AugSyn_" .. synKey, active)
+		if active and before == false then -- 방금 새로 켜졌다 (접속 직후 첫 계산은 알리지 않는다)
+			Remotes.Notify:FireClient(player, string.format("%s 세트 시너지 발동! 『%s』 — %s", syn.Icon, syn.Name, syn.Desc))
+		end
+	end
+	player:SetAttribute("AugAuraColor", auraColor)
 end
 
 ------------------------------------------------------------

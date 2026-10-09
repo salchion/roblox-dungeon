@@ -45,16 +45,18 @@ local function button(props, parent, callback)
 end
 
 -- 오른쪽의 "스탯" 버튼 (안 쓴 포인트가 있으면 개수 배지)
+-- 왼쪽 위 상태 카드 아래, 메뉴 / 설정 버튼 옆에 둔다. 안 쓴 포인트가 있으면 반짝이며 숫자 배지가 뜬다.
 local pill = button({
-	Size = UDim2.new(0, 96, 0, 40), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -14, 0.5, 40),
-	BackgroundColor3 = Color3.fromRGB(34, 38, 60), Text = "✨ 스탯 (T)", TextSize = 13,
+	Size = UDim2.new(0, 112, 0, 32), Position = UDim2.new(0, 132, 0, 244),
+	BackgroundColor3 = Color3.fromRGB(34, 38, 60), Text = "✨ 스탯 (T)", TextSize = 14,
 }, gui, function() end)
-make("UIStroke", { Color = Color3.fromRGB(150, 160, 255), Thickness = 1.5 }, pill)
+local pillStroke = make("UIStroke", { Color = Color3.fromRGB(150, 160, 255), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, pill)
 local badge = label({
-	Size = UDim2.new(0, 24, 0, 24), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(0, 6, 0, 0),
-	BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(255, 80, 80), Text = "0", TextSize = 13, Visible = false,
+	Size = UDim2.new(0, 24, 0, 24), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -4, 0, 2),
+	BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(255, 80, 80), Text = "0", TextSize = 13, Visible = false, ZIndex = 5,
 }, pill)
 make("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
+local pulse = game:GetService("TweenService"):Create(pillStroke, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 4, Color = Color3.fromRGB(255, 225, 110) })
 
 -- 창
 local panel = make("Frame", {
@@ -107,6 +109,14 @@ local function refresh()
 	end
 	badge.Visible = left > 0
 	badge.Text = tostring(math.min(99, left))
+	if left > 0 then
+		pulse:Play()
+		pill.BackgroundColor3 = Color3.fromRGB(70, 60, 28)
+	else
+		pulse:Cancel()
+		pillStroke.Thickness, pillStroke.Color = 1.5, Color3.fromRGB(150, 160, 255)
+		pill.BackgroundColor3 = Color3.fromRGB(34, 38, 60)
+	end
 	pill.Visible = not player:GetAttribute("TutorialActive")
 end
 

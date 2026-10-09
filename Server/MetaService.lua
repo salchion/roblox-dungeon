@@ -38,6 +38,7 @@ local function applyPetStats(player, state)
 		player:SetAttribute("Pet" .. pet.Stat, Config.GetPetValue(key, level))
 	end
 	player:SetAttribute("PetKey", key or "")
+	player:SetAttribute("PetLevel", (key and level) or 0)
 end
 
 local function removePetModel(player)
