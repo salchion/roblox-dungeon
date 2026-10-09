@@ -89,7 +89,9 @@ end
 -- 오늘의 퀘스트 패널: 튜토리얼에서 최종 군주에게 쓰러져 마을로 돌아온 뒤에야 나타난다 (QuestHud). 던전 / 강화 퀘스트가 항상 들어 있다.
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local TweenService = game:GetService("TweenService")
-local questPanel = Instance.new("Frame")
+local questPanel = Instance.new("TextButton") -- 누르면 완료된 퀘스트 보상을 한꺼번에 받는다
+questPanel.Text = ""
+questPanel.AutoButtonColor = false
 questPanel.Size = UDim2.new(0, 260, 0, 30)
 questPanel.Position = UDim2.new(0, -300, 0, 326)
 questPanel.BackgroundColor3 = Color3.fromRGB(20, 22, 34)
@@ -115,6 +117,24 @@ questLabel.TextYAlignment = Enum.TextYAlignment.Top
 questLabel.RichText = true
 questLabel.Parent = questPanel
 local dailyList = nil
+local refreshQuests -- 아래에서 정의
+local function claimable()
+	local count = 0
+	for _, quest in ipairs(dailyList or {}) do
+		if not quest.Claimed and quest.Progress >= quest.Goal then count += 1 end
+	end
+	return count
+end
+questPanel.Activated:Connect(function()
+	for _, quest in ipairs(dailyList or {}) do
+		if not quest.Claimed and quest.Progress >= quest.Goal then
+			quest.Claimed = true -- 서버 응답이 오기 전에 다시 눌러도 중복으로 보내지 않게
+			Remotes.Quest:FireServer("Claim", quest.Id)
+			task.wait(0.15)
+		end
+	end
+	refreshQuests()
+end)
 local questShown = false
 local beaconDone = false
 local beacon, beaconStart = nil, 0
@@ -125,7 +145,7 @@ end)
 
 task.defer(function() Remotes.Quest:FireServer("Request") end) -- 퀘스트 상태를 한 번 더 요청 (스크립트 시작 순서 때문에 놓칠 수 있다)
 
-local function refreshQuests()
+function refreshQuests()
 	if not dailyList then return end
 	local lines = { "<font color='#ffd966'><b>📋 오늘의 퀘스트</b></font>" }
 	for _, quest in ipairs(dailyList) do
@@ -133,7 +153,7 @@ local function refreshQuests()
 		if quest.Claimed then
 			table.insert(lines, string.format("<font color='#7a7f95'>✔ %s</font>", quest.Desc))
 		elseif done then
-			table.insert(lines, string.format("<font color='#78ff8c'>✅ %s — 메뉴(I)에서 받기!</font>", quest.Desc))
+			table.insert(lines, string.format("<font color='#78ff8c'>✅ %s — 눌러서 받기!</font>", quest.Desc))
 		else
 			table.insert(lines, string.format("• %s <font color='#ffd966'>%d/%d</font>", quest.Desc, quest.Progress, quest.Goal))
 		end
@@ -322,7 +342,10 @@ RunService.RenderStepped:Connect(function()
 	local now = os.clock()
 	if now - last >= 0.5 then
 		last = now
-		if questPanel.Visible then refreshQuests() end
+		if questPanel.Visible then
+			refreshQuests()
+			questStroke.Thickness = claimable() > 0 and 4 or 2
+		end
 		local goal = pickGoal()
 		if goal then
 			titleLabel.Text = goal.Text
