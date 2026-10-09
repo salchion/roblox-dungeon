@@ -293,6 +293,13 @@
       "name": "AdviceService",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "Server/IdleService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "IdleService",
+      "class": "ModuleScript",
+      "overwrite": true
     }
   ]
 }

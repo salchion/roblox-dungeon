@@ -189,6 +189,30 @@ local function updateBeacon(active)
 	if os.clock() - beaconStart > 240 then beaconDone = true end
 end
 
+-- 방치 수입 표시: 훈련장 원 안에서 방치 중일 때 초당 골드와 배율 (BM 배율이 올라가면 눈에 보인다)
+local idleLabel = Instance.new("TextLabel")
+idleLabel.Size = UDim2.new(0, 360, 0, 28)
+idleLabel.AnchorPoint = Vector2.new(0.5, 0)
+idleLabel.Position = UDim2.new(0.5, 0, 0, 128)
+idleLabel.BackgroundColor3 = Color3.fromRGB(26, 30, 48)
+idleLabel.BackgroundTransparency = 0.15
+idleLabel.BorderSizePixel = 0
+idleLabel.Font = Enum.Font.GothamBold
+idleLabel.TextSize = 15
+idleLabel.TextColor3 = Color3.fromRGB(255, 225, 120)
+idleLabel.RichText = true
+idleLabel.Visible = false
+idleLabel.Parent = gui
+addCorner(idleLabel, 8)
+RunService.Heartbeat:Connect(function()
+	local on = player:GetAttribute("IdleActive") == true and player:GetAttribute("Zone") == "Lobby"
+	idleLabel.Visible = on
+	if on then
+		local mult = player:GetAttribute("IdleMultTotal") or 1
+		idleLabel.Text = string.format("💤 방치 수입  +%s G/초   <font color='#9ad7ff'>x%.2f</font>", tostring(player:GetAttribute("IdleRate") or 0), mult)
+	end
+end)
+
 -- 처음 던전을 마치고 돌아오면 한 번: "다음 목표(전투력)"와 "무엇으로 강해지는가" 한 장 (서버가 Growth 이벤트로 보낸다)
 local guide = Instance.new("Frame")
 guide.Size = UDim2.new(0, 420, 0, 320)

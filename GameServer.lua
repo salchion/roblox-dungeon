@@ -39,6 +39,7 @@ local Monetization = require(Modules:WaitForChild("MonetizationService"))
 local Data = require(Modules:WaitForChild("DataService"))
 local Rift = require(Modules:WaitForChild("RiftService"))
 local Advice = require(Modules:WaitForChild("AdviceService"))
+local Idle = require(Modules:WaitForChild("IdleService"))
 
 Monetization.SaveHook = Data.Save -- 결제 영수증 처리 때 "저장 성공"을 확인하는 데 사용
 
@@ -69,6 +70,7 @@ Rank.Init(lobby.RankBoardCFrame)
 Showcase.Init(lobby.RankBoardCFrame) -- 랭킹판 앞 명예의 전당 (최강 3명)
 Field.Init(lobby.SpawnCFrame)
 Rift.Init(lobby.RiftPrompt) -- 심연 도전 포탈
+Idle.Init(lobby.DummyStart) -- 방치 수입 (훈련장 원 안 자동 사격 + 오프라인 적립)
 EventService.Start() -- 주기적 골든 타임
 
 -- 던전 게이트: 파티장(또는 솔로)에게 던전 종류 / 난이도 선택창을 띄운다
@@ -300,6 +302,7 @@ local function setupPlayer(player)
 		Daily.Load(player, saved.Daily) -- 출석 보상 (하루 한 번 자동 지급)
 		Meta.Load(player, saved.Meta)   -- 스킬 레벨 / 펫 / 무한의 탑 기록
 		Tutorial.Load(player, saved.Tutorial) -- 처음 1~5분 가이드 미션
+		Idle.OnJoin(player) -- 자리를 비운 동안 쌓인 방치 골드
 		updatePower(player)
 	end
 end

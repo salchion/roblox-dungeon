@@ -459,7 +459,7 @@ Config.Weapon.MaxLevel = totalSteps - 1 -- 마지막 무기까지 강화한 단�
 ------------------------------------------------------------
 Config.Dummy = {
 	GoldPerHit = 2,
-	GoldPerDamage = 0.25,  -- 허수아비 골드 = 이 값 x 탄 하나의 기대 피해량 (초당 골드가 초당 피해량에 정비례). 시작 권총(피해 약 10) = 한 발 약 2.5G
+	GoldPerDamage = 0.1,   -- 직접 쏠 때 허수아비 골드 = 이 값 x 탄 하나의 기대 피해량. 방치 수입(Config.Idle.GoldPerDamage)의 약 1/3 (직접 쏘기는 초반 체험용)
 	EraGoldMult = 1.4,     -- 무기 세대(10종 단위)가 오를 때마다 허수아비 골드 x1.4 (업그레이드할수록 골드도 늘게)
 	PowerRef = 600,        -- 전투력 기준값 (이 값일 때 배율 약 x2)
 	PowerExp = 0.55,       -- 전투력이 오를수록 골드가 어떻게 늘어나는지 (1 이면 정비례, 작을수록 완만)
@@ -1192,10 +1192,22 @@ Config.Events = {
 --   Studio 에서 플레이 테스트할 때는 ID 가 0 이어도 [테스트 지급]으로 효과를 확인할 수 있다.
 --   Grant 키: Keys(열쇠) Tickets(뽑기 티켓) XpBoost / LuckBoost(초 단위) Bag(가방 칸) Aura(꾸미기 해금)
 ------------------------------------------------------------
+-- 방치 수입 (허수아비 훈련장): 훈련장 원 안에 서 있으면 자동 사격 수입 + 접속을 끊어도 한도까지 적립. BM 은 "효율 / 한도"만 늘려 준다.
+Config.Idle = {
+	GoldPerDamage = 0.3,      -- 방치 골드/초 = 이 값 x 무기 초당 피해량(기대값) x 방치 배율
+	Radius = 18,              -- 훈련장 중심에서 이 거리 안에 있으면 방치 중
+	OfflineEfficiency = 0.6,  -- 오프라인 적립은 접속 중 방치의 60%
+	BaseCapHours = 2,         -- 오프라인 적립 한도 (기본)
+	BoostBonus = 1.0,         -- 방치 부스터 활성 중 배율 +100% (= x2)
+	MultTiers = { 0.25, 0.5, 1.0 }, -- 영구 방치 배율 상품 단계 (+25% / +50% / +100%, 단계는 덮어쓰는 방식이라 가장 높은 것 하나만 적용)
+	CapTiers = { 6, 22 },     -- 오프라인 적립 한도 상품 단계: 기본 2시간 + 6 = 8시간 / + 22 = 24시간
+	VipBonus = 0.2,           -- VIP 패스: 방치 배율 +20%
+}
+
 Config.Shop = {
 	Passes = {
 		VIP = {
-			Name = "VIP 패스", Desc = "경험치 +20% · 훈련 슬롯 +1 · 훈련/돌파 시간 -20% · 열쇠 보관 +2 · 열쇠 회복 30% 빠르게 · 가방 +20칸 · 황금 오라",
+			Name = "VIP 패스", Desc = "경험치 +20% · 방치 수입 +20% · 훈련 슬롯 +1 · 훈련/돌파 시간 -20% · 열쇠 보관 +2 · 열쇠 회복 30% 빠르게 · 가방 +20칸 · 황금 오라",
 			PassId = 0,
 		},
 	},
@@ -1207,6 +1219,12 @@ Config.Shop = {
 		TicketPack = { Name = "장비 뽑기 티켓 5장", Desc = "티켓으로 장비를 뽑아요", ProductId = 0, Grant = { Tickets = 5 } },
 		TimeSkip1h = { Name = "시간 단축권 1시간", Desc = "훈련 / 돌파 대기 시간을 1시간 줄여요", ProductId = 0, Grant = { TimeSkip = 3600 } },
 		TimeSkip8h = { Name = "시간 단축권 8시간", Desc = "훈련 / 돌파 대기 시간을 8시간 줄여요", ProductId = 0, Grant = { TimeSkip = 28800 } },
+		IdleBooster = { Name = "방치 부스터 (1시간)", Desc = "방치 수입 2배 (접속 중 + 오프라인 적립에도 적용)", ProductId = 0, Grant = { IdleBoost = 3600 } },
+		IdleMult1 = { Name = "방치 수입 +25%", Desc = "영구 적용", ProductId = 0, Grant = { IdleMult = 1 } },
+		IdleMult2 = { Name = "방치 수입 +50%", Desc = "영구 적용 (+25%를 대체)", ProductId = 0, Grant = { IdleMult = 2 } },
+		IdleMult3 = { Name = "방치 수입 +100%", Desc = "영구 적용 (이전 단계를 대체)", ProductId = 0, Grant = { IdleMult = 3 } },
+		IdleCap8 = { Name = "방치 적립 한도 8시간", Desc = "자리를 비워도 8시간까지 쌓여요 (기본 2시간)", ProductId = 0, Grant = { IdleCap = 1 } },
+		IdleCap24 = { Name = "방치 적립 한도 24시간", Desc = "자리를 비워도 하루치까지 쌓여요", ProductId = 0, Grant = { IdleCap = 2 } },
 		TrainSlot = { Name = "훈련 슬롯 +1", Desc = "영구 적용 · 동시에 하나 더 훈련", ProductId = 0, Grant = { TrainSlot = 1 } },
 		AuraVoid = { Name = "공허의 오라", Desc = "꾸미기 전용 (능력치 없음)", ProductId = 0, Grant = { Aura = "Void" } },
 		BannerDragon = { Name = "용의 깃발", Desc = "등 뒤에 꽂는 꾸미기 깃발 (능력치 없음)", ProductId = 0, Grant = { Banner = "Dragon" } },
@@ -1214,7 +1232,7 @@ Config.Shop = {
 		MountPhoenix = { Name = "불사조", Desc = "불꽃 날개 탈것 꾸미기 (능력치 없음)", ProductId = 0, Grant = { Mount = "Phoenix" } },
 	},
 	PassOrder = { "VIP" },
-	ProductOrder = { "TimeSkip1h", "TimeSkip8h", "TrainSlot", "KeyPack", "XpBooster", "LuckBooster", "BagPlus", "TicketPack", "AuraVoid", "BannerDragon", "MountCarpet", "MountPhoenix" },
+	ProductOrder = { "IdleBooster", "IdleMult1", "IdleMult2", "IdleMult3", "IdleCap8", "IdleCap24", "TimeSkip1h", "TimeSkip8h", "TrainSlot", "KeyPack", "XpBooster", "LuckBooster", "BagPlus", "TicketPack", "AuraVoid", "BannerDragon", "MountCarpet", "MountPhoenix" },
 	-- VIP 효과 (코드에서 읽는 값). TrainTime: 훈련/돌파 시간 단축 비율
 	Vip = { XpBonus = 0.2, KeyCap = 2, KeyRegen = 0.3, Bag = 20, TrainSlots = 1, TrainTime = 0.2 },
 	XpBoostMult = 2,

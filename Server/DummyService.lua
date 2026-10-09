@@ -212,6 +212,22 @@ function Dummy.Build(start)
 	}, folder)
 	addGlow(ring, Color3.fromRGB(255, 215, 90), 30)
 
+	-- 방치 구역 안내판: 훈련장 안에 서 있으면 자동으로 쏘며 골드가 쌓이고, 접속을 꺼도 쌓인다
+	local signGui = Instance.new("BillboardGui")
+	signGui.Size = UDim2.new(0, 300, 0, 64)
+	signGui.StudsOffset = Vector3.new(0, 17, 0)
+	signGui.MaxDistance = 120
+	signGui.Parent = ring
+	local signLabel = Instance.new("TextLabel")
+	signLabel.Size = UDim2.new(1, 0, 1, 0)
+	signLabel.BackgroundTransparency = 1
+	signLabel.Font = Enum.Font.GothamBlack
+	signLabel.TextScaled = true
+	signLabel.TextColor3 = Color3.fromRGB(255, 225, 120)
+	signLabel.TextStrokeTransparency = 0
+	signLabel.Text = "💤 방치 구역\n서 있으면 자동 사격 · 접속을 꺼도 골드가 쌓여요"
+	signLabel.Parent = signGui
+
 	-- 허수아비 하나: 8번 모양(어깨 보호대 / 투구 / 뿔 / 가슴 갑옷 / 빛나는 눈)을 써서 크고 듬직하게. 이름은 Dummy1.
 	buildDummy(8, Config.Dummy.List[1], start, 1, 1.7) -- 멀리서도 눈에 띄도록 1.7배 크기
 end
@@ -231,6 +247,18 @@ local function flash(data)
 end
 
 -- 로비에서 쏜 탄이 허수아비에 맞았는지 판정하고 골드를 지급. 반환: 탄이 끝나는 지점 (아무것도 안 맞으면 nil)
+-- 방치 모드: 허수아비가 맞는 것처럼 번쩍인다 (훈련장 원 안에 서 있는 동안 IdleService 가 1초마다 부른다)
+function Dummy.IdleHit(player)
+	for model, data in pairs(dummies) do
+		flash(data)
+		local root = model.PrimaryPart
+		if root and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+			Effects.Burst(root.Position + Vector3.new(0, 2, 0), Color3.fromRGB(255, 225, 120), 6)
+		end
+		break
+	end
+end
+
 local goldRemainder = {} -- [player] = 아직 지급하지 못한 소수점 골드
 
 function Dummy.Shoot(player, origin, direction, shotDamage)

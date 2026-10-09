@@ -73,6 +73,10 @@ local function applyAttributes(player, state)
 	player:SetAttribute("TrainSlotBonus", state.TrainSlot + (vip and S.Vip.TrainSlots or 0))
 	player:SetAttribute("XpBoostUntil", state.XpBoostUntil)
 	player:SetAttribute("LuckBoostUntil", state.LuckBoostUntil)
+	player:SetAttribute("IdleBoostUntil", state.IdleBoostUntil)
+	local idleTier = state.IdleMultTier > 0 and Config.Idle.MultTiers[math.min(state.IdleMultTier, #Config.Idle.MultTiers)] or 0
+	player:SetAttribute("IdleMultBonus", idleTier + (vip and Config.Idle.VipBonus or 0))
+	player:SetAttribute("IdleCapBonusHours", state.IdleCapTier > 0 and Config.Idle.CapTiers[math.min(state.IdleCapTier, #Config.Idle.CapTiers)] or 0)
 
 	for _, key in ipairs(Config.Auras.Order) do
 		player:SetAttribute("AuraOwned_" .. key, isAuraOwned(player, state, key))
@@ -127,6 +131,15 @@ function Monetization.Grant(player, grant)
 	if grant.LuckBoost then
 		state.LuckBoostUntil = math.max(os.time(), state.LuckBoostUntil) + grant.LuckBoost
 	end
+	if grant.IdleBoost then
+		state.IdleBoostUntil = math.max(os.time(), state.IdleBoostUntil) + grant.IdleBoost
+	end
+	if grant.IdleMult then
+		state.IdleMultTier = math.max(state.IdleMultTier, grant.IdleMult) -- 높은 단계 하나만 적용 (덮어쓰기)
+	end
+	if grant.IdleCap then
+		state.IdleCapTier = math.max(state.IdleCapTier, grant.IdleCap)
+	end
 	if grant.Bag then
 		state.Bag += grant.Bag
 	end
@@ -152,12 +165,15 @@ end
 -- 저장 / 불러오기
 ------------------------------------------------------------
 function Monetization.Load(player, saved)
-	local state = { Bag = 0, TrainSlot = 0, XpBoostUntil = 0, LuckBoostUntil = 0, AuraUnlocked = {}, Aura = "", Banner = "", Mount = "", Receipts = {}, Passes = {} }
+	local state = { Bag = 0, TrainSlot = 0, XpBoostUntil = 0, LuckBoostUntil = 0, IdleBoostUntil = 0, IdleMultTier = 0, IdleCapTier = 0, AuraUnlocked = {}, Aura = "", Banner = "", Mount = "", Receipts = {}, Passes = {} }
 	if typeof(saved) == "table" then
 		state.Bag = math.max(0, math.floor(tonumber(saved.Bag) or 0))
 		state.TrainSlot = math.max(0, math.floor(tonumber(saved.TrainSlot) or 0))
 		state.XpBoostUntil = tonumber(saved.XpBoostUntil) or 0
 		state.LuckBoostUntil = tonumber(saved.LuckBoostUntil) or 0
+		state.IdleBoostUntil = tonumber(saved.IdleBoostUntil) or 0
+		state.IdleMultTier = math.clamp(math.floor(tonumber(saved.IdleMultTier) or 0), 0, #Config.Idle.MultTiers)
+		state.IdleCapTier = math.clamp(math.floor(tonumber(saved.IdleCapTier) or 0), 0, #Config.Idle.CapTiers)
 		if typeof(saved.AuraUnlocked) == "table" then state.AuraUnlocked = saved.AuraUnlocked end
 		if typeof(saved.Aura) == "string" then state.Aura = saved.Aura end
 		if typeof(saved.Banner) == "string" then state.Banner = saved.Banner end
@@ -185,6 +201,7 @@ function Monetization.Serialize(player)
 	if not state then return nil end
 	return {
 		Bag = state.Bag, TrainSlot = state.TrainSlot, XpBoostUntil = state.XpBoostUntil, LuckBoostUntil = state.LuckBoostUntil,
+		IdleBoostUntil = state.IdleBoostUntil, IdleMultTier = state.IdleMultTier, IdleCapTier = state.IdleCapTier,
 		AuraUnlocked = state.AuraUnlocked, Aura = state.Aura, Banner = state.Banner, Mount = state.Mount, Receipts = state.Receipts,
 	}
 end
