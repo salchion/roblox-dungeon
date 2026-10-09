@@ -93,6 +93,7 @@ local function resetStats(player)
 	for _, attribute in ipairs(STAT_ATTRIBUTES) do
 		player:SetAttribute(attribute, 0)
 	end
+	player:SetAttribute("DungeonVisual", "")
 	local character = player.Character
 	local aura = character and character:FindFirstChild("AugAura")
 	if aura then aura:Destroy() end
@@ -2292,6 +2293,9 @@ local function runLoop(run)
 	notifyAll(run, string.format("👹 이번 보스: %s — %s", run.BossName, run.BossVariant.Desc))
 	if run.Mutator then
 		notifyAll(run, string.format("%s 이번 던전 변이: %s — %s", run.Mutator.Icon, run.Mutator.Name, run.Mutator.Desc))
+	end
+	for _, member in ipairs(run.Members) do
+		member:SetAttribute("DungeonVisual", run.Mutator and run.Mutator.Visual or "")
 	end
 	if run.RiftMode then
 		riftLoop(run)

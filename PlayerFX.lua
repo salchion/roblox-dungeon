@@ -60,6 +60,14 @@ do
 		{ ClockTime = 21, Brightness = 1.3, Ambient = Color3.fromRGB(58, 46, 88), OutdoorAmbient = Color3.fromRGB(84, 68, 124), Fog = Color3.fromRGB(150, 110, 230), Density = 0.46 }, -- 암흑 지대: 보랏빛 밤
 		{ ClockTime = 23, Brightness = 1.1, Ambient = Color3.fromRGB(64, 32, 74), OutdoorAmbient = Color3.fromRGB(90, 42, 100), Fog = Color3.fromRGB(255, 100, 180), Density = 0.5 }, -- 심연: 분홍 어둠
 	}
+	-- 던전 변이 화면 분위기 (서버가 던전 시작 때 DungeonVisual 을 정한다)
+	local DUNGEON_VISUALS = {
+		Dark  = { Lighting = { ClockTime = 0, Brightness = 0.5, Ambient = Color3.fromRGB(26, 26, 44), OutdoorAmbient = Color3.fromRGB(34, 34, 58) }, Atmosphere = { Color = Color3.fromRGB(20, 20, 40), Density = 0.5 } },
+		Fog   = { Lighting = { Brightness = 1.5, Ambient = Color3.fromRGB(110, 115, 125), OutdoorAmbient = Color3.fromRGB(140, 145, 155) }, Atmosphere = { Color = Color3.fromRGB(205, 212, 225), Density = 0.78 } },
+		Blood = { Lighting = { ClockTime = 18.5, Brightness = 1.5, Ambient = Color3.fromRGB(112, 40, 40), OutdoorAmbient = Color3.fromRGB(140, 50, 46) }, Atmosphere = { Color = Color3.fromRGB(255, 70, 60), Density = 0.42 } },
+		Gold  = { Lighting = { ClockTime = 16.5, Brightness = 2.6, Ambient = Color3.fromRGB(130, 112, 60), OutdoorAmbient = Color3.fromRGB(165, 140, 76) }, Atmosphere = { Color = Color3.fromRGB(255, 220, 130), Density = 0.3 } },
+		Elite = { Lighting = { ClockTime = 21, Brightness = 1.3, Ambient = Color3.fromRGB(70, 44, 100), OutdoorAmbient = Color3.fromRGB(96, 62, 130) }, Atmosphere = { Color = Color3.fromRGB(170, 110, 255), Density = 0.4 } },
+	}
 	local dusk = nil
 	local fieldIndex = 0
 	local function applyField(index)
@@ -101,7 +109,18 @@ do
 				}
 			end
 			if zone == "Dungeon" then
-				TweenService:Create(Lighting, TweenInfo.new(0.8), DAY):Play()
+				local visual = DUNGEON_VISUALS[player:GetAttribute("DungeonVisual") or ""]
+				local look = DAY
+				if visual then
+					look = {}
+					for key, value in pairs(DAY) do look[key] = value end
+					for key, value in pairs(visual.Lighting) do look[key] = value end
+				end
+				TweenService:Create(Lighting, TweenInfo.new(visual and 2 or 0.8), look):Play()
+				local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
+				if atmosphere and dusk and dusk.Atmosphere then
+					TweenService:Create(atmosphere, TweenInfo.new(2), visual and visual.Atmosphere or dusk.Atmosphere):Play()
+				end
 				fieldIndex = 0
 			end
 			if grade then grade.Enabled = false end
@@ -109,6 +128,7 @@ do
 		end
 	end
 	player:GetAttributeChangedSignal("Zone"):Connect(apply)
+	player:GetAttributeChangedSignal("DungeonVisual"):Connect(apply)
 	task.defer(apply)
 	-- 필드 안에서는 지금 서 있는 구역을 보고 하늘을 바꾼다
 	task.spawn(function()

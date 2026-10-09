@@ -164,14 +164,18 @@ Config.Daily = {
 }
 
 -- 던전마다 확률로 붙는 변이: 위험이 커지면 보상도 커진다
-Config.Dungeon.MutatorChance = 0.65
+Config.Dungeon.MutatorChance = 0.9 -- 거의 매번 변이가 붙는다 (Visual = 화면 분위기까지 확 바뀐다)
 Config.Dungeon.Mutators = {
-	Order = { "Giant", "Swift", "Swarm", "Golden", "Furious" },
+	Order = { "Giant", "Swift", "Swarm", "Golden", "Furious", "Dark", "Fog", "Blood", "Elite" },
 	Giant = { Name = "거대화", Icon = "🗿", Desc = "몬스터 체력 x1.6, 보상 x1.5", HealthMult = 1.6, GoldMult = 1.5 },
 	Swift = { Name = "신속", Icon = "💨", Desc = "몬스터 이동/공격이 빠름, 보상 x1.3", SpeedMult = 1.5, IntervalMult = 0.7, GoldMult = 1.3 },
 	Swarm = { Name = "떼거지", Icon = "🐀", Desc = "몬스터 수 x1.6 (체력 x0.7), 보상 x1.4", CountMult = 1.6, HealthMult = 0.7, GoldMult = 1.4 },
-	Golden = { Name = "황금의 날", Icon = "💰", Desc = "골드/경험치 x2, 몬스터 체력 x1.2", HealthMult = 1.2, GoldMult = 2 },
-	Furious = { Name = "광폭", Icon = "😡", Desc = "몬스터 공격력 x1.5, 보상 x1.5", DamageMult = 1.5, GoldMult = 1.5 },
+	Golden = { Name = "황금의 날", Icon = "💰", Desc = "골드/경험치 x2, 몬스터 체력 x1.2", HealthMult = 1.2, GoldMult = 2, Visual = "Gold" },
+	Furious = { Name = "광폭", Icon = "😡", Desc = "몬스터 공격력 x1.5, 보상 x1.5", DamageMult = 1.5, GoldMult = 1.5, Visual = "Blood" },
+	Dark = { Name = "칠흑", Icon = "🌑", Desc = "화면이 어두워져요 (몬스터 눈빛을 보고 싸워요), 몬스터 체력 x1.15, 보상 x1.6", HealthMult = 1.15, GoldMult = 1.6, Visual = "Dark" },
+	Fog = { Name = "짙은 안개", Icon = "🌫", Desc = "멀리가 안 보여요, 몬스터가 갑자기 튀어나와요 (이동 x1.2), 보상 x1.4", SpeedMult = 1.2, GoldMult = 1.4, Visual = "Fog" },
+	Blood = { Name = "핏빛 달", Icon = "🩸", Desc = "붉은 달이 떠요: 몬스터 이동 x1.25 · 공격력 x1.25, 보상 x1.5", SpeedMult = 1.25, DamageMult = 1.25, GoldMult = 1.5, Visual = "Blood" },
+	Elite = { Name = "정예의 날", Icon = "👑", Desc = "몬스터 수 x0.6, 체력 x2.0 · 공격력 x1.2, 보상 x1.7", CountMult = 0.6, HealthMult = 2.0, DamageMult = 1.2, GoldMult = 1.7, Visual = "Elite" },
 }
 
 ------------------------------------------------------------
