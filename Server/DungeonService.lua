@@ -2078,14 +2078,14 @@ local function surviveLoop(run)
 	run.PhaseEnd = nil
 
 	local waves = math.max(1, run.Type.Waves or 5)
-	local duration = math.max(60, waves * D.SurvivePerWave)
+	local duration = D.GetSurviveSeconds(waves)
 	local startedAt = os.clock()
 	run.SurviveEnd = startedAt + duration
 	run.Phase = "Wave"
 	run.TotalWaves = 0
 	run.Wave = 1
 	local nextSpawn = startedAt
-	local nextBonus = startedAt + 9 -- 첫 보너스는 일찍: 시작하자마자 "뭔가 터진다"
+	local nextBonus = startedAt + 8 -- 첫 보너스는 일찍: 시작하자마자 "뭔가 터진다"
 	local bonusCount = 0
 	local partyScale = 1 + 0.5 * (run.PartySize - 1)
 
@@ -2100,15 +2100,16 @@ local function surviveLoop(run)
 		run.Wave = 1 + math.floor(progress * waves)
 
 		if now >= nextSpawn then
-			local cap = math.floor((12 + 12 * progress) * partyScale)
+			local cap = math.floor((18 + 16 * progress) * partyScale)
 			if run.MonsterCount < cap then
 				run.SpawnPoints = nearSpawnPoints(run, 22, 75) or run.AllSpawns
 				local level = math.max(1, D.GetWaveMonsterLevel(run.Wave) + run.LevelBonus)
-				for _ = 1, math.random(2, 3) do
+				local burst = (now - startedAt < 1) and 7 or math.random(3, 4) -- 시작하자마자 우르르
+				for _ = 1, burst do
 					spawnMonster(run, level)
 				end
 			end
-			nextSpawn = now + (1.6 - 0.8 * progress) / (run.PenCount or 1)
+			nextSpawn = now + (1.1 - 0.6 * progress) / (run.PenCount or 1)
 		end
 
 		if now >= nextBonus then
