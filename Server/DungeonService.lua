@@ -2049,46 +2049,14 @@ local function drillLoop(run)
 	end
 	-- ④ NEAR MISS (각본): 눈에 잘 띄는 경고 레이저 -> 큰 미사일 -> 가까워지면 시간 정지 -> Q
 	if alive() then
-		show("⚡", "④ 미사일이 날아와요!", "붉은 레이저가 나를 조준해요! 미사일이 가까워지면 시간이 멈추니까, 그때 Q 대시로 피해보세요", 5)
-		task.wait(1.0)
+		show("⚡", "④ 미사일이 날아와요!", "표적이 큰 붉은 미사일을 쏴요! 가까워지면 시간이 멈추니까, 그때 Q 대시로 피해보세요", 5)
+		task.wait(2.0)
 		local root = getAliveParts(member)
 		if root and run.Monsters[part] == data then
 			local origin = part.Position + Vector3.new(0, 4, 0)
 			local aimAt = root.Position
 			local aim = Vector3.new(aimAt.X - origin.X, 0, aimAt.Z - origin.Z)
 			local direction = aim.Magnitude > 1 and aim.Unit or Vector3.new(0, 0, 1)
-			-- 경고 레이저: 표적에서 나를 향해 길게 뻗는 붉은 선 (발사 직전 2초 동안 깜빡인다)
-			local laserLength = 80
-			local laser = Instance.new("Part")
-			laser.Anchored = true
-			laser.CanCollide = false
-			laser.CanQuery = false
-			laser.Material = Enum.Material.Neon
-			laser.Color = Color3.fromRGB(255, 40, 40)
-			laser.Transparency = 0.3
-			laser.Size = Vector3.new(0.7, 0.7, laserLength)
-			laser.CFrame = CFrame.lookAt(origin + direction * (laserLength / 2), origin + direction * laserLength)
-			laser.Parent = run.Folder
-			local laserGui = Instance.new("BillboardGui")
-			laserGui.Size = UDim2.new(0, 160, 0, 40)
-			laserGui.StudsOffset = Vector3.new(0, 3, 0)
-			laserGui.AlwaysOnTop = true
-			laserGui.Parent = laser
-			local laserText = Instance.new("TextLabel")
-			laserText.Size = UDim2.new(1, 0, 1, 0)
-			laserText.BackgroundTransparency = 1
-			laserText.Font = Enum.Font.GothamBlack
-			laserText.TextScaled = true
-			laserText.TextColor3 = Color3.fromRGB(255, 90, 90)
-			laserText.TextStrokeTransparency = 0
-			laserText.Text = "⚠ 레이저 조준!"
-			laserText.Parent = laserGui
-			for flash = 1, 8 do
-				laser.Transparency = flash % 2 == 0 and 0.15 or 0.6
-				task.wait(0.25)
-			end
-			laser:Destroy()
-
 			local speed = 18
 			fireProjectile(run, origin, direction, speed, 0, 6, Color3.fromRGB(255, 70, 70), "Orb") -- 큰 붉은 구체 (피해 0: 맞아도 아프지 않다)
 			local missile = run.Projectiles[#run.Projectiles]
@@ -2150,10 +2118,90 @@ local function drillLoop(run)
 			missile.Expire = 0
 		end
 	end
+	-- ④-b 레이저 (각본): 표적이 나를 향해 레이저를 조준한다 -> 발사 직전에 시간 정지 -> Q 대시로 선 밖으로 -> 레이저 발사 (선에서 벗어난 채 스치면 NEAR MISS)
+	if alive() then
+		show("🔴", "⑤ 이번엔 레이저예요!", "표적이 붉은 레이저로 나를 조준해요. 발사 직전에 시간이 멈추면 Q 대시로 레이저 선 밖으로 빠져나가세요!", 5)
+		task.wait(2.0)
+		local root = getAliveParts(member)
+		if root and run.Monsters[part] == data then
+			local origin = part.Position + Vector3.new(0, 4, 0)
+			local aim = Vector3.new(root.Position.X - origin.X, 0, root.Position.Z - origin.Z)
+			local direction = aim.Magnitude > 1 and aim.Unit or Vector3.new(0, 0, 1)
+			local length = 90
+			local mid = origin + direction * (length / 2)
+			local function beamPart(thickness, color, transparency)
+				local beam = Instance.new("Part")
+				beam.Anchored = true
+				beam.CanCollide = false
+				beam.CanQuery = false
+				beam.CanTouch = false
+				beam.Material = Enum.Material.Neon
+				beam.Color = color
+				beam.Transparency = transparency
+				beam.Size = Vector3.new(thickness, thickness, length)
+				beam.CFrame = CFrame.lookAt(mid, origin + direction * length)
+				beam.Parent = run.Folder
+				return beam
+			end
+			local warnBeam = beamPart(0.8, Color3.fromRGB(255, 50, 50), 0.35) -- 가는 조준선
+			local warnGui = Instance.new("BillboardGui")
+			warnGui.Size = UDim2.new(0, 180, 0, 40)
+			warnGui.StudsOffset = Vector3.new(0, 3, 0)
+			warnGui.AlwaysOnTop = true
+			warnGui.Parent = warnBeam
+			local warnText = Instance.new("TextLabel")
+			warnText.Size = UDim2.new(1, 0, 1, 0)
+			warnText.BackgroundTransparency = 1
+			warnText.Font = Enum.Font.GothamBlack
+			warnText.TextScaled = true
+			warnText.TextColor3 = Color3.fromRGB(255, 90, 90)
+			warnText.TextStrokeTransparency = 0
+			warnText.Text = "⚠ 레이저 조준!"
+			warnText.Parent = warnGui
+			for flash = 1, 6 do -- 1.5초 동안 깜빡이며 조준
+				warnBeam.Transparency = flash % 2 == 0 and 0.15 or 0.6
+				task.wait(0.25)
+			end
+			-- 시간 정지: 발사 직전에 멈춘다 (굵게 변한 경고선)
+			warnBeam.Size = Vector3.new(2.2, 2.2, length)
+			warnBeam.Transparency = 0.25
+			Remotes.Tutorial:FireClient(member, "Freeze", true)
+			show("Q", "⏸ 지금이에요! 레이저 선 밖으로 Q 대시!", "레이저가 곧 발사돼요! 선에서 옆으로 Q 대시를 눌러 빠져나가세요", 40)
+			local missAt = member:GetAttribute("NearMissUntil") or 0
+			wait(25, dashing)
+			Remotes.Tutorial:FireClient(member, "Freeze", false)
+			warnBeam:Destroy()
+			task.wait(0.35)
+			-- 발사: 굵은 레이저가 순간 번쩍인다
+			local fired = beamPart(7, Color3.fromRGB(255, 80, 60), 0.05)
+			local core = beamPart(2.5, Color3.fromRGB(255, 240, 200), 0)
+			TweenService:Create(fired, TweenInfo.new(0.6), { Transparency = 1, Size = Vector3.new(1, 1, length) }):Play()
+			TweenService:Create(core, TweenInfo.new(0.5), { Transparency = 1 }):Play()
+			Effects.Burst(origin + direction * 8, Color3.fromRGB(255, 120, 70), 50)
+			game:GetService("Debris"):AddItem(fired, 1)
+			game:GetService("Debris"):AddItem(core, 1)
+			local r = getAliveParts(member)
+			if r then
+				-- 선에서 얼마나 떨어졌나 (발사 순간 선과의 수직 거리)
+				local rel = Vector3.new(r.Position.X - origin.X, 0, r.Position.Z - origin.Z)
+				local along = rel:Dot(direction)
+				local side = (rel - direction * along).Magnitude
+				if side > 4 and side <= 22 then
+					Dungeon.AwardNearMiss(run, member, r) -- 선 밖으로 빠져나가며 스침
+				end
+			end
+			task.wait(1.2)
+			if (member:GetAttribute("NearMissUntil") or 0) <= missAt and alive() then
+				local r2 = getAliveParts(member)
+				if r2 then Dungeon.AwardNearMiss(run, member, r2) end -- 놓쳤어도 한 번은 보여준다
+			end
+			ok("레이저도 이렇게 피해요! 선 밖으로 빠져나가면 NEAR MISS")
+		end
+	end
 	-- ④ 궁극기
 	if alive() then
 		member:SetAttribute("UltCharge", Config.Skills.Ult.Cost)
-		show("V", "④ 궁극기 데드아이!", "게이지가 가득 찼어요! V 키를 눌러 표적을 난사해보세요 (사용 중에는 피격 무적)", 40)
+		show("V", "⑥ 궁극기 데드아이!", "게이지가 가득 찼어요! V 키를 눌러 표적을 난사해보세요 (사용 중에는 피격 무적)", 40)
 		if wait(40, function() return member:GetAttribute("DeadeyeActive") == true end) then
 			task.wait(2.5)
 			ok("멋져요! 이제 진짜 던전이에요")
