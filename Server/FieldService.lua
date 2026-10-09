@@ -2345,6 +2345,22 @@ end
 local function doomWave(player, zone)
 	local root, humanoid = getAliveParts(player)
 	if not root then return end
+	-- 끌려가기 직전: 데드아이(궁극기)를 100% 채워 주고 한번 써볼 기회를 준다 (주변에 몬스터가 있을 때 V!)
+	player:SetAttribute("UltCharge", Config.Skills.Ult.Cost)
+	Remotes.Tutorial:FireClient(player, "Prompt", { Key = "V", Title = "궁극기 데드아이!", Text = "게이지가 가득 찼어요! V 키를 눌러 써보세요", Duration = 9 })
+	notify(player, "⚠ 불길한 기운이 짙어진다... 그 전에 V 키로 궁극기를 써보세요!")
+	do
+		local waited, usedAt = 0, nil
+		while waited < 9 do
+			task.wait(0.25)
+			waited += 0.25
+			if player:GetAttribute("DeadeyeActive") and not usedAt then usedAt = waited end
+			if usedAt and waited - usedAt >= 3.5 then break end
+			if not getAliveParts(player) then return end
+		end
+	end
+	root, humanoid = getAliveParts(player)
+	if not root or humanoid.Health <= 0 then return end
 	player:SetAttribute("InDoomArena", true) -- 납치 연출로 높이 올라가도 "필드 밖으로 튕김" / 구역 판별에 걸리지 않게 처음부터 켠다
 	notify(player, "⚠⚠ 압도적인 기운... 무언가가 당신을 부른다!!")
 	player:SetAttribute("ShakeStrength", 0.9)

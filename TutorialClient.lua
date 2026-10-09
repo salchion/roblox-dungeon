@@ -230,7 +230,8 @@ local highlightToken = 0
 local spot = {}
 do
 	local function dim(name)
-		return create("TextButton", { Name = name, Text = "", AutoButtonColor = false, Active = true, BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.4,
+		-- 클릭을 막지 않는다 (위치가 조금 어긋나도 게임 조작이 막히지 않게): 눈으로만 유도
+		return create("Frame", { Name = name, Active = false, BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.45,
 			BorderSizePixel = 0, ZIndex = 80, Visible = false }, gui)
 	end
 	spot.Top, spot.Bottom, spot.Left, spot.Right = dim("SpotTop"), dim("SpotBottom"), dim("SpotLeft"), dim("SpotRight")
@@ -243,12 +244,22 @@ do
 	create("UICorner", { CornerRadius = UDim.new(0, 10) }, spot.Arrow)
 end
 local function spotHide()
-	for _, part in pairs(spot) do part.Visible = false end
+	for key, part in pairs(spot) do
+		if key ~= "Corr" then part.Visible = false end
+	end
 end
 local function spotShow(target, text)
 	local scale = (gui:FindFirstChildOfClass("UIScale") and gui:FindFirstChildOfClass("UIScale").Scale) or 1
 	local pad = 8
-	local position = target.AbsolutePosition / scale - Vector2.new(pad, pad)
+	-- 화면 좌표가 UI 마다 조금씩 어긋나는 경우(상단 바 / 스케일)를 위해 실제로 놓인 고리 위치를 보고 보정한다
+	spot.Corr = spot.Corr or Vector2.zero
+	if spot.Ring.Visible then
+		local error = (target.AbsolutePosition - Vector2.new(pad, pad)) - spot.Ring.AbsolutePosition
+		if error.Magnitude > 1 and error.Magnitude < 400 then
+			spot.Corr += error / scale
+		end
+	end
+	local position = target.AbsolutePosition / scale - Vector2.new(pad, pad) + spot.Corr
 	local size = target.AbsoluteSize / scale + Vector2.new(pad * 2, pad * 2)
 	local x0, y0, x1, y1 = position.X, position.Y, position.X + size.X, position.Y + size.Y
 	spot.Top.Position, spot.Top.Size = UDim2.new(0, 0, 0, 0), UDim2.new(1, 0, 0, y0)
@@ -265,7 +276,9 @@ local function spotShow(target, text)
 		spot.Arrow.Position = UDim2.new(0, math.max(8, x0 - 40), 0, y1 + 12)
 		spot.Arrow.Text = "▲ " .. text
 	end
-	for _, part in pairs(spot) do part.Visible = true end
+	for key, part in pairs(spot) do
+		if key ~= "Corr" then part.Visible = true end
+	end
 end
 local function runHighlight(kind)
 	highlightToken += 1
@@ -306,7 +319,38 @@ local function runHighlight(kind)
 	end)
 end
 
+-- 키 안내 카드: 키 모양 큰 글자 + 설명 (잠깐 떠 있다가 사라진다)
+local activePrompt = nil
+local function showPrompt(data)
+	if activePrompt then activePrompt:Destroy() end
+	local card = create("Frame", { Size = UDim2.new(0, 460, 0, 110), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.66, 0),
+		BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.05, BorderSizePixel = 0, ZIndex = 70 }, gui)
+	activePrompt = card
+	rounded(card, 16)
+	local cardStroke = create("UIStroke", { Color = Color3.fromRGB(255, 225, 110), Thickness = 4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
+	TweenService:Create(cardStroke, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 8 }):Play()
+	local keycap = create("Frame", { Size = UDim2.new(0, 78, 0, 78), Position = UDim2.new(0, 16, 0.5, -39), BackgroundColor3 = Color3.fromRGB(245, 245, 250), BorderSizePixel = 0, ZIndex = 71 }, card)
+	rounded(keycap, 12)
+	label({ Size = UDim2.new(1, 0, 1, 0), Text = data.Key or "?", TextSize = 52, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 34, 50), TextStrokeTransparency = 1, ZIndex = 72 }, keycap)
+	label({ Size = UDim2.new(1, -120, 0, 34), Position = UDim2.new(0, 108, 0, 12), Text = data.Title or "", TextSize = 24, Font = Enum.Font.GothamBlack,
+		TextColor3 = Color3.fromRGB(255, 225, 110), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 71 }, card)
+	label({ Size = UDim2.new(1, -120, 0, 52), Position = UDim2.new(0, 108, 0, 46), Text = data.Text or "", TextSize = 17, Font = Enum.Font.GothamBold, TextWrapped = true,
+		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 71 }, card)
+	task.delay(data.Duration or 7, function()
+		if card.Parent then
+			TweenService:Create(card, TweenInfo.new(0.4), { BackgroundTransparency = 1 }):Play()
+			task.wait(0.4)
+			card:Destroy()
+		end
+		if activePrompt == card then activePrompt = nil end
+	end)
+end
+
 Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
+	if action == "Prompt" then
+		showPrompt(data)
+		return
+	end
 	if action == "Step" then
 		runHighlight(data.Highlight)
 	elseif action ~= "Cinema" and action ~= "Waypoint" and action ~= "WaypointClear" then
@@ -316,6 +360,7 @@ Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 		cinemaPlay(data)
 		return
 	end
+	if action == "Prompt" then return end -- 키 안내 카드는 위쪽 핸들러가 처리한다 (미션 표시는 건드리지 않는다)
 	if action == "Waypoint" then
 		placeWaypoint(data.Pos, data.Name)
 		return
