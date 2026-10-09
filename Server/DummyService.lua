@@ -259,6 +259,53 @@ function Dummy.IdleHit(player)
 	end
 end
 
+-- 허수아비 머리 위 DPS 표시: 최근 5초 동안 쏜 피해의 평균 + 지금까지의 최고 기록 (쏘는 사람마다 따로 계산, 마지막으로 쏜 사람 기준으로 보여 준다)
+local dpsLog = setmetatable({}, { __mode = "k" })  -- [player] = { Hits = { { t, amount } }, Best = 0 }
+local function showDps(model, data, player, damage)
+	local now = os.clock()
+	local log = dpsLog[player]
+	if not log then
+		log = { Hits = {}, Best = 0 }
+		dpsLog[player] = log
+	end
+	table.insert(log.Hits, { now, damage })
+	local total, first = 0, now
+	for i = #log.Hits, 1, -1 do
+		local hit = log.Hits[i]
+		if now - hit[1] > 5 then
+			table.remove(log.Hits, i)
+		else
+			total += hit[2]
+			first = math.min(first, hit[1])
+		end
+	end
+	local dps = total / math.max(1.5, now - first)
+	if dps > log.Best then log.Best = dps end
+	local root = model.PrimaryPart
+	if not root then return end
+	if not data.DpsLabel or not data.DpsLabel.Parent then
+		local gui = Instance.new("BillboardGui")
+		gui.Name = "DpsGui"
+		gui.Size = UDim2.new(0, 260, 0, 60)
+		gui.StudsOffset = Vector3.new(0, 13, 0)
+		gui.AlwaysOnTop = true
+		gui.MaxDistance = 150
+		gui.Parent = root
+		local label = Instance.new("TextLabel")
+		label.Size = UDim2.new(1, 0, 1, 0)
+		label.BackgroundTransparency = 1
+		label.Font = Enum.Font.GothamBlack
+		label.TextScaled = true
+		label.RichText = true
+		label.TextColor3 = Color3.fromRGB(255, 240, 200)
+		label.TextStrokeTransparency = 0.3
+		label.Parent = gui
+		data.DpsLabel = label
+	end
+	local function fmt(n) return (tostring(math.floor(n)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")) end
+	data.DpsLabel.Text = string.format("%s\n<font color='#ffd966'>DPS %s</font>  <font size='14' color='#aab4d8'>최고 %s</font>", player.DisplayName, fmt(dps), fmt(log.Best))
+end
+
 local goldRemainder = {} -- [player] = 아직 지급하지 못한 소수점 골드
 
 function Dummy.Shoot(player, origin, direction)
@@ -286,8 +333,14 @@ function Dummy.Shoot(player, origin, direction)
 		return result.Position
 	end
 
-	-- 직접 쏴서는 골드를 받지 않는다 (골드는 방치 수입 / 필드 / 던전에서): 연습장은 연습과 방치용이다
+	-- 직접 쏴서는 골드를 받지 않는다 (골드는 방치 수입 / 필드 / 던전에서): 허수아비는 대미지 / DPS 를 확인하는 연습용이다
 	Quest.Add(player, "DummyHits", 1)
+	local okDungeon, Dungeon = pcall(function() return require(script.Parent:WaitForChild("DungeonService")) end)
+	if okDungeon then
+		local damage, isCrit = Dungeon.ComputeDamage(player)
+		Effects.DamageNumber(result.Position, damage, isCrit)
+		showDps(model, data, player, damage)
+	end
 	return result.Position
 end
 
