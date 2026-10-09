@@ -136,9 +136,14 @@ local function onCharacterAdded(player, character)
 	if player:GetAttribute("DiedInField") then
 		player:SetAttribute("DiedInField", nil)
 		player:SetAttribute("Zone", "Lobby")
-		if player:GetAttribute("TutorialDoomed") then
+		local doomed = player:GetAttribute("TutorialDoomed")
+		if doomed then
 			player:SetAttribute("TutorialDoomed", nil)
-			Remotes.Notify:FireClient(player, "💀 아직 너무 약해요! 마을에서 강해져서 돌아오세요 — 훈련(성장)으로 영구 강화, 던전에서 장비 획득!")
+			if doomed == "Retry" then
+				Remotes.Notify:FireClient(player, "💀 쓰러졌어요! 이번엔 일회성 힘이 깃들었어요 (군주에게 주는 피해 크게 증가 + 궁극기 가득) — 다시 군주에게 도전해요!")
+			else
+				Remotes.Notify:FireClient(player, "💀 최후의 군주에게 쓰러졌어요… 하지만 전리품은 남았어요!")
+			end
 		else
 			Remotes.Notify:FireClient(player, "💀 쓰러져서 마을로 돌아왔어요. 장비를 정비하고 다시 도전하세요!")
 		end
@@ -147,10 +152,16 @@ local function onCharacterAdded(player, character)
 	humanoid.Died:Connect(function()
 		if player:GetAttribute("Zone") == "Field" then
 			player:SetAttribute("DiedInField", true)
-			if player:GetAttribute("TutorialDoom") then
-				player:SetAttribute("TutorialDoomed", true)
+			if player:GetAttribute("TutorialDoom") and not player:GetAttribute("InDoomArena") then
+				-- 지역 군주에게 쓰러짐: 미션은 끝나지 않는다. 일회성 힘을 받아 다시 군주에게 도전 (군주를 잡아야 최후의 군주에게 끌려간다)
+				player:SetAttribute("TutorialDoomed", "Retry")
+				player:SetAttribute("TutorialRetryBuff", true)
+			else
+				if player:GetAttribute("TutorialDoom") then
+					player:SetAttribute("TutorialDoomed", "Final") -- 최후의 군주에게 쓰러짐 (미션 완료)
+				end
+				Quest.Add(player, "FieldDeaths", 1)
 			end
-			Quest.Add(player, "FieldDeaths", 1)
 		end
 	end)
 
@@ -451,8 +462,8 @@ Remotes.Enhance.OnServerEvent:Connect(function(player, count)
 	lastEnhance[player] = now
 
 	count = typeof(count) == "number" and math.clamp(math.floor(count), 1, 50) or 1
-	if player:GetAttribute("TutorialActive") then
-		count = 1 -- 튜토리얼 중에는 한 번씩만 (x10 / 최대 강화는 튜토리얼이 끝난 뒤)
+	if player:GetAttribute("TutorialActive") and player:GetAttribute("TutorialEnhanceCost") == nil then
+		count = 1 -- 처음 강화 미션에서는 한 번씩만 (무기 진화 미션부터는 x10 / 최대 강화도 쓸 수 있다)
 	end
 	if count == 1 then
 		local ok, message = Weapon.Enhance(player)

@@ -513,9 +513,9 @@ do
 		local glow = create("Frame", { Size = UDim2.new(0, 60, 0, 60), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = Color3.fromRGB(255, 225, 120), BackgroundTransparency = 0.3, BorderSizePixel = 0, ZIndex = 2 }, center)
 		create("UICorner", { CornerRadius = UDim.new(1, 0) }, glow)
 		local rays = {}
-		for i = 1, 10 do
+		for i = 0, 4 do -- 가운데를 지나는 5줄 = 10갈래 빛줄기 (각 줄은 자기 중심을 기준으로 회전해서 한 점에서 퍼진다)
 			local ray = create("Frame", {
-				Size = UDim2.new(0, 14, 0, 0), AnchorPoint = Vector2.new(0.5, 1), BackgroundColor3 = Color3.fromRGB(255, 235, 150),
+				Size = UDim2.new(0, 14, 0, 0), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = Color3.fromRGB(255, 235, 150),
 				BackgroundTransparency = 0.35, BorderSizePixel = 0, Rotation = i * 36, ZIndex = 2,
 			}, center)
 			table.insert(rays, ray)
@@ -532,7 +532,7 @@ do
 		SoundBank.Play(workspace, "Enh_Evolve")
 		TweenService:Create(glow, TweenInfo.new(1.1, Enum.EasingStyle.Quad), { Size = UDim2.new(0, 360, 0, 360), BackgroundTransparency = 0.6 }):Play()
 		for _, ray in ipairs(rays) do
-			TweenService:Create(ray, TweenInfo.new(1.1, Enum.EasingStyle.Quad), { Size = UDim2.new(0, 14, 0, 520) }):Play()
+			TweenService:Create(ray, TweenInfo.new(1.1, Enum.EasingStyle.Quad), { Size = UDim2.new(0, 14, 0, 1040) }):Play()
 		end
 		shake(0.35)
 

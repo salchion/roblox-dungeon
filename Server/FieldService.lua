@@ -31,7 +31,6 @@ local Inventory = require(script.Parent:WaitForChild("InventoryService"))
 local F = Config.Field
 local TOP = 0.05
 local routeBeat = {} -- [player] = 튜토리얼 첫 구역 길목에서 이미 터진 사건 번호
-local doomFail = {} -- [player] = true: 군주를 못 잡고 쓰러지기 직전에 끌려간 경우 (대사만 다르다)
 local doomReady = {} -- [player] = 첫 구역 군주를 쓰러뜨린 시각 (튜토리얼 소환 결투의 시작 신호)
 
 local Field = {}
@@ -1112,7 +1111,9 @@ local function spawnMonster(zone, kind, at, ambush)
 			position = Vector3.new(at.X, floorAt(at.X) + stats.Size / 2, at.Z)
 		end
 	else
-		local spawnX = freeX(math.floor(x0 + F.CampSafe + 40), math.floor(x1 - 25))
+		-- 필드에 나서자마자 바로 싸움이 시작되도록: 몬스터의 절반 가까이는 캠프 안전지대 바로 바깥(입구 근처)에 모여 있다
+		local nearEntrance = math.random() < 0.45
+		local spawnX = nearEntrance and freeX(math.floor(x0 + F.CampSafe + 12), math.floor(x0 + F.CampSafe + 110)) or freeX(math.floor(x0 + F.CampSafe + 40), math.floor(x1 - 25))
 		position = Vector3.new(spawnX, floorAt(spawnX) + stats.Size / 2, math.random(-F.Width / 2 + 25, F.Width / 2 - 25))
 		if at then -- 습격: 플레이어 주변에 바로 나타난다
 			position = Vector3.new(at.X, floorAt(at.X) + stats.Size / 2, at.Z)
@@ -1433,6 +1434,7 @@ end
 local function killMonster(player, part, data)
 	monsters[part] = nil
 	if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then
+		player:SetAttribute("TutorialRetryBuff", nil) -- 일회성 힘은 군주를 쓰러뜨리면 사라진다
 		doomReady[player] = os.clock() -- 튜토리얼: 첫 구역 군주를 쓰러뜨리면 잠시 뒤 불길한 기운이 덮친다
 	end
 	Effects.Burst(part.Position, part.Color, data.Kind == "Boss" and 80 or 22)
@@ -1490,7 +1492,7 @@ function Field.HitPart(player, part, damage)
 	if not data or not part.Parent then return false end
 	if not canHitZone(player, part.Position.X) then return false end
 	if data.ExposedUntil and os.clock() < data.ExposedUntil then damage = math.floor(damage * 3) end -- 약점 노출 중 x3
-	if data.BossLike and data.Zone == 1 and player:GetAttribute("TutorialDoom") then damage = damage * 4 end
+	if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then damage = damage * (player:GetAttribute("TutorialRetryBuff") and 8 or 4) end
 	if data.Invincible then damage = 1 end
 	data.Health -= damage
 	if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
@@ -1584,8 +1586,8 @@ function Field.Shoot(player, origin, direction)
 			isCrit = true
 		end
 		-- 첫 구역 군주는 튜토리얼 중에는 훨씬 약하게 (군주를 쓰러뜨려야 다음 장면이 이어진다)
-		if data.BossLike and data.Zone == 1 and player:GetAttribute("TutorialDoom") then
-			damage = damage * 4
+		if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then
+			damage = damage * (player:GetAttribute("TutorialRetryBuff") and 8 or 4) -- 쓰러졌다 다시 도전하면 일회성 힘 (x8)
 		end
 		-- 로켓 런처 / 플라즈마 캐논: 맞은 곳 주변 적에게도 피해
 		local splash = Config.GetPlayerWeapon(player).Splash
@@ -2694,6 +2696,7 @@ local function updateBossFight()
 	for _, player in ipairs(Players:GetPlayers()) do
 		local fighting = false
 		local bossZone
+		local bossKind
 		if player:GetAttribute("Zone") == "Field" then
 			local root = getAliveParts(player)
 			if root then
@@ -2701,13 +2704,14 @@ local function updateBossFight()
 					if data.BossLike and not data.Static and data.Aggro and part.Parent and (part.Position - root.Position).Magnitude < 150 then
 						fighting = true
 						bossZone = data.Zone
-						break
+						bossKind = data.Kind
+						if data.Kind == "Boss" then break end -- 지역 군주가 가까이 있으면 군주를 기준으로 (침공 사령관보다 우선)
 					end
 				end
 			end
 		end
 		-- 튜토리얼 첫 구역 군주전: 싸우는 도중에 약점을 직접 맞혀 보게 한다 (맞힐 때까지 힌트를 반복하고, 맞히면 "노출" 효과를 알려준다)
-		if fighting and bossZone == 1 and player:GetAttribute("TutorialDoom") then
+		if fighting and bossKind == "Boss" and bossZone == 1 and player:GetAttribute("TutorialDoom") then
 			local lesson = weakLesson[player]
 			if not lesson then
 				lesson = { Base = player:GetAttribute("WeakHitTick") or 0, NextHint = os.clock() + 6 }
@@ -2728,8 +2732,15 @@ local function updateBossFight()
 		end
 		if player:GetAttribute("BossFight") ~= fighting then
 			player:SetAttribute("BossFight", fighting)
-			if fighting and bossZone and not player:GetAttribute("TutorialActive") then
-				-- 군주를 만나면: 전투력이 모자라면 무기 강화를 권하고(골드 사용처), 처음이면 약점 구슬 사용법을 알려준다
+			if fighting and bossKind == "Boss" and player:GetAttribute("TutorialRetryBuff") then
+				-- 쓰러졌다가 다시 도전: 일회성 힘 (군주에게 주는 피해 x8 + 궁극기 가득)
+				player:SetAttribute("UltCharge", Config.Skills.Ult.Cost)
+				Remotes.Tutorial:FireClient(player, "Prompt", { Key = "💪", Title = "일회성 힘이 깃들었어요!", Text = "군주에게 주는 피해가 크게 늘었고 궁극기가 가득 찼어요. V 키 데드아이와 노란 구슬 약점으로 이번엔 쓰러뜨려요!", Duration = 9 })
+			elseif fighting and bossKind == "Event" and not player:GetAttribute("TutorialActive") and not weakTipShown[player .. "_event"] then
+				weakTipShown[player] = weakTipShown[player]
+				Remotes.Tutorial:FireClient(player, "Prompt", { Key = "⚔", Title = "침공 사령관!", Text = "같이 싸운 사람 모두에게 전리품이 나와요. 멀리서 탄을 피하며 계속 쏘세요!", Duration = 7 })
+			elseif fighting and bossKind == "Boss" and bossZone and not player:GetAttribute("TutorialActive") then
+				-- 지역 군주를 만나면: 전투력이 모자라면 무기 강화를 권하고(골드 사용처), 처음이면 약점 구슬 사용법을 알려준다
 				local recommended = F.BossPower[bossZone] or 0
 				local power = player:GetAttribute("Power") or 0
 				if power < recommended * 0.85 and os.clock() - (powerWarnedAt[player] or -999) > 90 then
@@ -2863,9 +2874,7 @@ local function doomWave(player, zone)
 	if not root then return end
 	player:SetAttribute("InDoomArena", true) -- 납치 연출로 높이 올라가도 "필드 밖으로 튕김" / 구역 판별에 걸리지 않게 처음부터 켠다
 	notify(player, "⚠⚠ 압도적인 기운... 무언가가 당신을 부른다!!")
-	local failed = doomFail[player]
-	doomFail[player] = nil
-	Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "최후의 군주", Text = failed and "...그 정도 힘으로 내 영토에 들어오다니. 내가 직접 상대해주마." or "...군주를 쓰러뜨리다니, 강하구나. 이제 내가 직접 상대해주마.", Duration = 5, Top = true })
+	Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "최후의 군주", Text = "...군주를 쓰러뜨리다니, 강하구나. 이제 내가 직접 상대해주마.", Duration = 5, Top = true })
 	player:SetAttribute("ShakeStrength", 0.9)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	local TweenService = game:GetService("TweenService")
@@ -3292,12 +3301,6 @@ local function updateDoom()
 			anyDoom = true -- 소환 결투 중에는 군주 / 연출을 건드리지 않는다
 		elseif player:GetAttribute("TutorialDoom") and player:GetAttribute("Zone") == "Field" then
 			local root, humanoid = getAliveParts(player)
-			if root and humanoid.Health < humanoid.MaxHealth * 0.3 and not doomReady[player] and not isSafe(root.Position) then
-				-- 군주를 못 잡고 쓰러지기 직전: 그대로 죽는 대신 최후의 군주가 직접 나선다 (같은 소환 결투로 이어진다)
-				doomFail[player] = true
-				doomReady[player] = os.clock() - 1
-				humanoid.Health = humanoid.MaxHealth
-			end
 			if root and not isSafe(root.Position) then
 				anyDoom = true
 				local state = doomTimers[player]

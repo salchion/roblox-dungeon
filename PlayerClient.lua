@@ -318,9 +318,14 @@ local hammer = makeLabel({
 	Text = "🔨", TextSize = 56, Visible = false, ZIndex = 9, Rotation = -50,
 }, enhancePanel)
 
+-- 튜토리얼 중에도 "무기 진화" 미션(TutorialEnhanceCost 가 켜진 동안)에는 x10 / 최대 강화를 쓸 수 있다 (하나씩 누르는 건 너무 번거롭다).
+-- 처음 강화 미션(무료 3번)에서만 하나씩 해 보게 잠근다.
+local function manyLocked()
+	return player:GetAttribute("TutorialActive") == true and player:GetAttribute("TutorialEnhanceCost") == nil
+end
 local function enhanceMany(count)
-	if player:GetAttribute("TutorialActive") then
-		toast("🔒 튜토리얼이 끝나면 x10 / 최대 강화를 쓸 수 있어요. 지금은 [강화하기]로 한 번씩!")
+	if manyLocked() then
+		toast("🔒 처음 강화는 [강화하기]로 직접 해 보세요! 곧 x10 / 최대 강화가 열려요.")
 		return
 	end
 	if E.EnhanceBusy then return end
@@ -338,7 +343,7 @@ local enhanceMax = makeButton({
 }, enhancePanel, function() enhanceMany(50) end)
 do
 	local function lockMany()
-		local locked = player:GetAttribute("TutorialActive") == true
+		local locked = manyLocked()
 		for _, button in ipairs({ enhanceTen, enhanceMax }) do
 			button.AutoButtonColor = not locked
 			button.BackgroundTransparency = locked and 0.6 or 0
@@ -348,6 +353,7 @@ do
 		enhanceMax.Text = locked and "🔒\n최대" or "최대\n강화"
 	end
 	player:GetAttributeChangedSignal("TutorialActive"):Connect(lockMany)
+	player:GetAttributeChangedSignal("TutorialEnhanceCost"):Connect(lockMany)
 	lockMany()
 end
 local enhanceButton = makeButton({
@@ -391,6 +397,26 @@ local enhanceButton = makeButton({
 end)
 create("UIStroke", { Color = Color3.fromRGB(190, 255, 190), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 2 }, enhanceButton)
 enhanceButton.ClipsDescendants = true
+-- 꾹 누르고 있으면 계속 강화된다 (0.45초 뒤부터 0.35초마다). 골드가 모자라거나 창을 닫으면 멈춘다.
+do
+	local holding = false
+	enhanceButton.MouseButton1Down:Connect(function()
+		holding = true
+		task.spawn(function()
+			task.wait(0.45)
+			while holding and enhancePanel.Visible and E.EnhanceAffordable do
+				if not E.EnhanceBusy then
+					E.EnhanceBusy = true
+					Remotes.Enhance:FireServer()
+					task.delay(0.35, function() E.EnhanceBusy = false end)
+				end
+				task.wait(0.1)
+			end
+		end)
+	end)
+	enhanceButton.MouseButton1Up:Connect(function() holding = false end)
+	enhanceButton.MouseLeave:Connect(function() holding = false end)
+end
 E.Shimmer = create("Frame", {
 	Size = UDim2.new(0, 36, 1.8, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(-0.2, 0, 0.5, 0), Rotation = 20,
 	BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.7, BorderSizePixel = 0, ZIndex = 3,

@@ -884,7 +884,7 @@ function Lobby.Build()
 		GachaPrompt = gachaPrompt,
 		WarpPrompt = warpPrompt,
 		RiftPrompt = riftPrompt,
-		DummyStart = Vector3.new(-100, TOP, 88), -- 허수아비 하나가 서는 자리
+		DummyStart = Vector3.new(-52, TOP, 90), -- 허수아비 하나가 서는 자리
 		RankBoardCFrame = CFrame.lookAt(Vector3.new(-52, TOP + 16.5, 100), Vector3.new(0, TOP + 16.5, 72)),
 	}
 end

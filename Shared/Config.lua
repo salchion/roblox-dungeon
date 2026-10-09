@@ -121,7 +121,8 @@ Config.Tutorial = {
 		-- EvolveToTier: 이 번째 무기(3 = 기관단총)가 될 때까지 필요한 강화 횟수를 미션이 시작될 때 계산해서 목표로 쓴다. {무기} = 그 무기 이름
 		{ Text = "💰 모은 골드로 무기를 강화해서 {무기}까지 진화시키세요! 무기가 한층 강해져서 필드가 쉬워져요", Stat = "Enhances", Goal = 10, EvolveToTier = 3, Target = "Anvil", TargetName = "모루",
 			Reward = { Tickets = 2, Xp = 150 } },
-		{ Text = "마지막! 메뉴(I) → 성장 탭에서 훈련을 시작하세요. 자리를 비워도 계속 강해져요 (던전 / 필드에서도 장비와 재화를 얻어요)", Stat = "Trains", Goal = 1, Highlight = "Menu",
+		{ Text = "💪 몸도 단련해요! 메뉴(I) → 성장 탭에서 훈련을 시작하세요. 자리를 비워도 시간이 지나면 저절로 강해져요", Stat = "Trains", Goal = 1, Highlight = "Menu", IntroDelay = 4,
+			Intro = { { Key = "💪", Title = "무기만으로는 부족해요", Text = "최후의 군주를 이길 힘을 키우려면 몸도 단련해야 해요. 훈련은 접속을 끄고 있어도 계속 진행돼요.", Duration = 8 } },
 			Reward = { Gold = 1000, Keys = 1, Tickets = 2, Xp = 300 } },
 	},
 }
