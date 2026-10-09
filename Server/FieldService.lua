@@ -35,9 +35,10 @@ local baffleXs = {}      -- 시선을 막는 "꺾임 벽"의 x 위치 (몬스터
 local baffleRects = {}   -- 꺾임 벽이 차지한 사각형 { X0, X1, Z0, Z1 } (몬스터 / 탄 / 사격이 벽을 통과하지 못하게 하는 용도)
 
 -- 걸을 수 있는 곳인가 (꺾임 벽 안쪽이 아닌 곳)
-local function walkableAt(x, z)
+local function walkableAt(x, z, pad)
+	pad = pad or 0 -- 덩치가 큰 몬스터(보스)는 몸 반지름만큼 벽에서 떨어져 있어야 한다
 	for _, rect in ipairs(baffleRects) do
-		if x >= rect.X0 - 1.5 and x <= rect.X1 + 1.5 and z >= rect.Z0 and z <= rect.Z1 then
+		if x >= rect.X0 - 1.5 - pad and x <= rect.X1 + 1.5 + pad and z >= rect.Z0 - pad and z <= rect.Z1 + pad then
 			return false
 		end
 	end
@@ -1674,9 +1675,12 @@ local function stepMonsters(dt)
 					local move = flatTarget - part.Position
 					if move.Magnitude > 0.1 then
 						local step = move.Unit * data.Stats.Speed * dt
-						if walkableAt(part.Position.X + step.X, part.Position.Z + step.Z) then
-							local newPos = part.Position + step
-							newPos = Vector3.new(newPos.X, floorAt(newPos.X) + data.Stats.Size / 2, newPos.Z)
+						local radius = data.Stats.Size / 2 + 2
+						local zx0, zx1 = zoneBounds(data.Zone)
+						local nx = math.clamp(part.Position.X + step.X, zx0 + F.CampSafe + radius, zx1 - radius - 4) -- 구역 끝 벽 / 옆 절벽에도 몸이 끼지 않게
+						local nz = math.clamp(part.Position.Z + step.Z, -F.Width / 2 + radius + 4, F.Width / 2 - radius - 4)
+						if walkableAt(nx, nz, radius) then
+							local newPos = Vector3.new(nx, floorAt(nx) + data.Stats.Size / 2, nz)
 							part.CFrame = CFrame.lookAt(newPos, Vector3.new(target.Position.X, newPos.Y, target.Position.Z)) -- 항상 플레이어를 바라본다
 						end
 					end
