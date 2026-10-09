@@ -692,6 +692,18 @@ function M.Update(ctx, part, data, dt, now)
 			move = direction * speed * dt
 		end
 	end
+	-- 박진감: 곧장 걸어오지 않고 좌우로 흔들리며 접근하고, 가까워지면 가끔 확 덮치는 돌진 가속
+	if (def.Move == "Approach" or def.Move == "Rush") and distance > 8 then
+		local sideways = Vector3.new(-direction.Z, 0, direction.X)
+		move += sideways * math.sin(now * 3.2 + data.Phase) * speed * 0.45 * dt
+		if distance < 45 and now >= (data.NextLunge or 0) then
+			data.LungeUntil = now + 0.5
+			data.NextLunge = now + 2.5 + math.random() * 2.5
+		end
+		if data.LungeUntil and now < data.LungeUntil then
+			move += direction * speed * 1.6 * dt
+		end
+	end
 	-- 벽 / 절벽은 지나가지 못한다 (막히면 그 방향으로는 움직이지 않는다)
 	if ctx.Walkable then
 		local nextPosition = position + move
@@ -709,6 +721,11 @@ function M.Update(ctx, part, data, dt, now)
 	position += move
 	if def.Move ~= "Hover" then
 		position = snapToGround(ctx, position, stats.Size)
+		-- 통통 튀며 다가온다 (걷는 느낌보다 훨씬 역동적): 종류마다 튀는 높이가 다르다
+		if def.Move ~= "Static" and def.Move ~= "Keep" then
+			local hop = (def.Shape == "Ball" and 0.5 or 0.22) * stats.Size
+			position += Vector3.new(0, math.abs(math.sin(now * 6 + data.Phase)) * hop, 0)
+		end
 	end
 	part.CFrame = CFrame.lookAt(position, position + direction)
 

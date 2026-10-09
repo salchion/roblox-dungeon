@@ -283,7 +283,7 @@ function Config.Monster.GetStats(level)
 	return {
 		Size = math.min(3 + (level - 1) * 0.8, 40),
 		MaxHealth = math.floor(40 * 1.22 ^ (level - 1)),
-		Speed = 10,
+		Speed = 12.5,
 		ShotDamage = 8 + level * 2,
 		ShotInterval = math.max(1.2, 2.6 - level * 0.05),
 		ShotSpeed = 45,

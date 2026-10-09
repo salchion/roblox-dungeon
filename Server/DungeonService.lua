@@ -942,6 +942,18 @@ end
 local function stepRun(run, dt)
 	local now = os.clock()
 
+	-- 시체 청소: 몬스터 표에 없는데 남은 몬스터 부품을 2초마다 지운다
+	if not run.NextOrphanCheck or now >= run.NextOrphanCheck then
+		run.NextOrphanCheck = now + 2
+		if run.MonstersFolder then
+			for _, child in ipairs(run.MonstersFolder:GetChildren()) do
+				if child:IsA("BasePart") and not run.Monsters[child] then
+					child:Destroy()
+				end
+			end
+		end
+	end
+
 	for part, data in pairs(run.Monsters) do
 		if data.IsBoss then
 			-- 보스: 천천히 다가오면서, 패턴을 하나 골라 끝까지 실행한 뒤 잠깐 쉬고 다음 패턴

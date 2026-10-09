@@ -1361,13 +1361,18 @@ local function updateMusic()
 	if zone == "Lobby" then
 		playMusic("Lobby")
 	elseif zone == "Field" then
-		playMusic(tracks.Field and "Field" or "Lobby")
+		if player:GetAttribute("BossFight") then
+			playMusic(tracks.Dungeon and "Dungeon" or (tracks.Field and "Field" or "Lobby")) -- 보스가 나를 노리면 던전 전투 곡으로 바뀐다
+		else
+			playMusic(tracks.Field and "Field" or "Lobby")
+		end
 	elseif dungeonState and dungeonState.Phase == "Boss" then
 		playMusic("Boss")
 	else
 		playMusic("Dungeon")
 	end
 end
+player:GetAttributeChangedSignal("BossFight"):Connect(function() updateMusic() end)
 
 local function refreshStats()
 	local picking = #perkOffer > 0

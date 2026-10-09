@@ -55,6 +55,71 @@ function Effects.MakeProjectile(origin, direction, size, color, style)
 	return part
 end
 
+-- 거대한 군주 외형(뿔 / 날개 / 꼬리 / 눈). 던전 보스와 필드 구역 보스가 같이 쓴다
+function Effects.DecorateBoss(part, size, glow)
+	local dark = part.Color:Lerp(Color3.new(0, 0, 0), 0.55)
+	part.Material = Enum.Material.Slate
+	part.Color = dark
+	local function piece(shape, sx, sy, sz, x, y, z, color, material, rx, ry, rz, transparency)
+		local p = Instance.new("Part")
+		p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.Massless = false, false, false, false, true
+		p.Shape = shape
+		p.Size = Vector3.new(math.max(0.1, sx), math.max(0.1, sy), math.max(0.1, sz))
+		p.Color = color
+		p.Material = material
+		p.Transparency = transparency or 0
+		p.CFrame = part.CFrame * CFrame.new(x, y, z) * CFrame.Angles(math.rad(rx or 0), math.rad(ry or 0), math.rad(rz or 0))
+		local weld = Instance.new("WeldConstraint")
+		weld.Part0 = part
+		weld.Part1 = p
+		weld.Parent = p
+		p.Parent = part
+		return p
+	end
+	local S = size
+	local Ball, Block = Enum.PartType.Ball, Enum.PartType.Block
+	local Neon, Metal, Slate = Enum.Material.Neon, Enum.Material.Metal, Enum.Material.Slate
+	local bone = Color3.fromRGB(215, 205, 185)
+	-- 눈 / 가슴 룬 / 이마의 보석
+	for _, side in ipairs({ -1, 1 }) do
+		piece(Ball, S * 0.13, S * 0.13, S * 0.13, side * S * 0.2, S * 0.18, -S * 0.45, Color3.fromRGB(255, 240, 120), Neon)
+		-- 뿔 (휘어진 두 마디)
+		piece(Block, S * 0.1, S * 0.42, S * 0.1, side * S * 0.28, S * 0.52, -S * 0.08, bone, Slate, 0, 0, side * -22)
+		piece(Block, S * 0.08, S * 0.3, S * 0.08, side * S * 0.42, S * 0.8, -S * 0.12, bone, Slate, -15, 0, side * -48)
+		-- 어깨 갑옷
+		piece(Ball, S * 0.34, S * 0.34, S * 0.34, side * S * 0.52, S * 0.2, 0, dark:Lerp(Color3.new(1, 1, 1), 0.12), Metal)
+		-- 날개 (뼈대 + 빛나는 막)
+		piece(Block, S * 1.0, S * 0.07, S * 0.09, side * S * 0.95, S * 0.52, S * 0.28, bone, Slate, 0, 0, side * 28)
+		piece(Block, S * 0.95, S * 0.04, S * 0.65, side * S * 0.92, S * 0.4, S * 0.4, glow, Neon, 0, 0, side * 28, 0.4)
+		piece(Block, S * 0.7, S * 0.04, S * 0.5, side * S * 0.78, S * 0.14, S * 0.62, glow, Neon, 0, 0, side * 20, 0.5)
+	end
+	piece(Ball, S * 0.24, S * 0.24, S * 0.24, 0, S * 0.02, -S * 0.5, glow, Neon)
+	piece(Ball, S * 0.12, S * 0.12, S * 0.12, 0, S * 0.36, -S * 0.42, Color3.fromRGB(255, 70, 90), Neon)
+	-- 등 가시
+	for i = 0, 4 do
+		piece(Block, S * 0.09, S * (0.34 - i * 0.04), S * 0.09, 0, S * (0.5 - i * 0.07), S * (0.05 + i * 0.12), bone, Slate, 25 + i * 8, 0, 0)
+	end
+	-- 꼬리 (뒤쪽으로 점점 가늘어지는 구슬 + 끝의 불꽃)
+	for i = 1, 4 do
+		piece(Ball, S * (0.32 - i * 0.05), S * (0.32 - i * 0.05), S * (0.32 - i * 0.05), 0, -S * 0.1 * i, S * (0.45 + i * 0.22), dark, Slate)
+	end
+	local tip = piece(Ball, S * 0.22, S * 0.22, S * 0.22, 0, -S * 0.5, S * 1.45, glow, Neon)
+	local fire = Instance.new("ParticleEmitter")
+	fire.Rate = 40
+	fire.Lifetime = NumberRange.new(0.4, 0.9)
+	fire.Speed = NumberRange.new(3, 8)
+	fire.SpreadAngle = Vector2.new(35, 35)
+	fire.LightEmission = 1
+	fire.Color = ColorSequence.new(glow, Color3.fromRGB(255, 240, 160))
+	fire.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, S * 0.12), NumberSequenceKeypoint.new(1, 0) })
+	fire.Parent = tip
+	local halo = Instance.new("PointLight")
+	halo.Range = S * 1.6
+	halo.Brightness = 2
+	halo.Color = glow
+	halo.Parent = part
+end
+
 local RAINBOW = ColorSequence.new({
 	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 60, 60)),
 	ColorSequenceKeypoint.new(0.2, Color3.fromRGB(255, 220, 60)),

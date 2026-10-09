@@ -174,7 +174,7 @@ RunService.RenderStepped:Connect(function()
 				local need = Config.Field.Gate.KillsNeeded[sealZone - 1] or 0
 				if sealZone - 1 == clearedNow + 1 then
 					local zoneSet = Config.Sets[Config.Sets.ZoneKeys[sealZone]]
-					sealText.Text = string.format("🔒 구역 %d · %s 봉인\n구역 %d 몬스터 %d / %d 처치\n열면 %s %s 세트 획득 가능!", sealZone, Config.Field.ZoneNames[sealZone], sealZone - 1, player:GetAttribute("GateKills") or 0, need, zoneSet.Icon, zoneSet.Name)
+					sealText.Text = string.format("🔒 구역 %d · %s 봉인\n구역 %d 몬스터 %d / %d 처치 · 군주 %s\n열면 %s %s 세트 획득 가능!", sealZone, Config.Field.ZoneNames[sealZone], sealZone - 1, player:GetAttribute("GateKills") or 0, need, player:GetAttribute("GateBossDone") and "✔ 격파" or "👑 미격파", zoneSet.Icon, zoneSet.Name)
 				else
 					sealText.Text = string.format("🔒 구역 %d · %s 봉인\n먼저 이전 관문을 여세요", sealZone, Config.Field.ZoneNames[sealZone])
 				end

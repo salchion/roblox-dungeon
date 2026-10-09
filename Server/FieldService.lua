@@ -976,12 +976,22 @@ local function spawnMonster(zone, kind, at, ambush)
 	local typeKey, def, xpLevel
 
 	if kind == "Boss" then
+		-- 구역마다 하나씩 있는 구역 보스: 그 구역 몬스터 레벨 기준으로 체력 / 공격력이 훨씬 세고 크다. 관문을 열려면 이 보스를 쓰러뜨려야 한다.
 		local boss = F.Boss
+		local bossLevel = level + 3
+		local base = Config.Monster.GetStats(bossLevel)
+		local danger = F.ZoneDanger
 		stats = {
-			Size = boss.Size, MaxHealth = boss.MaxHealth, Speed = boss.Speed, ShotDamage = boss.ShotDamage,
-			ShotInterval = boss.ShotInterval, ShotSpeed = boss.ShotSpeed, Gold = boss.Gold,
+			Size = 16 + zone * 2,
+			MaxHealth = math.floor(base.MaxHealth * 60 * danger.Health[zone]),
+			Speed = boss.Speed * danger.Speed[zone],
+			ShotDamage = math.max(10, math.floor(base.ShotDamage * 1.5 * danger.Damage[zone])),
+			ShotInterval = math.max(0.9, boss.ShotInterval - zone * 0.05),
+			ShotSpeed = boss.ShotSpeed,
+			Gold = math.floor(boss.Gold * danger.Reward[zone]),
 		}
-		text, color, barWidth = "👑 " .. boss.Name, Color3.fromRGB(255, 120, 120), 300
+		xpLevel = bossLevel
+		text, color, barWidth = string.format("👑 %s의 군주 (구역 %d)", F.ZoneNames[zone], zone), Color3.fromRGB(255, 120, 120), 320
 	else
 		-- 구역마다 나오는 몬스터 종류가 다르다 (Config.Field.ZonePools)
 		typeKey = MonsterTypes.Pick(F.ZonePools[zone])
@@ -1029,9 +1039,10 @@ local function spawnMonster(zone, kind, at, ambush)
 		part.Anchored = true
 		part.CanCollide = false
 		part.Position = position
-		part.Color = Color3.fromRGB(150, 25, 45)
+		part.Color = F.ZoneColors[zone]:Lerp(Color3.fromRGB(150, 25, 45), 0.55)
 		part.Material = Enum.Material.Neon
 		part.Parent = monstersFolder
+		Effects.DecorateBoss(part, stats.Size, F.ZoneColors[zone]:Lerp(Color3.fromRGB(255, 120, 70), 0.6))
 		CollectionService:AddTag(part, "Monster")
 		CollectionService:AddTag(part, "RadarBoss")
 	else
@@ -1144,10 +1155,19 @@ local function gateProgress(player, data)
 	if not needed or data.Zone ~= frontier then return end
 	local weight = data.Kind == "Elite" and F.Gate.EliteWeight or (data.Kind == "Boss" and F.Gate.BossWeight or 1)
 	local kills = (player:GetAttribute("GateKills") or 0) + weight
-	if kills < needed then
-		player:SetAttribute("GateKills", kills)
+	if data.Kind == "Boss" then
+		player:SetAttribute("GateBossDone", true)
+	end
+	if kills < needed or not player:GetAttribute("GateBossDone") then
+		-- 처치 수를 채워도 구역 보스를 쓰러뜨리지 않으면 관문이 안 열린다
+		local capped = math.min(kills, needed)
+		if kills >= needed and not player:GetAttribute("GateBossDone") and (player:GetAttribute("GateKills") or 0) < needed then
+			notify(player, string.format("👑 처치 수를 채웠어요! 이제 구역 %d의 군주를 쓰러뜨리면 관문이 열려요!", frontier))
+		end
+		player:SetAttribute("GateKills", capped)
 		return
 	end
+	player:SetAttribute("GateBossDone", false)
 	player:SetAttribute("GateKills", 0)
 	player:SetAttribute("ClearedZone", frontier)
 	local gold = F.Gate.RewardGold * frontier
@@ -1558,8 +1578,9 @@ local function stepMonsters(dt)
 					if move.Magnitude > 0.1 then
 						local step = move.Unit * data.Stats.Speed * dt
 						if walkableAt(part.Position.X + step.X, part.Position.Z + step.Z) then
-							part.Position += step
-							part.Position = Vector3.new(part.Position.X, floorAt(part.Position.X) + data.Stats.Size / 2, part.Position.Z)
+							local newPos = part.Position + step
+							newPos = Vector3.new(newPos.X, floorAt(newPos.X) + data.Stats.Size / 2, newPos.Z)
+							part.CFrame = CFrame.lookAt(newPos, Vector3.new(target.Position.X, newPos.Y, target.Position.Z)) -- 항상 플레이어를 바라본다
 						end
 					end
 				end
@@ -1661,8 +1682,8 @@ local function updateZones()
 						root.AssemblyLinearVelocity = Vector3.zero
 						if os.clock() - (lastGateNotice[player] or 0) > 3 then
 							lastGateNotice[player] = os.clock()
-							notify(player, string.format("🔒 관문이 닫혀 있어요! 구역 %d 몬스터를 %d마리 처치하세요 (%d/%d)",
-								allowed, F.Gate.KillsNeeded[allowed] or 0, player:GetAttribute("GateKills") or 0, F.Gate.KillsNeeded[allowed] or 0))
+							notify(player, string.format("🔒 관문이 닫혀 있어요! 구역 %d 몬스터 %d/%d 처치 + 구역의 군주 격파%s",
+								allowed, player:GetAttribute("GateKills") or 0, F.Gate.KillsNeeded[allowed] or 0, player:GetAttribute("GateBossDone") and " (군주 ✔)" or ""))
 						end
 						fieldZone = allowed
 					end
@@ -2070,6 +2091,37 @@ local function airRaid(player, zone)
 	end)
 end
 
+-- 보스(구역 군주 / 이벤트 보스)가 나를 노리고 있으면 BossFight 가 켜진다 -> 클라이언트가 음악을 던전(전투) 곡으로 바꾼다
+local function updateBossFight()
+	for _, player in ipairs(Players:GetPlayers()) do
+		local fighting = false
+		if player:GetAttribute("Zone") == "Field" then
+			local root = getAliveParts(player)
+			if root then
+				for part, data in pairs(monsters) do
+					if data.BossLike and data.Aggro and part.Parent and (part.Position - root.Position).Magnitude < 150 then
+						fighting = true
+						break
+					end
+				end
+			end
+		end
+		if player:GetAttribute("BossFight") ~= fighting then
+			player:SetAttribute("BossFight", fighting)
+		end
+	end
+end
+
+-- 시체 청소: 몬스터 표(monsters)에 없는데 필드에 남은 몬스터 부품(죽었는데 안 지워진 것)을 지운다
+local function cleanOrphans()
+	if not monstersFolder then return end
+	for _, child in ipairs(monstersFolder:GetChildren()) do
+		if child:IsA("BasePart") and not monsters[child] then
+			child:Destroy()
+		end
+	end
+end
+
 -- 습격 / 공습: 필드에서 싸우는 플레이어에게 일정 시간마다 갑자기 닥친다 (가만히 있으면 위험하다)
 --   습격 = 사방에서 몬스터 떼가 몰려온다 / 공습 = 하늘에서 폭격기가 폭탄을 떨어뜨린다
 local function runAmbush()
@@ -2128,9 +2180,12 @@ function Field.Init(lobbySpawnCFrame)
 			spawnMonster(zone, "Elite")
 		end
 	end
-	spawnMonster(F.ZoneCount, "Boss")
+	for bossZone = 1, F.ZoneCount do
+		spawnMonster(bossZone, "Boss") -- 구역마다 군주 한 마리 (다음 구역으로 가려면 쓰러뜨려야 한다)
+	end
 
 	local zoneTimer = 0
+	local orphanTimer = 0
 	RunService.Heartbeat:Connect(function(dt)
 		stepMonsters(dt)
 		stepProjectiles(dt)
@@ -2139,6 +2194,12 @@ function Field.Init(lobbySpawnCFrame)
 			zoneTimer = 0
 			updateZones()
 			rescueOutOfBounds()
+			updateBossFight()
+			orphanTimer += 0.4
+			if orphanTimer >= 2 then
+				orphanTimer = 0
+				cleanOrphans()
+			end
 		end
 	end)
 

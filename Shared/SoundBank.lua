@@ -54,7 +54,7 @@ SPECS.Enh_Evolve  = { Base = "Enh_Success", Pitch = 0.9, Volume = 1.1, Length = 
 SPECS.Gacha_Drop  = { Base = "Enh_Hammer", Pitch = 0.9, Volume = 0.6, Length = 0.3, Fx = { { "reverb", { DecayTime = 0.8, WetLevel = -8 } } } }   -- 캡슐 낙하 "텅"
 SPECS.Gacha_Tick  = { Base = "Hit", Pitch = 1.3, Volume = 0.7, Length = 0.1, CustomLength = 0.2 }                                                      -- 흔들릴 때 "틱틱"
 SPECS.Gacha_Card  = { Base = "Kill", Pitch = 1.2, Volume = 0.5, Length = 0.25 }                                            -- 10연 카드 한 장씩
-SPECS.Dash   = { Base = "Shot", Pitch = 0.35, Volume = 2.6, Length = 0.4, CustomLength = 1.0, Fx = { { "eq", { HighGain = -12 } } } }  -- 대시 "슈웅"
+SPECS.Dash   = { Base = "Shot", Pitch = 0.35, Volume = 5.5, Length = 0.4, CustomLength = 1.0, Fx = { { "eq", { HighGain = -12 } } } }  -- 대시 "슈웅"
 SPECS.Pickup = { Base = "Enh_Success", Pitch = 2.2, Volume = 0.5, Length = 0.25, CustomLength = 1.0 }                        -- 전리품 줍기 "팅"
 local POP_PITCHES = { 1.0, 1.26, 1.5, 2.0, 2.52 }
 for rarity = 1, 5 do                                                                                                                   -- 퍽! 등급이 높을수록 음이 더 많이 쌓인다
