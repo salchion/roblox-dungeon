@@ -31,7 +31,9 @@ local SPECS = {
 		Layers = { { Pitch = 0.9, Volume = 0.6, Delay = 0.02 } } },
 	-- 적중 / 처치 / 치명타 (짧고 선명하게)
 	Hit  = { Base = "Shot", CustomLength = 0.6, Pitch = 3.0, Volume = 0.5, Length = 0.09 },
-	Crit = { Base = "Enh_Success", Pitch = 1.9, Volume = 0.6, Length = 0.3, CustomLength = 0.8 },
+	-- 치명타: 가는 "띵" 대신 묵직한 타격 + 날카로운 균열음 + 짧은 잔향 ("퍽-쨍!")
+	Crit = { Base = "Enh_Hammer", Pitch = 1.25, Volume = 0.85, Length = 0.28, CustomLength = 0.8, Fx = { { "reverb", { DecayTime = 0.5, WetLevel = -9 } } },
+		Layers = { { Pitch = 2.6, Volume = 0.45, Delay = 0.0 }, { Pitch = 0.7, Volume = 0.6, Delay = 0.025 } } },
 	Kill = { Base = "EnhanceSuccess", CustomLength = 1.2, Pitch = 1.5, Volume = 0.7, Length = 0.35, Fx = { { "reverb", { DecayTime = 0.6, WetLevel = -10 } } } },
 	-- 스킬 / 폭발 / 레벨업
 	Skill_Heal = { CustomLength = 2.5, Base = "Enh_Success", Pitch = 1.1, Volume = 0.8, Length = 0.9, Fx = { { "reverb", { DecayTime = 1.6, WetLevel = -6 } } } },
