@@ -157,6 +157,7 @@ end
 local function placeWaypoint(position, name)
 	clearWaypoint()
 	waypoint = Instance.new("Part")
+	waypoint:SetAttribute("Label", name)
 	waypoint.Name = "RoomWaypoint"
 	waypoint.Anchored = true
 	waypoint.CanCollide = false
@@ -426,7 +427,7 @@ RunService.RenderStepped:Connect(function()
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if root then
 			local flat = Vector3.new(root.Position.X - waypoint.Position.X, 0, root.Position.Z - waypoint.Position.Z).Magnitude
-			waypointLabel.Text = string.format("▼ 다음 방  %dm", math.floor(flat + 0.5))
+			waypointLabel.Text = string.format("▼ %s  %dm", waypoint:GetAttribute("Label") or "다음 방", math.floor(flat + 0.5))
 			waypoint.Transparency = flat < 30 and 0.92 or 0.6
 		end
 	end

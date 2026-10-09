@@ -30,6 +30,7 @@ local Inventory = require(script.Parent:WaitForChild("InventoryService"))
 
 local F = Config.Field
 local TOP = 0.05
+local routeBeat = {} -- [player] = 튜토리얼 첫 구역 길목에서 이미 터진 사건 번호
 local doomReady = {} -- [player] = 첫 구역 군주를 쓰러뜨린 시각 (튜토리얼 소환 결투의 시작 신호)
 
 local Field = {}
@@ -2056,8 +2057,17 @@ local function updateZones()
 				local newZone = inField and "Field" or "Lobby"
 				if newZone ~= zone then
 					player:SetAttribute("Zone", newZone)
+					if newZone == "Lobby" then routeBeat[player] = nil end -- 마을로 돌아오면 길목 사건이 처음부터 다시
 					if newZone == "Field" then
 						notify(player, "필드 입장! 동쪽으로 갈수록 몬스터가 강해져요.")
+						if player:GetAttribute("TutorialDoom") then -- 첫 구역 군주 위치를 표지로 알려준다
+							for bossPart, bossData in pairs(monsters) do
+								if bossData.Kind == "Boss" and bossData.Zone == 1 and bossPart.Parent then
+									Remotes.Tutorial:FireClient(player, "Waypoint", { Pos = bossPart.Position, Name = "👑 첫 구역 군주" })
+									break
+								end
+							end
+						end
 					end
 				end
 
@@ -2075,6 +2085,47 @@ local function updateZones()
 								allowed, player:GetAttribute("GateKills") or 0, F.Gate.KillsNeeded[allowed] or 0, player:GetAttribute("GateBossDone") and " (군주 ✔)" or ""))
 						end
 						fieldZone = allowed
+					end
+					-- 튜토리얼: 첫 구역 군주까지 가는 길이 밋밋하지 않게, 지점마다 사건이 터진다 (매복 -> 엘리트 -> 군주의 영역)
+					if fieldZone == 1 and player:GetAttribute("TutorialDoom") and not player:GetAttribute("InDoomArena") then
+						local x0 = zoneBounds(1)
+						local offset = root.Position.X - x0
+						local beat = routeBeat[player] or 0
+						local function around(kind, count, minDist, maxDist)
+							local spawned = 0
+							for _ = 1, count * 4 do
+								if spawned >= count then break end
+								local angle = math.random() * math.pi * 2
+								local distance = minDist + math.random() * (maxDist - minDist)
+								local at = root.Position + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
+								if walkableAt(at.X, at.Z) and not isSafe(at) and zoneOfX(at.X) == 1 then
+									spawnMonster(1, kind, at, true)
+									spawned += 1
+								end
+							end
+						end
+						local function rumble(strength)
+							player:SetAttribute("ShakeStrength", strength)
+							player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+						end
+						if beat < 1 and offset >= 120 then
+							routeBeat[player] = 1
+							notify(player, "🌿 풀숲이 이상하게 흔들린다...! 매복이다!")
+							rumble(0.5)
+							around("Normal", 7, 30, 46)
+						elseif beat < 2 and offset >= 300 then
+							routeBeat[player] = 2
+							notify(player, "⚠ 강한 기운이 다가온다! 엘리트 몬스터다!")
+							rumble(0.7)
+							around("Elite", 1, 36, 46)
+							around("Normal", 4, 32, 48)
+						elseif beat < 3 and offset >= 520 then
+							routeBeat[player] = 3
+							notify(player, "🔥 군주의 영역이 가까워진다... 호위병들이 몰려온다!")
+							rumble(0.8)
+							around("Normal", 9, 30, 48)
+							around("Elite", 1, 40, 50)
+						end
 					end
 					-- 새 구역에 들어서면 큰 경고 배너 (난이도가 얼마나 뛰는지 숫자로 보여준다)
 					if fieldZone ~= lastZoneSeen[player] then
