@@ -1435,6 +1435,7 @@ local function killMonster(player, part, data)
 	monsters[part] = nil
 	if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then
 		player:SetAttribute("TutorialRetryBuff", nil) -- 일회성 힘은 군주를 쓰러뜨리면 사라진다
+		Remotes.Tutorial:FireClient(player, "WaypointClear") -- 길잡이 빛기둥도 끈다
 		doomReady[player] = os.clock() -- 튜토리얼: 첫 구역 군주를 쓰러뜨리면 잠시 뒤 불길한 기운이 덮친다
 	end
 	Effects.Burst(part.Position, part.Color, data.Kind == "Boss" and 80 or 22)
@@ -1980,6 +1981,7 @@ end
 local function stepMonsters(dt)
 	local now = os.clock()
 	for part, data in pairs(monsters) do
+		if data.Beam and data.Beam.Parent then data.Beam.CFrame = CFrame.new(part.Position + Vector3.new(0, 210, 0)) end -- 침공 사령관 빛기둥은 항상 몸 위에
 		if data.WeakPart and data.WeakPart.Parent then -- 약점 구슬: 보스 몸 주위를 돌며 위아래로 흔들린다
 			local radius = part.Size.X / 2 + 7 -- 보스 몸(날개 / 뿔 장식 포함) 밖으로 충분히 떨어져 돈다
 			local angle = now * 1.5 + data.Phase
@@ -2204,6 +2206,7 @@ end
 -- x좌표로 로비 / 필드 구역을 판별하고, 가장 멀리 간 구역(MaxZone)을 기록
 local lastGateNotice = {}
 local lastZoneSeen = {}
+local lordPing = {}
 local tutorialLords = {} -- [player] = 튜토리얼용 첫 구역 군주 (입구 가까이에서 바로 나타난다)
 
 -- 튜토리얼 첫 구역 군주: 구역 끝까지 한참 걷게 하지 않고, 입구에서 조금만 나가면 바로 앞에 나타난다. 쉽게 잡을 수 있게 공격이 약하다.
@@ -2263,6 +2266,15 @@ local function updateZones()
 								allowed, player:GetAttribute("GateKills") or 0, F.Gate.KillsNeeded[allowed] or 0, player:GetAttribute("GateBossDone") and " (군주 ✔)" or ""))
 						end
 						fieldZone = allowed
+					end
+					do -- 튜토리얼 군주 길잡이 빛기둥이 군주를 따라가게 (군주는 플레이어에게 다가오며 움직인다)
+						local lord = tutorialLords[player]
+						if lord and lord.Parent and monsters[lord] then
+							if os.clock() - (lordPing[player] or 0) > 0.4 then
+								lordPing[player] = os.clock()
+								Remotes.Tutorial:FireClient(player, "WaypointMove", { Pos = lord.Position })
+							end
+						end
 					end
 					-- 튜토리얼: 첫 구역 군주까지 가는 길이 밋밋하지 않게, 지점마다 사건이 터진다 (매복 -> 엘리트 -> 군주의 영역)
 					if fieldZone == 1 and player:GetAttribute("TutorialDoom") and not player:GetAttribute("InDoomArena") then
@@ -2447,11 +2459,8 @@ local function spawnEvent(zone)
 	beam.CanQuery = false
 	beam.CanTouch = false
 	beam.Massless = true
+	beam.Anchored = true -- 보스가 움직일 때마다 stepMonsters 가 몸 위로 다시 맞춘다 (용접은 보스를 따라오지 못해 빛기둥이 벌어졌다)
 	beam.CFrame = part.CFrame * CFrame.new(0, 210, 0)
-	local weld = Instance.new("WeldConstraint")
-	weld.Part0 = part
-	weld.Part1 = beam
-	weld.Parent = beam
 	beam.Parent = part
 
 	local data = {
@@ -2471,6 +2480,7 @@ local function spawnEvent(zone)
 		BaseColor = part.Color,
 		Aggro = false,
 		Contrib = {},
+		Beam = beam,
 	}
 	monsters[part] = data
 	return part, data
