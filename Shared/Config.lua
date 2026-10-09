@@ -216,9 +216,7 @@ Config.Dungeon.Events = {
 -- Attr: 플레이어 Attribute(스택 수) / Max: 최대 스택 / Special: 총알이 바뀌는 특수 특성(항상 1개 이상 후보에 포함)
 ------------------------------------------------------------
 Config.Perks = {
-	Order = { "Multi", "Pierce", "Boom", "Chain", "Vamp", "Power", "Rapid", "Crit", "Vital" },
-	Multi  = { Name = "분산탄", Icon = "🔱", Attr = "PerkMulti", Max = 4, Special = true,
-		Desc = "한 번에 나가는 탄이 +1발, 부채꼴로 흩어져 나간다" },
+	Order = { "Pierce", "Boom", "Chain", "Vamp", "Power", "Rapid", "Crit", "Vital" },
 	Pierce = { Name = "관통탄", Icon = "➳", Attr = "PerkPierce", Max = 3, Special = true,
 		Desc = "탄이 적을 +1마리 더 관통한다" },
 	Boom   = { Name = "폭발탄", Icon = "💥", Attr = "PerkBoom", Max = 3, Special = true,
@@ -278,13 +276,14 @@ end
 function Config.Dungeon.GetSurviveSeconds(waves)
 	return math.min(100, 55 + (waves or 5) * 7)
 end
+Config.Dungeon.BossHealthBase = 2.0      -- 버티기 던전 보스 체력 배율: 랜덤 강화로 강해진 플레이어가 보스를 너무 빨리 잡지 않게
+Config.Dungeon.BossHealthPerBonus = 0.12 -- 버티는 동안 터진 랜덤 보너스 1번당 보스 체력 +12% (패널티로 강해진 적 체력 배율도 같이 곱해진다)
 Config.Dungeon.MonsterLimit = 40     -- 버티기 중 동시에 살아 있는 몬스터가 이 수(파티면 인원에 비례해 늘어남)를 넘기면 위험, OverrunSeconds 동안 못 줄이면 실패
 Config.Dungeon.OverrunSeconds = 6
 Config.Dungeon.BonusInterval = 15    -- 이 간격(초)마다 랜덤 강화 / 랜덤 패널티가 터진다 (선택 없이 자동 적용)
 
 -- 랜덤 강화 (고르지 않고 무작위로 하나 걸린다. Perk = 기존 특성을 Stacks 단계만큼 올림 / Weight = 나올 확률 가중치)
 Config.RunBuffs = {
-	{ Icon = "🔱", Name = "분산탄",       Desc = "탄이 +1발 부채꼴로 나간다",          Perk = "Multi",  Special = true },
 	{ Icon = "➳",  Name = "관통탄",       Desc = "탄이 적을 +1마리 더 관통",           Perk = "Pierce", Special = true },
 	{ Icon = "💥", Name = "폭발탄",       Desc = "맞은 적 주변이 폭발",                Perk = "Boom",   Special = true },
 	{ Icon = "⚡", Name = "연쇄 번개",    Desc = "맞은 적에게서 번개가 튄다",          Perk = "Chain",  Special = true },

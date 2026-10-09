@@ -530,7 +530,7 @@ local function spawnBoss(run)
 	local bossType = run.Type.Boss
 	local stats = {
 		Size = boss.Size * run.BossVariant.SizeMult,
-		MaxHealth = math.floor(boss.MaxHealth * D.GetHealthScale(run.PartySize) * bossType.HealthMult * run.Difficulty.HealthMult * run.BossVariant.HealthMult),
+		MaxHealth = math.floor(boss.MaxHealth * D.GetHealthScale(run.PartySize) * bossType.HealthMult * run.Difficulty.HealthMult * run.BossVariant.HealthMult * (run.BossHealthScale or 1)),
 		Speed = boss.Speed * run.BossVariant.SpeedMult,
 		ShotDamage = math.floor(boss.ShotDamage * bossType.DamageMult * run.Difficulty.DamageMult * run.BossVariant.DamageMult),
 		ShotInterval = boss.ShotInterval,
@@ -1866,6 +1866,7 @@ local function surviveLoop(run)
 	-- 보스: 플레이어 가까이에서 등장
 	run.SurviveEnd = nil
 	run.NextBonusAt, run.MonsterLimit, run.OverrunSince, run.OverrunLeft = nil, nil, nil, nil
+	run.BossHealthScale = (D.BossHealthBase + D.BossHealthPerBonus * bonusCount) * (run.PenHealth or 1)
 	run.Phase = "Boss"
 	run.StageText = nil
 	local spots = nearSpawnPoints(run, 35, 90)
