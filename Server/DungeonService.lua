@@ -453,7 +453,7 @@ local function makeWeakOrb(part)
 	local orb = Instance.new("Part")
 	orb.Name = "WeakPoint"
 	orb.Shape = Enum.PartType.Ball
-	orb.Size = Vector3.new(5.2, 5.2, 5.2)
+	orb.Size = Vector3.new(7.2, 7.2, 7.2) -- 맞히기 쉽게 크다
 	orb.Anchored = true
 	orb.CanCollide = false
 	orb.CanQuery = false
@@ -469,7 +469,7 @@ local function makeWeakOrb(part)
 	orbLight.Parent = orb
 	local orbGui = Instance.new("BillboardGui")
 	orbGui.Size = UDim2.new(0, 120, 0, 36)
-	orbGui.StudsOffset = Vector3.new(0, 4.4, 0)
+	orbGui.StudsOffset = Vector3.new(0, 5.6, 0)
 	orbGui.MaxDistance = 200
 	orbGui.AlwaysOnTop = true
 	orbGui.Parent = orb
@@ -477,7 +477,7 @@ local function makeWeakOrb(part)
 	local halo = Instance.new("Part")
 	halo.Name = "WeakHalo"
 	halo.Shape = Enum.PartType.Ball
-	halo.Size = Vector3.new(9, 9, 9)
+	halo.Size = Vector3.new(12, 12, 12)
 	halo.Anchored = false
 	halo.Massless = true
 	halo.CanCollide = false

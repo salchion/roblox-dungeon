@@ -1120,7 +1120,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		weakOrb = Instance.new("Part")
 		weakOrb.Name = "WeakPoint"
 		weakOrb.Shape = Enum.PartType.Ball
-		weakOrb.Size = Vector3.new(4.2, 4.2, 4.2)
+		weakOrb.Size = Vector3.new(7.2, 7.2, 7.2) -- 맞히기 쉽게 크다
 		weakOrb.Anchored = true
 		weakOrb.CanCollide = false
 		weakOrb.CanQuery = false
@@ -1136,9 +1136,37 @@ local function spawnMonster(zone, kind, at, ambush)
 		orbLight.Parent = weakOrb
 		local orbGui = Instance.new("BillboardGui")
 		orbGui.Size = UDim2.new(0, 70, 0, 28)
-		orbGui.StudsOffset = Vector3.new(0, 3.4, 0)
-		orbGui.MaxDistance = 120
+		orbGui.StudsOffset = Vector3.new(0, 5.6, 0)
+		orbGui.MaxDistance = 200
+		orbGui.AlwaysOnTop = true
 		orbGui.Parent = weakOrb
+		-- 구슬을 감싸는 반투명 후광 + 반짝이는 입자
+		local halo = Instance.new("Part")
+		halo.Name = "WeakHalo"
+		halo.Shape = Enum.PartType.Ball
+		halo.Size = Vector3.new(12, 12, 12)
+		halo.Massless = true
+		halo.CanCollide = false
+		halo.CanQuery = false
+		halo.CanTouch = false
+		halo.Material = Enum.Material.Neon
+		halo.Color = Color3.fromRGB(255, 220, 60)
+		halo.Transparency = 0.75
+		halo.CFrame = weakOrb.CFrame
+		local haloWeld = Instance.new("WeldConstraint")
+		haloWeld.Part0 = weakOrb
+		haloWeld.Part1 = halo
+		haloWeld.Parent = halo
+		halo.Parent = weakOrb
+		local sparks = Instance.new("ParticleEmitter")
+		sparks.Rate = 18
+		sparks.Lifetime = NumberRange.new(0.5, 1)
+		sparks.Speed = NumberRange.new(2, 6)
+		sparks.SpreadAngle = Vector2.new(180, 180)
+		sparks.LightEmission = 1
+		sparks.Color = ColorSequence.new(Color3.fromRGB(255, 240, 120))
+		sparks.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.2), NumberSequenceKeypoint.new(1, 0) })
+		sparks.Parent = weakOrb
 		local orbText = Instance.new("TextLabel")
 		orbText.Size = UDim2.new(1, 0, 1, 0)
 		orbText.BackgroundTransparency = 1
@@ -1146,7 +1174,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		orbText.TextScaled = true
 		orbText.TextColor3 = Color3.fromRGB(255, 240, 120)
 		orbText.TextStrokeTransparency = 0
-		orbText.Text = "🎯 약점"
+		orbText.Text = "🎯 약점! 여길 맞혀요"
 		orbText.Parent = orbGui
 		CollectionService:AddTag(part, "Monster")
 		CollectionService:AddTag(part, "RadarBoss")
@@ -2606,6 +2634,7 @@ end
 -- 보스(구역 군주 / 이벤트 보스)가 나를 노리고 있으면 BossFight 가 켜진다 -> 클라이언트가 음악을 던전(전투) 곡으로 바꾼다
 local powerWarnedAt = {}
 local weakTipShown = {}
+local weakLesson = {} -- [player] = { Base = 시작할 때 약점 명중 수, Taught = 약점을 맞힌 뒤 설명까지 끝났는지, NextHint = 다음 힌트 시각 }
 local function updateBossFight()
 	for _, player in ipairs(Players:GetPlayers()) do
 		local fighting = false
@@ -2621,6 +2650,26 @@ local function updateBossFight()
 					end
 				end
 			end
+		end
+		-- 튜토리얼 첫 구역 군주전: 싸우는 도중에 약점을 직접 맞혀 보게 한다 (맞힐 때까지 힌트를 반복하고, 맞히면 "노출" 효과를 알려준다)
+		if fighting and bossZone == 1 and player:GetAttribute("TutorialDoom") then
+			local lesson = weakLesson[player]
+			if not lesson then
+				lesson = { Base = player:GetAttribute("WeakHitTick") or 0, NextHint = os.clock() + 6 }
+				weakLesson[player] = lesson
+				player:SetAttribute("AutoOffTick", (player:GetAttribute("AutoOffTick") or 0) + 1) -- 자동 공격은 약점을 못 맞히니 꺼 준다
+			end
+			if not lesson.Taught then
+				if (player:GetAttribute("WeakHitTick") or 0) > lesson.Base then
+					lesson.Taught = true
+					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "💥", Title = "약점 노출!", Text = "방금처럼 노란 구슬을 맞히면 4초 동안 보스가 받는 피해가 3배! 지금 마구 쏘세요!", Duration = 7 })
+				elseif os.clock() >= lesson.NextHint then
+					lesson.NextHint = os.clock() + 11
+					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🎯", Title = "노란 구슬을 노려요!", Text = "보스 주위를 도는 노란 빛 구슬(🎯)을 마우스로 직접 조준해서 클릭하세요. 맞히면 약점이 노출돼요!", Duration = 9 })
+				end
+			end
+		elseif not fighting then
+			weakLesson[player] = nil
 		end
 		if player:GetAttribute("BossFight") ~= fighting then
 			player:SetAttribute("BossFight", fighting)
