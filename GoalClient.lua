@@ -26,7 +26,7 @@ end
 local panel = Instance.new("Frame")
 panel.Size = UDim2.new(0, 260, 0, 66)
 panel.Position = UDim2.new(0, 16, 0, 288)
-panel.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+panel.BackgroundColor3 = Color3.fromRGB(16, 18, 30)
 panel.BackgroundTransparency = 0.2
 panel.BorderSizePixel = 0
 panel.Parent = gui
@@ -73,7 +73,7 @@ questPanel.Text = ""
 questPanel.AutoButtonColor = false
 questPanel.Size = UDim2.new(0, 260, 0, 30)
 questPanel.Position = UDim2.new(0, -300, 0, 288)
-questPanel.BackgroundColor3 = Color3.fromRGB(20, 22, 34)
+questPanel.BackgroundColor3 = Color3.fromRGB(16, 18, 30)
 questPanel.BackgroundTransparency = 0.12
 questPanel.BorderSizePixel = 0
 questPanel.Visible = false

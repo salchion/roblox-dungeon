@@ -34,13 +34,13 @@ end
 ------------------------------------------------------------
 local panel = makePanel({
 	Size = UDim2.new(0, 560, 0, 540), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.52, 0),
-	BackgroundColor3 = Color3.fromRGB(26, 16, 40), BackgroundTransparency = 0.03, Visible = false, ZIndex = 10,
+	BackgroundColor3 = Color3.fromRGB(20, 18, 34), BackgroundTransparency = 0.03, Visible = false, ZIndex = 10,
 }, gui)
-create("UIStroke", { Color = Color3.fromRGB(255, 90, 180), Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, panel)
+create("UIStroke", { Color = Color3.fromRGB(230, 100, 180), Thickness = 2, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, panel)
 
 makeLabel({ Size = UDim2.new(1, -90, 0, 40), Position = UDim2.new(0, 18, 0, 10), Text = "🌀 심연 도전", Font = Enum.Font.GothamBlack, TextSize = 28,
 	TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 170, 225), ZIndex = 11 }, panel)
-makeButton({ Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -78, 0, 14), Text = "닫기", BackgroundColor3 = Color3.fromRGB(80, 80, 100), ZIndex = 11 }, panel, function()
+makeButton({ Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -78, 0, 14), Text = "닫기", BackgroundColor3 = Color3.fromRGB(54, 58, 82), ZIndex = 11 }, panel, function()
 	panel.Visible = false
 end)
 makeLabel({ Size = UDim2.new(1, -36, 0, 44), Position = UDim2.new(0, 18, 0, 54), TextSize = 16, ZIndex = 11, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
@@ -129,9 +129,9 @@ end)
 ------------------------------------------------------------
 local hud = makePanel({
 	Size = UDim2.new(0, 330, 0, 64), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 96),
-	BackgroundColor3 = Color3.fromRGB(26, 16, 40), BackgroundTransparency = 0.1, Visible = false, ZIndex = 5,
+	BackgroundColor3 = Color3.fromRGB(20, 18, 34), BackgroundTransparency = 0.1, Visible = false, ZIndex = 5,
 }, gui)
-create("UIStroke", { Color = Color3.fromRGB(255, 90, 180), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, hud)
+create("UIStroke", { Color = Color3.fromRGB(230, 100, 180), Thickness = 1.5, Transparency = 0.25, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, hud)
 local scoreLabel = makeLabel({ Size = UDim2.new(0.6, 0, 1, 0), Position = UDim2.new(0, 12, 0, 0), TextSize = 26, Font = Enum.Font.GothamBlack, RichText = true,
 	TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110), ZIndex = 6, Text = "0" }, hud)
 local timeLabel = makeLabel({ Size = UDim2.new(0.4, -12, 1, 0), Position = UDim2.new(0.6, 0, 0, 0), TextSize = 26, Font = Enum.Font.GothamBlack,
@@ -162,9 +162,9 @@ Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
 	if old then old:Destroy() end
 	local card = makePanel({
 		Name = "RiftResult", Size = UDim2.new(0, 480, 0, 300), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.45, 0),
-		BackgroundColor3 = Color3.fromRGB(26, 16, 40), BackgroundTransparency = 0.02, ZIndex = 30,
+		BackgroundColor3 = Color3.fromRGB(20, 18, 34), BackgroundTransparency = 0.02, ZIndex = 30,
 	}, gui)
-	create("UIStroke", { Color = info.NewBest and Color3.fromRGB(255, 225, 90) or Color3.fromRGB(255, 90, 180), Thickness = 4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
+	create("UIStroke", { Color = info.NewBest and Color3.fromRGB(255, 225, 90) or Color3.fromRGB(255, 90, 180), Thickness = 2.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
 	makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 12), Text = string.format("🌀 심연 깊이 %d 결과", info.Depth or 1), Font = Enum.Font.GothamBlack, TextSize = 26, ZIndex = 31 }, card)
 	local scoreText = makeLabel({ Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0, 0, 0, 56), Text = "0", Font = Enum.Font.GothamBlack, TextSize = 56,
 		TextColor3 = Color3.fromRGB(255, 225, 110), ZIndex = 31 }, card)

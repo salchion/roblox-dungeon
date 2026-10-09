@@ -48,7 +48,7 @@ local CARD_POSITION = UDim2.new(0, 16, 0, 288)
 local CARD_SIZE = UDim2.new(0, 260, 0, 116)
 local objective = create("Frame", {
 	Size = CARD_SIZE, Position = CARD_POSITION,
-	BackgroundColor3 = Color3.fromRGB(20, 20, 30), BackgroundTransparency = 0.12, BorderSizePixel = 0, Visible = false,
+	BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.12, BorderSizePixel = 0, Visible = false,
 }, gui)
 rounded(objective)
 local stroke = create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5 }, objective)
