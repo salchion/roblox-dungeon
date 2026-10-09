@@ -415,8 +415,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local tier = Config.GetWeaponTier(level)
 	local color = tier.Rainbow and Color3.fromHSV((now * 0.5) % 1, 0.8, 1) or tier.Color
-	local lvExtra = player:GetAttribute("LvShots") or 0 -- 레벨 스탯으로 늘어난 탄 (한 발이 약해서 합계 피해는 +20%/발)
-	local extra = (player:GetAttribute("Zone") == "Dungeon" and (player:GetAttribute("PerkMulti") or 0) or 0) + (player:GetAttribute("GearShot") or 0) + lvExtra
+	local extra = (player:GetAttribute("Zone") == "Dungeon" and (player:GetAttribute("PerkMulti") or 0) or 0) + (player:GetAttribute("GearShot") or 0)
 	local shot = table.clone(tier.Shot)
 	shot.Size *= weaponType.ShotScale * (1 + 0.04 * Config.GetWeaponStage(level)) -- 강화 단계마다 발사체가 조금씩 커진다
 	shot.Speed *= weaponType.SpeedScale
@@ -427,31 +426,44 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 
 	-- 던전 특성 "분산탄": 탄이 +N발, 부채꼴로 흩어져 나간다 (권총류는 대칭 부채꼴, 샷건은 산탄이 더 늘어남)
 	local pellets = weaponType.Pellets + extra
-	local otherExtra = extra - lvExtra
-	player:SetAttribute("ShotDmgScale", extra > 0 and (pellets - extra + otherExtra * Config.LevelStats.OtherExtraShotValue + lvExtra * Config.LevelStats.ExtraShotValue) / pellets or 1) -- 추가 탄은 위력이 낮다 (합계 피해가 배수로 뛰지 않게)
 	local hitsBefore = player:GetAttribute("HitTick") or 0
 	local isManual = manual == true
-	player:SetAttribute("ShotManual", isManual) -- Dungeon / Field.Shoot 이 읽는다: 약점 보너스는 직접 조준한 탄에만
 	local fanAngle = math.rad(Config.Perks.FanAngle)
-	for pellet = 1, pellets do
-		local direction
-		if weaponType.Pellets == 1 then
-			if pellets == 1 then
-				direction = baseDirection
+	-- 한 번의 사격(탄 여러 발). 더블샷이 터지면 이어서 한 번 더 부른다.
+	local function fireVolley(volleyOrigin, volleyTip)
+		player:SetAttribute("ShotManual", isManual) -- Dungeon / Field.Shoot 이 읽는다: 약점 보너스는 직접 조준한 탄에만
+		player:SetAttribute("ShotDmgScale", extra > 0 and (pellets - extra + extra * Config.LevelStats.OtherExtraShotValue) / pellets or 1) -- 추가 탄은 위력이 낮다 (합계 피해가 배수로 뛰지 않게)
+		for pellet = 1, pellets do
+			local direction
+			if weaponType.Pellets == 1 then
+				if pellets == 1 then
+					direction = baseDirection
+				else
+					direction = (CFrame.fromAxisAngle(Vector3.yAxis, (pellet - (pellets + 1) / 2) * fanAngle) * CFrame.new(baseDirection)).Position
+				end
 			else
-				direction = (CFrame.fromAxisAngle(Vector3.yAxis, (pellet - (pellets + 1) / 2) * fanAngle) * CFrame.new(baseDirection)).Position
+				direction = spreadDirection(baseDirection, weaponType.Spread)
 			end
-		else
-			direction = spreadDirection(baseDirection, weaponType.Spread)
+			local endPosition = Dungeon.Shoot(player, volleyOrigin, direction)
+				or Field.Shoot(player, volleyOrigin, direction)
+				or Dummy.Shoot(player, volleyOrigin, direction)
+			endPosition = endPosition or (volleyOrigin + direction * Config.GetRange(player, weaponType))
+			Effects.Shot(volleyTip, endPosition, shot, color, tier.Rainbow, tier.Class, tier.Era)
 		end
-		local endPosition = Dungeon.Shoot(player, origin, direction)
-			or Field.Shoot(player, origin, direction)
-			or Dummy.Shoot(player, origin, direction)
-		endPosition = endPosition or (origin + direction * Config.GetRange(player, weaponType))
-		Effects.Shot(tipPosition, endPosition, shot, color, tier.Rainbow, tier.Class, tier.Era)
+		player:SetAttribute("ShotDmgScale", 1)
+		Weapon.PlayShot(player)
 	end
-	player:SetAttribute("ShotDmgScale", 1)
-	Weapon.PlayShot(player)
+	fireVolley(origin, tipPosition)
+	-- 더블샷: 레벨 스탯 확률로 한 번 더 "따-땅" 이어서 나간다 (같은 방향, 위력도 같다)
+	if math.random() < (player:GetAttribute("LvDouble") or 0) then
+		task.delay(0.09, function()
+			local liveRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+			local liveHumanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+			if not liveRoot or not liveHumanoid or liveHumanoid.Health <= 0 then return end
+			local liveOrigin = liveRoot.Position + Vector3.new(0, 1.5, 0)
+			fireVolley(liveOrigin, Weapon.GetTipPosition(player) or liveOrigin)
+		end)
+	end
 	if isManual and (player:GetAttribute("HitTick") or 0) > hitsBefore then
 		player:SetAttribute("ManualHitTick", (player:GetAttribute("ManualHitTick") or 0) + 1) -- 연습장 "직접 조준" 판정
 	end

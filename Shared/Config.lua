@@ -1026,13 +1026,12 @@ Config.Level = {
 -- 언제든 마음대로 빼서 다시 넣을 수 있다 (무료). 한 스탯에 몰빵해도 되고 골고루 나눠도 된다.
 Config.LevelStats = {
 	PointsPerLevel = 1,
-	Order = { "Move", "Range", "Shots", "Haste", "Loot" },
+	Order = { "Move", "Range", "Double", "Haste", "Loot" },
 	Move  = { Name = "이동 속도",   Icon = "👟", Per = 0.3,  Desc = "포인트당 이동 속도 +0.3" },
 	Range = { Name = "사정거리",    Icon = "🎯", Per = 0.04, Desc = "포인트당 무기 사정거리 +4%" },
-	Shots = { Name = "투사체",      Icon = "🔱", Costs = { 12, 26, 42 }, Desc = "12 / 26 / 42 포인트마다 탄 +1발 (최대 +3)", Note = "투사체: 추가 탄은 한 발의 20% 위력이라 합계 피해는 발당 +20%만 늘고, 대신 넓게 퍼져 여러 마리를 맞혀요." },
+	Double = { Name = "더블샷", Icon = "🔫", Per = 0.007, Desc = "포인트당 +0.7% 확률로 한 발 더 \"따-땅\" 연달아 나감", Note = "더블샷: 쏠 때마다 확률로 같은 사격이 0.09초 뒤에 한 번 더 나가요 (위력은 같아요). 49포인트를 모두 넣으면 약 34%." },
 	Haste = { Name = "스킬 쿨타임", Icon = "⏱", Per = 0.01, Desc = "포인트당 스킬 쿨타임 -1%" },
 	Loot  = { Name = "전리품 흡수", Icon = "🧲", Per = 1.0,  Desc = "포인트당 전리품이 빨려 들어오는 범위 +1" },
-	ExtraShotValue = 0.2,   -- 레벨 스탯으로 늘어난 탄 한 발의 가치 (탄이 늘어도 총 피해는 발당 +20%만 늘어난다: 딜이 배수로 뛰지 않게)
 	OtherExtraShotValue = 0.5, -- 장비 옵션 / 던전 특성으로 늘어난 탄 한 발의 가치 (예전에는 100%여서 탄이 늘면 딜이 그대로 배수로 늘었다)
 }
 function Config.GetLevelStatPoints(level)
@@ -1041,22 +1040,13 @@ end
 -- 포인트 -> 실제 효과 문자열 / 값
 function Config.LevelStatValue(key, points)
 	local def = Config.LevelStats[key]
-	if key == "Shots" then
-		local count = 0
-		for _, cost in ipairs(def.Costs) do
-			if points >= cost then count += 1 end
-		end
-		return count
-	end
 	return points * def.Per
 end
 function Config.LevelStatText(key, points)
 	local value = Config.LevelStatValue(key, points)
 	if key == "Move" then return string.format("이동 속도 +%.1f", value)
 	elseif key == "Range" then return string.format("사정거리 +%d%%", math.floor(value * 100 + 0.5))
-	elseif key == "Shots" then
-		local nextCost = Config.LevelStats.Shots.Costs[value + 1]
-		return nextCost and string.format("탄 +%d발 (다음 +1발: %d포인트)", value, nextCost) or string.format("탄 +%d발 (최대)", value)
+	elseif key == "Double" then return string.format("더블샷 확률 %.1f%%", value * 100)
 	elseif key == "Haste" then return string.format("쿨타임 -%d%%", math.floor(value * 100 + 0.5))
 	else return string.format("흡수 범위 +%d", math.floor(value + 0.5)) end
 end

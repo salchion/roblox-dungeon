@@ -95,7 +95,7 @@ for index, key in ipairs(LS.Order) do
 	rows[key] = { Value = valueLabel, Count = countLabel }
 end
 
-label({ Size = UDim2.new(1, -32, 0, 30), Position = UDim2.new(0, 16, 0, 376), Text = LS.Shots.Note or "", TextSize = 11, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
+label({ Size = UDim2.new(1, -32, 0, 30), Position = UDim2.new(0, 16, 0, 376), Text = LS.Double.Note or "", TextSize = 11, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
 button({ Size = UDim2.new(0, 150, 0, 32), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 1, -42), BackgroundColor3 = Color3.fromRGB(120, 70, 70), Text = "전부 초기화 (무료)", TextSize = 13 }, panel, function()
 	Remotes.LevelStat:FireServer("Reset")
 end)
