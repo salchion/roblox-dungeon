@@ -1029,10 +1029,11 @@ Config.LevelStats = {
 	Order = { "Move", "Range", "Shots", "Haste", "Loot" },
 	Move  = { Name = "이동 속도",   Icon = "👟", Per = 0.3,  Desc = "포인트당 이동 속도 +0.3" },
 	Range = { Name = "사정거리",    Icon = "🎯", Per = 0.04, Desc = "포인트당 무기 사정거리 +4%" },
-	Shots = { Name = "투사체",      Icon = "🔱", Costs = { 8, 18, 30, 44 }, Desc = "누적 8 / 18 / 30 / 44 포인트마다 탄 +1발 (최대 +4발, 추가 탄은 약해서 합계 피해는 발당 +40%)" },
+	Shots = { Name = "투사체",      Icon = "🔱", Costs = { 12, 26, 42 }, Desc = "누적 12 / 26 / 42 포인트마다 탄 +1발 (최대 +3발). 추가 탄은 한 발의 20% 위력이라 합계 피해는 발당 +20%만 늘고, 대신 넓게 퍼져 여러 마리를 맞혀요" },
 	Haste = { Name = "스킬 쿨타임", Icon = "⏱", Per = 0.01, Desc = "포인트당 스킬 쿨타임 -1%" },
 	Loot  = { Name = "전리품 흡수", Icon = "🧲", Per = 1.0,  Desc = "포인트당 전리품이 빨려 들어오는 범위 +1" },
-	ExtraShotValue = 0.4,   -- 레벨 스탯으로 늘어난 탄 한 발의 가치 (경제가 깨지지 않게: 탄이 2배가 돼도 총 피해는 +40%)
+	ExtraShotValue = 0.2,   -- 레벨 스탯으로 늘어난 탄 한 발의 가치 (탄이 늘어도 총 피해는 발당 +20%만 늘어난다: 딜이 배수로 뛰지 않게)
+	OtherExtraShotValue = 0.5, -- 장비 옵션 / 던전 특성으로 늘어난 탄 한 발의 가치 (예전에는 100%여서 탄이 늘면 딜이 그대로 배수로 늘었다)
 }
 function Config.GetLevelStatPoints(level)
 	return math.max(0, ((level or 1) - 1) * Config.LevelStats.PointsPerLevel)

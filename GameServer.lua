@@ -414,7 +414,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local tier = Config.GetWeaponTier(level)
 	local color = tier.Rainbow and Color3.fromHSV((now * 0.5) % 1, 0.8, 1) or tier.Color
-	local lvExtra = player:GetAttribute("LvShots") or 0 -- 레벨 스탯으로 늘어난 탄 (한 발이 약해서 합계 피해는 +40%/발)
+	local lvExtra = player:GetAttribute("LvShots") or 0 -- 레벨 스탯으로 늘어난 탄 (한 발이 약해서 합계 피해는 +20%/발)
 	local extra = (player:GetAttribute("Zone") == "Dungeon" and (player:GetAttribute("PerkMulti") or 0) or 0) + (player:GetAttribute("GearShot") or 0) + lvExtra
 	local shot = table.clone(tier.Shot)
 	shot.Size *= weaponType.ShotScale * (1 + 0.04 * Config.GetWeaponStage(level)) -- 강화 단계마다 발사체가 조금씩 커진다
@@ -426,7 +426,8 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 
 	-- 던전 특성 "분산탄": 탄이 +N발, 부채꼴로 흩어져 나간다 (권총류는 대칭 부채꼴, 샷건은 산탄이 더 늘어남)
 	local pellets = weaponType.Pellets + extra
-	player:SetAttribute("ShotDmgScale", lvExtra > 0 and (pellets - lvExtra + lvExtra * Config.LevelStats.ExtraShotValue) / pellets or 1)
+	local otherExtra = extra - lvExtra
+	player:SetAttribute("ShotDmgScale", extra > 0 and (pellets - extra + otherExtra * Config.LevelStats.OtherExtraShotValue + lvExtra * Config.LevelStats.ExtraShotValue) / pellets or 1) -- 추가 탄은 위력이 낮다 (합계 피해가 배수로 뛰지 않게)
 	local hitsBefore = player:GetAttribute("HitTick") or 0
 	local isManual = manual == true
 	player:SetAttribute("ShotManual", isManual) -- Dungeon / Field.Shoot 이 읽는다: 약점 보너스는 직접 조준한 탄에만
