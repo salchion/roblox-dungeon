@@ -89,12 +89,36 @@ function Tutorial.Load(player, saved)
 			end
 		end
 	end)
-	player.CharacterAdded:Connect(function()
-		task.wait(0.5)
-		if states[player] then applyFreeze(player) end
-	end)
+	-- 처음 접속하면 캐릭터가 나타나는 순간부터 고정한다 (캐릭터가 아직 없을 수도 있어 몇 초간 반복 확인)
+	local function freezeSoon(character)
+		character:WaitForChild("HumanoidRootPart", 10)
+		for _ = 1, 8 do
+			if states[player] ~= state then return end
+			applyFreeze(player)
+			task.wait(0.25)
+		end
+	end
+	player.CharacterAdded:Connect(freezeSoon)
+	if player.Character then task.spawn(freezeSoon, player.Character) end
 	player:GetAttributeChangedSignal("TrainTick"):Connect(function()
 		Quest.Add(player, "Trains", 1)
+	end)
+end
+
+-- 데이터를 불러오는 동안(튜토리얼 상태를 알기 전)에는 몸을 고정해 둔다. Load 가 끝나면 필요 없는 사람은 풀린다.
+function Tutorial.EarlyFreeze(player, character)
+	if states[player] then return end
+	local root = character:WaitForChild("HumanoidRootPart", 10)
+	if root and not states[player] then
+		root.Anchored = true
+		player:SetAttribute("TutorialFrozen", true)
+	end
+	task.delay(25, function() -- 안전장치: 끝내 못 불러오면 풀어준다
+		if player.Parent and not states[player] and player:GetAttribute("TutorialFrozen") then
+			local r = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+			if r then r.Anchored = false end
+			player:SetAttribute("TutorialFrozen", false)
+		end
 	end)
 end
 

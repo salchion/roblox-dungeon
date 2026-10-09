@@ -99,6 +99,7 @@ end)
 ------------------------------------------------------------
 local function onCharacterAdded(player, character)
 	local humanoid = character:WaitForChild("Humanoid")
+	Tutorial.EarlyFreeze(player, character) -- 튜토리얼 상태가 로드되기 전까지 움직이지 못하게 (처음 접속 시)
 	humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None -- 기본 이름표 대신 전투력/무기 레벨이 보이는 이름표 사용
 	humanoid.MaxHealth = Dungeon.GetMaxHealth(player)
 	humanoid.Health = humanoid.MaxHealth
