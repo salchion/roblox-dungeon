@@ -10,7 +10,7 @@ local Lobby = {}
 
 local HALF = 130            -- 로비는 -130 ~ +130 의 정사각형
 local TOP = 0.05            -- 바닥 윗면 높이 (기본 Baseplate 와 겹쳐 깜빡이는 것 방지)
-local HILL_Z, HILL_H, HILL_R = 112, 0, 18 -- 시작 언덕: 마을 남쪽 끝의 높은 언덕 (여기서 마을 전체가 내려다보인다)
+local HILL_Z, HILL_H, HILL_R = 112, 28, 18 -- 시작 언덕: 마을 남쪽 끝의 높은 언덕 (여기서 마을 전체가 내려다보인다)
 
 local function makePart(props, parent)
 	local part = Instance.new("Part")
@@ -321,7 +321,31 @@ function Lobby.Build()
 		end
 	end
 
-	-- (시작 언덕과 경사로는 없앴다: HILL_H = 0 이라 시작 지점이 마을 바닥에 있다)
+	-- 시작 언덕: 높은 바위 단 위에 풀밭 / 가로등 / 나무 + 마을 쪽(북쪽)으로 내려가는 두 갈래 완만한 경사로
+	do
+		local center = Vector3.new(0, 0, HILL_Z)
+		makePart({ Name = "HillBody", Shape = Enum.PartType.Cylinder, Size = Vector3.new(HILL_H + 1.5, HILL_R * 2 + 4, HILL_R * 2 + 4),
+			CFrame = CFrame.new(center + Vector3.new(0, (HILL_H - 1.5) / 2 + TOP, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+			Color = Color3.fromRGB(96, 92, 100), Material = Enum.Material.Slate }, folder)
+		makePart({ Name = "HillGrass", Shape = Enum.PartType.Cylinder, Size = Vector3.new(1, HILL_R * 2 + 2, HILL_R * 2 + 2),
+			CFrame = CFrame.new(center + Vector3.new(0, TOP + HILL_H - 0.25, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+			Color = Color3.fromRGB(88, 130, 84), Material = Enum.Material.Grass }, folder)
+		makeLamp(Vector3.new(-11, TOP + HILL_H, HILL_Z + 6), folder)
+		makeLamp(Vector3.new(11, TOP + HILL_H, HILL_Z + 6), folder)
+		-- 경사로: 언덕 가장자리(y = HILL_H)에서 광장 가장자리(y = 0)까지 비스듬히 내려간다
+		local function ramp(topPoint, bottomPoint, width)
+			local direction = bottomPoint - topPoint
+			local thickness = 4
+			local middle = (topPoint + bottomPoint) / 2
+			local look = CFrame.lookAt(middle, middle + direction)
+			local center3 = middle - look.UpVector * (thickness / 2)
+			makePart({ Name = "HillRamp", Size = Vector3.new(width, thickness, direction.Magnitude), CFrame = CFrame.lookAt(center3, center3 + direction),
+				Color = Color3.fromRGB(205, 195, 175), Material = Enum.Material.Cobblestone }, folder)
+		end
+		for _, side in ipairs({ -1, 1 }) do
+			ramp(Vector3.new(side * 9.8, TOP + HILL_H, HILL_Z - 15.1), Vector3.new(side * 54, TOP, 44), 14)
+		end
+	end
 
 	local spawn = Instance.new("SpawnLocation")
 	spawn.Name = "LobbySpawn"
