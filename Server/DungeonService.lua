@@ -23,6 +23,7 @@ local Combo = require(script.Parent:WaitForChild("ComboService"))
 local Meta = require(script.Parent:WaitForChild("MetaService"))
 local DungeonTerrain = require(script.Parent:WaitForChild("DungeonTerrain"))
 local Keys = require(script.Parent:WaitForChild("KeyService"))
+local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 local Loot = require(script.Parent:WaitForChild("LootService"))
 
 local D = Config.Dungeon
@@ -55,6 +56,23 @@ local function notifyAll(run, text)
 	for _, member in ipairs(run.Members) do
 		notify(member, text)
 	end
+end
+
+-- 효과음: 내가 소리 ID 를 넣은 항목만 재생한다 (SoundBank.Has). 자주 나는 소리는 gap 초 안에 한 번만.
+local sfxLast = {}
+local function sfxAt(run, position, key, opts, gap)
+	if not SoundBank.Has(key) then return end
+	local now = os.clock()
+	if now - (sfxLast[key] or 0) < (gap or 0.1) then return end
+	sfxLast[key] = now
+	local anchor = Instance.new("Part")
+	anchor.Size = Vector3.new(1, 1, 1)
+	anchor.Transparency = 1
+	anchor.Anchored, anchor.CanCollide, anchor.CanQuery, anchor.CanTouch = true, false, false, false
+	anchor.Position = position
+	anchor.Parent = run.Folder
+	Debris:AddItem(anchor, 5)
+	SoundBank.Play(anchor, key, opts)
 end
 
 local function getAliveParts(player)
@@ -579,6 +597,7 @@ local function spawnBoss(run)
 	data.WeakPart = orb
 	run.Boss = data
 	run.BossPart = part
+	sfxAt(run, part.Position, "Boss_Spawn", nil, 1)
 	for _, member in ipairs(run.Members) do
 		Remotes.Tutorial:FireClient(member, "Prompt", { Key = "🎯", Title = "약점을 노려라!", Text = "보스 주위를 도는 노란 구슬을 마우스로 직접 조준해서 클릭하면 약점이 노출돼서 4초간 받는 피해 x3! + 데드아이 게이지 (자동 공격으로는 안 돼요)", Duration = 7, Top = true })
 	end
@@ -977,6 +996,7 @@ end
 
 local function enrageBoss(run, part, data)
 	data.Enraged = true
+	sfxAt(run, part.Position, "Boss_Enrage", nil, 1)
 	data.BaseColor = Color3.fromRGB(255, 60, 20)
 	part.Color = data.BaseColor
 	notifyAll(run, "⚠ " .. run.BossName .. "이(가) 분노했다!")
@@ -997,6 +1017,7 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 		if factor < 1 then
 			amount = math.max(1, math.floor(amount * factor))
 			Effects.FloatText(hitPosition + Vector3.new(0, 3, 0), "🛡 막힘! 뒤로 돌아가요", Color3.fromRGB(200, 215, 240))
+			sfxAt(run, part.Position, "Shield_Block", nil, 0.15)
 		end
 	end
 	if data.ExposedUntil and os.clock() < data.ExposedUntil then -- 약점 노출 중: 보스가 받는 피해 x3
@@ -1310,6 +1331,7 @@ local function launchMissile(run, player, from, entry, amount)
 	trail.Transparency = NumberSequence.new(0, 1)
 	trail.LightEmission = 1
 	trail.Parent = ball
+	sfxAt(run, from, "Aug_Missile", nil, 0.08)
 	local target = entry.Part.Position
 	local mid = from:Lerp(target, 0.5) + Vector3.new((math.random() - 0.5) * 14, 10 + math.random() * 6, (math.random() - 0.5) * 14) -- 휘어서 날아간다
 	local started = os.clock()
@@ -1325,6 +1347,7 @@ local function launchMissile(run, player, from, entry, amount)
 		if ball.Parent then
 			local position = entry.Part.Parent and entry.Part.Position or target
 			Effects.Burst(position, Color3.fromRGB(255, 150, 60), 22)
+			sfxAt(run, position, "Aug_MissileHit", nil, 0.08)
 			ball:Destroy()
 			hitMonster(run, player, entry, amount)
 		end
@@ -1355,6 +1378,7 @@ local function makeFlame(run, player, position, radius, seconds, damage)
 	run.FlameCount = run.FlameCount or 0
 	if run.FlameCount >= 14 then return end
 	run.FlameCount += 1
+	sfxAt(run, position, "Aug_Flame", nil, 0.3)
 	local pad = Instance.new("Part")
 	pad.Shape = Enum.PartType.Cylinder
 	pad.Size = Vector3.new(0.4, radius * 2, radius * 2)
@@ -1396,6 +1420,7 @@ local function strikeBolt(run, player, entry, damage)
 	TweenService:Create(bolt, TweenInfo.new(0.3), { Transparency = 1, Size = Vector3.new(0.2, 0.2, length) }):Play()
 	Debris:AddItem(bolt, 0.35)
 	Effects.Burst(entry.Part.Position, Color3.fromRGB(255, 240, 120), 24)
+	sfxAt(run, entry.Part.Position, "Aug_Storm", nil, 0.12)
 	hitMonster(run, player, entry, damage)
 end
 
@@ -1421,12 +1446,14 @@ local function dropMeteor(run, player, position, radius, damage, level)
 	local fire = Instance.new("Fire")
 	fire.Size = 14
 	fire.Parent = rock
+	sfxAt(run, position + Vector3.new(0, 20, 0), "Aug_MeteorFall", nil, 0.5)
 	TweenService:Create(rock, TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Position = position + Vector3.new(0, 3, 0) }):Play()
 	task.delay(0.9, function()
 		warn:Destroy()
 		rock:Destroy()
 		if run.Destroyed or run.Phase == "Ended" then return end
 		shockRing(run, position, radius, Color3.fromRGB(255, 150, 60))
+		sfxAt(run, position, "Aug_MeteorHit", nil, 0.2)
 		Effects.Burst(position + Vector3.new(0, 3, 0), Color3.fromRGB(255, 160, 60), 70)
 		for _, entry in ipairs(nearestMonsters(run, position, radius, 12)) do
 			hitMonster(run, player, entry, damage)
@@ -1445,6 +1472,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 	if execLevel > 0 and data.Health > 0 and not data.IsBoss and not data.Invincible and data.Health / data.MaxHealth <= 0.1 + 0.06 * execLevel then
 		data.Health = 0
 		Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 4, 0), "💀 처형!", Color3.fromRGB(215, 110, 255))
+		sfxAt(run, part.Position, "Aug_Execute", nil, 0.1)
 		if synergy(player, "Reaper") and augDepth == 0 then
 			local from = part.Position + Vector3.new(0, 3, 0)
 			for _, entry in ipairs(nearestMonsters(run, part.Position, 70, 2, part)) do
@@ -1471,6 +1499,7 @@ augOnKill = function(run, player, position)
 	augDepth += 1
 	local radius = (12 + 3 * level) * (synergy(player, "Inferno") and 1.3 or 1)
 	shockRing(run, position, radius, Color3.fromRGB(255, 110, 70))
+	sfxAt(run, position, "Aug_Nova", nil, 0.12)
 	Effects.Burst(position + Vector3.new(0, 2, 0), Color3.fromRGB(255, 150, 70), 40)
 	local damage = augDamage(player) * (1.2 + 0.6 * level)
 	for _, entry in ipairs(nearestMonsters(run, position, radius, 8)) do
@@ -1567,6 +1596,7 @@ local function startAugLoop(run)
 								for _, p in ipairs(positions) do
 									if (part.Position - p).Magnitude <= 5 + part.Size.X / 2 then
 										hitMonster(run, member, { Part = part, Data = data }, damage)
+										sfxAt(run, part.Position, "Aug_Blade", nil, 0.18)
 										if synergy(member, "BladeMissile") and math.random() < 0.12 then
 											for _, entry in ipairs(nearestMonsters(run, part.Position, 60, 1, part)) do
 												launchMissile(run, member, part.Position + Vector3.new(0, 3, 0), entry, damage * 1.2)
@@ -1612,6 +1642,7 @@ local function startAugLoop(run)
 					local radius = 16 + 2 * pulse
 					shockRing(run, root.Position - Vector3.new(0, 2.5, 0), radius, Color3.fromRGB(110, 255, 190))
 					Effects.Burst(root.Position, Color3.fromRGB(110, 255, 190), 40)
+					sfxAt(run, root.Position, "Aug_Pulse", nil, 0.5)
 					for _, entry in ipairs(nearestMonsters(run, root.Position, radius, 10)) do
 						hitMonster(run, member, entry, augDamage(member) * (0.8 + 0.4 * pulse))
 					end
@@ -1901,6 +1932,10 @@ end
 local function finish(run, victory)
 	if run.Phase == "Ended" then return end
 	run.Phase = "Ended"
+	for _, member in ipairs(run.Members) do
+		local endRoot = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
+		if endRoot then SoundBank.Play(endRoot, victory and "Dungeon_Clear" or "Dungeon_Fail") end
+	end
 	run.PhaseEnd = nil
 
 	for part in pairs(run.Monsters) do
@@ -2060,6 +2095,10 @@ local function pickWeighted(list, allowed)
 end
 
 local function applyBuff(run, member, buff)
+	do -- 얻는 순간의 소리: 어그먼트는 따로, 나머지 강화는 Buff_Get
+		local buffRoot = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
+		if buffRoot then sfxAt(run, buffRoot.Position, buff.Effect == "Aug" and "Aug_Get" or "Buff_Get", nil, 0.3) end
+	end
 	if buff.Perk then
 		for _ = 1, buff.Stacks or 1 do
 			if not perkMaxed(member, buff.Perk) then applyPerk(member, buff.Perk) end
@@ -2082,7 +2121,10 @@ local function applyBuff(run, member, buff)
 					member:SetAttribute("AugSyn_" .. synKey, true)
 					notify(member, string.format("%s 시너지 발동! 『%s』 — %s", syn.Icon, syn.Name, syn.Desc))
 					local root = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
-					if root then Effects.Burst(root.Position, Color3.fromRGB(255, 235, 140), 90) end
+					if root then
+						Effects.Burst(root.Position, Color3.fromRGB(255, 235, 140), 90)
+						sfxAt(run, root.Position, "Aug_Synergy", nil, 0.5)
+					end
 				end
 			end
 		end
@@ -2107,6 +2149,10 @@ local function applyBuff(run, member, buff)
 end
 
 local function applyPenalty(run, pen)
+	for _, member in ipairs(run.Members) do
+		local penRoot = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
+		if penRoot then sfxAt(run, penRoot.Position, "Penalty_Get", nil, 0.5) break end
+	end
 	run.PenHealth = math.min(3, (run.PenHealth or 1) * (pen.HealthMult or 1))
 	run.PenDamage = math.min(2.5, (run.PenDamage or 1) * (pen.DamageMult or 1))
 	run.PenSpeed = math.min(1.5, (run.PenSpeed or 1) * (pen.SpeedMult or 1))
@@ -2202,6 +2248,12 @@ local function surviveLoop(run)
 
 		-- 한도 초과 감시
 		if run.MonsterCount > limit then
+			if not run.OverrunSince then
+				for _, member in ipairs(run.Members) do
+					local warnRoot = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
+					if warnRoot then SoundBank.Play(warnRoot, "Warn_Overrun") end
+				end
+			end
 			run.OverrunSince = run.OverrunSince or now
 			run.OverrunLeft = math.max(0, D.OverrunSeconds - (now - run.OverrunSince))
 			if run.OverrunLeft <= 0 then
@@ -2287,6 +2339,10 @@ end
 
 local function runLoop(run)
 	run.Phase = "Starting"
+	for _, member in ipairs(run.Members) do
+		local startRoot = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
+		if startRoot then SoundBank.Play(startRoot, "Dungeon_Start") end
+	end
 	if run.LayoutName then
 		notifyAll(run, "🗺 이번 던전 지형: " .. run.LayoutName .. " (들어갈 때마다 달라져요)")
 	end

@@ -10,6 +10,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Growth = require(script.Parent:WaitForChild("GrowthService"))
+local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 
 local Quest = {}
 
@@ -278,6 +279,11 @@ local function notify(player, text)
 	Remotes.Notify:FireClient(player, text)
 end
 
+local function claimSound(player) -- 보상 수령 소리 (소리 ID 가 있을 때만)
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if root and SoundBank.Has("Quest_Claim") then SoundBank.Play(root, "Quest_Claim") end
+end
+
 Remotes.Quest.OnServerEvent:Connect(function(player, action, arg)
 	local state = states[player]
 	if not state then return end
@@ -293,6 +299,7 @@ Remotes.Quest.OnServerEvent:Connect(function(player, action, arg)
 				if (state.Progress[quest.Id] or 0) < quest.Goal then return end
 				state.Claimed[quest.Id] = true
 				applyReward(player, quest.Reward)
+				claimSound(player)
 				notify(player, string.format("✅ 일일 퀘스트 완료! 보상: %s", rewardText(quest.Reward)))
 				Quest.Push(player)
 				return
@@ -306,6 +313,7 @@ Remotes.Quest.OnServerEvent:Connect(function(player, action, arg)
 				if not achievementDone(player, state, achievement) then return end
 				state.AchClaimed[achievement.Id] = true
 				applyReward(player, achievement.Reward)
+				claimSound(player)
 				notify(player, string.format("🏅 업적 달성! 보상: %s%s", rewardText(achievement.Reward),
 					achievement.Title and ("  / 칭호 『" .. achievement.Title .. "』 해금") or ""))
 				Quest.Push(player)

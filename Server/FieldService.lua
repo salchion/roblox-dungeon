@@ -91,6 +91,13 @@ local activeEvent = nil     -- { Part, Data }
 ------------------------------------------------------------
 -- 유틸
 ------------------------------------------------------------
+local SoundBank = require(game:GetService("ReplicatedStorage"):WaitForChild("SoundBank"))
+local function playSfx(player, key) -- 그 플레이어 몸에서 나는 효과음 (소리 ID 가 있을 때만)
+	if not SoundBank.Has(key) then return end
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if root then SoundBank.Play(root, key) end
+end
+
 local function notify(player, text)
 	Remotes.Notify:FireClient(player, text)
 end
@@ -1684,6 +1691,7 @@ function Field.Shoot(player, origin, direction)
 			if factor < 1 then
 				damage = math.max(1, math.floor(damage * factor))
 				Effects.FloatText(result.Position + Vector3.new(0, 3, 0), "🛡 막힘! 뒤로 돌아가요", Color3.fromRGB(200, 215, 240))
+				if SoundBank.Has("Shield_Block") then SoundBank.Play(result.Instance, "Shield_Block") end
 			end
 		end
 		data.Health -= damage
@@ -2547,6 +2555,7 @@ local function runEvents()
 			local part, data = spawnEvent(zone)
 			activeEvent = { Part = part, Data = data }
 			for _, player in ipairs(Players:GetPlayers()) do
+				playSfx(player, "Event_Boss")
 				notify(player, string.format("⚔ [공개 이벤트] 구역 %d · %s 에 %s 출현! 하늘의 보라색 빛기둥을 따라가세요!", zone, F.ZoneNames[zone], Config.Events.Name))
 			end
 
@@ -2584,6 +2593,7 @@ local function runGoblins()
 			local part, data = spawnGoblin(zone)
 			for _, player in ipairs(Players:GetPlayers()) do
 				if player:GetAttribute("Zone") == "Field" then
+					playSfx(player, "Event_Goblin")
 					notify(player, string.format("💰 구역 %d · %s 에 황금 고블린 출현! 잡으면 대박! (75초)", zone, F.ZoneNames[zone]))
 				end
 			end
@@ -2599,6 +2609,7 @@ end
 local function airRaid(player, zone)
 	local root = getAliveParts(player)
 	if not root then return end
+	playSfx(player, "Event_Siren")
 	notify(player, "🚨 공습 경보! 하늘의 폭격기를 보세요 — 바닥의 붉은 원에서 벗어나세요!")
 	player:SetAttribute("ShakeStrength", 0.35)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
@@ -3472,6 +3483,7 @@ local function eventAmbush(player, root, zone)
 end
 
 local function eventElite(player, root, zone)
+	playSfx(player, "Event_Elite")
 	notify(player, "👑 엘리트 부대 출현! 정예 몬스터들이 다가온다 — 쓰러뜨리면 짭짤해요!")
 	player:SetAttribute("ShakeStrength", 0.4)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
@@ -3490,6 +3502,7 @@ local function eventStampede(player, root, zone)
 		center = root.Position + Vector3.new(dirX * 70, 0, 0)
 	end
 	if zoneOfX(center.X) ~= zone then return false end
+	playSfx(player, "Event_Stampede")
 	notify(player, string.format("🐃 몬스터 대이동! %s쪽에서 줄지어 달려온다 — 옆으로 비켜서 쓸어버려요!", dirX > 0 and "오른" or "왼"))
 	player:SetAttribute("ShakeStrength", 0.35)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)

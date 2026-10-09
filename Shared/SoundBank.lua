@@ -68,7 +68,58 @@ for rarity = 1, 5 do                                                            
 	SPECS["Gacha_Pop" .. rarity] = { Base = "Enh_Success", Pitch = POP_PITCHES[1], Volume = 0.8 + rarity * 0.08, Length = 0.9 + rarity * 0.2,
 		Fx = { { "reverb", { DecayTime = 0.8 + rarity * 0.4, WetLevel = -7 + rarity } } }, Layers = layers }
 end
+-- ★ 직접 고른 소리 전용 항목: 기본 소리를 가공하지 않는다. AudioBank 에 ID 를 적기 전에는 소리가 나지 않는다.
+--   (Volume = 음량 배율 / CustomLength = 이 시간(초)이 지나면 끊는다. 소리가 너무 크거나 길면 여기 숫자를 줄이면 된다.)
+local CUSTOM_ONLY = {
+	-- 어그먼트
+	Aug_Get       = { Volume = 1.0, CustomLength = 1.6 }, -- 어그먼트를 얻는 순간 (몸에서 빛이 퍼진다)
+	Aug_Synergy   = { Volume = 1.1, CustomLength = 2.2 }, -- 시너지 발동
+	Aug_Missile   = { Volume = 0.7, CustomLength = 1.0 }, -- 치명타 미사일 발사
+	Aug_MissileHit = { Volume = 0.6, CustomLength = 0.8 }, -- 미사일 명중
+	Aug_Nova      = { Volume = 0.9, CustomLength = 1.4 }, -- 처치 폭발
+	Aug_Blade     = { Volume = 0.5, CustomLength = 0.6 }, -- 회전 칼날이 벨 때 (자주 난다: 짧게)
+	Aug_Storm     = { Volume = 1.0, CustomLength = 1.8 }, -- 낙뢰 (천둥)
+	Aug_MeteorFall = { Volume = 0.9, CustomLength = 1.4 }, -- 유성이 떨어지는 소리
+	Aug_MeteorHit = { Volume = 1.3, CustomLength = 2.2 }, -- 유성 착탄 (큰 폭발)
+	Aug_Flame     = { Volume = 0.6, CustomLength = 1.2 }, -- 불길이 생길 때
+	Aug_Execute   = { Volume = 0.9, CustomLength = 1.2 }, -- 처형
+	Aug_Pulse     = { Volume = 0.9, CustomLength = 1.4 }, -- 수호 파동
+	Buff_Get      = { Volume = 0.9, CustomLength = 1.4 }, -- 일반 랜덤 강화를 얻을 때
+	Penalty_Get   = { Volume = 0.9, CustomLength = 1.4 }, -- 랜덤 패널티가 걸릴 때 (불길한 소리)
+	-- 위기 / 경고
+	Player_Hurt   = { Volume = 0.8, CustomLength = 0.6 }, -- 내가 맞았을 때
+	Low_Health    = { Volume = 0.8, CustomLength = 1.0 }, -- 체력이 25% 아래일 때 (심장 소리 / 삐-)
+	Warn_Overrun  = { Volume = 1.0, CustomLength = 2.0 }, -- 던전에서 몬스터가 한도를 넘었을 때 경고
+	Shield_Block  = { Volume = 0.8, CustomLength = 0.6 }, -- 방패 기사에게 막혔을 때 (쨍!)
+	-- 이벤트 / 보스
+	Event_Siren   = { Volume = 1.0, CustomLength = 3.5 }, -- 공습 사이렌
+	Event_Stampede = { Volume = 1.0, CustomLength = 3.0 }, -- 몬스터 대이동 (발굽 소리 / 뿔피리)
+	Event_Elite   = { Volume = 1.0, CustomLength = 2.5 }, -- 엘리트 부대 출현 (나팔)
+	Event_Goblin  = { Volume = 0.9, CustomLength = 2.0 }, -- 황금 고블린 출현 (반짝 / 동전)
+	Event_Boss    = { Volume = 1.1, CustomLength = 3.0 }, -- 침공 사령관 출현 (공개 이벤트)
+	Boss_Spawn    = { Volume = 1.2, CustomLength = 3.0 }, -- 던전 보스 등장 (포효)
+	Boss_Enrage   = { Volume = 1.2, CustomLength = 2.5 }, -- 보스 격노
+	-- 진행
+	Dungeon_Start = { Volume = 1.0, CustomLength = 2.5 }, -- 던전 시작
+	Dungeon_Clear = { Volume = 1.2, CustomLength = 4.0 }, -- 던전 클리어 (팡파르)
+	Dungeon_Fail  = { Volume = 1.0, CustomLength = 3.0 }, -- 던전 실패
+	Quest_Claim   = { Volume = 0.9, CustomLength = 1.6 }, -- 퀘스트 / 업적 보상 수령 (동전)
+	Rare_Drop     = { Volume = 1.0, CustomLength = 2.2 }, -- 희귀 이상 장비 획득
+}
+for key, spec in pairs(CUSTOM_ONLY) do
+	SPECS[key] = spec
+end
 SoundBank.Specs = SPECS
+
+-- 이 항목에 소리가 있는지 (내가 넣은 ID 나 가공할 기본 소리가 있을 때만 true): 소리 없는 항목은 재생 준비도 하지 않게 한다
+function SoundBank.Has(key)
+	local spec = SPECS[key]
+	if not spec then return false end
+	local bank = Config.Audio.Bank
+	if bank and bank[key] and bank[key] ~= 0 then return true end
+	local base = spec.Base and ((bank and bank[spec.Base] and bank[spec.Base] ~= 0 and bank[spec.Base]) or Config.Audio[spec.Base])
+	return base ~= nil and base ~= 0 and base ~= false
+end
 
 -- 사운드 테스트 창(Studio 에서 K 키)에 보이는 항목별 설명
 SoundBank.Descriptions = {
@@ -79,6 +130,11 @@ SoundBank.Descriptions = {
 	Skill_Heal = "응급 치료 사용", Skill_Ult = "데드아이 발동", UltShot = "데드아이 연사 한 발", Boom = "몬스터 폭발 / 충격파 / 운석",
 	LevelUp = "레벨업", Enh_Hammer = "강화: 망치 내려치기", Enh_Success = "강화 성공 (단계가 오를수록 높아짐)", Enh_Fail = "강화 실패",
 	Enh_Evolve = "무기 진화", Gacha_Drop = "뽑기: 캡슐 낙하", Gacha_Tick = "뽑기: 흔들리는 틱틱", Gacha_Card = "10연 뽑기: 카드 한 장",
+	Aug_Get = "어그먼트 획득", Aug_Synergy = "어그먼트 시너지 발동", Aug_Missile = "크리 미사일 발사", Aug_MissileHit = "미사일 명중", Aug_Nova = "처치 폭발",
+	Aug_Blade = "회전 칼날 베기", Aug_Storm = "낙뢰", Aug_MeteorFall = "유성 낙하", Aug_MeteorHit = "유성 착탄", Aug_Flame = "화염 지대", Aug_Execute = "처형", Aug_Pulse = "수호 파동",
+	Buff_Get = "일반 강화 획득", Penalty_Get = "패널티 발동", Player_Hurt = "내가 맞음", Low_Health = "체력 위험", Warn_Overrun = "몬스터 한도 경고", Shield_Block = "방패에 막힘",
+	Event_Siren = "공습 사이렌", Event_Stampede = "몬스터 대이동", Event_Elite = "엘리트 부대 출현", Event_Goblin = "황금 고블린 출현", Event_Boss = "침공 사령관 출현",
+	Boss_Spawn = "던전 보스 등장", Boss_Enrage = "보스 격노", Dungeon_Start = "던전 시작", Dungeon_Clear = "던전 클리어", Dungeon_Fail = "던전 실패", Quest_Claim = "퀘스트 보상 수령", Rare_Drop = "희귀 장비 획득",
 	Gacha_Pop1 = "뽑기 결과: 일반", Gacha_Pop2 = "뽑기 결과: 희귀", Gacha_Pop3 = "뽑기 결과: 영웅", Gacha_Pop4 = "뽑기 결과: 전설", Gacha_Pop5 = "뽑기 결과: 신화",
 }
 SoundBank.Order = {
@@ -86,6 +142,10 @@ SoundBank.Order = {
 	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_Ult", "UltShot", "Boom", "LevelUp",
 	"Dash", "Pickup", "Enh_Hammer", "Enh_Success", "Enh_Fail", "Enh_Evolve", "Gacha_Drop", "Gacha_Tick", "Gacha_Card",
 	"Gacha_Pop1", "Gacha_Pop2", "Gacha_Pop3", "Gacha_Pop4", "Gacha_Pop5",
+	"Aug_Get", "Aug_Synergy", "Aug_Missile", "Aug_MissileHit", "Aug_Nova", "Aug_Blade", "Aug_Storm", "Aug_MeteorFall", "Aug_MeteorHit", "Aug_Flame", "Aug_Execute", "Aug_Pulse",
+	"Buff_Get", "Penalty_Get", "Player_Hurt", "Low_Health", "Warn_Overrun", "Shield_Block",
+	"Event_Siren", "Event_Stampede", "Event_Elite", "Event_Goblin", "Event_Boss", "Boss_Spawn", "Boss_Enrage",
+	"Dungeon_Start", "Dungeon_Clear", "Dungeon_Fail", "Quest_Claim", "Rare_Drop",
 }
 
 local EFFECT_CLASS = {

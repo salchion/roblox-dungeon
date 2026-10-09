@@ -152,6 +152,7 @@ do
 	local text = { Text = "" }
 	local feet
 	local lastHealth
+	local lastLowSound
 	local function update()
 		local character = player.Character
 		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
@@ -159,6 +160,7 @@ do
 		local ratio = math.clamp(humanoid.Health / math.max(1, humanoid.MaxHealth), 0, 1)
 		-- 맞으면 화면 가장자리가 붉게 번쩍이고 -피해량이 뜬다 (맞고 있는지 한눈에)
 		if lastHealth and humanoid.Health < lastHealth - 0.5 then
+			SoundBank.Play(game:GetService("SoundService"), "Player_Hurt", { Pitch = 0.92 + math.random() * 0.16 })
 			local hurt = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 20, 20), BackgroundTransparency = 0.78, BorderSizePixel = 0, ZIndex = 45, Active = false }, gui)
 			TweenService:Create(hurt, TweenInfo.new(0.35), { BackgroundTransparency = 1 }):Play()
 			task.delay(0.4, function() hurt:Destroy() end)
@@ -167,6 +169,10 @@ do
 			task.delay(0.8, function() lost:Destroy() end)
 		end
 		lastHealth = humanoid.Health
+		if ratio > 0 and ratio <= 0.25 and os.clock() - (lastLowSound or 0) > 2.5 then
+			lastLowSound = os.clock()
+			SoundBank.Play(game:GetService("SoundService"), "Low_Health") -- 체력 위험
+		end
 		fill.Size = UDim2.new(ratio, 0, 1, 0)
 		fill.BackgroundColor3 = ratio > 0.5 and Color3.fromRGB(70, 220, 100) or ratio > 0.25 and Color3.fromRGB(255, 200, 60) or Color3.fromRGB(255, 70, 70)
 		text.Text = string.format("%d / %d", math.ceil(humanoid.Health), math.ceil(humanoid.MaxHealth))
@@ -308,6 +314,7 @@ Remotes.Loot.OnClientEvent:Connect(function(action, id, position, rarity, itemNa
 	if action == "Drop" then
 		local color = Config.Gear.RarityColors[rarity]
 		local width = 0.5 + rarity * 0.35
+		if rarity >= 3 then SoundBank.Play(game:GetService("SoundService"), "Rare_Drop", { Pitch = 0.9 + 0.05 * rarity }) end -- 희귀 이상 장비
 
 		local beam = create("Part", {
 			Anchored = true, CanCollide = false, CanQuery = false, CanTouch = false,
