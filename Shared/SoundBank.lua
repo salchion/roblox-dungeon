@@ -197,9 +197,19 @@ local function playOne(parent, id, volume, pitch, length, name, fx)
 end
 
 -- opts: Pitch(배율) / Volume(배율) / Name(소리 이름; 총소리는 "GunShot" 으로 두면 설정창 볼륨이 적용된다)
+-- 연속으로 터져도 "따따따따" 겹치지 않게: 이 시간(초) 안에 같은 소리가 또 울리면 건너뛴다
+local MIN_GAP = { Crit = 0.28, Hit = 0.05 }
+local lastPlayed = {}
+
 function SoundBank.Play(parent, key, opts)
 	local spec = SPECS[key]
 	if not spec or not parent then return end
+	local gap = MIN_GAP[key]
+	if gap then
+		local now = os.clock()
+		if now - (lastPlayed[key] or 0) < gap then return end
+		lastPlayed[key] = now
+	end
 	local id, custom = idFor(key, spec)
 	if not id then return end
 	opts = opts or {}
