@@ -1298,8 +1298,7 @@ local function spawnMonster(zone, kind, at, ambush)
 end
 
 local function fireProjectile(origin, direction, speed, damage, size, color, style)
-	local ball = Effects.MakeProjectile(origin, direction, size, color, style)
-	ball.Parent = worldFolder
+	local ball = Effects.SpawnProjectile(origin, direction, speed, size, color, style, 5) -- 부품 없이 숫자로만 (그리기는 클라이언트)
 
 	table.insert(projectiles, {
 		Part = ball, Direction = direction.Unit, Speed = speed, Damage = damage,

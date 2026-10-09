@@ -596,8 +596,7 @@ local function spawnBoss(run)
 end
 
 local function fireProjectile(run, origin, direction, speed, damage, size, color, style)
-	local ball = Effects.MakeProjectile(origin, direction, size, color, style)
-	ball.Parent = run.Folder
+	local ball = Effects.SpawnProjectile(origin, direction, speed, size, color, style, 5) -- 부품 없이 숫자로만 (그리기는 클라이언트)
 
 	table.insert(run.Projectiles, {
 		Part = ball,
