@@ -15,6 +15,7 @@ local gui = Instance.new("ScreenGui")
 gui.Name = "HudGui"
 gui.ResetOnSpawn = false
 gui.DisplayOrder = 4
+gui.IgnoreGuiInset = true -- 다른 HUD 와 같은 좌표 기준 (위쪽 Roblox 바 아래로 밀리지 않게)
 gui.Parent = playerGui
 
 local function make(class, props, parent)
@@ -109,12 +110,16 @@ local function refresh()
 	local tier = Config.GetWeaponTier(weaponLevel)
 	weaponText.Text = string.format("⚔ <font color='#%s'>%s</font>", tier.Color:ToHex(), Config.FormatWeapon(weaponLevel))
 
+	if not player:GetAttribute("DataReady") then -- 저장된 정보를 불러오는 동안은 멈춘 게 아니라는 걸 바로 알려 준다
+		zoneText.Text = "⏳ <font color='#ffe16e'>내 정보를 불러오는 중...</font>"
+		return
+	end
 	local zone = player:GetAttribute("Zone") or "Lobby"
 	local zoneName = zone == "Lobby" and "마을" or zone == "Dungeon" and "던전" or string.format("필드 · 최고 %d구역", player:GetAttribute("MaxZone") or 0)
 	zoneText.Text = string.format("📍 %s   <font color='#8fd8ff'>🎟 무료 %d/%d</font>", zoneName, player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily)
 end
 
-for _, name in ipairs({ "Level", "XP", "XPNeeded", "GatePassed", "Power", "Gold", "Tickets", "Keys", "KeysNormal", "KeysHard", "WeaponLevel", "Zone", "MaxZone", "DungeonFree" }) do
+for _, name in ipairs({ "DataReady", "Level", "XP", "XPNeeded", "GatePassed", "Power", "Gold", "Tickets", "Keys", "KeysNormal", "KeysHard", "WeaponLevel", "Zone", "MaxZone", "DungeonFree" }) do
 	player:GetAttributeChangedSignal(name):Connect(refresh)
 end
 refresh()

@@ -327,6 +327,7 @@ local function setupPlayer(player)
 		Idle.OnJoin(player) -- 자리를 비운 동안 쌓인 방치 골드
 		Journey.OnJoin(player) -- 이미 본 안내 기록
 		updatePower(player)
+		player:SetAttribute("DataReady", true) -- 저장된 정보를 다 불러왔다 (화면의 "불러오는 중" 표시를 끈다)
 	end
 end
 

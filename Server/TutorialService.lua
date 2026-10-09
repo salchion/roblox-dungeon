@@ -88,7 +88,7 @@ local function send(player)
 		local introStep = state.Step
 		playCards(player, step.Intro, function()
 			return states[player] == state and (state.Step == introStep or step.MinSeconds ~= nil) and player:GetAttribute("Zone") == "Lobby"
-		end, step.IntroDelay or 2)
+		end, step.IntroDelay or 0.6)
 	end
 	-- 최종 군주에게 쓰러져 마을로 돌아온 뒤(ShowQuests 미션부터)에 오늘의 퀘스트가 화면에 나타나고 던전 게이트가 열린다
 	local questStep = #Steps + 1

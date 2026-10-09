@@ -16,6 +16,7 @@ local gui = Instance.new("ScreenGui")
 gui.Name = "LevelStatGui"
 gui.ResetOnSpawn = false
 gui.DisplayOrder = 12
+gui.IgnoreGuiInset = true
 gui.Parent = player:WaitForChild("PlayerGui")
 
 local function make(class, props, parent)
