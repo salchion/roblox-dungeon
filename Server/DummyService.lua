@@ -214,9 +214,9 @@ function Dummy.Build(start)
 
 	-- 훈련장 안내판
 	local signGui = Instance.new("BillboardGui")
-	signGui.Size = UDim2.new(0, 300, 0, 64)
-	signGui.StudsOffset = Vector3.new(0, 17, 0)
-	signGui.MaxDistance = 120
+	signGui.Size = UDim2.new(0, 240, 0, 50)
+	signGui.StudsOffset = Vector3.new(0, 15, 0)
+	signGui.MaxDistance = 60
 	signGui.Parent = ring
 	local signLabel = Instance.new("TextLabel")
 	signLabel.Size = UDim2.new(1, 0, 1, 0)
@@ -229,7 +229,7 @@ function Dummy.Build(start)
 	signLabel.Parent = signGui
 
 	-- 허수아비 하나: 8번 모양(어깨 보호대 / 투구 / 뿔 / 가슴 갑옷 / 빛나는 눈)을 써서 크고 듬직하게. 이름은 Dummy1.
-	buildDummy(8, Config.Dummy.List[1], start, 1, 1.7) -- 멀리서도 눈에 띄도록 1.7배 크기
+	buildDummy(8, Config.Dummy.List[1], start, 1, 0.8) -- 너무 크면 화면을 가려서 작게 (약 1.5배)
 end
 
 local restFire, restCenter = nil, Vector3.zero -- 휴식 구역 모닥불 (IdleHit 가 타오르게 한다)
