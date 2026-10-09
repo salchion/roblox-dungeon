@@ -42,7 +42,7 @@ M.Defs = {
 		Attack = "Burst", Style = "Dart", Move = "Hover", Keep = 16, Range = 70, Wings = true,
 	},
 	Mage = {
-		Name = "마법사 유령", Shape = "Ball", Color = Color3.fromRGB(130, 225, 255), Material = Enum.Material.Neon, Transparency = 0.25,
+		Name = "마법사 유령", Shape = "Ball", Color = Color3.fromRGB(115, 185, 225), Material = Enum.Material.Neon, Transparency = 0.25,
 		SizeMult = 0.9, SpeedMult = 0.9, HealthMult = 0.8, DamageMult = 0.7, IntervalMult = 2.4, ShotSpeedMult = 0.8, GoldMult = 1.4,
 		Attack = "Mortar", Move = "Keep", Keep = 30, Range = 95, Halo = true,
 	},
@@ -83,12 +83,12 @@ M.Defs = {
 		Attack = "Burst", Style = "Dart", Move = "Rush", Keep = 0, Range = 45, Legs = true,
 	},
 	Wisp = {
-		Name = "도깨비불", Shape = "Ball", Color = Color3.fromRGB(120, 255, 200), Material = Enum.Material.Neon, Transparency = 0.3,
+		Name = "도깨비불", Shape = "Ball", Color = Color3.fromRGB(95, 215, 170), Material = Enum.Material.Neon, Transparency = 0.3,
 		SizeMult = 0.55, SpeedMult = 2.4, HealthMult = 0.45, DamageMult = 0.7, IntervalMult = 0.9, ShotSpeedMult = 1.4, GoldMult = 1.1,
 		Attack = "Burst", Style = "Orb", Move = "Hover", Keep = 22, Range = 80, Flame = true,
 	},
 	Healer = {
-		Name = "치유 사제", Shape = "Ball", Color = Color3.fromRGB(110, 255, 170), Material = Enum.Material.Neon, Transparency = 0.2,
+		Name = "치유 사제", Shape = "Ball", Color = Color3.fromRGB(120, 205, 150), Material = Enum.Material.Neon, Transparency = 0.2,
 		SizeMult = 0.95, SpeedMult = 0.8, HealthMult = 1.0, DamageMult = 0.5, IntervalMult = 2.2, ShotSpeedMult = 0.8, GoldMult = 2.2,
 		Attack = "Heal", Style = "Orb", Move = "Keep", Keep = 34, Range = 60, Halo = true,
 	},
@@ -154,151 +154,128 @@ local BLACK, WHITE = Color3.new(0, 0, 0), Color3.new(1, 1, 1)
 -- d(모양, 가로, 높이, 길이, x, y, z, 색, 재질, { Tint=몸 색 연출 대상, T=투명도, Rx/Ry/Rz=회전(도) })
 local Looks = {}
 
+-- 눈: 빛나는 Neon 공 하나씩 (부품 2개). 멀리서도 눈빛이 보이게 한다.
 local function eyes(d, S, y, z, spread, color, size)
 	for _, side in ipairs({ -1, 1 }) do
-		d(BALL, S * size, S * size, S * size * 0.6, side * S * spread, y, z, color or WHITE, Plastic)
-		d(BALL, S * size * 0.5, S * size * 0.5, S * size * 0.4, side * S * spread, y, z - S * size * 0.2, BLACK, Plastic)
+		d(BALL, S * size, S * size, S * size * 0.7, side * S * spread, y, z, color, Neon)
 	end
 end
 
-Looks.Slime = function(S, c, d)
-	local dark, light = c:Lerp(BLACK, 0.35), c:Lerp(WHITE, 0.55)
-	d(BALL, S * 1.0, S * 0.7, S * 1.0, 0, -S * 0.15, 0, c, Glass, { Tint = true, T = 0.12 })           -- 젤리 몸
-	d(BALL, S * 0.55, S * 0.4, S * 0.55, S * 0.1, S * 0.2, S * 0.05, c, Glass, { Tint = true, T = 0.12 }) -- 머리 위 말랑한 혹
-	d(BALL, S * 0.4, S * 0.3, S * 0.4, 0, -S * 0.12, S * 0.05, dark, Plastic, { T = 0.2 })              -- 몸 속 핵
-	d(BALL, S * 0.16, S * 0.1, S * 0.16, -S * 0.2, S * 0.28, -S * 0.2, light, Neon, { T = 0.25 })       -- 윤기 하이라이트
-	eyes(d, S, -S * 0.02, -S * 0.43, 0.2, WHITE, 0.2)
-	d(BLOCK, S * 0.2, S * 0.05, S * 0.05, 0, -S * 0.2, -S * 0.47, dark, Plastic)                       -- 입
-	for i = -1, 1 do -- 바닥에 퍼진 물방울
-		d(BALL, S * 0.22, S * 0.1, S * 0.22, i * S * 0.4, -S * 0.46, -S * 0.2 + math.abs(i) * S * 0.1, c, Glass, { Tint = true, T = 0.15 })
+Looks.Slime = function(S, c, d) -- 슬라임: 납작하고 말랑한 물방울 + 속이 비치는 핵 (9부품)
+	local dark = c:Lerp(BLACK, 0.35)
+	d(BALL, S * 1.0, S * 0.72, S * 1.0, 0, -S * 0.12, 0, c, Glass, { Tint = true, T = 0.12 })              -- 젤리 몸
+	d(BALL, S * 1.25, S * 0.2, S * 1.25, 0, -S * 0.42, 0, dark, Glass, { Tint = true, T = 0.2 })            -- 바닥에 퍼진 치마
+	d(BALL, S * 0.5, S * 0.4, S * 0.5, S * 0.12, S * 0.3, S * 0.05, c, Glass, { Tint = true, T = 0.12 })    -- 머리 위 혹
+	d(BALL, S * 0.34, S * 0.3, S * 0.34, 0, -S * 0.1, S * 0.12, dark, Plastic, { T = 0.25 })                -- 몸 속 핵
+	eyes(d, S, S * 0.02, -S * 0.42, 0.18, Color3.fromRGB(235, 245, 200), 0.17)
+	d(BLOCK, S * 0.22, S * 0.05, S * 0.05, 0, -S * 0.16, -S * 0.47, dark, Plastic)                          -- 입
+	for _, side in ipairs({ -1, 1 }) do
+		d(BALL, S * 0.2, S * 0.2, S * 0.2, side * S * 0.55, -S * 0.34, -S * 0.2, c, Glass, { Tint = true, T = 0.15 }) -- 옆으로 튄 물방울
 	end
 end
 
-Looks.Spitter = function(S, c, d) -- 가시 독충: 꿈틀대는 마디 몸 + 등 가시 + 집게턱
+Looks.Spitter = function(S, c, d) -- 가시 독충: 길쭉한 3마디 + 등에 솟은 긴 가시 + 꼬리 침 (12부품)
+	local dark, bone, venom = c:Lerp(BLACK, 0.4), Color3.fromRGB(225, 215, 195), Color3.fromRGB(170, 230, 90)
+	d(BALL, S * 0.75, S * 0.62, S * 0.8, 0, -S * 0.12, S * 0.05, c, Plastic, { Tint = true })
+	d(BALL, S * 0.6, S * 0.5, S * 0.6, 0, -S * 0.2, S * 0.6, dark, Plastic, { Tint = true })
+	d(BALL, S * 0.42, S * 0.36, S * 0.42, 0, -S * 0.26, S * 1.0, c, Plastic, { Tint = true })
+	d(BALL, S * 0.55, S * 0.5, S * 0.55, 0, -S * 0.04, -S * 0.5, dark, Plastic, { Tint = true })            -- 머리
+	eyes(d, S, S * 0.04, -S * 0.76, 0.16, Color3.fromRGB(240, 220, 90), 0.14)
+	for _, side in ipairs({ -1, 1 }) do
+		d(BLOCK, S * 0.07, S * 0.07, S * 0.38, side * S * 0.16, -S * 0.14, -S * 0.86, bone, Plastic, { Ry = side * 25 }) -- 집게턱
+	end
+	for i = 0, 2 do -- 등 가시 3개: 뒤로 갈수록 작다
+		d(BLOCK, S * 0.1, S * (0.55 - i * 0.1), S * 0.1, 0, S * (0.38 - i * 0.04), -S * 0.2 + i * S * 0.42, bone, Plastic, { Rx = -14 })
+	end
+	d(BLOCK, S * 0.08, S * 0.3, S * 0.08, 0, -S * 0.02, S * 1.3, venom, Neon, { Rx = -50 })                  -- 꼬리 독침 (작은 포인트 색)
+end
+
+Looks.Bat = function(S, c, d) -- 박쥐: 큰 귀 + 넓게 펼친 뾰족 날개 (11부품)
 	local dark = c:Lerp(BLACK, 0.4)
-	d(BALL, S * 0.8, S * 0.7, S * 0.8, 0, -S * 0.12, 0, c, Plastic, { Tint = true })
-	d(BALL, S * 0.65, S * 0.58, S * 0.65, 0, -S * 0.18, S * 0.55, c, Plastic, { Tint = true })
-	d(BALL, S * 0.5, S * 0.45, S * 0.5, 0, -S * 0.24, S * 1.0, c, Plastic, { Tint = true })
-	d(BALL, S * 0.6, S * 0.55, S * 0.6, 0, -S * 0.02, -S * 0.5, dark, Plastic, { Tint = true }) -- 머리
-	eyes(d, S, S * 0.05, -S * 0.78, 0.17, Color3.fromRGB(255, 230, 80), 0.16)
-	for _, side in ipairs({ -1, 1 }) do -- 집게턱
-		d(BLOCK, S * 0.07, S * 0.07, S * 0.34, side * S * 0.14, -S * 0.12, -S * 0.82, Color3.fromRGB(235, 230, 210), Plastic, { Ry = side * 20 })
-	end
-	for i = 0, 3 do -- 등 가시
-		d(BLOCK, S * 0.09, S * 0.4 - i * 0.04 * S, S * 0.09, 0, S * 0.3, -S * 0.35 + i * S * 0.4, Color3.fromRGB(235, 220, 255), Neon, { Rx = -15 })
-	end
-	for i = 0, 2 do for _, side in ipairs({ -1, 1 }) do -- 짧은 다리
-		d(BLOCK, S * 0.3, S * 0.06, S * 0.06, side * S * 0.42, -S * 0.42, -S * 0.1 + i * S * 0.45, dark, Plastic, { Rz = side * -35 })
-	end end
-end
-
-Looks.Bat = function(S, c, d)
-	local dark = c:Lerp(BLACK, 0.4)
-	d(BALL, S * 0.55, S * 0.65, S * 0.6, 0, 0, S * 0.05, c, Plastic, { Tint = true })
-	d(BALL, S * 0.45, S * 0.42, S * 0.45, 0, S * 0.18, -S * 0.3, c, Plastic, { Tint = true }) -- 머리
+	d(BALL, S * 0.55, S * 0.65, S * 0.55, 0, 0, S * 0.05, c, Plastic, { Tint = true })
+	d(BALL, S * 0.45, S * 0.42, S * 0.45, 0, S * 0.2, -S * 0.3, c, Plastic, { Tint = true })                 -- 머리
+	eyes(d, S, S * 0.24, -S * 0.5, 0.1, Color3.fromRGB(235, 90, 80), 0.1)
 	for _, side in ipairs({ -1, 1 }) do
-		d(BLOCK, S * 0.1, S * 0.35, S * 0.08, side * S * 0.16, S * 0.46, -S * 0.3, dark, Plastic, { Rz = side * -12 }) -- 큰 귀
-		d(BLOCK, S * 0.04, S * 0.05, S * 0.12, side * S * 0.08, -S * 0.0, -S * 0.5, WHITE, Plastic) -- 송곳니
-		-- 날개: 팔뼈 + 손가락 뼈 3개 + 막
-		d(BLOCK, S * 0.6, S * 0.07, S * 0.07, side * S * 0.5, S * 0.12, S * 0.05, dark, Plastic, { Rz = side * 14 })
-		for k = 1, 3 do
-			d(BLOCK, S * 0.75, S * 0.04, S * 0.04, side * S * 0.85, S * 0.3 - k * S * 0.17, S * 0.05 + k * S * 0.12, dark, Plastic, { Rz = side * (16 - k * 14), Ry = side * -(k * 9) })
-		end
-		d(BLOCK, S * 0.8, S * 0.02, S * 0.55, side * S * 0.82, S * 0.06, S * 0.2, c, Plastic, { Tint = true, T = 0.1, Rz = side * -8 })
+		d(BLOCK, S * 0.1, S * 0.4, S * 0.07, side * S * 0.16, S * 0.5, -S * 0.3, dark, Plastic, { Rz = side * -12 }) -- 큰 뾰족 귀
+		d(BLOCK, S * 0.8, S * 0.03, S * 0.55, side * S * 0.6, S * 0.1, S * 0.12, dark, Plastic, { Tint = true, Rz = side * 14 }) -- 날개 막
+		d(BLOCK, S * 0.6, S * 0.03, S * 0.2, side * S * 1.1, S * 0.2, -S * 0.02, c, Plastic, { Tint = true, Rz = side * 22, Ry = side * 35 }) -- 날개 끝 (앞으로 쓸린 뾰족 끝)
+		d(BLOCK, S * 0.04, S * 0.05, S * 0.12, side * S * 0.08, -S * 0.04, -S * 0.52, WHITE, Plastic)           -- 송곳니
 	end
-	eyes(d, S, S * 0.22, -S * 0.5, 0.1, Color3.fromRGB(255, 80, 80), 0.1)
 end
 
-Looks.Mage = function(S, c, d) -- 마법사 유령: 꼬리 달린 유령 + 뾰족 모자 + 지팡이
-	local robe = c:Lerp(Color3.fromRGB(40, 60, 140), 0.5)
-	d(BALL, S * 0.8, S * 0.9, S * 0.8, 0, S * 0.0, 0, c, Neon, { Tint = true, T = 0.3 })
-	for i = 1, 3 do -- 아래로 흩날리는 꼬리
-		d(BALL, S * (0.62 - i * 0.14), S * (0.5 - i * 0.1), S * (0.62 - i * 0.14), S * 0.05 * i, -S * (0.28 + i * 0.2), S * 0.08 * i, c, Neon, { Tint = true, T = 0.3 + i * 0.12 })
-	end
-	d(CYL, S * 0.08, S * 0.9, S * 0.9, 0, S * 0.38, 0, robe, Plastic, { Rz = 90 })                  -- 모자 챙
-	d(CYL, S * 0.4, S * 0.58, S * 0.58, 0, S * 0.58, 0, robe, Plastic, { Rz = 90 })
-	d(CYL, S * 0.3, S * 0.34, S * 0.34, S * 0.04, S * 0.86, 0, robe, Plastic, { Rz = 90 })
-	d(BALL, S * 0.12, S * 0.12, S * 0.12, S * 0.07, S * 1.05, 0, Color3.fromRGB(255, 230, 120), Neon)
-	eyes(d, S, S * 0.12, -S * 0.36, 0.17, Color3.fromRGB(255, 255, 255), 0.14)
-	d(BLOCK, S * 0.06, S * 1.3, S * 0.06, S * 0.52, S * 0.05, -S * 0.2, Color3.fromRGB(110, 75, 50), Wood)       -- 지팡이
-	d(BALL, S * 0.22, S * 0.22, S * 0.22, S * 0.52, S * 0.72, -S * 0.2, Color3.fromRGB(150, 230, 255), Neon)
-	d(BALL, S * 0.16, S * 0.16, S * 0.16, S * 0.4, -S * 0.08, -S * 0.3, c, Neon, { Tint = true, T = 0.25 })     -- 손
+Looks.Mage = function(S, c, d) -- 마법사 유령: 흐르는 꼬리 + 큰 뾰족 모자 + 빛나는 지팡이 (12부품)
+	local robe, gold = c:Lerp(Color3.fromRGB(40, 50, 120), 0.6), Color3.fromRGB(240, 215, 120)
+	d(BALL, S * 0.8, S * 0.95, S * 0.8, 0, 0, 0, c, Plastic, { Tint = true, T = 0.3 })
+	d(BALL, S * 0.55, S * 0.6, S * 0.55, S * 0.06, -S * 0.5, S * 0.12, c, Plastic, { Tint = true, T = 0.4 })   -- 꼬리 1
+	d(BALL, S * 0.3, S * 0.34, S * 0.3, S * 0.12, -S * 0.82, S * 0.24, c, Plastic, { Tint = true, T = 0.55 }) -- 꼬리 2 (점점 흐려진다)
+	d(CYL, S * 0.07, S * 0.95, S * 0.95, 0, S * 0.4, 0, robe, Plastic, { Rz = 90 })                         -- 모자 챙
+	d(CYL, S * 0.55, S * 0.55, S * 0.55, 0, S * 0.68, 0, robe, Plastic, { Rz = 90 })
+	d(CYL, S * 0.4, S * 0.28, S * 0.28, S * 0.05, S * 1.0, 0, robe, Plastic, { Rz = 90, Rx = 0 })           -- 모자 끝
+	d(BALL, S * 0.12, S * 0.12, S * 0.12, S * 0.1, S * 1.22, 0, gold, Neon)
+	eyes(d, S, S * 0.1, -S * 0.38, 0.16, Color3.fromRGB(235, 250, 255), 0.13)
+	d(BLOCK, S * 0.06, S * 1.3, S * 0.06, S * 0.55, S * 0.02, -S * 0.22, Color3.fromRGB(105, 75, 55), Wood)  -- 지팡이
+	d(BALL, S * 0.24, S * 0.24, S * 0.24, S * 0.55, S * 0.72, -S * 0.22, Color3.fromRGB(130, 200, 235), Neon)
+	d(BALL, S * 0.16, S * 0.16, S * 0.16, S * 0.42, -S * 0.06, -S * 0.3, c, Plastic, { Tint = true, T = 0.2 }) -- 손
 end
 
-Looks.Golem = function(S, c, d)
-	local dark, moss = c:Lerp(BLACK, 0.3), Color3.fromRGB(80, 130, 70)
-	d(BLOCK, S * 0.85, S * 0.7, S * 0.6, 0, S * 0.05, 0, c, Slate, { Tint = true })                -- 몸통
-	d(BLOCK, S * 0.5, S * 0.4, S * 0.45, 0, S * 0.5, -S * 0.02, c, Slate, { Tint = true, Rz = 4 }) -- 머리
-	d(BLOCK, S * 0.62, S * 0.12, S * 0.5, 0, S * 0.7, 0, dark, Slate)                                -- 이마 바위
-	eyes(d, S, S * 0.52, -S * 0.25, 0.14, Color3.fromRGB(255, 150, 50), 0.1)
-	d(BLOCK, S * 0.22, S * 0.28, S * 0.04, 0, S * 0.12, -S * 0.31, Color3.fromRGB(255, 140, 50), Neon, { Rz = 12 }) -- 가슴 균열의 불빛
+Looks.Golem = function(S, c, d) -- 바위 골렘: 웅크린 거대 어깨 + 낮은 머리 + 땅에 닿는 큰 주먹 (14부품)
+	local dark, moss, ember = c:Lerp(BLACK, 0.35), Color3.fromRGB(85, 120, 75), Color3.fromRGB(235, 140, 60)
+	d(BLOCK, S * 0.85, S * 0.7, S * 0.6, 0, S * 0.05, 0, c, Slate, { Tint = true })                           -- 몸통
+	d(BLOCK, S * 0.4, S * 0.3, S * 0.38, 0, S * 0.42, -S * 0.12, dark, Slate, { Tint = true, Rz = 4 })      -- 어깨 사이에 파묻힌 머리
+	eyes(d, S, S * 0.45, -S * 0.32, 0.12, ember, 0.09)
+	d(BLOCK, S * 0.22, S * 0.3, S * 0.04, 0, S * 0.08, -S * 0.31, ember, Neon, { Rz = 12 })                  -- 가슴 균열의 불빛
 	for _, side in ipairs({ -1, 1 }) do
-		d(BLOCK, S * 0.3, S * 0.6, S * 0.3, side * S * 0.62, -S * 0.02, 0, c, Slate, { Tint = true, Rz = side * 6 }) -- 팔
-		d(BLOCK, S * 0.4, S * 0.36, S * 0.4, side * S * 0.68, -S * 0.42, 0, dark, Slate, { Tint = true })            -- 주먹
-		d(BLOCK, S * 0.32, S * 0.32, S * 0.32, side * S * 0.5, S * 0.4, 0, dark, Slate, { Rx = 20, Rz = 25 })         -- 어깨 바위
-		d(BLOCK, S * 0.34, S * 0.4, S * 0.34, side * S * 0.2, -S * 0.4, 0, c, Slate, { Tint = true })                 -- 다리
-		d(BLOCK, S * 0.14, S * 0.04, S * 0.2, side * S * 0.3, S * 0.36, -S * 0.1, moss, Plastic)                      -- 이끼
+		d(BLOCK, S * 0.3, S * 0.7, S * 0.3, side * S * 0.62, -S * 0.1, 0, c, Slate, { Tint = true, Rz = side * 8 })       -- 긴 팔
+		d(BLOCK, S * 0.46, S * 0.42, S * 0.46, side * S * 0.7, -S * 0.5, -S * 0.04, dark, Slate, { Tint = true })         -- 거대한 주먹
+		d(BLOCK, S * 0.42, S * 0.34, S * 0.42, side * S * 0.5, S * 0.42, 0, dark, Slate, { Rx = 20, Rz = side * 25 })     -- 어깨 바위
+		d(BLOCK, S * 0.34, S * 0.36, S * 0.34, side * S * 0.2, -S * 0.42, 0, c, Slate, { Tint = true })                   -- 짧은 다리
+	end
+	d(BLOCK, S * 0.3, S * 0.05, S * 0.3, -S * 0.3, S * 0.62, S * 0.1, moss, Plastic)                          -- 어깨 이끼
+end
+
+Looks.Charger = function(S, c, d) -- 돌진 멧돼지: 낮고 긴 몸 + 큰 머리 + 위로 휜 엄니 + 등 갈기 (14부품)
+	local dark, tusk = c:Lerp(BLACK, 0.45), Color3.fromRGB(240, 232, 212)
+	d(BLOCK, S * 0.8, S * 0.62, S * 1.3, 0, S * 0.04, S * 0.14, c, Plastic, { Tint = true })                  -- 몸
+	d(BLOCK, S * 0.66, S * 0.58, S * 0.5, 0, -S * 0.02, -S * 0.56, dark, Plastic, { Tint = true })           -- 머리 (몸보다 어둡다)
+	d(BLOCK, S * 0.38, S * 0.28, S * 0.3, 0, -S * 0.1, -S * 0.9, c:Lerp(WHITE, 0.2), Plastic)               -- 주둥이
+	d(BLOCK, S * 0.2, S * 0.2, S * 1.1, 0, S * 0.4, S * 0.1, dark, Plastic, { Rx = -8 })                      -- 등 갈기
+	eyes(d, S, S * 0.1, -S * 0.82, 0.2, Color3.fromRGB(235, 80, 55), 0.1)
+	for _, side in ipairs({ -1, 1 }) do
+		d(BLOCK, S * 0.08, S * 0.1, S * 0.5, side * S * 0.2, -S * 0.2, -S * 0.98, tusk, Plastic, { Rx = 28, Ry = side * -8 }) -- 위로 휜 엄니
+		d(BLOCK, S * 0.2, S * 0.28, S * 0.06, side * S * 0.3, S * 0.3, -S * 0.5, dark, Plastic, { Rz = side * -25 })   -- 귀
+		d(BLOCK, S * 0.22, S * 0.4, S * 0.22, side * S * 0.28, -S * 0.38, -S * 0.35, dark, Plastic)                     -- 앞다리
+		d(BLOCK, S * 0.22, S * 0.4, S * 0.22, side * S * 0.28, -S * 0.38, S * 0.6, dark, Plastic)                      -- 뒷다리
 	end
 end
 
-Looks.Charger = function(S, c, d) -- 돌진 멧돼지
-	local dark, tusk = c:Lerp(BLACK, 0.45), Color3.fromRGB(245, 240, 225)
-	d(BLOCK, S * 0.8, S * 0.62, S * 1.3, 0, S * 0.02, S * 0.12, c, Plastic, { Tint = true })        -- 몸
-	d(BLOCK, S * 0.62, S * 0.55, S * 0.5, 0, -S * 0.02, -S * 0.55, c, Plastic, { Tint = true })      -- 머리
-	d(CYL, S * 0.28, S * 0.34, S * 0.34, 0, -S * 0.1, -S * 0.88, c:Lerp(WHITE, 0.15), Plastic, { Ry = 90 }) -- 주둥이
+Looks.Bomber = function(S, c, d) -- 폭탄병: 쇠 구슬 + 허리 띠 + 타는 심지 (10부품, 입자 없음)
+	local dark, belt = c:Lerp(BLACK, 0.3), Color3.fromRGB(150, 70, 55)
+	d(BALL, S * 0.95, S * 0.95, S * 0.95, 0, -S * 0.02, 0, c, Metal, { Tint = true })                         -- 폭탄 몸통
+	d(CYL, S * 0.2, S * 1.0, S * 1.0, 0, -S * 0.12, 0, belt, Metal, { Rz = 90 })                              -- 붉은 허리 띠
+	d(CYL, S * 0.16, S * 0.34, S * 0.34, 0, S * 0.5, 0, dark, Metal, { Rz = 90 })                             -- 꼭지
+	d(BLOCK, S * 0.05, S * 0.32, S * 0.05, S * 0.05, S * 0.72, 0, Color3.fromRGB(150, 120, 80), Plastic, { Rz = -20 }) -- 심지
+	d(BALL, S * 0.22, S * 0.22, S * 0.22, S * 0.12, S * 0.9, 0, Color3.fromRGB(255, 170, 60), Neon)           -- 심지 불꽃
 	for _, side in ipairs({ -1, 1 }) do
-		d(BLOCK, S * 0.08, S * 0.1, S * 0.5, side * S * 0.2, -S * 0.2, -S * 0.95, tusk, Plastic, { Rx = -15, Ry = side * -8 }) -- 엄니
-		d(BLOCK, S * 0.2, S * 0.26, S * 0.06, side * S * 0.28, S * 0.3, -S * 0.5, dark, Plastic, { Rz = side * -25 })          -- 귀
-		d(BALL, S * 0.13, S * 0.13, S * 0.08, side * S * 0.22, S * 0.08, -S * 0.78, Color3.fromRGB(255, 90, 60), Neon)         -- 붉은 눈
-		for _, z in ipairs({ -0.35, 0.55 }) do
-			d(BLOCK, S * 0.2, S * 0.35, S * 0.2, side * S * 0.28, -S * 0.38, S * z, dark, Plastic)                                -- 다리
-		end
+		d(BALL, S * 0.22, S * 0.14, S * 0.32, side * S * 0.22, -S * 0.48, -S * 0.08, dark, Plastic)             -- 발
+		d(BLOCK, S * 0.24, S * 0.07, S * 0.05, side * S * 0.2, S * 0.16, -S * 0.46, Color3.fromRGB(235, 70, 50), Neon, { Rz = side * 22 }) -- 화난 눈
 	end
-	for i = 0, 3 do -- 등 갈기
-		d(BLOCK, S * 0.1, S * 0.22, S * 0.1, 0, S * 0.42, -S * 0.3 + i * S * 0.28, dark, Plastic, { Rx = -12 })
-	end
-	d(BLOCK, S * 0.06, S * 0.06, S * 0.3, 0, S * 0.12, S * 0.85, dark, Plastic, { Rx = 40 })                                    -- 꼬리
+	d(BALL, S * 0.28, S * 0.28, S * 0.05, 0, -S * 0.2, -S * 0.46, Color3.fromRGB(230, 225, 210), Plastic)     -- 해골 표시
 end
 
-Looks.Bomber = function(S, c, d)
-	local dark = c:Lerp(BLACK, 0.3)
-	d(BALL, S * 0.95, S * 0.95, S * 0.95, 0, -S * 0.02, 0, c, Metal, { Tint = true })               -- 폭탄 몸통
-	d(CYL, S * 0.14, S * 0.34, S * 0.34, 0, S * 0.5, 0, dark, Metal, { Rz = 90 })                   -- 꼭지
-	d(BLOCK, S * 0.04, S * 0.3, S * 0.04, S * 0.05, S * 0.7, 0, Color3.fromRGB(150, 120, 80), Plastic, { Rz = -20 }) -- 심지
-	local fuse = d(BALL, S * 0.2, S * 0.2, S * 0.2, S * 0.12, S * 0.87, 0, Color3.fromRGB(255, 160, 40), Neon)
-	local sparks = Instance.new("ParticleEmitter")
-	sparks.Rate = 30
-	sparks.Lifetime = NumberRange.new(0.3, 0.6)
-	sparks.Speed = NumberRange.new(3, 7)
-	sparks.SpreadAngle = Vector2.new(60, 60)
-	sparks.LightEmission = 1
-	sparks.Color = ColorSequence.new(Color3.fromRGB(255, 200, 80))
-	sparks.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5), NumberSequenceKeypoint.new(1, 0) })
-	sparks.Parent = fuse
+Looks.Imp = function(S, c, d) -- 저격 임프: 긴 뿔 + 박쥐 날개 + 화살촉 꼬리 + 삼지창 (14부품)
+	local dark, horn = c:Lerp(BLACK, 0.45), Color3.fromRGB(45, 25, 35)
+	d(BALL, S * 0.55, S * 0.7, S * 0.5, 0, -S * 0.12, 0, c, Plastic, { Tint = true })                         -- 몸
+	d(BALL, S * 0.52, S * 0.46, S * 0.48, 0, S * 0.3, -S * 0.04, c, Plastic, { Tint = true })                 -- 머리
+	eyes(d, S, S * 0.32, -S * 0.27, 0.14, Color3.fromRGB(240, 225, 90), 0.12)
 	for _, side in ipairs({ -1, 1 }) do
-		d(BALL, S * 0.2, S * 0.14, S * 0.3, side * S * 0.2, -S * 0.48, -S * 0.08, dark, Plastic)           -- 발
-		d(BLOCK, S * 0.22, S * 0.06, S * 0.05, side * S * 0.2, S * 0.14, -S * 0.46, Color3.fromRGB(255, 70, 50), Neon, { Rz = side * 22 }) -- 화난 눈
+		d(BLOCK, S * 0.08, S * 0.5, S * 0.08, side * S * 0.2, S * 0.68, 0, horn, Plastic, { Rz = side * -24 })  -- 긴 뿔
+		d(BLOCK, S * 0.7, S * 0.03, S * 0.45, side * S * 0.55, S * 0.12, S * 0.2, dark, Plastic, { Rz = side * 28 }) -- 날개
+		d(BLOCK, S * 0.14, S * 0.32, S * 0.14, side * S * 0.14, -S * 0.52, 0, c, Plastic, { Tint = true })      -- 다리
 	end
-	d(BALL, S * 0.3, S * 0.3, S * 0.05, 0, -S * 0.12, -S * 0.46, Color3.fromRGB(235, 230, 215), Plastic, { T = 0.1 }) -- 해골 표시
-end
-
-Looks.Imp = function(S, c, d)
-	local dark, horn = c:Lerp(BLACK, 0.45), Color3.fromRGB(40, 20, 30)
-	d(BALL, S * 0.55, S * 0.7, S * 0.5, 0, -S * 0.15, 0, c, Plastic, { Tint = true })               -- 몸
-	d(BALL, S * 0.5, S * 0.46, S * 0.48, 0, S * 0.28, -S * 0.04, c, Plastic, { Tint = true })        -- 머리
-	for _, side in ipairs({ -1, 1 }) do
-		d(BLOCK, S * 0.08, S * 0.4, S * 0.08, side * S * 0.18, S * 0.62, 0, horn, Plastic, { Rz = side * -22 })       -- 뿔
-		d(BLOCK, S * 0.5, S * 0.03, S * 0.4, side * S * 0.55, S * 0.1, S * 0.2, dark, Plastic, { Rz = side * 25 })    -- 날개
-		d(BLOCK, S * 0.5, S * 0.05, S * 0.05, side * S * 0.55, S * 0.2, S * 0.2, horn, Plastic, { Rz = side * 25 })
-		d(BLOCK, S * 0.1, S * 0.1, S * 0.3, side * S * 0.35, -S * 0.2, -S * 0.1, c, Plastic, { Tint = true, Rx = -25 }) -- 팔
-		d(BLOCK, S * 0.14, S * 0.3, S * 0.14, side * S * 0.14, -S * 0.52, 0, c, Plastic, { Tint = true })             -- 다리
-	end
-	eyes(d, S, S * 0.3, -S * 0.26, 0.14, Color3.fromRGB(255, 240, 90), 0.13)
-	d(BLOCK, S * 0.22, S * 0.05, S * 0.04, 0, S * 0.14, -S * 0.27, WHITE, Plastic)                    -- 이빨 웃음
-	d(BLOCK, S * 0.05, S * 0.05, S * 0.6, 0, -S * 0.3, S * 0.45, dark, Plastic, { Rx = 25 })        -- 꼬리
-	d(BLOCK, S * 0.2, S * 0.2, S * 0.05, 0, -S * 0.1, S * 0.78, horn, Plastic, { Rz = 45 })          -- 꼬리 끝 화살촉
-	d(BLOCK, S * 0.04, S * 0.9, S * 0.04, S * 0.4, -S * 0.1, -S * 0.3, Color3.fromRGB(120, 90, 60), Wood) -- 삼지창
-	d(BLOCK, S * 0.22, S * 0.04, S * 0.04, S * 0.4, S * 0.36, -S * 0.3, horn, Metal)
+	d(BLOCK, S * 0.05, S * 0.05, S * 0.6, 0, -S * 0.3, S * 0.45, dark, Plastic, { Rx = 25 })                  -- 꼬리
+	d(BLOCK, S * 0.22, S * 0.22, S * 0.05, 0, -S * 0.1, S * 0.78, horn, Plastic, { Rz = 45 })                 -- 꼬리 끝 화살촉
+	d(BLOCK, S * 0.04, S * 1.0, S * 0.04, S * 0.42, -S * 0.05, -S * 0.3, Color3.fromRGB(120, 90, 60), Wood) -- 삼지창 자루
+	d(BLOCK, S * 0.24, S * 0.05, S * 0.05, S * 0.42, S * 0.44, -S * 0.3, horn, Metal)                         -- 삼지창 날
 end
 
 Looks.Knight = function(S, c, d)
@@ -319,87 +296,85 @@ Looks.Knight = function(S, c, d)
 	d(BLOCK, S * 0.2, S * 0.05, S * 0.05, S * 0.52, -S * 0.2, -S * 0.12, gold, Metal)
 end
 
-Looks.Turret = function(S, c, d)
+Looks.Turret = function(S, c, d) -- 마법 포탑: 넓은 받침 + 삼각 다리 + 돔 머리 + 긴 포신 + 붉은 센서 눈 (12부품)
 	local dark = c:Lerp(BLACK, 0.4)
-	d(CYL, S * 0.5, S * 0.9, S * 0.9, 0, -S * 0.3, 0, dark, Metal, { Rz = 90 })                      -- 원통 받침
+	d(CYL, S * 0.35, S * 1.0, S * 1.0, 0, -S * 0.38, 0, dark, Metal, { Rz = 90 })                             -- 넓은 받침
 	for i = 0, 2 do -- 삼각대 다리
 		local a = i / 3 * math.pi * 2
-		d(BLOCK, S * 0.1, S * 0.5, S * 0.1, math.cos(a) * S * 0.42, -S * 0.3, math.sin(a) * S * 0.42, dark, Metal, { Rz = math.cos(a) * 20, Rx = -math.sin(a) * 20 })
+		d(BLOCK, S * 0.12, S * 0.55, S * 0.12, math.cos(a) * S * 0.38, -S * 0.2, math.sin(a) * S * 0.38, dark, Metal, { Rz = math.cos(a) * 20, Rx = -math.sin(a) * 20 })
 	end
-	d(BALL, S * 0.7, S * 0.6, S * 0.7, 0, S * 0.15, 0, c, Metal, { Tint = true })                    -- 포신 머리
-	d(BLOCK, S * 0.22, S * 0.22, S * 0.8, 0, S * 0.18, -S * 0.65, Color3.fromRGB(50, 52, 64), Metal)   -- 포신
-	d(CYL, S * 0.1, S * 0.3, S * 0.3, 0, S * 0.18, -S * 1.04, dark, Metal, { Ry = 90 })              -- 포구 링
-	d(BALL, S * 0.2, S * 0.2, S * 0.2, 0, S * 0.18, -S * 1.06, Color3.fromRGB(150, 110, 255), Neon)
-	d(BALL, S * 0.14, S * 0.14, S * 0.1, 0, S * 0.32, -S * 0.3, Color3.fromRGB(255, 80, 80), Neon)   -- 센서 눈
+	d(BALL, S * 0.7, S * 0.6, S * 0.7, 0, S * 0.15, 0, c, Metal, { Tint = true })                              -- 돔 머리
+	d(BLOCK, S * 0.22, S * 0.22, S * 0.85, 0, S * 0.18, -S * 0.68, Color3.fromRGB(55, 58, 70), Metal)         -- 포신
+	d(CYL, S * 0.1, S * 0.32, S * 0.32, 0, S * 0.18, -S * 1.08, dark, Metal, { Ry = 90 })                      -- 포구 링
+	d(BALL, S * 0.18, S * 0.18, S * 0.18, 0, S * 0.18, -S * 1.1, Color3.fromRGB(150, 120, 235), Neon)
+	d(BALL, S * 0.2, S * 0.2, S * 0.1, 0, S * 0.3, -S * 0.34, Color3.fromRGB(235, 80, 70), Neon)               -- 센서 눈
 	for _, side in ipairs({ -1, 1 }) do
-		d(BLOCK, S * 0.08, S * 0.5, S * 0.08, side * S * 0.4, S * 0.5, S * 0.1, dark, Metal, { Rz = side * -10 }) -- 안테나
+		d(BLOCK, S * 0.08, S * 0.45, S * 0.5, side * S * 0.38, S * 0.28, S * 0.05, dark, Metal, { Rz = side * -12 }) -- 옆 방어판
 	end
 end
 
-Looks.Spider = function(S, c, d)
-	local dark, fang = c:Lerp(BLACK, 0.3), Color3.fromRGB(235, 230, 215)
-	d(BALL, S * 0.7, S * 0.6, S * 0.8, 0, S * 0.0, S * 0.35, c, Plastic, { Tint = true })            -- 배
-	d(BALL, S * 0.5, S * 0.42, S * 0.5, 0, -S * 0.02, -S * 0.18, dark, Plastic, { Tint = true })      -- 머리가슴
-	d(BLOCK, S * 0.2, S * 0.04, S * 0.2, 0, S * 0.3, S * 0.42, Color3.fromRGB(255, 70, 70), Neon, { T = 0.2 }) -- 등의 표식
-	for i = 0, 3 do -- 눈 여러 개
-		d(BALL, S * 0.07, S * 0.07, S * 0.06, (i % 2 == 0 and -1 or 1) * S * (0.07 + (i // 2) * 0.08), S * 0.08 + (i // 2) * S * 0.06, -S * 0.4, Color3.fromRGB(255, 60, 60), Neon)
-	end
+Looks.Spider = function(S, c, d) -- 독거미: 큰 배 + 낮은 머리 + 높게 솟은 꺾인 다리 4쌍 (14부품)
+	local dark, fang = c:Lerp(BLACK, 0.25), Color3.fromRGB(235, 228, 210)
+	d(BALL, S * 0.75, S * 0.65, S * 0.85, 0, S * 0.02, S * 0.4, c, Plastic, { Tint = true })                   -- 큰 배
+	d(BALL, S * 0.48, S * 0.4, S * 0.48, 0, -S * 0.04, -S * 0.18, dark, Plastic, { Tint = true })             -- 머리가슴
+	eyes(d, S, S * 0.06, -S * 0.38, 0.1, Color3.fromRGB(240, 70, 60), 0.11)
 	for _, side in ipairs({ -1, 1 }) do
-		d(BLOCK, S * 0.05, S * 0.18, S * 0.05, side * S * 0.08, -S * 0.2, -S * 0.46, fang, Plastic)  -- 송곳니
-		for i = 0, 3 do -- 다리 4쌍: 허벅지는 위로, 정강이는 아래로 꺾인다
-			local z = -S * 0.25 + i * S * 0.2
-			local lean = (i - 1.5) * 12
-			d(BLOCK, S * 0.5, S * 0.06, S * 0.06, side * S * 0.5, S * 0.12, z, dark, Plastic, { Rz = side * 35, Ry = side * lean })
-			d(BLOCK, S * 0.06, S * 0.55, S * 0.06, side * S * 0.82, -S * 0.2, z + lean * 0.004 * S, dark, Plastic, { Rz = side * -12 })
+		d(BLOCK, S * 0.05, S * 0.2, S * 0.05, side * S * 0.08, -S * 0.2, -S * 0.44, fang, Plastic, { Rx = 15 }) -- 송곳니
+		for i = 0, 3 do -- 다리: 위로 솟았다 아래로 꺾이는 긴 막대 하나
+			local lean = (i - 1.5) * 16
+			d(BLOCK, S * 0.8, S * 0.07, S * 0.07, side * S * 0.62, -S * 0.02, -S * 0.2 + i * S * 0.22, dark, Plastic, { Rz = side * -38, Ry = side * lean })
 		end
 	end
 end
 
-Looks.Wisp = function(S, c, d) -- 도깨비불: 불꽃 핵 + 꼬리불 + 도는 작은 불꽃
-	d(BALL, S * 0.7, S * 0.8, S * 0.7, 0, S * 0.05, 0, c, Neon, { Tint = true, T = 0.2 })
-	d(BALL, S * 0.4, S * 0.5, S * 0.4, 0, S * 0.1, 0, WHITE, Neon, { T = 0.3 })
-	for i = 1, 4 do
-		d(BALL, S * (0.5 - i * 0.09), S * (0.5 - i * 0.09), S * (0.5 - i * 0.09), math.sin(i) * S * 0.08, -S * (0.2 + i * 0.16), S * (0.1 * i), c, Neon, { Tint = true, T = 0.25 + i * 0.1 })
+Looks.Wisp = function(S, c, d) -- 도깨비불: 눈물방울 모양 불꽃 + 흩날리는 꼬리불 + 도는 곁불 (10부품 + 입자 1)
+	d(BALL, S * 0.7, S * 0.8, S * 0.7, 0, S * 0.0, 0, c, Neon, { Tint = true, T = 0.25 })
+	d(BALL, S * 0.36, S * 0.46, S * 0.36, 0, S * 0.04, 0, c:Lerp(WHITE, 0.7), Neon, { T = 0.35 })               -- 밝은 속불
+	d(BLOCK, S * 0.14, S * 0.45, S * 0.14, 0, S * 0.55, 0, c, Neon, { Tint = true, T = 0.35, Rz = 14 })        -- 위로 솟는 불꽃 끝
+	for i = 1, 3 do
+		d(BALL, S * (0.5 - i * 0.12), S * (0.55 - i * 0.12), S * (0.5 - i * 0.12), math.sin(i * 1.7) * S * 0.12, -S * (0.3 + i * 0.2), S * 0.12 * i, c, Neon, { Tint = true, T = 0.3 + i * 0.12 })
 	end
-	d(BLOCK, S * 0.12, S * 0.3, S * 0.12, 0, S * 0.5, 0, c, Neon, { Tint = true, T = 0.3, Rz = 12 })    -- 위로 솟는 불꽃 끝
 	for _, side in ipairs({ -1, 1 }) do
-		d(BALL, S * 0.14, S * 0.2, S * 0.06, side * S * 0.16, S * 0.12, -S * 0.34, Color3.fromRGB(20, 60, 50), Plastic) -- 눈
-		d(BALL, S * 0.14, S * 0.14, S * 0.14, side * S * 0.55, S * 0.1, S * 0.1, c, Neon, { T = 0.3 })    -- 곁불
+		d(BALL, S * 0.14, S * 0.22, S * 0.06, side * S * 0.16, S * 0.08, -S * 0.34, Color3.fromRGB(20, 55, 45), Plastic) -- 눈
 	end
+	d(BALL, S * 0.16, S * 0.16, S * 0.16, S * 0.6, S * 0.1, S * 0.1, c, Neon, { T = 0.35 })                    -- 곁불
 	local glow = Instance.new("ParticleEmitter")
-	glow.Rate = 45
+	glow.Rate = 25
 	glow.Lifetime = NumberRange.new(0.4, 0.8)
 	glow.Speed = NumberRange.new(1, 3)
 	glow.SpreadAngle = Vector2.new(180, 180)
 	glow.LightEmission = 1
-	glow.Color = ColorSequence.new(Color3.fromRGB(120, 255, 200))
+	glow.Color = ColorSequence.new(c)
 	glow.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, S * 0.5), NumberSequenceKeypoint.new(1, 0) })
 	glow.Parent = d.Body
 end
 
-Looks.Healer = function(S, c, d) -- 치유 사제: 빛나는 몸 + 후광 + 머리 위의 초록 십자
-	local green = Color3.fromRGB(120, 255, 170)
-	d(BALL, S * 0.8, S * 0.9, S * 0.8, 0, 0, 0, c, Neon, { Tint = true, T = 0.2 })
-	d(CYL, S * 0.06, S * 0.95, S * 0.95, 0, S * 0.62, 0, Color3.fromRGB(220, 255, 235), Neon, { Rz = 90 })
-	d(BLOCK, S * 0.12, S * 0.5, S * 0.12, 0, S * 1.05, 0, green, Neon)
-	d(BLOCK, S * 0.5, S * 0.12, S * 0.12, 0, S * 1.05, 0, green, Neon)
-	eyes(d, S, S * 0.1, -S * 0.36, 0.17, Color3.fromRGB(255, 255, 255), 0.14)
-end
-Looks.Totem = function(S, c, d)
-	local dark, red = c:Lerp(BLACK, 0.35), Color3.fromRGB(190, 60, 60)
-	d(BLOCK, S * 0.75, S * 0.5, S * 0.75, 0, -S * 0.3, 0, c, Wood, { Tint = true })                  -- 아래 토막
-	d(BLOCK, S * 0.65, S * 0.5, S * 0.65, 0, S * 0.15, 0, dark, Wood)                                -- 가운데 토막
-	d(BLOCK, S * 0.8, S * 0.5, S * 0.8, 0, S * 0.6, 0, red, Wood, { Tint = true })                   -- 얼굴 토막
-	eyes(d, S, S * 0.66, -S * 0.4, 0.2, Color3.fromRGB(255, 220, 80), 0.18)
-	d(BLOCK, S * 0.4, S * 0.1, S * 0.05, 0, S * 0.5, -S * 0.41, Color3.new(0.1, 0.05, 0.05), Plastic)  -- 입
+Looks.Healer = function(S, c, d) -- 치유 사제: 둥근 몸 + 긴 로브 + 머리 위 후광 + 십자 + 모은 손 (9부품)
+	local cream, green = Color3.fromRGB(235, 240, 225), Color3.fromRGB(130, 220, 160)
+	d(BALL, S * 0.75, S * 0.85, S * 0.75, 0, S * 0.08, 0, c, Plastic, { Tint = true, T = 0.2 })
+	d(CYL, S * 0.45, S * 1.0, S * 1.0, 0, -S * 0.32, 0, cream, Plastic, { Rz = 90 })                           -- 하얀 로브 자락
+	d(CYL, S * 0.05, S * 0.9, S * 0.9, 0, S * 0.7, 0, Color3.fromRGB(245, 225, 140), Neon, { Rz = 90 })        -- 후광
+	d(BLOCK, S * 0.1, S * 0.44, S * 0.1, 0, S * 1.1, 0, green, Neon)                                          -- 십자 세로
+	d(BLOCK, S * 0.4, S * 0.1, S * 0.1, 0, S * 1.14, 0, green, Neon)                                          -- 십자 가로
+	eyes(d, S, S * 0.14, -S * 0.34, 0.15, Color3.fromRGB(250, 250, 235), 0.12)
 	for _, side in ipairs({ -1, 1 }) do
-		d(BLOCK, S * 0.5, S * 0.12, S * 0.12, side * S * 0.55, S * 0.1, 0, dark, Wood, { Rz = side * 15 })  -- 양 날개 막대
-		for k = 0, 2 do
-			d(BLOCK, S * 0.08, S * 0.35, S * 0.04, side * (S * 0.5 + k * S * 0.12), -S * 0.1, 0, k % 2 == 0 and red or Color3.fromRGB(80, 160, 200), Plastic) -- 깃털
-		end
-		d(BLOCK, S * 0.1, S * 0.4, S * 0.1, side * S * 0.3, S * 1.0, 0, dark, Wood, { Rz = side * -20 })    -- 뿔
+		d(BALL, S * 0.16, S * 0.16, S * 0.16, side * S * 0.2, -S * 0.1, -S * 0.38, cream, Plastic)            -- 모은 손
 	end
-	d(BALL, S * 0.3, S * 0.3, S * 0.3, 0, S * 1.05, 0, Color3.fromRGB(255, 80, 80), Neon)           -- 꼭대기 저주 구슬
+end
+
+Looks.Totem = function(S, c, d) -- 저주 토템: 3단 기둥 + 얼굴 + 양 날개 + 뿔 + 꼭대기 구슬 (13부품)
+	local dark, red, teal = c:Lerp(BLACK, 0.35), Color3.fromRGB(165, 65, 60), Color3.fromRGB(70, 140, 165)
+	d(BLOCK, S * 0.75, S * 0.5, S * 0.75, 0, -S * 0.3, 0, c, Wood, { Tint = true })                            -- 아래 토막
+	d(BLOCK, S * 0.62, S * 0.5, S * 0.62, 0, S * 0.15, 0, dark, Wood)                                          -- 가운데 토막
+	d(BLOCK, S * 0.85, S * 0.5, S * 0.85, 0, S * 0.6, 0, red, Wood, { Tint = true })                           -- 얼굴 토막 (제일 넓다)
+	eyes(d, S, S * 0.66, -S * 0.43, 0.2, Color3.fromRGB(240, 210, 90), 0.16)
+	d(BLOCK, S * 0.42, S * 0.1, S * 0.05, 0, S * 0.5, -S * 0.44, Color3.new(0.1, 0.05, 0.05), Plastic)        -- 입
+	for _, side in ipairs({ -1, 1 }) do
+		d(BLOCK, S * 0.7, S * 0.12, S * 0.14, side * S * 0.62, S * 0.15, 0, dark, Wood, { Rz = side * 12 })    -- 양 날개 막대
+		d(BLOCK, S * 0.5, S * 0.3, S * 0.05, side * S * 0.7, -S * 0.08, 0, teal, Plastic, { Rz = side * 12 })  -- 날개 깃
+		d(BLOCK, S * 0.1, S * 0.45, S * 0.1, side * S * 0.32, S * 1.0, 0, dark, Wood, { Rz = side * -22 })     -- 뿔
+	end
+	d(BALL, S * 0.28, S * 0.28, S * 0.28, 0, S * 1.05, 0, Color3.fromRGB(235, 90, 80), Neon)                   -- 꼭대기 저주 구슬
 end
 
 function M.Build(typeKey, size, color, position, parent)
