@@ -488,8 +488,8 @@ local function updateNameplate(player)
 	if not gui then
 		gui = Instance.new("BillboardGui")
 		gui.Name = "Nameplate"
-		gui.Size = UDim2.new(0, 190, 0, 68)
-		gui.StudsOffset = Vector3.new(0, 5, 0) -- 머리 위로 높이 (총 / 조준점과 겹치지 않게)
+		gui.Size = UDim2.new(0, 190, 0, 42)
+		gui.StudsOffset = Vector3.new(0, 4.4, 0) -- 머리 위로 높이 (총 / 조준점과 겹치지 않게)
 		gui.MaxDistance = 70
 		gui.Parent = head
 
@@ -505,26 +505,18 @@ local function updateNameplate(player)
 			label.TextStrokeTransparency = 0.3
 			label.Parent = gui
 		end
-		addLabel("PlayerName", 0, 0.27, Enum.Font.GothamBold)
-		addLabel("Power", 0.27, 0.25, Enum.Font.GothamBlack)
-		addLabel("WeaponLevel", 0.52, 0.28, Enum.Font.GothamBlack)
-		addLabel("Zone", 0.8, 0.2, Enum.Font.GothamMedium)
+		-- 머리 위에는 이름과 전투력만 (무기 / 구역 기록은 메뉴에서 본다)
+		addLabel("PlayerName", 0, 0.45, Enum.Font.GothamBold)
+		addLabel("Power", 0.45, 0.55, Enum.Font.GothamBlack)
 	end
 
-	local level = player:GetAttribute("WeaponLevel") or 0
-	local tier = Config.GetWeaponTier(level)
 	local inParty = (player:GetAttribute("PartyId") or 0) ~= 0
-	local maxZone = player:GetAttribute("MaxZone") or 0
 
 	local title = player:GetAttribute("Title") or ""
 	gui.PlayerName.Text = (inParty and "[파티] " or "") .. (title ~= "" and ("『" .. title .. "』 ") or "") .. player.DisplayName
 	local prestige = player:GetAttribute("Prestige") or 0
-	gui.Power.Text = string.format("%sLv.%d  ⚡ 전투력 %d", prestige > 0 and ("🌟" .. prestige .. " ") or "", player:GetAttribute("Level") or 1, player:GetAttribute("Power") or 0)
+	gui.Power.Text = string.format("%s⚡ 전투력 %d", prestige > 0 and ("🌟" .. prestige .. " ") or "", player:GetAttribute("Power") or 0)
 	gui.Power.TextColor3 = Color3.fromRGB(255, 225, 110)
-	gui.WeaponLevel.Text = Config.FormatWeapon(level)
-	gui.WeaponLevel.TextColor3 = tier.Rainbow and Color3.fromRGB(255, 120, 255) or tier.Color
-	gui.Zone.Text = maxZone > 0 and string.format("🏔 필드 %d구역 돌파", maxZone) or ""
-	gui.Zone.TextColor3 = Color3.fromRGB(150, 220, 255)
 end
 
 Weapon.UpdateNameplate = updateNameplate
