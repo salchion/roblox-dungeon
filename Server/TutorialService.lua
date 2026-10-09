@@ -59,7 +59,7 @@ local function send(player)
 	end
 	Remotes.Tutorial:FireClient(player, "Step", {
 		Index = state.Step, Total = #Steps, Text = step.Text, Progress = state.Progress, Goal = step.Goal,
-		Target = targets[step.Target], TargetName = step.TargetName,
+		Target = targets[step.Target], TargetName = step.TargetName, Highlight = step.Highlight,
 	})
 end
 

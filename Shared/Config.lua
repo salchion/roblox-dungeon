@@ -119,7 +119,7 @@ Config.Tutorial = {
 		-- 이야기: 필드는 아직 너무 강하다 -> 쓰러져서 마을로 -> 성장(훈련) -> 던전에서 장비 -> 10연 뽑기 -> 다시 필드는 쉽다
 		{ Text = "동쪽 필드로 나가서 몬스터와 싸워보세요! ...어딘가 불길한 기운이 느껴져요. 무슨 일이 일어날지도 몰라요. 조심하세요!", Stat = "FieldDeaths", Goal = 1, Target = "Field", TargetName = "필드 입구", Doom = true,
 			Reward = { Gold = 300, Keys = 1, Xp = 100 } },
-		{ Text = "아직 너무 약해요! 메뉴(I) → 성장 탭에서 훈련을 시작하세요. 훈련하면 영구적으로 강해져요", Stat = "Trains", Goal = 1,
+		{ Text = "아직 너무 약해요! 메뉴(I) → 성장 탭에서 훈련을 시작하세요. 훈련하면 영구적으로 강해져요", Stat = "Trains", Goal = 1, Highlight = "Menu",
 			Reward = { Gold = 400, Xp = 100 } },
 		{ Text = "북쪽 던전 게이트에서 던전에 들어가 웨이브를 2번 막아내세요! (열쇠 1개, 달성 후 던전에서 나오면 티켓 10장 보상!)", Stat = "DungeonWaves", Goal = 2, Target = "Gate", TargetName = "던전 게이트", AfterDungeon = true,
 			Reward = { Tickets = 10, Gold = 600, Xp = 200 } },

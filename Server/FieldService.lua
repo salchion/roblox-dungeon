@@ -1304,6 +1304,7 @@ function Field.HitPart(player, part, damage)
 	local data = monsters[part]
 	if not data or not part.Parent then return false end
 	if not canHitZone(player, part.Position.X) then return false end
+	if data.Invincible then damage = 1 end
 	data.Health -= damage
 	if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
 	data.LastHit = os.clock()
@@ -1331,6 +1332,7 @@ function Field.AreaDamage(player, center, radius, damage)
 		local data = target.Data
 		if monsters[target.Part] == data then
 			table.insert(positions, target.Part.Position)
+			if data.Invincible then damage = 1 end
 			data.Health -= damage
 			if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
 			data.LastHit = os.clock()
@@ -1370,6 +1372,7 @@ function Field.Shoot(player, origin, direction)
 	if data then
 		player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1) -- 궁극기 게이지는 실제로 맞혔을 때만 찬다
 		local damage, isCrit = Dungeon.ComputeDamage(player)
+		if data.Invincible then damage, isCrit = 1, false end -- 최후의 군주: 맞는 느낌만 (피해는 1)
 		-- 로켓 런처 / 플라즈마 캐논: 맞은 곳 주변 적에게도 피해
 		local splash = Config.GetPlayerWeapon(player).Splash
 		if splash then
@@ -2500,14 +2503,14 @@ local function doomWave(player, zone)
 	place(CFrame.lookAt(bossPos, bossPos + Vector3.new(0, 0, 1)), 0)
 
 	-- 맞출 수 있는 몬스터로 등록한다 (체력이 바닥나지 않게 8% 밑으로는 안 떨어진다)
-	local fill = createHealthBar(body, "💀 최후의 군주", 360, rgb(255, 90, 90))
-	body.Parent = model
+	local fill = createHealthBar(body, "💀 Lv.???  ???", 360, rgb(255, 90, 90))
+	body.Parent = monstersFolder -- 필드 몬스터 폴더에 두어야 총알 판정 / 자동 조준이 잡는다 (장식 부품은 모델에 남는다)
 	CollectionService:AddTag(body, "Monster")
 	CollectionService:AddTag(body, "RadarBoss")
 	local data = {
 		Static = true, Invincible = true, Doom = true, Zone = 1, Aggro = true, Goblin = false,
-		Health = 3000, MaxHealth = 3000, HealthFill = fill, Contrib = {}, Level = 1, XpLevel = 1,
-		Stats = { Size = 20, MaxHealth = 3000, Speed = 0, ShotDamage = 0, ShotInterval = 99, ShotSpeed = 0, Gold = 0 },
+		Health = 1e9, MaxHealth = 1e9, HealthFill = fill, Contrib = {}, Level = 1, XpLevel = 1,
+		Stats = { Size = 20, MaxHealth = 1e9, Speed = 0, ShotDamage = 0, ShotInterval = 99, ShotSpeed = 0, Gold = 0 },
 		Home = bossPos, BossLike = true, Kind = "DoomLord",
 	}
 	monsters[body] = data
@@ -2672,6 +2675,7 @@ local function doomWave(player, zone)
 	-- 마지막: 아레나 전체가 붉게 물든다 — 어디에도 안전한 곳이 없다
 	if alive() then
 		notify(player, "💀 군주가 모든 힘을 모은다... 피할 곳이 없다!!")
+		Remotes.Tutorial:FireClient(player, "Cinema", "Start")
 		shake(0.9)
 		local flood = Instance.new("Part")
 		flood.Shape = Enum.PartType.Cylinder
@@ -2707,10 +2711,12 @@ local function doomWave(player, zone)
 			ring(center, 90, rgb(255, 90, 60), 1.0)
 			Effects.Burst(r.Position, rgb(255, 80, 60), 160)
 			shake(1)
-			task.wait(0.2)
+			Remotes.Tutorial:FireClient(player, "Cinema", "Blast")
+			task.wait(0.35)
 			local _, h = getAliveParts(player)
 			if h then
-				notify(player, "💀 압도적인 힘에 쓰러졌어요...")
+				Remotes.Tutorial:FireClient(player, "Cinema", "Black")
+				task.wait(0.5)
 				h.Health = 0
 			end
 		end
@@ -2720,16 +2726,20 @@ local function doomWave(player, zone)
 
 	running = false
 	monsters[body] = nil
-	task.delay(4, function()
+	body:Destroy()
+	task.delay(4.5, function()
 		player:SetAttribute("InDoomArena", nil)
 		arena:Destroy()
+		Remotes.Tutorial:FireClient(player, "Cinema", "End")
 	end)
 end
 
 local function updateDoom()
 	local anyDoom = false
 	for _, player in ipairs(Players:GetPlayers()) do
-		if player:GetAttribute("TutorialDoom") and player:GetAttribute("Zone") == "Field" then
+		if player:GetAttribute("InDoomArena") then
+			anyDoom = true -- 소환 결투 중에는 군주 / 연출을 건드리지 않는다
+		elseif player:GetAttribute("TutorialDoom") and player:GetAttribute("Zone") == "Field" then
 			local root, humanoid = getAliveParts(player)
 			if root and not isSafe(root.Position) then
 				anyDoom = true

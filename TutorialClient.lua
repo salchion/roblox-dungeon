@@ -178,7 +178,144 @@ local function placeWaypoint(position, name)
 	}, billboard)
 end
 
+-- 영화 같은 연출 (최후의 군주): 위아래 검은 띠 + 색 바랜 화면 + 줌 -> 하얀 섬광 -> 암전 + 자막 -> (마을에서) 서서히 밝아짐
+local Lighting = game:GetService("Lighting")
+local cinema = {}
+do
+	local function bar(position)
+		local frame = create("Frame", { Size = UDim2.new(1, 0, 0, 0), Position = position, AnchorPoint = Vector2.new(0, position.Y.Scale), BackgroundColor3 = Color3.new(0, 0, 0), BorderSizePixel = 0, ZIndex = 90 }, gui)
+		return frame
+	end
+	cinema.Top = bar(UDim2.new(0, 0, 0, 0))
+	cinema.Bottom = bar(UDim2.new(0, 0, 1, 0))
+	cinema.Flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 95 }, gui)
+	cinema.Black = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 96 }, gui)
+	cinema.Text = label({ Size = UDim2.new(1, 0, 0, 80), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), TextSize = 44, Font = Enum.Font.GothamBlack,
+		TextTransparency = 1, TextStrokeTransparency = 1, ZIndex = 97, Text = "…………" }, gui)
+	cinema.Color = Instance.new("ColorCorrectionEffect")
+	cinema.Color.Enabled = false
+	cinema.Color.Parent = Lighting
+end
+local function cinemaPlay(phase)
+	local camera = workspace.CurrentCamera
+	if phase == "Start" then
+		TweenService:Create(cinema.Top, TweenInfo.new(0.8), { Size = UDim2.new(1, 0, 0.13, 0) }):Play()
+		TweenService:Create(cinema.Bottom, TweenInfo.new(0.8), { Size = UDim2.new(1, 0, 0.13, 0) }):Play()
+		cinema.Color.Enabled = true
+		TweenService:Create(cinema.Color, TweenInfo.new(2.2), { Saturation = -0.75, Contrast = 0.35, Brightness = -0.08, TintColor = Color3.fromRGB(255, 200, 200) }):Play()
+		if camera then TweenService:Create(camera, TweenInfo.new(2.6, Enum.EasingStyle.Quad), { FieldOfView = 48 }):Play() end
+	elseif phase == "Blast" then
+		cinema.Flash.BackgroundTransparency = 0
+		TweenService:Create(cinema.Flash, TweenInfo.new(0.7), { BackgroundTransparency = 1 }):Play()
+		if camera then TweenService:Create(camera, TweenInfo.new(0.35), { FieldOfView = 32 }):Play() end
+		TweenService:Create(cinema.Color, TweenInfo.new(0.3), { Saturation = -1, Contrast = 0.6 }):Play()
+	elseif phase == "Black" then
+		TweenService:Create(cinema.Black, TweenInfo.new(0.5), { BackgroundTransparency = 0 }):Play()
+		TweenService:Create(cinema.Text, TweenInfo.new(0.6), { TextTransparency = 0, TextStrokeTransparency = 0.4 }):Play()
+	elseif phase == "End" then
+		cinema.Black.BackgroundTransparency = 0
+		TweenService:Create(cinema.Black, TweenInfo.new(1.4), { BackgroundTransparency = 1 }):Play()
+		TweenService:Create(cinema.Text, TweenInfo.new(0.5), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+		TweenService:Create(cinema.Top, TweenInfo.new(0.8), { Size = UDim2.new(1, 0, 0, 0) }):Play()
+		TweenService:Create(cinema.Bottom, TweenInfo.new(0.8), { Size = UDim2.new(1, 0, 0, 0) }):Play()
+		TweenService:Create(cinema.Color, TweenInfo.new(0.8), { Saturation = 0, Contrast = 0, Brightness = 0, TintColor = Color3.new(1, 1, 1) }):Play()
+		if camera then camera.FieldOfView = 70 end
+		task.delay(1, function() cinema.Color.Enabled = false end)
+	end
+end
+
+-- 스포트라이트 튜토리얼: 화면 전체를 어둡게 하고 눌러야 할 버튼만 밝게 뚫어서 거기로만 유도한다 (다른 곳은 눌러도 반응 없음)
+--   "메뉴를 열어라" 미션: 메뉴 버튼 -> (메뉴가 열리면) 성장 탭 -> 훈련 시작 버튼 순서로 하나씩 가리킨다
+local highlightToken = 0
+local spot = {}
+do
+	local function dim(name)
+		return create("TextButton", { Name = name, Text = "", AutoButtonColor = false, Active = true, BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.4,
+			BorderSizePixel = 0, ZIndex = 80, Visible = false }, gui)
+	end
+	spot.Top, spot.Bottom, spot.Left, spot.Right = dim("SpotTop"), dim("SpotBottom"), dim("SpotLeft"), dim("SpotRight")
+	spot.Ring = create("Frame", { Name = "SpotRing", BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 81, Visible = false }, gui)
+	create("UICorner", { CornerRadius = UDim.new(0, 12) }, spot.Ring)
+	local ringStroke = create("UIStroke", { Color = Color3.fromRGB(255, 225, 80), Thickness = 4 }, spot.Ring)
+	TweenService:Create(ringStroke, TweenInfo.new(0.55, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 10 }):Play()
+	spot.Arrow = label({ Name = "SpotArrow", Size = UDim2.new(0, 260, 0, 40), BackgroundColor3 = Color3.fromRGB(255, 225, 80), BackgroundTransparency = 0,
+		TextSize = 20, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(40, 28, 0), TextStrokeTransparency = 1, ZIndex = 82, Visible = false, Text = "" }, gui)
+	create("UICorner", { CornerRadius = UDim.new(0, 10) }, spot.Arrow)
+end
+local function spotHide()
+	for _, part in pairs(spot) do part.Visible = false end
+end
+local function spotShow(target, text)
+	local scale = (gui:FindFirstChildOfClass("UIScale") and gui:FindFirstChildOfClass("UIScale").Scale) or 1
+	local pad = 8
+	local position = target.AbsolutePosition / scale - Vector2.new(pad, pad)
+	local size = target.AbsoluteSize / scale + Vector2.new(pad * 2, pad * 2)
+	local x0, y0, x1, y1 = position.X, position.Y, position.X + size.X, position.Y + size.Y
+	spot.Top.Position, spot.Top.Size = UDim2.new(0, 0, 0, 0), UDim2.new(1, 0, 0, y0)
+	spot.Bottom.Position, spot.Bottom.Size = UDim2.new(0, 0, 0, y1), UDim2.new(1, 0, 1, -y1)
+	spot.Left.Position, spot.Left.Size = UDim2.new(0, 0, 0, y0), UDim2.new(0, x0, 0, y1 - y0)
+	spot.Right.Position, spot.Right.Size = UDim2.new(0, x1, 0, y0), UDim2.new(1, -x1, 0, y1 - y0)
+	spot.Ring.Position, spot.Ring.Size = UDim2.new(0, x0, 0, y0), UDim2.new(0, size.X, 0, size.Y)
+	-- 말풍선: 대상 오른쪽 (화면 오른쪽 끝이면 아래쪽)
+	local viewport = workspace.CurrentCamera.ViewportSize / scale
+	if x1 + 280 < viewport.X then
+		spot.Arrow.Position = UDim2.new(0, x1 + 12, 0, y0 + (y1 - y0) / 2 - 20)
+		spot.Arrow.Text = "◀ " .. text
+	else
+		spot.Arrow.Position = UDim2.new(0, math.max(8, x0 - 40), 0, y1 + 12)
+		spot.Arrow.Text = "▲ " .. text
+	end
+	for _, part in pairs(spot) do part.Visible = true end
+end
+local function runHighlight(kind)
+	highlightToken += 1
+	local token = highlightToken
+	spotHide()
+	if kind ~= "Menu" then return end
+	task.spawn(function()
+		while token == highlightToken do
+			local hud = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("HUD")
+			local target, text
+			if hud then
+				local menuButton, growthTab, trainButton
+				for _, descendant in ipairs(hud:GetDescendants()) do
+					if descendant:IsA("TextButton") and descendant.Visible then
+						if descendant.Text == "📋 메뉴 (I)" then menuButton = descendant end
+						if descendant.Text == "성장" and descendant.Parent and descendant.Parent.Visible then growthTab = descendant end
+						if descendant.Text == "훈련 시작" and not trainButton then trainButton = descendant end
+					end
+				end
+				if growthTab then
+					if growthTab.BackgroundColor3.B < 0.8 then
+						target, text = growthTab, "성장 탭을 눌러요!"
+					elseif trainButton then
+						target, text = trainButton, "훈련 시작을 눌러요!"
+					end
+				elseif menuButton then
+					target, text = menuButton, "메뉴를 열어요! (I)"
+				end
+			end
+			if target and target.AbsoluteSize.X > 0 then
+				spotShow(target, text)
+			else
+				spotHide()
+			end
+			task.wait(0.1)
+		end
+		spotHide()
+	end)
+end
+
 Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
+	if action == "Step" then
+		runHighlight(data.Highlight)
+	elseif action ~= "Cinema" and action ~= "Waypoint" and action ~= "WaypointClear" then
+		runHighlight(nil)
+	end
+	if action == "Cinema" then
+		cinemaPlay(data)
+		return
+	end
 	if action == "Waypoint" then
 		placeWaypoint(data.Pos, data.Name)
 		return
