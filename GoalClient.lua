@@ -77,6 +77,7 @@ golden.Parent = gui
 addCorner(golden, 8)
 local goldenStroke = Instance.new("UIStroke")
 goldenStroke.Thickness = 2
+goldenStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border -- 기본값은 글자 테두리라서 글씨가 뭉개졌다: 상자 테두리로만 쓴다
 goldenStroke.Color = Color3.fromRGB(255, 200, 70)
 goldenStroke.Parent = golden
 
