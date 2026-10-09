@@ -499,8 +499,9 @@ Remotes.Gear.OnServerEvent:Connect(function(player, action, arg)
 		else
 			-- 여러 개 동시에 뽑기 (최대 10연): 티켓이 모자라면 있는 만큼만 뽑는다
 			local rolls, failMessage = {}, nil
-			for _ = 1, count do
-				local ok, message, roll = Gear.Roll(player)
+			local heroAt = (player:GetAttribute("TutorialRoll") == "Hero" and not player:GetAttribute("TutorialHero") and count >= 10) and math.random(count) or nil
+			for index = 1, count do
+				local ok, message, roll = Gear.Roll(player, index == heroAt and 3 or nil)
 				if not ok then
 					failMessage = message
 					break
