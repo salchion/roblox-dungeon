@@ -379,10 +379,374 @@ builders.Necklace = function(character, folder, tier, glow, t)
 	end
 end
 
+------------------------------------------------------------
+-- 구역 세트 외형: 세트(Zone1~8)마다 색 / 재질 / 실루엣 / 발광 / 입자가 다르다.
+--   기본 등급 장식 위에 세트 색을 입히고(tint) 부위별 고유 장식을 덧붙인다.
+--   같은 세트 2부위 이상: 빛나는 띠 + 머리 위 떠 있는 상징 / 3부위 이상: 몸 둘레의 작은 상징 + 입자 한 줄 더.
+--   모두 정적인 용접 부품이다 (서버에서 매 프레임 움직이지 않는다).
+------------------------------------------------------------
+local BALL, CYLS, NEON = Enum.PartType.Ball, Enum.PartType.Cylinder, Enum.Material.Neon
+
+local function ang(x, y, z) return CFrame.Angles(math.rad(x or 0), math.rad(y or 0), math.rad(z or 0)) end
+
+local SET_STYLE = {
+	Zone1 = { main = rgb(110, 190, 80), accent = rgb(255, 225, 120), glow = rgb(190, 255, 140), mat = Enum.Material.Grass },
+	Zone2 = { main = rgb(45, 115, 65), accent = rgb(120, 85, 50), glow = rgb(170, 255, 190), mat = Enum.Material.Wood },
+	Zone3 = { main = rgb(150, 135, 115), accent = rgb(95, 85, 75), glow = rgb(255, 215, 140), mat = Enum.Material.Slate },
+	Zone4 = { main = rgb(235, 190, 90), accent = rgb(255, 245, 215), glow = rgb(255, 200, 60), mat = Enum.Material.Sandstone },
+	Zone5 = { main = rgb(165, 225, 255), accent = rgb(240, 252, 255), glow = rgb(140, 230, 255), mat = Enum.Material.Ice },
+	Zone6 = { main = rgb(48, 32, 30), accent = rgb(130, 40, 20), glow = rgb(255, 130, 40), mat = Enum.Material.Basalt },
+	Zone7 = { main = rgb(42, 26, 72), accent = rgb(110, 60, 190), glow = rgb(200, 140, 255), mat = Enum.Material.Slate },
+	Zone8 = { main = rgb(22, 10, 40), accent = rgb(120, 40, 160), glow = rgb(255, 90, 190), mat = Enum.Material.Glass },
+}
+
+-- 세트마다 은은한 입자 한 줄 (낮은 Rate)
+local SET_FX = {
+	Zone1 = { Rate = 4, Life = NumberRange.new(1.5, 2.5), Speed = NumberRange.new(0.3, 1), Accel = Vector3.new(0.4, -1.5, 0), Size = 0.32, Light = 0.2 }, -- 떨어지는 잎
+	Zone2 = { Rate = 4, Life = NumberRange.new(1.5, 2.5), Speed = NumberRange.new(0.2, 0.8), Accel = Vector3.new(0, 0.8, 0), Size = 0.22, Light = 1 },   -- 반딧불
+	Zone3 = { Rate = 4, Life = NumberRange.new(1, 1.8), Speed = NumberRange.new(0.2, 0.8), Accel = Vector3.new(0, -2.5, 0), Size = 0.25, Light = 0 },    -- 돌가루
+	Zone4 = { Rate = 5, Life = NumberRange.new(1, 1.8), Speed = NumberRange.new(1, 2.5), Accel = Vector3.new(2, 0.3, 0), Size = 0.22, Light = 0.6 },     -- 모래 바람
+	Zone5 = { Rate = 5, Life = NumberRange.new(1.5, 2.5), Speed = NumberRange.new(0.2, 0.8), Accel = Vector3.new(0, -1.8, 0), Size = 0.26, Light = 0.8 }, -- 눈송이
+	Zone6 = { Rate = 6, Life = NumberRange.new(0.8, 1.4), Speed = NumberRange.new(1, 3), Accel = Vector3.new(0, 6, 0), Size = 0.2, Light = 1 },           -- 불씨
+	Zone7 = { Rate = 4, Life = NumberRange.new(1.2, 2), Speed = NumberRange.new(0.3, 1), Accel = Vector3.new(0, 2, 0), Size = 0.4, Light = 0.5 },        -- 그림자 연기
+	Zone8 = { Rate = 5, Life = NumberRange.new(1.2, 2), Speed = NumberRange.new(0.5, 1.5), Accel = Vector3.new(0, 1, 0), Size = 0.28, Light = 1 },       -- 공허 입자
+}
+
+-- 머리 위에 떠 있는 세트 상징 (2부위 이상) : 모양 / 크기 / 재질 / 기울기
+local SET_MOTIF = {
+	Zone1 = { Size = Vector3.new(0.12, 0.8, 0.45), Rot = ang(0, 0, 25), Mat = Enum.Material.Grass },        -- 잎
+	Zone2 = { Shape = BALL, Size = Vector3.new(0.5, 0.5, 0.5), Mat = NEON },                                -- 반딧불 구슬
+	Zone3 = { Size = Vector3.new(0.45, 0.45, 0.45), Rot = ang(45, 45, 0), Mat = Enum.Material.Slate },     -- 룬 돌
+	Zone4 = { Shape = CYLS, Size = Vector3.new(0.08, 0.95, 0.95), Rot = ang(0, 90, 0), Mat = NEON },        -- 태양 원반
+	Zone5 = { Size = Vector3.new(0.3, 0.8, 0.3), Rot = ang(20, 0, 20), Mat = Enum.Material.Ice },          -- 얼음 결정
+	Zone6 = { Shape = BALL, Size = Vector3.new(0.55, 0.55, 0.55), Mat = NEON },                             -- 용암 구슬
+	Zone7 = { Shape = BALL, Size = Vector3.new(0.5, 0.65, 0.5), Mat = NEON, Trans = 0.45 },                -- 그림자 도깨비불
+	Zone8 = { Shape = BALL, Size = Vector3.new(0.6, 0.6, 0.6), Mat = Enum.Material.Glass, Ring = true },   -- 공허 구슬
+}
+
+local function A(folder, limb, size, off, color, mat, shape, trans)
+	return attach(folder, limb, { Size = size, Offset = off, Color = color, Material = mat, Shape = shape, Transparency = trans, Round = false })
+end
+
+-- 둘레에 비스듬히 벌어진 날 n 개 (왕관 / 잎 / 결정): vary 만큼 길이가 들쭉날쭉
+local function spikes(folder, limb, n, rx, rz, y, size, tilt, color, mat, trans, vary)
+	for i = 0, n - 1 do
+		local a = i / n * math.pi * 2
+		local sz = Vector3.new(size.X, size.Y * (1 + (vary or 0) * math.sin(i * 2.3)), size.Z)
+		A(folder, limb, sz, CFrame.new(math.cos(a) * rx, y + sz.Y * 0.4, math.sin(a) * rz) * CFrame.Angles(0, -a, 0) * ang(0, 0, -tilt), color, mat, nil, trans)
+	end
+end
+
+local SetDecor = {}
+
+SetDecor.Helmet = function(character, folder, z, st)
+	local head = character:FindFirstChild("Head")
+	if not head then return end
+	local hs = head.Size
+	local top = hs.Y * 0.9
+	if z == 1 then -- 잎 왕관
+		spikes(folder, head, 7, hs.X * 0.5, hs.Z * 0.5, top, Vector3.new(0.08, 0.9, 0.5), 35, st.main, st.mat, nil, 0.2)
+		A(folder, head, Vector3.new(0.22, 0.22, 0.22), CFrame.new(hs.X * 0.28, hs.Y * 0.62, -hs.Z * 0.62), st.accent, NEON, BALL) -- 작은 꽃
+	elseif z == 2 then -- 가지 뿔 + 빛나는 새순
+		for _, side in ipairs({ -1, 1 }) do
+			A(folder, head, Vector3.new(0.14, 1.4, 0.14), CFrame.new(side * hs.X * 0.45, top + 0.4, 0) * ang(0, 0, side * -22), st.accent, st.mat)
+			A(folder, head, Vector3.new(0.1, 0.7, 0.1), CFrame.new(side * hs.X * 0.85, top + 0.7, 0) * ang(0, 0, side * -55), st.accent, st.mat)
+			A(folder, head, Vector3.new(0.22, 0.22, 0.22), CFrame.new(side * hs.X * 1.05, top + 1.0, 0), st.glow, NEON, BALL)
+		end
+	elseif z == 3 then -- 부서진 돌 왕관 + 룬
+		for i = 0, 4 do
+			local a = i / 5 * math.pi * 2
+			A(folder, head, Vector3.new(0.4, 0.3 + 0.2 * (i % 3), 0.4), CFrame.new(math.cos(a) * hs.X * 0.55, top + 0.1, math.sin(a) * hs.Z * 0.55) * ang(0, i * 20, i * 7 - 10), st.main, st.mat)
+		end
+		A(folder, head, Vector3.new(0.32, 0.1, 0.06), CFrame.new(0, hs.Y * 0.62, -hs.Z * 0.62), st.glow, NEON)
+	elseif z == 4 then -- 터번 + 뒤의 태양 원반
+		A(folder, head, Vector3.new(hs.X * 1.25, hs.Y * 0.7, hs.Z * 1.25), CFrame.new(0, hs.Y * 0.75, 0), st.accent, Enum.Material.Fabric, BALL)
+		A(folder, head, Vector3.new(0.26, 0.26, 0.26), CFrame.new(0, hs.Y * 0.75, -hs.Z * 0.65), st.glow, NEON, BALL)
+		A(folder, head, Vector3.new(0.1, 2.6, 2.6), CFrame.new(0, hs.Y * 1.0, hs.Z * 0.9) * ang(0, 90, 0), st.glow, NEON, CYLS, 0.3)
+		for i = 0, 5 do -- 햇살
+			local a = i / 6 * math.pi * 2 + 0.26
+			A(folder, head, Vector3.new(0.14, 0.7, 0.1), CFrame.new(math.cos(a) * 1.75, hs.Y * 1.0 + math.sin(a) * 1.75, hs.Z * 0.9) * ang(0, 0, math.deg(a) - 90), st.glow, NEON)
+		end
+	elseif z == 5 then -- 얼음 결정 왕관
+		spikes(folder, head, 6, hs.X * 0.52, hs.Z * 0.52, top, Vector3.new(0.18, 1.0, 0.18), 18, st.main, st.mat, 0.15, 0.35)
+		A(folder, head, Vector3.new(0.26, 1.5, 0.26), CFrame.new(0, top + 0.7, 0), st.accent, st.mat, nil, 0.1)
+	elseif z == 6 then -- 용암 뿔 + 이마 균열
+		for _, side in ipairs({ -1, 1 }) do
+			A(folder, head, Vector3.new(0.32, 1.1, 0.32), CFrame.new(side * hs.X * 0.55, top + 0.35, 0.05) * ang(0, 0, side * -38), st.main, st.mat)
+			A(folder, head, Vector3.new(0.2, 0.7, 0.2), CFrame.new(side * hs.X * 0.95, top + 0.85, 0.05) * ang(0, 0, side * -12), st.glow, NEON)
+		end
+		A(folder, head, Vector3.new(0.08, 0.5, 0.06), CFrame.new(0, hs.Y * 0.7, -hs.Z * 0.62) * ang(0, 0, 12), st.glow, NEON)
+	elseif z == 7 then -- 박쥐 귀 뿔 + 도깨비불
+		for _, side in ipairs({ -1, 1 }) do
+			A(folder, head, Vector3.new(0.42, 1.4, 0.1), CFrame.new(side * hs.X * 0.5, top + 0.5, 0.05) * ang(0, 0, side * -16), st.main, st.mat)
+			A(folder, head, Vector3.new(0.3, 0.3, 0.3), CFrame.new(side * hs.X * 0.8, top + 1.4, 0), st.glow, NEON, BALL, 0.5)
+		end
+	else -- 8: 공허 왕관 (검은 구슬 + 분홍 고리)
+		A(folder, head, Vector3.new(0.95, 0.95, 0.95), CFrame.new(0, hs.Y * 0.9 + 0.85, 0), st.main, Enum.Material.Glass, BALL, 0.1)
+		A(folder, head, Vector3.new(0.07, 1.5, 1.5), CFrame.new(0, hs.Y * 0.9 + 0.85, 0) * ang(0, 0, 70), st.glow, NEON, CYLS, 0.15)
+		A(folder, head, Vector3.new(0.4, 0.4, 0.4), CFrame.new(0, hs.Y * 0.9 + 0.85, 0), st.glow, NEON, BALL, 0.3)
+	end
+end
+
+SetDecor.Armor = function(character, folder, z, st)
+	local torso = firstOf(character, "UpperTorso", "Torso")
+	if not torso then return end
+	local ts = torso.Size
+	local arms = {}
+	for _, name in ipairs({ { "LeftUpperArm", "Left Arm", -1 }, { "RightUpperArm", "Right Arm", 1 } }) do
+		local arm = firstOf(character, name[1], name[2])
+		if arm then table.insert(arms, { Limb = arm, Side = name[3] }) end
+	end
+	local front, back = -ts.Z * 0.66, ts.Z * 0.68
+	if z == 1 then -- 덩굴 + 꽃 + 잎 어깨
+		for _, side in ipairs({ -1, 1 }) do
+			A(folder, torso, Vector3.new(0.14, ts.Y * 1.0, 0.1), CFrame.new(0, 0, front) * ang(0, 0, side * 35), st.main, st.mat)
+		end
+		for i = -1, 1 do
+			A(folder, torso, Vector3.new(0.24, 0.24, 0.24), CFrame.new(i * ts.X * 0.22, i * i * 0.2 + ts.Y * 0.05, front - 0.04), st.accent, NEON, BALL)
+		end
+		for _, a in ipairs(arms) do
+			for k = 0, 1 do
+				A(folder, a.Limb, Vector3.new(0.5, 0.9, 0.08), CFrame.new(a.Side * (a.Limb.Size.X * 0.6 + k * 0.2), a.Limb.Size.Y * 0.5, 0) * ang(0, 0, a.Side * (-35 - k * 25)), st.main, st.mat)
+			end
+		end
+	elseif z == 2 then -- 나무껍질 어깨 + 이끼 + 빛나는 버섯
+		for _, a in ipairs(arms) do
+			local w = a.Limb.Size.X
+			A(folder, a.Limb, Vector3.new(w * 1.8, w * 1.4, w * 1.8), CFrame.new(a.Side * 0.05, a.Limb.Size.Y * 0.42, 0), st.accent, st.mat, BALL)
+			A(folder, a.Limb, Vector3.new(w * 1.2, w * 0.6, w * 1.2), CFrame.new(a.Side * 0.05, a.Limb.Size.Y * 0.62, 0), st.main, Enum.Material.Grass, BALL)
+			A(folder, a.Limb, Vector3.new(0.24, 0.24, 0.24), CFrame.new(a.Side * w * 0.6, a.Limb.Size.Y * 0.72, 0), st.glow, NEON, BALL)
+		end
+		A(folder, torso, Vector3.new(0.18, ts.Y * 1.2, 0.18), CFrame.new(ts.X * 0.3, -ts.Y * 0.1, back) * ang(0, 0, 6), st.accent, st.mat)
+	elseif z == 3 then -- 거대한 돌 견갑 + 룬 가슴판
+		for _, a in ipairs(arms) do
+			local w = a.Limb.Size.X
+			A(folder, a.Limb, Vector3.new(w * 1.9, 0.9, w * 1.9), CFrame.new(a.Side * 0.1, a.Limb.Size.Y * 0.5, 0) * ang(0, a.Side * 15, a.Side * -8), st.main, st.mat)
+			A(folder, a.Limb, Vector3.new(w * 0.9, 0.6, w * 0.9), CFrame.new(a.Side * w * 0.55, a.Limb.Size.Y * 0.2, 0.1) * ang(10, 0, a.Side * -20), st.accent, st.mat)
+		end
+		A(folder, torso, Vector3.new(ts.X * 0.9, ts.Y * 0.5, 0.18), CFrame.new(0, ts.Y * 0.12, front), st.main, st.mat)
+		A(folder, torso, Vector3.new(0.12, ts.Y * 0.32, 0.06), CFrame.new(0, ts.Y * 0.12, front - 0.1), st.glow, NEON)
+	elseif z == 4 then -- 사선 띠 + 망토 + 등의 태양
+		A(folder, torso, Vector3.new(0.45, ts.Y * 1.25, 0.12), CFrame.new(0, 0, front) * ang(0, 0, 38), st.accent, Enum.Material.Fabric)
+		A(folder, torso, Vector3.new(ts.X * 1.0, ts.Y * 1.5, 0.1), CFrame.new(0, -ts.Y * 0.35, back + 0.1) * ang(8, 0, 0), st.main, Enum.Material.Fabric)
+		A(folder, torso, Vector3.new(0.1, 1.9, 1.9), CFrame.new(0, ts.Y * 0.1, back + 0.3) * ang(0, 90, 0), st.glow, NEON, CYLS, 0.25)
+		for _, a in ipairs(arms) do
+			A(folder, a.Limb, Vector3.new(0.18, a.Limb.Size.X * 1.5, a.Limb.Size.X * 1.5), CFrame.new(0, a.Limb.Size.Y * 0.35, 0) * CYL, st.glow, NEON, CYLS, 0.1)
+		end
+	elseif z == 5 then -- 어깨 얼음 파편 + 가슴 결정 + 서리 칼라
+		for _, a in ipairs(arms) do
+			for k = 0, 2 do
+				A(folder, a.Limb, Vector3.new(0.2, 0.9 + k * 0.25, 0.2), CFrame.new(a.Side * (a.Limb.Size.X * 0.4 + k * 0.22), a.Limb.Size.Y * 0.55, (k - 1) * 0.2) * ang(0, 0, a.Side * (-15 - k * 20)), st.main, st.mat, nil, 0.15)
+			end
+		end
+		for i = -1, 1 do
+			A(folder, torso, Vector3.new(0.2, 0.8 - math.abs(i) * 0.2, 0.2), CFrame.new(i * ts.X * 0.25, ts.Y * 0.1, front - 0.05) * ang(-15, 0, i * -18), st.accent, st.mat, nil, 0.15)
+		end
+		A(folder, torso, Vector3.new(ts.X * 0.95, 0.35, ts.Z * 1.2), CFrame.new(0, ts.Y * 0.46, 0), st.accent, Enum.Material.Fabric, BALL)
+	elseif z == 6 then -- 흑요석 갑옷에 용암 균열 + 가슴 핵 + 어깨 가시
+		local cracks = { { -0.25, 0.1, 25 }, { 0.2, -0.05, -20 }, { 0, 0.3, 5 }, { 0.3, 0.25, 40 } }
+		for _, c in ipairs(cracks) do
+			A(folder, torso, Vector3.new(0.09, ts.Y * 0.4, 0.05), CFrame.new(c[1] * ts.X, c[2] * ts.Y, front - 0.04) * ang(0, 0, c[3]), st.glow, NEON)
+		end
+		A(folder, torso, Vector3.new(0.5, 0.5, 0.25), CFrame.new(0, ts.Y * 0.14, front - 0.05), st.glow, NEON, BALL)
+		for _, a in ipairs(arms) do
+			A(folder, a.Limb, Vector3.new(0.34, 1.0, 0.34), CFrame.new(a.Side * a.Limb.Size.X * 0.6, a.Limb.Size.Y * 0.6, 0) * ang(0, 0, a.Side * -30), st.main, st.mat)
+			A(folder, a.Limb, Vector3.new(0.1, 0.5, 0.1), CFrame.new(a.Side * a.Limb.Size.X * 1.0, a.Limb.Size.Y * 0.95, 0) * ang(0, 0, a.Side * -30), st.glow, NEON)
+		end
+		A(folder, torso, Vector3.new(0.09, ts.Y * 0.8, 0.05), CFrame.new(0, 0, back + 0.04) * ang(0, 0, 10), st.glow, NEON)
+	elseif z == 7 then -- 박쥐 날개 + 어깨 도깨비불
+		for _, side in ipairs({ -1, 1 }) do
+			local base = CFrame.new(side * ts.X * 0.7, ts.Y * 0.3, back + 0.1) * ang(-12, side * 18, side * -50)
+			A(folder, torso, Vector3.new(0.1, 2.4, 0.1), base * CFrame.new(0, 1.0, 0), st.accent, st.mat)
+			A(folder, torso, Vector3.new(0.05, 1.9, 1.3), base * CFrame.new(side * -0.1, 0.8, 0.5) * ang(0, 0, side * 14), st.main, Enum.Material.Fabric, nil, 0.1)
+			A(folder, torso, Vector3.new(0.05, 1.3, 1.0), base * CFrame.new(side * -0.15, 0.4, -0.2) * ang(0, 0, side * 14), st.main, Enum.Material.Fabric, nil, 0.1)
+		end
+		for _, a in ipairs(arms) do
+			A(folder, a.Limb, Vector3.new(0.4, 0.5, 0.4), CFrame.new(a.Side * a.Limb.Size.X * 0.7, a.Limb.Size.Y * 0.7, 0), st.glow, NEON, BALL, 0.45)
+		end
+	else -- 8: 공허 구슬 견갑 + 가슴 핵 + 등 뒤 고리
+		for _, a in ipairs(arms) do
+			local w = a.Limb.Size.X
+			A(folder, a.Limb, Vector3.new(w * 1.7, w * 1.7, w * 1.7), CFrame.new(a.Side * 0.1, a.Limb.Size.Y * 0.5, 0), st.main, Enum.Material.Glass, BALL, 0.1)
+			A(folder, a.Limb, Vector3.new(0.07, w * 2.2, w * 2.2), CFrame.new(a.Side * 0.1, a.Limb.Size.Y * 0.5, 0) * ang(0, 0, 90 + a.Side * 25), st.glow, NEON, CYLS, 0.2)
+		end
+		A(folder, torso, Vector3.new(0.7, 0.7, 0.3), CFrame.new(0, ts.Y * 0.14, front - 0.04), st.main, Enum.Material.Glass, BALL, 0.1)
+		A(folder, torso, Vector3.new(0.3, 0.3, 0.2), CFrame.new(0, ts.Y * 0.14, front - 0.1), st.glow, NEON, BALL)
+		A(folder, torso, Vector3.new(0.08, 2.6, 2.6), CFrame.new(0, ts.Y * 0.1, back + 0.5) * ang(0, 90, 0), st.glow, NEON, CYLS, 0.45)
+	end
+end
+
+SetDecor.Gloves = function(character, folder, z, st)
+	for _, names in ipairs({ { "LeftHand", "Left Arm", -1 }, { "RightHand", "Right Arm", 1 } }) do
+		local hand = firstOf(character, names[1], names[2])
+		if hand then
+			local hs, side = hand.Size, names[3]
+			local drop = hand.Name:find("Arm") and -hs.Y * 0.32 or 0
+			if z == 1 then
+				for k = 0, 1 do A(folder, hand, Vector3.new(0.4, 0.7, 0.06), CFrame.new(side * hs.X * 0.6, drop + 0.55, (k - 0.5) * 0.5) * ang(0, 0, side * -40), st.main, st.mat) end
+			elseif z == 2 then
+				A(folder, hand, Vector3.new(0.5, hs.X * 1.7, hs.Z * 1.7), CFrame.new(0, drop + 0.5, 0) * CYL, st.accent, st.mat, CYLS)
+				A(folder, hand, Vector3.new(0.2, 0.2, 0.2), CFrame.new(side * hs.X * 0.9, drop + 0.5, 0), st.glow, NEON, BALL)
+			elseif z == 3 then
+				A(folder, hand, Vector3.new(hs.X * 1.45, math.min(hs.Y, 1.1) * 1.1, hs.Z * 1.45), CFrame.new(0, drop, 0), st.main, st.mat)
+				A(folder, hand, Vector3.new(0.3, 0.06, 0.06), CFrame.new(0, drop + 0.1, -hs.Z * 0.76), st.glow, NEON)
+			elseif z == 4 then
+				A(folder, hand, Vector3.new(0.45, hs.X * 1.65, hs.Z * 1.65), CFrame.new(0, drop + 0.5, 0) * CYL, st.main, Enum.Material.Metal, CYLS)
+				A(folder, hand, Vector3.new(0.2, 1.0, 0.08), CFrame.new(side * hs.X * 0.75, drop + 0.1, 0.2) * ang(0, 0, side * -10), st.accent, Enum.Material.Fabric)
+			elseif z == 5 then
+				for i = -1, 1 do A(folder, hand, Vector3.new(0.12, 0.65, 0.12), CFrame.new(i * hs.X * 0.3, drop + 0.15, -hs.Z * 0.75) * ang(-50, 0, 0), st.accent, st.mat, nil, 0.15) end
+				A(folder, hand, Vector3.new(0.16, 0.9, 0.16), CFrame.new(side * hs.X * 0.75, drop + 0.7, 0) * ang(0, 0, side * -25), st.main, st.mat, nil, 0.15)
+			elseif z == 6 then
+				A(folder, hand, Vector3.new(0.45, hs.X * 1.6, hs.Z * 1.6), CFrame.new(0, drop + 0.5, 0) * CYL, st.main, st.mat, CYLS)
+				A(folder, hand, Vector3.new(0.08, hs.X * 1.68, hs.Z * 1.68), CFrame.new(0, drop + 0.5, 0) * CYL, st.glow, NEON, CYLS)
+				A(folder, hand, Vector3.new(0.3, 0.3, 0.3), CFrame.new(0, drop - 0.1, -hs.Z * 0.7), st.glow, NEON, BALL)
+			elseif z == 7 then
+				A(folder, hand, Vector3.new(0.4, 0.4, 0.4), CFrame.new(side * hs.X * 0.5, drop - 0.3, -hs.Z * 0.5), st.glow, NEON, BALL, 0.45)
+				for i = -1, 1, 2 do A(folder, hand, Vector3.new(0.08, 0.1, 0.7), CFrame.new(i * hs.X * 0.25, drop - 0.05, -hs.Z * 0.95), st.accent, st.mat) end
+			else
+				A(folder, hand, Vector3.new(0.55, 0.55, 0.55), CFrame.new(0, drop - 0.2, -hs.Z * 1.0), st.main, Enum.Material.Glass, BALL, 0.1)
+				A(folder, hand, Vector3.new(0.07, 0.95, 0.95), CFrame.new(0, drop - 0.2, -hs.Z * 1.0) * ang(0, 0, 90), st.glow, NEON, CYLS, 0.25)
+			end
+		end
+	end
+end
+
+SetDecor.Boots = function(character, folder, z, st)
+	for _, names in ipairs({ { "LeftFoot", "Left Leg" }, { "RightFoot", "Right Leg" } }) do
+		local foot = firstOf(character, names[1], names[2])
+		if foot then
+			local fs = foot.Size
+			local drop = foot.Name:find("Leg") and -fs.Y * 0.36 or 0
+			for _, side in ipairs({ -1, 1 }) do
+				if z == 1 then -- 잎 장식
+					A(folder, foot, Vector3.new(0.06, 0.6, 0.3), CFrame.new(side * fs.X * 0.62, drop + 0.4, 0.1) * ang(0, 0, side * -35), st.main, st.mat)
+				elseif z == 5 then -- 얼음 가시
+					A(folder, foot, Vector3.new(0.1, 0.8, 0.2), CFrame.new(side * fs.X * 0.62, drop + 0.5, 0.15) * ang(0, 0, side * -22), st.accent, st.mat, nil, 0.15)
+				elseif z == 7 then -- 작은 날개
+					A(folder, foot, Vector3.new(0.05, 0.6, 0.3), CFrame.new(side * fs.X * 0.6, drop + 0.4, 0.2) * ang(-20, 0, side * -30), st.main, Enum.Material.Fabric, nil, 0.1)
+				elseif side == 1 then
+					if z == 2 then -- 이끼 덩어리
+						A(folder, foot, Vector3.new(fs.X * 1.3, 0.4, fs.Z * 1.3), CFrame.new(0, drop + 0.45, 0), st.main, Enum.Material.Grass, BALL)
+					elseif z == 3 then -- 돌 앞코
+						A(folder, foot, Vector3.new(fs.X * 1.25, 0.5, fs.Z * 0.8), CFrame.new(0, drop + 0.3, -fs.Z * 0.45), st.main, st.mat)
+					elseif z == 4 then -- 천 감기 + 금 발찌
+						A(folder, foot, Vector3.new(0.3, fs.X * 1.4, fs.Z * 1.4), CFrame.new(0, drop + 0.5, 0) * CYL, st.accent, Enum.Material.Fabric, CYLS)
+						A(folder, foot, Vector3.new(0.06, fs.X * 1.5, fs.Z * 1.5), CFrame.new(0, drop + 0.7, 0) * CYL, st.glow, NEON, CYLS)
+					elseif z == 6 then -- 용암 밑창 + 불씨
+						A(folder, foot, Vector3.new(fs.X * 0.9, 0.1, fs.Z * 1.2), CFrame.new(0, drop - 0.45, -0.04), st.glow, NEON)
+						A(folder, foot, Vector3.new(0.2, 0.2, 0.2), CFrame.new(0, drop + 0.55, fs.Z * 0.55), st.glow, NEON, BALL)
+					elseif z == 8 then -- 공허 구슬 + 고리
+						A(folder, foot, Vector3.new(0.5, 0.5, 0.5), CFrame.new(0, drop + 0.7, 0), st.main, Enum.Material.Glass, BALL, 0.1)
+						A(folder, foot, Vector3.new(0.06, fs.X * 1.7, fs.Z * 1.7), CFrame.new(0, drop + 0.4, 0) * CYL, st.glow, NEON, CYLS, 0.2)
+					end
+				end
+				if z == 7 and side == 1 then -- 발목 도깨비불
+					A(folder, foot, Vector3.new(0.4, 0.4, 0.4), CFrame.new(0, drop + 0.6, 0), st.glow, NEON, BALL, 0.5)
+				end
+			end
+		end
+	end
+end
+
+-- 기존 등급 장식에 세트 색 / 재질을 입힌다: 발광 부품은 세트 발광색으로, 나머지는 세트 본색 + 재질로.
+local function setTint(folder, st)
+	for _, p in ipairs(folder:GetChildren()) do
+		if p:IsA("BasePart") then
+			if p.Material == NEON then
+				p.Color = p.Color:Lerp(st.glow, 0.6)
+			else
+				p.Color = p.Color:Lerp(st.main, 0.6)
+				p.Material = st.mat
+			end
+		end
+	end
+end
+
+local function setEmitter(parent, z, st)
+	local fx = SET_FX["Zone" .. z]
+	if not fx or not parent then return end
+	local e = Instance.new("ParticleEmitter")
+	e.Name = "SetFx"
+	e.Rate = fx.Rate
+	e.Lifetime = fx.Life
+	e.Speed = fx.Speed
+	e.Acceleration = fx.Accel
+	e.SpreadAngle = Vector2.new(180, 180)
+	e.LightEmission = fx.Light
+	e.Color = ColorSequence.new(st.glow)
+	e.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, fx.Size), NumberSequenceKeypoint.new(1, 0) })
+	e.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) })
+	e.Parent = parent
+end
+
+local function setZone(setKey)
+	return tonumber(string.match(setKey or "", "^Zone(%d+)$"))
+end
+
+-- 한 부위의 세트 외형을 입힌다 (folder 는 이미 등급 장식이 만들어진 상태). 반환: 세트 번호 또는 nil
+local function applySetLook(character, folder, slotKey, setKey)
+	local z = setZone(setKey)
+	local st = z and SET_STYLE["Zone" .. z]
+	if not st then return nil end
+	setTint(folder, st)
+	local decor = SetDecor[slotKey]
+	if decor then decor(character, folder, z, st) end
+	return z
+end
+
+-- 같은 세트 2부위 이상: 빛나는 띠 + 머리 위 상징 / 3부위 이상: 몸 둘레 작은 상징 + 입자
+local function applySetBonus(character, counts, slotSets)
+	local old = character:FindFirstChild("GearVisual_SetBonus")
+	if old then old:Destroy() end
+	local bestKey, bestCount = nil, 0
+	for key, n in pairs(counts) do
+		if n >= 2 and n > bestCount and SET_STYLE[key] then bestKey, bestCount = key, n end
+	end
+	if not bestKey then return end
+	local z = setZone(bestKey)
+	local st = SET_STYLE[bestKey]
+	local folder = Instance.new("Folder")
+	folder.Name = "GearVisual_SetBonus"
+	folder.Parent = character
+
+	-- 빛나는 띠: 같은 세트를 낀 부위마다 한 줄
+	local head = character:FindFirstChild("Head")
+	local torso = firstOf(character, "UpperTorso", "Torso")
+	local hand = firstOf(character, "RightHand", "Right Arm")
+	local foot = firstOf(character, "RightFoot", "Right Leg")
+	local function trim(limb, y, scale)
+		if limb then A(folder, limb, Vector3.new(0.07, limb.Size.X * scale, limb.Size.Z * scale), CFrame.new(0, y, 0) * CYL, st.glow, NEON, CYLS, 0.2) end
+	end
+	if slotSets.Helmet == bestKey and head then trim(head, head.Size.Y * 0.44, 1.2) end
+	if slotSets.Armor == bestKey and torso then trim(torso, -torso.Size.Y * 0.2, 1.18) end
+	if slotSets.Gloves == bestKey and hand then trim(hand, hand.Name:find("Arm") and -hand.Size.Y * 0.2 or 0.35, 1.3) end
+	if slotSets.Boots == bestKey and foot then trim(foot, foot.Name:find("Leg") and -foot.Size.Y * 0.2 or 0.35, 1.3) end
+
+	-- 떠 있는 상징: 머리 위에 하나, 3부위 이상이면 몸 둘레에 작은 것 셋
+	local motif = SET_MOTIF["Zone" .. z]
+	local function floatMotif(limb, off, scale)
+		attach(folder, limb, { Size = motif.Size * scale, Offset = off * (motif.Rot or CFrame.new()), Color = st.glow, Material = motif.Mat, Shape = motif.Shape, Transparency = motif.Trans, Round = false })
+		if motif.Ring then
+			A(folder, limb, Vector3.new(0.05, scale, scale), off * ang(0, 0, 90), st.glow, NEON, CYLS, 0.25)
+		end
+	end
+	if head then
+		floatMotif(head, CFrame.new(0, head.Size.Y * 0.5 + 2.2, 0), 1)
+	end
+	if bestCount >= 3 and torso then
+		for i = 0, 2 do
+			local a = i / 3 * math.pi * 2
+			floatMotif(torso, CFrame.new(math.cos(a) * 2.3, -torso.Size.Y * 0.2 + math.sin(i * 2) * 0.3, math.sin(a) * 2.3), 0.55)
+		end
+		setEmitter(head or torso, z, st)
+	end
+end
+
 function Gear.ApplyVisuals(player)
 	local character = player.Character
 	if not character then return end
 
+	local slotSets, setCounts, setFxHost, setFxZone = {}, {}, nil, nil
 	for _, slot in ipairs(G.Slots) do
 		local old = character:FindFirstChild("GearVisual_" .. slot.Key)
 		if old then
@@ -399,6 +763,17 @@ function Gear.ApplyVisuals(player)
 			folder.Parent = character
 			local palette = TIERS[slot.Key] and TIERS[slot.Key][rarity]
 			build(character, folder, rarity, glow, palette)
+			local setKey = player:GetAttribute("Gear_" .. slot.Key .. "_Set")
+			if setKey and setKey ~= "" then
+				if applySetLook(character, folder, slot.Key, setKey) then
+					slotSets[slot.Key] = setKey
+					setCounts[setKey] = (setCounts[setKey] or 0) + 1
+					if not setFxHost and (slot.Key == "Armor" or slot.Key == "Helmet") then
+						setFxHost = folder:FindFirstChildWhichIsA("BasePart")
+						setFxZone = setZone(setKey)
+					end
+				end
+			end
 
 			if rarity >= 4 then -- 전설 이상: 윤곽 빛
 				local outline = Instance.new("Highlight")
@@ -425,6 +800,13 @@ function Gear.ApplyVisuals(player)
 				end
 			end
 		end
+	end
+
+	-- 구역 세트 보너스 외형 + 입자 한 줄 (몸통 / 투구 부품에 붙인다)
+	applySetBonus(character, setCounts, slotSets)
+	if setFxHost and setFxZone then
+		local bonusKey = "Zone" .. setFxZone
+		if (setCounts[bonusKey] or 0) >= 1 then setEmitter(setFxHost, setFxZone, SET_STYLE[bonusKey]) end
 	end
 
 	-- 세트 효과: 고급(3등급) 이상 장비를 3개 이상 끼면 몸 전체에 은은한 기운

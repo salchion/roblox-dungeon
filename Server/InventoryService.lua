@@ -87,6 +87,7 @@ end
 local function applyEquipAttributes(player, state)
 	for _, slot in ipairs(G.Slots) do
 		local item = state.Items[state.Equipped[slot.Key]]
+		player:SetAttribute("Gear_" .. slot.Key .. "_Set", item and item.Set or "") -- 외형용 (GearService 가 세트 모양을 고른다)
 		player:SetAttribute(rAttr(slot.Key), item and item.Rarity or 0)
 		player:SetAttribute(lAttr(slot.Key), item and item.Level or 0)
 	end
