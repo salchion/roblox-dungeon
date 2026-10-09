@@ -588,7 +588,47 @@ function Lobby.Build()
 	end
 	local beam = makePart({ Name = "FieldBeam", Size = Vector3.new(9, 8, 58), Position = fieldGate + Vector3.new(0, 40, 0), Color = gateStone, Material = Enum.Material.Cobblestone }, folder)
 	makePart({ Name = "FieldBeamGlow", Size = Vector3.new(9.4, 1.2, 58.4), Position = fieldGate + Vector3.new(0, 35.4, 0), Color = green, Material = Enum.Material.Neon, CanCollide = false }, folder)
-	makeLabel(beam, "🏔 사냥 필드 입구", Color3.fromRGB(190, 255, 190), 10, 300, 56, 110)
+	-- 필드 입구임을 한눈에 알 수 있게: 문 위에 큰 글자 (멀리서도 보이는 빛나는 표지 + 문 안쪽 면의 큰 글씨)
+	local gateSign = makePart({ Name = "FieldGateSign", Size = Vector3.new(1, 1, 1), Position = fieldGate + Vector3.new(0, 52, 0), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
+	local signGui = Instance.new("BillboardGui")
+	signGui.Size = UDim2.new(0, 560, 0, 150)
+	signGui.MaxDistance = 700
+	signGui.AlwaysOnTop = true
+	signGui.Parent = gateSign
+	local signTitle = Instance.new("TextLabel")
+	signTitle.Size = UDim2.new(1, 0, 0.62, 0)
+	signTitle.BackgroundTransparency = 1
+	signTitle.Font = Enum.Font.GothamBlack
+	signTitle.TextScaled = true
+	signTitle.TextColor3 = Color3.fromRGB(190, 255, 190)
+	signTitle.TextStrokeTransparency = 0
+	signTitle.Text = "🏔 사냥 필드 입구  ▶"
+	signTitle.Parent = signGui
+	local signSub = Instance.new("TextLabel")
+	signSub.Size = UDim2.new(1, 0, 0.32, 0)
+	signSub.Position = UDim2.new(0, 0, 0.66, 0)
+	signSub.BackgroundTransparency = 1
+	signSub.Font = Enum.Font.GothamBold
+	signSub.TextScaled = true
+	signSub.TextColor3 = Color3.fromRGB(255, 255, 255)
+	signSub.TextStrokeTransparency = 0.2
+	signSub.Text = "이 문을 지나면 몬스터가 있는 필드예요"
+	signSub.Parent = signGui
+	local faceGui = Instance.new("SurfaceGui") -- 문 위 가로보 안쪽(마을 쪽) 면에도 큰 글씨
+	faceGui.Face = Enum.NormalId.Left
+	faceGui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	faceGui.PixelsPerStud = 24
+	faceGui.LightInfluence = 0
+	faceGui.Parent = beam
+	local faceText = Instance.new("TextLabel")
+	faceText.Size = UDim2.new(1, 0, 1, 0)
+	faceText.BackgroundTransparency = 1
+	faceText.Font = Enum.Font.GothamBlack
+	faceText.TextScaled = true
+	faceText.TextColor3 = Color3.fromRGB(190, 255, 190)
+	faceText.TextStrokeTransparency = 0
+	faceText.Text = "▶ 사냥 필드 입구 ◀"
+	faceText.Parent = faceGui
 
 	-- 문 사이를 채우는 반투명 빛의 막 (지나가면 필드)
 	local veil = makePart({ Name = "FieldVeil", Size = Vector3.new(1, 36, 40), Position = fieldGate + Vector3.new(0, 18, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.82, CanCollide = false, CanQuery = false }, folder)
@@ -652,9 +692,7 @@ function Lobby.Build()
 			local bulb = makePart({ Name = "CrossLamp", Shape = Enum.PartType.Ball, Size = Vector3.new(2.6 * scale, 2.6 * scale, 2.6 * scale), Position = origin + Vector3.new(0, 15.5 * scale, 0), Color = Color3.fromRGB(255, 225, 140), Material = Enum.Material.Neon, CanCollide = false }, folder)
 			addLight(bulb, 45, 2, Color3.fromRGB(255, 225, 140))
 		end
-		buildSignpost(Vector3.new(16, 0, 13), 2)
-		buildSignpost(Vector3.new(0, TOP + HILL_H, 99), 2) -- 처음 시작하는 언덕 끝에서 바로 눈앞에 보이는 큰 이정표 (경사로 위쪽 공중이라 길을 막지 않는다)
-		buildSignpost(Vector3.new(24, 0, 50), 2.4) -- 언덕에서 내려오면 눈앞에 크게 보이는 두 번째 이정표
+		buildSignpost(Vector3.new(13, 0, 13), 1)
 	end
 
 	-- 2) 필드로 이어지는 길가의 등불 (필드 문에 가까울수록 초록빛이 짙어진다) + 깃발
