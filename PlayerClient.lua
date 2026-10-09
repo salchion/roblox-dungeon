@@ -2103,12 +2103,15 @@ do
 end
 
 local menuPanel = makePanel({
-	Size = UDim2.new(0, 880, 0, 600),
+	Size = UDim2.new(0, 860, 0, 580),
 	AnchorPoint = Vector2.new(0.5, 0.5),
-	Position = UDim2.new(0.5, 0, 0.5, 0),
+	Position = UDim2.new(0.5, 0, 0.55, 0),
+	BackgroundColor3 = Color3.fromRGB(16, 18, 30),
+	BackgroundTransparency = 0.03, -- 뒤 화면이 비쳐 글자가 섞여 보이지 않게 거의 불투명하게
 	Visible = false,
 }, gui)
 settings.MenuPanel = menuPanel
+create("UIStroke", { Color = Color3.fromRGB(110, 140, 255), Thickness = 2, Transparency = 0.2 }, menuPanel)
 
 makeLabel({
 	Size = UDim2.new(1, -90, 0, 36), Position = UDim2.new(0, 16, 0, 8),
@@ -2148,7 +2151,7 @@ local function newRow(height, color)
 	rowOrder += 1
 	return makePanel({
 		Size = UDim2.new(1, -10, 0, height), LayoutOrder = rowOrder,
-		BackgroundColor3 = color or Color3.fromRGB(40, 40, 58),
+		BackgroundColor3 = color or Color3.fromRGB(34, 38, 58),
 	}, menuContent)
 end
 
@@ -2161,8 +2164,8 @@ local function rowText(row, text, size, rightMargin)
 end
 
 local function sectionTitle(text)
-	local row = newRow(26, Color3.fromRGB(30, 30, 44))
-	rowText(row, text, 14)
+	local row = newRow(30, Color3.fromRGB(26, 30, 48))
+	rowText(row, "<font color='#ffd966'><b>" .. text .. "</b></font>", 16)
 end
 
 local function hex(color)
@@ -2992,7 +2995,10 @@ end)
 
 function refreshMenu()
 	for _, tab in ipairs(TABS) do
-		tabButtons[tab.Key].BackgroundColor3 = tab.Key == currentTab and Color3.fromRGB(70, 110, 220) or GRAY
+		local active = tab.Key == currentTab
+		tabButtons[tab.Key].BackgroundColor3 = active and Color3.fromRGB(80, 125, 255) or Color3.fromRGB(44, 48, 68)
+		tabButtons[tab.Key].TextColor3 = active and Color3.new(1, 1, 1) or Color3.fromRGB(170, 176, 200)
+		tabButtons[tab.Key].Font = active and Enum.Font.GothamBlack or Enum.Font.GothamBold
 	end
 
 	clearChildren(menuContent)
@@ -3046,7 +3052,7 @@ end
 
 for index, tab in ipairs(TABS) do
 	tabButtons[tab.Key] = makeButton({
-		Size = UDim2.new(0, 80, 0, 34), Position = UDim2.new(0, 14 + (index - 1) * 85, 0, 52), Text = tab.Name, TextSize = 14,
+		Size = UDim2.new(0, 80, 0, 36), Position = UDim2.new(0, 14 + (index - 1) * 84, 0, 50), Text = tab.Name, TextSize = 16,
 	}, menuPanel, function()
 		selectTab(tab.Key)
 	end)
