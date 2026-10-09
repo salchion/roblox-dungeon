@@ -1919,6 +1919,10 @@ end
 ------------------------------------------------------------
 function Dungeon.Start(player, typeKey, diffKey)
 	if player:GetAttribute("Zone") ~= "Lobby" then return end
+	if player:GetAttribute("TutorialDungeonLocked") then
+		notify(player, "🔒 아직 던전에 들어갈 수 없어요. 튜토리얼 미션을 먼저 진행해주세요!")
+		return
+	end
 
 	typeKey = typeKey or "Cave"
 	diffKey = diffKey or "Normal"
@@ -2104,6 +2108,10 @@ end
 -- 로비의 던전 게이트(Config.Dungeon.List[index])에서 입장: 레벨 확인 후 바로 시작한다
 function Dungeon.StartGate(player, index)
 	if player:GetAttribute("Zone") ~= "Lobby" then return end
+	if player:GetAttribute("TutorialDungeonLocked") then
+		notify(player, "🔒 아직 던전에 들어갈 수 없어요. 튜토리얼 미션을 먼저 진행해주세요!")
+		return
+	end
 	local entry = typeof(index) == "number" and D.List[index]
 	if not entry then return end
 	local party = Party.GetParty(player)

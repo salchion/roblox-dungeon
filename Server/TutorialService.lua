@@ -45,6 +45,12 @@ local function send(player)
 	applyFreeze(player)
 	player:SetAttribute("TutorialFree", step ~= nil and step.FreeEnhance == true)
 	player:SetAttribute("TutorialActive", step ~= nil)
+	-- 던전 미션이 나오기 전에는 던전에 들어갈 수 없다
+	local dungeonStep = #Steps + 1
+	for index, candidate in ipairs(Steps) do
+		if candidate.Stat == "DungeonWaves" then dungeonStep = index break end
+	end
+	player:SetAttribute("TutorialDungeonLocked", step ~= nil and state.Step < dungeonStep)
 	player:SetAttribute("TutorialRoll", step and step.RollMode or nil) -- 미션 중 뽑기 보정: Lowest = 항상 일반 / Hero = 10연에 영웅 1개 확정 (전설 이상 없음)
 	player:SetAttribute("TutorialDoom", step ~= nil and step.Doom == true) -- 필드 "압도적인 습격" 장면 (쓰러지면 성장 단계로 이어진다)
 	if not step then
