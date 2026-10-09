@@ -3949,7 +3949,7 @@ Remotes.Hit.OnClientEvent:Connect(function(isCrit, killed)
 		SoundBank.Play(sfxParent, "Kill", { Pitch = 1 + math.min(0.7, combo * 0.02) })
 	elseif isCrit then
 		shake = math.max(shake, 0.25)
-		SoundBank.Play(sfxParent, "Crit")
+		SoundBank.Play(sfxParent, "Hit", { Pitch = 1.1 + math.random() * 0.15 }) -- 치명타 전용 소리는 없앴다: 평소 적중음과 같다 (화면의 노란 / 빨간 숫자가 치명타를 알려 준다)
 	else
 		SoundBank.Play(sfxParent, "Hit", { Pitch = 0.9 + math.random() * 0.25 })
 	end
