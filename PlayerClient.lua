@@ -2005,10 +2005,7 @@ local function targetName(target)
 end
 
 local function updateLockVisual()
-	autoLabel.Visible = autoMode
-	if autoMode then
-		autoLabel.Text = string.format("🔒 자동 공격 <font color='#ffe16e'>ON</font> (R) · %s", targetName(lockTarget))
-	end
+	autoLabel.Visible = false -- 아래 R 자동 공격 버튼이 상태를 이미 보여 주므로 가운데 안내 띠는 쓰지 않는다 (잠금 대상은 노란 윤곽선으로 표시)
 	if autoMode and lockTarget and lockTarget.Instance.Parent then
 		lockHighlight.Adornee = lockTarget.Instance
 		lockHighlight.Enabled = true

@@ -357,7 +357,7 @@ RunService.RenderStepped:Connect(function()
 	local questOn = player:GetAttribute("QuestHud") == true and zone ~= "Dungeon" and dailyList ~= nil
 	questPanel.Visible = questOn
 	if questOn then
-		local targetY = panel.Visible and 402 or 326
+		local targetY = panel.Visible and 402 or (player:GetAttribute("TutorialCardUp") and 326 + 116 + 8 or 326)
 		if not questShown then -- 처음 나타날 때: 왼쪽에서 튕겨 들어온다
 			questShown = true
 			refreshQuests()

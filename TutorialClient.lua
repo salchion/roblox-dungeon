@@ -43,18 +43,25 @@ local function label(props, parent)
 	return create("TextLabel", base, parent)
 end
 
+-- 미션 카드: 화면 왼쪽(다른 패널들과 같은 줄)에 계속 떠 있는 섹션 카드 (목표 / 진행 막대가 늘 같은 자리에 보인다)
+local CARD_POSITION = UDim2.new(0, 16, 0, 326)
+local CARD_SIZE = UDim2.new(0, 260, 0, 116)
 local objective = create("Frame", {
-	Size = UDim2.new(0, 540, 0, 70), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 10),
-	BackgroundColor3 = Color3.fromRGB(20, 20, 30), BackgroundTransparency = 0.2, BorderSizePixel = 0, Visible = false,
+	Size = CARD_SIZE, Position = CARD_POSITION,
+	BackgroundColor3 = Color3.fromRGB(20, 20, 30), BackgroundTransparency = 0.12, BorderSizePixel = 0, Visible = false,
 }, gui)
 rounded(objective)
 local stroke = create("UIStroke", { Color = Color3.fromRGB(255, 210, 90), Thickness = 2 }, objective)
 local titleLabel = label({
-	Size = UDim2.new(1, -20, 0, 28), Position = UDim2.new(0, 10, 0, 6), TextSize = 17, Font = Enum.Font.GothamBold,
+	Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 6), TextSize = 16, Font = Enum.Font.GothamBlack,
 	TextXAlignment = Enum.TextXAlignment.Left, RichText = true,
 }, objective)
+local descLabel = label({
+	Size = UDim2.new(1, -20, 0, 58), Position = UDim2.new(0, 10, 0, 28), TextSize = 14, Font = Enum.Font.GothamBold,
+	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = true,
+}, objective)
 local barBack = create("Frame", {
-	Size = UDim2.new(1, -20, 0, 14), Position = UDim2.new(0, 10, 0, 40), BackgroundColor3 = Color3.fromRGB(45, 45, 65), BorderSizePixel = 0,
+	Size = UDim2.new(1, -20, 0, 14), Position = UDim2.new(0, 10, 1, -24), BackgroundColor3 = Color3.fromRGB(45, 45, 65), BorderSizePixel = 0,
 }, objective)
 rounded(barBack)
 local barFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 210, 90), BorderSizePixel = 0 }, barBack)
@@ -123,7 +130,7 @@ local function popupMission()
 	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.new(0, 520, 0, 150) }):Play()
 	TweenService:Create(cardStroke, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 8 }):Play()
 	task.delay(4.5, function()
-		TweenService:Create(card, TweenInfo.new(0.4), { Position = UDim2.new(0.5, 0, 0, 45), Size = UDim2.new(0, 300, 0, 60), BackgroundTransparency = 1 }):Play()
+		TweenService:Create(card, TweenInfo.new(0.4), { Position = UDim2.new(0, 146, 0, 326 + 58), Size = UDim2.new(0, 260, 0, 116), BackgroundTransparency = 1 }):Play() -- 왼쪽 미션 카드 자리로 빨려 들어간다
 		task.wait(0.4)
 		card:Destroy()
 		if activeCard == card then activeCard = nil end
@@ -137,13 +144,16 @@ local function refresh()
 	end
 	if not current then
 		objective.Visible = false
+		player:SetAttribute("TutorialCardUp", false)
 		return
 	end
-	titleLabel.Text = string.format("<font color='#ffd966'>미션 %d/%d</font>  %s", current.Index, current.Total, current.Text)
+	titleLabel.Text = string.format("<font color='#ffd966'>🎯 미션 %d/%d</font>", current.Index, current.Total)
+	descLabel.Text = current.Text
 	local ratio = math.clamp(current.Progress / current.Goal, 0, 1)
 	TweenService:Create(barFill, TweenInfo.new(0.25), { Size = UDim2.new(ratio, 0, 1, 0) }):Play()
 	barText.Text = string.format("%d / %d", current.Progress, current.Goal)
 	objective.Visible = true
+	player:SetAttribute("TutorialCardUp", true) -- 다른 왼쪽 패널(오늘의 퀘스트)이 이 카드 아래로 비켜 준다
 end
 
 local function clearWaypoint()
