@@ -103,6 +103,7 @@ end
 -- 새 미션이 시작되면 화면 중앙에 큼직한 카드로 먼저 보여준다 (상단 바는 눈에 잘 안 띄어서)
 local lastPopupIndex = 0
 local activeCard = nil
+local activeWhere = nil -- 새 미션 카드 안의 "목표가 어느 쪽에 있는지" 줄 (매 프레임 갱신)
 local function popupMission()
 	if activeCard then activeCard:Destroy() end -- 이전 카드가 남아 글자가 겹치지 않게
 	local card = create("Frame", {
@@ -114,8 +115,10 @@ local function popupMission()
 	local cardStroke = create("UIStroke", { Color = Color3.fromRGB(255, 225, 110), Thickness = 4 }, card)
 	label({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 10), TextSize = 26, Font = Enum.Font.GothamBlack, RichText = true, ZIndex = 31,
 		Text = string.format("<font color='#ffd966'>🎯 미션 %d/%d</font>", current.Index, current.Total) }, card)
-	label({ Size = UDim2.new(1, -40, 0, 80), Position = UDim2.new(0, 20, 0, 56), TextSize = 22, Font = Enum.Font.GothamBold, TextWrapped = true, TextTruncate = Enum.TextTruncate.AtEnd, ZIndex = 31,
+	label({ Size = UDim2.new(1, -40, 0, 56), Position = UDim2.new(0, 20, 0, 50), TextSize = 22, Font = Enum.Font.GothamBold, TextWrapped = true, TextTruncate = Enum.TextTruncate.AtEnd, ZIndex = 31,
 		Text = current.Text }, card)
+	activeWhere = label({ Size = UDim2.new(1, -40, 0, 26), Position = UDim2.new(0, 20, 1, -34), TextSize = 20, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(130, 255, 160), ZIndex = 31,
+		Text = current.TargetName and ("📍 " .. current.TargetName) or "" }, card)
 	card.Size = UDim2.new(0, 400, 0, 110)
 	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.new(0, 520, 0, 150) }):Play()
 	TweenService:Create(cardStroke, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 8 }):Play()
@@ -242,16 +245,20 @@ RunService.RenderStepped:Connect(function()
 			local index = math.floor((math.atan2(dz, dx) / (math.pi / 4)) % 8 + 0.5) % 8 + 1
 			local where = compass[index] .. "쪽"
 			local camera = workspace.CurrentCamera
-			if flat < 45 and camera then -- 가까우면 보는 방향 기준으로 "바로 앞 / 뒤 / 왼쪽 / 오른쪽"
+			local meters = math.floor(flat + 0.5)
+			if camera then -- 보는 방향 기준으로 "앞 / 뒤 / 왼쪽 / 오른쪽" (가까울수록 "바로 ~에 있어요!")
 				local rel = camera.CFrame:VectorToObjectSpace(Vector3.new(dx, 0, dz))
 				local angle = math.deg(math.atan2(rel.X, -rel.Z))
-				if math.abs(angle) <= 45 then where = "바로 앞에"
-				elseif math.abs(angle) >= 135 then where = "바로 뒤에"
-				elseif angle > 0 then where = "오른쪽에"
-				else where = "왼쪽에" end
-				where = where .. " 있어요!"
+				local side = math.abs(angle) <= 45 and "앞" or math.abs(angle) >= 135 and "뒤" or angle > 0 and "오른쪽" or "왼쪽"
+				if flat < 45 then
+					where = "바로 " .. side .. "에 있어요!"
+				else
+					where = side .. "쪽 (" .. where .. ")"
+				end
 			end
-			barText.Text = string.format("%d / %d     📍 %s  %s %dm", current.Progress, current.Goal, current.TargetName or "목표", where, math.floor(flat + 0.5))
+			local line = string.format("📍 %s  %s  %dm", current.TargetName or "목표", where, meters)
+			barText.Text = string.format("%d / %d     %s", current.Progress, current.Goal, line)
+			if activeWhere and activeWhere.Parent then activeWhere.Text = line end
 			beacon.Transparency = flat < 40 and 0.85 or 0.35 -- 가까워지면 투명하게 (시야 방해 방지)
 		end
 	end
