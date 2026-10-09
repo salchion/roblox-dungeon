@@ -365,6 +365,11 @@ local function spawnMonster(run, level, position)
 		stats.Speed *= mutator.SpeedMult or 1
 		stats.ShotInterval *= mutator.IntervalMult or 1
 	end
+	if run.DepthScale then -- 심연 깊이: 구역(필드)과 같은 방식으로 체력 / 공격력 / 속도가 확 뛴다
+		stats.MaxHealth = math.floor(stats.MaxHealth * run.DepthScale.Health)
+		stats.ShotDamage = math.max(1, math.floor(stats.ShotDamage * run.DepthScale.Damage))
+		stats.Speed *= run.DepthScale.Speed
+	end
 	if run.PenHealth then -- 랜덤 패널티로 누적된 적 강화
 		stats.MaxHealth = math.floor(stats.MaxHealth * run.PenHealth)
 		stats.ShotDamage = math.floor(stats.ShotDamage * run.PenDamage)
@@ -1578,7 +1583,7 @@ local function riftFinish(run)
 		Remotes.Dungeon:FireClient(member, "Result", {
 			Victory = true, Gold = info.Gold or 0, Tickets = info.Tickets or 0, Loot = {}, Wave = run.Wave, TotalWaves = 0,
 			TypeName = run.Type.Name, DifficultyName = "", ReturnDelay = D.ReturnDelay,
-			Rift = { Score = score, Tier = info.Tier, TierIcon = info.TierIcon, Best = info.Best, NewBest = info.NewBest, TimeSkip = info.TimeSkip or 0 },
+			Rift = { Score = score, Tier = info.Tier, TierIcon = info.TierIcon, Best = info.Best, NewBest = info.NewBest, TimeSkip = info.TimeSkip or 0, Depth = info.Depth, UnlockedNext = info.UnlockedNext },
 		})
 	end
 	broadcast(run)
@@ -1925,7 +1930,7 @@ end
 ------------------------------------------------------------
 -- 입장 (던전 게이트에서 호출). 파티가 있으면 파티장만 가능, 없으면 혼자 입장.
 ------------------------------------------------------------
-function Dungeon.Start(player, typeKey, diffKey, riftMode)
+function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth)
 	if player:GetAttribute("Zone") ~= "Lobby" then return end
 	if player:GetAttribute("TutorialDungeonLocked") then
 		notify(player, "🔒 아직 던전에 들어갈 수 없어요. 튜토리얼 미션을 먼저 진행해주세요!")
@@ -2020,7 +2025,9 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode)
 		BossName = dungeonType.Boss.Name,
 		GoldMult = dungeonType.GoldMult * difficulty.GoldMult,
 		LevelBonus = dungeonType.LevelOffset + difficulty.LevelOffset,
+		DepthScale = riftMode == true and Config.GetRiftDepth(riftDepth or 1) or nil, -- 심연 깊이별 난이도
 	}
+	if run.DepthScale then run.LevelBonus += run.DepthScale.LevelBonus end
 	run.BossName = run.BossVariant.Prefix .. " " .. run.BossName -- 보스 변종 (매번 다름)
 	-- 던전 변이: 확률로 한 가지가 붙는다 (위험 + 보상)
 	if math.random() < D.MutatorChance then

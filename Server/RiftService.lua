@@ -38,18 +38,34 @@ local function stateOf(player)
 	return state
 end
 
+-- 열려 있는 가장 깊은 심연 깊이: 필드 관문을 연 구역 수 + 1 (최대 8) 또는 골드 등급 이상을 기록한 깊이 + 1 (그 뒤는 점수로 끝없이)
+local function unlockedDepth(player, state)
+	return math.clamp(math.max(1 + (player:GetAttribute("ClearedZone") or 0), (state.DepthDone or 0) + 1), 1, R.MaxDepth)
+end
+
+local function selectedDepth(player, state)
+	return math.clamp(state.Depth or 1, 1, unlockedDepth(player, state))
+end
+
+local activeDepth = {} -- [player] = 지금 도전 중인 깊이
+
 local function push(player, openPanel)
 	local state = stateOf(player)
 	if not state then return end
-	local tier = Config.GetRiftTier(state.Best)
+	local depth = selectedDepth(player, state)
+	local best = state.Bests and state.Bests[depth] or 0
+	local tier = Config.GetRiftTier(best)
+	player:SetAttribute("RiftUnlocked", unlockedDepth(player, state)) -- "다음 목표" 패널이 읽는다
 	Remotes.Rift:FireClient(player, openPanel and "Open" or "State", {
-		Best = state.Best, Left = math.max(0, R.FreeAttempts - state.Used), Max = R.FreeAttempts,
-		TierName = state.Best > 0 and tier.Name or "기록 없음", TierIcon = state.Best > 0 and tier.Icon or "❔",
+		Best = best, Left = math.max(0, R.FreeAttempts - state.Used), Max = R.FreeAttempts,
+		TierName = best > 0 and tier.Name or "기록 없음", TierIcon = best > 0 and tier.Icon or "❔",
+		Depth = depth, Unlocked = unlockedDepth(player, state), MaxDepth = R.MaxDepth, Reward = Config.GetRiftDepth(depth).Reward,
+		DepthDone = state.DepthDone or 0, ClearedZone = player:GetAttribute("ClearedZone") or 0,
 	})
 end
 
-local function giveReward(player, tier, rate)
-	local gold = math.floor(tier.Gold * rate)
+local function giveReward(player, tier, rate, depthMult)
+	local gold = math.floor(tier.Gold * rate * (depthMult or 1))
 	local tickets = math.floor(tier.Tickets * rate)
 	local timeSkip = math.floor(tier.TimeSkip * rate)
 	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
@@ -78,7 +94,9 @@ function Rift.Start(player)
 		return
 	end
 	state.Used += 1
-	Dungeon.Start(player, "Rift", "Normal", true)
+	local depth = selectedDepth(player, state)
+	activeDepth[player] = depth
+	Dungeon.Start(player, "Rift", "Normal", true, depth)
 	if player:GetAttribute("Zone") ~= "Dungeon" then
 		state.Used -= 1 -- 시작하지 못했으면 횟수를 돌려준다 (던전이 가득 참 등)
 	end
@@ -91,13 +109,15 @@ function Rift.Sweep(player)
 		notify(player, message)
 		return
 	end
-	if state.Best <= 0 then
-		notify(player, "먼저 심연 도전을 한 번 해서 기록을 만들어주세요! (소탕은 최고 점수 기준이에요)")
+	local depth = selectedDepth(player, state)
+	local depthBest = state.Bests and state.Bests[depth] or 0
+	if depthBest <= 0 then
+		notify(player, "이 깊이에서 먼저 한 번 도전해서 기록을 만들어주세요! (소탕은 그 깊이의 최고 점수 기준이에요)")
 		return
 	end
 	state.Used += 1
-	local tier = Config.GetRiftTier(state.Best)
-	local gold, tickets, timeSkip = giveReward(player, tier, R.SweepRate)
+	local tier = Config.GetRiftTier(depthBest)
+	local gold, tickets, timeSkip = giveReward(player, tier, R.SweepRate, Config.GetRiftDepth(depth).Reward)
 	Quest.Add(player, "RiftRuns", 1)
 	notify(player, string.format("⚡ 소탕 완료! (%s %s) 골드 +%d%s%s", tier.Icon, tier.Name, gold,
 		tickets > 0 and (" · 티켓 +" .. tickets) or "", timeSkip > 0 and string.format(" · 단축권 %d분", timeSkip // 60) or ""))
@@ -105,27 +125,50 @@ function Rift.Sweep(player)
 end
 
 -- 던전이 끝났을 때(시간 종료 / 전멸) 점수를 정산한다
+local function tierIndex(score)
+	local index = 1
+	for i, candidate in ipairs(R.Tiers) do
+		if score >= candidate.Min then index = i end
+	end
+	return index
+end
+
 local function onFinished(player, score)
 	local state = stateOf(player)
+	local depth = activeDepth[player] or 1
+	activeDepth[player] = nil
 	local tier = Config.GetRiftTier(score)
-	local gold, tickets, timeSkip = giveReward(player, tier, 1)
+	local gold, tickets, timeSkip = giveReward(player, tier, 1, Config.GetRiftDepth(depth).Reward)
 	local newBest = false
 	local best = 0
+	local unlockedNext = nil
 	if state then
-		best = state.Best
-		if score > state.Best then
+		state.Bests = state.Bests or {}
+		best = state.Bests[depth] or 0
+		if score > best then
 			newBest = true
-			state.Best = score
+			state.Bests[depth] = score
 			best = score
+		end
+		if score > state.Best then
+			state.Best = score
 			player:SetAttribute("RiftBest", score)
-			if score >= R.Tiers[4].Min then
-				Event.Announce(string.format("📢 %s 님이 심연 도전 %d점(%s)을 달성했어요!", player.DisplayName, score, tier.Name))
+		end
+		if newBest and score >= R.Tiers[4].Min then
+			Event.Announce(string.format("📢 %s 님이 심연 깊이 %d 에서 %d점(%s)을 달성했어요!", player.DisplayName, depth, score, tier.Name))
+		end
+		-- 골드 등급 이상을 기록하면 다음 깊이가 열린다
+		if tierIndex(score) >= R.UnlockTier and depth > (state.DepthDone or 0) then
+			state.DepthDone = depth
+			if depth + 1 <= R.MaxDepth and depth + 1 > 1 + (player:GetAttribute("ClearedZone") or 0) then
+				unlockedNext = depth + 1
 			end
 		end
+		state.Depth = math.clamp(depth + (unlockedNext and 1 or 0), 1, R.MaxDepth) -- 새로 열리면 바로 다음 깊이를 고른 상태로
 	end
 	Quest.Add(player, "RiftRuns", 1)
 	push(player, false)
-	return { Gold = gold, Tickets = tickets, TimeSkip = timeSkip, Tier = tier.Name, TierIcon = tier.Icon, Best = best, NewBest = newBest }
+	return { Gold = gold, Tickets = tickets, TimeSkip = timeSkip, Tier = tier.Name, TierIcon = tier.Icon, Best = best, NewBest = newBest, Depth = depth, UnlockedNext = unlockedNext }
 end
 
 function Rift.Init(prompt)
@@ -141,8 +184,14 @@ function Rift.Init(prompt)
 	end
 end
 
-Remotes.Rift.OnServerEvent:Connect(function(player, action)
-	if action == "Request" then
+Remotes.Rift.OnServerEvent:Connect(function(player, action, arg)
+	if action == "SetDepth" and typeof(arg) == "number" then
+		local state = stateOf(player)
+		if state then
+			state.Depth = math.clamp(math.floor(arg), 1, unlockedDepth(player, state))
+			push(player, false)
+		end
+	elseif action == "Request" then
 		push(player, false)
 	elseif action == "Start" then
 		Rift.Start(player)

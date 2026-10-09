@@ -871,6 +871,28 @@ Config.Rift = {
 		{ Min = 9000, Name = "마스터",   Icon = "👑", Gold = 15000, Tickets = 6, TimeSkip = 3600 },
 	},
 }
+-- 심연 깊이: 필드(이야기 / 8구역)를 모두 밀고 난 뒤에도 끝없이 이어지는 후반 목표.
+--   깊이 d 의 몬스터 = 필드 구역 d 와 같은 난이도(레벨 +3씩 / 체력 / 공격력 배율), 8을 넘으면 계속 가파르게. 보상도 같이 오른다.
+--   열리는 깊이 = max(1 + 필드 관문을 연 구역 수, (골드 등급 이상을 기록한 가장 깊은 깊이) + 1) — 필드를 밀면 8까지, 그 뒤는 점수로 열린다.
+Config.Rift.MaxDepth = 60
+Config.Rift.UnlockTier = 3 -- 이 등급(골드) 이상을 기록하면 다음 깊이가 열린다
+function Config.GetRiftDepth(depth)
+	depth = math.clamp(math.floor(depth or 1), 1, Config.Rift.MaxDepth)
+	local D = Config.Field.ZoneDanger
+	local function curve(list, growth)
+		if depth <= #list then return list[depth] end
+		return list[#list] * growth ^ (depth - #list)
+	end
+	return {
+		Depth = depth,
+		LevelBonus = (depth - 1) * 3,
+		Health = curve(D.Health, 1.4),
+		Damage = curve(D.Damage, 1.2),
+		Speed = curve(D.Speed, 1.02),
+		Reward = curve(Config.Field.BossPower, 1.35) / Config.Field.BossPower[1], -- 골드 보상 배율: 그 구역이 권하는 전투력에 비례 (경제 기준표: 수입 / 비용이 공격력에 비례)
+	}
+end
+
 function Config.GetRiftTier(score)
 	local tier = Config.Rift.Tiers[1]
 	for _, candidate in ipairs(Config.Rift.Tiers) do
