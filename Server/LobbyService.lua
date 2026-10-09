@@ -332,19 +332,7 @@ function Lobby.Build()
 			Color = Color3.fromRGB(88, 130, 84), Material = Enum.Material.Grass }, folder)
 		makeLamp(Vector3.new(-11, TOP + HILL_H, HILL_Z + 6), folder)
 		makeLamp(Vector3.new(11, TOP + HILL_H, HILL_Z + 6), folder)
-		-- 경사로: 언덕 가장자리(y = HILL_H)에서 광장 가장자리(y = 0)까지 비스듬히 내려간다
-		local function ramp(topPoint, bottomPoint, width)
-			local direction = bottomPoint - topPoint
-			local thickness = 4
-			local middle = (topPoint + bottomPoint) / 2
-			local look = CFrame.lookAt(middle, middle + direction)
-			local center3 = middle - look.UpVector * (thickness / 2)
-			makePart({ Name = "HillRamp", Size = Vector3.new(width, thickness, direction.Magnitude), CFrame = CFrame.lookAt(center3, center3 + direction),
-				Color = Color3.fromRGB(205, 195, 175), Material = Enum.Material.Cobblestone }, folder)
-		end
-		for _, side in ipairs({ -1, 1 }) do
-			ramp(Vector3.new(side * 9.8, TOP + HILL_H, HILL_Z - 15.1), Vector3.new(side * 54, TOP, 44), 14)
-		end
+		-- (경사로는 없앴다: 시작할 때 언덕에서 마을로 뛰어내려 오고, 다시 올라갈 일은 없다)
 	end
 
 	local spawn = Instance.new("SpawnLocation")
