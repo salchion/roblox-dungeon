@@ -31,10 +31,10 @@ local SPECS = {
 		Layers = { { Pitch = 0.9, Volume = 0.6, Delay = 0.02 } } },
 	-- 적중 / 처치 / 치명타 (짧고 선명하게)
 	Hit  = { Base = "Shot", CustomLength = 0.6, Pitch = 3.0, Volume = 0.5, Length = 0.09 },
-	-- 치명타 (오버워치 헤드샷 느낌): 짧고 깨끗한 금속 "팅!" + 5도 위 배음이 살짝 늦게 + 아주 짧은 반짝 꼬리, 저음은 깎아 낸다
-	Crit = { Base = "Enh_Success", Pitch = 2.3, Volume = 0.9, Length = 0.22, CustomLength = 0.7,
-		Fx = { { "eq", { LowGain = -30, MidGain = 2, HighGain = 3 } }, { "echo", { Delay = 0.06, Feedback = 0.25, WetLevel = -9 } } },
-		Layers = { { Pitch = 3.45, Volume = 0.55, Delay = 0.012 }, { Pitch = 4.6, Volume = 0.25, Delay = 0.03 } } },
+	-- 치명타 (오버워치 헤드샷 느낌, 귀가 아프지 않게): 낮고 단단한 "텅!" + 살짝 얹은 맑은 배음, 고음은 깎아 낸다
+	Crit = { Base = "Enh_Success", Pitch = 1.45, Volume = 0.5, Length = 0.2, CustomLength = 0.5,
+		Fx = { { "eq", { LowGain = -24, MidGain = 0, HighGain = -8 } }, { "echo", { Delay = 0.05, Feedback = 0.15, WetLevel = -14 } } },
+		Layers = { { Pitch = 2.0, Volume = 0.3, Delay = 0.01 } } },
 	Kill = { Base = "EnhanceSuccess", CustomLength = 1.2, Pitch = 1.5, Volume = 0.7, Length = 0.35, Fx = { { "reverb", { DecayTime = 0.6, WetLevel = -10 } } } },
 	-- 스킬 / 폭발 / 레벨업
 	Skill_Heal = { CustomLength = 2.5, Base = "Enh_Success", Pitch = 1.1, Volume = 0.8, Length = 0.9, Fx = { { "reverb", { DecayTime = 1.6, WetLevel = -6 } } } },

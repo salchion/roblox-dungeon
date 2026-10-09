@@ -166,7 +166,7 @@ Config.Daily = {
 -- 던전마다 확률로 붙는 변이: 위험이 커지면 보상도 커진다
 Config.Dungeon.MutatorChance = 0.9 -- 거의 매번 변이가 붙는다 (Visual = 화면 분위기까지 확 바뀐다)
 Config.Dungeon.Mutators = {
-	Order = { "Giant", "Swift", "Swarm", "Golden", "Furious", "Dark", "Fog", "Blood", "Elite" },
+	Order = { "Giant", "Swift", "Swarm", "Golden", "Furious", "Dark", "Blood", "Elite" },
 	Giant = { Name = "거대화", Icon = "🗿", Desc = "몬스터 체력 x1.6, 보상 x1.5", HealthMult = 1.6, GoldMult = 1.5 },
 	Swift = { Name = "신속", Icon = "💨", Desc = "몬스터 이동/공격이 빠름, 보상 x1.3", SpeedMult = 1.5, IntervalMult = 0.7, GoldMult = 1.3 },
 	Swarm = { Name = "떼거지", Icon = "🐀", Desc = "몬스터 수 x1.6 (체력 x0.7), 보상 x1.4", CountMult = 1.6, HealthMult = 0.7, GoldMult = 1.4 },
