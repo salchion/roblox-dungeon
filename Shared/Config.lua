@@ -277,6 +277,8 @@ end
 function Config.Dungeon.GetSurviveSeconds(waves)
 	return math.min(100, 55 + (waves or 5) * 7)
 end
+Config.Dungeon.MonsterLimit = 40     -- 버티기 중 동시에 살아 있는 몬스터가 이 수(파티면 인원에 비례해 늘어남)를 넘기면 위험, OverrunSeconds 동안 못 줄이면 실패
+Config.Dungeon.OverrunSeconds = 6
 Config.Dungeon.BonusInterval = 15    -- 이 간격(초)마다 랜덤 강화 / 랜덤 패널티가 터진다 (선택 없이 자동 적용)
 
 -- 랜덤 강화 (고르지 않고 무작위로 하나 걸린다. Perk = 기존 특성을 Stacks 단계만큼 올림 / Weight = 나올 확률 가중치)

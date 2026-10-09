@@ -809,7 +809,7 @@ do
 	local ICONS = { "🔱", "💥", "⚡", "🔥", "⏩", "🎯", "❤", "💚", "⭐", "💰", "🎫", "🌪" }
 	local PEN_ICONS = { "🪨", "😡", "💨", "🐺", "🔫", "☠" }
 	local popup = create("Frame", {
-		Name = "RollPopup", Size = UDim2.new(0, 460, 0, 96), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 160),
+		Name = "RollPopup", Size = UDim2.new(0, 460, 0, 96), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 176),
 		BackgroundColor3 = Color3.fromRGB(18, 20, 30), BackgroundTransparency = 0.1, BorderSizePixel = 0, Visible = false, ZIndex = 75,
 	}, gui)
 	rounded(popup, 14)
@@ -1355,6 +1355,20 @@ local bannerMutator = makeLabel({
 	TextSize = 13, TextColor3 = Color3.fromRGB(255, 205, 100), Font = Enum.Font.GothamBold,
 }, banner)
 
+-- 버티기 중 위쪽 두 줄: (1) 다음 랜덤 보너스까지 차오르는 막대 (밀리는 중에도 "곧 뭔가 터진다"는 기대감) (2) 몬스터 수 / 한도 (넘기면 압도당해 실패)
+local bonusBar = makePanel({
+	Size = UDim2.new(0, 420, 0, 22), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 118), Visible = false,
+}, dungeonFrame)
+local bonusFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 200, 70), BorderSizePixel = 0 }, bonusBar)
+rounded(bonusFill)
+local bonusText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 13, TextStrokeTransparency = 0.4 }, bonusBar)
+local limitBar = makePanel({
+	Size = UDim2.new(0, 420, 0, 22), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 144), Visible = false,
+}, dungeonFrame)
+local limitFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(110, 210, 120), BorderSizePixel = 0 }, limitBar)
+rounded(limitFill)
+local limitText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 13, TextStrokeTransparency = 0.4 }, limitBar)
+
 local bossBar = makePanel({
 	Size = UDim2.new(0, 460, 0, 26), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 120), Visible = false,
 }, dungeonFrame)
@@ -1604,6 +1618,26 @@ local function refreshBanner()
 	local state = dungeonState
 	banner.Visible = state ~= nil and state.Phase ~= "Ended"
 	bossBar.Visible = state ~= nil and state.BossRatio ~= nil
+	local surviving = state ~= nil and state.Phase == "Wave" and state.SurviveLeft ~= nil
+	bonusBar.Visible = surviving and state.BonusLeft ~= nil
+	limitBar.Visible = surviving and state.MonsterLimit ~= nil
+	if surviving and state.BonusLeft and state.BonusSpan then
+		local ratio = math.clamp(1 - state.BonusLeft / math.max(1, state.BonusSpan), 0, 1)
+		TweenService:Create(bonusFill, TweenInfo.new(0.5, Enum.EasingStyle.Linear), { Size = UDim2.new(ratio, 0, 1, 0) }):Play()
+		bonusFill.BackgroundColor3 = state.BonusLeft <= 3 and Color3.fromRGB(255, 120, 60) or Color3.fromRGB(255, 200, 70)
+		bonusText.Text = state.BonusLeft <= 3 and "🎲 곧 터진다!!" or string.format("🎲 랜덤 보너스까지 %d초", state.BonusLeft)
+	end
+	if surviving and state.MonsterLimit then
+		local ratio = math.clamp(state.MonstersLeft / state.MonsterLimit, 0, 1)
+		TweenService:Create(limitFill, TweenInfo.new(0.5, Enum.EasingStyle.Linear), { Size = UDim2.new(ratio, 0, 1, 0) }):Play()
+		if state.OverrunLeft then
+			limitFill.BackgroundColor3 = Color3.fromRGB(235, 50, 50)
+			limitText.Text = string.format("⚠ 몬스터 폭주! %d초 안에 줄이세요!  (%d / %d)", state.OverrunLeft, state.MonstersLeft, state.MonsterLimit)
+		else
+			limitFill.BackgroundColor3 = ratio >= 0.75 and Color3.fromRGB(240, 150, 50) or Color3.fromRGB(110, 210, 120)
+			limitText.Text = string.format("👹 몬스터 %d / %d%s", state.MonstersLeft, state.MonsterLimit, ratio >= 0.75 and "  — 위험!" or "")
+		end
+	end
 	if not state then return end
 	bannerMutator.Text = state.MutatorText or ""
 
@@ -1616,8 +1650,8 @@ local function refreshBanner()
 		bannerTitle.Text = string.format("%s 입장!", state.TypeName or "던전")
 		bannerSub.Text = string.format("[%s] %d초 후 시작! 몰려오는 몬스터를 버텨요", state.DifficultyName or "", state.TimeLeft)
 	elseif state.Phase == "Wave" and state.SurviveLeft then
-		bannerTitle.Text = string.format("🛡 버텨라!  %d초", state.SurviveLeft)
-		bannerSub.Text = string.format("%s · %s · 남은 몬스터 %d · 끝까지 버티면 보스 등장!", state.TypeName or "", state.DifficultyName or "", state.MonstersLeft)
+		bannerTitle.Text = string.format("🛡 처치하며 버텨라!  %d초", state.SurviveLeft)
+		bannerSub.Text = string.format("%s · %s · 몬스터가 너무 쌓이면 실패! 끝까지 버티면 보스 등장", state.TypeName or "", state.DifficultyName or "", state.MonstersLeft)
 	elseif state.Phase == "Wave" then
 		bannerTitle.Text = state.TotalWaves == 0 and string.format("🏯 %d층", state.Wave) or string.format("구역 %d / %d", state.Wave, state.TotalWaves)
 		bannerSub.Text = string.format("%s · %s · 남은 몬스터 %d · 앞으로 쭉!", state.TypeName or "", state.DifficultyName or "", state.MonstersLeft)

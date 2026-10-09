@@ -1524,6 +1524,10 @@ local function broadcast(run)
 		MemberCount = #run.Members,
 		StageText = run.StageText,
 		SurviveLeft = run.SurviveEnd and math.max(0, math.ceil(run.SurviveEnd - os.clock())) or nil,
+		BonusLeft = run.NextBonusAt and math.max(0, math.ceil(run.NextBonusAt - os.clock())) or nil,
+		BonusSpan = run.BonusSpan,
+		MonsterLimit = run.MonsterLimit,
+		OverrunLeft = run.OverrunLeft and math.ceil(run.OverrunLeft) or nil,
 		MutatorText = run.Mutator and string.format("%s %s — %s", run.Mutator.Icon, run.Mutator.Name, run.Mutator.Desc) or nil,
 		BossName = run.Boss and run.BossName or nil,
 		BossRatio = run.Boss and math.max(run.Boss.Health, 0) / run.Boss.MaxHealth or nil,
@@ -2098,7 +2102,7 @@ end
 -- 끝까지 버티면 보스가 나타난다. (심연 도전과 비슷하지만 점수제가 아니라 보스 / 보상이 있는 일반 던전)
 local function surviveLoop(run)
 	run.PhaseEnd = os.clock() + D.StartCountdown
-	notifyAll(run, "🛡 몰려오는 몬스터를 버텨내세요! 끝까지 버티면 보스가 나타나요")
+	notifyAll(run, "🛡 몰려오는 몬스터를 처치하세요! 너무 많이 쌓이면 압도당해 실패, 끝까지 버티면 보스가 나타나요")
 	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
 	run.PhaseEnd = nil
 
@@ -2111,8 +2115,12 @@ local function surviveLoop(run)
 	run.Wave = 1
 	local nextSpawn = startedAt
 	local nextBonus = startedAt + 8 -- 첫 보너스는 일찍: 시작하자마자 "뭔가 터진다"
+	run.NextBonusAt, run.BonusSpan = nextBonus, 8
 	local bonusCount = 0
 	local partyScale = 1 + 0.5 * (run.PartySize - 1)
+	-- 몬스터가 한도를 넘어 쌓이면 졌다: 가만히 버티기만 해서는 클리어할 수 없다 (한도를 넘긴 채 OverrunSeconds 가 지나면 실패)
+	local limit = math.floor(D.MonsterLimit * partyScale)
+	run.MonsterLimit = limit
 
 	while not run.Destroyed and run.Phase ~= "Ended" do
 		if allDown(run) then
@@ -2124,8 +2132,21 @@ local function surviveLoop(run)
 		local progress = (now - startedAt) / duration
 		run.Wave = 1 + math.floor(progress * waves)
 
+		-- 한도 초과 감시
+		if run.MonsterCount > limit then
+			run.OverrunSince = run.OverrunSince or now
+			run.OverrunLeft = math.max(0, D.OverrunSeconds - (now - run.OverrunSince))
+			if run.OverrunLeft <= 0 then
+				notifyAll(run, "💀 몬스터가 너무 많아졌어요! 압도당했습니다")
+				finish(run, false)
+				return
+			end
+		else
+			run.OverrunSince, run.OverrunLeft = nil, nil
+		end
+
 		if now >= nextSpawn then
-			local cap = math.floor((18 + 16 * progress) * partyScale)
+			local cap = math.floor(limit * 1.3) -- 성능 보호용 상한 (한도를 넘겨 쌓이긴 하지만 무한정은 아니다)
 			if run.MonsterCount < cap then
 				run.SpawnPoints = nearSpawnPoints(run, 22, 75) or run.AllSpawns
 				local level = math.max(1, D.GetWaveMonsterLevel(run.Wave) + run.LevelBonus)
@@ -2134,12 +2155,13 @@ local function surviveLoop(run)
 					spawnMonster(run, level)
 				end
 			end
-			nextSpawn = now + (1.1 - 0.6 * progress) / (run.PenCount or 1)
+			nextSpawn = now + (2.0 - 0.7 * progress) / (run.PenCount or 1)
 		end
 
 		if now >= nextBonus then
 			bonusCount += 1
 			nextBonus = now + D.BonusInterval
+			run.NextBonusAt, run.BonusSpan = nextBonus, D.BonusInterval
 			giveGold(run, D.WaveClearGold * bonusCount)
 			giveXp(run, Config.Xp.WaveClear * bonusCount)
 			for _, member in ipairs(run.Members) do
@@ -2153,6 +2175,7 @@ local function surviveLoop(run)
 
 	-- 보스: 플레이어 가까이에서 등장
 	run.SurviveEnd = nil
+	run.NextBonusAt, run.MonsterLimit, run.OverrunSince, run.OverrunLeft = nil, nil, nil, nil
 	run.Phase = "Boss"
 	run.StageText = nil
 	local spots = nearSpawnPoints(run, 35, 90)
