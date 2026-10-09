@@ -299,6 +299,169 @@ local function gunSound(event)
 	end
 end
 
+------------------------------------------------------------
+-- 세트 효과 연출: 고리 / 번개 / 미사일 / 불길 / 유성 / 회전 칼날 (서버는 위치와 피해만 계산한다)
+------------------------------------------------------------
+local RunService = game:GetService("RunService")
+
+local function neonPart(size, color, transparency, shape)
+	local part = Instance.new("Part")
+	part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch = true, false, false, false
+	part.Material = Enum.Material.Neon
+	part.Color = color
+	part.Transparency = transparency or 0
+	if shape then part.Shape = shape end
+	part.Size = size
+	return part
+end
+
+local function ring(event) -- { "R", 위치, 반지름, 색 }
+	local position, radius, color = event[2], event[3], event[4]
+	local part = neonPart(Vector3.new(0.5, 2, 2), color, 0.25, Enum.PartType.Cylinder)
+	part.CFrame = CFrame.new(position + Vector3.new(0, 0.5, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	part.Parent = fxFolder
+	TweenService:Create(part, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.5, radius * 2, radius * 2), Transparency = 1 }):Play()
+	Debris:AddItem(part, 0.5)
+end
+
+local function bolt(event) -- { "Z", 위, 아래 }
+	local top, bottom = event[2], event[3]
+	local length = (top - bottom).Magnitude
+	local part = neonPart(Vector3.new(1.4, 1.4, length), Color3.fromRGB(255, 245, 140), 0)
+	part.CFrame = CFrame.lookAt((top + bottom) / 2, bottom)
+	part.Parent = fxFolder
+	TweenService:Create(part, TweenInfo.new(0.3), { Transparency = 1, Size = Vector3.new(0.2, 0.2, length) }):Play()
+	Debris:AddItem(part, 0.35)
+	burst(bottom, Color3.fromRGB(255, 240, 120), 24)
+end
+
+local missiles = {}
+local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간 }
+	local from, target, mid, duration = event[2], event[3], event[4], event[5]
+	local ball = neonPart(Vector3.new(1.6, 1.6, 1.6), Color3.fromRGB(255, 160, 70), 0, Enum.PartType.Ball)
+	ball.Position = from
+	local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
+	a0.Position, a1.Position = Vector3.new(0, 0.6, 0), Vector3.new(0, -0.6, 0)
+	a0.Parent, a1.Parent = ball, ball
+	local trail = Instance.new("Trail")
+	trail.Attachment0, trail.Attachment1 = a0, a1
+	trail.Lifetime = 0.35
+	trail.Color = ColorSequence.new(Color3.fromRGB(255, 220, 120), Color3.fromRGB(255, 80, 40))
+	trail.Transparency = NumberSequence.new(0, 1)
+	trail.LightEmission = 1
+	trail.Parent = ball
+	ball.Parent = fxFolder
+	table.insert(missiles, { Ball = ball, From = from, Target = target, Last = event[3] and event[3].Parent and event[3].Position or from, Mid = mid, Duration = duration, Started = os.clock() })
+end
+
+local function flame(event) -- { "L", 위치, 반지름, 초 }
+	local position, radius, seconds = event[2], event[3], event[4]
+	local pad = neonPart(Vector3.new(0.4, radius * 2, radius * 2), Color3.fromRGB(255, 120, 40), 0.55, Enum.PartType.Cylinder)
+	pad.CFrame = CFrame.new(position + Vector3.new(0, 0.3, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	local fire = Instance.new("Fire")
+	fire.Size = math.max(6, radius)
+	fire.Heat = 8
+	fire.Parent = pad
+	pad.Parent = fxFolder
+	task.delay(seconds, function()
+		TweenService:Create(pad, TweenInfo.new(0.4), { Transparency = 1 }):Play()
+		Debris:AddItem(pad, 0.5)
+		fire.Enabled = false
+	end)
+end
+
+local function meteor(event) -- { "E", 위치, 반지름, 낙하 시간 }
+	local position, radius, fall = event[2], event[3], event[4]
+	local warnDisk = neonPart(Vector3.new(0.3, radius * 2, radius * 2), Color3.fromRGB(255, 80, 50), 0.6, Enum.PartType.Cylinder)
+	warnDisk.CFrame = CFrame.new(position + Vector3.new(0, 0.4, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	warnDisk.Parent = fxFolder
+	local rock = neonPart(Vector3.new(7, 7, 7), Color3.fromRGB(255, 150, 60), 0, Enum.PartType.Ball)
+	rock.Position = position + Vector3.new(14, 90, 10)
+	local fire = Instance.new("Fire")
+	fire.Size = 14
+	fire.Parent = rock
+	rock.Parent = fxFolder
+	TweenService:Create(rock, TweenInfo.new(fall, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Position = position + Vector3.new(0, 3, 0) }):Play()
+	task.delay(fall, function()
+		warnDisk:Destroy()
+		rock:Destroy()
+		ring({ "R", position, radius, Color3.fromRGB(255, 150, 60) })
+		burst(position + Vector3.new(0, 3, 0), Color3.fromRGB(255, 160, 60), 70)
+	end)
+end
+
+-- 회전 칼날: 칼날은 이 화면에서 서버 시각(GetServerTimeNow) 기준으로 돌아서, 서버가 계산한 피해 위치와 같은 곳에 보인다
+local orbiters = {} -- [userId] = { Parts, Count, Radius, Spin, Expire }
+local function orbit(event) -- { "O", userId, 개수(0이면 끔), 반지름, 속도 }
+	local userId, count = event[2], event[3]
+	local entry = orbiters[userId]
+	if not count or count <= 0 then
+		if entry then
+			for _, part in ipairs(entry.Parts) do part:Destroy() end
+			orbiters[userId] = nil
+		end
+		return
+	end
+	if entry and entry.Count ~= count then
+		for _, part in ipairs(entry.Parts) do part:Destroy() end
+		entry = nil
+	end
+	if not entry then
+		entry = { Parts = {}, Count = count }
+		for _ = 1, count do
+			local blade = neonPart(Vector3.new(0.7, 0.4, 5), Color3.fromRGB(120, 235, 255), 0)
+			local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
+			a0.Position, a1.Position = Vector3.new(0, 0, -2.5), Vector3.new(0, 0, 2.5)
+			a0.Parent, a1.Parent = blade, blade
+			local trail = Instance.new("Trail")
+			trail.Attachment0, trail.Attachment1 = a0, a1
+			trail.Lifetime = 0.25
+			trail.Color = ColorSequence.new(Color3.fromRGB(170, 245, 255))
+			trail.Transparency = NumberSequence.new(0.2, 1)
+			trail.LightEmission = 1
+			trail.Parent = blade
+			blade.Parent = fxFolder
+			table.insert(entry.Parts, blade)
+		end
+		orbiters[userId] = entry
+	end
+	entry.Radius, entry.Spin = event[4] or 9, event[5] or 5
+	entry.Expire = os.clock() + 8 -- 서버가 3초마다 다시 알린다: 끊기면 저절로 사라진다
+end
+
+RunService.RenderStepped:Connect(function()
+	local now = os.clock()
+	-- 미사일
+	for i = #missiles, 1, -1 do
+		local m = missiles[i]
+		local t = (now - m.Started) / m.Duration
+		if m.Target and m.Target.Parent then m.Last = m.Target.Position end
+		if t >= 1 or not m.Ball.Parent then
+			burst(m.Last, Color3.fromRGB(255, 150, 60), 22)
+			m.Ball:Destroy()
+			table.remove(missiles, i)
+		else
+			m.Ball.Position = m.From:Lerp(m.Mid, t):Lerp(m.Mid:Lerp(m.Last, t), t) -- 2차 곡선
+		end
+	end
+	-- 회전 칼날
+	local serverNow = workspace:GetServerTimeNow()
+	for userId, entry in pairs(orbiters) do
+		local owner = Players:GetPlayerByUserId(userId)
+		local root = owner and owner.Character and owner.Character:FindFirstChild("HumanoidRootPart")
+		if now > entry.Expire or not root then
+			for _, part in ipairs(entry.Parts) do part:Destroy() end
+			orbiters[userId] = nil
+		else
+			for index, blade in ipairs(entry.Parts) do
+				local angle = serverNow * entry.Spin + index * (2 * math.pi / entry.Count)
+				local p = root.Position + Vector3.new(math.cos(angle) * entry.Radius, 0.5, math.sin(angle) * entry.Radius)
+				blade.CFrame = CFrame.new(p, p + Vector3.new(-math.sin(angle), 0, math.cos(angle)))
+			end
+		end
+	end
+end)
+
 local FLOAT_SIZE, DAMAGE_SIZE = UDim2.new(0, 140, 0, 36), UDim2.new(0, 90, 0, 40)
 local HANDLERS = {
 	S = playShot,
@@ -312,6 +475,7 @@ local HANDLERS = {
 	end,
 	H = function(event) flash(event[2]) end,
 	G = gunSound,
+	R = ring, Z = bolt, M = missile, L = flame, E = meteor, O = orbit,
 }
 
 Remotes.Fx.OnClientEvent:Connect(function(batch)

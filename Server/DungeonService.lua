@@ -1316,62 +1316,21 @@ local function hitMonster(run, player, entry, amount, quiet)
 end
 
 local function launchMissile(run, player, from, entry, amount)
-	local ball = Instance.new("Part")
-	ball.Shape = Enum.PartType.Ball
-	ball.Size = Vector3.new(1.6, 1.6, 1.6)
-	ball.Material = Enum.Material.Neon
-	ball.Color = Color3.fromRGB(255, 160, 70)
-	ball.Anchored, ball.CanCollide, ball.CanQuery, ball.CanTouch = true, false, false, false
-	ball.Position = from
-	ball.Parent = run.Folder
-	local a0 = Instance.new("Attachment")
-	a0.Position = Vector3.new(0, 0.6, 0)
-	a0.Parent = ball
-	local a1 = Instance.new("Attachment")
-	a1.Position = Vector3.new(0, -0.6, 0)
-	a1.Parent = ball
-	local trail = Instance.new("Trail")
-	trail.Attachment0, trail.Attachment1 = a0, a1
-	trail.Lifetime = 0.35
-	trail.Color = ColorSequence.new(Color3.fromRGB(255, 220, 120), Color3.fromRGB(255, 80, 40))
-	trail.Transparency = NumberSequence.new(0, 1)
-	trail.LightEmission = 1
-	trail.Parent = ball
 	sfxAt(run, from, "Aug_Missile", nil, 0.08)
 	local target = entry.Part.Position
 	local mid = from:Lerp(target, 0.5) + Vector3.new((math.random() - 0.5) * 14, 10 + math.random() * 6, (math.random() - 0.5) * 14) -- 휘어서 날아간다
-	local started = os.clock()
 	local duration = 0.4
-	task.spawn(function()
-		while ball.Parent and os.clock() - started < duration do
-			local t = (os.clock() - started) / duration
-			local live = entry.Part.Parent and entry.Part.Position or target
-			local p = from:Lerp(mid, t):Lerp(mid:Lerp(live, t), t) -- 2차 곡선
-			ball.Position = p
-			task.wait()
-		end
-		if ball.Parent then
-			local position = entry.Part.Parent and entry.Part.Position or target
-			Effects.Burst(position, Color3.fromRGB(255, 150, 60), 22)
-			sfxAt(run, position, "Aug_MissileHit", nil, 0.08)
-			ball:Destroy()
-			hitMonster(run, player, entry, amount)
-		end
+	Effects.Raw(from, { "M", from, entry.Part, mid, duration }) -- 미사일은 각자 화면에서 그린다 (2차 곡선으로 날아가 폭발)
+	task.delay(duration, function()
+		if run.Destroyed then return end
+		local position = entry.Part.Parent and entry.Part.Position or target
+		sfxAt(run, position, "Aug_MissileHit", nil, 0.08)
+		hitMonster(run, player, entry, amount)
 	end)
 end
 
 local function shockRing(run, position, radius, color)
-	local ring = Instance.new("Part")
-	ring.Shape = Enum.PartType.Cylinder
-	ring.Size = Vector3.new(0.5, 2, 2)
-	ring.CFrame = CFrame.new(position + Vector3.new(0, 0.5, 0)) * CFrame.Angles(0, 0, math.rad(90))
-	ring.Material = Enum.Material.Neon
-	ring.Color = color
-	ring.Transparency = 0.25
-	ring.Anchored, ring.CanCollide, ring.CanQuery, ring.CanTouch = true, false, false, false
-	ring.Parent = run.Folder
-	TweenService:Create(ring, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.5, radius * 2, radius * 2), Transparency = 1 }):Play()
-	Debris:AddItem(ring, 0.5)
+	Effects.Raw(position, { "R", position, radius, color }) -- 퍼지는 고리 (각자 화면에서)
 end
 
 local augDepth = 0
@@ -1385,46 +1344,22 @@ local function makeFlame(run, player, position, radius, seconds, damage)
 	if run.FlameCount >= 14 then return end
 	run.FlameCount += 1
 	sfxAt(run, position, "Aug_Flame", nil, 0.3)
-	local pad = Instance.new("Part")
-	pad.Shape = Enum.PartType.Cylinder
-	pad.Size = Vector3.new(0.4, radius * 2, radius * 2)
-	pad.CFrame = CFrame.new(position + Vector3.new(0, 0.3, 0)) * CFrame.Angles(0, 0, math.rad(90))
-	pad.Material = Enum.Material.Neon
-	pad.Color = Color3.fromRGB(255, 120, 40)
-	pad.Transparency = 0.55
-	pad.Anchored, pad.CanCollide, pad.CanQuery, pad.CanTouch = true, false, false, false
-	pad.Parent = run.Folder
-	local fire = Instance.new("Fire")
-	fire.Size = math.max(6, radius)
-	fire.Heat = 8
-	fire.Parent = pad
+	Effects.Raw(position, { "L", position, radius, seconds }) -- 불길 바닥은 각자 화면에서 그린다
 	task.spawn(function()
 		local untilAt = os.clock() + seconds
-		while pad.Parent and os.clock() < untilAt and not run.Destroyed and run.Phase ~= "Ended" do
+		while os.clock() < untilAt and not run.Destroyed and run.Phase ~= "Ended" do
 			for _, entry in ipairs(nearestMonsters(run, position, radius, 8)) do
 				hitMonster(run, player, entry, damage, true)
 			end
 			task.wait(0.5)
 		end
-		TweenService:Create(pad, TweenInfo.new(0.4), { Transparency = 1 }):Play()
-		Debris:AddItem(pad, 0.5)
 		run.FlameCount -= 1
 	end)
 end
 
 -- 번개 한 줄기
 local function strikeBolt(run, player, entry, damage)
-	local top = entry.Part.Position + Vector3.new(0, 70, 0)
-	local bolt = Instance.new("Part")
-	bolt.Material = Enum.Material.Neon
-	bolt.Color = Color3.fromRGB(255, 245, 140)
-	bolt.Anchored, bolt.CanCollide, bolt.CanQuery, bolt.CanTouch = true, false, false, false
-	local length = (top - entry.Part.Position).Magnitude
-	bolt.Size = Vector3.new(1.4, 1.4, length)
-	bolt.CFrame = CFrame.lookAt((top + entry.Part.Position) / 2, entry.Part.Position)
-	bolt.Parent = run.Folder
-	TweenService:Create(bolt, TweenInfo.new(0.3), { Transparency = 1, Size = Vector3.new(0.2, 0.2, length) }):Play()
-	Debris:AddItem(bolt, 0.35)
+	Effects.Raw(entry.Part.Position, { "Z", entry.Part.Position + Vector3.new(0, 70, 0), entry.Part.Position }) -- 번개 줄기는 각자 화면에서
 	Effects.Burst(entry.Part.Position, Color3.fromRGB(255, 240, 120), 24)
 	sfxAt(run, entry.Part.Position, "Aug_Storm", nil, 0.12)
 	hitMonster(run, player, entry, damage)
@@ -1432,31 +1367,9 @@ end
 
 -- 유성: 경고 원 -> 낙하 -> 폭발
 local function dropMeteor(run, player, position, radius, damage, level)
-	local warn = Instance.new("Part")
-	warn.Shape = Enum.PartType.Cylinder
-	warn.Size = Vector3.new(0.3, radius * 2, radius * 2)
-	warn.CFrame = CFrame.new(position + Vector3.new(0, 0.4, 0)) * CFrame.Angles(0, 0, math.rad(90))
-	warn.Material = Enum.Material.Neon
-	warn.Color = Color3.fromRGB(255, 80, 50)
-	warn.Transparency = 0.6
-	warn.Anchored, warn.CanCollide, warn.CanQuery, warn.CanTouch = true, false, false, false
-	warn.Parent = run.Folder
-	local rock = Instance.new("Part")
-	rock.Shape = Enum.PartType.Ball
-	rock.Size = Vector3.new(7, 7, 7)
-	rock.Material = Enum.Material.Neon
-	rock.Color = Color3.fromRGB(255, 150, 60)
-	rock.Anchored, rock.CanCollide, rock.CanQuery, rock.CanTouch = true, false, false, false
-	rock.Position = position + Vector3.new(14, 90, 10)
-	rock.Parent = run.Folder
-	local fire = Instance.new("Fire")
-	fire.Size = 14
-	fire.Parent = rock
+	Effects.Raw(position, { "E", position, radius, 0.9 }) -- 경고 원 + 떨어지는 유성은 각자 화면에서
 	sfxAt(run, position + Vector3.new(0, 20, 0), "Aug_MeteorFall", nil, 0.5)
-	TweenService:Create(rock, TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Position = position + Vector3.new(0, 3, 0) }):Play()
 	task.delay(0.9, function()
-		warn:Destroy()
-		rock:Destroy()
 		if run.Destroyed or run.Phase == "Ended" then return end
 		shockRing(run, position, radius, Color3.fromRGB(255, 150, 60))
 		sfxAt(run, position, "Aug_MeteorHit", nil, 0.2)
@@ -1558,7 +1471,7 @@ end
 -- 회전 칼날 / 낙뢰: 던전이 진행되는 동안 계속 도는 효과 루프
 local function startAugLoop(run)
 	task.spawn(function()
-		local blades, nextTick, nextStorm, nextMeteor, nextPulse, nextPet = {}, {}, {}, {}, {}, {}
+		local orbitCount, nextOrbitSend, nextTick, nextStorm, nextMeteor, nextPulse, nextPet = {}, {}, {}, {}, {}, {}, {}
 		local nextAura = 0
 		while not run.Destroyed and run.Phase ~= "Ended" do
 			local now = os.clock()
@@ -1570,45 +1483,25 @@ local function startAugLoop(run)
 			for _, member in ipairs(members) do
 				local root = getAliveParts(member)
 				local orbit = member:GetAttribute("AugOrbit") or 0
-				local list = blades[member]
 				if not root or orbit <= 0 then
-					if list then
-						for _, blade in ipairs(list) do blade:Destroy() end
-						blades[member] = nil
+					if orbitCount[member] then -- 칼날을 껐다: 모두의 화면에서도 없앤다
+						orbitCount[member] = nil
+						Effects.Raw(nil, { "O", member.UserId, 0 })
 					end
 				else
 					local count = 2 + orbit
-					if not list or #list ~= count then
-						if list then for _, blade in ipairs(list) do blade:Destroy() end end
-						list = {}
-						for _ = 1, count do
-							local blade = Instance.new("Part")
-							blade.Size = Vector3.new(0.7, 0.4, 5)
-							blade.Material = Enum.Material.Neon
-							blade.Color = Color3.fromRGB(120, 235, 255)
-							blade.Anchored, blade.CanCollide, blade.CanQuery, blade.CanTouch = true, false, false, false
-							blade.Parent = run.Folder
-							local trail = Instance.new("Trail")
-							local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
-							a0.Position, a1.Position = Vector3.new(0, 0, -2.5), Vector3.new(0, 0, 2.5)
-							a0.Parent, a1.Parent = blade, blade
-							trail.Attachment0, trail.Attachment1 = a0, a1
-							trail.Lifetime = 0.25
-							trail.Color = ColorSequence.new(Color3.fromRGB(170, 245, 255))
-							trail.Transparency = NumberSequence.new(0.2, 1)
-							trail.LightEmission = 1
-							trail.Parent = blade
-							table.insert(list, blade)
-						end
-						blades[member] = list
+					if orbitCount[member] ~= count or now >= (nextOrbitSend[member] or 0) then
+						orbitCount[member] = count
+						nextOrbitSend[member] = now + 3 -- 새로 들어온 사람도 보이게 가끔 다시 알린다
+						Effects.Raw(root.Position, { "O", member.UserId, count, 9, 5 })
 					end
+					-- 칼날은 클라이언트가 같은 공식으로 돌린다 (서버 시각 기준). 서버는 피해 위치만 계산한다.
 					local radius = 9
+					local serverNow = workspace:GetServerTimeNow()
 					local positions = {}
-					for index, blade in ipairs(list) do
-						local angle = now * 5 + index * (2 * math.pi / count)
-						local p = root.Position + Vector3.new(math.cos(angle) * radius, 0.5, math.sin(angle) * radius)
-						blade.CFrame = CFrame.new(p, p + Vector3.new(-math.sin(angle), 0, math.cos(angle)))
-						table.insert(positions, p)
+					for index = 1, count do
+						local angle = serverNow * 5 + index * (2 * math.pi / count)
+						table.insert(positions, root.Position + Vector3.new(math.cos(angle) * radius, 0.5, math.sin(angle) * radius))
 					end
 					if now >= (nextTick[member] or 0) then
 						nextTick[member] = now + 0.3
@@ -1685,8 +1578,8 @@ local function startAugLoop(run)
 			task.wait(0.05)
 
 		end
-		for _, list in pairs(blades) do
-			for _, blade in ipairs(list) do blade:Destroy() end
+		for member in pairs(orbitCount) do -- 루프가 끝나면 칼날도 모두 지운다
+			Effects.Raw(nil, { "O", member.UserId, 0 })
 		end
 	end)
 end

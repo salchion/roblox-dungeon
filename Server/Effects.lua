@@ -235,6 +235,11 @@ function Effects.PlaySound(parent, soundId, volume, pitch)
 	Debris:AddItem(sound, 5)
 end
 
+-- 그 밖의 연출(미사일 / 고리 / 번개 / 불길 / 유성 / 회전 칼날 ...)도 같은 묶음으로 보낸다. position 이 nil 이면 모두에게.
+function Effects.Raw(position, event)
+	emit(position, event)
+end
+
 -- 총소리: 소리 부품도 서버가 만들지 않고, 쏜 위치 / 무기 종류 / 높낮이 / 크기만 보낸다 (각자 화면에서 재생)
 function Effects.GunSound(position, class, pitch, volume, era)
 	emit(position, { "G", position, class, pitch, volume, era })
