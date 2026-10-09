@@ -502,7 +502,7 @@ end
 --   빈 부위면 바로 장착, 아니면 가방에 들어간다 (자동 분해 설정이면 분해)
 -- 반환: ok, message, roll = { Slot, Rarity, Equipped, Status, Gold }
 ------------------------------------------------------------
-function Gear.Roll(player)
+function Gear.Roll(player, forced)
 	if player:GetAttribute("Zone") ~= "Lobby" then
 		return false, "뽑기는 로비에서만 할 수 있어요."
 	end
@@ -522,6 +522,22 @@ function Gear.Roll(player)
 			rarity = index
 			break
 		end
+	end
+
+	-- 튜토리얼 뽑기 보정: 첫 뽑기는 무조건 일반, 10연은 영웅 1개 확정 + 전설 / 신화 없음
+	local mode = player:GetAttribute("TutorialRoll")
+	if mode == "Lowest" then
+		rarity = 1
+	elseif mode == "Hero" then
+		local count = (player:GetAttribute("TutorialRollCount") or 0) + 1
+		player:SetAttribute("TutorialRollCount", count)
+		rarity = math.min(rarity, 3)
+		if forced then
+			rarity = forced
+		elseif not player:GetAttribute("TutorialHero") and count >= 10 then
+			rarity = 3 -- 낱개로 뽑아도 열 번째까지 영웅이 안 나왔으면 마지막에 확정
+		end
+		if rarity >= 3 then player:SetAttribute("TutorialHero", true) end
 	end
 
 	local slot = G.Slots[math.random(#G.Slots)]

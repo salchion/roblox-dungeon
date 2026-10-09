@@ -45,6 +45,7 @@ local function send(player)
 	applyFreeze(player)
 	player:SetAttribute("TutorialFree", step ~= nil and step.FreeEnhance == true)
 	player:SetAttribute("TutorialActive", step ~= nil)
+	player:SetAttribute("TutorialRoll", step and step.RollMode or nil) -- 미션 중 뽑기 보정: Lowest = 항상 일반 / Hero = 10연에 영웅 1개 확정 (전설 이상 없음)
 	player:SetAttribute("TutorialDoom", step ~= nil and step.Doom == true) -- 필드 "압도적인 습격" 장면 (쓰러지면 성장 단계로 이어진다)
 	if not step then
 		Remotes.Tutorial:FireClient(player, "Done")
@@ -111,6 +112,8 @@ end
 
 function complete(player, state, step)
 	local reward = step.Reward
+	player:SetAttribute("TutorialRollCount", nil)
+	player:SetAttribute("TutorialHero", nil)
 	if step.Stat == "DummyHits" then -- 허수아비 미션이 끝나면 자동 공격(R)을 꺼 달라고 클라이언트에 알린다
 		player:SetAttribute("AutoOffTick", (player:GetAttribute("AutoOffTick") or 0) + 1)
 	end

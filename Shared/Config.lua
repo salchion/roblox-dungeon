@@ -114,7 +114,7 @@ Config.Tutorial = {
 			Reward = { Gold = 50 } },
 		{ Text = "계속 강화해보세요! 강화할수록 총이 변해요 (권총은 10번 강화하면 다음 무기로 진화)", Stat = "Enhances", Goal = 2, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
 			Reward = { Tickets = 1, Gold = 100 } },
-		{ Text = "뽑기 머신에서 장비를 뽑아보세요! (티켓 1장)", Stat = "Rolls", Goal = 1, Target = "Gacha", TargetName = "뽑기 머신",
+		{ Text = "뽑기 머신에서 장비를 뽑아보세요! (티켓 1장)", Stat = "Rolls", Goal = 1, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Lowest",
 			Reward = { Gold = 300 } },
 		-- 이야기: 필드는 아직 너무 강하다 -> 쓰러져서 마을로 -> 성장(훈련) -> 던전에서 장비 -> 10연 뽑기 -> 다시 필드는 쉽다
 		{ Text = "동쪽 필드로 나가서 몬스터와 싸워보세요! (…잠시 후 거대한 무언가가 나타나요. 이길 수 없으니 버티며 구경하세요!)", Stat = "FieldDeaths", Goal = 1, Target = "Field", TargetName = "필드 입구", Doom = true,
@@ -123,7 +123,7 @@ Config.Tutorial = {
 			Reward = { Gold = 400, Xp = 100 } },
 		{ Text = "북쪽 던전 게이트에서 던전에 들어가 웨이브를 2번 막아내세요! (열쇠 1개, 달성 후 던전에서 나오면 티켓 10장 보상!)", Stat = "DungeonWaves", Goal = 2, Target = "Gate", TargetName = "던전 게이트", AfterDungeon = true,
 			Reward = { Tickets = 10, Gold = 600, Xp = 200 } },
-		{ Text = "🎰 뽑기 머신에서 10연 뽑기를 하세요! (티켓 10장) — 장비가 한꺼번에 강해져요", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "뽑기 머신",
+		{ Text = "🎰 뽑기 머신에서 10연 뽑기를 하세요! (티켓 10장) — 장비가 한꺼번에 강해져요", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Hero",
 			Reward = { Gold = 500 } },
 		{ Text = "이제 다시 필드로! 강해진 힘으로 몬스터 15마리를 처치하세요", Stat = "Kills", Goal = 15, Target = "Field", TargetName = "필드 입구",
 			Reward = { Gold = 1000, Keys = 1, Tickets = 2, Xp = 300 } },
