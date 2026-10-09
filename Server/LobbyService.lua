@@ -866,7 +866,7 @@ function Lobby.Build()
 
 	-- 허수아비 훈련장 입구 표지 (서쪽, 실제 허수아비는 DummyService 가 놓는다)
 	local trainingSign = makePart({ Name = "TrainingSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(0, 24, 38), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
-	makeLabel(trainingSign, "🎯 허수아비 훈련장\n전투력이 높을수록 골드 UP", Color3.fromRGB(255, 220, 120), 0, 340, 76, 110)
+	makeLabel(trainingSign, "🎯 허수아비 훈련장\n대미지 / DPS 를 확인해요", Color3.fromRGB(255, 220, 120), 0, 340, 76, 110)
 
 	-- 쨍한 느낌 줄이기: 네온 부품은 색을 살짝 가라앉히고, 조명은 약하게 (은은하게 빛나는 정도)
 	for _, descendant in ipairs(folder:GetDescendants()) do
@@ -889,6 +889,7 @@ function Lobby.Build()
 		WarpPrompt = warpPrompt,
 		RiftPrompt = riftPrompt,
 		DummyStart = Vector3.new(0, TOP, 28), -- 허수아비 하나가 서는 자리
+		RestStart = Vector3.new(-84, TOP, 70), -- 휴식 구역(방치 수입): 훈련장과 따로 떨어진 아늑한 모닥불 쉼터
 		RankBoardCFrame = CFrame.lookAt(Vector3.new(-52, TOP + 16.5, 100), Vector3.new(0, TOP + 16.5, 72)),
 	}
 end

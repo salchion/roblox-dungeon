@@ -1,5 +1,5 @@
 -- IdleService (ServerScriptService > Modules 안의 ModuleScript, 이름: IdleService)
--- 방치 수입: 허수아비 훈련장 원 안에 서 있으면 자동으로 쏘며 골드가 쌓이고(접속 중), 접속을 끊어도 일정 시간까지 쌓인다(오프라인 적립).
+-- 방치 수입: 휴식 구역 원 안에 서 있으면 골드가 쌓이고(접속 중), 접속을 끊어도 일정 시간까지 쌓인다(오프라인 적립).
 --   방치 골드/분 = Config.Idle.Fraction x IncomeBase x 공격력 배율(무기 단계) x 장비/훈련 보너스 x 방치 배율
 --   방치 배율 = 1 + 영구 보너스(IdleMultBonus: 상품 단계 + VIP) + 부스터 활성 시 BoostBonus
 --   오프라인 적립 한도 = BaseCapHours + 상품(IdleCapHours) , 효율 = OfflineEfficiency

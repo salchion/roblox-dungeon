@@ -68,6 +68,7 @@ Tutorial.SetTargets({ -- 튜토리얼 미션 표지 위치
 })
 Dungeon.Init(lobby.SpawnCFrame)
 Dummy.Build(lobby.DummyStart)
+Dummy.BuildRest(lobby.RestStart) -- 휴식 구역 (방치 수입)
 Rank.Init(lobby.RankBoardCFrame)
 Showcase.Init(lobby.RankBoardCFrame) -- 랭킹판 앞 명예의 전당 (최강 3명)
 Field.Init(lobby.SpawnCFrame)
@@ -80,7 +81,7 @@ do -- 튜토리얼 이후 안내 (구역 2 / 심연 / 새 던전 게이트 표�
 	Journey.Init({ Field = promptPosition(lobby.WarpPrompt), Rift = promptPosition(lobby.RiftPrompt), Gates = gatePositions })
 	Journey.Start()
 end
-Idle.Init(lobby.DummyStart) -- 방치 수입 (훈련장 원 안 자동 사격 + 오프라인 적립)
+Idle.Init(lobby.RestStart) -- 방치 수입 (휴식 구역 원 안에 서 있기 + 오프라인 적립)
 EventService.Start() -- 주기적 골든 타임
 
 -- 던전 게이트: 파티장(또는 솔로)에게 던전 종류 / 난이도 선택창을 띄운다
@@ -379,7 +380,7 @@ end)
 
 ------------------------------------------------------------
 -- 공격: 클라이언트는 조준 지점만 보내고, 맞았는지는 서버가 판정한다.
---   던전 -> 몬스터 / 필드 -> 필드 몬스터 / 로비 -> 허수아비 (골드)
+--   던전 -> 몬스터 / 필드 -> 필드 몬스터 / 로비 -> 허수아비 (대미지 / DPS 연습)
 -- 무기 종류에 따라 공격 속도 / 탄 수 / 퍼짐 / 사거리가 다르다 (Config.WeaponTypes)
 ------------------------------------------------------------
 local function spreadDirection(direction, degrees)

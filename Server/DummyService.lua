@@ -1,5 +1,5 @@
 -- DummyService (ServerScriptService > Modules 안의 ModuleScript, 이름: DummyService)
--- 로비 허수아비 훈련장. 허수아비를 공격할 때마다 골드가 자동으로 들어온다 (줍기 없음).
+-- 로비 허수아비 훈련장: 대미지 숫자 / DPS 를 확인하는 연습용 (골드는 없다). 방치 수입은 따로 있는 휴식 구역(BuildRest).
 -- 1번(x1)부터 10번(x30)까지 한 줄로 나열되고, 배수가 높을수록 크고 화려하고 강해 보인다.
 -- 더미마다 이름 / 배율(Multiplier) / 방어력(RequiredPower: 필요 전투력)이 다르다 -> Config.Dummy.List
 
@@ -172,7 +172,7 @@ local function buildDummy(index, info, position, nameIndex, bigScale)
 	sub.TextScaled = true
 	sub.TextStrokeTransparency = 0.3
 	sub.TextColor3 = Color3.fromRGB(230, 230, 240)
-	sub.Text = "💰 전투력이 높을수록 골드 UP"
+	sub.Text = "🎯 대미지 / DPS 연습"
 	sub.Parent = gui
 
 	model.Parent = folder
@@ -212,7 +212,7 @@ function Dummy.Build(start)
 	}, folder)
 	addGlow(ring, Color3.fromRGB(255, 215, 90), 30)
 
-	-- 방치 구역 안내판: 훈련장 안에 서 있으면 자동으로 쏘며 골드가 쌓이고, 접속을 꺼도 쌓인다
+	-- 훈련장 안내판
 	local signGui = Instance.new("BillboardGui")
 	signGui.Size = UDim2.new(0, 300, 0, 64)
 	signGui.StudsOffset = Vector3.new(0, 17, 0)
@@ -225,12 +225,14 @@ function Dummy.Build(start)
 	signLabel.TextScaled = true
 	signLabel.TextColor3 = Color3.fromRGB(255, 225, 120)
 	signLabel.TextStrokeTransparency = 0
-	signLabel.Text = "💤 방치 구역\n서 있으면 자동 사격 · 접속을 꺼도 골드가 쌓여요"
+	signLabel.Text = "🎯 허수아비 훈련장\n쏴 보고 DPS 를 확인해요"
 	signLabel.Parent = signGui
 
 	-- 허수아비 하나: 8번 모양(어깨 보호대 / 투구 / 뿔 / 가슴 갑옷 / 빛나는 눈)을 써서 크고 듬직하게. 이름은 Dummy1.
 	buildDummy(8, Config.Dummy.List[1], start, 1, 1.7) -- 멀리서도 눈에 띄도록 1.7배 크기
 end
+
+local restFire, restCenter = nil, Vector3.zero -- 휴식 구역 모닥불 (IdleHit 가 타오르게 한다)
 
 local function flash(data)
 	if data.Flashing then return end
@@ -249,13 +251,12 @@ end
 -- 로비에서 쏜 탄이 허수아비에 맞았는지 판정하고 골드를 지급. 반환: 탄이 끝나는 지점 (아무것도 안 맞으면 nil)
 -- 방치 모드: 허수아비가 맞는 것처럼 번쩍인다 (훈련장 원 안에 서 있는 동안 IdleService 가 1초마다 부른다)
 function Dummy.IdleHit(player)
-	for model, data in pairs(dummies) do
-		flash(data)
-		local root = model.PrimaryPart
-		if root and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-			Effects.Burst(root.Position + Vector3.new(0, 2, 0), Color3.fromRGB(255, 225, 120), 6)
-		end
-		break
+	if restFire and restFire.Parent then -- 휴식 구역: 모닥불이 한 번 확 타오른다
+		restFire.Size = 14
+		task.delay(0.25, function()
+			if restFire and restFire.Parent then restFire.Size = 8 end
+		end)
+		Effects.Burst(restCenter + Vector3.new(0, 3, 0), Color3.fromRGB(255, 200, 110), 6)
 	end
 end
 
@@ -342,6 +343,71 @@ function Dummy.Shoot(player, origin, direction)
 		showDps(model, data, player, damage)
 	end
 	return result.Position
+end
+
+-- 휴식 구역: 훈련장과 따로 떨어진 아늑한 쉼터. 모닥불 + 통나무 의자 + 등불 + 푸른 원. 원 안에 서 있으면 방치 수입이 쌓이고, 접속을 꺼도 쌓인다.
+function Dummy.BuildRest(position)
+	restCenter = position
+	local pad = newPart({
+		Name = "RestGround", Size = Vector3.new(36, 0.3, 36), Position = position + Vector3.new(0, 0.15, 0),
+		Color = Color3.fromRGB(80, 110, 85), Material = Enum.Material.Grass, CanCollide = false,
+	}, folder)
+	local ring = newPart({
+		Name = "RestRing", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.3, 30, 30),
+		CFrame = CFrame.new(position + Vector3.new(0, 0.35, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Color3.fromRGB(120, 210, 230), Material = Enum.Material.Neon, CanCollide = false, Transparency = 0.8,
+	}, folder)
+	addGlow(ring, Color3.fromRGB(120, 210, 230), 28)
+
+	-- 모닥불: 돌 + 장작 + 불
+	for i = 1, 8 do
+		local angle = i / 8 * math.pi * 2
+		newPart({ Name = "FireStone", Shape = Enum.PartType.Ball, Size = Vector3.new(1.4, 1.1, 1.4), Position = position + Vector3.new(math.cos(angle) * 2.6, 0.6, math.sin(angle) * 2.6), Color = Color3.fromRGB(110, 108, 104), Material = Enum.Material.Slate, CanCollide = false }, folder)
+	end
+	for i = 1, 3 do
+		newPart({ Name = "Log", Size = Vector3.new(0.7, 0.7, 3.6), CFrame = CFrame.new(position + Vector3.new(0, 0.9, 0)) * CFrame.Angles(math.rad(14), math.rad(i * 60), 0), Color = Color3.fromRGB(95, 62, 38), Material = Enum.Material.Wood, CanCollide = false }, folder)
+	end
+	local flameBase = newPart({ Name = "RestFlame", Shape = Enum.PartType.Ball, Size = Vector3.new(1.4, 1.4, 1.4), Position = position + Vector3.new(0, 1.6, 0), Transparency = 1, CanCollide = false }, folder)
+	restFire = Instance.new("Fire")
+	restFire.Size = 8
+	restFire.Heat = 6
+	restFire.Parent = flameBase
+	local glow = Instance.new("PointLight")
+	glow.Color = Color3.fromRGB(255, 170, 90)
+	glow.Range = 26
+	glow.Brightness = 1.6
+	glow.Parent = flameBase
+
+	-- 통나무 의자 4개 (불을 둘러싼다) + 등불
+	for i = 1, 4 do
+		local angle = i / 4 * math.pi * 2 + 0.4
+		local seat = position + Vector3.new(math.cos(angle) * 7.5, 0.9, math.sin(angle) * 7.5)
+		newPart({ Name = "LogSeat", Size = Vector3.new(4.4, 1.4, 1.6), CFrame = CFrame.lookAt(seat, position + Vector3.new(0, 0.9, 0)), Color = Color3.fromRGB(120, 82, 52), Material = Enum.Material.Wood, CanCollide = false }, folder)
+		local lampPos = position + Vector3.new(math.cos(angle + 0.8) * 13, 0, math.sin(angle + 0.8) * 13)
+		newPart({ Name = "LampPost", Size = Vector3.new(0.4, 5, 0.4), Position = lampPos + Vector3.new(0, 2.5, 0), Color = Color3.fromRGB(70, 56, 44), Material = Enum.Material.Wood, CanCollide = false }, folder)
+		local bulb = newPart({ Name = "LampBulb", Shape = Enum.PartType.Ball, Size = Vector3.new(1.3, 1.3, 1.3), Position = lampPos + Vector3.new(0, 5.2, 0), Color = Color3.fromRGB(255, 220, 150), Material = Enum.Material.Neon, CanCollide = false }, folder)
+		local lampLight = Instance.new("PointLight")
+		lampLight.Color = Color3.fromRGB(255, 210, 140)
+		lampLight.Range = 16
+		lampLight.Brightness = 1
+		lampLight.Parent = bulb
+	end
+
+	-- 안내판
+	local signGui = Instance.new("BillboardGui")
+	signGui.Size = UDim2.new(0, 320, 0, 70)
+	signGui.StudsOffset = Vector3.new(0, 16, 0)
+	signGui.MaxDistance = 140
+	signGui.Parent = ring
+	local signLabel = Instance.new("TextLabel")
+	signLabel.Size = UDim2.new(1, 0, 1, 0)
+	signLabel.BackgroundTransparency = 1
+	signLabel.Font = Enum.Font.GothamBlack
+	signLabel.TextScaled = true
+	signLabel.TextColor3 = Color3.fromRGB(190, 240, 255)
+	signLabel.TextStrokeTransparency = 0
+	signLabel.Text = "💤 휴식 구역\n서 있기만 해도 골드가 쌓여요 · 접속을 꺼도 쌓여요"
+	signLabel.Parent = signGui
 end
 
 return Dummy

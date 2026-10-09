@@ -168,7 +168,7 @@ local function updateBeacon(active)
 	if os.clock() - beaconStart > 240 then beaconDone = true end
 end
 
--- 방치 수입 표시: 훈련장 원 안에서 방치 중일 때 초당 골드와 배율 (BM 배율이 올라가면 눈에 보인다)
+-- 방치 수입 표시: 휴식 구역에서 방치 중일 때 초당 골드와 배율 (BM 배율이 올라가면 눈에 보인다)
 local idleLabel = Instance.new("TextLabel")
 idleLabel.Size = UDim2.new(0, 360, 0, 28)
 idleLabel.AnchorPoint = Vector2.new(0.5, 0)
