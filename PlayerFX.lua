@@ -127,7 +127,7 @@ do
 				local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 				if root then
 					local F = Config.Field
-					local index = math.clamp(math.floor((root.Position.X - F.StartX) / F.ZoneLength) + 1, 1, F.ZoneCount)
+					local index = F.ZoneOfX(root.Position.X)
 					if index ~= fieldIndex then applyField(index) end
 				end
 			end
@@ -451,7 +451,7 @@ do
 		local index = 0
 		if root and player:GetAttribute("Zone") == "Field" then
 			local F = Config.Field
-			index = math.clamp(math.floor((root.Position.X - F.StartX) / F.ZoneLength) + 1, 1, F.ZoneCount)
+			index = F.ZoneOfX(root.Position.X)
 		end
 		if index ~= active then
 			if emitters[active] then emitters[active].Enabled = false end

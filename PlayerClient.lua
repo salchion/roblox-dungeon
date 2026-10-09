@@ -2022,7 +2022,7 @@ local function isTargetValid(target, root)
 	-- 아직 열리지 않은 구역(관문 너머)의 몬스터는 자동 조준하지 않는다 (서버도 피해를 주지 않는다)
 	if target.Kind == "Monster" and currentZone() == "Field" then
 		local F = Config.Field
-		local zoneIndex = math.clamp(math.floor((target.Part.Position.X - F.StartX) / F.ZoneLength) + 1, 1, F.ZoneCount)
+		local zoneIndex = F.ZoneOfX(target.Part.Position.X)
 		if zoneIndex > math.min(F.ZoneCount, (player:GetAttribute("ClearedZone") or 0) + 1) then return false end
 	end
 	-- 던전은 몬스터가 방마다 잠들어 있으니, 가까이(깨어나는 거리) 있는 것만 자동 조준한다

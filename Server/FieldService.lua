@@ -109,7 +109,7 @@ end
 local function isSafe(position)
 	local relative = position.X - F.StartX
 	if relative < 0 then return true end
-	return relative % F.ZoneLength < F.CampSafe
+	return position.X - F.ZoneStart(F.ZoneOfX(position.X)) < F.CampSafe
 end
 
 local function nearestFieldPlayer(position)
@@ -129,12 +129,11 @@ local function nearestFieldPlayer(position)
 end
 
 local function zoneBounds(zone)
-	local x0 = F.StartX + (zone - 1) * F.ZoneLength
-	return x0, x0 + F.ZoneLength
+	return F.ZoneStart(zone), F.ZoneEnd(zone)
 end
 
 local function zoneOfX(x)
-	return math.clamp(math.floor((x - F.StartX) / F.ZoneLength) + 1, 1, F.ZoneCount)
+	return F.ZoneOfX(x)
 end
 
 -- 관문을 열지 않은 구역의 몬스터는 관문 너머에서 때릴 수 없다 (자동공격 / 스킬로 벽 너머를 잡는 것 방지)
@@ -151,8 +150,8 @@ end
 -- 한 구역의 경사로는 올라간 만큼 내려와서 구역 끝(관문 / 캠프)은 항상 0층이다. 첫 경사로는 캠프 안전지대(70) 뒤에서 시작한다.
 local ZONE_LAYOUTS = {
 	{ -- 1 초원: 완만한 언덕 하나, 탁 트인 길 (입문)
-		Stairs = { { At = 140, Rise = 10, Run = 40 }, { At = 420, Rise = -10, Run = 40 } },
-		Baffles = { { Offset = 300, Side = 1, Gap = 190 }, { Offset = 520, Side = -1, Gap = 190 } },
+		Stairs = { { At = 120, Rise = 8, Run = 36 }, { At = 230, Rise = -8, Run = 36 } }, -- (구역 길이 340)
+		Baffles = { { Offset = 200, Side = 1, Gap = 190 } },
 	},
 	{ -- 2 숲: 좁은 지그재그 숲길 (네 번 꺾인다) + 끝에 작은 언덕
 		Stairs = { { At = 540, Rise = 12, Run = 40 }, { At = 620, Rise = -12, Run = 40 } },
@@ -196,12 +195,12 @@ for zone, layout in ipairs(ZONE_LAYOUTS) do
 		cursor = stair.At + stair.Run
 		stair.Top = height
 	end
-	table.insert(segments, { A = cursor, B = F.ZoneLength, H = height, Kind = "Floor" })
+	table.insert(segments, { A = cursor, B = F.ZoneLengths[zone] or F.ZoneLength, H = height, Kind = "Floor" })
 	ZONE_SEGMENTS[zone] = segments
 end
 local function floorAt(x)
-	local zone = math.clamp(math.floor((x - F.StartX) / F.ZoneLength) + 1, 1, F.ZoneCount)
-	local offset = (x - F.StartX) % F.ZoneLength
+	local zone = F.ZoneOfX(x)
+	local offset = x - F.ZoneStart(zone)
 	for _, segment in ipairs(ZONE_SEGMENTS[zone] or ZONE_SEGMENTS[1]) do
 		if offset < segment.B then
 			if segment.Kind == "Step" then
@@ -907,7 +906,7 @@ local function buildWorld()
 	monstersFolder.Parent = workspace
 
 	local half = F.Width / 2
-	local totalLength = F.ZoneLength * F.ZoneCount
+	local totalLength = F.TotalLength()
 	local rng = Random.new(77)
 
 	for zone = 1, F.ZoneCount do
@@ -2182,7 +2181,7 @@ local function stepProjectiles(dt)
 				if root and not isSafe(root.Position) then
 					local gap = (root.Position - projectile.Part.Position).Magnitude
 					if gap < projectile.Radius + 2 then
-						humanoid:TakeDamage(projectile.Damage)
+						humanoid:TakeDamage(player:GetAttribute("TutorialDoom") and math.max(1, math.floor(projectile.Damage * 0.5)) or projectile.Damage) -- 튜토리얼 중에는 맞는 피해가 절반
 						hit = true
 						break
 					elseif gap < projectile.Radius + 14 and isDashing(root, player) then -- 닿지는 않았지만 아슬아슬하게 스치며 대시
@@ -2209,31 +2208,14 @@ local lastZoneSeen = {}
 local lordPing = {}
 local tutorialLords = {} -- [player] = 튜토리얼용 첫 구역 군주 (입구 가까이에서 바로 나타난다)
 
--- 튜토리얼 첫 구역 군주: 구역 끝까지 한참 걷게 하지 않고, 입구에서 조금만 나가면 바로 앞에 나타난다. 쉽게 잡을 수 있게 공격이 약하다.
-local function spawnTutorialLord(player, root)
-	local old = tutorialLords[player]
-	if old and old.Parent then
-		monsters[old] = nil
-		old:Destroy()
-	end
-	local at
-	for _, dx in ipairs({ 70, 85, 100, 55 }) do
-		for _, z in ipairs({ 0, 40, -40 }) do
-			local x = root.Position.X + dx
-			if walkableAt(x, z, 20) and not isSafe(Vector3.new(x, 0, z)) and zoneOfX(x) == 1 then
-				at = Vector3.new(x, 0, z)
-				break
-			end
+-- 튜토리얼 첫 구역 군주: 1구역이 작아서(길이 340) 구역 끝의 군주 한 마리가 입구에서 가깝다. 별도 군주를 또 만들지 않고 이 군주를 길잡이로 가리킨다.
+local function worldLordOfZone1()
+	for part, data in pairs(monsters) do
+		if data.Kind == "Boss" and data.Zone == 1 and part.Parent and not data.Ambush then
+			return part
 		end
-		if at then break end
 	end
-	at = at or Vector3.new(root.Position.X + 60, 0, 0)
-	local part, data = spawnMonster(1, "Boss", at, true)
-	if part and data then
-		data.Stats.ShotDamage = math.max(1, math.floor(data.Stats.ShotDamage * 0.4))
-		tutorialLords[player] = part
-		Remotes.Tutorial:FireClient(player, "Waypoint", { Pos = part.Position, Name = "👑 첫 구역 군주" })
-	end
+	return nil
 end
 
 local function updateZones()
@@ -2242,13 +2224,20 @@ local function updateZones()
 		if (zone == "Lobby" or zone == "Field") and not player:GetAttribute("InDoomArena") then
 			local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 			if root then
-				local inField = root.Position.X >= F.StartX - 5 and root.Position.X < F.StartX + F.ZoneLength * F.ZoneCount + 20
+				local inField = root.Position.X >= F.StartX - 5 and root.Position.X < F.StartX + F.TotalLength() + 20
 				local newZone = inField and "Field" or "Lobby"
 				if newZone ~= zone then
 					player:SetAttribute("Zone", newZone)
 					if newZone == "Lobby" then routeBeat[player] = nil end -- 마을로 돌아오면 길목 사건이 처음부터 다시
 					if newZone == "Field" then
 						notify(player, "필드 입장! 동쪽으로 갈수록 몬스터가 강해져요.")
+						if player:GetAttribute("TutorialDoom") then -- 첫 구역 군주 위치를 표지로 알려준다 (군주는 이 구역에 한 마리뿐)
+							local lord = worldLordOfZone1()
+							if lord then
+								tutorialLords[player] = lord
+								Remotes.Tutorial:FireClient(player, "Waypoint", { Pos = lord.Position, Name = "👑 첫 구역 군주" })
+							end
+						end
 					end
 				end
 
@@ -2311,10 +2300,9 @@ local function updateZones()
 							around("Normal", 4, 32, 48)
 						elseif beat < 3 and offset >= 215 then
 							routeBeat[player] = 3
-							notify(player, "👑 군주가 나타났다!! 호위병들과 함께 덮쳐온다!")
+							notify(player, "🔥 군주의 영역이 가까워진다... 호위병들이 몰려온다!")
 							rumble(0.8)
-							around("Normal", 5, 30, 48)
-							spawnTutorialLord(player, root)
+							around("Normal", 6, 30, 48)
 						end
 					end
 					-- 새 구역에 들어서면 큰 경고 배너 (난이도가 얼마나 뛰는지 숫자로 보여준다)
@@ -2365,7 +2353,7 @@ local lastWarp = {}
 -- 필드 밖으로 튕겨 나간 플레이어(대시 / 물리 버그로 벽 밖이나 허공)를 마을로 되돌린다
 local function rescueOutOfBounds()
 	local half = F.Width / 2
-	local endX = F.StartX + F.ZoneLength * F.ZoneCount + 60
+	local endX = F.StartX + F.TotalLength() + 60
 	for _, player in ipairs(Players:GetPlayers()) do
 		if player:GetAttribute("Zone") == "Field" and not player:GetAttribute("InDoomArena") then
 			local root = getAliveParts(player)

@@ -623,6 +623,7 @@ Config.Gacha = {
 ------------------------------------------------------------
 Config.Field = {
 	StartX = 150,          -- 필드 시작 x좌표 (로비 동쪽 끝)
+	ZoneLengths = { 340, 700, 700, 700, 700, 700, 700, 700 }, -- 구역별 길이: 1구역은 작게(군주가 입구 가까이에 있다), 나머지는 큰 사냥터
 	ZoneLength = 700,        -- 구역 하나의 길이: 걸어서 가로지르는 데 1분 가까이 걸리는 큰 사냥터
 	ZoneCount = 8,
 	Width = 320,
@@ -688,6 +689,25 @@ Config.Field = {
 		Gold = 600,
 	},
 }
+
+-- 구역별 길이를 쓰는 좌표 계산 (서버 / 클라이언트 공용)
+function Config.Field.ZoneStart(zone)
+	local x = Config.Field.StartX
+	for i = 1, zone - 1 do x += Config.Field.ZoneLengths[i] or Config.Field.ZoneLength end
+	return x
+end
+function Config.Field.ZoneEnd(zone)
+	return Config.Field.ZoneStart(zone) + (Config.Field.ZoneLengths[zone] or Config.Field.ZoneLength)
+end
+function Config.Field.TotalLength()
+	return Config.Field.ZoneEnd(Config.Field.ZoneCount) - Config.Field.StartX
+end
+function Config.Field.ZoneOfX(x)
+	for zone = 1, Config.Field.ZoneCount do
+		if x < Config.Field.ZoneEnd(zone) then return zone end
+	end
+	return Config.Field.ZoneCount
+end
 
 function Config.Field.GetZoneLevel(zone)
 	return 1 + (zone - 1) * 3
