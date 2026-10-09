@@ -1828,7 +1828,7 @@ local function rescueOutOfBounds()
 	local half = F.Width / 2
 	local endX = F.StartX + F.ZoneLength * F.ZoneCount + 60
 	for _, player in ipairs(Players:GetPlayers()) do
-		if player:GetAttribute("Zone") == "Field" then
+		if player:GetAttribute("Zone") == "Field" and not player:GetAttribute("InDoomArena") then
 			local root = getAliveParts(player)
 			if root then
 				local p = root.Position
@@ -2216,54 +2216,99 @@ end
 -- 튜토리얼 "압도적인 습격": 첫 필드 방문 때 잠깐 싸우게 한 뒤, 사방에서 훨씬 강한 몬스터 떼가 몰려와 필연적으로 쓰러지게 한다.
 -- (쓰러지면 마을로 돌아가고, 다음 미션이 "훈련 -> 던전 -> 10연 뽑기 -> 다시 필드(이제 쉽다)" 로 이어진다)
 local doomTimers = {}
+-- 소환 결투: 먼 하늘 위 작은 심연 무대로 끌려가 최후의 군주와 1:1 (약 6초 버티다가 쓰러진다)
 local function doomWave(player, zone)
-	local root = getAliveParts(player)
+	local root, humanoid = getAliveParts(player)
 	if not root then return end
-	notify(player, "⚠⚠ 땅이 울린다... 거대한 무언가가 모습을 드러냈다!! (지금은 도저히 이길 수 없어요)")
+	notify(player, "⚠⚠ 압도적인 기운... 무언가가 당신을 부른다!!")
 	player:SetAttribute("ShakeStrength", 0.9)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
-	-- 눈에 보이는 정체: 훨씬 크고 강한 구역 군주급 괴물이 멀리서 나타나 다가온다 (이 녀석에게 쓰러진다)
-	for _ = 1, 60 do
-		local angle = math.random() * math.pi * 2
-		local distance = 55 + math.random() * 15
-		local at = root.Position + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
-		if walkableAt(at.X, at.Z) and not isSafe(at) and zoneOfX(at.X) == zone then
-			local part, data = spawnMonster(zone, "Boss", at, true)
-			if part and data then
-				data.Doom = true
-				data.Stats.ShotDamage = math.floor(data.Stats.ShotDamage * 4)
-				data.Stats.Speed *= 1.25
-				data.Aggro = true
-				data.Health, data.MaxHealth = 1e9, 1e9
-				data.Stats.MaxHealth = 1e9
-				part.Size *= 1.4
-				if data.HealthFill and data.HealthFill.Parent then
-					local label = data.HealthFill.Parent:FindFirstChildWhichIsA("TextLabel", true)
-					if label then label.Text = "💀 심연의 포식자" end
-				end
-			end
-			break
-		end
+	task.wait(1.6)
+	root, humanoid = getAliveParts(player)
+	if not root or humanoid.Health <= 0 then return end
+
+	local center = Vector3.new(0, 420, 1500)
+	local arena = Instance.new("Folder")
+	arena.Name = "DoomArena"
+	arena.Parent = workspace
+	local floor = Instance.new("Part")
+	floor.Name = "DoomFloor"
+	floor.Shape = Enum.PartType.Cylinder
+	floor.Size = Vector3.new(2, 130, 130)
+	floor.CFrame = CFrame.new(center) * CFrame.Angles(0, 0, math.rad(90))
+	floor.Anchored = true
+	floor.Color = Color3.fromRGB(28, 14, 26)
+	floor.Material = Enum.Material.Basalt
+	floor.Parent = arena
+	local rim = Instance.new("Part")
+	rim.Name = "DoomRim"
+	rim.Shape = Enum.PartType.Cylinder
+	rim.Size = Vector3.new(0.4, 134, 134)
+	rim.CFrame = CFrame.new(center + Vector3.new(0, 1.1, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	rim.Anchored = true
+	rim.CanCollide = false
+	rim.Color = Color3.fromRGB(255, 60, 60)
+	rim.Material = Enum.Material.Neon
+	rim.Transparency = 0.4
+	rim.Parent = arena
+
+	local boss = Instance.new("Part")
+	boss.Name = "DoomLord"
+	boss.Shape = Enum.PartType.Ball
+	boss.Size = Vector3.new(34, 34, 34)
+	boss.Anchored = true
+	boss.CanCollide = false
+	boss.Color = Color3.fromRGB(120, 15, 40)
+	boss.Material = Enum.Material.Neon
+	boss.Position = center + Vector3.new(0, 20, -42)
+	boss.Parent = arena
+	Effects.DecorateBoss(boss, 34, Color3.fromRGB(255, 70, 70))
+	createHealthBar(boss, "💀 최후의 군주", 320, Color3.fromRGB(255, 90, 90))
+
+	player.Character:PivotTo(CFrame.lookAt(center + Vector3.new(0, 4, 30), center + Vector3.new(0, 4, -42)))
+	root.AssemblyLinearVelocity = Vector3.zero
+	player:SetAttribute("InDoomArena", true)
+	notify(player, "💀 최후의 군주와 마주했다! 도저히 이길 수 없다... 버텨보자!")
+	Effects.Burst(boss.Position, Color3.fromRGB(255, 70, 70), 80)
+
+	local TweenService = game:GetService("TweenService")
+	local function alive()
+		local r, h = getAliveParts(player)
+		return r ~= nil and h.Health > 0
 	end
-	task.wait(3)
-	root = getAliveParts(player)
-	if not root then return end
-	local spawned = 0
-	for _ = 1, 60 do
-		if spawned >= 12 then break end
-		local angle = math.random() * math.pi * 2
-		local distance = 22 + math.random() * 16
-		local at = root.Position + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
-		if walkableAt(at.X, at.Z) and not isSafe(at) and zoneOfX(at.X) == zone then
-			local part, data = spawnMonster(zone, "Normal", at, true)
-			if part and data then
-				data.Doom = true
-				data.Stats.ShotDamage = math.floor(data.Stats.ShotDamage * 5)
-				data.Stats.Speed *= 1.2
-				spawned += 1
-			end
-		end
+	local function shockwave()
+		local ring = Instance.new("Part")
+		ring.Shape = Enum.PartType.Cylinder
+		ring.Size = Vector3.new(0.5, 8, 8)
+		ring.CFrame = CFrame.new(boss.Position.X, center.Y + 1.4, boss.Position.Z) * CFrame.Angles(0, 0, math.rad(90))
+		ring.Anchored = true
+		ring.CanCollide = false
+		ring.Color = Color3.fromRGB(255, 90, 60)
+		ring.Material = Enum.Material.Neon
+		ring.Transparency = 0.2
+		ring.Parent = arena
+		TweenService:Create(ring, TweenInfo.new(1.4, Enum.EasingStyle.Quad), { Size = Vector3.new(0.5, 130, 130), Transparency = 1 }):Play()
+		player:SetAttribute("ShakeStrength", 0.6)
+		player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	end
+
+	-- 군주가 천천히 다가오며 충격파를 두 번 내보낸다 (약 5.5초)
+	TweenService:Create(boss, TweenInfo.new(5.4, Enum.EasingStyle.Sine), { Position = center + Vector3.new(0, 14, 8) }):Play()
+	task.wait(1.6)
+	if alive() then shockwave() end
+	task.wait(2)
+	if alive() then shockwave() end
+	task.wait(1.9)
+	if alive() then
+		local r, h = getAliveParts(player)
+		Effects.Burst(r.Position, Color3.fromRGB(255, 80, 60), 120)
+		notify(player, "💀 압도적인 힘에 쓰러졌어요...")
+		h.Health = 0
+	end
+	task.delay(4, function()
+		player:SetAttribute("InDoomArena", nil)
+		arena:Destroy()
+	end)
 end
 
 local function updateDoom()
@@ -2283,7 +2328,7 @@ local function updateDoom()
 					state.FiredAt = os.clock()
 					doomWave(player, zoneOfX(root.Position.X))
 				end
-				if state.Fired and os.clock() - state.FiredAt >= 30 and humanoid.Health > 0 then
+				if state.Fired and os.clock() - state.FiredAt >= 40 and humanoid.Health > 0 then
 					notify(player, "💀 압도적인 힘에 쓰러졌어요...")
 					humanoid.Health = 0
 				end

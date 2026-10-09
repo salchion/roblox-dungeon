@@ -136,9 +136,9 @@ rounded(xpFill, 4)
 local toastLabel = makeLabel({
 	Size = UDim2.new(0, 460, 0, 40),
 	AnchorPoint = Vector2.new(0.5, 0),
-	Position = UDim2.new(0.5, 0, 0, 110),
+	Position = UDim2.new(0.5, 0, 0, 132), -- 골든 타임 배너(88~122) 바로 아래: 겹치지 않게
 	BackgroundColor3 = Color3.fromRGB(20, 20, 30),
-	BackgroundTransparency = 0.25,
+	BackgroundTransparency = 0.12,
 	Font = Enum.Font.GothamBold,
 	TextSize = 18,
 	Visible = false,

@@ -63,18 +63,22 @@ addCorner(barFill, 5)
 
 -- 골든 타임 배너 (화면 위쪽 가운데)
 local golden = Instance.new("TextLabel")
-golden.Size = UDim2.new(0, 420, 0, 30)
+golden.Size = UDim2.new(0, 480, 0, 34)
 golden.AnchorPoint = Vector2.new(0.5, 0)
 golden.Position = UDim2.new(0.5, 0, 0, 88)
 golden.BackgroundColor3 = Color3.fromRGB(70, 50, 10)
-golden.BackgroundTransparency = 0.25
+golden.BackgroundTransparency = 0.08
 golden.BorderSizePixel = 0
 golden.Font = Enum.Font.GothamBlack
-golden.TextSize = 16
+golden.TextSize = 18
 golden.TextColor3 = Color3.fromRGB(255, 220, 90)
 golden.Visible = false
 golden.Parent = gui
 addCorner(golden, 8)
+local goldenStroke = Instance.new("UIStroke")
+goldenStroke.Thickness = 2
+goldenStroke.Color = Color3.fromRGB(255, 200, 70)
+goldenStroke.Parent = golden
 
 local function comma(n)
 	local s = tostring(math.floor(n))
@@ -184,12 +188,14 @@ RunService.RenderStepped:Connect(function()
 		local untilNext = (workspace:GetAttribute("GoldenNext") or 0) - os.time()
 		golden.Visible = (left > 0 or untilNext > 0) and zone ~= "Dungeon"
 		if left > 0 then
-			golden.BackgroundColor3 = Color3.fromRGB(70, 50, 10)
-			golden.TextColor3 = Color3.fromRGB(255, 220, 90)
+			golden.BackgroundColor3 = Color3.fromRGB(110, 78, 10)
+			golden.TextColor3 = Color3.fromRGB(255, 236, 130)
+			goldenStroke.Color = Color3.fromRGB(255, 210, 80)
 			golden.Text = string.format("🌟 골든 타임! 경험치 x%d · 골드 x%.1f  (%d:%02d)", Config.Golden.XpMult, Config.Golden.GoldMult, math.floor(left / 60), left % 60)
 		elseif untilNext > 0 then -- 평소에는 작게 "다음 골든 타임까지"를 보여줘서 기다릴 이유를 만든다
-			golden.BackgroundColor3 = Color3.fromRGB(30, 30, 44)
-			golden.TextColor3 = Color3.fromRGB(190, 190, 210)
+			golden.BackgroundColor3 = Color3.fromRGB(34, 36, 56)
+			golden.TextColor3 = Color3.fromRGB(225, 228, 245)
+			goldenStroke.Color = Color3.fromRGB(110, 120, 170)
 			golden.Text = string.format("⏳ 다음 골든 타임까지 %d:%02d  (경험치 x%d · 골드 x%.1f)", math.floor(untilNext / 60), untilNext % 60, Config.Golden.XpMult, Config.Golden.GoldMult)
 		end
 	end

@@ -117,7 +117,7 @@ Config.Tutorial = {
 		{ Text = "뽑기 머신에서 장비를 뽑아보세요! (티켓 1장)", Stat = "Rolls", Goal = 1, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Lowest",
 			Reward = { Gold = 300 } },
 		-- 이야기: 필드는 아직 너무 강하다 -> 쓰러져서 마을로 -> 성장(훈련) -> 던전에서 장비 -> 10연 뽑기 -> 다시 필드는 쉽다
-		{ Text = "동쪽 필드로 나가서 몬스터와 싸워보세요! (…잠시 후 거대한 무언가가 나타나요. 이길 수 없으니 버티며 구경하세요!)", Stat = "FieldDeaths", Goal = 1, Target = "Field", TargetName = "필드 입구", Doom = true,
+		{ Text = "동쪽 필드로 나가서 몬스터와 싸워보세요! (…잠시 후 최후의 군주에게 불려가요! 이길 수 없으니 버텨보세요)", Stat = "FieldDeaths", Goal = 1, Target = "Field", TargetName = "필드 입구", Doom = true,
 			Reward = { Gold = 300, Keys = 1, Xp = 100 } },
 		{ Text = "아직 너무 약해요! 메뉴(I) → 성장 탭에서 훈련을 시작하세요. 훈련하면 영구적으로 강해져요", Stat = "Trains", Goal = 1,
 			Reward = { Gold = 400, Xp = 100 } },
