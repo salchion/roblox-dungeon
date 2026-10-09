@@ -138,12 +138,7 @@ local function decoratePlaza(parent, center, avoid)
 		end
 		if not blocked then
 			local color = Color3.fromHSV(i / 16, 0.45, 1)
-			makePart({ Name = "Bollard", Size = Vector3.new(1.4, 2.4, 1.4), Position = position + Vector3.new(0, 1.2, 0), Color = Color3.fromRGB(70, 72, 88), Material = Enum.Material.Metal }, parent)
-			local lamp = makePart({
-				Name = "BollardLamp", Shape = Enum.PartType.Ball, Size = Vector3.new(1.8, 1.8, 1.8), Position = position + Vector3.new(0, 3.2, 0),
-				Color = color, Material = Enum.Material.Neon, CanCollide = false,
-			}, parent)
-			addLight(lamp, 14, 1, color)
+			-- (광장을 둘러싼 알록달록한 말뚝 등불은 없앴다)
 		end
 	end
 
@@ -349,8 +344,6 @@ function Lobby.Build()
 		end
 		for _, side in ipairs({ -1, 1 }) do
 			ramp(Vector3.new(side * 9.8, TOP + HILL_H, HILL_Z - 15.1), Vector3.new(side * 54, TOP, 44), 14)
-			-- 경사로 양옆 가로등
-			makeLamp(Vector3.new(side * 18, TOP + 8, 94), folder)
 		end
 	end
 
@@ -397,16 +390,7 @@ function Lobby.Build()
 	-- 마을 테두리: 성벽 + 절벽 (안에서 바깥이 보이지 않게)
 	buildPerimeter(folder)
 
-	-- 가로등: 중앙로와 동서로 양옆
-	for z = -90, 50, 35 do
-		makeLamp(Vector3.new(-12, TOP, z), folder)
-		makeLamp(Vector3.new(12, TOP, z), folder)
-	end
-	for x = -60, 100, 40 do
-		if math.abs(x) > 14 then
-			makeLamp(Vector3.new(x, TOP, 10), folder)
-		end
-	end
+	-- (길가 가로등은 너무 많아서 정신이 사나워 모두 없앴다: 광장 / 작업장 주변의 몇 개만 남는다)
 
 	-- 나무: 가장자리 숲 (길 / 시설 주변은 피함)
 	local rng = Random.new(2026)
@@ -823,20 +807,7 @@ function Lobby.Build()
 		buildSignpost(Vector3.new(13, 0, 13), 1)
 	end
 
-	-- 2) 필드로 이어지는 길가의 등불 (필드 문에 가까울수록 초록빛이 짙어진다) + 깃발
-	for step = 0, 9 do
-		local x = 30 + step * 10
-		for _, side in ipairs({ -1, 1 }) do
-			local fade = step / 9
-			local lampColor = Color3.fromRGB(255, 225, 160):Lerp(green, fade)
-			makePart({ Name = "RoadPost", Size = Vector3.new(0.7, 7, 0.7), Position = Vector3.new(x, 3.5, side * 9), Color = Color3.fromRGB(60, 56, 70), Material = Enum.Material.Metal }, folder)
-			local bulb = makePart({ Name = "RoadLamp", Shape = Enum.PartType.Ball, Size = Vector3.new(1.6, 1.6, 1.6), Position = Vector3.new(x, 7.6, side * 9), Color = lampColor, Material = Enum.Material.Neon, CanCollide = false }, folder)
-			addLight(bulb, 22, 1.1, lampColor)
-			if step % 2 == 1 then
-				makePart({ Name = "RoadBanner", Size = Vector3.new(0.3, 4, 2.4), Position = Vector3.new(x, 5.4, side * 9.8), Color = green:Lerp(Color3.fromRGB(30, 80, 50), 0.4), Material = Enum.Material.Fabric, CanCollide = false }, folder)
-			end
-		end
-	end
+	-- 2) (필드로 이어지는 길가의 등불 / 깃발은 너무 많아서 없앴다: 빛기둥과 문만으로 충분하다)
 
 	-- 3) 문 위로 솟는 빛기둥: 마을 어디서든 "저쪽이 필드"라는 게 보인다
 	local pillar = makePart({ Name = "FieldBeacon", Size = Vector3.new(14, 320, 14), Position = fieldGate + Vector3.new(0, 160, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.88, CanCollide = false, CanQuery = false }, folder)
