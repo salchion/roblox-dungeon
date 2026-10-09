@@ -557,9 +557,14 @@ function Lobby.Build()
 		prompt.ActionText = "입장 (Lv." .. entry.MinLevel .. ")"
 		prompt.ObjectText = string.format("%s · %s · %s · 권장 전투력 %d", dungeonType.Name, difficulty.Name, Config.Keys.TierIcons[difficulty.KeyTier or 1], dungeonType.RecommendedPower)
 		prompt.HoldDuration = 0.8
-		prompt.MaxActivationDistance = 14
+		prompt.MaxActivationDistance = 16
 		prompt.RequiresLineOfSight = false
-		prompt.Parent = portal
+		-- 문이 높아서(24~44) 문 한가운데에 달면 땅에서 닿지 않는다: 땅에서 가까운 높이(발 앞)에 붙인다
+		local promptAnchor = Instance.new("Attachment")
+		promptAnchor.Name = "PromptAnchor"
+		promptAnchor.Position = Vector3.new(0, -H / 2 + 3, 3)
+		promptAnchor.Parent = portal
+		prompt.Parent = promptAnchor
 		table.insert(gates, { Prompt = prompt, Index = index })
 	end
 	local gatePrompt = gates[1].Prompt
@@ -861,7 +866,7 @@ function Lobby.Build()
 	warpPrompt.Parent = beam
 
 	-- 허수아비 훈련장 입구 표지 (서쪽, 실제 허수아비는 DummyService 가 놓는다)
-	local trainingSign = makePart({ Name = "TrainingSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(-100, 24, 100), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
+	local trainingSign = makePart({ Name = "TrainingSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(-52, 24, 100), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
 	makeLabel(trainingSign, "🎯 허수아비 훈련장\n전투력이 높을수록 골드 UP", Color3.fromRGB(255, 220, 120), 0, 340, 76, 110)
 
 	-- 쨍한 느낌 줄이기: 네온 부품은 색을 살짝 가라앉히고, 조명은 약하게 (은은하게 빛나는 정도)
