@@ -114,7 +114,7 @@ function Showcase.Init(_boardCFrame)
 
 		slots[rank] = {
 			Platform = platform, Top = spot, Scale = 2.8, Look = look, Key = nil, Model = nil, Weapon = nil,
-			Label = makeLabel(platform, 27, 420),
+			Label = makeLabel(platform, 27, 75),
 		}
 		slots[rank].Label.Text = MEDAL[rank] .. " 비어 있음"
 	end

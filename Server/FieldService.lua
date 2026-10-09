@@ -79,7 +79,7 @@ end
 local projectiles = {}
 local worldFolder, monstersFolder
 local campCFrames = {}      -- [zone] = 캠프 부활/워프 위치
-local lobbySpawn = CFrame.new(0, 5, 102)
+local lobbySpawn = CFrame.new(0, 19, 112)
 local activeEvent = nil     -- { Part, Data }
 
 ------------------------------------------------------------

@@ -10,6 +10,7 @@ local Lobby = {}
 
 local HALF = 130            -- 로비는 -130 ~ +130 의 정사각형
 local TOP = 0.05            -- 바닥 윗면 높이 (기본 Baseplate 와 겹쳐 깜빡이는 것 방지)
+local HILL_Z, HILL_H, HILL_R = 112, 14, 18 -- 시작 언덕: 마을 남쪽 끝의 높은 언덕 (여기서 마을 전체가 내려다보인다)
 
 local function makePart(props, parent)
 	local part = Instance.new("Part")
@@ -165,11 +166,11 @@ local function decoratePlaza(parent, center, avoid)
 	sparkle.Parent = sky
 
 	-- 스폰 자리: 빛나는 환영 패드
-	local pad = makeDisc(Vector3.new(0, TOP + 0.35, 102), 16, 0.12, Color3.fromRGB(110, 230, 255), Enum.Material.Neon, parent)
+	local pad = makeDisc(Vector3.new(0, TOP + HILL_H + 0.35, HILL_Z), 16, 0.12, Color3.fromRGB(110, 230, 255), Enum.Material.Neon, parent)
 	pad.CanCollide = false
 	pad.CanQuery = false
 	pad.Transparency = 0.35
-	local padInner = makeDisc(Vector3.new(0, TOP + 0.4, 102), 9, 0.12, Color3.fromRGB(255, 255, 255), Enum.Material.Neon, parent)
+	local padInner = makeDisc(Vector3.new(0, TOP + HILL_H + 0.4, HILL_Z), 9, 0.12, Color3.fromRGB(255, 255, 255), Enum.Material.Neon, parent)
 	padInner.CanCollide = false
 	padInner.CanQuery = false
 	padInner.Transparency = 0.6
@@ -309,7 +310,9 @@ function Lobby.Build()
 	decoratePlaza(folder, Vector3.new(0, TOP, 70), {
 		{ X = -26, Z = 34, R = 20 },  -- 대장간
 		{ X = 26, Z = 34, R = 20 },   -- 뽑기 상점
-		{ X = 0, Z = 102, R = 12 },   -- 스폰
+		{ X = 0, Z = HILL_Z, R = 36 },   -- 시작 언덕
+		{ X = -22, Z = 84, R = 20 },     -- 왼쪽 경사로
+		{ X = 22, Z = 84, R = 20 },      -- 오른쪽 경사로
 		{ X = -40, Z = 92, R = 20 },  -- 랭킹판 / 명예의 전당
 	})
 
@@ -320,11 +323,45 @@ function Lobby.Build()
 		end
 	end
 
+	-- 시작 언덕: 높은 바위 단 위에 풀밭 / 가로등 / 나무 + 마을 쪽(북쪽)으로 내려가는 두 갈래 완만한 경사로
+	do
+		local center = Vector3.new(0, 0, HILL_Z)
+		makePart({ Name = "HillBody", Shape = Enum.PartType.Cylinder, Size = Vector3.new(HILL_H + 1.5, HILL_R * 2 + 4, HILL_R * 2 + 4),
+			CFrame = CFrame.new(center + Vector3.new(0, (HILL_H - 1.5) / 2 + TOP, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+			Color = Color3.fromRGB(96, 92, 100), Material = Enum.Material.Slate }, folder)
+		makePart({ Name = "HillGrass", Shape = Enum.PartType.Cylinder, Size = Vector3.new(1, HILL_R * 2 + 2, HILL_R * 2 + 2),
+			CFrame = CFrame.new(center + Vector3.new(0, TOP + HILL_H - 0.25, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+			Color = Color3.fromRGB(88, 130, 84), Material = Enum.Material.Grass }, folder)
+		-- 가장자리 돌 난간 (뒤로 떨어지지 않게 남쪽 반원만): 낮은 돌기둥들
+		for i = 0, 10 do
+			local angle = math.rad(110 + i * 14) -- 남쪽(+Z) 쪽 호
+			local pos = center + Vector3.new(math.cos(angle + math.pi / 2) * (HILL_R - 0.6), 0, math.sin(angle + math.pi / 2) * (HILL_R - 0.6))
+			makePart({ Name = "HillRail", Size = Vector3.new(2, 2.6, 2), Position = Vector3.new(pos.X, TOP + HILL_H + 1.3, pos.Z), Color = Color3.fromRGB(150, 146, 140), Material = Enum.Material.Cobblestone }, folder)
+		end
+		makeLamp(Vector3.new(-11, TOP + HILL_H, HILL_Z + 6), folder)
+		makeLamp(Vector3.new(11, TOP + HILL_H, HILL_Z + 6), folder)
+		-- 경사로: 언덕 가장자리(y = HILL_H)에서 광장 가장자리(y = 0)까지 비스듬히 내려간다
+		local function ramp(topPoint, bottomPoint, width)
+			local direction = bottomPoint - topPoint
+			local thickness = 4
+			local middle = (topPoint + bottomPoint) / 2
+			local look = CFrame.lookAt(middle, middle + direction)
+			local center3 = middle - look.UpVector * (thickness / 2)
+			makePart({ Name = "HillRamp", Size = Vector3.new(width, thickness, direction.Magnitude), CFrame = CFrame.lookAt(center3, center3 + direction),
+				Color = Color3.fromRGB(205, 195, 175), Material = Enum.Material.Cobblestone }, folder)
+		end
+		for _, side in ipairs({ -1, 1 }) do
+			ramp(Vector3.new(side * 9.8, TOP + HILL_H, HILL_Z - 15.1), Vector3.new(side * 34, TOP, 72), 12)
+			-- 경사로 양옆 가로등
+			makeLamp(Vector3.new(side * 18, TOP + 8, 94), folder)
+		end
+	end
+
 	local spawn = Instance.new("SpawnLocation")
 	spawn.Name = "LobbySpawn"
 	spawn.Anchored = true
 	spawn.Size = Vector3.new(12, 1, 12)
-	spawn.Position = Vector3.new(0, TOP + 0.5, 102)
+	spawn.Position = Vector3.new(0, TOP + HILL_H + 0.5, HILL_Z)
 	spawn.Transparency = 1
 	spawn.CanCollide = false
 	spawn.Neutral = true
@@ -441,7 +478,7 @@ function Lobby.Build()
 		local sign = part("StallSign", Vector3.new(11, 3.2, 0.5), Vector3.new(0, 9.6, -9.9), Color3.fromRGB(70, 48, 32), Enum.Material.Wood)
 		part("SignRopeL", Vector3.new(0.15, 1.6, 0.15), Vector3.new(-4.5, 11.2, -9.9), Color3.fromRGB(200, 190, 160), Enum.Material.Fabric, { CanCollide = false })
 		part("SignRopeR", Vector3.new(0.15, 1.6, 0.15), Vector3.new(4.5, 11.2, -9.9), Color3.fromRGB(200, 190, 160), Enum.Material.Fabric, { CanCollide = false })
-		makeLabel(sign, signText, signColor, 0, 360, 80, 90)
+		makeLabel(sign, signText, signColor, 0, 320, 72, 62)
 		for _, side in ipairs({ -1, 1 }) do
 			local lantern = part("StallLantern", Vector3.new(1.4, 1.8, 1.4), Vector3.new(side * 9.6, 8.5, -8.6), Color3.fromRGB(255, 200, 110), Enum.Material.Neon, { CanCollide = false })
 			addLight(lantern, 24, 1.3, Color3.fromRGB(255, 205, 130))
@@ -649,7 +686,7 @@ function Lobby.Build()
 	end
 
 	return {
-		SpawnCFrame = CFrame.new(0, 5, 102),
+		SpawnCFrame = CFrame.new(0, HILL_H + 5, HILL_Z),
 		GatePrompt = gatePrompt, -- (호환용: 첫 번째 게이트)
 		Gates = gates,
 		AnvilPrompt = anvilPrompt,
