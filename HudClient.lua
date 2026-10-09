@@ -59,7 +59,7 @@ local badge = make("Frame", { Size = UDim2.new(0, 50, 0, 50), Position = UDim2.n
 round(badge, 12)
 make("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(110, 170, 255), Color3.fromRGB(60, 80, 200)), Rotation = 90 }, badge)
 make("UIStroke", { Color = Color3.fromRGB(190, 215, 255), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, badge)
-text({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 4), Text = "LV", TextSize = 11, TextXAlignment = Enum.TextXAlignment.Center, TextColor3 = Color3.fromRGB(220, 235, 255) }, badge)
+text({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 4), Text = "LV", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Center, TextColor3 = Color3.fromRGB(220, 235, 255) }, badge)
 local levelText = text({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 16), Text = "1", TextSize = 26, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Center }, badge)
 
 -- 이름 + 전투력
@@ -72,7 +72,7 @@ round(xpBack, 7)
 local xpFill = make("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(110, 200, 255), BorderSizePixel = 0 }, xpBack)
 round(xpFill, 7)
 make("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(150, 225, 255), Color3.fromRGB(80, 150, 255)) }, xpFill)
-local xpText = text({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 10, TextXAlignment = Enum.TextXAlignment.Center, ZIndex = 3 }, xpBack)
+local xpText = text({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Center, ZIndex = 3 }, xpBack)
 xpText.TextStrokeTransparency = 0.6
 
 -- 자원 칩 3개: 골드 / 티켓 / 열쇠

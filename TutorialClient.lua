@@ -66,7 +66,7 @@ local barBack = create("Frame", {
 rounded(barBack)
 local barFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 210, 90), BorderSizePixel = 0 }, barBack)
 rounded(barFill)
-local barText = label({ Size = UDim2.new(1, 0, 1, 0), TextSize = 11, Font = Enum.Font.GothamBold }, barBack)
+local barText = label({ Size = UDim2.new(1, 0, 1, 0), TextSize = 12, Font = Enum.Font.GothamBold }, barBack)
 
 local waypoint = nil    -- 던전 안에서 다음 방을 가리키는 빛기둥 (하늘색)
 local waypointLabel = nil

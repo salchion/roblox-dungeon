@@ -77,6 +77,7 @@ local function makeLabel(props, parent)
 	for key, value in pairs(props) do
 		base[key] = value
 	end
+	if base.TextSize < 12 then base.TextSize = 12 end -- 작은 글씨 하한(모바일)
 	return create("TextLabel", base, parent)
 end
 
@@ -94,6 +95,10 @@ local function makeButton(props, parent, onClick)
 	end
 	local button = create("TextButton", base, parent)
 	rounded(button, 8)
+	if button.TextSize < 12 then button.TextSize = 12 end
+	local hs = create("UIStroke", { Color = Color3.fromRGB(230, 236, 255), Thickness = 1.5, Transparency = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, button) -- 마우스 올리면 테두리
+	button.MouseEnter:Connect(function() hs.Transparency = 0.55 end)
+	button.MouseLeave:Connect(function() hs.Transparency = 1 end)
 	if onClick then
 		button.Activated:Connect(onClick)
 	end

@@ -70,7 +70,7 @@ make("UISizeConstraint", { MaxSize = Vector2.new(460, 452) }, panel)
 
 label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "✨ 레벨 스탯", TextSize = 22, TextXAlignment = Enum.TextXAlignment.Left }, panel)
 local pointsLabel = label({ Size = UDim2.new(1, -32, 0, 22), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 15, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, panel)
-label({ Size = UDim2.new(1, -32, 0, 18), Position = UDim2.new(0, 16, 0, 62), Text = "공격력 / 체력이 아니라 플레이 스타일을 고르는 스탯이에요. 언제든 무료로 다시 배분할 수 있어요!", TextSize = 11, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
+label({ Size = UDim2.new(1, -32, 0, 18), Position = UDim2.new(0, 16, 0, 62), Text = "공격력 / 체력이 아니라 플레이 스타일을 고르는 스탯이에요. 언제든 무료로 다시 배분할 수 있어요!", TextSize = 12, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
 button({ Size = UDim2.new(0, 60, 0, 28), Position = UDim2.new(1, -72, 0, 10), BackgroundColor3 = Color3.fromRGB(70, 70, 90), Text = "닫기", TextSize = 13 }, panel, function() panel.Visible = false end)
 
 local rows = {}
@@ -95,7 +95,7 @@ for index, key in ipairs(LS.Order) do
 	rows[key] = { Value = valueLabel, Count = countLabel }
 end
 
-label({ Size = UDim2.new(1, -32, 0, 30), Position = UDim2.new(0, 16, 0, 376), Text = LS.Double.Note or "", TextSize = 11, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
+label({ Size = UDim2.new(1, -32, 0, 30), Position = UDim2.new(0, 16, 0, 376), Text = LS.Double.Note or "", TextSize = 12, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
 button({ Size = UDim2.new(0, 150, 0, 32), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 1, -42), BackgroundColor3 = Color3.fromRGB(120, 70, 70), Text = "전부 초기화 (무료)", TextSize = 13 }, panel, function()
 	Remotes.LevelStat:FireServer("Reset")
 end)

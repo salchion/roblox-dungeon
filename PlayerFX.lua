@@ -198,7 +198,7 @@ do
 			local inner = create("Frame", { Name = "Fill", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.fromRGB(70, 220, 100), BorderSizePixel = 0 }, back)
 			create("UICorner", { CornerRadius = UDim.new(0.5, 0) }, inner)
 			create("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(170, 170, 170)) }, inner)
-			makeLabel({ Name = "HP", Size = UDim2.fromScale(1, 1), Text = "", Font = Enum.Font.GothamBold, TextSize = 11, TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 0.35, ZIndex = 3 }, back)
+			makeLabel({ Name = "HP", Size = UDim2.fromScale(1, 1), Text = "", Font = Enum.Font.GothamBold, TextSize = 12, TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 0.35, ZIndex = 3 }, back)
 		end
 		local f = feet and feet:FindFirstChild("Fill", true)
 		if f then

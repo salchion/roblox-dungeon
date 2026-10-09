@@ -133,11 +133,11 @@ local function rebuild()
 			make("UIStroke", { Color = Color3.fromRGB(255, 215, 100), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, r)
 			label({ Size = UDim2.new(0, 70, 0, 16), Position = UDim2.new(1, -78, 0, 4), Text = "▶ 다음!", TextSize = 12, TextColor3 = Color3.fromRGB(255, 225, 110), TextXAlignment = Enum.TextXAlignment.Right }, r)
 		elseif open then
-			label({ Size = UDim2.new(0, 70, 0, 16), Position = UDim2.new(1, -78, 0, 4), Text = "✔ 열림", TextSize = 11, TextColor3 = Color3.fromRGB(130, 255, 170), TextXAlignment = Enum.TextXAlignment.Right }, r)
+			label({ Size = UDim2.new(0, 70, 0, 16), Position = UDim2.new(1, -78, 0, 4), Text = "✔ 열림", TextSize = 12, TextColor3 = Color3.fromRGB(130, 255, 170), TextXAlignment = Enum.TextXAlignment.Right }, r)
 		end
 		label({ Size = UDim2.new(0, 56, 1, 0), Position = UDim2.new(0, 8, 0, 0), Text = string.format("Lv.%d", fn.Level), TextSize = 14, TextColor3 = open and Color3.fromRGB(130, 255, 170) or Color3.fromRGB(150, 155, 185) }, r)
 		label({ Size = UDim2.new(1, -76, 0, 20), Position = UDim2.new(0, 66, 0, 3), Text = string.format("%s %s", fn.Icon, fn.Name), TextSize = 14, TextColor3 = open and Color3.new(1, 1, 1) or Color3.fromRGB(165, 170, 195) }, r)
-		label({ Size = UDim2.new(1, -76, 0, 16), Position = UDim2.new(0, 66, 0, 21), Text = fn.Desc, TextSize = 11, TextColor3 = open and Color3.fromRGB(190, 235, 205) or Color3.fromRGB(130, 135, 165), TextTruncate = Enum.TextTruncate.AtEnd }, r)
+		label({ Size = UDim2.new(1, -76, 0, 16), Position = UDim2.new(0, 66, 0, 21), Text = fn.Desc, TextSize = 12, TextColor3 = open and Color3.fromRGB(190, 235, 205) or Color3.fromRGB(130, 135, 165), TextTruncate = Enum.TextTruncate.AtEnd }, r)
 	end
 
 	-- 3) 외형 (군주를 쓰러뜨리거나 칭호를 따면 열린다. 능력과는 상관없다)
@@ -160,7 +160,7 @@ local function rebuild()
 		make("UIStroke", { Color = selected and Color3.fromRGB(255, 215, 100) or Color3.fromRGB(80, 85, 120), Thickness = selected and 2.5 or 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, b)
 		label({ Size = UDim2.new(0, 36, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = unlocked and look.Icon or "🔒", TextSize = 26, TextXAlignment = Enum.TextXAlignment.Center }, b)
 		label({ Size = UDim2.new(1, -48, 0, 22), Position = UDim2.new(0, 44, 0, 8), Text = look.Name, TextSize = 13, TextColor3 = unlocked and Color3.new(1, 1, 1) or Color3.fromRGB(150, 155, 185) }, b)
-		label({ Size = UDim2.new(1, -48, 0, 22), Position = UDim2.new(0, 44, 0, 30), Text = unlocked and (selected and "사용 중" or "") or look.Hint, TextSize = 10, TextColor3 = unlocked and Color3.fromRGB(255, 225, 110) or Color3.fromRGB(150, 155, 185), TextWrapped = true }, b)
+		label({ Size = UDim2.new(1, -48, 0, 22), Position = UDim2.new(0, 44, 0, 30), Text = unlocked and (selected and "사용 중" or "") or look.Hint, TextSize = 12, TextColor3 = unlocked and Color3.fromRGB(255, 225, 110) or Color3.fromRGB(150, 155, 185), TextWrapped = true }, b)
 	end
 
 	-- 4) 색
