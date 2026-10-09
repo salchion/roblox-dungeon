@@ -1123,7 +1123,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		weakOrb.Size = Vector3.new(7.2, 7.2, 7.2) -- 맞히기 쉽게 크다
 		weakOrb.Anchored = true
 		weakOrb.CanCollide = false
-		weakOrb.CanQuery = false
+		weakOrb.CanQuery = true -- 구슬을 직접 조준(클릭)할 수 있게: 조준선 / 총알 판정이 구슬에 맞는다
 		weakOrb.CanTouch = false
 		weakOrb.Color = Color3.fromRGB(255, 235, 80)
 		weakOrb.Material = Enum.Material.Neon
@@ -1529,6 +1529,12 @@ function Field.Shoot(player, origin, direction)
 
 	local range = Config.GetPlayerWeapon(player).Range
 	local result = workspace:Raycast(origin, direction * range, params)
+	-- 약점 구슬을 직접 맞힌 경우: 보스를 맞힌 것으로 바꾸고 "약점 명중"으로 처리한다
+	local weakDirect = false
+	if result and result.Instance.Name == "WeakPoint" and result.Instance.Parent and monsters[result.Instance.Parent] then
+		result = { Instance = result.Instance.Parent, Position = result.Position }
+		weakDirect = true
+	end
 	local endPosition = result and result.Position or (origin + direction * range)
 	-- 도중에 벽이 있으면 거기서 멈추고 맞히지 못한다
 	local clear, stopAt = segmentClear(origin, endPosition)
@@ -1548,7 +1554,7 @@ function Field.Shoot(player, origin, direction)
 		if data.WeakPart and data.WeakPart.Parent and not data.WeakHidden and not data.Invincible and player:GetAttribute("ShotManual") == true then -- 직접 조준한 탄만
 			local ab = result.Position - origin
 			local t = math.clamp((data.WeakPart.Position - origin):Dot(ab) / math.max(ab:Dot(ab), 0.001), 0, 1)
-			if (origin + ab * t - data.WeakPart.Position).Magnitude <= data.WeakPart.Size.X * 0.8 then
+			if weakDirect or (origin + ab * t - data.WeakPart.Position).Magnitude <= data.WeakPart.Size.X * 0.8 then
 				-- 약점 명중: 이 공격만 세지는 게 아니라 약점이 "노출"되어 4초 동안 보스가 받는 모든 피해가 x3
 				player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 6))
 				player:SetAttribute("WeakHitTick", (player:GetAttribute("WeakHitTick") or 0) + 1)
@@ -1956,7 +1962,7 @@ local function stepMonsters(dt)
 	local now = os.clock()
 	for part, data in pairs(monsters) do
 		if data.WeakPart and data.WeakPart.Parent then -- 약점 구슬: 보스 몸 주위를 돌며 위아래로 흔들린다
-			local radius = part.Size.X / 2 + 3
+			local radius = part.Size.X / 2 + 7 -- 보스 몸(날개 / 뿔 장식 포함) 밖으로 충분히 떨어져 돈다
 			local angle = now * 1.5 + data.Phase
 			data.WeakPart.Position = part.Position + Vector3.new(math.cos(angle) * radius, math.sin(now * 0.9) * radius * 0.35, math.sin(angle) * radius)
 		end

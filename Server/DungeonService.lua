@@ -457,7 +457,7 @@ local function makeWeakOrb(part)
 	orb.Size = Vector3.new(7.2, 7.2, 7.2) -- 맞히기 쉽게 크다
 	orb.Anchored = true
 	orb.CanCollide = false
-	orb.CanQuery = false
+	orb.CanQuery = true -- 구슬을 직접 조준(클릭)할 수 있게: 조준선 / 총알 판정이 구슬에 맞는다
 	orb.CanTouch = false
 	orb.Color = Color3.fromRGB(255, 235, 80)
 	orb.Material = Enum.Material.Neon
@@ -1095,7 +1095,7 @@ local function stepRun(run, dt)
 
 	for part, data in pairs(run.Monsters) do
 		if data.WeakPart and data.WeakPart.Parent then -- 약점 구슬: 보스 몸 주위를 돌며 위아래로 흔들린다
-			local radius = part.Size.X / 2 + 3
+			local radius = part.Size.X / 2 + 7 -- 보스 몸(날개 / 뿔 장식 포함) 밖으로 충분히 떨어져 돈다
 			local angle = now * 1.5
 			data.WeakPart.Position = part.Position + Vector3.new(math.cos(angle) * radius, math.sin(now * 0.9) * radius * 0.35, math.sin(angle) * radius)
 		end
@@ -1313,6 +1313,14 @@ function Dungeon.Shoot(player, origin, direction)
 	for _ = 1, 1 + pierce do
 		local result = workspace:Raycast(origin, direction * range, params)
 		if not result then break end
+		-- 약점 구슬을 직접 맞힌 경우: 보스를 맞힌 것으로 바꾸고 "약점 명중"으로 처리한다
+		local weakDirect = false
+		local orbPart
+		if result.Instance.Name == "WeakPoint" and result.Instance.Parent and run.Monsters[result.Instance.Parent] then
+			orbPart = result.Instance
+			result = { Instance = result.Instance.Parent, Position = result.Position }
+			weakDirect = true
+		end
 		endPosition = result.Position
 		local part = result.Instance
 		local data = run.Monsters[part]
@@ -1323,7 +1331,7 @@ function Dungeon.Shoot(player, origin, direction)
 		if data.WeakPart and data.WeakPart.Parent and not data.WeakHidden and player:GetAttribute("ShotManual") == true then -- 탄이 지나간 선이 약점 구슬에 닿으면 약점 노출 (직접 조준한 탄만)
 			local ab = result.Position - origin
 			local t = math.clamp((data.WeakPart.Position - origin):Dot(ab) / math.max(ab:Dot(ab), 0.001), 0, 1)
-			if (origin + ab * t - data.WeakPart.Position).Magnitude <= data.WeakPart.Size.X * 0.8 then
+			if weakDirect or (origin + ab * t - data.WeakPart.Position).Magnitude <= data.WeakPart.Size.X * 0.8 then
 				-- 이 공격만 세지는 게 아니라 약점이 노출되어 4초간 보스가 받는 모든 피해가 x3 (damageMonster 가 적용)
 				player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 6))
 				player:SetAttribute("WeakHitTick", (player:GetAttribute("WeakHitTick") or 0) + 1)
@@ -1381,9 +1389,13 @@ function Dungeon.Shoot(player, origin, direction)
 			part.CanQuery = false
 			table.insert(skipped, part)
 		end
+		if orbPart and orbPart.Parent then -- 관통할 때 같은 구슬이 또 잡히지 않게
+			orbPart.CanQuery = false
+			table.insert(skipped, orbPart)
+		end
 	end
 	for _, part in ipairs(skipped) do
-		part.CanQuery = true
+		part.CanQuery = part.Name ~= "WeakPoint" or part.Transparency < 1 -- 노출 때문에 숨겨진 구슬은 계속 판정에서 뺀다
 	end
 
 	return endPosition

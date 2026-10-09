@@ -380,6 +380,7 @@ function Effects.SetWeakVisible(orb, visible)
 	if orb:IsA("BasePart") then
 		if orb:GetAttribute("T0") == nil then orb:SetAttribute("T0", orb.Transparency) end
 		orb.Transparency = visible and orb:GetAttribute("T0") or 1
+		orb.CanQuery = visible -- 숨은 동안에는 조준 / 판정에 잡히지 않는다
 	end
 end
 
