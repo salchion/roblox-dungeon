@@ -1305,6 +1305,7 @@ function Field.HitPart(player, part, damage)
 	if not data or not part.Parent then return false end
 	if not canHitZone(player, part.Position.X) then return false end
 	data.Health -= damage
+	if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
 	data.LastHit = os.clock()
 	if data.Contrib then
 		data.Contrib[player] = (data.Contrib[player] or 0) + damage
@@ -1331,6 +1332,7 @@ function Field.AreaDamage(player, center, radius, damage)
 		if monsters[target.Part] == data then
 			table.insert(positions, target.Part.Position)
 			data.Health -= damage
+			if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
 			data.LastHit = os.clock()
 			if data.Contrib then
 				data.Contrib[player] = (data.Contrib[player] or 0) + damage
@@ -1624,6 +1626,7 @@ end
 local function stepMonsters(dt)
 	local now = os.clock()
 	for part, data in pairs(monsters) do
+		if data.Static then continue end -- 소환 결투의 군주: 제자리에서 연출만 한다
 		if data.Falling then
 			-- 공습 낙하병: 낙하산을 펴고 하늘에서 내려온다. 땅에 닿으면 충격으로 주변이 피해를 입고 그때부터 싸운다
 			local landY = floorAt(part.Position.X) + data.Stats.Size / 2
@@ -2216,7 +2219,100 @@ end
 -- 튜토리얼 "압도적인 습격": 첫 필드 방문 때 잠깐 싸우게 한 뒤, 사방에서 훨씬 강한 몬스터 떼가 몰려와 필연적으로 쓰러지게 한다.
 -- (쓰러지면 마을로 돌아가고, 다음 미션이 "훈련 -> 던전 -> 10연 뽑기 -> 다시 필드(이제 쉽다)" 로 이어진다)
 local doomTimers = {}
--- 소환 결투: 먼 하늘 위 작은 심연 무대로 끌려가 최후의 군주와 1:1 (약 6초 버티다가 쓰러진다)
+-- 최후의 군주 모델: 갑옷 몸통 + 뿔 달린 머리 + 후광 + 칼날 날개 + 거대한 주먹 + 가슴 코어. 몸통(Body)만 맞는다(나머지는 장식).
+local function rgb(r, g, b) return Color3.fromRGB(r, g, b) end
+
+local function buildDoomLord(parent)
+	local S = 1.7
+	local model = Instance.new("Model")
+	model.Name = "DoomLord"
+	model.Parent = parent
+	local parts = {} -- { Part, Rel }
+	local function add(size, rel, color, material, transparency, shape)
+		local part = Instance.new("Part")
+		part.Size = size * S
+		part.Color = color
+		part.Material = material or Enum.Material.Metal
+		part.Transparency = transparency or 0
+		part.Anchored = true
+		part.CanCollide = false
+		part.CanQuery = false
+		part.CanTouch = false
+		if shape then part.Shape = shape end
+		part.Parent = model
+		table.insert(parts, { Part = part, Rel = CFrame.new(rel.Position * S) * (rel - rel.Position) })
+		return part
+	end
+	local dark, steel, red = rgb(26, 12, 22), rgb(60, 52, 70), rgb(255, 50, 60)
+	local body = add(Vector3.new(12, 20, 7), CFrame.new(0, 0, 0), dark, Enum.Material.Metal)
+	body.CanQuery = true
+	body.Name = "Body"
+	add(Vector3.new(8, 6, 5), CFrame.new(0, -12, 0), dark) -- 허리 아래로 좁아지는 하체
+	add(Vector3.new(4, 7, 3), CFrame.new(0, -18, 0), steel)
+	add(Vector3.new(5, 5, 5), CFrame.new(0, 4, -4.2) * CFrame.Angles(math.rad(45), math.rad(45), 0), red, Enum.Material.Neon) -- 가슴 코어
+	add(Vector3.new(11, 1, 1), CFrame.new(0, 9, -3.8), steel)
+	add(Vector3.new(11, 1, 1), CFrame.new(0, -3, -3.8), steel)
+	-- 머리 + 눈 + 뿔 + 왕관
+	add(Vector3.new(6.5, 6.5, 6.5), CFrame.new(0, 14, 0), rgb(18, 8, 16))
+	for _, side in ipairs({ -1, 1 }) do
+		add(Vector3.new(3, 0.9, 0.6), CFrame.new(side * 1.7, 14.6, -3.3) * CFrame.Angles(0, 0, math.rad(side * 18)), rgb(255, 230, 90), Enum.Material.Neon)
+		add(Vector3.new(1.4, 13, 1.4), CFrame.new(side * 4.2, 21, 0) * CFrame.Angles(0, 0, math.rad(side * -28)), rgb(230, 220, 205), Enum.Material.SmoothPlastic)
+		add(Vector3.new(1.2, 7, 1.2), CFrame.new(side * 9, 27, 0) * CFrame.Angles(0, 0, math.rad(side * -58)), rgb(230, 220, 205), Enum.Material.SmoothPlastic)
+		-- 어깨 갑옷 + 가시
+		add(Vector3.new(8, 4, 8), CFrame.new(side * 9.5, 9, 0), steel)
+		for k = 0, 2 do
+			add(Vector3.new(1.4, 8 - k * 1.5, 1.4), CFrame.new(side * (7.5 + k * 2.2), 13 + k * 0.8, 0) * CFrame.Angles(0, 0, math.rad(side * (-15 - k * 14))), red, Enum.Material.Neon)
+		end
+		-- 팔 + 거대한 주먹 + 손목 불꽃줄
+		add(Vector3.new(4, 16, 4), CFrame.new(side * 12, -1, 0), dark)
+		add(Vector3.new(7.5, 7.5, 7.5), CFrame.new(side * 12, -11, -1), steel)
+		add(Vector3.new(8, 0.8, 8), CFrame.new(side * 12, -8, -1), red, Enum.Material.Neon)
+		-- 칼날 날개 (등 뒤로 부챗살)
+		for k = 0, 3 do
+			add(Vector3.new(1, 22 - k * 3, 5), CFrame.new(side * (8 + k * 3.4), 6 + k * 0.5, 7) * CFrame.Angles(math.rad(-10), math.rad(side * -12), math.rad(side * (-22 - k * 14))), rgb(90, 20, 40), Enum.Material.Metal)
+			add(Vector3.new(0.4, 20 - k * 3, 1.2), CFrame.new(side * (8 + k * 3.4), 6 + k * 0.5, 4.6) * CFrame.Angles(math.rad(-10), math.rad(side * -12), math.rad(side * (-22 - k * 14))), red, Enum.Material.Neon, 0.15)
+		end
+	end
+	-- 후광 (머리 뒤 큰 고리 두 겹)
+	add(Vector3.new(0.7, 30, 30), CFrame.new(0, 15, 8) * CFrame.Angles(0, math.rad(90), 0), red, Enum.Material.Neon, 0.25, Enum.PartType.Cylinder)
+	add(Vector3.new(0.5, 38, 38), CFrame.new(0, 15, 9) * CFrame.Angles(0, math.rad(90), 0), rgb(255, 150, 60), Enum.Material.Neon, 0.5, Enum.PartType.Cylinder)
+	-- 주변을 도는 칼날 4개
+	local orbit = {}
+	for k = 1, 4 do
+		local blade = add(Vector3.new(1.2, 8, 2.4), CFrame.new(), red, Enum.Material.Neon, 0.1)
+		table.insert(orbit, blade)
+	end
+
+	local core = body
+	local aura = Instance.new("ParticleEmitter")
+	aura.Rate = 40
+	aura.Lifetime = NumberRange.new(1, 2)
+	aura.Speed = NumberRange.new(4, 10)
+	aura.SpreadAngle = Vector2.new(180, 180)
+	aura.LightEmission = 1
+	aura.Color = ColorSequence.new(rgb(255, 70, 60), rgb(255, 170, 60))
+	aura.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 3), NumberSequenceKeypoint.new(1, 0) })
+	aura.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) })
+	aura.Parent = core
+	local light = Instance.new("PointLight")
+	light.Color = red
+	light.Range = 60
+	light.Brightness = 3
+	light.Parent = core
+
+	local function place(base, t)
+		for _, entry in ipairs(parts) do
+			entry.Part.CFrame = base * entry.Rel
+		end
+		for k, blade in ipairs(orbit) do
+			local angle = t * 1.8 + k * math.pi / 2
+			blade.CFrame = base * CFrame.new(math.cos(angle) * 16 * S, 4 * S + math.sin(angle * 2) * 3, math.sin(angle) * 8 * S) * CFrame.Angles(0, -angle, math.rad(20))
+		end
+	end
+	return model, body, place
+end
+
+-- 소환 결투: 먼 하늘 위 심연 무대로 끌려가 최후의 군주와 1:1 (약 8초). 공격할 수 있지만 쓰러뜨릴 수는 없고, 바닥 경고를 보고 피할 수 있는 공격을 받다가 마지막 일격에 쓰러진다.
 local function doomWave(player, zone)
 	local root, humanoid = getAliveParts(player)
 	if not root then return end
@@ -2227,84 +2323,245 @@ local function doomWave(player, zone)
 	root, humanoid = getAliveParts(player)
 	if not root or humanoid.Health <= 0 then return end
 
+	local TweenService = game:GetService("TweenService")
+	local RunService = game:GetService("RunService")
 	local center = Vector3.new(0, 420, 1500)
 	local arena = Instance.new("Folder")
 	arena.Name = "DoomArena"
 	arena.Parent = workspace
-	local floor = Instance.new("Part")
-	floor.Name = "DoomFloor"
-	floor.Shape = Enum.PartType.Cylinder
-	floor.Size = Vector3.new(2, 130, 130)
-	floor.CFrame = CFrame.new(center) * CFrame.Angles(0, 0, math.rad(90))
-	floor.Anchored = true
-	floor.Color = Color3.fromRGB(28, 14, 26)
-	floor.Material = Enum.Material.Basalt
-	floor.Parent = arena
-	local rim = Instance.new("Part")
-	rim.Name = "DoomRim"
-	rim.Shape = Enum.PartType.Cylinder
-	rim.Size = Vector3.new(0.4, 134, 134)
-	rim.CFrame = CFrame.new(center + Vector3.new(0, 1.1, 0)) * CFrame.Angles(0, 0, math.rad(90))
-	rim.Anchored = true
-	rim.CanCollide = false
-	rim.Color = Color3.fromRGB(255, 60, 60)
-	rim.Material = Enum.Material.Neon
-	rim.Transparency = 0.4
-	rim.Parent = arena
+	local function disc(name, diameter, height, y, color, material, transparency)
+		local part = Instance.new("Part")
+		part.Name = name
+		part.Shape = Enum.PartType.Cylinder
+		part.Size = Vector3.new(height, diameter, diameter)
+		part.CFrame = CFrame.new(center + Vector3.new(0, y, 0)) * CFrame.Angles(0, 0, math.rad(90))
+		part.Anchored = true
+		part.CanCollide = name == "DoomFloor"
+		part.Color = color
+		part.Material = material
+		part.Transparency = transparency or 0
+		part.Parent = arena
+		return part
+	end
+	disc("DoomFloor", 150, 2, 0, rgb(28, 14, 26), Enum.Material.Basalt)
+	disc("DoomRim", 154, 0.4, 1.1, rgb(255, 60, 60), Enum.Material.Neon, 0.4)
+	disc("DoomRune", 90, 0.2, 1.2, rgb(255, 110, 50), Enum.Material.Neon, 0.7)
+	disc("DoomRuneInner", 46, 0.2, 1.3, rgb(255, 200, 90), Enum.Material.Neon, 0.6)
 
-	local boss = Instance.new("Part")
-	boss.Name = "DoomLord"
-	boss.Shape = Enum.PartType.Ball
-	boss.Size = Vector3.new(34, 34, 34)
-	boss.Anchored = true
-	boss.CanCollide = false
-	boss.Color = Color3.fromRGB(120, 15, 40)
-	boss.Material = Enum.Material.Neon
-	boss.Position = center + Vector3.new(0, 20, -42)
-	boss.Parent = arena
-	Effects.DecorateBoss(boss, 34, Color3.fromRGB(255, 70, 70))
-	createHealthBar(boss, "💀 최후의 군주", 320, Color3.fromRGB(255, 90, 90))
+	-- 둘레 보이지 않는 높은 벽 (뛰어내릴 수 없게) + 둘레를 둘러싼 검은 첨탑과 불꽃 + 하늘의 붉은 달
+	for index = 0, 23 do
+		local angle = index / 24 * math.pi * 2
+		local at = center + Vector3.new(math.cos(angle) * 78, 0, math.sin(angle) * 78)
+		local wall = Instance.new("Part")
+		wall.Name = "DoomWall"
+		wall.Size = Vector3.new(26, 160, 4)
+		wall.CFrame = CFrame.lookAt(at + Vector3.new(0, 70, 0), center + Vector3.new(0, 70, 0))
+		wall.Anchored = true
+		wall.Transparency = 1
+		wall.CanQuery = false
+		wall.Parent = arena
+		local height = 26 + (index % 3) * 14
+		local spire = Instance.new("Part")
+		spire.Name = "DoomSpire"
+		spire.Size = Vector3.new(6, height, 6)
+		spire.CFrame = CFrame.new(center + Vector3.new(math.cos(angle) * 84, height / 2 - 2, math.sin(angle) * 84)) * CFrame.Angles(math.rad((index % 2) * 6), angle, math.rad(((index + 1) % 3) * 4))
+		spire.Anchored = true
+		spire.CanCollide = false
+		spire.CanQuery = false
+		spire.Color = rgb(22, 12, 24)
+		spire.Material = Enum.Material.Slate
+		spire.Parent = arena
+		if index % 2 == 0 then
+			local flame = Instance.new("Part")
+			flame.Shape = Enum.PartType.Ball
+			flame.Size = Vector3.new(3, 3, 3)
+			flame.Position = spire.Position + Vector3.new(0, height / 2 + 2, 0)
+			flame.Anchored = true
+			flame.CanCollide = false
+			flame.CanQuery = false
+			flame.Color = rgb(255, 90, 50)
+			flame.Material = Enum.Material.Neon
+			flame.Parent = arena
+			local fire = Instance.new("Fire")
+			fire.Size = 14
+			fire.Heat = 12
+			fire.Color = rgb(255, 120, 50)
+			fire.SecondaryColor = rgb(160, 20, 30)
+			fire.Parent = flame
+			local lamp = Instance.new("PointLight")
+			lamp.Color = rgb(255, 100, 60)
+			lamp.Range = 40
+			lamp.Brightness = 2
+			lamp.Parent = flame
+		end
+	end
+	local moon = Instance.new("Part")
+	moon.Name = "DoomMoon"
+	moon.Shape = Enum.PartType.Ball
+	moon.Size = Vector3.new(260, 260, 260)
+	moon.Position = center + Vector3.new(0, 260, -520)
+	moon.Anchored = true
+	moon.CanCollide = false
+	moon.CanQuery = false
+	moon.Color = rgb(200, 25, 40)
+	moon.Material = Enum.Material.Neon
+	moon.Parent = arena
+	for index = 1, 14 do -- 떠다니는 바위 조각
+		local rock = Instance.new("Part")
+		rock.Name = "DoomRock"
+		local size = 6 + (index * 7) % 14
+		rock.Size = Vector3.new(size, size * 0.8, size)
+		local angle = index * 2.4
+		rock.CFrame = CFrame.new(center + Vector3.new(math.cos(angle) * (110 + index * 6), 20 + (index * 13) % 70, math.sin(angle) * (110 + index * 6))) * CFrame.Angles(angle, angle * 2, 0)
+		rock.Anchored = true
+		rock.CanCollide = false
+		rock.CanQuery = false
+		rock.Color = rgb(30, 18, 30)
+		rock.Material = Enum.Material.Basalt
+		rock.Parent = arena
+	end
 
-	player.Character:PivotTo(CFrame.lookAt(center + Vector3.new(0, 4, 30), center + Vector3.new(0, 4, -42)))
+	local model, body, place = buildDoomLord(arena)
+	local bossPos = center + Vector3.new(0, 34, -48)
+	place(CFrame.lookAt(bossPos, bossPos + Vector3.new(0, 0, 1)), 0)
+
+	-- 맞출 수 있는 몬스터로 등록한다 (체력이 바닥나지 않게 8% 밑으로는 안 떨어진다)
+	local fill = createHealthBar(body, "💀 최후의 군주", 360, rgb(255, 90, 90))
+	body.Parent = model
+	CollectionService:AddTag(body, "Monster")
+	CollectionService:AddTag(body, "RadarBoss")
+	local data = {
+		Static = true, Invincible = true, Doom = true, Zone = 1, Aggro = true, Goblin = false,
+		Health = 3000, MaxHealth = 3000, HealthFill = fill, Contrib = {}, Level = 1, XpLevel = 1,
+		Stats = { Size = 20, MaxHealth = 3000, Speed = 0, ShotDamage = 0, ShotInterval = 99, ShotSpeed = 0, Gold = 0 },
+		Home = bossPos, BossLike = true, Kind = "DoomLord",
+	}
+	monsters[body] = data
+
+	player.Character:PivotTo(CFrame.lookAt(center + Vector3.new(0, 4, 36), center + Vector3.new(0, 4, -48)))
 	root.AssemblyLinearVelocity = Vector3.zero
 	player:SetAttribute("InDoomArena", true)
-	notify(player, "💀 최후의 군주와 마주했다! 도저히 이길 수 없다... 버텨보자!")
-	Effects.Burst(boss.Position, Color3.fromRGB(255, 70, 70), 80)
+	notify(player, "💀 최후의 군주와 마주했다! 공격은 통하지만... 쓰러뜨릴 수는 없다. 바닥의 붉은 경고를 피해 버텨라!")
+	Effects.Burst(bossPos, rgb(255, 70, 60), 100)
 
-	local TweenService = game:GetService("TweenService")
-	local function alive()
+	local alive = function()
 		local r, h = getAliveParts(player)
 		return r ~= nil and h.Health > 0
 	end
-	local function shockwave()
-		local ring = Instance.new("Part")
-		ring.Shape = Enum.PartType.Cylinder
-		ring.Size = Vector3.new(0.5, 8, 8)
-		ring.CFrame = CFrame.new(boss.Position.X, center.Y + 1.4, boss.Position.Z) * CFrame.Angles(0, 0, math.rad(90))
-		ring.Anchored = true
-		ring.CanCollide = false
-		ring.Color = Color3.fromRGB(255, 90, 60)
-		ring.Material = Enum.Material.Neon
-		ring.Transparency = 0.2
-		ring.Parent = arena
-		TweenService:Create(ring, TweenInfo.new(1.4, Enum.EasingStyle.Quad), { Size = Vector3.new(0.5, 130, 130), Transparency = 1 }):Play()
-		player:SetAttribute("ShakeStrength", 0.6)
+	local running, clock = true, 0
+	local approach = 0
+	local connection
+	connection = RunService.Heartbeat:Connect(function(dt)
+		clock += dt
+		if not running or not body.Parent then connection:Disconnect() return end
+		approach = math.min(1, approach + dt / 8)
+		local target = alive() and select(1, getAliveParts(player)).Position or center
+		local pos = bossPos:Lerp(center + Vector3.new(0, 30, -26), approach) + Vector3.new(0, math.sin(clock * 1.6) * 2.5, 0)
+		local flat = Vector3.new(target.X, pos.Y, target.Z)
+		place(CFrame.lookAt(pos, flat), clock)
+		data.Home = pos
+	end)
+
+	local function beam(from, to, thickness, duration, color)
+		local length = (to - from).Magnitude
+		local part = Instance.new("Part")
+		part.Anchored = true
+		part.CanCollide = false
+		part.CanQuery = false
+		part.Material = Enum.Material.Neon
+		part.Color = color or rgb(255, 80, 60)
+		part.Size = Vector3.new(thickness, thickness, length)
+		part.CFrame = CFrame.lookAt((from + to) / 2, to)
+		part.Parent = arena
+		TweenService:Create(part, TweenInfo.new(duration), { Transparency = 1, Size = Vector3.new(0.1, 0.1, length) }):Play()
+	end
+	local function ring(at, radius, color, duration)
+		local part = Instance.new("Part")
+		part.Shape = Enum.PartType.Cylinder
+		part.Size = Vector3.new(0.4, 2, 2)
+		part.CFrame = CFrame.new(at.X, center.Y + 1.4, at.Z) * CFrame.Angles(0, 0, math.rad(90))
+		part.Anchored = true
+		part.CanCollide = false
+		part.CanQuery = false
+		part.Material = Enum.Material.Neon
+		part.Color = color
+		part.Transparency = 0.2
+		part.Parent = arena
+		TweenService:Create(part, TweenInfo.new(duration), { Size = Vector3.new(0.4, radius * 2, radius * 2), Transparency = 1 }):Play()
+	end
+	local function shake(strength)
+		player:SetAttribute("ShakeStrength", strength)
 		player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	end
 
-	-- 군주가 천천히 다가오며 충격파를 두 번 내보낸다 (약 5.5초)
-	TweenService:Create(boss, TweenInfo.new(5.4, Enum.EasingStyle.Sine), { Position = center + Vector3.new(0, 14, 8) }):Play()
-	task.wait(1.6)
-	if alive() then shockwave() end
-	task.wait(2)
-	if alive() then shockwave() end
-	task.wait(1.9)
-	if alive() then
-		local r, h = getAliveParts(player)
-		Effects.Burst(r.Position, Color3.fromRGB(255, 80, 60), 120)
-		notify(player, "💀 압도적인 힘에 쓰러졌어요...")
-		h.Health = 0
+	-- 공격 4번: 플레이어 발밑에 붉은 경고 원 -> 0.9초 뒤 군주의 광선이 내리꽂힌다 (대시로 피할 수 있다)
+	task.wait(1.0)
+	for strike = 1, 4 do
+		if not alive() then break end
+		local r = select(1, getAliveParts(player))
+		local at = Vector3.new(r.Position.X, center.Y, r.Position.Z)
+		local warn = Instance.new("Part")
+		warn.Shape = Enum.PartType.Cylinder
+		warn.Size = Vector3.new(0.3, 22, 22)
+		warn.CFrame = CFrame.new(at.X, center.Y + 1.3, at.Z) * CFrame.Angles(0, 0, math.rad(90))
+		warn.Anchored = true
+		warn.CanCollide = false
+		warn.CanQuery = false
+		warn.Material = Enum.Material.Neon
+		warn.Color = rgb(255, 40, 40)
+		warn.Transparency = 0.55
+		warn.Parent = arena
+		TweenService:Create(warn, TweenInfo.new(0.9), { Transparency = 0.1 }):Play()
+		task.wait(0.9)
+		warn:Destroy()
+		beam(body.Position + Vector3.new(0, 4, -6), at + Vector3.new(0, 1, 0), 3, 0.35)
+		ring(at, 14, rgb(255, 120, 60), 0.6)
+		Effects.Burst(at + Vector3.new(0, 2, 0), rgb(255, 90, 60), 60)
+		shake(0.6)
+		local r2, h2 = getAliveParts(player)
+		if r2 and h2.Health > 0 and (Vector3.new(r2.Position.X, center.Y, r2.Position.Z) - at).Magnitude <= 12 then
+			local dmg = math.min(h2.MaxHealth * 0.2, h2.Health - 1) -- 죽지는 않는다
+			if dmg > 0 then h2:TakeDamage(dmg) end
+			notify(player, "💥 군주의 공격에 맞았다!")
+		end
+		task.wait(0.7)
 	end
+
+	-- 마지막 일격: 가슴 코어에 힘을 모으고 -> 전방위 충격파 + 거대한 광선
+	if alive() then
+		notify(player, "⚠⚠ 군주가 모든 힘을 모은다...!!")
+		shake(0.9)
+		local charge = Instance.new("Part")
+		charge.Shape = Enum.PartType.Ball
+		charge.Anchored = true
+		charge.CanCollide = false
+		charge.CanQuery = false
+		charge.Material = Enum.Material.Neon
+		charge.Color = rgb(255, 230, 120)
+		charge.Transparency = 0.2
+		charge.Size = Vector3.new(4, 4, 4)
+		charge.Position = body.Position + Vector3.new(0, 4, -10)
+		charge.Parent = arena
+		TweenService:Create(charge, TweenInfo.new(1.4, Enum.EasingStyle.Quad), { Size = Vector3.new(34, 34, 34), Transparency = 0.05 }):Play()
+		task.wait(1.4)
+		local r = alive() and select(1, getAliveParts(player))
+		if r then
+			beam(charge.Position, r.Position, 14, 0.7, rgb(255, 240, 150))
+			ring(r.Position, 90, rgb(255, 90, 60), 0.9)
+			Effects.Burst(r.Position, rgb(255, 80, 60), 140)
+			shake(1)
+			task.wait(0.15)
+			local _, h = getAliveParts(player)
+			if h then
+				notify(player, "💀 압도적인 힘에 쓰러졌어요...")
+				h.Health = 0
+			end
+		end
+		charge:Destroy()
+	end
+
+	running = false
+	monsters[body] = nil
 	task.delay(4, function()
 		player:SetAttribute("InDoomArena", nil)
 		arena:Destroy()
@@ -2328,7 +2585,7 @@ local function updateDoom()
 					state.FiredAt = os.clock()
 					doomWave(player, zoneOfX(root.Position.X))
 				end
-				if state.Fired and os.clock() - state.FiredAt >= 40 and humanoid.Health > 0 then
+				if state.Fired and os.clock() - state.FiredAt >= 50 and humanoid.Health > 0 then
 					notify(player, "💀 압도적인 힘에 쓰러졌어요...")
 					humanoid.Health = 0
 				end

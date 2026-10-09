@@ -620,16 +620,40 @@ function Lobby.Build()
 	-- 필드로 가는 "길"의 느낌: 광장 갈림길의 이정표 + 필드 쪽으로 이어지는 등불 가로수 길 + 멀리서도 보이는 빛기둥 + 문 앞 고리
 	-- 1) 갈림길 이정표 (중앙 교차로 한켠): 동쪽 필드 / 북쪽 던전 / 서쪽 훈련장 화살표 판
 	do
-		local post = makePart({ Name = "CrossPost", Size = Vector3.new(1.2, 12, 1.2), Position = Vector3.new(13, 6, 13), Color = Color3.fromRGB(95, 65, 40), Material = Enum.Material.Wood }, folder)
 		local boards = {
 			{ Text = "▶ 사냥 필드 (동쪽)", Y = 11, Color = Color3.fromRGB(70, 140, 80), Dir = 1 },
-			{ Text = "▲ 던전 게이트 (북쪽)", Y = 8.4, Color = Color3.fromRGB(120, 85, 160), Dir = 0 },
-			{ Text = "◀ 허수아비 훈련장 (서쪽)", Y = 5.8, Color = Color3.fromRGB(170, 120, 60), Dir = -1 },
+			{ Text = "▲ 던전 게이트 (북쪽)", Y = 8, Color = Color3.fromRGB(120, 85, 160), Dir = 0 },
+			{ Text = "◀ 허수아비 훈련장 (서쪽)", Y = 5, Color = Color3.fromRGB(170, 120, 60), Dir = -1 },
 		}
-		for _, board in ipairs(boards) do
-			local plank = makePart({ Name = "CrossBoard", Size = Vector3.new(9, 2.2, 0.5), Position = Vector3.new(13 + board.Dir * 3.2, board.Y, 13), Color = board.Color, Material = Enum.Material.Wood }, folder)
-			makeLabel(plank, board.Text, Color3.fromRGB(255, 250, 225), 0, 240, 36, 70)
+		-- 판 앞뒤 양쪽 면에 글자를 붙인다 (어느 쪽에서 봐도 읽히고, 판에 가려 잘리지 않는다)
+		local function buildSignpost(origin)
+			makePart({ Name = "CrossPost", Size = Vector3.new(1.4, 14, 1.4), Position = origin + Vector3.new(0, 7, 0), Color = Color3.fromRGB(95, 65, 40), Material = Enum.Material.Wood }, folder)
+			for _, board in ipairs(boards) do
+				local plank = makePart({ Name = "CrossBoard", Size = Vector3.new(12, 2.8, 0.6), Position = origin + Vector3.new(board.Dir * 4.4, board.Y + 1, 0), Color = board.Color, Material = Enum.Material.Wood }, folder)
+				for _, face in ipairs({ Enum.NormalId.Front, Enum.NormalId.Back }) do
+					local surface = Instance.new("SurfaceGui")
+					surface.Face = face
+					surface.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+					surface.PixelsPerStud = 50
+					surface.LightInfluence = 0
+					surface.Parent = plank
+					local text = Instance.new("TextLabel")
+					text.Size = UDim2.new(1, 0, 1, 0)
+					text.BackgroundTransparency = 1
+					text.Font = Enum.Font.GothamBlack
+					text.TextScaled = true
+					text.TextColor3 = Color3.fromRGB(255, 252, 230)
+					text.TextStrokeTransparency = 0
+					text.Text = board.Text
+					text.Parent = surface
+				end
+			end
+			-- 멀리서도 보이게 꼭대기 등불
+			local bulb = makePart({ Name = "CrossLamp", Shape = Enum.PartType.Ball, Size = Vector3.new(2, 2, 2), Position = origin + Vector3.new(0, 15.5, 0), Color = Color3.fromRGB(255, 225, 140), Material = Enum.Material.Neon, CanCollide = false }, folder)
+			addLight(bulb, 30, 1.4, Color3.fromRGB(255, 225, 140))
 		end
+		buildSignpost(Vector3.new(13, 0, 13))
+		buildSignpost(Vector3.new(16, 0, 52)) -- 언덕에서 내려오면 바로 보이는 두 번째 이정표
 	end
 
 	-- 2) 필드로 이어지는 길가의 등불 (필드 문에 가까울수록 초록빛이 짙어진다) + 깃발
