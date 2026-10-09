@@ -193,7 +193,7 @@ end
 ------------------------------------------------------------
 local function makeSign(part, text, color, offsetY)
 	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.new(0, 360, 0, 90)
+	gui.Size = UDim2.new(0, 400, 0, 130)
 	gui.StudsOffset = Vector3.new(0, offsetY, 0)
 	gui.MaxDistance = 160
 	gui.Parent = part
@@ -693,7 +693,7 @@ local function buildGateway(zone, x0)
 	local theme = GATE_THEMES[zone]
 	local half = F.Width / 2
 	local open = 56            -- 열린 통로 폭 (로비 쪽 통로 40보다 넓게)
-	local H = theme.Height
+	local H = theme.Height + (zone - 1) * 5 -- 동쪽으로 갈수록 관문이 점점 거대해진다
 	local thick = 8
 	local accent = theme.Accent
 
@@ -834,10 +834,27 @@ local function buildGateway(zone, x0)
 		label.Parent = gui
 	end
 
+	-- 동쪽으로 갈수록 극적으로: 구역마다 더 높고 더 넓고 더 진한 하늘 빛기둥 (멀리서도 "저 너머가 점점 위험하다"가 보인다) + 바닥 경고 줄무늬
+	do
+		local beamHeight = 90 + zone * 55
+		local beamWidth = 7 + zone * 1.6
+		local beacon = part("GateBeacon", Vector3.new(beamWidth, beamHeight, beamWidth), Vector3.new(x0 + 2, beamHeight / 2, 0), accent, Enum.Material.Neon,
+			{ Transparency = math.max(0.72, 0.9 - zone * 0.025), CanCollide = false, CanQuery = false })
+		local glow = Instance.new("PointLight")
+		glow.Range = 60 + zone * 8
+		glow.Brightness = 1.2 + zone * 0.15
+		glow.Color = accent
+		glow.Parent = beacon
+		for stripe = 1, zone do -- 구역 번호만큼 줄무늬: 위험도가 눈에 보인다
+			part("GateWarnStripe", Vector3.new(1.6, 0.25, open + 8), Vector3.new(x0 - 4 - stripe * 4, TOP + 0.2, 0), accent, Enum.Material.Neon,
+				{ Transparency = 0.25 + 0.05 * (stripe % 2), CanCollide = false, CanQuery = false })
+		end
+	end
+
 	-- 간판: 구역 이름 + 컨셉 + 몬스터 레벨
 	local signPart = part("GateSign", Vector3.new(1, 1, 1), Vector3.new(x0 + 2, H + 24, 0), accent, Enum.Material.Neon, { Transparency = 1, CanCollide = false, CanQuery = false })
 	local zoneSet = Config.Sets[Config.Sets.ZoneKeys[zone]]
-	makeSign(signPart, string.format("구역 %d · %s\n%s · 몬스터 Lv.%d\n%s 여기서만 드랍: %s 세트", zone, F.ZoneNames[zone], theme.Tag, F.GetZoneLevel(zone), zoneSet.Icon, zoneSet.Name), Color3.fromRGB(255, 240, 190), 0)
+	makeSign(signPart, string.format("구역 %d · %s\n%s · 몬스터 Lv.%d\n위험도 %s\n%s 여기서만 드랍: %s 세트", zone, F.ZoneNames[zone], theme.Tag, F.GetZoneLevel(zone), string.rep("☠", zone), zoneSet.Icon, zoneSet.Name), Color3.fromRGB(255, 240, 190), 0)
 end
 
 local function buildWorld()
