@@ -2047,7 +2047,7 @@ local function drillLoop(run)
 	run.Phase = "Drill"
 	notifyAll(run, "🎓 연습장! 진짜 던전 전에 조작을 연습해봐요")
 	-- 표적: 가만히 서 있고 쓰러지지 않는다
-	local base = (run.StartPos or run.Origin) + Vector3.new(0, 0, -36)
+	local base = (run.StartPos or run.Origin) + Vector3.new(0, 0, -44)
 	local stats = Config.Monster.GetStats(1)
 	stats.ShotInterval = 9999
 	stats.MaxHealth = 100000
@@ -2093,11 +2093,12 @@ local function drillLoop(run)
 		task.wait(2.0)
 		local root = getAliveParts(member)
 		if root and run.Monsters[part] == data then
-			local origin = part.Position + Vector3.new(0, 4, 0)
 			local aimAt = root.Position
-			local aim = Vector3.new(aimAt.X - origin.X, 0, aimAt.Z - origin.Z)
+			local aim = Vector3.new(aimAt.X - part.Position.X, 0, aimAt.Z - part.Position.Z)
 			local direction = aim.Magnitude > 1 and aim.Unit or Vector3.new(0, 0, 1)
-			local speed = 18
+			local origin = part.Position + direction * (part.Size.X / 2 + 2) -- 몸통 표면(내가 있는 쪽)에서 튀어나온다
+			local speed = 22
+			local startGap = (root.Position - origin).Magnitude
 			fireProjectile(run, origin, direction, speed, 0, 6, Color3.fromRGB(255, 70, 70), "Orb") -- 큰 붉은 구체 (피해 0: 맞아도 아프지 않다)
 			local missile = run.Projectiles[#run.Projectiles]
 			missile.Expire = os.clock() + 90
@@ -2133,7 +2134,8 @@ local function drillLoop(run)
 			local frozen = false
 			wait(20, function()
 				local r = getAliveParts(member)
-				if r and missile.Part.Parent and (r.Position - missile.Part.Position).Magnitude <= 34 then
+				-- 날아오는 모습이 보이도록: 처음 거리의 절반 가까이 날아왔거나 12 이내가 되면 멈춘다
+				if r and missile.Part.Parent and (r.Position - missile.Part.Position).Magnitude <= math.max(12, startGap * 0.45) then
 					frozen = true
 					return true
 				end
