@@ -108,9 +108,10 @@ function LobbyDecor.Build(parent, ctx)
 		e.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5), NumberSequenceKeypoint.new(1, 1) })
 		e.Parent = part
 	end
-	local function label(part, text, color, offsetY, width, height, maxDistance)
+	local function label(part, text, color, offsetY, width, height, maxDistance, onTop)
 		if not part then return end
 		local gui = Instance.new("BillboardGui")
+		gui.AlwaysOnTop = onTop == true -- 구조물에 가려지면 안 되는 표지용
 		gui.Size = UDim2.new(0, width * 0.75, 0, height * 0.75)
 		gui.StudsOffset = Vector3.new(0, offsetY, 0)
 		gui.MaxDistance = maxDistance
@@ -525,7 +526,7 @@ function LobbyDecor.Build(parent, ctx)
 		end
 		box("ArchBeam", Vector3.new(28, 2, 3.4), g(0, az, 13.4), rgb(112, 104, 122), M.Granite)
 		local sign = box("ArchSign", Vector3.new(10, 2.6, 0.5), g(0, az, 10.4), rgb(70, 52, 44), M.Wood)
-		label(sign, "⚔ 던전 게이트 구역", rgb(255, 220, 150), 3, 300, 60, 60)
+		label(sign, "⚔ 던전 게이트 구역", rgb(255, 220, 150), 9, 300, 60, 80, true) -- 들보 위로 올리고 항상 위에 그린다
 		-- 안내 게시판 (벨 옆)
 		for _, ox in ipairs({ -1.6, 1.6 }) do
 			box("NoticePost", Vector3.new(0.4, 5, 0.4), g(-20 + ox, -84, 2.5), WOOD_DARK, M.Wood)

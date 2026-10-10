@@ -126,14 +126,14 @@ end
 -- 불러오기 / 저장
 ------------------------------------------------------------
 local function syncSkillAttributes(player, state)
-	for _, key in ipairs(Config.Skills.Order) do
+	for _, key in ipairs(Config.Skills.UpgradeOrder) do
 		player:SetAttribute("SkillLv_" .. key, state.Skills[key])
 	end
 end
 
 function Meta.Load(player, saved)
 	local state = { Skills = {}, Pet = { Unlocked = false, Level = 1, Look = "Orb", Color = 1 }, Tower = 0, Prestige = 0, Rift = { Best = 0, Day = 0, Used = 0, Depth = 1, DepthDone = 0, Bests = {}, Hints = {}, LvStats = {} } }
-	for _, key in ipairs(Config.Skills.Order) do
+	for _, key in ipairs(Config.Skills.UpgradeOrder) do
 		local level = typeof(saved) == "table" and typeof(saved.Skills) == "table" and tonumber(saved.Skills[key]) or 1
 		state.Skills[key] = math.clamp(math.floor(level), 1, Config.SkillUpgrade.MaxLevel)
 	end

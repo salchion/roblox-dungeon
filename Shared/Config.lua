@@ -38,6 +38,9 @@ Config.StatAttributes = {   -- Upgrade 리모트가 받는 이름 -> 플레이�
 -- NEAR MISS(대시로 아슬아슬하게 피하기): 연속으로 성공할수록 공격력이 누적해서 올라간다 (마지막 성공 후 Duration 초가 지나면 사라진다)
 Config.WeakExposeSeconds = 6.5 -- 보스 약점을 맞혔을 때 약점이 노출되어 피해 x3 가 유지되는 시간(초)
 Config.NearMiss = { DamagePerStack = 0.05, MaxStacks = 10, Duration = 8 }
+function Config.GetNearMissDuration(player) -- 기운 집중 스킬 레벨 반영
+	return Config.NearMiss.Duration + Config.SkillUpgrade.FocusDuration * math.max(0, (player:GetAttribute("SkillLv_Focus") or 1) - 1)
+end
 
 Config.SkillUpgrade = {
 	MaxLevel = 10,
@@ -49,6 +52,7 @@ Config.SkillUpgrade = {
 	BlastMult = 0.18,           -- 충격파 피해 +18% (기본 대비)
 	BlastRadius = 0.8,          -- 충격파 범위 +0.8
 	HealRatio = 0.01,           -- 치료량 +1%p (최대 레벨 17%)
+	FocusDuration = 0.8,        -- 기운 집중: 레벨당 NEAR MISS 유지 시간 +0.8초 (10레벨 +7.2초)
 	UltTargets = 2 / 3,         -- 데드아이 대상 수: 레벨당 +0.67마리 (1레벨 6마리 -> 10레벨 12마리)
 	UltMult = 0.15,             -- 궁극기 피해 +15%
 }
@@ -205,6 +209,10 @@ Config.Skills = {
 		ShotsPerTarget = 8, ShotGap = 0.03,
 		Desc = "궁극기: 게이지가 가득 차면 사용! 주변 적을 하나씩 딱 락인한 뒤 공속 한계를 뚫고 전부에게 화다다다다 난사한다 (가까운 6마리부터, 스킬 레벨이 오르면 최대 12마리까지 / 공격력 x8)" },
 	ChargePerShot = 4,
+	-- 패시브 스킬 (스킬 강화 창에서 골드로 레벨업, 스킬 바에는 안 나온다)
+	Focus = { Name = "기운 집중", Icon = "⚡", Key = "패시브", Cooldown = 0, Passive = true,
+		Desc = "NEAR MISS 로 쌓은 공격력 보너스가 유지되는 시간이 늘어나요" },
+	UpgradeOrder = { "Heal", "Ult", "Focus" }, -- 스킬 강화 창 / 저장에 쓰는 목록
 }
 
 ------------------------------------------------------------

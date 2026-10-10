@@ -1131,14 +1131,15 @@ local dashSeenAt = setmetatable({}, { __mode = "k" })
 function Dungeon.AwardNearMiss(run, player, root)
 	local now = os.clock()
 	if now - (nearMissAt[player] or 0) < 0.7 then return end
-	local streak = (now - (nearMissAt[player] or 0) < Config.NearMiss.Duration) and ((player:GetAttribute("NearMissStreak") or 0) + 1) or 1
+	local streak = (now - (nearMissAt[player] or 0) < Config.GetNearMissDuration(player)) and ((player:GetAttribute("NearMissStreak") or 0) + 1) or 1
 	nearMissAt[player] = now
 	player:SetAttribute("NearMissStreak", streak)
 	player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 10 + math.min(streak, 4) * 3))
-	player:SetAttribute("NearMissUntil", now + Config.NearMiss.Duration)
+	player:SetAttribute("NearMissUntil", now + Config.GetNearMissDuration(player))
 	player:SetAttribute("NearMissStacks", math.min(streak, Config.NearMiss.MaxStacks)) -- 클라이언트가 몸 / 총에 기운이 모이는 연출을 그린다
-	player:SetAttribute("NearMissEnd", workspace:GetServerTimeNow() + Config.NearMiss.Duration)
-	task.delay(Config.NearMiss.Duration + 0.1, function()
+	player:SetAttribute("NearMissEnd", workspace:GetServerTimeNow() + Config.GetNearMissDuration(player))
+	player:SetAttribute("NearMissLen", Config.GetNearMissDuration(player))
+	task.delay(Config.GetNearMissDuration(player) + 0.1, function()
 		if player.Parent and (player:GetAttribute("NearMissEnd") or 0) <= workspace:GetServerTimeNow() then
 			player:SetAttribute("NearMissStacks", 0)
 		end

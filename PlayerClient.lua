@@ -3147,7 +3147,7 @@ local metaState = nil
 local function buildSkillTab()
 	sectionTitle("⚔ 스킬 강화 — 골드로 레벨업. 레벨이 오를수록 강해지고 쿨타임이 줄어요. (필드/던전에서 C 치료 · V 궁극기)")
 	local U = Config.SkillUpgrade
-	for _, key in ipairs(Config.Skills.Order) do
+	for _, key in ipairs(Config.Skills.UpgradeOrder) do
 		local cfg = Config.Skills[key]
 		local level = metaState and metaState.Skills[key] or 1
 		local lv = level - 1
@@ -3156,14 +3156,16 @@ local function buildSkillTab()
 			detail = string.format("지속 %.1f초", cfg.Duration + U.BarrierDuration * lv)
 		elseif key == "Blast" then
 			detail = string.format("범위 %.1f · 공격력 x%.2f", cfg.Radius + U.BlastRadius * lv, cfg.Mult * (1 + U.BlastMult * lv))
+		elseif key == "Focus" then
+			detail = string.format("NEAR MISS 유지 %.1f초", Config.NearMiss.Duration + U.FocusDuration * lv)
 		elseif key == "Heal" then
 			detail = string.format("체력 %d%% 회복", math.floor((cfg.Ratio + U.HealRatio * lv) * 100 + 0.5))
 		else
 			detail = string.format("공격력 x%.2f · 대상 %d마리 (게이지 %d)", cfg.Mult * (1 + U.UltMult * lv), cfg.MaxTargets + math.floor(U.UltTargets * lv + 0.001), cfg.Cost)
 		end
 		local row = newRow(74)
-		rowText(row, string.format("<font size='17'><b>[%s] %s %s</b></font>  <font color='#ffd966'>Lv.%d / %d</font>\n<font color='#bbbbcc'>%s</font>\n<font color='#9ad7ff'>%s · 쿨타임 %.1f초</font>",
-			cfg.Key, cfg.Icon, cfg.Name, level, U.MaxLevel, cfg.Desc, detail, cfg.Cooldown * (1 - U.CooldownPerLevel * lv)), 14, 190)
+		rowText(row, string.format("<font size='17'><b>[%s] %s %s</b></font>  <font color='#ffd966'>Lv.%d / %d</font>\n<font color='#bbbbcc'>%s</font>\n<font color='#9ad7ff'>%s%s</font>",
+			cfg.Key, cfg.Icon, cfg.Name, level, U.MaxLevel, cfg.Desc, detail, cfg.Passive and "" or string.format(" · 쿨타임 %.1f초", cfg.Cooldown * (1 - U.CooldownPerLevel * lv))), 14, 190)
 		local maxed = level >= U.MaxLevel
 		makeButton({
 			Size = UDim2.new(0, 150, 0, 34), Position = UDim2.new(1, -162, 0.5, -17),
