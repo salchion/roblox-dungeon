@@ -220,8 +220,8 @@ local function decorateCave(run, ctx)
 	-- 항아리
 	for _ = 1, 8 do
 		local base = ctx.Polar(ctx.RimAngle(true), RADIUS - rng:NextNumber(3, 8), 1.4)
-		ctx.Part("Pot", Vector3.new(2.6, 2.8, 2.6), CFrame.new(base), Color3.fromRGB(140, 96, 64), Mat.Clay, { Shape = Shape.Ball })
-		ctx.Part("PotNeck", Vector3.new(1.2, 0.9, 1.2), CFrame.new(base + Vector3.new(0, 1.5, 0)), Color3.fromRGB(120, 80, 54), Mat.Clay)
+		ctx.Part("Pot", Vector3.new(2.6, 2.8, 2.6), CFrame.new(base), Color3.fromRGB(140, 96, 64), Mat.Mud, { Shape = Shape.Ball })
+		ctx.Part("PotNeck", Vector3.new(1.2, 0.9, 1.2), CFrame.new(base + Vector3.new(0, 1.5, 0)), Color3.fromRGB(120, 80, 54), Mat.Mud)
 	end
 	-- 발광 버섯 (작게, 두 무더기만 약한 불빛)
 	for i = 1, 10 do

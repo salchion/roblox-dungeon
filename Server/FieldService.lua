@@ -2217,6 +2217,38 @@ local function stepMonsters(dt)
 				data.Home = part.Position
 			end
 		end
+		-- 벽 / 바위 뒤에 숨어서 총알도 조준도 닿지 않는 몬스터 구출: 플레이어와 시야가 20초 넘게 막혀 있으면 열린 자리(시야가 트인 곳)로 옮긴다
+		-- (전투 기록에서 처치까지 100~600초씩 걸리던 몬스터들 = 벽 뒤에 박혀 있던 것)
+		if occupiedZones[data.Zone] and not data.BossLike and not data.Falling and not data.Goblin and data.Kind ~= "Event" and part.Parent and now >= (data.NextHiddenCheck or 0) then
+			data.NextHiddenCheck = now + 1
+			local root, dist = nearestFieldPlayer(part.Position)
+			if root and dist < 260 then
+				if segmentClear(root.Position, part.Position) then
+					data.HiddenFor = 0
+				else
+					data.HiddenFor = (data.HiddenFor or 0) + 1
+				end
+				if data.HiddenFor >= 20 or (data.FirstHit and now - data.FirstHit > 60) then -- (시야가 막혔거나 / 맞은 지 60초가 넘도록 못 잡은 몬스터)
+					data.HiddenFor = 0
+					data.FirstHit = nil
+					local r = data.Stats.Size / 2
+					local zx0, zx1 = zoneBounds(data.Zone)
+					for _ = 1, 24 do
+						local x = math.clamp(root.Position.X + math.random(30, 140), zx0 + F.CampSafe + r + 10, zx1 - r - 10)
+						local z = math.random(-F.Width / 2 + r + 8, F.Width / 2 - r - 8)
+						if walkableAt(x, z, r) and segmentClear(root.Position, Vector3.new(x, root.Position.Y, z)) then
+							part.CFrame = CFrame.new(Vector3.new(x, floorAt(x) + r, z)) * (part.CFrame - part.CFrame.Position)
+							data.Home = part.Position
+							data.Aggro = false
+							Effects.Burst(part.Position, part.Color, 12)
+							break
+						end
+					end
+				end
+			else
+				data.HiddenFor = 0
+			end
+		end
 		if not occupiedZones[data.Zone] and not data.Aggro and not data.Goblin and not data.Falling and not data.Beam and not data.Static
 			and data.Health >= data.MaxHealth and data.Home and (part.Position - data.Home).Magnitude < 2.5 then
 			continue -- 이 구역에는 아무도 없고 몬스터는 제자리에서 멀쩡하다: 할 일이 없다
