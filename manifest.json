@@ -351,6 +351,13 @@
       "overwrite": true
     },
     {
+      "path": "WelcomeClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "WelcomeClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "RestPoseClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "RestPoseClient",
