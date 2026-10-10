@@ -426,6 +426,13 @@
       "name": "MobileLayoutClient",
       "class": "LocalScript",
       "overwrite": true
+    },
+    {
+      "path": "ShopClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "ShopClient",
+      "class": "LocalScript",
+      "overwrite": true
     }
   ]
 }

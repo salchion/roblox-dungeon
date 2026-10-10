@@ -22,7 +22,7 @@ local PILL_Y = 6
 local PANEL_Y = 52      -- 접이식 패널 / 레이더 시작 높이 (버튼 줄 아래)
 
 -- UIScale 을 직접 가진 화면(자기 fit() 이 있다) / 가지고 있지 않은 화면
-local THEIRS = { HUD = true, GoalHUD = true, RiftHUD = true, TutorialHUD = true }
+local THEIRS = { HUD = true, ShopGui = true, GoalHUD = true, RiftHUD = true, TutorialHUD = true }
 local OWN = { HudGui = true, LevelStatGui = true, PetGui = true, HUDFx = true, EvolveFx = true }
 
 local st = { compact = false, s = 1 }
