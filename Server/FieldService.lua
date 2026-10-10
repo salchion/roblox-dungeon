@@ -181,9 +181,9 @@ local ZONE_LAYOUTS = {
 		Stairs = { { At = 540, Rise = 12, Run = 40 }, { At = 620, Rise = -12, Run = 40 } },
 		Baffles = { { Offset = 160, Side = 1, Gap = 85 }, { Offset = 270, Side = -1, Gap = 85 }, { Offset = 380, Side = 1, Gap = 85 }, { Offset = 490, Side = -1, Gap = 85 } },
 	},
-	{ -- 3 황무지: 계단식 고원 (두 번 올라 높은 대지 -> 한 번에 길게 내려옴) + 가운데 바위 기둥
-		Stairs = { { At = 110, Rise = 22, Run = 60 }, { At = 330, Rise = 22, Run = 60 }, { At = 480, Rise = -44, Run = 110 } },
-		Baffles = { { Offset = 250, Type = "Center", Gap = 110 }, { Offset = 420, Type = "Center", Gap = 110 }, { Offset = 640, Type = "Center", Gap = 120 } },
+	{ -- 3 황무지: 평평한 바위 평원 + 가운데 바위 기둥 다섯 개 (돌진 멧돼지가 경사로에서 땅에 파묻히던 문제 때문에 경사로를 없애고, 대신 엄폐물을 늘렸다)
+		Stairs = {},
+		Baffles = { { Offset = 190, Side = 1, Gap = 150 }, { Offset = 300, Type = "Center", Gap = 110 }, { Offset = 420, Side = -1, Gap = 150 }, { Offset = 530, Type = "Center", Gap = 110 }, { Offset = 640, Side = 1, Gap = 150 } },
 	},
 	{ -- 4 사막: 출렁이는 모래언덕 (오르락내리락 6번) + 낮은 벽 두 개
 		Stairs = { { At = 110, Rise = 14, Run = 40 }, { At = 200, Rise = -14, Run = 40 }, { At = 300, Rise = 18, Run = 50 }, { At = 410, Rise = -18, Run = 50 }, { At = 520, Rise = 14, Run = 40 }, { At = 600, Rise = -14, Run = 40 } },
@@ -2134,6 +2134,42 @@ local function refreshOccupied(now)
 	end
 end
 
+-- 몬스터가 벽 / 땅에 끼면(돌진 / 경사로 / 구역 끝에서 생기던 문제) 가까운 빈 자리로 꺼내 준다. 정상일 때는 아무것도 하지 않는다.
+local function unstick(part, data)
+	local size = data.Stats.Size
+	local r = size / 2
+	local zx0, zx1 = zoneBounds(data.Zone)
+	local pos = part.Position
+	local x = math.clamp(pos.X, zx0 + F.CampSafe + r, zx1 - r - 4)
+	local z = math.clamp(pos.Z, -F.Width / 2 + r + 4, F.Width / 2 - r - 4)
+	if not walkableAt(x, z, r * 0.6) then
+		local pad = r * 0.6 + 3
+		for _, rect in ipairs(baffleRects) do
+			if x >= rect.X0 - pad and x <= rect.X1 + pad and z >= rect.Z0 - pad and z <= rect.Z1 + pad then
+				-- 벽 사각형의 네 변 중 가장 가까운 쪽으로 빠져나온다
+				local options = {
+					{ d = x - (rect.X0 - pad), nx = rect.X0 - pad - 1, nz = z },
+					{ d = (rect.X1 + pad) - x, nx = rect.X1 + pad + 1, nz = z },
+					{ d = z - (rect.Z0 - pad), nx = x, nz = rect.Z0 - pad - 1 },
+					{ d = (rect.Z1 + pad) - z, nx = x, nz = rect.Z1 + pad + 1 },
+				}
+				table.sort(options, function(a, b) return a.d < b.d end)
+				for _, option in ipairs(options) do
+					if option.nx > zx0 + F.CampSafe + r and option.nx < zx1 - r - 4 and math.abs(option.nz) < F.Width / 2 - r - 4 and walkableAt(option.nx, option.nz, r * 0.6) then
+						x, z = option.nx, option.nz
+						break
+					end
+				end
+				break
+			end
+		end
+	end
+	local y = floorAt(x) + r
+	if math.abs(pos.X - x) > 0.05 or math.abs(pos.Z - z) > 0.05 or pos.Y < y - r * 0.35 or pos.Y > y + r * 2.5 then
+		part.CFrame = CFrame.new(Vector3.new(x, y, z)) * (part.CFrame - part.CFrame.Position)
+	end
+end
+
 local function stepMonsters(dt)
 	local now = os.clock()
 	refreshOccupied(now)
@@ -2186,6 +2222,7 @@ local function stepMonsters(dt)
 			if not data.BossLike then
 				-- 일반 몬스터 / 엘리트: 종류별 움직임과 공격
 				MonsterTypes.Update(fieldCtx, part, data, dt, now)
+				if part.Parent and monsters[part] == data then unstick(part, data) end
 			else
 				local keepDistance = data.Stats.Size / 2 + 16
 				if distance > keepDistance and now >= (data.BusyUntil or 0) then

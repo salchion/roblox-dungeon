@@ -682,7 +682,7 @@ Config.Field = {
 	RespawnTime = 10,
 	AggroRange = 55,
 	LeashRange = 110,
-	EliteMultiplier = 5,       -- 엘리트 몬스터 체력 배율
+	EliteMultiplier = 3.5,     -- 엘리트 몬스터 체력 배율 (5였는데 3구역부터 너무 오래 걸려 낮춤)
 	EliteTicketChance = 0.2,   -- 엘리트 처치 시 티켓 획득 확률
 	BossRespawn = 120,
 	-- 구역마다 군주가 다시 나타나는 시간(초): 모두가 같이 쓰는 필드라서, 앞 구역은 자주 / 뒤 구역은 드물게 (뒤로 갈수록 귀한 상대)

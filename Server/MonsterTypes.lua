@@ -669,7 +669,7 @@ function M.Update(ctx, part, data, dt, now)
 	-- 돌진 중: 정해둔 방향으로 곧장 달리면서 닿으면 피해 (한 번만)
 	if data.ChargeUntil and now < data.ChargeUntil then
 		local chargeNext = position + data.ChargeDir * 75 * dt
-		if not ctx.Walkable or ctx.Walkable(chargeNext.X, chargeNext.Z) then
+		if not ctx.Walkable or ctx.Walkable(chargeNext.X, chargeNext.Z, stats.Size / 2) then
 			position = chargeNext
 		else
 			data.ChargeUntil = nil -- 벽에 부딪히면 돌진이 끝난다
