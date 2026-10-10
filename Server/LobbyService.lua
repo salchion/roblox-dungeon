@@ -582,7 +582,7 @@ function Lobby.Build()
 		swirl.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.7), NumberSequenceKeypoint.new(1, 0) })
 		swirl.Parent = portal
 
-		makeLabel(portal, string.format("⚔ %s\n[%s] Lv.%d+", dungeonType.Name, difficulty.Name, entry.MinLevel), difficulty.Color, GH / 2 + 17, 260, 64, 45)
+		makeLabel(portal, string.format("⚔ %s\n[%s] Lv.%d+", dungeonType.Name, difficulty.Name, entry.MinLevel), difficulty.Color, GH / 2 + 9, 280, 64, 60, true) -- 문틀 / 지붕에 가려지지 않게 항상 위에 그린다
 
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText = "입장 (Lv." .. entry.MinLevel .. ")"
