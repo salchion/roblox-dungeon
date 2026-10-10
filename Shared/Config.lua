@@ -300,13 +300,13 @@ end
 -- 던전 진행: 웨이브 없이 "버티기" (정해진 시간 동안 몬스터가 계속 몰려오고, 버티면 보스). 심연 도전(점수제)과 비슷하지만 보스와 보상이 있다.
 -- 버텨야 하는 시간: 쫄 구간이 2분을 넘으면 늘어지므로 최대 100초 (고블린 동굴 90초 / 얼음 97초 / 화염 100초)
 function Config.Dungeon.GetSurviveSeconds(waves)
-	return math.min(100, 55 + (waves or 5) * 7)
+	return 60 -- 쫄 구간은 모든 던전에서 60초 (예전 90~100초는 늘어졌다)
 end
 Config.Dungeon.BossHealthBase = 2.0      -- 버티기 던전 보스 체력 배율: 랜덤 강화로 강해진 플레이어가 보스를 너무 빨리 잡지 않게
 Config.Dungeon.BossHealthPerBonus = 0.12 -- 버티는 동안 터진 랜덤 보너스 1번당 보스 체력 +12% (패널티로 강해진 적 체력 배율도 같이 곱해진다)
 Config.Dungeon.MonsterLimit = 40     -- 버티기 중 동시에 살아 있는 몬스터가 이 수(파티면 인원에 비례해 늘어남)를 넘기면 위험, OverrunSeconds 동안 못 줄이면 실패
 Config.Dungeon.OverrunSeconds = 6
-Config.Dungeon.BonusInterval = 10    -- 이 간격(초)마다 랜덤 강화 / 랜덤 패널티가 터진다 (선택 없이 자동 적용)
+Config.Dungeon.BonusInterval = 6     -- 이 간격(초)마다 랜덤 강화 / 랜덤 패널티가 터진다 (선택 없이 자동 적용)
 
 -- 랜덤 강화 (고르지 않고 무작위로 하나 걸린다. Perk = 기존 특성을 Stacks 단계만큼 올림 / Weight = 나올 확률 가중치)
 Config.RunBuffs = {

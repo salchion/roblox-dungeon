@@ -2166,8 +2166,8 @@ local function surviveLoop(run)
 	run.TotalWaves = 0
 	run.Wave = 1
 	local nextSpawn = startedAt
-	local nextBonus = startedAt + 6 -- 첫 보너스는 일찍: 시작하자마자 "뭔가 터진다"
-	run.NextBonusAt, run.BonusSpan = nextBonus, 6
+	local nextBonus = startedAt + 3 -- 첫 보너스는 시작하고 3초 안에: 시작하자마자 "뭔가 터진다"
+	run.NextBonusAt, run.BonusSpan = nextBonus, 3
 	local bonusCount = 0
 	local partyScale = 1 + 0.5 * (run.PartySize - 1)
 	-- 몬스터가 한도를 넘어 쌓이면 졌다: 가만히 버티기만 해서는 클리어할 수 없다 (한도를 넘긴 채 OverrunSeconds 가 지나면 실패)
