@@ -2531,6 +2531,14 @@ local function spawnEvent(zone)
 
 	local x0, x1 = zoneBounds(zone)
 	local eventX = freeX(math.floor(x0 + 200), math.floor(x1 - 80))
+	for _ = 1, 12 do -- 그 구역 군주(보스)와 150 이상 떨어진 곳을 고른다 (군주 근처에서 겹치지 않게)
+		local tooClose = false
+		for otherPart, otherData in pairs(monsters) do
+			if otherData.Kind == "Boss" and otherData.Zone == zone and math.abs(otherPart.Position.X - eventX) < 150 then tooClose = true break end
+		end
+		if not tooClose then break end
+		eventX = freeX(math.floor(x0 + 200), math.floor(x1 - 80))
+	end
 	local position = Vector3.new(eventX, floorAt(eventX) + stats.Size / 2, math.random(-F.Width / 2 + 70, F.Width / 2 - 70))
 
 	local part = Instance.new("Part")
@@ -2596,8 +2604,13 @@ local function runEvents()
 			end
 		end
 
-		if anyone then
-			local zone = math.random(1, math.min(maxZone, F.ZoneCount))
+		-- 거신은 2구역부터 나온다: 1구역은 튜토리얼 군주전이 있는 곳이라 월드 보스가 겹치면 흐름이 꼬인다
+		local inTutorial = false
+		for _, player in ipairs(Players:GetPlayers()) do
+			if player:GetAttribute("TutorialDoom") then inTutorial = true end
+		end
+		if anyone and maxZone >= 2 and not inTutorial then
+			local zone = math.random(2, math.min(maxZone, F.ZoneCount))
 			local part, data = spawnEvent(zone)
 			activeEvent = { Part = part, Data = data }
 			for _, player in ipairs(Players:GetPlayers()) do

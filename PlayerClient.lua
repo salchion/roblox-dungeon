@@ -2206,12 +2206,12 @@ end
 
 -- 마을(로비)로 돌아오면 자동 공격을 끈다 (마을에서는 쏠 일이 없다)
 player:GetAttributeChangedSignal("Zone"):Connect(function()
-	if autoMode and player:GetAttribute("Zone") == "Lobby" then toggleAuto() end
+	if autoMode and player:GetAttribute("Zone") == "Lobby" and not player:GetAttribute("TutorialDoom") then toggleAuto() end -- 첫 군주전(튜토리얼) 중에는 끄지 않는다
 end)
 
 -- 튜토리얼 허수아비 미션이 끝나면 서버가 알려준다 -> 자동 공격이 켜져 있으면 끈다
 player:GetAttributeChangedSignal("AutoOffTick"):Connect(function()
-	if autoMode then
+	if autoMode and player:GetAttribute("Zone") == "Lobby" then -- 허수아비는 마을에서만 친다: 필드(군주전)에서는 절대 끄지 않는다
 		toggleAuto()
 	end
 end)
