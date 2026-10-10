@@ -77,16 +77,65 @@ do
 	}
 	local dusk = nil
 	local fieldIndex = 0
+	-- 시간대 변화: 서버 시계를 그대로 쓰므로 서버 부담이 없고, 모두 같은 시간대를 본다 (한 바퀴 DAY_CYCLE 초)
+	local DAY_CYCLE = 540
+	local NIGHT_AMBIENT, NIGHT_OUTDOOR, NIGHT_FOG = Color3.fromRGB(46, 56, 96), Color3.fromRGB(64, 76, 122), Color3.fromRGB(70, 86, 140)
+	local DUSK_FOG = Color3.fromRGB(255, 170, 120)
+	local function nightAmount()
+		local t = (workspace:GetServerTimeNow() % DAY_CYCLE) / DAY_CYCLE
+		-- 0~0.5 낮, 0.5~0.6 노을, 0.6~0.9 밤, 0.9~1 새벽
+		if t < 0.5 then return 0 end
+		if t < 0.6 then return (t - 0.5) / 0.1 end
+		if t < 0.9 then return 1 end
+		return 1 - (t - 0.9) / 0.1
+	end
+	local lastNight = -1
+	local phaseName = "낮"
 	local function applyField(index)
-		local theme = FIELD_THEMES[index]
+		local theme = FIELD_THEMES[index or fieldIndex]
 		if not theme then return end
-		fieldIndex = index
-		TweenService:Create(Lighting, TweenInfo.new(1.6), {
-			ClockTime = theme.ClockTime, Brightness = theme.Brightness * 0.86, Ambient = theme.Ambient, OutdoorAmbient = theme.OutdoorAmbient, ExposureCompensation = 0,
+		fieldIndex = index or fieldIndex
+		local n = nightAmount()
+		lastNight = n
+		local smooth = n * n * (3 - 2 * n)
+		local warm = math.sin(math.pi * smooth) * 0.35
+		local clock = theme.ClockTime + (21.5 - theme.ClockTime) * smooth * 0.6
+		TweenService:Create(Lighting, TweenInfo.new(1.2), {
+			ClockTime = clock, Brightness = theme.Brightness * 0.86 * (1 - 0.35 * smooth),
+			Ambient = theme.Ambient:Lerp(NIGHT_AMBIENT, smooth * 0.6), OutdoorAmbient = theme.OutdoorAmbient:Lerp(NIGHT_OUTDOOR, smooth * 0.6), ExposureCompensation = 0,
 		}):Play()
 		local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
 		if atmosphere then
-			TweenService:Create(atmosphere, TweenInfo.new(1.6), { Color = theme.Fog, Density = theme.Density }):Play()
+			local fog = theme.Fog:Lerp(NIGHT_FOG, smooth * 0.55):Lerp(DUSK_FOG, warm)
+			TweenService:Create(atmosphere, TweenInfo.new(1.2), { Color = fog, Density = theme.Density }):Play()
+		end
+		local name = n < 0.15 and "낮" or (n > 0.85 and "밤" or "노을")
+		if name ~= phaseName then
+			phaseName = name
+			local gui = player:FindFirstChildOfClass("PlayerGui")
+			if gui and not player:GetAttribute("InDoomArena") then
+				local sg = Instance.new("ScreenGui")
+				sg.Name = "DayPhaseToast"
+				sg.ResetOnSpawn = false
+				sg.Parent = gui
+				local label = Instance.new("TextLabel")
+				label.AnchorPoint = Vector2.new(0.5, 0)
+				label.Position = UDim2.new(0.5, 0, 0.14, 0)
+				label.Size = UDim2.new(0, 260, 0, 30)
+				label.BackgroundTransparency = 1
+				label.Font = Enum.Font.GothamBold
+				label.TextSize = 20
+				label.TextColor3 = Color3.fromRGB(235, 232, 220)
+				label.TextStrokeTransparency = 0.5
+				label.TextTransparency = 1
+				label.Text = name == "낮" and "☀ 아침이 밝았다" or (name == "밤" and "☾ 밤이 되었다 - 시야 주의" or "해가 저물어 간다")
+				label.Parent = sg
+				TweenService:Create(label, TweenInfo.new(0.6), { TextTransparency = 0 }):Play()
+				task.delay(3, function()
+					TweenService:Create(label, TweenInfo.new(0.8), { TextTransparency = 1 }):Play()
+					task.delay(1, function() sg:Destroy() end)
+				end)
+			end
 		end
 	end
 	local function apply()
