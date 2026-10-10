@@ -58,8 +58,17 @@ end
 
 local function removePetModel(player)
 	local character = player.Character
-	local old = character and character:FindFirstChild("PetModel")
-	if old then old:Destroy() end
+	if not character then return end
+	-- 펫 모델이 여러 개 남아 있어도(예전 것이 안 지워진 경우) 전부 지운다. 몸에 남은 따라다니기 고정점도 같이 정리한다.
+	for _, child in ipairs(character:GetChildren()) do
+		if child.Name == "PetModel" then child:Destroy() end
+	end
+	local root = character:FindFirstChild("HumanoidRootPart")
+	if root then
+		for _, child in ipairs(root:GetChildren()) do
+			if child.Name == "PetAnchor" then child:Destroy() end
+		end
+	end
 end
 
 -- 캐릭터 옆을 둥둥 떠서 따라다니는 펫 (AlignPosition 으로 부드럽게 따라옴)
@@ -71,7 +80,11 @@ function Meta.RefreshPetModel(player)
 	if not state or not state.Pet.Unlocked or not root then return end
 	local pet = state.Pet
 	local color = Config.Pet.Colors[pet.Color] or Config.Pet.Colors[1]
-	local model = PetModel.Build(pet.Look, color)
+	local okBuild, model = pcall(PetModel.Build, pet.Look, color)
+	if not okBuild then
+		warn("[펫] 모델을 만들지 못했어요:", pet.Look, model)
+		return
+	end
 	local body = model.PrimaryPart
 	body.CFrame = root.CFrame * CFrame.new(3, 2.5, 3)
 
@@ -100,6 +113,7 @@ function Meta.RefreshPetModel(player)
 	pcall(function()
 		body:SetNetworkOwner(nil)
 	end)
+	print(string.format("[펫] %s 의 따라다니는 펫을 %s(색 %d)로 바꿨어요", player.Name, tostring(pet.Look), pet.Color or 1))
 end
 
 ------------------------------------------------------------

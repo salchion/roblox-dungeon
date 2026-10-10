@@ -1693,20 +1693,32 @@ local function startAugLoop(run)
 						launchMissile(run, member, from, entries[1], augDamage(member) * 0.55)
 					end
 				end
-				-- 수호 파동: 몸에서 퍼져 나가며 쓸어내고 체력을 회복
+				-- 충격파: 몸에서 강하게 터져 나가며 주변 적을 쓸어낸다 (회복은 없다: 순수 공격 효과). 이어서 한 번 더 울려 두 번 때린다
 				local pulse = augLv(run, member, "AugPulse")
 				if root and pulse > 0 and now >= (nextPulse[member] or 0) then
-					nextPulse[member] = now + math.max(3, 7 - pulse)
-					local radius = 16 + 2 * pulse
-					shockRing(run, root.Position - Vector3.new(0, 2.5, 0), radius, Color3.fromRGB(110, 255, 190))
-					Effects.Raw(root.Position, { "V", root.Position - Vector3.new(0, 2.3, 0), radius, Color3.fromRGB(150, 255, 210), 0.7 }) -- 퍼지는 파동 고리
-						Effects.Burst(root.Position, Color3.fromRGB(110, 255, 190), 70)
-					sfxAt(run, root.Position, "Aug_Pulse", nil, 0.5)
-					for _, entry in ipairs(nearestMonsters(run, root.Position, radius, 10)) do
-						hitMonster(run, member, entry, augDamage(member) * (0.8 + 0.4 * pulse))
+					nextPulse[member] = now + math.max(2.5, 6 - pulse)
+					local origin = root.Position
+					local radius = 18 + 3 * pulse
+					local color = Color3.fromRGB(110, 255, 190)
+					shockRing(run, origin - Vector3.new(0, 2.5, 0), radius, color)
+					Effects.Raw(origin, { "V", origin - Vector3.new(0, 2.3, 0), radius, Color3.fromRGB(190, 255, 225), 0.55 })
+					Effects.Burst(origin, color, 90)
+					sfxAt(run, origin, "Aug_Pulse", nil, 0.7)
+					for _, entry in ipairs(nearestMonsters(run, origin, radius, 14)) do
+						hitMonster(run, member, entry, augDamage(member) * (1.4 + 0.6 * pulse))
 					end
-					local _, humanoid = getAliveParts(member)
-					if humanoid then humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * 0.03 * pulse) end
+					task.delay(0.35, function() -- 두 번째 울림 (더 넓게 한 번 더)
+						if run.Destroyed then return end
+						local root2 = getAliveParts(member)
+						local center = root2 and root2.Position or origin
+						local bigger = radius * 1.35
+						shockRing(run, center - Vector3.new(0, 2.5, 0), bigger, color)
+						Effects.Raw(center, { "V", center - Vector3.new(0, 2.3, 0), bigger, Color3.fromRGB(255, 255, 255), 0.5 })
+						Effects.Burst(center, Color3.fromRGB(190, 255, 225), 60)
+						for _, entry in ipairs(nearestMonsters(run, center, bigger, 14)) do
+							hitMonster(run, member, entry, augDamage(member) * (0.7 + 0.3 * pulse))
+						end
+					end)
 				end
 			end
 			task.wait(0.05)

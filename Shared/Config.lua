@@ -337,7 +337,7 @@ Config.AugInfo = {
 	AugFlame = { Icon = "🔥", Name = "화염 지대", Desc = "적을 처치한 자리에 불길이 남아 지나가는 적을 태워요", Color = Color3.fromRGB(255, 130, 40) },
 	AugExecute = { Icon = "💀", Name = "처형", Desc = "체력이 얼마 안 남은 적(보스 제외)은 맞는 즉시 처형돼요", Color = Color3.fromRGB(210, 90, 255) },
 	AugMeteor = { Icon = "🌠", Name = "유성우", Desc = "적이 가장 많이 모인 곳에 주기적으로 유성이 떨어져요", Color = Color3.fromRGB(255, 190, 90) },
-	AugPulse = { Icon = "🔔", Name = "수호 파동", Desc = "주기적으로 몸에서 파동이 퍼져 주변 적을 쓸어내고 체력을 회복해요", Color = Color3.fromRGB(110, 255, 190) },
+	AugPulse = { Icon = "💥", Name = "폭풍 충격파", Desc = "주기적으로 몸에서 강한 충격파가 두 번 터져 주변 적들을 크게 쓸어내요", Color = Color3.fromRGB(110, 255, 190) },
 }
 
 -- 세트 효과 시너지: 두 어그먼트를 모두 가지면 숨은 추가 효과가 켜진다 (획득하는 순간 알림 + 오라 폭발)

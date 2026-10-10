@@ -95,7 +95,7 @@ local CUSTOM_ONLY = {
 	Aug_MeteorHit = { Volume = 1.3, CustomLength = 2.0, CustomPitch = 0.7 }, -- 유성 착탄 (큰 폭발)
 	Aug_Flame     = { Volume = 0.6, CustomLength = 1.2 }, -- 불길이 생길 때
 	Aug_Execute   = { Volume = 0.5, CustomLength = 0.6, CustomPitch = 1.5 }, -- 처형
-	Aug_Pulse     = { Volume = 0.6, CustomLength = 1.0, CustomPitch = 1.5 }, -- 수호 파동
+	Aug_Pulse     = { Volume = 0.6, CustomLength = 1.0, CustomPitch = 1.5 }, -- 폭풍 충격파
 	Buff_Get      = { Volume = 0.7, CustomLength = 1.0, CustomPitch = 1.25 }, -- 일반 랜덤 강화를 얻을 때
 	Penalty_Get   = { Volume = 0.8, CustomLength = 1.4, CustomPitch = 0.55 }, -- 랜덤 패널티가 걸릴 때 (불길한 소리)
 	-- 위기 / 경고

@@ -2210,6 +2210,13 @@ local function stepMonsters(dt)
 	local now = os.clock()
 	refreshOccupied(now)
 	for part, data in pairs(monsters) do
+		if not data.PlacedChecked then -- 태어난 직후 한 번: 벽 / 바위 속에 태어났으면 빈 자리로 꺼낸다 (총알도 타게팅도 안 되는 몬스터 방지)
+			data.PlacedChecked = true
+			if part.Parent and data.Home and not data.BossLike and not data.Falling and not data.Goblin and data.Kind ~= "Event" then
+				unstick(part, data)
+				data.Home = part.Position
+			end
+		end
 		if not occupiedZones[data.Zone] and not data.Aggro and not data.Goblin and not data.Falling and not data.Beam and not data.Static
 			and data.Health >= data.MaxHealth and data.Home and (part.Position - data.Home).Magnitude < 2.5 then
 			continue -- 이 구역에는 아무도 없고 몬스터는 제자리에서 멀쩡하다: 할 일이 없다
@@ -2380,6 +2387,39 @@ local function stepMonsters(dt)
 			elseif data.Health < data.MaxHealth then
 				data.Health = data.MaxHealth
 				data.HealthFill.Size = UDim2.new(1, 0, 1, 0)
+			end
+		end
+	end
+	-- 몬스터끼리 한 점에 겹쳐 쌓이는 것(구역 끝 / 캠프 경계 / 벽 앞에서 몰려 뭉치던 것)을 막는다: 싸우는 중인 몬스터끼리 가까우면 서로 밀어낸다
+	local fighters = {}
+	for part, data in pairs(monsters) do
+		if data.Aggro and not data.BossLike and not data.Static and not data.Falling and part.Parent then
+			table.insert(fighters, { Part = part, Data = data })
+		end
+	end
+	if #fighters > 1 and #fighters <= 60 then
+		for i = 1, #fighters - 1 do
+			local a = fighters[i]
+			for j = i + 1, #fighters do
+				local b = fighters[j]
+				local pa, pb = a.Part.Position, b.Part.Position
+				local dx, dz = pb.X - pa.X, pb.Z - pa.Z
+				local dist = math.sqrt(dx * dx + dz * dz)
+				local minDist = (a.Data.Stats.Size + b.Data.Stats.Size) * 0.35
+				if dist < minDist then
+					local nx, nz = dx, dz
+					if dist < 0.05 then
+						local angle = math.random() * math.pi * 2
+						nx, nz = math.cos(angle), math.sin(angle)
+					else
+						nx, nz = dx / dist, dz / dist
+					end
+					local push = (minDist - dist) * 0.5
+					a.Part.CFrame = CFrame.new(pa.X - nx * push, pa.Y, pa.Z - nz * push) * (a.Part.CFrame - pa)
+					b.Part.CFrame = CFrame.new(pb.X + nx * push, pb.Y, pb.Z + nz * push) * (b.Part.CFrame - pb)
+					unstick(a.Part, a.Data)
+					unstick(b.Part, b.Data)
+				end
 			end
 		end
 	end
