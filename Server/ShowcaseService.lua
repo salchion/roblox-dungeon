@@ -56,9 +56,9 @@ function Showcase.Init(_boardCFrame)
 	local look = Vector3.new(0, 0, 1) -- 광장(남쪽)을 바라본다
 	-- 가운데가 1등(가장 높음), 좌우가 2등(왼쪽) / 3등(오른쪽)
 	local spots = {
-		Vector3.new(0, 46, WALL_FACE_Z + 5),
-		Vector3.new(-38, 38, WALL_FACE_Z + 5),
-		Vector3.new(38, 38, WALL_FACE_Z + 5),
+		Vector3.new(0, 52, WALL_FACE_Z + 5), -- 게이트 위 장식(높이 약 40)과 겹치지 않게 높이 올렸다 (뒷판 아래 끝이 49 / 43)
+		Vector3.new(-42, 46, WALL_FACE_Z + 5),
+		Vector3.new(42, 46, WALL_FACE_Z + 5),
 	}
 	for rank = 1, 3 do
 		local spot = spots[rank]
@@ -68,16 +68,16 @@ function Showcase.Init(_boardCFrame)
 		local backdrop = Instance.new("Part")
 		backdrop.Name = "Backdrop" .. rank
 		backdrop.Anchored = true
-		backdrop.Size = Vector3.new(26, 34, 1)
+		backdrop.Size = Vector3.new(26, 30, 1)
 		backdrop.Position = Vector3.new(spot.X, spot.Y + 12, WALL_FACE_Z + 0.5)
 		backdrop.Color = Color3.fromRGB(26, 24, 40)
 		backdrop.Material = Enum.Material.Slate
 		backdrop.Parent = folder
 		for _, edge in ipairs({
-			{ Vector3.new(26.6, 0.8, 1.4), Vector3.new(0, 17, 0) },
-			{ Vector3.new(26.6, 0.8, 1.4), Vector3.new(0, -17, 0) },
-			{ Vector3.new(0.8, 34, 1.4), Vector3.new(-13, 0, 0) },
-			{ Vector3.new(0.8, 34, 1.4), Vector3.new(13, 0, 0) },
+			{ Vector3.new(26.6, 0.8, 1.4), Vector3.new(0, 15, 0) },
+			{ Vector3.new(26.6, 0.8, 1.4), Vector3.new(0, -15, 0) },
+			{ Vector3.new(0.8, 30, 1.4), Vector3.new(-13, 0, 0) },
+			{ Vector3.new(0.8, 30, 1.4), Vector3.new(13, 0, 0) },
 		}) do
 			local trim = Instance.new("Part")
 			trim.Anchored = true
@@ -88,6 +88,42 @@ function Showcase.Init(_boardCFrame)
 			trim.Material = Enum.Material.Neon
 			trim.Parent = folder
 		end
+
+		-- 장식: 양옆 돌기둥(순위 색 머리) + 위쪽 박공 + 아래로 늘어진 깃발 -> 신전 벽감 느낌
+		for _, side in ipairs({ -1, 1 }) do
+			local pillar = Instance.new("Part")
+			pillar.Anchored = true
+			pillar.CanCollide = false
+			pillar.Size = Vector3.new(2.2, 32, 2.2)
+			pillar.Position = backdrop.Position + Vector3.new(side * 14.6, 0, 1.2)
+			pillar.Color = Color3.fromRGB(78, 74, 92)
+			pillar.Material = Enum.Material.Granite
+			pillar.Parent = folder
+			local cap = Instance.new("Part")
+			cap.Anchored = true
+			cap.CanCollide = false
+			cap.Size = Vector3.new(3.2, 1.2, 3.2)
+			cap.Position = pillar.Position + Vector3.new(0, 16.6, 0)
+			cap.Color = color
+			cap.Material = Enum.Material.Metal
+			cap.Parent = folder
+			local banner = Instance.new("Part")
+			banner.Anchored = true
+			banner.CanCollide = false
+			banner.Size = Vector3.new(3, 10, 0.3)
+			banner.Position = pillar.Position + Vector3.new(side * 0.2, -9, 1.6)
+			banner.Color = color:Lerp(Color3.fromRGB(40, 20, 50), 0.55)
+			banner.Material = Enum.Material.Fabric
+			banner.Parent = folder
+		end
+		local cornice = Instance.new("Part") -- 뒷판 위쪽 돌 처마 (순위 색 줄 포함)
+		cornice.Anchored = true
+		cornice.CanCollide = false
+		cornice.Size = Vector3.new(31, 1.6, 2.4)
+		cornice.Position = backdrop.Position + Vector3.new(0, 16.4, 0.5)
+		cornice.Color = Color3.fromRGB(78, 74, 92)
+		cornice.Material = Enum.Material.Granite
+		cornice.Parent = folder
 
 		-- 아바타가 서는 받침대 (벽에서 튀어나온 돌 선반)
 		local platform = Instance.new("Part")
@@ -118,6 +154,10 @@ function Showcase.Init(_boardCFrame)
 		}
 		slots[rank].Label.Text = MEDAL[rank] .. " 비어 있음"
 	end
+
+	local header = makeLabel(slots[1].Platform, 34, 160) -- 1등 뒷판 위의 큰 머리글
+	header.Text = "🏆 명예의 전당 🏆"
+	header.TextColor3 = Color3.fromRGB(255, 226, 120)
 
 	task.spawn(function()
 		task.wait(8)
