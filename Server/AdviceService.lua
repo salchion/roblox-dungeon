@@ -60,8 +60,8 @@ function Advice.GrowthGuide(player)
 	if not rift or rift.GrowthTip then return end
 	rift.GrowthTip = true
 	local power = player:GetAttribute("Power") or 0
-	local zone = math.min(#Config.Field.BossPower, (player:GetAttribute("ClearedZone") or 0) + 1)
-	local need = Config.Field.BossPower[zone]
+	local zone = math.min(#Config.Field.RecommendPower, (player:GetAttribute("ClearedZone") or 0) + 1)
+	local need = Config.Field.RecommendPower[zone]
 	local keys = (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0)
 	local tickets, gold = player:GetAttribute("Tickets") or 0, player:GetAttribute("Gold") or 0
 	Remotes.Tutorial:FireClient(player, "Growth", {

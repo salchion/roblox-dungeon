@@ -1144,13 +1144,13 @@ local function spawnMonster(zone, kind, at, ambush)
 			Size = 16 + zone * 2,
 			MaxHealth = math.floor(base.MaxHealth * 60 * danger.Health[zone]),
 			Speed = boss.Speed * danger.Speed[zone],
-			ShotDamage = math.max(10, math.floor(base.ShotDamage * 1.5 * danger.Damage[zone])),
+			ShotDamage = math.max(10, math.floor(base.ShotDamage * (zone >= 7 and 1.3 or 1.5) * danger.Damage[zone])), -- (후반 군주는 한 방에 체력이 크게 깎이지 않게 살짝 낮춤)
 			ShotInterval = math.max(0.9, boss.ShotInterval - zone * 0.05),
 			ShotSpeed = boss.ShotSpeed,
 			Gold = math.floor(boss.Gold * danger.Reward[zone]),
 		}
 		xpLevel = bossLevel
-		text, color, barWidth = string.format("👑 %s의 군주 (구역 %d) · 권장 ⚡%d", F.ZoneNames[zone], zone, F.BossPower[zone] or 0), Color3.fromRGB(255, 120, 120), 360
+		text, color, barWidth = string.format("👑 %s의 군주 (구역 %d) · 권장 ⚡%d", F.ZoneNames[zone], zone, F.RecommendPower[zone] or 0), Color3.fromRGB(255, 120, 120), 360
 	else
 		-- 구역마다 나오는 몬스터 종류가 다르다 (Config.Field.ZonePools)
 		if at then
@@ -2996,7 +2996,7 @@ local function updateBossFight()
 				Remotes.Tutorial:FireClient(player, "Prompt", { Key = "⚔", Title = "거신!", Text = "같이 싸운 사람 모두에게 전리품이 나와요. 멀리서 탄을 피하며 계속 쏘세요!", Duration = 7 })
 			elseif fighting and bossKind == "Boss" and bossZone and not player:GetAttribute("TutorialActive") then
 				-- 지역 군주를 만나면: 전투력이 모자라면 무기 강화를 권하고(골드 사용처), 처음이면 약점 구슬 사용법을 알려준다
-				local recommended = F.BossPower[bossZone] or 0
+				local recommended = F.RecommendPower[bossZone] or 0
 				local power = player:GetAttribute("Power") or 0
 				if power < recommended * 0.85 and os.clock() - (powerWarnedAt[player] or -999) > 90 then
 					powerWarnedAt[player] = os.clock()
