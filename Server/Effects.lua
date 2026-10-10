@@ -357,6 +357,210 @@ function Effects.DecorateBoss(part, size, glow)
 	halo.Parent = part
 end
 
+-- 구역 보스마다 다른 모습 (몸통 공은 같고, 장식 / 색 / 재질 / 입자가 구역 특성에 맞게 달라진다)
+-- 앞쪽은 -Z, 위쪽은 +Y. 6구역(화산)은 위의 악마형에 용암 균열을 더한다.
+local function zoneBossPiece(part)
+	return function(shape, sx, sy, sz, x, y, z, color, material, rx, ry, rz, transparency)
+		local p = Instance.new("Part")
+		p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.Massless = false, false, false, false, true
+		p.Shape = shape
+		p.Size = Vector3.new(math.max(0.1, sx), math.max(0.1, sy), math.max(0.1, sz))
+		p.Color = color
+		p.Material = material
+		p.Transparency = transparency or 0
+		p.CFrame = part.CFrame * CFrame.new(x, y, z) * CFrame.Angles(math.rad(rx or 0), math.rad(ry or 0), math.rad(rz or 0))
+		local weld = Instance.new("WeldConstraint")
+		weld.Part0 = part
+		weld.Part1 = p
+		weld.Parent = p
+		p.Parent = part
+		return p
+	end
+end
+
+local function zoneBossEmitter(parent, color, rate, size, speed, life, accel)
+	local e = Instance.new("ParticleEmitter")
+	e.Rate = rate
+	e.Lifetime = NumberRange.new(life * 0.6, life)
+	e.Speed = NumberRange.new(speed * 0.5, speed)
+	e.SpreadAngle = Vector2.new(180, 180)
+	e.LightEmission = 0.6
+	e.Acceleration = accel or Vector3.new(0, 0, 0)
+	e.Color = ColorSequence.new(color)
+	e.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, size), NumberSequenceKeypoint.new(1, 0) })
+	e.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 1) })
+	e.Parent = parent
+	return e
+end
+
+local ZONE_BOSS = {}
+
+ZONE_BOSS[1] = function(part, S, piece, Ball, Block) -- 초원: 꽃관을 쓴 덩굴 거인
+	part.Material, part.Color = Enum.Material.Grass, Color3.fromRGB(104, 150, 78)
+	local Wood, Grass = Enum.Material.Wood, Enum.Material.Grass
+	for i = 1, 8 do
+		local a = i / 8 * math.pi * 2
+		piece(Ball, S * 0.22, S * 0.1, S * 0.22, math.cos(a) * S * 0.28, S * 0.5, math.sin(a) * S * 0.28, Color3.fromRGB(245, 160, 190), Enum.Material.SmoothPlastic)
+	end
+	piece(Ball, S * 0.18, S * 0.12, S * 0.18, 0, S * 0.53, 0, Color3.fromRGB(255, 220, 90), Enum.Material.SmoothPlastic)
+	for _, side in ipairs({ -1, 1 }) do
+		piece(Ball, S * 0.16, S * 0.16, S * 0.16, side * S * 0.2, S * 0.14, -S * 0.46, Color3.fromRGB(255, 245, 190), Enum.Material.Neon)
+		piece(Block, S * 0.14, S * 0.14, S * 0.6, side * S * 0.6, -S * 0.02, -S * 0.12, Color3.fromRGB(88, 128, 62), Grass, 0, side * 25, 0)
+		piece(Ball, S * 0.3, S * 0.3, S * 0.3, side * S * 0.78, -S * 0.1, -S * 0.42, Color3.fromRGB(110, 78, 50), Wood)
+		piece(Block, S * 0.45, S * 0.04, S * 0.26, side * S * 0.32, S * 0.36, S * 0.34, Color3.fromRGB(80, 170, 90), Grass, 20, side * 25, side * 12)
+	end
+	zoneBossEmitter(part, Color3.fromRGB(255, 240, 150), 6, S * 0.05, 3, 3, Vector3.new(0, 1, 0))
+end
+
+ZONE_BOSS[2] = function(part, S, piece, Ball, Block) -- 숲: 이끼 낀 고목 사슴령
+	part.Material, part.Color = Enum.Material.Wood, Color3.fromRGB(78, 58, 40)
+	local Wood, Slate = Enum.Material.Wood, Enum.Material.Slate
+	local bark, moss = Color3.fromRGB(60, 44, 32), Color3.fromRGB(70, 130, 70)
+	for _, side in ipairs({ -1, 1 }) do
+		piece(Block, S * 0.08, S * 0.8, S * 0.08, side * S * 0.25, S * 0.72, -S * 0.02, bark, Wood, 0, 0, side * -14)
+		for k = 1, 3 do
+			piece(Block, S * 0.06, S * 0.4, S * 0.06, side * S * (0.3 + k * 0.1), S * (0.6 + k * 0.2), -S * 0.02, bark, Wood, 0, 0, side * -48)
+		end
+		piece(Ball, S * 0.13, S * 0.13, S * 0.13, side * S * 0.2, S * 0.16, -S * 0.46, Color3.fromRGB(150, 255, 150), Enum.Material.Neon)
+		piece(Block, S * 0.5, S * 0.3, S * 0.3, side * S * 0.42, S * 0.05, S * 0.12, moss, Enum.Material.Grass, 0, 0, side * 20)
+	end
+	for i = 1, 3 do
+		piece(Block, S * 0.07, S * 0.18, S * 0.07, (i - 2) * S * 0.2, S * 0.5, S * (0.08 + i * 0.1), Color3.fromRGB(235, 225, 200), Slate)
+		piece(Ball, S * 0.24, S * 0.12, S * 0.24, (i - 2) * S * 0.2, S * 0.6, S * (0.08 + i * 0.1), i == 2 and Color3.fromRGB(230, 90, 60) or Color3.fromRGB(240, 170, 80), Enum.Material.SmoothPlastic)
+	end
+	zoneBossEmitter(part, Color3.fromRGB(170, 255, 140), 8, S * 0.04, 4, 3.5, Vector3.new(0, 0.5, 0))
+end
+
+ZONE_BOSS[3] = function(part, S, piece, Ball, Block) -- 황무지: 외눈 바위 거인 (녹슨 쇠 가시)
+	part.Material, part.Color = Enum.Material.Cobblestone, Color3.fromRGB(112, 96, 82)
+	local Metal, Slate = Enum.Material.Metal, Enum.Material.Slate
+	piece(Ball, S * 0.34, S * 0.34, S * 0.2, 0, S * 0.1, -S * 0.46, Color3.fromRGB(255, 190, 80), Enum.Material.Neon)
+	piece(Ball, S * 0.12, S * 0.12, S * 0.1, 0, S * 0.1, -S * 0.56, Color3.fromRGB(25, 15, 10), Enum.Material.SmoothPlastic)
+	local rust = Color3.fromRGB(130, 78, 50)
+	for i = 1, 9 do
+		local a = i / 9 * math.pi * 2
+		piece(Block, S * 0.08, S * 0.36, S * 0.08, math.cos(a) * S * 0.3, S * 0.46, math.sin(a) * S * 0.3 + S * 0.05, rust, Metal, math.sin(a) * 28, 0, -math.cos(a) * 28)
+	end
+	for _, side in ipairs({ -1, 1 }) do
+		piece(Block, S * 0.3, S * 0.5, S * 0.4, side * S * 0.5, S * 0.05, 0, Color3.fromRGB(96, 84, 74), Slate, 0, 0, side * 10)
+		piece(Block, S * 0.5, S * 0.14, S * 0.34, side * S * 0.46, S * 0.34, 0, rust, Metal, 0, 0, side * 22)
+		piece(Block, S * 0.16, S * 0.16, S * 0.6, side * S * 0.66, -S * 0.1, -S * 0.2, Color3.fromRGB(100, 88, 76), Slate, 0, side * 12, 0)
+		piece(Ball, S * 0.4, S * 0.36, S * 0.4, side * S * 0.74, -S * 0.2, -S * 0.52, Color3.fromRGB(122, 106, 90), Enum.Material.Cobblestone)
+	end
+	zoneBossEmitter(part, Color3.fromRGB(190, 160, 120), 10, S * 0.1, 5, 2.5, Vector3.new(0, -1, 0))
+end
+
+ZONE_BOSS[4] = function(part, S, piece, Ball, Block) -- 사막: 거대 전갈 (집게 + 말아 올린 독침)
+	part.Material, part.Color = Enum.Material.Sandstone, Color3.fromRGB(196, 158, 96)
+	local Slate, Sand = Enum.Material.Slate, Enum.Material.Sandstone
+	local shell = Color3.fromRGB(168, 128, 74)
+	local tail = { { 0.46, 0.44 }, { 0.78, 0.74 }, { 1.02, 0.7 }, { 1.12, 0.36 } }
+	for i, t in ipairs(tail) do
+		piece(Ball, S * (0.3 - i * 0.03), S * (0.3 - i * 0.03), S * (0.3 - i * 0.03), 0, S * t[1], S * t[2], shell, Sand)
+	end
+	piece(Block, S * 0.07, S * 0.3, S * 0.07, 0, S * 1.02, S * 0.14, Color3.fromRGB(190, 255, 110), Enum.Material.Neon, -25, 0, 0)
+	for _, side in ipairs({ -1, 1 }) do
+		piece(Ball, S * 0.07, S * 0.07, S * 0.07, side * S * 0.12, S * 0.12, -S * 0.5, Color3.fromRGB(20, 12, 8), Enum.Material.SmoothPlastic)
+		piece(Block, S * 0.14, S * 0.14, S * 0.7, side * S * 0.52, -S * 0.04, -S * 0.5, shell, Sand, 0, side * 22, 0)
+		piece(Block, S * 0.16, S * 0.1, S * 0.5, side * S * 0.72, -S * 0.04, -S * 1.0, shell, Sand, 0, side * 24 - 16 * side, 0)
+		piece(Block, S * 0.16, S * 0.1, S * 0.5, side * S * 0.92, -S * 0.04, -S * 0.98, shell, Sand, 0, side * 24 + 16 * side, 0)
+		for k = 1, 3 do
+			piece(Block, S * 0.06, S * 0.06, S * 0.6, side * S * 0.62, -S * 0.22, S * (-0.1 + k * 0.17), Color3.fromRGB(120, 90, 54), Slate, 0, side * (50 + k * 14), 12)
+		end
+	end
+	zoneBossEmitter(part, Color3.fromRGB(235, 210, 150), 12, S * 0.1, 6, 2.2, Vector3.new(2, -0.5, 0))
+end
+
+ZONE_BOSS[5] = function(part, S, piece, Ball, Block) -- 설원: 얼음 수정 군주
+	part.Material, part.Color, part.Transparency = Enum.Material.Ice, Color3.fromRGB(165, 208, 240), 0.12
+	local Glass = Enum.Material.Glass
+	local crystal = Color3.fromRGB(190, 232, 255)
+	for i = 1, 9 do
+		local a = i / 9 * math.pi * 2
+		local h = 0.5 + 0.18 * ((i % 3) / 2)
+		piece(Block, S * 0.12, S * h, S * 0.12, math.cos(a) * S * 0.34, S * 0.46, math.sin(a) * S * 0.34, crystal, Glass, math.sin(a) * 26, i * 20, -math.cos(a) * 26, 0.2)
+	end
+	piece(Block, S * 0.16, S * 0.9, S * 0.16, 0, S * 0.7, 0, Color3.fromRGB(215, 245, 255), Glass, 0, 0, 0, 0.15)
+	for _, side in ipairs({ -1, 1 }) do
+		piece(Ball, S * 0.15, S * 0.15, S * 0.15, side * S * 0.2, S * 0.14, -S * 0.46, Color3.fromRGB(235, 252, 255), Enum.Material.Neon)
+		piece(Block, S * 0.08, S * 0.34, S * 0.08, side * S * 0.14, -S * 0.38, -S * 0.42, crystal, Glass, 0, 0, 0, 0.15)
+		piece(Block, S * 0.1, S * 0.7, S * 0.1, side * S * 0.62, S * 0.18, S * 0.1, crystal, Glass, 0, 0, side * -35, 0.2)
+		piece(Block, S * 0.08, S * 0.5, S * 0.08, side * S * 0.82, S * 0.46, S * 0.1, crystal, Glass, 0, 0, side * -60, 0.2)
+	end
+	zoneBossEmitter(part, Color3.fromRGB(240, 250, 255), 14, S * 0.06, 3, 4, Vector3.new(0, -2, 0))
+end
+
+ZONE_BOSS[6] = function(part, S, piece, Ball, Block, size, glow) -- 화산: 악마형 + 용암 균열
+	Effects.DecorateBoss(part, size, glow)
+	part.Color = Color3.fromRGB(58, 40, 36)
+	for i = 1, 6 do
+		local a = i / 6 * math.pi * 2
+		piece(Block, S * 0.05, S * 0.34, S * 0.04, math.cos(a) * S * 0.47, math.sin(i * 2) * S * 0.2, math.sin(a) * S * 0.47, Color3.fromRGB(255, 120, 40), Enum.Material.Neon, 0, -math.deg(a) + 90, i * 25)
+	end
+	zoneBossEmitter(part, Color3.fromRGB(255, 130, 50), 16, S * 0.07, 6, 2.5, Vector3.new(0, 5, 0))
+end
+
+ZONE_BOSS[7] = function(part, S, piece, Ball, Block) -- 암흑 지대: 두건 쓴 사신 (낫 + 떠도는 파편)
+	part.Material, part.Color = Enum.Material.Slate, Color3.fromRGB(40, 32, 62)
+	local cloak, violet = Color3.fromRGB(24, 18, 38), Color3.fromRGB(180, 120, 255)
+	piece(Ball, S * 0.95, S * 0.9, S * 0.9, 0, S * 0.1, S * 0.1, cloak, Enum.Material.Fabric)
+	for _, side in ipairs({ -1, 1 }) do
+		piece(Block, S * 0.17, S * 0.05, S * 0.05, side * S * 0.16, S * 0.12, -S * 0.5, violet, Enum.Material.Neon, 0, 0, side * -12)
+	end
+	for i = 1, 6 do
+		piece(Block, S * 0.1, S * (0.4 + (i % 3) * 0.12), S * 0.04, (i - 3.5) * S * 0.16, -S * 0.5, S * 0.42, cloak, Enum.Material.Fabric, 0, 0, (i - 3.5) * 5)
+	end
+	piece(Block, S * 0.06, S * 1.6, S * 0.06, S * 0.8, S * 0.1, -S * 0.2, Color3.fromRGB(190, 180, 170), Enum.Material.Slate)
+	piece(Block, S * 0.6, S * 0.07, S * 0.14, S * 0.58, S * 0.92, -S * 0.2, violet, Enum.Material.Neon, 0, 0, 22)
+	piece(Ball, S * 0.1, S * 0.1, S * 0.1, S * 0.3, S * 0.84, -S * 0.2, violet, Enum.Material.Neon)
+	for i = 1, 6 do
+		local a = i / 6 * math.pi * 2
+		piece(Block, S * 0.1, S * 0.2, S * 0.1, math.cos(a) * S * 0.85, S * (0.1 + (i % 2) * 0.3), math.sin(a) * S * 0.85, violet, Enum.Material.Neon, 45, i * 30, 45, 0.2)
+	end
+	zoneBossEmitter(part, Color3.fromRGB(120, 80, 190), 14, S * 0.14, 3, 3, Vector3.new(0, 1.5, 0))
+end
+
+ZONE_BOSS[8] = function(part, S, piece, Ball, Block) -- 심연: 큰 눈 + 촉수 + 떠다니는 눈알
+	part.Material, part.Color = Enum.Material.Slate, Color3.fromRGB(34, 28, 52)
+	local pink, flesh = Color3.fromRGB(255, 110, 190), Color3.fromRGB(64, 40, 84)
+	piece(Ball, S * 0.46, S * 0.46, S * 0.3, 0, S * 0.06, -S * 0.34, Color3.fromRGB(245, 240, 250), Enum.Material.SmoothPlastic)
+	piece(Ball, S * 0.28, S * 0.28, S * 0.14, 0, S * 0.06, -S * 0.47, pink, Enum.Material.Neon)
+	piece(Ball, S * 0.12, S * 0.12, S * 0.08, 0, S * 0.06, -S * 0.54, Color3.fromRGB(10, 6, 16), Enum.Material.SmoothPlastic)
+	for i = 1, 6 do
+		local a = i / 6 * math.pi * 2
+		for k = 1, 4 do
+			local r = 0.3 + 0.17 * k
+			local sz = S * (0.26 - k * 0.04)
+			piece(Ball, sz, sz, sz, math.cos(a) * S * r, -S * (0.26 + k * 0.1) + math.sin(k * 1.6) * S * 0.05, math.sin(a) * S * r, k == 4 and pink or flesh, k == 4 and Enum.Material.Neon or Enum.Material.Slate)
+		end
+	end
+	for i = 1, 4 do
+		local a = i / 4 * math.pi * 2 + 0.4
+		local x, y, z = math.cos(a) * S * 0.62, S * (0.5 + (i % 2) * 0.16), math.sin(a) * S * 0.62
+		piece(Ball, S * 0.2, S * 0.2, S * 0.2, x, y, z, Color3.fromRGB(240, 235, 250), Enum.Material.SmoothPlastic)
+		piece(Ball, S * 0.1, S * 0.1, S * 0.06, x * 1.1, y, z * 1.1, pink, Enum.Material.Neon)
+	end
+	zoneBossEmitter(part, pink, 10, S * 0.08, 3, 3.5, Vector3.new(0, 2, 0))
+end
+
+function Effects.DecorateZoneBoss(part, size, glow, zone)
+	local build = ZONE_BOSS[zone]
+	if not build then
+		Effects.DecorateBoss(part, size, glow)
+		return
+	end
+	local piece = zoneBossPiece(part)
+	local ok, err = pcall(build, part, size, piece, Enum.PartType.Ball, Enum.PartType.Block, size, glow)
+	if not ok then
+		warn("[Boss look] zone", zone, err)
+	end
+	local halo = Instance.new("PointLight")
+	halo.Range = size * 1.4
+	halo.Brightness = 1.2
+	halo.Color = glow
+	halo.Parent = part
+end
+
 local RAINBOW = ColorSequence.new({
 	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 60, 60)),
 	ColorSequenceKeypoint.new(0.2, Color3.fromRGB(255, 220, 60)),

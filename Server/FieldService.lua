@@ -1229,7 +1229,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		part.Color = F.ZoneColors[zone]:Lerp(Color3.fromRGB(150, 25, 45), 0.55)
 		part.Material = Enum.Material.Neon
 		part.Parent = monstersFolder
-		Effects.DecorateBoss(part, stats.Size, F.ZoneColors[zone]:Lerp(Color3.fromRGB(255, 120, 70), 0.6))
+		Effects.DecorateZoneBoss(part, stats.Size, F.ZoneColors[zone]:Lerp(Color3.fromRGB(255, 120, 70), 0.6), zone)
 		-- 약점 구슬: 보스 주위를 도는 노란 구슬. 직접 조준해서 맞히면 3배 치명타 (자동 조준은 몸통을 노린다)
 		weakOrb = Instance.new("Part")
 		weakOrb.Name = "WeakPoint"
