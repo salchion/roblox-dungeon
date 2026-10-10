@@ -121,24 +121,28 @@ local function isSafe(position)
 end
 
 -- 필드에 있는 살아 있는 플레이어 목록: 몬스터 수백 마리가 매 프레임 "가장 가까운 플레이어"를 물으므로 0.05초마다 한 번만 다시 만든다
-local fieldRoots, fieldRootsAt = {}, 0
+local fieldRoots, fieldRootZones, fieldRootsAt = {}, {}, 0
 local function nearestFieldPlayer(position)
 	local now = os.clock()
 	if now - fieldRootsAt > 0.05 then
 		fieldRootsAt = now
 		table.clear(fieldRoots)
+		table.clear(fieldRootZones)
 		for _, player in ipairs(Players:GetPlayers()) do
 			if player:GetAttribute("Zone") == "Field" then
 				local root = getAliveParts(player)
 				if root and not isSafe(root.Position) then
 					table.insert(fieldRoots, root)
+					table.insert(fieldRootZones, F.ZoneOfX(root.Position.X))
 				end
 			end
 		end
 	end
 	local nearest, nearestDist = nil, math.huge
-	for _, root in ipairs(fieldRoots) do
-		if root.Parent then
+	local myZone = F.ZoneOfX(position.X)
+	for index, root in ipairs(fieldRoots) do
+		-- 다른 구역(특히 닫힌 관문 너머)에 있는 플레이어는 노리지 않는다: 옆 구역에서 쏘거나 가까이 서 있어도 몬스터가 끌려오지 않게
+		if root.Parent and fieldRootZones[index] == myZone then
 			local dist = (root.Position - position).Magnitude
 			if dist < nearestDist then
 				nearest, nearestDist = root, dist
@@ -3169,7 +3173,7 @@ local function doomWave(player, zone)
 		part.Parent = arena
 		return part
 	end
-	disc("DoomFloor", 150, 2, 0, rgb(196, 190, 208), Enum.Material.Marble) -- 밝은 대리석: 붉은 경고 원이 또렷하게 보이게
+	disc("DoomFloor", 150, 2, 0, rgb(34, 36, 52), Enum.Material.Slate) -- 어두운 청회색 바닥: 붉은 경고 원과 내 탄이 또렷하게 보이게 (밝은 바닥은 붉은 조명을 받아 온통 붉게 보였다)
 	disc("DoomRim", 154, 0.4, 1.1, rgb(255, 60, 60), Enum.Material.Neon, 0.4)
 	disc("DoomRune", 90, 0.2, 1.2, rgb(60, 50, 90), Enum.Material.SmoothPlastic, 0.55)
 	disc("DoomRuneInner", 46, 0.2, 1.3, rgb(120, 110, 150), Enum.Material.SmoothPlastic, 0.5)
@@ -3448,7 +3452,7 @@ local function doomWave(player, zone)
 		flood.Color = rgb(255, 30, 30)
 		flood.Transparency = 0.9
 		flood.Parent = arena
-		TweenService:Create(flood, TweenInfo.new(2.4, Enum.EasingStyle.Quad), { Transparency = 0.5 }):Play() -- (바닥이 온통 붉어 내 총알이 안 보이던 문제: 덜 진하게)
+		TweenService:Create(flood, TweenInfo.new(2.4, Enum.EasingStyle.Quad), { Transparency = 0.72 }):Play() -- (바닥이 온통 붉어 내 총알이 안 보이던 문제: 덜 진하게)
 		lordSfx("Lord_Charge")
 		local charge = Instance.new("Part")
 		charge.Shape = Enum.PartType.Ball

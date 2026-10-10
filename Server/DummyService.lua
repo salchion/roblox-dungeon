@@ -225,7 +225,8 @@ function Dummy.Build(start)
 	signLabel.TextScaled = true
 	signLabel.TextColor3 = Color3.fromRGB(255, 225, 120)
 	signLabel.TextStrokeTransparency = 0
-	signLabel.Text = "🎯 허수아비 훈련장"
+	signLabel.Text = ""
+	signLabel.Visible = false -- (로비에 "허수아비 훈련장" 글자는 필요 없어서 뺐다)
 	signLabel.Parent = signGui
 
 	-- 허수아비 하나: 8번 모양(어깨 보호대 / 투구 / 뿔 / 가슴 갑옷 / 빛나는 눈)을 써서 크고 듬직하게. 이름은 Dummy1.

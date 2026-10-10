@@ -564,8 +564,10 @@ Remotes.Gear.OnServerEvent:Connect(function(player, action, arg)
 		if count == 1 then
 			local ok, message, roll = Gear.Roll(player)
 			Remotes.Gear:FireClient(player, "Result", { Ok = ok, Message = message, Roll = roll, Upgrades = ok and Inventory.CountUpgrades(player) or 0 })
+		elseif (player:GetAttribute("Tickets") or 0) < count then
+			Remotes.Gear:FireClient(player, "Result", { Ok = false, Message = string.format("🎫 %d연 뽑기는 티켓 %d장이 필요해요 (지금 %d장)", count, count, player:GetAttribute("Tickets") or 0) })
 		else
-			-- 여러 개 동시에 뽑기 (최대 10연): 티켓이 모자라면 있는 만큼만 뽑는다
+			-- 여러 개 동시에 뽑기 (10연): 티켓이 10장 있을 때만
 			local rolls, failMessage = {}, nil
 			local heroAt = (player:GetAttribute("TutorialRoll") == "Hero" and not player:GetAttribute("TutorialHero") and count >= 10) and math.random(count) or nil
 			for index = 1, count do

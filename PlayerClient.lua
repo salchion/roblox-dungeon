@@ -696,7 +696,7 @@ local rollButton = makeButton({
 	Size = UDim2.new(0, 200, 0, 80), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -14, 0.5, 0),
 	Text = "🎰 10연 뽑기!\n티켓 10장", TextSize = 22, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(165, 70, 245),
 }, gachaBar, function()
-	Remotes.Gear:FireServer("Roll", 10)
+	if (player:GetAttribute("Tickets") or 0) >= 10 then Remotes.Gear:FireServer("Roll", 10) end -- 10장이 없으면 눌러도 아무 일도 안 한다
 end)
 create("UIStroke", { Color = Color3.fromRGB(255, 225, 140), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 3 }, rollButton)
 rollButton.ClipsDescendants = true
@@ -781,15 +781,12 @@ function refreshGear()
 
 	powerLabel.Text = string.format("⚡ 전투력 %d", player:GetAttribute("Power") or 0)
 	ticketLabel.Text = string.format("🎫 티켓 %d장", tickets)
-	rollButton.BackgroundColor3 = tickets > 0 and Color3.fromRGB(165, 70, 245) or Color3.fromRGB(80, 70, 100)
 	rollOne.BackgroundColor3 = tickets > 0 and Color3.fromRGB(120, 80, 210) or Color3.fromRGB(80, 70, 100)
-	if tickets >= 10 then
-		rollButton.Text = "🎰 10연 뽑기!\n티켓 10장"
-	elseif tickets > 1 then
-		rollButton.Text = string.format("🎰 전부 뽑기!\n티켓 %d장", tickets)
-	else
-		rollButton.Text = "🎰 10연 뽑기\n티켓 10장 필요"
-	end
+	local canTen = tickets >= 10
+	rollButton.AutoButtonColor = canTen
+	rollButton.BackgroundColor3 = canTen and Color3.fromRGB(165, 70, 245) or Color3.fromRGB(62, 58, 78)
+	rollButton.TextTransparency = canTen and 0 or 0.45
+	rollButton.Text = canTen and "🎰 10연 뽑기!\n티켓 10장" or string.format("🎰 10연 뽑기\n티켓 10장 필요 (%d/10)", tickets)
 	state.Rebuild = rebuildCharacter
 end
 state.Reopen = function() rebuildCharacter() end
