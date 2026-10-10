@@ -3198,10 +3198,15 @@ for index, tab in ipairs(TABS) do
 	end)
 end
 
+local menuToggleAt = 0
 local function toggleMenu()
+	local now = os.clock()
+	if now - menuToggleAt < 0.15 then return end -- 키 입력이 두 경로(ContextAction / InputBegan)로 겹쳐 들어와도 한 번만 처리한다 (열렸다 바로 닫히는 것 방지)
+	menuToggleAt = now
 	menuPanel.Visible = not menuPanel.Visible
 	if menuPanel.Visible then
-		selectTab(currentTab)
+		local ok, err = pcall(selectTab, currentTab)
+		if not ok then warn("[Menu] " .. tostring(err)) end -- 탭을 그리다 오류가 나도 메뉴 창은 열린 채로 둔다
 	end
 end
 
