@@ -190,6 +190,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/LobbyDecor.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "LobbyDecor",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/DungeonTerrain.lua",
       "parent": "ServerScriptService/Modules",
       "name": "DungeonTerrain",

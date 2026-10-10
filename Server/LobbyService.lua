@@ -330,8 +330,6 @@ function Lobby.Build()
 		makePart({ Name = "HillGrass", Shape = Enum.PartType.Cylinder, Size = Vector3.new(1, HILL_R * 2 + 2, HILL_R * 2 + 2),
 			CFrame = CFrame.new(center + Vector3.new(0, TOP + HILL_H - 0.25, 0)) * CFrame.Angles(0, 0, math.rad(90)),
 			Color = Color3.fromRGB(88, 130, 84), Material = Enum.Material.Grass }, folder)
-		makeLamp(Vector3.new(-11, TOP + HILL_H, HILL_Z + 6), folder)
-		makeLamp(Vector3.new(11, TOP + HILL_H, HILL_Z + 6), folder)
 		-- (경사로는 없앴다: 시작할 때 언덕에서 마을로 뛰어내려 오고, 다시 올라갈 일은 없다)
 	end
 
@@ -395,135 +393,196 @@ function Lobby.Build()
 		end
 	end
 
-	-- 던전 게이트 (북쪽 끝)
-	-- 던전 게이트 8개: 북쪽 성벽 앞에 나란히. 던전마다 입구가 따로 있고, 필요 레벨이 낮은 순서(서쪽 -> 동쪽)로 어려워진다.
+	-- 던전 게이트: 북쪽 성벽 앞에 나란히. 던전마다 입구가 따로 있고, 필요 레벨이 낮은 순서(서쪽 -> 동쪽)로 어려워진다.
+	--   종류(Cave / Ice / Fire)는 문의 모양과 재질로, 난이도(쉬움 / 보통 / 어려움)는 틀의 재질 / 문장 점 개수 / 깃발 줄무늬 / 쇠사슬 / 바닥 룬 고리로 구분한다.
+	--   크기는 모두 같고, 불꽃은 문당 최대 2개, 장식은 전부 고정 부품이다.
 	local gates = {}
-	local stone = Color3.fromRGB(55, 50, 70)
 	local listCount = #Config.Dungeon.List
 	local spacing = 26
-	makePart({ Name = "GatePlaza", Size = Vector3.new(spacing * listCount + 10, 0.3, 40), Position = Vector3.new(0, TOP + 0.15, -HALF + 30), Color = Color3.fromRGB(70, 60, 90), Material = Enum.Material.Basalt, CanCollide = false }, folder)
+	local GH = 28 -- 모든 문의 높이는 같다
+	local gateFolder = Instance.new("Folder")
+	gateFolder.Name = "DungeonGates"
+	gateFolder.Parent = folder
+	makePart({ Name = "GatePlaza", Size = Vector3.new(spacing * listCount + 10, 0.3, 40), Position = Vector3.new(0, TOP + 0.15, -HALF + 30), Color = Color3.fromRGB(78, 68, 86), Material = Enum.Material.Basalt, CanCollide = false }, folder)
+	local DIFF_INDEX = { Easy = 1, Normal = 2, Hard = 3 }
+	local TRIMS = {
+		Easy = { Color = Color3.fromRGB(128, 92, 60), Material = Enum.Material.Wood },
+		Normal = { Color = Color3.fromRGB(140, 138, 132), Material = Enum.Material.Cobblestone },
+		Hard = { Color = Color3.fromRGB(36, 32, 42), Material = Enum.Material.Basalt },
+	}
+	local GOLD = Color3.fromRGB(196, 158, 76)
+	local function rgb(r, g, b) return Color3.fromRGB(r, g, b) end
 	for index, entry in ipairs(Config.Dungeon.List) do
 		local dungeonType = Config.Dungeon.Types[entry.Type]
 		local difficulty = Config.Dungeon.Difficulties[entry.Diff]
 		local x = (index - (listCount + 1) / 2) * spacing
 		local gatePos = Vector3.new(x, TOP, -HALF + 22)
-		-- 오른쪽으로 갈수록 무서워진다: t = 0(맨 왼쪽, 입문) ~ 1(맨 오른쪽, 최고 난이도). 문이 점점 커지고 어두워지고 붉어지며 가시 / 해골 / 불꽃 / 연기가 붙는다.
-		local t = (index - 1) / math.max(1, listCount - 1)
-		local dread = Color3.fromRGB(170, 20, 40)
-		local color = dungeonType.Torch:Lerp(dread, t * 0.75)
-		local gateStone = Color3.fromRGB(105, 98, 115):Lerp(Color3.fromRGB(20, 14, 24), t)
-		local stoneMat = t > 0.55 and Enum.Material.Basalt or Enum.Material.Granite
-		local H = 24 + 20 * t      -- 문 높이 24 -> 44
-		local pillar = 3.5 + 2.5 * t
-		makePart({ Name = "GatePillarL", Size = Vector3.new(pillar, H, pillar), Position = gatePos + Vector3.new(-8.5, H / 2, 0), Color = gateStone, Material = stoneMat }, folder)
-		makePart({ Name = "GatePillarR", Size = Vector3.new(pillar, H, pillar), Position = gatePos + Vector3.new(8.5, H / 2, 0), Color = gateStone, Material = stoneMat }, folder)
-		makePart({ Name = "GateBeam", Size = Vector3.new(21 + 2 * t, 3.5 + 2 * t, 3.5 + 2 * t), Position = gatePos + Vector3.new(0, H + 1.5, 0), Color = gateStone, Material = stoneMat }, folder)
-		makePart({ Name = "GateRune", Size = Vector3.new(6, 2, 3.8 + 2 * t), Position = gatePos + Vector3.new(0, H + 1.5, 0), Color = difficulty.Color:Lerp(dread, t * 0.5), Material = Enum.Material.Neon }, folder)
-		-- 가시: 위쪽으로 뻗은 뿔 (뒤로 갈수록 많고 길다)
-		local spikes = math.floor(t * 7)
-		for spike = 1, spikes do
-			local across = (spike / (spikes + 1) - 0.5) * 22
-			makePart({ Name = "GateSpike", Size = Vector3.new(1.2, 4 + 6 * t, 1.2), Position = gatePos + Vector3.new(across, H + 5 + 3 * t, 0), Color = Color3.fromRGB(30, 22, 30), Material = Enum.Material.Basalt }, folder)
+		local n = DIFF_INDEX[entry.Diff] or 1
+		local trim = TRIMS[entry.Diff] or TRIMS.Easy
+		local dcolor = difficulty.Color:Lerp(rgb(120, 110, 100), 0.3) -- 난이도 색 (눈이 편하게 살짝 죽임)
+		local color = dungeonType.Torch
+		local function gp(name, size, off, partColor, material, rot, extra)
+			local data = {
+				Name = name, Size = size, CFrame = CFrame.new(gatePos + off) * (rot or CFrame.new()), Color = partColor, Material = material,
+				CanCollide = false, CanQuery = false, CanTouch = false, CastShadow = false,
+			}
+			for key, value in pairs(extra or {}) do data[key] = value end
+			return makePart(data, gateFolder)
 		end
-		-- 불꽃: 오른쪽(강한 던전)으로 갈수록 기둥 / 들보 / 바닥에서 불이 더 많이, 더 크게 타오른다
-		local function flame(position, size)
-			local holder = makePart({ Name = "GateFlame", Shape = Enum.PartType.Ball, Size = Vector3.new(1.6, 1.6, 1.6), Position = position, Color = Color3.fromRGB(255, 70, 40), Material = Enum.Material.Neon, Transparency = 0.3, CanCollide = false, CanQuery = false }, folder)
+		local function gball(name, d, off, partColor, material)
+			return gp(name, Vector3.new(d, d, d), off, partColor, material, nil, { Shape = Enum.PartType.Ball })
+		end
+
+		-- 공통 틀 (난이도: 나무 -> 돌 -> 흑요석 + 금 장식)
+		gp("GatePillarL", Vector3.new(2, GH, 2.4), Vector3.new(-8.2, GH / 2, 0), trim.Color, trim.Material)
+		gp("GatePillarR", Vector3.new(2, GH, 2.4), Vector3.new(8.2, GH / 2, 0), trim.Color, trim.Material)
+		gp("GateBeam", Vector3.new(19.4, 2.2, 2.6), Vector3.new(0, GH + 1.1, 0), trim.Color, trim.Material)
+		if n == 1 then
+			for _, side in ipairs({ -1, 1 }) do
+				gp("GateWrap", Vector3.new(2.3, 0.6, 2.7), Vector3.new(side * 8.2, 6, 0), rgb(190, 170, 130), Enum.Material.Fabric)
+			end
+		elseif n == 2 then
+			for _, side in ipairs({ -1, 1 }) do
+				gp("GateBand", Vector3.new(2.3, 0.8, 2.7), Vector3.new(side * 8.2, 5, 0), rgb(70, 70, 78), Enum.Material.Metal)
+				gp("GateBand", Vector3.new(2.3, 0.8, 2.7), Vector3.new(side * 8.2, 20, 0), rgb(70, 70, 78), Enum.Material.Metal)
+			end
+		else
+			for _, side in ipairs({ -1, 1 }) do
+				gp("GateGold", Vector3.new(0.4, GH - 4, 0.3), Vector3.new(side * 8.2, GH / 2, 1.3), GOLD, Enum.Material.Metal)
+				gball("GateGold", 2.6, Vector3.new(side * 8.2, GH + 0.6, 0), GOLD, Enum.Material.Metal)
+			end
+			gp("GateGold", Vector3.new(19.6, 0.4, 2.8), Vector3.new(0, GH + 2, 0), GOLD, Enum.Material.Metal)
+		end
+
+		-- 난이도 문장판: 점 1 / 2 / 3개
+		gp("GatePlate", Vector3.new(6.4, 1.8, 0.5), Vector3.new(0, GH + 1.1, 1.55), rgb(44, 38, 40), Enum.Material.Metal)
+		for k = 0, n - 1 do
+			gball("GatePip", 1, Vector3.new((k - (n - 1) / 2) * 1.6, GH + 1.1, 1.9), dcolor, Enum.Material.SmoothPlastic)
+		end
+		-- 깃발: 난이도 색 + 줄무늬 개수
+		for _, side in ipairs({ -1, 1 }) do
+			gp("GateBracket", Vector3.new(2.6, 0.3, 0.3), Vector3.new(side * 10.4, GH - 2, 0.8), rgb(60, 50, 44), Enum.Material.Wood)
+			gp("GateBanner", Vector3.new(2.2, 7, 0.2), Vector3.new(side * 11.4, GH - 5.6, 0.8), dcolor, Enum.Material.Fabric)
+			for k = 1, n do
+				gp("GateBannerStripe", Vector3.new(2.25, 0.45, 0.22), Vector3.new(side * 11.4, GH - 8 + k * 0.9, 0.85), rgb(40, 34, 36), Enum.Material.Fabric)
+			end
+		end
+		-- 문 옆 쇠사슬 / 밧줄 (밧줄 -> 쇠사슬 -> 금 사슬)
+		local linkColor = n == 1 and rgb(190, 170, 130) or (n == 2 and rgb(76, 76, 84) or GOLD)
+		local linkMaterial = n == 1 and Enum.Material.Fabric or Enum.Material.Metal
+		for _, side in ipairs({ -1, 1 }) do
+			gp("GateChainPost", Vector3.new(0.5, 2.6, 0.5), Vector3.new(side * 14.2, 1.3, 5.5), rgb(86, 62, 44), Enum.Material.Wood)
+			for k = 0, 1 do
+				gp("GateChain", Vector3.new(1.7, 0.3, 0.3), Vector3.new(side * (11.0 + k * 1.9), 2.1 - k * 0.3, 5.5), linkColor, linkMaterial)
+			end
+		end
+		-- 문 앞 바닥 룬 고리 (난이도 색) + 점
+		do
+			local ringPos = gatePos + Vector3.new(0, 0.42, 10)
+			makeDisc(ringPos, 15, 0.1, dcolor, Enum.Material.Slate, gateFolder).CanCollide = false
+			makeDisc(ringPos + Vector3.new(0, 0.02, 0), 12.6, 0.12, color:Lerp(rgb(60, 56, 66), 0.75), Enum.Material.Slate, gateFolder).CanCollide = false
+			for k = 0, n - 1 do
+				local angle = math.pi / 2 + (k - (n - 1) / 2) * 0.5
+				makeDisc(ringPos + Vector3.new(math.cos(angle) * 5.2, 0.1, math.sin(angle) * 5.2), 1.4, 0.12, dcolor, Enum.Material.SmoothPlastic, gateFolder).CanCollide = false
+			end
+		end
+
+		-- 종류별 문 모양
+		local function flameHolder(off, size)
+			local holder = gp("GateFlame", Vector3.new(1, 1, 1), off, rgb(60, 52, 48), Enum.Material.Basalt, nil, { Shape = Enum.PartType.Ball })
 			local fire = Instance.new("Fire")
 			fire.Size = size
-			fire.Heat = 10
-			fire.Color = Color3.fromRGB(255, 100, 40)
-			fire.SecondaryColor = Color3.fromRGB(150, 15, 25)
+			fire.Heat = 4
+			fire.Color = rgb(255, 150, 70)
+			fire.SecondaryColor = rgb(170, 60, 40)
 			fire.Parent = holder
-			return holder
 		end
-		if t >= 0.15 then
+		if entry.Type == "Cave" then
+			local rock, rockDark = rgb(112, 102, 92), rgb(92, 84, 78)
+			gball("GateRock", 8, Vector3.new(-11, 5, -1), rock, Enum.Material.Slate).Size = Vector3.new(8, 10, 7)
+			gball("GateRock", 6, Vector3.new(-10.5, 12.5, -1), rockDark, Enum.Material.Slate).Size = Vector3.new(6, 7, 6)
+			gball("GateRock", 9, Vector3.new(11, 4.5, -1), rockDark, Enum.Material.Slate).Size = Vector3.new(9, 9, 7)
+			gball("GateRock", 5.5, Vector3.new(10.8, 12, -1), rock, Enum.Material.Slate).Size = Vector3.new(5.5, 8, 6)
+			gball("GateRock", 22, Vector3.new(0, GH + 4.2, -2.2), rock, Enum.Material.Slate).Size = Vector3.new(22, 6, 5)
+			gball("GateRock", 3, Vector3.new(-6, 1.2, 8), rockDark, Enum.Material.Slate).Size = Vector3.new(3, 2.4, 3)
+			gball("GateRock", 2.4, Vector3.new(6.5, 1, 8.5), rock, Enum.Material.Slate).Size = Vector3.new(2.4, 2, 2.4)
+			for k = -2, 2 do -- 늘어진 뿌리
+				local h = 3 + (k % 2 == 0 and 1.6 or 0) + math.abs(k) * 0.3
+				gp("GateRoot", Vector3.new(0.25, h, 0.25), Vector3.new(k * 2.6, GH - h / 2, 1.1), rgb(92, 66, 44), Enum.Material.Wood)
+			end
+			-- 고블린 해골 + 엇갈린 곤봉
+			for _, sign in ipairs({ -1, 1 }) do
+				gp("GateClub", Vector3.new(0.7, 6.4, 0.7), Vector3.new(0, GH + 5.3, 1.0), rgb(108, 76, 48), Enum.Material.Wood, CFrame.Angles(0, 0, sign * math.rad(38)))
+			end
+			gball("GateSkull", 3.2, Vector3.new(0, GH + 5.4, 1.6), rgb(226, 218, 196), Enum.Material.SmoothPlastic)
+			gp("GateSkullJaw", Vector3.new(2, 0.9, 1.8), Vector3.new(0, GH + 3.8, 1.7), rgb(220, 210, 188), Enum.Material.SmoothPlastic)
 			for _, side in ipairs({ -1, 1 }) do
-				local f = flame(gatePos + Vector3.new(side * 8.5, H + 2, 0), 6 + 10 * t)
-				addLight(f, 24 + 20 * t, 1.4 + 1.5 * t, Color3.fromRGB(255, 90, 40))
+				gball("GateSkullEye", 0.85, Vector3.new(side * 0.85, GH + 5.6, 3), rgb(36, 30, 28), Enum.Material.SmoothPlastic)
+				gp("GateTorchPole", Vector3.new(0.4, 5, 0.4), Vector3.new(side * 12.2, 2.5, 4), rgb(86, 62, 44), Enum.Material.Wood)
 			end
-		end
-		if t >= 0.35 then -- 기둥 옆면을 따라 불이 번진다
+			flameHolder(Vector3.new(-12.2, 5.4, 4), 3)
+			flameHolder(Vector3.new(12.2, 5.4, 4), 3)
+		elseif entry.Type == "Ice" then
+			local ice, frost = rgb(172, 212, 238), rgb(232, 244, 252)
 			for _, side in ipairs({ -1, 1 }) do
-				for k = 1, math.floor(1 + t * 4) do
-					flame(gatePos + Vector3.new(side * 8.5, H * (k / (2 + t * 4)), 2.6), 5 + 6 * t)
-				end
+				gp("GateCrystal", Vector3.new(2.2, 12, 2.2), Vector3.new(side * 11.6, 6, 0), ice, Enum.Material.Ice, CFrame.Angles(0, math.rad(20), side * math.rad(-9)), { Transparency = 0.15 })
+				gp("GateCrystal", Vector3.new(1.6, 8, 1.6), Vector3.new(side * 13.6, 3.6, -1), frost, Enum.Material.Ice, CFrame.Angles(0, math.rad(-15), side * math.rad(12)), { Transparency = 0.2 })
+				gp("GateArch", Vector3.new(13, 1.6, 2.4), Vector3.new(side * 5.9, GH + 5, 0), ice, Enum.Material.Ice, CFrame.Angles(0, 0, -side * math.rad(22)), { Transparency = 0.1 })
+				gp("GateSnow", Vector3.new(8, 1.6, 3.4), Vector3.new(side * 6, GH + 2.9, 0), frost, Enum.Material.Snow, nil, { Shape = Enum.PartType.Ball })
 			end
-		end
-		if t >= 0.5 then -- 들보 위로 줄지어 타오른다
-			for k = 1, math.floor(2 + t * 5) do
-				flame(gatePos + Vector3.new(((k / (math.floor(2 + t * 5) + 1)) - 0.5) * 20, H + 3.5, 0), 6 + 8 * t)
+			-- 눈꽃 문장
+			for k = 0, 2 do
+				gp("GateSnowflake", Vector3.new(6, 0.45, 0.45), Vector3.new(0, GH + 9.6, 1.2), frost, Enum.Material.Ice, CFrame.Angles(0, 0, k * math.rad(60)))
 			end
-		end
-		if t >= 0.6 then -- 문 아래쪽 가장자리에서도 불길이 솟는다
-			for k = 1, math.floor(2 + t * 3) do
-				flame(gatePos + Vector3.new(((k / (math.floor(2 + t * 3) + 1)) - 0.5) * 13, 1.2, 1.5), 8 + 10 * t)
+			gball("GateSnowflake", 1.3, Vector3.new(0, GH + 9.6, 1.2), ice, Enum.Material.Ice)
+			for k = -3, 3 do -- 고드름
+				local h = 1.6 + (k % 2 == 0 and 1.4 or 0.4) + (3 - math.abs(k)) * 0.35
+				gp("GateIcicle", Vector3.new(0.5, h, 0.5), Vector3.new(k * 2.4, GH - h / 2, 1.2), frost, Enum.Material.Ice, CFrame.Angles(0, math.rad(45), 0), { Transparency = 0.2 })
 			end
-		end
-		-- 문 앞 바닥에 번지는 붉은 기운
-		if t > 0.2 then
-			local glow = makeDisc(gatePos + Vector3.new(0, 0.35, 8), 20 + 6 * t, 0.12, Color3.fromRGB(180, 20, 40), Enum.Material.Neon, folder)
-			glow.CanCollide = false
-			glow.Transparency = 0.75 - 0.35 * t
+		else -- Fire: 현무암 신전 문
+			local basalt, basaltLight = rgb(52, 42, 44), rgb(70, 56, 56)
+			for _, side in ipairs({ -1, 1 }) do
+				gp("GateBlock", Vector3.new(3.6, GH - 6, 3.6), Vector3.new(side * 11.6, (GH - 6) / 2, 0), basalt, Enum.Material.Basalt)
+				gp("GateGlyph", Vector3.new(1.6, 5, 0.2), Vector3.new(side * 11.6, 12, 1.9), rgb(160, 66, 44), Enum.Material.SmoothPlastic)
+				gp("GateBrazierStand", Vector3.new(1, 3, 1), Vector3.new(side * 13.8, 1.5, 4), basaltLight, Enum.Material.Basalt)
+				local bowl = gp("GateBrazier", Vector3.new(0.9, 2.6, 2.6), Vector3.new(side * 13.8, 3.4, 4), rgb(60, 56, 60), Enum.Material.Metal, CFrame.Angles(0, 0, math.rad(90)), { Shape = Enum.PartType.Cylinder })
+				local fire = Instance.new("Fire")
+				fire.Size = 4
+				fire.Heat = 4
+				fire.Color = rgb(255, 150, 70)
+				fire.SecondaryColor = rgb(170, 60, 40)
+				fire.Parent = bowl
+			end
+			gp("GateCornice", Vector3.new(26, 1.6, 4.4), Vector3.new(0, GH + 3.0, 0), basalt, Enum.Material.Basalt)
+			gp("GateCornice", Vector3.new(20, 1.4, 3.6), Vector3.new(0, GH + 4.5, 0), basaltLight, Enum.Material.Basalt)
+			gp("GateCornice", Vector3.new(12, 2, 3), Vector3.new(0, GH + 5.8, 0), basalt, Enum.Material.Basalt)
+			-- 태양 / 불꽃 문장
+			local sunY = GH + 10.6
+			gp("GateSun", Vector3.new(0.5, 4.4, 4.4), Vector3.new(0, sunY, 1.6), GOLD, Enum.Material.Metal, CFrame.Angles(0, math.rad(90), 0), { Shape = Enum.PartType.Cylinder })
+			for k = 0, 7 do
+				local a = k / 8 * math.pi * 2
+				gp("GateSunRay", Vector3.new(0.5, 1.7, 0.3), Vector3.new(math.cos(a) * 3.5, sunY + math.sin(a) * 3.5, 1.6), rgb(190, 90, 52), Enum.Material.Metal, CFrame.Angles(0, 0, a - math.pi / 2))
+			end
 		end
 
 		local portal = makePart({
-			Name = "DungeonGate" .. index, Size = Vector3.new(14, H, 1), Position = gatePos + Vector3.new(0, H / 2, 0),
-			Color = color, Material = Enum.Material.Neon, Transparency = 0.4 - 0.15 * t, CanCollide = false,
+			Name = "DungeonGate" .. index, Size = Vector3.new(14, GH, 1), Position = gatePos + Vector3.new(0, GH / 2, 0),
+			Color = color, Material = Enum.Material.Neon, Transparency = 0.5, CanCollide = false,
 		}, folder)
-		addLight(portal, 36 + 20 * t, 1.8 + 1.2 * t, color)
+		addLight(portal, 28, 1.6, color)
 
-		local swirl = Instance.new("ParticleEmitter")
-		swirl.Rate = 30 + 40 * t
-		swirl.Lifetime = NumberRange.new(1, 2)
-		swirl.Speed = NumberRange.new(1, 4 + 6 * t)
+		local swirl = Instance.new("ParticleEmitter") -- 문 막에서 천천히 피어오르는 기운 (문마다 하나, 낮은 Rate)
+		swirl.Rate = 8
+		swirl.Lifetime = NumberRange.new(1.5, 2.5)
+		swirl.Speed = NumberRange.new(1, 3)
 		swirl.SpreadAngle = Vector2.new(180, 180)
 		swirl.Shape = Enum.ParticleEmitterShape.Box
-		swirl.LightEmission = 1
+		swirl.LightEmission = 0.4
 		swirl.Color = ColorSequence.new(color)
-		swirl.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.8 + t), NumberSequenceKeypoint.new(1, 0) })
+		swirl.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.7), NumberSequenceKeypoint.new(1, 0) })
 		swirl.Parent = portal
-		-- 문(막) 가운데에서 불꽃이 튀어나온다: 강한 문일수록 더 많이, 더 멀리, 더 빠르게
-		local embers = Instance.new("ParticleEmitter")
-		embers.Rate = 6 + 110 * t
-		embers.Lifetime = NumberRange.new(0.7, 1.4)
-		embers.Speed = NumberRange.new(4 + 10 * t, 9 + 20 * t)
-		embers.EmissionDirection = Enum.NormalId.Front
-		embers.SpreadAngle = Vector2.new(35, 55)
-		embers.Acceleration = Vector3.new(0, 6 + 10 * t, 0)
-		embers.Shape = Enum.ParticleEmitterShape.Box
-		embers.LightEmission = 1
-		embers.Color = ColorSequence.new(Color3.fromRGB(255, 200, 90), Color3.fromRGB(255, 70, 30))
-		embers.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5 + 0.9 * t), NumberSequenceKeypoint.new(1, 0) })
-		embers.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 1) })
-		embers.Parent = portal
-		if t >= 0.5 then -- 뒤쪽 문은 막 자체가 일렁이며 불길이 번지는 느낌
-			local blaze = Instance.new("ParticleEmitter")
-			blaze.Rate = 25 * t
-			blaze.Lifetime = NumberRange.new(0.8, 1.6)
-			blaze.Speed = NumberRange.new(1, 4)
-			blaze.EmissionDirection = Enum.NormalId.Top
-			blaze.SpreadAngle = Vector2.new(20, 20)
-			blaze.Shape = Enum.ParticleEmitterShape.Box
-			blaze.LightEmission = 0.8
-			blaze.Color = ColorSequence.new(Color3.fromRGB(255, 120, 40), Color3.fromRGB(120, 10, 20))
-			blaze.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 3 + 4 * t), NumberSequenceKeypoint.new(1, 0) })
-			blaze.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 1) })
-			blaze.Parent = portal
-		end
-		if t >= 0.35 then -- 뒤쪽 문에서는 어두운 연기가 흘러나온다
-			local smoke = Instance.new("ParticleEmitter")
-			smoke.Rate = 12 + 20 * t
-			smoke.Lifetime = NumberRange.new(2, 4)
-			smoke.Speed = NumberRange.new(2, 5)
-			smoke.EmissionDirection = Enum.NormalId.Front
-			smoke.SpreadAngle = Vector2.new(25, 25)
-			smoke.Color = ColorSequence.new(Color3.fromRGB(25, 12, 30))
-			smoke.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 3), NumberSequenceKeypoint.new(1, 9) })
-			smoke.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.4), NumberSequenceKeypoint.new(1, 1) })
-			smoke.Parent = portal
-		end
 
-		makeLabel(portal, string.format("⚔ %s\n[%s] Lv.%d+", dungeonType.Name, difficulty.Name, entry.MinLevel), difficulty.Color, 17, 260, 64, 70)
+		makeLabel(portal, string.format("⚔ %s\n[%s] Lv.%d+", dungeonType.Name, difficulty.Name, entry.MinLevel), difficulty.Color, GH / 2 + 17, 260, 64, 60)
 
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText = "입장 (Lv." .. entry.MinLevel .. ")"
@@ -531,10 +590,10 @@ function Lobby.Build()
 		prompt.HoldDuration = 0.8
 		prompt.MaxActivationDistance = 16
 		prompt.RequiresLineOfSight = false
-		-- 문이 높아서(24~44) 문 한가운데에 달면 땅에서 닿지 않는다: 땅에서 가까운 높이(발 앞)에 붙인다
+		-- 문이 높아서 문 한가운데에 달면 땅에서 닿지 않는다: 땅에서 가까운 높이(발 앞)에 붙인다
 		local promptAnchor = Instance.new("Attachment")
 		promptAnchor.Name = "PromptAnchor"
-		promptAnchor.Position = Vector3.new(0, -H / 2 + 3, 3)
+		promptAnchor.Position = Vector3.new(0, -GH / 2 + 3, 3)
 		promptAnchor.Parent = portal
 		prompt.Parent = promptAnchor
 		table.insert(gates, { Prompt = prompt, Index = index })
@@ -643,9 +702,6 @@ function Lobby.Build()
 
 	-- 작업 광장 바닥 + 마을 중앙 광장에서 이어지는 길 + 가로등
 	makeDisc(workshop + Vector3.new(0, 0.12, 0), 32, 0.2, Color3.fromRGB(196, 186, 168), Enum.Material.Cobblestone, folder).CanCollide = false
-	for _, lampOffset in ipairs({ Vector3.new(-18, 0, -6), Vector3.new(18, 0, -6), Vector3.new(-18, 0, 6), Vector3.new(18, 0, 6) }) do
-		makeLamp(workshop + lampOffset, folder)
-	end
 
 	local anvilPrompt = Instance.new("ProximityPrompt")
 	anvilPrompt.ActionText = "무기 강화"
@@ -673,7 +729,7 @@ function Lobby.Build()
 		makePart({ Name = "FieldTower", Size = Vector3.new(10, 46, 10), Position = tower + Vector3.new(0, 23, 0), Color = gateStone, Material = Enum.Material.Cobblestone }, folder)
 		makePart({ Name = "FieldTowerCap", Size = Vector3.new(13, 3, 13), Position = tower + Vector3.new(0, 47.5, 0), Color = Color3.fromRGB(50, 60, 50), Material = Enum.Material.Slate }, folder)
 		local flame = makePart({ Name = "FieldBrazier", Shape = Enum.PartType.Ball, Size = Vector3.new(5, 5, 5), Position = tower + Vector3.new(0, 52, 0), Color = Color3.fromRGB(120, 255, 170), Material = Enum.Material.Neon, CanCollide = false }, folder)
-		addLight(flame, 60, 3, green)
+		addLight(flame, 36, 2, Color3.fromRGB(255, 190, 120))
 		local torchFire = Instance.new("ParticleEmitter")
 		torchFire.Rate = 40
 		torchFire.Lifetime = NumberRange.new(0.8, 1.4)
@@ -745,7 +801,7 @@ function Lobby.Build()
 	mist.Parent = veil
 
 	-- 광장에서 필드 문까지 이어지는 바닥 화살표(빛나는 ▶ 띠): 어디로 가야 하는지 한눈에
-	for step = 0, 11 do
+	for step = 0, 11, 2 do
 		local x = 52 + step * 6
 		local chevron = makePart({
 			Name = "FieldChevron", Size = Vector3.new(3, 0.2, 7), Position = Vector3.new(x, TOP + 0.4, 0),
@@ -799,7 +855,7 @@ function Lobby.Build()
 
 	-- 3) 문 위로 솟는 빛기둥: 마을 어디서든 "저쪽이 필드"라는 게 보인다
 	local pillar = makePart({ Name = "FieldBeacon", Size = Vector3.new(14, 320, 14), Position = fieldGate + Vector3.new(0, 160, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.88, CanCollide = false, CanQuery = false }, folder)
-	addLight(pillar, 80, 1.2, green)
+	addLight(pillar, 60, 0.8, green)
 
 	-- 4) 문 앞의 큰 빛 고리 (통과하는 느낌)
 	for ring = 1, 3 do
@@ -844,6 +900,12 @@ function Lobby.Build()
 			descendant.LightEmission = math.min(descendant.LightEmission, 0.55)
 		end
 	end
+
+	-- 마을 장식 (상점 / 길 / 화단 / 언덕 전망대 등): 실패해도 로비는 그대로 열린다
+	local okDecor, decorErr = pcall(function()
+		require(script.Parent:WaitForChild("LobbyDecor")).Build(folder, { Top = TOP, Half = HALF, HillZ = HILL_Z, HillH = HILL_H, HillR = HILL_R, GateCount = listCount, GateSpacing = spacing })
+	end)
+	if not okDecor then warn("LobbyDecor 실패: " .. tostring(decorErr)) end
 
 	return {
 		SpawnCFrame = CFrame.new(0, HILL_H + 5, HILL_Z),

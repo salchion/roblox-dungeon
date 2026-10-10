@@ -125,6 +125,15 @@ local function build(def, position)
 	return model, bubble
 end
 
+-- 이름별 고정 서는 자리 (Lift: 가게 바닥 높이 / FaceX, FaceZ: 처음 바라보는 쪽)
+local STANDS = {
+	["톰"] = { X = -41.4, Z = 23, Lift = 0.6, FaceX = 0, FaceZ = 28 },     -- 대장간 카운터 뒤 (모루 옆)
+	["루나"] = { X = 40.8, Z = 33.5, Lift = 0.6, FaceX = 0, FaceZ = 28 },  -- 뽑기 상점 카운터 뒤 (머신 옆)
+	["카이"] = { X = 113, Z = 10.5, FaceX = 90, FaceZ = 0 },               -- 필드 문 안쪽, 길 옆 초소
+	["벨"] = { X = -15.5, Z = -87, FaceX = 0, FaceZ = -40 },               -- 던전 게이트 구역 입구 아치 옆
+	["미라"] = { X = 62.5, Z = 86, FaceX = 40, FaceZ = 78 },               -- 심연 포탈 제단 앞 (광장 쪽을 바라봄)
+}
+
 function Npc.Init(groundY, list)
 	local folder = Instance.new("Folder")
 	folder.Name = "Npcs"
@@ -133,9 +142,15 @@ function Npc.Init(groundY, list)
 		local flat = Vector3.new(def.Position.X, 0, def.Position.Z)
 		local toCenter = flat.Magnitude > 1 and -flat.Unit or Vector3.new(0, 0, 1)
 		local standAt = Vector3.new(def.Position.X, groundY, def.Position.Z) + toCenter * 6
+		local startYaw = 0
+		local stand = STANDS[def.Name]
+		if stand then -- 마을 배치에 맞춘 고정 자리 (가게 카운터 뒤 / 문 옆 / 길 옆), 오는 길 쪽을 바라본다
+			standAt = Vector3.new(stand.X, groundY + (stand.Lift or 0), stand.Z)
+			startYaw = math.atan2(-(stand.FaceX - stand.X), -(stand.FaceZ - stand.Z))
+		end
 		local model, bubble = build(def, standAt)
 		model.Parent = folder
-		table.insert(npcs, { Model = model, Bubble = bubble, Base = model:GetPivot(), Def = def, Phase = math.random() * 6, NextLine = 0, Line = 1, Yaw = 0 })
+		table.insert(npcs, { Model = model, Bubble = bubble, Base = model:GetPivot(), Def = def, Phase = math.random() * 6, NextLine = 0, Line = 1, Yaw = startYaw })
 	end
 	task.spawn(function()
 		while true do
