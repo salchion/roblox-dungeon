@@ -1129,7 +1129,7 @@ Config.Inventory = {
 	RerollEssence = { 5, 12, 30, 80, 200 },      -- 등급별 옵션 재굴림 비용(에센스)
 	AffixCount = { 0, 1, 2, 3, 4 },              -- 등급별 랜덤 옵션 개수
 	AffixRarityScale = { 1, 1.3, 1.7, 2.2, 3.0 },-- 등급별 옵션 수치 배율
-	AutoScrapNames = { [0] = "꺼짐", "일반 이하", "희귀 이하", "영웅 이하" },
+	AutoScrapNames = { [0] = "꺼짐", "일반 이하", "희귀 이하", "영웅 이하", "스마트(추천)" },
 	AffixOrder = { "Health", "Crit", "Speed", "Damage", "Xp", "Luck" },
 	Affixes = {
 		Health = { Name = "최대 체력", Base = 30 },

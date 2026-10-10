@@ -194,6 +194,58 @@ local function isEquipped(state, id)
 	return false
 end
 
+-- 스마트 정리: "같은 부위에 이미 더 좋은 장비가 있는, 세트도 유니크도 아닌 장비"만 자동으로 분해한다.
+--   * 순수 품질 = 점수에서 세트(+30) / 유니크(+80) 가산을 뺀 값 (등급 / 강화 / 옵션)
+--   * 지키는 것: 유니크 / 구역 세트 조각(같은 부위 같은 세트에서 더 좋은 조각이 있을 때만 정리) / 장착 중인 장비 / 그 부위에서 가장 품질 좋은 장비
+--   * 같은 부위에서 품질이 같으면 장착 중인 것, 그다음 먼저 얻은 것(Id 가 작은 것)이 남는다 -> 서로를 없애는 일이 없다
+local SMART = 4
+local function rawQuality(item)
+	return Config.GetItemScore(item) - (item.Set and 30 or 0) - (item.Unique and 80 or 0)
+end
+
+local function beats(state, other, item) -- other 가 item 을 확실히 대신할 수 있는가
+	local a, b = rawQuality(other), rawQuality(item)
+	if a ~= b then return a > b end
+	local otherEquipped, itemEquipped = isEquipped(state, other.Id), isEquipped(state, item.Id)
+	if otherEquipped ~= itemEquipped then return otherEquipped end
+	return other.Id < item.Id
+end
+
+local function isRedundant(state, item)
+	if item.Unique or isEquipped(state, item.Id) then return false end
+	for _, other in pairs(state.Items) do
+		if other ~= item and other.Slot == item.Slot then
+			if item.Set then
+				if other.Set == item.Set and beats(state, other, item) then return true end -- 같은 세트 같은 부위의 더 좋은 조각
+			elseif beats(state, other, item) then
+				return true
+			end
+		end
+	end
+	return false
+end
+
+-- 한 부위(slotKey 가 없으면 전부)에서 대신할 수 있는 장비를 모두 분해. 반환: 개수, 에센스 합, 골드 합
+local function smartPrune(player, state, slotKey)
+	local count, essenceTotal, goldTotal = 0, 0, 0
+	local changed = true
+	while changed do
+		changed = false
+		for id, item in pairs(state.Items) do
+			if (not slotKey or item.Slot == slotKey) and isRedundant(state, item) then
+				state.Items[id] = nil
+				local essence, gold = giveScrap(player, state, item)
+				essenceTotal += essence
+				goldTotal += gold
+				count += 1
+				changed = true
+				break
+			end
+		end
+	end
+	return count, essenceTotal, goldTotal
+end
+
 -- 아이템을 가방에 넣는다. 반환: status ("Equipped" | "Bag" | "Scrapped" | "Full"), item, essence, gold
 --   빈 부위면 자동 장착 / 자동 분해 등급 이하면 분해 / 가방이 가득하면 분해
 function Inventory.Add(player, item)
@@ -213,6 +265,30 @@ function Inventory.Add(player, item)
 		applyEquipAttributes(player, state)
 		Inventory.Push(player)
 		return "Equipped", item
+	end
+
+	if state.AutoScrap == SMART then
+		-- 스마트: 먼저 가방에 넣어 보고(가득 차면 정리부터), 같은 부위에서 대신할 수 있는 장비를 정리한다
+		if bagCount(state) >= Inventory.Capacity(player) then
+			smartPrune(player, state, nil)
+		end
+		if bagCount(state) >= Inventory.Capacity(player) then
+			local essence, gold = giveScrap(player, state, item)
+			Inventory.Push(player)
+			return "Full", item, essence, gold
+		end
+		state.Items[item.Id] = item
+		local mine = isRedundant(state, item)
+		local count, essenceTotal, goldTotal = smartPrune(player, state, item.Slot)
+		Inventory.Push(player)
+		if mine then -- 방금 얻은 장비가 정리 대상이었다 (정리된 것 중 자기 몫만 알려 준다)
+			local essence, gold = scrapValue(item)
+			return "Scrapped", item, essence, gold
+		end
+		if count > 0 then
+			notify(player, string.format("🧹 더 약한 장비 %d개를 자동 정리했어요 (에센스 +%d, %d G)", count, essenceTotal, goldTotal))
+		end
+		return "Bag", item
 	end
 
 	if item.Rarity <= state.AutoScrap and not item.Set and not item.Unique then
@@ -303,6 +379,15 @@ function Inventory.Scrap(player, id)
 	local essence, gold = giveScrap(player, state, item)
 	Inventory.Push(player)
 	return true, string.format("분해! 에센스 +%d, %d G", essence, gold)
+end
+
+function Inventory.SmartClean(player)
+	local state = states[player]
+	if not state then return false, "" end
+	local count, essenceTotal, goldTotal = smartPrune(player, state, nil)
+	Inventory.Push(player)
+	if count == 0 then return true, "정리할 약한 장비가 없어요. (세트 / 유니크 / 부위별 최고 장비는 남겨 둬요)" end
+	return true, string.format("🧹 %d개 정리! 에센스 +%d, %d G", count, essenceTotal, goldTotal)
 end
 
 function Inventory.ScrapBelow(player, rarity)
@@ -398,7 +483,7 @@ end
 function Inventory.SetAutoScrap(player, rarity)
 	local state = states[player]
 	if not state then return end
-	state.AutoScrap = math.clamp(math.floor(rarity), 0, 3)
+	state.AutoScrap = math.clamp(math.floor(rarity), 0, SMART)
 	Inventory.Push(player)
 end
 
@@ -415,7 +500,7 @@ end
 ------------------------------------------------------------
 -- saved: 저장된 Inventory 테이블. legacyGear: 예전 저장 형식({ Armor = { R, L }, ... })이면 아이템으로 바꿔서 이어받는다
 function Inventory.Load(player, saved, legacyGear)
-	local state = { Items = {}, NextId = 0, Equipped = {}, Essence = 0, AutoScrap = 1, Rev = 0, Shards = {} }
+	local state = { Items = {}, NextId = 0, Equipped = {}, Essence = 0, AutoScrap = SMART, Rev = 0, Shards = {} }
 
 	if typeof(saved) == "table" and typeof(saved.Items) == "table" then
 		for _, entry in ipairs(saved.Items) do
@@ -449,7 +534,8 @@ function Inventory.Load(player, saved, legacyGear)
 			end
 		end
 		state.Essence = math.max(0, math.floor(tonumber(saved.Essence) or 0))
-		state.AutoScrap = math.clamp(math.floor(tonumber(saved.AutoScrap) or 1), 0, 3)
+		local savedScrap = math.clamp(math.floor(tonumber(saved.AutoScrap) or 1), 0, SMART)
+		state.AutoScrap = savedScrap == 1 and SMART or savedScrap -- (옛 기본값 "일반 이하" 는 새 기본값 "스마트"로)
 		if typeof(saved.Shards) == "table" then
 			for zone = 1, Config.Field.ZoneCount do
 				state.Shards[zone] = math.max(0, math.floor(tonumber(saved.Shards[zone] or saved.Shards[tostring(zone)]) or 0))
@@ -524,6 +610,8 @@ Remotes.Inventory.OnServerEvent:Connect(function(player, action, arg, arg2)
 		ok, message = Inventory.Reroll(player, arg)
 	elseif action == "Imprint" and typeof(arg) == "number" and typeof(arg2) == "number" then
 		ok, message = Inventory.Imprint(player, arg, arg2)
+	elseif action == "SmartClean" then
+		ok, message = Inventory.SmartClean(player)
 	elseif action == "ScrapBelow" and typeof(arg) == "number" then
 		ok, message = Inventory.ScrapBelow(player, arg)
 	elseif action == "AutoEquip" then
