@@ -44,6 +44,12 @@ local SPECS = {
 	Lord_Voice = { Base = "Shot", CustomLength = 3.4, Pitch = 0.2, Volume = 1.7, Length = 1.0,
 		Fx = { { "eq", { LowGain = 6, MidGain = -6, HighGain = -30 } }, { "chorus", { Depth = 0.9, Mix = 0.7 } }, { "distortion", { Level = 0.2 } }, { "reverb", { DecayTime = 3.6, WetLevel = -2 } } },
 		Layers = { { Pitch = 0.27, Volume = 1.5, Delay = 0.55 }, { Pitch = 0.17, Volume = 1.7, Delay = 1.25 }, { Pitch = 0.23, Volume = 1.5, Delay = 1.95 }, { Pitch = 0.12, Volume = 1.2, Delay = 0.0 } } },
+	-- 최후의 군주: 기를 모을 때 점점 높아지는 웅장한 울림 / 쏠 때 깊고 큰 폭발
+	Lord_Charge = { Base = "Shot", CustomLength = 2.4, Pitch = 0.18, Volume = 1.2, Length = 0.9,
+		Fx = { { "eq", { LowGain = 5, MidGain = -4, HighGain = -24 } }, { "chorus", { Depth = 0.8, Mix = 0.6 } }, { "reverb", { DecayTime = 3.0, WetLevel = -3 } } },
+		Layers = { { Pitch = 0.24, Volume = 1.2, Delay = 0.3 }, { Pitch = 0.32, Volume = 1.3, Delay = 0.65 }, { Pitch = 0.43, Volume = 1.4, Delay = 1.0 }, { Pitch = 0.58, Volume = 1.5, Delay = 1.35 }, { Pitch = 0.8, Volume = 1.5, Delay = 1.7 } } },
+	Lord_Blast = { Base = "Enh_Hammer", CustomLength = 2.6, Pitch = 0.3, Volume = 2.0, Length = 1.4, Fx = { { "distortion", { Level = 0.5 } }, { "reverb", { DecayTime = 3.4, WetLevel = -2 } } },
+		Layers = { { Pitch = 0.18, Volume = 1.8, Delay = 0.0 }, { Pitch = 0.6, Volume = 1.0, Delay = 0.05 }, { Pitch = 0.12, Volume = 1.5, Delay = 0.25 } } },
 	UltShot = { Base = "Shot", Pitch = 1.4, Volume = 0.8, Length = 0.3, Fx = { { "chorus", { Depth = 0.5, Mix = 0.5 } } } },
 	Boom    = { CustomLength = 1.6, Base = "Enh_Hammer", Pitch = 0.45, Volume = 1.5, Length = 1.1, Fx = { { "distortion", { Level = 0.55 } }, { "reverb", { DecayTime = 1.8, WetLevel = -4 } } } },
 	LevelUp = { Base = "Enh_Success", Pitch = 1.0, Volume = 1.0, Length = 1.4, Fx = { { "reverb", { DecayTime = 1.8, WetLevel = -5 } } },

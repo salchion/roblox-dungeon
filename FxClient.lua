@@ -443,6 +443,7 @@ local function playShot(event)
 	local from, to = event[2], event[3]
 	local size, speed, impact, eraStyle, length = event[4], event[5], event[6], event[7], event[8]
 	local color, rainbow, class, era = event[9], event[10], event[11], event[12] or 1
+	if Players.LocalPlayer:GetAttribute("InDoomArena") then color = color:Lerp(WHITE, 0.6) end -- 최후의 군주 결투장: 바닥이 붉어도 내 탄이 또렷하게
 	local distance = (to - from).Magnitude
 	if distance < 0.5 then return end
 	local style = eraStyle
@@ -876,7 +877,7 @@ local function tracer(event)
 end
 
 -- 총소리 { "G", 위치, 무기 종류, 높낮이, 크기, 세대 }: 소리 이름이 "GunShot" 이면 PlayerClient 가 내 설정 볼륨을 곱한다
-local function gunSound(event)
+local function gunSoundNow(event)
 	local anchor = Instance.new("Part")
 	anchor.Anchored, anchor.CanCollide, anchor.CanQuery, anchor.CanTouch = true, false, false, false
 	anchor.Transparency = 1
@@ -895,6 +896,9 @@ local function gunSound(event)
 		sound.Parent = anchor
 		sound:Play()
 	end
+end
+local function gunSound(event) -- 발사음 간격이 기계처럼 일정하지 않게 아주 조금씩 어긋난다 (다른 효과 처리를 막지 않게 따로 띄운다)
+	task.delay(math.random() * 0.035, gunSoundNow, event)
 end
 
 ------------------------------------------------------------

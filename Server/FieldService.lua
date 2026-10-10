@@ -3253,6 +3253,9 @@ local function doomWave(player, zone)
 
 	-- 맞출 수 있는 몬스터로 등록한다 (체력이 바닥나지 않게 8% 밑으로는 안 떨어진다)
 	local fill = createHealthBar(body, "💀 Lv.???  ???", 360, rgb(255, 90, 90))
+	local function lordSfx(key) -- 군주가 기를 모을 때 / 쏠 때 나는 웅장한 소리 (군주 몸에서 난다)
+		if body.Parent and SoundBank.Has(key) then SoundBank.Play(body, key) end
+	end
 	body.Parent = monstersFolder -- 필드 몬스터 폴더에 두어야 총알 판정 / 자동 조준이 잡는다 (장식 부품은 모델에 남는다)
 	CollectionService:AddTag(body, "Monster")
 	CollectionService:AddTag(body, "RadarBoss")
@@ -3334,10 +3337,12 @@ local function doomWave(player, zone)
 		warn.Color = rgb(255, 40, 40)
 		warn.Transparency = 0.6
 		warn.Parent = arena
+		lordSfx("Lord_Charge")
 		TweenService:Create(warn, TweenInfo.new(telegraph), { Transparency = 0.05 }):Play()
 		task.delay(telegraph, function()
 			warn:Destroy()
 			if not arena.Parent then return end
+			lordSfx("Lord_Blast")
 			beam(body.Position + Vector3.new(0, 4, -6), at + Vector3.new(0, 1, 0), radius * 0.28, 0.35)
 			ring(at, radius * 1.1, rgb(255, 120, 60), 0.6)
 			Effects.Burst(at + Vector3.new(0, 2, 0), rgb(255, 90, 60), 60)
@@ -3443,7 +3448,8 @@ local function doomWave(player, zone)
 		flood.Color = rgb(255, 30, 30)
 		flood.Transparency = 0.9
 		flood.Parent = arena
-		TweenService:Create(flood, TweenInfo.new(2.4, Enum.EasingStyle.Quad), { Transparency = 0.2 }):Play()
+		TweenService:Create(flood, TweenInfo.new(2.4, Enum.EasingStyle.Quad), { Transparency = 0.5 }):Play() -- (바닥이 온통 붉어 내 총알이 안 보이던 문제: 덜 진하게)
+		lordSfx("Lord_Charge")
 		local charge = Instance.new("Part")
 		charge.Shape = Enum.PartType.Ball
 		charge.Anchored = true
@@ -3462,6 +3468,7 @@ local function doomWave(player, zone)
 		end
 		local r = alive() and select(1, getAliveParts(player))
 		if r then
+			lordSfx("Lord_Blast")
 			beam(charge.Position, r.Position, 26, 0.9, rgb(255, 240, 150))
 			ring(center, 90, rgb(255, 90, 60), 1.0)
 			Effects.Burst(r.Position, rgb(255, 80, 60), 160)

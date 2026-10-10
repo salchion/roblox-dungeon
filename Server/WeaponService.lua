@@ -612,6 +612,7 @@ local function playSoundAt(parent, soundId, volume, pitch, name)
 	Debris:AddItem(sound, 3)
 end
 
+local lastPitchIndex = setmetatable({}, { __mode = "k" })
 local shotCount, lastShotSound = setmetatable({}, { __mode = "k" }), setmetatable({}, { __mode = "k" }) -- 발사음 변주용
 local SHOT_PITCH_PATTERN = { 1.0, 1.25, 0.84, 1.5, 0.75, 1.12, 0.94, 1.34, 0.7, 1.18, 1.42, 0.88, 1.06, 1.3, 0.78, 1.5 } -- 여덟 박자: 높고 낮음이 확실히 오르내린다
 
@@ -668,8 +669,16 @@ function Weapon.PlayShot(player)
 	local gap = now - (lastShotSound[player] or 0)
 	if gap < 0.1 and count % 2 == 0 then return end -- 초고속 연사: 두 발에 한 발만 소리를 낸다
 	lastShotSound[player] = now
-	local pitch = eraFactor * SHOT_PITCH_PATTERN[count % #SHOT_PITCH_PATTERN + 1] * (0.9 + math.random() * 0.2)
-	local volume = (count % 8 == 1 and 1.4 or (count % 4 == 1 and 1.15 or 0.8)) * (0.85 + math.random() * 0.3) * (gap < 0.2 and 0.85 or 1)
+	-- 박자가 일정하면 지루하므로: 높낮이를 무작위로 고르되 바로 앞과 같은 음은 피하고, 가끔 아주 낮은 "쿵" / 높은 "탕" 강조음을 섞는다
+	local index = math.random(#SHOT_PITCH_PATTERN)
+	if index == lastPitchIndex[player] then index = index % #SHOT_PITCH_PATTERN + 1 end
+	lastPitchIndex[player] = index
+	local pitch = eraFactor * SHOT_PITCH_PATTERN[index] * (0.9 + math.random() * 0.2)
+	local volume = (0.65 + math.random() * 0.6) * (gap < 0.2 and 0.85 or 1)
+	if math.random() < 0.14 then
+		pitch *= (math.random() < 0.5) and 0.72 or 1.38
+		volume *= 1.35
+	end
 	Effects.GunSound(barrel.Position, tier.Class, pitch, volume, tier.Era) -- 소리는 근처 플레이어 화면에서 재생 (서버가 소리 부품을 만들지 않는다)
 end
 
