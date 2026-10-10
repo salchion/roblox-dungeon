@@ -517,11 +517,11 @@ Remotes.Enhance.OnClientEvent:Connect(function(ok, message, summary)
 			SoundBank.Play(sfxParent, "Enh_Evolve")
 		elseif summary and summary.Attempts and summary.Attempts > 1 then
 			for i = 1, math.min(8, summary.Successes or 0) do
-				task.delay((i - 1) * 0.09, function() SoundBank.Play(sfxParent, "Enh_Success", { Pitch = 0.85 + 0.06 * i }) end)
+				task.delay((i - 1) * 0.09, function() SoundBank.Play(sfxParent, "Enh_Success", { Pitch = 0.8 + 0.04 * i }) end)
 			end
 			if (summary.Successes or 0) == 0 then SoundBank.Play(sfxParent, "Enh_Fail") end
 		elseif ok then
-			SoundBank.Play(sfxParent, "Enh_Success", { Pitch = 0.85 + 0.75 * stageFrac })
+			SoundBank.Play(sfxParent, "Enh_Success", { Pitch = 0.8 + 0.3 * stageFrac })
 		else
 			SoundBank.Play(sfxParent, "Enh_Fail")
 		end
