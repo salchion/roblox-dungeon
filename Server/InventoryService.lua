@@ -49,12 +49,9 @@ function Inventory.NewItem(slotKey, rarity, level, zoneIndex)
 	if rarity == 5 and math.random() < Config.Uniques.Chance then
 		item.Unique = Config.Uniques.Order[math.random(#Config.Uniques.Order)]
 	end
-	local setChance = Config.Sets.SetChance[rarity]
 	local zoneSet = zoneIndex and Config.Sets.ZoneKeys[zoneIndex]
 	if zoneSet and math.random() < Config.Sets.ZoneSetChance then
-		item.Set = zoneSet -- 그 필드 구역에서만 나오는 구역 전용 세트
-	elseif setChance and math.random() < setChance then
-		item.Set = Config.Sets.Order[math.random(#Config.Sets.Order)]
+		item.Set = zoneSet -- 그 필드 구역에서만 나오는 구역 전용 세트 (뽑기 장비에는 세트가 붙지 않는다: 세트는 필드 파밍 / 각인으로만)
 	end
 	return item
 end
@@ -205,6 +202,10 @@ function Inventory.Add(player, item)
 
 	state.NextId += 1
 	item.Id = state.NextId
+	if item.Set then -- 도감: 이 세트 장비를 얻어 봤다
+		local okM, Meta = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
+		if okM and Meta.CodexSet then Meta.CodexSet(player, item.Set) end
+	end
 
 	if not state.Equipped[item.Slot] then
 		state.Items[item.Id] = item
@@ -430,7 +431,7 @@ function Inventory.Load(player, saved, legacyGear)
 						table.insert(item.Affixes, { Stat = affix.S, Value = tonumber(affix.V) })
 					end
 				end
-				if Config.Sets[entry.Set] and entry.Set ~= "Order" and Config.Sets[entry.Set].Bonuses then item.Set = entry.Set end
+				if typeof(entry.Set) == "string" and entry.Set:sub(1, 4) == "Zone" and Config.Sets[entry.Set] and Config.Sets[entry.Set].Bonuses then item.Set = entry.Set end -- (옛 세트 4종은 없어졌다: 불러올 때 세트만 떼어 낸다)
 				if Config.Uniques[entry.Unique] and entry.Unique ~= "Order" and Config.Uniques[entry.Unique].Effects then item.Unique = entry.Unique end
 				if item.Id > 0 and not state.Items[item.Id] then
 					state.Items[item.Id] = item

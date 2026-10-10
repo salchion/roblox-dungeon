@@ -1462,6 +1462,12 @@ local function reward(player, data, part)
 
 	gateProgress(player, data)
 	Quest.Add(player, "Kills", 1)
+	do -- 도감 기록
+		local okM, MetaS = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
+		if okM and MetaS.CodexKill then
+			if data.Kind == "Boss" then MetaS.CodexKill(player, nil, data.Zone) elseif data.TypeKey then MetaS.CodexKill(player, data.TypeKey) end
+		end
+	end
 	if data.Kind == "Elite" then
 		Quest.Add(player, "EliteKills", 1)
 	elseif data.Kind == "Boss" then

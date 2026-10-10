@@ -1173,6 +1173,27 @@ Config.Sets.Imprint = {
 -- 구역 세트마다 컨셉이 하나씩 있다: 그 세트를 2부위 이상 맞추면 그 효과가 켜진다 (2부위 1단계, 3부위 3단계)
 Config.Sets.ZoneAug = { "AugPulse", "AugOrbit", "AugStorm", "AugMissile", "AugNova", "AugFlame", "AugExecute", "AugMeteor" }
 Config.Sets.AugLevelByPieces = { [2] = 1, [3] = 3 }
+-- 도감: 몬스터 / 구역 군주 / 세트 장비 설명 (몬스터 이름은 MonsterTypes.Defs 와 같다)
+Config.Codex = {
+	Monsters = {
+		Slime = { Name = "슬라임", Icon = "🟢", Desc = "말랑한 물방울. 천천히 다가와 한 발씩 쏜다." },
+		Spitter = { Name = "가시 독충", Icon = "🐛", Desc = "멀리서 가시를 뱉는다. 거리를 유지하며 쏜다." },
+		Bat = { Name = "박쥐", Icon = "🦇", Desc = "빠르게 날아다니며 초승달 탄을 던진다." },
+		Mage = { Name = "마법사 유령", Icon = "👻", Desc = "멀리서 쫓아오는 유도탄을 쏜다. 천천히 쏘지만 끈질기다." },
+		Golem = { Name = "바위 골렘", Icon = "🗿", Desc = "느리지만 단단하고, 내려치면 아프다." },
+		Charger = { Name = "돌진 멧돼지", Icon = "🐗", Desc = "엄니를 세우고 돌진한다. 돌진 전 신호를 보고 피하자." },
+		Bomber = { Name = "폭탄병", Icon = "💣", Desc = "달려와서 폭발한다. 가까이 오기 전에 잡자." },
+		Imp = { Name = "저격 임프", Icon = "😈", Desc = "아주 먼 거리에서 빠른 창을 던진다. 갈라지는 탄도 있다." },
+		Knight = { Name = "방패 기사", Icon = "🛡", Desc = "정면 공격은 거의 막는다. 옆이나 뒤에서 쏘자." },
+		Turret = { Name = "마법 포탑", Icon = "🔫", Desc = "움직이지 않고 광선을 쏜다. 사거리가 길다." },
+		Spider = { Name = "독거미", Icon = "🕷", Desc = "빠르게 달려들며 독침을 연달아 쏜다." },
+		Wisp = { Name = "도깨비불", Icon = "🔥", Desc = "빠르게 떠다니며 고리 모양 탄을 낸다." },
+		Healer = { Name = "치유 사제", Icon = "💚", Desc = "주변 몬스터를 치료한다. 먼저 잡는 것이 좋다." },
+		Totem = { Name = "저주 토템", Icon = "🗿", Desc = "제자리에서 사방으로 고리 탄을 쏜다." },
+	},
+	Bosses = { "덩굴 거인", "고목 사슴령", "외눈 바위 거인", "거대 전갈", "얼음 수정 군주", "용암 악마", "암흑 사신", "심연의 눈" },
+}
+
 Config.Sets.ZoneKeys = {}
 do
 	local zoneSets = {

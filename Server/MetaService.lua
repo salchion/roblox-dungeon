@@ -132,7 +132,7 @@ local function syncSkillAttributes(player, state)
 end
 
 function Meta.Load(player, saved)
-	local state = { Skills = {}, Pet = { Unlocked = false, Level = 1, Look = "Orb", Color = 1 }, Tower = 0, Prestige = 0, Rift = { Best = 0, Day = 0, Used = 0, Depth = 1, DepthDone = 0, Bests = {}, Hints = {}, LvStats = {} } }
+	local state = { Skills = {}, Pet = { Unlocked = false, Level = 1, Look = "Orb", Color = 1 }, Tower = 0, Prestige = 0, Codex = { Kills = {}, Boss = {}, Sets = {} }, Rift = { Best = 0, Day = 0, Used = 0, Depth = 1, DepthDone = 0, Bests = {}, Hints = {}, LvStats = {} } }
 	for _, key in ipairs(Config.Skills.UpgradeOrder) do
 		local level = typeof(saved) == "table" and typeof(saved.Skills) == "table" and tonumber(saved.Skills[key]) or 1
 		state.Skills[key] = math.clamp(math.floor(level), 1, Config.SkillUpgrade.MaxLevel)
@@ -154,6 +154,15 @@ function Meta.Load(player, saved)
 				state.Pet.Level = math.clamp(math.floor(best), 1, Config.Pet.MaxLevel)
 			end
 		end
+		if typeof(saved.Codex) == "table" then
+			for _, group in ipairs({ "Kills", "Boss", "Sets" }) do
+				if typeof(saved.Codex[group]) == "table" then
+					for key, count in pairs(saved.Codex[group]) do
+						if typeof(key) == "string" and #key <= 16 and tonumber(count) then state.Codex[group][key] = math.max(0, math.floor(tonumber(count))) end
+					end
+				end
+			end
+		end
 		state.Tower = math.max(0, math.floor(tonumber(saved.Tower) or 0))
 		state.Prestige = math.clamp(math.floor(tonumber(saved.Prestige) or 0), 0, Config.Prestige.Max)
 		if typeof(saved.Rift) == "table" then
@@ -172,11 +181,27 @@ end
 function Meta.Serialize(player)
 	local state = states[player]
 	if not state then return nil end
-	return { Skills = state.Skills, Pet = state.Pet, Tower = state.Tower, Prestige = state.Prestige, Rift = state.Rift }
+	return { Skills = state.Skills, Pet = state.Pet, Tower = state.Tower, Prestige = state.Prestige, Rift = state.Rift, Codex = state.Codex }
 end
 
 function Meta.Forget(player)
 	states[player] = nil
+end
+
+-- 도감: 몬스터 처치 수 / 구역 군주 처치 수 / 세트 장비 획득 수 (키는 문자열: "Slime", "1", "Zone3")
+function Meta.CodexKill(player, typeKey, bossZone)
+	local state = states[player]
+	if not state then return end
+	local group, key = "Kills", typeKey
+	if bossZone then group, key = "Boss", tostring(bossZone) end
+	if typeof(key) ~= "string" then return end
+	state.Codex[group][key] = (state.Codex[group][key] or 0) + 1
+end
+
+function Meta.CodexSet(player, setKey)
+	local state = states[player]
+	if not state or typeof(setKey) ~= "string" then return end
+	state.Codex.Sets[setKey] = (state.Codex.Sets[setKey] or 0) + 1
 end
 
 -- 기본값(저장 데이터가 없을 때) 초기화: setupPlayer 에서 호출
@@ -354,6 +379,9 @@ Remotes.Meta.OnServerEvent:Connect(function(player, action, arg)
 	last[player] = now
 	if action == "Request" then
 		Meta.Push(player)
+	elseif action == "Codex" then
+		local state = states[player]
+		if state then Remotes.Meta:FireClient(player, "Codex", state.Codex) end
 	elseif action == "PetPeek" then -- 펫 창을 열어 봤다 (첫날 퀘스트 "펫 구경")
 		local okQ, Quest = pcall(function() return require(script.Parent:WaitForChild("QuestService")) end)
 		if okQ then Quest.Add(player, "PetPeek", 1) end

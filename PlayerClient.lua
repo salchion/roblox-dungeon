@@ -3796,7 +3796,7 @@ RunService.RenderStepped:Connect(function(dt)
 	local modalOpen = menuPanel.Visible or enhancePanel.Visible or gearPanel.Visible or selectPanel.Visible or warpPanel.Visible
 	if not modalOpen then
 		-- 다른 스크립트의 큰 창(펫 / 상점 / 스탯)이 열려 있으면 진짜 마우스 커서를 되살린다
-		for _, name in ipairs({ "PetGui", "ShopGui", "LevelStatGui" }) do
+		for _, name in ipairs({ "PetGui", "ShopGui", "LevelStatGui", "CodexGui" }) do
 			local g = playerGui:FindFirstChild(name)
 			if g then
 				for _, child in ipairs(g:GetChildren()) do

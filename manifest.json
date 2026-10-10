@@ -433,6 +433,13 @@
       "name": "ShopClient",
       "class": "LocalScript",
       "overwrite": true
+    },
+    {
+      "path": "CodexClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "CodexClient",
+      "class": "LocalScript",
+      "overwrite": true
     }
   ]
 }
