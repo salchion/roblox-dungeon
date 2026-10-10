@@ -2252,16 +2252,16 @@ end
 local function awardNearMiss(player, root)
 	local now = os.clock()
 	if now - (nearMissAt[player] or 0) < 0.7 then return end
-	local streak = (now - (nearMissAt[player] or 0) < 6) and ((player:GetAttribute("NearMissStreak") or 0) + 1) or 1
+	local streak = (now - (nearMissAt[player] or 0) < Config.NearMiss.Duration) and ((player:GetAttribute("NearMissStreak") or 0) + 1) or 1
 	nearMissAt[player] = now
 	player:SetAttribute("NearMissStreak", streak)
 	local charge = player:GetAttribute("UltCharge") or 0
 	player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, charge + 10 + math.min(streak, 4) * 3))
-	player:SetAttribute("NearMissUntil", now + 4) -- 4초 동안 공격이 전부 치명타 (DungeonService.ComputeDamage 가 읽는다)
+	player:SetAttribute("NearMissUntil", now + Config.NearMiss.Duration) -- 공격력 누적 보너스 유지 시간 (DungeonService.ComputeDamage 가 읽는다)
 	local rift = Meta.GetRift(player) -- 처음 한 번만 NEAR MISS 설명 카드를 띄운다 (저장됨)
 	local firstTime = rift ~= nil and not rift.Tip
 	if rift then rift.Tip = true end
-	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), streak > 1 and string.format("NEAR MISS! x%d", streak) or "NEAR MISS!", Color3.fromRGB(120, 255, 255))
+	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), string.format("NEAR MISS! 공격력 +%d%%", math.floor(math.min(streak, Config.NearMiss.MaxStacks) * Config.NearMiss.DamagePerStack * 100 + 0.5)), Color3.fromRGB(120, 255, 255))
 	Remotes.Banner:FireClient(player, "NearMiss", { Streak = streak, First = firstTime })
 end
 

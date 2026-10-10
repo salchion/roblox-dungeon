@@ -35,6 +35,9 @@ Config.StatAttributes = {   -- Upgrade 리모트가 받는 이름 -> 플레이�
 ------------------------------------------------------------
 -- 스킬 강화 (골드) / 펫 (알 부화) / 무한의 탑 기록
 ------------------------------------------------------------
+-- NEAR MISS(대시로 아슬아슬하게 피하기): 연속으로 성공할수록 공격력이 누적해서 올라간다 (마지막 성공 후 Duration 초가 지나면 사라진다)
+Config.NearMiss = { DamagePerStack = 0.05, MaxStacks = 10, Duration = 8 }
+
 Config.SkillUpgrade = {
 	MaxLevel = 10,
 	BaseCost = 400,
@@ -44,7 +47,8 @@ Config.SkillUpgrade = {
 	BarrierDuration = 0.4,      -- 방벽 지속시간 +0.4초
 	BlastMult = 0.18,           -- 충격파 피해 +18% (기본 대비)
 	BlastRadius = 0.8,          -- 충격파 범위 +0.8
-	HealRatio = 0.03,           -- 치료량 +3%p
+	HealRatio = 0.01,           -- 치료량 +1%p (최대 레벨 17%)
+	UltTargets = 2 / 3,         -- 데드아이 대상 수: 레벨당 +0.67마리 (1레벨 6마리 -> 10레벨 12마리)
 	UltMult = 0.15,             -- 궁극기 피해 +15%
 }
 function Config.GetSkillUpgradeCost(level)
@@ -194,11 +198,11 @@ Config.Skills = {
 		Desc = "3초 동안 모든 피해를 막는 방벽" },
 	Blast = { Name = "충격파", Icon = "💥", Key = "F", KeyCode = "F", Cooldown = 8, Radius = 16, Range = 90, Mult = 3,
 		Desc = "조준한 곳에 폭발 (범위 16, 공격력 x3)" },
-	Heal = { Name = "응급 치료", Icon = "💚", Key = "C", KeyCode = "C", Cooldown = 30, Radius = 40, Ratio = 0.2,
-		Desc = "나와 주변 파티원의 체력 20% 회복" },
-	Ult = { Name = "데드아이", Icon = "🎯", Key = "V", KeyCode = "V", Cooldown = 3, Radius = 110, Mult = 8, Cost = 100, MaxTargets = 12, Volleys = 12, VolleyGap = 0.09, -- 대상 수 / 일제 사격 횟수를 줄여 렉을 막는다 (빔 / 피해 숫자 / 폭발 효과가 대상 x 횟수만큼 생긴다)
+	Heal = { Name = "응급 치료", Icon = "💚", Key = "C", KeyCode = "C", Cooldown = 30, Radius = 40, Ratio = 0.08,
+		Desc = "나와 주변 파티원의 체력 8% 회복 (스킬 레벨마다 +1%p)" },
+	Ult = { Name = "데드아이", Icon = "🎯", Key = "V", KeyCode = "V", Cooldown = 3, Radius = 110, Mult = 8, Cost = 100, MaxTargets = 6, Volleys = 12, VolleyGap = 0.09, -- 대상 수 / 일제 사격 횟수를 줄여 렉을 막는다 (빔 / 피해 숫자 / 폭발 효과가 대상 x 횟수만큼 생긴다)
 		ShotsPerTarget = 8, ShotGap = 0.03,
-		Desc = "궁극기: 게이지가 가득 차면 사용! 주변 적을 하나씩 딱 락인한 뒤 공속 한계를 뚫고 전부에게 화다다다다 난사한다 (가까운 최대 12마리, 공격력 x8)" },
+		Desc = "궁극기: 게이지가 가득 차면 사용! 주변 적을 하나씩 딱 락인한 뒤 공속 한계를 뚫고 전부에게 화다다다다 난사한다 (가까운 6마리부터, 스킬 레벨이 오르면 최대 12마리까지 / 공격력 x8)" },
 	ChargePerShot = 4,
 }
 

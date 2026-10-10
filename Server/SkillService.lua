@@ -196,7 +196,8 @@ handlers.Ult = function(player, root, _, character)
 	if (player:GetAttribute("UltCharge") or 0) < cfg.Cost then
 		return false, "궁극기 게이지가 부족해요! (적을 공격하면 차올라요)"
 	end
-	local targets = Dungeon.TargetsIn(player, root.Position, cfg.Radius, cfg.MaxTargets or 12) or Field.TargetsIn(player, root.Position, cfg.Radius, cfg.MaxTargets or 12)
+	local maxTargets = (cfg.MaxTargets or 6) + math.floor((U.UltTargets or 0) * (skillLevel(player, "Ult") - 1) + 0.001)
+	local targets = Dungeon.TargetsIn(player, root.Position, cfg.Radius, maxTargets) or Field.TargetsIn(player, root.Position, cfg.Radius, maxTargets)
 	if not targets or #targets == 0 then
 		return false, "범위 안에 적이 없어요! (게이지는 그대로예요)"
 	end

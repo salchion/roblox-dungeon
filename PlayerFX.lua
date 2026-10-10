@@ -238,7 +238,7 @@ do
 				TextColor3 = Color3.fromRGB(120, 255, 255), ZIndex = 59 }, card)
 			makeLabel({ Size = UDim2.new(1, -32, 0, 96), Position = UDim2.new(0, 16, 0, 46), TextSize = 18, Font = Enum.Font.GothamBold, TextWrapped = true, RichText = true,
 				TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 59,
-				Text = "적의 탄이나 공격을 <font color='#78ffff'>대시(Q)로 아슬아슬하게 스치며 피하면</font> 발동해요!\n<font color='#ffe16e'>데드아이 게이지가 차오르고, 4초 동안 내 공격이 전부 치명타!</font>\n연속으로 성공하면 보너스가 커져요. (심연 도전에서는 점수도 올라요)" }, card)
+				Text = "적의 탄이나 공격을 <font color='#78ffff'>대시(Q)로 아슬아슬하게 스치며 피하면</font> 발동해요!\n<font color='#ffe16e'>데드아이 게이지가 차오르고, 공격력이 +5%씩 쌓여요! (최대 +50%)</font>\n8초 안에 연속으로 성공하면 계속 쌓여요. (심연 도전에서는 점수도 올라요)" }, card)
 			task.delay(8, function()
 				if card.Parent then
 					TweenService:Create(card, TweenInfo.new(0.4), { BackgroundTransparency = 1 }):Play()

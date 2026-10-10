@@ -1131,11 +1131,11 @@ local dashSeenAt = setmetatable({}, { __mode = "k" })
 function Dungeon.AwardNearMiss(run, player, root)
 	local now = os.clock()
 	if now - (nearMissAt[player] or 0) < 0.7 then return end
-	local streak = (now - (nearMissAt[player] or 0) < 6) and ((player:GetAttribute("NearMissStreak") or 0) + 1) or 1
+	local streak = (now - (nearMissAt[player] or 0) < Config.NearMiss.Duration) and ((player:GetAttribute("NearMissStreak") or 0) + 1) or 1
 	nearMissAt[player] = now
 	player:SetAttribute("NearMissStreak", streak)
 	player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 10 + math.min(streak, 4) * 3))
-	player:SetAttribute("NearMissUntil", now + 4)
+	player:SetAttribute("NearMissUntil", now + Config.NearMiss.Duration)
 	if run.Score then
 		run.Score[player] = (run.Score[player] or 0) + Config.Rift.NearMissScore * math.min(streak, 5)
 		player:SetAttribute("RiftScore", math.floor(run.Score[player]))
@@ -1143,7 +1143,7 @@ function Dungeon.AwardNearMiss(run, player, root)
 	local rift = Meta.GetRift(player) -- 처음 한 번만 NEAR MISS 설명 카드를 띄운다 (저장됨)
 	local firstTime = rift ~= nil and not rift.Tip
 	if rift then rift.Tip = true end
-	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), streak > 1 and string.format("NEAR MISS! x%d", streak) or "NEAR MISS!", Color3.fromRGB(120, 255, 255))
+	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), string.format("NEAR MISS! 공격력 +%d%%", math.floor(math.min(streak, Config.NearMiss.MaxStacks) * Config.NearMiss.DamagePerStack * 100 + 0.5)), Color3.fromRGB(120, 255, 255))
 	Remotes.Banner:FireClient(player, "NearMiss", { Streak = streak, First = firstTime })
 end
 
@@ -1296,7 +1296,10 @@ function Dungeon.ComputeDamage(player)
 		* (player:GetAttribute("ShotDmgScale") or 1) -- 레벨 스탯 추가 탄: 발당 피해 감소 (사격 중에만 적용)
 	local chance = math.min(0.9, (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint
 		+ (player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0) + (player:GetAttribute("PetCrit") or 0) + (weaponType.CritBonus or 0))
-	local isCrit = os.clock() < (player:GetAttribute("NearMissUntil") or 0) or math.random() < chance -- NEAR MISS 보상: 4초간 전부 치명타
+	if os.clock() < (player:GetAttribute("NearMissUntil") or 0) then -- NEAR MISS 보상: 연속으로 피할수록 공격력이 누적해서 오른다
+		damage *= 1 + Config.NearMiss.DamagePerStack * math.min(player:GetAttribute("NearMissStreak") or 0, Config.NearMiss.MaxStacks)
+	end
+	local isCrit = math.random() < chance
 	if isCrit then
 		damage *= P.CritMultiplier + (player:GetAttribute("LvCritDmg") or 0)
 	end

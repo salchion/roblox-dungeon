@@ -3156,7 +3156,7 @@ local function buildSkillTab()
 		elseif key == "Heal" then
 			detail = string.format("체력 %d%% 회복", math.floor((cfg.Ratio + U.HealRatio * lv) * 100 + 0.5))
 		else
-			detail = string.format("공격력 x%.2f (게이지 %d)", cfg.Mult * (1 + U.UltMult * lv), cfg.Cost)
+			detail = string.format("공격력 x%.2f · 대상 %d마리 (게이지 %d)", cfg.Mult * (1 + U.UltMult * lv), cfg.MaxTargets + math.floor(U.UltTargets * lv + 0.001), cfg.Cost)
 		end
 		local row = newRow(74)
 		rowText(row, string.format("<font size='17'><b>[%s] %s %s</b></font>  <font color='#ffd966'>Lv.%d / %d</font>\n<font color='#bbbbcc'>%s</font>\n<font color='#9ad7ff'>%s · 쿨타임 %.1f초</font>",
