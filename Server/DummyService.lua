@@ -149,6 +149,7 @@ local function buildDummy(index, info, position, nameIndex, bigScale)
 
 	-- 이름표: 이름 + 배율 / 방어력(필요 전투력)
 	local gui = Instance.new("BillboardGui")
+	gui.Enabled = false -- (허수아비 이름표는 훈련장 표지와 중복이라 숨긴다)
 	gui.Size = UDim2.new(0, 190, 0, 52)
 	gui.StudsOffset = Vector3.new(0, 3.5 + 2.2 * s, 0)
 	gui.MaxDistance = 40 -- 가까이 가야 이름 / 방어력이 보인다 (작은 화면에서 글자 겹침 방지)
@@ -281,29 +282,11 @@ local function showDps(model, data, player, damage)
 	end
 	local dps = total / math.max(1.5, now - first)
 	if dps > log.Best then log.Best = dps end
-	local root = model.PrimaryPart
-	if not root then return end
-	if not data.DpsLabel or not data.DpsLabel.Parent then
-		local gui = Instance.new("BillboardGui")
-		gui.Name = "DpsGui"
-		gui.Size = UDim2.new(0, 260, 0, 60)
-		gui.StudsOffset = Vector3.new(0, 13, 0)
-		gui.AlwaysOnTop = false
-		gui.MaxDistance = 40 -- 가까이 있을 때만 (이름 없이 DPS 만)
-		gui.Parent = root
-		local label = Instance.new("TextLabel")
-		label.Size = UDim2.new(1, 0, 1, 0)
-		label.BackgroundTransparency = 1
-		label.Font = Enum.Font.GothamBlack
-		label.TextScaled = true
-		label.RichText = true
-		label.TextColor3 = Color3.fromRGB(255, 240, 200)
-		label.TextStrokeTransparency = 0.3
-		label.Parent = gui
-		data.DpsLabel = label
-	end
-	local function fmt(n) return (tostring(math.floor(n)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")) end
-	data.DpsLabel.Text = string.format("<font color='#ffd966'>DPS %s</font>  <font size='14' color='#aab4d8'>최고 %s</font>", fmt(dps), fmt(log.Best))
+	-- 머리 위 글자 대신 쏘는 사람 화면의 작은 패널(DpsPanelClient)이 이 값을 읽어 보여 준다
+	player:SetAttribute("DummyDps", math.floor(dps))
+	player:SetAttribute("DummyBest", math.floor(log.Best))
+	player:SetAttribute("DummyHit", damage)
+	player:SetAttribute("DummyTick", (player:GetAttribute("DummyTick") or 0) + 1)
 end
 
 local goldRemainder = setmetatable({}, { __mode = "k" }) -- [player] = 아직 지급하지 못한 소수점 골드

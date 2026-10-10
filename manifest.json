@@ -351,6 +351,13 @@
       "overwrite": true
     },
     {
+      "path": "DpsPanelClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "DpsPanelClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "NearMissAuraClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "NearMissAuraClient",

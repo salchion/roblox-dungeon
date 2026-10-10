@@ -380,7 +380,6 @@ function LobbyDecor.Build(parent, ctx)
 			local a = math.rad(215 + i * 25)
 			ball("HillBoulder", 4, Vector3.new(math.cos(a) * 23, TOP + 1.1, HILL_Z + math.sin(a) * 23), STONE_DARK, M.Slate, 2.6, 3.5)
 		end
-		label(anchorPart("HillSignAnchor", hc + Vector3.new(0, 8, -12)), "🌄 마을 전망대", rgb(255, 232, 170), 0, 240, 56, 50)
 	end
 
 	--------------------------------------------------------------------
