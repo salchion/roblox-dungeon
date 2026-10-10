@@ -1540,7 +1540,41 @@ local function reward(player, data, part)
 end
 
 local augRun -- 세트 효과(미사일 / 번개 / 칼날 ...)용 "run 비슷한 표": Field.Init 에서 만든다
+-- 전투 기록 (Studio 출력창): 구역 / 종류별로 "처음 맞은 뒤 죽기까지 걸린 시간"을 모아 1분마다 한 줄로 찍는다. 난이도 조정 근거용.
+local combatLog = setmetatable({}, { __mode = "k" }) -- [player] = { [키] = { N, Ttk, Hp } }
+local function recordKill(player, data)
+	if not data.FirstHit or data.Kind == "Goblin" or data.Kind == "Event" then return end
+	local ttk = os.clock() - data.FirstHit
+	local log = combatLog[player]
+	if not log then log = {} combatLog[player] = log end
+	local key = string.format("%d구역 %s%s", data.Zone or 0, data.Kind == "Boss" and "군주" or (data.Kind == "Elite" and "엘리트 " or ""), (data.Kind ~= "Boss" and data.Def and data.Def.Name) or "")
+	local entry = log[key]
+	if not entry then entry = { N = 0, Ttk = 0, Hp = 0 } log[key] = entry end
+	entry.N += 1
+	entry.Ttk += ttk
+	entry.Hp += data.MaxHealth
+end
+task.spawn(function()
+	while true do
+		task.wait(60)
+		for player, log in pairs(combatLog) do
+			if player.Parent then
+				local lines = {}
+				for key, entry in pairs(log) do
+					table.insert(lines, string.format("  %s: %d마리 · 평균 %.1f초 · 체력 %d · 실제 초당피해 %d", key, entry.N, entry.Ttk / entry.N, entry.Hp / entry.N, (entry.Hp / entry.N) / math.max(0.1, entry.Ttk / entry.N)))
+				end
+				if #lines > 0 then
+					table.sort(lines)
+					print(string.format("[전투 기록] %s · 전투력 %d · 무기 %d단계 · 레벨 %d\n%s", player.Name, player:GetAttribute("Power") or 0, player:GetAttribute("WeaponLevel") or 0, player:GetAttribute("Level") or 1, table.concat(lines, "\n")))
+				end
+				combatLog[player] = nil
+			end
+		end
+	end
+end)
+
 local function killMonster(player, part, data)
+	recordKill(player, data)
 	if augRun then Dungeon.AugOnKill(augRun, player, part.Position) end -- 처치 폭발 / 화염 지대 (monsters 에서 지우기 전: 자기 자신은 다시 맞지 않는다)
 	monsters[part] = nil
 	if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then
@@ -1614,6 +1648,7 @@ function Field.HitPart(player, part, damage)
 	if data.Invincible then damage = 1 end
 	data.Health -= damage
 	if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
+	data.FirstHit = data.FirstHit or os.clock()
 	data.LastHit = os.clock()
 	if data.Contrib then
 		data.Contrib[player] = (data.Contrib[player] or 0) + damage
@@ -1643,6 +1678,7 @@ function Field.AreaDamage(player, center, radius, damage)
 			if data.ExposedUntil and os.clock() < data.ExposedUntil then damage = math.floor(damage * 3) end -- 약점 노출 중 x3
 			data.Health -= damage
 			if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
+			data.FirstHit = data.FirstHit or os.clock()
 			data.LastHit = os.clock()
 			if data.Contrib then
 				data.Contrib[player] = (data.Contrib[player] or 0) + damage
