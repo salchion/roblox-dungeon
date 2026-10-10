@@ -2793,13 +2793,36 @@ local function buildInventoryTab()
 					Size = UDim2.new(1 / zoneCount, -4, 0, 70), Position = UDim2.new((zone - 1) / zoneCount, 2, 0, 24), Text = "",
 					BackgroundColor3 = enough and Color3.fromRGB(46, 70, 100) or Color3.fromRGB(36, 38, 54), AutoButtonColor = enough,
 				}, strip, function()
-					if enough then
-						Remotes.Inventory:FireServer("Imprint", selected.Id, zone)
-					elseif already then
-						toast("이미 그 세트예요.")
-					else
-						toast(string.format("%s 구역 세트 조각이 부족해요 (%d / %d) — 그 구역 몬스터에게서 얻어요", Config.Field.ZoneNames[zone], have, cost))
+					-- 누르면 먼저 이 세트가 무슨 효과인지 보여주고, [확인] 을 눌러야 각인된다
+					local old = gui:FindFirstChild("ImprintConfirm")
+					if old then old:Destroy() end
+					local itemId = selected.Id
+					local dim = create("TextButton", { Name = "ImprintConfirm", Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.45, Text = "", AutoButtonColor = false, ZIndex = 90 }, gui)
+					local box = create("Frame", { Size = UDim2.new(0, 420, 0, 300), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundColor3 = Color3.fromRGB(22, 24, 38), BorderSizePixel = 0, ZIndex = 91 }, dim)
+					rounded(box, 14)
+					create("UIStroke", { Color = setDef.Color, Thickness = 2.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, box)
+					local aug = setDef.Aug and Config.AugInfo[setDef.Aug]
+					local lines = { string.format("<font size='20' color='#%s'><b>%s %s</b></font>", hex(setDef.Color), setDef.Icon, setDef.Name),
+						string.format("<font size='12' color='#aab0c8'>%d구역 %s 세트 · 이 장비를 세트 장비로 바꿔요 (등급·강화·옵션 유지)</font>", zone, Config.Field.ZoneNames[zone]), "" }
+					for _, tier in ipairs({ 2, 3 }) do
+						local parts = {}
+						for _, b in ipairs(setDef.Bonuses[tier]) do table.insert(parts, Config.FormatBonus(b.Stat, b.Value)) end
+						table.insert(lines, string.format("<font size='13' color='#ddddee'><b>%d부위</b>  %s</font>", tier, table.concat(parts, ", ")))
 					end
+					if aug then
+						table.insert(lines, string.format("\n<font size='14' color='#%s'><b>%s %s</b></font>  <font size='11' color='#aab0c8'>2부위 1단계 · 3부위 3단계</font>\n<font size='12' color='#cfd6f0'>%s</font>", hex(aug.Color), aug.Icon, aug.Name, aug.Desc))
+					end
+					makeLabel({ Size = UDim2.new(1, -28, 1, -84), Position = UDim2.new(0, 14, 0, 12), RichText = true, TextWrapped = true, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 92, Text = table.concat(lines, "\n") }, box)
+					local canDo = enough
+					makeLabel({ Size = UDim2.new(1, -28, 0, 16), Position = UDim2.new(0, 14, 1, -74), TextSize = 12, ZIndex = 92, TextXAlignment = Enum.TextXAlignment.Left,
+						TextColor3 = canDo and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(255, 150, 150),
+						Text = already and "이미 이 세트예요." or string.format("구역 조각 %d / %d%s", have, cost, canDo and "" or " — 부족해요 (그 구역 몬스터에게서 얻어요)") }, box)
+					makeButton({ Size = UDim2.new(0.5, -20, 0, 40), Position = UDim2.new(0, 14, 1, -52), Text = canDo and "✔ 각인하기" or "각인 불가", TextSize = 16, ZIndex = 92,
+						BackgroundColor3 = canDo and GREEN or GRAY }, box, function()
+						if canDo then Remotes.Inventory:FireServer("Imprint", itemId, zone) end
+						dim:Destroy()
+					end)
+					makeButton({ Size = UDim2.new(0.5, -20, 0, 40), Position = UDim2.new(0.5, 6, 1, -52), Text = "취소", TextSize = 16, ZIndex = 92, BackgroundColor3 = GRAY }, box, function() dim:Destroy() end)
 				end)
 				rounded(button, 6)
 				create("UIStroke", { Color = setDef.Color, Thickness = enough and 2.5 or 1, Transparency = enough and 0 or 0.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, button)
