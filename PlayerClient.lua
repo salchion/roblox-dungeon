@@ -3089,6 +3089,9 @@ function refreshMenu()
 		end
 	end
 
+	local renderKey = currentTab .. ":" .. tostring(MENU.Sub[currentTab])
+	local keepScroll = (MENU.LastKey == renderKey) and menuContent.CanvasPosition or nil -- 같은 화면을 다시 그릴 때는 스크롤 위치를 유지
+	MENU.LastKey = renderKey
 	clearChildren(menuContent)
 	rowOrder = 0
 	local sub = MENU.Sub[currentTab]
@@ -3124,6 +3127,7 @@ function refreshMenu()
 	elseif currentTab == "Rank" then
 		buildRankTab()
 	end
+	if keepScroll then menuContent.CanvasPosition = keepScroll end
 end
 settings.RefreshMenu = refreshMenu
 
@@ -3255,13 +3259,24 @@ Remotes.Rank.OnClientEvent:Connect(function(action, data)
 	end
 end)
 
+-- 메뉴 자동 갱신: 방치 중에는 골드 / 방치 게이지 속성이 매초 바뀌므로, 전부 다시 그리면 창이 툭툭 끊겨 보인다.
+-- 화면에 영향이 없는 값은 무시하고, 골드 / 경험치처럼 자주 바뀌는 값은 2초에 한 번만 갱신한다.
 local menuRefreshQueued = false
-player.AttributeChanged:Connect(function()
-	if not menuPanel.Visible or menuRefreshQueued then return end
+local MENU_IGNORE = {
+	IdleSeconds = true, IdleEarned = true, IdleRate = true, IdleMultTotal = true, IdleCapHours = true, IdleFullGold = true, IdleActive = true,
+	DummyDps = true, DummyTick = true, UltCharge = true, Combo = true, ShakeTick = true, ShakeStrength = true, NearMissStacks = true,
+	NearMissEnd = true, NearMissLen = true, Power = true, Stamina = true, DungeonLabel = true,
+}
+local MENU_SLOW = { Gold = true, XP = true, XPNeeded = true }
+local lastMenuRefresh = 0
+player.AttributeChanged:Connect(function(name)
+	if not menuPanel.Visible or menuRefreshQueued or MENU_IGNORE[name] then return end
 	menuRefreshQueued = true
-	task.defer(function()
+	local wait = MENU_SLOW[name] and math.max(0, 2 - (os.clock() - lastMenuRefresh)) or 0
+	task.delay(wait, function()
 		menuRefreshQueued = false
 		if menuPanel.Visible then
+			lastMenuRefresh = os.clock()
 			refreshMenu()
 		end
 	end)

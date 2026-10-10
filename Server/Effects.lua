@@ -686,6 +686,36 @@ function Effects.DecorateDungeonBoss(part, size, glow, typeKey, variantKey)
 	halo.Parent = part
 end
 
+-- 던전 일반 몬스터 꾸미기: 같은 몬스터라도 던전 종류에 따라 장식이 붙는다 (동굴 = 고블린풍 / 성채 = 서리 / 신전 = 불꽃). 부품 3~4개, 불 몬스터만 작은 불씨 입자.
+function Effects.DecorateDungeonMonster(part, size, typeKey)
+	local piece = zoneBossPiece(part)
+	local Ball, Block = Enum.PartType.Ball, Enum.PartType.Block
+	local S = size
+	if typeKey == "Cave" then
+		local skin = part.Color:Lerp(Color3.fromRGB(86, 140, 62), 0.5)
+		for _, side in ipairs({ -1, 1 }) do
+			piece(Block, S * 0.34, S * 0.07, S * 0.14, side * S * 0.55, S * 0.18, 0, skin, Enum.Material.SmoothPlastic, 0, 0, side * -20)
+		end
+		piece(Block, S * 0.8, S * 0.1, S * 0.8, 0, -S * 0.1, 0, Color3.fromRGB(96, 70, 48), Enum.Material.Fabric)
+		if math.random() < 0.4 then
+			piece(Ball, S * 0.55, S * 0.3, S * 0.55, 0, S * 0.45, 0, Color3.fromRGB(120, 124, 132), Enum.Material.Metal)
+		end
+	elseif typeKey == "Ice" then
+		local ice = Color3.fromRGB(190, 232, 255)
+		for i = 1, 3 do
+			piece(Block, S * 0.08, S * (0.36 + i * 0.05), S * 0.08, (i - 2) * S * 0.2, S * 0.5, 0, ice, Enum.Material.Glass, 0, 0, (i - 2) * 22, 0.2)
+		end
+		piece(Ball, S * 0.5, S * 0.14, S * 0.5, 0, S * 0.46, 0, Color3.fromRGB(240, 248, 255), Enum.Material.Snow)
+	elseif typeKey == "Fire" then
+		local flame = Color3.fromRGB(255, 130, 40)
+		for _, side in ipairs({ -1, 1 }) do
+			piece(Block, S * 0.07, S * 0.34, S * 0.07, side * S * 0.22, S * 0.5, 0, flame, Enum.Material.Neon, 0, 0, side * -18)
+		end
+		piece(Block, S * 0.45, S * 0.06, S * 0.05, 0, S * 0.1, -S * 0.5, Color3.fromRGB(255, 220, 90), Enum.Material.Neon)
+		zoneBossEmitter(part, flame, 3, S * 0.1, 3, 1.2, Vector3.new(0, 4, 0))
+	end
+end
+
 local RAINBOW = ColorSequence.new({
 	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 60, 60)),
 	ColorSequenceKeypoint.new(0.2, Color3.fromRGB(255, 220, 60)),
