@@ -826,7 +826,7 @@ do
 	local ICONS = { "🔱", "💥", "⚡", "🔥", "⏩", "🎯", "❤", "💚", "⭐", "💰", "🎫", "🌪" }
 	local PEN_ICONS = { "🪨", "😡", "💨", "🐺", "🔫", "☠" }
 	local popup = create("Frame", {
-		Name = "RollPopup", Size = UDim2.new(0, 520, 0, 104), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 176),
+		Name = "RollPopup", Size = UDim2.new(0, 520, 0, 104), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 104),
 		BackgroundColor3 = Color3.fromRGB(18, 20, 30), BackgroundTransparency = 0.12, BorderSizePixel = 0, Visible = false, ZIndex = 75,
 	}, gui)
 	rounded(popup, 14)
@@ -1354,36 +1354,36 @@ makeLabel({
 local dungeonFrame = create("Frame", { Name = "DungeonFrame", Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Visible = false }, gui)
 
 local banner = makePanel({
-	Name = "WaveBanner", Size = UDim2.new(0, 420, 0, 96), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 16),
+	Name = "WaveBanner", Size = UDim2.new(0, 340, 0, 30), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 6),
 }, dungeonFrame)
 local bannerTitle = makeLabel({
-	Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 6),
-	Font = Enum.Font.GothamBlack, TextSize = 26,
+	Size = UDim2.new(1, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0),
+	Font = Enum.Font.GothamBlack, TextSize = 17, TextTruncate = Enum.TextTruncate.AtEnd,
 }, banner)
 local bannerSub = makeLabel({
-	Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0, 0, 0, 44),
+	Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0, 0, 0, 44), Visible = false, -- (맵 이름 / 난이도는 왼쪽 위 정보 줄에 표시한다)
 	TextSize = 16, TextColor3 = Color3.fromRGB(210, 210, 230),
 }, banner)
 local bannerMutator = makeLabel({
-	Size = UDim2.new(1, -16, 0, 20), Position = UDim2.new(0, 8, 0, 70),
-	TextSize = 13, TextColor3 = Color3.fromRGB(255, 205, 100), Font = Enum.Font.GothamBold,
+	Size = UDim2.new(1, -16, 0, 18), Position = UDim2.new(0, 8, 0, 78), TextStrokeTransparency = 0.5,
+	TextSize = 12, TextColor3 = Color3.fromRGB(255, 205, 100), Font = Enum.Font.GothamBold,
 }, banner)
 
 local bonusBar = makePanel({
-	Name = "BonusBar", Size = UDim2.new(0, 420, 0, 22), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 118), Visible = false,
+	Name = "BonusBar", Size = UDim2.new(0, 340, 0, 18), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 40), Visible = false,
 }, dungeonFrame)
 local bonusFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 200, 70), BorderSizePixel = 0 }, bonusBar)
 rounded(bonusFill)
-local bonusText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 13, TextStrokeTransparency = 0.4 }, bonusBar)
+local bonusText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 12, TextStrokeTransparency = 0.4 }, bonusBar)
 local limitBar = makePanel({
-	Name = "LimitBar", Size = UDim2.new(0, 420, 0, 22), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 144), Visible = false,
+	Name = "LimitBar", Size = UDim2.new(0, 340, 0, 18), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 62), Visible = false,
 }, dungeonFrame)
 local limitFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(110, 210, 120), BorderSizePixel = 0 }, limitBar)
 rounded(limitFill)
-local limitText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 13, TextStrokeTransparency = 0.4 }, limitBar)
+local limitText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 12, TextStrokeTransparency = 0.4 }, limitBar)
 
 local bossBar = makePanel({
-	Name = "BossBar", Size = UDim2.new(0, 460, 0, 26), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 120), Visible = false,
+	Name = "BossBar", Size = UDim2.new(0, 400, 0, 22), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 40), Visible = false,
 }, dungeonFrame)
 local bossFill = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(200, 40, 50), BorderSizePixel = 0 }, bossBar)
 rounded(bossFill)
@@ -1576,6 +1576,8 @@ local function refreshBanner()
 	end
 	if not state then return end
 	bannerMutator.Text = state.MutatorText or ""
+	local mapLabel = string.format("%s · %s", state.TypeName or "던전", state.DifficultyName or "")
+	if player:GetAttribute("DungeonLabel") ~= mapLabel then player:SetAttribute("DungeonLabel", mapLabel) end -- 왼쪽 위 정보 줄이 읽는다
 
 	if state.BossRatio then
 		bossFill.Size = UDim2.new(math.clamp(state.BossRatio, 0, 1), 0, 1, 0)
@@ -1586,7 +1588,7 @@ local function refreshBanner()
 		bannerTitle.Text = string.format("%s 입장!", state.TypeName or "던전")
 		bannerSub.Text = string.format("[%s] %d초 후 시작! 몰려오는 몬스터를 버텨요", state.DifficultyName or "", state.TimeLeft)
 	elseif state.Phase == "Wave" and state.SurviveLeft then
-		bannerTitle.Text = string.format("🛡 처치하며 버텨라!  %d초", state.SurviveLeft)
+		bannerTitle.Text = string.format("🛡 버텨라!  %d초", state.SurviveLeft)
 		bannerSub.Text = string.format("%s · %s · 몬스터가 너무 쌓이면 실패! 끝까지 버티면 보스 등장", state.TypeName or "", state.DifficultyName or "", state.MonstersLeft)
 	elseif state.Phase == "Wave" then
 		bannerTitle.Text = state.TotalWaves == 0 and string.format("🏯 %d층", state.Wave) or string.format("구역 %d / %d", state.Wave, state.TotalWaves)

@@ -115,11 +115,11 @@ local function refresh()
 		return
 	end
 	local zone = player:GetAttribute("Zone") or "Lobby"
-	local zoneName = zone == "Lobby" and "마을" or zone == "Dungeon" and "던전" or string.format("필드 · 최고 %d구역", player:GetAttribute("MaxZone") or 0)
+	local zoneName = zone == "Lobby" and "마을" or zone == "Dungeon" and (player:GetAttribute("DungeonLabel") or "던전") or string.format("필드 · 최고 %d구역", player:GetAttribute("MaxZone") or 0)
 	zoneText.Text = string.format("📍 %s   <font color='#8fd8ff'>🎟 무료 %d/%d</font>", zoneName, player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily)
 end
 
-for _, name in ipairs({ "DataReady", "Level", "XP", "XPNeeded", "GatePassed", "Power", "Gold", "Tickets", "Keys", "KeysNormal", "KeysHard", "WeaponLevel", "Zone", "MaxZone", "DungeonFree" }) do
+for _, name in ipairs({ "DataReady", "Level", "XP", "XPNeeded", "GatePassed", "Power", "Gold", "Tickets", "Keys", "KeysNormal", "KeysHard", "WeaponLevel", "Zone", "MaxZone", "DungeonFree", "DungeonLabel" }) do
 	player:GetAttributeChangedSignal(name):Connect(refresh)
 end
 refresh()
