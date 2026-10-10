@@ -33,7 +33,7 @@ local guarded = {}    -- 이미 감시 중인 객체 (보이면 안 되는 것)
 local fitScales = {}  -- 큰 창에 붙인 UIScale
 local open = nil      -- 펼쳐진 접이식 패널: "party" | "rank" | "stat" | nil
 local ui, scaleObj, pillRank, pillParty, pillStat
-local layoutCompact
+local layoutCompact, layoutCalm
 
 local function make(class, props, parent)
 	local instance = Instance.new(class)
@@ -97,7 +97,10 @@ local function ensureUi()
 	scaleObj = make("UIScale", { Name = "MobileScale" }, ui)
 	local function toggle(which)
 		open = open ~= which and which or nil
-		task.defer(function() layoutCompact(workspace.CurrentCamera.ViewportSize) end)
+		task.defer(function()
+			local vp = workspace.CurrentCamera.ViewportSize
+			if st.compact then layoutCompact(vp) else layoutCalm(vp) end
+		end)
 	end
 	pillRank = pill("RankPill", "🏆 랭킹", 92, function() toggle("rank") end)
 	pillParty = pill("PartyPill", "👥 파티", 116, function() toggle("party") end)
@@ -337,6 +340,162 @@ local function layoutDesktop()
 	open = nil
 end
 
+------------------------------------------------------------
+-- 첫 화면 정리 (데스크톱 포함): 처음 6초는 HUD 카드 + 미션만, 나머지는 서서히 / 필요할 때만
+--  - 마을 월드 글자(간판 / NPC 이름 등)는 처음 6초 숨겼다가 가까운 것부터 켠다
+--  - 내 머리 위 이름표(Nameplate)는 내 화면에서만 숨긴다 (다른 사람 것은 그대로)
+--  - 키 안내 줄은 intro 가 끝나면 나타났다가 12초 뒤 사라진다 (H 를 누르면 8초 다시 보인다)
+--  - 파티 패널: 파티가 없으면 작은 "파티" 버튼 하나 (누르면 펼침) / 랭킹: 3줄, 내용 높이만큼
+------------------------------------------------------------
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local calm = { t0 = nil, hidden = {}, wave2 = false, rehid = false, hintState = nil, hintInit = false, hintReq = nil, hintOff = 0, hintStroke = 0.5 }
+local scriptStart = os.clock()
+local INTRO = 6
+
+local function introOver()
+	return calm.t0 == false or (calm.t0 ~= nil and os.clock() - calm.t0 >= INTRO)
+end
+
+local function hideWorldLabels(root)
+	for _, name in ipairs({ "Lobby", "LobbyDecor", "Dummies", "Npcs" }) do
+		local folder = workspace:FindFirstChild(name)
+		if folder then
+			for _, d in ipairs(folder:GetDescendants()) do
+				if d:IsA("BillboardGui") and d.Enabled and d.Name ~= "SealGui" and d.Parent and d.Parent.Name ~= "FieldGateSign" then
+					local p = d.Parent
+					local dist = p:IsA("BasePart") and (p.Position - root.Position).Magnitude or 0
+					calm.hidden[d] = dist
+					d.Enabled = false
+				end
+			end
+		end
+	end
+end
+
+local function revealWorldLabels(near)
+	for d, dist in pairs(calm.hidden) do
+		if (dist < 70) == near then
+			if d.Parent then d.Enabled = true end
+			calm.hidden[d] = nil
+		end
+	end
+end
+
+local function calmTick(hud)
+	local now = os.clock()
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	-- 내 이름표 숨김
+	local head = character and character:FindFirstChild("Head")
+	local nameplate = head and head:FindFirstChild("Nameplate")
+	if nameplate and nameplate.Enabled then nameplate.Enabled = false end
+	-- intro 시작
+	if calm.t0 == nil then
+		if root and player:GetAttribute("DataReady") then
+			if player:GetAttribute("Zone") == "Lobby" then
+				calm.t0 = now
+				hideWorldLabels(root)
+			else
+				calm.t0 = false
+			end
+		elseif now - scriptStart > 25 then
+			calm.t0 = false
+		end
+	elseif calm.t0 then
+		if not calm.rehid and now - calm.t0 > 1.5 then
+			calm.rehid = true
+			if root then hideWorldLabels(root) end -- 늦게 생긴 글자도 함께
+		end
+		if not calm.near and now - calm.t0 >= INTRO then
+			calm.near = true
+			revealWorldLabels(true)
+		end
+		if not calm.far and now - calm.t0 >= INTRO + 2 then
+			calm.far = true
+			revealWorldLabels(false)
+		end
+	end
+	-- 키 안내 줄
+	local hint = find(hud, "ControlsHint")
+	if hint then
+		if not calm.hintState then
+			calm.hintState = "hidden"
+			calm.hintStroke = hint.TextStrokeTransparency
+			hint.TextTransparency = 1
+			hint.TextStrokeTransparency = 1
+		end
+		if introOver() and not calm.hintInit then
+			calm.hintInit = true
+			calm.hintReq = now + 12
+		end
+		if calm.hintReq then
+			calm.hintOff = calm.hintReq
+			calm.hintReq = nil
+			if calm.hintState == "hidden" then
+				calm.hintState = "shown"
+				TweenService:Create(hint, TweenInfo.new(0.8), { TextTransparency = 0, TextStrokeTransparency = calm.hintStroke }):Play()
+			end
+		elseif calm.hintState == "shown" and now > calm.hintOff then
+			calm.hintState = "hidden"
+			TweenService:Create(hint, TweenInfo.new(1.2), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+		end
+	end
+end
+
+UserInputService.InputBegan:Connect(function(input, processed)
+	if not processed and input.KeyCode == Enum.KeyCode.H then calm.hintReq = os.clock() + 8 end
+end)
+
+-- 데스크톱: 파티가 없으면 작은 버튼, 랭킹은 3줄짜리 작은 상자
+function layoutCalm(viewport)
+	local hud = playerGui:FindFirstChild("HUD")
+	local partyPanel, rankMini = find(hud, "PartyPanel"), find(hud, "RankMini")
+	local lobbyFrame = find(hud, "LobbyFrame")
+	if not (partyPanel and rankMini) then return end
+	local lobbyOn = lobbyFrame ~= nil and lobbyFrame.Visible and introOver()
+	local hasParty = (player:GetAttribute("PartyId") or 0) ~= 0
+	if hasParty or not lobbyOn then open = nil end
+	if open == "rank" or open == "stat" then open = nil end
+	ensureUi()
+	local showPill = lobbyOn and not hasParty
+	ui.Enabled = showPill
+	scaleObj.Scale = desktopScale(viewport)
+	pillRank.Visible, pillStat.Visible = false, false
+	pillParty.Visible = showPill
+	pillParty.Text = "👥 파티"
+	pillParty.Position = UDim2.new(1, -16, 0, 16)
+	pillParty.BackgroundColor3 = open == "party" and Color3.fromRGB(62, 96, 196) or Color3.fromRGB(34, 40, 70)
+
+	local partyShown = lobbyOn and (hasParty or open == "party")
+	local panelY = showPill and 62 or 16
+	set(partyPanel, "Position", UDim2.new(1, -16, 0, panelY))
+	partyPanel.Visible = partyShown
+
+	-- 랭킹: 최대 3줄, 내용 높이만큼
+	local body = calm.rankBody
+	if not body or not body.Parent then
+		body = nil
+		for _, child in ipairs(rankMini:GetChildren()) do
+			if child:IsA("TextLabel") and child.RichText then body = child end
+		end
+		calm.rankBody = body
+		if body then
+			local function trim()
+				local lines = string.split(body.Text, "\n")
+				if #lines > 3 then body.Text = table.concat(lines, "\n", 1, 3) end
+			end
+			body:GetPropertyChangedSignal("Text"):Connect(trim)
+			trim()
+		end
+	end
+	local rows = body and math.min(3, #string.split(body.Text, "\n")) or 3
+	local rankY = partyShown and (panelY + partyPanel.Size.Y.Offset + 8) or panelY
+	set(rankMini, "Size", UDim2.new(0, 220, 0, 36 + 16 * rows))
+	set(rankMini, "Position", UDim2.new(1, -16, 0, rankY))
+	rankMini.Visible = lobbyOn
+end
+
 local function update()
 	local camera = workspace.CurrentCamera
 	if not camera then return end
@@ -347,12 +506,15 @@ local function update()
 		st.s = math.clamp(math.min(viewport.Y / 560, viewport.X / 820), MIN_SCALE, 1)
 	end
 	local was = st.compact
+	if compact and not was then restoreAll() end -- 데스크톱 정리에서 바꾼 크기 / 위치를 되돌린 뒤 작은 화면 배치를 적용
 	st.compact = compact
 	applyScales(viewport)
+	calmTick(playerGui:FindFirstChild("HUD"))
 	if compact then
 		layoutCompact(viewport)
-	elseif was then
-		layoutDesktop()
+	else
+		if was then layoutDesktop() end
+		layoutCalm(viewport)
 	end
 end
 

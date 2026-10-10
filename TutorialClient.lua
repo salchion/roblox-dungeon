@@ -57,6 +57,7 @@ local function missionPos(dy)
 	return UDim2.new(0, 16, 0, 288 + dy)
 end
 local CARD_SIZE = UDim2.new(0, 260, 0, 116)
+local cardH, scriptStart = 116, os.clock() -- 카드 높이: 마을이거나 20초가 지나면 80 (한 줄 제목 + 한 줄 목표)
 local objective = create("Frame", {
 	Size = CARD_SIZE, Position = CARD_POSITION,
 	BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.12, BorderSizePixel = 0, Visible = false,
@@ -111,10 +112,10 @@ local function placeBeacon(position, name)
 	beacon.Parent = workspace
 
 	local billboard = create("BillboardGui", {
-		Size = UDim2.new(0, 220, 0, 50), StudsOffset = Vector3.new(0, -85, 0), AlwaysOnTop = true, MaxDistance = 100000,
+		Size = UDim2.new(0, 200, 0, 30), StudsOffset = Vector3.new(0, -85, 0), AlwaysOnTop = true, MaxDistance = 100000, -- 월드 글자는 작게: 목표 표지는 이것 하나만
 	}, beacon)
 	beaconLabel = label({
-		Size = UDim2.new(1, 0, 1, 0), TextSize = 20, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0,
+		Size = UDim2.new(1, 0, 1, 0), TextSize = 15, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0.2,
 		TextColor3 = Color3.fromRGB(255, 230, 120), Text = "▼ " .. (name or "목표"),
 	}, billboard)
 end
@@ -464,8 +465,23 @@ RunService.RenderStepped:Connect(function()
 		if root then
 			local flat = Vector3.new(root.Position.X - waypoint.Position.X, 0, root.Position.Z - waypoint.Position.Z).Magnitude
 			waypointLabel.Text = string.format("▼ %s  %dm", waypoint:GetAttribute("Label") or "다음 방", math.floor(flat + 0.5))
-			waypoint.Transparency = flat < 30 and 0.92 or 0.6
+			local lobbyNow = player:GetAttribute("Zone") == "Lobby" -- 마을에서는 목표 표지 하나만 보이게 (다음 구역 길잡이는 숨긴다)
+			waypoint.Transparency = lobbyNow and 1 or (flat < 30 and 0.92 or 0.6)
+			local wGui = waypoint:FindFirstChildOfClass("BillboardGui")
+			if wGui then wGui.Enabled = not lobbyNow end
 		end
+	end
+	-- 마을에서는 미션 카드를 작게: 제목 한 줄 + 목표 한 줄 + 진행 막대
+	local small = player:GetAttribute("Zone") == "Lobby" or os.clock() - scriptStart > 20
+	local wantH = small and 80 or 116
+	if cardH ~= wantH then
+		cardH = wantH
+		objective.Size = UDim2.new(0, 260, 0, wantH)
+		descLabel.Size = small and UDim2.new(1, -20, 0, 18) or UDim2.new(1, -20, 0, 58)
+		descLabel.TextSize = small and 13 or 14
+		descLabel.TextWrapped = not small
+		descLabel.TextTruncate = small and Enum.TextTruncate.AtEnd or Enum.TextTruncate.None
+		player:SetAttribute("TutorialCardH", wantH)
 	end
 	-- 던전 안에서는 던전 UI 와 겹치지 않게 숨긴다
 	objective.Visible = current ~= nil and player:GetAttribute("Zone") ~= "Dungeon"
@@ -492,7 +508,7 @@ RunService.RenderStepped:Connect(function()
 				end
 			end
 			local line = string.format("📍 %s  %s  %dm", current.TargetName or "목표", where, meters)
-			barText.Text = string.format("%d / %d     %s", current.Progress, current.Goal, line)
+			barText.Text = cardH <= 80 and string.format("%d / %d", current.Progress, current.Goal) or string.format("%d / %d     %s", current.Progress, current.Goal, line)
 			if activeWhere and activeWhere.Parent then activeWhere.Text = line end
 			beacon.Transparency = flat < 40 and 0.85 or 0.35 -- 가까워지면 투명하게 (시야 방해 방지)
 		end
@@ -525,7 +541,7 @@ do
 		}, frame)
 		local text = label({
 			Size = UDim2.new(1, 0, 0, 20), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 52),
-			Text = "", TextSize = 16, Font = Enum.Font.GothamBold, TextColor3 = color, TextStrokeTransparency = 0, ZIndex = 50,
+			Text = "", TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = color, TextStrokeTransparency = 0, ZIndex = 50,
 		}, frame)
 		return frame, arrow, text
 	end
@@ -550,7 +566,9 @@ do
 			-- 화면 안에 보이면 목표 바로 위에 아래쪽 화살표
 			frame.Position = UDim2.fromOffset(screen.X / k, math.max(60, screen.Y - 90) / k)
 			arrow.Rotation = 90
+			text.Visible = false -- 화면 안에서는 월드 글자가 이미 있으니 중복 글자를 뺀다
 		else
+			text.Visible = true
 			if direction.Magnitude < 1 then
 				direction = Vector2.new(0, -1)
 			end
@@ -572,7 +590,7 @@ do
 		else
 			goalFrame.Visible = false
 		end
-		if waypoint then
+		if waypoint and player:GetAttribute("Zone") ~= "Lobby" then
 			point(wayFrame, wayArrow, wayText, waypoint.Position - Vector3.new(0, 70, 0), "다음 구역")
 		else
 			wayFrame.Visible = false

@@ -151,7 +151,7 @@ local function buildDummy(index, info, position, nameIndex, bigScale)
 	local gui = Instance.new("BillboardGui")
 	gui.Size = UDim2.new(0, 190, 0, 52)
 	gui.StudsOffset = Vector3.new(0, 3.5 + 2.2 * s, 0)
-	gui.MaxDistance = 55 -- 가까이 가야 이름 / 방어력이 보인다 (작은 화면에서 글자 겹침 방지)
+	gui.MaxDistance = 40 -- 가까이 가야 이름 / 방어력이 보인다 (작은 화면에서 글자 겹침 방지)
 	gui.Parent = head
 
 	local title = Instance.new("TextLabel")
@@ -172,7 +172,7 @@ local function buildDummy(index, info, position, nameIndex, bigScale)
 	sub.TextScaled = true
 	sub.TextStrokeTransparency = 0.3
 	sub.TextColor3 = Color3.fromRGB(230, 230, 240)
-	sub.Text = "🎯 대미지 / DPS 연습"
+	sub.Text = ""
 	sub.Parent = gui
 
 	model.Parent = folder
@@ -215,7 +215,7 @@ function Dummy.Build(start)
 	local signGui = Instance.new("BillboardGui")
 	signGui.Size = UDim2.new(0, 240, 0, 50)
 	signGui.StudsOffset = Vector3.new(0, 15, 0)
-	signGui.MaxDistance = 60
+	signGui.MaxDistance = 50
 	signGui.Parent = ring
 	local signLabel = Instance.new("TextLabel")
 	signLabel.Size = UDim2.new(1, 0, 1, 0)
@@ -224,7 +224,7 @@ function Dummy.Build(start)
 	signLabel.TextScaled = true
 	signLabel.TextColor3 = Color3.fromRGB(255, 225, 120)
 	signLabel.TextStrokeTransparency = 0
-	signLabel.Text = "🎯 허수아비 훈련장\n쏴 보고 DPS 를 확인해요"
+	signLabel.Text = "🎯 허수아비 훈련장"
 	signLabel.Parent = signGui
 
 	-- 허수아비 하나: 8번 모양(어깨 보호대 / 투구 / 뿔 / 가슴 갑옷 / 빛나는 눈)을 써서 크고 듬직하게. 이름은 Dummy1.
@@ -288,8 +288,8 @@ local function showDps(model, data, player, damage)
 		gui.Name = "DpsGui"
 		gui.Size = UDim2.new(0, 260, 0, 60)
 		gui.StudsOffset = Vector3.new(0, 13, 0)
-		gui.AlwaysOnTop = true
-		gui.MaxDistance = 150
+		gui.AlwaysOnTop = false
+		gui.MaxDistance = 40 -- 가까이 있을 때만 (이름 없이 DPS 만)
 		gui.Parent = root
 		local label = Instance.new("TextLabel")
 		label.Size = UDim2.new(1, 0, 1, 0)
@@ -303,7 +303,7 @@ local function showDps(model, data, player, damage)
 		data.DpsLabel = label
 	end
 	local function fmt(n) return (tostring(math.floor(n)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")) end
-	data.DpsLabel.Text = string.format("%s\n<font color='#ffd966'>DPS %s</font>  <font size='14' color='#aab4d8'>최고 %s</font>", player.DisplayName, fmt(dps), fmt(log.Best))
+	data.DpsLabel.Text = string.format("<font color='#ffd966'>DPS %s</font>  <font size='14' color='#aab4d8'>최고 %s</font>", fmt(dps), fmt(log.Best))
 end
 
 local goldRemainder = setmetatable({}, { __mode = "k" }) -- [player] = 아직 지급하지 못한 소수점 골드
@@ -532,7 +532,7 @@ function Dummy.BuildRest(position)
 	local signGui = Instance.new("BillboardGui")
 	signGui.Size = UDim2.new(0, 320, 0, 70)
 	signGui.StudsOffset = Vector3.new(0, 16, 0)
-	signGui.MaxDistance = 140
+	signGui.MaxDistance = 50
 	signGui.Parent = ring
 	local signLabel = Instance.new("TextLabel")
 	signLabel.Size = UDim2.new(1, 0, 1, 0)
@@ -541,7 +541,7 @@ function Dummy.BuildRest(position)
 	signLabel.TextScaled = true
 	signLabel.TextColor3 = Color3.fromRGB(190, 240, 255)
 	signLabel.TextStrokeTransparency = 0
-	signLabel.Text = "💤 휴식 구역\n서 있기만 해도 골드가 쌓여요 · 접속을 꺼도 쌓여요"
+	signLabel.Text = "💤 휴식 구역"
 	signLabel.Parent = signGui
 end
 

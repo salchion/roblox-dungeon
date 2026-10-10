@@ -72,6 +72,7 @@ barFill.BorderSizePixel = 0
 barFill.Parent = barBack
 addCorner(barFill, 5)
 
+local panelH, goalStart = 66, os.clock()
 local function comma(n)
 	local s = tostring(math.floor(n))
 	return (s:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
@@ -358,12 +359,21 @@ RunService.RenderStepped:Connect(function()
 	-- 튜토리얼 중에는 미션 바가 목표를 안내하므로 숨김. 던전 안에서도 숨김
 	panel.Visible = not player:GetAttribute("TutorialActive") and zone ~= "Dungeon"
 	panel.Position = lay(0)
+	-- 마을이거나 20초가 지나면 작게: 제목 한 줄 + 목표 한 줄 (진행 막대는 숨김)
+	local smallCard = zone == "Lobby" or os.clock() - goalStart > 20
+	local wantH = smallCard and 46 or 66
+	if panelH ~= wantH then
+		panelH = wantH
+		panel.Size = UDim2.new(0, 260, 0, wantH)
+		barBack.Visible = not smallCard
+		titleLabel.Size = UDim2.new(1, -16, 0, smallCard and 36 or 34)
+	end
 	if zone == "Dungeon" then beaconDone = true end
 
 	local questOn = player:GetAttribute("QuestHud") == true and zone ~= "Dungeon" and dailyList ~= nil
 	questPanel.Visible = questOn
 	if questOn then
-		local targetDy = panel.Visible and 76 or (player:GetAttribute("TutorialCardUp") and 116 + 8 or 0)
+		local targetDy = panel.Visible and (panelH + 10) or (player:GetAttribute("TutorialCardUp") and (player:GetAttribute("TutorialCardH") or 116) + 8 or 0)
 		if not questShown then -- 처음 나타날 때: 왼쪽에서 튕겨 들어온다 (작은 화면은 바로 제자리)
 			questShown = true
 			refreshQuests()
@@ -380,8 +390,9 @@ RunService.RenderStepped:Connect(function()
 	-- 방치 수입 줄은 쌓인 미션 카드들 바로 아래로 (작은 화면에서만)
 	if compact() then
 		local cardUp = player:GetAttribute("TutorialCardUp")
-		local bottom = (panel.Visible and 66) or (cardUp and 116) or 0
-		if questOn then bottom = (panel.Visible and 76 or (cardUp and 124 or 0)) + 30 end
+		local tutH = player:GetAttribute("TutorialCardH") or 116
+		local bottom = (panel.Visible and panelH) or (cardUp and tutH) or 0
+		if questOn then bottom = (panel.Visible and (panelH + 10) or (cardUp and (tutH + 8) or 0)) + 30 end
 		idleLabel.Position = UDim2.new(0.5, 0, 0, (pg:GetAttribute("UiMissionY") or 8) + bottom + 6)
 	else
 		idleLabel.Position = UDim2.new(0.5, 0, 0, 128)

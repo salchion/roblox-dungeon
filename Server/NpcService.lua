@@ -97,7 +97,7 @@ local function build(def, position)
 	local gui = Instance.new("BillboardGui")
 	gui.Size = UDim2.new(0, 220, 0, 74)
 	gui.StudsOffset = Vector3.new(0, 3.2, 0)
-	gui.MaxDistance = 70
+	gui.MaxDistance = 40
 	gui.Parent = head
 	local title = Instance.new("TextLabel")
 	title.Size = UDim2.new(1, 0, 0, 22)

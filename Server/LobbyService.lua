@@ -363,7 +363,7 @@ function Lobby.Build()
 			Transparency = 0.88, CanCollide = false, CanQuery = false }, folder)
 		addLight(beam, 60, 1.2, pink)
 		local pedestal = makePart({ Name = "RiftPedestal", Size = Vector3.new(4, 3, 4), Position = rift + Vector3.new(-9, 1.5, 0), Color = Color3.fromRGB(60, 40, 90), Material = Enum.Material.Slate }, folder)
-		makeLabel(pedestal, "🌀 심연 도전\n하루 3회 · 최고 점수가 소탕 보상을 정해요!", Color3.fromRGB(255, 180, 230), 6, 420, 90, 140)
+		makeLabel(pedestal, "🌀 심연 도전", Color3.fromRGB(255, 180, 230), 6, 300, 56, 50)
 		riftPrompt = Instance.new("ProximityPrompt")
 		riftPrompt.ActionText = "도전 / 소탕"
 		riftPrompt.ObjectText = "🌀 심연 도전"
@@ -582,7 +582,7 @@ function Lobby.Build()
 		swirl.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.7), NumberSequenceKeypoint.new(1, 0) })
 		swirl.Parent = portal
 
-		makeLabel(portal, string.format("⚔ %s\n[%s] Lv.%d+", dungeonType.Name, difficulty.Name, entry.MinLevel), difficulty.Color, GH / 2 + 17, 260, 64, 60)
+		makeLabel(portal, string.format("⚔ %s\n[%s] Lv.%d+", dungeonType.Name, difficulty.Name, entry.MinLevel), difficulty.Color, GH / 2 + 17, 260, 64, 45)
 
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText = "입장 (Lv." .. entry.MinLevel .. ")"
@@ -633,7 +633,7 @@ function Lobby.Build()
 		local sign = part("StallSign", Vector3.new(11, 3.2, 0.5), Vector3.new(0, 9.6, -9.9), Color3.fromRGB(70, 48, 32), Enum.Material.Wood)
 		part("SignRopeL", Vector3.new(0.15, 1.6, 0.15), Vector3.new(-4.5, 11.2, -9.9), Color3.fromRGB(200, 190, 160), Enum.Material.Fabric, { CanCollide = false })
 		part("SignRopeR", Vector3.new(0.15, 1.6, 0.15), Vector3.new(4.5, 11.2, -9.9), Color3.fromRGB(200, 190, 160), Enum.Material.Fabric, { CanCollide = false })
-		makeLabel(sign, signText, signColor, 3.4, 360, 80, 70, true) -- 지붕 위로 띄우고 항상 보이게: 가게 이름이 지붕에 가려 잘리던 문제
+		makeLabel(sign, signText, signColor, 3.4, 360, 80, 60, true) -- 지붕 위로 띄우고 항상 보이게: 가게 이름이 지붕에 가려 잘리던 문제
 		for _, side in ipairs({ -1, 1 }) do
 			local lantern = part("StallLantern", Vector3.new(1.4, 1.8, 1.4), Vector3.new(side * 9.6, 8.5, -8.6), Color3.fromRGB(255, 200, 110), Enum.Material.Neon, { CanCollide = false })
 			addLight(lantern, 24, 1.3, Color3.fromRGB(255, 205, 130))
@@ -748,7 +748,7 @@ function Lobby.Build()
 	local gateSign = makePart({ Name = "FieldGateSign", Size = Vector3.new(1, 1, 1), Position = fieldGate + Vector3.new(0, 52, 0), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
 	local signGui = Instance.new("BillboardGui")
 	signGui.Size = UDim2.new(0, 300, 0, 44)
-	signGui.MaxDistance = 170
+	signGui.MaxDistance = 130
 	signGui.AlwaysOnTop = false
 	signGui.Parent = gateSign
 	local signTitle = Instance.new("TextLabel")
@@ -883,7 +883,7 @@ function Lobby.Build()
 
 	-- 허수아비 훈련장 입구 표지 (서쪽, 실제 허수아비는 DummyService 가 놓는다)
 	local trainingSign = makePart({ Name = "TrainingSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(0, 24, 38), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
-	makeLabel(trainingSign, "🎯 허수아비 훈련장\n대미지 / DPS 를 확인해요", Color3.fromRGB(255, 220, 120), 0, 340, 76, 110)
+	-- (글자 표지는 DummyService 의 훈련장 안내판 하나만 쓴다: 중복 방지)
 
 	-- 쨍한 느낌 줄이기: 네온 부품은 색을 살짝 가라앉히고, 조명은 약하게 (은은하게 빛나는 정도)
 	for _, descendant in ipairs(folder:GetDescendants()) do
