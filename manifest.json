@@ -351,6 +351,13 @@
       "overwrite": true
     },
     {
+      "path": "NearMissAuraClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "NearMissAuraClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "MonsterSmoothClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "MonsterSmoothClient",

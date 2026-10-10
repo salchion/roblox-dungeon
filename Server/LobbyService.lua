@@ -825,10 +825,11 @@ function Lobby.Build()
 		}
 		-- 판 앞뒤 양쪽 면에 글자를 붙인다 (어느 쪽에서 봐도 읽히고, 판에 가려 잘리지 않는다)
 		local function buildSignpost(origin, scale)
-			makePart({ Name = "CrossPost", Size = Vector3.new(2.2 * scale, 14 * scale, 2.2 * scale), Position = origin + Vector3.new(0, 7 * scale, 0), Color = Color3.fromRGB(95, 65, 40), Material = Enum.Material.Wood }, folder)
-			for _, board in ipairs(boards) do
-				local plank = makePart({ Name = "CrossBoard", Size = Vector3.new(12 * scale, 2.8 * scale, 0.8), Position = origin + Vector3.new(board.Dir * 4.4 * scale, (board.Y + 1) * scale, 0), Color = board.Color, Material = Enum.Material.Wood }, folder)
-				for _, face in ipairs({ Enum.NormalId.Front, Enum.NormalId.Back }) do
+			makePart({ Name = "CrossPost", Size = Vector3.new(1.2 * scale, 14 * scale, 1.2 * scale), Position = origin + Vector3.new(0, 7 * scale, 0), Color = Color3.fromRGB(95, 65, 40), Material = Enum.Material.Wood }, folder)
+			-- 판은 기둥 밖으로 비껴서 달린다 (동 / 서는 옆으로, 북은 기둥 앞뒤에 따로) -> 기둥에 글자가 가려 잘리지 않는다
+			local function plankAt(board, offset, faces)
+				local plank = makePart({ Name = "CrossBoard", Size = Vector3.new(12 * scale, 2.8 * scale, 0.8), Position = origin + Vector3.new(offset.X * scale, (board.Y + 1) * scale, offset.Z), Color = board.Color, Material = Enum.Material.WoodPlanks }, folder)
+				for _, face in ipairs(faces) do
 					local surface = Instance.new("SurfaceGui")
 					surface.Face = face
 					surface.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
@@ -844,6 +845,14 @@ function Lobby.Build()
 					text.TextStrokeTransparency = 0
 					text.Text = board.Text
 					text.Parent = surface
+				end
+			end
+			for _, board in ipairs(boards) do
+				if board.Dir == 0 then
+					plankAt(board, Vector3.new(0, 0, 0.9), { Enum.NormalId.Front })
+					plankAt(board, Vector3.new(0, 0, -0.9), { Enum.NormalId.Back })
+				else
+					plankAt(board, Vector3.new(board.Dir * 7.4, 0, 0), { Enum.NormalId.Front, Enum.NormalId.Back })
 				end
 			end
 			-- 멀리서도 보이게 꼭대기 등불

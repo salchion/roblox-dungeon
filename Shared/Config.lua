@@ -36,6 +36,7 @@ Config.StatAttributes = {   -- Upgrade 리모트가 받는 이름 -> 플레이�
 -- 스킬 강화 (골드) / 펫 (알 부화) / 무한의 탑 기록
 ------------------------------------------------------------
 -- NEAR MISS(대시로 아슬아슬하게 피하기): 연속으로 성공할수록 공격력이 누적해서 올라간다 (마지막 성공 후 Duration 초가 지나면 사라진다)
+Config.WeakExposeSeconds = 6.5 -- 보스 약점을 맞혔을 때 약점이 노출되어 피해 x3 가 유지되는 시간(초)
 Config.NearMiss = { DamagePerStack = 0.05, MaxStacks = 10, Duration = 8 }
 
 Config.SkillUpgrade = {

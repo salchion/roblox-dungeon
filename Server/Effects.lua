@@ -297,21 +297,62 @@ function Effects.ExposeBoss(part, data, duration)
 		data.WeakHidden = true
 		Effects.SetWeakVisible(data.WeakPart, false)
 	end
+	-- 이미 노출 중에 또 맞히면 (표시를 새로 만들지 않고) 시간만 늘린다
+	for _, old in ipairs(part:GetChildren()) do
+		if old.Name == "ExposedOutline" or old.Name == "ExposedBar" then old:Destroy() end
+	end
 	local outline = Instance.new("Highlight")
 	outline.Name = "ExposedOutline"
 	outline.Adornee = part
 	outline.FillColor = Color3.fromRGB(255, 220, 60)
-	outline.FillTransparency = 0.7
+	outline.FillTransparency = 0.45
 	outline.OutlineColor = Color3.fromRGB(255, 240, 120)
 	outline.OutlineTransparency = 0
 	outline.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 	outline.Parent = part
-	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 6, 0), string.format("💥 약점 노출! %d초간 피해 x3", duration), Color3.fromRGB(255, 240, 90))
+	-- 갑옷이 깨져 속이 번쩍이는 느낌: 채움 색이 천천히 맥박친다
+	TweenService:Create(outline, TweenInfo.new(0.35, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { FillTransparency = 0.8 }):Play()
+	-- 보스 머리 위: 남은 시간 막대 (줄어드는 노란 막대) + 글자
+	local gui = Instance.new("BillboardGui")
+	gui.Name = "ExposedBar"
+	gui.Size = UDim2.new(0, 200, 0, 38)
+	gui.StudsOffset = Vector3.new(0, part.Size.Y / 2 + 9, 0)
+	gui.AlwaysOnTop = true
+	gui.MaxDistance = 260
+	gui.Parent = part
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(1, 0, 0, 22)
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.GothamBlack
+	label.TextSize = 18
+	label.TextColor3 = Color3.fromRGB(255, 240, 90)
+	label.TextStrokeTransparency = 0
+	label.Text = "💥 약점 적중!  피해 x3"
+	label.Parent = gui
+	local back = Instance.new("Frame")
+	back.Size = UDim2.new(1, -20, 0, 8)
+	back.Position = UDim2.new(0, 10, 0, 26)
+	back.BackgroundColor3 = Color3.fromRGB(40, 32, 10)
+	back.BorderSizePixel = 0
+	back.Parent = gui
+	local fill = Instance.new("Frame")
+	fill.Size = UDim2.new(1, 0, 1, 0)
+	fill.BackgroundColor3 = Color3.fromRGB(255, 220, 60)
+	fill.BorderSizePixel = 0
+	fill.Parent = back
+	TweenService:Create(fill, TweenInfo.new(duration, Enum.EasingStyle.Linear), { Size = UDim2.new(0, 0, 1, 0) }):Play()
+	-- 맞은 순간: 보스 둘레로 금빛 충격 고리 + 파편 + 큰 글자
+	Effects.Raw(part.Position, { "R", part.Position, math.max(10, part.Size.X * 0.9), Color3.fromRGB(255, 225, 80) })
+	Effects.Burst(part.Position, Color3.fromRGB(255, 225, 80), 40)
+	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 12, 0), string.format("💥 약점 적중! %.1f초간 피해 x3", duration), Color3.fromRGB(255, 240, 90))
 	task.delay(duration, function()
-		if outline.Parent then outline:Destroy() end
-		if data.WeakPart and data.WeakPart.Parent then
-			data.WeakHidden = nil
-			Effects.SetWeakVisible(data.WeakPart, true)
+		if outline.Parent and data.ExposedUntil and os.clock() >= data.ExposedUntil - 0.05 then
+			outline:Destroy()
+			gui:Destroy()
+			if data.WeakPart and data.WeakPart.Parent then
+				data.WeakHidden = nil
+				Effects.SetWeakVisible(data.WeakPart, true)
+			end
 		end
 	end)
 end

@@ -1662,7 +1662,7 @@ function Field.Shoot(player, origin, direction)
 				player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 6))
 				player:SetAttribute("WeakHitTick", (player:GetAttribute("WeakHitTick") or 0) + 1)
 				Effects.Burst(data.WeakPart.Position, Color3.fromRGB(255, 235, 80), 24)
-				Effects.ExposeBoss(result.Instance, data, 4)
+				Effects.ExposeBoss(result.Instance, data, Config.WeakExposeSeconds)
 			end
 		end
 		if data.ExposedUntil and os.clock() < data.ExposedUntil then
@@ -2258,6 +2258,13 @@ local function awardNearMiss(player, root)
 	local charge = player:GetAttribute("UltCharge") or 0
 	player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, charge + 10 + math.min(streak, 4) * 3))
 	player:SetAttribute("NearMissUntil", now + Config.NearMiss.Duration) -- 공격력 누적 보너스 유지 시간 (DungeonService.ComputeDamage 가 읽는다)
+	player:SetAttribute("NearMissStacks", math.min(streak, Config.NearMiss.MaxStacks)) -- 클라이언트가 몸 / 총에 기운이 모이는 연출을 그린다
+	player:SetAttribute("NearMissEnd", workspace:GetServerTimeNow() + Config.NearMiss.Duration)
+	task.delay(Config.NearMiss.Duration + 0.1, function()
+		if player.Parent and (player:GetAttribute("NearMissEnd") or 0) <= workspace:GetServerTimeNow() then
+			player:SetAttribute("NearMissStacks", 0)
+		end
+	end)
 	local rift = Meta.GetRift(player) -- 처음 한 번만 NEAR MISS 설명 카드를 띄운다 (저장됨)
 	local firstTime = rift ~= nil and not rift.Tip
 	if rift then rift.Tip = true end

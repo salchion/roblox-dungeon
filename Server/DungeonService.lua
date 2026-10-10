@@ -1136,6 +1136,13 @@ function Dungeon.AwardNearMiss(run, player, root)
 	player:SetAttribute("NearMissStreak", streak)
 	player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 10 + math.min(streak, 4) * 3))
 	player:SetAttribute("NearMissUntil", now + Config.NearMiss.Duration)
+	player:SetAttribute("NearMissStacks", math.min(streak, Config.NearMiss.MaxStacks)) -- 클라이언트가 몸 / 총에 기운이 모이는 연출을 그린다
+	player:SetAttribute("NearMissEnd", workspace:GetServerTimeNow() + Config.NearMiss.Duration)
+	task.delay(Config.NearMiss.Duration + 0.1, function()
+		if player.Parent and (player:GetAttribute("NearMissEnd") or 0) <= workspace:GetServerTimeNow() then
+			player:SetAttribute("NearMissStacks", 0)
+		end
+	end)
 	if run.Score then
 		run.Score[player] = (run.Score[player] or 0) + Config.Rift.NearMissScore * math.min(streak, 5)
 		player:SetAttribute("RiftScore", math.floor(run.Score[player]))
@@ -1734,7 +1741,7 @@ function Dungeon.Shoot(player, origin, direction)
 				player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 6))
 				player:SetAttribute("WeakHitTick", (player:GetAttribute("WeakHitTick") or 0) + 1)
 				Effects.Burst(data.WeakPart.Position, Color3.fromRGB(255, 235, 80), 24)
-				Effects.ExposeBoss(part, data, 4)
+				Effects.ExposeBoss(part, data, Config.WeakExposeSeconds)
 			end
 		end
 		damageMonster(run, player, part, data, damage, isCrit, hitPosition)
