@@ -443,6 +443,21 @@ end
 -- 무기 사다리: 10개 시대 x 10개 종류 = 100종. 시대마다 색 / 재질 / 효과 / 발사체가 크게 바뀌고,
 -- 시대 안에서는 권총 -> 기관단총 -> 리볼버 -> 라이플 -> 샷건 -> 화염방사기 -> 플라즈마 캐논 -> 저격총 -> 로켓 런처 -> 레일건 순서로 바뀐다 (CLASS_ORDER).
 -- Shot: 발사체 외형. Style(Ball/Bolt/Orb/Cannon/Fire/Rocket/Rainbow) / Size / Length(Bolt/Rocket) / Speed(초당 거리) / Impact(착탄 입자 수)
+
+-- 시대 특성: 무기가 새 시대로 진화할 때마다 "싸우는 방식"이 달라진다 (피해 숫자만 오르는 게 아니라 맞히는 맛이 바뀐다).
+-- 맞힌 적 주변에 추가 피해가 번진다 (Mult = 한 번 맞힌 피해 대비 비율). Kind: Pierce 뒤의 적 / Bounce 튕김 / Shard 파편 / Splash 폭발 / Chain 연쇄 / Cone 전방 부채꼴 / SoulBlast 처치 폭발 / Star 별빛 난사
+local ERA_PERKS = {
+	{ Name = "기본 사격", Icon = "🔫", Desc = "특별한 효과 없이 정직하게 쏜다" },
+	{ Name = "관통탄", Icon = "🏹", Desc = "탄이 뚫고 지나가 뒤에 있는 적도 맞혀요", Kind = "Pierce", Count = 1, Mult = 0.6, Range = 16, Color = Color3.fromRGB(120, 180, 255) },
+	{ Name = "마탄 튕김", Icon = "🔮", Desc = "30% 확률로 마법 구슬이 옆의 적에게 튕겨요", Kind = "Bounce", Chance = 0.3, Count = 1, Mult = 0.55, Radius = 28, Color = Color3.fromRGB(190, 120, 255) },
+	{ Name = "금빛 파편", Icon = "✨", Desc = "25% 확률로 금빛 파편 3개가 가까운 적들에게 날아가요", Kind = "Shard", Chance = 0.25, Count = 3, Mult = 0.4, Radius = 34, Color = Color3.fromRGB(255, 215, 80) },
+	{ Name = "화염 폭발", Icon = "🔥", Desc = "맞은 곳이 불꽃으로 폭발해 주변 적도 태워요", Kind = "Splash", Radius = 9, Mult = 0.5, Color = Color3.fromRGB(255, 120, 50) },
+	{ Name = "서리 관통", Icon = "❄", Desc = "얼음 탄이 두 마리까지 뚫고 지나가요", Kind = "Pierce", Count = 2, Mult = 0.65, Range = 22, Color = Color3.fromRGB(150, 225, 255) },
+	{ Name = "연쇄 번개", Icon = "⚡", Desc = "맞을 때마다 번개가 가까운 적 3마리로 튀어요", Kind = "Chain", Count = 3, Mult = 0.6, Radius = 32, Color = Color3.fromRGB(255, 240, 100) },
+	{ Name = "영혼 폭발", Icon = "💀", Desc = "적을 처치하면 영혼이 터져 주변 적에게 큰 피해를 줘요", Kind = "SoulBlast", Radius = 16, Mult = 1.0, Color = Color3.fromRGB(175, 100, 255) },
+	{ Name = "용의 숨결", Icon = "🐉", Desc = "맞힌 방향 앞쪽으로 불길이 퍼져 줄지은 적들을 태워요", Kind = "Cone", Range = 26, Mult = 0.5, Color = Color3.fromRGB(255, 140, 60) },
+	{ Name = "별빛 난사", Icon = "🌟", Desc = "35% 확률로 무지개 별 4개가 가까운 적들에게 쏟아져요", Kind = "Star", Chance = 0.35, Count = 4, Mult = 0.75, Radius = 40, Color = Color3.fromRGB(255, 255, 255) },
+}
 local ERAS = {
 	{ Prefix = "녹슨",   Color = Color3.fromRGB(165, 165, 175), Material = Enum.Material.Metal,  Particles = 0,  Trail = false, Light = 0,
 		Shot = { Style = "Ball", Size = 0.6, Speed = 260, Impact = 0 } },
@@ -499,7 +514,7 @@ for index = 1, Config.Weapon.WeaponCount do
 		Index = index, MinLevel = totalSteps, Steps = Config.Weapon.StepsFor(index),
 		Name = name, Prefix = era.Prefix, Class = class, Era = (index - 1) // #CLASS_ORDER + 1,
 		Color = era.Color, Material = era.Material, Particles = era.Particles, Trail = era.Trail, Light = era.Light,
-		Rainbow = era.Rainbow, Shot = shot,
+		Rainbow = era.Rainbow, Shot = shot, Perk = ERA_PERKS[(index - 1) // #CLASS_ORDER + 1],
 	}
 	-- 예전 코드가 tier.Names[종류] 로 이름을 찾는 곳이 있어서, 어떤 키로 찾아도 이 무기 이름을 돌려준다
 	entry.Names = setmetatable({}, { __index = function() return name end })
@@ -863,6 +878,11 @@ function Config.GetTierWeapon(tier)
 		tierWeapons[tier.Index] = cached
 	end
 	return cached
+end
+
+-- 지금 무기의 시대 특성
+function Config.GetWeaponPerk(level)
+	return Config.GetWeaponTier(level).Perk
 end
 
 function Config.GetPlayerWeapon(player)

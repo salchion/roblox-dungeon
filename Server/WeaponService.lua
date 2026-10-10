@@ -733,7 +733,8 @@ function Weapon.Enhance(player)
 			end
 		end
 		if evolved then
-			return true, string.format("🎉 진화! %s (%d/%d)", after.Name, after.Index, Config.Weapon.WeaponCount), false, true, cost
+			local perkText = (after.Era > before.Era and after.Perk and after.Perk.Kind) and string.format(" · 새 특성 『%s %s』!", after.Perk.Icon, after.Perk.Name) or ""
+			return true, string.format("🎉 진화! %s (%d/%d)%s", after.Name, after.Index, Config.Weapon.WeaponCount, perkText), false, true, cost
 		end
 		return true, string.format("강화 성공! +%d/%d", Config.GetWeaponStage(level + 1), after.Steps), false, false, cost
 	end

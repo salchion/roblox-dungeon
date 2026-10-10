@@ -185,7 +185,7 @@ local refreshEnhance
 do
 local E = {}
 enhancePanel = makePanel({
-	Size = UDim2.new(0, 400, 0, 560),
+	Size = UDim2.new(0, 400, 0, 620),
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Position = UDim2.new(0.5, 0, 0.5, 0),
 	BackgroundColor3 = Color3.fromRGB(18, 20, 34), BackgroundTransparency = 0.05,
@@ -308,12 +308,18 @@ local enhanceInfo = makeLabel({
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 }, enhancePanel)
 
+-- 무기 특성: 지금 무기의 싸우는 방식 + 다음 시대로 진화하면 생기는 새 특성 (업그레이드할 이유를 눈에 보이게)
+local enhancePerk = makeLabel({
+	Size = UDim2.new(1, -40, 0, 62), Position = UDim2.new(0, 20, 0, 464), TextSize = 13, RichText = true,
+	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+}, enhancePanel)
+
 local enhanceBanner = makeLabel({
 	Size = UDim2.new(1, 0, 0, 56), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 200),
 	Font = Enum.Font.GothamBlack, TextSize = 44, TextStrokeTransparency = 0, Visible = false, ZIndex = 8,
 }, enhancePanel)
 local enhanceResult = makeLabel({
-	Size = UDim2.new(1, -24, 0, 22), Position = UDim2.new(0, 12, 0, 468), Font = Enum.Font.GothamBold, TextSize = 14,
+	Size = UDim2.new(1, -24, 0, 22), Position = UDim2.new(0, 12, 0, 530), Font = Enum.Font.GothamBold, TextSize = 14,
 }, enhancePanel)
 
 local hammer = makeLabel({
@@ -491,6 +497,18 @@ function refreshEnhance()
 	end
 	enhanceInfo.Text = string.format("공격력  <b>x%.2f</b> <font color='#78ff8c'>▶ x%.2f</font>\n성공 확률  <font color='#%s'><b>%d%%</b></font>   <font size='12' color='#aaaabb'>(실패해도 단계 유지)</font>",
 		Config.GetDamageMultiplier(level), Config.GetDamageMultiplier(level + 1), chance >= 80 and "78ff8c" or (chance >= 60 and "ffd966" or "ff9a6e"), chance)
+	do
+		local perk = Config.GetWeaponPerk(level)
+		local lines = {}
+		if perk then
+			table.insert(lines, string.format("<font color='#ffe9a0'>%s <b>%s</b></font> <font color='#c9cde0'>%s</font>", perk.Icon, perk.Name, perk.Desc))
+		end
+		local nextTierInfo = tiers[tierIndex + 1]
+		if nextTierInfo and nextTierInfo.Perk and nextTierInfo.Era > Config.GetWeaponTier(level).Era then
+			table.insert(lines, string.format("<font color='#9affc0'>다음 시대 진화 → %s <b>%s</b></font> <font color='#aeb4cc'>%s</font>", nextTierInfo.Perk.Icon, nextTierInfo.Perk.Name, nextTierInfo.Perk.Desc))
+		end
+		enhancePerk.Text = table.concat(lines, "\n")
+	end
 	local affordable = gold >= cost
 	enhanceButton.Text = freeNow and "✨ 무료!\n강화하기" or string.format("💰 %s G\n강화하기", tostring(cost))
 	enhanceButton.BackgroundColor3 = affordable and GREEN or Color3.fromRGB(95, 60, 62)

@@ -1531,6 +1531,65 @@ local function dropMeteor(run, player, position, radius, damage, level)
 	end)
 end
 
+-- 무기 시대 특성 (Config.WeaponEraPerks): 맞힌 적 주변으로 추가 피해가 번진다. 던전 / 필드 / 심연 모두 같은 입구(augOnHit)를 지나므로 한 번만 만들면 된다.
+-- 번진 피해가 다시 특성을 부르지 않게 augDepth 로 막는다. 한 번에 최대 4마리, 확률형은 확률이 맞을 때만 돈다 (서버 부담 작음).
+local function applyWeaponPerk(run, player, part, data, amount)
+	local perk = Config.GetWeaponPerk(player:GetAttribute("WeaponLevel") or 0)
+	if not perk or not perk.Kind then return end
+	local origin = part.Position
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	local dirFlat = root and Vector3.new(origin.X - root.Position.X, 0, origin.Z - root.Position.Z)
+	local forward = dirFlat and dirFlat.Magnitude > 0.1 and dirFlat.Unit or Vector3.new(0, 0, -1)
+	local function hurt(entry, ratio)
+		Effects.Tracer(origin + Vector3.new(0, 2, 0), entry.Part.Position, perk.Color, 0.3)
+		hitMonster(run, player, entry, math.max(1, amount * ratio), true)
+	end
+	local kind = perk.Kind
+	if kind == "Pierce" then
+		-- 맞힌 적 "뒤쪽"(쏜 방향)으로 일직선에 가까운 적
+		local count = 0
+		for _, entry in ipairs(nearestMonsters(run, origin, perk.Range, 8, part)) do
+			local toEntry = Vector3.new(entry.Part.Position.X - origin.X, 0, entry.Part.Position.Z - origin.Z)
+			if toEntry.Magnitude > 0.1 and toEntry.Unit:Dot(forward) > 0.7 then
+				hurt(entry, perk.Mult)
+				count += 1
+				if count >= perk.Count then break end
+			end
+		end
+	elseif kind == "Bounce" or kind == "Shard" or kind == "Star" then
+		if math.random() > perk.Chance then return end
+		for _, entry in ipairs(nearestMonsters(run, origin, perk.Radius, perk.Count, part)) do
+			hurt(entry, perk.Mult)
+		end
+	elseif kind == "Splash" then
+		Effects.Burst(origin + Vector3.new(0, 1.5, 0), perk.Color, 26)
+		for _, entry in ipairs(nearestMonsters(run, origin, perk.Radius, 6, part)) do
+			hitMonster(run, player, entry, math.max(1, amount * perk.Mult), true)
+		end
+	elseif kind == "Chain" then
+		for _, entry in ipairs(nearestMonsters(run, origin, perk.Radius, perk.Count, part)) do
+			hurt(entry, perk.Mult)
+		end
+	elseif kind == "Cone" then
+		local count = 0
+		for _, entry in ipairs(nearestMonsters(run, origin, perk.Range, 10, part)) do
+			local toEntry = Vector3.new(entry.Part.Position.X - origin.X, 0, entry.Part.Position.Z - origin.Z)
+			if toEntry.Magnitude > 0.1 and toEntry.Unit:Dot(forward) > 0.55 then
+				Effects.Burst(entry.Part.Position, perk.Color, 8)
+				hitMonster(run, player, entry, math.max(1, amount * perk.Mult), true)
+				count += 1
+				if count >= 4 then break end
+			end
+		end
+	elseif kind == "SoulBlast" then
+		if data.Health > 0 then return end -- 쓰러뜨린 순간에만
+		Effects.Burst(origin + Vector3.new(0, 2, 0), perk.Color, 60)
+		for _, entry in ipairs(nearestMonsters(run, origin, perk.Radius, 6, part)) do
+			hitMonster(run, player, entry, math.max(1, amount * perk.Mult), true)
+		end
+	end
+end
+
 augOnHit = function(run, player, part, data, amount, isCrit)
 	-- 처형: 체력이 얼마 안 남은 일반 몬스터는 맞는 즉시 쓰러진다
 	local execLevel = augLv(run, player, "AugExecute")
@@ -1733,6 +1792,17 @@ end
 -- 범위 피해: center 주변 radius 안의 모든 적에게 damage 를 준다 (스킬용). 맞은 위치 목록 반환
 -- 범위 안의 몬스터(가까운 순) 목록 / 한 마리만 공격 (궁극기 락온 난사용)
 -- 세트 효과(어그먼트)를 필드에서도 쓰기 위한 입구: 필드가 "run 비슷한 표"를 만들어 넘기면 같은 효과가 작동한다
+-- 무기로 쏜 탄이 맞았을 때만 부른다 (칼날 / 불길 같은 틱 피해에는 붙지 않는다): 던전은 Dungeon.Shoot, 필드는 Field.Shoot 이 호출
+local perkLastAt = setmetatable({}, { __mode = "k" })
+function Dungeon.WeaponPerkHit(run, player, part, data, amount)
+	if augDepth ~= 0 then return end
+	local now = os.clock()
+	if now - (perkLastAt[player] or 0) < 0.12 then return end -- 산탄 여러 발이 한꺼번에 특성을 연달아 부르지 않게 (서버 / 화면 부담)
+	perkLastAt[player] = now
+	augDepth += 1
+	pcall(applyWeaponPerk, run, player, part, data, amount)
+	augDepth -= 1
+end
 function Dungeon.AugOnHit(run, player, part, data, amount, isCrit)
 	if augOnHit then augOnHit(run, player, part, data, amount, isCrit) end
 end
@@ -1864,6 +1934,7 @@ function Dungeon.Shoot(player, origin, direction)
 			end
 		end
 		damageMonster(run, player, part, data, damage, isCrit, hitPosition)
+		Dungeon.WeaponPerkHit(run, player, part, data, damage) -- 무기 시대 특성
 		player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1) -- 궁극기 게이지는 실제로 맞혔을 때만 찬다
 
 		if vamp > 0 then
