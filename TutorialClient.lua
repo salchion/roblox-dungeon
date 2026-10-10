@@ -226,7 +226,7 @@ local function cinemaPlay(phase)
 		TweenService:Create(cinema.Top, TweenInfo.new(0.8), { Size = UDim2.new(1, 0, 0.13, 0) }):Play()
 		TweenService:Create(cinema.Bottom, TweenInfo.new(0.8), { Size = UDim2.new(1, 0, 0.13, 0) }):Play()
 		cinema.Color.Enabled = true
-		TweenService:Create(cinema.Color, TweenInfo.new(2.2), { Saturation = -0.75, Contrast = 0.35, Brightness = -0.08, TintColor = Color3.fromRGB(255, 200, 200) }):Play()
+		TweenService:Create(cinema.Color, TweenInfo.new(2.2), { Saturation = -0.75, Contrast = 0.35, Brightness = -0.04, TintColor = Color3.fromRGB(255, 232, 232) }) -- (붉은 색조를 연하게: 바닥과 탄이 구분되게):Play()
 		if camera then TweenService:Create(camera, TweenInfo.new(2.6, Enum.EasingStyle.Quad), { FieldOfView = 48 }):Play() end
 	elseif phase == "Blast" then
 		cinema.Flash.BackgroundTransparency = 0

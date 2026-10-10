@@ -3452,7 +3452,7 @@ local function doomWave(player, zone)
 		flood.Color = rgb(255, 30, 30)
 		flood.Transparency = 0.9
 		flood.Parent = arena
-		TweenService:Create(flood, TweenInfo.new(2.4, Enum.EasingStyle.Quad), { Transparency = 0.72 }):Play() -- (바닥이 온통 붉어 내 총알이 안 보이던 문제: 덜 진하게)
+		TweenService:Create(flood, TweenInfo.new(2.4, Enum.EasingStyle.Quad), { Transparency = 0.86 }):Play() -- (바닥이 온통 붉어 내 총알이 안 보이던 문제: 덜 진하게)
 		lordSfx("Lord_Charge")
 		local charge = Instance.new("Part")
 		charge.Shape = Enum.PartType.Ball
