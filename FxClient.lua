@@ -527,6 +527,7 @@ local function playShot(event)
 		light.Parent = part
 	end
 	part.Parent = fxFolder
+	Debris:AddItem(part, 3) -- 안전장치: 어떤 이유로든 도착 처리가 안 돼도 탄이 화면에 남지 않게
 	local dir = (to - from).Unit
 	if look and look.Muzzle then -- 권총 / 리볼버: 총구 고리 (총구 앞쪽에서 퍼지며 사라진다)
 		eraRing(from + dir * 0.8, color, 0.6, look.Muzzle, 0.14, dir)
@@ -618,6 +619,7 @@ local function spawnProjectile(event)
 	-- { "P", id, origin, direction, speed, size, color, style, life, path }
 	-- path: nil(직선) / { "sine", 진폭, 빈도 } / { "curve", 각속도 } / { "lob", 착지점, 높이 } / { "home" }
 	local id, origin, direction, speed, size, color, style, life, path = event[2], event[3], event[4], event[5], event[6], event[7], event[8], event[9], event[10]
+	life = life or 5
 	local part = Instance.new("Part")
 	part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch = true, false, false, false
 	part.Material = Enum.Material.Neon
@@ -722,11 +724,17 @@ local function spawnProjectile(event)
 		part.Size = Vector3.new(size, size, size)
 		part.Position = origin
 	end
+	part.Color = part.Color:Lerp(Color3.fromRGB(128, 128, 140), 0.3) -- 너무 쨍하지 않게 살짝 가라앉힌다 (특히 보스 탄)
 	local light = Instance.new("PointLight")
-	light.Range, light.Brightness, light.Color = 8, 1.2, part.Color
+	light.Range, light.Brightness, light.Color = 6, 0.5, part.Color
+	light.Shadows = false
 	light.Parent = part
 	part.Parent = fxFolder
-	if pieces then pieces() end
+	Debris:AddItem(part, (life or 5) + 0.6) -- 가장 먼저 수명을 걸어 둔다: 아래에서 오류가 나도 탄이 남아 있지 않게
+	if pieces then
+		local ok = pcall(pieces)
+		if not ok then part:Destroy() return end
+	end
 
 	local entry = { Part = part, Pop = (style == "Missile" or style == "Seeker") }
 	local pathKind = path and path[1]
