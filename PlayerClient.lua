@@ -114,7 +114,7 @@ local GRAY = Color3.fromRGB(54, 58, 82)
 
 local gui = create("ScreenGui", { Name = "HUD", ResetOnSpawn = false, IgnoreGuiInset = true }, player:WaitForChild("PlayerGui"))
 
-local infoPanel = makePanel({ Size = UDim2.new(0, 240, 0, 176), Position = UDim2.new(0, 16, 0, 60), Visible = false }, gui) -- (예전 글자 패널: 이제 HudClient 의 카드가 대신한다. 값 계산 코드가 이 라벨을 쓰고 있어서 숨겨서만 둔다)
+local infoPanel = makePanel({ Size = UDim2.new(0, 240, 0, 176), Position = UDim2.new(0, 16, 0, 60), Visible = false }, gui)
 local infoLabel = makeLabel({
 	Size = UDim2.new(1, -20, 1, -16),
 	Position = UDim2.new(0, 10, 0, 8),
@@ -154,7 +154,7 @@ local function toast(text)
 	toastToken += 1
 	local token = toastToken
 	local base = (player:GetAttribute("Zone") == "Dungeon") and 210 or 112
-	local pg = gui.Parent -- 작은 화면: MobileLayoutClient 가 정한 아래 가운데 자리
+	local pg = gui.Parent
 	local cy = pg:GetAttribute(player:GetAttribute("SidePromptUp") and "UiToastYUp" or "UiToastY")
 	local y = cy or -(base + 138)
 	local tx = cy and pg:GetAttribute("UiToastX") or 14
@@ -180,10 +180,10 @@ local function weaponText(level)
 	return Config.FormatWeapon(level), tier.Color
 end
 
-local enhancePanel   -- (아래 do 블록 안에서 만든다: 지역 변수 개수 제한 때문에 블록으로 감쌌다)
+local enhancePanel
 local refreshEnhance
 do
-local E = {} -- 이 블록 안에서만 쓰는 상태 (EnhanceBusy / EnhanceShownTier / EnhanceAffordable)
+local E = {}
 enhancePanel = makePanel({
 	Size = UDim2.new(0, 400, 0, 560),
 	AnchorPoint = Vector2.new(0.5, 0.5),
@@ -285,7 +285,7 @@ RunService.RenderStepped:Connect(function()
 		star.Label.BackgroundTransparency = 0.25 + 0.7 * (0.5 + 0.5 * math.sin(t * star.Speed + star.Phase))
 	end
 	if E.RimGradient then E.RimGradient.Rotation = (t * 60) % 360 end
-	if medalModel and medalCenter then -- 무기가 천천히 돈다 (카메라가 주위를 도는 방식)
+	if medalModel and medalCenter then
 		local angle = t * 0.9
 		local d = medalReach * 1.35
 		medalCam.CFrame = CFrame.lookAt(medalCenter + Vector3.new(math.sin(angle) * d, d * 0.28, math.cos(angle) * d), medalCenter)
@@ -419,7 +419,7 @@ E.Shimmer = create("Frame", {
 	Size = UDim2.new(0, 36, 1.8, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(-0.2, 0, 0.5, 0), Rotation = 20,
 	BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.7, BorderSizePixel = 0, ZIndex = 3,
 }, enhanceButton)
-task.spawn(function() -- 버튼 위로 빛이 주기적으로 훑고 지나간다
+task.spawn(function()
 	while enhancePanel.Parent do
 		if enhancePanel.Visible then
 			E.Shimmer.Position = UDim2.new(-0.1, 0, 0.5, 0)
@@ -450,7 +450,7 @@ function refreshEnhance()
 
 	enhanceStage.Text = string.format("+%d", stage)
 	enhanceStage.TextColor3 = color
-	if E.LastStage and E.LastStage ~= stage then -- 단계가 바뀌면 숫자가 톡 튀어 오른다
+	if E.LastStage and E.LastStage ~= stage then
 		enhanceStage.TextSize = 54
 		TweenService:Create(enhanceStage, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { TextSize = 34 }):Play()
 	end
@@ -562,15 +562,15 @@ Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 	local advanced = data.Index > lastStepIndex and lastStepIndex > 0
 	lastStepIndex = data.Index
 	if advanced and data.TargetName ~= "모루" and enhancePanel.Visible then
-		task.delay(1.2, function() -- 강화 성공 연출을 잠깐 보여준 뒤
+		task.delay(1.2, function()
 			enhancePanel.Visible = false
 		end)
 	end
 end)
 end -- (강화창 do 블록 끝)
 
-local gearHooks = {}   -- 장비 창 안의 함수를 바깥에서 부르기 위한 표 (Rebuild: 캐릭터 3D 다시 복제)
-local gearPanel   -- (아래 do 블록에서 만든다)
+local gearHooks = {}
+local gearPanel
 local gearMessage
 local refreshGear
 do
@@ -696,7 +696,7 @@ local rollButton = makeButton({
 	Size = UDim2.new(0, 200, 0, 80), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -14, 0.5, 0),
 	Text = "🎰 10연 뽑기!\n티켓 10장", TextSize = 22, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(165, 70, 245),
 }, gachaBar, function()
-	if (player:GetAttribute("Tickets") or 0) >= 10 then Remotes.Gear:FireServer("Roll", 10) end -- 10장이 없으면 눌러도 아무 일도 안 한다
+	if (player:GetAttribute("Tickets") or 0) >= 10 then Remotes.Gear:FireServer("Roll", 10) end
 end)
 create("UIStroke", { Color = Color3.fromRGB(255, 225, 140), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 3 }, rollButton)
 rollButton.ClipsDescendants = true
@@ -803,7 +803,7 @@ Remotes.Gear.OnClientEvent:Connect(function(action, result)
 	end
 	gearMessage.Text = result.Message
 	gearMessage.TextColor3 = color
-	if not result.Roll then -- 장비 강화 결과음 (뽑기는 아래 뽑기 연출이 따로 소리를 낸다)
+	if not result.Roll then
 		SoundBank.Play(sfxParent, "Enh_Hammer")
 		task.delay(0.12, function() SoundBank.Play(sfxParent, result.Ok and "Enh_Success" or "Enh_Fail") end)
 	end
@@ -851,7 +851,7 @@ do
 		buffHalf.Title.Text, buffHalf.Desc.Text = "강화 추첨 중…", ""
 		penHalf.Title.Text, penHalf.Desc.Text = "", ""
 		task.spawn(function()
-			for step = 1, 9 do -- 아이콘이 빠르게 돌아간다
+			for step = 1, 9 do
 				if token ~= mine then return end
 				buffHalf.Icon.Text = ICONS[math.random(#ICONS)]
 				penHalf.Icon.Text = data.Penalty and PEN_ICONS[math.random(#PEN_ICONS)] or ""
@@ -861,7 +861,7 @@ do
 			if token ~= mine then return end
 			local buff = data.Buff
 			local setInfo = data.Set
-			if (buff and buff.Special) or (setInfo and (setInfo.Completed or data.Jackpot)) then -- 레어 / 세트 완성: 화면이 번쩍 + 흔들림 + 팝업이 커진다
+			if (buff and buff.Special) or (setInfo and (setInfo.Completed or data.Jackpot)) then
 				local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 215, 120), BackgroundTransparency = 0.55, BorderSizePixel = 0, ZIndex = 74 }, gui)
 				TweenService:Create(flash, TweenInfo.new(0.55), { BackgroundTransparency = 1 }):Play()
 				game:GetService("Debris"):AddItem(flash, 0.6)
@@ -871,7 +871,7 @@ do
 				TweenService:Create(popScale, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1.22 }):Play()
 			end
 			buffHalf.Desc.TextColor3 = Color3.fromRGB(215, 215, 230)
-			if setInfo then -- 세트 조각 카드: 아이콘 + 이름 + ● ● ○ + (완성되면) 효과 이름
+			if setInfo then
 				local pips = {}
 				for i = 1, setInfo.Max or 3 do table.insert(pips, i <= setInfo.Count and "●" or "○") end
 				buffHalf.Icon.Text = setInfo.Icon
@@ -938,7 +938,7 @@ do
 	end)
 	Remotes.Gear.OnClientEvent:Connect(function(action, result)
 		if action ~= "Result" or not result.Roll or (result.Upgrades or 0) <= 0 then return end
-		task.delay(1.8, function() -- 뽑기 연출이 끝날 즈음 떠오른다
+		task.delay(1.8, function()
 			popupText.Text = string.format("🔥 더 좋은 장비가 나왔어요! (%d부위)", result.Upgrades)
 			popup.Visible = true
 			shownAt = os.clock()
@@ -970,7 +970,7 @@ do
 		local function fade(object, goal, time, style, direction)
 			TweenService:Create(object, TweenInfo.new(time, style or Enum.EasingStyle.Quad, direction or Enum.EasingDirection.Out), goal):Play()
 		end
-		local function pause(seconds) -- 건너뛰기를 누르면 바로 끝나는 대기
+		local function pause(seconds)
 			local untilTime = os.clock() + seconds
 			while not skipped and root.Parent and os.clock() < untilTime do task.wait() end
 		end
@@ -1059,7 +1059,7 @@ do
 						makeLabel({ Size = UDim2.new(1, -8, 0, 34), Position = UDim2.new(0, 4, 0, 64), Text = r.Name or "", TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = rc, ZIndex = 64 }, cardM)
 						makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 100), Text = string.format("★ %s", Config.Gear.RarityNames[r.Rarity]), TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = rc, ZIndex = 64 }, cardM)
 						makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 1, -20), Text = STATUS[r.Status] or "분해", TextSize = 12, TextColor3 = Color3.fromRGB(190, 190, 210), ZIndex = 64 }, cardM)
-						if r.Rarity >= 3 then -- 영웅 이상은 카드 뒤로 빛 고리가 퍼진다
+						if r.Rarity >= 3 then
 							local ringM = create("Frame", { Size = UDim2.new(0, 40, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy), BackgroundTransparency = 1, ZIndex = 61 }, grid)
 							create("UICorner", { CornerRadius = UDim.new(1, 0) }, ringM)
 							local rs = create("UIStroke", { Color = rc, Thickness = 6 }, ringM)
@@ -1123,7 +1123,7 @@ do
 				TextSize = 13, TextColor3 = Color3.fromRGB(190, 190, 210), ZIndex = 63,
 			}, card)
 
-			skipped = false -- 카드가 뜬 뒤에는 한 번 더 누르면 닫힌다
+			skipped = false
 			pause(HOLD[rarity])
 			if not root.Parent then return end
 			fade(root, { BackgroundTransparency = 1 }, 0.25)
@@ -1191,7 +1191,7 @@ local playerList = create("ScrollingFrame", {
 }, partyPanel)
 create("UIListLayout", { Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder }, playerList)
 
-local partyData = nil -- 서버가 보내준 현재 파티 {Id, Leader, Members = {{UserId, Name}}}
+local partyData = nil
 
 local function isPartyLeaderOrSolo()
 	return partyData == nil or partyData.Leader == player.UserId
@@ -1414,10 +1414,10 @@ makeButton({
 end)
 
 local dungeonState = nil
-local openDungeonSelect -- 던전 선택창 (아래에서 정의)
+local openDungeonSelect
 
 local tracks = {}
-local playlists = {} -- [이름] = { 오디오 ID... } (곡이 여러 개면 끝날 때마다 다른 곡으로 바뀐다)
+local playlists = {}
 local function nextInPlaylist(name, sound)
 	local list = playlists[name]
 	if not list or #list < 2 then return end
@@ -1456,11 +1456,11 @@ if next(tracks) == nil and RunService:IsStudio() then
 end
 
 local settings = { Shake = true, Radar = true, ShotVolume = 1 }
-local toggleHelp -- 도움말/설정창 (아래에서 정의)
+local toggleHelp
 
 local musicEnabled = true   -- M 키로 켜고 끈다
 local currentMusic = nil
-local musicScale = 1       -- 설정창에서 조절 (0 ~ 1.5)
+local musicScale = 1
 local function musicVolume()
 	return musicEnabled and Config.Audio.MusicVolume * musicScale or 0
 end
@@ -1514,11 +1514,11 @@ local function updateMusic()
 		playMusic("Lobby")
 	elseif zone == "Field" then
 		if player:GetAttribute("BossFight") then
-			playMusic(tracks.Dungeon and "Dungeon" or (tracks.Field and "Field" or "Lobby")) -- 보스가 나를 노리면 던전 전투 곡으로 바뀐다
+			playMusic(tracks.Dungeon and "Dungeon" or (tracks.Field and "Field" or "Lobby"))
 		else
 			local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 			local zoneKey = root and ("Field" .. Config.Field.ZoneOfX(root.Position.X))
-			playMusic((zoneKey and tracks[zoneKey]) and zoneKey or (tracks.Field and "Field" or "Lobby")) -- 구역 전용 곡이 있으면 그 곡
+			playMusic((zoneKey and tracks[zoneKey]) and zoneKey or (tracks.Field and "Field" or "Lobby"))
 		end
 	elseif dungeonState and dungeonState.Phase == "Boss" then
 		playMusic("Boss")
@@ -1528,7 +1528,7 @@ local function updateMusic()
 end
 player:GetAttributeChangedSignal("BossFight"):Connect(function() updateMusic() end)
 player:GetAttributeChangedSignal("InDoomArena"):Connect(function() updateMusic() end)
-task.spawn(function() -- 필드에서 구역 경계를 넘으면 그 구역 곡으로 (같은 곡이면 아무 일도 안 한다)
+task.spawn(function()
 	while true do
 		task.wait(2)
 		if currentZone() == "Field" then updateMusic() end
@@ -1761,7 +1761,7 @@ local function applySpeed()
 	local character = player.Character
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 	if humanoid then
-		local bonus = (player:GetAttribute("GearSpeed") or 0) + (player:GetAttribute("TrainSpeed") or 0) + (player:GetAttribute("PetSpeed") or 0) + (player:GetAttribute("LvMove") or 0) -- 신발 장비 + 신속 단련 + 레벨 스탯
+		local bonus = (player:GetAttribute("GearSpeed") or 0) + (player:GetAttribute("TrainSpeed") or 0) + (player:GetAttribute("PetSpeed") or 0) + (player:GetAttribute("LvMove") or 0)
 		humanoid.WalkSpeed = (sprinting and Config.Player.RunSpeed or Config.Player.WalkSpeed) + bonus
 	end
 end
@@ -1770,8 +1770,8 @@ player:GetAttributeChangedSignal("GearSpeed"):Connect(applySpeed)
 player:GetAttributeChangedSignal("TrainSpeed"):Connect(applySpeed)
 player:GetAttributeChangedSignal("PetSpeed"):Connect(applySpeed)
 
-settings.DashCharges = Config.Player.DashCharges  -- 남은 대시 횟수 (스킬바에 표시)
-settings.DashRefillAt = 0                        -- 다음 충전 시각
+settings.DashCharges = Config.Player.DashCharges
+settings.DashRefillAt = 0
 
 local function spawnAfterimage(character, color)
 	for _, part in ipairs(character:GetChildren()) do
@@ -1800,7 +1800,7 @@ local function slide()
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 	if not root or not humanoid or humanoid.Health <= 0 then return end
-	if settings.DashCharges == P.DashCharges then -- 가득 찬 상태에서 처음 쓰면 충전 타이머 시작
+	if settings.DashCharges == P.DashCharges then
 		settings.DashRefillAt = now + P.DashCooldown
 	end
 	settings.DashCharges -= 1
@@ -1914,7 +1914,7 @@ RunService.RenderStepped:Connect(function(dt)
 end)
 
 local autoMode = false
-local lockTarget = nil     -- { Kind = "Dummy" | "Monster", Instance, Part }
+local lockTarget = nil
 local nextSearch = 0
 
 local autoLabel = makeLabel({
@@ -1942,7 +1942,7 @@ local function targetName(target)
 end
 
 local function updateLockVisual()
-	autoLabel.Visible = false -- 아래 R 자동 공격 버튼이 상태를 이미 보여 주므로 가운데 안내 띠는 쓰지 않는다 (잠금 대상은 노란 윤곽선으로 표시)
+	autoLabel.Visible = false
 	if autoMode and lockTarget and lockTarget.Instance.Parent then
 		lockHighlight.Adornee = lockTarget.Instance
 		lockHighlight.Enabled = true
@@ -2077,10 +2077,10 @@ local function getAimPoint(screenPosition)
 	return ray.Origin + ray.Direction * 300, nil
 end
 
-local hitMarker = 0      -- 적중 시 조준점이 색을 바꾸는 시간
+local hitMarker = 0
 local hitMarkerCrit = false
-local shake = 0          -- 카메라 흔들림 세기
-local crosshairKick = 0 -- 쏠 때마다 조준점이 벌어졌다 돌아오는 연출용
+local shake = 0
+local crosshairKick = 0
 
 local function fireAt(worldPoint, manual)
 	local character = player.Character
@@ -2094,7 +2094,7 @@ local function fireAt(worldPoint, manual)
 		end
 	end
 	crosshairKick = 10
-	Remotes.Attack:FireServer(worldPoint, manual == true) -- manual: 직접 클릭해서 쏜 것 (자동 공격과 구분: 약점 / 연습 판정용)
+	Remotes.Attack:FireServer(worldPoint, manual == true)
 end
 
 local function attack(screenPosition)
@@ -2123,11 +2123,11 @@ local function toggleAuto()
 end
 
 player:GetAttributeChangedSignal("Zone"):Connect(function()
-	if autoMode and player:GetAttribute("Zone") == "Lobby" and not player:GetAttribute("TutorialDoom") then toggleAuto() end -- 첫 군주전(튜토리얼) 중에는 끄지 않는다
+	if autoMode and player:GetAttribute("Zone") == "Lobby" and not player:GetAttribute("TutorialDoom") then toggleAuto() end
 end)
 
 player:GetAttributeChangedSignal("AutoOffTick"):Connect(function()
-	if autoMode and player:GetAttribute("Zone") == "Lobby" then -- 허수아비는 마을에서만 친다: 필드(군주전)에서는 절대 끄지 않는다
+	if autoMode and player:GetAttribute("Zone") == "Lobby" then
 		toggleAuto()
 	end
 end)
@@ -2162,7 +2162,7 @@ do
 	}, hint)
 	TweenService:Create(bigKey, TweenInfo.new(0.55, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Size = UDim2.new(0, 94, 0, 94), Position = UDim2.new(0, 13, 0.5, -47) }):Play()
 
-	local shownAt = os.clock() + 9   -- 접속 4초 뒤에 한 번 보여 준다
+	local shownAt = os.clock() + 9
 	local used = false
 	RunService.RenderStepped:Connect(function()
 		if autoMode then used = true end
@@ -2182,8 +2182,8 @@ local function attackCooldown()
 	return Config.Player.BaseCooldown * Config.GetPlayerWeapon(player).Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0))) -- 펫 가속 포함
 end
 
-local questState = nil   -- 서버가 보내준 퀘스트/업적/칭호 상태
-local rankList = {}      -- 서버가 보내준 전투력 랭킹
+local questState = nil
+local rankList = {}
 
 do
 	local mini = makePanel({
@@ -2216,7 +2216,7 @@ local menuPanel = makePanel({
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Position = UDim2.new(0.5, 0, 0.55, 0),
 	BackgroundColor3 = Color3.fromRGB(16, 18, 30),
-	BackgroundTransparency = 0.03, -- 뒤 화면이 비쳐 글자가 섞여 보이지 않게 거의 불투명하게
+	BackgroundTransparency = 0.03,
 	Visible = false,
 }, gui)
 settings.MenuPanel = menuPanel
@@ -2239,20 +2239,20 @@ local TABS = {
 	{ Key = "Quest", Name = "퀘스트" },     -- 오늘의 퀘스트 / 업적
 	{ Key = "Rank", Name = "랭킹" },
 }
-local MENU = { Sub = { Character = "Gear", Growth = "Train", Quest = "Daily" } } -- (지역 변수 개수 제한 때문에 표 하나로 묶음)
+local MENU = { Sub = { Character = "Gear", Growth = "Train", Quest = "Daily" } }
 MENU.Subs = { -- 탭 안의 작은 버튼 줄
 	Character = { { "Gear", "🛡 장비" }, { "Weapon", "🔫 무기" }, { "Info", "📊 정보" } },
 	Growth = { { "Train", "훈련" }, { "Skill", "스킬" }, { "Pet", "펫" } },
 	Quest = { { "Daily", "오늘의 퀘스트" }, { "Ach", "업적" } },
 }
-MENU.Alias = { -- 예전 탭 이름 -> 새 탭 / 작은 버튼 (selectTab 호출을 그대로 받아 준다)
+MENU.Alias = {
 	Inventory = { "Character", "Gear" }, Weapon = { "Character", "Weapon" }, Info = { "Character", "Info" },
 	Skill = { "Growth", "Skill" }, Pet = { "Growth", "Pet" }, Ach = { "Quest", "Ach" },
 }
 local currentTab = "Character"
 local tabButtons = {}
 local SHOP = {}
-SHOP.Panel = makePanel({ -- 상점: 메뉴와 따로 뜨는 창 (I 키와 무관, 닫기 버튼으로만 닫는다. 메뉴와 동시에 열리지 않는다)
+SHOP.Panel = makePanel({
 	Size = UDim2.new(0, 860, 0, 580), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.55, 0),
 	BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.03, Visible = false,
 }, gui)
@@ -2279,9 +2279,10 @@ function SHOP.Open()
 	end
 	menuPanel.Visible = false -- 큰 창은 한 번에 하나
 	SHOP.Panel.Visible = true
+	SHOP.LastSig = nil
 	SHOP.Refresh()
 end
-player:GetAttributeChangedSignal("OpenShop"):Connect(SHOP.Open) -- 화면의 🎁 상점 버튼(MobileLayoutClient)이 신호를 보낸다
+player:GetAttributeChangedSignal("OpenShop"):Connect(SHOP.Open)
 
 local menuContent = create("ScrollingFrame", {
 	Size = UDim2.new(1, -24, 1, -108), Position = UDim2.new(0, 12, 0, 96),
@@ -2291,7 +2292,7 @@ local menuContent = create("ScrollingFrame", {
 create("UIListLayout", { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder }, menuContent)
 
 local rowOrder = 0
-local activeContent = menuContent -- 줄을 붙이는 곳 (상점 창을 그릴 때만 바뀐다)
+local activeContent = menuContent
 local function newRow(height, color)
 	rowOrder += 1
 	return makePanel({
@@ -2524,10 +2525,10 @@ local function buildRankTab()
 	end
 end
 
-local refreshMenu -- (메뉴 다시 그리기: 아래에서 정의)
-local inventoryState = nil   -- 가방 (서버가 보내준 아이템 목록)
+local refreshMenu
+local inventoryState = nil
 local growthState = nil      -- 훈련소 / 돌파 상태
-local growthReceivedAt = 0   -- growthState 를 받은 시각(os.clock) - 남은 시간 계산용
+local growthReceivedAt = 0
 
 local SLOT_NAMES = {}
 for _, slot in ipairs(Config.Gear.Slots) do
@@ -2652,7 +2653,7 @@ local function buildInventoryTab()
 		end
 		clone.Parent = viewport
 		local pivot = clone:GetPivot()
-		local spin = settings.InvSpin or 0 -- 메뉴가 갱신돼 다시 그려져도 회전 각도를 이어간다
+		local spin = settings.InvSpin or 0
 		local connection
 		connection = RunService.RenderStepped:Connect(function(dt)
 			if not viewport:IsDescendantOf(game) then
@@ -2730,7 +2731,7 @@ local function buildInventoryTab()
 	slotBox("Ring", 350, 108)
 	slotBox("Boots", 350, 204)
 	slotBox("Weapon", 350, 300)
-	do -- 펫 칸: 펫 레벨 / 외형을 한눈에 (누르면 펫 창)
+	do
 		local petLevel = player:GetAttribute("PetLevel") or 0
 		local look = Config.Pet.Looks[player:GetAttribute("PetLook") or "Orb"] or Config.Pet.Looks.Orb
 		local box = makeButton({ Size = UDim2.new(0, 88, 0, 88), Position = UDim2.new(0, 10, 0, 300), Text = "", BackgroundColor3 = petLevel > 0 and Color3.fromRGB(46, 48, 68) or Color3.fromRGB(34, 34, 48), AutoButtonColor = true }, top, function()
@@ -3033,102 +3034,231 @@ local function shopButtonLabel(id)
 	return "준비 중", GRAY
 end
 
-local function buildShopTab()
-	local note = newRow(52)
-	rowText(note, "<font size='13' color='#bbbbcc'>상점은 <b>시간을 줄여주는 것</b>과 편의, 꾸미기를 팔아요. 돈을 쓰지 않아도 모든 성장에 도달할 수 있고, 장비는 필드에서 직접 얻어야 해요.</font>", 13)
+SHOP.Cat = "Rec"
+SHOP.Timers = {}
+SHOP.Acc = { Rec = Color3.fromRGB(214, 140, 72), Idle = Color3.fromRGB(78, 150, 196), Growth = Color3.fromRGB(88, 166, 112), Deco = Color3.fromRGB(166, 104, 200), Currency = Color3.fromRGB(200, 168, 80) }
+SHOP.Kinds = { { "Aura", "Auras", "✨" }, { "Banner", "Banners", "🚩" }, { "Mount", "Mounts", "🛹" } }
+SHOP.Boost = { XpBoost = "XpBoostUntil", LuckBoost = "LuckBoostUntil", IdleBoost = "IdleBoostUntil" }
+SHOP.Tier = { IdleMult = { "IdleMultBonus", "MultTiers" }, IdleCap = { "IdleCapBonusHours", "CapTiers" } }
 
-	sectionTitle("⭐ 패스")
-	for _, key in ipairs(Config.Shop.PassOrder) do
-		local def = Config.Shop.Passes[key]
-		local owned = key == "VIP" and player:GetAttribute("Vip") == true
-		local row = newRow(76)
-		rowText(row, string.format("<font size='17'><b>%s</b></font>\n<font size='13' color='#bbbbcc'>%s</font>", def.Name, def.Desc), 14, 170)
-		local label, color = shopButtonLabel(def.PassId)
-		makeButton({
-			Size = UDim2.new(0, 130, 0, 34), Position = UDim2.new(1, -142, 0.5, -17),
-			Text = owned and "보유 중" or label, TextSize = 14, BackgroundColor3 = owned and GRAY or color,
-		}, row, function()
-			if not owned then
-				Remotes.Shop:FireServer("Buy", "Pass", key)
-			end
-		end)
+function SHOP.Level(group)
+	local t = SHOP.Tier[group]
+	local v = player:GetAttribute(t[1]) or 0
+	if group == "IdleMult" and player:GetAttribute("Vip") == true then v -= Config.Idle.VipBonus end
+	local lv = 0
+	for i, need in ipairs(Config.Idle[t[2]]) do
+		if v >= need - 0.001 then lv = i end
 	end
+	return lv
+end
 
-	sectionTitle("🛍 상품")
-	local now = os.time()
-	for _, key in ipairs(Config.Shop.ProductOrder) do
-		local def = Config.Shop.Products[key]
-		local extra = ""
-		if def.Grant.XpBoost and (player:GetAttribute("XpBoostUntil") or 0) > now then
-			extra = string.format("  <font color='#78ff8c'>적용 중 %s</font>", Config.FormatDuration(player:GetAttribute("XpBoostUntil") - now))
-		elseif def.Grant.LuckBoost and (player:GetAttribute("LuckBoostUntil") or 0) > now then
-			extra = string.format("  <font color='#78ff8c'>적용 중 %s</font>", Config.FormatDuration(player:GetAttribute("LuckBoostUntil") - now))
-		end
-		local row = newRow(66)
-		rowText(row, string.format("<font size='16'><b>%s</b></font>%s\n<font size='13' color='#bbbbcc'>%s</font>", def.Name, extra, def.Desc), 14, 170)
-		local label, color = shopButtonLabel(def.ProductId)
-		makeButton({
-			Size = UDim2.new(0, 130, 0, 32), Position = UDim2.new(1, -142, 0.5, -16), Text = label, TextSize = 14, BackgroundColor3 = color,
-		}, row, function()
-			Remotes.Shop:FireServer("Buy", "Product", key)
-		end)
-	end
-
+function SHOP.Preview(kind, key, name)
+	local character = player.Character
+	if not character then return end
 	local Cosmetics = require(game:GetService("ReplicatedStorage"):WaitForChild("Cosmetics"))
-	local function previewCosmetic(kind, key, name)
-		local character = player.Character
-		if not character then return end
-		settings.PreviewToken = (settings.PreviewToken or 0) + 1
-		local token = settings.PreviewToken
-		local panel = SHOP.Panel
-		if panel then panel.Visible = false end
-		Cosmetics.Clear(character, kind)
-		Cosmetics.Build(kind, key, character, true)
-		toast(string.format("👀 [%s] 미리보기 5초!", name))
-		task.delay(5, function()
-			if settings.PreviewToken ~= token then return end
-			Cosmetics.Clear(character, kind, true)
-			local equipped = player:GetAttribute(kind) or ""
-			if equipped ~= "" and Config[kind == "Aura" and "Auras" or (kind == "Banner" and "Banners" or "Mounts")][equipped] then
-				Cosmetics.Build(kind, equipped, character)
-			end
-			if panel then panel.Visible = true end
+	settings.PreviewToken = (settings.PreviewToken or 0) + 1
+	local token = settings.PreviewToken
+	SHOP.Panel.Visible = false
+	Cosmetics.Clear(character, kind)
+	Cosmetics.Build(kind, key, character, true)
+	toast(string.format("👀 [%s] 미리보기 5초!", name))
+	task.delay(5, function()
+		if settings.PreviewToken ~= token then return end
+		Cosmetics.Clear(character, kind, true)
+		local equipped = player:GetAttribute(kind) or ""
+		if equipped ~= "" and Config[kind == "Aura" and "Auras" or (kind == "Banner" and "Banners" or "Mounts")][equipped] then
+			Cosmetics.Build(kind, equipped, character)
+		end
+		SHOP.Panel.Visible = true
+	end)
+end
+
+function SHOP.Card(parent, order, o)
+	local acc, mute = o.Acc, o.Owned and not o.Prev
+	local card = makePanel({ Size = UDim2.new(0, 100, 0, 190), LayoutOrder = order, BackgroundColor3 = Color3.fromRGB(28, 31, 48) }, parent)
+	local stroke = create("UIStroke", { Color = acc, Thickness = 1.2, Transparency = mute and 0.85 or 0.6 }, card)
+	card.MouseEnter:Connect(function() stroke.Transparency = 0.15 end)
+	card.MouseLeave:Connect(function() stroke.Transparency = mute and 0.85 or 0.6 end)
+	local dark, fade = acc:Lerp(Color3.fromRGB(28, 31, 48), 0.7), mute and 0.5 or 0
+	local head = create("Frame", { Size = UDim2.new(1, 0, 0, 64), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = fade, BorderSizePixel = 0 }, card)
+	rounded(head, 12)
+	create("UIGradient", { Rotation = 90, Color = ColorSequence.new(acc, dark) }, head)
+	create("Frame", { Size = UDim2.new(1, 0, 0, 12), Position = UDim2.new(0, 0, 0, 52), BackgroundColor3 = dark, BackgroundTransparency = fade, BorderSizePixel = 0 }, card)
+	makeLabel({ Size = UDim2.new(1, 0, 1, -6), Text = o.Icon, TextSize = 36, TextTransparency = fade }, head)
+	if o.Owned then
+		makeLabel({ Size = UDim2.new(0, 80, 0, 18), Position = UDim2.new(0, 10, 0, 8), Text = o.Ribbon or "✔ 보유", TextSize = 12, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(178, 238, 190), TextXAlignment = Enum.TextXAlignment.Left }, card)
+	end
+	if o.Badge then
+		local badge = makeLabel({ Size = UDim2.new(0, 0, 0, 20), AutomaticSize = Enum.AutomaticSize.X, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 8), Text = o.Badge, TextSize = 12, Font = Enum.Font.GothamBold, TextWrapped = false, BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(196, 84, 72) }, card)
+		rounded(badge, 10)
+		create("UIPadding", { PaddingLeft = UDim.new(0, 9), PaddingRight = UDim.new(0, 9) }, badge)
+	end
+	makeLabel({ Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 68), Text = o.Name, TextSize = 15, Font = Enum.Font.GothamBold, TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = mute and Color3.fromRGB(150, 156, 180) or Color3.fromRGB(240, 242, 250) }, card)
+	makeLabel({ Size = UDim2.new(1, -20, 0, 32), Position = UDim2.new(0, 10, 0, 91), Text = o.Desc, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(160, 166, 192) }, card)
+	if o.Pips then
+		makeLabel({ Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 126), Text = o.Pips, TextSize = 14, RichText = true, TextWrapped = false, TextXAlignment = Enum.TextXAlignment.Left }, card)
+	end
+	if o.Status or o.Timer then
+		local st = makeLabel({ Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 126), Text = o.Status or "", TextSize = 13, TextWrapped = false, TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = Color3.fromRGB(120, 255, 140) }, card)
+		if o.Timer then table.insert(SHOP.Timers, { st, o.Timer }) end
+	end
+	local b = o.Btn
+	makeButton({
+		Size = o.Prev and UDim2.new(0.62, -14, 0, 30) or UDim2.new(1, -20, 0, 30), Position = o.Prev and UDim2.new(0.38, 4, 0, 152) or UDim2.new(0, 10, 0, 152),
+		Text = b[1], TextSize = 14, BackgroundColor3 = b[2], Active = b[3] ~= nil, AutoButtonColor = b[3] ~= nil,
+	}, card, b[3])
+	if o.Prev then
+		makeButton({ Size = UDim2.new(0.38, -10, 0, 30), Position = UDim2.new(0, 10, 0, 152), Text = "👀 미리보기", TextSize = 13, BackgroundColor3 = Color3.fromRGB(58, 70, 124) }, card, o.Prev)
+	end
+end
+
+function SHOP.ProdCard(parent, order, key)
+	local def = Config.Shop.Products[key]
+	local label, color = shopButtonLabel(def.ProductId)
+	local o = { Icon = def.Icon or "🎁", Name = def.Name, Desc = def.Desc, Acc = SHOP.Acc[def.Category] or SHOP.Acc.Rec, Badge = def.Badge,
+		Btn = { label, color, function() Remotes.Shop:FireServer("Buy", "Product", key) end } }
+	local tier = def.Tier
+	if tier then
+		local lv, pips = SHOP.Level(tier.Group), {}
+		for i = 1, tier.Steps do
+			pips[i] = string.format("<font color='%s'>%s</font>", i <= lv and "#ffd24a" or (i <= tier.Step and "#e8ecff" or "#5c627e"), i <= tier.Step and "★" or "☆")
+		end
+		o.Owned = tier.Step <= lv
+		o.Pips = table.concat(pips) .. string.format("  <font color='#8a90aa' size='12'>%d/%d단계 · %s</font>", tier.Step, tier.Steps, o.Owned and "보유" or (tier.Step == lv + 1 and "다음 단계" or "상위 단계"))
+		if o.Owned then o.Btn = { "✔ 보유 중", GRAY } end
+	end
+	for g, attr in pairs(SHOP.Boost) do
+		if def.Grant[g] then o.Timer = attr end
+	end
+	local stack = def.Grant.TrainSlot and "TrainSlotBonus" or (def.Grant.Bag and "BagBonus")
+	if stack then
+		local n = (player:GetAttribute(stack) or 0) - (player:GetAttribute("Vip") == true and (def.Grant.Bag and Config.Shop.Vip.Bag or Config.Shop.Vip.TrainSlots) or 0)
+		if n > 0 then o.Status = "보유 +" .. n end
+	end
+	SHOP.Card(parent, order, o)
+end
+
+function SHOP.CosCard(parent, order, k, key)
+	local kind, item = k[1], Config[k[2]][key]
+	local owned = player:GetAttribute(kind .. "Owned_" .. key) == true
+	local equipped = player:GetAttribute(kind) == key
+	local pk = type(item.Unlock) == "table" and item.Unlock.Product
+	local def = pk and Config.Shop.Products[pk]
+	local o = { Icon = k[3], Name = item.Name, Acc = item.Color:Lerp(Color3.fromRGB(40, 44, 70), 0.3), Badge = def and def.Badge, Owned = owned,
+		Ribbon = equipped and "★ 착용 중", Desc = owned and "능력치 없는 꾸미기 · 다른 플레이어에게도 보여요" or ("🔒 " .. auraUnlockText(item)),
+		Prev = function() SHOP.Preview(kind, key, item.Name) end }
+	if owned then
+		o.Btn = { equipped and "해제" or "장착", equipped and RED or GREEN, function()
+			if kind == "Aura" then Remotes.Shop:FireServer("Aura", equipped and "" or key) else Remotes.Shop:FireServer("Cosmetic", kind, equipped and "" or key) end
+		end }
+	elseif def then
+		local label, color = shopButtonLabel(def.ProductId)
+		o.Btn = { label, color, function() Remotes.Shop:FireServer("Buy", "Product", pk) end }
+	else
+		o.Btn = { "🔒 잠김", GRAY }
+	end
+	SHOP.Card(parent, order, o)
+end
+
+function SHOP.Sig()
+	local now, s = os.time(), { SHOP.Cat, SHOP.Cols(), SHOP.Level("IdleMult"), SHOP.Level("IdleCap"), tostring(player:GetAttribute("Vip")), player:GetAttribute("TrainSlotBonus"), player:GetAttribute("BagBonus") }
+	for _, attr in pairs(SHOP.Boost) do s[#s + 1] = (player:GetAttribute(attr) or 0) > now and 1 or 0 end
+	for _, k in ipairs(SHOP.Kinds) do
+		s[#s + 1] = player:GetAttribute(k[1])
+		for _, key in ipairs(Config[k[2]].Order) do s[#s + 1] = player:GetAttribute(k[1] .. "Owned_" .. key) == true and 1 or 0 end
+	end
+	return table.concat(s, "|")
+end
+
+function SHOP.Cols()
+	local camera = workspace.CurrentCamera
+	return camera and camera.ViewportSize.X < 760 and 2 or 3
+end
+
+function SHOP.Build()
+	local C, cols = SHOP.Content, SHOP.Cols()
+	clearChildren(C)
+	SHOP.Timers = {}
+	local pass = Config.Shop.Passes.VIP
+	local vip = player:GetAttribute("Vip") == true
+	local hero = makePanel({ Size = UDim2.new(1, -10, 0, 118), LayoutOrder = 1, BackgroundColor3 = Color3.new(1, 1, 1) }, C)
+	create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(30, 34, 64), Color3.fromRGB(104, 82, 36)) }, hero)
+	create("UIStroke", { Color = Color3.fromRGB(230, 190, 100), Thickness = 1.5, Transparency = 0.45 }, hero)
+	local crown = create("Frame", { Size = UDim2.new(0, 76, 0, 76), Position = UDim2.new(0, 16, 0.5, -38), BackgroundColor3 = Color3.fromRGB(255, 214, 102), BackgroundTransparency = 0.82, BorderSizePixel = 0 }, hero)
+	rounded(crown, 38)
+	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "👑", TextSize = 48 }, crown)
+	makeLabel({ Size = UDim2.new(1, -320, 0, 28), Position = UDim2.new(0, 108, 0, 12), Text = pass.Name .. (vip and "  ✔ 이용 중" or ""), TextSize = 22, Font = Enum.Font.GothamBlack, TextWrapped = false, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 224, 140) }, hero)
+	local chips = create("Frame", { Size = UDim2.new(1, -330, 0, 60), Position = UDim2.new(0, 108, 0, 48), BackgroundTransparency = 1 }, hero)
+	create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Wraps = true, Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder }, chips)
+	for i, text in ipairs(pass.Benefits or {}) do
+		local chip = makeLabel({ Size = UDim2.new(0, 0, 0, 24), AutomaticSize = Enum.AutomaticSize.X, LayoutOrder = i, Text = text, TextSize = 13, TextWrapped = false, BackgroundTransparency = 0.86, BackgroundColor3 = Color3.fromRGB(255, 224, 140), TextColor3 = Color3.fromRGB(255, 232, 170) }, chips)
+		rounded(chip, 12)
+		create("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10) }, chip)
+	end
+	local label, color = shopButtonLabel(pass.PassId)
+	makeButton({
+		Size = UDim2.new(0, 170, 0, 48), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -16, 0.5, 0), TextSize = 16,
+		Text = vip and "✔ 보유 중" or ("👑 " .. label), BackgroundColor3 = vip and GRAY or (pass.PassId > 0 and GREEN or Color3.fromRGB(200, 140, 40)),
+	}, hero, function()
+		if not vip then Remotes.Shop:FireServer("Buy", "Pass", "VIP") end
+	end)
+
+	local row = create("Frame", { Size = UDim2.new(1, -10, 0, 34), LayoutOrder = 2, BackgroundTransparency = 1 }, C)
+	create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }, row)
+	for i, cat in ipairs(Config.Shop.Categories) do
+		local on = cat.Key == SHOP.Cat
+		makeButton({
+			Size = UDim2.new(0, 112, 0, 34), LayoutOrder = i, Text = cat.Name, TextSize = 14, Font = on and Enum.Font.GothamBlack or Enum.Font.GothamBold,
+			BackgroundColor3 = on and SHOP.Acc[cat.Key] or Color3.fromRGB(38, 42, 64), TextColor3 = on and Color3.new(1, 1, 1) or Color3.fromRGB(170, 176, 200),
+		}, row, function()
+			SHOP.Cat, SHOP.Top = cat.Key, true
+			SHOP.Refresh()
 		end)
 	end
-	local function cosmeticSection(title, kind, tableName)
-		sectionTitle(title)
-		local list = Config[tableName]
-		local current = player:GetAttribute(kind) or ""
-		for _, key in ipairs(list.Order) do
-			local item = list[key]
-			local owned = player:GetAttribute(kind .. "Owned_" .. key) == true
-			local row = newRow(60)
-			rowText(row, string.format("<font color='#%s' size='16'><b>%s</b></font>\n<font size='13' color='#bbbbcc'>%s</font>",
-				hex(item.Color), item.Name, owned and "보유 중" or ("🔒 " .. auraUnlockText(item))), 14, 290)
-			makeButton({
-				Size = UDim2.new(0, 124, 0, 30), Position = UDim2.new(1, -274, 0.5, -15),
-				Text = "👀 미리보기", TextSize = 14, BackgroundColor3 = Color3.fromRGB(70, 90, 160),
-			}, row, function()
-				previewCosmetic(kind, key, item.Name)
-			end)
-			if owned then
-				local equipped = current == key
-				makeButton({
-					Size = UDim2.new(0, 124, 0, 30), Position = UDim2.new(1, -142, 0.5, -15),
-					Text = equipped and "해제" or "장착", TextSize = 14, BackgroundColor3 = equipped and RED or GREEN,
-				}, row, function()
-					if kind == "Aura" then
-						Remotes.Shop:FireServer("Aura", equipped and "" or key)
-					else
-						Remotes.Shop:FireServer("Cosmetic", kind, equipped and "" or key)
-					end
-				end)
+
+	local cw = math.floor((826 - 8 * (cols - 1)) / cols) - 1
+	local grid = create("Frame", { Size = UDim2.new(1, -10, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = 3, BackgroundTransparency = 1 }, C)
+	create("UIGridLayout", { CellSize = UDim2.new(0, cw, 0, 190), CellPadding = UDim2.new(0, 8, 0, 8), SortOrder = Enum.SortOrder.LayoutOrder }, grid)
+	local n = 0
+	if SHOP.Cat == "Deco" then
+		for _, k in ipairs(SHOP.Kinds) do
+			for _, key in ipairs(Config[k[2]].Order) do
+				n += 1
+				SHOP.CosCard(grid, n, k, key)
+			end
+		end
+	else
+		for _, key in ipairs(Config.Shop.ProductOrder) do
+			local def = Config.Shop.Products[key]
+			if SHOP.Cat == "Rec" and def.Featured or def.Category == SHOP.Cat then
+				n += 1
+				local cos
+				for _, k in ipairs(SHOP.Kinds) do
+					if def.Grant[k[1]] then cos = k; SHOP.CosCard(grid, n, k, def.Grant[k[1]]) end
+				end
+				if not cos then SHOP.ProdCard(grid, n, key) end
 			end
 		end
 	end
-	cosmeticSection("✨ 오라 (꾸미기 · 능력치 없음 · 다른 플레이어에게도 보여요)", "Aura", "Auras")
-	cosmeticSection("🚩 깃발 (등 뒤에 꽂는 꾸미기 · 능력치 없음)", "Banner", "Banners")
-	cosmeticSection("🛹 탈것 (발밑에 떠 있는 꾸미기 · 능력치 / 이동속도 없음)", "Mount", "Mounts")
+	makeLabel({ Size = UDim2.new(1, -10, 0, 36), LayoutOrder = 4, Text = "상점은 시간을 줄여주는 것과 편의, 꾸미기를 팔아요. 돈을 쓰지 않아도 모든 성장에 도달할 수 있고, 장비는 필드에서 직접 얻어야 해요.", TextSize = 12, TextColor3 = Color3.fromRGB(130, 136, 164) }, C)
+end
+
+function SHOP.Refresh()
+	if not SHOP.Panel.Visible then return end
+	local sig = SHOP.Sig()
+	if sig ~= SHOP.LastSig then
+		SHOP.LastSig = sig
+		local y = SHOP.Top and 0 or SHOP.Content.CanvasPosition.Y
+		SHOP.Top = nil
+		local ok, err = pcall(SHOP.Build)
+		if not ok then warn("[Shop] " .. tostring(err)) end
+		task.defer(function() SHOP.Content.CanvasPosition = Vector2.new(0, y) end)
+	end
+	local now = os.time()
+	for _, t in ipairs(SHOP.Timers) do
+		local left = (player:GetAttribute(t[2]) or 0) - now
+		if t[1].Parent then t[1].Text = left > 0 and ("⏳ 적용 중 " .. Config.FormatDuration(left)) or "" end
+	end
 end
 
 local metaState = nil
@@ -3168,7 +3298,7 @@ local function buildSkillTab()
 	end
 end
 
-local function buildPetTab() -- 펫 창은 따로 있다 (PetClient): 기능 / 레벨업 / 외형 / 색
+local function buildPetTab()
 	local row = newRow(96)
 	rowText(row, "🐾 <b>펫</b>: 골드로 펫 기능을 열고, 레벨을 올릴 때마다 새 기능이 생겨요 (자동 루팅 · 공격 속도 · 보조 사격 ...)\n<font color='#bbbbcc' size='13'>외형은 능력과 상관없는 꾸미기예요. 필드 군주를 쓰러뜨리거나 칭호를 따면 새 외형이 열려요.</font>", 14, 210)
 	makeButton({ Size = UDim2.new(0, 190, 0, 44), Position = UDim2.new(1, -202, 0.5, -22), Text = "🐾 펫 창 열기 (P)", TextSize = 16, BackgroundColor3 = Color3.fromRGB(200, 130, 40) }, row, function()
@@ -3186,7 +3316,7 @@ Remotes.Meta.OnClientEvent:Connect(function(action, data)
 	end
 end)
 
-function MENU.seg(options, current, onPick) -- 탭 안쪽 작은 버튼 줄 (2~3개)
+function MENU.seg(options, current, onPick)
 	local row = newRow(44, Color3.fromRGB(26, 28, 42))
 	for index, option in ipairs(options) do
 		local active = option[1] == current
@@ -3262,15 +3392,6 @@ function refreshMenu()
 end
 settings.RefreshMenu = refreshMenu
 
-function SHOP.Refresh()
-	if not SHOP.Panel.Visible then return end
-	activeContent = SHOP.Content
-	clearChildren(SHOP.Content)
-	rowOrder = 0
-	local ok, err = pcall(buildShopTab)
-	activeContent = menuContent
-	if not ok then warn("[Shop] " .. tostring(err)) end
-end
 for _, cosmeticKind in ipairs({ "Aura", "Banner", "Mount" }) do
 	player:GetAttributeChangedSignal(cosmeticKind):Connect(function()
 		if SHOP.Panel.Visible then SHOP.Refresh() end
@@ -3287,7 +3408,7 @@ function selectTab(key, subKey)
 	currentTab = key
 	if subKey and MENU.Subs[key] then MENU.Sub[key] = subKey end
 	if key == "Growth" and MENU.Sub.Growth == "Train" and not subKey and player:GetAttribute("GrowthUnlocked") ~= true then
-		MENU.Sub.Growth = "Skill" -- 잠겨 있으면 열자마자 스킬을 보여 준다
+		MENU.Sub.Growth = "Skill"
 	end
 	local sub = MENU.Sub[key]
 	if key == "Quest" or key == "Character" then
@@ -3313,7 +3434,7 @@ for index, tab in ipairs(TABS) do
 		selectTab(tab.Key)
 	end)
 end
-do -- 성장 해금 직후: 성장 탭이 열어 볼 때까지 반짝인다
+do
 	local glow = create("UIStroke", { Name = "GrowthGlow", Color = Color3.fromRGB(255, 225, 90), Thickness = 3, Enabled = false, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, tabButtons.Growth)
 	TweenService:Create(glow, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 7 }):Play()
 end
@@ -3321,24 +3442,24 @@ end
 local menuToggleAt = 0
 local function toggleMenu()
 	local now = os.clock()
-	if now - menuToggleAt < 0.15 then return end -- 키 입력이 두 경로(ContextAction / InputBegan)로 겹쳐 들어와도 한 번만 처리한다 (열렸다 바로 닫히는 것 방지)
+	if now - menuToggleAt < 0.15 then return end
 	menuToggleAt = now
 	menuPanel.Visible = not menuPanel.Visible
 	if menuPanel.Visible then
 		SHOP.Panel.Visible = false -- 큰 창은 한 번에 하나
 		local ok, err = pcall(selectTab, currentTab)
-		if not ok then warn("[Menu] " .. tostring(err)) end -- 탭을 그리다 오류가 나도 메뉴 창은 열린 채로 둔다
+		if not ok then warn("[Menu] " .. tostring(err)) end
 	end
 end
 
-do -- 상태 카드(HudClient)와 같은 어두운 남색 + 은은한 테두리
+do
 	local menuButton = makeButton({
 		Name = "MenuButton", Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 16, 0, 244), Text = "📋 메뉴(I)", TextSize = 12,
 		BackgroundColor3 = Color3.fromRGB(34, 40, 70),
 	}, gui, toggleMenu)
 	local menuStroke = create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, menuButton)
 	local pulse = TweenService:Create(menuStroke, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 5 })
-	local function syncPulse() -- 성장이 방금 해금됐으면 열어 볼 때까지 반짝인다
+	local function syncPulse()
 		if player:GetAttribute("GrowthNew") == true then
 			menuStroke.Color = Color3.fromRGB(255, 225, 90)
 			menuStroke.Transparency = 0
@@ -3659,10 +3780,10 @@ local function radarDot(index)
 end
 
 local radarClock = 0
-local radarState = {} -- [점] = { 크기, 색, 흐림 }: 바뀐 속성만 다시 쓴다 (매 프레임 수십 개를 덮어쓰지 않게)
+local radarState = {}
 RunService.RenderStepped:Connect(function(dt)
 	radarClock += dt
-	if radarClock < 0.05 then return end -- 레이더는 초당 20번만 갱신해도 충분하다
+	if radarClock < 0.05 then return end
 	radarClock = 0
 	local zone = currentZone()
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
@@ -3723,7 +3844,7 @@ local useSkill
 local skillByKey = {}
 local skillSlots = {}
 local skillCooldownTotal = {}
-local skillReadyAt = {}   -- [skillKey] = 이 시각(os.clock) 이후 사용 가능
+local skillReadyAt = {}
 local skillBar = create("Frame", {
 	Name = "SkillBar", Size = UDim2.new(0, (#Config.Skills.Order + 1) * 68, 0, 64), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
 	BackgroundTransparency = 1, Visible = false,
@@ -3747,7 +3868,7 @@ for index, skillKey in ipairs(Config.Skills.Order) do
 	}, slot)
 	rounded(cover)
 	local timer = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 20, Font = Enum.Font.GothamBlack }, slot)
-	if UserInputService.TouchEnabled then -- 모바일: 스킬 칸을 눌러서 사용
+	if UserInputService.TouchEnabled then
 		local tap = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", ZIndex = 5 }, slot)
 		tap.Activated:Connect(function()
 			useSkill(skillKey)
@@ -3799,7 +3920,7 @@ function useSkill(skillKey)
 		return
 	end
 	if os.clock() < (skillReadyAt[skillKey] or 0) then return end
-	if skillKey == "Ult" then -- 범위 안에 적이 없으면 서버가 거절하니, 미리 눈에 띄게 알려 준다
+	if skillKey == "Ult" then
 		if (player:GetAttribute("UltCharge") or 0) < Config.Skills.Ult.Cost then
 			toast("🎯 궁극기 게이지가 아직 부족해요! (적을 공격하면 차올라요)")
 			return
@@ -3912,7 +4033,7 @@ RunService.Heartbeat:Connect(function()
 		if not root or not humanoid or humanoid.Health <= 0 then return end
 
 		if not isTargetValid(lockTarget, root) and now >= nextSearch then
-			nextSearch = now + 0.4 -- 대상 탐색은 0.4초에 한 번만
+			nextSearch = now + 0.4
 			lockTarget = findNearestTarget(root)
 			updateLockVisual()
 		end
@@ -4003,13 +4124,13 @@ Remotes.Hit.OnClientEvent:Connect(function(isCrit, killed)
 		SoundBank.Play(sfxParent, "Kill", { Pitch = 1 + math.min(0.7, combo * 0.02) })
 	elseif isCrit then
 		shake = math.max(shake, 0.25)
-		SoundBank.Play(sfxParent, "Hit", { Pitch = 1.1 + math.random() * 0.15 }) -- 치명타 전용 소리는 없앴다: 평소 적중음과 같다 (화면의 노란 / 빨간 숫자가 치명타를 알려 준다)
+		SoundBank.Play(sfxParent, "Hit", { Pitch = 1.1 + math.random() * 0.15 })
 	else
 		SoundBank.Play(sfxParent, "Hit", { Pitch = 0.9 + math.random() * 0.25 })
 	end
 end)
 
-player:GetAttributeChangedSignal("ShakeTick"):Connect(function() -- 서버가 보내는 화면 흔들림 (운석 충돌 등)
+player:GetAttributeChangedSignal("ShakeTick"):Connect(function()
 		shake = math.max(shake, player:GetAttribute("ShakeStrength") or 0.5)
 	end)
 
@@ -4168,7 +4289,7 @@ do
 end
 
 do
-	local jd = { Used = 0, Last = 0 } -- (지역 변수 개수 제한 때문에 표 하나로 묶음)
+	local jd = { Used = 0, Last = 0 }
 
 	local function bindCharacter(character)
 		local humanoid = character:WaitForChild("Humanoid", 10)
@@ -4223,7 +4344,7 @@ do
 		end
 	end)
 	UserInputService.JumpRequest:Connect(jd.Try)
-	RunService.Heartbeat:Connect(function() -- 땅에 닿아 있으면 점프 횟수 회복
+	RunService.Heartbeat:Connect(function()
 		local character = player.Character
 		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 		if humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then
