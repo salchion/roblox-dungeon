@@ -1405,8 +1405,8 @@ end
 
 -- 번개 한 줄기
 local function strikeBolt(run, player, entry, damage)
-	Effects.Raw(entry.Part.Position, { "Z", entry.Part.Position + Vector3.new(0, 70, 0), entry.Part.Position }) -- 번개 줄기는 각자 화면에서
-	Effects.Burst(entry.Part.Position, Color3.fromRGB(255, 240, 120), 24)
+	Effects.Raw(entry.Part.Position, { "Z", entry.Part.Position + Vector3.new(0, 95, 0), entry.Part.Position }) -- 번개 줄기(굵고 높게) / 바닥 그을음 / 불꽃은 각자 화면에서
+	Effects.Burst(entry.Part.Position, Color3.fromRGB(255, 240, 120), 36)
 	sfxAt(run, entry.Part.Position, "Aug_Storm", nil, 0.12)
 	hitMonster(run, player, entry, damage)
 end
@@ -1417,9 +1417,7 @@ local function dropMeteor(run, player, position, radius, damage, level)
 	sfxAt(run, position + Vector3.new(0, 20, 0), "Aug_MeteorFall", nil, 0.5)
 	task.delay(0.9, function()
 		if run.Destroyed or run.Phase == "Ended" then return end
-		shockRing(run, position, radius, Color3.fromRGB(255, 150, 60))
-		sfxAt(run, position, "Aug_MeteorHit", nil, 0.2)
-		Effects.Burst(position + Vector3.new(0, 3, 0), Color3.fromRGB(255, 160, 60), 70)
+		sfxAt(run, position, "Aug_MeteorHit", nil, 0.2) -- 착탄 고리 / 구덩이 / 파편은 클라이언트 "E" 가 낙하 끝에 그린다
 		for _, entry in ipairs(nearestMonsters(run, position, radius, 12)) do
 			hitMonster(run, player, entry, damage)
 		end
@@ -1436,8 +1434,9 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 	local execLevel = augLv(run, player, "AugExecute")
 	if execLevel > 0 and data.Health > 0 and not data.IsBoss and not data.BossLike and data.Kind ~= "Boss" and not data.Invincible and data.Health / data.MaxHealth <= 0.1 + 0.06 * execLevel then
 		data.Health = 0
-		Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 4, 0), "💀 처형!", Color3.fromRGB(215, 110, 255))
+		Effects.Raw(part.Position, { "U", part.Position + Vector3.new(0, part.Size.Y / 2 + 1.5, 0), part.Size.Y }) -- 해골 + 보라 폭발 + 베기 (각자 화면에서)
 		sfxAt(run, part.Position, "Aug_Execute", nil, 0.1)
+		sfxAt(run, part.Position, "Aug_Skull", nil, 0.12)
 		if synergy(player, "Reaper") and augDepth == 0 then
 			local from = part.Position + Vector3.new(0, 3, 0)
 			for _, entry in ipairs(nearestMonsters(run, part.Position, 70, 2, part)) do
@@ -1457,15 +1456,14 @@ end
 augOnKill = function(run, player, position)
 	local flame = augLv(run, player, "AugFlame")
 	if flame > 0 then -- 화염 지대: 쓰러진 자리에 불길
-		makeFlame(run, player, position, 7 + 2 * flame, (3 + flame) * (synergy(player, "Inferno") and 1.5 or 1), augDamage(player) * (0.25 + 0.1 * flame))
+		makeFlame(run, player, position, 7 + 2 * flame, (5 + flame) * (synergy(player, "Inferno") and 1.5 or 1), augDamage(player) * (0.25 + 0.1 * flame))
 	end
 	local level = augLv(run, player, "AugNova")
 	if level <= 0 or augDepth > 1 then return end
 	augDepth += 1
 	local radius = (12 + 3 * level) * (synergy(player, "Inferno") and 1.3 or 1)
-	shockRing(run, position, radius, Color3.fromRGB(255, 110, 70))
+	Effects.Raw(position, { "N", position, radius, Color3.fromRGB(255, 110, 70) }) -- 충격 고리 + 파편 + 부드러운 빛구 (각자 화면에서)
 	sfxAt(run, position, "Aug_Nova", nil, 0.12)
-	Effects.Burst(position + Vector3.new(0, 2, 0), Color3.fromRGB(255, 150, 70), 40)
 	local damage = augDamage(player) * (1.2 + 0.6 * level)
 	for _, entry in ipairs(nearestMonsters(run, position, radius, 8)) do
 		hitMonster(run, player, entry, damage)
@@ -1599,7 +1597,8 @@ local function startAugLoop(run)
 					nextPulse[member] = now + math.max(3, 7 - pulse)
 					local radius = 16 + 2 * pulse
 					shockRing(run, root.Position - Vector3.new(0, 2.5, 0), radius, Color3.fromRGB(110, 255, 190))
-					Effects.Burst(root.Position, Color3.fromRGB(110, 255, 190), 40)
+					Effects.Raw(root.Position, { "V", root.Position - Vector3.new(0, 2.3, 0), radius, Color3.fromRGB(150, 255, 210), 0.7 }) -- 퍼지는 파동 고리
+						Effects.Burst(root.Position, Color3.fromRGB(110, 255, 190), 70)
 					sfxAt(run, root.Position, "Aug_Pulse", nil, 0.5)
 					for _, entry in ipairs(nearestMonsters(run, root.Position, radius, 10)) do
 						hitMonster(run, member, entry, augDamage(member) * (0.8 + 0.4 * pulse))
@@ -2113,15 +2112,14 @@ local function applyPenalty(run, pen)
 	run.GoldMult *= 1 + (pen.Gold or 0)
 end
 
--- 주사위 한 번의 결과 비율: 세트 조각 65% / 나머지(유틸 / 플레이 방식 특수 / 약한 스탯) 35%. 스탯 퍼크는 가중치 x0.25.
-local SET_PIECE_CHANCE = 0.65
+-- 주사위 한 번의 결과: 세트 조각 1개(확정) + 스탯/유틸 강화 1개(원래 가중치). 이미 많이 쌓은 퍼크는 확률이 점점 줄고, 최대면 유틸로 넘어간다.
 local SET_PITY_CHANCE = 0.35 -- 이미 1~2조각 가진 세트를 골라 줄 확률 (완성이 설레되 운처럼 느껴지게)
-local STAT_PERKS = { Power = true, Rapid = true, Crit = true, Vital = true }
 
-local function buffWeight(entry)
+local function buffWeight(member, entry)
 	local w = entry.Weight or 1
-	if (entry.Perk and STAT_PERKS[entry.Perk]) or entry.Combo then
-		w *= 0.25
+	local perk = entry.Perk and Config.Perks[entry.Perk]
+	if perk and perk.Max and perk.Max > 0 and not entry.Special then
+		w *= math.max(0.35, 1 - 0.6 * perkStacks(member, entry.Perk) / perk.Max) -- 완만한 수확 체감
 	end
 	return w
 end
@@ -2157,9 +2155,8 @@ end
 local function giveSetPiece(run, member, jackpot)
 	local key = pickSetKey(run, member, jackpot)
 	if not key then
-		local filler = perkMaxed(member, "Power") and { Effect = "Heal" } or { Perk = "Power" }
-		applyBuff(run, member, filler)
-		return nil, "모든 세트 완성! 보너스 효과"
+		applyBuff(run, member, { Effect = "Xp" })
+		return nil, "모든 세트 완성! 경험치 보너스"
 	end
 	local def = Config.Sets[key]
 	local pieces = run.SetPieces[member]
@@ -2188,42 +2185,53 @@ local function rollBonus(run, penaltyChance, forceSpecial)
 	if pen then applyPenalty(run, pen) end
 	for _, member in ipairs(run.Members) do
 		run.SetPieces[member] = run.SetPieces[member] or {}
-		local buff, setInfo, note
-		if forceSpecial or math.random() < SET_PIECE_CHANCE then
-			setInfo, note = giveSetPiece(run, member, forceSpecial)
-		else
-			buff = pickWeighted(Config.RunBuffs, function(entry)
-				if entry.Perk then return not perkMaxed(member, entry.Perk) end
-				if entry.Attr then return (member:GetAttribute(entry.Attr) or 0) < (entry.Max or 3) end
-				return true
-			end, buffWeight)
-			if buff then applyBuff(run, member, buff) end
+		-- 이중 보상: 세트 조각(확정) + 스탯/유틸 강화 1개. 잭팟은 완성에 가까운 조각 + 레어(Special) 강화.
+		local setInfo, note = giveSetPiece(run, member, forceSpecial)
+		local function allowed(entry)
+			if forceSpecial and not entry.Special then return false end
+			if entry.Perk then return not perkMaxed(member, entry.Perk) end
+			if entry.Attr then return (member:GetAttribute(entry.Attr) or 0) < (entry.Max or 3) end
+			return true
 		end
+		local function weigh(entry) return buffWeight(member, entry) end
+		local buff = pickWeighted(Config.RunBuffs, allowed, weigh)
+		if not buff and forceSpecial then
+			buff = pickWeighted(Config.RunBuffs, function(entry) return entry.Perk == nil or not perkMaxed(member, entry.Perk) end, weigh)
+		end
+		if buff then applyBuff(run, member, buff) end
 		local root = getAliveParts(member)
-		if root and setInfo then
-			local color = setInfo.Color
-			local textPos = root.Position + Vector3.new(0, 7, 0)
-			sfxAt(run, root.Position, "Aug_Get", nil, 0.3)
-			Effects.Burst(root.Position, color, 55)
-			Effects.FloatText(textPos, string.format("%s %s 조각 (%d/3)", setInfo.Icon, setInfo.Name, setInfo.Count), color)
-			if setInfo.Completed then
-				task.delay(0.35, function()
+		if root then
+			if setInfo then
+				local color = setInfo.Color
+				sfxAt(run, root.Position, "Aug_Get", nil, 0.3)
+				Effects.Burst(root.Position, color, 55)
+				Effects.FloatText(root.Position + Vector3.new(0, 7, 0), string.format("%s %s 조각 (%d/3)", setInfo.Icon, setInfo.Name, setInfo.Count), color)
+				if setInfo.Completed then
+					task.delay(0.5, function()
+						if run.Destroyed or run.Phase == "Ended" then return end
+						local r2 = getAliveParts(member)
+						if not r2 then return end
+						Effects.Burst(r2.Position, color, 110)
+						shockRing(run, r2.Position - Vector3.new(0, 2.5, 0), 18 + 4 * setInfo.Count, color)
+						Effects.Raw(r2.Position, { "V", r2.Position - Vector3.new(0, 2.3, 0), 20 + 4 * setInfo.Count, color, 0.8 })
+						sfxAt(run, r2.Position, "Gacha_Card", nil, 0.3)
+						Effects.FloatText(r2.Position + Vector3.new(0, 12, 0), string.format("✨ %d세트 완성! %s %s Lv.%d", setInfo.Count, setInfo.EffectIcon or "", setInfo.EffectName or "", setInfo.Level), color, 340, 1.8)
+						syncAura(member, run)
+					end)
+				end
+			elseif note then
+				Effects.FloatText(root.Position + Vector3.new(0, 7, 0), "🏆 " .. note, Color3.fromRGB(255, 215, 90))
+			end
+			if buff then
+				local color = buff.Special and Color3.fromRGB(255, 190, 60) or Color3.fromRGB(120, 220, 255)
+				task.delay(0.25, function() -- 세트 글자와 겹치지 않게 조금 늦게, 더 높이
 					if run.Destroyed or run.Phase == "Ended" then return end
-					local r2 = getAliveParts(member)
-					if not r2 then return end
-					Effects.Burst(r2.Position, color, 110)
-					shockRing(run, r2.Position - Vector3.new(0, 2.5, 0), 18 + 4 * setInfo.Count, color)
-					sfxAt(run, r2.Position, "Gacha_Card", nil, 0.3)
-					Effects.FloatText(r2.Position + Vector3.new(0, 10, 0), string.format("✨ %d세트 완성! %s Lv.%d", setInfo.Count, setInfo.EffectName or "", setInfo.Level), color)
-					syncAura(member, run)
+					local r3 = getAliveParts(member)
+					if not r3 then return end
+					Effects.Burst(r3.Position, color, buff.Special and 90 or 55)
+					Effects.FloatText(r3.Position + Vector3.new(0, 9.5, 0), string.format("%s %s!", buff.Icon, buff.Name), color)
 				end)
 			end
-		elseif root and buff then
-			local color = buff.Special and Color3.fromRGB(255, 190, 60) or Color3.fromRGB(120, 220, 255)
-			Effects.Burst(root.Position, color, buff.Special and 90 or 55)
-			Effects.FloatText(root.Position + Vector3.new(0, 7, 0), string.format("%s %s!", buff.Icon, buff.Name), color)
-		elseif root and note then
-			Effects.FloatText(root.Position + Vector3.new(0, 7, 0), "🏆 " .. note, Color3.fromRGB(255, 215, 90))
 		end
 		Remotes.Dungeon:FireClient(member, "Roll", {
 			Buff = buff and { Icon = buff.Icon, Name = buff.Name, Desc = buff.Desc, Special = buff.Special == true } or nil,

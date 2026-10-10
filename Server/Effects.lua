@@ -422,8 +422,9 @@ function Effects.GunSound(position, class, pitch, volume, era)
 end
 
 -- 임의 색의 떠오르는 글자 (골드 획득 등)
-function Effects.FloatText(position, text, color)
-	emit(position, { "F", position, text, color })
+-- width / life (선택): 배너처럼 크고 오래 뜨는 글자 (픽셀 폭, 초)
+function Effects.FloatText(position, text, color, width, life)
+	emit(position, { "F", position, text, color, width, life })
 end
 
 function Effects.DamageNumber(position, amount, isCrit)

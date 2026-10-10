@@ -52,6 +52,7 @@ local SPECS = {
 		Layers = { { Pitch = 0.18, Volume = 1.8, Delay = 0.0 }, { Pitch = 0.6, Volume = 1.0, Delay = 0.05 }, { Pitch = 0.12, Volume = 1.5, Delay = 0.25 } } },
 	UltShot = { Base = "Shot", Pitch = 1.4, Volume = 0.8, Length = 0.3, Fx = { { "chorus", { Depth = 0.5, Mix = 0.5 } } } },
 	Boom    = { CustomLength = 1.6, Base = "Enh_Hammer", Pitch = 0.45, Volume = 1.5, Length = 1.1, Fx = { { "distortion", { Level = 0.55 } }, { "reverb", { DecayTime = 1.8, WetLevel = -4 } } } },
+	Aug_Skull = { CustomLength = 0.9, Base = "Enh_Hammer", Pitch = 0.32, Volume = 1.0, Length = 0.5, Fx = { { "distortion", { Level = 0.45 } }, { "reverb", { DecayTime = 1.0, WetLevel = -6 } } } }, -- 처형 해골: 짧고 낮은 쿵
 	LevelUp = { Base = "Enh_Success", Pitch = 1.0, Volume = 1.0, Length = 1.4, Fx = { { "reverb", { DecayTime = 1.8, WetLevel = -5 } } },
 		Layers = { { Pitch = 1.5, Volume = 0.7, Delay = 0.12 }, { Pitch = 2.0, Volume = 0.5, Delay = 0.26 } } },
 }
@@ -141,7 +142,7 @@ SoundBank.Descriptions = {
 	LevelUp = "레벨업", Enh_Hammer = "강화: 망치 내려치기", Enh_Success = "강화 성공 (단계가 오를수록 높아짐)", Enh_Fail = "강화 실패",
 	Enh_Evolve = "무기 진화", Gacha_Drop = "뽑기: 캡슐 낙하", Gacha_Tick = "뽑기: 흔들리는 틱틱", Gacha_Card = "10연 뽑기: 카드 한 장",
 	Aug_Get = "어그먼트 획득", Aug_Synergy = "어그먼트 시너지 발동", Aug_Missile = "크리 미사일 발사", Aug_MissileHit = "미사일 명중", Aug_Nova = "처치 폭발",
-	Aug_Blade = "회전 칼날 베기", Aug_Storm = "낙뢰", Aug_MeteorFall = "유성 낙하", Aug_MeteorHit = "유성 착탄", Aug_Flame = "화염 지대", Aug_Execute = "처형", Aug_Pulse = "수호 파동",
+	Aug_Blade = "회전 칼날 베기", Aug_Storm = "낙뢰", Aug_MeteorFall = "유성 낙하", Aug_MeteorHit = "유성 착탄", Aug_Flame = "화염 지대", Aug_Execute = "처형", Aug_Skull = "처형 해골 (짧은 저음)", Aug_Pulse = "수호 파동",
 	Buff_Get = "일반 강화 획득", Penalty_Get = "패널티 발동", Player_Hurt = "내가 맞음", Low_Health = "체력 위험", Warn_Overrun = "몬스터 한도 경고", Shield_Block = "방패에 막힘",
 	Event_Siren = "공습 사이렌", Event_Stampede = "몬스터 대이동", Event_Elite = "엘리트 부대 출현", Event_Goblin = "황금 고블린 출현", Event_Boss = "거신 출현",
 	Boss_Spawn = "던전 보스 등장", Boss_Enrage = "보스 격노", Dungeon_Start = "던전 시작", Dungeon_Clear = "던전 클리어", Dungeon_Fail = "던전 실패", Quest_Claim = "퀘스트 보상 수령", Rare_Drop = "희귀 장비 획득",
@@ -152,7 +153,7 @@ SoundBank.Order = {
 	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_Ult", "UltShot", "Boom", "LevelUp",
 	"Dash", "Pickup", "Enh_Hammer", "Enh_Success", "Enh_Fail", "Enh_Evolve", "Gacha_Drop", "Gacha_Tick", "Gacha_Card",
 	"Gacha_Pop1", "Gacha_Pop2", "Gacha_Pop3", "Gacha_Pop4", "Gacha_Pop5",
-	"Aug_Get", "Aug_Synergy", "Aug_Missile", "Aug_MissileHit", "Aug_Nova", "Aug_Blade", "Aug_Storm", "Aug_MeteorFall", "Aug_MeteorHit", "Aug_Flame", "Aug_Execute", "Aug_Pulse",
+	"Aug_Get", "Aug_Synergy", "Aug_Missile", "Aug_MissileHit", "Aug_Nova", "Aug_Blade", "Aug_Storm", "Aug_MeteorFall", "Aug_MeteorHit", "Aug_Flame", "Aug_Execute", "Aug_Skull", "Aug_Pulse",
 	"Buff_Get", "Penalty_Get", "Player_Hurt", "Low_Health", "Warn_Overrun", "Shield_Block",
 	"Event_Siren", "Event_Stampede", "Event_Elite", "Event_Goblin", "Event_Boss", "Boss_Spawn", "Boss_Enrage",
 	"Dungeon_Start", "Dungeon_Clear", "Dungeon_Fail", "Quest_Claim", "Rare_Drop",

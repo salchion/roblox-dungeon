@@ -917,111 +917,265 @@ local function neonPart(size, color, transparency, shape)
 	return part
 end
 
-local function ring(event) -- { "R", 위치, 반지름, 색 }
-	local position, radius, color = event[2], event[3], event[4]
-	local part = neonPart(Vector3.new(0.5, 2, 2), color, 0.25, Enum.PartType.Cylinder)
-	part.CFrame = CFrame.new(position + Vector3.new(0, 0.5, 0)) * CFrame.Angles(0, 0, math.rad(90))
-	part.Parent = fxFolder
-	TweenService:Create(part, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.5, radius * 2, radius * 2), Transparency = 1 }):Play()
-	Debris:AddItem(part, 0.5)
+local debrisFx -- 파편 (아래 "K" 사망 연출이 정해지면 채워진다)
+local CYL = Enum.PartType.Cylinder
+
+-- 점선 고리: 속이 빈 고리를 부품 몇 개로 흉내 낸다 (풀링). 퍼지는 파동 / 칼날 궤도 표시에 쓴다.
+local dashPool = {}
+local function makeDashes(n, color, thick, length, transparency)
+	local list = table.create(n)
+	for i = 1, n do
+		local part = table.remove(dashPool)
+		if not part then
+			part = neonPart(Vector3.one, color, 0)
+			part.CastShadow = false
+		end
+		part.Color, part.Size, part.Transparency = color, Vector3.new(thick, thick * 0.5, length), transparency or 0.2
+		part.Parent = fxFolder
+		list[i] = part
+	end
+	return list
+end
+local function releaseDashes(list)
+	for _, part in ipairs(list) do
+		part.Parent = nil
+		if #dashPool < 160 then table.insert(dashPool, part) else part:Destroy() end
+	end
+end
+local function placeDashes(list, center, radius, spin)
+	local n = #list
+	for i, part in ipairs(list) do
+		local a = spin + i * (2 * math.pi / n)
+		local c, s = math.cos(a), math.sin(a)
+		local p = center + Vector3.new(c * radius, 0, s * radius)
+		part.CFrame = CFrame.lookAt(p, p + Vector3.new(-s, 0, c))
+	end
 end
 
-local function bolt(event) -- { "Z", 위, 아래 }
-	local top, bottom = event[2], event[3]
-	local length = (top - bottom).Magnitude
-	local part = neonPart(Vector3.new(1.4, 1.4, length), Color3.fromRGB(255, 245, 140), 0)
-	part.CFrame = CFrame.lookAt((top + bottom) / 2, bottom)
+-- 퍼지는 파동: 가운데에서 바깥으로 퍼지며 옅어지는 점선 고리 (동시에 8개까지)
+local waves = {}
+local function ringWave(center, radius, color, dur, n, thick)
+	if #waves >= 8 then return end
+	n = n or math.clamp(math.floor(radius * 1.1), 14, 26)
+	local length = math.max(1.6, 2 * math.pi * radius / n * 0.6)
+	table.insert(waves, { List = makeDashes(n, color, thick or (0.9 + radius * 0.04), length), Center = center + Vector3.new(0, 0.5, 0), Radius = radius, Dur = dur or 0.5, T0 = os.clock() })
+end
+
+local activeRings = 0
+local function ring(event) -- { "R", 위치, 반지름, 색 }
+	if activeRings >= 36 then return end
+	activeRings += 1
+	task.delay(0.6, function() activeRings -= 1 end)
+	local position, radius, color = event[2], event[3], event[4]
+	local base = CFrame.new(position + Vector3.new(0, 0.5, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	local part = neonPart(Vector3.new(0.6, 2, 2), color, 0.3, CYL)
+	part.CFrame = base
 	part.Parent = fxFolder
-	TweenService:Create(part, TweenInfo.new(0.3), { Transparency = 1, Size = Vector3.new(0.2, 0.2, length) }):Play()
-	Debris:AddItem(part, 0.35)
-	burst(bottom, Color3.fromRGB(255, 240, 120), 24)
+	TweenService:Create(part, TweenInfo.new(0.55, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.6, radius * 2, radius * 2), Transparency = 1 }):Play()
+	Debris:AddItem(part, 0.6)
+	if radius >= 8 then -- 큰 고리는 안쪽에 더 밝고 빠른 속 고리가 하나 더
+		local core = neonPart(Vector3.new(0.5, 2, 2), color:Lerp(WHITE, 0.6), 0.35, CYL)
+		core.CFrame = base
+		core.Parent = fxFolder
+		TweenService:Create(core, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.5, radius * 1.3, radius * 1.3), Transparency = 1 }):Play()
+		Debris:AddItem(core, 0.35)
+	end
+end
+
+-- 바닥에 남는 그을음 (어두운 원이 천천히 사라진다)
+local function scorch(position, radius, seconds)
+	local part = neonPart(Vector3.new(0.12, radius * 2, radius * 2), Color3.fromRGB(28, 20, 16), 0.4, CYL)
+	part.Material = Enum.Material.SmoothPlastic
+	part.CastShadow = false
+	part.CFrame = CFrame.new(position + Vector3.new(0, 0.15, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	part.Parent = fxFolder
+	TweenService:Create(part, TweenInfo.new(seconds, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Transparency = 1 }):Play()
+	Debris:AddItem(part, seconds + 0.1)
+end
+
+local function bolt(event) -- { "Z", 위, 아래 }: 굵은 지그재그 번개 + 하얀 심지 + 바닥 그을음 / 고리 / 불꽃
+	local top, bottom = event[2], event[3]
+	local yellow = Color3.fromRGB(255, 240, 110)
+	local points = { top }
+	for i = 1, 2 do
+		table.insert(points, top:Lerp(bottom, i / 3) + Vector3.new((math.random() - 0.5) * 10, 0, (math.random() - 0.5) * 10))
+	end
+	table.insert(points, bottom)
+	for i = 1, #points - 1 do
+		local a, b = points[i], points[i + 1]
+		local length = (b - a).Magnitude
+		local part = neonPart(Vector3.new(2.6, 2.6, length), yellow, 0.05)
+		part.CFrame = CFrame.lookAt((a + b) / 2, b)
+		part.Parent = fxFolder
+		TweenService:Create(part, TweenInfo.new(0.4), { Transparency = 1, Size = Vector3.new(0.4, 0.4, length) }):Play()
+		Debris:AddItem(part, 0.45)
+	end
+	local length = (top - bottom).Magnitude
+	local core = neonPart(Vector3.new(1, 1, length), Color3.fromRGB(255, 255, 240), 0)
+	core.CFrame = CFrame.lookAt((top + bottom) / 2, bottom)
+	core.Parent = fxFolder
+	TweenService:Create(core, TweenInfo.new(0.25), { Transparency = 1, Size = Vector3.new(0.15, 0.15, length) }):Play()
+	Debris:AddItem(core, 0.3)
+	scorch(bottom, 5, 1.6)
+	ring({ "R", bottom, 8, yellow })
+	burst(bottom, yellow, 36)
+	burst(bottom + Vector3.new(0, 1, 0), WHITE, 14)
 end
 
 local missiles = {}
-local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간 }
+local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간 }: 빛나는 큰 미사일 + 불꽃 / 연기 꼬리
 	local from, target, mid, duration = event[2], event[3], event[4], event[5]
-	local ball = neonPart(Vector3.new(1.6, 1.6, 1.6), Color3.fromRGB(255, 160, 70), 0, Enum.PartType.Ball)
+	local ball = neonPart(Vector3.new(2.4, 2.4, 2.4), Color3.fromRGB(255, 190, 90), 0, Enum.PartType.Ball)
 	ball.Position = from
-	local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
-	a0.Position, a1.Position = Vector3.new(0, 0.6, 0), Vector3.new(0, -0.6, 0)
-	a0.Parent, a1.Parent = ball, ball
+	local function pair(half)
+		local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
+		a0.Position, a1.Position = Vector3.new(0, half, 0), Vector3.new(0, -half, 0)
+		a0.Parent, a1.Parent = ball, ball
+		return a0, a1
+	end
+	local a0, a1 = pair(0.9)
 	local trail = Instance.new("Trail")
 	trail.Attachment0, trail.Attachment1 = a0, a1
-	trail.Lifetime = 0.35
-	trail.Color = ColorSequence.new(Color3.fromRGB(255, 220, 120), Color3.fromRGB(255, 80, 40))
-	trail.Transparency = NumberSequence.new(0, 1)
+	trail.Lifetime = 0.5
+	trail.Color = ColorSequence.new(Color3.fromRGB(255, 235, 140), Color3.fromRGB(255, 70, 30))
+	trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.05), NumberSequenceKeypoint.new(0.6, 0.45), NumberSequenceKeypoint.new(1, 1) })
 	trail.LightEmission = 1
 	trail.Parent = ball
+	local s0, s1 = pair(1.5)
+	local smoke = Instance.new("Trail")
+	smoke.Attachment0, smoke.Attachment1 = s0, s1
+	smoke.Lifetime = 0.9
+	smoke.Color = ColorSequence.new(Color3.fromRGB(255, 140, 70), Color3.fromRGB(70, 70, 75))
+	smoke.Transparency = NumberSequence.new(0.5, 1)
+	smoke.WidthScale = NumberSequence.new(0.7, 1.5)
+	smoke.LightEmission = 0.1
+	smoke.Parent = ball
+	local light = Instance.new("PointLight")
+	light.Color, light.Range, light.Brightness = Color3.fromRGB(255, 150, 70), 12, 2
+	light.Parent = ball
 	ball.Parent = fxFolder
 	table.insert(missiles, { Ball = ball, From = from, Target = target, Last = event[3] and event[3].Parent and event[3].Position or from, Mid = mid, Duration = duration, Started = os.clock() })
 end
 
-local function flame(event) -- { "L", 위치, 반지름, 초 }
+local function flame(event) -- { "L", 위치, 반지름, 초 }: 큰 불길 지대 + 안쪽 밝은 불씨 판 + 튀는 불똥
 	local position, radius, seconds = event[2], event[3], event[4]
-	local pad = neonPart(Vector3.new(0.4, radius * 2, radius * 2), Color3.fromRGB(255, 120, 40), 0.55, Enum.PartType.Cylinder)
-	pad.CFrame = CFrame.new(position + Vector3.new(0, 0.3, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	local flat = CFrame.new(position + Vector3.new(0, 0.3, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	local pad = neonPart(Vector3.new(0.4, radius * 2, radius * 2), Color3.fromRGB(255, 95, 30), 0.5, CYL)
+	pad.CFrame = flat
+	local inner = neonPart(Vector3.new(0.5, radius * 1.2, radius * 1.2), Color3.fromRGB(255, 190, 70), 0.4, CYL)
+	inner.CFrame = flat
 	local fire = Instance.new("Fire")
-	fire.Size = math.max(6, radius)
-	fire.Heat = 8
+	fire.Size = math.clamp(radius * 1.3, 8, 30)
+	fire.Heat = 10
 	fire.Parent = pad
-	pad.Parent = fxFolder
+	local embers = Instance.new("ParticleEmitter")
+	embers.Rate = 16
+	embers.Lifetime = NumberRange.new(1, 1.8)
+	embers.Speed = NumberRange.new(6, 14)
+	embers.SpreadAngle = Vector2.new(30, 30)
+	embers.EmissionDirection = Enum.NormalId.Right -- (판을 눕혀 놓았으므로 로컬 오른쪽 = 위)
+	embers.Acceleration = Vector3.new(0, 5, 0)
+	embers.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.8), NumberSequenceKeypoint.new(1, 0) })
+	embers.Color = ColorSequence.new(Color3.fromRGB(255, 220, 110), Color3.fromRGB(255, 80, 30))
+	embers.LightEmission = 1
+	embers.Parent = inner
+	pad.Parent, inner.Parent = fxFolder, fxFolder
+	scorch(position, radius * 0.9, seconds + 1)
 	task.delay(seconds, function()
-		TweenService:Create(pad, TweenInfo.new(0.4), { Transparency = 1 }):Play()
-		Debris:AddItem(pad, 0.5)
+		TweenService:Create(pad, TweenInfo.new(0.5), { Transparency = 1 }):Play()
+		TweenService:Create(inner, TweenInfo.new(0.5), { Transparency = 1 }):Play()
 		fire.Enabled = false
+		embers.Enabled = false
+		Debris:AddItem(pad, 1.6)
+		Debris:AddItem(inner, 1.6)
 	end)
 end
 
-local function meteor(event) -- { "E", 위치, 반지름, 낙하 시간 }
+local function meteor(event) -- { "E", 위치, 반지름, 낙하 시간 }: 큰 경고 원 + 차오르는 원 + 불꼬리 유성 -> 착탄 고리 / 구덩이 / 파편
 	local position, radius, fall = event[2], event[3], event[4]
-	local warnDisk = neonPart(Vector3.new(0.3, radius * 2, radius * 2), Color3.fromRGB(255, 80, 50), 0.6, Enum.PartType.Cylinder)
-	warnDisk.CFrame = CFrame.new(position + Vector3.new(0, 0.4, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	local flat = CFrame.new(position + Vector3.new(0, 0.4, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	local warnDisk = neonPart(Vector3.new(0.3, radius * 2, radius * 2), Color3.fromRGB(255, 70, 40), 0.65, CYL)
+	warnDisk.CFrame = flat
 	warnDisk.Parent = fxFolder
-	local rock = neonPart(Vector3.new(7, 7, 7), Color3.fromRGB(255, 150, 60), 0, Enum.PartType.Ball)
-	rock.Position = position + Vector3.new(14, 90, 10)
+	local fill = neonPart(Vector3.new(0.35, 1, 1), Color3.fromRGB(255, 150, 70), 0.45, CYL)
+	fill.CFrame = flat
+	fill.Parent = fxFolder
+	TweenService:Create(fill, TweenInfo.new(fall, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Size = Vector3.new(0.35, radius * 2, radius * 2), Transparency = 0.25 }):Play()
+	local rim = makeDashes(22, Color3.fromRGB(255, 120, 60), 1.2, 2 * math.pi * radius / 22 * 0.6, 0.1)
+	placeDashes(rim, position + Vector3.new(0, 0.6, 0), radius, 0)
+	local rock = neonPart(Vector3.new(10, 10, 10), Color3.fromRGB(255, 140, 50), 0, Enum.PartType.Ball)
+	rock.Position = position + Vector3.new(18, 110, 14)
 	local fire = Instance.new("Fire")
-	fire.Size = 14
+	fire.Size = 22
 	fire.Parent = rock
+	local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
+	a0.Position, a1.Position = Vector3.new(0, 5, 0), Vector3.new(0, -5, 0)
+	a0.Parent, a1.Parent = rock, rock
+	local trail = Instance.new("Trail")
+	trail.Attachment0, trail.Attachment1 = a0, a1
+	trail.Lifetime = 0.8
+	trail.Color = ColorSequence.new(Color3.fromRGB(255, 220, 120), Color3.fromRGB(255, 60, 20))
+	trail.Transparency = NumberSequence.new(0.1, 1)
+	trail.LightEmission = 1
+	trail.Parent = rock
+	local light = Instance.new("PointLight")
+	light.Color, light.Range, light.Brightness = Color3.fromRGB(255, 150, 70), 28, 3
+	light.Parent = rock
 	rock.Parent = fxFolder
 	TweenService:Create(rock, TweenInfo.new(fall, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Position = position + Vector3.new(0, 3, 0) }):Play()
 	task.delay(fall, function()
 		warnDisk:Destroy()
+		fill:Destroy()
 		rock:Destroy()
-		ring({ "R", position, radius, Color3.fromRGB(255, 150, 60) })
-		burst(position + Vector3.new(0, 3, 0), Color3.fromRGB(255, 160, 60), 70)
+		releaseDashes(rim)
+		local orange = Color3.fromRGB(255, 150, 60)
+		ring({ "R", position, radius, orange })
+		ringWave(position, radius * 1.1, Color3.fromRGB(255, 200, 110), 0.6, 24, 1.4)
+		scorch(position, radius * 0.7, 3.5) -- 구덩이 자국
+		burst(position + Vector3.new(0, 3, 0), orange, 100)
+		burst(position + Vector3.new(0, 2, 0), WHITE, 30)
+		if debrisFx then debrisFx({ "K", position + Vector3.new(0, 2, 0), Color3.fromRGB(110, 85, 65), 9 }) end
 	end)
 end
 
 -- 회전 칼날: 칼날은 이 화면에서 서버 시각(GetServerTimeNow) 기준으로 돌아서, 서버가 계산한 피해 위치와 같은 곳에 보인다
-local orbiters = {} -- [userId] = { Parts, Count, Radius, Spin, Expire }
+local orbiters = {} -- [userId] = { Parts, Ring, Count, Radius, Spin, Expire }
+local function killOrbiter(entry)
+	for _, part in ipairs(entry.Parts) do part:Destroy() end
+	if entry.Ring then releaseDashes(entry.Ring) end
+end
 local function orbit(event) -- { "O", userId, 개수(0이면 끔), 반지름, 속도 }
 	local userId, count = event[2], event[3]
 	local entry = orbiters[userId]
 	if not count or count <= 0 then
 		if entry then
-			for _, part in ipairs(entry.Parts) do part:Destroy() end
+			killOrbiter(entry)
 			orbiters[userId] = nil
 		end
 		return
 	end
 	if entry and entry.Count ~= count then
-		for _, part in ipairs(entry.Parts) do part:Destroy() end
+		killOrbiter(entry)
 		entry = nil
 	end
 	if not entry then
 		entry = { Parts = {}, Count = count }
+		entry.Ring = makeDashes(16, Color3.fromRGB(120, 235, 255), 0.5, 2 * math.pi * (event[4] or 9) / 16 * 0.5, 0.55) -- 칼날이 도는 반지름 표시
 		for _ = 1, count do
-			local blade = neonPart(Vector3.new(0.7, 0.4, 5), Color3.fromRGB(120, 235, 255), 0)
+			local blade = neonPart(Vector3.new(1, 0.5, 6.5), Color3.fromRGB(170, 248, 255), 0)
 			local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
-			a0.Position, a1.Position = Vector3.new(0, 0, -2.5), Vector3.new(0, 0, 2.5)
+			a0.Position, a1.Position = Vector3.new(0, 0, -3.2), Vector3.new(0, 0, 3.2)
 			a0.Parent, a1.Parent = blade, blade
 			local trail = Instance.new("Trail")
 			trail.Attachment0, trail.Attachment1 = a0, a1
-			trail.Lifetime = 0.25
-			trail.Color = ColorSequence.new(Color3.fromRGB(170, 245, 255))
-			trail.Transparency = NumberSequence.new(0.2, 1)
+			trail.Lifetime = 0.45
+			trail.Color = ColorSequence.new(Color3.fromRGB(200, 250, 255), Color3.fromRGB(60, 170, 255))
+			trail.Transparency = NumberSequence.new(0.1, 1)
 			trail.LightEmission = 1
 			trail.Parent = blade
+			local light = Instance.new("PointLight")
+			light.Color, light.Range, light.Brightness = Color3.fromRGB(120, 235, 255), 9, 1.5
+			light.Parent = blade
 			blade.Parent = fxFolder
 			table.insert(entry.Parts, blade)
 		end
@@ -1039,11 +1193,27 @@ RunService.RenderStepped:Connect(function()
 		local t = (now - m.Started) / m.Duration
 		if m.Target and m.Target.Parent then m.Last = m.Target.Position end
 		if t >= 1 or not m.Ball.Parent then
-			burst(m.Last, Color3.fromRGB(255, 150, 60), 22)
+			local orange = Color3.fromRGB(255, 150, 60)
+			burst(m.Last, orange, 36)
+			burst(m.Last, WHITE, 10)
+			ring({ "R", m.Last - Vector3.new(0, 1, 0), 7, orange })
 			m.Ball:Destroy()
 			table.remove(missiles, i)
 		else
 			m.Ball.Position = m.From:Lerp(m.Mid, t):Lerp(m.Mid:Lerp(m.Last, t), t) -- 2차 곡선
+		end
+	end
+	-- 퍼지는 파동
+	for i = #waves, 1, -1 do
+		local w = waves[i]
+		local t = (now - w.T0) / w.Dur
+		if t >= 1 then
+			releaseDashes(w.List)
+			table.remove(waves, i)
+		else
+			placeDashes(w.List, w.Center, math.max(1, w.Radius * (1 - (1 - t) ^ 3)), 0)
+			local transparency = 0.15 + 0.85 * t * t
+			for _, part in ipairs(w.List) do part.Transparency = transparency end
 		end
 	end
 	-- 회전 칼날
@@ -1052,7 +1222,7 @@ RunService.RenderStepped:Connect(function()
 		local owner = Players:GetPlayerByUserId(userId)
 		local root = owner and owner.Character and owner.Character:FindFirstChild("HumanoidRootPart")
 		if now > entry.Expire or not root then
-			for _, part in ipairs(entry.Parts) do part:Destroy() end
+			killOrbiter(entry)
 			orbiters[userId] = nil
 		else
 			for index, blade in ipairs(entry.Parts) do
@@ -1060,6 +1230,7 @@ RunService.RenderStepped:Connect(function()
 				local p = root.Position + Vector3.new(math.cos(angle) * entry.Radius, 0.5, math.sin(angle) * entry.Radius)
 				blade.CFrame = CFrame.new(p, p + Vector3.new(-math.sin(angle), 0, math.cos(angle)))
 			end
+			placeDashes(entry.Ring, root.Position - Vector3.new(0, 2.4, 0), entry.Radius, serverNow * 0.5)
 		end
 	end
 end)
@@ -1072,7 +1243,15 @@ local HANDLERS = {
 	Q = reaimProjectile, W = groundWarn,
 	T = tracer,
 	B = function(event) burst(event[2], event[3], event[4]) end,
-	F = function(event) showText(event[2], event[3], event[4], FLOAT_SIZE, 0.7, 3) end,
+	F = function(event) -- { "F", 위치, 글자, 색, (폭), (초) }: 폭이 있으면 배너처럼 크고 오래 뜬다
+		local width = event[5]
+		if width then
+			width = math.clamp(width, 120, 420)
+			showText(event[2], event[3], event[4], UDim2.new(0, width, 0, math.floor(width * 0.16)), math.clamp(event[6] or 1.4, 0.5, 3), 5)
+		else
+			showText(event[2], event[3], event[4], FLOAT_SIZE, 0.7, 3)
+		end
+	end,
 	D = function(event) -- { "D", position, amount, isCrit }
 		showText(event[2], event[4] and (tostring(event[3]) .. "!") or tostring(event[3]), event[4] and Color3.fromRGB(255, 220, 60) or WHITE, DAMAGE_SIZE, 0.5, nil)
 	end,
@@ -1082,7 +1261,7 @@ local HANDLERS = {
 }
 
 -- 한 배치(한 프레임)에서 종류별로 그릴 수 있는 최대 개수: 넘치는 것은 건너뛴다 (지우기 "X" / 끄기 "O" / 번쩍임 "H" 는 제한 없음)
-local BATCH_LIMIT = { G = 10, T = 48, R = 16, Z = 12, M = 12, L = 8, E = 8, K = 14, P = 100, Q = 40, W = 10, S = 100, B = 60 }
+local BATCH_LIMIT = { G = 10, T = 48, R = 16, Z = 8, M = 12, L = 8, E = 8, U = 6, N = 6, V = 8, K = 14, P = 100, Q = 40, W = 10, S = 100, B = 60 }
 Remotes.Fx.OnClientEvent:Connect(function(batch)
 	if typeof(batch) ~= "table" then return end
 	local used = {}
@@ -1191,3 +1370,71 @@ game:GetService("RunService").RenderStepped:Connect(function(dt)
 end)
 
 HANDLERS.K = deathBurst
+
+------------------------------------------------------------
+-- 처형 해골 "U" { 위치(머리 위), 몸 높이 } / 처치 폭발 "N" { 위치, 반지름, 색 } / 퍼지는 파동 "V" { 위치, 반지름, 색, 초 }
+------------------------------------------------------------
+debrisFx = deathBurst
+
+local activeSkulls = 0
+local function skull(event)
+	if activeSkulls >= 8 or activeTexts >= MAX_ACTIVE_TEXTS then return end
+	activeSkulls += 1
+	activeTexts += 1
+	local position = event[2]
+	local center = position - Vector3.new(0, (event[3] or 4) / 2 + 1.5, 0)
+	local entry = getText()
+	local label = entry.Label
+	entry.Gui.Size = UDim2.new(0, 40, 0, 40)
+	label.Text = "💀"
+	label.TextColor3 = Color3.fromRGB(225, 140, 255)
+	label.TextTransparency, label.TextStrokeTransparency = 0, 0
+	entry.Part.Position = position
+	entry.Part.Parent = fxFolder
+	TweenService:Create(entry.Gui, TweenInfo.new(0.18, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.new(0, 150, 0, 150) }):Play()
+	TweenService:Create(entry.Part, TweenInfo.new(1.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = position + Vector3.new(0, 9, 0) }):Play()
+	task.delay(0.65, function() TweenService:Create(label, TweenInfo.new(0.45), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play() end)
+	task.delay(1.15, function()
+		activeSkulls -= 1
+		activeTexts -= 1
+		entry.Part.Parent = nil
+		label.TextTransparency, label.TextStrokeTransparency = 0, 0
+		if #textPool < 60 then table.insert(textPool, entry) else entry.Part:Destroy() end
+	end)
+	local purple = Color3.fromRGB(165, 70, 235)
+	burst(position, purple, 45)
+	burst(center, Color3.fromRGB(45, 12, 70), 22)
+	ring({ "R", center, 8, purple })
+	local camera = workspace.CurrentCamera
+	if camera then -- 보라 베기 두 줄 (X 자)
+		for i, tilt in ipairs({ 35, -35 }) do
+			task.delay((i - 1) * 0.06, function()
+				local slash = neonPart(Vector3.new(10, 0.35, 0.35), Color3.fromRGB(210, 120, 255), 0)
+				slash.CFrame = CFrame.lookAt(center, camera.CFrame.Position) * CFrame.Angles(0, 0, math.rad(tilt))
+				slash.Parent = fxFolder
+				TweenService:Create(slash, TweenInfo.new(0.22, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(16, 0.1, 0.1), Transparency = 1 }):Play()
+				Debris:AddItem(slash, 0.25)
+			end)
+		end
+	end
+end
+
+local function novaFx(event)
+	local position, radius, color = event[2], event[3], event[4]
+	local center = position + Vector3.new(0, 1.5, 0)
+	ringWave(position, radius, color, 0.45, 18, 1.1)
+	ring({ "R", position, radius * 0.8, color })
+	local glow = neonPart(Vector3.new(2, 2, 2), color:Lerp(WHITE, 0.4), 0.5, Enum.PartType.Ball) -- 부드러운 빛구 (화면 번쩍임 없음)
+	glow.CastShadow = false
+	glow.Position = center
+	glow.Parent = fxFolder
+	TweenService:Create(glow, TweenInfo.new(0.28, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.one * radius * 1.1, Transparency = 1 }):Play()
+	Debris:AddItem(glow, 0.32)
+	burst(center, color, 45)
+	burst(center, color:Lerp(WHITE, 0.7), 18)
+	deathBurst({ "K", center, color:Lerp(Color3.fromRGB(70, 50, 40), 0.5), 5 })
+end
+
+HANDLERS.U = skull
+HANDLERS.N = novaFx
+HANDLERS.V = function(event) ringWave(event[2], event[3], event[4], event[5] or 0.7, math.clamp(math.floor(event[3] * 1.3), 16, 30), 1.3) end
