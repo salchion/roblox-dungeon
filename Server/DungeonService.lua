@@ -1321,7 +1321,7 @@ end
 local function nearestMonsters(run, position, radius, limit, exclude)
 	local list = {}
 	for part, data in pairs(run.Monsters) do
-		if part ~= exclude and part.Parent and data.Health > 0 and not data.Invincible and not data.Static then
+		if part ~= exclude and part.Parent and data.Health > 0 and not data.Invincible and not data.Static and (not run.ValidTarget or run.ValidTarget(part)) then
 			local distance = (part.Position - position).Magnitude
 			if distance <= radius then table.insert(list, { Part = part, Data = data, D = distance }) end
 		end
@@ -1516,7 +1516,7 @@ local function startAugLoop(run)
 						nextTick[member] = now + 0.3
 						local damage = augDamage(member) * (0.45 + 0.2 * orbit)
 						for part, data in pairs(run.Monsters) do
-							if part.Parent and data.Health > 0 then
+							if part.Parent and data.Health > 0 and (not run.ValidTarget or run.ValidTarget(part)) then
 								for _, p in ipairs(positions) do
 									if (part.Position - p).Magnitude <= 5 + part.Size.X / 2 then
 										hitMonster(run, member, { Part = part, Data = data }, damage, true)

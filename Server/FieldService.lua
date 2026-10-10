@@ -3647,6 +3647,7 @@ end
 local function fieldAugHit(player, entry, amount, quiet)
 	local part, data = entry.Part, entry.Data
 	if monsters[part] ~= data or data.Health <= 0 or data.Invincible then return end
+	if not canHitZone(player, part.Position.X) then return end -- 아직 못 가는 구역(닫힌 관문 너머)의 몬스터는 세트 효과로도 못 때린다
 	amount = math.max(1, math.floor(amount))
 	data.Health -= amount
 	data.LastHit = os.clock()
@@ -3671,6 +3672,15 @@ function Field.Init(lobbySpawnCFrame)
 		fx.Parent = workspace
 		augRun = {
 			Monsters = monsters, Folder = fx, Phase = "Wave", Destroyed = false, HitFn = fieldAugHit,
+			ValidTarget = function(part) -- 세트 효과가 노리는 몬스터: 지금 필드에 있는 누군가가 갈 수 있는 구역까지만 (닫힌 관문 너머는 제외)
+				local best = 0
+				for _, member in ipairs(Players:GetPlayers()) do
+					if member:GetAttribute("Zone") == "Field" then
+						best = math.max(best, math.min(F.ZoneCount, (member:GetAttribute("ClearedZone") or 0) + 1))
+					end
+				end
+				return zoneOfX(part.Position.X) <= math.max(best, 1)
+			end,
 			MembersFn = function()
 				local list = {}
 				for _, member in ipairs(Players:GetPlayers()) do
