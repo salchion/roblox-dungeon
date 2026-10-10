@@ -2631,7 +2631,7 @@ local function buildInventoryTab()
 				TweenService:Create(glow, TweenInfo.new(0.9, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.6 }):Play()
 				makeLabel({
 					Size = UDim2.new(1, -10, 1, 0), Position = UDim2.new(0, 5, 0, 0), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left,
-					Text = string.format("%s <b>%s</b>  <font color='#%s'>%s</font> %d/3", def.Icon, def.Name, hex(def.Color), setPips(count), count),
+					Text = string.format("%s <b>%s</b>  <font color='#%s'>%s</font> %d/3", def.Icon or "✦", def.Name, hex(def.Color), setPips(count), count),
 				}, bar)
 				rowsShown += 1
 			end
@@ -2758,7 +2758,7 @@ local function buildInventoryTab()
 			create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 0.85) }) }, band)
 			makeLabel({
 				Size = UDim2.new(1, -16, 1, 0), Position = UDim2.new(0, 10, 0, 0), RichText = true, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left,
-				Text = string.format("%s <b>%s 세트</b>   %s %d/3 <font size='11'>착용</font>", setDef.Icon, setDef.Name, setPips(have), have),
+				Text = string.format("%s <b>%s 세트</b>   %s %d/3 <font size='11'>착용</font>", setDef.Icon or "✦", setDef.Name, setPips(have), have),
 			}, band)
 		end
 		makeLabel({
