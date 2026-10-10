@@ -736,6 +736,32 @@ local function buildCamp(zone, x0)
 		Remotes.Warp:FireClient(player, "Open")
 	end)
 
+	-- 안전지대 경계: 이 선 안에서는 사격이 통하지 않고 몬스터도 들어오지 않는다. 은은한 청록 선 + 작은 말뚝으로 어디까지인지 보이게 한다
+	local boundaryX = x0 + F.CampSafe
+	local teal = Color3.fromRGB(110, 205, 195)
+	local line = makePart({
+		Name = "SafeLine", Size = Vector3.new(0.7, 0.2, F.Width), Position = Vector3.new(boundaryX, TOP + 0.12, 0),
+		Color = teal, Material = Enum.Material.Neon, Transparency = 0.55, CanCollide = false, CanQuery = false,
+	}, worldFolder)
+	local lineGui = Instance.new("BillboardGui") -- 작은 글씨: 가까이 갔을 때만 보인다
+	lineGui.Size = UDim2.new(0, 240, 0, 26)
+	lineGui.StudsOffset = Vector3.new(0, 4, 0)
+	lineGui.MaxDistance = 55
+	lineGui.Parent = line
+	local lineText = Instance.new("TextLabel")
+	lineText.Size = UDim2.new(1, 0, 1, 0)
+	lineText.BackgroundTransparency = 1
+	lineText.Font = Enum.Font.GothamBold
+	lineText.TextScaled = true
+	lineText.TextColor3 = Color3.fromRGB(190, 240, 232)
+	lineText.TextStrokeTransparency = 0.4
+	lineText.Text = "🛡 안전지대 끝 (안쪽은 사격 불가)"
+	lineText.Parent = lineGui
+	for z = -F.Width / 2 + 20, F.Width / 2 - 20, 40 do
+		makePart({ Name = "SafePost", Size = Vector3.new(0.7, 3, 0.7), Position = Vector3.new(boundaryX, TOP + 1.5, z), Color = Color3.fromRGB(70, 90, 92), Material = Enum.Material.Slate, CanCollide = false, CanQuery = false }, worldFolder)
+		makePart({ Name = "SafeCap", Shape = Enum.PartType.Ball, Size = Vector3.new(0.9, 0.9, 0.9), Position = Vector3.new(boundaryX, TOP + 3.2, z), Color = teal, Material = Enum.Material.Neon, Transparency = 0.35, CanCollide = false, CanQuery = false }, worldFolder)
+	end
+
 	campCFrames[zone] = CFrame.new(x0 + 40, TOP + 4, 16)
 end
 
@@ -1132,7 +1158,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		else
 			local bx0, bx1 = zoneBounds(zone)
 			local nearEntrance = math.random() < 0.45
-			preX = nearEntrance and freeX(math.floor(bx0 + F.CampSafe + 12), math.floor(bx0 + F.CampSafe + 110)) or freeX(math.floor(bx0 + F.CampSafe + 40), math.floor(bx1 - 25))
+			preX = nearEntrance and freeX(math.floor(bx0 + F.CampSafe + 70), math.floor(bx0 + F.CampSafe + 170)) or freeX(math.floor(bx0 + F.CampSafe + 70), math.floor(bx1 - 25)) -- (몬스터가 안전지대 경계에 붙어 어정쩡하게 서 있지 않게 경계에서 70 이상 떨어져서 나온다)
 		end
 		typeKey = pickTypeAt(zone, preX)
 		def = MonsterTypes.Defs[typeKey]
@@ -1183,7 +1209,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		end
 	else
 		-- 필드에 나서자마자 바로 싸움이 시작되도록: 몬스터의 절반 가까이는 캠프 안전지대 바로 바깥(입구 근처)에 모여 있다
-		local spawnX = preX or freeX(math.floor(x0 + F.CampSafe + 40), math.floor(x1 - 25))
+		local spawnX = preX or freeX(math.floor(x0 + F.CampSafe + 70), math.floor(x1 - 25))
 		position = Vector3.new(spawnX, floorAt(spawnX) + stats.Size / 2, math.random(-F.Width / 2 + 25, F.Width / 2 - 25))
 		if at then -- 습격: 플레이어 주변에 바로 나타난다
 			position = Vector3.new(at.X, floorAt(at.X) + stats.Size / 2, at.Z)
