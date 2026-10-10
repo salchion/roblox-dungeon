@@ -817,36 +817,30 @@ do
 	local ICONS = { "🔱", "💥", "⚡", "🔥", "⏩", "🎯", "❤", "💚", "⭐", "💰", "🎫", "🌪" }
 	local PEN_ICONS = { "🪨", "😡", "💨", "🐺", "🔫", "☠" }
 	local popup = create("Frame", {
-		Name = "RollPopup", Size = UDim2.new(0, 460, 0, 150), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 176),
-		BackgroundColor3 = Color3.fromRGB(18, 20, 30), BackgroundTransparency = 0.1, BorderSizePixel = 0, Visible = false, ZIndex = 75,
+		Name = "RollPopup", Size = UDim2.new(0, 340, 0, 54), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -96),
+		BackgroundColor3 = Color3.fromRGB(18, 20, 30), BackgroundTransparency = 0.12, BorderSizePixel = 0, Visible = false, ZIndex = 75,
 	}, gui)
-	rounded(popup, 14)
+	rounded(popup, 12)
 	local popScale = create("UIScale", { Scale = 1 }, popup)
-	-- 카드 3장: 왼쪽 = 세트 조각, 오른쪽 = 스탯 강화, 아래 가로줄 = 패널티
-	local function half(xScale, color, wide)
-		local frame = create("Frame", {
-			Size = wide and UDim2.new(1, -12, 0, 40) or UDim2.new(0.5, -8, 0, 92),
-			Position = wide and UDim2.new(0, 6, 0, 104) or UDim2.new(xScale, xScale == 0 and 6 or 2, 0, 6),
-			BackgroundColor3 = color, BackgroundTransparency = 0.75, BorderSizePixel = 0, ZIndex = 76,
-		}, popup)
-		rounded(frame, 10)
+	-- 한 칸짜리 알림: 윗줄 = 세트 조각(진행 점), 아랫줄 = 스탯 강화 (+ 패널티가 있으면 끝에 짧게)
+	local function half(color)
+		local frame = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = color, BackgroundTransparency = 0.8, BorderSizePixel = 0, ZIndex = 76 }, popup)
+		rounded(frame, 12)
 		local stroke = create("UIStroke", { Color = color, Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame)
-		local icon = makeLabel({ Size = UDim2.new(0, 44, wide and 1 or 0, wide and 0 or 44), Position = UDim2.new(0, 2, 0, wide and 0 or 4), TextSize = wide and 26 or 32, ZIndex = 77 }, frame)
+		local icon = makeLabel({ Size = UDim2.new(0, 40, 1, 0), Position = UDim2.new(0, 4, 0, 0), TextSize = 26, ZIndex = 77 }, frame)
 		local title = makeLabel({
-			Size = wide and UDim2.new(1, -52, 0, 18) or UDim2.new(1, -52, 0, 36), Position = UDim2.new(0, 48, 0, wide and 2 or 4), Font = Enum.Font.GothamBlack, TextSize = 14,
-			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 77,
+			Size = UDim2.new(1, -50, 0, 22), Position = UDim2.new(0, 46, 0, 4), Font = Enum.Font.GothamBlack, TextSize = 13,
+			TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, ZIndex = 77,
 		}, frame)
 		local desc = makeLabel({
-			Size = wide and UDim2.new(1, -52, 0, 18) or UDim2.new(1, -52, 0, 48), Position = UDim2.new(0, 48, 0, wide and 20 or 40), TextSize = 12, TextWrapped = true,
-			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(215, 215, 230), ZIndex = 77,
+			Size = UDim2.new(1, -50, 0, 20), Position = UDim2.new(0, 46, 0, 28), TextSize = 12,
+			TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, TextColor3 = Color3.fromRGB(215, 215, 230), ZIndex = 77,
 		}, frame)
 		return { Frame = frame, Stroke = stroke, Icon = icon, Title = title, Desc = desc }
 	end
-	local setHalf = half(0, Color3.fromRGB(255, 190, 80))
-	local buffHalf = half(0.5, Color3.fromRGB(110, 210, 255))
-	local penHalf = half(0, Color3.fromRGB(255, 90, 80), true)
+	local card = half(Color3.fromRGB(255, 190, 80))
 	local token = 0
-	local function paint(card, icon, title, desc, color)
+	local function paint(icon, title, desc, color)
 		card.Icon.Text, card.Title.Text, card.Desc.Text = icon, title, desc
 		card.Title.TextColor3, card.Desc.TextColor3, card.Stroke.Color, card.Frame.BackgroundColor3 = color, Color3.fromRGB(215, 215, 230), color, color
 	end
@@ -857,14 +851,11 @@ do
 		popup.Visible = true
 		popScale.Scale = 0.6
 		TweenService:Create(popScale, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
-		setHalf.Title.Text, setHalf.Desc.Text, buffHalf.Title.Text, buffHalf.Desc.Text = "세트 추첨 중…", "", "강화 추첨 중…", ""
-		penHalf.Title.Text, penHalf.Desc.Text = "", ""
+		paint("🎲", "추첨 중…", "", Color3.fromRGB(150, 150, 170))
 		task.spawn(function()
-			for step = 1, 9 do
+			for step = 1, 7 do
 				if token ~= mine then return end
-				setHalf.Icon.Text = ICONS[math.random(#ICONS)]
-				buffHalf.Icon.Text = ICONS[math.random(#ICONS)]
-				penHalf.Icon.Text = data.Penalty and PEN_ICONS[math.random(#PEN_ICONS)] or ""
+				card.Icon.Text = ICONS[math.random(#ICONS)]
 				SoundBank.Play(sfxParent, "Gacha_Tick")
 				task.wait(0.06 + step * 0.012)
 			end
@@ -872,41 +863,31 @@ do
 			local buff = data.Buff
 			local setInfo = data.Set
 			if (buff and buff.Special) or (setInfo and (setInfo.Completed or data.Jackpot)) then
-				local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 215, 120), BackgroundTransparency = 0.55, BorderSizePixel = 0, ZIndex = 74 }, gui)
-				TweenService:Create(flash, TweenInfo.new(0.55), { BackgroundTransparency = 1 }):Play()
-				game:GetService("Debris"):AddItem(flash, 0.6)
-				player:SetAttribute("ShakeStrength", 0.35)
-				player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+				local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 215, 120), BackgroundTransparency = 0.75, BorderSizePixel = 0, ZIndex = 74 }, gui)
+				TweenService:Create(flash, TweenInfo.new(0.45), { BackgroundTransparency = 1 }):Play()
+				game:GetService("Debris"):AddItem(flash, 0.5)
 				SoundBank.Play(sfxParent, "Gacha_Card")
-				TweenService:Create(popScale, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1.22 }):Play()
+				TweenService:Create(popScale, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1.12 }):Play()
 			end
+			-- 윗줄: 세트 조각 / 아랫줄: 강화(+패널티)
+			local line2 = buff and ((buff.Special and "★ " or "✨ ") .. buff.Name .. " " .. (buff.Desc or "")) or "💤 강화 없음 (이미 최대)"
+			if data.Penalty then line2 = line2 .. "  ⚠" .. data.Penalty.Name end
 			if setInfo then
 				local pips = {}
 				for i = 1, setInfo.Max or 3 do table.insert(pips, i <= setInfo.Count and "●" or "○") end
-				paint(setHalf, setInfo.Icon, (data.Jackpot and "🌟 JACKPOT! " or "") .. setInfo.Name .. " 조각",
-					table.concat(pips, " ") .. (setInfo.Completed and string.format("\n✨ %d세트 완성! %s Lv.%d", setInfo.Count, setInfo.EffectName or "", setInfo.Level or 1) or string.format("  (%d/%d)", setInfo.Count, setInfo.Max or 3)), setInfo.Color)
+				local head = (data.Jackpot and "🌟 " or "") .. setInfo.Name .. " " .. table.concat(pips, "")
+				if setInfo.Completed then head = head .. string.format(" ✨%d세트 Lv.%d", setInfo.Count, setInfo.Level or 1) end
+				paint(setInfo.Icon, head, line2, setInfo.Color)
 			elseif data.Note then
-				paint(setHalf, "🏆", "세트 모두 완성!", data.Note, Color3.fromRGB(255, 215, 90))
+				paint("🏆", "세트 모두 완성!", line2, Color3.fromRGB(255, 215, 90))
 			else
-				paint(setHalf, "🧩", "세트 조각 없음", "", Color3.fromRGB(150, 150, 170))
+				paint(buff and buff.Icon or "💤", "세트 조각 없음", line2, buff and Color3.fromRGB(110, 210, 255) or Color3.fromRGB(150, 150, 170))
 			end
-			if buff then
-				local color = buff.Special and Color3.fromRGB(255, 195, 70) or Color3.fromRGB(110, 210, 255)
-				paint(buffHalf, buff.Icon, (buff.Special and (data.Jackpot and "🌟 확정 레어! " or "★ 레어 ") or "✨ ") .. buff.Name, buff.Desc, color)
-			else
-				paint(buffHalf, "💤", "강화 없음", "이미 최대예요", Color3.fromRGB(150, 150, 170))
-			end
-			SoundBank.Play(sfxParent, "Enh_Success")
-			if data.Penalty then
-				paint(penHalf, data.Penalty.Icon, "⚠ " .. data.Penalty.Name, string.format("%s · 대신 골드 +%d%%", data.Penalty.Desc, data.Penalty.Gold), Color3.fromRGB(255, 130, 120))
-				task.delay(0.12, function() SoundBank.Play(sfxParent, "Enh_Fail") end)
-			else
-				paint(penHalf, "🍀", "패널티 없음!", "이번엔 운이 좋았어요", Color3.fromRGB(150, 255, 170))
-			end
+			SoundBank.Play(sfxParent, data.Penalty and "Enh_Fail" or "Enh_Success")
 			TweenService:Create(popScale, TweenInfo.new(0.12), { Scale = 1.08 }):Play()
 			task.wait(0.14)
 			TweenService:Create(popScale, TweenInfo.new(0.2, Enum.EasingStyle.Back), { Scale = 1 }):Play()
-			task.wait(3.2)
+			task.wait(2.6)
 			if token == mine then popup.Visible = false end
 		end)
 	end)
