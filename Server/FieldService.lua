@@ -3200,7 +3200,9 @@ local function doomWave(player, zone)
 		return part
 	end
 	disc("DoomFloor", 150, 2, 0, rgb(34, 36, 52), Enum.Material.Slate) -- 어두운 청회색 바닥: 붉은 경고 원과 내 탄이 또렷하게 보이게 (밝은 바닥은 붉은 조명을 받아 온통 붉게 보였다)
+	-- 가장자리 붉은 띠: (예전에는 154짜리 원판 하나가 바닥 전체를 붉게 덮고 있었다) 붉은 원판 위에 바닥색 원판을 덮어 테두리 띠만 남긴다
 	disc("DoomRim", 154, 0.4, 1.1, rgb(255, 60, 60), Enum.Material.Neon, 0.4)
+	disc("DoomRimCover", 148, 0.5, 1.15, rgb(34, 36, 52), Enum.Material.Slate)
 	disc("DoomRune", 90, 0.2, 1.2, rgb(60, 50, 90), Enum.Material.SmoothPlastic, 0.55)
 	disc("DoomRuneInner", 46, 0.2, 1.3, rgb(120, 110, 150), Enum.Material.SmoothPlastic, 0.5)
 
