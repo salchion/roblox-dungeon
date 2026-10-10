@@ -1302,17 +1302,14 @@ local function spawnMonster(zone, kind, at, ambush)
 end
 
 local MAX_FIELD_PROJECTILES = 450 -- 동시에 날아다니는 적 탄 상한: 넘치면 가장 오래된 탄부터 지운다
-local function fireProjectile(origin, direction, speed, damage, size, color, style)
+-- opts (선택): 유도 / 포물선 / 뱀 / 곡선 / 갈라짐 같은 특수 움직임 (Effects.MakeShot 설명 참고). 없으면 직선탄.
+local function fireProjectile(origin, direction, speed, damage, size, color, style, opts)
 	if #projectiles >= MAX_FIELD_PROJECTILES then
 		local oldest = table.remove(projectiles, 1)
 		oldest.Part:Destroy()
 	end
-	local ball = Effects.SpawnProjectile(origin, direction, speed, size, color, style, 5) -- 부품 없이 숫자로만 (그리기는 클라이언트)
-
-	table.insert(projectiles, {
-		Part = ball, Direction = direction.Unit, Speed = speed, Damage = damage,
-		Radius = size / 2, Expire = os.clock() + 5,
-	})
+	-- 부품 없이 숫자로만 (그리기는 클라이언트)
+	table.insert(projectiles, Effects.MakeShot(projectiles, origin, direction, speed, damage, size, color, style, opts))
 end
 
 local function rotateY(vector, degrees)
@@ -1784,8 +1781,8 @@ local fieldCtx = {
 		return nil
 	end,
 	GetTarget = nearestFieldPlayer,
-	Fire = function(origin, direction, speed, damage, size, color, style)
-		fireProjectile(origin, direction, speed, damage, size, color, style)
+	Fire = function(origin, direction, speed, damage, size, color, style, opts)
+		fireProjectile(origin, direction, speed, damage, size, color, style, opts)
 	end,
 	Players = function()
 		local list = {}
@@ -2061,9 +2058,9 @@ local function bossSpiral(part, data)
 			for arm = 0, arms - 1 do
 				local angle = t * 3.4 + arm * (math.pi * 2 / arms)
 				local direction = Vector3.new(math.cos(angle), 0, math.sin(angle))
-				fireProjectile(Vector3.new(part.Position.X, floorAt(part.Position.X) + 3, part.Position.Z) + direction * (part.Size.X / 2 + 1), direction, 24, math.floor(data.Stats.ShotDamage * 0.5), 2.2, Color3.fromRGB(255, 120, 220))
+				fireProjectile(Vector3.new(part.Position.X, floorAt(part.Position.X) + 3, part.Position.Z) + direction * (part.Size.X / 2 + 1), direction, 22, math.floor(data.Stats.ShotDamage * 0.6), 2.4, Color3.fromRGB(235, 130, 215), arm % 2 == 0 and "Crystal" or "Skull") -- 나선 팔마다 모양이 다르다
 			end
-			task.wait(0.08)
+			task.wait(0.13) -- 탄 수 약 -40% (성기고 읽기 쉽게)
 		end
 	end)
 end
@@ -2189,8 +2186,13 @@ local function stepMonsters(dt)
 						local current = nearestFieldPlayer(part.Position)
 						if not current then return end
 						local direction = current.Position - part.Position
-						for _, angle in ipairs({ -20, -10, 0, 10, 20 }) do
-							fireProjectile(part.Position, rotateY(direction.Unit, angle), data.Stats.ShotSpeed, data.Stats.ShotDamage, 3, Color3.fromRGB(255, 80, 60))
+						-- 5갈래 -> 3갈래 수정 + (1구역 군주 제외) 느린 유도 미사일 한 발. 1구역 군주는 튜토리얼이라 순한 직선탄만.
+						local gentle = data.Zone == 1
+						for _, angle in ipairs(gentle and { -16, 0, 16 } or { -18, 0, 18 }) do
+							fireProjectile(part.Position, rotateY(direction.Unit, angle), data.Stats.ShotSpeed * 0.9, math.floor(data.Stats.ShotDamage * (gentle and 1 or 1.2)), 3, Color3.fromRGB(235, 110, 100), "Crystal")
+						end
+						if not gentle then
+							fireProjectile(part.Position + Vector3.new(0, 2, 0), direction.Unit, 26, math.floor(data.Stats.ShotDamage * 1.1), 2.4, Color3.fromRGB(240, 170, 90), "Missile", { Kind = "homing", Turn = 1.6, Life = 3.5 })
 						end
 					end)
 				end
@@ -2199,10 +2201,16 @@ local function stepMonsters(dt)
 				if now >= data.NextRing then
 					data.NextRing = now + 7
 					telegraph(part, data, Color3.new(1, 1, 1), 0.8, function()
-						for i = 0, 15 do
-							local angle = (i / 16) * math.pi * 2
+						-- 16발 -> 11발, 더 느리게. 곧은 수정 고리와 휘어 도는 바람개비 고리를 번갈아 (1구역 군주는 곧은 고리만)
+						data.RingN = (data.RingN or 0) + 1
+						local swirl = data.RingN % 2 == 0 and data.Zone ~= 1
+						local count = 11
+						local offset = math.random() * math.pi * 2
+						for i = 0, count - 1 do
+							local angle = offset + (i / count) * math.pi * 2
 							local direction = Vector3.new(math.cos(angle), 0, math.sin(angle))
-							fireProjectile(Vector3.new(part.Position.X, floorAt(part.Position.X) + 3, part.Position.Z) + direction * (part.Size.X / 2 + 1), direction, 30, math.floor(data.Stats.ShotDamage * 0.7), 2.4, Color3.fromRGB(255, 180, 60))
+							fireProjectile(Vector3.new(part.Position.X, floorAt(part.Position.X) + 3, part.Position.Z) + direction * (part.Size.X / 2 + 1), direction, 24, math.floor(data.Stats.ShotDamage * 0.85), 2.6,
+								Color3.fromRGB(235, 175, 90), swirl and "Halo" or "Crystal", swirl and { Kind = "curve", W = 0.4, Life = 4 } or nil)
 						end
 					end)
 				end
@@ -2297,13 +2305,23 @@ local function stepProjectiles(dt)
 			end
 		end
 	end
+	local spawnQueue -- 갈라지는 탄이 낳은 새 탄: 반복이 끝난 뒤에 쏜다 (반복 중에 목록이 밀리지 않게)
 	for i = #projectiles, 1, -1 do
 		local projectile = projectiles[i]
-		projectile.Part.Position += projectile.Direction * projectile.Speed * dt
-
-		local hit = not walkableAt(projectile.Part.Position.X, projectile.Part.Position.Z) -- 벽에 닿은 탄은 사라진다
+		local hit, pop = false, false
+		local special = projectile.Kind ~= nil -- 유도 / 포물선 / 뱀 / 곡선 / 갈라짐
+		if special then
+			spawnQueue = spawnQueue or {}
+			hit, pop = Effects.StepShot(projectile, dt, now, targets, spawnQueue)
+		else
+			projectile.Part.Position += projectile.Direction * projectile.Speed * dt
+		end
+		local flies = projectile.Flies == true -- 포물선 폭탄: 날아가는 동안은 벽 / 플레이어에 닿지 않는다
+		if not hit and not flies then
+			hit = not walkableAt(projectile.Part.Position.X, projectile.Part.Position.Z) -- 벽에 닿은 탄은 사라진다
+		end
 		for _, target in ipairs(targets) do
-			if hit then break end
+			if hit or flies then break end
 			local player, root, humanoid = target.Player, target.Root, target.Humanoid
 			do
 				if humanoid.Health > 0 then
@@ -2324,8 +2342,13 @@ local function stepProjectiles(dt)
 		end
 
 		if hit or now > projectile.Expire then
-			projectile.Part:Destroy()
+			projectile.Part:Destroy(pop or (special and hit))
 			table.remove(projectiles, i)
+		end
+	end
+	if spawnQueue then
+		for _, q in ipairs(spawnQueue) do
+			fireProjectile(q[1], q[2], q[3], q[4], q[5], q[6], q[7])
 		end
 	end
 end

@@ -598,21 +598,14 @@ local function spawnBoss(run)
 	end
 end
 
-local function fireProjectile(run, origin, direction, speed, damage, size, color, style)
-	local ball = Effects.SpawnProjectile(origin, direction, speed, size, color, style, 5) -- 부품 없이 숫자로만 (그리기는 클라이언트)
-
+-- opts (선택): 유도 / 포물선 / 뱀 / 곡선 / 갈라짐 같은 특수 움직임 (Effects.MakeShot 설명 참고). 없으면 직선탄.
+local function fireProjectile(run, origin, direction, speed, damage, size, color, style, opts)
 	if #run.Projectiles >= MAX_RUN_PROJECTILES then
 		local oldest = table.remove(run.Projectiles, 1)
 		oldest.Part:Destroy()
 	end
-	table.insert(run.Projectiles, {
-		Part = ball,
-		Direction = direction.Unit,
-		Speed = speed,
-		Damage = damage,
-		Radius = size / 2,
-		Expire = os.clock() + 5,
-	})
+	-- 부품 없이 숫자로만 (그리기는 클라이언트)
+	table.insert(run.Projectiles, Effects.MakeShot(run.Projectiles, origin, direction, speed, damage, size, color, style, opts))
 end
 
 -- 몬스터 수십 마리가 매 프레임 "가장 가까운 플레이어"를 묻는다: 살아 있는 몸 목록은 0.05초마다 한 번만 다시 만든다
@@ -665,22 +658,27 @@ end
 -- 1) 부채꼴 조준 연발: 가장 가까운 플레이어를 향해 5갈래 탄을 2~3번
 local function bossFan(run, part, data)
 	bossWarn(run, part, data, Color3.fromRGB(255, 220, 80), 0.5)
-	for _ = 1, data.Enraged and 3 or 2 do
+	-- 5갈래 -> 3갈래 수정탄(-40%) + 두 번째 일제 사격부터 느린 유도 미사일 한 발. 피해는 +20%
+	for volley = 1, data.Enraged and 3 or 2 do
 		if not bossAlive(run, part, data) then return end
 		local target = getNearestTarget(run, part.Position)
 		if not target then return end
 		local direction = (target.Position - part.Position).Unit
-		for _, angle in ipairs({ -24, -12, 0, 12, 24 }) do
-			fireProjectile(run, part.Position, rotateY(direction, angle), data.Stats.ShotSpeed, data.Stats.ShotDamage, 3.2, Color3.fromRGB(255, 80, 60))
+		for _, angle in ipairs({ -22, 0, 22 }) do
+			fireProjectile(run, part.Position, rotateY(direction, angle), data.Stats.ShotSpeed * 0.9, math.floor(data.Stats.ShotDamage * 1.2), 3.2, Color3.fromRGB(235, 110, 100), "Crystal")
 		end
-		task.wait(0.4)
+		if volley >= 2 then
+			fireProjectile(run, part.Position + Vector3.new(0, 2, 0), direction, 28, math.floor(data.Stats.ShotDamage * 1.1), 2.6, Color3.fromRGB(240, 170, 90), "Missile", { Kind = "homing", Turn = 1.7, Life = 3.5 })
+		end
+		task.wait(0.5)
 	end
 end
 
 -- 2) 전방위 탄막: 고리 모양 탄을 2번 (두 번째는 엇갈리게)
 local function bossRing(run, part, data)
 	bossWarn(run, part, data, Color3.new(1, 1, 1), 0.8)
-	local count = data.Enraged and 24 or Config.Boss.RingCount
+	-- 개수 -30%, 더 느리게, 피해 +20%. 1번째 고리는 곧은 수정, 2번째 고리는 엇갈리게 휘어 도는 후광 (격노하면 후광이 더 크게 휜다)
+	local count = math.max(8, math.floor((data.Enraged and 24 or Config.Boss.RingCount) * 0.7))
 	local radius = part.Size.X / 2 + 1
 	for wave = 0, 1 do
 		if not bossAlive(run, part, data) then return end
@@ -688,7 +686,8 @@ local function bossRing(run, part, data)
 		for i = 0, count - 1 do
 			local angle = offset + (i / count) * math.pi * 2
 			local direction = Vector3.new(math.cos(angle), 0, math.sin(angle))
-			fireProjectile(run, flatOrigin(run, part) + direction * radius, direction, 32, math.floor(data.Stats.ShotDamage * 0.7), 2.5, Color3.fromRGB(255, 180, 60))
+			fireProjectile(run, flatOrigin(run, part) + direction * radius, direction, 25, math.floor(data.Stats.ShotDamage * 0.85), 2.7, Color3.fromRGB(235, 175, 90),
+				wave == 0 and "Crystal" or "Halo", wave == 1 and { Kind = "curve", W = data.Enraged and 0.5 or 0.35, Life = 4 } or nil)
 		end
 		task.wait(0.6)
 	end
@@ -704,10 +703,10 @@ local function bossSpiral(run, part, data)
 		for arm = 0, 1 do
 			local a = angle + arm * math.pi
 			local direction = Vector3.new(math.cos(a), 0, math.sin(a))
-			fireProjectile(run, flatOrigin(run, part) + direction * (part.Size.X / 2 + 1), direction, 30, math.floor(data.Stats.ShotDamage * 0.6), 2.2, Color3.fromRGB(190, 110, 255))
+			fireProjectile(run, flatOrigin(run, part) + direction * (part.Size.X / 2 + 1), direction, 26, math.floor(data.Stats.ShotDamage * 0.72), 2.4, Color3.fromRGB(190, 120, 235), arm == 0 and "Crystal" or "Skull") -- 팔마다 모양이 다르다
 		end
-		angle += 0.42
-		task.wait(0.09)
+		angle += 0.6
+		task.wait(0.14) -- 탄 수 약 -35%
 	end
 end
 
@@ -1238,17 +1237,24 @@ local function stepRun(run, dt)
 			if root then memberParts[#memberParts + 1] = { Member = member, Root = root, Humanoid = humanoid } end
 		end
 	end
+	local spawnQueue -- 갈라지는 탄이 낳은 새 탄: 반복이 끝난 뒤에 쏜다 (반복 중에 목록이 밀리지 않게)
 	for i = #run.Projectiles, 1, -1 do
 		local projectile = run.Projectiles[i]
-		projectile.Part.Position += projectile.Direction * projectile.Speed * dt
-
-		local hit = false
+		local hit, pop = false, false
+		local special = projectile.Kind ~= nil -- 유도 / 포물선 / 뱀 / 곡선 / 갈라짐
+		if special then
+			spawnQueue = spawnQueue or {}
+			hit, pop = Effects.StepShot(projectile, dt, now, memberParts, spawnQueue)
+		else
+			projectile.Part.Position += projectile.Direction * projectile.Speed * dt
+		end
+		local flies = projectile.Flies == true -- 포물선 폭탄: 날아가는 동안은 벽 / 플레이어에 닿지 않는다
 		-- 절벽에 닿은 탄은 사라진다 (벽 너머로 공격이 들어오지 않게)
-		if not walkable(run, projectile.Part.Position.X, projectile.Part.Position.Z) then
+		if not hit and not flies and not walkable(run, projectile.Part.Position.X, projectile.Part.Position.Z) then
 			hit = true
 		end
 		for _, entry in ipairs(memberParts) do
-			if hit then break end
+			if hit or flies then break end
 			local member, root, humanoid = entry.Member, entry.Root, entry.Humanoid
 			if humanoid.Health > 0 then
 				local gap = (root.Position - projectile.Part.Position).Magnitude
@@ -1273,8 +1279,13 @@ local function stepRun(run, dt)
 		end
 
 		if hit or now > projectile.Expire then
-			projectile.Part:Destroy()
+			projectile.Part:Destroy(pop or (special and hit))
 			table.remove(run.Projectiles, i)
+		end
+	end
+	if spawnQueue then
+		for _, q in ipairs(spawnQueue) do
+			fireProjectile(run, q[1], q[2], q[3], q[4], q[5], q[6], q[7])
 		end
 	end
 end
@@ -2416,8 +2427,8 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth)
 		GetTarget = function(position)
 			return getNearestTarget(run, position)
 		end,
-		Fire = function(origin, direction, speed, damage, size, color, style)
-			fireProjectile(run, origin, direction, speed, damage, size, color, style)
+		Fire = function(origin, direction, speed, damage, size, color, style, opts)
+			fireProjectile(run, origin, direction, speed, damage, size, color, style, opts)
 		end,
 		Players = function()
 			local list = {}

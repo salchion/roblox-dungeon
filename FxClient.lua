@@ -110,10 +110,11 @@ local RAINBOW = ColorSequence.new({
 })
 local FIRE = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 240, 120)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 50, 20)) })
 local CLASS_LOOK = {
-	Revolver = { Style = "Ball", SizeMul = 1.35, Impact = 10 }, -- 묵직한 한 발
-	Smg = { Style = "Bolt", Length = 1.6, SizeMul = 0.55 }, -- 가늘고 짧은 연사 탄
+	Pistol = { SizeMul = 1.0, Muzzle = 2.4 }, -- 총구에 작은 고리
+	Revolver = { Style = "Ball", SizeMul = 1.35, Impact = 10, Muzzle = 3.6 }, -- 묵직한 한 발 + 큰 총구 고리
+	Smg = { Style = "Bolt", Length = 2.2, SizeMul = 0.55, Mini = true }, -- 가늘고 짧은 연사 탄 (시대 효과는 최소)
 	Rifle = { Style = "Bolt", Length = 3.5 },
-	Shotgun = { Style = "Ball", SizeMul = 0.55 }, -- 작은 산탄 알갱이
+	Shotgun = { Style = "Ball", SizeMul = 0.55, Mini = true, Puff = true }, -- 작은 산탄 알갱이 + 총구 원뿔 연기
 }
 -- 로켓 / 레일건 / 저격총 / 캐논 / 화염방사기는 아래 SPECIAL 이 따로 그린다
 local RATE_ERA = { Orb = 40, Cannon = 25, Fire = 90, Rocket = 110, Rainbow = 80 }
@@ -275,6 +276,167 @@ SPECIAL.Flamer = function(from, to, size, speed, color)
 	end)
 end
 
+------------------------------------------------------------
+-- 시대(era)별 탄 서명: 무기 종류 모양 위에 얹는다 (탄 하나당 추가 부품/입자 3개 이하, 기관단총/샷건은 1개)
+------------------------------------------------------------
+local SPARKLE = "rbxasset://textures/particles/sparkles_main.dds"
+local SMOKE = "rbxasset://textures/particles/smoke_main.dds"
+local ERA_TINT = { -- 탄 색을 시대 느낌으로 덮어쓴다
+	[1] = Color3.fromRGB(150, 130, 105), [2] = Color3.fromRGB(205, 230, 255), [4] = Color3.fromRGB(255, 205, 70),
+	[5] = Color3.fromRGB(255, 140, 45), [6] = Color3.fromRGB(170, 235, 255), [7] = Color3.fromRGB(255, 245, 110),
+	[8] = Color3.fromRGB(135, 75, 220), [9] = Color3.fromRGB(255, 95, 35),
+}
+local ERA_CORE = { [8] = Color3.fromRGB(35, 15, 60) } -- 암흑: 몸통은 검보라, 꼬리 / 폭발은 보라 빛
+local DRAGON = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 170, 60)), ColorSequenceKeypoint.new(1, Color3.fromRGB(190, 30, 15)) })
+local ERA_TRAIL = { [5] = FIRE, [9] = DRAGON }
+
+local function sigEmitter(part, colorSeq, rate, size, life, speed, accel, texture, emission)
+	local e = Instance.new("ParticleEmitter")
+	e.Rate = rate
+	e.Lifetime = NumberRange.new(life * 0.6, life)
+	e.Speed = NumberRange.new(speed * 0.3, speed)
+	e.SpreadAngle = Vector2.new(180, 180)
+	e.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, size), NumberSequenceKeypoint.new(1, 0) })
+	e.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.15), NumberSequenceKeypoint.new(1, 1) })
+	e.LightEmission = emission or 1
+	e.Color = colorSeq
+	if accel then e.Acceleration = accel end
+	if texture then e.Texture = texture end
+	e.Parent = part
+	return e
+end
+
+local lastRing, lastPuff = 0, 0
+local function eraRing(pos, color, d0, d1, dur, facing)
+	local now = os.clock()
+	if now - lastRing < 0.04 then return end -- 연사 때 고리가 쌓이지 않게
+	lastRing = now
+	local cf = facing and (CFrame.lookAt(pos, pos + facing) * CFrame.Angles(0, math.rad(90), 0)) or (CFrame.new(pos) * CFrame.Angles(0, 0, math.rad(90)))
+	local p = rootPart(cf, Vector3.new(0.2, d0, d0), color, Enum.Material.Neon, Enum.PartType.Cylinder, 0.35)
+	TweenService:Create(p, TweenInfo.new(dur), { Size = Vector3.new(0.2, d1, d1), Transparency = 1 }):Play()
+	Debris:AddItem(p, dur + 0.05)
+end
+
+-- c = { size, back(머리에서 꼬리쪽 거리), color, mini }. 돌려주는 함수는 탄이 끝날 때 부른다 (반복 트윈 정리)
+local ERA_SIG = {}
+ERA_SIG[1] = function(part, c) -- 녹슨: 탁한 회갈색 탄 + 작은 먼지
+	sigEmitter(part, ColorSequence.new(Color3.fromRGB(125, 108, 90)), c.mini and 10 or 16, math.max(c.size * 0.7, 0.3), 0.45, 2, nil, SMOKE, 0)
+end
+ERA_SIG[2] = function(part, c) -- 강철: 말끔한 흰청 줄기 + 짧은 불꽃 틱
+	sigEmitter(part, ColorSequence.new(Color3.fromRGB(230, 245, 255)), c.mini and 14 or 24, 0.2, 0.18, 12)
+end
+ERA_SIG[3] = function(part, c) -- 마력: 보라 구슬 + 돌아가는 알갱이 2개 + 별 꼬리
+	if not c.mini then
+		local r = c.size * 0.8 + 0.4
+		for _, sx in ipairs({ -1, 1 }) do
+			solid(part, Vector3.new(0.3, 0.3, 0.3), Color3.fromRGB(235, 200, 255), Enum.Material.Neon, CFrame.new(sx * r, 0, 0), 0, Enum.PartType.Ball)
+		end
+		c.roll = math.rad(170) -- 날아가는 동안 반 바퀴 돌아 알갱이가 궤도를 도는 것처럼 보인다
+	end
+	sigEmitter(part, ColorSequence.new(Color3.fromRGB(215, 160, 255)), c.mini and 14 or 24, math.max(c.size * 0.5, 0.35), 0.5, 1.5, nil, SPARKLE)
+end
+ERA_SIG[4] = function(part, c) -- 황금: 금빛 혜성 (꼬리 덩어리) + 반짝이
+	if not c.mini then
+		local len = c.size * 2.6
+		solid(part, Vector3.new(c.size * 0.55, c.size * 0.55, len), Color3.fromRGB(255, 225, 120), Enum.Material.Neon, CFrame.new(0, 0, c.back + len * 0.5), 0.45)
+	end
+	sigEmitter(part, ColorSequence.new(Color3.fromRGB(255, 240, 150)), c.mini and 16 or 30, math.max(c.size * 0.45, 0.3), 0.6, 2.5, nil, SPARKLE)
+end
+ERA_SIG[5] = function(part, c) -- 불꽃: 불꽃 물방울 (머리 + 뾰족 꼬리) + 위로 오르는 불씨
+	if not c.mini then
+		local len = c.size * 2.4
+		solid(part, Vector3.new(c.size * 0.55, c.size * 0.55, len), Color3.fromRGB(255, 90, 25), Enum.Material.Neon, CFrame.new(0, 0, c.back + len * 0.5), 0.3)
+	end
+	sigEmitter(part, FIRE, c.mini and 16 or 30, math.max(c.size * 0.35, 0.28), 0.6, 3, Vector3.new(0, 6, 0))
+end
+ERA_SIG[6] = function(part, c) -- 빙결: 옅은 하늘색 결정 조각 + 눈송이 안개
+	if not c.mini then
+		local s = c.size * 0.9
+		solid(part, Vector3.new(s, s, s), Color3.fromRGB(215, 245, 255), Enum.Material.Neon, CFrame.Angles(math.rad(45), math.rad(45), 0), 0.15)
+	end
+	sigEmitter(part, ColorSequence.new(Color3.fromRGB(220, 242, 255)), c.mini and 14 or 22, math.max(c.size * 0.5, 0.35), 0.8, 1.5, Vector3.new(0, -3, 0), SPARKLE)
+end
+ERA_SIG[7] = function(part, c) -- 번개: 지그재그 가는 마디 3개 (하나는 깜빡임)
+	local count = c.mini and 1 or 3
+	local segLen = math.max(c.size * 2.2, 1.4)
+	local first
+	for i = 1, count do
+		local sign = (i % 2 == 0) and 1 or -1
+		local seg = solid(part, Vector3.new(0.14, 0.14, segLen * 1.15), Color3.fromRGB(255, 250, 170), Enum.Material.Neon,
+			CFrame.new(sign * 0.55, 0, c.back + (i - 0.5) * segLen) * CFrame.Angles(0, sign * 0.75, 0))
+		first = first or seg
+	end
+	if c.mini then return end
+	local flicker = TweenService:Create(first, TweenInfo.new(0.05, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.75 })
+	flicker:Play()
+	return function() flicker:Cancel() end
+end
+ERA_SIG[8] = function(part, c) -- 암흑: 검보라 구 + 보랏빛 막 + 연기 꼬리
+	if not c.mini then
+		local s = c.size * 1.7
+		solid(part, Vector3.new(s, s, s), c.color, Enum.Material.Neon, CFrame.identity, 0.55, Enum.PartType.Ball)
+	end
+	sigEmitter(part, ColorSequence.new(Color3.fromRGB(70, 30, 115)), c.mini and 14 or 28, math.max(c.size * 0.9, 0.5), 0.7, 1.5, nil, SMOKE, 0)
+end
+ERA_SIG[9] = function(part, c) -- 용: 주황 불덩이 + S자로 굽은 긴 꼬리 2마디 + 용의 불씨
+	if not c.mini then
+		local len = c.size * 2.2
+		for i = 1, 2 do
+			local sign = (i == 1) and 1 or -1
+			solid(part, Vector3.new(c.size * (0.85 - 0.3 * i), c.size * (0.85 - 0.3 * i), len), (i == 1) and Color3.fromRGB(255, 120, 40) or Color3.fromRGB(200, 40, 20),
+				Enum.Material.Neon, CFrame.new(sign * c.size * 0.45, 0, c.back + (i - 0.5) * len) * CFrame.Angles(0, sign * 0.35, 0), 0.25)
+		end
+	end
+	sigEmitter(part, DRAGON, c.mini and 16 or 36, math.max(c.size * 0.4, 0.3), 0.5, 3, Vector3.new(0, 3, 0))
+end
+ERA_SIG[10] = function(part, c) -- 신화: 무지개 리본 (가로로 한 줄 더) + 별가루
+	if not c.mini then
+		local w = c.size * 1.2 + 0.3
+		local b0 = Instance.new("Attachment")
+		b0.Position = Vector3.new(w, 0, 0)
+		b0.Parent = part
+		local b1 = Instance.new("Attachment")
+		b1.Position = Vector3.new(-w, 0, 0)
+		b1.Parent = part
+		local ribbon = Instance.new("Trail")
+		ribbon.Attachment0, ribbon.Attachment1 = b0, b1
+		ribbon.Lifetime = 0.35
+		ribbon.Color = RAINBOW
+		ribbon.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) })
+		ribbon.LightEmission = 1
+		ribbon.FaceCamera = true
+		ribbon.Parent = part
+	end
+	sigEmitter(part, RAINBOW, c.mini and 16 or 34, math.max(c.size * 0.45, 0.3), 0.6, 2, nil, SPARKLE)
+end
+
+-- 시대별 착탄 모양 (burst / ring 재사용, 눈부신 큰 번쩍임은 없다)
+local ERA_IMPACT = {}
+ERA_IMPACT[1] = function(to, _, n) burst(to, Color3.fromRGB(125, 108, 90), n) end -- 먼지
+ERA_IMPACT[2] = function(to, color, n) burst(to, color, n) burst(to, WHITE, 4) end -- 불꽃 틱
+ERA_IMPACT[3] = function(to, color, n) burst(to, color, n) eraRing(to, color, 1, 6, 0.25) end -- 마력 고리
+ERA_IMPACT[4] = function(to, color, n) burst(to, color, n) burst(to, Color3.fromRGB(255, 250, 200), math.floor(n * 0.4)) end -- 금가루
+ERA_IMPACT[5] = function(to, _, n) burst(to, Color3.fromRGB(255, 100, 30), n) burst(to, Color3.fromRGB(255, 220, 90), math.floor(n * 0.4)) end -- 불꽃 + 불씨
+ERA_IMPACT[6] = function(to, color, n) burst(to, color, n) burst(to, WHITE, 10) eraRing(to, Color3.fromRGB(190, 240, 255), 1, 7, 0.2) end -- 얼음 파편
+ERA_IMPACT[7] = function(to, color, n) burst(to, color, n) burst(to, WHITE, 8) end -- 스파크
+ERA_IMPACT[8] = function(to, color, n) -- 공허 파문: 퍼지는 고리 + 빨려드는 고리
+	burst(to, Color3.fromRGB(90, 40, 150), n)
+	eraRing(to, color, 1, 9, 0.4)
+	eraRing(to, Color3.fromRGB(60, 25, 110), 10, 1, 0.3)
+end
+ERA_IMPACT[9] = function(to, _, n) -- 용의 불길
+	burst(to, Color3.fromRGB(255, 120, 40), n)
+	burst(to, Color3.fromRGB(200, 40, 20), math.floor(n * 0.5))
+	eraRing(to, Color3.fromRGB(255, 140, 50), 1, 10, 0.3)
+end
+ERA_IMPACT[10] = function(to, _, n) -- 별 터짐: 세 빛깔 + 흰 고리
+	local m = math.max(math.floor(n * 0.4), 6)
+	burst(to, Color3.fromRGB(255, 90, 120), m)
+	burst(to, Color3.fromRGB(255, 230, 90), m)
+	burst(to, Color3.fromRGB(90, 210, 255), m)
+	eraRing(to, WHITE, 1, 9, 0.3)
+end
+
 -- event = { "S", from, to, size, speed, impact, style, length, color, rainbow, class, era }
 local function playShot(event)
 	if activeShots >= MAX_ACTIVE_SHOTS then return end
@@ -298,12 +460,15 @@ local function playShot(event)
 		impact = look.Impact or impact
 		color = look.Color or color
 	end
+	local mini = look ~= nil and look.Mini == true -- 기관단총 / 샷건: 연사가 많아 시대 효과를 최소로
+	if not rainbow and ERA_TINT[era] then color = ERA_TINT[era] end
+	size = math.max(size, mini and 0.2 or 0.3) -- 뒤에서 봐도 보이게 바닥 굵기
 	activeShots += 1
 
 	local part = Instance.new("Part")
 	part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch = true, false, false, false
 	part.Material = Enum.Material.Neon
-	part.Color = color
+	part.Color = (not rainbow and ERA_CORE[era]) or color
 	if look and look.Transparency then part.Transparency = look.Transparency end
 	if style == "Bolt" or style == "Rocket" then
 		part.Size = Vector3.new(size, size, length or 3)
@@ -317,6 +482,7 @@ local function playShot(event)
 	if style == "Fire" or style == "Rocket" or eraStyle == "Fire" or eraStyle == "Rocket" then
 		colorSeq = rainbow and RAINBOW or FIRE
 	end
+	if not rainbow and ERA_TRAIL[era] then colorSeq = ERA_TRAIL[era] end
 	local trailWidth = size * (1 + 0.12 * era)
 	local a0 = Instance.new("Attachment")
 	a0.Position = Vector3.new(0, trailWidth / 2, 0)
@@ -333,8 +499,16 @@ local function playShot(event)
 	trail.FaceCamera = true
 	trail.Parent = part
 
-	local rate = RATE_ERA[eraStyle] or RATE_STYLE[style]
-	if not rate and era >= 2 then rate = 6 + era * 4 end
+	local sig = ERA_SIG[era]
+	local sigCleanup, roll
+	if sig then
+		local isBolt = style == "Bolt" or style == "Rocket"
+		local ctx = { size = size, back = (isBolt and (length or 3) or size) / 2, color = color, mini = mini }
+		sigCleanup = sig(part, ctx)
+		roll = ctx.roll
+	end
+	local rate = (not sig) and (RATE_ERA[eraStyle] or RATE_STYLE[style]) or nil
+	if not sig and not rate and era >= 2 then rate = 6 + era * 4 end
 	if rate then
 		rate = rate * (0.6 + 0.1 * era)
 		local emitter = Instance.new("ParticleEmitter")
@@ -347,22 +521,44 @@ local function playShot(event)
 		emitter.Color = colorSeq
 		emitter.Parent = part
 	end
-	if era >= 3 then
+	if era >= 7 and not mini then -- 점 조명은 번개 이상 + 연사 무기 제외
 		local light = Instance.new("PointLight")
 		light.Range, light.Brightness, light.Color = 5 + era * 2, 0.7 + 0.1 * era, color
 		light.Parent = part
 	end
 	part.Parent = fxFolder
-	if era >= 2 then burst(from, color, 2 + era) end
+	local dir = (to - from).Unit
+	if look and look.Muzzle then -- 권총 / 리볼버: 총구 고리 (총구 앞쪽에서 퍼지며 사라진다)
+		eraRing(from + dir * 0.8, color, 0.6, look.Muzzle, 0.14, dir)
+	elseif look and look.Puff then -- 샷건: 총구 원뿔 연기 (펠릿마다 만들지 않고 간격을 둔다)
+		local now = os.clock()
+		if now - lastPuff > 0.08 then
+			lastPuff = now
+			burst(from + dir * 1.2, Color3.fromRGB(215, 215, 220):Lerp(color, 0.25), 5)
+		end
+	elseif era >= 2 and not mini then
+		burst(from, color, 2 + era)
+	end
 
 	local duration = math.clamp(distance / speed, 0.03, 1.2)
-	local tween = TweenService:Create(part, TweenInfo.new(duration, Enum.EasingStyle.Linear), { CFrame = CFrame.lookAt(to, to + (to - from)) })
+	local goal = CFrame.lookAt(to, to + (to - from))
+	if roll then goal = goal * CFrame.Angles(0, 0, roll) end
+	local tween = TweenService:Create(part, TweenInfo.new(duration, Enum.EasingStyle.Linear), { CFrame = goal })
 	tween.Completed:Connect(function()
 		part.Transparency = 1
+		if sigCleanup then sigCleanup() end
 		for _, child in ipairs(part:GetChildren()) do
-			if child:IsA("ParticleEmitter") then child.Enabled = false end
+			if child:IsA("ParticleEmitter") then child.Enabled = false
+			elseif child:IsA("BasePart") then child.Transparency = 1 end
 		end
-		if impact and impact > 0 then burst(to, color, impact) end
+		local onImpact = ERA_IMPACT[era]
+		if mini then -- 연사 무기: 착탄은 한 번의 작은 입자만
+			burst(to, color, math.min(math.max(impact or 0, 4), 8))
+		elseif onImpact then
+			onImpact(to, color, math.clamp(math.max(impact or 0, 6), 6, 70))
+		elseif impact and impact > 0 then
+			burst(to, color, impact)
+		end
 		activeShots -= 1
 		Debris:AddItem(part, 0.5)
 	end)
@@ -372,16 +568,63 @@ end
 ------------------------------------------------------------
 -- 적 탄: 서버는 숫자로만 움직이고, 여기서는 시작 / 끝 두 점 사이를 부드럽게 날아가게만 그린다
 ------------------------------------------------------------
-local projectiles = {} -- [id] = { Part, Tween }
+local projectiles = {} -- [id] = { Part, Tween, Mover, Pop }
+local movers = {}      -- 직선이 아닌 탄(뱀 / 곡선 / 포물선 / 유도): 서버와 같은 식으로 매 프레임 위치를 그린다
+local MAX_MOVERS = 70
+
+-- 모양별 기본색 (채도를 낮춘 차분한 색 하나). 서버가 색을 정해 보내면 그 색을 쓴다.
+local STYLE_COLOR = {
+	Crescent = Color3.fromRGB(180, 150, 225), Halo = Color3.fromRGB(110, 215, 185), Crystal = Color3.fromRGB(125, 200, 225),
+	Skull = Color3.fromRGB(225, 220, 200), Needle = Color3.fromRGB(200, 160, 230), Bomb = Color3.fromRGB(235, 140, 70),
+	Missile = Color3.fromRGB(235, 165, 95), Seeker = Color3.fromRGB(135, 190, 235), Snake = Color3.fromRGB(165, 205, 90),
+}
+
+-- 메인 부품에 용접되어 같이 움직이는 덧붙임 부품 (한 탄이 1~3개 부품으로 이루어진다)
+local function addPiece(main, shape, size, offset, color, material, transparency)
+	local piece = Instance.new("Part")
+	piece.Anchored, piece.CanCollide, piece.CanQuery, piece.CanTouch, piece.Massless = false, false, false, false, true
+	if shape then piece.Shape = shape end
+	piece.Material = material or Enum.Material.Neon
+	piece.Color = color
+	piece.Transparency = transparency or 0
+	piece.Size = size
+	piece.CFrame = main.CFrame * offset
+	local weld = Instance.new("WeldConstraint")
+	weld.Part0, weld.Part1 = main, piece
+	weld.Parent = piece
+	piece.Parent = main
+	return piece
+end
+
+-- 꼬리 불꽃 입자 (유도탄에만 붙인다)
+local function addFlame(onPart, size, c1, c2)
+	local flame = Instance.new("ParticleEmitter")
+	flame.Rate = 28
+	flame.Lifetime = NumberRange.new(0.25, 0.45)
+	flame.Speed = NumberRange.new(3, 6)
+	flame.SpreadAngle = Vector2.new(12, 12)
+	flame.EmissionDirection = Enum.NormalId.Back
+	flame.LightEmission = 0.8
+	flame.Color = ColorSequence.new(c1, c2)
+	flame.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, size * 0.5), NumberSequenceKeypoint.new(1, 0) })
+	flame.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(1, 1) })
+	flame.Parent = onPart
+end
+
+local BALL, BLOCK, CYLINDER = Enum.PartType.Ball, Enum.PartType.Block, Enum.PartType.Cylinder
+local PLASTIC, METAL = Enum.Material.SmoothPlastic, Enum.Material.Metal
 
 local function spawnProjectile(event)
-	-- { "P", id, origin, direction, speed, size, color, style, life }
-	local id, origin, direction, speed, size, color, style, life = event[2], event[3], event[4], event[5], event[6], event[7], event[8], event[9]
+	-- { "P", id, origin, direction, speed, size, color, style, life, path }
+	-- path: nil(직선) / { "sine", 진폭, 빈도 } / { "curve", 각속도 } / { "lob", 착지점, 높이 } / { "home" }
+	local id, origin, direction, speed, size, color, style, life, path = event[2], event[3], event[4], event[5], event[6], event[7], event[8], event[9], event[10]
 	local part = Instance.new("Part")
 	part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch = true, false, false, false
 	part.Material = Enum.Material.Neon
-	part.Color = color or Color3.fromRGB(255, 120, 30)
+	part.Color = color or STYLE_COLOR[style] or Color3.fromRGB(255, 120, 30)
 	local look = CFrame.lookAt(origin, origin + direction)
+	local baseColor = part.Color
+	local pieces -- 메인 부품이 자리 잡고 workspace 에 들어간 뒤에 붙일 덧붙임 부품들
 	if style == "Spear" then
 		part.Size = Vector3.new(size * 0.45, size * 0.45, size * 3.6)
 		part.CFrame = look
@@ -392,8 +635,90 @@ local function spawnProjectile(event)
 	elseif style == "Shard" then
 		part.Size = Vector3.new(size * 0.9, size * 0.9, size * 1.9)
 		part.CFrame = look * CFrame.Angles(0, 0, math.rad(45))
+	elseif style == "Crescent" then -- 초승달 칼날: 앞이 뾰족한 ㅅ자 (가운데 + 양 날개 부품)
+		local k = size * 1.5
+		part.Size = Vector3.new(k * 0.4, k * 0.2, k * 0.55)
+		part.CFrame = look
+		pieces = function()
+			for _, side in ipairs({ -1, 1 }) do
+				addPiece(part, BLOCK, Vector3.new(k * 0.26, k * 0.18, k * 1.6), CFrame.new(side * k * 0.6, 0, k * 0.5) * CFrame.Angles(0, math.rad(side * 50), 0), baseColor:Lerp(WHITE, 0.2))
+			end
+		end
+	elseif style == "Halo" then -- 후광 고리: 빛나는 원판 + 어두운 속 + 밝은 핵
+		local k = size * 1.2
+		part.Shape = CYLINDER
+		part.Size = Vector3.new(k * 0.25, k * 2, k * 2)
+		part.CFrame = look * CFrame.Angles(0, math.rad(90), 0)
+		pieces = function()
+			addPiece(part, CYLINDER, Vector3.new(k * 0.4, k * 1.2, k * 1.2), CFrame.identity, Color3.fromRGB(18, 30, 36), PLASTIC)
+			addPiece(part, BALL, Vector3.new(k * 0.5, k * 0.5, k * 0.5), CFrame.identity, baseColor:Lerp(WHITE, 0.5))
+		end
+	elseif style == "Crystal" then -- 수정: 서로 엇갈린 두 마름모
+		part.Size = Vector3.new(size * 0.65, size * 0.65, size * 1.8)
+		part.CFrame = look * CFrame.Angles(0, 0, math.rad(45))
+		part.Color = baseColor:Lerp(WHITE, 0.2)
+		part.Transparency = 0.1
+		pieces = function()
+			addPiece(part, BLOCK, Vector3.new(size * 0.65, size * 0.65, size * 1.3), CFrame.Angles(0, 0, math.rad(-45)), baseColor, Enum.Material.Neon, 0.3)
+		end
+	elseif style == "Skull" then -- 해골 구슬: 뼈색 공 + 검은 눈 두 개
+		part.Shape = BALL
+		part.Size = Vector3.new(size * 1.1, size * 1.1, size * 1.1)
+		part.CFrame = look
+		pieces = function()
+			for _, side in ipairs({ -1, 1 }) do
+				addPiece(part, BALL, Vector3.new(size * 0.24, size * 0.28, size * 0.2), CFrame.new(side * size * 0.2, size * 0.1, -size * 0.45), Color3.fromRGB(25, 22, 28), PLASTIC)
+			end
+		end
+	elseif style == "Needle" then -- 가시 묶음: 가는 바늘 세 개
+		local k = size
+		part.Size = Vector3.new(k * 0.2, k * 0.2, k * 2.8)
+		part.CFrame = look
+		pieces = function()
+			for _, side in ipairs({ -1, 1 }) do
+				addPiece(part, BLOCK, Vector3.new(k * 0.15, k * 0.15, k * 2.0), CFrame.new(side * k * 0.3, 0, k * 0.4) * CFrame.Angles(0, math.rad(side * 7), 0), baseColor:Lerp(WHITE, 0.25))
+			end
+		end
+	elseif style == "Bomb" then -- 폭탄: 어두운 쇠공 + 심지 + 타는 불꽃
+		part.Shape = BALL
+		part.Size = Vector3.new(size, size, size)
+		part.CFrame = look
+		part.Material = METAL
+		part.Color = Color3.fromRGB(62, 64, 72)
+		pieces = function()
+			addPiece(part, BLOCK, Vector3.new(size * 0.1, size * 0.34, size * 0.1), CFrame.new(0, size * 0.55, 0), Color3.fromRGB(150, 120, 80), PLASTIC)
+			addPiece(part, BALL, Vector3.new(size * 0.3, size * 0.3, size * 0.3), CFrame.new(0, size * 0.78, 0), baseColor)
+		end
+	elseif style == "Missile" then -- 미사일: 몸통 + 코 + 꼬리날개 + 불꽃 (유도탄)
+		local k = size
+		part.Size = Vector3.new(k * 0.5, k * 0.5, k * 1.7)
+		part.CFrame = look
+		part.Material = PLASTIC
+		part.Color = baseColor:Lerp(Color3.fromRGB(70, 72, 80), 0.55)
+		pieces = function()
+			addPiece(part, BALL, Vector3.new(k * 0.55, k * 0.55, k * 0.7), CFrame.new(0, 0, -k * 0.85), baseColor)
+			addPiece(part, BLOCK, Vector3.new(k * 1.4, k * 0.1, k * 0.55), CFrame.new(0, 0, k * 0.6), baseColor:Lerp(Color3.fromRGB(70, 72, 80), 0.3), PLASTIC)
+			local core = addPiece(part, BALL, Vector3.new(k * 0.4, k * 0.4, k * 0.4), CFrame.new(0, 0, k * 0.95), Color3.fromRGB(255, 205, 120))
+			addFlame(core, k, Color3.fromRGB(255, 200, 110), Color3.fromRGB(140, 120, 110))
+		end
+	elseif style == "Seeker" then -- 유도 구슬: 빛나는 구슬 + 흐릿한 꼬리 + 꼬리 불꽃
+		part.Shape = BALL
+		part.Size = Vector3.new(size, size, size)
+		part.CFrame = look
+		pieces = function()
+			local tail = addPiece(part, BALL, Vector3.new(size * 0.6, size * 0.6, size * 0.6), CFrame.new(0, 0, size * 0.75), baseColor, Enum.Material.Neon, 0.35)
+			addFlame(tail, size * 0.9, baseColor:Lerp(WHITE, 0.5), baseColor)
+		end
+	elseif style == "Snake" then -- 뱀: 머리 + 점점 작아지는 몸 두 마디
+		part.Shape = BALL
+		part.Size = Vector3.new(size, size, size)
+		part.CFrame = look
+		pieces = function()
+			addPiece(part, BALL, Vector3.new(size * 0.75, size * 0.75, size * 0.75), CFrame.new(0, 0, size * 0.85), baseColor, Enum.Material.Neon, 0.15)
+			addPiece(part, BALL, Vector3.new(size * 0.55, size * 0.55, size * 0.55), CFrame.new(0, 0, size * 1.55), baseColor, Enum.Material.Neon, 0.3)
+		end
 	else
-		part.Shape = Enum.PartType.Ball
+		part.Shape = BALL
 		part.Size = Vector3.new(size, size, size)
 		part.Position = origin
 	end
@@ -401,22 +726,119 @@ local function spawnProjectile(event)
 	light.Range, light.Brightness, light.Color = 8, 1.2, part.Color
 	light.Parent = part
 	part.Parent = fxFolder
-	local endCFrame = part.CFrame + direction * speed * life
-	local tween = TweenService:Create(part, TweenInfo.new(life, Enum.EasingStyle.Linear), { CFrame = endCFrame })
-	tween:Play()
-	projectiles[id] = { Part = part, Tween = tween }
+	if pieces then pieces() end
+
+	local entry = { Part = part, Pop = (style == "Missile" or style == "Seeker") }
+	local pathKind = path and path[1]
+	if pathKind and #movers < MAX_MOVERS then
+		-- 직선이 아닌 탄: 부품 모양을 진행 방향에 맞춰 돌릴 때 쓸 "처음 자세 대비 회전" 을 기억한다
+		local mover = { Part = part, Kind = pathKind, Origin = origin, Dir = direction, Speed = speed, T0 = os.clock(), End = os.clock() + life + 0.3, Rel = look:ToObjectSpace(part.CFrame) }
+		mover.Rel = mover.Rel.Rotation
+		if pathKind == "sine" then
+			local side = Vector3.new(-direction.Z, 0, direction.X)
+			mover.Side = side.Magnitude > 0.01 and side.Unit or Vector3.xAxis
+			mover.Amp, mover.Freq = path[2], path[3]
+		elseif pathKind == "curve" then
+			mover.W = path[2]
+		elseif pathKind == "lob" then
+			mover.Target, mover.Height, mover.Dur = path[2], path[3], life
+		elseif pathKind == "home" then
+			mover.Pos, mover.TargetDir = origin, direction
+		end
+		entry.Mover = mover
+		table.insert(movers, mover)
+	else
+		local endCFrame = part.CFrame + direction * speed * life
+		entry.Tween = TweenService:Create(part, TweenInfo.new(life, Enum.EasingStyle.Linear), { CFrame = endCFrame })
+		entry.Tween:Play()
+	end
+	projectiles[id] = entry
 	Debris:AddItem(part, life + 0.3)
 	task.delay(life + 0.3, function() projectiles[id] = nil end)
 end
 
-local function removeProjectile(id)
+local function removeProjectile(id, pop)
 	local entry = projectiles[id]
 	if entry then
 		projectiles[id] = nil
-		entry.Tween:Cancel()
+		if entry.Tween then entry.Tween:Cancel() end
+		if entry.Mover then entry.Mover.Dead = true end
+		if pop or entry.Pop then burst(entry.Part.Position, entry.Part.Color, 8) end -- 작은 터짐 (유도탄 명중 / 갈라짐)
 		entry.Part:Destroy()
 	end
 end
+
+-- 유도탄 새 방향 { "Q", id, 위치, 방향, 속도 }: 서버가 0.2초마다 알린다. 클라이언트는 방향을 부드럽게 돌리고 위치는 살짝만 보정한다.
+local function reaimProjectile(event)
+	local entry = projectiles[event[2]]
+	local mover = entry and entry.Mover
+	if not mover or mover.Kind ~= "home" then return end
+	local predicted = event[3] + event[4] * event[5] * 0.06
+	mover.Pos = ((mover.Pos - predicted).Magnitude > 20) and predicted or mover.Pos:Lerp(predicted, 0.5)
+	mover.TargetDir, mover.Speed = event[4], event[5]
+end
+
+-- 땅 위 경고 { "W", 위치, 반지름, 지속 초, 색 }: 착탄 지점에 흐린 원이 나타나고 안쪽에서 차오른다
+local activeWarns = 0
+local function groundWarn(event)
+	if activeWarns >= 12 then return end
+	local position, radius, duration, color = event[2], event[3], math.clamp(event[4] or 1.5, 0.3, 4), event[5] or Color3.fromRGB(235, 110, 90)
+	activeWarns += 1
+	local cframe = CFrame.new(position + Vector3.new(0, 0.35, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	local base = Instance.new("Part")
+	base.Anchored, base.CanCollide, base.CanQuery, base.CanTouch = true, false, false, false
+	base.Shape, base.Material, base.Color, base.Transparency = CYLINDER, Enum.Material.Neon, color, 0.8
+	base.Size = Vector3.new(0.2, radius * 2, radius * 2)
+	base.CFrame = cframe
+	base.Parent = fxFolder
+	local fill = base:Clone()
+	fill.Transparency = 0.5
+	fill.Size = Vector3.new(0.25, 1, 1)
+	fill.Parent = fxFolder
+	TweenService:Create(fill, TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Size = Vector3.new(0.25, radius * 2, radius * 2), Transparency = 0.3 }):Play()
+	Debris:AddItem(base, duration + 0.1)
+	Debris:AddItem(fill, duration + 0.1)
+	task.delay(duration + 0.1, function() activeWarns -= 1 end)
+end
+
+game:GetService("RunService").RenderStepped:Connect(function(dt)
+	if #movers == 0 then return end
+	local now = os.clock()
+	for i = #movers, 1, -1 do
+		local m = movers[i]
+		local part = m.Part
+		if m.Dead or not part.Parent or now > m.End then
+			table.remove(movers, i)
+		else
+			local kind, t = m.Kind, now - m.T0
+			local position, velocity
+			if kind == "sine" then
+				local phase = m.Freq * t
+				position = m.Origin + m.Dir * (m.Speed * t) + m.Side * (m.Amp * math.sin(phase))
+				velocity = m.Dir * m.Speed + m.Side * (m.Amp * m.Freq * math.cos(phase))
+			elseif kind == "curve" then
+				local w, d = m.W, m.Dir
+				local k = m.Speed / w
+				local s, c = math.sin(w * t), 1 - math.cos(w * t)
+				position = Vector3.new(m.Origin.X + (d.X * s + d.Z * c) * k, m.Origin.Y + d.Y * m.Speed * t, m.Origin.Z + (d.Z * s - d.X * c) * k)
+				local cs, sn = math.cos(w * t), math.sin(w * t)
+				velocity = Vector3.new((d.X * cs + d.Z * sn) * m.Speed, d.Y * m.Speed, (d.Z * cs - d.X * sn) * m.Speed)
+			elseif kind == "lob" then
+				local u = math.min(t / m.Dur, 1)
+				position = m.Origin:Lerp(m.Target, u) + Vector3.new(0, m.Height * 4 * u * (1 - u), 0)
+				velocity = (m.Target - m.Origin) / m.Dur + Vector3.new(0, m.Height * 4 * (1 - 2 * u) / m.Dur, 0)
+			else -- home
+				local dir = m.Dir + (m.TargetDir - m.Dir) * math.min(1, dt * 8)
+				if dir.Magnitude > 0.01 then m.Dir = dir.Unit end
+				m.Pos += m.Dir * m.Speed * dt
+				position, velocity = m.Pos, m.Dir
+			end
+			if velocity.Magnitude > 0.01 then
+				part.CFrame = CFrame.lookAt(position, position + velocity) * m.Rel
+			end
+		end
+	end
+end)
 
 ------------------------------------------------------------
 -- 나머지
@@ -634,7 +1056,8 @@ local FLOAT_SIZE, DAMAGE_SIZE = UDim2.new(0, 140, 0, 36), UDim2.new(0, 90, 0, 40
 local HANDLERS = {
 	S = playShot,
 	P = spawnProjectile,
-	X = function(event) removeProjectile(event[2]) end,
+	X = function(event) removeProjectile(event[2], event[3]) end,
+	Q = reaimProjectile, W = groundWarn,
 	T = tracer,
 	B = function(event) burst(event[2], event[3], event[4]) end,
 	F = function(event) showText(event[2], event[3], event[4], FLOAT_SIZE, 0.7, 3) end,
@@ -647,7 +1070,7 @@ local HANDLERS = {
 }
 
 -- 한 배치(한 프레임)에서 종류별로 그릴 수 있는 최대 개수: 넘치는 것은 건너뛴다 (지우기 "X" / 끄기 "O" / 번쩍임 "H" 는 제한 없음)
-local BATCH_LIMIT = { G = 10, T = 48, R = 16, Z = 12, M = 12, L = 8, E = 8, K = 14, P = 100, S = 100, B = 60 }
+local BATCH_LIMIT = { G = 10, T = 48, R = 16, Z = 12, M = 12, L = 8, E = 8, K = 14, P = 100, Q = 40, W = 10, S = 100, B = 60 }
 Remotes.Fx.OnClientEvent:Connect(function(batch)
 	if typeof(batch) ~= "table" then return end
 	local used = {}

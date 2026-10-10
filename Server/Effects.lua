@@ -66,15 +66,178 @@ end
 
 -- 적 탄: 서버는 숫자(위치)로만 움직이고 부품은 만들지 않는다. 반환값은 { Position, Destroy() } 인 가벼운 표.
 -- 서버가 Position 을 옮기며 충돌을 계산하고, 클라이언트는 시작 / 끝 두 점 사이를 날아가는 모양만 그린다 (끝나기 전에 Destroy 하면 "X" 로 지운다).
-function Effects.SpawnProjectile(origin, direction, speed, size, color, style, life)
+-- path (선택): 직선이 아닌 움직임을 클라이언트가 같은 식으로 그리게 하는 설명 { "sine", 진폭, 빈도 } / { "curve", 각속도 } / { "lob", 착지점, 높이 } / { "home" }
+-- Destroy(pop): pop 이 true 면 클라이언트가 사라지는 자리에 작은 터짐을 그린다 ("X" 의 3번째 값)
+function Effects.SpawnProjectile(origin, direction, speed, size, color, style, life, path)
 	nextProjectileId += 1
 	local id = nextProjectileId
 	local proxy = { Position = origin, Id = id }
-	function proxy:Destroy()
-		emit(self.Position, { "X", id })
+	function proxy:Destroy(pop)
+		emit(self.Position, { "X", id, pop and 1 or nil })
 	end
-	emit(origin, { "P", id, origin, direction.Unit, speed, size, color, style, life or 5 })
+	emit(origin, { "P", id, origin, direction.Unit, speed, size, color, style, life or 5, path })
 	return proxy
+end
+
+------------------------------------------------------------
+-- 적 탄의 특수 움직임: 유도 / 포물선 / 뱀(사인파) / 휘어지는 초승달 / 갈라지는 탄.
+-- 필드와 던전이 같이 쓴다: 서비스는 MakeShot 으로 탄 데이터를 만들고, 매 프레임 Kind 가 있는 탄만 StepShot 으로 움직인다.
+-- 서버는 숫자만 계산한다. 뱀 / 곡선 / 포물선은 닫힌 식이라 클라이언트가 같은 식으로 그리고, 유도탄만 0.2초마다 "Q" 로 새 방향을 알린다.
+------------------------------------------------------------
+Effects.HomingCap = 6 -- 한 판(던전) / 필드 전체에서 동시에 날아다닐 수 있는 유도탄 수
+
+function Effects.CountKind(list, kind)
+	local n = 0
+	for i = 1, #list do
+		if list[i].Kind == kind then n += 1 end
+	end
+	return n
+end
+
+-- opts: { Kind = "sine"|"curve"|"lob"|"homing"|"split", ... } (없으면 직선탄)
+--   sine   : Amp(진폭 studs, 음수면 반대 위상), Freq(rad/s)
+--   curve  : W(rad/s, 양수 = rotateY(+) 방향으로 휘어진다)
+--   lob    : Target(착지점 Vector3), Dur(비행 초), Height(포물선 높이), AoE(폭발 반지름)
+--   homing : Turn(rad/s), Life(초)
+--   split  : SplitTime(초), Child = { Count, Spread(도), Speed, Damage, Size, Color, Style }
+-- list: 이 서비스의 탄 목록 (유도탄 상한 확인용). 돌려주는 값: 목록에 넣을 탄 데이터
+function Effects.MakeShot(list, origin, direction, speed, damage, size, color, style, opts)
+	local now = os.clock()
+	local dir = direction.Magnitude > 0.001 and direction.Unit or Vector3.new(0, 0, -1)
+	local kind = opts and opts.Kind
+	if kind == "homing" and Effects.CountKind(list, "homing") >= Effects.HomingCap then
+		kind, opts = nil, nil -- 상한: 평범한 직선 구슬로 바꾼다
+		style = "Orb"
+	end
+	local life = 5
+	local entry = { Direction = dir, Speed = speed, Damage = damage, Radius = size / 2 }
+	local path
+	if kind then
+		entry.Kind, entry.Origin, entry.Dir0, entry.T0 = kind, origin, dir, now
+		life = opts.Life or life -- 수명(초): 휘어 도는 탄이 필드를 오래 떠돌지 않게
+		if kind == "sine" then
+			local side = Vector3.new(-dir.Z, 0, dir.X)
+			entry.Side = side.Magnitude > 0.01 and side.Unit or Vector3.xAxis
+			entry.Amp, entry.Freq = opts.Amp or 7, opts.Freq or 3.4
+			path = { "sine", entry.Amp, entry.Freq }
+		elseif kind == "curve" then
+			entry.W = (opts.W and opts.W ~= 0) and opts.W or 0.8
+			path = { "curve", entry.W }
+		elseif kind == "lob" then
+			entry.Target, entry.Dur, entry.Height, entry.AoE, entry.Color = opts.Target, opts.Dur or 1.8, opts.Height or 16, opts.AoE or 8, color
+			entry.Flies = true -- 날아가는 동안은 벽 / 플레이어에 닿지 않는다 (착지할 때만 피해)
+			life = entry.Dur + 0.05
+			path = { "lob", entry.Target, entry.Height }
+		elseif kind == "homing" then
+			entry.Turn, entry.NextQ, entry.NextPick = opts.Turn or 1.75, now + 0.2, 0
+			life = opts.Life or 3.5
+			path = { "home" }
+		elseif kind == "split" then
+			entry.SplitAt, entry.Child = now + (opts.SplitTime or 0.6), opts.Child
+			life = (opts.SplitTime or 0.6) + 0.4
+		end
+	end
+	entry.Expire = now + life
+	entry.Part = Effects.SpawnProjectile(origin, dir, speed, size, color, style, life, path)
+	return entry
+end
+
+-- 특수 탄 한 프레임: 위치를 갱신한다. 돌려주는 값: ended, pop (ended 면 호출한 쪽이 목록에서 지우고 Part:Destroy(pop) 한다)
+-- targets: 살아 있는 플레이어 목록 { Root, Humanoid, Player/Member } (호출한 쪽이 프레임마다 한 번 만든 것을 그대로 쓴다)
+-- queue: 갈라지는 탄이 낳은 새 탄을 담는 표 { origin, direction, speed, damage, size, color, style } - 반복이 끝난 뒤에 호출한 쪽이 쏜다
+function Effects.StepShot(p, dt, now, targets, queue)
+	local kind = p.Kind
+	local proxy = p.Part
+	if kind == "sine" then
+		local t = now - p.T0
+		proxy.Position = p.Origin + p.Dir0 * (p.Speed * t) + p.Side * (p.Amp * math.sin(p.Freq * t))
+	elseif kind == "curve" then
+		local t, w, d = now - p.T0, p.W, p.Dir0
+		local fx, fz = d.X, d.Z
+		local k = p.Speed / w
+		local s, c = math.sin(w * t), 1 - math.cos(w * t)
+		proxy.Position = Vector3.new(p.Origin.X + (fx * s + fz * c) * k, p.Origin.Y + d.Y * p.Speed * t, p.Origin.Z + (fz * s - fx * c) * k)
+	elseif kind == "homing" then
+		local pos = proxy.Position
+		if now > p.Expire then -- 수명이 끝나면 그 자리에서 터진다
+			Effects.Burst(pos, Color3.fromRGB(255, 170, 90), 14)
+			return true, true
+		end
+		if now >= p.NextPick then -- 가장 가까운 플레이어를 0.4초마다 다시 고른다 (전체 검색 없이 이미 만든 목록만 훑는다)
+			p.NextPick = now + 0.4
+			local best, bestDist = nil, math.huge
+			for i = 1, #targets do
+				local entry = targets[i]
+				if entry.Humanoid.Health > 0 then
+					local dist = (entry.Root.Position - pos).Magnitude
+					if dist < bestDist then best, bestDist = entry, dist end
+				end
+			end
+			p.Target = best
+		end
+		local target = p.Target
+		if target and target.Root.Parent then
+			local to = target.Root.Position - pos
+			local dist = to.Magnitude
+			if dist > 8 then -- 바로 앞까지 오면 더 꺾지 않는다: 옆으로 피할 수 있다
+				local desired = to / dist
+				local dir = p.Direction
+				local angle = math.acos(math.clamp(dir:Dot(desired), -1, 1))
+				local maxStep = p.Turn * dt
+				local turned = angle <= maxStep and desired or (dir + (desired - dir) * (maxStep / angle))
+				if turned.Magnitude > 0.001 then p.Direction = turned.Unit end
+			end
+		end
+		proxy.Position = pos + p.Direction * p.Speed * dt
+		if now >= p.NextQ then
+			p.NextQ = now + 0.2
+			emit(proxy.Position, { "Q", proxy.Id, proxy.Position, p.Direction, p.Speed })
+		end
+	elseif kind == "lob" then
+		local u = (now - p.T0) / p.Dur
+		if u >= 1 then
+			local ground = p.Target
+			proxy.Position = ground
+			local aoe = p.AoE
+			for i = 1, #targets do
+				local entry = targets[i]
+				if entry.Humanoid.Health > 0 then
+					local rp = entry.Root.Position
+					if Vector3.new(rp.X - ground.X, 0, rp.Z - ground.Z).Magnitude <= aoe and rp.Y - ground.Y < 8 then
+						local who = entry.Player or entry.Member
+						entry.Humanoid:TakeDamage((who and who:GetAttribute("TutorialDoom")) and math.max(1, math.floor(p.Damage * 0.5)) or p.Damage)
+					end
+				end
+			end
+			local color = p.Color or Color3.fromRGB(255, 160, 80)
+			Effects.Burst(ground + Vector3.new(0, 1.5, 0), color, 26)
+			emit(ground, { "R", ground, aoe, color })
+			return true, false
+		end
+		proxy.Position = p.Origin:Lerp(p.Target, u) + Vector3.new(0, p.Height * 4 * u * (1 - u), 0)
+	elseif kind == "split" then
+		local pos = proxy.Position + p.Direction * p.Speed * dt
+		proxy.Position = pos
+		if now >= p.SplitAt then
+			local child = p.Child
+			local n = child.Count
+			for i = 1, n do
+				queue[#queue + 1] = {
+					pos, CFrame.Angles(0, math.rad((i - (n + 1) / 2) * child.Spread), 0):VectorToWorldSpace(p.Direction),
+					child.Speed, child.Damage, child.Size, child.Color, child.Style,
+				}
+			end
+			return true, true
+		end
+	else
+		proxy.Position += p.Direction * p.Speed * dt
+	end
+	return false, false
+end
+
+-- 땅 위 경고 표시 { "W", 위치, 반지름, 지속 초, 색 }: 착탄 지점 / 위험 구역을 클라이언트가 그린다
+function Effects.Warn(position, radius, duration, color)
+	emit(position, { "W", position, radius, duration, color })
 end
 
 -- 거대한 군주 외형(뿔 / 날개 / 꼬리 / 눈). 던전 보스와 필드 구역 보스가 같이 쓴다

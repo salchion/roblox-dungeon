@@ -11,7 +11,7 @@
 -- 사용: MonsterTypes.Build(...) 로 몸체를 만들고, 매 프레임 MonsterTypes.Update(ctx, part, data, dt, now) 를 부른다.
 -- ctx 는 던전/필드가 각자 만들어 주는 "환경" 이다:
 --   ctx.GetTarget(position) -> root, distance     가장 가까운 타겟 플레이어
---   ctx.Fire(origin, direction, speed, damage, size, color)
+--   ctx.Fire(origin, direction, speed, damage, size, color, style, opts)   opts: 유도 / 포물선 / 뱀 / 곡선 / 갈라짐 (Effects.MakeShot 참고)
 --   ctx.Players() -> { { Root, Humanoid }... }    맞을 수 있는 살아 있는 플레이어들
 --   ctx.Alive(part, data) -> bool                 이 몬스터가 아직 살아 있는가
 --   ctx.Kill(part, data)                          보상 없이 제거 (자폭용)
@@ -28,27 +28,27 @@ local M = {}
 M.Defs = {
 	Slime = {
 		Name = "슬라임", Shape = "Ball", Color = Color3.fromRGB(110, 205, 95), Material = Enum.Material.Glass, Transparency = 0.1,
-		SizeMult = 1, SpeedMult = 1, HealthMult = 1, DamageMult = 1, IntervalMult = 1, ShotSpeedMult = 1, GoldMult = 1,
+		SizeMult = 1, SpeedMult = 1, HealthMult = 1, DamageMult = 1.2, IntervalMult = 1, ShotSpeedMult = 0.9, GoldMult = 1,
 		Attack = "Single", Move = "Approach", Keep = 14, Range = 75,
 	},
 	Spitter = {
 		Name = "가시 독충", Shape = "Ball", Color = Color3.fromRGB(165, 80, 215), Material = Enum.Material.SmoothPlastic,
-		SizeMult = 0.95, SpeedMult = 1.1, HealthMult = 0.9, DamageMult = 0.7, IntervalMult = 1.3, ShotSpeedMult = 1, GoldMult = 1.1,
-		Attack = "Fan", Style = "Shard", Move = "Approach", Keep = 20, Range = 85, Spikes = true,
+		SizeMult = 0.95, SpeedMult = 1.1, HealthMult = 0.9, DamageMult = 0.85, IntervalMult = 1.3, ShotSpeedMult = 0.9, GoldMult = 1.1,
+		Attack = "Spit", Style = "Needle", Move = "Approach", Keep = 20, Range = 85, Spikes = true,
 	},
 	Bat = {
 		Name = "박쥐", Shape = "Ball", Color = Color3.fromRGB(85, 60, 120), Material = Enum.Material.SmoothPlastic,
-		SizeMult = 0.6, SpeedMult = 2.2, HealthMult = 0.55, DamageMult = 0.6, IntervalMult = 0.7, ShotSpeedMult = 1.3, GoldMult = 0.9,
-		Attack = "Burst", Style = "Dart", Move = "Hover", Keep = 16, Range = 70, Wings = true,
+		SizeMult = 0.6, SpeedMult = 2.2, HealthMult = 0.55, DamageMult = 0.75, IntervalMult = 0.8, ShotSpeedMult = 1.1, GoldMult = 0.9,
+		Attack = "Crescent", Style = "Crescent", Move = "Hover", Keep = 16, Range = 70, Wings = true,
 	},
 	Mage = {
 		Name = "마법사 유령", Shape = "Ball", Color = Color3.fromRGB(115, 185, 225), Material = Enum.Material.Neon, Transparency = 0.25,
-		SizeMult = 0.9, SpeedMult = 0.9, HealthMult = 0.8, DamageMult = 0.7, IntervalMult = 2.4, ShotSpeedMult = 0.8, GoldMult = 1.4,
-		Attack = "Mortar", Move = "Keep", Keep = 30, Range = 95, Halo = true,
+		SizeMult = 0.9, SpeedMult = 0.9, HealthMult = 0.8, DamageMult = 0.85, IntervalMult = 2.4, ShotSpeedMult = 0.7, GoldMult = 1.4,
+		Attack = "Seeker", Style = "Seeker", Move = "Keep", Keep = 30, Range = 95, Halo = true,
 	},
 	Golem = {
 		Name = "바위 골렘", Shape = "Block", Color = Color3.fromRGB(125, 120, 115), Material = Enum.Material.Slate,
-		SizeMult = 1.3, SpeedMult = 0.5, HealthMult = 2.2, DamageMult = 1.8, IntervalMult = 1.8, ShotSpeedMult = 0.55, GoldMult = 1.7,
+		SizeMult = 1.3, SpeedMult = 0.5, HealthMult = 2.2, DamageMult = 2.1, IntervalMult = 1.8, ShotSpeedMult = 0.55, GoldMult = 1.7,
 		Attack = "Slam", Move = "Approach", Keep = 12, Range = 80, Core = true,
 	},
 	Charger = {
@@ -64,28 +64,28 @@ M.Defs = {
 	-- ===== 신규 몬스터 =====
 	Imp = {
 		Name = "저격 임프", Shape = "Ball", Color = Color3.fromRGB(200, 60, 90), Material = Enum.Material.SmoothPlastic,
-		SizeMult = 0.7, SpeedMult = 0.9, HealthMult = 0.6, DamageMult = 1.3, IntervalMult = 1.6, ShotSpeedMult = 2.6, GoldMult = 1.3,
-		Attack = "Single", Style = "Spear", Move = "Keep", Keep = 55, Range = 130, Horns = true,
+		SizeMult = 0.7, SpeedMult = 0.9, HealthMult = 0.6, DamageMult = 1.55, IntervalMult = 1.6, ShotSpeedMult = 2.2, GoldMult = 1.3,
+		Attack = "Split", Style = "Spear", Move = "Keep", Keep = 55, Range = 130, Horns = true,
 	},
 	Knight = {
 		Name = "방패 기사", Shape = "Block", Color = Color3.fromRGB(120, 140, 175), Material = Enum.Material.Metal,
-		SizeMult = 1.15, SpeedMult = 0.7, HealthMult = 2.6, DamageMult = 1.1, IntervalMult = 1.4, ShotSpeedMult = 0.9, GoldMult = 1.8,
-		Attack = "Fan", Style = "Spear", Move = "Approach", Keep = 8, Range = 60, Shield = true,
+		SizeMult = 1.15, SpeedMult = 0.7, HealthMult = 2.6, DamageMult = 1.3, IntervalMult = 1.4, ShotSpeedMult = 0.8, GoldMult = 1.8,
+		Attack = "Sword", Style = "Spear", Move = "Approach", Keep = 8, Range = 60, Shield = true,
 	},
 	Turret = {
 		Name = "마법 포탑", Shape = "Block", Color = Color3.fromRGB(90, 95, 110), Material = Enum.Material.Metal,
-		SizeMult = 1.0, SpeedMult = 0, HealthMult = 1.7, DamageMult = 1.0, IntervalMult = 0.8, ShotSpeedMult = 1.2, GoldMult = 1.4,
-		Attack = "Beam", Move = "Static", Keep = 0, Range = 110, Barrel = true,
+		SizeMult = 1.0, SpeedMult = 0, HealthMult = 1.7, DamageMult = 1.2, IntervalMult = 0.8, ShotSpeedMult = 1.0, GoldMult = 1.4,
+		Attack = "Beam", Style = "Needle", Move = "Static", Keep = 0, Range = 110, Barrel = true,
 	},
 	Spider = {
 		Name = "독거미", Shape = "Ball", Color = Color3.fromRGB(60, 50, 60), Material = Enum.Material.SmoothPlastic,
-		SizeMult = 0.75, SpeedMult = 1.9, HealthMult = 0.8, DamageMult = 0.8, IntervalMult = 0.6, ShotSpeedMult = 1.2, GoldMult = 1.0,
+		SizeMult = 0.75, SpeedMult = 1.9, HealthMult = 0.8, DamageMult = 0.95, IntervalMult = 0.7, ShotSpeedMult = 1.1, GoldMult = 1.0,
 		Attack = "Burst", Style = "Dart", Move = "Rush", Keep = 0, Range = 45, Legs = true,
 	},
 	Wisp = {
 		Name = "도깨비불", Shape = "Ball", Color = Color3.fromRGB(95, 215, 170), Material = Enum.Material.Neon, Transparency = 0.3,
-		SizeMult = 0.55, SpeedMult = 2.4, HealthMult = 0.45, DamageMult = 0.7, IntervalMult = 0.9, ShotSpeedMult = 1.4, GoldMult = 1.1,
-		Attack = "Burst", Style = "Orb", Move = "Hover", Keep = 22, Range = 80, Flame = true,
+		SizeMult = 0.55, SpeedMult = 2.4, HealthMult = 0.45, DamageMult = 0.85, IntervalMult = 1.0, ShotSpeedMult = 1.1, GoldMult = 1.1,
+		Attack = "Halo", Style = "Halo", Move = "Hover", Keep = 22, Range = 80, Flame = true,
 	},
 	Healer = {
 		Name = "치유 사제", Shape = "Ball", Color = Color3.fromRGB(120, 205, 150), Material = Enum.Material.Neon, Transparency = 0.2,
@@ -94,8 +94,8 @@ M.Defs = {
 	},
 	Totem = {
 		Name = "저주 토템", Shape = "Block", Color = Color3.fromRGB(130, 90, 60), Material = Enum.Material.Wood,
-		SizeMult = 1.2, SpeedMult = 0, HealthMult = 2.2, DamageMult = 0.9, IntervalMult = 1.8, ShotSpeedMult = 0.7, GoldMult = 1.8,
-		Attack = "Ring", Move = "Static", Keep = 0, Range = 100, Totem = true,
+		SizeMult = 1.2, SpeedMult = 0, HealthMult = 2.2, DamageMult = 1.1, IntervalMult = 1.8, ShotSpeedMult = 0.7, GoldMult = 1.8,
+		Attack = "Ring", Style = "Crystal", Move = "Static", Keep = 0, Range = 100, Totem = true,
 	},
 }
 
@@ -477,12 +477,13 @@ end
 -- 빙빙 돌며 피하는 플레이도 맞도록: 정면 탄 옆으로 양쪽 "옆 탄"을 같이 쏜다.
 -- 가만히 서 있으면 옆 탄은 몸 옆을 스치고(정면만 피하면 됨), 옆으로 돌며 달리면 옆 탄이 길목을 막는다.
 local FLANK_ANGLE = 13
-local function fireFlanked(ctx, part, target, speed, damage, size, color, style)
+-- (탄 수를 줄이려고) noFlank 가 true 면 정면 한 발만 쏜다: 호출하는 쪽이 두 번에 한 번만 옆 탄을 붙인다
+local function fireFlanked(ctx, part, target, speed, damage, size, color, style, noFlank)
 	local aim = target.Position - part.Position
 	if aim.Magnitude < 0.1 then return end
 	aim = aim.Unit
 	ctx.Fire(part.Position, aim, speed, damage, size, color, style)
-	if (target.Position - part.Position).Magnitude < 10 then return end -- 너무 가까우면 옆 탄은 의미 없다
+	if noFlank or (target.Position - part.Position).Magnitude < 10 then return end -- 너무 가까우면 옆 탄은 의미 없다
 	local sideDamage = math.max(1, math.floor(damage * 0.7))
 	for _, angle in ipairs({ -FLANK_ANGLE, FLANK_ANGLE }) do
 		ctx.Fire(part.Position, rotateY(aim, angle), speed, sideDamage, size * 0.85, color, style)
@@ -820,10 +821,137 @@ function M.Update(ctx, part, data, dt, now)
 	data.NextAttack = now + stats.ShotInterval
 
 	if def.Attack == "Single" then
+		data.ShotN = (data.ShotN or 0) + 1
+		local noFlank = data.ShotN % 2 == 1 -- 옆 탄은 두 번에 한 번만
 		telegraph(ctx, part, data, Color3.fromRGB(255, 220, 80), 0.4, function()
 			local current = ctx.GetTarget(part.Position)
 			if current then
-				fireFlanked(ctx, part, current, stats.ShotSpeed, stats.ShotDamage, math.max(1.5, stats.Size / 4), nil, def.Style)
+				fireFlanked(ctx, part, current, stats.ShotSpeed, stats.ShotDamage, math.max(1.5, stats.Size / 4), nil, def.Style, noFlank)
+			end
+		end)
+
+	elseif def.Attack == "Spit" then
+		-- 가시 독충: 좌우로 꿈틀대는 뱀 탄 두 줄(반대 위상) / 바늘 두 묶음을 번갈아 쏜다
+		data.ShotN = (data.ShotN or 0) + 1
+		local snake = data.ShotN % 2 == 1
+		telegraph(ctx, part, data, Color3.fromRGB(215, 190, 255), 0.45, function()
+			local current = ctx.GetTarget(part.Position)
+			if not current then return end
+			local aim = (current.Position - part.Position).Unit
+			local size = math.max(1.4, stats.Size / 3.6)
+			if snake then
+				for _, sign in ipairs({ 1, -1 }) do
+					ctx.Fire(part.Position, aim, stats.ShotSpeed * 0.8, stats.ShotDamage, size, Color3.fromRGB(165, 205, 90), "Snake", { Kind = "sine", Amp = 7 * sign, Freq = 3.4, Life = 3.5 })
+				end
+			else
+				for _, angle in ipairs({ -9, 9 }) do
+					ctx.Fire(part.Position, rotateY(aim, angle), stats.ShotSpeed * 1.1, stats.ShotDamage, size, Color3.fromRGB(205, 150, 235), "Needle")
+				end
+			end
+		end)
+
+	elseif def.Attack == "Crescent" then
+		-- 박쥐: 좌우에서 휘어 들어오는 초승달 한 쌍 (집게처럼 모인다). 세 번에 한 번은 빠른 표창 두 발.
+		data.ShotN = (data.ShotN or 0) + 1
+		local darts = data.ShotN % 3 == 0
+		telegraph(ctx, part, data, Color3.fromRGB(255, 220, 80), 0.3, function()
+			local current = ctx.GetTarget(part.Position)
+			if not current then return end
+			local aim = (current.Position - part.Position).Unit
+			local size = math.max(1.4, stats.Size / 3)
+			if darts then
+				for i = 0, 1 do
+					task.delay(i * 0.15, function()
+						if not ctx.Alive(part, data) then return end
+						local now2 = ctx.GetTarget(part.Position)
+						if now2 then
+							ctx.Fire(part.Position, (now2.Position - part.Position).Unit, stats.ShotSpeed * 1.2, stats.ShotDamage, size * 0.8, Color3.fromRGB(150, 120, 200), "Dart")
+						end
+					end)
+				end
+			else
+				for _, sign in ipairs({ 1, -1 }) do
+					ctx.Fire(part.Position, rotateY(aim, sign * 26), stats.ShotSpeed * 0.85, stats.ShotDamage, size, Color3.fromRGB(175, 145, 225), "Crescent", { Kind = "curve", W = -sign * 1.0, Life = 2.6 })
+				end
+			end
+		end)
+
+	elseif def.Attack == "Seeker" then
+		-- 마법사 유령: 느리게 꺾으며 쫓아오는 유도 구슬 한 발. 두 번에 한 번은 운석 두 개도 같이 떨어뜨린다.
+		data.ShotN = (data.ShotN or 0) + 1
+		local withMeteor = data.ShotN % 2 == 0
+		telegraph(ctx, part, data, Color3.fromRGB(255, 140, 90), 0.55, function()
+			local current = ctx.GetTarget(part.Position)
+			if not current then return end
+			local gentle = data.Zone == 1 -- 1구역은 더 느리게 꺾는다
+			ctx.Fire(part.Position + Vector3.new(0, 1.5, 0), (current.Position - part.Position).Unit, stats.ShotSpeed * (gentle and 0.75 or 0.9), math.floor(stats.ShotDamage * 1.1), 2.3, Color3.fromRGB(135, 190, 235), "Seeker",
+				{ Kind = "homing", Turn = gentle and 0.9 or 1.6, Life = 3.5 })
+			if withMeteor then
+				for i = 0, 1 do
+					task.delay(0.4 + i * 0.4, function()
+						if not ctx.Alive(part, data) then return end
+						local c2 = ctx.GetTarget(part.Position)
+						if not c2 then return end
+						meteor(ctx, c2.Position + Vector3.new((math.random() - 0.5) * 16, 0, (math.random() - 0.5) * 16), stats)
+					end)
+				end
+			end
+		end)
+
+	elseif def.Attack == "Split" then
+		-- 저격 임프: 날다가 목표 앞에서 세 갈래 표창으로 갈라지는 창
+		telegraph(ctx, part, data, Color3.fromRGB(255, 120, 150), 0.5, function()
+			local current = ctx.GetTarget(part.Position)
+			if not current then return end
+			local delta = current.Position - part.Position
+			local aim = delta.Unit
+			local speed = stats.ShotSpeed
+			local splitTime = math.clamp(0.55 * delta.Magnitude / speed, 0.4, 0.9)
+			ctx.Fire(part.Position, aim, speed, math.floor(stats.ShotDamage * 0.8), math.max(1.6, stats.Size / 3.5), Color3.fromRGB(235, 120, 150), "Spear", {
+				Kind = "split", SplitTime = splitTime,
+				Child = { Count = 3, Spread = 11, Speed = speed * 0.8, Damage = math.max(1, math.floor(stats.ShotDamage * 0.55)), Size = math.max(1.2, stats.Size / 4.5), Color = Color3.fromRGB(235, 140, 160), Style = "Dart" },
+			})
+		end)
+
+	elseif def.Attack == "Sword" then
+		-- 방패 기사: 창 두 자루 / 커다란 검기(초승달) 한 번을 번갈아
+		data.ShotN = (data.ShotN or 0) + 1
+		local wave = data.ShotN % 2 == 0
+		telegraph(ctx, part, data, Color3.fromRGB(255, 200, 255), 0.5, function()
+			local current = ctx.GetTarget(part.Position)
+			if not current then return end
+			local aim = (current.Position - part.Position).Unit
+			if wave then
+				ctx.Fire(part.Position, aim, stats.ShotSpeed * 0.75, math.floor(stats.ShotDamage * 1.2), math.max(2.6, stats.Size / 2.4), Color3.fromRGB(190, 205, 235), "Crescent")
+			else
+				for _, angle in ipairs({ -9, 9 }) do
+					ctx.Fire(part.Position, rotateY(aim, angle), stats.ShotSpeed, stats.ShotDamage, math.max(1.3, stats.Size / 4), Color3.fromRGB(190, 205, 235), "Spear")
+				end
+			end
+		end)
+
+	elseif def.Attack == "Halo" then
+		-- 도깨비불: 후광 고리 두 개를 연달아 (두 번째는 새로 조준). 세 번에 한 번은 살짝 휘는 세 갈래.
+		data.ShotN = (data.ShotN or 0) + 1
+		local swirl = data.ShotN % 3 == 0
+		telegraph(ctx, part, data, Color3.fromRGB(190, 255, 235), 0.35, function()
+			for i = 0, 1 do
+				task.delay(i * 0.25, function()
+					if not ctx.Alive(part, data) then return end
+					local current = ctx.GetTarget(part.Position)
+					if not current then return end
+					local aim = (current.Position - part.Position).Unit
+					local size = math.max(1.6, stats.Size / 2.6)
+					if swirl then
+						if i == 0 then
+							for _, sign in ipairs({ -1, 1 }) do
+								ctx.Fire(part.Position, rotateY(aim, sign * 14), stats.ShotSpeed * 0.7, stats.ShotDamage, size, Color3.fromRGB(110, 215, 185), "Halo", { Kind = "curve", W = -sign * 0.5, Life = 3 })
+							end
+						end
+					else
+						ctx.Fire(part.Position, aim, stats.ShotSpeed * 0.75, stats.ShotDamage, size, Color3.fromRGB(110, 215, 185), "Halo")
+					end
+				end)
 			end
 		end)
 
@@ -832,19 +960,22 @@ function M.Update(ctx, part, data, dt, now)
 			local current = ctx.GetTarget(part.Position)
 			if not current then return end
 			local aim = (current.Position - part.Position).Unit
-			for _, angle in ipairs({ -15, 0, 15 }) do
+			for _, angle in ipairs({ -10, 10 }) do
 				ctx.Fire(part.Position, rotateY(aim, angle), stats.ShotSpeed, stats.ShotDamage, math.max(1.3, stats.Size / 4), Color3.fromRGB(210, 120, 255), def.Style)
 			end
 		end)
 
 	elseif def.Attack == "Ring" then
+		-- 저주 토템: 수정 6개의 고리. 매번 바람개비처럼 휘어 돈다 (방향은 번갈아). 8 -> 6발, 더 느리게.
+		data.ShotN = (data.ShotN or 0) + 1
+		local bend = (data.ShotN % 2 == 0) and 0.35 or -0.35
 		telegraph(ctx, part, data, Color3.new(1, 1, 1), 0.6, function()
 			local offset = math.random() * math.pi * 2
-			for i = 0, 7 do
-				local angle = offset + (i / 8) * math.pi * 2
+			for i = 0, 5 do
+				local angle = offset + (i / 6) * math.pi * 2
 				local ringDirection = Vector3.new(math.cos(angle), 0, math.sin(angle))
 				local origin = Vector3.new(part.Position.X, (ctx.GroundY and ctx.GroundY(part.Position.X, part.Position.Z, part.Position.Y) or ctx.FloorY) + 3, part.Position.Z) + ringDirection * (stats.Size / 2 + 1)
-				ctx.Fire(origin, ringDirection, 26, math.max(1, math.floor(stats.ShotDamage * 0.8)), 2, Color3.fromRGB(150, 235, 255))
+				ctx.Fire(origin, ringDirection, 21, math.max(1, math.floor(stats.ShotDamage * 0.8)), 2.3, Color3.fromRGB(135, 215, 235), "Crystal", { Kind = "curve", W = bend, Life = 3.5 })
 			end
 		end)
 
@@ -858,12 +989,12 @@ function M.Update(ctx, part, data, dt, now)
 
 	elseif def.Attack == "Burst" then
 		telegraph(ctx, part, data, Color3.fromRGB(255, 220, 80), 0.3, function()
-			for i = 0, 2 do
-				task.delay(i * 0.13, function()
+			for i = 0, 1 do -- 3연발 -> 2연발
+				task.delay(i * 0.16, function()
 					if not ctx.Alive(part, data) then return end
 					local current = ctx.GetTarget(part.Position)
 					if current then
-						ctx.Fire(part.Position, rotateY((current.Position - part.Position).Unit, (i - 1) * 9), stats.ShotSpeed * 1.25, math.max(1, math.floor(stats.ShotDamage * 0.7)), math.max(1.2, stats.Size / 4), nil, def.Style)
+						ctx.Fire(part.Position, rotateY((current.Position - part.Position).Unit, (i - 0.5) * 12), stats.ShotSpeed * 1.1, math.max(1, math.floor(stats.ShotDamage * 0.85)), math.max(1.2, stats.Size / 4), Color3.fromRGB(150, 120, 190), def.Style)
 					end
 				end)
 			end
@@ -884,10 +1015,22 @@ function M.Update(ctx, part, data, dt, now)
 
 	elseif def.Attack == "Slam" then
 		if distance > 34 then
+			-- 바위 골렘: 멀리서는 포물선으로 던지는 폭탄 두 개 (착지 지점에 경고 표시, 작은 범위 폭발). 직선 대포 3발보다 훨씬 읽기 쉽다.
 			telegraph(ctx, part, data, Color3.fromRGB(255, 150, 60), 0.7, function()
-				local current = ctx.GetTarget(part.Position)
-				if current then
-					fireFlanked(ctx, part, current, stats.ShotSpeed, stats.ShotDamage, math.max(3.5, stats.Size / 2.5), Color3.fromRGB(255, 130, 40))
+				for i = 0, 1 do
+					task.delay(i * 0.45, function()
+						if not ctx.Alive(part, data) then return end
+						local current = ctx.GetTarget(part.Position)
+						if not current then return end
+						local landing = current.Position + Vector3.new((math.random() - 0.5) * (i == 0 and 4 or 16), -2.8, (math.random() - 0.5) * (i == 0 and 4 or 16))
+						local reach = flat(landing - part.Position).Magnitude
+						local dur = math.clamp(reach / math.max(stats.ShotSpeed, 12), 1.3, 2.4)
+						local aoe = 8
+						local color = Color3.fromRGB(235, 140, 70)
+						Effects.Warn(landing, aoe, dur, color)
+						ctx.Fire(part.Position + Vector3.new(0, stats.Size * 0.4, 0), flat(landing - part.Position), stats.ShotSpeed, stats.ShotDamage, 3.4, color, "Bomb",
+							{ Kind = "lob", Target = landing, Dur = dur, Height = 9 + reach * 0.22, AoE = aoe })
+					end)
 				end
 			end)
 		else
@@ -897,8 +1040,25 @@ function M.Update(ctx, part, data, dt, now)
 		end
 
 	elseif def.Attack == "Beam" then
-		data.NextAttack = now + stats.ShotInterval * 2
-		laser(ctx, part, data, stats, direction, def.Range)
+		-- 마법 포탑: 레이저 선과 바늘 연발을 번갈아 쏜다
+		data.ShotN = (data.ShotN or 0) + 1
+		if data.ShotN % 2 == 0 then
+			data.NextAttack = now + stats.ShotInterval * 1.4
+			telegraph(ctx, part, data, Color3.fromRGB(190, 170, 255), 0.4, function()
+				for i = 0, 2 do
+					task.delay(i * 0.2, function()
+						if not ctx.Alive(part, data) then return end
+						local current = ctx.GetTarget(part.Position)
+						if current then
+							ctx.Fire(part.Position + Vector3.new(0, stats.Size * 0.2, 0), rotateY((current.Position - part.Position).Unit, (i - 1) * 7), stats.ShotSpeed * 1.5, stats.ShotDamage, 1.8, Color3.fromRGB(190, 170, 240), "Needle")
+						end
+					end)
+				end
+			end)
+		else
+			data.NextAttack = now + stats.ShotInterval * 2
+			laser(ctx, part, data, stats, direction, def.Range)
+		end
 
 	elseif def.Attack == "Charge" then
 		data.NextAttack = now + 4
