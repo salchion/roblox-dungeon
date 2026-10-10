@@ -1367,23 +1367,23 @@ local bossName = makeLabel({
 }, bossBar)
 
 local statPanel = makePanel({
-	Name = "StatPanel", Size = UDim2.new(0, 380, 0, 170), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 16, 1, -16),
+	Name = "StatPanel", Size = UDim2.new(0, 270, 0, 84), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 16, 1, -16),
 }, dungeonFrame)
 
 local statPoints = makeLabel({
-	Size = UDim2.new(1, -20, 0, 28), Position = UDim2.new(0, 10, 0, 8),
-	Font = Enum.Font.GothamBlack, TextSize = 19, TextXAlignment = Enum.TextXAlignment.Left,
+	Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 5),
+	Font = Enum.Font.GothamBlack, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left,
 }, statPanel)
 
 local perkSummary = makeLabel({
-	Size = UDim2.new(1, -20, 0, 40), Position = UDim2.new(0, 10, 0, 40),
+	Size = UDim2.new(1, -20, 0, 32), Position = UDim2.new(0, 10, 0, 23),
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
-	TextSize = 13, RichText = true, TextColor3 = Color3.fromRGB(200, 200, 220),
+	TextSize = 12, TextWrapped = true, RichText = true, TextColor3 = Color3.fromRGB(200, 200, 220),
 }, statPanel)
 
 makeButton({
-	Size = UDim2.new(1, -20, 0, 24), Position = UDim2.new(0, 10, 1, -30),
-	Text = "던전 나가기", TextSize = 13, BackgroundColor3 = GRAY,
+	Size = UDim2.new(1, -20, 0, 20), Position = UDim2.new(0, 10, 1, -24),
+	Text = "던전 나가기", TextSize = 12, BackgroundColor3 = GRAY,
 }, statPanel, function()
 	Remotes.Dungeon:FireServer("Leave")
 end)
@@ -1511,7 +1511,7 @@ task.spawn(function()
 end)
 
 local function refreshStats()
-	statPoints.Text = "특성 (던전 동안만 유지)"
+	statPoints.Text = "특성 (이번 던전만)"
 	statPoints.TextColor3 = Color3.new(1, 1, 1)
 
 	local parts = {}
@@ -1522,7 +1522,7 @@ local function refreshStats()
 			table.insert(parts, string.format("%s%s %d", perk.Icon, perk.Name, stacks))
 		end
 	end
-	perkSummary.Text = #parts > 0 and ("내 특성: " .. table.concat(parts, "  ·  ")) or "내 특성: 아직 없음"
+	perkSummary.Text = #parts > 0 and ("" .. table.concat(parts, " · ")) or "아직 없음"
 end
 
 local function refreshBanner()
