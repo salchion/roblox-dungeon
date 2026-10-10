@@ -142,6 +142,44 @@ function Showcase.Init(_boardCFrame)
 		lip.Color = color
 		lip.Material = Enum.Material.Neon
 		lip.Parent = folder
+		-- 스포트라이트: 받침대 위로 쏟아지는 은은한 빛기둥 + 반짝이는 금가루 ("저 자리에 서고 싶다")
+		local beam = Instance.new("Part")
+		beam.Name = "Spotlight" .. rank
+		beam.Anchored = true
+		beam.CanCollide = false
+		beam.CanQuery = false
+		beam.CanTouch = false
+		beam.CastShadow = false
+		beam.Material = Enum.Material.Neon
+		beam.Color = color
+		beam.Transparency = 0.9
+		beam.Size = Vector3.new(15, 36, 9)
+		beam.Position = platform.Position + Vector3.new(0, 18 + 1, 0)
+		beam.Parent = folder
+		local halo = Instance.new("Part") -- 받침대 바닥 후광 (납작한 원판)
+		halo.Anchored = true
+		halo.CanCollide = false
+		halo.CanQuery = false
+		halo.CastShadow = false
+		halo.Shape = Enum.PartType.Cylinder
+		halo.Material = Enum.Material.Neon
+		halo.Color = color
+		halo.Transparency = 0.55
+		halo.Size = Vector3.new(0.2, 15, 15)
+		halo.CFrame = CFrame.new(platform.Position + Vector3.new(0, 1.1, 0)) * CFrame.Angles(0, 0, math.rad(90))
+		halo.Parent = folder
+		local dust = Instance.new("ParticleEmitter")
+		dust.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+		dust.Rate = rank == 1 and 14 or 8
+		dust.Lifetime = NumberRange.new(2.5, 4)
+		dust.Speed = NumberRange.new(1.5, 3.5)
+		dust.EmissionDirection = Enum.NormalId.Top
+		dust.SpreadAngle = Vector2.new(25, 25)
+		dust.LightEmission = 0.8
+		dust.Color = ColorSequence.new(color)
+		dust.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5), NumberSequenceKeypoint.new(1, 0) })
+		dust.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 1) })
+		dust.Parent = halo
 		local glow = Instance.new("PointLight")
 		glow.Range = 45
 		glow.Brightness = 2
@@ -152,7 +190,7 @@ function Showcase.Init(_boardCFrame)
 			Platform = platform, Top = spot, Scale = 2.8, Look = look, Key = nil, Model = nil, Weapon = nil,
 			Label = makeLabel(platform, 27, 75),
 		}
-		slots[rank].Label.Text = MEDAL[rank] .. " 비어 있음"
+		slots[rank].Label.Text = MEDAL[rank] .. " 이 자리의 주인공은?\n<font size='14'>전투력을 올려 서 보세요!</font>"
 	end
 
 	local header = makeLabel(slots[1].Platform, 34, 160) -- 1등 뒷판 위의 큰 머리글
@@ -262,7 +300,7 @@ function Showcase.Refresh()
 			end
 		elseif slot.Key ~= nil then
 			clearSlot(slot)
-			slot.Label.Text = MEDAL[rank] .. " 비어 있음"
+			slot.Label.Text = MEDAL[rank] .. " 이 자리의 주인공은?\n<font size='14'>전투력을 올려 서 보세요!</font>"
 		end
 	end
 end
