@@ -74,7 +74,7 @@ Npc.Init(lobby.DummyStart.Y, { -- 시설마다 NPC 가 서서 말을 건다 (허
 	{ Name = "톰", Title = "🔨 대장장이", Position = promptPosition(lobby.AnvilPrompt), Shirt = Color3.fromRGB(150, 98, 60), Pants = Color3.fromRGB(70, 56, 48), Hat = "cap", Accent = Color3.fromRGB(110, 70, 44), Prop = "hammer",
 		Lines = { "쾅쾅! 무기를 두드려 볼까?", "강화하다 보면 더 강한 무기로 진화해!", "실패해도 단계는 안 내려가니까 걱정 마!" } },
 	{ Name = "루나", Title = "🎰 뽑기 상인", Position = promptPosition(lobby.GachaPrompt), Shirt = Color3.fromRGB(120, 80, 170), Pants = Color3.fromRGB(60, 44, 90), Hat = "wizard", Accent = Color3.fromRGB(150, 100, 210), Prop = "staff",
-		Lines = { "티켓 있어? 행운을 시험해 봐!", "10연 뽑기엔 가끔 좋은 게 숨어 있대.", "세트 장비는 필드에서 모아야 맞출 수 있어!" } },
+		Lines = { "티켓 있어? 행운을 시험해 봐!", "여러 장 뽑기엔 가끔 좋은 게 숨어 있대.", "세트 장비는 필드에서 모아야 맞출 수 있어!" } },
 	{ Name = "카이", Title = "🛡 필드 문지기", Position = promptPosition(lobby.WarpPrompt), Shirt = Color3.fromRGB(110, 120, 140), Pants = Color3.fromRGB(70, 74, 90), Hat = "helmet", Accent = Color3.fromRGB(190, 60, 60), Prop = "spear",
 		Lines = { "필드는 위험해. 군주를 쓰러뜨리면 다음 구역이 열려.", "Q 대시로 탄을 아슬아슬하게 피해 봐!", "준비됐으면 문으로 가!" } },
 	{ Name = "벨", Title = "🗝 던전 안내원", Position = promptPosition(lobby.GatePrompt), Shirt = Color3.fromRGB(70, 110, 100), Pants = Color3.fromRGB(46, 62, 60), Hat = "hood", Accent = Color3.fromRGB(60, 96, 90), Prop = "lantern",
