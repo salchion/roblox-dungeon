@@ -1556,7 +1556,7 @@ end
 function Field.TargetsIn(player, center, radius, limit)
 	if player:GetAttribute("Zone") ~= "Field" then return nil end
 	local list = {}
-	if isSafe(center) then return list end -- 안전지대 안에서는 스킬(데드아이 등)도 적을 잡지 못한다
+	if not player:GetAttribute("InDoomArena") and isSafe(center) then return list end -- 안전지대 안에서는 스킬(데드아이 등)도 적을 잡지 못한다
 	for part in pairs(monsters) do
 		if part.Parent and (part.Position - center).Magnitude <= radius + part.Size.X / 2 and canHitZone(player, part.Position.X) then
 			table.insert(list, part)
@@ -1629,7 +1629,7 @@ function Field.Shoot(player, origin, direction)
 	if player:GetAttribute("Zone") ~= "Field" or not monstersFolder then return nil end
 	-- 안전지대(캠프) 안에서는 사격이 통하지 않는다: 몬스터를 경계에 걸쳐 놓고 안전하게 잡는 꼼수 방지
 	local rootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-	if rootPart and isSafe(rootPart.Position) then
+	if rootPart and not player:GetAttribute("InDoomArena") and isSafe(rootPart.Position) then -- (소환 결투장은 필드 좌표 밖이라 안전지대로 오인되지 않게 제외)
 		if os.clock() - (safeShotWarnAt[player] or 0) > 4 then
 			safeShotWarnAt[player] = os.clock()
 			notify(player, "🛡 안전지대 안에서는 사격이 통하지 않아요! 캠프 밖으로 나가서 싸우세요")
