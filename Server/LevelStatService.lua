@@ -78,7 +78,12 @@ Remotes.LevelStat.OnServerEvent:Connect(function(player, action, key, amount)
 		amount = typeof(amount) == "number" and math.clamp(math.floor(amount), 1, 99) or 1
 		if action == "Add" then
 			local left = Config.GetLevelStatPoints(player:GetAttribute("Level") or 1) - spent(stats)
-			stats[key] += math.min(amount, math.max(0, left))
+			local gained = math.min(amount, math.max(0, left))
+			stats[key] += gained
+			if gained > 0 then
+				local okQ, Quest = pcall(function() return require(script.Parent:WaitForChild("QuestService")) end)
+				if okQ then Quest.Add(player, "StatPoints", gained) end -- 첫날 퀘스트 "스탯 찍기"
+			end
 		else
 			stats[key] = math.max(0, stats[key] - amount)
 		end

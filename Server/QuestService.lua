@@ -14,7 +14,7 @@ local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 
 local Quest = {}
 
-local COUNTERS = { "DummyHits", "FieldKills", "EliteKills", "Kills", "BossKills", "DungeonClears", "Enhances", "Rolls", "GoblinKills", "SkillUses", "FieldDeaths", "Trains", "DungeonWaves", "RiftRuns" }
+local COUNTERS = { "DummyHits", "FieldKills", "EliteKills", "Kills", "BossKills", "DungeonClears", "Enhances", "Rolls", "GoblinKills", "SkillUses", "FieldDeaths", "Trains", "DungeonWaves", "RiftRuns", "StatPoints", "PetPeek" }
 
 -- 카운터가 아니라 플레이어의 현재 값을 읽는 Stat
 local function readLive(player, stat)
@@ -71,9 +71,11 @@ local function todaysQuests(day, player)
 	-- 던전 / 강화 퀘스트는 항상 포함한다 (처음 접속한 날부터 "던전에 가고 장비를 강화한다"가 자연스럽게 눈에 들어오게)
 	local list, used = {}, {}
 	local riftOpen = player == nil or player:GetAttribute("HintDone_FieldClear") == true
+	local firstDay = player ~= nil and player:GetAttribute("LoginStreak") == 1 -- 첫날: 스탯 / 펫이 있다는 걸 퀘스트로 자연스럽게 알려 준다
 	for _, quest in ipairs(Config.Quests.Pool) do
 		if quest.Stat == "RiftRuns" and not riftOpen then used[quest.Id] = true end -- 심연이 열리기 전에는 심연 퀘스트가 나오지 않는다
-		if quest.Always and not used[quest.Id] then
+		if quest.FirstDay and not firstDay then used[quest.Id] = true end -- 첫날 전용 퀘스트는 둘째 날부터 나오지 않는다
+		if (quest.Always or quest.FirstDay) and not used[quest.Id] then
 			table.insert(list, quest)
 			used[quest.Id] = true
 		end

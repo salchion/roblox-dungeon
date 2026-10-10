@@ -1014,6 +1014,9 @@ Config.Quests = {
 		{ Id = "goblin",  Name = "황금 사냥",     Desc = "황금 고블린 %d마리 처치",       Stat = "GoblinKills",   Goal = 1,   Reward = { Gold = 800, Tickets = 1 } },
 		{ Id = "skills",  Name = "스킬 연습",     Desc = "스킬을 %d번 사용하기",          Stat = "SkillUses",     Goal = 20,  Reward = { Gold = 400 } },
 		{ Id = "rift",    Name = "심연 도전",     Desc = "심연 도전(소탕 포함) %d번 하기", Stat = "RiftRuns",      Goal = 2,   Reward = { Gold = 700, TimeSkip = 600 } },
+		-- 첫날 전용 (처음 접속한 날만 나온다): 스탯 / 펫이 있다는 걸 알려 주는 퀘스트
+		{ Id = "statpts", Name = "스탯 찍기",     Desc = "스탯 포인트 %d개 올리기 (T 키 / 스탯 버튼)", Stat = "StatPoints", Goal = 3, Reward = { Gold = 300 }, FirstDay = true },
+		{ Id = "petpeek", Name = "펫 구경",       Desc = "펫 창 열어 보기 (P 키 / 캐릭터 탭)",       Stat = "PetPeek",    Goal = 1, Reward = { Gold = 300, Tickets = 1 }, FirstDay = true },
 		{ Id = "kills",   Name = "몬스터 청소",   Desc = "몬스터 %d마리 처치 (던전 포함)", Stat = "Kills",         Goal = 60,  Reward = { Gold = 500, TimeSkip = 300 } },
 	},
 }

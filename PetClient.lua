@@ -199,6 +199,7 @@ local function toggle(open)
 	panel.Visible = open
 	if open then
 		Remotes.Meta:FireServer("Request")
+		task.delay(0.4, function() Remotes.Meta:FireServer("PetPeek") end) -- (서버가 0.25초에 한 번만 받아서 살짝 늦춰 보낸다)
 		rebuild()
 	end
 end

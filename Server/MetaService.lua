@@ -354,6 +354,9 @@ Remotes.Meta.OnServerEvent:Connect(function(player, action, arg)
 	last[player] = now
 	if action == "Request" then
 		Meta.Push(player)
+	elseif action == "PetPeek" then -- 펫 창을 열어 봤다 (첫날 퀘스트 "펫 구경")
+		local okQ, Quest = pcall(function() return require(script.Parent:WaitForChild("QuestService")) end)
+		if okQ then Quest.Add(player, "PetPeek", 1) end
 	elseif action == "SkillUp" then
 		upgradeSkill(player, arg)
 	elseif action == "Prestige" then
