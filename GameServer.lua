@@ -342,6 +342,38 @@ local function setupPlayer(player)
 		Journey.OnJoin(player) -- 이미 본 안내 기록
 		updatePower(player)
 		player:SetAttribute("DataReady", true) -- 저장된 정보를 다 불러왔다 (화면의 "불러오는 중" 표시를 끈다)
+		-- 진행 기록(Studio 출력창): 접속 후 몇 분 몇 초에 어디까지 왔는지 찍는다. 신규 플레이어가 5분 / 30분에 어디까지 오는지 재는 용도.
+		task.spawn(function()
+			local startedAt = os.clock()
+			local function stamp() local t = math.floor(os.clock() - startedAt) return string.format("%d:%02d", t // 60, t % 60) end
+			local function log(text) print(string.format("[진행 기록] %s · %s · %s", player.Name, stamp(), text)) end
+			local lastWeaponTier = Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0).Index
+			local seen = {}
+			local function once(key, text) if not seen[key] then seen[key] = true log(text) end end
+			log(string.format("시작 (레벨 %d, 골드 %d)", player:GetAttribute("Level") or 1, player:GetAttribute("Gold") or 0))
+			player:GetAttributeChangedSignal("Level"):Connect(function() log(string.format("레벨 %d 달성 (전투력 %d)", player:GetAttribute("Level") or 1, player:GetAttribute("Power") or 0)) end)
+			player:GetAttributeChangedSignal("ClearedZone"):Connect(function() log(string.format("%d구역 관문 열림 (군주 격파)", player:GetAttribute("ClearedZone") or 0)) end)
+			player:GetAttributeChangedSignal("MaxZone"):Connect(function() log(string.format("%d구역에 처음 도착", player:GetAttribute("MaxZone") or 0)) end)
+			player:GetAttributeChangedSignal("Zone"):Connect(function() once("zone_" .. tostring(player:GetAttribute("Zone")), "처음 입장: " .. tostring(player:GetAttribute("Zone"))) end)
+			player:GetAttributeChangedSignal("TutorialActive"):Connect(function() if player:GetAttribute("TutorialActive") ~= true then once("tut_end", "튜토리얼 종료") end end)
+			player:GetAttributeChangedSignal("InDoomArena"):Connect(function() if player:GetAttribute("InDoomArena") then once("doom", "최후의 군주 결투장 입장") end end)
+			player:GetAttributeChangedSignal("GrowthUnlocked"):Connect(function() if player:GetAttribute("GrowthUnlocked") then once("growth", "성장 훈련 해금") end end)
+			player:GetAttributeChangedSignal("WeaponLevel"):Connect(function()
+				once("weapon1", string.format("첫 무기 강화 (%d단계)", player:GetAttribute("WeaponLevel") or 0))
+				local tier = Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0).Index
+				if tier ~= lastWeaponTier then lastWeaponTier = tier log(string.format("무기 진화 → %d번째 무기", tier)) end
+			end)
+			for _, minutes in ipairs({ 5, 10, 20, 30 }) do
+				task.delay(minutes * 60 - (os.clock() - startedAt), function()
+					if player.Parent then
+						log(string.format("== %d분 요약 == 레벨 %d · 전투력 %d · 무기 %d단계(%d번째) · 도달 %d구역 / 격파 %d구역 · 골드 %d · 티켓 %d", minutes,
+							player:GetAttribute("Level") or 1, player:GetAttribute("Power") or 0, player:GetAttribute("WeaponLevel") or 0,
+							Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0).Index, player:GetAttribute("MaxZone") or 0, player:GetAttribute("ClearedZone") or 0,
+							player:GetAttribute("Gold") or 0, player:GetAttribute("Tickets") or 0))
+					end
+				end)
+			end
+		end)
 	end
 end
 
