@@ -238,7 +238,7 @@ do
 				TextColor3 = Color3.fromRGB(120, 255, 255), ZIndex = 59 }, card)
 			makeLabel({ Size = UDim2.new(1, -28, 0, 116), Position = UDim2.new(0, 14, 0, 42), TextSize = 15, Font = Enum.Font.GothamBold, TextWrapped = true, RichText = true,
 				TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 59,
-				Text = "적의 탄이나 공격을 <font color='#78ffff'>대시(Q)로 아슬아슬하게 스치며 피하면</font> 발동해요!\n<font color='#ffe16e'>데드아이 게이지가 차오르고, 공격력이 +5%씩 쌓여요! (최대 +50%)</font>\n8초 안에 연속으로 성공하면 계속 쌓여요. (심연 도전에서는 점수도 올라요)" }, card)
+				Text = "적의 탄이나 공격을 <font color='#78ffff'>대시(Q)로 아슬아슬하게 스치며 피하면</font> 발동해요!\n<font color='#ffe16e'>데드아이 게이지가 차오르고, 연속으로 성공할수록 공격력이 쌓여요! (머리 위 막대가 붉어져요)</font>\n8초 안에 연속으로 성공하면 계속 쌓여요. (심연 도전에서는 점수도 올라요)" }, card)
 			task.delay(8, function()
 				if card.Parent then
 					TweenService:Create(card, TweenInfo.new(0.4), { BackgroundTransparency = 1 }):Play()
@@ -254,7 +254,7 @@ do
 		}, gui)
 		local sub = makeLabel({
 			Size = UDim2.new(0, 520, 0, 28), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.3, 46),
-			Text = string.format("데드아이 게이지 +  ·  공격력 +%d%% (8초)", math.min(streak or 1, Config.NearMiss.MaxStacks) * math.floor(Config.NearMiss.DamagePerStack * 100 + 0.5)), TextSize = 18, Font = Enum.Font.GothamBold,
+			Text = "데드아이 게이지 +  ·  공격력이 점점 올라가요!", TextSize = 18, Font = Enum.Font.GothamBold,
 			TextColor3 = Color3.fromRGB(255, 240, 160), TextStrokeTransparency = 0, ZIndex = 60,
 		}, gui)
 		text.Size = UDim2.new(0, 340, 0, 46)

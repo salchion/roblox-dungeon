@@ -1151,7 +1151,7 @@ function Dungeon.AwardNearMiss(run, player, root)
 	local rift = Meta.GetRift(player) -- 처음 한 번만 NEAR MISS 설명 카드를 띄운다 (저장됨)
 	local firstTime = rift ~= nil and not rift.Tip
 	if rift then rift.Tip = true end
-	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), string.format("NEAR MISS! 공격력 +%d%%", math.floor(math.min(streak, Config.NearMiss.MaxStacks) * Config.NearMiss.DamagePerStack * 100 + 0.5)), Color3.fromRGB(120, 255, 255))
+	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), streak > 1 and string.format("NEAR MISS! x%d", streak) or "NEAR MISS!", Color3.fromRGB(120, 255, 255))
 	Remotes.Banner:FireClient(player, "NearMiss", { Streak = streak, First = firstTime })
 end
 
