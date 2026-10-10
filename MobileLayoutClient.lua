@@ -32,7 +32,7 @@ local driven = {}     -- 이미 감시 중인 UIScale
 local guarded = {}    -- 이미 감시 중인 객체 (보이면 안 되는 것)
 local fitScales = {}  -- 큰 창에 붙인 UIScale
 local open = nil      -- 펼쳐진 접이식 패널: "party" | "rank" | "stat" | nil
-local ui, scaleObj, pillRank, pillParty, pillStat
+local ui, scaleObj, pillRank, pillParty, pillStat, pillShop
 local layoutCompact, layoutCalm
 
 local function make(class, props, parent)
@@ -105,6 +105,8 @@ local function ensureUi()
 	pillRank = pill("RankPill", "🏆 랭킹", 92, function() toggle("rank") end)
 	pillParty = pill("PartyPill", "👥 파티", 116, function() toggle("party") end)
 	pillStat = pill("StatPill", "✨ 특성 / 나가기", 150, function() toggle("stat") end)
+	pillShop = pill("ShopPill", "🎁 상점", 96, function() player:SetAttribute("OpenShop", os.clock()) end) -- PlayerClient 가 신호를 받아 상점 창을 연다
+	pillShop.BackgroundColor3 = Color3.fromRGB(86, 52, 40)
 end
 
 ------------------------------------------------------------
@@ -239,6 +241,9 @@ function layoutCompact(viewport)
 	pillParty.Position = UDim2.new(1, -12, 0, PILL_Y)
 	pillStat.Position = UDim2.new(1, -12, 0, PILL_Y)
 	pillRank.Visible, pillParty.Visible, pillStat.Visible = lobbyOn, lobbyOn, dungeonOn
+	pillShop.Size = UDim2.new(0, 96, 0, 40)
+	pillShop.Position = UDim2.new(1, -(12 + 116 + 6 + 92 + 6), 0, PILL_Y) -- 랭킹 버튼 왼쪽 (위 줄)
+	pillShop.Visible = lobbyOn
 	local partyTitle = partyPanel and partyPanel:FindFirstChildOfClass("TextLabel")
 	pillParty.Text = partyTitle and partyTitle.Text ~= "" and ("👥 " .. partyTitle.Text) or "👥 파티"
 	local function tint(button, on)
@@ -459,7 +464,7 @@ function layoutCalm(viewport)
 	if open == "rank" or open == "stat" then open = nil end
 	ensureUi()
 	local showPill = lobbyOn and not hasParty
-	ui.Enabled = showPill
+	ui.Enabled = lobbyOn
 	scaleObj.Scale = desktopScale(viewport)
 	pillRank.Visible, pillStat.Visible = false, false
 	pillParty.Visible = showPill
@@ -494,6 +499,17 @@ function layoutCalm(viewport)
 	set(rankMini, "Size", UDim2.new(0, 220, 0, 36 + 16 * rows))
 	set(rankMini, "Position", UDim2.new(1, -16, 0, rankY))
 	rankMini.Visible = lobbyOn
+
+	-- 🎁 상점 버튼: 랭킹 카드 바로 아래 (DPS 패널과 겹칠 것 같으면 랭킹 카드 왼쪽)
+	local rankH = 36 + 16 * rows
+	local scale = scaleObj.Scale
+	local dpsGui = playerGui:FindFirstChild("DpsPanelGui")
+	local dps = dpsGui and dpsGui:FindFirstChild("DpsPanel")
+	local shopY = rankY + rankH + 8
+	local beside = dps ~= nil and dps.Visible and (shopY + 40 + 6) * scale > dps.AbsolutePosition.Y
+	pillShop.Size = UDim2.new(0, beside and 96 or 130, 0, 40)
+	pillShop.Position = beside and UDim2.new(1, -(16 + 220 + 8), 0, rankY) or UDim2.new(1, -16, 0, shopY)
+	pillShop.Visible = lobbyOn
 end
 
 local function update()

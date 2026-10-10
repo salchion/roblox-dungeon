@@ -1,5 +1,5 @@
 -- PetClient (StarterPlayer > StarterPlayerScripts 안의 LocalScript, 이름: PetClient)
--- 펫 창 (P 키 / 캐릭터 칸의 펫 칸 / 메뉴 > 펫): 골드로 펫 기능 열기 -> 레벨업(기능이 하나씩 늘어남) -> 외형 / 색 고르기.
+-- 펫 창 (P 키 / 캐릭터 칸의 펫 칸 / 메뉴 > 성장 > 펫): 골드로 펫 기능 열기 -> 레벨업(기능이 하나씩 늘어남) -> 외형 / 색 고르기.
 -- 상태는 서버(MetaService)가 Remotes.Meta "State" 로 보내 준다.
 
 local Players = game:GetService("Players")

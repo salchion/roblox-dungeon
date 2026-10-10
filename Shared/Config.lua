@@ -139,9 +139,6 @@ Config.Tutorial = {
 		-- EvolveToTier: 이 번째 무기(3 = 기관단총)가 될 때까지 필요한 강화 횟수를 미션이 시작될 때 계산해서 목표로 쓴다. {무기} = 그 무기 이름
 		{ Text = "💰 모은 골드로 무기를 강화해서 {무기}까지 진화시키세요! 무기가 한층 강해져서 필드가 쉬워져요", Stat = "Enhances", Goal = 10, EvolveToTier = 3, Target = "Anvil", TargetName = "모루",
 			Reward = { Tickets = 2, Xp = 150 } },
-		{ Text = "💪 몸도 단련해요! 메뉴(I) → 성장 탭에서 훈련을 시작하세요. 자리를 비워도 시간이 지나면 저절로 강해져요", Stat = "Trains", Goal = 1, Highlight = "Menu", IntroDelay = 4,
-			Intro = { { Key = "💪", Title = "무기만으로는 부족해요", Text = "최후의 군주를 이길 힘을 키우려면 몸도 단련해야 해요. 훈련은 접속을 끄고 있어도 계속 진행돼요.", Duration = 8 } },
-			Reward = { Gold = 1000, Keys = 1, Tickets = 2, Xp = 300 } },
 	},
 }
 
@@ -1016,7 +1013,7 @@ Config.Quests = {
 		{ Id = "rift",    Name = "심연 도전",     Desc = "심연 도전(소탕 포함) %d번 하기", Stat = "RiftRuns",      Goal = 2,   Reward = { Gold = 700, TimeSkip = 600 } },
 		-- 첫날 전용 (처음 접속한 날만 나온다): 스탯 / 펫이 있다는 걸 알려 주는 퀘스트
 		{ Id = "statpts", Name = "스탯 찍기",     Desc = "스탯 포인트 %d개 올리기 (T 키 / 스탯 버튼)", Stat = "StatPoints", Goal = 3, Reward = { Gold = 300 }, FirstDay = true },
-		{ Id = "petpeek", Name = "펫 구경",       Desc = "펫 창 열어 보기 (P 키 / 캐릭터 탭)",       Stat = "PetPeek",    Goal = 1, Reward = { Gold = 300, Tickets = 1 }, FirstDay = true },
+		{ Id = "petpeek", Name = "펫 구경",       Desc = "펫 창 열어 보기 (P 키 / 성장 > 펫)",       Stat = "PetPeek",    Goal = 1, Reward = { Gold = 300, Tickets = 1 }, FirstDay = true },
 		{ Id = "kills",   Name = "몬스터 청소",   Desc = "몬스터 %d마리 처치 (던전 포함)", Stat = "Kills",         Goal = 60,  Reward = { Gold = 500, TimeSkip = 300 } },
 	},
 }
@@ -1427,6 +1424,8 @@ Config.Mounts = {
 --   -> 돈을 안 써도 시간만 들이면 모두 도달 가능. 돈은 시간만 줄여준다.
 ------------------------------------------------------------
 Config.Growth = {
+	UnlockZone = 2, -- 성장(훈련) 해금: ClearedZone 이 이 값에 처음 도달하면 한 번 해금 + 보상
+	UnlockReward = { Gold = 1000, Keys = 1, Tickets = 2, Xp = 300 },
 	BaseSlots = 1,
 	MaxLevel = 30,
 	TimeBase = 120,     -- 0 -> 1 단계 훈련 시간(초)

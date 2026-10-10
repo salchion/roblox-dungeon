@@ -860,7 +860,8 @@ do
 			end
 			if token ~= mine then return end
 			local buff = data.Buff
-			if buff and buff.Special then -- 레어: 화면이 금빛으로 번쩍 + 흔들림 + 팝업이 커진다
+			local setInfo = data.Set
+			if (buff and buff.Special) or (setInfo and (setInfo.Completed or data.Jackpot)) then -- 레어 / 세트 완성: 화면이 번쩍 + 흔들림 + 팝업이 커진다
 				local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 215, 120), BackgroundTransparency = 0.55, BorderSizePixel = 0, ZIndex = 74 }, gui)
 				TweenService:Create(flash, TweenInfo.new(0.55), { BackgroundTransparency = 1 }):Play()
 				game:GetService("Debris"):AddItem(flash, 0.6)
@@ -869,7 +870,22 @@ do
 				SoundBank.Play(sfxParent, "Gacha_Card")
 				TweenService:Create(popScale, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1.22 }):Play()
 			end
-			if buff then
+			buffHalf.Desc.TextColor3 = Color3.fromRGB(215, 215, 230)
+			if setInfo then -- 세트 조각 카드: 아이콘 + 이름 + ● ● ○ + (완성되면) 효과 이름
+				local pips = {}
+				for i = 1, setInfo.Max or 3 do table.insert(pips, i <= setInfo.Count and "●" or "○") end
+				buffHalf.Icon.Text = setInfo.Icon
+				buffHalf.Title.Text = (data.Jackpot and "🌟 JACKPOT! " or "") .. setInfo.Name .. " 조각"
+				buffHalf.Title.TextColor3 = setInfo.Color
+				buffHalf.Desc.Text = table.concat(pips, " ") .. (setInfo.Completed and string.format("\n✨ %d세트 완성! %s Lv.%d", setInfo.Count, setInfo.EffectName or "", setInfo.Level or 1) or string.format("  (%d/%d)", setInfo.Count, setInfo.Max or 3))
+				buffHalf.Desc.TextColor3 = setInfo.Color
+				buffHalf.Stroke.Color = setInfo.Color
+				buffHalf.Frame.BackgroundColor3 = setInfo.Color
+			elseif data.Note and not buff then
+				buffHalf.Icon.Text = "🏆"
+				buffHalf.Title.Text = "세트 모두 완성!"
+				buffHalf.Desc.Text = data.Note
+			elseif buff then
 				local special = buff.Special
 				local color = special and Color3.fromRGB(255, 195, 70) or Color3.fromRGB(110, 210, 255)
 				buffHalf.Icon.Text = buff.Icon
@@ -2218,19 +2234,54 @@ makeButton({
 end)
 
 local TABS = {
-	{ Key = "Inventory", Name = "캐릭터" }, -- 3D 캐릭터 + 장비 칸 + 가방 (메뉴를 열면 가장 먼저 보인다)
-	{ Key = "Character", Name = "정보" },
-	{ Key = "Weapon", Name = "무기" },
-	{ Key = "Growth", Name = "성장" },
-	{ Key = "Skill", Name = "스킬" },
-	{ Key = "Pet", Name = "펫" },
-	{ Key = "Quest", Name = "퀘스트" },
-	{ Key = "Ach", Name = "업적" },
+	{ Key = "Character", Name = "캐릭터" }, -- 장비 / 무기 / 정보
+	{ Key = "Growth", Name = "성장" },      -- 훈련 / 스킬 / 펫
+	{ Key = "Quest", Name = "퀘스트" },     -- 오늘의 퀘스트 / 업적
 	{ Key = "Rank", Name = "랭킹" },
-	{ Key = "Shop", Name = "상점" },
 }
-local currentTab = "Inventory"
+local MENU = { Sub = { Character = "Gear", Growth = "Train", Quest = "Daily" } } -- (지역 변수 개수 제한 때문에 표 하나로 묶음)
+MENU.Subs = { -- 탭 안의 작은 버튼 줄
+	Character = { { "Gear", "🛡 장비" }, { "Weapon", "🔫 무기" }, { "Info", "📊 정보" } },
+	Growth = { { "Train", "훈련" }, { "Skill", "스킬" }, { "Pet", "펫" } },
+	Quest = { { "Daily", "오늘의 퀘스트" }, { "Ach", "업적" } },
+}
+MENU.Alias = { -- 예전 탭 이름 -> 새 탭 / 작은 버튼 (selectTab 호출을 그대로 받아 준다)
+	Inventory = { "Character", "Gear" }, Weapon = { "Character", "Weapon" }, Info = { "Character", "Info" },
+	Skill = { "Growth", "Skill" }, Pet = { "Growth", "Pet" }, Ach = { "Quest", "Ach" },
+}
+local currentTab = "Character"
 local tabButtons = {}
+local SHOP = {}
+SHOP.Panel = makePanel({ -- 상점: 메뉴와 따로 뜨는 창 (I 키와 무관, 닫기 버튼으로만 닫는다. 메뉴와 동시에 열리지 않는다)
+	Size = UDim2.new(0, 860, 0, 580), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.55, 0),
+	BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.03, Visible = false,
+}, gui)
+create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35 }, SHOP.Panel)
+makeLabel({
+	Size = UDim2.new(1, -120, 0, 36), Position = UDim2.new(0, 16, 0, 8),
+	Text = "🎁 상점", Font = Enum.Font.GothamBlack, TextSize = 24, TextXAlignment = Enum.TextXAlignment.Left,
+}, SHOP.Panel)
+makeButton({
+	Size = UDim2.new(0, 64, 0, 28), Position = UDim2.new(1, -76, 0, 10), Text = "닫기", TextSize = 13, BackgroundColor3 = GRAY,
+}, SHOP.Panel, function()
+	SHOP.Panel.Visible = false
+end)
+SHOP.Content = create("ScrollingFrame", {
+	Size = UDim2.new(1, -24, 1, -60), Position = UDim2.new(0, 12, 0, 48),
+	BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 6,
+	CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.Y,
+}, SHOP.Panel)
+create("UIListLayout", { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder }, SHOP.Content)
+function SHOP.Open()
+	if SHOP.Panel.Visible then
+		SHOP.Panel.Visible = false
+		return
+	end
+	menuPanel.Visible = false -- 큰 창은 한 번에 하나
+	SHOP.Panel.Visible = true
+	SHOP.Refresh()
+end
+player:GetAttributeChangedSignal("OpenShop"):Connect(SHOP.Open) -- 화면의 🎁 상점 버튼(MobileLayoutClient)이 신호를 보낸다
 
 local menuContent = create("ScrollingFrame", {
 	Size = UDim2.new(1, -24, 1, -108), Position = UDim2.new(0, 12, 0, 96),
@@ -2240,12 +2291,13 @@ local menuContent = create("ScrollingFrame", {
 create("UIListLayout", { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder }, menuContent)
 
 local rowOrder = 0
+local activeContent = menuContent -- 줄을 붙이는 곳 (상점 창을 그릴 때만 바뀐다)
 local function newRow(height, color)
 	rowOrder += 1
 	return makePanel({
 		Size = UDim2.new(1, -10, 0, height), LayoutOrder = rowOrder,
 		BackgroundColor3 = color or Color3.fromRGB(36, 39, 58),
-	}, menuContent)
+	}, activeContent)
 end
 
 local function rowText(row, text, size, rightMargin)
@@ -2333,7 +2385,7 @@ local function buildCharacterTab()
 	local equipped = questState and questState.Equipped
 	if #titles == 0 then
 		local row = newRow(36)
-		rowText(row, "<font color='#888888'>아직 해금한 칭호가 없어요. 업적 탭에서 도전해보세요!</font>")
+		rowText(row, "<font color='#888888'>아직 해금한 칭호가 없어요. 퀘스트의 업적에서 도전해보세요!</font>")
 	end
 	for _, title in ipairs(titles) do
 		local row = newRow(40)
@@ -3028,7 +3080,7 @@ local function buildShopTab()
 		if not character then return end
 		settings.PreviewToken = (settings.PreviewToken or 0) + 1
 		local token = settings.PreviewToken
-		local panel = settings.MenuPanel
+		local panel = SHOP.Panel
 		if panel then panel.Visible = false end
 		Cosmetics.Clear(character, kind)
 		Cosmetics.Build(kind, key, character, true)
@@ -3120,6 +3172,7 @@ local function buildPetTab() -- 펫 창은 따로 있다 (PetClient): 기능 / �
 	local row = newRow(96)
 	rowText(row, "🐾 <b>펫</b>: 골드로 펫 기능을 열고, 레벨을 올릴 때마다 새 기능이 생겨요 (자동 루팅 · 공격 속도 · 보조 사격 ...)\n<font color='#bbbbcc' size='13'>외형은 능력과 상관없는 꾸미기예요. 필드 군주를 쓰러뜨리거나 칭호를 따면 새 외형이 열려요.</font>", 14, 210)
 	makeButton({ Size = UDim2.new(0, 190, 0, 44), Position = UDim2.new(1, -202, 0.5, -22), Text = "🐾 펫 창 열기 (P)", TextSize = 16, BackgroundColor3 = Color3.fromRGB(200, 130, 40) }, row, function()
+		menuPanel.Visible = false
 		player:SetAttribute("OpenPet", os.clock())
 	end)
 end
@@ -3127,75 +3180,142 @@ end
 Remotes.Meta.OnClientEvent:Connect(function(action, data)
 	if action == "State" then
 		metaState = data
-		if menuPanel.Visible and (currentTab == "Skill" or currentTab == "Pet") then
+		if menuPanel.Visible and currentTab == "Growth" then
 			refreshMenu()
 		end
 	end
 end)
 
+function MENU.seg(options, current, onPick) -- 탭 안쪽 작은 버튼 줄 (2~3개)
+	local row = newRow(44, Color3.fromRGB(26, 28, 42))
+	for index, option in ipairs(options) do
+		local active = option[1] == current
+		makeButton({
+			Size = UDim2.new(0, 150, 0, 32), Position = UDim2.new(0, 10 + (index - 1) * 158, 0.5, -16), Text = option[2], TextSize = 15,
+			BackgroundColor3 = active and Color3.fromRGB(70, 104, 206) or Color3.fromRGB(44, 48, 72),
+			TextColor3 = active and Color3.fromRGB(255, 232, 160) or Color3.fromRGB(170, 176, 200),
+		}, row, function()
+			onPick(option[1])
+		end)
+	end
+end
+
+function MENU.locked()
+	local row = newRow(120)
+	rowText(row, "<font size='22'><b>🔒 2구역 클리어 시 해금</b></font>\n<font size='14' color='#bbbbcc'>필드 2구역의 관문을 열면 훈련이 열려요.\n훈련은 접속을 꺼도 계속 진행돼서 영구적으로 강해져요. (스킬 / 펫은 지금도 쓸 수 있어요)</font>", 15)
+end
+
+local selectTab
 function refreshMenu()
+	local newGrowth = player:GetAttribute("GrowthNew") == true
+	local locked = player:GetAttribute("GrowthUnlocked") ~= true
 	for _, tab in ipairs(TABS) do
 		local active = tab.Key == currentTab
-		tabButtons[tab.Key].BackgroundColor3 = active and Color3.fromRGB(70, 104, 206) or Color3.fromRGB(34, 38, 58)
-		tabButtons[tab.Key].TextColor3 = active and Color3.fromRGB(255, 232, 160) or Color3.fromRGB(170, 176, 200)
-		tabButtons[tab.Key].Font = active and Enum.Font.GothamBlack or Enum.Font.GothamBold
+		local button = tabButtons[tab.Key]
+		button.BackgroundColor3 = active and Color3.fromRGB(70, 104, 206) or Color3.fromRGB(34, 38, 58)
+		button.TextColor3 = active and Color3.fromRGB(255, 232, 160) or Color3.fromRGB(170, 176, 200)
+		button.Font = active and Enum.Font.GothamBlack or Enum.Font.GothamBold
+		if tab.Key == "Growth" then
+			button.Text = (locked and "🔒 " or "") .. tab.Name
+			local glow = button:FindFirstChild("GrowthGlow")
+			if glow then glow.Enabled = newGrowth end
+		end
 	end
 
 	clearChildren(menuContent)
 	rowOrder = 0
+	local sub = MENU.Sub[currentTab]
+	if MENU.Subs[currentTab] then
+		MENU.seg(MENU.Subs[currentTab], sub, function(key)
+			selectTab(currentTab, key)
+		end)
+	end
 	if currentTab == "Character" then
-		buildCharacterTab()
-	elseif currentTab == "Inventory" then
-		buildInventoryTab()
+		if sub == "Gear" then
+			buildInventoryTab()
+		elseif sub == "Weapon" then
+			buildWeaponTab()
+		else
+			buildCharacterTab()
+		end
 	elseif currentTab == "Growth" then
-		buildGrowthTab()
-	elseif currentTab == "Shop" then
-		buildShopTab()
-	elseif currentTab == "Weapon" then
-		buildWeaponTab()
-	elseif currentTab == "Skill" then
-		buildSkillTab()
-	elseif currentTab == "Pet" then
-		buildPetTab()
+		if sub == "Skill" then
+			buildSkillTab()
+		elseif sub == "Pet" then
+			buildPetTab()
+		elseif locked then
+			MENU.locked()
+		else
+			buildGrowthTab()
+		end
 	elseif currentTab == "Quest" then
-		sectionTitle("📅 오늘의 일일 퀘스트 (매일 바뀌어요)")
-		buildProgressRows(questState and questState.Daily, "Claim", false)
-	elseif currentTab == "Ach" then
-		sectionTitle("🏅 업적 — 달성하면 보상과 칭호를 받아요")
-		buildProgressRows(questState and questState.Achievements, "ClaimAch", true)
+		if sub == "Ach" then
+			sectionTitle("🏅 업적 — 달성하면 보상과 칭호를 받아요")
+			buildProgressRows(questState and questState.Achievements, "ClaimAch", true)
+		else
+			sectionTitle("📅 오늘의 일일 퀘스트 (매일 바뀌어요)")
+			buildProgressRows(questState and questState.Daily, "Claim", false)
+		end
 	elseif currentTab == "Rank" then
 		buildRankTab()
 	end
 end
 settings.RefreshMenu = refreshMenu
+
+function SHOP.Refresh()
+	if not SHOP.Panel.Visible then return end
+	activeContent = SHOP.Content
+	clearChildren(SHOP.Content)
+	rowOrder = 0
+	local ok, err = pcall(buildShopTab)
+	activeContent = menuContent
+	if not ok then warn("[Shop] " .. tostring(err)) end
+end
 for _, cosmeticKind in ipairs({ "Aura", "Banner", "Mount" }) do
 	player:GetAttributeChangedSignal(cosmeticKind):Connect(function()
-		if currentTab == "Shop" and menuPanel.Visible then refreshMenu() end
+		if SHOP.Panel.Visible then SHOP.Refresh() end
 	end)
 end
 
-local function selectTab(key)
+function selectTab(key, subKey)
+	if key == "Shop" then
+		SHOP.Open()
+		return
+	end
+	local alias = MENU.Alias[key]
+	if alias then key, subKey = alias[1], subKey or alias[2] end
 	currentTab = key
-	if key == "Quest" or key == "Ach" or key == "Character" then
+	if subKey and MENU.Subs[key] then MENU.Sub[key] = subKey end
+	if key == "Growth" and MENU.Sub.Growth == "Train" and not subKey and player:GetAttribute("GrowthUnlocked") ~= true then
+		MENU.Sub.Growth = "Skill" -- 잠겨 있으면 열자마자 스킬을 보여 준다
+	end
+	local sub = MENU.Sub[key]
+	if key == "Quest" or key == "Character" then
 		Remotes.Quest:FireServer("Request")
-	elseif key == "Rank" then
+	end
+	if key == "Rank" then
 		Remotes.Rank:FireServer("Request")
-	elseif key == "Inventory" then
+	elseif key == "Character" and sub == "Gear" then
 		Remotes.Inventory:FireServer("Request")
 	elseif key == "Growth" then
 		Remotes.Growth:FireServer("Request")
-	elseif key == "Skill" or key == "Pet" then
 		Remotes.Meta:FireServer("Request")
+		if player:GetAttribute("GrowthNew") then Remotes.Growth:FireServer("Seen") end
 	end
 	refreshMenu()
 end
 
+local tabWidth = 140
 for index, tab in ipairs(TABS) do
 	tabButtons[tab.Key] = makeButton({
-		Size = UDim2.new(0, 80, 0, 36), Position = UDim2.new(0, 14 + (index - 1) * 84, 0, 50), Text = tab.Name, TextSize = 16,
+		Size = UDim2.new(0, tabWidth, 0, 36), Position = UDim2.new(0, 14 + (index - 1) * (tabWidth + 6), 0, 50), Text = tab.Name, TextSize = 16,
 	}, menuPanel, function()
 		selectTab(tab.Key)
 	end)
+end
+do -- 성장 해금 직후: 성장 탭이 열어 볼 때까지 반짝인다
+	local glow = create("UIStroke", { Name = "GrowthGlow", Color = Color3.fromRGB(255, 225, 90), Thickness = 3, Enabled = false, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, tabButtons.Growth)
+	TweenService:Create(glow, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 7 }):Play()
 end
 
 local menuToggleAt = 0
@@ -3205,6 +3325,7 @@ local function toggleMenu()
 	menuToggleAt = now
 	menuPanel.Visible = not menuPanel.Visible
 	if menuPanel.Visible then
+		SHOP.Panel.Visible = false -- 큰 창은 한 번에 하나
 		local ok, err = pcall(selectTab, currentTab)
 		if not ok then warn("[Menu] " .. tostring(err)) end -- 탭을 그리다 오류가 나도 메뉴 창은 열린 채로 둔다
 	end
@@ -3215,7 +3336,20 @@ do -- 상태 카드(HudClient)와 같은 어두운 남색 + 은은한 테두리
 		Name = "MenuButton", Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 16, 0, 244), Text = "📋 메뉴(I)", TextSize = 12,
 		BackgroundColor3 = Color3.fromRGB(34, 40, 70),
 	}, gui, toggleMenu)
-	create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, menuButton)
+	local menuStroke = create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, menuButton)
+	local pulse = TweenService:Create(menuStroke, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 5 })
+	local function syncPulse() -- 성장이 방금 해금됐으면 열어 볼 때까지 반짝인다
+		if player:GetAttribute("GrowthNew") == true then
+			menuStroke.Color = Color3.fromRGB(255, 225, 90)
+			menuStroke.Transparency = 0
+			pulse:Play()
+		else
+			pulse:Cancel()
+			menuStroke.Color, menuStroke.Thickness, menuStroke.Transparency = Color3.fromRGB(110, 130, 220), 1.5, 0.35
+		end
+	end
+	player:GetAttributeChangedSignal("GrowthNew"):Connect(syncPulse)
+	syncPulse()
 end
 
 Remotes.Quest.OnClientEvent:Connect(function(action, data)
@@ -3230,7 +3364,7 @@ end)
 Remotes.Inventory.OnClientEvent:Connect(function(action, data)
 	if action == "State" then
 		inventoryState = data
-		if menuPanel.Visible and currentTab == "Inventory" then
+		if menuPanel.Visible and currentTab == "Character" and MENU.Sub.Character == "Gear" then
 			refreshMenu()
 		end
 	end
@@ -3249,9 +3383,10 @@ end)
 task.spawn(function()
 	while true do
 		task.wait(1)
-		if menuPanel.Visible and (currentTab == "Growth" or currentTab == "Shop") then
+		if menuPanel.Visible and currentTab == "Growth" and MENU.Sub.Growth == "Train" then
 			refreshMenu()
 		end
+		if SHOP.Panel.Visible then SHOP.Refresh() end
 	end
 end)
 
@@ -3266,13 +3401,14 @@ end)
 
 local menuRefreshQueued = false
 player.AttributeChanged:Connect(function()
-	if not menuPanel.Visible or menuRefreshQueued then return end
+	if (not menuPanel.Visible and not SHOP.Panel.Visible) or menuRefreshQueued then return end
 	menuRefreshQueued = true
 	task.defer(function()
 		menuRefreshQueued = false
 		if menuPanel.Visible then
 			refreshMenu()
 		end
+		if SHOP.Panel.Visible then SHOP.Refresh() end
 	end)
 end)
 
@@ -3900,14 +4036,14 @@ makeLabel({
 		"<b>이동/공격</b>  WASD 이동 · Shift 달리기 · Q 대시 · 마우스 클릭(누르고 있으면 연사) 공격",
 		"<b>자동 공격</b>  R — 가장 가까운 적을 자동으로 조준 (적을 클릭하면 그 대상으로 고정)",
 		"<b>스킬</b>  C 응급 치료 · V 궁극기(적을 공격해 게이지 100%를 채우면 사용)  — 필드/던전에서 사용",
-		"<b>메뉴</b>  I — 가방 · 무기 · 성장 · 스킬 · 펫 · 퀘스트 · 업적 · 랭킹 · 상점",
+		"<b>메뉴</b>  I — 캐릭터(장비·무기·정보) · 성장(훈련·스킬·펫) · 퀘스트(업적) · 랭킹   |   🎁 상점은 화면 오른쪽 버튼",
 		"<b>음악</b>  M — 켜기/끄기",
 		"",
 		"<b>🎯 게임 흐름</b>",
 		"1. 필드 / 던전에서 골드를 모아 무기를 강화하세요 (로비의 허수아비는 대미지 / DPS 연습용, 휴식 구역에 서 있으면 방치 골드가 쌓여요)",
 		"2. 동쪽 <b>필드</b>에서 몬스터를 잡아 장비를 얻고 레벨을 올리세요 (황금 고블린을 놓치지 마세요!)",
 		"3. 북쪽 <b>던전</b>은 열쇠가 필요해요. 정해진 시간을 버티면 보스가 나와요. 중간중간 랜덤 강화(와 패널티)가 터지고, 보스 상자에서 장비를 얻어요",
-		"4. 성장 탭에서 훈련을 걸어두고, 장비 세트/유니크를 모아 전투력을 키우세요",
+		"4. 2구역을 깨면 성장(훈련)이 열려요. 훈련을 걸어두고, 장비 세트/유니크를 모아 전투력을 키우세요",
 		"5. 최고 레벨이 되면 <b>환생</b>으로 영구 보너스를 받고 다시 도전할 수 있어요",
 	}, "\n"),
 }, helpPanel)

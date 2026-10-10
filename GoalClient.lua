@@ -329,7 +329,7 @@ local function pickGoal()
 	local charLevel = player:GetAttribute("Level") or 1
 	if charLevel < Config.Level.Max then
 		if player:GetAttribute("GateBlocked") then
-			table.insert(candidates, { Text = "🚧 레벨이 막혔어요!\n메뉴(I) → 성장 탭에서 돌파를 진행하세요", Ratio = 1, Priority = 0 })
+			table.insert(candidates, { Text = "🚧 레벨이 막혔어요!\n메뉴(I) → 성장에서 돌파를 진행하세요", Ratio = 1, Priority = 0 })
 		else
 			local xp, needed = player:GetAttribute("XP") or 0, math.max(1, player:GetAttribute("XPNeeded") or 1)
 			table.insert(candidates, {
@@ -352,7 +352,7 @@ local function pickGoal()
 
 	-- 지금 바로 쓸 수 있는 것
 	if (player:GetAttribute("Level") or 1) >= Config.Level.Max and (player:GetAttribute("Prestige") or 0) < Config.Prestige.Max then
-		table.insert(candidates, { Text = "🌟 최고 레벨 달성!\n환생하면 영구 공격력 + 골드 획득량이 늘어요 (메뉴 I → 정보)", Ratio = 0.99, Priority = 2 })
+		table.insert(candidates, { Text = "🌟 최고 레벨 달성!\n환생하면 영구 공격력 + 골드 획득량이 늘어요 (메뉴 I → 캐릭터 > 정보)", Ratio = 0.99, Priority = 2 })
 	end
 	if (player:GetAttribute("DungeonFree") or 0) >= 1 or (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0) >= 1 then
 		table.insert(candidates, { Text = string.format("🎟 오늘 무료 입장 %d회 · 🗝 열쇠 %d개!\n북쪽 게이트에서 던전에 도전하세요", player:GetAttribute("DungeonFree") or 0, (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0)), Ratio = 0.95, Priority = 3 })

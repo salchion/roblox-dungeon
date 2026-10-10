@@ -15,6 +15,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 
+local Level = require(script.Parent:WaitForChild("LevelService"))
+local Keys = require(script.Parent:WaitForChild("KeyService"))
+
 local R = Config.Growth
 
 local Growth = {}
@@ -24,6 +27,25 @@ local pushQueued = {}
 
 local function notify(player, text)
 	Remotes.Notify:FireClient(player, text)
+end
+
+-- 2구역 클리어로 해금: 처음 해금될 때 한 번만 보상 + 안내 (state.Unlocked / Rewarded 는 Growth 저장 데이터에 같이 저장된다)
+local function unlock(player, state, giveReward)
+	if state.Unlocked then return end
+	state.Unlocked = true
+	player:SetAttribute("GrowthUnlocked", true)
+	if giveReward and not state.Rewarded then
+		state.Rewarded = true
+		local reward = R.UnlockReward
+		if reward.Gold then player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + reward.Gold) end
+		if reward.Tickets then player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + reward.Tickets) end
+		if reward.Keys then Keys.Add(player, reward.Keys) end
+		if reward.Xp then Level.AddXP(player, reward.Xp) end
+		player:SetAttribute("GrowthNew", true) -- 클라이언트가 성장 탭 버튼을 반짝이게 한다 (탭을 열면 "Seen" 으로 꺼진다)
+		notify(player, "💪 성장 해금! 2구역을 돌파했어요. 훈련을 시작하면 접속을 꺼도 강해져요")
+		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "💪", Title = "성장 해금!", Text = "2구역을 돌파했어요! 메뉴(I) → 성장에서 훈련을 시작하면 접속을 꺼도 강해져요. 보상: 1000 G · 열쇠 1 · 티켓 2 · 경험치 300", Duration = 9 })
+	end
+	Growth.Push(player)
 end
 
 local function slotsOf(player)
@@ -110,6 +132,10 @@ end
 function Growth.StartTrain(player, stat)
 	local state = states[player]
 	if not state then return end
+	if not state.Unlocked then
+		notify(player, "🔒 2구역을 클리어하면 성장이 해금돼요!")
+		return
+	end
 	if typeof(stat) ~= "string" or not R.Stats[stat] or stat == "Order" then return end
 
 	local level = state.Levels[stat]
@@ -147,6 +173,10 @@ end
 function Growth.StartGate(player)
 	local state = states[player]
 	if not state then return end
+	if not state.Unlocked then
+		notify(player, "🔒 2구역을 클리어하면 성장이 해금돼요!")
+		return
+	end
 	if state.GateJob then
 		notify(player, "⚠ 이미 돌파 중이에요.")
 		return
@@ -184,7 +214,7 @@ function Growth.StartGate(player)
 	notify(player, string.format("🌟 레벨 %d 돌파 시작! (%s)", gateLevel, Config.FormatDuration(duration)))
 	if gateIndex == 1 then -- 첫 돌파는 30분이라 너무 길다: 같은 시간만큼 단축권을 선물해서 바로 끝낼 수 있게 한다
 		Growth.AddTimeSkip(player, duration)
-		notify(player, string.format("🎁 첫 돌파 선물! 시간 단축권 %s 지급 — 성장 탭의 [단축권 사용]을 누르면 바로 끝나요!", Config.FormatDuration(duration)))
+		notify(player, string.format("🎁 첫 돌파 선물! 시간 단축권 %s 지급 — 성장의 [단축권 사용]을 누르면 바로 끝나요!", Config.FormatDuration(duration)))
 	end
 	Growth.Push(player)
 end
@@ -226,7 +256,7 @@ end
 -- 비어 있는 훈련 슬롯 수 (훈련을 안 걸어 둔 칸) - 조언 서비스가 "훈련을 걸어 두세요"를 말할 때 쓴다
 function Growth.IdleSlots(player)
 	local state = states[player]
-	if not state then return 0 end
+	if not state or not state.Unlocked then return 0 end
 	return math.max(0, slotsOf(player) - #state.Jobs)
 end
 
@@ -265,6 +295,25 @@ function Growth.Load(player, saved)
 	end
 
 	states[player] = state
+	-- 해금 상태: 저장된 값 / 이미 훈련해 본 사람(옛 튜토리얼에서 마친 것) / 이미 2구역을 깬 사람은 조용히 해금 (보상은 훈련 경험이 없을 때만 한 번)
+	local trained = #state.Jobs > 0
+	for _, stat in ipairs(R.Stats.Order) do
+		if state.Levels[stat] > 0 then trained = true end
+	end
+	state.Rewarded = (typeof(saved) == "table" and saved.Rewarded == true) or trained
+	if typeof(saved) == "table" and saved.Unlocked == true then
+		state.Unlocked = true
+		player:SetAttribute("GrowthUnlocked", true)
+	elseif trained then
+		unlock(player, state, false)
+	end
+	local function checkZone()
+		if not state.Unlocked and states[player] == state and (player:GetAttribute("ClearedZone") or 0) >= R.UnlockZone then
+			unlock(player, state, true)
+		end
+	end
+	player:GetAttributeChangedSignal("ClearedZone"):Connect(checkZone)
+	task.defer(checkZone)
 	recompute(player, state)
 	completeJobs(player, state) -- 접속하지 않은 동안 끝난 훈련 / 돌파를 바로 완료 처리
 	Growth.Push(player)
@@ -282,6 +331,7 @@ function Growth.Serialize(player)
 		GateJob = state.GateJob and { Level = state.GateJob.Level, EndAt = state.GateJob.EndAt } or nil,
 		GatePassed = player:GetAttribute("GatePassed") or 0,
 		TimeSkip = player:GetAttribute("TimeSkip") or 0,
+		Unlocked = state.Unlocked == true, Rewarded = state.Rewarded == true,
 	}
 end
 
@@ -298,6 +348,9 @@ local lastRequest = setmetatable({}, { __mode = "k" })
 Remotes.Growth.OnServerEvent:Connect(function(player, action, arg1, arg2)
 	if action == "Request" then
 		Growth.Push(player)
+		return
+	elseif action == "Seen" then
+		player:SetAttribute("GrowthNew", nil)
 		return
 	end
 

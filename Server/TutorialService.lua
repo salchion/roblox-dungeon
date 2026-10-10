@@ -1,5 +1,5 @@
 -- TutorialService (ServerScriptService > Modules 안의 ModuleScript, 이름: TutorialService)
--- 처음 가이드 미션: 허수아비 -> 무기 강화(무료) -> 장비 뽑기 -> 필드 첫 군주 -> 최종 군주에게 패배 -> 전리품으로 10연 뽑기 / 무기 진화 / 훈련 (튜토리얼 던전 없음).
+-- 처음 가이드 미션: 허수아비 -> 무기 강화(무료) -> 장비 뽑기 -> 필드 첫 군주 -> 최종 군주에게 패배 -> 전리품으로 10연 뽑기 / 무기 진화 (훈련은 2구역 클리어로 해금: GrowthService) (튜토리얼 던전 없음).
 -- 미션마다 목표 위치에 빛기둥/표지가 나타나고, 완료하면 곧바로 보상이 터진다 (숫자가 빠르게 오르는 초반 쾌감).
 -- Quest.Add 에 올라오는 카운터(DummyHits / Enhances / Rolls / Kills / DungeonClears)를 그대로 듣는다.
 -- 미션 2~3 동안은 무기 강화가 공짜 + 100% 성공 (TutorialFree Attribute 로 WeaponService 가 확인).
@@ -98,7 +98,7 @@ local function send(player)
 	player:SetAttribute("QuestHud", step == nil or state.Step >= questStep)
 	player:SetAttribute("TutorialDungeonLocked", step ~= nil and state.Step < questStep)
 	player:SetAttribute("TutorialRoll", step and step.RollMode or nil) -- 미션 중 뽑기 보정: Lowest = 항상 일반 / Hero = 10연에 영웅 1개 확정 (전설 이상 없음)
-	player:SetAttribute("TutorialDoom", step ~= nil and step.Doom == true) -- 필드 "압도적인 습격" 장면 (쓰러지면 성장 단계로 이어진다)
+	player:SetAttribute("TutorialDoom", step ~= nil and step.Doom == true) -- 필드 "압도적인 습격" 장면 (쓰러지면 다음 단계로 이어진다)
 	if not step then
 		Remotes.Tutorial:FireClient(player, "Done")
 		return
