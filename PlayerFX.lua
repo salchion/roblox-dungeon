@@ -254,7 +254,7 @@ do
 		}, gui)
 		local sub = makeLabel({
 			Size = UDim2.new(0, 520, 0, 28), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.3, 46),
-			Text = "데드아이 게이지 +  ·  4초간 전부 치명타!", TextSize = 18, Font = Enum.Font.GothamBold,
+			Text = string.format("데드아이 게이지 +  ·  공격력 +%d%% (8초)", math.min(streak or 1, Config.NearMiss.MaxStacks) * math.floor(Config.NearMiss.DamagePerStack * 100 + 0.5)), TextSize = 18, Font = Enum.Font.GothamBold,
 			TextColor3 = Color3.fromRGB(255, 240, 160), TextStrokeTransparency = 0, ZIndex = 60,
 		}, gui)
 		text.Size = UDim2.new(0, 340, 0, 46)

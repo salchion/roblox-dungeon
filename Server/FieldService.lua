@@ -2237,7 +2237,7 @@ local function stepMonsters(dt)
 	end
 end
 
--- 아슬아슬한 회피(NEAR MISS): 대시 중에 탄 / 폭격이 몸 바로 옆을 스치면 보상 - 데드아이 게이지 + 잠깐 동안 공격이 전부 치명타
+-- 아슬아슬한 회피(NEAR MISS): 대시 중에 탄 / 폭격이 몸 바로 옆을 스치면 보상 - 데드아이 게이지 + 연속으로 피할수록 공격력이 누적해서 오른다
 local nearMissAt = setmetatable({}, { __mode = "k" })
 local dashSeenAt = setmetatable({}, { __mode = "k" })
 local function isDashing(root, player)
