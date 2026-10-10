@@ -40,6 +40,10 @@ local SPECS = {
 	Skill_Heal = { CustomLength = 2.5, Base = "Enh_Success", Pitch = 1.1, Volume = 0.8, Length = 0.9, Fx = { { "reverb", { DecayTime = 1.6, WetLevel = -6 } } } },
 	Skill_Ult  = { Base = "Shot", CustomLength = 3.0, Pitch = 0.4, Volume = 1.6, Length = 1.8, Fx = { { "reverb", { DecayTime = 3.0, WetLevel = -2 } }, { "distortion", { Level = 0.4 } } },
 		Layers = { { Pitch = 1.6, Volume = 0.6, Delay = 0.08 } } },
+	-- 최후의 군주의 목소리: 아주 낮게 깔리는 "웅... 어어... 크으..." 울림 (기본 소리를 몇 옥타브 내리고 잔향 / 코러스 / 왜곡으로 사람 같지 않게 가공해 음절처럼 이어 붙인다)
+	Lord_Voice = { Base = "Shot", CustomLength = 3.4, Pitch = 0.2, Volume = 1.7, Length = 1.0,
+		Fx = { { "eq", { LowGain = 6, MidGain = -6, HighGain = -30 } }, { "chorus", { Depth = 0.9, Mix = 0.7 } }, { "distortion", { Level = 0.2 } }, { "reverb", { DecayTime = 3.6, WetLevel = -2 } } },
+		Layers = { { Pitch = 0.27, Volume = 1.5, Delay = 0.55 }, { Pitch = 0.17, Volume = 1.7, Delay = 1.25 }, { Pitch = 0.23, Volume = 1.5, Delay = 1.95 }, { Pitch = 0.12, Volume = 1.2, Delay = 0.0 } } },
 	UltShot = { Base = "Shot", Pitch = 1.4, Volume = 0.8, Length = 0.3, Fx = { { "chorus", { Depth = 0.5, Mix = 0.5 } } } },
 	Boom    = { CustomLength = 1.6, Base = "Enh_Hammer", Pitch = 0.45, Volume = 1.5, Length = 1.1, Fx = { { "distortion", { Level = 0.55 } }, { "reverb", { DecayTime = 1.8, WetLevel = -4 } } } },
 	LevelUp = { Base = "Enh_Success", Pitch = 1.0, Volume = 1.0, Length = 1.4, Fx = { { "reverb", { DecayTime = 1.8, WetLevel = -5 } } },

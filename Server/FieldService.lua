@@ -3050,6 +3050,7 @@ local function doomWave(player, zone)
 	if not root then return end
 	player:SetAttribute("InDoomArena", true) -- 납치 연출로 높이 올라가도 "필드 밖으로 튕김" / 구역 판별에 걸리지 않게 처음부터 켠다
 	notify(player, "⚠⚠ 압도적인 기운... 무언가가 당신을 부른다!!")
+	playSfx(player, "Lord_Voice") -- 낮게 깔리는 군주의 목소리
 	Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "최후의 군주", Text = "...군주를 쓰러뜨리다니, 강하구나. 이제 내가 직접 상대해주마.", Duration = 5, Top = true })
 	player:SetAttribute("ShakeStrength", 0.9)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)

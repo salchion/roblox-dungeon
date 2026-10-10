@@ -96,8 +96,9 @@ local function build(def, position)
 	-- 이름 + 말풍선
 	local gui = Instance.new("BillboardGui")
 	gui.Size = UDim2.new(0, 220, 0, 74)
-	gui.StudsOffset = Vector3.new(0, 3.2, 0)
-	gui.MaxDistance = 40
+	gui.StudsOffset = Vector3.new(0, 3.4, 0)
+	gui.MaxDistance = 55
+	gui.AlwaysOnTop = true -- 가게 지붕 / 간판 뒤에 서 있어도 이름과 대사가 가려지지 않게
 	gui.Parent = head
 	local title = Instance.new("TextLabel")
 	title.Size = UDim2.new(1, 0, 0, 22)
@@ -114,7 +115,7 @@ local function build(def, position)
 	bubble.BackgroundColor3 = Color3.fromRGB(250, 248, 240)
 	bubble.BackgroundTransparency = 0.05
 	bubble.Font = Enum.Font.GothamBold
-	bubble.TextSize = 13
+	bubble.TextSize = 14
 	bubble.TextColor3 = Color3.fromRGB(40, 36, 50)
 	bubble.TextWrapped = true
 	bubble.Text = ""
