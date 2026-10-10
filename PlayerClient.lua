@@ -22,7 +22,6 @@ local sfxParent = game:GetService("SoundService")
 local player = Players.LocalPlayer
 local camera = workspace.CurrentCamera
 
--- 무기는 서버가 장착해주므로 기본 툴바(숫자키 1/2/3 충돌)는 끈다
 task.spawn(function()
 	for _ = 1, 10 do
 		if pcall(StarterGui.SetCoreGuiEnabled, StarterGui, Enum.CoreGuiType.Backpack, false) then
@@ -32,9 +31,6 @@ task.spawn(function()
 	end
 end)
 
-------------------------------------------------------------
--- UI 헬퍼
-------------------------------------------------------------
 local function create(className, props, parent)
 	local instance = Instance.new(className)
 	for key, value in pairs(props) do
@@ -58,7 +54,6 @@ local function makePanel(props, parent)
 		base[key] = value
 	end
 	local frame = create("Frame", base, parent)
-	-- 통일 스타일: 큰 패널 12 / 줄(행) 8, 색을 따로 안 준 패널은 HUD 카드와 같은 남색 테두리
 	rounded(frame, (not props.BackgroundColor3 or (props.Size and props.Size.Y.Offset >= 100)) and 12 or 8)
 	if not props.BackgroundColor3 then
 		create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame)
@@ -119,9 +114,6 @@ local GRAY = Color3.fromRGB(54, 58, 82)
 
 local gui = create("ScreenGui", { Name = "HUD", ResetOnSpawn = false, IgnoreGuiInset = true }, player:WaitForChild("PlayerGui"))
 
-------------------------------------------------------------
--- 공통: 상단 좌측 정보, 알림
-------------------------------------------------------------
 local infoPanel = makePanel({ Size = UDim2.new(0, 240, 0, 176), Position = UDim2.new(0, 16, 0, 60), Visible = false }, gui) -- (예전 글자 패널: 이제 HudClient 의 카드가 대신한다. 값 계산 코드가 이 라벨을 쓰고 있어서 숨겨서만 둔다)
 local infoLabel = makeLabel({
 	Size = UDim2.new(1, -20, 1, -16),
@@ -131,7 +123,6 @@ local infoLabel = makeLabel({
 	RichText = true,
 }, infoPanel)
 
--- 경험치 막대 (정보 패널 맨 아래)
 local xpBack = create("Frame", {
 	Size = UDim2.new(1, -20, 0, 7), Position = UDim2.new(0, 10, 1, -14),
 	BackgroundColor3 = Color3.fromRGB(45, 45, 60), BorderSizePixel = 0,
@@ -142,8 +133,6 @@ local xpFill = create("Frame", {
 }, xpBack)
 rounded(xpFill, 4)
 
--- 알림(토스트)은 화면 가운데 위가 아니라 왼쪽 아래 "툴팁 자리"에 뜬다 (안내 카드 바로 위). 가운데 시야와 미션 / 배너를 가리지 않는다.
--- 던전에서는 왼쪽 아래 특성 패널 위로 올라간다.
 local toastLabel = makeLabel({
 	Name = "ToastLabel", Size = UDim2.new(0, 400, 0, 74),
 	AnchorPoint = Vector2.new(0, 1),
@@ -191,9 +180,6 @@ local function weaponText(level)
 	return Config.FormatWeapon(level), tier.Color
 end
 
-------------------------------------------------------------
--- 로비: 무기 강화창 (모바일 게임식): 가운데 큰 메달 안에서 무기가 돌고, 단계 칸이 채워지고, 큰 강화 버튼 + 망치 연출
-------------------------------------------------------------
 local enhancePanel   -- (아래 do 블록 안에서 만든다: 지역 변수 개수 제한 때문에 블록으로 감쌌다)
 local refreshEnhance
 do
@@ -225,7 +211,6 @@ local enhanceWeapon = makeLabel({
 	Font = Enum.Font.GothamBlack, TextSize = 22, TextWrapped = true,
 }, enhancePanel)
 
--- 메달: 등급 색 고리 + 뒤에서 도는 빛 + 안에서 천천히 도는 무기 3D 모델
 local medal = create("Frame", {
 	Size = UDim2.new(0, 230, 0, 230), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 86),
 	BackgroundColor3 = Color3.fromRGB(34, 30, 52), BorderSizePixel = 0,
@@ -241,7 +226,6 @@ local medalGradient = create("UIGradient", {
 	Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(0.5, 0.9), NumberSequenceKeypoint.new(1, 0.2) }),
 }, medalGlow)
 
--- 화려하게: 메달 뒤에서 도는 빛줄기 + 반짝이는 별 + 테두리 무지개 흐름 + 제목 그라데이션
 E.Rays = {}
 for i = 1, 14 do
 	local ray = create("Frame", {
@@ -308,7 +292,6 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
--- 큰 "+N" 단계 숫자 / 단계 칸 (이 무기가 진화하기까지)
 local enhanceStage = makeLabel({
 	Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 322), Font = Enum.Font.GothamBlack, TextSize = 34,
 }, enhancePanel)
@@ -320,13 +303,11 @@ local enhanceNext = makeLabel({
 	Size = UDim2.new(1, -30, 0, 22), Position = UDim2.new(0, 15, 0, 386), TextSize = 14, RichText = true,
 }, enhancePanel)
 
--- 변화 비교 (공격력 → 다음 단계) + 성공 확률
 local enhanceInfo = makeLabel({
 	Size = UDim2.new(1, -40, 0, 50), Position = UDim2.new(0, 20, 0, 414), TextSize = 15, RichText = true,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 }, enhancePanel)
 
--- 결과 연출용 큰 글자 (SUCCESS / FAIL / 진화!)
 local enhanceBanner = makeLabel({
 	Size = UDim2.new(1, 0, 0, 56), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 200),
 	Font = Enum.Font.GothamBlack, TextSize = 44, TextStrokeTransparency = 0, Visible = false, ZIndex = 8,
@@ -340,8 +321,6 @@ local hammer = makeLabel({
 	Text = "🔨", TextSize = 56, Visible = false, ZIndex = 9, Rotation = -50,
 }, enhancePanel)
 
--- 튜토리얼 중에도 "무기 진화" 미션(TutorialEnhanceCost 가 켜진 동안)에는 x10 / 최대 강화를 쓸 수 있다 (하나씩 누르는 건 너무 번거롭다).
--- 처음 강화 미션(무료 3번)에서만 하나씩 해 보게 잠근다.
 local function manyLocked()
 	return player:GetAttribute("TutorialActive") == true and player:GetAttribute("TutorialEnhanceCost") == nil
 end
@@ -384,7 +363,6 @@ local enhanceButton = makeButton({
 }, enhancePanel, function()
 	if E.EnhanceBusy then return end
 	E.EnhanceBusy = true
-	-- 망치가 내려친다 -> 메달이 흔들리고 불꽃이 튄다 (결과는 서버가 알려주면 이어서 표시)
 	hammer.Visible = true
 	hammer.Rotation = -50
 	local swing = TweenService:Create(hammer, TweenInfo.new(0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Rotation = 25, Position = UDim2.new(0.5, 20, 0, 190) })
@@ -403,7 +381,6 @@ local enhanceButton = makeButton({
 			}):Play()
 			game:GetService("Debris"):AddItem(spark, 0.5)
 		end
-		-- 메달 흔들림
 		task.spawn(function()
 			local base = medal.Position
 			for i = 1, 6 do
@@ -419,7 +396,6 @@ local enhanceButton = makeButton({
 end)
 create("UIStroke", { Color = Color3.fromRGB(190, 255, 190), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 2 }, enhanceButton)
 enhanceButton.ClipsDescendants = true
--- 꾹 누르고 있으면 계속 강화된다 (0.45초 뒤부터 0.35초마다). 골드가 모자라거나 창을 닫으면 멈춘다.
 do
 	local holding = false
 	enhanceButton.MouseButton1Down:Connect(function()
@@ -513,7 +489,6 @@ function refreshEnhance()
 	E.EnhanceAffordable = affordable
 end
 
--- 강화 버튼이 눌러볼 만하면 살짝 숨 쉬듯 커졌다 작아진다
 RunService.RenderStepped:Connect(function()
 	if enhancePanel.Visible and E.EnhanceAffordable and not E.EnhanceBusy then
 		local pulse = 1 + 0.02 * math.sin(os.clock() * 4)
@@ -525,7 +500,6 @@ Remotes.Enhance.OnClientEvent:Connect(function(ok, message, summary)
 	local oldTier = E.EnhanceShownTier
 	refreshEnhance()
 	local evolved = oldTier ~= nil and E.EnhanceShownTier ~= nil and E.EnhanceShownTier > oldTier
-	-- 결과 소리: 성공은 단계가 오를수록 음이 높아지고, 진화는 화음, 실패는 둔탁하게
 	do
 		local level = player:GetAttribute("WeaponLevel") or 0
 		local tierNow = Config.GetWeaponTier(level)
@@ -543,7 +517,6 @@ Remotes.Enhance.OnClientEvent:Connect(function(ok, message, summary)
 			SoundBank.Play(sfxParent, "Enh_Fail")
 		end
 	end
-	-- 결과 큰 글자: 성공 / 실패 / 진화
 	enhanceBanner.Visible = true
 	enhanceBanner.Position = UDim2.new(0.5, 0, 0, 200)
 	enhanceBanner.TextTransparency = 0
@@ -583,7 +556,6 @@ Remotes.OpenEnhance.OnClientEvent:Connect(function()
 	enhancePanel.Visible = true
 end)
 
--- 튜토리얼: 강화 미션이 끝나 다음 미션(모루가 목표가 아닌 것)으로 넘어가면 강화창을 자동으로 닫는다
 local lastStepIndex = 0
 Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 	if action ~= "Step" then return end
@@ -597,10 +569,6 @@ Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 end)
 end -- (강화창 do 블록 끝)
 
-------------------------------------------------------------
--- 로비: 장비창 (갑옷 / 장갑 / 신발 강화 + 보스 티켓 뽑기)
-------------------------------------------------------------
--- 장비 · 뽑기 창 (RPG식): 가운데 3D 캐릭터 + 양옆 장비 칸 6개(등급 색 윤곽선) + 오른쪽 선택한 장비 강화 + 아래 큰 뽑기 버튼
 local gearHooks = {}   -- 장비 창 안의 함수를 바깥에서 부르기 위한 표 (Rebuild: 캐릭터 3D 다시 복제)
 local gearPanel   -- (아래 do 블록에서 만든다)
 local gearMessage
@@ -631,7 +599,6 @@ makeButton({
 	gearPanel.Visible = false
 end)
 
--- 가운데: 3D 캐릭터 (천천히 돈다)
 local viewport = create("ViewportFrame", {
 	Size = UDim2.new(0, 210, 0, 330), Position = UDim2.new(0, 135, 0, 54), BackgroundColor3 = Color3.fromRGB(26, 24, 44), BorderSizePixel = 0,
 	Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1),
@@ -668,7 +635,6 @@ local powerLabel = makeLabel({
 	TextColor3 = Color3.fromRGB(255, 225, 110),
 }, gearPanel)
 
--- 장비 칸 6개 (눌러서 선택)
 local function makeSlotBox(slotKey, x, y)
 	local box = create("TextButton", {
 		Size = UDim2.new(0, 104, 0, 100), Position = UDim2.new(0, x, 0, y), BackgroundColor3 = Color3.fromRGB(34, 32, 54), BorderSizePixel = 0, Text = "", AutoButtonColor = false,
@@ -687,7 +653,6 @@ end
 for index, slotKey in ipairs(LEFT_SLOTS) do makeSlotBox(slotKey, 18, 54 + (index - 1) * 112) end
 for index, slotKey in ipairs(RIGHT_SLOTS) do makeSlotBox(slotKey, 358, 54 + (index - 1) * 112) end
 
--- 오른쪽: 선택한 장비 + 강화
 local detail = create("Frame", { Size = UDim2.new(0, 262, 0, 336), Position = UDim2.new(1, -278, 0, 54), BackgroundColor3 = Color3.fromRGB(24, 22, 40), BorderSizePixel = 0 }, gearPanel)
 rounded(detail, 12)
 local detailStroke = create("UIStroke", { Color = Color3.fromRGB(110, 90, 160), Thickness = 2 }, detail)
@@ -705,7 +670,6 @@ gearMessage = makeLabel({
 	Size = UDim2.new(1, -16, 0, 40), Position = UDim2.new(0, 8, 1, -54), Font = Enum.Font.GothamBold, TextSize = 14, RichText = true,
 }, detail)
 
--- 아래: 뽑기 (큰 버튼 + 확률)
 local gachaBar = create("Frame", { Size = UDim2.new(1, -36, 0, 128), Position = UDim2.new(0, 18, 1, -142), BackgroundColor3 = Color3.fromRGB(58, 38, 92), BorderSizePixel = 0 }, gearPanel)
 rounded(gachaBar, 14)
 create("UIStroke", { Color = Color3.fromRGB(255, 210, 120), Thickness = 2 }, gachaBar)
@@ -781,7 +745,6 @@ function refreshGear()
 		ui.Box.BackgroundColor3 = slot.Key == state.Selected and Color3.fromRGB(52, 48, 82) or Color3.fromRGB(34, 32, 54)
 	end
 
-	-- 선택한 장비 설명 + 강화
 	local slot = Config.GetGearSlot(state.Selected)
 	local rarity = player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0
 	local level = player:GetAttribute("Gear_" .. slot.Key .. "_L") or 0
@@ -829,7 +792,6 @@ function refreshGear()
 	end
 	state.Rebuild = rebuildCharacter
 end
--- 뽑기 / 강화 결과로 외형이 바뀌므로 캐릭터를 다시 복제해서 보여준다
 state.Reopen = function() rebuildCharacter() end
 gearHooks.Rebuild = rebuildCharacter
 end -- (장비 창 do 블록 끝)
@@ -852,7 +814,6 @@ Remotes.Gear.OnClientEvent:Connect(function(action, result)
 	refreshGear()
 end)
 
--- 던전 랜덤 보너스: 슬롯머신처럼 아이콘이 돌다가 [강화]와 (가끔) [패널티]가 정해진다. 고르는 건 없고 전투는 계속된다.
 do
 	local ICONS = { "🔱", "💥", "⚡", "🔥", "⏩", "🎯", "❤", "💚", "⭐", "💰", "🎫", "🌪" }
 	local PEN_ICONS = { "🪨", "😡", "💨", "🐺", "🔫", "☠" }
@@ -944,7 +905,6 @@ do
 	end)
 end
 
--- 뽑기로 지금 끼고 있는 것보다 좋은 장비가 나오면 "강한 장비로 자동 장착" 버튼이 떠오른다 (누르면 부위마다 가장 좋은 장비로 교체)
 do
 	local popup = create("Frame", {
 		Name = "UpgradePopup", Size = UDim2.new(0, 330, 0, 84), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 96),
@@ -975,8 +935,6 @@ do
 	end)
 end
 
--- 뽑기 연출 (모든 등급): 캡슐이 툭 떨어지고 → 덜덜 흔들리다가(높은 등급일수록 오래, 색이 새어 나옴) → 퍽 터지며 카드가 나온다.
--- 아무 곳이나 누르면 건너뛴다.
 do
 	local ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
 	local SHAKE = { 0.35, 0.5, 0.85, 1.25, 1.7 }  -- 등급별 흔들리는 시간
@@ -1006,7 +964,6 @@ do
 		fade(root, { BackgroundTransparency = 0.35 }, 0.2)
 
 		task.spawn(function()
-			-- 1) 캡슐 낙하
 			local capsule = create("Frame", {
 				Size = UDim2.new(0, 96, 0, 96), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, -80),
 				BackgroundColor3 = Color3.fromRGB(235, 235, 245), BorderSizePixel = 0, ZIndex = 62,
@@ -1019,7 +976,6 @@ do
 			task.delay(0.4, function() SoundBank.Play(sfxParent, "Gacha_Drop") end)
 			pause(0.55)
 
-			-- 2) 흔들림 + 높은 등급일수록 캡슐 테두리에 등급 색이 새어 나온다 (두근두근)
 			local shakeTime = SHAKE[rarity]
 			local started = os.clock()
 			local hintColor = rarity >= 3 and color or Color3.fromRGB(190, 190, 210)
@@ -1038,7 +994,6 @@ do
 			end
 			if not root.Parent then return end
 
-			-- 3) 퍽! 터지며 빛 고리 + 번쩍임 + 카드
 			capsule:Destroy()
 			SoundBank.Play(sfxParent, "Gacha_Pop" .. rarity)
 			if rarity >= 4 then SoundBank.Play(sfxParent, "Skill_Ult", { Volume = 0.5 }) end
@@ -1058,7 +1013,6 @@ do
 			fade(flash, { BackgroundTransparency = 1 }, 0.5)
 
 			if multi then
-				-- 10연 결과: 카드가 화다닥 한 장씩 튀어나온다 (높은 등급은 빛 고리 + 무지개 테두리)
 				local grid = create("Frame", { Size = UDim2.new(0, 660, 0, 380), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 62 }, root)
 				makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 0), Text = string.format("🎰 %d연 뽑기 결과", #result.Rolls), TextSize = 26, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 230, 150), ZIndex = 63 }, grid)
 				local counts = {}
@@ -1173,7 +1127,6 @@ Remotes.OpenGear.OnClientEvent:Connect(function()
 	refreshGear()
 end)
 
--- 튜토리얼: 뽑기 미션이 끝나 다음 미션으로 넘어가면 장비 / 뽑기창을 자동으로 닫는다 (결과를 볼 시간을 준 뒤)
 local lastGearStep = 0
 Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 	if action ~= "Step" then return end
@@ -1186,9 +1139,6 @@ Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 	end
 end)
 
-------------------------------------------------------------
--- 로비: 파티 패널
-------------------------------------------------------------
 local lobbyFrame = create("Frame", { Name = "LobbyFrame", Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1 }, gui)
 
 local partyPanel = makePanel({
@@ -1297,7 +1247,6 @@ local function refreshParty()
 	end
 end
 
--- 여러 신호가 한꺼번에 와도 한 번만 다시 그리도록
 local partyRefreshQueued = false
 local function queuePartyRefresh()
 	if partyRefreshQueued then return end
@@ -1329,7 +1278,6 @@ Players.PlayerRemoving:Connect(function(other)
 	queuePartyRefresh()
 end)
 
--- 초대 팝업
 local invitePanel = makePanel({
 	Size = UDim2.new(0, 340, 0, 100),
 	AnchorPoint = Vector2.new(0.5, 0),
@@ -1383,7 +1331,6 @@ Remotes.Party.OnClientEvent:Connect(function(action, a, b)
 	end
 end)
 
--- (무기 강화 / 장비 뽑기는 광장의 모루 / 뽑기 기계 앞에서만 한다. 화면 하단 버튼은 없앴다)
 
 makeLabel({
 	Name = "ControlsHint", Size = UDim2.new(0, 560, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -78),
@@ -1391,9 +1338,6 @@ makeLabel({
 	TextSize = 14, TextColor3 = Color3.fromRGB(220, 220, 235), TextStrokeTransparency = 0.5,
 }, lobbyFrame)
 
-------------------------------------------------------------
--- 던전: 웨이브 배너 / 보스 체력바 / 스탯 패널 / 결과
-------------------------------------------------------------
 local dungeonFrame = create("Frame", { Name = "DungeonFrame", Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Visible = false }, gui)
 
 local banner = makePanel({
@@ -1412,7 +1356,6 @@ local bannerMutator = makeLabel({
 	TextSize = 13, TextColor3 = Color3.fromRGB(255, 205, 100), Font = Enum.Font.GothamBold,
 }, banner)
 
--- 버티기 중 위쪽 두 줄: (1) 다음 랜덤 보너스까지 차오르는 막대 (밀리는 중에도 "곧 뭔가 터진다"는 기대감) (2) 몬스터 수 / 한도 (넘기면 압도당해 실패)
 local bonusBar = makePanel({
 	Name = "BonusBar", Size = UDim2.new(0, 420, 0, 22), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 118), Visible = false,
 }, dungeonFrame)
@@ -1435,7 +1378,6 @@ local bossName = makeLabel({
 	Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 15, TextStrokeTransparency = 0.4,
 }, bossBar)
 
--- 내 특성 요약 패널 (랜덤 보너스로 쌓인 특성을 보여준다)
 local statPanel = makePanel({
 	Name = "StatPanel", Size = UDim2.new(0, 380, 0, 170), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 16, 1, -16),
 }, dungeonFrame)
@@ -1461,9 +1403,6 @@ end)
 local dungeonState = nil
 local openDungeonSelect -- 던전 선택창 (아래에서 정의)
 
-------------------------------------------------------------
--- 배경음악: Config.Audio.Music 에 소리 ID를 넣으면 로비 / 던전 / 보스전마다 부드럽게 바뀐다
-------------------------------------------------------------
 local tracks = {}
 local playlists = {} -- [이름] = { 오디오 ID... } (곡이 여러 개면 끝날 때마다 다른 곡으로 바뀐다)
 local function nextInPlaylist(name, sound)
@@ -1503,7 +1442,6 @@ if next(tracks) == nil and RunService:IsStudio() then
 	print("[음악] 배경음악이 비어 있어요. ReplicatedStorage > AudioIds 스크립트에 오디오 ID(숫자)를 적으면 로비 / 필드 / 던전 / 보스 음악이 나와요. (README의 '소리 넣는 법' 참고)")
 end
 
--- 설정창에서 바꾸는 값
 local settings = { Shake = true, Radar = true, ShotVolume = 1 }
 local toggleHelp -- 도움말/설정창 (아래에서 정의)
 
@@ -1549,7 +1487,6 @@ local function updateMusic()
 	local zone = currentZone()
 	if tracks.Boss then tracks.Boss.PlaybackSpeed = 1 end
 	if player:GetAttribute("InDoomArena") then
-		-- 최후의 군주와의 결투: 전용 음악(Doom)이 있으면 그걸, 없으면 보스전 음악을 더 빠르고 급하게
 		if tracks.Doom then
 			playMusic("Doom")
 		elseif tracks.Boss then
@@ -1656,7 +1593,6 @@ local function refreshBanner()
 	end
 end
 
--- 결과 화면
 local resultPanel = makePanel({
 	Size = UDim2.new(0, 460, 0, 340), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.45, 0), Visible = false,
 }, dungeonFrame)
@@ -1711,9 +1647,6 @@ Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
 	end
 end)
 
-------------------------------------------------------------
--- 구역 전환 / 정보 갱신
-------------------------------------------------------------
 local function refreshInfo()
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local name, color = weaponText(level)
@@ -1745,7 +1678,6 @@ local function refreshInfo()
 	)
 end
 
--- 열쇠 회복 시간이 흐르는 걸 보여주려고 1초마다 정보를 갱신
 task.spawn(function()
 	while true do
 		task.wait(1)
@@ -1760,10 +1692,8 @@ local function refreshZone()
 	local zone = currentZone()
 	lobbyFrame.Visible = zone ~= "Dungeon"
 	dungeonFrame.Visible = zone == "Dungeon"
-	-- 조작 안내 글자는 로비에서만 (필드에서는 아래의 스킬바와 겹쳐서 안 보이므로 숨긴다)
 	local hint = lobbyFrame:FindFirstChild("ControlsHint")
 	if hint then hint.Visible = zone == "Lobby" end
-	-- 무기 강화 / 장비 뽑기 버튼은 로비에서만 (필드 / 던전에서는 숨기고, 열려 있던 창도 닫는다)
 	for _, child in ipairs(lobbyFrame:GetChildren()) do
 		if child.Name == "LobbyOnlyButton" then
 			child.Visible = zone == "Lobby"
@@ -1808,15 +1738,9 @@ end)
 refreshZone()
 refreshEnhance()
 
-------------------------------------------------------------
--- 입력: 마우스 방향 공격 (누르고 있으면 연사), 숫자키 스탯 투자
-------------------------------------------------------------
 local holding = false
 local nextAttack = 0
 
-------------------------------------------------------------
--- Shift 달리기 / Q 대시
-------------------------------------------------------------
 local sprinting = false
 local sliding = false
 
@@ -1833,9 +1757,6 @@ player:GetAttributeChangedSignal("GearSpeed"):Connect(applySpeed)
 player:GetAttributeChangedSignal("TrainSpeed"):Connect(applySpeed)
 player:GetAttributeChangedSignal("PetSpeed"):Connect(applySpeed)
 
--- Q: 대시. 이동 방향(가만히 있으면 바라보는 방향)으로 순간 폭발적으로 튀어 나간다. 공중에서도 쓸 수 있고
--- (공중에선 높이가 유지된 채 수평으로 휙), 최대 DashCharges 번까지 연속으로 쓸 수 있다. 쓴 만큼 시간이 지나면 하나씩 충전.
--- 연출: 잔상(몸 모양 유령) + 바람 줄기 + 화면 FOV 확 벌어짐.
 settings.DashCharges = Config.Player.DashCharges  -- 남은 대시 횟수 (스킬바에 표시)
 settings.DashRefillAt = 0                        -- 다음 충전 시각
 
@@ -1878,7 +1799,6 @@ local function slide()
 		direction = root.CFrame.LookVector
 	end
 	direction = Vector3.new(direction.X, 0, direction.Z).Unit
-	-- 진짜로 공중일 때만 높이 고정 (계단 위에서 FloorMaterial 이 잠깐 Air 가 되는 걸로 오판하면 대시가 위로 튕겨 나간다)
 	local airborne = false
 	if humanoid.FloorMaterial == Enum.Material.Air then
 		local params = RaycastParams.new()
@@ -1890,7 +1810,6 @@ local function slide()
 	local attachment = Instance.new("Attachment")
 	attachment.Parent = root
 
-	-- 땅에서는 중력 그대로, 공중에서는 높이를 유지한 채 수평으로 쏜다 (건즈식 공중 대시)
 	local velocity = Instance.new("LinearVelocity")
 	velocity.Attachment0 = attachment
 	velocity.VelocityConstraintMode = Enum.VelocityConstraintMode.Vector
@@ -1900,7 +1819,6 @@ local function slide()
 	velocity.VectorVelocity = direction * P.DashSpeed
 	velocity.Parent = root
 
-	-- 바람 줄기 (몸 뒤로 길게)
 	local trailTop = Instance.new("Attachment")
 	trailTop.Position = Vector3.new(0, 1.6, 0)
 	trailTop.Parent = root
@@ -1916,7 +1834,6 @@ local function slide()
 	trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(1, 1) })
 	trail.Parent = root
 
-	-- 출발 먼지 / 충격
 	local puff = Instance.new("Attachment")
 	puff.Position = Vector3.new(0, -2.6, 0)
 	puff.Parent = root
@@ -1946,7 +1863,6 @@ local function slide()
 		if humanoid.Parent then
 			humanoid.AutoRotate = autoRotate
 		end
-		-- 끝났을 때 속도를 조금 남겨서 뚝 멈추지 않고 이어 달리게 한다
 		if root.Parent then
 			local vertical = root.AssemblyLinearVelocity.Y
 			root.AssemblyLinearVelocity = direction * P.RunSpeed * 1.1 + Vector3.new(0, vertical, 0)
@@ -1965,7 +1881,6 @@ local function slide()
 			finish()
 			return
 		end
-		-- 시작은 폭발적으로, 끝은 부드럽게 (ease-out)
 		velocity.VectorVelocity = direction * (P.DashSpeed * (1 - t * t * 0.7))
 		if os.clock() - lastGhost > 0.035 then
 			lastGhost = os.clock()
@@ -1985,9 +1900,6 @@ RunService.RenderStepped:Connect(function(dt)
 	camera.FieldOfView += (target - camera.FieldOfView) * math.min(1, dt * 8)
 end)
 
-------------------------------------------------------------
--- 조준 / 공격 / 자동 공격(락온, R)
-------------------------------------------------------------
 local autoMode = false
 local lockTarget = nil     -- { Kind = "Dummy" | "Monster", Instance, Part }
 local nextSearch = 0
@@ -2031,14 +1943,12 @@ local function weaponRange()
 	return Config.GetRange(player, Config.GetPlayerWeapon(player))
 end
 
--- 이 더미를 지금 내 전투력으로 때려서 골드를 받을 수 있는가? (방어력보다 전투력이 낮으면 튕겨 나간다)
 local function dummyUsable(model)
 	local index = tonumber(string.sub(model.Name, 6))
 	local info = index and Config.Dummy.List[index]
 	return info ~= nil and (player:GetAttribute("Power") or 0) >= info.RequiredPower
 end
 
--- 맞은 Instance 가 락온할 수 있는 대상(허수아비 / 필드 몬스터 / 던전 몬스터)이면 대상 정보를 만든다
 local function resolveTarget(instance)
 	if not instance then return nil end
 
@@ -2061,7 +1971,6 @@ local function resolveTarget(instance)
 	return nil
 end
 
--- 화면 안에 있고(뒤쪽 / 화면 밖 제외) 사이에 벽이 없어서 실제로 "보이는" 대상인가
 local function isTargetVisible(target, root)
 	local position = target.Part.Position
 	local _, onScreen = camera:WorldToViewportPoint(position)
@@ -2077,26 +1986,22 @@ end
 local function isTargetValid(target, root)
 	if not target or not target.Instance.Parent or not target.Part.Parent then return false end
 	if target.Kind == "Dummy" and not dummyUsable(target.Instance) then return false end
-	-- 아직 열리지 않은 구역(관문 너머)의 몬스터는 자동 조준하지 않는다 (서버도 피해를 주지 않는다)
 	if target.Kind == "Monster" and currentZone() == "Field" then
 		local F = Config.Field
 		local zoneIndex = F.ZoneOfX(target.Part.Position.X)
 		if zoneIndex > math.min(F.ZoneCount, (player:GetAttribute("ClearedZone") or 0) + 1) then return false end
 	end
-	-- 던전은 몬스터가 방마다 잠들어 있으니, 가까이(깨어나는 거리) 있는 것만 자동 조준한다
 	local reach = currentZone() == "Dungeon" and math.min(weaponRange() * 0.95, 80) or weaponRange() * 0.95
 	if (target.Part.Position - root.Position).Magnitude > reach then return false end
 	return isTargetVisible(target, root)
 end
 
--- 지금 구역에서 때릴 수 있는 가장 가까운 대상
 local function findNearestTarget(root)
 	local zone = currentZone()
 	local best, bestDistance = nil, math.huge
 
 	local function consider(target)
 		if isTargetValid(target, root) then
-			-- 점수 = 화면 중앙(조준점)에서 떨어진 정도 + 거리 약간. 내가 보고 있는 쪽의 적이 우선이고, 비슷하면 가까운 적.
 			local screen = camera:WorldToViewportPoint(target.Part.Position)
 			local viewport = camera.ViewportSize
 			local fromCenter = (Vector2.new(screen.X, screen.Y) - viewport / 2).Magnitude / viewport.Y -- 0 = 정중앙
@@ -2114,7 +2019,6 @@ local function findNearestTarget(root)
 		if dummies then
 			for _, model in ipairs(dummies:GetChildren()) do
 				if model:IsA("Model") and model.PrimaryPart then
-					-- 허수아비는 "내 레벨로 칠 수 있는 가장 높은 레벨"(보상 배율이 큰 쪽)을 우선한다
 					local target = { Kind = "Dummy", Instance = model, Part = model.PrimaryPart }
 					if isTargetValid(target, root) then
 						local order = tonumber(string.sub(model.Name, 6)) or 0
@@ -2165,7 +2069,6 @@ local hitMarkerCrit = false
 local shake = 0          -- 카메라 흔들림 세기
 local crosshairKick = 0 -- 쏠 때마다 조준점이 벌어졌다 돌아오는 연출용
 
--- 월드 좌표를 향해 캐릭터를 돌려세우고 서버에 공격 요청
 local function fireAt(worldPoint, manual)
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
@@ -2184,7 +2087,6 @@ end
 local function attack(screenPosition)
 	local point, instance = getAimPoint(screenPosition)
 
-	-- 자동 공격 중에 대상을 직접 클릭하면 그 대상으로 락온을 바꾼다 (배율이 다른 허수아비를 고를 수 있음)
 	if autoMode then
 		local target = resolveTarget(instance)
 		if target then
@@ -2207,19 +2109,16 @@ local function toggleAuto()
 	toast(autoMode and "🔒 자동 공격 ON — 허수아비/몬스터를 직접 클릭하면 그 대상으로 고정돼요 (R로 끄기)" or "자동 공격 OFF")
 end
 
--- 마을(로비)로 돌아오면 자동 공격을 끈다 (마을에서는 쏠 일이 없다)
 player:GetAttributeChangedSignal("Zone"):Connect(function()
 	if autoMode and player:GetAttribute("Zone") == "Lobby" and not player:GetAttribute("TutorialDoom") then toggleAuto() end -- 첫 군주전(튜토리얼) 중에는 끄지 않는다
 end)
 
--- 튜토리얼 허수아비 미션이 끝나면 서버가 알려준다 -> 자동 공격이 켜져 있으면 끈다
 player:GetAttributeChangedSignal("AutoOffTick"):Connect(function()
 	if autoMode and player:GetAttribute("Zone") == "Lobby" then -- 허수아비는 마을에서만 친다: 필드(군주전)에서는 절대 끄지 않는다
 		toggleAuto()
 	end
 end)
 
--- 자동 공격(R) 안내: (1) 언제나 화면에 보이는 "R 자동 공격" 버튼(눌러도 켜짐, 켜지면 초록), (2) 처음에는 화면 한가운데에 큼직한 안내
 do
 	local autoButton = makeButton({
 		Name = "AutoButton", Size = UDim2.new(0, 140, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0.5, 150, 1, -14),
@@ -2260,7 +2159,6 @@ do
 		autoText.Text = autoMode and "<font color='#8fffb0'><b>자동 공격</b>\nON</font>" or "<b>자동 공격</b>\n<font color='#9aa0c8'>OFF</font>"
 		local zone = currentZone()
 		autoButton.Visible = zone == "Lobby" or zone == "Field" or zone == "Dungeon"
-		-- 첫 안내: 한 번도 안 써 봤으면 큼직하게 (쓰거나 40초가 지나면 사라진다)
 		local showHint = not used and os.clock() > shownAt and os.clock() < shownAt + 40 and zone ~= "Dungeon" and not (settings.MenuPanel and settings.MenuPanel.Visible)
 		hint.Visible = showHint
 	end)
@@ -2271,13 +2169,9 @@ local function attackCooldown()
 	return Config.Player.BaseCooldown * Config.GetPlayerWeapon(player).Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0))) -- 펫 가속 포함
 end
 
-------------------------------------------------------------
--- 메뉴 (I): 캐릭터 / 무기 / 퀘스트 / 업적 / 랭킹
-------------------------------------------------------------
 local questState = nil   -- 서버가 보내준 퀘스트/업적/칭호 상태
 local rankList = {}      -- 서버가 보내준 전투력 랭킹
 
--- 화면 오른쪽의 작은 전투력 랭킹 (로비 / 필드에서 항상 보인다. 광장의 랭킹판을 대신한다)
 do
 	local mini = makePanel({
 		Name = "RankMini", Size = UDim2.new(0, 270, 0, 138), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0, 444),
@@ -2457,8 +2351,6 @@ local function buildCharacterTab()
 	end
 end
 
--- 무기 발사 시연 (무기 탭): 총 3D 모델 + 앞에 선 슬라임 몬스터를 향해 실제 탄 모양이 날아가 맞고 터지는 걸 반복해서 보여준다.
--- 내가 못 끼는 무기도 도감에서 누르면 똑같이 볼 수 있다.
 do
 	require(ReplicatedStorage:WaitForChild("FireDemo"))(settings, { create = create })
 end
@@ -2470,7 +2362,6 @@ local function buildWeaponTab()
 	local stage = Config.GetWeaponStage(level)
 	sectionTitle(string.format("🔫 무기 도감 — 무기마다 정해진 횟수만큼 강화하면 다음 무기로 자동 진화해요 (총 %d종)", #tiers))
 
-	-- 도감에서 누른 무기(없으면 지금 내 무기)를 보여준다. 내가 못 끼는 무기도 눌러서 발사 모습을 볼 수 있다.
 	local shown = tiers[settings.PreviewTier or current.Index] or current
 	local isMine = shown.Index == current.Index
 	local classInfo = Config.WeaponTypes[shown.Class]
@@ -2517,7 +2408,6 @@ local function buildWeaponTab()
 		),
 	}, header)
 
-	-- 도감: 지나온 무기 / 지금 / 앞으로 만날 무기 (모두 이름이 보여서 "저걸 갖고 싶다"가 생기게)
 	for _, tier in ipairs(tiers) do
 		local owned = tier.Index < current.Index
 		local isCurrent = tier.Index == current.Index
@@ -2527,7 +2417,6 @@ local function buildWeaponTab()
 		local nameColor = (owned or isCurrent) and hex(tier.Color) or "777788"
 		rowText(row, string.format("%s  <font color='#aaaabb'>%d.</font> <font color='#%s'><b>%s</b></font>   <font size='12' color='#8888aa'>%s · +%d 단계부터</font>",
 			mark, tier.Index, nameColor, tier.Name, classOf.Name, tier.MinLevel), 14, 24)
-		-- 눌러서 그 무기의 발사 시연을 위에서 본다 (선택한 줄은 테두리)
 		if (settings.PreviewTier or current.Index) == tier.Index then
 			create("UIStroke", { Color = Color3.fromRGB(255, 225, 120), Thickness = 2 }, row)
 		end
@@ -2630,7 +2519,6 @@ local function buildInventoryTab()
 		Remotes.Inventory:FireServer("ScrapBelow", 2)
 	end)
 
-	-- 장착 중인 장비 / 가방 장비 구분 + 세트 착용 수
 	local equipped, bag, setCounts, byId = {}, {}, {}, {}
 	for _, item in ipairs(state.Items) do
 		byId[item.Id] = item
@@ -2649,7 +2537,6 @@ local function buildInventoryTab()
 		selected = equipped.Armor or equipped.Helmet or equipped.Gloves or equipped.Boots or equipped.Ring or equipped.Necklace or bag[1]
 	end
 
-	-- 등급 테두리: 등급이 높을수록 굵고 밝고, 영웅 이상은 숨 쉬듯 빛나며, 신화는 무지개가 돈다
 	local function rarityOutline(frame, rarity, thick)
 		local color = Config.Gear.RarityColors[rarity]
 		local stroke = create("UIStroke", { Color = color, Thickness = thick or ({ 2, 2, 3, 3.5, 4.5 })[rarity], ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame)
@@ -2669,12 +2556,32 @@ local function buildInventoryTab()
 		return stroke
 	end
 
+	local function setPips(count)
+		return string.rep("●", math.min(count, 3)) .. string.rep("○", math.max(0, 3 - count))
+	end
+	-- 세트 장비 표시: 세트색 배경 틴트 + 안쪽 테두리 + 구역 리본 (2부위 이상 맞추면 더 밝고 숨 쉬듯 빛남)
+	local function setDecor(tile, setKey, pieces, ribbonPos, ribbonSize, radius)
+		local def = setKey and Config.Sets[setKey]
+		if not def then return end
+		local active = (pieces or 0) >= 2
+		local tint = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = def.Color, BorderSizePixel = 0, ZIndex = 0, Active = false }, tile)
+		rounded(tint, radius or 8)
+		create("UIGradient", { Rotation = 90, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, active and 0.4 or 0.62), NumberSequenceKeypoint.new(1, active and 0.8 or 0.92) }) }, tint)
+		local inner = create("Frame", { Size = UDim2.new(1, -6, 1, -6), Position = UDim2.new(0, 3, 0, 3), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 2, Active = false }, tile)
+		rounded(inner, (radius or 8) - 2)
+		local stroke = create("UIStroke", { Color = def.Color, Thickness = active and 2 or 1.5, Transparency = active and 0 or 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, inner)
+		if active then
+			TweenService:Create(stroke, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.6 }):Play()
+		end
+		local pill = create("Frame", { Size = ribbonSize, Position = ribbonPos, BackgroundColor3 = def.Color, BorderSizePixel = 0, ZIndex = 3, Active = false }, tile)
+		rounded(pill, 6)
+		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = def.Zone and (def.Zone .. "구역") or "세트", TextSize = 12, TextColor3 = Color3.fromRGB(20, 20, 30), Font = Enum.Font.GothamBlack, TextWrapped = false, ZIndex = 4 }, pill)
+	end
+
 	local SLOT_ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Weapon = "🔫", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
 
-	-- ===== 위쪽: 캐릭터(가운데 3D) + 장비 칸(양옆) + 선택한 아이템 설명 =====
 	local top = newRow(500, Color3.fromRGB(30, 32, 46))
 
-	-- 3D 캐릭터: 지금 입고 있는 모습 그대로 복제해서 보여주고, 천천히 돈다
 	local viewport = create("ViewportFrame", {
 		Size = UDim2.new(0, 230, 0, 330), Position = UDim2.new(0, 108, 0, 12), BackgroundColor3 = Color3.fromRGB(20, 22, 34), BorderSizePixel = 0,
 		Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1),
@@ -2711,7 +2618,28 @@ local function buildInventoryTab()
 	end
 	makeLabel({ Size = UDim2.new(0, 230, 0, 22), Position = UDim2.new(0, 108, 0, 350), Text = string.format("⚡ 전투력 %d", player:GetAttribute("Power") or 0), TextSize = 16, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, top)
 
-	-- 장비 칸 4개: 왼쪽(무기 / 장갑), 오른쪽(갑옷 / 신발)
+	do
+		local rowsShown = 0
+		for _, key in ipairs(Config.Sets.ZoneKeys) do
+			local count = setCounts[key] or 0
+			if count >= 2 then
+				local def = Config.Sets[key]
+				local bar = create("Frame", { Size = UDim2.new(0, 230, 0, 26), Position = UDim2.new(0, 108, 0, 378 + rowsShown * 30), BackgroundColor3 = def.Color, BorderSizePixel = 0 }, top)
+				rounded(bar, 8)
+				create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.55), NumberSequenceKeypoint.new(1, 0.9) }) }, bar)
+				local glow = create("UIStroke", { Color = def.Color, Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, bar)
+				TweenService:Create(glow, TweenInfo.new(0.9, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.6 }):Play()
+				makeLabel({
+					Size = UDim2.new(1, -10, 1, 0), Position = UDim2.new(0, 5, 0, 0), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left,
+					Text = string.format("%s <b>%s</b>  <font color='#%s'>%s</font> %d/3", def.Icon, def.Name, hex(def.Color), setPips(count), count),
+				}, bar)
+				rowsShown += 1
+			end
+		end
+		if rowsShown == 0 then
+			makeLabel({ Size = UDim2.new(0, 230, 0, 30), Position = UDim2.new(0, 108, 0, 378), Text = "같은 세트 2부위↑ 착용 시 세트 효과 발동", TextSize = 12, TextWrapped = true, TextColor3 = Color3.fromRGB(120, 124, 150) }, top)
+		end
+	end
 	local function slotBox(slotKey, x, y)
 		local item = equipped[slotKey]
 		local rarity = item and item.Rarity or 0
@@ -2732,6 +2660,7 @@ local function buildInventoryTab()
 			makeLabel({ Size = UDim2.new(1, -6, 0, 36), Position = UDim2.new(0, 3, 0, 46), Text = tier.Name, TextSize = 12, TextWrapped = true, TextColor3 = tier.Color, Font = Enum.Font.GothamBold }, box)
 		elseif item then
 			rarityOutline(box, rarity)
+			setDecor(box, item.Set, setCounts[item.Set], UDim2.new(0, 4, 0, 4), UDim2.new(0, 44, 0, 16), 10)
 			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 4), Text = SLOT_ICONS[slotKey], TextSize = 32 }, box)
 			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 44), Text = Config.ItemDisplayName(item), TextSize = 11, TextWrapped = true, TextColor3 = Config.Gear.RarityColors[rarity], Font = Enum.Font.GothamBold }, box)
 			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 64), Text = string.format("+%d", item.Level), TextSize = 13, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, box)
@@ -2745,7 +2674,6 @@ local function buildInventoryTab()
 		end
 		return box
 	end
-	-- 왼쪽: 투구 / 갑옷 / 장갑   오른쪽: 목걸이 / 반지 / 신발   오른쪽 아래: 무기
 	slotBox("Helmet", 10, 12)
 	slotBox("Armor", 10, 108)
 	slotBox("Gloves", 10, 204)
@@ -2775,7 +2703,6 @@ local function buildInventoryTab()
 			makeLabel({ Size = UDim2.new(1, -4, 0, 30), Position = UDim2.new(0, 2, 0, 52), Text = "펫 기능\n열기 (P)", TextSize = 11, TextWrapped = true, TextColor3 = Color3.fromRGB(150, 150, 175) }, box)
 		end
 	end
-	-- 선택한 아이템 설명
 	local detail = create("Frame", { Size = UDim2.new(1, -462, 1, -24), Position = UDim2.new(0, 450, 0, 12), BackgroundColor3 = Color3.fromRGB(24, 26, 38), BorderSizePixel = 0 }, top)
 	rounded(detail, 10)
 	if selected then
@@ -2798,29 +2725,46 @@ local function buildInventoryTab()
 		end
 		if selected.Set and Config.Sets[selected.Set] then
 			local setDef = Config.Sets[selected.Set]
-			local b2, b3 = {}, {}
-			for _, b in ipairs(setDef.Bonuses[2]) do table.insert(b2, Config.FormatBonus(b.Stat, b.Value)) end
-			for _, b in ipairs(setDef.Bonuses[3]) do table.insert(b3, Config.FormatBonus(b.Stat, b.Value)) end
+			local have = setCounts[selected.Set] or 0
+			local lit, dim = "#" .. hex(setDef.Color), "#6c7088"
 			if setDef.Zone then
-				table.insert(lines, string.format("<font size='12' color='#%s'><b>📍 구역 %d · %s 세트 — 그 구역에서 떨어지거나, 세트 조각으로 각인해서 얻어요!</b></font>", hex(setDef.Color), setDef.Zone, Config.Field.ZoneNames[setDef.Zone]))
+				table.insert(lines, string.format("<font size='12' color='%s'>📍 %d구역 %s · 그 구역 드랍 / 세트 각인</font>", lit, setDef.Zone, Config.Field.ZoneNames[setDef.Zone]))
 			end
-			table.insert(lines, string.format("<font size='12' color='#%s'>◈ 세트 [%s] %d/3\n  2부위: %s\n  3부위: %s</font>", hex(setDef.Color), setDef.Name, setCounts[selected.Set] or 0, table.concat(b2, ", "), table.concat(b3, ", ")))
-				local augInfo = setDef.Aug and Config.AugInfo[setDef.Aug]
-				if augInfo then
-					table.insert(lines, string.format("<font size='12' color='#%s'><b>%s 세트 효과: %s</b> — 2부위 1단계 · 3부위 3단계\n  <font color='#cfd6f0'>%s</font></font>", hex(augInfo.Color), augInfo.Icon, augInfo.Name, augInfo.Desc))
-				end
+			for _, tier in ipairs({ 2, 3 }) do
+				local parts = {}
+				for _, b in ipairs(setDef.Bonuses[tier]) do table.insert(parts, Config.FormatBonus(b.Stat, b.Value)) end
+				local on = have >= tier
+				table.insert(lines, string.format("<font size='12' color='%s'>%s <b>%d부위</b>  %s</font>", on and lit or dim, on and "✔" or "○", tier, table.concat(parts, ", ")))
+			end
+			local augInfo = setDef.Aug and Config.AugInfo[setDef.Aug]
+			if augInfo then
+				local lv = have >= 3 and Config.Sets.AugLevelByPieces[3] or (have >= 2 and Config.Sets.AugLevelByPieces[2] or 0)
+				local ac = lv > 0 and ("#" .. hex(augInfo.Color)) or dim
+				table.insert(lines, string.format("<font size='12' color='%s'><b>%s %s</b> %s</font>\n  <font color='%s'>%s</font>", ac, augInfo.Icon, augInfo.Name, lv > 0 and ("✔ " .. lv .. "단계") or "○ 2부위 1단계 · 3부위 3단계", lv > 0 and "#cfd6f0" or dim, augInfo.Desc))
+			end
 		end
-		-- 지금 장착한 같은 부위 장비와 비교
 		local current = equipped[selected.Slot]
 		if current and current.Id ~= selected.Id then
 			local diff = selected.Score - current.Score
 			table.insert(lines, diff >= 0 and string.format("<font color='#78ff8c'>장착 중인 것보다 ▲ +%d</font>", diff) or string.format("<font color='#ff8c8c'>장착 중인 것보다 ▼ %d</font>", diff))
 		end
+		local bandH = 0
+		if selected.Set and Config.Sets[selected.Set] then
+			local setDef = Config.Sets[selected.Set]
+			local have = setCounts[selected.Set] or 0
+			bandH = 32
+			local band = create("Frame", { Size = UDim2.new(1, 0, 0, 28), BackgroundColor3 = setDef.Color, BorderSizePixel = 0 }, detail)
+			rounded(band, 10)
+			create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 0.85) }) }, band)
+			makeLabel({
+				Size = UDim2.new(1, -16, 1, 0), Position = UDim2.new(0, 10, 0, 0), RichText = true, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left,
+				Text = string.format("%s <b>%s 세트</b>   %s %d/3 <font size='11'>착용</font>", setDef.Icon, setDef.Name, setPips(have), have),
+			}, band)
+		end
 		makeLabel({
-			Size = UDim2.new(1, -20, 1, -172), Position = UDim2.new(0, 10, 0, 8), Text = table.concat(lines, "\n"), TextSize = 14, RichText = true,
+			Size = UDim2.new(1, -20, 1, -172 - bandH), Position = UDim2.new(0, 10, 0, 8 + bandH), Text = table.concat(lines, "\n"), TextSize = 14, RichText = true,
 			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 		}, detail)
-		-- 세트 각인: 선택한 장비 바로 아래에서 한눈에 (구역별 세트 조각으로 그 구역 세트 장비로 바꾼다)
 		do
 			local cost = Config.Sets.Imprint.Cost[selected.Rarity]
 			local zoneCount = Config.Field.ZoneCount
@@ -2875,7 +2819,6 @@ local function buildInventoryTab()
 		makeLabel({ Size = UDim2.new(1, -20, 1, -20), Position = UDim2.new(0, 10, 0, 10), Text = "장비가 없어요.\n필드에서 몬스터를 잡거나 뽑기로 얻어보세요!", TextSize = 15, TextColor3 = Color3.fromRGB(150, 150, 170) }, detail)
 	end
 
-	-- ===== 아래쪽: 가방 칸(격자) =====
 	sectionTitle(string.format("🎒 가방 (%d / %d) — 칸을 누르면 위에 자세히 나와요", state.BagCount, state.Capacity))
 	local columns = 10
 	local rowsNeeded = math.max(1, math.ceil(#bag / columns))
@@ -2911,12 +2854,11 @@ local function buildInventoryTab()
 			makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0, 2, 0, 3), Text = "✦", TextSize = 12, TextColor3 = Color3.fromRGB(255, 184, 77) }, tile)
 		end
 		if item.Set then
-			makeLabel({ Size = UDim2.new(1, 0, 0, 12), Position = UDim2.new(0, 0, 1, -14), Text = "세트", TextSize = 10, TextColor3 = Config.Sets[item.Set].Color, Font = Enum.Font.GothamBold }, tile)
+			setDecor(tile, item.Set, setCounts[item.Set], UDim2.new(0, 5, 1, -17), UDim2.new(1, -10, 0, 14), 8)
 		end
 	end
 end
 
--- 서버가 보낸 시점 기준으로 남은 시간 계산 (내 PC 시계와 서버 시계가 달라도 정확)
 local function growthRemaining(endAt)
 	return endAt - (growthState.ServerTime + (os.clock() - growthReceivedAt))
 end
@@ -3083,7 +3025,6 @@ local function buildShopTab()
 		end)
 	end
 
-	-- 꾸미기 3종: 오라 / 깃발 / 탈것. 각 줄에 [미리보기] (5초 동안 내 캐릭터에 입혀서 보여준다) + [장착]
 	local Cosmetics = require(game:GetService("ReplicatedStorage"):WaitForChild("Cosmetics"))
 	local function previewCosmetic(kind, key, name)
 		local character = player.Character
@@ -3092,7 +3033,6 @@ local function buildShopTab()
 		local token = settings.PreviewToken
 		local panel = settings.MenuPanel
 		if panel then panel.Visible = false end
-		-- 실제로 장착 중인 같은 종류는 잠깐 숨기고 미리보기를 보여준다
 		Cosmetics.Clear(character, kind)
 		Cosmetics.Build(kind, key, character, true)
 		toast(string.format("👀 [%s] 미리보기 5초!", name))
@@ -3304,7 +3244,6 @@ Remotes.Growth.OnClientEvent:Connect(function(action, data)
 	end
 end)
 
--- 남은 시간 / 부스터 시간이 흐르는 탭은 1초마다 갱신
 task.spawn(function()
 	while true do
 		task.wait(1)
@@ -3323,7 +3262,6 @@ Remotes.Rank.OnClientEvent:Connect(function(action, data)
 	end
 end)
 
--- 골드/장비/무기 등이 바뀌면 열려 있는 메뉴도 갱신 (한꺼번에 여러 번 와도 한 번만)
 local menuRefreshQueued = false
 player.AttributeChanged:Connect(function()
 	if not menuPanel.Visible or menuRefreshQueued then return end
@@ -3336,9 +3274,6 @@ player.AttributeChanged:Connect(function()
 	end)
 end)
 
-------------------------------------------------------------
--- 던전 선택창 (게이트): 종류 + 난이도
-------------------------------------------------------------
 local refreshSelect
 local selectedType = "Cave"
 local selectedDifficulty = "Normal"
@@ -3446,9 +3381,6 @@ player:GetAttributeChangedSignal("Zone"):Connect(function()
 	updateLockVisual()
 end)
 
-------------------------------------------------------------
--- 워프 메뉴: 필드 캠프 비콘 / 필드 입구에서 열린다. 마을이나 도달한 구역의 캠프로 바로 이동.
-------------------------------------------------------------
 local warpPanel = makePanel({
 	Size = UDim2.new(0, 440, 0, 520),
 	AnchorPoint = Vector2.new(0.5, 0.5),
@@ -3513,15 +3445,7 @@ Remotes.Warp.OnClientEvent:Connect(function(action)
 	end
 end)
 
-------------------------------------------------------------
--- 입력
---   마우스: 조준 방향 공격(누르고 있으면 연사) / R: 자동 공격(락온) / Q: 대시 / Shift: 달리기
---   I: 메뉴 / 던전 안: 숫자키 1 2 3 스탯 투자
-------------------------------------------------------------
 do
-------------------------------------------------------------
--- 전투 피드백: 피격 시 화면이 붉게 번쩍임 / 체력이 낮으면 붉은 경고 / 연속 처치 콤보 표시
-------------------------------------------------------------
 local hurtFlash = create("Frame", {
 	Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(220, 20, 20), BackgroundTransparency = 1,
 	BorderSizePixel = 0, ZIndex = 0, Active = false,
@@ -3573,10 +3497,6 @@ end)
 end
 
 do
-------------------------------------------------------------
--- 레이더: 주변 몬스터 위치를 원형 지도에 표시 (빨강 일반 / 노랑 엘리트 / 보라 보스 / 금색 황금 고블린)
--- 위쪽 = 카메라가 보는 방향. 범위 밖 몬스터는 가장자리에 작게 표시된다.
-------------------------------------------------------------
 local RADAR_SIZE, RADAR_RANGE = 150, 100
 local radarFrame = create("Frame", {
 	Name = "RadarFrame", Size = UDim2.new(0, RADAR_SIZE, 0, RADAR_SIZE), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -16, 1, -16),
@@ -3661,9 +3581,6 @@ RunService.RenderStepped:Connect(function(dt)
 end)
 end
 
-------------------------------------------------------------
--- 스킬 (C 응급 치료 / V 궁극기): 하단 스킬바 + 쿨타임 표시
-------------------------------------------------------------
 local useSkill
 local skillByKey = {}
 local skillSlots = {}
@@ -3701,7 +3618,6 @@ for index, skillKey in ipairs(Config.Skills.Order) do
 	skillSlots[skillKey] = { Cover = cover, Timer = timer, Stroke = slotStroke }
 end
 
--- 대시(Q) 칸: 스킬처럼 쿨타임 / 남은 횟수가 보인다 (칸을 눌러도 대시)
 do
 	local slot = create("Frame", { Size = UDim2.new(0, 62, 0, 62), Position = UDim2.new(0, 0, 0, 0), BackgroundColor3 = Color3.fromRGB(28, 28, 42), BorderSizePixel = 0 }, skillBar)
 	rounded(slot)
@@ -3721,7 +3637,6 @@ do
 	RunService.RenderStepped:Connect(function()
 		local P = Config.Player
 		local now = os.clock()
-		-- 충전: 쿨타임(DashCooldown)마다 1회씩 돌아온다 (로비에서도 계속 돈다)
 		if settings.DashCharges < P.DashCharges and now >= settings.DashRefillAt then
 			settings.DashCharges += 1
 			settings.DashRefillAt = settings.DashCharges < P.DashCharges and now + P.DashCooldown or 0
@@ -3775,7 +3690,6 @@ Remotes.Skill.OnClientEvent:Connect(function(action, skillKey, cooldown)
 		skillCooldownTotal[skillKey] = cooldown or Config.Skills[skillKey].Cooldown
 		skillReadyAt[skillKey] = os.clock() + skillCooldownTotal[skillKey]
 		if skillKey == "Ult" then
-			-- 서버 연출과 별개로, 발동한 순간 화면 전체가 붉게 번쩍이고 큰 글자가 뜬다 (확실히 "나갔다"는 피드백)
 			local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 70, 60), BackgroundTransparency = 0.8, BorderSizePixel = 0, ZIndex = 58, Active = false }, gui)
 			TweenService:Create(flash, TweenInfo.new(0.4), { BackgroundTransparency = 1 }):Play()
 			task.delay(0.5, function() flash:Destroy() end)
@@ -3799,7 +3713,6 @@ RunService.RenderStepped:Connect(function()
 			slot.Cover.Size = UDim2.new(1, 0, 1 - math.clamp(charge / cfg.Cost, 0, 1), 0)
 			slot.Timer.Text = full and "" or string.format("%d%%", math.floor(charge))
 			slot.Timer.TextSize = 16
-			-- 가득 차면 테두리가 두껍게 깜빡여서 "지금 쓸 수 있다"를 알려준다
 			slot.Stroke.Thickness = full and (3 + 2 * math.abs(math.sin(os.clock() * 5))) or 2
 			slot.Stroke.Color = full and Color3.fromRGB(255, 225, 90) or Color3.fromRGB(255, 90, 90)
 		elseif remain > 0 then
@@ -3872,11 +3785,6 @@ RunService.Heartbeat:Connect(function()
 	end
 end)
 
-------------------------------------------------------------
--- 조준점: 마우스 화살표 대신 십자 격자 조준점이 마우스를 따라다닌다.
---   쏠 때마다 살짝 벌어졌다 돌아오고, 자동 공격으로 대상을 잡으면 노란색이 된다.
---   메뉴 창이 열려 있거나 버튼 위에 있을 땐 원래 화살표 마우스로 돌아온다.
-------------------------------------------------------------
 local hasMouse = UserInputService.MouseEnabled
 local playerGui = player:WaitForChild("PlayerGui")
 
@@ -3937,9 +3845,6 @@ RunService.RenderStepped:Connect(function(dt)
 end)
 
 do
-------------------------------------------------------------
--- 타격감: 적중 표시 / 적중음 / 치명타·처치 시 카메라 흔들림
-------------------------------------------------------------
 local function playUiSound(id, volume, pitch)
 	if not id or id == 0 then return end
 	local sound = Instance.new("Sound")
@@ -3956,7 +3861,6 @@ Remotes.Hit.OnClientEvent:Connect(function(isCrit, killed)
 	hitMarkerCrit = isCrit or killed
 	if killed then
 		shake = math.max(shake, 0.5)
-		-- 연속 처치할수록 처치음이 점점 높아진다 (콤보가 쌓이는 쾌감)
 		local combo = player:GetAttribute("Combo") or 0
 		SoundBank.Play(sfxParent, "Kill", { Pitch = 1 + math.min(0.7, combo * 0.02) })
 	elseif isCrit then
@@ -3983,9 +3887,6 @@ end)
 end
 
 do
-------------------------------------------------------------
--- 도움말 / 설정 (H 키 또는 왼쪽 버튼). 처음 안내는 튜토리얼 미션이 맡는다.
-------------------------------------------------------------
 local helpPanel = makePanel({
 	Size = UDim2.new(0, 560, 0, 580), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
 }, gui)
@@ -4018,7 +3919,6 @@ local function settingButton(y, labelFn, onClick)
 		button.Text = labelFn()
 	end)
 end
--- 슬라이더: 막대를 클릭하거나 드래그해서 0% ~ 200% 사이를 1% 단위로 조절한다
 local function settingSlider(y, title, getValue, setValue)
 	local maxValue = 2
 	local caption = makeLabel({
@@ -4091,7 +3991,6 @@ function toggleHelp()
 	helpPanel.Visible = not helpPanel.Visible
 end
 
--- 총소리 볼륨: 서버가 만든 "GunShot" 소리가 생길 때 내 설정 배율을 곱한다 (0이면 끔)
 workspace.DescendantAdded:Connect(function(instance)
 	if instance:IsA("Sound") and instance.Name == "GunShot" then
 		instance.Volume = instance.Volume * settings.ShotVolume
@@ -4109,7 +4008,6 @@ end
 
 end
 
--- 화면이 작을 때(Studio에서 창이 끼어 있을 때 등) UI 전체를 자동으로 줄여서 잘리지 않게 한다
 do
 	local uiScale = Instance.new("UIScale")
 	uiScale.Parent = gui
@@ -4121,8 +4019,6 @@ do
 	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fit)
 end
 
--- 메뉴 키(I): Roblox 기본 카메라가 I / O 키를 "확대 / 축소"에 쓰고 있어서 입력이 먼저 가로채질 수 있다.
--- 더 높은 우선순위로 직접 등록해서 I 가 항상 메뉴를 열도록 한다.
 do
 	local ContextActionService = game:GetService("ContextActionService")
 	ContextActionService:BindActionAtPriority("DungeonMenuToggle", function(_, state)
@@ -4133,7 +4029,6 @@ do
 	end, false, Enum.ContextActionPriority.High.Value, Enum.KeyCode.I)
 end
 
--- 건즈식 이동: 2단 점프 (공중에서 점프 키를 한 번 더 누르면 한 번 더 뛴다)
 do
 	local jd = { Used = 0, Last = 0 } -- (지역 변수 개수 제한 때문에 표 하나로 묶음)
 
@@ -4153,8 +4048,6 @@ do
 	end
 	player.CharacterAdded:Connect(bindCharacter)
 
-	-- 공중 판정은 "발밑이 비었는가"(FloorMaterial)로 한다. (Humanoid 상태 이름은 점프 직후 / 오르막 등에서 어긋나기 쉬움)
-	-- 스페이스 키 입력(InputBegan)과 JumpRequest(모바일 점프 버튼) 둘 다 받고, 0.2초 안의 중복은 무시한다.
 	jd.Try = function()
 		local character = player.Character
 		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
@@ -4171,7 +4064,6 @@ do
 		local velocity = root.AssemblyLinearVelocity
 		root.AssemblyLinearVelocity = Vector3.new(velocity.X, 52, velocity.Z)
 		humanoid:ChangeState(Enum.HumanoidStateType.Freefall)
-		-- 공중에서 한 번 더 뛴 표시: 발밑에 퍼지는 고리
 		local ring = Instance.new("Part")
 		ring.Shape = Enum.PartType.Cylinder
 		ring.Anchored = true
