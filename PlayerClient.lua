@@ -475,6 +475,14 @@ function refreshEnhance()
 	end
 	local cost = Config.GetEnhanceCost(level)
 	local chance = math.floor(Config.GetEnhanceChance(level) * 100 + 0.5)
+	-- 튜토리얼: 처음 3번은 무료 + 100% 성공 (서버 WeaponService 와 같은 규칙), 진화 미션은 낮은 비용 + 100%
+	local freeNow = player:GetAttribute("TutorialFree") == true and level < 3
+	local tutorialCost = player:GetAttribute("TutorialEnhanceCost")
+	if freeNow then
+		cost, chance = 0, 100
+	elseif tutorialCost then
+		cost, chance = math.min(cost, tutorialCost), 100
+	end
 	if tierIndex < #tiers then
 		local nextTier = tiers[tierIndex + 1]
 		enhanceNext.Text = string.format("▶ <b>%d단계</b> 더 하면 <font color='#9ad7ff'><b>%s</b></font> 로 진화!", nextTier.MinLevel - level, nextTier.Name)
@@ -484,11 +492,12 @@ function refreshEnhance()
 	enhanceInfo.Text = string.format("공격력  <b>x%.2f</b> <font color='#78ff8c'>▶ x%.2f</font>\n성공 확률  <font color='#%s'><b>%d%%</b></font>   <font size='12' color='#aaaabb'>(실패해도 단계 유지)</font>",
 		Config.GetDamageMultiplier(level), Config.GetDamageMultiplier(level + 1), chance >= 80 and "78ff8c" or (chance >= 60 and "ffd966" or "ff9a6e"), chance)
 	local affordable = gold >= cost
-	enhanceButton.Text = string.format("💰 %s G\n강화하기", tostring(cost))
+	enhanceButton.Text = freeNow and "✨ 무료!\n강화하기" or string.format("💰 %s G\n강화하기", tostring(cost))
 	enhanceButton.BackgroundColor3 = affordable and GREEN or Color3.fromRGB(95, 60, 62)
 	E.EnhanceAffordable = affordable
 end
 
+player:GetAttributeChangedSignal("TutorialFree"):Connect(function() if enhancePanel.Visible then refreshEnhance() end end)
 RunService.RenderStepped:Connect(function()
 	if enhancePanel.Visible and E.EnhanceAffordable and not E.EnhanceBusy then
 		local pulse = 1 + 0.02 * math.sin(os.clock() * 4)
