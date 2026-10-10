@@ -1347,7 +1347,7 @@ end)
 
 makeLabel({
 	Name = "ControlsHint", Size = UDim2.new(0, 560, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -78),
-	Text = "북쪽 던전 게이트 · 서쪽 허수아비 훈련장 · 동쪽 끝 사냥 필드   |   Shift 달리기 · Q 대시 · R 자동공격 · I 메뉴 · M 음악",
+	Text = "북쪽 던전 게이트 · 서쪽 허수아비 훈련장 · 동쪽 끝 사냥 필드   |   Q 대시 · R 자동공격 · I 메뉴 · M 음악",
 	TextSize = 14, TextColor3 = Color3.fromRGB(220, 220, 235), TextStrokeTransparency = 0.5,
 }, lobbyFrame)
 
@@ -2242,7 +2242,7 @@ local TABS = {
 local MENU = { Sub = { Character = "Gear", Growth = "Train", Quest = "Daily" } }
 MENU.Subs = { -- 탭 안의 작은 버튼 줄
 	Character = { { "Gear", "🛡 장비" }, { "Weapon", "🔫 무기" }, { "Info", "📊 정보" } },
-	Growth = { { "Train", "훈련" }, { "Skill", "스킬" }, { "Pet", "펫" } },
+	Growth = { { "Train", "훈련" }, { "Skill", "스킬" }, { "Pet", "🐾 펫 (P)" } },
 	Quest = { { "Daily", "오늘의 퀘스트" }, { "Ach", "업적" } },
 }
 MENU.Alias = {
@@ -3405,6 +3405,11 @@ function selectTab(key, subKey)
 	end
 	local alias = MENU.Alias[key]
 	if alias then key, subKey = alias[1], subKey or alias[2] end
+	if key == "Growth" and subKey == "Pet" then -- 펫은 한 번 더 들어가지 않고 바로 펫 창(P)을 연다
+		menuPanel.Visible = false
+		player:SetAttribute("OpenPet", os.clock())
+		return
+	end
 	currentTab = key
 	if subKey and MENU.Subs[key] then MENU.Sub[key] = subKey end
 	if key == "Growth" and MENU.Sub.Growth == "Train" and not subKey and player:GetAttribute("GrowthUnlocked") ~= true then
@@ -3989,9 +3994,6 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		holding = true
-	elseif input.KeyCode == Enum.KeyCode.LeftShift then
-		sprinting = true
-		applySpeed()
 	elseif input.KeyCode == Enum.KeyCode.H then
 		toggleHelp()
 	elseif skillByKey[input.KeyCode] then
@@ -4013,9 +4015,6 @@ end)
 UserInputService.InputEnded:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		holding = false
-	elseif input.KeyCode == Enum.KeyCode.LeftShift then
-		sprinting = false
-		applySpeed()
 	end
 end)
 
@@ -4154,7 +4153,7 @@ makeLabel({
 	Size = UDim2.new(1, -40, 0, 280), Position = UDim2.new(0, 20, 0, 50), RichText = true, TextSize = 14,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 	Text = table.concat({
-		"<b>이동/공격</b>  WASD 이동 · Shift 달리기 · Q 대시 · 마우스 클릭(누르고 있으면 연사) 공격",
+		"<b>이동/공격</b>  WASD 이동 · Q 대시 · 마우스 클릭(누르고 있으면 연사) 공격",
 		"<b>자동 공격</b>  R — 가장 가까운 적을 자동으로 조준 (적을 클릭하면 그 대상으로 고정)",
 		"<b>스킬</b>  C 응급 치료 · V 궁극기(적을 공격해 게이지 100%를 채우면 사용)  — 필드/던전에서 사용",
 		"<b>메뉴</b>  I — 캐릭터(장비·무기·정보) · 성장(훈련·스킬·펫) · 퀘스트(업적) · 랭킹   |   🎁 상점은 화면 오른쪽 버튼",
