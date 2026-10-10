@@ -2113,9 +2113,29 @@ local function pickBossPattern(data)
 	return bossPatterns[1]
 end
 
+-- 최적화: 아무도 없는 구역의 몬스터는 (제자리에서 쉬고 있다면) 계산을 건너뛴다. 8개 구역 수백 마리가 사람이 없어도 매 프레임 계산되던 것을 막는다.
+local occupiedZones, occupiedAt = {}, 0
+local function refreshOccupied(now)
+	if now - occupiedAt < 0.25 then return end
+	occupiedAt = now
+	table.clear(occupiedZones)
+	for _, player in ipairs(Players:GetPlayers()) do
+		if player:GetAttribute("Zone") == "Field" then
+			local character = player.Character
+			local root = character and character:FindFirstChild("HumanoidRootPart")
+			if root then occupiedZones[F.ZoneOfX(root.Position.X)] = true end
+		end
+	end
+end
+
 local function stepMonsters(dt)
 	local now = os.clock()
+	refreshOccupied(now)
 	for part, data in pairs(monsters) do
+		if not occupiedZones[data.Zone] and not data.Aggro and not data.Goblin and not data.Falling and not data.Beam and not data.Static
+			and data.Health >= data.MaxHealth and data.Home and (part.Position - data.Home).Magnitude < 2.5 then
+			continue -- 이 구역에는 아무도 없고 몬스터는 제자리에서 멀쩡하다: 할 일이 없다
+		end
 		if data.Beam and data.Beam.Parent then data.Beam.CFrame = CFrame.new(part.Position + Vector3.new(0, 210, 0)) end -- 거신 빛기둥은 항상 몸 위에
 		if data.WeakPart and data.WeakPart.Parent then -- 약점 구슬: 보스 몸 주위를 돌며 위아래로 흔들린다
 			local radius = part.Size.X / 2 + 7 -- 보스 몸(날개 / 뿔 장식 포함) 밖으로 충분히 떨어져 돈다
