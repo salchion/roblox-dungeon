@@ -76,11 +76,13 @@ function Idle.Init(center)
 				player:SetAttribute("IdleCapHours", capHours) -- 자리를 비웠을 때 쌓이는 최대 시간
 				player:SetAttribute("IdleFullGold", math.floor(capHours * 3600 * rate * I.OfflineEfficiency)) -- 한도까지 가득 찼을 때 받는 골드
 				if isActive then
+					player:SetAttribute("IdleSeconds", (player:GetAttribute("IdleSeconds") or 0) + 1) -- 게이지: 이번 접속에서 방치한 시간 / 받은 골드
 					local owed = (remainder[player] or 0) + rate
 					local gold = math.floor(owed)
 					remainder[player] = owed - gold
 					if gold > 0 then
 						player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
+						player:SetAttribute("IdleEarned", (player:GetAttribute("IdleEarned") or 0) + gold)
 						local bucket = pending[player] or { Gold = 0, Since = os.clock() }
 						bucket.Gold += gold
 						pending[player] = bucket

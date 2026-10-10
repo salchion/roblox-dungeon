@@ -183,7 +183,7 @@ end
 
 -- 방치 수입 표시: 휴식 구역에서 방치 중일 때 초당 골드와 배율 (BM 배율이 올라가면 눈에 보인다)
 local idleLabel = Instance.new("TextLabel")
-idleLabel.Size = UDim2.new(0, 420, 0, 46)
+idleLabel.Size = UDim2.new(0, 420, 0, 66)
 idleLabel.AnchorPoint = Vector2.new(0.5, 0)
 idleLabel.Position = UDim2.new(0.5, 0, 0, 128)
 local idleW = 420
@@ -201,22 +201,43 @@ local function commas(n)
 	local text = tostring(math.floor(n or 0))
 	return (text:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
 end
+-- 방치 게이지: 방치로 골드를 받을 때마다 막대가 차오르고, 가득 찰 때까지 남은 시간을 보여 준다 (가득 차도 계속 받는다)
+local idleBarBack = Instance.new("Frame")
+idleBarBack.Size = UDim2.new(1, -24, 0, 8)
+idleBarBack.Position = UDim2.new(0, 12, 1, -14)
+idleBarBack.BackgroundColor3 = Color3.fromRGB(12, 14, 24)
+idleBarBack.BorderSizePixel = 0
+idleBarBack.Parent = idleLabel
+addCorner(idleBarBack, 4)
+local idleBarFill = Instance.new("Frame")
+idleBarFill.Size = UDim2.new(0, 0, 1, 0)
+idleBarFill.BackgroundColor3 = Color3.fromRGB(120, 215, 255)
+idleBarFill.BorderSizePixel = 0
+idleBarFill.Parent = idleBarBack
+addCorner(idleBarFill, 4)
+local function commas(n)
+	local text = tostring(math.floor(n or 0))
+	return (text:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
+end
+local function timeLeft(seconds)
+	seconds = math.max(0, math.ceil(seconds))
+	if seconds >= 3600 then return string.format("%d시간 %d분", seconds // 3600, (seconds % 3600) // 60) end
+	return string.format("%d분 %d초", seconds // 60, seconds % 60)
+end
 RunService.Heartbeat:Connect(function()
-	local inLobby = player:GetAttribute("Zone") == "Lobby" and player:GetAttribute("Level") ~= nil
-	local capHours = player:GetAttribute("IdleCapHours")
-	idleLabel.Visible = inLobby and capHours ~= nil and player:GetAttribute("IdleActive") == true -- 휴식 구역에 서 있을 때만
-	idleW = compact() and 300 or 420
-	if idleLabel.Visible then
-		local line2 = string.format("🌙 자리를 비우면 최대 %s시간  ·  가득 차면 <font color='#8fffb0'>%s G</font>", tostring(math.floor(capHours * 10 + 0.5) / 10), commas(player:GetAttribute("IdleFullGold")))
-		if player:GetAttribute("IdleActive") == true then
-			local mult = player:GetAttribute("IdleMultTotal") or 1
-			idleLabel.Text = string.format("💤 방치 수입  +%s G/초   <font color='#9ad7ff'>x%.2f</font>\n%s", tostring(player:GetAttribute("IdleRate") or 0), mult, line2)
-		else
-			idleLabel.Text = line2
-			idleLabel.Size = UDim2.new(0, idleW, 0, 28)
-		end
-		if player:GetAttribute("IdleActive") == true then idleLabel.Size = UDim2.new(0, idleW, 0, 46) end
-	end
+	local active = player:GetAttribute("IdleActive") == true and player:GetAttribute("Zone") == "Lobby" and player:GetAttribute("IdleCapHours") ~= nil
+	idleLabel.Visible = active -- 휴식 구역에 서 있을 때만
+	if not active then return end
+	local capSeconds = (player:GetAttribute("IdleCapHours") or 2) * 3600
+	local seconds = player:GetAttribute("IdleSeconds") or 0
+	local ratio = math.clamp(seconds / capSeconds, 0, 1)
+	idleLabel.Size = UDim2.new(0, 420, 0, 66)
+	idleBarFill.Size = UDim2.new(ratio, 0, 1, 0)
+	idleBarFill.BackgroundColor3 = ratio >= 1 and Color3.fromRGB(255, 220, 110) or Color3.fromRGB(120, 215, 255)
+	local mult = player:GetAttribute("IdleMultTotal") or 1
+	local left = ratio >= 1 and "<font color='#ffe16e'>가득 참! (계속 받는 중)</font>" or string.format("가득 차려면 <font color='#8fffb0'>%s</font>", timeLeft(capSeconds - seconds))
+	idleLabel.Text = string.format("💤 방치 수입  +%s G/초   <font color='#9ad7ff'>x%.2f</font>  ·  받은 <font color='#ffe16e'>%s G</font>\n%s  ·  가득 차면 +%s G", tostring(player:GetAttribute("IdleRate") or 0), mult, commas(player:GetAttribute("IdleEarned")), left, commas(player:GetAttribute("IdleFullGold")))
+	idleLabel.TextYAlignment = Enum.TextYAlignment.Top
 end)
 
 -- 처음 던전을 마치고 돌아오면 한 번: "다음 목표(전투력)"와 "무엇으로 강해지는가" 한 장 (서버가 Growth 이벤트로 보낸다)
