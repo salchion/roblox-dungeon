@@ -384,6 +384,13 @@
       "name": "JourneyService",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "MobileLayoutClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "MobileLayoutClient",
+      "class": "LocalScript",
+      "overwrite": true
     }
   ]
 }

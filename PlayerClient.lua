@@ -145,7 +145,7 @@ rounded(xpFill, 4)
 -- 알림(토스트)은 화면 가운데 위가 아니라 왼쪽 아래 "툴팁 자리"에 뜬다 (안내 카드 바로 위). 가운데 시야와 미션 / 배너를 가리지 않는다.
 -- 던전에서는 왼쪽 아래 특성 패널 위로 올라간다.
 local toastLabel = makeLabel({
-	Size = UDim2.new(0, 400, 0, 74),
+	Name = "ToastLabel", Size = UDim2.new(0, 400, 0, 74),
 	AnchorPoint = Vector2.new(0, 1),
 	Position = UDim2.new(0, -430, 1, -250),
 	BackgroundColor3 = Color3.fromRGB(16, 18, 30),
@@ -165,11 +165,14 @@ local function toast(text)
 	toastToken += 1
 	local token = toastToken
 	local base = (player:GetAttribute("Zone") == "Dungeon") and 210 or 112
-	local y = -(base + 138)
+	local pg = gui.Parent -- 작은 화면: MobileLayoutClient 가 정한 아래 가운데 자리
+	local cy = pg:GetAttribute(player:GetAttribute("SidePromptUp") and "UiToastYUp" or "UiToastY")
+	local y = cy or -(base + 138)
+	local tx = cy and pg:GetAttribute("UiToastX") or 14
 	toastLabel.Text = text
 	toastLabel.Position = UDim2.new(0, -430, 1, y)
 	toastLabel.Visible = true
-	TweenService:Create(toastLabel, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, 14, 1, y) }):Play()
+	TweenService:Create(toastLabel, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, tx, 1, y) }):Play()
 	task.delay(4, function()
 		if token == toastToken then
 			toastLabel.Visible = false
@@ -1186,10 +1189,10 @@ end)
 ------------------------------------------------------------
 -- 로비: 파티 패널
 ------------------------------------------------------------
-local lobbyFrame = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1 }, gui)
+local lobbyFrame = create("Frame", { Name = "LobbyFrame", Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1 }, gui)
 
 local partyPanel = makePanel({
-	Size = UDim2.new(0, 270, 0, 420),
+	Name = "PartyPanel", Size = UDim2.new(0, 270, 0, 420),
 	AnchorPoint = Vector2.new(1, 0),
 	Position = UDim2.new(1, -16, 0, 16),
 }, lobbyFrame)
@@ -1391,10 +1394,10 @@ makeLabel({
 ------------------------------------------------------------
 -- 던전: 웨이브 배너 / 보스 체력바 / 스탯 패널 / 결과
 ------------------------------------------------------------
-local dungeonFrame = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Visible = false }, gui)
+local dungeonFrame = create("Frame", { Name = "DungeonFrame", Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Visible = false }, gui)
 
 local banner = makePanel({
-	Size = UDim2.new(0, 420, 0, 96), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 16),
+	Name = "WaveBanner", Size = UDim2.new(0, 420, 0, 96), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 16),
 }, dungeonFrame)
 local bannerTitle = makeLabel({
 	Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 6),
@@ -1411,20 +1414,20 @@ local bannerMutator = makeLabel({
 
 -- 버티기 중 위쪽 두 줄: (1) 다음 랜덤 보너스까지 차오르는 막대 (밀리는 중에도 "곧 뭔가 터진다"는 기대감) (2) 몬스터 수 / 한도 (넘기면 압도당해 실패)
 local bonusBar = makePanel({
-	Size = UDim2.new(0, 420, 0, 22), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 118), Visible = false,
+	Name = "BonusBar", Size = UDim2.new(0, 420, 0, 22), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 118), Visible = false,
 }, dungeonFrame)
 local bonusFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 200, 70), BorderSizePixel = 0 }, bonusBar)
 rounded(bonusFill)
 local bonusText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 13, TextStrokeTransparency = 0.4 }, bonusBar)
 local limitBar = makePanel({
-	Size = UDim2.new(0, 420, 0, 22), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 144), Visible = false,
+	Name = "LimitBar", Size = UDim2.new(0, 420, 0, 22), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 144), Visible = false,
 }, dungeonFrame)
 local limitFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(110, 210, 120), BorderSizePixel = 0 }, limitBar)
 rounded(limitFill)
 local limitText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 13, TextStrokeTransparency = 0.4 }, limitBar)
 
 local bossBar = makePanel({
-	Size = UDim2.new(0, 460, 0, 26), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 120), Visible = false,
+	Name = "BossBar", Size = UDim2.new(0, 460, 0, 26), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 120), Visible = false,
 }, dungeonFrame)
 local bossFill = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(200, 40, 50), BorderSizePixel = 0 }, bossBar)
 rounded(bossFill)
@@ -1434,7 +1437,7 @@ local bossName = makeLabel({
 
 -- 내 특성 요약 패널 (랜덤 보너스로 쌓인 특성을 보여준다)
 local statPanel = makePanel({
-	Size = UDim2.new(0, 380, 0, 170), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 16, 1, -16),
+	Name = "StatPanel", Size = UDim2.new(0, 380, 0, 170), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 16, 1, -16),
 }, dungeonFrame)
 
 local statPoints = makeLabel({
@@ -2219,7 +2222,7 @@ end)
 -- 자동 공격(R) 안내: (1) 언제나 화면에 보이는 "R 자동 공격" 버튼(눌러도 켜짐, 켜지면 초록), (2) 처음에는 화면 한가운데에 큼직한 안내
 do
 	local autoButton = makeButton({
-		Size = UDim2.new(0, 140, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0.5, 150, 1, -14),
+		Name = "AutoButton", Size = UDim2.new(0, 140, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0.5, 150, 1, -14),
 		Text = "", BackgroundColor3 = Color3.fromRGB(34, 36, 58),
 	}, gui, toggleAuto)
 	local autoStroke = create("UIStroke", { Color = Color3.fromRGB(120, 130, 190), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, autoButton)
@@ -2277,7 +2280,7 @@ local rankList = {}      -- 서버가 보내준 전투력 랭킹
 -- 화면 오른쪽의 작은 전투력 랭킹 (로비 / 필드에서 항상 보인다. 광장의 랭킹판을 대신한다)
 do
 	local mini = makePanel({
-		Size = UDim2.new(0, 270, 0, 138), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0, 444),
+		Name = "RankMini", Size = UDim2.new(0, 270, 0, 138), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0, 444),
 	}, lobbyFrame)
 	makeLabel({
 		Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 6), Text = "🏆 전투력 랭킹",
@@ -3265,7 +3268,7 @@ end
 
 do -- 상태 카드(HudClient)와 같은 어두운 남색 + 은은한 테두리
 	local menuButton = makeButton({
-		Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 16, 0, 244), Text = "📋 메뉴(I)", TextSize = 12,
+		Name = "MenuButton", Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 16, 0, 244), Text = "📋 메뉴(I)", TextSize = 12,
 		BackgroundColor3 = Color3.fromRGB(34, 40, 70),
 	}, gui, toggleMenu)
 	create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, menuButton)
@@ -3574,7 +3577,7 @@ do
 ------------------------------------------------------------
 local RADAR_SIZE, RADAR_RANGE = 150, 100
 local radarFrame = create("Frame", {
-	Size = UDim2.new(0, RADAR_SIZE, 0, RADAR_SIZE), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -16, 1, -16),
+	Name = "RadarFrame", Size = UDim2.new(0, RADAR_SIZE, 0, RADAR_SIZE), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -16, 1, -16),
 	BackgroundColor3 = Color3.fromRGB(14, 18, 28), BackgroundTransparency = 0.25, BorderSizePixel = 0, Visible = false,
 }, gui)
 create("UICorner", { CornerRadius = UDim.new(1, 0) }, radarFrame)
@@ -3665,7 +3668,7 @@ local skillSlots = {}
 local skillCooldownTotal = {}
 local skillReadyAt = {}   -- [skillKey] = 이 시각(os.clock) 이후 사용 가능
 local skillBar = create("Frame", {
-	Size = UDim2.new(0, (#Config.Skills.Order + 1) * 68, 0, 64), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
+	Name = "SkillBar", Size = UDim2.new(0, (#Config.Skills.Order + 1) * 68, 0, 64), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
 	BackgroundTransparency = 1, Visible = false,
 }, gui)
 for index, skillKey in ipairs(Config.Skills.Order) do
@@ -4095,7 +4098,7 @@ end)
 
 do
 	local helpButton = makeButton({
-		Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 98, 0, 244), Text = "⚙ 설정(H)", TextSize = 12,
+		Name = "HelpButton", Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 98, 0, 244), Text = "⚙ 설정(H)", TextSize = 12,
 		BackgroundColor3 = Color3.fromRGB(34, 40, 70),
 	}, gui, toggleHelp)
 	create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, helpButton)

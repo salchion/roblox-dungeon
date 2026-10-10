@@ -45,12 +45,24 @@ end
 
 -- 미션 카드: 화면 왼쪽(다른 패널들과 같은 줄)에 계속 떠 있는 섹션 카드 (목표 / 진행 막대가 늘 같은 자리에 보인다)
 local CARD_POSITION = UDim2.new(0, 16, 0, 288)
+-- 작은 화면(MobileLayoutClient 가 PlayerGui 의 Ui* 속성으로 알려 준다)에서는 위쪽 가운데(세로 화면은 왼쪽 버튼 줄 아래)에 놓는다
+local pgui = gui.Parent
+local function compact() return pgui:GetAttribute("UiCompact") == true end
+local function missionPos(dy)
+	if compact() then
+		local y = (pgui:GetAttribute("UiMissionY") or 8) + dy
+		if pgui:GetAttribute("UiNarrow") then return UDim2.new(0, 12, 0, y) end
+		return UDim2.new(0.5, -130, 0, y)
+	end
+	return UDim2.new(0, 16, 0, 288 + dy)
+end
 local CARD_SIZE = UDim2.new(0, 260, 0, 116)
 local objective = create("Frame", {
 	Size = CARD_SIZE, Position = CARD_POSITION,
 	BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.12, BorderSizePixel = 0, Visible = false,
 }, gui)
 rounded(objective)
+RunService.Heartbeat:Connect(function() objective.Position = missionPos(0) end)
 local stroke = create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5 }, objective)
 local titleLabel = label({
 	Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 6), TextSize = 16, Font = Enum.Font.GothamBlack,
@@ -130,7 +142,7 @@ local function popupMission()
 	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.new(0, 520, 0, 150) }):Play()
 	TweenService:Create(cardStroke, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 5 }):Play()
 	task.delay(4.5, function()
-		TweenService:Create(card, TweenInfo.new(0.4), { Position = UDim2.new(0, 146, 0, 288 + 58), Size = UDim2.new(0, 260, 0, 116), BackgroundTransparency = 1 }):Play() -- 왼쪽 미션 카드 자리로 빨려 들어간다
+		TweenService:Create(card, TweenInfo.new(0.4), { Position = compact() and missionPos(58) or UDim2.new(0, 146, 0, 288 + 58), Size = UDim2.new(0, 260, 0, 116), BackgroundTransparency = 1 }):Play() -- 왼쪽 미션 카드 자리로 빨려 들어간다
 		task.wait(0.4)
 		card:Destroy()
 		if activeCard == card then activeCard = nil end
@@ -304,7 +316,7 @@ local function runHighlight(kind)
 				local menuButton, growthTab, trainButton
 				for _, descendant in ipairs(hud:GetDescendants()) do
 					if descendant:IsA("TextButton") and descendant.Visible then
-						if descendant.Text == "📋 메뉴 (I)" then menuButton = descendant end
+						if descendant.Text == "📋 메뉴(I)" then menuButton = descendant end
 						if descendant.Text == "성장" and descendant.Parent and descendant.Parent.Visible then growthTab = descendant end
 						if descendant.Text == "훈련 시작" and not trainButton then trainButton = descendant end
 					end
@@ -337,12 +349,15 @@ local function showPrompt(data)
 	-- 안내 카드는 항상 화면 왼쪽 아래 측면에 둔다: 가운데(캐릭터 / 몬스터 / 조준점)를 가리지 않고, 위쪽 배너 / 아래 스킬 바와도 겹치지 않는다
 	local sideBase = (player:GetAttribute("Zone") == "Dungeon") and 210 or 112 -- 던전에서는 왼쪽 아래 특성 패널 위
 	player:SetAttribute("SidePromptUp", true)
-	local card = create("Frame", { Size = UDim2.new(0, 400, 0, 130), AnchorPoint = Vector2.new(0, 1),
-		Position = UDim2.new(0, -420, 1, -sideBase),
+	local small = compact() -- 작은 화면: 아래 가운데(스킬 바 위)에 줄여서 띄운다 (왼쪽 아래는 조이스틱 자리)
+	local promptY = pgui:GetAttribute("UiPromptY") or -sideBase
+	local card = create("Frame", { Size = UDim2.new(0, 400, 0, 130), AnchorPoint = small and Vector2.new(0.5, 1) or Vector2.new(0, 1),
+		Position = small and UDim2.new(0.5, 0, 1, 140) or UDim2.new(0, -420, 1, -sideBase),
 		BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.05, BorderSizePixel = 0, ZIndex = 70 }, gui)
 	activePrompt = card
 	rounded(card, 16)
-	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, 14, 1, -sideBase) }):Play() -- 왼쪽에서 스르륵 들어온다
+	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = small and UDim2.new(0.5, 0, 1, promptY) or UDim2.new(0, 14, 1, -sideBase) }):Play() -- 왼쪽에서 스르륵 들어온다
+	if small then create("UIScale", { Scale = 0.8 }, card) end
 	local cardStroke = create("UIStroke", { Color = Color3.fromRGB(255, 225, 110), Thickness = 4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
 	TweenService:Create(cardStroke, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 8 }):Play()
 	local keycap = create("Frame", { Size = UDim2.new(0, 78, 0, 78), Position = UDim2.new(0, 16, 0.5, -39), BackgroundColor3 = Color3.fromRGB(245, 245, 250), BorderSizePixel = 0, ZIndex = 71 }, card)
@@ -594,7 +609,7 @@ do
 	RunService.Heartbeat:Connect(function()
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		local step = current
-		local relevant = root ~= nil and step ~= nil and step.TargetName == "필드 입구" and player:GetAttribute("Zone") == "Lobby" and not player:GetAttribute("SidePromptUp")
+		local relevant = not compact() and root ~= nil and step ~= nil and step.TargetName == "필드 입구" and player:GetAttribute("Zone") == "Lobby" and not player:GetAttribute("SidePromptUp")
 		if not relevant then
 			movingSince = nil
 			setShown(false)

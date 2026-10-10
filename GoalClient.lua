@@ -17,6 +17,18 @@ gui.ResetOnSpawn = false
 gui.IgnoreGuiInset = true
 gui.Parent = player:WaitForChild("PlayerGui")
 
+-- 작은 화면(MobileLayoutClient 가 PlayerGui 의 Ui* 속성으로 알려 준다)에서는 미션 카드들이 왼쪽 열이 아니라 위쪽 가운데(세로 화면은 왼쪽 버튼 줄 아래)에 쌓인다.
+local pg = gui.Parent
+local function compact() return pg:GetAttribute("UiCompact") == true end
+local function lay(dy) -- dy = 미션 쌓기 맨 위에서 아래로 내려온 거리
+	if compact() then
+		local y = (pg:GetAttribute("UiMissionY") or 8) + dy
+		if pg:GetAttribute("UiNarrow") then return UDim2.new(0, 12, 0, y) end
+		return UDim2.new(0.5, -130, 0, y)
+	end
+	return UDim2.new(0, 16, 0, 288 + dy)
+end
+
 local function addCorner(instance, radius)
 	local corner = Instance.new("UICorner")
 	corner.CornerRadius = UDim.new(0, radius)
@@ -25,7 +37,7 @@ end
 
 local panel = Instance.new("Frame")
 panel.Size = UDim2.new(0, 260, 0, 66)
-panel.Position = UDim2.new(0, 16, 0, 288)
+panel.Position = lay(0)
 panel.BackgroundColor3 = Color3.fromRGB(16, 18, 30)
 panel.BackgroundTransparency = 0.2
 panel.BorderSizePixel = 0
@@ -173,6 +185,7 @@ local idleLabel = Instance.new("TextLabel")
 idleLabel.Size = UDim2.new(0, 420, 0, 46)
 idleLabel.AnchorPoint = Vector2.new(0.5, 0)
 idleLabel.Position = UDim2.new(0.5, 0, 0, 128)
+local idleW = 420
 idleLabel.BackgroundColor3 = Color3.fromRGB(26, 30, 48)
 idleLabel.BackgroundTransparency = 0.15
 idleLabel.BorderSizePixel = 0
@@ -191,6 +204,7 @@ RunService.Heartbeat:Connect(function()
 	local inLobby = player:GetAttribute("Zone") == "Lobby" and player:GetAttribute("Level") ~= nil
 	local capHours = player:GetAttribute("IdleCapHours")
 	idleLabel.Visible = inLobby and capHours ~= nil
+	idleW = compact() and 300 or 420
 	if idleLabel.Visible then
 		local line2 = string.format("🌙 자리를 비우면 최대 %s시간  ·  가득 차면 <font color='#8fffb0'>%s G</font>", tostring(math.floor(capHours * 10 + 0.5) / 10), commas(player:GetAttribute("IdleFullGold")))
 		if player:GetAttribute("IdleActive") == true then
@@ -198,9 +212,9 @@ RunService.Heartbeat:Connect(function()
 			idleLabel.Text = string.format("💤 방치 수입  +%s G/초   <font color='#9ad7ff'>x%.2f</font>\n%s", tostring(player:GetAttribute("IdleRate") or 0), mult, line2)
 		else
 			idleLabel.Text = line2
-			idleLabel.Size = UDim2.new(0, 420, 0, 28)
+			idleLabel.Size = UDim2.new(0, idleW, 0, 28)
 		end
-		if player:GetAttribute("IdleActive") == true then idleLabel.Size = UDim2.new(0, 420, 0, 46) end
+		if player:GetAttribute("IdleActive") == true then idleLabel.Size = UDim2.new(0, idleW, 0, 46) end
 	end
 end)
 
@@ -343,20 +357,34 @@ RunService.RenderStepped:Connect(function()
 	local zone = player:GetAttribute("Zone")
 	-- 튜토리얼 중에는 미션 바가 목표를 안내하므로 숨김. 던전 안에서도 숨김
 	panel.Visible = not player:GetAttribute("TutorialActive") and zone ~= "Dungeon"
+	panel.Position = lay(0)
 	if zone == "Dungeon" then beaconDone = true end
 
 	local questOn = player:GetAttribute("QuestHud") == true and zone ~= "Dungeon" and dailyList ~= nil
 	questPanel.Visible = questOn
 	if questOn then
-		local targetY = panel.Visible and (288 + 76) or (player:GetAttribute("TutorialCardUp") and 288 + 116 + 8 or 288)
-		if not questShown then -- 처음 나타날 때: 왼쪽에서 튕겨 들어온다
+		local targetDy = panel.Visible and 76 or (player:GetAttribute("TutorialCardUp") and 116 + 8 or 0)
+		if not questShown then -- 처음 나타날 때: 왼쪽에서 튕겨 들어온다 (작은 화면은 바로 제자리)
 			questShown = true
 			refreshQuests()
-			questPanel.Position = UDim2.new(0, -300, 0, targetY)
-			TweenService:Create(questPanel, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, 16, 0, targetY) }):Play()
-		elseif questPanel.Position.X.Offset > 0 then
-			questPanel.Position = UDim2.new(0, 16, 0, targetY)
+			if compact() then
+				questPanel.Position = lay(targetDy)
+			else
+				questPanel.Position = UDim2.new(0, -300, 0, 288 + targetDy)
+				TweenService:Create(questPanel, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = lay(targetDy) }):Play()
+			end
+		elseif compact() or questPanel.Position.X.Offset > 0 then
+			questPanel.Position = lay(targetDy)
 		end
+	end
+	-- 방치 수입 줄은 쌓인 미션 카드들 바로 아래로 (작은 화면에서만)
+	if compact() then
+		local cardUp = player:GetAttribute("TutorialCardUp")
+		local bottom = (panel.Visible and 66) or (cardUp and 116) or 0
+		if questOn then bottom = (panel.Visible and 76 or (cardUp and 124 or 0)) + 30 end
+		idleLabel.Position = UDim2.new(0.5, 0, 0, (pg:GetAttribute("UiMissionY") or 8) + bottom + 6)
+	else
+		idleLabel.Position = UDim2.new(0.5, 0, 0, 128)
 	end
 	updateBeacon(questOn and zone == "Lobby")
 

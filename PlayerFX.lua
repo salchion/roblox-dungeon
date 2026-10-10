@@ -663,7 +663,7 @@ do
 		if diff == 0 then return end
 		local up = diff > 0
 		local color = up and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(255, 130, 120)
-		local holder = create("Frame", { Size = UDim2.new(0, 300, 0, 74), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 14, 1, -(((player:GetAttribute("Zone") == "Dungeon") and 210 or 112) + 232)), BackgroundTransparency = 1, ZIndex = 60 }, gui)
+		local holder = create("Frame", { Size = UDim2.new(0, 300, 0, 74), AnchorPoint = Vector2.new(0, 1), Position = gui.Parent:GetAttribute("UiCompact") and UDim2.new(0.5, -150, 0.4, 0) or UDim2.new(0, 14, 1, -(((player:GetAttribute("Zone") == "Dungeon") and 210 or 112) + 232)), BackgroundTransparency = 1, ZIndex = 60 }, gui)
 		local main = makeLabel({
 			Size = UDim2.new(1, 0, 0, 44), Text = string.format("⚡ 전투력 %s%d %s", up and "+" or "", diff, up and "▲" or "▼"), TextXAlignment = Enum.TextXAlignment.Left,
 			Font = Enum.Font.GothamBlack, TextSize = 28, TextColor3 = color, TextStrokeTransparency = 0.2, ZIndex = 61, TextTransparency = 1,

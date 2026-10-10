@@ -128,7 +128,7 @@ end)
 -- 도전 중 HUD: 점수 + 남은 시간
 ------------------------------------------------------------
 local hud = makePanel({
-	Size = UDim2.new(0, 330, 0, 64), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 96),
+	Name = "RiftScore", Size = UDim2.new(0, 330, 0, 64), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 96),
 	BackgroundColor3 = Color3.fromRGB(20, 18, 34), BackgroundTransparency = 0.1, Visible = false, ZIndex = 5,
 }, gui)
 create("UIStroke", { Color = Color3.fromRGB(230, 100, 180), Thickness = 1.5, Transparency = 0.25, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, hud)

@@ -47,7 +47,7 @@ end
 -- 카드 (240 x 176): 아래의 메뉴 / 설정 버튼 위치는 그대로 두었다
 ------------------------------------------------------------
 local card = make("Frame", {
-	Size = UDim2.new(0, 244, 0, 176), Position = UDim2.new(0, 16, 0, 60),
+	Name = "HudCard", Size = UDim2.new(0, 244, 0, 176), Position = UDim2.new(0, 16, 0, 60),
 	BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.12, BorderSizePixel = 0,
 }, gui)
 round(card, 12)
@@ -87,9 +87,9 @@ local ticketText = chip(120, 54, Color3.fromRGB(215, 160, 255))
 local keyText = chip(178, 56, Color3.fromRGB(150, 240, 200))
 
 -- 무기 / 위치
-local weaponText = text({ Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 122), Text = "", TextSize = 12, RichText = true, TextTruncate = Enum.TextTruncate.AtEnd }, card)
-local zoneText = text({ Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 146), Text = "", TextSize = 12, TextColor3 = Color3.fromRGB(175, 185, 220), RichText = true }, card)
-make("Frame", { Size = UDim2.new(1, -20, 0, 1), Position = UDim2.new(0, 10, 0, 118), BackgroundColor3 = Color3.fromRGB(60, 66, 100), BackgroundTransparency = 0.5, BorderSizePixel = 0 }, card)
+local weaponText = text({ Name = "HudWeaponRow", Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 122), Text = "", TextSize = 12, RichText = true, TextTruncate = Enum.TextTruncate.AtEnd }, card)
+local zoneText = text({ Name = "HudZoneRow", Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 146), Text = "", TextSize = 12, TextColor3 = Color3.fromRGB(175, 185, 220), RichText = true }, card)
+make("Frame", { Name = "HudSep", Size = UDim2.new(1, -20, 0, 1), Position = UDim2.new(0, 10, 0, 118), BackgroundColor3 = Color3.fromRGB(60, 66, 100), BackgroundTransparency = 0.5, BorderSizePixel = 0 }, card)
 
 local function refresh()
 	local level = player:GetAttribute("Level") or 1
