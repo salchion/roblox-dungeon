@@ -1461,36 +1461,17 @@ local function syncAura(player)
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	if not root then return end
 	local color = player:GetAttribute("AugAuraColor")
-	local aura = character:FindFirstChild("AugAura")
-	local fx = root:FindFirstChild("AugAuraFx")
+	-- 예전 전신 Highlight / 범용 입자는 없앤다 (오라는 SetAuraClient 가 세트별로 그린다)
+	local old = character:FindFirstChild("AugAura")
+	if old then old:Destroy() end
+	local oldFx = root:FindFirstChild("AugAuraFx")
+	if oldFx then oldFx:Destroy() end
 	if typeof(color) ~= "Color3" then
-		if aura then aura:Destroy() end
-		if fx then fx:Destroy() end
+		character:SetAttribute("AugAuraShown", nil)
 		return
 	end
-	if not aura then
-		aura = Instance.new("Highlight")
-		aura.Name = "AugAura"
-		aura.FillTransparency = 0.8
-		aura.OutlineTransparency = 0.1
-		aura.DepthMode = Enum.HighlightDepthMode.Occluded
-		aura.Parent = character
-	end
-	if not fx then
-		fx = Instance.new("ParticleEmitter")
-		fx.Name = "AugAuraFx"
-		fx.Rate = 24
-		fx.Lifetime = NumberRange.new(0.6, 1.1)
-		fx.Speed = NumberRange.new(2, 5)
-		fx.SpreadAngle = Vector2.new(180, 180)
-		fx.EmissionDirection = Enum.NormalId.Top
-		fx.LightEmission = 1
-		fx.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.9), NumberSequenceKeypoint.new(1, 0) })
-		fx.Parent = root
-	end
-	if aura.FillColor ~= color then
-		aura.FillColor, aura.OutlineColor = color, color
-		fx.Color = ColorSequence.new(color)
+	if character:GetAttribute("AugAuraShown") ~= color then
+		character:SetAttribute("AugAuraShown", color)
 		shockRing({ Folder = character }, root.Position, 14, color) -- 새로 켜진 순간 몸에서 빛이 퍼진다
 		Effects.Burst(root.Position, color, 60)
 	end

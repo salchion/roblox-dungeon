@@ -372,6 +372,13 @@
       "overwrite": true
     },
     {
+      "path": "SetAuraClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "SetAuraClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "FxClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "FxClient",
