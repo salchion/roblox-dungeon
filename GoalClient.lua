@@ -203,7 +203,7 @@ end
 RunService.Heartbeat:Connect(function()
 	local inLobby = player:GetAttribute("Zone") == "Lobby" and player:GetAttribute("Level") ~= nil
 	local capHours = player:GetAttribute("IdleCapHours")
-	idleLabel.Visible = inLobby and capHours ~= nil
+	idleLabel.Visible = inLobby and capHours ~= nil and player:GetAttribute("IdleActive") == true -- 휴식 구역에 서 있을 때만
 	idleW = compact() and 300 or 420
 	if idleLabel.Visible then
 		local line2 = string.format("🌙 자리를 비우면 최대 %s시간  ·  가득 차면 <font color='#8fffb0'>%s G</font>", tostring(math.floor(capHours * 10 + 0.5) / 10), commas(player:GetAttribute("IdleFullGold")))

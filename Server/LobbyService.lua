@@ -747,12 +747,12 @@ function Lobby.Build()
 	-- 필드 입구임을 한눈에 알 수 있게: 문 위에 큰 글자 (멀리서도 보이는 빛나는 표지 + 문 안쪽 면의 큰 글씨)
 	local gateSign = makePart({ Name = "FieldGateSign", Size = Vector3.new(1, 1, 1), Position = fieldGate + Vector3.new(0, 52, 0), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
 	local signGui = Instance.new("BillboardGui")
-	signGui.Size = UDim2.new(0, 560, 0, 150)
-	signGui.MaxDistance = 700
-	signGui.AlwaysOnTop = true
+	signGui.Size = UDim2.new(0, 300, 0, 44)
+	signGui.MaxDistance = 170
+	signGui.AlwaysOnTop = false
 	signGui.Parent = gateSign
 	local signTitle = Instance.new("TextLabel")
-	signTitle.Size = UDim2.new(1, 0, 0.62, 0)
+	signTitle.Size = UDim2.new(1, 0, 1, 0)
 	signTitle.BackgroundTransparency = 1
 	signTitle.Font = Enum.Font.GothamBlack
 	signTitle.TextScaled = true
@@ -768,7 +768,8 @@ function Lobby.Build()
 	signSub.TextScaled = true
 	signSub.TextColor3 = Color3.fromRGB(255, 255, 255)
 	signSub.TextStrokeTransparency = 0.2
-	signSub.Text = "이 문을 지나면 몬스터가 있는 필드예요"
+	signSub.Text = ""
+	signSub.Visible = false
 	signSub.Parent = signGui
 	local faceGui = Instance.new("SurfaceGui") -- 문 위 가로보 안쪽(마을 쪽) 면에도 큰 글씨
 	faceGui.Face = Enum.NormalId.Left
@@ -789,7 +790,7 @@ function Lobby.Build()
 	-- 문 사이를 채우는 반투명 빛의 막 (지나가면 필드)
 	local veil = makePart({ Name = "FieldVeil", Size = Vector3.new(1, 36, 40), Position = fieldGate + Vector3.new(0, 18, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.82, CanCollide = false, CanQuery = false }, folder)
 	local mist = Instance.new("ParticleEmitter")
-	mist.Rate = 30
+	mist.Rate = 5
 	mist.Lifetime = NumberRange.new(2, 3)
 	mist.Speed = NumberRange.new(2, 5)
 	mist.SpreadAngle = Vector2.new(60, 60)
@@ -797,11 +798,12 @@ function Lobby.Build()
 	mist.Shape = Enum.ParticleEmitterShape.Box
 	mist.LightEmission = 1
 	mist.Color = ColorSequence.new(green)
-	mist.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.2), NumberSequenceKeypoint.new(1, 0) })
+	mist.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5), NumberSequenceKeypoint.new(1, 0) })
+	mist.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.6), NumberSequenceKeypoint.new(1, 1) })
 	mist.Parent = veil
 
 	-- 광장에서 필드 문까지 이어지는 바닥 화살표(빛나는 ▶ 띠): 어디로 가야 하는지 한눈에
-	for step = 0, 11, 2 do
+	for step = 1, 0 do -- (바닥 화살표 띠는 지저분해서 뺐다)
 		local x = 52 + step * 6
 		local chevron = makePart({
 			Name = "FieldChevron", Size = Vector3.new(3, 0.2, 7), Position = Vector3.new(x, TOP + 0.4, 0),

@@ -94,6 +94,7 @@ function LobbyDecor.Build(parent, ctx)
 		light.Parent = part
 	end
 	local function dust(part, color, rate, size, speed, lifetime)
+		if true then return end -- (떠다니는 입자는 네모 조각처럼 보여 지저분해서 껐다)
 		if not part or emitters >= MAX_EMITTERS then return end
 		emitters += 1
 		local e = Instance.new("ParticleEmitter")
@@ -443,11 +444,8 @@ function LobbyDecor.Build(parent, ctx)
 		-- 안내판: 구역 목록
 		do
 			local names = Config.Field.ZoneNames
-			local lines = {}
-			for index, name in ipairs(names) do
-				lines[#lines + 1] = index .. " " .. name
-			end
-			local text = "🏔 사냥 필드 구역\n" .. table.concat(lines, " · ", 1, math.min(4, #lines)) .. "\n" .. table.concat(lines, " · ", math.min(5, #lines), #lines)
+			local function short(index) return index .. " " .. string.gsub(names[index] or "", " .*", "") end
+			local text = "🏔 사냥 필드\n" .. short(1) .. " · " .. short(2) .. "\n" .. short(3) .. " · " .. short(4) .. "\n" .. short(5) .. " · " .. short(6) .. "\n" .. short(7) .. " · " .. short(8)
 			vcyl("ZonePost", 9, 1, g(96, -13.5), WOOD_DARK, M.Wood)
 			local board = box("ZoneBoard", Vector3.new(0.4, 5.6, 10), g(96, -13.5, 6.4), rgb(140, 102, 66), M.WoodPlanks)
 			box("ZoneBoardCap", Vector3.new(0.9, 0.3, 10.6), g(96, -13.5, 9.4), WOOD_DARK, M.Wood)
@@ -463,6 +461,7 @@ function LobbyDecor.Build(parent, ctx)
 				t.BackgroundTransparency = 1
 				t.Font = Enum.Font.GothamBold
 				t.TextScaled = true
+				t.TextWrapped = false
 				t.TextColor3 = rgb(255, 244, 214)
 				t.TextStrokeTransparency = 0.3
 				t.Text = text
