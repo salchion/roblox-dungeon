@@ -1,5 +1,5 @@
 -- RankService (ServerScriptService > Modules 안의 ModuleScript, 이름: RankService)
--- 전투력 랭킹. 로비 광장에 랭킹판을 세우고, 메뉴(I) 랭킹 탭에도 같은 목록을 보내준다.
+-- 전투력 랭킹. 로비 광장에 랭킹판을 세우고, 메뉴(B) 랭킹 탭에도 같은 목록을 보내준다.
 --   * 전 서버 통합 랭킹: OrderedDataStore 를 쓴다 (Studio에서 API 접근을 켜야 동작)
 --   * DataStore 를 쓸 수 없으면 지금 서버에 있는 플레이어끼리의 랭킹으로 대신한다
 

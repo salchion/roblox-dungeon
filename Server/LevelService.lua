@@ -63,7 +63,7 @@ function Level.AddXP(player, amount)
 		xp = math.min(xp, Config.GetXpNeeded(level))
 		if not player:GetAttribute("GateBlocked") then
 			player:SetAttribute("GateBlocked", true)
-			Remotes.Notify:FireClient(player, string.format("🚧 레벨 %d 에서 막혔어요! 메뉴(I) → 성장 탭에서 돌파를 진행하세요.", level))
+			Remotes.Notify:FireClient(player, string.format("🚧 레벨 %d 에서 막혔어요! 메뉴(B) → 성장 탭에서 돌파를 진행하세요.", level))
 		end
 	end
 	if gained > 0 then

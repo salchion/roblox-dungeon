@@ -36,7 +36,7 @@ local function collect(player)
 		table.insert(tips, string.format("🛡 %s 장비가 비어 있어요! 던전 보스 상자나 뽑기로 얻어서 장착해요", table.concat(empty, " · ")))
 	end
 	if Growth.IdleSlots(player) > 0 then
-		table.insert(tips, "🏋 훈련 슬롯이 비어 있어요! 메뉴(I) → 성장에서 훈련을 걸어 두면 시간이 지나 저절로 강해져요")
+		table.insert(tips, "🏋 훈련 슬롯이 비어 있어요! 메뉴(B) → 성장에서 훈련을 걸어 두면 시간이 지나 저절로 강해져요")
 	end
 	if (player:GetAttribute("DungeonFree") or 0) > 0 then
 		table.insert(tips, string.format("🏰 던전 무료 입장 %d회가 남아 있어요! 던전에서 장비와 티켓을 얻어요", player:GetAttribute("DungeonFree")))

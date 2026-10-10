@@ -749,7 +749,7 @@ function refreshGear()
 	local rarity = player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0
 	local level = player:GetAttribute("Gear_" .. slot.Key .. "_L") or 0
 	if rarity <= 0 then
-		detailText.Text = string.format("<font size='18'><b>%s</b></font>\n<font color='#9a9ab5'>비어 있어요</font>\n\n%s 효과\n<font color='#c9c0e0'>아래 뽑기로 장비를 얻거나, 필드에서 떨어진 장비를 가방(I)에서 장착하세요.</font>", slot.Name, slot.StatName)
+		detailText.Text = string.format("<font size='18'><b>%s</b></font>\n<font color='#9a9ab5'>비어 있어요</font>\n\n%s 효과\n<font color='#c9c0e0'>아래 뽑기로 장비를 얻거나, 필드에서 떨어진 장비를 가방(B)에서 장착하세요.</font>", slot.Name, slot.StatName)
 		enhanceSlotButton.Text = "—"
 		enhanceSlotButton.BackgroundColor3 = GRAY
 		detailStroke.Color = Color3.fromRGB(110, 90, 160)
@@ -2221,7 +2221,7 @@ makeLabel({
 }, menuPanel)
 
 makeButton({
-	Size = UDim2.new(0, 64, 0, 28), Position = UDim2.new(1, -76, 0, 10), Text = "닫기 (I)", TextSize = 13, BackgroundColor3 = GRAY,
+	Size = UDim2.new(0, 64, 0, 28), Position = UDim2.new(1, -76, 0, 10), Text = "닫기 (B)", TextSize = 13, BackgroundColor3 = GRAY,
 }, menuPanel, function()
 	menuPanel.Visible = false
 end)
@@ -3157,7 +3157,7 @@ end
 
 do
 	local menuButton = makeButton({
-		Name = "MenuButton", Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 16, 0, 244), Text = "📋 메뉴(I)", TextSize = 12,
+		Name = "MenuButton", Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 16, 0, 244), Text = "📋 메뉴(B)", TextSize = 12,
 		BackgroundColor3 = Color3.fromRGB(34, 40, 70),
 	}, gui, toggleMenu)
 	local menuStroke = create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, menuButton)
@@ -3698,7 +3698,7 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 		slide()
 	elseif input.KeyCode == Enum.KeyCode.R then
 		toggleAuto()
-	elseif input.KeyCode == Enum.KeyCode.I then
+	elseif input.KeyCode == Enum.KeyCode.I or input.KeyCode == Enum.KeyCode.B then
 		toggleMenu()
 	elseif input.KeyCode == Enum.KeyCode.M then
 		toggleMusic()
@@ -3772,6 +3772,18 @@ end
 
 RunService.RenderStepped:Connect(function(dt)
 	local modalOpen = menuPanel.Visible or enhancePanel.Visible or gearPanel.Visible or selectPanel.Visible or warpPanel.Visible
+	if not modalOpen then
+		-- 다른 스크립트의 큰 창(펫 / 상점 / 스탯)이 열려 있으면 진짜 마우스 커서를 되살린다
+		for _, name in ipairs({ "PetGui", "ShopGui", "LevelStatGui" }) do
+			local g = playerGui:FindFirstChild(name)
+			if g then
+				for _, child in ipairs(g:GetChildren()) do
+					if child:IsA("Frame") and child.Visible and child.Size.Y.Offset >= 300 then modalOpen = true break end
+				end
+			end
+			if modalOpen then break end
+		end
+	end
 	local position = UserInputService:GetMouseLocation()
 	local show = hasMouse and not modalOpen and player.Character ~= nil and not isMouseOverButton(position)
 
@@ -3980,7 +3992,7 @@ do
 			toggleMenu()
 		end
 		return Enum.ContextActionResult.Sink
-	end, false, Enum.ContextActionPriority.High.Value, Enum.KeyCode.I)
+	end, false, Enum.ContextActionPriority.High.Value, Enum.KeyCode.I, Enum.KeyCode.B)
 end
 
 do

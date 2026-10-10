@@ -317,7 +317,7 @@ local function runHighlight(kind)
 				local menuButton, growthTab, trainButton
 				for _, descendant in ipairs(hud:GetDescendants()) do
 					if descendant:IsA("TextButton") and descendant.Visible then
-						if descendant.Text == "📋 메뉴(I)" then menuButton = descendant end
+						if descendant.Text == "📋 메뉴(B)" then menuButton = descendant end
 						if descendant.Text == "성장" and descendant.Parent and descendant.Parent.Visible then growthTab = descendant end
 						if descendant.Text == "훈련 시작" and not trainButton then trainButton = descendant end
 					end

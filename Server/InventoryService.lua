@@ -356,7 +356,7 @@ function Inventory.AddShards(player, zone, amount)
 	for _, value in pairs(state.Shards) do before += value end
 	state.Shards[zone] = (state.Shards[zone] or 0) + amount
 	if before == 0 then
-		notify(player, "🔹 세트 조각을 얻었어요! 메뉴(I) → 가방에서 장비를 고르고 [세트 각인]을 하면 세트 장비로 바뀌어요.")
+		notify(player, "🔹 세트 조각을 얻었어요! 메뉴(B) → 가방에서 장비를 고르고 [세트 각인]을 하면 세트 장비로 바뀌어요.")
 	end
 	Inventory.Push(player)
 end

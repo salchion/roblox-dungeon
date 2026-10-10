@@ -2,7 +2,7 @@
 -- 일일 퀘스트 / 업적 / 칭호.
 --   * 일일 퀘스트: 하루마다(UTC 기준) Config.Quests.Pool 에서 DailyCount 개가 무작위로 나오고 진행도가 초기화된다
 --   * 업적: 한 번 달성하면 보상을 받고, 달성하면 칭호(Title)가 열린다
---   * 칭호: 메뉴(I)에서 골라 달면 머리 위 이름표에 표시된다 (플레이어 Attribute "Title")
+--   * 칭호: 메뉴(B)에서 골라 달면 머리 위 이름표에 표시된다 (플레이어 Attribute "Title")
 -- 다른 서비스는 Quest.Add(player, "DummyHits", 1) 처럼 카운터를 올려주기만 하면 된다.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
