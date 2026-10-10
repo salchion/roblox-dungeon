@@ -859,7 +859,7 @@ function Lobby.Build()
 			local bulb = makePart({ Name = "CrossLamp", Shape = Enum.PartType.Ball, Size = Vector3.new(2.6 * scale, 2.6 * scale, 2.6 * scale), Position = origin + Vector3.new(0, 15.5 * scale, 0), Color = Color3.fromRGB(255, 225, 140), Material = Enum.Material.Neon, CanCollide = false }, folder)
 			addLight(bulb, 45, 2, Color3.fromRGB(255, 225, 140))
 		end
-		buildSignpost(Vector3.new(13, 0, 13), 1)
+		-- (갈림길 이정표는 의미가 없어서 뺐다: buildSignpost 를 부르지 않는다)
 	end
 
 	-- 2) (필드로 이어지는 길가의 등불 / 깃발은 너무 많아서 없앴다: 빛기둥과 문만으로 충분하다)
