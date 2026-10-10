@@ -564,73 +564,110 @@ end
 -- 던전 군주: 던전 종류마다 모습이 다르고(고블린 왕 / 서리 군주 / 화염 군주), 변이(광폭 / 비전 / 거대 / 군단장)에 따라 장식이 더 붙는다
 local DUNGEON_BOSS = {}
 
-DUNGEON_BOSS.Cave = function(part, S, piece, Ball, Block) -- 고블린 왕: 왕관 + 큰 귀 + 엄니 + 곤봉
-	part.Material, part.Color = Enum.Material.SmoothPlastic, Color3.fromRGB(86, 138, 62)
-	local gold, skin, wood = Color3.fromRGB(235, 190, 70), Color3.fromRGB(70, 118, 52), Color3.fromRGB(110, 78, 50)
-	piece(Block, S * 0.5, S * 0.08, S * 0.5, 0, S * 0.5, 0, gold, Enum.Material.Metal)
+DUNGEON_BOSS.Cave = function(part, S, piece, Ball, Block) -- 고블린 왕: 배불뚝이 거인 (머리 / 팔 / 다리 / 곤봉이 있는 두 발 달린 몸, 둥근 몸통은 불룩한 배)
+	part.Material, part.Color = Enum.Material.SmoothPlastic, Color3.fromRGB(96, 150, 66)
+	local gold, skin, dark, wood = Color3.fromRGB(235, 190, 70), Color3.fromRGB(78, 126, 54), Color3.fromRGB(58, 96, 42), Color3.fromRGB(110, 78, 50)
+	local P = Enum.Material.SmoothPlastic
+	-- 머리 + 왕관 + 귀 + 코 + 눈 + 엄니
+	piece(Ball, S * 0.46, S * 0.42, S * 0.46, 0, S * 0.62, -S * 0.1, skin, P)
+	piece(Block, S * 0.4, S * 0.08, S * 0.4, 0, S * 0.84, -S * 0.1, gold, Enum.Material.Metal)
 	for i = 1, 5 do
 		local a = i / 5 * math.pi * 2
-		piece(Block, S * 0.07, S * 0.2, S * 0.07, math.cos(a) * S * 0.22, S * 0.62, math.sin(a) * S * 0.22, gold, Enum.Material.Metal)
+		piece(Block, S * 0.06, S * 0.18, S * 0.06, math.cos(a) * S * 0.17, S * 0.96, -S * 0.1 + math.sin(a) * S * 0.17, gold, Enum.Material.Metal)
 	end
-	piece(Ball, S * 0.1, S * 0.1, S * 0.1, 0, S * 0.52, -S * 0.25, Color3.fromRGB(230, 50, 70), Enum.Material.Neon)
-	piece(Ball, S * 0.18, S * 0.16, S * 0.2, 0, -S * 0.04, -S * 0.5, skin, Enum.Material.SmoothPlastic)
+	piece(Ball, S * 0.09, S * 0.09, S * 0.09, 0, S * 0.9, -S * 0.27, Color3.fromRGB(230, 50, 70), Enum.Material.Neon)
+	piece(Ball, S * 0.16, S * 0.14, S * 0.18, 0, S * 0.56, -S * 0.34, dark, P)
 	for _, side in ipairs({ -1, 1 }) do
-		piece(Block, S * 0.4, S * 0.08, S * 0.18, side * S * 0.58, S * 0.2, S * 0.02, skin, Enum.Material.SmoothPlastic, 0, 0, side * -18)
-		piece(Ball, S * 0.12, S * 0.12, S * 0.1, side * S * 0.2, S * 0.18, -S * 0.46, Color3.fromRGB(255, 235, 90), Enum.Material.Neon)
-		piece(Block, S * 0.06, S * 0.2, S * 0.06, side * S * 0.14, -S * 0.26, -S * 0.46, Color3.fromRGB(240, 235, 220), Enum.Material.SmoothPlastic, 10, 0, side * 8)
+		piece(Block, S * 0.42, S * 0.08, S * 0.18, side * S * 0.42, S * 0.7, -S * 0.1, skin, P, 0, 0, side * -18)
+		piece(Ball, S * 0.1, S * 0.1, S * 0.08, side * S * 0.12, S * 0.68, -S * 0.31, Color3.fromRGB(255, 235, 90), Enum.Material.Neon)
+		piece(Block, S * 0.05, S * 0.17, S * 0.05, side * S * 0.1, S * 0.46, -S * 0.32, Color3.fromRGB(240, 235, 220), P, 12, 0, side * 8)
+		-- 팔 (어깨 + 팔뚝 + 주먹)
+		piece(Ball, S * 0.3, S * 0.3, S * 0.3, side * S * 0.52, S * 0.3, -S * 0.02, skin, P)
+		piece(Block, S * 0.16, S * 0.46, S * 0.16, side * S * 0.66, S * 0.02, -S * 0.12, skin, P, 12, 0, side * -12)
+		piece(Ball, S * 0.24, S * 0.24, S * 0.24, side * S * 0.7, -S * 0.2, -S * 0.2, dark, P)
+		-- 다리 + 발
+		piece(Block, S * 0.26, S * 0.28, S * 0.3, side * S * 0.2, -S * 0.36, S * 0.02, skin, P)
+		piece(Block, S * 0.3, S * 0.07, S * 0.4, side * S * 0.2, -S * 0.48, -S * 0.04, dark, P)
 	end
-	piece(Block, S * 0.14, S * 0.14, S * 0.6, S * 0.62, -S * 0.02, -S * 0.2, skin, Enum.Material.SmoothPlastic, 0, 20, 0)
-	piece(Block, S * 0.1, S * 1.0, S * 0.1, S * 0.88, S * 0.2, -S * 0.5, wood, Enum.Material.Wood, 0, 0, 12)
-	piece(Ball, S * 0.4, S * 0.4, S * 0.4, S * 0.98, S * 0.72, -S * 0.5, wood, Enum.Material.Wood)
-	for i = 1, 5 do
-		local a = i / 5 * math.pi * 2
-		piece(Block, S * 0.06, S * 0.14, S * 0.06, S * 0.98 + math.cos(a) * S * 0.2, S * 0.72 + math.sin(a) * S * 0.2, -S * 0.5, Color3.fromRGB(170, 170, 175), Enum.Material.Metal, 0, 0, math.deg(a) - 90)
-	end
-	piece(Block, S * 0.9, S * 0.12, S * 0.14, 0, -S * 0.1, 0, Color3.fromRGB(88, 60, 40), Enum.Material.Wood)
-	piece(Ball, S * 0.12, S * 0.12, S * 0.06, 0, -S * 0.1, -S * 0.07, gold, Enum.Material.Metal)
-end
-
-DUNGEON_BOSS.Ice = function(part, S, piece, Ball, Block) -- 서리 군주: 얼음 갑옷 기사 + 큰 검 + 서리 망토
-	part.Material, part.Color = Enum.Material.Metal, Color3.fromRGB(110, 160, 205)
-	local ice, glass = Color3.fromRGB(190, 232, 255), Enum.Material.Glass
-	piece(Block, S * 0.44, S * 0.07, S * 0.05, 0, S * 0.12, -S * 0.5, Color3.fromRGB(170, 250, 255), Enum.Material.Neon)
-	piece(Ball, S * 0.3, S * 0.3, S * 0.3, 0, S * 0.02, 0, Color3.fromRGB(120, 230, 255), Enum.Material.Neon, nil, nil, nil, 0.3)
-	for _, side in ipairs({ -1, 1 }) do
-		piece(Block, S * 0.09, S * 0.7, S * 0.09, side * S * 0.2, S * 0.62, S * 0.0, ice, glass, -20, 0, side * -28, 0.15)
-		piece(Ball, S * 0.42, S * 0.36, S * 0.42, side * S * 0.55, S * 0.22, 0, ice, glass, nil, nil, nil, 0.1)
-		piece(Block, S * 0.09, S * 0.34, S * 0.09, side * S * 0.6, S * 0.5, 0, ice, glass, 0, 0, side * -25, 0.1)
-		piece(Block, S * 0.5, S * 0.7, S * 0.04, side * S * 0.2, -S * 0.05, S * 0.52, Color3.fromRGB(120, 175, 225), Enum.Material.Fabric, -8, 0, side * 6)
-	end
-	piece(Block, S * 0.14, S * 1.5, S * 0.04, S * 0.88, S * 0.25, -S * 0.35, Color3.fromRGB(205, 245, 255), Enum.Material.Neon, 0, 0, 8, 0.15)
-	piece(Block, S * 0.5, S * 0.08, S * 0.1, S * 0.82, -S * 0.42, -S * 0.35, Color3.fromRGB(150, 190, 220), Enum.Material.Metal, 0, 0, 8)
+	-- 허리띠 + 금 버클 + 가죽 천
+	piece(Block, S * 0.95, S * 0.1, S * 0.9, 0, -S * 0.12, 0, Color3.fromRGB(88, 60, 40), Enum.Material.Fabric)
+	piece(Block, S * 0.14, S * 0.12, S * 0.05, 0, -S * 0.12, -S * 0.46, gold, Enum.Material.Metal)
+	-- 곤봉 (오른손에 높이 든다)
+	piece(Block, S * 0.1, S * 1.0, S * 0.1, S * 0.82, S * 0.28, -S * 0.34, wood, Enum.Material.Wood, 0, 0, -8)
+	piece(Ball, S * 0.4, S * 0.4, S * 0.4, S * 0.9, S * 0.84, -S * 0.34, wood, Enum.Material.Wood)
 	for i = 1, 6 do
 		local a = i / 6 * math.pi * 2
-		piece(Block, S * 0.07, S * 0.3, S * 0.07, math.cos(a) * S * 0.9, S * (0.3 + (i % 2) * 0.25), math.sin(a) * S * 0.9, ice, glass, 0, 0, 0, 0.2)
+		piece(Block, S * 0.06, S * 0.14, S * 0.06, S * 0.9 + math.cos(a) * S * 0.21, S * 0.84 + math.sin(a) * S * 0.21, -S * 0.34, Color3.fromRGB(170, 170, 175), Enum.Material.Metal, 0, 0, math.deg(a) - 90)
 	end
-	zoneBossEmitter(part, Color3.fromRGB(235, 248, 255), 14, S * 0.07, 3, 4, Vector3.new(0, -2, 0))
+	-- 등에 멘 금화 자루
+	piece(Ball, S * 0.4, S * 0.46, S * 0.34, 0, S * 0.1, S * 0.48, Color3.fromRGB(150, 118, 70), Enum.Material.Fabric)
+	piece(Ball, S * 0.12, S * 0.05, S * 0.12, S * 0.06, S * 0.3, S * 0.48, gold, Enum.Material.Metal)
 end
 
-DUNGEON_BOSS.Fire = function(part, S, piece, Ball, Block) -- 화염 군주: 불사조 (불꽃 날개 / 꼬리깃 / 부리 / 볏)
-	part.Material, part.Color = Enum.Material.Neon, Color3.fromRGB(240, 110, 40)
-	local gold = Color3.fromRGB(255, 205, 70)
+DUNGEON_BOSS.Ice = function(part, S, piece, Ball, Block) -- 서리 군주: 거대한 얼음 갑옷 기사 (둥근 몸통은 갑옷 속 푸른 코어)
+	part.Material, part.Color = Enum.Material.Neon, Color3.fromRGB(110, 210, 240)
+	local glass, metal = Enum.Material.Glass, Enum.Material.Metal
+	local ice, steel, deep = Color3.fromRGB(175, 215, 240), Color3.fromRGB(110, 140, 175), Color3.fromRGB(70, 100, 150)
+	-- 흉갑 / 허리 / 어깨 (투명한 얼음이라 속의 코어가 비친다)
+	piece(Block, S * 0.62, S * 0.66, S * 0.44, 0, S * 0.12, 0, ice, glass, nil, nil, nil, 0.45)
+	piece(Block, S * 0.7, S * 0.12, S * 0.5, 0, -S * 0.24, 0, steel, metal)
+	-- 투구 + 눈 틈 + 얼음 뿔
+	piece(Block, S * 0.36, S * 0.34, S * 0.36, 0, S * 0.62, 0, steel, metal)
+	piece(Block, S * 0.3, S * 0.06, S * 0.05, 0, S * 0.64, -S * 0.19, Color3.fromRGB(170, 250, 255), Enum.Material.Neon)
+	piece(Block, S * 0.14, S * 0.5, S * 0.14, 0, S * 1.0, 0, ice, glass, nil, nil, nil, 0.2)
 	for _, side in ipairs({ -1, 1 }) do
+		piece(Block, S * 0.09, S * 0.5, S * 0.09, side * S * 0.2, S * 0.88, S * 0.02, ice, glass, -20, 0, side * -30, 0.15)
+		-- 어깨 갑옷 + 팔 + 주먹
+		piece(Ball, S * 0.34, S * 0.3, S * 0.34, side * S * 0.46, S * 0.38, 0, ice, glass, nil, nil, nil, 0.2)
+		piece(Block, S * 0.08, S * 0.3, S * 0.08, side * S * 0.54, S * 0.58, 0, ice, glass, 0, 0, side * -25, 0.15)
+		piece(Block, S * 0.17, S * 0.5, S * 0.17, side * S * 0.52, S * 0.0, -S * 0.04, steel, metal)
+		piece(Ball, S * 0.22, S * 0.22, S * 0.22, side * S * 0.52, -S * 0.3, -S * 0.1, deep, metal)
+		-- 다리 + 장화
+		piece(Block, S * 0.24, S * 0.34, S * 0.26, side * S * 0.18, -S * 0.34, 0, steel, metal)
+		piece(Block, S * 0.28, S * 0.08, S * 0.38, side * S * 0.18, -S * 0.48, -S * 0.04, deep, metal)
+		-- 서리 망토
+		piece(Block, S * 0.46, S * 0.8, S * 0.04, side * S * 0.22, S * 0.0, S * 0.3, Color3.fromRGB(120, 175, 225), Enum.Material.Fabric, -6, 0, side * 5)
+	end
+	-- 얼음 대검 (오른손)
+	piece(Block, S * 0.12, S * 1.5, S * 0.05, S * 0.62, S * 0.28, -S * 0.34, Color3.fromRGB(205, 245, 255), Enum.Material.Neon, 0, 0, 6, 0.1)
+	piece(Block, S * 0.46, S * 0.08, S * 0.1, S * 0.58, -S * 0.4, -S * 0.34, steel, metal, 0, 0, 6)
+	-- 몸 주위를 도는 고드름
+	for i = 1, 6 do
+		local a = i / 6 * math.pi * 2
+		piece(Block, S * 0.07, S * 0.28, S * 0.07, math.cos(a) * S * 0.95, S * (0.2 + (i % 2) * 0.3), math.sin(a) * S * 0.95, ice, glass, 0, 0, 0, 0.2)
+	end
+	zoneBossEmitter(part, Color3.fromRGB(235, 248, 255), 12, S * 0.06, 3, 4, Vector3.new(0, -2, 0))
+end
+
+DUNGEON_BOSS.Fire = function(part, S, piece, Ball, Block) -- 화염 군주: 불사조 (목 / 머리 / 불꽃 날개 / 꼬리깃 / 발톱)
+	part.Material, part.Color = Enum.Material.Neon, Color3.fromRGB(240, 110, 40)
+	local gold, flame = Color3.fromRGB(255, 205, 70), Color3.fromRGB(255, 150, 50)
+	-- 긴 목 + 머리 + 부리 + 눈 + 볏
+	piece(Ball, S * 0.3, S * 0.34, S * 0.4, 0, S * 0.3, -S * 0.5, Color3.fromRGB(255, 130, 45), Enum.Material.Neon)
+	piece(Ball, S * 0.34, S * 0.34, S * 0.34, 0, S * 0.56, -S * 0.7, Color3.fromRGB(255, 150, 55), Enum.Material.Neon)
+	piece(Block, S * 0.12, S * 0.1, S * 0.3, 0, S * 0.5, -S * 0.92, gold, Enum.Material.Metal, 12, 0, 0)
+	for _, side in ipairs({ -1, 1 }) do
+		piece(Ball, S * 0.08, S * 0.08, S * 0.08, side * S * 0.12, S * 0.62, -S * 0.82, Color3.fromRGB(40, 20, 10), Enum.Material.SmoothPlastic)
+		-- 불꽃 날개 (3겹, 바깥으로 갈수록 투명)
 		for k = 1, 3 do
-			piece(Block, S * (1.0 - k * 0.15), S * 0.04, S * (0.5 - k * 0.06), side * S * (0.7 + k * 0.28), S * (0.2 + k * 0.12), S * (0.1 + k * 0.1), k == 3 and gold or Color3.fromRGB(255, 120 + k * 30, 40), Enum.Material.Neon, 0, side * -10, side * (20 + k * 12), 0.25 + k * 0.1)
+			piece(Block, S * (1.1 - k * 0.14), S * 0.04, S * (0.55 - k * 0.07), side * S * (0.7 + k * 0.3), S * (0.25 + k * 0.1), S * (0.05 + k * 0.1), k == 3 and gold or Color3.fromRGB(255, 110 + k * 30, 40), Enum.Material.Neon, 0, side * -10, side * (22 + k * 12), 0.2 + k * 0.1)
 		end
-		piece(Ball, S * 0.14, S * 0.14, S * 0.12, side * S * 0.2, S * 0.16, -S * 0.45, Color3.fromRGB(255, 250, 200), Enum.Material.Neon)
-	end
-	piece(Block, S * 0.14, S * 0.12, S * 0.34, 0, -S * 0.04, -S * 0.6, gold, Enum.Material.Metal, 15, 0, 0)
-	for i = 1, 5 do
-		piece(Block, S * 0.07, S * (0.4 - math.abs(i - 3) * 0.08), S * 0.07, (i - 3) * S * 0.08, S * 0.62, -S * 0.1 - math.abs(i - 3) * S * 0.04, i == 3 and gold or Color3.fromRGB(255, 130, 40), Enum.Material.Neon, 0, 0, (i - 3) * 14)
+		-- 발톱
+		piece(Block, S * 0.08, S * 0.22, S * 0.08, side * S * 0.16, -S * 0.5, -S * 0.08, gold, Enum.Material.Metal)
+		piece(Block, S * 0.2, S * 0.05, S * 0.26, side * S * 0.16, -S * 0.62, -S * 0.14, gold, Enum.Material.Metal)
 	end
 	for i = 1, 5 do
-		piece(Block, S * 0.1, S * 0.05, S * 0.9, (i - 3) * S * 0.14, S * 0.05 - math.abs(i - 3) * S * 0.04, S * 0.9, Color3.fromRGB(255, 100 + i * 20, 40), Enum.Material.Neon, 0, (i - 3) * 14, 0, 0.2)
+		piece(Block, S * 0.07, S * (0.4 - math.abs(i - 3) * 0.08), S * 0.07, (i - 3) * S * 0.07, S * 0.82, -S * 0.7 - math.abs(i - 3) * S * 0.04, i == 3 and gold or flame, Enum.Material.Neon, 0, 0, (i - 3) * 14)
+	end
+	-- 부채꼴 꼬리깃 + 몸 주위를 도는 불씨
+	for i = 1, 7 do
+		piece(Block, S * 0.1, S * 0.05, S * 1.1, (i - 4) * S * 0.12, S * 0.05 - math.abs(i - 4) * S * 0.03, S * 0.95, Color3.fromRGB(255, 90 + i * 18, 40), Enum.Material.Neon, 0, (i - 4) * 12, 0, 0.2)
 	end
 	for i = 1, 8 do
 		local a = i / 8 * math.pi * 2
-		piece(Ball, S * 0.1, S * 0.1, S * 0.1, math.cos(a) * S * 0.85, S * 0.0, math.sin(a) * S * 0.85, Color3.fromRGB(255, 160, 50), Enum.Material.Neon)
+		piece(Ball, S * 0.1, S * 0.1, S * 0.1, math.cos(a) * S * 0.85, S * 0.0, math.sin(a) * S * 0.85, flame, Enum.Material.Neon)
 	end
-	zoneBossEmitter(part, Color3.fromRGB(255, 150, 50), 22, S * 0.09, 6, 2.6, Vector3.new(0, 6, 0))
+	zoneBossEmitter(part, flame, 22, S * 0.09, 6, 2.6, Vector3.new(0, 6, 0))
 end
 
 local DUNGEON_VARIANT = {}

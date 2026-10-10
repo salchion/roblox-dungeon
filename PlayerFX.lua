@@ -172,6 +172,15 @@ do
 					for key, value in pairs(DAY) do look[key] = value end
 					for key, value in pairs(visual.Lighting) do look[key] = value end
 				end
+				if player:GetAttribute("DungeonTypeKey") == "Ice" then -- 얼음 성채: 눈 / 얼음이 하얗게 번쩍여 눈부시지 않게 밝기를 낮추고 푸른 어둑한 톤으로
+					local dim = {}
+					for key, value in pairs(look) do dim[key] = value end
+					dim.Brightness = math.min(dim.Brightness or 1.85, 1.15)
+					dim.ExposureCompensation = -0.45
+					dim.Ambient = Color3.fromRGB(46, 58, 80)
+					dim.OutdoorAmbient = Color3.fromRGB(62, 78, 104)
+					look = dim
+				end
 				TweenService:Create(Lighting, TweenInfo.new(visual and 2 or 0.8), look):Play()
 				local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
 				if atmosphere and dusk and dusk.Atmosphere then
@@ -185,6 +194,7 @@ do
 	end
 	player:GetAttributeChangedSignal("Zone"):Connect(apply)
 	player:GetAttributeChangedSignal("DungeonVisual"):Connect(apply)
+	player:GetAttributeChangedSignal("DungeonTypeKey"):Connect(apply)
 	task.defer(apply)
 	-- 필드 안에서는 지금 서 있는 구역을 보고 하늘을 바꾼다
 	task.spawn(function()

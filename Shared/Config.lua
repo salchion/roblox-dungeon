@@ -900,17 +900,17 @@ Config.Dungeon.Types = {
 		Torch = Color3.fromRGB(255, 150, 70),
 		Terrain = { Ground = Enum.Material.Mud, Mountain = Enum.Material.Rock, Accent = Enum.Material.Slate },
 		MonsterPool = { Slime = 4, Bat = 3, Spider = 3, Imp = 2, Spitter = 1, Healer = 1 },
-		Boss = { Name = "고블린 왕", Color = Color3.fromRGB(70, 130, 50), HealthMult = 1, DamageMult = 1, Weights = { Fan = 2, Ring = 1, Spiral = 0.5, Meteor = 0.5, Slam = 1.5, Summon = 4, Lanes = 1.5, Sweep = 1, SideAdds = 3.5 } },
+		Boss = { Name = "고블린 왕", Color = Color3.fromRGB(70, 130, 50), HealthMult = 1, DamageMult = 1, Weights = { Fan = 1.5, Slam = 2, Summon = 3, SideAdds = 3, Lanes = 1, Rush = 3.5, CoinRain = 3 } }, -- 고블린 왕: 돌진 / 금화 폭격 / 부하 소환
 	},
 	Ice = {
 		Name = "얼음 성채", Desc = "❄ 탄막 지옥! 멀리서 쏘는 적이 많고, 서리 군주는 나선 / 전방위 탄막을 쏟아내요 (중급)", Theme = { Health = 1.0, Damage = 1.2, Speed = 0.9, Spawn = 0.9, Burst = 1.0 }, Waves = 6, LevelOffset = 6, GoldMult = 1.6, RecommendedPower = 2000,
 		MonsterColor = Color3.fromRGB(110, 200, 240),
-		Floor = { Color = Color3.fromRGB(190, 220, 240), Material = Enum.Material.Ice },
-		Wall = { Color = Color3.fromRGB(120, 160, 200), Material = Enum.Material.Glacier },
+		Floor = { Color = Color3.fromRGB(112, 140, 172), Material = Enum.Material.Slate }, -- (너무 하얗고 쨍해서 눈부시던 것을 어두운 청회색으로)
+		Wall = { Color = Color3.fromRGB(78, 106, 146), Material = Enum.Material.Glacier },
 		Torch = Color3.fromRGB(120, 200, 255),
-		Terrain = { Ground = Enum.Material.Snow, Mountain = Enum.Material.Glacier, Accent = Enum.Material.Ice },
+		Terrain = { Ground = Enum.Material.Slate, Mountain = Enum.Material.Glacier, Accent = Enum.Material.Slate },
 		MonsterPool = { Spitter = 3, Mage = 4, Turret = 2, Wisp = 3, Golem = 1, Healer = 2 },
-		Boss = { Name = "서리 군주", Color = Color3.fromRGB(90, 170, 240), HealthMult = 1.6, DamageMult = 1.2, Weights = { Fan = 2, Ring = 4, Spiral = 4.5, Meteor = 0.5, Slam = 1, Summon = 1, Lanes = 1.5, Sweep = 2, SideAdds = 0.5 } },
+		Boss = { Name = "서리 군주", Color = Color3.fromRGB(90, 170, 240), HealthMult = 1.6, DamageMult = 1.2, Weights = { Fan = 1, Ring = 3, Spiral = 4, Sweep = 2, Slam = 0.5, SpikeLines = 4 } }, -- 서리 군주: 탄막 / 얼음 가시 줄기
 	},
 	Fire = {
 		Name = "화염 신전", Desc = "🔥 돌진과 폭발! 달려드는 적이 단단하고 빠르고, 화염의 군주는 메테오와 충격파를 퍼부어요 (고급)", Theme = { Health = 1.25, Damage = 1.0, Speed = 1.15, Spawn = 1.0, Burst = 1.0 }, Waves = 7, LevelOffset = 12, GoldMult = 2.5, RecommendedPower = 4500,
@@ -920,7 +920,7 @@ Config.Dungeon.Types = {
 		Torch = Color3.fromRGB(255, 90, 40),
 		Terrain = { Ground = Enum.Material.Basalt, Mountain = Enum.Material.Slate, Accent = Enum.Material.CrackedLava },
 		MonsterPool = { Charger = 4, Bomber = 4, Imp = 2, Golem = 2, Spider = 1, Totem = 1, Healer = 1 },
-		Boss = { Name = "화염의 군주", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Fan = 0.5, Ring = 0.5, Spiral = 0.5, Meteor = 5, Slam = 4, Summon = 0.5, Lanes = 3, Sweep = 3.5, SideAdds = 0.5 } },
+		Boss = { Name = "화염의 군주", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Meteor = 3, Slam = 2, Lanes = 3, Sweep = 2, Dive = 4, EmberFall = 3.5 } }, -- 화염 군주: 급강하 / 불씨 폭격 / 화염 줄기
 	},
 }
 
