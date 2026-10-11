@@ -844,7 +844,7 @@ do
 	local ICONS = { "🔱", "💥", "⚡", "🔥", "⏩", "🎯", "❤", "💚", "⭐", "💰", "🎫", "🌪" }
 	local PEN_ICONS = { "🪨", "😡", "💨", "🐺", "🔫", "☠" }
 	local popup = create("Frame", {
-		Name = "RollPopup", Size = UDim2.new(0, 520, 0, 104), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 104),
+		Name = "RollPopup", Size = UDim2.new(0, 520, 0, 80), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 104),
 		BackgroundColor3 = Color3.fromRGB(18, 20, 30), BackgroundTransparency = 0.12, BorderSizePixel = 0, Visible = false, ZIndex = 75,
 	}, gui)
 	rounded(popup, 14)
@@ -854,13 +854,13 @@ do
 		local frame = create("Frame", { Size = UDim2.new(0.5, -9, 1, -12), Position = UDim2.new(x, x == 0 and 6 or 3, 0, 6), BackgroundColor3 = color, BackgroundTransparency = 0.78, BorderSizePixel = 0, ZIndex = 76 }, popup)
 		rounded(frame, 10)
 		local stroke = create("UIStroke", { Color = color, Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame)
-		local icon = makeLabel({ Size = UDim2.new(0, 44, 0, 44), Position = UDim2.new(0, 2, 0, 4), TextSize = 30, ZIndex = 77 }, frame)
+		local icon = makeLabel({ Size = UDim2.new(0, 44, 0, 44), Position = UDim2.new(0, 2, 0, 12), TextSize = 30, ZIndex = 77 }, frame)
 		local title = makeLabel({
-			Size = UDim2.new(1, -52, 0, 40), Position = UDim2.new(0, 48, 0, 4), Font = Enum.Font.GothamBlack, TextSize = 13, TextWrapped = true,
+			Size = UDim2.new(1, -52, 0, 32), Position = UDim2.new(0, 48, 0, 3), Font = Enum.Font.GothamBlack, TextSize = 13, TextWrapped = true,
 			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 77,
 		}, frame)
 		local desc = makeLabel({
-			Size = UDim2.new(1, -52, 0, 40), Position = UDim2.new(0, 48, 0, 44), TextSize = 12, TextWrapped = true,
+			Size = UDim2.new(1, -52, 0, 32), Position = UDim2.new(0, 48, 0, 36), TextSize = 12, TextWrapped = true,
 			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(215, 215, 230), ZIndex = 77,
 		}, frame)
 		return { Frame = frame, Stroke = stroke, Icon = icon, Title = title, Desc = desc }
@@ -876,11 +876,6 @@ do
 		if action ~= "Roll" then return end
 		token += 1
 		local mine = token
-		-- 패널티가 없으면 오른쪽 칸 없이 작은 한 칸만 보인다 (화면을 덜 가린다)
-		local hasPen = data.Penalty ~= nil
-		popup.Size = hasPen and UDim2.new(0, 520, 0, 104) or UDim2.new(0, 380, 0, 66)
-		penCard.Frame.Visible = hasPen
-		card.Frame.Size = hasPen and UDim2.new(0.5, -9, 1, -12) or UDim2.new(1, -12, 1, -12)
 		popup.Visible = true
 		popScale.Scale = 0.6
 		TweenService:Create(popScale, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
@@ -929,11 +924,13 @@ do
 			if data.Penalty then
 				paint(penCard, data.Penalty.Icon, "⚠ " .. data.Penalty.Name, string.format("%s\n대신 골드 +%d%%", data.Penalty.Desc, data.Penalty.Gold), Color3.fromRGB(255, 130, 120))
 				task.delay(0.12, function() SoundBank.Play(sfxParent, "Enh_Fail") end)
+			else
+				paint(penCard, "🍀", "패널티 없음!", "이번엔 운이 좋았어요", Color3.fromRGB(150, 255, 170))
 			end
 			TweenService:Create(popScale, TweenInfo.new(0.12), { Scale = 1.08 }):Play()
 			task.wait(0.14)
 			TweenService:Create(popScale, TweenInfo.new(0.2, Enum.EasingStyle.Back), { Scale = 1 }):Play()
-			task.wait(hasPen and 3.2 or 2.2)
+			task.wait(3.2)
 			if token == mine then popup.Visible = false end
 		end)
 	end)
