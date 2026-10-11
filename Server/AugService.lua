@@ -54,6 +54,14 @@ local function equipped(rift, slots)
 	return list
 end
 
+-- 같은 구역 세트 장비를 끼면 단계가 오른다: 골드 단계(최대 3) + 장착 부위 수(최대 3) = 최대 6단계 (1부위 4단계 / 2부위 5단계 / 3부위 6단계)
+local function gearBonus(player, zone)
+	local okInv, Inventory = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
+	if not okInv then return 0 end
+	local counts = Inventory.GetTotals(player).SetCounts or {}
+	return math.clamp(counts["Zone" .. zone] or 0, 0, 3)
+end
+
 -- Attribute 채우기 (효과 코드가 읽는 값 + 화면용 값)
 function Aug.Apply(player)
 	local rift = stateOf(player)
@@ -63,7 +71,7 @@ function Aug.Apply(player)
 	local levels, bestLevel, auraColor = {}, 0, nil
 	for _, z in ipairs(list) do
 		local attr = Config.Sets.ZoneAug[z]
-		local level = rift.AugLv[tostring(z)]
+		local level = rift.AugLv[tostring(z)] + gearBonus(player, z)
 		levels[attr] = level
 		if level > bestLevel then bestLevel, auraColor = level, Config.AugInfo[attr].Color end
 	end
@@ -86,6 +94,7 @@ function Aug.Apply(player)
 	player:SetAttribute("AugSlots", slots)
 	for z = 1, ZONES do
 		player:SetAttribute("AugLvZ_" .. z, rift.AugLv[tostring(z)] or 0)
+		player:SetAttribute("AugGearZ_" .. z, (rift.AugLv[tostring(z)] or 0) > 0 and gearBonus(player, z) or 0) -- 장비로 더해진 단계
 		player:SetAttribute("AugOnZ_" .. z, table.find(list, z) ~= nil)
 		player:SetAttribute("AugOpenZ_" .. z, isOpen(player, rift, z))
 	end

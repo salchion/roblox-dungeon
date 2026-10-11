@@ -71,7 +71,7 @@ make("UISizeConstraint", { MaxSize = Vector2.new(480, 470) }, panel)
 
 label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "🌟 세트 효과", TextSize = 22, TextXAlignment = Enum.TextXAlignment.Left }, panel)
 local slotLabel = label({ Size = UDim2.new(1, -32, 0, 20), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, panel)
-label({ Size = UDim2.new(1, -32, 0, 32), Position = UDim2.new(0, 16, 0, 60), Text = "구역 군주를 잡으면 그 구역의 효과가 열려요. 골드로 활성화하고 강화하면 내 탄이 눈에 띄게 달라져요. 구역을 클리어할수록 동시에 켤 수 있는 칸이 늘어요.", TextSize = 12, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
+label({ Size = UDim2.new(1, -32, 0, 32), Position = UDim2.new(0, 16, 0, 60), Text = "군주를 잡으면 효과가 열리고, 골드로 3단계까지 올려요. 그 구역 세트 장비를 끼면 1부위 4단계 · 2부위 5단계 · 3부위 6단계! 진짜 위력은 필드 사냥에서 나와요.", TextSize = 12, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
 button({ Size = UDim2.new(0, 60, 0, 28), Position = UDim2.new(1, -72, 0, 10), BackgroundColor3 = Color3.fromRGB(70, 70, 90), Text = "닫기", TextSize = 13 }, panel, function() panel.Visible = false end)
 
 local list = make("ScrollingFrame", {
@@ -111,7 +111,8 @@ local function refresh()
 		anyOpen = anyOpen or open
 		if on then used += 1 end
 		local info = Config.AugInfo[Config.Sets.ZoneAug[zone]]
-		r.Title.Text = string.format("%d구역 · %s  %s", zone, info.Name, level > 0 and ("<" .. level .. "단계>") or "")
+		local gear = player:GetAttribute("AugGearZ_" .. zone) or 0
+		r.Title.Text = string.format("%d구역 · %s  %s", zone, info.Name, level > 0 and (gear > 0 and string.format("<%d단계 + 장비 %d = %d>", level, gear, level + gear) or ("<" .. level .. "단계>")) or "")
 		r.Title.TextColor3 = open and Color3.fromRGB(255, 240, 200) or Color3.fromRGB(130, 134, 156)
 		r.Toggle.Visible = level > 0
 		r.Toggle.Text = on and "끄기" or "켜기"
@@ -139,7 +140,7 @@ for _, name in ipairs({ "Gold", "AugSlots", "TutorialActive" }) do
 	player:GetAttributeChangedSignal(name):Connect(refresh)
 end
 for zone = 1, ZONES do
-	for _, prefix in ipairs({ "AugOpenZ_", "AugLvZ_", "AugOnZ_" }) do
+	for _, prefix in ipairs({ "AugOpenZ_", "AugLvZ_", "AugOnZ_", "AugGearZ_" }) do
 		player:GetAttributeChangedSignal(prefix .. zone):Connect(refresh)
 	end
 end

@@ -1552,7 +1552,7 @@ end
 augOnHit = function(run, player, part, data, amount, isCrit)
 	-- 처형: 체력이 얼마 안 남은 일반 몬스터는 맞는 즉시 쓰러진다
 	local execLevel = augLv(run, player, "AugExecute")
-	if execLevel > 0 and data.Health > 0 and not data.IsBoss and not data.BossLike and data.Kind ~= "Boss" and not data.Invincible and data.Health / data.MaxHealth <= 0.1 + 0.06 * execLevel then
+	if execLevel > 0 and data.Health > 0 and not data.IsBoss and not data.BossLike and data.Kind ~= "Boss" and not data.Invincible and data.Health / data.MaxHealth <= math.min(0.4, 0.1 + 0.06 * execLevel) then
 		data.Health = 0
 		Effects.Raw(part.Position, { "U", part.Position + Vector3.new(0, part.Size.Y / 2 + 1.5, 0), part.Size.Y }) -- 해골 + 보라 폭발 + 베기 (각자 화면에서)
 		sfxAt(run, part.Position, "Aug_Execute", nil, 0.1)
