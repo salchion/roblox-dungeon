@@ -193,26 +193,84 @@ local function startTutorialRift(player, at)
 		if not root then print("[튜토리얼 열쇠] 중단: 캐릭터 없음") return end
 		print(string.format("[튜토리얼 열쇠] %s 시작", player.Name))
 		notify(player, "🗝 군주가 던전 열쇠를 떨어뜨렸다!")
-		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🗝", Title = "군주의 열쇠", Text = "필드 군주는 던전 열쇠를 떨어뜨려요. 열쇠에 반응해서 어딘가에 던전의 문이 열리려 해요...", Duration = 4, Top = true })
 		Remotes.Tutorial:FireClient(player, "WaypointClear")
 		-- 열쇠: 군주가 쓰러진 자리에 떠오른다 (눈이 아프지 않은 호박색)
 		key = Instance.new("Part")
 		key.Name = "TutorialKey"
-		key.Size = Vector3.new(1.2, 3.2, 0.5)
+		key.Size = Vector3.new(2.6, 7, 1)
 		key.Color = Color3.fromRGB(232, 178, 90)
 		key.Material = Enum.Material.Neon
 		key.Anchored = true
 		key.CanCollide = false
 		key.CanQuery = false
 		key.CastShadow = false
-		key.CFrame = CFrame.new(at + Vector3.new(0, 3, 0))
+		key.CFrame = CFrame.new(at + Vector3.new(0, 6, 0))
 		key.Parent = workspace
 		local light = Instance.new("PointLight")
 		light.Color = Color3.fromRGB(255, 190, 110)
-		light.Range = 18
+		light.Range = 26
 		light.Brightness = 1.2
 		light.Parent = key
-		task.wait(1.0)
+		local beam = Instance.new("Part") -- 멀리서도 보이는 빛기둥 (드랍된 열쇠를 찾기 쉽게)
+		beam.Name = "TutorialKeyBeam"
+		beam.Size = Vector3.new(90, 3, 3)
+		beam.CFrame = CFrame.new(at + Vector3.new(0, 48, 0)) * CFrame.Angles(0, 0, math.rad(90))
+		beam.Shape = Enum.PartType.Cylinder
+		beam.Anchored, beam.CanCollide, beam.CanQuery, beam.CanTouch, beam.CastShadow = true, false, false, false, false
+		beam.Material = Enum.Material.Neon
+		beam.Color = Color3.fromRGB(232, 160, 90)
+		beam.Transparency = 0.7
+		beam.Parent = key
+		local tag = Instance.new("BillboardGui")
+		tag.Size = UDim2.new(0, 220, 0, 40)
+		tag.StudsOffset = Vector3.new(0, 6, 0)
+		tag.AlwaysOnTop = true
+		tag.MaxDistance = 400
+		tag.Parent = key
+		local tagText = Instance.new("TextLabel")
+		tagText.Size = UDim2.new(1, 0, 1, 0)
+		tagText.BackgroundTransparency = 1
+		tagText.Font = Enum.Font.GothamBlack
+		tagText.TextSize = 22
+		tagText.TextColor3 = Color3.fromRGB(255, 214, 140)
+		tagText.TextStrokeTransparency = 0.3
+		tagText.Text = "🗝 군주의 열쇠 (가까이 가서 줍기)"
+		tagText.Parent = tag
+		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🗝", Title = "열쇠가 떨어졌어요!", Text = "쓰러진 군주 자리에 큰 열쇠가 떨어졌어요. 가까이 가서 주워 보세요!", Duration = 6, Top = true })
+		-- 플레이어가 가까이 갈 때까지 기다린다 (제자리에서 천천히 돌며 떠 있다). 너무 오래 안 주우면 열쇠가 스스로 날아온다
+		local waitStart, hover = os.clock(), 0
+		while true do
+			root = getAliveParts(player)
+			if not root then return end
+			hover += 1 / 60
+			key.CFrame = CFrame.new(at + Vector3.new(0, 6 + math.sin(hover * 3) * 0.8, 0)) * CFrame.Angles(0, hover * 2, 0)
+			local near = (Vector3.new(root.Position.X, 0, root.Position.Z) - Vector3.new(at.X, 0, at.Z)).Magnitude
+			if near <= 8 or os.clock() - waitStart > 45 then break end
+			task.wait()
+		end
+		beam:Destroy()
+		tag:Destroy()
+		-- 주웠다: 열쇠가 손으로 날아온다
+		root = getAliveParts(player)
+		if not root then return end
+		do
+			local pickFrom = key.Position
+			local pickStart = os.clock()
+			while os.clock() - pickStart < 0.5 do
+				local t = (os.clock() - pickStart) / 0.5
+				root = getAliveParts(player)
+				if not root then return end
+				key.CFrame = CFrame.new(pickFrom:Lerp(root.Position + Vector3.new(0, 3, 0), t * t)) * CFrame.Angles(0, t * 12, 0)
+				task.wait()
+			end
+		end
+		Effects.Burst(key.Position, Color3.fromRGB(255, 210, 130), 40)
+		Effects.FloatText(key.Position + Vector3.new(0, 4, 0), "🗝 군주의 열쇠 획득!", Color3.fromRGB(255, 220, 150))
+		notify(player, "🗝 군주의 열쇠를 얻었다! 열쇠가 공명하기 시작한다...")
+		key:Destroy()
+		key = nil
+		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🗝", Title = "열쇠가 빛난다", Text = "열쇠에 반응해서 어딘가에 던전의 문이 열리려 해요...", Duration = 4, Top = true })
+		task.wait(0.8)
 		root = getAliveParts(player)
 		if not root then return end
 		-- 땅이 울린다: 점점 세지는 진동 (갑자기 뭔가 나타나지 않게 먼저 알린다)
@@ -236,38 +294,37 @@ local function startTutorialRift(player, at)
 			task.wait(0.05)
 		end
 		gate.Set(1, 0)
-		-- 열쇠가 문으로 날아가 박힌다 -> 문이 밝게 열린다
-		local from = key.Position
-		local flightStart = os.clock()
-		while os.clock() - flightStart < 1.3 do
-			local t = (os.clock() - flightStart) / 1.3
-			local eased = t * t * (3 - 2 * t)
-			key.CFrame = CFrame.new(from:Lerp(gate.Center, eased) + Vector3.new(0, math.sin(t * math.pi) * 5, 0)) * CFrame.Angles(0, t * 14, math.rad(15))
-			gate.Set(1, os.clock() - riseStart)
-			task.wait()
-		end
+		-- 문이 밝게 열린다 (잠깐 숨을 고르며 문을 보여 준다: 무엇에 끌려가는지 알 수 있게)
 		Effects.Burst(gate.Center, Color3.fromRGB(255, 200, 120), 60)
-		key:Destroy()
-		key = nil
+		notify(player, "🌀 던전의 문이 열렸다 — 문이 당신을 끌어당긴다!")
+		local openStart = os.clock()
+		while os.clock() - openStart < 1.2 do
+			gate.Set(1, os.clock() - riseStart)
+			task.wait(0.05)
+		end
 		shakeScreen(player, 0.8)
 		-- 빨려 들어간다: 몸을 고정하고 문 쪽으로 점점 빠르게 끌려간다 (제자리에서 흔들리다가 휙)
 		root = getAliveParts(player)
 		if not root then return end
 		root.Anchored = true
+		player:SetAttribute("CombatLocked", true) -- 끌려가는 동안은 공격이 나가지 않는다
+		local shield = Instance.new("ForceField") -- 무적 (방패 모양은 숨긴다)
+		shield.Visible = false
+		shield.Parent = player.Character
 		local startCF = root.CFrame
 		local pullStart = os.clock()
-		local pullTime = 1.8
+		local pullTime = 3.4
 		local blackSent = false
 		while os.clock() - pullStart < pullTime do
 			local t = (os.clock() - pullStart) / pullTime
 			root = getAliveParts(player)
 			if not root then break end
-			local eased = t * t * t
+			local eased = t * t
 			local shakeOffset = Vector3.new(math.sin(os.clock() * 55), math.cos(os.clock() * 47), math.sin(os.clock() * 61)) * (1 - t) * 0.9
 			root.CFrame = CFrame.lookAt(startCF.Position:Lerp(gate.Center, eased) + shakeOffset, gate.Center)
 			gate.Set(1, os.clock() - riseStart)
 			shakeScreen(player, 0.4 + t * 0.5)
-			if t > 0.72 and not blackSent then
+			if t > 0.92 and not blackSent then -- 화면은 마지막 순간에만 어두워진다 (그 전에는 문이 다가오는 것이 보이게)
 				blackSent = true
 				Remotes.Tutorial:FireClient(player, "Cinema", "Black")
 			end
@@ -277,6 +334,8 @@ local function startTutorialRift(player, at)
 		gate = nil
 		root = getAliveParts(player)
 		if root then root.Anchored = false end
+		shield:Destroy()
+		player:SetAttribute("CombatLocked", nil)
 		print(string.format("[튜토리얼 열쇠] %s 던전 입장 시도 (Zone=%s, TutorialDungeonRun=%s)", player.Name, tostring(player:GetAttribute("Zone")), tostring(player:GetAttribute("TutorialDungeonRun"))))
 		Dungeon.Start(player, "Cave", "Easy", nil, nil, true)
 		if player:GetAttribute("Zone") ~= "Dungeon" then
@@ -290,8 +349,14 @@ local function startTutorialRift(player, at)
 		warn("[튜토리얼 열쇠] 오류: " .. tostring(err))
 		if key then key:Destroy() end
 		if gate then gate.Destroy() end
+		player:SetAttribute("CombatLocked", nil)
 		local root = getAliveParts(player)
-		if root then root.Anchored = false end
+		if root then
+			root.Anchored = false
+			for _, child in ipairs(root.Parent:GetChildren()) do
+				if child:IsA("ForceField") then child:Destroy() end
+			end
+		end
 		Remotes.Tutorial:FireClient(player, "Cinema", "End")
 	end
 	player:SetAttribute("TutorialRiftBusy", nil)
@@ -307,7 +372,14 @@ local function doomWaveInner(player, zone, center)
 	-- 끌려가기 전: 땅 / 하늘이 먼저 울린다 (점점 세지는 진동 2.5초). 갑자기 빨려 올라가지 않게 몸도 잠깐 굳는다
 	do
 		local shakeRoot = getAliveParts(player)
-		if shakeRoot then shakeRoot.Anchored = true end
+		if shakeRoot then
+			shakeRoot.Anchored = true
+			player:SetAttribute("CombatLocked", true)
+			local shield = Instance.new("ForceField")
+			shield.Name = "DoomShield"
+			shield.Visible = false
+			shield.Parent = player.Character
+		end
 		for step = 1, 8 do
 			player:SetAttribute("ShakeStrength", 0.15 + step * 0.1)
 			player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
@@ -386,11 +458,18 @@ local function doomWaveInner(player, zone, center)
 		abduction:Destroy()
 	end
 	root, humanoid = getAliveParts(player)
+	local function unlockCombat() -- 납치되는 동안의 공격 불가 / 무적을 푼다 (결투장에 도착하면 공격할 수 있다)
+		player:SetAttribute("CombatLocked", nil)
+		local shield = player.Character and player.Character:FindFirstChild("DoomShield")
+		if shield then shield:Destroy() end
+	end
 	if not root or humanoid.Health <= 0 then
 		player:SetAttribute("InDoomArena", nil)
+		unlockCombat()
 		return
 	end
 	root.Anchored = false
+	unlockCombat()
 	local arena = Instance.new("Folder")
 	arena.Name = "DoomArena"
 	arena.Parent = workspace

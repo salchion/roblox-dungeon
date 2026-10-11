@@ -174,9 +174,9 @@ end
 --   Baffles 종류: Edge = 한쪽 가장자리에서 벽이 뻗고 반대쪽이 열린 틈(Gap) / Center = 가운데 벽, 양옆이 열려 있음(Gap 씩)
 -- 한 구역의 경사로는 올라간 만큼 내려와서 구역 끝(관문 / 캠프)은 항상 0층이다. 첫 경사로는 캠프 안전지대(70) 뒤에서 시작한다.
 local ZONE_LAYOUTS = {
-	{ -- 1 초원: 완만한 언덕 하나, 탁 트인 길 (입문)
-		Stairs = { { At = 120, Rise = 8, Run = 36 }, { At = 230, Rise = -8, Run = 36 } }, -- (구역 길이 340)
-		Baffles = { { Offset = 200, Side = 1, Gap = 190 } },
+	{ -- 1 초원: 입구(마을 분지)에서 완만한 큰 언덕을 올라 정상에서 군주가 내려다보이고, 다시 내려가 군주 앞으로 (입문)
+		Stairs = { { At = 100, Rise = 22, Run = 60 }, { At = 205, Rise = -22, Run = 60 } }, -- (구역 길이 340 / 정상 160~205 / 군주 자리 295는 0층)
+		Baffles = { { Offset = 182, Side = 1, Gap = 190 } },
 	},
 	{ -- 2 숲: 좁은 지그재그 숲길 (네 번 꺾인다) + 끝에 작은 언덕
 		Stairs = { { At = 540, Rise = 12, Run = 40 }, { At = 620, Rise = -12, Run = 40 } },
@@ -1510,7 +1510,7 @@ local function reward(player, data, part)
 		local bossPosition = part.Position
 		for _, other in ipairs(Players:GetPlayers()) do
 			local drop = Config.Keys.DropByZone and Config.Keys.DropByZone[data.Zone] or { Tier = 1, Chance = Config.Keys.BossDropChance }
-			if other:GetAttribute("Zone") == "Field" and getAliveParts(other) and math.random() < drop.Chance then -- 던전 열쇠: 구역마다 단계 / 확률이 다르다
+			if other:GetAttribute("Zone") == "Field" and getAliveParts(other) and not other:GetAttribute("TutorialRiftBusy") and math.random() < drop.Chance then -- 던전 열쇠 (튜토리얼 군주는 큰 열쇠 아이템을 따로 떨어뜨린다: DoomScene): 구역마다 단계 / 확률이 다르다
 				local rootForKey = getAliveParts(other)
 				-- 하루 드랍 한도 (단계별, UTC 날짜 기준)
 				local riftState = Meta.GetRift(other)
@@ -1626,7 +1626,7 @@ end
 ------------------------------------------------------------
 -- 범위 피해 (스킬용). 맞은 위치 목록 반환
 function Field.TargetsIn(player, center, radius, limit)
-	if player:GetAttribute("Zone") ~= "Field" then return nil end
+	if player:GetAttribute("Zone") ~= "Field" or player:GetAttribute("CombatLocked") then return nil end
 	local list = {}
 	if not player:GetAttribute("InDoomArena") and isSafe(center) then return list end -- 안전지대 안에서는 스킬(데드아이 등)도 적을 잡지 못한다
 	for part in pairs(monsters) do
@@ -1701,7 +1701,7 @@ end
 
 local safeShotWarnAt = setmetatable({}, { __mode = "k" })
 function Field.Shoot(player, origin, direction)
-	if player:GetAttribute("Zone") ~= "Field" or not monstersFolder then return nil end
+	if player:GetAttribute("Zone") ~= "Field" or not monstersFolder or player:GetAttribute("CombatLocked") then return nil end -- (연출 중: 끌려가는 동안은 공격이 나가지 않는다)
 	-- 안전지대(캠프) 안에서는 사격이 통하지 않는다: 몬스터를 경계에 걸쳐 놓고 안전하게 잡는 꼼수 방지
 	local rootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if rootPart and not player:GetAttribute("InDoomArena") and isSafe(rootPart.Position) then -- (소환 결투장은 필드 좌표 밖이라 안전지대로 오인되지 않게 제외)
