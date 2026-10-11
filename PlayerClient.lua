@@ -1704,16 +1704,15 @@ local function refreshInfo()
 	local xpText = maxed and "MAX" or blocked and "돌파 필요!" or string.format("%d / %d XP", xp, xpNeeded)
 
 	local keys = (player:GetAttribute("Keys") or 0) -- 쉬움 열쇠
-	local keysNormal, keysHard = player:GetAttribute("KeysNormal") or 0, player:GetAttribute("KeysHard") or 0
 	local keyCap = Config.Keys.Max + (player:GetAttribute("KeyCapBonus") or 0)
 	local keyNext = player:GetAttribute("KeyNext") or 0
 	local keyText = string.format("오늘 무료 %d/%d", player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily)
 
 	infoLabel.Text = string.format(
-		"🎖 <font color='#8fd8ff'>Lv.%d</font>  <font size='12' color='#aaaacc'>%s</font>\n💰 <font color='#ffd966'>%d G</font>   🎫 <font color='#d9a6ff'>%d</font>\n🗝<font color='#a6f0c8'>%d</font> 🔑<font color='#ffe08a'>%d</font> 🏆<font color='#ff9a9a'>%d</font> <font size='12' color='#aaaacc'>(%s)</font>\n⚡ 전투력 <font color='#ffe16e'>%d</font>\n⚔ <font color='#%s'>%s</font>\n📍 %s",
+		"🎖 <font color='#8fd8ff'>Lv.%d</font>  <font size='12' color='#aaaacc'>%s</font>\n💰 <font color='#ffd966'>%d G</font>   🎫 <font color='#d9a6ff'>%d</font>\n🔑<font color='#ffe08a'>%d</font> <font size='12' color='#aaaacc'>(%s)</font>\n⚡ 전투력 <font color='#ffe16e'>%d</font>\n⚔ <font color='#%s'>%s</font>\n📍 %s",
 		characterLevel, xpText,
 		player:GetAttribute("Gold") or 0, player:GetAttribute("Tickets") or 0,
-		keys, keysNormal, keysHard, keyText,
+		keys, keyText,
 		player:GetAttribute("Power") or 0,
 		color:ToHex(), name, zoneText
 	)
@@ -3416,12 +3415,12 @@ function refreshSelect()
 	local dungeonType = Config.Dungeon.Types[selectedType]
 	local difficulty = Config.Dungeon.Difficulties[selectedDifficulty]
 	summaryLabel.Text = string.format(
-		"<b>%s · %s</b>\n%s → 보스 <font color='#ff9a9a'>%s</font>\n권장 전투력 <font color='#ffe16e'>%d</font>  (내 전투력 %d)\n골드 x%.1f · 티켓 %d장 · 보스 상자 장비 %d개\n🎟 오늘 무료 입장 <b>%d / %d회</b> · 다 쓰면 <b>%s %d개</b> 필요 (보유 %d개, 더 높은 열쇠도 가능)\n열쇠는 필드 구역 군주가 줘요: 앞 구역 🗝 쉬움 · 중간 🔑 보통 · 뒤 구역 🏆 어려움",
+		"<b>%s · %s</b>\n%s → 보스 <font color='#ff9a9a'>%s</font>\n권장 전투력 <font color='#ffe16e'>%d</font>  (내 전투력 %d)\n골드 x%.1f · 티켓 %d장 · 보스 상자 장비 %d개\n🎟 오늘 무료 입장 <b>%d / %d회</b> · 다 쓰면 <b>🔑 열쇠 %d개</b> 필요 (보유 %d개)\n🔑 열쇠는 필드 구역 군주가 줘요 (뒤 구역일수록 많이 · 자주). 쉬움 1개 · 보통 2개 · 어려움 3개",
 		dungeonType.Name, difficulty.Name, string.format("%d초 버티기", Config.Dungeon.GetSurviveSeconds(dungeonType.Waves)), dungeonType.Boss.Name,
 		Config.DungeonPower(dungeonType, difficulty), player:GetAttribute("Power") or 0,
 		dungeonType.GoldMult * difficulty.GoldMult, difficulty.Tickets, Config.Loot.DungeonChestCount,
-		player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily, Config.Keys.TierNames[difficulty.KeyTier or 1], difficulty.KeyCost,
-		(function() local total = 0 for t = difficulty.KeyTier or 1, 3 do total += player:GetAttribute(({ "Keys", "KeysNormal", "KeysHard" })[t]) or 0 end return total end)()
+		player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily, difficulty.KeyCost,
+		player:GetAttribute("Keys") or 0
 	)
 end
 

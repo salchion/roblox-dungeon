@@ -918,8 +918,8 @@ end
 Config.Dungeon.Difficulties = {
 	Order = { "Easy", "Normal", "Hard" },
 	Easy = { Name = "쉬움", PowerMult = 0.6, KeyTier = 1, HealthMult = 0.7, DamageMult = 0.7, GoldMult = 0.8, Tickets = 2, KeyCost = 1, LevelOffset = -2, Color = Color3.fromRGB(120, 220, 130) },
-	Normal = { Name = "보통", PowerMult = 1, KeyTier = 2, HealthMult = 1, DamageMult = 1, GoldMult = 1, Tickets = 3, KeyCost = 1, LevelOffset = 0, Color = Color3.fromRGB(255, 220, 110) },
-	Hard = { Name = "어려움", PowerMult = 2.2, KeyTier = 3, HealthMult = 1.8, DamageMult = 1.5, GoldMult = 2, Tickets = 5, KeyCost = 1, LevelOffset = 4, Color = Color3.fromRGB(255, 100, 100) },
+	Normal = { Name = "보통", PowerMult = 1, KeyTier = 2, HealthMult = 1, DamageMult = 1, GoldMult = 1, Tickets = 3, KeyCost = 2, LevelOffset = 0, Color = Color3.fromRGB(255, 220, 110) },
+	Hard = { Name = "어려움", PowerMult = 2.2, KeyTier = 3, HealthMult = 1.8, DamageMult = 1.5, GoldMult = 2, Tickets = 5, KeyCost = 3, LevelOffset = 4, Color = Color3.fromRGB(255, 100, 100) },
 }
 
 -- 던전 경험치 배율: 골드 배율(유형 x 난이도 = 최대 5~10배)과 따로 정한다. 예전에는 골드 배율을 경험치에도 그대로 곱해서 어려운 던전에서 필드의 약 10배 속도로 레벨이 올랐다.
@@ -1415,15 +1415,16 @@ Config.Keys = {
 	-- 구역별 열쇠 드랍 확률: 앞 구역 군주는 자주 나오는 대신 열쇠가 잘 안 나오고, 뒤 구역 군주는 드문 대신 잘 나온다 (앞 구역 반복 사냥으로 열쇠를 쓸어 담지 못하게)
 	BossDropByZone = { 0.04, 0.06, 0.09, 0.13, 0.18, 0.25, 0.33, 0.45 },
 	DailyDropCap = 8,       -- (예전 값)
-	-- 열쇠는 던전 난이도와 같은 3단계: 쉬움 / 보통 / 어려움 열쇠. 앞 구역 군주는 낮은 단계, 뒤 구역 군주는 높은 단계 열쇠를 준다 (높은 열쇠는 낮은 난이도에도 쓸 수 있다).
-	TierNames = { "쉬움 열쇠", "보통 열쇠", "어려움 열쇠" },
-	TierIcons = { "🗝", "🔑", "🏆" },
+	-- 열쇠는 한 종류. 던전 입장 비용: 쉬움 1개 / 보통 2개 / 어려움 3개 (Difficulties.KeyCost).
+	-- 군주를 잡으면 낮은 확률로 나온다 (뒤 구역일수록 확률 / 개수가 높다). 예전의 3단계 열쇠는 접속할 때 개수만큼 환산해 합친다 (보통 x2, 어려움 x3).
+	TierNames = { "열쇠", "열쇠", "열쇠" },
+	TierIcons = { "🔑", "🔑", "🔑" },
 	DropByZone = {
-		{ Tier = 1, Chance = 0.10 }, { Tier = 1, Chance = 0.16 },
-		{ Tier = 2, Chance = 0.10 }, { Tier = 2, Chance = 0.15 }, { Tier = 2, Chance = 0.20 },
-		{ Tier = 3, Chance = 0.12 }, { Tier = 3, Chance = 0.18 }, { Tier = 3, Chance = 0.25 },
+		{ Tier = 1, Chance = 0.10, Count = 1 }, { Tier = 1, Chance = 0.16, Count = 1 },
+		{ Tier = 1, Chance = 0.10, Count = 1 }, { Tier = 1, Chance = 0.15, Count = 1 }, { Tier = 1, Chance = 0.20, Count = 1 },
+		{ Tier = 1, Chance = 0.12, Count = 2 }, { Tier = 1, Chance = 0.18, Count = 2 }, { Tier = 1, Chance = 0.25, Count = 2 },
 	},
-	DailyDropCapByTier = { 8, 5, 3 }, -- 하루에 군주 드랍으로 얻을 수 있는 단계별 열쇠 최대 개수 (UTC 날짜 기준)
+	DailyDropCapByTier = { 20, 0, 0 }, -- 하루에 군주 드랍으로 얻을 수 있는 열쇠 최대 개수 (UTC 날짜 기준)
 }
 
 ------------------------------------------------------------

@@ -1519,11 +1519,11 @@ local function reward(player, data, part)
 				riftState.KeyDropsTier = riftState.KeyDropsTier or { 0, 0, 0 }
 				local capped = (riftState.KeyDropsTier[drop.Tier] or 0) >= (Config.Keys.DailyDropCapByTier[drop.Tier] or 0)
 				if rootForKey and not capped and (rootForKey.Position - bossPosition).Magnitude <= 160 then
-					riftState.KeyDropsTier[drop.Tier] = (riftState.KeyDropsTier[drop.Tier] or 0) + 1
-					Keys.AddTier(other, drop.Tier, 1)
-					local name = Config.Keys.TierNames[drop.Tier]
-					notify(other, string.format("%s %s을(를) 얻었어요! (군주 드랍) — 무료 입장을 다 써도 해당 난이도 이하의 던전에 들어갈 수 있어요", Config.Keys.TierIcons[drop.Tier], name))
-					Effects.FloatText(rootForKey.Position + Vector3.new(0, 6, 0), Config.Keys.TierIcons[drop.Tier] .. " " .. name .. "!", Color3.fromRGB(160, 255, 200))
+					local count = math.min(drop.Count or 1, (Config.Keys.DailyDropCapByTier[drop.Tier] or 0) - (riftState.KeyDropsTier[drop.Tier] or 0))
+					riftState.KeyDropsTier[drop.Tier] = (riftState.KeyDropsTier[drop.Tier] or 0) + count
+					Keys.Add(other, count)
+					notify(other, string.format("🔑 열쇠 %d개를 얻었어요! (군주 드랍) — 쉬움 1개 · 보통 2개 · 어려움 3개로 던전에 입장해요", count))
+					Effects.FloatText(rootForKey.Position + Vector3.new(0, 6, 0), "🔑 열쇠 +" .. count, Color3.fromRGB(160, 255, 200))
 				end
 			end
 			local root = getAliveParts(other)

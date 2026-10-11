@@ -2588,7 +2588,7 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 		if keyCost > 0 and Dungeon.FreeLeft(member) > 0 then
 			useFree[member] = true -- 오늘의 무료 입장 사용 (열쇠 소모 없음)
 		elseif not Keys.HasTier(member, difficulty.KeyTier or 1, keyCost) then
-			notify(player, string.format("%s 님은 오늘의 무료 입장을 다 썼고 %s(이상)도 없어요. 필드 구역 군주를 잡으면 열쇠가 나와요 (뒤 구역일수록 높은 단계)", member.DisplayName, Config.Keys.TierNames[difficulty.KeyTier or 1]))
+			notify(player, string.format("%s 님은 오늘의 무료 입장을 다 썼고 열쇠도 %d개 이상 없어요. 필드 구역 군주를 잡으면 열쇠가 나와요", member.DisplayName, keyCost))
 			if member ~= player then
 				notify(member, "무료 입장 / 열쇠가 부족해서 파티가 입장하지 못했어요.")
 			end
