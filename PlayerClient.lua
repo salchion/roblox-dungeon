@@ -1469,6 +1469,14 @@ for name, value in pairs(Config.Audio.Music) do
 	end
 end
 
+if RunService:IsStudio() then -- 음악이 안 나오거나 안 바뀔 때 원인을 알 수 있게: 어떤 ID 가 로드됐는지 6초 뒤에 한 번 알려 준다
+	task.delay(6, function()
+		for trackName, sound in pairs(tracks) do
+			print(string.format("[음악] %s = %s · 로드됨=%s · 길이=%.0f초", trackName, sound.SoundId, tostring(sound.IsLoaded), sound.TimeLength))
+		end
+	end)
+end
+
 if next(tracks) == nil and RunService:IsStudio() then
 	print("[음악] 배경음악이 비어 있어요. ReplicatedStorage > AudioIds 스크립트에 오디오 ID(숫자)를 적으면 로비 / 필드 / 던전 / 보스 음악이 나와요. (README의 '소리 넣는 법' 참고)")
 end
