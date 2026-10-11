@@ -113,6 +113,7 @@ local function send(player)
 end
 
 local complete -- 아래에서 정의 (Load 안의 콜백이 쓴다)
+local giveReelGear -- 아래에서 정의 (필드에 처음 나갈 때 Load 안의 콜백이 부른다)
 
 function Tutorial.Load(player, saved)
 	local state
@@ -150,7 +151,24 @@ function Tutorial.Load(player, saved)
 		state = { Step = 1, Progress = 0 }
 	end
 	state.StepStartedAt = os.clock()
+	state.ReelDone = not (typeof(saved) == "table" and saved.ReelDone == false) -- 예전 저장본 / 새 사용자는 이미 받았거나 아직 때가 아니다
 	states[player] = state
+	player:GetAttributeChangedSignal("Zone"):Connect(function()
+		local current = states[player]
+		if current ~= state or player:GetAttribute("Zone") ~= "Field" then return end
+		if state.ReelDone == false then -- 필드로 나가는 순간 첫 장비 3개 지급 (슬롯 릴)
+			state.ReelDone = true
+			task.delay(1.2, function() if player.Parent then giveReelGear(player) end end)
+		end
+		if state.Step >= 5 and not state.ShadowHint then -- 최후의 군주를 만난 뒤 처음 필드에 나가면: 동쪽 끝 그림자 안내
+			state.ShadowHint = true
+			task.delay(3, function()
+				if player.Parent and player:GetAttribute("Zone") == "Field" then
+					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "저 멀리 동쪽 하늘에…", Text = "필드 끝에 거대한 그림자가 서 있어요. 최후의 군주예요. 구역을 넘어 동쪽으로 갈수록 점점 또렷해져요.", Duration = 8, Top = true })
+				end
+			end)
+		end
+	end)
 	send(player)
 	-- 처음 접속하면 캐릭터가 나타나는 순간부터 고정한다 (캐릭터가 아직 없을 수도 있어 몇 초간 반복 확인)
 	local function freezeSoon(character)
@@ -188,7 +206,7 @@ end
 
 function Tutorial.Serialize(player)
 	local state = states[player] or { Step = #Steps + 1, Progress = 0 }
-	return { Step = state.Step, Progress = state.Progress, V = 8 }
+	return { Step = state.Step, Progress = state.Progress, V = 8, ReelDone = state.ReelDone }
 end
 
 function Tutorial.Forget(player)
@@ -205,7 +223,7 @@ local function rewardText(reward)
 end
 
 -- 첫 장비 지급: 겹치지 않는 부위 3개 (희귀 1 + 일반 2)를 바로 주고(빈 부위는 자동 장착), 화면에는 슬롯 릴이 돌아간다
-local function giveReelGear(player)
+function giveReelGear(player)
 	local okI, Inventory = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
 	if not okI then return end
 	local G = Config.Gear
@@ -254,9 +272,7 @@ function complete(player, state, step)
 	end
 	Remotes.Notify:FireClient(player, string.format("✅ 미션 완료! 보상: %s", rewardText(reward)))
 	if step.Reel then
-		task.delay(1.5, function() -- 강화창이 닫힌 뒤에 릴이 뜨게 (창이 겹치지 않게)
-			if player.Parent then giveReelGear(player) end
-		end)
+		state.ReelDone = false -- 장비는 필드로 처음 나갈 때 준다 (아래 Zone 감시)
 	end
 	state.Step += 1
 	state.Progress = 0

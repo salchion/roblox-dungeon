@@ -665,6 +665,10 @@ local function buildCanyon(rng, totalLength, half)
 			local width = rng:NextNumber(34, 52)
 			local height = rng:NextNumber(120, 200)
 			local depth = rng:NextNumber(18, 30)
+			if rng:NextNumber() < 0.2 then -- 군데군데 높은 봉우리: 멀리 최후의 군주 그림자가 능선 뒤로 걸쳐 보이게 (필드 안쪽으로는 들어오지 않는다)
+				height = rng:NextNumber(260, 360)
+				width = rng:NextNumber(60, 90)
+			end
 			local inner = half + rng:NextNumber(-4, 4)
 			makePart({
 				Name = "Cliff", Size = Vector3.new(width, height, depth),

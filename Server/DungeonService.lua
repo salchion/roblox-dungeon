@@ -2464,7 +2464,7 @@ local function surviveLoop(run)
 	-- 보스: 플레이어 가까이에서 등장
 	run.SurviveEnd = nil
 	run.NextBonusAt, run.MonsterLimit, run.OverrunSince, run.OverrunLeft = nil, nil, nil, nil
-	run.BossHealthScale = (D.BossHealthBase + D.BossHealthPerBonus * bonusCount) * (run.PenHealth or 1)
+	run.BossHealthScale = (D.BossHealthBase + D.BossHealthPerBonus * bonusCount) * (run.PenHealth or 1) * (run.Tutorial and 0.5 or 1) -- 튜토리얼 던전 보스는 체력 절반
 	run.Phase = "Boss"
 	run.StageText = nil
 	local spots = nearSpawnPoints(run, 35, 90)

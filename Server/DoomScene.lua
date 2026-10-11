@@ -124,26 +124,82 @@ local function buildDoomLord(parent)
 end
 
 -- 소환 결투: 먼 하늘 위 심연 무대로 끌려가 최후의 군주와 1:1 (약 8초). 공격할 수 있지만 쓰러뜨릴 수는 없고, 바닥 경고를 보고 피할 수 있는 공격을 받다가 마지막 일격에 쓰러진다.
--- 튜토리얼: 첫 구역 군주를 쓰러뜨리면 군주가 던전 열쇠를 떨어뜨린다 -> 열쇠가 날아와 공명하고 -> 바닥이 갈라져 던전으로 떨어진다
+-- 튜토리얼: 첫 구역 군주를 쓰러뜨리면 군주가 던전 열쇠를 떨어뜨린다 -> 땅이 울리며 임시 던전 문이 솟아오르고 -> 열쇠가 문으로 날아가 -> 문 안으로 빨려 들어간다
+local function buildTempGate(position, faceTo)
+	local base = CFrame.lookAt(position, Vector3.new(faceTo.X, position.Y, faceTo.Z)) -- 앞면(-Z)이 플레이어를 본다
+	local items = {} -- { Part, Rel, Final }
+	local function add(name, shape, size, rel, color, material, final)
+		local p = Instance.new("Part")
+		p.Name = name
+		p.Shape = shape
+		p.Size = size
+		p.Anchored = true
+		p.CanCollide = false
+		p.CanQuery = false
+		p.CanTouch = false
+		p.CastShadow = false
+		p.Color = color
+		p.Material = material
+		p.Transparency = 1
+		p.Parent = workspace
+		table.insert(items, { Part = p, Rel = rel, Final = final or 0 })
+		return items[#items]
+	end
+	local B, stone = Enum.PartType.Block, Color3.fromRGB(60, 56, 72)
+	for _, side in ipairs({ -1, 1 }) do -- 돌기둥
+		add("GatePillar", B, Vector3.new(3.2, 24, 3.2), CFrame.new(side * 12.5, 12, 0), stone, Enum.Material.Slate)
+		add("GateRune", B, Vector3.new(0.5, 14, 0.5), CFrame.new(side * 12.5, 12, -1.8), Color3.fromRGB(232, 150, 80), Enum.Material.Neon, 0.25)
+	end
+	add("GateLintel", B, Vector3.new(29, 3.4, 3.4), CFrame.new(0, 25.2, 0), stone, Enum.Material.Slate)
+	add("GateKeystone", B, Vector3.new(3, 3, 3.6), CFrame.new(0, 28, 0), Color3.fromRGB(232, 150, 80), Enum.Material.Neon, 0.2)
+	local segments = 20
+	for index = 0, segments - 1 do -- 문 가장자리 고리
+		local angle = index / segments * math.pi * 2
+		add("GateRing", B, Vector3.new(3, 2.2, 1.6), CFrame.new(math.cos(angle) * 9.2, 12 + math.sin(angle) * 9.2, 0) * CFrame.Angles(0, 0, angle), Color3.fromRGB(190, 120, 70), Enum.Material.Neon, 0.3)
+	end
+	local disc = add("GateDisc", Enum.PartType.Cylinder, Vector3.new(0.5, 17, 17), CFrame.new(0, 12, 0) * CFrame.Angles(0, math.rad(90), 0), Color3.fromRGB(44, 24, 68), Enum.Material.Neon, 0.15)
+	local swirlA = add("GateSwirl", Enum.PartType.Cylinder, Vector3.new(0.3, 13, 13), CFrame.new(0, 12, -0.5) * CFrame.Angles(0, math.rad(90), 0), Color3.fromRGB(232, 150, 80), Enum.Material.Neon, 0.45)
+	local swirlB = add("GateSwirl", Enum.PartType.Cylinder, Vector3.new(0.3, 8, 8), CFrame.new(0, 12, -0.8) * CFrame.Angles(0, math.rad(90), 0), Color3.fromRGB(150, 100, 210), Enum.Material.Neon, 0.35)
+	local light = Instance.new("PointLight")
+	light.Color = Color3.fromRGB(230, 150, 90)
+	light.Range = 40
+	light.Brightness = 0
+	light.Parent = disc.Part
+	local gate = { Base = base, Items = items, Center = (base * CFrame.new(0, 12, 0)).Position, Light = light }
+	-- progress: 0..1 로 땅에서 솟아오르며 나타난다. spin: 안쪽 고리가 돈다
+	function gate.Set(progress, spin)
+		local rise = progress * progress * (3 - 2 * progress)
+		for _, item in ipairs(items) do
+			local rel = item.Rel
+			if item == swirlA then rel = rel * CFrame.Angles(spin * 2.2, 0, 0) elseif item == swirlB then rel = rel * CFrame.Angles(-spin * 3.4, 0, 0) end
+			item.Part.CFrame = base * CFrame.new(0, -28 * (1 - rise), 0) * rel
+			item.Part.Transparency = item.Final + (1 - item.Final) * (1 - rise)
+		end
+		light.Brightness = rise * 1.5
+	end
+	function gate.Destroy()
+		for _, item in ipairs(items) do item.Part:Destroy() end
+	end
+	gate.Set(0, 0)
+	return gate
+end
+
 local function startTutorialRift(player, at)
 	if player:GetAttribute("TutorialRiftBusy") then return end
 	player:SetAttribute("TutorialRiftBusy", true)
-	local key
+	local key, gate
 	local ok, err = pcall(function()
 		local root = getAliveParts(player)
 		if not root then print("[튜토리얼 열쇠] 중단: 캐릭터 없음") return end
 		print(string.format("[튜토리얼 열쇠] %s 시작", player.Name))
 		notify(player, "🗝 군주가 던전 열쇠를 떨어뜨렸다!")
-		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🗝", Title = "군주의 열쇠", Text = "필드 군주는 던전 열쇠를 떨어뜨려요. 열쇠가 공명하며 발밑이 갈라지기 시작해요...", Duration = 4, Top = true })
+		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🗝", Title = "군주의 열쇠", Text = "필드 군주는 던전 열쇠를 떨어뜨려요. 열쇠에 반응해서 어딘가에 던전의 문이 열리려 해요...", Duration = 4, Top = true })
 		Remotes.Tutorial:FireClient(player, "WaypointClear")
-		task.wait(1.0)
-		root = getAliveParts(player)
-		if not root then return end
-		-- 열쇠: 군주가 쓰러진 자리에서 떠올라 플레이어에게 날아온다 (눈이 아프지 않은 호박색)
+		-- 열쇠: 군주가 쓰러진 자리에 떠오른다 (눈이 아프지 않은 호박색)
 		key = Instance.new("Part")
 		key.Name = "TutorialKey"
 		key.Size = Vector3.new(1.2, 3.2, 0.5)
-		key.Color = rgb(232, 178, 90)
+		key.Color = Color3.fromRGB(232, 178, 90)
 		key.Material = Enum.Material.Neon
 		key.Anchored = true
 		key.CanCollide = false
@@ -152,65 +208,73 @@ local function startTutorialRift(player, at)
 		key.CFrame = CFrame.new(at + Vector3.new(0, 3, 0))
 		key.Parent = workspace
 		local light = Instance.new("PointLight")
-		light.Color = rgb(255, 190, 110)
+		light.Color = Color3.fromRGB(255, 190, 110)
 		light.Range = 18
 		light.Brightness = 1.2
 		light.Parent = key
+		task.wait(1.0)
+		root = getAliveParts(player)
+		if not root then return end
+		-- 땅이 울린다: 점점 세지는 진동 (갑자기 뭔가 나타나지 않게 먼저 알린다)
+		for step = 1, 4 do
+			shakeScreen(player, 0.15 + step * 0.12)
+			task.wait(0.3)
+		end
+		-- 임시 던전 문이 플레이어 앞에서 땅을 뚫고 솟아오른다
+		root = getAliveParts(player)
+		if not root then return end
+		local look = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z)
+		if look.Magnitude < 0.1 then look = Vector3.new(1, 0, 0) end
+		local gatePos = Vector3.new(root.Position.X, root.Position.Y - 3, root.Position.Z) + look.Unit * 34
+		gate = buildTempGate(gatePos, root.Position)
+		notify(player, "⚠ 땅을 뚫고 던전의 문이 솟아오른다!")
+		local riseStart = os.clock()
+		while os.clock() - riseStart < 1.6 do
+			local t = (os.clock() - riseStart) / 1.6
+			gate.Set(t, os.clock() - riseStart)
+			shakeScreen(player, 0.45)
+			task.wait(0.05)
+		end
+		gate.Set(1, 0)
+		-- 열쇠가 문으로 날아가 박힌다 -> 문이 밝게 열린다
 		local from = key.Position
-		local started = os.clock()
-		while os.clock() - started < 1.3 do
-			local t = (os.clock() - started) / 1.3
+		local flightStart = os.clock()
+		while os.clock() - flightStart < 1.3 do
+			local t = (os.clock() - flightStart) / 1.3
 			local eased = t * t * (3 - 2 * t)
-			root = getAliveParts(player)
-			if not root then return end
-			local target = root.Position + Vector3.new(0, 3.5, 0)
-			key.CFrame = CFrame.new(from:Lerp(target, eased) + Vector3.new(0, math.sin(t * math.pi) * 6, 0)) * CFrame.Angles(0, t * 14, math.rad(15))
+			key.CFrame = CFrame.new(from:Lerp(gate.Center, eased) + Vector3.new(0, math.sin(t * math.pi) * 5, 0)) * CFrame.Angles(0, t * 14, math.rad(15))
+			gate.Set(1, os.clock() - riseStart)
 			task.wait()
 		end
-		Effects.Burst(key.Position, rgb(255, 200, 120), 40)
-		shakeScreen(player, 0.5)
-		task.wait(0.4)
-		-- 바닥이 갈라진다: 발밑에서 사방으로 갈라진 틈이 번진다
-		root = getAliveParts(player)
-		if not root then return end
-		local floorY = root.Position.Y - 3
-		local cracks = {}
-		for index = 1, 7 do
-			local angle = index / 7 * math.pi * 2 + math.random() * 0.4
-			local length = 16 + math.random() * 14
-			local crack = Instance.new("Part")
-			crack.Size = Vector3.new(0.9, 0.2, length)
-			crack.CFrame = CFrame.new(root.Position.X, floorY + 0.15, root.Position.Z) * CFrame.Angles(0, angle, 0) * CFrame.new(0, 0, length / 2)
-			crack.Anchored = true
-			crack.CanCollide = false
-			crack.CanQuery = false
-			crack.CastShadow = false
-			crack.Material = Enum.Material.Neon
-			crack.Color = rgb(232, 150, 80)
-			crack.Transparency = 0.9
-			crack.Parent = workspace
-			TweenService:Create(crack, TweenInfo.new(0.7), { Transparency = 0.25 }):Play()
-			table.insert(cracks, crack)
-		end
-		shakeScreen(player, 0.9)
-		task.wait(0.9)
-		-- 떨어진다: 몸을 고정하고 아래로 내려보내며 화면이 어두워진다
-		root = getAliveParts(player)
-		if not root then return end
-		Remotes.Tutorial:FireClient(player, "Cinema", "Black")
-		root.Anchored = true
-		local base = root.CFrame
-		local fall = os.clock()
-		while os.clock() - fall < 0.8 do
-			local t = (os.clock() - fall) / 0.8
-			root = getAliveParts(player)
-			if not root then break end
-			root.CFrame = base - Vector3.new(0, 28 * t * t, 0)
-			task.wait()
-		end
-		for _, crack in ipairs(cracks) do crack:Destroy() end
+		Effects.Burst(gate.Center, Color3.fromRGB(255, 200, 120), 60)
 		key:Destroy()
 		key = nil
+		shakeScreen(player, 0.8)
+		-- 빨려 들어간다: 몸을 고정하고 문 쪽으로 점점 빠르게 끌려간다 (제자리에서 흔들리다가 휙)
+		root = getAliveParts(player)
+		if not root then return end
+		root.Anchored = true
+		local startCF = root.CFrame
+		local pullStart = os.clock()
+		local pullTime = 1.8
+		local blackSent = false
+		while os.clock() - pullStart < pullTime do
+			local t = (os.clock() - pullStart) / pullTime
+			root = getAliveParts(player)
+			if not root then break end
+			local eased = t * t * t
+			local shakeOffset = Vector3.new(math.sin(os.clock() * 55), math.cos(os.clock() * 47), math.sin(os.clock() * 61)) * (1 - t) * 0.9
+			root.CFrame = CFrame.lookAt(startCF.Position:Lerp(gate.Center, eased) + shakeOffset, gate.Center)
+			gate.Set(1, os.clock() - riseStart)
+			shakeScreen(player, 0.4 + t * 0.5)
+			if t > 0.72 and not blackSent then
+				blackSent = true
+				Remotes.Tutorial:FireClient(player, "Cinema", "Black")
+			end
+			task.wait()
+		end
+		gate.Destroy()
+		gate = nil
 		root = getAliveParts(player)
 		if root then root.Anchored = false end
 		print(string.format("[튜토리얼 열쇠] %s 던전 입장 시도 (Zone=%s, TutorialDungeonRun=%s)", player.Name, tostring(player:GetAttribute("Zone")), tostring(player:GetAttribute("TutorialDungeonRun"))))
@@ -225,6 +289,7 @@ local function startTutorialRift(player, at)
 	if not ok then
 		warn("[튜토리얼 열쇠] 오류: " .. tostring(err))
 		if key then key:Destroy() end
+		if gate then gate.Destroy() end
 		local root = getAliveParts(player)
 		if root then root.Anchored = false end
 		Remotes.Tutorial:FireClient(player, "Cinema", "End")
@@ -239,6 +304,16 @@ local function doomWaveInner(player, zone, center)
 	player:SetAttribute("InDoomArena", true) -- 납치 연출로 높이 올라가도 "필드 밖으로 튕김" / 구역 판별에 걸리지 않게 처음부터 켠다
 	notify(player, "⚠⚠ 압도적인 기운... 무언가가 당신을 부른다!!")
 	playSfx(player, "Lord_Voice") -- 낮게 깔리는 군주의 목소리
+	-- 끌려가기 전: 땅 / 하늘이 먼저 울린다 (점점 세지는 진동 2.5초). 갑자기 빨려 올라가지 않게 몸도 잠깐 굳는다
+	do
+		local shakeRoot = getAliveParts(player)
+		if shakeRoot then shakeRoot.Anchored = true end
+		for step = 1, 8 do
+			player:SetAttribute("ShakeStrength", 0.15 + step * 0.1)
+			player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+			task.wait(0.3)
+		end
+	end
 	Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "최후의 군주", Text = "...내 수하들을 쓰러뜨리다니, 강하구나. 이제 내가 직접 상대해주마.", Duration = 5, Top = true })
 	player:SetAttribute("ShakeStrength", 0.9)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)

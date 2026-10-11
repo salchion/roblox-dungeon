@@ -13,13 +13,17 @@ local player = Players.LocalPlayer
 local F = Config.Field
 
 local TOP = 0.05
-local ORIGIN = Vector3.new(F.ZoneEnd(F.ZoneCount) + 1100, TOP - 40, 0) -- 마지막 구역 끝에서 더 동쪽, 발 위치
-local BODY_COLOR = Color3.fromRGB(18, 16, 30)
+-- 군주가 실제로 서 있는 자리(마지막 구역 끝에서 더 동쪽). 너무 멀면 안개(Atmosphere)에 묻히거나 그려지지 않을 수 있어서,
+-- 실제 부품은 "카메라 앞 REAL_R 거리"에 두고 진짜 거리에 비례해 작게 그린다 (멀리 있는 산을 하늘에 붙이는 방식). 가까이 갈수록 커지고 또렷해진다.
+local ORIGIN = Vector3.new(F.ZoneEnd(F.ZoneCount) + 1100, TOP - 40, 0)
+local REAL_R = 900
+local BODY_COLOR = Color3.fromRGB(16, 14, 28)
 local EYE_COLOR = Color3.fromRGB(190, 48, 56) -- 눈이 아프지 않게 짙은 붉은색
 
 local folder = Instance.new("Folder")
 folder.Name = "LordShadow"
 
+local pieces = {} -- { Part, Size, Offset, Rotation }
 local bodyParts, eyes, halo = {}, {}, nil
 
 local function part(name, shape, size, offset, color, material, rotation)
@@ -27,7 +31,6 @@ local function part(name, shape, size, offset, color, material, rotation)
 	p.Name = name
 	p.Shape = shape
 	p.Size = size
-	p.CFrame = CFrame.new(ORIGIN + offset) * (rotation or CFrame.new())
 	p.Anchored = true
 	p.CanCollide = false
 	p.CanQuery = false
@@ -37,6 +40,7 @@ local function part(name, shape, size, offset, color, material, rotation)
 	p.Material = material
 	p.Transparency = 1
 	p.Parent = folder
+	table.insert(pieces, { Part = p, Size = size, Offset = offset, Rotation = rotation or CFrame.new() })
 	return p
 end
 
@@ -69,42 +73,48 @@ end
 
 local shown = false
 local clock = 0
-local function update(dt)
+local lastScale = 0
+
+-- 매 프레임: 카메라 앞에 놓고 진짜 거리에 맞춰 크기를 조절한다 (카메라가 움직여도 흔들리지 않게 렌더 단계에서)
+RunService.RenderStepped:Connect(function(dt)
 	clock += dt
 	local inField = player:GetAttribute("Zone") == "Field" and not player:GetAttribute("InDoomArena")
-	if not inField then
+	local camera = workspace.CurrentCamera
+	if not inField or not camera then
 		if shown then
 			shown = false
 			folder.Parent = nil
 		end
 		return
 	end
-	local camera = workspace.CurrentCamera
-	if not camera then return end
 	if not shown then
 		shown = true
+		lastScale = 0
 		folder.Parent = workspace
 	end
+	local cam = camera.CFrame.Position
+	local trueDistance = math.max(ORIGIN.X - cam.X, 300)
+	local radius = math.min(REAL_R, trueDistance)
+	local scale = radius / trueDistance
+	local origin = cam + Vector3.new(radius, (ORIGIN.Y - cam.Y) * scale, (ORIGIN.Z - cam.Z) * scale)
+	local resize = math.abs(scale - lastScale) > 0.003
+	lastScale = resize and scale or lastScale
+	for _, piece in ipairs(pieces) do
+		if resize then piece.Part.Size = piece.Size * scale end
+		piece.Part.CFrame = CFrame.new(origin + piece.Offset * scale) * piece.Rotation
+	end
 	-- 가까울수록 또렷하다: 지금 서 있는 위치 / 지금까지 열어 둔 가장 먼 구역 중 더 앞선 쪽
-	local reach = (camera.CFrame.Position.X - F.StartX) / (F.ZoneEnd(F.ZoneCount) - F.StartX)
+	local reach = (cam.X - F.StartX) / (F.ZoneEnd(F.ZoneCount) - F.StartX)
 	local opened = (player:GetAttribute("MaxZone") or 0) / F.ZoneCount * 0.6
 	local p = math.clamp(math.max(reach, opened), 0, 1)
-	local bodyT = lerp(0.8, 0.12, p ^ 0.7)
+	local bodyT = lerp(0.55, 0.1, p ^ 0.7) -- 처음부터 눈에 띄게 (멀리서도 윤곽이 보이도록 처음 투명도를 낮췄다)
 	for _, b in ipairs(bodyParts) do
 		b.Transparency = bodyT
 	end
-	local eyeStrength = math.clamp((p - 0.25) / 0.5, 0, 1)
+	local eyeStrength = math.clamp((p - 0.12) / 0.45, 0, 1)
 	local eyeT = 1 - eyeStrength * (0.85 + 0.06 * math.sin(clock * 1.7))
 	for _, e in ipairs(eyes) do
 		e.Transparency = eyeT
 	end
-	halo.Transparency = 1 - math.clamp((p - 0.5) / 0.5, 0, 1) * 0.55
-end
-
-local accumulated = 0
-RunService.Heartbeat:Connect(function(dt)
-	accumulated += dt
-	if accumulated < 0.25 then return end -- 몇 개 안 되는 부품이지만 매 프레임 갱신할 필요는 없다
-	update(accumulated)
-	accumulated = 0
+	halo.Transparency = 1 - math.clamp((p - 0.45) / 0.5, 0, 1) * 0.55
 end)
