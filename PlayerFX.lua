@@ -212,6 +212,67 @@ do
 	end)
 end
 
+-- 화면 가장자리 연출: 체력이 낮을 때 붉게 맥박치고, 필드 이벤트(공습 / 엘리트 / 대이동)가 터질 때 번쩍인다 (소리 대신)
+local LowHpFx = { Ratio = 1 }
+do
+	local edges = {} -- [Top / Bottom / Left / Right] = Frame
+	local sides = {
+		Top = { Size = UDim2.new(1, 0, 0.2, 0), Position = UDim2.new(0, 0, 0, 0), Anchor = Vector2.new(0, 0), Rotation = 90 },
+		Bottom = { Size = UDim2.new(1, 0, 0.2, 0), Position = UDim2.new(0, 0, 1, 0), Anchor = Vector2.new(0, 1), Rotation = 270 },
+		Left = { Size = UDim2.new(0.12, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0), Anchor = Vector2.new(0, 0), Rotation = 0 },
+		Right = { Size = UDim2.new(0.12, 0, 1, 0), Position = UDim2.new(1, 0, 0, 0), Anchor = Vector2.new(1, 0), Rotation = 180 },
+	}
+	for name, side in pairs(sides) do
+		local frame = create("Frame", { Name = "Edge" .. name, Size = side.Size, Position = side.Position, AnchorPoint = side.Anchor,
+			BackgroundColor3 = Color3.fromRGB(200, 28, 36), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 44, Active = false }, gui)
+		create("UIGradient", { Rotation = side.Rotation, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(1, 1) }) }, frame)
+		edges[name] = frame
+	end
+	local function paint(color, transparency, only) -- only: nil = 네 변 모두 / "Left" "Right" = 그쪽 변만
+		for name, frame in pairs(edges) do
+			frame.BackgroundColor3 = color
+			frame.BackgroundTransparency = (only == nil or only == name) and transparency or 1
+		end
+	end
+	local flashUntil, flashStart, flashColor, flashPulses, flashOnly = 0, 0, nil, 0, nil
+	local edgesShown = false
+	game:GetService("RunService").RenderStepped:Connect(function()
+		local now = os.clock()
+		if flashColor and now < flashUntil then -- 이벤트 번쩍임: 정해진 횟수만큼 맥박
+			local t = (now - flashStart) / (flashUntil - flashStart)
+			local wave = math.abs(math.sin(t * math.pi * flashPulses))
+			edgesShown = true
+			paint(flashColor, 1 - 0.78 * wave, flashOnly)
+			return
+		end
+		flashColor = nil
+		local ratio = LowHpFx.Ratio
+		if ratio <= 0.3 then -- 체력이 낮을수록 더 진하고 빠르게 맥박친다
+			local danger = (0.3 - ratio) / 0.3
+			local pulse = 0.5 + 0.5 * math.sin(now * (3 + danger * 5))
+			edgesShown = true
+			paint(Color3.fromRGB(200, 28, 36), 0.9 - (0.35 + 0.35 * danger) * (0.55 + 0.45 * pulse))
+		elseif edgesShown then
+			edgesShown = false
+			paint(Color3.fromRGB(200, 28, 36), 1)
+		end
+	end)
+	player:GetAttributeChangedSignal("EventFxTick"):Connect(function()
+		local kind = player:GetAttribute("EventFx")
+		local now = os.clock()
+		if kind == "Raid" then
+			flashColor, flashPulses, flashOnly, flashUntil = Color3.fromRGB(220, 50, 40), 3, nil, now + 2.4
+		elseif kind == "Elite" then
+			flashColor, flashPulses, flashOnly, flashUntil = Color3.fromRGB(235, 180, 70), 2, nil, now + 1.8
+		elseif kind == "StampedeR" or kind == "StampedeL" then
+			flashColor, flashPulses, flashOnly, flashUntil = Color3.fromRGB(230, 140, 60), 3, kind == "StampedeR" and "Right" or "Left", now + 2.2
+		else
+			return
+		end
+		flashStart = now
+	end)
+end
+
 -- 내 체력바: 캐릭터 발밑에만 표시
 do
 	local fill = { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(70, 220, 100) }
@@ -235,10 +296,7 @@ do
 			task.delay(0.8, function() lost:Destroy() end)
 		end
 		lastHealth = humanoid.Health
-		if ratio > 0 and ratio <= 0.25 and os.clock() - (lastLowSound or 0) > 2.5 then
-			lastLowSound = os.clock()
-			SoundBank.Play(game:GetService("SoundService"), "Low_Health") -- 체력 위험
-		end
+		LowHpFx.Ratio = humanoid.Health > 0 and ratio or 1 -- 체력이 낮으면 화면 가장자리가 붉게 맥박친다 (심장 소리 대신 화면 연출)
 		fill.Size = UDim2.new(ratio, 0, 1, 0)
 		fill.BackgroundColor3 = ratio > 0.5 and Color3.fromRGB(70, 220, 100) or ratio > 0.25 and Color3.fromRGB(255, 200, 60) or Color3.fromRGB(255, 70, 70)
 		text.Text = string.format("%d / %d", math.ceil(humanoid.Health), math.ceil(humanoid.MaxHealth))

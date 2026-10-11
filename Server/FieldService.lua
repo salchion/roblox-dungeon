@@ -2905,7 +2905,8 @@ end
 local function airRaid(player, zone)
 	local root = getAliveParts(player)
 	if not root then return end
-	playSfx(player, "Event_Siren")
+	player:SetAttribute("EventFx", "Raid") -- 사이렌 대신 화면 가장자리가 붉게 맥박친다 (PlayerFX)
+	player:SetAttribute("EventFxTick", (player:GetAttribute("EventFxTick") or 0) + 1)
 	notify(player, "🚨 공습 경보! 하늘의 폭격기를 보세요 — 바닥의 붉은 원에서 벗어나세요!")
 	player:SetAttribute("ShakeStrength", 0.35)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
@@ -3265,7 +3266,8 @@ local function eventAmbush(player, root, zone)
 end
 
 local function eventElite(player, root, zone)
-	playSfx(player, "Event_Elite")
+	player:SetAttribute("EventFx", "Elite") -- 나팔 대신 화면 가장자리가 금빛으로 번쩍인다
+	player:SetAttribute("EventFxTick", (player:GetAttribute("EventFxTick") or 0) + 1)
 	notify(player, "👑 엘리트 부대 출현! 정예 몬스터들이 다가온다 — 쓰러뜨리면 짭짤해요!")
 	player:SetAttribute("ShakeStrength", 0.4)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
@@ -3284,7 +3286,8 @@ local function eventStampede(player, root, zone)
 		center = root.Position + Vector3.new(dirX * 70, 0, 0)
 	end
 	if zoneOfX(center.X) ~= zone then return false end
-	playSfx(player, "Event_Stampede")
+	player:SetAttribute("EventFx", dirX > 0 and "StampedeR" or "StampedeL") -- 몰려오는 쪽 가장자리가 주황빛으로 번쩍인다
+	player:SetAttribute("EventFxTick", (player:GetAttribute("EventFxTick") or 0) + 1)
 	notify(player, string.format("🐃 몬스터 대이동! %s쪽에서 줄지어 달려온다 — 옆으로 비켜서 쓸어버려요!", dirX > 0 and "오른" or "왼"))
 	player:SetAttribute("ShakeStrength", 0.35)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)

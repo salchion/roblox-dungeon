@@ -28,7 +28,11 @@ return {
 	Dungeon_Start = 130904532062911,
 	Quest_Claim = 130904532062911,
 	Aug_Synergy = 76357092271646,   -- epic power up -> Aug_Synergy / Dungeon_Clear / Rare_Drop
-	Dungeon_Clear = 76357092271646,
+	Dungeon_Clear = 9045298695,     -- 던전 클리어 (희귀 드랍 / 시너지와 따로)
+	Dungeon_Fail = 140107605044294, -- 던전 실패
+	Warn_Overrun = 6783209805,      -- 몬스터가 한도를 넘음 (경고음)
+	Reel_Stop = 9119221148,         -- 첫 장비 슬롯 릴이 멈출 때 "띵"
+	NearMiss_Get = 138149044086182, -- NEAR MISS 성공
 	Rare_Drop = 76357092271646,
 	Aug_Missile = 542181791,        -- missile launch -> Aug_Missile / Aug_MeteorFall(낮게)
 	Aug_MeteorFall = 542181791,

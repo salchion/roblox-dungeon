@@ -117,6 +117,8 @@ local CUSTOM_ONLY = {
 	Dungeon_Fail  = { Volume = 1.0, CustomLength = 3.0 }, -- 던전 실패
 	Quest_Claim   = { Volume = 0.6, CustomLength = 1.0, CustomPitch = 1.5 }, -- 퀘스트 / 업적 보상 수령 (동전)
 	Rare_Drop     = { Volume = 0.8, CustomLength = 1.8, CustomPitch = 1.15 }, -- 희귀 이상 장비 획득
+	Reel_Stop     = { Volume = 0.8, CustomLength = 1.0 }, -- 첫 장비 슬롯 릴이 멈출 때 ("띵")
+	NearMiss_Get  = { Volume = 0.7, CustomLength = 1.0 }, -- NEAR MISS 성공 (스택이 쌓일 때)
 }
 for key, spec in pairs(CUSTOM_ONLY) do
 	SPECS[key] = spec
@@ -210,7 +212,7 @@ end
 
 -- opts: Pitch(배율) / Volume(배율) / Name(소리 이름; 총소리는 "GunShot" 으로 두면 설정창 볼륨이 적용된다)
 -- 연속으로 터져도 "따따따따" 겹치지 않게: 이 시간(초) 안에 같은 소리가 또 울리면 건너뛴다
-local MIN_GAP = { Crit = 0.28, Hit = 0.05 }
+local MIN_GAP = { Crit = 0.28, Hit = 0.05, NearMiss_Get = 0.2 }
 local lastPlayed = {}
 
 function SoundBank.Play(parent, key, opts)

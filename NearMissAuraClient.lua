@@ -8,6 +8,7 @@ local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
+local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 local player = Players.LocalPlayer
 local MAX = Config.NearMiss.MaxStacks
 
@@ -93,8 +94,13 @@ local function clear(plr)
 	if entry.Gui then entry.Gui:Destroy() end
 end
 
+local lastStackSound = 0
 local function refresh(plr)
 	local stacks = plr:GetAttribute("NearMissStacks") or 0
+	if plr == player then -- 내 스택이 늘어날 때마다 소리 (스택이 높을수록 음이 조금 높다)
+		if stacks > lastStackSound then SoundBank.Play(game:GetService("SoundService"), "NearMiss_Get", { Pitch = 0.9 + math.min(stacks, MAX) * 0.04 }) end
+		lastStackSound = stacks
+	end
 	local endTime = plr:GetAttribute("NearMissEnd") or 0
 	local remaining = endTime - workspace:GetServerTimeNow()
 	local character = plr.Character

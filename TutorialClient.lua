@@ -10,6 +10,7 @@ local TweenService = game:GetService("TweenService")
 
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
+local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 
 local player = Players.LocalPlayer
 
@@ -428,6 +429,7 @@ local function playReel(list)
 				if elapsed >= stopAt[index] then
 					window.Stopped = true
 					done += 1
+					SoundBank.Play(game:GetService("SoundService"), "Reel_Stop", { Pitch = 0.92 + 0.12 * index }) -- 멈출 때마다 "띵" (음이 조금씩 올라간다)
 					window.Slot.Text = item.Slot
 					window.Name.Text = item.Name .. "\n[" .. G.RarityNames[item.Rarity] .. "]"
 					local color = G.RarityColors[item.Rarity]

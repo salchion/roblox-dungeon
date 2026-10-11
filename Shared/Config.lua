@@ -565,7 +565,8 @@ local ids = audioIds and require(audioIds) or {}
 -- AudioIds 에서 0(비어 있음)으로 둔 항목은 여기 기본값을 쓴다. AudioIds 에 숫자를 적으면 그게 우선.
 local defaultIds = {
 	Lobby = 119474756800883,   -- 마을 배경음악 (Field 가 비어 있으면 필드에서도 이 곡이 이어서 나옴)
-	Dungeon = 139997523791273, -- 던전(웨이브) 배경음악
+	Dungeon = 111737108754664, -- 던전(웨이브) 배경음악
+	Field = 1845092181,        -- 필드 배경음악
 	Boss = 132347366936691,    -- 보스전 배경음악
 	Shot = 86531217997974,     -- 총 쏘는 소리
 	EnhanceSuccess = 119142651784821, -- 강화 성공 소리 (무기 / 장비)
