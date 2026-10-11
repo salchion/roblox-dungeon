@@ -64,7 +64,7 @@ Tutorial.SetTargets({ -- 튜토리얼 미션 표지 위치
 	Dummy = lobby.DummyStart + Vector3.new(0, 1, 0), -- 대장간 옆 훈련장의 큰 허수아비
 	Anvil = promptPosition(lobby.AnvilPrompt),
 	Gacha = promptPosition(lobby.GachaPrompt),
-	Field = promptPosition(lobby.FieldPortalPrompt or lobby.WarpPrompt), -- 튜토리얼: 정면(북쪽)의 필드 문
+	Field = promptPosition(lobby.WarpPrompt),
 	Gate = promptPosition(lobby.GatePrompt),
 })
 Dungeon.Init(lobby.SpawnCFrame)
@@ -116,18 +116,6 @@ lobby.WarpPrompt.Triggered:Connect(function(player)
 		Remotes.Warp:FireClient(player, "Open")
 	end
 end)
-
--- 북쪽 정면의 필드 문: 처음이면 1구역 캠프로 바로 출발, 더 먼 구역에 가 봤다면 구역 선택 메뉴
-if lobby.FieldPortalPrompt then
-	lobby.FieldPortalPrompt.Triggered:Connect(function(player)
-		if player:GetAttribute("Zone") ~= "Lobby" then return end
-		if (player:GetAttribute("MaxZone") or 0) <= 1 then
-			Field.WarpTo(player, 1)
-		else
-			Remotes.Warp:FireClient(player, "Open")
-		end
-	end)
-end
 
 lobby.GachaPrompt.Triggered:Connect(function(player)
 	if player:GetAttribute("Zone") == "Lobby" then

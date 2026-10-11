@@ -518,7 +518,15 @@ function LobbyDecor.Build(parent, ctx)
 	section("GateArea")
 	do
 		local az = -84
-		-- (가운데 아치는 없앴다: 그 자리는 북쪽 정면의 "필드 문")
+		for _, side in ipairs({ -1, 1 }) do
+			box("ArchBase", Vector3.new(4, 1.2, 4), g(side * 12, az, 0.6), STONE_DARK, M.Cobblestone)
+			box("ArchPillar", Vector3.new(3, 13, 3), g(side * 12, az, 7.7), rgb(112, 104, 122), M.Granite)
+			box("ArchCap", Vector3.new(4, 1, 4), g(side * 12, az, 14.2), STONE_DARK, M.Cobblestone)
+			add("ArchRope", Vector3.new(0.15, 1.8, 0.15), CFrame.new(g(side * 4, az, 11.6)), CREAM, M.Fabric)
+		end
+		box("ArchBeam", Vector3.new(28, 2, 3.4), g(0, az, 13.4), rgb(112, 104, 122), M.Granite)
+		local sign = box("ArchSign", Vector3.new(10, 2.6, 0.5), g(0, az, 10.4), rgb(70, 52, 44), M.Wood)
+		label(sign, "⚔ 던전 게이트 구역", rgb(255, 220, 150), 9, 300, 60, 80, true) -- 들보 위로 올리고 항상 위에 그린다
 		-- 안내 게시판 (벨 옆)
 		for _, ox in ipairs({ -1.6, 1.6 }) do
 			box("NoticePost", Vector3.new(0.4, 5, 0.4), g(-20 + ox, -84, 2.5), WOOD_DARK, M.Wood)
@@ -527,7 +535,7 @@ function LobbyDecor.Build(parent, ctx)
 		for i = 0, 2 do
 			box("NoticePaper", Vector3.new(0.9, 1.1, 0.05), g(-21.2 + i * 1.2, -83.8, 4), CREAM, M.Fabric, 0.05 * i)
 		end
-		for _, x in ipairs({ -39, 39 }) do
+		for _, x in ipairs({ -39, -13, 13, 39 }) do
 			planter(x, -92, 0, 0)
 		end
 	end
