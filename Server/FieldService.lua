@@ -174,9 +174,11 @@ end
 --   Baffles 종류: Edge = 한쪽 가장자리에서 벽이 뻗고 반대쪽이 열린 틈(Gap) / Center = 가운데 벽, 양옆이 열려 있음(Gap 씩)
 -- 한 구역의 경사로는 올라간 만큼 내려와서 구역 끝(관문 / 캠프)은 항상 0층이다. 첫 경사로는 캠프 안전지대(70) 뒤에서 시작한다.
 local ZONE_LAYOUTS = {
-	{ -- 1 초원: 입구(마을 분지)에서 완만한 큰 언덕을 올라 정상에서 군주가 내려다보이고, 다시 내려가 군주 앞으로 (입문)
-		Stairs = { { At = 100, Rise = 22, Run = 60 }, { At = 205, Rise = -22, Run = 60 } }, -- (구역 길이 340 / 정상 160~205 / 군주 자리 295는 0층)
-		Baffles = { { Offset = 182, Side = 1, Gap = 190 } },
+	{ -- 1 초원: 마을(분지)에서 능선을 올라 첫 봉우리(+28)에서 아래의 군주가 보이고, 점점 낮아지는 봉우리 세 개(+28 / +14 / +6)를 지나 군주 앞(0층)으로 내려간다.
+		-- 봉우리는 군주 쪽으로 갈수록 낮아서, 어느 봉우리에서도 능선 너머로 군주가 보인다 (구역 길이 520 / 군주 자리 475). 봉우리마다 전망대 깃발 (buildVistaFlags)
+		Stairs = { { At = 100, Rise = 28, Run = 80 }, { At = 190, Rise = -22, Run = 60 }, { At = 258, Rise = 8, Run = 40 },
+			{ At = 308, Rise = -12, Run = 40 }, { At = 356, Rise = 4, Run = 30 }, { At = 394, Rise = -6, Run = 36 } },
+		Baffles = {},
 	},
 	{ -- 2 숲: 좁은 지그재그 숲길 (네 번 꺾인다) + 끝에 작은 언덕
 		Stairs = { { At = 540, Rise = 12, Run = 40 }, { At = 620, Rise = -12, Run = 40 } },
@@ -951,6 +953,35 @@ local function buildGateway(zone, x0)
 	makeSign(signPart, string.format("구역 %d · %s\n%s · 몬스터 Lv.%d\n위험도 %s\n%s 여기서만 드랍: %s 세트", zone, F.ZoneNames[zone], theme.Tag, F.GetZoneLevel(zone), string.rep("☠", zone), zoneSet.Icon, zoneSet.Name), Color3.fromRGB(255, 240, 190), 0)
 end
 
+-- 1구역 봉우리 전망대: 봉우리마다 작은 돌무더기 + 깃발 + 은은한 빛줄기 + 이름표 (멀리서도 "저기까지 가면 된다"가 보인다). 눈이 부시지 않게 호박색 / 반투명.
+local function buildVistaFlags()
+	local x0 = F.ZoneStart(1)
+	for index, offset in ipairs({ 185, 303, 390 }) do
+		local x = x0 + offset
+		local y = floorAt(x)
+		local amber = Color3.fromRGB(232, 170, 90)
+		makePart({ Name = "VistaCairn", Size = Vector3.new(5, 1.8, 5), Position = Vector3.new(x, y + 0.9, 0), Color = Color3.fromRGB(96, 92, 100), Material = Enum.Material.Slate, CanCollide = false, CanQuery = false }, worldFolder)
+		makePart({ Name = "VistaPole", Size = Vector3.new(0.5, 11, 0.5), Position = Vector3.new(x, y + 7, 0), Color = Color3.fromRGB(90, 66, 44), Material = Enum.Material.Wood, CanCollide = false, CanQuery = false }, worldFolder)
+		makePart({ Name = "VistaFlag", Size = Vector3.new(5.5, 3, 0.2), Position = Vector3.new(x + 3, y + 10, 0), Color = amber, Material = Enum.Material.Neon, Transparency = 0.2, CanCollide = false, CanQuery = false }, worldFolder)
+		local beam = makePart({ Name = "VistaBeam", Size = Vector3.new(1.4, 80, 1.4), Position = Vector3.new(x, y + 40, 0), Color = amber, Material = Enum.Material.Neon, Transparency = 0.8, CanCollide = false, CanQuery = false }, worldFolder)
+		local tag = Instance.new("BillboardGui")
+		tag.Size = UDim2.new(0, 160, 0, 26)
+		tag.StudsOffset = Vector3.new(0, 48, 0)
+		tag.AlwaysOnTop = true
+		tag.MaxDistance = 700
+		tag.Parent = beam
+		local text = Instance.new("TextLabel")
+		text.Size = UDim2.new(1, 0, 1, 0)
+		text.BackgroundTransparency = 1
+		text.Font = Enum.Font.GothamBold
+		text.TextSize = 15
+		text.TextColor3 = Color3.fromRGB(255, 222, 160)
+		text.TextStrokeTransparency = 0.35
+		text.Text = index == 3 and "🚩 마지막 전망대" or string.format("🚩 전망대 %d", index)
+		text.Parent = tag
+	end
+end
+
 local function buildWorld()
 	worldFolder = Instance.new("Folder")
 	worldFolder.Name = "Field"
@@ -1040,6 +1071,7 @@ local function buildWorld()
 	end
 
 	buildCanyon(rng, totalLength, half)
+	buildVistaFlags()
 
 	-- 필드 가장자리 보이지 않는 벽 (옆면 / 끝 / 로비 쪽 입구 통로)
 	local function wall(size, position)
@@ -2633,18 +2665,18 @@ local function updateZones()
 							player:SetAttribute("ShakeStrength", strength)
 							player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 						end
-						if beat < 1 and offset >= 85 then
+						if beat < 1 and offset >= 85 then -- (첫 능선을 오르기 전: 매복)
 							routeBeat[player] = 1
 							notify(player, "🌿 풀숲이 이상하게 흔들린다...! 매복이다!")
 							rumble(0.5)
 							around("Normal", 7, 30, 46)
-						elseif beat < 2 and offset >= 150 then
+						elseif beat < 2 and offset >= 190 then -- (첫 봉우리 정상: 엘리트)
 							routeBeat[player] = 2
 							notify(player, "⚠ 강한 기운이 다가온다! 엘리트 몬스터다!")
 							rumble(0.7)
 							around("Elite", 1, 36, 46)
 							around("Normal", 4, 32, 48)
-						elseif beat < 3 and offset >= 215 then
+						elseif beat < 3 and offset >= 300 then -- (두 번째 봉우리: 군주의 영역)
 							routeBeat[player] = 3
 							notify(player, "🔥 군주의 영역이 가까워진다... 호위병들이 몰려온다!")
 							rumble(0.8)
