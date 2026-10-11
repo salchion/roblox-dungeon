@@ -3234,12 +3234,25 @@ local function ringSpot(root, zone, minDistance, maxDistance)
 	return nil
 end
 
-local function ambushCount()
+-- 이벤트(습격 / 엘리트 부대 / 대이동 / 공습)로 나온 몬스터 수: zone 을 주면 그 구역만 센다 (여러 명이 서로 다른 구역에 있어도 한 구역의 몬스터가 다른 구역 이벤트를 막지 않게)
+local function ambushCount(zone)
 	local alive = 0
 	for _, data in pairs(monsters) do
-		if data.Ambush then alive += 1 end
+		if data.Ambush and (not zone or data.Zone == zone) then alive += 1 end
 	end
 	return alive
+end
+
+-- 구역별 이벤트 몬스터 상한: 기본 12마리 + 그 구역에 있는 사람 1명당 4마리 (여럿이 함께 싸우면 그만큼 더 나온다)
+local function ambushCap(zone)
+	local present = 0
+	for _, member in ipairs(Players:GetPlayers()) do
+		if member:GetAttribute("Zone") == "Field" then
+			local memberRoot = getAliveParts(member)
+			if memberRoot and zoneOfX(memberRoot.Position.X) == zone then present += 1 end
+		end
+	end
+	return 12 + 4 * present
 end
 
 -- 필드 랜덤 이벤트: 몇십 초마다 한 가지가 터진다. 같은 이벤트가 연달아 나오지 않는다.
@@ -3305,6 +3318,7 @@ end
 local function runAmbush()
 	task.wait(20)
 	local lastEvent = setmetatable({}, { __mode = "k" })
+	local zoneEventAt = {} -- [구역] = 마지막 이벤트 시각: 같은 구역에서 여러 명이 있어도 이벤트가 동시에 겹쳐 터지지 않게 10초 간격을 둔다
 	while true do
 		task.wait(math.random(18, 32))
 		for _, player in ipairs(Players:GetPlayers()) do
@@ -3325,12 +3339,12 @@ local function runAmbush()
 								if roll <= 0 then picked = entry.Key break end
 							end
 						end
-						if picked == "Raid" then
+						if ambushCount(zone) <= ambushCap(zone) and os.clock() - (zoneEventAt[zone] or 0) > 10 then -- (공습도 같은 상한을 지킨다)
+							zoneEventAt[zone] = os.clock()
 							lastEvent[player] = picked
-							task.spawn(airRaid, player, zone)
-						elseif ambushCount() <= 14 then
-							lastEvent[player] = picked
-							if picked == "Ambush" then
+							if picked == "Raid" then
+								task.spawn(airRaid, player, zone)
+							elseif picked == "Ambush" then
 								eventAmbush(player, root, zone)
 							elseif picked == "Elite" then
 								eventElite(player, root, zone)
@@ -3466,6 +3480,39 @@ function Field.Init(lobbySpawnCFrame)
 		end
 	end)
 	task.spawn(runAmbush)
+	-- 이벤트 몬스터 정리: 주변 170 안에 필드의 어떤 플레이어도 없는 상태가 30초 넘게 이어지면 사라진다 (싸우는 중이거나 누군가 가까이 있으면 그대로)
+	task.spawn(function()
+		local lonelySince = setmetatable({}, { __mode = "k" })
+		while true do
+			task.wait(5)
+			local positions = {}
+			for _, member in ipairs(Players:GetPlayers()) do
+				if member:GetAttribute("Zone") == "Field" then
+					local memberRoot = getAliveParts(member)
+					if memberRoot then table.insert(positions, memberRoot.Position) end
+				end
+			end
+			local now = os.clock()
+			for part, data in pairs(monsters) do
+				if data.Ambush and data.Kind ~= "Boss" and part.Parent then
+					local near = false
+					for _, position in ipairs(positions) do
+						if (position - part.Position).Magnitude <= 170 then near = true break end
+					end
+					if near then
+						lonelySince[part] = nil
+					else
+						lonelySince[part] = lonelySince[part] or now
+						if now - lonelySince[part] > 30 then
+							monsters[part] = nil
+							lonelySince[part] = nil
+							part:Destroy()
+						end
+					end
+				end
+			end
+		end
+	end)
 end
 
 return Field
