@@ -2741,6 +2741,11 @@ local function warp(player, zone)
 	end
 end
 
+-- 마을 북쪽 "필드 문"이 부른다: 해당 구역 캠프로 바로 이동
+function Field.WarpTo(player, zone)
+	warp(player, zone)
+end
+
 Remotes.Warp.OnServerEvent:Connect(function(player, action, zone)
 	if action == "Go" then
 		warp(player, zone)

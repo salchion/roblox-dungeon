@@ -415,7 +415,9 @@ function Lobby.Build()
 	for index, entry in ipairs(Config.Dungeon.List) do
 		local dungeonType = Config.Dungeon.Types[entry.Type]
 		local difficulty = Config.Dungeon.Difficulties[entry.Diff]
-		local x = (index - (listCount + 1) / 2) * spacing
+		-- 정면(북쪽 중앙)은 필드 문 자리: 던전 게이트는 좌우로 나누어 가운데를 비운다 (왼쪽 3개 / 오른쪽 4개)
+		local halfCount = math.floor(listCount / 2)
+		local x = index <= halfCount and -(38 + (halfCount - index) * 25) or (38 + (index - halfCount - 1) * 25)
 		local gatePos = Vector3.new(x, TOP, -HALF + 22)
 		local n = DIFF_INDEX[entry.Diff] or 1
 		local trim = TRIMS[entry.Diff] or TRIMS.Easy
@@ -719,6 +721,46 @@ function Lobby.Build()
 	gachaPrompt.RequiresLineOfSight = false
 	gachaPrompt.Parent = gachaBody
 
+	-- 필드 문 (북쪽 정면): 시작 위치에서 곧바로 보이는 큰 문. 가까이 가서 누르면 필드 1구역(도달한 구역이 더 있으면 구역 선택)으로 출발한다.
+	local fieldPortalPrompt
+	do
+		local center = Vector3.new(0, TOP, -92)
+		local stone = Color3.fromRGB(70, 85, 70)
+		local green = Color3.fromRGB(120, 255, 160)
+		for _, side in ipairs({ -1, 1 }) do
+			makePart({ Name = "FieldPortalTower", Size = Vector3.new(8, 34, 8), Position = center + Vector3.new(side * 17, 17, 0), Color = stone, Material = Enum.Material.Cobblestone }, folder)
+			makePart({ Name = "FieldPortalCap", Size = Vector3.new(11, 3, 11), Position = center + Vector3.new(side * 17, 35.5, 0), Color = Color3.fromRGB(50, 60, 50), Material = Enum.Material.Cobblestone }, folder)
+			local flame = makePart({ Name = "FieldPortalBrazier", Shape = Enum.PartType.Ball, Size = Vector3.new(4, 4, 4), Position = center + Vector3.new(side * 17, 39, 0), Color = Color3.fromRGB(255, 200, 140), Material = Enum.Material.Neon, CanCollide = false, CanQuery = false }, folder)
+			addLight(flame, 30, 1.4, Color3.fromRGB(255, 190, 120))
+		end
+		makePart({ Name = "FieldPortalBeam", Size = Vector3.new(42, 5, 6), Position = center + Vector3.new(0, 34, 0), Color = stone, Material = Enum.Material.Cobblestone }, folder)
+		local veil = makePart({ Name = "FieldPortalVeil", Size = Vector3.new(30, 30, 0.6), Position = center + Vector3.new(0, 15, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.82, CanCollide = false, CanQuery = false }, folder)
+		local beacon = makePart({ Name = "FieldPortalBeacon", Size = Vector3.new(10, 320, 10), Position = center + Vector3.new(0, 160, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.88, CanCollide = false, CanQuery = false }, folder)
+		addLight(beacon, 50, 0.8, green)
+		local signPart = makePart({ Name = "FieldPortalSign", Size = Vector3.new(1, 1, 1), Position = center + Vector3.new(0, 44, 0), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
+		local signGui = Instance.new("BillboardGui")
+		signGui.Size = UDim2.new(0, 260, 0, 44)
+		signGui.AlwaysOnTop = true
+		signGui.MaxDistance = 900
+		signGui.Parent = signPart
+		local signText = Instance.new("TextLabel")
+		signText.Size = UDim2.new(1, 0, 1, 0)
+		signText.BackgroundTransparency = 1
+		signText.Font = Enum.Font.GothamBlack
+		signText.TextSize = 26
+		signText.TextColor3 = Color3.fromRGB(180, 255, 205)
+		signText.TextStrokeTransparency = 0.3
+		signText.Text = "🌿 사냥 필드"
+		signText.Parent = signGui
+		fieldPortalPrompt = Instance.new("ProximityPrompt")
+		fieldPortalPrompt.ActionText = "필드로 출발"
+		fieldPortalPrompt.ObjectText = "필드 문"
+		fieldPortalPrompt.HoldDuration = 0
+		fieldPortalPrompt.MaxActivationDistance = 22
+		fieldPortalPrompt.RequiresLineOfSight = false
+		fieldPortalPrompt.Parent = veil
+	end
+
 	-- 필드 입구 (동쪽 끝)
 	local fieldGate = Vector3.new(HALF - 6, TOP, 0)
 	local gateStone = Color3.fromRGB(70, 85, 70)
@@ -865,8 +907,7 @@ function Lobby.Build()
 	-- 2) (필드로 이어지는 길가의 등불 / 깃발은 너무 많아서 없앴다: 빛기둥과 문만으로 충분하다)
 
 	-- 3) 문 위로 솟는 빛기둥: 마을 어디서든 "저쪽이 필드"라는 게 보인다
-	local pillar = makePart({ Name = "FieldBeacon", Size = Vector3.new(14, 320, 14), Position = fieldGate + Vector3.new(0, 160, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.88, CanCollide = false, CanQuery = false }, folder)
-	addLight(pillar, 60, 0.8, green)
+	-- (동쪽 문의 큰 빛기둥은 없앴다: 정면의 북쪽 필드 문이 대표 표지)
 
 	-- 4) 문 앞의 큰 빛 고리 (통과하는 느낌)
 	for ring = 1, 3 do
@@ -925,6 +966,7 @@ function Lobby.Build()
 		AnvilPrompt = anvilPrompt,
 		GachaPrompt = gachaPrompt,
 		WarpPrompt = warpPrompt,
+		FieldPortalPrompt = fieldPortalPrompt, -- 북쪽 정면의 필드 문
 		RiftPrompt = riftPrompt,
 		DummyStart = Vector3.new(0, TOP, 28), -- 허수아비 하나가 서는 자리
 		RestStart = Vector3.new(-84, TOP, 70), -- 휴식 구역(방치 수입): 훈련장과 따로 떨어진 아늑한 모닥불 쉼터
