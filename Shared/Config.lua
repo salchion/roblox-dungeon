@@ -432,7 +432,7 @@ Config.Economy = {
 	StepMinutesEarly = 0.4,   -- 초반 무기 강화 한 단계에 걸리길 바라는 분 (15단계 = 약 4분)
 	StepMinutesLate = 0.9,    -- 강화 단계 LateLevel 이후 (10단계 = 약 6분)
 	LateLevel = 600,
-	FieldGoldMult = 3.5,      -- 필드 몬스터 처치 골드 배율 (구역 보상표 x 이 값)
+	FieldGoldMult = 2.6,      -- 필드 몬스터 처치 골드 배율 (구역 보상표 x 이 값)
 	DungeonGoldMult = 0.6,    -- 던전 골드 배율 (던전은 처치 수가 많아서 낮춘다)
 }
 
