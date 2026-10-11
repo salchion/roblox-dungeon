@@ -304,8 +304,8 @@ function Lobby.Build()
 	makeDisc(Vector3.new(0, TOP + 0.1, 70), 70, 0.2, Color3.fromRGB(205, 195, 165), Enum.Material.Marble, folder).CanCollide = false
 	makeFountain(Vector3.new(0, TOP, 70), folder)
 	decoratePlaza(folder, Vector3.new(0, TOP, 70), {
-		{ X = -44, Z = 28, R = 20 },  -- 대장간
-		{ X = 44, Z = 28, R = 20 },   -- 뽑기 상점
+		{ X = -44, Z = 28, R = 20 },  -- 뽑기 상점
+		{ X = 44, Z = 28, R = 20 },   -- 대장간
 		{ X = 0, Z = 28, R = 26 },    -- 훈련 구역
 		{ X = 78, Z = 90, R = 26 },   -- 심연 도전 포탈
 		{ X = 0, Z = HILL_Z, R = 36 },   -- 시작 언덕
@@ -648,10 +648,10 @@ function Lobby.Build()
 		return base
 	end
 
-	-- 대장간 (왼쪽 / 서): 모루 + 화로 + 무기 걸이
+	-- 대장간 (오른쪽 / 동, 필드 입구 쪽): 모루 + 화로 + 무기 걸이
 	-- (서쪽 "작업 광장": 허수아비 훈련장 - 대장간 - 뽑기 상점이 한 광장을 둘러싸서, 허수아비 앞에서 두 가게가 바로 보인다)
 	local workshop = Vector3.new(0, TOP, 28) -- 훈련 / 강화 / 뽑기 구역: 스폰 언덕에서 북쪽을 보면 한눈에 들어오고 던전 길 쪽에 있다
-	local forgeCenter = Vector3.new(-44, TOP, 28)
+	local forgeCenter = Vector3.new(44, TOP, 28) -- 대장간은 동쪽(필드 입구 쪽): 허수아비 -> 강화 -> 그대로 동쪽 필드로 이어지는 동선
 	local anvilPart
 	makeStall(forgeCenter, Color3.fromRGB(190, 70, 55), Color3.fromRGB(235, 225, 205), "🔨 대장간 · 무기 강화", Color3.fromRGB(255, 210, 120), function(base, part)
 		part("AnvilBase", Vector3.new(4, 2.2, 3), Vector3.new(0, 1.7, 1), Color3.fromRGB(45, 45, 50), Enum.Material.Metal)
@@ -675,8 +675,8 @@ function Lobby.Build()
 		end
 	end, workshop)
 
-	-- 뽑기 상점 (오른쪽 / 동): 반짝이는 뽑기 머신 + 선반
-	local shopCenter = Vector3.new(44, TOP, 28)
+	-- 뽑기 상점 (왼쪽 / 서): 반짝이는 뽑기 머신 + 선반
+	local shopCenter = Vector3.new(-44, TOP, 28) -- 뽑기 상점은 서쪽: 동선에서 비켜 있어서 필드로 가는 길을 막지 않는다
 	local gachaBody
 	makeStall(shopCenter, Color3.fromRGB(120, 70, 200), Color3.fromRGB(255, 225, 150), "🎰 장비 뽑기 상점", Color3.fromRGB(255, 225, 140), function(base, part)
 		part("GachaBase", Vector3.new(8, 2, 6), Vector3.new(0, 1.6, 1.5), Color3.fromRGB(60, 40, 90), Enum.Material.Metal)

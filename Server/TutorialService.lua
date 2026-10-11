@@ -87,7 +87,8 @@ local function send(player)
 		state.IntroShown = state.Step
 		local introStep = state.Step
 		playCards(player, step.Intro, function()
-			return states[player] == state and (state.Step == introStep or step.MinSeconds ~= nil) and player:GetAttribute("Zone") == "Lobby"
+			return states[player] == state and (state.Step == introStep or step.MinSeconds ~= nil)
+				and (player:GetAttribute("Zone") == "Lobby" or (step.IntroAnyZone and player:GetAttribute("Zone") == "Field"))
 		end, step.IntroDelay or 0.6)
 	end
 	-- 최종 군주에게 쓰러져 마을로 돌아온 뒤(ShowQuests 미션부터)에 오늘의 퀘스트가 화면에 나타나고 던전 게이트가 열린다
@@ -253,7 +254,9 @@ function complete(player, state, step)
 	end
 	Remotes.Notify:FireClient(player, string.format("✅ 미션 완료! 보상: %s", rewardText(reward)))
 	if step.Reel then
-		giveReelGear(player)
+		task.delay(1.5, function() -- 강화창이 닫힌 뒤에 릴이 뜨게 (창이 겹치지 않게)
+			if player.Parent then giveReelGear(player) end
+		end)
 	end
 	state.Step += 1
 	state.Progress = 0

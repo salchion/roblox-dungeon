@@ -445,7 +445,7 @@ local function playReel(list)
 		end
 		task.wait(0.07)
 	end
-	task.wait(3.6)
+	task.wait(2.2)
 	for _, inst in ipairs({ panel, panelStroke, title, footer }) do
 		local prop = inst:IsA("Frame") and "BackgroundTransparency" or inst:IsA("UIStroke") and "Transparency" or "TextTransparency"
 		TweenService:Create(inst, TweenInfo.new(0.5), { [prop] = 1 }):Play()
