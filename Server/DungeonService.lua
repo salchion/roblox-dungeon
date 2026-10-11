@@ -2596,7 +2596,7 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 	if not table.find(members, player) then return end
 
 	-- 던전 입장 제한: 열쇠 (파티원 모두 필요). 시간이 지나면 자동으로 차오른다.
-	local keyCost = (riftMode or fromField) and 0 or (difficulty.KeyCost or 1) -- 심연 도전은 열쇠 대신 하루 도전 횟수를 쓴다 (RiftService 가 관리)
+	local keyCost = (riftMode or fromField or player:GetAttribute("TutorialDungeonRun") == true) and 0 or (difficulty.KeyCost or 1) -- 튜토리얼 던전 미션은 몇 번을 다시 들어가도 열쇠 / 무료 입장을 쓰지 않는다 -- 심연 도전은 열쇠 대신 하루 도전 횟수를 쓴다 (RiftService 가 관리)
 	local useFree = {}
 	for _, member in ipairs(members) do
 		if keyCost > 0 and Dungeon.FreeLeft(member) > 0 then
