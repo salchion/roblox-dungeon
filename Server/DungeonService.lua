@@ -1466,6 +1466,27 @@ local function launchMissile(run, player, from, entry, amount)
 	end)
 end
 
+-- 폭발 투사체: 날아가서 맞은 자리에서 범위로 터진다 (충격파탄)
+local function launchBlast(run, player, from, entry, amount, radius, color)
+	sfxAt(run, from, "Aug_Missile", nil, 0.08)
+	local target = entry.Part.Position
+	local mid = from:Lerp(target, 0.5) + Vector3.new((math.random() - 0.5) * 10, 8 + math.random() * 5, (math.random() - 0.5) * 10)
+	local duration = 0.42
+	Effects.Raw(from, { "M", from, entry.Part, mid, duration })
+	task.delay(duration, function()
+		if run.Destroyed or run.Phase == "Ended" then return end
+		local position = entry.Part.Parent and entry.Part.Position or target
+		local ground = position - Vector3.new(0, 2.5, 0)
+		Effects.Raw(ground, { "R", ground, radius, color })
+		Effects.Raw(position, { "V", ground, radius, Color3.fromRGB(210, 255, 235), 0.45 })
+		Effects.Burst(position, color, 50)
+		sfxAt(run, position, "Aug_Pulse", nil, 0.5)
+		for _, hit in ipairs(nearestMonsters(run, position, radius, 12)) do
+			hitMonster(run, player, hit, amount)
+		end
+	end)
+end
+
 local function shockRing(run, position, radius, color)
 	Effects.Raw(position, { "R", position, radius, color }) -- 퍼지는 고리 (각자 화면에서)
 end
@@ -1611,45 +1632,38 @@ local function startAugLoop(run)
 			end
 			for _, member in ipairs(members) do
 				local root = getAliveParts(member)
+				-- 회전 칼날 -> 표창: 가까운 적에게 던진 칼날이 튕기며 다른 적들을 연달아 벤다 (몸 주위가 아니라 날아가는 칼날에 효과가 붙는다)
 				local orbit = augLv(run, member, "AugOrbit")
-				if not root or orbit <= 0 then
-					if orbitCount[member] then -- 칼날을 껐다: 모두의 화면에서도 없앤다
-						orbitCount[member] = nil
-						Effects.Raw(nil, { "O", member.UserId, 0 })
-					end
-				else
-					local count = 2 + orbit
-					if orbitCount[member] ~= count or now >= (nextOrbitSend[member] or 0) then
-						orbitCount[member] = count
-						nextOrbitSend[member] = now + 3 -- 새로 들어온 사람도 보이게 가끔 다시 알린다
-						Effects.Raw(root.Position, { "O", member.UserId, count, 9, 5 })
-					end
-					-- 칼날은 클라이언트가 같은 공식으로 돌린다 (서버 시각 기준). 서버는 피해 위치만 계산한다.
-					local radius = 9
-					local serverNow = workspace:GetServerTimeNow()
-					local positions = {}
-					for index = 1, count do
-						local angle = serverNow * 5 + index * (2 * math.pi / count)
-						table.insert(positions, root.Position + Vector3.new(math.cos(angle) * radius, 0.5, math.sin(angle) * radius))
-					end
-					if now >= (nextTick[member] or 0) then
-						nextTick[member] = now + 0.3
-						local damage = augDamage(member) * (0.45 + 0.2 * orbit)
-						for part, data in pairs(run.Monsters) do
-							if part.Parent and data.Health > 0 and (not run.ValidTarget or run.ValidTarget(part)) then
-								for _, p in ipairs(positions) do
-									if (part.Position - p).Magnitude <= 5 + part.Size.X / 2 then
-										hitMonster(run, member, { Part = part, Data = data }, damage, true)
-										sfxAt(run, part.Position, "Aug_Blade", nil, 0.18)
-										if synergy(member, "BladeMissile") and math.random() < 0.12 then
-											for _, entry in ipairs(nearestMonsters(run, part.Position, 60, 1, part)) do
-												launchMissile(run, member, part.Position + Vector3.new(0, 3, 0), entry, damage * 1.2)
-											end
-										end
-										break
-									end
+				if root and orbit > 0 and now >= (nextTick[member] or 0) then
+					nextTick[member] = now + math.max(1.1, 2.1 - 0.3 * orbit)
+					local first = nearestMonsters(run, root.Position, 70, 1)[1]
+					if first then
+						local chain, used = { first }, { [first.Part] = true }
+						for _ = 1, orbit + 1 do
+							local last = chain[#chain]
+							for _, cand in ipairs(nearestMonsters(run, last.Part.Position, 38, 6, last.Part)) do
+								if not used[cand.Part] then
+									used[cand.Part] = true
+									table.insert(chain, cand)
+									break
 								end
 							end
+						end
+						local damage = augDamage(member) * (0.9 + 0.4 * orbit)
+						local fromPos = root.Position + Vector3.new(0, 3, 0)
+						for index, entry in ipairs(chain) do
+							local start = fromPos
+							task.delay((index - 1) * 0.2, function()
+								if run.Destroyed or run.Phase == "Ended" or not entry.Part.Parent then return end
+								launchMissile(run, member, start, entry, damage)
+								sfxAt(run, entry.Part.Position, "Aug_Blade", nil, 0.15)
+								if synergy(member, "BladeMissile") and math.random() < 0.3 then
+									for _, extra in ipairs(nearestMonsters(run, entry.Part.Position, 60, 1, entry.Part)) do
+										launchMissile(run, member, entry.Part.Position + Vector3.new(0, 3, 0), extra, damage * 0.8)
+									end
+								end
+							end)
+							fromPos = entry.Part.Position + Vector3.new(0, 3, 0)
 						end
 					end
 				end
@@ -1689,32 +1703,15 @@ local function startAugLoop(run)
 						launchMissile(run, member, from, entries[1], augDamage(member) * 0.55)
 					end
 				end
-				-- 충격파: 몸에서 강하게 터져 나가며 주변 적을 쓸어낸다 (회복은 없다: 순수 공격 효과). 이어서 한 번 더 울려 두 번 때린다
+				-- 충격파 -> 충격파탄: 가까운 적들에게 폭발 투사체를 동시에 쏜다 (몸에서 터지는 게 아니라 날아가 맞은 자리에서 터진다)
 				local pulse = augLv(run, member, "AugPulse")
 				if root and pulse > 0 and now >= (nextPulse[member] or 0) then
-					nextPulse[member] = now + math.max(2.5, 6 - pulse)
-					local origin = root.Position
-					local radius = 18 + 3 * pulse
-					local color = Color3.fromRGB(110, 255, 190)
-					shockRing(run, origin - Vector3.new(0, 2.5, 0), radius, color)
-					Effects.Raw(origin, { "V", origin - Vector3.new(0, 2.3, 0), radius, Color3.fromRGB(190, 255, 225), 0.55 })
-					Effects.Burst(origin, color, 90)
-					sfxAt(run, origin, "Aug_Pulse", nil, 0.7)
-					for _, entry in ipairs(nearestMonsters(run, origin, radius, 14)) do
-						hitMonster(run, member, entry, augDamage(member) * (1.4 + 0.6 * pulse))
+					nextPulse[member] = now + math.max(2.2, 4.8 - 0.8 * pulse)
+					local origin = root.Position + Vector3.new(0, 3, 0)
+					local blastDamage = augDamage(member) * (1.4 + 0.6 * pulse)
+					for _, entry in ipairs(nearestMonsters(run, root.Position, 75, 2 + pulse)) do
+						launchBlast(run, member, origin, entry, blastDamage, 10 + 2 * pulse, Color3.fromRGB(110, 255, 190))
 					end
-					task.delay(0.35, function() -- 두 번째 울림 (더 넓게 한 번 더)
-						if run.Destroyed then return end
-						local root2 = getAliveParts(member)
-						local center = root2 and root2.Position or origin
-						local bigger = radius * 1.35
-						shockRing(run, center - Vector3.new(0, 2.5, 0), bigger, color)
-						Effects.Raw(center, { "V", center - Vector3.new(0, 2.3, 0), bigger, Color3.fromRGB(255, 255, 255), 0.5 })
-						Effects.Burst(center, Color3.fromRGB(190, 255, 225), 60)
-						for _, entry in ipairs(nearestMonsters(run, center, bigger, 14)) do
-							hitMonster(run, member, entry, augDamage(member) * (0.7 + 0.3 * pulse))
-						end
-					end)
 				end
 			end
 			task.wait(0.05)
@@ -2400,6 +2397,21 @@ end
 -- 버티기 진행: 웨이브 없이 정해진 시간 동안 몬스터가 계속 몰려오고(점점 빨라진다), 중간중간 랜덤 강화 / 패널티가 터진다.
 -- 끝까지 버티면 보스가 나타난다. (심연 도전과 비슷하지만 점수제가 아니라 보스 / 보상이 있는 일반 던전)
 local function surviveLoop(run)
+	-- 던전 체험: 시작할 때 세트 효과 하나를 3단계로 무작위로 받는다 (이번 던전에서만). 필드에서 골드로 직접 열면 평소에도 쓴다.
+	run.RunAug = run.RunAug or {}
+	for _, member in ipairs(run.Members) do
+		local picks = {}
+		for _, attr in ipairs(Config.Sets.ZoneAug) do
+			if (member:GetAttribute(attr) or 0) < 3 then table.insert(picks, attr) end
+		end
+		if #picks > 0 then
+			local pick = picks[math.random(#picks)]
+			run.RunAug[member] = run.RunAug[member] or {}
+			run.RunAug[member][pick] = 3
+			local info = Config.AugInfo[pick]
+			notify(member, string.format("%s 이번 던전 체험 효과: 『%s』 (3단계) — %s", info.Icon, info.Name, info.Desc))
+		end
+	end
 	startAugLoop(run)
 	run.PhaseEnd = os.clock() + D.StartCountdown
 	notifyAll(run, "🛡 몰려오는 몬스터를 처치하세요! 너무 많이 쌓이면 압도당해 실패, 끝까지 버티면 보스가 나타나요")

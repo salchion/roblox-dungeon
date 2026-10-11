@@ -24,6 +24,7 @@
 --   Shop         C->S  ("Buy", kind, key) ("Aura", key)    kind = "Pass" | "Product"
 --   Growth       C->S  ("Request") ("Train", stat) ("Gate") ("Skip", "Train", stat) ("Skip", "Gate")   훈련소 / 돌파 / 시간 단축
 --                S->C  ("State", { Levels, Jobs, Slots, GatePassed, GateJob, TimeSkip, ServerTime })
+--   Aug          C->S  ("Buy", zone) ("Toggle", zone)                        세트 효과: 골드로 단계 올리기 / 켜고 끄기
 --   LevelStat    C->S  ("Add", key, n) ("Sub", key, n) ("Reset")             레벨 스탯 포인트 배분 (이동속도 / 사정거리 / 투사체 / 쿨감 / 줍기)
 --   Fx           S->C  (events)                                전투 시각 효과 묶음 (총알 / 폭발 / 피해 숫자 / 적 탄). 클라이언트 FxClient 가 그린다
 --   Notify       S->C  (text)                                  화면 알림
@@ -32,7 +33,7 @@
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon", "Notify", "Gear", "OpenGear", "Quest", "Rank", "Weapon", "Inventory", "Loot", "Warp", "Shop", "Growth", "Rift", "Skill", "Hit", "Meta", "Tutorial", "Banner", "LevelStat", "Fx" }
+local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon", "Notify", "Gear", "OpenGear", "Quest", "Rank", "Weapon", "Inventory", "Loot", "Warp", "Shop", "Growth", "Rift", "Skill", "Hit", "Meta", "Tutorial", "Banner", "LevelStat", "Fx", "Aug" }
 
 local folder
 if RunService:IsServer() then

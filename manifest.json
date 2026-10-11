@@ -337,6 +337,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/AugService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "AugService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/PetModel.lua",
       "parent": "ServerScriptService/Modules",
       "name": "PetModel",
@@ -417,6 +424,13 @@
       "path": "LevelStatClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "LevelStatClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
+      "path": "AugClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "AugClient",
       "class": "LocalScript",
       "overwrite": true
     },

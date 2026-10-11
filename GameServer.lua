@@ -36,6 +36,7 @@ local Inventory = require(Modules:WaitForChild("InventoryService"))
 local Keys = require(Modules:WaitForChild("KeyService"))
 local Growth = require(Modules:WaitForChild("GrowthService"))
 local LevelStat = require(Modules:WaitForChild("LevelStatService"))
+local Aug = require(Modules:WaitForChild("AugService"))
 local Monetization = require(Modules:WaitForChild("MonetizationService"))
 local Data = require(Modules:WaitForChild("DataService"))
 local Rift = require(Modules:WaitForChild("RiftService"))
@@ -357,6 +358,7 @@ local function setupPlayer(player)
 		Quest.Load(player, saved.Quest)
 		Daily.Load(player, saved.Daily) -- 출석 보상 (하루 한 번 자동 지급)
 		Meta.Load(player, saved.Meta)   -- 스킬 레벨 / 펫 / 무한의 탑 기록
+		Aug.Refresh(player)             -- 세트 효과 (골드로 활성화한 것)
 		LevelStat.Refresh(player)       -- 레벨 스탯 (이동 속도 / 사정거리 / 투사체 ...) 효과 반영
 		Tutorial.Load(player, saved.Tutorial) -- 처음 1~5분 가이드 미션
 		Idle.OnJoin(player) -- 자리를 비운 동안 쌓인 방치 골드

@@ -2791,9 +2791,9 @@ local function buildInventoryTab()
 			end
 			local augInfo = setDef.Aug and Config.AugInfo[setDef.Aug]
 			if augInfo then
-				local lv = have >= 3 and Config.Sets.AugLevelByPieces[3] or (have >= 2 and Config.Sets.AugLevelByPieces[2] or 0)
+				local lv = player:GetAttribute("AugLvZ_" .. setDef.Zone) or 0
 				local ac = lv > 0 and ("#" .. hex(augInfo.Color)) or dim
-				table.insert(lines, string.format("<font size='12' color='%s'><b>%s %s</b> %s</font>\n  <font color='%s'>%s</font>", ac, augInfo.Icon, augInfo.Name, lv > 0 and ("✔ " .. lv .. "단계") or "○ 2부위 1단계 · 3부위 3단계", lv > 0 and "#cfd6f0" or dim, augInfo.Desc))
+				table.insert(lines, string.format("<font size='12' color='%s'><b>%s %s</b> %s</font>\n  <font color='%s'>%s</font>", ac, augInfo.Icon, augInfo.Name, lv > 0 and ("✔ " .. lv .. "단계") or "○ 군주를 잡고 골드로 활성화 (Y)", lv > 0 and "#cfd6f0" or dim, augInfo.Desc))
 			end
 		end
 		local current = equipped[selected.Slot]
@@ -2853,7 +2853,7 @@ local function buildInventoryTab()
 						table.insert(lines, string.format("<font size='13' color='#ddddee'><b>%d부위</b>  %s</font>", tier, table.concat(parts, ", ")))
 					end
 					if aug then
-						table.insert(lines, string.format("\n<font size='14' color='#%s'><b>%s %s</b></font>  <font size='11' color='#aab0c8'>2부위 1단계 · 3부위 3단계</font>\n<font size='12' color='#cfd6f0'>%s</font>", hex(aug.Color), aug.Icon, aug.Name, aug.Desc))
+						table.insert(lines, string.format("\n<font size='14' color='#%s'><b>%s %s</b></font>  <font size='11' color='#aab0c8'>군주를 잡고 골드로 활성화 (Y)</font>\n<font size='12' color='#cfd6f0'>%s</font>", hex(aug.Color), aug.Icon, aug.Name, aug.Desc))
 					end
 					makeLabel({ Size = UDim2.new(1, -28, 1, -84), Position = UDim2.new(0, 14, 0, 12), RichText = true, TextWrapped = true, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 92, Text = table.concat(lines, "\n") }, box)
 					local canDo = enough

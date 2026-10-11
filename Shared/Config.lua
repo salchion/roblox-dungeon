@@ -340,12 +340,12 @@ Config.RunBuffs = {
 Config.AugInfo = {
 	AugMissile = { Icon = "🚀", Name = "크리 미사일", Desc = "치명타가 터질 때마다 추가 미사일이 날아가 주변 적을 터뜨려요", Color = Color3.fromRGB(255, 150, 60) },
 	AugNova = { Icon = "☄", Name = "처치 폭발", Desc = "적을 처치하면 그 자리에서 큰 폭발이 일어나 주변 적에게 번져요", Color = Color3.fromRGB(255, 80, 70) },
-	AugOrbit = { Icon = "🌀", Name = "회전 칼날", Desc = "몸 주위를 도는 칼날이 닿는 적을 계속 베어요", Color = Color3.fromRGB(110, 230, 255) },
+	AugOrbit = { Icon = "🌀", Name = "튕기는 표창", Desc = "던진 칼날이 적들 사이를 튕기며 연달아 베어요", Color = Color3.fromRGB(110, 230, 255) },
 	AugStorm = { Icon = "⛈", Name = "낙뢰", Desc = "주기적으로 하늘에서 번개가 가까운 적들에게 내리쳐요", Color = Color3.fromRGB(255, 240, 110) },
 	AugFlame = { Icon = "🔥", Name = "화염 지대", Desc = "적을 처치한 자리에 불길이 남아 지나가는 적을 태워요", Color = Color3.fromRGB(255, 130, 40) },
 	AugExecute = { Icon = "💀", Name = "처형", Desc = "체력이 얼마 안 남은 적(보스 제외)은 맞는 즉시 처형돼요", Color = Color3.fromRGB(210, 90, 255) },
 	AugMeteor = { Icon = "🌠", Name = "유성우", Desc = "적이 가장 많이 모인 곳에 주기적으로 유성이 떨어져요", Color = Color3.fromRGB(255, 190, 90) },
-	AugPulse = { Icon = "💥", Name = "폭풍 충격파", Desc = "주기적으로 몸에서 강한 충격파가 두 번 터져 주변 적들을 크게 쓸어내요", Color = Color3.fromRGB(110, 255, 190) },
+	AugPulse = { Icon = "💥", Name = "충격파탄", Desc = "주변 적들에게 폭발탄이 날아가 맞은 자리에서 크게 터져요", Color = Color3.fromRGB(110, 255, 190) },
 }
 
 -- 세트 효과 시너지: 두 어그먼트를 모두 가지면 숨은 추가 효과가 켜진다 (획득하는 순간 알림 + 오라 폭발)
@@ -1236,9 +1236,17 @@ Config.Sets.Imprint = {
 	DropGoblin = 10,                       -- 황금 고블린
 	DropEvent = 20,                        -- 공개 이벤트 보스
 }
--- 구역 세트마다 컨셉이 하나씩 있다: 그 세트를 2부위 이상 맞추면 그 효과가 켜진다 (2부위 1단계, 3부위 3단계)
+-- 구역 세트마다 컨셉이 하나씩 있다: 그 구역 군주를 잡으면 열리고 골드로 활성화한다 (아래 AugCost / AugSlotZones). 던전 주사위의 세트 조각은 예전 방식 그대로 단계를 준다
 Config.Sets.ZoneAug = { "AugPulse", "AugOrbit", "AugStorm", "AugMissile", "AugNova", "AugFlame", "AugExecute", "AugMeteor" }
 Config.Sets.AugLevelByPieces = { [2] = 1, [3] = 3 }
+-- 세트 효과는 장비가 아니라 "골드로 활성화"한다: 그 구역 군주를 잡으면 열리고, 골드로 1~3단계까지 올린다.
+-- 동시에 켤 수 있는 개수(슬롯)는 처음 1개이고 구역을 클리어할수록 늘어난다 (AugSlotZones[n] = n번째 슬롯이 열리는 클리어 구역).
+Config.Sets.AugSlotZones = { 0, 4, 7 }
+Config.Sets.AugCostMult = { 1, 3, 8 } -- 1단계 / 2단계 / 3단계 비용 배수
+function Config.Sets.AugCost(zone, level)
+	local base = math.floor(1500 * 2.2 ^ (zone - 1) / 100 + 0.5) * 100
+	return base * (Config.Sets.AugCostMult[level] or 8)
+end
 -- 도감: 몬스터 / 구역 군주 / 세트 장비 설명 (몬스터 이름은 MonsterTypes.Defs 와 같다)
 Config.Codex = {
 	Monsters = {
