@@ -848,7 +848,7 @@ do
 	local ICONS = { "🔱", "💥", "⚡", "🔥", "⏩", "🎯", "❤", "💚", "⭐", "💰", "🎫", "🌪" }
 	local PEN_ICONS = { "🪨", "😡", "💨", "🐺", "🔫", "☠" }
 	local popup = create("Frame", {
-		Name = "RollPopup", Size = UDim2.new(0, 520, 0, 80), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 104),
+		Name = "RollPopup", Size = UDim2.new(0, 520, 0, 80), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0.26, 0), -- 위쪽 HUD(버티기 막대 / 안내 줄)와 겹치지 않게 화면 위쪽 1/4 지점
 		BackgroundColor3 = Color3.fromRGB(18, 20, 30), BackgroundTransparency = 0.12, BorderSizePixel = 0, Visible = false, ZIndex = 75,
 	}, gui)
 	rounded(popup, 14)
