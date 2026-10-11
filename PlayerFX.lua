@@ -740,7 +740,7 @@ do
 		return Config.GetWeaponTierIndex(player:GetAttribute("WeaponLevel") or 0)
 	end
 	task.defer(function()
-		while player.Parent and player:GetAttribute("WeaponLevel") == nil do task.wait(0.5) end
+		while player.Parent and (player:GetAttribute("WeaponLevel") == nil or player:GetAttribute("DataReady") ~= true) do task.wait(0.25) end -- 저장된 무기 단계가 다 불러와진 뒤부터 비교한다 (접속 때 0 -> 저장값으로 바뀌는 걸 진화로 오해하지 않게)
 		shownTier = tierIndexNow()
 		player:GetAttributeChangedSignal("WeaponLevel"):Connect(function()
 			local now = tierIndexNow()
