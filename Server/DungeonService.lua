@@ -419,6 +419,7 @@ local function spawnMonster(run, level, position)
 		TypeKey = typeKey,
 		Def = def,
 		Level = level,
+		GZone = run.Tutorial and 1 or (run.DepthScale and math.clamp(run.DepthScale.Depth or 1, 1, 8)) or Config.Gimmick.DungeonZone[run.DiffKey] or 1, -- 탄막 기믹 강도: 난이도 / 심연 깊이를 필드 구역으로 환산
 		Phase = math.random() * math.pi * 2,
 		NextAttack = os.clock() + stats.ShotInterval,
 	})

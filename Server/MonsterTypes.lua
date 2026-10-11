@@ -21,6 +21,7 @@ local TweenService = game:GetService("TweenService")
 local Debris = game:GetService("Debris")
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local SoundBank = require(game:GetService("ReplicatedStorage"):WaitForChild("SoundBank"))
+local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Config"))
 
 local M = {}
 
@@ -477,11 +478,32 @@ end
 -- 빙빙 돌며 피하는 플레이도 맞도록: 정면 탄 옆으로 양쪽 "옆 탄"을 같이 쏜다.
 -- 가만히 서 있으면 옆 탄은 몸 옆을 스치고(정면만 피하면 됨), 옆으로 돌며 달리면 옆 탄이 길목을 막는다.
 local FLANK_ANGLE = 13
+
+-- 탄막 기믹 (예측 사격): 목표가 가던 방향으로 계속 가면 맞도록 앞을 겨눈다. 구역 / 던전 난이도가 올라갈수록 자주 쓴다.
+-- data.GZone: 던전이 정해 주는 "구역 환산값", 필드는 data.Zone 을 그대로 쓴다.
+local function leadLevel(data)
+	local G = Config.Gimmick
+	local zone = data.GZone or data.Zone or 1
+	if zone >= G.LeadAlwaysZone then return 2 end
+	if zone >= G.LeadFromZone then return 1 end
+	return 0
+end
+
+local function leadAim(part, target, speed)
+	local G = Config.Gimmick
+	local delta = target.Position - part.Position
+	if delta.Magnitude < 0.1 then return nil end
+	local velocity = target.AssemblyLinearVelocity
+	velocity = Vector3.new(velocity.X, 0, velocity.Z)
+	local lead = target.Position + velocity * math.clamp(delta.Magnitude / math.max(speed, 1), 0, G.LeadMaxTime) * G.LeadStrength
+	local aim = lead - part.Position
+	return aim.Magnitude > 0.1 and aim.Unit or delta.Unit
+end
 -- (탄 수를 줄이려고) noFlank 가 true 면 정면 한 발만 쏜다: 호출하는 쪽이 두 번에 한 번만 옆 탄을 붙인다
-local function fireFlanked(ctx, part, target, speed, damage, size, color, style, noFlank)
+local function fireFlanked(ctx, part, target, speed, damage, size, color, style, noFlank, lead)
 	local aim = target.Position - part.Position
 	if aim.Magnitude < 0.1 then return end
-	aim = aim.Unit
+	aim = (lead and leadAim(part, target, speed)) or aim.Unit
 	ctx.Fire(part.Position, aim, speed, damage, size, color, style)
 	if noFlank or (target.Position - part.Position).Magnitude < 10 then return end -- 너무 가까우면 옆 탄은 의미 없다
 	local sideDamage = math.max(1, math.floor(damage * 0.7))
@@ -850,10 +872,12 @@ function M.Update(ctx, part, data, dt, now)
 	if def.Attack == "Single" then
 		data.ShotN = (data.ShotN or 0) + 1
 		local noFlank = data.ShotN % 2 == 1 -- 옆 탄은 두 번에 한 번만
+		local level = leadLevel(data)
+		local lead = level >= 2 or (level == 1 and data.ShotN % 2 == 0) -- 예측 사격 (옆 탄이 없는 차례에 겹치지 않게 번갈아 쓴다)
 		telegraph(ctx, part, data, Color3.fromRGB(255, 220, 80), 0.4, function()
 			local current = ctx.GetTarget(part.Position)
 			if current then
-				fireFlanked(ctx, part, current, stats.ShotSpeed, stats.ShotDamage, math.max(1.5, stats.Size / 4), nil, def.Style, noFlank)
+				fireFlanked(ctx, part, current, stats.ShotSpeed, stats.ShotDamage, math.max(1.5, stats.Size / 4), nil, def.Style, noFlank, lead)
 			end
 		end)
 
@@ -948,6 +972,7 @@ function M.Update(ctx, part, data, dt, now)
 			local current = ctx.GetTarget(part.Position)
 			if not current then return end
 			local aim = (current.Position - part.Position).Unit
+			if leadLevel(data) >= 1 and not wave then aim = leadAim(part, current, stats.ShotSpeed) or aim end -- 창 두 자루는 예측해서 쏜다
 			if wave then
 				ctx.Fire(part.Position, aim, stats.ShotSpeed * 0.75, math.floor(stats.ShotDamage * 1.2), math.max(2.6, stats.Size / 2.4), Color3.fromRGB(190, 205, 235), "Crescent")
 			else
