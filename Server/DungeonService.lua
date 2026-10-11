@@ -1836,6 +1836,11 @@ function Dungeon.Shoot(player, origin, direction)
 	local skipped = {}
 	for _ = 1, 1 + pierce do
 		local result = workspace:Raycast(origin, direction * range, params)
+		if not result then -- 조준 보정(필드와 같음): 비껴간 산탄 / 퍼지는 탄을 두툼한 탄으로 한 번 더 훑는다
+			local assist = (weaponType.Pellets or 1) > 1 and 3 or 1.2
+			local okCast, swept = pcall(function() return workspace:Spherecast(origin, assist, direction * range, params) end)
+			if okCast then result = swept end
+		end
 		if not result then break end
 		-- 약점 구슬을 직접 맞힌 경우: 보스를 맞힌 것으로 바꾸고 "약점 명중"으로 처리한다
 		local weakDirect = false

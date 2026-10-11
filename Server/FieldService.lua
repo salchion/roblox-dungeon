@@ -1712,6 +1712,13 @@ function Field.Shoot(player, origin, direction)
 
 	local range = Config.GetRange(player, Config.GetPlayerWeapon(player))
 	local result = workspace:Raycast(origin, direction * range, params)
+	if not result then
+		-- 조준 보정: 작은 일반 몬스터는 샷건 산탄 / 퍼지는 탄이 몸 옆으로 비껴가기 쉽다. 정확히 못 맞혔으면 두툼한 탄(구)으로 한 번 더 훑어 몸 근처를 지나간 탄을 맞은 것으로 쳐 준다
+		local weapon = Config.GetPlayerWeapon(player)
+		local assist = (weapon.Pellets or 1) > 1 and 3 or 1.2
+		local okCast, swept = pcall(function() return workspace:Spherecast(origin, assist, direction * range, params) end)
+		if okCast then result = swept end
+	end
 	-- 약점 구슬을 직접 맞힌 경우: 보스를 맞힌 것으로 바꾸고 "약점 명중"으로 처리한다
 	local weakDirect = false
 	if result and result.Instance.Name == "WeakPoint" and result.Instance.Parent and monsters[result.Instance.Parent] then

@@ -455,7 +455,7 @@ local function playShot(event)
 		special(from, to, size, speed, color, era)
 		if vt >= 6 then -- 로켓 / 레일건 / 저격 / 캐논 / 화염방사도 번호가 오를수록 착탄 고리가 커진다
 			task.delay(math.clamp(distance / speed, 0.03, 1.2), function()
-				eraRing(to, color, 1, 3.5 + 9 * richness, 0.18 + 0.12 * richness)
+				eraRing(to, color, 1, 3 + 6 * richness, 0.18 + 0.1 * richness)
 			end)
 		end
 		return
@@ -492,7 +492,7 @@ local function playShot(event)
 		colorSeq = rainbow and RAINBOW or FIRE
 	end
 	if not rainbow and ERA_TRAIL[era] then colorSeq = ERA_TRAIL[era] end
-	local trailWidth = size * (1 + 0.12 * era) * (1 + 0.9 * richness)
+	local trailWidth = size * (1 + 0.12 * era) * (1 + 0.5 * richness)
 	local a0 = Instance.new("Attachment")
 	a0.Position = Vector3.new(0, trailWidth / 2, 0)
 	a0.Parent = part
@@ -535,21 +535,46 @@ local function playShot(event)
 		light.Range, light.Brightness, light.Color = 5 + era * 2, 0.7 + 0.1 * era, color
 		light.Parent = part
 	end
-	-- 후광: 무기 번호가 오를수록 탄을 감싸는 빛이 더 크고 진해진다 (연사 무기는 작게)
-	if vt >= 4 then
-		local haloSize = size * (1.45 + 1.4 * richness) * (mini and 0.75 or 1)
-		local halo = Instance.new("Part")
-		halo.Anchored, halo.CanCollide, halo.CanQuery, halo.CanTouch, halo.Massless = false, false, false, false, true
-		halo.Shape = Enum.PartType.Ball
-		halo.Material = Enum.Material.Neon
-		halo.Color = color
-		halo.Transparency = 0.84 - 0.34 * richness
-		halo.Size = Vector3.new(haloSize, haloSize, haloSize)
-		halo.CFrame = part.CFrame
-		local haloWeld = Instance.new("WeldConstraint")
-		haloWeld.Part0, haloWeld.Part1 = part, halo
-		haloWeld.Parent = halo
-		halo.Parent = part
+	-- 탄의 몸체: 번호가 오를수록 탄 자체의 "생김새"가 복잡해진다 (번쩍임이 아니라 구조: 뾰족한 촉 -> 꼬리 날개 -> 테두리 -> 띠 -> 가시 관). 빛나지 않는 금속 재질이라 눈이 편하다.
+	-- 연사 무기(mini)는 촉만 붙여서 부담을 줄인다.
+	if vt >= 3 and class ~= "Rocket" then
+		local isBolt = style == "Bolt" or style == "Rocket"
+		local half = (isBolt and (length or 3) or size) / 2
+		local steel = color:Lerp(Color3.fromRGB(190, 195, 205), 0.55)
+		local function bodyPart(shape, partSize, offset, material, tint, transparency)
+			local p = Instance.new("Part")
+			p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.Massless = false, false, false, false, true
+			p.Shape = shape
+			p.Material = material
+			p.Color = tint
+			p.Transparency = transparency or 0
+			p.Size = partSize
+			p.CFrame = part.CFrame * offset
+			local w = Instance.new("WeldConstraint")
+			w.Part0, w.Part1 = part, p
+			w.Parent = p
+			p.Parent = part
+			return p
+		end
+		bodyPart(Enum.PartType.Ball, Vector3.new(size * 0.7, size * 0.7, size * 0.7), CFrame.new(0, 0, -half), Enum.Material.Metal, steel) -- 촉
+		if not mini then
+			if vt >= 12 then -- 꼬리 날개 두 장
+				bodyPart(Enum.PartType.Block, Vector3.new(size * 1.5, size * 0.12, size * 0.9), CFrame.new(0, 0, half * 0.8), Enum.Material.Metal, steel:Lerp(color, 0.3))
+				bodyPart(Enum.PartType.Block, Vector3.new(size * 0.12, size * 1.5, size * 0.9), CFrame.new(0, 0, half * 0.8), Enum.Material.Metal, steel:Lerp(color, 0.3))
+			end
+			if vt >= 25 then -- 몸통 테두리
+				bodyPart(Enum.PartType.Cylinder, Vector3.new(size * 0.18, size * 1.25, size * 1.25), CFrame.new(0, 0, -half * 0.3) * CFrame.Angles(0, math.rad(90), 0), Enum.Material.Metal, steel)
+			end
+			if vt >= 45 then -- 은은하게 빛나는 띠 (한 줄)
+				bodyPart(Enum.PartType.Cylinder, Vector3.new(size * 0.1, size * 1.35, size * 1.35), CFrame.new(0, 0, half * 0.25) * CFrame.Angles(0, math.rad(90), 0), Enum.Material.Neon, color, 0.35)
+			end
+			if vt >= 70 then -- 촉 둘레의 작은 가시 관
+				for i = 0, 3 do
+					local a = i * math.pi / 2
+					bodyPart(Enum.PartType.Block, Vector3.new(size * 0.1, size * 0.1, size * 0.55), CFrame.new(math.cos(a) * size * 0.45, math.sin(a) * size * 0.45, -half * 0.85) * CFrame.Angles(math.sin(a) * 0.4, -math.cos(a) * 0.4, 0), Enum.Material.Metal, steel)
+				end
+			end
+		end
 	end
 	part.Parent = fxFolder
 	Debris:AddItem(part, 3) -- 안전장치: 어떤 이유로든 도착 처리가 안 돼도 탄이 화면에 남지 않게
@@ -585,11 +610,10 @@ local function playShot(event)
 		elseif impact and impact > 0 then
 			burst(to, color, impact)
 		end
-		-- 착탄 고리: 무기 번호가 오를수록 고리가 커지고, 중반부터 두 겹, 후반에는 흰 섬광이 더해진다
+		-- 착탄 고리: 번호가 오를수록 조금씩 커진다 (은은하게: 흰 섬광 없음). 중반부터 두 겹.
 		if vt >= 6 then
-			eraRing(to, color, 1, 3.5 + 9 * richness, 0.18 + 0.12 * richness)
-			if vt >= 50 and not mini then eraRing(to + Vector3.new(0, 0.6, 0), WHITE, 0.6, 2 + 6 * richness, 0.14) end
-			if vt >= 80 and not mini then burst(to, WHITE, 6) end
+			eraRing(to, color, 1, 3 + 6 * richness, 0.18 + 0.1 * richness)
+			if vt >= 50 and not mini then eraRing(to + Vector3.new(0, 0.5, 0), color, 0.6, 2 + 4 * richness, 0.14) end
 		end
 		activeShots -= 1
 		Debris:AddItem(part, 0.5)
