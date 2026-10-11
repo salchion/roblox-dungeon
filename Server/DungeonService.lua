@@ -2027,6 +2027,19 @@ local function finish(run, victory)
 			run.LootLines[member] = lines
 		end
 	end
+	-- 튜토리얼: 던전 보스를 쓰러뜨리면 결과 카드 없이 곧바로 최후의 군주 장면으로 넘어간다 (전리품은 쓰러진 뒤 마을에서 알려 준다)
+	if victory and run.Tutorial and Dungeon.OnTutorialHandoff then
+		local member = run.Members[1]
+		if member and #run.Members == 1 and member:GetAttribute("TutorialDungeonDoom") == true and getAliveParts(member) then
+			table.remove(run.Members, 1)
+			run.Ready[member] = nil
+			playerRun[member] = nil
+			resetStats(member)
+			local lines = run.LootLines[member] or {}
+			print(string.format("[튜토리얼 던전] %s 던전 클리어 -> 최후의 군주로 인계 (골드 %d)", member.Name, run.Earned[member] or 0))
+			Dungeon.OnTutorialHandoff(member, lines, run.Earned[member] or 0)
+		end
+	end
 	for _, member in ipairs(run.Members) do
 		if not victory then
 			task.delay(2, function() Advice.AfterDefeat(member) end) -- 던전에서 졌을 때: 지금 부족한 것 / 안 쓴 것 조언
@@ -2057,6 +2070,7 @@ local function finish(run, victory)
 end
 
 -- 심연 도전 종료: 점수로 등급을 매기고 (RiftService 가 보상 / 기록) 결과 카드를 보낸다. 시간이 끝나거나 전멸하면 호출된다.
+Dungeon.OnTutorialHandoff = nil -- FieldService 가 채운다: function(player, lootLines, gold) (튜토리얼 던전 클리어 -> 최후의 군주 장면)
 Dungeon.OnRiftFinished = nil -- RiftService 가 채운다: function(player, score) -> { Gold, Tickets, TimeSkip, Tier, Best, NewBest }
 local function riftFinish(run)
 	if run.Phase == "Ended" then return end
@@ -2374,7 +2388,7 @@ local function surviveLoop(run)
 	run.PhaseEnd = nil
 
 	local waves = math.max(1, run.Type.Waves or 5)
-	local duration = D.GetSurviveSeconds(waves)
+	local duration = run.Tutorial and 30 or D.GetSurviveSeconds(waves)
 	local startedAt = os.clock()
 	run.SurviveEnd = startedAt + duration
 	run.Phase = "Wave"
@@ -2517,8 +2531,9 @@ end
 ------------------------------------------------------------
 -- 입장 (던전 게이트에서 호출). 파티가 있으면 파티장만 가능, 없으면 혼자 입장.
 ------------------------------------------------------------
-function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth)
-	if player:GetAttribute("Zone") ~= "Lobby" then return end
+function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
+	-- fromField: 튜토리얼에서 필드 군주가 떨어뜨린 열쇠로 필드에서 바로 던전으로 떨어질 때만 true (혼자, 열쇠 / 무료 입장 소모 없음)
+	if player:GetAttribute("Zone") ~= "Lobby" and not (fromField and player:GetAttribute("Zone") == "Field") then return end
 	if player:GetAttribute("TutorialDungeonLocked") then
 		notify(player, "🔒 아직 던전에 들어갈 수 없어요. 튜토리얼 미션을 먼저 진행해주세요!")
 		return
@@ -2531,7 +2546,7 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth)
 	if not dungeonType or not dungeonType.Waves or not difficulty or not difficulty.HealthMult then return end -- "Order" 같은 잘못된 키 방어
 
 	local party = nil
-	if not riftMode then
+	if not riftMode and not fromField then
 		party = Party.GetParty(player) -- 심연 도전은 혼자 한다
 	end
 	if party and party.Leader ~= player then
@@ -2541,14 +2556,14 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth)
 
 	local members = {}
 	for _, candidate in ipairs(party and party.Members or { player }) do
-		if candidate:GetAttribute("Zone") == "Lobby" and getAliveParts(candidate) then
+		if (candidate:GetAttribute("Zone") == "Lobby" or (fromField and candidate == player)) and getAliveParts(candidate) then
 			table.insert(members, candidate)
 		end
 	end
 	if not table.find(members, player) then return end
 
 	-- 던전 입장 제한: 열쇠 (파티원 모두 필요). 시간이 지나면 자동으로 차오른다.
-	local keyCost = riftMode and 0 or (difficulty.KeyCost or 1) -- 심연 도전은 열쇠 대신 하루 도전 횟수를 쓴다 (RiftService 가 관리)
+	local keyCost = (riftMode or fromField) and 0 or (difficulty.KeyCost or 1) -- 심연 도전은 열쇠 대신 하루 도전 횟수를 쓴다 (RiftService 가 관리)
 	local useFree = {}
 	for _, member in ipairs(members) do
 		if keyCost > 0 and Dungeon.FreeLeft(member) > 0 then
@@ -2583,7 +2598,8 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth)
 		end
 	end
 
-	if not riftMode and #members == 1 and player:GetAttribute("TutorialDungeonRun") == true then
+	local tutorialRun = not riftMode and #members == 1 and player:GetAttribute("TutorialDungeonRun") == true
+	if tutorialRun then
 		-- 튜토리얼 첫 던전: 받는 피해 절반 + 몬스터 체력 약간 감소 (처음 보는 던전에서 막히지 않게)
 		difficulty = table.clone(difficulty)
 		difficulty.DamageMult = (difficulty.DamageMult or 1) * 0.5
@@ -2614,6 +2630,7 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth)
 		DiffKey = diffKey,
 		LootLines = {},
 		Difficulty = difficulty,
+		Tutorial = tutorialRun, -- 튜토리얼 첫 던전: 쫄 구간이 짧고(30초), 보스를 쓰러뜨리면 최후의 군주로 이어진다
 		TotalWaves = dungeonType.Waves,
 		BossVariant = D.BossVariants[D.BossVariants.Order[math.random(#D.BossVariants.Order)]],
 		BossName = dungeonType.Boss.Name,

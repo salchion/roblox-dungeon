@@ -32,7 +32,8 @@ local Journey = require(script.Parent:WaitForChild("JourneyService"))
 local F = Config.Field
 local TOP = 0.05
 local routeBeat = setmetatable({}, { __mode = "k" }) -- [player] = 튜토리얼 첫 구역 길목에서 이미 터진 사건 번호
-local doomReady = setmetatable({}, { __mode = "k" }) -- [player] = 첫 구역 군주를 쓰러뜨린 시각 (튜토리얼 소환 결투의 시작 신호)
+local doomReady = setmetatable({}, { __mode = "k" }) -- [player] = (옛 방식) 첫 구역 군주를 쓰러뜨린 시각. 지금은 군주가 열쇠를 떨어뜨리고 던전으로 이어진다 (startTutorialRift)
+local startTutorialRift -- 아래(최후의 군주 장면 근처)에서 정의
 
 local Field = {}
 
@@ -1580,7 +1581,7 @@ local function killMonster(player, part, data)
 	if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then
 		player:SetAttribute("TutorialRetryBuff", nil) -- 일회성 힘은 군주를 쓰러뜨리면 사라진다
 		Remotes.Tutorial:FireClient(player, "WaypointClear") -- 길잡이 빛기둥도 끈다
-		doomReady[player] = os.clock() -- 튜토리얼: 첫 구역 군주를 쓰러뜨리면 잠시 뒤 불길한 기운이 덮친다
+		if startTutorialRift then task.spawn(startTutorialRift, player, part.Position) end -- 튜토리얼: 군주가 열쇠를 떨어뜨리고 발밑이 갈라져 던전으로 떨어진다
 	end
 	Effects.Burst(part.Position, part.Color, data.Kind == "Boss" and 80 or 22)
 	Effects.MonsterDeath(part, data) -- 조각 / 영혼 연기 (클라이언트)
@@ -3258,6 +3259,114 @@ local function buildDoomLord(parent)
 end
 
 -- 소환 결투: 먼 하늘 위 심연 무대로 끌려가 최후의 군주와 1:1 (약 8초). 공격할 수 있지만 쓰러뜨릴 수는 없고, 바닥 경고를 보고 피할 수 있는 공격을 받다가 마지막 일격에 쓰러진다.
+-- 튜토리얼: 첫 구역 군주를 쓰러뜨리면 군주가 던전 열쇠를 떨어뜨린다 -> 열쇠가 날아와 공명하고 -> 바닥이 갈라져 던전으로 떨어진다
+function startTutorialRift(player, at)
+	if player:GetAttribute("TutorialRiftBusy") then return end
+	player:SetAttribute("TutorialRiftBusy", true)
+	local key
+	local ok, err = pcall(function()
+		local root = getAliveParts(player)
+		if not root then print("[튜토리얼 열쇠] 중단: 캐릭터 없음") return end
+		print(string.format("[튜토리얼 열쇠] %s 시작", player.Name))
+		notify(player, "🗝 군주가 던전 열쇠를 떨어뜨렸다!")
+		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🗝", Title = "군주의 열쇠", Text = "필드 군주는 던전 열쇠를 떨어뜨려요. 열쇠가 공명하며 발밑이 갈라지기 시작해요...", Duration = 4, Top = true })
+		Remotes.Tutorial:FireClient(player, "WaypointClear")
+		task.wait(1.0)
+		root = getAliveParts(player)
+		if not root then return end
+		-- 열쇠: 군주가 쓰러진 자리에서 떠올라 플레이어에게 날아온다 (눈이 아프지 않은 호박색)
+		key = Instance.new("Part")
+		key.Name = "TutorialKey"
+		key.Size = Vector3.new(1.2, 3.2, 0.5)
+		key.Color = rgb(232, 178, 90)
+		key.Material = Enum.Material.Neon
+		key.Anchored = true
+		key.CanCollide = false
+		key.CanQuery = false
+		key.CastShadow = false
+		key.CFrame = CFrame.new(at + Vector3.new(0, 3, 0))
+		key.Parent = workspace
+		local light = Instance.new("PointLight")
+		light.Color = rgb(255, 190, 110)
+		light.Range = 18
+		light.Brightness = 1.2
+		light.Parent = key
+		local from = key.Position
+		local started = os.clock()
+		while os.clock() - started < 1.3 do
+			local t = (os.clock() - started) / 1.3
+			local eased = t * t * (3 - 2 * t)
+			root = getAliveParts(player)
+			if not root then return end
+			local target = root.Position + Vector3.new(0, 3.5, 0)
+			key.CFrame = CFrame.new(from:Lerp(target, eased) + Vector3.new(0, math.sin(t * math.pi) * 6, 0)) * CFrame.Angles(0, t * 14, math.rad(15))
+			task.wait()
+		end
+		Effects.Burst(key.Position, rgb(255, 200, 120), 40)
+		shakeScreen(player, 0.5)
+		task.wait(0.4)
+		-- 바닥이 갈라진다: 발밑에서 사방으로 갈라진 틈이 번진다
+		root = getAliveParts(player)
+		if not root then return end
+		local floorY = root.Position.Y - 3
+		local cracks = {}
+		for index = 1, 7 do
+			local angle = index / 7 * math.pi * 2 + math.random() * 0.4
+			local length = 16 + math.random() * 14
+			local crack = Instance.new("Part")
+			crack.Size = Vector3.new(0.9, 0.2, length)
+			crack.CFrame = CFrame.new(root.Position.X, floorY + 0.15, root.Position.Z) * CFrame.Angles(0, angle, 0) * CFrame.new(0, 0, length / 2)
+			crack.Anchored = true
+			crack.CanCollide = false
+			crack.CanQuery = false
+			crack.CastShadow = false
+			crack.Material = Enum.Material.Neon
+			crack.Color = rgb(232, 150, 80)
+			crack.Transparency = 0.9
+			crack.Parent = workspace
+			TweenService:Create(crack, TweenInfo.new(0.7), { Transparency = 0.25 }):Play()
+			table.insert(cracks, crack)
+		end
+		shakeScreen(player, 0.9)
+		task.wait(0.9)
+		-- 떨어진다: 몸을 고정하고 아래로 내려보내며 화면이 어두워진다
+		root = getAliveParts(player)
+		if not root then return end
+		Remotes.Tutorial:FireClient(player, "Cinema", "Black")
+		root.Anchored = true
+		local base = root.CFrame
+		local fall = os.clock()
+		while os.clock() - fall < 0.8 do
+			local t = (os.clock() - fall) / 0.8
+			root = getAliveParts(player)
+			if not root then break end
+			root.CFrame = base - Vector3.new(0, 28 * t * t, 0)
+			task.wait()
+		end
+		for _, crack in ipairs(cracks) do crack:Destroy() end
+		key:Destroy()
+		key = nil
+		root = getAliveParts(player)
+		if root then root.Anchored = false end
+		print(string.format("[튜토리얼 열쇠] %s 던전 입장 시도 (Zone=%s, TutorialDungeonRun=%s)", player.Name, tostring(player:GetAttribute("Zone")), tostring(player:GetAttribute("TutorialDungeonRun"))))
+		Dungeon.Start(player, "Cave", "Easy", nil, nil, true)
+		if player:GetAttribute("Zone") ~= "Dungeon" then
+			warn("[튜토리얼 열쇠] 던전 입장 실패: Zone=" .. tostring(player:GetAttribute("Zone")) .. " TutorialDungeonLocked=" .. tostring(player:GetAttribute("TutorialDungeonLocked")))
+			notify(player, "던전이 아직 열리지 않았어요. 마을의 북쪽 던전 게이트에서 들어갈 수 있어요")
+		end
+		task.wait(0.5)
+		Remotes.Tutorial:FireClient(player, "Cinema", "End")
+	end)
+	if not ok then
+		warn("[튜토리얼 열쇠] 오류: " .. tostring(err))
+		if key then key:Destroy() end
+		local root = getAliveParts(player)
+		if root then root.Anchored = false end
+		Remotes.Tutorial:FireClient(player, "Cinema", "End")
+	end
+	player:SetAttribute("TutorialRiftBusy", nil)
+end
+
 local doomSlots = {} -- [칸 번호] = true : 동시에 여러 명이 끌려가도 결투장이 겹치지 않게 사람마다 옆으로 떨어뜨린다
 local function doomWaveInner(player, zone, center)
 	local root, humanoid = getAliveParts(player)
@@ -3265,7 +3374,7 @@ local function doomWaveInner(player, zone, center)
 	player:SetAttribute("InDoomArena", true) -- 납치 연출로 높이 올라가도 "필드 밖으로 튕김" / 구역 판별에 걸리지 않게 처음부터 켠다
 	notify(player, "⚠⚠ 압도적인 기운... 무언가가 당신을 부른다!!")
 	playSfx(player, "Lord_Voice") -- 낮게 깔리는 군주의 목소리
-	Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "최후의 군주", Text = "...군주를 쓰러뜨리다니, 강하구나. 이제 내가 직접 상대해주마.", Duration = 5, Top = true })
+	Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "최후의 군주", Text = "...내 수하들을 쓰러뜨리다니, 강하구나. 이제 내가 직접 상대해주마.", Duration = 5, Top = true })
 	player:SetAttribute("ShakeStrength", 0.9)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	local TweenService = game:GetService("TweenService")
@@ -3730,7 +3839,7 @@ local function doomWaveInner(player, zone, center)
 		task.wait(2)
 		if player.Parent then -- 쓰러진 직후: 지금 강해질 수 있는 방법을 한눈에 알려준다
 			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "\"8번째 땅 끝에서 기다리마\"",
-				Text = "군주는 그 말만 남기고 사라졌어요. 쓰러졌지만 전리품(골드 4000 / 티켓 10장)은 남았어요!\n🎰 뽑기 → 🏰 던전 → 🔨 강화 순서로 강해져 봐요. 먼저 뽑기 머신으로!", Duration = 10 })
+				Text = "군주는 그 말만 남기고 사라졌어요. 쓰러졌지만 전리품(골드 4000 / 티켓 10장)은 남았어요!\n🎰 뽑기 10연 → 🔨 강화(진화) 순서로 강해져 봐요. 먼저 뽑기 머신으로!", Duration = 10 })
 		end
 	end)
 end
@@ -3742,6 +3851,36 @@ local function doomWave(player, zone)
 	local ok, err = pcall(doomWaveInner, player, zone, Vector3.new(slot * 450, 420, 1500))
 	task.delay(8, function() doomSlots[slot] = nil end) -- 결투장이 치워지는 시간(약 4.5초)이 지난 뒤에 칸을 비운다
 	if not ok then error(err, 0) end
+end
+
+-- 튜토리얼 던전의 보스를 쓰러뜨리면 (DungeonService.finish) 그 자리에서 최후의 군주 장면으로 이어진다
+Dungeon.OnTutorialHandoff = function(player, lootLines, gold)
+	player:SetAttribute("InDoomArena", true) -- 던전 좌표에서 시작해도 "필드 밖으로 튕김" 에 걸리지 않게 먼저 켠다
+	player:SetAttribute("Zone", "Field") -- 군주 결투장은 필드 규칙(필드 사격 / 쓰러지면 마을 귀환)으로 진행된다
+	task.spawn(function()
+		print(string.format("[튜토리얼 군주] %s 군주 장면 시작", player.Name))
+		task.wait(2.5) -- 보스가 쓰러지는 여운
+		if not getAliveParts(player) then
+			print("[튜토리얼 군주] 중단: 캐릭터 없음")
+			player:SetAttribute("InDoomArena", nil)
+			return
+		end
+		notify(player, "⚠ 하늘이 어두워진다...")
+		local ok, err = pcall(doomWave, player, 1)
+		if not ok then
+			warn("[튜토리얼 군주] 오류: " .. tostring(err))
+			player:SetAttribute("InDoomArena", nil)
+			local r = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+			if r then r.Anchored = false end
+		end
+		task.delay(10, function() -- 쓰러져 마을로 돌아온 뒤: 던전에서 받은 전리품을 알려 준다
+			if player.Parent and #lootLines > 0 then
+				local names = {}
+				for _, line in ipairs(lootLines) do table.insert(names, typeof(line) == "table" and tostring(line.Text) or tostring(line)) end
+				notify(player, "🎁 던전 전리품: " .. table.concat(names, ", "))
+			end
+		end)
+	end)
 end
 
 local function updateDoom()

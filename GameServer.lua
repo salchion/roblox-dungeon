@@ -171,10 +171,13 @@ local function onCharacterAdded(player, character)
 				-- 지역 군주에게 쓰러짐: 미션은 끝나지 않는다. 일회성 힘을 받아 다시 군주에게 도전 (군주를 잡아야 최후의 군주에게 끌려간다)
 				player:SetAttribute("TutorialDoomed", "Retry")
 				player:SetAttribute("TutorialRetryBuff", true)
-			else
-				if player:GetAttribute("TutorialDoom") then
-					player:SetAttribute("TutorialDoomed", "Final") -- 최후의 군주에게 쓰러짐 (미션 완료)
+			elseif player:GetAttribute("TutorialDungeonDoom") then
+				-- 던전 보스 뒤에 나타난 최후의 군주에게 쓰러짐 (미션 완료). 그 밖의 곳에서 쓰러진 것은 세지 않는다
+				if player:GetAttribute("InDoomArena") then
+					player:SetAttribute("TutorialDoomed", "Final")
+					Quest.Add(player, "FieldDeaths", 1)
 				end
+			else
 				Quest.Add(player, "FieldDeaths", 1)
 			end
 		end

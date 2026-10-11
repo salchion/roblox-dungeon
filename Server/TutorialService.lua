@@ -96,9 +96,10 @@ local function send(player)
 		if candidate.ShowQuests then questStep = index break end
 	end
 	player:SetAttribute("QuestHud", step == nil or state.Step >= questStep)
-	player:SetAttribute("TutorialDungeonLocked", step ~= nil and state.Step < questStep)
+	player:SetAttribute("TutorialDungeonLocked", step ~= nil and state.Step < questStep and step.Dungeon ~= true)
 	player:SetAttribute("TutorialRoll", step and step.RollMode or nil) -- 미션 중 뽑기 보정: Lowest = 항상 일반 / Hero = 10연에 영웅 1개 확정 (전설 이상 없음)
 	player:SetAttribute("TutorialDungeonRun", step ~= nil and step.Dungeon == true) -- 첫 던전 미션: 받는 피해 절반 (DungeonService)
+	player:SetAttribute("TutorialDungeonDoom", step ~= nil and step.DungeonDoom == true) -- 이 던전의 보스를 쓰러뜨리면 최후의 군주가 나타난다 (DungeonService -> FieldService)
 	player:SetAttribute("TutorialDoom", step ~= nil and step.Doom == true) -- 필드 "압도적인 습격" 장면 (쓰러지면 다음 단계로 이어진다)
 	if not step then
 		Remotes.Tutorial:FireClient(player, "Done")
@@ -132,6 +133,12 @@ function Tutorial.Load(player, saved)
 		if version < 7 then -- 강화 2단계를 하나로 합치고 "뽑기 1번" 미션을 없앴다 (옛 8단계 -> 새 6단계)
 			local map = { [1] = 1, [2] = 2, [3] = 2, [4] = 3, [5] = 3, [6] = 4, [7] = 5, [8] = 6 }
 			local mapped = savedStep >= 9 and #Steps + 1 or (map[savedStep] or savedStep)
+			if mapped ~= savedStep then saved.Progress = 0 end
+			savedStep = mapped
+		end
+		if version < 8 then -- 던전이 군주 앞으로 왔다 (옛 6단계: 필드 / 뽑기10 / 던전 / 강화 -> 새: 필드 / 던전+군주 / 뽑기10 / 강화)
+			local map = { [1] = 1, [2] = 2, [3] = 3, [4] = 5, [5] = 4, [6] = 6 }
+			local mapped = savedStep >= 7 and #Steps + 1 or (map[savedStep] or savedStep)
 			if mapped ~= savedStep then saved.Progress = 0 end
 			savedStep = mapped
 		end
@@ -180,7 +187,7 @@ end
 
 function Tutorial.Serialize(player)
 	local state = states[player] or { Step = #Steps + 1, Progress = 0 }
-	return { Step = state.Step, Progress = state.Progress, V = 7 }
+	return { Step = state.Step, Progress = state.Progress, V = 8 }
 end
 
 function Tutorial.Forget(player)
