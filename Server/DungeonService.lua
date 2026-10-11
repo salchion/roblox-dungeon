@@ -138,7 +138,7 @@ end
 
 -- 파티원 모두에게 경험치 (던전 종류 x 난이도 배율 적용)
 local function giveXp(run, amount)
-	amount = math.floor(amount * run.GoldMult + 0.5)
+	amount = math.floor(amount * (Config.Dungeon.XpMult[run.DiffKey] or 1) + 0.5) -- (골드 배율이 아니라 경험치 전용 배율: 던전이 필드보다 레벨이 훨씬 빨리 오르던 문제)
 	for _, member in ipairs(run.Members) do
 		Level.AddXP(member, amount)
 	end
@@ -2221,7 +2221,7 @@ local function applyBuff(run, member, buff)
 	elseif buff.Effect == "Gold" then
 		run.GoldMult *= 1.2
 	elseif buff.Effect == "Xp" then
-		Level.AddXP(member, math.floor(Config.Xp.WaveClear * math.max(1, run.Wave or 1) * 2 * run.GoldMult + 0.5))
+		Level.AddXP(member, math.floor(Config.Xp.WaveClear * math.max(1, run.Wave or 1) * 2 * (Config.Dungeon.XpMult[run.DiffKey] or 1) + 0.5))
 	elseif buff.Effect == "Ticket" then
 		member:SetAttribute("Tickets", (member:GetAttribute("Tickets") or 0) + 1)
 		run.TicketsEarned[member] = (run.TicketsEarned[member] or 0) + 1

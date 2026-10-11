@@ -922,6 +922,9 @@ Config.Dungeon.Difficulties = {
 	Hard = { Name = "어려움", PowerMult = 2.2, KeyTier = 3, HealthMult = 1.8, DamageMult = 1.5, GoldMult = 2, Tickets = 5, KeyCost = 1, LevelOffset = 4, Color = Color3.fromRGB(255, 100, 100) },
 }
 
+-- 던전 경험치 배율: 골드 배율(유형 x 난이도 = 최대 5~10배)과 따로 정한다. 예전에는 골드 배율을 경험치에도 그대로 곱해서 어려운 던전에서 필드의 약 10배 속도로 레벨이 올랐다.
+Config.Dungeon.XpMult = { Easy = 0.8, Normal = 1.0, Hard = 1.4 }
+
 -- 던전 권장 전투력 (난이도 배율 반영, 50 단위)
 function Config.DungeonPower(dungeonType, difficulty)
 	return math.floor((dungeonType.RecommendedPower or 0) * (difficulty.PowerMult or 1) / 50 + 0.5) * 50
