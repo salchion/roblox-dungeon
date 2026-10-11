@@ -1375,8 +1375,7 @@ local function rewardEvent(data, part)
 			Quest.Add(player, "Kills", 1)
 			Loot.DropFor(player, position, "Event", data.Zone)
 			Loot.DropFor(player, position, "Event", data.Zone) -- 월드 보스: 장비를 두 번 떨어뜨린다
-			Inventory.AddShards(player, data.Zone, Config.Sets.Imprint.DropEvent)
-			notify(player, string.format("🗿 거신 격파 보상! 장비 + 세트 조각 + 🎫 +1 + %d G", data.Stats.Gold))
+			notify(player, string.format("🗿 거신 격파 보상! 장비 + 🎫 +1 + %d G", data.Stats.Gold))
 		end
 	end
 	for _, other in ipairs(Players:GetPlayers()) do
@@ -1395,7 +1394,6 @@ local function rewardGoblin(player, data, part)
 	for _ = 1, 3 do
 		Loot.DropFor(player, position, "Elite", data.Zone)
 	end
-	Inventory.AddShards(player, data.Zone, Config.Sets.Imprint.DropGoblin)
 	Quest.Add(player, "Kills", 1)
 	Quest.Add(player, "GoblinKills", 1)
 	notify(player, string.format("💰 황금 고블린 처치! +%d G, 전리품 3개!", gold))
@@ -1476,23 +1474,6 @@ local function reward(player, data, part)
 		Quest.Add(player, "BossKills", 1)
 	else
 		Quest.Add(player, "FieldKills", 1)
-	end
-
-	-- 세트 조각: 그 구역 몬스터에게서만 나온다 (뽑기 장비를 세트 장비로 바꾸는 재료)
-	do
-		local imprint = Config.Sets.Imprint
-		local amount = 0
-		if data.Kind == "Boss" then
-			amount = imprint.DropBoss
-		elseif data.Kind == "Elite" then
-			amount = math.random(imprint.DropElite[1], imprint.DropElite[2])
-		elseif math.random() < imprint.DropNormal then
-			amount = 1
-		end
-		if amount > 0 then
-			Inventory.AddShards(player, data.Zone, amount)
-			Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 3, 0), string.format("🔹 세트 조각 +%d", amount), Color3.fromRGB(150, 220, 255))
-		end
 	end
 
 	-- 장비 전리품 (개인 전리품: 처치한 본인에게만 보임)
@@ -2862,7 +2843,7 @@ local function runEvents()
 			activeEvent = { Part = part, Data = data }
 			for _, player in ipairs(Players:GetPlayers()) do
 				playSfx(player, "Event_Boss")
-				notify(player, string.format("🗿 [월드 보스] 구역 %d · %s 에 %s 출현! 주황색 빛기둥을 따라가 모두 함께 쓰러뜨리면 장비 + 세트 조각 + 티켓 보상!", zone, F.ZoneNames[zone], Config.Events.Name))
+				notify(player, string.format("🗿 [월드 보스] 구역 %d · %s 에 %s 출현! 주황색 빛기둥을 따라가 모두 함께 쓰러뜨리면 장비 + 티켓 보상!", zone, F.ZoneNames[zone], Config.Events.Name))
 			end
 
 			local expire = os.clock() + Config.Events.Lifetime

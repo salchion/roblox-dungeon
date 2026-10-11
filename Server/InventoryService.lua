@@ -434,41 +434,7 @@ function Inventory.Reroll(player, id)
 	return true, "옵션 재굴림 완료!"
 end
 
--- 세트 조각: 구역마다 따로 쌓인다 (FieldService 가 몬스터를 잡을 때 올려 준다)
-function Inventory.AddShards(player, zone, amount)
-	local state = states[player]
-	if not state or amount <= 0 then return end
-	local before = 0
-	for _, value in pairs(state.Shards) do before += value end
-	state.Shards[zone] = (state.Shards[zone] or 0) + amount
-	if before == 0 then
-		notify(player, "🔹 세트 조각을 얻었어요! 메뉴(B) → 가방에서 장비를 고르고 [세트 각인]을 하면 세트 장비로 바뀌어요.")
-	end
-	Inventory.Push(player)
-end
-
--- 세트 각인: 아이템을 그 구역의 세트 장비로 바꾼다 (등급 / 강화 / 옵션 유지)
-function Inventory.Imprint(player, id, zone)
-	local state = states[player]
-	local item = state and state.Items[id]
-	if not item then return false, "그 아이템이 없어요." end
-	if typeof(zone) ~= "number" or zone % 1 ~= 0 or zone < 1 or zone > Config.Field.ZoneCount then return false, "잘못된 구역이에요." end
-	local setKey = Config.Sets.ZoneKeys[zone]
-	if item.Set == setKey then return false, "이미 그 세트예요." end
-	local cost = Config.Sets.Imprint.Cost[item.Rarity]
-	local have = state.Shards[zone] or 0
-	if have < cost then
-		return false, string.format("%s 구역 세트 조각이 부족해요. (%d / %d) — 그 구역 몬스터에게서 얻어요", Config.Field.ZoneNames[zone], have, cost)
-	end
-	state.Shards[zone] = have - cost
-	item.Set = setKey
-	if isEquipped(state, id) then
-		applyEquipAttributes(player, state)
-	end
-	Inventory.Push(player)
-	local set = Config.Sets[setKey]
-	return true, string.format("%s %s 세트 각인 완료! (같은 세트를 2 / 3부위 끼면 보너스)", set.Icon, set.Name)
-end
+-- (세트 조각 / 세트 각인은 없어졌다: 세트 장비는 필드 드랍으로만 얻는다)
 
 -- 강화 레벨 변경 (GearService 의 장비 강화가 호출)
 function Inventory.SetLevel(player, slotKey, level)
@@ -608,8 +574,6 @@ Remotes.Inventory.OnServerEvent:Connect(function(player, action, arg, arg2)
 		ok, message = Inventory.Scrap(player, arg)
 	elseif action == "Reroll" and typeof(arg) == "number" then
 		ok, message = Inventory.Reroll(player, arg)
-	elseif action == "Imprint" and typeof(arg) == "number" and typeof(arg2) == "number" then
-		ok, message = Inventory.Imprint(player, arg, arg2)
 	elseif action == "SmartClean" then
 		ok, message = Inventory.SmartClean(player)
 	elseif action == "ScrapBelow" and typeof(arg) == "number" then

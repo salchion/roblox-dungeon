@@ -119,7 +119,7 @@ local function rebuild()
 				makeLabel({ Size = UDim2.new(1, -20, 0, 82), Position = UDim2.new(0, 10, 0, 40), Text = table.concat(lines, "\n"), RichText = true, TextSize = 12, TextColor3 = Color3.fromRGB(205, 210, 232), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top }, r)
 			end
 		end
-		summary.Text = string.format("얻어 본 세트 %d / %d  ·  그 구역 몬스터 / 군주가 떨구거나, 세트 조각으로 각인해요", found, F.ZoneCount)
+		summary.Text = string.format("얻어 본 세트 %d / %d  ·  그 구역 몬스터 / 군주가 일정 확률로 떨궈요", found, F.ZoneCount)
 	end
 end
 
