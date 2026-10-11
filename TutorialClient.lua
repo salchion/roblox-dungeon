@@ -88,10 +88,8 @@ local waypointLabel = nil
 local current = nil     -- 지금 미션 정보
 local beacon = nil      -- 목표 위치의 빛기둥 Part
 local beaconLabel = nil
-local trailTarget = nil -- 마을에서 목표까지 바닥에 깔리는 길 안내 점선의 도착점
 
 local function clearBeacon()
-	trailTarget = nil
 	if beacon then
 		beacon:Destroy()
 		beacon = nil
@@ -102,7 +100,6 @@ end
 local function placeBeacon(position, name)
 	clearBeacon()
 	if not position then return end
-	trailTarget = position
 	beacon = Instance.new("Part")
 	beacon.Name = "TutorialBeacon"
 	beacon.Anchored = true
@@ -123,71 +120,6 @@ local function placeBeacon(position, name)
 		Size = UDim2.new(1, 0, 1, 0), TextSize = 15, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0.2,
 		TextColor3 = Color3.fromRGB(255, 230, 120), Text = "▼ " .. (name or "목표"),
 	}, billboard)
-end
-
--- 길 안내 점선: 마을에서 지금 목표(허수아비 / 모루 / 필드 입구)까지 바닥에 점선이 이어지고, 목표 쪽으로 흐르듯 깜빡인다.
--- 월드 빛기둥만으로는 "어디로 걸어가야 하는지" 한눈에 안 들어와서 길을 바닥에 그려 준다. 눈이 부시지 않게 연한 하늘색 + 반투명.
-do
-	local DASH_COUNT, DASH_GAP, DASH_START = 14, 7.5, 9
-	local dashes = {}
-	local folder = Instance.new("Folder")
-	folder.Name = "TutorialTrail"
-	local rayParams = RaycastParams.new()
-	rayParams.FilterType = Enum.RaycastFilterType.Exclude
-	for index = 1, DASH_COUNT do
-		local dash = Instance.new("Part")
-		dash.Name = "Dash"
-		dash.Size = Vector3.new(1.3, 0.12, 2.6)
-		dash.Anchored = true
-		dash.CanCollide = false
-		dash.CanQuery = false
-		dash.CanTouch = false
-		dash.CastShadow = false
-		dash.Material = Enum.Material.Neon
-		dash.Color = Color3.fromRGB(130, 215, 245)
-		dash.Transparency = 1
-		dash.Parent = folder
-		dashes[index] = dash
-	end
-	local shownTrail = false
-	RunService.RenderStepped:Connect(function()
-		local character = player.Character
-		local root = character and character:FindFirstChild("HumanoidRootPart")
-		local active = trailTarget ~= nil and root ~= nil and current ~= nil and player:GetAttribute("Zone") == "Lobby" and not current.Look
-		local flat, distance
-		if active then
-			flat = Vector3.new(trailTarget.X - root.Position.X, 0, trailTarget.Z - root.Position.Z)
-			distance = flat.Magnitude
-			active = distance > DASH_START + 4 -- 가까이 오면 점선은 사라진다 (이미 도착)
-		end
-		if not active then
-			if shownTrail then
-				shownTrail = false
-				folder.Parent = nil
-			end
-			return
-		end
-		if not shownTrail then
-			shownTrail = true
-			folder.Parent = workspace
-		end
-		rayParams.FilterDescendantsInstances = { character, folder }
-		local direction = flat.Unit
-		local t = os.clock()
-		for index, dash in ipairs(dashes) do
-			local along = DASH_START + (index - 1) * DASH_GAP
-			if along >= distance - 3 then
-				dash.Transparency = 1
-			else
-				local position = root.Position + direction * along
-				local hit = workspace:Raycast(Vector3.new(position.X, root.Position.Y + 6, position.Z), Vector3.new(0, -40, 0), rayParams)
-				local y = hit and hit.Position.Y + 0.12 or root.Position.Y - 2.8
-				dash.CFrame = CFrame.lookAt(Vector3.new(position.X, y, position.Z), Vector3.new(position.X, y, position.Z) + direction)
-				local wave = 0.5 + 0.5 * math.sin(t * 5 - index * 0.7) -- 목표 쪽으로 흐르는 깜빡임
-				dash.Transparency = 0.7 - 0.38 * wave
-			end
-		end
-	end)
 end
 
 -- 새 미션이 시작되면 화면 중앙에 큼직한 카드로 먼저 보여준다 (상단 바는 눈에 잘 안 띄어서)
