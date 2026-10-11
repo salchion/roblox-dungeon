@@ -85,6 +85,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/DoomScene.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "DoomScene",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/FieldService.lua",
       "parent": "ServerScriptService/Modules",
       "name": "FieldService",
