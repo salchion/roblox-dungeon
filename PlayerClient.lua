@@ -26,7 +26,8 @@ task.spawn(function()
 	for _ = 1, 10 do
 		local okBag = pcall(StarterGui.SetCoreGuiEnabled, StarterGui, Enum.CoreGuiType.Backpack, false)
 		local okHealth = pcall(StarterGui.SetCoreGuiEnabled, StarterGui, Enum.CoreGuiType.Health, false) -- 오른쪽 위 기본 체력바는 숨긴다 (발밑 체력바 / 낮을 때 붉은 화면 / 상태 카드로 충분)
-		if okBag and okHealth then
+		local okList = pcall(StarterGui.SetCoreGuiEnabled, StarterGui, Enum.CoreGuiType.PlayerList, false) -- 오른쪽 위 Roblox 기본 플레이어 목록(Gold / Tickets / Lv / Weapon 표)도 숨긴다: 우리 전투력 랭킹 / 상점 버튼과 겹쳤다
+		if okBag and okHealth and okList then
 			break
 		end
 		task.wait(0.5)
