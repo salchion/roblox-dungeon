@@ -780,9 +780,9 @@ local CLASS_LOOK = {
 	Shotgun = { Style = "Ball", SizeMul = 0.9 },
 }
 
-function Effects.Shot(from, to, shot, color, rainbow, class, era)
+function Effects.Shot(from, to, shot, color, rainbow, class, era, progress)
 	if (to - from).Magnitude < 0.5 then return end
-	emit(from, { "S", from, to, shot.Size, shot.Speed, shot.Impact or 0, shot.Style, shot.Length, color, rainbow == true, class, era or 1 })
+	emit(from, { "S", from, to, shot.Size, shot.Speed, shot.Impact or 0, shot.Style, shot.Length, color, rainbow == true, class, era or 1, progress or 1 })
 end
 
 -- 타격감: 맞은 몬스터가 하얗게 번쩍이고, 쏜 사람에게는 적중 표시(Hit)를 보낸다 (치명타 / 처치는 더 크게)

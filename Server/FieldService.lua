@@ -1812,7 +1812,6 @@ function Field.Shoot(player, origin, direction)
 		Effects.DamageNumber(result.Position, damage, isCrit)
 		Effects.Hit(player, result.Instance, isCrit, data.Health <= 0)
 		if augRun then Dungeon.AugOnHit(augRun, player, result.Instance, data, damage, isCrit) end -- 크리 미사일 / 처형
-		if augRun then Dungeon.WeaponPerkHit(augRun, player, result.Instance, data, damage) end -- 무기 시대 특성
 		if data.Health <= 0 then
 			killMonster(player, result.Instance, data)
 		end

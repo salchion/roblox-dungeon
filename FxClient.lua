@@ -443,6 +443,8 @@ local function playShot(event)
 	local from, to = event[2], event[3]
 	local size, speed, impact, eraStyle, length = event[4], event[5], event[6], event[7], event[8]
 	local color, rainbow, class, era = event[9], event[10], event[11], event[12] or 1
+	local vt = event[13] or 1 -- 무기 진행도 (1 ~ 100): 높을수록 탄이 꾸준히 더 화려해진다 (후광 / 꼬리 / 착탄 고리)
+	local richness = math.clamp(vt / 100, 0, 1)
 	if Players.LocalPlayer:GetAttribute("InDoomArena") then color = color:Lerp(WHITE, 0.6) end -- 최후의 군주 결투장: 바닥이 붉어도 내 탄이 또렷하게
 	local distance = (to - from).Magnitude
 	if distance < 0.5 then return end
@@ -451,6 +453,11 @@ local function playShot(event)
 	if special then
 		activeShots += 1 -- (fly 가 끝나면 스스로 줄인다)
 		special(from, to, size, speed, color, era)
+		if vt >= 6 then -- 로켓 / 레일건 / 저격 / 캐논 / 화염방사도 번호가 오를수록 착탄 고리가 커진다
+			task.delay(math.clamp(distance / speed, 0.03, 1.2), function()
+				eraRing(to, color, 1, 3.5 + 9 * richness, 0.18 + 0.12 * richness)
+			end)
+		end
 		return
 	end
 	local look = class and CLASS_LOOK[class]
@@ -463,6 +470,7 @@ local function playShot(event)
 	end
 	local mini = look ~= nil and look.Mini == true -- 기관단총 / 샷건: 연사가 많아 시대 효과를 최소로
 	if not rainbow and ERA_TINT[era] then color = ERA_TINT[era] end
+	if mini then size *= 1 + 0.7 * richness end -- 연사 무기도 번호가 오르면 탄이 굵고 밝아진다 (앞 무기보다 초라해지지 않게)
 	size = math.max(size, mini and 0.2 or 0.3) -- 뒤에서 봐도 보이게 바닥 굵기
 	activeShots += 1
 
@@ -484,7 +492,7 @@ local function playShot(event)
 		colorSeq = rainbow and RAINBOW or FIRE
 	end
 	if not rainbow and ERA_TRAIL[era] then colorSeq = ERA_TRAIL[era] end
-	local trailWidth = size * (1 + 0.12 * era)
+	local trailWidth = size * (1 + 0.12 * era) * (1 + 0.9 * richness)
 	local a0 = Instance.new("Attachment")
 	a0.Position = Vector3.new(0, trailWidth / 2, 0)
 	a0.Parent = part
@@ -493,7 +501,7 @@ local function playShot(event)
 	a1.Parent = part
 	local trail = Instance.new("Trail")
 	trail.Attachment0, trail.Attachment1 = a0, a1
-	trail.Lifetime = math.min(0.55, (style == "Ball" and 0.08 or 0.14) + 0.03 * era)
+	trail.Lifetime = math.min(0.65, (style == "Ball" and 0.08 or 0.14) + 0.03 * era + 0.12 * richness)
 	trail.Color = colorSeq
 	trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(1, 1) })
 	trail.LightEmission = 1
@@ -526,6 +534,22 @@ local function playShot(event)
 		local light = Instance.new("PointLight")
 		light.Range, light.Brightness, light.Color = 5 + era * 2, 0.7 + 0.1 * era, color
 		light.Parent = part
+	end
+	-- 후광: 무기 번호가 오를수록 탄을 감싸는 빛이 더 크고 진해진다 (연사 무기는 작게)
+	if vt >= 4 then
+		local haloSize = size * (1.45 + 1.4 * richness) * (mini and 0.75 or 1)
+		local halo = Instance.new("Part")
+		halo.Anchored, halo.CanCollide, halo.CanQuery, halo.CanTouch, halo.Massless = false, false, false, false, true
+		halo.Shape = Enum.PartType.Ball
+		halo.Material = Enum.Material.Neon
+		halo.Color = color
+		halo.Transparency = 0.84 - 0.34 * richness
+		halo.Size = Vector3.new(haloSize, haloSize, haloSize)
+		halo.CFrame = part.CFrame
+		local haloWeld = Instance.new("WeldConstraint")
+		haloWeld.Part0, haloWeld.Part1 = part, halo
+		haloWeld.Parent = halo
+		halo.Parent = part
 	end
 	part.Parent = fxFolder
 	Debris:AddItem(part, 3) -- 안전장치: 어떤 이유로든 도착 처리가 안 돼도 탄이 화면에 남지 않게
@@ -560,6 +584,12 @@ local function playShot(event)
 			onImpact(to, color, math.clamp(math.max(impact or 0, 6), 6, 70))
 		elseif impact and impact > 0 then
 			burst(to, color, impact)
+		end
+		-- 착탄 고리: 무기 번호가 오를수록 고리가 커지고, 중반부터 두 겹, 후반에는 흰 섬광이 더해진다
+		if vt >= 6 then
+			eraRing(to, color, 1, 3.5 + 9 * richness, 0.18 + 0.12 * richness)
+			if vt >= 50 and not mini then eraRing(to + Vector3.new(0, 0.6, 0), WHITE, 0.6, 2 + 6 * richness, 0.14) end
+			if vt >= 80 and not mini then burst(to, WHITE, 6) end
 		end
 		activeShots -= 1
 		Debris:AddItem(part, 0.5)

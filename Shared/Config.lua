@@ -444,20 +444,29 @@ end
 -- 시대 안에서는 권총 -> 기관단총 -> 리볼버 -> 라이플 -> 샷건 -> 화염방사기 -> 플라즈마 캐논 -> 저격총 -> 로켓 런처 -> 레일건 순서로 바뀐다 (CLASS_ORDER).
 -- Shot: 발사체 외형. Style(Ball/Bolt/Orb/Cannon/Fire/Rocket/Rainbow) / Size / Length(Bolt/Rocket) / Speed(초당 거리) / Impact(착탄 입자 수)
 
--- 시대 특성: 무기가 새 시대로 진화할 때마다 "싸우는 방식"이 달라진다 (피해 숫자만 오르는 게 아니라 맞히는 맛이 바뀐다).
--- 맞힌 적 주변에 추가 피해가 번진다 (Mult = 한 번 맞힌 피해 대비 비율). Kind: Pierce 뒤의 적 / Bounce 튕김 / Shard 파편 / Splash 폭발 / Chain 연쇄 / Cone 전방 부채꼴 / SoulBlast 처치 폭발 / Star 별빛 난사
+-- 시대 특징(화면에서 보이는 모습 설명): 새 시대의 무기로 진화하면 탄 / 꼬리 / 착탄 연출이 이렇게 바뀐다. (피해를 퍼뜨리는 효과는 세트 효과 / 던전 특성 / 무기 종류와 겹쳐서 넣지 않는다)
 local ERA_PERKS = {
-	{ Name = "기본 사격", Icon = "🔫", Desc = "특별한 효과 없이 정직하게 쏜다" },
-	{ Name = "관통탄", Icon = "🏹", Desc = "탄이 뚫고 지나가 뒤에 있는 적도 맞혀요", Kind = "Pierce", Count = 1, Mult = 0.6, Range = 16, Color = Color3.fromRGB(120, 180, 255) },
-	{ Name = "마탄 튕김", Icon = "🔮", Desc = "30% 확률로 마법 구슬이 옆의 적에게 튕겨요", Kind = "Bounce", Chance = 0.3, Count = 1, Mult = 0.55, Radius = 28, Color = Color3.fromRGB(190, 120, 255) },
-	{ Name = "금빛 파편", Icon = "✨", Desc = "25% 확률로 금빛 파편 3개가 가까운 적들에게 날아가요", Kind = "Shard", Chance = 0.25, Count = 3, Mult = 0.4, Radius = 34, Color = Color3.fromRGB(255, 215, 80) },
-	{ Name = "화염 폭발", Icon = "🔥", Desc = "맞은 곳이 불꽃으로 폭발해 주변 적도 태워요", Kind = "Splash", Radius = 9, Mult = 0.5, Color = Color3.fromRGB(255, 120, 50) },
-	{ Name = "서리 관통", Icon = "❄", Desc = "얼음 탄이 두 마리까지 뚫고 지나가요", Kind = "Pierce", Count = 2, Mult = 0.65, Range = 22, Color = Color3.fromRGB(150, 225, 255) },
-	{ Name = "연쇄 번개", Icon = "⚡", Desc = "맞을 때마다 번개가 가까운 적 3마리로 튀어요", Kind = "Chain", Count = 3, Mult = 0.6, Radius = 32, Color = Color3.fromRGB(255, 240, 100) },
-	{ Name = "영혼 폭발", Icon = "💀", Desc = "적을 처치하면 영혼이 터져 주변 적에게 큰 피해를 줘요", Kind = "SoulBlast", Radius = 16, Mult = 1.0, Color = Color3.fromRGB(175, 100, 255) },
-	{ Name = "용의 숨결", Icon = "🐉", Desc = "맞힌 방향 앞쪽으로 불길이 퍼져 줄지은 적들을 태워요", Kind = "Cone", Range = 26, Mult = 0.5, Color = Color3.fromRGB(255, 140, 60) },
-	{ Name = "별빛 난사", Icon = "🌟", Desc = "35% 확률로 무지개 별 4개가 가까운 적들에게 쏟아져요", Kind = "Star", Chance = 0.35, Count = 4, Mult = 0.75, Radius = 40, Color = Color3.fromRGB(255, 255, 255) },
+	{ Name = "녹슨 총알", Icon = "🔫", Desc = "탁한 회갈색 탄과 먼지. 모든 무기의 시작" },
+	{ Name = "푸른 강철탄", Icon = "🔷", Desc = "말끔한 흰청 줄기 탄과 짧은 불꽃 틱" },
+	{ Name = "마력 구슬", Icon = "🔮", Desc = "보라 구슬 주위를 알갱이가 돌고 별 꼬리가 끌려요" },
+	{ Name = "황금 혜성", Icon = "☄", Desc = "금빛 혜성 같은 꼬리 덩어리와 반짝이는 금가루" },
+	{ Name = "불꽃 물방울", Icon = "🔥", Desc = "불꽃 머리에 뾰족한 꼬리, 위로 오르는 불씨" },
+	{ Name = "빙결 결정", Icon = "❄", Desc = "하늘색 결정 조각과 눈송이 안개, 얼음 파편이 터져요" },
+	{ Name = "번개 마디", Icon = "⚡", Desc = "지그재그로 깜빡이는 번개 마디와 튀는 스파크" },
+	{ Name = "암흑 구체", Icon = "🌑", Desc = "검보라 구체와 연기 꼬리, 공허 파문이 퍼져요" },
+	{ Name = "용의 불덩이", Icon = "🐉", Desc = "S자로 굽은 긴 꼬리를 끄는 불덩이, 용의 불길" },
+	{ Name = "신화의 무지개", Icon = "🌈", Desc = "무지개 리본 탄과 별가루, 별이 터지는 착탄" },
 }
+
+-- 탄 크기 / 길이는 "무기 번호 + 그 무기 안의 진행도" 하나로 이어서 커진다 (진화해도 크기가 다시 줄어들지 않는다). 번호가 높을수록 항상 같거나 더 크다.
+Config.Weapon.ShotBias = { Ball = 1, Bolt = 0.9, Orb = 1, Cannon = 1, Rocket = 0.85, Fire = 1, Rainbow = 1 }
+function Config.Weapon.VisualProgress(tier, stage)
+	return tier.Index + (stage or 0) / math.max(1, tier.Steps) -- 1.0 ~ 100.99
+end
+function Config.Weapon.ShotSize(tier, stage)
+	return (0.55 + 0.022 * Config.Weapon.VisualProgress(tier, stage)) * (Config.Weapon.ShotBias[tier.Shot.Style] or 1)
+end
+
 local ERAS = {
 	{ Prefix = "녹슨",   Color = Color3.fromRGB(165, 165, 175), Material = Enum.Material.Metal,  Particles = 0,  Trail = false, Light = 0,
 		Shot = { Style = "Ball", Size = 0.6, Speed = 260, Impact = 0 } },
@@ -508,7 +517,6 @@ for index = 1, Config.Weapon.WeaponCount do
 	local class = CLASS_ORDER[(index - 1) % #CLASS_ORDER + 1]
 	local inEra = (index - 1) % #CLASS_ORDER -- 0~9: 시대 안에서 뒤로 갈수록 탄이 조금씩 커진다
 	local shot = table.clone(era.Shot)
-	shot.Size *= 1 + 0.04 * inEra
 	local name = WEAPON_NAMES[class][(index - 1) // #CLASS_ORDER + 1]
 	local entry = {
 		Index = index, MinLevel = totalSteps, Steps = Config.Weapon.StepsFor(index),

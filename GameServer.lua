@@ -463,7 +463,10 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 	local color = tier.Rainbow and Color3.fromHSV((now * 0.5) % 1, 0.8, 1) or tier.Color
 	local extra = (player:GetAttribute("Zone") == "Dungeon" and (player:GetAttribute("PerkMulti") or 0) or 0) + (player:GetAttribute("GearShot") or 0)
 	local shot = table.clone(tier.Shot)
-	shot.Size *= weaponType.ShotScale * (1 + 0.04 * Config.GetWeaponStage(level)) -- 강화 단계마다 발사체가 조금씩 커진다
+	local stageNow = Config.GetWeaponStage(level)
+	local progress = Config.Weapon.VisualProgress(tier, stageNow)
+	shot.Size = Config.Weapon.ShotSize(tier, stageNow) * weaponType.ShotScale -- 무기 번호 + 강화 진행도로 이어서 커진다 (진화해도 작아지지 않는다)
+	if shot.Length then shot.Length *= 1 + 0.006 * progress end
 	shot.Speed *= weaponType.SpeedScale
 	if weaponType.Pellets + extra > 1 then
 		shot.Impact = math.floor(shot.Impact / 3)
@@ -494,7 +497,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 				or Field.Shoot(player, volleyOrigin, direction)
 				or Dummy.Shoot(player, volleyOrigin, direction)
 			endPosition = endPosition or (volleyOrigin + direction * Config.GetRange(player, weaponType))
-			Effects.Shot(volleyTip, endPosition, shot, color, tier.Rainbow, tier.Class, tier.Era)
+			Effects.Shot(volleyTip, endPosition, shot, color, tier.Rainbow, tier.Class, tier.Era, progress)
 		end
 		player:SetAttribute("ShotDmgScale", 1)
 		Weapon.PlayShot(player)

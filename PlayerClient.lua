@@ -505,7 +505,7 @@ function refreshEnhance()
 		end
 		local nextTierInfo = tiers[tierIndex + 1]
 		if nextTierInfo and nextTierInfo.Perk and nextTierInfo.Era > Config.GetWeaponTier(level).Era then
-			table.insert(lines, string.format("<font color='#9affc0'>다음 시대 진화 → %s <b>%s</b></font> <font color='#aeb4cc'>%s</font>", nextTierInfo.Perk.Icon, nextTierInfo.Perk.Name, nextTierInfo.Perk.Desc))
+			table.insert(lines, string.format("<font color='#9affc0'>다음 시대 모습 → %s <b>%s</b></font> <font color='#aeb4cc'>%s</font>", nextTierInfo.Perk.Icon, nextTierInfo.Perk.Name, nextTierInfo.Perk.Desc))
 		end
 		enhancePerk.Text = table.concat(lines, "\n")
 	end
