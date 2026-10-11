@@ -154,7 +154,7 @@ Config.Tutorial = {
 -- 환생(프레스티지): 최고 레벨에서 레벨을 1로 되돌리고 영구 공격력 보너스를 얻는다
 ------------------------------------------------------------
 -- 환생: 최고 레벨에서 레벨을 1로 되돌리는 대신 영구 보너스. 골드를 더 벌려면 환생한다 (영구 공격력 + 골드 획득량).
-Config.Prestige = { Max = 10, DamagePerRank = 0.05, GoldPerRank = 0.10 }
+Config.Prestige = { Max = 10, DamagePerRank = 0.05, GoldPerRank = 0.10, Level = 50 } -- Level: 환생할 수 있는 최소 레벨 (최대 레벨을 200 으로 늘려도 환생은 예전처럼 50 부터)
 function Config.GoldBonus(player)
 	return 1 + (player:GetAttribute("Prestige") or 0) * Config.Prestige.GoldPerRank + (player:GetAttribute("PetGold") or 0) -- 환생 + 펫(대각성)
 end
@@ -1094,7 +1094,9 @@ Config.Achievements = {
 -- 캐릭터 레벨: 몬스터를 잡으면 경험치(XP). 레벨이 오르면 최대 체력과 공격력이 늘고 체력이 가득 찬다.
 ------------------------------------------------------------
 Config.Level = {
-	Max = 50,
+	Max = 200,              -- (50 -> 200: 찍고 싶은 스탯이 부족하다는 의견. 50 이후는 필요 경험치 곡선이 완만하고 레벨당 공격력도 작다)
+	LateStart = 50,         -- 이 레벨 이후는 "후반" 곡선
+	LateDamagePerLevel = 0.004, -- 50 레벨 이후 레벨당 공격력 +0.4% (200레벨에서 총 +60%; 경제 기준 공격력 배율이 부풀지 않게)
 	EarlyBoostUntil = 6,    -- 이 레벨까지는 경험치 x3 (처음 몇 분 안에 레벨업이 연달아 터지게)
 	EarlyBoost = 3,
 	HealthPerLevel = 8,     -- 레벨당 최대 체력 +8
@@ -1111,10 +1113,23 @@ Config.LevelStats = {
 	Double = { Name = "더블샷", Icon = "🔫", Per = 0.007, Desc = "포인트당 +0.7% 확률로 한 발 더 \"따-땅\" 연달아 나감", Note = "더블샷: 쏠 때마다 확률로 같은 사격이 0.09초 뒤에 한 번 더 나가요 (위력은 같아요). 49포인트를 모두 넣으면 약 34%." },
 	Haste = { Name = "스킬 쿨타임", Icon = "⏱", Per = 0.01, Desc = "포인트당 스킬 쿨타임 -1%" },
 	CritDmg = { Name = "치명 피해", Icon = "💥", Per = 0.015, Desc = "포인트당 치명타 피해 +1.5%p (기본 2배)", Note = "치명 피해: 치명타가 터질 때 더 아프게 박혀요. 49포인트를 모두 넣으면 치명타가 2배 -> 약 2.7배. 치명타 확률 장비 / 펫 / 더블샷과 같이 쓰면 큰 한 방 빌드가 돼요." },
+	-- 스탯 하나에 넣을 수 있는 최대 포인트 (포인트가 199개로 늘어도 한 스탯이 한계를 넘지 않게: 더블샷 확률 100% 초과 같은 일 방지)
+	Cap = { Move = 40, Range = 50, Double = 60, Haste = 50, CritDmg = 60 },
+	-- 최대 레벨(200)을 찍은 뒤에는 골드로 포인트를 더 살 수 있다 (골드 사용처). n 번째(0부터) 포인트 비용 = Base x Growth^n. 살 수 있는 총 개수는 아래 MaxGoldPoints.
+	GoldPoint = { Base = 200000, Growth = 1.07 },
 	OtherExtraShotValue = 0.5, -- 장비 옵션 / 던전 특성으로 늘어난 탄 한 발의 가치 (예전에는 100%여서 탄이 늘면 딜이 그대로 배수로 늘었다)
 }
 function Config.GetLevelStatPoints(level)
 	return math.max(0, ((level or 1) - 1) * Config.LevelStats.PointsPerLevel)
+end
+-- 골드로 살 수 있는 포인트 수 = 모든 스탯 한계 합 - 레벨로 얻는 포인트 (모두 사면 전 스탯이 한계까지 찬다)
+do
+	local capTotal = 0
+	for _, key in ipairs(Config.LevelStats.Order) do capTotal += Config.LevelStats.Cap[key] end
+	Config.LevelStats.MaxGoldPoints = math.max(0, capTotal - Config.GetLevelStatPoints(Config.Level.Max))
+end
+function Config.GetLevelGoldPointCost(bought)
+	return math.floor(Config.LevelStats.GoldPoint.Base * Config.LevelStats.GoldPoint.Growth ^ bought)
 end
 -- 포인트 -> 실제 효과 문자열 / 값
 function Config.LevelStatValue(key, points)
@@ -1146,11 +1161,18 @@ Config.Xp = {
 
 -- level -> level+1 에 필요한 XP
 function Config.GetXpNeeded(level)
-	return math.floor(50 * level ^ 1.75)
+	if level <= Config.Level.LateStart then
+		return math.floor(50 * level ^ 1.75)
+	end
+	-- 50 레벨 이후: 50 레벨 필요량에서 완만하게 늘어난다 (200 레벨 직전 약 30만). 50 -> 200 총합 약 2천5백만 XP
+	local base = 50 * Config.Level.LateStart ^ 1.75
+	return math.floor(base * (level / Config.Level.LateStart) ^ 1.35)
 end
 
 function Config.GetLevelDamageMult(level)
-	return 1 + Config.Level.DamagePerLevel * (level - 1)
+	local early = math.min(level, Config.Level.LateStart) - 1
+	local late = math.max(0, level - Config.Level.LateStart)
+	return 1 + Config.Level.DamagePerLevel * early + Config.Level.LateDamagePerLevel * late
 end
 
 function Config.GetLevelHealth(level)

@@ -96,18 +96,26 @@ for index, key in ipairs(LS.Order) do
 end
 
 label({ Size = UDim2.new(1, -32, 0, 30), Position = UDim2.new(0, 16, 0, 376), Text = LS.Double.Note or "", TextSize = 12, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
-button({ Size = UDim2.new(0, 150, 0, 32), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 1, -42), BackgroundColor3 = Color3.fromRGB(120, 70, 70), Text = "전부 초기화 (무료)", TextSize = 13 }, panel, function()
+-- 최대 레벨을 찍은 뒤: 골드로 포인트 구매 (살수록 비싸진다)
+local buyButton = button({ Size = UDim2.new(0, 250, 0, 32), Position = UDim2.new(0, 16, 1, -42), BackgroundColor3 = Color3.fromRGB(140, 104, 40), Text = "", TextSize = 13, Visible = false }, panel, function()
+	Remotes.LevelStat:FireServer("Buy")
+end)
+button({ Size = UDim2.new(0, 150, 0, 32), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 1, -42), BackgroundColor3 = Color3.fromRGB(120, 70, 70), Text = "전부 초기화 (무료)", TextSize = 13 }, panel, function()
 	Remotes.LevelStat:FireServer("Reset")
 end)
 
 local function refresh()
 	local left = player:GetAttribute("LvPointsLeft") or 0
-	local total = Config.GetLevelStatPoints(player:GetAttribute("Level") or 1)
-	pointsLabel.Text = string.format("남은 포인트 %d  /  전체 %d  (레벨 %d)", left, total, player:GetAttribute("Level") or 1)
+	local level = player:GetAttribute("Level") or 1
+	local total = player:GetAttribute("LvTotal") or Config.GetLevelStatPoints(level)
+	pointsLabel.Text = string.format("남은 포인트 %d  /  전체 %d  (레벨 %d)", left, total, level)
+	local bought, cost = player:GetAttribute("LvGoldBought") or 0, player:GetAttribute("LvGoldCost") or 0
+	buyButton.Visible = level >= Config.Level.Max
+	buyButton.Text = cost > 0 and string.format("💰 포인트 구매 %s G (%d/%d)", tostring(cost):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""), bought, LS.MaxGoldPoints) or "💰 포인트 모두 구매함"
 	for _, key in ipairs(LS.Order) do
 		local points = player:GetAttribute("LvPts_" .. key) or 0
 		rows[key].Count.Text = tostring(points)
-		rows[key].Value.Text = points > 0 and Config.LevelStatText(key, points) or LS[key].Desc
+		rows[key].Value.Text = (points > 0 and Config.LevelStatText(key, points) or LS[key].Desc) .. string.format("  (최대 %d)", LS.Cap[key])
 	end
 	badge.Visible = left > 0
 	badge.Text = tostring(math.min(99, left))
@@ -122,7 +130,7 @@ local function refresh()
 	pill.Visible = not player:GetAttribute("TutorialActive")
 end
 
-for _, name in ipairs({ "LvPointsLeft", "Level", "TutorialActive" }) do
+for _, name in ipairs({ "LvPointsLeft", "Level", "TutorialActive", "LvTotal", "LvGoldBought", "LvGoldCost" }) do
 	player:GetAttributeChangedSignal(name):Connect(refresh)
 end
 for _, key in ipairs(LS.Order) do

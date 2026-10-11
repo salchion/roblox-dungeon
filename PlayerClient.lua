@@ -2366,7 +2366,7 @@ local function buildCharacterTab()
 
 	do -- 환생
 		local prestige = player:GetAttribute("Prestige") or 0
-		local ready = (player:GetAttribute("Level") or 1) >= Config.Level.Max and prestige < Config.Prestige.Max
+		local ready = (player:GetAttribute("Level") or 1) >= Config.Prestige.Level and prestige < Config.Prestige.Max
 		local row = newRow(64)
 		rowText(row, string.format("🌟 <b>환생 %d / %d</b>  (영구 공격력 +%d%% · 골드 +%d%%)\n<font size='13' color='#bbbbcc'>레벨 %d 에서 환생하면 레벨이 1로 돌아가고 영구 공격력 +%d%%, 골드 획득량 +%d%%. 장비/무기는 그대로예요. (로비에서)</font>",
 			prestige, Config.Prestige.Max, math.floor(prestige * Config.Prestige.DamagePerRank * 100 + 0.5), math.floor(prestige * Config.Prestige.GoldPerRank * 100 + 0.5), Config.Level.Max, Config.Prestige.DamagePerRank * 100, Config.Prestige.GoldPerRank * 100), 14, 190)

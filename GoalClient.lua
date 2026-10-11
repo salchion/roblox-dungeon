@@ -352,7 +352,7 @@ local function pickGoal()
 	end
 
 	-- 지금 바로 쓸 수 있는 것
-	if (player:GetAttribute("Level") or 1) >= Config.Level.Max and (player:GetAttribute("Prestige") or 0) < Config.Prestige.Max then
+	if (player:GetAttribute("Level") or 1) >= Config.Prestige.Level and (player:GetAttribute("Prestige") or 0) < Config.Prestige.Max then
 		table.insert(candidates, { Text = "🌟 최고 레벨 달성!\n환생하면 영구 공격력 + 골드 획득량이 늘어요 (메뉴 I → 캐릭터 > 정보)", Ratio = 0.99, Priority = 2 })
 	end
 	if (player:GetAttribute("DungeonFree") or 0) >= 1 or (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0) >= 1 then
