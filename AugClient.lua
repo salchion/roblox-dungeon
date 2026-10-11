@@ -5,6 +5,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
@@ -95,7 +96,17 @@ for zone = 1, ZONES do
 	local buy = button({ Size = UDim2.new(0, 150, 0, 26), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -8, 1, -6), BackgroundColor3 = Color3.fromRGB(140, 104, 40), Text = "", TextSize = 12 }, row, function()
 		Remotes.Aug:FireServer("Buy", zone)
 	end)
-	rows[zone] = { Title = title, Toggle = toggle, Buy = buy, Row = row }
+	-- 켜져 있으면 테두리가 효과 색으로 빛나며 천천히 도는 띠가 된다 (꺼져 있으면 테두리 없음)
+	local rowStroke = make("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Transparency = 1 }, row)
+	local gradient = make("UIGradient", {
+		Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, info.Color),
+			ColorSequenceKeypoint.new(0.3, Color3.new(1, 1, 1)),
+			ColorSequenceKeypoint.new(0.6, info.Color:Lerp(Color3.new(0, 0, 0), 0.55)),
+			ColorSequenceKeypoint.new(1, info.Color),
+		}),
+	}, rowStroke)
+	rows[zone] = { Title = title, Toggle = toggle, Buy = buy, Row = row, Stroke = rowStroke, Gradient = gradient }
 end
 
 local function refresh()
@@ -115,8 +126,10 @@ local function refresh()
 		r.Title.Text = string.format("%d구역 · %s  %s", zone, info.Name, level > 0 and (gear > 0 and string.format("<%d단계 + 장비 %d = %d>", level, gear, level + gear) or ("<" .. level .. "단계>")) or "")
 		r.Title.TextColor3 = open and Color3.fromRGB(255, 240, 200) or Color3.fromRGB(130, 134, 156)
 		r.Toggle.Visible = level > 0
-		r.Toggle.Text = on and "끄기" or "켜기"
-		r.Toggle.BackgroundColor3 = on and Color3.fromRGB(120, 70, 70) or Color3.fromRGB(60, 120, 80)
+		r.Toggle.Text = on and "● ON" or "○ OFF" -- 지금 상태를 보여 주고, 누르면 반대로 바뀐다
+		r.Toggle.BackgroundColor3 = on and Color3.fromRGB(46, 112, 84) or Color3.fromRGB(62, 64, 84)
+		r.Toggle.TextColor3 = on and Color3.fromRGB(190, 255, 215) or Color3.fromRGB(150, 154, 180)
+		r.Stroke.Transparency = on and 0.1 or 1
 		r.Row.BackgroundColor3 = on and Color3.fromRGB(50, 52, 74) or Color3.fromRGB(36, 39, 58)
 		if not open then
 			r.Buy.Text = string.format("🔒 %d구역 군주를 잡으세요", zone)
@@ -145,6 +158,19 @@ for zone = 1, ZONES do
 	end
 end
 refresh()
+
+-- 켜진 효과의 테두리 빛이 천천히 돈다 (창이 열려 있을 때만)
+RunService.RenderStepped:Connect(function()
+	if not panel.Visible then return end
+	local t = os.clock()
+	for zone = 1, ZONES do
+		local r = rows[zone]
+		if r.Stroke.Transparency < 1 then
+			r.Gradient.Rotation = (t * 110 + zone * 40) % 360
+			r.Stroke.Thickness = 2 + 0.6 * math.sin(t * 3 + zone)
+		end
+	end
+end)
 
 pill.Activated:Connect(function() panel.Visible = not panel.Visible end)
 UserInputService.InputBegan:Connect(function(input, processed)
