@@ -2199,7 +2199,7 @@ do
 		autoText.Text = autoMode and "<font color='#8fffb0'><b>자동 공격</b>\nON</font>" or "<b>자동 공격</b>\n<font color='#9aa0c8'>OFF</font>"
 		local zone = currentZone()
 		autoButton.Visible = zone == "Lobby" or zone == "Field" or zone == "Dungeon"
-		local showHint = not used and os.clock() > shownAt and os.clock() < shownAt + 40 and zone ~= "Dungeon" and not (settings.MenuPanel and settings.MenuPanel.Visible)
+		local showHint = not used and player:GetAttribute("TutorialActive") == true and os.clock() > shownAt and os.clock() < shownAt + 40 and zone ~= "Dungeon" and not (settings.MenuPanel and settings.MenuPanel.Visible)
 		hint.Visible = showHint
 	end)
 end
