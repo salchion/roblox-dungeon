@@ -140,10 +140,13 @@ Config.Tutorial = {
 		{ Text = "동쪽 필드로 나가서 첫 구역의 군주(👑)를 쓰러뜨리세요! ...어딘가 불길한 기운이 느껴져요. 무슨 일이 일어날지도 몰라요. 조심하세요!", Stat = "FieldDeaths", Goal = 1, Target = "Field", TargetName = "필드 입구", Doom = true,
 			Intro = { { Key = "Q", Title = "Q 키: 대시!", Text = "필드로 나가기 전에 알아 두세요. Q 키를 누르면 가는 방향으로 순간적으로 빨라져요 (2번 연속, 3초마다 충전). 적의 탄을 아슬아슬하게 피하면 보너스!", Duration = 9 } },
 			Reward = { Gold = 4000, Tickets = 10, Keys = 1, Xp = 150 } }, -- 쓰러져도 전리품(재화)은 남는다 -> 아래 미션에서 바로 쓰게 한다
-		{ Text = "💀 쓰러졌지만 전리품은 남았어요! 장비와 재화를 모으면 더 강해져요. 뽑기 머신에서 10연 뽑기를 하세요 (티켓 10장)", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Hero", ShowQuests = true, -- 여기서부터 화면에 오늘의 퀘스트가 나타나고 던전 게이트가 열린다
+		{ Text = "💀 군주는 \"8번째 땅 끝에서 기다리마\"라는 말만 남기고 사라졌어요. 강해져야 해요! 전리품 티켓으로 뽑기 머신에서 10연 뽑기!", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Hero", ShowQuests = true, -- 여기서부터 화면에 오늘의 퀘스트가 나타나고 던전 게이트가 열린다
 			Reward = { Gold = 500, Xp = 100 } },
+		-- 뽑기 -> (클릭 연타 대신) 던전: 방금 뽑은 장비를 끼고 바로 써 보는 첫 던전. 무료 입장 + 받는 피해 절반 (DungeonService 가 TutorialDungeonRun 을 읽는다)
+		{ Text = "🏰 뽑은 장비를 써볼 시간! 북쪽 던전 게이트로 들어가 던전을 클리어하세요. 던전 보스는 장비와 골드를 줘요 (오늘 무료 입장)", Stat = "DungeonClears", Goal = 1, Target = "Gate", TargetName = "던전 게이트", Dungeon = true,
+			Reward = { Gold = 1500, Tickets = 2, Xp = 200 } },
 		-- EvolveToTier: 이 번째 무기(3 = 기관단총)가 될 때까지 필요한 강화 횟수를 미션이 시작될 때 계산해서 목표로 쓴다. {무기} = 그 무기 이름
-		{ Text = "💰 모은 골드로 무기를 강화해서 {무기}까지 진화시키세요! 무기가 한층 강해져서 필드가 쉬워져요", Stat = "Enhances", Goal = 10, EvolveToTier = 3, Target = "Anvil", TargetName = "모루",
+		{ Text = "💰 던전에서 번 골드로 무기를 강화해서 {무기}까지 진화시키세요! 무기가 한층 강해져서 필드가 쉬워져요", Stat = "Enhances", Goal = 10, EvolveToTier = 3, Target = "Anvil", TargetName = "모루",
 			Reward = { Tickets = 2, Xp = 150 } },
 	},
 }

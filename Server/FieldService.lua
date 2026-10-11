@@ -3685,8 +3685,8 @@ local function doomWave(player, zone)
 		Remotes.Tutorial:FireClient(player, "Cinema", "End")
 		task.wait(2)
 		if player.Parent then -- 쓰러진 직후: 지금 강해질 수 있는 방법을 한눈에 알려준다
-			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "💪", Title = "쓰러져도 강해질 수 있어요!",
-				Text = "🎰 티켓으로 장비 뽑기  ·  🔨 골드로 무기 강화(진화)  ·  🏋 훈련으로 영구 성장\n전리품(골드 4000 / 티켓 10장)을 방금 받았어요. 먼저 뽑기 머신으로!", Duration = 10 })
+			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "\"8번째 땅 끝에서 기다리마\"",
+				Text = "군주는 그 말만 남기고 사라졌어요. 쓰러졌지만 전리품(골드 4000 / 티켓 10장)은 남았어요!\n🎰 뽑기 → 🏰 던전 → 🔨 강화 순서로 강해져 봐요. 먼저 뽑기 머신으로!", Duration = 10 })
 		end
 	end)
 end

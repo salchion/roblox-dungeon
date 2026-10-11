@@ -2583,6 +2583,13 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth)
 		end
 	end
 
+	if not riftMode and #members == 1 and player:GetAttribute("TutorialDungeonRun") == true then
+		-- 튜토리얼 첫 던전: 받는 피해 절반 + 몬스터 체력 약간 감소 (처음 보는 던전에서 막히지 않게)
+		difficulty = table.clone(difficulty)
+		difficulty.DamageMult = (difficulty.DamageMult or 1) * 0.5
+		difficulty.HealthMult = (difficulty.HealthMult or 1) * 0.8
+	end
+
 	local run = {
 		Id = nextRunId,
 		Slot = slot,

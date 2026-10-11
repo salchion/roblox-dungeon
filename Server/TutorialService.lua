@@ -98,6 +98,7 @@ local function send(player)
 	player:SetAttribute("QuestHud", step == nil or state.Step >= questStep)
 	player:SetAttribute("TutorialDungeonLocked", step ~= nil and state.Step < questStep)
 	player:SetAttribute("TutorialRoll", step and step.RollMode or nil) -- 미션 중 뽑기 보정: Lowest = 항상 일반 / Hero = 10연에 영웅 1개 확정 (전설 이상 없음)
+	player:SetAttribute("TutorialDungeonRun", step ~= nil and step.Dungeon == true) -- 첫 던전 미션: 받는 피해 절반 (DungeonService)
 	player:SetAttribute("TutorialDoom", step ~= nil and step.Doom == true) -- 필드 "압도적인 습격" 장면 (쓰러지면 다음 단계로 이어진다)
 	if not step then
 		Remotes.Tutorial:FireClient(player, "Done")
@@ -124,6 +125,9 @@ function Tutorial.Load(player, saved)
 			local mapped = savedStep >= 11 and #Steps + 1 or (map[savedStep] or savedStep)
 			if mapped ~= savedStep then saved.Progress = 0 end
 			savedStep = mapped
+		end
+		if version < 6 and savedStep >= 7 then -- 뽑기와 무기 진화 사이에 "첫 던전" 미션이 끼어들었다
+			savedStep += 1
 		end
 		state = { Step = math.clamp(savedStep, 1, #Steps + 1), Progress = math.max(0, math.floor(tonumber(saved.Progress) or 0)) }
 	elseif (player:GetAttribute("Level") or 1) >= 5 then
@@ -170,7 +174,7 @@ end
 
 function Tutorial.Serialize(player)
 	local state = states[player] or { Step = #Steps + 1, Progress = 0 }
-	return { Step = state.Step, Progress = state.Progress, V = 5 }
+	return { Step = state.Step, Progress = state.Progress, V = 6 }
 end
 
 function Tutorial.Forget(player)
@@ -221,7 +225,7 @@ function complete(player, state, step)
 		end, 2.5)
 	end
 	if state.Step > #Steps then
-		Remotes.Notify:FireClient(player, "🎉 튜토리얼 완료! 북쪽 던전 게이트가 열렸어요! 던전에서 장비와 재화를 더 모아보세요. (설정/도움말: H)")
+		Remotes.Notify:FireClient(player, "🎉 튜토리얼 완료! 필드 끝에 어른거리는 거대한 그림자가 최종 목표예요. 구역을 넘어 강해지고, 던전에서도 장비를 모아보세요. (설정/도움말: H)")
 	end
 	send(player)
 end
