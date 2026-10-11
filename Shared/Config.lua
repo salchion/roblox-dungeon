@@ -1306,6 +1306,24 @@ function Config.FormatAffix(stat, value)
 	return string.format("%s +%.1f", def.Name, value)
 end
 
+-- 옵션 수치 범위: 재굴림하면 이 범위(등급이 높을수록 큼) 안에서 다시 뽑는다 (서버 InventoryService 의 rollAffixValue 와 같은 식: 기준 x 등급배율 x 0.7 ~ 1.3)
+function Config.AffixRange(stat, rarity)
+	local def = Config.Inventory.Affixes[stat]
+	local base = def.Base * Config.Inventory.AffixRarityScale[rarity]
+	return base * 0.7, base * 1.3
+end
+
+function Config.FormatAffixRange(stat, rarity)
+	local def = Config.Inventory.Affixes[stat]
+	local lo, hi = Config.AffixRange(stat, rarity)
+	if def.Percent then
+		return string.format("%.1f~%.1f%%", lo * 100, hi * 100)
+	elseif stat == "Health" then
+		return string.format("%d~%d", math.floor(lo + 0.5), math.floor(hi + 0.5))
+	end
+	return string.format("%.1f~%.1f", lo, hi)
+end
+
 -- 아이템 점수: 기본 효과(등급 x 강화) + 옵션. 가방 정렬 / 비교용
 function Config.GetItemScore(item)
 	local score = Config.Gear.RarityMult[item.Rarity] * 100 * (1 + Config.Gear.LevelBonus * item.Level)

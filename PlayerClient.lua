@@ -2756,8 +2756,15 @@ local function buildInventoryTab()
 		}
 		for _, affix in ipairs(selected.Affixes) do
 			local info = Config.StatDesc[affix.Stat]
+			local lo, hi = Config.AffixRange(affix.Stat, selected.Rarity)
+			local pos = hi > lo and math.clamp((affix.Value - lo) / (hi - lo), 0, 1) or 1
+			local posColor = pos >= 0.75 and "#78ff8c" or (pos >= 0.4 and "#ffd966" or "#ff9a6e")
 			table.insert(lines, "<font size='13' color='#9ad7ff'>◆ " .. Config.FormatAffix(affix.Stat, affix.Value) .. "</font>"
+				.. string.format(" <font size='11' color='#8a8aa8'>범위 %s</font> <font size='11' color='%s'><b>(%d%%)</b></font>", Config.FormatAffixRange(affix.Stat, selected.Rarity), posColor, math.floor(pos * 100 + 0.5))
 				.. (info and ("\n<font size='11' color='#8a8aa8'>   → " .. info.Desc .. "</font>") or ""))
+		end
+		if #selected.Affixes > 0 then
+			table.insert(lines, "<font size='11' color='#7f86a8'>🎲 재굴림: 옵션 수치를 위 범위 안에서 다시 뽑아요 (괄호 = 범위 안 위치, 100%가 최고). 좋아질 수도 나빠질 수도 있어요</font>")
 		end
 		if selected.Unique and Config.Uniques[selected.Unique] then
 			table.insert(lines, "<font size='13' color='#ffb84d'>✦ 유니크: " .. Config.Uniques[selected.Unique].Desc .. "</font>")
@@ -2859,6 +2866,22 @@ local function buildInventoryTab()
 				makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 27), Text = tostring(zone) .. "구역", TextSize = 10, TextColor3 = setDef.Color, Font = Enum.Font.GothamBold }, button)
 				makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 41), Text = string.format("%d/%d", have, cost), TextSize = 11, Font = Enum.Font.GothamBlack, TextColor3 = enough and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(170, 170, 190) }, button)
 				makeLabel({ Size = UDim2.new(1, 0, 0, 12), Position = UDim2.new(0, 0, 0, 56), Text = already and "착용" or (enough and "각인!" or ""), TextSize = 10, TextColor3 = Color3.fromRGB(255, 225, 110), Font = Enum.Font.GothamBold }, button)
+			end
+		end
+		if selected.Equipped then
+			-- 장착 중인 장비는 여기서도 바로 강화 (뽑기 창의 강화와 같다: 로비에서만)
+			if selected.Level < Config.Gear.MaxLevel then
+				local cost = Config.GetGearCost(selected.Slot, selected.Rarity, selected.Level)
+				local chance = math.floor(Config.GetGearEnhanceChance(selected.Level) * 100 + 0.5)
+				local gold = player:GetAttribute("Gold") or 0
+				makeButton({
+					Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 1, -40),
+					Text = string.format("💰 %d G 강화 (성공 %d%%)", cost, chance), TextSize = 13, BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62),
+				}, detail, function()
+					Remotes.Gear:FireServer("Enhance", selected.Slot)
+				end)
+			else
+				makeButton({ Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 1, -40), Text = "최대 강화 MAX", TextSize = 13, BackgroundColor3 = GRAY }, detail, function() end)
 			end
 		end
 		if not selected.Equipped then
@@ -3255,6 +3278,12 @@ Remotes.Inventory.OnClientEvent:Connect(function(action, data)
 		if menuPanel.Visible and currentTab == "Character" and MENU.Sub.Character == "Gear" then
 			refreshMenu()
 		end
+	end
+end)
+
+Remotes.Gear.OnClientEvent:Connect(function(action, result) -- 메뉴에서 장비를 강화했을 때 결과를 바로 알려 준다
+	if action == "Result" and menuPanel.Visible and result and not result.Roll and result.Message then
+		toast(result.Message)
 	end
 end)
 
