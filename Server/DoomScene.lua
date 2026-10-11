@@ -194,47 +194,62 @@ local function startTutorialRift(player, at)
 		print(string.format("[튜토리얼 열쇠] %s 시작", player.Name))
 		notify(player, "🗝 군주가 던전 열쇠를 떨어뜨렸다!")
 		Remotes.Tutorial:FireClient(player, "WaypointClear")
-		-- 열쇠: 군주가 쓰러진 자리에 떠오른다 (눈이 아프지 않은 호박색)
-		key = Instance.new("Part")
-		key.Name = "TutorialKey"
-		key.Size = Vector3.new(2.6, 7, 1)
-		key.Color = Color3.fromRGB(232, 178, 90)
-		key.Material = Enum.Material.Neon
-		key.Anchored = true
-		key.CanCollide = false
-		key.CanQuery = false
-		key.CastShadow = false
-		key.CFrame = CFrame.new(at + Vector3.new(0, 6, 0))
+		-- 열쇠: 군주가 쓰러진 자리 위에 크게 떠올라 천천히 돈다. 흰색으로 날아가 보이지 않게 진한 주황빛 금색 + 큰 후광 + 바닥 고리 + 불꽃 + 굵은 빛기둥으로 멀리서도 눈에 띄게 한다
+		local groundHit = workspace:Raycast(at + Vector3.new(0, 20, 0), Vector3.new(0, -80, 0))
+		local groundY = groundHit and groundHit.Position.Y or (at.Y - 9)
+		local keyY = groundY + 11
+		local GOLD = Color3.fromRGB(255, 150, 30)
+		local function glowPart(name, shape, size, color, transparency)
+			local glow = Instance.new("Part")
+			glow.Name = name
+			glow.Shape = shape
+			glow.Size = size
+			glow.Color = color
+			glow.Material = Enum.Material.Neon
+			glow.Transparency = transparency
+			glow.Anchored, glow.CanCollide, glow.CanQuery, glow.CanTouch, glow.CastShadow = true, false, false, false, false
+			return glow
+		end
+		key = glowPart("TutorialKey", Enum.PartType.Block, Vector3.new(4, 10, 1.6), GOLD, 0)
+		key.CFrame = CFrame.new(at.X, keyY, at.Z)
 		key.Parent = workspace
+		local aura = glowPart("TutorialKeyAura", Enum.PartType.Ball, Vector3.new(20, 20, 20), Color3.fromRGB(255, 170, 60), 0.78)
+		aura.Parent = key
+		local ring = glowPart("TutorialKeyRing", Enum.PartType.Cylinder, Vector3.new(0.3, 22, 22), Color3.fromRGB(255, 150, 40), 0.6)
+		ring.CFrame = CFrame.new(at.X, groundY + 0.3, at.Z) * CFrame.Angles(0, 0, math.rad(90))
+		ring.Parent = key
 		local light = Instance.new("PointLight")
-		light.Color = Color3.fromRGB(255, 190, 110)
-		light.Range = 26
-		light.Brightness = 1.2
+		light.Color = Color3.fromRGB(255, 160, 70)
+		light.Range = 40
+		light.Brightness = 2
 		light.Parent = key
-		local beam = Instance.new("Part") -- 멀리서도 보이는 빛기둥 (드랍된 열쇠를 찾기 쉽게)
-		beam.Name = "TutorialKeyBeam"
-		beam.Size = Vector3.new(90, 3, 3)
-		beam.CFrame = CFrame.new(at + Vector3.new(0, 48, 0)) * CFrame.Angles(0, 0, math.rad(90))
-		beam.Shape = Enum.PartType.Cylinder
-		beam.Anchored, beam.CanCollide, beam.CanQuery, beam.CanTouch, beam.CastShadow = true, false, false, false, false
-		beam.Material = Enum.Material.Neon
-		beam.Color = Color3.fromRGB(232, 160, 90)
-		beam.Transparency = 0.7
+		local sparks = Instance.new("ParticleEmitter")
+		sparks.Rate = 28
+		sparks.Lifetime = NumberRange.new(1.2, 2)
+		sparks.Speed = NumberRange.new(4, 9)
+		sparks.SpreadAngle = Vector2.new(180, 180)
+		sparks.LightEmission = 1
+		sparks.Color = ColorSequence.new(Color3.fromRGB(255, 190, 80), Color3.fromRGB(255, 120, 30))
+		sparks.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.1), NumberSequenceKeypoint.new(1, 0) })
+		sparks.Parent = key
+		local beam = glowPart("TutorialKeyBeam", Enum.PartType.Cylinder, Vector3.new(170, 6, 6), GOLD, 0.5) -- 멀리서도 보이는 굵은 빛기둥
+		beam.CFrame = CFrame.new(at.X, groundY + 85, at.Z) * CFrame.Angles(0, 0, math.rad(90))
 		beam.Parent = key
 		local tag = Instance.new("BillboardGui")
-		tag.Size = UDim2.new(0, 220, 0, 40)
-		tag.StudsOffset = Vector3.new(0, 6, 0)
+		tag.Size = UDim2.new(0, 340, 0, 54)
+		tag.StudsOffset = Vector3.new(0, 9, 0)
 		tag.AlwaysOnTop = true
-		tag.MaxDistance = 400
+		tag.MaxDistance = 600
 		tag.Parent = key
 		local tagText = Instance.new("TextLabel")
 		tagText.Size = UDim2.new(1, 0, 1, 0)
 		tagText.BackgroundTransparency = 1
 		tagText.Font = Enum.Font.GothamBlack
-		tagText.TextSize = 22
-		tagText.TextColor3 = Color3.fromRGB(255, 214, 140)
-		tagText.TextStrokeTransparency = 0.3
-		tagText.Text = "🗝 군주의 열쇠 (가까이 가서 줍기)"
+		tagText.TextSize = 28
+		tagText.TextColor3 = Color3.fromRGB(255, 196, 80)
+		tagText.TextStrokeColor3 = Color3.fromRGB(60, 24, 0)
+		tagText.TextStrokeTransparency = 0
+		tagText.Text = "🗝 군주의 열쇠 — 가까이 가서 줍기!"
 		tagText.Parent = tag
 		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🗝", Title = "열쇠가 떨어졌어요!", Text = "쓰러진 군주 자리에 큰 열쇠가 떨어졌어요. 가까이 가서 주워 보세요!", Duration = 6, Top = true })
 		-- 플레이어가 가까이 갈 때까지 기다린다 (제자리에서 천천히 돌며 떠 있다). 너무 오래 안 주우면 열쇠가 스스로 날아온다
@@ -243,13 +258,18 @@ local function startTutorialRift(player, at)
 			root = getAliveParts(player)
 			if not root then return end
 			hover += 1 / 60
-			key.CFrame = CFrame.new(at + Vector3.new(0, 6 + math.sin(hover * 3) * 0.8, 0)) * CFrame.Angles(0, hover * 2, 0)
+			key.CFrame = CFrame.new(at.X, keyY + math.sin(hover * 3) * 1.2, at.Z) * CFrame.Angles(0, hover * 2, 0)
+			aura.CFrame = key.CFrame
+			ring.Transparency = 0.6 + 0.2 * math.sin(hover * 4)
 			local near = (Vector3.new(root.Position.X, 0, root.Position.Z) - Vector3.new(at.X, 0, at.Z)).Magnitude
 			if near <= 8 or os.clock() - waitStart > 45 then break end
 			task.wait()
 		end
 		beam:Destroy()
 		tag:Destroy()
+		aura:Destroy()
+		ring:Destroy()
+		sparks.Rate = 0
 		-- 주웠다: 열쇠가 손으로 날아온다
 		root = getAliveParts(player)
 		if not root then return end

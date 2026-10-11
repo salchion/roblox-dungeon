@@ -1578,10 +1578,22 @@ local function killMonster(player, part, data)
 	recordKill(player, data)
 	if augRun then Dungeon.AugOnKill(augRun, player, part.Position) end -- 처치 폭발 / 화염 지대 (monsters 에서 지우기 전: 자기 자신은 다시 맞지 않는다)
 	monsters[part] = nil
-	if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then
-		player:SetAttribute("TutorialRetryBuff", nil) -- 일회성 힘은 군주를 쓰러뜨리면 사라진다
-		Remotes.Tutorial:FireClient(player, "WaypointClear") -- 길잡이 빛기둥도 끈다
-		if startTutorialRift then task.spawn(startTutorialRift, player, part.Position) end -- 튜토리얼: 군주가 열쇠를 떨어뜨리고 발밑이 갈라져 던전으로 떨어진다
+	if data.Kind == "Boss" and data.Zone == 1 then
+		-- 튜토리얼: 군주를 한 대라도 때린 튜토리얼 플레이어는 막타를 누가 쳤든 각자 열쇠 이벤트를 받는다 (같은 군주를 여럿이 잡는 이벤트성 상황)
+		local bossAt = part.Position
+		local helpers = { [player] = true }
+		for contributor in pairs(data.Contrib or {}) do helpers[contributor] = true end
+		for member in pairs(helpers) do
+			if typeof(member) == "Instance" and member.Parent and member:GetAttribute("TutorialDoom") then
+				member:SetAttribute("TutorialRetryBuff", nil) -- 일회성 힘은 군주를 쓰러뜨리면 사라진다
+				Remotes.Tutorial:FireClient(member, "WaypointClear") -- 길잡이 빛기둥도 끈다
+				local memberRoot = getAliveParts(member)
+				-- (보스 근처 160 안에 있어야 군주 처치로 인정되어 다음 단계로 넘어간다: 아래 reward 의 BossKills 와 같은 조건)
+				if startTutorialRift and (member == player or (memberRoot and member:GetAttribute("Zone") == "Field" and (memberRoot.Position - bossAt).Magnitude <= 160)) then
+					task.spawn(startTutorialRift, member, bossAt) -- 군주가 열쇠를 떨어뜨리고 던전의 문이 열린다
+				end
+			end
+		end
 	end
 	Effects.Burst(part.Position, part.Color, data.Kind == "Boss" and 80 or 22)
 	Effects.MonsterDeath(part, data) -- 조각 / 영혼 연기 (클라이언트)
