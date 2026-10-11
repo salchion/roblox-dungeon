@@ -338,6 +338,7 @@ function LobbyDecor.Build(parent, ctx)
 	-- 3) 시작 언덕 전망대
 	--------------------------------------------------------------------
 	section("Hill")
+	local hillFolder = current
 	do
 		local hy = HILL_H + 0.25
 		local hc = Vector3.new(0, TOP + hy, HILL_Z)
@@ -380,6 +381,14 @@ function LobbyDecor.Build(parent, ctx)
 		for i = 0, 4 do -- 언덕 아래 바위
 			local a = math.rad(215 + i * 25)
 			ball("HillBoulder", 4, Vector3.new(math.cos(a) * 23, TOP + 1.1, HILL_Z + math.sin(a) * 23), STONE_DARK, M.Slate, 2.6, 3.5)
+		end
+	end
+
+	-- 시작 언덕 장식은 "남쪽 끝에서 북쪽을 보는" 설계라서, 서쪽 끝(HillNewX, HillNewZ)에서 동쪽을 보도록 통째로 돌려서 옮긴다
+	do
+		local move = CFrame.new(ctx.HillNewX, 0, ctx.HillNewZ) * CFrame.Angles(0, -math.pi / 2, 0) * CFrame.new(0, 0, -HILL_Z)
+		for _, descendant in ipairs(hillFolder:GetDescendants()) do
+			if descendant:IsA("BasePart") then descendant.CFrame = move * descendant.CFrame end
 		end
 	end
 
@@ -553,7 +562,7 @@ function LobbyDecor.Build(parent, ctx)
 			tree(-19, z, 8, 0)
 			tree(19, z, 7, 0)
 		end
-		for _, spot in ipairs({ { -60, 11 }, { -32, 11 }, { 32, 11 }, { 60, 11 }, { -90, -11 }, { -32, -11 } }) do
+		for _, spot in ipairs({ { -60, 11 }, { -32, 11 }, { 32, 11 }, { 60, 11 }, { -32, -11 } }) do
 			planter(spot[1], spot[2], 0, 0)
 		end
 		for i = 0, 11 do -- 사거리 돌 고리

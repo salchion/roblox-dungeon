@@ -10,7 +10,8 @@ local Lobby = {}
 
 local HALF = 130            -- 로비는 -130 ~ +130 의 정사각형
 local TOP = 0.05            -- 바닥 윗면 높이 (기본 Baseplate 와 겹쳐 깜빡이는 것 방지)
-local HILL_Z, HILL_H, HILL_R = 112, 28, 18 -- 시작 언덕: 마을 남쪽 끝의 높은 언덕 (여기서 마을 전체가 내려다보인다)
+local HILL_Z, HILL_H, HILL_R = 112, 28, 18 -- 시작 언덕의 "설계" 좌표(남쪽 끝에서 북쪽을 보는 구조). 실제로는 아래 HILL_NX / HILL_NZ(서쪽 끝, 동쪽을 봄)로 통째로 돌려서 옮겨 놓는다
+local HILL_NX, HILL_NZ = -105, 0 -- 시작 언덕의 실제 자리: 마을 서쪽 끝 (9시). 높은 곳에서 동쪽의 필드 문을 정면으로 본다
 
 local function makePart(props, parent)
 	local part = Instance.new("Part")
@@ -162,11 +163,11 @@ local function decoratePlaza(parent, center, avoid)
 	sparkle.Parent = sky
 
 	-- 스폰 자리: 빛나는 환영 패드
-	local pad = makeDisc(Vector3.new(0, TOP + HILL_H + 0.35, HILL_Z), 16, 0.12, Color3.fromRGB(110, 230, 255), Enum.Material.Neon, parent)
+	local pad = makeDisc(Vector3.new(HILL_NX, TOP + HILL_H + 0.35, HILL_NZ), 16, 0.12, Color3.fromRGB(110, 230, 255), Enum.Material.Neon, parent)
 	pad.CanCollide = false
 	pad.CanQuery = false
 	pad.Transparency = 0.35
-	local padInner = makeDisc(Vector3.new(0, TOP + HILL_H + 0.4, HILL_Z), 9, 0.12, Color3.fromRGB(255, 255, 255), Enum.Material.Neon, parent)
+	local padInner = makeDisc(Vector3.new(HILL_NX, TOP + HILL_H + 0.4, HILL_NZ), 9, 0.12, Color3.fromRGB(255, 255, 255), Enum.Material.Neon, parent)
 	padInner.CanCollide = false
 	padInner.CanQuery = false
 	padInner.Transparency = 0.6
@@ -308,7 +309,7 @@ function Lobby.Build()
 		{ X = 44, Z = 28, R = 20 },   -- 대장간
 		{ X = 0, Z = 28, R = 26 },    -- 훈련 구역
 		{ X = 78, Z = 90, R = 26 },   -- 심연 도전 포탈
-		{ X = 0, Z = HILL_Z, R = 36 },   -- 시작 언덕
+		{ X = HILL_NX, Z = HILL_NZ, R = 36 },   -- 시작 언덕
 		{ X = -34, Z = 72, R = 26 },     -- 왼쪽 경사로
 		{ X = 34, Z = 72, R = 26 },      -- 오른쪽 경사로
 		{ X = -40, Z = 92, R = 20 },  -- 랭킹판 / 명예의 전당
@@ -323,7 +324,7 @@ function Lobby.Build()
 
 	-- 시작 언덕: 높은 바위 단 위에 풀밭 / 가로등 / 나무 + 마을 쪽(북쪽)으로 내려가는 두 갈래 완만한 경사로
 	do
-		local center = Vector3.new(0, 0, HILL_Z)
+		local center = Vector3.new(HILL_NX, 0, HILL_NZ)
 		makePart({ Name = "HillBody", Shape = Enum.PartType.Cylinder, Size = Vector3.new(HILL_H + 1.5, HILL_R * 2 + 4, HILL_R * 2 + 4),
 			CFrame = CFrame.new(center + Vector3.new(0, (HILL_H - 1.5) / 2 + TOP, 0)) * CFrame.Angles(0, 0, math.rad(90)),
 			Color = Color3.fromRGB(96, 92, 100), Material = Enum.Material.Slate }, folder)
@@ -338,7 +339,7 @@ function Lobby.Build()
 	spawn.Anchored = true
 	spawn.Size = Vector3.new(12, 1, 12)
 	-- 시작 위치: 마을 서쪽 끝(9시)에서 동쪽(필드 문)을 보고 선다 -> 정면은 필드, 왼쪽(북)은 던전 길, 오른쪽(남)은 허수아비 / 대장간 / 뽑기
-	spawn.CFrame = CFrame.lookAt(Vector3.new(-105, TOP + 0.5, 0), Vector3.new(-104, TOP + 0.5, 0))
+	spawn.CFrame = CFrame.lookAt(Vector3.new(HILL_NX, TOP + HILL_H + 0.5, HILL_NZ), Vector3.new(HILL_NX + 1, TOP + HILL_H + 0.5, HILL_NZ))
 	spawn.Transparency = 1
 	spawn.CanCollide = false
 	spawn.Neutral = true
@@ -915,12 +916,12 @@ function Lobby.Build()
 
 	-- 마을 장식 (상점 / 길 / 화단 / 언덕 전망대 등): 실패해도 로비는 그대로 열린다
 	local okDecor, decorErr = pcall(function()
-		require(script.Parent:WaitForChild("LobbyDecor")).Build(folder, { Top = TOP, Half = HALF, HillZ = HILL_Z, HillH = HILL_H, HillR = HILL_R, GateCount = listCount, GateSpacing = spacing })
+		require(script.Parent:WaitForChild("LobbyDecor")).Build(folder, { Top = TOP, Half = HALF, HillZ = HILL_Z, HillH = HILL_H, HillR = HILL_R, HillNewX = HILL_NX, HillNewZ = HILL_NZ, GateCount = listCount, GateSpacing = spacing })
 	end)
 	if not okDecor then warn("LobbyDecor 실패: " .. tostring(decorErr)) end
 
 	return {
-		SpawnCFrame = CFrame.lookAt(Vector3.new(-105, TOP + 4, 0), Vector3.new(-104, TOP + 4, 0)), -- 마을 서쪽 끝(9시)에서 동쪽(필드 문)을 본다
+		SpawnCFrame = CFrame.lookAt(Vector3.new(HILL_NX, TOP + HILL_H + 5, HILL_NZ), Vector3.new(HILL_NX + 1, TOP + HILL_H + 5, HILL_NZ)), -- 마을 서쪽 끝(9시) 높은 언덕 위에서 동쪽(필드 문)을 본다
 		GatePrompt = gatePrompt, -- (호환용: 첫 번째 게이트)
 		Gates = gates,
 		AnvilPrompt = anvilPrompt,
