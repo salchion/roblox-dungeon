@@ -867,7 +867,7 @@ function Gear.Enhance(player, slotKey)
 	end
 	local rarity = equipped.Rarity
 
-	local level = equipped.Level
+	local level = Inventory.GetSlotLevel(player, slotKey) -- 강화는 부위(슬롯)에 쌓인다 (어떤 장비를 끼든 적용)
 	if level >= G.MaxLevel then
 		return false, "이미 최대 강화 단계예요!"
 	end

@@ -2844,7 +2844,7 @@ local function buildInventoryTab()
 				local gold = player:GetAttribute("Gold") or 0
 				makeButton({
 					Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 1, -40),
-					Text = string.format("💰 %d G 강화 (성공 %d%%)", cost, chance), TextSize = 13, BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62),
+					Text = string.format("💰 %d G 부위 강화 (성공 %d%%)", cost, chance), TextSize = 13, BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62),
 				}, detail, function()
 					Remotes.Gear:FireServer("Enhance", selected.Slot)
 				end)

@@ -254,6 +254,7 @@ function Inventory.Add(player, item)
 
 	state.NextId += 1
 	item.Id = state.NextId
+	item.Level = state.SlotLevels[item.Slot] or 0 -- 새 장비도 그 부위의 강화 단계를 바로 받는다
 	if item.Set then -- 도감: 이 세트 장비를 얻어 봤다
 		local okM, Meta = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
 		if okM and Meta.CodexSet then Meta.CodexSet(player, item.Set) end
@@ -439,11 +440,18 @@ end
 -- 강화 레벨 변경 (GearService 의 장비 강화가 호출)
 function Inventory.SetLevel(player, slotKey, level)
 	local state = states[player]
-	local item = state and state.Items[state.Equipped[slotKey]]
-	if not item then return end
-	item.Level = level
+	if not state then return end
+	state.SlotLevels[slotKey] = level
+	for _, item in pairs(state.Items) do
+		if item.Slot == slotKey then item.Level = level end
+	end
 	applyEquipAttributes(player, state)
 	Inventory.Push(player)
+end
+
+function Inventory.GetSlotLevel(player, slotKey)
+	local state = states[player]
+	return state and state.SlotLevels[slotKey] or 0
 end
 
 function Inventory.SetAutoScrap(player, rarity)
@@ -466,7 +474,7 @@ end
 ------------------------------------------------------------
 -- saved: 저장된 Inventory 테이블. legacyGear: 예전 저장 형식({ Armor = { R, L }, ... })이면 아이템으로 바꿔서 이어받는다
 function Inventory.Load(player, saved, legacyGear)
-	local state = { Items = {}, NextId = 0, Equipped = {}, Essence = 0, AutoScrap = SMART, Rev = 0, Shards = {} }
+	local state = { Items = {}, NextId = 0, Equipped = {}, Essence = 0, AutoScrap = SMART, Rev = 0, Shards = {}, SlotLevels = {} }
 
 	if typeof(saved) == "table" and typeof(saved.Items) == "table" then
 		for _, entry in ipairs(saved.Items) do
@@ -522,6 +530,22 @@ function Inventory.Load(player, saved, legacyGear)
 		end
 	end
 
+	-- 강화는 아이템이 아니라 "부위(슬롯)"에 쌓인다: 어떤 장비를 끼든 그 부위의 강화 단계를 받는다. 모든 아이템의 Level 은 그 부위 단계를 그대로 따라간다.
+	-- (옛 저장본: 저장된 슬롯 단계가 없으면 그 부위 아이템 중 가장 높은 강화 단계를 부위 단계로 이어받는다)
+	local savedLevels = typeof(saved) == "table" and typeof(saved.SlotLevels) == "table" and saved.SlotLevels or nil
+	for _, slot in ipairs(G.Slots) do
+		local level = 0
+		if savedLevels then
+			level = math.clamp(math.floor(tonumber(savedLevels[slot.Key]) or 0), 0, G.MaxLevel)
+		else
+			for _, item in pairs(state.Items) do
+				if item.Slot == slot.Key then level = math.max(level, item.Level) end
+			end
+		end
+		state.SlotLevels[slot.Key] = level
+	end
+	for _, item in pairs(state.Items) do item.Level = state.SlotLevels[item.Slot] or 0 end
+
 	states[player] = state
 	Inventory.AutoEquipBest(player, true) -- 접속했을 때 빈 칸이 있고 가방에 맞는 장비가 있으면 자동으로 채운다
 	applyEquipAttributes(player, state)
@@ -544,7 +568,7 @@ function Inventory.Serialize(player)
 	for zone = 1, Config.Field.ZoneCount do
 		shards[tostring(zone)] = state.Shards[zone] or 0
 	end
-	return { Items = items, Equipped = state.Equipped, Essence = state.Essence, AutoScrap = state.AutoScrap, Shards = shards }
+	return { Items = items, Equipped = state.Equipped, Essence = state.Essence, AutoScrap = state.AutoScrap, Shards = shards, SlotLevels = state.SlotLevels }
 end
 
 function Inventory.Forget(player)
