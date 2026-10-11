@@ -1479,8 +1479,8 @@ local toggleHelp
 local musicEnabled = true   -- M 키로 켜고 끈다
 local currentMusic = nil
 local musicScale = 1
-local function musicVolume()
-	return musicEnabled and Config.Audio.MusicVolume * musicScale or 0
+local function musicVolume(name)
+	return musicEnabled and Config.Audio.MusicVolume * musicScale * ((Config.Audio.TrackScale or {})[name or currentMusic] or 1) or 0
 end
 
 local function playMusic(name)
@@ -1491,7 +1491,7 @@ local function playMusic(name)
 			if not sound.IsPlaying then
 				sound:Play()
 			end
-			TweenService:Create(sound, TweenInfo.new(1.5), { Volume = musicVolume() }):Play()
+			TweenService:Create(sound, TweenInfo.new(1.5), { Volume = musicVolume(trackName) }):Play()
 		else
 			local fade = TweenService:Create(sound, TweenInfo.new(1.5), { Volume = 0 })
 			fade.Completed:Connect(function()
@@ -1508,7 +1508,7 @@ local function toggleMusic()
 	musicEnabled = not musicEnabled
 	for name, sound in pairs(tracks) do
 		if name == currentMusic then
-			TweenService:Create(sound, TweenInfo.new(0.4), { Volume = musicVolume() }):Play()
+			TweenService:Create(sound, TweenInfo.new(0.4), { Volume = musicVolume(name) }):Play()
 		end
 	end
 	toast(musicEnabled and "🔊 배경음악 켜짐 (M)" or "🔇 배경음악 꺼짐 (M)")
@@ -4042,7 +4042,7 @@ settingSlider(334, "🔊 배경음악 볼륨", function() return musicScale end,
 	musicScale = value
 	for name, sound in pairs(tracks) do
 		if name == currentMusic then
-			sound.Volume = musicVolume()
+			sound.Volume = musicVolume(name)
 		end
 	end
 end)
