@@ -911,7 +911,7 @@ do
 			elseif data.Note then
 				setLine = "+ 🏆 " .. data.Note
 			else
-				setLine = "+ 🧩 세트 조각 없음"
+				setLine = "" -- 세트 조각은 주사위에서 주지 않는다: 줄 자체를 비운다
 			end
 			local color = (buff and buff.Special) and Color3.fromRGB(255, 195, 70) or (setInfo and setInfo.Color) or Color3.fromRGB(110, 210, 255)
 			if buff then
