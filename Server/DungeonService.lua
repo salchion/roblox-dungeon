@@ -1238,6 +1238,25 @@ end
 local function stepRun(run, dt)
 	local now = os.clock()
 
+	-- 튜토리얼 첫 던전: 체력이 30% 아래로 떨어지면 응급 구조 (최대 3번, 4초에 한 번): 막혀서 튜토리얼이 멈추지 않게
+	if run.Tutorial and run.Phase ~= "Ended" then
+		for _, member in ipairs(run.Members) do
+			local _, humanoid = getAliveParts(member)
+			if humanoid and humanoid.Health > 0 and humanoid.Health < humanoid.MaxHealth * 0.3 then
+				run.Revives = run.Revives or {}
+				local used = run.Revives[member] or 0
+				if used < 3 and now - (run.LastRevive or 0) > 4 then
+					run.Revives[member] = used + 1
+					run.LastRevive = now
+					humanoid.Health = humanoid.MaxHealth * 0.75
+					local reviveRoot = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
+					if reviveRoot then Effects.Burst(reviveRoot.Position, Color3.fromRGB(120, 255, 170), 40) end
+					notify(member, string.format("💚 응급 구조! 체력이 회복됐어요 (남은 횟수 %d)", 3 - used - 1))
+				end
+			end
+		end
+	end
+
 	-- 시체 청소: 몬스터 표에 없는데 남은 몬스터 부품을 2초마다 지운다
 	if not run.NextOrphanCheck or now >= run.NextOrphanCheck then
 		run.NextOrphanCheck = now + 2
@@ -2400,7 +2419,7 @@ local function surviveLoop(run)
 	local bonusCount = 0
 	local partyScale = 1 + 0.5 * (run.PartySize - 1)
 	-- 몬스터가 한도를 넘어 쌓이면 졌다: 가만히 버티기만 해서는 클리어할 수 없다 (한도를 넘긴 채 OverrunSeconds 가 지나면 실패)
-	local limit = math.floor(D.MonsterLimit * partyScale)
+	local limit = math.floor(D.MonsterLimit * partyScale * (run.Tutorial and 2 or 1)) -- 튜토리얼은 한도 2배 (쌓여도 바로 지지 않게)
 	run.MonsterLimit = limit
 
 	while not run.Destroyed and run.Phase ~= "Ended" do
@@ -2422,7 +2441,7 @@ local function surviveLoop(run)
 				end
 			end
 			run.OverrunSince = run.OverrunSince or now
-			run.OverrunLeft = math.max(0, D.OverrunSeconds - (now - run.OverrunSince))
+			run.OverrunLeft = math.max(0, D.OverrunSeconds * (run.Tutorial and 2 or 1) - (now - run.OverrunSince))
 			if run.OverrunLeft <= 0 then
 				notifyAll(run, "💀 몬스터가 너무 많아졌어요! 압도당했습니다")
 				finish(run, false)
@@ -2438,12 +2457,12 @@ local function surviveLoop(run)
 				run.SpawnPoints = nearSpawnPoints(run, 22, 75) or run.AllSpawns
 				local level = math.max(1, D.GetWaveMonsterLevel(run.Wave) + run.LevelBonus)
 				local theme = run.Type.Theme or { Spawn = 1, Burst = 1 }
-				local burst = math.floor(((now - startedAt < 1) and 7 or math.random(3, 4)) * theme.Burst + 0.5) -- 시작하자마자 우르르 (던전 성격에 따라 많거나 적다)
+				local burst = math.floor(((now - startedAt < 1) and 7 or math.random(3, 4)) * theme.Burst * (run.Tutorial and 0.6 or 1) + 0.5) -- 시작하자마자 우르르 (던전 성격에 따라 많거나 적다)
 				for _ = 1, burst do
 					spawnMonster(run, level)
 				end
 			end
-			nextSpawn = now + (2.0 - 0.7 * progress) / ((run.PenCount or 1) * ((run.Type.Theme and run.Type.Theme.Spawn) or 1))
+			nextSpawn = now + (2.0 - 0.7 * progress) * (run.Tutorial and 1.5 or 1) / ((run.PenCount or 1) * ((run.Type.Theme and run.Type.Theme.Spawn) or 1))
 		end
 
 		if now >= nextBonus then
@@ -2603,7 +2622,7 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 		-- 튜토리얼 첫 던전: 받는 피해 절반 + 몬스터 체력 약간 감소 (처음 보는 던전에서 막히지 않게)
 		difficulty = table.clone(difficulty)
 		difficulty.DamageMult = (difficulty.DamageMult or 1) * 0.5
-		difficulty.HealthMult = (difficulty.HealthMult or 1) * 0.8
+		difficulty.HealthMult = (difficulty.HealthMult or 1) * 0.65
 	end
 
 	local run = {
