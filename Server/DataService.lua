@@ -17,7 +17,7 @@ local Tutorial = require(script.Parent:WaitForChild("TutorialService"))
 local Data = {}
 
 local okStore, store = pcall(function()
-	return DataStoreService:GetDataStore("DungeonPlayerData_v1")
+	return DataStoreService:GetDataStore("DungeonPlayerData_v2")
 end)
 if not okStore then
 	store = nil
