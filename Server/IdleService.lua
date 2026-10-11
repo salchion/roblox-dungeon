@@ -115,11 +115,19 @@ function Idle.OnJoin(player)
 	local seconds = math.min(away, capSeconds(player))
 	task.delay(3, function() -- 장비 / 훈련 능력치가 다 반영된 뒤에 계산한다
 		if not player.Parent then return end
-		local gold = math.floor(seconds * Idle.Rate(player) * I.OfflineEfficiency)
+		-- 방치 부스터: 자리를 비운 시간 중 부스터가 켜져 있던 구간만 x2 (접속 순간에 이미 끝났어도 그 구간은 인정한다)
+		local baseMult = 1 + (player:GetAttribute("IdleMultBonus") or 0)
+		local perSecondBase = Idle.Rate(player) / Idle.Multiplier(player) -- 배율을 뺀 초당 골드
+		local windowEnd = last + seconds
+		local boosted = math.max(0, math.min(player:GetAttribute("IdleBoostUntil") or 0, windowEnd) - last)
+		local gold = math.floor(perSecondBase * (baseMult * (seconds - boosted) + (baseMult + I.BoostBonus) * boosted) * I.OfflineEfficiency)
 		if gold < 1 then return end
 		player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
 		local hours = seconds / 3600
 		local text = string.format("%.1f시간 동안 방치 골드 %d G가 쌓였어요!", hours, gold)
+		if boosted > 60 then
+			text ..= string.format("\n(방치 부스터 %d분 적용)", math.floor(boosted / 60))
+		end
 		if (player:GetAttribute("IdleMultBonus") or 0) > 0 then
 			text ..= string.format("\n(방치 수입 보너스 +%d%% 적용 중)", math.floor((player:GetAttribute("IdleMultBonus") or 0) * 100 + 0.5))
 		end
