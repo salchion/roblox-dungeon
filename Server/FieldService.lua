@@ -3523,6 +3523,41 @@ local function doomWaveInner(player, zone, center)
 		player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	end
 
+	-- 하늘에서 내리꽂히는 붉은 기둥 (겉은 짙은 진홍, 속은 주황빛) + 바닥에 남는 그을음. 눈이 부시지 않게 흰색은 쓰지 않는다.
+	local function pillar(at, radius)
+		local function column(width, color, transparency, duration)
+			local part = Instance.new("Part")
+			part.Shape = Enum.PartType.Cylinder
+			part.Size = Vector3.new(320, width, width)
+			part.CFrame = CFrame.new(at.X, center.Y + 160, at.Z) * CFrame.Angles(0, 0, math.rad(90))
+			part.Anchored = true
+			part.CanCollide = false
+			part.CanQuery = false
+			part.CastShadow = false
+			part.Material = Enum.Material.Neon
+			part.Color = color
+			part.Transparency = transparency
+			part.Parent = arena
+			TweenService:Create(part, TweenInfo.new(duration, Enum.EasingStyle.Quad), { Transparency = 1, Size = Vector3.new(320, width * 0.15, width * 0.15) }):Play()
+		end
+		column(radius * 1.7, rgb(190, 40, 52), 0.25, 0.6)
+		column(radius * 0.8, rgb(255, 150, 100), 0.1, 0.45)
+		local scorch = Instance.new("Part")
+		scorch.Shape = Enum.PartType.Cylinder
+		scorch.Size = Vector3.new(0.3, radius * 2, radius * 2)
+		scorch.CFrame = CFrame.new(at.X, center.Y + 1.2, at.Z) * CFrame.Angles(0, 0, math.rad(90))
+		scorch.Anchored = true
+		scorch.CanCollide = false
+		scorch.CanQuery = false
+		scorch.CastShadow = false
+		scorch.Material = Enum.Material.Neon
+		scorch.Color = rgb(150, 30, 36)
+		scorch.Transparency = 0.45
+		scorch.Parent = arena
+		TweenService:Create(scorch, TweenInfo.new(2, Enum.EasingStyle.Quad), { Transparency = 1 }):Play()
+		task.delay(2.1, function() scorch:Destroy() end)
+	end
+
 	-- 한 번의 폭격: 바닥에 붉은 경고 원 -> 시간이 지나면 군주의 광선이 내리꽂힌다 (맞으면 최대 체력의 일부, 죽지는 않는다)
 	local function strike(at, radius, telegraph, percent)
 		local warn = Instance.new("Part")
@@ -3543,8 +3578,11 @@ local function doomWaveInner(player, zone, center)
 			if not arena.Parent then return end
 			lordSfx("Lord_Blast")
 			beam(body.Position + Vector3.new(0, 4, -6), at + Vector3.new(0, 1, 0), radius * 0.28, 0.35)
+			pillar(at, radius)
 			ring(at, radius * 1.1, rgb(255, 120, 60), 0.6)
+			task.delay(0.12, function() if arena.Parent then ring(at, radius * 1.9, rgb(200, 50, 60), 0.8) end end)
 			Effects.Burst(at + Vector3.new(0, 2, 0), rgb(255, 90, 60), 60)
+			Effects.Burst(at + Vector3.new(0, 14, 0), rgb(255, 170, 110), 30)
 			shake(0.6)
 			local r2, h2 = getAliveParts(player)
 			if r2 and h2.Health > 0 then
@@ -3573,7 +3611,26 @@ local function doomWaveInner(player, zone, center)
 			strike(playerAt() + offset, 13, 1.2, 0.15)
 			task.wait(0.35)
 		end
-		task.wait(1.2)
+		task.wait(1.4)
+	end
+	-- 2) 플레이어를 둘러싼 고리가 시계 방향으로 하나씩 내리꽂히고, 마지막에 한가운데로 큰 일격
+	if alive() then
+		notify(player, "⚠⚠ 사방이 붉게 물든다 — 빠져나갈 틈을 찾아라!")
+		shake(0.5)
+		local around = playerAt()
+		local gap = math.random(6) -- 한 군데는 비워 둔다: 그쪽으로 빠져나가면 맞지 않는다
+		for k = 1, 6 do
+			if k ~= gap then
+				local angle = k / 6 * math.pi * 2
+				strike(around + Vector3.new(math.cos(angle) * 34, 0, math.sin(angle) * 34), 14, 1.1, 0.12)
+			end
+			task.wait(0.14)
+		end
+		task.wait(0.5)
+		if alive() then
+			strike(around, 22, 1.0, 0.2)
+		end
+		task.wait(1.5)
 	end
 	-- 마지막: 아레나 전체가 붉게 물든다 — 어디에도 안전한 곳이 없다
 	if alive() then
@@ -3607,16 +3664,48 @@ local function doomWaveInner(player, zone, center)
 		charge.Position = body.Position + Vector3.new(0, 4, -10)
 		charge.Parent = arena
 		TweenService:Create(charge, TweenInfo.new(2.4, Enum.EasingStyle.Quad), { Size = Vector3.new(60, 60, 60), Transparency = 0.05 }):Play()
-		for _ = 1, 3 do
-			shake(0.7)
-			task.wait(0.5)
+		local halos = {} -- 충전구 둘레를 도는 세 개의 고리 (자이로스코프처럼 서로 다른 방향으로 돈다)
+		for index, diameter in ipairs({ 40, 56, 72 }) do
+			local halo = Instance.new("Part")
+			halo.Shape = Enum.PartType.Cylinder
+			halo.Size = Vector3.new(1.2, diameter, diameter)
+			halo.Anchored = true
+			halo.CanCollide = false
+			halo.CanQuery = false
+			halo.CastShadow = false
+			halo.Material = Enum.Material.Neon
+			halo.Color = index == 2 and rgb(255, 150, 100) or rgb(200, 50, 60)
+			halo.Transparency = 1
+			halo.Parent = arena
+			TweenService:Create(halo, TweenInfo.new(1.2), { Transparency = 0.35 }):Play()
+			halos[index] = halo
 		end
+		local chargeStart, nextStream = os.clock(), 0
+		while os.clock() - chargeStart < 2.4 do
+			local t = os.clock() - chargeStart
+			for index, halo in ipairs(halos) do
+				halo.CFrame = CFrame.new(charge.Position) * CFrame.Angles(t * (0.9 + index * 0.5), t * (1.4 - index * 0.3), t * 0.7 * index)
+			end
+			if t >= nextStream then -- 아레나 가장자리에서 에너지가 충전구로 빨려든다
+				nextStream = t + 0.1
+				local angle = math.random() * math.pi * 2
+				local from = center + Vector3.new(math.cos(angle) * 78, math.random(4, 40), math.sin(angle) * 78)
+				beam(from, charge.Position, 1.4, 0.35, rgb(255, 120, 90))
+			end
+			if math.floor(t * 2) ~= math.floor((t - 0.03) * 2) and t > 0.2 then shake(0.6 + t * 0.15) end
+			task.wait()
+		end
+		for _, halo in ipairs(halos) do halo:Destroy() end
 		local r = alive() and select(1, getAliveParts(player))
 		if r then
 			lordSfx("Lord_Blast")
 			beam(charge.Position, r.Position, 26, 0.9, rgb(255, 240, 150))
 			ring(center, 90, rgb(255, 90, 60), 1.0)
+			for k = 1, 2 do
+				task.delay(0.15 * k, function() if arena.Parent then ring(center, 90 + 30 * k, rgb(200, 50, 60), 1.0) end end)
+			end
 			Effects.Burst(r.Position, rgb(255, 80, 60), 160)
+			Effects.Burst(r.Position + Vector3.new(0, 10, 0), rgb(255, 170, 110), 80)
 			shake(1)
 			Remotes.Tutorial:FireClient(player, "Cinema", "Blast")
 			task.wait(0.35)
