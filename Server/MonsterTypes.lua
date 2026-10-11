@@ -413,9 +413,10 @@ function M.Build(typeKey, size, color, position, parent)
 		part.Material = material or Plastic
 		part.Transparency = opts.T or (def.Transparency and opts.Tint and def.Transparency) or 0
 		part.CFrame = body.CFrame * CFrame.new(x, y, z) * CFrame.Angles(math.rad(opts.Rx or 0), math.rad(opts.Ry or 0), math.rad(opts.Rz or 0))
-		local weld = Instance.new("WeldConstraint")
+		local weld = Instance.new("Weld") -- (Weld + 명시적 오프셋: WeldConstraint 는 클라이언트가 받는 순간의 위치로 오프셋을 다시 계산해서, 움직이는 몬스터의 겉모양이 본체에서 어긋나 보였다)
 		weld.Part0 = body
 		weld.Part1 = part
+		weld.C0 = body.CFrame:ToObjectSpace(part.CFrame)
 		weld.Parent = part
 		part.Parent = body
 		if opts.Tint then

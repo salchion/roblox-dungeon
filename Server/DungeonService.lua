@@ -465,9 +465,10 @@ local function makeWeakOrb(part)
 	halo.Color = Color3.fromRGB(255, 220, 60)
 	halo.Transparency = 0.75
 	halo.CFrame = orb.CFrame
-	local haloWeld = Instance.new("WeldConstraint")
+	local haloWeld = Instance.new("Weld") -- (Weld + 명시적 오프셋: WeldConstraint 는 클라이언트가 받는 순간의 위치로 오프셋을 다시 계산해서, 움직이는 몬스터의 겉모양이 본체에서 어긋나 보였다)
 	haloWeld.Part0 = orb
 	haloWeld.Part1 = halo
+	haloWeld.C0 = orb.CFrame:ToObjectSpace(halo.CFrame)
 	haloWeld.Parent = halo
 	halo.Parent = orb
 	local sparks = Instance.new("ParticleEmitter")

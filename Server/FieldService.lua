@@ -1270,9 +1270,10 @@ local function spawnMonster(zone, kind, at, ambush)
 		halo.Color = Color3.fromRGB(255, 220, 60)
 		halo.Transparency = 0.75
 		halo.CFrame = weakOrb.CFrame
-		local haloWeld = Instance.new("WeldConstraint")
+		local haloWeld = Instance.new("Weld") -- (Weld + 명시적 오프셋: WeldConstraint 는 클라이언트가 받는 순간의 위치로 오프셋을 다시 계산해서, 움직이는 몬스터의 겉모양이 본체에서 어긋나 보였다)
 		haloWeld.Part0 = weakOrb
 		haloWeld.Part1 = halo
+		haloWeld.C0 = weakOrb.CFrame:ToObjectSpace(halo.CFrame)
 		haloWeld.Parent = halo
 		halo.Parent = weakOrb
 		local sparks = Instance.new("ParticleEmitter")
@@ -1932,9 +1933,10 @@ local function spawnGoblin(zone)
 		p.Color = color
 		p.Material = material
 		p.CFrame = part.CFrame * CFrame.new(offset)
-		local weld = Instance.new("WeldConstraint")
+		local weld = Instance.new("Weld") -- (Weld + 명시적 오프셋: WeldConstraint 는 클라이언트가 받는 순간의 위치로 오프셋을 다시 계산해서, 움직이는 몬스터의 겉모양이 본체에서 어긋나 보였다)
 		weld.Part0 = part
 		weld.Part1 = p
+		weld.C0 = part.CFrame:ToObjectSpace(p.CFrame)
 		weld.Parent = p
 		p.Parent = part
 		return p
@@ -2977,9 +2979,10 @@ local function airRaid(player, zone)
 					canopy.Color = Color3.fromRGB(235, 90, 70)
 					canopy.Material = Enum.Material.Fabric
 					canopy.CFrame = part.CFrame * CFrame.new(0, data.Stats.Size * 1.6, 0)
-					local weld = Instance.new("WeldConstraint")
+					local weld = Instance.new("Weld") -- (Weld + 명시적 오프셋: WeldConstraint 는 클라이언트가 받는 순간의 위치로 오프셋을 다시 계산해서, 움직이는 몬스터의 겉모양이 본체에서 어긋나 보였다)
 					weld.Part0 = part
 					weld.Part1 = canopy
+					weld.C0 = part.CFrame:ToObjectSpace(canopy.CFrame)
 					weld.Parent = canopy
 					canopy.Parent = part
 				end
