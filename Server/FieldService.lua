@@ -3476,6 +3476,29 @@ function Field.Init(lobbySpawnCFrame)
 		end
 	end)
 	task.spawn(runAmbush)
+	if RunService:IsStudio() then
+		-- Studio 진단: 내 주변 40 안의 몬스터 상태를 4초마다 출력한다 ("맞지도 않고 반응도 없는 몬스터" 원인 추적용. 게임 서버에서는 안 돈다)
+		task.spawn(function()
+			while true do
+				task.wait(4)
+				for _, player in ipairs(Players:GetPlayers()) do
+					local root = player:GetAttribute("Zone") == "Field" and getAliveParts(player)
+					if root then
+						local lines = {}
+						for part, data in pairs(monsters) do
+							local distance = (part.Position - root.Position).Magnitude
+							if part.Parent and distance <= 40 and #lines < 6 then
+								table.insert(lines, string.format("  %s 구역%s %s 거리%d HP %d/%d aggro=%s 맞힐수있음=%s 습격=%s 낙하=%s 안전지대=%s",
+									tostring(data.TypeKey), tostring(data.Zone), tostring(data.Kind), distance, data.Health or -1, data.MaxHealth or -1,
+									tostring(data.Aggro), tostring(canHitZone(player, part.Position.X)), tostring(data.Ambush), tostring(data.Falling ~= nil), tostring(isSafe(part.Position))))
+							end
+						end
+						if #lines > 0 then print("[몹진단] " .. player.Name .. " 구역 " .. tostring(zoneOfX(root.Position.X)) .. " 내 구역관문 " .. tostring(player:GetAttribute("ClearedZone")) .. "\n" .. table.concat(lines, "\n")) end
+					end
+				end
+			end
+		end)
+	end
 	-- 이벤트 몬스터 정리: 주변 170 안에 필드의 어떤 플레이어도 없는 상태가 30초 넘게 이어지면 사라진다 (싸우는 중이거나 누군가 가까이 있으면 그대로)
 	task.spawn(function()
 		local lonelySince = setmetatable({}, { __mode = "k" })
