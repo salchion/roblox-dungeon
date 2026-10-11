@@ -41,7 +41,7 @@ local function slotCount(player, rift)
 	for _, need in ipairs(Config.Sets.AugSlotZones) do
 		if cleared >= need then slots += 1 end
 	end
-	return math.max(1, slots)
+	return math.max(1, slots) + (player:GetAttribute("AugSlotBonus") or 0) -- 상품 / VIP 로 얻은 칸
 end
 
 local function equipped(rift, slots)
@@ -92,8 +92,13 @@ function Aug.Apply(player)
 end
 
 -- 데이터가 적용된 뒤(Meta.Load 후) 호출
+local watching = setmetatable({}, { __mode = "k" })
 function Aug.Refresh(player)
 	Aug.Apply(player)
+	if not watching[player] then
+		watching[player] = true
+		player:GetAttributeChangedSignal("AugSlotBonus"):Connect(function() Aug.Apply(player) end) -- 칸 상품을 샀을 때
+	end
 end
 
 -- 구역 군주를 잡았다 (FieldService)

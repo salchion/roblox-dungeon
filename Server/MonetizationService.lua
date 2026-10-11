@@ -71,6 +71,7 @@ local function applyAttributes(player, state)
 	player:SetAttribute("KeyCapBonus", vip and S.Vip.KeyCap or 0)
 	player:SetAttribute("KeyRegenBonus", vip and S.Vip.KeyRegen or 0)
 	player:SetAttribute("TrainSlotBonus", state.TrainSlot + (vip and S.Vip.TrainSlots or 0))
+	player:SetAttribute("AugSlotBonus", state.AugSlot + (vip and S.Vip.AugSlots or 0)) -- 세트 효과를 동시에 켜는 칸
 	player:SetAttribute("XpBoostUntil", state.XpBoostUntil)
 	player:SetAttribute("LuckBoostUntil", state.LuckBoostUntil)
 	player:SetAttribute("IdleBoostUntil", state.IdleBoostUntil)
@@ -143,6 +144,9 @@ function Monetization.Grant(player, grant)
 	if grant.Bag then
 		state.Bag += grant.Bag
 	end
+	if grant.AugSlot then
+		state.AugSlot = math.min(2, state.AugSlot + grant.AugSlot)
+	end
 	if grant.TrainSlot then
 		state.TrainSlot += grant.TrainSlot
 	end
@@ -165,10 +169,11 @@ end
 -- 저장 / 불러오기
 ------------------------------------------------------------
 function Monetization.Load(player, saved)
-	local state = { Bag = 0, TrainSlot = 0, XpBoostUntil = 0, LuckBoostUntil = 0, IdleBoostUntil = 0, IdleMultTier = 0, IdleCapTier = 0, AuraUnlocked = {}, Aura = "", Banner = "", Mount = "", Receipts = {}, Passes = {} }
+	local state = { Bag = 0, TrainSlot = 0, AugSlot = 0, XpBoostUntil = 0, LuckBoostUntil = 0, IdleBoostUntil = 0, IdleMultTier = 0, IdleCapTier = 0, AuraUnlocked = {}, Aura = "", Banner = "", Mount = "", Receipts = {}, Passes = {} }
 	if typeof(saved) == "table" then
 		state.Bag = math.max(0, math.floor(tonumber(saved.Bag) or 0))
 		state.TrainSlot = math.max(0, math.floor(tonumber(saved.TrainSlot) or 0))
+		state.AugSlot = math.clamp(math.floor(tonumber(saved.AugSlot) or 0), 0, 2)
 		state.XpBoostUntil = tonumber(saved.XpBoostUntil) or 0
 		state.LuckBoostUntil = tonumber(saved.LuckBoostUntil) or 0
 		state.IdleBoostUntil = tonumber(saved.IdleBoostUntil) or 0
@@ -200,7 +205,7 @@ function Monetization.Serialize(player)
 	local state = states[player]
 	if not state then return nil end
 	return {
-		Bag = state.Bag, TrainSlot = state.TrainSlot, XpBoostUntil = state.XpBoostUntil, LuckBoostUntil = state.LuckBoostUntil,
+		Bag = state.Bag, TrainSlot = state.TrainSlot, AugSlot = state.AugSlot, XpBoostUntil = state.XpBoostUntil, LuckBoostUntil = state.LuckBoostUntil,
 		IdleBoostUntil = state.IdleBoostUntil, IdleMultTier = state.IdleMultTier, IdleCapTier = state.IdleCapTier,
 		AuraUnlocked = state.AuraUnlocked, Aura = state.Aura, Banner = state.Banner, Mount = state.Mount, Receipts = state.Receipts,
 	}

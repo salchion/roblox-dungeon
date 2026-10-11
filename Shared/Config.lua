@@ -1471,8 +1471,8 @@ Config.Idle = {
 Config.Shop = {
 	Passes = {
 		VIP = {
-			Name = "VIP 패스", Desc = "경험치 +20% · 방치 수입 +20% · 훈련 슬롯 +1 · 훈련/돌파 시간 -20% · 열쇠 보관 +2 · 열쇠 회복 30% 빠르게 · 가방 +20칸 · 황금 오라",
-			PassId = 0, Icon = "👑", Benefits = { "경험치 +20%", "방치 수입 +20%", "훈련 슬롯 +1", "훈련 시간 -20%", "열쇠 보관 +2", "열쇠 회복 +30%", "가방 +20칸", "황금 오라" },
+			Name = "VIP 패스", Desc = "경험치 +20% · 방치 수입 +20% · 훈련 슬롯 +1 · 훈련/돌파 시간 -20% · 세트 효과 칸 +1 · 가방 +20칸 · 황금 오라",
+			PassId = 0, Icon = "👑", Benefits = { "경험치 +20%", "방치 수입 +20%", "훈련 슬롯 +1", "훈련 시간 -20%", "세트 효과 칸 +1", "가방 +20칸", "황금 오라" },
 		},
 	},
 	Products = {
@@ -1481,6 +1481,8 @@ Config.Shop = {
 		LuckBooster = { Name = "행운 부스터 (1시간)", Desc = "장비 드롭 등급 +50%", ProductId = 0, Category = "Growth", Icon = "🍀", Grant = { LuckBoost = 3600 } },
 		BagPlus = { Name = "가방 확장 +10칸", Desc = "영구 적용", ProductId = 0, Category = "Growth", Icon = "🎒", Grant = { Bag = 10 } },
 		TicketPack = { Name = "장비 뽑기 티켓 5장", Desc = "티켓으로 장비를 뽑아요", ProductId = 0, Category = "Currency", Icon = "🎫", Grant = { Tickets = 5 } },
+		TimeSkip10m = { Name = "시간 단축권 10분", Desc = "훈련 / 돌파 대기 시간을 10분 줄여요 (단축칸이 바로 가득 차요)", ProductId = 0, Category = "Growth", Icon = "⏩", Grant = { TimeSkip = 600 } },
+		AugSlot = { Name = "세트 효과 칸 +1", Desc = "영구 적용 · 세트 효과를 하나 더 동시에 켜요 (최대 +2)", ProductId = 0, Category = "Growth", Icon = "🌟", Badge = "NEW", Featured = true, Grant = { AugSlot = 1 } },
 		TimeSkip1h = { Name = "시간 단축권 1시간", Desc = "훈련 / 돌파 대기 시간을 1시간 줄여요", ProductId = 0, Category = "Growth", Icon = "⏩", Grant = { TimeSkip = 3600 } },
 		TimeSkip8h = { Name = "시간 단축권 8시간", Desc = "훈련 / 돌파 대기 시간을 8시간 줄여요", ProductId = 0, Category = "Growth", Icon = "⏩", Badge = "가성비 최고", Featured = true, Grant = { TimeSkip = 28800 } },
 		IdleBooster = { Name = "방치 부스터 (1시간)", Desc = "방치 수입 2배 (접속 중 + 오프라인 적립에도 적용)", ProductId = 0, Category = "Idle", Icon = "⏱", Badge = "인기", Featured = true, Grant = { IdleBoost = 3600 } },
@@ -1498,9 +1500,9 @@ Config.Shop = {
 	PassOrder = { "VIP" },
 	-- 상점 화면 표시용 (효과와 무관): 카테고리 탭. Products 의 Category / Badge / Icon / Featured(추천 탭) / Tier(단계 상품 표시) 도 표시 전용
 	Categories = { { Key = "Rec", Name = "🔥 추천" }, { Key = "Idle", Name = "⏱ 방치" }, { Key = "Growth", Name = "📈 성장" }, { Key = "Deco", Name = "🎨 꾸미기" }, { Key = "Currency", Name = "🎫 재화" } },
-	ProductOrder = { "IdleBooster", "IdleMult1", "IdleMult2", "IdleMult3", "IdleCap8", "IdleCap24", "TimeSkip1h", "TimeSkip8h", "TrainSlot", "KeyPack", "XpBooster", "LuckBooster", "BagPlus", "TicketPack", "AuraVoid", "BannerDragon", "MountCarpet", "MountPhoenix" },
+	ProductOrder = { "IdleBooster", "IdleMult1", "IdleMult2", "IdleMult3", "IdleCap8", "IdleCap24", "AugSlot", "TimeSkip10m", "TimeSkip1h", "TimeSkip8h", "TrainSlot", "KeyPack", "XpBooster", "LuckBooster", "BagPlus", "TicketPack", "AuraVoid", "BannerDragon", "MountCarpet", "MountPhoenix" },
 	-- VIP 효과 (코드에서 읽는 값). TrainTime: 훈련/돌파 시간 단축 비율
-	Vip = { XpBonus = 0.2, KeyCap = 2, KeyRegen = 0.3, Bag = 20, TrainSlots = 1, TrainTime = 0.2 },
+	Vip = { XpBonus = 0.2, KeyCap = 2, KeyRegen = 0.3, Bag = 20, TrainSlots = 1, TrainTime = 0.2, AugSlots = 1 },
 	XpBoostMult = 2,
 	LuckBoostBonus = 0.5,
 }
