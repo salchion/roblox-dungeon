@@ -43,7 +43,7 @@ local function unlock(player, state, giveReward)
 		if reward.Xp then Level.AddXP(player, reward.Xp) end
 		player:SetAttribute("GrowthNew", true) -- 클라이언트가 성장 탭 버튼을 반짝이게 한다 (탭을 열면 "Seen" 으로 꺼진다)
 		notify(player, "💪 성장 해금! 2구역을 돌파했어요. 훈련을 시작하면 접속을 꺼도 강해져요")
-		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "💪", Title = "성장 해금!", Text = "2구역을 돌파했어요! 메뉴(B) → 성장에서 훈련을 시작하면 접속을 꺼도 강해져요. 보상: 1000 G · 열쇠 1 · 티켓 2 · 경험치 300", Duration = 9 })
+		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "💪", Title = "성장 해금!", Text = "2구역을 돌파했어요! 메뉴(B) → 스킬·성장(패시브·훈련)에서 훈련을 시작하면 접속을 꺼도 강해져요. 보상: 1000 G · 열쇠 1 · 티켓 2 · 경험치 300", Duration = 9 })
 	end
 	Growth.Push(player)
 end

@@ -2256,19 +2256,19 @@ end)
 
 local TABS = {
 	{ Key = "Character", Name = "캐릭터" }, -- 장비 / 무기 / 정보
-	{ Key = "Growth", Name = "성장" },      -- 훈련 / 스킬 / 펫
+	{ Key = "Growth", Name = "스킬·성장" }, -- 액티브 스킬 / 패시브(스킬 + 훈련·돌파) / 펫
 	{ Key = "Quest", Name = "퀘스트" },     -- 오늘의 퀘스트 / 업적
 	{ Key = "Rank", Name = "랭킹" },
 }
-local MENU = { Sub = { Character = "Gear", Growth = "Train", Quest = "Daily" } }
+local MENU = { Sub = { Character = "Gear", Growth = "Active", Quest = "Daily" } }
 MENU.Subs = { -- 탭 안의 작은 버튼 줄
 	Character = { { "Gear", "🛡 장비" }, { "Weapon", "🔫 무기" }, { "Info", "📊 정보" } },
-	Growth = { { "Train", "훈련" }, { "Skill", "스킬" }, { "Pet", "🐾 펫 (P)" } },
+	Growth = { { "Active", "⚔ 액티브 스킬" }, { "Passive", "🌿 패시브 · 훈련" }, { "Pet", "🐾 펫 (P)" } },
 	Quest = { { "Daily", "오늘의 퀘스트" }, { "Ach", "업적" } },
 }
 MENU.Alias = {
 	Inventory = { "Character", "Gear" }, Weapon = { "Character", "Weapon" }, Info = { "Character", "Info" },
-	Skill = { "Growth", "Skill" }, Pet = { "Growth", "Pet" }, Ach = { "Quest", "Ach" },
+	Skill = { "Growth", "Active" }, Train = { "Growth", "Passive" }, Pet = { "Growth", "Pet" }, Ach = { "Quest", "Ach" },
 }
 local currentTab = "Character"
 local tabButtons = {}
@@ -3027,11 +3027,16 @@ end
 
 local metaState = nil
 
-local function buildSkillTab()
-	sectionTitle("⚔ 스킬 강화 — 골드로 레벨업. 레벨이 오를수록 강해지고 쿨타임이 줄어요. (필드/던전에서 C 치료 · V 궁극기)")
+local function buildSkillTab(passiveOnly)
+	if passiveOnly then
+		sectionTitle("🌿 패시브 스킬 — 키를 누르지 않아도 항상 적용돼요. 골드로 레벨업")
+	else
+		sectionTitle("⚔ 액티브 스킬 — 필드 / 던전에서 키를 눌러 써요 (C 치료 · V 궁극기). 골드로 레벨업하면 더 강해지고 쿨타임이 줄어요")
+	end
 	local U = Config.SkillUpgrade
 	for _, key in ipairs(Config.Skills.UpgradeOrder) do
 		local cfg = Config.Skills[key]
+		if (cfg.Passive == true) ~= (passiveOnly == true) then continue end
 		local level = metaState and metaState.Skills[key] or 1
 		local lv = level - 1
 		local detail
@@ -3127,12 +3132,16 @@ function refreshMenu()
 			buildCharacterTab()
 		end
 	elseif currentTab == "Growth" then
-		if sub == "Skill" then
-			buildSkillTab()
-		elseif locked then
-			MENU.locked()
+		if sub == "Passive" then
+			buildSkillTab(true)
+			sectionTitle("🏋 훈련 · 돌파 — 접속을 꺼도 흘러가는 영구 성장 (패시브의 한 종류)")
+			if locked then
+				MENU.locked()
+			else
+				buildGrowthTab()
+			end
 		else
-			buildGrowthTab()
+			buildSkillTab(false)
 		end
 	elseif currentTab == "Quest" then
 		if sub == "Ach" then
@@ -3163,8 +3172,8 @@ function selectTab(key, subKey)
 	end
 	currentTab = key
 	if subKey and MENU.Subs[key] then MENU.Sub[key] = subKey end
-	if key == "Growth" and MENU.Sub.Growth == "Train" and not subKey and player:GetAttribute("GrowthUnlocked") ~= true then
-		MENU.Sub.Growth = "Skill"
+	if key == "Growth" and not subKey and (player:GetAttribute("GrowthNew") == true or (player:GetAttribute("TutorialActive") == true and player:GetAttribute("GrowthUnlocked") == true)) then
+		MENU.Sub.Growth = "Passive" -- 방금 해금된 훈련을 바로 보여 준다
 	end
 	local sub = MENU.Sub[key]
 	if key == "Quest" or key == "Character" then
@@ -3262,7 +3271,7 @@ end)
 task.spawn(function()
 	while true do
 		task.wait(1)
-		if menuPanel.Visible and currentTab == "Growth" and MENU.Sub.Growth == "Train" then
+		if menuPanel.Visible and currentTab == "Growth" and MENU.Sub.Growth == "Passive" then
 			refreshMenu()
 		end
 	end

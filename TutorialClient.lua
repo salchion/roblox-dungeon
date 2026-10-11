@@ -318,18 +318,18 @@ local function runHighlight(kind)
 				for _, descendant in ipairs(hud:GetDescendants()) do
 					if descendant:IsA("TextButton") and descendant.Visible then
 						if descendant.Text == "📋 메뉴(B)" then menuButton = descendant end
-						if descendant.Text == "성장" and descendant.Parent and descendant.Parent.Visible then growthTab = descendant end
+						if descendant:IsA("TextButton") and string.find(descendant.Text, "스킬·성장", 1, true) and descendant.Parent and descendant.Parent.Visible then growthTab = descendant end
 						if descendant.Text == "훈련 시작" and not trainButton then trainButton = descendant end
 					end
 				end
 				if growthTab then
 					if growthTab.BackgroundColor3.B < 0.8 then
-						target, text = growthTab, "성장 탭을 눌러요!"
+						target, text = growthTab, "스킬·성장 탭을 눌러요!"
 					elseif trainButton then
 						target, text = trainButton, "훈련 시작을 눌러요!"
 					end
 				elseif menuButton then
-					target, text = menuButton, "메뉴를 열어요! (I)"
+					target, text = menuButton, "메뉴를 열어요! (B)"
 				end
 			end
 			if target and target.AbsoluteSize.X > 0 then

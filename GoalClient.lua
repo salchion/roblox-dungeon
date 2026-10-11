@@ -330,7 +330,7 @@ local function pickGoal()
 	local charLevel = player:GetAttribute("Level") or 1
 	if charLevel < Config.Level.Max then
 		if player:GetAttribute("GateBlocked") then
-			table.insert(candidates, { Text = "🚧 레벨이 막혔어요!\n메뉴(B) → 성장에서 돌파를 진행하세요", Ratio = 1, Priority = 0 })
+			table.insert(candidates, { Text = "🚧 레벨이 막혔어요!\n메뉴(B) → 스킬·성장(패시브·훈련)에서 돌파를 진행하세요", Ratio = 1, Priority = 0 })
 		else
 			local xp, needed = player:GetAttribute("XP") or 0, math.max(1, player:GetAttribute("XPNeeded") or 1)
 			table.insert(candidates, {
