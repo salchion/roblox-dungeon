@@ -46,6 +46,7 @@ function Level.AddXP(player, amount)
 	amount = math.floor(amount * xpMultiplier(player) * early + 0.5)
 	if amount <= 0 then return end
 	if level >= Config.Level.Max then return end
+	pcall(function() require(script.Parent:WaitForChild("BalanceLog")).Xp(player, amount) end) -- (Studio 밸런스 로그)
 	local xp = (player:GetAttribute("XP") or 0) + amount
 
 	-- 돌파가 필요한 레벨(Config.Growth.Gates)에서는 더 오르지 못하고 경험치 막대만 가득 찬 채 기다린다

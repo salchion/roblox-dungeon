@@ -52,6 +52,7 @@ function NearMiss.Award(player, root, scoreFn)
 	if now - st.LastAt < 0.7 then return end -- 한 번에 여러 번 인정되지 않게
 	st.LastAt = now
 	st.Stacks = math.min(Config.NearMiss.MaxStacks, st.Stacks + 1)
+	pcall(function() require(script.Parent:WaitForChild("BalanceLog")).Count(player, "NearMiss", 1) end) -- (Studio 밸런스 로그)
 	st.NextDecay = now + Config.GetNearMissDuration(player)
 	apply(player, st)
 	player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 10 + math.min(st.Stacks, 4) * 3))

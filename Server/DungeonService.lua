@@ -10,6 +10,7 @@ local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+local BL = require(script.Parent:WaitForChild("BalanceLog")) -- Studio 전용 밸런스 로그
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Party = require(script.Parent:WaitForChild("PartyService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
@@ -1133,6 +1134,7 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 		isCrit = true
 	end
 	data.Health -= amount
+	BL.Dmg(player, amount, isCrit)
 	if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.5) end -- 연습 표적은 쓰러지지 않는다
 	data.Awake = true -- 맞은 몬스터는 거리와 상관없이 깨어난다
 	data.HealthFill.Size = UDim2.new(math.max(data.Health, 0) / data.MaxHealth, 0, 1, 0)
@@ -1172,6 +1174,7 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 		run.Score[player] = (run.Score[player] or 0) + R.KillScore + math.min(player:GetAttribute("Combo") or 0, 60) + (data.IsBoss and R.BossScore or 0)
 		player:SetAttribute("RiftScore", math.floor(run.Score[player]))
 	end
+	BL.Kill(player, data.IsBoss and "Boss" or "던전")
 	giveGold(run, data.Stats.Gold)
 	giveXp(run, data.IsBoss and Config.Xp.DungeonBoss or Config.Xp.DungeonPerMonsterLevel * data.Level)
 	Quest.Add(player, "Kills", 1)
@@ -1449,7 +1452,9 @@ local function hitMonster(run, player, entry, amount, quiet)
 	if run.HitFn then -- 필드: 필드 몬스터에게 피해를 주는 함수를 따로 받는다
 		run.HitFn(player, entry, amount, quiet)
 	elseif run.Monsters[entry.Part] == entry.Data then
+		BL.Ctx = "세트·펫" -- (밸런스 로그: 이 호출은 세트 효과 / 펫이 준 피해)
 		damageMonster(run, player, entry.Part, entry.Data, math.max(1, math.floor(amount)), false, entry.Part.Position, quiet)
+		BL.Ctx = nil
 	end
 end
 

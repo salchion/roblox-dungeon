@@ -21,6 +21,7 @@ local Effects = require(script.Parent:WaitForChild("Effects"))
 local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
 local Keys = require(script.Parent:WaitForChild("KeyService"))
 local Aug = require(script.Parent:WaitForChild("AugService"))
+local BL = require(script.Parent:WaitForChild("BalanceLog")) -- Studio 전용 밸런스 로그
 local Meta = require(script.Parent:WaitForChild("MetaService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Level = require(script.Parent:WaitForChild("LevelService"))
@@ -1450,6 +1451,8 @@ local function reward(player, data, part)
 
 	local gold = math.floor(data.Stats.Gold + 0.5)
 	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + math.floor(gold * Config.GoldBonus(player) + 0.5))
+	BL.Kill(player, data.Kind or "Normal")
+	BL.Gold(player, "처치", math.floor(gold * Config.GoldBonus(player) + 0.5))
 	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2, 0), string.format("+%d G", gold), Color3.fromRGB(255, 220, 90))
 
 	local xp
@@ -1644,6 +1647,7 @@ function Field.HitPart(player, part, damage)
 	if data.Invincible then damage = 1 end
 	if data.Doom then data.DoomHits = (data.DoomHits or 0) + 1 end
 	data.Health -= damage
+	BL.Dmg(player, damage, false)
 	if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
 	data.FirstHit = data.FirstHit or os.clock()
 	data.LastHit = os.clock()
@@ -1674,6 +1678,7 @@ function Field.AreaDamage(player, center, radius, damage)
 			if data.Invincible then damage = 1 end
 			if data.ExposedUntil and os.clock() < data.ExposedUntil then damage = math.floor(damage * 3) end -- 약점 노출 중 x3
 			data.Health -= damage
+			BL.Dmg(player, damage, false)
 			if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
 			data.FirstHit = data.FirstHit or os.clock()
 			data.LastHit = os.clock()
@@ -1766,6 +1771,7 @@ function Field.Shoot(player, origin, direction)
 					and (otherPart.Position - result.Position).Magnitude <= splash + otherPart.Size.X / 2 then
 					local splashDamage = math.max(1, math.floor(damage * 0.5))
 					otherData.Health -= splashDamage
+					BL.DmgAs(player, "스플래시", splashDamage)
 					otherData.LastHit = os.clock()
 					if otherData.Contrib then
 						otherData.Contrib[player] = (otherData.Contrib[player] or 0) + splashDamage
@@ -1809,6 +1815,7 @@ function Field.Shoot(player, origin, direction)
 			end
 		end
 		data.Health -= damage
+		BL.Dmg(player, damage, isCrit)
 		data.LastHit = os.clock() -- 맞은 몬스터는 멀리서 맞아도 깨어나 반응하고, 한동안 체력을 되찾지 않는다
 		if data.Contrib then
 			data.Contrib[player] = (data.Contrib[player] or 0) + damage
@@ -3362,6 +3369,7 @@ local function fieldAugHit(player, entry, amount, quiet)
 	if not canHitZone(player, part.Position.X) then return end -- 아직 못 가는 구역(닫힌 관문 너머)의 몬스터는 세트 효과로도 못 때린다
 	amount = math.max(1, math.floor(amount))
 	data.Health -= amount
+	BL.DmgAs(player, "세트·펫", amount)
 	data.LastHit = os.clock()
 	if data.Contrib then data.Contrib[player] = (data.Contrib[player] or 0) + amount end
 	data.HealthFill.Size = UDim2.new(math.max(data.Health, 0) / data.MaxHealth, 0, 1, 0)

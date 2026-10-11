@@ -70,9 +70,13 @@ end
 local function damageAt(player, center, radius, mult)
 	local base = Dungeon.ComputeDamage(player)
 	local damage = math.max(1, math.floor(base * mult))
-	return Dungeon.AreaDamage(player, center, radius, damage) or Field.AreaDamage(player, center, radius, damage) or {}
+	BL.Ctx = "스킬"
+	local hit = Dungeon.AreaDamage(player, center, radius, damage) or Field.AreaDamage(player, center, radius, damage) or {}
+	BL.Ctx = nil
+	return hit
 end
 
+local BL = require(script.Parent:WaitForChild("BalanceLog")) -- Studio 전용 밸런스 로그
 local U = Config.SkillUpgrade
 
 local function skillLevel(player, key)
@@ -254,7 +258,9 @@ handlers.Ult = function(player, root, _, character)
 				if not player.Parent or not root.Parent then return end
 				local from = root.Position + Vector3.new(0, 1.5, 0)
 				for index, part in ipairs(targets) do
+					BL.Ctx = "데드아이"
 					local alive = part.Parent and (Dungeon.HitPart(player, part, perShot) or Field.HitPart(player, part, perShot))
+					BL.Ctx = nil
 					if alive then
 						fired += 1
 						pcall(function()
@@ -329,6 +335,7 @@ function Skill.Use(player, skillKey, aimPoint)
 	cooldowns[skillKey] = now + cooldown
 	SoundBank.Play(root, skillKey == "Ult" and "Skill_Ult" or "Skill_Heal")
 	Quest.Add(player, "SkillUses", 1)
+	BL.Count(player, skillKey, 1) -- (밸런스 로그: Ult = 궁극기, 나머지 = 스킬)
 	Remotes.Skill:FireClient(player, "Cast", skillKey, cooldown)
 end
 

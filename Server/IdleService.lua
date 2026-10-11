@@ -83,6 +83,7 @@ function Idle.Init(center)
 					if gold > 0 then
 						player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
 						player:SetAttribute("IdleEarned", (player:GetAttribute("IdleEarned") or 0) + gold)
+						pcall(function() require(script.Parent:WaitForChild("BalanceLog")).Gold(player, "방치", gold) end) -- (Studio 밸런스 로그)
 						local bucket = pending[player] or { Gold = 0, Since = os.clock() }
 						bucket.Gold += gold
 						pending[player] = bucket
