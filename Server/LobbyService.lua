@@ -337,7 +337,8 @@ function Lobby.Build()
 	spawn.Name = "LobbySpawn"
 	spawn.Anchored = true
 	spawn.Size = Vector3.new(12, 1, 12)
-	spawn.Position = Vector3.new(0, TOP + HILL_H + 0.5, HILL_Z)
+	-- 시작 위치: 사거리 중앙에서 동쪽(필드 문)을 보고 선다 -> 정면은 필드, 왼쪽(북)은 던전 길, 오른쪽(남)은 허수아비 / 대장간 / 뽑기
+	spawn.CFrame = CFrame.lookAt(Vector3.new(0, TOP + 0.5, 0), Vector3.new(1, TOP + 0.5, 0))
 	spawn.Transparency = 1
 	spawn.CanCollide = false
 	spawn.Neutral = true
@@ -919,7 +920,7 @@ function Lobby.Build()
 	if not okDecor then warn("LobbyDecor 실패: " .. tostring(decorErr)) end
 
 	return {
-		SpawnCFrame = CFrame.new(0, HILL_H + 5, HILL_Z),
+		SpawnCFrame = CFrame.lookAt(Vector3.new(0, TOP + 4, 0), Vector3.new(1, TOP + 4, 0)), -- 사거리 중앙, 동쪽(필드)을 본다
 		GatePrompt = gatePrompt, -- (호환용: 첫 번째 게이트)
 		Gates = gates,
 		AnvilPrompt = anvilPrompt,
