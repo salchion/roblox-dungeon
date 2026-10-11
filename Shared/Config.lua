@@ -37,9 +37,15 @@ Config.StatAttributes = {   -- Upgrade 리모트가 받는 이름 -> 플레이�
 ------------------------------------------------------------
 -- NEAR MISS(대시로 아슬아슬하게 피하기): 연속으로 성공할수록 공격력이 누적해서 올라간다 (마지막 성공 후 Duration 초가 지나면 사라진다)
 Config.WeakExposeSeconds = 6.5 -- 보스 약점을 맞혔을 때 약점이 노출되어 피해 x3 가 유지되는 시간(초)
-Config.NearMiss = { DamagePerStack = 0.05, MaxStacks = 10, Duration = 8 }
+Config.NearMiss = { DamagePerStack = 0.03, MaxStacks = 10, Duration = 8, DecayStep = 2 } -- 최대 +30% (자동 공격만 써도 기본 DPS 에서 손해 보지 않게 낮춤). Duration 뒤에는 DecayStep 초마다 1스택씩 줄어든다
 function Config.GetNearMissDuration(player) -- 기운 집중 스킬 레벨 반영
 	return Config.NearMiss.Duration + Config.SkillUpgrade.FocusDuration * math.max(0, (player:GetAttribute("SkillLv_Focus") or 1) - 1)
+end
+
+-- 기운 집중: 줄어들다 멈추는 바닥 스택 (레벨 1 = 0, 최대 레벨 = 최대 스택의 절반): 끊겨도 어느 정도는 남는다
+function Config.GetNearMissFloor(player)
+	local level = math.max(1, player:GetAttribute("SkillLv_Focus") or 1)
+	return math.floor(Config.NearMiss.MaxStacks * 0.5 * (level - 1) / math.max(1, Config.SkillUpgrade.MaxLevel - 1))
 end
 
 Config.SkillUpgrade = {
@@ -208,7 +214,7 @@ Config.Skills = {
 	ChargePerShot = 4,
 	-- 패시브 스킬 (스킬 강화 창에서 골드로 레벨업, 스킬 바에는 안 나온다)
 	Focus = { Name = "기운 집중", Icon = "⚡", Key = "패시브", Cooldown = 0, Passive = true,
-		Desc = "NEAR MISS 로 쌓은 공격력 보너스가 유지되는 시간이 늘어나요" },
+		Desc = "NEAR MISS 로 쌓은 공격력 보너스가 더 오래 유지돼요. 레벨이 높을수록 끊겨도 보너스가 일정 수준(최대 레벨에서 절반) 남아요" },
 	UpgradeOrder = { "Heal", "Ult", "Focus" }, -- 스킬 강화 창 / 저장에 쓰는 목록
 }
 

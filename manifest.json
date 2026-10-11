@@ -440,6 +440,13 @@
       "name": "CodexClient",
       "class": "LocalScript",
       "overwrite": true
+    },
+    {
+      "path": "Server/NearMissService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "NearMissService",
+      "class": "ModuleScript",
+      "overwrite": true
     }
   ]
 }

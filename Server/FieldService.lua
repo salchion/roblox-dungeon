@@ -2208,6 +2208,16 @@ local function unstick(part, data)
 		end
 	end
 	local y = floorAt(x) + r
+	-- 몸이 눕거나 크게 기운 채로 남았으면(돌진 / 밀림 뒤) 바로 세운다: 앞 방향(yaw)만 남기고 평평하게
+	local cf = part.CFrame
+	if cf.UpVector.Y < 0.7 and not data.Static then
+		local look = cf.LookVector
+		local flatLook = Vector3.new(look.X, 0, look.Z)
+		if flatLook.Magnitude < 0.05 then flatLook = Vector3.new(0, 0, -1) end
+		part.CFrame = CFrame.lookAt(Vector3.new(pos.X, y, pos.Z), Vector3.new(pos.X, y, pos.Z) + flatLook.Unit)
+		data.Lean = 0
+		pos = part.Position
+	end
 	if math.abs(pos.X - x) > 0.05 or math.abs(pos.Z - z) > 0.05 or pos.Y < y - r * 0.35 or pos.Y > y + r * 2.5 then
 		part.CFrame = CFrame.new(Vector3.new(x, y, z)) * (part.CFrame - part.CFrame.Position)
 	end
@@ -2464,41 +2474,11 @@ local function stepMonsters(dt)
 	end
 end
 
--- 아슬아슬한 회피(NEAR MISS): 대시 중에 탄 / 폭격이 몸 바로 옆을 스치면 보상 - 데드아이 게이지 + 연속으로 피할수록 공격력이 누적해서 오른다
-local nearMissAt = setmetatable({}, { __mode = "k" })
-local dashSeenAt = setmetatable({}, { __mode = "k" })
-local function isDashing(root, player)
-	-- 대시 중이거나 방금(0.6초 안에) 대시했으면 인정한다: 탄이 스치는 순간 대시가 막 끝났어도 NEAR MISS (후한 판정)
-	local v = root.AssemblyLinearVelocity
-	local now = os.clock()
-	if Vector3.new(v.X, 0, v.Z).Magnitude > 50 then
-		dashSeenAt[player] = now
-	end
-	return now - (dashSeenAt[player] or -10) < 0.6
-end
-local function awardNearMiss(player, root)
-	local now = os.clock()
-	if now - (nearMissAt[player] or 0) < 0.7 then return end
-	local streak = (now - (nearMissAt[player] or 0) < Config.GetNearMissDuration(player)) and ((player:GetAttribute("NearMissStreak") or 0) + 1) or 1
-	nearMissAt[player] = now
-	player:SetAttribute("NearMissStreak", streak)
-	local charge = player:GetAttribute("UltCharge") or 0
-	player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, charge + 10 + math.min(streak, 4) * 3))
-	player:SetAttribute("NearMissUntil", now + Config.GetNearMissDuration(player)) -- 공격력 누적 보너스 유지 시간 (DungeonService.ComputeDamage 가 읽는다)
-	player:SetAttribute("NearMissStacks", math.min(streak, Config.NearMiss.MaxStacks)) -- 클라이언트가 몸 / 총에 기운이 모이는 연출을 그린다
-	player:SetAttribute("NearMissEnd", workspace:GetServerTimeNow() + Config.GetNearMissDuration(player))
-	player:SetAttribute("NearMissLen", Config.GetNearMissDuration(player))
-	task.delay(Config.GetNearMissDuration(player) + 0.1, function()
-		if player.Parent and (player:GetAttribute("NearMissEnd") or 0) <= workspace:GetServerTimeNow() then
-			player:SetAttribute("NearMissStacks", 0)
-		end
-	end)
-	local rift = Meta.GetRift(player) -- 처음 한 번만 NEAR MISS 설명 카드를 띄운다 (저장됨)
-	local firstTime = rift ~= nil and not rift.Tip
-	if rift then rift.Tip = true end
-	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), streak > 1 and string.format("NEAR MISS! x%d", streak) or "NEAR MISS!", Color3.fromRGB(120, 255, 255))
-	Remotes.Banner:FireClient(player, "NearMiss", { Streak = streak, First = firstTime })
-end
+-- 아슬아슬한 회피(NEAR MISS): 공통 처리는 NearMissService (필드 / 던전 / 몬스터 AI 가 같이 쓴다)
+local NearMiss = require(script.Parent:WaitForChild("NearMissService"))
+local function isDashing(root, player) return NearMiss.IsDashing(player, root) end
+local function awardNearMiss(player, root) NearMiss.Award(player, root) end
+fieldCtx.NearMiss = function(root) NearMiss.AwardRoot(root) end -- 돌진 / 폭발 / 메테오 / 충격파 / 레이저를 아슬아슬하게 피했을 때 (MonsterTypes 가 부른다)
 
 local function stepProjectiles(dt)
 	local now = os.clock()

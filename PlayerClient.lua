@@ -3068,7 +3068,7 @@ local function buildSkillTab(passiveOnly)
 		elseif key == "Blast" then
 			detail = string.format("범위 %.1f · 공격력 x%.2f", cfg.Radius + U.BlastRadius * lv, cfg.Mult * (1 + U.BlastMult * lv))
 		elseif key == "Focus" then
-			detail = string.format("NEAR MISS 유지 %.1f초", Config.NearMiss.Duration + U.FocusDuration * lv)
+			detail = string.format("NEAR MISS 유지 %.1f초 · 끊겨도 최소 %d스택 유지", Config.NearMiss.Duration + U.FocusDuration * lv, math.floor(Config.NearMiss.MaxStacks * 0.5 * lv / math.max(1, U.MaxLevel - 1)))
 		elseif key == "Heal" then
 			detail = string.format("체력 %d%% 회복", math.floor((cfg.Ratio + U.HealRatio * lv) * 100 + 0.5))
 		else

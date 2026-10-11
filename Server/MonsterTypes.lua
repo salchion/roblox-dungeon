@@ -500,13 +500,23 @@ local function telegraph(ctx, part, data, color, delay, action)
 	end)
 end
 
+-- 아슬아슬한 회피(NEAR MISS) 확인: 위험이 지나간 순간 플레이어가 "닿지 않았지만 바로 옆"에 있으면 ctx.NearMiss(root) 를 부른다 (대시 중인지는 받는 쪽이 판단)
+local function nearMiss(ctx, entry, distance, inner, outer)
+	if ctx.NearMiss and distance > inner and distance <= outer then
+		ctx.NearMiss(entry.Root)
+	end
+end
+
 local function explode(ctx, part, data)
 	local center = part.Position
 	local damage = data.Stats.ShotDamage
 	for _, entry in ipairs(ctx.Players()) do
 		-- 벽 너머에서는 폭발 피해를 주지 않는다
-		if (entry.Root.Position - center).Magnitude <= 16 and (not ctx.LineOfSight or ctx.LineOfSight(center, entry.Root.Position)) then
+		local dist = (entry.Root.Position - center).Magnitude
+		if dist <= 16 and (not ctx.LineOfSight or ctx.LineOfSight(center, entry.Root.Position)) then
 			entry.Humanoid:TakeDamage(damage)
+		else
+			nearMiss(ctx, entry, dist, 16, 24) -- 폭발 반경 바로 밖
 		end
 	end
 	Effects.Burst(center, Color3.fromRGB(255, 130, 50), 55)
@@ -587,8 +597,11 @@ local function meteor(ctx, spot, stats, owner, ownerData)
 		SoundBank.Play(boom, "Boom", { Volume = 0.8 })
 		for _, entry in ipairs(ctx.Players()) do
 			local p = entry.Root.Position
-			if Vector3.new(p.X - spot.X, 0, p.Z - spot.Z).Magnitude <= radius then
+			local gap = Vector3.new(p.X - spot.X, 0, p.Z - spot.Z).Magnitude
+			if gap <= radius then
 				entry.Humanoid:TakeDamage(math.floor(stats.ShotDamage * 1.2))
+			else
+				nearMiss(ctx, entry, gap, radius, radius + 8) -- 경고 원 바로 밖으로 빠져나갔다
 			end
 		end
 	end)
@@ -610,6 +623,10 @@ local function shockwave(ctx, part, stats)
 			local flatDist = Vector3.new(p.X - origin.X, 0, p.Z - origin.Z).Magnitude
 			if flatDist <= radius and p.Y - groundOf(ctx, p) < 5 then
 				entry.Humanoid:TakeDamage(math.floor(stats.ShotDamage * 1.1))
+			elseif flatDist <= radius and ctx.NearMiss then
+				ctx.NearMiss(entry.Root) -- 점프로 충격파를 넘었다 (대시 중이면 인정)
+			else
+				nearMiss(ctx, entry, flatDist, radius, radius + 8)
 			end
 		end
 	end)
@@ -639,8 +656,11 @@ local function laser(ctx, part, data, stats, aimDir, range)
 		TweenService:Create(beam, TweenInfo.new(0.35), { Transparency = 1, Size = Vector3.new(1, 1, length) }):Play()
 		Debris:AddItem(beam, 0.4)
 		for _, entry in ipairs(ctx.Players()) do
-			if distToSegment(entry.Root.Position, origin, target) <= 3.5 then
+			local lineGap = distToSegment(entry.Root.Position, origin, target)
+			if lineGap <= 3.5 then
 				entry.Humanoid:TakeDamage(math.floor(stats.ShotDamage * 1.6))
+			else
+				nearMiss(ctx, entry, lineGap, 3.5, 9) -- 빛줄기 바로 옆
 			end
 		end
 	end)
@@ -678,14 +698,21 @@ function M.Update(ctx, part, data, dt, now)
 		part.CFrame = slopeTilt(ctx, position, stats.Size) * CFrame.lookAt(position, position + data.ChargeDir)
 		if not data.ChargeHit then
 			for _, entry in ipairs(ctx.Players()) do
-				if (flat(entry.Root.Position - position)).Magnitude <= stats.Size / 2 + 3 then
+				local gap = (flat(entry.Root.Position - position)).Magnitude
+				if gap <= stats.Size / 2 + 3 then
 					entry.Humanoid:TakeDamage(math.floor(stats.ShotDamage * 1.5))
 					data.ChargeHit = true
 					break
+				elseif not data.ChargeMissed and gap <= stats.Size / 2 + 10 then
+					nearMiss(ctx, entry, gap, 0, 99) -- 돌진 길 옆으로 아슬아슬하게 비켜났다 (한 번의 돌진에 한 번만)
+					data.ChargeMissed = true
 				end
 			end
 		end
 		return
+	end
+	if data.ChargeUntil then -- 돌진이 끝난 첫 프레임: 기울임 / 젖힘을 지워 몸이 바로 서게 한다 (돌진 뒤 몸이 뜨거나 기운 채 남던 문제)
+		data.Lean, data.RearUntil = 0, nil
 	end
 	data.ChargeUntil = nil
 
@@ -1069,6 +1096,7 @@ function M.Update(ctx, part, data, dt, now)
 			data.ChargeDir = aim.Magnitude > 0.1 and aim.Unit or direction
 			data.ChargeUntil = os.clock() + 0.5
 			data.ChargeHit = false
+			data.ChargeMissed = false
 		end)
 	end
 end

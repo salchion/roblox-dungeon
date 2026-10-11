@@ -1225,33 +1225,14 @@ task.spawn(function() -- 접속 직후 / 날짜가 바뀔 때 화면 표시용 �
 	end
 end)
 
-local nearMissAt = setmetatable({}, { __mode = "k" })
-local dashSeenAt = setmetatable({}, { __mode = "k" })
+local NearMiss = require(script.Parent:WaitForChild("NearMissService"))
 function Dungeon.AwardNearMiss(run, player, root)
-	local now = os.clock()
-	if now - (nearMissAt[player] or 0) < 0.7 then return end
-	local streak = (now - (nearMissAt[player] or 0) < Config.GetNearMissDuration(player)) and ((player:GetAttribute("NearMissStreak") or 0) + 1) or 1
-	nearMissAt[player] = now
-	player:SetAttribute("NearMissStreak", streak)
-	player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 10 + math.min(streak, 4) * 3))
-	player:SetAttribute("NearMissUntil", now + Config.GetNearMissDuration(player))
-	player:SetAttribute("NearMissStacks", math.min(streak, Config.NearMiss.MaxStacks)) -- 클라이언트가 몸 / 총에 기운이 모이는 연출을 그린다
-	player:SetAttribute("NearMissEnd", workspace:GetServerTimeNow() + Config.GetNearMissDuration(player))
-	player:SetAttribute("NearMissLen", Config.GetNearMissDuration(player))
-	task.delay(Config.GetNearMissDuration(player) + 0.1, function()
-		if player.Parent and (player:GetAttribute("NearMissEnd") or 0) <= workspace:GetServerTimeNow() then
-			player:SetAttribute("NearMissStacks", 0)
+	NearMiss.Award(player, root, function(streak)
+		if run.Score then -- 심연 도전 점수 (필드와 같은 보상 + 점수)
+			run.Score[player] = (run.Score[player] or 0) + Config.Rift.NearMissScore * math.min(streak, 5)
+			player:SetAttribute("RiftScore", math.floor(run.Score[player]))
 		end
 	end)
-	if run.Score then
-		run.Score[player] = (run.Score[player] or 0) + Config.Rift.NearMissScore * math.min(streak, 5)
-		player:SetAttribute("RiftScore", math.floor(run.Score[player]))
-	end
-	local rift = Meta.GetRift(player) -- 처음 한 번만 NEAR MISS 설명 카드를 띄운다 (저장됨)
-	local firstTime = rift ~= nil and not rift.Tip
-	if rift then rift.Tip = true end
-	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), streak > 1 and string.format("NEAR MISS! x%d", streak) or "NEAR MISS!", Color3.fromRGB(120, 255, 255))
-	Remotes.Banner:FireClient(player, "NearMiss", { Streak = streak, First = firstTime })
 end
 
 local function stepRun(run, dt)
@@ -1365,11 +1346,7 @@ local function stepRun(run, dt)
 					hit = true
 					break
 				elseif gap < projectile.Radius + 14 then -- 아슬아슬하게 스치며 대시: NEAR MISS (필드와 같은 보상 + 심연 도전 점수). 방금(0.6초 안) 대시했어도 인정
-					local v = root.AssemblyLinearVelocity
-					if Vector3.new(v.X, 0, v.Z).Magnitude > 50 then
-						dashSeenAt[member] = os.clock()
-					end
-					if os.clock() - (dashSeenAt[member] or -10) < 0.6 then
+					if NearMiss.IsDashing(member, root) then
 						projectile.NearMissed = projectile.NearMissed or {}
 						if not projectile.NearMissed[member] then
 							projectile.NearMissed[member] = true
@@ -2668,6 +2645,10 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth)
 		end,
 		Fire = function(origin, direction, speed, damage, size, color, style, opts)
 			fireProjectile(run, origin, direction, speed, damage, size, color, style, opts)
+		end,
+		NearMiss = function(root) -- 돌진 / 폭발 / 메테오 / 충격파 / 레이저를 아슬아슬하게 피했을 때 (MonsterTypes 가 부른다)
+			local owner = Players:GetPlayerFromCharacter(root.Parent)
+			if owner and NearMiss.IsDashing(owner, root) then Dungeon.AwardNearMiss(run, owner, root) end
 		end,
 		Players = function()
 			local list = {}
