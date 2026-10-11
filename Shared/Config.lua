@@ -130,12 +130,9 @@ Config.Tutorial = {
 	Steps = {
 		{ Text = "🎯 대장간 옆 훈련장의 허수아비를 쏘세요! 마우스 클릭으로 사격해요 (R 키 = 자동 조준)", Stat = "DummyHits", Goal = 8, Target = "Dummy", TargetName = "허수아비",
 			Reward = { Gold = 100 } },
-		{ Text = "모루에서 무기를 강화하세요! (처음 3번은 무료)", Stat = "Enhances", Goal = 1, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
-			Reward = { Gold = 50 } },
-		{ Text = "계속 강화해보세요! 강화할수록 무기가 강해져요 (여러 번 강화하면 더 강한 다음 무기로 진화)", Stat = "Enhances", Goal = 2, Target = "Anvil", TargetName = "모루", FreeEnhance = true,
-			Reward = { Tickets = 1, Gold = 100 } },
-		{ Text = "뽑기 머신에서 장비를 뽑아보세요! (티켓 1장)", Stat = "Rolls", Goal = 1, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Lowest",
-			Reward = { Gold = 300 } },
+		-- 강화 2번이 끝나면 슬롯 릴이 돌면서 겹치지 않는 부위 장비 3개를 바로 준다 (Reel). 뽑기 머신은 마을에 있다고 카드로 알려 주고, 일일 퀘스트에도 뽑기가 있다.
+		{ Text = "모루에서 무기를 강화하세요! 강화할수록 무기가 강해지고, 여러 번 하면 더 강한 다음 무기로 진화해요 (무료)", Stat = "Enhances", Goal = 2, Target = "Anvil", TargetName = "모루", FreeEnhance = true, Reel = true,
+			Reward = { Tickets = 1, Gold = 150 } },
 		-- 이야기: 필드는 아직 너무 강하다 -> 쓰러져서 마을로 -> 성장(훈련) -> 던전에서 장비 -> 10연 뽑기 -> 다시 필드는 쉽다
 		{ Text = "동쪽 필드로 나가서 첫 구역의 군주(👑)를 쓰러뜨리세요! ...어딘가 불길한 기운이 느껴져요. 무슨 일이 일어날지도 몰라요. 조심하세요!", Stat = "FieldDeaths", Goal = 1, Target = "Field", TargetName = "필드 입구", Doom = true,
 			Intro = { { Key = "Q", Title = "Q 키: 대시!", Text = "필드로 나가기 전에 알아 두세요. Q 키를 누르면 가는 방향으로 순간적으로 빨라져요 (2번 연속, 3초마다 충전). 적의 탄을 아슬아슬하게 피하면 보너스!", Duration = 9 } },

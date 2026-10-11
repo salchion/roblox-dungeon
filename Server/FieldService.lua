@@ -1646,6 +1646,7 @@ function Field.HitPart(player, part, damage)
 		if factor < 1 then damage = math.max(1, math.floor(damage * factor)) end
 	end
 	if data.Invincible then damage = 1 end
+	if data.Doom then data.DoomHits = (data.DoomHits or 0) + 1 end
 	data.Health -= damage
 	if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
 	data.FirstHit = data.FirstHit or os.clock()
@@ -1740,6 +1741,7 @@ function Field.Shoot(player, origin, direction)
 		player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1) -- 궁극기 게이지는 실제로 맞혔을 때만 찬다
 		local damage, isCrit = Dungeon.ComputeDamage(player)
 		if data.Invincible then damage, isCrit = 1, false end -- 최후의 군주: 맞는 느낌만 (피해는 1)
+		if data.Doom then data.DoomHits = (data.DoomHits or 0) + 1 end -- (몇 번 맞으면 군주가 "스쳤다"고 반응한다)
 		-- 약점 구슬: 탄이 지나간 선이 구슬에 닿으면 3배 치명타 + 데드아이 게이지
 		if data.WeakPart and data.WeakPart.Parent and not data.WeakHidden and not data.Invincible and player:GetAttribute("ShotManual") == true then -- 직접 조준한 탄만
 			local ab = result.Position - origin
@@ -3256,7 +3258,8 @@ local function buildDoomLord(parent)
 end
 
 -- 소환 결투: 먼 하늘 위 심연 무대로 끌려가 최후의 군주와 1:1 (약 8초). 공격할 수 있지만 쓰러뜨릴 수는 없고, 바닥 경고를 보고 피할 수 있는 공격을 받다가 마지막 일격에 쓰러진다.
-local function doomWave(player, zone)
+local doomSlots = {} -- [칸 번호] = true : 동시에 여러 명이 끌려가도 결투장이 겹치지 않게 사람마다 옆으로 떨어뜨린다
+local function doomWaveInner(player, zone, center)
 	local root, humanoid = getAliveParts(player)
 	if not root then return end
 	player:SetAttribute("InDoomArena", true) -- 납치 연출로 높이 올라가도 "필드 밖으로 튕김" / 구역 판별에 걸리지 않게 처음부터 켠다
@@ -3300,7 +3303,7 @@ local function doomWave(player, zone)
 		end
 		notify(player, "⚠ 하늘에서 거대한 무언가가 내려온다...!")
 		shakeScreen(player, 0.5)
-		task.wait(1.3)
+		task.wait(1.0)
 		TweenService:Create(column, TweenInfo.new(0.5), { Transparency = 0.45, Size = Vector3.new(120, 16, 16) }):Play()
 		TweenService:Create(groundRing, TweenInfo.new(1.2), { Transparency = 0.3, Size = Vector3.new(0.4, 18, 18) }):Play()
 		local pull = Instance.new("ParticleEmitter") -- 빛줄기 안에서 위로 빨려 올라가는 입자
@@ -3318,7 +3321,7 @@ local function doomWave(player, zone)
 			r0.Anchored = true
 			r0.AssemblyLinearVelocity = Vector3.zero
 			local started = os.clock()
-			local duration = 2.6
+			local duration = 2.0
 			while os.clock() - started < duration do
 				local t = (os.clock() - started) / duration
 				local rr = getAliveParts(player)
@@ -3339,7 +3342,6 @@ local function doomWave(player, zone)
 		return
 	end
 	root.Anchored = false
-	local center = Vector3.new(0, 420, 1500)
 	local arena = Instance.new("Folder")
 	arena.Name = "DoomArena"
 	arena.Parent = workspace
@@ -3480,6 +3482,13 @@ local function doomWave(player, zone)
 		local flat = Vector3.new(target.X, pos.Y, target.Z)
 		place(CFrame.lookAt(pos, flat), clock)
 		data.Home = pos
+		if not data.Scratched and (data.DoomHits or 0) >= 6 and alive() then -- 내 공격이 닿았다: 군주가 잠깐 반응한다
+			data.Scratched = true
+			Effects.Burst(body.Position + Vector3.new(0, 6, -8), rgb(255, 235, 170), 60)
+			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "최후의 군주", Text = "...감히.", Duration = 2.5, Top = true })
+			player:SetAttribute("ShakeStrength", 0.5)
+			player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+		end
 	end)
 
 	local function beam(from, to, thickness, duration, color)
@@ -3564,67 +3573,13 @@ local function doomWave(player, zone)
 			strike(playerAt() + offset, 13, 1.2, 0.15)
 			task.wait(0.35)
 		end
-		task.wait(1.6)
+		task.wait(1.2)
 	end
-	-- 2) 가로로 넓게 퍼진 세 줄기 광선 (군주 쪽에서 뒤쪽 끝까지) : 줄 사이 빈 곳으로 피해야 한다
-	if alive() then
-		notify(player, "⚠⚠ 군주의 눈이 붉게 빛난다 — 광선이 온다!")
-		local lanes = { -42, -4, 36 }
-		local warnLanes = {}
-		for _, x in ipairs(lanes) do
-			local lane = Instance.new("Part")
-			lane.Size = Vector3.new(16, 0.3, 140)
-			lane.CFrame = CFrame.new(center + Vector3.new(x, 1.3, 0))
-			lane.Anchored = true
-			lane.CanCollide = false
-			lane.CanQuery = false
-			lane.Material = Enum.Material.Neon
-			lane.Color = rgb(255, 40, 40)
-			lane.Transparency = 0.65
-			lane.Parent = arena
-			TweenService:Create(lane, TweenInfo.new(1.6), { Transparency = 0.05 }):Play()
-			table.insert(warnLanes, lane)
-		end
-		task.wait(1.6)
-		for _, lane in ipairs(warnLanes) do
-			lane:Destroy()
-		end
-		for _, x in ipairs(lanes) do
-			beam(center + Vector3.new(x, 30, -60), center + Vector3.new(x, 1, 70), 12, 0.6, rgb(255, 120, 80))
-			ring(center + Vector3.new(x, 0, 0), 20, rgb(255, 100, 60), 0.5)
-		end
-		shake(0.8)
-		local r2, h2 = getAliveParts(player)
-		if r2 and h2.Health > 0 then
-			for _, x in ipairs(lanes) do
-				if math.abs(r2.Position.X - (center.X + x)) <= 8 then
-					local dmg = math.min(h2.MaxHealth * 0.22, h2.Health - 1)
-					if dmg > 0 then h2:TakeDamage(dmg) end
-					notify(player, "💥 광선에 휩쓸렸다!")
-					break
-				end
-			end
-		end
-		task.wait(1.0)
-	end
-	-- 3) 융단 폭격: 아레나 전체에 연달아 떨어진다 (점점 빨라지고 피할 곳이 줄어든다)
-	if alive() then
-		notify(player, "⚠⚠⚠ 사방이 붉게 물든다 — 융단 폭격!!")
-		for k = 1, 16 do
-			if not alive() then break end
-			local angle = math.random() * math.pi * 2
-			local dist = math.random() * 55
-			local at = center + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist)
-			if k % 3 == 0 then at = playerAt() end -- 세 번에 한 번은 플레이어를 정확히 노린다
-			strike(at, 11, 0.9, 0.12)
-			task.wait(math.max(0.18, 0.5 - k * 0.02))
-		end
-		task.wait(1.5)
-	end
-
 	-- 마지막: 아레나 전체가 붉게 물든다 — 어디에도 안전한 곳이 없다
 	if alive() then
 		notify(player, "💀 군주가 모든 힘을 모은다... 피할 곳이 없다!!")
+		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "최후의 군주",
+			Text = (data.DoomHits or 0) >= 6 and "...흠집을 냈구나. 하지만 아직 부족하다." or "그 힘으로는 아직 부족하다.", Duration = 3, Top = true })
 		Remotes.Tutorial:FireClient(player, "Cinema", "Start")
 		shake(0.9)
 		local flood = Instance.new("Part")
@@ -3652,9 +3607,9 @@ local function doomWave(player, zone)
 		charge.Position = body.Position + Vector3.new(0, 4, -10)
 		charge.Parent = arena
 		TweenService:Create(charge, TweenInfo.new(2.4, Enum.EasingStyle.Quad), { Size = Vector3.new(60, 60, 60), Transparency = 0.05 }):Play()
-		for _ = 1, 4 do
+		for _ = 1, 3 do
 			shake(0.7)
-			task.wait(0.6)
+			task.wait(0.5)
 		end
 		local r = alive() and select(1, getAliveParts(player))
 		if r then
@@ -3689,6 +3644,15 @@ local function doomWave(player, zone)
 				Text = "군주는 그 말만 남기고 사라졌어요. 쓰러졌지만 전리품(골드 4000 / 티켓 10장)은 남았어요!\n🎰 뽑기 → 🏰 던전 → 🔨 강화 순서로 강해져 봐요. 먼저 뽑기 머신으로!", Duration = 10 })
 		end
 	end)
+end
+
+local function doomWave(player, zone)
+	local slot = 0
+	while doomSlots[slot] do slot += 1 end
+	doomSlots[slot] = true
+	local ok, err = pcall(doomWaveInner, player, zone, Vector3.new(slot * 450, 420, 1500))
+	task.delay(8, function() doomSlots[slot] = nil end) -- 결투장이 치워지는 시간(약 4.5초)이 지난 뒤에 칸을 비운다
+	if not ok then error(err, 0) end
 end
 
 local function updateDoom()

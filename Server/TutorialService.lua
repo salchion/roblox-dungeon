@@ -129,6 +129,12 @@ function Tutorial.Load(player, saved)
 		if version < 6 and savedStep >= 7 then -- 뽑기와 무기 진화 사이에 "첫 던전" 미션이 끼어들었다
 			savedStep += 1
 		end
+		if version < 7 then -- 강화 2단계를 하나로 합치고 "뽑기 1번" 미션을 없앴다 (옛 8단계 -> 새 6단계)
+			local map = { [1] = 1, [2] = 2, [3] = 2, [4] = 3, [5] = 3, [6] = 4, [7] = 5, [8] = 6 }
+			local mapped = savedStep >= 9 and #Steps + 1 or (map[savedStep] or savedStep)
+			if mapped ~= savedStep then saved.Progress = 0 end
+			savedStep = mapped
+		end
 		state = { Step = math.clamp(savedStep, 1, #Steps + 1), Progress = math.max(0, math.floor(tonumber(saved.Progress) or 0)) }
 	elseif (player:GetAttribute("Level") or 1) >= 5 then
 		state = { Step = #Steps + 1, Progress = 0 } -- 이미 진행한 유저는 건너뜀
@@ -174,7 +180,7 @@ end
 
 function Tutorial.Serialize(player)
 	local state = states[player] or { Step = #Steps + 1, Progress = 0 }
-	return { Step = state.Step, Progress = state.Progress, V = 6 }
+	return { Step = state.Step, Progress = state.Progress, V = 7 }
 end
 
 function Tutorial.Forget(player)
@@ -188,6 +194,30 @@ local function rewardText(reward)
 	if reward.Keys then table.insert(parts, "열쇠 " .. reward.Keys) end
 	if reward.Xp then table.insert(parts, "경험치 " .. reward.Xp) end
 	return table.concat(parts, " + ")
+end
+
+-- 첫 장비 지급: 겹치지 않는 부위 3개 (희귀 1 + 일반 2)를 바로 주고(빈 부위는 자동 장착), 화면에는 슬롯 릴이 돌아간다
+local function giveReelGear(player)
+	local okI, Inventory = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
+	if not okI then return end
+	local G = Config.Gear
+	local slots = table.clone(G.Slots)
+	for i = #slots, 2, -1 do
+		local j = math.random(i)
+		slots[i], slots[j] = slots[j], slots[i]
+	end
+	local rarities = { 2, 1, 1 }
+	for i = #rarities, 2, -1 do
+		local j = math.random(i)
+		rarities[i], rarities[j] = rarities[j], rarities[i]
+	end
+	local list = {}
+	for index = 1, 3 do
+		local slot, rarity = slots[index], rarities[index]
+		Inventory.Add(player, Inventory.NewItem(slot.Key, rarity, 0))
+		table.insert(list, { Slot = slot.Name, Name = slot.Names[rarity], Rarity = rarity })
+	end
+	Remotes.Tutorial:FireClient(player, "Reel", list)
 end
 
 function complete(player, state, step)
@@ -215,6 +245,9 @@ function complete(player, state, step)
 		Effects.FloatText(root.Position + Vector3.new(0, 6, 0), "✅ 미션 완료!", Color3.fromRGB(130, 255, 150))
 	end
 	Remotes.Notify:FireClient(player, string.format("✅ 미션 완료! 보상: %s", rewardText(reward)))
+	if step.Reel then
+		giveReelGear(player)
+	end
 	state.Step += 1
 	state.Progress = 0
 	state.DynGoal = nil

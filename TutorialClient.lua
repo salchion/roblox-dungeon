@@ -9,6 +9,7 @@ local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+local Config = require(ReplicatedStorage:WaitForChild("Config"))
 
 local player = Players.LocalPlayer
 
@@ -381,7 +382,84 @@ local function showPrompt(data)
 	end)
 end
 
+-- 첫 장비 슬롯 릴: 화면 가운데 위쪽에서 세 칸이 차례로 멈추며 장비 3개를 보여 준다 (장비는 이미 지급되어 장착됐다)
+local reelActive = false
+local function playReel(list)
+	if reelActive or typeof(list) ~= "table" or #list == 0 then return end
+	reelActive = true
+	local G = Config.Gear
+	local panel = create("Frame", {
+		Size = UDim2.new(0, 460, 0, 196), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0.16, 0),
+		BackgroundColor3 = Color3.fromRGB(26, 30, 46), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 70,
+	}, gui)
+	rounded(panel, 14)
+	local panelStroke = create("UIStroke", { Color = Color3.fromRGB(120, 140, 200), Thickness = 2, Transparency = 1 }, panel)
+	local title = label({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 8), TextSize = 22, Font = Enum.Font.GothamBlack,
+		Text = "🎁 첫 장비 지급!", TextTransparency = 1, ZIndex = 71 }, panel)
+	local footer = label({ Size = UDim2.new(1, -24, 0, 40), Position = UDim2.new(0, 12, 1, -46), TextSize = 14, TextWrapped = true,
+		TextColor3 = Color3.fromRGB(200, 210, 235), Text = "🎰 더 뽑고 싶다면 마을의 뽑기 머신에서 티켓으로! 일일 퀘스트에도 뽑기가 있어요", TextTransparency = 1, ZIndex = 71 }, panel)
+	TweenService:Create(panel, TweenInfo.new(0.3), { BackgroundTransparency = 0.08 }):Play()
+	TweenService:Create(panelStroke, TweenInfo.new(0.3), { Transparency = 0.3 }):Play()
+	TweenService:Create(title, TweenInfo.new(0.3), { TextTransparency = 0 }):Play()
+	TweenService:Create(footer, TweenInfo.new(0.6), { TextTransparency = 0 }):Play()
+
+	local windows = {}
+	for index = 1, #list do
+		local width = 130
+		local x = (460 - (#list * width + (#list - 1) * 12)) / 2 + (index - 1) * (width + 12)
+		local frame = create("Frame", { Size = UDim2.new(0, width, 0, 84), Position = UDim2.new(0, x, 0, 54), BackgroundColor3 = Color3.fromRGB(14, 16, 28),
+			BorderSizePixel = 0, ClipsDescendants = true, ZIndex = 71 }, panel)
+		rounded(frame, 10)
+		local stroke = create("UIStroke", { Color = Color3.fromRGB(70, 80, 110), Thickness = 2 }, frame)
+		local slotText = label({ Size = UDim2.new(1, 0, 0, 28), Position = UDim2.new(0, 0, 0, 10), TextSize = 20, Font = Enum.Font.GothamBold, Text = "?", ZIndex = 72 }, frame)
+		local nameText = label({ Size = UDim2.new(1, -8, 0, 36), Position = UDim2.new(0, 4, 0, 40), TextSize = 14, TextWrapped = true, Text = "", ZIndex = 72 }, frame)
+		windows[index] = { Slot = slotText, Name = nameText, Stroke = stroke, Frame = frame }
+	end
+	-- 돌아가는 동안: 부위 이름이 빠르게 바뀐다 -> 왼쪽부터 차례로 멈춘다
+	local startedAt = os.clock()
+	local stopAt = {}
+	for index = 1, #list do stopAt[index] = 1.1 + (index - 1) * 0.7 end
+	local done = 0
+	while done < #list do
+		local elapsed = os.clock() - startedAt
+		for index, window in ipairs(windows) do
+			local item = list[index]
+			if not window.Stopped then
+				if elapsed >= stopAt[index] then
+					window.Stopped = true
+					done += 1
+					window.Slot.Text = item.Slot
+					window.Name.Text = item.Name .. "\n[" .. G.RarityNames[item.Rarity] .. "]"
+					local color = G.RarityColors[item.Rarity]
+					window.Name.TextColor3 = color
+					window.Stroke.Color = color
+					window.Frame.Size = UDim2.new(0, 142, 0, 92)
+					TweenService:Create(window.Frame, TweenInfo.new(0.25, Enum.EasingStyle.Back), { Size = UDim2.new(0, 130, 0, 84) }):Play()
+				else
+					local slot = G.Slots[math.random(#G.Slots)]
+					window.Slot.Text = slot.Name
+					window.Name.Text = slot.Names[math.random(#slot.Names)]
+					window.Name.TextColor3 = Color3.fromRGB(150, 160, 190)
+				end
+			end
+		end
+		task.wait(0.07)
+	end
+	task.wait(3.6)
+	for _, inst in ipairs({ panel, panelStroke, title, footer }) do
+		local prop = inst:IsA("Frame") and "BackgroundTransparency" or inst:IsA("UIStroke") and "Transparency" or "TextTransparency"
+		TweenService:Create(inst, TweenInfo.new(0.5), { [prop] = 1 }):Play()
+	end
+	task.wait(0.6)
+	panel:Destroy()
+	reelActive = false
+end
+
 Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
+	if action == "Reel" then
+		task.spawn(playReel, data)
+		return
+	end
 	if action == "Prompt" then
 		showPrompt(data)
 		return
