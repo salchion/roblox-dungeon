@@ -685,9 +685,10 @@ function Config.FormatGearStat(slotKey, value)
 	return string.format("%s +%.1f%%", slot.StatName, value * 100)
 end
 
-function Config.GetGearCost(slotKey, rarity, level)
+-- 강화 비용: 부위와 강화 단계로만 정해진다 (끼고 있는 장비의 등급은 상관없다: 일부러 낮은 등급을 끼고 싸게 강화하는 걸 막는다). 등급 값은 호환용으로만 받는다.
+function Config.GetGearCost(slotKey, _rarity, level)
 	local slot = Config.GetGearSlot(slotKey)
-	return math.floor(slot.BaseCost * (1 + 0.4 * (rarity - 1)) * 1.28 ^ level)
+	return math.floor(slot.BaseCost * 1.8 * 1.28 ^ level) -- (1.8 = 예전 영웅 등급 기준)
 end
 
 function Config.GetGearEnhanceChance(level)
