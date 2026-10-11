@@ -452,8 +452,10 @@ function refreshEnhance()
 	medalStroke.Color = color
 	medalGlow.BackgroundColor3 = color
 	if E.EnhanceShownTier ~= tierIndex then
+		local firstTime = E.EnhanceShownTier == nil
 		E.EnhanceShownTier = tierIndex
-		showMedalWeapon(tierIndex)
+		-- 접속(재접속)할 때 저장된 무기 단계가 처음 읽히는 순간에는 큰 무기 연출을 띄우지 않는다 (강화창을 열었거나 실제로 진화했을 때만)
+		if not firstTime or enhancePanel.Visible then showMedalWeapon(tierIndex) end
 	end
 
 	enhanceStage.Text = string.format("+%d", stage)
