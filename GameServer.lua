@@ -216,6 +216,24 @@ local function setupPlayer(player)
 	player.CameraMode = Enum.CameraMode.Classic
 	player.CameraMinZoomDistance = 8
 	player.CameraMaxZoomDistance = 60
+	-- 처음 접속하면 카메라를 조금 멀리 / 높게 잡는다 (기본은 12.5): 잠깐 한 거리로 고정했다가 풀면 그 거리에서 시작하고, 이후에는 마음대로 줌할 수 있다
+	do
+		local START_ZOOM = 26
+		player.CameraMinZoomDistance = START_ZOOM
+		player.CameraMaxZoomDistance = START_ZOOM
+		task.spawn(function()
+			local waited = 0
+			while player.Parent and not player.Character and waited < 12 do
+				task.wait(0.25)
+				waited += 0.25
+			end
+			task.wait(1.5) -- 카메라가 그 거리로 자리 잡을 시간
+			if player.Parent then
+				player.CameraMinZoomDistance = 8
+				player.CameraMaxZoomDistance = 60
+			end
+		end)
+	end
 
 	player:SetAttribute("Zone", "Lobby")
 	player:SetAttribute("PartyId", 0)
