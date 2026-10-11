@@ -2023,8 +2023,22 @@ local function isTargetVisible(target, root)
 	params.FilterType = Enum.RaycastFilterType.Exclude
 	params.FilterDescendantsInstances = { player.Character }
 	local origin = root.Position + Vector3.new(0, 1.5, 0)
-	local result = workspace:Raycast(origin, position - origin, params)
-	return result == nil or result.Instance == target.Part or result.Instance:IsDescendantOf(target.Instance)
+	-- 가는 길을 막는 게 "벽"일 때만 보이지 않는 것으로 본다: 다른 몬스터 / 날아다니는 탄 / 이펙트 / 투명한 부품은 그냥 지나친다
+	-- (예전에는 이런 것에 광선이 한 번이라도 걸리면 그 몬스터는 조준 대상에서 빠져서, 탄막이 많을 때 "타겟팅이 안 된다"처럼 보였다)
+	local ignore = { player.Character }
+	for _ = 1, 8 do
+		params.FilterDescendantsInstances = ignore
+		local result = workspace:Raycast(origin, position - origin, params)
+		if result == nil or result.Instance == target.Part or result.Instance:IsDescendantOf(target.Instance) then return true end
+		local hit = result.Instance
+		local isMonster = hit:FindFirstAncestor("FieldMonsters") ~= nil or hit:FindFirstAncestor("Monsters") ~= nil
+		if isMonster or not hit.CanCollide or hit.Transparency >= 0.5 then
+			table.insert(ignore, hit)
+		else
+			return false -- 단단한 벽
+		end
+	end
+	return true
 end
 
 local function isTargetValid(target, root)
