@@ -156,12 +156,12 @@ end)
 ------------------------------------------------------------
 local TweenService = game:GetService("TweenService")
 local corner = make("TextLabel", {
-	Size = UDim2.new(0, 210, 0, 28), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 96),
+	Size = UDim2.new(0, 240, 0, 46), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 96), RichText = true, TextWrapped = true,
 	BackgroundColor3 = Color3.fromRGB(26, 28, 42), BackgroundTransparency = 0.25, Font = Enum.Font.GothamBold, TextSize = 13,
 	TextColor3 = Color3.new(1, 1, 1), Text = "", Visible = false, BorderSizePixel = 0,
 }, gui)
 make("UICorner", { CornerRadius = UDim.new(0, 8) }, corner)
-local cornerStroke = make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 1.5 }, corner)
+local cornerStroke = make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, corner) -- (Border: 글자가 아니라 상자 테두리에만)
 
 local function refreshCorner()
 	local attr = player:GetAttribute("AugDemo")
@@ -169,7 +169,8 @@ local function refreshCorner()
 	local show = info and player:GetAttribute("Zone") == "Dungeon" and not corner:GetAttribute("Rolling")
 	corner.Visible = show == true
 	if show then
-		corner.Text = string.format("%s %s Lv.3 (체험)", info.Icon, info.Name)
+		local zone = table.find(Config.Sets.ZoneAug, attr) or 0
+		corner.Text = string.format("%s <b>%s</b>  <font size='11' color='#ffd966'>%d구역 · 체험 Lv.3</font>\n<font size='11' color='#c8d0e8'>%s</font>", info.Icon, info.Name, zone, info.Desc)
 		cornerStroke.Color = info.Color
 	end
 end
@@ -182,14 +183,15 @@ local function playRoll(pick)
 	corner:SetAttribute("Rolling", true)
 	corner.Visible = false
 	local box = make("Frame", {
-		Size = UDim2.new(0, 280, 0, 92), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0.14, 0),
+		Size = UDim2.new(0, 320, 0, 128), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0.14, 0),
 		BackgroundColor3 = Color3.fromRGB(26, 28, 42), BackgroundTransparency = 0.1, BorderSizePixel = 0, ZIndex = 60,
 	}, gui)
 	make("UICorner", { CornerRadius = UDim.new(0, 12) }, box)
 	local stroke = make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 2 }, box)
 	label({ Size = UDim2.new(1, 0, 0, 22), Position = UDim2.new(0, 0, 0, 6), Text = "🎲 이번 던전 체험 효과", TextSize = 14, ZIndex = 61 }, box)
 	local icon = label({ Size = UDim2.new(0, 60, 0, 44), Position = UDim2.new(0, 14, 0, 32), Text = "?", TextSize = 34, ZIndex = 61 }, box)
-	local name = label({ Size = UDim2.new(1, -88, 0, 44), Position = UDim2.new(0, 78, 0, 32), Text = "", TextSize = 16, TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true, ZIndex = 61 }, box)
+	local name = label({ Size = UDim2.new(1, -88, 0, 44), Position = UDim2.new(0, 78, 0, 32), Text = "", TextSize = 16, TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true, RichText = true, ZIndex = 61 }, box)
+	local detail = label({ Size = UDim2.new(1, -24, 0, 40), Position = UDim2.new(0, 12, 0, 80), Text = "", TextSize = 12, TextWrapped = true, TextColor3 = Color3.fromRGB(200, 208, 232), Font = Enum.Font.GothamMedium, ZIndex = 61 }, box)
 	local startedAt = os.clock()
 	while os.clock() - startedAt < 1.3 do
 		local info = Config.AugInfo[Config.Sets.ZoneAug[math.random(#Config.Sets.ZoneAug)]]
@@ -197,10 +199,12 @@ local function playRoll(pick)
 		name.TextColor3 = Color3.fromRGB(170, 175, 205)
 		task.wait(0.07)
 	end
-	icon.Text, name.Text = winner.Icon, winner.Name .. "\n<Lv.3 체험>"
+	local winZone = table.find(Config.Sets.ZoneAug, pick) or 0
+	icon.Text, name.Text = winner.Icon, string.format("%s\n<font size='12' color='#ffd966'>%d구역 세트효과 · 체험 Lv.3</font>", winner.Name, winZone)
+	detail.Text = winner.Desc
 	name.TextColor3 = winner.Color
 	stroke.Color = winner.Color
-	task.wait(1.2)
+	task.wait(2.2)
 	TweenService:Create(box, TweenInfo.new(0.3), { BackgroundTransparency = 1 }):Play()
 	task.wait(0.3)
 	box:Destroy()
