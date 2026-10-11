@@ -174,10 +174,11 @@ end
 --   Baffles 종류: Edge = 한쪽 가장자리에서 벽이 뻗고 반대쪽이 열린 틈(Gap) / Center = 가운데 벽, 양옆이 열려 있음(Gap 씩)
 -- 한 구역의 경사로는 올라간 만큼 내려와서 구역 끝(관문 / 캠프)은 항상 0층이다. 첫 경사로는 캠프 안전지대(70) 뒤에서 시작한다.
 local ZONE_LAYOUTS = {
-	{ -- 1 초원: 마을(분지)에서 능선을 올라 첫 봉우리(+28)에서 아래의 군주가 보이고, 점점 낮아지는 봉우리 세 개(+28 / +14 / +6)를 지나 군주 앞(0층)으로 내려간다.
-		-- 봉우리는 군주 쪽으로 갈수록 낮아서, 어느 봉우리에서도 능선 너머로 군주가 보인다 (구역 길이 520 / 군주 자리 475). 봉우리마다 전망대 깃발 (buildVistaFlags)
-		Stairs = { { At = 100, Rise = 28, Run = 80 }, { At = 190, Rise = -22, Run = 60 }, { At = 258, Rise = 8, Run = 40 },
-			{ At = 308, Rise = -12, Run = 40 }, { At = 356, Rise = 4, Run = 30 }, { At = 394, Rise = -6, Run = 36 } },
+	{ -- 1 초원: 구역 입구(캠프)는 높은 가장자리다. 입구에 서면 분지 건너편의 군주가 보이고, 분지 아래로 내려가 싸우는 동안은 능선이 군주를 가린다.
+		-- 능선 위(+)에서는 다시 군주가 보인다 (스케치: 높은 곳마다 군주가 보이고 깊은 곳에서는 안 보임). 높이가 0 아래(-30)로 내려가는 구역은 여기뿐이다.
+		-- 입구 0 -> 분지 바닥 -30 -> 첫 능선 -4 (분지 안에서는 군주가 가려진다) -> 둘째 골짜기 -18 -> 마지막 능선 +6 (넘는 순간 군주가 눈앞에 나타난다) -> 군주 앞 0 (길이 520 / 군주 자리 475)
+		Stairs = { { At = 95, Rise = -30, Run = 80 }, { At = 215, Rise = 26, Run = 70 }, { At = 295, Rise = -14, Run = 40 },
+			{ At = 345, Rise = 24, Run = 64 }, { At = 417, Rise = -6, Run = 30 } },
 		Baffles = {},
 	},
 	{ -- 2 숲: 좁은 지그재그 숲길 (네 번 꺾인다) + 끝에 작은 언덕
@@ -655,8 +656,8 @@ local function buildCanyon(rng, totalLength, half)
 	-- 뒤에 깔아두는 끊김 없는 절벽 벽 (절벽 덩어리 사이로 바깥이 비치지 않게)
 	for _, side in ipairs({ -1, 1 }) do
 		makePart({
-			Name = "CanyonBack", Size = Vector3.new(totalLength + 120, 240, 8),
-			Position = Vector3.new(F.StartX + totalLength / 2, 120, side * (half + 34)),
+			Name = "CanyonBack", Size = Vector3.new(totalLength + 120, 300, 8),
+			Position = Vector3.new(F.StartX + totalLength / 2, 90, side * (half + 34)),
 			Color = Color3.fromRGB(55, 50, 58), Material = Enum.Material.Slate,
 		}, worldFolder)
 
@@ -673,8 +674,8 @@ local function buildCanyon(rng, totalLength, half)
 			end
 			local inner = half + rng:NextNumber(-4, 4)
 			makePart({
-				Name = "Cliff", Size = Vector3.new(width, height, depth),
-				CFrame = CFrame.new(x, height / 2 - 2, side * (inner + depth / 2)) * CFrame.Angles(0, math.rad(rng:NextNumber(-6, 6)), 0),
+				Name = "Cliff", Size = Vector3.new(width, height + 60, depth),
+				CFrame = CFrame.new(x, (height + 60) / 2 - 62, side * (inner + depth / 2)) * CFrame.Angles(0, math.rad(rng:NextNumber(-6, 6)), 0),
 				Color = F.ZoneColors[zone]:Lerp(Color3.fromRGB(70, 65, 72), 0.55),
 				Material = Enum.Material.Slate,
 			}, worldFolder)
@@ -684,8 +685,8 @@ local function buildCanyon(rng, totalLength, half)
 
 	-- 필드 끝 / 로비에서 들어오는 통로 양옆도 절벽으로 막는다
 	makePart({
-		Name = "CanyonEnd", Size = Vector3.new(40, 240, F.Width + 90),
-		Position = Vector3.new(endX + 20, 120, 0), Color = Color3.fromRGB(35, 30, 45), Material = Enum.Material.Slate,
+		Name = "CanyonEnd", Size = Vector3.new(40, 300, F.Width + 90),
+		Position = Vector3.new(endX + 20, 90, 0), Color = Color3.fromRGB(35, 30, 45), Material = Enum.Material.Slate,
 	}, worldFolder)
 	for _, side in ipairs({ -1, 1 }) do
 		makePart({
@@ -956,7 +957,7 @@ end
 -- 1구역 봉우리 전망대: 봉우리마다 작은 돌무더기 + 깃발 + 은은한 빛줄기 + 이름표 (멀리서도 "저기까지 가면 된다"가 보인다). 눈이 부시지 않게 호박색 / 반투명.
 local function buildVistaFlags()
 	local x0 = F.ZoneStart(1)
-	for index, offset in ipairs({ 185, 303, 390 }) do
+	for index, offset in ipairs({ 88, 290, 413 }) do
 		local x = x0 + offset
 		local y = floorAt(x)
 		local amber = Color3.fromRGB(232, 170, 90)
@@ -977,7 +978,7 @@ local function buildVistaFlags()
 		text.TextSize = 15
 		text.TextColor3 = Color3.fromRGB(255, 222, 160)
 		text.TextStrokeTransparency = 0.35
-		text.Text = index == 3 and "🚩 마지막 전망대" or string.format("🚩 전망대 %d", index)
+		text.Text = index == 1 and "🚩 입구 전망대" or index == 3 and "🚩 마지막 전망대" or "🚩 능선 전망대"
 		text.Parent = tag
 	end
 end
@@ -1000,11 +1001,12 @@ local function buildWorld()
 		-- 바닥: 평지(층) 블록 + 좁은 계단통(양옆은 높은 벽, 가운데 폭 14 계단). 높은 층일수록 살짝 밝아져서 "층"이 구분된다
 		for _, segment in ipairs(ZONE_SEGMENTS[zone]) do
 			local top = TOP + segment.H
-			local tint = F.ZoneColors[zone]:Lerp(Color3.new(1, 1, 1), 0.08 * segment.H / 24)
+			local tint = F.ZoneColors[zone]:Lerp(Color3.new(1, 1, 1), math.max(-0.1, 0.08 * segment.H / 24))
 			if segment.Kind == "Floor" then
+				local bottom = math.min(-1.95, top - 3) -- (음수 높이의 분지 바닥도 두께가 남게)
 				makePart({
-					Name = "Ground" .. zone, Size = Vector3.new(segment.B - segment.A, top + 1.95, F.Width),
-					Position = Vector3.new(x0 + (segment.A + segment.B) / 2, (top - 1.95) / 2, 0), Color = tint, Material = F.ZoneMaterials[zone],
+					Name = "Ground" .. zone, Size = Vector3.new(segment.B - segment.A, top - bottom, F.Width),
+					Position = Vector3.new(x0 + (segment.A + segment.B) / 2, (top + bottom) / 2, 0), Color = tint, Material = F.ZoneMaterials[zone],
 				}, worldFolder)
 			else
 				local stair = segment.Stair
@@ -1022,9 +1024,10 @@ local function buildWorld()
 					Color = Color3.fromRGB(205, 195, 180):Lerp(F.ZoneColors[zone], 0.3), Material = Enum.Material.Cobblestone,
 				}, worldFolder)
 				local lowY = math.min(startY, endY)
+				local rampBottom = math.min(-1.95, lowY - thickness - 3)
 				makePart({
-					Name = "RampBase" .. zone, Size = Vector3.new(stair.Run, math.max(0.5, lowY - thickness + 1.95), F.Width),
-					Position = Vector3.new(midX, (lowY - thickness - 1.95) / 2, 0), Color = F.ZoneColors[zone], Material = F.ZoneMaterials[zone],
+					Name = "RampBase" .. zone, Size = Vector3.new(stair.Run, math.max(0.5, lowY - thickness - rampBottom), F.Width),
+					Position = Vector3.new(midX, (lowY - thickness + rampBottom) / 2, 0), Color = F.ZoneColors[zone], Material = F.ZoneMaterials[zone],
 				}, worldFolder)
 				for dx = 0, stair.Run, 14 do
 					table.insert(baffleXs, x0 + stair.At + dx)
@@ -2665,18 +2668,18 @@ local function updateZones()
 							player:SetAttribute("ShakeStrength", strength)
 							player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 						end
-						if beat < 1 and offset >= 85 then -- (첫 능선을 오르기 전: 매복)
+						if beat < 1 and offset >= 120 then -- (분지로 내려가는 중: 매복)
 							routeBeat[player] = 1
 							notify(player, "🌿 풀숲이 이상하게 흔들린다...! 매복이다!")
 							rumble(0.5)
 							around("Normal", 7, 30, 46)
-						elseif beat < 2 and offset >= 190 then -- (첫 봉우리 정상: 엘리트)
+						elseif beat < 2 and offset >= 215 then -- (분지 바닥에서 첫 능선으로 오르기 전: 엘리트)
 							routeBeat[player] = 2
 							notify(player, "⚠ 강한 기운이 다가온다! 엘리트 몬스터다!")
 							rumble(0.7)
 							around("Elite", 1, 36, 46)
 							around("Normal", 4, 32, 48)
-						elseif beat < 3 and offset >= 300 then -- (두 번째 봉우리: 군주의 영역)
+						elseif beat < 3 and offset >= 345 then -- (둘째 골짜기를 지나 마지막 능선을 오르기 전: 군주의 영역)
 							routeBeat[player] = 3
 							notify(player, "🔥 군주의 영역이 가까워진다... 호위병들이 몰려온다!")
 							rumble(0.8)
