@@ -1453,10 +1453,10 @@ Config.Idle = {
 	Fraction = 0.34,          -- 방치 수입(분당) = 이 값 x Economy.IncomeBase x 공격력 배율(무기 단계) x (1 + 장비/훈련/펫 공격력 보너스) x 환생 x 방치 배율. 활동 수입의 약 1/3
 	Radius = 18,              -- 훈련장 중심에서 이 거리 안에 있으면 방치 중
 	OfflineEfficiency = 0.6,  -- 오프라인 적립은 접속 중 방치의 60%
-	BaseCapHours = 2,         -- 오프라인 적립 한도 (기본)
+	BaseCapHours = 4,         -- 오프라인 적립 한도 (기본). 하루 2~3번 접속하는 사람이 반나절 비워도 대부분 받도록 4시간
 	BoostBonus = 1.0,         -- 방치 부스터 활성 중 배율 +100% (= x2)
 	MultTiers = { 0.25, 0.5, 1.0 }, -- 영구 방치 배율 상품 단계 (+25% / +50% / +100%, 단계는 덮어쓰는 방식이라 가장 높은 것 하나만 적용)
-	CapTiers = { 6, 22 },     -- 오프라인 적립 한도 상품 단계: 기본 2시간 + 6 = 8시간 / + 22 = 24시간
+	CapTiers = { 4, 20 },     -- 오프라인 적립 한도 상품 단계: 기본 4시간 + 4 = 8시간 / + 20 = 24시간
 	VipBonus = 0.2,           -- VIP 패스: 방치 배율 +20%
 }
 
@@ -1479,7 +1479,7 @@ Config.Shop = {
 		IdleMult1 = { Name = "방치 수입 +25%", Desc = "영구 적용", ProductId = 0, Category = "Idle", Icon = "📈", Featured = true, Tier = { Group = "IdleMult", Step = 1, Steps = 3 }, Grant = { IdleMult = 1 } },
 		IdleMult2 = { Name = "방치 수입 +50%", Desc = "영구 적용 (+25%를 대체)", ProductId = 0, Category = "Idle", Icon = "📈", Badge = "가성비 최고", Tier = { Group = "IdleMult", Step = 2, Steps = 3 }, Grant = { IdleMult = 2 } },
 		IdleMult3 = { Name = "방치 수입 +100%", Desc = "영구 적용 (이전 단계를 대체)", ProductId = 0, Category = "Idle", Icon = "📈", Badge = "최고 효율", Tier = { Group = "IdleMult", Step = 3, Steps = 3 }, Grant = { IdleMult = 3 } },
-		IdleCap8 = { Name = "방치 적립 한도 8시간", Desc = "자리를 비워도 8시간까지 쌓여요 (기본 2시간)", ProductId = 0, Category = "Idle", Icon = "🗄", Featured = true, Tier = { Group = "IdleCap", Step = 1, Steps = 2 }, Grant = { IdleCap = 1 } },
+		IdleCap8 = { Name = "방치 적립 한도 8시간", Desc = "자리를 비워도 8시간까지 쌓여요 (기본 4시간)", ProductId = 0, Category = "Idle", Icon = "🗄", Featured = true, Tier = { Group = "IdleCap", Step = 1, Steps = 2 }, Grant = { IdleCap = 1 } },
 		IdleCap24 = { Name = "방치 적립 한도 24시간", Desc = "자리를 비워도 하루치까지 쌓여요", ProductId = 0, Category = "Idle", Icon = "🗄", Badge = "추천", Tier = { Group = "IdleCap", Step = 2, Steps = 2 }, Grant = { IdleCap = 2 } },
 		TrainSlot = { Name = "훈련 슬롯 +1", Desc = "영구 적용 · 동시에 하나 더 훈련", ProductId = 0, Category = "Growth", Icon = "🏋", Badge = "인기", Featured = true, Grant = { TrainSlot = 1 } },
 		AuraVoid = { Name = "공허의 오라", Desc = "꾸미기 전용 (능력치 없음)", ProductId = 0, Category = "Deco", Icon = "✨", Badge = "NEW", Grant = { Aura = "Void" } },

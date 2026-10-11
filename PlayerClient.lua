@@ -2955,6 +2955,7 @@ local function growthRemaining(endAt)
 	return endAt - (growthState.ServerTime + (os.clock() - growthReceivedAt))
 end
 
+local skipShownFrac = 0 -- 단축칸 게이지가 마지막으로 보여 준 비율 (줄어드는 연출용)
 local function buildGrowthTab()
 	local state = growthState
 	if not state then
@@ -2968,6 +2969,15 @@ local function buildGrowthTab()
 		"⏱ 시간 단축권 <font color='#ffe16e'><b>%s</b></font> 보유      🏋 훈련 슬롯 <b>%d / %d</b> 사용 중\n<font size='13' color='#bbbbcc'>훈련과 돌파는 시간이 지나면 저절로 끝나요 (접속하지 않아도 흘러요). 시간 단축권으로 기다리는 시간을 줄일 수 있고, 퀘스트로도 조금씩 얻어요. 돈을 쓰지 않아도 모두 도달할 수 있어요.</font>",
 		Config.FormatDuration(state.TimeSkip), #state.Jobs, state.Slots
 	), 15, 24)
+
+	local gaugeRow = newRow(40) -- 단축칸: 얻으면 가득 차고, 쓰면 줄어든다
+	local cap = math.max(player:GetAttribute("TimeSkipCap") or 0, state.TimeSkip, 1)
+	local frac = math.clamp(state.TimeSkip / cap, 0, 1)
+	local gaugeBack = makePanel({ Size = UDim2.new(1, -24, 0, 18), Position = UDim2.new(0, 12, 0, 11), BackgroundColor3 = Color3.fromRGB(22, 24, 36) }, gaugeRow)
+	local gaugeFill = makePanel({ Size = UDim2.new(skipShownFrac, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(215, 150, 60) }, gaugeBack)
+	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "⏱ 단축칸 " .. Config.FormatDuration(state.TimeSkip), TextSize = 12, ZIndex = 3 }, gaugeBack)
+	game:GetService("TweenService"):Create(gaugeFill, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = UDim2.new(frac, 0, 1, 0) }):Play()
+	skipShownFrac = frac
 
 	sectionTitle("🏋 훈련소 — 영구적으로 강해져요")
 	for _, stat in ipairs(Config.Growth.Stats.Order) do

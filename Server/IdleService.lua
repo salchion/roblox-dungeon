@@ -120,8 +120,11 @@ function Idle.OnJoin(player)
 		player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
 		local hours = seconds / 3600
 		local text = string.format("%.1f시간 동안 방치 골드 %d G가 쌓였어요!", hours, gold)
+		if (player:GetAttribute("IdleMultBonus") or 0) > 0 then
+			text ..= string.format("\n(방치 수입 보너스 +%d%% 적용 중)", math.floor((player:GetAttribute("IdleMultBonus") or 0) * 100 + 0.5))
+		end
 		if capped then
-			text ..= string.format("\n(최대 %d시간까지 쌓여요. 한도는 상점에서 늘릴 수 있어요)", math.floor(capSeconds(player) / 3600))
+			text ..= string.format("\n⚠ 한도(%d시간)가 차서 %.1f시간치는 쌓이지 못했어요. 상점에서 한도를 늘릴 수 있어요", math.floor(capSeconds(player) / 3600), (away - capSeconds(player)) / 3600)
 		end
 		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🌙", Title = "자리를 비운 동안…", Text = text, Duration = 8 })
 		Remotes.Notify:FireClient(player, string.format("🌙 방치 보상 +%d G", gold))

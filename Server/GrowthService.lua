@@ -247,6 +247,7 @@ function Growth.Skip(player, kind, stat)
 	local used = math.min(balance, remaining)
 	job.EndAt -= used
 	player:SetAttribute("TimeSkip", balance - used)
+	if balance - used <= 0 then player:SetAttribute("TimeSkipCap", 0) end
 	notify(player, string.format("⏱ 시간 단축권 %s 사용!", Config.FormatDuration(used)))
 
 	completeJobs(player, state)
@@ -261,7 +262,9 @@ function Growth.IdleSlots(player)
 end
 
 function Growth.AddTimeSkip(player, seconds)
-	player:SetAttribute("TimeSkip", (player:GetAttribute("TimeSkip") or 0) + seconds)
+	local balance = (player:GetAttribute("TimeSkip") or 0) + seconds
+	player:SetAttribute("TimeSkip", balance)
+	player:SetAttribute("TimeSkipCap", balance) -- 단축칸: 얻는 순간 가득 찬다 (쓰면 이 값 대비 줄어드는 게 보인다)
 	Growth.Push(player)
 end
 
@@ -292,6 +295,7 @@ function Growth.Load(player, saved)
 		end
 		player:SetAttribute("GatePassed", math.max(0, math.floor(tonumber(saved.GatePassed) or 0)))
 		player:SetAttribute("TimeSkip", math.max(0, math.floor(tonumber(saved.TimeSkip) or 0)))
+		player:SetAttribute("TimeSkipCap", player:GetAttribute("TimeSkip"))
 	end
 
 	states[player] = state
