@@ -23,6 +23,7 @@ local function show()
 	local streak = player:GetAttribute("LoginStreak") or 1
 	local level = player:GetAttribute("Level") or 1
 	local first = level <= 1 and (player:GetAttribute("TutorialActive") == true)
+	if first then return end -- 처음 시작하는 튜토리얼 중에는 미션 카드가 가운데에 크게 뜨므로 환영 문구는 건너뛴다 (겹쳐서 가려지던 문제)
 
 	local gui = Instance.new("ScreenGui")
 	gui.Name = "WelcomeGui"
