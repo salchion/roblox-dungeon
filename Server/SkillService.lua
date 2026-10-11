@@ -266,13 +266,13 @@ handlers.Ult = function(player, root, _, character)
 						end)
 					end
 				end
-				if volley % 3 == 1 then -- 화면 번쩍임 / 흔들림 / 링 없이 소리만 (탄이 쏟아지는 느낌에 집중)
-					pcall(function() SoundBank.Play(root, "UltShot", { Pitch = 0.9 + math.random() * 0.4, Name = "GunShot" }) end)
-				end
+				-- 화면 번쩍임 / 흔들림 / 링 없이 소리만 (탄이 쏟아지는 느낌에 집중): 한 발씩 나갈 때마다 총소리 (세 번에 한 번만 나던 것을 매번으로)
+				pcall(function() SoundBank.Play(root, "UltShot", { Pitch = 0.9 + math.random() * 0.4, Volume = 0.8, Name = "GunShot" }) end)
 				task.wait(volleyGap)
 			end
 
 			-- 3) 마무리 대폭발: 락온했던 모든 위치에서 한꺼번에 터진다
+			pcall(function() SoundBank.Play(root, "Boom", { Volume = 0.8, Pitch = 1.1 }) end)
 			pcall(function()
 				for _, part in ipairs(targets) do
 					if part.Parent then
