@@ -24,7 +24,9 @@ local camera = workspace.CurrentCamera
 
 task.spawn(function()
 	for _ = 1, 10 do
-		if pcall(StarterGui.SetCoreGuiEnabled, StarterGui, Enum.CoreGuiType.Backpack, false) then
+		local okBag = pcall(StarterGui.SetCoreGuiEnabled, StarterGui, Enum.CoreGuiType.Backpack, false)
+		local okHealth = pcall(StarterGui.SetCoreGuiEnabled, StarterGui, Enum.CoreGuiType.Health, false) -- 오른쪽 위 기본 체력바는 숨긴다 (발밑 체력바 / 낮을 때 붉은 화면 / 상태 카드로 충분)
+		if okBag and okHealth then
 			break
 		end
 		task.wait(0.5)
