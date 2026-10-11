@@ -153,8 +153,17 @@ function Tutorial.Load(player, saved)
 	state.StepStartedAt = os.clock()
 	state.ReelDone = not (typeof(saved) == "table" and saved.ReelDone == false) -- 예전 저장본 / 새 사용자는 이미 받았거나 아직 때가 아니다
 	states[player] = state
+	-- 첫 던전 미션 중 던전에서 나왔거나(죽음 / 나가기 / 접속 종료) 다시 접속했다면: 게이트로 다시 들어가면 된다고 알려 준다 (열쇠 / 무료 입장 소모 없음)
+	local function nudgeDungeon()
+		if states[player] ~= state or player:GetAttribute("Zone") ~= "Lobby" or player:GetAttribute("TutorialDungeonRun") ~= true then return end
+		if os.clock() - (state.LastDungeonNudge or -100) < 20 then return end
+		state.LastDungeonNudge = os.clock()
+		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🗝", Title = "던전에 다시 도전!", Text = "마을의 던전 게이트(미션 화살표)에서 다시 들어갈 수 있어요. 열쇠도 필요 없어요. 처음 장면 그대로 이어져요!", Duration = 9, Top = true })
+	end
+	task.delay(10, nudgeDungeon) -- 이 던전 미션 도중 접속을 껐다가 다시 들어온 경우
 	player:GetAttributeChangedSignal("Zone"):Connect(function()
 		local current = states[player]
+		if current == state and player:GetAttribute("Zone") == "Lobby" then task.delay(2, nudgeDungeon) end
 		if current ~= state or player:GetAttribute("Zone") ~= "Field" then return end
 		if state.ReelDone == false then -- 필드로 나가는 순간 첫 장비 3개 지급 (슬롯 릴)
 			state.ReelDone = true
