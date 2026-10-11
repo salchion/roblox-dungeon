@@ -3256,7 +3256,7 @@ local FIELD_EVENTS = {
 	{ Key = "Raid",    Weight = 2.5 },  -- 공습 (폭격기 + 낙하산 부대)
 	{ Key = "Ambush",  Weight = 3 },    -- 사방 습격
 	{ Key = "Elite",   Weight = 2.2 },  -- 엘리트 부대 습격
-	{ Key = "Stampede", Weight = 2.6 }, -- 몬스터 대이동 (한 줄로 몰려온다)
+	-- (몬스터 대이동 Stampede 는 뺐다: 줄지어 달려오는 몬스터가 타격되지 않는 문제 + 피하기 어려운 연출. eventStampede 코드는 남겨 둔다)
 }
 
 local function eventAmbush(player, root, zone)
