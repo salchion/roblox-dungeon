@@ -419,7 +419,7 @@ local function playReel(list)
 	-- 돌아가는 동안: 부위 이름이 빠르게 바뀐다 -> 왼쪽부터 차례로 멈춘다
 	local startedAt = os.clock()
 	local stopAt = {}
-	for index = 1, #list do stopAt[index] = 1.1 + (index - 1) * 0.7 end
+	for index = 1, #list do stopAt[index] = 0.5 + (index - 1) * 0.25 end
 	local done = 0
 	while done < #list do
 		local elapsed = os.clock() - startedAt
@@ -447,12 +447,12 @@ local function playReel(list)
 		end
 		task.wait(0.07)
 	end
-	task.wait(2.2)
+	task.wait(0.9)
 	for _, inst in ipairs({ panel, panelStroke, title, footer }) do
 		local prop = inst:IsA("Frame") and "BackgroundTransparency" or inst:IsA("UIStroke") and "Transparency" or "TextTransparency"
-		TweenService:Create(inst, TweenInfo.new(0.5), { [prop] = 1 }):Play()
+		TweenService:Create(inst, TweenInfo.new(0.3), { [prop] = 1 }):Play()
 	end
-	task.wait(0.6)
+	task.wait(0.35)
 	panel:Destroy()
 	reelActive = false
 end

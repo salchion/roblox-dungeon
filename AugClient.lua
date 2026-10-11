@@ -150,3 +150,65 @@ UserInputService.InputBegan:Connect(function(input, processed)
 	if processed then return end
 	if input.KeyCode == Enum.KeyCode.Y then panel.Visible = not panel.Visible end
 end)
+
+------------------------------------------------------------
+-- 던전 시작 체험 효과: 8개 중 하나를 뽑는 연출(약 2.5초) -> 화면 오른쪽 위 구석에 작은 표시
+------------------------------------------------------------
+local TweenService = game:GetService("TweenService")
+local corner = make("TextLabel", {
+	Size = UDim2.new(0, 210, 0, 28), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 96),
+	BackgroundColor3 = Color3.fromRGB(26, 28, 42), BackgroundTransparency = 0.25, Font = Enum.Font.GothamBold, TextSize = 13,
+	TextColor3 = Color3.new(1, 1, 1), Text = "", Visible = false, BorderSizePixel = 0,
+}, gui)
+make("UICorner", { CornerRadius = UDim.new(0, 8) }, corner)
+local cornerStroke = make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 1.5 }, corner)
+
+local function refreshCorner()
+	local attr = player:GetAttribute("AugDemo")
+	local info = typeof(attr) == "string" and Config.AugInfo[attr]
+	local show = info and player:GetAttribute("Zone") == "Dungeon" and not corner:GetAttribute("Rolling")
+	corner.Visible = show == true
+	if show then
+		corner.Text = string.format("%s %s Lv.3 (체험)", info.Icon, info.Name)
+		cornerStroke.Color = info.Color
+	end
+end
+player:GetAttributeChangedSignal("AugDemo"):Connect(refreshCorner)
+player:GetAttributeChangedSignal("Zone"):Connect(refreshCorner)
+
+local function playRoll(pick)
+	local winner = Config.AugInfo[pick]
+	if not winner then return end
+	corner:SetAttribute("Rolling", true)
+	corner.Visible = false
+	local box = make("Frame", {
+		Size = UDim2.new(0, 280, 0, 92), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0.14, 0),
+		BackgroundColor3 = Color3.fromRGB(26, 28, 42), BackgroundTransparency = 0.1, BorderSizePixel = 0, ZIndex = 60,
+	}, gui)
+	make("UICorner", { CornerRadius = UDim.new(0, 12) }, box)
+	local stroke = make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 2 }, box)
+	label({ Size = UDim2.new(1, 0, 0, 22), Position = UDim2.new(0, 0, 0, 6), Text = "🎲 이번 던전 체험 효과", TextSize = 14, ZIndex = 61 }, box)
+	local icon = label({ Size = UDim2.new(0, 60, 0, 44), Position = UDim2.new(0, 14, 0, 32), Text = "?", TextSize = 34, ZIndex = 61 }, box)
+	local name = label({ Size = UDim2.new(1, -88, 0, 44), Position = UDim2.new(0, 78, 0, 32), Text = "", TextSize = 16, TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true, ZIndex = 61 }, box)
+	local startedAt = os.clock()
+	while os.clock() - startedAt < 1.3 do
+		local info = Config.AugInfo[Config.Sets.ZoneAug[math.random(#Config.Sets.ZoneAug)]]
+		icon.Text, name.Text = info.Icon, info.Name
+		name.TextColor3 = Color3.fromRGB(170, 175, 205)
+		task.wait(0.07)
+	end
+	icon.Text, name.Text = winner.Icon, winner.Name .. "\n<Lv.3 체험>"
+	name.TextColor3 = winner.Color
+	stroke.Color = winner.Color
+	task.wait(1.2)
+	TweenService:Create(box, TweenInfo.new(0.3), { BackgroundTransparency = 1 }):Play()
+	task.wait(0.3)
+	box:Destroy()
+	corner:SetAttribute("Rolling", nil)
+	refreshCorner()
+end
+
+Remotes.Aug.OnClientEvent:Connect(function(action, pick)
+	if action == "Demo" then task.spawn(playRoll, pick) end
+end)
+refreshCorner()

@@ -2312,7 +2312,7 @@ local function rollBonus(run, penaltyChance, forceSpecial)
 	for _, member in ipairs(run.Members) do
 		run.SetPieces[member] = run.SetPieces[member] or {}
 		-- 이중 보상: 세트 조각(확정) + 스탯/유틸 강화 1개. 잭팟은 완성에 가까운 조각 + 레어(Special) 강화.
-		local setInfo, note = giveSetPiece(run, member, forceSpecial)
+		local setInfo, note = nil, nil -- 세트 조각은 주사위에서 주지 않는다 (세트 효과는 던전 시작 체험 / 골드 활성화로만)
 		local function allowed(entry)
 			if forceSpecial and not entry.Special then return false end
 			if entry.Perk then return not perkMaxed(member, entry.Perk) end
@@ -2409,6 +2409,8 @@ local function surviveLoop(run)
 			run.RunAug[member] = run.RunAug[member] or {}
 			run.RunAug[member][pick] = 3
 			local info = Config.AugInfo[pick]
+			member:SetAttribute("AugDemo", pick) -- 화면 구석 표시 (AugClient)
+			Remotes.Aug:FireClient(member, "Demo", pick) -- 8개 중 뽑는 연출
 			notify(member, string.format("%s 이번 던전 체험 효과: 『%s』 (3단계) — %s", info.Icon, info.Name, info.Desc))
 		end
 	end
