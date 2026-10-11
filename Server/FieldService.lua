@@ -3082,6 +3082,7 @@ end
 -- 보스(구역 군주 / 이벤트 보스)가 나를 노리고 있으면 BossFight 가 켜진다 -> 클라이언트가 음악을 던전(전투) 곡으로 바꾼다
 local powerWarnedAt = setmetatable({}, { __mode = "k" })
 local weakTipShown = setmetatable({}, { __mode = "k" })
+local eventTipShown = setmetatable({}, { __mode = "k" }) -- [player] = 거신 안내를 이미 보여 줌
 local rescueAt = setmetatable({}, { __mode = "k" }) -- [player] = 튜토리얼 군주전에서 위험할 때 마지막으로 보호막을 받은 시각
 local weakLesson = setmetatable({}, { __mode = "k" }) -- [player] = { Base = 시작할 때 약점 명중 수, Taught = 약점을 맞힌 뒤 설명까지 끝났는지, NextHint = 다음 힌트 시각 }
 local function updateBossFight()
@@ -3139,8 +3140,8 @@ local function updateBossFight()
 				-- 쓰러졌다가 다시 도전: 일회성 힘 (군주에게 주는 피해 x8 + 궁극기 가득)
 				player:SetAttribute("UltCharge", Config.Skills.Ult.Cost)
 				Remotes.Tutorial:FireClient(player, "Prompt", { Key = "💪", Title = "일회성 힘이 깃들었어요!", Text = "군주에게 주는 피해가 크게 늘었고 궁극기가 가득 찼어요. V 키 데드아이와 노란 구슬 약점으로 이번엔 쓰러뜨려요!", Duration = 9 })
-			elseif fighting and bossKind == "Event" and not player:GetAttribute("TutorialActive") and not weakTipShown[player .. "_event"] then
-				weakTipShown[player] = weakTipShown[player]
+			elseif fighting and bossKind == "Event" and not player:GetAttribute("TutorialActive") and not eventTipShown[player] then
+				eventTipShown[player] = true -- (예전에는 player .. "_event" 로 Instance 와 글자를 이어 붙여 오류가 났다)
 				Remotes.Tutorial:FireClient(player, "Prompt", { Key = "⚔", Title = "거신!", Text = "같이 싸운 사람 모두에게 전리품이 나와요. 멀리서 탄을 피하며 계속 쏘세요!", Duration = 7 })
 			elseif fighting and bossKind == "Boss" and bossZone and not player:GetAttribute("TutorialActive") then
 				-- 지역 군주를 만나면: 전투력이 모자라면 무기 강화를 권하고(골드 사용처), 처음이면 약점 구슬 사용법을 알려준다
