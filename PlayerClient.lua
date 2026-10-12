@@ -2473,6 +2473,16 @@ local function buildWeaponTab()
 		),
 	}, header)
 
+	-- 무기 목록은 높이가 정해진 작은 창 안에서만 스크롤된다: 위쪽 시연 / 설명이 목록을 내려도 화면 밖으로 밀려나지 않는다 (엑셀 틀 고정처럼)
+	local listHost = newRow(178)
+	local inner = create("ScrollingFrame", {
+		Size = UDim2.new(1, -12, 1, -12), Position = UDim2.new(0, 6, 0, 6), BackgroundTransparency = 1, BorderSizePixel = 0,
+		ScrollBarThickness = 5, CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.Y,
+	}, listHost)
+	create("UIListLayout", { Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder }, inner)
+	local outerContent, outerOrder = activeContent, rowOrder
+	activeContent, rowOrder = inner, 0
+	task.defer(function() inner.CanvasPosition = Vector2.new(0, settings.WeaponListY or math.max(0, (current.Index - 3) * 38)) end)
 	for _, tier in ipairs(tiers) do
 		local owned = tier.Index < current.Index
 		local isCurrent = tier.Index == current.Index
@@ -2489,9 +2499,11 @@ local function buildWeaponTab()
 		pick.Activated:Connect(function()
 			settings.PreviewTier = tier.Index
 			settings.DemoClock = 0
+			settings.WeaponListY = inner.CanvasPosition.Y -- 다시 그려도 보던 자리에 머문다
 			settings.RefreshMenu()
 		end)
 	end
+	activeContent, rowOrder = outerContent, outerOrder
 end
 
 local function buildProgressRows(entries, remoteAction, showTitle)
