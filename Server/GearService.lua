@@ -67,13 +67,17 @@ local function attach(folder, limb, spec)
 	part.Color = spec.Color
 	part.Material = spec.Material or Enum.Material.Metal
 	part.Transparency = spec.Transparency or 0
+	local mat = part.Material
+	if mat == Enum.Material.Metal or mat == Enum.Material.Foil or mat == Enum.Material.DiamondPlate then
+		part.Reflectance = 0.16 -- 금속은 은은하게 반사해서 장난감 같은 플라스틱 느낌을 줄인다
+	end
 	part.CanCollide = false
 	part.CanQuery = false
 	part.CanTouch = false
 	part.Massless = true
 	if spec.Shape then part.Shape = spec.Shape end
 	-- 네모난 느낌을 줄이기 위해 각진 판은 모서리가 둥근 모양(Head 메시)으로 만든다. 얇은 날 / 띠는 그대로 둔다.
-	if not spec.Shape and spec.Round ~= false and math.min(spec.Size.X, spec.Size.Y, spec.Size.Z) >= 0.5 then
+	if not spec.Shape and spec.Round ~= false and math.min(spec.Size.X, spec.Size.Y, spec.Size.Z) >= 0.2 then -- (예전 0.5 -> 0.2: 얇은 판도 둥글게)
 		local mesh = Instance.new("SpecialMesh")
 		mesh.MeshType = Enum.MeshType.Head
 		mesh.Scale = Vector3.new(1.25, 1.25, 1.25)
