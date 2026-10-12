@@ -1529,12 +1529,12 @@ if next(tracks) == nil and RunService:IsStudio() then
 	print("[Music] Background music is empty. Enter audio IDs (numbers) in the ReplicatedStorage > AudioIds script to get lobby / field / dungeon / boss music. (See 'How to add sound' in the README)")
 end
 
-local settings = { Shake = true, Radar = true, ShotVolume = 1 }
+local settings = { Shake = true, Radar = true, ShotVolume = 0.2 } -- 총소리 슬라이더는 20% 에서 시작 (100% 는 예전 최대 크기)
 local toggleHelp
 
 local musicEnabled = true   -- M 키로 켜고 끈다
 local currentMusic = nil
-local musicScale = 1
+local musicScale = 0.3 -- 음악 슬라이더는 30% 에서 시작 (100% 는 예전 최대 크기)
 local function musicVolume(name)
 	return musicEnabled and Config.Audio.MusicVolume * musicScale * ((Config.Audio.TrackScale or {})[name or currentMusic] or 1) or 0
 end
