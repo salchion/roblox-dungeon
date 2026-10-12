@@ -862,7 +862,7 @@ end
 ------------------------------------------------------------
 Config.WeaponTypes = {
 	Order = { "Pistol", "Smg", "Revolver", "Rifle", "Shotgun", "Flamer", "Cannon", "Sniper", "Rocket", "Rail" },
-	-- 초당 피해 계수 F = 한 발 x 탄 수(산탄은 60%만 맞는다고 계산) / 간격. 사거리가 긴 무기는 F 가 1.0 근처, 사거리가 짧은 무기는 F 가 1.5 근처
+	-- 초당 피해 계수 F = 한 발 x 탄 수(산탄은 60%만 맞는다고 계산. 허수아비처럼 붙어서 쏘면 100% 맞으므로 샷건 / 화염방사기는 100% 기준으로 약 1.8배가 되게 잡았다) / 간격. 사거리가 긴 무기는 F 가 1.0 근처, 사거리가 짧은 무기는 F 가 1.5 근처
 	Pistol = {
 		Name = "Pistol", Form = "Basic", DamageMult = 1.0, Cooldown = 1, Range = 300, Pellets = 1, Spread = 0,
 		ShotScale = 1, SpeedScale = 1, BarrelLength = 1, BarrelThickness = 1,
@@ -884,12 +884,12 @@ Config.WeaponTypes = {
 		Trait = "Fast fire rate · Long range", Desc = "Accurate sustained fire at long range",
 	},
 	Shotgun = {
-		Name = "Shotgun", Form = "Basic", DamageMult = 0.5, Cooldown = 1.2, Range = 80, Pellets = 6, Spread = 9,
+		Name = "Shotgun", Form = "Basic", DamageMult = 0.36, Cooldown = 1.2, Range = 80, Pellets = 6, Spread = 9,
 		ShotScale = 0.55, SpeedScale = 1, BarrelLength = 0.75, BarrelThickness = 1.5,
 		Trait = "Point-blank burst damage · Very short range", Desc = "6 pellets fan out in a spread (fewer hit at range)",
 	},
 	Flamer = {
-		Name = "Flamethrower", Form = "Flamer", DamageMult = 0.19, Cooldown = 0.3, Range = 45, Pellets = 4, Spread = 16,
+		Name = "Flamethrower", Form = "Flamer", DamageMult = 0.14, Cooldown = 0.3, Range = 45, Pellets = 4, Spread = 16,
 		ShotScale = 0.9, SpeedScale = 0.6, BarrelLength = 0.7, BarrelThickness = 1.4,
 		Trait = "Highest firepower · Shortest range", Desc = "Sprays flames in a fan (get up close and burn them)",
 	},
