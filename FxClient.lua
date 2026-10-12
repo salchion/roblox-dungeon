@@ -321,13 +321,13 @@ local ERA_TRAIL = { [5] = FIRE, [9] = DRAGON }
 
 local function sigEmitter(part, colorSeq, rate, size, life, speed, accel, texture, emission)
 	local e = Instance.new("ParticleEmitter")
-	e.Rate = rate
+	e.Rate = rate * 0.7
 	e.Lifetime = NumberRange.new(life * 0.6, life)
 	e.Speed = NumberRange.new(speed * 0.3, speed)
 	e.SpreadAngle = Vector2.new(180, 180)
 	e.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, size), NumberSequenceKeypoint.new(1, 0) })
 	e.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.15), NumberSequenceKeypoint.new(1, 1) })
-	e.LightEmission = emission or 1
+	e.LightEmission = math.min(emission or 1, 0.6) -- (번쩍임 톤 다운)
 	e.Color = colorSeq
 	if accel then e.Acceleration = accel end
 	if texture then e.Texture = texture end
@@ -499,6 +499,7 @@ local function playShot(event)
 	end
 	local mini = look ~= nil and look.Mini == true -- 기관단총 / 샷건: 연사가 많아 시대 효과를 최소로
 	if not rainbow and ERA_TINT[era] then color = ERA_TINT[era] end
+	if not rainbow then color = color:Lerp(Color3.fromRGB(120, 125, 135), 0.18) end -- 너무 쨍하지 않게 살짝 가라앉힌다
 	if mini then size *= 1 + 0.7 * richness end -- 연사 무기도 번호가 오르면 탄이 굵고 밝아진다 (앞 무기보다 초라해지지 않게)
 	size = math.max(size, mini and 0.45 or 0.5) -- 뒤에서 봐도 보이게 바닥 굵기 (연사 / 산탄 탄이 너무 가늘어 안 보인다는 말이 있어 키웠다)
 	activeShots += 1
@@ -533,7 +534,7 @@ local function playShot(event)
 	trail.Lifetime = math.min(0.65, (style == "Ball" and 0.08 or 0.14) + 0.03 * era + 0.12 * richness)
 	trail.Color = colorSeq
 	trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(1, 1) })
-	trail.LightEmission = 1
+	trail.LightEmission = 0.6
 	trail.FaceCamera = true
 	trail.Parent = part
 
@@ -1117,9 +1118,10 @@ local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간
 	local scale = event[6] or 1
 	local style = event[7]
 	local tint = event[8] -- (선택) 불꽃 / 폭발 색
+	if tint then tint = tint:Lerp(Color3.fromRGB(120, 125, 135), 0.14) end -- 너무 쨍하지 않게
 	local icbm = style == "icbm"
 	local long = icbm or style == "rocket" -- 길쭉한 몸체 (비행 방향을 향한다)
-	local white = Color3.fromRGB(240, 250, 255)
+	local white = Color3.fromRGB(215, 225, 235)
 	local ball
 	if icbm then
 		ball = neonPart(Vector3.new(0.7, 0.7, 3.6) * scale, white, 0)
@@ -1151,7 +1153,7 @@ local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간
 	trail.Lifetime = icbm and 0.7 or (style == "blade" and 0.35 or 0.5)
 	trail.Color = tint and ColorSequence.new(white, tint) or ColorSequence.new(Color3.fromRGB(255, 235, 140), Color3.fromRGB(255, 70, 30))
 	trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.05), NumberSequenceKeypoint.new(0.6, 0.45), NumberSequenceKeypoint.new(1, 1) })
-	trail.LightEmission = 1
+	trail.LightEmission = 0.7
 	trail.Parent = ball
 	if style ~= "blade" and style ~= "orb" then
 		local s0, s1 = pair(1.3 * scale)
@@ -1172,7 +1174,7 @@ local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간
 		sparks.SpreadAngle = Vector2.new(180, 180)
 		sparks.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5 * scale), NumberSequenceKeypoint.new(1, 0) })
 		sparks.Color = ColorSequence.new(white, tint or white)
-		sparks.LightEmission = 1
+		sparks.LightEmission = 0.6
 		sparks.Parent = ball
 	end
 	local light = Instance.new("PointLight")
