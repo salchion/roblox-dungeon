@@ -2316,6 +2316,11 @@ makeLabel({
 	Size = UDim2.new(1, -90, 0, 36), Position = UDim2.new(0, 16, 0, 8),
 	Text = "📋 Menu", Font = Enum.Font.GothamBlack, TextSize = 20, TextXAlignment = Enum.TextXAlignment.Left,
 }, menuPanel)
+-- 메뉴 제목 옆 재화 줄: 장비 탭일 때 가방 칸 수 / 에센스를 여기에 보여 준다 (장비 / 강화 버튼이 더 위로 올라오게)
+settings.MenuInfo = makeLabel({
+	Size = UDim2.new(1, -330, 0, 36), Position = UDim2.new(0, 130, 0, 8), RichText = true, TextSize = 13, Text = "",
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, menuPanel)
 
 makeButton({
 	Size = UDim2.new(0, 64, 0, 28), Position = UDim2.new(1, -76, 0, 10), Text = "Close (B)", TextSize = 11, BackgroundColor3 = GRAY,
@@ -2624,31 +2629,9 @@ local function buildInventoryTab()
 		return
 	end
 
-	local header = newRow(92)
-	local headerText = rowText(header, string.format(
-		"🎒 Bag <b>%d / %d</b>      ✨ Essence <font color='#9ad7ff'>%d</font>\n<font size='11' color='#bbbbcc'>Tap a slot for details. Smart Clean: only auto-dismantles weak gear when you have better gear in the same slot (Set / Unique are safe)</font>",
-		state.BagCount, state.Capacity, state.Essence
-	), 15, 24)
-	headerText.Size = UDim2.new(1, -24, 0, 50)
-	headerText.TextYAlignment = Enum.TextYAlignment.Top
-	makeButton({
-		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -318, 0, 56),
-		Text = "Auto-Dismantle: " .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 11, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
-	}, header, function()
-		Remotes.Inventory:FireServer("AutoScrap", (state.AutoScrap + 1) % 5)
-	end)
-	makeButton({
-		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -474, 0, 56),
-		Text = "⚡ Auto-equip best gear", TextSize = 11, BackgroundColor3 = GREEN,
-	}, header, function()
-		Remotes.Inventory:FireServer("AutoEquip")
-	end)
-	makeButton({
-		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -162, 0, 56),
-		Text = "🧹 Smart Clean", TextSize = 11, BackgroundColor3 = RED,
-	}, header, function()
-		Remotes.Inventory:FireServer("SmartClean")
-	end)
+	if settings.MenuInfo then
+		settings.MenuInfo.Text = string.format("🎒 Bag <b>%d / %d</b>    ✨ Essence <font color='#9ad7ff'><b>%d</b></font>", state.BagCount, state.Capacity, state.Essence)
+	end
 
 	local equipped, bag, setCounts, byId = {}, {}, {}, {}
 	for _, item in ipairs(state.Items) do
@@ -2711,7 +2694,7 @@ local function buildInventoryTab()
 
 	local SLOT_ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Weapon = "🔫", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
 
-	local top = newRow(500, Color3.fromRGB(30, 32, 46))
+	local top = newRow(470, Color3.fromRGB(30, 32, 46))
 
 	local viewport = create("ViewportFrame", {
 		Size = UDim2.new(0, 230, 0, 330), Position = UDim2.new(0, 108, 0, 12), BackgroundColor3 = Color3.fromRGB(20, 22, 34), BorderSizePixel = 0,
@@ -2987,7 +2970,18 @@ local function buildInventoryTab()
 		makeLabel({ Size = UDim2.new(1, -20, 1, -20), Position = UDim2.new(0, 10, 0, 10), Text = "No gear yet.\nDefeat monsters in the field or use the gacha!", TextSize = 13, TextColor3 = Color3.fromRGB(150, 150, 170) }, detail)
 	end
 
-	sectionTitle(string.format("🎒 Bag (%d / %d) — tap a slot to see details above", state.BagCount, state.Capacity))
+	-- 가방 줄: 제목 + 자동 장착 / 자동 분해 / 정리 버튼 (장비 화면 위쪽 공간을 비우려고 이쪽으로 옮겼다)
+	local bagHeader = newRow(34, Color3.fromRGB(26, 28, 42))
+	rowText(bagHeader, "<font color='#e1c476'><b>🎒 Bag — tap a slot to see details above</b></font>", 14)
+	makeButton({ Size = UDim2.new(0, 132, 0, 26), Position = UDim2.new(1, -140, 0.5, -13), Text = "🧹 Smart Clean", TextSize = 10, BackgroundColor3 = RED }, bagHeader, function()
+		Remotes.Inventory:FireServer("SmartClean")
+	end)
+	makeButton({ Size = UDim2.new(0, 172, 0, 26), Position = UDim2.new(1, -318, 0.5, -13), Text = "Auto-Dismantle: " .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 10, BackgroundColor3 = Color3.fromRGB(70, 110, 220) }, bagHeader, function()
+		Remotes.Inventory:FireServer("AutoScrap", (state.AutoScrap + 1) % 5)
+	end)
+	makeButton({ Size = UDim2.new(0, 160, 0, 26), Position = UDim2.new(1, -486, 0.5, -13), Text = "⚡ Auto-equip best gear", TextSize = 10, BackgroundColor3 = GREEN }, bagHeader, function()
+		Remotes.Inventory:FireServer("AutoEquip")
+	end)
 	local columns = 10
 	local rowsNeeded = math.max(1, math.ceil(#bag / columns))
 	local gridRow = newRow(rowsNeeded * 76 + 14)
@@ -3233,6 +3227,7 @@ function refreshMenu()
 	local keepScroll = (MENU.LastKey == renderKey) and menuContent.CanvasPosition or nil -- 같은 화면을 다시 그릴 때는 스크롤 위치를 유지
 	MENU.LastKey = renderKey
 	clearChildren(menuContent)
+	if settings.MenuInfo then settings.MenuInfo.Text = "" end -- (장비 탭이 아니면 비운다)
 	rowOrder = 0
 	local sub = MENU.Sub[currentTab]
 	if MENU.Subs[currentTab] then
