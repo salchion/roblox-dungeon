@@ -2932,9 +2932,10 @@ local function buildInventoryTab()
 			}, band)
 		end
 		makeLabel({
-			Size = UDim2.new(1, -20, 1, -172 - bandH), Position = UDim2.new(0, 10, 0, 8 + bandH), Text = table.concat(lines, "\n"), TextSize = 12, RichText = true,
+			Size = UDim2.new(1, -20, 1, -52 - bandH), Position = UDim2.new(0, 10, 0, 46 + bandH), Text = table.concat(lines, "\n"), TextSize = 12, RichText = true,
 			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 		}, detail)
+		-- (강화 / 재굴림 / 장착 버튼은 상세 창 맨 위로 올렸다: 아래에 두면 메뉴 아래쪽에 가려졌다)
 		if selected.Equipped then
 			-- 장착 중인 장비는 여기서도 바로 강화 (뽑기 창의 강화와 같다: 로비에서만)
 			if selected.Level < Config.Gear.MaxLevel then
@@ -2942,26 +2943,26 @@ local function buildInventoryTab()
 				local chance = math.floor(Config.GetGearEnhanceChance(selected.Level) * 100 + 0.5)
 				local gold = player:GetAttribute("Gold") or 0
 				makeButton({
-					Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 1, -40),
+					Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 0, bandH + 6),
 					Text = string.format("💰 %d G Slot Upgrade (%d%% success)", cost, chance), TextSize = 11, BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62),
 				}, detail, function()
 					Remotes.Gear:FireServer("Enhance", selected.Slot)
 				end)
 			else
-				makeButton({ Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 1, -40), Text = "Max Upgrade MAX", TextSize = 11, BackgroundColor3 = GRAY }, detail, function() end)
+				makeButton({ Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 0, bandH + 6), Text = "Max Upgrade MAX", TextSize = 11, BackgroundColor3 = GRAY }, detail, function() end)
 			end
 		end
 		if not selected.Equipped then
-			makeButton({ Size = UDim2.new(0, 96, 0, 30), Position = UDim2.new(0, 10, 1, -40), Text = "Equip", TextSize = 12, BackgroundColor3 = GREEN }, detail, function()
+			makeButton({ Size = UDim2.new(0, 96, 0, 30), Position = UDim2.new(0, 10, 0, bandH + 6), Text = "Equip", TextSize = 12, BackgroundColor3 = GREEN }, detail, function()
 				Remotes.Inventory:FireServer("Equip", selected.Id)
 			end)
-			makeButton({ Size = UDim2.new(0, 96, 0, 30), Position = UDim2.new(0, 112, 1, -40), Text = "Dismantle", TextSize = 12, BackgroundColor3 = RED }, detail, function()
+			makeButton({ Size = UDim2.new(0, 96, 0, 30), Position = UDim2.new(0, 112, 0, bandH + 6), Text = "Dismantle", TextSize = 12, BackgroundColor3 = RED }, detail, function()
 				Remotes.Inventory:FireServer("Scrap", selected.Id)
 			end)
 		end
 		if #selected.Affixes > 0 then
 			makeButton({
-				Size = UDim2.new(0, 120, 0, 30), Position = UDim2.new(1, -130, 1, -40),
+				Size = UDim2.new(0, 120, 0, 30), Position = UDim2.new(1, -130, 0, bandH + 6),
 				Text = string.format("Reroll ✨%d", Config.Inventory.RerollEssence[selected.Rarity]), TextSize = 10, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
 			}, detail, function()
 				Remotes.Inventory:FireServer("Reroll", selected.Id)
