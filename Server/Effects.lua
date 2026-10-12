@@ -826,8 +826,10 @@ function Effects.FloatText(position, text, color, width, life)
 	emit(position, { "F", position, text, color, width, life })
 end
 
+-- Effects.DamageTint: 세트 효과 / 데드아이가 준 피해일 때 호출하는 쪽이 잠깐 넣어 두는 색 (그 색으로 크게 뜬다)
+Effects.DamageTint = nil
 function Effects.DamageNumber(position, amount, isCrit)
-	emit(position, { "D", position, amount, isCrit == true })
+	emit(position, { "D", position, amount, isCrit == true, Effects.DamageTint })
 end
 
 -- 강화 성공 시 캐릭터 주변에 터지는 빛 입자

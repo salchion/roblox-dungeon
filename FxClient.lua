@@ -81,13 +81,17 @@ local function getText()
 	return { Part = anchor, Gui = gui, Label = label }
 end
 
-local function showText(position, text, color, size, lifetime, rise)
+local lootTicker
+local DEFAULT_STROKE = 0
+local function showText(position, text, color, size, lifetime, rise, transparency)
 	if activeTexts >= MAX_ACTIVE_TEXTS then return end
 	activeTexts += 1
 	local entry = getText()
 	entry.Gui.Size = size
 	entry.Label.Text = text
 	entry.Label.TextColor3 = color
+	entry.Label.TextTransparency = transparency or 0 -- (획득 글자는 흐리게)
+	entry.Label.TextStrokeTransparency = transparency and math.min(1, transparency + 0.3) or DEFAULT_STROKE
 	entry.Part.Position = position
 	entry.Part.Parent = fxFolder
 	if rise then
@@ -1375,6 +1379,7 @@ RunService.RenderStepped:Connect(function()
 end)
 
 local FLOAT_SIZE, DAMAGE_SIZE = UDim2.new(0, 140, 0, 36), UDim2.new(0, 90, 0, 40)
+lootTicker = { G = { Pending = 0, Last = 0, Scheduled = false }, XP = { Pending = 0, Last = 0, Scheduled = false } } -- 골드 / 경험치 글자 합치기용
 local HANDLERS = {
 	S = playShot,
 	P = spawnProjectile,
@@ -1383,6 +1388,30 @@ local HANDLERS = {
 	T = tracer,
 	B = function(event) burst(event[2], event[3], event[4]) end,
 	F = function(event) -- { "F", 위치, 글자, 색, (폭), (초) }: 폭이 있으면 배너처럼 크고 오래 뜬다
+		-- 골드 / 경험치 획득 글자("+8 G", "+4 XP")는 작고 흐리게, 0.3초 안에 여러 개가 오면 합쳐서 한 번만 (화면 잡음 줄이기)
+		local text = event[3]
+		if not event[5] and typeof(text) == "string" then
+			local amount, unit = string.match(text, "^%+(%d+) (G)$")
+			if not amount then amount, unit = string.match(text, "^💰 %+(%d+) (G)$") end
+			if not amount then amount, unit = string.match(text, "^%+(%d+) (XP)$") end
+			if amount then
+				local slot = lootTicker[unit]
+				local now = os.clock()
+				slot.Pending += tonumber(amount)
+				slot.Position, slot.Color = event[2], event[4]
+				if not slot.Scheduled then
+					slot.Scheduled = true
+					task.delay(math.max(0, slot.Last + 0.3 - now), function()
+						slot.Scheduled = false
+						slot.Last = os.clock()
+						local total = slot.Pending
+						slot.Pending = 0
+						showText(slot.Position, string.format("+%d %s", total, unit), slot.Color, UDim2.new(0, 80, 0, 20), 0.55, 2, 0.45)
+					end)
+				end
+				return
+			end
+		end
 		local width = event[5]
 		if width then
 			width = math.clamp(width, 120, 420)
@@ -1391,8 +1420,12 @@ local HANDLERS = {
 			showText(event[2], event[3], event[4], FLOAT_SIZE, 0.7, 3)
 		end
 	end,
-	D = function(event) -- { "D", position, amount, isCrit }
-		showText(event[2], event[4] and (tostring(event[3]) .. "!") or tostring(event[3]), event[4] and Color3.fromRGB(255, 220, 60) or WHITE, DAMAGE_SIZE, 0.5, nil)
+	D = function(event) -- { "D", position, amount, isCrit, (색) }: 색이 있으면 세트 효과 / 데드아이 피해 -> 그 색으로 크게
+		if event[5] then
+			showText(event[2], tostring(event[3]), event[5]:Lerp(WHITE, 0.25), UDim2.new(0, 150, 0, 60), 0.75, 3)
+		else
+			showText(event[2], event[4] and (tostring(event[3]) .. "!") or tostring(event[3]), event[4] and Color3.fromRGB(255, 220, 60) or WHITE, DAMAGE_SIZE, 0.5, nil)
+		end
 	end,
 	H = function(event) flash(event[2]) end,
 	G = gunSound,

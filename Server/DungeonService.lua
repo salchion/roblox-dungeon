@@ -1449,7 +1449,8 @@ local function augDamage(player)
 	return (Dungeon.ComputeDamage(player))
 end
 
-local function hitMonster(run, player, entry, amount, quiet)
+local function hitMonster(run, player, entry, amount, quiet, tint)
+	Effects.DamageTint = tint -- 세트 효과 피해: 그 효과 색으로 피해 숫자를 띄운다 (아래 호출이 끝나면 지운다)
 	if run.HitFn then -- 필드: 필드 몬스터에게 피해를 주는 함수를 따로 받는다
 		run.HitFn(player, entry, amount, quiet)
 	elseif run.Monsters[entry.Part] == entry.Data then
@@ -1457,6 +1458,7 @@ local function hitMonster(run, player, entry, amount, quiet)
 		damageMonster(run, player, entry.Part, entry.Data, math.max(1, math.floor(amount)), false, entry.Part.Position, quiet)
 		BL.Ctx = nil
 	end
+	Effects.DamageTint = nil
 end
 
 -- 세트 효과가 발동했다는 것을 그 플레이어 화면에 알린다 (효과별로 0.55초에 한 번만: 연사해도 화면이 도배되지 않게)
@@ -1490,7 +1492,7 @@ local function launchMissile(run, player, from, entry, amount, style, tint, scal
 		if run.Destroyed then return end
 		local position = entry.Part.Parent and entry.Part.Position or target
 		sfxAt(run, position, "Aug_MissileHit", nil, 0.08)
-		hitMonster(run, player, entry, amount)
+		hitMonster(run, player, entry, amount, nil, tint or Color3.fromRGB(255, 160, 80))
 	end)
 end
 
@@ -1510,7 +1512,7 @@ local function launchBlast(run, player, from, entry, amount, radius, color)
 		Effects.Burst(position, color, 50)
 		sfxAt(run, position, "Aug_Pulse", nil, 0.5)
 		for _, hit in ipairs(nearestMonsters(run, position, radius, 12)) do
-			hitMonster(run, player, hit, amount)
+			hitMonster(run, player, hit, amount, nil, color)
 		end
 	end)
 end
@@ -1555,7 +1557,7 @@ local function strikeBolt(run, player, entry, damage)
 	Effects.Raw(entry.Part.Position, { "Z", entry.Part.Position + Vector3.new(0, 95, 0), entry.Part.Position }) -- 번개 줄기(굵고 높게) / 바닥 그을음 / 불꽃은 각자 화면에서
 	Effects.Burst(entry.Part.Position, Color3.fromRGB(255, 240, 120), 36)
 	sfxAt(run, entry.Part.Position, "Aug_Storm", nil, 0.12)
-	hitMonster(run, player, entry, damage)
+	hitMonster(run, player, entry, damage, nil, Color3.fromRGB(255, 240, 110))
 end
 
 -- 유성: 경고 원 -> 낙하 -> 폭발
@@ -1566,7 +1568,7 @@ local function dropMeteor(run, player, position, radius, damage, level)
 		if run.Destroyed or run.Phase == "Ended" then return end
 		sfxAt(run, position, "Aug_MeteorHit", nil, 0.2) -- 착탄 고리 / 구덩이 / 파편은 클라이언트 "E" 가 낙하 끝에 그린다
 		for _, entry in ipairs(nearestMonsters(run, position, radius, 12)) do
-			hitMonster(run, player, entry, damage)
+			hitMonster(run, player, entry, damage, nil, Color3.fromRGB(255, 190, 90))
 		end
 		if synergy(player, "StormEye") then -- 폭풍의 눈: 유성이 떨어질 때 번개가 추가로
 			for _, entry in ipairs(nearestMonsters(run, position, radius + 25, 3 + level)) do
@@ -1617,7 +1619,7 @@ augOnKill = function(run, player, position)
 	sfxAt(run, position, "Aug_Nova", nil, 0.12)
 	local damage = augDamage(player) * (1.2 + 0.6 * level)
 	for _, entry in ipairs(nearestMonsters(run, position, radius, 8)) do
-		hitMonster(run, player, entry, damage)
+		hitMonster(run, player, entry, damage, nil, Color3.fromRGB(255, 110, 80))
 	end
 	augDepth -= 1
 end

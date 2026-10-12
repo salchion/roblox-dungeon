@@ -313,7 +313,9 @@ handlers.Ult = function(player, root, _, character)
 					end
 					if not hitPart then return end
 					BL.Ctx = "데드아이"
+					Effects.DamageTint = Color3.fromRGB(90, 200, 255) -- 데드아이 피해 숫자는 하늘색으로 크게
 					local landed = Dungeon.HitPart(player, hitPart, perMissile) or Field.HitPart(player, hitPart, perMissile)
+					Effects.DamageTint = nil
 					BL.Ctx = nil
 					if shotNumber % 2 == 0 then pcall(function() SoundBank.Play(hitPart, "Aug_MissileHit", { Pitch = 0.9 + math.random() * 0.4, Volume = 0.6 }) end) end
 					local label = markers[index] and markers[index]:FindFirstChildOfClass("TextLabel")

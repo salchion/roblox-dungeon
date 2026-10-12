@@ -90,11 +90,11 @@ local CUSTOM_ONLY = {
 	Aug_Missile   = { Volume = 0.7, CustomLength = 1.0, CustomPitch = 1.0 }, -- 치명타 미사일 발사
 	Aug_MissileHit = { Volume = 0.35, CustomLength = 0.5, CustomPitch = 1.8 }, -- 미사일 명중
 	Aug_Nova      = { Volume = 0.7, CustomLength = 1.2, CustomPitch = 1.2 }, -- 처치 폭발
-	Aug_Blade     = { Volume = 0.5, CustomLength = 0.6 }, -- 회전 칼날이 벨 때 (자주 난다: 짧게)
-	Aug_Storm     = { Volume = 1.0, CustomLength = 1.8 }, -- 낙뢰 (천둥)
+	Aug_Blade     = { Volume = 0.5, CustomLength = 0.6, Base = "Dash", Pitch = 1.7, Length = 0.3, Fx = { { "eq", { LowGain = -10, MidGain = 0, HighGain = 3 } } } }, -- 회전 칼날이 벨 때 "슈웅" (소리 ID 가 없으면 대시 소리를 높게 가공)
+	Aug_Storm     = { Volume = 1.0, CustomLength = 1.8, Base = "Boom", Pitch = 0.75, Length = 1.3, Fx = { { "distortion", { Level = 0.6 } }, { "reverb", { DecayTime = 2.5, WetLevel = -3 } } }, Layers = { { Pitch = 2.4, Volume = 0.6, Delay = 0 } } }, -- 낙뢰: 찌직(높은 소리) + 우르릉(낮은 폭발 가공)
 	Aug_MeteorFall = { Volume = 0.8, CustomLength = 1.4, CustomPitch = 0.5 }, -- 유성이 떨어지는 소리
 	Aug_MeteorHit = { Volume = 1.3, CustomLength = 2.0, CustomPitch = 0.7 }, -- 유성 착탄 (큰 폭발)
-	Aug_Flame     = { Volume = 0.6, CustomLength = 1.2 }, -- 불길이 생길 때
+	Aug_Flame     = { Volume = 0.6, CustomLength = 1.2, Base = "Dash", Pitch = 0.6, Length = 0.7, Fx = { { "chorus", { Depth = 0.7, Mix = 0.6 } }, { "distortion", { Level = 0.35 } } } }, -- 불길이 생길 때 "후와악"
 	Aug_Execute   = { Volume = 0.5, CustomLength = 0.6, CustomPitch = 1.5 }, -- 처형
 	Aug_Pulse     = { Volume = 0.6, CustomLength = 1.0, CustomPitch = 1.5 }, -- 폭풍 충격파
 	Buff_Get      = { Volume = 0.7, CustomLength = 1.0, CustomPitch = 1.25 }, -- 일반 랜덤 강화를 얻을 때
