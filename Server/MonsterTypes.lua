@@ -841,7 +841,9 @@ function M.Update(ctx, part, data, dt, now)
 			for otherPart, otherData in pairs(ctx.Monsters()) do
 				if healed >= 5 then break end
 				if otherPart ~= part and otherPart.Parent and not otherData.BossLike and not otherData.IsBoss and otherData.Health > 0 and otherData.Health < otherData.MaxHealth
+					and (now - (otherData.HealedAt or 0)) >= 2.2 -- 같은 몬스터는 여러 사제가 겹쳐서 치유하지 못한다
 					and (otherPart.Position - part.Position).Magnitude <= 34 then
+					otherData.HealedAt = now
 					local amount = math.max(1, math.floor(otherData.MaxHealth * 0.12))
 					otherData.Health = math.min(otherData.MaxHealth, otherData.Health + amount)
 					otherData.HealthFill.Size = UDim2.new(math.max(otherData.Health, 0) / otherData.MaxHealth, 0, 1, 0)

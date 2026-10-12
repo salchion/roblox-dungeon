@@ -1106,7 +1106,9 @@ local function segmentFeatures(zone, segment)
 	local id = zone * 10 + segment
 	if segmentFeatureCache[id] then return segmentFeatureCache[id] end
 	local keys = {}
-	for key in pairs(F.ZonePools[zone]) do table.insert(keys, key) end
+	for key in pairs(F.ZonePools[zone]) do
+		if key ~= "Healer" then table.insert(keys, key) end -- 치유 사제는 구간 "특산" 으로 뽑히지 않는다 (뽑히면 그 구간이 힐러투성이가 돼서 불쾌했다)
+	end
 	table.sort(keys)
 	local rng = Random.new(zone * 7919 + segment * 104729)
 	local picked = {}
@@ -1126,6 +1128,13 @@ local function pickTypeAt(zone, x)
 	end
 	for _, key in ipairs(features) do
 		pool[key] = (F.ZonePools[zone][key] or 1) * 3.2
+	end
+	if pool.Healer then -- 주변(150칸 안)에 이미 치유 사제가 2마리 살아 있으면 더 나오지 않는다
+		local near = 0
+		for part, data in pairs(monsters) do
+			if data.TypeKey == "Healer" and data.Zone == zone and part.Parent and math.abs(part.Position.X - x) < 150 then near += 1 end
+		end
+		if near >= 2 then pool.Healer = nil end
 	end
 	return MonsterTypes.Pick(pool)
 end
