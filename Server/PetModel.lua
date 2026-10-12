@@ -43,8 +43,9 @@ function PetModel.Build(look, color)
 
 	local function attach(part, offset, rotation)
 		part.CFrame = body.CFrame * CFrame.new(offset) * (rotation or CFrame.new())
-		local weld = Instance.new("WeldConstraint")
+		local weld = Instance.new("Weld") -- (Weld + 명시적 오프셋: WeldConstraint 는 클라이언트가 받는 순간 위치로 오프셋을 다시 계산해서, 펫의 눈 / 귀 / 날개가 본체에서 어긋나 외형이 다 똑같아 보였다)
 		weld.Part0, weld.Part1 = body, part
+		weld.C0 = body.CFrame:ToObjectSpace(part.CFrame)
 		weld.Parent = part
 		return part
 	end
