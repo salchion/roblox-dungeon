@@ -234,10 +234,11 @@ SPECIAL.Rail = function(from, to, size, _, color, era)
 	local length = (to - from).Magnitude
 	local mid = (from + to) / 2
 	local cf = CFrame.lookAt(mid, to)
-	local core = rootPart(cf, Vector3.new(size * 0.3, size * 0.3, length), E.Hot, Enum.Material.Neon)
-	local aura = rootPart(cf, Vector3.new(size * 1.1, size * 1.1, length), E.Core, Enum.Material.Neon, nil, 0.7)
-	TweenService:Create(core, TweenInfo.new(0.28), { Size = Vector3.new(0.05, 0.05, length), Transparency = 1 }):Play()
-	TweenService:Create(aura, TweenInfo.new(0.35), { Size = Vector3.new(size * 0.1, size * 0.1, length), Transparency = 1 }):Play()
+	local coreWidth, auraWidth = math.max(0.8, size * 0.8), math.max(2.6, size * 2.6) -- (예전엔 가늘어서 거의 안 보였다)
+	local core = rootPart(cf, Vector3.new(coreWidth, coreWidth, length), E.Hot, Enum.Material.Neon)
+	local aura = rootPart(cf, Vector3.new(auraWidth, auraWidth, length), E.Core, Enum.Material.Neon, nil, 0.5)
+	TweenService:Create(core, TweenInfo.new(0.34), { Size = Vector3.new(0.1, 0.1, length), Transparency = 1 }):Play()
+	TweenService:Create(aura, TweenInfo.new(0.45), { Size = Vector3.new(0.3, 0.3, length), Transparency = 1 }):Play()
 	Debris:AddItem(core, 0.4)
 	Debris:AddItem(aura, 0.45)
 	burst(from, color, 5)
@@ -255,8 +256,9 @@ SPECIAL.Sniper = function(from, to, size, speed, color, era)
 	color = E.Core
 	local length = (to - from).Magnitude
 	local cf = CFrame.lookAt(from, to)
-	local slug = rootPart(cf, Vector3.new(size * 0.4, size * 0.4, 9), E.Hot, Enum.Material.Neon)
-	local line = rootPart(CFrame.lookAt((from + to) / 2, to), Vector3.new(size * 0.18, size * 0.18, length), color, Enum.Material.Neon, nil, 0.4)
+	local slugWidth, lineWidth = math.max(0.7, size * 0.6), math.max(0.4, size * 0.3)
+	local slug = rootPart(cf, Vector3.new(slugWidth, slugWidth, 12), E.Hot, Enum.Material.Neon)
+	local line = rootPart(CFrame.lookAt((from + to) / 2, to), Vector3.new(lineWidth, lineWidth, length), color, Enum.Material.Neon, nil, 0.3)
 	TweenService:Create(line, TweenInfo.new(0.4), { Size = Vector3.new(0.03, 0.03, length), Transparency = 1 }):Play()
 	Debris:AddItem(line, 0.45)
 	burst(from, color, 3)
@@ -498,7 +500,7 @@ local function playShot(event)
 	local mini = look ~= nil and look.Mini == true -- 기관단총 / 샷건: 연사가 많아 시대 효과를 최소로
 	if not rainbow and ERA_TINT[era] then color = ERA_TINT[era] end
 	if mini then size *= 1 + 0.7 * richness end -- 연사 무기도 번호가 오르면 탄이 굵고 밝아진다 (앞 무기보다 초라해지지 않게)
-	size = math.max(size, mini and 0.2 or 0.3) -- 뒤에서 봐도 보이게 바닥 굵기
+	size = math.max(size, mini and 0.45 or 0.5) -- 뒤에서 봐도 보이게 바닥 굵기 (연사 / 산탄 탄이 너무 가늘어 안 보인다는 말이 있어 키웠다)
 	activeShots += 1
 
 	local part = Instance.new("Part")

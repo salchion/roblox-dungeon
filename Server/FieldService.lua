@@ -1848,6 +1848,34 @@ function Field.Shoot(player, origin, direction)
 			killMonster(player, result.Instance, data)
 		end
 	end
+	-- 레일건 등 관통: 첫 목표 뒤쪽, 같은 직선 위에 있는 몬스터도 맞힌다 (던전과 같은 규칙: 1 + 관통 수만큼. 필드에는 이 처리가 빠져 있어서 레일건이 한 마리만 맞혔다)
+	local pierce = (player:GetAttribute("PerkPierce") or 0) + (Config.GetPlayerWeapon(player).Pierce or 0)
+	if data and result and pierce > 0 then
+		local hitParts = { [result.Instance] = true }
+		local rayStart = result.Position
+		local remaining = range - (result.Position - origin).Magnitude
+		for _ = 1, pierce do
+			if remaining <= 1 then break end
+			local candidates = {}
+			for otherPart in pairs(monsters) do
+				if otherPart.Parent and not hitParts[otherPart] then table.insert(candidates, otherPart) end
+			end
+			if #candidates == 0 then break end
+			local pierceParams = RaycastParams.new()
+			pierceParams.FilterType = Enum.RaycastFilterType.Include
+			pierceParams.FilterDescendantsInstances = candidates
+			local nextResult = workspace:Raycast(rayStart + direction * 0.5, direction * remaining, pierceParams)
+			if not nextResult or not monsters[nextResult.Instance] then break end
+			if not (segmentClear(rayStart, nextResult.Position)) then break end -- 중간에 벽이 있으면 막힌다
+			hitParts[nextResult.Instance] = true
+			local pierceDamage = Dungeon.ComputeDamage(player)
+			Field.HitPart(player, nextResult.Instance, pierceDamage)
+			player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1)
+			endPosition = nextResult.Position
+			remaining -= (nextResult.Position - rayStart).Magnitude
+			rayStart = nextResult.Position
+		end
+	end
 	return endPosition
 end
 
