@@ -1100,50 +1100,74 @@ local function bolt(event) -- { "Z", 위, 아래 }: 굵은 지그재그 번개 +
 end
 
 local missiles = {}
-local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간 }: 빛나는 큰 미사일 + 불꽃 / 연기 꼬리
+local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간, 크기, 모양, 색 }: 날아가 폭발하는 투사체. 모양: icbm(솟았다 급강하) / rocket(꼬리 불꽃 미사일) / blade(회전 표창) / orb(에너지 구체) / 없으면 노란 큰 구
 	local from, target, mid, duration = event[2], event[3], event[4], event[5]
-	local scale = event[6] or 1 -- (선택) 크기 배율: 데드아이 같은 작은 미사일 여러 발
-	local icbm = event[7] == "icbm" -- (선택) 천천히 솟았다가 방향을 꺾어 급강하하는 대륙간 미사일 식 비행
+	local scale = event[6] or 1
+	local style = event[7]
 	local tint = event[8] -- (선택) 불꽃 / 폭발 색
+	local icbm = style == "icbm"
+	local long = icbm or style == "rocket" -- 길쭉한 몸체 (비행 방향을 향한다)
+	local white = Color3.fromRGB(240, 250, 255)
 	local ball
 	if icbm then
-		ball = neonPart(Vector3.new(0.7, 0.7, 3.6) * scale, Color3.fromRGB(235, 250, 255), 0) -- 길쭉한 미사일 몸체 (비행 방향을 향한다)
+		ball = neonPart(Vector3.new(0.7, 0.7, 3.6) * scale, white, 0)
+	elseif style == "rocket" then
+		ball = neonPart(Vector3.new(0.6, 0.6, 2.8) * scale, white:Lerp(tint or white, 0.35), 0)
+	elseif style == "blade" then
+		ball = neonPart(Vector3.new(3.8, 0.12, 1.1) * scale, white:Lerp(tint or white, 0.4), 0) -- 납작한 칼날: 빙글빙글 돈다
+	elseif style == "orb" then
+		ball = neonPart(Vector3.new(2, 2, 2) * scale, white:Lerp(tint or white, 0.5), 0.05, Enum.PartType.Ball)
 	else
 		ball = neonPart(Vector3.new(2.4, 2.4, 2.4) * scale, Color3.fromRGB(255, 190, 90), 0, Enum.PartType.Ball)
 	end
 	ball.Position = from
 	local function pair(half)
 		local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
-		if icbm then
-			a0.Position, a1.Position = Vector3.new(half, 0, 1.6 * scale), Vector3.new(-half, 0, 1.6 * scale) -- 꼬리 쪽(뒤) 에 붙인다
+		if long then
+			a0.Position, a1.Position = Vector3.new(half, 0, 1.4 * scale), Vector3.new(-half, 0, 1.4 * scale) -- 꼬리 쪽(뒤) 에 붙인다
+		elseif style == "blade" then
+			a0.Position, a1.Position = Vector3.new(1.9 * scale, 0, 0), Vector3.new(-1.9 * scale, 0, 0) -- 칼날 양 끝: 돌면서 빛띠가 소용돌이처럼 남는다
 		else
 			a0.Position, a1.Position = Vector3.new(0, half, 0), Vector3.new(0, -half, 0)
 		end
 		a0.Parent, a1.Parent = ball, ball
 		return a0, a1
 	end
-	local a0, a1 = pair(0.9 * scale)
+	local a0, a1 = pair((long and 0.55 or 0.9) * scale)
 	local trail = Instance.new("Trail")
 	trail.Attachment0, trail.Attachment1 = a0, a1
-	trail.Lifetime = icbm and 0.7 or 0.5
-	trail.Color = tint and ColorSequence.new(Color3.fromRGB(235, 250, 255), tint) or ColorSequence.new(Color3.fromRGB(255, 235, 140), Color3.fromRGB(255, 70, 30))
+	trail.Lifetime = icbm and 0.7 or (style == "blade" and 0.35 or 0.5)
+	trail.Color = tint and ColorSequence.new(white, tint) or ColorSequence.new(Color3.fromRGB(255, 235, 140), Color3.fromRGB(255, 70, 30))
 	trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.05), NumberSequenceKeypoint.new(0.6, 0.45), NumberSequenceKeypoint.new(1, 1) })
 	trail.LightEmission = 1
 	trail.Parent = ball
-	local s0, s1 = pair(1.5 * scale)
-	local smoke = Instance.new("Trail")
-	smoke.Attachment0, smoke.Attachment1 = s0, s1
-	smoke.Lifetime = icbm and 1.5 or 0.9 -- 솟아오른 자리에 흰 연기 기둥이 길게 남는다
-	smoke.Color = icbm and ColorSequence.new(Color3.fromRGB(240, 245, 250), Color3.fromRGB(95, 100, 112)) or ColorSequence.new(Color3.fromRGB(255, 140, 70), Color3.fromRGB(70, 70, 75))
-	smoke.Transparency = NumberSequence.new(0.5, 1)
-	smoke.WidthScale = NumberSequence.new(0.7, 1.5)
-	smoke.LightEmission = 0.1
-	smoke.Parent = ball
+	if style ~= "blade" and style ~= "orb" then
+		local s0, s1 = pair(1.3 * scale)
+		local smoke = Instance.new("Trail")
+		smoke.Attachment0, smoke.Attachment1 = s0, s1
+		smoke.Lifetime = icbm and 1.5 or 0.9 -- 솟아오른 자리에 연기 기둥이 길게 남는다
+		smoke.Color = long and ColorSequence.new(Color3.fromRGB(240, 245, 250), Color3.fromRGB(95, 100, 112)) or ColorSequence.new(Color3.fromRGB(255, 140, 70), Color3.fromRGB(70, 70, 75))
+		smoke.Transparency = NumberSequence.new(0.5, 1)
+		smoke.WidthScale = NumberSequence.new(0.7, 1.5)
+		smoke.LightEmission = 0.1
+		smoke.Parent = ball
+	end
+	if style == "orb" or style == "blade" then -- 지나간 자리에 반짝이는 불씨
+		local sparks = Instance.new("ParticleEmitter")
+		sparks.Rate = 70
+		sparks.Lifetime = NumberRange.new(0.25, 0.5)
+		sparks.Speed = NumberRange.new(1, 5)
+		sparks.SpreadAngle = Vector2.new(180, 180)
+		sparks.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5 * scale), NumberSequenceKeypoint.new(1, 0) })
+		sparks.Color = ColorSequence.new(white, tint or white)
+		sparks.LightEmission = 1
+		sparks.Parent = ball
+	end
 	local light = Instance.new("PointLight")
 	light.Color, light.Range, light.Brightness = tint or Color3.fromRGB(255, 150, 70), 12, 2
 	light.Parent = ball
 	ball.Parent = fxFolder
-	table.insert(missiles, { Ball = ball, From = from, Target = target, Last = event[3] and event[3].Parent and event[3].Position or from, Mid = mid, Duration = duration, Started = os.clock(), Scale = scale, Icbm = icbm, Tint = tint, Prev = from })
+	table.insert(missiles, { Ball = ball, From = from, Target = target, Last = event[3] and event[3].Parent and event[3].Position or from, Mid = mid, Duration = duration, Started = os.clock(), Scale = scale, Icbm = icbm, Style = style, Tint = tint, Prev = from })
 end
 
 local function flame(event) -- { "L", 위치, 반지름, 초 }: 큰 불길 지대 + 안쪽 밝은 불씨 판 + 튀는 불똥
@@ -1289,9 +1313,9 @@ RunService.RenderStepped:Connect(function()
 			m.Ball:Destroy()
 			table.remove(missiles, i)
 		else
+			local pos
 			if m.Icbm then
-				-- 1) 앞 55%: 거의 수직으로 천천히 솟는다 (점점 빨라지며 꼭대기에서 잠깐 머뭇) 2) 뒤 45%: 목표를 향해 꺾어 급가속으로 내리꽂는다
-				local pos
+				-- 1) 앞 55%: 천천히 솟는다 (점점 빨라지며 꼭대기에서 잠깐 머뭇) 2) 뒤 45%: 목표를 향해 꺾어 급가속으로 내리꽂는다
 				if t < 0.55 then
 					local u = t / 0.55
 					pos = m.From:Lerp(m.Mid, math.sin(u * math.pi / 2) * 0.35 + u * 0.65)
@@ -1299,16 +1323,23 @@ RunService.RenderStepped:Connect(function()
 					local v = (t - 0.55) / 0.45
 					pos = m.Mid:Lerp(m.Last, v ^ 2.4)
 				end
+			else
+				local k = m.Style == "blade" and t or t * t * 0.4 + t * 0.6 -- 미사일 / 구체: 갈수록 빨라진다
+				pos = m.From:Lerp(m.Mid, k):Lerp(m.Mid:Lerp(m.Last, k), k) -- 2차 곡선
+			end
+			if m.Style == "blade" then
+				m.Ball.CFrame = CFrame.new(pos) * CFrame.Angles(0, now * 38, 0) -- 표창처럼 빙글빙글
+			elseif m.Icbm or m.Style == "rocket" then
 				local dir = pos - m.Prev
 				if dir.Magnitude > 0.01 then
 					m.Ball.CFrame = CFrame.lookAt(pos, pos + dir)
 				else
 					m.Ball.Position = pos
 				end
-				m.Prev = pos
 			else
-				m.Ball.Position = m.From:Lerp(m.Mid, t):Lerp(m.Mid:Lerp(m.Last, t), t) -- 2차 곡선
+				m.Ball.Position = pos
 			end
+			m.Prev = pos
 		end
 	end
 	-- 퍼지는 파동

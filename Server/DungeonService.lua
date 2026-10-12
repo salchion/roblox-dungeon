@@ -1459,12 +1459,22 @@ local function hitMonster(run, player, entry, amount, quiet)
 	end
 end
 
-local function launchMissile(run, player, from, entry, amount)
+-- style: "rocket"(꼬리 불꽃 미사일: 크리 미사일) / "blade"(회전 표창: 튕기는 표창) / "orb"(에너지 구체: 펫 사격) / nil(예전 노란 구)
+local function launchMissile(run, player, from, entry, amount, style, tint, scale)
 	sfxAt(run, from, "Aug_Missile", nil, 0.08)
 	local target = entry.Part.Position
-	local mid = from:Lerp(target, 0.5) + Vector3.new((math.random() - 0.5) * 14, 10 + math.random() * 6, (math.random() - 0.5) * 14) -- 휘어서 날아간다
-	local duration = 0.4
-	Effects.Raw(from, { "M", from, entry.Part, mid, duration }) -- 미사일은 각자 화면에서 그린다 (2차 곡선으로 날아가 폭발)
+	local mid, duration
+	if style == "blade" then -- 표창: 낮고 빠르게 휙 (약간 옆으로 휘어서)
+		mid = from:Lerp(target, 0.5) + Vector3.new((math.random() - 0.5) * 12, 1 + math.random() * 3, (math.random() - 0.5) * 12)
+		duration = 0.3
+	elseif style == "orb" then
+		mid = from:Lerp(target, 0.5) + Vector3.new((math.random() - 0.5) * 8, 3 + math.random() * 4, (math.random() - 0.5) * 8)
+		duration = 0.35
+	else -- 미사일: 위로 솟았다가 휘어서 내리꽂는다
+		mid = from:Lerp(target, 0.5) + Vector3.new((math.random() - 0.5) * 14, 10 + math.random() * 6, (math.random() - 0.5) * 14)
+		duration = 0.45
+	end
+	Effects.Raw(from, { "M", from, entry.Part, mid, duration, scale or 1, style, tint }) -- 미사일은 각자 화면에서 그린다 (2차 곡선으로 날아가 폭발)
 	task.delay(duration, function()
 		if run.Destroyed then return end
 		local position = entry.Part.Parent and entry.Part.Position or target
@@ -1479,7 +1489,7 @@ local function launchBlast(run, player, from, entry, amount, radius, color)
 	local target = entry.Part.Position
 	local mid = from:Lerp(target, 0.5) + Vector3.new((math.random() - 0.5) * 10, 8 + math.random() * 5, (math.random() - 0.5) * 10)
 	local duration = 0.42
-	Effects.Raw(from, { "M", from, entry.Part, mid, duration })
+	Effects.Raw(from, { "M", from, entry.Part, mid, duration, 1.1, "orb", color })
 	task.delay(duration, function()
 		if run.Destroyed or run.Phase == "Ended" then return end
 		local position = entry.Part.Parent and entry.Part.Position or target
@@ -1566,7 +1576,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 		if synergy(player, "Reaper") and augDepth == 0 then
 			local from = part.Position + Vector3.new(0, 3, 0)
 			for _, entry in ipairs(nearestMonsters(run, part.Position, 70, 2, part)) do
-				launchMissile(run, player, from, entry, augDamage(player) * 0.8)
+				launchMissile(run, player, from, entry, augDamage(player) * 0.8, "rocket", Color3.fromRGB(210, 120, 255))
 			end
 		end
 	end
@@ -1575,7 +1585,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 	-- 치명타: 맞은 곳에서 추가 미사일 (1 + 단계 발) 이 주변 적에게 휘어 날아간다
 	local from = part.Position + Vector3.new(0, 3, 0)
 	for _, entry in ipairs(nearestMonsters(run, part.Position, 70, 1 + level, part)) do
-		launchMissile(run, player, from, entry, amount * 0.6)
+		launchMissile(run, player, from, entry, amount * 0.6, "rocket", Color3.fromRGB(255, 120, 60))
 	end
 end
 
@@ -1662,11 +1672,11 @@ local function startAugLoop(run)
 							local start = fromPos
 							task.delay((index - 1) * 0.2, function()
 								if run.Destroyed or run.Phase == "Ended" or not entry.Part.Parent then return end
-								launchMissile(run, member, start, entry, damage)
+								launchMissile(run, member, start, entry, damage, "blade", Color3.fromRGB(110, 230, 255), 0.9)
 								sfxAt(run, entry.Part.Position, "Aug_Blade", nil, 0.15)
 								if synergy(member, "BladeMissile") and math.random() < 0.3 then
 									for _, extra in ipairs(nearestMonsters(run, entry.Part.Position, 60, 1, entry.Part)) do
-										launchMissile(run, member, entry.Part.Position + Vector3.new(0, 3, 0), extra, damage * 0.8)
+										launchMissile(run, member, entry.Part.Position + Vector3.new(0, 3, 0), extra, damage * 0.8, "rocket", Color3.fromRGB(110, 230, 255), 0.8)
 									end
 								end
 							end)
@@ -1707,7 +1717,7 @@ local function startAugLoop(run)
 					if entries[1] then
 						local petModel = member.Character and member.Character:FindFirstChild("PetModel")
 						local from = petModel and petModel.PrimaryPart and petModel.PrimaryPart.Position or (root.Position + Vector3.new(3, 3, 3))
-						launchMissile(run, member, from, entries[1], augDamage(member) * 0.55)
+						launchMissile(run, member, from, entries[1], augDamage(member) * 0.55, "orb", Color3.fromRGB(255, 190, 220), 0.45)
 					end
 				end
 				-- 충격파 -> 충격파탄: 가까운 적들에게 폭발 투사체를 동시에 쏜다 (몸에서 터지는 게 아니라 날아가 맞은 자리에서 터진다)
