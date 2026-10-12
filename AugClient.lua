@@ -163,9 +163,10 @@ local function refresh()
 		if on then used += 1 end
 		local info = Config.AugInfo[Config.Sets.ZoneAug[zone]]
 		local gear = player:GetAttribute("AugGearZ_" .. zone) or 0
-		r.Title.Text = string.format("Zone %d · %s  %s", zone, info.Name, level > 0 and (gear > 0 and string.format("<Lv.%d + gear %d = %d>", level, gear, level + gear) or ("<Lv." .. level .. ">")) or "")
+		r.Title.RichText = true
+		r.Title.Text = string.format("%sZone %d · %s  %s", on and "<font color='#78ffb4'>●</font> " or "", zone, info.Name, level > 0 and (gear > 0 and string.format("[Lv.%d + gear %d = %d]", level, gear, level + gear) or ("[Lv." .. level .. "]")) or "")
 		r.Title.TextColor3 = open and Color3.fromRGB(255, 240, 200) or Color3.fromRGB(130, 134, 156)
-		r.Toggle.Visible = level > 0
+		r.Toggle.Visible = false -- ON/OFF 글자는 없앴다: 칸을 누르면 켜지고 꺼지며, 켜진 칸은 테두리가 빛나고 제목 앞에 ● 가 붙는다
 		r.Toggle.Text = on and "● ON" or "○ OFF" -- 지금 상태를 보여 주고, 누르면 반대로 바뀐다
 		r.Toggle.BackgroundColor3 = on and Color3.fromRGB(46, 112, 84) or Color3.fromRGB(62, 64, 84)
 		r.Toggle.TextColor3 = on and Color3.fromRGB(190, 255, 215) or Color3.fromRGB(150, 154, 180)
