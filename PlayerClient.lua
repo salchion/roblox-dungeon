@@ -2702,7 +2702,7 @@ local function buildInventoryTab()
 			end
 		end
 		if rowsShown == 0 then
-			makeLabel({ Size = UDim2.new(0, 230, 0, 30), Position = UDim2.new(0, 108, 0, 378), Text = "같은 세트 2부위↑ 착용 시 세트 효과 발동", TextSize = 12, TextWrapped = true, TextColor3 = Color3.fromRGB(120, 124, 150) }, top)
+			makeLabel({ Size = UDim2.new(0, 230, 0, 30), Position = UDim2.new(0, 108, 0, 378), Text = "같은 구역 세트 1·2·3부위 착용 → 세트 효과 4·5·6단계 (세트 창 Y)", TextSize = 12, TextWrapped = true, TextColor3 = Color3.fromRGB(120, 124, 150) }, top)
 		end
 	end
 	local function slotBox(slotKey, x, y)
@@ -3481,10 +3481,17 @@ player:GetAttributeChangedSignal("Zone"):Connect(function()
 	end
 end)
 
-Remotes.Warp.OnClientEvent:Connect(function(action)
+Remotes.Warp.OnClientEvent:Connect(function(action, seconds)
 	if action == "Open" then
 		refreshWarp()
 		warpPanel.Visible = true
+	elseif action == "Cast" then -- 이동 연출: 화면이 연한 푸른빛으로 밝아졌다가 이동 직후 걷힌다
+		local fade = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(150, 190, 245), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 95, Active = false }, gui)
+		TweenService:Create(fade, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.In), { BackgroundTransparency = 0.35 }):Play()
+		task.delay(seconds or 1, function()
+			TweenService:Create(fade, TweenInfo.new(0.5), { BackgroundTransparency = 1 }):Play()
+			game:GetService("Debris"):AddItem(fade, 0.6)
+		end)
 	end
 end)
 

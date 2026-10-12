@@ -2734,15 +2734,27 @@ local function warp(player, zone)
 	end
 
 	lastWarp[player] = now
-	if zone == 0 then
-		player.Character:PivotTo(lobbySpawn)
-		player:SetAttribute("Zone", "Lobby")
-		notify(player, "마을로 돌아왔어요.")
-	else
-		player.Character:PivotTo(campCFrames[zone])
-		player:SetAttribute("Zone", "Field")
-		notify(player, string.format("⛺ 구역 %d · %s 캠프로 이동!", zone, F.ZoneNames[zone]))
-	end
+	-- 이동 연출: 1초 동안 몸이 빛나고(무적) 화면이 밝아졌다가 이동한다 (바로 사라지면 어색하다)
+	Effects.Burst(root.Position + Vector3.new(0, 3, 0), Color3.fromRGB(150, 195, 255), 70)
+	Remotes.Warp:FireClient(player, "Cast", 1)
+	local shield = Instance.new("ForceField")
+	shield.Visible = false
+	shield.Parent = player.Character
+	game:GetService("Debris"):AddItem(shield, 1.6)
+	task.delay(1, function()
+		if not player.Parent or not getAliveParts(player) or player:GetAttribute("Zone") == "Dungeon" then return end
+		if zone == 0 then
+			player.Character:PivotTo(lobbySpawn)
+			player:SetAttribute("Zone", "Lobby")
+			notify(player, "마을로 돌아왔어요.")
+		else
+			player.Character:PivotTo(campCFrames[zone])
+			player:SetAttribute("Zone", "Field")
+			notify(player, string.format("⛺ 구역 %d · %s 캠프로 이동!", zone, F.ZoneNames[zone]))
+		end
+		local arrived = getAliveParts(player)
+		if arrived then Effects.Burst(arrived.Position + Vector3.new(0, 3, 0), Color3.fromRGB(150, 195, 255), 70) end
+	end)
 end
 
 Remotes.Warp.OnServerEvent:Connect(function(player, action, zone)
