@@ -17,6 +17,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local CollectionService = game:GetService("CollectionService")
 local TweenService = game:GetService("TweenService")
+local Debris = game:GetService("Debris")
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
 local Keys = require(script.Parent:WaitForChild("KeyService"))
@@ -3351,6 +3352,123 @@ local function eventStampede(player, root, zone)
 	return true
 end
 
+-- 2구역(숲) 덤불 매복: 길가에 평범해 보이는 덤불이 흩어져 있다가, 가까이 가면 흔들리고(!) 잠시 뒤 몬스터 서너 마리가 튀어나온다.
+-- 덤불은 터진 뒤 2분 30초 뒤에 다시 생긴다. 이벤트 몬스터 상한(ambushCap)을 지킨다.
+local BUSH_ZONE = 2
+local function runBushAmbush()
+	task.wait(6)
+	local folder = Instance.new("Folder")
+	folder.Name = "AmbushBushes"
+	folder.Parent = workspace
+	local rng = Random.new(7742)
+	local x0, x1 = zoneBounds(BUSH_ZONE)
+	local bushes = {}
+	local tries = 0
+	while #bushes < 11 and tries < 300 do
+		tries += 1
+		local x = x0 + 80 + rng:NextNumber() * math.max(10, x1 - x0 - 160)
+		local z = (rng:NextNumber() - 0.5) * (F.Width - 70)
+		local pos = Vector3.new(x, floorAt(x), z)
+		local ok = walkableAt(x, z, 6) and not isSafe(pos) and zoneOfX(x) == BUSH_ZONE
+		for _, other in ipairs(bushes) do
+			if (other.Pos - pos).Magnitude < 60 then ok = false break end
+		end
+		if ok then table.insert(bushes, { Pos = pos, State = "Idle", ReadyAt = 0 }) end
+	end
+	local GREENS = { Color3.fromRGB(52, 112, 48), Color3.fromRGB(64, 130, 56), Color3.fromRGB(46, 98, 44) }
+	local function build(bush)
+		local model = Instance.new("Model")
+		model.Name = "Bush"
+		bush.Bases = {}
+		for i = 1, 4 do
+			local ball = Instance.new("Part")
+			ball.Shape = Enum.PartType.Ball
+			ball.Anchored, ball.CanCollide, ball.CanQuery, ball.CanTouch = true, false, false, false
+			ball.Material = Enum.Material.Grass
+			ball.Color = GREENS[(i % #GREENS) + 1]
+			local size = i == 1 and 8 or (5 + (i % 2) * 1.5)
+			ball.Size = Vector3.new(size, size * 0.8, size)
+			local angle = (i / 4) * math.pi * 2
+			ball.CFrame = CFrame.new(bush.Pos + Vector3.new(i == 1 and 0 or math.cos(angle) * 3.2, size * 0.32, i == 1 and 0 or math.sin(angle) * 3.2))
+			ball.Parent = model
+			bush.Bases[ball] = ball.CFrame
+		end
+		model.Parent = folder
+		bush.Model = model
+		bush.State = "Idle"
+	end
+	for _, bush in ipairs(bushes) do build(bush) end
+
+	local function trigger(bush)
+		bush.State = "Rustle"
+		for _, member in ipairs(Players:GetPlayers()) do
+			local memberRoot = member:GetAttribute("Zone") == "Field" and getAliveParts(member)
+			if memberRoot and (memberRoot.Position - bush.Pos).Magnitude < 60 then
+				notify(member, "🌿 The bush is rustling strangely...!")
+			end
+		end
+		Effects.FloatText(bush.Pos + Vector3.new(0, 10, 0), "❗", Color3.fromRGB(255, 235, 90))
+		Effects.Burst(bush.Pos + Vector3.new(0, 4, 0), Color3.fromRGB(110, 210, 90), 24)
+		task.spawn(function()
+			for _ = 1, 16 do -- 0.8초 동안 부르르 떤다
+				if not bush.Model then return end
+				for ball, base in pairs(bush.Bases) do
+					if ball.Parent then ball.CFrame = base * CFrame.new((math.random() - 0.5) * 0.9, (math.random() - 0.5) * 0.4, (math.random() - 0.5) * 0.9) end
+				end
+				task.wait(0.05)
+			end
+			local present = 0
+			for _, member in ipairs(Players:GetPlayers()) do
+				local memberRoot = member:GetAttribute("Zone") == "Field" and getAliveParts(member)
+				if memberRoot and (memberRoot.Position - bush.Pos).Magnitude < 45 then present += 1 end
+			end
+			local count = 3 + (present >= 2 and 1 or 0)
+			Effects.Burst(bush.Pos + Vector3.new(0, 3, 0), Color3.fromRGB(110, 210, 90), 40)
+			for _ = 1, count do
+				local angle = math.random() * math.pi * 2
+				local at = bush.Pos + Vector3.new(math.cos(angle) * 6, 0, math.sin(angle) * 6)
+				if not (walkableAt(at.X, at.Z) and not isSafe(at) and zoneOfX(at.X) == BUSH_ZONE) then at = bush.Pos end
+				local _, data = spawnMonster(BUSH_ZONE, "Normal", at, true)
+				if data then data.Aggro = true end
+			end
+			if bush.Model then
+				for ball in pairs(bush.Bases) do
+					if ball.Parent then TweenService:Create(ball, TweenInfo.new(0.35), { Size = Vector3.new(0.5, 0.5, 0.5), Transparency = 1 }):Play() end
+				end
+				Debris:AddItem(bush.Model, 0.5)
+				bush.Model = nil
+			end
+			bush.State = "Cooldown"
+			bush.ReadyAt = os.clock() + 150
+		end)
+	end
+
+	while true do
+		task.wait(0.4)
+		local now = os.clock()
+		for _, bush in ipairs(bushes) do
+			if bush.State == "Idle" then
+				for _, member in ipairs(Players:GetPlayers()) do
+					if member:GetAttribute("Zone") == "Field" then
+						local memberRoot = getAliveParts(member)
+						if memberRoot and (memberRoot.Position - bush.Pos).Magnitude < 28 and ambushCount(BUSH_ZONE) <= ambushCap(BUSH_ZONE) then
+							trigger(bush)
+							break
+						end
+					end
+				end
+			elseif bush.State == "Cooldown" and now >= bush.ReadyAt then
+				local nearby = false
+				for _, member in ipairs(Players:GetPlayers()) do
+					local memberRoot = member:GetAttribute("Zone") == "Field" and getAliveParts(member)
+					if memberRoot and (memberRoot.Position - bush.Pos).Magnitude < 70 then nearby = true end
+				end
+				if not nearby then build(bush) end
+			end
+		end
+	end
+end
+
 local function runAmbush()
 	task.wait(20)
 	local lastEvent = setmetatable({}, { __mode = "k" })
@@ -3517,6 +3635,7 @@ function Field.Init(lobbySpawnCFrame)
 		end
 	end)
 	task.spawn(runAmbush)
+	task.spawn(runBushAmbush)
 	if RunService:IsStudio() then
 		-- Studio 진단: 내 주변 40 안의 몬스터 상태를 4초마다 출력한다 ("맞지도 않고 반응도 없는 몬스터" 원인 추적용. 게임 서버에서는 안 돈다)
 		task.spawn(function()
