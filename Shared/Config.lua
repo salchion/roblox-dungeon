@@ -369,10 +369,24 @@ function Config.BaseAttackEstimate(player)
 		* Config.GetLevelDamageMult(player:GetAttribute("Level") or 1)
 		* (1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0) + (player:GetAttribute("PetDamage") or 0))
 end
+-- 4셋 / 5셋 / 6셋에서 새로 생기는 효과 (수치만 오르는 게 아니라 투사체 / 지속 효과가 늘어난다. 서버 DungeonService 와 같이 바꾼다)
+local AUG_EXTRA = {
+	AugMissile = { [4] = "missiles explode (splash)", [5] = "+ second salvo 0.45s later", [6] = "+ a giant missile at the toughest enemy" },
+	AugNova = { [4] = "explodes again 0.5s later", [5] = "wider blast + third explosion", [6] = "+ leaves flames behind" },
+	AugOrbit = { [4] = "2 blades at once", [5] = "3 blades at once", [6] = "4 blades at once" },
+	AugStorm = { [4] = "lightning arcs to 1 nearby enemy", [5] = "arcs to 2", [6] = "arcs to 3" },
+	AugFlame = { [4] = "flames appear in 2 places", [5] = "burns 40% longer", [6] = "big explosion when the flames die" },
+	AugExecute = { [4] = "executed enemies explode", [5] = "bigger explosion", [6] = "+ heal 4% HP per execution" },
+	AugMeteor = { [4] = "2 meteors per cast", [5] = "3 meteors", [6] = "4 meteors, bigger" },
+	AugPulse = { [4] = "fires twice (0.45s apart)", [5] = "fires 3 times", [6] = "+3 more targets" },
+}
 function Config.AugLevelLine(attr, level)
 	local fn = AUG_LEVEL[attr]
 	if not fn then return "", nil end
-	return fn(level)
+	local text, mult = fn(level)
+	local extra = AUG_EXTRA[attr] and AUG_EXTRA[attr][level]
+	if extra then text = text .. " · ★" .. extra end
+	return text, mult
 end
 
 -- 세트 효과 시너지: 두 어그먼트를 모두 가지면 숨은 추가 효과가 켜진다 (획득하는 순간 알림 + 오라 폭발)
@@ -1319,9 +1333,9 @@ Config.Sets.AugLevelByPieces = { [2] = 1, [3] = 3 }
 -- 세트 효과는 장비가 아니라 "골드로 활성화"한다: 그 구역 군주를 잡으면 열리고, 골드로 1~3단계까지 올린다.
 -- 동시에 켤 수 있는 개수(슬롯)는 처음 1개이고 구역을 클리어할수록 늘어난다 (AugSlotZones[n] = n번째 슬롯이 열리는 클리어 구역).
 Config.Sets.AugSlotZones = { 0, 4, 7 }
-Config.Sets.AugCostMult = { 1, 3, 8 } -- 1단계 / 2단계 / 3단계 비용 배수
+Config.Sets.AugCostMult = { 1, 2.5, 6 } -- 1단계 / 2단계 / 3단계 비용 배수
 function Config.Sets.AugCost(zone, level)
-	local base = math.floor(1500 * 2.2 ^ (zone - 1) / 100 + 0.5) * 100
+	local base = math.floor(1500 * 1.75 ^ (zone - 1) / 100 + 0.5) * 100
 	return base * (Config.Sets.AugCostMult[level] or 8)
 end
 -- 도감: 몬스터 / 구역 군주 / 세트 장비 설명 (몬스터 이름은 MonsterTypes.Defs 와 같다)

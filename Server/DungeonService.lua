@@ -1473,7 +1473,7 @@ local function procAug(player, attr)
 end
 
 -- style: "rocket"(꼬리 불꽃 미사일: 크리 미사일) / "blade"(회전 표창: 튕기는 표창) / "orb"(에너지 구체: 펫 사격) / nil(예전 노란 구)
-local function launchMissile(run, player, from, entry, amount, style, tint, scale)
+local function launchMissile(run, player, from, entry, amount, style, tint, scale, splash)
 	sfxAt(run, from, "Aug_Missile", nil, 0.08)
 	local target = entry.Part.Position
 	local mid, duration
@@ -1493,6 +1493,12 @@ local function launchMissile(run, player, from, entry, amount, style, tint, scal
 		local position = entry.Part.Parent and entry.Part.Position or target
 		sfxAt(run, position, "Aug_MissileHit", nil, 0.08)
 		hitMonster(run, player, entry, amount, nil, tint or Color3.fromRGB(255, 160, 80))
+		if splash then -- 4셋 이상 크리 미사일: 맞은 자리에서 폭발해 주변 적도 맞는다
+			Effects.Raw(position, { "R", position - Vector3.new(0, 2, 0), splash, tint or Color3.fromRGB(255, 160, 80) })
+			for _, other in ipairs(nearestMonsters(run, position, splash, 4)) do
+				if other.Part ~= entry.Part then hitMonster(run, player, other, amount * 0.5, nil, tint) end
+			end
+		end
 	end)
 end
 
@@ -1534,7 +1540,7 @@ local function synergy(player, key)
 end
 
 -- 불길 지대: 한동안 남아서 안에 있는 적을 계속 태운다
-local function makeFlame(run, player, position, radius, seconds, damage)
+local function makeFlame(run, player, position, radius, seconds, damage, finale)
 	run.FlameCount = run.FlameCount or 0
 	if run.FlameCount >= 14 then return end
 	run.FlameCount += 1
@@ -1549,6 +1555,13 @@ local function makeFlame(run, player, position, radius, seconds, damage)
 			task.wait(0.5)
 		end
 		run.FlameCount -= 1
+		if finale and not run.Destroyed and run.Phase ~= "Ended" then -- 6셋: 불길이 꺼질 때 크게 폭발
+			Effects.Raw(position, { "N", position, radius * 1.3, Color3.fromRGB(255, 150, 60) })
+			sfxAt(run, position, "Aug_Nova", nil, 0.2)
+			for _, entry in ipairs(nearestMonsters(run, position, radius * 1.3, 10)) do
+				hitMonster(run, player, entry, damage * 5, nil, Color3.fromRGB(255, 170, 70))
+			end
+		end
 	end)
 end
 
@@ -1587,6 +1600,20 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 		Effects.Raw(part.Position, { "U", part.Position + Vector3.new(0, part.Size.Y / 2 + 1.5, 0), part.Size.Y }) -- 해골 + 보라 폭발 + 베기 (각자 화면에서)
 		sfxAt(run, part.Position, "Aug_Execute", nil, 0.1)
 		sfxAt(run, part.Position, "Aug_Skull", nil, 0.12)
+		if execLevel >= 4 and augDepth == 0 then -- 4셋: 처형당한 적이 폭발해 주변 적을 때린다 (5셋부터 더 넓게) / 6셋: 처형할 때마다 체력 4% 회복
+			local blastPosition = part.Position
+			local blastRadius = execLevel >= 5 and 15 or 11
+			Effects.Raw(blastPosition, { "N", blastPosition, blastRadius, Color3.fromRGB(210, 90, 255) })
+			augDepth += 1 -- (폭발에 맞아 또 처형당한 적이 연쇄로 폭발하지는 않는다)
+			for _, other in ipairs(nearestMonsters(run, blastPosition, blastRadius, 6, part)) do
+				hitMonster(run, player, other, augDamage(player) * 1.5, nil, Color3.fromRGB(210, 90, 255))
+			end
+			augDepth -= 1
+			if execLevel >= 6 then
+				local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+				if humanoid and humanoid.Health > 0 then humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * 0.04) end
+			end
+		end
 		if synergy(player, "Reaper") and augDepth == 0 then
 			local from = part.Position + Vector3.new(0, 3, 0)
 			for _, entry in ipairs(nearestMonsters(run, part.Position, 70, 2, part)) do
@@ -1599,8 +1626,25 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 	-- 치명타: 맞은 곳에서 추가 미사일 (1 + 단계 발) 이 주변 적에게 휘어 날아간다
 	local from = part.Position + Vector3.new(0, 3, 0)
 	procAug(player, "AugMissile")
-	for _, entry in ipairs(nearestMonsters(run, part.Position, 70, 1 + level, part)) do
-		launchMissile(run, player, from, entry, amount * 0.6, "rocket", Color3.fromRGB(255, 120, 60), 1.8)
+	-- 4셋: 미사일이 터지며 주변 적도 맞는다 / 5셋: 0.45초 뒤 두 번째 일제 사격 / 6셋: 가장 튼튼한 적에게 대형 미사일까지
+	local splash = level >= 4 and 11 or nil
+	local function volley()
+		for _, entry in ipairs(nearestMonsters(run, part.Position, 70, 1 + level, part)) do
+			launchMissile(run, player, from, entry, amount * 0.6, "rocket", Color3.fromRGB(255, 120, 60), 1.8, splash)
+		end
+	end
+	volley()
+	if level >= 5 then
+		task.delay(0.45, function()
+			if not run.Destroyed and run.Phase ~= "Ended" then volley() end
+		end)
+	end
+	if level >= 6 then
+		local tough, toughHealth = nil, -1
+		for _, entry in ipairs(nearestMonsters(run, part.Position, 80, 14, part)) do
+			if entry.Data.Health > toughHealth then tough, toughHealth = entry, entry.Data.Health end
+		end
+		if tough then launchMissile(run, player, from + Vector3.new(0, 2, 0), tough, amount * 3, "rocket", Color3.fromRGB(255, 80, 40), 3, 14) end
 	end
 end
 
@@ -1608,20 +1652,44 @@ augOnKill = function(run, player, position)
 	local flame = augLv(run, player, "AugFlame")
 	if flame > 0 then -- 화염 지대: 쓰러진 자리에 불길
 		procAug(player, "AugFlame")
-		makeFlame(run, player, position, 7 + 2 * flame, (5 + flame) * (synergy(player, "Inferno") and 1.5 or 1), augDamage(player) * (0.25 + 0.1 * flame))
+		-- 4셋: 불길이 두 곳에 / 5셋: 오래 탄다 / 6셋: 꺼질 때 한 번 크게 폭발
+		local seconds = (5 + flame) * (synergy(player, "Inferno") and 1.5 or 1) * (flame >= 5 and 1.4 or 1)
+		local radius = 7 + 2 * flame
+		local damage = augDamage(player) * (0.25 + 0.1 * flame)
+		makeFlame(run, player, position, radius, seconds, damage, flame >= 6)
+		if flame >= 4 then
+			local angle = math.random() * math.pi * 2
+			makeFlame(run, player, position + Vector3.new(math.cos(angle) * radius * 1.2, 0, math.sin(angle) * radius * 1.2), radius, seconds, damage, flame >= 6)
+		end
 	end
 	local level = augLv(run, player, "AugNova")
 	if level <= 0 or augDepth > 1 then return end
-	augDepth += 1
 	procAug(player, "AugNova")
-	local radius = (12 + 3 * level) * (synergy(player, "Inferno") and 1.3 or 1)
-	Effects.Raw(position, { "N", position, radius, Color3.fromRGB(255, 110, 70) }) -- 충격 고리 + 파편 + 부드러운 빛구 (각자 화면에서)
-	sfxAt(run, position, "Aug_Nova", nil, 0.12)
-	local damage = augDamage(player) * (1.2 + 0.6 * level)
-	for _, entry in ipairs(nearestMonsters(run, position, radius, 8)) do
-		hitMonster(run, player, entry, damage, nil, Color3.fromRGB(255, 110, 80))
+	-- 4셋: 0.5초 뒤 한 번 더 터진다 / 5셋: 폭발이 25% 넓어지고 세 번째 폭발까지 / 6셋: 폭발 자리에 불길이 남는다
+	local function blast(radiusMult, damageMult)
+		augDepth += 1
+		local radius = (12 + 3 * level) * radiusMult * (synergy(player, "Inferno") and 1.3 or 1)
+		Effects.Raw(position, { "N", position, radius, Color3.fromRGB(255, 110, 70) }) -- 충격 고리 + 파편 + 부드러운 빛구 (각자 화면에서)
+		sfxAt(run, position, "Aug_Nova", nil, 0.12)
+		local damage = augDamage(player) * (1.2 + 0.6 * level) * damageMult
+		for _, entry in ipairs(nearestMonsters(run, position, radius, 8)) do
+			hitMonster(run, player, entry, damage, nil, Color3.fromRGB(255, 110, 80))
+		end
+		augDepth -= 1
 	end
-	augDepth -= 1
+	local sizeMult = level >= 5 and 1.25 or 1
+	blast(sizeMult, 1)
+	if level >= 4 then
+		task.delay(0.5, function()
+			if not run.Destroyed and run.Phase ~= "Ended" then blast(sizeMult, 0.6) end
+		end)
+	end
+	if level >= 5 then
+		task.delay(0.95, function()
+			if not run.Destroyed and run.Phase ~= "Ended" then blast(sizeMult, 0.4) end
+		end)
+	end
+	if level >= 6 then makeFlame(run, player, position, 11, 6, augDamage(player) * 0.5, false) end
 end
 
 -- 세트 효과 오라: 세트를 맞춘 동안 몸에 색이 다른 빛 / 입자가 감돈다 (AugAuraColor Attribute 를 따라간다)
@@ -1670,9 +1738,11 @@ local function startAugLoop(run)
 				local orbit = augLv(run, member, "AugOrbit")
 				if root and orbit > 0 and now >= (nextTick[member] or 0) then
 					nextTick[member] = now + math.max(1.1, 2.1 - 0.3 * orbit)
-					local first = nearestMonsters(run, root.Position, 70, 1)[1]
-					if first then
-						procAug(member, "AugOrbit")
+					-- 4셋부터 칼날이 동시에 여러 줄기로 날아간다 (4셋 2줄 / 5셋 3줄 / 6셋 4줄)
+					local chains = orbit >= 6 and 4 or (orbit >= 5 and 3 or (orbit >= 4 and 2 or 1))
+					local starts = nearestMonsters(run, root.Position, 70, chains)
+					if starts[1] then procAug(member, "AugOrbit") end
+					for _, first in ipairs(starts) do
 						local chain, used = { first }, { [first.Part] = true }
 						for _ = 1, orbit + 1 do
 							local last = chain[#chain]
@@ -1707,8 +1777,14 @@ local function startAugLoop(run)
 				if root and storm > 0 and now >= (nextStorm[member] or 0) then
 					nextStorm[member] = now + math.max(1.2, 3.4 - 0.5 * storm)
 					procAug(member, "AugStorm")
+					local arcs = storm >= 6 and 3 or (storm >= 5 and 2 or (storm >= 4 and 1 or 0)) -- 4셋부터 번개가 근처 적에게 번져 튄다 (4셋 1마리 / 5셋 2마리 / 6셋 3마리)
 					for _, entry in ipairs(nearestMonsters(run, root.Position, 75, 2 + storm)) do
 						strikeBolt(run, member, entry, augDamage(member) * (1.5 + 0.5 * storm))
+						if arcs > 0 then
+							for _, neighbor in ipairs(nearestMonsters(run, entry.Part.Position, 30, arcs, entry.Part)) do
+								strikeBolt(run, member, neighbor, augDamage(member) * (1.5 + 0.5 * storm) * 0.6)
+							end
+						end
 					end
 				end
 				-- 유성우: 적이 가장 많이 모인 곳에
@@ -1727,7 +1803,28 @@ local function startAugLoop(run)
 					if best then
 						procAug(member, "AugMeteor")
 						local p = best.Part.Position
-						dropMeteor(run, member, Vector3.new(p.X, root.Position.Y - 2.5, p.Z), 14 + 2 * meteor, augDamage(member) * (2.2 + 0.8 * meteor), meteor)
+						local meteorRadius = (14 + 2 * meteor) * (meteor >= 6 and 1.2 or 1)
+						local meteorDamage = augDamage(member) * (2.2 + 0.8 * meteor)
+						dropMeteor(run, member, Vector3.new(p.X, root.Position.Y - 2.5, p.Z), meteorRadius, meteorDamage, meteor)
+						-- 4셋부터 유성이 연달아 더 떨어진다 (4셋 2발 / 5셋 3발 / 6셋 4발, 서로 다른 곳에)
+						local extra = meteor >= 6 and 3 or (meteor >= 5 and 2 or (meteor >= 4 and 1 or 0))
+						local spots = { p }
+						for _, other in ipairs(candidates) do
+							if extra <= 0 then break end
+							local tooClose = false
+							for _, spot in ipairs(spots) do
+								if (spot - other.Part.Position).Magnitude < meteorRadius * 1.2 then tooClose = true break end
+							end
+							if not tooClose then
+								table.insert(spots, other.Part.Position)
+								extra -= 1
+								local spotPosition = other.Part.Position
+								task.delay(0.5 * (#spots - 1), function()
+									if run.Destroyed or run.Phase == "Ended" then return end
+									dropMeteor(run, member, Vector3.new(spotPosition.X, root.Position.Y - 2.5, spotPosition.Z), meteorRadius, meteorDamage, meteor)
+								end)
+							end
+						end
 					end
 				end
 				-- 펫 보조 사격 (펫 레벨 기능): 1.6초마다 가까운 적 한 마리에게 미사일
@@ -1747,8 +1844,19 @@ local function startAugLoop(run)
 					local origin = root.Position + Vector3.new(0, 3, 0)
 					local blastDamage = augDamage(member) * (1.4 + 0.6 * pulse)
 					procAug(member, "AugPulse")
-					for _, entry in ipairs(nearestMonsters(run, root.Position, 75, 2 + pulse)) do
-						launchBlast(run, member, origin, entry, blastDamage, 10 + 2 * pulse, Color3.fromRGB(110, 255, 190))
+					-- 4셋: 0.45초 뒤 두 번째 발사 / 5셋: 세 번째 발사까지 / 6셋: 노리는 적이 3마리 더
+					local volleys = pulse >= 5 and 3 or (pulse >= 4 and 2 or 1)
+					local targetCount = 2 + pulse + (pulse >= 6 and 3 or 0)
+					for volley = 1, volleys do
+						task.delay((volley - 1) * 0.45, function()
+							if run.Destroyed or run.Phase == "Ended" then return end
+							local liveRoot = getAliveParts(member)
+							if not liveRoot then return end
+							local liveOrigin = liveRoot.Position + Vector3.new(0, 3, 0)
+							for _, entry in ipairs(nearestMonsters(run, liveRoot.Position, 75, targetCount)) do
+								launchBlast(run, member, liveOrigin, entry, blastDamage, 10 + 2 * pulse, Color3.fromRGB(110, 255, 190))
+							end
+						end)
 					end
 				end
 			end
