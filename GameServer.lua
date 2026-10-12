@@ -511,6 +511,32 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 	local isManual = manual == true
 	local fanAngle = math.rad(Config.Perks.FanAngle)
 	-- 한 번의 사격(탄 여러 발). 더블샷이 터지면 이어서 한 번 더 부른다.
+	-- 레일건 튕김: 맞은 곳 주변(BounceRange)의 가까운 적에게 연달아 튕긴다 (Bounce 마리까지, 한 번 맞은 적은 건너뜀)
+	local function bounceChain(startPosition)
+		local used = {}
+		local last = startPosition
+		local bounceRange = weaponType.BounceRange or 34
+		for index = 0, weaponType.Bounce do
+			local list = Dungeon.TargetsIn(player, last, bounceRange, 8) or Field.TargetsIn(player, last, bounceRange, 8)
+			local pick
+			for _, candidate in ipairs(list or {}) do
+				if not used[candidate] and (index > 0 or (candidate.Position - last).Magnitude < 16) then
+					pick = candidate
+					break
+				end
+			end
+			if not pick then break end
+			used[pick] = true
+			if index > 0 then -- (index 0 = 방금 직접 맞힌 적: 표시만 해 두고 건너뛴다)
+				local bounceDamage = math.max(1, math.floor(Dungeon.ComputeDamage(player) * (weaponType.BounceMult or 0.85)))
+				Effects.Shot(last, pick.Position, { Size = 0.9, Speed = 700, Impact = 0, Style = "Bolt", Length = 3 }, color, false, "Rail", tier.Era, progress)
+				Dungeon.HitPart(player, pick, bounceDamage)
+				Field.HitPart(player, pick, bounceDamage)
+				player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1)
+			end
+			last = pick.Position
+		end
+	end
 	local function fireVolley(volleyOrigin, volleyTip)
 		player:SetAttribute("ShotManual", isManual) -- Dungeon / Field.Shoot 이 읽는다: 약점 보너스는 직접 조준한 탄에만
 		player:SetAttribute("ShotDmgScale", extra > 0 and (pellets - extra + extra * Config.LevelStats.OtherExtraShotValue) / pellets or 1) -- 추가 탄은 위력이 낮다 (합계 피해가 배수로 뛰지 않게)
@@ -530,6 +556,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 				or Dummy.Shoot(player, volleyOrigin, direction)
 			endPosition = endPosition or (volleyOrigin + direction * Config.GetRange(player, weaponType))
 			Effects.Shot(volleyTip, endPosition, shot, color, tier.Rainbow, tier.Class, tier.Era, progress)
+			if weaponType.Bounce and (player:GetAttribute("HitTick") or 0) > hitsBefore then bounceChain(endPosition) end
 		end
 		player:SetAttribute("ShotDmgScale", 1)
 		Weapon.PlayShot(player)

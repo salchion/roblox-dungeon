@@ -797,8 +797,8 @@ Config.Field = {
 		{ Mage = 2, Golem = 3, Charger = 3, Bomber = 3, Spitter = 1, Turret = 2, Totem = 2, Wisp = 2 },
 	},
 	ZoneColors = {
-		Color3.fromRGB(90, 150, 80), Color3.fromRGB(50, 110, 60), Color3.fromRGB(140, 115, 80), Color3.fromRGB(215, 190, 120),
-		Color3.fromRGB(225, 235, 245), Color3.fromRGB(95, 55, 50), Color3.fromRGB(55, 45, 75), Color3.fromRGB(35, 30, 50),
+		Color3.fromRGB(90, 150, 80), Color3.fromRGB(50, 110, 60), Color3.fromRGB(140, 115, 80), Color3.fromRGB(190, 168, 108),
+		Color3.fromRGB(180, 195, 212), Color3.fromRGB(95, 55, 50), Color3.fromRGB(55, 45, 75), Color3.fromRGB(35, 30, 50),
 	},
 	ZoneMaterials = {
 		Enum.Material.Grass, Enum.Material.Grass, Enum.Material.Ground, Enum.Material.Sand,
@@ -909,9 +909,9 @@ Config.WeaponTypes = {
 		Trait = "Wide explosion · Crowd clearing", Desc = "Explodes on impact, damaging nearby enemies too (radius 12)",
 	},
 	Rail = {
-		Name = "Railgun", Form = "Rail", DamageMult = 1.45, Cooldown = 1.4, Range = 700, Pellets = 1, Spread = 0, Pierce = 2,
+		Name = "Railgun", Form = "Rail", DamageMult = 1.45, Cooldown = 1.4, Range = 700, Pellets = 1, Spread = 0, Bounce = 2, BounceRange = 34, BounceMult = 0.85,
 		ShotScale = 1.2, SpeedScale = 3, BarrelLength = 1.6, BarrelThickness = 0.8,
-		Trait = "Pierces 3 enemies · Longest range", Desc = "Ultra-fast shot that pierces up to 3 enemies in a straight line",
+		Trait = "Bounces to 3 nearby enemies · Longest range", Desc = "Ultra-fast shot that bounces from the target to the 2 nearest enemies around it (within 34)",
 	},
 }
 

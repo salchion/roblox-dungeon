@@ -51,18 +51,18 @@ do
 	-- 눈이 편하도록: 필드 / 던전은 채도와 대비를 살짝 낮춘 부드러운 색보정을 늘 켜 두고, 전체 밝기도 약간 낮춘다
 	local soft = Lighting:FindFirstChild("SoftGrade") or Instance.new("ColorCorrectionEffect")
 	soft.Name = "SoftGrade"
-	soft.Saturation = -0.12
+	soft.Saturation = -0.18
 	soft.Contrast = -0.04
 	soft.TintColor = Color3.fromRGB(252, 249, 244)
 	soft.Parent = Lighting
-	local DAY = { ClockTime = 14, Brightness = 1.85, Ambient = Color3.fromRGB(70, 70, 70), OutdoorAmbient = Color3.fromRGB(70, 70, 70), ExposureCompensation = 0 }
+	local DAY = { ClockTime = 14, Brightness = 1.6, Ambient = Color3.fromRGB(70, 70, 70), OutdoorAmbient = Color3.fromRGB(70, 70, 70), ExposureCompensation = 0 }
 	-- 필드 구역별 하늘: 시간대 / 밝기 / 주변광 / 안개 색 / 안개 농도
 	local FIELD_THEMES = {
-		{ ClockTime = 14, Brightness = 2.4, Ambient = Color3.fromRGB(90, 90, 90), OutdoorAmbient = Color3.fromRGB(112, 112, 112), Fog = Color3.fromRGB(200, 225, 255), Density = 0.22 },   -- 초원: 맑은 낮
-		{ ClockTime = 11, Brightness = 1.9, Ambient = Color3.fromRGB(60, 82, 70), OutdoorAmbient = Color3.fromRGB(88, 108, 96), Fog = Color3.fromRGB(150, 205, 175), Density = 0.35 }, -- 숲: 초록 안개
-		{ ClockTime = 16.5, Brightness = 2.2, Ambient = Color3.fromRGB(104, 86, 70), OutdoorAmbient = Color3.fromRGB(132, 112, 92), Fog = Color3.fromRGB(212, 182, 150), Density = 0.34 }, -- 황무지: 먼지
-		{ ClockTime = 13, Brightness = 2.6, Ambient = Color3.fromRGB(132, 116, 82), OutdoorAmbient = Color3.fromRGB(162, 142, 102), Fog = Color3.fromRGB(255, 226, 172), Density = 0.4 }, -- 사막: 뜨거운 낮
-		{ ClockTime = 10, Brightness = 2.3, Ambient = Color3.fromRGB(96, 106, 128), OutdoorAmbient = Color3.fromRGB(132, 148, 172), Fog = Color3.fromRGB(218, 238, 255), Density = 0.42 }, -- 설원: 차가운 흰 안개
+		{ ClockTime = 14, Brightness = 1.7, Ambient = Color3.fromRGB(80, 80, 80), OutdoorAmbient = Color3.fromRGB(98, 98, 98), Fog = Color3.fromRGB(200, 225, 255), Density = 0.22 },   -- 초원: 맑은 낮
+		{ ClockTime = 11, Brightness = 1.55, Ambient = Color3.fromRGB(60, 82, 70), OutdoorAmbient = Color3.fromRGB(88, 108, 96), Fog = Color3.fromRGB(150, 205, 175), Density = 0.35 }, -- 숲: 초록 안개
+		{ ClockTime = 16.5, Brightness = 1.65, Ambient = Color3.fromRGB(96, 80, 66), OutdoorAmbient = Color3.fromRGB(118, 100, 82), Fog = Color3.fromRGB(212, 182, 150), Density = 0.34 }, -- 황무지: 먼지
+		{ ClockTime = 13, Brightness = 1.7, Ambient = Color3.fromRGB(112, 98, 70), OutdoorAmbient = Color3.fromRGB(136, 120, 86), Fog = Color3.fromRGB(226, 198, 150), Density = 0.4 }, -- 사막: 뜨거운 낮
+		{ ClockTime = 10, Brightness = 1.6, Ambient = Color3.fromRGB(86, 96, 118), OutdoorAmbient = Color3.fromRGB(112, 126, 150), Fog = Color3.fromRGB(186, 204, 226), Density = 0.42 }, -- 설원: 차가운 흰 안개
 		{ ClockTime = 18.5, Brightness = 1.6, Ambient = Color3.fromRGB(98, 52, 42), OutdoorAmbient = Color3.fromRGB(124, 62, 46), Fog = Color3.fromRGB(255, 150, 100), Density = 0.46 }, -- 화산: 붉은 노을
 		{ ClockTime = 21, Brightness = 1.3, Ambient = Color3.fromRGB(58, 46, 88), OutdoorAmbient = Color3.fromRGB(84, 68, 124), Fog = Color3.fromRGB(150, 110, 230), Density = 0.46 }, -- 암흑 지대: 보랏빛 밤
 		{ ClockTime = 23, Brightness = 1.1, Ambient = Color3.fromRGB(64, 32, 74), OutdoorAmbient = Color3.fromRGB(90, 42, 100), Fog = Color3.fromRGB(255, 100, 180), Density = 0.5 }, -- 심연: 분홍 어둠
@@ -72,7 +72,7 @@ do
 		Dark  = { Lighting = { ClockTime = 0, Brightness = 0.5, Ambient = Color3.fromRGB(26, 26, 44), OutdoorAmbient = Color3.fromRGB(34, 34, 58) }, Atmosphere = { Color = Color3.fromRGB(20, 20, 40), Density = 0.5 } },
 		Fog   = { Lighting = { Brightness = 1.5, Ambient = Color3.fromRGB(110, 115, 125), OutdoorAmbient = Color3.fromRGB(140, 145, 155) }, Atmosphere = { Color = Color3.fromRGB(205, 212, 225), Density = 0.78 } },
 		Blood = { Lighting = { ClockTime = 18.5, Brightness = 1.5, Ambient = Color3.fromRGB(112, 40, 40), OutdoorAmbient = Color3.fromRGB(140, 50, 46) }, Atmosphere = { Color = Color3.fromRGB(255, 70, 60), Density = 0.42 } },
-		Gold  = { Lighting = { ClockTime = 16.5, Brightness = 2.6, Ambient = Color3.fromRGB(130, 112, 60), OutdoorAmbient = Color3.fromRGB(165, 140, 76) }, Atmosphere = { Color = Color3.fromRGB(255, 220, 130), Density = 0.3 } },
+		Gold  = { Lighting = { ClockTime = 16.5, Brightness = 2.0, Ambient = Color3.fromRGB(130, 112, 60), OutdoorAmbient = Color3.fromRGB(165, 140, 76) }, Atmosphere = { Color = Color3.fromRGB(255, 220, 130), Density = 0.3 } },
 		Elite = { Lighting = { ClockTime = 21, Brightness = 1.3, Ambient = Color3.fromRGB(70, 44, 100), OutdoorAmbient = Color3.fromRGB(96, 62, 130) }, Atmosphere = { Color = Color3.fromRGB(170, 110, 255), Density = 0.4 } },
 	}
 	local dusk = nil
@@ -102,7 +102,7 @@ do
 		local clock = theme.ClockTime + (21.5 - theme.ClockTime) * smooth * 0.6
 		TweenService:Create(Lighting, TweenInfo.new(1.2), {
 			ClockTime = clock, Brightness = theme.Brightness * 0.86 * (1 - 0.35 * smooth),
-			Ambient = theme.Ambient:Lerp(NIGHT_AMBIENT, smooth * 0.6), OutdoorAmbient = theme.OutdoorAmbient:Lerp(NIGHT_OUTDOOR, smooth * 0.6), ExposureCompensation = 0,
+			Ambient = theme.Ambient:Lerp(NIGHT_AMBIENT, smooth * 0.6), OutdoorAmbient = theme.OutdoorAmbient:Lerp(NIGHT_OUTDOOR, smooth * 0.6), ExposureCompensation = -0.2, -- 쨍하게 번쩍이지 않도록 전체 노출을 살짝 낮춘다
 		}):Play()
 		local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
 		if atmosphere then

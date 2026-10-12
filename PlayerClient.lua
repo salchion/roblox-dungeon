@@ -2499,6 +2499,7 @@ local function buildWeaponTab()
 	if classInfo.Pellets > 1 then table.insert(behavior, string.format("Fires %d pellets in a spread", classInfo.Pellets)) end
 	if classInfo.Splash then table.insert(behavior, string.format("Explodes on hit (radius %d)", classInfo.Splash)) end
 	if classInfo.Pierce then table.insert(behavior, string.format("Pierces up to %d enemies", classInfo.Pierce + 1)) end
+	if classInfo.Bounce then table.insert(behavior, string.format("Bounces to %d nearby enemies (within %d)", classInfo.Bounce, classInfo.BounceRange or 34)) end
 	if (classInfo.CritBonus or 0) > 0 then table.insert(behavior, string.format("Crit +%d%%", math.floor(classInfo.CritBonus * 100 + 0.5))) end
 	if #behavior == 0 then table.insert(behavior, "Flies straight and hits one enemy") end
 	local rate = 1 / math.max(0.05, classInfo.Cooldown * Config.Player.BaseCooldown)
