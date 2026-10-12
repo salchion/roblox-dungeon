@@ -1332,6 +1332,11 @@ local function spawnMonster(zone, kind, at, ambush)
 	}
 	newData.WeakPart = weakOrb
 	monsters[part] = newData
+	if ambush then -- 갑자기 나타나는 몬스터(습격 / 이벤트): 그냥 "띡" 나오지 않고 보랏빛 소환 고리 + 파편이 터지면서 나타난다
+		local at = Vector3.new(part.Position.X, floorAt(part.Position.X) + 0.5, part.Position.Z)
+		Effects.Raw(at, { "N", at, 7 + stats.Size * 0.35, Color3.fromRGB(190, 130, 255) })
+		Effects.Burst(part.Position, Color3.fromRGB(190, 130, 255), 22)
+	end
 	return part, newData
 end
 
@@ -3275,7 +3280,7 @@ end
 
 -- 필드 랜덤 이벤트: 몇십 초마다 한 가지가 터진다. 같은 이벤트가 연달아 나오지 않는다.
 local FIELD_EVENTS = {
-	{ Key = "Raid",    Weight = 2.5 },  -- 공습 (폭격기 + 낙하산 부대)
+	{ Key = "Raid",    Weight = 3.8 },  -- 공습 (폭격기 + 낙하산 부대): 화면이 심심하지 않게 조금 더 자주 (2.5 -> 3.8)
 	{ Key = "Ambush",  Weight = 3 },    -- 사방 습격
 	{ Key = "Elite",   Weight = 2.2 },  -- 엘리트 부대 습격
 	-- (몬스터 대이동 Stampede 는 뺐다: 줄지어 달려오는 몬스터가 타격되지 않는 문제 + 피하기 어려운 연출. eventStampede 코드는 남겨 둔다)
