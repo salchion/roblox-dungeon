@@ -331,7 +331,7 @@ function LobbyDecor.Build(parent, ctx)
 				ball("Flower", 0.9, g(x + 2.2 + k * 0.8, z + (k % 2) * 1.2, 0.7), nextFlower(), M.SmoothPlastic)
 			end
 		end
-		label(anchorPart("PlazaSignAnchor", g(cx, cz, 11)), "⛲ 마을 광장", rgb(255, 232, 170), 0, 240, 56, 50)
+		label(anchorPart("PlazaSignAnchor", g(cx, cz, 11)), "⛲ Town Plaza", rgb(255, 232, 170), 0, 240, 56, 50)
 	end
 
 	--------------------------------------------------------------------
@@ -454,7 +454,7 @@ function LobbyDecor.Build(parent, ctx)
 		do
 			local names = Config.Field.ZoneNames
 			local function short(index) return index .. " " .. string.gsub(names[index] or "", " .*", "") end
-			local text = "🏔 사냥 필드\n" .. short(1) .. " · " .. short(2) .. "\n" .. short(3) .. " · " .. short(4) .. "\n" .. short(5) .. " · " .. short(6) .. "\n" .. short(7) .. " · " .. short(8)
+			local text = "🏔 Hunting Field\n" .. short(1) .. " · " .. short(2) .. "\n" .. short(3) .. " · " .. short(4) .. "\n" .. short(5) .. " · " .. short(6) .. "\n" .. short(7) .. " · " .. short(8)
 			vcyl("ZonePost", 9, 1, g(96, -13.5), WOOD_DARK, M.Wood)
 			local board = box("ZoneBoard", Vector3.new(0.4, 5.6, 10), g(96, -13.5, 6.4), rgb(140, 102, 66), M.WoodPlanks)
 			box("ZoneBoardCap", Vector3.new(0.9, 0.3, 10.6), g(96, -13.5, 9.4), WOOD_DARK, M.Wood)
@@ -535,7 +535,7 @@ function LobbyDecor.Build(parent, ctx)
 		end
 		box("ArchBeam", Vector3.new(28, 2, 3.4), g(0, az, 13.4), rgb(112, 104, 122), M.Granite)
 		local sign = box("ArchSign", Vector3.new(10, 2.6, 0.5), g(0, az, 10.4), rgb(70, 52, 44), M.Wood)
-		label(sign, "⚔ 던전 게이트 구역", rgb(255, 220, 150), 9, 300, 60, 80, true) -- 들보 위로 올리고 항상 위에 그린다
+		label(sign, "⚔ Dungeon Gate District", rgb(255, 220, 150), 9, 300, 60, 80, true) -- 들보 위로 올리고 항상 위에 그린다
 		-- 안내 게시판 (벨 옆)
 		for _, ox in ipairs({ -1.6, 1.6 }) do
 			box("NoticePost", Vector3.new(0.4, 5, 0.4), g(-20 + ox, -84, 2.5), WOOD_DARK, M.Wood)
@@ -616,7 +616,7 @@ function LobbyDecor.Build(parent, ctx)
 		barrel(mx - 4.5, mz - 1)
 		barrel(mx - 5, mz + 1.5)
 		ball("MarketSack", 2, g(mx + 4.5, mz + 2, 0.9), rgb(196, 176, 134), M.Fabric, 1.8)
-		label(anchorPart("MarketSignAnchor", g(mx, mz, 9)), "🛒 장터", rgb(255, 232, 170), 0, 160, 50, 40)
+		label(anchorPart("MarketSignAnchor", g(mx, mz, 9)), "🛒 Market", rgb(255, 232, 170), 0, 160, 50, 40)
 	end
 
 	return { Parts = count, Lights = lights, Emitters = emitters }

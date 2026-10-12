@@ -236,7 +236,7 @@ Remotes.Shop.OnServerEvent:Connect(function(player, action, kind, key)
 		elseif typeof(auraKey) == "string" and isAuraOwned(player, state, auraKey) then
 			state.Aura = auraKey
 		else
-			notify(player, "⚠ 아직 얻지 못한 오라예요.")
+			notify(player, "⚠ You haven't unlocked this aura yet.")
 			return
 		end
 		applyAttributes(player, state)
@@ -252,7 +252,7 @@ Remotes.Shop.OnServerEvent:Connect(function(player, action, kind, key)
 		elseif isCosmeticOwned(player, state, kind, key) then
 			state[kind] = key
 		else
-			notify(player, "⚠ 아직 얻지 못한 꾸미기예요.")
+			notify(player, "⚠ You haven't unlocked this cosmetic yet.")
 			return
 		end
 		applyAttributes(player, state)
@@ -266,7 +266,7 @@ Remotes.Shop.OnServerEvent:Connect(function(player, action, kind, key)
 	if not def or (kind ~= "Pass" and kind ~= "Product") then return end
 
 	if isPass and state.Passes[key] then
-		notify(player, "이미 가지고 있는 패스예요!")
+		notify(player, "You already own this pass!")
 		return
 	end
 
@@ -285,9 +285,9 @@ Remotes.Shop.OnServerEvent:Connect(function(player, action, kind, key)
 		else
 			Monetization.Grant(player, def.Grant)
 		end
-		notify(player, "🧪 [Studio 테스트 지급] " .. def.Name)
+		notify(player, "🧪 [Studio test grant] " .. def.Name)
 	else
-		notify(player, "아직 준비 중인 상품이에요.")
+		notify(player, "This item isn't available yet.")
 	end
 end)
 
@@ -299,7 +299,7 @@ MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player, passI
 		if def.PassId > 0 and def.PassId == passId then
 			state.Passes[key] = true
 			applyAttributes(player, state)
-			notify(player, "🎉 " .. def.Name .. " 적용 완료!")
+			notify(player, "🎉 " .. def.Name .. " applied!")
 		end
 	end
 end)
@@ -324,7 +324,7 @@ MarketplaceService.ProcessReceipt = function(info)
 		end
 	end
 	if not product then
-		warn("[Shop] 알 수 없는 상품 ID:", info.ProductId)
+		warn("[Shop] Unknown product ID:", info.ProductId)
 		return Enum.ProductPurchaseDecision.NotProcessedYet
 	end
 
@@ -346,7 +346,7 @@ MarketplaceService.ProcessReceipt = function(info)
 	if Monetization.SaveHook and not Monetization.SaveHook(player) then
 		return Enum.ProductPurchaseDecision.NotProcessedYet -- 저장 실패: Roblox 가 나중에 다시 시도 (영수증으로 중복 지급은 막힘)
 	end
-	notify(player, "🛍 구매 완료: " .. product.Name)
+	notify(player, "🛍 Purchase complete: " .. product.Name)
 	return Enum.ProductPurchaseDecision.PurchaseGranted
 end
 

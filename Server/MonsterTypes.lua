@@ -28,73 +28,73 @@ local M = {}
 -- Range: 이 거리 안에서만 공격 / Keep: 유지하려는 거리 / *Mult: 기본 몬스터 능력치 대비 배율
 M.Defs = {
 	Slime = {
-		Name = "슬라임", Shape = "Ball", Color = Color3.fromRGB(110, 205, 95), Material = Enum.Material.Glass, Transparency = 0.1,
+		Name = "Slime", Shape = "Ball", Color = Color3.fromRGB(110, 205, 95), Material = Enum.Material.Glass, Transparency = 0.1,
 		SizeMult = 1, SpeedMult = 1, HealthMult = 1, DamageMult = 1.2, IntervalMult = 1, ShotSpeedMult = 0.9, GoldMult = 1,
 		Attack = "Single", Move = "Approach", Keep = 14, Range = 75,
 	},
 	Spitter = {
-		Name = "가시 독충", Shape = "Ball", Color = Color3.fromRGB(165, 80, 215), Material = Enum.Material.SmoothPlastic,
+		Name = "Spike Bug", Shape = "Ball", Color = Color3.fromRGB(165, 80, 215), Material = Enum.Material.SmoothPlastic,
 		SizeMult = 0.95, SpeedMult = 1.1, HealthMult = 0.9, DamageMult = 0.85, IntervalMult = 1.3, ShotSpeedMult = 0.9, GoldMult = 1.1,
 		Attack = "Spit", Style = "Needle", Move = "Approach", Keep = 20, Range = 85, Spikes = true,
 	},
 	Bat = {
-		Name = "박쥐", Shape = "Ball", Color = Color3.fromRGB(85, 60, 120), Material = Enum.Material.SmoothPlastic,
+		Name = "Bat", Shape = "Ball", Color = Color3.fromRGB(85, 60, 120), Material = Enum.Material.SmoothPlastic,
 		SizeMult = 0.6, SpeedMult = 2.2, HealthMult = 0.55, DamageMult = 0.75, IntervalMult = 0.8, ShotSpeedMult = 1.1, GoldMult = 0.9,
 		Attack = "Crescent", Style = "Crescent", Move = "Hover", Keep = 16, Range = 70, Wings = true,
 	},
 	Mage = {
-		Name = "마법사 유령", Shape = "Ball", Color = Color3.fromRGB(115, 185, 225), Material = Enum.Material.Neon, Transparency = 0.25,
+		Name = "Mage Ghost", Shape = "Ball", Color = Color3.fromRGB(115, 185, 225), Material = Enum.Material.Neon, Transparency = 0.25,
 		SizeMult = 0.9, SpeedMult = 0.9, HealthMult = 0.8, DamageMult = 0.85, IntervalMult = 2.4, ShotSpeedMult = 0.7, GoldMult = 1.4,
 		Attack = "Seeker", Style = "Seeker", Move = "Keep", Keep = 30, Range = 95, Halo = true,
 	},
 	Golem = {
-		Name = "바위 골렘", Shape = "Block", Color = Color3.fromRGB(125, 120, 115), Material = Enum.Material.Slate,
+		Name = "Rock Golem", Shape = "Block", Color = Color3.fromRGB(125, 120, 115), Material = Enum.Material.Slate,
 		SizeMult = 1.3, SpeedMult = 0.5, HealthMult = 2.2, DamageMult = 2.1, IntervalMult = 1.8, ShotSpeedMult = 0.55, GoldMult = 1.7,
 		Attack = "Slam", Move = "Approach", Keep = 12, Range = 80, Core = true,
 	},
 	Charger = {
-		Name = "돌진 멧돼지", Shape = "Block", Color = Color3.fromRGB(155, 100, 65), Material = Enum.Material.Wood,
+		Name = "Charging Boar", Shape = "Block", Color = Color3.fromRGB(155, 100, 65), Material = Enum.Material.Wood,
 		SizeMult = 1.1, SpeedMult = 1, HealthMult = 1.3, DamageMult = 1.4, IntervalMult = 1, ShotSpeedMult = 1, GoldMult = 1.4,
 		Attack = "Charge", Move = "Approach", Keep = 6, Range = 55, Tusks = true,
 	},
 	Bomber = {
-		Name = "폭탄병", Shape = "Ball", Color = Color3.fromRGB(70, 70, 82), Material = Enum.Material.Metal,
+		Name = "Bomber", Shape = "Ball", Color = Color3.fromRGB(70, 70, 82), Material = Enum.Material.Metal,
 		SizeMult = 0.8, SpeedMult = 2, HealthMult = 0.6, DamageMult = 2.5, IntervalMult = 1, ShotSpeedMult = 1, GoldMult = 0.8,
 		Attack = "Explode", Move = "Rush", Keep = 0, Range = 999, Fuse = true,
 	},
 	-- ===== 신규 몬스터 =====
 	Imp = {
-		Name = "저격 임프", Shape = "Ball", Color = Color3.fromRGB(200, 60, 90), Material = Enum.Material.SmoothPlastic,
+		Name = "Sniper Imp", Shape = "Ball", Color = Color3.fromRGB(200, 60, 90), Material = Enum.Material.SmoothPlastic,
 		SizeMult = 0.7, SpeedMult = 0.9, HealthMult = 0.6, DamageMult = 1.55, IntervalMult = 1.6, ShotSpeedMult = 2.2, GoldMult = 1.3,
 		Attack = "Split", Style = "Spear", Move = "Keep", Keep = 55, Range = 130, Horns = true,
 	},
 	Knight = {
-		Name = "방패 기사", Shape = "Block", Color = Color3.fromRGB(120, 140, 175), Material = Enum.Material.Metal,
+		Name = "Shield Knight", Shape = "Block", Color = Color3.fromRGB(120, 140, 175), Material = Enum.Material.Metal,
 		SizeMult = 1.15, SpeedMult = 0.7, HealthMult = 2.6, DamageMult = 1.3, IntervalMult = 1.4, ShotSpeedMult = 0.8, GoldMult = 1.8,
 		Attack = "Sword", Style = "Spear", Move = "Approach", Keep = 8, Range = 60, Shield = true,
 	},
 	Turret = {
-		Name = "마법 포탑", Shape = "Block", Color = Color3.fromRGB(90, 95, 110), Material = Enum.Material.Metal,
+		Name = "Magic Turret", Shape = "Block", Color = Color3.fromRGB(90, 95, 110), Material = Enum.Material.Metal,
 		SizeMult = 1.0, SpeedMult = 0, HealthMult = 1.7, DamageMult = 1.2, IntervalMult = 0.8, ShotSpeedMult = 1.0, GoldMult = 1.4,
 		Attack = "Beam", Style = "Needle", Move = "Static", Keep = 0, Range = 110, Barrel = true,
 	},
 	Spider = {
-		Name = "독거미", Shape = "Ball", Color = Color3.fromRGB(60, 50, 60), Material = Enum.Material.SmoothPlastic,
+		Name = "Venom Spider", Shape = "Ball", Color = Color3.fromRGB(60, 50, 60), Material = Enum.Material.SmoothPlastic,
 		SizeMult = 0.75, SpeedMult = 1.9, HealthMult = 0.8, DamageMult = 0.95, IntervalMult = 0.7, ShotSpeedMult = 1.1, GoldMult = 1.0,
 		Attack = "Burst", Style = "Dart", Move = "Rush", Keep = 0, Range = 45, Legs = true,
 	},
 	Wisp = {
-		Name = "도깨비불", Shape = "Ball", Color = Color3.fromRGB(95, 215, 170), Material = Enum.Material.Neon, Transparency = 0.3,
+		Name = "Wisp", Shape = "Ball", Color = Color3.fromRGB(95, 215, 170), Material = Enum.Material.Neon, Transparency = 0.3,
 		SizeMult = 0.55, SpeedMult = 2.4, HealthMult = 0.45, DamageMult = 0.85, IntervalMult = 1.0, ShotSpeedMult = 1.1, GoldMult = 1.1,
 		Attack = "Halo", Style = "Halo", Move = "Hover", Keep = 22, Range = 80, Flame = true,
 	},
 	Healer = {
-		Name = "치유 사제", Shape = "Ball", Color = Color3.fromRGB(120, 205, 150), Material = Enum.Material.Neon, Transparency = 0.2,
+		Name = "Healer Priest", Shape = "Ball", Color = Color3.fromRGB(120, 205, 150), Material = Enum.Material.Neon, Transparency = 0.2,
 		SizeMult = 0.95, SpeedMult = 0.8, HealthMult = 1.0, DamageMult = 0.5, IntervalMult = 2.2, ShotSpeedMult = 0.8, GoldMult = 2.2,
 		Attack = "Heal", Style = "Orb", Move = "Keep", Keep = 34, Range = 60, Halo = true,
 	},
 	Totem = {
-		Name = "저주 토템", Shape = "Block", Color = Color3.fromRGB(130, 90, 60), Material = Enum.Material.Wood,
+		Name = "Curse Totem", Shape = "Block", Color = Color3.fromRGB(130, 90, 60), Material = Enum.Material.Wood,
 		SizeMult = 1.2, SpeedMult = 0, HealthMult = 2.2, DamageMult = 1.1, IntervalMult = 1.8, ShotSpeedMult = 0.7, GoldMult = 1.8,
 		Attack = "Ring", Style = "Crystal", Move = "Static", Keep = 0, Range = 100, Totem = true,
 	},

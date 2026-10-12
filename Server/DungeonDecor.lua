@@ -415,7 +415,7 @@ function DungeonDecor.Decorate(run, typeKey, helpers)
 	-- 장식 실패가 던전 시작을 막지 않도록 보호 호출
 	local ok, err = pcall(decorate, run, ctx)
 	if not ok then
-		warn("[DungeonDecor] 장식 실패: " .. tostring(err))
+		warn("[DungeonDecor] decoration failed: " .. tostring(err))
 	end
 end
 

@@ -890,7 +890,7 @@ function Effects.ExposeBoss(part, data, duration)
 	label.TextSize = 18
 	label.TextColor3 = Color3.fromRGB(255, 240, 90)
 	label.TextStrokeTransparency = 0
-	label.Text = "💥 약점 적중!  피해 x3"
+	label.Text = "💥 Weak Spot Hit!  x3 Damage"
 	label.Parent = gui
 	local back = Instance.new("Frame")
 	back.Size = UDim2.new(1, -20, 0, 8)
@@ -907,7 +907,7 @@ function Effects.ExposeBoss(part, data, duration)
 	-- 맞은 순간: 보스 둘레로 금빛 충격 고리 + 파편 + 큰 글자
 	Effects.Raw(part.Position, { "R", part.Position, math.max(10, part.Size.X * 0.9), Color3.fromRGB(255, 225, 80) })
 	Effects.Burst(part.Position, Color3.fromRGB(255, 225, 80), 40)
-	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 12, 0), string.format("💥 약점 적중! %.1f초간 피해 x3", duration), Color3.fromRGB(255, 240, 90))
+	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 12, 0), string.format("💥 Weak Spot Hit! x3 damage for %.1fs", duration), Color3.fromRGB(255, 240, 90))
 	task.delay(duration, function()
 		if outline.Parent and data.ExposedUntil and os.clock() >= data.ExposedUntil - 0.05 then
 			outline:Destroy()

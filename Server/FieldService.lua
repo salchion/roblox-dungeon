@@ -712,7 +712,7 @@ local function buildCamp(zone, x0)
 	light.Brightness = 1.6
 	light.Color = accent
 	light.Parent = beacon
-	makeSign(beacon, "⛺ 캠프 · 워프", Color3.fromRGB(255, 240, 200), 18)
+	makeSign(beacon, "⛺ Camp · Warp", Color3.fromRGB(255, 240, 200), 18)
 
 	for index = 0, 3 do
 		local angle = math.rad(index * 90 + 45)
@@ -729,8 +729,8 @@ local function buildCamp(zone, x0)
 	end
 
 	local prompt = Instance.new("ProximityPrompt")
-	prompt.ActionText = "워프 / 캠프"
-	prompt.ObjectText = string.format("구역 %d 캠프", zone)
+	prompt.ActionText = "Warp / Camp"
+	prompt.ObjectText = string.format("Zone %d Camp", zone)
 	prompt.HoldDuration = 0
 	prompt.MaxActivationDistance = 18
 	prompt.RequiresLineOfSight = false
@@ -758,7 +758,7 @@ local function buildCamp(zone, x0)
 	lineText.TextScaled = true
 	lineText.TextColor3 = Color3.fromRGB(190, 240, 232)
 	lineText.TextStrokeTransparency = 0.4
-	lineText.Text = "🛡 안전지대 끝 (안쪽은 사격 불가)"
+	lineText.Text = "🛡 Safe Zone Edge (no shooting inside)"
 	lineText.Parent = lineGui
 	for z = -F.Width / 2 + 20, F.Width / 2 - 20, 40 do
 		makePart({ Name = "SafePost", Size = Vector3.new(0.7, 3, 0.7), Position = Vector3.new(boundaryX, TOP + 1.5, z), Color = Color3.fromRGB(70, 90, 92), Material = Enum.Material.Slate, CanCollide = false, CanQuery = false }, worldFolder)
@@ -771,14 +771,14 @@ end
 -- 구역 관문: 구역마다 컨셉이 다른 성문 / 입구. 문은 활짝 열려 있고, 이름 / 컨셉 / 몬스터 레벨이 위에 걸려 있다.
 --   1 초원 목책 문 · 2 숲속 고성 정문 · 3 무너진 요새 · 4 사막 신전 · 5 얼음 궁전 · 6 용암 요새 · 7 암흑 성 · 8 심연의 문
 local GATE_THEMES = {
-	{ Tag = "🌾 모험의 시작", Wall = Color3.fromRGB(140, 105, 70), Mat = Enum.Material.Wood, Accent = Color3.fromRGB(255, 205, 90), Height = 24, Crenel = false },
-	{ Tag = "🏰 숲속 고성 정문", Wall = Color3.fromRGB(105, 125, 105), Mat = Enum.Material.Brick, Accent = Color3.fromRGB(120, 230, 130), Height = 34, Crenel = true },
-	{ Tag = "🏚 무너진 요새 관문", Wall = Color3.fromRGB(120, 105, 90), Mat = Enum.Material.Cobblestone, Accent = Color3.fromRGB(255, 170, 80), Height = 30, Crenel = true },
-	{ Tag = "🏜 사막 신전 입구", Wall = Color3.fromRGB(205, 175, 110), Mat = Enum.Material.Sandstone, Accent = Color3.fromRGB(255, 215, 70), Height = 32, Crenel = false },
-	{ Tag = "❄ 얼음 궁전 성문", Wall = Color3.fromRGB(180, 215, 235), Mat = Enum.Material.Ice, Accent = Color3.fromRGB(130, 220, 255), Height = 34, Crenel = true },
-	{ Tag = "🌋 용암 요새 관문", Wall = Color3.fromRGB(70, 45, 42), Mat = Enum.Material.Basalt, Accent = Color3.fromRGB(255, 110, 40), Height = 34, Crenel = true },
-	{ Tag = "🦇 암흑 성 정문", Wall = Color3.fromRGB(45, 38, 62), Mat = Enum.Material.Slate, Accent = Color3.fromRGB(170, 100, 255), Height = 40, Crenel = true },
-	{ Tag = "🌀 심연의 문", Wall = Color3.fromRGB(28, 24, 40), Mat = Enum.Material.Slate, Accent = Color3.fromRGB(255, 70, 130), Height = 40, Crenel = false },
+	{ Tag = "🌾 Adventure Begins", Wall = Color3.fromRGB(140, 105, 70), Mat = Enum.Material.Wood, Accent = Color3.fromRGB(255, 205, 90), Height = 24, Crenel = false },
+	{ Tag = "🏰 Forest Castle Gate", Wall = Color3.fromRGB(105, 125, 105), Mat = Enum.Material.Brick, Accent = Color3.fromRGB(120, 230, 130), Height = 34, Crenel = true },
+	{ Tag = "🏚 Ruined Fortress Gate", Wall = Color3.fromRGB(120, 105, 90), Mat = Enum.Material.Cobblestone, Accent = Color3.fromRGB(255, 170, 80), Height = 30, Crenel = true },
+	{ Tag = "🏜 Desert Temple Entrance", Wall = Color3.fromRGB(205, 175, 110), Mat = Enum.Material.Sandstone, Accent = Color3.fromRGB(255, 215, 70), Height = 32, Crenel = false },
+	{ Tag = "❄ Ice Palace Gate", Wall = Color3.fromRGB(180, 215, 235), Mat = Enum.Material.Ice, Accent = Color3.fromRGB(130, 220, 255), Height = 34, Crenel = true },
+	{ Tag = "🌋 Lava Fortress Gate", Wall = Color3.fromRGB(70, 45, 42), Mat = Enum.Material.Basalt, Accent = Color3.fromRGB(255, 110, 40), Height = 34, Crenel = true },
+	{ Tag = "🦇 Dark Castle Gate", Wall = Color3.fromRGB(45, 38, 62), Mat = Enum.Material.Slate, Accent = Color3.fromRGB(170, 100, 255), Height = 40, Crenel = true },
+	{ Tag = "🌀 Gate of the Abyss", Wall = Color3.fromRGB(28, 24, 40), Mat = Enum.Material.Slate, Accent = Color3.fromRGB(255, 70, 130), Height = 40, Crenel = false },
 }
 
 local function buildGateway(zone, x0)
@@ -946,7 +946,7 @@ local function buildGateway(zone, x0)
 	-- 간판: 구역 이름 + 컨셉 + 몬스터 레벨
 	local signPart = part("GateSign", Vector3.new(1, 1, 1), Vector3.new(x0 + 2, H + 24, 0), accent, Enum.Material.Neon, { Transparency = 1, CanCollide = false, CanQuery = false })
 	local zoneSet = Config.Sets[Config.Sets.ZoneKeys[zone]]
-	makeSign(signPart, string.format("구역 %d · %s\n%s · 몬스터 Lv.%d\n위험도 %s\n%s 여기서만 드랍: %s 세트", zone, F.ZoneNames[zone], theme.Tag, F.GetZoneLevel(zone), string.rep("☠", zone), zoneSet.Icon, zoneSet.Name), Color3.fromRGB(255, 240, 190), 0)
+	makeSign(signPart, string.format("Zone %d · %s\n%s · Monster Lv.%d\nDanger %s\n%s Drops only here: %s Set", zone, F.ZoneNames[zone], theme.Tag, F.GetZoneLevel(zone), string.rep("☠", zone), zoneSet.Icon, zoneSet.Name), Color3.fromRGB(255, 240, 190), 0)
 end
 
 local function buildWorld()
@@ -1054,7 +1054,7 @@ local function buildWorld()
 
 	-- 구역별 분위기 장식 (충돌 없는 장식 + 바닥 무늬, 실패해도 게임은 계속)
 	local okDecor, decorErr = pcall(function() require(script.Parent:WaitForChild("FieldDecor")).Build(worldFolder, { FloorAt = floorAt, ZoneBounds = zoneBounds, Width = F.Width, Blocked = propBlocked }) end)
-	if not okDecor then warn("FieldDecor 실패: " .. tostring(decorErr)) end
+	if not okDecor then warn("FieldDecor failed: " .. tostring(decorErr)) end
 end
 
 ------------------------------------------------------------
@@ -1153,7 +1153,7 @@ local function spawnMonster(zone, kind, at, ambush)
 			Gold = math.floor(boss.Gold * danger.Reward[zone]),
 		}
 		xpLevel = bossLevel
-		text, color, barWidth = string.format("👑 %s의 군주 (구역 %d) · 권장 ⚡%d", F.ZoneNames[zone], zone, F.RecommendPower[zone] or 0), Color3.fromRGB(255, 120, 120), 360
+		text, color, barWidth = string.format("👑 Lord of %s (Zone %d) · Rec. ⚡%d", F.ZoneNames[zone], zone, F.RecommendPower[zone] or 0), Color3.fromRGB(255, 120, 120), 360
 	else
 		-- 구역마다 나오는 몬스터 종류가 다르다 (Config.Field.ZonePools)
 		if at then
@@ -1172,7 +1172,7 @@ local function spawnMonster(zone, kind, at, ambush)
 			stats.MaxHealth = math.floor(stats.MaxHealth * F.EliteMultiplier)
 			stats.Size = stats.Size * 1.5
 			stats.Gold *= 4
-			text, color, barWidth = string.format("★ 엘리트 Lv.%d %s", xpLevel, def.Name), Color3.fromRGB(255, 220, 90), 190
+			text, color, barWidth = string.format("★ Elite Lv.%d %s", xpLevel, def.Name), Color3.fromRGB(255, 220, 90), 190
 		else
 			xpLevel = level
 			stats = Config.Monster.GetStats(level)
@@ -1292,7 +1292,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		orbText.TextScaled = true
 		orbText.TextColor3 = Color3.fromRGB(255, 240, 120)
 		orbText.TextStrokeTransparency = 0
-		orbText.Text = "🎯 약점! 여길 맞혀요"
+		orbText.Text = "🎯 Weak spot! Hit here"
 		orbText.Parent = orbGui
 		CollectionService:AddTag(part, "Monster")
 		CollectionService:AddTag(part, "RadarBoss")
@@ -1382,11 +1382,11 @@ local function rewardEvent(data, part)
 			Quest.Add(player, "Kills", 1)
 			Loot.DropFor(player, position, "Event", data.Zone)
 			Loot.DropFor(player, position, "Event", data.Zone) -- 월드 보스: 장비를 두 번 떨어뜨린다
-			notify(player, string.format("🗿 거신 격파 보상! 장비 + 🎫 +1 + %d G", data.Stats.Gold))
+			notify(player, string.format("🗿 Colossus defeated! Gear + 🎫 +1 + %d G", data.Stats.Gold))
 		end
 	end
 	for _, other in ipairs(Players:GetPlayers()) do
-		notify(other, string.format("🏆 거신 격파! 모두의 힘으로 쓰러뜨렸어요 (보상 받은 사람 %d명)", rewarded))
+		notify(other, string.format("🏆 Colossus defeated! Everyone worked together (%d player(s) rewarded)", rewarded))
 	end
 end
 
@@ -1403,14 +1403,14 @@ local function rewardGoblin(player, data, part)
 	end
 	Quest.Add(player, "Kills", 1)
 	Quest.Add(player, "GoblinKills", 1)
-	notify(player, string.format("💰 황금 고블린 처치! +%d G, 전리품 3개!", gold))
+	notify(player, string.format("💰 Golden Goblin defeated! +%d G, 3 loot drops!", gold))
 end
 
 -- 구역 관문: 지금 막 열어야 하는 구역(ClearedZone+1)에서 몬스터를 처치하면 진행도가 오르고, 다 채우면 다음 구역이 열린다
 local function gateProgress(player, data)
 	if data.Kind == "Boss" and data.Zone == F.ZoneCount and not Journey.IsDone(player, "FieldClear") then
 		Journey.Mark(player, "FieldClear") -- 마지막 구역의 군주: 필드(이야기) 정복 -> 심연이 열린다
-		notify(player, "🏆 필드 정복! 마지막 군주를 쓰러뜨렸어요 — 마을 포털에서 끝없는 심연이 열렸어요!")
+		notify(player, "🏆 Field conquered! You defeated the final Lord — the Endless Abyss opened at the town portal!")
 	end
 	local cleared = player:GetAttribute("ClearedZone") or 0
 	local frontier = cleared + 1
@@ -1425,7 +1425,7 @@ local function gateProgress(player, data)
 		-- 처치 수를 채워도 구역 보스를 쓰러뜨리지 않으면 관문이 안 열린다
 		local capped = math.min(kills, needed)
 		if kills >= needed and not player:GetAttribute("GateBossDone") and (player:GetAttribute("GateKills") or 0) < needed then
-			notify(player, string.format("👑 처치 수를 채웠어요! 이제 구역 %d의 군주를 쓰러뜨리면 관문이 열려요!", frontier))
+			notify(player, string.format("👑 Kill goal reached! Defeat the Lord of Zone %d to open the gate!", frontier))
 		end
 		player:SetAttribute("GateKills", capped)
 		return
@@ -1438,7 +1438,7 @@ local function gateProgress(player, data)
 	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + math.floor(gold * Config.GoldBonus(player) + 0.5))
 	player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + tickets)
 	local nextSet = Config.Sets[Config.Sets.ZoneKeys[frontier + 1]]
-	notify(player, string.format("🔓 구역 %d 관문 개방! 보상 💰%d G · 🎫%d장  — %s · %s 에서만 %s %s 세트 장비가 나와요!", frontier + 1, gold, tickets, F.ZoneNames[frontier + 1], F.ZoneNames[frontier + 1], nextSet.Icon, nextSet.Name))
+	notify(player, string.format("🔓 Zone %d gate opened! Reward 💰%d G · 🎫%d  — %s · %s-only drops: %s %s Set", frontier + 1, gold, tickets, F.ZoneNames[frontier + 1], F.ZoneNames[frontier + 1], nextSet.Icon, nextSet.Name))
 	local root = getAliveParts(player)
 	if root then
 		Effects.Burst(root.Position, Color3.fromRGB(255, 225, 100), 60)
@@ -1458,7 +1458,7 @@ local function reward(player, data, part)
 	local gold = math.floor(data.Stats.Gold + 0.5)
 	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + math.floor(gold * Config.GoldBonus(player) + 0.5))
 	BL.Kill(player, data.Kind or "Normal")
-	BL.Gold(player, "처치", math.floor(gold * Config.GoldBonus(player) + 0.5))
+	BL.Gold(player, "Kills", math.floor(gold * Config.GoldBonus(player) + 0.5))
 	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2, 0), string.format("+%d G", gold), Color3.fromRGB(255, 220, 90))
 
 	local xp
@@ -1492,7 +1492,7 @@ local function reward(player, data, part)
 
 	if data.Kind == "Elite" and math.random() < F.EliteTicketChance then
 		player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + 1)
-		notify(player, "🎫 엘리트에게서 장비 뽑기 티켓을 얻었어요!")
+		notify(player, "🎫 You got a gear draw ticket from an Elite!")
 	elseif data.Kind == "Boss" then
 		local bossPosition = part.Position
 		for _, other in ipairs(Players:GetPlayers()) do
@@ -1513,8 +1513,8 @@ local function reward(player, data, part)
 					local count = math.min(drop.Count or 1, (Config.Keys.DailyDropCapByTier[drop.Tier] or 0) - (riftState.KeyDropsTier[drop.Tier] or 0))
 					riftState.KeyDropsTier[drop.Tier] = (riftState.KeyDropsTier[drop.Tier] or 0) + count
 					Keys.Add(other, count)
-					notify(other, string.format("🔑 열쇠 %d개를 얻었어요! (군주 드랍) — 쉬움 1개 · 보통 2개 · 어려움 3개로 던전에 입장해요", count))
-					Effects.FloatText(rootForKey.Position + Vector3.new(0, 6, 0), "🔑 열쇠 +" .. count, Color3.fromRGB(160, 255, 200))
+					notify(other, string.format("🔑 You got %d key(s)! (Lord drop) — Enter a dungeon with 1 (Easy) · 2 (Normal) · 3 (Hard)", count))
+					Effects.FloatText(rootForKey.Position + Vector3.new(0, 6, 0), "🔑 Key +" .. count, Color3.fromRGB(160, 255, 200))
 				end
 			end
 			local root = getAliveParts(other)
@@ -1526,7 +1526,7 @@ local function reward(player, data, part)
 					Quest.Add(other, "BossKills", 1)
 					Level.AddXP(other, Config.Xp.FieldBoss)
 				end
-				notify(other, string.format("👑 필드 보스 처치! 티켓 +%d, 전리품이 떨어졌어요", F.BossTickets))
+				notify(other, string.format("👑 Field Boss defeated! Tickets +%d, loot dropped", F.BossTickets))
 			end
 		end
 	end
@@ -1540,7 +1540,7 @@ local function recordKill(player, data)
 	local ttk = os.clock() - data.FirstHit
 	local log = combatLog[player]
 	if not log then log = {} combatLog[player] = log end
-	local key = string.format("%d구역 %s%s", data.Zone or 0, data.Kind == "Boss" and "군주" or (data.Kind == "Elite" and "엘리트 " or ""), (data.Kind ~= "Boss" and data.Def and data.Def.Name) or "")
+	local key = string.format("Zone %d %s%s", data.Zone or 0, data.Kind == "Boss" and "Lord" or (data.Kind == "Elite" and "Elite " or ""), (data.Kind ~= "Boss" and data.Def and data.Def.Name) or "")
 	local entry = log[key]
 	if not entry then entry = { N = 0, Ttk = 0, Hp = 0 } log[key] = entry end
 	entry.N += 1
@@ -1554,11 +1554,11 @@ task.spawn(function()
 			if player.Parent then
 				local lines = {}
 				for key, entry in pairs(log) do
-					table.insert(lines, string.format("  %s: %d마리 · 평균 %.1f초 · 체력 %d · 실제 초당피해 %d", key, entry.N, entry.Ttk / entry.N, entry.Hp / entry.N, (entry.Hp / entry.N) / math.max(0.1, entry.Ttk / entry.N)))
+					table.insert(lines, string.format("  %s: %d kills · avg %.1fs · HP %d · actual DPS %d", key, entry.N, entry.Ttk / entry.N, entry.Hp / entry.N, (entry.Hp / entry.N) / math.max(0.1, entry.Ttk / entry.N)))
 				end
 				if #lines > 0 then
 					table.sort(lines)
-					print(string.format("[전투 기록] %s · 전투력 %d · 무기 %d단계 · 레벨 %d\n%s", player.Name, player:GetAttribute("Power") or 0, player:GetAttribute("WeaponLevel") or 0, player:GetAttribute("Level") or 1, table.concat(lines, "\n")))
+					print(string.format("[Combat Log] %s · Power %d · Weapon Lv.%d · Level %d\n%s", player.Name, player:GetAttribute("Power") or 0, player:GetAttribute("WeaponLevel") or 0, player:GetAttribute("Level") or 1, table.concat(lines, "\n")))
 				end
 				combatLog[player] = nil
 			end
@@ -1614,7 +1614,7 @@ local function killMonster(player, part, data)
 			for _, other in ipairs(Players:GetPlayers()) do -- 그 구역에 있는 사람들에게 알린다
 				local root = getAliveParts(other)
 				if other:GetAttribute("Zone") == "Field" and root and zoneOfX(root.Position.X) == zone then
-					notify(other, string.format("👑 구역 %d · %s의 군주가 다시 나타났어요!", zone, F.ZoneNames[zone]))
+					notify(other, string.format("👑 Zone %d · The Lord of %s has reappeared!", zone, F.ZoneNames[zone]))
 				end
 			end
 		end
@@ -1709,7 +1709,7 @@ function Field.Shoot(player, origin, direction)
 	if rootPart and not player:GetAttribute("InDoomArena") and isSafe(rootPart.Position) then -- (소환 결투장은 필드 좌표 밖이라 안전지대로 오인되지 않게 제외)
 		if os.clock() - (safeShotWarnAt[player] or 0) > 4 then
 			safeShotWarnAt[player] = os.clock()
-			notify(player, "🛡 안전지대 안에서는 사격이 통하지 않아요! 캠프 밖으로 나가서 싸우세요")
+			notify(player, "🛡 Shots do nothing inside the safe zone! Leave the camp to fight")
 		end
 		return origin + direction * 40
 	end
@@ -1816,7 +1816,7 @@ function Field.Shoot(player, origin, direction)
 			local factor = MonsterTypes.ShieldFactor(result.Instance, data, origin)
 			if factor < 1 then
 				damage = math.max(1, math.floor(damage * factor))
-				Effects.FloatText(result.Position + Vector3.new(0, 3, 0), "🛡 막힘! 뒤로 돌아가요", Color3.fromRGB(200, 215, 240))
+				Effects.FloatText(result.Position + Vector3.new(0, 3, 0), "🛡 Blocked! Go around", Color3.fromRGB(200, 215, 240))
 				if SoundBank.Has("Shield_Block") then SoundBank.Play(result.Instance, "Shield_Block") end
 			end
 		end
@@ -1975,7 +1975,7 @@ local function spawnGoblin(zone)
 	local labelText = Instance.new("TextLabel")
 	labelText.Size = UDim2.fromScale(1, 1)
 	labelText.BackgroundTransparency = 1
-	labelText.Text = "💰 황금 고블린!"
+	labelText.Text = "💰 Golden Goblin!"
 	labelText.Font = Enum.Font.GothamBlack
 	labelText.TextScaled = true
 	labelText.TextColor3 = Color3.fromRGB(255, 232, 100)
@@ -1985,7 +1985,7 @@ local function spawnGoblin(zone)
 	local data = {
 		Zone = zone, Kind = "Goblin", Goblin = true, Level = level, XpLevel = level + 2, Stats = stats,
 		Health = stats.MaxHealth, MaxHealth = stats.MaxHealth, Contrib = {},
-		HealthFill = createHealthBar(part, "💰 황금 고블린", 200, Color3.fromRGB(255, 225, 80)),
+		HealthFill = createHealthBar(part, "💰 Golden Goblin", 200, Color3.fromRGB(255, 225, 80)),
 		Home = position, Expire = os.clock() + 75, NextShot = math.huge, NextAttack = math.huge, NextRing = math.huge,
 		BaseColor = part.Color, Aggro = false, Phase = math.random() * 6,
 	}
@@ -2000,7 +2000,7 @@ local function stepGoblin(part, data, dt, now)
 		part:Destroy()
 		for _, player in ipairs(Players:GetPlayers()) do
 			if player:GetAttribute("Zone") == "Field" then
-				notify(player, "💨 황금 고블린이 도망쳐 버렸어요...")
+				notify(player, "💨 The Golden Goblin ran away...")
 			end
 		end
 		return
@@ -2064,7 +2064,7 @@ end
 local function bossSlam(part, data)
 	local target = nearestFieldPlayer(part.Position)
 	if not target then return end
-	bossCue(part, "⚠ 내려찍기!", Color3.fromRGB(255, 120, 80))
+	bossCue(part, "⚠ Slam!", Color3.fromRGB(255, 120, 80))
 	local spots = { Vector3.new(target.Position.X, 0, target.Position.Z) }
 	if data.Enraged then
 		table.insert(spots, spots[1] + Vector3.new(16, 0, 10))
@@ -2101,7 +2101,7 @@ local function bossCharge(part, data)
 	local direction = Vector3.new(target.Position.X - part.Position.X, 0, target.Position.Z - part.Position.Z)
 	if direction.Magnitude < 1 then return end
 	direction = direction.Unit
-	bossCue(part, "⚠ 돌진!", Color3.fromRGB(255, 200, 70))
+	bossCue(part, "⚠ Charge!", Color3.fromRGB(255, 200, 70))
 	local length = 64
 	local warn = Instance.new("Part")
 	warn.Size = Vector3.new(10, 0.3, length)
@@ -2139,7 +2139,7 @@ local function bossCharge(part, data)
 end
 
 local function bossSpiral(part, data)
-	bossCue(part, "⚠ 나선 탄막!", Color3.fromRGB(255, 160, 255))
+	bossCue(part, "⚠ Spiral Barrage!", Color3.fromRGB(255, 160, 255))
 	data.BusyUntil = os.clock() + 0.4
 	task.spawn(function()
 		local started = os.clock()
@@ -2415,7 +2415,7 @@ local function stepMonsters(dt)
 				-- 체력이 절반 아래면 격노
 				if not data.Enraged and data.Health / data.MaxHealth <= 0.5 then
 					data.Enraged = true
-					Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 6, 0), "😡 격노!", Color3.fromRGB(255, 70, 70))
+					Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 6, 0), "😡 Enraged!", Color3.fromRGB(255, 70, 70))
 					Effects.Burst(part.Position, Color3.fromRGB(255, 70, 70), 80)
 				end
 				-- 다양한 패턴: 내려찍기 / 돌진 / 나선 탄막을 번갈아 (격노하면 더 자주, 두 개씩)
@@ -2581,12 +2581,12 @@ local function updateZones()
 					player:SetAttribute("Zone", newZone)
 					if newZone == "Lobby" then routeBeat[player] = nil end -- 마을로 돌아오면 길목 사건이 처음부터 다시
 					if newZone == "Field" then
-						notify(player, "필드 입장! 동쪽으로 갈수록 몬스터가 강해져요.")
+						notify(player, "Entered the Field! Monsters get stronger the farther east you go.")
 						if player:GetAttribute("TutorialDoom") then -- 첫 구역 군주 위치를 표지로 알려준다 (군주는 이 구역에 한 마리뿐)
 							local lord = worldLordOfZone1()
 							if lord then
 								tutorialLords[player] = lord
-								Remotes.Tutorial:FireClient(player, "Waypoint", { Pos = lord.Position, Name = "👑 첫 구역 군주" })
+								Remotes.Tutorial:FireClient(player, "Waypoint", { Pos = lord.Position, Name = "👑 First Zone Lord" })
 							end
 						end
 					end
@@ -2602,8 +2602,8 @@ local function updateZones()
 						root.AssemblyLinearVelocity = Vector3.zero
 						if os.clock() - (lastGateNotice[player] or 0) > 3 then
 							lastGateNotice[player] = os.clock()
-							notify(player, string.format("🔒 관문이 닫혀 있어요! 구역 %d 몬스터 %d/%d 처치 + 구역의 군주 격파%s",
-								allowed, player:GetAttribute("GateKills") or 0, F.Gate.KillsNeeded[allowed] or 0, player:GetAttribute("GateBossDone") and " (군주 ✔)" or ""))
+							notify(player, string.format("🔒 The gate is closed! Defeat Zone %d monsters %d/%d + the zone Lord%s",
+								allowed, player:GetAttribute("GateKills") or 0, F.Gate.KillsNeeded[allowed] or 0, player:GetAttribute("GateBossDone") and " (Lord ✔)" or ""))
 						end
 						fieldZone = allowed
 					end
@@ -2640,18 +2640,18 @@ local function updateZones()
 						end
 						if beat < 1 and offset >= 85 then
 							routeBeat[player] = 1
-							notify(player, "🌿 풀숲이 이상하게 흔들린다...! 매복이다!")
+							notify(player, "🌿 The bushes are rustling strangely...! Ambush!")
 							rumble(0.5)
 							around("Normal", 7, 30, 46)
 						elseif beat < 2 and offset >= 150 then
 							routeBeat[player] = 2
-							notify(player, "⚠ 강한 기운이 다가온다! 엘리트 몬스터다!")
+							notify(player, "⚠ A powerful presence approaches! It's an Elite monster!")
 							rumble(0.7)
 							around("Elite", 1, 36, 46)
 							around("Normal", 4, 32, 48)
 						elseif beat < 3 and offset >= 215 then
 							routeBeat[player] = 3
-							notify(player, "🔥 군주의 영역이 가까워진다... 호위병들이 몰려온다!")
+							notify(player, "🔥 The Lord's domain draws near... guards are swarming in!")
 							rumble(0.8)
 							around("Normal", 6, 30, 48)
 						end
@@ -2671,7 +2671,7 @@ local function updateZones()
 					end
 					if fieldZone > (player:GetAttribute("MaxZone") or 0) then
 						player:SetAttribute("MaxZone", fieldZone)
-						notify(player, string.format("🏔 구역 %d · %s 돌파!", fieldZone, F.ZoneNames[fieldZone]))
+						notify(player, string.format("🏔 Zone %d · %s cleared!", fieldZone, F.ZoneNames[fieldZone]))
 					end
 				end
 			end
@@ -2714,7 +2714,7 @@ local function rescueOutOfBounds()
 					root.AssemblyLinearVelocity = Vector3.zero
 					player.Character:PivotTo(lobbySpawn)
 					player:SetAttribute("Zone", "Lobby")
-					notify(player, "필드 밖으로 튕겨 나가서 마을로 돌아왔어요.")
+					notify(player, "You were knocked out of the Field and returned to town.")
 				end
 			end
 		end
@@ -2727,14 +2727,14 @@ local function warp(player, zone)
 	if now - (lastWarp[player] or 0) < 3 then return end
 	if typeof(zone) ~= "number" or zone % 1 ~= 0 or zone < 0 or zone > F.ZoneCount then return end
 	if player:GetAttribute("Zone") == "Dungeon" then
-		notify(player, "던전 안에서는 워프할 수 없어요.")
+		notify(player, "You can't warp inside a dungeon.")
 		return
 	end
 	local root = getAliveParts(player)
 	if not root then return end
 
 	if zone >= 1 and zone > math.max(1, math.min(player:GetAttribute("MaxZone") or 0, (player:GetAttribute("ClearedZone") or 0) + 1)) then
-		notify(player, "아직 도달하지 않은 구역이에요. 걸어서 먼저 가보세요!")
+		notify(player, "You haven't reached that zone yet. Walk there first!")
 		return
 	end
 
@@ -2751,11 +2751,11 @@ local function warp(player, zone)
 		if zone == 0 then
 			player.Character:PivotTo(lobbySpawn)
 			player:SetAttribute("Zone", "Lobby")
-			notify(player, "마을로 돌아왔어요.")
+			notify(player, "Returned to town.")
 		else
 			player.Character:PivotTo(campCFrames[zone])
 			player:SetAttribute("Zone", "Field")
-			notify(player, string.format("⛺ 구역 %d · %s 캠프로 이동!", zone, F.ZoneNames[zone]))
+			notify(player, string.format("⛺ Moved to Zone %d · %s Camp!", zone, F.ZoneNames[zone]))
 		end
 		local arrived = getAliveParts(player)
 		if arrived then Effects.Burst(arrived.Position + Vector3.new(0, 3, 0), Color3.fromRGB(150, 195, 255), 70) end
@@ -2832,7 +2832,7 @@ local function spawnEvent(zone)
 		Stats = stats,
 		Health = stats.MaxHealth,
 		MaxHealth = stats.MaxHealth,
-		HealthFill = createHealthBar(part, string.format("🗿 %s · 월드 보스 (구역 %d)", Config.Events.Name, zone), 360, Color3.fromRGB(255, 190, 110)),
+		HealthFill = createHealthBar(part, string.format("🗿 %s · World Boss (Zone %d)", Config.Events.Name, zone), 360, Color3.fromRGB(255, 190, 110)),
 		Home = position,
 		NextAttack = os.clock() + 3,
 		NextShot = os.clock() + 3,
@@ -2869,7 +2869,7 @@ local function runEvents()
 			activeEvent = { Part = part, Data = data }
 			for _, player in ipairs(Players:GetPlayers()) do
 				playSfx(player, "Event_Boss")
-				notify(player, string.format("🗿 [월드 보스] 구역 %d · %s 에 %s 출현! 주황색 빛기둥을 따라가 모두 함께 쓰러뜨리면 장비 + 티켓 보상!", zone, F.ZoneNames[zone], Config.Events.Name))
+				notify(player, string.format("🗿 [World Boss] Zone %d · %s: %s appeared! Follow the orange light pillar and defeat it together for gear + tickets!", zone, F.ZoneNames[zone], Config.Events.Name))
 			end
 
 			local expire = os.clock() + Config.Events.Lifetime
@@ -2881,7 +2881,7 @@ local function runEvents()
 				part:Destroy()
 				activeEvent = nil
 				for _, player in ipairs(Players:GetPlayers()) do
-					notify(player, "거신이 땅속으로 사라졌어요... (다음 출현을 기다려요)")
+					notify(player, "The Colossus vanished underground... (wait for its next appearance)")
 				end
 			end
 		end
@@ -2907,7 +2907,7 @@ local function runGoblins()
 			for _, player in ipairs(Players:GetPlayers()) do
 				if player:GetAttribute("Zone") == "Field" then
 					playSfx(player, "Event_Goblin")
-					notify(player, string.format("💰 구역 %d · %s 에 황금 고블린 출현! 잡으면 대박! (75초)", zone, F.ZoneNames[zone]))
+					notify(player, string.format("💰 A Golden Goblin appeared in Zone %d · %s! Catch it for a jackpot! (75s)", zone, F.ZoneNames[zone]))
 				end
 			end
 			while monsters[part] == data do
@@ -2924,7 +2924,7 @@ local function airRaid(player, zone)
 	if not root then return end
 	player:SetAttribute("EventFx", "Raid") -- 사이렌 대신 화면 가장자리가 붉게 맥박친다 (PlayerFX)
 	player:SetAttribute("EventFxTick", (player:GetAttribute("EventFxTick") or 0) + 1)
-	notify(player, "🚨 공습 경보! 하늘의 폭격기를 보세요 — 바닥의 붉은 원에서 벗어나세요!")
+	notify(player, "🚨 Air raid! Watch the bombers in the sky — stay out of the red circles on the ground!")
 	player:SetAttribute("ShakeStrength", 0.35)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	local TweenService = game:GetService("TweenService")
@@ -3123,10 +3123,10 @@ local function updateBossFight()
 			if not lesson.Taught then
 				if (player:GetAttribute("WeakHitTick") or 0) > lesson.Base then
 					lesson.Taught = true
-					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "💥", Title = "약점 노출!", Text = "방금처럼 노란 구슬을 맞히면 4초 동안 보스가 받는 피해가 3배! 지금 마구 쏘세요!", Duration = 7 })
+					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "💥", Title = "Weak Spot Exposed!", Text = "Hit the yellow orb like that and the boss takes triple damage for 4 seconds! Fire away!", Duration = 7 })
 				elseif os.clock() >= lesson.NextHint then
 					lesson.NextHint = os.clock() + 11
-					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🎯", Title = "노란 구슬을 노려요!", Text = "보스 주위를 도는 노란 빛 구슬(🎯)을 마우스로 직접 조준해서 클릭하세요. 맞히면 약점이 노출돼요!", Duration = 9 })
+					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🎯", Title = "Aim for the yellow orb!", Text = "Aim at the yellow glowing orb (🎯) circling the boss with your mouse and click it. Hit it to expose a weak spot!", Duration = 9 })
 				end
 			end
 		elseif not fighting then
@@ -3141,7 +3141,7 @@ local function updateBossFight()
 				local shield = Instance.new("ForceField")
 				shield.Parent = player.Character
 				game:GetService("Debris"):AddItem(shield, 4)
-				notify(player, "🛡 위험! 보호막이 감싸 주었어요. 지금이 기회예요!")
+				notify(player, "🛡 Danger! A shield wrapped around you. Now is your chance!")
 			end
 		end
 		if player:GetAttribute("BossFight") ~= fighting then
@@ -3149,22 +3149,22 @@ local function updateBossFight()
 			if fighting and bossKind == "Boss" and player:GetAttribute("TutorialRetryBuff") then
 				-- 쓰러졌다가 다시 도전: 일회성 힘 (군주에게 주는 피해 x8 + 궁극기 가득)
 				player:SetAttribute("UltCharge", Config.Skills.Ult.Cost)
-				Remotes.Tutorial:FireClient(player, "Prompt", { Key = "💪", Title = "일회성 힘이 깃들었어요!", Text = "군주에게 주는 피해가 크게 늘었고 궁극기가 가득 찼어요. V 키 데드아이와 노란 구슬 약점으로 이번엔 쓰러뜨려요!", Duration = 9 })
+				Remotes.Tutorial:FireClient(player, "Prompt", { Key = "💪", Title = "A one-time surge of power!", Text = "Damage to the Lord is greatly increased and your ultimate is full. Use V-key Dead Eye and the yellow orb weak spot to take it down this time!", Duration = 9 })
 			elseif fighting and bossKind == "Event" and not player:GetAttribute("TutorialActive") and not eventTipShown[player] then
 				eventTipShown[player] = true -- (예전에는 player .. "_event" 로 Instance 와 글자를 이어 붙여 오류가 났다)
-				Remotes.Tutorial:FireClient(player, "Prompt", { Key = "⚔", Title = "거신!", Text = "같이 싸운 사람 모두에게 전리품이 나와요. 멀리서 탄을 피하며 계속 쏘세요!", Duration = 7 })
+				Remotes.Tutorial:FireClient(player, "Prompt", { Key = "⚔", Title = "Colossus!", Text = "Everyone who fought gets loot. Keep shooting from afar while dodging shots!", Duration = 7 })
 			elseif fighting and bossKind == "Boss" and bossZone and not player:GetAttribute("TutorialActive") then
 				-- 지역 군주를 만나면: 전투력이 모자라면 무기 강화를 권하고(골드 사용처), 처음이면 약점 구슬 사용법을 알려준다
 				local recommended = F.RecommendPower[bossZone] or 0
 				local power = player:GetAttribute("Power") or 0
 				if power < recommended * 0.85 and os.clock() - (powerWarnedAt[player] or -999) > 90 then
 					powerWarnedAt[player] = os.clock()
-					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "⚒", Title = string.format("전투력 부족! (내 %d / 권장 %d)", power, recommended),
-						Text = "마을 대장간에서 골드로 무기를 강화하면 전투력이 올라요. 강화하고 다시 도전하면 훨씬 쉬워요!", Duration = 9 })
+					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "⚒", Title = string.format("Not enough power! (You %d / Rec. %d)", power, recommended),
+						Text = "Upgrade your weapon with gold at the town blacksmith to raise your power. Upgrade and try again — it'll be much easier!", Duration = 9 })
 				elseif not weakTipShown[player] then
 					weakTipShown[player] = true
-					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🎯", Title = "약점을 노려라!",
-						Text = "보스 주위를 도는 노란 구슬을 마우스로 직접 조준해서 클릭하면 약점이 노출돼서 4초간 받는 피해 x3! + 데드아이 게이지 (자동 공격으로는 안 돼요)", Duration = 8 })
+					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🎯", Title = "Target the weak spot!",
+						Text = "Aim at the yellow orb circling the boss with your mouse and click it to expose a weak spot: x3 damage taken for 4s! + Dead Eye gauge (auto-attack won't work)", Duration = 8 })
 				end
 			end
 		end
@@ -3216,7 +3216,7 @@ local function updateDoom()
 					task.spawn(function() -- 오래 걸리는 연출이라 필드 업데이트 루프를 막지 않게 따로 돌린다
 						local ok, err = pcall(doomWave, player, doomZone)
 						if not ok then
-							warn("[Doom] 소환 결투 오류: " .. tostring(err))
+							warn("[Doom] Summon duel error: " .. tostring(err))
 							player:SetAttribute("InDoomArena", nil)
 							local r = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 							if r then r.Anchored = false end
@@ -3224,7 +3224,7 @@ local function updateDoom()
 					end)
 				end
 				if state.Fired and os.clock() - state.FiredAt >= 70 and humanoid.Health > 0 then
-					notify(player, "💀 압도적인 힘에 쓰러졌어요...")
+					notify(player, "💀 You were crushed by overwhelming power...")
 					humanoid.Health = 0
 				end
 			else
@@ -3287,7 +3287,7 @@ local FIELD_EVENTS = {
 }
 
 local function eventAmbush(player, root, zone)
-	notify(player, "⚠ 습격! 사방에서 몬스터 떼가 몰려온다!")
+	notify(player, "⚠ Raid! Monster hordes are swarming from all sides!")
 	player:SetAttribute("ShakeStrength", 0.5)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	local count = 6 + math.min(6, zone)
@@ -3300,7 +3300,7 @@ end
 local function eventElite(player, root, zone)
 	player:SetAttribute("EventFx", "Elite") -- 나팔 대신 화면 가장자리가 금빛으로 번쩍인다
 	player:SetAttribute("EventFxTick", (player:GetAttribute("EventFxTick") or 0) + 1)
-	notify(player, "👑 엘리트 부대 출현! 정예 몬스터들이 다가온다 — 쓰러뜨리면 짭짤해요!")
+	notify(player, "👑 Elite squad incoming! Elite monsters approach — defeat them for big rewards!")
 	player:SetAttribute("ShakeStrength", 0.4)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	for _ = 1, 3 + zone // 3 do
@@ -3320,7 +3320,7 @@ local function eventStampede(player, root, zone)
 	if zoneOfX(center.X) ~= zone then return false end
 	player:SetAttribute("EventFx", dirX > 0 and "StampedeR" or "StampedeL") -- 몰려오는 쪽 가장자리가 주황빛으로 번쩍인다
 	player:SetAttribute("EventFxTick", (player:GetAttribute("EventFxTick") or 0) + 1)
-	notify(player, string.format("🐃 몬스터 대이동! %s쪽에서 줄지어 달려온다 — 옆으로 비켜서 쓸어버려요!", dirX > 0 and "오른" or "왼"))
+	notify(player, string.format("🐃 Monster stampede! They're charging in a line from the %s — step aside and sweep them away!", dirX > 0 and "right" or "left"))
 	player:SetAttribute("ShakeStrength", 0.35)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	local count = 9 + math.min(6, zone)
@@ -3495,7 +3495,7 @@ function Field.Init(lobbySpawnCFrame)
 								for _, typeKey in ipairs(segmentFeatures(zone, key % 10)) do
 									table.insert(names, MonsterTypes.Defs[typeKey].Name)
 								end
-								notify(player, string.format("📍 %d구역 %d구간 — %s이(가) 많은 곳", zone, key % 10, table.concat(names, " · ")))
+								notify(player, string.format("📍 Zone %d Section %d — lots of %s here", zone, key % 10, table.concat(names, " · ")))
 							end
 						end
 					end
@@ -3516,12 +3516,12 @@ function Field.Init(lobbySpawnCFrame)
 						for part, data in pairs(monsters) do
 							local distance = (part.Position - root.Position).Magnitude
 							if part.Parent and distance <= 40 and #lines < 6 then
-								table.insert(lines, string.format("  %s 구역%s %s 거리%d HP %d/%d aggro=%s 맞힐수있음=%s 습격=%s 낙하=%s 안전지대=%s",
+								table.insert(lines, string.format("  %s zone%s %s dist%d HP %d/%d aggro=%s hittable=%s ambush=%s falling=%s safe=%s",
 									tostring(data.TypeKey), tostring(data.Zone), tostring(data.Kind), distance, data.Health or -1, data.MaxHealth or -1,
 									tostring(data.Aggro), tostring(canHitZone(player, part.Position.X)), tostring(data.Ambush), tostring(data.Falling ~= nil), tostring(isSafe(part.Position))))
 							end
 						end
-						if #lines > 0 then print("[몹진단] " .. player.Name .. " 구역 " .. tostring(zoneOfX(root.Position.X)) .. " 내 구역관문 " .. tostring(player:GetAttribute("ClearedZone")) .. "\n" .. table.concat(lines, "\n")) end
+						if #lines > 0 then print("[MobDiag] " .. player.Name .. " zone " .. tostring(zoneOfX(root.Position.X)) .. " my zone gate " .. tostring(player:GetAttribute("ClearedZone")) .. "\n" .. table.concat(lines, "\n")) end
 					end
 				end
 			end

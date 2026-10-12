@@ -7,13 +7,13 @@ local TweenService = game:GetService("TweenService")
 
 local player = Players.LocalPlayer
 local TIPS = {
-	"Q 키로 대시! 적의 탄을 아슬아슬하게 피하면 공격력이 쌓여요",
-	"R 키를 누르면 가까운 적을 자동으로 조준해요",
-	"레벨이 오르면 T 키로 스탯 포인트를 올려요 (언제든 무료로 다시 찍을 수 있어요)",
-	"휴식 구역에 서 있으면 골드가 쌓여요 (접속을 꺼도 쌓여요)",
-	"던전을 시작하면 랜덤 세트 효과를 하나 체험해 볼 수 있어요. 구역 군주를 잡으면 골드로 직접 열 수 있어요 (Y 키)",
-	"필드 구역에서 세트 장비가 일정 확률로 떨어져요. 같은 구역 세트를 1~3부위 끼면 골드로 연 효과가 4~6단계로 더 강해져요. J 키 도감에서 효과를 미리 볼 수 있어요",
-	"보스의 약점 구슬을 직접 조준해서 맞히면 피해가 x3가 돼요",
+	"Press Q to dash! Narrowly dodge enemy bullets to stack attack power",
+	"Press R to auto-aim at the nearest enemy",
+	"When you level up, press T to spend stat points (respec for free anytime)",
+	"Stand in the rest area to earn gold (even while you're offline)",
+	"Starting a dungeon lets you try one random set effect. Defeat a zone lord to unlock it yourself with gold (Y key)",
+	"Set gear drops in field zones at a set rate. Wear 1-3 pieces of the same zone's set and effects you unlocked with gold get boosted to Lv.4-6. Preview effects in the J key Codex",
+	"Aim directly at a boss's weak-point orb to deal x3 damage",
 }
 
 local shown = false
@@ -62,9 +62,9 @@ local function show()
 		return l
 	end
 	local title = label(8, 30, 24, Color3.fromRGB(255, 232, 160), Enum.Font.GothamBlack,
-		first and string.format("🎮 %s님, 모험의 세계에 오신 걸 환영해요!", player.DisplayName) or string.format("👋 다시 오셨네요, %s님!", player.DisplayName))
+		first and string.format("🎮 Welcome to the world of adventure, %s!", player.DisplayName) or string.format("👋 Welcome back, %s!", player.DisplayName))
 	local sub = label(40, 20, 15, Color3.fromRGB(190, 200, 240), Enum.Font.GothamBold,
-		first and "먼저 허수아비를 쏴 보세요. 마우스 클릭으로 사격해요" or string.format("📅 %d일 연속 출석 중 · 오늘도 강해져 봐요", streak))
+		first and "Start by shooting the dummy. Click to fire" or string.format("📅 %d-day login streak · Get stronger today!", streak))
 	local tip = label(62, 24, 13, Color3.fromRGB(150, 160, 200), Enum.Font.GothamMedium, "💡 " .. TIPS[math.random(#TIPS)])
 
 	local fadeIn = TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)

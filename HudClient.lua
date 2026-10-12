@@ -101,8 +101,8 @@ local function refresh()
 	nameText.Text = (title ~= "" and ("『" .. title .. "』 ") or "") .. player.DisplayName -- 내 머리 위 이름표는 내 화면에서 숨기므로 칭호는 여기서 보인다
 	xpFill.Size = UDim2.new((maxed or blocked) and 1 or math.clamp(xp / needed, 0, 1), 0, 1, 0)
 	xpFill.BackgroundColor3 = blocked and Color3.fromRGB(255, 170, 60) or Color3.fromRGB(110, 200, 255)
-	xpText.Text = maxed and "MAX" or blocked and "돌파가 필요해요!" or string.format("%s / %s XP", comma(xp), comma(needed))
-	powerText.Text = "⚡ " .. comma(player:GetAttribute("Power") or 0) .. " <font size='11' color='#9aa4cc'>전투력</font>"
+	xpText.Text = maxed and "MAX" or blocked and "Breakthrough needed!" or string.format("%s / %s XP", comma(xp), comma(needed))
+	powerText.Text = "⚡ " .. comma(player:GetAttribute("Power") or 0) .. " <font size='11' color='#9aa4cc'>Power</font>"
 	goldText.Text = "💰 <font color='#ffd966'>" .. comma(player:GetAttribute("Gold") or 0) .. "</font>"
 	ticketText.Text = "🎫 <font color='#d9a6ff'>" .. comma(player:GetAttribute("Tickets") or 0) .. "</font>"
 	local keys = (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0)
@@ -113,12 +113,12 @@ local function refresh()
 	weaponText.Text = string.format("⚔ <font color='#%s'>%s</font>", tier.Color:ToHex(), Config.FormatWeapon(weaponLevel, player:GetAttribute("WeaponType")))
 
 	if not player:GetAttribute("DataReady") then -- 저장된 정보를 불러오는 동안은 멈춘 게 아니라는 걸 바로 알려 준다
-		zoneText.Text = "⏳ <font color='#ffe16e'>내 정보를 불러오는 중...</font>"
+		zoneText.Text = "⏳ <font color='#ffe16e'>Loading your data...</font>"
 		return
 	end
 	local zone = player:GetAttribute("Zone") or "Lobby"
-	local zoneName = zone == "Lobby" and "마을" or zone == "Dungeon" and (player:GetAttribute("DungeonLabel") or "던전") or string.format("필드 · 최고 %d구역", player:GetAttribute("MaxZone") or 0)
-	zoneText.Text = string.format("📍 %s   <font color='#8fd8ff'>🎟 무료 %d/%d</font>", zoneName, player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily)
+	local zoneName = zone == "Lobby" and "Town" or zone == "Dungeon" and (player:GetAttribute("DungeonLabel") or "Dungeon") or string.format("Field · Best Zone %d", player:GetAttribute("MaxZone") or 0)
+	zoneText.Text = string.format("📍 %s   <font color='#8fd8ff'>🎟 Free %d/%d</font>", zoneName, player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily)
 end
 
 for _, name in ipairs({ "DataReady", "Level", "XP", "XPNeeded", "GatePassed", "Power", "Gold", "Tickets", "Keys", "KeysNormal", "KeysHard", "WeaponLevel", "Zone", "MaxZone", "Title", "DungeonFree", "DungeonLabel" }) do

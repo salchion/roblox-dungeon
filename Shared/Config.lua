@@ -75,29 +75,29 @@ Config.Pet = {
 	LevelCostGrowth = 1.45,  -- 레벨이 오를수록 비용이 늘어난다
 	-- 기능: 그 레벨에 도달하면 열린다 (아래 레벨 기능이 모두 합쳐진다). Stats = 플레이어 Attribute 에 더해지는 값
 	Functions = {
-		{ Level = 1,  Icon = "🐾", Name = "동행",         Desc = "펫이 따라다녀요 · 이동 속도 +1",                 Stats = { PetSpeed = 1 } },
-		{ Level = 2,  Icon = "📘", Name = "배움",         Desc = "경험치 +5%",                                     Stats = { PetXp = 0.05 } },
-		{ Level = 3,  Icon = "💥", Name = "힘",           Desc = "공격력 +4%",                                     Stats = { PetDamage = 0.04 } },
-		{ Level = 5,  Icon = "🧲", Name = "자동 루팅",    Desc = "전리품이 반경 50 안에서 저절로 빨려 들어와요",  Stats = { PetLoot = 50 } },
-		{ Level = 7,  Icon = "🎯", Name = "집중",         Desc = "치명타 확률 +4%",                                Stats = { PetCrit = 0.04 } },
-		{ Level = 8,  Icon = "🛡", Name = "수호",         Desc = "체력이 25% 아래로 떨어지면 3초 무적 (90초마다)", Stats = { PetGuard = 1 } },
-		{ Level = 10, Icon = "⏩", Name = "가속",         Desc = "공격 속도 +10%",                                 Stats = { PetAtkSpeed = 0.10 } },
-		{ Level = 12, Icon = "🧲", Name = "넓은 루팅",    Desc = "자동 루팅 반경이 100으로 늘어나요",                Stats = { PetLoot = 50 } },
-		{ Level = 13, Icon = "🔫", Name = "보조 사격",    Desc = "펫이 1.6초마다 가까운 적에게 미사일을 쏴요",    Stats = { PetShoot = 1 } },
-		{ Level = 15, Icon = "✨", Name = "대각성",       Desc = "골드 획득 +10% · 스킬 쿨타임 -10%",              Stats = { PetGold = 0.10, PetHaste = 0.10 } },
+		{ Level = 1,  Icon = "🐾", Name = "Companion",         Desc = "Your pet follows you · Move speed +1",                 Stats = { PetSpeed = 1 } },
+		{ Level = 2,  Icon = "📘", Name = "Learning",         Desc = "XP +5%",                                     Stats = { PetXp = 0.05 } },
+		{ Level = 3,  Icon = "💥", Name = "Power",           Desc = "Attack +4%",                                     Stats = { PetDamage = 0.04 } },
+		{ Level = 5,  Icon = "🧲", Name = "Auto-Loot",    Desc = "Loot within a 50 radius gets pulled in automatically",  Stats = { PetLoot = 50 } },
+		{ Level = 7,  Icon = "🎯", Name = "Focus",         Desc = "Crit chance +4%",                                Stats = { PetCrit = 0.04 } },
+		{ Level = 8,  Icon = "🛡", Name = "Guardian",         Desc = "Invincible for 3s when HP drops below 25% (every 90s)", Stats = { PetGuard = 1 } },
+		{ Level = 10, Icon = "⏩", Name = "Haste",         Desc = "Attack speed +10%",                                 Stats = { PetAtkSpeed = 0.10 } },
+		{ Level = 12, Icon = "🧲", Name = "Wide Loot",    Desc = "Auto-loot radius grows to 100",                Stats = { PetLoot = 50 } },
+		{ Level = 13, Icon = "🔫", Name = "Support Fire",    Desc = "Your pet fires a missile at a nearby enemy every 1.6s",    Stats = { PetShoot = 1 } },
+		{ Level = 15, Icon = "✨", Name = "Great Awakening",       Desc = "Gold +10% · Skill cooldown -10%",              Stats = { PetGold = 0.10, PetHaste = 0.10 } },
 	},
 	-- 외형: Unlock = Free / { Zone = N } (필드 N구역 군주를 쓰러뜨림) / { Ach = 업적Id } (그 업적을 달성해 칭호를 얻음)
 	LookOrder = { "Orb", "Slime", "Fox", "Bat", "Golem", "Spirit", "Dragon", "Phoenix", "Star" },
 	Looks = {
-		Orb     = { Name = "빛구슬",     Icon = "🔮", Unlock = "Free", Hint = "처음부터" },
-		Slime   = { Name = "슬라임",     Icon = "🟢", Unlock = { Zone = 1 }, Hint = "구역 1 군주 처치" },
-		Fox     = { Name = "꼬마 여우",  Icon = "🦊", Unlock = { Zone = 2 }, Hint = "구역 2 군주 처치" },
-		Bat     = { Name = "박쥐",       Icon = "🦇", Unlock = { Zone = 3 }, Hint = "구역 3 군주 처치" },
-		Golem   = { Name = "돌 골렘",    Icon = "🪨", Unlock = { Zone = 4 }, Hint = "구역 4 군주 처치" },
-		Spirit  = { Name = "빛의 정령",  Icon = "🧚", Unlock = { Ach = "dungeon10" }, Hint = "칭호 『던전 단골』" },
-		Dragon  = { Name = "아기 용",    Icon = "🐲", Unlock = { Ach = "boss10" }, Hint = "칭호 『보스 헌터』" },
-		Phoenix = { Name = "불사조",     Icon = "🔥", Unlock = { Zone = 7 }, Hint = "구역 7 군주 처치" },
-		Star    = { Name = "별똥별",     Icon = "⭐", Unlock = { Ach = "zone8" }, Hint = "칭호 『심연의 정복자』" },
+		Orb     = { Name = "Light Orb",     Icon = "🔮", Unlock = "Free", Hint = "From the start" },
+		Slime   = { Name = "Slime",     Icon = "🟢", Unlock = { Zone = 1 }, Hint = "Defeat the Zone 1 Lord" },
+		Fox     = { Name = "Little Fox",  Icon = "🦊", Unlock = { Zone = 2 }, Hint = "Defeat the Zone 2 Lord" },
+		Bat     = { Name = "Bat",       Icon = "🦇", Unlock = { Zone = 3 }, Hint = "Defeat the Zone 3 Lord" },
+		Golem   = { Name = "Stone Golem",    Icon = "🪨", Unlock = { Zone = 4 }, Hint = "Defeat the Zone 4 Lord" },
+		Spirit  = { Name = "Light Spirit",  Icon = "🧚", Unlock = { Ach = "dungeon10" }, Hint = "Title 『Dungeon Regular』" },
+		Dragon  = { Name = "Baby Dragon",    Icon = "🐲", Unlock = { Ach = "boss10" }, Hint = "Title 『Boss Hunter』" },
+		Phoenix = { Name = "Phoenix",     Icon = "🔥", Unlock = { Zone = 7 }, Hint = "Defeat the Zone 7 Lord" },
+		Star    = { Name = "Shooting Star",     Icon = "⭐", Unlock = { Ach = "zone8" }, Hint = "Title 『Abyss Conqueror』" },
 	},
 	-- 색: 외형 위에 입히는 색 (처음 몇 개는 기본 제공)
 	Colors = {
@@ -128,24 +128,24 @@ end
 ------------------------------------------------------------
 Config.Tutorial = {
 	Steps = {
-		{ Text = "🎯 대장간 옆 훈련장의 허수아비를 쏘세요! 마우스 클릭으로 사격해요 (R 키 = 자동 조준)", Stat = "DummyHits", Goal = 8, Target = "Dummy", TargetName = "허수아비",
+		{ Text = "🎯 Shoot the dummy at the training ground next to the forge! Click the mouse to fire (R key = auto-aim)", Stat = "DummyHits", Goal = 8, Target = "Dummy", TargetName = "Dummy",
 			Reward = { Gold = 100 } },
 		-- 강화 2번이 끝나면 슬롯 릴이 돌면서 겹치지 않는 부위 장비 3개를 바로 준다 (Reel). 뽑기 머신은 마을에 있다고 카드로 알려 주고, 일일 퀘스트에도 뽑기가 있다.
-		{ Text = "모루에서 무기를 강화하세요! 강화할수록 무기가 강해지고, 15강마다 새 무기가 해금돼요 (무료)", Stat = "Enhances", Goal = 2, Target = "Anvil", TargetName = "모루", FreeEnhance = true, Reel = true,
+		{ Text = "Upgrade your weapon at the anvil! The more you upgrade, the stronger it gets, and a new weapon unlocks every 15 levels (free)", Stat = "Enhances", Goal = 2, Target = "Anvil", TargetName = "Anvil", FreeEnhance = true, Reel = true,
 			Reward = { Tickets = 1, Gold = 150 } },
 		-- 이야기: 필드 군주를 쓰러뜨리면 열쇠가 떨어져 바닥이 갈라지고 -> 던전 -> 던전 보스를 쓰러뜨리면 최후의 군주가 나타나 압도당하고 -> 마을에서 전리품으로 뽑기 / 강화
-		{ Text = "동쪽 필드로 나가서 첫 구역의 군주(👑)를 쓰러뜨리세요! (필드로 나가면 첫 장비를 받아요) ...어딘가 불길한 기운이 느껴져요. 조심하세요!", Stat = "BossKills", Goal = 1, Target = "Field", TargetName = "필드 입구", Doom = true,
-			Intro = { { Key = "Q", Title = "Q 키: 대시!", Text = "필드에서는 이걸 알아 두세요. Q 키를 누르면 가는 방향으로 순간적으로 빨라져요 (2번 연속, 3초마다 충전). 적의 탄을 아슬아슬하게 피하면 보너스!", Duration = 6 } },
+		{ Text = "Head east to the field and defeat the first zone's Lord (👑)! (You'll get your first gear when you enter the field) ...You sense an ominous presence. Be careful!", Stat = "BossKills", Goal = 1, Target = "Field", TargetName = "Field Entrance", Doom = true,
+			Intro = { { Key = "Q", Title = "Q Key: Dash!", Text = "Good to know for the field: press Q to burst forward in your moving direction (2 in a row, recharges every 3s). Narrowly dodge enemy shots for a bonus!", Duration = 6 } },
 			IntroAnyZone = true, -- (마을에서 나가는 길에 읽는다. 첫 장비 지급 릴은 필드에 들어선 뒤에 뜬다)
 			Reward = { Gold = 300, Xp = 100 } },
 		-- 군주가 떨어뜨린 열쇠로 던전이 열린다 (자동으로 들어간다). 던전은 짧게(30초 버티기) + 받는 피해 절반. 보스를 쓰러뜨리면 최후의 군주가 나타나 쓰러진다 (그때 이 미션이 끝난다)
 		-- 중간에 졌다면 마을의 던전 게이트에서 다시 들어가도 같은 장면으로 이어진다.
-		{ Text = "🗝 군주가 떨어뜨린 열쇠가 던전을 열었어요! 던전을 클리어하세요 ...무언가 더 큰 기운이 느껴져요", Stat = "FieldDeaths", Goal = 1, Target = "Gate", TargetName = "던전 게이트", Dungeon = true, DungeonDoom = true,
+		{ Text = "🗝 The key dropped by the Lord opened a dungeon! Clear the dungeon ...You sense an even greater presence", Stat = "FieldDeaths", Goal = 1, Target = "Gate", TargetName = "Dungeon Gate", Dungeon = true, DungeonDoom = true,
 			Reward = { Gold = 4000, Tickets = 10, Keys = 1, Xp = 150 } }, -- 쓰러져도 전리품(재화)은 남는다 -> 아래 미션에서 바로 쓰게 한다
-		{ Text = "💀 군주는 \"8번째 땅 끝에서 기다리마\"라는 말만 남기고 사라졌어요. 강해져야 해요! 전리품 티켓으로 뽑기 머신에서 10연 뽑기!", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Hero", ShowQuests = true, -- 여기서부터 화면에 오늘의 퀘스트가 나타난다
+		{ Text = "💀 The Lord vanished, leaving only the words \"I'll be waiting at the end of the 8th land.\" You need to get stronger! Use your loot tickets for a 10-pull at the gacha machine!", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "Gacha Machine", RollMode = "Hero", ShowQuests = true, -- 여기서부터 화면에 오늘의 퀘스트가 나타난다
 			Reward = { Gold = 500, Xp = 100 } },
 		-- EvolveToTier: 이 번째 무기(3 = 기관단총)가 될 때까지 필요한 강화 횟수를 미션이 시작될 때 계산해서 목표로 쓴다. {무기} = 그 무기 이름
-		{ Text = "💰 모은 골드로 무기를 +15강까지 강화해서 기관단총을 해금하세요! 해금하면 무기 탭에서 원하는 무기를 골라 쓸 수 있어요", Stat = "Enhances", Goal = 15, EvolveToTier = 2, Target = "Anvil", TargetName = "모루",
+		{ Text = "💰 Use your gold to upgrade your weapon to +15 and unlock the SMG! Once unlocked, you can pick any weapon you like in the Weapons tab", Stat = "Enhances", Goal = 15, EvolveToTier = 2, Target = "Anvil", TargetName = "Anvil",
 			Reward = { Tickets = 2, Xp = 150 } },
 	},
 }
@@ -187,15 +187,15 @@ Config.Daily = {
 Config.Dungeon.MutatorChance = 0.9 -- 거의 매번 변이가 붙는다 (Visual = 화면 분위기까지 확 바뀐다)
 Config.Dungeon.Mutators = {
 	Order = { "Giant", "Swift", "Swarm", "Golden", "Furious", "Dark", "Blood", "Elite" },
-	Giant = { Name = "거대화", Icon = "🗿", Desc = "몬스터 체력 x1.6, 보상 x1.5", HealthMult = 1.6, GoldMult = 1.5 },
-	Swift = { Name = "신속", Icon = "💨", Desc = "몬스터 이동/공격이 빠름, 보상 x1.3", SpeedMult = 1.5, IntervalMult = 0.7, GoldMult = 1.3 },
-	Swarm = { Name = "떼거지", Icon = "🐀", Desc = "몬스터 수 x1.6 (체력 x0.7), 보상 x1.4", CountMult = 1.6, HealthMult = 0.7, GoldMult = 1.4 },
-	Golden = { Name = "황금의 날", Icon = "💰", Desc = "골드/경험치 x2, 몬스터 체력 x1.2", HealthMult = 1.2, GoldMult = 2, Visual = "Gold" },
-	Furious = { Name = "광폭", Icon = "😡", Desc = "몬스터 공격력 x1.5, 보상 x1.5", DamageMult = 1.5, GoldMult = 1.5, Visual = "Blood" },
-	Dark = { Name = "칠흑", Icon = "🌑", Desc = "화면이 어두워져요 (몬스터 눈빛을 보고 싸워요), 몬스터 체력 x1.15, 보상 x1.6", HealthMult = 1.15, GoldMult = 1.6, Visual = "Dark" },
-	Fog = { Name = "짙은 안개", Icon = "🌫", Desc = "멀리가 안 보여요, 몬스터가 갑자기 튀어나와요 (이동 x1.2), 보상 x1.4", SpeedMult = 1.2, GoldMult = 1.4, Visual = "Fog" },
-	Blood = { Name = "핏빛 달", Icon = "🩸", Desc = "붉은 달이 떠요: 몬스터 이동 x1.25 · 공격력 x1.25, 보상 x1.5", SpeedMult = 1.25, DamageMult = 1.25, GoldMult = 1.5, Visual = "Blood" },
-	Elite = { Name = "정예의 날", Icon = "👑", Desc = "몬스터 수 x0.6, 체력 x2.0 · 공격력 x1.2, 보상 x1.7", CountMult = 0.6, HealthMult = 2.0, DamageMult = 1.2, GoldMult = 1.7, Visual = "Elite" },
+	Giant = { Name = "Giant", Icon = "🗿", Desc = "Monster HP x1.6, rewards x1.5", HealthMult = 1.6, GoldMult = 1.5 },
+	Swift = { Name = "Swift", Icon = "💨", Desc = "Monsters move/attack faster, rewards x1.3", SpeedMult = 1.5, IntervalMult = 0.7, GoldMult = 1.3 },
+	Swarm = { Name = "Swarm", Icon = "🐀", Desc = "Monster count x1.6 (HP x0.7), rewards x1.4", CountMult = 1.6, HealthMult = 0.7, GoldMult = 1.4 },
+	Golden = { Name = "Golden Day", Icon = "💰", Desc = "Gold/XP x2, monster HP x1.2", HealthMult = 1.2, GoldMult = 2, Visual = "Gold" },
+	Furious = { Name = "Frenzy", Icon = "😡", Desc = "Monster attack x1.5, rewards x1.5", DamageMult = 1.5, GoldMult = 1.5, Visual = "Blood" },
+	Dark = { Name = "Pitch Black", Icon = "🌑", Desc = "The screen goes dark (fight by the glow of monster eyes), monster HP x1.15, rewards x1.6", HealthMult = 1.15, GoldMult = 1.6, Visual = "Dark" },
+	Fog = { Name = "Thick Fog", Icon = "🌫", Desc = "You can't see far, monsters pop out suddenly (speed x1.2), rewards x1.4", SpeedMult = 1.2, GoldMult = 1.4, Visual = "Fog" },
+	Blood = { Name = "Blood Moon", Icon = "🩸", Desc = "A red moon rises: monster speed x1.25 · attack x1.25, rewards x1.5", SpeedMult = 1.25, DamageMult = 1.25, GoldMult = 1.5, Visual = "Blood" },
+	Elite = { Name = "Elite Day", Icon = "👑", Desc = "Monster count x0.6, HP x2.0 · attack x1.2, rewards x1.7", CountMult = 0.6, HealthMult = 2.0, DamageMult = 1.2, GoldMult = 1.7, Visual = "Elite" },
 }
 
 ------------------------------------------------------------
@@ -204,19 +204,19 @@ Config.Dungeon.Mutators = {
 ------------------------------------------------------------
 Config.Skills = {
 	Order = { "Heal", "Ult" }, -- 방벽 / 충격파는 임팩트가 약해서 뺐다 (정의만 남겨둠)
-	Barrier = { Name = "에너지 방벽", Icon = "🛡", Key = "Z", KeyCode = "Z", Cooldown = 14, Duration = 3,
-		Desc = "3초 동안 모든 피해를 막는 방벽" },
-	Blast = { Name = "충격파", Icon = "💥", Key = "F", KeyCode = "F", Cooldown = 8, Radius = 16, Range = 90, Mult = 3,
-		Desc = "조준한 곳에 폭발 (범위 16, 공격력 x3)" },
-	Heal = { Name = "응급 치료", Icon = "💚", Key = "C", KeyCode = "C", Cooldown = 30, Radius = 40, Ratio = 0.08,
-		Desc = "나와 주변 파티원의 체력 8% 회복 (스킬 레벨마다 +1%p)" },
-	Ult = { Name = "데드아이", Icon = "🎯", Key = "V", KeyCode = "V", Cooldown = 3, Radius = 110, Mult = 8, Cost = 100, MaxTargets = 6, Volleys = 12, VolleyGap = 0.09, -- 대상 수 / 일제 사격 횟수를 줄여 렉을 막는다 (빔 / 피해 숫자 / 폭발 효과가 대상 x 횟수만큼 생긴다)
+	Barrier = { Name = "Energy Barrier", Icon = "🛡", Key = "Z", KeyCode = "Z", Cooldown = 14, Duration = 3,
+		Desc = "A barrier that blocks all damage for 3s" },
+	Blast = { Name = "Shockwave", Icon = "💥", Key = "F", KeyCode = "F", Cooldown = 8, Radius = 16, Range = 90, Mult = 3,
+		Desc = "Explodes where you aim (radius 16, attack x3)" },
+	Heal = { Name = "First Aid", Icon = "💚", Key = "C", KeyCode = "C", Cooldown = 30, Radius = 40, Ratio = 0.08,
+		Desc = "Restores 8% HP to you and nearby party members (+1%p per skill level)" },
+	Ult = { Name = "Deadeye", Icon = "🎯", Key = "V", KeyCode = "V", Cooldown = 3, Radius = 110, Mult = 8, Cost = 100, MaxTargets = 6, Volleys = 12, VolleyGap = 0.09, -- 대상 수 / 일제 사격 횟수를 줄여 렉을 막는다 (빔 / 피해 숫자 / 폭발 효과가 대상 x 횟수만큼 생긴다)
 		ShotsPerTarget = 8, ShotGap = 0.03,
-		Desc = "궁극기: 게이지가 가득 차면 사용! 주변 적을 하나씩 딱 락인한 뒤 공속 한계를 뚫고 전부에게 화다다다다 난사한다 (가까운 6마리부터, 스킬 레벨이 오르면 최대 12마리까지 / 공격력 x8)" },
+		Desc = "Ultimate: use it when the gauge is full! Locks onto nearby enemies one by one, then blasts them all rapid-fire past the attack speed limit (nearest 6 first, up to 12 as the skill levels up / attack x8)" },
 	ChargePerShot = 4,
 	-- 패시브 스킬 (스킬 강화 창에서 골드로 레벨업, 스킬 바에는 안 나온다)
-	Focus = { Name = "기운 집중", Icon = "⚡", Key = "패시브", Cooldown = 0, Passive = true,
-		Desc = "NEAR MISS 로 쌓은 공격력 보너스가 더 오래 유지돼요. 레벨이 높을수록 끊겨도 보너스가 일정 수준(최대 레벨에서 절반) 남아요" },
+	Focus = { Name = "Aura Focus", Icon = "⚡", Key = "Passive", Cooldown = 0, Passive = true,
+		Desc = "The attack bonus built up by NEAR MISS lasts longer. At higher levels, part of the bonus (half at max level) stays even if your streak breaks" },
 	UpgradeOrder = { "Heal", "Ult", "Focus" }, -- 스킬 강화 창 / 저장에 쓰는 목록
 }
 
@@ -225,22 +225,22 @@ Config.Skills = {
 -- Weights: 기본 패턴 비중에 곱해지는 배율 (Fan Ring Spiral Meteor Slam Summon)
 Config.Dungeon.BossVariants = {
 	Order = { "Berserk", "Arcane", "Titan", "Summoner" },
-	Berserk = { Prefix = "광폭한", Color = Color3.fromRGB(255, 60, 40), SpeedMult = 1.8, DamageMult = 1.2, HealthMult = 0.9, SizeMult = 0.9,
-		Weights = { Fan = 1.5, Slam = 2.5 }, Desc = "빠르고 거칠다" },
-	Arcane = { Prefix = "비전의", Color = Color3.fromRGB(150, 90, 255), SpeedMult = 1, DamageMult = 1.1, HealthMult = 1, SizeMult = 1,
-		Weights = { Spiral = 2.5, Meteor = 2.5 }, Desc = "탄막과 운석을 쏟아낸다" },
-	Titan = { Prefix = "거대한", Color = Color3.fromRGB(150, 150, 160), SpeedMult = 0.8, DamageMult = 1, HealthMult = 1.5, SizeMult = 1.3,
-		Weights = { Slam = 3, Ring = 1.5 }, Desc = "느리지만 단단하고 충격파가 강하다" },
-	Summoner = { Prefix = "군단장", Color = Color3.fromRGB(110, 220, 120), SpeedMult = 1, DamageMult = 1, HealthMult = 0.9, SizeMult = 1,
-		Weights = { Summon = 4 }, Desc = "부하를 끊임없이 불러낸다" },
+	Berserk = { Prefix = "Berserk", Color = Color3.fromRGB(255, 60, 40), SpeedMult = 1.8, DamageMult = 1.2, HealthMult = 0.9, SizeMult = 0.9,
+		Weights = { Fan = 1.5, Slam = 2.5 }, Desc = "Fast and fierce" },
+	Arcane = { Prefix = "Arcane", Color = Color3.fromRGB(150, 90, 255), SpeedMult = 1, DamageMult = 1.1, HealthMult = 1, SizeMult = 1,
+		Weights = { Spiral = 2.5, Meteor = 2.5 }, Desc = "Rains down bullet barrages and meteors" },
+	Titan = { Prefix = "Giant", Color = Color3.fromRGB(150, 150, 160), SpeedMult = 0.8, DamageMult = 1, HealthMult = 1.5, SizeMult = 1.3,
+		Weights = { Slam = 3, Ring = 1.5 }, Desc = "Slow but tough, with powerful shockwaves" },
+	Summoner = { Prefix = "Commander", Color = Color3.fromRGB(110, 220, 120), SpeedMult = 1, DamageMult = 1, HealthMult = 0.9, SizeMult = 1,
+		Weights = { Summon = 4 }, Desc = "Constantly summons minions" },
 }
 
 -- 방 이벤트: 전투 사이에 끼어드는 특별한 방
 Config.Dungeon.Events = {
 	Order = { "Treasure", "Trap", "Rest" },
-	Treasure = { Name = "💎 보물방", Desc = "보물 상자가 있어요! 가까이 가면 열려요" },
-	Trap = { Name = "☄ 함정방", Desc = "운석이 쏟아져요! 빨간 원을 피하세요 (끝까지 버티면 보상)" },
-	Rest = { Name = "⛲ 휴식방", Desc = "샘물이 체력을 모두 회복시켜 줘요 + 특성 한 번 더" },
+	Treasure = { Name = "💎 Treasure Room", Desc = "There's a treasure chest! Get close to open it" },
+	Trap = { Name = "☄ Trap Room", Desc = "Meteors are falling! Avoid the red circles (survive to the end for a reward)" },
+	Rest = { Name = "⛲ Rest Room", Desc = "The spring fully restores your HP + one more perk" },
 }
 
 -- 던전 특성 (뱀파이어 서바이벌식): 웨이브 클리어마다 3개 중 1개를 골라 그 던전 동안만 쌓인다
@@ -248,22 +248,22 @@ Config.Dungeon.Events = {
 ------------------------------------------------------------
 Config.Perks = {
 	Order = { "Pierce", "Boom", "Chain", "Vamp", "Power", "Rapid", "Crit", "Vital" },
-	Pierce = { Name = "관통탄", Icon = "➳", Attr = "PerkPierce", Max = 3, Special = true,
-		Desc = "탄이 적을 +1마리 더 관통한다" },
-	Boom   = { Name = "폭발탄", Icon = "💥", Attr = "PerkBoom", Max = 3, Special = true,
-		Desc = "맞은 적 주변에 폭발 (피해의 40%, 단계마다 범위 증가)" },
-	Chain  = { Name = "연쇄 번개", Icon = "⚡", Attr = "PerkChain", Max = 3, Special = true,
-		Desc = "맞은 적에게서 근처 적 +1마리로 번개가 튄다 (피해의 60%)" },
-	Vamp   = { Name = "흡혈", Icon = "🩸", Attr = "PerkVamp", Max = 3, Special = true,
-		Desc = "탄이 맞을 때마다 체력 +1 회복" },
-	Power  = { Name = "강타", Icon = "🔥", Attr = "PerkPower", Max = 6,
-		Desc = "공격력 +18%" },
-	Rapid  = { Name = "속사", Icon = "⏩", Attr = "SpeedPoints", Max = 10,
-		Desc = "공격 속도 +8%" },
-	Crit   = { Name = "급소", Icon = "🎯", Attr = "CritPoints", Max = 15,
-		Desc = "치명타 확률 +4%" },
-	Vital  = { Name = "강인함", Icon = "❤", Attr = "HealthPoints", Max = 10,
-		Desc = "최대 체력 +15, 즉시 회복" },
+	Pierce = { Name = "Piercing Shot", Icon = "➳", Attr = "PerkPierce", Max = 3, Special = true,
+		Desc = "Shots pierce +1 more enemy" },
+	Boom   = { Name = "Explosive Shot", Icon = "💥", Attr = "PerkBoom", Max = 3, Special = true,
+		Desc = "Explodes around the enemy hit (40% of damage, radius grows per level)" },
+	Chain  = { Name = "Chain Lightning", Icon = "⚡", Attr = "PerkChain", Max = 3, Special = true,
+		Desc = "Lightning jumps from the enemy hit to +1 nearby enemy (60% of damage)" },
+	Vamp   = { Name = "Lifesteal", Icon = "🩸", Attr = "PerkVamp", Max = 3, Special = true,
+		Desc = "Restore +1 HP each time a shot hits" },
+	Power  = { Name = "Heavy Hit", Icon = "🔥", Attr = "PerkPower", Max = 6,
+		Desc = "Attack +18%" },
+	Rapid  = { Name = "Rapid Fire", Icon = "⏩", Attr = "SpeedPoints", Max = 10,
+		Desc = "Attack speed +8%" },
+	Crit   = { Name = "Weak Spot", Icon = "🎯", Attr = "CritPoints", Max = 15,
+		Desc = "Crit chance +4%" },
+	Vital  = { Name = "Toughness", Icon = "❤", Attr = "HealthPoints", Max = 10,
+		Desc = "Max HP +15, instant heal" },
 	ChoiceCount = 3,
 	PowerPerStack = 0.18,
 	BoomRatio = 0.4,
@@ -315,57 +315,57 @@ Config.Dungeon.BonusInterval = 6     -- 이 간격(초)마다 랜덤 강화 / �
 
 -- 랜덤 강화 (고르지 않고 무작위로 하나 걸린다. Perk = 기존 특성을 Stacks 단계만큼 올림 / Weight = 나올 확률 가중치)
 Config.RunBuffs = {
-	{ Icon = "➳",  Name = "관통탄",       Desc = "탄이 적을 +1마리 더 관통",           Perk = "Pierce", Special = true },
-	{ Icon = "💥", Name = "폭발탄",       Desc = "맞은 적 주변이 폭발",                Perk = "Boom",   Special = true },
-	{ Icon = "⚡", Name = "연쇄 번개",    Desc = "맞은 적에게서 번개가 튄다",          Perk = "Chain",  Special = true },
-	{ Icon = "🩸", Name = "흡혈",         Desc = "맞힐 때마다 체력 회복",              Perk = "Vamp",   Special = true },
-	{ Icon = "🔥", Name = "강타",         Desc = "공격력 +18%",                        Perk = "Power" },
-	{ Icon = "⏩", Name = "속사",         Desc = "공격 속도 +8%",                      Perk = "Rapid" },
-	{ Icon = "🎯", Name = "급소",         Desc = "치명타 확률 +4%",                    Perk = "Crit" },
-	{ Icon = "❤",  Name = "강인함",       Desc = "최대 체력 +15, 즉시 회복",           Perk = "Vital" },
-	{ Icon = "💢", Name = "대폭 강타",    Desc = "공격력 +36%!",                       Perk = "Power", Stacks = 2, Weight = 0.7, Special = true },
-	{ Icon = "🌪", Name = "총알 폭풍",    Desc = "공격 속도 +24%!",                    Perk = "Rapid", Stacks = 3, Weight = 0.7, Special = true },
-	{ Icon = "👁", Name = "저격수의 눈",  Desc = "치명타 확률 +12%!",                  Perk = "Crit",  Stacks = 3, Weight = 0.7, Special = true },
-	{ Icon = "🛡", Name = "강철 심장",    Desc = "최대 체력 +45, 즉시 회복!",          Perk = "Vital", Stacks = 3, Weight = 0.7, Special = true },
-	{ Icon = "✨", Name = "화력 집중",    Desc = "강타 + 속사 + 급소를 한꺼번에",      Combo = { "Power", "Rapid", "Crit" }, Weight = 0.8, Special = true },
-	{ Icon = "💚", Name = "완전 회복",    Desc = "체력이 가득 찬다",                   Effect = "Heal" },
-	{ Icon = "🔰", Name = "보호막",       Desc = "10초 동안 무적",                     Effect = "Shield" },
-	{ Icon = "⭐", Name = "궁극기 충전",  Desc = "궁극기 게이지가 가득 찬다",          Effect = "Ult", Weight = 0.8 },
-	{ Icon = "💰", Name = "황금 손",      Desc = "이번 던전 골드 +20%",                Effect = "Gold" },
-	{ Icon = "📘", Name = "경험의 샘",    Desc = "경험치를 듬뿍 얻는다",               Effect = "Xp" },
-	{ Icon = "🎫", Name = "행운의 티켓",  Desc = "장비 티켓 +1",                       Effect = "Ticket", Weight = 0.35, Special = true },
+	{ Icon = "➳",  Name = "Piercing Shot",       Desc = "Shots pierce +1 more enemy",           Perk = "Pierce", Special = true },
+	{ Icon = "💥", Name = "Explosive Shot",       Desc = "Explodes around the enemy hit",                Perk = "Boom",   Special = true },
+	{ Icon = "⚡", Name = "Chain Lightning",    Desc = "Lightning jumps from the enemy hit",          Perk = "Chain",  Special = true },
+	{ Icon = "🩸", Name = "Lifesteal",         Desc = "Restore HP on every hit",              Perk = "Vamp",   Special = true },
+	{ Icon = "🔥", Name = "Heavy Hit",         Desc = "Attack +18%",                        Perk = "Power" },
+	{ Icon = "⏩", Name = "Rapid Fire",         Desc = "Attack speed +8%",                      Perk = "Rapid" },
+	{ Icon = "🎯", Name = "Weak Spot",         Desc = "Crit chance +4%",                    Perk = "Crit" },
+	{ Icon = "❤",  Name = "Toughness",       Desc = "Max HP +15, instant heal",           Perk = "Vital" },
+	{ Icon = "💢", Name = "Mega Hit",    Desc = "Attack +36%!",                       Perk = "Power", Stacks = 2, Weight = 0.7, Special = true },
+	{ Icon = "🌪", Name = "Bullet Storm",    Desc = "Attack speed +24%!",                    Perk = "Rapid", Stacks = 3, Weight = 0.7, Special = true },
+	{ Icon = "👁", Name = "Sniper's Eye",  Desc = "Crit chance +12%!",                  Perk = "Crit",  Stacks = 3, Weight = 0.7, Special = true },
+	{ Icon = "🛡", Name = "Steel Heart",    Desc = "Max HP +45, instant heal!",          Perk = "Vital", Stacks = 3, Weight = 0.7, Special = true },
+	{ Icon = "✨", Name = "Firepower",    Desc = "Heavy Hit + Rapid Fire + Weak Spot all at once",      Combo = { "Power", "Rapid", "Crit" }, Weight = 0.8, Special = true },
+	{ Icon = "💚", Name = "Full Heal",    Desc = "HP is fully restored",                   Effect = "Heal" },
+	{ Icon = "🔰", Name = "Shield",       Desc = "Invincible for 10s",                     Effect = "Shield" },
+	{ Icon = "⭐", Name = "Ultimate Charge",  Desc = "Ultimate gauge fills up",          Effect = "Ult", Weight = 0.8 },
+	{ Icon = "💰", Name = "Golden Touch",      Desc = "Gold +20% this dungeon",                Effect = "Gold" },
+	{ Icon = "📘", Name = "Spring of Experience",    Desc = "Gain a big chunk of XP",               Effect = "Xp" },
+	{ Icon = "🎫", Name = "Lucky Ticket",  Desc = "Gear ticket +1",                       Effect = "Ticket", Weight = 0.35, Special = true },
 }
 
 -- 세트 효과 (구역 세트 2부위 = 1단계 / 3부위 = 3단계): 수치가 아니라 "플레이 방식"이 바뀌는 효과. 필드 / 던전 / 심연 어디서나 작동한다.
 Config.AugInfo = {
-	AugMissile = { Icon = "🚀", Name = "크리 미사일", Desc = "치명타가 터질 때마다 추가 미사일이 날아가 주변 적을 터뜨려요", Color = Color3.fromRGB(255, 150, 60) },
-	AugNova = { Icon = "☄", Name = "처치 폭발", Desc = "적을 처치하면 그 자리에서 큰 폭발이 일어나 주변 적에게 번져요", Color = Color3.fromRGB(255, 80, 70) },
-	AugOrbit = { Icon = "🌀", Name = "튕기는 표창", Desc = "던진 칼날이 적들 사이를 튕기며 연달아 베어요", Color = Color3.fromRGB(110, 230, 255) },
-	AugStorm = { Icon = "⛈", Name = "낙뢰", Desc = "주기적으로 하늘에서 번개가 가까운 적들에게 내리쳐요", Color = Color3.fromRGB(255, 240, 110) },
-	AugFlame = { Icon = "🔥", Name = "화염 지대", Desc = "적을 처치한 자리에 불길이 남아 지나가는 적을 태워요", Color = Color3.fromRGB(255, 130, 40) },
-	AugExecute = { Icon = "💀", Name = "처형", Desc = "체력이 얼마 안 남은 적(보스 제외)은 맞는 즉시 처형돼요", Color = Color3.fromRGB(210, 90, 255) },
-	AugMeteor = { Icon = "🌠", Name = "유성우", Desc = "적이 가장 많이 모인 곳에 주기적으로 유성이 떨어져요", Color = Color3.fromRGB(255, 190, 90) },
-	AugPulse = { Icon = "💥", Name = "충격파탄", Desc = "주변 적들에게 폭발탄이 날아가 맞은 자리에서 크게 터져요", Color = Color3.fromRGB(110, 255, 190) },
+	AugMissile = { Icon = "🚀", Name = "Crit Missile", Desc = "Every crit launches an extra missile that blasts nearby enemies", Color = Color3.fromRGB(255, 150, 60) },
+	AugNova = { Icon = "☄", Name = "Kill Burst", Desc = "Killing an enemy causes a big explosion that spreads to nearby enemies", Color = Color3.fromRGB(255, 80, 70) },
+	AugOrbit = { Icon = "🌀", Name = "Ricochet Blades", Desc = "Thrown blades bounce between enemies, slashing them in a row", Color = Color3.fromRGB(110, 230, 255) },
+	AugStorm = { Icon = "⛈", Name = "Lightning Strike", Desc = "Lightning periodically strikes nearby enemies from the sky", Color = Color3.fromRGB(255, 240, 110) },
+	AugFlame = { Icon = "🔥", Name = "Flame Zone", Desc = "Flames linger where an enemy died, burning those who pass", Color = Color3.fromRGB(255, 130, 40) },
+	AugExecute = { Icon = "💀", Name = "Execute", Desc = "Enemies (bosses excluded) with very low HP are executed the moment they're hit", Color = Color3.fromRGB(210, 90, 255) },
+	AugMeteor = { Icon = "🌠", Name = "Meteor Shower", Desc = "Meteors periodically fall where enemies are most clustered", Color = Color3.fromRGB(255, 190, 90) },
+	AugPulse = { Icon = "💥", Name = "Shockwave Shot", Desc = "Explosive shots fly at nearby enemies and burst big on impact", Color = Color3.fromRGB(110, 255, 190) },
 }
 
 -- 세트 효과 시너지: 두 어그먼트를 모두 가지면 숨은 추가 효과가 켜진다 (획득하는 순간 알림 + 오라 폭발)
 Config.AugSynergies = {
 	Order = { "Inferno", "StormEye", "BladeMissile", "Reaper" },
-	Inferno      = { Need = { "AugNova", "AugFlame" },      Icon = "🌋", Name = "불바다",    Desc = "처치 폭발이 30% 더 넓어지고 불길이 1.5배 오래 타요" },
-	StormEye     = { Need = { "AugStorm", "AugMeteor" },    Icon = "🌩", Name = "폭풍의 눈", Desc = "유성이 떨어질 때마다 주변 적에게 번개가 추가로 내리쳐요" },
-	BladeMissile = { Need = { "AugOrbit", "AugMissile" },   Icon = "🗡", Name = "추적 칼날", Desc = "칼날이 벨 때 가끔 미사일이 튀어나가요" },
-	Reaper       = { Need = { "AugExecute", "AugMissile" }, Icon = "☠", Name = "사신의 낫", Desc = "처형이 일어나면 미사일이 2발 터져 나가요" },
+	Inferno      = { Need = { "AugNova", "AugFlame" },      Icon = "🌋", Name = "Sea of Flames",    Desc = "Kill Burst is 30% wider and flames burn 1.5x longer" },
+	StormEye     = { Need = { "AugStorm", "AugMeteor" },    Icon = "🌩", Name = "Eye of the Storm", Desc = "Each time a meteor lands, extra lightning strikes nearby enemies" },
+	BladeMissile = { Need = { "AugOrbit", "AugMissile" },   Icon = "🗡", Name = "Homing Blades", Desc = "Blades occasionally launch a missile when they slash" },
+	Reaper       = { Need = { "AugExecute", "AugMissile" }, Icon = "☠", Name = "Reaper's Scythe", Desc = "When an execute happens, 2 missiles burst out" },
 }
 
 -- 랜덤 패널티 (적이 강해지는 대신 골드를 더 준다. 누적되지만 상한이 있다)
 Config.RunPenalties = {
-	{ Icon = "🪨", Name = "단단한 적",   Desc = "적 체력 +25%",           HealthMult = 1.25, Gold = 0.15 },
-	{ Icon = "😡", Name = "사나운 적",   Desc = "적 공격력 +30%",         DamageMult = 1.30, Gold = 0.15 },
-	{ Icon = "💨", Name = "빠른 적",     Desc = "적 이동 속도 +12%",      SpeedMult = 1.12, Gold = 0.15 },
-	{ Icon = "🐺", Name = "떼거지",      Desc = "적이 더 자주 몰려온다",   CountMult = 1.25, Gold = 0.20 },
-	{ Icon = "🔫", Name = "광속 사격",   Desc = "적 발사 간격 -15%",      IntervalMult = 0.85, Gold = 0.20 },
-	{ Icon = "🛡", Name = "철갑 군단",   Desc = "적 체력 +40%, 공격력 +10%", HealthMult = 1.40, DamageMult = 1.10, Gold = 0.30 },
-	{ Icon = "☠",  Name = "악몽의 기운", Desc = "적 체력/공격력 +15%, 속도 +5%", HealthMult = 1.15, DamageMult = 1.15, SpeedMult = 1.05, Gold = 0.30 },
+	{ Icon = "🪨", Name = "Tough Enemies",   Desc = "Enemy HP +25%",           HealthMult = 1.25, Gold = 0.15 },
+	{ Icon = "😡", Name = "Fierce Enemies",   Desc = "Enemy attack +30%",         DamageMult = 1.30, Gold = 0.15 },
+	{ Icon = "💨", Name = "Fast Enemies",     Desc = "Enemy move speed +12%",      SpeedMult = 1.12, Gold = 0.15 },
+	{ Icon = "🐺", Name = "Swarm",      Desc = "Enemies swarm in more often",   CountMult = 1.25, Gold = 0.20 },
+	{ Icon = "🔫", Name = "Lightspeed Fire",   Desc = "Enemy fire interval -15%",      IntervalMult = 0.85, Gold = 0.20 },
+	{ Icon = "🛡", Name = "Ironclad Legion",   Desc = "Enemy HP +40%, attack +10%", HealthMult = 1.40, DamageMult = 1.10, Gold = 0.30 },
+	{ Icon = "☠",  Name = "Nightmare Aura", Desc = "Enemy HP/attack +15%, speed +5%", HealthMult = 1.15, DamageMult = 1.15, SpeedMult = 1.05, Gold = 0.30 },
 }
 
 -- 웨이브별 몬스터 마릿수 (파티 인원이 많을수록 늘어남)
@@ -401,7 +401,7 @@ function Config.Monster.GetStats(level)
 end
 
 Config.Boss = {
-	Name = "던전의 군주",
+	Name = "Dungeon Lord",
 	Size = 30,
 	MaxHealth = 2500,        -- 1인 기준 (파티 인원 배율 추가)
 	Speed = 6,
@@ -454,16 +454,16 @@ end
 
 -- 시대 특징(화면에서 보이는 모습 설명): 새 시대의 무기로 진화하면 탄 / 꼬리 / 착탄 연출이 이렇게 바뀐다. (피해를 퍼뜨리는 효과는 세트 효과 / 던전 특성 / 무기 종류와 겹쳐서 넣지 않는다)
 local ERA_PERKS = {
-	{ Name = "녹슨 총알", Icon = "🔫", Desc = "탁한 회갈색 탄과 먼지. 모든 무기의 시작" },
-	{ Name = "푸른 강철탄", Icon = "🔷", Desc = "말끔한 흰청 줄기 탄과 짧은 불꽃 틱" },
-	{ Name = "마력 구슬", Icon = "🔮", Desc = "보라 구슬 주위를 알갱이가 돌고 별 꼬리가 끌려요" },
-	{ Name = "황금 혜성", Icon = "☄", Desc = "금빛 혜성 같은 꼬리 덩어리와 반짝이는 금가루" },
-	{ Name = "불꽃 물방울", Icon = "🔥", Desc = "불꽃 머리에 뾰족한 꼬리, 위로 오르는 불씨" },
-	{ Name = "빙결 결정", Icon = "❄", Desc = "하늘색 결정 조각과 눈송이 안개, 얼음 파편이 터져요" },
-	{ Name = "번개 마디", Icon = "⚡", Desc = "지그재그로 깜빡이는 번개 마디와 튀는 스파크" },
-	{ Name = "암흑 구체", Icon = "🌑", Desc = "검보라 구체와 연기 꼬리, 공허 파문이 퍼져요" },
-	{ Name = "용의 불덩이", Icon = "🐉", Desc = "S자로 굽은 긴 꼬리를 끄는 불덩이, 용의 불길" },
-	{ Name = "신화의 무지개", Icon = "🌈", Desc = "무지개 리본 탄과 별가루, 별이 터지는 착탄" },
+	{ Name = "Rusty Bullets", Icon = "🔫", Desc = "Dull gray-brown shots and dust. Where every weapon begins" },
+	{ Name = "Blue Steel Shots", Icon = "🔷", Desc = "Clean white-blue streak shots with short spark ticks" },
+	{ Name = "Mana Orbs", Icon = "🔮", Desc = "Particles orbit purple orbs, trailing a star tail" },
+	{ Name = "Golden Comet", Icon = "☄", Desc = "A comet-like golden tail with glittering gold dust" },
+	{ Name = "Flame Droplets", Icon = "🔥", Desc = "Fiery heads with pointed tails and rising embers" },
+	{ Name = "Frozen Crystals", Icon = "❄", Desc = "Sky-blue crystal shards and snowflake mist, bursting into ice fragments" },
+	{ Name = "Lightning Links", Icon = "⚡", Desc = "Zigzag flickering lightning links and flying sparks" },
+	{ Name = "Dark Spheres", Icon = "🌑", Desc = "Dark purple spheres with smoke tails and spreading void ripples" },
+	{ Name = "Dragon Fireball", Icon = "🐉", Desc = "A fireball trailing a long S-curved tail, dragon flames" },
+	{ Name = "Mythic Rainbow", Icon = "🌈", Desc = "Rainbow ribbon shots and stardust, with star bursts on impact" },
 }
 
 -- 탄 크기 / 길이는 "무기 번호 + 그 무기 안의 진행도" 하나로 이어서 커진다 (진화해도 크기가 다시 줄어들지 않는다). 번호가 높을수록 항상 같거나 더 크다.
@@ -476,45 +476,45 @@ function Config.Weapon.ShotSize(tier, stage)
 end
 
 local ERAS = {
-	{ Prefix = "녹슨",   Color = Color3.fromRGB(165, 165, 175), Material = Enum.Material.Metal,  Particles = 0,  Trail = false, Light = 0,
+	{ Prefix = "Rusty",   Color = Color3.fromRGB(165, 165, 175), Material = Enum.Material.Metal,  Particles = 0,  Trail = false, Light = 0,
 		Shot = { Style = "Ball", Size = 0.6, Speed = 260, Impact = 0 } },
-	{ Prefix = "강철",   Color = Color3.fromRGB(90, 160, 255),  Material = Enum.Material.Metal,  Particles = 6,  Trail = false, Light = 0,
+	{ Prefix = "Steel",   Color = Color3.fromRGB(90, 160, 255),  Material = Enum.Material.Metal,  Particles = 6,  Trail = false, Light = 0,
 		Shot = { Style = "Bolt", Size = 0.35, Length = 3, Speed = 320, Impact = 6 } },
-	{ Prefix = "마력",   Color = Color3.fromRGB(175, 95, 255),  Material = Enum.Material.Glass,  Particles = 12, Trail = true,  Light = 0,
+	{ Prefix = "Arcane",   Color = Color3.fromRGB(175, 95, 255),  Material = Enum.Material.Glass,  Particles = 12, Trail = true,  Light = 0,
 		Shot = { Style = "Orb", Size = 1.3, Speed = 190, Impact = 14 } },
-	{ Prefix = "황금",   Color = Color3.fromRGB(255, 200, 50),  Material = Enum.Material.Neon,   Particles = 22, Trail = true,  Light = 10,
+	{ Prefix = "Golden",   Color = Color3.fromRGB(255, 200, 50),  Material = Enum.Material.Neon,   Particles = 22, Trail = true,  Light = 10,
 		Shot = { Style = "Cannon", Size = 2.4, Speed = 140, Impact = 30 } },
-	{ Prefix = "불꽃",   Color = Color3.fromRGB(255, 70, 40),   Material = Enum.Material.Neon,   Particles = 40, Trail = true,  Light = 16,
+	{ Prefix = "Flame",   Color = Color3.fromRGB(255, 70, 40),   Material = Enum.Material.Neon,   Particles = 40, Trail = true,  Light = 16,
 		Shot = { Style = "Rocket", Size = 1.6, Length = 4, Speed = 150, Impact = 70 } },
-	{ Prefix = "빙결",   Color = Color3.fromRGB(140, 225, 255), Material = Enum.Material.Ice,    Particles = 30, Trail = true,  Light = 14,
+	{ Prefix = "Frozen",   Color = Color3.fromRGB(140, 225, 255), Material = Enum.Material.Ice,    Particles = 30, Trail = true,  Light = 14,
 		Shot = { Style = "Bolt", Size = 0.5, Length = 4.5, Speed = 360, Impact = 40 } },
-	{ Prefix = "번개",   Color = Color3.fromRGB(255, 240, 90),  Material = Enum.Material.Neon,   Particles = 45, Trail = true,  Light = 18,
+	{ Prefix = "Lightning",   Color = Color3.fromRGB(255, 240, 90),  Material = Enum.Material.Neon,   Particles = 45, Trail = true,  Light = 18,
 		Shot = { Style = "Bolt", Size = 0.45, Length = 7, Speed = 440, Impact = 50 } },
-	{ Prefix = "암흑",   Color = Color3.fromRGB(100, 50, 160),  Material = Enum.Material.Neon,   Particles = 50, Trail = true,  Light = 14,
+	{ Prefix = "Dark",   Color = Color3.fromRGB(100, 50, 160),  Material = Enum.Material.Neon,   Particles = 50, Trail = true,  Light = 14,
 		Shot = { Style = "Orb", Size = 1.9, Speed = 200, Impact = 55 } },
-	{ Prefix = "용의",   Color = Color3.fromRGB(255, 120, 60),  Material = Enum.Material.Neon,   Particles = 55, Trail = true,  Light = 20,
+	{ Prefix = "Dragon",   Color = Color3.fromRGB(255, 120, 60),  Material = Enum.Material.Neon,   Particles = 55, Trail = true,  Light = 20,
 		Shot = { Style = "Fire", Size = 2.4, Speed = 180, Impact = 80 } },
-	{ Prefix = "신화의", Color = Color3.fromRGB(255, 255, 255), Material = Enum.Material.Neon,   Particles = 70, Trail = true,  Light = 24, Rainbow = true,
+	{ Prefix = "Mythic", Color = Color3.fromRGB(255, 255, 255), Material = Enum.Material.Neon,   Particles = 70, Trail = true,  Light = 24, Rainbow = true,
 		Shot = { Style = "Rainbow", Size = 2.6, Speed = 190, Impact = 90 } },
 }
 -- 시대 안에서 뒤로 갈수록 "한 방 / 폭발 / 관통" 같은 묵직한 무기가 오고, 기본 화력(DPS)도 조금씩 올라간다
 local CLASS_ORDER = { "Pistol", "Smg", "Revolver", "Rifle", "Shotgun", "Flamer", "Cannon", "Sniper", "Rocket", "Rail" }
 local CLASS_NAMES = {
-	Pistol = "권총", Revolver = "리볼버", Smg = "기관단총", Shotgun = "샷건", Rifle = "라이플",
-	Sniper = "저격총", Rocket = "로켓 런처", Rail = "레일건", Flamer = "화염방사기", Cannon = "플라즈마 캐논",
+	Pistol = "Pistol", Revolver = "Revolver", Smg = "SMG", Shotgun = "Shotgun", Rifle = "Rifle",
+	Sniper = "Sniper Rifle", Rocket = "Rocket Launcher", Rail = "Railgun", Flamer = "Flamethrower", Cannon = "Plasma Cannon",
 }
 -- 무기 이름: 종류 x 시대마다 전부 다른 이름 (접두사만 바뀌는 게 아니라 무기 자체가 다른 이름 / 다른 모양)
 local WEAPON_NAMES = {
-	Pistol = { "녹슨 권총", "강철 피스톨", "마력 핸드캐논", "황금 에이스", "불꽃 점화기", "서리송곳 권총", "번개 방아쇠", "그림자 송곳니", "용송곳니 피스톨", "신화의 아스트라" },
-	Smg = { "녹슨 기관단총", "강철 연발총", "마력 속삭임 SMG", "황금 폭풍 SMG", "화염 연사기", "서리 연사기", "방전 기관단총", "그림자 연사기", "용염 기관단총", "신화의 스프레이" },
-	Revolver = { "녹슨 리볼버", "강철 육혈포", "마력 마그넘", "황금 헌터", "인페르노 리볼버", "얼음깨기 리볼버", "천둥 리볼버", "저주받은 리볼버", "용의 마그넘", "이터널 리볼버" },
-	Rifle = { "녹슨 라이플", "강철 카빈", "마력 소총", "황금 레인저", "불꽃 라이플", "서리 소총", "전격 라이플", "그림자 라이플", "용린 라이플", "신화의 은하 라이플" },
-	Shotgun = { "녹슨 샷건", "강철 펌프 샷건", "마력 쌍열 샷건", "황금 파쇄총", "화염 산탄총", "빙하 산탄총", "번개 산탄총", "학살자 샷건", "용의 산탄포", "신화의 산탄포" },
-	Flamer = { "녹슨 화염방사기", "강철 분사기", "마력 불꽃 분사기", "황금 용광로", "불꽃 인페르노 토치", "서리 불꽃 분사기", "플라즈마 토치", "지옥불 분사기", "용의 숨결", "별의 화염" },
-	Cannon = { "녹슨 플라즈마 캐논", "강철 대포", "마력 캐논", "황금 대포", "화산포", "빙결포", "천둥포", "암흑 캐논", "용포", "별 파괴포" },
-	Sniper = { "녹슨 저격총", "강철 장거리 저격총", "마력 저격총", "황금 독수리 저격총", "불꽃 저격총", "설원 저격총", "번개 저격총", "암살자의 저격총", "용안 저격총", "은하 저격총" },
-	Rocket = { "녹슨 로켓 런처", "강철 바주카", "마력 런처", "황금 미사일", "화염 로켓", "빙결 미사일", "번개 미사일", "암흑 미사일", "용의 로켓", "혜성 런처" },
-	Rail = { "녹슨 레일건", "강철 가우스 건", "마력 레일건", "황금 레일건", "불꽃 레일건", "서리 레일건", "전자기 레일건", "공허 레일건", "용핵 레일건", "신화의 레일건" },
+	Pistol = { "Rusty Pistol", "Steel Pistol", "Arcane Hand Cannon", "Golden Ace", "Flame Igniter", "Frost Spike Pistol", "Lightning Trigger", "Shadow Fang", "Dragonfang Pistol", "Mythic Astra" },
+	Smg = { "Rusty SMG", "Steel Repeater", "Arcane Whisper SMG", "Golden Storm SMG", "Flame Rapid-Fire", "Frost Rapid-Fire", "Discharge SMG", "Shadow Rapid-Fire", "Dragonflame SMG", "Mythic Spray" },
+	Revolver = { "Rusty Revolver", "Steel Six-Shooter", "Arcane Magnum", "Golden Hunter", "Inferno Revolver", "Icebreaker Revolver", "Thunder Revolver", "Cursed Revolver", "Dragon's Magnum", "Eternal Revolver" },
+	Rifle = { "Rusty Rifle", "Steel Carbine", "Arcane Rifle", "Golden Ranger", "Flame Rifle", "Frost Rifle", "Shock Rifle", "Shadow Rifle", "Dragonscale Rifle", "Mythic Galaxy Rifle" },
+	Shotgun = { "Rusty Shotgun", "Steel Pump Shotgun", "Arcane Double-Barrel", "Golden Shredder", "Flame Scattergun", "Glacier Scattergun", "Lightning Scattergun", "Slaughterer Shotgun", "Dragon Blunderbuss", "Mythic Blunderbuss" },
+	Flamer = { "Rusty Flamethrower", "Steel Sprayer", "Arcane Flame Sprayer", "Golden Furnace", "Flame Inferno Torch", "Frostfire Sprayer", "Plasma Torch", "Hellfire Sprayer", "Dragon's Breath", "Star Flame" },
+	Cannon = { "Rusty Plasma Cannon", "Steel Cannon", "Arcane Cannon", "Golden Cannon", "Volcano Cannon", "Frost Cannon", "Thunder Cannon", "Dark Cannon", "Dragon Cannon", "Star Breaker" },
+	Sniper = { "Rusty Sniper", "Steel Long-Range Sniper", "Arcane Sniper", "Golden Eagle Sniper", "Flame Sniper", "Snowfield Sniper", "Lightning Sniper", "Assassin's Sniper", "Dragon Eye Sniper", "Galaxy Sniper" },
+	Rocket = { "Rusty Rocket Launcher", "Steel Bazooka", "Arcane Launcher", "Golden Missile", "Flame Rocket", "Frost Missile", "Lightning Missile", "Dark Missile", "Dragon Rocket", "Comet Launcher" },
+	Rail = { "Rusty Railgun", "Steel Gauss Gun", "Arcane Railgun", "Golden Railgun", "Flame Railgun", "Frost Railgun", "Electromagnetic Railgun", "Void Railgun", "Dragon Core Railgun", "Mythic Railgun" },
 }
 
 -- Tiers[i] = i번째 무기 (MinLevel = 이 무기가 되는 최소 강화 단계). 이름은 시대 + 종류.
@@ -551,7 +551,7 @@ Config.Dummy = {
 	PowerExp = 0.55,       -- 전투력이 오를수록 골드가 어떻게 늘어나는지 (1 이면 정비례, 작을수록 완만)
 	-- 허수아비는 하나. 이름 / 기본 배율만 있다 (방어력 없음: 누구나 때려서 골드를 번다)
 	List = {
-		{ Name = "황금 훈련 허수아비", Multiplier = 1, RequiredPower = 0 },
+		{ Name = "Golden Training Dummy", Multiplier = 1, RequiredPower = 0 },
 	},
 }
 
@@ -626,7 +626,7 @@ end
 Config.Gear = {
 	MaxLevel = 15,
 	LevelBonus = 0.08,   -- 강화 1레벨당 효과 +8%
-	RarityNames = { "일반", "희귀", "영웅", "전설", "신화" },
+	RarityNames = { "Common", "Rare", "Epic", "Legendary", "Mythic" },
 	RarityColors = {
 		Color3.fromRGB(190, 190, 190),
 		Color3.fromRGB(90, 200, 120),
@@ -643,18 +643,18 @@ Config.Gear = {
 	},
 	RarityMult = { 1, 1.6, 2.5, 4, 6 },
 	Slots = {
-		{ Key = "Armor", Name = "갑옷", Stat = "Health", StatName = "최대 체력", Base = 40, BaseCost = 120,
-			Names = { "가죽 갑옷", "사슬 갑옷", "강철 갑옷", "미스릴 갑옷", "용린 갑옷" } },
-		{ Key = "Gloves", Name = "장갑", Stat = "Crit", StatName = "치명타 확률", Base = 0.02, BaseCost = 100,
-			Names = { "천 장갑", "가죽 장갑", "강철 건틀릿", "미스릴 건틀릿", "용발톱 건틀릿" } },
-		{ Key = "Boots", Name = "신발", Stat = "Speed", StatName = "이동 속도", Base = 0.6, BaseCost = 100,
-			Names = { "낡은 신발", "가죽 장화", "강철 부츠", "미스릴 부츠", "바람의 부츠" } },
-		{ Key = "Helmet", Name = "투구", Stat = "Damage", StatName = "공격력", Base = 0.03, BaseCost = 130,
-			Names = { "가죽 모자", "철 투구", "강철 투구", "미스릴 투구", "용뿔 왕관" } },
-		{ Key = "Ring", Name = "반지", Stat = "Haste", StatName = "스킬 쿨타임 감소", Base = 0.02, BaseCost = 140,
-			Names = { "구리 반지", "은 반지", "금 반지", "보석 반지", "시간의 반지" } },
-		{ Key = "Necklace", Name = "목걸이", Stat = "Luck", StatName = "행운", Base = 0.05, BaseCost = 140,
-			Names = { "끈 목걸이", "은 목걸이", "금 목걸이", "보석 목걸이", "별빛 목걸이" } },
+		{ Key = "Armor", Name = "Armor", Stat = "Health", StatName = "Max HP", Base = 40, BaseCost = 120,
+			Names = { "Leather Armor", "Chainmail", "Steel Armor", "Mithril Armor", "Dragonscale Armor" } },
+		{ Key = "Gloves", Name = "Gloves", Stat = "Crit", StatName = "Crit Chance", Base = 0.02, BaseCost = 100,
+			Names = { "Cloth Gloves", "Leather Gloves", "Steel Gauntlets", "Mithril Gauntlets", "Dragonclaw Gauntlets" } },
+		{ Key = "Boots", Name = "Boots", Stat = "Speed", StatName = "Move Speed", Base = 0.6, BaseCost = 100,
+			Names = { "Worn Shoes", "Leather Boots", "Steel Boots", "Mithril Boots", "Boots of Wind" } },
+		{ Key = "Helmet", Name = "Helmet", Stat = "Damage", StatName = "Attack", Base = 0.03, BaseCost = 130,
+			Names = { "Leather Cap", "Iron Helm", "Steel Helm", "Mithril Helm", "Dragonhorn Crown" } },
+		{ Key = "Ring", Name = "Ring", Stat = "Haste", StatName = "Skill Cooldown Reduction", Base = 0.02, BaseCost = 140,
+			Names = { "Copper Ring", "Silver Ring", "Gold Ring", "Gem Ring", "Ring of Time" } },
+		{ Key = "Necklace", Name = "Necklace", Stat = "Luck", StatName = "Luck", Base = 0.05, BaseCost = 140,
+			Names = { "String Necklace", "Silver Necklace", "Gold Necklace", "Gem Necklace", "Starlight Necklace" } },
 	},
 }
 
@@ -677,9 +677,9 @@ end
 function Config.FormatGearStat(slotKey, value)
 	local slot = Config.GetGearSlot(slotKey)
 	if slot.Stat == "Health" then
-		return string.format("최대 체력 +%d", math.floor(value + 0.5))
+		return string.format("Max HP +%d", math.floor(value + 0.5))
 	elseif slot.Stat == "Speed" then
-		return string.format("이동 속도 +%.1f", value)
+		return string.format("Move Speed +%.1f", value)
 	end
 	-- 나머지는 비율(%) 효과: 치명타 확률 / 공격력 / 스킬 쿨타임 감소 / 행운 ...
 	return string.format("%s +%.1f%%", slot.StatName, value * 100)
@@ -743,7 +743,7 @@ Config.Field = {
 		Speed = { 1, 1.05, 1.1, 1.18, 1.26, 1.35, 1.45, 1.55 },
 		Reward = { 1, 1.5, 2.2, 3.2, 4.6, 6.5, 9, 13 },
 	},
-	ZoneNames = { "초원", "숲", "황무지", "사막", "설원", "화산", "암흑 지대", "심연" },
+	ZoneNames = { "Meadow", "Forest", "Wasteland", "Desert", "Snowfield", "Volcano", "Darklands", "Abyss" },
 	-- 구역별로 나오는 몬스터 종류와 비중 (MonsterTypes.lua 의 Defs 이름)
 	ZonePools = {
 		{ Slime = 5, Bat = 2, Spider = 1 },
@@ -764,7 +764,7 @@ Config.Field = {
 		Enum.Material.Snow, Enum.Material.Basalt, Enum.Material.Slate, Enum.Material.Slate,
 	},
 	Boss = {
-		Name = "필드의 지배자",
+		Name = "Field Overlord",
 		Size = 18,
 		MaxHealth = 6000,
 		Speed = 8,
@@ -823,54 +823,54 @@ Config.WeaponTypes = {
 	Order = { "Pistol", "Smg", "Revolver", "Rifle", "Shotgun", "Flamer", "Cannon", "Sniper", "Rocket", "Rail" },
 	-- 초당 피해 계수 F = 한 발 x 탄 수(산탄은 60%만 맞는다고 계산) / 간격. 사거리가 긴 무기는 F 가 1.0 근처, 사거리가 짧은 무기는 F 가 1.5 근처
 	Pistol = {
-		Name = "권총", Form = "Basic", DamageMult = 1.0, Cooldown = 1, Range = 300, Pellets = 1, Spread = 0,
+		Name = "Pistol", Form = "Basic", DamageMult = 1.0, Cooldown = 1, Range = 300, Pellets = 1, Spread = 0,
 		ShotScale = 1, SpeedScale = 1, BarrelLength = 1, BarrelThickness = 1,
-		Trait = "가장 균형 잡힌 무기", Desc = "무엇 하나 모자라지 않는 기본기",
+		Trait = "The most balanced weapon", Desc = "Solid fundamentals with no weak points",
 	},
 	Smg = {
-		Name = "기관단총", Form = "Smg", DamageMult = 0.44, Cooldown = 0.4, Range = 190, Pellets = 1, Spread = 0,
+		Name = "SMG", Form = "Smg", DamageMult = 0.44, Cooldown = 0.4, Range = 190, Pellets = 1, Spread = 0,
 		ShotScale = 0.7, SpeedScale = 1.1, BarrelLength = 0.8, BarrelThickness = 0.9,
-		Trait = "아주 빠른 연사 · 짧은 사거리", Desc = "엄청난 연사 속도로 쏟아붓는 총",
+		Trait = "Very fast fire rate · Short range", Desc = "A gun that pours out shots at a blistering fire rate",
 	},
 	Revolver = {
-		Name = "리볼버", Form = "Steel", DamageMult = 1.12, Cooldown = 1.1, Range = 320, Pellets = 1, Spread = 0,
+		Name = "Revolver", Form = "Steel", DamageMult = 1.12, Cooldown = 1.1, Range = 320, Pellets = 1, Spread = 0,
 		ShotScale = 1.15, SpeedScale = 1.1, CritBonus = 0.1, BarrelLength = 0.9, BarrelThickness = 1.2,
-		Trait = "묵직한 한 방 · 치명타 +10%", Desc = "느리지만 묵직한 한 방",
+		Trait = "Heavy hitter · Crit +10%", Desc = "Slow but hits hard",
 	},
 	Rifle = {
-		Name = "소총", Form = "Rifle", DamageMult = 0.62, Cooldown = 0.6, Range = 420, Pellets = 1, Spread = 0,
+		Name = "Rifle", Form = "Rifle", DamageMult = 0.62, Cooldown = 0.6, Range = 420, Pellets = 1, Spread = 0,
 		ShotScale = 0.9, SpeedScale = 1.4, CritBonus = 0.05, BarrelLength = 1.4, BarrelThickness = 0.9,
-		Trait = "빠른 연사 · 먼 사거리", Desc = "멀리까지 정확하게 이어지는 연사",
+		Trait = "Fast fire rate · Long range", Desc = "Accurate sustained fire at long range",
 	},
 	Shotgun = {
-		Name = "샷건", Form = "Basic", DamageMult = 0.5, Cooldown = 1.2, Range = 80, Pellets = 6, Spread = 9,
+		Name = "Shotgun", Form = "Basic", DamageMult = 0.5, Cooldown = 1.2, Range = 80, Pellets = 6, Spread = 9,
 		ShotScale = 0.55, SpeedScale = 1, BarrelLength = 0.75, BarrelThickness = 1.5,
-		Trait = "초근접 폭딜 · 사거리 매우 짧음", Desc = "6발이 부채꼴로 퍼지는 산탄 (멀수록 덜 맞아요)",
+		Trait = "Point-blank burst damage · Very short range", Desc = "6 pellets fan out in a spread (fewer hit at range)",
 	},
 	Flamer = {
-		Name = "화염방사기", Form = "Flamer", DamageMult = 0.19, Cooldown = 0.3, Range = 45, Pellets = 4, Spread = 16,
+		Name = "Flamethrower", Form = "Flamer", DamageMult = 0.19, Cooldown = 0.3, Range = 45, Pellets = 4, Spread = 16,
 		ShotScale = 0.9, SpeedScale = 0.6, BarrelLength = 0.7, BarrelThickness = 1.4,
-		Trait = "최고 화력 · 사거리 가장 짧음", Desc = "불길을 부채꼴로 뿜는 무기 (붙어서 태워요)",
+		Trait = "Highest firepower · Shortest range", Desc = "Sprays flames in a fan (get up close and burn them)",
 	},
 	Cannon = {
-		Name = "플라즈마 캐논", Form = "Cannon", DamageMult = 1.5, Cooldown = 1.3, Range = 360, Pellets = 1, Spread = 0, Splash = 7,
+		Name = "Plasma Cannon", Form = "Cannon", DamageMult = 1.5, Cooldown = 1.3, Range = 360, Pellets = 1, Spread = 0, Splash = 7,
 		ShotScale = 1.5, SpeedScale = 0.8, BarrelLength = 1.1, BarrelThickness = 1.8,
-		Trait = "작은 폭발 · 느린 탄", Desc = "큼직한 플라즈마 탄, 맞은 곳 주변에 작은 폭발 (범위 7)",
+		Trait = "Small explosion · Slow shots", Desc = "Big plasma shots that cause a small explosion around the impact (radius 7)",
 	},
 	Sniper = {
-		Name = "저격총", Form = "Basic", DamageMult = 1.6, Cooldown = 1.6, Range = 650, Pellets = 1, Spread = 0,
+		Name = "Sniper Rifle", Form = "Basic", DamageMult = 1.6, Cooldown = 1.6, Range = 650, Pellets = 1, Spread = 0,
 		ShotScale = 1.4, SpeedScale = 2.4, CritBonus = 0.25, BarrelLength = 1.9, BarrelThickness = 0.7,
-		Trait = "먼 사거리 · 치명타 +25%", Desc = "느리지만 한 방이 강력",
+		Trait = "Long range · Crit +25%", Desc = "Slow but each shot is powerful",
 	},
 	Rocket = {
-		Name = "로켓 런처", Form = "Rocket", DamageMult = 1.7, Cooldown = 1.5, Range = 340, Pellets = 1, Spread = 0, Splash = 12,
+		Name = "Rocket Launcher", Form = "Rocket", DamageMult = 1.7, Cooldown = 1.5, Range = 340, Pellets = 1, Spread = 0, Splash = 12,
 		ShotScale = 1.8, SpeedScale = 0.55, BarrelLength = 1.3, BarrelThickness = 1.6,
-		Trait = "넓은 폭발 · 몰이 사냥", Desc = "맞은 곳이 폭발해서 주변 적에게도 피해 (범위 12)",
+		Trait = "Wide explosion · Crowd clearing", Desc = "Explodes on impact, damaging nearby enemies too (radius 12)",
 	},
 	Rail = {
-		Name = "레일건", Form = "Rail", DamageMult = 1.45, Cooldown = 1.4, Range = 700, Pellets = 1, Spread = 0, Pierce = 2,
+		Name = "Railgun", Form = "Rail", DamageMult = 1.45, Cooldown = 1.4, Range = 700, Pellets = 1, Spread = 0, Pierce = 2,
 		ShotScale = 1.2, SpeedScale = 3, BarrelLength = 1.6, BarrelThickness = 0.8,
-		Trait = "적 3마리 관통 · 가장 먼 사거리", Desc = "일직선으로 적을 3마리까지 관통하는 초고속 탄",
+		Trait = "Pierces 3 enemies · Longest range", Desc = "Ultra-fast shot that pierces up to 3 enemies in a straight line",
 	},
 }
 
@@ -953,7 +953,7 @@ end
 
 function Config.GetEraName(era)
 	local data = ERAS[era]
-	return data and (data.Prefix .. " 시대") or ""
+	return data and (data.Prefix .. " Era") or ""
 end
 
 -- 무기 이름: 형 이름만 (접두사 없음). 시대는 따로 표시한다.
@@ -967,9 +967,9 @@ end
 ------------------------------------------------------------
 Config.Dungeon.Difficulties = {
 	Order = { "Easy", "Normal", "Hard" },
-	Easy = { Name = "쉬움", PowerMult = 0.6, KeyTier = 1, HealthMult = 0.7, DamageMult = 0.7, GoldMult = 0.8, Tickets = 2, KeyCost = 1, LevelOffset = -2, Color = Color3.fromRGB(120, 220, 130) },
-	Normal = { Name = "보통", PowerMult = 1, KeyTier = 2, HealthMult = 1, DamageMult = 1, GoldMult = 1, Tickets = 3, KeyCost = 2, LevelOffset = 0, Color = Color3.fromRGB(255, 220, 110) },
-	Hard = { Name = "어려움", PowerMult = 2.2, KeyTier = 3, HealthMult = 1.8, DamageMult = 1.5, GoldMult = 2, Tickets = 5, KeyCost = 3, LevelOffset = 4, Color = Color3.fromRGB(255, 100, 100) },
+	Easy = { Name = "Easy", PowerMult = 0.6, KeyTier = 1, HealthMult = 0.7, DamageMult = 0.7, GoldMult = 0.8, Tickets = 2, KeyCost = 1, LevelOffset = -2, Color = Color3.fromRGB(120, 220, 130) },
+	Normal = { Name = "Normal", PowerMult = 1, KeyTier = 2, HealthMult = 1, DamageMult = 1, GoldMult = 1, Tickets = 3, KeyCost = 2, LevelOffset = 0, Color = Color3.fromRGB(255, 220, 110) },
+	Hard = { Name = "Hard", PowerMult = 2.2, KeyTier = 3, HealthMult = 1.8, DamageMult = 1.5, GoldMult = 2, Tickets = 5, KeyCost = 3, LevelOffset = 4, Color = Color3.fromRGB(255, 100, 100) },
 }
 
 -- 던전 경험치 배율: 골드 배율(유형 x 난이도 = 최대 5~10배)과 따로 정한다. 예전에는 골드 배율을 경험치에도 그대로 곱해서 어려운 던전에서 필드의 약 10배 속도로 레벨이 올랐다.
@@ -984,47 +984,47 @@ end
 Config.Dungeon.Types = {
 	Order = { "Cave", "Ice", "Fire" },
 	Cave = {
-		Name = "고블린 동굴", Desc = "🐀 떼거지! 약하지만 엄청 많이 몰려오고, 고블린 왕은 부하를 끊임없이 불러내요 (입문용)", Theme = { Health = 0.8, Damage = 0.9, Speed = 1.0, Spawn = 1.35, Burst = 1.3 }, Waves = 5, LevelOffset = 0, GoldMult = 1, RecommendedPower = 700,
+		Name = "Goblin Cave", Desc = "🐀 Swarm! Weak but overwhelming in number, and the Goblin King keeps summoning minions (beginner)", Theme = { Health = 0.8, Damage = 0.9, Speed = 1.0, Spawn = 1.35, Burst = 1.3 }, Waves = 5, LevelOffset = 0, GoldMult = 1, RecommendedPower = 700,
 		MonsterColor = Color3.fromRGB(110, 160, 70),
 		Floor = { Color = Color3.fromRGB(70, 60, 50), Material = Enum.Material.Slate },
 		Wall = { Color = Color3.fromRGB(55, 45, 40), Material = Enum.Material.Brick },
 		Torch = Color3.fromRGB(255, 150, 70),
 		Terrain = { Ground = Enum.Material.Mud, Mountain = Enum.Material.Rock, Accent = Enum.Material.Slate },
 		MonsterPool = { Slime = 4, Bat = 3, Spider = 3, Imp = 2, Spitter = 1, Healer = 1 },
-		Boss = { Name = "고블린 왕", Color = Color3.fromRGB(70, 130, 50), HealthMult = 1, DamageMult = 1, Weights = { Fan = 1.5, Slam = 2, Summon = 3, SideAdds = 3, Lanes = 1, Rush = 3.5, CoinRain = 3 } }, -- 고블린 왕: 돌진 / 금화 폭격 / 부하 소환
+		Boss = { Name = "Goblin King", Color = Color3.fromRGB(70, 130, 50), HealthMult = 1, DamageMult = 1, Weights = { Fan = 1.5, Slam = 2, Summon = 3, SideAdds = 3, Lanes = 1, Rush = 3.5, CoinRain = 3 } }, -- 고블린 왕: 돌진 / 금화 폭격 / 부하 소환
 	},
 	Ice = {
-		Name = "얼음 성채", Desc = "❄ 탄막 지옥! 멀리서 쏘는 적이 많고, 서리 군주는 나선 / 전방위 탄막을 쏟아내요 (중급)", Theme = { Health = 1.0, Damage = 1.2, Speed = 0.9, Spawn = 0.9, Burst = 1.0 }, Waves = 6, LevelOffset = 6, GoldMult = 1.6, RecommendedPower = 2000,
+		Name = "Ice Fortress", Desc = "❄ Bullet hell! Many enemies shoot from afar, and the Frost Lord unleashes spiral / all-direction barrages (intermediate)", Theme = { Health = 1.0, Damage = 1.2, Speed = 0.9, Spawn = 0.9, Burst = 1.0 }, Waves = 6, LevelOffset = 6, GoldMult = 1.6, RecommendedPower = 2000,
 		MonsterColor = Color3.fromRGB(110, 200, 240),
 		Floor = { Color = Color3.fromRGB(112, 140, 172), Material = Enum.Material.Slate }, -- (너무 하얗고 쨍해서 눈부시던 것을 어두운 청회색으로)
 		Wall = { Color = Color3.fromRGB(78, 106, 146), Material = Enum.Material.Glacier },
 		Torch = Color3.fromRGB(120, 200, 255),
 		Terrain = { Ground = Enum.Material.Slate, Mountain = Enum.Material.Glacier, Accent = Enum.Material.Slate },
 		MonsterPool = { Spitter = 3, Mage = 4, Turret = 2, Wisp = 3, Golem = 1, Healer = 2 },
-		Boss = { Name = "서리 군주", Color = Color3.fromRGB(90, 170, 240), HealthMult = 1.6, DamageMult = 1.2, Weights = { Fan = 1, Ring = 3, Spiral = 4, Sweep = 2, Slam = 0.5, SpikeLines = 4 } }, -- 서리 군주: 탄막 / 얼음 가시 줄기
+		Boss = { Name = "Frost Lord", Color = Color3.fromRGB(90, 170, 240), HealthMult = 1.6, DamageMult = 1.2, Weights = { Fan = 1, Ring = 3, Spiral = 4, Sweep = 2, Slam = 0.5, SpikeLines = 4 } }, -- 서리 군주: 탄막 / 얼음 가시 줄기
 	},
 	Fire = {
-		Name = "화염 신전", Desc = "🔥 돌진과 폭발! 달려드는 적이 단단하고 빠르고, 화염의 군주는 메테오와 충격파를 퍼부어요 (고급)", Theme = { Health = 1.25, Damage = 1.0, Speed = 1.15, Spawn = 1.0, Burst = 1.0 }, Waves = 7, LevelOffset = 12, GoldMult = 2.5, RecommendedPower = 4500,
+		Name = "Flame Temple", Desc = "🔥 Charges and explosions! Charging enemies are tough and fast, and the Flame Lord rains down meteors and shockwaves (advanced)", Theme = { Health = 1.25, Damage = 1.0, Speed = 1.15, Spawn = 1.0, Burst = 1.0 }, Waves = 7, LevelOffset = 12, GoldMult = 2.5, RecommendedPower = 4500,
 		MonsterColor = Color3.fromRGB(240, 100, 50),
 		Floor = { Color = Color3.fromRGB(60, 35, 35), Material = Enum.Material.Basalt },
 		Wall = { Color = Color3.fromRGB(90, 40, 30), Material = Enum.Material.CrackedLava },
 		Torch = Color3.fromRGB(255, 90, 40),
 		Terrain = { Ground = Enum.Material.Basalt, Mountain = Enum.Material.Slate, Accent = Enum.Material.CrackedLava },
 		MonsterPool = { Charger = 4, Bomber = 4, Imp = 2, Golem = 2, Spider = 1, Totem = 1, Healer = 1 },
-		Boss = { Name = "화염의 군주", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Meteor = 3, Slam = 2, Lanes = 3, Sweep = 2, Dive = 4, EmberFall = 3.5 } }, -- 화염 군주: 급강하 / 불씨 폭격 / 화염 줄기
+		Boss = { Name = "Flame Lord", Color = Color3.fromRGB(230, 70, 30), HealthMult = 2.4, DamageMult = 1.5, Weights = { Meteor = 3, Slam = 2, Lanes = 3, Sweep = 2, Dive = 4, EmberFall = 3.5 } }, -- 화염 군주: 급강하 / 불씨 폭격 / 화염 줄기
 	},
 }
 
 -- 심연 도전(점수 도전): 90초 동안 버티며 점수를 쌓는다. 최고 점수가 "소탕" 보상의 한계를 정한다 (방치 + 손맛)
 Config.Dungeon.Types.Rift = {
-	Name = "심연 도전", Desc = "90초 점수 도전! 처치 + 콤보 + 아슬아슬한 회피로 점수를 쌓아요", Waves = 0, Endless = true, TimeLimit = 90, LevelOffset = 4, GoldMult = 1, RecommendedPower = 0,
+	Name = "Abyss Challenge", Desc = "90-second score challenge! Rack up points with kills + combos + close dodges", Waves = 0, Endless = true, TimeLimit = 90, LevelOffset = 4, GoldMult = 1, RecommendedPower = 0,
 	MonsterColor = Color3.fromRGB(255, 80, 150),
 	Floor = { Color = Color3.fromRGB(46, 30, 66), Material = Enum.Material.Slate },
 	Wall = { Color = Color3.fromRGB(80, 40, 100), Material = Enum.Material.Slate },
 	Torch = Color3.fromRGB(255, 80, 150),
 	Terrain = { Ground = Enum.Material.Slate, Mountain = Enum.Material.Basalt, Accent = Enum.Material.Glacier },
 	MonsterPool = { Slime = 2, Spitter = 2, Bat = 2, Mage = 2, Golem = 1, Charger = 2, Bomber = 2, Spider = 2, Imp = 2, Turret = 1, Wisp = 2, Totem = 1 },
-	Boss = { Name = "심연의 문지기", Color = Color3.fromRGB(255, 80, 150), HealthMult = 1, DamageMult = 1, Weights = { Fan = 1, Ring = 1, Spiral = 1, Meteor = 1, Slam = 2, Summon = 2, Lanes = 2, Sweep = 2, SideAdds = 1.5 } },
+	Boss = { Name = "Abyss Gatekeeper", Color = Color3.fromRGB(255, 80, 150), HealthMult = 1, DamageMult = 1, Weights = { Fan = 1, Ring = 1, Spiral = 1, Meteor = 1, Slam = 2, Summon = 2, Lanes = 2, Sweep = 2, SideAdds = 1.5 } },
 }
 
 Config.Rift = {
@@ -1036,12 +1036,12 @@ Config.Rift = {
 	WaveBonus = 100,      -- 웨이브 클리어 보너스 x 웨이브 번호
 	BossScore = 200,
 	Tiers = {             -- 점수 등급별 보상 (직접 도전의 보상 = 그 판의 등급 / 소탕 = 최고 점수 등급의 70%)
-		{ Min = 0,    Name = "브론즈",   Icon = "🥉", Gold = 200,   Tickets = 0, TimeSkip = 0 },
-		{ Min = 500,  Name = "실버",     Icon = "🥈", Gold = 600,   Tickets = 0, TimeSkip = 300 },
-		{ Min = 1200, Name = "골드",     Icon = "🥇", Gold = 1500,  Tickets = 1, TimeSkip = 600 },
-		{ Min = 2500, Name = "플래티넘", Icon = "💠", Gold = 3500,  Tickets = 2, TimeSkip = 900 },
-		{ Min = 5000, Name = "다이아",   Icon = "💎", Gold = 8000,  Tickets = 4, TimeSkip = 1800 },
-		{ Min = 9000, Name = "마스터",   Icon = "👑", Gold = 15000, Tickets = 6, TimeSkip = 3600 },
+		{ Min = 0,    Name = "Bronze",   Icon = "🥉", Gold = 200,   Tickets = 0, TimeSkip = 0 },
+		{ Min = 500,  Name = "Silver",     Icon = "🥈", Gold = 600,   Tickets = 0, TimeSkip = 300 },
+		{ Min = 1200, Name = "Gold",     Icon = "🥇", Gold = 1500,  Tickets = 1, TimeSkip = 600 },
+		{ Min = 2500, Name = "Platinum", Icon = "💠", Gold = 3500,  Tickets = 2, TimeSkip = 900 },
+		{ Min = 5000, Name = "Diamond",   Icon = "💎", Gold = 8000,  Tickets = 4, TimeSkip = 1800 },
+		{ Min = 9000, Name = "Master",   Icon = "👑", Gold = 15000, Tickets = 6, TimeSkip = 3600 },
 	},
 }
 -- 심연 깊이: 필드(이야기 / 8구역)를 모두 밀고 난 뒤에도 끝없이 이어지는 후반 목표.
@@ -1095,52 +1095,52 @@ Config.Dungeon.List = {
 Config.Quests = {
 	DailyCount = 4,   -- 하루에 나오는 퀘스트 수 (아래 Pool 에서 날짜마다 무작위 선택)
 	Pool = {
-		{ Id = "dummy",   Name = "허수아비 연습", Desc = "허수아비를 %d번 때리기",       Stat = "DummyHits",     Goal = 300, Reward = { Gold = 300 } },
-		{ Id = "field",   Name = "필드 사냥",     Desc = "필드 몬스터 %d마리 처치",       Stat = "FieldKills",    Goal = 30,  Reward = { Gold = 400, TimeSkip = 300 } },
-		{ Id = "elite",   Name = "엘리트 사냥꾼", Desc = "엘리트 몬스터 %d마리 처치",     Stat = "EliteKills",    Goal = 3,   Reward = { Tickets = 1 } },
-		{ Id = "dungeon", Name = "던전 도전",     Desc = "던전 %d번 클리어",              Stat = "DungeonClears", Goal = 1,   Reward = { Gold = 600, Tickets = 1, TimeSkip = 600 }, Always = true },
-		{ Id = "boss",    Name = "보스 사냥",     Desc = "보스 %d마리 처치",              Stat = "BossKills",     Goal = 1,   Reward = { Tickets = 2 } },
-		{ Id = "enhance", Name = "대장장이",      Desc = "강화에 %d번 성공하기",          Stat = "Enhances",      Goal = 3,   Reward = { Gold = 500 }, Always = true },
-		{ Id = "gacha",   Name = "운 시험",       Desc = "장비 뽑기를 %d번 하기",         Stat = "Rolls",         Goal = 2,   Reward = { Gold = 300 } },
-		{ Id = "goblin",  Name = "황금 사냥",     Desc = "황금 고블린 %d마리 처치",       Stat = "GoblinKills",   Goal = 1,   Reward = { Gold = 800, Tickets = 1 } },
-		{ Id = "skills",  Name = "스킬 연습",     Desc = "스킬을 %d번 사용하기",          Stat = "SkillUses",     Goal = 20,  Reward = { Gold = 400 } },
-		{ Id = "rift",    Name = "심연 도전",     Desc = "심연 도전(소탕 포함) %d번 하기", Stat = "RiftRuns",      Goal = 2,   Reward = { Gold = 700, TimeSkip = 600 } },
+		{ Id = "dummy",   Name = "Dummy Practice", Desc = "Hit the dummy %d times",       Stat = "DummyHits",     Goal = 300, Reward = { Gold = 300 } },
+		{ Id = "field",   Name = "Field Hunt",     Desc = "Defeat %d field monsters",       Stat = "FieldKills",    Goal = 30,  Reward = { Gold = 400, TimeSkip = 300 } },
+		{ Id = "elite",   Name = "Elite Hunter", Desc = "Defeat %d elite monsters",     Stat = "EliteKills",    Goal = 3,   Reward = { Tickets = 1 } },
+		{ Id = "dungeon", Name = "Dungeon Run",     Desc = "Clear %d dungeon(s)",              Stat = "DungeonClears", Goal = 1,   Reward = { Gold = 600, Tickets = 1, TimeSkip = 600 }, Always = true },
+		{ Id = "boss",    Name = "Boss Hunt",     Desc = "Defeat %d boss(es)",              Stat = "BossKills",     Goal = 1,   Reward = { Tickets = 2 } },
+		{ Id = "enhance", Name = "Blacksmith",      Desc = "Succeed at upgrading %d times",          Stat = "Enhances",      Goal = 3,   Reward = { Gold = 500 }, Always = true },
+		{ Id = "gacha",   Name = "Test Your Luck",       Desc = "Roll for gear %d times",         Stat = "Rolls",         Goal = 2,   Reward = { Gold = 300 } },
+		{ Id = "goblin",  Name = "Golden Hunt",     Desc = "Defeat %d Golden Goblin(s)",       Stat = "GoblinKills",   Goal = 1,   Reward = { Gold = 800, Tickets = 1 } },
+		{ Id = "skills",  Name = "Skill Practice",     Desc = "Use skills %d times",          Stat = "SkillUses",     Goal = 20,  Reward = { Gold = 400 } },
+		{ Id = "rift",    Name = "Abyss Challenge",     Desc = "Do the Abyss Challenge (sweeps included) %d times", Stat = "RiftRuns",      Goal = 2,   Reward = { Gold = 700, TimeSkip = 600 } },
 		-- 첫날 전용 (처음 접속한 날만 나온다): 스탯 / 펫이 있다는 걸 알려 주는 퀘스트
-		{ Id = "statpts", Name = "스탯 찍기",     Desc = "스탯 포인트 %d개 올리기 (T 키 / 스탯 버튼)", Stat = "StatPoints", Goal = 3, Reward = { Gold = 300 }, FirstDay = true },
-		{ Id = "petpeek", Name = "펫 구경",       Desc = "펫 창 열어 보기 (P 키 / 성장 > 펫)",       Stat = "PetPeek",    Goal = 1, Reward = { Gold = 300, Tickets = 1 }, FirstDay = true },
-		{ Id = "kills",   Name = "몬스터 청소",   Desc = "몬스터 %d마리 처치 (던전 포함)", Stat = "Kills",         Goal = 60,  Reward = { Gold = 500, TimeSkip = 300 } },
+		{ Id = "statpts", Name = "Allocate Stats",     Desc = "Spend %d stat points (T key / Stats button)", Stat = "StatPoints", Goal = 3, Reward = { Gold = 300 }, FirstDay = true },
+		{ Id = "petpeek", Name = "Meet Your Pet",       Desc = "Open the pet window (P key / Growth > Pet)",       Stat = "PetPeek",    Goal = 1, Reward = { Gold = 300, Tickets = 1 }, FirstDay = true },
+		{ Id = "kills",   Name = "Monster Cleanup",   Desc = "Defeat %d monsters (dungeons included)", Stat = "Kills",         Goal = 60,  Reward = { Gold = 500, TimeSkip = 300 } },
 	},
 }
 
 Config.Achievements = {
-	{ Id = "dummy100",   Name = "초보 사수",       Desc = "허수아비 %d회 타격",          Stat = "DummyHits",     Goal = 100,   Reward = { Gold = 200 },               Title = "초보 사수" },
-	{ Id = "dummy2000",  Name = "허수아비 학살자", Desc = "허수아비 %d회 타격",          Stat = "DummyHits",     Goal = 2000,  Reward = { Gold = 1500 },              Title = "허수아비 학살자" },
-	{ Id = "kills500",   Name = "사냥꾼",          Desc = "몬스터 %d마리 처치",          Stat = "Kills",         Goal = 500,   Reward = { Gold = 1500 },              Title = "사냥꾼" },
-	{ Id = "dungeon1",   Name = "첫 던전",         Desc = "던전 %d회 클리어",            Stat = "DungeonClears", Goal = 1,     Reward = { Gold = 500, Tickets = 1 },  Title = "던전 입문자" },
-	{ Id = "dungeon10",  Name = "던전 단골",       Desc = "던전 %d회 클리어",            Stat = "DungeonClears", Goal = 10,    Reward = { Tickets = 3 },              Title = "던전 단골" },
-	{ Id = "dungeon50",  Name = "던전 마스터",     Desc = "던전 %d회 클리어",            Stat = "DungeonClears", Goal = 50,    Reward = { Tickets = 10 },             Title = "던전 마스터" },
-	{ Id = "goblin1",    Name = "황금 사냥꾼",     Desc = "황금 고블린 %d마리 처치",     Stat = "GoblinKills",   Goal = 1,     Reward = { Gold = 1000 },              Title = "행운의 사냥꾼" },
-	{ Id = "goblin20",   Name = "황금 도둑",       Desc = "황금 고블린 %d마리 처치",     Stat = "GoblinKills",   Goal = 20,    Reward = { Tickets = 5 },              Title = "황금 도둑" },
-	{ Id = "skill200",   Name = "스킬 마스터",     Desc = "스킬 %d회 사용",              Stat = "SkillUses",     Goal = 200,   Reward = { Tickets = 3 },              Title = "스킬 마스터" },
-	{ Id = "rift2500",   Name = "심연의 도전자",   Desc = "심연 도전 %d점 달성",         Stat = "RiftBest",      Goal = 2500,  Reward = { Tickets = 4 },              Title = "심연의 도전자" },
-	{ Id = "rift9000",   Name = "한계 돌파자",     Desc = "심연 도전 %d점 달성",         Stat = "RiftBest",      Goal = 9000,  Reward = { Tickets = 12 },             Title = "한계 돌파자" },
-	{ Id = "riftdepth5",  Name = "심연 탐험가",     Desc = "심연 깊이 %d 돌파",           Stat = "RiftDepth",     Goal = 5,     Reward = { Tickets = 3 },              Title = "심연 탐험가" },
-	{ Id = "riftdepth15", Name = "심연 개척자",     Desc = "심연 깊이 %d 돌파",           Stat = "RiftDepth",     Goal = 15,    Reward = { Tickets = 10 },             Title = "심연 개척자" },
-	{ Id = "prestige1",  Name = "다시 태어난 자",   Desc = "환생 %d회",                    Stat = "Prestige",      Goal = 1,     Reward = { Tickets = 5 },              Title = "환생자" },
-	{ Id = "prestige5",  Name = "윤회의 달인",     Desc = "환생 %d회",                    Stat = "Prestige",      Goal = 5,     Reward = { Tickets = 15 },             Title = "윤회의 달인" },
-	{ Id = "boss10",     Name = "보스 헌터",       Desc = "보스 %d마리 처치",            Stat = "BossKills",     Goal = 10,    Reward = { Tickets = 5 },              Title = "보스 헌터" },
-	{ Id = "zone4",      Name = "탐험가",          Desc = "필드 %d구역 돌파",            Stat = "MaxZone",       Goal = 4,     Reward = { Gold = 1000 },              Title = "탐험가" },
-	{ Id = "zone8",      Name = "심연의 정복자",   Desc = "필드 %d구역 돌파",            Stat = "MaxZone",       Goal = 8,     Reward = { Tickets = 5 },              Title = "심연의 정복자" },
-	{ Id = "weapon10",   Name = "무기 수집가",     Desc = "무기 강화 %d단계 달성 (무기 약 10번째)", Stat = "WeaponLevel",   Goal = Config.Weapon.Tiers[10].MinLevel, Reward = { Gold = 2000 },              Title = "강화의 달인" },
-	{ Id = "weapon50",   Name = "전설을 쥔 자",    Desc = "무기 강화 %d단계 달성 (무기 약 50번째)", Stat = "WeaponLevel",   Goal = Config.Weapon.Tiers[50].MinLevel, Reward = { Tickets = 6 },              Title = "전설을 쥔 자" },
-	{ Id = "weapon15",   Name = "전설의 대장장이", Desc = "마지막 무기까지 강화 (%d단계)",       Stat = "WeaponLevel",   Goal = Config.Weapon.MaxLevel, Reward = { Tickets = 20 },             Title = "전설의 대장장이" },
-	{ Id = "legend",     Name = "행운아",          Desc = "전설 등급 장비 획득",         Stat = "BestRarity",    Goal = 4,     Reward = { Tickets = 3 },              Title = "행운아" },
-	{ Id = "myth",       Name = "신화의 주인",     Desc = "신화 등급 장비 획득",         Stat = "BestRarity",    Goal = 5,     Reward = { Tickets = 8 },              Title = "신화의 주인" },
-	{ Id = "level10",    Name = "성장하는 모험가", Desc = "캐릭터 레벨 %d 달성",         Stat = "Level",         Goal = 10,    Reward = { Gold = 1000 },              Title = "모험가" },
-	{ Id = "level25",    Name = "숙련된 전사",     Desc = "캐릭터 레벨 %d 달성",         Stat = "Level",         Goal = 25,    Reward = { Tickets = 3 },              Title = "숙련자" },
-	{ Id = "level50",    Name = "전설의 용사",     Desc = "캐릭터 레벨 %d 달성",         Stat = "Level",         Goal = 50,    Reward = { Tickets = 10 },             Title = "전설의 용사" },
-	{ Id = "power1000",  Name = "강자",            Desc = "전투력 %d 달성",              Stat = "Power",         Goal = 1000,  Reward = { Gold = 1500 },              Title = "강자" },
-	{ Id = "power10000", Name = "초월자",          Desc = "전투력 %d 달성",              Stat = "Power",         Goal = 10000, Reward = { Tickets = 10 },             Title = "초월자" },
+	{ Id = "dummy100",   Name = "Rookie Shooter",       Desc = "Hit the dummy %d times",          Stat = "DummyHits",     Goal = 100,   Reward = { Gold = 200 },               Title = "Rookie Shooter" },
+	{ Id = "dummy2000",  Name = "Dummy Slayer", Desc = "Hit the dummy %d times",          Stat = "DummyHits",     Goal = 2000,  Reward = { Gold = 1500 },              Title = "Dummy Slayer" },
+	{ Id = "kills500",   Name = "Hunter",          Desc = "Defeat %d monsters",          Stat = "Kills",         Goal = 500,   Reward = { Gold = 1500 },              Title = "Hunter" },
+	{ Id = "dungeon1",   Name = "First Dungeon",         Desc = "Clear %d dungeon(s)",            Stat = "DungeonClears", Goal = 1,     Reward = { Gold = 500, Tickets = 1 },  Title = "Dungeon Newbie" },
+	{ Id = "dungeon10",  Name = "Dungeon Regular",       Desc = "Clear %d dungeon(s)",            Stat = "DungeonClears", Goal = 10,    Reward = { Tickets = 3 },              Title = "Dungeon Regular" },
+	{ Id = "dungeon50",  Name = "Dungeon Master",     Desc = "Clear %d dungeon(s)",            Stat = "DungeonClears", Goal = 50,    Reward = { Tickets = 10 },             Title = "Dungeon Master" },
+	{ Id = "goblin1",    Name = "Golden Hunter",     Desc = "Defeat %d Golden Goblin(s)",     Stat = "GoblinKills",   Goal = 1,     Reward = { Gold = 1000 },              Title = "Lucky Hunter" },
+	{ Id = "goblin20",   Name = "Golden Thief",       Desc = "Defeat %d Golden Goblin(s)",     Stat = "GoblinKills",   Goal = 20,    Reward = { Tickets = 5 },              Title = "Golden Thief" },
+	{ Id = "skill200",   Name = "Skill Master",     Desc = "Use skills %d times",              Stat = "SkillUses",     Goal = 200,   Reward = { Tickets = 3 },              Title = "Skill Master" },
+	{ Id = "rift2500",   Name = "Abyss Challenger",   Desc = "Score %d in the Abyss Challenge",         Stat = "RiftBest",      Goal = 2500,  Reward = { Tickets = 4 },              Title = "Abyss Challenger" },
+	{ Id = "rift9000",   Name = "Limit Breaker",     Desc = "Score %d in the Abyss Challenge",         Stat = "RiftBest",      Goal = 9000,  Reward = { Tickets = 12 },             Title = "Limit Breaker" },
+	{ Id = "riftdepth5",  Name = "Abyss Explorer",     Desc = "Reach Abyss depth %d",           Stat = "RiftDepth",     Goal = 5,     Reward = { Tickets = 3 },              Title = "Abyss Explorer" },
+	{ Id = "riftdepth15", Name = "Abyss Pioneer",     Desc = "Reach Abyss depth %d",           Stat = "RiftDepth",     Goal = 15,    Reward = { Tickets = 10 },             Title = "Abyss Pioneer" },
+	{ Id = "prestige1",  Name = "The Reborn",   Desc = "Rebirth x%d",                    Stat = "Prestige",      Goal = 1,     Reward = { Tickets = 5 },              Title = "Reborn" },
+	{ Id = "prestige5",  Name = "Samsara Master",     Desc = "Rebirth x%d",                    Stat = "Prestige",      Goal = 5,     Reward = { Tickets = 15 },             Title = "Samsara Master" },
+	{ Id = "boss10",     Name = "Boss Hunter",       Desc = "Defeat %d boss(es)",            Stat = "BossKills",     Goal = 10,    Reward = { Tickets = 5 },              Title = "Boss Hunter" },
+	{ Id = "zone4",      Name = "Explorer",          Desc = "Clear field zone %d",            Stat = "MaxZone",       Goal = 4,     Reward = { Gold = 1000 },              Title = "Explorer" },
+	{ Id = "zone8",      Name = "Abyss Conqueror",   Desc = "Clear field zone %d",            Stat = "MaxZone",       Goal = 8,     Reward = { Tickets = 5 },              Title = "Abyss Conqueror" },
+	{ Id = "weapon10",   Name = "Weapon Collector",     Desc = "Reach weapon upgrade level %d (about the 10th weapon)", Stat = "WeaponLevel",   Goal = Config.Weapon.Tiers[10].MinLevel, Reward = { Gold = 2000 },              Title = "Upgrade Master" },
+	{ Id = "weapon50",   Name = "Legend Wielder",    Desc = "Reach weapon upgrade level %d (about the 50th weapon)", Stat = "WeaponLevel",   Goal = Config.Weapon.Tiers[50].MinLevel, Reward = { Tickets = 6 },              Title = "Legend Wielder" },
+	{ Id = "weapon15",   Name = "Legendary Blacksmith", Desc = "Upgrade all the way to the last weapon (level %d)",       Stat = "WeaponLevel",   Goal = Config.Weapon.MaxLevel, Reward = { Tickets = 20 },             Title = "Legendary Blacksmith" },
+	{ Id = "legend",     Name = "Lucky One",          Desc = "Obtain Legendary gear",         Stat = "BestRarity",    Goal = 4,     Reward = { Tickets = 3 },              Title = "Lucky One" },
+	{ Id = "myth",       Name = "Mythic Master",     Desc = "Obtain Mythic gear",         Stat = "BestRarity",    Goal = 5,     Reward = { Tickets = 8 },              Title = "Mythic Master" },
+	{ Id = "level10",    Name = "Growing Adventurer", Desc = "Reach character level %d",         Stat = "Level",         Goal = 10,    Reward = { Gold = 1000 },              Title = "Adventurer" },
+	{ Id = "level25",    Name = "Skilled Warrior",     Desc = "Reach character level %d",         Stat = "Level",         Goal = 25,    Reward = { Tickets = 3 },              Title = "Veteran" },
+	{ Id = "level50",    Name = "Legendary Hero",     Desc = "Reach character level %d",         Stat = "Level",         Goal = 50,    Reward = { Tickets = 10 },             Title = "Legendary Hero" },
+	{ Id = "power1000",  Name = "Powerhouse",            Desc = "Reach %d Power",              Stat = "Power",         Goal = 1000,  Reward = { Gold = 1500 },              Title = "Powerhouse" },
+	{ Id = "power10000", Name = "Transcendent",          Desc = "Reach %d Power",              Stat = "Power",         Goal = 10000, Reward = { Tickets = 10 },             Title = "Transcendent" },
 }
 
 ------------------------------------------------------------
@@ -1161,11 +1161,11 @@ Config.Level = {
 Config.LevelStats = {
 	PointsPerLevel = 1,
 	Order = { "Move", "Range", "Double", "Haste", "CritDmg" },
-	Move  = { Name = "이동 속도",   Icon = "👟", Per = 0.3,  Desc = "포인트당 이동 속도 +0.3" },
-	Range = { Name = "사정거리",    Icon = "🎯", Per = 0.04, Desc = "포인트당 무기 사정거리 +4%" },
-	Double = { Name = "더블샷", Icon = "🔫", Per = 0.007, Desc = "포인트당 +0.7% 확률로 한 발 더 \"따-땅\" 연달아 나감", Note = "더블샷: 쏠 때마다 확률로 같은 사격이 0.09초 뒤에 한 번 더 나가요 (위력은 같아요). 49포인트를 모두 넣으면 약 34%." },
-	Haste = { Name = "스킬 쿨타임", Icon = "⏱", Per = 0.01, Desc = "포인트당 스킬 쿨타임 -1%" },
-	CritDmg = { Name = "치명 피해", Icon = "💥", Per = 0.015, Desc = "포인트당 치명타 피해 +1.5%p (기본 2배)", Note = "치명 피해: 치명타가 터질 때 더 아프게 박혀요. 49포인트를 모두 넣으면 치명타가 2배 -> 약 2.7배. 치명타 확률 장비 / 펫 / 더블샷과 같이 쓰면 큰 한 방 빌드가 돼요." },
+	Move  = { Name = "Move Speed",   Icon = "👟", Per = 0.3,  Desc = "Move speed +0.3 per point" },
+	Range = { Name = "Range",    Icon = "🎯", Per = 0.04, Desc = "Weapon range +4% per point" },
+	Double = { Name = "Double Shot", Icon = "🔫", Per = 0.007, Desc = "+0.7% chance per point to fire a second shot right after the first (\"bang-bang\")", Note = "Double Shot: each time you shoot, there's a chance the same shot fires again 0.09s later (same power). With all 49 points, about 34%." },
+	Haste = { Name = "Skill Cooldown", Icon = "⏱", Per = 0.01, Desc = "Skill cooldown -1% per point" },
+	CritDmg = { Name = "Crit Damage", Icon = "💥", Per = 0.015, Desc = "Crit damage +1.5%p per point (base 2x)", Note = "Crit Damage: crits hit even harder. With all 49 points, crits go from 2x to about 2.7x. Combine with crit chance gear / pet / Double Shot for a big-hit build." },
 	-- 스탯 하나에 넣을 수 있는 최대 포인트 (포인트가 199개로 늘어도 한 스탯이 한계를 넘지 않게: 더블샷 확률 100% 초과 같은 일 방지)
 	Cap = { Move = 40, Range = 50, Double = 60, Haste = 50, CritDmg = 60 },
 	-- 최대 레벨(200)을 찍은 뒤에는 골드로 포인트를 더 살 수 있다 (골드 사용처). n 번째(0부터) 포인트 비용 = Base x Growth^n. 살 수 있는 총 개수는 아래 MaxGoldPoints.
@@ -1191,11 +1191,11 @@ function Config.LevelStatValue(key, points)
 end
 function Config.LevelStatText(key, points)
 	local value = Config.LevelStatValue(key, points)
-	if key == "Move" then return string.format("이동 속도 +%.1f", value)
-	elseif key == "Range" then return string.format("사정거리 +%d%%", math.floor(value * 100 + 0.5))
-	elseif key == "Double" then return string.format("더블샷 확률 %.1f%%", value * 100)
-	elseif key == "Haste" then return string.format("쿨타임 -%d%%", math.floor(value * 100 + 0.5))
-	else return string.format("치명타 피해 +%d%%p", math.floor(value * 100 + 0.5)) end
+	if key == "Move" then return string.format("Move Speed +%.1f", value)
+	elseif key == "Range" then return string.format("Range +%d%%", math.floor(value * 100 + 0.5))
+	elseif key == "Double" then return string.format("Double Shot chance %.1f%%", value * 100)
+	elseif key == "Haste" then return string.format("Cooldown -%d%%", math.floor(value * 100 + 0.5))
+	else return string.format("Crit damage +%d%%p", math.floor(value * 100 + 0.5)) end
 end
 -- 무기 사정거리 (레벨 스탯 반영)
 function Config.GetRange(player, weaponType)
@@ -1245,15 +1245,15 @@ Config.Inventory = {
 	RerollEssence = { 5, 12, 30, 80, 200 },      -- 등급별 옵션 재굴림 비용(에센스)
 	AffixCount = { 0, 1, 2, 3, 4 },              -- 등급별 랜덤 옵션 개수
 	AffixRarityScale = { 1, 1.3, 1.7, 2.2, 3.0 },-- 등급별 옵션 수치 배율
-	AutoScrapNames = { [0] = "꺼짐", "일반 이하", "희귀 이하", "영웅 이하", "스마트(추천)" },
+	AutoScrapNames = { [0] = "Off", "Common or lower", "Rare or lower", "Epic or lower", "Smart (Recommended)" },
 	AffixOrder = { "Health", "Crit", "Speed", "Damage", "Xp", "Luck" },
 	Affixes = {
-		Health = { Name = "최대 체력", Base = 30 },
-		Crit = { Name = "치명타 확률", Base = 0.012, Percent = true },
-		Speed = { Name = "이동 속도", Base = 0.4 },
-		Damage = { Name = "공격력", Base = 0.03, Percent = true },
-		Xp = { Name = "경험치 획득", Base = 0.04, Percent = true },
-		Luck = { Name = "행운 (드롭 등급)", Base = 0.05, Percent = true },
+		Health = { Name = "Max HP", Base = 30 },
+		Crit = { Name = "Crit Chance", Base = 0.012, Percent = true },
+		Speed = { Name = "Move Speed", Base = 0.4 },
+		Damage = { Name = "Attack", Base = 0.03, Percent = true },
+		Xp = { Name = "XP Gain", Base = 0.04, Percent = true },
+		Luck = { Name = "Luck (Drop Rarity)", Base = 0.05, Percent = true },
 	},
 }
 
@@ -1262,13 +1262,13 @@ Config.Inventory = {
 Config.Sets = {
 	Order = { "Hunter", "Guardian", "Gale", "Sage" },
 	SetChance = { [3] = 0.30, [4] = 0.45, [5] = 0.60 }, -- 등급별로 세트가 붙을 확률
-	Hunter = { Name = "사냥꾼의 증표", Color = Color3.fromRGB(255, 170, 70),
+	Hunter = { Name = "Hunter's Emblem", Color = Color3.fromRGB(255, 170, 70),
 		Bonuses = { [2] = { { Stat = "Damage", Value = 0.08 } }, [3] = { { Stat = "Crit", Value = 0.10 }, { Stat = "Damage", Value = 0.07 } } } },
-	Guardian = { Name = "수호자의 맹세", Color = Color3.fromRGB(110, 190, 255),
+	Guardian = { Name = "Guardian's Oath", Color = Color3.fromRGB(110, 190, 255),
 		Bonuses = { [2] = { { Stat = "Health", Value = 120 } }, [3] = { { Stat = "Health", Value = 250 }, { Stat = "Haste", Value = 0.10 } } } },
-	Gale = { Name = "질풍의 바람", Color = Color3.fromRGB(120, 255, 170),
+	Gale = { Name = "Gale Wind", Color = Color3.fromRGB(120, 255, 170),
 		Bonuses = { [2] = { { Stat = "Speed", Value = 2 } }, [3] = { { Stat = "Speed", Value = 3 }, { Stat = "Haste", Value = 0.15 } } } },
-	Sage = { Name = "현자의 지혜", Color = Color3.fromRGB(200, 140, 255),
+	Sage = { Name = "Sage's Wisdom", Color = Color3.fromRGB(200, 140, 255),
 		Bonuses = { [2] = { { Stat = "Xp", Value = 0.15 } }, [3] = { { Stat = "Xp", Value = 0.25 }, { Stat = "Luck", Value = 0.25 } } } },
 }
 
@@ -1300,42 +1300,42 @@ end
 -- 도감: 몬스터 / 구역 군주 / 세트 장비 설명 (몬스터 이름은 MonsterTypes.Defs 와 같다)
 Config.Codex = {
 	Monsters = {
-		Slime = { Name = "슬라임", Icon = "🟢", Desc = "말랑한 물방울. 천천히 다가와 한 발씩 쏜다." },
-		Spitter = { Name = "가시 독충", Icon = "🐛", Desc = "멀리서 가시를 뱉는다. 거리를 유지하며 쏜다." },
-		Bat = { Name = "박쥐", Icon = "🦇", Desc = "빠르게 날아다니며 초승달 탄을 던진다." },
-		Mage = { Name = "마법사 유령", Icon = "👻", Desc = "멀리서 쫓아오는 유도탄을 쏜다. 천천히 쏘지만 끈질기다." },
-		Golem = { Name = "바위 골렘", Icon = "🗿", Desc = "느리지만 단단하고, 내려치면 아프다." },
-		Charger = { Name = "돌진 멧돼지", Icon = "🐗", Desc = "엄니를 세우고 돌진한다. 돌진 전 신호를 보고 피하자." },
-		Bomber = { Name = "폭탄병", Icon = "💣", Desc = "달려와서 폭발한다. 가까이 오기 전에 잡자." },
-		Imp = { Name = "저격 임프", Icon = "😈", Desc = "아주 먼 거리에서 빠른 창을 던진다. 갈라지는 탄도 있다." },
-		Knight = { Name = "방패 기사", Icon = "🛡", Desc = "정면 공격은 거의 막는다. 옆이나 뒤에서 쏘자." },
-		Turret = { Name = "마법 포탑", Icon = "🔫", Desc = "움직이지 않고 광선을 쏜다. 사거리가 길다." },
-		Spider = { Name = "독거미", Icon = "🕷", Desc = "빠르게 달려들며 독침을 연달아 쏜다." },
-		Wisp = { Name = "도깨비불", Icon = "🔥", Desc = "빠르게 떠다니며 고리 모양 탄을 낸다." },
-		Healer = { Name = "치유 사제", Icon = "💚", Desc = "주변 몬스터를 치료한다. 먼저 잡는 것이 좋다." },
-		Totem = { Name = "저주 토템", Icon = "🗿", Desc = "제자리에서 사방으로 고리 탄을 쏜다." },
+		Slime = { Name = "Slime", Icon = "🟢", Desc = "A squishy droplet. Approaches slowly and shoots one shot at a time." },
+		Spitter = { Name = "Spiny Venomworm", Icon = "🐛", Desc = "Spits thorns from afar. Keeps its distance while shooting." },
+		Bat = { Name = "Bat", Icon = "🦇", Desc = "Flies around quickly, throwing crescent-moon shots." },
+		Mage = { Name = "Mage Ghost", Icon = "👻", Desc = "Fires homing shots from afar. Shoots slowly but relentlessly." },
+		Golem = { Name = "Rock Golem", Icon = "🗿", Desc = "Slow but tough, and its smash really hurts." },
+		Charger = { Name = "Charging Boar", Icon = "🐗", Desc = "Lowers its tusks and charges. Watch for the tell before the charge and dodge!" },
+		Bomber = { Name = "Bomber", Icon = "💣", Desc = "Runs up and explodes. Take it out before it gets close." },
+		Imp = { Name = "Sniper Imp", Icon = "😈", Desc = "Hurls fast spears from very far away. Some shots split apart." },
+		Knight = { Name = "Shield Knight", Icon = "🛡", Desc = "Blocks almost all frontal attacks. Shoot from the side or behind." },
+		Turret = { Name = "Magic Turret", Icon = "🔫", Desc = "Stays put and fires beams. Long range." },
+		Spider = { Name = "Venom Spider", Icon = "🕷", Desc = "Rushes in fast, firing poison stingers in succession." },
+		Wisp = { Name = "Will-o'-Wisp", Icon = "🔥", Desc = "Floats around quickly, emitting ring-shaped shots." },
+		Healer = { Name = "Healing Priest", Icon = "💚", Desc = "Heals nearby monsters. Best to take it out first." },
+		Totem = { Name = "Curse Totem", Icon = "🗿", Desc = "Fires ring shots in all directions from a fixed spot." },
 	},
-	Bosses = { "덩굴 거인", "고목 사슴령", "외눈 바위 거인", "거대 전갈", "얼음 수정 군주", "용암 악마", "암흑 사신", "심연의 눈" },
+	Bosses = { "Vine Giant", "Ancient Stag Spirit", "One-Eyed Rock Giant", "Giant Scorpion", "Ice Crystal Lord", "Lava Demon", "Dark Reaper", "Eye of the Abyss" },
 }
 
 Config.Sets.ZoneKeys = {}
 do
 	local zoneSets = {
-		{ Name = "초원의 수호", Prefix = "초원", Color = Color3.fromRGB(130, 220, 110), Icon = "🌾",
+		{ Name = "Meadow's Guard", Prefix = "Meadow", Color = Color3.fromRGB(130, 220, 110), Icon = "🌾",
 			B2 = { { Stat = "Health", Value = 80 } }, B3 = { { Stat = "Health", Value = 150 }, { Stat = "Speed", Value = 1.5 } } },
-		{ Name = "숲의 축복", Prefix = "숲", Color = Color3.fromRGB(80, 200, 120), Icon = "🌲",
+		{ Name = "Forest's Blessing", Prefix = "Forest", Color = Color3.fromRGB(80, 200, 120), Icon = "🌲",
 			B2 = { { Stat = "Xp", Value = 0.10 } }, B3 = { { Stat = "Xp", Value = 0.18 }, { Stat = "Luck", Value = 0.15 } } },
-		{ Name = "폐허의 의지", Prefix = "폐허", Color = Color3.fromRGB(200, 170, 120), Icon = "🏚",
+		{ Name = "Will of the Ruins", Prefix = "Ruins", Color = Color3.fromRGB(200, 170, 120), Icon = "🏚",
 			B2 = { { Stat = "Damage", Value = 0.06 } }, B3 = { { Stat = "Damage", Value = 0.10 }, { Stat = "Health", Value = 150 } } },
-		{ Name = "사막의 태양", Prefix = "사막", Color = Color3.fromRGB(255, 210, 90), Icon = "🏜",
+		{ Name = "Desert Sun", Prefix = "Desert", Color = Color3.fromRGB(255, 210, 90), Icon = "🏜",
 			B2 = { { Stat = "Crit", Value = 0.06 } }, B3 = { { Stat = "Crit", Value = 0.10 }, { Stat = "Damage", Value = 0.06 } } },
-		{ Name = "서리의 숨결", Prefix = "서리", Color = Color3.fromRGB(150, 225, 255), Icon = "❄",
+		{ Name = "Frost's Breath", Prefix = "Frost", Color = Color3.fromRGB(150, 225, 255), Icon = "❄",
 			B2 = { { Stat = "Haste", Value = 0.08 } }, B3 = { { Stat = "Haste", Value = 0.12 }, { Stat = "Health", Value = 200 } } },
-		{ Name = "용암의 심장", Prefix = "용암", Color = Color3.fromRGB(255, 110, 50), Icon = "🌋",
+		{ Name = "Lava Heart", Prefix = "Lava", Color = Color3.fromRGB(255, 110, 50), Icon = "🌋",
 			B2 = { { Stat = "Damage", Value = 0.10 } }, B3 = { { Stat = "Damage", Value = 0.15 }, { Stat = "Crit", Value = 0.08 } } },
-		{ Name = "암흑의 서약", Prefix = "암흑", Color = Color3.fromRGB(180, 110, 255), Icon = "🦇",
+		{ Name = "Dark Pact", Prefix = "Dark", Color = Color3.fromRGB(180, 110, 255), Icon = "🦇",
 			B2 = { { Stat = "Luck", Value = 0.20 } }, B3 = { { Stat = "Luck", Value = 0.30 }, { Stat = "Damage", Value = 0.10 } } },
-		{ Name = "심연의 지배", Prefix = "심연", Color = Color3.fromRGB(255, 80, 140), Icon = "🌀",
+		{ Name = "Abyss Dominion", Prefix = "Abyss", Color = Color3.fromRGB(255, 80, 140), Icon = "🌀",
 			B2 = { { Stat = "Damage", Value = 0.15 } }, B3 = { { Stat = "Damage", Value = 0.22 }, { Stat = "Haste", Value = 0.15 }, { Stat = "Shot", Value = 1 } } },
 	}
 	for zone, def in ipairs(zoneSets) do
@@ -1358,13 +1358,13 @@ end
 Config.Uniques = {
 	Order = { "Split", "Chrono", "Slayer", "Fortune" },
 	Chance = 0.30,
-	Split = { Name = "분열의 총탄", Desc = "발사하는 탄이 +1발", Effects = { { Stat = "Shot", Value = 1 } } },
-	Chrono = { Name = "시간 왜곡", Desc = "스킬 쿨타임 -25%", Effects = { { Stat = "Haste", Value = 0.25 } } },
-	Slayer = { Name = "학살자", Desc = "공격력 +25%", Effects = { { Stat = "Damage", Value = 0.25 } } },
-	Fortune = { Name = "행운의 별", Desc = "행운 +50%, 경험치 +30%", Effects = { { Stat = "Luck", Value = 0.5 }, { Stat = "Xp", Value = 0.3 } } },
+	Split = { Name = "Splitting Bullets", Desc = "Fires +1 extra shot", Effects = { { Stat = "Shot", Value = 1 } } },
+	Chrono = { Name = "Time Warp", Desc = "Skill cooldown -25%", Effects = { { Stat = "Haste", Value = 0.25 } } },
+	Slayer = { Name = "Slaughterer", Desc = "Attack +25%", Effects = { { Stat = "Damage", Value = 0.25 } } },
+	Fortune = { Name = "Lucky Star", Desc = "Luck +50%, XP +30%", Effects = { { Stat = "Luck", Value = 0.5 }, { Stat = "Xp", Value = 0.3 } } },
 }
 
-Config.BonusNames = { Health = "최대 체력", Crit = "치명타 확률", Speed = "이동 속도", Damage = "공격력", Xp = "경험치", Luck = "행운", Haste = "스킬 쿨타임 감소", Shot = "탄 수" }
+Config.BonusNames = { Health = "Max HP", Crit = "Crit Chance", Speed = "Move Speed", Damage = "Attack", Xp = "XP", Luck = "Luck", Haste = "Skill Cooldown Reduction", Shot = "Shot Count" }
 function Config.FormatBonus(stat, value)
 	local name = Config.BonusNames[stat] or stat
 	if stat == "Health" then
@@ -1379,14 +1379,14 @@ end
 
 -- 스탯 설명 (인벤토리 / 정보 탭에서 "이게 뭔데?"를 풀어준다)
 Config.StatDesc = {
-	Health = { Name = "최대 체력", Desc = "버틸 수 있는 피해량. 높을수록 덜 죽어요" },
-	Crit = { Name = "치명타 확률", Desc = "공격이 치명타(피해 2배)로 터질 확률" },
-	Speed = { Name = "이동 속도", Desc = "걷고 달리는 속도" },
-	Damage = { Name = "공격력", Desc = "내 모든 공격(총·스킬)의 피해량이 늘어나요" },
-	Xp = { Name = "경험치 획득", Desc = "몬스터를 잡을 때 경험치를 더 받아 레벨업이 빨라져요" },
-	Luck = { Name = "행운", Desc = "필드 몬스터가 떨어뜨리는 장비가 높은 등급(영웅 이상)으로 나올 확률이 올라가요" },
-	Haste = { Name = "스킬 쿨타임 감소", Desc = "응급 치료 · 궁극기를 더 자주 쓸 수 있어요 (최대 60%)" },
-	Shot = { Name = "추가 탄", Desc = "한 번 쏠 때 나가는 탄이 늘어나요 (부채꼴)" },
+	Health = { Name = "Max HP", Desc = "How much damage you can take. Higher means fewer deaths" },
+	Crit = { Name = "Crit Chance", Desc = "Chance for an attack to crit (2x damage)" },
+	Speed = { Name = "Move Speed", Desc = "Walking and running speed" },
+	Damage = { Name = "Attack", Desc = "Increases the damage of all your attacks (gun & skills)" },
+	Xp = { Name = "XP Gain", Desc = "Earn more XP from monsters so you level up faster" },
+	Luck = { Name = "Luck", Desc = "Raises the chance that gear dropped by field monsters is high rarity (Epic or above)" },
+	Haste = { Name = "Skill Cooldown Reduction", Desc = "Use First Aid · Ultimate more often (max 60%)" },
+	Shot = { Name = "Extra Shots", Desc = "More shots fire at once (in a fan)" },
 }
 
 function Config.FormatAffix(stat, value)
@@ -1484,7 +1484,7 @@ Config.Keys = {
 	DailyDropCap = 8,       -- (예전 값)
 	-- 열쇠는 한 종류. 던전 입장 비용: 쉬움 1개 / 보통 2개 / 어려움 3개 (Difficulties.KeyCost).
 	-- 군주를 잡으면 낮은 확률로 나온다 (뒤 구역일수록 확률 / 개수가 높다). 예전의 3단계 열쇠는 접속할 때 개수만큼 환산해 합친다 (보통 x2, 어려움 x3).
-	TierNames = { "열쇠", "열쇠", "열쇠" },
+	TierNames = { "Key", "Key", "Key" },
 	TierIcons = { "🔑", "🔑", "🔑" },
 	DropByZone = {
 		{ Tier = 1, Chance = 0.10, Count = 1 }, { Tier = 1, Chance = 0.16, Count = 1 },
@@ -1504,7 +1504,7 @@ Config.Events = {
 	MaxInterval = 540,
 	Lifetime = 420,
 	ContribMin = 0.03,    -- 보스 체력의 3% 이상 피해를 준 사람이 보상 대상
-	Name = "거신",   -- 구역마다 몇 분에 한 번 나타나는 필드 월드 보스 (돌 거인): 모두 같이 잡으면 장비 + 세트 조각 + 티켓
+	Name = "Colossus",   -- 구역마다 몇 분에 한 번 나타나는 필드 월드 보스 (돌 거인): 모두 같이 잡으면 장비 + 세트 조각 + 티켓
 }
 
 ------------------------------------------------------------
@@ -1530,35 +1530,35 @@ Config.Idle = {
 Config.Shop = {
 	Passes = {
 		VIP = {
-			Name = "VIP 패스", Desc = "경험치 +20% · 방치 수입 +20% · 훈련 슬롯 +1 · 훈련/돌파 시간 -20% · 세트 효과 칸 +1 · 가방 +20칸 · 황금 오라",
-			PassId = 0, Icon = "👑", Benefits = { "경험치 +20%", "방치 수입 +20%", "훈련 슬롯 +1", "훈련 시간 -20%", "세트 효과 칸 +1", "가방 +20칸", "황금 오라" },
+			Name = "VIP Pass", Desc = "XP +20% · Idle income +20% · Training slot +1 · Training/breakthrough time -20% · Set effect slot +1 · Bag +20 slots · Golden aura",
+			PassId = 0, Icon = "👑", Benefits = { "XP +20%", "Idle income +20%", "Training slot +1", "Training time -20%", "Set effect slot +1", "Bag +20 slots", "Golden Aura" },
 		},
 	},
 	Products = {
-		KeyPack = { Name = "던전 열쇠 5개", Desc = "던전을 더 많이 돌고 싶을 때", ProductId = 0, Category = "Currency", Icon = "🔑", Badge = "추천", Featured = true, Grant = { Keys = 5 } },
-		XpBooster = { Name = "경험치 부스터 (1시간)", Desc = "경험치 2배", ProductId = 0, Category = "Growth", Icon = "📚", Featured = true, Grant = { XpBoost = 3600 } },
-		LuckBooster = { Name = "행운 부스터 (1시간)", Desc = "장비 드롭 등급 +50%", ProductId = 0, Category = "Growth", Icon = "🍀", Grant = { LuckBoost = 3600 } },
-		BagPlus = { Name = "가방 확장 +10칸", Desc = "영구 적용", ProductId = 0, Category = "Growth", Icon = "🎒", Grant = { Bag = 10 } },
-		TicketPack = { Name = "장비 뽑기 티켓 5장", Desc = "티켓으로 장비를 뽑아요", ProductId = 0, Category = "Currency", Icon = "🎫", Grant = { Tickets = 5 } },
-		TimeSkip10m = { Name = "시간 단축권 10분", Desc = "훈련 / 돌파 대기 시간을 10분 줄여요 (단축칸이 바로 가득 차요)", ProductId = 0, Category = "Growth", Icon = "⏩", Grant = { TimeSkip = 600 } },
-		AugSlot = { Name = "세트 효과 칸 +1", Desc = "영구 적용 · 세트 효과를 하나 더 동시에 켜요 (최대 +2)", ProductId = 0, Category = "Growth", Icon = "🌟", Badge = "NEW", Featured = true, Grant = { AugSlot = 1 } },
-		TimeSkip1h = { Name = "시간 단축권 1시간", Desc = "훈련 / 돌파 대기 시간을 1시간 줄여요", ProductId = 0, Category = "Growth", Icon = "⏩", Grant = { TimeSkip = 3600 } },
-		TimeSkip8h = { Name = "시간 단축권 8시간", Desc = "훈련 / 돌파 대기 시간을 8시간 줄여요", ProductId = 0, Category = "Growth", Icon = "⏩", Badge = "가성비 최고", Featured = true, Grant = { TimeSkip = 28800 } },
-		IdleBooster = { Name = "방치 부스터 (1시간)", Desc = "방치 수입 2배 (접속 중 + 오프라인 적립에도 적용)", ProductId = 0, Category = "Idle", Icon = "⏱", Badge = "인기", Featured = true, Grant = { IdleBoost = 3600 } },
-		IdleMult1 = { Name = "방치 수입 +25%", Desc = "영구 적용", ProductId = 0, Category = "Idle", Icon = "📈", Featured = true, Tier = { Group = "IdleMult", Step = 1, Steps = 3 }, Grant = { IdleMult = 1 } },
-		IdleMult2 = { Name = "방치 수입 +50%", Desc = "영구 적용 (+25%를 대체)", ProductId = 0, Category = "Idle", Icon = "📈", Badge = "가성비 최고", Tier = { Group = "IdleMult", Step = 2, Steps = 3 }, Grant = { IdleMult = 2 } },
-		IdleMult3 = { Name = "방치 수입 +100%", Desc = "영구 적용 (이전 단계를 대체)", ProductId = 0, Category = "Idle", Icon = "📈", Badge = "최고 효율", Tier = { Group = "IdleMult", Step = 3, Steps = 3 }, Grant = { IdleMult = 3 } },
-		IdleCap8 = { Name = "방치 적립 한도 8시간", Desc = "자리를 비워도 8시간까지 쌓여요 (기본 4시간)", ProductId = 0, Category = "Idle", Icon = "🗄", Featured = true, Tier = { Group = "IdleCap", Step = 1, Steps = 2 }, Grant = { IdleCap = 1 } },
-		IdleCap24 = { Name = "방치 적립 한도 24시간", Desc = "자리를 비워도 하루치까지 쌓여요", ProductId = 0, Category = "Idle", Icon = "🗄", Badge = "추천", Tier = { Group = "IdleCap", Step = 2, Steps = 2 }, Grant = { IdleCap = 2 } },
-		TrainSlot = { Name = "훈련 슬롯 +1", Desc = "영구 적용 · 동시에 하나 더 훈련", ProductId = 0, Category = "Growth", Icon = "🏋", Badge = "인기", Featured = true, Grant = { TrainSlot = 1 } },
-		AuraVoid = { Name = "공허의 오라", Desc = "꾸미기 전용 (능력치 없음)", ProductId = 0, Category = "Deco", Icon = "✨", Badge = "NEW", Grant = { Aura = "Void" } },
-		BannerDragon = { Name = "용의 깃발", Desc = "등 뒤에 꽂는 꾸미기 깃발 (능력치 없음)", ProductId = 0, Category = "Deco", Icon = "🚩", Grant = { Banner = "Dragon" } },
-		MountCarpet = { Name = "마법 양탄자", Desc = "발밑에 떠 있는 탈것 꾸미기 (능력치 없음)", ProductId = 0, Category = "Deco", Icon = "🛹", Grant = { Mount = "Carpet" } },
-		MountPhoenix = { Name = "불사조", Desc = "불꽃 날개 탈것 꾸미기 (능력치 없음)", ProductId = 0, Category = "Deco", Icon = "🔥", Badge = "NEW", Featured = true, Grant = { Mount = "Phoenix" } },
+		KeyPack = { Name = "5 Dungeon Keys", Desc = "For when you want to run more dungeons", ProductId = 0, Category = "Currency", Icon = "🔑", Badge = "Top Pick", Featured = true, Grant = { Keys = 5 } },
+		XpBooster = { Name = "XP Booster (1 hour)", Desc = "2x XP", ProductId = 0, Category = "Growth", Icon = "📚", Featured = true, Grant = { XpBoost = 3600 } },
+		LuckBooster = { Name = "Luck Booster (1 hour)", Desc = "Gear drop rarity +50%", ProductId = 0, Category = "Growth", Icon = "🍀", Grant = { LuckBoost = 3600 } },
+		BagPlus = { Name = "Bag Expansion +10 Slots", Desc = "Permanent", ProductId = 0, Category = "Growth", Icon = "🎒", Grant = { Bag = 10 } },
+		TicketPack = { Name = "5 Gear Roll Tickets", Desc = "Use tickets to roll for gear", ProductId = 0, Category = "Currency", Icon = "🎫", Grant = { Tickets = 5 } },
+		TimeSkip10m = { Name = "Time Skip 10 min", Desc = "Reduces training / breakthrough wait time by 10 min (the skip bar fills instantly)", ProductId = 0, Category = "Growth", Icon = "⏩", Grant = { TimeSkip = 600 } },
+		AugSlot = { Name = "Set effect slot +1", Desc = "Permanent · Run one more set effect at the same time (max +2)", ProductId = 0, Category = "Growth", Icon = "🌟", Badge = "NEW", Featured = true, Grant = { AugSlot = 1 } },
+		TimeSkip1h = { Name = "Time Skip 1 hour", Desc = "Reduces training / breakthrough wait time by 1 hour", ProductId = 0, Category = "Growth", Icon = "⏩", Grant = { TimeSkip = 3600 } },
+		TimeSkip8h = { Name = "Time Skip 8 hours", Desc = "Reduces training / breakthrough wait time by 8 hours", ProductId = 0, Category = "Growth", Icon = "⏩", Badge = "Best Value", Featured = true, Grant = { TimeSkip = 28800 } },
+		IdleBooster = { Name = "Idle Booster (1 hour)", Desc = "2x idle income (applies while online and to offline accrual)", ProductId = 0, Category = "Idle", Icon = "⏱", Badge = "Popular", Featured = true, Grant = { IdleBoost = 3600 } },
+		IdleMult1 = { Name = "Idle Income +25%", Desc = "Permanent", ProductId = 0, Category = "Idle", Icon = "📈", Featured = true, Tier = { Group = "IdleMult", Step = 1, Steps = 3 }, Grant = { IdleMult = 1 } },
+		IdleMult2 = { Name = "Idle Income +50%", Desc = "Permanent (replaces +25%)", ProductId = 0, Category = "Idle", Icon = "📈", Badge = "Best Value", Tier = { Group = "IdleMult", Step = 2, Steps = 3 }, Grant = { IdleMult = 2 } },
+		IdleMult3 = { Name = "Idle Income +100%", Desc = "Permanent (replaces the previous tier)", ProductId = 0, Category = "Idle", Icon = "📈", Badge = "Max Efficiency", Tier = { Group = "IdleMult", Step = 3, Steps = 3 }, Grant = { IdleMult = 3 } },
+		IdleCap8 = { Name = "Idle Accrual Cap: 8 Hours", Desc = "Accrues up to 8 hours while you're away (default 4 hours)", ProductId = 0, Category = "Idle", Icon = "🗄", Featured = true, Tier = { Group = "IdleCap", Step = 1, Steps = 2 }, Grant = { IdleCap = 1 } },
+		IdleCap24 = { Name = "Idle Accrual Cap: 24 Hours", Desc = "Accrues up to a full day while you're away", ProductId = 0, Category = "Idle", Icon = "🗄", Badge = "Top Pick", Tier = { Group = "IdleCap", Step = 2, Steps = 2 }, Grant = { IdleCap = 2 } },
+		TrainSlot = { Name = "Training slot +1", Desc = "Permanent · Train one more at the same time", ProductId = 0, Category = "Growth", Icon = "🏋", Badge = "Popular", Featured = true, Grant = { TrainSlot = 1 } },
+		AuraVoid = { Name = "Void Aura", Desc = "Cosmetic only (no stats)", ProductId = 0, Category = "Deco", Icon = "✨", Badge = "NEW", Grant = { Aura = "Void" } },
+		BannerDragon = { Name = "Dragon Banner", Desc = "Cosmetic banner worn on your back (no stats)", ProductId = 0, Category = "Deco", Icon = "🚩", Grant = { Banner = "Dragon" } },
+		MountCarpet = { Name = "Magic Carpet", Desc = "Cosmetic mount floating under your feet (no stats)", ProductId = 0, Category = "Deco", Icon = "🛹", Grant = { Mount = "Carpet" } },
+		MountPhoenix = { Name = "Phoenix", Desc = "Cosmetic flame-winged mount (no stats)", ProductId = 0, Category = "Deco", Icon = "🔥", Badge = "NEW", Featured = true, Grant = { Mount = "Phoenix" } },
 	},
 	PassOrder = { "VIP" },
 	-- 상점 화면 표시용 (효과와 무관): 카테고리 탭. Products 의 Category / Badge / Icon / Featured(추천 탭) / Tier(단계 상품 표시) 도 표시 전용
-	Categories = { { Key = "Rec", Name = "🔥 추천" }, { Key = "Idle", Name = "⏱ 방치" }, { Key = "Growth", Name = "📈 성장" }, { Key = "Deco", Name = "🎨 꾸미기" }, { Key = "Currency", Name = "🎫 재화" } },
+	Categories = { { Key = "Rec", Name = "🔥 Featured" }, { Key = "Idle", Name = "⏱ Idle" }, { Key = "Growth", Name = "📈 Growth" }, { Key = "Deco", Name = "🎨 Cosmetics" }, { Key = "Currency", Name = "🎫 Currency" } },
 	ProductOrder = { "IdleBooster", "IdleMult1", "IdleMult2", "IdleMult3", "IdleCap8", "IdleCap24", "AugSlot", "TimeSkip10m", "TimeSkip1h", "TimeSkip8h", "TrainSlot", "KeyPack", "XpBooster", "LuckBooster", "BagPlus", "TicketPack", "AuraVoid", "BannerDragon", "MountCarpet", "MountPhoenix" },
 	-- VIP 효과 (코드에서 읽는 값). TrainTime: 훈련/돌파 시간 단축 비율
 	Vip = { XpBonus = 0.2, KeyCap = 2, KeyRegen = 0.3, Bag = 20, TrainSlots = 1, TrainTime = 0.2, AugSlots = 1 },
@@ -1570,27 +1570,27 @@ Config.Shop = {
 -- Unlock: Free / { Ach = 업적Id } / { Pass = 패스이름 } / { Product = 상품이름 }
 Config.Auras = {
 	Order = { "Spark", "Frost", "Flame", "Gold", "Void" },
-	Spark = { Name = "반짝이 오라", Color = Color3.fromRGB(255, 255, 255), Unlock = "Free" },
-	Frost = { Name = "서리 오라", Color = Color3.fromRGB(130, 210, 255), Unlock = { Ach = "zone4" } },
-	Flame = { Name = "불꽃 오라", Color = Color3.fromRGB(255, 110, 50), Unlock = { Ach = "boss10" } },
-	Gold = { Name = "황금 오라", Color = Color3.fromRGB(255, 215, 90), Unlock = { Pass = "VIP" } },
-	Void = { Name = "공허의 오라", Color = Color3.fromRGB(170, 70, 255), Unlock = { Product = "AuraVoid" } },
+	Spark = { Name = "Sparkle Aura", Color = Color3.fromRGB(255, 255, 255), Unlock = "Free" },
+	Frost = { Name = "Frost Aura", Color = Color3.fromRGB(130, 210, 255), Unlock = { Ach = "zone4" } },
+	Flame = { Name = "Flame Aura", Color = Color3.fromRGB(255, 110, 50), Unlock = { Ach = "boss10" } },
+	Gold = { Name = "Golden Aura", Color = Color3.fromRGB(255, 215, 90), Unlock = { Pass = "VIP" } },
+	Void = { Name = "Void Aura", Color = Color3.fromRGB(170, 70, 255), Unlock = { Product = "AuraVoid" } },
 }
 
 -- 깃발: 등 뒤에 꽂는 꾸미기. 탈것: 발밑에 떠 있는 꾸미기 (둘 다 능력치 / 이동속도 없음, 다른 플레이어에게도 보임)
 Config.Banners = {
 	Order = { "Scout", "Hero", "Gold", "Dragon" },
-	Scout = { Name = "수련생 깃발", Color = Color3.fromRGB(90, 150, 255), Unlock = "Free" },
-	Hero = { Name = "용사의 깃발", Color = Color3.fromRGB(230, 70, 70), Unlock = { Ach = "zone4" } },
-	Gold = { Name = "황금 깃발", Color = Color3.fromRGB(255, 205, 70), Unlock = { Pass = "VIP" } },
-	Dragon = { Name = "용의 깃발", Color = Color3.fromRGB(150, 60, 230), Sparks = true, Unlock = { Product = "BannerDragon" } },
+	Scout = { Name = "Trainee Banner", Color = Color3.fromRGB(90, 150, 255), Unlock = "Free" },
+	Hero = { Name = "Hero's Banner", Color = Color3.fromRGB(230, 70, 70), Unlock = { Ach = "zone4" } },
+	Gold = { Name = "Golden Banner", Color = Color3.fromRGB(255, 205, 70), Unlock = { Pass = "VIP" } },
+	Dragon = { Name = "Dragon Banner", Color = Color3.fromRGB(150, 60, 230), Sparks = true, Unlock = { Product = "BannerDragon" } },
 }
 Config.Mounts = {
 	Order = { "Board", "Cloud", "Carpet", "Phoenix" },
-	Board = { Name = "호버보드", Color = Color3.fromRGB(80, 220, 255), Style = "Board", Unlock = "Free" },
-	Cloud = { Name = "구름", Color = Color3.fromRGB(190, 225, 255), Style = "Cloud", Unlock = { Ach = "boss10" } },
-	Carpet = { Name = "마법 양탄자", Color = Color3.fromRGB(190, 50, 90), Style = "Carpet", Unlock = { Product = "MountCarpet" } },
-	Phoenix = { Name = "불사조", Color = Color3.fromRGB(255, 100, 40), Style = "Phoenix", Unlock = { Product = "MountPhoenix" } },
+	Board = { Name = "Hoverboard", Color = Color3.fromRGB(80, 220, 255), Style = "Board", Unlock = "Free" },
+	Cloud = { Name = "Cloud", Color = Color3.fromRGB(190, 225, 255), Style = "Cloud", Unlock = { Ach = "boss10" } },
+	Carpet = { Name = "Magic Carpet", Color = Color3.fromRGB(190, 50, 90), Style = "Carpet", Unlock = { Product = "MountCarpet" } },
+	Phoenix = { Name = "Phoenix", Color = Color3.fromRGB(255, 100, 40), Style = "Phoenix", Unlock = { Product = "MountPhoenix" } },
 }
 
 ------------------------------------------------------------
@@ -1611,10 +1611,10 @@ Config.Growth = {
 	GoldGrowth = 1.3,
 	Stats = {
 		Order = { "Attack", "Health", "Crit", "Speed" },
-		Attack = { Name = "공격 단련", Icon = "⚔", Per = 0.02 },
-		Health = { Name = "체력 단련", Icon = "❤", Per = 12 },
-		Crit = { Name = "치명 단련", Icon = "🎯", Per = 0.004 },
-		Speed = { Name = "신속 단련", Icon = "💨", Per = 0.12 },
+		Attack = { Name = "Attack Training", Icon = "⚔", Per = 0.02 },
+		Health = { Name = "HP Training", Icon = "❤", Per = 12 },
+		Crit = { Name = "Crit Training", Icon = "🎯", Per = 0.004 },
+		Speed = { Name = "Speed Training", Icon = "💨", Per = 0.12 },
 	},
 	Gates = {},                            -- (예전: 레벨 10 / 20 / 30 / 40 에서 멈추고 시간 돌파 -> 기다리는 느낌이라 없앴다. 이제 막힘 없이 성장하고 골드는 환생으로 더 번다)
 	GateTime = { 1800, 7200, 21600, 43200 }, -- 돌파 시간(초): 30분 / 2시간 / 6시간 / 12시간
@@ -1633,13 +1633,13 @@ function Config.FormatTrainEffect(stat, level)
 	local def = Config.Growth.Stats[stat]
 	local value = def.Per * level
 	if stat == "Attack" then
-		return string.format("공격력 +%.0f%%", value * 100)
+		return string.format("Attack +%.0f%%", value * 100)
 	elseif stat == "Health" then
-		return string.format("최대 체력 +%d", math.floor(value + 0.5))
+		return string.format("Max HP +%d", math.floor(value + 0.5))
 	elseif stat == "Crit" then
-		return string.format("치명타 확률 +%.1f%%", value * 100)
+		return string.format("Crit chance +%.1f%%", value * 100)
 	end
-	return string.format("이동 속도 +%.1f", value)
+	return string.format("Move Speed +%.1f", value)
 end
 
 -- 돌파를 몇 번째까지 마쳤는지(gatePassed = 마친 돌파 레벨, 0이면 없음)에 따라 지금 오를 수 있는 최대 레벨
@@ -1659,11 +1659,11 @@ function Config.FormatDuration(seconds)
 	local minutes = (seconds % 3600) // 60
 	local secs = seconds % 60
 	if hours > 0 then
-		return string.format("%d시간 %02d분", hours, minutes)
+		return string.format("%dh %02dm", hours, minutes)
 	elseif minutes > 0 then
-		return string.format("%d분 %02d초", minutes, secs)
+		return string.format("%dm %02ds", minutes, secs)
 	end
-	return string.format("%d초", secs)
+	return string.format("%ds", secs)
 end
 
 function Config.GetWeaponTier(level)
@@ -1703,7 +1703,7 @@ end
 function Config.FormatWeapon(level, typeKey)
 	local tier = Config.GetWeaponTier(level)
 	local key = Config.ResolveWeaponType(level, typeKey)
-	return string.format("%s · %s +%d강", Config.WeaponTypes[key].Name, Config.GetEraName(tier.Era), math.floor(level or 0))
+	return string.format("%s · %s +%d", Config.WeaponTypes[key].Name, Config.GetEraName(tier.Era), math.floor(level or 0))
 end
 
 -- level -> level+1 강화 비용 (사다리 전체에서 조금씩 올라간다)

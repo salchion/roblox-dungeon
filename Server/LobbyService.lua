@@ -365,10 +365,10 @@ function Lobby.Build()
 			Transparency = 0.88, CanCollide = false, CanQuery = false }, folder)
 		addLight(beam, 60, 1.2, pink)
 		local pedestal = makePart({ Name = "RiftPedestal", Size = Vector3.new(4, 3, 4), Position = rift + Vector3.new(-9, 1.5, 0), Color = Color3.fromRGB(60, 40, 90), Material = Enum.Material.Slate }, folder)
-		makeLabel(pedestal, "🌀 심연 도전", Color3.fromRGB(255, 180, 230), 6, 300, 56, 50)
+		makeLabel(pedestal, "🌀 Abyss Challenge", Color3.fromRGB(255, 180, 230), 6, 300, 56, 50)
 		riftPrompt = Instance.new("ProximityPrompt")
-		riftPrompt.ActionText = "도전 / 소탕"
-		riftPrompt.ObjectText = "🌀 심연 도전"
+		riftPrompt.ActionText = "Challenge / Sweep"
+		riftPrompt.ObjectText = "🌀 Abyss Challenge"
 		riftPrompt.HoldDuration = 0
 		riftPrompt.MaxActivationDistance = 16
 		riftPrompt.RequiresLineOfSight = false
@@ -587,8 +587,8 @@ function Lobby.Build()
 		makeLabel(portal, string.format("⚔ %s\n[%s] Lv.%d+", dungeonType.Name, difficulty.Name, entry.MinLevel), difficulty.Color, GH / 2 + 9, 280, 64, 60, true) -- 문틀 / 지붕에 가려지지 않게 항상 위에 그린다
 
 		local prompt = Instance.new("ProximityPrompt")
-		prompt.ActionText = "입장 (Lv." .. entry.MinLevel .. ")"
-		prompt.ObjectText = string.format("%s · %s · %s · 권장 전투력 %d", dungeonType.Name, difficulty.Name, Config.Keys.TierIcons[difficulty.KeyTier or 1], Config.DungeonPower(dungeonType, difficulty))
+		prompt.ActionText = "Enter (Lv." .. entry.MinLevel .. ")"
+		prompt.ObjectText = string.format("%s · %s · %s · Rec. Power %d", dungeonType.Name, difficulty.Name, Config.Keys.TierIcons[difficulty.KeyTier or 1], Config.DungeonPower(dungeonType, difficulty))
 		prompt.HoldDuration = 0.8
 		prompt.MaxActivationDistance = 16
 		prompt.RequiresLineOfSight = false
@@ -655,7 +655,7 @@ function Lobby.Build()
 	local workshop = Vector3.new(0, TOP, 28) -- 훈련 / 강화 / 뽑기 구역: 스폰 언덕에서 북쪽을 보면 한눈에 들어오고 던전 길 쪽에 있다
 	local forgeCenter = Vector3.new(44, TOP, 28) -- 대장간은 동쪽(필드 입구 쪽): 허수아비 -> 강화 -> 그대로 동쪽 필드로 이어지는 동선
 	local anvilPart
-	makeStall(forgeCenter, Color3.fromRGB(190, 70, 55), Color3.fromRGB(235, 225, 205), "🔨 대장간 · 무기 강화", Color3.fromRGB(255, 210, 120), function(base, part)
+	makeStall(forgeCenter, Color3.fromRGB(190, 70, 55), Color3.fromRGB(235, 225, 205), "🔨 Forge · Weapon Upgrade", Color3.fromRGB(255, 210, 120), function(base, part)
 		part("AnvilBase", Vector3.new(4, 2.2, 3), Vector3.new(0, 1.7, 1), Color3.fromRGB(45, 45, 50), Enum.Material.Metal)
 		anvilPart = part("Anvil", Vector3.new(7, 1.8, 2.8), Vector3.new(0, 3.7, 1), Color3.fromRGB(78, 78, 90), Enum.Material.Metal)
 		local ember = part("Ember", Vector3.new(2, 0.4, 2), Vector3.new(5.5, 3.3, 3.5), Color3.fromRGB(255, 120, 40), Enum.Material.Neon, { CanCollide = false })
@@ -680,7 +680,7 @@ function Lobby.Build()
 	-- 뽑기 상점 (왼쪽 / 서): 반짝이는 뽑기 머신 + 선반
 	local shopCenter = Vector3.new(-44, TOP, 28) -- 뽑기 상점은 서쪽: 동선에서 비켜 있어서 필드로 가는 길을 막지 않는다
 	local gachaBody
-	makeStall(shopCenter, Color3.fromRGB(120, 70, 200), Color3.fromRGB(255, 225, 150), "🎰 장비 뽑기 상점", Color3.fromRGB(255, 225, 140), function(base, part)
+	makeStall(shopCenter, Color3.fromRGB(120, 70, 200), Color3.fromRGB(255, 225, 150), "🎰 Gear Gacha Shop", Color3.fromRGB(255, 225, 140), function(base, part)
 		part("GachaBase", Vector3.new(8, 2, 6), Vector3.new(0, 1.6, 1.5), Color3.fromRGB(60, 40, 90), Enum.Material.Metal)
 		gachaBody = part("GachaBody", Vector3.new(7, 8, 5), Vector3.new(0, 6.6, 1.5), Color3.fromRGB(150, 70, 230), Enum.Material.SmoothPlastic)
 		part("GachaGlass", Vector3.new(5, 4.6, 0.6), Vector3.new(0, 7.2, -1.2), Color3.fromRGB(180, 230, 255), Enum.Material.Glass, { Transparency = 0.4, CanCollide = false })
@@ -706,16 +706,16 @@ function Lobby.Build()
 	makeDisc(workshop + Vector3.new(0, 0.12, 0), 32, 0.2, Color3.fromRGB(196, 186, 168), Enum.Material.Cobblestone, folder).CanCollide = false
 
 	local anvilPrompt = Instance.new("ProximityPrompt")
-	anvilPrompt.ActionText = "무기 강화"
-	anvilPrompt.ObjectText = "대장간"
+	anvilPrompt.ActionText = "Upgrade Weapon"
+	anvilPrompt.ObjectText = "Forge"
 	anvilPrompt.HoldDuration = 0
 	anvilPrompt.MaxActivationDistance = 18
 	anvilPrompt.RequiresLineOfSight = false
 	anvilPrompt.Parent = anvilPart
 
 	local gachaPrompt = Instance.new("ProximityPrompt")
-	gachaPrompt.ActionText = "장비 뽑기 / 강화"
-	gachaPrompt.ObjectText = "뽑기 상점"
+	gachaPrompt.ActionText = "Gear Gacha / Upgrade"
+	gachaPrompt.ObjectText = "Gacha Shop"
 	gachaPrompt.HoldDuration = 0
 	gachaPrompt.MaxActivationDistance = 18
 	gachaPrompt.RequiresLineOfSight = false
@@ -760,7 +760,7 @@ function Lobby.Build()
 	signTitle.TextScaled = true
 	signTitle.TextColor3 = Color3.fromRGB(190, 255, 190)
 	signTitle.TextStrokeTransparency = 0
-	signTitle.Text = "🏔 사냥 필드 입구  ▶"
+	signTitle.Text = "🏔 Hunting Field Entrance  ▶"
 	signTitle.Parent = signGui
 	local signSub = Instance.new("TextLabel")
 	signSub.Size = UDim2.new(1, 0, 0.32, 0)
@@ -786,7 +786,7 @@ function Lobby.Build()
 	faceText.TextScaled = true
 	faceText.TextColor3 = Color3.fromRGB(190, 255, 190)
 	faceText.TextStrokeTransparency = 0
-	faceText.Text = "▶ 사냥 필드 입구 ◀"
+	faceText.Text = "▶ Hunting Field Entrance ◀"
 	faceText.Parent = faceGui
 
 	-- 문 사이를 채우는 반투명 빛의 막 (지나가면 필드)
@@ -821,9 +821,9 @@ function Lobby.Build()
 	-- 1) 갈림길 이정표 (중앙 교차로 한켠): 동쪽 필드 / 북쪽 던전 / 서쪽 훈련장 화살표 판
 	do
 		local boards = {
-			{ Text = "▶ 사냥 필드 (동쪽)", Y = 11, Color = Color3.fromRGB(70, 140, 80), Dir = 1 },
-			{ Text = "▲ 던전 게이트 (북쪽)", Y = 8, Color = Color3.fromRGB(120, 85, 160), Dir = 0 },
-			{ Text = "◀ 허수아비 훈련장 (서쪽)", Y = 5, Color = Color3.fromRGB(170, 120, 60), Dir = -1 },
+			{ Text = "▶ Hunting Field (East)", Y = 11, Color = Color3.fromRGB(70, 140, 80), Dir = 1 },
+			{ Text = "▲ Dungeon Gates (North)", Y = 8, Color = Color3.fromRGB(120, 85, 160), Dir = 0 },
+			{ Text = "◀ Dummy Training Yard (West)", Y = 5, Color = Color3.fromRGB(170, 120, 60), Dir = -1 },
 		}
 		-- 판 앞뒤 양쪽 면에 글자를 붙인다 (어느 쪽에서 봐도 읽히고, 판에 가려 잘리지 않는다)
 		local function buildSignpost(origin, scale)
@@ -885,8 +885,8 @@ function Lobby.Build()
 
 	-- 도달한 필드 구역 캠프로 바로 워프 (캠프의 비콘에서도 같은 메뉴가 열린다)
 	local warpPrompt = Instance.new("ProximityPrompt")
-	warpPrompt.ActionText = "필드 워프"
-	warpPrompt.ObjectText = "필드 입구"
+	warpPrompt.ActionText = "Field Warp"
+	warpPrompt.ObjectText = "Field Entrance"
 	warpPrompt.HoldDuration = 0
 	warpPrompt.MaxActivationDistance = 40
 	warpPrompt.RequiresLineOfSight = false

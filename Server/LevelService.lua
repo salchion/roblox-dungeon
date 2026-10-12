@@ -64,7 +64,7 @@ function Level.AddXP(player, amount)
 		xp = math.min(xp, Config.GetXpNeeded(level))
 		if not player:GetAttribute("GateBlocked") then
 			player:SetAttribute("GateBlocked", true)
-			Remotes.Notify:FireClient(player, string.format("🚧 레벨 %d 에서 막혔어요! 메뉴(B) → 스킬·성장 탭(패시브·훈련)에서 돌파를 진행하세요.", level))
+			Remotes.Notify:FireClient(player, string.format("🚧 Stuck at level %d! Go to Menu (B) → Skills & Growth tab (Passives · Training) to break through.", level))
 		end
 	end
 	if gained > 0 then
@@ -80,7 +80,7 @@ function Level.AddXP(player, amount)
 	setLevel(player, level, xp)
 
 	if gained > 0 then
-		Remotes.Notify:FireClient(player, string.format("🎉 레벨 업! Lv.%d  (최대 체력 +%d, 공격력 +%d%%)",
+		Remotes.Notify:FireClient(player, string.format("🎉 Level up! Lv.%d  (Max HP +%d, Attack +%d%%)",
 			level, Config.Level.HealthPerLevel * gained, math.floor(Config.Level.DamagePerLevel * 100 * gained + 0.5)))
 		if root then
 			Effects.Burst(root.Position, Color3.fromRGB(255, 225, 110), 60)

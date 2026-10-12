@@ -44,7 +44,7 @@ local function label(y, h, size, color, font)
 	return l
 end
 local title = label(4, 16, 12, Color3.fromRGB(170, 180, 215))
-title.Text = "🎯 허수아비 DPS"
+title.Text = "🎯 Dummy DPS"
 local dpsText = label(18, 30, 26, Color3.fromRGB(255, 217, 102), Enum.Font.GothamBlack)
 local subText = label(48, 18, 12, Color3.fromRGB(200, 205, 230))
 
@@ -57,7 +57,7 @@ player:GetAttributeChangedSignal("DummyTick"):Connect(function()
 	lastShown = os.clock()
 	panel.Visible = true
 	dpsText.Text = commas(player:GetAttribute("DummyDps"))
-	subText.Text = string.format("최고 %s  ·  한 방 %s", commas(player:GetAttribute("DummyBest")), commas(player:GetAttribute("DummyHit")))
+	subText.Text = string.format("Best %s  ·  Max hit %s", commas(player:GetAttribute("DummyBest")), commas(player:GetAttribute("DummyHit")))
 	local mine = lastShown
 	task.delay(3.5, function()
 		if lastShown == mine then panel.Visible = false end

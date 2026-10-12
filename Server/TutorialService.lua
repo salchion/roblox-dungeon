@@ -80,7 +80,7 @@ local function send(player)
 	local goal = (state and state.DynGoal) or (step and step.Goal)
 	local text = step and step.Text
 	if step and step.EvolveToTier and Config.Weapon.Tiers[step.EvolveToTier] then
-		text = string.gsub(text, "{무기}", Config.Weapon.Tiers[step.EvolveToTier].Name)
+		text = string.gsub(string.gsub(text, "{무기}", Config.Weapon.Tiers[step.EvolveToTier].Name), "{weapon}", Config.Weapon.Tiers[step.EvolveToTier].Name)
 	end
 	-- 미션 소개 카드(Intro): 이 미션이 처음 시작될 때 한 번 차례로 보여준다 (던전에 들어가면 중단. 첫 미션은 MinSeconds 동안 끝까지 보여준다)
 	if step and step.Intro and state.IntroShown ~= state.Step then
@@ -108,7 +108,7 @@ local function send(player)
 	end
 	Remotes.Tutorial:FireClient(player, "Step", {
 		Index = state.Step, Total = #Steps, Text = text, Progress = state.Progress, Goal = goal,
-		Target = targets[step.Target], TargetName = step.TargetName, Highlight = step.Highlight, Look = step.Look == true,
+		Target = targets[step.Target], TargetName = step.TargetName, TargetKey = step.Target, Highlight = step.Highlight, Look = step.Look == true,
 	})
 end
 
@@ -158,7 +158,7 @@ function Tutorial.Load(player, saved)
 		if states[player] ~= state or player:GetAttribute("Zone") ~= "Lobby" or player:GetAttribute("TutorialDungeonRun") ~= true then return end
 		if os.clock() - (state.LastDungeonNudge or -100) < 20 then return end
 		state.LastDungeonNudge = os.clock()
-		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🗝", Title = "던전에 다시 도전!", Text = "마을의 던전 게이트(미션 화살표)에서 다시 들어갈 수 있어요. 열쇠도 필요 없어요. 처음 장면 그대로 이어져요!", Duration = 9, Top = true })
+		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🗝", Title = "Take on the dungeon again!", Text = "You can re-enter from the town Dungeon Gate (follow the mission arrow). No key needed. It picks up right where the scene left off!", Duration = 9, Top = true })
 	end
 	task.delay(10, nudgeDungeon) -- 이 던전 미션 도중 접속을 껐다가 다시 들어온 경우
 	player:GetAttributeChangedSignal("Zone"):Connect(function()
@@ -173,7 +173,7 @@ function Tutorial.Load(player, saved)
 			state.ShadowHint = true
 			task.delay(3, function()
 				if player.Parent and player:GetAttribute("Zone") == "Field" then
-					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "저 멀리 동쪽 하늘에…", Text = "필드 끝에 거대한 그림자가 서 있어요. 최후의 군주예요. 구역을 넘어 동쪽으로 갈수록 점점 또렷해져요.", Duration = 8, Top = true })
+					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "Far off in the eastern sky…", Text = "A giant shadow looms at the end of the field. It is the Final Lord. It grows clearer the further east you go through the zones.", Duration = 8, Top = true })
 				end
 			end)
 		end
@@ -225,9 +225,9 @@ end
 local function rewardText(reward)
 	local parts = {}
 	if reward.Gold then table.insert(parts, reward.Gold .. " G") end
-	if reward.Tickets then table.insert(parts, "티켓 " .. reward.Tickets) end
-	if reward.Keys then table.insert(parts, "열쇠 " .. reward.Keys) end
-	if reward.Xp then table.insert(parts, "경험치 " .. reward.Xp) end
+	if reward.Tickets then table.insert(parts, "Tickets " .. reward.Tickets) end
+	if reward.Keys then table.insert(parts, "Keys " .. reward.Keys) end
+	if reward.Xp then table.insert(parts, "XP " .. reward.Xp) end
 	return table.concat(parts, " + ")
 end
 
@@ -277,9 +277,9 @@ function complete(player, state, step)
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if root then
 		Effects.Burst(root.Position + Vector3.new(0, 3, 0), Color3.fromRGB(255, 225, 110), 80)
-		Effects.FloatText(root.Position + Vector3.new(0, 6, 0), "✅ 미션 완료!", Color3.fromRGB(130, 255, 150))
+		Effects.FloatText(root.Position + Vector3.new(0, 6, 0), "✅ Mission complete!", Color3.fromRGB(130, 255, 150))
 	end
-	Remotes.Notify:FireClient(player, string.format("✅ 미션 완료! 보상: %s", rewardText(reward)))
+	Remotes.Notify:FireClient(player, string.format("✅ Mission complete! Reward: %s", rewardText(reward)))
 	if step.Reel then
 		state.ReelDone = false -- 장비는 필드로 처음 나갈 때 준다 (아래 Zone 감시)
 	end
@@ -293,7 +293,7 @@ function complete(player, state, step)
 		end, 2.5)
 	end
 	if state.Step > #Steps then
-		Remotes.Notify:FireClient(player, "🎉 튜토리얼 완료! 필드 끝에 어른거리는 거대한 그림자가 최종 목표예요. 구역을 넘어 강해지고, 던전에서도 장비를 모아보세요. (설정/도움말: H)")
+		Remotes.Notify:FireClient(player, "🎉 Tutorial complete! The giant shadow flickering at the end of the field is your final goal. Grow stronger by clearing zones, and gather gear in dungeons too. (Settings/Help: H)")
 	end
 	send(player)
 end

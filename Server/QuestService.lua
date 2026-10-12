@@ -132,7 +132,7 @@ local function rewardText(reward)
 		table.insert(parts, string.format("🎫 %d", reward.Tickets))
 	end
 	if reward.TimeSkip then
-		table.insert(parts, string.format("⏱ %d분", reward.TimeSkip // 60))
+		table.insert(parts, string.format("⏱ %d min", reward.TimeSkip // 60))
 	end
 	return table.concat(parts, " + ")
 end
@@ -304,7 +304,7 @@ Remotes.Quest.OnServerEvent:Connect(function(player, action, arg)
 				state.Claimed[quest.Id] = true
 				applyReward(player, quest.Reward)
 				claimSound(player)
-				notify(player, string.format("✅ 일일 퀘스트 완료! 보상: %s", rewardText(quest.Reward)))
+				notify(player, string.format("✅ Daily quest complete! Reward: %s", rewardText(quest.Reward)))
 				Quest.Push(player)
 				return
 			end
@@ -318,8 +318,8 @@ Remotes.Quest.OnServerEvent:Connect(function(player, action, arg)
 				state.AchClaimed[achievement.Id] = true
 				applyReward(player, achievement.Reward)
 				claimSound(player)
-				notify(player, string.format("🏅 업적 달성! 보상: %s%s", rewardText(achievement.Reward),
-					achievement.Title and ("  / 칭호 『" .. achievement.Title .. "』 해금") or ""))
+				notify(player, string.format("🏅 Achievement unlocked! Reward: %s%s", rewardText(achievement.Reward),
+					achievement.Title and ("  / Title 『" .. achievement.Title .. "』 unlocked") or ""))
 				Quest.Push(player)
 				return
 			end

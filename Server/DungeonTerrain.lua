@@ -57,7 +57,7 @@ layouts.Cavern = function(rng, length, sway)
 		if i == count then boss = pos end
 		previous = pos
 	end
-	return { Circles = circles, Rooms = rooms, Start = start, Boss = boss, Name = "동굴 군락" }
+	return { Circles = circles, Rooms = rooms, Start = start, Boss = boss, Name = "Cave Cluster" }
 end
 
 -- 협곡 길: 사인 곡선으로 굽이치는 긴 길 + 길 중간중간 넓은 방
@@ -84,7 +84,7 @@ layouts.Canyon = function(rng, length, sway)
 		table.insert(rooms, { Pos = p, R = r })
 	end
 	table.insert(rooms, { Pos = bossPos, R = 80 })
-	return { Circles = circles, Rooms = rooms, Start = startPos, Boss = bossPos, Name = "구불구불한 협곡 길" }
+	return { Circles = circles, Rooms = rooms, Start = startPos, Boss = bossPos, Name = "Winding Canyon Path" }
 end
 
 local LAYOUT_ORDER = { "Cavern", "Canyon" } -- 모두 입구에서 보스방까지 한 줄로 이어지는 길
@@ -382,7 +382,7 @@ function DungeonTerrain.BuildColosseum(run, theme, D, folder)
 		GroundY = groundY,
 		StartPos = startPos,
 		BossPos = bossPos,
-		LayoutName = "콜로세움 (중앙에서 버티세요!)",
+		LayoutName = "Colosseum (hold the center!)",
 		Center = center,
 	}
 end

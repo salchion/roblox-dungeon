@@ -487,7 +487,7 @@ local function makeWeakOrb(part)
 	orbText.TextScaled = true
 	orbText.TextColor3 = Color3.fromRGB(255, 240, 120)
 	orbText.TextStrokeTransparency = 0
-	orbText.Text = "🎯 약점! 여길 맞혀요"
+	orbText.Text = "🎯 Weak spot! Hit here"
 	orbText.Parent = orbGui
 	return orb
 end
@@ -537,7 +537,7 @@ local function spawnBoss(run)
 	run.BossPart = part
 	sfxAt(run, part.Position, "Boss_Spawn", nil, 1)
 	for _, member in ipairs(run.Members) do
-		Remotes.Tutorial:FireClient(member, "Prompt", { Key = "🎯", Title = "약점을 노려라!", Text = "보스 주위를 도는 노란 구슬을 마우스로 직접 조준해서 클릭하면 약점이 노출돼서 4초간 받는 피해 x3! + 데드아이 게이지 (자동 공격으로는 안 돼요)", Duration = 7, Top = true })
+		Remotes.Tutorial:FireClient(member, "Prompt", { Key = "🎯", Title = "Aim for the weak spot!", Text = "Aim at the yellow orb circling the boss with your mouse and click it to expose the weak spot: damage taken x3 for 4s! + Deadeye gauge (auto-attacks don't count)", Duration = 7, Top = true })
 	end
 end
 
@@ -756,7 +756,7 @@ local function bossSummon(run, part, data)
 		spawnMonster(run, level, Vector3.new(x, groundAt(run, x, z, part.Position.Y) + stats.Size / 2, z))
 		Effects.Burst(Vector3.new(x, part.Position.Y, z), Color3.fromRGB(190, 90, 255), 20)
 	end
-	notifyAll(run, "👹 " .. run.BossName .. "이(가) 부하를 불러냈다!")
+	notifyAll(run, "👹 " .. run.BossName .. " summoned minions!")
 end
 
 -- 7) 화염 줄기 (디아블로 벨리알식): 보스 앞에 붉은 줄기 여러 개가 예고된 뒤 불길이 치솟는다. 줄기 "사이"로 피하고, 두 번째는 줄기 위치가 어긋난다
@@ -880,7 +880,7 @@ local function bossSideAdds(run, part, data, announce)
 	if not bossAlive(run, part, data) then return end
 	local center = run.ArenaCenter or run.BossPos or part.Position
 	if announce then
-		notifyAll(run, "⚠ " .. run.BossName .. "의 부하들이 양옆에서 몰려온다!")
+		notifyAll(run, "⚠ " .. run.BossName .. "'s minions are rushing in from both sides!")
 	end
 	local level = math.max(1, Config.Boss.MinionLevel + run.LevelBonus + 1)
 	local spots = {}
@@ -1109,7 +1109,7 @@ local function enrageBoss(run, part, data)
 	sfxAt(run, part.Position, "Boss_Enrage", nil, 1)
 	data.BaseColor = Color3.fromRGB(255, 60, 20)
 	part.Color = data.BaseColor
-	notifyAll(run, "⚠ " .. run.BossName .. "이(가) 분노했다!")
+	notifyAll(run, "⚠ " .. run.BossName .. " is enraged!")
 	for _ = 1, Config.Boss.MinionCount do
 		local angle = math.random() * math.pi * 2
 		local position = part.Position + Vector3.new(math.cos(angle) * 20, 0, math.sin(angle) * 20)
@@ -1126,7 +1126,7 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 		local factor = MonsterTypes.ShieldFactor(part, data, shooterRoot.Position)
 		if factor < 1 then
 			amount = math.max(1, math.floor(amount * factor))
-			Effects.FloatText(hitPosition + Vector3.new(0, 3, 0), "🛡 막힘! 뒤로 돌아가요", Color3.fromRGB(200, 215, 240))
+			Effects.FloatText(hitPosition + Vector3.new(0, 3, 0), "🛡 Blocked! Turn around", Color3.fromRGB(200, 215, 240))
 			sfxAt(run, part.Position, "Shield_Block", nil, 0.15)
 		end
 	end
@@ -1256,7 +1256,7 @@ local function stepRun(run, dt)
 					humanoid.Health = humanoid.MaxHealth * 0.75
 					local reviveRoot = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
 					if reviveRoot then Effects.Burst(reviveRoot.Position, Color3.fromRGB(120, 255, 170), 40) end
-					notify(member, string.format("💚 응급 구조! 체력이 회복됐어요 (남은 횟수 %d)", 3 - used - 1))
+					notify(member, string.format("💚 Emergency rescue! HP restored (%d left)", 3 - used - 1))
 				end
 			end
 		end
@@ -2289,7 +2289,7 @@ local function giveSetPiece(run, member, jackpot)
 	local key = pickSetKey(run, member, jackpot)
 	if not key then
 		applyBuff(run, member, { Effect = "Xp" })
-		return nil, "모든 세트 완성! 경험치 보너스"
+		return nil, "All sets complete! XP bonus"
 	end
 	local def = Config.Sets[key]
 	local pieces = run.SetPieces[member]
@@ -2338,7 +2338,7 @@ local function rollBonus(run, penaltyChance, forceSpecial)
 				local color = setInfo.Color
 				sfxAt(run, root.Position, "Aug_Get", nil, 0.3)
 				Effects.Burst(root.Position, color, 55)
-				Effects.FloatText(root.Position + Vector3.new(0, 7, 0), string.format("%s %s 조각 (%d/3)", setInfo.Icon, setInfo.Name, setInfo.Count), color)
+				Effects.FloatText(root.Position + Vector3.new(0, 7, 0), string.format("%s %s piece (%d/3)", setInfo.Icon, setInfo.Name, setInfo.Count), color)
 				if setInfo.Completed then
 					task.delay(0.5, function()
 						if run.Destroyed or run.Phase == "Ended" then return end
@@ -2348,7 +2348,7 @@ local function rollBonus(run, penaltyChance, forceSpecial)
 						shockRing(run, r2.Position - Vector3.new(0, 2.5, 0), 18 + 4 * setInfo.Count, color)
 						Effects.Raw(r2.Position, { "V", r2.Position - Vector3.new(0, 2.3, 0), 20 + 4 * setInfo.Count, color, 0.8 })
 						sfxAt(run, r2.Position, "Gacha_Card", nil, 0.3)
-						Effects.FloatText(r2.Position + Vector3.new(0, 12, 0), string.format("✨ %d세트 완성! %s %s Lv.%d", setInfo.Count, setInfo.EffectIcon or "", setInfo.EffectName or "", setInfo.Level), color, 340, 1.8)
+						Effects.FloatText(r2.Position + Vector3.new(0, 12, 0), string.format("✨ %d-piece set complete! %s %s Lv.%d", setInfo.Count, setInfo.EffectIcon or "", setInfo.EffectName or "", setInfo.Level), color, 340, 1.8)
 						syncAura(member, run)
 					end)
 				end
@@ -2418,12 +2418,12 @@ local function surviveLoop(run)
 			local info = Config.AugInfo[pick]
 			member:SetAttribute("AugDemo", pick) -- 화면 구석 표시 (AugClient)
 			Remotes.Aug:FireClient(member, "Demo", pick) -- 8개 중 뽑는 연출
-			notify(member, string.format("%s 이번 던전 체험 효과: 『%s』 (3단계) — %s", info.Icon, info.Name, info.Desc))
+			notify(member, string.format("%s Trial effect for this dungeon: [%s] (Lv.3) — %s", info.Icon, info.Name, info.Desc))
 		end
 	end
 	startAugLoop(run)
 	run.PhaseEnd = os.clock() + D.StartCountdown
-	notifyAll(run, "🛡 몰려오는 몬스터를 처치하세요! 너무 많이 쌓이면 압도당해 실패, 끝까지 버티면 보스가 나타나요")
+	notifyAll(run, "🛡 Defeat the incoming monsters! If too many pile up you'll be overwhelmed and fail. Hold out to the end and the boss appears")
 	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
 	run.PhaseEnd = nil
 
@@ -2464,7 +2464,7 @@ local function surviveLoop(run)
 			run.OverrunSince = run.OverrunSince or now
 			run.OverrunLeft = math.max(0, D.OverrunSeconds * (run.Tutorial and 2 or 1) - (now - run.OverrunSince))
 			if run.OverrunLeft <= 0 then
-				notifyAll(run, "💀 몬스터가 너무 많아졌어요! 압도당했습니다")
+				notifyAll(run, "💀 Too many monsters! You were overwhelmed")
 				finish(run, false)
 				return
 			end
@@ -2509,7 +2509,7 @@ local function surviveLoop(run)
 	run.StageText = nil
 	local spots = nearSpawnPoints(run, 35, 90)
 	if spots and #spots > 0 then run.BossPos = spots[math.random(#spots)] end
-	notifyAll(run, "⚠ " .. run.BossName .. "이(가) 나타났다! 공격을 피하며 쓰러뜨리세요!")
+	notifyAll(run, "⚠ " .. run.BossName .. " has appeared! Dodge its attacks and take it down!")
 	spawnBoss(run)
 	if not waitFor(run, function() return run.BossDead == true end) then return end
 	finish(run, true)
@@ -2518,7 +2518,7 @@ end
 -- 심연 도전: 시간제한 안에 웨이브를 이어서 상대한다 (특성 선택 없음). 점수는 처치 / 콤보 / NEAR MISS / 웨이브 보너스.
 local function riftLoop(run)
 	run.PhaseEnd = os.clock() + D.StartCountdown
-	notifyAll(run, string.format("🌀 심연 도전! %d초 동안 최대한 많이 처치하고 아슬아슬하게 피해서 점수를 쌓으세요!", Config.Rift.Duration))
+	notifyAll(run, string.format("🌀 Abyss challenge! Defeat as many as you can in %ds and rack up points with close dodges!", Config.Rift.Duration))
 	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
 	run.PhaseEnd = nil
 	run.RiftEndAt = os.clock() + Config.Rift.Duration
@@ -2539,7 +2539,7 @@ local function riftLoop(run)
 			run.Score[member] = (run.Score[member] or 0) + Config.Rift.WaveBonus * wave
 			member:SetAttribute("RiftScore", math.floor(run.Score[member]))
 		end
-		notifyAll(run, string.format("✅ 웨이브 %d 클리어! 보너스 +%d", wave, Config.Rift.WaveBonus * wave))
+		notifyAll(run, string.format("✅ Wave %d cleared! Bonus +%d", wave, Config.Rift.WaveBonus * wave))
 	end
 	riftFinish(run)
 end
@@ -2551,11 +2551,11 @@ local function runLoop(run)
 		if startRoot then SoundBank.Play(startRoot, "Dungeon_Start") end
 	end
 	if run.LayoutName then
-		notifyAll(run, "🗺 이번 던전 지형: " .. run.LayoutName .. " (들어갈 때마다 달라져요)")
+		notifyAll(run, "🗺 Dungeon layout: " .. run.LayoutName .. " (changes every run)")
 	end
-	notifyAll(run, string.format("👹 이번 보스: %s — %s", run.BossName, run.BossVariant.Desc))
+	notifyAll(run, string.format("👹 Boss this run: %s — %s", run.BossName, run.BossVariant.Desc))
 	if run.Mutator then
-		notifyAll(run, string.format("%s 이번 던전 변이: %s — %s", run.Mutator.Icon, run.Mutator.Name, run.Mutator.Desc))
+		notifyAll(run, string.format("%s Dungeon mutation: %s — %s", run.Mutator.Icon, run.Mutator.Name, run.Mutator.Desc))
 	end
 	for _, member in ipairs(run.Members) do
 		member:SetAttribute("DungeonVisual", run.Mutator and run.Mutator.Visual or "")
@@ -2575,7 +2575,7 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 	-- fromField: 튜토리얼에서 필드 군주가 떨어뜨린 열쇠로 필드에서 바로 던전으로 떨어질 때만 true (혼자, 열쇠 / 무료 입장 소모 없음)
 	if player:GetAttribute("Zone") ~= "Lobby" and not (fromField and player:GetAttribute("Zone") == "Field") then return end
 	if player:GetAttribute("TutorialDungeonLocked") then
-		notify(player, "🔒 아직 던전에 들어갈 수 없어요. 튜토리얼 미션을 먼저 진행해주세요!")
+		notify(player, "🔒 You can't enter dungeons yet. Complete the tutorial missions first!")
 		return
 	end
 
@@ -2590,7 +2590,7 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 		party = Party.GetParty(player) -- 심연 도전은 혼자 한다
 	end
 	if party and party.Leader ~= player then
-		notify(player, "파티장만 던전에 입장시킬 수 있어요.")
+		notify(player, "Only the party leader can start a dungeon.")
 		return
 	end
 
@@ -2609,9 +2609,9 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 		if keyCost > 0 and Dungeon.FreeLeft(member) > 0 then
 			useFree[member] = true -- 오늘의 무료 입장 사용 (열쇠 소모 없음)
 		elseif not Keys.HasTier(member, difficulty.KeyTier or 1, keyCost) then
-			notify(player, string.format("%s 님은 오늘의 무료 입장을 다 썼고 열쇠도 %d개 이상 없어요. 필드 구역 군주를 잡으면 열쇠가 나와요", member.DisplayName, keyCost))
+			notify(player, string.format("%s has used up today's free entries and doesn't have %d key(s). Defeat a field zone lord to get keys", member.DisplayName, keyCost))
 			if member ~= player then
-				notify(member, "무료 입장 / 열쇠가 부족해서 파티가 입장하지 못했어요.")
+				notify(member, "Your party couldn't enter: not enough free entries / keys.")
 			end
 			return
 		end
@@ -2625,14 +2625,14 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 		end
 	end
 	if not slot then
-		notify(player, "지금은 던전이 가득 찼어요. 잠시 후 다시 시도해주세요.")
+		notify(player, "All dungeons are full right now. Please try again shortly.")
 		return
 	end
 	usedSlots[slot] = true
 	for _, member in ipairs(members) do
 		if useFree[member] then
 			Dungeon.UseFree(member)
-			notify(member, string.format("🎟 오늘의 무료 입장 사용! (남은 횟수 %d / %d)", Dungeon.FreeLeft(member), Config.Keys.FreeDaily))
+			notify(member, string.format("🎟 Free entry used! (%d / %d left today)", Dungeon.FreeLeft(member), Config.Keys.FreeDaily))
 		else
 			Keys.SpendTier(member, difficulty.KeyTier or 1, keyCost)
 		end
@@ -2793,20 +2793,20 @@ end
 function Dungeon.StartGate(player, index)
 	if player:GetAttribute("Zone") ~= "Lobby" then return end
 	if player:GetAttribute("TutorialDungeonLocked") then
-		notify(player, "🔒 아직 던전에 들어갈 수 없어요. 튜토리얼 미션을 먼저 진행해주세요!")
+		notify(player, "🔒 You can't enter dungeons yet. Complete the tutorial missions first!")
 		return
 	end
 	local entry = typeof(index) == "number" and D.List[index]
 	if not entry then return end
 	local party = Party.GetParty(player)
 	if party and party.Leader ~= player then
-		notify(player, "파티장만 던전에 입장시킬 수 있어요.")
+		notify(player, "Only the party leader can start a dungeon.")
 		return
 	end
 	local who = party and party.Members or { player }
 	for _, member in ipairs(who) do
 		if (member:GetAttribute("Level") or 1) < entry.MinLevel then
-			notify(player, string.format("%s 님은 레벨이 부족해요. (이 던전은 Lv.%d 이상)", member.DisplayName, entry.MinLevel))
+			notify(player, string.format("%s's level is too low. (This dungeon requires Lv.%d+)", member.DisplayName, entry.MinLevel))
 			return
 		end
 	end
@@ -2817,7 +2817,7 @@ function Dungeon.OpenSelect(player)
 	if player:GetAttribute("Zone") ~= "Lobby" then return end
 	local party = Party.GetParty(player)
 	if party and party.Leader ~= player then
-		notify(player, "파티장만 던전에 입장시킬 수 있어요.")
+		notify(player, "Only the party leader can start a dungeon.")
 		return
 	end
 	Remotes.Dungeon:FireClient(player, "OpenSelect")

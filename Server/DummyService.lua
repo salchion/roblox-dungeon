@@ -312,7 +312,7 @@ function Dummy.Shoot(player, origin, direction)
 	-- (방어력이 있는 허수아비가 남아 있을 때만) 내 전투력이 모자라면 공격이 튕겨 나간다
 	local power = player:GetAttribute("Power") or 0
 	if power < data.RequiredPower then
-		Effects.FloatText(result.Position, string.format("🛡 튕겨 나가요! 전투력 %d 필요 (지금 %d)", data.RequiredPower, power), Color3.fromRGB(255, 130, 120))
+		Effects.FloatText(result.Position, string.format("🛡 Knocked back! Power %d required (you: %d)", data.RequiredPower, power), Color3.fromRGB(255, 130, 120))
 		Effects.Burst(result.Position, Color3.fromRGB(190, 195, 210), 6)
 		return result.Position
 	end
@@ -508,7 +508,7 @@ function Dummy.BuildRest(position)
 		faceText.TextScaled = true
 		faceText.TextColor3 = Color3.fromRGB(255, 244, 214)
 		faceText.TextStrokeTransparency = 0.3
-		faceText.Text = "💤 휴식 구역"
+		faceText.Text = "💤 Rest Zone"
 		faceText.Parent = face
 	end
 
@@ -525,7 +525,7 @@ function Dummy.BuildRest(position)
 	signLabel.TextScaled = true
 	signLabel.TextColor3 = Color3.fromRGB(190, 240, 255)
 	signLabel.TextStrokeTransparency = 0
-	signLabel.Text = "💤 휴식 구역"
+	signLabel.Text = "💤 Rest Zone"
 	signLabel.Parent = signGui
 end
 

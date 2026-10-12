@@ -118,7 +118,7 @@ local function placeBeacon(position, name)
 	}, beacon)
 	beaconLabel = label({
 		Size = UDim2.new(1, 0, 1, 0), TextSize = 15, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0.2,
-		TextColor3 = Color3.fromRGB(255, 230, 120), Text = "▼ " .. (name or "목표"),
+		TextColor3 = Color3.fromRGB(255, 230, 120), Text = "▼ " .. (name or "Goal"),
 	}, billboard)
 end
 
@@ -136,7 +136,7 @@ local function popupMission()
 	rounded(card, 18)
 	local cardStroke = create("UIStroke", { Color = Color3.fromRGB(235, 208, 128), Thickness = 3 }, card)
 	label({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 10), TextSize = 26, Font = Enum.Font.GothamBlack, RichText = true, ZIndex = 31,
-		Text = string.format("<font color='#ffd966'>🎯 미션 %d/%d</font>", current.Index, current.Total) }, card)
+		Text = string.format("<font color='#ffd966'>🎯 Mission %d/%d</font>", current.Index, current.Total) }, card)
 	label({ Size = UDim2.new(1, -40, 0, 56), Position = UDim2.new(0, 20, 0, 50), TextSize = 22, Font = Enum.Font.GothamBold, TextWrapped = true, TextTruncate = Enum.TextTruncate.AtEnd, ZIndex = 31,
 		Text = current.Text }, card)
 	activeWhere = label({ Size = UDim2.new(1, -40, 0, 26), Position = UDim2.new(0, 20, 1, -34), TextSize = 20, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(130, 255, 160), ZIndex = 31,
@@ -162,7 +162,7 @@ local function refresh()
 		player:SetAttribute("TutorialCardUp", false)
 		return
 	end
-	titleLabel.Text = string.format("<font color='#ffd966'>🎯 미션 %d/%d</font>", current.Index, current.Total)
+	titleLabel.Text = string.format("<font color='#ffd966'>🎯 Mission %d/%d</font>", current.Index, current.Total)
 	descLabel.Text = current.Text
 	local ratio = math.clamp(current.Progress / current.Goal, 0, 1)
 	TweenService:Create(barFill, TweenInfo.new(0.25), { Size = UDim2.new(ratio, 0, 1, 0) }):Play()
@@ -200,7 +200,7 @@ local function placeWaypoint(position, name)
 	}, waypoint)
 	waypointLabel = label({
 		Size = UDim2.new(1, 0, 1, 0), TextSize = 20, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0,
-		TextColor3 = Color3.fromRGB(150, 225, 255), Text = "▼ " .. (name or "다음 방"),
+		TextColor3 = Color3.fromRGB(150, 225, 255), Text = "▼ " .. (name or "Next room"),
 	}, billboard)
 end
 
@@ -319,19 +319,19 @@ local function runHighlight(kind)
 				local menuButton, growthTab, trainButton
 				for _, descendant in ipairs(hud:GetDescendants()) do
 					if descendant:IsA("TextButton") and descendant.Visible then
-						if descendant.Text == "📋 메뉴(B)" then menuButton = descendant end
-						if descendant:IsA("TextButton") and string.find(descendant.Text, "스킬·성장", 1, true) and descendant.Parent and descendant.Parent.Visible then growthTab = descendant end
-						if descendant.Text == "훈련 시작" and not trainButton then trainButton = descendant end
+						if descendant.Text == "📋 Menu(B)" then menuButton = descendant end
+						if descendant:IsA("TextButton") and string.find(descendant.Text, "Skills·Growth", 1, true) and descendant.Parent and descendant.Parent.Visible then growthTab = descendant end
+						if descendant.Text == "Start Training" and not trainButton then trainButton = descendant end
 					end
 				end
 				if growthTab then
 					if growthTab.BackgroundColor3.B < 0.8 then
-						target, text = growthTab, "스킬·성장 탭을 눌러요!"
+						target, text = growthTab, "Tap the Skills/Growth tab!"
 					elseif trainButton then
-						target, text = trainButton, "훈련 시작을 눌러요!"
+						target, text = trainButton, "Tap Start Training!"
 					end
 				elseif menuButton then
-					target, text = menuButton, "메뉴를 열어요! (B)"
+					target, text = menuButton, "Open the menu! (B)"
 				end
 			end
 			if target and target.AbsoluteSize.X > 0 then
@@ -396,9 +396,9 @@ local function playReel(list)
 	rounded(panel, 14)
 	local panelStroke = create("UIStroke", { Color = Color3.fromRGB(120, 140, 200), Thickness = 2, Transparency = 1 }, panel)
 	local title = label({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 8), TextSize = 22, Font = Enum.Font.GothamBlack,
-		Text = "🎁 첫 장비 지급!", TextTransparency = 1, ZIndex = 71 }, panel)
+		Text = "🎁 First gear granted!", TextTransparency = 1, ZIndex = 71 }, panel)
 	local footer = label({ Size = UDim2.new(1, -24, 0, 40), Position = UDim2.new(0, 12, 1, -46), TextSize = 14, TextWrapped = true,
-		TextColor3 = Color3.fromRGB(200, 210, 235), Text = "🎰 더 뽑고 싶다면 마을의 뽑기 머신에서 티켓으로! 일일 퀘스트에도 뽑기가 있어요", TextTransparency = 1, ZIndex = 71 }, panel)
+		TextColor3 = Color3.fromRGB(200, 210, 235), Text = "🎰 Want more pulls? Use tickets at the gacha machine in town! Daily quests have pulls too", TextTransparency = 1, ZIndex = 71 }, panel)
 	TweenService:Create(panel, TweenInfo.new(0.3), { BackgroundTransparency = 0.08 }):Play()
 	TweenService:Create(panelStroke, TweenInfo.new(0.3), { Transparency = 0.3 }):Play()
 	TweenService:Create(title, TweenInfo.new(0.3), { TextTransparency = 0 }):Play()
@@ -544,7 +544,7 @@ RunService.RenderStepped:Connect(function()
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if root then
 			local flat = Vector3.new(root.Position.X - waypoint.Position.X, 0, root.Position.Z - waypoint.Position.Z).Magnitude
-			waypointLabel.Text = string.format("▼ %s  %dm", waypoint:GetAttribute("Label") or "다음 방", math.floor(flat + 0.5))
+			waypointLabel.Text = string.format("▼ %s  %dm", waypoint:GetAttribute("Label") or "Next room", math.floor(flat + 0.5))
 			local lobbyNow = player:GetAttribute("Zone") == "Lobby" -- 마을에서는 목표 표지 하나만 보이게 (다음 구역 길잡이는 숨긴다)
 			waypoint.Transparency = lobbyNow and 1 or (flat < 30 and 0.92 or 0.6)
 			local wGui = waypoint:FindFirstChildOfClass("BillboardGui")
@@ -569,25 +569,25 @@ RunService.RenderStepped:Connect(function()
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if root then
 			local flat = Vector3.new(root.Position.X - beacon.Position.X, 0, root.Position.Z - beacon.Position.Z).Magnitude
-			beaconLabel.Text = string.format("▼ %s  %dm", current.TargetName or "목표", math.floor(flat + 0.5))
+			beaconLabel.Text = string.format("▼ %s  %dm", current.TargetName or "Goal", math.floor(flat + 0.5))
 			-- 메뉴 / 강화창이 화면을 가려도 상단 바에서 방향과 거리를 알 수 있게 한다 (북쪽 = -Z, 동쪽 = +X)
 			local dx, dz = beacon.Position.X - root.Position.X, beacon.Position.Z - root.Position.Z
-			local compass = { "동", "남동", "남", "남서", "서", "북서", "북", "북동" }
+			local compass = { "east", "southeast", "south", "southwest", "west", "northwest", "north", "northeast" }
 			local index = math.floor((math.atan2(dz, dx) / (math.pi / 4)) % 8 + 0.5) % 8 + 1
-			local where = compass[index] .. "쪽"
+			local where = compass[index]
 			local camera = workspace.CurrentCamera
 			local meters = math.floor(flat + 0.5)
 			if camera then -- 보는 방향 기준으로 "앞 / 뒤 / 왼쪽 / 오른쪽" (가까울수록 "바로 ~에 있어요!")
 				local rel = camera.CFrame:VectorToObjectSpace(Vector3.new(dx, 0, dz))
 				local angle = math.deg(math.atan2(rel.X, -rel.Z))
-				local side = math.abs(angle) <= 45 and "앞" or math.abs(angle) >= 135 and "뒤" or angle > 0 and "오른쪽" or "왼쪽"
+				local side = math.abs(angle) <= 45 and "ahead" or math.abs(angle) >= 135 and "behind" or angle > 0 and "to the right" or "to the left"
 				if flat < 45 then
-					where = "바로 " .. side .. "에 있어요!"
+					where = "Right " .. side .. "!"
 				else
-					where = side .. "쪽 (" .. where .. ")"
+					where = side .. " (" .. where .. ")"
 				end
 			end
-			local line = string.format("📍 %s  %s  %dm", current.TargetName or "목표", where, meters)
+			local line = string.format("📍 %s  %s  %dm", current.TargetName or "Goal", where, meters)
 			barText.Text = cardH <= 80 and string.format("%d / %d", current.Progress, current.Goal) or string.format("%d / %d     %s", current.Progress, current.Goal, line)
 			if activeWhere and activeWhere.Parent then activeWhere.Text = line end
 			beacon.Transparency = flat < 40 and 0.85 or 0.35 -- 가까워지면 투명하게 (시야 방해 방지)
@@ -636,7 +636,7 @@ do
 		local center = viewport / 2
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		local distance = root and math.floor((root.Position - worldPosition).Magnitude + 0.5) or 0
-		text.Text = string.format("%s  %dm", name or "목표", distance)
+		text.Text = string.format("%s  %dm", name or "Goal", distance)
 		-- 카메라 뒤쪽이면 방향이 뒤집히므로 보정
 		local direction = Vector2.new(screen.X, screen.Y) - center
 		if screen.Z < 0 then
@@ -671,7 +671,7 @@ do
 			goalFrame.Visible = false
 		end
 		if waypoint and player:GetAttribute("Zone") ~= "Lobby" then
-			point(wayFrame, wayArrow, wayText, waypoint.Position - Vector3.new(0, 70, 0), "다음 구역")
+			point(wayFrame, wayArrow, wayText, waypoint.Position - Vector3.new(0, 70, 0), "Next zone")
 		else
 			wayFrame.Visible = false
 		end
@@ -690,9 +690,9 @@ do
 	local cap = create("Frame", { Size = UDim2.new(0, 46, 0, 46), Position = UDim2.new(0, 10, 0.5, -23), BackgroundColor3 = Color3.fromRGB(245, 245, 250), BorderSizePixel = 0, ZIndex = 69 }, tip)
 	rounded(cap, 10)
 	label({ Size = UDim2.new(1, 0, 1, 0), Text = "Q", TextSize = 32, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 34, 50), TextStrokeTransparency = 1, ZIndex = 70 }, cap)
-	label({ Size = UDim2.new(1, -72, 0, 24), Position = UDim2.new(0, 66, 0, 8), Text = "대시로 빨리 가요!", TextSize = 20, Font = Enum.Font.GothamBlack,
+	label({ Size = UDim2.new(1, -72, 0, 24), Position = UDim2.new(0, 66, 0, 8), Text = "Dash to get there fast!", TextSize = 20, Font = Enum.Font.GothamBlack,
 		TextColor3 = Color3.fromRGB(150, 230, 255), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 69 }, tip)
-	label({ Size = UDim2.new(1, -72, 0, 22), Position = UDim2.new(0, 66, 0, 34), Text = "Q 키를 누르면 방향으로 순간 가속", TextSize = 14, Font = Enum.Font.GothamBold,
+	label({ Size = UDim2.new(1, -72, 0, 22), Position = UDim2.new(0, 66, 0, 34), Text = "Press Q to burst forward", TextSize = 14, Font = Enum.Font.GothamBold,
 		TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 69 }, tip)
 	local shown = false
 	local movingSince = nil
@@ -707,7 +707,7 @@ do
 	RunService.Heartbeat:Connect(function()
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		local step = current
-		local relevant = not compact() and root ~= nil and step ~= nil and step.TargetName == "필드 입구" and player:GetAttribute("Zone") == "Lobby" and not player:GetAttribute("SidePromptUp")
+		local relevant = not compact() and root ~= nil and step ~= nil and step.TargetKey == "Field" and player:GetAttribute("Zone") == "Lobby" and not player:GetAttribute("SidePromptUp")
 		if not relevant then
 			movingSince = nil
 			setShown(false)

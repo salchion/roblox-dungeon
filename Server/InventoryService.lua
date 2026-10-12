@@ -287,7 +287,7 @@ function Inventory.Add(player, item)
 			return "Scrapped", item, essence, gold
 		end
 		if count > 0 then
-			notify(player, string.format("🧹 더 약한 장비 %d개를 자동 정리했어요 (에센스 +%d, %d G)", count, essenceTotal, goldTotal))
+			notify(player, string.format("🧹 Auto-cleaned %d weaker gear (Essence +%d, %d G)", count, essenceTotal, goldTotal))
 		end
 		return "Bag", item
 	end
@@ -312,14 +312,14 @@ end
 function Inventory.Equip(player, id)
 	local state = states[player]
 	local item = state and state.Items[id]
-	if not item then return false, "그 아이템이 없어요." end
-	if player:GetAttribute("Zone") == "Dungeon" then return false, "던전 안에서는 장비를 바꿀 수 없어요." end
-	if isEquipped(state, id) then return false, "이미 장착 중이에요." end
+	if not item then return false, "You don't have that item." end
+	if player:GetAttribute("Zone") == "Dungeon" then return false, "You can't change gear in the dungeon." end
+	if isEquipped(state, id) then return false, "Already equipped." end
 
 	state.Equipped[item.Slot] = id
 	applyEquipAttributes(player, state)
 	Inventory.Push(player)
-	return true, string.format("[%s] %s 장착!", G.RarityNames[item.Rarity], Inventory.ItemName(item))
+	return true, string.format("[%s] %s equipped!", G.RarityNames[item.Rarity], Inventory.ItemName(item))
 end
 
 -- 가방에 지금 끼고 있는 것보다 점수가 높은 아이템이 있는 부위 수 (뽑기 직후 "자동 장착" 팝업용)
@@ -346,7 +346,7 @@ function Inventory.AutoEquipBest(player, emptyOnly)
 	local state = states[player]
 	if not state then return 0 end
 	if player:GetAttribute("Zone") == "Dungeon" then
-		return 0, "던전 안에서는 장비를 바꿀 수 없어요."
+		return 0, "You can't change gear in the dungeon."
 	end
 	local best = {}      -- [slotKey] = { Id, Score }
 	for id, item in pairs(state.Items) do
@@ -373,13 +373,13 @@ end
 function Inventory.Scrap(player, id)
 	local state = states[player]
 	local item = state and state.Items[id]
-	if not item then return false, "그 아이템이 없어요." end
-	if isEquipped(state, id) then return false, "장착 중인 장비는 분해할 수 없어요." end
+	if not item then return false, "You don't have that item." end
+	if isEquipped(state, id) then return false, "You can't dismantle equipped gear." end
 
 	state.Items[id] = nil
 	local essence, gold = giveScrap(player, state, item)
 	Inventory.Push(player)
-	return true, string.format("분해! 에센스 +%d, %d G", essence, gold)
+	return true, string.format("Dismantled! Essence +%d, %d G", essence, gold)
 end
 
 function Inventory.SmartClean(player)
@@ -387,8 +387,8 @@ function Inventory.SmartClean(player)
 	if not state then return false, "" end
 	local count, essenceTotal, goldTotal = smartPrune(player, state, nil)
 	Inventory.Push(player)
-	if count == 0 then return true, "정리할 약한 장비가 없어요. (세트 / 유니크 / 부위별 최고 장비는 남겨 둬요)" end
-	return true, string.format("🧹 %d개 정리! 에센스 +%d, %d G", count, essenceTotal, goldTotal)
+	if count == 0 then return true, "No weak gear to clean up. (Set / Unique / best-in-slot gear is kept)" end
+	return true, string.format("🧹 Cleaned up %d! Essence +%d, %d G", count, essenceTotal, goldTotal)
 end
 
 function Inventory.ScrapBelow(player, rarity)
@@ -408,21 +408,21 @@ function Inventory.ScrapBelow(player, rarity)
 	end
 	Inventory.Push(player)
 	if count == 0 then
-		return false, "분해할 아이템이 없어요."
+		return false, "No items to dismantle."
 	end
-	return true, string.format("%d개 분해! 에센스 +%d, %d G", count, essenceTotal, goldTotal)
+	return true, string.format("Dismantled %d! Essence +%d, %d G", count, essenceTotal, goldTotal)
 end
 
 -- 옵션 재굴림: 옵션 종류는 그대로, 수치만 다시 뽑는다 (더 좋아질 수도 나빠질 수도 있어요)
 function Inventory.Reroll(player, id)
 	local state = states[player]
 	local item = state and state.Items[id]
-	if not item then return false, "그 아이템이 없어요." end
-	if #item.Affixes == 0 then return false, "옵션이 없는 아이템이에요." end
+	if not item then return false, "You don't have that item." end
+	if #item.Affixes == 0 then return false, "This item has no affixes." end
 
 	local cost = I.RerollEssence[item.Rarity]
 	if state.Essence < cost then
-		return false, string.format("에센스가 부족해요. (%d 필요)", cost)
+		return false, string.format("Not enough Essence. (%d needed)", cost)
 	end
 	state.Essence -= cost
 	for _, affix in ipairs(item.Affixes) do
@@ -432,7 +432,7 @@ function Inventory.Reroll(player, id)
 		applyEquipAttributes(player, state)
 	end
 	Inventory.Push(player)
-	return true, "옵션 재굴림 완료!"
+	return true, "Affix reroll complete!"
 end
 
 -- (세트 조각 / 세트 각인은 없어졌다: 세트 장비는 필드 드랍으로만 얻는다)
@@ -607,9 +607,9 @@ Remotes.Inventory.OnServerEvent:Connect(function(player, action, arg, arg2)
 		if reason then
 			ok, message = false, reason
 		elseif changed > 0 then
-			ok, message = true, string.format("가장 좋은 장비로 %d부위를 자동 장착했어요!", changed)
+			ok, message = true, string.format("Auto-equipped the best gear in %d slot(s)!", changed)
 		else
-			ok, message = true, "이미 모든 부위에 가장 좋은 장비를 끼고 있어요."
+			ok, message = true, "You're already wearing the best gear in every slot."
 		end
 	elseif action == "AutoScrap" and typeof(arg) == "number" then
 		Inventory.SetAutoScrap(player, arg)

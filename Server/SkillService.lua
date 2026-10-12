@@ -17,7 +17,7 @@ local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
 local Field = require(script.Parent:WaitForChild("FieldService"))
 
 local S = Config.Skills
-print("[SkillService] 최신 버전 로드됨 (데드아이 일제 포격 v3)")
+print("[SkillService] latest version loaded (Deadeye barrage v3)")
 
 local Skill = {}
 
@@ -94,7 +94,7 @@ handlers.Barrier = function(player, root, humanoid, character)
 	Debris:AddItem(field, S.Barrier.Duration + U.BarrierDuration * (skillLevel(player, "Barrier") - 1))
 	Effects.Burst(root.Position, Color3.fromRGB(120, 200, 255), 25)
 	ring(root.Position, 7, Color3.fromRGB(120, 200, 255), 0.5)
-	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), "🛡 방벽!", Color3.fromRGB(150, 220, 255))
+	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), "🛡 Barrier!", Color3.fromRGB(150, 220, 255))
 	return true
 end
 
@@ -198,12 +198,12 @@ end
 handlers.Ult = function(player, root, _, character)
 	local cfg = S.Ult
 	if (player:GetAttribute("UltCharge") or 0) < cfg.Cost then
-		return false, "궁극기 게이지가 부족해요! (적을 공격하면 차올라요)"
+		return false, "Not enough Ultimate gauge! (It fills as you attack enemies)"
 	end
 	local maxTargets = (cfg.MaxTargets or 6) + math.floor((U.UltTargets or 0) * (skillLevel(player, "Ult") - 1) + 0.001)
 	local targets = Dungeon.TargetsIn(player, root.Position, cfg.Radius, maxTargets) or Field.TargetsIn(player, root.Position, cfg.Radius, maxTargets)
 	if not targets or #targets == 0 then
-		return false, "범위 안에 적이 없어요! (게이지는 그대로예요)"
+		return false, "No enemies in range! (Your gauge is unchanged)"
 	end
 	player:SetAttribute("UltCharge", 0)
 
@@ -222,8 +222,8 @@ handlers.Ult = function(player, root, _, character)
 	Debris:AddItem(field, 0.6 + volleys * volleyGap + 1.2) -- 먼저 수명을 정해 둔다 (오류가 나도 영구 무적이 되지 않게)
 	field.Parent = character
 	player:SetAttribute("DeadeyeActive", true)
-	Remotes.Notify:FireClient(player, string.format("🎯 데드아이! %d마리 일제 포격", #targets))
-	Effects.FloatText(origin + Vector3.new(0, 6, 0), "🎯 데드아이!", Color3.fromRGB(255, 90, 90))
+	Remotes.Notify:FireClient(player, string.format("🎯 Deadeye! Barrage on %d enemies", #targets))
+	Effects.FloatText(origin + Vector3.new(0, 6, 0), "🎯 Deadeye!", Color3.fromRGB(255, 90, 90))
 
 	task.spawn(function()
 		local bodyOk, bodyErr = pcall(function()
@@ -292,7 +292,7 @@ handlers.Ult = function(player, root, _, character)
 		if not bodyOk then
 			if field.Parent then field:Destroy() end
 			warn("[Deadeye] error: " .. tostring(bodyErr))
-			Remotes.Notify:FireClient(player, "데드아이 오류: " .. tostring(bodyErr))
+			Remotes.Notify:FireClient(player, "Deadeye error: " .. tostring(bodyErr))
 			player:SetAttribute("DeadeyeActive", false)
 		end
 	end)
@@ -306,7 +306,7 @@ function Skill.Use(player, skillKey, aimPoint)
 	if typeof(skillKey) ~= "string" or not table.find(S.Order, skillKey) or not handlers[skillKey] then return end
 	local zone = player:GetAttribute("Zone")
 	if zone ~= "Field" and zone ~= "Dungeon" then
-		Remotes.Notify:FireClient(player, "스킬은 필드와 던전에서만 쓸 수 있어요.")
+		Remotes.Notify:FireClient(player, "Skills can only be used in the field and dungeons.")
 		return
 	end
 	local root, humanoid, character = aliveParts(player)

@@ -42,11 +42,11 @@ function Daily.Load(player, saved)
 
 	local parts = {}
 	if reward.Gold then table.insert(parts, reward.Gold .. " G") end
-	if reward.Tickets then table.insert(parts, "티켓 " .. reward.Tickets) end
-	if reward.Keys then table.insert(parts, "열쇠 " .. reward.Keys) end
+	if reward.Tickets then table.insert(parts, "Tickets " .. reward.Tickets) end
+	if reward.Keys then table.insert(parts, "Keys " .. reward.Keys) end
 	task.delay(5, function()
 		if player.Parent then
-			Remotes.Notify:FireClient(player, string.format("📅 %d일 연속 출석! 보상: %s", streak, table.concat(parts, " + ")))
+			Remotes.Notify:FireClient(player, string.format("📅 %d-day login streak! Reward: %s", streak, table.concat(parts, " + ")))
 		end
 	end)
 end

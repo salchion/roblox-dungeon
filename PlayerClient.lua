@@ -201,10 +201,10 @@ create("UIGradient", {
 
 makeLabel({
 	Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 8),
-	Text = "🔨 무기 강화", Font = Enum.Font.GothamBlack, TextSize = 24, TextColor3 = Color3.fromRGB(255, 220, 130),
+	Text = "🔨 Weapon Upgrade", Font = Enum.Font.GothamBlack, TextSize = 24, TextColor3 = Color3.fromRGB(255, 220, 130),
 }, enhancePanel)
 makeButton({
-	Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -74, 0, 12), Text = "닫기", TextSize = 15, BackgroundColor3 = Color3.fromRGB(110, 60, 70),
+	Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -74, 0, 12), Text = "Close", TextSize = 15, BackgroundColor3 = Color3.fromRGB(110, 60, 70),
 }, enhancePanel, function()
 	enhancePanel.Visible = false
 end)
@@ -335,7 +335,7 @@ local function manyLocked()
 end
 local function enhanceMany(count)
 	if manyLocked() then
-		toast("🔒 처음 강화는 [강화하기]로 직접 해 보세요! 곧 x10 / 최대 강화가 열려요.")
+		toast("🔒 Do your first upgrades with [Upgrade] yourself! x10 / Max Upgrade unlock soon.")
 		return
 	end
 	if E.EnhanceBusy then return end
@@ -345,11 +345,11 @@ local function enhanceMany(count)
 end
 local enhanceTen = makeButton({
 	Size = UDim2.new(0, 80, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 214, 1, -14),
-	Text = "x10\n강화", TextSize = 16, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(60, 120, 200),
+	Text = "x10\nUpgrade", TextSize = 16, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(60, 120, 200),
 }, enhancePanel, function() enhanceMany(10) end)
 local enhanceMax = makeButton({
 	Size = UDim2.new(0, 80, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 302, 1, -14),
-	Text = "최대\n강화", TextSize = 16, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(190, 110, 40),
+	Text = "Max\nUpgrade", TextSize = 16, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(190, 110, 40),
 }, enhancePanel, function() enhanceMany(50) end)
 do
 	local function lockMany()
@@ -359,8 +359,8 @@ do
 			button.BackgroundTransparency = locked and 0.6 or 0
 			button.TextTransparency = locked and 0.5 or 0
 		end
-		enhanceTen.Text = locked and "🔒\nx10" or "x10\n강화"
-		enhanceMax.Text = locked and "🔒\n최대" or "최대\n강화"
+		enhanceTen.Text = locked and "🔒\nx10" or "x10\nUpgrade"
+		enhanceMax.Text = locked and "🔒\nMax" or "Max\nUpgrade"
 	end
 	player:GetAttributeChangedSignal("TutorialActive"):Connect(lockMany)
 	player:GetAttributeChangedSignal("TutorialEnhanceCost"):Connect(lockMany)
@@ -368,7 +368,7 @@ do
 end
 local enhanceButton = makeButton({
 	Size = UDim2.new(0, 186, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 20, 1, -14),
-	Text = "강화하기", TextSize = 18, Font = Enum.Font.GothamBold, BackgroundColor3 = GREEN,
+	Text = "Upgrade", TextSize = 18, Font = Enum.Font.GothamBold, BackgroundColor3 = GREEN,
 }, enhancePanel, function()
 	if E.EnhanceBusy then return end
 	E.EnhanceBusy = true
@@ -485,7 +485,7 @@ function refreshEnhance()
 	end
 
 	if level >= Config.Weapon.MaxLevel then
-		enhanceNext.Text = "<font color='#ffd966'>마지막 무기를 최대로 강화했어요!</font>"
+		enhanceNext.Text = "<font color='#ffd966'>You maxed out the final weapon!</font>"
 		enhanceInfo.Text = ""
 		enhanceButton.Text = "MAX"
 		enhanceButton.BackgroundColor3 = GRAY
@@ -502,13 +502,13 @@ function refreshEnhance()
 		cost, chance = math.min(cost, tutorialCost), 100
 	end
 	if milestone and milestone.Kind == "Form" then
-		enhanceNext.Text = string.format("▶ <b>%d강</b> 더 하면 <font color='#9ad7ff'><b>%s</b></font> 해금!", milestone.Level - level, milestone.Name)
+		enhanceNext.Text = string.format("▶ <b>%d more</b> to unlock <font color='#9ad7ff'><b>%s</b></font>!", milestone.Level - level, milestone.Name)
 	elseif milestone then
-		enhanceNext.Text = string.format("▶ <b>%d강</b> 더 하면 <font color='#9ad7ff'><b>%s</b></font> 로 진화!", milestone.Level - level, milestone.Name)
+		enhanceNext.Text = string.format("▶ <b>%d more</b> to evolve into <font color='#9ad7ff'><b>%s</b></font>!", milestone.Level - level, milestone.Name)
 	else
 		enhanceNext.Text = ""
 	end
-	enhanceInfo.Text = string.format("공격력  <b>x%.2f</b> <font color='#78ff8c'>▶ x%.2f</font>\n성공 확률  <font color='#%s'><b>%d%%</b></font>   <font size='12' color='#aaaabb'>(실패해도 단계 유지)</font>",
+	enhanceInfo.Text = string.format("Damage  <b>x%.2f</b> <font color='#78ff8c'>▶ x%.2f</font>\nSuccess rate  <font color='#%s'><b>%d%%</b></font>   <font size='12' color='#aaaabb'>(level kept on failure)</font>",
 		Config.GetDamageMultiplier(level), Config.GetDamageMultiplier(level + 1), chance >= 80 and "78ff8c" or (chance >= 60 and "ffd966" or "ff9a6e"), chance)
 	do
 		local perk = Config.GetWeaponPerk(level)
@@ -518,15 +518,15 @@ function refreshEnhance()
 		end
 		if milestone and milestone.Kind == "Era" and milestone.Tier.Perk then
 			local nextPerk = milestone.Tier.Perk
-			table.insert(lines, string.format("<font color='#9affc0'>다음 시대 → %s <b>%s</b></font> <font color='#aeb4cc'>%s</font>", nextPerk.Icon, nextPerk.Name, nextPerk.Desc))
+			table.insert(lines, string.format("<font color='#9affc0'>Next era → %s <b>%s</b></font> <font color='#aeb4cc'>%s</font>", nextPerk.Icon, nextPerk.Name, nextPerk.Desc))
 		elseif milestone and milestone.Kind == "Form" then
 			local info = Config.WeaponTypes[milestone.Key]
-			table.insert(lines, string.format("<font color='#9affc0'>다음 무기 → <b>%s</b></font> <font color='#aeb4cc'>%s</font>", info.Name, info.Trait))
+			table.insert(lines, string.format("<font color='#9affc0'>Next weapon → <b>%s</b></font> <font color='#aeb4cc'>%s</font>", info.Name, info.Trait))
 		end
 		enhancePerk.Text = table.concat(lines, "\n")
 	end
 	local affordable = gold >= cost
-	enhanceButton.Text = freeNow and "✨ 무료!\n강화하기" or string.format("💰 %s G\n강화하기", tostring(cost))
+	enhanceButton.Text = freeNow and "✨ Free!\nUpgrade" or string.format("💰 %s G\nUpgrade", tostring(cost))
 	enhanceButton.BackgroundColor3 = affordable and GREEN or Color3.fromRGB(95, 60, 62)
 	E.EnhanceAffordable = affordable
 end
@@ -565,12 +565,12 @@ Remotes.Enhance.OnClientEvent:Connect(function(ok, message, summary)
 	enhanceBanner.TextTransparency = 0
 	enhanceBanner.TextStrokeTransparency = 0
 	if evolved then
-		enhanceBanner.Text = "✨ 해금 · 진화! ✨"
+		enhanceBanner.Text = "✨ Unlock · Evolve! ✨"
 		enhanceBanner.TextColor3 = Color3.fromRGB(255, 225, 100)
 		medalStroke.Thickness = 12
 		TweenService:Create(medalStroke, TweenInfo.new(0.7), { Thickness = 5 }):Play()
 	elseif summary and summary.Attempts > 1 then
-		enhanceBanner.Text = string.format("%d연 강화! 성공 %d", summary.Attempts, summary.Successes)
+		enhanceBanner.Text = string.format("%d upgrades! %d succeeded", summary.Attempts, summary.Successes)
 		enhanceBanner.TextColor3 = ok and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 160, 120)
 		enhanceBanner.TextSize = 34
 		medalStroke.Thickness = 9
@@ -604,7 +604,7 @@ Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 	if action ~= "Step" then return end
 	local advanced = data.Index > lastStepIndex and lastStepIndex > 0
 	lastStepIndex = data.Index
-	if advanced and data.TargetName ~= "모루" and enhancePanel.Visible then
+	if advanced and data.TargetName ~= "Anvil" and enhancePanel.Visible then
 		task.delay(1.2, function()
 			enhancePanel.Visible = false
 		end)
@@ -634,10 +634,10 @@ create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(70, 46, 100), Co
 
 makeLabel({
 	Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8),
-	Text = "🛡 장비 · 뽑기", Font = Enum.Font.GothamBlack, TextSize = 24, TextColor3 = Color3.fromRGB(235, 200, 255),
+	Text = "🛡 Gear · Gacha", Font = Enum.Font.GothamBlack, TextSize = 24, TextColor3 = Color3.fromRGB(235, 200, 255),
 }, gearPanel)
 makeButton({
-	Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -74, 0, 12), Text = "닫기", TextSize = 15, BackgroundColor3 = Color3.fromRGB(110, 60, 70),
+	Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -74, 0, 12), Text = "Close", TextSize = 15, BackgroundColor3 = Color3.fromRGB(110, 60, 70),
 }, gearPanel, function()
 	gearPanel.Visible = false
 end)
@@ -704,7 +704,7 @@ local detailText = makeLabel({
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 }, detail)
 local enhanceSlotButton = makeButton({
-	Size = UDim2.new(1, -24, 0, 50), Position = UDim2.new(0, 12, 1, -112), Text = "강화", TextSize = 18, Font = Enum.Font.GothamBold, BackgroundColor3 = GREEN,
+	Size = UDim2.new(1, -24, 0, 50), Position = UDim2.new(0, 12, 1, -112), Text = "Upgrade", TextSize = 18, Font = Enum.Font.GothamBold, BackgroundColor3 = GREEN,
 }, detail, function()
 	Remotes.Gear:FireServer("Enhance", state.Selected)
 end)
@@ -726,18 +726,18 @@ for index, rate in ipairs(Config.Gacha.Rates) do
 end
 makeLabel({
 	Size = UDim2.new(0.44, 0, 0, 60), Position = UDim2.new(0, 20, 0, 52), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
-	Text = table.concat(rateParts, "  ") .. "\n<font color='#c9c0e0'>같거나 낮은 등급은 골드로 교환 · 티켓은 던전 / 필드 보스에게서 나와요</font>",
+	Text = table.concat(rateParts, "  ") .. "\n<font color='#c9c0e0'>Same or lower rarity converts to Gold · Tickets drop from dungeons / field bosses</font>",
 }, gachaBar)
 local rollOne = makeButton({
 	Size = UDim2.new(0, 176, 0, 80), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -218, 0.5, 0),
-	Text = "🎰 뽑기 x1\n티켓 1장", TextSize = 20, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(120, 80, 210),
+	Text = "🎰 Roll x1\n1 Ticket", TextSize = 20, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(120, 80, 210),
 }, gachaBar, function()
 	Remotes.Gear:FireServer("Roll", 1)
 end)
 create("UIStroke", { Color = Color3.fromRGB(190, 170, 255), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 2 }, rollOne)
 local rollButton = makeButton({
 	Size = UDim2.new(0, 200, 0, 80), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -14, 0.5, 0),
-	Text = "🎰 여러 장 뽑기!\n티켓 장수만큼 (최대 10)", TextSize = 22, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(165, 70, 245),
+	Text = "🎰 Multi Roll!\nUses all Tickets (max 10)", TextSize = 22, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(165, 70, 245),
 }, gachaBar, function()
 	local many = math.min(10, player:GetAttribute("Tickets") or 0)
 	if many >= 2 then Remotes.Gear:FireServer("Roll", many) end
@@ -781,7 +781,7 @@ function refreshGear()
 		else
 			ui.Stroke.Color = (slot.Key == state.Selected) and Color3.fromRGB(255, 225, 120) or Color3.fromRGB(90, 90, 120)
 			ui.Stroke.Thickness = (slot.Key == state.Selected) and 4 or 2
-			ui.Name.Text = slot.Name .. " 비어 있음"
+			ui.Name.Text = slot.Name .. " (empty)"
 			ui.Name.TextColor3 = Color3.fromRGB(130, 130, 150)
 			ui.Level.Text = ""
 			ui.Icon.TextTransparency = 0.6
@@ -793,7 +793,7 @@ function refreshGear()
 	local rarity = player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0
 	local level = player:GetAttribute("Gear_" .. slot.Key .. "_L") or 0
 	if rarity <= 0 then
-		detailText.Text = string.format("<font size='18'><b>%s</b></font>\n<font color='#9a9ab5'>비어 있어요</font>\n\n%s 효과\n<font color='#c9c0e0'>아래 뽑기로 장비를 얻거나, 필드에서 떨어진 장비를 가방(B)에서 장착하세요.</font>", slot.Name, slot.StatName)
+		detailText.Text = string.format("<font size='18'><b>%s</b></font>\n<font color='#9a9ab5'>Empty</font>\n\n%s effect\n<font color='#c9c0e0'>Get gear with the gacha below, or equip gear dropped in the field from your Bag (B).</font>", slot.Name, slot.StatName)
 		enhanceSlotButton.Text = "—"
 		enhanceSlotButton.BackgroundColor3 = GRAY
 		detailStroke.Color = Color3.fromRGB(110, 90, 160)
@@ -811,27 +811,27 @@ function refreshGear()
 			local chance = math.floor(Config.GetGearEnhanceChance(level) * 100 + 0.5)
 			table.insert(lines, string.format("<b>%s</b>\n<font color='#78ff8c'>▶ %s</font>", now, Config.FormatGearStat(slot.Key, Config.GetGearStat(slot.Key, rarity, level + 1))))
 			table.insert(lines, "")
-			table.insert(lines, string.format("성공 확률 <b><font color='#%s'>%d%%</font></b>   <font size='12' color='#aaaabb'>(실패해도 유지)</font>", chance >= 80 and "78ff8c" or (chance >= 60 and "ffd966" or "ff9a6e"), chance))
-			enhanceSlotButton.Text = string.format("💰 %d G   강화", cost)
+			table.insert(lines, string.format("Success rate <b><font color='#%s'>%d%%</font></b>   <font size='12' color='#aaaabb'>(kept on failure)</font>", chance >= 80 and "78ff8c" or (chance >= 60 and "ffd966" or "ff9a6e"), chance))
+			enhanceSlotButton.Text = string.format("💰 %d G   Upgrade", cost)
 			enhanceSlotButton.BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62)
 		else
 			table.insert(lines, "<b>" .. now .. "</b>")
-			table.insert(lines, "\n<font color='#ffd966'>최대 강화 단계!</font>")
+			table.insert(lines, "\n<font color='#ffd966'>Max upgrade level!</font>")
 			enhanceSlotButton.Text = "MAX"
 			enhanceSlotButton.BackgroundColor3 = GRAY
 		end
 		detailText.Text = table.concat(lines, "\n")
 	end
 
-	powerLabel.Text = string.format("⚡ 전투력 %d", player:GetAttribute("Power") or 0)
-	ticketLabel.Text = string.format("🎫 티켓 %d장", tickets)
+	powerLabel.Text = string.format("⚡ Power %d", player:GetAttribute("Power") or 0)
+	ticketLabel.Text = string.format("🎫 Tickets: %d", tickets)
 	rollOne.BackgroundColor3 = tickets > 0 and Color3.fromRGB(120, 80, 210) or Color3.fromRGB(80, 70, 100)
 	local many = math.min(10, tickets)
 	local canTen = many >= 2
 	rollButton.AutoButtonColor = canTen
 	rollButton.BackgroundColor3 = canTen and Color3.fromRGB(165, 70, 245) or Color3.fromRGB(62, 58, 78)
 	rollButton.TextTransparency = canTen and 0 or 0.45
-	rollButton.Text = canTen and string.format("🎰 %d장 뽑기!\n티켓 %d장", many, many) or "🎰 여러 장 뽑기\n티켓 2장부터 (최대 10)"
+	rollButton.Text = canTen and string.format("🎰 Roll x%d!\n%d Tickets", many, many) or "🎰 Multi Roll\nNeeds 2+ Tickets (max 10)"
 	state.Rebuild = rebuildCharacter
 end
 state.Reopen = function() rebuildCharacter() end
@@ -895,15 +895,15 @@ do
 		popup.Visible = true
 		popScale.Scale = 0.6
 		TweenService:Create(popScale, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
-		paint(card, "🎲", "추첨 중…", "", Color3.fromRGB(150, 150, 170))
-		paint(penCard, "🎲", "추첨 중…", "", Color3.fromRGB(150, 150, 170))
+		paint(card, "🎲", "Rolling…", "", Color3.fromRGB(150, 150, 170))
+		paint(penCard, "🎲", "Rolling…", "", Color3.fromRGB(150, 150, 170))
 		task.spawn(function()
 			-- 주사위 돌아가는 연출: 점점 느려지며 멈춘다
 			for step = 1, 12 do
 				if token ~= mine then return end
 				card.Icon.Text = ICONS[math.random(#ICONS)]
 				penCard.Icon.Text = data.Penalty and PEN_ICONS[math.random(#PEN_ICONS)] or ICONS[math.random(#ICONS)]
-				card.Title.Text = "추첨 중" .. string.rep(".", step % 3 + 1)
+				card.Title.Text = "Rolling" .. string.rep(".", step % 3 + 1)
 				SoundBank.Play(sfxParent, "Gacha_Tick")
 				task.wait(0.05 + step * 0.014)
 			end
@@ -922,8 +922,8 @@ do
 			if setInfo then
 				local pips = {}
 				for i = 1, setInfo.Max or 3 do table.insert(pips, i <= setInfo.Count and "●" or "○") end
-				setLine = "+ " .. (data.Jackpot and "🌟 " or "") .. setInfo.Name .. " 조각 " .. table.concat(pips, " ")
-				if setInfo.Completed then setLine = setLine .. string.format("   ✨ %d세트 완성! %s Lv.%d", setInfo.Count, setInfo.EffectName or "", setInfo.Level or 1) end
+				setLine = "+ " .. (data.Jackpot and "🌟 " or "") .. setInfo.Name .. " piece " .. table.concat(pips, " ")
+				if setInfo.Completed then setLine = setLine .. string.format("   ✨ %d-piece set complete! %s Lv.%d", setInfo.Count, setInfo.EffectName or "", setInfo.Level or 1) end
 			elseif data.Note then
 				setLine = "+ 🏆 " .. data.Note
 			else
@@ -931,17 +931,17 @@ do
 			end
 			local color = (buff and buff.Special) and Color3.fromRGB(255, 195, 70) or (setInfo and setInfo.Color) or Color3.fromRGB(110, 210, 255)
 			if buff then
-				paint(card, buff.Icon, (buff.Special and (data.Jackpot and "🌟 확정 레어! " or "★ 레어 ") or "✨ ") .. buff.Name .. " " .. (buff.Desc or ""), setLine, color)
+				paint(card, buff.Icon, (buff.Special and (data.Jackpot and "🌟 Guaranteed Rare! " or "★ Rare ") or "✨ ") .. buff.Name .. " " .. (buff.Desc or ""), setLine, color)
 			else
-				paint(card, "💤", "강화 없음 (이미 최대)", setLine, color)
+				paint(card, "💤", "No buff (already maxed)", setLine, color)
 			end
 			if setInfo and setInfo.Icon then card.Icon.Text = buff and buff.Icon or setInfo.Icon end
 			SoundBank.Play(sfxParent, "Enh_Success")
 			if data.Penalty then
-				paint(penCard, data.Penalty.Icon, "⚠ " .. data.Penalty.Name, string.format("%s\n대신 골드 +%d%%", data.Penalty.Desc, data.Penalty.Gold), Color3.fromRGB(255, 130, 120))
+				paint(penCard, data.Penalty.Icon, "⚠ " .. data.Penalty.Name, string.format("%s\nGold +%d%% instead", data.Penalty.Desc, data.Penalty.Gold), Color3.fromRGB(255, 130, 120))
 				task.delay(0.12, function() SoundBank.Play(sfxParent, "Enh_Fail") end)
 			else
-				paint(penCard, "🍀", "패널티 없음!", "이번엔 운이 좋았어요", Color3.fromRGB(150, 255, 170))
+				paint(penCard, "🍀", "No penalty!", "Lucky this time", Color3.fromRGB(150, 255, 170))
 			end
 			TweenService:Create(popScale, TweenInfo.new(0.12), { Scale = 1.08 }):Play()
 			task.wait(0.14)
@@ -961,7 +961,7 @@ do
 	create("UIStroke", { Color = Color3.fromRGB(120, 255, 150), Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, popup)
 	local popupText = makeLabel({ Size = UDim2.new(1, -20, 0, 26), Position = UDim2.new(0, 10, 0, 6), Font = Enum.Font.GothamBlack, TextSize = 17, ZIndex = 81 }, popup)
 	local popupButton = makeButton({
-		Size = UDim2.new(1, -24, 0, 38), Position = UDim2.new(0, 12, 0, 38), Text = "⬆ 강한 장비로 자동 장착", TextSize = 18,
+		Size = UDim2.new(1, -24, 0, 38), Position = UDim2.new(0, 12, 0, 38), Text = "⬆ Auto-equip stronger gear", TextSize = 18,
 		Font = Enum.Font.GothamBlack, BackgroundColor3 = Color3.fromRGB(60, 190, 100), ZIndex = 81,
 	}, popup)
 	local shownAt = 0
@@ -973,7 +973,7 @@ do
 	Remotes.Gear.OnClientEvent:Connect(function(action, result)
 		if action ~= "Result" or not result.Roll or (result.Upgrades or 0) <= 0 then return end
 		task.delay(1.8, function()
-			popupText.Text = string.format("🔥 더 좋은 장비가 나왔어요! (%d부위)", result.Upgrades)
+			popupText.Text = string.format("🔥 Better gear dropped! (%d slot(s))", result.Upgrades)
 			popup.Visible = true
 			shownAt = os.clock()
 			local mine = shownAt
@@ -1061,9 +1061,9 @@ do
 
 			if multi then
 				local grid = create("Frame", { Size = UDim2.new(0, 660, 0, 380), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 62 }, root)
-				makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 0), Text = string.format("🎰 %d연 뽑기 결과", #result.Rolls), TextSize = 26, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 230, 150), ZIndex = 63 }, grid)
+				makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 0), Text = string.format("🎰 %d-Roll Results", #result.Rolls), TextSize = 26, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 230, 150), ZIndex = 63 }, grid)
 				local counts = {}
-				local STATUS = { Equipped = "장착!", Bag = "가방" }
+				local STATUS = { Equipped = "Equipped!", Bag = "Bag" }
 				for index, r in ipairs(result.Rolls) do
 					counts[r.Rarity] = (counts[r.Rarity] or 0) + 1
 					task.delay((index - 1) * 0.1, function()
@@ -1092,7 +1092,7 @@ do
 						makeLabel({ Size = UDim2.new(1, 0, 0, 56), Position = UDim2.new(0, 0, 0, 10), Text = ICONS[r.Slot] or "🎁", TextSize = 42, ZIndex = 64 }, cardM)
 						makeLabel({ Size = UDim2.new(1, -8, 0, 34), Position = UDim2.new(0, 4, 0, 64), Text = r.Name or "", TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = rc, ZIndex = 64 }, cardM)
 						makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 100), Text = string.format("★ %s", Config.Gear.RarityNames[r.Rarity]), TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = rc, ZIndex = 64 }, cardM)
-						makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 1, -20), Text = STATUS[r.Status] or "분해", TextSize = 12, TextColor3 = Color3.fromRGB(190, 190, 210), ZIndex = 64 }, cardM)
+						makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 1, -20), Text = STATUS[r.Status] or "Scrap", TextSize = 12, TextColor3 = Color3.fromRGB(190, 190, 210), ZIndex = 64 }, cardM)
 						if r.Rarity >= 3 then
 							local ringM = create("Frame", { Size = UDim2.new(0, 40, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy), BackgroundTransparency = 1, ZIndex = 61 }, grid)
 							create("UICorner", { CornerRadius = UDim.new(1, 0) }, ringM)
@@ -1109,7 +1109,7 @@ do
 						table.insert(parts, string.format("<font color='#%s'>%s %d</font>", Config.Gear.RarityColors[rarity]:ToHex(), Config.Gear.RarityNames[rarity], counts[rarity]))
 					end
 				end
-				makeLabel({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 1, -26), RichText = true, Text = table.concat(parts, "   ") .. "   <font color='#aaaabb' size='13'>(눌러서 닫기)</font>", TextSize = 18, Font = Enum.Font.GothamBold, ZIndex = 63 }, grid)
+				makeLabel({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 1, -26), RichText = true, Text = table.concat(parts, "   ") .. "   <font color='#aaaabb' size='13'>(tap to close)</font>", TextSize = 18, Font = Enum.Font.GothamBold, ZIndex = 63 }, grid)
 				skipped = false
 				pause(6)
 				if not root.Parent then return end
@@ -1153,7 +1153,7 @@ do
 				Font = Enum.Font.GothamBold, ZIndex = 63,
 			}, card)
 			makeLabel({
-				Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 1, -28), Text = roll.Equipped and "장착했어요!" or "가방에 넣었어요",
+				Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 1, -28), Text = roll.Equipped and "Equipped!" or "Added to bag",
 				TextSize = 13, TextColor3 = Color3.fromRGB(190, 190, 210), ZIndex = 63,
 			}, card)
 
@@ -1179,7 +1179,7 @@ Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 	if action ~= "Step" then return end
 	local advanced = data.Index > lastGearStep and lastGearStep > 0
 	lastGearStep = data.Index
-	if advanced and data.TargetName ~= "뽑기 머신" and gearPanel.Visible then
+	if advanced and data.TargetName ~= "Gacha Machine" and gearPanel.Visible then
 		task.delay(3, function()
 			gearPanel.Visible = false
 		end)
@@ -1206,14 +1206,14 @@ create("UIListLayout", { Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.La
 
 local leaveButton = makeButton({
 	Size = UDim2.new(1, -20, 0, 30), Position = UDim2.new(0, 10, 0, 186),
-	Text = "파티 나가기", BackgroundColor3 = RED,
+	Text = "Leave Party", BackgroundColor3 = RED,
 }, partyPanel, function()
 	Remotes.Party:FireServer("Leave")
 end)
 
 makeLabel({
 	Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 224),
-	Text = "로비 플레이어 (초대)", Font = Enum.Font.GothamBold, TextSize = 14,
+	Text = "Lobby Players (Invite)", Font = Enum.Font.GothamBold, TextSize = 14,
 	TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(190, 190, 210),
 }, partyPanel)
 
@@ -1233,7 +1233,7 @@ end
 
 local function refreshParty()
 	local count = partyData and #partyData.Members or 1
-	partyTitle.Text = string.format("파티 (%d/%d)", count, Config.Party.MaxSize)
+	partyTitle.Text = string.format("Party (%d/%d)", count, Config.Party.MaxSize)
 
 	clearChildren(memberList)
 	if partyData then
@@ -1250,7 +1250,7 @@ local function refreshParty()
 			if partyData.Leader == player.UserId and member.UserId ~= player.UserId then
 				makeButton({
 					Size = UDim2.new(0, 48, 0, 22), Position = UDim2.new(1, -52, 0.5, -11),
-					Text = "추방", TextSize = 12, BackgroundColor3 = RED,
+					Text = "Kick", TextSize = 12, BackgroundColor3 = RED,
 				}, row, function()
 					Remotes.Party:FireServer("Kick", member.UserId)
 				end)
@@ -1258,7 +1258,7 @@ local function refreshParty()
 		end
 	else
 		makeLabel({
-			Size = UDim2.new(1, 0, 0, 40), Text = "파티가 없어요.\n아래에서 초대해보세요!",
+			Size = UDim2.new(1, 0, 0, 40), Text = "No party yet.\nInvite someone below!",
 			TextSize = 14, TextColor3 = Color3.fromRGB(190, 190, 210),
 		}, memberList)
 	end
@@ -1280,12 +1280,12 @@ local function refreshParty()
 			if inParty then
 				makeLabel({
 					Size = UDim2.new(0, 56, 1, 0), Position = UDim2.new(1, -60, 0, 0),
-					Text = "파티중", TextSize = 12, TextColor3 = Color3.fromRGB(150, 150, 170),
+					Text = "In party", TextSize = 12, TextColor3 = Color3.fromRGB(150, 150, 170),
 				}, row)
 			elseif canInvite then
 				makeButton({
 					Size = UDim2.new(0, 48, 0, 22), Position = UDim2.new(1, -52, 0.5, -11),
-					Text = "초대", TextSize = 12, BackgroundColor3 = GREEN,
+					Text = "Invite", TextSize = 12, BackgroundColor3 = GREEN,
 				}, row, function()
 					Remotes.Party:FireServer("Invite", other.UserId)
 				end)
@@ -1347,7 +1347,7 @@ end
 
 makeButton({
 	Size = UDim2.new(0, 140, 0, 36), Position = UDim2.new(0, 20, 1, -46),
-	Text = "수락", BackgroundColor3 = GREEN,
+	Text = "Accept", BackgroundColor3 = GREEN,
 }, invitePanel, function()
 	if pendingInvite then
 		Remotes.Party:FireServer("Accept", pendingInvite.UserId)
@@ -1356,7 +1356,7 @@ makeButton({
 end)
 makeButton({
 	Size = UDim2.new(0, 140, 0, 36), Position = UDim2.new(1, -160, 1, -46),
-	Text = "거절", BackgroundColor3 = RED,
+	Text = "Decline", BackgroundColor3 = RED,
 }, invitePanel, function()
 	closeInvite(true)
 end)
@@ -1368,7 +1368,7 @@ Remotes.Party.OnClientEvent:Connect(function(action, a, b)
 	elseif action == "Invite" then
 		local invite = { UserId = a, Name = b }
 		pendingInvite = invite
-		inviteLabel.Text = string.format("%s 님이 파티에 초대했어요!", b)
+		inviteLabel.Text = string.format("%s invited you to a party!", b)
 		invitePanel.Visible = true
 		task.delay(Config.Party.InviteTimeout, function()
 			if pendingInvite == invite then
@@ -1381,7 +1381,7 @@ end)
 
 makeLabel({
 	Name = "ControlsHint", Size = UDim2.new(0, 560, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -78),
-	Text = "북쪽 던전 게이트 · 서쪽 허수아비 훈련장 · 동쪽 끝 사냥 필드   |   Q 대시 · R 자동공격 · I 메뉴 · M 음악",
+	Text = "North: Dungeon Gate · West: Training Dummy · Far East: Hunting Field   |   Q Dash · R Auto-Attack · I Menu · M Music",
 	TextSize = 14, TextColor3 = Color3.fromRGB(220, 220, 235), TextStrokeTransparency = 0.5,
 }, lobbyFrame)
 
@@ -1442,7 +1442,7 @@ local perkSummary = makeLabel({
 
 makeButton({
 	Size = UDim2.new(1, -20, 0, 20), Position = UDim2.new(0, 10, 1, -24),
-	Text = "던전 나가기", TextSize = 12, BackgroundColor3 = GRAY,
+	Text = "Leave Dungeon", TextSize = 12, BackgroundColor3 = GRAY,
 }, statPanel, function()
 	Remotes.Dungeon:FireServer("Leave")
 end)
@@ -1488,13 +1488,13 @@ end
 if RunService:IsStudio() then -- 음악이 안 나오거나 안 바뀔 때 원인을 알 수 있게: 어떤 ID 가 로드됐는지 6초 뒤에 한 번 알려 준다
 	task.delay(6, function()
 		for trackName, sound in pairs(tracks) do
-			print(string.format("[음악] %s = %s · 로드됨=%s · 길이=%.0f초", trackName, sound.SoundId, tostring(sound.IsLoaded), sound.TimeLength))
+			print(string.format("[Music] %s = %s · loaded=%s · length=%.0fs", trackName, sound.SoundId, tostring(sound.IsLoaded), sound.TimeLength))
 		end
 	end)
 end
 
 if next(tracks) == nil and RunService:IsStudio() then
-	print("[음악] 배경음악이 비어 있어요. ReplicatedStorage > AudioIds 스크립트에 오디오 ID(숫자)를 적으면 로비 / 필드 / 던전 / 보스 음악이 나와요. (README의 '소리 넣는 법' 참고)")
+	print("[Music] Background music is empty. Enter audio IDs (numbers) in the ReplicatedStorage > AudioIds script to get lobby / field / dungeon / boss music. (See 'How to add sound' in the README)")
 end
 
 local settings = { Shake = true, Radar = true, ShotVolume = 1 }
@@ -1535,7 +1535,7 @@ local function toggleMusic()
 			TweenService:Create(sound, TweenInfo.new(0.4), { Volume = musicVolume(name) }):Play()
 		end
 	end
-	toast(musicEnabled and "🔊 배경음악 켜짐 (M)" or "🔇 배경음악 꺼짐 (M)")
+	toast(musicEnabled and "🔊 Music ON (M)" or "🔇 Music OFF (M)")
 end
 
 local function updateMusic()
@@ -1578,7 +1578,7 @@ task.spawn(function()
 end)
 
 local function refreshStats()
-	statPoints.Text = "특성 (이번 던전만)"
+	statPoints.Text = "Perks (this dungeon only)"
 	statPoints.TextColor3 = Color3.new(1, 1, 1)
 
 	local parts = {}
@@ -1589,7 +1589,7 @@ local function refreshStats()
 			table.insert(parts, string.format("%s%s %d", perk.Icon, perk.Name, stacks))
 		end
 	end
-	perkSummary.Text = #parts > 0 and ("" .. table.concat(parts, " · ")) or "아직 없음"
+	perkSummary.Text = #parts > 0 and ("" .. table.concat(parts, " · ")) or "None yet"
 end
 
 local function refreshBanner()
@@ -1603,22 +1603,22 @@ local function refreshBanner()
 		local ratio = math.clamp(1 - state.BonusLeft / math.max(1, state.BonusSpan), 0, 1)
 		TweenService:Create(bonusFill, TweenInfo.new(0.5, Enum.EasingStyle.Linear), { Size = UDim2.new(ratio, 0, 1, 0) }):Play()
 		bonusFill.BackgroundColor3 = state.BonusLeft <= 3 and Color3.fromRGB(255, 120, 60) or Color3.fromRGB(255, 200, 70)
-		bonusText.Text = state.BonusLeft <= 3 and "🎲 곧 터진다!!" or string.format("🎲 랜덤 보너스까지 %d초", state.BonusLeft)
+		bonusText.Text = state.BonusLeft <= 3 and "🎲 Coming up!!" or string.format("🎲 Random bonus in %ds", state.BonusLeft)
 	end
 	if surviving and state.MonsterLimit then
 		local ratio = math.clamp(state.MonstersLeft / state.MonsterLimit, 0, 1)
 		TweenService:Create(limitFill, TweenInfo.new(0.5, Enum.EasingStyle.Linear), { Size = UDim2.new(ratio, 0, 1, 0) }):Play()
 		if state.OverrunLeft then
 			limitFill.BackgroundColor3 = Color3.fromRGB(235, 50, 50)
-			limitText.Text = string.format("⚠ 몬스터 폭주! %d초 안에 줄이세요!  (%d / %d)", state.OverrunLeft, state.MonstersLeft, state.MonsterLimit)
+			limitText.Text = string.format("⚠ Monster overrun! Thin them out within %ds!  (%d / %d)", state.OverrunLeft, state.MonstersLeft, state.MonsterLimit)
 		else
 			limitFill.BackgroundColor3 = ratio >= 0.75 and Color3.fromRGB(240, 150, 50) or Color3.fromRGB(110, 210, 120)
-			limitText.Text = string.format("👹 몬스터 %d / %d%s", state.MonstersLeft, state.MonsterLimit, ratio >= 0.75 and "  — 위험!" or "")
+			limitText.Text = string.format("👹 Monsters %d / %d%s", state.MonstersLeft, state.MonsterLimit, ratio >= 0.75 and "  — Danger!" or "")
 		end
 	end
 	if not state then return end
 	bannerMutator.Text = state.MutatorText or ""
-	local mapLabel = string.format("%s · %s", state.TypeName or "던전", state.DifficultyName or "")
+	local mapLabel = string.format("%s · %s", state.TypeName or "Dungeon", state.DifficultyName or "")
 	if player:GetAttribute("DungeonLabel") ~= mapLabel then player:SetAttribute("DungeonLabel", mapLabel) end -- 왼쪽 위 정보 줄이 읽는다
 
 	if state.BossRatio then
@@ -1627,26 +1627,26 @@ local function refreshBanner()
 	end
 
 	if state.Phase == "Starting" then
-		bannerTitle.Text = string.format("%s 입장!", state.TypeName or "던전")
-		bannerSub.Text = string.format("[%s] %d초 후 시작! 몰려오는 몬스터를 버텨요", state.DifficultyName or "", state.TimeLeft)
+		bannerTitle.Text = string.format("Entering %s!", state.TypeName or "Dungeon")
+		bannerSub.Text = string.format("[%s] Starts in %ds! Survive the incoming monsters", state.DifficultyName or "", state.TimeLeft)
 	elseif state.Phase == "Wave" and state.SurviveLeft then
-		bannerTitle.Text = string.format("🛡 버텨라!  %d초", state.SurviveLeft)
-		bannerSub.Text = string.format("%s · %s · 몬스터가 너무 쌓이면 실패! 끝까지 버티면 보스 등장", state.TypeName or "", state.DifficultyName or "", state.MonstersLeft)
+		bannerTitle.Text = string.format("🛡 Survive!  %ds", state.SurviveLeft)
+		bannerSub.Text = string.format("%s · %s · Fail if monsters pile up! Survive to the end and the boss appears", state.TypeName or "", state.DifficultyName or "", state.MonstersLeft)
 	elseif state.Phase == "Wave" then
-		bannerTitle.Text = state.TotalWaves == 0 and string.format("🏯 %d층", state.Wave) or string.format("구역 %d / %d", state.Wave, state.TotalWaves)
-		bannerSub.Text = string.format("%s · %s · 남은 몬스터 %d · 앞으로 쭉!", state.TypeName or "", state.DifficultyName or "", state.MonstersLeft)
+		bannerTitle.Text = state.TotalWaves == 0 and string.format("🏯 Floor %d", state.Wave) or string.format("Zone %d / %d", state.Wave, state.TotalWaves)
+		bannerSub.Text = string.format("%s · %s · Monsters left %d · Keep going!", state.TypeName or "", state.DifficultyName or "", state.MonstersLeft)
 	elseif state.Phase == "StatPhase" then
-		bannerTitle.Text = "🎁 보너스 발동!"
-		bannerSub.Text = "랜덤 강화가 적용됐어요"
+		bannerTitle.Text = "🎁 Bonus triggered!"
+		bannerSub.Text = "A random buff was applied"
 	elseif state.Phase == "Moving" then
-		bannerTitle.Text = state.StageText or "다음 방으로 이동하세요"
-		bannerSub.Text = "하늘색 빛기둥을 따라가세요"
+		bannerTitle.Text = state.StageText or "Head to the next room"
+		bannerSub.Text = "Follow the sky-blue light beam"
 	elseif state.Phase == "Event" then
-		bannerTitle.Text = state.StageText or "이벤트 방"
-		bannerSub.Text = "특별한 방이에요!"
+		bannerTitle.Text = state.StageText or "Event Room"
+		bannerSub.Text = "A special room!"
 	elseif state.Phase == "Boss" then
 		bannerTitle.Text = "BOSS"
-		bannerSub.Text = string.format("남은 몬스터: %d", state.MonstersLeft)
+		bannerSub.Text = string.format("Monsters left: %d", state.MonstersLeft)
 	end
 end
 
@@ -1661,7 +1661,7 @@ local resultInfo = makeLabel({
 }, resultPanel)
 makeButton({
 	Size = UDim2.new(0, 200, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
-	Text = "지금 로비로", TextSize = 17,
+	Text = "Back to Lobby", TextSize = 17,
 }, resultPanel, function()
 	Remotes.Dungeon:FireServer("Leave")
 end)
@@ -1671,7 +1671,7 @@ local function showResult(result)
 	resultToken += 1
 	local token = resultToken
 	resultPanel.Visible = true
-	resultTitle.Text = result.Victory and "🏆 던전 클리어!" or "💀 던전 실패"
+	resultTitle.Text = result.Victory and "🏆 Dungeon Cleared!" or "💀 Dungeon Failed"
 	resultTitle.TextColor3 = result.Victory and Color3.fromRGB(255, 220, 90) or Color3.fromRGB(255, 110, 110)
 
 	task.spawn(function()
@@ -1682,9 +1682,9 @@ local function showResult(result)
 				table.insert(lootLines, string.format("<font color='#%s' size='15'>%s</font>", Config.Gear.RarityColors[entry.Rarity]:ToHex(), entry.Text))
 			end
 			resultInfo.Text = string.format(
-				"%s\n획득 골드  +%d G   🎫 티켓 +%d\n%s\n%d초 후 로비로 이동",
-				(result.Victory and "끝까지 버텨서 보스 격파!" or "버티지 못했어요"), result.Gold, result.Tickets or 0,
-				#lootLines > 0 and ("<b>📦 보스 상자</b>\n" .. table.concat(lootLines, "\n")) or "", remaining
+				"%s\nGold earned  +%d G   🎫 Tickets +%d\n%s\nReturning to lobby in %ds",
+				(result.Victory and "Survived and defeated the boss!" or "You couldn't hold out"), result.Gold, result.Tickets or 0,
+				#lootLines > 0 and ("<b>📦 Boss Chest</b>\n" .. table.concat(lootLines, "\n")) or "", remaining
 			)
 			task.wait(1)
 		end
@@ -1708,7 +1708,7 @@ local function refreshInfo()
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local name, color = weaponText(level)
 	local zone = currentZone()
-	local zoneText = zone == "Lobby" and "로비" or zone == "Dungeon" and "던전" or string.format("필드 (최고 %d구역)", player:GetAttribute("MaxZone") or 0)
+	local zoneText = zone == "Lobby" and "Lobby" or zone == "Dungeon" and "Dungeon" or string.format("Field (best: Zone %d)", player:GetAttribute("MaxZone") or 0)
 
 	local characterLevel = player:GetAttribute("Level") or 1
 	local xp = player:GetAttribute("XP") or 0
@@ -1717,15 +1717,15 @@ local function refreshInfo()
 	local blocked = not maxed and characterLevel >= Config.GetLevelCap(player:GetAttribute("GatePassed") or 0)
 	xpFill.Size = UDim2.new((maxed or blocked) and 1 or math.clamp(xp / xpNeeded, 0, 1), 0, 1, 0)
 	xpFill.BackgroundColor3 = blocked and Color3.fromRGB(255, 170, 60) or Color3.fromRGB(110, 200, 255)
-	local xpText = maxed and "MAX" or blocked and "돌파 필요!" or string.format("%d / %d XP", xp, xpNeeded)
+	local xpText = maxed and "MAX" or blocked and "Breakthrough needed!" or string.format("%d / %d XP", xp, xpNeeded)
 
 	local keys = (player:GetAttribute("Keys") or 0) -- 쉬움 열쇠
 	local keyCap = Config.Keys.Max + (player:GetAttribute("KeyCapBonus") or 0)
 	local keyNext = player:GetAttribute("KeyNext") or 0
-	local keyText = string.format("오늘 무료 %d/%d", player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily)
+	local keyText = string.format("Free today %d/%d", player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily)
 
 	infoLabel.Text = string.format(
-		"🎖 <font color='#8fd8ff'>Lv.%d</font>  <font size='12' color='#aaaacc'>%s</font>\n💰 <font color='#ffd966'>%d G</font>   🎫 <font color='#d9a6ff'>%d</font>\n🔑<font color='#ffe08a'>%d</font> <font size='12' color='#aaaacc'>(%s)</font>\n⚡ 전투력 <font color='#ffe16e'>%d</font>\n⚔ <font color='#%s'>%s</font>\n📍 %s",
+		"🎖 <font color='#8fd8ff'>Lv.%d</font>  <font size='12' color='#aaaacc'>%s</font>\n💰 <font color='#ffd966'>%d G</font>   🎫 <font color='#d9a6ff'>%d</font>\n🔑<font color='#ffe08a'>%d</font> <font size='12' color='#aaaacc'>(%s)</font>\n⚡ Power <font color='#ffe16e'>%d</font>\n⚔ <font color='#%s'>%s</font>\n📍 %s",
 		characterLevel, xpText,
 		player:GetAttribute("Gold") or 0, player:GetAttribute("Tickets") or 0,
 		keys, keyText,
@@ -1975,13 +1975,13 @@ lockHighlight.Enabled = false
 lockHighlight.Parent = workspace
 
 local function targetName(target)
-	if not target then return "대상 찾는 중..." end
+	if not target then return "Finding target..." end
 	if target.Kind == "Dummy" then
 		local index = tonumber(string.sub(target.Instance.Name, 6))
 		local info = index and Config.Dummy.List[index]
-		return info and info.Name or "허수아비"
+		return info and info.Name or "Training Dummy"
 	end
-	return "몬스터"
+	return "Monster"
 end
 
 local function updateLockVisual()
@@ -2161,7 +2161,7 @@ local function attack(screenPosition)
 		local target = resolveTarget(instance)
 		if target then
 			if target.Kind == "Dummy" and not dummyUsable(target.Instance) then
-				toast("🛡 이 더미는 방어력이 높아서 지금 전투력으로는 공격이 튕겨 나가요")
+				toast("🛡 This dummy has high defense, so your attacks bounce off at your current Power")
 			else
 				lockTarget = target
 				updateLockVisual()
@@ -2176,7 +2176,7 @@ local function toggleAuto()
 	lockTarget = nil
 	nextSearch = 0
 	updateLockVisual()
-	toast(autoMode and "🔒 자동 공격 ON — 허수아비/몬스터를 직접 클릭하면 그 대상으로 고정돼요 (R로 끄기)" or "자동 공격 OFF")
+	toast(autoMode and "🔒 Auto-Attack ON — click a dummy/monster to lock onto it (R to turn off)" or "Auto-Attack OFF")
 end
 
 player:GetAttributeChangedSignal("Zone"):Connect(function()
@@ -2215,7 +2215,7 @@ do
 	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "R", TextSize = 60, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 30, 50), ZIndex = 32 }, bigKey)
 	makeLabel({
 		Size = UDim2.new(1, -130, 1, -16), Position = UDim2.new(0, 118, 0, 8), RichText = true, TextSize = 20, ZIndex = 31, TextXAlignment = Enum.TextXAlignment.Left,
-		Text = UserInputService.TouchEnabled and "<b>자동 공격!</b>\n<font size='15' color='#cfd3ea'>오른쪽 아래 <b>R 자동 공격</b> 버튼을 누르면\n알아서 쏴 줘요</font>" or "<b>자동 공격!</b>\n<font size='15' color='#cfd3ea'><b>R 키</b>를 누르면 가까운 적을\n알아서 조준해서 쏴 줘요</font>",
+		Text = UserInputService.TouchEnabled and "<b>Auto-Attack!</b>\n<font size='15' color='#cfd3ea'>Tap the <b>R Auto-Attack</b> button\nat the bottom right to fire automatically</font>" or "<b>Auto-Attack!</b>\n<font size='15' color='#cfd3ea'>Press <b>R</b> to automatically\naim at and shoot nearby enemies</font>",
 	}, hint)
 	TweenService:Create(bigKey, TweenInfo.new(0.55, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Size = UDim2.new(0, 94, 0, 94), Position = UDim2.new(0, 13, 0.5, -47) }):Play()
 
@@ -2226,7 +2226,7 @@ do
 		autoStroke.Color = autoMode and Color3.fromRGB(110, 255, 150) or Color3.fromRGB(120, 130, 190)
 		autoStroke.Thickness = autoMode and 3 or 2
 		autoButton.BackgroundColor3 = autoMode and Color3.fromRGB(32, 70, 52) or Color3.fromRGB(34, 36, 58)
-		autoText.Text = autoMode and "<font color='#8fffb0'><b>자동 공격</b>\nON</font>" or "<b>자동 공격</b>\n<font color='#9aa0c8'>OFF</font>"
+		autoText.Text = autoMode and "<font color='#8fffb0'><b>Auto-Attack</b>\nON</font>" or "<b>Auto-Attack</b>\n<font color='#9aa0c8'>OFF</font>"
 		local zone = currentZone()
 		autoButton.Visible = zone == "Lobby" or zone == "Field" or zone == "Dungeon"
 		local showHint = not used and player:GetAttribute("TutorialActive") == true and os.clock() > shownAt and os.clock() < shownAt + 40 and zone ~= "Dungeon" and not (settings.MenuPanel and settings.MenuPanel.Visible)
@@ -2247,12 +2247,12 @@ do
 		Name = "RankMini", Size = UDim2.new(0, 270, 0, 138), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0, 444),
 	}, lobbyFrame)
 	makeLabel({
-		Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 6), Text = "🏆 전투력 랭킹",
+		Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 6), Text = "🏆 Power Ranking",
 		Font = Enum.Font.GothamBlack, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 120),
 	}, mini)
 	local body = makeLabel({
 		Size = UDim2.new(1, -20, 1, -32), Position = UDim2.new(0, 10, 0, 28), RichText = true, TextSize = 13,
-		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = "집계 중...",
+		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = "Tallying...",
 	}, mini)
 	Remotes.Rank.OnClientEvent:Connect(function(action, data)
 		if action ~= "List" then return end
@@ -2263,7 +2263,7 @@ do
 			local mine = entry.Name == player.DisplayName
 			table.insert(lines, string.format("%s <font color='#%s'>%s</font>  <font color='#ffe16e'>⚡%d</font>", medal, mine and "78ff8c" or "ffffff", entry.Name, entry.Power))
 		end
-		body.Text = #lines > 0 and table.concat(lines, "\n") or "아직 기록이 없어요"
+		body.Text = #lines > 0 and table.concat(lines, "\n") or "No records yet"
 	end)
 	Remotes.Rank:FireServer("Request")
 end
@@ -2282,26 +2282,26 @@ create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Tra
 
 makeLabel({
 	Size = UDim2.new(1, -90, 0, 36), Position = UDim2.new(0, 16, 0, 8),
-	Text = "📋 메뉴", Font = Enum.Font.GothamBlack, TextSize = 24, TextXAlignment = Enum.TextXAlignment.Left,
+	Text = "📋 Menu", Font = Enum.Font.GothamBlack, TextSize = 24, TextXAlignment = Enum.TextXAlignment.Left,
 }, menuPanel)
 
 makeButton({
-	Size = UDim2.new(0, 64, 0, 28), Position = UDim2.new(1, -76, 0, 10), Text = "닫기 (B)", TextSize = 13, BackgroundColor3 = GRAY,
+	Size = UDim2.new(0, 64, 0, 28), Position = UDim2.new(1, -76, 0, 10), Text = "Close (B)", TextSize = 13, BackgroundColor3 = GRAY,
 }, menuPanel, function()
 	menuPanel.Visible = false
 end)
 
 local TABS = {
-	{ Key = "Character", Name = "캐릭터" }, -- 장비 / 무기 / 정보
-	{ Key = "Growth", Name = "스킬·성장" }, -- 액티브 스킬 / 패시브(스킬 + 훈련·돌파) / 펫
-	{ Key = "Quest", Name = "퀘스트" },     -- 오늘의 퀘스트 / 업적
-	{ Key = "Rank", Name = "랭킹" },
+	{ Key = "Character", Name = "Character" }, -- 장비 / 무기 / 정보
+	{ Key = "Growth", Name = "Skills·Growth" }, -- 액티브 스킬 / 패시브(스킬 + 훈련·돌파) / 펫
+	{ Key = "Quest", Name = "Quests" },     -- 오늘의 퀘스트 / 업적
+	{ Key = "Rank", Name = "Ranking" },
 }
 local MENU = { Sub = { Character = "Gear", Growth = "Active", Quest = "Daily" } }
 MENU.Subs = { -- 탭 안의 작은 버튼 줄
-	Character = { { "Gear", "🛡 장비" }, { "Weapon", "🔫 무기" }, { "Info", "📊 정보" } },
-	Growth = { { "Active", "⚔ 액티브 스킬" }, { "Passive", "🌿 패시브 · 훈련" }, { "Pet", "🐾 펫 (P)" } },
-	Quest = { { "Daily", "오늘의 퀘스트" }, { "Ach", "업적" } },
+	Character = { { "Gear", "🛡 Gear" }, { "Weapon", "🔫 Weapon" }, { "Info", "📊 Info" } },
+	Growth = { { "Active", "⚔ Active Skills" }, { "Passive", "🌿 Passive · Training" }, { "Pet", "🐾 Pet (P)" } },
+	Quest = { { "Daily", "Today's Quests" }, { "Ach", "Achievements" } },
 }
 MENU.Alias = {
 	Inventory = { "Character", "Gear" }, Weapon = { "Character", "Weapon" }, Info = { "Character", "Info" },
@@ -2353,7 +2353,7 @@ local function buildCharacterTab()
 	local summary = newRow(142)
 	local menuLevel = player:GetAttribute("Level") or 1
 	rowText(summary, string.format(
-		"🎖 <font color='#8fd8ff'>Lv.%d</font>  (%s)   공격력 +%d%% · 체력 +%d\n⚡ 전투력 <font color='#ffe16e'>%d</font>\n❤ 최대 체력 %d    🎯 치명타 확률 %.1f%%    💨 이동속도 %.1f\n💰 %d G    🎫 티켓 %d장\n🏔 필드 최고 %d구역 돌파    🏰 던전 클리어 %d회",
+		"🎖 <font color='#8fd8ff'>Lv.%d</font>  (%s)   Damage +%d%% · HP +%d\n⚡ Power <font color='#ffe16e'>%d</font>\n❤ Max HP %d    🎯 Crit Chance %.1f%%    💨 Move Speed %.1f\n💰 %d G    🎫 Tickets %d\n🏔 Best field zone cleared: %d    🏰 Dungeons cleared: %d",
 		menuLevel,
 		menuLevel >= Config.Level.Max and "MAX" or string.format("%d / %d XP", player:GetAttribute("XP") or 0, player:GetAttribute("XPNeeded") or 1),
 		math.floor((Config.GetLevelDamageMult(menuLevel) - 1) * 100 + 0.5), Config.GetLevelHealth(menuLevel),
@@ -2362,18 +2362,18 @@ local function buildCharacterTab()
 		player:GetAttribute("MaxZone") or 0, questState and questState.Stats and questState.Stats.DungeonClears or 0
 	), 16)
 
-	sectionTitle("장착 중인 장비")
+	sectionTitle("Equipped Gear")
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local weaponName, weaponColor = weaponText(level)
 	local weaponRow = newRow(40)
-	rowText(weaponRow, string.format("🔫 무기   <font color='#%s'>%s</font>", hex(weaponColor), weaponName))
+	rowText(weaponRow, string.format("🔫 Weapon   <font color='#%s'>%s</font>", hex(weaponColor), weaponName))
 
 	for _, slot in ipairs(Config.Gear.Slots) do
 		local rarity = player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0
 		local gearLevel = player:GetAttribute("Gear_" .. slot.Key .. "_L") or 0
 		local row = newRow(40)
 		if rarity <= 0 then
-			rowText(row, string.format("🛡 %s   <font color='#888888'>비어 있음 (보스 티켓으로 뽑기)</font>", slot.Name))
+			rowText(row, string.format("🛡 %s   <font color='#888888'>Empty (roll with Boss Tickets)</font>", slot.Name))
 		else
 			local color = Config.Gear.RarityColors[rarity]
 			rowText(row, string.format("🛡 %s   <font color='#%s'>[%s] %s +%d</font>   %s", slot.Name, hex(color),
@@ -2382,7 +2382,7 @@ local function buildCharacterTab()
 		end
 	end
 
-	sectionTitle("📖 스탯 설명")
+	sectionTitle("📖 Stat Guide")
 	do
 		local glossary = {}
 		for _, key in ipairs({ "Health", "Crit", "Speed", "Damage", "Xp", "Luck", "Haste", "Shot" }) do
@@ -2397,22 +2397,22 @@ local function buildCharacterTab()
 		local prestige = player:GetAttribute("Prestige") or 0
 		local ready = (player:GetAttribute("Level") or 1) >= Config.Prestige.Level and prestige < Config.Prestige.Max
 		local row = newRow(64)
-		rowText(row, string.format("🌟 <b>환생 %d / %d</b>  (영구 공격력 +%d%% · 골드 +%d%%)\n<font size='13' color='#bbbbcc'>레벨 %d 에서 환생하면 레벨이 1로 돌아가고 영구 공격력 +%d%%, 골드 획득량 +%d%%. 장비/무기는 그대로예요. (로비에서)</font>",
+		rowText(row, string.format("🌟 <b>Rebirth %d / %d</b>  (Permanent Damage +%d%% · Gold +%d%%)\n<font size='13' color='#bbbbcc'>Rebirth at Lv.%d to reset to Lv.1 and gain permanent Damage +%d%% and Gold gain +%d%%. Gear/weapons are kept. (In the lobby)</font>",
 			prestige, Config.Prestige.Max, math.floor(prestige * Config.Prestige.DamagePerRank * 100 + 0.5), math.floor(prestige * Config.Prestige.GoldPerRank * 100 + 0.5), Config.Level.Max, Config.Prestige.DamagePerRank * 100, Config.Prestige.GoldPerRank * 100), 14, 190)
 		makeButton({
 			Size = UDim2.new(0, 160, 0, 36), Position = UDim2.new(1, -172, 0.5, -18),
-			Text = prestige >= Config.Prestige.Max and "MAX" or "환생하기", BackgroundColor3 = ready and Color3.fromRGB(200, 150, 40) or GRAY,
+			Text = prestige >= Config.Prestige.Max and "MAX" or "Rebirth", BackgroundColor3 = ready and Color3.fromRGB(200, 150, 40) or GRAY,
 		}, row, function()
 			Remotes.Meta:FireServer("Prestige")
 		end)
 	end
 
-	sectionTitle("칭호 (업적을 달성하면 해금, 머리 위 이름표에 표시)")
+	sectionTitle("Titles (unlocked via achievements, shown on your nameplate)")
 	local titles = questState and questState.Titles or {}
 	local equipped = questState and questState.Equipped
 	if #titles == 0 then
 		local row = newRow(36)
-		rowText(row, "<font color='#888888'>아직 해금한 칭호가 없어요. 퀘스트의 업적에서 도전해보세요!</font>")
+		rowText(row, "<font color='#888888'>No titles unlocked yet. Try the achievements under Quests!</font>")
 	end
 	for _, title in ipairs(titles) do
 		local row = newRow(40)
@@ -2420,7 +2420,7 @@ local function buildCharacterTab()
 		local isEquipped = title == equipped
 		makeButton({
 			Size = UDim2.new(0, 110, 0, 28), Position = UDim2.new(1, -122, 0.5, -14),
-			Text = isEquipped and "해제" or "장착", BackgroundColor3 = isEquipped and RED or GREEN,
+			Text = isEquipped and "Remove" or "Equip", BackgroundColor3 = isEquipped and RED or GREEN,
 		}, row, function()
 			Remotes.Quest:FireServer("Title", isEquipped and "" or title)
 		end)
@@ -2436,7 +2436,7 @@ local function buildWeaponTab()
 	local order = Config.WeaponTypes.Order
 	local equippedKey = Config.ResolveWeaponType(level, player:GetAttribute("WeaponType"))
 	local eraTier = Config.GetWeaponTier(level)
-	sectionTitle(string.format("🔫 무기 10형 — 강화하면 한 형씩 해금돼요 (15강마다). 해금한 무기 중에서 싸울 무기를 골라요 · 지금 %s", Config.GetEraName(eraTier.Era)))
+	sectionTitle(string.format("🔫 10 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: %s", Config.GetEraName(eraTier.Era)))
 
 	local previewKey = Config.WeaponTypes[settings.PreviewForm or ""] and settings.PreviewForm ~= "Order" and settings.PreviewForm or equippedKey
 	local shown = Config.GetLookTier(level, previewKey) -- 그 무기 형 + 지금 시대의 외모 / 탄 색
@@ -2453,25 +2453,25 @@ local function buildWeaponTab()
 		rounded(viewport, 10)
 		create("UIStroke", { Color = shown.Rainbow and Color3.fromRGB(255, 120, 255) or shown.Color, Thickness = 2 }, viewport)
 		settings.BuildFireDemo(viewport, shown, classInfo)
-		makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 1, -22), Text = isMine and "내 무기 · 발사 시연" or "👀 미리보기 · 발사 시연", TextSize = 11, TextColor3 = Color3.fromRGB(170, 180, 210) }, viewport)
+		makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 1, -22), Text = isMine and "My Weapon · Fire Demo" or "👀 Preview · Fire Demo", TextSize = 11, TextColor3 = Color3.fromRGB(170, 180, 210) }, viewport)
 	end
 
-	local SHOT_NAMES = { Ball = "작은 탄환", Bolt = "빛줄기 탄", Orb = "에너지 구체", Cannon = "대형 포탄", Fire = "불꽃 덩이", Rocket = "로켓탄", Rainbow = "무지개 광구" }
+	local SHOT_NAMES = { Ball = "Small Bullet", Bolt = "Light Bolt", Orb = "Energy Orb", Cannon = "Heavy Shell", Fire = "Fireball", Rocket = "Rocket", Rainbow = "Rainbow Orb" }
 	local shotInfo = shown.Shot or { Style = "Ball" }
 	local behavior = {}
-	if classInfo.Pellets > 1 then table.insert(behavior, string.format("한 번에 %d발이 부채꼴로 퍼짐", classInfo.Pellets)) end
-	if classInfo.Splash then table.insert(behavior, string.format("맞은 곳이 폭발 (범위 %d)", classInfo.Splash)) end
-	if classInfo.Pierce then table.insert(behavior, string.format("적 %d마리까지 관통", classInfo.Pierce + 1)) end
-	if (classInfo.CritBonus or 0) > 0 then table.insert(behavior, string.format("치명타 +%d%%", math.floor(classInfo.CritBonus * 100 + 0.5))) end
-	if #behavior == 0 then table.insert(behavior, "곧게 날아가 한 마리를 맞힘") end
+	if classInfo.Pellets > 1 then table.insert(behavior, string.format("Fires %d pellets in a spread", classInfo.Pellets)) end
+	if classInfo.Splash then table.insert(behavior, string.format("Explodes on hit (radius %d)", classInfo.Splash)) end
+	if classInfo.Pierce then table.insert(behavior, string.format("Pierces up to %d enemies", classInfo.Pierce + 1)) end
+	if (classInfo.CritBonus or 0) > 0 then table.insert(behavior, string.format("Crit +%d%%", math.floor(classInfo.CritBonus * 100 + 0.5))) end
+	if #behavior == 0 then table.insert(behavior, "Flies straight and hits one enemy") end
 	local rate = 1 / math.max(0.05, classInfo.Cooldown * Config.Player.BaseCooldown)
 	local status
 	if isMine then
-		status = "<font color='#78ff8c'>▶ 사용 중</font>"
+		status = "<font color='#78ff8c'>▶ In use</font>"
 	elseif unlocked then
-		status = "<font color='#ffd966'>✔ 해금됨</font>"
+		status = "<font color='#ffd966'>✔ Unlocked</font>"
 	else
-		status = string.format("<font color='#ff9a6e'>🔒 +%d강에 해금 (앞으로 %d강)</font>", Config.GetUnlockLevel(previewKey), math.max(0, Config.GetUnlockLevel(previewKey) - level))
+		status = string.format("<font color='#ff9a6e'>🔒 Unlocks at +%d (%d to go)</font>", Config.GetUnlockLevel(previewKey), math.max(0, Config.GetUnlockLevel(previewKey) - level))
 	end
 	local power = Config.WeaponDpsFactor(classInfo)
 	local nameColor = hex(shown.Rainbow and Color3.fromRGB(255, 120, 255) or shown.Color)
@@ -2479,15 +2479,15 @@ local function buildWeaponTab()
 		Size = UDim2.new(1, -306, 1, -64), Position = UDim2.new(0, 294, 0, 10), RichText = true, TextSize = 14,
 		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 		Text = string.format(
-			"<font size='20'><b><font color='#%s'>%s</font></b></font>  <font size='12' color='#aab0cc'>%s</font>\n%s\n<font color='#ffe9a0'><b>%s</b></font>\n<font color='#bbbbcc'>%s</font>\n\n<b>🔫 공격 방식</b>\n<font color='#dfe6ff'>• 탄 모양: %s\n• %s\n• 초당 약 %.1f번 · 화력 지수 %d · 사거리 %d</font>",
+			"<font size='20'><b><font color='#%s'>%s</font></b></font>  <font size='12' color='#aab0cc'>%s</font>\n%s\n<font color='#ffe9a0'><b>%s</b></font>\n<font color='#bbbbcc'>%s</font>\n\n<b>🔫 Attack Style</b>\n<font color='#dfe6ff'>• Shot type: %s\n• %s\n• About %.1f shots/sec · Firepower %d · Range %d</font>",
 			nameColor, classInfo.Name, Config.GetEraName(shown.Era), status, classInfo.Trait, classInfo.Desc,
-			SHOT_NAMES[shotInfo.Style] or "탄환", table.concat(behavior, " · "),
+			SHOT_NAMES[shotInfo.Style] or "Bullet", table.concat(behavior, " · "),
 			rate, math.floor(power * 100 + 0.5), classInfo.Range
 		),
 	}, header)
 	if unlocked and not isMine then
 		makeButton({
-			Size = UDim2.new(0, 190, 0, 40), Position = UDim2.new(1, -202, 1, -52), Text = "🔫 이 무기로 싸우기", BackgroundColor3 = GREEN,
+			Size = UDim2.new(0, 190, 0, 40), Position = UDim2.new(1, -202, 1, -52), Text = "🔫 Fight with this weapon", BackgroundColor3 = GREEN,
 		}, header, function()
 			Remotes.Weapon:FireServer("Equip", previewKey)
 			settings.PreviewForm = nil
@@ -2513,7 +2513,7 @@ local function buildWeaponTab()
 		local row = newRow(34, using and Color3.fromRGB(45, 70, 50) or (open and Color3.fromRGB(34, 38, 48) or Color3.fromRGB(28, 28, 38)))
 		local mark = using and "▶" or (open and "✔" or "🔒")
 		rowText(row, string.format("%s  <font color='#%s'><b>%s</b></font>   <font size='12' color='#8888aa'>%s%s</font>",
-			mark, open and hex(look.Color) or "777788", info.Name, info.Trait, open and "" or string.format(" · +%d강 해금", Config.GetUnlockLevel(key))), 14, 24)
+			mark, open and hex(look.Color) or "777788", info.Name, info.Trait, open and "" or string.format(" · Unlocks at +%d", Config.GetUnlockLevel(key))), 14, 24)
 		if previewKey == key then
 			create("UIStroke", { Color = Color3.fromRGB(255, 225, 120), Thickness = 2 }, row)
 		end
@@ -2531,25 +2531,25 @@ end
 local function buildProgressRows(entries, remoteAction, showTitle)
 	if not entries then
 		local row = newRow(36)
-		rowText(row, "<font color='#888888'>불러오는 중...</font>")
+		rowText(row, "<font color='#888888'>Loading...</font>")
 		return
 	end
 	for _, entry in ipairs(entries) do
 		local done = entry.Progress >= entry.Goal
 		local row = newRow(66, entry.Claimed and Color3.fromRGB(32, 38, 36) or Color3.fromRGB(40, 40, 58))
-		local titleText = showTitle and entry.Title and string.format("   <font color='#9ad7ff'>칭호 『%s』</font>", entry.Title) or ""
+		local titleText = showTitle and entry.Title and string.format("   <font color='#9ad7ff'>Title 『%s』</font>", entry.Title) or ""
 		rowText(row, string.format(
-			"<font size='16'><b>%s</b></font>%s\n<font color='#bbbbcc'>%s</font>\n<font color='#%s'>%d / %d</font>   <font color='#ffd966'>보상 %s</font>",
+			"<font size='16'><b>%s</b></font>%s\n<font color='#bbbbcc'>%s</font>\n<font color='#%s'>%d / %d</font>   <font color='#ffd966'>Reward: %s</font>",
 			entry.Name, titleText, entry.Desc, done and "78ff8c" or "ffffff", entry.Progress, entry.Goal, entry.Reward
 		), 14, 160)
 
 		local label, color, enabled
 		if entry.Claimed then
-			label, color = "완료", GRAY
+			label, color = "Done", GRAY
 		elseif done then
-			label, color, enabled = "보상 받기", GREEN, true
+			label, color, enabled = "Claim", GREEN, true
 		else
-			label, color = "진행 중", GRAY
+			label, color = "In progress", GRAY
 		end
 		makeButton({
 			Size = UDim2.new(0, 120, 0, 32), Position = UDim2.new(1, -132, 0.5, -16), Text = label, BackgroundColor3 = color,
@@ -2562,10 +2562,10 @@ local function buildProgressRows(entries, remoteAction, showTitle)
 end
 
 local function buildRankTab()
-	sectionTitle("🏆 전투력 랭킹 TOP 10 (화면 오른쪽 작은 랭킹과 같아요)")
+	sectionTitle("🏆 Power Ranking TOP 10 (same as the small ranking on the right of the screen)")
 	if #rankList == 0 then
 		local row = newRow(36)
-		rowText(row, "<font color='#888888'>집계 중이에요...</font>")
+		rowText(row, "<font color='#888888'>Tallying...</font>")
 	end
 	for index, entry in ipairs(rankList) do
 		local row = newRow(36, entry.Name == player.DisplayName and Color3.fromRGB(60, 52, 28) or nil)
@@ -2588,32 +2588,32 @@ local function buildInventoryTab()
 	local state = inventoryState
 	if not state then
 		local row = newRow(36)
-		rowText(row, "<font color='#888888'>가방을 불러오는 중...</font>")
+		rowText(row, "<font color='#888888'>Loading bag...</font>")
 		return
 	end
 
 	local header = newRow(92)
 	local headerText = rowText(header, string.format(
-		"🎒 가방 <b>%d / %d</b>      ✨ 에센스 <font color='#9ad7ff'>%d</font>\n<font size='13' color='#bbbbcc'>칸을 누르면 자세히 보여요. 스마트 정리: 같은 부위에 더 좋은 장비가 있는 약한 장비만 알아서 분해해요 (세트 / 유니크는 안전)</font>",
+		"🎒 Bag <b>%d / %d</b>      ✨ Essence <font color='#9ad7ff'>%d</font>\n<font size='13' color='#bbbbcc'>Tap a slot for details. Smart Clean: only auto-dismantles weak gear when you have better gear in the same slot (Set / Unique are safe)</font>",
 		state.BagCount, state.Capacity, state.Essence
 	), 15, 24)
 	headerText.Size = UDim2.new(1, -24, 0, 50)
 	headerText.TextYAlignment = Enum.TextYAlignment.Top
 	makeButton({
 		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -318, 0, 56),
-		Text = "자동 분해: " .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 13, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
+		Text = "Auto-Dismantle: " .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 13, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
 	}, header, function()
 		Remotes.Inventory:FireServer("AutoScrap", (state.AutoScrap + 1) % 5)
 	end)
 	makeButton({
 		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -474, 0, 56),
-		Text = "⚡ 최고 장비 자동 장착", TextSize = 13, BackgroundColor3 = GREEN,
+		Text = "⚡ Auto-equip best gear", TextSize = 13, BackgroundColor3 = GREEN,
 	}, header, function()
 		Remotes.Inventory:FireServer("AutoEquip")
 	end)
 	makeButton({
 		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -162, 0, 56),
-		Text = "🧹 스마트 정리", TextSize = 13, BackgroundColor3 = RED,
+		Text = "🧹 Smart Clean", TextSize = 13, BackgroundColor3 = RED,
 	}, header, function()
 		Remotes.Inventory:FireServer("SmartClean")
 	end)
@@ -2674,7 +2674,7 @@ local function buildInventoryTab()
 		end
 		local pill = create("Frame", { Size = ribbonSize, Position = ribbonPos, BackgroundColor3 = def.Color, BorderSizePixel = 0, ZIndex = 3, Active = false }, tile)
 		rounded(pill, 6)
-		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = def.Zone and (def.Zone .. "구역") or "세트", TextSize = 12, TextColor3 = Color3.fromRGB(20, 20, 30), Font = Enum.Font.GothamBlack, TextWrapped = false, ZIndex = 4 }, pill)
+		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = def.Zone and ("Z" .. def.Zone) or "Set", TextSize = 12, TextColor3 = Color3.fromRGB(20, 20, 30), Font = Enum.Font.GothamBlack, TextWrapped = false, ZIndex = 4 }, pill)
 	end
 
 	local SLOT_ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Weapon = "🔫", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
@@ -2715,7 +2715,7 @@ local function buildInventoryTab()
 			cam.CFrame = CFrame.lookAt(pivot.Position + Vector3.new(0, 1.2, 12.5), pivot.Position + Vector3.new(0, 0.4, 0))
 		end)
 	end
-	makeLabel({ Size = UDim2.new(0, 230, 0, 22), Position = UDim2.new(0, 108, 0, 350), Text = string.format("⚡ 전투력 %d", player:GetAttribute("Power") or 0), TextSize = 16, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, top)
+	makeLabel({ Size = UDim2.new(0, 230, 0, 22), Position = UDim2.new(0, 108, 0, 350), Text = string.format("⚡ Power %d", player:GetAttribute("Power") or 0), TextSize = 16, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, top)
 
 	do
 		local rowsShown = 0
@@ -2736,7 +2736,7 @@ local function buildInventoryTab()
 			end
 		end
 		if rowsShown == 0 then
-			makeLabel({ Size = UDim2.new(0, 230, 0, 30), Position = UDim2.new(0, 108, 0, 378), Text = "같은 구역 세트 1·2·3부위 착용 → 세트 효과 4·5·6단계 (세트 창 Y)", TextSize = 12, TextWrapped = true, TextColor3 = Color3.fromRGB(120, 124, 150) }, top)
+			makeLabel({ Size = UDim2.new(0, 230, 0, 30), Position = UDim2.new(0, 108, 0, 378), Text = "Wear 1·2·3 pieces of the same zone set → set effect tiers 4·5·6 (Set window: Y)", TextSize = 12, TextWrapped = true, TextColor3 = Color3.fromRGB(120, 124, 150) }, top)
 		end
 	end
 	local function slotBox(slotKey, x, y)
@@ -2770,7 +2770,7 @@ local function buildInventoryTab()
 		else
 			create("UIStroke", { Color = Color3.fromRGB(70, 70, 90), Thickness = 1.5 }, box)
 			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 10), Text = SLOT_ICONS[slotKey], TextSize = 30, TextTransparency = 0.6 }, box)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 0, 56), Text = "비어 있음", TextSize = 12, TextColor3 = Color3.fromRGB(120, 120, 140) }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 0, 56), Text = "Empty", TextSize = 12, TextColor3 = Color3.fromRGB(120, 120, 140) }, box)
 		end
 		return box
 	end
@@ -2795,12 +2795,12 @@ local function buildInventoryTab()
 			for _, fn in ipairs(Config.Pet.Functions) do
 				if fn.Level > petLevel then nextFn = fn break end
 			end
-			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 42), Text = nextFn and string.format("▶ %s Lv.%d", nextFn.Icon, nextFn.Level) or "최대!", TextSize = 11, TextWrapped = true, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(190, 220, 255) }, box) -- 다음에 열리는 펫 기능
+			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 42), Text = nextFn and string.format("▶ %s Lv.%d", nextFn.Icon, nextFn.Level) or "Max!", TextSize = 11, TextWrapped = true, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(190, 220, 255) }, box) -- 다음에 열리는 펫 기능
 			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 62), Text = string.format("Lv.%d", petLevel), TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, box)
 		else
 			create("UIStroke", { Color = Color3.fromRGB(70, 70, 90), Thickness = 1.5 }, box)
 			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 8), Text = "🐾", TextSize = 30, TextTransparency = 0.6 }, box)
-			makeLabel({ Size = UDim2.new(1, -4, 0, 30), Position = UDim2.new(0, 2, 0, 52), Text = "펫 기능\n열기 (P)", TextSize = 11, TextWrapped = true, TextColor3 = Color3.fromRGB(150, 150, 175) }, box)
+			makeLabel({ Size = UDim2.new(1, -4, 0, 30), Position = UDim2.new(0, 2, 0, 52), Text = "Unlock\nPet (P)", TextSize = 11, TextWrapped = true, TextColor3 = Color3.fromRGB(150, 150, 175) }, box)
 		end
 	end
 	local detail = create("Frame", { Size = UDim2.new(1, -462, 1, -24), Position = UDim2.new(0, 450, 0, 12), BackgroundColor3 = Color3.fromRGB(24, 26, 38), BorderSizePixel = 0 }, top)
@@ -2811,8 +2811,8 @@ local function buildInventoryTab()
 		local slot = Config.GetGearSlot(selected.Slot)
 		local lines = {
 			string.format("<font color='#%s' size='18'><b>[%s] %s</b></font>  +%d", hex(color), Config.Gear.RarityNames[selected.Rarity], Config.ItemDisplayName(selected), selected.Level),
-			string.format("<font color='#aaaacc' size='12'>%s · 점수 %d%s</font>", slot.Name, selected.Score, selected.Equipped and " · 장착 중" or ""),
-			"<font size='13' color='#ddddee'>기본  " .. Config.FormatGearStat(selected.Slot, Config.GetGearStat(selected.Slot, selected.Rarity, selected.Level)) .. "</font>"
+			string.format("<font color='#aaaacc' size='12'>%s · Score %d%s</font>", slot.Name, selected.Score, selected.Equipped and " · Equipped" or ""),
+			"<font size='13' color='#ddddee'>Base  " .. Config.FormatGearStat(selected.Slot, Config.GetGearStat(selected.Slot, selected.Rarity, selected.Level)) .. "</font>"
 				.. (Config.StatDesc[slot.Stat] and ("\n<font size='11' color='#8a8aa8'>   → " .. Config.StatDesc[slot.Stat].Desc .. "</font>") or ""),
 		}
 		for _, affix in ipairs(selected.Affixes) do
@@ -2821,39 +2821,39 @@ local function buildInventoryTab()
 			local pos = hi > lo and math.clamp((affix.Value - lo) / (hi - lo), 0, 1) or 1
 			local posColor = pos >= 0.75 and "#78ff8c" or (pos >= 0.4 and "#ffd966" or "#ff9a6e")
 			table.insert(lines, "<font size='13' color='#9ad7ff'>◆ " .. Config.FormatAffix(affix.Stat, affix.Value) .. "</font>"
-				.. string.format(" <font size='11' color='#8a8aa8'>범위 %s</font> <font size='11' color='%s'><b>(%d%%)</b></font>", Config.FormatAffixRange(affix.Stat, selected.Rarity), posColor, math.floor(pos * 100 + 0.5))
+				.. string.format(" <font size='11' color='#8a8aa8'>Range %s</font> <font size='11' color='%s'><b>(%d%%)</b></font>", Config.FormatAffixRange(affix.Stat, selected.Rarity), posColor, math.floor(pos * 100 + 0.5))
 				.. (info and ("\n<font size='11' color='#8a8aa8'>   → " .. info.Desc .. "</font>") or ""))
 		end
 		if #selected.Affixes > 0 then
-			table.insert(lines, "<font size='11' color='#7f86a8'>🎲 재굴림: 옵션 수치를 위 범위 안에서 다시 뽑아요 (괄호 = 범위 안 위치, 100%가 최고). 좋아질 수도 나빠질 수도 있어요</font>")
+			table.insert(lines, "<font size='11' color='#7f86a8'>🎲 Reroll: re-rolls affix values within the range above (brackets = position in range, 100% is best). Can get better or worse</font>")
 		end
 		if selected.Unique and Config.Uniques[selected.Unique] then
-			table.insert(lines, "<font size='13' color='#ffb84d'>✦ 유니크: " .. Config.Uniques[selected.Unique].Desc .. "</font>")
+			table.insert(lines, "<font size='13' color='#ffb84d'>✦ Unique: " .. Config.Uniques[selected.Unique].Desc .. "</font>")
 		end
 		if selected.Set and Config.Sets[selected.Set] then
 			local setDef = Config.Sets[selected.Set]
 			local have = setCounts[selected.Set] or 0
 			local lit, dim = "#" .. hex(setDef.Color), "#6c7088"
 			if setDef.Zone then
-				table.insert(lines, string.format("<font size='12' color='%s'>📍 %d구역 %s · 그 구역 드랍 / 세트 각인</font>", lit, setDef.Zone, Config.Field.ZoneNames[setDef.Zone]))
+				table.insert(lines, string.format("<font size='12' color='%s'>📍 Zone %d %s · Drops in that zone / Set Imprint</font>", lit, setDef.Zone, Config.Field.ZoneNames[setDef.Zone]))
 			end
 			for _, tier in ipairs({ 2, 3 }) do
 				local parts = {}
 				for _, b in ipairs(setDef.Bonuses[tier]) do table.insert(parts, Config.FormatBonus(b.Stat, b.Value)) end
 				local on = have >= tier
-				table.insert(lines, string.format("<font size='12' color='%s'>%s <b>%d부위</b>  %s</font>", on and lit or dim, on and "✔" or "○", tier, table.concat(parts, ", ")))
+				table.insert(lines, string.format("<font size='12' color='%s'>%s <b>%d pieces</b>  %s</font>", on and lit or dim, on and "✔" or "○", tier, table.concat(parts, ", ")))
 			end
 			local augInfo = setDef.Aug and Config.AugInfo[setDef.Aug]
 			if augInfo then
 				local lv = player:GetAttribute("AugLvZ_" .. setDef.Zone) or 0
 				local ac = lv > 0 and ("#" .. hex(augInfo.Color)) or dim
-				table.insert(lines, string.format("<font size='12' color='%s'><b>%s %s</b> %s</font>\n  <font color='%s'>%s</font>", ac, augInfo.Icon, augInfo.Name, lv > 0 and ("✔ " .. lv .. "단계") or "○ 골드 3단계 + 장비 1·2·3부위 = 4·5·6단계 (Y)", lv > 0 and "#cfd6f0" or dim, augInfo.Desc))
+				table.insert(lines, string.format("<font size='12' color='%s'><b>%s %s</b> %s</font>\n  <font color='%s'>%s</font>", ac, augInfo.Icon, augInfo.Name, lv > 0 and ("✔ Tier " .. lv) or "○ Gold Tier 3 + 1·2·3 gear pieces = Tier 4·5·6 (Y)", lv > 0 and "#cfd6f0" or dim, augInfo.Desc))
 			end
 		end
 		local current = equipped[selected.Slot]
 		if current and current.Id ~= selected.Id then
 			local diff = selected.Score - current.Score
-			table.insert(lines, diff >= 0 and string.format("<font color='#78ff8c'>장착 중인 것보다 ▲ +%d</font>", diff) or string.format("<font color='#ff8c8c'>장착 중인 것보다 ▼ %d</font>", diff))
+			table.insert(lines, diff >= 0 and string.format("<font color='#78ff8c'>vs. equipped ▲ +%d</font>", diff) or string.format("<font color='#ff8c8c'>vs. equipped ▼ %d</font>", diff))
 		end
 		local bandH = 0
 		if selected.Set and Config.Sets[selected.Set] then
@@ -2865,7 +2865,7 @@ local function buildInventoryTab()
 			create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 0.85) }) }, band)
 			makeLabel({
 				Size = UDim2.new(1, -16, 1, 0), Position = UDim2.new(0, 10, 0, 0), RichText = true, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left,
-				Text = string.format("%s <b>%s 세트</b>   %s %d/3 <font size='11'>착용</font>", setDef.Icon or "✦", setDef.Name, setPips(have), have),
+				Text = string.format("%s <b>%s Set</b>   %s %d/3 <font size='11'>worn</font>", setDef.Icon or "✦", setDef.Name, setPips(have), have),
 			}, band)
 		end
 		makeLabel({
@@ -2880,40 +2880,40 @@ local function buildInventoryTab()
 				local gold = player:GetAttribute("Gold") or 0
 				makeButton({
 					Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 1, -40),
-					Text = string.format("💰 %d G 부위 강화 (성공 %d%%)", cost, chance), TextSize = 13, BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62),
+					Text = string.format("💰 %d G Slot Upgrade (%d%% success)", cost, chance), TextSize = 13, BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62),
 				}, detail, function()
 					Remotes.Gear:FireServer("Enhance", selected.Slot)
 				end)
 			else
-				makeButton({ Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 1, -40), Text = "최대 강화 MAX", TextSize = 13, BackgroundColor3 = GRAY }, detail, function() end)
+				makeButton({ Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 1, -40), Text = "Max Upgrade MAX", TextSize = 13, BackgroundColor3 = GRAY }, detail, function() end)
 			end
 		end
 		if not selected.Equipped then
-			makeButton({ Size = UDim2.new(0, 96, 0, 30), Position = UDim2.new(0, 10, 1, -40), Text = "장착", TextSize = 14, BackgroundColor3 = GREEN }, detail, function()
+			makeButton({ Size = UDim2.new(0, 96, 0, 30), Position = UDim2.new(0, 10, 1, -40), Text = "Equip", TextSize = 14, BackgroundColor3 = GREEN }, detail, function()
 				Remotes.Inventory:FireServer("Equip", selected.Id)
 			end)
-			makeButton({ Size = UDim2.new(0, 96, 0, 30), Position = UDim2.new(0, 112, 1, -40), Text = "분해", TextSize = 14, BackgroundColor3 = RED }, detail, function()
+			makeButton({ Size = UDim2.new(0, 96, 0, 30), Position = UDim2.new(0, 112, 1, -40), Text = "Dismantle", TextSize = 14, BackgroundColor3 = RED }, detail, function()
 				Remotes.Inventory:FireServer("Scrap", selected.Id)
 			end)
 		end
 		if #selected.Affixes > 0 then
 			makeButton({
 				Size = UDim2.new(0, 120, 0, 30), Position = UDim2.new(1, -130, 1, -40),
-				Text = string.format("재굴림 ✨%d", Config.Inventory.RerollEssence[selected.Rarity]), TextSize = 12, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
+				Text = string.format("Reroll ✨%d", Config.Inventory.RerollEssence[selected.Rarity]), TextSize = 12, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
 			}, detail, function()
 				Remotes.Inventory:FireServer("Reroll", selected.Id)
 			end)
 		end
 	else
-		makeLabel({ Size = UDim2.new(1, -20, 1, -20), Position = UDim2.new(0, 10, 0, 10), Text = "장비가 없어요.\n필드에서 몬스터를 잡거나 뽑기로 얻어보세요!", TextSize = 15, TextColor3 = Color3.fromRGB(150, 150, 170) }, detail)
+		makeLabel({ Size = UDim2.new(1, -20, 1, -20), Position = UDim2.new(0, 10, 0, 10), Text = "No gear yet.\nDefeat monsters in the field or use the gacha!", TextSize = 15, TextColor3 = Color3.fromRGB(150, 150, 170) }, detail)
 	end
 
-	sectionTitle(string.format("🎒 가방 (%d / %d) — 칸을 누르면 위에 자세히 나와요", state.BagCount, state.Capacity))
+	sectionTitle(string.format("🎒 Bag (%d / %d) — tap a slot to see details above", state.BagCount, state.Capacity))
 	local columns = 10
 	local rowsNeeded = math.max(1, math.ceil(#bag / columns))
 	local gridRow = newRow(rowsNeeded * 76 + 14)
 	if #bag == 0 then
-		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "가방이 비어 있어요", TextSize = 15, TextColor3 = Color3.fromRGB(130, 130, 150) }, gridRow)
+		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "Your bag is empty", TextSize = 15, TextColor3 = Color3.fromRGB(130, 130, 150) }, gridRow)
 	end
 	create("UIGridLayout", { CellSize = UDim2.new(0, 68, 0, 68), CellPadding = UDim2.new(0, 8, 0, 8), SortOrder = Enum.SortOrder.LayoutOrder }, gridRow)
 	create("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingLeft = UDim.new(0, 10) }, gridRow)
@@ -2957,13 +2957,13 @@ local function buildGrowthTab()
 	local state = growthState
 	if not state then
 		local row = newRow(36)
-		rowText(row, "<font color='#888888'>불러오는 중...</font>")
+		rowText(row, "<font color='#888888'>Loading...</font>")
 		return
 	end
 
 	local header = newRow(78)
 	rowText(header, string.format(
-		"⏱ 시간 단축권 <font color='#ffe16e'><b>%s</b></font> 보유      🏋 훈련 슬롯 <b>%d / %d</b> 사용 중\n<font size='13' color='#bbbbcc'>훈련과 돌파는 시간이 지나면 저절로 끝나요 (접속하지 않아도 흘러요). 시간 단축권으로 기다리는 시간을 줄일 수 있고, 퀘스트로도 조금씩 얻어요. 돈을 쓰지 않아도 모두 도달할 수 있어요.</font>",
+		"⏱ Time Skip <font color='#ffe16e'><b>%s</b></font> owned      🏋 Training slots <b>%d / %d</b> in use\n<font size='13' color='#bbbbcc'>Training and breakthroughs finish on their own over time (even while offline). Time Skips shorten the wait, and you also earn them slowly from quests. You can reach everything without spending money.</font>",
 		Config.FormatDuration(state.TimeSkip), #state.Jobs, state.Slots
 	), 15, 24)
 
@@ -2972,11 +2972,11 @@ local function buildGrowthTab()
 	local frac = math.clamp(state.TimeSkip / cap, 0, 1)
 	local gaugeBack = makePanel({ Size = UDim2.new(1, -24, 0, 18), Position = UDim2.new(0, 12, 0, 11), BackgroundColor3 = Color3.fromRGB(22, 24, 36) }, gaugeRow)
 	local gaugeFill = makePanel({ Size = UDim2.new(skipShownFrac, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(215, 150, 60) }, gaugeBack)
-	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "⏱ 단축칸 " .. Config.FormatDuration(state.TimeSkip), TextSize = 12, ZIndex = 3 }, gaugeBack)
+	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "⏱ Skip gauge " .. Config.FormatDuration(state.TimeSkip), TextSize = 12, ZIndex = 3 }, gaugeBack)
 	game:GetService("TweenService"):Create(gaugeFill, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = UDim2.new(frac, 0, 1, 0) }):Play()
 	skipShownFrac = frac
 
-	sectionTitle("🏋 훈련소 — 영구적으로 강해져요")
+	sectionTitle("🏋 Training Grounds — get permanently stronger")
 	for _, stat in ipairs(Config.Growth.Stats.Order) do
 		local def = Config.Growth.Stats[stat]
 		local level = state.Levels[stat] or 0
@@ -2988,14 +2988,14 @@ local function buildGrowthTab()
 		end
 
 		local current = Config.FormatTrainEffect(stat, level)
-		local nextText = level < Config.Growth.MaxLevel and ("  →  " .. Config.FormatTrainEffect(stat, level + 1)) or "  (최대)"
+		local nextText = level < Config.Growth.MaxLevel and ("  →  " .. Config.FormatTrainEffect(stat, level + 1)) or "  (max)"
 		local status
 		if job then
-			status = string.format("<font color='#ffd966'>훈련 중 · 남은 시간 %s</font>", Config.FormatDuration(growthRemaining(job.EndAt)))
+			status = string.format("<font color='#ffd966'>Training · Time left %s</font>", Config.FormatDuration(growthRemaining(job.EndAt)))
 		elseif level >= Config.Growth.MaxLevel then
-			status = "<font color='#78ff8c'>최대 단계!</font>"
+			status = "<font color='#78ff8c'>Max level!</font>"
 		else
-			status = string.format("<font color='#bbbbcc'>필요 시간 %s · 💰 %d G</font>", Config.FormatDuration(Config.GetTrainTime(level)), Config.GetTrainGold(level))
+			status = string.format("<font color='#bbbbcc'>Time needed %s · 💰 %d G</font>", Config.FormatDuration(Config.GetTrainTime(level)), Config.GetTrainGold(level))
 		end
 
 		local row = newRow(84)
@@ -3005,21 +3005,21 @@ local function buildGrowthTab()
 		if job then
 			makeButton({
 				Size = UDim2.new(0, 160, 0, 34), Position = UDim2.new(1, -172, 0.5, -17),
-				Text = "⏱ 단축권 사용", TextSize = 14, BackgroundColor3 = state.TimeSkip > 0 and Color3.fromRGB(200, 130, 40) or GRAY,
+				Text = "⏱ Use Time Skip", TextSize = 14, BackgroundColor3 = state.TimeSkip > 0 and Color3.fromRGB(200, 130, 40) or GRAY,
 			}, row, function()
 				Remotes.Growth:FireServer("Skip", "Train", stat)
 			end)
 		elseif level < Config.Growth.MaxLevel then
 			makeButton({
 				Size = UDim2.new(0, 160, 0, 34), Position = UDim2.new(1, -172, 0.5, -17),
-				Text = "훈련 시작", TextSize = 15, BackgroundColor3 = GREEN,
+				Text = "Start Training", TextSize = 15, BackgroundColor3 = GREEN,
 			}, row, function()
 				Remotes.Growth:FireServer("Train", stat)
 			end)
 		end
 	end
 
-	sectionTitle("🚧 돌파 — 레벨이 막히는 구간을 넘어요")
+	sectionTitle("🚧 Breakthrough — pass the level caps")
 	local gateIndex
 	for index, gate in ipairs(Config.Growth.Gates) do
 		if gate > state.GatePassed then
@@ -3030,31 +3030,31 @@ local function buildGrowthTab()
 
 	local gateRow = newRow(92)
 	if not gateIndex then
-		rowText(gateRow, "<font color='#78ff8c'>모든 돌파를 마쳤어요! 최대 레벨까지 자유롭게 성장할 수 있어요.</font>")
+		rowText(gateRow, "<font color='#78ff8c'>All breakthroughs complete! You can now grow freely up to max level.</font>")
 	else
 		local gateLevel = Config.Growth.Gates[gateIndex]
 		local myLevel = player:GetAttribute("Level") or 1
 		local text
 		if state.GateJob then
-			text = string.format("<font size='17'><b>레벨 %d 돌파 중</b></font>\n<font color='#ffd966'>남은 시간 %s</font>", state.GateJob.Level, Config.FormatDuration(growthRemaining(state.GateJob.EndAt)))
+			text = string.format("<font size='17'><b>Level %d Breakthrough in progress</b></font>\n<font color='#ffd966'>Time left %s</font>", state.GateJob.Level, Config.FormatDuration(growthRemaining(state.GateJob.EndAt)))
 		else
-			text = string.format("<font size='17'><b>레벨 %d 돌파</b></font>   (현재 Lv.%d)\n<font color='#bbbbcc'>필요 시간 %s · 💰 %d G</font>\n<font size='13' color='#bbbbcc'>%s</font>",
+			text = string.format("<font size='17'><b>Level %d Breakthrough</b></font>   (Current Lv.%d)\n<font color='#bbbbcc'>Time needed %s · 💰 %d G</font>\n<font size='13' color='#bbbbcc'>%s</font>",
 				gateLevel, myLevel, Config.FormatDuration(Config.Growth.GateTime[gateIndex]), Config.Growth.GateGold[gateIndex],
-				myLevel >= gateLevel and "지금 돌파할 수 있어요!" or string.format("레벨 %d 에 도달하면 돌파할 수 있어요", gateLevel))
+				myLevel >= gateLevel and "You can break through now!" or string.format("Reach level %d to break through", gateLevel))
 		end
 		rowText(gateRow, text, 14, 190)
 
 		if state.GateJob then
 			makeButton({
 				Size = UDim2.new(0, 160, 0, 34), Position = UDim2.new(1, -172, 0.5, -17),
-				Text = "⏱ 단축권 사용", TextSize = 14, BackgroundColor3 = state.TimeSkip > 0 and Color3.fromRGB(200, 130, 40) or GRAY,
+				Text = "⏱ Use Time Skip", TextSize = 14, BackgroundColor3 = state.TimeSkip > 0 and Color3.fromRGB(200, 130, 40) or GRAY,
 			}, gateRow, function()
 				Remotes.Growth:FireServer("Skip", "Gate")
 			end)
 		else
 			makeButton({
 				Size = UDim2.new(0, 160, 0, 34), Position = UDim2.new(1, -172, 0.5, -17),
-				Text = "돌파 시작", TextSize = 15, BackgroundColor3 = myLevel >= gateLevel and GREEN or GRAY,
+				Text = "Start Breakthrough", TextSize = 15, BackgroundColor3 = myLevel >= gateLevel and GREEN or GRAY,
 			}, gateRow, function()
 				Remotes.Growth:FireServer("Gate")
 			end)
@@ -3066,9 +3066,9 @@ local metaState = nil
 
 local function buildSkillTab(passiveOnly)
 	if passiveOnly then
-		sectionTitle("🌿 패시브 스킬 — 키를 누르지 않아도 항상 적용돼요. 골드로 레벨업")
+		sectionTitle("🌿 Passive Skills — always active, no key press needed. Level up with Gold")
 	else
-		sectionTitle("⚔ 액티브 스킬 — 필드 / 던전에서 키를 눌러 써요 (C 치료 · V 궁극기). 골드로 레벨업하면 더 강해지고 쿨타임이 줄어요")
+		sectionTitle("⚔ Active Skills — press the key in the field / dungeons (C Heal · V Ultimate). Level up with Gold to get stronger and cut cooldowns")
 	end
 	local U = Config.SkillUpgrade
 	for _, key in ipairs(Config.Skills.UpgradeOrder) do
@@ -3078,23 +3078,23 @@ local function buildSkillTab(passiveOnly)
 		local lv = level - 1
 		local detail
 		if key == "Barrier" then
-			detail = string.format("지속 %.1f초", cfg.Duration + U.BarrierDuration * lv)
+			detail = string.format("Lasts %.1fs", cfg.Duration + U.BarrierDuration * lv)
 		elseif key == "Blast" then
-			detail = string.format("범위 %.1f · 공격력 x%.2f", cfg.Radius + U.BlastRadius * lv, cfg.Mult * (1 + U.BlastMult * lv))
+			detail = string.format("Radius %.1f · Damage x%.2f", cfg.Radius + U.BlastRadius * lv, cfg.Mult * (1 + U.BlastMult * lv))
 		elseif key == "Focus" then
-			detail = string.format("NEAR MISS 유지 %.1f초 · 끊겨도 최소 %d스택 유지", Config.NearMiss.Duration + U.FocusDuration * lv, math.floor(Config.NearMiss.MaxStacks * 0.5 * lv / math.max(1, U.MaxLevel - 1)))
+			detail = string.format("NEAR MISS lasts %.1fs · keeps at least %d stacks even if broken", Config.NearMiss.Duration + U.FocusDuration * lv, math.floor(Config.NearMiss.MaxStacks * 0.5 * lv / math.max(1, U.MaxLevel - 1)))
 		elseif key == "Heal" then
-			detail = string.format("체력 %d%% 회복", math.floor((cfg.Ratio + U.HealRatio * lv) * 100 + 0.5))
+			detail = string.format("Restores %d%% HP", math.floor((cfg.Ratio + U.HealRatio * lv) * 100 + 0.5))
 		else
-			detail = string.format("공격력 x%.2f · 대상 %d마리 (게이지 %d)", cfg.Mult * (1 + U.UltMult * lv), cfg.MaxTargets + math.floor(U.UltTargets * lv + 0.001), cfg.Cost)
+			detail = string.format("Damage x%.2f · %d targets (gauge %d)", cfg.Mult * (1 + U.UltMult * lv), cfg.MaxTargets + math.floor(U.UltTargets * lv + 0.001), cfg.Cost)
 		end
 		local row = newRow(74)
 		rowText(row, string.format("<font size='17'><b>[%s] %s %s</b></font>  <font color='#ffd966'>Lv.%d / %d</font>\n<font color='#bbbbcc'>%s</font>\n<font color='#9ad7ff'>%s%s</font>",
-			cfg.Key, cfg.Icon, cfg.Name, level, U.MaxLevel, cfg.Desc, detail, cfg.Passive and "" or string.format(" · 쿨타임 %.1f초", cfg.Cooldown * (1 - U.CooldownPerLevel * lv))), 14, 190)
+			cfg.Key, cfg.Icon, cfg.Name, level, U.MaxLevel, cfg.Desc, detail, cfg.Passive and "" or string.format(" · Cooldown %.1fs", cfg.Cooldown * (1 - U.CooldownPerLevel * lv))), 14, 190)
 		local maxed = level >= U.MaxLevel
 		makeButton({
 			Size = UDim2.new(0, 150, 0, 34), Position = UDim2.new(1, -162, 0.5, -17),
-			Text = maxed and "MAX" or string.format("강화 %d G", Config.GetSkillUpgradeCost(level)),
+			Text = maxed and "MAX" or string.format("Upgrade %d G", Config.GetSkillUpgradeCost(level)),
 			BackgroundColor3 = maxed and GRAY or GREEN,
 		}, row, function()
 			if not maxed then
@@ -3129,7 +3129,7 @@ end
 
 function MENU.locked()
 	local row = newRow(120)
-	rowText(row, "<font size='22'><b>🔒 2구역 클리어 시 해금</b></font>\n<font size='14' color='#bbbbcc'>필드 2구역의 관문을 열면 훈련이 열려요.\n훈련은 접속을 꺼도 계속 진행돼서 영구적으로 강해져요. (스킬 / 펫은 지금도 쓸 수 있어요)</font>", 15)
+	rowText(row, "<font size='22'><b>🔒 Unlocks after clearing Zone 2</b></font>\n<font size='14' color='#bbbbcc'>Open the gate of Field Zone 2 to unlock training.\nTraining continues even while offline, making you permanently stronger. (Skills / Pets are available now)</font>", 15)
 end
 
 local selectTab
@@ -3171,7 +3171,7 @@ function refreshMenu()
 	elseif currentTab == "Growth" then
 		if sub == "Passive" then
 			buildSkillTab(true)
-			sectionTitle("🏋 훈련 · 돌파 — 접속을 꺼도 흘러가는 영구 성장 (패시브의 한 종류)")
+			sectionTitle("🏋 Training · Breakthrough — permanent growth that runs even while offline (a kind of passive)")
 			if locked then
 				MENU.locked()
 			else
@@ -3182,10 +3182,10 @@ function refreshMenu()
 		end
 	elseif currentTab == "Quest" then
 		if sub == "Ach" then
-			sectionTitle("🏅 업적 — 달성하면 보상과 칭호를 받아요")
+			sectionTitle("🏅 Achievements — earn rewards and titles")
 			buildProgressRows(questState and questState.Achievements, "ClaimAch", true)
 		else
-			sectionTitle("📅 오늘의 일일 퀘스트 (매일 바뀌어요)")
+			sectionTitle("📅 Today's Daily Quests (changes every day)")
 			buildProgressRows(questState and questState.Daily, "Claim", false)
 		end
 	elseif currentTab == "Rank" then
@@ -3258,7 +3258,7 @@ end
 
 do
 	local menuButton = makeButton({
-		Name = "MenuButton", Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 16, 0, 244), Text = "📋 메뉴(B)", TextSize = 12,
+		Name = "MenuButton", Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 16, 0, 244), Text = "📋 Menu(B)", TextSize = 12,
 		BackgroundColor3 = Color3.fromRGB(34, 40, 70),
 	}, gui, toggleMenu)
 	local menuStroke = create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, menuButton)
@@ -3365,7 +3365,7 @@ local selectPanel = makePanel({
 
 makeLabel({
 	Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8),
-	Text = "⚔ 던전 선택", Font = Enum.Font.GothamBlack, TextSize = 24,
+	Text = "⚔ Select Dungeon", Font = Enum.Font.GothamBlack, TextSize = 24,
 }, selectPanel)
 
 local typeCards = {}
@@ -3381,8 +3381,8 @@ for index, key in ipairs(Config.Dungeon.Types.Order) do
 	create("UIStroke", { Color = info.Torch, Thickness = 0, Name = "Stroke" }, card)
 	makeLabel({
 		Size = UDim2.new(1, -16, 1, -12), Position = UDim2.new(0, 8, 0, 6), RichText = true,
-		Text = string.format("<font size='20'><b>%s</b></font>\n\n<font color='#bbbbcc' size='13'>%s</font>\n\n%s\n권장 전투력 %d",
-			info.Name, info.Desc, string.format("%d초 버티기 + 보스", Config.Dungeon.GetSurviveSeconds(info.Waves)), info.RecommendedPower),
+		Text = string.format("<font size='20'><b>%s</b></font>\n\n<font color='#bbbbcc' size='13'>%s</font>\n\n%s\nRecommended Power %d",
+			info.Name, info.Desc, string.format("Survive %ds + Boss", Config.Dungeon.GetSurviveSeconds(info.Waves)), info.RecommendedPower),
 		TextSize = 15, TextYAlignment = Enum.TextYAlignment.Top,
 	}, card)
 	typeCards[key] = card
@@ -3390,7 +3390,7 @@ end
 
 makeLabel({
 	Size = UDim2.new(1, -28, 0, 22), Position = UDim2.new(0, 14, 0, 236),
-	Text = "난이도", Font = Enum.Font.GothamBold, TextSize = 15, TextXAlignment = Enum.TextXAlignment.Left,
+	Text = "Difficulty", Font = Enum.Font.GothamBold, TextSize = 15, TextXAlignment = Enum.TextXAlignment.Left,
 }, selectPanel)
 
 local difficultyButtons = {}
@@ -3422,8 +3422,8 @@ function refreshSelect()
 	local dungeonType = Config.Dungeon.Types[selectedType]
 	local difficulty = Config.Dungeon.Difficulties[selectedDifficulty]
 	summaryLabel.Text = string.format(
-		"<b>%s · %s</b>\n%s → 보스 <font color='#ff9a9a'>%s</font>\n권장 전투력 <font color='#ffe16e'>%d</font>  (내 전투력 %d)\n골드 x%.1f · 티켓 %d장 · 보스 상자 장비 %d개\n🎟 오늘 무료 입장 <b>%d / %d회</b> · 다 쓰면 <b>🔑 열쇠 %d개</b> 필요 (보유 %d개)\n🔑 열쇠는 필드 구역 군주가 줘요 (뒤 구역일수록 많이 · 자주). 쉬움 1개 · 보통 2개 · 어려움 3개",
-		dungeonType.Name, difficulty.Name, string.format("%d초 버티기", Config.Dungeon.GetSurviveSeconds(dungeonType.Waves)), dungeonType.Boss.Name,
+		"<b>%s · %s</b>\n%s → Boss <font color='#ff9a9a'>%s</font>\nRecommended Power <font color='#ffe16e'>%d</font>  (Your Power %d)\nGold x%.1f · Tickets %d · Boss chest gear %d\n🎟 Free entries today <b>%d / %d</b> · After that you need <b>🔑 %d Key(s)</b> (you have %d)\n🔑 Keys are dropped by field zone lords (more and more often in later zones). Easy 1 · Normal 2 · Hard 3",
+		dungeonType.Name, difficulty.Name, string.format("Survive %ds", Config.Dungeon.GetSurviveSeconds(dungeonType.Waves)), dungeonType.Boss.Name,
 		Config.DungeonPower(dungeonType, difficulty), player:GetAttribute("Power") or 0,
 		dungeonType.GoldMult * difficulty.GoldMult, difficulty.Tickets, Config.Loot.DungeonChestCount,
 		player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily, difficulty.KeyCost,
@@ -3433,7 +3433,7 @@ end
 
 makeButton({
 	Size = UDim2.new(0, 280, 0, 46), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 14, 1, -14),
-	Text = "입장하기", TextSize = 20, BackgroundColor3 = GREEN,
+	Text = "Enter", TextSize = 20, BackgroundColor3 = GREEN,
 }, selectPanel, function()
 	selectPanel.Visible = false
 	Remotes.Dungeon:FireServer("Start", selectedType, selectedDifficulty)
@@ -3441,7 +3441,7 @@ end)
 
 makeButton({
 	Size = UDim2.new(0, 280, 0, 46), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -14, 1, -14),
-	Text = "닫기", TextSize = 20, BackgroundColor3 = GRAY,
+	Text = "Close", TextSize = 20, BackgroundColor3 = GRAY,
 }, selectPanel, function()
 	selectPanel.Visible = false
 end)
@@ -3468,11 +3468,11 @@ local warpPanel = makePanel({
 
 makeLabel({
 	Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8),
-	Text = "⛺ 워프", Font = Enum.Font.GothamBlack, TextSize = 24,
+	Text = "⛺ Warp", Font = Enum.Font.GothamBlack, TextSize = 24,
 }, warpPanel)
 makeLabel({
 	Size = UDim2.new(1, -28, 0, 36), Position = UDim2.new(0, 14, 0, 44),
-	Text = "도달한 구역의 캠프로 이동할 수 있어요. 필드에서 죽으면 가까웠던 캠프에서 부활해요.",
+	Text = "Warp to the camp of any zone you've reached. If you die in the field, you respawn at the nearest camp.",
 	TextSize = 13, TextColor3 = Color3.fromRGB(190, 190, 210),
 }, warpPanel)
 
@@ -3481,7 +3481,7 @@ create("UIListLayout", { Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.La
 
 makeButton({
 	Size = UDim2.new(1, -28, 0, 36), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 14, 1, -14),
-	Text = "닫기", TextSize = 16, BackgroundColor3 = GRAY,
+	Text = "Close", TextSize = 16, BackgroundColor3 = GRAY,
 }, warpPanel, function()
 	warpPanel.Visible = false
 end)
@@ -3502,11 +3502,11 @@ local function refreshWarp()
 		end)
 	end
 
-	addRow(0, "  🏠 마을 (로비)", true, 0)
+	addRow(0, "  🏠 Town (Lobby)", true, 0)
 	for zone = 1, Config.Field.ZoneCount do
 		local unlocked = zone <= reached
 		local zoneSet = Config.Sets[Config.Sets.ZoneKeys[zone]]
-		addRow(zone, string.format("  %s 구역 %d · %s   (몬스터 Lv.%d)  %s %s 세트", unlocked and "⛺" or "🔒", zone, Config.Field.ZoneNames[zone], Config.Field.GetZoneLevel(zone), zoneSet.Icon, zoneSet.Name), unlocked, zone)
+		addRow(zone, string.format("  %s Zone %d · %s   (Monster Lv.%d)  %s %s Set", unlocked and "⛺" or "🔒", zone, Config.Field.ZoneNames[zone], Config.Field.GetZoneLevel(zone), zoneSet.Icon, zoneSet.Name), unlocked, zone)
 	end
 end
 
@@ -3573,7 +3573,7 @@ RunService.RenderStepped:Connect(function(dt)
 	comboLabel.Visible = combo >= 2
 	if combo >= 2 then
 		local bonus = math.min(Config.Combo.MaxStacks, combo) * Config.Combo.DamagePerStack
-		comboLabel.Text = string.format("🔥 콤보 x%d\n공격력 +%d%%", combo, math.floor(bonus * 100 + 0.5))
+		comboLabel.Text = string.format("🔥 Combo x%d\nDamage +%d%%", combo, math.floor(bonus * 100 + 0.5))
 		comboLabel.TextSize = math.clamp(24 + combo * 0.4, 24, 40)
 		local left = (player:GetAttribute("ComboUntil") or 0) - os.clock()
 		comboLabel.TextTransparency = left < 1 and 0.5 or 0
@@ -3708,7 +3708,7 @@ do
 	rounded(slot)
 	create("UIStroke", { Color = Color3.fromRGB(120, 210, 255), Thickness = 2 }, slot)
 	makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = "💨", TextSize = 24 }, slot)
-	makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 34), Text = "대시", TextSize = 10 }, slot)
+	makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 34), Text = "Dash", TextSize = 10 }, slot)
 	makeLabel({ Size = UDim2.new(0, 18, 0, 16), Position = UDim2.new(0, 3, 0, 3), Text = "Q", TextSize = 12, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 220, 90) }, slot)
 	local cover = create("Frame", { Size = UDim2.new(1, 0, 0, 0), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.45, BorderSizePixel = 0 }, slot)
 	rounded(cover)
@@ -3742,13 +3742,13 @@ end
 function useSkill(skillKey)
 	local zone = currentZone()
 	if zone ~= "Field" and zone ~= "Dungeon" then
-		toast("스킬은 필드와 던전에서만 쓸 수 있어요.")
+		toast("Skills can only be used in the field and dungeons.")
 		return
 	end
 	if os.clock() < (skillReadyAt[skillKey] or 0) then return end
 	if skillKey == "Ult" then
 		if (player:GetAttribute("UltCharge") or 0) < Config.Skills.Ult.Cost then
-			toast("🎯 궁극기 게이지가 아직 부족해요! (적을 공격하면 차올라요)")
+			toast("🎯 Ultimate gauge not full yet! (Attack enemies to fill it)")
 			return
 		end
 		local character = player.Character
@@ -3763,7 +3763,7 @@ function useSkill(skillKey)
 			end
 		end
 		if not found then
-			toast("🎯 데드아이: 반경 " .. Config.Skills.Ult.Radius .. " 안에 적이 있어야 락온할 수 있어요! (캠프 근처는 안전지대라 적이 없어요)")
+			toast("🎯 Deadeye: an enemy must be within " .. Config.Skills.Ult.Radius .. " range to lock on! (Camps are safe zones with no enemies)")
 			return
 		end
 	end
@@ -3981,23 +3981,23 @@ do
 local helpPanel = makePanel({
 	Size = UDim2.new(0, 560, 0, 580), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
 }, gui)
-makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8), Text = "⚙ 설정 / ❓ 도움말", Font = Enum.Font.GothamBlack, TextSize = 22 }, helpPanel)
+makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8), Text = "⚙ Settings / ❓ Help", Font = Enum.Font.GothamBlack, TextSize = 22 }, helpPanel)
 makeLabel({
 	Size = UDim2.new(1, -40, 0, 280), Position = UDim2.new(0, 20, 0, 50), RichText = true, TextSize = 14,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 	Text = table.concat({
-		"<b>이동/공격</b>  WASD 이동 · Q 대시 · 마우스 클릭(누르고 있으면 연사) 공격",
-		"<b>자동 공격</b>  R — 가장 가까운 적을 자동으로 조준 (적을 클릭하면 그 대상으로 고정)",
-		"<b>스킬</b>  C 응급 치료 · V 궁극기(적을 공격해 게이지 100%를 채우면 사용)  — 필드/던전에서 사용",
-		"<b>메뉴</b>  I — 캐릭터(장비·무기·정보) · 성장(훈련·스킬·펫) · 퀘스트(업적) · 랭킹   |   🎁 상점은 화면 오른쪽 버튼",
-		"<b>음악</b>  M — 켜기/끄기",
+		"<b>Move/Attack</b>  WASD move · Q dash · Mouse click (hold for rapid fire) to attack",
+		"<b>Auto-Attack</b>  R — auto-aims at the nearest enemy (click an enemy to lock onto it)",
+		"<b>Skills</b>  C Emergency Heal · V Ultimate (usable when the gauge is 100% from attacking enemies)  — field/dungeons only",
+		"<b>Menu</b>  I — Character (Gear·Weapon·Info) · Growth (Training·Skills·Pets) · Quests (Achievements) · Ranking   |   🎁 Shop button is on the right of the screen",
+		"<b>Music</b>  M — on/off",
 		"",
-		"<b>🎯 게임 흐름</b>",
-		"1. 필드 / 던전에서 골드를 모아 무기를 강화하세요 (로비의 허수아비는 대미지 / DPS 연습용, 휴식 구역에 서 있으면 방치 골드가 쌓여요)",
-		"2. 동쪽 <b>필드</b>에서 몬스터를 잡아 장비를 얻고 레벨을 올리세요 (황금 고블린을 놓치지 마세요!)",
-		"3. 북쪽 <b>던전</b>은 열쇠가 필요해요. 정해진 시간을 버티면 보스가 나와요. 중간중간 랜덤 강화(와 패널티)가 터지고, 보스 상자에서 장비를 얻어요",
-		"4. 2구역을 깨면 성장(훈련)이 열려요. 훈련을 걸어두고, 장비 세트/유니크를 모아 전투력을 키우세요",
-		"5. 최고 레벨이 되면 <b>환생</b>으로 영구 보너스를 받고 다시 도전할 수 있어요",
+		"<b>🎯 Game Flow</b>",
+		"1. Collect Gold in the field / dungeons to upgrade your weapon (the lobby dummy is for damage / DPS practice; standing in the rest area earns idle Gold)",
+		"2. Defeat monsters in the eastern <b>Field</b> to get gear and level up (don't miss the Golden Goblin!)",
+		"3. The northern <b>Dungeon</b> needs a Key. Survive the set time and the boss appears. Random buffs (and penalties) pop up along the way, and you get gear from the boss chest",
+		"4. Clearing Zone 2 unlocks Growth (training). Queue up training, and collect gear sets/uniques to boost your Power",
+		"5. At max level, <b>Rebirth</b> for permanent bonuses and take on the challenge again",
 	}, "\n"),
 }, helpPanel)
 
@@ -4059,7 +4059,7 @@ local function settingSlider(y, title, getValue, setValue)
 	refresh()
 end
 
-settingSlider(334, "🔊 배경음악 볼륨", function() return musicScale end, function(value)
+settingSlider(334, "🔊 Music Volume", function() return musicScale end, function(value)
 	musicScale = value
 	for name, sound in pairs(tracks) do
 		if name == currentMusic then
@@ -4067,13 +4067,13 @@ settingSlider(334, "🔊 배경음악 볼륨", function() return musicScale end,
 		end
 	end
 end)
-settingSlider(380, "🔫 총소리 볼륨", function() return settings.ShotVolume end, function(value)
+settingSlider(380, "🔫 Gunshot Volume", function() return settings.ShotVolume end, function(value)
 	settings.ShotVolume = value
 end)
-settingButton(428, function() return "📳 화면 흔들림: " .. (settings.Shake and "켜짐" or "꺼짐") end, function() settings.Shake = not settings.Shake end)
-settingButton(468, function() return "📡 레이더: " .. (settings.Radar and "켜짐" or "꺼짐") end, function() settings.Radar = not settings.Radar end)
+settingButton(428, function() return "📳 Screen Shake: " .. (settings.Shake and "ON" or "OFF") end, function() settings.Shake = not settings.Shake end)
+settingButton(468, function() return "📡 Radar: " .. (settings.Radar and "ON" or "OFF") end, function() settings.Radar = not settings.Radar end)
 makeButton({
-	Size = UDim2.new(0, 160, 0, 36), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14), Text = "닫기 (H)", BackgroundColor3 = GRAY,
+	Size = UDim2.new(0, 160, 0, 36), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14), Text = "Close (H)", BackgroundColor3 = GRAY,
 }, helpPanel, function()
 	helpPanel.Visible = false
 end)
@@ -4090,7 +4090,7 @@ end)
 
 do
 	local helpButton = makeButton({
-		Name = "HelpButton", Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 98, 0, 244), Text = "⚙ 설정(H)", TextSize = 12,
+		Name = "HelpButton", Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 98, 0, 244), Text = "⚙ Settings(H)", TextSize = 12,
 		BackgroundColor3 = Color3.fromRGB(34, 40, 70),
 	}, gui, toggleHelp)
 	create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, helpButton)

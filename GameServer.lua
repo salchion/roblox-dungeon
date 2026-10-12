@@ -72,16 +72,16 @@ Dungeon.Init(lobby.SpawnCFrame)
 Dummy.Build(lobby.DummyStart)
 Dummy.BuildRest(lobby.RestStart) -- 휴식 구역 (방치 수입)
 Npc.Init(lobby.DummyStart.Y, { -- 시설마다 NPC 가 서서 말을 건다 (허공에 대고 말하는 느낌을 없애려고)
-	{ Name = "톰", Title = "🔨 대장장이", Position = promptPosition(lobby.AnvilPrompt), Shirt = Color3.fromRGB(150, 98, 60), Pants = Color3.fromRGB(70, 56, 48), Hat = "cap", Accent = Color3.fromRGB(110, 70, 44), Prop = "hammer",
-		Lines = { "쾅쾅! 무기를 두드려 볼까?", "강화하다 보면 새 무기가 해금돼!", "실패해도 단계는 안 내려가니까 걱정 마!" } },
-	{ Name = "루나", Title = "🎰 뽑기 상인", Position = promptPosition(lobby.GachaPrompt), Shirt = Color3.fromRGB(120, 80, 170), Pants = Color3.fromRGB(60, 44, 90), Hat = "wizard", Accent = Color3.fromRGB(150, 100, 210), Prop = "staff",
-		Lines = { "티켓 있어? 행운을 시험해 봐!", "여러 장 뽑기엔 가끔 좋은 게 숨어 있대.", "세트 장비는 필드에서 모아야 맞출 수 있어!" } },
-	{ Name = "카이", Title = "🛡 필드 문지기", Position = promptPosition(lobby.WarpPrompt), Shirt = Color3.fromRGB(110, 120, 140), Pants = Color3.fromRGB(70, 74, 90), Hat = "helmet", Accent = Color3.fromRGB(190, 60, 60), Prop = "spear",
-		Lines = { "필드는 위험해. 군주를 쓰러뜨리면 다음 구역이 열려.", "Q 대시로 탄을 아슬아슬하게 피해 봐!", "준비됐으면 문으로 가!" } },
-	{ Name = "벨", Title = "🗝 던전 안내원", Position = promptPosition(lobby.GatePrompt), Shirt = Color3.fromRGB(70, 110, 100), Pants = Color3.fromRGB(46, 62, 60), Hat = "hood", Accent = Color3.fromRGB(60, 96, 90), Prop = "lantern",
-		Lines = { "던전은 하루 무료 입장이 있어.", "던전마다 몬스터도 보스도 달라!", "열쇠는 필드 군주가 줘." } },
-	{ Name = "미라", Title = "🌀 심연 관리인", Position = promptPosition(lobby.RiftPrompt), Shirt = Color3.fromRGB(150, 60, 120), Pants = Color3.fromRGB(70, 36, 66), Hat = "hood", Accent = Color3.fromRGB(190, 70, 150), Prop = "staff",
-		Lines = { "필드를 정복한 자만 심연에 들어갈 수 있어.", "깊이 들어갈수록 보상이 커져.", "기록이 곧 소탕 보상이야." } },
+	{ Name = "Tom", Title = "🔨 Blacksmith", Position = promptPosition(lobby.AnvilPrompt), Shirt = Color3.fromRGB(150, 98, 60), Pants = Color3.fromRGB(70, 56, 48), Hat = "cap", Accent = Color3.fromRGB(110, 70, 44), Prop = "hammer",
+		Lines = { "Clang clang! Shall we hammer out a weapon?", "Keep upgrading and you'll unlock new weapons!", "Don't worry, failing won't lower your level!" } },
+	{ Name = "Luna", Title = "🎰 Gacha Merchant", Position = promptPosition(lobby.GachaPrompt), Shirt = Color3.fromRGB(120, 80, 170), Pants = Color3.fromRGB(60, 44, 90), Hat = "wizard", Accent = Color3.fromRGB(150, 100, 210), Prop = "staff",
+		Lines = { "Got a ticket? Try your luck!", "They say multi-pulls sometimes hide good stuff.", "You have to collect set gear out in the field!" } },
+	{ Name = "Kai", Title = "🛡 Field Gatekeeper", Position = promptPosition(lobby.WarpPrompt), Shirt = Color3.fromRGB(110, 120, 140), Pants = Color3.fromRGB(70, 74, 90), Hat = "helmet", Accent = Color3.fromRGB(190, 60, 60), Prop = "spear",
+		Lines = { "The field is dangerous. Defeat the lord and the next zone opens.", "Try dodging shots narrowly with the Q dash!", "Head to the gate when you're ready!" } },
+	{ Name = "Belle", Title = "🗝 Dungeon Guide", Position = promptPosition(lobby.GatePrompt), Shirt = Color3.fromRGB(70, 110, 100), Pants = Color3.fromRGB(46, 62, 60), Hat = "hood", Accent = Color3.fromRGB(60, 96, 90), Prop = "lantern",
+		Lines = { "Dungeons have free daily entries.", "Every dungeon has different monsters and bosses!", "Field lords drop the keys." } },
+	{ Name = "Mira", Title = "🌀 Abyss Keeper", Position = promptPosition(lobby.RiftPrompt), Shirt = Color3.fromRGB(150, 60, 120), Pants = Color3.fromRGB(70, 36, 66), Hat = "hood", Accent = Color3.fromRGB(190, 70, 150), Prop = "staff",
+		Lines = { "Only those who conquer the field may enter the Abyss.", "The deeper you go, the bigger the rewards.", "Your record is your sweep reward." } },
 })
 Rank.Init(lobby.RankBoardCFrame)
 Showcase.Init(lobby.RankBoardCFrame) -- 랭킹판 앞 명예의 전당 (최강 3명)
@@ -156,12 +156,12 @@ local function onCharacterAdded(player, character)
 		if doomed then
 			player:SetAttribute("TutorialDoomed", nil)
 			if doomed == "Retry" then
-				Remotes.Notify:FireClient(player, "💀 쓰러졌어요! 이번엔 일회성 힘이 깃들었어요 (군주에게 주는 피해 크게 증가 + 궁극기 가득) — 다시 군주에게 도전해요!")
+				Remotes.Notify:FireClient(player, "💀 You fell! A one-time power surges within you (big damage boost vs. the lord + full ultimate) — challenge the lord again!")
 			else
-				Remotes.Notify:FireClient(player, "💀 최후의 군주에게 쓰러졌어요… 하지만 전리품은 남았어요!")
+				Remotes.Notify:FireClient(player, "💀 You were defeated by the Final Lord... but the loot remains!")
 			end
 		else
-			Remotes.Notify:FireClient(player, "💀 쓰러져서 마을로 돌아왔어요. 장비를 정비하고 다시 도전하세요!")
+			Remotes.Notify:FireClient(player, "💀 You fell and returned to town. Gear up and try again!")
 		end
 		task.delay(1.5, function() Advice.AfterDefeat(player) end) -- 쓰러진 직후: 지금 남은 골드 / 티켓 / 빈 장비 / 빈 훈련 슬롯을 알려준다
 	end
@@ -282,7 +282,7 @@ local function setupPlayer(player)
 			end
 		end)
 	end
-	addStat("전투력", "Power", function()
+	addStat("Power", "Power", function()
 		Weapon.UpdateNameplate(player)
 		Quest.Refresh(player)
 	end)
@@ -593,7 +593,7 @@ Remotes.Enhance.OnServerEvent:Connect(function(player, count)
 		Remotes.Enhance:FireClient(player, false, lastMessage)
 		return
 	end
-	local summary = string.format("%d회 강화: 성공 %d / 실패 %d  (골드 -%d)", attempts, successes, attempts - successes, spent)
+	local summary = string.format("%d upgrades: %d success / %d fail  (Gold -%d)", attempts, successes, attempts - successes, spent)
 	Remotes.Enhance:FireClient(player, successes > 0, evolvedMessage or summary, { Attempts = attempts, Successes = successes, Spent = spent, Evolved = evolvedMessage ~= nil, Summary = summary })
 end)
 
@@ -608,7 +608,7 @@ Remotes.Weapon.OnServerEvent:Connect(function(player, action, typeKey)
 		ok, message = Weapon.Equip(player, typeKey)
 	elseif action == "Buy" then
 		if player:GetAttribute("Zone") ~= "Lobby" then
-			ok, message = false, "무기 구매는 로비에서만 할 수 있어요."
+			ok, message = false, "Weapons can only be bought in the lobby."
 		else
 			ok, message = Weapon.Buy(player, typeKey)
 		end
@@ -632,7 +632,7 @@ Remotes.Gear.OnServerEvent:Connect(function(player, action, arg)
 			local ok, message, roll = Gear.Roll(player)
 			Remotes.Gear:FireClient(player, "Result", { Ok = ok, Message = message, Roll = roll, Upgrades = ok and Inventory.CountUpgrades(player) or 0 })
 		elseif (player:GetAttribute("Tickets") or 0) < count then
-			Remotes.Gear:FireClient(player, "Result", { Ok = false, Message = string.format("🎫 %d연 뽑기는 티켓 %d장이 필요해요 (지금 %d장)", count, count, player:GetAttribute("Tickets") or 0) })
+			Remotes.Gear:FireClient(player, "Result", { Ok = false, Message = string.format("🎫 A %dx pull needs %d tickets (you have %d)", count, count, player:GetAttribute("Tickets") or 0) })
 		else
 			-- 여러 개 동시에 뽑기 (10연): 티켓이 10장 있을 때만
 			local rolls, failMessage = {}, nil
@@ -646,7 +646,7 @@ Remotes.Gear.OnServerEvent:Connect(function(player, action, arg)
 				table.insert(rolls, roll)
 			end
 			if #rolls == 0 then
-				Remotes.Gear:FireClient(player, "Result", { Ok = false, Message = failMessage or "뽑을 수 없어요." })
+				Remotes.Gear:FireClient(player, "Result", { Ok = false, Message = failMessage or "Can't pull." })
 			else
 				local best = rolls[1]
 				for _, roll in ipairs(rolls) do
@@ -654,7 +654,7 @@ Remotes.Gear.OnServerEvent:Connect(function(player, action, arg)
 				end
 				Remotes.Gear:FireClient(player, "Result", {
 					Ok = true, Roll = best, Rolls = rolls, Upgrades = Inventory.CountUpgrades(player),
-					Message = string.format("%d회 뽑기 완료! 최고 등급: %s", #rolls, Config.Gear.RarityNames[best.Rarity]),
+					Message = string.format("%d pulls done! Best rarity: %s", #rolls, Config.Gear.RarityNames[best.Rarity]),
 				})
 			end
 		end

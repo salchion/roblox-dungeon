@@ -102,10 +102,10 @@ local function ensureUi()
 			if st.compact then layoutCompact(vp) else layoutCalm(vp) end
 		end)
 	end
-	pillRank = pill("RankPill", "🏆 랭킹", 92, function() toggle("rank") end)
-	pillParty = pill("PartyPill", "👥 파티", 116, function() toggle("party") end)
-	pillStat = pill("StatPill", "✨ 특성 / 나가기", 150, function() toggle("stat") end)
-	pillShop = pill("ShopPill", "🎁 상점", 96, function() player:SetAttribute("OpenShop", os.clock()) end) -- PlayerClient 가 신호를 받아 상점 창을 연다
+	pillRank = pill("RankPill", "🏆 Ranking", 92, function() toggle("rank") end)
+	pillParty = pill("PartyPill", "👥 Party", 116, function() toggle("party") end)
+	pillStat = pill("StatPill", "✨ Traits / Exit", 150, function() toggle("stat") end)
+	pillShop = pill("ShopPill", "🎁 Shop", 96, function() player:SetAttribute("OpenShop", os.clock()) end) -- PlayerClient 가 신호를 받아 상점 창을 연다
 	pillShop.BackgroundColor3 = Color3.fromRGB(86, 52, 40)
 end
 
@@ -245,7 +245,7 @@ function layoutCompact(viewport)
 	pillShop.Position = UDim2.new(1, -(12 + 116 + 6 + 92 + 6), 0, PILL_Y) -- 랭킹 버튼 왼쪽 (위 줄)
 	pillShop.Visible = lobbyOn
 	local partyTitle = partyPanel and partyPanel:FindFirstChildOfClass("TextLabel")
-	pillParty.Text = partyTitle and partyTitle.Text ~= "" and ("👥 " .. partyTitle.Text) or "👥 파티"
+	pillParty.Text = partyTitle and partyTitle.Text ~= "" and ("👥 " .. partyTitle.Text) or "👥 Party"
 	local function tint(button, on)
 		button.BackgroundColor3 = on and Color3.fromRGB(62, 96, 196) or Color3.fromRGB(34, 40, 70)
 	end
@@ -468,7 +468,7 @@ function layoutCalm(viewport)
 	scaleObj.Scale = desktopScale(viewport)
 	pillRank.Visible, pillStat.Visible = false, false
 	pillParty.Visible = showPill
-	pillParty.Text = "👥 파티"
+	pillParty.Text = "👥 Party"
 	pillParty.Position = UDim2.new(1, -16, 0, 16)
 	pillParty.BackgroundColor3 = open == "party" and Color3.fromRGB(62, 96, 196) or Color3.fromRGB(34, 40, 70)
 

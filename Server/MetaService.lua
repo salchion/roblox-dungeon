@@ -82,7 +82,7 @@ function Meta.RefreshPetModel(player)
 	local color = Config.Pet.Colors[pet.Color] or Config.Pet.Colors[1]
 	local okBuild, model = pcall(PetModel.Build, pet.Look, color)
 	if not okBuild then
-		warn("[펫] 모델을 만들지 못했어요:", pet.Look, model)
+		warn("[Pet] Could not build model:", pet.Look, model)
 		return
 	end
 	local body = model.PrimaryPart
@@ -113,7 +113,7 @@ function Meta.RefreshPetModel(player)
 	pcall(function()
 		body:SetNetworkOwner(nil)
 	end)
-	print(string.format("[펫] %s 의 따라다니는 펫을 %s(색 %d)로 바꿨어요", player.Name, tostring(pet.Look), pet.Color or 1))
+	print(string.format("[Pet] Changed %s's follower pet to %s (color %d)", player.Name, tostring(pet.Look), pet.Color or 1))
 end
 
 ------------------------------------------------------------
@@ -242,13 +242,13 @@ local function upgradeSkill(player, key)
 	if not state or typeof(key) ~= "string" or key == "Order" or not Config.Skills[key] or not state.Skills[key] then return end
 	local level = state.Skills[key]
 	if level >= Config.SkillUpgrade.MaxLevel then
-		notify(player, "이미 최대 레벨이에요!")
+		notify(player, "Already at max level!")
 		return
 	end
 	local cost = Config.GetSkillUpgradeCost(level)
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
-		notify(player, string.format("골드가 부족해요. (%d G 필요)", cost))
+		notify(player, string.format("Not enough gold. (%d G needed)", cost))
 		return
 	end
 	player:SetAttribute("Gold", gold - cost)
@@ -267,13 +267,13 @@ local function unlockPet(player)
 	local cost = Config.Pet.UnlockCost
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
-		notify(player, string.format("골드가 부족해요. (%d G 필요)", cost))
+		notify(player, string.format("Not enough gold. (%d G needed)", cost))
 		return
 	end
 	player:SetAttribute("Gold", gold - cost)
 	state.Pet.Unlocked = true
 	state.Pet.Level = 1
-	notify(player, "🐾 펫 기능이 열렸어요! 골드로 레벨을 올릴수록 새 기능이 생겨요. (외형은 군주를 쓰러뜨리거나 칭호를 따면 늘어나요)")
+	notify(player, "🐾 Pets unlocked! Level up with gold to gain new abilities. (More looks unlock by defeating Lords or earning titles)")
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if root then
 		Effects.Burst(root.Position + Vector3.new(0, 3, 0), Color3.fromRGB(255, 220, 120), 80)
@@ -288,13 +288,13 @@ local function levelUpPet(player)
 	if not state or not state.Pet.Unlocked then return end
 	local level = state.Pet.Level
 	if level >= Config.Pet.MaxLevel then
-		notify(player, "펫이 이미 최대 레벨이에요!")
+		notify(player, "Your pet is already at max level!")
 		return
 	end
 	local cost = Config.GetPetLevelCost(level)
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
-		notify(player, string.format("골드가 부족해요. (%d G 필요)", cost))
+		notify(player, string.format("Not enough gold. (%d G needed)", cost))
 		return
 	end
 	player:SetAttribute("Gold", gold - cost)
@@ -303,7 +303,7 @@ local function levelUpPet(player)
 	for _, fn in ipairs(Config.Pet.Functions) do
 		if fn.Level == level + 1 then gained = fn end
 	end
-	notify(player, gained and string.format("🐾 펫 Lv.%d! 새 기능 %s %s — %s", level + 1, gained.Icon, gained.Name, gained.Desc) or string.format("🐾 펫 Lv.%d!", level + 1))
+	notify(player, gained and string.format("🐾 Pet Lv.%d! New ability %s %s — %s", level + 1, gained.Icon, gained.Name, gained.Desc) or string.format("🐾 Pet Lv.%d!", level + 1))
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if root then
 		Effects.Burst(root.Position + Vector3.new(0, 3, 0), Color3.fromRGB(255, 225, 120), gained and 70 or 30)
@@ -316,7 +316,7 @@ local function setPetLook(player, key)
 	local state = states[player]
 	if not state or not state.Pet.Unlocked then return end
 	if typeof(key) ~= "string" or not lookUnlocked(player, key) then
-		notify(player, "아직 열리지 않은 외형이에요.")
+		notify(player, "This look isn't unlocked yet.")
 		return
 	end
 	state.Pet.Look = key
@@ -348,7 +348,7 @@ task.spawn(function()
 					local shield = Instance.new("ForceField")
 					shield.Parent = character
 					game:GetService("Debris"):AddItem(shield, 3)
-					notify(player, "🛡 펫의 수호! 3초 동안 무적이에요 (90초마다)")
+					notify(player, "🛡 Pet's Guard! Invincible for 3 seconds (every 90 seconds)")
 				end
 			end
 		end
@@ -360,15 +360,15 @@ local function prestige(player)
 	local state = states[player]
 	if not state then return end
 	if player:GetAttribute("Zone") ~= "Lobby" then
-		notify(player, "환생은 로비에서만 할 수 있어요.")
+		notify(player, "You can only Rebirth in the lobby.")
 		return
 	end
 	if (player:GetAttribute("Level") or 1) < Config.Prestige.Level then
-		notify(player, string.format("레벨 %d 부터 환생할 수 있어요.", Config.Prestige.Level))
+		notify(player, string.format("You can Rebirth from level %d.", Config.Prestige.Level))
 		return
 	end
 	if state.Prestige >= Config.Prestige.Max then
-		notify(player, "이미 최대 환생 단계예요!")
+		notify(player, "Already at max Rebirth rank!")
 		return
 	end
 	state.Prestige += 1
@@ -378,7 +378,7 @@ local function prestige(player)
 	if root then
 		Effects.Burst(root.Position + Vector3.new(0, 3, 0), Color3.fromRGB(255, 230, 120), 120)
 	end
-	notify(player, string.format("🌟 환생 %d단계! 영구 공격력 +%d%% · 골드 획득량 +%d%% (총 공격력 +%d%%, 골드 +%d%%)", state.Prestige, Config.Prestige.DamagePerRank * 100, Config.Prestige.GoldPerRank * 100, state.Prestige * Config.Prestige.DamagePerRank * 100, state.Prestige * Config.Prestige.GoldPerRank * 100))
+	notify(player, string.format("🌟 Rebirth rank %d! Permanent attack +%d%% · gold gain +%d%% (total attack +%d%%, gold +%d%%)", state.Prestige, Config.Prestige.DamagePerRank * 100, Config.Prestige.GoldPerRank * 100, state.Prestige * Config.Prestige.DamagePerRank * 100, state.Prestige * Config.Prestige.GoldPerRank * 100))
 	Meta.Push(player)
 end
 

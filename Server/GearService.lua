@@ -854,28 +854,28 @@ end
 ------------------------------------------------------------
 function Gear.Enhance(player, slotKey)
 	if player:GetAttribute("Zone") ~= "Lobby" then
-		return false, "장비 강화는 로비에서만 할 수 있어요."
+		return false, "Gear upgrades are only available in the lobby."
 	end
 	local slot = Config.GetGearSlot(slotKey)
 	if not slot then
-		return false, "알 수 없는 부위예요."
+		return false, "Unknown slot."
 	end
 
 	local equipped = Inventory.GetEquipped(player, slotKey)
 	if not equipped then
-		return false, slot.Name .. " 장비가 없어요. 필드에서 얻거나 뽑기로 얻어주세요."
+		return false, "You have no " .. slot.Name .. " gear. Get one from the field or the gacha."
 	end
 	local rarity = equipped.Rarity
 
 	local level = Inventory.GetSlotLevel(player, slotKey) -- 강화는 부위(슬롯)에 쌓인다 (어떤 장비를 끼든 적용)
 	if level >= G.MaxLevel then
-		return false, "이미 최대 강화 단계예요!"
+		return false, "Already at max upgrade level!"
 	end
 
 	local cost = Config.GetGearCost(slotKey, rarity, level)
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
-		return false, string.format("💰 골드가 부족해요. (%d 필요) 허수아비 훈련장 / 필드 사냥 / 던전 / 심연 소탕으로 골드를 벌어요", cost)
+		return false, string.format("💰 Not enough Gold. (%d needed) Earn Gold at the Training Dummy / field hunting / dungeons / Abyss clears", cost)
 	end
 	player:SetAttribute("Gold", gold - cost)
 
@@ -886,9 +886,9 @@ function Gear.Enhance(player, slotKey)
 		if root then
 			Effects.Burst(root.Position, G.RarityColors[rarity], 30)
 		end
-		return true, string.format("%s 강화 성공! +%d", slot.Name, level + 1)
+		return true, string.format("%s upgrade success! +%d", slot.Name, level + 1)
 	end
-	return false, "강화 실패... (골드만 사라졌어요)"
+	return false, "Upgrade failed... (only the Gold was lost)"
 end
 
 ------------------------------------------------------------
@@ -898,11 +898,11 @@ end
 ------------------------------------------------------------
 function Gear.Roll(player, forced)
 	if player:GetAttribute("Zone") ~= "Lobby" then
-		return false, "뽑기는 로비에서만 할 수 있어요."
+		return false, "The gacha is only available in the lobby."
 	end
 	local tickets = player:GetAttribute("Tickets") or 0
 	if tickets < 1 then
-		return false, "🎫 티켓이 없어요! 던전을 클리어하거나, 필드 군주·엘리트를 잡거나, 일일 퀘스트를 하면 얻을 수 있어요"
+		return false, "🎫 No tickets! Clear dungeons, defeat field lords/elites, or do daily quests to get more"
 	end
 	player:SetAttribute("Tickets", tickets - 1)
 	Quest.Add(player, "Rolls", 1)
@@ -941,15 +941,15 @@ function Gear.Roll(player, forced)
 	local name = string.format("[%s] %s", G.RarityNames[rarity], slot.Names[rarity])
 	local message
 	if status == "Equipped" then
-		message = name .. " 획득! 장착했어요."
+		message = name .. " obtained! Equipped."
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if root then
 			Effects.Burst(root.Position, G.RarityColors[rarity], 20 + rarity * 12)
 		end
 	elseif status == "Bag" then
-		message = name .. " 획득! 가방에 넣었어요. (I → 가방에서 장착)"
+		message = name .. " obtained! Added to your bag. (I → equip from Bag)"
 	else
-		message = string.format("%s... 자동 분해! 에센스 +%d, %d G", name, essence or 0, gold or 0)
+		message = string.format("%s... auto-dismantled! Essence +%d, %d G", name, essence or 0, gold or 0)
 	end
 	return true, message, { Slot = slot.Key, Rarity = rarity, Name = slot.Names[rarity], Equipped = status == "Equipped", Status = status, Gold = gold or 0 }
 end

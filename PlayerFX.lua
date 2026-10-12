@@ -90,7 +90,7 @@ do
 		return 1 - (t - 0.9) / 0.1
 	end
 	local lastNight = -1
-	local phaseName = "낮"
+	local phaseName = "Day"
 	local function applyField(index)
 		local theme = FIELD_THEMES[index or fieldIndex]
 		if not theme then return end
@@ -109,7 +109,7 @@ do
 			local fog = theme.Fog:Lerp(NIGHT_FOG, smooth * 0.55):Lerp(DUSK_FOG, warm)
 			TweenService:Create(atmosphere, TweenInfo.new(1.2), { Color = fog, Density = theme.Density }):Play()
 		end
-		local name = n < 0.15 and "낮" or (n > 0.85 and "밤" or "노을")
+		local name = n < 0.15 and "Day" or (n > 0.85 and "Night" or "Dusk")
 		if name ~= phaseName then
 			phaseName = name
 			local gui = player:FindFirstChildOfClass("PlayerGui")
@@ -128,7 +128,7 @@ do
 				label.TextColor3 = Color3.fromRGB(235, 232, 220)
 				label.TextStrokeTransparency = 0.5
 				label.TextTransparency = 1
-				label.Text = name == "낮" and "☀ 아침이 밝았다" or (name == "밤" and "☾ 밤이 되었다 - 시야 주의" or "해가 저물어 간다")
+				label.Text = name == "Day" and "☀ Morning has come" or (name == "Night" and "☾ Night has fallen - watch your sight" or "The sun is setting")
 				label.Parent = sg
 				TweenService:Create(label, TweenInfo.new(0.6), { TextTransparency = 0 }):Play()
 				task.delay(3, function()
@@ -351,11 +351,11 @@ do
 				BackgroundColor3 = Color3.fromRGB(14, 24, 36), BackgroundTransparency = 0.03, ZIndex = 58,
 			}, gui)
 			create("UIStroke", { Color = Color3.fromRGB(120, 255, 255), Thickness = 4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
-			makeLabel({ Size = UDim2.new(1, -24, 0, 34), Position = UDim2.new(0, 12, 0, 8), Text = "⚡ NEAR MISS 란?", TextSize = 22, Font = Enum.Font.GothamBlack,
+			makeLabel({ Size = UDim2.new(1, -24, 0, 34), Position = UDim2.new(0, 12, 0, 8), Text = "⚡ What is NEAR MISS?", TextSize = 22, Font = Enum.Font.GothamBlack,
 				TextColor3 = Color3.fromRGB(120, 255, 255), ZIndex = 59 }, card)
 			makeLabel({ Size = UDim2.new(1, -28, 0, 116), Position = UDim2.new(0, 14, 0, 42), TextSize = 15, Font = Enum.Font.GothamBold, TextWrapped = true, RichText = true,
 				TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 59,
-				Text = "적의 탄이나 공격을 <font color='#78ffff'>대시(Q)로 아슬아슬하게 스치며 피하면</font> 발동해요!\n<font color='#ffe16e'>데드아이 게이지가 차오르고, 연속으로 성공할수록 공격력이 쌓여요! (머리 위 막대가 붉어져요)</font>\n8초 안에 연속으로 성공하면 계속 쌓여요. (심연 도전에서는 점수도 올라요)" }, card)
+				Text = "It triggers when you <font color='#78ffff'>dash (Q) through enemy shots or attacks at the last moment</font>!\n<font color='#ffe16e'>Your Dead Eye gauge fills up, and your attack power stacks with every consecutive success! (The bar above your head turns red)</font>\nKeep succeeding within 8 seconds to keep stacking. (In Abyss challenges, your score goes up too)" }, card)
 			task.delay(8, function()
 				if card.Parent then
 					TweenService:Create(card, TweenInfo.new(0.4), { BackgroundTransparency = 1 }):Play()
@@ -371,7 +371,7 @@ do
 		}, gui)
 		local sub = makeLabel({
 			Size = UDim2.new(0, 520, 0, 28), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.3, 46),
-			Text = "데드아이 게이지 +  ·  공격력이 점점 올라가요!", TextSize = 18, Font = Enum.Font.GothamBold,
+			Text = "Dead Eye gauge +  ·  Attack power keeps rising!", TextSize = 18, Font = Enum.Font.GothamBold,
 			TextColor3 = Color3.fromRGB(255, 240, 160), TextStrokeTransparency = 0, ZIndex = 60,
 		}, gui)
 		text.Size = UDim2.new(0, 340, 0, 46)
@@ -398,19 +398,19 @@ do
 		local band = create("Frame", { Size = UDim2.new(1, 0, 0, 150), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 0, 0.3, 0), BackgroundColor3 = Color3.fromRGB(10, 6, 14), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 56 }, root)
 		TweenService:Create(band, TweenInfo.new(0.25), { BackgroundTransparency = 0.25 }):Play()
 		local title = makeLabel({
-			Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0, 0, 0, 10), Text = string.format("⚠ 구역 %d · %s ⚠", info.Zone, info.Name),
+			Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0, 0, 0, 10), Text = string.format("⚠ Zone %d · %s ⚠", info.Zone, info.Name),
 			Font = Enum.Font.GothamBlack, TextSize = 120, TextColor3 = Color3.fromRGB(255, 90, 80), TextStrokeTransparency = 0, ZIndex = 57, TextTransparency = 1,
 		}, band)
 		TweenService:Create(title, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { TextSize = 50, TextTransparency = 0 }):Play()
 		local stars = {}
 		for i = 1, 8 do table.insert(stars, i <= info.Stars and "★" or "☆") end
 		makeLabel({
-			Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 80), Text = "위험도 " .. table.concat(stars), TextSize = 20, Font = Enum.Font.GothamBold,
+			Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 80), Text = "Danger " .. table.concat(stars), TextSize = 20, Font = Enum.Font.GothamBold,
 			TextColor3 = Color3.fromRGB(255, 200, 90), ZIndex = 57,
 		}, band)
 		makeLabel({
 			Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 110), RichText = true, TextSize = 18, ZIndex = 57,
-			Text = string.format("몬스터 체력 <font color='#ff8c7a'><b>x%.1f</b></font> · 공격력 <font color='#ff8c7a'><b>x%.1f</b></font>   |   보상 <font color='#8cff9c'><b>x%.1f</b></font>   (Lv.%d~)", info.HealthMult, info.DamageMult, info.RewardMult, info.Level),
+			Text = string.format("Monster HP <font color='#ff8c7a'><b>x%.1f</b></font> · ATK <font color='#ff8c7a'><b>x%.1f</b></font>   |   Reward <font color='#8cff9c'><b>x%.1f</b></font>   (Lv.%d~)", info.HealthMult, info.DamageMult, info.RewardMult, info.Level),
 		}, band)
 		task.delay(3.2, function()
 			if not root.Parent then return end
@@ -481,7 +481,7 @@ end)
 
 -- 연속 처치 이정표: 10 / 25 / 50 / 100 / 200 연속 처치 때 큰 글자가 쾅! 하고 뜬다 (박진감)
 do
-	local milestones = { [10] = "🔥 10 연속 처치!", [25] = "⚡ 25 연속 처치!!", [50] = "💥 50 연속 처치!!!", [100] = "👑 100 연속 처치!!!!", [200] = "🌋 200 연속 — 전설!" }
+	local milestones = { [10] = "🔥 10 Kill Streak!", [25] = "⚡ 25 Kill Streak!!", [50] = "💥 50 Kill Streak!!!", [100] = "👑 100 Kill Streak!!!!", [200] = "🌋 200 Streak — Legendary!" }
 	local lastCombo = 0
 	player:GetAttributeChangedSignal("Combo"):Connect(function()
 		local combo = player:GetAttribute("Combo") or 0
@@ -505,8 +505,8 @@ end
 -- 마음에 드는 조합은 [출력으로 내보내기] 로 AudioIds 에 붙여 넣을 줄을 만든다.
 if game:GetService("RunService"):IsStudio() then
 	local panel = makePanel({ Size = UDim2.new(0, 560, 0, 520), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false, ZIndex = 80, BackgroundTransparency = 0.05 }, gui)
-	makeLabel({ Size = UDim2.new(1, -20, 0, 30), Position = UDim2.new(0, 10, 0, 8), Text = "🔊 사운드 테스트 (Studio 전용 · K 키로 열고 닫기)", Font = Enum.Font.GothamBlack, TextSize = 18, ZIndex = 81, TextXAlignment = Enum.TextXAlignment.Left }, panel)
-	local idBox = create("TextBox", { Size = UDim2.new(1, -150, 0, 32), Position = UDim2.new(0, 10, 0, 44), PlaceholderText = "후보 소리 ID(숫자) 붙여넣기", Text = "", ClearTextOnFocus = false,
+	makeLabel({ Size = UDim2.new(1, -20, 0, 30), Position = UDim2.new(0, 10, 0, 8), Text = "🔊 Sound Test (Studio only · press K to open/close)", Font = Enum.Font.GothamBlack, TextSize = 18, ZIndex = 81, TextXAlignment = Enum.TextXAlignment.Left }, panel)
+	local idBox = create("TextBox", { Size = UDim2.new(1, -150, 0, 32), Position = UDim2.new(0, 10, 0, 44), PlaceholderText = "Paste candidate sound ID (number)", Text = "", ClearTextOnFocus = false,
 		BackgroundColor3 = Color3.fromRGB(40, 42, 62), TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamMedium, TextSize = 15, BorderSizePixel = 0, ZIndex = 81 }, panel)
 	rounded(idBox, 6)
 	local function playRaw(id)
@@ -517,7 +517,7 @@ if game:GetService("RunService"):IsStudio() then
 		sound:Play()
 		game:GetService("Debris"):AddItem(sound, 6)
 	end
-	makeButton({ Size = UDim2.new(0, 130, 0, 32), Position = UDim2.new(1, -140, 0, 44), Text = "▶ 이 ID 그대로", TextSize = 14, ZIndex = 81 }, panel, function()
+	makeButton({ Size = UDim2.new(0, 130, 0, 32), Position = UDim2.new(1, -140, 0, 44), Text = "▶ Play this ID", TextSize = 14, ZIndex = 81 }, panel, function()
 		local id = tonumber(idBox.Text)
 		if id then playRaw(id) end
 	end)
@@ -529,10 +529,10 @@ if game:GetService("RunService"):IsStudio() then
 		local row = create("Frame", { Size = UDim2.new(1, -8, 0, 34), BackgroundColor3 = Color3.fromRGB(34, 36, 54), BorderSizePixel = 0, LayoutOrder = order, ZIndex = 81 }, list)
 		rounded(row, 6)
 		makeLabel({ Size = UDim2.new(1, -250, 1, 0), Position = UDim2.new(0, 8, 0, 0), Text = string.format("%s  <font color='#9aa0c8'>%s</font>", key, SoundBank.Descriptions[key] or ""), RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 82 }, row)
-		makeButton({ Size = UDim2.new(0, 70, 0, 26), Position = UDim2.new(1, -240, 0.5, -13), Text = "▶ 지금", TextSize = 13, ZIndex = 82, BackgroundColor3 = Color3.fromRGB(70, 110, 220) }, row, function()
+		makeButton({ Size = UDim2.new(0, 70, 0, 26), Position = UDim2.new(1, -240, 0.5, -13), Text = "▶ Now", TextSize = 13, ZIndex = 82, BackgroundColor3 = Color3.fromRGB(70, 110, 220) }, row, function()
 			SoundBank.Play(game:GetService("SoundService"), key)
 		end)
-		makeButton({ Size = UDim2.new(0, 160, 0, 26), Position = UDim2.new(1, -162, 0.5, -13), Text = "▶ 내 ID 걸어서", TextSize = 13, ZIndex = 82, BackgroundColor3 = Color3.fromRGB(60, 150, 100) }, row, function()
+		makeButton({ Size = UDim2.new(0, 160, 0, 26), Position = UDim2.new(1, -162, 0.5, -13), Text = "▶ With my ID", TextSize = 13, ZIndex = 82, BackgroundColor3 = Color3.fromRGB(60, 150, 100) }, row, function()
 			local id = tonumber(idBox.Text)
 			if id then
 				chosen[key] = id
@@ -541,13 +541,13 @@ if game:GetService("RunService"):IsStudio() then
 			end
 		end)
 	end
-	makeButton({ Size = UDim2.new(1, -20, 0, 34), Position = UDim2.new(0, 10, 1, -44), Text = "📋 고른 조합을 출력창으로 내보내기 (AudioIds 에 붙여넣기)", TextSize = 14, ZIndex = 81, BackgroundColor3 = Color3.fromRGB(190, 110, 40) }, panel, function()
+	makeButton({ Size = UDim2.new(1, -20, 0, 34), Position = UDim2.new(0, 10, 1, -44), Text = "📋 Export chosen combo to Output (paste into AudioIds)", TextSize = 14, ZIndex = 81, BackgroundColor3 = Color3.fromRGB(190, 110, 40) }, panel, function()
 		local parts = {}
 		for key, id in pairs(chosen) do
 			table.insert(parts, string.format("%s = %d", key, id))
 		end
 		table.sort(parts)
-		print("[사운드] AudioIds 의 return { ... } 안에 이 줄을 추가하세요:\n\tBank = { " .. table.concat(parts, ", ") .. " },")
+		print("[Sound] Add this line inside the return { ... } of AudioIds:\n\tBank = { " .. table.concat(parts, ", ") .. " },")
 	end)
 	UserInputService.InputBegan:Connect(function(input, processed)
 		if processed or UserInputService:GetFocusedTextBox() then return end
@@ -709,7 +709,7 @@ do
 		-- 새 무기 이름이 쾅 하고 박힌다
 		local title = makeLabel({
 			Size = UDim2.new(0, 560, 0, 30), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.34, 0),
-			Text = "✨ 새 시대! ✨", Font = Enum.Font.GothamBlack, TextSize = 24, TextColor3 = Color3.fromRGB(255, 225, 100), TextStrokeTransparency = 0.2, ZIndex = 7, TextTransparency = 1,
+			Text = "✨ New Era! ✨", Font = Enum.Font.GothamBlack, TextSize = 24, TextColor3 = Color3.fromRGB(255, 225, 100), TextStrokeTransparency = 0.2, ZIndex = 7, TextTransparency = 1,
 		}, root)
 		local name = makeLabel({
 			Size = UDim2.new(0, 640, 0, 80), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.46, 0),
@@ -720,7 +720,7 @@ do
 		TweenService:Create(title, TweenInfo.new(0.4), { TextTransparency = 0 }):Play()
 		local sub = makeLabel({
 			Size = UDim2.new(0, 560, 0, 26), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.56, 0),
-			Text = string.format("%d시대  ·  무기 외형과 탄 색이 바뀌었어요!", newIndex), Font = Enum.Font.GothamBold, TextSize = 16,
+			Text = string.format("Era %d  ·  Your weapon look and bullet color changed!", newIndex), Font = Enum.Font.GothamBold, TextSize = 16,
 			TextColor3 = Color3.fromRGB(215, 215, 235), TextStrokeTransparency = 0.4, ZIndex = 7, TextTransparency = 1,
 		}, root)
 		task.delay(0.5, function() if sub.Parent then TweenService:Create(sub, TweenInfo.new(0.4), { TextTransparency = 0 }):Play() end end)
@@ -782,7 +782,7 @@ do
 		local color = up and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(255, 130, 120)
 		local holder = create("Frame", { Size = UDim2.new(0, 300, 0, 74), AnchorPoint = Vector2.new(0, 1), Position = gui.Parent:GetAttribute("UiCompact") and UDim2.new(0.5, -150, 0.4, 0) or UDim2.new(0, 14, 1, -(((player:GetAttribute("Zone") == "Dungeon") and 210 or 112) + 232)), BackgroundTransparency = 1, ZIndex = 60 }, gui)
 		local main = makeLabel({
-			Size = UDim2.new(1, 0, 0, 44), Text = string.format("⚡ 전투력 %s%d %s", up and "+" or "", diff, up and "▲" or "▼"), TextXAlignment = Enum.TextXAlignment.Left,
+			Size = UDim2.new(1, 0, 0, 44), Text = string.format("⚡ Power %s%d %s", up and "+" or "", diff, up and "▲" or "▼"), TextXAlignment = Enum.TextXAlignment.Left,
 			Font = Enum.Font.GothamBlack, TextSize = 28, TextColor3 = color, TextStrokeTransparency = 0.2, ZIndex = 61, TextTransparency = 1,
 		}, holder)
 		local sub = makeLabel({

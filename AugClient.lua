@@ -53,7 +53,7 @@ end
 -- 왼쪽 상태 카드 아래, "스탯" 버튼 옆
 local pill = button({
 	Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 264, 0, 244),
-	BackgroundColor3 = Color3.fromRGB(34, 38, 60), Text = "🌟 세트(Y)", TextSize = 12, Visible = false,
+	BackgroundColor3 = Color3.fromRGB(34, 38, 60), Text = "🌟 Sets (Y)", TextSize = 12, Visible = false,
 }, gui, function() end)
 make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, pill)
 local badge = label({
@@ -70,10 +70,10 @@ make("UICorner", { CornerRadius = UDim.new(0, 12) }, panel)
 make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 2 }, panel)
 make("UISizeConstraint", { MaxSize = Vector2.new(480, 470) }, panel)
 
-label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "🌟 세트 효과", TextSize = 22, TextXAlignment = Enum.TextXAlignment.Left }, panel)
+label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "🌟 Set Effects", TextSize = 22, TextXAlignment = Enum.TextXAlignment.Left }, panel)
 local slotLabel = label({ Size = UDim2.new(1, -32, 0, 20), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, panel)
-label({ Size = UDim2.new(1, -32, 0, 32), Position = UDim2.new(0, 16, 0, 60), Text = "칸을 누르면 켜고 꺼요. 군주를 잡으면 효과가 열리고 골드로 3단계까지 올려요. 그 구역 세트 장비를 끼면 1부위 4단계 · 2부위 5단계 · 3부위 6단계! 진짜 위력은 필드 사냥에서 나와요.", TextSize = 12, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
-button({ Size = UDim2.new(0, 60, 0, 28), Position = UDim2.new(1, -72, 0, 10), BackgroundColor3 = Color3.fromRGB(70, 70, 90), Text = "닫기", TextSize = 13 }, panel, function() panel.Visible = false end)
+label({ Size = UDim2.new(1, -32, 0, 32), Position = UDim2.new(0, 16, 0, 60), Text = "Tap a slot to toggle it. Defeat a lord to unlock its effect, then upgrade it with gold up to Lv.3. Wear that zone's set gear for Lv.4 at 1 piece · Lv.5 at 2 pieces · Lv.6 at 3 pieces! The real power shows up in field hunting.", TextSize = 12, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
+button({ Size = UDim2.new(0, 60, 0, 28), Position = UDim2.new(1, -72, 0, 10), BackgroundColor3 = Color3.fromRGB(70, 70, 90), Text = "Close", TextSize = 13 }, panel, function() panel.Visible = false end)
 
 local list = make("ScrollingFrame", {
 	Size = UDim2.new(1, -24, 1, -104), Position = UDim2.new(0, 12, 0, 94), BackgroundTransparency = 1, BorderSizePixel = 0,
@@ -128,7 +128,7 @@ local function refresh()
 		if on then used += 1 end
 		local info = Config.AugInfo[Config.Sets.ZoneAug[zone]]
 		local gear = player:GetAttribute("AugGearZ_" .. zone) or 0
-		r.Title.Text = string.format("%d구역 · %s  %s", zone, info.Name, level > 0 and (gear > 0 and string.format("<%d단계 + 장비 %d = %d>", level, gear, level + gear) or ("<" .. level .. "단계>")) or "")
+		r.Title.Text = string.format("Zone %d · %s  %s", zone, info.Name, level > 0 and (gear > 0 and string.format("<Lv.%d + gear %d = %d>", level, gear, level + gear) or ("<Lv." .. level .. ">")) or "")
 		r.Title.TextColor3 = open and Color3.fromRGB(255, 240, 200) or Color3.fromRGB(130, 134, 156)
 		r.Toggle.Visible = level > 0
 		r.Toggle.Text = on and "● ON" or "○ OFF" -- 지금 상태를 보여 주고, 누르면 반대로 바뀐다
@@ -137,19 +137,19 @@ local function refresh()
 		r.Stroke.Transparency = on and 0.1 or 1
 		r.Row.BackgroundColor3 = on and Color3.fromRGB(50, 52, 74) or Color3.fromRGB(36, 39, 58)
 		if not open then
-			r.Buy.Text = string.format("🔒 %d구역 군주를 잡으세요", zone)
+			r.Buy.Text = string.format("🔒 Defeat the Zone %d lord", zone)
 			r.Buy.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
 		elseif level >= 3 then
-			r.Buy.Text = "최대 단계"
+			r.Buy.Text = "Max level"
 			r.Buy.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
 		else
 			local cost = Config.Sets.AugCost(zone, level + 1)
-			r.Buy.Text = string.format("%s %s G", level == 0 and "활성화" or "강화", commas(cost))
+			r.Buy.Text = string.format("%s %s G", level == 0 and "Activate" or "Upgrade", commas(cost))
 			r.Buy.BackgroundColor3 = gold >= cost and Color3.fromRGB(150, 110, 40) or Color3.fromRGB(80, 74, 66)
 			if gold >= cost and level == 0 then affordable += 1 end
 		end
 	end
-	slotLabel.Text = string.format("켜진 효과 %d / %d칸   (보유 💰 %s G)", used, slots, commas(gold))
+	slotLabel.Text = string.format("Active %d / %d slots   (💰 %s G)", used, slots, commas(gold))
 	pill.Visible = anyOpen and not player:GetAttribute("TutorialActive")
 	badge.Visible = affordable > 0 and used < slots
 end
@@ -198,14 +198,14 @@ make("UIPadding", { PaddingLeft = UDim.new(0, 8), PaddingTop = UDim.new(0, 5), P
 
 local function refreshHud()
 	local zone = player:GetAttribute("Zone")
-	local lines = { "<font color='#ffd966'><b>🌟 세트 효과</b></font>" }
+	local lines = { "<font color='#ffd966'><b>🌟 Set Effects</b></font>" }
 	for z = 1, ZONES do
 		if player:GetAttribute("AugOnZ_" .. z) == true then
 			local info = Config.AugInfo[Config.Sets.ZoneAug[z]]
 			local gold = player:GetAttribute("AugLvZ_" .. z) or 0
 			local gear = player:GetAttribute("AugGearZ_" .. z) or 0
-			table.insert(lines, string.format("%s %s  <font color='#8fe0ff'><b>%d단계</b></font>%s", info.Icon, info.Name, gold + gear,
-				gear > 0 and string.format(" <font color='#aab0c8'>(골드 %d + 장비 %d)</font>", gold, gear) or ""))
+			table.insert(lines, string.format("%s %s  <font color='#8fe0ff'><b>Lv.%d</b></font>%s", info.Icon, info.Name, gold + gear,
+				gear > 0 and string.format(" <font color='#aab0c8'>(gold %d + gear %d)</font>", gold, gear) or ""))
 		end
 	end
 	hudBox.Visible = #lines > 1 and (zone == "Field" or zone == "Dungeon") and not player:GetAttribute("TutorialActive")
@@ -237,7 +237,7 @@ local function refreshCorner()
 	corner.Visible = show == true
 	if show then
 		local zone = table.find(Config.Sets.ZoneAug, attr) or 0
-		corner.Text = string.format("%s <b>%s</b>  <font size='11' color='#ffd966'>%d구역 · 체험 Lv.3</font>\n<font size='11' color='#c8d0e8'>%s</font>", info.Icon, info.Name, zone, info.Desc)
+		corner.Text = string.format("%s <b>%s</b>  <font size='11' color='#ffd966'>Zone %d · Trial Lv.3</font>\n<font size='11' color='#c8d0e8'>%s</font>", info.Icon, info.Name, zone, info.Desc)
 		cornerStroke.Color = info.Color
 	end
 end
@@ -255,7 +255,7 @@ local function playRoll(pick)
 	}, gui)
 	make("UICorner", { CornerRadius = UDim.new(0, 12) }, box)
 	local stroke = make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 2 }, box)
-	label({ Size = UDim2.new(1, 0, 0, 22), Position = UDim2.new(0, 0, 0, 6), Text = "🎲 이번 던전 체험 효과", TextSize = 14, ZIndex = 61 }, box)
+	label({ Size = UDim2.new(1, 0, 0, 22), Position = UDim2.new(0, 0, 0, 6), Text = "🎲 This Dungeon's Trial Effect", TextSize = 14, ZIndex = 61 }, box)
 	local icon = label({ Size = UDim2.new(0, 60, 0, 44), Position = UDim2.new(0, 14, 0, 32), Text = "?", TextSize = 34, ZIndex = 61 }, box)
 	local name = label({ Size = UDim2.new(1, -88, 0, 44), Position = UDim2.new(0, 78, 0, 32), Text = "", TextSize = 16, TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true, RichText = true, ZIndex = 61 }, box)
 	local detail = label({ Size = UDim2.new(1, -24, 0, 40), Position = UDim2.new(0, 12, 0, 80), Text = "", TextSize = 12, TextWrapped = true, TextColor3 = Color3.fromRGB(200, 208, 232), Font = Enum.Font.GothamMedium, ZIndex = 61 }, box)
@@ -267,7 +267,7 @@ local function playRoll(pick)
 		task.wait(0.07)
 	end
 	local winZone = table.find(Config.Sets.ZoneAug, pick) or 0
-	icon.Text, name.Text = winner.Icon, string.format("%s\n<font size='12' color='#ffd966'>%d구역 세트효과 · 체험 Lv.3</font>", winner.Name, winZone)
+	icon.Text, name.Text = winner.Icon, string.format("%s\n<font size='12' color='#ffd966'>Zone %d set effect · Trial Lv.3</font>", winner.Name, winZone)
 	detail.Text = winner.Desc
 	name.TextColor3 = winner.Color
 	stroke.Color = winner.Color

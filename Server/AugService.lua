@@ -87,7 +87,7 @@ function Aug.Apply(player)
 		local before = player:GetAttribute("AugSyn_" .. synKey)
 		player:SetAttribute("AugSyn_" .. synKey, active)
 		if active and before == false then
-			notify(player, string.format("%s 세트 시너지 발동! 『%s』 — %s", syn.Icon, syn.Name, syn.Desc))
+			notify(player, string.format("%s Set synergy activated! 『%s』 - %s", syn.Icon, syn.Name, syn.Desc))
 		end
 	end
 	player:SetAttribute("AugAuraColor", auraColor)
@@ -122,11 +122,11 @@ function Aug.NoteBoss(player, zone)
 	if not wasOpen then
 		local attr = Config.Sets.ZoneAug[zone]
 		local info = Config.AugInfo[attr]
-		notify(player, string.format("%s 세트 효과 『%s』가 열렸어요! 골드로 활성화하세요 (Y 키 / ✨ 세트 버튼)", info.Icon, info.Name))
+		notify(player, string.format("%s Set effect 『%s』 unlocked! Activate it with gold (Y key / ✨ Set button)", info.Icon, info.Name))
 	end
 	local after = slotCount(player, rift)
 	if after > before then
-		notify(player, string.format("🔓 세트 효과를 동시에 켤 수 있는 칸이 %d개로 늘었어요!", after))
+		notify(player, string.format("🔓 You can now run %d set effects at once!", after))
 	end
 end
 
@@ -140,7 +140,7 @@ Remotes.Aug.OnServerEvent:Connect(function(player, action, zone)
 	local info = Config.AugInfo[attr]
 	if action == "Buy" then
 		if not isOpen(player, rift, zone) then
-			notify(player, string.format("%d구역 군주를 잡으면 열려요", zone))
+			notify(player, string.format("Defeat the Zone %d lord to unlock", zone))
 			return
 		end
 		local level = rift.AugLv[key] or 0
@@ -148,7 +148,7 @@ Remotes.Aug.OnServerEvent:Connect(function(player, action, zone)
 		local cost = Config.Sets.AugCost(zone, level + 1)
 		local gold = player:GetAttribute("Gold") or 0
 		if gold < cost then
-			notify(player, string.format("골드가 부족해요 (필요 %d G)", cost))
+			notify(player, string.format("Not enough gold (need %d G)", cost))
 			return
 		end
 		player:SetAttribute("Gold", gold - cost)
@@ -157,7 +157,7 @@ Remotes.Aug.OnServerEvent:Connect(function(player, action, zone)
 		if level == 0 and #equipped(rift, slots) < slots then
 			rift.AugOn[key] = true -- 첫 활성화는 빈 칸이 있으면 바로 켠다
 		end
-		notify(player, string.format("%s 『%s』 %s 완료! (%d단계)", info.Icon, info.Name, level == 0 and "활성화" or "강화", level + 1))
+		notify(player, string.format("%s 『%s』 %s done! (Lv.%d)", info.Icon, info.Name, level == 0 and "Activation" or "Upgrade", level + 1))
 	elseif action == "Toggle" then
 		if (rift.AugLv[key] or 0) <= 0 then return end
 		if rift.AugOn[key] then
@@ -165,7 +165,7 @@ Remotes.Aug.OnServerEvent:Connect(function(player, action, zone)
 		else
 			local slots = slotCount(player, rift)
 			if #equipped(rift, slots) >= slots then
-				notify(player, string.format("동시에 켤 수 있는 칸이 %d개예요. 다른 효과를 먼저 끄세요", slots))
+				notify(player, string.format("You can run %d effects at once. Turn another one off first", slots))
 				return
 			end
 			rift.AugOn[key] = true

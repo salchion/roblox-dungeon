@@ -35,7 +35,7 @@ local function addDmg(player, source, amount, isCrit)
 	b.Dmg[source] = (b.Dmg[source] or 0) + amount
 	b.Hits[source] = (b.Hits[source] or 0) + 1
 	b.Total += amount
-	if source == "기본" then
+	if source == "Basic" then
 		b.BasicHits += 1
 		if isCrit then
 			b.CritDmg += amount
@@ -46,7 +46,7 @@ end
 
 -- 피해: BL.Ctx(스킬 / 데드아이 / 세트·펫)가 켜져 있으면 그 종류, 아니면 기본 공격
 function BL.Dmg(player, amount, isCrit)
-	addDmg(player, BL.Ctx or "기본", amount, isCrit)
+	addDmg(player, BL.Ctx or "Basic", amount, isCrit)
 end
 
 function BL.DmgAs(player, source, amount)
@@ -107,9 +107,10 @@ local function pct(part, whole)
 	return whole > 0 and math.floor(part / whole * 100 + 0.5) or 0
 end
 
-local SOURCE_ORDER = { "기본", "스플래시", "데드아이", "스킬", "세트·펫" }
+local SOURCE_ORDER = { "Basic", "스플래시", "데드아이", "스킬", "세트·펫" }
 local KILL_ORDER = { "Normal", "Elite", "Boss", "Event", "Goblin", "던전" }
-local KILL_NAMES = { Normal = "일반", Elite = "엘리트", Boss = "군주", Event = "거신", Goblin = "고블린", ["던전"] = "던전" }
+local KILL_NAMES = { Normal = "Normal", Elite = "Elite", Boss = "Lord", Event = "Titan", Goblin = "Goblin", ["던전"] = "Dungeon" }
+local SOURCE_NAMES = { ["스플래시"] = "Splash", ["데드아이"] = "Dead Eye", ["스킬"] = "Skill", ["세트·펫"] = "Set/Pet" } -- (키는 다른 파일이 쓰는 값이라 그대로 둔다)
 
 local function report(player, b)
 	local seconds = math.max(1, os.clock() - b.Since)
@@ -118,12 +119,12 @@ local function report(player, b)
 		local value = b.Dmg[source]
 		if value then
 			local extra = ""
-			if source == "기본" and b.BasicHits > 0 then
-				extra = string.format(" (치명 %d%% · 평균 %d)", pct(b.CritDmg, value), math.floor(value / b.BasicHits))
+			if source == "Basic" and b.BasicHits > 0 then
+				extra = string.format(" (crit %d%% · avg %d)", pct(b.CritDmg, value), math.floor(value / b.BasicHits))
 			elseif b.Hits[source] and b.Hits[source] > 0 then
-				extra = string.format(" (%d회 · 평균 %d)", b.Hits[source], math.floor(value / b.Hits[source]))
+				extra = string.format(" (%dx · avg %d)", b.Hits[source], math.floor(value / b.Hits[source]))
 			end
-			table.insert(parts, string.format("%s %d%% %d%s", source, pct(value, b.Total), value, extra))
+			table.insert(parts, string.format("%s %d%% %d%s", SOURCE_NAMES[source] or source, pct(value, b.Total), value, extra))
 		end
 	end
 	local kills, killTotal = {}, 0
@@ -139,16 +140,16 @@ local function report(player, b)
 		known += value
 		table.insert(goldParts, string.format("%s %d", key, value))
 	end
-	table.insert(goldParts, string.format("기타 %d", math.max(0, b.GoldIn - known)))
+	table.insert(goldParts, string.format("Other %d", math.max(0, b.GoldIn - known)))
 	local samples = math.max(1, b.Samples)
 	local lines = {
-		string.format("[밸런스 %d초] %s · 레벨 %d · 전투력 %d · 무기 %d단계 · 필드 최고 %d구역 · 체류 필드 %d초 / 던전 %d초 / 마을 %d초",
+		string.format("[Balance %ds] %s · Level %d · Power %d · Weapon Lv.%d · Best field zone %d · Time in Field %ds / Dungeon %ds / Town %ds",
 			math.floor(seconds), player.Name, player:GetAttribute("Level") or 1, player:GetAttribute("Power") or 0, player:GetAttribute("WeaponLevel") or 0,
 			player:GetAttribute("MaxZone") or 0, b.Seconds.Field, b.Seconds.Dungeon, b.Seconds.Lobby),
-		string.format("  피해 합계 %d (초당 %d) | %s", b.Total, math.floor(b.Total / seconds), #parts > 0 and table.concat(parts, " | ") or "없음"),
-		string.format("  처치 %d (분당 %d) | %s", killTotal, math.floor(killTotal / seconds * 60), #kills > 0 and table.concat(kills, " · ") or "없음"),
-		string.format("  골드 +%d / -%d (분당 +%d) | %s | 경험치 +%d", b.GoldIn, b.GoldOut, math.floor(b.GoldIn / seconds * 60), table.concat(goldParts, " · "), b.Xp),
-		string.format("  받은 피해 %d (%d회) · 사망 %d · 평균 체력 %d%% · NEAR MISS %d회 · 평균 스택 %.1f · 평균 궁극 게이지 %d%% · 궁극기 %d회 · 스킬 %d회",
+		string.format("  Total damage %d (%d/s) | %s", b.Total, math.floor(b.Total / seconds), #parts > 0 and table.concat(parts, " | ") or "none"),
+		string.format("  Kills %d (%d/min) | %s", killTotal, math.floor(killTotal / seconds * 60), #kills > 0 and table.concat(kills, " · ") or "none"),
+		string.format("  Gold +%d / -%d (+%d/min) | %s | XP +%d", b.GoldIn, b.GoldOut, math.floor(b.GoldIn / seconds * 60), table.concat(goldParts, " · "), b.Xp),
+		string.format("  Damage taken %d (%dx) · Deaths %d · Avg HP %d%% · NEAR MISS %dx · Avg stacks %.1f · Avg ult gauge %d%% · Ults %dx · Skills %dx",
 			math.floor(b.Taken), b.TakenHits, b.Deaths, math.floor(b.HpSum / samples * 100), b.Counts.NearMiss or 0, b.StackSum / samples,
 			math.floor(b.UltSum / samples * 100), b.Counts.Ult or 0, (b.Counts.Heal or 0) + (b.Counts.Dash or 0)),
 	}

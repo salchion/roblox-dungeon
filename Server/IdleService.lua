@@ -125,18 +125,18 @@ function Idle.OnJoin(player)
 		if gold < 1 then return end
 		player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
 		local hours = seconds / 3600
-		local text = string.format("%.1f시간 동안 방치 골드 %d G가 쌓였어요!", hours, gold)
+		local text = string.format("%.1f hours of idle gold (%d G) piled up!", hours, gold)
 		if boosted > 60 then
-			text ..= string.format("\n(방치 부스터 %d분 적용)", math.floor(boosted / 60))
+			text ..= string.format("\n(Idle Booster applied for %d min)", math.floor(boosted / 60))
 		end
 		if (player:GetAttribute("IdleMultBonus") or 0) > 0 then
-			text ..= string.format("\n(방치 수입 보너스 +%d%% 적용 중)", math.floor((player:GetAttribute("IdleMultBonus") or 0) * 100 + 0.5))
+			text ..= string.format("\n(Idle income bonus +%d%% active)", math.floor((player:GetAttribute("IdleMultBonus") or 0) * 100 + 0.5))
 		end
 		if capped then
-			text ..= string.format("\n⚠ 한도(%d시간)가 차서 %.1f시간치는 쌓이지 못했어요. 상점에서 한도를 늘릴 수 있어요", math.floor(capSeconds(player) / 3600), (away - capSeconds(player)) / 3600)
+			text ..= string.format("\n⚠ The %d-hour cap was reached, so %.1f hours' worth couldn't be saved. You can raise the cap in the Shop", math.floor(capSeconds(player) / 3600), (away - capSeconds(player)) / 3600)
 		end
-		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🌙", Title = "자리를 비운 동안…", Text = text, Duration = 8 })
-		Remotes.Notify:FireClient(player, string.format("🌙 방치 보상 +%d G", gold))
+		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🌙", Title = "While you were away…", Text = text, Duration = 8 })
+		Remotes.Notify:FireClient(player, string.format("🌙 Idle reward +%d G", gold))
 	end)
 end
 
@@ -168,7 +168,7 @@ if RunService:IsStudio() then
 			for _, player in ipairs(Players:GetPlayers()) do
 				local entry = ledger[player]
 				if entry then
-					print(string.format("[골드 장부] %s · 최근 1분 수입 %d G / 지출 %d G · 이론 방치 %d G/분 (배율 x%.2f) · 공격력 배율 x%.2f · 다음 강화 비용 %d G",
+					print(string.format("[Gold ledger] %s · last 1 min income %d G / spent %d G · theoretical idle %d G/min (mult x%.2f) · attack mult x%.2f · next upgrade cost %d G",
 						player.Name, entry.In, entry.Out, math.floor(Idle.Rate(player) * 60), Idle.Multiplier(player),
 						Config.GetDamageMultiplier(player:GetAttribute("WeaponLevel") or 0), Config.GetEnhanceCost(player:GetAttribute("WeaponLevel") or 0)))
 					entry.In, entry.Out = 0, 0

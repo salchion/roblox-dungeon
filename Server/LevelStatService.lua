@@ -62,7 +62,7 @@ local function apply(player, announce)
 	player:SetAttribute("LvGoldBought", rift.LvGold or 0)
 	player:SetAttribute("LvGoldCost", (rift.LvGold or 0) < LS.MaxGoldPoints and Config.GetLevelGoldPointCost(rift.LvGold or 0) or 0)
 	if announce and lastPoints[player] and total > lastPoints[player] then
-		Remotes.Notify:FireClient(player, string.format("✨ 스탯 포인트 +%d! 안 쓴 포인트 %d개 (T 키로 이동속도 / 사정거리 / 더블샷을 올려요)", total - lastPoints[player], left))
+		Remotes.Notify:FireClient(player, string.format("✨ Stat points +%d! %d unspent (press T to raise move speed / range / double shot)", total - lastPoints[player], left))
 	end
 	lastPoints[player] = total
 end
@@ -86,18 +86,18 @@ Remotes.LevelStat.OnServerEvent:Connect(function(player, action, key, amount)
 	if not stats then return end
 	if action == "Buy" then -- 최대 레벨을 찍은 뒤 골드로 포인트 구매 (비용은 살수록 커진다)
 		if (player:GetAttribute("Level") or 1) < Config.Level.Max then
-			Remotes.Notify:FireClient(player, string.format("레벨 %d 을 찍으면 골드로 포인트를 살 수 있어요.", Config.Level.Max))
+			Remotes.Notify:FireClient(player, string.format("Reach level %d to buy points with gold.", Config.Level.Max))
 		elseif rift.LvGold >= LS.MaxGoldPoints then
-			Remotes.Notify:FireClient(player, "골드로 살 수 있는 포인트를 모두 샀어요!")
+			Remotes.Notify:FireClient(player, "You've bought all the points available with gold!")
 		else
 			local cost = Config.GetLevelGoldPointCost(rift.LvGold)
 			local gold = player:GetAttribute("Gold") or 0
 			if gold < cost then
-				Remotes.Notify:FireClient(player, string.format("골드가 부족해요 (필요 %d G)", cost))
+				Remotes.Notify:FireClient(player, string.format("Not enough gold (need %d G)", cost))
 			else
 				player:SetAttribute("Gold", gold - cost)
 				rift.LvGold += 1
-				Remotes.Notify:FireClient(player, string.format("💰 스탯 포인트 +1 구매! (%d / %d)", rift.LvGold, LS.MaxGoldPoints))
+				Remotes.Notify:FireClient(player, string.format("💰 Bought +1 stat point! (%d / %d)", rift.LvGold, LS.MaxGoldPoints))
 			end
 		end
 	elseif action == "Reset" then

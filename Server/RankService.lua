@@ -55,9 +55,9 @@ end
 
 local function renderBoard()
 	if not boardLabel then return end
-	local lines = { "🏆 전투력 랭킹 TOP " .. TOP_COUNT, "" }
+	local lines = { "🏆 Power Ranking TOP " .. TOP_COUNT, "" }
 	if #rankList == 0 then
-		table.insert(lines, "아직 기록이 없어요")
+		table.insert(lines, "No records yet")
 	end
 	for index, entry in ipairs(rankList) do
 		local medal = index == 1 and "🥇" or index == 2 and "🥈" or index == 3 and "🥉" or string.format("%2d.", index)

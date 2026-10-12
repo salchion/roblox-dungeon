@@ -21,7 +21,7 @@ local okStore, store = pcall(function()
 end)
 if not okStore then
 	store = nil
-	warn("[Data] DataStore를 사용할 수 없어 저장 없이 진행합니다.")
+	warn("[Data] DataStore unavailable; continuing without saving.")
 end
 
 local loaded = {} -- [player] = true  (불러오기에 성공한 플레이어만 저장 -> 실패 시 기존 데이터 덮어쓰기 방지)
@@ -111,7 +111,7 @@ function Data.Load(player)
 		end
 		task.wait(attempt)
 	end
-	warn("[Data] 데이터 로드 실패:", player.Name)
+	warn("[Data] Failed to load data:", player.Name)
 	return defaults
 end
 
@@ -147,7 +147,7 @@ function Data.Save(player)
 		store:SetAsync(keyOf(player), payload)
 	end)
 	if not ok then
-		warn("[Data] 저장 실패:", player.Name, err)
+		warn("[Data] Failed to save:", player.Name, err)
 	end
 	return ok
 end

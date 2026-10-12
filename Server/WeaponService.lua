@@ -528,9 +528,9 @@ local function updateNameplate(player)
 	local inParty = (player:GetAttribute("PartyId") or 0) ~= 0
 
 	local title = player:GetAttribute("Title") or ""
-	gui.PlayerName.Text = (inParty and "[파티] " or "") .. (title ~= "" and ("『" .. title .. "』 ") or "") .. player.DisplayName
+	gui.PlayerName.Text = (inParty and "[Party] " or "") .. (title ~= "" and ("『" .. title .. "』 ") or "") .. player.DisplayName
 	local prestige = player:GetAttribute("Prestige") or 0
-	gui.Power.Text = string.format("%s⚡ 전투력 %d", prestige > 0 and ("🌟" .. prestige .. " ") or "", player:GetAttribute("Power") or 0)
+	gui.Power.Text = string.format("%s⚡ Power %d", prestige > 0 and ("🌟" .. prestige .. " ") or "", player:GetAttribute("Power") or 0)
 	gui.Power.TextColor3 = Color3.fromRGB(255, 225, 110)
 end
 
@@ -690,17 +690,17 @@ end
 ------------------------------------------------------------
 function Weapon.Enhance(player)
 	if player:GetAttribute("Zone") ~= "Lobby" then
-		return false, "무기 강화는 로비에서만 할 수 있어요.", true
+		return false, "Weapons can only be upgraded in the lobby.", true
 	end
 
 	local level = player:GetAttribute("WeaponLevel") or 0
 	if level >= Config.Weapon.MaxLevel then
-		return false, "마지막 무기를 최대로 강화했어요!", true
+		return false, "You maxed out the final weapon!", true
 	end
 
 	-- 튜토리얼 미션 중에는 +3까지 무료 + 100% 성공
 	if player:GetAttribute("TutorialFree") == true and level >= 3 then -- 무료 강화는 딱 3번: 미션이 넘어가는 짧은 사이에 광클해서 골드로 한 번 더 강화되지 않게 막는다
-		return false, "✨ 무료 강화는 여기까지! 다음 미션을 확인해요", true
+		return false, "✨ Free upgrades end here! Check your next mission", true
 	end
 	local free = player:GetAttribute("TutorialFree") == true and level < 3
 	local cost = free and 0 or Config.GetEnhanceCost(level)
@@ -712,7 +712,7 @@ function Weapon.Enhance(player)
 	end
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
-		return false, string.format("💰 골드가 부족해요. (%d 필요) 허수아비 훈련장 / 필드 사냥 / 던전 / 심연 소탕으로 골드를 벌어요", cost), true
+		return false, string.format("💰 Not enough gold. (%d needed) Earn gold at the dummy yard, field hunting, dungeons, or Abyss sweeps", cost), true
 	end
 
 	player:SetAttribute("Gold", gold - cost)
@@ -727,7 +727,7 @@ function Weapon.Enhance(player)
 		local newEra = after.Era > before.Era
 		local evolved = newForm ~= nil or newEra -- 새 무기 형이 해금되거나 시대가 바뀔 때만 큰 연출
 		if newEra and after.Index >= 4 then
-			Event.Announce(string.format("📢 %s 님의 무기가 [%s]로 진화했어요!", player.DisplayName, Config.GetEraName(after.Era)))
+			Event.Announce(string.format("📢 %s's weapon evolved into [%s]!", player.DisplayName, Config.GetEraName(after.Era)))
 		end
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if root then
@@ -738,35 +738,35 @@ function Weapon.Enhance(player)
 		end
 		if newForm then
 			local info = Config.WeaponTypes[newForm]
-			return true, string.format("🔓 %s 해금! (%s) 무기 탭에서 골라 쓸 수 있어요", info.Name, info.Trait), false, true, cost
+			return true, string.format("🔓 %s unlocked! (%s) Pick it in the Weapons tab", info.Name, info.Trait), false, true, cost
 		elseif newEra then
-			local perkText = after.Perk and string.format(" · 새 시대 『%s %s』!", after.Perk.Icon, after.Perk.Name) or ""
-			return true, string.format("🎉 %s로 진화! 무기 외형과 탄 색이 바뀌었어요%s", Config.GetEraName(after.Era), perkText), false, true, cost
+			local perkText = after.Perk and string.format(" · New era 『%s %s』!", after.Perk.Icon, after.Perk.Name) or ""
+			return true, string.format("🎉 Evolved to %s! Your weapon look and bullet color changed%s", Config.GetEraName(after.Era), perkText), false, true, cost
 		end
-		return true, string.format("강화 성공! +%d강", level + 1), false, false, cost
+		return true, string.format("Upgrade success! +%d", level + 1), false, false, cost
 	end
-	return false, "강화 실패... (골드만 사라졌어요)", false, false, cost
+	return false, "Upgrade failed... (only the gold was lost)", false, false, cost
 end
 
 -- 해금한 무기 형 중에서 싸울 무기를 고른다
 function Weapon.Equip(player, typeKey)
 	local info = Config.WeaponTypes[typeKey]
 	if typeKey == "Order" or typeof(info) ~= "table" then
-		return false, "알 수 없는 무기예요."
+		return false, "Unknown weapon."
 	end
 	local level = player:GetAttribute("WeaponLevel") or 0
 	if not Config.IsWeaponUnlocked(level, typeKey) then
-		return false, string.format("%s는 +%d강에 해금돼요.", info.Name, Config.GetUnlockLevel(typeKey))
+		return false, string.format("%s unlocks at +%d.", info.Name, Config.GetUnlockLevel(typeKey))
 	end
 	if player:GetAttribute("WeaponType") == typeKey then
-		return true, string.format("이미 %s를 들고 있어요.", info.Name)
+		return true, string.format("You are already holding %s.", info.Name)
 	end
 	player:SetAttribute("WeaponType", typeKey)
-	return true, string.format("%s 장착! (%s)", info.Name, info.Trait)
+	return true, string.format("%s equipped! (%s)", info.Name, info.Trait)
 end
 
 function Weapon.Buy()
-	return false, "무기 형은 강화 단계로 해금돼요! 무기 탭에서 골라 쓸 수 있어요."
+	return false, "Weapon types unlock through upgrade levels! Pick one in the Weapons tab."
 end
 
 return Weapon

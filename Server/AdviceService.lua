@@ -20,11 +20,11 @@ local function collect(player)
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local cost = Config.GetEnhanceCost(level)
 	if gold >= cost * 2 then
-		table.insert(tips, string.format("💰 골드 %d G가 남아 있어요! 마을 모루에서 무기를 강화하면 훨씬 강해져요", gold))
+		table.insert(tips, string.format("💰 You have %d G left! Upgrade your weapon at the town anvil to get much stronger", gold))
 	end
 	local tickets = player:GetAttribute("Tickets") or 0
 	if tickets >= 1 then
-		table.insert(tips, string.format("🎫 장비 티켓 %d장이 남아 있어요! 뽑기 머신에서 장비를 뽑아요", tickets))
+		table.insert(tips, string.format("🎫 You have %d gear ticket(s) left! Draw gear at the gacha machine", tickets))
 	end
 	local empty = {}
 	for _, slot in ipairs(Config.Gear.Slots) do
@@ -33,13 +33,13 @@ local function collect(player)
 		end
 	end
 	if #empty > 0 then
-		table.insert(tips, string.format("🛡 %s 장비가 비어 있어요! 던전 보스 상자나 뽑기로 얻어서 장착해요", table.concat(empty, " · ")))
+		table.insert(tips, string.format("🛡 Your %s slot(s) are empty! Get gear from dungeon boss chests or the gacha and equip it", table.concat(empty, " · ")))
 	end
 	if Growth.IdleSlots(player) > 0 then
-		table.insert(tips, "🏋 훈련 슬롯이 비어 있어요! 메뉴(B) → 스킬·성장(패시브·훈련)에서 훈련을 걸어 두면 시간이 지나 저절로 강해져요")
+		table.insert(tips, "🏋 Your training slot is empty! Set up training in Menu (B) → Skills & Growth (Passives · Training) and you'll get stronger over time")
 	end
 	if (player:GetAttribute("DungeonFree") or 0) > 0 then
-		table.insert(tips, string.format("🏰 던전 무료 입장 %d회가 남아 있어요! 던전에서 장비와 티켓을 얻어요", player:GetAttribute("DungeonFree")))
+		table.insert(tips, string.format("🏰 %d free dungeon entries left! Earn gear and tickets in dungeons", player:GetAttribute("DungeonFree")))
 	end
 	return tips
 end
@@ -67,12 +67,12 @@ function Advice.GrowthGuide(player)
 	Remotes.Tutorial:FireClient(player, "Growth", {
 		Power = power, Zone = zone, Need = need,
 		Sources = {
-			{ Icon = "🏰", Name = "던전", Desc = "보스 상자에서 장비 · 티켓", Status = string.format("무료 입장 %d회 · 열쇠 %d개", player:GetAttribute("DungeonFree") or 0, keys) },
-			{ Icon = "👑", Name = "필드 군주", Desc = "구역 세트 장비 · 열쇠", Status = string.format("다음: 구역 %d", zone) },
-			{ Icon = "🎰", Name = "뽑기", Desc = "티켓으로 새 장비", Status = string.format("티켓 %d장", tickets) },
-			{ Icon = "🔨", Name = "강화 · 진화", Desc = "골드로 무기를 키운다", Status = string.format("골드 %d G", gold) },
-			{ Icon = "🏋", Name = "훈련", Desc = "자리를 비워도 영구 성장", Status = Growth.IdleSlots(player) > 0 and string.format("빈 슬롯 %d개!", Growth.IdleSlots(player)) or "진행 중" },
-			{ Icon = "🌀", Name = "심연 도전", Desc = "내 기록에 도전 · 점수 보상", Status = "마을 포털" },
+			{ Icon = "🏰", Name = "Dungeon", Desc = "Gear & tickets from boss chests", Status = string.format("Free entries %d · Keys %d", player:GetAttribute("DungeonFree") or 0, keys) },
+			{ Icon = "👑", Name = "Field Lord", Desc = "Zone set gear & keys", Status = string.format("Next: Zone %d", zone) },
+			{ Icon = "🎰", Name = "Gacha", Desc = "New gear with tickets", Status = string.format("Tickets %d", tickets) },
+			{ Icon = "🔨", Name = "Upgrade · Evolve", Desc = "Power up your weapon with gold", Status = string.format("Gold %d G", gold) },
+			{ Icon = "🏋", Name = "Training", Desc = "Permanent growth, even while away", Status = Growth.IdleSlots(player) > 0 and string.format("%d empty slot(s)!", Growth.IdleSlots(player)) or "In progress" },
+			{ Icon = "🌀", Name = "Rift Challenge", Desc = "Beat your record · score rewards", Status = "Town portal" },
 		},
 	})
 end

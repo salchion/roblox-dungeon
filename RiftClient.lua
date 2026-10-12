@@ -38,13 +38,13 @@ local panel = makePanel({
 }, gui)
 create("UIStroke", { Color = Color3.fromRGB(230, 100, 180), Thickness = 2, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, panel)
 
-makeLabel({ Size = UDim2.new(1, -90, 0, 40), Position = UDim2.new(0, 18, 0, 10), Text = "🌀 심연 도전", Font = Enum.Font.GothamBlack, TextSize = 28,
+makeLabel({ Size = UDim2.new(1, -90, 0, 40), Position = UDim2.new(0, 18, 0, 10), Text = "🌀 Rift Challenge", Font = Enum.Font.GothamBlack, TextSize = 28,
 	TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 170, 225), ZIndex = 11 }, panel)
-makeButton({ Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -78, 0, 14), Text = "닫기", BackgroundColor3 = Color3.fromRGB(54, 58, 82), ZIndex = 11 }, panel, function()
+makeButton({ Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -78, 0, 14), Text = "Close", BackgroundColor3 = Color3.fromRGB(54, 58, 82), ZIndex = 11 }, panel, function()
 	panel.Visible = false
 end)
 makeLabel({ Size = UDim2.new(1, -36, 0, 44), Position = UDim2.new(0, 18, 0, 54), TextSize = 16, ZIndex = 11, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
-	Text = string.format("%d초 동안 버티며 점수를 쌓아요. 처치 + 콤보 + 대시로 아슬아슬하게 피하기(NEAR MISS)가 점수예요!", R.Duration) }, panel)
+	Text = string.format("Survive for %d seconds and rack up points. Kills + combos + close dodges with dash (NEAR MISS) all score!", R.Duration) }, panel)
 
 local state = nil
 -- 심연 깊이 선택: 필드를 밀면 8까지 열리고, 그 뒤는 골드 등급 이상을 기록하면 다음 깊이가 열린다 (끝없는 후반 목표)
@@ -68,43 +68,43 @@ local tierLines = {}
 for index, tier in ipairs(R.Tiers) do
 	local reward = string.format("%d G", tier.Gold)
 	if tier.Tickets > 0 then reward ..= string.format(" · 🎫%d", tier.Tickets) end
-	if tier.TimeSkip > 0 then reward ..= string.format(" · ⏱%d분", tier.TimeSkip // 60) end
+	if tier.TimeSkip > 0 then reward ..= string.format(" · ⏱%dm", tier.TimeSkip // 60) end
 	tierLines[index] = makeLabel({
 		Size = UDim2.new(1, -20, 0, 23), Position = UDim2.new(0, 12, 0, 5 + (index - 1) * 24), TextSize = 15, RichText = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 12,
-		Text = string.format("%s %s  <font color='#aab0d0'>%s점~</font>  →  %s", tier.Icon, tier.Name, comma(tier.Min), reward),
+		Text = string.format("%s %s  <font color='#aab0d0'>%s pts~</font>  →  %s", tier.Icon, tier.Name, comma(tier.Min), reward),
 	}, tierList)
 end
 
 local startButton = makeButton({
-	Size = UDim2.new(0.5, -24, 0, 56), Position = UDim2.new(0, 18, 0, 392), Text = string.format("⚔ 도전 시작\n(%d초)", R.Duration), TextSize = 18, Font = Enum.Font.GothamBlack,
+	Size = UDim2.new(0.5, -24, 0, 56), Position = UDim2.new(0, 18, 0, 392), Text = string.format("⚔ Start Challenge\n(%ds)", R.Duration), TextSize = 18, Font = Enum.Font.GothamBlack,
 	BackgroundColor3 = Color3.fromRGB(230, 70, 150), ZIndex = 11,
 }, panel, function()
 	Remotes.Rift:FireServer("Start")
 	panel.Visible = false
 end)
 local sweepButton = makeButton({
-	Size = UDim2.new(0.5, -24, 0, 56), Position = UDim2.new(0.5, 6, 0, 392), Text = string.format("⚡ 소탕\n(최고 등급 보상의 %d%%)", math.floor(R.SweepRate * 100)), TextSize = 17, Font = Enum.Font.GothamBlack,
+	Size = UDim2.new(0.5, -24, 0, 56), Position = UDim2.new(0.5, 6, 0, 392), Text = string.format("⚡ Sweep\n(%d%% of best-tier reward)", math.floor(R.SweepRate * 100)), TextSize = 17, Font = Enum.Font.GothamBlack,
 	BackgroundColor3 = Color3.fromRGB(70, 120, 230), ZIndex = 11,
 }, panel, function()
 	Remotes.Rift:FireServer("Sweep")
 end)
 makeLabel({ Size = UDim2.new(1, -36, 0, 50), Position = UDim2.new(0, 18, 0, 460), TextSize = 14, TextColor3 = Color3.fromRGB(190, 190, 215), ZIndex = 11,
-	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = "💡 도전과 소탕은 하루 횟수를 함께 써요 (매일 초기화). 직접 최고 점수를 올릴수록 소탕 보상도 커져요!" }, panel)
+	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = "💡 Challenges and Sweeps share the daily limit (resets daily). The higher your own best score, the bigger the Sweep reward!" }, panel)
 
 local function refresh()
 	if not state then return end
-	depthLabel.Text = string.format("🌀 심연 깊이 <font color='#ffe16e'>%d</font>", state.Depth)
+	depthLabel.Text = string.format("🌀 Rift Depth <font color='#ffe16e'>%d</font>", state.Depth)
 	depthPrev.BackgroundColor3 = state.Depth > 1 and Color3.fromRGB(110, 80, 150) or Color3.fromRGB(55, 45, 70)
 	depthNext.BackgroundColor3 = state.Depth < state.Unlocked and Color3.fromRGB(110, 80, 150) or Color3.fromRGB(55, 45, 70)
 	local unlockHint
 	if state.Unlocked <= state.ClearedZone + 1 and state.Unlocked < 9 then
-		unlockHint = string.format("다음 깊이: 필드 관문을 더 열면 깊이 %d 까지", state.Unlocked + 1)
+		unlockHint = string.format("Next depth: open more field gates to reach depth %d", state.Unlocked + 1)
 	else
-		unlockHint = string.format("다음 깊이 %d: 깊이 %d 에서 🥇골드 등급 이상 달성하면 열려요", state.Unlocked + 1, state.Unlocked)
+		unlockHint = string.format("Next depth %d: reach 🥇Gold tier or higher at depth %d", state.Unlocked + 1, state.Unlocked)
 	end
-	depthInfo.Text = string.format("보상 <font color='#78ff8c'>x%.1f</font>  ·  열린 깊이 %d  ·  <font color='#aab0d0'>%s</font>", state.Reward, state.Unlocked, state.Unlocked >= state.MaxDepth and "최대 깊이!" or unlockHint)
-	bestLabel.Text = state.Best > 0 and string.format("내 최고 기록  %s %s  <font color='#ffe16e'>%s점</font>", state.TierIcon, state.TierName, comma(state.Best)) or "내 최고 기록  ❔ 아직 없어요"
-	leftLabel.Text = string.format("오늘 남은 횟수  <font color='#%s'>%d / %d</font>", state.Left > 0 and "78ff8c" or "ff8c8c", state.Left, state.Max)
+	depthInfo.Text = string.format("Reward <font color='#78ff8c'>x%.1f</font>  ·  Unlocked depth %d  ·  <font color='#aab0d0'>%s</font>", state.Reward, state.Unlocked, state.Unlocked >= state.MaxDepth and "Max depth!" or unlockHint)
+	bestLabel.Text = state.Best > 0 and string.format("Personal best  %s %s  <font color='#ffe16e'>%s pts</font>", state.TierIcon, state.TierName, comma(state.Best)) or "Personal best  ❔ None yet"
+	leftLabel.Text = string.format("Attempts left today  <font color='#%s'>%d / %d</font>", state.Left > 0 and "78ff8c" or "ff8c8c", state.Left, state.Max)
 	startButton.BackgroundColor3 = state.Left > 0 and Color3.fromRGB(230, 70, 150) or Color3.fromRGB(80, 60, 80)
 	sweepButton.BackgroundColor3 = (state.Left > 0 and state.Best > 0) and Color3.fromRGB(70, 120, 230) or Color3.fromRGB(60, 66, 90)
 	local mine = Config.GetRiftTier(state.Best)
@@ -165,26 +165,26 @@ Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
 		BackgroundColor3 = Color3.fromRGB(20, 18, 34), BackgroundTransparency = 0.02, ZIndex = 30,
 	}, gui)
 	create("UIStroke", { Color = info.NewBest and Color3.fromRGB(255, 225, 90) or Color3.fromRGB(255, 90, 180), Thickness = 2.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
-	makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 12), Text = string.format("🌀 심연 깊이 %d 결과", info.Depth or 1), Font = Enum.Font.GothamBlack, TextSize = 26, ZIndex = 31 }, card)
+	makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 12), Text = string.format("🌀 Rift Depth %d Results", info.Depth or 1), Font = Enum.Font.GothamBlack, TextSize = 26, ZIndex = 31 }, card)
 	local scoreText = makeLabel({ Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0, 0, 0, 56), Text = "0", Font = Enum.Font.GothamBlack, TextSize = 56,
 		TextColor3 = Color3.fromRGB(255, 225, 110), ZIndex = 31 }, card)
-	makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 128), Text = string.format("%s %s 등급", info.TierIcon or "", info.Tier or ""), Font = Enum.Font.GothamBlack,
+	makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 128), Text = string.format("%s %s Tier", info.TierIcon or "", info.Tier or ""), Font = Enum.Font.GothamBlack,
 		TextSize = 24, ZIndex = 31 }, card)
 	if info.NewBest then
-		makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 164), Text = "🏆 NEW BEST! 소탕 보상도 올라갔어요", Font = Enum.Font.GothamBlack, TextSize = 20,
+		makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 164), Text = "🏆 NEW BEST! Sweep reward increased too", Font = Enum.Font.GothamBlack, TextSize = 20,
 			TextColor3 = Color3.fromRGB(255, 240, 120), ZIndex = 31 }, card)
 	else
-		makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 164), Text = string.format("내 최고 %s점", comma(info.Best or 0)), TextSize = 18, ZIndex = 31 }, card)
+		makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 164), Text = string.format("Best: %s pts", comma(info.Best or 0)), TextSize = 18, ZIndex = 31 }, card)
 	end
 	local rewardParts = { string.format("💰 %s G", comma(data.Gold or 0)) }
 	if (data.Tickets or 0) > 0 then table.insert(rewardParts, string.format("🎫 %d", data.Tickets)) end
-	if (info.TimeSkip or 0) > 0 then table.insert(rewardParts, string.format("⏱ %d분", info.TimeSkip // 60)) end
-	makeLabel({ Size = UDim2.new(1, -30, 0, 30), Position = UDim2.new(0, 15, 0, 204), Text = "보상  " .. table.concat(rewardParts, "  ·  "), TextSize = 18, ZIndex = 31 }, card)
+	if (info.TimeSkip or 0) > 0 then table.insert(rewardParts, string.format("⏱ %dm", info.TimeSkip // 60)) end
+	makeLabel({ Size = UDim2.new(1, -30, 0, 30), Position = UDim2.new(0, 15, 0, 204), Text = "Reward  " .. table.concat(rewardParts, "  ·  "), TextSize = 18, ZIndex = 31 }, card)
 	if info.UnlockedNext then
-		makeLabel({ Size = UDim2.new(1, -30, 0, 30), Position = UDim2.new(0, 15, 0, 238), Text = string.format("🔓 심연 깊이 %d 이(가) 열렸어요!", info.UnlockedNext), Font = Enum.Font.GothamBlack, TextSize = 20,
+		makeLabel({ Size = UDim2.new(1, -30, 0, 30), Position = UDim2.new(0, 15, 0, 238), Text = string.format("🔓 Rift Depth %d unlocked!", info.UnlockedNext), Font = Enum.Font.GothamBlack, TextSize = 20,
 			TextColor3 = Color3.fromRGB(150, 255, 190), ZIndex = 31 }, card)
 	end
-	makeButton({ Size = UDim2.new(0, 150, 0, 40), Position = UDim2.new(0.5, -75, 1, -54), Text = "확인", ZIndex = 31 }, card, function()
+	makeButton({ Size = UDim2.new(0, 150, 0, 40), Position = UDim2.new(0.5, -75, 1, -54), Text = "OK", ZIndex = 31 }, card, function()
 		card:Destroy()
 	end)
 	-- 점수가 촤르륵 올라간다

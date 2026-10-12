@@ -42,8 +42,8 @@ local function unlock(player, state, giveReward)
 		if reward.Keys then Keys.Add(player, reward.Keys) end
 		if reward.Xp then Level.AddXP(player, reward.Xp) end
 		player:SetAttribute("GrowthNew", true) -- 클라이언트가 성장 탭 버튼을 반짝이게 한다 (탭을 열면 "Seen" 으로 꺼진다)
-		notify(player, "💪 성장 해금! 2구역을 돌파했어요. 훈련을 시작하면 접속을 꺼도 강해져요")
-		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "💪", Title = "성장 해금!", Text = "2구역을 돌파했어요! 메뉴(B) → 스킬·성장(패시브·훈련)에서 훈련을 시작하면 접속을 꺼도 강해져요. 보상: 1000 G · 열쇠 1 · 티켓 2 · 경험치 300", Duration = 9 })
+		notify(player, "💪 Growth unlocked! You cleared Zone 2. Start training and you'll get stronger even while offline")
+		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "💪", Title = "Growth Unlocked!", Text = "You cleared Zone 2! Open Menu (B) → Skills & Growth (Passive/Training) and start training to get stronger even while offline. Reward: 1000 G · 1 Key · 2 Tickets · 300 XP", Duration = 9 })
 	end
 	Growth.Push(player)
 end
@@ -109,13 +109,13 @@ local function completeJobs(player, state)
 			state.Levels[job.Stat] += 1
 			changed = true
 			local def = R.Stats[job.Stat]
-			notify(player, string.format("%s %s 완료! Lv.%d (%s)", def.Icon, def.Name, state.Levels[job.Stat], Config.FormatTrainEffect(job.Stat, state.Levels[job.Stat])))
+			notify(player, string.format("%s %s complete! Lv.%d (%s)", def.Icon, def.Name, state.Levels[job.Stat], Config.FormatTrainEffect(job.Stat, state.Levels[job.Stat])))
 		end
 	end
 
 	if state.GateJob and now >= state.GateJob.EndAt then
 		player:SetAttribute("GatePassed", state.GateJob.Level)
-		notify(player, string.format("🌟 레벨 %d 돌파 완료! 이제 더 성장할 수 있어요.", state.GateJob.Level))
+		notify(player, string.format("🌟 Level %d breakthrough complete! You can grow even more now.", state.GateJob.Level))
 		state.GateJob = nil
 		changed = true
 	end
@@ -133,38 +133,38 @@ function Growth.StartTrain(player, stat)
 	local state = states[player]
 	if not state then return end
 	if not state.Unlocked then
-		notify(player, "🔒 2구역을 클리어하면 성장이 해금돼요!")
+		notify(player, "🔒 Clear Zone 2 to unlock Growth!")
 		return
 	end
 	if typeof(stat) ~= "string" or not R.Stats[stat] or stat == "Order" then return end
 
 	local level = state.Levels[stat]
 	if level >= R.MaxLevel then
-		notify(player, "⚠ 이미 최대 단계예요!")
+		notify(player, "⚠ Already at max level!")
 		return
 	end
 	for _, job in ipairs(state.Jobs) do
 		if job.Stat == stat then
-			notify(player, "⚠ 이미 훈련 중이에요.")
+			notify(player, "⚠ Already training.")
 			return
 		end
 	end
 	if #state.Jobs >= slotsOf(player) then
-		notify(player, "⚠ 훈련 슬롯이 가득 찼어요. (슬롯은 VIP / 상점에서 늘릴 수 있어요)")
+		notify(player, "⚠ Training slots are full. (Get more slots with VIP / in the Shop)")
 		return
 	end
 
 	local cost = Config.GetTrainGold(level)
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
-		notify(player, string.format("⚠ 골드가 부족해요. (%d G 필요)", cost))
+		notify(player, string.format("⚠ Not enough gold. (%d G needed)", cost))
 		return
 	end
 	player:SetAttribute("Gold", gold - cost)
 
 	local duration = math.floor(Config.GetTrainTime(level) * timeMultiplier(player))
 	table.insert(state.Jobs, { Stat = stat, EndAt = os.time() + duration })
-	notify(player, string.format("%s 훈련 시작! (%s)", R.Stats[stat].Name, Config.FormatDuration(duration)))
+	notify(player, string.format("%s training started! (%s)", R.Stats[stat].Name, Config.FormatDuration(duration)))
 	player:SetAttribute("TrainTick", (player:GetAttribute("TrainTick") or 0) + 1) -- 튜토리얼이 "훈련 시작"을 알아채는 신호
 	Growth.Push(player)
 end
@@ -174,11 +174,11 @@ function Growth.StartGate(player)
 	local state = states[player]
 	if not state then return end
 	if not state.Unlocked then
-		notify(player, "🔒 2구역을 클리어하면 성장이 해금돼요!")
+		notify(player, "🔒 Clear Zone 2 to unlock Growth!")
 		return
 	end
 	if state.GateJob then
-		notify(player, "⚠ 이미 돌파 중이에요.")
+		notify(player, "⚠ Already breaking through.")
 		return
 	end
 
@@ -191,30 +191,30 @@ function Growth.StartGate(player)
 		end
 	end
 	if not gateIndex then
-		notify(player, "⚠ 더 이상 돌파할 곳이 없어요!")
+		notify(player, "⚠ Nothing left to break through!")
 		return
 	end
 
 	local gateLevel = R.Gates[gateIndex]
 	if (player:GetAttribute("Level") or 1) < gateLevel then
-		notify(player, string.format("⚠ 레벨 %d 에 도달해야 돌파할 수 있어요.", gateLevel))
+		notify(player, string.format("⚠ Reach level %d to break through.", gateLevel))
 		return
 	end
 
 	local cost = R.GateGold[gateIndex]
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
-		notify(player, string.format("⚠ 골드가 부족해요. (%d G 필요)", cost))
+		notify(player, string.format("⚠ Not enough gold. (%d G needed)", cost))
 		return
 	end
 	player:SetAttribute("Gold", gold - cost)
 
 	local duration = math.floor(R.GateTime[gateIndex] * timeMultiplier(player))
 	state.GateJob = { Level = gateLevel, EndAt = os.time() + duration }
-	notify(player, string.format("🌟 레벨 %d 돌파 시작! (%s)", gateLevel, Config.FormatDuration(duration)))
+	notify(player, string.format("🌟 Level %d breakthrough started! (%s)", gateLevel, Config.FormatDuration(duration)))
 	if gateIndex == 1 then -- 첫 돌파는 30분이라 너무 길다: 같은 시간만큼 단축권을 선물해서 바로 끝낼 수 있게 한다
 		Growth.AddTimeSkip(player, duration)
-		notify(player, string.format("🎁 첫 돌파 선물! 시간 단축권 %s 지급 — 성장의 [단축권 사용]을 누르면 바로 끝나요!", Config.FormatDuration(duration)))
+		notify(player, string.format("🎁 First breakthrough gift! Received %s Time Skip — press [Use Time Skip] in Growth to finish right away!", Config.FormatDuration(duration)))
 	end
 	Growth.Push(player)
 end
@@ -238,7 +238,7 @@ function Growth.Skip(player, kind, stat)
 
 	local balance = player:GetAttribute("TimeSkip") or 0
 	if balance <= 0 then
-		notify(player, "⚠ 시간 단축권이 없어요.")
+		notify(player, "⚠ You have no Time Skips.")
 		return
 	end
 
@@ -248,7 +248,7 @@ function Growth.Skip(player, kind, stat)
 	job.EndAt -= used
 	player:SetAttribute("TimeSkip", balance - used)
 	if balance - used <= 0 then player:SetAttribute("TimeSkipCap", 0) end
-	notify(player, string.format("⏱ 시간 단축권 %s 사용!", Config.FormatDuration(used)))
+	notify(player, string.format("⏱ Used %s Time Skip!", Config.FormatDuration(used)))
 
 	completeJobs(player, state)
 	Growth.Push(player)

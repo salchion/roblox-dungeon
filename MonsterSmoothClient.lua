@@ -20,7 +20,7 @@ task.spawn(function()
 					for _, decor in ipairs(body:GetChildren()) do
 						if decor:IsA("BasePart") and (decor.Position - body.Position).Magnitude > limit then
 							reportedAt[body] = now
-							print(string.format("[몬스터 어긋남] 본체 X=%d 겉모양 부품 '%s' 이(가) %d 스터드 떨어짐 (본체 크기 %.0f)",
+							print(string.format("[Monster desync] Body X=%d, visual part '%s' is %d studs away (body size %.0f)",
 								math.floor(body.Position.X), decor.Name, math.floor((decor.Position - body.Position).Magnitude), body.Size.Magnitude))
 							break
 						end

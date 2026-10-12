@@ -92,8 +92,8 @@ function Loot.DropFor(player, position, kind, zoneIndex)
 end
 
 local function announce(player, item)
-	local mark = item.Rarity >= 5 and "👑 신화!" or "🌟 전설!"
-	local text = string.format("%s %s 님이 %s 획득!", mark, player.DisplayName, itemLabel(item))
+	local mark = item.Rarity >= 5 and "👑 MYTHIC!" or "🌟 LEGENDARY!"
+	local text = string.format("%s %s got %s!", mark, player.DisplayName, itemLabel(item))
 	for _, other in ipairs(Players:GetPlayers()) do
 		Remotes.Notify:FireClient(other, text)
 	end
@@ -108,11 +108,11 @@ local function collect(player, drop)
 	local label = itemLabel(item)
 	local text
 	if status == "Equipped" then
-		text = "⚔ 새 장비 장착! " .. label
+		text = "⚔ New gear equipped! " .. label
 	elseif status == "Bag" then
-		text = "🎒 " .. label .. (betterThanEquipped and "  ▲ 지금 장비보다 좋아요! (I → 가방)" or "")
+		text = "🎒 " .. label .. (betterThanEquipped and "  ▲ Better than your current gear! (I → Bag)" or "")
 	else
-		text = string.format("♻ %s 자동 분해 (에센스 +%d, %d G)", label, essence or 0, gold or 0)
+		text = string.format("♻ %s auto-salvaged (Essence +%d, %d G)", label, essence or 0, gold or 0)
 	end
 	Remotes.Notify:FireClient(player, text)
 
@@ -146,11 +146,11 @@ function Loot.DungeonChest(player, typeKey, difficultyKey, count)
 		local label = itemLabel(item)
 		local text
 		if status == "Equipped" then
-			text = "⚔ " .. label .. " (장착)"
+			text = "⚔ " .. label .. " (equipped)"
 		elseif status == "Bag" then
 			text = "🎒 " .. label
 		else
-			text = string.format("♻ %s (자동 분해 +%d 에센스)", label, essence or 0)
+			text = string.format("♻ %s (auto-salvage +%d Essence)", label, essence or 0)
 		end
 		table.insert(lines, { Text = text, Rarity = item.Rarity })
 		if item.Rarity >= 4 and (status == "Equipped" or status == "Bag") then

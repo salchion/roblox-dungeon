@@ -137,19 +137,19 @@ end
 
 -- 사운드 테스트 창(Studio 에서 K 키)에 보이는 항목별 설명
 SoundBank.Descriptions = {
-	Dash = "대시 (Q)", Pickup = "전리품 줍기",
-	Shot_Pistol = "권총 발사", Shot_Smg = "기관단총 발사", Shot_Revolver = "리볼버 발사", Shot_Rifle = "라이플 발사", Shot_Shotgun = "샷건 발사",
-	Shot_Flamer = "화염방사기 발사", Shot_Cannon = "플라즈마 캐논 발사", Shot_Sniper = "저격총 발사", Shot_Rocket = "로켓 런처 발사", Shot_Rail = "레일건 발사",
-	Hit = "적을 맞췄을 때 (짧게)", Crit = "치명타", Kill = "적 처치 (연속 처치할수록 높아짐)",
-	Skill_Heal = "응급 치료 사용", Skill_Ult = "데드아이 발동", UltShot = "데드아이 연사 한 발", Boom = "몬스터 폭발 / 충격파 / 운석",
-	LevelUp = "레벨업", Enh_Hammer = "강화: 망치 내려치기", Enh_Success = "강화 성공 (단계가 오를수록 높아짐)", Enh_Fail = "강화 실패",
-	Enh_Evolve = "무기 진화", Gacha_Drop = "뽑기: 캡슐 낙하", Gacha_Tick = "뽑기: 흔들리는 틱틱", Gacha_Card = "10연 뽑기: 카드 한 장",
-	Aug_Get = "어그먼트 획득", Aug_Synergy = "어그먼트 시너지 발동", Aug_Missile = "크리 미사일 발사", Aug_MissileHit = "미사일 명중", Aug_Nova = "처치 폭발",
-	Aug_Blade = "회전 칼날 베기", Aug_Storm = "낙뢰", Aug_MeteorFall = "유성 낙하", Aug_MeteorHit = "유성 착탄", Aug_Flame = "화염 지대", Aug_Execute = "처형", Aug_Skull = "처형 해골 (짧은 저음)", Aug_Pulse = "수호 파동",
-	Buff_Get = "일반 강화 획득", Penalty_Get = "패널티 발동", Player_Hurt = "내가 맞음", Low_Health = "체력 위험", Warn_Overrun = "몬스터 한도 경고", Shield_Block = "방패에 막힘",
-	Event_Siren = "공습 사이렌", Event_Stampede = "몬스터 대이동", Event_Elite = "엘리트 부대 출현", Event_Goblin = "황금 고블린 출현", Event_Boss = "거신 출현",
-	Boss_Spawn = "던전 보스 등장", Boss_Enrage = "보스 격노", Dungeon_Start = "던전 시작", Dungeon_Clear = "던전 클리어", Dungeon_Fail = "던전 실패", Quest_Claim = "퀘스트 보상 수령", Rare_Drop = "희귀 장비 획득",
-	Gacha_Pop1 = "뽑기 결과: 일반", Gacha_Pop2 = "뽑기 결과: 희귀", Gacha_Pop3 = "뽑기 결과: 영웅", Gacha_Pop4 = "뽑기 결과: 전설", Gacha_Pop5 = "뽑기 결과: 신화",
+	Dash = "Dash (Q)", Pickup = "Loot pickup",
+	Shot_Pistol = "Pistol shot", Shot_Smg = "SMG shot", Shot_Revolver = "Revolver shot", Shot_Rifle = "Rifle shot", Shot_Shotgun = "Shotgun shot",
+	Shot_Flamer = "Flamethrower shot", Shot_Cannon = "Plasma Cannon shot", Shot_Sniper = "Sniper shot", Shot_Rocket = "Rocket Launcher shot", Shot_Rail = "Railgun shot",
+	Hit = "Enemy hit (short)", Crit = "Critical hit", Kill = "Enemy kill (pitch rises with kill streak)",
+	Skill_Heal = "First Aid used", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Boom = "Monster explosion / shockwave / meteor",
+	LevelUp = "Level up", Enh_Hammer = "Enhance: hammer strike", Enh_Success = "Enhance success (pitch rises with level)", Enh_Fail = "Enhance failed",
+	Enh_Evolve = "Weapon evolution", Gacha_Drop = "Gacha: capsule drop", Gacha_Tick = "Gacha: rattling ticks", Gacha_Card = "10-pull gacha: one card",
+	Aug_Get = "Augment acquired", Aug_Synergy = "Augment synergy triggered", Aug_Missile = "Crit missile launched", Aug_MissileHit = "Missile hit", Aug_Nova = "Kill explosion",
+	Aug_Blade = "Spinning blade slash", Aug_Storm = "Lightning strike", Aug_MeteorFall = "Meteor falling", Aug_MeteorHit = "Meteor impact", Aug_Flame = "Flame zone", Aug_Execute = "Execute", Aug_Skull = "Execute skull (short low thud)", Aug_Pulse = "Guardian pulse",
+	Buff_Get = "Normal buff acquired", Penalty_Get = "Penalty triggered", Player_Hurt = "I got hit", Low_Health = "Low health", Warn_Overrun = "Monster limit warning", Shield_Block = "Blocked by shield",
+	Event_Siren = "Air raid siren", Event_Stampede = "Monster stampede", Event_Elite = "Elite squad appears", Event_Goblin = "Golden Goblin appears", Event_Boss = "Colossus appears",
+	Boss_Spawn = "Dungeon boss appears", Boss_Enrage = "Boss enrage", Dungeon_Start = "Dungeon start", Dungeon_Clear = "Dungeon clear", Dungeon_Fail = "Dungeon failed", Quest_Claim = "Quest reward claimed", Rare_Drop = "Rare gear acquired",
+	Gacha_Pop1 = "Gacha result: Common", Gacha_Pop2 = "Gacha result: Rare", Gacha_Pop3 = "Gacha result: Epic", Gacha_Pop4 = "Gacha result: Legendary", Gacha_Pop5 = "Gacha result: Mythic",
 }
 SoundBank.Order = {
 	"Shot_Pistol", "Shot_Smg", "Shot_Revolver", "Shot_Rifle", "Shot_Shotgun", "Shot_Flamer", "Shot_Cannon", "Shot_Sniper", "Shot_Rocket", "Shot_Rail",

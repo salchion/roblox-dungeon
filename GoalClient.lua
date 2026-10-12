@@ -139,13 +139,13 @@ task.defer(function() Remotes.Quest:FireServer("Request") end) -- 퀘스트 상�
 
 function refreshQuests()
 	if not dailyList then return end
-	local lines = { "<font color='#ffd966'><b>📋 오늘의 퀘스트</b></font>" }
+	local lines = { "<font color='#ffd966'><b>📋 Daily Quests</b></font>" }
 	for _, quest in ipairs(dailyList) do
 		local done = quest.Progress >= quest.Goal
 		if quest.Claimed then
 			table.insert(lines, string.format("<font color='#7a7f95'>✔ %s</font>", quest.Desc))
 		elseif done then
-			table.insert(lines, string.format("<font color='#78ff8c'>✅ %s — 눌러서 받기!</font>", quest.Desc))
+			table.insert(lines, string.format("<font color='#78ff8c'>✅ %s — tap to claim!</font>", quest.Desc))
 		else
 			table.insert(lines, string.format("• %s <font color='#ffd966'>%d/%d</font>", quest.Desc, quest.Progress, quest.Goal))
 		end
@@ -221,8 +221,8 @@ local function commas(n)
 end
 local function timeLeft(seconds)
 	seconds = math.max(0, math.ceil(seconds))
-	if seconds >= 3600 then return string.format("%d시간 %d분", seconds // 3600, (seconds % 3600) // 60) end
-	return string.format("%d분 %d초", seconds // 60, seconds % 60)
+	if seconds >= 3600 then return string.format("%dh %dm", seconds // 3600, (seconds % 3600) // 60) end
+	return string.format("%dm %ds", seconds // 60, seconds % 60)
 end
 RunService.Heartbeat:Connect(function()
 	local active = player:GetAttribute("IdleActive") == true and player:GetAttribute("Zone") == "Lobby" and player:GetAttribute("IdleCapHours") ~= nil
@@ -235,8 +235,8 @@ RunService.Heartbeat:Connect(function()
 	idleBarFill.Size = UDim2.new(ratio, 0, 1, 0)
 	idleBarFill.BackgroundColor3 = ratio >= 1 and Color3.fromRGB(255, 220, 110) or Color3.fromRGB(120, 215, 255)
 	local mult = player:GetAttribute("IdleMultTotal") or 1
-	local left = ratio >= 1 and "<font color='#ffe16e'>가득 참! (계속 받는 중)</font>" or string.format("가득 차려면 <font color='#8fffb0'>%s</font>", timeLeft(capSeconds - seconds))
-	idleLabel.Text = string.format("💤 방치 수입  +%s G/초   <font color='#9ad7ff'>x%.2f</font>  ·  받은 <font color='#ffe16e'>%s G</font>\n%s  ·  가득 차면 +%s G", tostring(player:GetAttribute("IdleRate") or 0), mult, commas(player:GetAttribute("IdleEarned")), left, commas(player:GetAttribute("IdleFullGold")))
+	local left = ratio >= 1 and "<font color='#ffe16e'>Full! (still earning)</font>" or string.format("Full in <font color='#8fffb0'>%s</font>", timeLeft(capSeconds - seconds))
+	idleLabel.Text = string.format("💤 Idle income  +%s G/sec   <font color='#9ad7ff'>x%.2f</font>  ·  Earned <font color='#ffe16e'>%s G</font>\n%s  ·  When full: +%s G", tostring(player:GetAttribute("IdleRate") or 0), mult, commas(player:GetAttribute("IdleEarned")), left, commas(player:GetAttribute("IdleFullGold")))
 	idleLabel.TextYAlignment = Enum.TextYAlignment.Top
 end)
 
@@ -279,19 +279,19 @@ guideClose.BorderSizePixel = 0
 guideClose.Font = Enum.Font.GothamBlack
 guideClose.TextSize = 18
 guideClose.TextColor3 = Color3.new(1, 1, 1)
-guideClose.Text = "좋아요, 강해지러 가자!"
+guideClose.Text = "Got it, let's get stronger!"
 guideClose.ZIndex = 51
 guideClose.Parent = guide
 addCorner(guideClose, 8)
 guideClose.Activated:Connect(function() guide.Visible = false end)
 Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 	if action ~= "Growth" then return end
-	local lines = { "<font size='20' color='#ffd966'><b>💪 더 강해지는 법</b></font>" }
+	local lines = { "<font size='20' color='#ffd966'><b>💪 How to Get Stronger</b></font>" }
 	local gap = data.Need - data.Power
 	if gap > 0 then
-		table.insert(lines, string.format("<font color='#9ad7ff'>🎯 목표: 구역 %d 군주 격파</font>  <font size='12' color='#c9c0e0'>(권장 전투력 %s · 내 전투력 %s)</font>", data.Zone, comma(data.Need), comma(data.Power)))
+		table.insert(lines, string.format("<font color='#9ad7ff'>🎯 Goal: Defeat Zone %d Lord</font>  <font size='12' color='#c9c0e0'>(Recommended power %s · Your power %s)</font>", data.Zone, comma(data.Need), comma(data.Power)))
 	else
-		table.insert(lines, string.format("<font color='#78ff8c'>🎯 구역 %d 군주에 도전할 준비 완료!</font>  <font size='12' color='#c9c0e0'>(권장 %s · 내 %s)</font>", data.Zone, comma(data.Need), comma(data.Power)))
+		table.insert(lines, string.format("<font color='#78ff8c'>🎯 Ready to challenge the Zone %d Lord!</font>  <font size='12' color='#c9c0e0'>(Recommended %s · Yours %s)</font>", data.Zone, comma(data.Need), comma(data.Power)))
 	end
 	table.insert(lines, "")
 	for _, source in ipairs(data.Sources) do
@@ -320,7 +320,7 @@ local function pickGoal()
 			end
 			local freeLeft = player:GetAttribute("TutorialFree") == true and level < 3
 			table.insert(candidates, {
-				Text = freeLeft and string.format("🔫 다음 %s <font color='#ffd966'>%s</font>\n✨ 지금은 강화가 무료예요! (%d번 남음)", nextTier.Kind == "Form" and "무기 해금" or "시대", nextTier.Name, 3 - level) or string.format("🔫 다음 %s <font color='#ffd966'>%s</font> (+%d강)\n강화 비용 %s G · 보유 %s G", nextTier.Kind == "Form" and "무기 해금" or "시대", nextTier.Name, nextTier.Level, comma(cost), comma(gold)),
+				Text = freeLeft and string.format("🔫 Next %s <font color='#ffd966'>%s</font>\n✨ Upgrades are free right now! (%d left)", nextTier.Kind == "Form" and "weapon unlock" or "era", nextTier.Name, 3 - level) or string.format("🔫 Next %s <font color='#ffd966'>%s</font> (+%d)\nUpgrade cost %s G · You have %s G", nextTier.Kind == "Form" and "weapon unlock" or "era", nextTier.Name, nextTier.Level, comma(cost), comma(gold)),
 				Ratio = freeLeft and 1 or math.min(1, gold / cost), Priority = 1,
 			})
 		end
@@ -330,11 +330,11 @@ local function pickGoal()
 	local charLevel = player:GetAttribute("Level") or 1
 	if charLevel < Config.Level.Max then
 		if player:GetAttribute("GateBlocked") then
-			table.insert(candidates, { Text = "🚧 레벨이 막혔어요!\n메뉴(B) → 스킬·성장(패시브·훈련)에서 돌파를 진행하세요", Ratio = 1, Priority = 0 })
+			table.insert(candidates, { Text = "🚧 Your level is capped!\nMenu (B) → Skills & Growth (Passive/Training) to break through", Ratio = 1, Priority = 0 })
 		else
 			local xp, needed = player:GetAttribute("XP") or 0, math.max(1, player:GetAttribute("XPNeeded") or 1)
 			table.insert(candidates, {
-				Text = string.format("⭐ 다음 레벨 Lv.%d\n경험치 %d / %d", charLevel + 1, xp, needed), Ratio = math.min(1, xp / needed), Priority = 2,
+				Text = string.format("⭐ Next level Lv.%d\nXP %d / %d", charLevel + 1, xp, needed), Ratio = math.min(1, xp / needed), Priority = 2,
 			})
 		end
 	end
@@ -346,26 +346,26 @@ local function pickGoal()
 		local kills = player:GetAttribute("GateKills") or 0
 		local gold = Config.Field.Gate.RewardGold * (cleared + 1)
 		table.insert(candidates, {
-			Text = string.format("🚪 구역 %d 관문 열기\n구역 %d 몬스터 처치 %d / %d · 보상 %s G + 티켓", cleared + 2, cleared + 1, kills, needed, comma(gold)),
+			Text = string.format("🚪 Open Zone %d Gate\nDefeat Zone %d monsters %d / %d · Reward %s G + Ticket", cleared + 2, cleared + 1, kills, needed, comma(gold)),
 			Ratio = math.min(0.9, kills / needed), Priority = 1,
 		})
 	end
 
 	-- 지금 바로 쓸 수 있는 것
 	if (player:GetAttribute("Level") or 1) >= Config.Prestige.Level and (player:GetAttribute("Prestige") or 0) < Config.Prestige.Max then
-		table.insert(candidates, { Text = "🌟 최고 레벨 달성!\n환생하면 영구 공격력 + 골드 획득량이 늘어요 (메뉴 I → 캐릭터 > 정보)", Ratio = 0.99, Priority = 2 })
+		table.insert(candidates, { Text = "🌟 Max level reached!\nRebirth for permanent attack + gold gain (Menu I → Character > Info)", Ratio = 0.99, Priority = 2 })
 	end
 	if (player:GetAttribute("DungeonFree") or 0) >= 1 or (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0) >= 1 then
-		table.insert(candidates, { Text = string.format("🎟 오늘 무료 입장 %d회 · 🗝 열쇠 %d개!\n북쪽 게이트에서 던전에 도전하세요", player:GetAttribute("DungeonFree") or 0, (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0)), Ratio = 0.95, Priority = 3 })
+		table.insert(candidates, { Text = string.format("🎟 %d free entries today · 🗝 %d keys!\nChallenge the dungeon at the north gate", player:GetAttribute("DungeonFree") or 0, (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0)), Ratio = 0.95, Priority = 3 })
 	end
 	if (player:GetAttribute("ClearedZone") or 0) >= Config.Field.ZoneCount - 1 and not player:GetAttribute("HintDone_FieldClear") and not player:GetAttribute("TutorialActive") then
-		table.insert(candidates, { Text = "👑 마지막 8구역의 군주를 쓰러뜨려요!\n필드를 정복하면 끝없는 심연이 열려요", Ratio = 0.95, Priority = 3 })
+		table.insert(candidates, { Text = "👑 Defeat the Lord of the final Zone 8!\nConquer the field to unlock the endless Rift", Ratio = 0.95, Priority = 3 })
 	end
 	if player:GetAttribute("HintDone_FieldClear") and not player:GetAttribute("TutorialActive") then
-		table.insert(candidates, { Text = string.format("🌀 필드 정복! 이제 심연이에요\n마을 포털에서 심연 깊이 %d 에 도전하세요 (깊을수록 보상 x배)", player:GetAttribute("RiftUnlocked") or 1), Ratio = 0.98, Priority = 3 })
+		table.insert(candidates, { Text = string.format("🌀 Field conquered! Now for the Rift\nTake on Rift depth %d at the town portal (deeper = bigger rewards)", player:GetAttribute("RiftUnlocked") or 1), Ratio = 0.98, Priority = 3 })
 	end
 	if (player:GetAttribute("Tickets") or 0) >= 1 then
-		table.insert(candidates, { Text = string.format("🎫 티켓 %d장!\n뽑기 머신에서 장비를 뽑아보세요", player:GetAttribute("Tickets")), Ratio = 0.97, Priority = 4 })
+		table.insert(candidates, { Text = string.format("🎫 %d tickets!\nPull gear at the gacha machine", player:GetAttribute("Tickets")), Ratio = 0.97, Priority = 4 })
 	end
 
 	table.sort(candidates, function(a, b)
@@ -450,9 +450,9 @@ RunService.RenderStepped:Connect(function()
 				local need = Config.Field.Gate.KillsNeeded[sealZone - 1] or 0
 				if sealZone - 1 == clearedNow + 1 then
 					local zoneSet = Config.Sets[Config.Sets.ZoneKeys[sealZone]]
-					sealText.Text = string.format("🔒 구역 %d · %s 봉인\n구역 %d 몬스터 %d / %d 처치 · 군주 %s\n열면 %s %s 세트 획득 가능!", sealZone, Config.Field.ZoneNames[sealZone], sealZone - 1, player:GetAttribute("GateKills") or 0, need, player:GetAttribute("GateBossDone") and "✔ 격파" or "👑 미격파", zoneSet.Icon, zoneSet.Name)
+					sealText.Text = string.format("🔒 Zone %d · %s Sealed\nZone %d monsters %d / %d defeated · Lord %s\nOpen to earn the %s %s set!", sealZone, Config.Field.ZoneNames[sealZone], sealZone - 1, player:GetAttribute("GateKills") or 0, need, player:GetAttribute("GateBossDone") and "✔ Defeated" or "👑 Not defeated", zoneSet.Icon, zoneSet.Name)
 				else
-					sealText.Text = string.format("🔒 구역 %d · %s 봉인\n먼저 이전 관문을 여세요", sealZone, Config.Field.ZoneNames[sealZone])
+					sealText.Text = string.format("🔒 Zone %d · %s Sealed\nOpen the previous gate first", sealZone, Config.Field.ZoneNames[sealZone])
 				end
 			end
 		end

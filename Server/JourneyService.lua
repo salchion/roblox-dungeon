@@ -68,16 +68,16 @@ local function townBeat(player, now)
 	if (player:GetAttribute("ClearedZone") or 0) >= 1 and not Journey.IsDone(player, "Zone2") then
 		Journey.Mark(player, "Zone2")
 		lastBeat[player] = now
-		prompt(player, "🚪", "구역 2가 열렸어요!", "다음 구역의 군주를 쓰러뜨리면 더 좋은 세트 장비와 큰 보상을 얻어요. 필드 입구에 표지를 켰어요.")
-		beacon(player, positions.Field, "필드 입구")
+		prompt(player, "🚪", "Zone 2 is open!", "Defeat the next zone's lord for better set gear and big rewards. A marker now points to the field entrance.")
+		beacon(player, positions.Field, "Field Entrance")
 		return
 	end
 
 	if Journey.RiftOpen(player) and not Journey.IsDone(player, "RiftOpen") then
 		Journey.Mark(player, "RiftOpen")
 		lastBeat[player] = now
-		prompt(player, "🌀", "필드 정복! 심연이 열렸어요!", "마을의 보라색 포털에서 끝없는 심연에 도전해요. 하루 3번 무료이고, 깊이 들어갈수록 보상이 커지고, 기록이 곧 소탕 보상이에요.")
-		beacon(player, positions.Rift, "심연 포털")
+		prompt(player, "🌀", "Field conquered! The Rift is open!", "Take on the endless Rift at the purple portal in town. 3 free runs a day - the deeper you go, the bigger the rewards, and your record becomes your sweep reward.")
+		beacon(player, positions.Rift, "Rift Portal")
 		return
 	end
 
@@ -97,7 +97,7 @@ local function townBeat(player, now)
 		local difficulty = Config.Dungeon.Difficulties[entry.Diff]
 		if dungeonType and difficulty and positions.Gates and positions.Gates[newest] and not player:GetAttribute("Journey_Silent") then
 			lastBeat[player] = now
-			prompt(player, "🏰", "새 던전이 열렸어요!", string.format("%s [%s] — 레벨 %d 이상. 더 큰 보상과 더 센 보스가 기다려요. 게이트에 표지를 켰어요.", dungeonType.Name, difficulty.Name, entry.MinLevel))
+			prompt(player, "🏰", "New dungeon unlocked!", string.format("%s [%s] - Level %d or higher. Bigger rewards and tougher bosses await. A marker now points to the gate.", dungeonType.Name, difficulty.Name, entry.MinLevel))
 			beacon(player, positions.Gates[newest], dungeonType.Name)
 		end
 	end
@@ -114,15 +114,15 @@ local function combatBeat(player, now)
 	if fraction < 0.35 and not Journey.IsDone(player, "Heal") and (player:GetAttribute("Level") or 1) >= 3 then
 		Journey.Mark(player, "Heal")
 		lastBeat[player] = now
-		prompt(player, "C", "체력이 위험해요!", "C 키로 응급 치료를 쓰면 체력을 회복해요. (스킬바의 초록 버튼)", 7)
+		prompt(player, "C", "Low health!", "Press C for first aid to restore health. (green button on the skill bar)", 7)
 	elseif fraction < 0.6 and not Journey.IsDone(player, "Dash") and now - (dashedAt[player] or -1000) > 120 then
 		Journey.Mark(player, "Dash")
 		lastBeat[player] = now
-		prompt(player, "Q", "대시로 피하세요!", "Q 키로 대시하면 적의 탄을 피할 수 있어요. 아슬아슬하게 스치면 NEAR MISS로 보너스!", 7)
+		prompt(player, "Q", "Dash to dodge!", "Press Q to dash past enemy bullets. A close shave earns a NEAR MISS bonus!", 7)
 	elseif (player:GetAttribute("UltCharge") or 0) >= Config.Skills.Ult.Cost and not Journey.IsDone(player, "Ult") then
 		Journey.Mark(player, "Ult")
 		lastBeat[player] = now
-		prompt(player, "V", "궁극기 준비 완료!", "V 키로 데드아이! 주변 적들을 한꺼번에 락온해서 쏴요 (사용 중에는 무적).", 7)
+		prompt(player, "V", "Ultimate ready!", "Press V for Dead Eye! Lock onto all nearby enemies and fire at once (invincible while active).", 7)
 	end
 end
 

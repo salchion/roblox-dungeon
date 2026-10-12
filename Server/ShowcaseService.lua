@@ -190,11 +190,11 @@ function Showcase.Init(_boardCFrame)
 			Platform = platform, Top = spot, Scale = 2.8, Look = look, Key = nil, Model = nil, Weapon = nil,
 			Label = makeLabel(platform, 27, 75),
 		}
-		slots[rank].Label.Text = MEDAL[rank] .. " 이 자리의 주인공은?\n<font size='14'>전투력을 올려 서 보세요!</font>"
+		slots[rank].Label.Text = MEDAL[rank] .. " Who will take this spot?\n<font size='14'>Raise your power to claim it!</font>"
 	end
 
 	local header = makeLabel(slots[1].Platform, 34, 160) -- 1등 뒷판 위의 큰 머리글
-	header.Text = "🏆 명예의 전당 🏆"
+	header.Text = "🏆 Hall of Fame 🏆"
 	header.TextColor3 = Color3.fromRGB(255, 226, 120)
 
 	task.spawn(function()
@@ -300,7 +300,7 @@ function Showcase.Refresh()
 			end
 		elseif slot.Key ~= nil then
 			clearSlot(slot)
-			slot.Label.Text = MEDAL[rank] .. " 이 자리의 주인공은?\n<font size='14'>전투력을 올려 서 보세요!</font>"
+			slot.Label.Text = MEDAL[rank] .. " Who will take this spot?\n<font size='14'>Raise your power to claim it!</font>"
 		end
 	end
 end

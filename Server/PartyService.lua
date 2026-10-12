@@ -67,7 +67,7 @@ local function removeMember(party, player)
 	end
 	if party.Leader == player then
 		party.Leader = party.Members[1] -- 파티장이 나가면 다음 사람이 파티장
-		notify(party.Leader, "당신이 새 파티장이 되었습니다.")
+		notify(party.Leader, "You are the new party leader.")
 	end
 	broadcast(party)
 end
@@ -75,28 +75,28 @@ end
 function Party.Invite(inviter, target)
 	if not target or target == inviter or target.Parent ~= Players then return end
 	if inviter:GetAttribute("Zone") ~= "Lobby" or target:GetAttribute("Zone") ~= "Lobby" then
-		notify(inviter, "로비에 있는 플레이어만 초대할 수 있어요.")
+		notify(inviter, "You can only invite players who are in the lobby.")
 		return
 	end
 
 	local party = playerParty[inviter]
 	if party and party.Leader ~= inviter then
-		notify(inviter, "파티장만 초대할 수 있어요.")
+		notify(inviter, "Only the party leader can invite.")
 		return
 	end
 	if party and #party.Members >= Config.Party.MaxSize then
-		notify(inviter, "파티가 가득 찼어요. (최대 " .. Config.Party.MaxSize .. "명)")
+		notify(inviter, "The party is full. (max " .. Config.Party.MaxSize .. ")")
 		return
 	end
 	if playerParty[target] then
-		notify(inviter, target.DisplayName .. " 님은 이미 파티에 있어요.")
+		notify(inviter, target.DisplayName .. " is already in a party.")
 		return
 	end
 
 	invites[target] = invites[target] or {}
 	invites[target][inviter] = os.clock() + Config.Party.InviteTimeout
 	Remotes.Party:FireClient(target, "Invite", inviter.UserId, inviter.DisplayName)
-	notify(inviter, target.DisplayName .. " 님에게 초대를 보냈어요.")
+	notify(inviter, "Invite sent to " .. target.DisplayName .. ".")
 end
 
 function Party.Accept(player, inviterUserId)
@@ -104,7 +104,7 @@ function Party.Accept(player, inviterUserId)
 	local pending = invites[player]
 	local expire = pending and inviter and pending[inviter]
 	if not expire or os.clock() > expire then
-		notify(player, "만료되었거나 유효하지 않은 초대예요.")
+		notify(player, "That invite has expired or is invalid.")
 		return
 	end
 	pending[inviter] = nil
@@ -114,11 +114,11 @@ function Party.Accept(player, inviterUserId)
 
 	local party = playerParty[inviter]
 	if party and party.Leader ~= inviter then
-		notify(player, "초대한 사람이 더 이상 파티장이 아니에요.")
+		notify(player, "The inviter is no longer the party leader.")
 		return
 	end
 	if party and #party.Members >= Config.Party.MaxSize then
-		notify(player, "파티가 가득 찼어요.")
+		notify(player, "The party is full.")
 		return
 	end
 
@@ -140,7 +140,7 @@ function Party.Decline(player, inviterUserId)
 	local inviter = Players:GetPlayerByUserId(inviterUserId)
 	if inviter and invites[player] then
 		invites[player][inviter] = nil
-		notify(inviter, player.DisplayName .. " 님이 초대를 거절했어요.")
+		notify(inviter, player.DisplayName .. " declined your invite.")
 	end
 end
 
@@ -157,10 +157,10 @@ function Party.Kick(leader, userId)
 	if not party or party.Leader ~= leader or not target or target == leader then return end
 	if playerParty[target] ~= party then return end
 	if target:GetAttribute("Zone") ~= "Lobby" then
-		notify(leader, "던전 안에 있는 파티원은 추방할 수 없어요.")
+		notify(leader, "You can't kick a party member who is inside a dungeon.")
 		return
 	end
-	notify(target, "파티에서 추방되었어요.")
+	notify(target, "You were kicked from the party.")
 	removeMember(party, target)
 end
 

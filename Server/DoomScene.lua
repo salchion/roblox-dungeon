@@ -192,7 +192,7 @@ local function startTutorialRift(player, at)
 		local root = getAliveParts(player)
 		if not root then print("[튜토리얼 열쇠] 중단: 캐릭터 없음") return end
 		print(string.format("[튜토리얼 열쇠] %s 시작", player.Name))
-		notify(player, "🗝 군주가 던전 열쇠를 떨어뜨렸다!")
+		notify(player, "🗝 The Lord dropped a dungeon key!")
 		Remotes.Tutorial:FireClient(player, "WaypointClear")
 		-- 열쇠: 군주가 쓰러진 자리 위에 크게 떠올라 천천히 돈다. 흰색으로 날아가 보이지 않게 진한 주황빛 금색 + 큰 후광 + 바닥 고리 + 불꽃 + 굵은 빛기둥으로 멀리서도 눈에 띄게 한다
 		local groundHit = workspace:Raycast(at + Vector3.new(0, 20, 0), Vector3.new(0, -80, 0))
@@ -249,9 +249,9 @@ local function startTutorialRift(player, at)
 		tagText.TextColor3 = Color3.fromRGB(255, 196, 80)
 		tagText.TextStrokeColor3 = Color3.fromRGB(60, 24, 0)
 		tagText.TextStrokeTransparency = 0
-		tagText.Text = "🗝 군주의 열쇠 — 가까이 가서 줍기!"
+		tagText.Text = "🗝 Lord's Key — go close and pick it up!"
 		tagText.Parent = tag
-		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🗝", Title = "열쇠가 떨어졌어요!", Text = "쓰러진 군주 자리에 큰 열쇠가 떨어졌어요. 가까이 가서 주워 보세요!", Duration = 6, Top = true })
+		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🗝", Title = "A key dropped!", Text = "A big key fell where the Lord went down. Walk up and grab it!", Duration = 6, Top = true })
 		-- 플레이어가 가까이 갈 때까지 기다린다 (제자리에서 천천히 돌며 떠 있다). 너무 오래 안 주우면 열쇠가 스스로 날아온다
 		local waitStart, hover = os.clock(), 0
 		while true do
@@ -285,11 +285,11 @@ local function startTutorialRift(player, at)
 			end
 		end
 		Effects.Burst(key.Position, Color3.fromRGB(255, 210, 130), 40)
-		Effects.FloatText(key.Position + Vector3.new(0, 4, 0), "🗝 군주의 열쇠 획득!", Color3.fromRGB(255, 220, 150))
-		notify(player, "🗝 군주의 열쇠를 얻었다! 열쇠가 공명하기 시작한다...")
+		Effects.FloatText(key.Position + Vector3.new(0, 4, 0), "🗝 Got the Lord's Key!", Color3.fromRGB(255, 220, 150))
+		notify(player, "🗝 You got the Lord's Key! The key begins to resonate...")
 		key:Destroy()
 		key = nil
-		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🗝", Title = "열쇠가 빛난다", Text = "열쇠에 반응해서 어딘가에 던전의 문이 열리려 해요...", Duration = 4, Top = true })
+		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🗝", Title = "The key glows", Text = "Reacting to the key, a dungeon gate is about to open somewhere...", Duration = 4, Top = true })
 		task.wait(0.8)
 		root = getAliveParts(player)
 		if not root then return end
@@ -305,7 +305,7 @@ local function startTutorialRift(player, at)
 		if look.Magnitude < 0.1 then look = Vector3.new(1, 0, 0) end
 		local gatePos = Vector3.new(root.Position.X, root.Position.Y - 3, root.Position.Z) + look.Unit * 34
 		gate = buildTempGate(gatePos, root.Position)
-		notify(player, "⚠ 땅을 뚫고 던전의 문이 솟아오른다!")
+		notify(player, "⚠ A dungeon gate bursts up through the ground!")
 		local riseStart = os.clock()
 		while os.clock() - riseStart < 1.6 do
 			local t = (os.clock() - riseStart) / 1.6
@@ -316,7 +316,7 @@ local function startTutorialRift(player, at)
 		gate.Set(1, 0)
 		-- 문이 밝게 열린다 (잠깐 숨을 고르며 문을 보여 준다: 무엇에 끌려가는지 알 수 있게)
 		Effects.Burst(gate.Center, Color3.fromRGB(255, 200, 120), 60)
-		notify(player, "🌀 던전의 문이 열렸다 — 문이 당신을 끌어당긴다!")
+		notify(player, "🌀 The dungeon gate opened — it pulls you in!")
 		local openStart = os.clock()
 		while os.clock() - openStart < 1.2 do
 			gate.Set(1, os.clock() - riseStart)
@@ -360,7 +360,7 @@ local function startTutorialRift(player, at)
 		Dungeon.Start(player, "Cave", "Easy", nil, nil, true)
 		if player:GetAttribute("Zone") ~= "Dungeon" then
 			warn("[튜토리얼 열쇠] 던전 입장 실패: Zone=" .. tostring(player:GetAttribute("Zone")) .. " TutorialDungeonLocked=" .. tostring(player:GetAttribute("TutorialDungeonLocked")))
-			notify(player, "던전이 아직 열리지 않았어요. 마을의 북쪽 던전 게이트에서 들어갈 수 있어요")
+			notify(player, "The dungeon is not open yet. You can enter from the Dungeon Gates in the north of town")
 		end
 		task.wait(0.5)
 		Remotes.Tutorial:FireClient(player, "Cinema", "End")
@@ -387,7 +387,7 @@ local function doomWaveInner(player, zone, center)
 	local root, humanoid = getAliveParts(player)
 	if not root then return end
 	player:SetAttribute("InDoomArena", true) -- 납치 연출로 높이 올라가도 "필드 밖으로 튕김" / 구역 판별에 걸리지 않게 처음부터 켠다
-	notify(player, "⚠⚠ 압도적인 기운... 무언가가 당신을 부른다!!")
+	notify(player, "⚠⚠ An overwhelming presence... something is calling you!!")
 	playSfx(player, "Lord_Voice") -- 낮게 깔리는 군주의 목소리
 	-- 끌려가기 전: 땅 / 하늘이 먼저 울린다 (점점 세지는 진동 2.5초). 갑자기 빨려 올라가지 않게 몸도 잠깐 굳는다
 	do
@@ -406,7 +406,7 @@ local function doomWaveInner(player, zone, center)
 			task.wait(0.3)
 		end
 	end
-	Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "최후의 군주", Text = "...내 수하들을 쓰러뜨리다니, 강하구나. 이제 내가 직접 상대해주마.", Duration = 5, Top = true })
+	Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "The Final Lord", Text = "...You defeated my servants. Impressive. Now I shall face you myself.", Duration = 5, Top = true })
 	player:SetAttribute("ShakeStrength", 0.9)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	local TweenService = game:GetService("TweenService")
@@ -442,7 +442,7 @@ local function doomWaveInner(player, zone, center)
 		for _, part in ipairs({ hull, dome, rim }) do
 			TweenService:Create(part, TweenInfo.new(1.2), { Transparency = part == hull and 0 or 0.1 }):Play()
 		end
-		notify(player, "⚠ 하늘에서 거대한 무언가가 내려온다...!")
+		notify(player, "⚠ Something huge descends from the sky...!")
 		shakeScreen(player, 0.5)
 		task.wait(1.0)
 		TweenService:Create(column, TweenInfo.new(0.5), { Transparency = 0.45, Size = Vector3.new(120, 16, 16) }):Play()
@@ -611,7 +611,7 @@ local function doomWaveInner(player, zone, center)
 	root.AssemblyLinearVelocity = Vector3.zero
 	player:SetAttribute("InDoomArena", true)
 	player:SetAttribute("UltCharge", Config.Skills.Ult.Cost) -- 궁극기(V)를 써볼 수 있게 게이지를 가득 채워 둔다
-	notify(player, "💀 최후의 군주와 마주했다! 공격은 통하지만... 쓰러뜨릴 수는 없다. 바닥의 붉은 경고를 피하고, V 궁극기도 써보자!")
+	notify(player, "💀 You face the Final Lord! Your attacks land, but... you cannot defeat him. Dodge the red warnings on the floor, and try your V ultimate too!")
 	Effects.Burst(bossPos, rgb(255, 70, 60), 100)
 
 	local alive = function()
@@ -633,7 +633,7 @@ local function doomWaveInner(player, zone, center)
 		if not data.Scratched and (data.DoomHits or 0) >= 6 and alive() then -- 내 공격이 닿았다: 군주가 잠깐 반응한다
 			data.Scratched = true
 			Effects.Burst(body.Position + Vector3.new(0, 6, -8), rgb(255, 235, 170), 60)
-			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "최후의 군주", Text = "...감히.", Duration = 2.5, Top = true })
+			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "The Final Lord", Text = "...How dare you.", Duration = 2.5, Top = true })
 			player:SetAttribute("ShakeStrength", 0.5)
 			player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 		end
@@ -738,7 +738,7 @@ local function doomWaveInner(player, zone, center)
 				if gap <= radius then
 					local dmg = math.min(h2.MaxHealth * percent, h2.Health - 1)
 					if dmg > 0 then h2:TakeDamage(dmg) end
-					notify(player, "💥 군주의 공격에 맞았다!")
+					notify(player, "💥 Hit by the Lord's attack!")
 				elseif gap <= radius + 16 and isDashing(r2, player) then
 					awardNearMiss(player, r2) -- 경고 원 바로 밖으로 대시로 빠져나갔다
 				end
@@ -753,7 +753,7 @@ local function doomWaveInner(player, zone, center)
 	task.wait(1.0)
 	-- 1) 좁은 간격의 3연 폭격 (플레이어 주변)
 	if alive() then
-		notify(player, "⚠ 군주가 손을 들어올렸다!")
+		notify(player, "⚠ The Lord raised his hand!")
 		for k = 1, 3 do
 			local offset = Vector3.new((k - 2) * 20, 0, 0)
 			strike(playerAt() + offset, 13, 1.2, 0.15)
@@ -763,7 +763,7 @@ local function doomWaveInner(player, zone, center)
 	end
 	-- 2) 플레이어를 둘러싼 고리가 시계 방향으로 하나씩 내리꽂히고, 마지막에 한가운데로 큰 일격
 	if alive() then
-		notify(player, "⚠⚠ 사방이 붉게 물든다 — 빠져나갈 틈을 찾아라!")
+		notify(player, "⚠⚠ Everything turns red — find a gap to escape!")
 		shake(0.5)
 		local around = playerAt()
 		local gap = math.random(6) -- 한 군데는 비워 둔다: 그쪽으로 빠져나가면 맞지 않는다
@@ -782,9 +782,9 @@ local function doomWaveInner(player, zone, center)
 	end
 	-- 마지막: 아레나 전체가 붉게 물든다 — 어디에도 안전한 곳이 없다
 	if alive() then
-		notify(player, "💀 군주가 모든 힘을 모은다... 피할 곳이 없다!!")
-		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "최후의 군주",
-			Text = (data.DoomHits or 0) >= 6 and "...흠집을 냈구나. 하지만 아직 부족하다." or "그 힘으로는 아직 부족하다.", Duration = 3, Top = true })
+		notify(player, "💀 The Lord gathers all his power... there is nowhere to hide!!")
+		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "The Final Lord",
+			Text = (data.DoomHits or 0) >= 6 and "...You scratched me. But it is not enough." or "That power is still not enough.", Duration = 3, Top = true })
 		Remotes.Tutorial:FireClient(player, "Cinema", "Start")
 		shake(0.9)
 		local flood = Instance.new("Part")
@@ -877,8 +877,8 @@ local function doomWaveInner(player, zone, center)
 		Remotes.Tutorial:FireClient(player, "Cinema", "End")
 		task.wait(2)
 		if player.Parent then -- 쓰러진 직후: 지금 강해질 수 있는 방법을 한눈에 알려준다
-			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "\"8번째 땅 끝에서 기다리마\"",
-				Text = "군주는 그 말만 남기고 사라졌어요. 쓰러졌지만 전리품(골드 4000 / 티켓 10장)은 남았어요!\n🎰 뽑기 10연 → 🔨 강화(진화) 순서로 강해져 봐요. 먼저 뽑기 머신으로!", Duration = 10 })
+			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "\"I will wait at the end of the 8th land\"",
+				Text = "The Lord vanished after saying only that. You fell, but you kept the loot (4000 gold / 10 tickets)!\n🎰 10-pull gacha → 🔨 Upgrade (evolve) — that is how you get stronger. Head to the gacha machine first!", Duration = 10 })
 		end
 	end)
 end
@@ -904,7 +904,7 @@ Dungeon.OnTutorialHandoff = function(player, lootLines, gold)
 			player:SetAttribute("InDoomArena", nil)
 			return
 		end
-		notify(player, "⚠ 하늘이 어두워진다...")
+		notify(player, "⚠ The sky grows dark...")
 		local ok, err = pcall(doomWave, player, 1)
 		if not ok then
 			warn("[튜토리얼 군주] 오류: " .. tostring(err))
@@ -916,7 +916,7 @@ Dungeon.OnTutorialHandoff = function(player, lootLines, gold)
 			if player.Parent and #lootLines > 0 then
 				local names = {}
 				for _, line in ipairs(lootLines) do table.insert(names, typeof(line) == "table" and tostring(line.Text) or tostring(line)) end
-				notify(player, "🎁 던전 전리품: " .. table.concat(names, ", "))
+				notify(player, "🎁 Dungeon loot: " .. table.concat(names, ", "))
 			end
 		end)
 	end)
