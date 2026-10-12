@@ -234,7 +234,7 @@ handlers.Ult = function(player, root, _, character)
 	local field = Instance.new("ForceField")
 	field.Name = "DeadeyeShield"
 	field.Visible = false
-	Debris:AddItem(field, 0.3 + 6 * 0.13 + 1.0 + 1.0) -- 먼저 수명을 정해 둔다 (오류가 나도 영구 무적이 되지 않게)
+	Debris:AddItem(field, 0.3 + 6 * 0.13 + 1.4 + 1.2) -- 먼저 수명을 정해 둔다 (오류가 나도 영구 무적이 되지 않게)
 	field.Parent = character
 	player:SetAttribute("DeadeyeActive", true)
 	Remotes.Notify:FireClient(player, string.format("🎯 Deadeye! Barrage on %d enemies", #targets))
@@ -276,15 +276,15 @@ handlers.Ult = function(player, root, _, character)
 			for round = 1, rounds do
 				if not player.Parent or not root.Parent then return end
 				local shoulder = root.Position + Vector3.new((math.random() - 0.5) * 3, 3 + math.random() * 1.5, (math.random() - 0.5) * 3)
-				Effects.Burst(shoulder, Color3.fromRGB(255, 235, 170), 8) -- 발사 불꽃
+				Effects.Burst(shoulder, Color3.fromRGB(190, 235, 255), 8) -- 발사 불꽃
 				pcall(function() SoundBank.Play(root, "UltShot", { Pitch = 0.9 + math.random() * 0.4, Volume = 0.8, Name = "GunShot" }) end)
 				for index, part in ipairs(targets) do
 					if not part.Parent then continue end
 					local target = part.Position
 					-- 위로 높이 솟았다가(중간점이 출발점 위쪽에 치우침) 곡선으로 떨어진다
-					local mid = shoulder:Lerp(target, 0.25) + Vector3.new((math.random() - 0.5) * 22, 30 + math.random() * 16, (math.random() - 0.5) * 22)
-					local flight = 0.75 + math.random() * 0.25
-					Effects.Raw(shoulder, { "M", shoulder, part, mid, flight, 0.5 })
+					local mid = shoulder + Vector3.new((math.random() - 0.5) * 14, 44 + math.random() * 22, (math.random() - 0.5) * 14) + (target - shoulder) * Vector3.new(0.12, 0, 0.12) -- 거의 수직으로 높이 솟는다
+					local flight = 1.15 + math.random() * 0.2
+					Effects.Raw(shoulder, { "M", shoulder, part, mid, flight, 0.55, "icbm", Color3.fromRGB(90, 200, 255) })
 					local landAt = os.clock() + flight
 					lastLanding = math.max(lastLanding, landAt)
 					task.delay(flight, function()
@@ -305,9 +305,9 @@ handlers.Ult = function(player, root, _, character)
 			pcall(function()
 				for _, part in ipairs(targets) do
 					if part.Parent then
-						Effects.Burst(part.Position, Color3.fromRGB(255, 200, 90), 16)
-						flashBall(part.Position, Color3.fromRGB(255, 190, 90), math.clamp(part.Size.X * 2.2, 6, 14), 0.35)
-						groundRing(part.Position - Vector3.new(0, part.Size.Y / 2 - 0.2, 0), Color3.fromRGB(255, 120, 70), math.clamp(part.Size.X * 2.5, 8, 18), 0.45)
+						Effects.Burst(part.Position, Color3.fromRGB(140, 215, 255), 16)
+						flashBall(part.Position, Color3.fromRGB(170, 225, 255), math.clamp(part.Size.X * 2.2, 6, 14), 0.35)
+						groundRing(part.Position - Vector3.new(0, part.Size.Y / 2 - 0.2, 0), Color3.fromRGB(90, 200, 255), math.clamp(part.Size.X * 2.5, 8, 18), 0.45)
 					end
 				end
 			end)

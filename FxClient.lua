@@ -1103,36 +1103,47 @@ local missiles = {}
 local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간 }: 빛나는 큰 미사일 + 불꽃 / 연기 꼬리
 	local from, target, mid, duration = event[2], event[3], event[4], event[5]
 	local scale = event[6] or 1 -- (선택) 크기 배율: 데드아이 같은 작은 미사일 여러 발
-	local ball = neonPart(Vector3.new(2.4, 2.4, 2.4) * scale, Color3.fromRGB(255, 190, 90), 0, Enum.PartType.Ball)
+	local icbm = event[7] == "icbm" -- (선택) 천천히 솟았다가 방향을 꺾어 급강하하는 대륙간 미사일 식 비행
+	local tint = event[8] -- (선택) 불꽃 / 폭발 색
+	local ball
+	if icbm then
+		ball = neonPart(Vector3.new(0.7, 0.7, 3.6) * scale, Color3.fromRGB(235, 250, 255), 0) -- 길쭉한 미사일 몸체 (비행 방향을 향한다)
+	else
+		ball = neonPart(Vector3.new(2.4, 2.4, 2.4) * scale, Color3.fromRGB(255, 190, 90), 0, Enum.PartType.Ball)
+	end
 	ball.Position = from
 	local function pair(half)
 		local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
-		a0.Position, a1.Position = Vector3.new(0, half, 0), Vector3.new(0, -half, 0)
+		if icbm then
+			a0.Position, a1.Position = Vector3.new(half, 0, 1.6 * scale), Vector3.new(-half, 0, 1.6 * scale) -- 꼬리 쪽(뒤) 에 붙인다
+		else
+			a0.Position, a1.Position = Vector3.new(0, half, 0), Vector3.new(0, -half, 0)
+		end
 		a0.Parent, a1.Parent = ball, ball
 		return a0, a1
 	end
 	local a0, a1 = pair(0.9 * scale)
 	local trail = Instance.new("Trail")
 	trail.Attachment0, trail.Attachment1 = a0, a1
-	trail.Lifetime = 0.5
-	trail.Color = ColorSequence.new(Color3.fromRGB(255, 235, 140), Color3.fromRGB(255, 70, 30))
+	trail.Lifetime = icbm and 0.7 or 0.5
+	trail.Color = tint and ColorSequence.new(Color3.fromRGB(235, 250, 255), tint) or ColorSequence.new(Color3.fromRGB(255, 235, 140), Color3.fromRGB(255, 70, 30))
 	trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.05), NumberSequenceKeypoint.new(0.6, 0.45), NumberSequenceKeypoint.new(1, 1) })
 	trail.LightEmission = 1
 	trail.Parent = ball
 	local s0, s1 = pair(1.5 * scale)
 	local smoke = Instance.new("Trail")
 	smoke.Attachment0, smoke.Attachment1 = s0, s1
-	smoke.Lifetime = 0.9
-	smoke.Color = ColorSequence.new(Color3.fromRGB(255, 140, 70), Color3.fromRGB(70, 70, 75))
+	smoke.Lifetime = icbm and 1.5 or 0.9 -- 솟아오른 자리에 흰 연기 기둥이 길게 남는다
+	smoke.Color = icbm and ColorSequence.new(Color3.fromRGB(240, 245, 250), Color3.fromRGB(95, 100, 112)) or ColorSequence.new(Color3.fromRGB(255, 140, 70), Color3.fromRGB(70, 70, 75))
 	smoke.Transparency = NumberSequence.new(0.5, 1)
 	smoke.WidthScale = NumberSequence.new(0.7, 1.5)
 	smoke.LightEmission = 0.1
 	smoke.Parent = ball
 	local light = Instance.new("PointLight")
-	light.Color, light.Range, light.Brightness = Color3.fromRGB(255, 150, 70), 12, 2
+	light.Color, light.Range, light.Brightness = tint or Color3.fromRGB(255, 150, 70), 12, 2
 	light.Parent = ball
 	ball.Parent = fxFolder
-	table.insert(missiles, { Ball = ball, From = from, Target = target, Last = event[3] and event[3].Parent and event[3].Position or from, Mid = mid, Duration = duration, Started = os.clock(), Scale = scale })
+	table.insert(missiles, { Ball = ball, From = from, Target = target, Last = event[3] and event[3].Parent and event[3].Position or from, Mid = mid, Duration = duration, Started = os.clock(), Scale = scale, Icbm = icbm, Tint = tint, Prev = from })
 end
 
 local function flame(event) -- { "L", 위치, 반지름, 초 }: 큰 불길 지대 + 안쪽 밝은 불씨 판 + 튀는 불똥
@@ -1271,14 +1282,33 @@ RunService.RenderStepped:Connect(function()
 		local t = (now - m.Started) / m.Duration
 		if m.Target and m.Target.Parent then m.Last = m.Target.Position end
 		if t >= 1 or not m.Ball.Parent then
-			local orange = Color3.fromRGB(255, 150, 60)
+			local orange = m.Tint or Color3.fromRGB(255, 150, 60)
 			burst(m.Last, orange, math.floor(36 * m.Scale))
 			burst(m.Last, WHITE, math.floor(10 * m.Scale))
 			ring({ "R", m.Last - Vector3.new(0, 1, 0), 7 * m.Scale + 1, orange })
 			m.Ball:Destroy()
 			table.remove(missiles, i)
 		else
-			m.Ball.Position = m.From:Lerp(m.Mid, t):Lerp(m.Mid:Lerp(m.Last, t), t) -- 2차 곡선
+			if m.Icbm then
+				-- 1) 앞 55%: 거의 수직으로 천천히 솟는다 (점점 빨라지며 꼭대기에서 잠깐 머뭇) 2) 뒤 45%: 목표를 향해 꺾어 급가속으로 내리꽂는다
+				local pos
+				if t < 0.55 then
+					local u = t / 0.55
+					pos = m.From:Lerp(m.Mid, math.sin(u * math.pi / 2) * 0.35 + u * 0.65)
+				else
+					local v = (t - 0.55) / 0.45
+					pos = m.Mid:Lerp(m.Last, v ^ 2.4)
+				end
+				local dir = pos - m.Prev
+				if dir.Magnitude > 0.01 then
+					m.Ball.CFrame = CFrame.lookAt(pos, pos + dir)
+				else
+					m.Ball.Position = pos
+				end
+				m.Prev = pos
+			else
+				m.Ball.Position = m.From:Lerp(m.Mid, t):Lerp(m.Mid:Lerp(m.Last, t), t) -- 2차 곡선
+			end
 		end
 	end
 	-- 퍼지는 파동
