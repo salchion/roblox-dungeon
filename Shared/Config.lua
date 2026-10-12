@@ -623,7 +623,7 @@ do
 end
 
 Config.Audio = {
-	MusicVolume = 0.18,
+	MusicVolume = 0.144,
 	TrackScale = { Lobby = 0.7 }, -- 곡마다 크기 배율 (마을은 잔잔하게 작게)
 	Music = {
 		Lobby = ids.Lobby or 0,      -- 로비 배경음악
