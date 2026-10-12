@@ -244,6 +244,9 @@ handlers.Ult = function(player, root, _, character)
 		local bodyOk, bodyErr = pcall(function()
 			-- 1) 전원 동시 락온: 조준 표시가 돌면서 한꺼번에 맞춰진다
 			local markers = {}
+			player:SetAttribute("ShakeStrength", 0.25) -- 시작할 때 약한 흔들림
+			player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+			do local feet = root.Position - Vector3.new(0, 2.5, 0); Effects.Raw(feet, { "R", feet, 16, Color3.fromRGB(150, 225, 255) }) end
 			for index, part in ipairs(targets) do
 				if not part.Parent then continue end
 				local gui = Instance.new("BillboardGui")
@@ -289,7 +292,12 @@ handlers.Ult = function(player, root, _, character)
 				local original = targets[index]
 				local part = original.Parent and original or alive[(shotNumber - 1) % #alive + 1]
 				local shoulder = root.Position + Vector3.new((math.random() - 0.5) * 3, 3 + math.random() * 1.5, (math.random() - 0.5) * 3)
-				Effects.Burst(shoulder, Color3.fromRGB(190, 235, 255), 6) -- 발사 불꽃
+				Effects.Burst(shoulder, Color3.fromRGB(190, 235, 255), 18) -- 발사 불꽃 (크게)
+				if shotNumber % 3 == 1 then -- 세 발마다 발밑에서 충격 고리가 퍼진다
+					local feet = root.Position - Vector3.new(0, 2.5, 0)
+					Effects.Raw(feet, { "R", feet, 10 + shotNumber, Color3.fromRGB(120, 215, 255) })
+				end
+				pcall(function() SoundBank.Play(root, "Ult_Launch", { Pitch = 0.85 + math.random() * 0.3, Volume = 1 }) end)
 				pcall(function() SoundBank.Play(root, "Ult_Missile", { Pitch = 0.9 + math.random() * 0.3, Volume = 0.8, Name = "GunShot" }) end)
 				local target = part.Position
 				-- 옆으로 약 45도 각도로 부채꼴로 퍼져 올라간다 (높이는 낮춰서 꺾여 내리꽂히는 장면이 화면에 담기게)
@@ -299,7 +307,7 @@ handlers.Ult = function(player, root, _, character)
 				local reach = 16 + math.random() * 16
 				local mid = shoulder + side * reach + Vector3.new(0, reach * (0.85 + math.random() * 0.4), 0)
 				local flight = 1.0 + math.random() * 0.2
-				Effects.Raw(shoulder, { "M", shoulder, part, mid, flight, 0.55, "icbm", Color3.fromRGB(90, 200, 255) })
+				Effects.Raw(shoulder, { "M", shoulder, part, mid, flight, 0.85, "icbm", Color3.fromRGB(90, 200, 255) })
 				lastLanding = math.max(lastLanding, os.clock() + flight)
 				task.delay(flight, function()
 					if not player.Parent then return end
@@ -317,7 +325,7 @@ handlers.Ult = function(player, root, _, character)
 					local landed = Dungeon.HitPart(player, hitPart, perMissile) or Field.HitPart(player, hitPart, perMissile)
 					Effects.DamageTint = nil
 					BL.Ctx = nil
-					if shotNumber % 2 == 0 then pcall(function() SoundBank.Play(hitPart, "Aug_MissileHit", { Pitch = 0.9 + math.random() * 0.4, Volume = 0.6 }) end) end
+					pcall(function() SoundBank.Play(hitPart, "Ult_Hit", { Pitch = 0.85 + math.random() * 0.4, Volume = 1 }) end) -- 미사일마다 "쾅"
 					local label = markers[index] and markers[index]:FindFirstChildOfClass("TextLabel")
 					if landed and label then label.TextColor3 = Color3.fromRGB(255, 255, 255) end
 				end)
@@ -326,7 +334,8 @@ handlers.Ult = function(player, root, _, character)
 			task.wait(math.max(0, lastLanding - os.clock()) + 0.05) -- 마지막 미사일이 꽂힐 때까지
 
 			-- 3) 마무리 대폭발: 락온했던 모든 위치에서 한꺼번에 터진다
-			pcall(function() SoundBank.Play(root, "Boom", { Volume = 0.8, Pitch = 1.1 }) end)
+			pcall(function() SoundBank.Play(root, "Ult_Finale", { Volume = 1 }) end)
+			player:SetAttribute("UltFinaleTick", (player:GetAttribute("UltFinaleTick") or 0) + 1) -- 클라이언트가 보고 화면이 "쿵" 하고 조여졌다 풀린다
 			pcall(function()
 				for _, part in ipairs(targets) do
 					if part.Parent then

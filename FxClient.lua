@@ -1311,9 +1311,16 @@ RunService.RenderStepped:Connect(function()
 		if m.Target and m.Target.Parent then m.Last = m.Target.Position end
 		if t >= 1 or not m.Ball.Parent then
 			local orange = m.Tint or Color3.fromRGB(255, 150, 60)
-			burst(m.Last, orange, math.floor(36 * m.Scale))
-			burst(m.Last, WHITE, math.floor(10 * m.Scale))
-			ring({ "R", m.Last - Vector3.new(0, 1, 0), 7 * m.Scale + 1, orange })
+			if m.Icbm then -- 데드아이: 크게 터지고 충격 고리가 두 겹으로 퍼진다
+				burst(m.Last, orange, 50)
+				burst(m.Last, WHITE, 18)
+				ring({ "R", m.Last - Vector3.new(0, 1, 0), 13, orange })
+				ring({ "R", m.Last - Vector3.new(0, 1, 0), 7, WHITE })
+			else
+				burst(m.Last, orange, math.floor(36 * m.Scale))
+				burst(m.Last, WHITE, math.floor(10 * m.Scale))
+				ring({ "R", m.Last - Vector3.new(0, 1, 0), 7 * m.Scale + 1, orange })
+			end
 			m.Ball:Destroy()
 			table.remove(missiles, i)
 		else
@@ -1610,3 +1617,16 @@ end
 HANDLERS.U = skull
 HANDLERS.N = novaFx
 HANDLERS.V = function(event) ringWave(event[2], event[3], event[4], event[5] or 0.7, math.clamp(math.floor(event[3] * 1.3), 16, 30), 1.3) end
+
+-- 데드아이 마지막 대폭발: 화면이 "쿵" 하고 살짝 조여졌다가 풀린다 (시야각을 잠깐 좁힌다. 서버가 UltFinaleTick 을 올릴 때)
+do
+	local localPlayer = game:GetService("Players").LocalPlayer
+	localPlayer:GetAttributeChangedSignal("UltFinaleTick"):Connect(function()
+		local camera = workspace.CurrentCamera
+		if not camera then return end
+		local TweenService = game:GetService("TweenService")
+		local base = camera.FieldOfView
+		camera.FieldOfView = base - 9
+		TweenService:Create(camera, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { FieldOfView = base }):Play()
+	end)
+end

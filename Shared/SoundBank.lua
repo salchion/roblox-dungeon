@@ -51,6 +51,11 @@ local SPECS = {
 	Lord_Blast = { Base = "Enh_Hammer", CustomLength = 2.6, Pitch = 0.3, Volume = 2.0, Length = 1.4, Fx = { { "distortion", { Level = 0.5 } }, { "reverb", { DecayTime = 3.4, WetLevel = -2 } } },
 		Layers = { { Pitch = 0.18, Volume = 1.8, Delay = 0.0 }, { Pitch = 0.6, Volume = 1.0, Delay = 0.05 }, { Pitch = 0.12, Volume = 1.5, Delay = 0.25 } } },
 	Ult_Lock = { Base = "Enh_Success", Pitch = 2.6, Volume = 0.45, Length = 0.09, CustomLength = 0.3, Fx = { { "eq", { LowGain = -12, MidGain = 0, HighGain = -4 } } } }, -- 데드아이 락온 "띠" (연속으로 피치를 올려 "띠띠띠띠")
+	-- 데드아이 "콰콰콰쾅": 미사일마다 쿵(착탄) + 발사 때 낮은 퐁(발사) + 마지막 대폭발 (폭발음을 낮게 가공해 겹쳐 쌓는다)
+	Ult_Hit = { Base = "Boom", Pitch = 1.0, Volume = 1.0, Length = 0.8, Fx = { { "distortion", { Level = 0.3 } } } },
+	Ult_Launch = { Base = "Boom", Pitch = 1.7, Volume = 0.45, Length = 0.3, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -10 } } } },
+	Ult_Finale = { Base = "Boom", Pitch = 0.55, Volume = 1.8, Length = 1.7, Fx = { { "distortion", { Level = 0.5 } }, { "reverb", { DecayTime = 2.6, WetLevel = -3 } } },
+		Layers = { { Pitch = 0.35, Volume = 1.4, Delay = 0 }, { Pitch = 1.0, Volume = 0.8, Delay = 0.08 }, { Pitch = 0.7, Volume = 1.0, Delay = 0.2 } } },
 	UltShot = { Base = "Shot", Pitch = 1.4, Volume = 0.8, Length = 0.3, Fx = { { "chorus", { Depth = 0.5, Mix = 0.5 } } } },
 	Boom    = { CustomLength = 1.6, Base = "Enh_Hammer", Pitch = 0.45, Volume = 1.5, Length = 1.1, Fx = { { "distortion", { Level = 0.55 } }, { "reverb", { DecayTime = 1.8, WetLevel = -4 } } } },
 	Aug_Skull = { CustomLength = 0.9, Base = "Enh_Hammer", Pitch = 0.32, Volume = 1.0, Length = 0.5, Fx = { { "distortion", { Level = 0.45 } }, { "reverb", { DecayTime = 1.0, WetLevel = -6 } } } }, -- 처형 해골: 짧고 낮은 쿵
@@ -143,7 +148,7 @@ SoundBank.Descriptions = {
 	Shot_Pistol = "Pistol shot", Shot_Smg = "SMG shot", Shot_Revolver = "Revolver shot", Shot_Rifle = "Rifle shot", Shot_Shotgun = "Shotgun shot",
 	Shot_Flamer = "Flamethrower shot", Shot_Cannon = "Plasma Cannon shot", Shot_Sniper = "Sniper shot", Shot_Rocket = "Rocket Launcher shot", Shot_Rail = "Railgun shot",
 	Hit = "Enemy hit (short)", Crit = "Critical hit", Kill = "Enemy kill (pitch rises with kill streak)",
-	Skill_Heal = "First Aid used", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Ult_Missile = "Dead Eye missile launch", Boom = "Monster explosion / shockwave / meteor",
+	Skill_Heal = "First Aid used", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Ult_Missile = "Dead Eye missile launch", Ult_Hit = "Dead Eye missile impact", Ult_Launch = "Dead Eye launch thump", Ult_Finale = "Dead Eye final blast", Boom = "Monster explosion / shockwave / meteor",
 	LevelUp = "Level up", Enh_Hammer = "Enhance: hammer strike", Enh_Success = "Enhance success (pitch rises with level)", Enh_Fail = "Enhance failed",
 	Enh_Evolve = "Weapon evolution", Gacha_Drop = "Gacha: capsule drop", Gacha_Tick = "Gacha: rattling ticks", Gacha_Card = "10-pull gacha: one card",
 	Aug_Get = "Augment acquired", Aug_Synergy = "Augment synergy triggered", Aug_Missile = "Crit missile launched", Aug_MissileHit = "Missile hit", Aug_Nova = "Kill explosion",
@@ -155,7 +160,7 @@ SoundBank.Descriptions = {
 }
 SoundBank.Order = {
 	"Shot_Pistol", "Shot_Smg", "Shot_Revolver", "Shot_Rifle", "Shot_Shotgun", "Shot_Flamer", "Shot_Cannon", "Shot_Sniper", "Shot_Rocket", "Shot_Rail",
-	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_Ult", "Ult_Lock", "Ult_Missile", "UltShot", "Boom", "LevelUp",
+	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_Ult", "Ult_Lock", "Ult_Missile", "Ult_Hit", "Ult_Launch", "Ult_Finale", "UltShot", "Boom", "LevelUp",
 	"Dash", "Pickup", "Enh_Hammer", "Enh_Success", "Enh_Fail", "Enh_Evolve", "Gacha_Drop", "Gacha_Tick", "Gacha_Card",
 	"Gacha_Pop1", "Gacha_Pop2", "Gacha_Pop3", "Gacha_Pop4", "Gacha_Pop5",
 	"Aug_Get", "Aug_Synergy", "Aug_Missile", "Aug_MissileHit", "Aug_Nova", "Aug_Blade", "Aug_Storm", "Aug_MeteorFall", "Aug_MeteorHit", "Aug_Flame", "Aug_Execute", "Aug_Skull", "Aug_Pulse",
