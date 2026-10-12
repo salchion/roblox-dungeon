@@ -234,7 +234,7 @@ handlers.Ult = function(player, root, _, character)
 	local field = Instance.new("ForceField")
 	field.Name = "DeadeyeShield"
 	field.Visible = false
-	Debris:AddItem(field, 0.3 + 6 * 0.13 + 1.4 + 1.2) -- 먼저 수명을 정해 둔다 (오류가 나도 영구 무적이 되지 않게)
+	Debris:AddItem(field, 0.5 + 12 * 0.07 + 1.3 + 1.2) -- 먼저 수명을 정해 둔다 (오류가 나도 영구 무적이 되지 않게)
 	field.Parent = character
 	player:SetAttribute("DeadeyeActive", true)
 	Remotes.Notify:FireClient(player, string.format("🎯 Deadeye! Barrage on %d enemies", #targets))
@@ -266,57 +266,60 @@ handlers.Ult = function(player, root, _, character)
 				markers[index] = gui
 				Debris:AddItem(gui, 4)
 			end
-			task.wait(0.3)
+			-- 락온 "띠띠띠띠": 점점 높아지는 짧은 경고음 네 번
+			for beep = 1, 4 do
+				pcall(function() SoundBank.Play(root, "Ult_Lock", { Pitch = 0.85 + 0.12 * beep, Volume = 0.8 }) end)
+				task.wait(0.11)
+			end
 
-			-- 2) 미사일 일제 발사: 한 번에 모든 적에게 한 발씩 (여러 라운드). 작은 미사일이 위로 솟구쳤다가 포물선으로 떨어져 꽂힌다.
-			--    미사일은 각자 화면에서 그리고(Effects.Raw "M"), 피해는 도착하는 순간 들어간다. 대상당 총 피해는 예전(빔 일제 사격)과 같다.
-			local rounds, roundGap = 6, 0.13
-			local perMissile = math.max(1, math.floor(perShot * volleys / rounds))
+			-- 2) 미사일 일제 발사: 총 발수는 고정(Config.Skills.Ult.Missiles). 대상들에게 번갈아 한 발씩 나가므로 적이 많으면 퍼지고, 한 마리면 전부 그 적에게 꽂힌다.
+			--    작은 미사일이 옆으로 퍼져 솟았다가 내리꽂힌다. 미사일은 각자 화면에서 그리고(Effects.Raw "M"), 피해는 도착하는 순간 들어간다.
+			local missileCount, missileGap = cfg.Missiles or 12, 0.07
+			local perMissile = math.max(1, math.floor(baseShot * totalMult * (cfg.PoolMult or 4) / missileCount))
 			local lastLanding = 0
-			for round = 1, rounds do
+			for shotNumber = 1, missileCount do
 				if not player.Parent or not root.Parent then return end
-				local shoulder = root.Position + Vector3.new((math.random() - 0.5) * 3, 3 + math.random() * 1.5, (math.random() - 0.5) * 3)
-				Effects.Burst(shoulder, Color3.fromRGB(190, 235, 255), 8) -- 발사 불꽃
-				pcall(function() SoundBank.Play(root, "UltShot", { Pitch = 0.9 + math.random() * 0.4, Volume = 0.8, Name = "GunShot" }) end)
 				-- 이미 죽은 적의 몫은 살아 있는 다른 적에게 넘긴다 (기본 공격에 먼저 죽어도 데드아이 총 피해가 유지된다)
 				local alive = {}
 				for _, candidate in ipairs(targets) do
 					if candidate.Parent then table.insert(alive, candidate) end
 				end
 				if #alive == 0 then break end
-				for index, original in ipairs(targets) do
-					local part = original.Parent and original or alive[(index - 1) % #alive + 1]
-					local target = part.Position
-					-- 위로 높이 솟았다가(중간점이 출발점 위쪽에 치우침) 곡선으로 떨어진다
-					-- 옆으로 약 45도 각도로 부채꼴로 퍼져 올라간다 (높이는 낮춰서 꺾여 내리꽂히는 장면이 화면에 담기게)
-					local flat = Vector3.new(target.X - shoulder.X, 0, target.Z - shoulder.Z)
-					flat = flat.Magnitude > 1 and flat.Unit or Vector3.new(0, 0, -1)
-					local side = (CFrame.Angles(0, math.rad((math.random() - 0.5) * 170), 0) * CFrame.new(flat)).Position
-					local reach = 16 + math.random() * 16
-					local mid = shoulder + side * reach + Vector3.new(0, reach * (0.85 + math.random() * 0.4), 0)
-					local flight = 1.0 + math.random() * 0.2
-					Effects.Raw(shoulder, { "M", shoulder, part, mid, flight, 0.55, "icbm", Color3.fromRGB(90, 200, 255) })
-					local landAt = os.clock() + flight
-					lastLanding = math.max(lastLanding, landAt)
-					task.delay(flight, function()
-						if not player.Parent then return end
-						local hitPart = part
-						if not hitPart.Parent then -- 날아가는 사이에 죽었다: 살아 있는 다른 적에게 피해를 넘긴다
-							local others = {}
-							for _, candidate in ipairs(targets) do
-								if candidate.Parent then table.insert(others, candidate) end
-							end
-							hitPart = #others > 0 and others[math.random(#others)] or nil
+				local index = (shotNumber - 1) % #targets + 1
+				local original = targets[index]
+				local part = original.Parent and original or alive[(shotNumber - 1) % #alive + 1]
+				local shoulder = root.Position + Vector3.new((math.random() - 0.5) * 3, 3 + math.random() * 1.5, (math.random() - 0.5) * 3)
+				Effects.Burst(shoulder, Color3.fromRGB(190, 235, 255), 6) -- 발사 불꽃
+				pcall(function() SoundBank.Play(root, "Aug_Missile", { Pitch = 0.85 + math.random() * 0.4, Volume = 0.7, Name = "GunShot" }) end)
+				local target = part.Position
+				-- 옆으로 약 45도 각도로 부채꼴로 퍼져 올라간다 (높이는 낮춰서 꺾여 내리꽂히는 장면이 화면에 담기게)
+				local flat = Vector3.new(target.X - shoulder.X, 0, target.Z - shoulder.Z)
+				flat = flat.Magnitude > 1 and flat.Unit or Vector3.new(0, 0, -1)
+				local side = (CFrame.Angles(0, math.rad((math.random() - 0.5) * 170), 0) * CFrame.new(flat)).Position
+				local reach = 16 + math.random() * 16
+				local mid = shoulder + side * reach + Vector3.new(0, reach * (0.85 + math.random() * 0.4), 0)
+				local flight = 1.0 + math.random() * 0.2
+				Effects.Raw(shoulder, { "M", shoulder, part, mid, flight, 0.55, "icbm", Color3.fromRGB(90, 200, 255) })
+				lastLanding = math.max(lastLanding, os.clock() + flight)
+				task.delay(flight, function()
+					if not player.Parent then return end
+					local hitPart = part
+					if not hitPart.Parent then -- 날아가는 사이에 죽었다: 살아 있는 다른 적에게 피해를 넘긴다
+						local others = {}
+						for _, candidate in ipairs(targets) do
+							if candidate.Parent then table.insert(others, candidate) end
 						end
-						if not hitPart then return end
-						BL.Ctx = "데드아이"
-						local landed = Dungeon.HitPart(player, hitPart, perMissile) or Field.HitPart(player, hitPart, perMissile)
-						BL.Ctx = nil
-						local label = markers[index] and markers[index]:FindFirstChildOfClass("TextLabel")
-						if landed and label then label.TextColor3 = Color3.fromRGB(255, 255, 255) end
-					end)
-				end
-				task.wait(roundGap)
+						hitPart = #others > 0 and others[math.random(#others)] or nil
+					end
+					if not hitPart then return end
+					BL.Ctx = "데드아이"
+					local landed = Dungeon.HitPart(player, hitPart, perMissile) or Field.HitPart(player, hitPart, perMissile)
+					BL.Ctx = nil
+					if shotNumber % 2 == 0 then pcall(function() SoundBank.Play(hitPart, "Aug_MissileHit", { Pitch = 0.9 + math.random() * 0.4, Volume = 0.6 }) end) end
+					local label = markers[index] and markers[index]:FindFirstChildOfClass("TextLabel")
+					if landed and label then label.TextColor3 = Color3.fromRGB(255, 255, 255) end
+				end)
+				task.wait(missileGap)
 			end
 			task.wait(math.max(0, lastLanding - os.clock()) + 0.05) -- 마지막 미사일이 꽂힐 때까지
 
