@@ -280,6 +280,8 @@ handlers.Ult = function(player, root, _, character)
 			local missileCount, missileGap = cfg.Missiles or 12, 0.07
 			local perMissile = math.max(1, math.floor(baseShot * totalMult * (cfg.PoolMult or 4) / missileCount))
 			local lastLanding = 0
+			local hitsOn = {} -- 이번 데드아이에서 적마다 몇 발 맞았는지 (거듭 맞을수록 피해가 줄어든다)
+			local decay = cfg.RepeatDecay or 0.82
 			for shotNumber = 1, missileCount do
 				if not player.Parent or not root.Parent then return end
 				-- 이미 죽은 적의 몫은 살아 있는 다른 적에게 넘긴다 (기본 공격에 먼저 죽어도 데드아이 총 피해가 유지된다)
@@ -321,8 +323,11 @@ handlers.Ult = function(player, root, _, character)
 					end
 					if not hitPart then return end
 					BL.Ctx = "데드아이"
+					local previousHits = hitsOn[hitPart] or 0
+					hitsOn[hitPart] = previousHits + 1
+					local damage = math.max(1, math.floor(perMissile * decay ^ previousHits)) -- 같은 적에게 거듭 맞을수록 줄어든다
 					Effects.DamageTint = Color3.fromRGB(90, 200, 255) -- 데드아이 피해 숫자는 하늘색으로 크게
-					local landed = Dungeon.HitPart(player, hitPart, perMissile) or Field.HitPart(player, hitPart, perMissile)
+					local landed = Dungeon.HitPart(player, hitPart, damage) or Field.HitPart(player, hitPart, damage)
 					Effects.DamageTint = nil
 					BL.Ctx = nil
 					pcall(function() SoundBank.Play(hitPart, "Ult_Hit", { Pitch = 0.85 + math.random() * 0.4, Volume = 1 }) end) -- 미사일마다 "쾅"

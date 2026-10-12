@@ -212,7 +212,8 @@ Config.Skills = {
 		Desc = "Restores 8% HP to you and nearby party members (+1%p per skill level)" },
 	Ult = { Name = "Deadeye", Icon = "🎯", Key = "V", KeyCode = "V", Cooldown = 3, Radius = 110, Mult = 8, Cost = 100, MaxTargets = 6, Volleys = 12, VolleyGap = 0.09, -- 대상 수 / 일제 사격 횟수를 줄여 렉을 막는다 (빔 / 피해 숫자 / 폭발 효과가 대상 x 횟수만큼 생긴다)
 		ShotsPerTarget = 8, ShotGap = 0.03,
-		Missiles = 12, PoolMult = 4, -- 미사일 총 발수(대상 수와 상관없이 고정, 대상들에게 번갈아 나눠 간다) / 총 피해 배율 (한 마리면 12발이 전부 그 적에게 꽂힌다)
+		Missiles = 12, PoolMult = 4, RepeatDecay = 0.82, -- RepeatDecay: 같은 적에게 미사일이 거듭 맞을수록 한 발 피해가 이 배율씩 줄어든다 (한 마리에 12발이면 합계가 약 5발 분량)
+		 -- 미사일 총 발수(대상 수와 상관없이 고정, 대상들에게 번갈아 나눠 간다) / 총 피해 배율 (한 마리면 12발이 전부 그 적에게 꽂힌다)
 		Desc = "Ultimate: use it when the gauge is full! Locks onto nearby enemies, then fires 12 missiles split between them (nearest 6 first, up to 12 as the skill levels up). Against a single target like a boss, all 12 hit it" },
 	ChargePerShot = 4,
 	-- 패시브 스킬 (스킬 강화 창에서 골드로 레벨업, 스킬 바에는 안 나온다)
