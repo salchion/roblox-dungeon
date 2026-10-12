@@ -35,6 +35,10 @@ return {
 	NearMiss_Get = 138149044086182, -- NEAR MISS 성공
 	Rare_Drop = 76357092271646,
 	Aug_Missile = 542181791,        -- missile launch -> Aug_Missile / Aug_MeteorFall(낮게)
-	Aug_MeteorFall = 542181791,
+	Aug_MeteorFall = 130619201421833, -- 유성 낙하 (전용 소리)
+	Aug_Storm = 133560890939895,    -- 낙뢰 (천둥)
+	Aug_Blade = 121422898567513,    -- 튕기는 표창
+	Aug_Flame = 138257634793906,    -- 화염 지대
+	Ult_Missile = 112204190873336,  -- 데드아이 미사일 발사
 	Player_Hurt = 139071137654755,  -- 내가 맞았을 때
 }

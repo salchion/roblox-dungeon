@@ -290,7 +290,7 @@ handlers.Ult = function(player, root, _, character)
 				local part = original.Parent and original or alive[(shotNumber - 1) % #alive + 1]
 				local shoulder = root.Position + Vector3.new((math.random() - 0.5) * 3, 3 + math.random() * 1.5, (math.random() - 0.5) * 3)
 				Effects.Burst(shoulder, Color3.fromRGB(190, 235, 255), 6) -- 발사 불꽃
-				pcall(function() SoundBank.Play(root, "Aug_Missile", { Pitch = 0.85 + math.random() * 0.4, Volume = 0.7, Name = "GunShot" }) end)
+				pcall(function() SoundBank.Play(root, "Ult_Missile", { Pitch = 0.9 + math.random() * 0.3, Volume = 0.8, Name = "GunShot" }) end)
 				local target = part.Position
 				-- 옆으로 약 45도 각도로 부채꼴로 퍼져 올라간다 (높이는 낮춰서 꺾여 내리꽂히는 장면이 화면에 담기게)
 				local flat = Vector3.new(target.X - shoulder.X, 0, target.Z - shoulder.Z)

@@ -92,9 +92,10 @@ local CUSTOM_ONLY = {
 	Aug_Nova      = { Volume = 0.7, CustomLength = 1.2, CustomPitch = 1.2 }, -- 처치 폭발
 	Aug_Blade     = { Volume = 0.5, CustomLength = 0.6, Base = "Dash", Pitch = 1.7, Length = 0.3, Fx = { { "eq", { LowGain = -10, MidGain = 0, HighGain = 3 } } } }, -- 회전 칼날이 벨 때 "슈웅" (소리 ID 가 없으면 대시 소리를 높게 가공)
 	Aug_Storm     = { Volume = 1.0, CustomLength = 1.8, Base = "Boom", Pitch = 0.75, Length = 1.3, Fx = { { "distortion", { Level = 0.6 } }, { "reverb", { DecayTime = 2.5, WetLevel = -3 } } }, Layers = { { Pitch = 2.4, Volume = 0.6, Delay = 0 } } }, -- 낙뢰: 찌직(높은 소리) + 우르릉(낮은 폭발 가공)
-	Aug_MeteorFall = { Volume = 0.8, CustomLength = 1.4, CustomPitch = 0.5 }, -- 유성이 떨어지는 소리
+	Aug_MeteorFall = { Volume = 0.8, CustomLength = 1.6, CustomPitch = 1.0 }, -- 유성이 떨어지는 소리
 	Aug_MeteorHit = { Volume = 1.3, CustomLength = 2.0, CustomPitch = 0.7 }, -- 유성 착탄 (큰 폭발)
 	Aug_Flame     = { Volume = 0.6, CustomLength = 1.2, Base = "Dash", Pitch = 0.6, Length = 0.7, Fx = { { "chorus", { Depth = 0.7, Mix = 0.6 } }, { "distortion", { Level = 0.35 } } } }, -- 불길이 생길 때 "후와악"
+	Ult_Missile   = { Volume = 0.7, CustomLength = 1.2, Base = "Aug_Missile", Pitch = 1.0, Length = 0.8 }, -- 데드아이 미사일 발사 (12발이 연달아 나가므로 짧게)
 	Aug_Execute   = { Volume = 0.5, CustomLength = 0.6, CustomPitch = 1.5 }, -- 처형
 	Aug_Pulse     = { Volume = 0.6, CustomLength = 1.0, CustomPitch = 1.5 }, -- 폭풍 충격파
 	Buff_Get      = { Volume = 0.7, CustomLength = 1.0, CustomPitch = 1.25 }, -- 일반 랜덤 강화를 얻을 때
@@ -142,7 +143,7 @@ SoundBank.Descriptions = {
 	Shot_Pistol = "Pistol shot", Shot_Smg = "SMG shot", Shot_Revolver = "Revolver shot", Shot_Rifle = "Rifle shot", Shot_Shotgun = "Shotgun shot",
 	Shot_Flamer = "Flamethrower shot", Shot_Cannon = "Plasma Cannon shot", Shot_Sniper = "Sniper shot", Shot_Rocket = "Rocket Launcher shot", Shot_Rail = "Railgun shot",
 	Hit = "Enemy hit (short)", Crit = "Critical hit", Kill = "Enemy kill (pitch rises with kill streak)",
-	Skill_Heal = "First Aid used", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Boom = "Monster explosion / shockwave / meteor",
+	Skill_Heal = "First Aid used", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Ult_Missile = "Dead Eye missile launch", Boom = "Monster explosion / shockwave / meteor",
 	LevelUp = "Level up", Enh_Hammer = "Enhance: hammer strike", Enh_Success = "Enhance success (pitch rises with level)", Enh_Fail = "Enhance failed",
 	Enh_Evolve = "Weapon evolution", Gacha_Drop = "Gacha: capsule drop", Gacha_Tick = "Gacha: rattling ticks", Gacha_Card = "10-pull gacha: one card",
 	Aug_Get = "Augment acquired", Aug_Synergy = "Augment synergy triggered", Aug_Missile = "Crit missile launched", Aug_MissileHit = "Missile hit", Aug_Nova = "Kill explosion",
@@ -154,7 +155,7 @@ SoundBank.Descriptions = {
 }
 SoundBank.Order = {
 	"Shot_Pistol", "Shot_Smg", "Shot_Revolver", "Shot_Rifle", "Shot_Shotgun", "Shot_Flamer", "Shot_Cannon", "Shot_Sniper", "Shot_Rocket", "Shot_Rail",
-	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_Ult", "Ult_Lock", "UltShot", "Boom", "LevelUp",
+	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_Ult", "Ult_Lock", "Ult_Missile", "UltShot", "Boom", "LevelUp",
 	"Dash", "Pickup", "Enh_Hammer", "Enh_Success", "Enh_Fail", "Enh_Evolve", "Gacha_Drop", "Gacha_Tick", "Gacha_Card",
 	"Gacha_Pop1", "Gacha_Pop2", "Gacha_Pop3", "Gacha_Pop4", "Gacha_Pop5",
 	"Aug_Get", "Aug_Synergy", "Aug_Missile", "Aug_MissileHit", "Aug_Nova", "Aug_Blade", "Aug_Storm", "Aug_MeteorFall", "Aug_MeteorHit", "Aug_Flame", "Aug_Execute", "Aug_Skull", "Aug_Pulse",
