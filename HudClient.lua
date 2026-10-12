@@ -63,7 +63,7 @@ text({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 4), Text = "
 local levelText = text({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 16), Text = "1", TextSize = 26, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Center }, badge)
 
 -- 이름 + 전투력
-text({ Size = UDim2.new(1, -76, 0, 16), Position = UDim2.new(0, 68, 0, 9), Text = player.DisplayName, TextSize = 12, TextColor3 = Color3.fromRGB(175, 185, 220), TextTruncate = Enum.TextTruncate.AtEnd }, card)
+local nameText = text({ Size = UDim2.new(1, -76, 0, 16), Position = UDim2.new(0, 68, 0, 9), Text = player.DisplayName, TextSize = 12, TextColor3 = Color3.fromRGB(175, 185, 220), TextTruncate = Enum.TextTruncate.AtEnd }, card)
 local powerText = text({ Size = UDim2.new(1, -76, 0, 26), Position = UDim2.new(0, 68, 0, 24), Text = "⚡ 0", TextSize = 22, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110), RichText = true }, card)
 
 -- 경험치 막대 (글자를 막대 안에)
@@ -97,6 +97,8 @@ local function refresh()
 	local maxed = level >= Config.Level.Max
 	local blocked = not maxed and level >= Config.GetLevelCap(player:GetAttribute("GatePassed") or 0)
 	levelText.Text = tostring(level)
+	local title = player:GetAttribute("Title") or ""
+	nameText.Text = (title ~= "" and ("『" .. title .. "』 ") or "") .. player.DisplayName -- 내 머리 위 이름표는 내 화면에서 숨기므로 칭호는 여기서 보인다
 	xpFill.Size = UDim2.new((maxed or blocked) and 1 or math.clamp(xp / needed, 0, 1), 0, 1, 0)
 	xpFill.BackgroundColor3 = blocked and Color3.fromRGB(255, 170, 60) or Color3.fromRGB(110, 200, 255)
 	xpText.Text = maxed and "MAX" or blocked and "돌파가 필요해요!" or string.format("%s / %s XP", comma(xp), comma(needed))
@@ -119,7 +121,7 @@ local function refresh()
 	zoneText.Text = string.format("📍 %s   <font color='#8fd8ff'>🎟 무료 %d/%d</font>", zoneName, player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily)
 end
 
-for _, name in ipairs({ "DataReady", "Level", "XP", "XPNeeded", "GatePassed", "Power", "Gold", "Tickets", "Keys", "KeysNormal", "KeysHard", "WeaponLevel", "Zone", "MaxZone", "DungeonFree", "DungeonLabel" }) do
+for _, name in ipairs({ "DataReady", "Level", "XP", "XPNeeded", "GatePassed", "Power", "Gold", "Tickets", "Keys", "KeysNormal", "KeysHard", "WeaponLevel", "Zone", "MaxZone", "Title", "DungeonFree", "DungeonLabel" }) do
 	player:GetAttributeChangedSignal(name):Connect(refresh)
 end
 refresh()
