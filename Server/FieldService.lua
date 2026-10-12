@@ -1129,12 +1129,15 @@ local function pickTypeAt(zone, x)
 	for _, key in ipairs(features) do
 		pool[key] = (F.ZonePools[zone][key] or 1) * 3.2
 	end
-	if pool.Healer then -- 주변(150칸 안)에 이미 치유 사제가 2마리 살아 있으면 더 나오지 않는다
-		local near = 0
+	if pool.Healer then -- 주변(150칸 안)에 이미 치유 사제가 있거나 구역 전체에 3마리가 살아 있으면 더 나오지 않는다
+		local near, total = 0, 0
 		for part, data in pairs(monsters) do
-			if data.TypeKey == "Healer" and data.Zone == zone and part.Parent and math.abs(part.Position.X - x) < 150 then near += 1 end
+			if data.TypeKey == "Healer" and data.Zone == zone and part.Parent then
+				total += 1
+				if math.abs(part.Position.X - x) < 150 then near += 1 end
+			end
 		end
-		if near >= 2 then pool.Healer = nil end
+		if near >= 1 or total >= 3 then pool.Healer = nil end -- 주변에 1마리만 / 구역 전체로도 3마리까지
 	end
 	return MonsterTypes.Pick(pool)
 end

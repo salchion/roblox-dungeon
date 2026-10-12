@@ -592,10 +592,11 @@ local function disc(position, diameter, color, transparency)
 end
 
 -- 박격포: 바닥에 붉은 경고 원이 차오르다가 하늘에서 운석이 떨어져 폭발 (원 밖으로 피하면 안 맞는다)
-local function meteor(ctx, spot, stats, owner, ownerData)
+-- radius / delay / damageMult (선택): 포격 한 발의 크기 / 경고 시간 / 피해 배율
+local function meteor(ctx, spot, stats, owner, ownerData, radiusOpt, delayOpt, damageMult)
 	local ground = groundOf(ctx, spot)
-	local radius = 9
-	local delay = 1.2
+	local radius = radiusOpt or 9
+	local delay = delayOpt or 1.2
 	local ring = disc(Vector3.new(spot.X, ground + 0.3, spot.Z), radius * 2, Color3.fromRGB(255, 60, 50), 0.7)
 	local fill = disc(Vector3.new(spot.X, ground + 0.35, spot.Z), 1, Color3.fromRGB(255, 90, 60), 0.4)
 	TweenService:Create(fill, TweenInfo.new(delay, Enum.EasingStyle.Linear), { Size = Vector3.new(0.4, radius * 2, radius * 2) }):Play()
@@ -622,12 +623,38 @@ local function meteor(ctx, spot, stats, owner, ownerData)
 			local p = entry.Root.Position
 			local gap = Vector3.new(p.X - spot.X, 0, p.Z - spot.Z).Magnitude
 			if gap <= radius then
-				entry.Humanoid:TakeDamage(math.floor(stats.ShotDamage * 1.2))
+				entry.Humanoid:TakeDamage(math.floor(stats.ShotDamage * (damageMult or 1.2)))
 			else
 				nearMiss(ctx, entry, gap, radius, radius + 8) -- 경고 원 바로 밖으로 빠져나갔다
 			end
 		end
 	end)
+end
+
+-- 포격 일제 사격: 바닥에 붉은 원이 먼저 뜨고(1.5초) 시간차를 두고 한 발씩 떨어진다. 정신없지 않게 원끼리 간격을 벌리고 개수는 3발로 제한.
+--   "line": 몬스터 쪽으로 길게 늘어선 3발(걸어서 빠져나가기) / "spread": 플레이어 주변에 3발이 삼각형으로(원 사이 빈틈으로 피하기)
+local function salvo(ctx, part, data, stats, kind)
+	local target = ctx.GetTarget(part.Position)
+	if not target then return end
+	local center = target.Position
+	local toward = Vector3.new(part.Position.X - center.X, 0, part.Position.Z - center.Z)
+	toward = toward.Magnitude > 1 and toward.Unit or Vector3.new(1, 0, 0)
+	local spots = {}
+	if kind == "line" then
+		for k = 0, 2 do table.insert(spots, center + toward * (k * 15)) end
+	else
+		local offset = math.random() * math.pi * 2
+		for k = 0, 2 do
+			local angle = offset + k * (math.pi * 2 / 3)
+			table.insert(spots, center + Vector3.new(math.cos(angle), 0, math.sin(angle)) * 15)
+		end
+	end
+	for index, spot in ipairs(spots) do
+		task.delay((index - 1) * 0.4, function()
+			if not ctx.Alive(part, data) then return end
+			meteor(ctx, spot, stats, part, data, 7, 1.5, 1.0)
+		end)
+	end
 end
 
 -- 충격파: 발밑에서 고리가 퍼진다. 점프해서 넘으면 안 맞는다
@@ -1024,6 +1051,11 @@ function M.Update(ctx, part, data, dt, now)
 		-- 저주 토템: 수정 6개의 고리. 매번 바람개비처럼 휘어 돈다 (방향은 번갈아). 8 -> 6발, 더 느리게.
 		data.ShotN = (data.ShotN or 0) + 1
 		local bend = (data.ShotN % 2 == 0) and 0.35 or -0.35
+		if data.ShotN % 3 == 0 then -- 세 번에 한 번: 플레이어 주변에 붉은 원 3개가 삼각형으로 떨어진다
+			data.NextAttack = now + stats.ShotInterval * 1.6
+			telegraph(ctx, part, data, Color3.fromRGB(255, 150, 120), 0.6, function() salvo(ctx, part, data, stats, "spread") end)
+			return
+		end
 		telegraph(ctx, part, data, Color3.new(1, 1, 1), 0.6, function()
 			local offset = math.random() * math.pi * 2
 			for i = 0, 5 do
@@ -1097,7 +1129,10 @@ function M.Update(ctx, part, data, dt, now)
 	elseif def.Attack == "Beam" then
 		-- 마법 포탑: 레이저 선과 바늘 연발을 번갈아 쏜다
 		data.ShotN = (data.ShotN or 0) + 1
-		if data.ShotN % 2 == 0 then
+		if data.ShotN % 3 == 0 then -- 세 번에 한 번: 일직선 포격 (붉은 원 3개가 줄지어 떨어진다)
+			data.NextAttack = now + stats.ShotInterval * 2.2
+			telegraph(ctx, part, data, Color3.fromRGB(255, 120, 90), 0.5, function() salvo(ctx, part, data, stats, "line") end)
+		elseif data.ShotN % 2 == 0 then
 			data.NextAttack = now + stats.ShotInterval * 1.4
 			telegraph(ctx, part, data, Color3.fromRGB(190, 170, 255), 0.4, function()
 				for i = 0, 2 do
