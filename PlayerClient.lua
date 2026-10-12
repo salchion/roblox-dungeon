@@ -220,24 +220,6 @@ local medal = create("Frame", {
 }, enhancePanel)
 create("UICorner", { CornerRadius = UDim.new(1, 0) }, medal)
 local medalStroke = create("UIStroke", { Color = Color3.fromRGB(255, 200, 90), Thickness = 5 }, medal)
-local medalGlow = create("Frame", {
-	Size = UDim2.new(1.18, 0, 1.18, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
-	BackgroundColor3 = Color3.fromRGB(255, 200, 90), BackgroundTransparency = 0.82, BorderSizePixel = 0, ZIndex = 0,
-}, medal)
-create("UICorner", { CornerRadius = UDim.new(1, 0) }, medalGlow)
-local medalGradient = create("UIGradient", {
-	Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(0.5, 0.9), NumberSequenceKeypoint.new(1, 0.2) }),
-}, medalGlow)
-
-E.Rays = {}
-for i = 1, 14 do
-	local ray = create("Frame", {
-		Size = UDim2.new(0, 10, 0, 190), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 0.5, 0),
-		BackgroundColor3 = Color3.fromRGB(255, 220, 130), BackgroundTransparency = 0.82, BorderSizePixel = 0, ZIndex = 0,
-	}, medal)
-	create("UIGradient", { Rotation = 90, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.5, 0.2), NumberSequenceKeypoint.new(1, 1) }) }, ray)
-	E.Rays[i] = ray
-end
 E.Stars = {}
 for i = 1, 16 do
 	local dot = 3 + (i % 3) * 2
@@ -258,41 +240,19 @@ if rim then
 	}, rim)
 end
 
-local medalView = create("ViewportFrame", {
-	Size = UDim2.new(0.86, 0, 0.86, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
-	BackgroundTransparency = 1, Ambient = Color3.fromRGB(235, 235, 245), LightColor = Color3.fromRGB(255, 250, 235), LightDirection = Vector3.new(-0.4, -0.7, -0.6), ZIndex = 2,
-}, medal)
-local medalCam = create("Camera", { FieldOfView = 36 }, medalView)
-medalView.CurrentCamera = medalCam
-local medalModel, medalCenter, medalReach
-local function showMedalWeapon(tierIndex)
-	if medalModel then medalModel:Destroy() medalModel = nil end
-	local previews = ReplicatedStorage:FindFirstChild("WeaponPreviews")
-	local source = previews and previews:FindFirstChild("W" .. tierIndex)
-	if not source then return end
-	medalModel = source:Clone()
-	medalModel.Parent = medalView
-	local cf, size = medalModel:GetBoundingBox()
-	medalCenter, medalReach = cf.Position, math.max(size.X, size.Y, size.Z)
-end
+-- 무기 모형 대신 "해금 진행 길": 강화할수록 막대가 앞으로 나아가고, 도착하면 무엇이 해금되는지 보인다
+medal.Visible = false
+local track = create("Frame", {
+	Size = UDim2.new(1, -24, 0, 230), Position = UDim2.new(0, 12, 0, 86), BackgroundTransparency = 1, BorderSizePixel = 0,
+}, enhancePanel)
+
 RunService.RenderStepped:Connect(function()
 	if not enhancePanel.Visible then return end
 	local t = os.clock()
-	medalGradient.Rotation = (t * 40) % 360
-	medalGlow.BackgroundTransparency = 0.78 + 0.08 * math.sin(t * 2.2)
-	for i, ray in ipairs(E.Rays) do
-		ray.Rotation = (i - 1) * (360 / #E.Rays) + t * 14
-		ray.BackgroundTransparency = 0.78 + 0.1 * math.sin(t * 2 + i)
-	end
 	for _, star in ipairs(E.Stars) do
 		star.Label.BackgroundTransparency = 0.25 + 0.7 * (0.5 + 0.5 * math.sin(t * star.Speed + star.Phase))
 	end
 	if E.RimGradient then E.RimGradient.Rotation = (t * 60) % 360 end
-	if medalModel and medalCenter then
-		local angle = t * 0.9
-		local d = medalReach * 1.35
-		medalCam.CFrame = CFrame.lookAt(medalCenter + Vector3.new(math.sin(angle) * d, d * 0.28, math.cos(angle) * d), medalCenter)
-	end
 end)
 
 local enhanceStage = makeLabel({
@@ -438,6 +398,83 @@ task.spawn(function()
 	end
 end)
 
+local function buildTrack(level, color)
+	for _, child in ipairs(track:GetChildren()) do child:Destroy() end
+	local order = Config.WeaponTypes.Order
+	local tiers = Config.Weapon.Tiers
+	local unlocked = Config.GetUnlockedCount(level)
+	local nodes = {}
+	if unlocked < #order then -- 무기 10형 해금 길 (+ 끝에 새 시대)
+		for i, key in ipairs(order) do
+			table.insert(nodes, { Level = tiers[i].MinLevel, Name = Config.WeaponTypes[key].Name })
+		end
+		table.insert(nodes, { Level = tiers[#order + 1].MinLevel, Name = "New Era", Era = true })
+	else -- 다 열었으면 시대 길
+		for e = 1, 10 do
+			table.insert(nodes, { Level = tiers[(e - 1) * #order + 1].MinLevel, Name = Config.GetEraName(e), Era = true })
+		end
+	end
+	local n = #nodes
+	local pos = n - 1
+	for i = 1, n - 1 do
+		if level < nodes[i + 1].Level then
+			pos = (i - 1) + (level - nodes[i].Level) / math.max(1, nodes[i + 1].Level - nodes[i].Level)
+			break
+		end
+	end
+	local nextIndex = nil
+	for i = 1, n do
+		if nodes[i].Level > level then nextIndex = i break end
+	end
+	local milestone = Config.GetNextMilestone(level)
+
+	-- 위쪽 카드: 다음에 무엇이 열리는지
+	local cardText
+	if milestone and milestone.Kind == "Form" then
+		local info = Config.WeaponTypes[milestone.Key]
+		cardText = string.format("<font size='12' color='#aab0cc'>Next unlock · +%d</font>\n<font size='22' color='#ffd966'><b>🔓 %s</b></font>\n<font size='12' color='#dfe6ff'>%s</font>\n<font size='12' color='#78ff8c'><b>%d more upgrades</b></font>", milestone.Level, info.Name, info.Trait, milestone.Level - level)
+	elseif milestone then
+		local perk = milestone.Tier.Perk
+		cardText = string.format("<font size='12' color='#aab0cc'>Next era · +%d</font>\n<font size='22' color='#ffd966'><b>✨ %s</b></font>\n<font size='12' color='#dfe6ff'>%s</font>\n<font size='12' color='#78ff8c'><b>%d more upgrades</b></font>", milestone.Level, milestone.Name, perk and (perk.Icon .. " " .. perk.Name) or "New look and shot color", milestone.Level - level)
+	else
+		cardText = "<font size='22' color='#ffd966'><b>🏆 Max level!</b></font>"
+	end
+	makeLabel({
+		Size = UDim2.new(1, 0, 0, 100), Position = UDim2.new(0, 0, 0, 8), RichText = true, TextSize = 14, Text = cardText,
+		TextWrapped = true, TextYAlignment = Enum.TextYAlignment.Top,
+	}, track)
+
+	-- 길: 어두운 바탕 + 나아간 만큼 차오르는 막대 + 해금 지점(동그라미)
+	local left, width, y = 18, 340, 150
+	local bar = create("Frame", { Size = UDim2.new(0, width, 0, 10), Position = UDim2.new(0, left, 0, y - 5), BackgroundColor3 = Color3.fromRGB(52, 50, 72), BorderSizePixel = 0 }, track)
+	create("UICorner", { CornerRadius = UDim.new(0, 5) }, bar)
+	local fillWidth = math.max(4, width * math.min(1, pos / math.max(1, n - 1)))
+	local fill = create("Frame", { Size = UDim2.new(0, fillWidth, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 96, 84), BorderSizePixel = 0 }, bar)
+	create("UICorner", { CornerRadius = UDim.new(0, 5) }, fill)
+	create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 120, 90), Color3.fromRGB(255, 205, 100)) }, fill)
+	makeLabel({ Size = UDim2.new(0, 40, 0, 16), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0, left + fillWidth, 0, y - 12), Text = "▼", TextSize = 13, TextColor3 = Color3.fromRGB(255, 205, 100) }, track)
+	for i, node in ipairs(nodes) do
+		local x = left + width * (i - 1) / math.max(1, n - 1)
+		local done = level >= node.Level
+		local isNext = i == nextIndex
+		local dot = create("Frame", {
+			Size = UDim2.new(0, 26, 0, 26), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, x, 0, y), BorderSizePixel = 0,
+			BackgroundColor3 = done and color or (isNext and Color3.fromRGB(70, 60, 30) or Color3.fromRGB(36, 36, 52)),
+		}, track)
+		create("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
+		create("UIStroke", { Color = isNext and Color3.fromRGB(255, 217, 102) or (done and Color3.new(1, 1, 1) or Color3.fromRGB(80, 82, 110)), Thickness = isNext and 3 or 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, dot)
+		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = done and "✔" or (isNext and "★" or (node.Era and "✦" or "🔒")), TextSize = done and 13 or 11, TextColor3 = done and Color3.fromRGB(20, 20, 30) or Color3.fromRGB(190, 192, 215) }, dot)
+		makeLabel({ Size = UDim2.new(0, 44, 0, 14), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, x, 0, y + 17), Text = "+" .. node.Level, TextSize = 9, TextColor3 = done and Color3.fromRGB(200, 205, 230) or Color3.fromRGB(120, 122, 150) }, track)
+		-- 이름은 칸이 좁아서 위아래로 엇갈려 쓴다 (다음 해금은 굵게)
+		local above = i % 2 == 0
+		makeLabel({
+			Size = UDim2.new(0, 60, 0, 14), AnchorPoint = Vector2.new(0.5, above and 1 or 0), Position = UDim2.new(0, x, 0, above and (y - 20) or (y + 32)),
+			Text = node.Name, TextSize = 9, TextColor3 = isNext and Color3.fromRGB(255, 217, 102) or (done and Color3.fromRGB(215, 220, 240) or Color3.fromRGB(130, 132, 160)),
+			Font = isNext and Enum.Font.GothamBlack or Enum.Font.GothamBold,
+		}, track)
+	end
+end
+
 function refreshEnhance()
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local gold = player:GetAttribute("Gold") or 0
@@ -448,17 +485,12 @@ function refreshEnhance()
 	local stage = level
 	local color = tier.Rainbow and Color3.fromRGB(255, 120, 255) or tier.Color
 
+	buildTrack(level, color)
 	enhanceWeapon.Text = string.format("%s · %s", Config.GetWeaponName(typeKey, level), Config.GetEraName(tier.Era))
 	enhanceWeapon.TextColor3 = color
 	medalStroke.Color = color
-	medalGlow.BackgroundColor3 = color
 	E.Milestone = Config.GetUnlockedCount(level) + 100 * tier.Era -- 새 무기 해금 / 새 시대 때만 "진화!" 연출
-	if E.EnhanceShownTier ~= tierIndex then
-		local firstTime = E.EnhanceShownTier == nil
-		E.EnhanceShownTier = tierIndex
-		-- 접속(재접속)할 때 저장된 무기 단계가 처음 읽히는 순간에는 큰 무기 연출을 띄우지 않는다 (강화창을 열었거나 실제로 진화했을 때만)
-		if not firstTime or enhancePanel.Visible then showMedalWeapon(tierIndex) end
-	end
+	E.EnhanceShownTier = tierIndex
 
 	enhanceStage.Text = string.format("+%d", stage)
 	enhanceStage.TextColor3 = color
