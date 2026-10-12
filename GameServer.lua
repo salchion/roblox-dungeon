@@ -482,6 +482,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 	local cooldown = Config.Player.BaseCooldown * weaponType.Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0))) -- 펫 가속 포함
 	if now - (lastAttack[player] or 0) < cooldown * 0.9 then return end -- 연타 제한 (네트워크 오차 10% 허용)
 	lastAttack[player] = now
+	Dungeon.NoteShot(player) -- 세트 효과 "튕기는 표창"이 쏜 횟수를 센다
 
 	local origin = root.Position + Vector3.new(0, 1.5, 0)
 	local offset = aimPoint - origin

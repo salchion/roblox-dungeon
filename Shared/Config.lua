@@ -342,7 +342,7 @@ Config.RunBuffs = {
 Config.AugInfo = {
 	AugMissile = { Icon = "🚀", Name = "Crit Missile", Desc = "Every crit launches an extra missile that blasts nearby enemies", Color = Color3.fromRGB(255, 150, 60) },
 	AugNova = { Icon = "☄", Name = "Kill Burst", Desc = "Killing an enemy causes a big explosion that spreads to nearby enemies", Color = Color3.fromRGB(255, 80, 70) },
-	AugOrbit = { Icon = "🌀", Name = "Ricochet Blades", Desc = "Thrown blades bounce between enemies, slashing them in a row", Color = Color3.fromRGB(110, 230, 255) },
+	AugOrbit = { Icon = "🌀", Name = "Ricochet Blades", Desc = "Every few shots, a blade bounces between enemies, slashing them in a row (faster-firing weapons throw it more often)", Color = Color3.fromRGB(110, 230, 255) },
 	AugStorm = { Icon = "⛈", Name = "Lightning Strike", Desc = "Lightning periodically strikes nearby enemies from the sky", Color = Color3.fromRGB(255, 240, 110) },
 	AugFlame = { Icon = "🔥", Name = "Flame Zone", Desc = "Flames linger where an enemy died, burning those who pass", Color = Color3.fromRGB(255, 130, 40) },
 	AugExecute = { Icon = "💀", Name = "Execute", Desc = "Enemies (bosses excluded) with very low HP are executed the moment they're hit", Color = Color3.fromRGB(210, 90, 255) },
@@ -354,7 +354,7 @@ Config.AugInfo = {
 local AUG_LEVEL = {
 	AugMissile = function(l) return string.format("on crit, %d extra missiles (60%% of the crit damage each)", 1 + l), 0.6 end,
 	AugNova = function(l) return string.format("kill → explosion, radius %d, hits up to 8 enemies", 12 + 3 * l), 1.2 + 0.6 * l end,
-	AugOrbit = function(l) return string.format("every %.1fs a blade bounces across %d enemies", math.max(1.1, 2.1 - 0.3 * l), l + 2), 0.9 + 0.4 * l end,
+	AugOrbit = function(l) return string.format("every %d shots a blade bounces across %d enemies", ({ 6, 6, 5, 5, 4, 4 })[math.min(l, 6)], l + 2), 0.9 + 0.4 * l end,
 	AugStorm = function(l) return string.format("every %.1fs lightning hits %d enemies", math.max(1.2, 3.4 - 0.5 * l), 2 + l), 1.5 + 0.5 * l end,
 	AugFlame = function(l) return string.format("flames radius %d for %ds, damage every 0.5s", 7 + 2 * l, 5 + l), 0.25 + 0.1 * l end,
 	AugExecute = function(l) return string.format("enemies below %d%% HP are executed (not bosses)", math.floor(math.min(0.4, 0.1 + 0.06 * l) * 100 + 0.5)), nil end,

@@ -1528,6 +1528,25 @@ local function shockRing(run, position, radius, color)
 end
 
 local augDepth = 0
+-- 튕기는 표창: 시간이 아니라 "쏜 횟수"로 던진다 (연사가 빠른 무기가 더 자주). GameServer 가 공격 한 번마다 Dungeon.NoteShot 을 부른다.
+local shotCount = setmetatable({}, { __mode = "k" })
+function Dungeon.NoteShot(player)
+	shotCount[player] = (shotCount[player] or 0) + 1
+end
+local BLADE_SHOTS = { 6, 6, 5, 5, 4, 4 } -- 표창 단계(1~6)별로 몇 번 쏠 때마다 한 번 던지는지
+-- 크리 미사일 폭주 방지: 한 사람이 1초에 낼 수 있는 미사일 수 상한 (샷건처럼 탄이 많은 무기가 서버를 짓누르지 않게)
+local missileWindow = setmetatable({}, { __mode = "k" })
+local function allowMissiles(player, count)
+	local now = os.clock()
+	local window = missileWindow[player]
+	if not window or now - window.Start >= 1 then
+		window = { Start = now, Count = 0 }
+		missileWindow[player] = window
+	end
+	if window.Count + count > 20 then return false end
+	window.Count += count
+	return true
+end
 -- 세트 효과 단계: 장비로 맞춘 단계(Attribute)와 이번 던전에서 주사위로 맞춘 단계(run.RunAug[member][attr]) 중 큰 쪽. 던전이 끝나면 run 과 함께 사라진다.
 local function augLv(run, player, attr)
 	local gear = player:GetAttribute(attr) or 0
@@ -1625,6 +1644,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 	if level <= 0 or not isCrit or augDepth > 0 then return end
 	-- 치명타: 맞은 곳에서 추가 미사일 (1 + 단계 발) 이 주변 적에게 휘어 날아간다
 	local from = part.Position + Vector3.new(0, 3, 0)
+	if not allowMissiles(player, 1 + level) then return end
 	procAug(player, "AugMissile")
 	-- 4셋: 미사일이 터지며 주변 적도 맞는다 / 5셋: 0.45초 뒤 두 번째 일제 사격 / 6셋: 가장 튼튼한 적에게 대형 미사일까지
 	local splash = level >= 4 and 11 or nil
@@ -1736,8 +1756,9 @@ local function startAugLoop(run)
 				local root = getAliveParts(member)
 				-- 회전 칼날 -> 표창: 가까운 적에게 던진 칼날이 튕기며 다른 적들을 연달아 벤다 (몸 주위가 아니라 날아가는 칼날에 효과가 붙는다)
 				local orbit = augLv(run, member, "AugOrbit")
-				if root and orbit > 0 and now >= (nextTick[member] or 0) then
-					nextTick[member] = now + math.max(1.1, 2.1 - 0.3 * orbit)
+				if root and orbit > 0 and (shotCount[member] or 0) >= BLADE_SHOTS[math.min(orbit, 6)] and now >= (nextTick[member] or 0) then
+					shotCount[member] = 0
+					nextTick[member] = now + 0.8 -- (연사가 아주 빠르면 최소 0.8초 간격)
 					-- 4셋부터 칼날이 동시에 여러 줄기로 날아간다 (4셋 2줄 / 5셋 3줄 / 6셋 4줄)
 					local chains = orbit >= 6 and 4 or (orbit >= 5 and 3 or (orbit >= 4 and 2 or 1))
 					local starts = nearestMonsters(run, root.Position, 70, chains)
