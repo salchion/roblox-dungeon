@@ -657,6 +657,116 @@ local function salvo(ctx, part, data, stats, kind)
 	end
 end
 
+-- 초반 구역(1~5) 전용 "맵 분위기 바닥 공격": 구역 테마에 맞는 색 / 모양의 경고 원이 먼저 뜨고 잠시 뒤 내리꽂힌다. (붉은색이 아니어도 된다: 번개는 노랑, 얼음은 하늘색 ...)
+--   Kind: drop(떨어지는 덩어리) / spike(땅에서 솟는 가시) / bolt(번개 기둥) / ice(떨어지는 얼음 기둥)
+local HAZARD_THEMES = {
+	{ Kind = "drop", Warn = Color3.fromRGB(150, 255, 140), Fill = Color3.fromRGB(100, 235, 110), Body = Color3.fromRGB(110, 255, 120), Count = 1, Delay = 1.5, Radius = 7, Damage = 0.8 },   -- 1 초원: 초록 슬라임 덩어리
+	{ Kind = "spike", Warn = Color3.fromRGB(150, 220, 100), Fill = Color3.fromRGB(95, 170, 75), Body = Color3.fromRGB(110, 150, 60), Count = 1, Delay = 1.4, Radius = 7, Damage = 0.9 }, -- 2 숲: 덩굴 가시
+	{ Kind = "bolt", Warn = Color3.fromRGB(255, 240, 100), Fill = Color3.fromRGB(255, 225, 60), Body = Color3.fromRGB(255, 250, 190), Count = 2, Delay = 1.3, Radius = 6, Damage = 1.0 },  -- 3 황무지: 번개
+	{ Kind = "spike", Warn = Color3.fromRGB(255, 205, 110), Fill = Color3.fromRGB(235, 170, 70), Body = Color3.fromRGB(225, 185, 105), Count = 2, Delay = 1.3, Radius = 8, Damage = 1.0 }, -- 4 사막: 모래 기둥
+	{ Kind = "ice", Warn = Color3.fromRGB(150, 230, 255), Fill = Color3.fromRGB(120, 200, 255), Body = Color3.fromRGB(205, 245, 255), Count = 2, Delay = 1.3, Radius = 7, Damage = 1.1 },   -- 5 설원: 고드름
+}
+local hazardActive = 0 -- 동시에 떠 있는 경고 원이 너무 많아지지 않게
+
+local function hazardStrike(ctx, spot, stats, theme)
+	local ground = groundOf(ctx, spot)
+	local radius, delay = theme.Radius, theme.Delay
+	local base = Vector3.new(spot.X, ground, spot.Z)
+	local ring = disc(base + Vector3.new(0, 0.3, 0), radius * 2, theme.Warn, 0.65)
+	local fill = disc(base + Vector3.new(0, 0.35, 0), 1, theme.Fill, 0.35)
+	TweenService:Create(fill, TweenInfo.new(delay, Enum.EasingStyle.Linear), { Size = Vector3.new(0.4, radius * 2, radius * 2) }):Play()
+	local falling
+	if theme.Kind == "drop" or theme.Kind == "ice" then
+		falling = Instance.new("Part")
+		falling.Anchored, falling.CanCollide, falling.CanQuery, falling.CanTouch = true, false, false, false
+		falling.Material = Enum.Material.Neon
+		falling.Color = theme.Body
+		if theme.Kind == "drop" then
+			falling.Shape = Enum.PartType.Ball
+			falling.Size = Vector3.new(4.5, 4.5, 4.5)
+		else
+			falling.Size = Vector3.new(2, 11, 2) -- 길쭉한 고드름
+		end
+		falling.Position = base + Vector3.new(0, 65, 0)
+		falling.Parent = workspace
+		TweenService:Create(falling, TweenInfo.new(delay, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Position = base + Vector3.new(0, 4, 0) }):Play()
+	end
+	task.delay(delay, function()
+		hazardActive -= 1
+		ring:Destroy()
+		fill:Destroy()
+		if falling then falling:Destroy() end
+		-- 충돌 순간 연출 (모양마다 다르다)
+		if theme.Kind == "bolt" then
+			local column = Instance.new("Part")
+			column.Anchored, column.CanCollide, column.CanQuery, column.CanTouch = true, false, false, false
+			column.Material = Enum.Material.Neon
+			column.Color = theme.Body
+			column.Size = Vector3.new(2.4, 110, 2.4)
+			column.Position = base + Vector3.new(0, 55, 0)
+			column.Parent = workspace
+			TweenService:Create(column, TweenInfo.new(0.3), { Transparency = 1, Size = Vector3.new(0.4, 110, 0.4) }):Play()
+			Debris:AddItem(column, 0.35)
+		elseif theme.Kind == "spike" then
+			for i = 1, 7 do
+				local angle = (i / 7) * math.pi * 2
+				local reach = i == 7 and 0 or radius * 0.6
+				local spike = Instance.new("Part")
+				spike.Anchored, spike.CanCollide, spike.CanQuery, spike.CanTouch = true, false, false, false
+				spike.Material = Enum.Material.SmoothPlastic
+				spike.Color = theme.Body
+				spike.Size = Vector3.new(1.6, 1, 1.6)
+				spike.Position = base + Vector3.new(math.cos(angle) * reach, 0.5, math.sin(angle) * reach)
+				spike.Parent = workspace
+				local height = i == 7 and 13 or 9
+				TweenService:Create(spike, TweenInfo.new(0.14, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(1.6, height, 1.6), Position = spike.Position + Vector3.new(0, height / 2, 0) }):Play()
+				task.delay(0.45, function() TweenService:Create(spike, TweenInfo.new(0.25), { Transparency = 1 }):Play() end)
+				Debris:AddItem(spike, 0.75)
+			end
+		end
+		Effects.Burst(base + Vector3.new(0, 2, 0), theme.Body, 36)
+		local boom = disc(base + Vector3.new(0, 0.5, 0), 2, theme.Fill, 0.3)
+		TweenService:Create(boom, TweenInfo.new(0.35), { Size = Vector3.new(0.4, radius * 2.2, radius * 2.2), Transparency = 1 }):Play()
+		Debris:AddItem(boom, 0.4)
+		if theme.Kind == "bolt" then
+			SoundBank.Play(boom, "Aug_Storm", { Volume = 0.8 })
+		else
+			SoundBank.Play(boom, "Boom", { Volume = 0.55, Pitch = theme.Kind == "ice" and 1.6 or (theme.Kind == "spike" and 1.3 or 0.9) })
+		end
+		for _, entry in ipairs(ctx.Players()) do
+			local p = entry.Root.Position
+			local gap = Vector3.new(p.X - spot.X, 0, p.Z - spot.Z).Magnitude
+			if gap <= radius then
+				entry.Humanoid:TakeDamage(math.max(1, math.floor(stats.ShotDamage * theme.Damage)))
+			else
+				nearMiss(ctx, entry, gap, radius, radius + 8)
+			end
+		end
+	end)
+end
+
+local function hazardCast(ctx, part, data, stats)
+	local theme = HAZARD_THEMES[data.Zone or 1]
+	if not theme or hazardActive >= 4 then return end
+	local target = ctx.GetTarget(part.Position)
+	if not target then return end
+	local center = target.Position
+	local offset = math.random() * math.pi * 2
+	for index = 1, theme.Count do
+		-- 첫 발은 플레이어 자리, 둘째 발은 옆 (움직여서 피하게)
+		local spot = center
+		if index > 1 then
+			local angle = offset + index * 2.1
+			spot = center + Vector3.new(math.cos(angle), 0, math.sin(angle)) * (theme.Radius * 2 + 4)
+		end
+		hazardActive += 1
+		task.delay((index - 1) * 0.35, function()
+			if not ctx.Alive(part, data) then hazardActive -= 1 return end
+			hazardStrike(ctx, spot, stats, theme)
+		end)
+	end
+end
+
 -- 충격파: 발밑에서 고리가 퍼진다. 점프해서 넘으면 안 맞는다
 local function shockwave(ctx, part, stats)
 	local origin = part.Position
@@ -885,6 +995,16 @@ function M.Update(ctx, part, data, dt, now)
 			end
 		end
 		return
+	end
+
+	-- 초반 구역 바닥 공격: 일부 몬스터가 8~13초마다 한 번 (자기 공격과 따로)
+	if data.Hazard and distance <= 95 then
+		if not data.NextHazard then
+			data.NextHazard = now + 3 + math.random() * 5
+		elseif now >= data.NextHazard then
+			data.NextHazard = now + 8 + math.random() * 5
+			hazardCast(ctx, part, data, stats)
+		end
 	end
 
 	-- 공격

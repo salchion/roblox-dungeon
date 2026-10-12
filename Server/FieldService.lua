@@ -1327,6 +1327,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		Level = level,
 		XpLevel = xpLevel,
 		TypeKey = typeKey,
+		Hazard = (zone <= 5 and kind == "Normal" and math.random() < 0.3) or nil, -- 초반 구역(1~5)의 일부 몬스터는 맵 분위기에 맞는 바닥 경고 공격(번개 / 가시 / 얼음 ...)을 가끔 쓴다
 		Def = def,
 		Phase = math.random() * math.pi * 2,
 		Stats = stats,
