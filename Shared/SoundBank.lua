@@ -50,7 +50,7 @@ local SPECS = {
 		Layers = { { Pitch = 0.24, Volume = 1.2, Delay = 0.3 }, { Pitch = 0.32, Volume = 1.3, Delay = 0.65 }, { Pitch = 0.43, Volume = 1.4, Delay = 1.0 }, { Pitch = 0.58, Volume = 1.5, Delay = 1.35 }, { Pitch = 0.8, Volume = 1.5, Delay = 1.7 } } },
 	Lord_Blast = { Base = "Enh_Hammer", CustomLength = 2.6, Pitch = 0.3, Volume = 2.0, Length = 1.4, Fx = { { "distortion", { Level = 0.5 } }, { "reverb", { DecayTime = 3.4, WetLevel = -2 } } },
 		Layers = { { Pitch = 0.18, Volume = 1.8, Delay = 0.0 }, { Pitch = 0.6, Volume = 1.0, Delay = 0.05 }, { Pitch = 0.12, Volume = 1.5, Delay = 0.25 } } },
-	Ult_Lock = { Base = "Enh_Success", Pitch = 2.6, Volume = 0.45, Length = 0.09, CustomLength = 0.3, Fx = { { "eq", { LowGain = -12, MidGain = 0, HighGain = -4 } } } }, -- 데드아이 락온 "띠" (연속으로 피치를 올려 "띠띠띠띠")
+	Ult_Lock = { Base = "Enh_Success", Pitch = 2.6, Volume = 1.3, Length = 0.09, CustomLength = 0.3, Fx = { { "eq", { LowGain = -12, MidGain = 0, HighGain = -4 } } } }, -- 데드아이 락온 "띠" (연속으로 피치를 올려 "띠띠띠띠")
 	-- 데드아이 "콰콰콰쾅": 미사일마다 쿵(착탄) + 발사 때 낮은 퐁(발사) + 마지막 대폭발 (폭발음을 낮게 가공해 겹쳐 쌓는다)
 	Ult_Hit = { Base = "Boom", Pitch = 1.0, Volume = 1.0, Length = 0.8, Fx = { { "distortion", { Level = 0.3 } } } },
 	Ult_Launch = { Base = "Boom", Pitch = 1.7, Volume = 0.45, Length = 0.3, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -10 } } } },
@@ -100,7 +100,7 @@ local CUSTOM_ONLY = {
 	Aug_MeteorFall = { Volume = 0.8, CustomLength = 1.6, CustomPitch = 1.0 }, -- 유성이 떨어지는 소리
 	Aug_MeteorHit = { Volume = 1.3, CustomLength = 2.0, CustomPitch = 0.7 }, -- 유성 착탄 (큰 폭발)
 	Aug_Flame     = { Volume = 0.6, CustomLength = 1.2, Base = "Dash", Pitch = 0.6, Length = 0.7, Fx = { { "chorus", { Depth = 0.7, Mix = 0.6 } }, { "distortion", { Level = 0.35 } } } }, -- 불길이 생길 때 "후와악"
-	Ult_Missile   = { Volume = 0.7, CustomLength = 1.2, Base = "Aug_Missile", Pitch = 1.0, Length = 0.8 }, -- 데드아이 미사일 발사 (12발이 연달아 나가므로 짧게)
+	Ult_Missile   = { Volume = 1.6, CustomLength = 1.2, Base = "Aug_Missile", Pitch = 1.0, Length = 0.8 }, -- 데드아이 미사일 발사 (12발이 연달아 나가므로 짧게)
 	Aug_Execute   = { Volume = 0.5, CustomLength = 0.6, CustomPitch = 1.5 }, -- 처형
 	Aug_Pulse     = { Volume = 0.6, CustomLength = 1.0, CustomPitch = 1.5 }, -- 폭풍 충격파
 	Buff_Get      = { Volume = 0.7, CustomLength = 1.0, CustomPitch = 1.25 }, -- 일반 랜덤 강화를 얻을 때

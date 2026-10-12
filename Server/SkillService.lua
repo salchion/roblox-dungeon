@@ -271,7 +271,7 @@ handlers.Ult = function(player, root, _, character)
 			end
 			-- 락온 "띠띠띠띠": 점점 높아지는 짧은 경고음 네 번
 			for beep = 1, 4 do
-				pcall(function() SoundBank.Play(root, "Ult_Lock", { Pitch = 0.85 + 0.12 * beep, Volume = 0.8 }) end)
+				pcall(function() SoundBank.Play(root, "Ult_Lock", { Pitch = 0.85 + 0.12 * beep, Volume = 1.4 }) end)
 				task.wait(0.11)
 			end
 
@@ -298,7 +298,7 @@ handlers.Ult = function(player, root, _, character)
 					Effects.Raw(feet, { "R", feet, 10 + shotNumber, Color3.fromRGB(120, 215, 255) })
 				end
 				pcall(function() SoundBank.Play(root, "Ult_Launch", { Pitch = 0.85 + math.random() * 0.3, Volume = 1 }) end)
-				pcall(function() SoundBank.Play(root, "Ult_Missile", { Pitch = 0.9 + math.random() * 0.3, Volume = 0.8, Name = "GunShot" }) end)
+				pcall(function() SoundBank.Play(root, "Ult_Missile", { Pitch = 0.9 + math.random() * 0.3, Volume = 1.3 }) -- (총소리 볼륨 설정에 묶이지 않게 이름을 안 붙인다) end)
 				local target = part.Position
 				-- 옆으로 약 45도 각도로 부채꼴로 퍼져 올라간다 (높이는 낮춰서 꺾여 내리꽂히는 장면이 화면에 담기게)
 				local flat = Vector3.new(target.X - shoulder.X, 0, target.Z - shoulder.Z)
