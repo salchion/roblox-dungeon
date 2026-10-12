@@ -278,8 +278,14 @@ handlers.Ult = function(player, root, _, character)
 				local shoulder = root.Position + Vector3.new((math.random() - 0.5) * 3, 3 + math.random() * 1.5, (math.random() - 0.5) * 3)
 				Effects.Burst(shoulder, Color3.fromRGB(190, 235, 255), 8) -- 발사 불꽃
 				pcall(function() SoundBank.Play(root, "UltShot", { Pitch = 0.9 + math.random() * 0.4, Volume = 0.8, Name = "GunShot" }) end)
-				for index, part in ipairs(targets) do
-					if not part.Parent then continue end
+				-- 이미 죽은 적의 몫은 살아 있는 다른 적에게 넘긴다 (기본 공격에 먼저 죽어도 데드아이 총 피해가 유지된다)
+				local alive = {}
+				for _, candidate in ipairs(targets) do
+					if candidate.Parent then table.insert(alive, candidate) end
+				end
+				if #alive == 0 then break end
+				for index, original in ipairs(targets) do
+					local part = original.Parent and original or alive[(index - 1) % #alive + 1]
 					local target = part.Position
 					-- 위로 높이 솟았다가(중간점이 출발점 위쪽에 치우침) 곡선으로 떨어진다
 					local mid = shoulder + Vector3.new((math.random() - 0.5) * 14, 44 + math.random() * 22, (math.random() - 0.5) * 14) + (target - shoulder) * Vector3.new(0.12, 0, 0.12) -- 거의 수직으로 높이 솟는다
@@ -289,11 +295,20 @@ handlers.Ult = function(player, root, _, character)
 					lastLanding = math.max(lastLanding, landAt)
 					task.delay(flight, function()
 						if not player.Parent then return end
+						local hitPart = part
+						if not hitPart.Parent then -- 날아가는 사이에 죽었다: 살아 있는 다른 적에게 피해를 넘긴다
+							local others = {}
+							for _, candidate in ipairs(targets) do
+								if candidate.Parent then table.insert(others, candidate) end
+							end
+							hitPart = #others > 0 and others[math.random(#others)] or nil
+						end
+						if not hitPart then return end
 						BL.Ctx = "데드아이"
-						local alive = part.Parent and (Dungeon.HitPart(player, part, perMissile) or Field.HitPart(player, part, perMissile))
+						local landed = Dungeon.HitPart(player, hitPart, perMissile) or Field.HitPart(player, hitPart, perMissile)
 						BL.Ctx = nil
 						local label = markers[index] and markers[index]:FindFirstChildOfClass("TextLabel")
-						if alive and label then label.TextColor3 = Color3.fromRGB(255, 255, 255) end
+						if landed and label then label.TextColor3 = Color3.fromRGB(255, 255, 255) end
 					end)
 				end
 				task.wait(roundGap)
