@@ -42,8 +42,8 @@ local function parseWeapons(saved)
 		result.Levels[key] = math.clamp(math.floor(level or 0), 0, Config.Weapon.MaxLevel)
 		result.Unlocked[key] = key == "Pistol" or (weapons.Unlocked ~= nil and weapons.Unlocked[key] == true)
 	end
-	if typeof(weapons.Type) == "string" and result.Unlocked[weapons.Type] then
-		result.Type = weapons.Type
+	if typeof(weapons.Type) == "string" and Config.WeaponTypes[weapons.Type] and weapons.Type ~= "Order" then
+		result.Type = weapons.Type -- 고른 무기 (해금 여부는 접속할 때 강화 단계로 다시 확인)
 	end
 	-- 예전 저장(무기 종류별 레벨)은 가장 높은 레벨을 이어받는다
 	result.Best = 0
@@ -119,7 +119,7 @@ end
 function Data.Save(player)
 	if not store then return true end -- DataStore 를 못 쓰는 환경(Studio API 꺼짐)에서는 저장 없이 진행
 	if not loaded[player] then return false end
-	local weapons = { Type = player:GetAttribute("WeaponType") or "Pistol", Unlocked = {}, Levels = {} } -- (예전 호환용: 지금은 WeaponLevel 하나만 쓴다)
+	local weapons = { Type = player:GetAttribute("WeaponType") or "Pistol", Unlocked = {}, Levels = {} } -- Type = 고른 무기 형 (Unlocked / Levels 는 예전 호환용)
 	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
 	local weaponTier = Config.GetWeaponTier(weaponLevel)
 	local payload = {

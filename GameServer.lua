@@ -73,7 +73,7 @@ Dummy.Build(lobby.DummyStart)
 Dummy.BuildRest(lobby.RestStart) -- 휴식 구역 (방치 수입)
 Npc.Init(lobby.DummyStart.Y, { -- 시설마다 NPC 가 서서 말을 건다 (허공에 대고 말하는 느낌을 없애려고)
 	{ Name = "톰", Title = "🔨 대장장이", Position = promptPosition(lobby.AnvilPrompt), Shirt = Color3.fromRGB(150, 98, 60), Pants = Color3.fromRGB(70, 56, 48), Hat = "cap", Accent = Color3.fromRGB(110, 70, 44), Prop = "hammer",
-		Lines = { "쾅쾅! 무기를 두드려 볼까?", "강화하다 보면 더 강한 무기로 진화해!", "실패해도 단계는 안 내려가니까 걱정 마!" } },
+		Lines = { "쾅쾅! 무기를 두드려 볼까?", "강화하다 보면 새 무기가 해금돼!", "실패해도 단계는 안 내려가니까 걱정 마!" } },
 	{ Name = "루나", Title = "🎰 뽑기 상인", Position = promptPosition(lobby.GachaPrompt), Shirt = Color3.fromRGB(120, 80, 170), Pants = Color3.fromRGB(60, 44, 90), Hat = "wizard", Accent = Color3.fromRGB(150, 100, 210), Prop = "staff",
 		Lines = { "티켓 있어? 행운을 시험해 봐!", "여러 장 뽑기엔 가끔 좋은 게 숨어 있대.", "세트 장비는 필드에서 모아야 맞출 수 있어!" } },
 	{ Name = "카이", Title = "🛡 필드 문지기", Position = promptPosition(lobby.WarpPrompt), Shirt = Color3.fromRGB(110, 120, 140), Pants = Color3.fromRGB(70, 74, 90), Hat = "helmet", Accent = Color3.fromRGB(190, 60, 60), Prop = "spear",
@@ -206,10 +206,13 @@ local function updatePower(player)
 	))
 end
 
--- 무기는 강화 단계(WeaponLevel) 하나로 정해진다. 그 단계의 무기 종류(권총 / 리볼버 / ...)를 WeaponType 으로 맞춘다.
+-- 무기 형(권총 / 기관단총 ...)은 강화 단계로 해금되고, 어떤 형으로 싸울지는 플레이어가 고른다 (WeaponType). 잠긴 형이면 권총.
 local function syncWeaponLevel(player)
 	local level = player:GetAttribute("WeaponLevel") or 0
-	player:SetAttribute("WeaponType", Config.GetWeaponTier(level).Class)
+	local resolved = Config.ResolveWeaponType(level, player:GetAttribute("WeaponType"))
+	if player:GetAttribute("WeaponType") ~= resolved then
+		player:SetAttribute("WeaponType", resolved)
+	end
 end
 
 local function setupPlayer(player)
@@ -295,6 +298,10 @@ local function setupPlayer(player)
 		Weapon.Refresh(player) -- 강화 즉시 무기 외형 변경 (모든 플레이어에게 보임)
 		updatePower(player)
 	end)
+	player:GetAttributeChangedSignal("WeaponType"):Connect(function() -- 무기 형을 바꿔 들었다
+		Weapon.Refresh(player)
+		updatePower(player)
+	end)
 	for _, attribute in ipairs({ "CritPoints", "SpeedPoints", "GearHealth", "GearCrit", "GearDamage", "TrainHealth", "TrainCrit", "TrainDamage" }) do
 		player:GetAttributeChangedSignal(attribute):Connect(function()
 			updatePower(player)
@@ -348,6 +355,7 @@ local function setupPlayer(player)
 		player:SetAttribute("Tickets", saved.Tickets)
 		player:SetAttribute("MaxZone", saved.MaxZone)
 		player:SetAttribute("ClearedZone", saved.ClearedZone or 0)
+		player:SetAttribute("WeaponType", saved.Weapons and saved.Weapons.Type or "Pistol") -- 저장된 선택 무기 (잠겨 있으면 아래에서 권총으로)
 		player:SetAttribute("WeaponLevel", saved.WeaponLevel)
 		syncWeaponLevel(player)
 		Level.Load(player, saved.Level, saved.XP)
@@ -370,7 +378,7 @@ local function setupPlayer(player)
 			local startedAt = os.clock()
 			local function stamp() local t = math.floor(os.clock() - startedAt) return string.format("%d:%02d", t // 60, t % 60) end
 			local function log(text) print(string.format("[진행 기록] %s · %s · %s", player.Name, stamp(), text)) end
-			local lastWeaponTier = Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0).Index
+			local lastWeaponTier = Config.GetUnlockedCount(player:GetAttribute("WeaponLevel") or 0)
 			local seen = {}
 			local function once(key, text) if not seen[key] then seen[key] = true log(text) end end
 			log(string.format("시작 (레벨 %d, 골드 %d)", player:GetAttribute("Level") or 1, player:GetAttribute("Gold") or 0))
@@ -383,8 +391,8 @@ local function setupPlayer(player)
 			player:GetAttributeChangedSignal("GrowthUnlocked"):Connect(function() if player:GetAttribute("GrowthUnlocked") then once("growth", "성장 훈련 해금") end end)
 			player:GetAttributeChangedSignal("WeaponLevel"):Connect(function()
 				once("weapon1", string.format("첫 무기 강화 (%d단계)", player:GetAttribute("WeaponLevel") or 0))
-				local tier = Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0).Index
-				if tier ~= lastWeaponTier then lastWeaponTier = tier log(string.format("무기 진화 → %d번째 무기", tier)) end
+				local tier = Config.GetUnlockedCount(player:GetAttribute("WeaponLevel") or 0)
+				if tier ~= lastWeaponTier then lastWeaponTier = tier log(string.format("무기 형 해금 → %d/10형", tier)) end
 			end)
 			for _, minutes in ipairs({ 5, 10, 20, 30 }) do
 				task.delay(minutes * 60 - (os.clock() - startedAt), function()
@@ -482,13 +490,14 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 
 	-- 무기 등급마다 모양이 다른 발사체 (무기 종류별로 크기 / 속도 보정)
 	local level = player:GetAttribute("WeaponLevel") or 0
-	local tier = Config.GetWeaponTier(level)
+	local progressTier = Config.GetWeaponTier(level) -- 강화 진행도 (탄 크기가 이어서 커지게)
+	local tier = Config.GetLookTier(level, Config.ResolveWeaponType(level, player:GetAttribute("WeaponType"))) -- 고른 무기 형 + 지금 시대의 색 / 탄 모양
 	local color = tier.Rainbow and Color3.fromHSV((now * 0.5) % 1, 0.8, 1) or tier.Color
 	local extra = (player:GetAttribute("Zone") == "Dungeon" and (player:GetAttribute("PerkMulti") or 0) or 0) + (player:GetAttribute("GearShot") or 0)
 	local shot = table.clone(tier.Shot)
 	local stageNow = Config.GetWeaponStage(level)
-	local progress = Config.Weapon.VisualProgress(tier, stageNow)
-	shot.Size = Config.Weapon.ShotSize(tier, stageNow) * weaponType.ShotScale -- 무기 번호 + 강화 진행도로 이어서 커진다 (진화해도 작아지지 않는다)
+	local progress = Config.Weapon.VisualProgress(progressTier, stageNow)
+	shot.Size = (0.55 + 0.022 * progress) * (Config.Weapon.ShotBias[tier.Shot.Style] or 1) * weaponType.ShotScale -- 강화 진행도로 이어서 커진다 (시대가 바뀌어도 작아지지 않는다)
 	if shot.Length then shot.Length *= 1 + 0.006 * progress end
 	shot.Speed *= weaponType.SpeedScale
 	if weaponType.Pellets + extra > 1 then
@@ -541,7 +550,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 	end
 	-- 궁극기 게이지: 몬스터를 실제로 맞혔을 때만 찬다 (허공에 쏴서는 안 참)
 	if (player:GetAttribute("HitTick") or 0) > hitsBefore then
-		Skill.AddCharge(player, Config.Skills.ChargePerShot)
+		Skill.AddCharge(player, Config.Skills.ChargePerShot * weaponType.Cooldown) -- 연사 무기가 게이지를 더 빨리 채우지 않게: 공격 간격에 비례
 	end
 end)
 

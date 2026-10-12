@@ -180,7 +180,7 @@ end
 
 local function weaponText(level)
 	local tier = Config.GetWeaponTier(level)
-	return Config.FormatWeapon(level), tier.Color
+	return Config.FormatWeapon(level, player:GetAttribute("WeaponType")), tier.Color
 end
 
 local enhancePanel
@@ -441,17 +441,18 @@ end)
 function refreshEnhance()
 	local level = player:GetAttribute("WeaponLevel") or 0
 	local gold = player:GetAttribute("Gold") or 0
-	local typeKey = player:GetAttribute("WeaponType") or "Pistol"
-	local tierIndex = Config.GetWeaponTierIndex(level)
-	local tiers = Config.Weapon.Tiers
-	local tier = tiers[tierIndex]
-	local stage = Config.GetWeaponStage(level)
+	local typeKey = Config.ResolveWeaponType(level, player:GetAttribute("WeaponType"))
+	local tier = Config.GetLookTier(level, typeKey) -- 고른 무기 형 + 지금 시대의 외모
+	local tierIndex = tier.Index
+	local milestone = Config.GetNextMilestone(level)
+	local stage = level
 	local color = tier.Rainbow and Color3.fromRGB(255, 120, 255) or tier.Color
 
-	enhanceWeapon.Text = string.format("[%d/%d] %s", tier.Index, #tiers, Config.GetWeaponName(typeKey, level))
+	enhanceWeapon.Text = string.format("%s · %s", Config.GetWeaponName(typeKey, level), Config.GetEraName(tier.Era))
 	enhanceWeapon.TextColor3 = color
 	medalStroke.Color = color
 	medalGlow.BackgroundColor3 = color
+	E.Milestone = Config.GetUnlockedCount(level) + 100 * tier.Era -- 새 무기 해금 / 새 시대 때만 "진화!" 연출
 	if E.EnhanceShownTier ~= tierIndex then
 		local firstTime = E.EnhanceShownTier == nil
 		E.EnhanceShownTier = tierIndex
@@ -469,10 +470,16 @@ function refreshEnhance()
 	for _, child in ipairs(segmentBar:GetChildren()) do
 		if child:IsA("Frame") then child:Destroy() end
 	end
-	for i = 1, tier.Steps do
+	-- 막대: 직전 큰 변화(해금 / 시대)부터 다음 큰 변화까지의 진행도
+	local base = Config.Weapon.Tiers[(tier.Era - 1) * #Config.WeaponTypes.Order + 1].MinLevel
+	if milestone and milestone.Kind == "Form" then base = Config.Weapon.Tiers[Config.GetUnlockedCount(level)].MinLevel end
+	local span = milestone and math.max(1, milestone.Level - base) or 1
+	local segs = math.clamp(span, 1, 20)
+	local filled = milestone and math.floor((level - base) / span * segs + 0.0001) or segs
+	for i = 1, segs do
 		local seg = create("Frame", {
-			Size = UDim2.new(1 / tier.Steps, -4, 1, 0), LayoutOrder = i, BorderSizePixel = 0,
-			BackgroundColor3 = i <= stage and color or Color3.fromRGB(55, 52, 72),
+			Size = UDim2.new(1 / segs, -4, 1, 0), LayoutOrder = i, BorderSizePixel = 0,
+			BackgroundColor3 = i <= filled and color or Color3.fromRGB(55, 52, 72),
 		}, segmentBar)
 		create("UICorner", { CornerRadius = UDim.new(0, 4) }, seg)
 	end
@@ -494,9 +501,10 @@ function refreshEnhance()
 	elseif tutorialCost then
 		cost, chance = math.min(cost, tutorialCost), 100
 	end
-	if tierIndex < #tiers then
-		local nextTier = tiers[tierIndex + 1]
-		enhanceNext.Text = string.format("▶ <b>%d단계</b> 더 하면 <font color='#9ad7ff'><b>%s</b></font> 로 진화!", nextTier.MinLevel - level, nextTier.Name)
+	if milestone and milestone.Kind == "Form" then
+		enhanceNext.Text = string.format("▶ <b>%d강</b> 더 하면 <font color='#9ad7ff'><b>%s</b></font> 해금!", milestone.Level - level, milestone.Name)
+	elseif milestone then
+		enhanceNext.Text = string.format("▶ <b>%d강</b> 더 하면 <font color='#9ad7ff'><b>%s</b></font> 로 진화!", milestone.Level - level, milestone.Name)
 	else
 		enhanceNext.Text = ""
 	end
@@ -508,9 +516,12 @@ function refreshEnhance()
 		if perk then
 			table.insert(lines, string.format("<font color='#ffe9a0'>%s <b>%s</b></font> <font color='#c9cde0'>%s</font>", perk.Icon, perk.Name, perk.Desc))
 		end
-		local nextTierInfo = tiers[tierIndex + 1]
-		if nextTierInfo and nextTierInfo.Perk and nextTierInfo.Era > Config.GetWeaponTier(level).Era then
-			table.insert(lines, string.format("<font color='#9affc0'>다음 시대 모습 → %s <b>%s</b></font> <font color='#aeb4cc'>%s</font>", nextTierInfo.Perk.Icon, nextTierInfo.Perk.Name, nextTierInfo.Perk.Desc))
+		if milestone and milestone.Kind == "Era" and milestone.Tier.Perk then
+			local nextPerk = milestone.Tier.Perk
+			table.insert(lines, string.format("<font color='#9affc0'>다음 시대 → %s <b>%s</b></font> <font color='#aeb4cc'>%s</font>", nextPerk.Icon, nextPerk.Name, nextPerk.Desc))
+		elseif milestone and milestone.Kind == "Form" then
+			local info = Config.WeaponTypes[milestone.Key]
+			table.insert(lines, string.format("<font color='#9affc0'>다음 무기 → <b>%s</b></font> <font color='#aeb4cc'>%s</font>", info.Name, info.Trait))
 		end
 		enhancePerk.Text = table.concat(lines, "\n")
 	end
@@ -529,9 +540,9 @@ RunService.RenderStepped:Connect(function()
 end)
 
 Remotes.Enhance.OnClientEvent:Connect(function(ok, message, summary)
-	local oldTier = E.EnhanceShownTier
+	local oldMilestone = E.Milestone
 	refreshEnhance()
-	local evolved = oldTier ~= nil and E.EnhanceShownTier ~= nil and E.EnhanceShownTier > oldTier
+	local evolved = oldMilestone ~= nil and E.Milestone ~= nil and E.Milestone > oldMilestone
 	do
 		local level = player:GetAttribute("WeaponLevel") or 0
 		local tierNow = Config.GetWeaponTier(level)
@@ -554,7 +565,7 @@ Remotes.Enhance.OnClientEvent:Connect(function(ok, message, summary)
 	enhanceBanner.TextTransparency = 0
 	enhanceBanner.TextStrokeTransparency = 0
 	if evolved then
-		enhanceBanner.Text = "✨ 진화! ✨"
+		enhanceBanner.Text = "✨ 해금 · 진화! ✨"
 		enhanceBanner.TextColor3 = Color3.fromRGB(255, 225, 100)
 		medalStroke.Thickness = 12
 		TweenService:Create(medalStroke, TweenInfo.new(0.7), { Thickness = 5 }):Play()
@@ -2422,15 +2433,16 @@ end
 
 local function buildWeaponTab()
 	local level = player:GetAttribute("WeaponLevel") or 0
-	local tiers = Config.Weapon.Tiers
-	local current = Config.GetWeaponTier(level)
-	local stage = Config.GetWeaponStage(level)
-	sectionTitle(string.format("🔫 무기 도감 — 무기마다 정해진 횟수만큼 강화하면 다음 무기로 자동 진화해요 (총 %d종)", #tiers))
+	local order = Config.WeaponTypes.Order
+	local equippedKey = Config.ResolveWeaponType(level, player:GetAttribute("WeaponType"))
+	local eraTier = Config.GetWeaponTier(level)
+	sectionTitle(string.format("🔫 무기 10형 — 강화하면 한 형씩 해금돼요 (15강마다). 해금한 무기 중에서 싸울 무기를 골라요 · 지금 %s", Config.GetEraName(eraTier.Era)))
 
-	local shown = tiers[settings.PreviewTier or current.Index] or current
-	local isMine = shown.Index == current.Index
-	local classInfo = Config.WeaponTypes[shown.Class]
-	local nextTier = tiers[shown.Index + 1]
+	local previewKey = Config.WeaponTypes[settings.PreviewForm or ""] and settings.PreviewForm ~= "Order" and settings.PreviewForm or equippedKey
+	local shown = Config.GetLookTier(level, previewKey) -- 그 무기 형 + 지금 시대의 외모 / 탄 색
+	local classInfo = Config.WeaponTypes[previewKey]
+	local unlocked = Config.IsWeaponUnlocked(level, previewKey)
+	local isMine = previewKey == equippedKey
 
 	local header = newRow(262)
 	do
@@ -2455,23 +2467,33 @@ local function buildWeaponTab()
 	local rate = 1 / math.max(0.05, classInfo.Cooldown * Config.Player.BaseCooldown)
 	local status
 	if isMine then
-		status = string.format("<font color='#ffd966'>+%d / %d</font>  %s", stage, shown.Steps, Config.StageBar(level))
-	elseif shown.Index < current.Index then
-		status = "<font color='#78ff8c'>✔ 이미 지나온 무기</font>"
+		status = "<font color='#78ff8c'>▶ 사용 중</font>"
+	elseif unlocked then
+		status = "<font color='#ffd966'>✔ 해금됨</font>"
 	else
-		status = string.format("<font color='#ff9a6e'>🔒 +%d 단계부터 (앞으로 %d단계)</font>", shown.MinLevel, math.max(0, shown.MinLevel - level))
+		status = string.format("<font color='#ff9a6e'>🔒 +%d강에 해금 (앞으로 %d강)</font>", Config.GetUnlockLevel(previewKey), math.max(0, Config.GetUnlockLevel(previewKey) - level))
 	end
+	local power = Config.WeaponDpsFactor(classInfo)
+	local nameColor = hex(shown.Rainbow and Color3.fromRGB(255, 120, 255) or shown.Color)
 	makeLabel({
-		Size = UDim2.new(1, -306, 1, -20), Position = UDim2.new(0, 294, 0, 10), RichText = true, TextSize = 14,
+		Size = UDim2.new(1, -306, 1, -64), Position = UDim2.new(0, 294, 0, 10), RichText = true, TextSize = 14,
 		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 		Text = string.format(
-			"<font size='20'><b><font color='#%s'>[%d/%d] %s</font></b></font>\n%s\n<font color='#bbbbcc'>%s</font>\n\n<b>🔫 공격 방식</b>\n<font color='#dfe6ff'>• 탄 모양: %s\n• %s\n• 초당 약 %.1f발 · 한 발 x%.2f · 사거리 %d</font>\n\n%s",
-			hex(shown.Rainbow and Color3.fromRGB(255, 120, 255) or shown.Color), shown.Index, #tiers, shown.Name, status, classInfo.Desc,
+			"<font size='20'><b><font color='#%s'>%s</font></b></font>  <font size='12' color='#aab0cc'>%s</font>\n%s\n<font color='#ffe9a0'><b>%s</b></font>\n<font color='#bbbbcc'>%s</font>\n\n<b>🔫 공격 방식</b>\n<font color='#dfe6ff'>• 탄 모양: %s\n• %s\n• 초당 약 %.1f번 · 화력 지수 %d · 사거리 %d</font>",
+			nameColor, classInfo.Name, Config.GetEraName(shown.Era), status, classInfo.Trait, classInfo.Desc,
 			SHOT_NAMES[shotInfo.Style] or "탄환", table.concat(behavior, " · "),
-			rate, classInfo.DamageMult, Config.GetTierRange(shown),
-			nextTier and string.format("<font color='#9ad7ff'>다음 진화 → %s\n(%s)</font>", nextTier.Name, Config.WeaponTypes[nextTier.Class].Desc) or "<font color='#ffd966'>마지막 무기예요!</font>"
+			rate, math.floor(power * 100 + 0.5), classInfo.Range
 		),
 	}, header)
+	if unlocked and not isMine then
+		makeButton({
+			Size = UDim2.new(0, 190, 0, 40), Position = UDim2.new(1, -202, 1, -52), Text = "🔫 이 무기로 싸우기", BackgroundColor3 = GREEN,
+		}, header, function()
+			Remotes.Weapon:FireServer("Equip", previewKey)
+			settings.PreviewForm = nil
+			task.delay(0.3, function() settings.RefreshMenu() end)
+		end)
+	end
 
 	-- 무기 목록은 높이가 정해진 작은 창 안에서만 스크롤된다: 위쪽 시연 / 설명이 목록을 내려도 화면 밖으로 밀려나지 않는다 (엑셀 틀 고정처럼)
 	local listHost = newRow(178)
@@ -2482,22 +2504,22 @@ local function buildWeaponTab()
 	create("UIListLayout", { Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder }, inner)
 	local outerContent, outerOrder = activeContent, rowOrder
 	activeContent, rowOrder = inner, 0
-	task.defer(function() inner.CanvasPosition = Vector2.new(0, settings.WeaponListY or math.max(0, (current.Index - 3) * 38)) end)
-	for _, tier in ipairs(tiers) do
-		local owned = tier.Index < current.Index
-		local isCurrent = tier.Index == current.Index
-		local row = newRow(34, isCurrent and Color3.fromRGB(45, 70, 50) or (owned and Color3.fromRGB(34, 38, 48) or Color3.fromRGB(28, 28, 38)))
-		local classOf = Config.WeaponTypes[tier.Class]
-		local mark = isCurrent and "▶" or (owned and "✔" or "🔒")
-		local nameColor = (owned or isCurrent) and hex(tier.Color) or "777788"
-		rowText(row, string.format("%s  <font color='#aaaabb'>%d.</font> <font color='#%s'><b>%s</b></font>   <font size='12' color='#8888aa'>%s · +%d 단계부터</font>",
-			mark, tier.Index, nameColor, tier.Name, classOf.Name, tier.MinLevel), 14, 24)
-		if (settings.PreviewTier or current.Index) == tier.Index then
+	task.defer(function() inner.CanvasPosition = Vector2.new(0, settings.WeaponListY or 0) end)
+	for _, key in ipairs(order) do
+		local info = Config.WeaponTypes[key]
+		local look = Config.GetLookTier(level, key)
+		local open = Config.IsWeaponUnlocked(level, key)
+		local using = key == equippedKey
+		local row = newRow(34, using and Color3.fromRGB(45, 70, 50) or (open and Color3.fromRGB(34, 38, 48) or Color3.fromRGB(28, 28, 38)))
+		local mark = using and "▶" or (open and "✔" or "🔒")
+		rowText(row, string.format("%s  <font color='#%s'><b>%s</b></font>   <font size='12' color='#8888aa'>%s%s</font>",
+			mark, open and hex(look.Color) or "777788", info.Name, info.Trait, open and "" or string.format(" · +%d강 해금", Config.GetUnlockLevel(key))), 14, 24)
+		if previewKey == key then
 			create("UIStroke", { Color = Color3.fromRGB(255, 225, 120), Thickness = 2 }, row)
 		end
 		local pick = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", ZIndex = 5 }, row)
 		pick.Activated:Connect(function()
-			settings.PreviewTier = tier.Index
+			settings.PreviewForm = key
 			settings.DemoClock = 0
 			settings.WeaponListY = inner.CanvasPosition.Y -- 다시 그려도 보던 자리에 머문다
 			settings.RefreshMenu()
@@ -2731,10 +2753,11 @@ local function buildInventoryTab()
 		end)
 		rounded(box, 10)
 		if slotKey == "Weapon" then
-			local tier = Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0)
+			local weaponLevel = player:GetAttribute("WeaponLevel") or 0
+			local tier = Config.GetLookTier(weaponLevel, Config.ResolveWeaponType(weaponLevel, player:GetAttribute("WeaponType")))
 			rarityOutline(box, 4, 3.5).Color = tier.Color
 			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 6), Text = "🔫", TextSize = 32 }, box)
-			makeLabel({ Size = UDim2.new(1, -6, 0, 36), Position = UDim2.new(0, 3, 0, 46), Text = tier.Name, TextSize = 12, TextWrapped = true, TextColor3 = tier.Color, Font = Enum.Font.GothamBold }, box)
+			makeLabel({ Size = UDim2.new(1, -6, 0, 36), Position = UDim2.new(0, 3, 0, 46), Text = Config.WeaponTypes[tier.Class].Name, TextSize = 12, TextWrapped = true, TextColor3 = tier.Color, Font = Enum.Font.GothamBold }, box)
 		elseif item then
 			rarityOutline(box, rarity)
 			setDecor(box, item.Set, setCounts[item.Set], UDim2.new(0, 4, 0, 4), UDim2.new(0, 44, 0, 16), 10)

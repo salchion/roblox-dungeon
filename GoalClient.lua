@@ -312,15 +312,15 @@ local function pickGoal()
 
 	-- 무기 진화
 	if level < Config.Weapon.MaxLevel then
-		local nextTier = Config.Weapon.Tiers[Config.GetWeaponTierIndex(level) + 1]
+		local nextTier = Config.GetNextMilestone(level)
 		if nextTier then
 			local cost = 0
-			for l = level, nextTier.MinLevel - 1 do
+			for l = level, nextTier.Level - 1 do
 				cost += Config.GetEnhanceCost(l)
 			end
 			local freeLeft = player:GetAttribute("TutorialFree") == true and level < 3
 			table.insert(candidates, {
-				Text = freeLeft and string.format("🔫 다음 무기 <font color='#ffd966'>%s</font>\n✨ 지금은 강화가 무료예요! (%d번 남음)", nextTier.Name, 3 - level) or string.format("🔫 다음 무기 <font color='#ffd966'>%s</font> (%d/%d)\n강화 비용 %s G · 보유 %s G", nextTier.Name, nextTier.Index, Config.Weapon.WeaponCount, comma(cost), comma(gold)),
+				Text = freeLeft and string.format("🔫 다음 %s <font color='#ffd966'>%s</font>\n✨ 지금은 강화가 무료예요! (%d번 남음)", nextTier.Kind == "Form" and "무기 해금" or "시대", nextTier.Name, 3 - level) or string.format("🔫 다음 %s <font color='#ffd966'>%s</font> (+%d강)\n강화 비용 %s G · 보유 %s G", nextTier.Kind == "Form" and "무기 해금" or "시대", nextTier.Name, nextTier.Level, comma(cost), comma(gold)),
 				Ratio = freeLeft and 1 or math.min(1, gold / cost), Priority = 1,
 			})
 		end

@@ -336,7 +336,8 @@ local ERA_STYLE = {
 local PART_BUDGET = 20 -- 손잡이 / 그립 / 총열 외에 붙이는 장식 부품 수의 상한 (가벼운 무기 모델 유지)
 
 local function buildTool(level, typeKey)
-	local tier = Config.GetWeaponTier(level)
+	typeKey = Config.ResolveWeaponType(level, typeKey)
+	local tier = Config.GetLookTier(level, typeKey) -- 고른 무기 형 + 지금 시대의 외모
 	local scale = Config.GetWeaponScale(level)
 	local weaponType = Config.WeaponTypes[typeKey] or Config.WeaponTypes.Pistol
 	local thick = weaponType.BarrelThickness
@@ -350,7 +351,7 @@ local function buildTool(level, typeKey)
 	tool.Name = "Weapon"
 	tool.CanBeDropped = false
 	tool.RequiresHandle = true
-	tool.ToolTip = Config.FormatWeapon(level)
+	tool.ToolTip = Config.FormatWeapon(level, typeKey)
 
 	-- 몸체(손에 쥐는 부분) + 손잡이 그립
 	local handle = newPart("Handle", V(0.4, 0.6, 1.4), dark, STEEL, tool)
@@ -547,7 +548,7 @@ function Weapon.BuildPreviews()
 	folder.Name = "WeaponPreviews"
 	do
 		for index, tier in ipairs(Config.Weapon.Tiers) do
-			local tool = buildTool(tier.MinLevel, tier.Class)
+			local tool = buildTool(Config.Weapon.Tiers[(tier.Era - 1) * #Config.WeaponTypes.Order + 1].MinLevel, tier.Class) -- 그 시대가 시작되는 단계 (그 시대의 외모)
 			local model = Instance.new("Model")
 			model.Name = "W" .. index
 			for _, child in ipairs(tool:GetChildren()) do
@@ -659,7 +660,8 @@ function Weapon.PlayShot(player)
 
 	-- 무기가 강할수록 낮고 묵직한 소리
 	-- 무기 종류마다 다른 소리 (SoundBank: 같은 기본 소리를 피치 / 잔향 / 왜곡 / 겹치기로 가공). 세대가 높을수록 살짝 낮고 묵직하게
-	local tier = Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0)
+	local level = player:GetAttribute("WeaponLevel") or 0
+	local tier = Config.GetLookTier(level, Config.ResolveWeaponType(level, player:GetAttribute("WeaponType")))
 	local eraFactor = math.max(0.8, 1.08 - 0.03 * (tier.Era - 1))
 	-- 똑같은 소리가 "탕탕탕탕" 반복되지 않게: 쏠 때마다 높낮이 / 크기가 조금씩 달라지고(네 박자 패턴 + 무작위),
 	-- 아주 빠르게 연사할 때는 일부 발사음을 건너뛰거나 작게 해서 소리가 뭉개지지 않고 리듬이 생긴다
@@ -720,34 +722,51 @@ function Weapon.Enhance(player)
 		player:SetAttribute("WeaponLevel", level + 1)
 		Quest.Add(player, "Enhances", 1)
 		local before, after = Config.GetWeaponTier(level), Config.GetWeaponTier(level + 1)
-		local evolved = after.Index > before.Index
-		-- 무기가 바뀌면 서버 전체에 자랑 (시대가 바뀌거나 10번째 무기마다)
-		if evolved and (after.Era > before.Era or after.Index % 10 == 0) and after.Index >= 4 then
-			Event.Announce(string.format("📢 %s 님의 무기가 [%s]로 진화했어요! (%d/%d)", player.DisplayName, after.Name, after.Index, Config.Weapon.WeaponCount))
+		local unlockedBefore, unlockedAfter = Config.GetUnlockedCount(level), Config.GetUnlockedCount(level + 1)
+		local newForm = unlockedAfter > unlockedBefore and Config.WeaponTypes.Order[unlockedAfter] or nil
+		local newEra = after.Era > before.Era
+		local evolved = newForm ~= nil or newEra -- 새 무기 형이 해금되거나 시대가 바뀔 때만 큰 연출
+		if newEra and after.Index >= 4 then
+			Event.Announce(string.format("📢 %s 님의 무기가 [%s]로 진화했어요!", player.DisplayName, Config.GetEraName(after.Era)))
 		end
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if root then
 			Effects.Burst(root.Position, after.Color, evolved and 120 or 30)
 			if evolved then
-				Effects.FloatText(root.Position + Vector3.new(0, 5, 0), "⭐ " .. after.Name, after.Color)
+				Effects.FloatText(root.Position + Vector3.new(0, 5, 0), "⭐ " .. (newForm and Config.WeaponTypes[newForm].Name or Config.GetEraName(after.Era)), after.Color)
 			end
 		end
-		if evolved then
-			local perkText = (after.Era > before.Era and after.Perk) and string.format(" · 새 시대 『%s %s』!", after.Perk.Icon, after.Perk.Name) or ""
-			return true, string.format("🎉 진화! %s (%d/%d)%s", after.Name, after.Index, Config.Weapon.WeaponCount, perkText), false, true, cost
+		if newForm then
+			local info = Config.WeaponTypes[newForm]
+			return true, string.format("🔓 %s 해금! (%s) 무기 탭에서 골라 쓸 수 있어요", info.Name, info.Trait), false, true, cost
+		elseif newEra then
+			local perkText = after.Perk and string.format(" · 새 시대 『%s %s』!", after.Perk.Icon, after.Perk.Name) or ""
+			return true, string.format("🎉 %s로 진화! 무기 외형과 탄 색이 바뀌었어요%s", Config.GetEraName(after.Era), perkText), false, true, cost
 		end
-		return true, string.format("강화 성공! +%d/%d", Config.GetWeaponStage(level + 1), after.Steps), false, false, cost
+		return true, string.format("강화 성공! +%d강", level + 1), false, false, cost
 	end
 	return false, "강화 실패... (골드만 사라졌어요)", false, false, cost
 end
 
--- (예전 무기 종류 구매 / 장착은 없어졌다: 무기는 강화 단계에 따라 자동으로 진화한다)
-function Weapon.Equip()
-	return false, "무기는 강화하면 자동으로 다음 무기로 진화해요!"
+-- 해금한 무기 형 중에서 싸울 무기를 고른다
+function Weapon.Equip(player, typeKey)
+	local info = Config.WeaponTypes[typeKey]
+	if typeKey == "Order" or typeof(info) ~= "table" then
+		return false, "알 수 없는 무기예요."
+	end
+	local level = player:GetAttribute("WeaponLevel") or 0
+	if not Config.IsWeaponUnlocked(level, typeKey) then
+		return false, string.format("%s는 +%d강에 해금돼요.", info.Name, Config.GetUnlockLevel(typeKey))
+	end
+	if player:GetAttribute("WeaponType") == typeKey then
+		return true, string.format("이미 %s를 들고 있어요.", info.Name)
+	end
+	player:SetAttribute("WeaponType", typeKey)
+	return true, string.format("%s 장착! (%s)", info.Name, info.Trait)
 end
 
 function Weapon.Buy()
-	return false, "무기는 강화하면 자동으로 다음 무기로 진화해요!"
+	return false, "무기 형은 강화 단계로 해금돼요! 무기 탭에서 골라 쓸 수 있어요."
 end
 
 return Weapon

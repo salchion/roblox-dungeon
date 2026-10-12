@@ -110,7 +110,7 @@ local function refresh()
 
 	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
 	local tier = Config.GetWeaponTier(weaponLevel)
-	weaponText.Text = string.format("⚔ <font color='#%s'>%s</font>", tier.Color:ToHex(), Config.FormatWeapon(weaponLevel))
+	weaponText.Text = string.format("⚔ <font color='#%s'>%s</font>", tier.Color:ToHex(), Config.FormatWeapon(weaponLevel, player:GetAttribute("WeaponType")))
 
 	if not player:GetAttribute("DataReady") then -- 저장된 정보를 불러오는 동안은 멈춘 게 아니라는 걸 바로 알려 준다
 		zoneText.Text = "⏳ <font color='#ffe16e'>내 정보를 불러오는 중...</font>"

@@ -709,7 +709,7 @@ do
 		-- 새 무기 이름이 쾅 하고 박힌다
 		local title = makeLabel({
 			Size = UDim2.new(0, 560, 0, 30), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.34, 0),
-			Text = "✨ 무기 진화! ✨", Font = Enum.Font.GothamBlack, TextSize = 24, TextColor3 = Color3.fromRGB(255, 225, 100), TextStrokeTransparency = 0.2, ZIndex = 7, TextTransparency = 1,
+			Text = "✨ 새 시대! ✨", Font = Enum.Font.GothamBlack, TextSize = 24, TextColor3 = Color3.fromRGB(255, 225, 100), TextStrokeTransparency = 0.2, ZIndex = 7, TextTransparency = 1,
 		}, root)
 		local name = makeLabel({
 			Size = UDim2.new(0, 640, 0, 80), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.46, 0),
@@ -720,7 +720,7 @@ do
 		TweenService:Create(title, TweenInfo.new(0.4), { TextTransparency = 0 }):Play()
 		local sub = makeLabel({
 			Size = UDim2.new(0, 560, 0, 26), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.56, 0),
-			Text = string.format("%d번째 무기  ·  무기가 더 강해졌어요!", newIndex), Font = Enum.Font.GothamBold, TextSize = 16,
+			Text = string.format("%d시대  ·  무기 외형과 탄 색이 바뀌었어요!", newIndex), Font = Enum.Font.GothamBold, TextSize = 16,
 			TextColor3 = Color3.fromRGB(215, 215, 235), TextStrokeTransparency = 0.4, ZIndex = 7, TextTransparency = 1,
 		}, root)
 		task.delay(0.5, function() if sub.Parent then TweenService:Create(sub, TweenInfo.new(0.4), { TextTransparency = 0 }):Play() end end)
@@ -737,7 +737,7 @@ do
 	end
 
 	local function tierIndexNow()
-		return Config.GetWeaponTierIndex(player:GetAttribute("WeaponLevel") or 0)
+		return Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0).Era -- 시대가 바뀔 때만 큰 연출 (새 무기 형 해금은 알림으로)
 	end
 	task.defer(function()
 		while player.Parent and (player:GetAttribute("WeaponLevel") == nil or player:GetAttribute("DataReady") ~= true) do task.wait(0.25) end -- 저장된 무기 단계가 다 불러와진 뒤부터 비교한다 (접속 때 0 -> 저장값으로 바뀌는 걸 진화로 오해하지 않게)
@@ -747,7 +747,7 @@ do
 			local before = shownTier
 			shownTier = now
 			if before and now > before and Config.Weapon.Tiers[now] and Config.Weapon.Tiers[before] then
-				task.delay(0.6, function() play(Config.Weapon.Tiers[before].Name, Config.Weapon.Tiers[now].Name, now) end)
+				task.delay(0.6, function() play(Config.GetEraName(before), Config.GetEraName(now), now) end)
 			end
 		end)
 	end)

@@ -131,7 +131,7 @@ Config.Tutorial = {
 		{ Text = "🎯 대장간 옆 훈련장의 허수아비를 쏘세요! 마우스 클릭으로 사격해요 (R 키 = 자동 조준)", Stat = "DummyHits", Goal = 8, Target = "Dummy", TargetName = "허수아비",
 			Reward = { Gold = 100 } },
 		-- 강화 2번이 끝나면 슬롯 릴이 돌면서 겹치지 않는 부위 장비 3개를 바로 준다 (Reel). 뽑기 머신은 마을에 있다고 카드로 알려 주고, 일일 퀘스트에도 뽑기가 있다.
-		{ Text = "모루에서 무기를 강화하세요! 강화할수록 무기가 강해지고, 여러 번 하면 더 강한 다음 무기로 진화해요 (무료)", Stat = "Enhances", Goal = 2, Target = "Anvil", TargetName = "모루", FreeEnhance = true, Reel = true,
+		{ Text = "모루에서 무기를 강화하세요! 강화할수록 무기가 강해지고, 15강마다 새 무기가 해금돼요 (무료)", Stat = "Enhances", Goal = 2, Target = "Anvil", TargetName = "모루", FreeEnhance = true, Reel = true,
 			Reward = { Tickets = 1, Gold = 150 } },
 		-- 이야기: 필드 군주를 쓰러뜨리면 열쇠가 떨어져 바닥이 갈라지고 -> 던전 -> 던전 보스를 쓰러뜨리면 최후의 군주가 나타나 압도당하고 -> 마을에서 전리품으로 뽑기 / 강화
 		{ Text = "동쪽 필드로 나가서 첫 구역의 군주(👑)를 쓰러뜨리세요! (필드로 나가면 첫 장비를 받아요) ...어딘가 불길한 기운이 느껴져요. 조심하세요!", Stat = "BossKills", Goal = 1, Target = "Field", TargetName = "필드 입구", Doom = true,
@@ -145,7 +145,7 @@ Config.Tutorial = {
 		{ Text = "💀 군주는 \"8번째 땅 끝에서 기다리마\"라는 말만 남기고 사라졌어요. 강해져야 해요! 전리품 티켓으로 뽑기 머신에서 10연 뽑기!", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "뽑기 머신", RollMode = "Hero", ShowQuests = true, -- 여기서부터 화면에 오늘의 퀘스트가 나타난다
 			Reward = { Gold = 500, Xp = 100 } },
 		-- EvolveToTier: 이 번째 무기(3 = 기관단총)가 될 때까지 필요한 강화 횟수를 미션이 시작될 때 계산해서 목표로 쓴다. {무기} = 그 무기 이름
-		{ Text = "💰 모은 골드로 무기를 강화해서 {무기}까지 진화시키세요! 무기가 한층 강해져서 필드가 쉬워져요", Stat = "Enhances", Goal = 10, EvolveToTier = 3, Target = "Anvil", TargetName = "모루",
+		{ Text = "💰 모은 골드로 무기를 +15강까지 강화해서 기관단총을 해금하세요! 해금하면 무기 탭에서 원하는 무기를 골라 쓸 수 있어요", Stat = "Enhances", Goal = 15, EvolveToTier = 2, Target = "Anvil", TargetName = "모루",
 			Reward = { Tickets = 2, Xp = 150 } },
 	},
 }
@@ -804,7 +804,7 @@ end
 function Config.GetPower(weaponLevel, critPoints, speedPoints, gearHealth, gearCrit, typeKey, level, gearDamage)
 	local P = Config.Player
 	level = level or 1
-	local weaponType = Config.WeaponTypes[typeKey or "Pistol"] or Config.WeaponTypes.Pistol
+	local weaponType = Config.WeaponTypes[Config.ResolveWeaponType(weaponLevel, typeKey)]
 	local pellets = weaponType.Pellets > 1 and weaponType.Pellets * 0.6 or 1
 	local typeFactor = weaponType.DamageMult * pellets / weaponType.Cooldown
 	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel) * Config.GetLevelDamageMult(level) * (1 + (gearDamage or 0))
@@ -821,55 +821,56 @@ end
 ------------------------------------------------------------
 Config.WeaponTypes = {
 	Order = { "Pistol", "Smg", "Revolver", "Rifle", "Shotgun", "Flamer", "Cannon", "Sniper", "Rocket", "Rail" },
+	-- 초당 피해 계수 F = 한 발 x 탄 수(산탄은 60%만 맞는다고 계산) / 간격. 사거리가 긴 무기는 F 가 1.0 근처, 사거리가 짧은 무기는 F 가 1.5 근처
 	Pistol = {
 		Name = "권총", Form = "Basic", DamageMult = 1.0, Cooldown = 1, Range = 300, Pellets = 1, Spread = 0,
 		ShotScale = 1, SpeedScale = 1, BarrelLength = 1, BarrelThickness = 1,
-		Desc = "균형 잡힌 기본 무기",
-	},
-	Revolver = {
-		Name = "리볼버", Form = "Steel", DamageMult = 1.08, Cooldown = 1.0, Range = 320, Pellets = 1, Spread = 0,
-		ShotScale = 1.15, SpeedScale = 1.1, CritBonus = 0.1, BarrelLength = 0.9, BarrelThickness = 1.2,
-		Desc = "느리지만 묵직한 한 방, 치명타 +10%",
+		Trait = "가장 균형 잡힌 무기", Desc = "무엇 하나 모자라지 않는 기본기",
 	},
 	Smg = {
-		Name = "기관단총", Form = "Smg", DamageMult = 0.416, Cooldown = 0.4, Range = 220, Pellets = 1, Spread = 0,
+		Name = "기관단총", Form = "Smg", DamageMult = 0.44, Cooldown = 0.4, Range = 190, Pellets = 1, Spread = 0,
 		ShotScale = 0.7, SpeedScale = 1.1, BarrelLength = 0.8, BarrelThickness = 0.9,
-		Desc = "엄청난 연사 속도로 쏟아붓는 총",
+		Trait = "아주 빠른 연사 · 짧은 사거리", Desc = "엄청난 연사 속도로 쏟아붓는 총",
 	},
-	Shotgun = {
-		Name = "샷건", Form = "Basic", DamageMult = 0.387, Cooldown = 1.2, Range = 90, Pellets = 6, Spread = 9,
-		ShotScale = 0.55, SpeedScale = 1, BarrelLength = 0.75, BarrelThickness = 1.5,
-		Desc = "6발이 부채꼴로 퍼져 나가는 산탄 (멀수록 덜 맞아요)",
+	Revolver = {
+		Name = "리볼버", Form = "Steel", DamageMult = 1.12, Cooldown = 1.1, Range = 320, Pellets = 1, Spread = 0,
+		ShotScale = 1.15, SpeedScale = 1.1, CritBonus = 0.1, BarrelLength = 0.9, BarrelThickness = 1.2,
+		Trait = "묵직한 한 방 · 치명타 +10%", Desc = "느리지만 묵직한 한 방",
 	},
 	Rifle = {
-		Name = "라이플", Form = "Rifle", DamageMult = 0.84, Cooldown = 0.75, Range = 400, Pellets = 1, Spread = 0,
+		Name = "소총", Form = "Rifle", DamageMult = 0.62, Cooldown = 0.6, Range = 420, Pellets = 1, Spread = 0,
 		ShotScale = 0.9, SpeedScale = 1.4, CritBonus = 0.05, BarrelLength = 1.4, BarrelThickness = 0.9,
-		Desc = "멀리까지 정확한 중속 연사",
+		Trait = "빠른 연사 · 먼 사거리", Desc = "멀리까지 정확하게 이어지는 연사",
 	},
-	Sniper = {
-		Name = "저격총", Form = "Basic", DamageMult = 1.792, Cooldown = 1.4, Range = 600, Pellets = 1, Spread = 0,
-		ShotScale = 1.4, SpeedScale = 2.4, CritBonus = 0.25, BarrelLength = 1.9, BarrelThickness = 0.7,
-		Desc = "느리지만 한 방이 강력, 치명타 +25%",
-	},
-	Rocket = {
-		Name = "로켓 런처", Form = "Rocket", DamageMult = 1.848, Cooldown = 1.4, Range = 350, Pellets = 1, Spread = 0, Splash = 12,
-		ShotScale = 1.8, SpeedScale = 0.55, BarrelLength = 1.3, BarrelThickness = 1.6,
-		Desc = "맞은 곳이 폭발해서 주변 적에게도 피해 (범위 12)",
-	},
-	Rail = {
-		Name = "레일건", Form = "Rail", DamageMult = 1.904, Cooldown = 1.4, Range = 700, Pellets = 1, Spread = 0, Pierce = 2,
-		ShotScale = 1.2, SpeedScale = 3, BarrelLength = 1.6, BarrelThickness = 0.8,
-		Desc = "일직선으로 적을 3마리까지 관통하는 초고속 탄",
+	Shotgun = {
+		Name = "샷건", Form = "Basic", DamageMult = 0.5, Cooldown = 1.2, Range = 80, Pellets = 6, Spread = 9,
+		ShotScale = 0.55, SpeedScale = 1, BarrelLength = 0.75, BarrelThickness = 1.5,
+		Trait = "초근접 폭딜 · 사거리 매우 짧음", Desc = "6발이 부채꼴로 퍼지는 산탄 (멀수록 덜 맞아요)",
 	},
 	Flamer = {
-		Name = "화염방사기", Form = "Flamer", DamageMult = 0.2, Cooldown = 0.4, Range = 55, Pellets = 4, Spread = 16,
+		Name = "화염방사기", Form = "Flamer", DamageMult = 0.19, Cooldown = 0.3, Range = 45, Pellets = 4, Spread = 16,
 		ShotScale = 0.9, SpeedScale = 0.6, BarrelLength = 0.7, BarrelThickness = 1.4,
-		Desc = "불길을 부채꼴로 뿜는 무기 (멀수록 덜 맞아요)",
+		Trait = "최고 화력 · 사거리 가장 짧음", Desc = "불길을 부채꼴로 뿜는 무기 (붙어서 태워요)",
 	},
 	Cannon = {
-		Name = "플라즈마 캐논", Form = "Cannon", DamageMult = 1.488, Cooldown = 1.2, Range = 380, Pellets = 1, Spread = 0, Splash = 7,
+		Name = "플라즈마 캐논", Form = "Cannon", DamageMult = 1.5, Cooldown = 1.3, Range = 360, Pellets = 1, Spread = 0, Splash = 7,
 		ShotScale = 1.5, SpeedScale = 0.8, BarrelLength = 1.1, BarrelThickness = 1.8,
-		Desc = "큼직한 플라즈마 탄, 맞은 곳 주변에 작은 폭발 (범위 7)",
+		Trait = "작은 폭발 · 느린 탄", Desc = "큼직한 플라즈마 탄, 맞은 곳 주변에 작은 폭발 (범위 7)",
+	},
+	Sniper = {
+		Name = "저격총", Form = "Basic", DamageMult = 1.6, Cooldown = 1.6, Range = 650, Pellets = 1, Spread = 0,
+		ShotScale = 1.4, SpeedScale = 2.4, CritBonus = 0.25, BarrelLength = 1.9, BarrelThickness = 0.7,
+		Trait = "먼 사거리 · 치명타 +25%", Desc = "느리지만 한 방이 강력",
+	},
+	Rocket = {
+		Name = "로켓 런처", Form = "Rocket", DamageMult = 1.7, Cooldown = 1.5, Range = 340, Pellets = 1, Spread = 0, Splash = 12,
+		ShotScale = 1.8, SpeedScale = 0.55, BarrelLength = 1.3, BarrelThickness = 1.6,
+		Trait = "넓은 폭발 · 몰이 사냥", Desc = "맞은 곳이 폭발해서 주변 적에게도 피해 (범위 12)",
+	},
+	Rail = {
+		Name = "레일건", Form = "Rail", DamageMult = 1.45, Cooldown = 1.4, Range = 700, Pellets = 1, Spread = 0, Pierce = 2,
+		ShotScale = 1.2, SpeedScale = 3, BarrelLength = 1.6, BarrelThickness = 0.8,
+		Trait = "적 3마리 관통 · 가장 먼 사거리", Desc = "일직선으로 적을 3마리까지 관통하는 초고속 탄",
 	},
 }
 
@@ -880,37 +881,85 @@ function Config.WeaponDpsFactor(weaponType)
 	return weaponType.DamageMult * pellets / weaponType.Cooldown
 end
 
--- (무기 종류끼리 연사 속도 차이를 줄였다: 초당 약 2~7발. 초당 피해량(DPS)은 그대로 유지하도록 한 발 피해를 맞췄다)
--- 지금 들고 있는 무기의 종류 능력치 (무기는 강화 단계에 따라 자동으로 바뀐다)
--- 사거리는 무기 종류(권총 / 샷건 ...)가 아니라 "몇 번째 무기인가"로 정한다: 강해질수록(무기가 진화할수록) 사거리가 줄어드는 일이 없게 (게임적 허용).
--- 무기 번호가 오를수록 280 -> 약 680 (최대 700). 샷건 / 화염방사기는 사거리가 길어진 대신 탄이 퍼져서 멀리서는 덜 맞는다.
-function Config.GetTierRange(tier)
-	return math.min(700, 280 + 4 * tier.Index)
-end
-
-local tierWeapons = {} -- [무기 번호] = 종류 능력치 + 그 무기 번호의 사거리
-function Config.GetTierWeapon(tier)
-	local cached = tierWeapons[tier.Index]
-	if not cached then
-		cached = table.clone(Config.WeaponTypes[tier.Class] or Config.WeaponTypes.Pistol)
-		cached.Range = Config.GetTierRange(tier)
-		tierWeapons[tier.Index] = cached
+-- 무기 종류 10형은 강화 단계로 해금된다 (Tiers 1~10 의 MinLevel = 0 / 15 / 30 ... 135). 어떤 형으로 싸울지는 플레이어가 고른다.
+-- 시대(Era)는 무기의 외모 / 탄 색만 바꾸고, 강화 단계가 오를수록 위력(GetDamageMultiplier)이 오른다.
+function Config.GetUnlockLevel(typeKey)
+	for index, key in ipairs(Config.WeaponTypes.Order) do
+		if key == typeKey then return Config.Weapon.Tiers[index].MinLevel end
 	end
-	return cached
+	return 0
 end
 
--- 지금 무기의 시대 특성
+function Config.IsWeaponUnlocked(level, typeKey)
+	return (level or 0) >= Config.GetUnlockLevel(typeKey)
+end
+
+function Config.GetUnlockedCount(level)
+	local count = 0
+	for index in ipairs(Config.WeaponTypes.Order) do
+		if (level or 0) >= Config.Weapon.Tiers[index].MinLevel then count += 1 end
+	end
+	return count
+end
+
+-- 고른 무기가 아직 잠겨 있으면(또는 이상한 값이면) 권총
+function Config.ResolveWeaponType(level, typeKey)
+	if typeof(typeKey) == "string" and typeKey ~= "Order" and Config.WeaponTypes[typeKey] and Config.IsWeaponUnlocked(level, typeKey) then
+		return typeKey
+	end
+	return "Pistol"
+end
+
+-- 그 무기 형 + 지금 시대의 외모 정보 (색 / 재질 / 탄 모양). Tiers[(시대-1)*10 + 형 번호]
+function Config.GetLookTier(level, typeKey)
+	local era = Config.GetWeaponTier(level).Era
+	local count = #Config.WeaponTypes.Order
+	for index, key in ipairs(Config.WeaponTypes.Order) do
+		if key == typeKey then return Config.Weapon.Tiers[(era - 1) * count + index] end
+	end
+	return Config.Weapon.Tiers[(era - 1) * count + 1]
+end
+
+-- 다음 큰 변화: 아직 잠긴 무기 형이 있으면 그 해금, 다 풀었으면 다음 시대. 없으면 nil.
+function Config.GetNextMilestone(level)
+	level = level or 0
+	local order = Config.WeaponTypes.Order
+	local unlocked = Config.GetUnlockedCount(level)
+	if unlocked < #order then
+		local tier = Config.Weapon.Tiers[unlocked + 1]
+		return { Kind = "Form", Level = tier.MinLevel, Name = Config.WeaponTypes[order[unlocked + 1]].Name, Key = order[unlocked + 1], Era = tier.Era }
+	end
+	local era = Config.GetWeaponTier(level).Era
+	local tier = Config.Weapon.Tiers[era * #order + 1]
+	if tier then
+		return { Kind = "Era", Level = tier.MinLevel, Name = Config.GetEraName(tier.Era), Era = tier.Era, Tier = tier }
+	end
+	return nil
+end
+
+function Config.GetTierWeapon(tier)
+	return Config.WeaponTypes[tier.Class] or Config.WeaponTypes.Pistol
+end
+
+-- 지금 시대의 특성
 function Config.GetWeaponPerk(level)
 	return Config.GetWeaponTier(level).Perk
 end
 
 function Config.GetPlayerWeapon(player)
-	return Config.GetTierWeapon(Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0))
+	local level = player:GetAttribute("WeaponLevel") or 0
+	return Config.WeaponTypes[Config.ResolveWeaponType(level, player:GetAttribute("WeaponType"))]
 end
 
--- 무기 이름 (typeKey 는 예전 호환용으로 무시: 이름은 강화 단계로만 정해진다)
-function Config.GetWeaponName(_typeKey, level)
-	return Config.GetWeaponTier(level).Name
+function Config.GetEraName(era)
+	local data = ERAS[era]
+	return data and (data.Prefix .. " 시대") or ""
+end
+
+-- 무기 이름: 형 이름만 (접두사 없음). 시대는 따로 표시한다.
+function Config.GetWeaponName(typeKey, _level)
+	local weaponType = Config.WeaponTypes[typeKey] or Config.WeaponTypes.Pistol
+	return weaponType.Name
 end
 
 ------------------------------------------------------------
@@ -1650,10 +1699,11 @@ function Config.StageBar(level)
 	return string.rep("▰", stage) .. string.rep("▱", tier.Steps - stage)
 end
 
--- 화면에 보이는 무기 표시: "[1/100] 녹슨 권총 +3/10"
-function Config.FormatWeapon(level)
+-- 화면에 보이는 무기 표시: "권총 · 녹슨 시대 +3강"
+function Config.FormatWeapon(level, typeKey)
 	local tier = Config.GetWeaponTier(level)
-	return string.format("[%d/%d] %s +%d/%d", tier.Index, Config.Weapon.WeaponCount, tier.Name, Config.GetWeaponStage(level), tier.Steps)
+	local key = Config.ResolveWeaponType(level, typeKey)
+	return string.format("%s · %s +%d강", Config.WeaponTypes[key].Name, Config.GetEraName(tier.Era), math.floor(level or 0))
 end
 
 -- level -> level+1 강화 비용 (사다리 전체에서 조금씩 올라간다)
