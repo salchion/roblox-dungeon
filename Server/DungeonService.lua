@@ -1459,6 +1459,17 @@ local function hitMonster(run, player, entry, amount, quiet)
 	end
 end
 
+-- 세트 효과가 발동했다는 것을 그 플레이어 화면에 알린다 (효과별로 0.55초에 한 번만: 연사해도 화면이 도배되지 않게)
+local lastProc = setmetatable({}, { __mode = "k" })
+local function procAug(player, attr)
+	local now = os.clock()
+	local mine = lastProc[player]
+	if not mine then mine = {} lastProc[player] = mine end
+	if now - (mine[attr] or 0) < 0.55 then return end
+	mine[attr] = now
+	Remotes.Aug:FireClient(player, "Proc", attr)
+end
+
 -- style: "rocket"(꼬리 불꽃 미사일: 크리 미사일) / "blade"(회전 표창: 튕기는 표창) / "orb"(에너지 구체: 펫 사격) / nil(예전 노란 구)
 local function launchMissile(run, player, from, entry, amount, style, tint, scale)
 	sfxAt(run, from, "Aug_Missile", nil, 0.08)
@@ -1570,6 +1581,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 	local execLevel = augLv(run, player, "AugExecute")
 	if execLevel > 0 and data.Health > 0 and not data.IsBoss and not data.BossLike and data.Kind ~= "Boss" and not data.Invincible and data.Health / data.MaxHealth <= math.min(0.4, 0.1 + 0.06 * execLevel) then
 		data.Health = 0
+		procAug(player, "AugExecute")
 		Effects.Raw(part.Position, { "U", part.Position + Vector3.new(0, part.Size.Y / 2 + 1.5, 0), part.Size.Y }) -- 해골 + 보라 폭발 + 베기 (각자 화면에서)
 		sfxAt(run, part.Position, "Aug_Execute", nil, 0.1)
 		sfxAt(run, part.Position, "Aug_Skull", nil, 0.12)
@@ -1584,6 +1596,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 	if level <= 0 or not isCrit or augDepth > 0 then return end
 	-- 치명타: 맞은 곳에서 추가 미사일 (1 + 단계 발) 이 주변 적에게 휘어 날아간다
 	local from = part.Position + Vector3.new(0, 3, 0)
+	procAug(player, "AugMissile")
 	for _, entry in ipairs(nearestMonsters(run, part.Position, 70, 1 + level, part)) do
 		launchMissile(run, player, from, entry, amount * 0.6, "rocket", Color3.fromRGB(255, 120, 60))
 	end
@@ -1592,11 +1605,13 @@ end
 augOnKill = function(run, player, position)
 	local flame = augLv(run, player, "AugFlame")
 	if flame > 0 then -- 화염 지대: 쓰러진 자리에 불길
+		procAug(player, "AugFlame")
 		makeFlame(run, player, position, 7 + 2 * flame, (5 + flame) * (synergy(player, "Inferno") and 1.5 or 1), augDamage(player) * (0.25 + 0.1 * flame))
 	end
 	local level = augLv(run, player, "AugNova")
 	if level <= 0 or augDepth > 1 then return end
 	augDepth += 1
+	procAug(player, "AugNova")
 	local radius = (12 + 3 * level) * (synergy(player, "Inferno") and 1.3 or 1)
 	Effects.Raw(position, { "N", position, radius, Color3.fromRGB(255, 110, 70) }) -- 충격 고리 + 파편 + 부드러운 빛구 (각자 화면에서)
 	sfxAt(run, position, "Aug_Nova", nil, 0.12)
@@ -1655,6 +1670,7 @@ local function startAugLoop(run)
 					nextTick[member] = now + math.max(1.1, 2.1 - 0.3 * orbit)
 					local first = nearestMonsters(run, root.Position, 70, 1)[1]
 					if first then
+						procAug(member, "AugOrbit")
 						local chain, used = { first }, { [first.Part] = true }
 						for _ = 1, orbit + 1 do
 							local last = chain[#chain]
@@ -1688,6 +1704,7 @@ local function startAugLoop(run)
 				local storm = augLv(run, member, "AugStorm")
 				if root and storm > 0 and now >= (nextStorm[member] or 0) then
 					nextStorm[member] = now + math.max(1.2, 3.4 - 0.5 * storm)
+					procAug(member, "AugStorm")
 					for _, entry in ipairs(nearestMonsters(run, root.Position, 75, 2 + storm)) do
 						strikeBolt(run, member, entry, augDamage(member) * (1.5 + 0.5 * storm))
 					end
@@ -1706,6 +1723,7 @@ local function startAugLoop(run)
 						if count > bestCount then best, bestCount = a, count end
 					end
 					if best then
+						procAug(member, "AugMeteor")
 						local p = best.Part.Position
 						dropMeteor(run, member, Vector3.new(p.X, root.Position.Y - 2.5, p.Z), 14 + 2 * meteor, augDamage(member) * (2.2 + 0.8 * meteor), meteor)
 					end
@@ -1726,6 +1744,7 @@ local function startAugLoop(run)
 					nextPulse[member] = now + math.max(2.2, 4.8 - 0.8 * pulse)
 					local origin = root.Position + Vector3.new(0, 3, 0)
 					local blastDamage = augDamage(member) * (1.4 + 0.6 * pulse)
+					procAug(member, "AugPulse")
 					for _, entry in ipairs(nearestMonsters(run, root.Position, 75, 2 + pulse)) do
 						launchBlast(run, member, origin, entry, blastDamage, 10 + 2 * pulse, Color3.fromRGB(110, 255, 190))
 					end

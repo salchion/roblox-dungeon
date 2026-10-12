@@ -229,9 +229,10 @@ local hudBox = make("TextLabel", {
 	Text = "", Visible = false, ZIndex = 3,
 }, gui)
 make("UICorner", { CornerRadius = UDim.new(0, 8) }, hudBox)
-make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 1.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Transparency = 0.4 }, hudBox)
+local hudStroke = make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 1.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Transparency = 0.4 }, hudBox)
 make("UIPadding", { PaddingLeft = UDim.new(0, 8), PaddingTop = UDim.new(0, 5), PaddingRight = UDim.new(0, 6) }, hudBox)
 
+local procUntil = {} -- 효과 이름 -> 이 시각까지 "방금 발동" 표시
 local function refreshHud()
 	local zone = player:GetAttribute("Zone")
 	local lines = { "<font color='#ffd966'><b>🌟 Set Effects</b></font>" }
@@ -240,7 +241,8 @@ local function refreshHud()
 			local info = Config.AugInfo[Config.Sets.ZoneAug[z]]
 			local gold = player:GetAttribute("AugLvZ_" .. z) or 0
 			local gear = player:GetAttribute("AugGearZ_" .. z) or 0
-			table.insert(lines, string.format("%s %s  <font color='#8fe0ff'><b>Lv.%d</b></font>%s", info.Icon, info.Name, gold + gear,
+			local fired = (procUntil[Config.Sets.ZoneAug[z]] or 0) > os.clock() -- 방금 발동한 효과는 노랗게 켜진다
+			table.insert(lines, string.format("%s%s %s  <font color='#8fe0ff'><b>Lv.%d</b></font>%s", fired and "<font color='#ffff70'><b>▶ </b></font>" or "", info.Icon, fired and ("<font color='#ffff70'><b>" .. info.Name .. "</b></font>") or info.Name, gold + gear,
 				gear > 0 and string.format(" <font color='#aab0c8'>(gold %d + gear %d)</font>", gold, gear) or ""))
 		end
 	end
@@ -315,7 +317,37 @@ local function playRoll(pick)
 	refreshCorner()
 end
 
+-- 세트 효과가 발동했을 때: 조준점 아래에 이름 팝업이 떠올랐다 사라지고, 오른쪽 위 목록의 그 효과가 잠깐 노랗게 켜지며 상자 테두리가 번쩍인다
+local procLabels = {}
+local function showProc(attr)
+	local info = Config.AugInfo[attr]
+	if not info then return end
+	procUntil[attr] = os.clock() + 0.5
+	refreshHud()
+	task.delay(0.55, refreshHud)
+	hudStroke.Thickness = 3
+	hudStroke.Transparency = 0
+	TweenService:Create(hudStroke, TweenInfo.new(0.5), { Thickness = 1.2, Transparency = 0.4 }):Play()
+	local slot = #procLabels
+	local pop = label({
+		Size = UDim2.new(0, 260, 0, 26), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.64, 26 * slot), Text = info.Icon .. "  " .. info.Name .. "!",
+		TextSize = 17, TextColor3 = info.Color:Lerp(Color3.new(1, 1, 1), 0.35), TextStrokeTransparency = 0.35, TextStrokeColor3 = Color3.fromRGB(10, 10, 20), ZIndex = 40,
+	}, gui)
+	table.insert(procLabels, pop)
+	local scale = make("UIScale", { Scale = 0.6 }, pop)
+	TweenService:Create(scale, TweenInfo.new(0.18, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	task.delay(0.25, function()
+		TweenService:Create(pop, TweenInfo.new(0.5), { Position = pop.Position - UDim2.new(0, 0, 0, 28), TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+	end)
+	task.delay(0.8, function()
+		local at = table.find(procLabels, pop)
+		if at then table.remove(procLabels, at) end
+		pop:Destroy()
+	end)
+end
+
 Remotes.Aug.OnClientEvent:Connect(function(action, pick)
-	if action == "Demo" then task.spawn(playRoll, pick) end
+	if action == "Demo" then task.spawn(playRoll, pick)
+	elseif action == "Proc" then showProc(pick) end
 end)
 refreshCorner()
