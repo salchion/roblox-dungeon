@@ -767,6 +767,33 @@ local function hazardCast(ctx, part, data, stats)
 	end
 end
 
+-- 필드 이벤트 "포격": 플레이어 뒤쪽을 중심으로 사방에 경고 원이 줄줄이 뜨고 시간차로 떨어진다. (뒤로 빠지며 쏘기만 해서는 맞는다: 계속 움직이며 빈 곳을 찾아야 한다)
+--   heading: 플레이어가 바라보는 방향(수평). 원의 60%는 뒤쪽 반원에 나온다. 1~5구역은 구역 테마(번개 / 가시 / 얼음 ...), 6구역 이후는 운석.
+function M.Barrage(ctx, center, count, zone, stats, heading)
+	heading = (heading and heading.Magnitude > 0.1) and heading.Unit or Vector3.new(0, 0, -1)
+	local theme = HAZARD_THEMES[zone]
+	local behindAngle = math.atan2(-heading.Z, -heading.X)
+	for index = 1, count do
+		local angle
+		if math.random() < 0.6 then
+			angle = behindAngle + (math.random() - 0.5) * math.rad(200) -- 뒤쪽 반원
+		else
+			angle = math.random() * math.pi * 2 -- 사방
+		end
+		local distance = 10 + math.random() * 18
+		local spot = center + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
+		if index == 1 then spot = center end -- 한 발은 서 있는 자리에 (가만히 서 있지 못하게)
+		task.delay((index - 1) * 0.16, function()
+			if theme then
+				hazardActive += 1
+				hazardStrike(ctx, spot, stats, theme)
+			else
+				meteor(ctx, spot, stats, nil, nil, 7, 1.5, 1.0)
+			end
+		end)
+	end
+end
+
 -- 충격파: 발밑에서 고리가 퍼진다. 점프해서 넘으면 안 맞는다
 local function shockwave(ctx, part, stats)
 	local origin = part.Position

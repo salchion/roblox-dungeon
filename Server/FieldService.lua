@@ -3325,6 +3325,7 @@ local FIELD_EVENTS = {
 	{ Key = "Raid",    Weight = 3.8 },  -- 공습 (폭격기 + 낙하산 부대): 화면이 심심하지 않게 조금 더 자주 (2.5 -> 3.8)
 	{ Key = "Ambush",  Weight = 3 },    -- 사방 습격
 	{ Key = "Elite",   Weight = 2.2 },  -- 엘리트 부대 습격
+	{ Key = "Barrage", Weight = 3 },    -- 포격: 뒤쪽 / 사방에 붉은(구역 테마) 경고 원이 줄줄이 떨어진다 (뒤로 빠지며 쏘기만 해서는 안 되게)
 	-- (몬스터 대이동 Stampede 는 뺐다: 줄지어 달려오는 몬스터가 타격되지 않는 문제 + 피하기 어려운 연출. eventStampede 코드는 남겨 둔다)
 }
 
@@ -3337,6 +3338,16 @@ local function eventAmbush(player, root, zone)
 		local at = ringSpot(root, zone, 42, 58)
 		if at then spawnMonster(zone, "Normal", at, true) end
 	end
+end
+
+local function eventBarrage(player, root, zone)
+	notify(player, "💥 Incoming barrage! Watch the circles on the ground — keep moving!")
+	player:SetAttribute("ShakeStrength", 0.25)
+	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+	local base = Config.Monster.GetStats(F.GetZoneLevel(zone))
+	local stats = { ShotDamage = math.max(1, math.floor(base.ShotDamage * F.ZoneDanger.Damage[zone] * 0.9)) }
+	local look = root.CFrame.LookVector
+	MonsterTypes.Barrage(fieldCtx, root.Position, 7 + math.min(4, zone // 2), zone, stats, Vector3.new(look.X, 0, look.Z))
 end
 
 local function eventElite(player, root, zone)
@@ -3530,6 +3541,8 @@ local function runAmbush()
 								eventAmbush(player, root, zone)
 							elseif picked == "Elite" then
 								eventElite(player, root, zone)
+							elseif picked == "Barrage" then
+								eventBarrage(player, root, zone)
 							elseif picked == "Stampede" then
 								eventStampede(player, root, zone)
 							end
