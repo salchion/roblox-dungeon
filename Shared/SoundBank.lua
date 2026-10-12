@@ -17,12 +17,12 @@ local SoundBank = {}
 local SPECS = {
 	-- 무기 종류별 총소리 (Shot 소리를 가공)
 	Shot_Pistol   = { Base = "Shot", Pitch = 1.15, Volume = 1.0, Length = 0.7 },
-	Shot_Smg      = { Base = "Shot", CustomLength = 0.9, Pitch = 1.5, Volume = 0.55, Length = 0.35 },
+	Shot_Smg      = { Base = "Shot", CustomLength = 0.9, Pitch = 1.5, Volume = 1.4, Length = 0.35 },
 	Shot_Revolver = { Base = "Shot", Pitch = 0.82, Volume = 1.2, Length = 1.3, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -4 } } } },
 	Shot_Rifle    = { Base = "Shot", Pitch = 1.0, Volume = 0.9, Length = 0.9, Fx = { { "reverb", { DecayTime = 0.8, WetLevel = -9 } } } },
 	Shot_Shotgun  = { Base = "Shot", Pitch = 0.7, Volume = 1.3, Length = 1.0, Fx = { { "distortion", { Level = 0.35 } } },
 		Layers = { { Pitch = 0.5, Volume = 0.9, Delay = 0 }, { Pitch = 1.3, Volume = 0.5, Delay = 0.03 } } },
-	Shot_Flamer   = { Base = "Shot", Pitch = 0.6, Volume = 0.7, Length = 0.4, Fx = { { "chorus", { Depth = 0.7, Mix = 0.6 } }, { "distortion", { Level = 0.3 } } } },
+	Shot_Flamer   = { Base = "Shot", Pitch = 0.6, Volume = 1.0, Length = 0.4, Fx = { { "chorus", { Depth = 0.7, Mix = 0.6 } }, { "distortion", { Level = 0.3 } } } },
 	Shot_Cannon   = { Base = "Shot", Pitch = 0.62, Volume = 1.3, Length = 1.5, Fx = { { "reverb", { DecayTime = 2.2, WetLevel = -3 } }, { "pitchshift", { Octave = 0.85 } } } },
 	Shot_Sniper   = { Base = "Shot", Pitch = 0.8, Volume = 1.3, Length = 2.0, Fx = { { "reverb", { DecayTime = 2.8, WetLevel = -3 } }, { "echo", { Delay = 0.22, Feedback = 0.3, WetLevel = -8 } } } },
 	Shot_Rocket   = { Base = "Shot", Pitch = 0.55, Volume = 1.4, Length = 1.5, Fx = { { "distortion", { Level = 0.5 } }, { "echo", { Delay = 0.15, Feedback = 0.35, WetLevel = -6 } } },
