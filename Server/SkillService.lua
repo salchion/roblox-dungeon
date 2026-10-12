@@ -178,21 +178,6 @@ handlers.Heal = function(player, root)
 	return true
 end
 
--- 데드아이 전용 굵은 빔 (기본 Tracer 는 너무 가늘고 짧아서 안 보였다)
-local function thickBeam(from, to, color, thickness, life)
-	local distance = (to - from).Magnitude
-	if distance < 0.1 then return end
-	local beam = Instance.new("Part")
-	beam.Anchored, beam.CanCollide, beam.CanQuery, beam.CanTouch = true, false, false, false
-	beam.Material = Enum.Material.Neon
-	beam.Color = color
-	beam.Size = Vector3.new(thickness, thickness, distance)
-	beam.CFrame = CFrame.lookAt(from, to) * CFrame.new(0, 0, -distance / 2)
-	beam.Parent = workspace
-	TweenService:Create(beam, TweenInfo.new(life), { Transparency = 1, Size = Vector3.new(thickness * 0.2, thickness * 0.2, distance) }):Play()
-	Debris:AddItem(beam, life + 0.05)
-end
-
 -- 데드아이 타격 연출: 커지며 사라지는 네온 구 (맞은 자리 번쩍임 / 총구 화염)
 local function flashBall(position, color, size, life)
 	local ball = Instance.new("Part")
@@ -249,7 +234,7 @@ handlers.Ult = function(player, root, _, character)
 	local field = Instance.new("ForceField")
 	field.Name = "DeadeyeShield"
 	field.Visible = false
-	Debris:AddItem(field, 0.6 + volleys * volleyGap + 1.2) -- 먼저 수명을 정해 둔다 (오류가 나도 영구 무적이 되지 않게)
+	Debris:AddItem(field, 0.3 + 6 * 0.13 + 1.0 + 1.0) -- 먼저 수명을 정해 둔다 (오류가 나도 영구 무적이 되지 않게)
 	field.Parent = character
 	player:SetAttribute("DeadeyeActive", true)
 	Remotes.Notify:FireClient(player, string.format("🎯 Deadeye! Barrage on %d enemies", #targets))
@@ -257,7 +242,7 @@ handlers.Ult = function(player, root, _, character)
 
 	task.spawn(function()
 		local bodyOk, bodyErr = pcall(function()
-			-- 1) 전원 동시 락온: 조준 표시가 한꺼번에 쏙 줄어들며 고정 + 가는 빨간 선이 전원에게 뻗는다
+			-- 1) 전원 동시 락온: 조준 표시가 돌면서 한꺼번에 맞춰진다
 			local markers = {}
 			for index, part in ipairs(targets) do
 				if not part.Parent then continue end
@@ -274,44 +259,46 @@ handlers.Ult = function(player, root, _, character)
 				label.Font = Enum.Font.GothamBlack
 				label.TextColor3 = Color3.fromRGB(255, 70, 70)
 				label.TextStrokeTransparency = 0.3
-				label.Parent = gui
 				label.Rotation = -120
+				label.Parent = gui
 				TweenService:Create(gui, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.fromOffset(50, 50) }):Play()
-				TweenService:Create(label, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Rotation = 0 }):Play() -- 조준 표시가 돌면서 맞춰진다
-				thickBeam(root.Position + Vector3.new(0, 1.5, 0), part.Position, Color3.fromRGB(255, 60, 60), 0.5, 0.5)
+				TweenService:Create(label, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Rotation = 0 }):Play()
 				markers[index] = gui
 				Debris:AddItem(gui, 4)
 			end
-			task.wait(0.25) -- 짧게 조준만 하고 바로 쏜다 (움직이면서 쓸 수 있게 몸을 멈추거나 돌리지 않는다)
+			task.wait(0.3)
 
-			-- 2) 일제 사격: 매 회마다 살아 있는 전원에게 동시에 굵은 빔 + 폭발. 몸은 그대로 두고 움직일 수 있다
-			local fired = 0
-			for volley = 1, volleys do
+			-- 2) 미사일 일제 발사: 한 번에 모든 적에게 한 발씩 (여러 라운드). 작은 미사일이 위로 솟구쳤다가 포물선으로 떨어져 꽂힌다.
+			--    미사일은 각자 화면에서 그리고(Effects.Raw "M"), 피해는 도착하는 순간 들어간다. 대상당 총 피해는 예전(빔 일제 사격)과 같다.
+			local rounds, roundGap = 6, 0.13
+			local perMissile = math.max(1, math.floor(perShot * volleys / rounds))
+			local lastLanding = 0
+			for round = 1, rounds do
 				if not player.Parent or not root.Parent then return end
-				local from = root.Position + Vector3.new(0, 1.5, 0)
-				pcall(function() flashBall(from + root.CFrame.LookVector * 2, Color3.fromRGB(255, 235, 170), 3.2, 0.1) end) -- 총구 화염
-				for index, part in ipairs(targets) do
-					BL.Ctx = "데드아이"
-					local alive = part.Parent and (Dungeon.HitPart(player, part, perShot) or Field.HitPart(player, part, perShot))
-					BL.Ctx = nil
-					if alive then
-						fired += 1
-						pcall(function()
-							local jitter = Vector3.new(math.random() - 0.5, math.random() - 0.5, math.random() - 0.5) * (part.Size.X * 0.5)
-							thickBeam(from, part.Position + jitter, (fired % 2 == 0) and Color3.fromRGB(255, 240, 150) or Color3.fromRGB(120, 230, 255), 0.55, 0.14) -- 가늘고 빠른 예광탄
-							if volley % 2 == 0 then Effects.Burst(part.Position + jitter, Color3.fromRGB(255, 110, 70), 6) end
-							if (volley + index) % 2 == 0 then -- 맞은 자리 번쩍임 (서버 부하를 줄이려고 반만)
-								flashBall(part.Position + jitter, (fired % 2 == 0) and Color3.fromRGB(255, 225, 140) or Color3.fromRGB(150, 235, 255), math.clamp(part.Size.X * 0.9, 2.5, 7), 0.16)
-							end
-							local label = markers[index] and markers[index]:FindFirstChildOfClass("TextLabel")
-							if label then label.TextColor3 = Color3.fromRGB(255, 255, 255) end
-						end)
-					end
-				end
-				-- 화면 번쩍임 / 흔들림 / 링 없이 소리만 (탄이 쏟아지는 느낌에 집중): 한 발씩 나갈 때마다 총소리 (세 번에 한 번만 나던 것을 매번으로)
+				local shoulder = root.Position + Vector3.new((math.random() - 0.5) * 3, 3 + math.random() * 1.5, (math.random() - 0.5) * 3)
+				Effects.Burst(shoulder, Color3.fromRGB(255, 235, 170), 8) -- 발사 불꽃
 				pcall(function() SoundBank.Play(root, "UltShot", { Pitch = 0.9 + math.random() * 0.4, Volume = 0.8, Name = "GunShot" }) end)
-				task.wait(volleyGap)
+				for index, part in ipairs(targets) do
+					if not part.Parent then continue end
+					local target = part.Position
+					-- 위로 높이 솟았다가(중간점이 출발점 위쪽에 치우침) 곡선으로 떨어진다
+					local mid = shoulder:Lerp(target, 0.25) + Vector3.new((math.random() - 0.5) * 22, 30 + math.random() * 16, (math.random() - 0.5) * 22)
+					local flight = 0.75 + math.random() * 0.25
+					Effects.Raw(shoulder, { "M", shoulder, part, mid, flight, 0.5 })
+					local landAt = os.clock() + flight
+					lastLanding = math.max(lastLanding, landAt)
+					task.delay(flight, function()
+						if not player.Parent then return end
+						BL.Ctx = "데드아이"
+						local alive = part.Parent and (Dungeon.HitPart(player, part, perMissile) or Field.HitPart(player, part, perMissile))
+						BL.Ctx = nil
+						local label = markers[index] and markers[index]:FindFirstChildOfClass("TextLabel")
+						if alive and label then label.TextColor3 = Color3.fromRGB(255, 255, 255) end
+					end)
+				end
+				task.wait(roundGap)
 			end
+			task.wait(math.max(0, lastLanding - os.clock()) + 0.05) -- 마지막 미사일이 꽂힐 때까지
 
 			-- 3) 마무리 대폭발: 락온했던 모든 위치에서 한꺼번에 터진다
 			pcall(function() SoundBank.Play(root, "Boom", { Volume = 0.8, Pitch = 1.1 }) end)

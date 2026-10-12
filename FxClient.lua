@@ -1102,7 +1102,8 @@ end
 local missiles = {}
 local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간 }: 빛나는 큰 미사일 + 불꽃 / 연기 꼬리
 	local from, target, mid, duration = event[2], event[3], event[4], event[5]
-	local ball = neonPart(Vector3.new(2.4, 2.4, 2.4), Color3.fromRGB(255, 190, 90), 0, Enum.PartType.Ball)
+	local scale = event[6] or 1 -- (선택) 크기 배율: 데드아이 같은 작은 미사일 여러 발
+	local ball = neonPart(Vector3.new(2.4, 2.4, 2.4) * scale, Color3.fromRGB(255, 190, 90), 0, Enum.PartType.Ball)
 	ball.Position = from
 	local function pair(half)
 		local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
@@ -1110,7 +1111,7 @@ local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간
 		a0.Parent, a1.Parent = ball, ball
 		return a0, a1
 	end
-	local a0, a1 = pair(0.9)
+	local a0, a1 = pair(0.9 * scale)
 	local trail = Instance.new("Trail")
 	trail.Attachment0, trail.Attachment1 = a0, a1
 	trail.Lifetime = 0.5
@@ -1118,7 +1119,7 @@ local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간
 	trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.05), NumberSequenceKeypoint.new(0.6, 0.45), NumberSequenceKeypoint.new(1, 1) })
 	trail.LightEmission = 1
 	trail.Parent = ball
-	local s0, s1 = pair(1.5)
+	local s0, s1 = pair(1.5 * scale)
 	local smoke = Instance.new("Trail")
 	smoke.Attachment0, smoke.Attachment1 = s0, s1
 	smoke.Lifetime = 0.9
@@ -1131,7 +1132,7 @@ local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간
 	light.Color, light.Range, light.Brightness = Color3.fromRGB(255, 150, 70), 12, 2
 	light.Parent = ball
 	ball.Parent = fxFolder
-	table.insert(missiles, { Ball = ball, From = from, Target = target, Last = event[3] and event[3].Parent and event[3].Position or from, Mid = mid, Duration = duration, Started = os.clock() })
+	table.insert(missiles, { Ball = ball, From = from, Target = target, Last = event[3] and event[3].Parent and event[3].Position or from, Mid = mid, Duration = duration, Started = os.clock(), Scale = scale })
 end
 
 local function flame(event) -- { "L", 위치, 반지름, 초 }: 큰 불길 지대 + 안쪽 밝은 불씨 판 + 튀는 불똥
@@ -1271,9 +1272,9 @@ RunService.RenderStepped:Connect(function()
 		if m.Target and m.Target.Parent then m.Last = m.Target.Position end
 		if t >= 1 or not m.Ball.Parent then
 			local orange = Color3.fromRGB(255, 150, 60)
-			burst(m.Last, orange, 36)
-			burst(m.Last, WHITE, 10)
-			ring({ "R", m.Last - Vector3.new(0, 1, 0), 7, orange })
+			burst(m.Last, orange, math.floor(36 * m.Scale))
+			burst(m.Last, WHITE, math.floor(10 * m.Scale))
+			ring({ "R", m.Last - Vector3.new(0, 1, 0), 7 * m.Scale + 1, orange })
 			m.Ball:Destroy()
 			table.remove(missiles, i)
 		else
