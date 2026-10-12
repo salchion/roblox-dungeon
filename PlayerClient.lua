@@ -2746,7 +2746,11 @@ local function buildInventoryTab()
 			Size = UDim2.new(0, 88, 0, 88), Position = UDim2.new(0, x, 0, y), Text = "",
 			BackgroundColor3 = item and Color3.fromRGB(46, 48, 68) or Color3.fromRGB(34, 34, 48), AutoButtonColor = true,
 		}, top, function()
-			if item then
+			if slotKey == "Weapon" then
+				menuContent:SetAttribute("ShowWeapons", true) -- 무기 칸: 오른쪽에 무기 10형 목록을 보여준다
+				refreshMenu()
+			elseif item then
+				menuContent:SetAttribute("ShowWeapons", nil)
 				menuContent:SetAttribute("SelectedItem", item.Id)
 				refreshMenu()
 			end
@@ -2805,6 +2809,49 @@ local function buildInventoryTab()
 	end
 	local detail = create("Frame", { Size = UDim2.new(1, -462, 1, -24), Position = UDim2.new(0, 450, 0, 12), BackgroundColor3 = Color3.fromRGB(24, 26, 38), BorderSizePixel = 0 }, top)
 	rounded(detail, 10)
+	local showWeapons = menuContent:GetAttribute("ShowWeapons") == true
+	if showWeapons then
+		-- 무기 칸을 눌렀을 때: 10형 목록 (해금 / 사용 중 / 잠김) + 눌러서 바로 장착
+		local weaponLevel = player:GetAttribute("WeaponLevel") or 0
+		local equippedKey = Config.ResolveWeaponType(weaponLevel, player:GetAttribute("WeaponType"))
+		local eraTier = Config.GetWeaponTier(weaponLevel)
+		makeLabel({
+			Size = UDim2.new(1, -20, 0, 40), Position = UDim2.new(0, 10, 0, 6), RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left,
+			Text = string.format("<font size='17'><b>🔫 Weapons</b></font>  <font color='#aab0cc'>%s · +%d</font>\n<font size='12' color='#9aa4cc'>A new weapon unlocks every 15 levels. Tap one to use it.</font>", Config.GetEraName(eraTier.Era), weaponLevel),
+		}, detail)
+		local list = create("ScrollingFrame", {
+			Size = UDim2.new(1, -16, 1, -56), Position = UDim2.new(0, 8, 0, 50), BackgroundTransparency = 1, BorderSizePixel = 0,
+			ScrollBarThickness = 5, CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.Y,
+		}, detail)
+		create("UIListLayout", { Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder }, list)
+		for order, key in ipairs(Config.WeaponTypes.Order) do
+			local info = Config.WeaponTypes[key]
+			local look = Config.GetLookTier(weaponLevel, key)
+			local open = Config.IsWeaponUnlocked(weaponLevel, key)
+			local using = key == equippedKey
+			local row = makeButton({
+				Size = UDim2.new(1, -6, 0, 40), LayoutOrder = order, Text = "", AutoButtonColor = open and not using,
+				BackgroundColor3 = using and Color3.fromRGB(45, 80, 55) or (open and Color3.fromRGB(40, 44, 60) or Color3.fromRGB(30, 30, 40)),
+			}, list, function()
+				if open and not using then
+					Remotes.Weapon:FireServer("Equip", key)
+					task.delay(0.35, refreshMenu)
+				end
+			end)
+			rounded(row, 8)
+			if using then create("UIStroke", { Color = Color3.fromRGB(120, 230, 150), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, row) end
+			makeLabel({
+				Size = UDim2.new(1, -90, 1, 0), Position = UDim2.new(0, 8, 0, 0), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left,
+				Text = string.format("<font size='14' color='#%s'><b>%s</b></font>\n<font color='#8f94b0'>%s</font>", open and hex(look.Color) or "777788", info.Name, info.Trait),
+			}, row)
+			makeLabel({
+				Size = UDim2.new(0, 78, 1, 0), Position = UDim2.new(1, -82, 0, 0), TextSize = 12, Font = Enum.Font.GothamBold,
+				TextColor3 = using and Color3.fromRGB(120, 230, 150) or (open and Color3.fromRGB(255, 217, 102) or Color3.fromRGB(255, 154, 110)),
+				Text = using and "▶ In use" or (open and "Use" or string.format("🔒 +%d", Config.GetUnlockLevel(key))),
+			}, row)
+		end
+		selected = nil
+	end
 	if selected then
 		local color = Config.Gear.RarityColors[selected.Rarity]
 		rarityOutline(detail, selected.Rarity)
@@ -2904,7 +2951,7 @@ local function buildInventoryTab()
 				Remotes.Inventory:FireServer("Reroll", selected.Id)
 			end)
 		end
-	else
+	elseif not showWeapons then
 		makeLabel({ Size = UDim2.new(1, -20, 1, -20), Position = UDim2.new(0, 10, 0, 10), Text = "No gear yet.\nDefeat monsters in the field or use the gacha!", TextSize = 15, TextColor3 = Color3.fromRGB(150, 150, 170) }, detail)
 	end
 
@@ -2922,6 +2969,7 @@ local function buildInventoryTab()
 			Text = "", LayoutOrder = order,
 			BackgroundColor3 = (selected and selected.Id == item.Id) and Color3.fromRGB(70, 74, 104) or Color3.fromRGB(42, 44, 62), AutoButtonColor = true,
 		}, gridRow, function()
+			menuContent:SetAttribute("ShowWeapons", nil)
 			menuContent:SetAttribute("SelectedItem", item.Id)
 			refreshMenu()
 		end)
