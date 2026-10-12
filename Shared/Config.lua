@@ -348,6 +348,31 @@ Config.AugInfo = {
 	AugPulse = { Icon = "💥", Name = "Shockwave Shot", Desc = "Explosive shots fly at nearby enemies and burst big on impact", Color = Color3.fromRGB(110, 255, 190) },
 }
 
+-- 세트 효과 단계별 수치 (서버 DungeonService 의 공식과 같다. 바꿀 때는 같이 바꾼다). 돌려주는 값: 설명 글자, 한 번 맞을 때 "내 공격력의 몇 배"
+local AUG_LEVEL = {
+	AugMissile = function(l) return string.format("on crit, %d extra missiles (60%% of the crit damage each)", 1 + l), 0.6 end,
+	AugNova = function(l) return string.format("kill → explosion, radius %d, hits up to 8 enemies", 12 + 3 * l), 1.2 + 0.6 * l end,
+	AugOrbit = function(l) return string.format("every %.1fs a blade bounces across %d enemies", math.max(1.1, 2.1 - 0.3 * l), l + 2), 0.9 + 0.4 * l end,
+	AugStorm = function(l) return string.format("every %.1fs lightning hits %d enemies", math.max(1.2, 3.4 - 0.5 * l), 2 + l), 1.5 + 0.5 * l end,
+	AugFlame = function(l) return string.format("flames radius %d for %ds, damage every 0.5s", 7 + 2 * l, 5 + l), 0.25 + 0.1 * l end,
+	AugExecute = function(l) return string.format("enemies below %d%% HP are executed (not bosses)", math.floor(math.min(0.4, 0.1 + 0.06 * l) * 100 + 0.5)), nil end,
+	AugMeteor = function(l) return string.format("every %.1fs a meteor, radius %d", math.max(3, 8.5 - 1.5 * l), 14 + 2 * l), 2.2 + 0.8 * l end,
+	AugPulse = function(l) return string.format("every %.1fs shock shots at %d enemies, burst radius %d", math.max(2.2, 4.8 - 0.8 * l), 2 + l, 10 + 2 * l), 1.4 + 0.6 * l end,
+}
+-- 지금 내 공격력으로 한 번 맞힐 때의 대략적인 피해 (치명타 / 콤보 제외, 클라이언트에서 계산)
+function Config.BaseAttackEstimate(player)
+	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
+	local weaponType = Config.GetPlayerWeapon(player)
+	return Config.Player.BaseDamage * Config.GetDamageMultiplier(weaponLevel) * weaponType.DamageMult
+		* Config.GetLevelDamageMult(player:GetAttribute("Level") or 1)
+		* (1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0) + (player:GetAttribute("PetDamage") or 0))
+end
+function Config.AugLevelLine(attr, level)
+	local fn = AUG_LEVEL[attr]
+	if not fn then return "", nil end
+	return fn(level)
+end
+
 -- 세트 효과 시너지: 두 어그먼트를 모두 가지면 숨은 추가 효과가 켜진다 (획득하는 순간 알림 + 오라 폭발)
 Config.AugSynergies = {
 	Order = { "Inferno", "StormEye", "BladeMissile", "Reaper" },

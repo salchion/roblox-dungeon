@@ -88,8 +88,8 @@ for zone = 1, ZONES do
 	local row = make("Frame", { Size = UDim2.new(1, -8, 0, 62), BackgroundColor3 = Color3.fromRGB(36, 39, 58), BorderSizePixel = 0, LayoutOrder = zone }, list)
 	make("UICorner", { CornerRadius = UDim.new(0, 8) }, row)
 	label({ Size = UDim2.new(0, 34, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = info.Icon, TextSize = 24 }, row)
-	local title = label({ Size = UDim2.new(1, -230, 0, 20), Position = UDim2.new(0, 44, 0, 5), Text = "", TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, row)
-	local desc = label({ Size = UDim2.new(1, -230, 0, 32), Position = UDim2.new(0, 44, 0, 25), Text = info.Desc, TextSize = 11, TextColor3 = Color3.fromRGB(170, 215, 190), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = true }, row)
+	local title = label({ Size = UDim2.new(1, -250, 0, 20), Position = UDim2.new(0, 44, 0, 5), Text = "", TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, row)
+	local desc = label({ Size = UDim2.new(1, -250, 0, 32), Position = UDim2.new(0, 44, 0, 25), Text = info.Desc, TextSize = 11, TextColor3 = Color3.fromRGB(170, 215, 190), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = true }, row)
 	-- 칸 어디를 눌러도 켜고 꺼진다 (맨 아래에 깔린 투명 버튼). 오른쪽 위 ON/OFF 는 상태만 보여 준다.
 	local hit = make("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", AutoButtonColor = false, ZIndex = 1 }, row)
 	hit.Activated:Connect(function() Remotes.Aug:FireServer("Toggle", zone) end)
@@ -98,9 +98,16 @@ for zone = 1, ZONES do
 		BorderSizePixel = 0, Font = Enum.Font.GothamBold, TextSize = 12, TextColor3 = Color3.fromRGB(150, 154, 180), Text = "○ OFF", ZIndex = 2,
 	}, row)
 	make("UICorner", { CornerRadius = UDim.new(0, 12) }, toggle)
-	local buy = button({ Size = UDim2.new(0, 150, 0, 26), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -8, 1, -6), BackgroundColor3 = Color3.fromRGB(140, 104, 40), Text = "", TextSize = 12 }, row, function()
+	local buy = button({ Size = UDim2.new(0, 150, 0, 26), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 32), BackgroundColor3 = Color3.fromRGB(140, 104, 40), Text = "", TextSize = 12 }, row, function()
 		Remotes.Aug:FireServer("Buy", zone)
 	end)
+	-- ⓘ 자세히: 1~6단계 수치 (눌러서 펼치고 접는다)
+	local detail = label({
+		Size = UDim2.new(1, -20, 0, 0), Position = UDim2.new(0, 10, 0, 64), Text = "", TextSize = 11, RichText = true, Visible = false,
+		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = true, TextColor3 = Color3.fromRGB(205, 210, 235), ZIndex = 2,
+	}, row)
+	local infoButton = button({ Size = UDim2.new(0, 74, 0, 26), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -166, 0, 32), BackgroundColor3 = Color3.fromRGB(64, 72, 112), Text = "ⓘ Details ▾", TextSize = 10 }, row, function() end)
+	infoButton.ZIndex = 3
 	-- 켜져 있으면 테두리가 효과 색으로 빛나며 천천히 도는 띠가 된다 (꺼져 있으면 테두리 없음)
 	local rowStroke = make("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Transparency = 1 }, row)
 	local gradient = make("UIGradient", {
@@ -111,7 +118,35 @@ for zone = 1, ZONES do
 			ColorSequenceKeypoint.new(1, info.Color),
 		}),
 	}, rowStroke)
-	rows[zone] = { Title = title, Toggle = toggle, Buy = buy, Row = row, Stroke = rowStroke, Gradient = gradient }
+	rows[zone] = { Title = title, Toggle = toggle, Buy = buy, Row = row, Stroke = rowStroke, Gradient = gradient, Detail = detail, Info = infoButton, Desc = desc, Open = false }
+	infoButton.Activated:Connect(function()
+		rows[zone].Open = not rows[zone].Open
+		rows[zone].Update()
+	end)
+	rows[zone].Update = function()
+		local r = rows[zone]
+		local levelNow = (player:GetAttribute("AugLvZ_" .. zone) or 0) + (player:GetAttribute("AugGearZ_" .. zone) or 0)
+		local atk = Config.BaseAttackEstimate and Config.BaseAttackEstimate(player) or 0
+		r.Info.Text = r.Open and "ⓘ Details ▴" or "ⓘ Details ▾"
+		if not r.Open then
+			r.Detail.Visible = false
+			r.Row.Size = UDim2.new(1, -8, 0, 62)
+			return
+		end
+		local lines = { "<b>Per level</b>  (Lv.1–3 from gold · Lv.4–6 with set gear; damage ≈ one hit at your current attack, before crit/combo)" }
+		local attr = Config.Sets.ZoneAug[zone]
+		for l = 1, 6 do
+			local text, mult = Config.AugLevelLine(attr, l)
+			local dmg = mult and atk > 0 and string.format("  <font color='#ffd966'>≈ %d dmg</font>", math.floor(atk * mult + 0.5)) or ""
+			local line = string.format("Lv.%d  %s%s", l, text, dmg)
+			if l == levelNow then line = "<font color='#78ff8c'><b>▶ " .. line .. "  (now)</b></font>" end
+			table.insert(lines, line)
+		end
+		r.Detail.Text = table.concat(lines, "\n")
+		r.Detail.Size = UDim2.new(1, -20, 0, 14 + 15 * 8)
+		r.Detail.Visible = true
+		r.Row.Size = UDim2.new(1, -8, 0, 62 + 14 + 15 * 8 + 6)
+	end
 end
 
 local function refresh()
@@ -149,6 +184,7 @@ local function refresh()
 			if gold >= cost and level == 0 then affordable += 1 end
 		end
 	end
+	for zone = 1, ZONES do rows[zone].Update() end
 	slotLabel.Text = string.format("Active %d / %d slots   (💰 %s G)", used, slots, commas(gold))
 	pill.Visible = anyOpen and not player:GetAttribute("TutorialActive")
 	badge.Visible = affordable > 0 and used < slots
