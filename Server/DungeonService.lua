@@ -1502,7 +1502,7 @@ local function launchBlast(run, player, from, entry, amount, radius, color)
 	local target = entry.Part.Position
 	local mid = from:Lerp(target, 0.5) + Vector3.new((math.random() - 0.5) * 10, 8 + math.random() * 5, (math.random() - 0.5) * 10)
 	local duration = 0.42
-	Effects.Raw(from, { "M", from, entry.Part, mid, duration, 1.1, "orb", color })
+	Effects.Raw(from, { "M", from, entry.Part, mid, duration, 1.9, "orb", color })
 	task.delay(duration, function()
 		if run.Destroyed or run.Phase == "Ended" then return end
 		local position = entry.Part.Parent and entry.Part.Position or target
@@ -1590,7 +1590,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 		if synergy(player, "Reaper") and augDepth == 0 then
 			local from = part.Position + Vector3.new(0, 3, 0)
 			for _, entry in ipairs(nearestMonsters(run, part.Position, 70, 2, part)) do
-				launchMissile(run, player, from, entry, augDamage(player) * 0.8, "rocket", Color3.fromRGB(210, 120, 255))
+				launchMissile(run, player, from, entry, augDamage(player) * 0.8, "rocket", Color3.fromRGB(210, 120, 255), 1.7)
 			end
 		end
 	end
@@ -1600,7 +1600,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 	local from = part.Position + Vector3.new(0, 3, 0)
 	procAug(player, "AugMissile")
 	for _, entry in ipairs(nearestMonsters(run, part.Position, 70, 1 + level, part)) do
-		launchMissile(run, player, from, entry, amount * 0.6, "rocket", Color3.fromRGB(255, 120, 60))
+		launchMissile(run, player, from, entry, amount * 0.6, "rocket", Color3.fromRGB(255, 120, 60), 1.8)
 	end
 end
 
@@ -1690,11 +1690,11 @@ local function startAugLoop(run)
 							local start = fromPos
 							task.delay((index - 1) * 0.2, function()
 								if run.Destroyed or run.Phase == "Ended" or not entry.Part.Parent then return end
-								launchMissile(run, member, start, entry, damage, "blade", Color3.fromRGB(110, 230, 255), 0.9)
+								launchMissile(run, member, start, entry, damage, "blade", Color3.fromRGB(110, 230, 255), 1.6)
 								sfxAt(run, entry.Part.Position, "Aug_Blade", nil, 0.15)
 								if synergy(member, "BladeMissile") and math.random() < 0.3 then
 									for _, extra in ipairs(nearestMonsters(run, entry.Part.Position, 60, 1, entry.Part)) do
-										launchMissile(run, member, entry.Part.Position + Vector3.new(0, 3, 0), extra, damage * 0.8, "rocket", Color3.fromRGB(110, 230, 255), 0.8)
+										launchMissile(run, member, entry.Part.Position + Vector3.new(0, 3, 0), extra, damage * 0.8, "rocket", Color3.fromRGB(110, 230, 255), 1.5)
 									end
 								end
 							end)

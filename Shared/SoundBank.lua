@@ -58,7 +58,7 @@ local SPECS = {
 		Layers = { { Pitch = 0.35, Volume = 1.4, Delay = 0 }, { Pitch = 1.0, Volume = 0.8, Delay = 0.08 }, { Pitch = 0.7, Volume = 1.0, Delay = 0.2 } } },
 	UltShot = { Base = "Shot", Pitch = 1.4, Volume = 0.8, Length = 0.3, Fx = { { "chorus", { Depth = 0.5, Mix = 0.5 } } } },
 	Boom    = { CustomLength = 1.6, Base = "Enh_Hammer", Pitch = 0.45, Volume = 1.5, Length = 1.1, Fx = { { "distortion", { Level = 0.55 } }, { "reverb", { DecayTime = 1.8, WetLevel = -4 } } } },
-	Aug_Skull = { CustomLength = 0.9, Base = "Enh_Hammer", Pitch = 0.32, Volume = 1.0, Length = 0.5, Fx = { { "distortion", { Level = 0.45 } }, { "reverb", { DecayTime = 1.0, WetLevel = -6 } } } }, -- 처형 해골: 짧고 낮은 쿵
+	Aug_Skull = { CustomLength = 0.9, Base = "Enh_Hammer", Pitch = 0.32, Volume = 1.7, Length = 0.5, Fx = { { "distortion", { Level = 0.45 } }, { "reverb", { DecayTime = 1.0, WetLevel = -6 } } } }, -- 처형 해골: 짧고 낮은 쿵
 	LevelUp = { Base = "Enh_Success", Pitch = 0.9, Volume = 1.0, Length = 1.4, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -8 } }, { "reverb", { DecayTime = 2.0, WetLevel = -5 } } },
 		Layers = { { Pitch = 1.19, Volume = 0.7, Delay = 0.12 }, { Pitch = 1.5, Volume = 0.5, Delay = 0.26 } } },
 }
@@ -90,19 +90,19 @@ end
 --   (Volume = 음량 배율 / CustomLength = 이 시간(초)이 지나면 끊는다. 소리가 너무 크거나 길면 여기 숫자를 줄이면 된다.)
 local CUSTOM_ONLY = {
 	-- 어그먼트
-	Aug_Get       = { Volume = 1.0, CustomLength = 1.6, CustomPitch = 1.0 }, -- 어그먼트를 얻는 순간 (몸에서 빛이 퍼진다)
-	Aug_Synergy   = { Volume = 1.1, CustomLength = 2.2, CustomPitch = 1.0 }, -- 시너지 발동
-	Aug_Missile   = { Volume = 0.7, CustomLength = 1.0, CustomPitch = 1.0 }, -- 치명타 미사일 발사
-	Aug_MissileHit = { Volume = 0.35, CustomLength = 0.5, CustomPitch = 1.8 }, -- 미사일 명중
-	Aug_Nova      = { Volume = 0.7, CustomLength = 1.2, CustomPitch = 1.2 }, -- 처치 폭발
-	Aug_Blade     = { Volume = 0.5, CustomLength = 0.6, Base = "Dash", Pitch = 1.7, Length = 0.3, Fx = { { "eq", { LowGain = -10, MidGain = 0, HighGain = 3 } } } }, -- 회전 칼날이 벨 때 "슈웅" (소리 ID 가 없으면 대시 소리를 높게 가공)
-	Aug_Storm     = { Volume = 1.0, CustomLength = 1.8, Base = "Boom", Pitch = 0.75, Length = 1.3, Fx = { { "distortion", { Level = 0.6 } }, { "reverb", { DecayTime = 2.5, WetLevel = -3 } } }, Layers = { { Pitch = 2.4, Volume = 0.6, Delay = 0 } } }, -- 낙뢰: 찌직(높은 소리) + 우르릉(낮은 폭발 가공)
-	Aug_MeteorFall = { Volume = 0.8, CustomLength = 1.6, CustomPitch = 1.0 }, -- 유성이 떨어지는 소리
-	Aug_MeteorHit = { Volume = 1.3, CustomLength = 2.0, CustomPitch = 0.7 }, -- 유성 착탄 (큰 폭발)
-	Aug_Flame     = { Volume = 0.6, CustomLength = 1.2, Base = "Dash", Pitch = 0.6, Length = 0.7, Fx = { { "chorus", { Depth = 0.7, Mix = 0.6 } }, { "distortion", { Level = 0.35 } } } }, -- 불길이 생길 때 "후와악"
+	Aug_Get       = { Volume = 1.5, CustomLength = 1.6, CustomPitch = 1.0 }, -- 어그먼트를 얻는 순간 (몸에서 빛이 퍼진다)
+	Aug_Synergy   = { Volume = 1.6, CustomLength = 2.2, CustomPitch = 1.0 }, -- 시너지 발동
+	Aug_Missile   = { Volume = 1.6, CustomLength = 1.0, CustomPitch = 1.0 }, -- 치명타 미사일 발사
+	Aug_MissileHit = { Volume = 1.0, CustomLength = 0.5, CustomPitch = 1.8 }, -- 미사일 명중
+	Aug_Nova      = { Volume = 1.7, CustomLength = 1.2, CustomPitch = 1.2 }, -- 처치 폭발
+	Aug_Blade     = { Volume = 1.4, CustomLength = 0.6, Base = "Dash", Pitch = 1.7, Length = 0.3, Fx = { { "eq", { LowGain = -10, MidGain = 0, HighGain = 3 } } } }, -- 회전 칼날이 벨 때 "슈웅" (소리 ID 가 없으면 대시 소리를 높게 가공)
+	Aug_Storm     = { Volume = 1.9, CustomLength = 1.8, Base = "Boom", Pitch = 0.75, Length = 1.3, Fx = { { "distortion", { Level = 0.6 } }, { "reverb", { DecayTime = 2.5, WetLevel = -3 } } }, Layers = { { Pitch = 2.4, Volume = 0.6, Delay = 0 } } }, -- 낙뢰: 찌직(높은 소리) + 우르릉(낮은 폭발 가공)
+	Aug_MeteorFall = { Volume = 1.6, CustomLength = 1.6, CustomPitch = 1.0 }, -- 유성이 떨어지는 소리
+	Aug_MeteorHit = { Volume = 2.3, CustomLength = 2.0, CustomPitch = 0.7 }, -- 유성 착탄 (큰 폭발)
+	Aug_Flame     = { Volume = 1.4, CustomLength = 1.2, Base = "Dash", Pitch = 0.6, Length = 0.7, Fx = { { "chorus", { Depth = 0.7, Mix = 0.6 } }, { "distortion", { Level = 0.35 } } } }, -- 불길이 생길 때 "후와악"
 	Ult_Missile   = { Volume = 1.6, CustomLength = 1.2, Base = "Aug_Missile", Pitch = 1.0, Length = 0.8 }, -- 데드아이 미사일 발사 (12발이 연달아 나가므로 짧게)
-	Aug_Execute   = { Volume = 0.5, CustomLength = 0.6, CustomPitch = 1.5 }, -- 처형
-	Aug_Pulse     = { Volume = 0.6, CustomLength = 1.0, CustomPitch = 1.5 }, -- 폭풍 충격파
+	Aug_Execute   = { Volume = 1.4, CustomLength = 0.6, CustomPitch = 1.5 }, -- 처형
+	Aug_Pulse     = { Volume = 1.5, CustomLength = 1.0, CustomPitch = 1.5 }, -- 폭풍 충격파
 	Buff_Get      = { Volume = 0.7, CustomLength = 1.0, CustomPitch = 1.25 }, -- 일반 랜덤 강화를 얻을 때
 	Penalty_Get   = { Volume = 0.8, CustomLength = 1.4, CustomPitch = 0.55 }, -- 랜덤 패널티가 걸릴 때 (불길한 소리)
 	-- 위기 / 경고

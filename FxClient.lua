@@ -1085,22 +1085,28 @@ local function bolt(event) -- { "Z", 위, 아래 }: 굵은 지그재그 번개 +
 	for i = 1, #points - 1 do
 		local a, b = points[i], points[i + 1]
 		local length = (b - a).Magnitude
-		local part = neonPart(Vector3.new(2.6, 2.6, length), yellow, 0.05)
+		local part = neonPart(Vector3.new(5, 5, length), yellow, 0.05)
 		part.CFrame = CFrame.lookAt((a + b) / 2, b)
 		part.Parent = fxFolder
 		TweenService:Create(part, TweenInfo.new(0.4), { Transparency = 1, Size = Vector3.new(0.4, 0.4, length) }):Play()
 		Debris:AddItem(part, 0.45)
 	end
 	local length = (top - bottom).Magnitude
-	local core = neonPart(Vector3.new(1, 1, length), Color3.fromRGB(255, 255, 240), 0)
+	local core = neonPart(Vector3.new(2, 2, length), Color3.fromRGB(255, 255, 240), 0)
 	core.CFrame = CFrame.lookAt((top + bottom) / 2, bottom)
 	core.Parent = fxFolder
 	TweenService:Create(core, TweenInfo.new(0.25), { Transparency = 1, Size = Vector3.new(0.15, 0.15, length) }):Play()
 	Debris:AddItem(core, 0.3)
-	scorch(bottom, 5, 1.6)
-	ring({ "R", bottom, 8, yellow })
-	burst(bottom, yellow, 36)
-	burst(bottom + Vector3.new(0, 1, 0), WHITE, 14)
+	scorch(bottom, 9, 1.6)
+	ring({ "R", bottom, 16, yellow })
+	ring({ "R", bottom, 9, WHITE })
+	local flash = neonPart(Vector3.new(3, 3, 3), Color3.fromRGB(255, 250, 200), 0.2, Enum.PartType.Ball)
+	flash.Position = bottom + Vector3.new(0, 2, 0)
+	flash.Parent = fxFolder
+	TweenService:Create(flash, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(15, 15, 15), Transparency = 1 }):Play()
+	Debris:AddItem(flash, 0.35)
+	burst(bottom, yellow, 70)
+	burst(bottom + Vector3.new(0, 1, 0), WHITE, 28)
 end
 
 local missiles = {}
@@ -1182,11 +1188,11 @@ local function flame(event) -- { "L", 위치, 반지름, 초 }: 큰 불길 지�
 	local inner = neonPart(Vector3.new(0.5, radius * 1.2, radius * 1.2), Color3.fromRGB(255, 190, 70), 0.4, CYL)
 	inner.CFrame = flat
 	local fire = Instance.new("Fire")
-	fire.Size = math.clamp(radius * 1.3, 8, 30)
+	fire.Size = math.clamp(radius * 1.8, 12, 42)
 	fire.Heat = 10
 	fire.Parent = pad
 	local embers = Instance.new("ParticleEmitter")
-	embers.Rate = 16
+	embers.Rate = 34
 	embers.Lifetime = NumberRange.new(1, 1.8)
 	embers.Speed = NumberRange.new(6, 14)
 	embers.SpreadAngle = Vector2.new(30, 30)
@@ -1220,10 +1226,10 @@ local function meteor(event) -- { "E", 위치, 반지름, 낙하 시간 }: 큰 �
 	TweenService:Create(fill, TweenInfo.new(fall, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Size = Vector3.new(0.35, radius * 2, radius * 2), Transparency = 0.25 }):Play()
 	local rim = makeDashes(22, Color3.fromRGB(255, 120, 60), 1.2, 2 * math.pi * radius / 22 * 0.6, 0.1)
 	placeDashes(rim, position + Vector3.new(0, 0.6, 0), radius, 0)
-	local rock = neonPart(Vector3.new(10, 10, 10), Color3.fromRGB(255, 140, 50), 0, Enum.PartType.Ball)
+	local rock = neonPart(Vector3.new(16, 16, 16), Color3.fromRGB(255, 140, 50), 0, Enum.PartType.Ball)
 	rock.Position = position + Vector3.new(18, 110, 14)
 	local fire = Instance.new("Fire")
-	fire.Size = 22
+	fire.Size = 34
 	fire.Parent = rock
 	local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
 	a0.Position, a1.Position = Vector3.new(0, 5, 0), Vector3.new(0, -5, 0)
@@ -1246,11 +1252,12 @@ local function meteor(event) -- { "E", 위치, 반지름, 낙하 시간 }: 큰 �
 		rock:Destroy()
 		releaseDashes(rim)
 		local orange = Color3.fromRGB(255, 150, 60)
-		ring({ "R", position, radius, orange })
-		ringWave(position, radius * 1.1, Color3.fromRGB(255, 200, 110), 0.6, 24, 1.4)
+		ring({ "R", position, radius * 1.15, orange })
+		ring({ "R", position, radius * 0.6, WHITE })
+		ringWave(position, radius * 1.2, Color3.fromRGB(255, 200, 110), 0.65, 28, 2.6)
 		scorch(position, radius * 0.7, 3.5) -- 구덩이 자국
-		burst(position + Vector3.new(0, 3, 0), orange, 100)
-		burst(position + Vector3.new(0, 2, 0), WHITE, 30)
+		burst(position + Vector3.new(0, 3, 0), orange, 170)
+		burst(position + Vector3.new(0, 2, 0), WHITE, 50)
 		if debrisFx then debrisFx({ "K", position + Vector3.new(0, 2, 0), Color3.fromRGB(110, 85, 65), 9 }) end
 	end)
 end
@@ -1601,16 +1608,17 @@ end
 local function novaFx(event)
 	local position, radius, color = event[2], event[3], event[4]
 	local center = position + Vector3.new(0, 1.5, 0)
-	ringWave(position, radius, color, 0.45, 18, 1.1)
-	ring({ "R", position, radius * 0.8, color })
-	local glow = neonPart(Vector3.new(2, 2, 2), color:Lerp(WHITE, 0.4), 0.5, Enum.PartType.Ball) -- 부드러운 빛구 (화면 번쩍임 없음)
+	ringWave(position, radius, color, 0.5, 26, 2.4)
+	ring({ "R", position, radius * 0.9, color })
+	ring({ "R", position, radius * 0.5, WHITE })
+	local glow = neonPart(Vector3.new(2, 2, 2), color:Lerp(WHITE, 0.4), 0.3, Enum.PartType.Ball) -- 빛구 (화면 번쩍임 없음)
 	glow.CastShadow = false
 	glow.Position = center
 	glow.Parent = fxFolder
-	TweenService:Create(glow, TweenInfo.new(0.28, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.one * radius * 1.1, Transparency = 1 }):Play()
+	TweenService:Create(glow, TweenInfo.new(0.28, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.one * radius * 1.7, Transparency = 1 }):Play()
 	Debris:AddItem(glow, 0.32)
-	burst(center, color, 45)
-	burst(center, color:Lerp(WHITE, 0.7), 18)
+	burst(center, color, 85)
+	burst(center, color:Lerp(WHITE, 0.7), 34)
 	deathBurst({ "K", center, color:Lerp(Color3.fromRGB(70, 50, 40), 0.5), 5 })
 end
 
