@@ -288,8 +288,13 @@ handlers.Ult = function(player, root, _, character)
 					local part = original.Parent and original or alive[(index - 1) % #alive + 1]
 					local target = part.Position
 					-- 위로 높이 솟았다가(중간점이 출발점 위쪽에 치우침) 곡선으로 떨어진다
-					local mid = shoulder + Vector3.new((math.random() - 0.5) * 14, 44 + math.random() * 22, (math.random() - 0.5) * 14) + (target - shoulder) * Vector3.new(0.12, 0, 0.12) -- 거의 수직으로 높이 솟는다
-					local flight = 1.15 + math.random() * 0.2
+					-- 옆으로 약 45도 각도로 부채꼴로 퍼져 올라간다 (높이는 낮춰서 꺾여 내리꽂히는 장면이 화면에 담기게)
+					local flat = Vector3.new(target.X - shoulder.X, 0, target.Z - shoulder.Z)
+					flat = flat.Magnitude > 1 and flat.Unit or Vector3.new(0, 0, -1)
+					local side = (CFrame.Angles(0, math.rad((math.random() - 0.5) * 170), 0) * CFrame.new(flat)).Position
+					local reach = 16 + math.random() * 16
+					local mid = shoulder + side * reach + Vector3.new(0, reach * (0.85 + math.random() * 0.4), 0)
+					local flight = 1.0 + math.random() * 0.2
 					Effects.Raw(shoulder, { "M", shoulder, part, mid, flight, 0.55, "icbm", Color3.fromRGB(90, 200, 255) })
 					local landAt = os.clock() + flight
 					lastLanding = math.max(lastLanding, landAt)
