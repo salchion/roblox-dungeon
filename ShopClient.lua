@@ -43,7 +43,7 @@ end
 -- 미리보기 알림 (HUD 의 토스트와 같은 모양)
 local toastLabel = makeLabel({
 	Name = "ToastLabel", Size = UDim2.new(0, 400, 0, 74), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, -430, 1, -250),
-	BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.08, Font = Enum.Font.GothamBold, TextSize = 16,
+	BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.08, Font = Enum.Font.GothamBold, TextSize = 14,
 	TextXAlignment = Enum.TextXAlignment.Left, Visible = false,
 }, gui)
 create("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 10) }, toastLabel)
@@ -75,10 +75,10 @@ SHOP.Panel = makePanel({
 create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35 }, SHOP.Panel)
 makeLabel({
 	Size = UDim2.new(1, -120, 0, 36), Position = UDim2.new(0, 16, 0, 8),
-	Text = "🎁 Shop", Font = Enum.Font.GothamBlack, TextSize = 24, TextXAlignment = Enum.TextXAlignment.Left,
+	Text = "🎁 Shop", Font = Enum.Font.GothamBlack, TextSize = 20, TextXAlignment = Enum.TextXAlignment.Left,
 }, SHOP.Panel)
 makeButton({
-	Size = UDim2.new(0, 64, 0, 28), Position = UDim2.new(1, -76, 0, 10), Text = "Close", TextSize = 13, BackgroundColor3 = GRAY,
+	Size = UDim2.new(0, 64, 0, 28), Position = UDim2.new(1, -76, 0, 10), Text = "Close", TextSize = 11, BackgroundColor3 = GRAY,
 }, SHOP.Panel, function()
 	SHOP.Panel.Visible = false
 end)
@@ -160,31 +160,31 @@ function SHOP.Card(parent, order, o)
 	rounded(head, 12)
 	create("UIGradient", { Rotation = 90, Color = ColorSequence.new(acc, dark) }, head)
 	create("Frame", { Size = UDim2.new(1, 0, 0, 12), Position = UDim2.new(0, 0, 0, 52), BackgroundColor3 = dark, BackgroundTransparency = fade, BorderSizePixel = 0 }, card)
-	makeLabel({ Size = UDim2.new(1, 0, 1, -6), Text = o.Icon, TextSize = 36, TextTransparency = fade }, head)
+	makeLabel({ Size = UDim2.new(1, 0, 1, -6), Text = o.Icon, TextSize = 31, TextTransparency = fade }, head)
 	if o.Owned then
-		makeLabel({ Size = UDim2.new(0, 80, 0, 18), Position = UDim2.new(0, 10, 0, 8), Text = o.Ribbon or "✔ Owned", TextSize = 12, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(178, 238, 190), TextXAlignment = Enum.TextXAlignment.Left }, card)
+		makeLabel({ Size = UDim2.new(0, 80, 0, 18), Position = UDim2.new(0, 10, 0, 8), Text = o.Ribbon or "✔ Owned", TextSize = 10, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(178, 238, 190), TextXAlignment = Enum.TextXAlignment.Left }, card)
 	end
 	if o.Badge then
-		local badge = makeLabel({ Size = UDim2.new(0, 0, 0, 20), AutomaticSize = Enum.AutomaticSize.X, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 8), Text = o.Badge, TextSize = 12, Font = Enum.Font.GothamBold, TextWrapped = false, BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(196, 84, 72) }, card)
+		local badge = makeLabel({ Size = UDim2.new(0, 0, 0, 20), AutomaticSize = Enum.AutomaticSize.X, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 8), Text = o.Badge, TextSize = 10, Font = Enum.Font.GothamBold, TextWrapped = false, BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(196, 84, 72) }, card)
 		rounded(badge, 10)
 		create("UIPadding", { PaddingLeft = UDim.new(0, 9), PaddingRight = UDim.new(0, 9) }, badge)
 	end
-	makeLabel({ Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 68), Text = o.Name, TextSize = 15, Font = Enum.Font.GothamBold, TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = mute and Color3.fromRGB(150, 156, 180) or Color3.fromRGB(240, 242, 250) }, card)
-	makeLabel({ Size = UDim2.new(1, -20, 0, 32), Position = UDim2.new(0, 10, 0, 91), Text = o.Desc, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(160, 166, 192) }, card)
+	makeLabel({ Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 68), Text = o.Name, TextSize = 13, Font = Enum.Font.GothamBold, TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = mute and Color3.fromRGB(150, 156, 180) or Color3.fromRGB(240, 242, 250) }, card)
+	makeLabel({ Size = UDim2.new(1, -20, 0, 32), Position = UDim2.new(0, 10, 0, 91), Text = o.Desc, TextSize = 11, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(160, 166, 192) }, card)
 	if o.Pips then
-		makeLabel({ Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 126), Text = o.Pips, TextSize = 14, RichText = true, TextWrapped = false, TextXAlignment = Enum.TextXAlignment.Left }, card)
+		makeLabel({ Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 126), Text = o.Pips, TextSize = 12, RichText = true, TextWrapped = false, TextXAlignment = Enum.TextXAlignment.Left }, card)
 	end
 	if o.Status or o.Timer then
-		local st = makeLabel({ Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 126), Text = o.Status or "", TextSize = 13, TextWrapped = false, TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = Color3.fromRGB(120, 255, 140) }, card)
+		local st = makeLabel({ Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 126), Text = o.Status or "", TextSize = 11, TextWrapped = false, TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = Color3.fromRGB(120, 255, 140) }, card)
 		if o.Timer then table.insert(SHOP.Timers, { st, o.Timer }) end
 	end
 	local b = o.Btn
 	makeButton({
 		Size = o.Prev and UDim2.new(0.62, -14, 0, 30) or UDim2.new(1, -20, 0, 30), Position = o.Prev and UDim2.new(0.38, 4, 0, 152) or UDim2.new(0, 10, 0, 152),
-		Text = b[1], TextSize = 14, BackgroundColor3 = b[2], Active = b[3] ~= nil, AutoButtonColor = b[3] ~= nil,
+		Text = b[1], TextSize = 12, BackgroundColor3 = b[2], Active = b[3] ~= nil, AutoButtonColor = b[3] ~= nil,
 	}, card, b[3])
 	if o.Prev then
-		makeButton({ Size = UDim2.new(0.38, -10, 0, 30), Position = UDim2.new(0, 10, 0, 152), Text = "👀 Preview", TextSize = 13, BackgroundColor3 = Color3.fromRGB(58, 70, 124) }, card, o.Prev)
+		makeButton({ Size = UDim2.new(0.38, -10, 0, 30), Position = UDim2.new(0, 10, 0, 152), Text = "👀 Preview", TextSize = 11, BackgroundColor3 = Color3.fromRGB(58, 70, 124) }, card, o.Prev)
 	end
 end
 
@@ -200,7 +200,7 @@ function SHOP.ProdCard(parent, order, key)
 			pips[i] = string.format("<font color='%s'>%s</font>", i <= lv and "#ffd24a" or (i <= tier.Step and "#e8ecff" or "#5c627e"), i <= tier.Step and "★" or "☆")
 		end
 		o.Owned = tier.Step <= lv
-		o.Pips = table.concat(pips) .. string.format("  <font color='#8a90aa' size='12'>Step %d/%d · %s</font>", tier.Step, tier.Steps, o.Owned and "Owned" or (tier.Step == lv + 1 and "Next step" or "Higher step"))
+		o.Pips = table.concat(pips) .. string.format("  <font color='#8a90aa' size='10'>Step %d/%d · %s</font>", tier.Step, tier.Steps, o.Owned and "Owned" or (tier.Step == lv + 1 and "Next step" or "Higher step"))
 		if o.Owned then o.Btn = { "✔ Owned", GRAY } end
 	end
 	for g, attr in pairs(SHOP.Boost) do
@@ -262,18 +262,18 @@ function SHOP.Build()
 	create("UIStroke", { Color = Color3.fromRGB(230, 190, 100), Thickness = 1.5, Transparency = 0.45 }, hero)
 	local crown = create("Frame", { Size = UDim2.new(0, 76, 0, 76), Position = UDim2.new(0, 16, 0.5, -38), BackgroundColor3 = Color3.fromRGB(255, 214, 102), BackgroundTransparency = 0.82, BorderSizePixel = 0 }, hero)
 	rounded(crown, 38)
-	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "👑", TextSize = 48 }, crown)
-	makeLabel({ Size = UDim2.new(1, -320, 0, 28), Position = UDim2.new(0, 108, 0, 12), Text = pass.Name .. (vip and "  ✔ Active" or ""), TextSize = 22, Font = Enum.Font.GothamBlack, TextWrapped = false, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 224, 140) }, hero)
+	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "👑", TextSize = 41 }, crown)
+	makeLabel({ Size = UDim2.new(1, -320, 0, 28), Position = UDim2.new(0, 108, 0, 12), Text = pass.Name .. (vip and "  ✔ Active" or ""), TextSize = 19, Font = Enum.Font.GothamBlack, TextWrapped = false, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 224, 140) }, hero)
 	local chips = create("Frame", { Size = UDim2.new(1, -330, 0, 60), Position = UDim2.new(0, 108, 0, 48), BackgroundTransparency = 1 }, hero)
 	create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Wraps = true, Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder }, chips)
 	for i, text in ipairs(pass.Benefits or {}) do
-		local chip = makeLabel({ Size = UDim2.new(0, 0, 0, 24), AutomaticSize = Enum.AutomaticSize.X, LayoutOrder = i, Text = text, TextSize = 13, TextWrapped = false, BackgroundTransparency = 0.86, BackgroundColor3 = Color3.fromRGB(255, 224, 140), TextColor3 = Color3.fromRGB(255, 232, 170) }, chips)
+		local chip = makeLabel({ Size = UDim2.new(0, 0, 0, 24), AutomaticSize = Enum.AutomaticSize.X, LayoutOrder = i, Text = text, TextSize = 11, TextWrapped = false, BackgroundTransparency = 0.86, BackgroundColor3 = Color3.fromRGB(255, 224, 140), TextColor3 = Color3.fromRGB(255, 232, 170) }, chips)
 		rounded(chip, 12)
 		create("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10) }, chip)
 	end
 	local label, color = shopButtonLabel(pass.PassId)
 	makeButton({
-		Size = UDim2.new(0, 170, 0, 48), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -16, 0.5, 0), TextSize = 16,
+		Size = UDim2.new(0, 170, 0, 48), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -16, 0.5, 0), TextSize = 14,
 		Text = vip and "✔ Owned" or ("👑 " .. label), BackgroundColor3 = vip and GRAY or (pass.PassId > 0 and GREEN or Color3.fromRGB(200, 140, 40)),
 	}, hero, function()
 		if not vip then Remotes.Shop:FireServer("Buy", "Pass", "VIP") end
@@ -284,7 +284,7 @@ function SHOP.Build()
 	for i, cat in ipairs(Config.Shop.Categories) do
 		local on = cat.Key == SHOP.Cat
 		makeButton({
-			Size = UDim2.new(0, 112, 0, 34), LayoutOrder = i, Text = cat.Name, TextSize = 14, Font = on and Enum.Font.GothamBlack or Enum.Font.GothamBold,
+			Size = UDim2.new(0, 112, 0, 34), LayoutOrder = i, Text = cat.Name, TextSize = 12, Font = on and Enum.Font.GothamBlack or Enum.Font.GothamBold,
 			BackgroundColor3 = on and SHOP.Acc[cat.Key] or Color3.fromRGB(38, 42, 64), TextColor3 = on and Color3.new(1, 1, 1) or Color3.fromRGB(170, 176, 200),
 		}, row, function()
 			SHOP.Cat, SHOP.Top = cat.Key, true
@@ -316,7 +316,7 @@ function SHOP.Build()
 			end
 		end
 	end
-	makeLabel({ Size = UDim2.new(1, -10, 0, 36), LayoutOrder = 4, Text = "The Shop sells time savers, conveniences, and cosmetics. You can reach every level of progress without spending, and gear must be earned in the field.", TextSize = 12, TextColor3 = Color3.fromRGB(130, 136, 164) }, C)
+	makeLabel({ Size = UDim2.new(1, -10, 0, 36), LayoutOrder = 4, Text = "The Shop sells time savers, conveniences, and cosmetics. You can reach every level of progress without spending, and gear must be earned in the field.", TextSize = 10, TextColor3 = Color3.fromRGB(130, 136, 164) }, C)
 end
 
 function SHOP.Refresh()

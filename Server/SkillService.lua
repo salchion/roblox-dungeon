@@ -193,6 +193,36 @@ local function thickBeam(from, to, color, thickness, life)
 	Debris:AddItem(beam, life + 0.05)
 end
 
+-- 데드아이 타격 연출: 커지며 사라지는 네온 구 (맞은 자리 번쩍임 / 총구 화염)
+local function flashBall(position, color, size, life)
+	local ball = Instance.new("Part")
+	ball.Shape = Enum.PartType.Ball
+	ball.Anchored, ball.CanCollide, ball.CanQuery, ball.CanTouch = true, false, false, false
+	ball.Material = Enum.Material.Neon
+	ball.Color = color
+	ball.Transparency = 0.1
+	ball.Size = Vector3.new(size * 0.3, size * 0.3, size * 0.3)
+	ball.CFrame = CFrame.new(position)
+	ball.Parent = workspace
+	TweenService:Create(ball, TweenInfo.new(life, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(size, size, size), Transparency = 1 }):Play()
+	Debris:AddItem(ball, life + 0.05)
+end
+
+-- 바닥으로 퍼지는 충격 고리 (마지막 대폭발용)
+local function groundRing(position, color, radius, life)
+	local ring = Instance.new("Part")
+	ring.Shape = Enum.PartType.Cylinder
+	ring.Anchored, ring.CanCollide, ring.CanQuery, ring.CanTouch = true, false, false, false
+	ring.Material = Enum.Material.Neon
+	ring.Color = color
+	ring.Transparency = 0.2
+	ring.Size = Vector3.new(0.4, 2, 2)
+	ring.CFrame = CFrame.new(position) * CFrame.Angles(0, 0, math.rad(90))
+	ring.Parent = workspace
+	TweenService:Create(ring, TweenInfo.new(life, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.2, radius * 2, radius * 2), Transparency = 1 }):Play()
+	Debris:AddItem(ring, life + 0.05)
+end
+
 -- 궁극기 데드아이: 범위 안의 모든 적(가까운 최대 12마리)을 한꺼번에 락온하고 전원에게 동시에 일제 포격 + 충격파 + 대폭발.
 -- 포격 동안 무적(ForceField) + 화면이 붉게 변한다 (클라이언트가 DeadeyeActive Attribute 를 보고 연출).
 handlers.Ult = function(player, root, _, character)
@@ -245,7 +275,9 @@ handlers.Ult = function(player, root, _, character)
 				label.TextColor3 = Color3.fromRGB(255, 70, 70)
 				label.TextStrokeTransparency = 0.3
 				label.Parent = gui
+				label.Rotation = -120
 				TweenService:Create(gui, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.fromOffset(50, 50) }):Play()
+				TweenService:Create(label, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Rotation = 0 }):Play() -- 조준 표시가 돌면서 맞춰진다
 				thickBeam(root.Position + Vector3.new(0, 1.5, 0), part.Position, Color3.fromRGB(255, 60, 60), 0.5, 0.5)
 				markers[index] = gui
 				Debris:AddItem(gui, 4)
@@ -257,6 +289,7 @@ handlers.Ult = function(player, root, _, character)
 			for volley = 1, volleys do
 				if not player.Parent or not root.Parent then return end
 				local from = root.Position + Vector3.new(0, 1.5, 0)
+				pcall(function() flashBall(from + root.CFrame.LookVector * 2, Color3.fromRGB(255, 235, 170), 3.2, 0.1) end) -- 총구 화염
 				for index, part in ipairs(targets) do
 					BL.Ctx = "데드아이"
 					local alive = part.Parent and (Dungeon.HitPart(player, part, perShot) or Field.HitPart(player, part, perShot))
@@ -267,6 +300,9 @@ handlers.Ult = function(player, root, _, character)
 							local jitter = Vector3.new(math.random() - 0.5, math.random() - 0.5, math.random() - 0.5) * (part.Size.X * 0.5)
 							thickBeam(from, part.Position + jitter, (fired % 2 == 0) and Color3.fromRGB(255, 240, 150) or Color3.fromRGB(120, 230, 255), 0.55, 0.14) -- 가늘고 빠른 예광탄
 							if volley % 2 == 0 then Effects.Burst(part.Position + jitter, Color3.fromRGB(255, 110, 70), 6) end
+							if (volley + index) % 2 == 0 then -- 맞은 자리 번쩍임 (서버 부하를 줄이려고 반만)
+								flashBall(part.Position + jitter, (fired % 2 == 0) and Color3.fromRGB(255, 225, 140) or Color3.fromRGB(150, 235, 255), math.clamp(part.Size.X * 0.9, 2.5, 7), 0.16)
+							end
 							local label = markers[index] and markers[index]:FindFirstChildOfClass("TextLabel")
 							if label then label.TextColor3 = Color3.fromRGB(255, 255, 255) end
 						end)
@@ -283,6 +319,8 @@ handlers.Ult = function(player, root, _, character)
 				for _, part in ipairs(targets) do
 					if part.Parent then
 						Effects.Burst(part.Position, Color3.fromRGB(255, 200, 90), 16)
+						flashBall(part.Position, Color3.fromRGB(255, 190, 90), math.clamp(part.Size.X * 2.2, 6, 14), 0.35)
+						groundRing(part.Position - Vector3.new(0, part.Size.Y / 2 - 0.2, 0), Color3.fromRGB(255, 120, 70), math.clamp(part.Size.X * 2.5, 8, 18), 0.45)
 					end
 				end
 			end)

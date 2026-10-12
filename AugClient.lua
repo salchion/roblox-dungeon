@@ -53,12 +53,12 @@ end
 -- 왼쪽 상태 카드 아래, "스탯" 버튼 옆
 local pill = button({
 	Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 264, 0, 244),
-	BackgroundColor3 = Color3.fromRGB(34, 38, 60), Text = "🌟 Sets (Y)", TextSize = 12, Visible = false,
+	BackgroundColor3 = Color3.fromRGB(34, 38, 60), Text = "🌟 Sets (Y)", TextSize = 10, Visible = false,
 }, gui, function() end)
 make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, pill)
 local badge = label({
 	Size = UDim2.new(0, 24, 0, 24), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -4, 0, 2),
-	BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(255, 80, 80), Text = "!", TextSize = 13, Visible = false, ZIndex = 5,
+	BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(255, 80, 80), Text = "!", TextSize = 11, Visible = false, ZIndex = 5,
 }, pill)
 make("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
 
@@ -70,10 +70,10 @@ make("UICorner", { CornerRadius = UDim.new(0, 12) }, panel)
 make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 2 }, panel)
 make("UISizeConstraint", { MaxSize = Vector2.new(480, 470) }, panel)
 
-label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "🌟 Set Effects", TextSize = 22, TextXAlignment = Enum.TextXAlignment.Left }, panel)
-local slotLabel = label({ Size = UDim2.new(1, -32, 0, 20), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, panel)
-label({ Size = UDim2.new(1, -32, 0, 32), Position = UDim2.new(0, 16, 0, 60), Text = "Tap a slot to toggle it. Defeat a lord to unlock its effect, then upgrade it with gold up to Lv.3. Wear that zone's set gear for Lv.4 at 1 piece · Lv.5 at 2 pieces · Lv.6 at 3 pieces! The real power shows up in field hunting.", TextSize = 12, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
-button({ Size = UDim2.new(0, 60, 0, 28), Position = UDim2.new(1, -72, 0, 10), BackgroundColor3 = Color3.fromRGB(70, 70, 90), Text = "Close", TextSize = 13 }, panel, function() panel.Visible = false end)
+label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "🌟 Set Effects", TextSize = 19, TextXAlignment = Enum.TextXAlignment.Left }, panel)
+local slotLabel = label({ Size = UDim2.new(1, -32, 0, 20), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, panel)
+label({ Size = UDim2.new(1, -32, 0, 32), Position = UDim2.new(0, 16, 0, 60), Text = "Tap a slot to toggle it. Defeat a lord to unlock its effect, then upgrade it with gold up to Lv.3. Wear that zone's set gear for Lv.4 at 1 piece · Lv.5 at 2 pieces · Lv.6 at 3 pieces! The real power shows up in field hunting.", TextSize = 10, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
+button({ Size = UDim2.new(0, 60, 0, 28), Position = UDim2.new(1, -72, 0, 10), BackgroundColor3 = Color3.fromRGB(70, 70, 90), Text = "Close", TextSize = 11 }, panel, function() panel.Visible = false end)
 
 local list = make("ScrollingFrame", {
 	Size = UDim2.new(1, -24, 1, -104), Position = UDim2.new(0, 12, 0, 94), BackgroundTransparency = 1, BorderSizePixel = 0,
@@ -87,26 +87,26 @@ for zone = 1, ZONES do
 	local info = Config.AugInfo[attr]
 	local row = make("Frame", { Size = UDim2.new(1, -8, 0, 62), BackgroundColor3 = Color3.fromRGB(36, 39, 58), BorderSizePixel = 0, LayoutOrder = zone }, list)
 	make("UICorner", { CornerRadius = UDim.new(0, 8) }, row)
-	label({ Size = UDim2.new(0, 34, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = info.Icon, TextSize = 24 }, row)
-	local title = label({ Size = UDim2.new(1, -250, 0, 20), Position = UDim2.new(0, 44, 0, 5), Text = "", TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, row)
-	local desc = label({ Size = UDim2.new(1, -250, 0, 32), Position = UDim2.new(0, 44, 0, 25), Text = info.Desc, TextSize = 11, TextColor3 = Color3.fromRGB(170, 215, 190), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = true }, row)
+	label({ Size = UDim2.new(0, 34, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = info.Icon, TextSize = 20 }, row)
+	local title = label({ Size = UDim2.new(1, -250, 0, 20), Position = UDim2.new(0, 44, 0, 5), Text = "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, row)
+	local desc = label({ Size = UDim2.new(1, -250, 0, 32), Position = UDim2.new(0, 44, 0, 25), Text = info.Desc, TextSize = 9, TextColor3 = Color3.fromRGB(170, 215, 190), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = true }, row)
 	-- 칸 어디를 눌러도 켜고 꺼진다 (맨 아래에 깔린 투명 버튼). 오른쪽 위 ON/OFF 는 상태만 보여 준다.
 	local hit = make("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", AutoButtonColor = false, ZIndex = 1 }, row)
 	hit.Activated:Connect(function() Remotes.Aug:FireServer("Toggle", zone) end)
 	local toggle = make("TextLabel", {
 		Size = UDim2.new(0, 64, 0, 24), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 6), BackgroundColor3 = Color3.fromRGB(62, 64, 84),
-		BorderSizePixel = 0, Font = Enum.Font.GothamBold, TextSize = 12, TextColor3 = Color3.fromRGB(150, 154, 180), Text = "○ OFF", ZIndex = 2,
+		BorderSizePixel = 0, Font = Enum.Font.GothamBold, TextSize = 10, TextColor3 = Color3.fromRGB(150, 154, 180), Text = "○ OFF", ZIndex = 2,
 	}, row)
 	make("UICorner", { CornerRadius = UDim.new(0, 12) }, toggle)
-	local buy = button({ Size = UDim2.new(0, 150, 0, 26), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 32), BackgroundColor3 = Color3.fromRGB(140, 104, 40), Text = "", TextSize = 12 }, row, function()
+	local buy = button({ Size = UDim2.new(0, 150, 0, 26), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 32), BackgroundColor3 = Color3.fromRGB(140, 104, 40), Text = "", TextSize = 10 }, row, function()
 		Remotes.Aug:FireServer("Buy", zone)
 	end)
 	-- ⓘ 자세히: 1~6단계 수치 (눌러서 펼치고 접는다)
 	local detail = label({
-		Size = UDim2.new(1, -20, 0, 0), Position = UDim2.new(0, 10, 0, 64), Text = "", TextSize = 11, RichText = true, Visible = false,
+		Size = UDim2.new(1, -20, 0, 0), Position = UDim2.new(0, 10, 0, 64), Text = "", TextSize = 9, RichText = true, Visible = false,
 		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = true, TextColor3 = Color3.fromRGB(205, 210, 235), ZIndex = 2,
 	}, row)
-	local infoButton = button({ Size = UDim2.new(0, 74, 0, 26), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -166, 0, 32), BackgroundColor3 = Color3.fromRGB(64, 72, 112), Text = "ⓘ Details ▾", TextSize = 10 }, row, function() end)
+	local infoButton = button({ Size = UDim2.new(0, 74, 0, 26), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -166, 0, 32), BackgroundColor3 = Color3.fromRGB(64, 72, 112), Text = "ⓘ Details ▾", TextSize = 9 }, row, function() end)
 	infoButton.ZIndex = 3
 	-- 켜져 있으면 테두리가 효과 색으로 빛나며 천천히 도는 띠가 된다 (꺼져 있으면 테두리 없음)
 	local rowStroke = make("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Transparency = 1 }, row)
@@ -225,7 +225,7 @@ end)
 local hudBox = make("TextLabel", {
 	Size = UDim2.new(0, 210, 0, 40), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0, 176),
 	BackgroundColor3 = Color3.fromRGB(22, 24, 38), BackgroundTransparency = 0.2, BorderSizePixel = 0, Font = Enum.Font.GothamMedium,
-	TextSize = 12, TextColor3 = Color3.new(1, 1, 1), RichText = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+	TextSize = 10, TextColor3 = Color3.new(1, 1, 1), RichText = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 	Text = "", Visible = false, ZIndex = 3,
 }, gui)
 make("UICorner", { CornerRadius = UDim.new(0, 8) }, hudBox)
@@ -260,7 +260,7 @@ refreshHud()
 local TweenService = game:GetService("TweenService")
 local corner = make("TextLabel", {
 	Size = UDim2.new(0, 240, 0, 46), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 96), RichText = true, TextWrapped = true,
-	BackgroundColor3 = Color3.fromRGB(26, 28, 42), BackgroundTransparency = 0.25, Font = Enum.Font.GothamBold, TextSize = 13,
+	BackgroundColor3 = Color3.fromRGB(26, 28, 42), BackgroundTransparency = 0.25, Font = Enum.Font.GothamBold, TextSize = 11,
 	TextColor3 = Color3.new(1, 1, 1), Text = "", Visible = false, BorderSizePixel = 0,
 }, gui)
 make("UICorner", { CornerRadius = UDim.new(0, 8) }, corner)
@@ -273,7 +273,7 @@ local function refreshCorner()
 	corner.Visible = show == true
 	if show then
 		local zone = table.find(Config.Sets.ZoneAug, attr) or 0
-		corner.Text = string.format("%s <b>%s</b>  <font size='11' color='#ffd966'>Zone %d · Trial Lv.3</font>\n<font size='11' color='#c8d0e8'>%s</font>", info.Icon, info.Name, zone, info.Desc)
+		corner.Text = string.format("%s <b>%s</b>  <font size='9' color='#ffd966'>Zone %d · Trial Lv.3</font>\n<font size='9' color='#c8d0e8'>%s</font>", info.Icon, info.Name, zone, info.Desc)
 		cornerStroke.Color = info.Color
 	end
 end
@@ -291,10 +291,10 @@ local function playRoll(pick)
 	}, gui)
 	make("UICorner", { CornerRadius = UDim.new(0, 12) }, box)
 	local stroke = make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 2 }, box)
-	label({ Size = UDim2.new(1, 0, 0, 22), Position = UDim2.new(0, 0, 0, 6), Text = "🎲 This Dungeon's Trial Effect", TextSize = 14, ZIndex = 61 }, box)
-	local icon = label({ Size = UDim2.new(0, 60, 0, 44), Position = UDim2.new(0, 14, 0, 32), Text = "?", TextSize = 34, ZIndex = 61 }, box)
-	local name = label({ Size = UDim2.new(1, -88, 0, 44), Position = UDim2.new(0, 78, 0, 32), Text = "", TextSize = 16, TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true, RichText = true, ZIndex = 61 }, box)
-	local detail = label({ Size = UDim2.new(1, -24, 0, 40), Position = UDim2.new(0, 12, 0, 80), Text = "", TextSize = 12, TextWrapped = true, TextColor3 = Color3.fromRGB(200, 208, 232), Font = Enum.Font.GothamMedium, ZIndex = 61 }, box)
+	label({ Size = UDim2.new(1, 0, 0, 22), Position = UDim2.new(0, 0, 0, 6), Text = "🎲 This Dungeon's Trial Effect", TextSize = 12, ZIndex = 61 }, box)
+	local icon = label({ Size = UDim2.new(0, 60, 0, 44), Position = UDim2.new(0, 14, 0, 32), Text = "?", TextSize = 29, ZIndex = 61 }, box)
+	local name = label({ Size = UDim2.new(1, -88, 0, 44), Position = UDim2.new(0, 78, 0, 32), Text = "", TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true, RichText = true, ZIndex = 61 }, box)
+	local detail = label({ Size = UDim2.new(1, -24, 0, 40), Position = UDim2.new(0, 12, 0, 80), Text = "", TextSize = 10, TextWrapped = true, TextColor3 = Color3.fromRGB(200, 208, 232), Font = Enum.Font.GothamMedium, ZIndex = 61 }, box)
 	local startedAt = os.clock()
 	while os.clock() - startedAt < 1.3 do
 		local info = Config.AugInfo[Config.Sets.ZoneAug[math.random(#Config.Sets.ZoneAug)]]
@@ -303,7 +303,7 @@ local function playRoll(pick)
 		task.wait(0.07)
 	end
 	local winZone = table.find(Config.Sets.ZoneAug, pick) or 0
-	icon.Text, name.Text = winner.Icon, string.format("%s\n<font size='12' color='#ffd966'>Zone %d set effect · Trial Lv.3</font>", winner.Name, winZone)
+	icon.Text, name.Text = winner.Icon, string.format("%s\n<font size='10' color='#ffd966'>Zone %d set effect · Trial Lv.3</font>", winner.Name, winZone)
 	detail.Text = winner.Desc
 	name.TextColor3 = winner.Color
 	stroke.Color = winner.Color

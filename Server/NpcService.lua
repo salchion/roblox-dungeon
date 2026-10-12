@@ -104,7 +104,7 @@ local function build(def, position)
 	title.Size = UDim2.new(1, 0, 0, 22)
 	title.BackgroundTransparency = 1
 	title.Font = Enum.Font.GothamBlack
-	title.TextSize = 16
+	title.TextSize = 14
 	title.TextColor3 = Color3.fromRGB(255, 232, 160)
 	title.TextStrokeTransparency = 0.4
 	title.Text = def.Title and (def.Title .. "  " .. def.Name) or def.Name
@@ -115,7 +115,7 @@ local function build(def, position)
 	bubble.BackgroundColor3 = Color3.fromRGB(250, 248, 240)
 	bubble.BackgroundTransparency = 0.05
 	bubble.Font = Enum.Font.GothamBold
-	bubble.TextSize = 14
+	bubble.TextSize = 12
 	bubble.TextColor3 = Color3.fromRGB(40, 36, 50)
 	bubble.TextWrapped = true
 	bubble.Text = ""

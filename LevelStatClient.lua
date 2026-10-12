@@ -49,12 +49,12 @@ end
 -- 왼쪽 위 상태 카드 아래, 메뉴 / 설정 버튼 옆에 둔다. 안 쓴 포인트가 있으면 반짝이며 숫자 배지가 뜬다.
 local pill = button({
 	Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 180, 0, 244),
-	BackgroundColor3 = Color3.fromRGB(34, 38, 60), Text = "✨ Stats (T)", TextSize = 12,
+	BackgroundColor3 = Color3.fromRGB(34, 38, 60), Text = "✨ Stats (T)", TextSize = 10,
 }, gui, function() end)
 local pillStroke = make("UIStroke", { Color = Color3.fromRGB(150, 160, 255), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, pill)
 local badge = label({
 	Size = UDim2.new(0, 24, 0, 24), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -4, 0, 2),
-	BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(255, 80, 80), Text = "0", TextSize = 13, Visible = false, ZIndex = 5,
+	BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(255, 80, 80), Text = "0", TextSize = 11, Visible = false, ZIndex = 5,
 }, pill)
 make("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
 local pulse = game:GetService("TweenService"):Create(pillStroke, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 4, Color = Color3.fromRGB(255, 225, 110) })
@@ -68,10 +68,10 @@ make("UICorner", { CornerRadius = UDim.new(0, 12) }, panel)
 make("UIStroke", { Color = Color3.fromRGB(150, 160, 255), Thickness = 2 }, panel)
 make("UISizeConstraint", { MaxSize = Vector2.new(460, 452) }, panel)
 
-label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "✨ Level Stats", TextSize = 22, TextXAlignment = Enum.TextXAlignment.Left }, panel)
-local pointsLabel = label({ Size = UDim2.new(1, -32, 0, 22), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 15, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, panel)
-label({ Size = UDim2.new(1, -32, 0, 18), Position = UDim2.new(0, 16, 0, 62), Text = "These stats shape your play style, not your attack or HP. You can respec for free anytime!", TextSize = 12, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
-button({ Size = UDim2.new(0, 60, 0, 28), Position = UDim2.new(1, -72, 0, 10), BackgroundColor3 = Color3.fromRGB(70, 70, 90), Text = "Close", TextSize = 13 }, panel, function() panel.Visible = false end)
+label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "✨ Level Stats", TextSize = 19, TextXAlignment = Enum.TextXAlignment.Left }, panel)
+local pointsLabel = label({ Size = UDim2.new(1, -32, 0, 22), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, panel)
+label({ Size = UDim2.new(1, -32, 0, 18), Position = UDim2.new(0, 16, 0, 62), Text = "These stats shape your play style, not your attack or HP. You can respec for free anytime!", TextSize = 10, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
+button({ Size = UDim2.new(0, 60, 0, 28), Position = UDim2.new(1, -72, 0, 10), BackgroundColor3 = Color3.fromRGB(70, 70, 90), Text = "Close", TextSize = 11 }, panel, function() panel.Visible = false end)
 
 local rows = {}
 for index, key in ipairs(LS.Order) do
@@ -79,28 +79,28 @@ for index, key in ipairs(LS.Order) do
 	local y = 92 + (index - 1) * 56
 	local row = make("Frame", { Size = UDim2.new(1, -24, 0, 50), Position = UDim2.new(0, 12, 0, y), BackgroundColor3 = Color3.fromRGB(36, 39, 58), BorderSizePixel = 0 }, panel)
 	make("UICorner", { CornerRadius = UDim.new(0, 8) }, row)
-	label({ Size = UDim2.new(0, 34, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = def.Icon, TextSize = 24 }, row)
-	label({ Size = UDim2.new(0, 160, 0, 22), Position = UDim2.new(0, 44, 0, 4), Text = def.Name, TextSize = 15, TextXAlignment = Enum.TextXAlignment.Left }, row)
-	local valueLabel = label({ Size = UDim2.new(0, 216, 0, 18), Position = UDim2.new(0, 44, 0, 27), Text = "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(150, 235, 190), TextTruncate = Enum.TextTruncate.AtEnd }, row)
-	local countLabel = label({ Size = UDim2.new(0, 36, 1, 0), Position = UDim2.new(1, -168, 0, 0), Text = "0", TextSize = 18, TextColor3 = Color3.fromRGB(255, 225, 110) }, row)
+	label({ Size = UDim2.new(0, 34, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = def.Icon, TextSize = 20 }, row)
+	label({ Size = UDim2.new(0, 160, 0, 22), Position = UDim2.new(0, 44, 0, 4), Text = def.Name, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left }, row)
+	local valueLabel = label({ Size = UDim2.new(0, 216, 0, 18), Position = UDim2.new(0, 44, 0, 27), Text = "", TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(150, 235, 190), TextTruncate = Enum.TextTruncate.AtEnd }, row)
+	local countLabel = label({ Size = UDim2.new(0, 36, 1, 0), Position = UDim2.new(1, -168, 0, 0), Text = "0", TextSize = 15, TextColor3 = Color3.fromRGB(255, 225, 110) }, row)
 	button({ Size = UDim2.new(0, 30, 0, 32), Position = UDim2.new(1, -132, 0.5, -16), BackgroundColor3 = Color3.fromRGB(110, 60, 70), Text = "−" }, row, function()
 		Remotes.LevelStat:FireServer("Sub", key, 1)
 	end)
 	button({ Size = UDim2.new(0, 30, 0, 32), Position = UDim2.new(1, -98, 0.5, -16), BackgroundColor3 = Color3.fromRGB(60, 120, 80), Text = "+" }, row, function()
 		Remotes.LevelStat:FireServer("Add", key, 1)
 	end)
-	button({ Size = UDim2.new(0, 56, 0, 32), Position = UDim2.new(1, -64, 0.5, -16), BackgroundColor3 = Color3.fromRGB(70, 90, 170), Text = "Max", TextSize = 13 }, row, function()
+	button({ Size = UDim2.new(0, 56, 0, 32), Position = UDim2.new(1, -64, 0.5, -16), BackgroundColor3 = Color3.fromRGB(70, 90, 170), Text = "Max", TextSize = 11 }, row, function()
 		Remotes.LevelStat:FireServer("Add", key, 99)
 	end)
 	rows[key] = { Value = valueLabel, Count = countLabel }
 end
 
-label({ Size = UDim2.new(1, -32, 0, 30), Position = UDim2.new(0, 16, 0, 376), Text = LS.Double.Note or "", TextSize = 12, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
+label({ Size = UDim2.new(1, -32, 0, 30), Position = UDim2.new(0, 16, 0, 376), Text = LS.Double.Note or "", TextSize = 10, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
 -- 최대 레벨을 찍은 뒤: 골드로 포인트 구매 (살수록 비싸진다)
-local buyButton = button({ Size = UDim2.new(0, 250, 0, 32), Position = UDim2.new(0, 16, 1, -42), BackgroundColor3 = Color3.fromRGB(140, 104, 40), Text = "", TextSize = 13, Visible = false }, panel, function()
+local buyButton = button({ Size = UDim2.new(0, 250, 0, 32), Position = UDim2.new(0, 16, 1, -42), BackgroundColor3 = Color3.fromRGB(140, 104, 40), Text = "", TextSize = 11, Visible = false }, panel, function()
 	Remotes.LevelStat:FireServer("Buy")
 end)
-button({ Size = UDim2.new(0, 150, 0, 32), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 1, -42), BackgroundColor3 = Color3.fromRGB(120, 70, 70), Text = "Reset All (Free)", TextSize = 13 }, panel, function()
+button({ Size = UDim2.new(0, 150, 0, 32), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 1, -42), BackgroundColor3 = Color3.fromRGB(120, 70, 70), Text = "Reset All (Free)", TextSize = 11 }, panel, function()
 	Remotes.LevelStat:FireServer("Reset")
 end)
 

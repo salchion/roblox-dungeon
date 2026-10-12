@@ -59,12 +59,12 @@ local badge = make("Frame", { Size = UDim2.new(0, 50, 0, 50), Position = UDim2.n
 round(badge, 12)
 make("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(110, 170, 255), Color3.fromRGB(60, 80, 200)), Rotation = 90 }, badge)
 make("UIStroke", { Color = Color3.fromRGB(190, 215, 255), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, badge)
-text({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 4), Text = "LV", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Center, TextColor3 = Color3.fromRGB(220, 235, 255) }, badge)
-local levelText = text({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 16), Text = "1", TextSize = 26, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Center }, badge)
+text({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 4), Text = "LV", TextSize = 10, TextXAlignment = Enum.TextXAlignment.Center, TextColor3 = Color3.fromRGB(220, 235, 255) }, badge)
+local levelText = text({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 16), Text = "1", TextSize = 22, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Center }, badge)
 
 -- 이름 + 전투력
-local nameText = text({ Size = UDim2.new(1, -76, 0, 16), Position = UDim2.new(0, 68, 0, 9), Text = player.DisplayName, TextSize = 12, TextColor3 = Color3.fromRGB(175, 185, 220), TextTruncate = Enum.TextTruncate.AtEnd }, card)
-local powerText = text({ Size = UDim2.new(1, -76, 0, 26), Position = UDim2.new(0, 68, 0, 24), Text = "⚡ 0", TextSize = 22, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110), RichText = true }, card)
+local nameText = text({ Size = UDim2.new(1, -76, 0, 16), Position = UDim2.new(0, 68, 0, 9), Text = player.DisplayName, TextSize = 10, TextColor3 = Color3.fromRGB(175, 185, 220), TextTruncate = Enum.TextTruncate.AtEnd }, card)
+local powerText = text({ Size = UDim2.new(1, -76, 0, 26), Position = UDim2.new(0, 68, 0, 24), Text = "⚡ 0", TextSize = 19, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110), RichText = true }, card)
 
 -- 경험치 막대 (글자를 막대 안에)
 local xpBack = make("Frame", { Size = UDim2.new(1, -20, 0, 14), Position = UDim2.new(0, 10, 0, 66), BackgroundColor3 = Color3.fromRGB(34, 38, 58), BorderSizePixel = 0 }, card)
@@ -72,7 +72,7 @@ round(xpBack, 7)
 local xpFill = make("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(110, 200, 255), BorderSizePixel = 0 }, xpBack)
 round(xpFill, 7)
 make("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(150, 225, 255), Color3.fromRGB(80, 150, 255)) }, xpFill)
-local xpText = text({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Center, ZIndex = 3 }, xpBack)
+local xpText = text({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 10, TextXAlignment = Enum.TextXAlignment.Center, ZIndex = 3 }, xpBack)
 xpText.TextStrokeTransparency = 0.6
 
 -- 자원 칩 3개: 골드 / 티켓 / 열쇠
@@ -80,15 +80,15 @@ local function chip(x, width, color)
 	local frame = make("Frame", { Size = UDim2.new(0, width, 0, 26), Position = UDim2.new(0, x, 0, 88), BackgroundColor3 = Color3.fromRGB(26, 29, 46), BorderSizePixel = 0 }, card)
 	round(frame, 8)
 	make("UIStroke", { Color = color, Thickness = 1, Transparency = 0.55, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame)
-	return text({ Size = UDim2.new(1, -8, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = "", TextSize = 12, RichText = true }, frame)
+	return text({ Size = UDim2.new(1, -8, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = "", TextSize = 10, RichText = true }, frame)
 end
 local goldText = chip(10, 106, Color3.fromRGB(255, 215, 90))
 local ticketText = chip(120, 54, Color3.fromRGB(215, 160, 255))
 local keyText = chip(178, 56, Color3.fromRGB(150, 240, 200))
 
 -- 무기 / 위치
-local weaponText = text({ Name = "HudWeaponRow", Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 122), Text = "", TextSize = 12, RichText = true, TextTruncate = Enum.TextTruncate.AtEnd }, card)
-local zoneText = text({ Name = "HudZoneRow", Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 146), Text = "", TextSize = 12, TextColor3 = Color3.fromRGB(175, 185, 220), RichText = true }, card)
+local weaponText = text({ Name = "HudWeaponRow", Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 122), Text = "", TextSize = 10, RichText = true, TextTruncate = Enum.TextTruncate.AtEnd }, card)
+local zoneText = text({ Name = "HudZoneRow", Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 146), Text = "", TextSize = 10, TextColor3 = Color3.fromRGB(175, 185, 220), RichText = true }, card)
 make("Frame", { Name = "HudSep", Size = UDim2.new(1, -20, 0, 1), Position = UDim2.new(0, 10, 0, 118), BackgroundColor3 = Color3.fromRGB(60, 66, 100), BackgroundTransparency = 0.5, BorderSizePixel = 0 }, card)
 
 local function refresh()
@@ -102,7 +102,7 @@ local function refresh()
 	xpFill.Size = UDim2.new((maxed or blocked) and 1 or math.clamp(xp / needed, 0, 1), 0, 1, 0)
 	xpFill.BackgroundColor3 = blocked and Color3.fromRGB(255, 170, 60) or Color3.fromRGB(110, 200, 255)
 	xpText.Text = maxed and "MAX" or blocked and "Breakthrough needed!" or string.format("%s / %s XP", comma(xp), comma(needed))
-	powerText.Text = "⚡ " .. comma(player:GetAttribute("Power") or 0) .. " <font size='11' color='#9aa4cc'>Power</font>"
+	powerText.Text = "⚡ " .. comma(player:GetAttribute("Power") or 0) .. " <font size='9' color='#9aa4cc'>Power</font>"
 	goldText.Text = "💰 <font color='#ffd966'>" .. comma(player:GetAttribute("Gold") or 0) .. "</font>"
 	ticketText.Text = "🎫 <font color='#d9a6ff'>" .. comma(player:GetAttribute("Tickets") or 0) .. "</font>"
 	local keys = (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0)

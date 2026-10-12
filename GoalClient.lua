@@ -49,7 +49,7 @@ titleLabel.Size = UDim2.new(1, -16, 0, 34)
 titleLabel.Position = UDim2.new(0, 8, 0, 4)
 titleLabel.BackgroundTransparency = 1
 titleLabel.Font = Enum.Font.GothamBold
-titleLabel.TextSize = 13
+titleLabel.TextSize = 11
 titleLabel.TextColor3 = Color3.new(1, 1, 1)
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 titleLabel.TextYAlignment = Enum.TextYAlignment.Top
@@ -102,7 +102,7 @@ questLabel.Size = UDim2.new(1, -16, 1, -8)
 questLabel.Position = UDim2.new(0, 8, 0, 4)
 questLabel.BackgroundTransparency = 1
 questLabel.Font = Enum.Font.GothamBold
-questLabel.TextSize = 13
+questLabel.TextSize = 11
 questLabel.TextColor3 = Color3.new(1, 1, 1)
 questLabel.TextXAlignment = Enum.TextXAlignment.Left
 questLabel.TextYAlignment = Enum.TextYAlignment.Top
@@ -191,7 +191,7 @@ idleLabel.BackgroundColor3 = Color3.fromRGB(26, 30, 48)
 idleLabel.BackgroundTransparency = 0.15
 idleLabel.BorderSizePixel = 0
 idleLabel.Font = Enum.Font.GothamBold
-idleLabel.TextSize = 14
+idleLabel.TextSize = 12
 idleLabel.TextColor3 = Color3.fromRGB(255, 225, 120)
 idleLabel.RichText = true
 idleLabel.Visible = false
@@ -264,7 +264,7 @@ guideText.Size = UDim2.new(1, -28, 1, -64)
 guideText.Position = UDim2.new(0, 14, 0, 10)
 guideText.BackgroundTransparency = 1
 guideText.Font = Enum.Font.GothamBold
-guideText.TextSize = 14
+guideText.TextSize = 12
 guideText.TextColor3 = Color3.new(1, 1, 1)
 guideText.TextXAlignment = Enum.TextXAlignment.Left
 guideText.TextYAlignment = Enum.TextYAlignment.Top
@@ -277,7 +277,7 @@ guideClose.Position = UDim2.new(0, 14, 1, -50)
 guideClose.BackgroundColor3 = Color3.fromRGB(60, 170, 90)
 guideClose.BorderSizePixel = 0
 guideClose.Font = Enum.Font.GothamBlack
-guideClose.TextSize = 18
+guideClose.TextSize = 15
 guideClose.TextColor3 = Color3.new(1, 1, 1)
 guideClose.Text = "Got it, let's get stronger!"
 guideClose.ZIndex = 51
@@ -286,16 +286,16 @@ addCorner(guideClose, 8)
 guideClose.Activated:Connect(function() guide.Visible = false end)
 Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 	if action ~= "Growth" then return end
-	local lines = { "<font size='20' color='#ffd966'><b>💪 How to Get Stronger</b></font>" }
+	local lines = { "<font size='17' color='#ffd966'><b>💪 How to Get Stronger</b></font>" }
 	local gap = data.Need - data.Power
 	if gap > 0 then
-		table.insert(lines, string.format("<font color='#9ad7ff'>🎯 Goal: Defeat Zone %d Lord</font>  <font size='12' color='#c9c0e0'>(Recommended power %s · Your power %s)</font>", data.Zone, comma(data.Need), comma(data.Power)))
+		table.insert(lines, string.format("<font color='#9ad7ff'>🎯 Goal: Defeat Zone %d Lord</font>  <font size='10' color='#c9c0e0'>(Recommended power %s · Your power %s)</font>", data.Zone, comma(data.Need), comma(data.Power)))
 	else
-		table.insert(lines, string.format("<font color='#78ff8c'>🎯 Ready to challenge the Zone %d Lord!</font>  <font size='12' color='#c9c0e0'>(Recommended %s · Yours %s)</font>", data.Zone, comma(data.Need), comma(data.Power)))
+		table.insert(lines, string.format("<font color='#78ff8c'>🎯 Ready to challenge the Zone %d Lord!</font>  <font size='10' color='#c9c0e0'>(Recommended %s · Yours %s)</font>", data.Zone, comma(data.Need), comma(data.Power)))
 	end
 	table.insert(lines, "")
 	for _, source in ipairs(data.Sources) do
-		table.insert(lines, string.format("%s <b>%s</b> — %s\n      <font size='12' color='#ffd966'>%s</font>", source.Icon, source.Name, source.Desc, source.Status))
+		table.insert(lines, string.format("%s <b>%s</b> — %s\n      <font size='10' color='#ffd966'>%s</font>", source.Icon, source.Name, source.Desc, source.Status))
 	end
 	guideText.Text = table.concat(lines, "\n")
 	guide.Visible = true

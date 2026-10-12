@@ -17,7 +17,7 @@ local gui = create("ScreenGui", { Name = "CodexGui", ResetOnSpawn = false, Ignor
 
 local openButton = makeButton({
 	Name = "CodexButton", Size = UDim2.new(0, 52, 0, 52), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0),
-	Text = "📖\nCodex", TextSize = 12, BackgroundColor3 = Color3.fromRGB(46, 52, 92),
+	Text = "📖\nCodex", TextSize = 10, BackgroundColor3 = Color3.fromRGB(46, 52, 92),
 }, gui, function() end)
 rounded(openButton, 10)
 
@@ -27,10 +27,10 @@ local panel = create("Frame", {
 }, gui)
 rounded(panel, 14)
 create("UIStroke", { Color = Color3.fromRGB(130, 150, 230), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, panel)
-makeLabel({ Size = UDim2.new(1, -100, 0, 34), Position = UDim2.new(0, 16, 0, 8), Text = "📖 Codex", TextSize = 22, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left }, panel)
-makeButton({ Size = UDim2.new(0, 70, 0, 30), Position = UDim2.new(1, -82, 0, 10), Text = "Close (J)", TextSize = 13, BackgroundColor3 = Color3.fromRGB(54, 58, 82) }, panel, function() panel.Visible = false end)
+makeLabel({ Size = UDim2.new(1, -100, 0, 34), Position = UDim2.new(0, 16, 0, 8), Text = "📖 Codex", TextSize = 19, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left }, panel)
+makeButton({ Size = UDim2.new(0, 70, 0, 30), Position = UDim2.new(1, -82, 0, 10), Text = "Close (J)", TextSize = 11, BackgroundColor3 = Color3.fromRGB(54, 58, 82) }, panel, function() panel.Visible = false end)
 
-local summary = makeLabel({ Size = UDim2.new(1, -32, 0, 18), Position = UDim2.new(0, 16, 0, 42), TextSize = 13, TextColor3 = Color3.fromRGB(180, 188, 220), TextXAlignment = Enum.TextXAlignment.Left }, panel)
+local summary = makeLabel({ Size = UDim2.new(1, -32, 0, 18), Position = UDim2.new(0, 16, 0, 42), TextSize = 11, TextColor3 = Color3.fromRGB(180, 188, 220), TextXAlignment = Enum.TextXAlignment.Left }, panel)
 local list = create("ScrollingFrame", {
 	Size = UDim2.new(1, -24, 1, -112), Position = UDim2.new(0, 12, 0, 100), BackgroundTransparency = 1, BorderSizePixel = 0,
 	ScrollBarThickness = 5, CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.Y,
@@ -67,7 +67,7 @@ local function rebuild()
 		local seen = {}
 		for zone = 1, F.ZoneCount do
 			local head = row(26, Color3.fromRGB(44, 50, 84))
-			makeLabel({ Size = UDim2.new(1, -12, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = string.format("Zone %d · %s", zone, F.ZoneNames[zone]), TextSize = 14, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Left }, head)
+			makeLabel({ Size = UDim2.new(1, -12, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = string.format("Zone %d · %s", zone, F.ZoneNames[zone]), TextSize = 12, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Left }, head)
 			local keys = {}
 			for key in pairs(F.ZonePools[zone] or {}) do table.insert(keys, key) end
 			table.sort(keys)
@@ -77,20 +77,20 @@ local function rebuild()
 					local kills = data.Kills[key] or 0
 					if not seen[key] then seen[key] = true total += 1 if kills > 0 then found += 1 end end
 					local r = row(46)
-					makeLabel({ Size = UDim2.new(0, 40, 1, 0), Position = UDim2.new(0, 4, 0, 0), Text = kills > 0 and info.Icon or "❔", TextSize = 24 }, r)
-					makeLabel({ Size = UDim2.new(1, -150, 0, 20), Position = UDim2.new(0, 48, 0, 3), Text = kills > 0 and info.Name or "???", TextSize = 14, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Left }, r)
-					makeLabel({ Size = UDim2.new(1, -150, 0, 20), Position = UDim2.new(0, 48, 0, 23), Text = kills > 0 and info.Desc or "Not met yet", TextSize = 12, TextColor3 = Color3.fromRGB(170, 176, 200), TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, r)
-					makeLabel({ Size = UDim2.new(0, 90, 1, 0), Position = UDim2.new(1, -96, 0, 0), Text = kills > 0 and ("Kills " .. kills) or "", TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(255, 225, 120), TextXAlignment = Enum.TextXAlignment.Right }, r)
+					makeLabel({ Size = UDim2.new(0, 40, 1, 0), Position = UDim2.new(0, 4, 0, 0), Text = kills > 0 and info.Icon or "❔", TextSize = 20 }, r)
+					makeLabel({ Size = UDim2.new(1, -150, 0, 20), Position = UDim2.new(0, 48, 0, 3), Text = kills > 0 and info.Name or "???", TextSize = 12, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Left }, r)
+					makeLabel({ Size = UDim2.new(1, -150, 0, 20), Position = UDim2.new(0, 48, 0, 23), Text = kills > 0 and info.Desc or "Not met yet", TextSize = 10, TextColor3 = Color3.fromRGB(170, 176, 200), TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, r)
+					makeLabel({ Size = UDim2.new(0, 90, 1, 0), Position = UDim2.new(1, -96, 0, 0), Text = kills > 0 and ("Kills " .. kills) or "", TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(255, 225, 120), TextXAlignment = Enum.TextXAlignment.Right }, r)
 				end
 			end
 			local bossKills = data.Boss[tostring(zone)] or 0
 			total += 1
 			if bossKills > 0 then found += 1 end
 			local r = row(50, Color3.fromRGB(52, 36, 44))
-			makeLabel({ Size = UDim2.new(0, 40, 1, 0), Position = UDim2.new(0, 4, 0, 0), Text = bossKills > 0 and "👑" or "❔", TextSize = 24 }, r)
-			makeLabel({ Size = UDim2.new(1, -150, 0, 22), Position = UDim2.new(0, 48, 0, 5), Text = bossKills > 0 and string.format("%s (Lord of %s)", Config.Codex.Bosses[zone] or "Lord", F.ZoneNames[zone]) or "??? (Lord of this zone)", TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 170, 160), TextXAlignment = Enum.TextXAlignment.Left }, r)
-			makeLabel({ Size = UDim2.new(1, -150, 0, 18), Position = UDim2.new(0, 48, 0, 27), Text = bossKills > 0 and "The boss waiting at the end of the zone. Aim for the weak-point orb" or "Defeat it to open the next zone", TextSize = 12, TextColor3 = Color3.fromRGB(190, 170, 175), TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, r)
-			makeLabel({ Size = UDim2.new(0, 90, 1, 0), Position = UDim2.new(1, -96, 0, 0), Text = bossKills > 0 and ("Kills " .. bossKills) or "", TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(255, 225, 120), TextXAlignment = Enum.TextXAlignment.Right }, r)
+			makeLabel({ Size = UDim2.new(0, 40, 1, 0), Position = UDim2.new(0, 4, 0, 0), Text = bossKills > 0 and "👑" or "❔", TextSize = 20 }, r)
+			makeLabel({ Size = UDim2.new(1, -150, 0, 22), Position = UDim2.new(0, 48, 0, 5), Text = bossKills > 0 and string.format("%s (Lord of %s)", Config.Codex.Bosses[zone] or "Lord", F.ZoneNames[zone]) or "??? (Lord of this zone)", TextSize = 12, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 170, 160), TextXAlignment = Enum.TextXAlignment.Left }, r)
+			makeLabel({ Size = UDim2.new(1, -150, 0, 18), Position = UDim2.new(0, 48, 0, 27), Text = bossKills > 0 and "The boss waiting at the end of the zone. Aim for the weak-point orb" or "Defeat it to open the next zone", TextSize = 10, TextColor3 = Color3.fromRGB(190, 170, 175), TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, r)
+			makeLabel({ Size = UDim2.new(0, 90, 1, 0), Position = UDim2.new(1, -96, 0, 0), Text = bossKills > 0 and ("Kills " .. bossKills) or "", TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(255, 225, 120), TextXAlignment = Enum.TextXAlignment.Right }, r)
 		end
 		summary.Text = string.format("Monsters met %d / %d (incl. zone lords)", found, total)
 	else
@@ -104,9 +104,9 @@ local function rebuild()
 				local augInfo = setDef.Aug and Config.AugInfo[setDef.Aug]
 				local r = row(124, Color3.fromRGB(28, 32, 52))
 				create("UIStroke", { Color = setDef.Color, Thickness = got > 0 and 2 or 1, Transparency = got > 0 and 0 or 0.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, r)
-				makeLabel({ Size = UDim2.new(0, 40, 0, 40), Position = UDim2.new(0, 4, 0, 4), Text = setDef.Icon, TextSize = 28 }, r)
-				makeLabel({ Size = UDim2.new(1, -150, 0, 22), Position = UDim2.new(0, 48, 0, 5), Text = string.format("%s  <font size='12' color='#aab0c8'>Zone %d %s</font>", setDef.Name, zone, F.ZoneNames[zone]), RichText = true, TextSize = 15, Font = Enum.Font.GothamBlack, TextColor3 = setDef.Color, TextXAlignment = Enum.TextXAlignment.Left }, r)
-				makeLabel({ Size = UDim2.new(0, 96, 0, 22), Position = UDim2.new(1, -102, 0, 5), Text = got > 0 and ("Got " .. got) or "Not obtained", TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = got > 0 and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(150, 150, 170), TextXAlignment = Enum.TextXAlignment.Right }, r)
+				makeLabel({ Size = UDim2.new(0, 40, 0, 40), Position = UDim2.new(0, 4, 0, 4), Text = setDef.Icon, TextSize = 24 }, r)
+				makeLabel({ Size = UDim2.new(1, -150, 0, 22), Position = UDim2.new(0, 48, 0, 5), Text = string.format("%s  <font size='10' color='#aab0c8'>Zone %d %s</font>", setDef.Name, zone, F.ZoneNames[zone]), RichText = true, TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = setDef.Color, TextXAlignment = Enum.TextXAlignment.Left }, r)
+				makeLabel({ Size = UDim2.new(0, 96, 0, 22), Position = UDim2.new(1, -102, 0, 5), Text = got > 0 and ("Got " .. got) or "Not obtained", TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = got > 0 and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(150, 150, 170), TextXAlignment = Enum.TextXAlignment.Right }, r)
 				local lines = {}
 				for _, tier in ipairs({ 2, 3 }) do
 					local parts = {}
@@ -116,7 +116,7 @@ local function rebuild()
 				if augInfo then
 					table.insert(lines, string.format("<font color='#%s'><b>%s %s</b></font>  %s", hex(augInfo.Color), augInfo.Icon, augInfo.Name, augInfo.Desc))
 				end
-				makeLabel({ Size = UDim2.new(1, -20, 0, 82), Position = UDim2.new(0, 10, 0, 40), Text = table.concat(lines, "\n"), RichText = true, TextSize = 12, TextColor3 = Color3.fromRGB(205, 210, 232), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top }, r)
+				makeLabel({ Size = UDim2.new(1, -20, 0, 82), Position = UDim2.new(0, 10, 0, 40), Text = table.concat(lines, "\n"), RichText = true, TextSize = 10, TextColor3 = Color3.fromRGB(205, 210, 232), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top }, r)
 			end
 		end
 		summary.Text = string.format("Sets obtained %d / %d  ·  Monsters / lord of that zone drop them at a set rate", found, F.ZoneCount)
@@ -125,7 +125,7 @@ end
 
 for index, def in ipairs({ { "Monster", "👾 Monsters" }, { "Set", "🛡 Set Gear" } }) do
 	local button = makeButton({
-		Size = UDim2.new(0, 140, 0, 30), Position = UDim2.new(0, 16 + (index - 1) * 148, 0, 64), Text = def[2], TextSize = 14,
+		Size = UDim2.new(0, 140, 0, 30), Position = UDim2.new(0, 16 + (index - 1) * 148, 0, 64), Text = def[2], TextSize = 12,
 	}, panel, function() tab = def[1] rebuild() end)
 	rounded(button, 8)
 	tabButtons[def[1]] = button

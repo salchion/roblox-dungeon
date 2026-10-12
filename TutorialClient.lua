@@ -37,7 +37,7 @@ end
 local function label(props, parent)
 	local base = {
 		BackgroundTransparency = 1, Font = Enum.Font.GothamMedium, TextColor3 = Color3.new(1, 1, 1),
-		TextSize = 15, TextStrokeTransparency = 0.5,
+		TextSize = 13, TextStrokeTransparency = 0.5,
 	}
 	for key, value in pairs(props) do
 		base[key] = value
@@ -68,11 +68,11 @@ rounded(objective)
 RunService.Heartbeat:Connect(function() objective.Position = missionPos(0) end)
 local stroke = create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5 }, objective)
 local titleLabel = label({
-	Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 6), TextSize = 16, Font = Enum.Font.GothamBlack,
+	Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 6), TextSize = 14, Font = Enum.Font.GothamBlack,
 	TextXAlignment = Enum.TextXAlignment.Left, RichText = true,
 }, objective)
 local descLabel = label({
-	Size = UDim2.new(1, -20, 0, 58), Position = UDim2.new(0, 10, 0, 28), TextSize = 14, Font = Enum.Font.GothamBold,
+	Size = UDim2.new(1, -20, 0, 58), Position = UDim2.new(0, 10, 0, 28), TextSize = 12, Font = Enum.Font.GothamBold,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = true,
 }, objective)
 local barBack = create("Frame", {
@@ -81,7 +81,7 @@ local barBack = create("Frame", {
 rounded(barBack)
 local barFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 210, 90), BorderSizePixel = 0 }, barBack)
 rounded(barFill)
-local barText = label({ Size = UDim2.new(1, 0, 1, 0), TextSize = 12, Font = Enum.Font.GothamBold }, barBack)
+local barText = label({ Size = UDim2.new(1, 0, 1, 0), TextSize = 10, Font = Enum.Font.GothamBold }, barBack)
 
 local waypoint = nil    -- 던전 안에서 다음 방을 가리키는 빛기둥 (하늘색)
 local waypointLabel = nil
@@ -117,7 +117,7 @@ local function placeBeacon(position, name)
 		Size = UDim2.new(0, 200, 0, 30), StudsOffset = Vector3.new(0, -85, 0), AlwaysOnTop = true, MaxDistance = 100000, -- 월드 글자는 작게: 목표 표지는 이것 하나만
 	}, beacon)
 	beaconLabel = label({
-		Size = UDim2.new(1, 0, 1, 0), TextSize = 15, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0.2,
+		Size = UDim2.new(1, 0, 1, 0), TextSize = 13, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0.2,
 		TextColor3 = Color3.fromRGB(255, 230, 120), Text = "▼ " .. (name or "Goal"),
 	}, billboard)
 end
@@ -135,11 +135,11 @@ local function popupMission()
 	activeCard = card
 	rounded(card, 18)
 	local cardStroke = create("UIStroke", { Color = Color3.fromRGB(235, 208, 128), Thickness = 3 }, card)
-	label({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 10), TextSize = 26, Font = Enum.Font.GothamBlack, RichText = true, ZIndex = 31,
+	label({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 10), TextSize = 22, Font = Enum.Font.GothamBlack, RichText = true, ZIndex = 31,
 		Text = string.format("<font color='#ffd966'>🎯 Mission %d/%d</font>", current.Index, current.Total) }, card)
-	label({ Size = UDim2.new(1, -40, 0, 56), Position = UDim2.new(0, 20, 0, 50), TextSize = 22, Font = Enum.Font.GothamBold, TextWrapped = true, TextTruncate = Enum.TextTruncate.AtEnd, ZIndex = 31,
+	label({ Size = UDim2.new(1, -40, 0, 56), Position = UDim2.new(0, 20, 0, 50), TextSize = 19, Font = Enum.Font.GothamBold, TextWrapped = true, TextTruncate = Enum.TextTruncate.AtEnd, ZIndex = 31,
 		Text = current.Text }, card)
-	activeWhere = label({ Size = UDim2.new(1, -40, 0, 26), Position = UDim2.new(0, 20, 1, -34), TextSize = 20, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(130, 255, 160), ZIndex = 31,
+	activeWhere = label({ Size = UDim2.new(1, -40, 0, 26), Position = UDim2.new(0, 20, 1, -34), TextSize = 17, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(130, 255, 160), ZIndex = 31,
 		Text = current.TargetName and ("📍 " .. current.TargetName) or "" }, card)
 	card.Size = UDim2.new(0, 400, 0, 110)
 	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.new(0, 520, 0, 150) }):Play()
@@ -199,7 +199,7 @@ local function placeWaypoint(position, name)
 		Size = UDim2.new(0, 240, 0, 50), StudsOffset = Vector3.new(0, -26, 0), AlwaysOnTop = true, MaxDistance = 100000,
 	}, waypoint)
 	waypointLabel = label({
-		Size = UDim2.new(1, 0, 1, 0), TextSize = 20, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0,
+		Size = UDim2.new(1, 0, 1, 0), TextSize = 17, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0,
 		TextColor3 = Color3.fromRGB(150, 225, 255), Text = "▼ " .. (name or "Next room"),
 	}, billboard)
 end
@@ -216,7 +216,7 @@ do
 	cinema.Bottom = bar(UDim2.new(0, 0, 1, 0))
 	cinema.Flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 95 }, gui)
 	cinema.Black = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 96 }, gui)
-	cinema.Text = label({ Size = UDim2.new(1, 0, 0, 80), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), TextSize = 44, Font = Enum.Font.GothamBlack,
+	cinema.Text = label({ Size = UDim2.new(1, 0, 0, 80), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), TextSize = 37, Font = Enum.Font.GothamBlack,
 		TextTransparency = 1, TextStrokeTransparency = 1, ZIndex = 97, Text = "…………" }, gui)
 	cinema.Color = Instance.new("ColorCorrectionEffect")
 	cinema.Color.Enabled = false
@@ -266,7 +266,7 @@ do
 	local ringStroke = create("UIStroke", { Color = Color3.fromRGB(255, 225, 80), Thickness = 4 }, spot.Ring)
 	TweenService:Create(ringStroke, TweenInfo.new(0.55, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 10 }):Play()
 	spot.Arrow = label({ Name = "SpotArrow", Size = UDim2.new(0, 260, 0, 40), BackgroundColor3 = Color3.fromRGB(255, 225, 80), BackgroundTransparency = 0,
-		TextSize = 20, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(40, 28, 0), TextStrokeTransparency = 1, ZIndex = 82, Visible = false, Text = "" }, gui)
+		TextSize = 17, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(40, 28, 0), TextStrokeTransparency = 1, ZIndex = 82, Visible = false, Text = "" }, gui)
 	create("UICorner", { CornerRadius = UDim.new(0, 10) }, spot.Arrow)
 end
 local function spotHide()
@@ -365,10 +365,10 @@ local function showPrompt(data)
 	TweenService:Create(cardStroke, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 8 }):Play()
 	local keycap = create("Frame", { Size = UDim2.new(0, 78, 0, 78), Position = UDim2.new(0, 16, 0.5, -39), BackgroundColor3 = Color3.fromRGB(245, 245, 250), BorderSizePixel = 0, ZIndex = 71 }, card)
 	rounded(keycap, 12)
-	label({ Size = UDim2.new(1, 0, 1, 0), Text = data.Key or "?", TextSize = 52, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 34, 50), TextStrokeTransparency = 1, ZIndex = 72 }, keycap)
-	label({ Size = UDim2.new(1, -120, 0, 34), Position = UDim2.new(0, 108, 0, 12), Text = data.Title or "", TextSize = 24, Font = Enum.Font.GothamBlack,
+	label({ Size = UDim2.new(1, 0, 1, 0), Text = data.Key or "?", TextSize = 44, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 34, 50), TextStrokeTransparency = 1, ZIndex = 72 }, keycap)
+	label({ Size = UDim2.new(1, -120, 0, 34), Position = UDim2.new(0, 108, 0, 12), Text = data.Title or "", TextSize = 20, Font = Enum.Font.GothamBlack,
 		TextColor3 = Color3.fromRGB(255, 225, 110), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 71 }, card)
-	label({ Size = UDim2.new(1, -120, 0, 76), Position = UDim2.new(0, 108, 0, 46), Text = data.Text or "", TextSize = 16, Font = Enum.Font.GothamBold, TextWrapped = true,
+	label({ Size = UDim2.new(1, -120, 0, 76), Position = UDim2.new(0, 108, 0, 46), Text = data.Text or "", TextSize = 14, Font = Enum.Font.GothamBold, TextWrapped = true,
 		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 71 }, card)
 	task.delay(data.Duration or 7, function()
 		if card.Parent then
@@ -395,9 +395,9 @@ local function playReel(list)
 	}, gui)
 	rounded(panel, 14)
 	local panelStroke = create("UIStroke", { Color = Color3.fromRGB(120, 140, 200), Thickness = 2, Transparency = 1 }, panel)
-	local title = label({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 8), TextSize = 22, Font = Enum.Font.GothamBlack,
+	local title = label({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 8), TextSize = 19, Font = Enum.Font.GothamBlack,
 		Text = "🎁 First gear granted!", TextTransparency = 1, ZIndex = 71 }, panel)
-	local footer = label({ Size = UDim2.new(1, -24, 0, 40), Position = UDim2.new(0, 12, 1, -46), TextSize = 14, TextWrapped = true,
+	local footer = label({ Size = UDim2.new(1, -24, 0, 40), Position = UDim2.new(0, 12, 1, -46), TextSize = 12, TextWrapped = true,
 		TextColor3 = Color3.fromRGB(200, 210, 235), Text = "🎰 Want more pulls? Use tickets at the gacha machine in town! Daily quests have pulls too", TextTransparency = 1, ZIndex = 71 }, panel)
 	TweenService:Create(panel, TweenInfo.new(0.3), { BackgroundTransparency = 0.08 }):Play()
 	TweenService:Create(panelStroke, TweenInfo.new(0.3), { Transparency = 0.3 }):Play()
@@ -412,8 +412,8 @@ local function playReel(list)
 			BorderSizePixel = 0, ClipsDescendants = true, ZIndex = 71 }, panel)
 		rounded(frame, 10)
 		local stroke = create("UIStroke", { Color = Color3.fromRGB(70, 80, 110), Thickness = 2 }, frame)
-		local slotText = label({ Size = UDim2.new(1, 0, 0, 28), Position = UDim2.new(0, 0, 0, 10), TextSize = 20, Font = Enum.Font.GothamBold, Text = "?", ZIndex = 72 }, frame)
-		local nameText = label({ Size = UDim2.new(1, -8, 0, 36), Position = UDim2.new(0, 4, 0, 40), TextSize = 14, TextWrapped = true, Text = "", ZIndex = 72 }, frame)
+		local slotText = label({ Size = UDim2.new(1, 0, 0, 28), Position = UDim2.new(0, 0, 0, 10), TextSize = 17, Font = Enum.Font.GothamBold, Text = "?", ZIndex = 72 }, frame)
+		local nameText = label({ Size = UDim2.new(1, -8, 0, 36), Position = UDim2.new(0, 4, 0, 40), TextSize = 12, TextWrapped = true, Text = "", ZIndex = 72 }, frame)
 		windows[index] = { Slot = slotText, Name = nameText, Stroke = stroke, Frame = frame }
 	end
 	-- 돌아가는 동안: 부위 이름이 빠르게 바뀐다 -> 왼쪽부터 차례로 멈춘다
@@ -617,11 +617,11 @@ do
 		}, gui)
 		local arrow = label({
 			Size = UDim2.new(0, 56, 0, 56), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 0),
-			Text = "➤", TextSize = 54, Font = Enum.Font.GothamBlack, TextColor3 = color, TextStrokeTransparency = 0, ZIndex = 50,
+			Text = "➤", TextSize = 46, Font = Enum.Font.GothamBlack, TextColor3 = color, TextStrokeTransparency = 0, ZIndex = 50,
 		}, frame)
 		local text = label({
 			Size = UDim2.new(1, 0, 0, 20), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 52),
-			Text = "", TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = color, TextStrokeTransparency = 0, ZIndex = 50,
+			Text = "", TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = color, TextStrokeTransparency = 0, ZIndex = 50,
 		}, frame)
 		return frame, arrow, text
 	end
@@ -689,10 +689,10 @@ do
 	create("UIStroke", { Color = Color3.fromRGB(120, 220, 255), Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, tip)
 	local cap = create("Frame", { Size = UDim2.new(0, 46, 0, 46), Position = UDim2.new(0, 10, 0.5, -23), BackgroundColor3 = Color3.fromRGB(245, 245, 250), BorderSizePixel = 0, ZIndex = 69 }, tip)
 	rounded(cap, 10)
-	label({ Size = UDim2.new(1, 0, 1, 0), Text = "Q", TextSize = 32, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 34, 50), TextStrokeTransparency = 1, ZIndex = 70 }, cap)
-	label({ Size = UDim2.new(1, -72, 0, 24), Position = UDim2.new(0, 66, 0, 8), Text = "Dash to get there fast!", TextSize = 20, Font = Enum.Font.GothamBlack,
+	label({ Size = UDim2.new(1, 0, 1, 0), Text = "Q", TextSize = 27, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 34, 50), TextStrokeTransparency = 1, ZIndex = 70 }, cap)
+	label({ Size = UDim2.new(1, -72, 0, 24), Position = UDim2.new(0, 66, 0, 8), Text = "Dash to get there fast!", TextSize = 17, Font = Enum.Font.GothamBlack,
 		TextColor3 = Color3.fromRGB(150, 230, 255), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 69 }, tip)
-	label({ Size = UDim2.new(1, -72, 0, 22), Position = UDim2.new(0, 66, 0, 34), Text = "Press Q to burst forward", TextSize = 14, Font = Enum.Font.GothamBold,
+	label({ Size = UDim2.new(1, -72, 0, 22), Position = UDim2.new(0, 66, 0, 34), Text = "Press Q to burst forward", TextSize = 12, Font = Enum.Font.GothamBold,
 		TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 69 }, tip)
 	local shown = false
 	local movingSince = nil

@@ -69,13 +69,13 @@ local function makeLabel(props, parent)
 		BackgroundTransparency = 1,
 		TextColor3 = Color3.fromRGB(240, 242, 250),
 		Font = Enum.Font.GothamMedium,
-		TextSize = 16,
+		TextSize = 14,
 		TextWrapped = true,
 	}
 	for key, value in pairs(props) do
 		base[key] = value
 	end
-	if base.TextSize < 12 then base.TextSize = 12 end -- 작은 글씨 하한(모바일)
+	if base.TextSize < 12 then base.TextSize = 10 end -- 작은 글씨 하한(모바일)
 	return create("TextLabel", base, parent)
 end
 
@@ -84,7 +84,7 @@ local function makeButton(props, parent, onClick)
 		BackgroundColor3 = Color3.fromRGB(62, 96, 196),
 		TextColor3 = Color3.fromRGB(240, 242, 250),
 		Font = Enum.Font.GothamBold,
-		TextSize = 15,
+		TextSize = 13,
 		AutoButtonColor = true,
 		BorderSizePixel = 0,
 	}
@@ -93,7 +93,7 @@ local function makeButton(props, parent, onClick)
 	end
 	local button = create("TextButton", base, parent)
 	rounded(button, 8)
-	if button.TextSize < 12 then button.TextSize = 12 end
+	if button.TextSize < 12 then button.TextSize = 10 end
 	local hs = create("UIStroke", { Color = Color3.fromRGB(230, 236, 255), Thickness = 1.5, Transparency = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, button) -- 마우스 올리면 테두리
 	button.MouseEnter:Connect(function() hs.Transparency = 0.55 end)
 	button.MouseLeave:Connect(function() hs.Transparency = 1 end)
@@ -143,7 +143,7 @@ local toastLabel = makeLabel({
 	BackgroundColor3 = Color3.fromRGB(16, 18, 30),
 	BackgroundTransparency = 0.08,
 	Font = Enum.Font.GothamBold,
-	TextSize = 16,
+	TextSize = 14,
 	TextWrapped = true,
 	TextXAlignment = Enum.TextXAlignment.Left,
 	Visible = false,
@@ -201,17 +201,17 @@ create("UIGradient", {
 
 makeLabel({
 	Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 8),
-	Text = "🔨 Weapon Upgrade", Font = Enum.Font.GothamBlack, TextSize = 24, TextColor3 = Color3.fromRGB(255, 220, 130),
+	Text = "🔨 Weapon Upgrade", Font = Enum.Font.GothamBlack, TextSize = 20, TextColor3 = Color3.fromRGB(255, 220, 130),
 }, enhancePanel)
 makeButton({
-	Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -74, 0, 12), Text = "Close", TextSize = 15, BackgroundColor3 = Color3.fromRGB(110, 60, 70),
+	Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -74, 0, 12), Text = "Close", TextSize = 13, BackgroundColor3 = Color3.fromRGB(110, 60, 70),
 }, enhancePanel, function()
 	enhancePanel.Visible = false
 end)
 
 local enhanceWeapon = makeLabel({
 	Size = UDim2.new(1, -24, 0, 30), Position = UDim2.new(0, 12, 0, 50),
-	Font = Enum.Font.GothamBlack, TextSize = 22, TextWrapped = true,
+	Font = Enum.Font.GothamBlack, TextSize = 19, TextWrapped = true,
 }, enhancePanel)
 
 local medal = create("Frame", {
@@ -296,38 +296,38 @@ RunService.RenderStepped:Connect(function()
 end)
 
 local enhanceStage = makeLabel({
-	Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 322), Font = Enum.Font.GothamBlack, TextSize = 34,
+	Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 322), Font = Enum.Font.GothamBlack, TextSize = 29,
 }, enhancePanel)
 local segmentBar = create("Frame", {
 	Size = UDim2.new(1, -60, 0, 14), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 366), BackgroundTransparency = 1,
 }, enhancePanel)
 create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder }, segmentBar)
 local enhanceNext = makeLabel({
-	Size = UDim2.new(1, -30, 0, 22), Position = UDim2.new(0, 15, 0, 386), TextSize = 14, RichText = true,
+	Size = UDim2.new(1, -30, 0, 22), Position = UDim2.new(0, 15, 0, 386), TextSize = 12, RichText = true,
 }, enhancePanel)
 
 local enhanceInfo = makeLabel({
-	Size = UDim2.new(1, -40, 0, 50), Position = UDim2.new(0, 20, 0, 414), TextSize = 15, RichText = true,
+	Size = UDim2.new(1, -40, 0, 50), Position = UDim2.new(0, 20, 0, 414), TextSize = 13, RichText = true,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 }, enhancePanel)
 
 -- 무기 특성: 지금 무기의 싸우는 방식 + 다음 시대로 진화하면 생기는 새 특성 (업그레이드할 이유를 눈에 보이게)
 local enhancePerk = makeLabel({
-	Size = UDim2.new(1, -40, 0, 62), Position = UDim2.new(0, 20, 0, 464), TextSize = 13, RichText = true,
+	Size = UDim2.new(1, -40, 0, 62), Position = UDim2.new(0, 20, 0, 464), TextSize = 11, RichText = true,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 }, enhancePanel)
 
 local enhanceBanner = makeLabel({
 	Size = UDim2.new(1, 0, 0, 56), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 200),
-	Font = Enum.Font.GothamBlack, TextSize = 44, TextStrokeTransparency = 0, Visible = false, ZIndex = 8,
+	Font = Enum.Font.GothamBlack, TextSize = 37, TextStrokeTransparency = 0, Visible = false, ZIndex = 8,
 }, enhancePanel)
 local enhanceResult = makeLabel({
-	Size = UDim2.new(1, -24, 0, 22), Position = UDim2.new(0, 12, 0, 530), Font = Enum.Font.GothamBold, TextSize = 14,
+	Size = UDim2.new(1, -24, 0, 22), Position = UDim2.new(0, 12, 0, 530), Font = Enum.Font.GothamBold, TextSize = 12,
 }, enhancePanel)
 
 local hammer = makeLabel({
 	Size = UDim2.new(0, 70, 0, 70), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 70, 0, 150),
-	Text = "🔨", TextSize = 56, Visible = false, ZIndex = 9, Rotation = -50,
+	Text = "🔨", TextSize = 48, Visible = false, ZIndex = 9, Rotation = -50,
 }, enhancePanel)
 
 local function manyLocked()
@@ -345,11 +345,11 @@ local function enhanceMany(count)
 end
 local enhanceTen = makeButton({
 	Size = UDim2.new(0, 80, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 214, 1, -14),
-	Text = "x10\nUpgrade", TextSize = 16, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(60, 120, 200),
+	Text = "x10\nUpgrade", TextSize = 14, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(60, 120, 200),
 }, enhancePanel, function() enhanceMany(10) end)
 local enhanceMax = makeButton({
 	Size = UDim2.new(0, 80, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 302, 1, -14),
-	Text = "Max\nUpgrade", TextSize = 16, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(190, 110, 40),
+	Text = "Max\nUpgrade", TextSize = 14, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(190, 110, 40),
 }, enhancePanel, function() enhanceMany(50) end)
 do
 	local function lockMany()
@@ -368,7 +368,7 @@ do
 end
 local enhanceButton = makeButton({
 	Size = UDim2.new(0, 186, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 20, 1, -14),
-	Text = "Upgrade", TextSize = 18, Font = Enum.Font.GothamBold, BackgroundColor3 = GREEN,
+	Text = "Upgrade", TextSize = 15, Font = Enum.Font.GothamBold, BackgroundColor3 = GREEN,
 }, enhancePanel, function()
 	if E.EnhanceBusy then return end
 	E.EnhanceBusy = true
@@ -463,8 +463,8 @@ function refreshEnhance()
 	enhanceStage.Text = string.format("+%d", stage)
 	enhanceStage.TextColor3 = color
 	if E.LastStage and E.LastStage ~= stage then
-		enhanceStage.TextSize = 54
-		TweenService:Create(enhanceStage, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { TextSize = 34 }):Play()
+		enhanceStage.TextSize = 46
+		TweenService:Create(enhanceStage, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { TextSize = 29 }):Play()
 	end
 	E.LastStage = stage
 	for _, child in ipairs(segmentBar:GetChildren()) do
@@ -508,7 +508,7 @@ function refreshEnhance()
 	else
 		enhanceNext.Text = ""
 	end
-	enhanceInfo.Text = string.format("Damage  <b>x%.2f</b> <font color='#78ff8c'>▶ x%.2f</font>\nSuccess rate  <font color='#%s'><b>%d%%</b></font>   <font size='12' color='#aaaabb'>(level kept on failure)</font>",
+	enhanceInfo.Text = string.format("Damage  <b>x%.2f</b> <font color='#78ff8c'>▶ x%.2f</font>\nSuccess rate  <font color='#%s'><b>%d%%</b></font>   <font size='10' color='#aaaabb'>(level kept on failure)</font>",
 		Config.GetDamageMultiplier(level), Config.GetDamageMultiplier(level + 1), chance >= 80 and "78ff8c" or (chance >= 60 and "ffd966" or "ff9a6e"), chance)
 	do
 		local perk = Config.GetWeaponPerk(level)
@@ -572,7 +572,7 @@ Remotes.Enhance.OnClientEvent:Connect(function(ok, message, summary)
 	elseif summary and summary.Attempts > 1 then
 		enhanceBanner.Text = string.format("%d upgrades! %d succeeded", summary.Attempts, summary.Successes)
 		enhanceBanner.TextColor3 = ok and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 160, 120)
-		enhanceBanner.TextSize = 34
+		enhanceBanner.TextSize = 29
 		medalStroke.Thickness = 9
 		TweenService:Create(medalStroke, TweenInfo.new(0.5), { Thickness = 5 }):Play()
 	elseif ok then
@@ -634,10 +634,10 @@ create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(70, 46, 100), Co
 
 makeLabel({
 	Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8),
-	Text = "🛡 Gear · Gacha", Font = Enum.Font.GothamBlack, TextSize = 24, TextColor3 = Color3.fromRGB(235, 200, 255),
+	Text = "🛡 Gear · Gacha", Font = Enum.Font.GothamBlack, TextSize = 20, TextColor3 = Color3.fromRGB(235, 200, 255),
 }, gearPanel)
 makeButton({
-	Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -74, 0, 12), Text = "Close", TextSize = 15, BackgroundColor3 = Color3.fromRGB(110, 60, 70),
+	Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -74, 0, 12), Text = "Close", TextSize = 13, BackgroundColor3 = Color3.fromRGB(110, 60, 70),
 }, gearPanel, function()
 	gearPanel.Visible = false
 end)
@@ -674,7 +674,7 @@ RunService.RenderStepped:Connect(function(dt)
 	cam.CFrame = CFrame.lookAt(pivot.Position + Vector3.new(0, 1.2, 12.5), pivot.Position + Vector3.new(0, 0.4, 0))
 end)
 local powerLabel = makeLabel({
-	Size = UDim2.new(0, 210, 0, 24), Position = UDim2.new(0, 135, 0, 390), TextSize = 16, Font = Enum.Font.GothamBlack,
+	Size = UDim2.new(0, 210, 0, 24), Position = UDim2.new(0, 135, 0, 390), TextSize = 14, Font = Enum.Font.GothamBlack,
 	TextColor3 = Color3.fromRGB(255, 225, 110),
 }, gearPanel)
 
@@ -684,9 +684,9 @@ local function makeSlotBox(slotKey, x, y)
 	}, gearPanel)
 	rounded(box, 12)
 	local stroke = create("UIStroke", { Color = Color3.fromRGB(90, 90, 120), Thickness = 2 }, box)
-	local icon = makeLabel({ Size = UDim2.new(1, 0, 0, 44), Position = UDim2.new(0, 0, 0, 6), TextSize = 32 }, box)
-	local name = makeLabel({ Size = UDim2.new(1, -6, 0, 30), Position = UDim2.new(0, 3, 0, 48), TextSize = 11, Font = Enum.Font.GothamBold, TextWrapped = true }, box)
-	local level = makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 1, -20), TextSize = 13, Font = Enum.Font.GothamBlack }, box)
+	local icon = makeLabel({ Size = UDim2.new(1, 0, 0, 44), Position = UDim2.new(0, 0, 0, 6), TextSize = 27 }, box)
+	local name = makeLabel({ Size = UDim2.new(1, -6, 0, 30), Position = UDim2.new(0, 3, 0, 48), TextSize = 9, Font = Enum.Font.GothamBold, TextWrapped = true }, box)
+	local level = makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 1, -20), TextSize = 11, Font = Enum.Font.GothamBlack }, box)
 	box.Activated:Connect(function()
 		state.Selected = slotKey
 		refreshGear()
@@ -700,17 +700,17 @@ local detail = create("Frame", { Size = UDim2.new(0, 262, 0, 336), Position = UD
 rounded(detail, 12)
 local detailStroke = create("UIStroke", { Color = Color3.fromRGB(110, 90, 160), Thickness = 2 }, detail)
 local detailText = makeLabel({
-	Size = UDim2.new(1, -20, 0, 214), Position = UDim2.new(0, 10, 0, 10), RichText = true, TextSize = 14,
+	Size = UDim2.new(1, -20, 0, 214), Position = UDim2.new(0, 10, 0, 10), RichText = true, TextSize = 12,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 }, detail)
 local enhanceSlotButton = makeButton({
-	Size = UDim2.new(1, -24, 0, 50), Position = UDim2.new(0, 12, 1, -112), Text = "Upgrade", TextSize = 18, Font = Enum.Font.GothamBold, BackgroundColor3 = GREEN,
+	Size = UDim2.new(1, -24, 0, 50), Position = UDim2.new(0, 12, 1, -112), Text = "Upgrade", TextSize = 15, Font = Enum.Font.GothamBold, BackgroundColor3 = GREEN,
 }, detail, function()
 	Remotes.Gear:FireServer("Enhance", state.Selected)
 end)
 create("UIStroke", { Color = Color3.fromRGB(190, 255, 190), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 2 }, enhanceSlotButton)
 gearMessage = makeLabel({
-	Size = UDim2.new(1, -16, 0, 40), Position = UDim2.new(0, 8, 1, -54), Font = Enum.Font.GothamBold, TextSize = 14, RichText = true,
+	Size = UDim2.new(1, -16, 0, 40), Position = UDim2.new(0, 8, 1, -54), Font = Enum.Font.GothamBold, TextSize = 12, RichText = true,
 }, detail)
 
 local gachaBar = create("Frame", { Size = UDim2.new(1, -36, 0, 128), Position = UDim2.new(0, 18, 1, -142), BackgroundColor3 = Color3.fromRGB(58, 38, 92), BorderSizePixel = 0 }, gearPanel)
@@ -718,26 +718,26 @@ rounded(gachaBar, 14)
 create("UIStroke", { Color = Color3.fromRGB(255, 210, 120), Thickness = 2 }, gachaBar)
 create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(110, 60, 170), Color3.fromRGB(48, 30, 80)), Rotation = 0 }, gachaBar)
 local ticketLabel = makeLabel({
-	Size = UDim2.new(0.5, 0, 0, 34), Position = UDim2.new(0, 20, 0, 10), Font = Enum.Font.GothamBlack, TextSize = 22, TextXAlignment = Enum.TextXAlignment.Left,
+	Size = UDim2.new(0.5, 0, 0, 34), Position = UDim2.new(0, 20, 0, 10), Font = Enum.Font.GothamBlack, TextSize = 19, TextXAlignment = Enum.TextXAlignment.Left,
 }, gachaBar)
 local rateParts = {}
 for index, rate in ipairs(Config.Gacha.Rates) do
 	table.insert(rateParts, string.format("<font color='#%s'>%s %d%%</font>", Config.Gear.RarityColors[index]:ToHex(), Config.Gear.RarityNames[index], rate))
 end
 makeLabel({
-	Size = UDim2.new(0.44, 0, 0, 60), Position = UDim2.new(0, 20, 0, 52), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+	Size = UDim2.new(0.44, 0, 0, 60), Position = UDim2.new(0, 20, 0, 52), RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 	Text = table.concat(rateParts, "  ") .. "\n<font color='#c9c0e0'>Same or lower rarity converts to Gold · Tickets drop from dungeons / field bosses</font>",
 }, gachaBar)
 local rollOne = makeButton({
 	Size = UDim2.new(0, 176, 0, 80), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -218, 0.5, 0),
-	Text = "🎰 Roll x1\n1 Ticket", TextSize = 20, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(120, 80, 210),
+	Text = "🎰 Roll x1\n1 Ticket", TextSize = 17, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(120, 80, 210),
 }, gachaBar, function()
 	Remotes.Gear:FireServer("Roll", 1)
 end)
 create("UIStroke", { Color = Color3.fromRGB(190, 170, 255), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 2 }, rollOne)
 local rollButton = makeButton({
 	Size = UDim2.new(0, 200, 0, 80), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -14, 0.5, 0),
-	Text = "🎰 Multi Roll!\nUses all Tickets (max 10)", TextSize = 22, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(165, 70, 245),
+	Text = "🎰 Multi Roll!\nUses all Tickets (max 10)", TextSize = 19, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(165, 70, 245),
 }, gachaBar, function()
 	local many = math.min(10, player:GetAttribute("Tickets") or 0)
 	if many >= 2 then Remotes.Gear:FireServer("Roll", many) end
@@ -793,7 +793,7 @@ function refreshGear()
 	local rarity = player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0
 	local level = player:GetAttribute("Gear_" .. slot.Key .. "_L") or 0
 	if rarity <= 0 then
-		detailText.Text = string.format("<font size='18'><b>%s</b></font>\n<font color='#9a9ab5'>Empty</font>\n\n%s effect\n<font color='#c9c0e0'>Get gear with the gacha below, or equip gear dropped in the field from your Bag (B).</font>", slot.Name, slot.StatName)
+		detailText.Text = string.format("<font size='15'><b>%s</b></font>\n<font color='#9a9ab5'>Empty</font>\n\n%s effect\n<font color='#c9c0e0'>Get gear with the gacha below, or equip gear dropped in the field from your Bag (B).</font>", slot.Name, slot.StatName)
 		enhanceSlotButton.Text = "—"
 		enhanceSlotButton.BackgroundColor3 = GRAY
 		detailStroke.Color = Color3.fromRGB(110, 90, 160)
@@ -801,7 +801,7 @@ function refreshGear()
 		local color = Config.Gear.RarityColors[rarity]
 		detailStroke.Color = color
 		local lines = {
-			string.format("<font size='18'><b><font color='#%s'>[%s] %s</font></b></font>  <b>+%d</b>", color:ToHex(), Config.Gear.RarityNames[rarity], slot.Names[rarity], level),
+			string.format("<font size='15'><b><font color='#%s'>[%s] %s</font></b></font>  <b>+%d</b>", color:ToHex(), Config.Gear.RarityNames[rarity], slot.Names[rarity], level),
 			"",
 			"<font color='#c9c0e0'>" .. slot.StatName .. "</font>",
 		}
@@ -811,7 +811,7 @@ function refreshGear()
 			local chance = math.floor(Config.GetGearEnhanceChance(level) * 100 + 0.5)
 			table.insert(lines, string.format("<b>%s</b>\n<font color='#78ff8c'>▶ %s</font>", now, Config.FormatGearStat(slot.Key, Config.GetGearStat(slot.Key, rarity, level + 1))))
 			table.insert(lines, "")
-			table.insert(lines, string.format("Success rate <b><font color='#%s'>%d%%</font></b>   <font size='12' color='#aaaabb'>(kept on failure)</font>", chance >= 80 and "78ff8c" or (chance >= 60 and "ffd966" or "ff9a6e"), chance))
+			table.insert(lines, string.format("Success rate <b><font color='#%s'>%d%%</font></b>   <font size='10' color='#aaaabb'>(kept on failure)</font>", chance >= 80 and "78ff8c" or (chance >= 60 and "ffd966" or "ff9a6e"), chance))
 			enhanceSlotButton.Text = string.format("💰 %d G   Upgrade", cost)
 			enhanceSlotButton.BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62)
 		else
@@ -870,13 +870,13 @@ do
 		local frame = create("Frame", { Size = UDim2.new(0.5, -9, 1, -12), Position = UDim2.new(x, x == 0 and 6 or 3, 0, 6), BackgroundColor3 = color, BackgroundTransparency = 0.78, BorderSizePixel = 0, ZIndex = 76 }, popup)
 		rounded(frame, 10)
 		local stroke = create("UIStroke", { Color = color, Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame)
-		local icon = makeLabel({ Size = UDim2.new(0, 44, 0, 44), Position = UDim2.new(0, 2, 0, 12), TextSize = 30, ZIndex = 77 }, frame)
+		local icon = makeLabel({ Size = UDim2.new(0, 44, 0, 44), Position = UDim2.new(0, 2, 0, 12), TextSize = 26, ZIndex = 77 }, frame)
 		local title = makeLabel({
-			Size = UDim2.new(1, -52, 0, 32), Position = UDim2.new(0, 48, 0, 3), Font = Enum.Font.GothamBlack, TextSize = 13, TextWrapped = true,
+			Size = UDim2.new(1, -52, 0, 32), Position = UDim2.new(0, 48, 0, 3), Font = Enum.Font.GothamBlack, TextSize = 11, TextWrapped = true,
 			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 77,
 		}, frame)
 		local desc = makeLabel({
-			Size = UDim2.new(1, -52, 0, 32), Position = UDim2.new(0, 48, 0, 36), TextSize = 12, TextWrapped = true,
+			Size = UDim2.new(1, -52, 0, 32), Position = UDim2.new(0, 48, 0, 36), TextSize = 10, TextWrapped = true,
 			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(215, 215, 230), ZIndex = 77,
 		}, frame)
 		return { Frame = frame, Stroke = stroke, Icon = icon, Title = title, Desc = desc }
@@ -959,9 +959,9 @@ do
 	}, gui)
 	rounded(popup, 14)
 	create("UIStroke", { Color = Color3.fromRGB(120, 255, 150), Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, popup)
-	local popupText = makeLabel({ Size = UDim2.new(1, -20, 0, 26), Position = UDim2.new(0, 10, 0, 6), Font = Enum.Font.GothamBlack, TextSize = 17, ZIndex = 81 }, popup)
+	local popupText = makeLabel({ Size = UDim2.new(1, -20, 0, 26), Position = UDim2.new(0, 10, 0, 6), Font = Enum.Font.GothamBlack, TextSize = 14, ZIndex = 81 }, popup)
 	local popupButton = makeButton({
-		Size = UDim2.new(1, -24, 0, 38), Position = UDim2.new(0, 12, 0, 38), Text = "⬆ Auto-equip stronger gear", TextSize = 18,
+		Size = UDim2.new(1, -24, 0, 38), Position = UDim2.new(0, 12, 0, 38), Text = "⬆ Auto-equip stronger gear", TextSize = 15,
 		Font = Enum.Font.GothamBlack, BackgroundColor3 = Color3.fromRGB(60, 190, 100), ZIndex = 81,
 	}, popup)
 	local shownAt = 0
@@ -1061,7 +1061,7 @@ do
 
 			if multi then
 				local grid = create("Frame", { Size = UDim2.new(0, 660, 0, 380), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 62 }, root)
-				makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 0), Text = string.format("🎰 %d-Roll Results", #result.Rolls), TextSize = 26, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 230, 150), ZIndex = 63 }, grid)
+				makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 0), Text = string.format("🎰 %d-Roll Results", #result.Rolls), TextSize = 22, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 230, 150), ZIndex = 63 }, grid)
 				local counts = {}
 				local STATUS = { Equipped = "Equipped!", Bag = "Bag" }
 				for index, r in ipairs(result.Rolls) do
@@ -1089,10 +1089,10 @@ do
 							end)
 						end
 						fade(cardM, { Size = UDim2.new(0, 120, 0, 146) }, 0.3, Enum.EasingStyle.Back)
-						makeLabel({ Size = UDim2.new(1, 0, 0, 56), Position = UDim2.new(0, 0, 0, 10), Text = ICONS[r.Slot] or "🎁", TextSize = 42, ZIndex = 64 }, cardM)
-						makeLabel({ Size = UDim2.new(1, -8, 0, 34), Position = UDim2.new(0, 4, 0, 64), Text = r.Name or "", TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = rc, ZIndex = 64 }, cardM)
-						makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 100), Text = string.format("★ %s", Config.Gear.RarityNames[r.Rarity]), TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = rc, ZIndex = 64 }, cardM)
-						makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 1, -20), Text = STATUS[r.Status] or "Scrap", TextSize = 12, TextColor3 = Color3.fromRGB(190, 190, 210), ZIndex = 64 }, cardM)
+						makeLabel({ Size = UDim2.new(1, 0, 0, 56), Position = UDim2.new(0, 0, 0, 10), Text = ICONS[r.Slot] or "🎁", TextSize = 36, ZIndex = 64 }, cardM)
+						makeLabel({ Size = UDim2.new(1, -8, 0, 34), Position = UDim2.new(0, 4, 0, 64), Text = r.Name or "", TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = rc, ZIndex = 64 }, cardM)
+						makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 100), Text = string.format("★ %s", Config.Gear.RarityNames[r.Rarity]), TextSize = 11, Font = Enum.Font.GothamBlack, TextColor3 = rc, ZIndex = 64 }, cardM)
+						makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 1, -20), Text = STATUS[r.Status] or "Scrap", TextSize = 10, TextColor3 = Color3.fromRGB(190, 190, 210), ZIndex = 64 }, cardM)
 						if r.Rarity >= 3 then
 							local ringM = create("Frame", { Size = UDim2.new(0, 40, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy), BackgroundTransparency = 1, ZIndex = 61 }, grid)
 							create("UICorner", { CornerRadius = UDim.new(1, 0) }, ringM)
@@ -1109,7 +1109,7 @@ do
 						table.insert(parts, string.format("<font color='#%s'>%s %d</font>", Config.Gear.RarityColors[rarity]:ToHex(), Config.Gear.RarityNames[rarity], counts[rarity]))
 					end
 				end
-				makeLabel({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 1, -26), RichText = true, Text = table.concat(parts, "   ") .. "   <font color='#aaaabb' size='13'>(tap to close)</font>", TextSize = 18, Font = Enum.Font.GothamBold, ZIndex = 63 }, grid)
+				makeLabel({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 1, -26), RichText = true, Text = table.concat(parts, "   ") .. "   <font color='#aaaabb' size='11'>(tap to close)</font>", TextSize = 15, Font = Enum.Font.GothamBold, ZIndex = 63 }, grid)
 				skipped = false
 				pause(6)
 				if not root.Parent then return end
@@ -1143,18 +1143,18 @@ do
 			fade(card, { Size = UDim2.new(0, 340, 0, 220) }, 0.45, Enum.EasingStyle.Back)
 			pause(0.3)
 			if not root.Parent then return end
-			makeLabel({ Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0, 0, 0, 14), Text = ICONS[roll.Slot] or "🎁", TextSize = 56, ZIndex = 63 }, card)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0, 0, 0, 14), Text = ICONS[roll.Slot] or "🎁", TextSize = 48, ZIndex = 63 }, card)
 			makeLabel({
 				Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 92), Text = string.format("★ %s ★", Config.Gear.RarityNames[rarity]),
 				TextSize = rarity >= 4 and 30 or 26, Font = Enum.Font.GothamBlack, TextColor3 = color, ZIndex = 63,
 			}, card)
 			makeLabel({
-				Size = UDim2.new(1, -20, 0, 30), Position = UDim2.new(0, 10, 0, 134), Text = roll.Name or "", TextSize = 20,
+				Size = UDim2.new(1, -20, 0, 30), Position = UDim2.new(0, 10, 0, 134), Text = roll.Name or "", TextSize = 17,
 				Font = Enum.Font.GothamBold, ZIndex = 63,
 			}, card)
 			makeLabel({
 				Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 1, -28), Text = roll.Equipped and "Equipped!" or "Added to bag",
-				TextSize = 13, TextColor3 = Color3.fromRGB(190, 190, 210), ZIndex = 63,
+				TextSize = 11, TextColor3 = Color3.fromRGB(190, 190, 210), ZIndex = 63,
 			}, card)
 
 			skipped = false
@@ -1196,7 +1196,7 @@ local partyPanel = makePanel({
 
 local partyTitle = makeLabel({
 	Size = UDim2.new(1, -20, 0, 28), Position = UDim2.new(0, 10, 0, 8),
-	Font = Enum.Font.GothamBlack, TextSize = 18, TextXAlignment = Enum.TextXAlignment.Left,
+	Font = Enum.Font.GothamBlack, TextSize = 15, TextXAlignment = Enum.TextXAlignment.Left,
 }, partyPanel)
 
 local memberList = create("Frame", {
@@ -1213,7 +1213,7 @@ end)
 
 makeLabel({
 	Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 224),
-	Text = "Lobby Players (Invite)", Font = Enum.Font.GothamBold, TextSize = 14,
+	Text = "Lobby Players (Invite)", Font = Enum.Font.GothamBold, TextSize = 12,
 	TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(190, 190, 210),
 }, partyPanel)
 
@@ -1245,12 +1245,12 @@ local function refreshParty()
 			makeLabel({
 				Size = UDim2.new(1, -60, 1, 0), Position = UDim2.new(0, 8, 0, 0),
 				Text = string.format("%s%s  (+%d)", isLeader and "👑 " or "", member.Name, level),
-				TextXAlignment = Enum.TextXAlignment.Left, TextSize = 14,
+				TextXAlignment = Enum.TextXAlignment.Left, TextSize = 12,
 			}, row)
 			if partyData.Leader == player.UserId and member.UserId ~= player.UserId then
 				makeButton({
 					Size = UDim2.new(0, 48, 0, 22), Position = UDim2.new(1, -52, 0.5, -11),
-					Text = "Kick", TextSize = 12, BackgroundColor3 = RED,
+					Text = "Kick", TextSize = 10, BackgroundColor3 = RED,
 				}, row, function()
 					Remotes.Party:FireServer("Kick", member.UserId)
 				end)
@@ -1259,7 +1259,7 @@ local function refreshParty()
 	else
 		makeLabel({
 			Size = UDim2.new(1, 0, 0, 40), Text = "No party yet.\nInvite someone below!",
-			TextSize = 14, TextColor3 = Color3.fromRGB(190, 190, 210),
+			TextSize = 12, TextColor3 = Color3.fromRGB(190, 190, 210),
 		}, memberList)
 	end
 	leaveButton.Visible = partyData ~= nil
@@ -1275,17 +1275,17 @@ local function refreshParty()
 			makeLabel({
 				Size = UDim2.new(1, -64, 1, 0), Position = UDim2.new(0, 8, 0, 0),
 				Text = string.format("%s  (+%d)", other.DisplayName, other:GetAttribute("WeaponLevel") or 0),
-				TextXAlignment = Enum.TextXAlignment.Left, TextSize = 14,
+				TextXAlignment = Enum.TextXAlignment.Left, TextSize = 12,
 			}, row)
 			if inParty then
 				makeLabel({
 					Size = UDim2.new(0, 56, 1, 0), Position = UDim2.new(1, -60, 0, 0),
-					Text = "In party", TextSize = 12, TextColor3 = Color3.fromRGB(150, 150, 170),
+					Text = "In party", TextSize = 10, TextColor3 = Color3.fromRGB(150, 150, 170),
 				}, row)
 			elseif canInvite then
 				makeButton({
 					Size = UDim2.new(0, 48, 0, 22), Position = UDim2.new(1, -52, 0.5, -11),
-					Text = "Invite", TextSize = 12, BackgroundColor3 = GREEN,
+					Text = "Invite", TextSize = 10, BackgroundColor3 = GREEN,
 				}, row, function()
 					Remotes.Party:FireServer("Invite", other.UserId)
 				end)
@@ -1333,7 +1333,7 @@ local invitePanel = makePanel({
 }, gui)
 local inviteLabel = makeLabel({
 	Size = UDim2.new(1, -20, 0, 44), Position = UDim2.new(0, 10, 0, 6),
-	Font = Enum.Font.GothamBold, TextSize = 17,
+	Font = Enum.Font.GothamBold, TextSize = 14,
 }, invitePanel)
 local pendingInvite = nil
 
@@ -1382,7 +1382,7 @@ end)
 makeLabel({
 	Name = "ControlsHint", Size = UDim2.new(0, 560, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -78),
 	Text = "North: Dungeon Gate · West: Training Dummy · Far East: Hunting Field   |   Q Dash · R Auto-Attack · I Menu · M Music",
-	TextSize = 14, TextColor3 = Color3.fromRGB(220, 220, 235), TextStrokeTransparency = 0.5,
+	TextSize = 12, TextColor3 = Color3.fromRGB(220, 220, 235), TextStrokeTransparency = 0.5,
 }, lobbyFrame)
 
 local dungeonFrame = create("Frame", { Name = "DungeonFrame", Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Visible = false }, gui)
@@ -1392,15 +1392,15 @@ local banner = makePanel({
 }, dungeonFrame)
 local bannerTitle = makeLabel({
 	Size = UDim2.new(1, 0, 1, 0), Position = UDim2.new(0, 0, 0, 0),
-	Font = Enum.Font.GothamBlack, TextSize = 17, TextTruncate = Enum.TextTruncate.AtEnd,
+	Font = Enum.Font.GothamBlack, TextSize = 14, TextTruncate = Enum.TextTruncate.AtEnd,
 }, banner)
 local bannerSub = makeLabel({
 	Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0, 0, 0, 44), Visible = false, -- (맵 이름 / 난이도는 왼쪽 위 정보 줄에 표시한다)
-	TextSize = 16, TextColor3 = Color3.fromRGB(210, 210, 230),
+	TextSize = 14, TextColor3 = Color3.fromRGB(210, 210, 230),
 }, banner)
 local bannerMutator = makeLabel({
 	Size = UDim2.new(1, -16, 0, 18), Position = UDim2.new(0, 8, 0, 78), TextStrokeTransparency = 0.5,
-	TextSize = 12, TextColor3 = Color3.fromRGB(255, 205, 100), Font = Enum.Font.GothamBold,
+	TextSize = 10, TextColor3 = Color3.fromRGB(255, 205, 100), Font = Enum.Font.GothamBold,
 }, banner)
 
 local bonusBar = makePanel({
@@ -1408,13 +1408,13 @@ local bonusBar = makePanel({
 }, dungeonFrame)
 local bonusFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 200, 70), BorderSizePixel = 0 }, bonusBar)
 rounded(bonusFill)
-local bonusText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 12, TextStrokeTransparency = 0.4 }, bonusBar)
+local bonusText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 10, TextStrokeTransparency = 0.4 }, bonusBar)
 local limitBar = makePanel({
 	Name = "LimitBar", Size = UDim2.new(0, 340, 0, 18), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 62), Visible = false,
 }, dungeonFrame)
 local limitFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(110, 210, 120), BorderSizePixel = 0 }, limitBar)
 rounded(limitFill)
-local limitText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 12, TextStrokeTransparency = 0.4 }, limitBar)
+local limitText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 10, TextStrokeTransparency = 0.4 }, limitBar)
 
 local bossBar = makePanel({
 	Name = "BossBar", Size = UDim2.new(0, 400, 0, 22), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 40), Visible = false,
@@ -1422,7 +1422,7 @@ local bossBar = makePanel({
 local bossFill = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(200, 40, 50), BorderSizePixel = 0 }, bossBar)
 rounded(bossFill)
 local bossName = makeLabel({
-	Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 15, TextStrokeTransparency = 0.4,
+	Size = UDim2.new(1, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 13, TextStrokeTransparency = 0.4,
 }, bossBar)
 
 local statPanel = makePanel({
@@ -1431,18 +1431,18 @@ local statPanel = makePanel({
 
 local statPoints = makeLabel({
 	Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 5),
-	Font = Enum.Font.GothamBlack, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left,
+	Font = Enum.Font.GothamBlack, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left,
 }, statPanel)
 
 local perkSummary = makeLabel({
 	Size = UDim2.new(1, -20, 0, 32), Position = UDim2.new(0, 10, 0, 23),
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
-	TextSize = 12, TextWrapped = true, RichText = true, TextColor3 = Color3.fromRGB(200, 200, 220),
+	TextSize = 10, TextWrapped = true, RichText = true, TextColor3 = Color3.fromRGB(200, 200, 220),
 }, statPanel)
 
 makeButton({
 	Size = UDim2.new(1, -20, 0, 20), Position = UDim2.new(0, 10, 1, -24),
-	Text = "Leave Dungeon", TextSize = 12, BackgroundColor3 = GRAY,
+	Text = "Leave Dungeon", TextSize = 10, BackgroundColor3 = GRAY,
 }, statPanel, function()
 	Remotes.Dungeon:FireServer("Leave")
 end)
@@ -1654,14 +1654,14 @@ local resultPanel = makePanel({
 	Size = UDim2.new(0, 460, 0, 340), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.45, 0), Visible = false,
 }, dungeonFrame)
 local resultTitle = makeLabel({
-	Size = UDim2.new(1, 0, 0, 56), Position = UDim2.new(0, 0, 0, 12), Font = Enum.Font.GothamBlack, TextSize = 36,
+	Size = UDim2.new(1, 0, 0, 56), Position = UDim2.new(0, 0, 0, 12), Font = Enum.Font.GothamBlack, TextSize = 31,
 }, resultPanel)
 local resultInfo = makeLabel({
-	Size = UDim2.new(1, -20, 0, 200), Position = UDim2.new(0, 10, 0, 72), TextSize = 17, RichText = true, TextYAlignment = Enum.TextYAlignment.Top,
+	Size = UDim2.new(1, -20, 0, 200), Position = UDim2.new(0, 10, 0, 72), TextSize = 14, RichText = true, TextYAlignment = Enum.TextYAlignment.Top,
 }, resultPanel)
 makeButton({
 	Size = UDim2.new(0, 200, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
-	Text = "Back to Lobby", TextSize = 17,
+	Text = "Back to Lobby", TextSize = 14,
 }, resultPanel, function()
 	Remotes.Dungeon:FireServer("Leave")
 end)
@@ -1679,7 +1679,7 @@ local function showResult(result)
 			if token ~= resultToken or not resultPanel.Visible then return end
 			local lootLines = {}
 			for _, entry in ipairs(result.Loot or {}) do
-				table.insert(lootLines, string.format("<font color='#%s' size='15'>%s</font>", Config.Gear.RarityColors[entry.Rarity]:ToHex(), entry.Text))
+				table.insert(lootLines, string.format("<font color='#%s' size='13'>%s</font>", Config.Gear.RarityColors[entry.Rarity]:ToHex(), entry.Text))
 			end
 			resultInfo.Text = string.format(
 				"%s\nGold earned  +%d G   🎫 Tickets +%d\n%s\nReturning to lobby in %ds",
@@ -1725,7 +1725,7 @@ local function refreshInfo()
 	local keyText = string.format("Free today %d/%d", player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily)
 
 	infoLabel.Text = string.format(
-		"🎖 <font color='#8fd8ff'>Lv.%d</font>  <font size='12' color='#aaaacc'>%s</font>\n💰 <font color='#ffd966'>%d G</font>   🎫 <font color='#d9a6ff'>%d</font>\n🔑<font color='#ffe08a'>%d</font> <font size='12' color='#aaaacc'>(%s)</font>\n⚡ Power <font color='#ffe16e'>%d</font>\n⚔ <font color='#%s'>%s</font>\n📍 %s",
+		"🎖 <font color='#8fd8ff'>Lv.%d</font>  <font size='10' color='#aaaacc'>%s</font>\n💰 <font color='#ffd966'>%d G</font>   🎫 <font color='#d9a6ff'>%d</font>\n🔑<font color='#ffe08a'>%d</font> <font size='10' color='#aaaacc'>(%s)</font>\n⚡ Power <font color='#ffe16e'>%d</font>\n⚔ <font color='#%s'>%s</font>\n📍 %s",
 		characterLevel, xpText,
 		player:GetAttribute("Gold") or 0, player:GetAttribute("Tickets") or 0,
 		keys, keyText,
@@ -1963,7 +1963,7 @@ local nextSearch = 0
 local autoLabel = makeLabel({
 	Size = UDim2.new(0, 460, 0, 30), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -128),
 	BackgroundColor3 = Color3.fromRGB(20, 20, 30), BackgroundTransparency = 0.25,
-	Font = Enum.Font.GothamBold, TextSize = 16, Visible = false, RichText = true,
+	Font = Enum.Font.GothamBold, TextSize = 14, Visible = false, RichText = true,
 }, gui)
 rounded(autoLabel)
 
@@ -2197,9 +2197,9 @@ do
 	local autoStroke = create("UIStroke", { Color = Color3.fromRGB(120, 130, 190), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, autoButton)
 	local keycap = create("Frame", { Size = UDim2.new(0, 34, 0, 34), Position = UDim2.new(0, 10, 0.5, -17), BackgroundColor3 = Color3.fromRGB(235, 235, 245), BorderSizePixel = 0 }, autoButton)
 	rounded(keycap, 8)
-	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "R", TextSize = 22, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 30, 50) }, keycap)
+	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "R", TextSize = 19, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 30, 50) }, keycap)
 	local autoText = makeLabel({
-		Size = UDim2.new(1, -54, 1, -6), Position = UDim2.new(0, 50, 0, 3), TextSize = 14, Font = Enum.Font.GothamBold, RichText = true,
+		Size = UDim2.new(1, -54, 1, -6), Position = UDim2.new(0, 50, 0, 3), TextSize = 12, Font = Enum.Font.GothamBold, RichText = true,
 		TextXAlignment = Enum.TextXAlignment.Left,
 	}, autoButton)
 
@@ -2212,10 +2212,10 @@ do
 	local bigKey = create("Frame", { Size = UDim2.new(0, 84, 0, 84), Position = UDim2.new(0, 18, 0.5, -42), BackgroundColor3 = Color3.fromRGB(245, 245, 252), BorderSizePixel = 0, ZIndex = 31 }, hint)
 	rounded(bigKey, 16)
 	create("UIStroke", { Color = Color3.fromRGB(255, 200, 70), Thickness = 4 }, bigKey)
-	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "R", TextSize = 60, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 30, 50), ZIndex = 32 }, bigKey)
+	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "R", TextSize = 51, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 30, 50), ZIndex = 32 }, bigKey)
 	makeLabel({
-		Size = UDim2.new(1, -130, 1, -16), Position = UDim2.new(0, 118, 0, 8), RichText = true, TextSize = 20, ZIndex = 31, TextXAlignment = Enum.TextXAlignment.Left,
-		Text = UserInputService.TouchEnabled and "<b>Auto-Attack!</b>\n<font size='15' color='#cfd3ea'>Tap the <b>R Auto-Attack</b> button\nat the bottom right to fire automatically</font>" or "<b>Auto-Attack!</b>\n<font size='15' color='#cfd3ea'>Press <b>R</b> to automatically\naim at and shoot nearby enemies</font>",
+		Size = UDim2.new(1, -130, 1, -16), Position = UDim2.new(0, 118, 0, 8), RichText = true, TextSize = 17, ZIndex = 31, TextXAlignment = Enum.TextXAlignment.Left,
+		Text = UserInputService.TouchEnabled and "<b>Auto-Attack!</b>\n<font size='13' color='#cfd3ea'>Tap the <b>R Auto-Attack</b> button\nat the bottom right to fire automatically</font>" or "<b>Auto-Attack!</b>\n<font size='13' color='#cfd3ea'>Press <b>R</b> to automatically\naim at and shoot nearby enemies</font>",
 	}, hint)
 	TweenService:Create(bigKey, TweenInfo.new(0.55, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Size = UDim2.new(0, 94, 0, 94), Position = UDim2.new(0, 13, 0.5, -47) }):Play()
 
@@ -2248,10 +2248,10 @@ do
 	}, lobbyFrame)
 	makeLabel({
 		Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 6), Text = "🏆 Power Ranking",
-		Font = Enum.Font.GothamBlack, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 120),
+		Font = Enum.Font.GothamBlack, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 120),
 	}, mini)
 	local body = makeLabel({
-		Size = UDim2.new(1, -20, 1, -32), Position = UDim2.new(0, 10, 0, 28), RichText = true, TextSize = 13,
+		Size = UDim2.new(1, -20, 1, -32), Position = UDim2.new(0, 10, 0, 28), RichText = true, TextSize = 11,
 		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = "Tallying...",
 	}, mini)
 	Remotes.Rank.OnClientEvent:Connect(function(action, data)
@@ -2282,11 +2282,11 @@ create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Tra
 
 makeLabel({
 	Size = UDim2.new(1, -90, 0, 36), Position = UDim2.new(0, 16, 0, 8),
-	Text = "📋 Menu", Font = Enum.Font.GothamBlack, TextSize = 24, TextXAlignment = Enum.TextXAlignment.Left,
+	Text = "📋 Menu", Font = Enum.Font.GothamBlack, TextSize = 20, TextXAlignment = Enum.TextXAlignment.Left,
 }, menuPanel)
 
 makeButton({
-	Size = UDim2.new(0, 64, 0, 28), Position = UDim2.new(1, -76, 0, 10), Text = "Close (B)", TextSize = 13, BackgroundColor3 = GRAY,
+	Size = UDim2.new(0, 64, 0, 28), Position = UDim2.new(1, -76, 0, 10), Text = "Close (B)", TextSize = 11, BackgroundColor3 = GRAY,
 }, menuPanel, function()
 	menuPanel.Visible = false
 end)
@@ -2397,7 +2397,7 @@ local function buildCharacterTab()
 		local prestige = player:GetAttribute("Prestige") or 0
 		local ready = (player:GetAttribute("Level") or 1) >= Config.Prestige.Level and prestige < Config.Prestige.Max
 		local row = newRow(64)
-		rowText(row, string.format("🌟 <b>Rebirth %d / %d</b>  (Permanent Damage +%d%% · Gold +%d%%)\n<font size='13' color='#bbbbcc'>Rebirth at Lv.%d to reset to Lv.1 and gain permanent Damage +%d%% and Gold gain +%d%%. Gear/weapons are kept. (In the lobby)</font>",
+		rowText(row, string.format("🌟 <b>Rebirth %d / %d</b>  (Permanent Damage +%d%% · Gold +%d%%)\n<font size='11' color='#bbbbcc'>Rebirth at Lv.%d to reset to Lv.1 and gain permanent Damage +%d%% and Gold gain +%d%%. Gear/weapons are kept. (In the lobby)</font>",
 			prestige, Config.Prestige.Max, math.floor(prestige * Config.Prestige.DamagePerRank * 100 + 0.5), math.floor(prestige * Config.Prestige.GoldPerRank * 100 + 0.5), Config.Level.Max, Config.Prestige.DamagePerRank * 100, Config.Prestige.GoldPerRank * 100), 14, 190)
 		makeButton({
 			Size = UDim2.new(0, 160, 0, 36), Position = UDim2.new(1, -172, 0.5, -18),
@@ -2453,7 +2453,7 @@ local function buildWeaponTab()
 		rounded(viewport, 10)
 		create("UIStroke", { Color = shown.Rainbow and Color3.fromRGB(255, 120, 255) or shown.Color, Thickness = 2 }, viewport)
 		settings.BuildFireDemo(viewport, shown, classInfo)
-		makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 1, -22), Text = isMine and "My Weapon · Fire Demo" or "👀 Preview · Fire Demo", TextSize = 11, TextColor3 = Color3.fromRGB(170, 180, 210) }, viewport)
+		makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 1, -22), Text = isMine and "My Weapon · Fire Demo" or "👀 Preview · Fire Demo", TextSize = 9, TextColor3 = Color3.fromRGB(170, 180, 210) }, viewport)
 	end
 
 	local SHOT_NAMES = { Ball = "Small Bullet", Bolt = "Light Bolt", Orb = "Energy Orb", Cannon = "Heavy Shell", Fire = "Fireball", Rocket = "Rocket", Rainbow = "Rainbow Orb" }
@@ -2476,10 +2476,10 @@ local function buildWeaponTab()
 	local power = Config.WeaponDpsFactor(classInfo)
 	local nameColor = hex(shown.Rainbow and Color3.fromRGB(255, 120, 255) or shown.Color)
 	makeLabel({
-		Size = UDim2.new(1, -306, 1, -64), Position = UDim2.new(0, 294, 0, 10), RichText = true, TextSize = 14,
+		Size = UDim2.new(1, -306, 1, -64), Position = UDim2.new(0, 294, 0, 10), RichText = true, TextSize = 12,
 		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 		Text = string.format(
-			"<font size='20'><b><font color='#%s'>%s</font></b></font>  <font size='12' color='#aab0cc'>%s</font>\n%s\n<font color='#ffe9a0'><b>%s</b></font>\n<font color='#bbbbcc'>%s</font>\n\n<b>🔫 Attack Style</b>\n<font color='#dfe6ff'>• Shot type: %s\n• %s\n• About %.1f shots/sec · Firepower %d · Range %d</font>",
+			"<font size='17'><b><font color='#%s'>%s</font></b></font>  <font size='10' color='#aab0cc'>%s</font>\n%s\n<font color='#ffe9a0'><b>%s</b></font>\n<font color='#bbbbcc'>%s</font>\n\n<b>🔫 Attack Style</b>\n<font color='#dfe6ff'>• Shot type: %s\n• %s\n• About %.1f shots/sec · Firepower %d · Range %d</font>",
 			nameColor, classInfo.Name, Config.GetEraName(shown.Era), status, classInfo.Trait, classInfo.Desc,
 			SHOT_NAMES[shotInfo.Style] or "Bullet", table.concat(behavior, " · "),
 			rate, math.floor(power * 100 + 0.5), classInfo.Range
@@ -2512,7 +2512,7 @@ local function buildWeaponTab()
 		local using = key == equippedKey
 		local row = newRow(34, using and Color3.fromRGB(45, 70, 50) or (open and Color3.fromRGB(34, 38, 48) or Color3.fromRGB(28, 28, 38)))
 		local mark = using and "▶" or (open and "✔" or "🔒")
-		rowText(row, string.format("%s  <font color='#%s'><b>%s</b></font>   <font size='12' color='#8888aa'>%s%s</font>",
+		rowText(row, string.format("%s  <font color='#%s'><b>%s</b></font>   <font size='10' color='#8888aa'>%s%s</font>",
 			mark, open and hex(look.Color) or "777788", info.Name, info.Trait, open and "" or string.format(" · Unlocks at +%d", Config.GetUnlockLevel(key))), 14, 24)
 		if previewKey == key then
 			create("UIStroke", { Color = Color3.fromRGB(255, 225, 120), Thickness = 2 }, row)
@@ -2539,7 +2539,7 @@ local function buildProgressRows(entries, remoteAction, showTitle)
 		local row = newRow(66, entry.Claimed and Color3.fromRGB(32, 38, 36) or Color3.fromRGB(40, 40, 58))
 		local titleText = showTitle and entry.Title and string.format("   <font color='#9ad7ff'>Title 『%s』</font>", entry.Title) or ""
 		rowText(row, string.format(
-			"<font size='16'><b>%s</b></font>%s\n<font color='#bbbbcc'>%s</font>\n<font color='#%s'>%d / %d</font>   <font color='#ffd966'>Reward: %s</font>",
+			"<font size='14'><b>%s</b></font>%s\n<font color='#bbbbcc'>%s</font>\n<font color='#%s'>%d / %d</font>   <font color='#ffd966'>Reward: %s</font>",
 			entry.Name, titleText, entry.Desc, done and "78ff8c" or "ffffff", entry.Progress, entry.Goal, entry.Reward
 		), 14, 160)
 
@@ -2594,26 +2594,26 @@ local function buildInventoryTab()
 
 	local header = newRow(92)
 	local headerText = rowText(header, string.format(
-		"🎒 Bag <b>%d / %d</b>      ✨ Essence <font color='#9ad7ff'>%d</font>\n<font size='13' color='#bbbbcc'>Tap a slot for details. Smart Clean: only auto-dismantles weak gear when you have better gear in the same slot (Set / Unique are safe)</font>",
+		"🎒 Bag <b>%d / %d</b>      ✨ Essence <font color='#9ad7ff'>%d</font>\n<font size='11' color='#bbbbcc'>Tap a slot for details. Smart Clean: only auto-dismantles weak gear when you have better gear in the same slot (Set / Unique are safe)</font>",
 		state.BagCount, state.Capacity, state.Essence
 	), 15, 24)
 	headerText.Size = UDim2.new(1, -24, 0, 50)
 	headerText.TextYAlignment = Enum.TextYAlignment.Top
 	makeButton({
 		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -318, 0, 56),
-		Text = "Auto-Dismantle: " .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 13, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
+		Text = "Auto-Dismantle: " .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 11, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
 	}, header, function()
 		Remotes.Inventory:FireServer("AutoScrap", (state.AutoScrap + 1) % 5)
 	end)
 	makeButton({
 		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -474, 0, 56),
-		Text = "⚡ Auto-equip best gear", TextSize = 13, BackgroundColor3 = GREEN,
+		Text = "⚡ Auto-equip best gear", TextSize = 11, BackgroundColor3 = GREEN,
 	}, header, function()
 		Remotes.Inventory:FireServer("AutoEquip")
 	end)
 	makeButton({
 		Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -162, 0, 56),
-		Text = "🧹 Smart Clean", TextSize = 13, BackgroundColor3 = RED,
+		Text = "🧹 Smart Clean", TextSize = 11, BackgroundColor3 = RED,
 	}, header, function()
 		Remotes.Inventory:FireServer("SmartClean")
 	end)
@@ -2674,7 +2674,7 @@ local function buildInventoryTab()
 		end
 		local pill = create("Frame", { Size = ribbonSize, Position = ribbonPos, BackgroundColor3 = def.Color, BorderSizePixel = 0, ZIndex = 3, Active = false }, tile)
 		rounded(pill, 6)
-		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = def.Zone and ("Z" .. def.Zone) or "Set", TextSize = 12, TextColor3 = Color3.fromRGB(20, 20, 30), Font = Enum.Font.GothamBlack, TextWrapped = false, ZIndex = 4 }, pill)
+		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = def.Zone and ("Z" .. def.Zone) or "Set", TextSize = 10, TextColor3 = Color3.fromRGB(20, 20, 30), Font = Enum.Font.GothamBlack, TextWrapped = false, ZIndex = 4 }, pill)
 	end
 
 	local SLOT_ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Weapon = "🔫", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
@@ -2715,7 +2715,7 @@ local function buildInventoryTab()
 			cam.CFrame = CFrame.lookAt(pivot.Position + Vector3.new(0, 1.2, 12.5), pivot.Position + Vector3.new(0, 0.4, 0))
 		end)
 	end
-	makeLabel({ Size = UDim2.new(0, 230, 0, 22), Position = UDim2.new(0, 108, 0, 350), Text = string.format("⚡ Power %d", player:GetAttribute("Power") or 0), TextSize = 16, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, top)
+	makeLabel({ Size = UDim2.new(0, 230, 0, 22), Position = UDim2.new(0, 108, 0, 350), Text = string.format("⚡ Power %d", player:GetAttribute("Power") or 0), TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, top)
 
 	do
 		local rowsShown = 0
@@ -2729,14 +2729,14 @@ local function buildInventoryTab()
 				local glow = create("UIStroke", { Color = def.Color, Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, bar)
 				TweenService:Create(glow, TweenInfo.new(0.9, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.6 }):Play()
 				makeLabel({
-					Size = UDim2.new(1, -10, 1, 0), Position = UDim2.new(0, 5, 0, 0), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left,
+					Size = UDim2.new(1, -10, 1, 0), Position = UDim2.new(0, 5, 0, 0), RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left,
 					Text = string.format("%s <b>%s</b>  <font color='#%s'>%s</font> %d/3", def.Icon or "✦", def.Name, hex(def.Color), setPips(count), count),
 				}, bar)
 				rowsShown += 1
 			end
 		end
 		if rowsShown == 0 then
-			makeLabel({ Size = UDim2.new(0, 230, 0, 30), Position = UDim2.new(0, 108, 0, 378), Text = "Wear 1·2·3 pieces of the same zone set → set effect tiers 4·5·6 (Set window: Y)", TextSize = 12, TextWrapped = true, TextColor3 = Color3.fromRGB(120, 124, 150) }, top)
+			makeLabel({ Size = UDim2.new(0, 230, 0, 30), Position = UDim2.new(0, 108, 0, 378), Text = "Wear 1·2·3 pieces of the same zone set → set effect tiers 4·5·6 (Set window: Y)", TextSize = 10, TextWrapped = true, TextColor3 = Color3.fromRGB(120, 124, 150) }, top)
 		end
 	end
 	local function slotBox(slotKey, x, y)
@@ -2760,21 +2760,21 @@ local function buildInventoryTab()
 			local weaponLevel = player:GetAttribute("WeaponLevel") or 0
 			local tier = Config.GetLookTier(weaponLevel, Config.ResolveWeaponType(weaponLevel, player:GetAttribute("WeaponType")))
 			rarityOutline(box, 4, 3.5).Color = tier.Color
-			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 6), Text = "🔫", TextSize = 32 }, box)
-			makeLabel({ Size = UDim2.new(1, -6, 0, 36), Position = UDim2.new(0, 3, 0, 46), Text = Config.WeaponTypes[tier.Class].Name, TextSize = 12, TextWrapped = true, TextColor3 = tier.Color, Font = Enum.Font.GothamBold }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 6), Text = "🔫", TextSize = 27 }, box)
+			makeLabel({ Size = UDim2.new(1, -6, 0, 36), Position = UDim2.new(0, 3, 0, 46), Text = Config.WeaponTypes[tier.Class].Name, TextSize = 10, TextWrapped = true, TextColor3 = tier.Color, Font = Enum.Font.GothamBold }, box)
 		elseif item then
 			rarityOutline(box, rarity)
 			setDecor(box, item.Set, setCounts[item.Set], UDim2.new(0, 4, 0, 4), UDim2.new(0, 44, 0, 16), 10)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 4), Text = SLOT_ICONS[slotKey], TextSize = 32 }, box)
-			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 44), Text = Config.ItemDisplayName(item), TextSize = 11, TextWrapped = true, TextColor3 = Config.Gear.RarityColors[rarity], Font = Enum.Font.GothamBold }, box)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 64), Text = string.format("+%d", item.Level), TextSize = 13, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 4), Text = SLOT_ICONS[slotKey], TextSize = 27 }, box)
+			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 44), Text = Config.ItemDisplayName(item), TextSize = 9, TextWrapped = true, TextColor3 = Config.Gear.RarityColors[rarity], Font = Enum.Font.GothamBold }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 64), Text = string.format("+%d", item.Level), TextSize = 11, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, box)
 			if item.Unique then
-				makeLabel({ Size = UDim2.new(0, 16, 0, 16), Position = UDim2.new(1, -18, 0, 2), Text = "✦", TextSize = 14, TextColor3 = Color3.fromRGB(255, 184, 77) }, box)
+				makeLabel({ Size = UDim2.new(0, 16, 0, 16), Position = UDim2.new(1, -18, 0, 2), Text = "✦", TextSize = 12, TextColor3 = Color3.fromRGB(255, 184, 77) }, box)
 			end
 		else
 			create("UIStroke", { Color = Color3.fromRGB(70, 70, 90), Thickness = 1.5 }, box)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 10), Text = SLOT_ICONS[slotKey], TextSize = 30, TextTransparency = 0.6 }, box)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 0, 56), Text = "Empty", TextSize = 12, TextColor3 = Color3.fromRGB(120, 120, 140) }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 10), Text = SLOT_ICONS[slotKey], TextSize = 26, TextTransparency = 0.6 }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 0, 56), Text = "Empty", TextSize = 10, TextColor3 = Color3.fromRGB(120, 120, 140) }, box)
 		end
 		return box
 	end
@@ -2794,17 +2794,17 @@ local function buildInventoryTab()
 		rounded(box, 10)
 		if petLevel > 0 then
 			create("UIStroke", { Color = Color3.fromRGB(255, 200, 90), Thickness = 2.5 }, box)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 4), Text = look.Icon, TextSize = 30 }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 4), Text = look.Icon, TextSize = 26 }, box)
 			local nextFn
 			for _, fn in ipairs(Config.Pet.Functions) do
 				if fn.Level > petLevel then nextFn = fn break end
 			end
-			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 42), Text = nextFn and string.format("▶ %s Lv.%d", nextFn.Icon, nextFn.Level) or "Max!", TextSize = 11, TextWrapped = true, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(190, 220, 255) }, box) -- 다음에 열리는 펫 기능
-			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 62), Text = string.format("Lv.%d", petLevel), TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, box)
+			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 42), Text = nextFn and string.format("▶ %s Lv.%d", nextFn.Icon, nextFn.Level) or "Max!", TextSize = 9, TextWrapped = true, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(190, 220, 255) }, box) -- 다음에 열리는 펫 기능
+			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 62), Text = string.format("Lv.%d", petLevel), TextSize = 11, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, box)
 		else
 			create("UIStroke", { Color = Color3.fromRGB(70, 70, 90), Thickness = 1.5 }, box)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 8), Text = "🐾", TextSize = 30, TextTransparency = 0.6 }, box)
-			makeLabel({ Size = UDim2.new(1, -4, 0, 30), Position = UDim2.new(0, 2, 0, 52), Text = "Unlock\nPet (P)", TextSize = 11, TextWrapped = true, TextColor3 = Color3.fromRGB(150, 150, 175) }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 8), Text = "🐾", TextSize = 26, TextTransparency = 0.6 }, box)
+			makeLabel({ Size = UDim2.new(1, -4, 0, 30), Position = UDim2.new(0, 2, 0, 52), Text = "Unlock\nPet (P)", TextSize = 9, TextWrapped = true, TextColor3 = Color3.fromRGB(150, 150, 175) }, box)
 		end
 	end
 	local detail = create("Frame", { Size = UDim2.new(1, -462, 1, -24), Position = UDim2.new(0, 450, 0, 12), BackgroundColor3 = Color3.fromRGB(24, 26, 38), BorderSizePixel = 0 }, top)
@@ -2816,8 +2816,8 @@ local function buildInventoryTab()
 		local equippedKey = Config.ResolveWeaponType(weaponLevel, player:GetAttribute("WeaponType"))
 		local eraTier = Config.GetWeaponTier(weaponLevel)
 		makeLabel({
-			Size = UDim2.new(1, -20, 0, 40), Position = UDim2.new(0, 10, 0, 6), RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left,
-			Text = string.format("<font size='17'><b>🔫 Weapons</b></font>  <font color='#aab0cc'>%s · +%d</font>\n<font size='12' color='#9aa4cc'>A new weapon unlocks every 15 levels. Tap one to use it.</font>", Config.GetEraName(eraTier.Era), weaponLevel),
+			Size = UDim2.new(1, -20, 0, 40), Position = UDim2.new(0, 10, 0, 6), RichText = true, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left,
+			Text = string.format("<font size='14'><b>🔫 Weapons</b></font>  <font color='#aab0cc'>%s · +%d</font>\n<font size='10' color='#9aa4cc'>A new weapon unlocks every 15 levels. Tap one to use it.</font>", Config.GetEraName(eraTier.Era), weaponLevel),
 		}, detail)
 		local list = create("ScrollingFrame", {
 			Size = UDim2.new(1, -16, 1, -56), Position = UDim2.new(0, 8, 0, 50), BackgroundTransparency = 1, BorderSizePixel = 0,
@@ -2841,11 +2841,11 @@ local function buildInventoryTab()
 			rounded(row, 8)
 			if using then create("UIStroke", { Color = Color3.fromRGB(120, 230, 150), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, row) end
 			makeLabel({
-				Size = UDim2.new(1, -90, 1, 0), Position = UDim2.new(0, 8, 0, 0), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left,
-				Text = string.format("<font size='14' color='#%s'><b>%s</b></font>\n<font color='#8f94b0'>%s</font>", open and hex(look.Color) or "777788", info.Name, info.Trait),
+				Size = UDim2.new(1, -90, 1, 0), Position = UDim2.new(0, 8, 0, 0), RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left,
+				Text = string.format("<font size='12' color='#%s'><b>%s</b></font>\n<font color='#8f94b0'>%s</font>", open and hex(look.Color) or "777788", info.Name, info.Trait),
 			}, row)
 			makeLabel({
-				Size = UDim2.new(0, 78, 1, 0), Position = UDim2.new(1, -82, 0, 0), TextSize = 12, Font = Enum.Font.GothamBold,
+				Size = UDim2.new(0, 78, 1, 0), Position = UDim2.new(1, -82, 0, 0), TextSize = 10, Font = Enum.Font.GothamBold,
 				TextColor3 = using and Color3.fromRGB(120, 230, 150) or (open and Color3.fromRGB(255, 217, 102) or Color3.fromRGB(255, 154, 110)),
 				Text = using and "▶ In use" or (open and "Use" or string.format("🔒 +%d", Config.GetUnlockLevel(key))),
 			}, row)
@@ -2857,44 +2857,44 @@ local function buildInventoryTab()
 		rarityOutline(detail, selected.Rarity)
 		local slot = Config.GetGearSlot(selected.Slot)
 		local lines = {
-			string.format("<font color='#%s' size='18'><b>[%s] %s</b></font>  +%d", hex(color), Config.Gear.RarityNames[selected.Rarity], Config.ItemDisplayName(selected), selected.Level),
-			string.format("<font color='#aaaacc' size='12'>%s · Score %d%s</font>", slot.Name, selected.Score, selected.Equipped and " · Equipped" or ""),
-			"<font size='13' color='#ddddee'>Base  " .. Config.FormatGearStat(selected.Slot, Config.GetGearStat(selected.Slot, selected.Rarity, selected.Level)) .. "</font>"
-				.. (Config.StatDesc[slot.Stat] and ("\n<font size='11' color='#8a8aa8'>   → " .. Config.StatDesc[slot.Stat].Desc .. "</font>") or ""),
+			string.format("<font color='#%s' size='15'><b>[%s] %s</b></font>  +%d", hex(color), Config.Gear.RarityNames[selected.Rarity], Config.ItemDisplayName(selected), selected.Level),
+			string.format("<font color='#aaaacc' size='10'>%s · Score %d%s</font>", slot.Name, selected.Score, selected.Equipped and " · Equipped" or ""),
+			"<font size='11' color='#ddddee'>Base  " .. Config.FormatGearStat(selected.Slot, Config.GetGearStat(selected.Slot, selected.Rarity, selected.Level)) .. "</font>"
+				.. (Config.StatDesc[slot.Stat] and ("\n<font size='9' color='#8a8aa8'>   → " .. Config.StatDesc[slot.Stat].Desc .. "</font>") or ""),
 		}
 		for _, affix in ipairs(selected.Affixes) do
 			local info = Config.StatDesc[affix.Stat]
 			local lo, hi = Config.AffixRange(affix.Stat, selected.Rarity)
 			local pos = hi > lo and math.clamp((affix.Value - lo) / (hi - lo), 0, 1) or 1
 			local posColor = pos >= 0.75 and "#78ff8c" or (pos >= 0.4 and "#ffd966" or "#ff9a6e")
-			table.insert(lines, "<font size='13' color='#9ad7ff'>◆ " .. Config.FormatAffix(affix.Stat, affix.Value) .. "</font>"
-				.. string.format(" <font size='11' color='#8a8aa8'>Range %s</font> <font size='11' color='%s'><b>(%d%%)</b></font>", Config.FormatAffixRange(affix.Stat, selected.Rarity), posColor, math.floor(pos * 100 + 0.5))
-				.. (info and ("\n<font size='11' color='#8a8aa8'>   → " .. info.Desc .. "</font>") or ""))
+			table.insert(lines, "<font size='11' color='#9ad7ff'>◆ " .. Config.FormatAffix(affix.Stat, affix.Value) .. "</font>"
+				.. string.format(" <font size='9' color='#8a8aa8'>Range %s</font> <font size='9' color='%s'><b>(%d%%)</b></font>", Config.FormatAffixRange(affix.Stat, selected.Rarity), posColor, math.floor(pos * 100 + 0.5))
+				.. (info and ("\n<font size='9' color='#8a8aa8'>   → " .. info.Desc .. "</font>") or ""))
 		end
 		if #selected.Affixes > 0 then
-			table.insert(lines, "<font size='11' color='#7f86a8'>🎲 Reroll: re-rolls affix values within the range above (brackets = position in range, 100% is best). Can get better or worse</font>")
+			table.insert(lines, "<font size='9' color='#7f86a8'>🎲 Reroll: re-rolls affix values within the range above (brackets = position in range, 100% is best). Can get better or worse</font>")
 		end
 		if selected.Unique and Config.Uniques[selected.Unique] then
-			table.insert(lines, "<font size='13' color='#ffb84d'>✦ Unique: " .. Config.Uniques[selected.Unique].Desc .. "</font>")
+			table.insert(lines, "<font size='11' color='#ffb84d'>✦ Unique: " .. Config.Uniques[selected.Unique].Desc .. "</font>")
 		end
 		if selected.Set and Config.Sets[selected.Set] then
 			local setDef = Config.Sets[selected.Set]
 			local have = setCounts[selected.Set] or 0
 			local lit, dim = "#" .. hex(setDef.Color), "#6c7088"
 			if setDef.Zone then
-				table.insert(lines, string.format("<font size='12' color='%s'>📍 Zone %d %s · Drops in that zone / Set Imprint</font>", lit, setDef.Zone, Config.Field.ZoneNames[setDef.Zone]))
+				table.insert(lines, string.format("<font size='10' color='%s'>📍 Zone %d %s · Drops in that zone / Set Imprint</font>", lit, setDef.Zone, Config.Field.ZoneNames[setDef.Zone]))
 			end
 			for _, tier in ipairs({ 2, 3 }) do
 				local parts = {}
 				for _, b in ipairs(setDef.Bonuses[tier]) do table.insert(parts, Config.FormatBonus(b.Stat, b.Value)) end
 				local on = have >= tier
-				table.insert(lines, string.format("<font size='12' color='%s'>%s <b>%d pieces</b>  %s</font>", on and lit or dim, on and "✔" or "○", tier, table.concat(parts, ", ")))
+				table.insert(lines, string.format("<font size='10' color='%s'>%s <b>%d pieces</b>  %s</font>", on and lit or dim, on and "✔" or "○", tier, table.concat(parts, ", ")))
 			end
 			local augInfo = setDef.Aug and Config.AugInfo[setDef.Aug]
 			if augInfo then
 				local lv = player:GetAttribute("AugLvZ_" .. setDef.Zone) or 0
 				local ac = lv > 0 and ("#" .. hex(augInfo.Color)) or dim
-				table.insert(lines, string.format("<font size='12' color='%s'><b>%s %s</b> %s</font>\n  <font color='%s'>%s</font>", ac, augInfo.Icon, augInfo.Name, lv > 0 and ("✔ Tier " .. lv) or "○ Gold Tier 3 + 1·2·3 gear pieces = Tier 4·5·6 (Y)", lv > 0 and "#cfd6f0" or dim, augInfo.Desc))
+				table.insert(lines, string.format("<font size='10' color='%s'><b>%s %s</b> %s</font>\n  <font color='%s'>%s</font>", ac, augInfo.Icon, augInfo.Name, lv > 0 and ("✔ Tier " .. lv) or "○ Gold Tier 3 + 1·2·3 gear pieces = Tier 4·5·6 (Y)", lv > 0 and "#cfd6f0" or dim, augInfo.Desc))
 			end
 		end
 		local current = equipped[selected.Slot]
@@ -2911,12 +2911,12 @@ local function buildInventoryTab()
 			rounded(band, 10)
 			create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 0.85) }) }, band)
 			makeLabel({
-				Size = UDim2.new(1, -16, 1, 0), Position = UDim2.new(0, 10, 0, 0), RichText = true, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left,
-				Text = string.format("%s <b>%s Set</b>   %s %d/3 <font size='11'>worn</font>", setDef.Icon or "✦", setDef.Name, setPips(have), have),
+				Size = UDim2.new(1, -16, 1, 0), Position = UDim2.new(0, 10, 0, 0), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left,
+				Text = string.format("%s <b>%s Set</b>   %s %d/3 <font size='9'>worn</font>", setDef.Icon or "✦", setDef.Name, setPips(have), have),
 			}, band)
 		end
 		makeLabel({
-			Size = UDim2.new(1, -20, 1, -172 - bandH), Position = UDim2.new(0, 10, 0, 8 + bandH), Text = table.concat(lines, "\n"), TextSize = 14, RichText = true,
+			Size = UDim2.new(1, -20, 1, -172 - bandH), Position = UDim2.new(0, 10, 0, 8 + bandH), Text = table.concat(lines, "\n"), TextSize = 12, RichText = true,
 			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 		}, detail)
 		if selected.Equipped then
@@ -2927,32 +2927,32 @@ local function buildInventoryTab()
 				local gold = player:GetAttribute("Gold") or 0
 				makeButton({
 					Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 1, -40),
-					Text = string.format("💰 %d G Slot Upgrade (%d%% success)", cost, chance), TextSize = 13, BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62),
+					Text = string.format("💰 %d G Slot Upgrade (%d%% success)", cost, chance), TextSize = 11, BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62),
 				}, detail, function()
 					Remotes.Gear:FireServer("Enhance", selected.Slot)
 				end)
 			else
-				makeButton({ Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 1, -40), Text = "Max Upgrade MAX", TextSize = 13, BackgroundColor3 = GRAY }, detail, function() end)
+				makeButton({ Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 1, -40), Text = "Max Upgrade MAX", TextSize = 11, BackgroundColor3 = GRAY }, detail, function() end)
 			end
 		end
 		if not selected.Equipped then
-			makeButton({ Size = UDim2.new(0, 96, 0, 30), Position = UDim2.new(0, 10, 1, -40), Text = "Equip", TextSize = 14, BackgroundColor3 = GREEN }, detail, function()
+			makeButton({ Size = UDim2.new(0, 96, 0, 30), Position = UDim2.new(0, 10, 1, -40), Text = "Equip", TextSize = 12, BackgroundColor3 = GREEN }, detail, function()
 				Remotes.Inventory:FireServer("Equip", selected.Id)
 			end)
-			makeButton({ Size = UDim2.new(0, 96, 0, 30), Position = UDim2.new(0, 112, 1, -40), Text = "Dismantle", TextSize = 14, BackgroundColor3 = RED }, detail, function()
+			makeButton({ Size = UDim2.new(0, 96, 0, 30), Position = UDim2.new(0, 112, 1, -40), Text = "Dismantle", TextSize = 12, BackgroundColor3 = RED }, detail, function()
 				Remotes.Inventory:FireServer("Scrap", selected.Id)
 			end)
 		end
 		if #selected.Affixes > 0 then
 			makeButton({
 				Size = UDim2.new(0, 120, 0, 30), Position = UDim2.new(1, -130, 1, -40),
-				Text = string.format("Reroll ✨%d", Config.Inventory.RerollEssence[selected.Rarity]), TextSize = 12, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
+				Text = string.format("Reroll ✨%d", Config.Inventory.RerollEssence[selected.Rarity]), TextSize = 10, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
 			}, detail, function()
 				Remotes.Inventory:FireServer("Reroll", selected.Id)
 			end)
 		end
 	elseif not showWeapons then
-		makeLabel({ Size = UDim2.new(1, -20, 1, -20), Position = UDim2.new(0, 10, 0, 10), Text = "No gear yet.\nDefeat monsters in the field or use the gacha!", TextSize = 15, TextColor3 = Color3.fromRGB(150, 150, 170) }, detail)
+		makeLabel({ Size = UDim2.new(1, -20, 1, -20), Position = UDim2.new(0, 10, 0, 10), Text = "No gear yet.\nDefeat monsters in the field or use the gacha!", TextSize = 13, TextColor3 = Color3.fromRGB(150, 150, 170) }, detail)
 	end
 
 	sectionTitle(string.format("🎒 Bag (%d / %d) — tap a slot to see details above", state.BagCount, state.Capacity))
@@ -2960,7 +2960,7 @@ local function buildInventoryTab()
 	local rowsNeeded = math.max(1, math.ceil(#bag / columns))
 	local gridRow = newRow(rowsNeeded * 76 + 14)
 	if #bag == 0 then
-		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "Your bag is empty", TextSize = 15, TextColor3 = Color3.fromRGB(130, 130, 150) }, gridRow)
+		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "Your bag is empty", TextSize = 13, TextColor3 = Color3.fromRGB(130, 130, 150) }, gridRow)
 	end
 	create("UIGridLayout", { CellSize = UDim2.new(0, 68, 0, 68), CellPadding = UDim2.new(0, 8, 0, 8), SortOrder = Enum.SortOrder.LayoutOrder }, gridRow)
 	create("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingLeft = UDim.new(0, 10) }, gridRow)
@@ -2975,8 +2975,8 @@ local function buildInventoryTab()
 		end)
 		rounded(tile, 8)
 		rarityOutline(tile, item.Rarity, (selected and selected.Id == item.Id) and 5 or nil)
-		makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = SLOT_ICONS[item.Slot], TextSize = 26 }, tile)
-		makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 36), Text = string.format("+%d", item.Level), TextSize = 12, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, tile)
+		makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = SLOT_ICONS[item.Slot], TextSize = 22 }, tile)
+		makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 36), Text = string.format("+%d", item.Level), TextSize = 10, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, tile)
 		local equippedItem = equipped[item.Slot]
 		local compare = ""
 		if equippedItem then
@@ -2985,10 +2985,10 @@ local function buildInventoryTab()
 			compare = "▲"
 		end
 		if compare ~= "" then
-			makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(1, -16, 0, 3), Text = compare, TextSize = 12, TextColor3 = compare == "▲" and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 120, 120), Font = Enum.Font.GothamBlack }, tile)
+			makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(1, -16, 0, 3), Text = compare, TextSize = 10, TextColor3 = compare == "▲" and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 120, 120), Font = Enum.Font.GothamBlack }, tile)
 		end
 		if item.Unique then
-			makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0, 2, 0, 3), Text = "✦", TextSize = 12, TextColor3 = Color3.fromRGB(255, 184, 77) }, tile)
+			makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0, 2, 0, 3), Text = "✦", TextSize = 10, TextColor3 = Color3.fromRGB(255, 184, 77) }, tile)
 		end
 		if item.Set then
 			setDecor(tile, item.Set, setCounts[item.Set], UDim2.new(0, 5, 1, -17), UDim2.new(1, -10, 0, 14), 8)
@@ -3011,7 +3011,7 @@ local function buildGrowthTab()
 
 	local header = newRow(78)
 	rowText(header, string.format(
-		"⏱ Time Skip <font color='#ffe16e'><b>%s</b></font> owned      🏋 Training slots <b>%d / %d</b> in use\n<font size='13' color='#bbbbcc'>Training and breakthroughs finish on their own over time (even while offline). Time Skips shorten the wait, and you also earn them slowly from quests. You can reach everything without spending money.</font>",
+		"⏱ Time Skip <font color='#ffe16e'><b>%s</b></font> owned      🏋 Training slots <b>%d / %d</b> in use\n<font size='11' color='#bbbbcc'>Training and breakthroughs finish on their own over time (even while offline). Time Skips shorten the wait, and you also earn them slowly from quests. You can reach everything without spending money.</font>",
 		Config.FormatDuration(state.TimeSkip), #state.Jobs, state.Slots
 	), 15, 24)
 
@@ -3020,7 +3020,7 @@ local function buildGrowthTab()
 	local frac = math.clamp(state.TimeSkip / cap, 0, 1)
 	local gaugeBack = makePanel({ Size = UDim2.new(1, -24, 0, 18), Position = UDim2.new(0, 12, 0, 11), BackgroundColor3 = Color3.fromRGB(22, 24, 36) }, gaugeRow)
 	local gaugeFill = makePanel({ Size = UDim2.new(skipShownFrac, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(215, 150, 60) }, gaugeBack)
-	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "⏱ Skip gauge " .. Config.FormatDuration(state.TimeSkip), TextSize = 12, ZIndex = 3 }, gaugeBack)
+	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "⏱ Skip gauge " .. Config.FormatDuration(state.TimeSkip), TextSize = 10, ZIndex = 3 }, gaugeBack)
 	game:GetService("TweenService"):Create(gaugeFill, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = UDim2.new(frac, 0, 1, 0) }):Play()
 	skipShownFrac = frac
 
@@ -3047,20 +3047,20 @@ local function buildGrowthTab()
 		end
 
 		local row = newRow(84)
-		rowText(row, string.format("<font size='17'><b>%s %s</b></font>  Lv.%d / %d\n<font color='#ddddee'>%s%s</font>\n%s",
+		rowText(row, string.format("<font size='14'><b>%s %s</b></font>  Lv.%d / %d\n<font color='#ddddee'>%s%s</font>\n%s",
 			def.Icon, def.Name, level, Config.Growth.MaxLevel, current, nextText, status), 14, 190)
 
 		if job then
 			makeButton({
 				Size = UDim2.new(0, 160, 0, 34), Position = UDim2.new(1, -172, 0.5, -17),
-				Text = "⏱ Use Time Skip", TextSize = 14, BackgroundColor3 = state.TimeSkip > 0 and Color3.fromRGB(200, 130, 40) or GRAY,
+				Text = "⏱ Use Time Skip", TextSize = 12, BackgroundColor3 = state.TimeSkip > 0 and Color3.fromRGB(200, 130, 40) or GRAY,
 			}, row, function()
 				Remotes.Growth:FireServer("Skip", "Train", stat)
 			end)
 		elseif level < Config.Growth.MaxLevel then
 			makeButton({
 				Size = UDim2.new(0, 160, 0, 34), Position = UDim2.new(1, -172, 0.5, -17),
-				Text = "Start Training", TextSize = 15, BackgroundColor3 = GREEN,
+				Text = "Start Training", TextSize = 13, BackgroundColor3 = GREEN,
 			}, row, function()
 				Remotes.Growth:FireServer("Train", stat)
 			end)
@@ -3084,9 +3084,9 @@ local function buildGrowthTab()
 		local myLevel = player:GetAttribute("Level") or 1
 		local text
 		if state.GateJob then
-			text = string.format("<font size='17'><b>Level %d Breakthrough in progress</b></font>\n<font color='#ffd966'>Time left %s</font>", state.GateJob.Level, Config.FormatDuration(growthRemaining(state.GateJob.EndAt)))
+			text = string.format("<font size='14'><b>Level %d Breakthrough in progress</b></font>\n<font color='#ffd966'>Time left %s</font>", state.GateJob.Level, Config.FormatDuration(growthRemaining(state.GateJob.EndAt)))
 		else
-			text = string.format("<font size='17'><b>Level %d Breakthrough</b></font>   (Current Lv.%d)\n<font color='#bbbbcc'>Time needed %s · 💰 %d G</font>\n<font size='13' color='#bbbbcc'>%s</font>",
+			text = string.format("<font size='14'><b>Level %d Breakthrough</b></font>   (Current Lv.%d)\n<font color='#bbbbcc'>Time needed %s · 💰 %d G</font>\n<font size='11' color='#bbbbcc'>%s</font>",
 				gateLevel, myLevel, Config.FormatDuration(Config.Growth.GateTime[gateIndex]), Config.Growth.GateGold[gateIndex],
 				myLevel >= gateLevel and "You can break through now!" or string.format("Reach level %d to break through", gateLevel))
 		end
@@ -3095,14 +3095,14 @@ local function buildGrowthTab()
 		if state.GateJob then
 			makeButton({
 				Size = UDim2.new(0, 160, 0, 34), Position = UDim2.new(1, -172, 0.5, -17),
-				Text = "⏱ Use Time Skip", TextSize = 14, BackgroundColor3 = state.TimeSkip > 0 and Color3.fromRGB(200, 130, 40) or GRAY,
+				Text = "⏱ Use Time Skip", TextSize = 12, BackgroundColor3 = state.TimeSkip > 0 and Color3.fromRGB(200, 130, 40) or GRAY,
 			}, gateRow, function()
 				Remotes.Growth:FireServer("Skip", "Gate")
 			end)
 		else
 			makeButton({
 				Size = UDim2.new(0, 160, 0, 34), Position = UDim2.new(1, -172, 0.5, -17),
-				Text = "Start Breakthrough", TextSize = 15, BackgroundColor3 = myLevel >= gateLevel and GREEN or GRAY,
+				Text = "Start Breakthrough", TextSize = 13, BackgroundColor3 = myLevel >= gateLevel and GREEN or GRAY,
 			}, gateRow, function()
 				Remotes.Growth:FireServer("Gate")
 			end)
@@ -3137,7 +3137,7 @@ local function buildSkillTab(passiveOnly)
 			detail = string.format("Damage x%.2f · %d targets (gauge %d)", cfg.Mult * (1 + U.UltMult * lv), cfg.MaxTargets + math.floor(U.UltTargets * lv + 0.001), cfg.Cost)
 		end
 		local row = newRow(74)
-		rowText(row, string.format("<font size='17'><b>[%s] %s %s</b></font>  <font color='#ffd966'>Lv.%d / %d</font>\n<font color='#bbbbcc'>%s</font>\n<font color='#9ad7ff'>%s%s</font>",
+		rowText(row, string.format("<font size='14'><b>[%s] %s %s</b></font>  <font color='#ffd966'>Lv.%d / %d</font>\n<font color='#bbbbcc'>%s</font>\n<font color='#9ad7ff'>%s%s</font>",
 			cfg.Key, cfg.Icon, cfg.Name, level, U.MaxLevel, cfg.Desc, detail, cfg.Passive and "" or string.format(" · Cooldown %.1fs", cfg.Cooldown * (1 - U.CooldownPerLevel * lv))), 14, 190)
 		local maxed = level >= U.MaxLevel
 		makeButton({
@@ -3166,7 +3166,7 @@ function MENU.seg(options, current, onPick)
 	for index, option in ipairs(options) do
 		local active = option[1] == current
 		makeButton({
-			Size = UDim2.new(0, 150, 0, 32), Position = UDim2.new(0, 10 + (index - 1) * 158, 0.5, -16), Text = option[2], TextSize = 15,
+			Size = UDim2.new(0, 150, 0, 32), Position = UDim2.new(0, 10 + (index - 1) * 158, 0.5, -16), Text = option[2], TextSize = 13,
 			BackgroundColor3 = active and Color3.fromRGB(70, 104, 206) or Color3.fromRGB(44, 48, 72),
 			TextColor3 = active and Color3.fromRGB(255, 232, 160) or Color3.fromRGB(170, 176, 200),
 		}, row, function()
@@ -3177,7 +3177,7 @@ end
 
 function MENU.locked()
 	local row = newRow(120)
-	rowText(row, "<font size='22'><b>🔒 Unlocks after clearing Zone 2</b></font>\n<font size='14' color='#bbbbcc'>Open the gate of Field Zone 2 to unlock training.\nTraining continues even while offline, making you permanently stronger. (Skills / Pets are available now)</font>", 15)
+	rowText(row, "<font size='19'><b>🔒 Unlocks after clearing Zone 2</b></font>\n<font size='12' color='#bbbbcc'>Open the gate of Field Zone 2 to unlock training.\nTraining continues even while offline, making you permanently stronger. (Skills / Pets are available now)</font>", 15)
 end
 
 local selectTab
@@ -3279,7 +3279,7 @@ end
 local tabWidth = 140
 for index, tab in ipairs(TABS) do
 	tabButtons[tab.Key] = makeButton({
-		Size = UDim2.new(0, tabWidth, 0, 36), Position = UDim2.new(0, 14 + (index - 1) * (tabWidth + 6), 0, 50), Text = tab.Name, TextSize = 16,
+		Size = UDim2.new(0, tabWidth, 0, 36), Position = UDim2.new(0, 14 + (index - 1) * (tabWidth + 6), 0, 50), Text = tab.Name, TextSize = 14,
 	}, menuPanel, function()
 		selectTab(tab.Key)
 	end)
@@ -3306,7 +3306,7 @@ end
 
 do
 	local menuButton = makeButton({
-		Name = "MenuButton", Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 16, 0, 244), Text = "📋 Menu(B)", TextSize = 12,
+		Name = "MenuButton", Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 16, 0, 244), Text = "📋 Menu(B)", TextSize = 10,
 		BackgroundColor3 = Color3.fromRGB(34, 40, 70),
 	}, gui, toggleMenu)
 	local menuStroke = create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, menuButton)
@@ -3413,7 +3413,7 @@ local selectPanel = makePanel({
 
 makeLabel({
 	Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8),
-	Text = "⚔ Select Dungeon", Font = Enum.Font.GothamBlack, TextSize = 24,
+	Text = "⚔ Select Dungeon", Font = Enum.Font.GothamBlack, TextSize = 20,
 }, selectPanel)
 
 local typeCards = {}
@@ -3429,16 +3429,16 @@ for index, key in ipairs(Config.Dungeon.Types.Order) do
 	create("UIStroke", { Color = info.Torch, Thickness = 0, Name = "Stroke" }, card)
 	makeLabel({
 		Size = UDim2.new(1, -16, 1, -12), Position = UDim2.new(0, 8, 0, 6), RichText = true,
-		Text = string.format("<font size='20'><b>%s</b></font>\n\n<font color='#bbbbcc' size='13'>%s</font>\n\n%s\nRecommended Power %d",
+		Text = string.format("<font size='17'><b>%s</b></font>\n\n<font color='#bbbbcc' size='11'>%s</font>\n\n%s\nRecommended Power %d",
 			info.Name, info.Desc, string.format("Survive %ds + Boss", Config.Dungeon.GetSurviveSeconds(info.Waves)), info.RecommendedPower),
-		TextSize = 15, TextYAlignment = Enum.TextYAlignment.Top,
+		TextSize = 13, TextYAlignment = Enum.TextYAlignment.Top,
 	}, card)
 	typeCards[key] = card
 end
 
 makeLabel({
 	Size = UDim2.new(1, -28, 0, 22), Position = UDim2.new(0, 14, 0, 236),
-	Text = "Difficulty", Font = Enum.Font.GothamBold, TextSize = 15, TextXAlignment = Enum.TextXAlignment.Left,
+	Text = "Difficulty", Font = Enum.Font.GothamBold, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left,
 }, selectPanel)
 
 local difficultyButtons = {}
@@ -3446,7 +3446,7 @@ for index, key in ipairs(Config.Dungeon.Difficulties.Order) do
 	local info = Config.Dungeon.Difficulties[key]
 	difficultyButtons[key] = makeButton({
 		Size = UDim2.new(0, 200, 0, 40), Position = UDim2.new(0, 14 + (index - 1) * 212, 0, 262),
-		Text = string.format("%s  %s", info.Name, Config.Keys.TierIcons[info.KeyTier or 1]), TextSize = 18, BackgroundColor3 = GRAY,
+		Text = string.format("%s  %s", info.Name, Config.Keys.TierIcons[info.KeyTier or 1]), TextSize = 15, BackgroundColor3 = GRAY,
 	}, selectPanel, function()
 		selectedDifficulty = key
 		refreshSelect()
@@ -3455,7 +3455,7 @@ end
 
 local summaryLabel = makeLabel({
 	Size = UDim2.new(1, -28, 0, 110), Position = UDim2.new(0, 14, 0, 314), RichText = true,
-	TextSize = 16, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+	TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 }, selectPanel)
 
 function refreshSelect()
@@ -3481,7 +3481,7 @@ end
 
 makeButton({
 	Size = UDim2.new(0, 280, 0, 46), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 14, 1, -14),
-	Text = "Enter", TextSize = 20, BackgroundColor3 = GREEN,
+	Text = "Enter", TextSize = 17, BackgroundColor3 = GREEN,
 }, selectPanel, function()
 	selectPanel.Visible = false
 	Remotes.Dungeon:FireServer("Start", selectedType, selectedDifficulty)
@@ -3489,7 +3489,7 @@ end)
 
 makeButton({
 	Size = UDim2.new(0, 280, 0, 46), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -14, 1, -14),
-	Text = "Close", TextSize = 20, BackgroundColor3 = GRAY,
+	Text = "Close", TextSize = 17, BackgroundColor3 = GRAY,
 }, selectPanel, function()
 	selectPanel.Visible = false
 end)
@@ -3516,12 +3516,12 @@ local warpPanel = makePanel({
 
 makeLabel({
 	Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8),
-	Text = "⛺ Warp", Font = Enum.Font.GothamBlack, TextSize = 24,
+	Text = "⛺ Warp", Font = Enum.Font.GothamBlack, TextSize = 20,
 }, warpPanel)
 makeLabel({
 	Size = UDim2.new(1, -28, 0, 36), Position = UDim2.new(0, 14, 0, 44),
 	Text = "Warp to the camp of any zone you've reached. If you die in the field, you respawn at the nearest camp.",
-	TextSize = 13, TextColor3 = Color3.fromRGB(190, 190, 210),
+	TextSize = 11, TextColor3 = Color3.fromRGB(190, 190, 210),
 }, warpPanel)
 
 local warpList = create("Frame", { Size = UDim2.new(1, -28, 1, -140), Position = UDim2.new(0, 14, 0, 84), BackgroundTransparency = 1 }, warpPanel)
@@ -3529,7 +3529,7 @@ create("UIListLayout", { Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.La
 
 makeButton({
 	Size = UDim2.new(1, -28, 0, 36), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 14, 1, -14),
-	Text = "Close", TextSize = 16, BackgroundColor3 = GRAY,
+	Text = "Close", TextSize = 14, BackgroundColor3 = GRAY,
 }, warpPanel, function()
 	warpPanel.Visible = false
 end)
@@ -3540,7 +3540,7 @@ local function refreshWarp()
 
 	local function addRow(order, text, unlocked, zone)
 		makeButton({
-			Size = UDim2.new(1, 0, 0, 36), LayoutOrder = order, Text = text, TextSize = 15,
+			Size = UDim2.new(1, 0, 0, 36), LayoutOrder = order, Text = text, TextSize = 13,
 			BackgroundColor3 = unlocked and Color3.fromRGB(60, 90, 160) or GRAY, TextXAlignment = Enum.TextXAlignment.Left,
 		}, warpList, function()
 			if unlocked then
@@ -3588,7 +3588,7 @@ local lowHealthRatio = 1
 
 local comboLabel = makeLabel({
 	Size = UDim2.new(0, 260, 0, 60), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -24, 0.4, 0),
-	Font = Enum.Font.GothamBlack, TextSize = 30, TextXAlignment = Enum.TextXAlignment.Right, Visible = false,
+	Font = Enum.Font.GothamBlack, TextSize = 26, TextXAlignment = Enum.TextXAlignment.Right, Visible = false,
 	TextColor3 = Color3.fromRGB(255, 190, 60), TextStrokeTransparency = 0.2,
 }, gui)
 
@@ -3732,16 +3732,16 @@ for index, skillKey in ipairs(Config.Skills.Order) do
 	}, skillBar)
 	rounded(slot)
 	local slotStroke = create("UIStroke", { Color = skillKey == "Ult" and Color3.fromRGB(255, 90, 90) or Color3.fromRGB(110, 150, 220), Thickness = 2 }, slot)
-	makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = cfg.Icon, TextSize = 24 }, slot)
-	makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 34), Text = cfg.Name, TextSize = 10 }, slot)
-	makeLabel({ Size = UDim2.new(0, 18, 0, 16), Position = UDim2.new(0, 3, 0, 3), Text = cfg.Key, TextSize = 12, Font = Enum.Font.GothamBlack,
+	makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = cfg.Icon, TextSize = 20 }, slot)
+	makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 34), Text = cfg.Name, TextSize = 9 }, slot)
+	makeLabel({ Size = UDim2.new(0, 18, 0, 16), Position = UDim2.new(0, 3, 0, 3), Text = cfg.Key, TextSize = 10, Font = Enum.Font.GothamBlack,
 		TextColor3 = Color3.fromRGB(255, 220, 90) }, slot)
 	local cover = create("Frame", {
 		Size = UDim2.new(1, 0, 0, 0), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 0, 1, 0),
 		BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.45, BorderSizePixel = 0,
 	}, slot)
 	rounded(cover)
-	local timer = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 20, Font = Enum.Font.GothamBlack }, slot)
+	local timer = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 17, Font = Enum.Font.GothamBlack }, slot)
 	if UserInputService.TouchEnabled then
 		local tap = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", ZIndex = 5 }, slot)
 		tap.Activated:Connect(function()
@@ -3755,13 +3755,13 @@ do
 	local slot = create("Frame", { Size = UDim2.new(0, 62, 0, 62), Position = UDim2.new(0, 0, 0, 0), BackgroundColor3 = Color3.fromRGB(28, 28, 42), BorderSizePixel = 0 }, skillBar)
 	rounded(slot)
 	create("UIStroke", { Color = Color3.fromRGB(120, 210, 255), Thickness = 2 }, slot)
-	makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = "💨", TextSize = 24 }, slot)
-	makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 34), Text = "Dash", TextSize = 10 }, slot)
-	makeLabel({ Size = UDim2.new(0, 18, 0, 16), Position = UDim2.new(0, 3, 0, 3), Text = "Q", TextSize = 12, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 220, 90) }, slot)
+	makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = "💨", TextSize = 20 }, slot)
+	makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 34), Text = "Dash", TextSize = 9 }, slot)
+	makeLabel({ Size = UDim2.new(0, 18, 0, 16), Position = UDim2.new(0, 3, 0, 3), Text = "Q", TextSize = 10, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 220, 90) }, slot)
 	local cover = create("Frame", { Size = UDim2.new(1, 0, 0, 0), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.45, BorderSizePixel = 0 }, slot)
 	rounded(cover)
-	local charges = makeLabel({ Size = UDim2.new(0, 20, 0, 18), Position = UDim2.new(1, -22, 0, 3), TextSize = 14, Font = Enum.Font.GothamBlack }, slot)
-	local timer = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 20, Font = Enum.Font.GothamBlack }, slot)
+	local charges = makeLabel({ Size = UDim2.new(0, 20, 0, 18), Position = UDim2.new(1, -22, 0, 3), TextSize = 12, Font = Enum.Font.GothamBlack }, slot)
+	local timer = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 17, Font = Enum.Font.GothamBlack }, slot)
 	if UserInputService.TouchEnabled then
 		create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", ZIndex = 5 }, slot).Activated:Connect(function()
 			slide()
@@ -3826,7 +3826,7 @@ Remotes.Skill.OnClientEvent:Connect(function(action, skillKey, cooldown)
 			local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 70, 60), BackgroundTransparency = 0.8, BorderSizePixel = 0, ZIndex = 58, Active = false }, gui)
 			TweenService:Create(flash, TweenInfo.new(0.4), { BackgroundTransparency = 1 }):Play()
 			task.delay(0.5, function() flash:Destroy() end)
-			local big = makeLabel({ Size = UDim2.new(1, 0, 0, 120), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.3, 0), Text = "◎ DEADEYE ◎", Font = Enum.Font.GothamBlack, TextSize = 64, TextColor3 = Color3.fromRGB(255, 60, 60), TextStrokeTransparency = 0, ZIndex = 60 }, gui)
+			local big = makeLabel({ Size = UDim2.new(1, 0, 0, 120), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.3, 0), Text = "◎ DEADEYE ◎", Font = Enum.Font.GothamBlack, TextSize = 54, TextColor3 = Color3.fromRGB(255, 60, 60), TextStrokeTransparency = 0, ZIndex = 60 }, gui)
 			TweenService:Create(big, TweenInfo.new(1.6), { TextTransparency = 1, TextStrokeTransparency = 1, Position = UDim2.new(0.5, 0, 0.24, 0) }):Play()
 			task.delay(1.7, function() big:Destroy() end)
 		end
@@ -3845,7 +3845,7 @@ RunService.RenderStepped:Connect(function()
 			local full = charge >= cfg.Cost
 			slot.Cover.Size = UDim2.new(1, 0, 1 - math.clamp(charge / cfg.Cost, 0, 1), 0)
 			slot.Timer.Text = full and "" or string.format("%d%%", math.floor(charge))
-			slot.Timer.TextSize = 16
+			slot.Timer.TextSize = 14
 			slot.Stroke.Thickness = full and (3 + 2 * math.abs(math.sin(os.clock() * 5))) or 2
 			slot.Stroke.Color = full and Color3.fromRGB(255, 225, 90) or Color3.fromRGB(255, 90, 90)
 		elseif remain > 0 then
@@ -4029,9 +4029,9 @@ do
 local helpPanel = makePanel({
 	Size = UDim2.new(0, 560, 0, 580), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
 }, gui)
-makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8), Text = "⚙ Settings / ❓ Help", Font = Enum.Font.GothamBlack, TextSize = 22 }, helpPanel)
+makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8), Text = "⚙ Settings / ❓ Help", Font = Enum.Font.GothamBlack, TextSize = 19 }, helpPanel)
 makeLabel({
-	Size = UDim2.new(1, -40, 0, 280), Position = UDim2.new(0, 20, 0, 50), RichText = true, TextSize = 14,
+	Size = UDim2.new(1, -40, 0, 280), Position = UDim2.new(0, 20, 0, 50), RichText = true, TextSize = 12,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 	Text = table.concat({
 		"<b>Move/Attack</b>  WASD move · Q dash · Mouse click (hold for rapid fire) to attack",
@@ -4052,7 +4052,7 @@ makeLabel({
 local function settingButton(y, labelFn, onClick)
 	local button
 	button = makeButton({
-		Size = UDim2.new(1, -40, 0, 32), Position = UDim2.new(0, 20, 0, y), Text = labelFn(), TextSize = 14, BackgroundColor3 = Color3.fromRGB(55, 65, 100),
+		Size = UDim2.new(1, -40, 0, 32), Position = UDim2.new(0, 20, 0, y), Text = labelFn(), TextSize = 12, BackgroundColor3 = Color3.fromRGB(55, 65, 100),
 	}, helpPanel, function()
 		onClick()
 		button.Text = labelFn()
@@ -4061,7 +4061,7 @@ end
 local function settingSlider(y, title, getValue, setValue)
 	local maxValue = 2
 	local caption = makeLabel({
-		Size = UDim2.new(1, -40, 0, 18), Position = UDim2.new(0, 20, 0, y), TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left,
+		Size = UDim2.new(1, -40, 0, 18), Position = UDim2.new(0, 20, 0, y), TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left,
 	}, helpPanel)
 	local bar = create("Frame", {
 		Size = UDim2.new(1, -40, 0, 12), Position = UDim2.new(0, 20, 0, y + 22), BackgroundColor3 = Color3.fromRGB(55, 65, 100), BorderSizePixel = 0,
@@ -4138,7 +4138,7 @@ end)
 
 do
 	local helpButton = makeButton({
-		Name = "HelpButton", Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 98, 0, 244), Text = "⚙ Settings(H)", TextSize = 12,
+		Name = "HelpButton", Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 98, 0, 244), Text = "⚙ Settings(H)", TextSize = 10,
 		BackgroundColor3 = Color3.fromRGB(34, 40, 70),
 	}, gui, toggleHelp)
 	create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, helpButton)

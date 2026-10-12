@@ -38,28 +38,28 @@ local panel = makePanel({
 }, gui)
 create("UIStroke", { Color = Color3.fromRGB(230, 100, 180), Thickness = 2, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, panel)
 
-makeLabel({ Size = UDim2.new(1, -90, 0, 40), Position = UDim2.new(0, 18, 0, 10), Text = "🌀 Rift Challenge", Font = Enum.Font.GothamBlack, TextSize = 28,
+makeLabel({ Size = UDim2.new(1, -90, 0, 40), Position = UDim2.new(0, 18, 0, 10), Text = "🌀 Rift Challenge", Font = Enum.Font.GothamBlack, TextSize = 24,
 	TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 170, 225), ZIndex = 11 }, panel)
 makeButton({ Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -78, 0, 14), Text = "Close", BackgroundColor3 = Color3.fromRGB(54, 58, 82), ZIndex = 11 }, panel, function()
 	panel.Visible = false
 end)
-makeLabel({ Size = UDim2.new(1, -36, 0, 44), Position = UDim2.new(0, 18, 0, 54), TextSize = 16, ZIndex = 11, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+makeLabel({ Size = UDim2.new(1, -36, 0, 44), Position = UDim2.new(0, 18, 0, 54), TextSize = 14, ZIndex = 11, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 	Text = string.format("Survive for %d seconds and rack up points. Kills + combos + close dodges with dash (NEAR MISS) all score!", R.Duration) }, panel)
 
 local state = nil
 -- 심연 깊이 선택: 필드를 밀면 8까지 열리고, 그 뒤는 골드 등급 이상을 기록하면 다음 깊이가 열린다 (끝없는 후반 목표)
-local depthLabel = makeLabel({ Size = UDim2.new(1, -150, 0, 34), Position = UDim2.new(0, 75, 0, 100), TextSize = 22, Font = Enum.Font.GothamBlack, RichText = true, ZIndex = 11, Text = "" }, panel)
-local depthPrev = makeButton({ Size = UDim2.new(0, 44, 0, 34), Position = UDim2.new(0, 18, 0, 100), Text = "◀", TextSize = 20, BackgroundColor3 = Color3.fromRGB(80, 60, 110), ZIndex = 11 }, panel, function()
+local depthLabel = makeLabel({ Size = UDim2.new(1, -150, 0, 34), Position = UDim2.new(0, 75, 0, 100), TextSize = 19, Font = Enum.Font.GothamBlack, RichText = true, ZIndex = 11, Text = "" }, panel)
+local depthPrev = makeButton({ Size = UDim2.new(0, 44, 0, 34), Position = UDim2.new(0, 18, 0, 100), Text = "◀", TextSize = 17, BackgroundColor3 = Color3.fromRGB(80, 60, 110), ZIndex = 11 }, panel, function()
 	if state and state.Depth > 1 then Remotes.Rift:FireServer("SetDepth", state.Depth - 1) end
 end)
-local depthNext = makeButton({ Size = UDim2.new(0, 44, 0, 34), Position = UDim2.new(1, -62, 0, 100), Text = "▶", TextSize = 20, BackgroundColor3 = Color3.fromRGB(80, 60, 110), ZIndex = 11 }, panel, function()
+local depthNext = makeButton({ Size = UDim2.new(0, 44, 0, 34), Position = UDim2.new(1, -62, 0, 100), Text = "▶", TextSize = 17, BackgroundColor3 = Color3.fromRGB(80, 60, 110), ZIndex = 11 }, panel, function()
 	if state and state.Depth < state.Unlocked then Remotes.Rift:FireServer("SetDepth", state.Depth + 1) end
 end)
-local depthInfo = makeLabel({ Size = UDim2.new(1, -36, 0, 22), Position = UDim2.new(0, 18, 0, 136), TextSize = 14, RichText = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 11, Text = "" }, panel)
+local depthInfo = makeLabel({ Size = UDim2.new(1, -36, 0, 22), Position = UDim2.new(0, 18, 0, 136), TextSize = 12, RichText = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 11, Text = "" }, panel)
 
-local bestLabel = makeLabel({ Size = UDim2.new(1, -36, 0, 34), Position = UDim2.new(0, 18, 0, 164), TextSize = 22, Font = Enum.Font.GothamBlack, RichText = true,
+local bestLabel = makeLabel({ Size = UDim2.new(1, -36, 0, 34), Position = UDim2.new(0, 18, 0, 164), TextSize = 19, Font = Enum.Font.GothamBlack, RichText = true,
 	TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 11, Text = "" }, panel)
-local leftLabel = makeLabel({ Size = UDim2.new(1, -36, 0, 26), Position = UDim2.new(0, 18, 0, 196), TextSize = 17, RichText = true,
+local leftLabel = makeLabel({ Size = UDim2.new(1, -36, 0, 26), Position = UDim2.new(0, 18, 0, 196), TextSize = 14, RichText = true,
 	TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 11, Text = "" }, panel)
 
 local tierList = create("Frame", { Size = UDim2.new(1, -36, 0, 150), Position = UDim2.new(0, 18, 0, 228), BackgroundColor3 = Color3.fromRGB(38, 24, 58), BorderSizePixel = 0, ZIndex = 11 }, panel)
@@ -70,25 +70,25 @@ for index, tier in ipairs(R.Tiers) do
 	if tier.Tickets > 0 then reward ..= string.format(" · 🎫%d", tier.Tickets) end
 	if tier.TimeSkip > 0 then reward ..= string.format(" · ⏱%dm", tier.TimeSkip // 60) end
 	tierLines[index] = makeLabel({
-		Size = UDim2.new(1, -20, 0, 23), Position = UDim2.new(0, 12, 0, 5 + (index - 1) * 24), TextSize = 15, RichText = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 12,
+		Size = UDim2.new(1, -20, 0, 23), Position = UDim2.new(0, 12, 0, 5 + (index - 1) * 24), TextSize = 13, RichText = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 12,
 		Text = string.format("%s %s  <font color='#aab0d0'>%s pts~</font>  →  %s", tier.Icon, tier.Name, comma(tier.Min), reward),
 	}, tierList)
 end
 
 local startButton = makeButton({
-	Size = UDim2.new(0.5, -24, 0, 56), Position = UDim2.new(0, 18, 0, 392), Text = string.format("⚔ Start Challenge\n(%ds)", R.Duration), TextSize = 18, Font = Enum.Font.GothamBlack,
+	Size = UDim2.new(0.5, -24, 0, 56), Position = UDim2.new(0, 18, 0, 392), Text = string.format("⚔ Start Challenge\n(%ds)", R.Duration), TextSize = 15, Font = Enum.Font.GothamBlack,
 	BackgroundColor3 = Color3.fromRGB(230, 70, 150), ZIndex = 11,
 }, panel, function()
 	Remotes.Rift:FireServer("Start")
 	panel.Visible = false
 end)
 local sweepButton = makeButton({
-	Size = UDim2.new(0.5, -24, 0, 56), Position = UDim2.new(0.5, 6, 0, 392), Text = string.format("⚡ Sweep\n(%d%% of best-tier reward)", math.floor(R.SweepRate * 100)), TextSize = 17, Font = Enum.Font.GothamBlack,
+	Size = UDim2.new(0.5, -24, 0, 56), Position = UDim2.new(0.5, 6, 0, 392), Text = string.format("⚡ Sweep\n(%d%% of best-tier reward)", math.floor(R.SweepRate * 100)), TextSize = 14, Font = Enum.Font.GothamBlack,
 	BackgroundColor3 = Color3.fromRGB(70, 120, 230), ZIndex = 11,
 }, panel, function()
 	Remotes.Rift:FireServer("Sweep")
 end)
-makeLabel({ Size = UDim2.new(1, -36, 0, 50), Position = UDim2.new(0, 18, 0, 460), TextSize = 14, TextColor3 = Color3.fromRGB(190, 190, 215), ZIndex = 11,
+makeLabel({ Size = UDim2.new(1, -36, 0, 50), Position = UDim2.new(0, 18, 0, 460), TextSize = 12, TextColor3 = Color3.fromRGB(190, 190, 215), ZIndex = 11,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = "💡 Challenges and Sweeps share the daily limit (resets daily). The higher your own best score, the bigger the Sweep reward!" }, panel)
 
 local function refresh()
@@ -132,9 +132,9 @@ local hud = makePanel({
 	BackgroundColor3 = Color3.fromRGB(20, 18, 34), BackgroundTransparency = 0.1, Visible = false, ZIndex = 5,
 }, gui)
 create("UIStroke", { Color = Color3.fromRGB(230, 100, 180), Thickness = 1.5, Transparency = 0.25, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, hud)
-local scoreLabel = makeLabel({ Size = UDim2.new(0.6, 0, 1, 0), Position = UDim2.new(0, 12, 0, 0), TextSize = 26, Font = Enum.Font.GothamBlack, RichText = true,
+local scoreLabel = makeLabel({ Size = UDim2.new(0.6, 0, 1, 0), Position = UDim2.new(0, 12, 0, 0), TextSize = 22, Font = Enum.Font.GothamBlack, RichText = true,
 	TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110), ZIndex = 6, Text = "0" }, hud)
-local timeLabel = makeLabel({ Size = UDim2.new(0.4, -12, 1, 0), Position = UDim2.new(0.6, 0, 0, 0), TextSize = 26, Font = Enum.Font.GothamBlack,
+local timeLabel = makeLabel({ Size = UDim2.new(0.4, -12, 1, 0), Position = UDim2.new(0.6, 0, 0, 0), TextSize = 22, Font = Enum.Font.GothamBlack,
 	TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 6, Text = "" }, hud)
 local shownScore = 0
 RunService.RenderStepped:Connect(function(dt)
@@ -165,23 +165,23 @@ Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
 		BackgroundColor3 = Color3.fromRGB(20, 18, 34), BackgroundTransparency = 0.02, ZIndex = 30,
 	}, gui)
 	create("UIStroke", { Color = info.NewBest and Color3.fromRGB(255, 225, 90) or Color3.fromRGB(255, 90, 180), Thickness = 2.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
-	makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 12), Text = string.format("🌀 Rift Depth %d Results", info.Depth or 1), Font = Enum.Font.GothamBlack, TextSize = 26, ZIndex = 31 }, card)
-	local scoreText = makeLabel({ Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0, 0, 0, 56), Text = "0", Font = Enum.Font.GothamBlack, TextSize = 56,
+	makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 12), Text = string.format("🌀 Rift Depth %d Results", info.Depth or 1), Font = Enum.Font.GothamBlack, TextSize = 22, ZIndex = 31 }, card)
+	local scoreText = makeLabel({ Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0, 0, 0, 56), Text = "0", Font = Enum.Font.GothamBlack, TextSize = 48,
 		TextColor3 = Color3.fromRGB(255, 225, 110), ZIndex = 31 }, card)
 	makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 128), Text = string.format("%s %s Tier", info.TierIcon or "", info.Tier or ""), Font = Enum.Font.GothamBlack,
-		TextSize = 24, ZIndex = 31 }, card)
+		TextSize = 20, ZIndex = 31 }, card)
 	if info.NewBest then
-		makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 164), Text = "🏆 NEW BEST! Sweep reward increased too", Font = Enum.Font.GothamBlack, TextSize = 20,
+		makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 164), Text = "🏆 NEW BEST! Sweep reward increased too", Font = Enum.Font.GothamBlack, TextSize = 17,
 			TextColor3 = Color3.fromRGB(255, 240, 120), ZIndex = 31 }, card)
 	else
-		makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 164), Text = string.format("Best: %s pts", comma(info.Best or 0)), TextSize = 18, ZIndex = 31 }, card)
+		makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 164), Text = string.format("Best: %s pts", comma(info.Best or 0)), TextSize = 15, ZIndex = 31 }, card)
 	end
 	local rewardParts = { string.format("💰 %s G", comma(data.Gold or 0)) }
 	if (data.Tickets or 0) > 0 then table.insert(rewardParts, string.format("🎫 %d", data.Tickets)) end
 	if (info.TimeSkip or 0) > 0 then table.insert(rewardParts, string.format("⏱ %dm", info.TimeSkip // 60)) end
-	makeLabel({ Size = UDim2.new(1, -30, 0, 30), Position = UDim2.new(0, 15, 0, 204), Text = "Reward  " .. table.concat(rewardParts, "  ·  "), TextSize = 18, ZIndex = 31 }, card)
+	makeLabel({ Size = UDim2.new(1, -30, 0, 30), Position = UDim2.new(0, 15, 0, 204), Text = "Reward  " .. table.concat(rewardParts, "  ·  "), TextSize = 15, ZIndex = 31 }, card)
 	if info.UnlockedNext then
-		makeLabel({ Size = UDim2.new(1, -30, 0, 30), Position = UDim2.new(0, 15, 0, 238), Text = string.format("🔓 Rift Depth %d unlocked!", info.UnlockedNext), Font = Enum.Font.GothamBlack, TextSize = 20,
+		makeLabel({ Size = UDim2.new(1, -30, 0, 30), Position = UDim2.new(0, 15, 0, 238), Text = string.format("🔓 Rift Depth %d unlocked!", info.UnlockedNext), Font = Enum.Font.GothamBlack, TextSize = 17,
 			TextColor3 = Color3.fromRGB(150, 255, 190), ZIndex = 31 }, card)
 	end
 	makeButton({ Size = UDim2.new(0, 150, 0, 40), Position = UDim2.new(0.5, -75, 1, -54), Text = "OK", ZIndex = 31 }, card, function()

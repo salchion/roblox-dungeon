@@ -42,7 +42,7 @@ function Kit.makePanel(props, parent)
 end
 
 function Kit.makeLabel(props, parent)
-	local base = { BackgroundTransparency = 1, TextColor3 = Color3.fromRGB(240, 242, 250), Font = Enum.Font.GothamMedium, TextSize = 16, TextWrapped = true }
+	local base = { BackgroundTransparency = 1, TextColor3 = Color3.fromRGB(240, 242, 250), Font = Enum.Font.GothamMedium, TextSize = 14, TextWrapped = true }
 	for key, value in pairs(props) do
 		base[key] = value
 	end
@@ -53,7 +53,7 @@ end
 function Kit.makeButton(props, parent, onClick)
 	local base = {
 		BackgroundColor3 = Color3.fromRGB(62, 96, 196), TextColor3 = Color3.fromRGB(240, 242, 250), Font = Enum.Font.GothamBold,
-		TextSize = 15, AutoButtonColor = true, BorderSizePixel = 0,
+		TextSize = 13, AutoButtonColor = true, BorderSizePixel = 0,
 	}
 	for key, value in pairs(props) do
 		base[key] = value

@@ -61,8 +61,8 @@ make("UICorner", { CornerRadius = UDim.new(0, 12) }, panel)
 make("UIStroke", { Color = Color3.fromRGB(255, 200, 100), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, panel)
 make("UISizeConstraint", { MaxSize = Vector2.new(480, 540) }, panel)
 
-label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "🐾 Pet", TextSize = 22 }, panel)
-button({ Size = UDim2.new(0, 60, 0, 28), Position = UDim2.new(1, -72, 0, 10), BackgroundColor3 = Color3.fromRGB(70, 70, 90), Text = "Close", TextSize = 13 }, panel, function() panel.Visible = false end)
+label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "🐾 Pet", TextSize = 19 }, panel)
+button({ Size = UDim2.new(0, 60, 0, 28), Position = UDim2.new(1, -72, 0, 10), BackgroundColor3 = Color3.fromRGB(70, 70, 90), Text = "Close", TextSize = 11 }, panel, function() panel.Visible = false end)
 
 local scroll = make("ScrollingFrame", {
 	Size = UDim2.new(1, -20, 1, -54), Position = UDim2.new(0, 10, 0, 46), BackgroundTransparency = 1, BorderSizePixel = 0,
@@ -89,15 +89,15 @@ local function rebuild()
 	-- 1) 상태 / 열기 / 레벨업
 	local head = row(98, Color3.fromRGB(44, 40, 30))
 	if not pet or not pet.Unlocked then
-		label({ Size = UDim2.new(1, -24, 0, 40), Position = UDim2.new(0, 12, 0, 8), Text = "Unlock pet features and your pet will follow and help you.\nEvery level you buy with gold adds a new feature!", TextSize = 13, TextWrapped = true, TextYAlignment = Enum.TextYAlignment.Top }, head)
+		label({ Size = UDim2.new(1, -24, 0, 40), Position = UDim2.new(0, 12, 0, 8), Text = "Unlock pet features and your pet will follow and help you.\nEvery level you buy with gold adds a new feature!", TextSize = 11, TextWrapped = true, TextYAlignment = Enum.TextYAlignment.Top }, head)
 		button({ Size = UDim2.new(0, 220, 0, 36), Position = UDim2.new(0, 12, 1, -46), BackgroundColor3 = gold >= P.UnlockCost and Color3.fromRGB(60, 130, 80) or Color3.fromRGB(95, 60, 62),
-			Text = string.format("🐾 Unlock Pet  💰 %s G", comma(P.UnlockCost)), TextSize = 15 }, head, function()
+			Text = string.format("🐾 Unlock Pet  💰 %s G", comma(P.UnlockCost)), TextSize = 13 }, head, function()
 			Remotes.Meta:FireServer("PetUnlock")
 		end)
 	else
 		local look = P.Looks[pet.Look] or P.Looks.Orb
-		label({ Size = UDim2.new(0, 60, 0, 52), Position = UDim2.new(0, 10, 0, 8), Text = look.Icon, TextSize = 40, TextXAlignment = Enum.TextXAlignment.Center }, head)
-		label({ Size = UDim2.new(1, -90, 0, 24), Position = UDim2.new(0, 72, 0, 10), Text = string.format("%s  <font color='#ffd966'>Lv.%d / %d</font>", look.Name, pet.Level, P.MaxLevel), TextSize = 18, RichText = true }, head)
+		label({ Size = UDim2.new(0, 60, 0, 52), Position = UDim2.new(0, 10, 0, 8), Text = look.Icon, TextSize = 34, TextXAlignment = Enum.TextXAlignment.Center }, head)
+		label({ Size = UDim2.new(1, -90, 0, 24), Position = UDim2.new(0, 72, 0, 10), Text = string.format("%s  <font color='#ffd966'>Lv.%d / %d</font>", look.Name, pet.Level, P.MaxLevel), TextSize = 15, RichText = true }, head)
 		local nextFn
 		for _, fn in ipairs(P.Functions) do
 			if fn.Level > pet.Level then nextFn = fn break end
@@ -108,18 +108,18 @@ local function rebuild()
 			for lv = pet.Level, nextFn.Level - 1 do total += Config.GetPetLevelCost(lv) end
 			reachText = string.format("  (%d lvl · ~%s G)", nextFn.Level - pet.Level, comma(total))
 		end
-		label({ Size = UDim2.new(1, -90, 0, 18), Position = UDim2.new(0, 72, 0, 36), Text = nextFn and string.format("▶ Next feature: Lv.%d %s %s%s", nextFn.Level, nextFn.Icon, nextFn.Name, reachText) or "All features unlocked!", TextSize = 12, TextColor3 = Color3.fromRGB(255, 225, 140) }, head)
+		label({ Size = UDim2.new(1, -90, 0, 18), Position = UDim2.new(0, 72, 0, 36), Text = nextFn and string.format("▶ Next feature: Lv.%d %s %s%s", nextFn.Level, nextFn.Icon, nextFn.Name, reachText) or "All features unlocked!", TextSize = 10, TextColor3 = Color3.fromRGB(255, 225, 140) }, head)
 		if pet.Level < P.MaxLevel then
 			local cost = Config.GetPetLevelCost(pet.Level)
 			button({ Size = UDim2.new(0, 230, 0, 34), Position = UDim2.new(0, 12, 1, -42), BackgroundColor3 = gold >= cost and Color3.fromRGB(60, 130, 80) or Color3.fromRGB(95, 60, 62),
-				Text = string.format("⬆ Level Up  💰 %s G", comma(cost)), TextSize = 15 }, head, function()
+				Text = string.format("⬆ Level Up  💰 %s G", comma(cost)), TextSize = 13 }, head, function()
 				Remotes.Meta:FireServer("PetLevel")
 			end)
 		end
 	end
 
 	-- 2) 기능 목록 (레벨별로 열린다)
-	label({ Size = UDim2.new(1, 0, 0, 22), Text = "  ⚙ Features (more unlock as you level up)", TextSize = 14, TextColor3 = Color3.fromRGB(255, 225, 140), LayoutOrder = (function() order += 1 return order end)() }, scroll)
+	label({ Size = UDim2.new(1, 0, 0, 22), Text = "  ⚙ Features (more unlock as you level up)", TextSize = 12, TextColor3 = Color3.fromRGB(255, 225, 140), LayoutOrder = (function() order += 1 return order end)() }, scroll)
 	local level = pet and pet.Unlocked and pet.Level or 0
 	local nextLevel
 	for _, fn in ipairs(P.Functions) do
@@ -131,17 +131,17 @@ local function rebuild()
 		local r = row(40, open and Color3.fromRGB(34, 52, 44) or (isNext and Color3.fromRGB(58, 50, 28) or Color3.fromRGB(32, 34, 48)))
 		if isNext then
 			make("UIStroke", { Color = Color3.fromRGB(255, 215, 100), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, r)
-			label({ Size = UDim2.new(0, 70, 0, 16), Position = UDim2.new(1, -78, 0, 4), Text = "▶ Next!", TextSize = 12, TextColor3 = Color3.fromRGB(255, 225, 110), TextXAlignment = Enum.TextXAlignment.Right }, r)
+			label({ Size = UDim2.new(0, 70, 0, 16), Position = UDim2.new(1, -78, 0, 4), Text = "▶ Next!", TextSize = 10, TextColor3 = Color3.fromRGB(255, 225, 110), TextXAlignment = Enum.TextXAlignment.Right }, r)
 		elseif open then
-			label({ Size = UDim2.new(0, 70, 0, 16), Position = UDim2.new(1, -78, 0, 4), Text = "✔ Unlocked", TextSize = 12, TextColor3 = Color3.fromRGB(130, 255, 170), TextXAlignment = Enum.TextXAlignment.Right }, r)
+			label({ Size = UDim2.new(0, 70, 0, 16), Position = UDim2.new(1, -78, 0, 4), Text = "✔ Unlocked", TextSize = 10, TextColor3 = Color3.fromRGB(130, 255, 170), TextXAlignment = Enum.TextXAlignment.Right }, r)
 		end
-		label({ Size = UDim2.new(0, 56, 1, 0), Position = UDim2.new(0, 8, 0, 0), Text = string.format("Lv.%d", fn.Level), TextSize = 14, TextColor3 = open and Color3.fromRGB(130, 255, 170) or Color3.fromRGB(150, 155, 185) }, r)
-		label({ Size = UDim2.new(1, -76, 0, 20), Position = UDim2.new(0, 66, 0, 3), Text = string.format("%s %s", fn.Icon, fn.Name), TextSize = 14, TextColor3 = open and Color3.new(1, 1, 1) or Color3.fromRGB(165, 170, 195) }, r)
-		label({ Size = UDim2.new(1, -76, 0, 16), Position = UDim2.new(0, 66, 0, 21), Text = fn.Desc, TextSize = 12, TextColor3 = open and Color3.fromRGB(190, 235, 205) or Color3.fromRGB(130, 135, 165), TextTruncate = Enum.TextTruncate.AtEnd }, r)
+		label({ Size = UDim2.new(0, 56, 1, 0), Position = UDim2.new(0, 8, 0, 0), Text = string.format("Lv.%d", fn.Level), TextSize = 12, TextColor3 = open and Color3.fromRGB(130, 255, 170) or Color3.fromRGB(150, 155, 185) }, r)
+		label({ Size = UDim2.new(1, -76, 0, 20), Position = UDim2.new(0, 66, 0, 3), Text = string.format("%s %s", fn.Icon, fn.Name), TextSize = 12, TextColor3 = open and Color3.new(1, 1, 1) or Color3.fromRGB(165, 170, 195) }, r)
+		label({ Size = UDim2.new(1, -76, 0, 16), Position = UDim2.new(0, 66, 0, 21), Text = fn.Desc, TextSize = 10, TextColor3 = open and Color3.fromRGB(190, 235, 205) or Color3.fromRGB(130, 135, 165), TextTruncate = Enum.TextTruncate.AtEnd }, r)
 	end
 
 	-- 3) 외형 (군주를 쓰러뜨리거나 칭호를 따면 열린다. 능력과는 상관없다)
-	label({ Size = UDim2.new(1, 0, 0, 22), Text = "  🎨 Looks (cosmetic only)", TextSize = 14, TextColor3 = Color3.fromRGB(255, 225, 140), LayoutOrder = (function() order += 1 return order end)() }, scroll)
+	label({ Size = UDim2.new(1, 0, 0, 22), Text = "  🎨 Looks (cosmetic only)", TextSize = 12, TextColor3 = Color3.fromRGB(255, 225, 140), LayoutOrder = (function() order += 1 return order end)() }, scroll)
 	local lookRow = row(200)
 	make("UIGridLayout", { CellSize = UDim2.new(0, 140, 0, 60), CellPadding = UDim2.new(0, 6, 0, 6), SortOrder = Enum.SortOrder.LayoutOrder }, lookRow)
 	make("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingLeft = UDim.new(0, 8) }, lookRow)
@@ -158,13 +158,13 @@ local function rebuild()
 			end
 		end)
 		make("UIStroke", { Color = selected and Color3.fromRGB(255, 215, 100) or Color3.fromRGB(80, 85, 120), Thickness = selected and 2.5 or 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, b)
-		label({ Size = UDim2.new(0, 36, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = unlocked and look.Icon or "🔒", TextSize = 26, TextXAlignment = Enum.TextXAlignment.Center }, b)
-		label({ Size = UDim2.new(1, -48, 0, 22), Position = UDim2.new(0, 44, 0, 8), Text = look.Name, TextSize = 13, TextColor3 = unlocked and Color3.new(1, 1, 1) or Color3.fromRGB(150, 155, 185) }, b)
-		label({ Size = UDim2.new(1, -48, 0, 22), Position = UDim2.new(0, 44, 0, 30), Text = unlocked and (selected and "In use" or "") or look.Hint, TextSize = 12, TextColor3 = unlocked and Color3.fromRGB(255, 225, 110) or Color3.fromRGB(150, 155, 185), TextWrapped = true }, b)
+		label({ Size = UDim2.new(0, 36, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = unlocked and look.Icon or "🔒", TextSize = 22, TextXAlignment = Enum.TextXAlignment.Center }, b)
+		label({ Size = UDim2.new(1, -48, 0, 22), Position = UDim2.new(0, 44, 0, 8), Text = look.Name, TextSize = 11, TextColor3 = unlocked and Color3.new(1, 1, 1) or Color3.fromRGB(150, 155, 185) }, b)
+		label({ Size = UDim2.new(1, -48, 0, 22), Position = UDim2.new(0, 44, 0, 30), Text = unlocked and (selected and "In use" or "") or look.Hint, TextSize = 10, TextColor3 = unlocked and Color3.fromRGB(255, 225, 110) or Color3.fromRGB(150, 155, 185), TextWrapped = true }, b)
 	end
 
 	-- 4) 색
-	label({ Size = UDim2.new(1, 0, 0, 22), Text = "  🖌 Color", TextSize = 14, TextColor3 = Color3.fromRGB(255, 225, 140), LayoutOrder = (function() order += 1 return order end)() }, scroll)
+	label({ Size = UDim2.new(1, 0, 0, 22), Text = "  🖌 Color", TextSize = 12, TextColor3 = Color3.fromRGB(255, 225, 140), LayoutOrder = (function() order += 1 return order end)() }, scroll)
 	local colorRow = row(52)
 	for index, color in ipairs(P.Colors) do
 		local selected = pet and pet.Color == index

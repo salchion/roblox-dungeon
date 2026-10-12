@@ -82,7 +82,7 @@ end
 local function pill(name, text, width, onClick)
 	local button = make("TextButton", {
 		Name = name, Size = UDim2.new(0, width, 0, 40), AnchorPoint = Vector2.new(1, 0), Text = text,
-		Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = Color3.fromRGB(240, 242, 250),
+		Font = Enum.Font.GothamBold, TextSize = 12, TextColor3 = Color3.fromRGB(240, 242, 250),
 		BackgroundColor3 = Color3.fromRGB(34, 40, 70), BackgroundTransparency = 0.05, BorderSizePixel = 0, AutoButtonColor = true, Visible = false,
 	}, ui)
 	make("UICorner", { CornerRadius = UDim.new(0, 8) }, button)
