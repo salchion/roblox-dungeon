@@ -539,6 +539,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 		end
 	end
 	local function fireVolley(volleyOrigin, volleyTip)
+		Dungeon.AssistLeft[player] = 2 -- 이번 사격에서 조준 보정(구 레이캐스트)은 처음 2발까지만 (서버 부담)
 		player:SetAttribute("ShotManual", isManual) -- Dungeon / Field.Shoot 이 읽는다: 약점 보너스는 직접 조준한 탄에만
 		player:SetAttribute("ShotDmgScale", extra > 0 and (pellets - extra + extra * Config.LevelStats.OtherExtraShotValue) / pellets or 1) -- 추가 탄은 위력이 낮다 (합계 피해가 배수로 뛰지 않게)
 		for pellet = 1, pellets do

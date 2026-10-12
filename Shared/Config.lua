@@ -889,7 +889,7 @@ Config.WeaponTypes = {
 		Trait = "Point-blank burst damage · Very short range", Desc = "6 pellets fan out in a spread (fewer hit at range)",
 	},
 	Flamer = {
-		Name = "Flamethrower", Form = "Flamer", DamageMult = 0.14, Cooldown = 0.3, Range = 45, Pellets = 4, Spread = 16,
+		Name = "Flamethrower", Form = "Flamer", DamageMult = 0.25, Cooldown = 0.4, Range = 45, Pellets = 3, Spread = 16,
 		ShotScale = 0.9, SpeedScale = 0.6, BarrelLength = 0.7, BarrelThickness = 1.4,
 		Trait = "Highest firepower · Shortest range", Desc = "Sprays flames in a fan (get up close and burn them)",
 	},
