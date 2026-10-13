@@ -2707,17 +2707,15 @@ local RUSH_TYPES = { "Cave", "Ice", "Fire", "Rift" }
 
 local function spawnRushBoss(run, index)
 	local R = Config.Rift
-	local member = run.Members[1]
 	local typeKey = RUSH_TYPES[math.random(#RUSH_TYPES)]
 	local bossType = D.Types[typeKey].Boss
 	local variant = D.BossVariants[D.BossVariants.Order[math.random(#D.BossVariants.Order)]]
 	local hp = math.floor(R.BossHp * R.HpGrowth ^ (index - 1)) -- 모두에게 같은 체력 (공정한 순위)
-	local hitRatio = math.min(R.DamageCap, R.DamageStart + R.DamageStep * (index - 1)) -- 한 번 맞는 피해 = 내 최대 체력의 몇 %
 	local spots = nearSpawnPoints(run, 40, 90)
 	local name = variant.Prefix .. " " .. bossType.Name
 	spawnBoss(run, {
 		BossType = bossType, Variant = variant, Name = name, MaxHealth = hp,
-		ShotDamage = math.max(1, math.floor((member and Dungeon.GetMaxHealth(member) or 100) * hitRatio)),
+		ShotDamage = math.floor(R.DamageBase * math.min(R.DamageGrowCap, R.DamageGrow ^ (index - 1))), -- 모두에게 같은 고정 피해 (한 발 상한은 DamageGuard 가 최대 체력의 25%로 막는다)
 		Pos = spots and #spots > 0 and spots[math.random(#spots)] or nil,
 	})
 	run.RushSpawned = index
