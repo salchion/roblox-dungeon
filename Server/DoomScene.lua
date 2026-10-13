@@ -1316,9 +1316,11 @@ function DoomScene.BuildPortal(deps)
 	prompt.ActionText = "Enter the Final Lord's realm"
 	prompt.ObjectText = "Portal"
 	prompt.HoldDuration = 1.2
-	prompt.MaxActivationDistance = 16
+	prompt.MaxActivationDistance = 22
 	prompt.RequiresLineOfSight = false
-	prompt.Parent = swirl
+	-- 소용돌이 중심은 땅에서 21 스터드 위라서 거기에 붙이면 땅에 선 사람에게 프롬프트가 안 보인다 -> 바닥 높이의 투명 부품에 붙인다
+	local anchor = part(Vector3.new(6, 6, 6), base + Vector3.new(0, 3, 0), rgb(0, 0, 0), Enum.Material.SmoothPlastic, 1)
+	prompt.Parent = anchor
 	prompt.Triggered:Connect(function(player)
 		if player:GetAttribute("InDoomArena") or player:GetAttribute("Zone") ~= "Field" or not getAliveParts(player) then return end
 		local beaten = player:GetAttribute("AugOpenZ_" .. zoneCount) == true or (player:GetAttribute("ClearedZone") or 0) >= zoneCount
