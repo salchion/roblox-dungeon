@@ -1011,6 +1011,7 @@ local function buildWorld()
 			local x0 = zoneBounds(zone)
 			for _, wallSpec in ipairs(ZONE_LAYOUTS[zone].Baffles) do
 				local offset, gapSize = wallSpec.Offset, wallSpec.Gap
+				if zone == F.ZoneCount and x0 + offset > F.ZoneEnd(zone) - 110 then continue end -- 최후의 군주 포탈 주변은 벽 없이 탁 트이게
 				local height = 110
 				local color = F.ZoneColors[zone]:Lerp(Color3.fromRGB(70, 65, 72), 0.5)
 				-- 이 위치의 땅 높이만큼 벽을 올려 세운다 (언덕 위에 서 있는 벽)
