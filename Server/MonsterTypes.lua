@@ -22,6 +22,7 @@ local Debris = game:GetService("Debris")
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local SoundBank = require(game:GetService("ReplicatedStorage"):WaitForChild("SoundBank"))
 local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Config"))
+local Guard = require(script.Parent:WaitForChild("DamageGuard"))
 
 local M = {}
 
@@ -537,7 +538,7 @@ local function explode(ctx, part, data)
 		-- 벽 너머에서는 폭발 피해를 주지 않는다
 		local dist = (entry.Root.Position - center).Magnitude
 		if dist <= 16 and (not ctx.LineOfSight or ctx.LineOfSight(center, entry.Root.Position)) then
-			entry.Humanoid:TakeDamage(damage)
+			Guard.Take(entry.Humanoid, damage)
 		else
 			nearMiss(ctx, entry, dist, 16, 24) -- 폭발 반경 바로 밖
 		end
@@ -623,7 +624,7 @@ local function meteor(ctx, spot, stats, owner, ownerData, radiusOpt, delayOpt, d
 			local p = entry.Root.Position
 			local gap = Vector3.new(p.X - spot.X, 0, p.Z - spot.Z).Magnitude
 			if gap <= radius then
-				entry.Humanoid:TakeDamage(math.floor(stats.ShotDamage * (damageMult or 1.2)))
+				Guard.Take(entry.Humanoid, math.floor(stats.ShotDamage * (damageMult or 1.2)))
 			else
 				nearMiss(ctx, entry, gap, radius, radius + 8) -- 경고 원 바로 밖으로 빠져나갔다
 			end
@@ -737,7 +738,7 @@ local function hazardStrike(ctx, spot, stats, theme)
 			local p = entry.Root.Position
 			local gap = Vector3.new(p.X - spot.X, 0, p.Z - spot.Z).Magnitude
 			if gap <= radius then
-				entry.Humanoid:TakeDamage(math.max(1, math.floor(stats.ShotDamage * theme.Damage)))
+				Guard.Take(entry.Humanoid, math.max(1, math.floor(stats.ShotDamage * theme.Damage)))
 			else
 				nearMiss(ctx, entry, gap, radius, radius + 8)
 			end
@@ -809,7 +810,7 @@ local function shockwave(ctx, part, stats)
 			local p = entry.Root.Position
 			local flatDist = Vector3.new(p.X - origin.X, 0, p.Z - origin.Z).Magnitude
 			if flatDist <= radius and p.Y - groundOf(ctx, p) < 5 then
-				entry.Humanoid:TakeDamage(math.floor(stats.ShotDamage * 1.1))
+				Guard.Take(entry.Humanoid, math.floor(stats.ShotDamage * 1.1))
 			elseif flatDist <= radius and ctx.NearMiss then
 				ctx.NearMiss(entry.Root) -- 점프로 충격파를 넘었다 (대시 중이면 인정)
 			else
@@ -845,7 +846,7 @@ local function laser(ctx, part, data, stats, aimDir, range)
 		for _, entry in ipairs(ctx.Players()) do
 			local lineGap = distToSegment(entry.Root.Position, origin, target)
 			if lineGap <= 3.5 then
-				entry.Humanoid:TakeDamage(math.floor(stats.ShotDamage * 1.6))
+				Guard.Take(entry.Humanoid, math.floor(stats.ShotDamage * 1.6))
 			else
 				nearMiss(ctx, entry, lineGap, 3.5, 9) -- 빛줄기 바로 옆
 			end
@@ -887,7 +888,7 @@ function M.Update(ctx, part, data, dt, now)
 			for _, entry in ipairs(ctx.Players()) do
 				local gap = (flat(entry.Root.Position - position)).Magnitude
 				if gap <= stats.Size / 2 + 3 then
-					entry.Humanoid:TakeDamage(math.floor(stats.ShotDamage * 1.5))
+					Guard.Take(entry.Humanoid, math.floor(stats.ShotDamage * 1.5))
 					data.ChargeHit = true
 					break
 				elseif not data.ChargeMissed and gap <= stats.Size / 2 + 10 then

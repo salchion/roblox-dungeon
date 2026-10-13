@@ -9,6 +9,7 @@ local CollectionService = game:GetService("CollectionService")
 local TweenService = game:GetService("TweenService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
+local Guard = require(script.Parent:WaitForChild("DamageGuard"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
@@ -749,7 +750,7 @@ local function doomWaveInner(player, zone, center, real)
 				local gap = (Vector3.new(r2.Position.X, center.Y, r2.Position.Z) - at).Magnitude
 				if gap <= radius then
 					local dmg = lethal and (h2.MaxHealth * percent) or math.min(h2.MaxHealth * percent, h2.Health - 1) -- (진짜 결전에서는 죽을 수 있다)
-					if dmg > 0 then h2:TakeDamage(dmg) end
+					if dmg > 0 then Guard.Take(h2, dmg) end
 					notify(player, "💥 Hit by the Lord's attack!")
 				elseif gap <= radius + 16 and isDashing(r2, player) then
 					awardNearMiss(player, r2) -- 경고 원 바로 밖으로 대시로 빠져나갔다
@@ -776,7 +777,7 @@ local function doomWaveInner(player, zone, center, real)
 		local function hurt(percent, text)
 			local r2, h2 = getAliveParts(player)
 			if r2 and h2.Health > 0 then
-				h2:TakeDamage(h2.MaxHealth * percent)
+				Guard.Take(h2, h2.MaxHealth * percent)
 				if text then notify(player, text) end
 			end
 		end

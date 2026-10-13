@@ -1068,6 +1068,15 @@ Config.Dungeon.Types.Rift = {
 	Boss = { Name = "Abyss Gatekeeper", Color = Color3.fromRGB(255, 80, 150), HealthMult = 1, DamageMult = 1, Weights = { Fan = 1, Ring = 1, Spiral = 1, Meteor = 1, Slam = 2, Summon = 2, Lanes = 2, Sweep = 2, SideAdds = 1.5 } },
 }
 
+-- 방어력(피해 감소): 레벨 + 장비 체력에서 생기고, 몬스터 / 보스가 주는 모든 피해에 적용된다 (Server/DamageGuard.lua)
+Config.Defense = {
+	LevelDef = 2,        -- 레벨당 방어력
+	GearDef = 0.08,      -- 장비 최대 체력 1당 방어력
+	K = 500,             -- 피해 감소 = 방어력 / (방어력 + K): 레벨 200 + 장비 약 1000 이면 약 49%
+	MaxReduction = 0.6,  -- 최대 60%
+	HitCap = 0.25,       -- 한 번에 맞는 피해는 최대 체력의 25% 까지
+}
+
 Config.Rift = {
 	Duration = 600,       -- 최대 버티는 시간(초): 이 시간이 지나면 끝난다
 	FreeAttempts = 2,     -- 하루 입장 횟수 (UTC 날짜 기준 초기화)

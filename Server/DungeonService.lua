@@ -9,6 +9,7 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
+local Guard = require(script.Parent:WaitForChild("DamageGuard"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local BL = require(script.Parent:WaitForChild("BalanceLog")) -- Studio 전용 밸런스 로그
 local Effects = require(script.Parent:WaitForChild("Effects"))
@@ -696,7 +697,7 @@ local function bossMeteor(run, part, data)
 				if root then
 					local flat = Vector3.new(root.Position.X - marker.Center.X, 0, root.Position.Z - marker.Center.Z)
 					if flat.Magnitude <= radius then
-						humanoid:TakeDamage(math.floor(data.Stats.ShotDamage * 1.6))
+						Guard.Take(humanoid, math.floor(data.Stats.ShotDamage * 1.6))
 					end
 				end
 			end
@@ -738,7 +739,7 @@ local function bossSlam(run, part, data)
 				local height = root.Position.Y - groundAt(run, root.Position.X, root.Position.Z, root.Position.Y)
 				if math.abs(flatDist - radius) < 3 and height < 4.5 then
 					hit[member] = true
-					humanoid:TakeDamage(math.floor(data.Stats.ShotDamage * 1.3))
+					Guard.Take(humanoid, math.floor(data.Stats.ShotDamage * 1.3))
 					Effects.Burst(root.Position, Color3.fromRGB(255, 90, 60), 25)
 				end
 			end
@@ -814,7 +815,7 @@ local function bossLanes(run, part, data)
 				if along > 0 and along < length + part.Size.X and height < 7 then
 					for k = -3, 3 do
 						if math.abs(lateral - (k * 18 + wave * 9)) < width / 2 then
-							humanoid:TakeDamage(math.floor(data.Stats.ShotDamage * 1.5))
+							Guard.Take(humanoid, math.floor(data.Stats.ShotDamage * 1.5))
 							break
 						end
 					end
@@ -869,7 +870,7 @@ local function bossSweep(run, part, data)
 				local height = root.Position.Y - groundAt(run, root.Position.X, root.Position.Z, root.Position.Y)
 				if along > 0 and along < length and lateral < 3.8 and height < 6 then
 					lastHit[member] = os.clock()
-					humanoid:TakeDamage(math.floor(data.Stats.ShotDamage * 0.9))
+					Guard.Take(humanoid, math.floor(data.Stats.ShotDamage * 0.9))
 					Effects.Burst(root.Position, Color3.fromRGB(255, 200, 120), 15)
 				end
 			end
@@ -942,7 +943,7 @@ local function hurtInRadius(run, center, radius, damage, burstColor)
 	for _, member in ipairs(run.Members) do
 		local root, humanoid = getAliveParts(member)
 		if root and Vector3.new(root.Position.X - center.X, 0, root.Position.Z - center.Z).Magnitude <= radius then
-			humanoid:TakeDamage(damage)
+			Guard.Take(humanoid, damage)
 		end
 	end
 	Effects.Burst(center + Vector3.new(0, 2, 0), burstColor, 36)
@@ -978,7 +979,7 @@ local function bossRush(run, part, data)
 			local root, humanoid = getAliveParts(member)
 			if root and not hit[member] and Vector3.new(root.Position.X - nx, 0, root.Position.Z - nz).Magnitude <= data.Stats.Size / 2 + 3 then
 				hit[member] = true
-				humanoid:TakeDamage(math.floor(data.Stats.ShotDamage * 1.6))
+				Guard.Take(humanoid, math.floor(data.Stats.ShotDamage * 1.6))
 				Effects.Burst(root.Position, Color3.fromRGB(255, 200, 90), 26)
 			end
 		end
@@ -1371,7 +1372,7 @@ local function stepRun(run, dt)
 			if humanoid.Health > 0 then
 				local gap = (root.Position - projectile.Part.Position).Magnitude
 				if gap < projectile.Radius + 2 then
-					humanoid:TakeDamage(projectile.Damage)
+					Guard.Take(humanoid, projectile.Damage)
 					hit = true
 					break
 				elseif gap < projectile.Radius + 14 then -- 아슬아슬하게 스치며 대시: NEAR MISS (필드와 같은 보상 + 심연 도전 점수). 방금(0.6초 안) 대시했어도 인정

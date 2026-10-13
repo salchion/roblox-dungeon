@@ -8,6 +8,7 @@ local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+local Guard = require(script.Parent:WaitForChild("DamageGuard"))
 
 local Effects = {}
 
@@ -205,7 +206,7 @@ function Effects.StepShot(p, dt, now, targets, queue)
 					local rp = entry.Root.Position
 					if Vector3.new(rp.X - ground.X, 0, rp.Z - ground.Z).Magnitude <= aoe and rp.Y - ground.Y < 8 then
 						local who = entry.Player or entry.Member
-						entry.Humanoid:TakeDamage((who and who:GetAttribute("TutorialDoom")) and math.max(1, math.floor(p.Damage * 0.5)) or p.Damage)
+						Guard.Take(entry.Humanoid, (who and who:GetAttribute("TutorialDoom")) and math.max(1, math.floor(p.Damage * 0.5)) or p.Damage)
 					end
 				end
 			end

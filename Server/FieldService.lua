@@ -14,6 +14,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
+local Guard = require(script.Parent:WaitForChild("DamageGuard"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local CollectionService = game:GetService("CollectionService")
 local TweenService = game:GetService("TweenService")
@@ -2136,7 +2137,7 @@ local function bossSlam(part, data)
 			if monsters[part] ~= data then return end
 			Effects.Burst(Vector3.new(spot.X, floorAt(spot.X) + 2, spot.Z), Color3.fromRGB(255, 140, 70), 60)
 			for _, entry in ipairs(playersNear(spot, radius)) do
-				entry.Humanoid:TakeDamage(math.floor(data.Stats.ShotDamage * 1.4))
+				Guard.Take(entry.Humanoid, math.floor(data.Stats.ShotDamage * 1.4))
 			end
 		end)
 	end
@@ -2176,7 +2177,7 @@ local function bossCharge(part, data)
 			for _, entry in ipairs(playersNear(part.Position, radius + 4)) do
 				if not hitOnce[entry.Humanoid] then
 					hitOnce[entry.Humanoid] = true
-					entry.Humanoid:TakeDamage(math.floor(data.Stats.ShotDamage * 1.6))
+					Guard.Take(entry.Humanoid, math.floor(data.Stats.ShotDamage * 1.6))
 					Effects.Burst(entry.Root.Position, Color3.fromRGB(255, 200, 90), 30)
 				end
 			end
@@ -2351,7 +2352,7 @@ local function stepMonsters(dt)
 					local otherRoot, humanoid = getAliveParts(other)
 					if otherRoot and other:GetAttribute("Zone") == "Field" and not isSafe(otherRoot.Position)
 						and (Vector3.new(otherRoot.Position.X, 0, otherRoot.Position.Z) - Vector3.new(at.X, 0, at.Z)).Magnitude < 8 then
-						humanoid:TakeDamage(math.max(3, math.floor(data.Stats.ShotDamage * 0.8)))
+						Guard.Take(humanoid, math.max(3, math.floor(data.Stats.ShotDamage * 0.8)))
 					end
 				end
 			end
@@ -2574,7 +2575,7 @@ local function stepProjectiles(dt)
 				if humanoid.Health > 0 then
 					local gap = (root.Position - projectile.Part.Position).Magnitude
 					if gap < projectile.Radius + 2 then
-						humanoid:TakeDamage(player:GetAttribute("TutorialDoom") and math.max(1, math.floor(projectile.Damage * 0.5)) or projectile.Damage) -- 튜토리얼 중에는 맞는 피해가 절반
+						Guard.Take(humanoid, player:GetAttribute("TutorialDoom") and math.max(1, math.floor(projectile.Damage * 0.5)) or projectile.Damage) -- 튜토리얼 중에는 맞는 피해가 절반
 						hit = true
 						break
 					elseif gap < projectile.Radius + 14 and isDashing(root, player) then -- 닿지는 않았지만 아슬아슬하게 스치며 대시
@@ -3124,7 +3125,7 @@ local function airRaid(player, zone)
 						if otherRoot and other:GetAttribute("Zone") == "Field" and not isSafe(otherRoot.Position) then
 							local flat = Vector3.new(otherRoot.Position.X - at.X, 0, otherRoot.Position.Z - at.Z)
 							if flat.Magnitude <= radius and otherRoot.Position.Y - ground < 8 then
-								humanoid:TakeDamage(damage)
+								Guard.Take(humanoid, damage)
 							end
 						end
 					end
