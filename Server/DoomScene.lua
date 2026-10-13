@@ -111,10 +111,22 @@ local function buildDoomLord(parent)
 	light.Brightness = 3
 	light.Parent = core
 
-	local function place(base, t)
-		for _, entry in ipairs(parts) do
-			entry.Part.CFrame = base * entry.Rel
+	-- 장식 부품은 몸통에 용접한다: 몸통 하나만 움직이면 되므로 매 프레임 50개 넘는 부품의 위치를 클라이언트로 보내지 않는다 (예전엔 이것 때문에 걸을 때 뚝뚝 끊겼다)
+	local isBlade = {}
+	for _, blade in ipairs(orbit) do isBlade[blade] = true end
+	for _, entry in ipairs(parts) do
+		if entry.Part ~= body and not isBlade[entry.Part] then
+			local weld = Instance.new("Weld")
+			weld.Part0, weld.Part1, weld.C0 = body, entry.Part, entry.Rel
+			weld.Parent = entry.Part
+			entry.Part.Anchored = false
+			entry.Part.Massless = true
+			entry.Part.CFrame = body.CFrame * entry.Rel
 		end
+	end
+
+	local function place(base, t)
+		body.CFrame = base
 		for k, blade in ipairs(orbit) do
 			local angle = t * 1.8 + k * math.pi / 2
 			blade.CFrame = base * CFrame.new(math.cos(angle) * 16 * S, 4 * S + math.sin(angle * 2) * 3, math.sin(angle) * 8 * S) * CFrame.Angles(0, -angle, math.rad(20))
