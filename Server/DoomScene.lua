@@ -673,10 +673,22 @@ local function doomWaveInner(player, zone, center, real)
 	end
 	local running, clock = true, 0
 	local diagAt, diagFrames = 0, 0
+	local ownerCheckAt = 0
 	local approach = 0
 	local connection
 	connection = RunService.Heartbeat:Connect(function(dt)
 		clock += dt
+		if clock - ownerCheckAt >= 1 then -- 결투장에서 내 캐릭터의 물리 소유권이 서버로 넘어가 있으면(서버 속도 16 으로 움직여 느리고 끊긴다) 다시 내 것으로 돌려준다
+			ownerCheckAt = clock
+			local r = getAliveParts(player)
+			if r and not r.Anchored then
+				local okOwner, who = pcall(function() return r:GetNetworkOwner() end)
+				if okOwner and who ~= player then
+					local okSet, err = pcall(function() r:SetNetworkOwner(player) end)
+					if not okSet then warn("[군주전] 네트워크 소유권 복구 실패: " .. tostring(err)) end
+				end
+			end
+		end
 		if RunService:IsStudio() then -- 진단 (Studio 전용): 군주전에서 이동이 느리고 끊기는 원인을 찾기 위한 출력. 3초마다 한 줄
 			diagFrames += 1
 			if clock - diagAt >= 3 then
