@@ -1085,29 +1085,28 @@ Config.Rift = {
 	IntervalMin = 8,      -- 점점 짧아져서 이 값에서 멈춘다
 	IntervalStep = 0.7,   -- 보스가 하나 나올 때마다 줄어드는 간격(초)
 	MaxAlive = 10,        -- 동시에 쌓일 수 있는 보스 수 (서버 부담 + 끝이 나게 하는 장치)
-	HpShots = 320,        -- 첫 보스 체력 = 내 평균 한 발 피해^PowerExp x 이 값 (대략 풀가동으로 십몇 초 걸리는 체력)
-	PowerExp = 1.0,       -- 1보다 작으면 전투력이 올라도 보스 체력은 덜 오른다 (센 사람이 점수는 높되 압도하진 않게)
-	HpGrowth = 1.12,      -- 보스가 하나 나올 때마다 체력 x1.1
+	BossHp = 7000000,     -- 첫 보스 체력 (모두 같다: 풀파밍 캐릭터 DPS 약 34만 기준 약 20초). 장비가 강한 사람이 더 빨리 잡고 더 많이 쌓아서 점수가 높다
+	HpGrowth = 1.12,      -- 보스가 하나 나올 때마다 체력 x1.12
 	DamageStart = 0.07,   -- 보스 탄 한 발 피해 = 내 최대 체력의 7%에서 시작
 	DamageStep = 0.012,   -- 보스마다 +1.2%p
 	DamageCap = 0.22,
 	GimmickZone = 5,      -- 쫄병 / 탄막 기믹 강도 (필드 구역 환산)
 	RewardMult = 30,      -- 등급 보상 골드 배율 (8구역을 끝낸 사람 기준)
 	RankShown = 10,       -- 순위표에 보여 주는 인원
-	Tiers = {             -- 쓰러뜨린 보스 수 -> 등급 보상 (순위와 별개로 누구나 받는다)
+	Tiers = {             -- 준 피해 합계 -> 등급 보상 (순위와 별개로 누구나 받는다)
 		{ Min = 0,  Name = "Bronze",   Icon = "🥉", Gold = 200,   Tickets = 0, TimeSkip = 0 },
-		{ Min = 2,  Name = "Silver",   Icon = "🥈", Gold = 600,   Tickets = 0, TimeSkip = 300 },
-		{ Min = 5,  Name = "Gold",     Icon = "🥇", Gold = 1500,  Tickets = 1, TimeSkip = 600 },
-		{ Min = 9,  Name = "Platinum", Icon = "💠", Gold = 3500,  Tickets = 2, TimeSkip = 900 },
-		{ Min = 14, Name = "Diamond",  Icon = "💎", Gold = 8000,  Tickets = 4, TimeSkip = 1800 },
-		{ Min = 20, Name = "Master",   Icon = "👑", Gold = 15000, Tickets = 6, TimeSkip = 3600 },
+		{ Min = 3000000,   Name = "Silver",   Icon = "🥈", Gold = 600,   Tickets = 0, TimeSkip = 300 },
+		{ Min = 15000000,  Name = "Gold",     Icon = "🥇", Gold = 1500,  Tickets = 1, TimeSkip = 600 },
+		{ Min = 50000000,  Name = "Platinum", Icon = "💠", Gold = 3500,  Tickets = 2, TimeSkip = 900 },
+		{ Min = 150000000, Name = "Diamond",  Icon = "💎", Gold = 8000,  Tickets = 4, TimeSkip = 1800 },
+		{ Min = 400000000, Name = "Master",   Icon = "👑", Gold = 15000, Tickets = 6, TimeSkip = 3600 },
 	},
 }
 
-function Config.GetRiftTier(bosses)
+function Config.GetRiftTier(dealt)
 	local tier = Config.Rift.Tiers[1]
 	for _, candidate in ipairs(Config.Rift.Tiers) do
-		if bosses >= candidate.Min then tier = candidate end
+		if dealt >= candidate.Min then tier = candidate end
 	end
 	return tier
 end

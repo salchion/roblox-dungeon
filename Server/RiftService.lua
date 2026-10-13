@@ -129,11 +129,11 @@ end
 local function push(player, openPanel)
 	local state = stateOf(player)
 	if not state then return end
-	local tier = Config.GetRiftTier(state.BestBoss or 0)
+	local tier = Config.GetRiftTier(state.BestDealt or 0)
 	local board = loadBoard()
 	Remotes.Rift:FireClient(player, openPanel and "Open" or "State", {
 		Left = math.max(0, R.FreeAttempts - state.Used), Max = R.FreeAttempts,
-		Best = state.BestScore or 0, BestBoss = state.BestBoss or 0, BestTime = state.BestTime or 0, WeekBest = state.WeekBest or 0,
+		Best = state.BestScore or 0, BestBoss = state.BestBoss or 0, BestDealt = state.BestDealt or 0, BestTime = state.BestTime or 0, WeekBest = state.WeekBest or 0,
 		TierName = tier.Name, TierIcon = tier.Icon,
 		WeekEndsIn = (thisWeek() + 1) * WEEK - os.time(),
 		Board = board.List, BoardOk = board.Ok,
@@ -180,7 +180,7 @@ end
 -- 던전이 끝났을 때(제한 시간 / 전멸) 정산한다. result = { Score, Seconds, Dealt, Bosses }
 local function onFinished(player, result)
 	local state = stateOf(player)
-	local tier = Config.GetRiftTier(result.Bosses)
+	local tier = Config.GetRiftTier(result.Dealt)
 	local gold, tickets, timeSkip = giveReward(player, tier)
 	local newBest, newWeekBest = false, false
 	local best, weekBest = 0, 0
@@ -197,6 +197,9 @@ local function onFinished(player, result)
 			state.WeekBest = result.Score
 			weekBest = result.Score
 		end
+		if result.Dealt > (state.BestDealt or 0) then
+			state.BestDealt = result.Dealt
+		end
 		if result.Bosses > (state.BestBoss or 0) then
 			state.BestBoss = result.Bosses
 			player:SetAttribute("RiftBossBest", result.Bosses)
@@ -209,7 +212,7 @@ local function onFinished(player, result)
 	if newWeekBest then
 		submitScore(player, result.Score)
 	end
-	if result.Bosses >= R.Tiers[4].Min and newWeekBest then
+	if result.Dealt >= R.Tiers[4].Min and newWeekBest then
 		Event.Announce(string.format("📢 %s took down %d bosses in the Boss Rush! (%s)", player.DisplayName, result.Bosses, tier.Name))
 	end
 	Quest.Add(player, "RiftRuns", 1)

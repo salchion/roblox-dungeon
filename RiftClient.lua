@@ -89,10 +89,10 @@ local boardNote = makeLabel({ Size = UDim2.new(1, -20, 0, 20), Position = UDim2.
 -- 등급 보상 (쓰러뜨린 보스 수 기준)
 local tierText = {}
 for _, tier in ipairs(R.Tiers) do
-	table.insert(tierText, string.format("%s %d+", tier.Icon, tier.Min))
+	table.insert(tierText, string.format("%s %s+", tier.Icon, short(tier.Min)))
 end
 makeLabel({ Size = UDim2.new(1, -36, 0, 36), Position = UDim2.new(0, 18, 0, 384), TextSize = 12, RichText = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 11,
-	Text = "Tier rewards by bosses defeated (gold · tickets · time skip):\n" .. table.concat(tierText, "   ") }, panel)
+	Text = "Tier rewards by total damage dealt (gold · tickets · time skip):\n" .. table.concat(tierText, "   ") }, panel)
 local tierRewardLabel = makeLabel({ Size = UDim2.new(1, -36, 0, 22), Position = UDim2.new(0, 18, 0, 424), TextSize = 12, RichText = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 11, Text = "" }, panel)
 
 local startButton = makeButton({
@@ -103,7 +103,7 @@ local startButton = makeButton({
 	panel.Visible = false
 end)
 makeLabel({ Size = UDim2.new(1, -36, 0, 30), Position = UDim2.new(0, 18, 0, 520), TextSize = 11, TextColor3 = Color3.fromRGB(190, 190, 215), ZIndex = 11,
-	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = "💡 Boss HP follows your own damage. Dash through shots for NEAR MISS, and aim at the yellow weak-spot orb (x3 damage)." }, panel)
+	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = "💡 Every player faces the same bosses, so gear and level decide your score. Dash through shots for NEAR MISS, and aim at the yellow weak-spot orb (x3 damage)." }, panel)
 
 local function refresh()
 	if not state then return end
@@ -124,8 +124,8 @@ local function refresh()
 		end
 	end
 	boardNote.Text = state.BoardOk and "" or "Ranking unavailable right now (in Studio, enable API Services)"
-	local mine = Config.GetRiftTier(state.BestBoss)
-	tierRewardLabel.Text = string.format("Your best tier: %s %s  <font color='#aab0d0'>(%d bosses)</font>", mine.Icon, mine.Name, state.BestBoss)
+	local mine = Config.GetRiftTier(state.BestDealt)
+	tierRewardLabel.Text = string.format("Your best tier: %s %s  <font color='#aab0d0'>(%s damage)</font>", mine.Icon, mine.Name, short(state.BestDealt))
 end
 
 Remotes.Rift.OnClientEvent:Connect(function(action, data)

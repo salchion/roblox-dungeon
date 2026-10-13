@@ -2705,21 +2705,13 @@ end
 -- 못 잡으면 쌓이고, 쓰러지거나 제한 시간이 되면 끝. 점수 = 버틴 시간(초) x 준 피해.
 local RUSH_TYPES = { "Cave", "Ice", "Fire", "Rift" }
 
-local function rushBaseDamage(member) -- 한 발 평균 피해 (치명타 포함): 보스 체력을 내 전투력에 맞춘다
-	local total = 0
-	for _ = 1, 10 do
-		total += Dungeon.ComputeDamage(member)
-	end
-	return total / 10
-end
-
-local function spawnRushBoss(run, index, baseDamage)
+local function spawnRushBoss(run, index)
 	local R = Config.Rift
 	local member = run.Members[1]
 	local typeKey = RUSH_TYPES[math.random(#RUSH_TYPES)]
 	local bossType = D.Types[typeKey].Boss
 	local variant = D.BossVariants[D.BossVariants.Order[math.random(#D.BossVariants.Order)]]
-	local hp = math.floor(R.HpShots * baseDamage ^ R.PowerExp * R.HpGrowth ^ (index - 1))
+	local hp = math.floor(R.BossHp * R.HpGrowth ^ (index - 1)) -- 모두에게 같은 체력 (공정한 순위)
 	local hitRatio = math.min(R.DamageCap, R.DamageStart + R.DamageStep * (index - 1)) -- 한 번 맞는 피해 = 내 최대 체력의 몇 %
 	local spots = nearSpawnPoints(run, 40, 90)
 	local name = variant.Prefix .. " " .. bossType.Name
@@ -2743,7 +2735,6 @@ local function riftLoop(run)
 	run.RushStart = startAt
 	run.RiftEndAt = startAt + R.Duration
 	local member = run.Members[1]
-	local baseDamage = member and rushBaseDamage(member) or 1
 	local index = 0
 	local nextAt = startAt + R.FirstBoss
 	run.RushNext = nextAt
@@ -2757,7 +2748,7 @@ local function riftLoop(run)
 			end
 			if alive < R.MaxAlive then -- 너무 쌓이면 서버가 버거우니 한도에서 멈춘다 (쌓인 채로 버티는 것도 실력)
 				index += 1
-				spawnRushBoss(run, index, baseDamage)
+				spawnRushBoss(run, index)
 			end
 			nextAt = now + math.max(R.IntervalMin, R.IntervalStart - R.IntervalStep * math.max(index - 1, 0))
 			run.RushNext = nextAt
