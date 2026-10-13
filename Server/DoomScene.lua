@@ -561,17 +561,19 @@ local function doomWaveInner(player, zone, center, real)
 			flame.Color = rgb(255, 90, 50)
 			flame.Material = Enum.Material.Neon
 			flame.Parent = arena
-			local fire = Instance.new("Fire")
-			fire.Size = 14
-			fire.Heat = 12
-			fire.Color = rgb(255, 120, 50)
-			fire.SecondaryColor = rgb(160, 20, 30)
-			fire.Parent = flame
-			local lamp = Instance.new("PointLight")
-			lamp.Color = rgb(255, 100, 60)
-			lamp.Range = 40
-			lamp.Brightness = 2
-			lamp.Parent = flame
+			if index % 4 == 0 then -- (불꽃 / 조명은 4개에 하나만: 화면이 무거워 걸을 때 끊기던 원인 후보)
+				local fire = Instance.new("Fire")
+				fire.Size = 10
+				fire.Heat = 8
+				fire.Color = rgb(255, 120, 50)
+				fire.SecondaryColor = rgb(160, 20, 30)
+				fire.Parent = flame
+				local lamp = Instance.new("PointLight")
+				lamp.Color = rgb(255, 100, 60)
+				lamp.Range = 40
+				lamp.Brightness = 2
+				lamp.Parent = flame
+			end
 		end
 	end
 	local moon = Instance.new("Part")
@@ -601,6 +603,9 @@ local function doomWaveInner(player, zone, center, real)
 	end
 
 	local model, body, place = buildDoomLord(arena)
+	for _, item in ipairs(arena:GetDescendants()) do -- 그림자 계산이 가장 무겁다: 결투장 장식은 전부 그림자를 끈다
+		if item:IsA("BasePart") then item.CastShadow = false end
+	end
 	local bossPos = center + Vector3.new(0, 34, -48)
 	place(CFrame.lookAt(bossPos, bossPos + Vector3.new(0, 0, 1)), 0)
 
@@ -627,6 +632,41 @@ local function doomWaveInner(player, zone, center, real)
 	notify(player, real and "💀 The Final Lord! This time your attacks count — dodge the warnings and bring him down!" or "💀 You face the Final Lord! Your attacks land, but... you cannot defeat him. Dodge the red warnings on the floor, and try your V ultimate too!")
 	Effects.Burst(bossPos, rgb(255, 70, 60), 100)
 
+	-- 진짜 결전: 화면 위쪽에 군주 체력바를 고정해서 보여 준다 (머리 위 체력바는 높이 떠 있어서 화면 밖으로 나간다)
+	local hudGui, hudFill, hudText
+	local playerGui = real and player:FindFirstChildOfClass("PlayerGui")
+	if playerGui then
+		hudGui = Instance.new("ScreenGui")
+		hudGui.Name = "LordBarHUD"
+		hudGui.ResetOnSpawn = false
+		hudGui.DisplayOrder = 40
+		local frame = Instance.new("Frame")
+		frame.AnchorPoint, frame.Position, frame.Size = Vector2.new(0.5, 0), UDim2.new(0.5, 0, 0, 20), UDim2.new(0.5, 0, 0, 30)
+		frame.BackgroundColor3, frame.BackgroundTransparency, frame.BorderSizePixel = rgb(20, 12, 22), 0.15, 0
+		frame.Parent = hudGui
+		local limit = Instance.new("UISizeConstraint")
+		limit.MaxSize, limit.MinSize = Vector2.new(620, 30), Vector2.new(260, 30)
+		limit.Parent = frame
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(0, 8)
+		corner.Parent = frame
+		local stroke = Instance.new("UIStroke")
+		stroke.Color, stroke.Thickness = rgb(255, 90, 90), 1.5
+		stroke.Parent = frame
+		hudFill = Instance.new("Frame")
+		hudFill.Size, hudFill.BackgroundColor3, hudFill.BorderSizePixel = UDim2.new(1, 0, 1, 0), rgb(220, 50, 60), 0
+		hudFill.Parent = frame
+		local fillCorner = Instance.new("UICorner")
+		fillCorner.CornerRadius = UDim.new(0, 8)
+		fillCorner.Parent = hudFill
+		hudText = Instance.new("TextLabel")
+		hudText.Size, hudText.BackgroundTransparency, hudText.ZIndex = UDim2.new(1, 0, 1, 0), 1, 3
+		hudText.Font, hudText.TextSize, hudText.TextColor3 = Enum.Font.GothamBlack, 15, Color3.new(1, 1, 1)
+		hudText.TextStrokeTransparency = 0.4
+		hudText.Text = "💀 The Final Lord"
+		hudText.Parent = frame
+		hudGui.Parent = playerGui
+	end
 	local alive = function()
 		local r, h = getAliveParts(player)
 		return r ~= nil and h.Health > 0
@@ -636,7 +676,16 @@ local function doomWaveInner(player, zone, center, real)
 	local connection
 	connection = RunService.Heartbeat:Connect(function(dt)
 		clock += dt
-		if not running or not body.Parent then connection:Disconnect() return end
+		if not running or not body.Parent then
+			if hudGui then hudGui:Destroy() end
+			connection:Disconnect()
+			return
+		end
+		if hudFill and data.MaxHealth > 1e6 and data.MaxHealth < 1e9 then -- (진짜 결전에서만: 체력이 정해지면 표시)
+			local ratio = math.clamp(data.Health / data.MaxHealth, 0, 1)
+			hudFill.Size = UDim2.new(ratio, 0, 1, 0)
+			hudText.Text = string.format("💀 The Final Lord  %d%%", math.ceil(ratio * 100))
+		end
 		approach = math.min(1, approach + dt / 16)
 		local target = alive() and select(1, getAliveParts(player)).Position or center
 		local pos = bossPos:Lerp(center + Vector3.new(0, 30, -26), approach) + Vector3.new(0, math.sin(clock * 1.6) * 2.5, 0)
