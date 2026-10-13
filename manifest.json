@@ -482,6 +482,13 @@
       "name": "NearMissService",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "DevToolsClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "DevToolsClient",
+      "class": "LocalScript",
+      "overwrite": true
     }
   ]
 }
