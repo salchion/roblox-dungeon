@@ -672,10 +672,25 @@ local function doomWaveInner(player, zone, center, real)
 		return r ~= nil and h.Health > 0
 	end
 	local running, clock = true, 0
+	local diagAt, diagFrames = 0, 0
 	local approach = 0
 	local connection
 	connection = RunService.Heartbeat:Connect(function(dt)
 		clock += dt
+		if RunService:IsStudio() then -- 진단 (Studio 전용): 군주전에서 이동이 느리고 끊기는 원인을 찾기 위한 출력. 3초마다 한 줄
+			diagFrames += 1
+			if clock - diagAt >= 3 then
+				local r, h = getAliveParts(player)
+				local owner = "?"
+				if r then
+					local okOwner, who = pcall(function() return r:GetNetworkOwner() end)
+					owner = okOwner and (who and who.Name or "SERVER") or "n/a"
+				end
+				print(string.format("[군주전 진단] 서버 FPS %.0f · 부품 %d · 네트워크 소유자 %s · 속도 %.1f · WalkSpeed(서버값) %s · Anchored %s",
+					diagFrames / (clock - diagAt), #arena:GetDescendants(), owner, r and r.AssemblyLinearVelocity.Magnitude or -1, h and tostring(h.WalkSpeed) or "-", r and tostring(r.Anchored) or "-"))
+				diagAt, diagFrames = clock, 0
+			end
+		end
 		if not running or not body.Parent then
 			if hudGui then hudGui:Destroy() end
 			connection:Disconnect()
