@@ -394,11 +394,6 @@ local function spawnMonster(run, level, position)
 		stats.ShotDamage = math.max(1, math.floor(stats.ShotDamage * theme.Damage))
 		stats.Speed *= theme.Speed
 	end
-	if run.DepthScale then -- 심연 깊이: 구역(필드)과 같은 방식으로 체력 / 공격력 / 속도가 확 뛴다
-		stats.MaxHealth = math.floor(stats.MaxHealth * run.DepthScale.Health)
-		stats.ShotDamage = math.max(1, math.floor(stats.ShotDamage * run.DepthScale.Damage))
-		stats.Speed *= run.DepthScale.Speed
-	end
 	if run.PenHealth then -- 랜덤 패널티로 누적된 적 강화
 		stats.MaxHealth = math.floor(stats.MaxHealth * run.PenHealth)
 		stats.ShotDamage = math.floor(stats.ShotDamage * run.PenDamage)
@@ -420,7 +415,7 @@ local function spawnMonster(run, level, position)
 		TypeKey = typeKey,
 		Def = def,
 		Level = level,
-		GZone = run.Tutorial and 1 or (run.DepthScale and math.clamp(run.DepthScale.Depth or 1, 1, 8)) or Config.Gimmick.DungeonZone[run.DiffKey] or 1, -- 탄막 기믹 강도: 난이도 / 심연 깊이를 필드 구역으로 환산
+		GZone = run.Tutorial and 1 or (run.RiftMode and Config.Rift.GimmickZone) or Config.Gimmick.DungeonZone[run.DiffKey] or 1, -- 탄막 기믹 강도: 난이도 / 보스러쉬를 필드 구역으로 환산
 		Phase = math.random() * math.pi * 2,
 		NextAttack = os.clock() + stats.ShotInterval,
 	})
@@ -492,14 +487,18 @@ local function makeWeakOrb(part)
 	return orb
 end
 
-local function spawnBoss(run)
+local function spawnBoss(run, opts)
+	-- opts (보스러쉬 전용): { BossType, Variant, Name, MaxHealth, ShotDamage, Pos } — 보스를 여러 마리 동시에 세울 수 있다
+	opts = opts or {}
 	local boss = Config.Boss
-	local bossType = run.Type.Boss
+	local bossType = opts.BossType or run.Type.Boss
+	local variant = opts.Variant or run.BossVariant
+	local bossName = opts.Name or run.BossName
 	local stats = {
-		Size = boss.Size * run.BossVariant.SizeMult,
-		MaxHealth = math.floor(boss.MaxHealth * D.GetHealthScale(run.PartySize) * bossType.HealthMult * run.Difficulty.HealthMult * run.BossVariant.HealthMult * (run.BossHealthScale or 1)),
-		Speed = boss.Speed * run.BossVariant.SpeedMult,
-		ShotDamage = math.floor(boss.ShotDamage * bossType.DamageMult * run.Difficulty.DamageMult * run.BossVariant.DamageMult),
+		Size = boss.Size * variant.SizeMult,
+		MaxHealth = opts.MaxHealth or math.floor(boss.MaxHealth * D.GetHealthScale(run.PartySize) * bossType.HealthMult * run.Difficulty.HealthMult * variant.HealthMult * (run.BossHealthScale or 1)),
+		Speed = boss.Speed * variant.SpeedMult,
+		ShotDamage = opts.ShotDamage and math.max(1, math.floor(opts.ShotDamage * variant.DamageMult)) or math.floor(boss.ShotDamage * bossType.DamageMult * run.Difficulty.DamageMult * variant.DamageMult),
 		ShotInterval = boss.ShotInterval,
 		ShotSpeed = boss.ShotSpeed,
 		Gold = boss.Gold,
@@ -511,21 +510,24 @@ local function spawnBoss(run)
 	part.Size = Vector3.new(stats.Size, stats.Size, stats.Size)
 	part.Anchored = true
 	part.CanCollide = false
-	part.Color = bossType.Color:Lerp(run.BossVariant.Color, 0.45)
+	part.Color = bossType.Color:Lerp(variant.Color, 0.45)
 	part.Material = Enum.Material.Neon
-	local bossSpot = run.BossPos or (run.Origin + Vector3.new(0, 0, -D.SpawnRadius))
+	local bossSpot = opts.Pos or run.BossPos or (run.Origin + Vector3.new(0, 0, -D.SpawnRadius))
 	part.Position = Vector3.new(bossSpot.X, groundAt(run, bossSpot.X, bossSpot.Z, run.Origin.Y + 10) + stats.Size / 2, bossSpot.Z)
 	part.Parent = run.MonstersFolder
 	local variantKey
 	for _, key in ipairs(D.BossVariants.Order) do
-		if D.BossVariants[key] == run.BossVariant then variantKey = key end
+		if D.BossVariants[key] == variant then variantKey = key end
 	end
-	Effects.DecorateDungeonBoss(part, stats.Size, bossType.Color:Lerp(run.BossVariant.Color, 0.45):Lerp(Color3.fromRGB(255, 190, 90), 0.35), run.TypeKey, variantKey)
+	Effects.DecorateDungeonBoss(part, stats.Size, bossType.Color:Lerp(variant.Color, 0.45):Lerp(Color3.fromRGB(255, 190, 90), 0.35), run.TypeKey, variantKey)
 	CollectionService:AddTag(part, "Monster")
 	CollectionService:AddTag(part, "RadarBoss")
 
-	local data = registerMonster(run, part, stats, run.BossName, 320, {
+	local data = registerMonster(run, part, stats, bossName, 320, {
 		IsBoss = true,
+		BossType = bossType,
+		Variant = variant,
+		BossName = bossName,
 		Enraged = false,
 		NextPattern = os.clock() + 3,
 		Casting = false,
@@ -537,8 +539,10 @@ local function spawnBoss(run)
 	run.BossPart = part
 	sfxAt(run, part.Position, "Boss_Spawn", nil, 1)
 	for _, member in ipairs(run.Members) do
+		if run.WeakTipShown then break end
 		Remotes.Tutorial:FireClient(member, "Prompt", { Key = "🎯", Title = "Aim for the weak spot!", Text = "Aim at the yellow orb circling the boss with your mouse and click it to expose the weak spot: damage taken x3 for 4s! + Deadeye gauge (auto-attacks don't count)", Duration = 7, Top = true })
 	end
+	run.WeakTipShown = true
 end
 
 -- opts (선택): 유도 / 포물선 / 뱀 / 곡선 / 갈라짐 같은 특수 움직임 (Effects.MakeShot 설명 참고). 없으면 직선탄.
@@ -756,7 +760,7 @@ local function bossSummon(run, part, data)
 		spawnMonster(run, level, Vector3.new(x, groundAt(run, x, z, part.Position.Y) + stats.Size / 2, z))
 		Effects.Burst(Vector3.new(x, part.Position.Y, z), Color3.fromRGB(190, 90, 255), 20)
 	end
-	notifyAll(run, "👹 " .. run.BossName .. " summoned minions!")
+	notifyAll(run, "👹 " .. (data.BossName or run.BossName) .. " summoned minions!")
 end
 
 -- 7) 화염 줄기 (디아블로 벨리알식): 보스 앞에 붉은 줄기 여러 개가 예고된 뒤 불길이 치솟는다. 줄기 "사이"로 피하고, 두 번째는 줄기 위치가 어긋난다
@@ -880,7 +884,7 @@ local function bossSideAdds(run, part, data, announce)
 	if not bossAlive(run, part, data) then return end
 	local center = run.ArenaCenter or run.BossPos or part.Position
 	if announce then
-		notifyAll(run, "⚠ " .. run.BossName .. "'s minions are rushing in from both sides!")
+		notifyAll(run, "⚠ " .. (data.BossName or run.BossName) .. "'s minions are rushing in from both sides!")
 	end
 	local level = math.max(1, Config.Boss.MinionLevel + run.LevelBonus + 1)
 	local spots = {}
@@ -1082,10 +1086,10 @@ local BOSS_PATTERNS = { Fan = bossFan, Ring = bossRing, Spiral = bossSpiral, Met
 -- 던전 종류마다 패턴 비중이 다르다 (Config.Dungeon.Types[..].Boss.Weights).
 -- 직전과 같은 패턴은 피하고, 광폭화하면 나선 / 메테오 비중이 커진다.
 local function pickBossPattern(run, data)
-	local weights = run.Type.Boss.Weights
+	local weights = (data.BossType or run.Type.Boss).Weights
 	local entries, total = {}, 0
 	for name, weight in pairs(weights) do
-		weight *= run.BossVariant.Weights[name] or 1
+		weight *= (data.Variant or run.BossVariant).Weights[name] or 1
 		if name ~= data.LastPattern then
 			if data.Enraged and (name == "Spiral" or name == "Meteor") then
 				weight *= 1.7
@@ -1109,7 +1113,7 @@ local function enrageBoss(run, part, data)
 	sfxAt(run, part.Position, "Boss_Enrage", nil, 1)
 	data.BaseColor = Color3.fromRGB(255, 60, 20)
 	part.Color = data.BaseColor
-	notifyAll(run, "⚠ " .. run.BossName .. " is enraged!")
+	notifyAll(run, "⚠ " .. (data.BossName or run.BossName) .. " is enraged!")
 	for _ = 1, Config.Boss.MinionCount do
 		local angle = math.random() * math.pi * 2
 		local position = part.Position + Vector3.new(math.cos(angle) * 20, 0, math.sin(angle) * 20)
@@ -1133,6 +1137,9 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 	if data.ExposedUntil and os.clock() < data.ExposedUntil then -- 약점 노출 중: 보스가 받는 피해 x3
 		amount = math.floor(amount * 3)
 		isCrit = true
+	end
+	if run.Dealt then -- 보스러쉬: 준 피해 합계 (남은 체력을 넘는 만큼은 세지 않는다)
+		run.Dealt[player] = (run.Dealt[player] or 0) + math.min(amount, math.max(data.Health, 0))
 	end
 	data.Health -= amount
 	BL.Dmg(player, amount, isCrit)
@@ -1170,16 +1177,19 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 2, 0), string.format("+%d G", math.floor(data.Stats.Gold * run.GoldMult * Config.Economy.DungeonGoldMult + 0.5)), Color3.fromRGB(255, 220, 90))
 	part:Destroy()
 	Combo.Kill(player)
-	if run.Score then -- 심연 도전 점수: 처치 + 현재 콤보 (최대 60) + 보스
-		local R = Config.Rift
-		run.Score[player] = (run.Score[player] or 0) + R.KillScore + math.min(player:GetAttribute("Combo") or 0, 60) + (data.IsBoss and R.BossScore or 0)
-		player:SetAttribute("RiftScore", math.floor(run.Score[player]))
-	end
 	BL.Kill(player, data.IsBoss and "Boss" or "던전")
-	giveGold(run, data.Stats.Gold)
-	giveXp(run, data.IsBoss and Config.Xp.DungeonBoss or Config.Xp.DungeonPerMonsterLevel * data.Level)
+	if not run.RiftMode then -- 보스러쉬는 끝날 때 등급 보상으로만 정산한다
+		giveGold(run, data.Stats.Gold)
+		giveXp(run, data.IsBoss and Config.Xp.DungeonBoss or Config.Xp.DungeonPerMonsterLevel * data.Level)
+	end
 	Quest.Add(player, "Kills", 1)
-	if data.IsBoss then
+	if data.IsBoss and run.RiftMode then
+		run.Felled[player] = (run.Felled[player] or 0) + 1
+		run.Boss, run.BossPart = nil, nil
+		for otherPart, other in pairs(run.Monsters) do -- 화면 위 보스 체력바는 남아 있는 보스 중 하나를 보여 준다
+			if other.IsBoss then run.Boss, run.BossPart = other, otherPart break end
+		end
+	elseif data.IsBoss then
 		run.BossDead = true
 		run.Boss = nil
 		run.BossPart = nil
@@ -1232,12 +1242,7 @@ end)
 
 local NearMiss = require(script.Parent:WaitForChild("NearMissService"))
 function Dungeon.AwardNearMiss(run, player, root)
-	NearMiss.Award(player, root, function(streak)
-		if run.Score then -- 심연 도전 점수 (필드와 같은 보상 + 점수)
-			run.Score[player] = (run.Score[player] or 0) + Config.Rift.NearMissScore * math.min(streak, 5)
-			player:SetAttribute("RiftScore", math.floor(run.Score[player]))
-		end
-	end)
+	NearMiss.Award(player, root, function() end)
 end
 
 local function stepRun(run, dt)
@@ -2122,6 +2127,12 @@ end
 ------------------------------------------------------------
 -- 상태 전송 (클라이언트 HUD용)
 ------------------------------------------------------------
+-- 보스러쉬 점수 = 버틴 시간(초) x 준 피해
+local function rushScore(run, member)
+	if not run.RushStart then return 0 end
+	return math.floor((run.RushEnd or os.clock()) - run.RushStart) * math.floor(run.Dealt[member] or 0)
+end
+
 local function broadcast(run)
 	local readyCount = 0
 	for _, member in ipairs(run.Members) do
@@ -2147,12 +2158,15 @@ local function broadcast(run)
 		MonsterLimit = run.MonsterLimit,
 		OverrunLeft = run.OverrunLeft and math.ceil(run.OverrunLeft) or nil,
 		MutatorText = run.Mutator and string.format("%s %s — %s", run.Mutator.Icon, run.Mutator.Name, run.Mutator.Desc) or nil,
-		BossName = run.Boss and run.BossName or nil,
+		BossName = run.Boss and (run.Boss.BossName or run.BossName) or nil,
 		BossRatio = run.Boss and math.max(run.Boss.Health, 0) / run.Boss.MaxHealth or nil,
 	}
 	for _, member in ipairs(run.Members) do
 		if run.RiftMode and run.Phase ~= "Ended" then
-			member:SetAttribute("RiftScore", math.floor(run.Score[member] or 0))
+			member:SetAttribute("RiftScore", rushScore(run, member))
+			member:SetAttribute("RiftDealt", math.floor(run.Dealt[member] or 0))
+			member:SetAttribute("RiftBosses", run.Felled[member] or 0)
+			member:SetAttribute("RiftNext", run.RushNext and math.max(0, math.ceil(run.RushNext - os.clock())) or 0)
 			member:SetAttribute("RiftLeft", run.RiftEndAt and math.max(0, math.ceil(run.RiftEndAt - os.clock())) or Config.Rift.Duration)
 		end
 		Remotes.Dungeon:FireClient(member, "State", state)
@@ -2166,6 +2180,8 @@ local function returnToLobby(player)
 	playerRun[player] = nil
 	player:SetAttribute("RiftLeft", 0)
 	player:SetAttribute("RiftScore", 0)
+	player:SetAttribute("RiftDealt", 0)
+	player:SetAttribute("RiftBosses", 0)
 	player:SetAttribute("Zone", "Lobby")
 	resetStats(player)
 	pivotTo(player, lobbySpawn)
@@ -2259,7 +2275,7 @@ end
 
 -- 심연 도전 종료: 점수로 등급을 매기고 (RiftService 가 보상 / 기록) 결과 카드를 보낸다. 시간이 끝나거나 전멸하면 호출된다.
 Dungeon.OnTutorialHandoff = nil -- FieldService 가 채운다: function(player, lootLines, gold) (튜토리얼 던전 클리어 -> 최후의 군주 장면)
-Dungeon.OnRiftFinished = nil -- RiftService 가 채운다: function(player, score) -> { Gold, Tickets, TimeSkip, Tier, Best, NewBest }
+Dungeon.OnRiftFinished = nil -- RiftService 가 채운다: function(player, { Score, Seconds, Dealt, Bosses }) -> { Gold, Tickets, TimeSkip, Tier, Best, NewBest }
 local function riftFinish(run)
 	if run.Phase == "Ended" then return end
 	run.Phase = "Ended"
@@ -2273,14 +2289,18 @@ local function riftFinish(run)
 		projectile.Part:Destroy()
 	end
 	run.Projectiles = {}
+	run.RushEnd = run.RushEnd or os.clock()
 	for _, member in ipairs(run.Members) do
-		local score = math.floor(run.Score[member] or 0)
-		local info = Dungeon.OnRiftFinished and Dungeon.OnRiftFinished(member, score) or {}
+		local seconds = run.RushStart and math.floor(run.RushEnd - run.RushStart) or 0
+		local dealt = math.floor(run.Dealt[member] or 0)
+		local result = { Score = rushScore(run, member), Seconds = seconds, Dealt = dealt, Bosses = run.Felled[member] or 0, Spawned = run.RushSpawned or 0 }
+		local info = Dungeon.OnRiftFinished and Dungeon.OnRiftFinished(member, result) or {}
 		member:SetAttribute("RiftLeft", 0)
 		Remotes.Dungeon:FireClient(member, "Result", {
 			Victory = true, Gold = info.Gold or 0, Tickets = info.Tickets or 0, Loot = {}, Wave = run.Wave, TotalWaves = 0,
 			TypeName = run.Type.Name, DifficultyName = "", ReturnDelay = D.ReturnDelay,
-			Rift = { Score = score, Tier = info.Tier, TierIcon = info.TierIcon, Best = info.Best, NewBest = info.NewBest, TimeSkip = info.TimeSkip or 0, Depth = info.Depth, UnlockedNext = info.UnlockedNext },
+			Rift = { Score = result.Score, Seconds = seconds, Dealt = dealt, Bosses = result.Bosses, Spawned = result.Spawned, Tier = info.Tier, TierIcon = info.TierIcon,
+				Best = info.Best, NewBest = info.NewBest, WeekBest = info.WeekBest, NewWeekBest = info.NewWeekBest, TimeSkip = info.TimeSkip or 0 },
 		})
 	end
 	broadcast(run)
@@ -2680,31 +2700,68 @@ local function surviveLoop(run)
 	finish(run, true)
 end
 
--- 심연 도전: 시간제한 안에 웨이브를 이어서 상대한다 (특성 선택 없음). 점수는 처치 / 콤보 / NEAR MISS / 웨이브 보너스.
+-- 보스러쉬: 일정 간격마다 보스급이 한 마리씩 랜덤으로 나타난다 (간격은 점점 짧아지고 체력 / 공격은 점점 세진다).
+-- 못 잡으면 쌓이고, 쓰러지거나 제한 시간이 되면 끝. 점수 = 버틴 시간(초) x 준 피해.
+local RUSH_TYPES = { "Cave", "Ice", "Fire", "Rift" }
+
+local function rushBaseDamage(member) -- 한 발 평균 피해 (치명타 포함): 보스 체력을 내 전투력에 맞춘다
+	local total = 0
+	for _ = 1, 10 do
+		total += Dungeon.ComputeDamage(member)
+	end
+	return total / 10
+end
+
+local function spawnRushBoss(run, index, baseDamage)
+	local R = Config.Rift
+	local member = run.Members[1]
+	local typeKey = RUSH_TYPES[math.random(#RUSH_TYPES)]
+	local bossType = D.Types[typeKey].Boss
+	local variant = D.BossVariants[D.BossVariants.Order[math.random(#D.BossVariants.Order)]]
+	local hp = math.floor(R.HpShots * baseDamage ^ R.PowerExp * R.HpGrowth ^ (index - 1))
+	local hitRatio = math.min(R.DamageCap, R.DamageStart + R.DamageStep * (index - 1)) -- 한 번 맞는 피해 = 내 최대 체력의 몇 %
+	local spots = nearSpawnPoints(run, 40, 90)
+	local name = variant.Prefix .. " " .. bossType.Name
+	spawnBoss(run, {
+		BossType = bossType, Variant = variant, Name = name, MaxHealth = hp,
+		ShotDamage = math.max(1, math.floor((member and Dungeon.GetMaxHealth(member) or 100) * hitRatio)),
+		Pos = spots and #spots > 0 and spots[math.random(#spots)] or nil,
+	})
+	run.RushSpawned = index
+	notifyAll(run, string.format("👹 Boss #%d: %s appeared!", index, name))
+end
+
 local function riftLoop(run)
+	local R = Config.Rift
 	run.PhaseEnd = os.clock() + D.StartCountdown
-	notifyAll(run, string.format("🌀 Abyss challenge! Defeat as many as you can in %ds and rack up points with close dodges!", Config.Rift.Duration))
+	notifyAll(run, "👹 Boss Rush! Bosses arrive one after another. Deal damage and survive as long as you can!")
 	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
 	run.PhaseEnd = nil
-	run.RiftEndAt = os.clock() + Config.Rift.Duration
-	local wave = 0
+	run.Phase = "Wave" -- (전멸 감시가 Wave / Boss 단계에서만 동작한다)
+	local startAt = os.clock()
+	run.RushStart = startAt
+	run.RiftEndAt = startAt + R.Duration
+	local member = run.Members[1]
+	local baseDamage = member and rushBaseDamage(member) or 1
+	local index = 0
+	local nextAt = startAt + R.FirstBoss
+	run.RushNext = nextAt
 	while not run.Destroyed and run.Phase ~= "Ended" do
-		wave += 1
-		run.Wave = wave
-		run.Phase = "Wave"
-		run.Spawning = true
-		task.spawn(function()
-			spawnWave(run, wave)
-			run.Spawning = false
-		end)
-		local ok = waitFor(run, function() return (run.MonsterCount <= 0 and not run.Spawning) or os.clock() >= run.RiftEndAt end)
-		if not ok then return end
-		if os.clock() >= run.RiftEndAt then break end
-		for _, member in ipairs(run.Members) do
-			run.Score[member] = (run.Score[member] or 0) + Config.Rift.WaveBonus * wave
-			member:SetAttribute("RiftScore", math.floor(run.Score[member]))
+		local now = os.clock()
+		if now >= run.RiftEndAt then break end
+		if now >= nextAt then
+			local alive = 0
+			for _, data in pairs(run.Monsters) do
+				if data.IsBoss then alive += 1 end
+			end
+			if alive < R.MaxAlive then -- 너무 쌓이면 서버가 버거우니 한도에서 멈춘다 (쌓인 채로 버티는 것도 실력)
+				index += 1
+				spawnRushBoss(run, index, baseDamage)
+			end
+			nextAt = now + math.max(R.IntervalMin, R.IntervalStart - R.IntervalStep * math.max(index - 1, 0))
+			run.RushNext = nextAt
 		end
-		notifyAll(run, string.format("✅ Wave %d cleared! Bonus +%d", wave, Config.Rift.WaveBonus * wave))
+		if not waitFor(run, function() return os.clock() >= nextAt or os.clock() >= run.RiftEndAt end) then return end
 	end
 	riftFinish(run)
 end
@@ -2829,7 +2886,8 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 		BossDead = false,
 		Destroyed = false,
 		RiftMode = riftMode == true,
-		Score = riftMode == true and {} or nil,
+		Dealt = riftMode == true and {} or nil, -- 보스러쉬: [player] = 준 피해
+		Felled = riftMode == true and {} or nil, -- [player] = 쓰러뜨린 보스 수
 		Type = dungeonType,
 		TypeKey = typeKey,
 		DiffKey = diffKey,
@@ -2841,9 +2899,7 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 		BossName = dungeonType.Boss.Name,
 		GoldMult = dungeonType.GoldMult * difficulty.GoldMult,
 		LevelBonus = dungeonType.LevelOffset + difficulty.LevelOffset,
-		DepthScale = riftMode == true and Config.GetRiftDepth(riftDepth or 1) or nil, -- 심연 깊이별 난이도
 	}
-	if run.DepthScale then run.LevelBonus += run.DepthScale.LevelBonus end
 	run.BossName = run.BossVariant.Prefix .. " " .. run.BossName -- 보스 변종 (매번 다름)
 	-- 던전 변이: 확률로 한 가지가 붙는다 (위험 + 보상)
 	if math.random() < D.MutatorChance then

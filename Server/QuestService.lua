@@ -22,10 +22,10 @@ local function readLive(player, stat)
 		return player:GetAttribute("MaxZone") or 0
 	elseif stat == "Prestige" then
 		return player:GetAttribute("Prestige") or 0
-	elseif stat == "RiftDepth" then
-		return player:GetAttribute("RiftDepthDone") or 0
-	elseif stat == "RiftBest" then
-		return player:GetAttribute("RiftBest") or 0
+	elseif stat == "RiftTime" then
+		return player:GetAttribute("RiftTimeBest") or 0
+	elseif stat == "RiftBoss" then
+		return player:GetAttribute("RiftBossBest") or 0
 	elseif stat == "Level" then
 		return player:GetAttribute("Level") or 1
 	elseif stat == "Power" then

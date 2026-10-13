@@ -359,10 +359,10 @@ local function pickGoal()
 		table.insert(candidates, { Text = string.format("🎟 %d free entries today · 🗝 %d keys!\nChallenge the dungeon at the north gate", player:GetAttribute("DungeonFree") or 0, (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0)), Ratio = 0.95, Priority = 3 })
 	end
 	if (player:GetAttribute("ClearedZone") or 0) >= Config.Field.ZoneCount - 1 and not player:GetAttribute("HintDone_FieldClear") and not player:GetAttribute("TutorialActive") then
-		table.insert(candidates, { Text = "👑 Defeat the Lord of the final Zone 8!\nConquer the field to unlock the endless Rift", Ratio = 0.95, Priority = 3 })
+		table.insert(candidates, { Text = "👑 Defeat the Lord of the final Zone 8!\nConquer the field to unlock the Boss Rush", Ratio = 0.95, Priority = 3 })
 	end
 	if player:GetAttribute("HintDone_FieldClear") and not player:GetAttribute("TutorialActive") then
-		table.insert(candidates, { Text = string.format("🌀 Field conquered! Now for the Rift\nTake on Rift depth %d at the town portal (deeper = bigger rewards)", player:GetAttribute("RiftUnlocked") or 1), Ratio = 0.98, Priority = 3 })
+		table.insert(candidates, { Text = "👹 Field conquered! Now for the Boss Rush\nEnter at the town portal - 2 runs a day, weekly ranking", Ratio = 0.98, Priority = 3 })
 	end
 	if (player:GetAttribute("Tickets") or 0) >= 1 then
 		table.insert(candidates, { Text = string.format("🎫 %d tickets!\nPull gear at the gacha machine", player:GetAttribute("Tickets")), Ratio = 0.97, Priority = 4 })

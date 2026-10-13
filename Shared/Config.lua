@@ -1056,9 +1056,9 @@ Config.Dungeon.Types = {
 	},
 }
 
--- 심연 도전(점수 도전): 90초 동안 버티며 점수를 쌓는다. 최고 점수가 "소탕" 보상의 한계를 정한다 (방치 + 손맛)
+-- 보스러쉬(옛 심연 도전): 보스급이 일정 간격으로 하나씩 나타난다. 점수 = 버틴 시간 x 준 피해, 주간 전체 순위.
 Config.Dungeon.Types.Rift = {
-	Name = "Abyss Challenge", Desc = "90-second score challenge! Rack up points with kills + combos + close dodges", Waves = 0, Endless = true, TimeLimit = 90, LevelOffset = 4, GoldMult = 1, RecommendedPower = 0,
+	Name = "Boss Rush", Desc = "Bosses arrive one after another! Score = seconds survived x damage dealt", Waves = 0, Endless = true, TimeLimit = 600, LevelOffset = 4, GoldMult = 1, RecommendedPower = 0,
 	MonsterColor = Color3.fromRGB(255, 80, 150),
 	Floor = { Color = Color3.fromRGB(46, 30, 66), Material = Enum.Material.Slate },
 	Wall = { Color = Color3.fromRGB(80, 40, 100), Material = Enum.Material.Slate },
@@ -1069,48 +1069,36 @@ Config.Dungeon.Types.Rift = {
 }
 
 Config.Rift = {
-	Duration = 90,        -- 도전 시간(초)
-	FreeAttempts = 3,     -- 하루 무료 도전(또는 소탕) 횟수 (UTC 날짜 기준 초기화)
-	SweepRate = 0.7,      -- 소탕 보상 = 내 최고 점수 등급 보상의 70%
-	KillScore = 10,       -- 처치 1마리 기본 점수 (+ 현재 콤보, 최대 60)
-	NearMissScore = 60,   -- NEAR MISS(대시로 아슬아슬하게 피하기) 1회
-	WaveBonus = 100,      -- 웨이브 클리어 보너스 x 웨이브 번호
-	BossScore = 200,
-	Tiers = {             -- 점수 등급별 보상 (직접 도전의 보상 = 그 판의 등급 / 소탕 = 최고 점수 등급의 70%)
-		{ Min = 0,    Name = "Bronze",   Icon = "🥉", Gold = 200,   Tickets = 0, TimeSkip = 0 },
-		{ Min = 500,  Name = "Silver",     Icon = "🥈", Gold = 600,   Tickets = 0, TimeSkip = 300 },
-		{ Min = 1200, Name = "Gold",     Icon = "🥇", Gold = 1500,  Tickets = 1, TimeSkip = 600 },
-		{ Min = 2500, Name = "Platinum", Icon = "💠", Gold = 3500,  Tickets = 2, TimeSkip = 900 },
-		{ Min = 5000, Name = "Diamond",   Icon = "💎", Gold = 8000,  Tickets = 4, TimeSkip = 1800 },
-		{ Min = 9000, Name = "Master",   Icon = "👑", Gold = 15000, Tickets = 6, TimeSkip = 3600 },
+	Duration = 600,       -- 최대 버티는 시간(초): 이 시간이 지나면 끝난다
+	FreeAttempts = 2,     -- 하루 입장 횟수 (UTC 날짜 기준 초기화)
+	FirstBoss = 6,        -- 첫 보스가 나오기까지(시작 후 초)
+	IntervalStart = 20,   -- 보스 등장 간격(초): 처음에는 느긋하게
+	IntervalMin = 12,     -- 점점 짧아져서 이 값에서 멈춘다
+	IntervalStep = 0.8,   -- 보스가 하나 나올 때마다 줄어드는 간격(초)
+	MaxAlive = 10,        -- 동시에 쌓일 수 있는 보스 수 (서버 부담 + 끝이 나게 하는 장치)
+	HpShots = 120,        -- 첫 보스 체력 = 내 평균 한 발 피해^PowerExp x 이 값 (대략 풀가동으로 십몇 초 걸리는 체력)
+	PowerExp = 0.9,       -- 1보다 작으면 전투력이 올라도 보스 체력은 덜 오른다 (센 사람이 점수는 높되 압도하진 않게)
+	HpGrowth = 1.1,       -- 보스가 하나 나올 때마다 체력 x1.1
+	DamageStart = 0.07,   -- 보스 탄 한 발 피해 = 내 최대 체력의 7%에서 시작
+	DamageStep = 0.012,   -- 보스마다 +1.2%p
+	DamageCap = 0.22,
+	GimmickZone = 5,      -- 쫄병 / 탄막 기믹 강도 (필드 구역 환산)
+	RewardMult = 30,      -- 등급 보상 골드 배율 (8구역을 끝낸 사람 기준)
+	RankShown = 10,       -- 순위표에 보여 주는 인원
+	Tiers = {             -- 쓰러뜨린 보스 수 -> 등급 보상 (순위와 별개로 누구나 받는다)
+		{ Min = 0,  Name = "Bronze",   Icon = "🥉", Gold = 200,   Tickets = 0, TimeSkip = 0 },
+		{ Min = 2,  Name = "Silver",   Icon = "🥈", Gold = 600,   Tickets = 0, TimeSkip = 300 },
+		{ Min = 5,  Name = "Gold",     Icon = "🥇", Gold = 1500,  Tickets = 1, TimeSkip = 600 },
+		{ Min = 9,  Name = "Platinum", Icon = "💠", Gold = 3500,  Tickets = 2, TimeSkip = 900 },
+		{ Min = 14, Name = "Diamond",  Icon = "💎", Gold = 8000,  Tickets = 4, TimeSkip = 1800 },
+		{ Min = 20, Name = "Master",   Icon = "👑", Gold = 15000, Tickets = 6, TimeSkip = 3600 },
 	},
 }
--- 심연 깊이: 필드(이야기 / 8구역)를 모두 밀고 난 뒤에도 끝없이 이어지는 후반 목표.
---   깊이 d 의 몬스터 = 필드 구역 d 와 같은 난이도(레벨 +3씩 / 체력 / 공격력 배율), 8을 넘으면 계속 가파르게. 보상도 같이 오른다.
---   열리는 깊이 = max(1 + 필드 관문을 연 구역 수, (골드 등급 이상을 기록한 가장 깊은 깊이) + 1) — 필드를 밀면 8까지, 그 뒤는 점수로 열린다.
-Config.Rift.MaxDepth = 60
-Config.Rift.UnlockTier = 3 -- 이 등급(골드) 이상을 기록하면 다음 깊이가 열린다
-function Config.GetRiftDepth(depth)
-	depth = math.clamp(math.floor(depth or 1), 1, Config.Rift.MaxDepth)
-	local D = Config.Field.ZoneDanger
-	local function curve(list, growth)
-		if depth <= #list then return list[depth] end
-		return list[#list] * growth ^ (depth - #list)
-	end
-	return {
-		Depth = depth,
-		LevelBonus = (depth - 1) * 3,
-		Health = curve(D.Health, 1.4),
-		Damage = curve(D.Damage, 1.2),
-		Speed = curve(D.Speed, 1.02),
-		Reward = curve(Config.Field.BossPower, 1.35) / Config.Field.BossPower[1], -- 골드 보상 배율: 그 구역이 권하는 전투력에 비례 (경제 기준표: 수입 / 비용이 공격력에 비례)
-	}
-end
 
-function Config.GetRiftTier(score)
+function Config.GetRiftTier(bosses)
 	local tier = Config.Rift.Tiers[1]
 	for _, candidate in ipairs(Config.Rift.Tiers) do
-		if score >= candidate.Min then tier = candidate end
+		if bosses >= candidate.Min then tier = candidate end
 	end
 	return tier
 end
@@ -1145,7 +1133,7 @@ Config.Quests = {
 		{ Id = "gacha",   Name = "Test Your Luck",       Desc = "Roll for gear %d times",         Stat = "Rolls",         Goal = 2,   Reward = { Gold = 300 } },
 		{ Id = "goblin",  Name = "Golden Hunt",     Desc = "Defeat %d Golden Goblin(s)",       Stat = "GoblinKills",   Goal = 1,   Reward = { Gold = 800, Tickets = 1 } },
 		{ Id = "skills",  Name = "Skill Practice",     Desc = "Use skills %d times",          Stat = "SkillUses",     Goal = 20,  Reward = { Gold = 400 } },
-		{ Id = "rift",    Name = "Abyss Challenge",     Desc = "Do the Abyss Challenge (sweeps included) %d times", Stat = "RiftRuns",      Goal = 2,   Reward = { Gold = 700, TimeSkip = 600 } },
+		{ Id = "rift",    Name = "Boss Rush",     Desc = "Enter the Boss Rush %d times", Stat = "RiftRuns",      Goal = 2,   Reward = { Gold = 700, TimeSkip = 600 } },
 		-- 첫날 전용 (처음 접속한 날만 나온다): 스탯 / 펫이 있다는 걸 알려 주는 퀘스트
 		{ Id = "statpts", Name = "Allocate Stats",     Desc = "Spend %d stat points (T key / Stats button)", Stat = "StatPoints", Goal = 3, Reward = { Gold = 300 }, FirstDay = true },
 		{ Id = "petpeek", Name = "Meet Your Pet",       Desc = "Open the pet window (P key / Growth > Pet)",       Stat = "PetPeek",    Goal = 1, Reward = { Gold = 300, Tickets = 1 }, FirstDay = true },
@@ -1163,10 +1151,10 @@ Config.Achievements = {
 	{ Id = "goblin1",    Name = "Golden Hunter",     Desc = "Defeat %d Golden Goblin(s)",     Stat = "GoblinKills",   Goal = 1,     Reward = { Gold = 1000 },              Title = "Lucky Hunter" },
 	{ Id = "goblin20",   Name = "Golden Thief",       Desc = "Defeat %d Golden Goblin(s)",     Stat = "GoblinKills",   Goal = 20,    Reward = { Tickets = 5 },              Title = "Golden Thief" },
 	{ Id = "skill200",   Name = "Skill Master",     Desc = "Use skills %d times",              Stat = "SkillUses",     Goal = 200,   Reward = { Tickets = 3 },              Title = "Skill Master" },
-	{ Id = "rift2500",   Name = "Abyss Challenger",   Desc = "Score %d in the Abyss Challenge",         Stat = "RiftBest",      Goal = 2500,  Reward = { Tickets = 4 },              Title = "Abyss Challenger" },
-	{ Id = "rift9000",   Name = "Limit Breaker",     Desc = "Score %d in the Abyss Challenge",         Stat = "RiftBest",      Goal = 9000,  Reward = { Tickets = 12 },             Title = "Limit Breaker" },
-	{ Id = "riftdepth5",  Name = "Abyss Explorer",     Desc = "Reach Abyss depth %d",           Stat = "RiftDepth",     Goal = 5,     Reward = { Tickets = 3 },              Title = "Abyss Explorer" },
-	{ Id = "riftdepth15", Name = "Abyss Pioneer",     Desc = "Reach Abyss depth %d",           Stat = "RiftDepth",     Goal = 15,    Reward = { Tickets = 10 },             Title = "Abyss Pioneer" },
+	{ Id = "rift2500",   Name = "Boss Hunter",   Desc = "Defeat %d bosses in one Boss Rush run",         Stat = "RiftBoss",      Goal = 5,  Reward = { Tickets = 4 },              Title = "Boss Hunter" },
+	{ Id = "rift9000",   Name = "Limit Breaker",     Desc = "Defeat %d bosses in one Boss Rush run",         Stat = "RiftBoss",      Goal = 15,  Reward = { Tickets = 12 },             Title = "Limit Breaker" },
+	{ Id = "riftdepth5",  Name = "Survivor",     Desc = "Survive %d seconds in the Boss Rush",           Stat = "RiftTime",     Goal = 300,     Reward = { Tickets = 3 },              Title = "Survivor" },
+	{ Id = "riftdepth15", Name = "Unbreakable",     Desc = "Survive %d seconds in the Boss Rush",           Stat = "RiftTime",     Goal = 600,    Reward = { Tickets = 10 },             Title = "Unbreakable" },
 	{ Id = "prestige1",  Name = "The Reborn",   Desc = "Rebirth x%d",                    Stat = "Prestige",      Goal = 1,     Reward = { Tickets = 5 },              Title = "Reborn" },
 	{ Id = "prestige5",  Name = "Samsara Master",     Desc = "Rebirth x%d",                    Stat = "Prestige",      Goal = 5,     Reward = { Tickets = 15 },             Title = "Samsara Master" },
 	{ Id = "boss10",     Name = "Boss Hunter",       Desc = "Defeat %d boss(es)",            Stat = "BossKills",     Goal = 10,    Reward = { Tickets = 5 },              Title = "Boss Hunter" },

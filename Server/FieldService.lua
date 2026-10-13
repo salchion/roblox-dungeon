@@ -1424,7 +1424,7 @@ end
 local function gateProgress(player, data)
 	if data.Kind == "Boss" and data.Zone == F.ZoneCount and not Journey.IsDone(player, "FieldClear") then
 		Journey.Mark(player, "FieldClear") -- 마지막 구역의 군주: 필드(이야기) 정복 -> 심연이 열린다
-		notify(player, "🏆 Field conquered! You defeated the final Lord — the Endless Abyss opened at the town portal!")
+		notify(player, "🏆 Field conquered! You defeated the final Lord — the Boss Rush opened at the town portal!")
 	end
 	local cleared = player:GetAttribute("ClearedZone") or 0
 	local frontier = cleared + 1

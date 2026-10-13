@@ -365,10 +365,10 @@ function Lobby.Build()
 			Transparency = 0.88, CanCollide = false, CanQuery = false }, folder)
 		addLight(beam, 60, 1.2, pink)
 		local pedestal = makePart({ Name = "RiftPedestal", Size = Vector3.new(4, 3, 4), Position = rift + Vector3.new(-9, 1.5, 0), Color = Color3.fromRGB(60, 40, 90), Material = Enum.Material.Slate }, folder)
-		makeLabel(pedestal, "🌀 Abyss Challenge", Color3.fromRGB(255, 180, 230), 6, 300, 56, 50)
+		makeLabel(pedestal, "👹 Boss Rush", Color3.fromRGB(255, 180, 230), 6, 300, 56, 50)
 		riftPrompt = Instance.new("ProximityPrompt")
-		riftPrompt.ActionText = "Challenge / Sweep"
-		riftPrompt.ObjectText = "🌀 Abyss Challenge"
+		riftPrompt.ActionText = "Enter / Ranking"
+		riftPrompt.ObjectText = "👹 Boss Rush"
 		riftPrompt.HoldDuration = 0
 		riftPrompt.MaxActivationDistance = 16
 		riftPrompt.RequiresLineOfSight = false

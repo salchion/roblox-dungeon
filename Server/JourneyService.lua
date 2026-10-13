@@ -40,7 +40,7 @@ end
 -- 심연은 필드 8구역을 끝까지 밀고(마지막 구역의 군주를 쓰러뜨리고) 나면 열린다. 이야기(필드)가 끝난 뒤의 끝없는 후반 콘텐츠.
 -- (이미 심연 기록이 있는 사람은 그대로 열려 있다)
 function Journey.RiftOpen(player)
-	return Journey.IsDone(player, "FieldClear")
+	return Journey.IsDone(player, "FieldClear") or (player:GetAttribute("ClearedZone") or 0) >= Config.Field.ZoneCount
 end
 
 local function prompt(player, key, title, text, duration)
@@ -76,8 +76,8 @@ local function townBeat(player, now)
 	if Journey.RiftOpen(player) and not Journey.IsDone(player, "RiftOpen") then
 		Journey.Mark(player, "RiftOpen")
 		lastBeat[player] = now
-		prompt(player, "🌀", "Field conquered! The Rift is open!", "Take on the endless Rift at the purple portal in town. 3 free runs a day - the deeper you go, the bigger the rewards, and your record becomes your sweep reward.")
-		beacon(player, positions.Rift, "Rift Portal")
+		prompt(player, "👹", "Field conquered! Boss Rush is open!", "Challenge the Boss Rush at the purple portal in town. 2 runs a day - score = seconds survived x damage dealt, ranked weekly worldwide!")
+		beacon(player, positions.Rift, "Boss Rush")
 		return
 	end
 

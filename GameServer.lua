@@ -80,8 +80,8 @@ Npc.Init(lobby.DummyStart.Y, { -- 시설마다 NPC 가 서서 말을 건다 (허
 		Lines = { "The field is dangerous. Defeat the lord and the next zone opens.", "Try dodging shots narrowly with the Q dash!", "Head to the gate when you're ready!" } },
 	{ Name = "Belle", Title = "🗝 Dungeon Guide", Position = promptPosition(lobby.GatePrompt), Shirt = Color3.fromRGB(70, 110, 100), Pants = Color3.fromRGB(46, 62, 60), Hat = "hood", Accent = Color3.fromRGB(60, 96, 90), Prop = "lantern",
 		Lines = { "Dungeons have free daily entries.", "Every dungeon has different monsters and bosses!", "Field lords drop the keys." } },
-	{ Name = "Mira", Title = "🌀 Abyss Keeper", Position = promptPosition(lobby.RiftPrompt), Shirt = Color3.fromRGB(150, 60, 120), Pants = Color3.fromRGB(70, 36, 66), Hat = "hood", Accent = Color3.fromRGB(190, 70, 150), Prop = "staff",
-		Lines = { "Only those who conquer the field may enter the Abyss.", "The deeper you go, the bigger the rewards.", "Your record is your sweep reward." } },
+	{ Name = "Mira", Title = "👹 Boss Rush Keeper", Position = promptPosition(lobby.RiftPrompt), Shirt = Color3.fromRGB(150, 60, 120), Pants = Color3.fromRGB(70, 36, 66), Hat = "hood", Accent = Color3.fromRGB(190, 70, 150), Prop = "staff",
+		Lines = { "Only those who conquer the field may enter the Boss Rush.", "Bosses keep coming. Survive longer, hit harder.", "Your score is seconds survived x damage dealt - the weekly ranking resets every week." } },
 })
 Rank.Init(lobby.RankBoardCFrame)
 Showcase.Init(lobby.RankBoardCFrame) -- 랭킹판 앞 명예의 전당 (최강 3명)

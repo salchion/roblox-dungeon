@@ -72,7 +72,7 @@ function Advice.GrowthGuide(player)
 			{ Icon = "🎰", Name = "Gacha", Desc = "New gear with tickets", Status = string.format("Tickets %d", tickets) },
 			{ Icon = "🔨", Name = "Upgrade · Evolve", Desc = "Power up your weapon with gold", Status = string.format("Gold %d G", gold) },
 			{ Icon = "🏋", Name = "Training", Desc = "Permanent growth, even while away", Status = Growth.IdleSlots(player) > 0 and string.format("%d empty slot(s)!", Growth.IdleSlots(player)) or "In progress" },
-			{ Icon = "🌀", Name = "Rift Challenge", Desc = "Beat your record · score rewards", Status = "Town portal" },
+			{ Icon = "🌀", Name = "Boss Rush", Desc = "Weekly ranking · tier rewards", Status = "Town portal" },
 		},
 	})
 end

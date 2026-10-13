@@ -1,12 +1,14 @@
 -- RiftService (ServerScriptService > Modules 안의 ModuleScript, 이름: RiftService)
--- 심연 도전(점수 도전) + 소탕 + 하루 도전 횟수.
---   * 직접 도전: 90초 동안 버티며 점수를 쌓는다 (처치 + 콤보 + NEAR MISS + 웨이브 보너스). 점수 등급에 따라 보상.
---   * 소탕: 도전을 한 번이라도 했으면 버튼 한 번으로 "내 최고 점수 등급 보상의 70%" 를 받는다 (방치형).
---     -> 손맛으로 최고 점수를 올리면 소탕 보상의 한계도 같이 올라간다.
---   * 하루 무료 3회(도전 / 소탕 공유, UTC 날짜 기준 초기화). 기록은 MetaService 의 Rift 에 같이 저장된다.
--- 던전 진행 자체는 DungeonService(Dungeon.Start(..., true))가 맡고, 끝날 때 Dungeon.OnRiftFinished 로 정산한다.
+-- 보스러쉬(옛 심연 도전): 하루 입장 횟수 + 점수 정산 + 주간 전체 순위.
+--   * 보스급이 일정 간격으로 하나씩 나타난다. 점수 = 버틴 시간(초) x 준 피해. 등급(쓰러뜨린 보스 수)에 따라 보상.
+--   * 하루 입장 2회 (UTC 날짜 기준 초기화). 기록은 MetaService 의 Rift 표에 같이 저장된다.
+--   * 순위: OrderedDataStore 에 "주 번호"별 이름으로 저장 -> 매주 자동으로 새 순위표 (주 번호 = os.time() // 604800, 목요일 00:00 UTC = 한국 시간 목요일 09:00 에 바뀐다).
+--     DataStore 호출은 모두 pcall (Studio 에서 API 가 꺼져 있어도 게임은 돌아간다). 순위표는 서버에서 60초 캐시.
+-- 진행 자체는 DungeonService(Dungeon.Start(..., true))가 맡고, 끝날 때 Dungeon.OnRiftFinished 로 정산한다.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local DataStoreService = game:GetService("DataStoreService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
@@ -18,6 +20,10 @@ local Event = require(script.Parent:WaitForChild("EventService"))
 local Journey = require(script.Parent:WaitForChild("JourneyService"))
 
 local R = Config.Rift
+local WEEK = 604800
+local BOARD_NAME = "BossRushWeekly_v1_"
+local BOARD_REFRESH = 60 -- 순위표 캐시 시간(초)
+local SCORE_MAX = 9e15 -- OrderedDataStore 는 정수만: 정밀도를 지킬 수 있는 한계
 
 local Rift = {}
 
@@ -29,64 +35,131 @@ local function today()
 	return math.floor(os.time() / 86400)
 end
 
--- 오늘 기준으로 정리된 내 기록 (날짜가 바뀌면 사용 횟수 초기화)
+local function thisWeek()
+	return math.floor(os.time() / WEEK)
+end
+
+-- 오늘 / 이번 주 기준으로 정리된 내 기록 (날짜가 바뀌면 사용 횟수, 주가 바뀌면 주간 최고 초기화)
 local function stateOf(player)
 	local state = Meta.GetRift(player)
-	if state and state.Day ~= today() then
+	if not state then return nil end
+	if state.Day ~= today() then
 		state.Day = today()
 		state.Used = 0
+	end
+	if state.Week ~= thisWeek() then
+		state.Week = thisWeek()
+		state.WeekBest = 0
 	end
 	return state
 end
 
--- 열려 있는 가장 깊은 심연 깊이: 필드 관문을 연 구역 수 + 1 (최대 8) 또는 골드 등급 이상을 기록한 깊이 + 1 (그 뒤는 점수로 끝없이)
-local function unlockedDepth(player, state)
-	return math.clamp(math.max(1 + (player:GetAttribute("ClearedZone") or 0), (state.DepthDone or 0) + 1), 1, R.MaxDepth)
+------------------------------------------------------------
+-- 주간 순위표
+------------------------------------------------------------
+local boardCache = { Week = 0, At = -1e9, List = {}, Ok = false }
+local nameCache = {}
+
+local function boardStore(week)
+	local ok, store = pcall(function() return DataStoreService:GetOrderedDataStore(BOARD_NAME .. week) end)
+	return ok and store or nil
 end
 
-local function selectedDepth(player, state)
-	return math.clamp(state.Depth or 1, 1, unlockedDepth(player, state))
+local function nameOf(userId)
+	if nameCache[userId] then return nameCache[userId] end
+	local online = Players:GetPlayerByUserId(userId)
+	if online then
+		nameCache[userId] = online.DisplayName
+		return nameCache[userId]
+	end
+	local ok, name = pcall(function() return Players:GetNameFromUserIdAsync(userId) end)
+	nameCache[userId] = ok and name or ("Player" .. userId)
+	return nameCache[userId]
 end
 
-local activeDepth = setmetatable({}, { __mode = "k" }) -- [player] = 지금 도전 중인 깊이
+local function loadBoard()
+	local week = thisWeek()
+	if boardCache.Week == week and os.clock() - boardCache.At < BOARD_REFRESH then
+		return boardCache
+	end
+	boardCache.Week, boardCache.At = week, os.clock() -- (실패해도 60초 동안은 다시 부르지 않는다)
+	local store = boardStore(week)
+	local list, okAll = {}, false
+	if store then
+		local ok, pages = pcall(function() return store:GetSortedAsync(false, R.RankShown) end)
+		if ok and pages then
+			local okPage, page = pcall(function() return pages:GetCurrentPage() end)
+			if okPage and page then
+				okAll = true
+				for rank, entry in ipairs(page) do
+					local userId = tonumber(entry.key)
+					if userId then
+						table.insert(list, { Rank = rank, UserId = userId, Name = nameOf(userId), Score = entry.value })
+					end
+				end
+			end
+		end
+	end
+	boardCache.List, boardCache.Ok = list, okAll
+	return boardCache
+end
 
+local function submitScore(player, score)
+	if score <= 0 then return end
+	local value = math.floor(math.min(score, SCORE_MAX))
+	task.spawn(function()
+		local store = boardStore(thisWeek())
+		if not store then return end
+		local ok, err = pcall(function()
+			store:UpdateAsync(tostring(player.UserId), function(old)
+				if old and old >= value then return nil end -- 더 낮으면 그대로 둔다
+				return value
+			end)
+		end)
+		if not ok then
+			warn("[BossRush] 순위 저장 실패 (Studio 면 Game Settings > Security > Enable Studio Access to API Services 확인): " .. tostring(err))
+		end
+		boardCache.At = -1e9 -- 다음 요청 때 순위표를 새로 읽는다
+	end)
+end
+
+------------------------------------------------------------
+-- 패널
+------------------------------------------------------------
 local function push(player, openPanel)
 	local state = stateOf(player)
 	if not state then return end
-	local depth = selectedDepth(player, state)
-	local best = state.Bests and state.Bests[depth] or 0
-	local tier = Config.GetRiftTier(best)
-	player:SetAttribute("RiftUnlocked", unlockedDepth(player, state)) -- "다음 목표" 패널이 읽는다
-	player:SetAttribute("RiftDepthDone", state.DepthDone or 0) -- 업적("심연 깊이 N 돌파")이 읽는다
+	local tier = Config.GetRiftTier(state.BestBoss or 0)
+	local board = loadBoard()
 	Remotes.Rift:FireClient(player, openPanel and "Open" or "State", {
-		Best = best, Left = math.max(0, R.FreeAttempts - state.Used), Max = R.FreeAttempts,
-		TierName = best > 0 and tier.Name or "No record", TierIcon = best > 0 and tier.Icon or "❔",
-		Depth = depth, Unlocked = unlockedDepth(player, state), MaxDepth = R.MaxDepth, Reward = Config.GetRiftDepth(depth).Reward,
-		DepthDone = state.DepthDone or 0, ClearedZone = player:GetAttribute("ClearedZone") or 0,
+		Left = math.max(0, R.FreeAttempts - state.Used), Max = R.FreeAttempts,
+		Best = state.BestScore or 0, BestBoss = state.BestBoss or 0, BestTime = state.BestTime or 0, WeekBest = state.WeekBest or 0,
+		TierName = tier.Name, TierIcon = tier.Icon,
+		WeekEndsIn = (thisWeek() + 1) * WEEK - os.time(),
+		Board = board.List, BoardOk = board.Ok,
 	})
 end
 
-local function giveReward(player, tier, rate, depthMult)
-	local gold = math.floor(tier.Gold * rate * (depthMult or 1))
-	local tickets = math.floor(tier.Tickets * rate)
-	local timeSkip = math.floor(tier.TimeSkip * rate)
+local function giveReward(player, tier)
+	local mult = R.RewardMult
+	local gold = math.floor(tier.Gold * mult)
 	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
-	if tickets > 0 then
-		player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + tickets)
+	if tier.Tickets > 0 then
+		player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + tier.Tickets)
 	end
-	if timeSkip > 0 then
-		Growth.AddTimeSkip(player, timeSkip)
+	if tier.TimeSkip > 0 then
+		Growth.AddTimeSkip(player, tier.TimeSkip)
 	end
-	return gold, tickets, timeSkip
+	return gold, tier.Tickets, tier.TimeSkip
 end
 
 local function canPlay(player)
 	if player:GetAttribute("Zone") ~= "Lobby" then return false, "This can only be done in town." end
 	if player:GetAttribute("TutorialActive") then return false, "🔒 Finish all tutorial missions to unlock!" end
-	if not Journey.RiftOpen(player) then return false, "🔒 Defeat the Zone 8 Lord in the field to unlock the Rift!" end
+	if not Journey.RiftOpen(player) then return false, "🔒 Defeat the Zone 8 Lord in the field to unlock the Boss Rush!" end
 	local state = stateOf(player)
 	if not state then return false, "Please try again in a moment." end
-	if state.Used >= R.FreeAttempts then return false, "You've used all of today's attempts. Come back tomorrow!" end
+	if state.Used >= R.FreeAttempts then return false, "You've used all of today's runs. Come back tomorrow!" end
 	return true, nil, state
 end
 
@@ -97,81 +170,51 @@ function Rift.Start(player)
 		return
 	end
 	state.Used += 1
-	local depth = selectedDepth(player, state)
-	activeDepth[player] = depth
-	Dungeon.Start(player, "Rift", "Normal", true, depth)
+	Dungeon.Start(player, "Rift", "Normal", true)
 	if player:GetAttribute("Zone") ~= "Dungeon" then
 		state.Used -= 1 -- 시작하지 못했으면 횟수를 돌려준다 (던전이 가득 참 등)
 	end
 	push(player, false)
 end
 
-function Rift.Sweep(player)
-	local ok, message, state = canPlay(player)
-	if not ok then
-		notify(player, message)
-		return
-	end
-	local depth = selectedDepth(player, state)
-	local depthBest = state.Bests and state.Bests[depth] or 0
-	if depthBest <= 0 then
-		notify(player, "Challenge this depth once first to set a record! (Sweep is based on your best score at that depth)")
-		return
-	end
-	state.Used += 1
-	local tier = Config.GetRiftTier(depthBest)
-	local gold, tickets, timeSkip = giveReward(player, tier, R.SweepRate, Config.GetRiftDepth(depth).Reward)
-	Quest.Add(player, "RiftRuns", 1)
-	notify(player, string.format("⚡ Sweep complete! (%s %s) Gold +%d%s%s", tier.Icon, tier.Name, gold,
-		tickets > 0 and (" · Tickets +" .. tickets) or "", timeSkip > 0 and string.format(" · Time Skip %dm", timeSkip // 60) or ""))
-	push(player, false)
-end
-
--- 던전이 끝났을 때(시간 종료 / 전멸) 점수를 정산한다
-local function tierIndex(score)
-	local index = 1
-	for i, candidate in ipairs(R.Tiers) do
-		if score >= candidate.Min then index = i end
-	end
-	return index
-end
-
-local function onFinished(player, score)
+-- 던전이 끝났을 때(제한 시간 / 전멸) 정산한다. result = { Score, Seconds, Dealt, Bosses }
+local function onFinished(player, result)
 	local state = stateOf(player)
-	local depth = activeDepth[player] or 1
-	activeDepth[player] = nil
-	local tier = Config.GetRiftTier(score)
-	local gold, tickets, timeSkip = giveReward(player, tier, 1, Config.GetRiftDepth(depth).Reward)
-	local newBest = false
-	local best = 0
-	local unlockedNext = nil
+	local tier = Config.GetRiftTier(result.Bosses)
+	local gold, tickets, timeSkip = giveReward(player, tier)
+	local newBest, newWeekBest = false, false
+	local best, weekBest = 0, 0
 	if state then
-		state.Bests = state.Bests or {}
-		best = state.Bests[depth] or 0
-		if score > best then
+		best, weekBest = state.BestScore or 0, state.WeekBest or 0
+		if result.Score > best then
 			newBest = true
-			state.Bests[depth] = score
-			best = score
+			state.BestScore = result.Score
+			best = result.Score
+			player:SetAttribute("RiftBest", best)
 		end
-		if score > state.Best then
-			state.Best = score
-			player:SetAttribute("RiftBest", score)
+		if result.Score > weekBest then
+			newWeekBest = true
+			state.WeekBest = result.Score
+			weekBest = result.Score
 		end
-		if newBest and score >= R.Tiers[4].Min then
-			Event.Announce(string.format("📢 %s cleared Rift depth %d with %d pts (%s)!", player.DisplayName, depth, score, tier.Name))
+		if result.Bosses > (state.BestBoss or 0) then
+			state.BestBoss = result.Bosses
+			player:SetAttribute("RiftBossBest", result.Bosses)
 		end
-		-- 골드 등급 이상을 기록하면 다음 깊이가 열린다
-		if tierIndex(score) >= R.UnlockTier and depth > (state.DepthDone or 0) then
-			state.DepthDone = depth
-			if depth + 1 <= R.MaxDepth and depth + 1 > 1 + (player:GetAttribute("ClearedZone") or 0) then
-				unlockedNext = depth + 1
-			end
+		if result.Seconds > (state.BestTime or 0) then
+			state.BestTime = result.Seconds
+			player:SetAttribute("RiftTimeBest", result.Seconds)
 		end
-		state.Depth = math.clamp(depth + (unlockedNext and 1 or 0), 1, R.MaxDepth) -- 새로 열리면 바로 다음 깊이를 고른 상태로
+	end
+	if newWeekBest then
+		submitScore(player, result.Score)
+	end
+	if result.Bosses >= R.Tiers[4].Min and newWeekBest then
+		Event.Announce(string.format("📢 %s took down %d bosses in the Boss Rush! (%s)", player.DisplayName, result.Bosses, tier.Name))
 	end
 	Quest.Add(player, "RiftRuns", 1)
-	push(player, false)
-	return { Gold = gold, Tickets = tickets, TimeSkip = timeSkip, Tier = tier.Name, TierIcon = tier.Icon, Best = best, NewBest = newBest, Depth = depth, UnlockedNext = unlockedNext }
+	task.spawn(push, player, false) -- (순위표를 읽느라 기다리지 않게)
+	return { Gold = gold, Tickets = tickets, TimeSkip = timeSkip, Tier = tier.Name, TierIcon = tier.Icon, Best = best, NewBest = newBest, WeekBest = weekBest, NewWeekBest = newWeekBest }
 end
 
 function Rift.Init(prompt)
@@ -183,7 +226,7 @@ function Rift.Init(prompt)
 				return
 			end
 			if not Journey.RiftOpen(player) then
-				notify(player, "🔒 Defeat the Zone 8 Lord in the field to unlock the Rift!")
+				notify(player, "🔒 Defeat the Zone 8 Lord in the field to unlock the Boss Rush!")
 				return
 			end
 			push(player, true)
@@ -191,19 +234,15 @@ function Rift.Init(prompt)
 	end
 end
 
-Remotes.Rift.OnServerEvent:Connect(function(player, action, arg)
-	if action == "SetDepth" and typeof(arg) == "number" then
-		local state = stateOf(player)
-		if state then
-			state.Depth = math.clamp(math.floor(arg), 1, unlockedDepth(player, state))
-			push(player, false)
-		end
-	elseif action == "Request" then
+local lastRequest = setmetatable({}, { __mode = "k" })
+Remotes.Rift.OnServerEvent:Connect(function(player, action)
+	if action == "Request" then
+		local now = os.clock()
+		if now - (lastRequest[player] or 0) < 1 then return end
+		lastRequest[player] = now
 		push(player, false)
 	elseif action == "Start" then
 		Rift.Start(player)
-	elseif action == "Sweep" then
-		Rift.Sweep(player)
 	end
 end)
 
