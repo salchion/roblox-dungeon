@@ -383,11 +383,11 @@ local function startTutorialRift(player, at)
 end
 
 local doomSlots = {} -- [칸 번호] = true : 동시에 여러 명이 끌려가도 결투장이 겹치지 않게 사람마다 옆으로 떨어뜨린다
-local function doomWaveInner(player, zone, center)
+local function doomWaveInner(player, zone, center, real)
 	local root, humanoid = getAliveParts(player)
 	if not root then return end
 	player:SetAttribute("InDoomArena", true) -- 납치 연출로 높이 올라가도 "필드 밖으로 튕김" / 구역 판별에 걸리지 않게 처음부터 켠다
-	notify(player, "⚠⚠ An overwhelming presence... something is calling you!!")
+	notify(player, real and "⚠⚠ The portal pulls you in... the Final Lord awaits!!" or "⚠⚠ An overwhelming presence... something is calling you!!")
 	playSfx(player, "Lord_Voice") -- 낮게 깔리는 군주의 목소리
 	-- 끌려가기 전: 땅 / 하늘이 먼저 울린다 (점점 세지는 진동 2.5초). 갑자기 빨려 올라가지 않게 몸도 잠깐 굳는다
 	do
@@ -406,7 +406,7 @@ local function doomWaveInner(player, zone, center)
 			task.wait(0.3)
 		end
 	end
-	Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "The Final Lord", Text = "...You defeated my servants. Impressive. Now I shall face you myself.", Duration = 5, Top = true })
+	Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "The Final Lord", Text = real and "...You have conquered all eight lands. Come. This time, I will not hold back." or "...You defeated my servants. Impressive. Now I shall face you myself.", Duration = 5, Top = true })
 	player:SetAttribute("ShakeStrength", 0.9)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	local TweenService = game:GetService("TweenService")
@@ -592,7 +592,7 @@ local function doomWaveInner(player, zone, center)
 	place(CFrame.lookAt(bossPos, bossPos + Vector3.new(0, 0, 1)), 0)
 
 	-- 맞출 수 있는 몬스터로 등록한다 (체력이 바닥나지 않게 8% 밑으로는 안 떨어진다)
-	local fill = createHealthBar(body, "💀 Lv.???  ???", 360, rgb(255, 90, 90))
+	local fill = createHealthBar(body, real and "💀 The Final Lord" or "💀 Lv.???  ???", 360, rgb(255, 90, 90))
 	local function lordSfx(key) -- 군주가 기를 모을 때 / 쏠 때 나는 웅장한 소리 (군주 몸에서 난다)
 		if body.Parent and SoundBank.Has(key) then SoundBank.Play(body, key) end
 	end
@@ -611,7 +611,7 @@ local function doomWaveInner(player, zone, center)
 	root.AssemblyLinearVelocity = Vector3.zero
 	player:SetAttribute("InDoomArena", true)
 	player:SetAttribute("UltCharge", Config.Skills.Ult.Cost) -- 궁극기(V)를 써볼 수 있게 게이지를 가득 채워 둔다
-	notify(player, "💀 You face the Final Lord! Your attacks land, but... you cannot defeat him. Dodge the red warnings on the floor, and try your V ultimate too!")
+	notify(player, real and "💀 The Final Lord! This time your attacks count — dodge the warnings and bring him down!" or "💀 You face the Final Lord! Your attacks land, but... you cannot defeat him. Dodge the red warnings on the floor, and try your V ultimate too!")
 	Effects.Burst(bossPos, rgb(255, 70, 60), 100)
 
 	local alive = function()
@@ -707,7 +707,7 @@ local function doomWaveInner(player, zone, center)
 	end
 
 	-- 한 번의 폭격: 바닥에 붉은 경고 원 -> 시간이 지나면 군주의 광선이 내리꽂힌다 (맞으면 최대 체력의 일부, 죽지는 않는다)
-	local function strike(at, radius, telegraph, percent)
+	local function strike(at, radius, telegraph, percent, lethal)
 		local warn = Instance.new("Part")
 		warn.Shape = Enum.PartType.Cylinder
 		warn.Size = Vector3.new(0.3, radius * 2, radius * 2)
@@ -736,7 +736,7 @@ local function doomWaveInner(player, zone, center)
 			if r2 and h2.Health > 0 then
 				local gap = (Vector3.new(r2.Position.X, center.Y, r2.Position.Z) - at).Magnitude
 				if gap <= radius then
-					local dmg = math.min(h2.MaxHealth * percent, h2.Health - 1)
+					local dmg = lethal and (h2.MaxHealth * percent) or math.min(h2.MaxHealth * percent, h2.Health - 1) -- (진짜 결전에서는 죽을 수 있다)
 					if dmg > 0 then h2:TakeDamage(dmg) end
 					notify(player, "💥 Hit by the Lord's attack!")
 				elseif gap <= radius + 16 and isDashing(r2, player) then
@@ -748,6 +748,339 @@ local function doomWaveInner(player, zone, center)
 	local function playerAt()
 		local r = select(1, getAliveParts(player))
 		return r and Vector3.new(r.Position.X, center.Y, r.Position.Z) or center
+	end
+
+	-- ================= 진짜 결전 (8구역 이후 포탈): 체력이 실제로 줄고, 단계마다 패턴이 늘어난다 =================
+	if real then
+		local FL = Config.FinalLord
+		local maxHealth = FL.Health
+		data.Invincible, data.Doom, data.Kind, data.Ambush, data.Zone = false, false, "FinalLord", true, 8 -- (Ambush: 쓰러져도 다시 나타나지 않는다)
+		data.Health, data.MaxHealth = maxHealth, maxHealth
+		data.Stats.MaxHealth = maxHealth
+		data.HealthFill.Size = UDim2.new(1, 0, 1, 0)
+		local function bossAlive() return body.Parent ~= nil and data.Health > 0 end
+		local function fraction() return math.max(0, data.Health) / maxHealth end
+		local function flat(v) return Vector3.new(v.X, 0, v.Z) end
+		local function hurt(percent, text)
+			local r2, h2 = getAliveParts(player)
+			if r2 and h2.Health > 0 then
+				h2:TakeDamage(h2.MaxHealth * percent)
+				if text then notify(player, text) end
+			end
+		end
+		local function distToSegment(p, a, b)
+			local ab, ap = flat(b - a), flat(p - a)
+			local t = math.clamp(ap:Dot(ab) / math.max(ab:Dot(ab), 0.001), 0, 1)
+			return (ap - ab * t).Magnitude
+		end
+		local function floorPart(size, cframe, color, transparency)
+			local part = Instance.new("Part")
+			part.Size = size
+			part.CFrame = cframe
+			part.Anchored, part.CanCollide, part.CanQuery, part.CastShadow = true, false, false, false
+			part.Material = Enum.Material.Neon
+			part.Color = color
+			part.Transparency = transparency
+			part.Parent = arena
+			return part
+		end
+		local floorY = center.Y + 1.35
+		local phaseNow = 1
+
+		-- 패턴 1) 좁은 간격의 3연 폭격 (플레이어 주변)
+		local function tripleStrike()
+			notify(player, "⚠ The Lord raised his hand!")
+			for k = 1, 3 do
+				if not alive() then return end
+				strike(playerAt() + Vector3.new((k - 2) * 20, 0, 0), 13, 1.1, 0.2, true)
+				task.wait(0.32)
+			end
+			task.wait(1.4)
+		end
+
+		-- 패턴 2) 플레이어를 둘러싼 고리 (한 군데는 비어 있다) + 한가운데 큰 일격
+		local function ringOfRuin()
+			notify(player, "⚠⚠ Find the gap in the ring!")
+			shake(0.5)
+			local around = playerAt()
+			local gap = math.random(7)
+			for k = 1, 7 do
+				if k ~= gap then
+					local angle = k / 7 * math.pi * 2
+					strike(around + Vector3.new(math.cos(angle) * 34, 0, math.sin(angle) * 34), 13, 1.1, 0.17, true)
+				end
+				task.wait(0.12)
+			end
+			task.wait(0.5)
+			if alive() then strike(around, 21, 1.0, 0.28, true) end
+			task.wait(1.6)
+		end
+
+		-- 패턴 3) 회전하는 두 갈래 광선 (바닥에 경고 -> 광선이 되어 반원을 훑는다)
+		local function sweepBeam()
+			notify(player, "⚠ The Lord's gaze turns red — don't touch the beams!")
+			local pivot = Vector3.new(center.X, floorY, center.Z)
+			local length, width = 82, 7
+			local base = math.random() * math.pi
+			local sign = math.random() < 0.5 and 1 or -1
+			local arms = {}
+			for _ = 1, 2 do arms[#arms + 1] = floorPart(Vector3.new(width, 0.4, length), CFrame.new(pivot), rgb(255, 60, 50), 0.65) end
+			local function place(angle)
+				for index, arm in ipairs(arms) do
+					local dir = Vector3.new(math.cos(angle + (index - 1) * math.pi), 0, math.sin(angle + (index - 1) * math.pi))
+					arm.CFrame = CFrame.lookAt(pivot + dir * (length / 2), pivot + dir * length)
+				end
+			end
+			place(base)
+			for _, arm in ipairs(arms) do TweenService:Create(arm, TweenInfo.new(1.3), { Transparency = 0.15 }):Play() end
+			lordSfx("Lord_Charge")
+			task.wait(1.4)
+			for _, arm in ipairs(arms) do arm.Color, arm.Transparency = rgb(255, 170, 70), 0.05 end
+			lordSfx("Lord_Blast")
+			local started, duration, hitAt = os.clock(), 3.0, 0
+			while os.clock() - started < duration and alive() and bossAlive() do
+				local t = (os.clock() - started) / duration
+				local angle = base + sign * t * math.pi * 1.1
+				place(angle)
+				local r2 = select(1, getAliveParts(player))
+				if r2 and os.clock() - hitAt > 0.8 then
+					for index = 1, 2 do
+						local dir = Vector3.new(math.cos(angle + (index - 1) * math.pi), 0, math.sin(angle + (index - 1) * math.pi))
+						if distToSegment(r2.Position, pivot, pivot + dir * length) <= width / 2 + 1.5 then
+							hitAt = os.clock()
+							hurt(0.3, "💥 Caught by the beam!")
+							shake(0.6)
+							break
+						end
+					end
+				end
+				if math.floor(t * 10) ~= math.floor((t - 0.02) * 10) then Effects.Burst(pivot + Vector3.new(math.cos(angle) * 40, 2, math.sin(angle) * 40), rgb(255, 150, 80), 10) end
+				task.wait()
+			end
+			for _, arm in ipairs(arms) do
+				TweenService:Create(arm, TweenInfo.new(0.35), { Transparency = 1 }):Play()
+				task.delay(0.4, function() arm:Destroy() end)
+			end
+			task.wait(0.8)
+		end
+
+		-- 패턴 4) 유성 폭풍 (아레나 곳곳에 경고 원이 줄줄이)
+		local function meteorStorm()
+			notify(player, "☄ Meteors are falling — keep moving!")
+			shake(0.4)
+			for _ = 1, 14 do
+				if not alive() or not bossAlive() then return end
+				local angle, distance = math.random() * math.pi * 2, math.random() * 58
+				local at = center + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
+				if math.random() < 0.4 then at = playerAt() + Vector3.new(math.random(-8, 8), 0, math.random(-8, 8)) end -- 일부는 내 쪽으로
+				strike(at, 10, 1.35, 0.14, true)
+				task.wait(0.22)
+			end
+			task.wait(1.8)
+		end
+
+		-- 패턴 5) 가로 / 세로 띠 (다섯 줄 중 한 줄만 비어 있다)
+		local function lanes()
+			notify(player, "⚠⚠ Walls of fire! Reach the one safe lane!")
+			local vertical = math.random() < 0.5
+			local safe = math.random(5)
+			local bands = {}
+			for lane = 1, 5 do
+				local offset = (lane - 3) * 26
+				local size = vertical and Vector3.new(16, 0.4, 150) or Vector3.new(150, 0.4, 16)
+				local at = center + (vertical and Vector3.new(offset, 0, 0) or Vector3.new(0, 0, offset))
+				if lane ~= safe then
+					local band = floorPart(size, CFrame.new(at.X, floorY, at.Z), rgb(255, 60, 50), 0.7)
+					TweenService:Create(band, TweenInfo.new(1.6), { Transparency = 0.12 }):Play()
+					bands[#bands + 1] = { Part = band, Offset = offset }
+				else
+				end
+			end
+			lordSfx("Lord_Charge")
+			task.wait(1.7)
+			if not arena.Parent then return end
+			lordSfx("Lord_Blast")
+			shake(0.7)
+			local r2 = alive() and select(1, getAliveParts(player))
+			for _, band in ipairs(bands) do
+				band.Part.Color = rgb(255, 170, 70)
+				band.Part.Transparency = 0.02
+				TweenService:Create(band.Part, TweenInfo.new(0.6), { Transparency = 1 }):Play()
+				task.delay(0.65, function() band.Part:Destroy() end)
+				for step = -2, 2 do
+					local along = step * 30
+					local at = center + (vertical and Vector3.new(band.Offset, 0, along) or Vector3.new(along, 0, band.Offset))
+					Effects.Burst(at + Vector3.new(0, 3, 0), rgb(255, 120, 60), 24)
+				end
+				if r2 then
+					local local1 = vertical and (r2.Position.X - center.X) or (r2.Position.Z - center.Z)
+					if math.abs(local1 - band.Offset) <= 8 then
+						hurt(0.28, "💥 Burned by the wall of fire!")
+						r2 = nil -- (한 번에 한 줄만 맞는다)
+					end
+				end
+			end
+			task.wait(1.4)
+		end
+
+		-- 패턴 6) 쫓아오는 불덩이 (느리게 따라온다: 맞으면 사라진다)
+		local function orbBarrage()
+			notify(player, "🔴 Homing fireballs! Keep your distance!")
+			local orbs = {}
+			for index = 1, 9 do
+				local angle = index / 9 * math.pi * 2
+				local orb = floorPart(Vector3.new(4, 4, 4), CFrame.new(body.Position + Vector3.new(math.cos(angle) * 8, -4, math.sin(angle) * 8)), rgb(255, 80, 60), 0.05)
+				orb.Shape = Enum.PartType.Ball
+				orbs[#orbs + 1] = orb
+			end
+			lordSfx("Lord_Charge")
+			local started = os.clock()
+			local last = started
+			while os.clock() - started < 5.5 and alive() and bossAlive() do
+				local now = os.clock()
+				local dt = now - last
+				last = now
+				local r2 = select(1, getAliveParts(player))
+				for index = #orbs, 1, -1 do
+					local orb = orbs[index]
+					if r2 then
+						local to = Vector3.new(r2.Position.X, floorY + 3, r2.Position.Z) - orb.Position
+						local speed = 24 + (now - started) * 2.5
+						if to.Magnitude < 4 then
+							Effects.Burst(orb.Position, rgb(255, 90, 60), 40)
+							hurt(0.14, "💥 A fireball hit you!")
+							orb:Destroy()
+							table.remove(orbs, index)
+						elseif now - started > 0.6 then
+							orb.Position += to.Unit * math.min(to.Magnitude, speed * dt)
+						else
+							orb.Position += Vector3.new(0, 7 * dt, 0) + (orb.Position - body.Position).Unit * 6 * dt
+						end
+					end
+				end
+				task.wait()
+			end
+			for _, orb in ipairs(orbs) do
+				Effects.Burst(orb.Position, rgb(255, 120, 70), 14)
+				orb:Destroy()
+			end
+			task.wait(0.8)
+		end
+
+		-- 패턴 7) 최후의 심판 (3단계): 아레나가 붉게 물든다. 초록 원 안에 들어가 있어야 산다
+		local function judgement()
+			notify(player, "💀 JUDGEMENT! Stand inside a green circle!")
+			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "The Final Lord", Text = "Perish.", Duration = 2.5, Top = true })
+			shake(0.7)
+			lordSfx("Lord_Charge")
+			local flood = floorPart(Vector3.new(0.4, 150, 150), CFrame.new(center.X, floorY + 0.05, center.Z) * CFrame.Angles(0, 0, math.rad(90)), rgb(255, 30, 30), 0.88)
+			flood.Shape = Enum.PartType.Cylinder
+			local safes = {}
+			for _ = 1, 3 do
+				local at
+				for _ = 1, 20 do
+					local angle, distance = math.random() * math.pi * 2, 14 + math.random() * 40
+					at = center + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
+					local clear = true
+					for _, other in ipairs(safes) do
+						if (other - at).Magnitude < 32 then clear = false end
+					end
+					if clear then break end
+				end
+				safes[#safes + 1] = at
+				local ringPart = floorPart(Vector3.new(0.5, 30, 30), CFrame.new(at.X, floorY + 0.1, at.Z) * CFrame.Angles(0, 0, math.rad(90)), rgb(110, 255, 170), 0.5)
+				ringPart.Shape = Enum.PartType.Cylinder
+				task.delay(3.4, function() ringPart:Destroy() end)
+			end
+			TweenService:Create(flood, TweenInfo.new(3.2), { Transparency = 0.7 }):Play()
+			task.wait(3.2)
+			if not arena.Parent then flood:Destroy() return end
+			lordSfx("Lord_Blast")
+			shake(1)
+			local r2 = alive() and select(1, getAliveParts(player))
+			local safeNow = false
+			if r2 then
+				for _, at in ipairs(safes) do
+					if (flat(r2.Position) - flat(at)).Magnitude <= 15 then safeNow = true end
+				end
+			end
+			for _, at in ipairs(safes) do ring(at, 22, rgb(110, 255, 170), 0.8) end
+			ring(center, 80, rgb(255, 90, 60), 1.0)
+			Effects.Burst(center + Vector3.new(0, 10, 0), rgb(255, 120, 80), 140)
+			if r2 and not safeNow then hurt(0.75, "💥 Judgement struck you down!") elseif r2 then notify(player, "✅ Survived the judgement!") end
+			TweenService:Create(flood, TweenInfo.new(0.5), { Transparency = 1 }):Play()
+			task.delay(0.6, function() flood:Destroy() end)
+			task.wait(1.4)
+		end
+
+		-- 단계 안내
+		local function phaseBanner(text, sub)
+			notify(player, text)
+			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "The Final Lord", Text = sub, Duration = 3, Top = true })
+			shake(0.9)
+			Effects.Burst(body.Position, rgb(255, 120, 90), 140)
+			lordSfx("Lord_Blast")
+		end
+
+		task.wait(1.5)
+		local order = 0
+		local lastPattern
+		while alive() and bossAlive() do
+			local fractionNow = fraction()
+			local newPhase = fractionNow <= FL.Phase3 and 3 or (fractionNow <= FL.Phase2 and 2 or 1)
+			if newPhase > phaseNow then
+				phaseNow = newPhase
+				if phaseNow == 2 then phaseBanner("🔥 PHASE 2 — The Lord's fury grows!", "...Not bad. But I am only getting started.")
+				else phaseBanner("☠ PHASE 3 — Final form! Stay inside the circles!", "Now... witness true despair.") end
+				task.wait(1.8)
+			end
+			local pool = { tripleStrike, ringOfRuin, sweepBeam }
+			if phaseNow >= 2 then table.insert(pool, meteorStorm) table.insert(pool, lanes) end
+			if phaseNow >= 3 then table.insert(pool, orbBarrage) table.insert(pool, judgement) end
+			order += 1
+			local pick
+			if phaseNow >= 3 and order % 3 == 0 then
+				pick = judgement
+			else
+				for _ = 1, 6 do
+					pick = pool[math.random(#pool)]
+					if pick ~= lastPattern then break end
+				end
+			end
+			lastPattern = pick
+			pick()
+			if not alive() or not bossAlive() then break end
+			task.wait(phaseNow == 1 and 1.4 or (phaseNow == 2 and 1.0 or 0.7))
+		end
+
+		running = false
+		local won = not bossAlive() and alive()
+		monsters[body] = nil
+		if body.Parent then body:Destroy() end
+		if won then
+			local bossPoint = center + Vector3.new(0, 30, -26)
+			for k = 1, 6 do
+				task.delay(k * 0.18, function()
+					if arena.Parent then
+						Effects.Burst(bossPoint + Vector3.new(math.random(-12, 12), math.random(-6, 10), math.random(-8, 8)), rgb(255, 200, 120), 120)
+						ring(bossPoint, 40 + k * 14, rgb(255, 140, 80), 1.0)
+						shake(0.9)
+					end
+				end)
+			end
+			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👑", Title = "The Final Lord", Text = "...Impossible. You... have surpassed me. The world is yours.", Duration = 6, Top = true })
+			notify(player, string.format("🏆 You defeated the Final Lord!  +%d gold  +%d tickets", FL.RewardGold, FL.RewardTickets))
+			player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + FL.RewardGold)
+			player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + FL.RewardTickets)
+			Remotes.Notify:FireAllClients(string.format("📢 %s defeated the Final Lord!", player.DisplayName))
+			task.wait(7)
+		else
+			task.wait(4)
+		end
+		player:SetAttribute("InDoomArena", nil)
+		arena:Destroy()
+		if won and player.Parent then player:LoadCharacter() end -- 이긴 사람은 마을로 돌아간다 (진 사람은 쓰러져서 자동으로 마을로)
+		return
 	end
 
 	task.wait(1.0)
@@ -883,11 +1216,11 @@ local function doomWaveInner(player, zone, center)
 	end)
 end
 
-local function doomWave(player, zone)
+local function doomWave(player, zone, real)
 	local slot = 0
 	while doomSlots[slot] do slot += 1 end
 	doomSlots[slot] = true
-	local ok, err = pcall(doomWaveInner, player, zone, Vector3.new(slot * 450, 420, 1500))
+	local ok, err = pcall(doomWaveInner, player, zone, Vector3.new(slot * 450, 420, 1500), real)
 	task.delay(8, function() doomSlots[slot] = nil end) -- 결투장이 치워지는 시간(약 4.5초)이 지난 뒤에 칸을 비운다
 	if not ok then error(err, 0) end
 end
@@ -922,6 +1255,95 @@ Dungeon.OnTutorialHandoff = function(player, lootLines, gold)
 	end)
 end
 
+
+-- 8구역 끝에 서 있는 최후의 군주 포탈: 8구역 군주를 쓰러뜨린 사람만 들어갈 수 있다. 들어가면 튜토리얼 때와 같은 납치 연출로 결투장에 끌려가 진짜 결전이 시작된다.
+local portalLast = setmetatable({}, { __mode = "k" })
+function DoomScene.BuildPortal(deps)
+	local zoneCount = deps.ZoneCount or 8
+	local x = deps.ZoneEnd(zoneCount) - 24
+	local base = Vector3.new(x, deps.FloorAt(x), 0)
+	local folder = Instance.new("Folder")
+	folder.Name = "FinalLordPortal"
+	folder.Parent = workspace
+	local function part(size, position, color, material, transparency, shape)
+		local p = Instance.new("Part")
+		p.Size = size
+		p.Position = position
+		p.Anchored, p.CanCollide, p.CanQuery, p.CastShadow = true, false, false, false
+		p.Color, p.Material, p.Transparency = color, material, transparency or 0
+		if shape then p.Shape = shape end
+		p.Parent = folder
+		return p
+	end
+	for _, side in ipairs({ -1, 1 }) do
+		part(Vector3.new(7, 38, 7), base + Vector3.new(0, 19, side * 20), rgb(24, 14, 28), Enum.Material.Slate)
+		part(Vector3.new(3, 10, 3), base + Vector3.new(0, 42, side * 20), rgb(255, 70, 60), Enum.Material.Neon, 0.15)
+	end
+	part(Vector3.new(7, 5, 47), base + Vector3.new(0, 40, 0), rgb(24, 14, 28), Enum.Material.Slate)
+	local outer = part(Vector3.new(2.4, 40, 40), base + Vector3.new(0, 21, 0), rgb(255, 60, 60), Enum.Material.Neon, 0.25, Enum.PartType.Cylinder)
+	local swirl = part(Vector3.new(1, 34, 34), base + Vector3.new(0, 21, 0), rgb(130, 40, 170), Enum.Material.Neon, 0.35, Enum.PartType.Cylinder)
+	local glow = Instance.new("PointLight")
+	glow.Color, glow.Range, glow.Brightness = rgb(255, 80, 90), 60, 3
+	glow.Parent = swirl
+	local sparks = Instance.new("ParticleEmitter")
+	sparks.Rate = 40
+	sparks.Lifetime = NumberRange.new(1.2, 2)
+	sparks.Speed = NumberRange.new(4, 10)
+	sparks.SpreadAngle = Vector2.new(180, 180)
+	sparks.LightEmission = 0.8
+	sparks.Color = ColorSequence.new(rgb(255, 120, 130), rgb(150, 50, 200))
+	sparks.Size = NumberSequence.new(1.6, 0)
+	sparks.Parent = swirl
+	local sign = Instance.new("BillboardGui")
+	sign.Size = UDim2.fromOffset(300, 50)
+	sign.StudsOffset = Vector3.new(0, 30, 0)
+	sign.AlwaysOnTop = false
+	sign.MaxDistance = 220
+	sign.Parent = swirl
+	local text = Instance.new("TextLabel")
+	text.Size = UDim2.fromScale(1, 1)
+	text.BackgroundTransparency = 1
+	text.Text = "☠ The Final Lord's Portal"
+	text.Font = Enum.Font.GothamBlack
+	text.TextScaled = true
+	text.TextColor3 = rgb(255, 120, 130)
+	text.TextStrokeTransparency = 0.3
+	text.Parent = sign
+	TweenService:Create(outer, TweenInfo.new(1.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.5 }):Play()
+	TweenService:Create(swirl, TweenInfo.new(2.2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.6 }):Play()
+
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.ActionText = "Enter the Final Lord's realm"
+	prompt.ObjectText = "Portal"
+	prompt.HoldDuration = 1.2
+	prompt.MaxActivationDistance = 16
+	prompt.RequiresLineOfSight = false
+	prompt.Parent = swirl
+	prompt.Triggered:Connect(function(player)
+		if player:GetAttribute("InDoomArena") or player:GetAttribute("Zone") ~= "Field" or not getAliveParts(player) then return end
+		local beaten = player:GetAttribute("AugOpenZ_" .. zoneCount) == true or (player:GetAttribute("ClearedZone") or 0) >= zoneCount
+		if not beaten then
+			notify(player, string.format("🔒 Defeat the Lord of Zone %d first — only then will the portal open for you.", zoneCount))
+			return
+		end
+		local wait = Config.FinalLord.PortalCooldown - (os.clock() - (portalLast[player] or -1e9))
+		if wait > 0 then
+			notify(player, string.format("⏳ The portal is still recovering (%d s).", math.ceil(wait)))
+			return
+		end
+		portalLast[player] = os.clock()
+		task.spawn(function()
+			local ok, err = pcall(doomWave, player, zoneCount, true)
+			if not ok then
+				warn("[최후의 군주 결전] 오류: " .. tostring(err))
+				player:SetAttribute("InDoomArena", nil)
+				player:SetAttribute("CombatLocked", nil)
+				local r = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+				if r then r.Anchored = false end
+			end
+		end)
+	end)
+end
 
 DoomScene.Wave = doomWave
 DoomScene.StartRift = startTutorialRift

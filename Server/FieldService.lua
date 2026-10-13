@@ -3239,6 +3239,11 @@ DoomScene.Init({
 })
 startTutorialRift = DoomScene.StartRift
 local doomWave = DoomScene.Wave
+task.spawn(function() -- 8구역 끝의 최후의 군주 포탈 (월드가 만들어진 뒤에)
+	task.wait(10)
+	local okPortal, errPortal = pcall(DoomScene.BuildPortal, { ZoneEnd = F.ZoneEnd, FloorAt = floorAt, ZoneCount = F.ZoneCount })
+	if not okPortal then warn("[FinalLord] portal build failed: " .. tostring(errPortal)) end
+end)
 
 local function updateDoom()
 	local anyDoom = false

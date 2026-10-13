@@ -1332,6 +1332,14 @@ Config.Sets.ZoneAug = { "AugPulse", "AugOrbit", "AugStorm", "AugMissile", "AugNo
 Config.Sets.AugLevelByPieces = { [2] = 1, [3] = 3 }
 -- 세트 효과는 장비가 아니라 "골드로 활성화"한다: 그 구역 군주를 잡으면 열리고, 골드로 1~3단계까지 올린다.
 -- 동시에 켤 수 있는 개수(슬롯)는 처음 1개이고 구역을 클리어할수록 늘어난다 (AugSlotZones[n] = n번째 슬롯이 열리는 클리어 구역).
+-- 최후의 군주 결전 (8구역 군주를 쓰러뜨리면 8구역 끝에 포탈이 열린다): 튜토리얼에서 만났던 군주와 이번에는 진짜로 싸운다
+Config.FinalLord = {
+	Health = 56000000,        -- 8구역 권장 전투력(780,000) x 0.4(대략의 초당 피해) x 180초. 권장 전투력이면 약 3분 반 (이동 / 회피 시간 포함)
+	PortalCooldown = 45,      -- 같은 사람이 다시 들어가기까지 (초)
+	RewardGold = 3000000,
+	RewardTickets = 40,
+	Phase2 = 0.7, Phase3 = 0.35, -- 체력이 이 비율 아래로 내려가면 다음 단계 (패턴이 늘고 빨라진다)
+}
 Config.Sets.AugSlotZones = { 0, 4, 7 }
 Config.Sets.AugCostMult = { 1, 2.5, 6 } -- 1단계 / 2단계 / 3단계 비용 배수
 function Config.Sets.AugCost(zone, level)
