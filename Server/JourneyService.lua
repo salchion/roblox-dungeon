@@ -56,6 +56,12 @@ local function beacon(player, position, name, seconds)
 	end)
 end
 
+-- 최후의 군주를 쓰러뜨리고 돌아온 사람에게: 보스러쉬 포탈로 빛기둥을 켜 준다 (처음 한 번 뜨는 안내와 겹치지 않게 표시해 둔다)
+function Journey.PointToRift(player)
+	Journey.Mark(player, "RiftOpen")
+	beacon(player, positions.Rift, "Boss Rush", 45)
+end
+
 function Journey.Init(info)
 	positions = info or {}
 end

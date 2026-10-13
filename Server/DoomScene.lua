@@ -1162,13 +1162,44 @@ local function doomWaveInner(player, zone, center, real)
 			player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + FL.RewardGold)
 			player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + FL.RewardTickets)
 			Remotes.Notify:FireAllClients(string.format("📢 %s defeated the Final Lord!", player.DisplayName))
-			task.wait(7)
+			task.wait(4.5)
+			-- 이어지는 연출: 군주의 마지막 말 -> 하늘에 보랏빛 균열이 열린다 -> 마을로 돌아가 보스러쉬 포탈로 안내
+			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🌀", Title = "The Final Lord", Text = "...Listen. Beneath this world, a rift is opening. The seals I held are breaking. Bosses will come, one after another... Show me how long you can stand.", Duration = 7, Top = true })
+			local riftAt = center + Vector3.new(0, 70, -10)
+			local orb = Instance.new("Part")
+			orb.Shape = Enum.PartType.Ball
+			orb.Size = Vector3.new(4, 4, 4)
+			orb.Position = riftAt
+			orb.Anchored, orb.CanCollide, orb.CanQuery, orb.CastShadow = true, false, false, false
+			orb.Material, orb.Color, orb.Transparency = Enum.Material.Neon, rgb(200, 70, 220), 0.1
+			orb.Parent = arena
+			TweenService:Create(orb, TweenInfo.new(4.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Size = Vector3.new(150, 150, 150), Transparency = 0.55 }):Play()
+			for k = 1, 5 do
+				task.delay(k * 0.9, function()
+					if arena.Parent then
+						ring(riftAt - Vector3.new(0, 68, 0), 30 + k * 12, rgb(210, 90, 230), 1.4)
+						Effects.Burst(riftAt, rgb(220, 110, 240), 90)
+						shake(0.4 + k * 0.1)
+					end
+				end)
+			end
+			task.wait(5)
+			Remotes.Notify:FireClient(player, "🌀 A rift opens... you are pulled back to town.")
+			task.wait(2)
 		else
 			task.wait(4)
 		end
 		player:SetAttribute("InDoomArena", nil)
 		arena:Destroy()
-		if won and player.Parent then player:LoadCharacter() end -- 이긴 사람은 마을로 돌아간다 (진 사람은 쓰러져서 자동으로 마을로)
+		if won and player.Parent then
+			player:LoadCharacter() -- 이긴 사람은 마을로 돌아간다 (진 사람은 쓰러져서 자동으로 마을로)
+			task.delay(2.5, function() -- 마을에 도착하면: 보스러쉬 포탈이 열렸다고 알려 주고 포탈로 길을 안내한다
+				if not player.Parent then return end
+				Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👹", Title = "The Boss Rush is open!", Text = "Follow the purple light to the portal in town. Bosses arrive one by one - survive as long as you can. Score = seconds survived x damage dealt, ranked weekly!", Duration = 9 })
+				local okJourney, Journey = pcall(function() return require(script.Parent:WaitForChild("JourneyService")) end)
+				if okJourney and Journey.PointToRift then Journey.PointToRift(player) end
+			end)
+		end
 		return
 	end
 
