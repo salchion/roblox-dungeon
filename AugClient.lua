@@ -52,7 +52,7 @@ end
 
 -- 왼쪽 상태 카드 아래, "스탯" 버튼 옆
 local pill = button({
-	Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 264, 0, 244),
+	Name = "SetsPill", Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 264, 0, 244),
 	BackgroundColor3 = Color3.fromRGB(34, 38, 60), Text = "🌟 Sets (Y)", TextSize = 10, Visible = false,
 }, gui, function() end)
 make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, pill)

@@ -23,7 +23,7 @@ local PANEL_Y = 52      -- 접이식 패널 / 레이더 시작 높이 (버튼 �
 
 -- UIScale 을 직접 가진 화면(자기 fit() 이 있다) / 가지고 있지 않은 화면
 local THEIRS = { HUD = true, ShopGui = true, GoalHUD = true, RiftHUD = true, TutorialHUD = true }
-local OWN = { HudGui = true, LevelStatGui = true, PetGui = true, HUDFx = true, EvolveFx = true }
+local OWN = { HudGui = true, LevelStatGui = true, PetGui = true, HUDFx = true, EvolveFx = true, AugGui = true }
 
 local st = { compact = false, s = 1 }
 local saved = {}      -- [객체] = { [속성] = { 원래 값 } }
@@ -193,8 +193,14 @@ function layoutCompact(viewport)
 	local topY = math.ceil(52 / s)            -- Roblox 왼쪽 위 아이콘(실제 약 48px) 아래
 	local btnY = topY + 118
 	local missionY = narrow and (btnY + 40) or 8
+	-- 가로 화면이고 폭이 충분하면 스킬 바 + 자동 공격 버튼을 "오른쪽 아래, 점프 버튼 영역 바로 왼쪽"으로 옮긴다 (모바일 게임처럼 스킬은 오른손 쪽)
+	local dockRight = (not narrow) and (vw - zone - 12 - (204 + 8 + 64) - 24) > 0
 	local barBottom = raised and (math.ceil(zone) + 10) or 14
 	local barTop = barBottom + 64
+	if dockRight then
+		barBottom = 14
+		barTop = 6 -- 아래 가운데가 비므로 토스트 / 안내 카드가 거의 바닥까지 내려온다
+	end
 
 	-- 다른 스크립트가 읽는 값
 	playerGui:SetAttribute("UiS", s)
@@ -225,6 +231,10 @@ function layoutCompact(viewport)
 			if child:IsA("TextButton") then set(child, "Position", UDim2.new(0, 176, 0, btnY)) end
 		end
 	end
+
+	-- 세트 효과 버튼: 메뉴 / 설정 / 스탯 버튼 줄 맨 끝에 (예전에는 화면 가운데쯤에 혼자 떠 있었다)
+	local augGui = playerGui:FindFirstChild("AugGui")
+	set(find(augGui, "SetsPill"), "Position", UDim2.new(0, 258, 0, btnY))
 
 	-- 오른쪽 위: 접이식 패널 + 레이더
 	local lobbyFrame, dungeonFrame = find(hud, "LobbyFrame"), find(hud, "DungeonFrame")
@@ -280,10 +290,18 @@ function layoutCompact(viewport)
 	if bar and auto then
 		local barW, autoW, gap = bar.Size.X.Offset, 64, 8
 		local total = barW + gap + autoW
-		set(bar, "AnchorPoint", Vector2.new(0.5, 1))
-		set(bar, "Position", UDim2.new(0.5, -total / 2 + barW / 2, 1, -barBottom))
-		set(auto, "AnchorPoint", Vector2.new(0, 1))
-		set(auto, "Position", UDim2.new(0.5, -total / 2 + barW + gap, 1, -barBottom))
+		if dockRight then
+			local edge = zone + 12 -- 점프 버튼 영역(실제 200px)의 왼쪽 끝
+			set(bar, "AnchorPoint", Vector2.new(1, 1))
+			set(bar, "Position", UDim2.new(1, -edge, 1, -barBottom))
+			set(auto, "AnchorPoint", Vector2.new(1, 1))
+			set(auto, "Position", UDim2.new(1, -(edge + barW + gap), 1, -barBottom))
+		else
+			set(bar, "AnchorPoint", Vector2.new(0.5, 1))
+			set(bar, "Position", UDim2.new(0.5, -total / 2 + barW / 2, 1, -barBottom))
+			set(auto, "AnchorPoint", Vector2.new(0, 1))
+			set(auto, "Position", UDim2.new(0.5, -total / 2 + barW + gap, 1, -barBottom))
+		end
 		set(auto, "Size", UDim2.new(0, autoW, 0, 54))
 		for _, child in ipairs(auto:GetChildren()) do
 			if child:IsA("Frame") then
