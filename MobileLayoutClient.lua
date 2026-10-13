@@ -12,6 +12,7 @@
 --  5) 키 안내 줄(ControlsHint) 숨김, 토스트 / 튜토리얼 안내 카드는 아래 가운데로, 큰 창(메뉴 등)은 화면에 맞게 줄임.
 
 local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
@@ -32,7 +33,7 @@ local driven = {}     -- 이미 감시 중인 UIScale
 local guarded = {}    -- 이미 감시 중인 객체 (보이면 안 되는 것)
 local fitScales = {}  -- 큰 창에 붙인 UIScale
 local open = nil      -- 펼쳐진 접이식 패널: "party" | "rank" | "stat" | nil
-local ui, scaleObj, pillRank, pillParty, pillStat, pillShop
+local ui, scaleObj, pillRank, pillParty, pillStat, pillShop, zoomIn, zoomOut
 local layoutCompact, layoutCalm
 
 local function make(class, props, parent)
@@ -107,6 +108,30 @@ local function ensureUi()
 	pillStat = pill("StatPill", "✨ Traits / Exit", 150, function() toggle("stat") end)
 	pillShop = pill("ShopPill", "🎁 Shop", 96, function() player:SetAttribute("OpenShop", os.clock()) end) -- PlayerClient 가 신호를 받아 상점 창을 연다
 	pillShop.BackgroundColor3 = Color3.fromRGB(86, 52, 40)
+	-- 카메라 거리 버튼 (왼쪽 가운데): 시점을 뒤로 빼거나 당긴다. 눌러도 손가락 두 개로 벌리고 오므리는 줌은 그대로 쓸 수 있다.
+	local function zoomButton(name, text, offsetY, delta)
+		local button = make("TextButton", {
+			Name = name, Size = UDim2.new(0, 46, 0, 46), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 12, 0.5, offsetY), Text = text,
+			Font = Enum.Font.GothamBlack, TextSize = 24, TextColor3 = Color3.fromRGB(240, 242, 250),
+			BackgroundColor3 = Color3.fromRGB(34, 40, 70), BackgroundTransparency = 0.25, BorderSizePixel = 0, AutoButtonColor = true, Visible = false,
+		}, ui)
+		make("UICorner", { CornerRadius = UDim.new(1, 0) }, button)
+		make("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, button)
+		button.Activated:Connect(function()
+			local cam = workspace.CurrentCamera
+			local current = (cam.CFrame.Position - cam.Focus.Position).Magnitude
+			local target = math.clamp(current + delta, 10, 60)
+			player.CameraMinZoomDistance = target -- 잠깐 그 거리로 고정했다가 풀면 그 거리에 머문다
+			player.CameraMaxZoomDistance = target
+			task.delay(0.35, function()
+				player.CameraMinZoomDistance = 8
+				player.CameraMaxZoomDistance = 60
+			end)
+		end)
+		return button
+	end
+	zoomOut = zoomButton("ZoomOut", "-", 28, 8) -- 시점 뒤로 (멀리)
+	zoomIn = zoomButton("ZoomIn", "+", -28, -8) -- 시점 앞으로 (가까이)
 end
 
 ------------------------------------------------------------
@@ -194,11 +219,11 @@ function layoutCompact(viewport)
 	local btnY = topY + 118
 	local missionY = narrow and (btnY + 40) or 8
 	-- 가로 화면이고 폭이 충분하면 스킬 바 + 자동 공격 버튼을 "오른쪽 아래, 점프 버튼 영역 바로 왼쪽"으로 옮긴다 (모바일 게임처럼 스킬은 오른손 쪽)
-	local dockRight = (not narrow) and (vw - zone - 12 - (204 + 8 + 64) - 24) > 0
+	local dockRight = (not narrow) and (vw - zone - 14 - (204 + 8 + 64) - 24) > 0 -- (점프 버튼을 없앴으므로 오른쪽 끝(5시 방향)까지 붙인다)
 	local barBottom = raised and (math.ceil(zone) + 10) or 14
 	local barTop = barBottom + 64
 	if dockRight then
-		barBottom = 14
+		barBottom = 22
 		barTop = 6 -- 아래 가운데가 비므로 토스트 / 안내 카드가 거의 바닥까지 내려온다
 	end
 
@@ -254,6 +279,7 @@ function layoutCompact(viewport)
 	pillShop.Size = UDim2.new(0, 96, 0, 40)
 	pillShop.Position = UDim2.new(1, -(12 + 116 + 6 + 92 + 6), 0, PILL_Y) -- 랭킹 버튼 왼쪽 (위 줄)
 	pillShop.Visible = lobbyOn
+	zoomIn.Visible, zoomOut.Visible = true, true
 	local partyTitle = partyPanel and partyPanel:FindFirstChildOfClass("TextLabel")
 	pillParty.Text = partyTitle and partyTitle.Text ~= "" and ("👥 " .. partyTitle.Text) or "👥 Party"
 	local function tint(button, on)
@@ -291,7 +317,7 @@ function layoutCompact(viewport)
 		local barW, autoW, gap = bar.Size.X.Offset, 64, 8
 		local total = barW + gap + autoW
 		if dockRight then
-			local edge = zone + 12 -- 점프 버튼 영역(실제 200px)의 왼쪽 끝
+			local edge = 14 -- 오른쪽 끝에서 살짝 띄운다
 			set(bar, "AnchorPoint", Vector2.new(1, 1))
 			set(bar, "Position", UDim2.new(1, -edge, 1, -barBottom))
 			set(auto, "AnchorPoint", Vector2.new(1, 1))
@@ -485,6 +511,7 @@ function layoutCalm(viewport)
 	ui.Enabled = lobbyOn
 	scaleObj.Scale = desktopScale(viewport)
 	pillRank.Visible, pillStat.Visible = false, false
+	zoomIn.Visible, zoomOut.Visible = false, false
 	pillParty.Visible = showPill
 	pillParty.Text = "👥 Party"
 	pillParty.Position = UDim2.new(1, -16, 0, 16)
@@ -569,5 +596,34 @@ task.spawn(function()
 	while true do
 		task.wait(0.3)
 		update()
+	end
+end)
+
+
+-- 점프 버튼은 없애고(스킬 바를 5시 방향까지 옮겼다), 화면을 빠르게 두 번 터치하면 점프한다 (공중에서는 2단 점프). 실제 점프는 PlayerClient 가 "TapJump" 신호를 받아 처리한다.
+task.spawn(function()
+	while true do
+		task.wait(1)
+		if st.compact then
+			local touchGui = playerGui:FindFirstChild("TouchGui")
+			local jump = touchGui and touchGui:FindFirstChild("JumpButton", true)
+			if jump then
+				guardHidden(jump)
+				if jump.Visible then jump.Visible = false end
+			end
+		end
+	end
+end)
+local lastTapAt, lastTapPos = 0, Vector2.zero
+UserInputService.TouchTap:Connect(function(positions, processed)
+	if processed or not st.compact then return end
+	local pos = positions[1]
+	if not pos then return end
+	local now = os.clock()
+	if now - lastTapAt < 0.35 and (pos - lastTapPos).Magnitude < 90 then
+		lastTapAt = 0
+		player:SetAttribute("TapJump", (player:GetAttribute("TapJump") or 0) + 1)
+	else
+		lastTapAt, lastTapPos = now, pos
 	end
 end)

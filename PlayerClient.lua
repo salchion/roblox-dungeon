@@ -4253,6 +4253,12 @@ do
 		end
 	end)
 	UserInputService.JumpRequest:Connect(jd.Try)
+	player:GetAttributeChangedSignal("TapJump"):Connect(function() -- 모바일: 화면 두 번 터치 (MobileLayoutClient)
+		local character = player.Character
+		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+		if not humanoid or humanoid.Health <= 0 then return end
+		if humanoid.FloorMaterial ~= Enum.Material.Air then humanoid.Jump = true else jd.Try() end
+	end)
 	RunService.Heartbeat:Connect(function()
 		local character = player.Character
 		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
