@@ -1584,6 +1584,9 @@ Config.Shop = {
 		XpBooster = { Name = "XP Booster (1 hour)", Desc = "2x XP", ProductId = 0, Category = "Growth", Icon = "📚", Featured = true, Grant = { XpBoost = 3600 } },
 		LuckBooster = { Name = "Luck Booster (1 hour)", Desc = "Gear drop rarity +50%", ProductId = 0, Category = "Growth", Icon = "🍀", Grant = { LuckBoost = 3600 } },
 		TicketPack = { Name = "5 Gear Roll Tickets", Desc = "Use tickets to roll for gear", ProductId = 0, Category = "Currency", Icon = "🎫", Grant = { Tickets = 5 } },
+		GoldS = { Name = "Gold Pack S", Desc = "Instantly get 30 minutes of YOUR idle income · max 3 per day", ProductId = 0, Category = "Currency", Icon = "💰", DailyLimit = 3, Grant = { IdleGold = 30 } },
+		GoldM = { Name = "Gold Pack M", Desc = "Instantly get 2 hours of YOUR idle income · max 3 per day", ProductId = 0, Category = "Currency", Icon = "💰", Featured = true, DailyLimit = 3, Grant = { IdleGold = 120 } },
+		GoldL = { Name = "Gold Pack L", Desc = "Instantly get 8 hours of YOUR idle income · max 3 per day", ProductId = 0, Category = "Currency", Icon = "💰", Badge = "Best Value", DailyLimit = 3, Grant = { IdleGold = 480 } },
 		TimeSkip10m = { Name = "Time Skip 10 min", Desc = "Reduces training / breakthrough wait time by 10 min (the skip bar fills instantly)", ProductId = 0, Category = "Growth", Icon = "⏩", Grant = { TimeSkip = 600 } },
 		TimeSkip1h = { Name = "Time Skip 1 hour", Desc = "Reduces training / breakthrough wait time by 1 hour", ProductId = 0, Category = "Growth", Icon = "⏩", Grant = { TimeSkip = 3600 } },
 		TimeSkip8h = { Name = "Time Skip 8 hours", Desc = "Reduces training / breakthrough wait time by 8 hours", ProductId = 0, Category = "Growth", Icon = "⏩", Badge = "Best Value", Featured = true, Grant = { TimeSkip = 28800 } },
@@ -1598,7 +1601,7 @@ Config.Shop = {
 	PassOrder = { "VIP" },
 	-- 상점 화면 표시용 (효과와 무관): 카테고리 탭. Products 의 Category / Badge / Icon / Featured(추천 탭) / Tier(단계 상품 표시) 도 표시 전용
 	Categories = { { Key = "Rec", Name = "🔥 Featured" }, { Key = "Idle", Name = "⏱ Idle" }, { Key = "Growth", Name = "📈 Growth" }, { Key = "Deco", Name = "🎨 Cosmetics" }, { Key = "Currency", Name = "🎫 Currency" } },
-	ProductOrder = { "IdleBooster", "IdleMult1", "IdleMult2", "IdleMult3", "IdleCap8", "IdleCap24", "TimeSkip10m", "TimeSkip1h", "TimeSkip8h", "TrainSlot", "KeyPack", "XpBooster", "LuckBooster", "TicketPack" },
+	ProductOrder = { "IdleBooster", "IdleMult1", "IdleMult2", "IdleMult3", "IdleCap8", "IdleCap24", "TimeSkip10m", "TimeSkip1h", "TimeSkip8h", "TrainSlot", "KeyPack", "XpBooster", "LuckBooster", "TicketPack", "GoldS", "GoldM", "GoldL" },
 	-- VIP 효과 (코드에서 읽는 값). TrainTime: 훈련/돌파 시간 단축 비율
 	Vip = { XpBonus = 0.2, KeyCap = 2, KeyRegen = 0.3, Bag = 20, TrainSlots = 1, TrainTime = 0.2, AugSlots = 0 }, -- (세트 효과 칸은 과금으로 늘릴 수 없다: 군주 클리어로만)
 	XpBoostMult = 2,

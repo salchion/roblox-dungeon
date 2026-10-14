@@ -115,10 +115,42 @@ end
 ------------------------------------------------------------
 -- 지급
 ------------------------------------------------------------
+-- 골드 팩: 하루 구매 제한 (UTC 날짜 기준 초기화)
+local function dailyLeft(state, key, def)
+	if not def.DailyLimit then return math.huge end
+	local day = math.floor(os.time() / 86400)
+	if state.GoldDay ~= day then
+		state.GoldDay = day
+		state.GoldBuys = {}
+	end
+	return def.DailyLimit - (state.GoldBuys[key] or 0)
+end
+
+-- 골드 팩 지급량 = "구매하는 순간 내 방치 수입 N분치" (배율 제외: 부스터 / 방치 배율 상품과 겹쳐서 커지지 않게)
+local function idleGold(player, minutes)
+	local okIdle, Idle = pcall(function() return require(script.Parent:WaitForChild("IdleService")) end)
+	if not okIdle then return 0 end
+	local perSecond = Idle.Rate(player) / math.max(1, Idle.Multiplier(player))
+	return math.floor(perSecond * 60 * minutes)
+end
+
 -- grant: Config.Shop 의 Grant 테이블 (Keys / Tickets / XpBoost / LuckBoost / Bag / Aura)
-function Monetization.Grant(player, grant)
+function Monetization.Grant(player, grant, productKey)
 	local state = states[player]
 	if not state then return end
+
+	if grant.IdleGold then
+		local gold = idleGold(player, grant.IdleGold)
+		player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
+		local def = productKey and S.Products[productKey]
+		if def and def.DailyLimit then
+			dailyLeft(state, productKey, def) -- (날짜가 바뀌었으면 초기화)
+			state.GoldBuys[productKey] = (state.GoldBuys[productKey] or 0) + 1
+			notify(player, string.format("💰 +%d G (%d min of your idle income) · %d left today", gold, grant.IdleGold, math.max(0, def.DailyLimit - state.GoldBuys[productKey])))
+		else
+			notify(player, string.format("💰 +%d G", gold))
+		end
+	end
 
 	if grant.Keys then
 		Keys.Add(player, grant.Keys)
@@ -169,8 +201,14 @@ end
 -- 저장 / 불러오기
 ------------------------------------------------------------
 function Monetization.Load(player, saved)
-	local state = { Bag = 0, TrainSlot = 0, AugSlot = 0, XpBoostUntil = 0, LuckBoostUntil = 0, IdleBoostUntil = 0, IdleMultTier = 0, IdleCapTier = 0, AuraUnlocked = {}, Aura = "", Banner = "", Mount = "", Receipts = {}, Passes = {} }
+	local state = { GoldDay = 0, GoldBuys = {}, Bag = 0, TrainSlot = 0, AugSlot = 0, XpBoostUntil = 0, LuckBoostUntil = 0, IdleBoostUntil = 0, IdleMultTier = 0, IdleCapTier = 0, AuraUnlocked = {}, Aura = "", Banner = "", Mount = "", Receipts = {}, Passes = {} }
 	if typeof(saved) == "table" then
+		state.GoldDay = math.floor(tonumber(saved.GoldDay) or 0)
+		if typeof(saved.GoldBuys) == "table" then
+			for key, count in pairs(saved.GoldBuys) do
+				if typeof(key) == "string" and tonumber(count) then state.GoldBuys[key] = math.max(0, math.floor(tonumber(count))) end
+			end
+		end
 		state.Bag = math.max(0, math.floor(tonumber(saved.Bag) or 0))
 		state.TrainSlot = math.max(0, math.floor(tonumber(saved.TrainSlot) or 0))
 		state.AugSlot = math.clamp(math.floor(tonumber(saved.AugSlot) or 0), 0, 2)
@@ -205,6 +243,7 @@ function Monetization.Serialize(player)
 	local state = states[player]
 	if not state then return nil end
 	return {
+		GoldDay = state.GoldDay, GoldBuys = state.GoldBuys,
 		Bag = state.Bag, TrainSlot = state.TrainSlot, AugSlot = state.AugSlot, XpBoostUntil = state.XpBoostUntil, LuckBoostUntil = state.LuckBoostUntil,
 		IdleBoostUntil = state.IdleBoostUntil, IdleMultTier = state.IdleMultTier, IdleCapTier = state.IdleCapTier,
 		AuraUnlocked = state.AuraUnlocked, Aura = state.Aura, Banner = state.Banner, Mount = state.Mount, Receipts = state.Receipts,
@@ -270,6 +309,11 @@ Remotes.Shop.OnServerEvent:Connect(function(player, action, kind, key)
 		return
 	end
 
+	if not isPass and dailyLeft(state, key, def) <= 0 then
+		notify(player, "You've reached today's purchase limit for this item. Come back tomorrow!")
+		return
+	end
+
 	local id = isPass and def.PassId or def.ProductId
 	if id > 0 then
 		if isPass then
@@ -283,7 +327,7 @@ Remotes.Shop.OnServerEvent:Connect(function(player, action, kind, key)
 			state.Passes[key] = true
 			applyAttributes(player, state)
 		else
-			Monetization.Grant(player, def.Grant)
+			Monetization.Grant(player, def.Grant, key)
 		end
 		notify(player, "🧪 [Studio test grant] " .. def.Name)
 	else
@@ -317,10 +361,10 @@ MarketplaceService.ProcessReceipt = function(info)
 		return Enum.ProductPurchaseDecision.PurchaseGranted
 	end
 
-	local product
-	for _, def in pairs(S.Products) do
+	local product, productKey
+	for key, def in pairs(S.Products) do
 		if def.ProductId > 0 and def.ProductId == info.ProductId then
-			product = def
+			product, productKey = def, key
 		end
 	end
 	if not product then
@@ -328,7 +372,7 @@ MarketplaceService.ProcessReceipt = function(info)
 		return Enum.ProductPurchaseDecision.NotProcessedYet
 	end
 
-	Monetization.Grant(player, product.Grant)
+	Monetization.Grant(player, product.Grant, productKey)
 	state.Receipts[receiptKey] = os.time()
 
 	-- 오래된 영수증은 정리 (최대 200개 보관)
