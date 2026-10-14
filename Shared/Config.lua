@@ -1596,15 +1596,11 @@ Config.Shop = {
 		IdleCap8 = { Name = "Idle Accrual Cap: 8 Hours", Desc = "Accrues up to 8 hours while you're away (default 4 hours)", ProductId = 0, Category = "Idle", Icon = "🗄", Featured = true, Tier = { Group = "IdleCap", Step = 1, Steps = 2 }, Grant = { IdleCap = 1 } },
 		IdleCap24 = { Name = "Idle Accrual Cap: 24 Hours", Desc = "Accrues up to a full day while you're away", ProductId = 0, Category = "Idle", Icon = "🗄", Badge = "Top Pick", Tier = { Group = "IdleCap", Step = 2, Steps = 2 }, Grant = { IdleCap = 2 } },
 		TrainSlot = { Name = "Training slot +1", Desc = "Permanent · Train one more at the same time", ProductId = 0, Category = "Growth", Icon = "🏋", Badge = "Popular", Featured = true, Grant = { TrainSlot = 1 } },
-		AuraVoid = { Name = "Void Aura", Desc = "Cosmetic only (no stats)", ProductId = 0, Category = "Deco", Icon = "✨", Badge = "NEW", Grant = { Aura = "Void" } },
-		BannerDragon = { Name = "Dragon Banner", Desc = "Cosmetic banner worn on your back (no stats)", ProductId = 0, Category = "Deco", Icon = "🚩", Grant = { Banner = "Dragon" } },
-		MountCarpet = { Name = "Magic Carpet", Desc = "Cosmetic mount floating under your feet (no stats)", ProductId = 0, Category = "Deco", Icon = "🛹", Grant = { Mount = "Carpet" } },
-		MountPhoenix = { Name = "Phoenix", Desc = "Cosmetic flame-winged mount (no stats)", ProductId = 0, Category = "Deco", Icon = "🔥", Badge = "NEW", Featured = true, Grant = { Mount = "Phoenix" } },
 	},
 	PassOrder = { "VIP" },
 	-- 상점 화면 표시용 (효과와 무관): 카테고리 탭. Products 의 Category / Badge / Icon / Featured(추천 탭) / Tier(단계 상품 표시) 도 표시 전용
 	Categories = { { Key = "Rec", Name = "🔥 Featured" }, { Key = "Idle", Name = "⏱ Idle" }, { Key = "Growth", Name = "📈 Growth" }, { Key = "Deco", Name = "🎨 Cosmetics" }, { Key = "Currency", Name = "🎫 Currency" } },
-	ProductOrder = { "IdleBooster", "IdleMult1", "IdleMult2", "IdleMult3", "IdleCap8", "IdleCap24", "AugSlot", "TimeSkip10m", "TimeSkip1h", "TimeSkip8h", "TrainSlot", "KeyPack", "XpBooster", "LuckBooster", "BagPlus", "TicketPack", "AuraVoid", "BannerDragon", "MountCarpet", "MountPhoenix" },
+	ProductOrder = { "IdleBooster", "IdleMult1", "IdleMult2", "IdleMult3", "IdleCap8", "IdleCap24", "AugSlot", "TimeSkip10m", "TimeSkip1h", "TimeSkip8h", "TrainSlot", "KeyPack", "XpBooster", "LuckBooster", "BagPlus", "TicketPack" },
 	-- VIP 효과 (코드에서 읽는 값). TrainTime: 훈련/돌파 시간 단축 비율
 	Vip = { XpBonus = 0.2, KeyCap = 2, KeyRegen = 0.3, Bag = 20, TrainSlots = 1, TrainTime = 0.2, AugSlots = 1 },
 	XpBoostMult = 2,
@@ -1619,7 +1615,7 @@ Config.Auras = {
 	Frost = { Name = "Frost Aura", Color = Color3.fromRGB(130, 210, 255), Unlock = { Ach = "zone4" } },
 	Flame = { Name = "Flame Aura", Color = Color3.fromRGB(255, 110, 50), Unlock = { Ach = "boss10" } },
 	Gold = { Name = "Golden Aura", Color = Color3.fromRGB(255, 215, 90), Unlock = { Pass = "VIP" } },
-	Void = { Name = "Void Aura", Color = Color3.fromRGB(170, 70, 255), Unlock = { Product = "AuraVoid" } },
+	Void = { Name = "Void Aura", Color = Color3.fromRGB(170, 70, 255), Unlock = { Ach = "rift9000" } },
 }
 
 -- 깃발: 등 뒤에 꽂는 꾸미기. 탈것: 발밑에 떠 있는 꾸미기 (둘 다 능력치 / 이동속도 없음, 다른 플레이어에게도 보임)
@@ -1628,14 +1624,14 @@ Config.Banners = {
 	Scout = { Name = "Trainee Banner", Color = Color3.fromRGB(90, 150, 255), Unlock = "Free" },
 	Hero = { Name = "Hero's Banner", Color = Color3.fromRGB(230, 70, 70), Unlock = { Ach = "zone4" } },
 	Gold = { Name = "Golden Banner", Color = Color3.fromRGB(255, 205, 70), Unlock = { Pass = "VIP" } },
-	Dragon = { Name = "Dragon Banner", Color = Color3.fromRGB(150, 60, 230), Sparks = true, Unlock = { Product = "BannerDragon" } },
+	Dragon = { Name = "Dragon Banner", Color = Color3.fromRGB(150, 60, 230), Sparks = true, Unlock = { Ach = "zone8" } },
 }
 Config.Mounts = {
 	Order = { "Board", "Cloud", "Carpet", "Phoenix" },
 	Board = { Name = "Hoverboard", Color = Color3.fromRGB(80, 220, 255), Style = "Board", Unlock = "Free" },
 	Cloud = { Name = "Cloud", Color = Color3.fromRGB(190, 225, 255), Style = "Cloud", Unlock = { Ach = "boss10" } },
-	Carpet = { Name = "Magic Carpet", Color = Color3.fromRGB(190, 50, 90), Style = "Carpet", Unlock = { Product = "MountCarpet" } },
-	Phoenix = { Name = "Phoenix", Color = Color3.fromRGB(255, 100, 40), Style = "Phoenix", Unlock = { Product = "MountPhoenix" } },
+	Carpet = { Name = "Magic Carpet", Color = Color3.fromRGB(190, 50, 90), Style = "Carpet", Unlock = { Ach = "prestige1" } },
+	Phoenix = { Name = "Phoenix", Color = Color3.fromRGB(255, 100, 40), Style = "Phoenix", Unlock = { Ach = "riftdepth15" } },
 }
 
 ------------------------------------------------------------
