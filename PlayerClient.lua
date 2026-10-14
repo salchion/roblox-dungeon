@@ -1982,23 +1982,6 @@ player.CharacterAdded:Connect(function(character)
 	applySpeed()
 	sliding = false
 end)
-if game:GetService("RunService"):IsStudio() then -- 진단(Studio 전용): 이동이 느려졌을 때 원인을 찾는다 (4초마다 한 줄, 움직이는 중일 때만)
-	task.spawn(function()
-		while true do
-			task.wait(4)
-			local character = player.Character
-			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-			local root = character and character:FindFirstChild("HumanoidRootPart")
-			if humanoid and root and humanoid.MoveDirection.Magnitude > 0.1 then
-				local cam = workspace.CurrentCamera
-				print(string.format("[이속 진단] WalkSpeed %.1f · 실제 속도 %.1f · 카메라 거리 %.1f · FOV %.0f · 구역 %s · 보너스 기어%.1f/훈련%.1f/펫%.1f/레벨%.1f",
-					humanoid.WalkSpeed, Vector3.new(root.AssemblyLinearVelocity.X, 0, root.AssemblyLinearVelocity.Z).Magnitude,
-					(cam.CFrame.Position - cam.Focus.Position).Magnitude, cam.FieldOfView, tostring(player:GetAttribute("Zone")),
-					player:GetAttribute("GearSpeed") or 0, player:GetAttribute("TrainSpeed") or 0, player:GetAttribute("PetSpeed") or 0, player:GetAttribute("LvMove") or 0))
-			end
-		end
-	end)
-end
 task.spawn(function() -- 이동 속도를 0.5초마다 다시 맞춘다 (스크립트가 캐릭터보다 늦게 켜지거나 다른 곳에서 16 으로 되돌려도 느려진 채로 남지 않게)
 	while true do
 		applySpeed()
