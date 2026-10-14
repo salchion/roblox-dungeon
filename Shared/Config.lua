@@ -154,9 +154,8 @@ Config.Tutorial = {
 -- 환생(프레스티지): 최고 레벨에서 레벨을 1로 되돌리고 영구 공격력 보너스를 얻는다
 ------------------------------------------------------------
 -- 환생: 최고 레벨에서 레벨을 1로 되돌리는 대신 영구 보너스. 골드를 더 벌려면 환생한다 (영구 공격력 + 골드 획득량).
-Config.Prestige = { Max = 10, DamagePerRank = 0.05, GoldPerRank = 0.10, Level = 50 } -- Level: 환생할 수 있는 최소 레벨 (최대 레벨을 200 으로 늘려도 환생은 예전처럼 50 부터)
 function Config.GoldBonus(player)
-	return 1 + (player:GetAttribute("Prestige") or 0) * Config.Prestige.GoldPerRank + (player:GetAttribute("PetGold") or 0) -- 환생 + 펫(대각성)
+	return 1 + (player:GetAttribute("PetGold") or 0) -- 펫(대각성)
 end
 
 Config.Dungeon = {} -- 아래에서 여러 블록이 채우고, "던전" 절에서 기본 값이 합쳐진다
@@ -1163,8 +1162,6 @@ Config.Achievements = {
 	{ Id = "rift9000",   Name = "Limit Breaker",     Desc = "Defeat %d bosses in one Boss Rush run",         Stat = "RiftBoss",      Goal = 15,  Reward = { Tickets = 12 },             Title = "Limit Breaker" },
 	{ Id = "riftdepth5",  Name = "Survivor",     Desc = "Survive %d seconds in the Boss Rush",           Stat = "RiftTime",     Goal = 300,     Reward = { Tickets = 3 },              Title = "Survivor" },
 	{ Id = "riftdepth15", Name = "Unbreakable",     Desc = "Survive %d seconds in the Boss Rush",           Stat = "RiftTime",     Goal = 600,    Reward = { Tickets = 10 },             Title = "Unbreakable" },
-	{ Id = "prestige1",  Name = "The Reborn",   Desc = "Rebirth x%d",                    Stat = "Prestige",      Goal = 1,     Reward = { Tickets = 5 },              Title = "Reborn" },
-	{ Id = "prestige5",  Name = "Samsara Master",     Desc = "Rebirth x%d",                    Stat = "Prestige",      Goal = 5,     Reward = { Tickets = 15 },             Title = "Samsara Master" },
 	{ Id = "boss10",     Name = "Boss Hunter",       Desc = "Defeat %d boss(es)",            Stat = "BossKills",     Goal = 10,    Reward = { Tickets = 5 },              Title = "Boss Hunter" },
 	{ Id = "zone4",      Name = "Explorer",          Desc = "Clear field zone %d",            Stat = "MaxZone",       Goal = 4,     Reward = { Gold = 1000 },              Title = "Explorer" },
 	{ Id = "zone8",      Name = "Abyss Conqueror",   Desc = "Clear field zone %d",            Stat = "MaxZone",       Goal = 8,     Reward = { Tickets = 5 },              Title = "Abyss Conqueror" },
@@ -1630,7 +1627,7 @@ Config.Mounts = {
 	Order = { "Board", "Cloud", "Carpet", "Phoenix" },
 	Board = { Name = "Hoverboard", Color = Color3.fromRGB(80, 220, 255), Style = "Board", Unlock = "Free" },
 	Cloud = { Name = "Cloud", Color = Color3.fromRGB(190, 225, 255), Style = "Cloud", Unlock = { Ach = "boss10" } },
-	Carpet = { Name = "Magic Carpet", Color = Color3.fromRGB(190, 50, 90), Style = "Carpet", Unlock = { Ach = "prestige1" } },
+	Carpet = { Name = "Magic Carpet", Color = Color3.fromRGB(190, 50, 90), Style = "Carpet", Unlock = { Ach = "myth" } },
 	Phoenix = { Name = "Phoenix", Color = Color3.fromRGB(255, 100, 40), Style = "Phoenix", Unlock = { Ach = "riftdepth15" } },
 }
 

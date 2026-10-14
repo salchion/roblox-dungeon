@@ -2436,20 +2436,6 @@ local function buildCharacterTab()
 		rowText(row, table.concat(glossary, "\n"), 13)
 	end
 
-	do -- 환생
-		local prestige = player:GetAttribute("Prestige") or 0
-		local ready = (player:GetAttribute("Level") or 1) >= Config.Prestige.Level and prestige < Config.Prestige.Max
-		local row = newRow(64)
-		rowText(row, string.format("🌟 <b>Rebirth %d / %d</b>  (Permanent Damage +%d%% · Gold +%d%%)\n<font size='11' color='#bbbbcc'>Rebirth at Lv.%d to reset to Lv.1 and gain permanent Damage +%d%% and Gold gain +%d%%. Gear/weapons are kept. (In the lobby)</font>",
-			prestige, Config.Prestige.Max, math.floor(prestige * Config.Prestige.DamagePerRank * 100 + 0.5), math.floor(prestige * Config.Prestige.GoldPerRank * 100 + 0.5), Config.Level.Max, Config.Prestige.DamagePerRank * 100, Config.Prestige.GoldPerRank * 100), 14, 190)
-		makeButton({
-			Size = UDim2.new(0, 160, 0, 36), Position = UDim2.new(1, -172, 0.5, -18),
-			Text = prestige >= Config.Prestige.Max and "MAX" or "Rebirth", BackgroundColor3 = ready and Color3.fromRGB(200, 150, 40) or GRAY,
-		}, row, function()
-			Remotes.Meta:FireServer("Prestige")
-		end)
-	end
-
 	sectionTitle("Titles (unlocked via achievements, shown on your nameplate)")
 	local titles = questState and questState.Titles or {}
 	local equipped = questState and questState.Equipped
@@ -4080,7 +4066,7 @@ makeLabel({
 		"2. Defeat monsters in the eastern <b>Field</b> to get gear and level up (don't miss the Golden Goblin!)",
 		"3. The northern <b>Dungeon</b> needs a Key. Survive the set time and the boss appears. Random buffs (and penalties) pop up along the way, and you get gear from the boss chest",
 		"4. Clearing Zone 2 unlocks Growth (training). Queue up training, and collect gear sets/uniques to boost your Power",
-		"5. At max level, <b>Rebirth</b> for permanent bonuses and take on the challenge again",
+		"5. Once the field is conquered, challenge the Final Lord, then the weekly <b>Boss Rush</b> ranking",
 	}, "\n"),
 }, helpPanel)
 

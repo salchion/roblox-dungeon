@@ -3,7 +3,7 @@
 --   1) 스킬 강화: 골드로 스킬 레벨업 (SkillLv_<스킬> Attribute)
 --   2) 펫: 골드로 펫 기능 열기 / 레벨업(기능이 하나씩 늘어남) / 외형 선택 (Pet* Attribute 로 효과를 알린다)
 --   3) 무한의 탑 최고 층 (TowerBest Attribute)
--- 저장: { Skills = {...}, Pet = { Unlocked, Level, Look, Color }, Tower = 최고층, Prestige, Rift }
+-- 저장: { Skills = {...}, Pet = { Unlocked, Level, Look, Color }, Tower = 최고층, Rift }
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -121,7 +121,7 @@ end
 -- 클라이언트로 상태 보내기
 ------------------------------------------------------------
 local function buildPayload(state)
-	return { Skills = state.Skills, Pet = state.Pet, Tower = state.Tower, Prestige = state.Prestige }
+	return { Skills = state.Skills, Pet = state.Pet, Tower = state.Tower }
 end
 
 function Meta.Push(player)
@@ -147,7 +147,7 @@ local function syncSkillAttributes(player, state)
 end
 
 function Meta.Load(player, saved)
-	local state = { Skills = {}, Pet = { Unlocked = false, Level = 1, Look = "Orb", Color = 1 }, Tower = 0, Prestige = 0, Codex = { Kills = {}, Boss = {}, Sets = {} }, Rift = { BestScore = 0, BestBoss = 0, BestTime = 0, Week = 0, WeekBest = 0, Day = 0, Used = 0, Hints = {}, LvStats = {} } }
+	local state = { Skills = {}, Pet = { Unlocked = false, Level = 1, Look = "Orb", Color = 1 }, Tower = 0, Codex = { Kills = {}, Boss = {}, Sets = {} }, Rift = { BestScore = 0, BestBoss = 0, BestTime = 0, Week = 0, WeekBest = 0, Day = 0, Used = 0, Hints = {}, LvStats = {} } }
 	for _, key in ipairs(Config.Skills.UpgradeOrder) do
 		local level = typeof(saved) == "table" and typeof(saved.Skills) == "table" and tonumber(saved.Skills[key]) or 1
 		state.Skills[key] = math.clamp(math.floor(level), 1, Config.SkillUpgrade.MaxLevel)
@@ -179,7 +179,6 @@ function Meta.Load(player, saved)
 			end
 		end
 		state.Tower = math.max(0, math.floor(tonumber(saved.Tower) or 0))
-		state.Prestige = math.clamp(math.floor(tonumber(saved.Prestige) or 0), 0, Config.Prestige.Max)
 		if typeof(saved.Rift) == "table" then
 			state.Rift = { BestScore = math.max(0, math.floor(tonumber(saved.Rift.BestScore) or 0)), Day = math.floor(tonumber(saved.Rift.Day) or 0), Used = math.max(0, math.floor(tonumber(saved.Rift.Used) or 0)), Tip = saved.Rift.Tip == true, DungeonTip = saved.Rift.DungeonTip == true, DungeonDay = math.floor(tonumber(saved.Rift.DungeonDay) or 0), DungeonUsed = math.max(0, math.floor(tonumber(saved.Rift.DungeonUsed) or 0)), KeyDay = math.floor(tonumber(saved.Rift.KeyDay) or 0), KeyDropsTier = typeof(saved.Rift.KeyDropsTier) == "table" and { tonumber(saved.Rift.KeyDropsTier[1]) or 0, tonumber(saved.Rift.KeyDropsTier[2]) or 0, tonumber(saved.Rift.KeyDropsTier[3]) or 0 } or { 0, 0, 0 }, Hints = (function() local list = {} if typeof(saved.Rift.Hints) == "table" then for key, value in pairs(saved.Rift.Hints) do if typeof(key) == "string" and #key <= 24 and value == true then list[key] = true end end end return list end)(), GrowthTip = saved.Rift.GrowthTip == true, BestBoss = math.max(0, math.floor(tonumber(saved.Rift.BestBoss) or 0)), BestDealt = math.max(0, tonumber(saved.Rift.BestDealt) or 0), BestTime = math.max(0, math.floor(tonumber(saved.Rift.BestTime) or 0)), Week = math.floor(tonumber(saved.Rift.Week) or 0), WeekBest = math.max(0, tonumber(saved.Rift.WeekBest) or 0), IdleSeen = math.max(0, math.floor(tonumber(saved.Rift.IdleSeen) or 0)), LvStats = (function() local list = {} for _, key in ipairs(Config.LevelStats.Order) do list[key] = typeof(saved.Rift.LvStats) == "table" and math.clamp(math.floor(tonumber(saved.Rift.LvStats[key]) or 0), 0, 99) or 0 end return list end)(), LvGold = math.clamp(math.floor(tonumber(saved.Rift.LvGold) or 0), 0, Config.LevelStats.MaxGoldPoints), AugBoss = (function() local list = {} if typeof(saved.Rift.AugBoss) == "table" then for z = 1, Config.Field.ZoneCount do if saved.Rift.AugBoss[tostring(z)] == true then list[tostring(z)] = true end end end return list end)(), AugLv = (function() local list = {} if typeof(saved.Rift.AugLv) == "table" then for z = 1, Config.Field.ZoneCount do local lv = math.clamp(math.floor(tonumber(saved.Rift.AugLv[tostring(z)]) or 0), 0, 3) if lv > 0 then list[tostring(z)] = lv end end end return list end)(), AugOn = (function() local list = {} if typeof(saved.Rift.AugOn) == "table" then for z = 1, Config.Field.ZoneCount do if saved.Rift.AugOn[tostring(z)] == true then list[tostring(z)] = true end end end return list end)() }
 		end
@@ -187,7 +186,6 @@ function Meta.Load(player, saved)
 	states[player] = state
 	syncSkillAttributes(player, state)
 	applyPetStats(player, state)
-	player:SetAttribute("Prestige", state.Prestige)
 	player:SetAttribute("RiftBest", state.Rift.BestScore)
 	player:SetAttribute("RiftBossBest", state.Rift.BestBoss)
 	player:SetAttribute("RiftTimeBest", state.Rift.BestTime)
@@ -198,7 +196,7 @@ end
 function Meta.Serialize(player)
 	local state = states[player]
 	if not state then return nil end
-	return { Skills = state.Skills, Pet = state.Pet, Tower = state.Tower, Prestige = state.Prestige, Rift = state.Rift, Codex = state.Codex }
+	return { Skills = state.Skills, Pet = state.Pet, Tower = state.Tower, Rift = state.Rift, Codex = state.Codex }
 end
 
 function Meta.Forget(player)
@@ -358,33 +356,6 @@ task.spawn(function()
 	end
 end)
 
--- 환생: 최고 레벨에서 레벨을 1로 되돌리고 영구 공격력 보너스를 얻는다 (장비 / 무기 / 돌파 진행은 그대로)
-local function prestige(player)
-	local state = states[player]
-	if not state then return end
-	if player:GetAttribute("Zone") ~= "Lobby" then
-		notify(player, "You can only Rebirth in the lobby.")
-		return
-	end
-	if (player:GetAttribute("Level") or 1) < Config.Prestige.Level then
-		notify(player, string.format("You can Rebirth from level %d.", Config.Prestige.Level))
-		return
-	end
-	if state.Prestige >= Config.Prestige.Max then
-		notify(player, "Already at max Rebirth rank!")
-		return
-	end
-	state.Prestige += 1
-	player:SetAttribute("Prestige", state.Prestige)
-	Level.Load(player, 1, 0)
-	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-	if root then
-		Effects.Burst(root.Position + Vector3.new(0, 3, 0), Color3.fromRGB(255, 230, 120), 120)
-	end
-	notify(player, string.format("🌟 Rebirth rank %d! Permanent attack +%d%% · gold gain +%d%% (total attack +%d%%, gold +%d%%)", state.Prestige, Config.Prestige.DamagePerRank * 100, Config.Prestige.GoldPerRank * 100, state.Prestige * Config.Prestige.DamagePerRank * 100, state.Prestige * Config.Prestige.GoldPerRank * 100))
-	Meta.Push(player)
-end
-
 local last = setmetatable({}, { __mode = "k" })
 Players.PlayerRemoving:Connect(function(player)
 	last[player] = nil
@@ -404,8 +375,6 @@ Remotes.Meta.OnServerEvent:Connect(function(player, action, arg)
 		if okQ then Quest.Add(player, "PetPeek", 1) end
 	elseif action == "SkillUp" then
 		upgradeSkill(player, arg)
-	elseif action == "Prestige" then
-		prestige(player)
 	elseif action == "PetUnlock" then
 		unlockPet(player)
 	elseif action == "PetLevel" then

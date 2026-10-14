@@ -1419,7 +1419,6 @@ function Dungeon.ComputeDamage(player)
 		* (1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0) + (player:GetAttribute("PetDamage") or 0))
 		* (1 + (player:GetAttribute("PerkPower") or 0) * Config.Perks.PowerPerStack)
 		* Combo.GetDamageMult(player)
-		* (1 + (player:GetAttribute("Prestige") or 0) * Config.Prestige.DamagePerRank)
 		* Dungeon.PartyBonus(player)
 		* (player:GetAttribute("ShotDmgScale") or 1) -- 레벨 스탯 추가 탄: 발당 피해 감소 (사격 중에만 적용)
 	local chance = math.min(0.9, (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint

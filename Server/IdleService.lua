@@ -37,8 +37,7 @@ function Idle.Rate(player)
 	local E = Config.Economy
 	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
 	local bonus = 1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0) + (player:GetAttribute("PetDamage") or 0)
-	local prestige = 1 + (player:GetAttribute("Prestige") or 0) * Config.Prestige.DamagePerRank
-	local perMinute = I.Fraction * E.IncomeBase * Config.GetDamageMultiplier(weaponLevel) * bonus * prestige
+	local perMinute = I.Fraction * E.IncomeBase * Config.GetDamageMultiplier(weaponLevel) * bonus
 	return perMinute / 60 * Idle.Multiplier(player)
 end
 

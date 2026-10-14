@@ -20,8 +20,6 @@ local COUNTERS = { "DummyHits", "FieldKills", "EliteKills", "Kills", "BossKills"
 local function readLive(player, stat)
 	if stat == "MaxZone" then
 		return player:GetAttribute("MaxZone") or 0
-	elseif stat == "Prestige" then
-		return player:GetAttribute("Prestige") or 0
 	elseif stat == "RiftTime" then
 		return player:GetAttribute("RiftTimeBest") or 0
 	elseif stat == "RiftBoss" then

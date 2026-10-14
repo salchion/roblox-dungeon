@@ -529,8 +529,7 @@ local function updateNameplate(player)
 
 	local title = player:GetAttribute("Title") or ""
 	gui.PlayerName.Text = (inParty and "[Party] " or "") .. (title ~= "" and ("『" .. title .. "』 ") or "") .. player.DisplayName
-	local prestige = player:GetAttribute("Prestige") or 0
-	gui.Power.Text = string.format("%s⚡ Power %d", prestige > 0 and ("🌟" .. prestige .. " ") or "", player:GetAttribute("Power") or 0)
+	gui.Power.Text = string.format("⚡ Power %d", player:GetAttribute("Power") or 0)
 	gui.Power.TextColor3 = Color3.fromRGB(255, 225, 110)
 end
 

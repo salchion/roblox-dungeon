@@ -352,9 +352,6 @@ local function pickGoal()
 	end
 
 	-- 지금 바로 쓸 수 있는 것
-	if (player:GetAttribute("Level") or 1) >= Config.Prestige.Level and (player:GetAttribute("Prestige") or 0) < Config.Prestige.Max then
-		table.insert(candidates, { Text = "🌟 Max level reached!\nRebirth for permanent attack + gold gain (Menu I → Character > Info)", Ratio = 0.99, Priority = 2 })
-	end
 	if (player:GetAttribute("DungeonFree") or 0) >= 1 or (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0) >= 1 then
 		table.insert(candidates, { Text = string.format("🎟 %d free entries today · 🗝 %d keys!\nChallenge the dungeon at the north gate", player:GetAttribute("DungeonFree") or 0, (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0)), Ratio = 0.95, Priority = 3 })
 	end

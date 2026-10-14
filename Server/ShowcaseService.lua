@@ -226,9 +226,8 @@ local function buildSlot(rank, player)
 	local power = player:GetAttribute("Power") or 0
 	slot.Key = string.format("%d_%d_%s_%d", player.UserId, power // 25, typeKey, level)
 
-	local prestige = player:GetAttribute("Prestige") or 0
 	slot.Label.Text = string.format("%s %s%s\n<font color='#ffe16e'>⚡ %d</font> Lv.%d\n<font color='#9ad7ff'>%s</font>",
-		MEDAL[rank], prestige > 0 and ("🌟" .. prestige .. " ") or "", player.DisplayName, power, player:GetAttribute("Level") or 1,
+		MEDAL[rank], "", player.DisplayName, power, player:GetAttribute("Level") or 1,
 		Config.FormatWeapon(level, typeKey))
 
 	local top = slot.Top
