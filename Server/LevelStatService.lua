@@ -31,7 +31,7 @@ end
 local function totalPoints(player, rift)
 	local level = player:GetAttribute("Level") or 1
 	local total = Config.GetLevelStatPoints(level)
-	if level >= Config.Level.Max then total += rift.LvGold or 0 end
+	if level >= Config.Level.StatCap then total += rift.LvGold or 0 end
 	return total
 end
 
@@ -85,8 +85,8 @@ Remotes.LevelStat.OnServerEvent:Connect(function(player, action, key, amount)
 	local stats, rift = statsOf(player)
 	if not stats then return end
 	if action == "Buy" then -- 최대 레벨을 찍은 뒤 골드로 포인트 구매 (비용은 살수록 커진다)
-		if (player:GetAttribute("Level") or 1) < Config.Level.Max then
-			Remotes.Notify:FireClient(player, string.format("Reach level %d to buy points with gold.", Config.Level.Max))
+		if (player:GetAttribute("Level") or 1) < Config.Level.StatCap then
+			Remotes.Notify:FireClient(player, string.format("Reach level %d to buy points with gold.", Config.Level.StatCap))
 		elseif rift.LvGold >= LS.MaxGoldPoints then
 			Remotes.Notify:FireClient(player, "You've bought all the points available with gold!")
 		else

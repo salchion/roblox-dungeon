@@ -1181,12 +1181,14 @@ Config.Achievements = {
 -- 캐릭터 레벨: 몬스터를 잡으면 경험치(XP). 레벨이 오르면 최대 체력과 공격력이 늘고 체력이 가득 찬다.
 ------------------------------------------------------------
 Config.Level = {
-	Max = 200,              -- (50 -> 200: 찍고 싶은 스탯이 부족하다는 의견. 50 이후는 필요 경험치 곡선이 완만하고 레벨당 공격력도 작다)
+	Max = 400,              -- (200 -> 400: 200 이후 레벨은 공격력 / 체력만 올려 준다 (스탯 포인트는 200 레벨까지만). 이전: 50 -> 200: 찍고 싶은 스탯이 부족하다는 의견. 50 이후는 필요 경험치 곡선이 완만하고 레벨당 공격력도 작다)
 	LateStart = 50,         -- 이 레벨 이후는 "후반" 곡선
 	LateDamagePerLevel = 0.004, -- 50 레벨 이후 레벨당 공격력 +0.4% (200레벨에서 총 +60%; 경제 기준 공격력 배율이 부풀지 않게)
 	EarlyBoostUntil = 6,    -- 이 레벨까지는 경험치 x3 (처음 몇 분 안에 레벨업이 연달아 터지게)
 	EarlyBoost = 3,
-	HealthPerLevel = 8,     -- 레벨당 최대 체력 +8
+	HealthPerLevel = 8,     -- 레벨당 최대 체력 +8 (StatCap 레벨까지)
+	StatCap = 200,          -- 이 레벨까지만 레벨당 스탯 포인트 1개 / 체력 +8. 이 레벨을 찍어야 골드로 포인트를 더 살 수 있다
+	PostHealthPerLevel = 25, -- StatCap 레벨 이후 레벨당 최대 체력 (공격력은 LateDamagePerLevel 로 계속 오른다)
 	DamagePerLevel = 0.03,  -- 레벨당 공격력 +3%
 }
 
@@ -1207,13 +1209,13 @@ Config.LevelStats = {
 	OtherExtraShotValue = 0.5, -- 장비 옵션 / 던전 특성으로 늘어난 탄 한 발의 가치 (예전에는 100%여서 탄이 늘면 딜이 그대로 배수로 늘었다)
 }
 function Config.GetLevelStatPoints(level)
-	return math.max(0, ((level or 1) - 1) * Config.LevelStats.PointsPerLevel)
+	return math.max(0, (math.min(level or 1, Config.Level.StatCap) - 1) * Config.LevelStats.PointsPerLevel)
 end
 -- 골드로 살 수 있는 포인트 수 = 모든 스탯 한계 합 - 레벨로 얻는 포인트 (모두 사면 전 스탯이 한계까지 찬다)
 do
 	local capTotal = 0
 	for _, key in ipairs(Config.LevelStats.Order) do capTotal += Config.LevelStats.Cap[key] end
-	Config.LevelStats.MaxGoldPoints = math.max(0, capTotal - Config.GetLevelStatPoints(Config.Level.Max))
+	Config.LevelStats.MaxGoldPoints = math.max(0, capTotal - Config.GetLevelStatPoints(Config.Level.StatCap))
 end
 function Config.GetLevelGoldPointCost(bought)
 	return math.floor(Config.LevelStats.GoldPoint.Base * Config.LevelStats.GoldPoint.Growth ^ bought)
@@ -1263,7 +1265,8 @@ function Config.GetLevelDamageMult(level)
 end
 
 function Config.GetLevelHealth(level)
-	return (level - 1) * Config.Level.HealthPerLevel
+	local L = Config.Level
+	return (math.min(level, L.StatCap) - 1) * L.HealthPerLevel + math.max(0, level - L.StatCap) * L.PostHealthPerLevel
 end
 
 ------------------------------------------------------------
