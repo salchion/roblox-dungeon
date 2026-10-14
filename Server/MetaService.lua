@@ -390,49 +390,11 @@ Players.PlayerRemoving:Connect(function(player)
 	last[player] = nil
 end)
 
--- [Studio 전용 테스트] 풀파밍 캐릭터: 5단계 이후 콘텐츠(8구역 군주 / 최후의 군주 / 세트 효과 6단계)를 바로 시험해 볼 수 있게 만든다. 게임 서버(실제 게시)에서는 절대 동작하지 않는다.
-local function devMaxCharacter(player)
-	local state = states[player]
-	if not RunService:IsStudio() or not state then return end
-	local ok, err = pcall(function()
-		local ZONES = Config.Field.ZoneCount
-		player:SetAttribute("WeaponLevel", Config.Weapon.MaxLevel)
-		Level.Load(player, Config.Level.Max, 0)
-		player:SetAttribute("Gold", 99999999)
-		player:SetAttribute("Tickets", 999)
-		player:SetAttribute("MaxZone", ZONES)
-		player:SetAttribute("ClearedZone", ZONES)
-		-- 세트 효과: 전 구역 열기 + 골드 3단계 + 켜 두기(4 / 3 / 5구역: 크리 미사일, 낙뢰, 처치 폭발)
-		local rift = state.Rift
-		for zone = 1, ZONES do
-			rift.AugBoss[tostring(zone)] = true
-			rift.AugLv[tostring(zone)] = 3
-			rift.AugOn[tostring(zone)] = (zone == 4 or zone == 3 or zone == 5) or nil
-		end
-		-- 장비: 모든 부위 전설(5등급) + 부위 강화 최대. 갑옷 / 투구 / 장갑은 4구역 세트로 맞춰서 크리 미사일 6단계
-		local Inventory = require(script.Parent:WaitForChild("InventoryService"))
-		for _, slot in ipairs(Config.Gear.Slots) do
-			local item = Inventory.NewItem(slot.Key, 5, 0, nil)
-			if slot.Key == "Armor" or slot.Key == "Helmet" or slot.Key == "Gloves" then item.Set = Config.Sets.ZoneKeys[4] end
-			Inventory.Add(player, item)
-			Inventory.SetLevel(player, slot.Key, Config.Gear.MaxLevel)
-		end
-		Inventory.AutoEquipBest(player)
-		local okAug, Aug = pcall(function() return require(script.Parent:WaitForChild("AugService")) end)
-		if okAug then Aug.Refresh(player) end
-		Meta.Push(player)
-		notify(player, "🧪 [Studio test] Full-farmed character ready! (Max weapon / max level / all lords beaten / Lv.3 set effects / legendary gear)")
-	end)
-	if not ok then warn("[DevMax] failed: " .. tostring(err)) notify(player, "🧪 Test character failed: " .. tostring(err)) end
-end
-
 Remotes.Meta.OnServerEvent:Connect(function(player, action, arg)
 	local now = os.clock()
 	if now - (last[player] or 0) < 0.25 then return end
 	last[player] = now
-	if action == "DevMax" then
-		devMaxCharacter(player)
-	elseif action == "Request" then
+	if action == "Request" then
 		Meta.Push(player)
 	elseif action == "Codex" then
 		local state = states[player]
