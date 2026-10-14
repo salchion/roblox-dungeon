@@ -1575,8 +1575,8 @@ Config.Idle = {
 Config.Shop = {
 	Passes = {
 		VIP = {
-			Name = "VIP Pass", Desc = "XP +20% · Idle income +20% · Training slot +1 · Training/breakthrough time -20% · Set effect slot +1 · Bag +20 slots · Golden aura",
-			PassId = 0, Icon = "👑", Benefits = { "XP +20%", "Idle income +20%", "Training slot +1", "Training time -20%", "Set effect slot +1", "Bag +20 slots", "Golden Aura" },
+			Name = "VIP Pass", Desc = "XP +20% · Idle income +20% · Training slot +1 · Training/breakthrough time -20% · Bag +20 slots · Golden aura",
+			PassId = 0, Icon = "👑", Benefits = { "XP +20%", "Idle income +20%", "Training slot +1", "Training time -20%", "Bag +20 slots", "Golden Aura" },
 		},
 	},
 	Products = {
@@ -1586,7 +1586,6 @@ Config.Shop = {
 		BagPlus = { Name = "Bag Expansion +10 Slots", Desc = "Permanent", ProductId = 0, Category = "Growth", Icon = "🎒", Grant = { Bag = 10 } },
 		TicketPack = { Name = "5 Gear Roll Tickets", Desc = "Use tickets to roll for gear", ProductId = 0, Category = "Currency", Icon = "🎫", Grant = { Tickets = 5 } },
 		TimeSkip10m = { Name = "Time Skip 10 min", Desc = "Reduces training / breakthrough wait time by 10 min (the skip bar fills instantly)", ProductId = 0, Category = "Growth", Icon = "⏩", Grant = { TimeSkip = 600 } },
-		AugSlot = { Name = "Set effect slot +1", Desc = "Permanent · Run one more set effect at the same time (max +2)", ProductId = 0, Category = "Growth", Icon = "🌟", Badge = "NEW", Featured = true, Grant = { AugSlot = 1 } },
 		TimeSkip1h = { Name = "Time Skip 1 hour", Desc = "Reduces training / breakthrough wait time by 1 hour", ProductId = 0, Category = "Growth", Icon = "⏩", Grant = { TimeSkip = 3600 } },
 		TimeSkip8h = { Name = "Time Skip 8 hours", Desc = "Reduces training / breakthrough wait time by 8 hours", ProductId = 0, Category = "Growth", Icon = "⏩", Badge = "Best Value", Featured = true, Grant = { TimeSkip = 28800 } },
 		IdleBooster = { Name = "Idle Booster (1 hour)", Desc = "2x idle income (applies while online and to offline accrual)", ProductId = 0, Category = "Idle", Icon = "⏱", Badge = "Popular", Featured = true, Grant = { IdleBoost = 3600 } },
@@ -1600,9 +1599,9 @@ Config.Shop = {
 	PassOrder = { "VIP" },
 	-- 상점 화면 표시용 (효과와 무관): 카테고리 탭. Products 의 Category / Badge / Icon / Featured(추천 탭) / Tier(단계 상품 표시) 도 표시 전용
 	Categories = { { Key = "Rec", Name = "🔥 Featured" }, { Key = "Idle", Name = "⏱ Idle" }, { Key = "Growth", Name = "📈 Growth" }, { Key = "Deco", Name = "🎨 Cosmetics" }, { Key = "Currency", Name = "🎫 Currency" } },
-	ProductOrder = { "IdleBooster", "IdleMult1", "IdleMult2", "IdleMult3", "IdleCap8", "IdleCap24", "AugSlot", "TimeSkip10m", "TimeSkip1h", "TimeSkip8h", "TrainSlot", "KeyPack", "XpBooster", "LuckBooster", "BagPlus", "TicketPack" },
+	ProductOrder = { "IdleBooster", "IdleMult1", "IdleMult2", "IdleMult3", "IdleCap8", "IdleCap24", "TimeSkip10m", "TimeSkip1h", "TimeSkip8h", "TrainSlot", "KeyPack", "XpBooster", "LuckBooster", "BagPlus", "TicketPack" },
 	-- VIP 효과 (코드에서 읽는 값). TrainTime: 훈련/돌파 시간 단축 비율
-	Vip = { XpBonus = 0.2, KeyCap = 2, KeyRegen = 0.3, Bag = 20, TrainSlots = 1, TrainTime = 0.2, AugSlots = 1 },
+	Vip = { XpBonus = 0.2, KeyCap = 2, KeyRegen = 0.3, Bag = 20, TrainSlots = 1, TrainTime = 0.2, AugSlots = 0 }, -- (세트 효과 칸은 과금으로 늘릴 수 없다: 군주 클리어로만)
 	XpBoostMult = 2,
 	LuckBoostBonus = 0.5,
 }
