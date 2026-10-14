@@ -24,6 +24,15 @@ if not okStore then
 	warn("[Data] DataStore unavailable; continuing without saving.")
 end
 
+-- 세션 잠금: 한 유저의 데이터는 한 서버만 쓴다. 저장 데이터 안에 Lock = { JobId, At } 을 두고, 다른 서버가 최근(LOCK_TIMEOUT 초 안)에 잡은 잠금이면 불러오지도, 덮어쓰지도 않는다.
+-- 자동 저장(60초마다)이 잠금 시각을 갱신하고, 나갈 때 / 서버 종료 때는 잠금을 풀어서 바로 다른 서버에서 이어서 할 수 있다. 서버가 갑자기 죽어도 LOCK_TIMEOUT 뒤에는 풀린다.
+local LOCK_TIMEOUT = 120
+local LOAD_TRIES = 8
+local function lockedByOther(value)
+	local lock = typeof(value) == "table" and value.Lock
+	return typeof(lock) == "table" and lock.JobId ~= game.JobId and os.time() - (tonumber(lock.At) or 0) < LOCK_TIMEOUT
+end
+
 local loaded = {} -- [player] = true  (불러오기에 성공한 플레이어만 저장 -> 실패 시 기존 데이터 덮어쓰기 방지)
 
 local function keyOf(player)
@@ -79,11 +88,21 @@ function Data.Load(player)
 	}
 	if not store then return defaults end
 
-	for attempt = 1, 3 do
+	local busy = false
+	for attempt = 1, LOAD_TRIES do
+		busy = false
 		local ok, saved = pcall(function()
-			return store:GetAsync(keyOf(player))
+			return store:UpdateAsync(keyOf(player), function(old) -- 읽으면서 잠금을 잡는다
+				if lockedByOther(old) then
+					busy = true
+					return nil -- 다른 서버가 쓰는 중: 바꾸지 않는다
+				end
+				local data = typeof(old) == "table" and old or {}
+				data.Lock = { JobId = game.JobId, At = os.time() }
+				return data
+			end)
 		end)
-		if ok then
+		if ok and not busy then
 			loaded[player] = true
 			if typeof(saved) == "table" then
 				return {
@@ -109,9 +128,13 @@ function Data.Load(player)
 			end
 			return defaults
 		end
-		task.wait(attempt)
+		if busy then
+			task.wait(2) -- 다른 서버가 저장하고 잠금을 풀 때까지 잠깐 기다린다
+		else
+			task.wait(attempt)
+		end
 	end
-	warn("[Data] Failed to load data:", player.Name)
+	warn("[Data] Failed to load data:", player.Name, busy and "(session locked by another server)" or "")
 	defaults.LoadFailed = true -- 호출한 쪽이 알려 주고 내보낸다 (저장은 막혀 있어서, 모르고 계속 하면 진행이 사라진다)
 	return defaults
 end
@@ -147,10 +170,22 @@ function Data.Save(player, final)
 	-- 마지막 저장(나갈 때 / 서버 종료)은 실패해도 진행이 사라지지 않게 몇 번 더 시도한다. 일반 자동 저장은 한 번만 (다음 자동 저장이 있다)
 	local tries = final and 4 or 1
 	local ok, err
+	local lostLock = false
 	for attempt = 1, tries do
 		ok, err = pcall(function()
-			store:SetAsync(keyOf(player), payload)
+			store:UpdateAsync(keyOf(player), function(old)
+				if lockedByOther(old) then
+					lostLock = true
+					return nil -- 다른 서버가 이 유저를 쓰는 중이면 덮어쓰지 않는다
+				end
+				payload.Lock = (not final) and { JobId = game.JobId, At = os.time() } or nil -- 나갈 때는 잠금을 푼다
+				return payload
+			end)
 		end)
+		if lostLock then
+			warn("[Data] Save skipped: session is locked by another server:", player.Name)
+			return false
+		end
 		if ok then break end
 		warn(string.format("[Data] Failed to save (%d/%d): %s %s", attempt, tries, player.Name, tostring(err)))
 		if attempt < tries then task.wait(attempt * 1.5) end
