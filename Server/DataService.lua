@@ -112,11 +112,12 @@ function Data.Load(player)
 		task.wait(attempt)
 	end
 	warn("[Data] Failed to load data:", player.Name)
+	defaults.LoadFailed = true -- 호출한 쪽이 알려 주고 내보낸다 (저장은 막혀 있어서, 모르고 계속 하면 진행이 사라진다)
 	return defaults
 end
 
 -- 저장 성공 여부를 돌려준다 (결제 영수증 처리가 "저장된 뒤에만 완료"로 쓰려고)
-function Data.Save(player)
+function Data.Save(player, final)
 	if not store then return true end -- DataStore 를 못 쓰는 환경(Studio API 꺼짐)에서는 저장 없이 진행
 	if not loaded[player] then return false end
 	local weapons = { Type = player:GetAttribute("WeaponType") or "Pistol", Unlocked = {}, Levels = {} } -- Type = 고른 무기 형 (Unlocked / Levels 는 예전 호환용)
@@ -143,11 +144,16 @@ function Data.Save(player)
 		Weapons = weapons,
 		Quest = Quest.Serialize(player),
 	}
-	local ok, err = pcall(function()
-		store:SetAsync(keyOf(player), payload)
-	end)
-	if not ok then
-		warn("[Data] Failed to save:", player.Name, err)
+	-- 마지막 저장(나갈 때 / 서버 종료)은 실패해도 진행이 사라지지 않게 몇 번 더 시도한다. 일반 자동 저장은 한 번만 (다음 자동 저장이 있다)
+	local tries = final and 4 or 1
+	local ok, err
+	for attempt = 1, tries do
+		ok, err = pcall(function()
+			store:SetAsync(keyOf(player), payload)
+		end)
+		if ok then break end
+		warn(string.format("[Data] Failed to save (%d/%d): %s %s", attempt, tries, player.Name, tostring(err)))
+		if attempt < tries then task.wait(attempt * 1.5) end
 	end
 	return ok
 end

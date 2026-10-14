@@ -350,6 +350,10 @@ local function setupPlayer(player)
 
 	-- 저장된 데이터 적용 (DataStore 대기 중에도 캐릭터는 이미 스폰될 수 있음)
 	local saved = Data.Load(player)
+	if saved.LoadFailed and player.Parent then -- 저장 데이터를 못 읽었다: 이 상태로 하면 저장이 막혀서 진행이 사라지므로 안내 후 내보낸다
+		player:Kick("Your save data could not be loaded. Please rejoin in a moment - your progress is safe.")
+		return
+	end
 	if player.Parent then
 		player:SetAttribute("Gold", saved.Gold)
 		player:SetAttribute("Tickets", saved.Tickets)
@@ -425,7 +429,7 @@ Players.PlayerRemoving:Connect(function(player)
 	lastWeapon[player] = nil
 	Party.OnPlayerRemoving(player)
 	Dungeon.OnPlayerRemoving(player)
-	Data.Save(player)
+	Data.Save(player, true)
 	Data.Forget(player)
 	Quest.Forget(player)
 	Inventory.Forget(player)
@@ -448,10 +452,20 @@ task.spawn(function()
 end)
 
 game:BindToClose(function()
+	-- 서버가 닫히기 전에 모든 플레이어 저장이 끝날 때까지 기다린다 (Roblox 는 종료 후 최대 30초까지 기다려 준다)
+	local pending = 0
 	for _, player in ipairs(Players:GetPlayers()) do
-		task.spawn(Data.Save, player)
+		pending += 1
+		task.spawn(function()
+			Data.Save(player, true)
+			pending -= 1
+		end)
 	end
-	task.wait(2)
+	local waited = 0
+	while pending > 0 and waited < 25 do
+		task.wait(0.25)
+		waited += 0.25
+	end
 end)
 
 ------------------------------------------------------------
