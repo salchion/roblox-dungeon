@@ -1982,6 +1982,12 @@ player.CharacterAdded:Connect(function(character)
 	applySpeed()
 	sliding = false
 end)
+task.spawn(function() -- 이동 속도를 0.5초마다 다시 맞춘다 (스크립트가 캐릭터보다 늦게 켜지거나 다른 곳에서 16 으로 되돌려도 느려진 채로 남지 않게)
+	while true do
+		applySpeed()
+		task.wait(0.5)
+	end
+end)
 
 RunService.RenderStepped:Connect(function(dt)
 	local target = player:GetAttribute("DeadeyeActive") and 62 or (sliding and 108 or sprinting and 80 or 70) -- 데드아이: 줌인
