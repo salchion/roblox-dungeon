@@ -412,7 +412,7 @@ local function spawnMonster(run, level, position)
 	glow.Parent = part
 	pcall(Effects.DecorateDungeonMonster, part, stats.Size, run.TypeKey) -- 던전 종류별 장식 (고블린 귀 / 서리 조각 / 불꽃 뿔)
 
-	return registerMonster(run, part, stats, string.format("Lv.%d %s", level, def.Name), 140, {
+	return registerMonster(run, part, stats, def.Name, 140, {
 		TypeKey = typeKey,
 		Def = def,
 		Level = level,

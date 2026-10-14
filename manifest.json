@@ -496,6 +496,13 @@
       "name": "DamageGuard",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "MonsterLabelClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "MonsterLabelClient",
+      "class": "LocalScript",
+      "overwrite": true
     }
   ]
 }

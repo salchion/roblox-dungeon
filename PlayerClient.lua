@@ -3589,7 +3589,7 @@ local function refreshWarp()
 	for zone = 1, Config.Field.ZoneCount do
 		local unlocked = zone <= reached
 		local zoneSet = Config.Sets[Config.Sets.ZoneKeys[zone]]
-		addRow(zone, string.format("  %s Zone %d · %s   (Monster Lv.%d)  %s %s Set", unlocked and "⛺" or "🔒", zone, Config.Field.ZoneNames[zone], Config.Field.GetZoneLevel(zone), zoneSet.Icon, zoneSet.Name), unlocked, zone)
+		addRow(zone, string.format("  %s Zone %d · %s   (Rec. ⚡%d)  %s %s Set", unlocked and "⛺" or "🔒", zone, Config.Field.ZoneNames[zone], Config.Field.RecommendPower[zone] or 0, zoneSet.Icon, zoneSet.Name), unlocked, zone)
 	end
 end
 

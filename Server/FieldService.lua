@@ -948,7 +948,7 @@ local function buildGateway(zone, x0)
 	-- 간판: 구역 이름 + 컨셉 + 몬스터 레벨
 	local signPart = part("GateSign", Vector3.new(1, 1, 1), Vector3.new(x0 + 2, H + 24, 0), accent, Enum.Material.Neon, { Transparency = 1, CanCollide = false, CanQuery = false })
 	local zoneSet = Config.Sets[Config.Sets.ZoneKeys[zone]]
-	makeSign(signPart, string.format("Zone %d · %s\n%s · Monster Lv.%d\nDanger %s\n%s Drops only here: %s Set", zone, F.ZoneNames[zone], theme.Tag, F.GetZoneLevel(zone), string.rep("☠", zone), zoneSet.Icon, zoneSet.Name), Color3.fromRGB(255, 240, 190), 0)
+	makeSign(signPart, string.format("Zone %d · %s\n%s · Rec. ⚡%d\nDanger %s\n%s Drops only here: %s Set", zone, F.ZoneNames[zone], theme.Tag, F.RecommendPower[zone] or 0, string.rep("☠", zone), zoneSet.Icon, zoneSet.Name), Color3.fromRGB(255, 240, 190), 0)
 end
 
 local function buildWorld()
@@ -1187,12 +1187,12 @@ local function spawnMonster(zone, kind, at, ambush)
 			stats.MaxHealth = math.floor(stats.MaxHealth * F.EliteMultiplier)
 			stats.Size = stats.Size * 1.5
 			stats.Gold *= 4
-			text, color, barWidth = string.format("★ Elite Lv.%d %s", xpLevel, def.Name), Color3.fromRGB(255, 220, 90), 190
+			text, color, barWidth = string.format("★ Elite %s", def.Name), Color3.fromRGB(255, 220, 90), 190
 		else
 			xpLevel = level
 			stats = Config.Monster.GetStats(level)
 			MonsterTypes.ApplyDef(typeKey, stats)
-			text, color, barWidth = string.format("Lv.%d %s", level, def.Name), Color3.new(1, 1, 1), 140
+			text, color, barWidth = def.Name, Color3.new(1, 1, 1), 140
 		end
 		-- 구역 난이도 배율: 구역이 넘어가면 몬스터가 확 강해진다 (체력 / 공격력 / 속도) 대신 보상도 크게 오른다
 		local danger = F.ZoneDanger
@@ -1323,6 +1323,8 @@ local function spawnMonster(zone, kind, at, ambush)
 		end
 	end
 
+	part:SetAttribute("MobZone", zone) -- 클라이언트가 내 전투력과 비교해서 이름 색을 칠한다 (MonsterLabelClient)
+	part:SetAttribute("MobKind", kind)
 	local newData = {
 		BossLike = kind == "Boss",
 		Zone = zone,
