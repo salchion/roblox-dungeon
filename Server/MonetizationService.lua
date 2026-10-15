@@ -392,7 +392,8 @@ MarketplaceService.ProcessReceipt = function(info)
 
 	Monetization.Grant(player, product.Grant, productKey)
 	state.Receipts[receiptKey] = os.time()
-	pcall(function() require(script.Parent:WaitForChild("OpsLog")).Purchase(player, productKey, info.CurrencySpent) end) -- (운영 로그)
+	local ops = script.Parent:FindFirstChild("OpsLog") -- (운영 로그: 없으면 건너뛴다. 기다리다 영수증 처리가 멈추지 않게 FindFirstChild)
+	if ops then pcall(function() require(ops).Purchase(player, productKey, info.CurrencySpent) end) end
 
 	-- 오래된 영수증은 정리 (최대 200개 보관)
 	local count, oldestKey, oldestTime = 0, nil, math.huge
