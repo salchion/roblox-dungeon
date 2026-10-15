@@ -496,6 +496,13 @@
       "name": "MonsterLabelClient",
       "class": "LocalScript",
       "overwrite": true
+    },
+    {
+      "path": "InventoryTabUI.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "InventoryTabUI",
+      "class": "ModuleScript",
+      "overwrite": true
     }
   ]
 }
