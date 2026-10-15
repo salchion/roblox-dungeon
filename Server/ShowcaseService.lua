@@ -17,7 +17,7 @@ local folder
 local MEDAL = { "🥇", "🥈", "🥉" }
 local MEDAL_COLORS = { Color3.fromRGB(255, 215, 60), Color3.fromRGB(205, 210, 220), Color3.fromRGB(205, 140, 80) }
 
-local function makeLabel(parent, offsetY, maxDistance)
+local function makeLabel(parent, offsetY, maxDistance, width, height)
 	local part = Instance.new("Part")
 	part.Anchored = true
 	part.CanCollide = false
@@ -27,7 +27,7 @@ local function makeLabel(parent, offsetY, maxDistance)
 	part.Position = parent.Position + Vector3.new(0, offsetY, 0)
 	part.Parent = folder
 	local gui = Instance.new("BillboardGui")
-	gui.Size = UDim2.new(0, 260, 0, 84)
+	gui.Size = UDim2.new(0, width or 260, 0, height or 84)
 	gui.AlwaysOnTop = false
 	gui.MaxDistance = maxDistance or 40
 	gui.Parent = part
@@ -188,12 +188,12 @@ function Showcase.Init(_boardCFrame)
 
 		slots[rank] = {
 			Platform = platform, Top = spot, Scale = 2.8, Look = look, Key = nil, Model = nil, Weapon = nil,
-			Label = makeLabel(platform, 27, 75),
+			Label = makeLabel(platform, 27, 150, 230, 100), -- 이름이 멀리서도 보이게 (75 -> 150 스터드, 라벨 약간 크게). 세 라벨이 멀리서 서로 겹치지 않을 정도로만 키웠다
 		}
 		slots[rank].Label.Text = MEDAL[rank] .. " Who will take this spot?\n<font size='14'>Raise your power to claim it!</font>"
 	end
 
-	local header = makeLabel(slots[1].Platform, 34, 160) -- 1등 뒷판 위의 큰 머리글
+	local header = makeLabel(slots[1].Platform, 34, 300, 320, 96) -- 1등 뒷판 위의 큰 머리글
 	header.Text = "🏆 Hall of Fame 🏆"
 	header.TextColor3 = Color3.fromRGB(255, 226, 120)
 
