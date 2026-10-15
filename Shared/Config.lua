@@ -1620,10 +1620,11 @@ Config.Shop.IdsByUniverse = {
 		Products = {
 			GoldS = 3718747392, GoldM = 3718748528, GoldL = 3718748586,
 			TimeSkip10m = 3718748285, TimeSkip1h = 3718748319, TimeSkip8h = 3718748361,
-			KeyPack = 3718748384, IdleBooster = 3718748422, XpBooster = 3718748452, LuckBooster = 3718748495,
+			IdleBooster = 3718748422, XpBooster = 3718748452,
 			IdleMult1 = 3718748628, IdleMult2 = 3718748663, IdleMult3 = 3718748690,
 			IdleCap8 = 3718748713, IdleCap24 = 3718748741, TrainSlot = 3718748785,
-			-- TicketPack: 유료 랜덤 정책 확인 뒤에 만든다
+			-- 판매하지 않는다(번호를 넣지 않음 = 상점에 "Coming Soon"): TicketPack(티켓 뽑기) / KeyPack(열쇠 -> 던전 상자의 랜덤 장비) / LuckBooster(드롭 확률 변경)
+			-- 이유: Roblox 유료 랜덤 아이템 정책(확률 공개 / 지역 제한 / 성숙도 설문)을 맞출 때까지. (KeyPack 번호 3718748384, LuckBooster 번호 3718748495 는 만들어 두었다)
 		},
 	},
 }
