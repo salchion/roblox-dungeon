@@ -524,6 +524,20 @@
       "name": "OpsLog",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "Server/AdminService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "AdminService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "AdminClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "AdminClient",
+      "class": "LocalScript",
+      "overwrite": true
     }
   ]
 }
