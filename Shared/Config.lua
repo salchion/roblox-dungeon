@@ -1608,6 +1608,26 @@ Config.Shop = {
 	LuckBoostBonus = 0.5,
 }
 
+-- 상품 번호는 "체험(게임)마다" 다르다: 테스트 복사본과 본 게임은 번호가 따로 나온다. 체험 번호(game.GameId)에 맞는 표가 있으면 그 번호로 바꿔 끼운다.
+-- 본 게임 번호는 같은 모양으로 한 줄 추가하면 된다: [본 게임 체험 번호] = { Passes = { VIP = 패스번호 }, Products = { 상품키 = 상품번호, ... } }
+Config.Shop.IdsByUniverse = {
+	[10771032846] = { -- 던전 테스트 복사본
+		Passes = { VIP = 2037536597 },
+		Products = { GoldS = 3718745146 },
+	},
+}
+do
+	local ids = Config.Shop.IdsByUniverse[game.GameId]
+	if ids then
+		for key, id in pairs(ids.Passes or {}) do
+			if Config.Shop.Passes[key] then Config.Shop.Passes[key].PassId = id end
+		end
+		for key, id in pairs(ids.Products or {}) do
+			if Config.Shop.Products[key] then Config.Shop.Products[key].ProductId = id end
+		end
+	end
+end
+
 -- 오라: 캐릭터 주변에 반짝이는 꾸미기 (다른 플레이어에게도 보임). 능력치 없음.
 -- Unlock: Free / { Ach = 업적Id } / { Pass = 패스이름 } / { Product = 상품이름 }
 Config.Auras = {
