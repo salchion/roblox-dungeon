@@ -1620,10 +1620,9 @@ Config.Shop.IdsByUniverse = {
 		Products = {
 			GoldS = 3718747392, GoldM = 3718748528, GoldL = 3718748586,
 			TimeSkip10m = 3718748285, TimeSkip1h = 3718748319, TimeSkip8h = 3718748361,
-			KeyPack = 3718748384, IdleBooster = 3718748422, XpBooster = 3718748452, LuckBooster = 3718748495,
+			KeyPack = 3718748384, TicketPack = 3718753019, IdleBooster = 3718748422, XpBooster = 3718748452, LuckBooster = 3718748495,
 			IdleMult1 = 3718748628, IdleMult2 = 3718748663, IdleMult3 = 3718748690,
 			IdleCap8 = 3718748713, IdleCap24 = 3718748741, TrainSlot = 3718748785,
-			-- TicketPack: 사이트에서 상품을 만든 뒤 번호를 넣는다 (그 전까지는 상점에 "Coming Soon")
 		},
 	},
 }
