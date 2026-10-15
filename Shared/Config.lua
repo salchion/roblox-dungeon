@@ -1615,6 +1615,10 @@ Config.Shop.IdsByUniverse = {
 		Passes = { VIP = 2037536597 },
 		Products = { GoldS = 3718745146 },
 	},
+	[10769481472] = { -- 본 게임 (test_game)
+		Passes = { VIP = 2037422610 },
+		Products = { GoldS = 3718747392 },
+	},
 }
 do
 	local ids = Config.Shop.IdsByUniverse[game.GameId]
