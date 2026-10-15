@@ -1617,7 +1617,14 @@ Config.Shop.IdsByUniverse = {
 	},
 	[10769481472] = { -- 본 게임 (test_game)
 		Passes = { VIP = 2037422610 },
-		Products = { GoldS = 3718747392 },
+		Products = {
+			GoldS = 3718747392, GoldM = 3718748528, GoldL = 3718748586,
+			TimeSkip10m = 3718748285, TimeSkip1h = 3718748319, TimeSkip8h = 3718748361,
+			KeyPack = 3718748384, IdleBooster = 3718748422, XpBooster = 3718748452, LuckBooster = 3718748495,
+			IdleMult1 = 3718748628, IdleMult2 = 3718748663, IdleMult3 = 3718748690,
+			IdleCap8 = 3718748713, IdleCap24 = 3718748741, TrainSlot = 3718748785,
+			-- TicketPack: 유료 랜덤 정책 확인 뒤에 만든다
+		},
 	},
 }
 do
