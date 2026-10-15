@@ -750,9 +750,9 @@ rounded(gachaBar, 14)
 create("UIStroke", { Color = Color3.fromRGB(255, 210, 120), Thickness = 2 }, gachaBar)
 create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(110, 60, 170), Color3.fromRGB(48, 30, 80)), Rotation = 0 }, gachaBar)
 local ticketLabel = makeLabel({
-	Size = UDim2.new(0.5, 0, 0, 34), Position = UDim2.new(0, 20, 0, 10), Font = Enum.Font.GothamBlack, TextSize = 19, TextXAlignment = Enum.TextXAlignment.Left,
+	Size = UDim2.new(1, -420, 0, 30), Position = UDim2.new(0, 20, 0, 8), Font = Enum.Font.GothamBlack, TextSize = 19, TextXAlignment = Enum.TextXAlignment.Left,
 }, gachaBar)
-makeButton({ Size = UDim2.new(0, 104, 0, 26), Position = UDim2.new(0.42, 0, 0, 14), Text = "📊 Odds", TextSize = 13, BackgroundColor3 = Color3.fromRGB(60, 72, 130) }, gachaBar, function()
+makeButton({ Size = UDim2.new(0, 104, 0, 26), Position = UDim2.new(0, 20, 1, -34), Text = "📊 Odds", TextSize = 13, BackgroundColor3 = Color3.fromRGB(60, 72, 130) }, gachaBar, function()
 	player:SetAttribute("OddsKind", "Gacha") -- OddsClient 가 확률 창을 연다 (유료 랜덤 아이템 정책)
 	player:SetAttribute("OddsOpen", os.clock())
 end)
@@ -761,7 +761,7 @@ for index, rate in ipairs(Config.Gacha.Rates) do
 	table.insert(rateParts, string.format("<font color='#%s'>%s %d%%</font>", Config.Gear.RarityColors[index]:ToHex(), Config.Gear.RarityNames[index], rate))
 end
 makeLabel({
-	Size = UDim2.new(0.44, 0, 0, 60), Position = UDim2.new(0, 20, 0, 52), RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+	Size = UDim2.new(1, -420, 0, 50), Position = UDim2.new(0, 20, 0, 40), RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 	Text = table.concat(rateParts, "  ") .. "\n<font color='#c9c0e0'>Same or lower rarity converts to Gold · Tickets drop from dungeons / field bosses</font>",
 }, gachaBar)
 local rollOne = makeButton({
