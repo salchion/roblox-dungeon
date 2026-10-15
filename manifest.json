@@ -503,6 +503,20 @@
       "name": "InventoryTabUI",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "Shared/Odds.lua",
+      "parent": "ReplicatedStorage",
+      "name": "Odds",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "OddsClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "OddsClient",
+      "class": "LocalScript",
+      "overwrite": true
     }
   ]
 }

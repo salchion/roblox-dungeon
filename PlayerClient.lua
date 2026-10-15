@@ -752,6 +752,10 @@ create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(110, 60, 170), C
 local ticketLabel = makeLabel({
 	Size = UDim2.new(0.5, 0, 0, 34), Position = UDim2.new(0, 20, 0, 10), Font = Enum.Font.GothamBlack, TextSize = 19, TextXAlignment = Enum.TextXAlignment.Left,
 }, gachaBar)
+makeButton({ Size = UDim2.new(0, 104, 0, 26), Position = UDim2.new(0.42, 0, 0, 14), Text = "📊 Odds", TextSize = 13, BackgroundColor3 = Color3.fromRGB(60, 72, 130) }, gachaBar, function()
+	player:SetAttribute("OddsKind", "Gacha") -- OddsClient 가 확률 창을 연다 (유료 랜덤 아이템 정책)
+	player:SetAttribute("OddsOpen", os.clock())
+end)
 local rateParts = {}
 for index, rate in ipairs(Config.Gacha.Rates) do
 	table.insert(rateParts, string.format("<font color='#%s'>%s %d%%</font>", Config.Gear.RarityColors[index]:ToHex(), Config.Gear.RarityNames[index], rate))
@@ -3081,6 +3085,11 @@ for index, key in ipairs(Config.Dungeon.Difficulties.Order) do
 		refreshSelect()
 	end)
 end
+
+makeButton({ Size = UDim2.new(0, 150, 0, 28), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 234), Text = "📊 Chest Odds", TextSize = 13, BackgroundColor3 = Color3.fromRGB(60, 72, 130) }, selectPanel, function()
+	player:SetAttribute("OddsKind", "Chest") -- 보스 상자 확률 (유료 랜덤 아이템 정책: 열쇠로 들어가는 던전의 상자)
+	player:SetAttribute("OddsOpen", os.clock())
+end)
 
 local summaryLabel = makeLabel({
 	Size = UDim2.new(1, -28, 0, 110), Position = UDim2.new(0, 14, 0, 314), RichText = true,

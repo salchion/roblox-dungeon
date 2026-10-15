@@ -13,6 +13,7 @@ local RunService = game:GetService("RunService")
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Inventory = require(script.Parent:WaitForChild("InventoryService"))
+local Odds = require(ReplicatedStorage:WaitForChild("Odds"))
 
 local L = Config.Loot
 local G = Config.Gear
@@ -30,16 +31,11 @@ local function luckOf(player)
 	return luck
 end
 
--- 구역 줄(row)의 가중치로 등급을 뽑는다. 영웅(3) 이상 가중치만 행운 / 종류 보너스를 받는다.
+-- 구역 줄(row)의 가중치로 등급을 뽑는다. 가중치 계산은 화면에 보여 주는 확률과 같은 모듈(Odds)을 쓴다.
 local function rollRarity(row, luck, kindMult)
-	local weights, total = {}, 0
-	for index, weight in ipairs(L.ZoneRarity[row]) do
-		if index >= 3 then
-			weight *= (1 + luck) * kindMult
-		end
-		weights[index] = weight
-		total += weight
-	end
+	local weights = Odds.Weights(row, luck, kindMult)
+	local total = 0
+	for _, weight in ipairs(weights) do total += weight end
 	local roll = math.random() * total
 	for index, weight in ipairs(weights) do
 		roll -= weight

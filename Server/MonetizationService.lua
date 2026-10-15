@@ -17,6 +17,7 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local PolicyService = game:GetService("PolicyService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
@@ -237,6 +238,19 @@ function Monetization.Load(player, saved)
 		end
 	end
 	applyAttributes(player, state)
+
+	-- 유료 랜덤 아이템 정책: 지역 / 나이 때문에 막힌 계정은 랜덤 아이템 관련 상품(티켓 / 열쇠 / 행운 부스터)을 살 수 없다.
+	-- 확인에 실패하면 안전하게 막는다 (Studio 에서는 확인이 안 될 수 있어서 막지 않는다).
+	task.spawn(function()
+		local ok, info = pcall(function() return PolicyService:GetPolicyInfoForPlayerAsync(player) end)
+		local restricted
+		if ok and typeof(info) == "table" then
+			restricted = info.ArePaidRandomItemsRestricted == true
+		else
+			restricted = not RunService:IsStudio()
+		end
+		if player.Parent then player:SetAttribute("PaidRandomRestricted", restricted) end
+	end)
 end
 
 function Monetization.Serialize(player)
@@ -309,6 +323,10 @@ Remotes.Shop.OnServerEvent:Connect(function(player, action, kind, key)
 		return
 	end
 
+	if not isPass and def.PaidRandom and player:GetAttribute("PaidRandomRestricted") ~= false then
+		notify(player, "This item isn't available for your account (paid random item restrictions).") -- (확인 전이거나 막힌 계정)
+		return
+	end
 	if not isPass and dailyLeft(state, key, def) <= 0 then
 		notify(player, "You've reached today's purchase limit for this item. Come back tomorrow!")
 		return

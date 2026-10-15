@@ -1580,10 +1580,10 @@ Config.Shop = {
 		},
 	},
 	Products = {
-		KeyPack = { Name = "5 Dungeon Keys", Desc = "For when you want to run more dungeons", ProductId = 0, Category = "Currency", Icon = "🔑", Badge = "Top Pick", Featured = true, Grant = { Keys = 5 } },
+		KeyPack = { Name = "5 Dungeon Keys", Desc = "For when you want to run more dungeons", ProductId = 0, Category = "Currency", Icon = "🔑", PaidRandom = true, OddsKind = "Chest", Badge = "Top Pick", Featured = true, Grant = { Keys = 5 } },
 		XpBooster = { Name = "XP Booster (1 hour)", Desc = "2x XP", ProductId = 0, Category = "Growth", Icon = "📚", Featured = true, Grant = { XpBoost = 3600 } },
-		LuckBooster = { Name = "Luck Booster (1 hour)", Desc = "Gear drop rarity +50%", ProductId = 0, Category = "Growth", Icon = "🍀", Grant = { LuckBoost = 3600 } },
-		TicketPack = { Name = "5 Gear Roll Tickets", Desc = "Use tickets to roll for gear", ProductId = 0, Category = "Currency", Icon = "🎫", Grant = { Tickets = 5 } },
+		LuckBooster = { Name = "Luck Booster (1 hour)", Desc = "Gear drop rarity +50%", ProductId = 0, Category = "Growth", Icon = "🍀", PaidRandom = true, OddsKind = "Luck", Grant = { LuckBoost = 3600 } },
+		TicketPack = { Name = "5 Gear Roll Tickets", Desc = "Use tickets to roll for gear", ProductId = 0, Category = "Currency", Icon = "🎫", PaidRandom = true, OddsKind = "Gacha", Grant = { Tickets = 5 } },
 		GoldS = { Name = "Gold Pack S", Desc = "Instantly get 30 minutes of YOUR idle income · max 3 per day", ProductId = 0, Category = "Currency", Icon = "💰", DailyLimit = 3, Grant = { IdleGold = 30 } },
 		GoldM = { Name = "Gold Pack M", Desc = "Instantly get 2 hours of YOUR idle income · max 3 per day", ProductId = 0, Category = "Currency", Icon = "💰", Featured = true, DailyLimit = 3, Grant = { IdleGold = 120 } },
 		GoldL = { Name = "Gold Pack L", Desc = "Instantly get 8 hours of YOUR idle income · max 3 per day", ProductId = 0, Category = "Currency", Icon = "💰", Badge = "Best Value", DailyLimit = 3, Grant = { IdleGold = 480 } },
@@ -1620,11 +1620,10 @@ Config.Shop.IdsByUniverse = {
 		Products = {
 			GoldS = 3718747392, GoldM = 3718748528, GoldL = 3718748586,
 			TimeSkip10m = 3718748285, TimeSkip1h = 3718748319, TimeSkip8h = 3718748361,
-			IdleBooster = 3718748422, XpBooster = 3718748452,
+			KeyPack = 3718748384, IdleBooster = 3718748422, XpBooster = 3718748452, LuckBooster = 3718748495,
 			IdleMult1 = 3718748628, IdleMult2 = 3718748663, IdleMult3 = 3718748690,
 			IdleCap8 = 3718748713, IdleCap24 = 3718748741, TrainSlot = 3718748785,
-			-- 판매하지 않는다(번호를 넣지 않음 = 상점에 "Coming Soon"): TicketPack(티켓 뽑기) / KeyPack(열쇠 -> 던전 상자의 랜덤 장비) / LuckBooster(드롭 확률 변경)
-			-- 이유: Roblox 유료 랜덤 아이템 정책(확률 공개 / 지역 제한 / 성숙도 설문)을 맞출 때까지. (KeyPack 번호 3718748384, LuckBooster 번호 3718748495 는 만들어 두었다)
+			-- TicketPack: 사이트에서 상품을 만든 뒤 번호를 넣는다 (그 전까지는 상점에 "Coming Soon")
 		},
 	},
 }

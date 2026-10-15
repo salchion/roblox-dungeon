@@ -180,9 +180,15 @@ function SHOP.Card(parent, order, o)
 	end
 	local b = o.Btn
 	makeButton({
-		Size = o.Prev and UDim2.new(0.62, -14, 0, 30) or UDim2.new(1, -20, 0, 30), Position = o.Prev and UDim2.new(0.38, 4, 0, 152) or UDim2.new(0, 10, 0, 152),
+		Size = (o.Prev or o.OddsKind) and UDim2.new(0.62, -14, 0, 30) or UDim2.new(1, -20, 0, 30), Position = (o.Prev or o.OddsKind) and UDim2.new(0.38, 4, 0, 152) or UDim2.new(0, 10, 0, 152),
 		Text = b[1], TextSize = 12, BackgroundColor3 = b[2], Active = b[3] ~= nil, AutoButtonColor = b[3] ~= nil,
 	}, card, b[3])
+	if o.OddsKind then
+		makeButton({ Size = UDim2.new(0.38, -10, 0, 30), Position = UDim2.new(0, 10, 0, 152), Text = "📊 Odds", TextSize = 11, BackgroundColor3 = Color3.fromRGB(58, 70, 124) }, card, function()
+			player:SetAttribute("OddsKind", o.OddsKind)
+			player:SetAttribute("OddsOpen", os.clock())
+		end)
+	end
 	if o.Prev then
 		makeButton({ Size = UDim2.new(0.38, -10, 0, 30), Position = UDim2.new(0, 10, 0, 152), Text = "👀 Preview", TextSize = 11, BackgroundColor3 = Color3.fromRGB(58, 70, 124) }, card, o.Prev)
 	end
@@ -193,6 +199,10 @@ function SHOP.ProdCard(parent, order, key)
 	local label, color = shopButtonLabel(def.ProductId)
 	local o = { Icon = def.Icon or "🎁", Name = def.Name, Desc = def.Desc, Acc = SHOP.Acc[def.Category] or SHOP.Acc.Rec, Badge = def.Badge,
 		Btn = { label, color, function() Remotes.Shop:FireServer("Buy", "Product", key) end } }
+	if def.PaidRandom then -- 유료 랜덤 아이템: "Odds" 버튼으로 확률을 보여 주고, 지역 제한이 걸린 계정은 살 수 없다
+		o.OddsKind = def.OddsKind
+		if player:GetAttribute("PaidRandomRestricted") == true then o.Btn = { "Not available in your region", GRAY } end
+	end
 	local tier = def.Tier
 	if tier then
 		local lv, pips = SHOP.Level(tier.Group), {}
@@ -237,7 +247,7 @@ function SHOP.CosCard(parent, order, k, key)
 end
 
 function SHOP.Sig()
-	local now, s = os.time(), { SHOP.Cat, SHOP.Cols(), SHOP.Level("IdleMult"), SHOP.Level("IdleCap"), tostring(player:GetAttribute("Vip")), player:GetAttribute("TrainSlotBonus"), player:GetAttribute("BagBonus") }
+	local now, s = os.time(), { SHOP.Cat, SHOP.Cols(), SHOP.Level("IdleMult"), SHOP.Level("IdleCap"), tostring(player:GetAttribute("Vip")), tostring(player:GetAttribute("PaidRandomRestricted")), player:GetAttribute("TrainSlotBonus"), player:GetAttribute("BagBonus") }
 	for _, attr in pairs(SHOP.Boost) do s[#s + 1] = (player:GetAttribute(attr) or 0) > now and 1 or 0 end
 	for _, k in ipairs(SHOP.Kinds) do
 		s[#s + 1] = player:GetAttribute(k[1])
