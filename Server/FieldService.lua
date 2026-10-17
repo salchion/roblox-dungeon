@@ -1159,7 +1159,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		local base = Config.Monster.GetStats(bossLevel)
 		local danger = F.ZoneDanger
 		stats = {
-			Size = 16 + zone * 2,
+			Size = (16 + zone * 2) * ((F.BossSizeMult and F.BossSizeMult[zone]) or 1),
 			MaxHealth = math.floor(base.MaxHealth * 60 * danger.Health[zone]),
 			Speed = boss.Speed * danger.Speed[zone],
 			ShotDamage = math.max(10, math.floor(base.ShotDamage * (zone >= 7 and 1.3 or 1.5) * danger.Damage[zone])), -- (후반 군주는 한 방에 체력이 크게 깎이지 않게 살짝 낮춤)
@@ -2107,6 +2107,42 @@ local function playersNear(position, radius)
 	return list
 end
 
+-- 구역 군주의 기본 공격 탄 모양 / 색 (F.BossShot, 없으면 1구역 모양)
+local function bossLook(zone)
+	return (F.BossShot and (F.BossShot[zone] or F.BossShot[1])) or { Style = "Crystal", Color = Color3.fromRGB(235, 110, 100), RingStyle = "Crystal", RingColor = Color3.fromRGB(235, 175, 90), MissileStyle = "Missile", MissileColor = Color3.fromRGB(240, 170, 90) }
+end
+
+-- 구역 군주 움직임 변화 (F.BossMove): 좌우로 도는 움직임(Strafe) / 가까우면 물러나기(Kite)
+local function bossSidestep(part, data, target, dt, mv, distance)
+	local flat = Vector3.new(target.Position.X - part.Position.X, 0, target.Position.Z - part.Position.Z)
+	if flat.Magnitude < 0.5 then return end
+	local toward = flat.Unit
+	local dir
+	if mv.Kite and distance < data.Stats.Size / 2 + (mv.Keep or 16) - 6 then
+		dir = -toward
+	elseif mv.Strafe then
+		if not data.StrafeUntil or os.clock() > data.StrafeUntil then
+			data.StrafeUntil = os.clock() + 2 + math.random() * 2
+			data.StrafeSign = math.random() < 0.5 and -1 or 1
+		end
+		dir = Vector3.new(-toward.Z, 0, toward.X) * data.StrafeSign * mv.Strafe
+	else
+		return
+	end
+	local radius = data.Stats.Size / 2 + 2
+	local zx0, zx1 = zoneBounds(data.Zone)
+	local half = F.Width / 2
+	local step = dir * data.Stats.Speed * (mv.Speed or 1) * dt
+	local nx = math.clamp(part.Position.X + step.X, zx0 + F.CampSafe + radius, zx1 - radius - 4)
+	local nz = math.clamp(part.Position.Z + step.Z, -half + radius + 4, half - radius - 4)
+	if walkableAt(nx, nz, radius) then
+		local newPos = Vector3.new(nx, floorAt(nx) + data.Stats.Size / 2, nz)
+		part.CFrame = CFrame.lookAt(newPos, Vector3.new(target.Position.X, newPos.Y, target.Position.Z))
+	else
+		data.StrafeUntil = nil -- 막히면 방향을 다시 고른다
+	end
+end
+
 local function bossCue(part, text, color)
 	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 4, 0), text, color)
 end
@@ -2390,12 +2426,16 @@ local function stepMonsters(dt)
 				MonsterTypes.Update(fieldCtx, part, data, dt, now)
 				if part.Parent and monsters[part] == data then unstick(part, data) end
 			else
-				local keepDistance = data.Stats.Size / 2 + 16
+				local mv = F.BossMove and F.BossMove[data.Zone]
+				local keepDistance = data.Stats.Size / 2 + ((mv and mv.Keep) or 16)
+				if mv and distance <= keepDistance + 4 and now >= (data.BusyUntil or 0) then
+					bossSidestep(part, data, target, dt, mv, distance) -- 구역마다 다른 움직임 (옆으로 돌기 / 물러나기)
+				end
 				if distance > keepDistance and now >= (data.BusyUntil or 0) then
 					local flatTarget = Vector3.new(target.Position.X, part.Position.Y, target.Position.Z)
 					local move = flatTarget - part.Position
 					if move.Magnitude > 0.1 then
-						local speed = data.Stats.Speed * dt
+						local speed = data.Stats.Speed * ((mv and mv.Speed) or 1) * dt
 						local step = move.Unit * speed
 						local radius = data.Stats.Size / 2 + 2
 						local zx0, zx1 = zoneBounds(data.Zone)
@@ -2447,11 +2487,12 @@ local function stepMonsters(dt)
 						local direction = current.Position - part.Position
 						-- 5갈래 -> 3갈래 수정 + (1구역 군주 제외) 느린 유도 미사일 한 발. 1구역 군주는 튜토리얼이라 순한 직선탄만.
 						local gentle = data.Zone == 1
+						local look = bossLook(data.Zone)
 						for _, angle in ipairs(gentle and { -16, 0, 16 } or { -18, 0, 18 }) do
-							fireProjectile(part.Position, rotateY(direction.Unit, angle), data.Stats.ShotSpeed * 0.9, math.floor(data.Stats.ShotDamage * (gentle and 1 or 1.2)), 3, Color3.fromRGB(235, 110, 100), "Crystal")
+							fireProjectile(part.Position, rotateY(direction.Unit, angle), data.Stats.ShotSpeed * 0.9, math.floor(data.Stats.ShotDamage * (gentle and 1 or 1.2)), 3, look.Color, look.Style)
 						end
-						if not gentle then
-							fireProjectile(part.Position + Vector3.new(0, 2, 0), direction.Unit, 26, math.floor(data.Stats.ShotDamage * 1.1), 2.4, Color3.fromRGB(240, 170, 90), "Missile", { Kind = "homing", Turn = 1.6, Life = 3.5 })
+						if not gentle and look.MissileStyle then
+							fireProjectile(part.Position + Vector3.new(0, 2, 0), direction.Unit, 26, math.floor(data.Stats.ShotDamage * 1.1), 2.4, look.MissileColor, look.MissileStyle, { Kind = "homing", Turn = 1.6, Life = 3.5 })
 						end
 					end)
 				end
@@ -2469,7 +2510,7 @@ local function stepMonsters(dt)
 							local angle = offset + (i / count) * math.pi * 2
 							local direction = Vector3.new(math.cos(angle), 0, math.sin(angle))
 							fireProjectile(Vector3.new(part.Position.X, floorAt(part.Position.X) + 3, part.Position.Z) + direction * (part.Size.X / 2 + 1), direction, 24, math.floor(data.Stats.ShotDamage * 0.85), 2.6,
-								Color3.fromRGB(235, 175, 90), swirl and "Halo" or "Crystal", swirl and { Kind = "curve", W = 0.4, Life = 4 } or nil)
+								bossLook(data.Zone).RingColor, swirl and "Halo" or bossLook(data.Zone).RingStyle, swirl and { Kind = "curve", W = 0.4, Life = 4 } or nil)
 						end
 					end)
 				end

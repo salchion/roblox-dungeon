@@ -815,6 +815,27 @@ Config.Field = {
 		[8] = { slam = 1, charge = 1, spiral = 2 }, -- 나선 + 심연 광선
 	},
 	BossSignatureWeight = 7, -- 구역 고유 패턴이 뽑힐 비중
+	-- 구역 군주의 기본 공격 탄 모양 / 색 (Style: Crystal / Spear / Dart / Shard / Halo / Skull / Needle / Bomb / Seeker / Crescent ...). MissileStyle = false 이면 유도탄 없음
+	BossShot = {
+		[1] = { Style = "Crystal", Color = Color3.fromRGB(235, 110, 100), RingStyle = "Crystal", RingColor = Color3.fromRGB(235, 175, 90), MissileStyle = "Missile", MissileColor = Color3.fromRGB(240, 170, 90) },
+		[2] = { Style = "Spear", Color = Color3.fromRGB(150, 215, 110), RingStyle = "Dart", RingColor = Color3.fromRGB(190, 225, 120), MissileStyle = "Seeker", MissileColor = Color3.fromRGB(170, 235, 130) },
+		[3] = { Style = "Bomb", Color = Color3.fromRGB(200, 165, 120), RingStyle = "Bomb", RingColor = Color3.fromRGB(215, 180, 130), MissileStyle = false, MissileColor = Color3.fromRGB(215, 180, 130) },
+		[4] = { Style = "Needle", Color = Color3.fromRGB(140, 240, 110), RingStyle = "Needle", RingColor = Color3.fromRGB(165, 245, 120), MissileStyle = "Snake", MissileColor = Color3.fromRGB(130, 235, 100) },
+		[5] = { Style = "Shard", Color = Color3.fromRGB(150, 220, 255), RingStyle = "Shard", RingColor = Color3.fromRGB(190, 235, 255), MissileStyle = false, MissileColor = Color3.fromRGB(170, 225, 255) },
+		[6] = { Style = "Seeker", Color = Color3.fromRGB(255, 135, 55), RingStyle = "Bomb", RingColor = Color3.fromRGB(255, 160, 70), MissileStyle = "Missile", MissileColor = Color3.fromRGB(255, 120, 50) },
+		[7] = { Style = "Crescent", Color = Color3.fromRGB(190, 120, 255), RingStyle = "Skull", RingColor = Color3.fromRGB(210, 160, 255), MissileStyle = "Seeker", MissileColor = Color3.fromRGB(200, 130, 255) },
+		[8] = { Style = "Halo", Color = Color3.fromRGB(255, 105, 175), RingStyle = "Halo", RingColor = Color3.fromRGB(255, 150, 200), MissileStyle = "Seeker", MissileColor = Color3.fromRGB(255, 110, 180) },
+	},
+	-- 구역 군주의 움직임 (Speed: 걷는 속도 배율 / Keep: 유지하려는 거리 / Strafe: 좌우로 도는 정도 / Kite: 가까워지면 물러남)
+	BossMove = {
+		[2] = { Speed = 1.6, Strafe = 0.7 },            -- 사슴령: 빠르게 돌아다닌다
+		[3] = { Speed = 0.7 },                           -- 바위 거인: 느리고 묵직하다
+		[4] = { Speed = 1.2, Strafe = 0.9 },            -- 전갈: 좌우로 재빠르게
+		[5] = { Speed = 0.9, Keep = 34, Kite = true },  -- 얼음 군주: 거리를 두고 물러난다
+		[7] = { Speed = 1.3, Strafe = 0.5 },            -- 사신: 미끄러지듯
+		[8] = { Speed = 0.8, Keep = 28, Strafe = 0.5 }, -- 심연의 눈: 떠다니며 거리를 유지
+	},
+	BossSizeMult = { [3] = 1.15, [4] = 0.9, [6] = 1.1, [7] = 0.95, [8] = 1.15 }, -- 군주 크기 배율 (실루엣 변화, 나머지는 1)
 	Boss = {
 		Name = "Field Overlord",
 		Size = 18,
