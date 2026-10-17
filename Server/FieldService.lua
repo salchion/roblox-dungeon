@@ -2536,16 +2536,16 @@ local function stepMonsters(dt)
 					Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 6, 0), "😡 Enraged!", Color3.fromRGB(255, 70, 70))
 					Effects.Burst(part.Position, Color3.fromRGB(255, 70, 70), 80)
 				end
-				-- 보스전 박진감: 싸우는 동안 부하 몬스터가 주변에 나타난다 (2구역부터, 살아 있는 부하는 최대 5마리)
+				-- 보스전 박진감: 싸우는 동안 부하 몬스터가 주변에 나타난다 (2구역부터, 살아 있는 부하는 최대 7마리)
 				data.NextAdds = data.NextAdds or (now + 6)
 				if data.Zone > 1 and now >= data.NextAdds then
-					data.NextAdds = now + (data.Enraged and 8 or 12)
+					data.NextAdds = now + (data.Enraged and 5 or 8)
 					data.AddParts = data.AddParts or {}
 					local alive = 0
 					for i = #data.AddParts, 1, -1 do
 						if monsters[data.AddParts[i]] then alive += 1 else table.remove(data.AddParts, i) end
 					end
-					for _ = 1, math.min(5 - alive, data.Enraged and 3 or 2) do
+					for _ = 1, math.min(7 - alive, data.Enraged and 4 or 3) do
 						local angle = math.random() * math.pi * 2
 						local dist = data.Stats.Size / 2 + 14 + math.random() * 18
 						local at = part.Position + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist)
@@ -2556,9 +2556,9 @@ local function stepMonsters(dt)
 					end
 				end
 				-- 다양한 패턴: 내려찍기 / 돌진 / 나선 탄막을 번갈아 (격노하면 더 자주, 두 개씩)
-				data.NextPattern = data.NextPattern or (now + 3) -- (예전에는 이 값이 비어 있으면 조건이 항상 거짓이라 군주 패턴이 한 번도 나오지 않았다)
+				data.NextPattern = data.NextPattern or (now + 2) -- (예전에는 이 값이 비어 있으면 조건이 항상 거짓이라 군주 패턴이 한 번도 나오지 않았다)
 				if now >= data.NextPattern and now >= (data.BusyUntil or 0) then
-					data.NextPattern = now + (data.Enraged and 4.2 or 6.5)
+					data.NextPattern = now + (data.Enraged and 4.2 or 6.5) * (F.BossTempo or 1) -- BossTempo < 1 이면 패턴이 더 자주 나온다
 					local entry = pickBossPattern(data)
 					data.LastPattern = entry.Name
 					local okFn, errFn = pcall(entry.Fn, part, data) -- 패턴 하나가 오류가 나도 보스 전체가 멈추지 않게
