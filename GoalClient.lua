@@ -117,14 +117,18 @@ local function claimable()
 	end
 	return count
 end
+local questOpen = false -- 작은 화면(폰): 평소엔 한 줄로 접어 두고, 누르면 펼친다 (화면 가운데를 가리지 않게)
 questPanel.Activated:Connect(function()
+	local claimed = false
 	for _, quest in ipairs(dailyList or {}) do
 		if not quest.Claimed and quest.Progress >= quest.Goal then
 			quest.Claimed = true -- 서버 응답이 오기 전에 다시 눌러도 중복으로 보내지 않게
 			Remotes.Quest:FireServer("Claim", quest.Id)
+			claimed = true
 			task.wait(0.15)
 		end
 	end
+	if not claimed and compact() then questOpen = not questOpen end -- 받을 보상이 없으면 접기 / 펼치기
 	refreshQuests()
 end)
 local questShown = false
@@ -139,6 +143,16 @@ task.defer(function() Remotes.Quest:FireServer("Request") end) -- 퀘스트 상�
 
 function refreshQuests()
 	if not dailyList then return end
+	if compact() and not questOpen then
+		local done, ready = 0, 0
+		for _, quest in ipairs(dailyList) do
+			if quest.Claimed then done += 1 elseif quest.Progress >= quest.Goal then ready += 1 end
+		end
+		local tail = ready > 0 and "  <font color='#78ff8c'>✅ tap to claim!</font>" or "  <font color='#9aa0b8'>(tap to open)</font>"
+		questLabel.Text = string.format("<font color='#ffd966'><b>📋 Daily Quests</b></font> %d/%d%s", done, #dailyList, tail)
+		questPanel.Size = UDim2.new(0, 260, 0, 28)
+		return
+	end
 	local lines = { "<font color='#ffd966'><b>📋 Daily Quests</b></font>" }
 	for _, quest in ipairs(dailyList) do
 		local done = quest.Progress >= quest.Goal
@@ -153,6 +167,7 @@ function refreshQuests()
 	questLabel.Text = table.concat(lines, "\n")
 	questPanel.Size = UDim2.new(0, 260, 0, 12 + 18 * #lines)
 end
+pg:GetAttributeChangedSignal("UiCompact"):Connect(function() refreshQuests() end)
 
 -- 던전 게이트에 은은한 빛기둥: 설명 없이 시선이 그쪽으로 가게 한다 (처음 던전에 들어가면 사라진다)
 local function updateBeacon(active)
