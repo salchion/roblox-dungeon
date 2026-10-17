@@ -806,15 +806,15 @@ Config.Field = {
 	-- 구역 군주마다 기본 패턴 비중을 다르게 (slam 내려찍기 / charge 돌진 / spiral 나선). 2~8구역은 여기에 구역 고유 패턴(FieldBossPatterns)이 한 개 더 섞인다.
 	BossStyle = {
 		[1] = { slam = 3, charge = 2, spiral = 2 },
-		[2] = { slam = 1, charge = 4, spiral = 1 },
-		[3] = { slam = 4, charge = 1, spiral = 1 },
-		[4] = { slam = 2, charge = 2, spiral = 1 },
-		[5] = { slam = 1, charge = 1, spiral = 4 },
-		[6] = { slam = 3, charge = 1, spiral = 2 },
-		[7] = { slam = 1, charge = 3, spiral = 2 },
-		[8] = { slam = 2, charge = 2, spiral = 3 },
+		[2] = { slam = 0, charge = 3, spiral = 1 }, -- 돌진 + 뿔 질주
+		[3] = { slam = 3, charge = 0, spiral = 1 }, -- 내려찍기 + 바위 소나기
+		[4] = { slam = 1, charge = 0, spiral = 2 }, -- 나선 + 독 웅덩이
+		[5] = { slam = 0, charge = 0, spiral = 3 }, -- 나선 + 얼음 가시줄
+		[6] = { slam = 2, charge = 0, spiral = 1 }, -- 내려찍기 + 유성우
+		[7] = { slam = 0, charge = 2, spiral = 1 }, -- 돌진 + 순간이동 베기
+		[8] = { slam = 1, charge = 1, spiral = 2 }, -- 나선 + 심연 광선
 	},
-	BossSignatureWeight = 3.5, -- 구역 고유 패턴이 뽑힐 비중
+	BossSignatureWeight = 7, -- 구역 고유 패턴이 뽑힐 비중
 	Boss = {
 		Name = "Field Overlord",
 		Size = 18,
