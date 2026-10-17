@@ -17,6 +17,9 @@ local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
+-- 폰에서 화면을 자동으로 가로로 (센서: 폰을 왼쪽 / 오른쪽으로 돌려도 가로 유지). PC 에서는 아무 영향이 없다.
+pcall(function() playerGui.ScreenOrientation = Enum.ScreenOrientation.LandscapeSensor end)
+
 local THUMB = 200       -- 모바일 조이스틱 / 점프 버튼 영역 (실제 픽셀)
 local MIN_SCALE = 0.7   -- 이보다 작게 줄이면 12px 글씨가 8px 아래로 내려간다
 local PILL_Y = 6
