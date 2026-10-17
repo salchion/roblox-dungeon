@@ -28,13 +28,14 @@
 --   LevelStat    C->S  ("Add", key, n) ("Sub", key, n) ("Reset")             레벨 스탯 포인트 배분 (이동속도 / 사정거리 / 투사체 / 쿨감 / 줍기)
 --   Fx           S->C  (events)                                전투 시각 효과 묶음 (총알 / 폭발 / 피해 숫자 / 적 탄). 클라이언트 FxClient 가 그린다
 --   Notify       S->C  (text)                                  화면 알림
+--   BossStage    S->C  ("Intro"|"Enrage"|"Victory", { Zone, Name, ... })   구역 군주 연출 (배너 / 번쩍임)
 --   Admin        C->S  ("List")   S->C ("List", { Players, JobId, Count })   운영자 전용(서버가 확인)
 --   Banner       S->C  ("Zone", { Zone, Name, Stars, HealthMult, DamageMult, RewardMult })   구역에 들어설 때 뜨는 큰 경고 배너
 
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon", "Notify", "Gear", "OpenGear", "Quest", "Rank", "Weapon", "Inventory", "Loot", "Warp", "Shop", "Growth", "Rift", "Skill", "Hit", "Meta", "Tutorial", "Banner", "LevelStat", "Fx", "Aug", "Admin" }
+local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon", "Notify", "Gear", "OpenGear", "Quest", "Rank", "Weapon", "Inventory", "Loot", "Warp", "Shop", "Growth", "Rift", "Skill", "Hit", "Meta", "Tutorial", "Banner", "LevelStat", "Fx", "Aug", "Admin", "BossStage" }
 
 local folder
 if RunService:IsServer() then

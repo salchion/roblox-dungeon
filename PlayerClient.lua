@@ -1592,7 +1592,12 @@ local function updateMusic()
 		playMusic("Lobby")
 	elseif zone == "Field" then
 		if player:GetAttribute("BossFight") then
-			playMusic(tracks.Dungeon and "Dungeon" or (tracks.Field and "Field" or "Lobby"))
+			if tracks.Boss then
+				tracks.Boss.PlaybackSpeed = player:GetAttribute("BossEnrage") and 1.1 or 1 -- 군주 격노: 음악이 한 단계 빨라진다
+				playMusic("Boss")
+			else
+				playMusic(tracks.Dungeon and "Dungeon" or (tracks.Field and "Field" or "Lobby"))
+			end
 		else
 			local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 			local zoneKey = root and ("Field" .. Config.Field.ZoneOfX(root.Position.X))
@@ -1605,6 +1610,7 @@ local function updateMusic()
 	end
 end
 player:GetAttributeChangedSignal("BossFight"):Connect(function() updateMusic() end)
+player:GetAttributeChangedSignal("BossEnrage"):Connect(function() updateMusic() end)
 player:GetAttributeChangedSignal("InDoomArena"):Connect(function() updateMusic() end)
 task.spawn(function()
 	while true do

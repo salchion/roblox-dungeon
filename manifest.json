@@ -545,6 +545,20 @@
       "name": "FieldBossPatterns",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "Server/BossStage.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "BossStage",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "BossStageClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "BossStageClient",
+      "class": "LocalScript",
+      "overwrite": true
     }
   ]
 }

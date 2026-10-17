@@ -28,6 +28,7 @@ local Meta = require(script.Parent:WaitForChild("MetaService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Level = require(script.Parent:WaitForChild("LevelService"))
 local MonsterTypes = require(script.Parent:WaitForChild("MonsterTypes"))
+local Stage = require(script.Parent:WaitForChild("BossStage")) -- 군주 전투 연출 (등장 / 격노 / 처치)
 local Combo = require(script.Parent:WaitForChild("ComboService"))
 local Loot = require(script.Parent:WaitForChild("LootService"))
 local Inventory = require(script.Parent:WaitForChild("InventoryService"))
@@ -1510,6 +1511,11 @@ local function reward(player, data, part)
 
 	gateProgress(player, data)
 	Quest.Add(player, "Kills", 1)
+	local firstBoss = false -- 이 구역 군주를 처음 쓰러뜨렸나 (도감 기록 전에 확인)
+	if data.Kind == "Boss" then
+		local okF, MetaF = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
+		if okF and MetaF.BossKills then firstBoss = MetaF.BossKills(player, data.Zone) == 0 end
+	end
 	do -- 도감 기록
 		local okM, MetaS = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
 		if okM and MetaS.CodexKill then
@@ -1520,6 +1526,7 @@ local function reward(player, data, part)
 		Quest.Add(player, "EliteKills", 1)
 	elseif data.Kind == "Boss" then
 		Quest.Add(player, "BossKills", 1)
+		pcall(Stage.Victory, player, part, data, firstBoss) -- 승리 연출
 	else
 		Quest.Add(player, "FieldKills", 1)
 	end
@@ -1691,6 +1698,7 @@ function Field.HitPart(player, part, damage)
 	end
 	if data.Invincible then damage = 1 end
 	if data.Doom then data.DoomHits = (data.DoomHits or 0) + 1 end
+	if data.IntroUntil and os.clock() < data.IntroUntil then damage = 0 end -- 군주 등장 포효 중에는 피해 없음
 	data.Health -= damage
 	BL.Dmg(player, damage, false)
 	if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
@@ -1722,6 +1730,7 @@ function Field.AreaDamage(player, center, radius, damage)
 			table.insert(positions, target.Part.Position)
 			if data.Invincible then damage = 1 end
 			if data.ExposedUntil and os.clock() < data.ExposedUntil then damage = math.floor(damage * 3) end -- 약점 노출 중 x3
+			if data.IntroUntil and os.clock() < data.IntroUntil then damage = 0 end -- 군주 등장 포효 중에는 피해 없음
 			data.Health -= damage
 			BL.Dmg(player, damage, false)
 			if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
@@ -1863,6 +1872,7 @@ function Field.Shoot(player, origin, direction)
 				if SoundBank.Has("Shield_Block") then SoundBank.Play(result.Instance, "Shield_Block") end
 			end
 		end
+		if data.IntroUntil and os.clock() < data.IntroUntil then damage = 0 end -- 군주 등장 포효 중에는 피해 없음
 		data.Health -= damage
 		BL.Dmg(player, damage, isCrit)
 		data.LastHit = os.clock() -- 맞은 몬스터는 멀리서 맞아도 깨어나 반응하고, 한동안 체력을 되찾지 않는다
@@ -2270,6 +2280,7 @@ local function bossSpiral(part, data)
 	end)
 end
 
+Stage.Init({ GetWorldFolder = function() return worldFolder end, FloorAt = floorAt, Effects = Effects })
 local ExtraBossPatterns = require(script.Parent:WaitForChild("FieldBossPatterns")).Init({
 	Monsters = monsters, GetWorldFolder = function() return worldFolder end, FloorAt = floorAt, NearestFieldPlayer = nearestFieldPlayer,
 	PlayersNear = playersNear, WalkableAt = walkableAt, Effects = Effects, Guard = Guard,
@@ -2548,6 +2559,7 @@ local function stepMonsters(dt)
 					data.Enraged = true
 					Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 6, 0), "😡 Enraged!", Color3.fromRGB(255, 70, 70))
 					Effects.Burst(part.Position, Color3.fromRGB(255, 70, 70), 80)
+					if data.Kind == "Boss" then pcall(Stage.Enrage, part, data) end -- 격노 연출 (몸이 붉어지고 충격파 / 배너)
 				end
 				-- 보스전 박진감: 싸우는 동안 부하 몬스터가 주변에 나타난다 (2구역부터, 살아 있는 부하는 최대 7마리)
 				data.NextAdds = data.NextAdds or (now + 6)
@@ -3255,6 +3267,7 @@ local function updateBossFight()
 		local fighting = false
 		local bossZone
 		local bossKind
+		local bossPart, bossData
 		if player:GetAttribute("Zone") == "Field" then
 			local root = getAliveParts(player)
 			if root then
@@ -3263,6 +3276,7 @@ local function updateBossFight()
 						fighting = true
 						bossZone = data.Zone
 						bossKind = data.Kind
+						bossPart, bossData = part, data
 						if data.Kind == "Boss" then break end -- 지역 군주가 가까이 있으면 군주를 기준으로 (거신보다 우선)
 					end
 				end
@@ -3301,6 +3315,11 @@ local function updateBossFight()
 		end
 		if player:GetAttribute("BossFight") ~= fighting then
 			player:SetAttribute("BossFight", fighting)
+			if fighting and bossKind == "Boss" and bossPart and bossData and not player:GetAttribute("TutorialDoom") then
+				pcall(Stage.Intro, bossPart, bossData, player) -- 등장 연출 (배너 / 흔들림 / 충격파)
+			elseif not fighting then
+				Stage.ClearEnrage(player)
+			end
 			if fighting and bossKind == "Boss" and player:GetAttribute("TutorialRetryBuff") then
 				-- 쓰러졌다가 다시 도전: 일회성 힘 (군주에게 주는 피해 x8 + 궁극기 가득)
 				player:SetAttribute("UltCharge", Config.Skills.Ult.Cost)
@@ -3678,6 +3697,7 @@ local function fieldAugHit(player, entry, amount, quiet)
 	if monsters[part] ~= data or data.Health <= 0 or data.Invincible then return end
 	if not canHitZone(player, part.Position.X) then return end -- 아직 못 가는 구역(닫힌 관문 너머)의 몬스터는 세트 효과로도 못 때린다
 	amount = math.max(1, math.floor(amount))
+	if data.IntroUntil and os.clock() < data.IntroUntil then return end
 	data.Health -= amount
 	BL.DmgAs(player, "세트·펫", amount)
 	data.LastHit = os.clock()

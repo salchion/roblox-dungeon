@@ -248,6 +248,12 @@ local function scanCodexItems(player, state)
 	end
 end
 
+-- 이 구역 군주를 지금까지 몇 번 쓰러뜨렸나 (처음 쓰러뜨림 표시용)
+function Meta.BossKills(player, zone)
+	local state = states[player]
+	return state and state.Codex.Boss[tostring(zone)] or 0
+end
+
 function Meta.CodexSet(player, setKey)
 	local state = states[player]
 	if not state or typeof(setKey) ~= "string" then return end
