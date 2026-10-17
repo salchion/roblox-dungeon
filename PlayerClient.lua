@@ -2780,7 +2780,7 @@ local function buildSkillTab(passiveOnly)
 		local maxed = level >= U.MaxLevel
 		makeButton({
 			Size = UDim2.new(0, 150, 0, 34), Position = UDim2.new(1, -162, 0.5, -17),
-			Text = maxed and "MAX" or string.format("Upgrade %d G", Config.GetSkillUpgradeCost(level)),
+			Text = maxed and "MAX" or string.format("Upgrade %d G", Config.GetSkillUpgradeCost(level, player:GetAttribute("WeaponLevel"))),
 			BackgroundColor3 = maxed and GRAY or GREEN,
 		}, row, function()
 			if not maxed then

@@ -145,7 +145,7 @@ Remotes.Aug.OnServerEvent:Connect(function(player, action, zone)
 		end
 		local level = rift.AugLv[key] or 0
 		if level >= 3 then return end
-		local cost = Config.Sets.AugCost(zone, level + 1)
+		local cost = Config.Sets.AugCost(zone, level + 1, player:GetAttribute("WeaponLevel"))
 		local gold = player:GetAttribute("Gold") or 0
 		if gold < cost then
 			notify(player, string.format("Not enough gold (need %d G)", cost))

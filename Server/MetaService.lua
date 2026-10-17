@@ -310,7 +310,7 @@ local function upgradeSkill(player, key)
 		notify(player, "Already at max level!")
 		return
 	end
-	local cost = Config.GetSkillUpgradeCost(level)
+	local cost = Config.GetSkillUpgradeCost(level, player:GetAttribute("WeaponLevel"))
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
 		notify(player, string.format("Not enough gold. (%d G needed)", cost))
@@ -329,7 +329,7 @@ end
 local function unlockPet(player)
 	local state = states[player]
 	if not state or state.Pet.Unlocked then return end
-	local cost = Config.Pet.UnlockCost
+	local cost = Config.GetPetUnlockCost(player:GetAttribute("WeaponLevel"))
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
 		notify(player, string.format("Not enough gold. (%d G needed)", cost))
@@ -356,7 +356,7 @@ local function levelUpPet(player)
 		notify(player, "Your pet is already at max level!")
 		return
 	end
-	local cost = Config.GetPetLevelCost(level)
+	local cost = Config.GetPetLevelCost(level, player:GetAttribute("WeaponLevel"))
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
 		notify(player, string.format("Not enough gold. (%d G needed)", cost))
