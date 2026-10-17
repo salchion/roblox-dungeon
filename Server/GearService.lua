@@ -876,7 +876,7 @@ function Gear.Enhance(player, slotKey)
 		return false, "Already at max upgrade level!"
 	end
 
-	local cost = Config.GetGearCost(slotKey, rarity, level)
+	local cost = Config.GetGearCost(slotKey, rarity, level, player:GetAttribute("WeaponLevel") or 0)
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
 		return false, string.format("💰 Not enough Gold. (%d needed) Earn Gold at the Training Dummy / field hunting / dungeons / Boss Rush rewards", cost)

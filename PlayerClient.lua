@@ -843,7 +843,7 @@ function refreshGear()
 		}
 		local now = Config.FormatGearStat(slot.Key, Config.GetGearStat(slot.Key, rarity, level))
 		if level < maxLevel then
-			local cost = Config.GetGearCost(slot.Key, rarity, level)
+			local cost = Config.GetGearCost(slot.Key, rarity, level, player:GetAttribute("WeaponLevel") or 0)
 			local chance = math.floor(Config.GetGearEnhanceChance(level) * 100 + 0.5)
 			table.insert(lines, string.format("<b>%s</b>\n<font color='#78ff8c'>▶ %s</font>", now, Config.FormatGearStat(slot.Key, Config.GetGearStat(slot.Key, rarity, level + 1))))
 			table.insert(lines, "")

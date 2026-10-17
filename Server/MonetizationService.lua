@@ -132,6 +132,7 @@ local function idleGold(player, minutes)
 	local okIdle, Idle = pcall(function() return require(script.Parent:WaitForChild("IdleService")) end)
 	if not okIdle then return 0 end
 	local perSecond = Idle.Rate(player) / math.max(1, Idle.Multiplier(player))
+	perSecond = perSecond * ((Config.Idle.PackFraction or Config.Idle.Fraction) / Config.Idle.Fraction) -- 방치 비율을 낮춰도 골드 팩 가치는 그대로
 	return math.floor(perSecond * 60 * minutes)
 end
 

@@ -470,7 +470,7 @@ Config.Boss = {
 Config.Economy = {
 	IncomeBase = 1500,        -- 공격력 배율 1.0(처음 무기)일 때 열심히 플레이한 분당 골드
 	StepMinutesEarly = 0.4,   -- 초반 무기 강화 한 단계에 걸리길 바라는 분 (15단계 = 약 4분)
-	StepMinutesLate = 0.9,    -- 강화 단계 LateLevel 이후 (10단계 = 약 6분)
+	StepMinutesLate = 1.4,    -- 강화 단계 LateLevel 이후 (0.9 -> 1.4: 무기만 올리면 점점 비싸져서 장비 / 다른 성장에도 골드를 나누게 된다. 무기 전체 약 900분 분량)
 	LateLevel = 600,
 	FieldGoldMult = 2.6,      -- 필드 몬스터 처치 골드 배율 (구역 보상표 x 이 값)
 	DungeonGoldMult = 0.6,    -- 던전 골드 배율 (던전은 처치 수가 많아서 낮춘다)
@@ -664,7 +664,7 @@ end
 -- 등급(일반~신화)이 높을수록 효과가 크고, 강화 레벨이 오를수록 더 커짐
 ------------------------------------------------------------
 Config.Gear = {
-	MaxLevel = 30, -- 15 -> 30 (15강까지는 6부위 기대 약 39만 G, 30강까지는 약 1,100만 G)
+	MaxLevel = 30, -- 15 -> 30 (비용은 아래 GetGearCost: 내 분당 수입 기준)
 	LevelBonus = 0.08,   -- 강화 1레벨당 효과 +8%
 	RarityNames = { "Common", "Rare", "Epic", "Legendary", "Mythic" },
 	RarityColors = {
@@ -725,14 +725,16 @@ function Config.FormatGearStat(slotKey, value)
 	return string.format("%s +%.1f%%", slot.StatName, value * 100)
 end
 
--- 강화 비용: 부위와 강화 단계로만 정해진다 (끼고 있는 장비의 등급은 상관없다: 일부러 낮은 등급을 끼고 싸게 강화하는 걸 막는다). 등급 값은 호환용으로만 받는다.
-function Config.GetGearCost(slotKey, _rarity, level)
+-- 강화 비용: "내 분당 수입(무기 단계에 비례) x 단계별 분 수"로 정한다. 부위와 강화 단계로만 정해진다 (끼고 있는 장비의 등급은 상관없다: 일부러 낮은 등급을 끼고 싸게 강화하는 걸 막는다. 등급 값은 호환)
+-- 무기를 올려 수입이 늘면 장비 비용도 같이 오르므로, 무기만 올려서는 장비를 따라 올릴 수 없다 (성장이 골고루 되게).
+-- StepMinutes: 6부위를 +30까지 올리는 데 드는 기대 비용이 수입 약 125분 분량이 되도록 맞춘 값 (열심히 하는 사람이 일주일 안팎). 증가율 CostGrowth 1.15 로 단계마다 고르게 오른다.
+Config.Gear.StepMinutes = 0.017
+Config.Gear.CostGrowth = 1.15
+function Config.GetGearCost(slotKey, _rarity, level, weaponLevel)
 	local slot = Config.GetGearSlot(slotKey)
-	-- 15강까지는 단계마다 1.28배, 15강 이후는 1.2배로 완만하게 (성공 확률은 35% 아래로 내려가지 않는다)
-	if level <= 15 then
-		return math.floor(slot.BaseCost * 1.8 * 1.28 ^ level) -- (1.8 = 예전 영웅 등급 기준)
-	end
-	return math.floor(slot.BaseCost * 1.8 * 1.28 ^ 15 * 1.2 ^ (level - 15))
+	local weight = slot.BaseCost / 121.67 -- 부위마다 조금씩 다르게 (여섯 부위 평균 1)
+	local income = Config.Economy.IncomeBase * Config.GetDamageMultiplier(weaponLevel or 0)
+	return math.max(1, math.floor(income * Config.Gear.StepMinutes * Config.Gear.CostGrowth ^ level * weight))
 end
 
 function Config.GetGearEnhanceChance(level)
@@ -1245,6 +1247,7 @@ Config.LevelStats = {
 	Cap = { Move = 40, Range = 50, Double = 60, Haste = 50, CritDmg = 60 },
 	-- 최대 레벨(200)을 찍은 뒤에는 골드로 포인트를 더 살 수 있다 (골드 사용처). n 번째(0부터) 포인트 비용 = Base x Growth^n. 살 수 있는 총 개수는 아래 MaxGoldPoints.
 	GoldPoint = { Base = 200000, Growth = 1.07 },
+	GoldPointMinLevel = 100, -- 이 레벨부터 골드로 포인트를 살 수 있다 (예전에는 200 레벨이라 중반에 쓸 골드가 마땅치 않았다)
 	OtherExtraShotValue = 0.5, -- 장비 옵션 / 던전 특성으로 늘어난 탄 한 발의 가치 (예전에는 100%여서 탄이 늘면 딜이 그대로 배수로 늘었다)
 }
 function Config.GetLevelStatPoints(level)
@@ -1603,7 +1606,8 @@ Config.Events = {
 ------------------------------------------------------------
 -- 방치 수입 (휴식 구역): 휴식 구역 원 안에 서 있으면 수입 + 접속을 끊어도 한도까지 적립. BM 은 "효율 / 한도"만 늘려 준다.
 Config.Idle = {
-	Fraction = 0.34,          -- 방치 수입(분당) = 이 값 x Economy.IncomeBase x 공격력 배율(무기 단계) x (1 + 장비/훈련/펫 공격력 보너스) x 환생 x 방치 배율. 활동 수입의 약 1/3
+	Fraction = 0.22,          -- (0.34 -> 0.22: 영구 +100% / VIP / 부스터를 모두 켜도 접속 중 방치가 직접 플레이 수입의 약 70%를 넘지 않게. 오프라인은 효율 0.6 이라 약 42%)
+	PackFraction = 0.34,      -- 골드 팩("내 방치 수입 N분치")을 계산하는 비율: 기존 값 그대로라 팩 가치는 변하지 않는다          -- 방치 수입(분당) = 이 값 x Economy.IncomeBase x 공격력 배율(무기 단계) x (1 + 장비/훈련/펫 공격력 보너스) x 환생 x 방치 배율. 활동 수입의 약 1/3
 	Radius = 18,              -- 훈련장 중심에서 이 거리 안에 있으면 방치 중
 	OfflineEfficiency = 0.6,  -- 오프라인 적립은 접속 중 방치의 60%
 	BaseCapHours = 4,         -- 오프라인 적립 한도 (기본). 하루 2~3번 접속하는 사람이 반나절 비워도 대부분 받도록 4시간
