@@ -160,7 +160,8 @@ end
 
 local function scanModals(vw, vh)
 	for _, g in ipairs(playerGui:GetChildren()) do
-		if g:IsA("ScreenGui") and (THEIRS[g.Name] or OWN[g.Name]) then
+		-- 목록에 없는 화면(도감 / 확률표 / 운영자 창 ...)도 자동으로 맞춘다: 화면 전체에 UIScale 이 이미 있으면(스스로 맞추는 화면) 건드리지 않는다
+		if g:IsA("ScreenGui") and (THEIRS[g.Name] or OWN[g.Name] or (g.Name ~= "TouchGui" and not g:FindFirstChildOfClass("UIScale"))) then
 			for _, child in ipairs(g:GetChildren()) do
 				if isModal(child) then
 					fitModal(child, vw, vh)
