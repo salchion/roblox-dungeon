@@ -248,6 +248,13 @@ end
 
 -- 아이템을 가방에 넣는다. 반환: status ("Equipped" | "Bag" | "Scrapped" | "Full"), item, essence, gold
 --   빈 부위면 자동 장착 / 자동 분해 등급 이하면 분해 / 가방이 가득하면 분해
+-- 도감이 가방 / 장착 아이템을 훑을 때 쓴다
+function Inventory.EachItem(player, fn)
+	local state = states[player]
+	if not state then return end
+	for _, item in pairs(state.Items) do fn(item) end
+end
+
 function Inventory.Add(player, item)
 	local state = states[player]
 	if not state then return "None", item end
@@ -255,6 +262,10 @@ function Inventory.Add(player, item)
 	state.NextId += 1
 	item.Id = state.NextId
 	item.Level = state.SlotLevels[item.Slot] or 0 -- 새 장비도 그 부위의 강화 단계를 바로 받는다
+	do -- 도감(아이템): 이 부위 / 등급 / 유니크 효과를 얻어 봤다
+		local okM, Meta = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
+		if okM and Meta.CodexItem then Meta.CodexItem(player, item.Slot, item.Rarity, item.Unique) end
+	end
 	if item.Set then -- 도감: 이 세트 장비를 얻어 봤다
 		local okM, Meta = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
 		if okM and Meta.CodexSet then Meta.CodexSet(player, item.Set) end

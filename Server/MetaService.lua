@@ -147,7 +147,7 @@ local function syncSkillAttributes(player, state)
 end
 
 function Meta.Load(player, saved)
-	local state = { Skills = {}, Pet = { Unlocked = false, Level = 1, Look = "Orb", Color = 1 }, Tower = 0, Codex = { Kills = {}, Boss = {}, Sets = {} }, Rift = { BestScore = 0, BestBoss = 0, BestTime = 0, Week = 0, WeekBest = 0, Day = 0, Used = 0, Hints = {}, LvStats = {} } }
+	local state = { Skills = {}, Pet = { Unlocked = false, Level = 1, Look = "Orb", Color = 1 }, Tower = 0, Codex = { Kills = {}, Boss = {}, Sets = {}, Items = {} }, Rift = { BestScore = 0, BestBoss = 0, BestTime = 0, Week = 0, WeekBest = 0, Day = 0, Used = 0, Hints = {}, LvStats = {} } }
 	for _, key in ipairs(Config.Skills.UpgradeOrder) do
 		local level = typeof(saved) == "table" and typeof(saved.Skills) == "table" and tonumber(saved.Skills[key]) or 1
 		state.Skills[key] = math.clamp(math.floor(level), 1, Config.SkillUpgrade.MaxLevel)
@@ -170,7 +170,7 @@ function Meta.Load(player, saved)
 			end
 		end
 		if typeof(saved.Codex) == "table" then
-			for _, group in ipairs({ "Kills", "Boss", "Sets" }) do
+			for _, group in ipairs({ "Kills", "Boss", "Sets", "Items" }) do
 				if typeof(saved.Codex[group]) == "table" then
 					for key, count in pairs(saved.Codex[group]) do
 						if typeof(key) == "string" and #key <= 16 and tonumber(count) then state.Codex[group][key] = math.max(0, math.floor(tonumber(count))) end
@@ -211,6 +211,41 @@ function Meta.CodexKill(player, typeKey, bossZone)
 	if bossZone then group, key = "Boss", tostring(bossZone) end
 	if typeof(key) ~= "string" then return end
 	state.Codex[group][key] = (state.Codex[group][key] or 0) + 1
+end
+
+-- 도감(아이템): 얻어 본 장비 등급 / 유니크 효과. 키: "부위등급" (예: "Armor3") / "U_유니크키" (예: "U_Split") -> 얻은 횟수
+function Meta.CodexItem(player, slotKey, rarity, uniqueKey)
+	local state = states[player]
+	if not state then return end
+	local items = state.Codex.Items
+	if typeof(slotKey) == "string" and typeof(rarity) == "number" and rarity >= 1 and rarity <= #Config.Gear.RarityNames then
+		local key = slotKey .. math.floor(rarity)
+		if #key <= 16 then items[key] = (items[key] or 0) + 1 end
+	end
+	if typeof(uniqueKey) == "string" and Config.Uniques[uniqueKey] and uniqueKey ~= "Order" and #uniqueKey <= 14 then
+		items["U_" .. uniqueKey] = (items["U_" .. uniqueKey] or 0) + 1
+	end
+end
+
+-- 도감을 열 때: 지금 끼고 있는 뽑기 장비 등급과 가방 / 장착 중인 아이템을 훑어서, 업데이트 전에 얻은 것도 기록한다 (이미 기록된 것은 1 이상으로만 맞춘다)
+local function scanCodexItems(player, state)
+	local items = state.Codex.Items
+	local function mark(key)
+		if (items[key] or 0) < 1 and #key <= 16 then items[key] = 1 end
+	end
+	for _, slot in ipairs(Config.Gear.Slots) do
+		local rarity = player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0
+		for r = 1, math.floor(rarity) do -- 더 높은 등급을 가졌으면 낮은 등급도 알 만큼 봤다고 친다
+			mark(slot.Key .. r)
+		end
+	end
+	local okI, Inventory = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
+	if okI and Inventory.EachItem then
+		Inventory.EachItem(player, function(item)
+			if item.Slot and item.Rarity then mark(item.Slot .. math.floor(item.Rarity)) end
+			if item.Unique and Config.Uniques[item.Unique] then mark("U_" .. item.Unique) end
+		end)
+	end
 end
 
 function Meta.CodexSet(player, setKey)
@@ -369,7 +404,10 @@ Remotes.Meta.OnServerEvent:Connect(function(player, action, arg)
 		Meta.Push(player)
 	elseif action == "Codex" then
 		local state = states[player]
-		if state then Remotes.Meta:FireClient(player, "Codex", state.Codex) end
+		if state then
+			pcall(scanCodexItems, player, state)
+			Remotes.Meta:FireClient(player, "Codex", state.Codex)
+		end
 	elseif action == "PetPeek" then -- 펫 창을 열어 봤다 (첫날 퀘스트 "펫 구경")
 		local okQ, Quest = pcall(function() return require(script.Parent:WaitForChild("QuestService")) end)
 		if okQ then Quest.Add(player, "PetPeek", 1) end

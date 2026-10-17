@@ -45,7 +45,7 @@ local list = create("ScrollingFrame", {
 }, panel)
 create("UIListLayout", { Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder }, list)
 
-local data = { Kills = {}, Boss = {}, Sets = {} }
+local data = { Kills = {}, Boss = {}, Sets = {}, Items = {} }
 local tab = "Monster"
 local tabButtons = {}
 local order = 0
@@ -101,7 +101,7 @@ local function rebuild()
 			makeLabel({ Size = UDim2.new(0, 90, 1, 0), Position = UDim2.new(1, -96, 0, 0), Text = bossKills > 0 and ("Kills " .. bossKills) or "", TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(255, 225, 120), TextXAlignment = Enum.TextXAlignment.Right }, r)
 		end
 		summary.Text = string.format("Monsters met %d / %d (incl. zone lords)", found, total)
-	else
+	elseif tab == "Set" then
 		local found = 0
 		for zone = 1, F.ZoneCount do
 			local key = Config.Sets.ZoneKeys[zone]
@@ -128,12 +128,65 @@ local function rebuild()
 			end
 		end
 		summary.Text = string.format("Sets obtained %d / %d  ·  Monsters / lord of that zone drop them at a set rate", found, F.ZoneCount)
+	elseif tab == "Weapon" then
+		-- 무기 도감: 100종 (10개 시대 x 10종류). 지금 무기 단계까지 온 무기만 이름이 공개된다 (새 저장 데이터 없이 WeaponLevel 로 계산)
+		local reached = Config.GetWeaponTier(player:GetAttribute("WeaponLevel") or 0).Index
+		local perEra = #Config.WeaponTypes.Order
+		local eras = math.ceil(#Config.Weapon.Tiers / perEra)
+		for era = 1, eras do
+			local firstIndex = (era - 1) * perEra + 1
+			local head = row(26, Color3.fromRGB(44, 50, 84))
+			local foundInEra = math.max(0, math.min(perEra, reached - firstIndex + 1))
+			makeLabel({ Size = UDim2.new(1, -12, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = string.format("%s  ·  %d / %d", Config.GetEraName(era), foundInEra, perEra), TextSize = 12, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Left }, head)
+			local r = row(86)
+			local left, right = {}, {}
+			for k = 1, perEra do
+				local tier = Config.Weapon.Tiers[firstIndex + k - 1]
+				if tier then
+					local text = firstIndex + k - 1 <= reached and string.format("<font color='#%s'>%s</font>", hex(tier.Color or Color3.new(1, 1, 1)), tier.Name) or "<font color='#6b7088'>???</font>"
+					table.insert(k <= perEra / 2 and left or right, text)
+				end
+			end
+			makeLabel({ Size = UDim2.new(0.5, -14, 1, -10), Position = UDim2.new(0, 10, 0, 5), Text = table.concat(left, "\n"), RichText = true, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top }, r)
+			makeLabel({ Size = UDim2.new(0.5, -14, 1, -10), Position = UDim2.new(0.5, 4, 0, 5), Text = table.concat(right, "\n"), RichText = true, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top }, r)
+		end
+		summary.Text = string.format("Weapons reached %d / %d  ·  Enhance your weapon to meet the next one", reached, #Config.Weapon.Tiers)
+	elseif tab == "Unique" then
+		local found = 0
+		for _, key in ipairs(Config.Uniques.Order) do
+			local info = Config.Uniques[key]
+			local got = data.Items["U_" .. key] or 0
+			if got > 0 then found += 1 end
+			local r = row(54, Color3.fromRGB(46, 38, 64))
+			makeLabel({ Size = UDim2.new(0, 40, 1, 0), Position = UDim2.new(0, 4, 0, 0), Text = got > 0 and "✨" or "❔", TextSize = 20 }, r)
+			makeLabel({ Size = UDim2.new(1, -150, 0, 22), Position = UDim2.new(0, 48, 0, 6), Text = got > 0 and info.Name or "???", TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 140), TextXAlignment = Enum.TextXAlignment.Left }, r)
+			makeLabel({ Size = UDim2.new(1, -150, 0, 20), Position = UDim2.new(0, 48, 0, 28), Text = got > 0 and info.Desc or "A special effect that can come with Mythic gear", TextSize = 10, TextColor3 = Color3.fromRGB(190, 196, 225), TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, r)
+			makeLabel({ Size = UDim2.new(0, 90, 1, 0), Position = UDim2.new(1, -96, 0, 0), Text = got > 0 and ("Got " .. got) or "Not obtained", TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = got > 0 and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(150, 150, 170), TextXAlignment = Enum.TextXAlignment.Right }, r)
+		end
+		summary.Text = string.format("Unique effects found %d / %d  ·  Mythic gear can carry one (about %d%% chance)", found, #Config.Uniques.Order, math.floor(Config.Uniques.Chance * 100 + 0.5))
+	else
+		-- 장비 도감: 부위마다 5개 등급 이름. 얻어 본 등급만 공개된다
+		local total, found = 0, 0
+		for _, slot in ipairs(Config.Gear.Slots) do
+			local r = row(64)
+			local parts = {}
+			for rarity, name in ipairs(slot.Names) do
+				total += 1
+				local got = (data.Items[slot.Key .. rarity] or 0) > 0
+				if got then found += 1 end
+				local color = Config.Gear.RarityColors[rarity] or Color3.new(1, 1, 1)
+				table.insert(parts, got and string.format("<font color='#%s'>%s</font>", hex(color), name) or "<font color='#6b7088'>???</font>")
+			end
+			makeLabel({ Size = UDim2.new(1, -20, 0, 20), Position = UDim2.new(0, 10, 0, 4), Text = string.format("%s · %s", slot.Name, slot.StatName), TextSize = 12, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Left }, r)
+			makeLabel({ Size = UDim2.new(1, -20, 0, 36), Position = UDim2.new(0, 10, 0, 24), Text = table.concat(parts, "  ·  "), RichText = true, TextSize = 11, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top }, r)
+		end
+		summary.Text = string.format("Gear found %d / %d  ·  Higher-rarity gear you have held shows its name", found, total)
 	end
 end
 
-for index, def in ipairs({ { "Monster", "👾 Monsters" }, { "Set", "🛡 Set Gear" } }) do
+for index, def in ipairs({ { "Monster", "👾 Monsters" }, { "Set", "🛡 Sets" }, { "Weapon", "🔫 Weapons" }, { "Unique", "✨ Uniques" }, { "Gear", "🎽 Gear" } }) do
 	local button = makeButton({
-		Size = UDim2.new(0, 140, 0, 30), Position = UDim2.new(0, 16 + (index - 1) * 148, 0, 64), Text = def[2], TextSize = 12,
+		Size = UDim2.new(0, 90, 0, 30), Position = UDim2.new(0, 16 + (index - 1) * 96, 0, 64), Text = def[2], TextSize = 11,
 	}, panel, function() tab = def[1] rebuild() end)
 	rounded(button, 8)
 	tabButtons[def[1]] = button
@@ -151,7 +204,7 @@ openButton.Activated:Connect(function() toggle() end)
 
 Remotes.Meta.OnClientEvent:Connect(function(action, payload)
 	if action == "Codex" and typeof(payload) == "table" then
-		data = { Kills = payload.Kills or {}, Boss = payload.Boss or {}, Sets = payload.Sets or {} }
+		data = { Kills = payload.Kills or {}, Boss = payload.Boss or {}, Sets = payload.Sets or {}, Items = payload.Items or {} }
 		if panel.Visible then rebuild() end
 	end
 end)
