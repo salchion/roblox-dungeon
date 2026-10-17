@@ -140,7 +140,7 @@ end
 
 -- 파티원 모두에게 경험치 (던전 종류 x 난이도 배율 적용)
 local function giveXp(run, amount)
-	amount = math.floor(amount * (Config.Dungeon.XpMult[run.DiffKey] or 1) + 0.5) -- (골드 배율이 아니라 경험치 전용 배율: 던전이 필드보다 레벨이 훨씬 빨리 오르던 문제)
+	amount = math.floor(amount * D.GetXpMult(run.DiffKey) + 0.5) -- (골드 배율이 아니라 경험치 전용 배율: 던전이 필드보다 레벨이 훨씬 빨리 오르던 문제)
 	for _, member in ipairs(run.Members) do
 		Level.AddXP(member, amount)
 	end
@@ -416,7 +416,7 @@ local function spawnMonster(run, level, position)
 		TypeKey = typeKey,
 		Def = def,
 		Level = level,
-		GZone = run.Tutorial and 1 or (run.RiftMode and Config.Rift.GimmickZone) or Config.Gimmick.DungeonZone[run.DiffKey] or 1, -- 탄막 기믹 강도: 난이도 / 보스러쉬를 필드 구역으로 환산
+		GZone = run.Tutorial and 1 or (run.RiftMode and Config.Rift.GimmickZone) or D.GimmickZone(run.DiffKey), -- 탄막 기믹 강도: 난이도 / 보스러쉬를 필드 구역으로 환산
 		Phase = math.random() * math.pi * 2,
 		NextAttack = os.clock() + stats.ShotInterval,
 	})
@@ -2224,6 +2224,16 @@ local function finish(run, victory)
 		giveXp(run, Config.Xp.DungeonClear)
 		for _, member in ipairs(run.Members) do
 			Quest.Add(member, "DungeonClears", 1)
+			local clearedDepth = D.DepthOf(run.DiffKey)
+			if clearedDepth then
+				local okMeta, MetaD = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
+				if okMeta then
+					local isRecord = MetaD.DepthClear(member, run.TypeKey, clearedDepth)
+					if isRecord then
+						notify(member, string.format("⭐ New record! %s depth %d cleared. Depth %d is unlocked.", run.Type.Name, clearedDepth, clearedDepth + 1))
+					end
+				end
+			end
 			local lines = run.LootLines[member] or {}
 			for _, line in ipairs(Loot.DungeonChest(member, run.TypeKey, run.DiffKey)) do -- 보스 상자: 장비 아이템
 				table.insert(lines, line)
@@ -2410,7 +2420,7 @@ local function applyBuff(run, member, buff)
 	elseif buff.Effect == "Gold" then
 		run.GoldMult *= 1.2
 	elseif buff.Effect == "Xp" then
-		Level.AddXP(member, math.floor(Config.Xp.WaveClear * math.max(1, run.Wave or 1) * 2 * (Config.Dungeon.XpMult[run.DiffKey] or 1) + 0.5))
+		Level.AddXP(member, math.floor(Config.Xp.WaveClear * math.max(1, run.Wave or 1) * 2 * D.GetXpMult(run.DiffKey) + 0.5))
 	elseif buff.Effect == "Ticket" then
 		member:SetAttribute("Tickets", (member:GetAttribute("Tickets") or 0) + 1)
 		run.TicketsEarned[member] = (run.TicketsEarned[member] or 0) + 1
@@ -2793,7 +2803,7 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 	typeKey = typeKey or "Cave"
 	diffKey = diffKey or "Normal"
 	local dungeonType = D.Types[typeKey]
-	local difficulty = D.Difficulties[diffKey]
+	local difficulty = D.GetDifficulty(diffKey) -- "Easy"/"Normal"/"Hard" 또는 깊이 "D12"
 	if not dungeonType or not dungeonType.Waves or not difficulty or not difficulty.HealthMult then return end -- "Order" 같은 잘못된 키 방어
 
 	local party = nil
@@ -2812,6 +2822,20 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 		end
 	end
 	if not table.find(members, player) then return end
+
+	-- 깊이: 못 깬 깊이로는 못 들어간다 (파티원 모두 최고 깊이 + 1 까지)
+	local startDepth = D.DepthOf(diffKey)
+	if startDepth and not riftMode and not fromField then
+		local okMeta, MetaD = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
+		if okMeta then
+			for _, member in ipairs(members) do
+				if startDepth > MetaD.DepthBest(member, typeKey) + 1 then
+					notify(player, string.format("%s hasn't unlocked depth %d yet. (Clear depth %d first)", member.DisplayName, startDepth, startDepth - 1))
+					return
+				end
+			end
+		end
+	end
 
 	-- 던전 입장 제한: 열쇠 (파티원 모두 필요). 시간이 지나면 자동으로 차오른다.
 	local keyCost = (riftMode or fromField or player:GetAttribute("TutorialDungeonRun") == true) and 0 or (difficulty.KeyCost or 1) -- 튜토리얼 던전 미션은 몇 번을 다시 들어가도 열쇠 / 무료 입장을 쓰지 않는다 -- 심연 도전은 열쇠 대신 하루 도전 횟수를 쓴다 (RiftService 가 관리)
@@ -3000,27 +3024,49 @@ end
 
 -- 던전 게이트: 파티장(또는 솔로)에게 던전 종류 / 난이도 선택창을 띄운다
 -- 로비의 던전 게이트(Config.Dungeon.List[index])에서 입장: 레벨 확인 후 바로 시작한다
-function Dungeon.StartGate(player, index)
-	if player:GetAttribute("Zone") ~= "Lobby" then return end
+-- 입장구 앞에서 레벨을 확인한 뒤: 처음이면 깊이 1 로 바로 시작, 아니면 깊이 고르는 창을 띄운다
+local function gateChecks(player, entry)
+	if player:GetAttribute("Zone") ~= "Lobby" then return false end
 	if player:GetAttribute("TutorialDungeonLocked") then
 		notify(player, "🔒 You can't enter dungeons yet. Complete the tutorial missions first!")
-		return
+		return false
 	end
-	local entry = typeof(index) == "number" and D.List[index]
-	if not entry then return end
 	local party = Party.GetParty(player)
 	if party and party.Leader ~= player then
 		notify(player, "Only the party leader can start a dungeon.")
-		return
+		return false
 	end
 	local who = party and party.Members or { player }
 	for _, member in ipairs(who) do
 		if (member:GetAttribute("Level") or 1) < entry.MinLevel then
 			notify(player, string.format("%s's level is too low. (This dungeon requires Lv.%d+)", member.DisplayName, entry.MinLevel))
-			return
+			return false
 		end
 	end
-	Dungeon.Start(player, entry.Type, entry.Diff)
+	return true
+end
+
+function Dungeon.StartGate(player, index)
+	local entry = typeof(index) == "number" and D.List[index]
+	if not entry or not gateChecks(player, entry) then return end
+	local okMeta, MetaD = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
+	local best = okMeta and MetaD.DepthBest(player, entry.Type) or 0
+	if best == 0 or player:GetAttribute("TutorialActive") or player:GetAttribute("TutorialDungeonRun") == true then
+		Dungeon.Start(player, entry.Type, D.DepthKey(1)) -- 처음이거나 튜토리얼: 깊이 1 로 바로
+	else
+		Remotes.Dungeon:FireClient(player, "OpenDepth", { Type = entry.Type })
+	end
+end
+
+-- 깊이 창에서 [입장]: 입장구와 같은 검사를 서버에서 다시 한다 (화면에서 보낸 값을 믿지 않는다)
+function Dungeon.StartDepth(player, typeKey, depth)
+	if typeof(typeKey) ~= "string" or typeof(depth) ~= "number" or depth ~= depth then return end
+	local entry
+	for _, e in ipairs(D.List) do
+		if e.Type == typeKey then entry = e break end
+	end
+	if not entry or not gateChecks(player, entry) then return end
+	Dungeon.Start(player, typeKey, D.DepthKey(depth))
 end
 
 function Dungeon.OpenSelect(player)
@@ -3033,11 +3079,9 @@ function Dungeon.OpenSelect(player)
 	Remotes.Dungeon:FireClient(player, "OpenSelect")
 end
 
-Remotes.Dungeon.OnServerEvent:Connect(function(player, action, typeKey, diffKey)
-	if action == "Start" then
-		if typeof(typeKey) == "string" and typeof(diffKey) == "string" and typeKey ~= "Rift" then -- 심연 도전은 RiftService 만 시작할 수 있다
-			Dungeon.Start(player, typeKey, diffKey)
-		end
+Remotes.Dungeon.OnServerEvent:Connect(function(player, action, typeKey, depth)
+	if action == "StartDepth" then -- 깊이 창에서 입장 (옛 "Start" 는 입장구 레벨 검사를 건너뛸 수 있어서 없앴다)
+		Dungeon.StartDepth(player, typeKey, depth)
 	elseif action == "Leave" then
 		Dungeon.Leave(player)
 	end

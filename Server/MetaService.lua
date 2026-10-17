@@ -147,7 +147,7 @@ local function syncSkillAttributes(player, state)
 end
 
 function Meta.Load(player, saved)
-	local state = { Skills = {}, Pet = { Unlocked = false, Level = 1, Look = "Orb", Color = 1 }, Tower = 0, Codex = { Kills = {}, Boss = {}, Sets = {}, Items = {} }, Rift = { BestScore = 0, BestBoss = 0, BestTime = 0, Week = 0, WeekBest = 0, Day = 0, Used = 0, Hints = {}, LvStats = {} } }
+	local state = { Skills = {}, Pet = { Unlocked = false, Level = 1, Look = "Orb", Color = 1 }, Tower = 0, Codex = { Kills = {}, Boss = {}, Sets = {}, Items = {} }, Depth = { Cave = 0, Ice = 0, Fire = 0 }, Rift = { BestScore = 0, BestBoss = 0, BestTime = 0, Week = 0, WeekBest = 0, Day = 0, Used = 0, Hints = {}, LvStats = {} } }
 	for _, key in ipairs(Config.Skills.UpgradeOrder) do
 		local level = typeof(saved) == "table" and typeof(saved.Skills) == "table" and tonumber(saved.Skills[key]) or 1
 		state.Skills[key] = math.clamp(math.floor(level), 1, Config.SkillUpgrade.MaxLevel)
@@ -178,12 +178,18 @@ function Meta.Load(player, saved)
 				end
 			end
 		end
+		if typeof(saved.Depth) == "table" then -- 던전 깊이 최고 기록 (종류별)
+			for typeKey in pairs(state.Depth) do
+				state.Depth[typeKey] = math.clamp(math.floor(tonumber(saved.Depth[typeKey]) or 0), 0, Config.Dungeon.Depth.MaxDepth)
+			end
+		end
 		state.Tower = math.max(0, math.floor(tonumber(saved.Tower) or 0))
 		if typeof(saved.Rift) == "table" then
 			state.Rift = { BestScore = math.max(0, math.floor(tonumber(saved.Rift.BestScore) or 0)), Day = math.floor(tonumber(saved.Rift.Day) or 0), Used = math.max(0, math.floor(tonumber(saved.Rift.Used) or 0)), Tip = saved.Rift.Tip == true, DungeonTip = saved.Rift.DungeonTip == true, DungeonDay = math.floor(tonumber(saved.Rift.DungeonDay) or 0), DungeonUsed = math.max(0, math.floor(tonumber(saved.Rift.DungeonUsed) or 0)), KeyDay = math.floor(tonumber(saved.Rift.KeyDay) or 0), KeyDropsTier = typeof(saved.Rift.KeyDropsTier) == "table" and { tonumber(saved.Rift.KeyDropsTier[1]) or 0, tonumber(saved.Rift.KeyDropsTier[2]) or 0, tonumber(saved.Rift.KeyDropsTier[3]) or 0 } or { 0, 0, 0 }, Hints = (function() local list = {} if typeof(saved.Rift.Hints) == "table" then for key, value in pairs(saved.Rift.Hints) do if typeof(key) == "string" and #key <= 24 and value == true then list[key] = true end end end return list end)(), GrowthTip = saved.Rift.GrowthTip == true, BestBoss = math.max(0, math.floor(tonumber(saved.Rift.BestBoss) or 0)), BestDealt = math.max(0, tonumber(saved.Rift.BestDealt) or 0), BestTime = math.max(0, math.floor(tonumber(saved.Rift.BestTime) or 0)), Week = math.floor(tonumber(saved.Rift.Week) or 0), WeekBest = math.max(0, tonumber(saved.Rift.WeekBest) or 0), IdleSeen = math.max(0, math.floor(tonumber(saved.Rift.IdleSeen) or 0)), LvStats = (function() local list = {} for _, key in ipairs(Config.LevelStats.Order) do list[key] = typeof(saved.Rift.LvStats) == "table" and math.clamp(math.floor(tonumber(saved.Rift.LvStats[key]) or 0), 0, 99) or 0 end return list end)(), LvGold = math.clamp(math.floor(tonumber(saved.Rift.LvGold) or 0), 0, Config.LevelStats.MaxGoldPoints), AugBoss = (function() local list = {} if typeof(saved.Rift.AugBoss) == "table" then for z = 1, Config.Field.ZoneCount do if saved.Rift.AugBoss[tostring(z)] == true then list[tostring(z)] = true end end end return list end)(), AugLv = (function() local list = {} if typeof(saved.Rift.AugLv) == "table" then for z = 1, Config.Field.ZoneCount do local lv = math.clamp(math.floor(tonumber(saved.Rift.AugLv[tostring(z)]) or 0), 0, 3) if lv > 0 then list[tostring(z)] = lv end end end return list end)(), AugOn = (function() local list = {} if typeof(saved.Rift.AugOn) == "table" then for z = 1, Config.Field.ZoneCount do if saved.Rift.AugOn[tostring(z)] == true then list[tostring(z)] = true end end end return list end)() }
 		end
 	end
 	states[player] = state
+	for typeKey, best in pairs(state.Depth) do player:SetAttribute("DepthBest_" .. typeKey, best) end
 	syncSkillAttributes(player, state)
 	applyPetStats(player, state)
 	player:SetAttribute("RiftBest", state.Rift.BestScore)
@@ -196,7 +202,7 @@ end
 function Meta.Serialize(player)
 	local state = states[player]
 	if not state then return nil end
-	return { Skills = state.Skills, Pet = state.Pet, Tower = state.Tower, Rift = state.Rift, Codex = state.Codex }
+	return { Skills = state.Skills, Pet = state.Pet, Tower = state.Tower, Rift = state.Rift, Codex = state.Codex, Depth = state.Depth }
 end
 
 function Meta.Forget(player)
@@ -252,6 +258,23 @@ end
 function Meta.BossKills(player, zone)
 	local state = states[player]
 	return state and state.Codex.Boss[tostring(zone)] or 0
+end
+
+-- 던전 깊이 기록: 깬 깊이가 최고 기록보다 높으면 갱신한다. 반환: 새 기록인가, 최고 깊이
+function Meta.DepthClear(player, typeKey, depth)
+	local state = states[player]
+	if not state or state.Depth[typeKey] == nil or typeof(depth) ~= "number" then return false, 0 end
+	if depth > state.Depth[typeKey] then
+		state.Depth[typeKey] = math.min(depth, Config.Dungeon.Depth.MaxDepth)
+		player:SetAttribute("DepthBest_" .. typeKey, state.Depth[typeKey])
+		return true, state.Depth[typeKey]
+	end
+	return false, state.Depth[typeKey]
+end
+
+function Meta.DepthBest(player, typeKey)
+	local state = states[player]
+	return state and state.Depth[typeKey] or 0
 end
 
 function Meta.CodexSet(player, setKey)

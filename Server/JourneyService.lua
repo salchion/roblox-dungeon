@@ -103,7 +103,7 @@ local function townBeat(player, now)
 		local difficulty = Config.Dungeon.Difficulties[entry.Diff]
 		if dungeonType and difficulty and positions.Gates and positions.Gates[newest] and not player:GetAttribute("Journey_Silent") then
 			lastBeat[player] = now
-			prompt(player, "🏰", "New dungeon unlocked!", string.format("%s [%s] - Level %d or higher. Bigger rewards and tougher bosses await. A marker now points to the gate.", dungeonType.Name, difficulty.Name, entry.MinLevel))
+			prompt(player, "🏰", "New dungeon unlocked!", string.format("%s - Level %d or higher. Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", dungeonType.Name, entry.MinLevel))
 			beacon(player, positions.Gates[newest], dungeonType.Name)
 		end
 	end

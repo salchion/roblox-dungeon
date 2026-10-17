@@ -8,9 +8,16 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Odds = {}
 
 -- 구역 줄(row)의 가중치: 영웅(3) 이상 가중치만 행운 / 종류 보너스를 받는다 (LootService.rollRarity 와 같은 규칙)
+-- row 는 소수도 된다: 인접한 두 줄을 섞는다 (던전 깊이마다 확률이 조금씩 오르게)
 function Odds.Weights(row, luck, kindMult)
+	local rows = Config.Loot.ZoneRarity
+	row = math.clamp(row, 1, #rows)
+	local lo = math.floor(row)
+	local hi = math.min(#rows, lo + 1)
+	local f = row - lo
 	local weights = {}
-	for index, weight in ipairs(Config.Loot.ZoneRarity[row]) do
+	for index = 1, #rows[lo] do
+		local weight = rows[lo][index] * (1 - f) + rows[hi][index] * f
 		if index >= 3 then
 			weight *= (1 + (luck or 0)) * (kindMult or 1)
 		end
@@ -72,19 +79,40 @@ function Odds.Gacha()
 	return { Rarities = rarities, Slots = slots, UniqueChance = Config.Uniques.Chance * 100 }
 end
 
--- 던전 보스 상자 한 개: 던전 종류 / 난이도 -> 등급별 확률 (보스 가중치 x BossBonus 포함)
-function Odds.ChestRow(typeKey, diffKey)
+-- 던전 보스 상자 한 개: 던전 종류 / 깊이("D12") 또는 옛 난이도("Normal") -> 등급 표의 줄(소수 가능)과 높은 등급 추가 배율
+function Odds.ChestParams(typeKey, diffKey)
 	local L = Config.Loot
-	return math.clamp((L.DungeonRarityRow[typeKey] or 3) + (L.DungeonDifficultyRow[diffKey] or 0), 1, #L.ZoneRarity)
+	local start = L.DungeonRarityRow[typeKey] or 3
+	local depth = Config.Dungeon.DepthOf(diffKey)
+	if depth then
+		local D = Config.Dungeon.Depth
+		local raw = start + (depth - 1) * D.RowPerDepth
+		local last = #L.ZoneRarity
+		local extra = raw > last and (1 + (raw - last) * D.ExtraPerRow) or 1
+		return math.min(raw, last), extra
+	end
+	return math.clamp(start + (L.DungeonDifficultyRow[diffKey] or 0), 1, #L.ZoneRarity), 1
+end
+
+function Odds.ChestRow(typeKey, diffKey)
+	local row = Odds.ChestParams(typeKey, diffKey)
+	return row
 end
 
 function Odds.Chest(typeKey, diffKey, luck)
-	local pct = Odds.Percentages(Odds.Weights(Odds.ChestRow(typeKey, diffKey), luck, Config.Loot.BossBonus))
+	local row, extra = Odds.ChestParams(typeKey, diffKey)
+	local pct = Odds.Percentages(Odds.Weights(row, luck, Config.Loot.BossBonus * extra))
 	local out = {}
 	for index, p in ipairs(pct) do
 		out[index] = { Name = Config.Gear.RarityNames[index], Color = Config.Gear.RarityColors[index], Pct = p }
 	end
 	return out
+end
+
+-- 던전 상자에서 나온 신화 장비에 유니크 효과가 붙을 확률(%): 깊이가 아니면 필드와 같은 기본 확률
+function Odds.ChestUnique(diffKey)
+	local depth = Config.Dungeon.DepthOf(diffKey)
+	return (depth and Config.Uniques.ChanceAtDepth(depth) or Config.Uniques.Chance) * 100
 end
 
 -- 필드 몬스터 드롭 (행운 부스터가 영향을 주는 곳): 구역 / 종류별 등급 확률 (드롭이 나왔을 때의 등급 확률)

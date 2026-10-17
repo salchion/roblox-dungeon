@@ -1056,6 +1056,69 @@ Config.Dungeon.Difficulties = {
 -- 던전 경험치 배율: 골드 배율(유형 x 난이도 = 최대 5~10배)과 따로 정한다. 예전에는 골드 배율을 경험치에도 그대로 곱해서 어려운 던전에서 필드의 약 10배 속도로 레벨이 올랐다.
 Config.Dungeon.XpMult = { Easy = 0.8, Normal = 1.0, Hard = 1.4 }
 
+------------------------------------------------------------
+-- 던전 깊이(Depth): 쉬움 / 보통 / 어려움 대신 던전 종류마다 깊이 1, 2, 3 ... (설계: DUNGEON_DEPTH.md)
+--   깊이 키는 "D12" 같은 글자 (DungeonService 의 diffKey 로 그대로 쓴다). 몬스터는 정해진 곡선으로 강해지고(전투력과 연결하지 않는다),
+--   보스 상자의 높은 등급 확률 / 유니크 확률 / 보상이 깊이마다 오른다. 못 깬 깊이로는 못 들어간다(최고 깊이 + 1 까지).
+------------------------------------------------------------
+Config.Dungeon.Depth = {
+	HealthGrowth = 1.15,   -- 깊이마다 몬스터 체력 x1.15
+	DamageGrowth = 1.05,   -- 깊이마다 몬스터 피해 x1.05
+	GoldGrowth = 1.12,     -- 깊이마다 골드 x1.12
+	XpGrowth = 1.12,       -- 깊이마다 경험치 x1.12
+	TicketBase = 2, TicketEvery = 6, TicketMax = 8, -- 보스 클리어 티켓 = 2 + floor(깊이 / 6), 최대 8
+	KeyBrackets = { { Upto = 10, Cost = 1 }, { Upto = 25, Cost = 2 }, { Upto = 1e9, Cost = 3 } }, -- 열쇠 비용
+	RowPerDepth = 0.25,    -- 깊이마다 상자 등급 표(Config.Loot.ZoneRarity)를 0.25 줄씩 이동
+	ExtraPerRow = 0.15,    -- 표의 마지막 줄을 넘으면 줄마다 높은 등급 가중치 +15%
+	MaxDepth = 999,
+}
+
+function Config.Dungeon.DepthOf(diffKey)
+	if typeof(diffKey) ~= "string" then return nil end
+	local n = tonumber(string.match(diffKey, "^D(%d+)$"))
+	if not n then return nil end
+	return math.clamp(math.floor(n), 1, Config.Dungeon.Depth.MaxDepth)
+end
+
+function Config.Dungeon.DepthKey(depth)
+	return "D" .. math.clamp(math.floor(depth), 1, Config.Dungeon.Depth.MaxDepth)
+end
+
+function Config.Dungeon.DepthKeyCost(depth)
+	for _, bracket in ipairs(Config.Dungeon.Depth.KeyBrackets) do
+		if depth <= bracket.Upto then return bracket.Cost end
+	end
+	return 3
+end
+
+-- 난이도 키("Easy" / "Normal" / "Hard" 또는 깊이 "D12") -> 난이도 표 (깊이는 곡선으로 새로 만든다)
+function Config.Dungeon.GetDifficulty(diffKey)
+	local depth = Config.Dungeon.DepthOf(diffKey)
+	if depth then
+		local G = Config.Dungeon.Depth
+		return {
+			Name = "Depth " .. depth, Depth = depth, PowerMult = 1, KeyTier = 1,
+			HealthMult = G.HealthGrowth ^ (depth - 1), DamageMult = G.DamageGrowth ^ (depth - 1), GoldMult = G.GoldGrowth ^ (depth - 1),
+			Tickets = math.min(G.TicketMax, G.TicketBase + depth // G.TicketEvery), KeyCost = Config.Dungeon.DepthKeyCost(depth), LevelOffset = 0,
+			Color = Color3.fromRGB(255, 220, 110):Lerp(Color3.fromRGB(255, 120, 110), math.clamp(depth / 40, 0, 1)),
+		}
+	end
+	return Config.Dungeon.Difficulties[diffKey]
+end
+
+function Config.Dungeon.GetXpMult(diffKey)
+	local depth = Config.Dungeon.DepthOf(diffKey)
+	if depth then return Config.Dungeon.Depth.XpGrowth ^ (depth - 1) end
+	return Config.Dungeon.XpMult[diffKey] or 1
+end
+
+-- 탄막 기믹 강도(비슷한 필드 구역): 깊이 1~3 = 2구역, 4~7 = 3구역 ... 깊이 28+ = 8구역
+function Config.Dungeon.GimmickZone(diffKey)
+	local depth = Config.Dungeon.DepthOf(diffKey)
+	if depth then return math.clamp(2 + (depth - 1) // 4, 2, 8) end
+	return Config.Gimmick.DungeonZone[diffKey] or 1
+end
+
 -- 던전 권장 전투력 (난이도 배율 반영, 50 단위)
 function Config.DungeonPower(dungeonType, difficulty)
 	return math.floor((dungeonType.RecommendedPower or 0) * (difficulty.PowerMult or 1) / 50 + 0.5) * 50
@@ -1154,13 +1217,10 @@ end
 -- 던전 목록: 던전마다 입구(게이트)가 따로 있고, 캐릭터 레벨이 되면 난이도 순서대로 입장할 수 있다 (메뉴에서 고르지 않는다)
 -- Type / Diff: 위의 던전 종류 / 난이도 조합. MinLevel: 입장에 필요한 캐릭터 레벨 (파티원 모두).
 Config.Dungeon.List = {
-	{ Type = "Cave", Diff = "Easy", MinLevel = 1 },
-	{ Type = "Cave", Diff = "Normal", MinLevel = 8 },
-	{ Type = "Ice", Diff = "Easy", MinLevel = 14 },
-	{ Type = "Ice", Diff = "Normal", MinLevel = 20 },
-	{ Type = "Fire", Diff = "Easy", MinLevel = 26 },
-	{ Type = "Fire", Diff = "Normal", MinLevel = 32 },
-	{ Type = "Fire", Diff = "Hard", MinLevel = 40 },
+	-- 던전 종류마다 입장구 하나 (깊이는 입장구 앞에서 고른다). Diff 는 입장구 겉모습(문틀)과 색에만 쓴다.
+	{ Type = "Cave", Diff = "Normal", MinLevel = 1 },
+	{ Type = "Ice", Diff = "Normal", MinLevel = 14 },
+	{ Type = "Fire", Diff = "Normal", MinLevel = 26 },
 }
 
 ------------------------------------------------------------
@@ -1452,6 +1512,13 @@ Config.Uniques = {
 	Slayer = { Name = "Slaughterer", Desc = "Attack +25%", Effects = { { Stat = "Damage", Value = 0.25 } } },
 	Fortune = { Name = "Lucky Star", Desc = "Luck +50%, XP +30%", Effects = { { Stat = "Luck", Value = 0.5 }, { Stat = "Xp", Value = 0.3 } } },
 }
+
+-- 던전 상자의 유니크 확률(신화 장비): 깊이마다 +0.7%p, 최대 60%
+Config.Uniques.DepthBonus = 0.007
+Config.Uniques.MaxChance = 0.60
+function Config.Uniques.ChanceAtDepth(depth)
+	return math.min(Config.Uniques.MaxChance, Config.Uniques.Chance + Config.Uniques.DepthBonus * math.max(0, (depth or 1) - 1))
+end
 
 Config.BonusNames = { Health = "Max HP", Crit = "Crit Chance", Speed = "Move Speed", Damage = "Attack", Xp = "XP", Luck = "Luck", Haste = "Skill Cooldown Reduction", Shot = "Shot Count" }
 function Config.FormatBonus(stat, value)

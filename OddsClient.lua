@@ -91,14 +91,18 @@ local function chestText()
 		"Luck and the boss bonus multiply the weights of Epic and above; the percentages below already include them.",
 		"",
 	}
+	local depths = { 1, 5, 9, 13, 17, 21, 30 }
 	for _, typeKey in ipairs({ "Cave", "Ice", "Fire" }) do
-		for _, diffKey in ipairs(Config.Dungeon.Difficulties.Order) do
-			local entries = Odds.Chest(typeKey, diffKey, luck)
-			table.insert(lines, string.format("<b>%s · %s</b>  (total %s)", Config.Dungeon.Types[typeKey].Name, Config.Dungeon.Difficulties[diffKey].Name, total(entries)))
-			table.insert(lines, rarityLine(entries))
-			table.insert(lines, "")
+		local best = player:GetAttribute("DepthBest_" .. typeKey) or 0
+		table.insert(lines, string.format("<b>%s</b>  (your record: depth %d)", Config.Dungeon.Types[typeKey].Name, best))
+		for _, depth in ipairs(depths) do
+			local entries = Odds.Chest(typeKey, Config.Dungeon.DepthKey(depth), luck)
+			table.insert(lines, string.format("Depth %d (total %s, Unique %s, keys %d): %s", depth, total(entries),
+				Odds.Format(Odds.ChestUnique(Config.Dungeon.DepthKey(depth))), Config.Dungeon.DepthKeyCost(depth), rarityLine(entries)))
 		end
+		table.insert(lines, "")
 	end
+	table.insert(lines, "Odds rise smoothly with every depth; the depth window shows the exact odds of the depth you pick.")
 	table.insert(lines, "Gear slot is uniformly random (each slot equal chance). Every result is useful: gear you can't improve on is converted into Gold and Essence.")
 	return table.concat(lines, "\n")
 end

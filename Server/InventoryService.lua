@@ -43,10 +43,10 @@ local function newAffixes(rarity)
 	return list
 end
 
-function Inventory.NewItem(slotKey, rarity, level, zoneIndex)
+function Inventory.NewItem(slotKey, rarity, level, zoneIndex, uniqueChance)
 	local item = { Slot = slotKey, Rarity = rarity, Level = level or 0, Affixes = newAffixes(rarity) }
 	-- 세트 / 유니크 (높은 등급에서만)
-	if rarity == 5 and math.random() < Config.Uniques.Chance then
+	if rarity == 5 and math.random() < (uniqueChance or Config.Uniques.Chance) then
 		item.Unique = Config.Uniques.Order[math.random(#Config.Uniques.Order)]
 	end
 	local zoneSet = zoneIndex and Config.Sets.ZoneKeys[zoneIndex]

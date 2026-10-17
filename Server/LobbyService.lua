@@ -584,11 +584,11 @@ function Lobby.Build()
 		swirl.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.7), NumberSequenceKeypoint.new(1, 0) })
 		swirl.Parent = portal
 
-		makeLabel(portal, string.format("⚔ %s\n[%s] Lv.%d+", dungeonType.Name, difficulty.Name, entry.MinLevel), difficulty.Color, GH / 2 + 9, 280, 64, 60, true) -- 문틀 / 지붕에 가려지지 않게 항상 위에 그린다
+		makeLabel(portal, string.format("⚔ %s\nPick a depth · Lv.%d+", dungeonType.Name, entry.MinLevel), difficulty.Color, GH / 2 + 9, 280, 64, 60, true) -- 문틀 / 지붕에 가려지지 않게 항상 위에 그린다
 
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText = "Enter (Lv." .. entry.MinLevel .. ")"
-		prompt.ObjectText = string.format("%s · %s · %s · Rec. Power %d", dungeonType.Name, difficulty.Name, Config.Keys.TierIcons[difficulty.KeyTier or 1], Config.DungeonPower(dungeonType, difficulty))
+		prompt.ObjectText = string.format("%s · pick a depth (deeper = better drop odds) · %s", dungeonType.Name, Config.Keys.TierIcons[difficulty.KeyTier or 1])
 		prompt.HoldDuration = 0.8
 		prompt.MaxActivationDistance = 16
 		prompt.RequiresLineOfSight = false

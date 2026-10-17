@@ -55,10 +55,11 @@ local function kindMultiplier(kind)
 	return 1
 end
 
-function Loot.RollItem(player, row, kind, zoneIndex)
-	local rarity = rollRarity(row, luckOf(player), kindMultiplier(kind))
+-- extraMult: 높은 등급 추가 배율(던전 깊이가 표의 끝을 넘었을 때) / uniqueChance: 신화 장비의 유니크 확률(던전 깊이)
+function Loot.RollItem(player, row, kind, zoneIndex, extraMult, uniqueChance)
+	local rarity = rollRarity(row, luckOf(player), kindMultiplier(kind) * (extraMult or 1))
 	local slot = G.Slots[math.random(#G.Slots)]
-	return Inventory.NewItem(slot.Key, rarity, 0, zoneIndex)
+	return Inventory.NewItem(slot.Key, rarity, 0, zoneIndex, uniqueChance)
 end
 
 local function itemLabel(item)
@@ -132,12 +133,14 @@ end
 -- 던전 보스 상자: 바로 가방으로. 반환: 화면에 보여줄 줄 목록 { { Text, Rarity }... }
 ------------------------------------------------------------
 function Loot.DungeonChest(player, typeKey, difficultyKey, count)
-	local row = (L.DungeonRarityRow[typeKey] or 3) + (L.DungeonDifficultyRow[difficultyKey] or 0)
-	row = math.clamp(row, 1, #L.ZoneRarity)
+	-- 깊이("D12")면 등급 표의 줄이 깊이마다 이동하고 유니크 확률도 오른다 (화면의 확률 표와 같은 Odds.ChestParams 를 쓴다)
+	local row, extra = Odds.ChestParams(typeKey, difficultyKey)
+	local depth = Config.Dungeon.DepthOf(difficultyKey)
+	local uniqueChance = depth and Config.Uniques.ChanceAtDepth(depth) or nil
 
 	local lines = {}
 	for _ = 1, count or L.DungeonChestCount do
-		local item = Loot.RollItem(player, row, "DungeonBoss")
+		local item = Loot.RollItem(player, row, "DungeonBoss", nil, extra, uniqueChance)
 		local status, _, essence, gold = Inventory.Add(player, item)
 		local label = itemLabel(item)
 		local text

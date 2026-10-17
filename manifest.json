@@ -512,6 +512,13 @@
       "overwrite": true
     },
     {
+      "path": "DungeonDepthClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "DungeonDepthClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "OddsClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "OddsClient",
