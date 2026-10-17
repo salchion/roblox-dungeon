@@ -63,9 +63,9 @@ do
 		{ ClockTime = 16.5, Brightness = 1.65, Ambient = Color3.fromRGB(96, 80, 66), OutdoorAmbient = Color3.fromRGB(118, 100, 82), Fog = Color3.fromRGB(212, 182, 150), Density = 0.34 }, -- 황무지: 먼지
 		{ ClockTime = 13, Brightness = 1.7, Ambient = Color3.fromRGB(112, 98, 70), OutdoorAmbient = Color3.fromRGB(136, 120, 86), Fog = Color3.fromRGB(226, 198, 150), Density = 0.4 }, -- 사막: 뜨거운 낮
 		{ ClockTime = 10, Brightness = 1.6, Ambient = Color3.fromRGB(86, 96, 118), OutdoorAmbient = Color3.fromRGB(112, 126, 150), Fog = Color3.fromRGB(186, 204, 226), Density = 0.42 }, -- 설원: 차가운 흰 안개
-		{ ClockTime = 18.5, Brightness = 1.6, Ambient = Color3.fromRGB(98, 52, 42), OutdoorAmbient = Color3.fromRGB(124, 62, 46), Fog = Color3.fromRGB(255, 150, 100), Density = 0.46 }, -- 화산: 붉은 노을
-		{ ClockTime = 21, Brightness = 1.3, Ambient = Color3.fromRGB(58, 46, 88), OutdoorAmbient = Color3.fromRGB(84, 68, 124), Fog = Color3.fromRGB(150, 110, 230), Density = 0.46 }, -- 암흑 지대: 보랏빛 밤
-		{ ClockTime = 23, Brightness = 1.1, Ambient = Color3.fromRGB(64, 32, 74), OutdoorAmbient = Color3.fromRGB(90, 42, 100), Fog = Color3.fromRGB(255, 100, 180), Density = 0.5 }, -- 심연: 분홍 어둠
+		{ ClockTime = 17.5, Brightness = 1.8, Ambient = Color3.fromRGB(116, 66, 52), OutdoorAmbient = Color3.fromRGB(150, 80, 60), Fog = Color3.fromRGB(255, 150, 100), Density = 0.44 }, -- 화산: 붉은 노을 (후반이 너무 어두워서 밝힘)
+		{ ClockTime = 19.5, Brightness = 1.7, Ambient = Color3.fromRGB(94, 78, 130), OutdoorAmbient = Color3.fromRGB(130, 108, 172), Fog = Color3.fromRGB(150, 110, 230), Density = 0.44 }, -- 암흑 지대: 보랏빛 저녁 (밤 -> 저녁, 더 밝게)
+		{ ClockTime = 20.5, Brightness = 1.6, Ambient = Color3.fromRGB(104, 62, 116), OutdoorAmbient = Color3.fromRGB(142, 86, 152), Fog = Color3.fromRGB(255, 100, 180), Density = 0.46 }, -- 심연: 분홍 어둠 (밤 -> 늦은 저녁, 더 밝게)
 	}
 	-- 던전 변이 화면 분위기 (서버가 던전 시작 때 DungeonVisual 을 정한다)
 	local DUNGEON_VISUALS = {

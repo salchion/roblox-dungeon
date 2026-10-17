@@ -538,6 +538,13 @@
       "name": "AdminClient",
       "class": "LocalScript",
       "overwrite": true
+    },
+    {
+      "path": "Server/FieldBossPatterns.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "FieldBossPatterns",
+      "class": "ModuleScript",
+      "overwrite": true
     }
   ]
 }

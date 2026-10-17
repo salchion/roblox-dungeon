@@ -2206,18 +2206,30 @@ local function bossSpiral(part, data)
 	end)
 end
 
+local ExtraBossPatterns = require(script.Parent:WaitForChild("FieldBossPatterns")).Init({
+	Monsters = monsters, GetWorldFolder = function() return worldFolder end, FloorAt = floorAt, NearestFieldPlayer = nearestFieldPlayer,
+	PlayersNear = playersNear, WalkableAt = walkableAt, Effects = Effects, Guard = Guard,
+})
 local bossPatterns = { { Fn = bossSlam, Weight = 3, Name = "slam" }, { Fn = bossCharge, Weight = 2, Name = "charge" }, { Fn = bossSpiral, Weight = 2, Name = "spiral" } }
 local function pickBossPattern(data)
-	local total = 0
+	-- 구역마다 비중이 다르다 (F.BossStyle) + 2~8구역은 고유 패턴이 하나 더 섞인다
+	local style = F.BossStyle and F.BossStyle[data.Zone]
+	local list = {}
 	for _, entry in ipairs(bossPatterns) do
-		if entry.Name ~= data.LastPattern then total += entry.Weight end
+		table.insert(list, { Entry = entry, Weight = style and style[entry.Name] or entry.Weight })
+	end
+	local signature = ExtraBossPatterns[data.Zone]
+	if signature then table.insert(list, { Entry = signature, Weight = F.BossSignatureWeight or 3.5 }) end
+	local total = 0
+	for _, item in ipairs(list) do
+		if item.Entry.Name ~= data.LastPattern then total += item.Weight end
 	end
 	local roll = math.random() * total
-	for _, entry in ipairs(bossPatterns) do
-		if entry.Name ~= data.LastPattern then
-			roll -= entry.Weight
+	for _, item in ipairs(list) do
+		if item.Entry.Name ~= data.LastPattern then
+			roll -= item.Weight
 			if roll <= 0 then
-				return entry
+				return item.Entry
 			end
 		end
 	end
@@ -2473,12 +2485,16 @@ local function stepMonsters(dt)
 					data.NextPattern = now + (data.Enraged and 4.2 or 6.5)
 					local entry = pickBossPattern(data)
 					data.LastPattern = entry.Name
-					entry.Fn(part, data)
+					local okFn, errFn = pcall(entry.Fn, part, data) -- 패턴 하나가 오류가 나도 보스 전체가 멈추지 않게
+					if not okFn then warn("[FieldBoss] pattern error: " .. tostring(errFn)) end
 					if data.Enraged then
 						task.delay(1.0, function()
 							if monsters[part] == data then
 								local second = pickBossPattern(data)
-								if second.Name ~= "charge" then second.Fn(part, data) end
+								if second.Name ~= "charge" and not second.Skip then
+									local okSecond, errSecond = pcall(second.Fn, part, data)
+									if not okSecond then warn("[FieldBoss] pattern error: " .. tostring(errSecond)) end
+								end
 							end
 						end)
 					end

@@ -803,6 +803,18 @@ Config.Field = {
 		Enum.Material.Grass, Enum.Material.Grass, Enum.Material.Ground, Enum.Material.Sand,
 		Enum.Material.Snow, Enum.Material.Basalt, Enum.Material.Slate, Enum.Material.Slate,
 	},
+	-- 구역 군주마다 기본 패턴 비중을 다르게 (slam 내려찍기 / charge 돌진 / spiral 나선). 2~8구역은 여기에 구역 고유 패턴(FieldBossPatterns)이 한 개 더 섞인다.
+	BossStyle = {
+		[1] = { slam = 3, charge = 2, spiral = 2 },
+		[2] = { slam = 1, charge = 4, spiral = 1 },
+		[3] = { slam = 4, charge = 1, spiral = 1 },
+		[4] = { slam = 2, charge = 2, spiral = 1 },
+		[5] = { slam = 1, charge = 1, spiral = 4 },
+		[6] = { slam = 3, charge = 1, spiral = 2 },
+		[7] = { slam = 1, charge = 3, spiral = 2 },
+		[8] = { slam = 2, charge = 2, spiral = 3 },
+	},
+	BossSignatureWeight = 3.5, -- 구역 고유 패턴이 뽑힐 비중
 	Boss = {
 		Name = "Field Overlord",
 		Size = 18,
