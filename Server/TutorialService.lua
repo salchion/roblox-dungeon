@@ -213,6 +213,20 @@ function Tutorial.EarlyFreeze(player, character)
 	end)
 end
 
+-- 운영자 테스트용: 튜토리얼 진행만 처음으로 되돌린다 (레벨 / 장비 / 골드는 그대로)
+function Tutorial.Restart(player)
+	local state = states[player]
+	if not state then return false end
+	state.Step = 1
+	state.Progress = 0
+	state.DynGoal = nil
+	state.DynFor = nil
+	state.IntroShown = nil
+	state.StepStartedAt = os.clock()
+	send(player)
+	return true
+end
+
 function Tutorial.Serialize(player)
 	local state = states[player] or { Step = #Steps + 1, Progress = 0 }
 	return { Step = state.Step, Progress = state.Progress, V = 8, ReelDone = state.ReelDone }

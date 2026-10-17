@@ -66,6 +66,13 @@ end
 
 Remotes.Admin.OnServerEvent:Connect(function(player, action)
 	if not isAdmin(player) then return end
+	if action == "RestartTutorial" then -- 내 튜토리얼 진행만 처음으로 (레벨 / 장비 / 골드는 그대로)
+		local okTut, Tutorial = pcall(function() return require(script.Parent:FindFirstChild("TutorialService")) end)
+		if okTut and Tutorial and Tutorial.Restart and Tutorial.Restart(player) then
+			Remotes.Notify:FireClient(player, "Tutorial restarted from the first mission.")
+		end
+		return
+	end
 	if action ~= "List" then return end
 	local now = os.clock()
 	if now - (lastRequest[player] or 0) < 1 then return end

@@ -17,9 +17,13 @@ local function start()
 		Size = UDim2.new(0, 620, 0, 420), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
 		BackgroundColor3 = Color3.fromRGB(22, 24, 38), BackgroundTransparency = 0.02, Visible = false, ZIndex = 10,
 	}, gui)
-	makeLabel({ Size = UDim2.new(1, -110, 0, 36), Position = UDim2.new(0, 16, 0, 8), Text = "Admin · Players in this server (F6)", Font = Enum.Font.GothamBlack, TextSize = 18,
+	makeLabel({ Size = UDim2.new(1, -290, 0, 36), Position = UDim2.new(0, 16, 0, 8), Text = "Admin (F6)", Font = Enum.Font.GothamBlack, TextSize = 18,
 		TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 11 }, panel)
 	makeButton({ Size = UDim2.new(0, 72, 0, 28), Position = UDim2.new(1, -86, 0, 12), Text = "Close", BackgroundColor3 = Color3.fromRGB(54, 58, 82), ZIndex = 11 }, panel, function()
+		panel.Visible = false
+	end)
+	makeButton({ Size = UDim2.new(0, 170, 0, 28), Position = UDim2.new(1, -266, 0, 12), Text = "Restart my tutorial", TextSize = 12, BackgroundColor3 = Color3.fromRGB(110, 70, 70), ZIndex = 11 }, panel, function()
+		Remotes.Admin:FireServer("RestartTutorial")
 		panel.Visible = false
 	end)
 	local scroll = create("ScrollingFrame", {
