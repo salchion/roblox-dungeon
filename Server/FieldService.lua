@@ -1175,8 +1175,16 @@ local function spawnMonster(zone, kind, at, ambush)
 			preX = at.X
 		else
 			local bx0, bx1 = zoneBounds(zone)
-			local nearEntrance = math.random() < 0.45
-			preX = nearEntrance and freeX(math.floor(bx0 + F.CampSafe + 70), math.floor(bx0 + F.CampSafe + 170)) or freeX(math.floor(bx0 + F.CampSafe + 70), math.floor(bx1 - 25)) -- (몬스터가 안전지대 경계에 붙어 어정쩡하게 서 있지 않게 경계에서 70 이상 떨어져서 나온다)
+			-- 입구 근처 35% / 군주가 있는 구역 끝(보스 둥지) 근처 25% / 구역 전체 40%: 보스 근처가 썰렁하지 않게 몬스터가 일부 모여 있다
+			local roll = math.random()
+			if roll < 0.35 then
+				preX = freeX(math.floor(bx0 + F.CampSafe + 70), math.floor(bx0 + F.CampSafe + 170))
+			elseif roll < 0.6 then
+				preX = freeX(math.floor(math.max(bx0 + F.CampSafe + 70, bx1 - 170)), math.floor(bx1 - 70))
+			else
+				preX = freeX(math.floor(bx0 + F.CampSafe + 70), math.floor(bx1 - 25))
+			end
+			-- (몬스터가 안전지대 경계에 붙어 어정쩡하게 서 있지 않게 입구 쪽은 안전지대에서 조금 떨어진 곳부터)
 		end
 		typeKey = pickTypeAt(zone, preX)
 		def = MonsterTypes.Defs[typeKey]
@@ -2526,6 +2534,24 @@ local function stepMonsters(dt)
 					data.Enraged = true
 					Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 6, 0), "😡 Enraged!", Color3.fromRGB(255, 70, 70))
 					Effects.Burst(part.Position, Color3.fromRGB(255, 70, 70), 80)
+				end
+				-- 보스전 박진감: 싸우는 동안 부하 몬스터가 주변에 나타난다 (2구역부터, 살아 있는 부하는 최대 5마리)
+				if data.Zone > 1 and now >= (data.NextAdds or now + 6) then
+					data.NextAdds = now + (data.Enraged and 8 or 12)
+					data.AddParts = data.AddParts or {}
+					local alive = 0
+					for i = #data.AddParts, 1, -1 do
+						if monsters[data.AddParts[i]] then alive += 1 else table.remove(data.AddParts, i) end
+					end
+					for _ = 1, math.min(5 - alive, data.Enraged and 3 or 2) do
+						local angle = math.random() * math.pi * 2
+						local dist = data.Stats.Size / 2 + 14 + math.random() * 18
+						local at = part.Position + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist)
+						if walkableAt(at.X, at.Z) and not isSafe(at) and zoneOfX(at.X) == data.Zone then
+							local addPart = spawnMonster(data.Zone, "Normal", at, true)
+							if addPart then table.insert(data.AddParts, addPart) end
+						end
+					end
 				end
 				-- 다양한 패턴: 내려찍기 / 돌진 / 나선 탄막을 번갈아 (격노하면 더 자주, 두 개씩)
 				if now >= (data.NextPattern or now + 3) and now >= (data.BusyUntil or 0) then
