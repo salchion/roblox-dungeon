@@ -176,6 +176,47 @@ local function scanModals(vw, vh)
 end
 
 ------------------------------------------------------------
+-- 큰 창(메뉴 / 상점 / 도감 ...)이 열려 있는 동안은 창 뒤에 깔린 HUD 카드와 미션 글씨를 숨긴다 (작은 화면에서 창과 겹치지 않게)
+------------------------------------------------------------
+local MODAL_SKIP = { GoalHUD = true, TutorialHUD = true, RiftHUD = true, EvolveFx = true, WelcomeGui = true, MobileUi = true, TouchGui = true, HudGui = true }
+local COVERED = { "HudGui", "GoalHUD" } -- 창이 열리면 숨기는 화면
+local hiddenByModal = {}
+
+local function anyModalOpen()
+	for _, g in ipairs(playerGui:GetChildren()) do
+		if g:IsA("ScreenGui") and g.Enabled and not MODAL_SKIP[g.Name] then
+			for _, child in ipairs(g:GetChildren()) do
+				if isModal(child) and child.Visible then return true end
+				if child.Name == "LobbyFrame" or child.Name == "DungeonFrame" then
+					for _, inner in ipairs(child:GetChildren()) do
+						if isModal(inner) and inner.Visible then return true end
+					end
+				end
+			end
+		end
+	end
+	return false
+end
+
+local function updateModalCover(compact)
+	local want = compact and anyModalOpen()
+	for _, name in ipairs(COVERED) do
+		local g = playerGui:FindFirstChild(name)
+		if g then
+			if want then
+				if g.Enabled then
+					g.Enabled = false
+					hiddenByModal[g] = true
+				end
+			elseif hiddenByModal[g] then
+				g.Enabled = true
+				hiddenByModal[g] = nil
+			end
+		end
+	end
+end
+
+------------------------------------------------------------
 -- UIScale 맞추기
 ------------------------------------------------------------
 local function applyScales(viewport)
@@ -575,6 +616,7 @@ local function update()
 	st.compact = compact
 	applyScales(viewport)
 	calmTick(playerGui:FindFirstChild("HUD"))
+	updateModalCover(compact)
 	if compact then
 		layoutCompact(viewport)
 	else
