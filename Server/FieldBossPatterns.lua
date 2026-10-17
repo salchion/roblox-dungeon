@@ -82,7 +82,7 @@ P[2] = { Name = "stampede", Fn = function(part, data)
 	if not dir then return end
 	cue(part, "⚠ Stampede!", Color3.fromRGB(255, 200, 70))
 	local side = Vector3.new(-dir.Z, 0, dir.X)
-	local lanes = data.Enraged and 5 or 3
+	local lanes = data.Enraged and 7 or 5
 	for i = 1, lanes do
 		local offset = (i - (lanes + 1) / 2) * 15
 		strip(part, data, part.Position + side * offset, dir, 78, 8, 1.2, math.floor(data.Stats.ShotDamage * 1.4), Color3.fromRGB(255, 190, 80))
@@ -94,7 +94,7 @@ P[3] = { Name = "boulders", Fn = function(part, data)
 	local target = ctx.NearestFieldPlayer(part.Position)
 	if not target then return end
 	cue(part, "⚠ Boulder Rain!", Color3.fromRGB(220, 190, 140))
-	local count = data.Enraged and 9 or 6
+	local count = data.Enraged and 14 or 10
 	data.BusyUntil = os.clock() + 0.6
 	task.spawn(function()
 		for _ = 1, count do
@@ -102,7 +102,7 @@ P[3] = { Name = "boulders", Fn = function(part, data)
 			local angle, dist = rand(0, math.pi * 2), rand(0, 20)
 			local spot = Vector3.new(target.Position.X + math.cos(angle) * dist, 0, target.Position.Z + math.sin(angle) * dist)
 			disc(part, data, spot, 7, 1.0, math.floor(data.Stats.ShotDamage * 1.2), Color3.fromRGB(230, 190, 120))
-			task.wait(0.22)
+			task.wait(0.16)
 		end
 	end)
 end }
@@ -112,7 +112,7 @@ P[4] = { Name = "poison", Fn = function(part, data)
 	local target = ctx.NearestFieldPlayer(part.Position)
 	if not target then return end
 	cue(part, "⚠ Poison Pools!", Color3.fromRGB(150, 255, 120))
-	local pools = data.Enraged and 5 or 4
+	local pools = data.Enraged and 7 or 5
 	for i = 1, pools do
 		local angle = (i / pools) * math.pi * 2 + rand(0, 0.6)
 		local spot = Vector3.new(target.Position.X + math.cos(angle) * 12, 0, target.Position.Z + math.sin(angle) * 12)
@@ -144,7 +144,7 @@ end }
 -- 5구역: 얼음 가시줄 - 보스에서 사방으로 가시줄이 뻗고, 격노하면 사이를 메우는 두 번째 줄이 이어서 나온다
 P[5] = { Name = "icelines", Fn = function(part, data)
 	cue(part, "⚠ Ice Spikes!", Color3.fromRGB(150, 220, 255))
-	local lines = 8
+	local lines = 10
 	local offset = rand(0, math.pi * 2)
 	local origin = part.Position
 	local function wave(extra)
@@ -166,7 +166,7 @@ P[6] = { Name = "meteors", Fn = function(part, data)
 	local target = ctx.NearestFieldPlayer(part.Position)
 	if not target then return end
 	cue(part, "⚠ Meteor Shower!", Color3.fromRGB(255, 150, 70))
-	local count = data.Enraged and 10 or 7
+	local count = data.Enraged and 16 or 11
 	data.BusyUntil = os.clock() + 0.6
 	task.spawn(function()
 		for _ = 1, count do
@@ -200,7 +200,7 @@ end }
 -- 8구역: 심연 광선 - 보스를 중심으로 광선이 돌아간다 (돌아가는 방향을 보고 사이로 빠져나간다)
 P[8] = { Name = "beam", Fn = function(part, data)
 	cue(part, "⚠ Abyss Beam!", Color3.fromRGB(255, 100, 170))
-	local beams = data.Enraged and 3 or 2
+	local beams = data.Enraged and 4 or 3
 	local origin = part.Position
 	local base = rand(0, math.pi * 2)
 	local length = 70
