@@ -2144,7 +2144,8 @@ local function bossSidestep(part, data, target, dt, mv, distance)
 	if mv.Burst then -- 멈칫했다가 휙 튀어 나가는 리듬 (약 1.6초 주기: 앞 0.5초는 빠르게, 나머지는 천천히)
 		factor = (os.clock() * 0.625) % 1 < 0.3 and mv.Burst or 0.45
 	end
-	local step = dir * data.Stats.Speed * (mv.Speed or 1) * factor * dt
+	local base = mv.StrafeSpeed or (data.Stats.Speed * (mv.Speed or 1)) -- 옆으로 움직이는 속도는 칸/초로 따로 정한다 (큰 몸집에 비해 느려 보이지 않게)
+	local step = dir * base * factor * dt
 	local nx = math.clamp(part.Position.X + step.X, zx0 + F.CampSafe + radius, zx1 - radius - 4)
 	local nz = math.clamp(part.Position.Z + step.Z, -half + radius + 4, half - radius - 4)
 	if walkableAt(nx, nz, radius) then
@@ -2536,7 +2537,8 @@ local function stepMonsters(dt)
 					Effects.Burst(part.Position, Color3.fromRGB(255, 70, 70), 80)
 				end
 				-- 보스전 박진감: 싸우는 동안 부하 몬스터가 주변에 나타난다 (2구역부터, 살아 있는 부하는 최대 5마리)
-				if data.Zone > 1 and now >= (data.NextAdds or now + 6) then
+				data.NextAdds = data.NextAdds or (now + 6)
+				if data.Zone > 1 and now >= data.NextAdds then
 					data.NextAdds = now + (data.Enraged and 8 or 12)
 					data.AddParts = data.AddParts or {}
 					local alive = 0
@@ -2554,7 +2556,8 @@ local function stepMonsters(dt)
 					end
 				end
 				-- 다양한 패턴: 내려찍기 / 돌진 / 나선 탄막을 번갈아 (격노하면 더 자주, 두 개씩)
-				if now >= (data.NextPattern or now + 3) and now >= (data.BusyUntil or 0) then
+				data.NextPattern = data.NextPattern or (now + 3) -- (예전에는 이 값이 비어 있으면 조건이 항상 거짓이라 군주 패턴이 한 번도 나오지 않았다)
+				if now >= data.NextPattern and now >= (data.BusyUntil or 0) then
 					data.NextPattern = now + (data.Enraged and 4.2 or 6.5)
 					local entry = pickBossPattern(data)
 					data.LastPattern = entry.Name

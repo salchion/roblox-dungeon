@@ -807,7 +807,7 @@ Config.Field = {
 	BossStyle = {
 		[1] = { slam = 3, charge = 2, spiral = 2 },
 		[2] = { slam = 0, charge = 3, spiral = 1 }, -- 돌진 + 뿔 질주
-		[3] = { slam = 3, charge = 0, spiral = 1 }, -- 내려찍기 + 바위 소나기
+		[3] = { slam = 3, charge = 1, spiral = 1 }, -- 내려찍기 + 가끔 돌진(달려듦) + 바위 소나기
 		[4] = { slam = 1, charge = 0, spiral = 2 }, -- 나선 + 독 웅덩이
 		[5] = { slam = 0, charge = 0, spiral = 3 }, -- 나선 + 얼음 가시줄
 		[6] = { slam = 2, charge = 0, spiral = 1 }, -- 내려찍기 + 유성우
@@ -828,13 +828,13 @@ Config.Field = {
 	},
 	-- 구역 군주의 움직임 (Speed: 걷는 속도 배율 / Keep: 유지하려는 거리 / Strafe: 좌우로 도는 정도 / Burst: 옆으로 휙 튀어 나가는 순간 속도 배율 / Kite: 가까워지면 물러남)
 	BossMove = {
-		[2] = { Speed = 1.6, Strafe = 0.8, Burst = 2.0 },            -- 사슴령: 빠르게 돌아다니다 휙 치고 나간다
-		[3] = { Speed = 0.9, Strafe = 0.45, Burst = 1.8 },           -- 바위 거인: 묵직하지만 천천히 돌며 가끔 쿵 하고 달려든다
-		[4] = { Speed = 1.3, Strafe = 1.0, Burst = 3.2 },            -- 전갈: 멈췄다가 옆으로 확 튀어 나가는 재빠른 움직임
-		[5] = { Speed = 1.0, Keep = 34, Kite = true, Strafe = 0.5 }, -- 얼음 군주: 거리를 두고 떠다니며 가까워지면 물러난다
-		[6] = { Speed = 1.2, Strafe = 0.6, Burst = 2.0 },            -- 용암 악마: 이글거리며 좌우로 달려든다
-		[7] = { Speed = 1.3, Strafe = 0.6, Burst = 2.2 },            -- 사신: 미끄러지듯 / 가끔 빠르게
-		[8] = { Speed = 0.9, Keep = 28, Strafe = 0.7, Burst = 1.6 }, -- 심연의 눈: 떠다니며 거리를 유지
+		[2] = { Speed = 1.6, Strafe = 0.8, Burst = 2.0, StrafeSpeed = 22 },            -- 사슴령: 빠르게 돌아다니다 휙 치고 나간다
+		[3] = { Speed = 0.9, Strafe = 0.45, Burst = 1.8, StrafeSpeed = 10 },           -- 바위 거인: 묵직하지만 천천히 돌며 가끔 쿵 하고 달려든다
+		[4] = { Speed = 1.3, Strafe = 1.0, Burst = 2.6, StrafeSpeed = 22 },            -- 전갈: 멈췄다가 옆으로 확 튀어 나가는 재빠른 움직임
+		[5] = { Speed = 1.0, Keep = 34, Kite = true, Strafe = 0.5, StrafeSpeed = 13 }, -- 얼음 군주: 거리를 두고 떠다니며 가까워지면 물러난다
+		[6] = { Speed = 1.2, Strafe = 0.6, Burst = 2.0, StrafeSpeed = 17 },            -- 용암 악마: 이글거리며 좌우로 달려든다
+		[7] = { Speed = 1.3, Strafe = 0.6, Burst = 2.2, StrafeSpeed = 18 },            -- 사신: 미끄러지듯 / 가끔 빠르게
+		[8] = { Speed = 0.9, Keep = 28, Strafe = 0.7, Burst = 1.6, StrafeSpeed = 11 }, -- 심연의 눈: 떠다니며 거리를 유지
 	},
 	BossSizeMult = { [3] = 1.15, [4] = 0.9, [6] = 1.1, [7] = 0.95, [8] = 1.15 }, -- 군주 크기 배율 (실루엣 변화, 나머지는 1)
 	Boss = {
