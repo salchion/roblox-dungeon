@@ -826,13 +826,13 @@ Config.Field = {
 		[7] = { Style = "Crescent", Color = Color3.fromRGB(190, 120, 255), RingStyle = "Skull", RingColor = Color3.fromRGB(210, 160, 255), MissileStyle = "Seeker", MissileColor = Color3.fromRGB(200, 130, 255) },
 		[8] = { Style = "Halo", Color = Color3.fromRGB(255, 105, 175), RingStyle = "Halo", RingColor = Color3.fromRGB(255, 150, 200), MissileStyle = "Seeker", MissileColor = Color3.fromRGB(255, 110, 180) },
 	},
-	-- 구역 군주의 움직임 (Speed: 걷는 속도 배율 / Keep: 유지하려는 거리 / Strafe: 좌우로 도는 정도 / Kite: 가까워지면 물러남)
+	-- 구역 군주의 움직임 (Speed: 걷는 속도 배율 / Keep: 유지하려는 거리 / Strafe: 좌우로 도는 정도 / Burst: 옆으로 휙 튀어 나가는 순간 속도 배율 / Kite: 가까워지면 물러남)
 	BossMove = {
-		[2] = { Speed = 1.6, Strafe = 0.7 },            -- 사슴령: 빠르게 돌아다닌다
+		[2] = { Speed = 1.6, Strafe = 0.8, Burst = 2.0 }, -- 사슴령: 빠르게 돌아다니다 휙 치고 나간다
 		[3] = { Speed = 0.7 },                           -- 바위 거인: 느리고 묵직하다
-		[4] = { Speed = 1.2, Strafe = 0.9 },            -- 전갈: 좌우로 재빠르게
+		[4] = { Speed = 1.3, Strafe = 1.0, Burst = 3.2 }, -- 전갈: 멈췄다가 옆으로 확 튀어 나가는 재빠른 움직임
 		[5] = { Speed = 0.9, Keep = 34, Kite = true },  -- 얼음 군주: 거리를 두고 물러난다
-		[7] = { Speed = 1.3, Strafe = 0.5 },            -- 사신: 미끄러지듯
+		[7] = { Speed = 1.3, Strafe = 0.6, Burst = 2.2 }, -- 사신: 미끄러지듯 / 가끔 빠르게
 		[8] = { Speed = 0.8, Keep = 28, Strafe = 0.5 }, -- 심연의 눈: 떠다니며 거리를 유지
 	},
 	BossSizeMult = { [3] = 1.15, [4] = 0.9, [6] = 1.1, [7] = 0.95, [8] = 1.15 }, -- 군주 크기 배율 (실루엣 변화, 나머지는 1)

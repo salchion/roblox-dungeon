@@ -2122,7 +2122,7 @@ local function bossSidestep(part, data, target, dt, mv, distance)
 		dir = -toward
 	elseif mv.Strafe then
 		if not data.StrafeUntil or os.clock() > data.StrafeUntil then
-			data.StrafeUntil = os.clock() + 2 + math.random() * 2
+			data.StrafeUntil = os.clock() + 1.2 + math.random() * 1.4
 			data.StrafeSign = math.random() < 0.5 and -1 or 1
 		end
 		dir = Vector3.new(-toward.Z, 0, toward.X) * data.StrafeSign * mv.Strafe
@@ -2132,14 +2132,20 @@ local function bossSidestep(part, data, target, dt, mv, distance)
 	local radius = data.Stats.Size / 2 + 2
 	local zx0, zx1 = zoneBounds(data.Zone)
 	local half = F.Width / 2
-	local step = dir * data.Stats.Speed * (mv.Speed or 1) * dt
+	local factor = 1
+	if mv.Burst then -- 멈칫했다가 휙 튀어 나가는 리듬 (약 1.6초 주기: 앞 0.5초는 빠르게, 나머지는 천천히)
+		factor = (os.clock() * 0.625) % 1 < 0.3 and mv.Burst or 0.45
+	end
+	local step = dir * data.Stats.Speed * (mv.Speed or 1) * factor * dt
 	local nx = math.clamp(part.Position.X + step.X, zx0 + F.CampSafe + radius, zx1 - radius - 4)
 	local nz = math.clamp(part.Position.Z + step.Z, -half + radius + 4, half - radius - 4)
 	if walkableAt(nx, nz, radius) then
-		local newPos = Vector3.new(nx, floorAt(nx) + data.Stats.Size / 2, nz)
-		part.CFrame = CFrame.lookAt(newPos, Vector3.new(target.Position.X, newPos.Y, target.Position.Z))
+		local bob = math.sin(os.clock() * 7) * data.Stats.Size * 0.03 -- 움직일 때 위아래로 살짝 흔들려서 살아 있는 느낌
+		local newPos = Vector3.new(nx, floorAt(nx) + data.Stats.Size / 2 + bob, nz)
+		part.CFrame = CFrame.lookAt(newPos, Vector3.new(target.Position.X, newPos.Y, target.Position.Z)) * CFrame.Angles(0, 0, math.sin(os.clock() * 5) * 0.06)
 	else
-		data.StrafeUntil = nil -- 막히면 방향을 다시 고른다
+		data.StrafeSign = -(data.StrafeSign or 1) -- 막히면 반대 방향으로 (제자리에서 떨리지 않게)
+		data.StrafeUntil = os.clock() + 1
 	end
 end
 
@@ -2428,7 +2434,7 @@ local function stepMonsters(dt)
 			else
 				local mv = F.BossMove and F.BossMove[data.Zone]
 				local keepDistance = data.Stats.Size / 2 + ((mv and mv.Keep) or 16)
-				if mv and distance <= keepDistance + 4 and now >= (data.BusyUntil or 0) then
+				if mv and distance <= keepDistance + 12 and now >= (data.BusyUntil or 0) then
 					bossSidestep(part, data, target, dt, mv, distance) -- 구역마다 다른 움직임 (옆으로 돌기 / 물러나기)
 				end
 				if distance > keepDistance and now >= (data.BusyUntil or 0) then
