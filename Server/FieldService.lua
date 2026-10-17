@@ -1368,7 +1368,20 @@ end
 
 local MAX_FIELD_PROJECTILES = 450 -- 동시에 날아다니는 적 탄 상한: 넘치면 가장 오래된 탄부터 지운다
 -- opts (선택): 유도 / 포물선 / 뱀 / 곡선 / 갈라짐 같은 특수 움직임 (Effects.MakeShot 설명 참고). 없으면 직선탄.
+-- 경사로 보정: 수평으로 쏜 탄(전방위 / 나선 / 일직선)은 땅이 오르내리는 곳에서 허공을 지나거나 땅에 박힌다.
+-- 쏘는 자리의 땅 기울기(x 방향)만큼 위아래 성분을 더해서 탄이 땅을 따라 날아가게 한다. (클라이언트는 직선으로 그리므로 서버와 어긋나지 않는다)
+local function slopeAdjusted(origin, direction)
+	if math.abs(direction.Y) > 0.02 then return direction end -- 이미 위아래로 겨눈 탄(플레이어를 조준한 탄)은 그대로
+	local h = math.sqrt(direction.X * direction.X + direction.Z * direction.Z)
+	if h < 0.001 then return direction end
+	local slope = math.clamp((floorAt(origin.X + 12) - floorAt(origin.X - 12)) / 24, -0.8, 0.8)
+	if math.abs(slope) < 0.03 then return direction end
+	local ux, uz = direction.X / h, direction.Z / h
+	return Vector3.new(ux, slope * ux, uz)
+end
+
 local function fireProjectile(origin, direction, speed, damage, size, color, style, opts)
+	direction = slopeAdjusted(origin, direction)
 	if #projectiles >= MAX_FIELD_PROJECTILES then
 		local oldest = table.remove(projectiles, 1)
 		oldest.Part:Destroy()
