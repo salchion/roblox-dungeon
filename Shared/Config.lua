@@ -664,7 +664,7 @@ end
 -- 등급(일반~신화)이 높을수록 효과가 크고, 강화 레벨이 오를수록 더 커짐
 ------------------------------------------------------------
 Config.Gear = {
-	MaxLevel = 15,
+	MaxLevel = 30, -- 15 -> 30 (15강까지는 6부위 기대 약 39만 G, 30강까지는 약 1,100만 G)
 	LevelBonus = 0.08,   -- 강화 1레벨당 효과 +8%
 	RarityNames = { "Common", "Rare", "Epic", "Legendary", "Mythic" },
 	RarityColors = {
@@ -728,7 +728,11 @@ end
 -- 강화 비용: 부위와 강화 단계로만 정해진다 (끼고 있는 장비의 등급은 상관없다: 일부러 낮은 등급을 끼고 싸게 강화하는 걸 막는다). 등급 값은 호환용으로만 받는다.
 function Config.GetGearCost(slotKey, _rarity, level)
 	local slot = Config.GetGearSlot(slotKey)
-	return math.floor(slot.BaseCost * 1.8 * 1.28 ^ level) -- (1.8 = 예전 영웅 등급 기준)
+	-- 15강까지는 단계마다 1.28배, 15강 이후는 1.2배로 완만하게 (성공 확률은 35% 아래로 내려가지 않는다)
+	if level <= 15 then
+		return math.floor(slot.BaseCost * 1.8 * 1.28 ^ level) -- (1.8 = 예전 영웅 등급 기준)
+	end
+	return math.floor(slot.BaseCost * 1.8 * 1.28 ^ 15 * 1.2 ^ (level - 15))
 end
 
 function Config.GetGearEnhanceChance(level)
@@ -1278,6 +1282,8 @@ Config.Xp = {
 	DungeonPerMonsterLevel = 3,  -- 던전 몬스터: 몬스터 레벨 x 3 (던전 종류/난이도 배율이 곱해짐)
 	EliteMult = 4,               -- 엘리트는 x4
 	FieldBoss = 600,
+	-- 필드 구역별 경험치 배율 (구역 몬스터 레벨이 1~22 로만 오르는데 레벨업에 필요한 XP 는 훨씬 커서, 레벨이 오를수록 경험치가 잘 안 오르던 것을 보정)
+	ZoneMult = { 1, 1.5, 2.2, 3, 4, 5.5, 7.5, 10 },
 	DungeonBoss = 400,
 	WaveClear = 25,              -- 웨이브 클리어: 25 x 웨이브 번호
 	DungeonClear = 150,

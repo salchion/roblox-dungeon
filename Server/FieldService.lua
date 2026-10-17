@@ -1507,6 +1507,7 @@ local function reward(player, data, part)
 	else
 		xp = Config.Xp.FieldPerMonsterLevel * data.XpLevel * (data.Kind == "Elite" and Config.Xp.EliteMult or 1)
 	end
+	xp = xp * ((Config.Xp.ZoneMult and Config.Xp.ZoneMult[data.Zone]) or 1) -- 구역이 깊을수록 경험치 배율
 	Level.AddXP(player, xp)
 
 	gateProgress(player, data)
