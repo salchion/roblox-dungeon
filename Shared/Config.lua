@@ -298,7 +298,7 @@ local dungeonBase = {
 	PointsPerWave = 3,       -- (사용 안 함: 던전 특성 선택으로 대체됨)
 	WaveClearGold = 40,      -- 웨이브 클리어 보너스 골드 (x 웨이브 번호)
 	VictoryGold = 400,       -- 보스 처치 보너스 골드
-	ReturnDelay = 8,         -- 던전 종료 후 로비 복귀까지 대기(초)
+	ReturnDelay = 12,        -- 던전 종료 후 로비 복귀까지 대기(초)
 
 	ArenaLength = 1000,      -- 시작방에서 보스방까지 +X 방향으로 쭉 이어지는 길이
 	ArenaWidth = 300,        -- 좌우 폭 (길이 이 안에서 굽이친다)
