@@ -1454,6 +1454,20 @@ function Config.Sets.AugCost(zone, level, weaponLevel)
 	local base = math.floor(1500 * 1.75 ^ (zone - 1) / 100 + 0.5) * 100
 	return math.floor(base * (Config.Sets.AugCostMult[level] or 8) * Config.GoldScale(weaponLevel))
 end
+-- 던전 상자의 구역 세트 장비: 깊이가 깊을수록 확률이 오르고, 나오는 구역은 "내가 클리어한 구역" 중 깊이에 맞는 구역 이하로 정한다
+--   (필드가 세트의 첫 입구로 남는다: 7구역 군주를 잡기 전에는 던전에서도 7구역 세트가 나오지 않는다)
+Config.Sets.Dungeon = { Base = 0.10, PerDepth = 0.01, Max = 0.50, ZoneEvery = 4, Spread = 3 }
+function Config.Sets.DungeonChance(depth)
+	local D = Config.Sets.Dungeon
+	return math.min(D.Max, D.Base + D.PerDepth * math.max(0, (depth or 1) - 1))
+end
+function Config.Sets.DungeonZones(depth, clearedZone)
+	local D = Config.Sets.Dungeon
+	local top = math.min(1 + (math.max(1, depth or 1) - 1) // D.ZoneEvery, clearedZone or 0, Config.Field.ZoneCount)
+	local zones = {}
+	for zone = math.max(1, top - D.Spread + 1), top do table.insert(zones, zone) end
+	return zones
+end
 -- 도감: 몬스터 / 구역 군주 / 세트 장비 설명 (몬스터 이름은 MonsterTypes.Defs 와 같다)
 Config.Codex = {
 	Monsters = {

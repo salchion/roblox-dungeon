@@ -141,6 +141,12 @@ function Loot.DungeonChest(player, typeKey, difficultyKey, count)
 	local lines = {}
 	for _ = 1, count or L.DungeonChestCount do
 		local item = Loot.RollItem(player, row, "DungeonBoss", nil, extra, uniqueChance)
+		if depth then -- 구역 세트 장비 (확률 / 구역은 Odds.ChestSet 과 같은 규칙)
+			local chance, zones = Odds.ChestSet(difficultyKey, player:GetAttribute("ClearedZone") or 0)
+			if #zones > 0 and math.random() * 100 < chance then
+				item.Set = Config.Sets.ZoneKeys[zones[math.random(#zones)]]
+			end
+		end
 		local status, _, essence, gold = Inventory.Add(player, item)
 		local label = itemLabel(item)
 		local text

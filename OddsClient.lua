@@ -100,6 +100,12 @@ local function chestText()
 			Odds.Format(Odds.ChestUnique(Config.Dungeon.DepthKey(depth))), Config.Dungeon.DepthKeyCost(depth), rarityLine(entries)))
 	end
 	table.insert(lines, "")
+	table.insert(lines, "<b>Zone set gear</b> (each chest piece can be a field-zone set piece; only zones whose lord you have defeated can appear, the deepest 3 that fit the depth)")
+	for _, depth in ipairs({ 1, 5, 9, 13, 17, 21, 30 }) do
+		local chance, zones = Odds.ChestSet(Config.Dungeon.DepthKey(depth), player:GetAttribute("ClearedZone") or 0)
+		table.insert(lines, string.format("Depth %d: %s%s", depth, Odds.Format(chance), #zones > 0 and (" (zones " .. zones[1] .. "–" .. zones[#zones] .. ")") or " (no zone cleared yet)"))
+	end
+	table.insert(lines, "")
 	table.insert(lines, "Odds rise smoothly with every depth; the depth window shows the exact odds of the depth you pick.")
 	table.insert(lines, "Gear slot is uniformly random (each slot equal chance). Every result is useful: gear you can't improve on is converted into Gold and Essence.")
 	return table.concat(lines, "\n")

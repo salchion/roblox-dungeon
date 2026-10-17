@@ -109,6 +109,15 @@ function Odds.Chest(typeKey, diffKey, luck)
 	return out
 end
 
+-- 던전 상자 장비 한 개가 구역 세트 장비일 확률(%)과 나올 수 있는 구역들 (내가 클리어한 구역에 따라 다르다)
+function Odds.ChestSet(diffKey, clearedZone)
+	local depth = Config.Dungeon.DepthOf(diffKey)
+	if not depth then return 0, {} end
+	local zones = Config.Sets.DungeonZones(depth, clearedZone)
+	if #zones == 0 then return 0, zones end
+	return Config.Sets.DungeonChance(depth) * 100, zones
+end
+
 -- 던전 상자에서 나온 신화 장비에 유니크 효과가 붙을 확률(%): 깊이가 아니면 필드와 같은 기본 확률
 function Odds.ChestUnique(diffKey)
 	local depth = Config.Dungeon.DepthOf(diffKey)

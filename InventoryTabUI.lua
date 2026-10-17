@@ -295,7 +295,7 @@ local function buildInventoryTab(state)
 			local have = setCounts[selected.Set] or 0
 			local lit, dim = "#" .. hex(setDef.Color), "#6c7088"
 			if setDef.Zone then
-				table.insert(lines, string.format("<font size='10' color='%s'>📍 Zone %d %s · Drops in that zone / Set Imprint</font>", lit, setDef.Zone, Config.Field.ZoneNames[setDef.Zone]))
+				table.insert(lines, string.format("<font size='10' color='%s'>📍 Zone %d %s · Drops in that zone · Dungeon chests (deeper = better odds)</font>", lit, setDef.Zone, Config.Field.ZoneNames[setDef.Zone]))
 			end
 			for _, tier in ipairs({ 2, 3 }) do
 				local parts = {}

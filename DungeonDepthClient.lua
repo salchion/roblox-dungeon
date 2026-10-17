@@ -41,6 +41,14 @@ local body = makeLabel({
 
 local function hex(color) return color:ToHex() end
 
+local function setLine(key)
+	local chance, zones = Odds.ChestSet(key, player:GetAttribute("ClearedZone") or 0)
+	if #zones == 0 then return "🧩 Zone set gear: clear a field zone lord to unlock" end
+	local names = {}
+	for _, zone in ipairs(zones) do table.insert(names, Config.Sets[Config.Sets.ZoneKeys[zone]].Name) end
+	return string.format("🧩 Zone set gear: <b>%.0f%%</b> per piece (%s)", chance, table.concat(names, ", "))
+end
+
 local function refresh()
 	if not typeKey then return end
 	local frontier = bestOf(typeKey) + 1
@@ -61,6 +69,7 @@ local function refresh()
 		string.format("<b>🎁 Boss chest · %d gear pieces</b>", Config.Loot.DungeonChestCount),
 		table.concat(parts, "  ·  "),
 		string.format("✦ Unique effect on Mythic gear: <b>%.1f%%</b>", Odds.ChestUnique(key)),
+		setLine(key),
 		"",
 		string.format("🔑 Entry: <b>%d key</b> (or 1 of your daily free entries)", difficulty.KeyCost),
 		string.format("🎫 Tickets for the boss: <b>%d</b>  ·  Gold / XP x%.1f", difficulty.Tickets, difficulty.GoldMult),
