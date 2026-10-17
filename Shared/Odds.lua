@@ -82,8 +82,8 @@ end
 -- 던전 보스 상자 한 개: 던전 종류 / 깊이("D12") 또는 옛 난이도("Normal") -> 등급 표의 줄(소수 가능)과 높은 등급 추가 배율
 function Odds.ChestParams(typeKey, diffKey)
 	local L = Config.Loot
-	local start = L.DungeonRarityRow[typeKey] or 3
 	local depth = Config.Dungeon.DepthOf(diffKey)
+	local start = depth and L.DungeonDepthRow or (L.DungeonRarityRow[typeKey] or 3)
 	if depth then
 		local D = Config.Dungeon.Depth
 		local raw = start + (depth - 1) * D.RowPerDepth

@@ -2228,9 +2228,9 @@ local function finish(run, victory)
 			if clearedDepth then
 				local okMeta, MetaD = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
 				if okMeta then
-					local isRecord = MetaD.DepthClear(member, run.TypeKey, clearedDepth)
+					local isRecord = MetaD.DepthClear(member, "All", clearedDepth)
 					if isRecord then
-						notify(member, string.format("⭐ New record! %s depth %d cleared. Depth %d is unlocked.", run.Type.Name, clearedDepth, clearedDepth + 1))
+						notify(member, string.format("⭐ New record! Depth %d cleared. Depth %d is unlocked.", clearedDepth, clearedDepth + 1))
 					end
 				end
 			end
@@ -2829,7 +2829,7 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 		local okMeta, MetaD = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
 		if okMeta then
 			for _, member in ipairs(members) do
-				if startDepth > MetaD.DepthBest(member, typeKey) + 1 then
+				if startDepth > MetaD.DepthBest(member, "All") + 1 then
 					notify(player, string.format("%s hasn't unlocked depth %d yet. (Clear depth %d first)", member.DisplayName, startDepth, startDepth - 1))
 					return
 				end
@@ -3046,27 +3046,38 @@ local function gateChecks(player, entry)
 	return true
 end
 
+-- 입장할 던전 종류: 파티원 모두 레벨이 맞는 종류 중 무작위 (깊이가 같으면 어떤 종류가 나와도 보상 확률은 같다)
+local function pickDungeonType(player)
+	local party = Party.GetParty(player)
+	local lowest = math.huge
+	for _, member in ipairs(party and party.Members or { player }) do
+		lowest = math.min(lowest, member:GetAttribute("Level") or 1)
+	end
+	local pool = {}
+	for _, entry in ipairs(D.List) do
+		if lowest >= entry.MinLevel then table.insert(pool, entry.Type) end
+	end
+	if #pool == 0 then return D.List[1].Type end
+	return pool[math.random(1, #pool)]
+end
+
 function Dungeon.StartGate(player, index)
-	local entry = typeof(index) == "number" and D.List[index]
-	if not entry or not gateChecks(player, entry) then return end
+	local entry = D.List[1] -- 입장구는 하나
+	if index ~= 1 or not gateChecks(player, entry) then return end
 	local okMeta, MetaD = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
-	local best = okMeta and MetaD.DepthBest(player, entry.Type) or 0
+	local best = okMeta and MetaD.DepthBest(player, "All") or 0
 	if best == 0 or player:GetAttribute("TutorialActive") or player:GetAttribute("TutorialDungeonRun") == true then
-		Dungeon.Start(player, entry.Type, D.DepthKey(1)) -- 처음이거나 튜토리얼: 깊이 1 로 바로
+		Dungeon.Start(player, pickDungeonType(player), D.DepthKey(1)) -- 처음이거나 튜토리얼: 깊이 1 로 바로
 	else
-		Remotes.Dungeon:FireClient(player, "OpenDepth", { Type = entry.Type })
+		Remotes.Dungeon:FireClient(player, "OpenDepth", { Type = "All" })
 	end
 end
 
 -- 깊이 창에서 [입장]: 입장구와 같은 검사를 서버에서 다시 한다 (화면에서 보낸 값을 믿지 않는다)
 function Dungeon.StartDepth(player, typeKey, depth)
 	if typeof(typeKey) ~= "string" or typeof(depth) ~= "number" or depth ~= depth then return end
-	local entry
-	for _, e in ipairs(D.List) do
-		if e.Type == typeKey then entry = e break end
-	end
-	if not entry or not gateChecks(player, entry) then return end
-	Dungeon.Start(player, typeKey, D.DepthKey(depth))
+	if typeKey ~= "All" or not gateChecks(player, D.List[1]) then return end
+	Dungeon.Start(player, pickDungeonType(player), D.DepthKey(depth))
 end
 
 function Dungeon.OpenSelect(player)

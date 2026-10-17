@@ -1225,7 +1225,7 @@ end
 -- 던전 목록: 던전마다 입구(게이트)가 따로 있고, 캐릭터 레벨이 되면 난이도 순서대로 입장할 수 있다 (메뉴에서 고르지 않는다)
 -- Type / Diff: 위의 던전 종류 / 난이도 조합. MinLevel: 입장에 필요한 캐릭터 레벨 (파티원 모두).
 Config.Dungeon.List = {
-	-- 던전 종류마다 입장구 하나 (깊이는 입장구 앞에서 고른다). Diff 는 입장구 겉모습(문틀)과 색에만 쓴다.
+	-- 던전 종류 목록: 입장구는 마을에 하나뿐이고(첫 항목의 모양), 들어갈 때마다 레벨이 맞는 종류 중 하나가 무작위로 나온다. 깊이 기록은 종류와 상관없이 하나다.
 	{ Type = "Cave", Diff = "Normal", MinLevel = 1 },
 	{ Type = "Ice", Diff = "Normal", MinLevel = 14 },
 	{ Type = "Fire", Diff = "Normal", MinLevel = 26 },
@@ -1618,7 +1618,8 @@ Config.Loot = {
 		{ 14, 28, 32, 21, 5 },
 	},
 	-- 던전 보스 상자: 던전 종류별로 위 표의 어느 줄을 쓸지 (난이도에 따라 +-1)
-	DungeonRarityRow = { Cave = 3, Ice = 5, Fire = 7 },
+	DungeonRarityRow = { Cave = 3, Ice = 5, Fire = 7 }, -- (옛 난이도 방식에서만 사용)
+	DungeonDepthRow = 3,  -- 깊이 방식: 종류와 상관없이 모두 같은 시작 줄 (깊이 1 의 상자 확률)
 	DungeonDifficultyRow = { Easy = -1, Normal = 0, Hard = 1 },
 	DungeonChestCount = 3,
 }

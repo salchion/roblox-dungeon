@@ -26,7 +26,7 @@ local title = makeLabel({ Size = UDim2.new(1, -110, 0, 36), Position = UDim2.new
 makeButton({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -86, 0, 13), Text = "Close", BackgroundColor3 = Color3.fromRGB(54, 58, 82), ZIndex = 11 }, panel, function()
 	panel.Visible = false
 end)
-makeLabel({ Size = UDim2.new(1, -36, 0, 20), Position = UDim2.new(0, 18, 0, 46), Text = "Deeper depths have better drop odds and tougher monsters.", TextSize = 12, TextColor3 = Color3.fromRGB(180, 188, 220), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 11 }, panel)
+makeLabel({ Size = UDim2.new(1, -36, 0, 20), Position = UDim2.new(0, 18, 0, 46), Text = "Deeper depths have better drop odds and tougher monsters. The dungeon theme is random.", TextSize = 12, TextColor3 = Color3.fromRGB(180, 188, 220), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 11 }, panel)
 
 local typeKey, depth = nil, 1
 
@@ -43,12 +43,11 @@ local function hex(color) return color:ToHex() end
 
 local function refresh()
 	if not typeKey then return end
-	local info0 = Config.Dungeon.Types[typeKey]
 	local frontier = bestOf(typeKey) + 1
 	depth = math.clamp(depth, 1, frontier)
 	local key = Config.Dungeon.DepthKey(depth)
 	local difficulty = Config.Dungeon.GetDifficulty(key)
-	title.Text = "🏰 " .. (info0 and info0.Name or typeKey)
+	title.Text = "🏰 Dungeon"
 	depthLabel.Text = "Depth " .. depth
 	depthLabel.TextColor3 = difficulty.Color
 	info.Text = string.format("Cleared up to depth %d  ·  You can enter up to depth %d", bestOf(typeKey), frontier)
@@ -99,13 +98,9 @@ Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
 	panel.Visible = true
 end)
 
-for key in pairs(Config.Dungeon.Types) do
-	if typeof(key) == "string" and key ~= "Order" then
-		player:GetAttributeChangedSignal("DepthBest_" .. key):Connect(function()
-			if panel.Visible then refresh() end
-		end)
-	end
-end
+player:GetAttributeChangedSignal("DepthBest_All"):Connect(function()
+	if panel.Visible then refresh() end
+end)
 player:GetAttributeChangedSignal("Zone"):Connect(function()
 	if player:GetAttribute("Zone") ~= "Lobby" then panel.Visible = false end
 end)

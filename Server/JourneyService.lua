@@ -100,11 +100,10 @@ local function townBeat(player, now)
 		Journey.Mark(player, "Gate" .. newest)
 		local entry = Config.Dungeon.List[newest]
 		local dungeonType = Config.Dungeon.Types[entry.Type]
-		local difficulty = Config.Dungeon.Difficulties[entry.Diff]
-		if dungeonType and difficulty and positions.Gates and positions.Gates[newest] and not player:GetAttribute("Journey_Silent") then
+		if dungeonType and positions.Gates and positions.Gates[1] and not player:GetAttribute("Journey_Silent") then
 			lastBeat[player] = now
-			prompt(player, "🏰", "New dungeon unlocked!", string.format("%s - Level %d or higher. Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", dungeonType.Name, entry.MinLevel))
-			beacon(player, positions.Gates[newest], dungeonType.Name)
+			prompt(player, "🏰", "New dungeon unlocked!", string.format("A new dungeon theme can now appear (%s, Level %d+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", dungeonType.Name, entry.MinLevel))
+			beacon(player, positions.Gates[1], "Dungeon")
 		end
 	end
 end

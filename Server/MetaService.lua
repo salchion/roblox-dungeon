@@ -147,7 +147,7 @@ local function syncSkillAttributes(player, state)
 end
 
 function Meta.Load(player, saved)
-	local state = { Skills = {}, Pet = { Unlocked = false, Level = 1, Look = "Orb", Color = 1 }, Tower = 0, Codex = { Kills = {}, Boss = {}, Sets = {}, Items = {} }, Depth = { Cave = 0, Ice = 0, Fire = 0 }, Rift = { BestScore = 0, BestBoss = 0, BestTime = 0, Week = 0, WeekBest = 0, Day = 0, Used = 0, Hints = {}, LvStats = {} } }
+	local state = { Skills = {}, Pet = { Unlocked = false, Level = 1, Look = "Orb", Color = 1 }, Tower = 0, Codex = { Kills = {}, Boss = {}, Sets = {}, Items = {} }, Depth = { All = 0 }, Rift = { BestScore = 0, BestBoss = 0, BestTime = 0, Week = 0, WeekBest = 0, Day = 0, Used = 0, Hints = {}, LvStats = {} } }
 	for _, key in ipairs(Config.Skills.UpgradeOrder) do
 		local level = typeof(saved) == "table" and typeof(saved.Skills) == "table" and tonumber(saved.Skills[key]) or 1
 		state.Skills[key] = math.clamp(math.floor(level), 1, Config.SkillUpgrade.MaxLevel)
@@ -179,9 +179,10 @@ function Meta.Load(player, saved)
 			end
 		end
 		if typeof(saved.Depth) == "table" then -- 던전 깊이 최고 기록 (종류별)
-			for typeKey in pairs(state.Depth) do
-				state.Depth[typeKey] = math.clamp(math.floor(tonumber(saved.Depth[typeKey]) or 0), 0, Config.Dungeon.Depth.MaxDepth)
-			end
+			-- 종류별 기록이 있던 저장 데이터는 가장 높은 값 하나로 합친다
+			local best = 0
+			for _, key in ipairs({ "All", "Cave", "Ice", "Fire" }) do best = math.max(best, math.floor(tonumber(saved.Depth[key]) or 0)) end
+			state.Depth.All = math.clamp(best, 0, Config.Dungeon.Depth.MaxDepth)
 		end
 		state.Tower = math.max(0, math.floor(tonumber(saved.Tower) or 0))
 		if typeof(saved.Rift) == "table" then

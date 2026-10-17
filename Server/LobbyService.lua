@@ -399,7 +399,7 @@ function Lobby.Build()
 	--   종류(Cave / Ice / Fire)는 문의 모양과 재질로, 난이도(쉬움 / 보통 / 어려움)는 틀의 재질 / 문장 점 개수 / 깃발 줄무늬 / 쇠사슬 / 바닥 룬 고리로 구분한다.
 	--   크기는 모두 같고, 불꽃은 문당 최대 2개, 장식은 전부 고정 부품이다.
 	local gates = {}
-	local listCount = #Config.Dungeon.List
+	local listCount = 1 -- 입장구는 하나 (던전 종류는 들어갈 때 무작위)
 	local spacing = 26
 	local GH = 28 -- 모든 문의 높이는 같다
 	local gateFolder = Instance.new("Folder")
@@ -415,6 +415,7 @@ function Lobby.Build()
 	local GOLD = Color3.fromRGB(196, 158, 76)
 	local function rgb(r, g, b) return Color3.fromRGB(r, g, b) end
 	for index, entry in ipairs(Config.Dungeon.List) do
+		if index > listCount then break end
 		local dungeonType = Config.Dungeon.Types[entry.Type]
 		local difficulty = Config.Dungeon.Difficulties[entry.Diff]
 		local x = (index - (listCount + 1) / 2) * spacing
@@ -584,11 +585,11 @@ function Lobby.Build()
 		swirl.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.7), NumberSequenceKeypoint.new(1, 0) })
 		swirl.Parent = portal
 
-		makeLabel(portal, string.format("⚔ %s\nPick a depth · Lv.%d+", dungeonType.Name, entry.MinLevel), difficulty.Color, GH / 2 + 9, 280, 64, 60, true) -- 문틀 / 지붕에 가려지지 않게 항상 위에 그린다
+		makeLabel(portal, string.format("⚔ Dungeon\nPick a depth · Lv.%d+", entry.MinLevel), difficulty.Color, GH / 2 + 9, 280, 64, 60, true) -- 문틀 / 지붕에 가려지지 않게 항상 위에 그린다
 
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText = "Enter (Lv." .. entry.MinLevel .. ")"
-		prompt.ObjectText = string.format("%s · pick a depth (deeper = better drop odds) · %s", dungeonType.Name, Config.Keys.TierIcons[difficulty.KeyTier or 1])
+		prompt.ObjectText = string.format("Dungeon · pick a depth (deeper = better drop odds) · random theme · %s", Config.Keys.TierIcons[difficulty.KeyTier or 1])
 		prompt.HoldDuration = 0.8
 		prompt.MaxActivationDistance = 16
 		prompt.RequiresLineOfSight = false
@@ -822,7 +823,7 @@ function Lobby.Build()
 	do
 		local boards = {
 			{ Text = "▶ Hunting Field (East)", Y = 11, Color = Color3.fromRGB(70, 140, 80), Dir = 1 },
-			{ Text = "▲ Dungeon Gates (North)", Y = 8, Color = Color3.fromRGB(120, 85, 160), Dir = 0 },
+			{ Text = "▲ Dungeon Gate (North)", Y = 8, Color = Color3.fromRGB(120, 85, 160), Dir = 0 },
 			{ Text = "◀ Dummy Training Yard (West)", Y = 5, Color = Color3.fromRGB(170, 120, 60), Dir = -1 },
 		}
 		-- 판 앞뒤 양쪽 면에 글자를 붙인다 (어느 쪽에서 봐도 읽히고, 판에 가려 잘리지 않는다)

@@ -92,16 +92,14 @@ local function chestText()
 		"",
 	}
 	local depths = { 1, 5, 9, 13, 17, 21, 30 }
-	for _, typeKey in ipairs({ "Cave", "Ice", "Fire" }) do
-		local best = player:GetAttribute("DepthBest_" .. typeKey) or 0
-		table.insert(lines, string.format("<b>%s</b>  (your record: depth %d)", Config.Dungeon.Types[typeKey].Name, best))
-		for _, depth in ipairs(depths) do
-			local entries = Odds.Chest(typeKey, Config.Dungeon.DepthKey(depth), luck)
-			table.insert(lines, string.format("Depth %d (total %s, Unique %s, keys %d): %s", depth, total(entries),
-				Odds.Format(Odds.ChestUnique(Config.Dungeon.DepthKey(depth))), Config.Dungeon.DepthKeyCost(depth), rarityLine(entries)))
-		end
-		table.insert(lines, "")
+	local best = player:GetAttribute("DepthBest_All") or 0
+	table.insert(lines, string.format("<b>Dungeon depth</b>  (your record: depth %d · the dungeon theme is random, odds are the same)", best))
+	for _, depth in ipairs({ 1, 5, 9, 13, 17, 21, 30 }) do
+		local entries = Odds.Chest("Cave", Config.Dungeon.DepthKey(depth), luck)
+		table.insert(lines, string.format("Depth %d (total %s, Unique %s, keys %d): %s", depth, total(entries),
+			Odds.Format(Odds.ChestUnique(Config.Dungeon.DepthKey(depth))), Config.Dungeon.DepthKeyCost(depth), rarityLine(entries)))
 	end
+	table.insert(lines, "")
 	table.insert(lines, "Odds rise smoothly with every depth; the depth window shows the exact odds of the depth you pick.")
 	table.insert(lines, "Gear slot is uniformly random (each slot equal chance). Every result is useful: gear you can't improve on is converted into Gold and Essence.")
 	return table.concat(lines, "\n")
