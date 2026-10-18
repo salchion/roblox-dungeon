@@ -27,11 +27,11 @@ local function place()
 	local zone = player:GetAttribute("Zone")
 	gui.Enabled = zone == "Lobby" or zone == "Field"
 	if not pill then return end
-	local atRight = zone == "Field"
+	local atRight = zone == "Field" or COMPACT -- 폰은 위 가운데에 안내 글이 있어서 마을에서도 오른쪽으로
 	local anchor = atRight and Vector2.new(1, 0) or Vector2.new(0.5, 0)
 	local x = atRight and UDim2.new(1, -16, 0, 0) or UDim2.new(0.5, 0, 0, 0)
 	pill.AnchorPoint, listFrame.AnchorPoint, toast.AnchorPoint = anchor, anchor, anchor
-	local y = atRight and 300 or 8 -- 필드: 오른쪽 위의 파티 / 효과 카드 아래 빈 곳 (레이더는 오른쪽 아래)
+	local y = COMPACT and 44 or (atRight and 300 or 8) -- 폰: 오른쪽 위 버튼 줄(상점 / 랭킹 / 파티) 바로 아래 / 필드(PC): 파티 / 효과 카드 아래 빈 곳 (레이더는 오른쪽 아래)
 	toastBaseY = y + 36
 	pill.Position = UDim2.new(x.X.Scale, x.X.Offset, 0, y)
 	listFrame.Position = UDim2.new(x.X.Scale, x.X.Offset, 0, y + 36)
