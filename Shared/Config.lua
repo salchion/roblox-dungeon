@@ -1935,4 +1935,95 @@ function Config.GetWeaponScale(level)
 	return 1 + 0.22 * math.log(1 + level * Config.Weapon.LevelScale)
 end
 
+------------------------------------------------------------
+-- 골드 소비처 비용 (장비 강화 / 스킬 / 펫 / 세트 효과 / 훈련소 / 레벨 스탯 골드 포인트)
+--   원칙: 각 성장은 "자기 레벨"로만 비용이 정해진다. 지금 내 무기 단계는 보지 않는다 (무기와 연동하지 않는다).
+--   숫자는 이렇게 맞춘다: 그 성장을 처음부터 끝까지 올리는 데 드는 비용을 "열심히 플레이했을 때 수입 SinkMinutes 분"어치가 되게 한다.
+--   (수입은 무기를 평균적인 속도로 올렸을 때의 값 RefIncome 을 기준표로 쓴다. 완성된 비용은 고정된 표이고 게임 안에서 무기와 연결되지 않는다.)
+--   초반 단계는 싸고 뒤로 갈수록 비싸다 (Progressive). 실패하면 골드만 쓰는 성장(장비)은 성공 확률을 넣어서 계산한다.
+------------------------------------------------------------
+Config.SinkMinutes = 600 -- 한 성장을 끝까지 올리는 데 드는 시간 (분): 최소 10시간
+
+-- 그 성장에서 f(0~1) 만큼 진행했을 때의 기준 분당 수입
+function Config.RefIncome(f)
+	local level = math.floor(math.clamp(f, 0, 1) * Config.Weapon.MaxLevel)
+	return Config.Economy.IncomeBase * Config.GetDamageMultiplier(level)
+end
+
+local function progressive(f)
+	return 0.3 + 0.7 * f
+end
+
+do
+	local T = Config.SinkMinutes
+	local RI = Config.RefIncome
+
+	-- 장비: 6부위 x 레벨 0 -> 29 (성공 확률 반영). 부위마다 조금씩 다르게 (평균 1)
+	local gearSum = 0
+	for level = 0, Config.Gear.MaxLevel - 1 do
+		gearSum += progressive(level / (Config.Gear.MaxLevel - 1)) / Config.GetGearEnhanceChance(level)
+	end
+	local gearK = T / (#Config.Gear.Slots * gearSum)
+	function Config.GetGearCost(slotKey, _rarity, level)
+		local slot = Config.GetGearSlot(slotKey)
+		local f = math.clamp(level, 0, Config.Gear.MaxLevel - 1) / (Config.Gear.MaxLevel - 1)
+		return math.max(1, math.floor(RI(f) * gearK * progressive(f) * slot.BaseCost / 121.67))
+	end
+
+	-- 스킬: 종류마다 레벨 1 -> 10 (9번 강화)
+	local skillSteps = Config.SkillUpgrade.MaxLevel - 1
+	local skillSum = 0
+	for step = 0, skillSteps - 1 do skillSum += progressive(step / (skillSteps - 1)) end
+	local skillK = T / (#Config.Skills.UpgradeOrder * skillSum)
+	function Config.GetSkillUpgradeCost(level)
+		local f = math.clamp(level - 1, 0, skillSteps - 1) / (skillSteps - 1)
+		return math.max(1, math.floor(RI(f) * skillK * progressive(f)))
+	end
+
+	-- 펫: 해금(한 번) + 레벨 1 -> 15 (14번 강화)
+	local petSteps = Config.Pet.MaxLevel -- 0 = 해금, 1 ~ MaxLevel-1 = 레벨업
+	local petSum = 0
+	for step = 0, petSteps - 1 do petSum += progressive(step / (petSteps - 1)) end
+	local petK = T / petSum
+	function Config.GetPetLevelCost(level)
+		local f = math.clamp(level, 1, petSteps - 1) / (petSteps - 1)
+		return math.max(1, math.floor(RI(f) * petK * progressive(f)))
+	end
+	Config.Pet.UnlockCost = math.max(1, math.floor(RI(0) * petK * progressive(0)))
+
+	-- 세트 효과: 8구역 x 1 / 2 / 3 단계 (단계 비용 배수 AugCostMult)
+	local zones = Config.Field.ZoneCount
+	local augSum = 0
+	for zone = 1, zones do
+		for _, mult in ipairs(Config.Sets.AugCostMult) do
+			augSum += progressive((zone - 1) / (zones - 1)) * mult
+		end
+	end
+	local augK = T / augSum
+	function Config.Sets.AugCost(zone, level)
+		local f = (math.clamp(zone, 1, zones) - 1) / (zones - 1)
+		return math.max(1, math.floor(RI(f) * augK * progressive(f) * (Config.Sets.AugCostMult[level] or 8)))
+	end
+
+	-- 훈련소 (골드 부분; 시간은 따로 걸린다): 4종 x 레벨 0 -> 29
+	local trainSteps = Config.Growth.MaxLevel
+	local trainSum = 0
+	for level = 0, trainSteps - 1 do trainSum += progressive(level / (trainSteps - 1)) end
+	local trainK = T / (#Config.Growth.Stats.Order * trainSum)
+	function Config.GetTrainGold(level)
+		local f = math.clamp(level, 0, trainSteps - 1) / (trainSteps - 1)
+		return math.max(1, math.floor(RI(f) * trainK * progressive(f)))
+	end
+
+	-- 레벨 스탯 골드 포인트: 최대 레벨 이후 사는 포인트. 뒤쪽 진행(기준 40% ~ 100%)의 수입을 기준표로 쓴다
+	local points = math.max(2, Config.LevelStats.MaxGoldPoints)
+	local pointSum = 0
+	for n = 0, points - 1 do pointSum += progressive(n / (points - 1)) end
+	local pointK = T / pointSum
+	function Config.GetLevelGoldPointCost(bought)
+		local g = math.clamp(bought, 0, points - 1) / (points - 1)
+		return math.max(1, math.floor(RI(0.4 + 0.6 * g) * pointK * progressive(g)))
+	end
+end
+
 return Config

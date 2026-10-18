@@ -336,7 +336,7 @@ local function buildInventoryTab(state)
 		if selected.Equipped then
 			-- 장착 중인 장비는 여기서도 바로 강화 (뽑기 창의 강화와 같다: 로비에서만)
 			if selected.Level < Config.Gear.MaxLevel then
-				local cost = Config.GetGearCost(selected.Slot, selected.Rarity, selected.Level, player:GetAttribute("WeaponLevel") or 0)
+				local cost = Config.GetGearCost(selected.Slot, selected.Rarity, selected.Level)
 				local chance = math.floor(Config.GetGearEnhanceChance(selected.Level) * 100 + 0.5)
 				local gold = player:GetAttribute("Gold") or 0
 				makeButton({
