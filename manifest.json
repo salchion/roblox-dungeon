@@ -512,6 +512,13 @@
       "overwrite": true
     },
     {
+      "path": "LowSpecClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "LowSpecClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "ChestOpenClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "ChestOpenClient",

@@ -3675,7 +3675,7 @@ end
 
 do
 local helpPanel = makePanel({
-	Size = UDim2.new(0, 560, 0, 580), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
+	Size = UDim2.new(0, 560, 0, 620), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
 }, gui)
 makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8), Text = "⚙ Settings / ❓ Help", Font = Enum.Font.GothamBlack, TextSize = 19 }, helpPanel)
 makeLabel({
@@ -3768,6 +3768,7 @@ settingSlider(380, "🔫 Gunshot Volume", function() return settings.ShotVolume 
 end)
 settingButton(428, function() return "📳 Screen Shake: " .. (settings.Shake and "ON" or "OFF") end, function() settings.Shake = not settings.Shake end)
 settingButton(468, function() return "📡 Radar: " .. (settings.Radar and "ON" or "OFF") end, function() settings.Radar = not settings.Radar end)
+settingButton(508, function() return "🖥 Low-spec mode (less lag): " .. (player:GetAttribute("LowSpec") and "ON" or "OFF") end, function() player:SetAttribute("LowSpec", not player:GetAttribute("LowSpec")) end)
 makeButton({
 	Size = UDim2.new(0, 160, 0, 36), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14), Text = "Close (H)", BackgroundColor3 = GRAY,
 }, helpPanel, function()
