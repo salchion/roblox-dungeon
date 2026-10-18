@@ -62,13 +62,8 @@ Config.SkillUpgrade = {
 	UltTargets = 2 / 3,         -- 데드아이 대상 수: 레벨당 +0.67마리 (1레벨 6마리 -> 10레벨 12마리)
 	UltMult = 0.15,             -- 궁극기 피해 +15%
 }
--- 골드 소비처(스킬 / 펫 / 세트 효과)도 장비 강화처럼 내 수입(무기 단계)에 비례한다: 무기만 올려서는 다른 성장을 따라갈 수 없다.
--- 기본 비용은 무기 0단계 기준이고 weaponLevel 을 넘기면 그 배율만큼 오른다 (안 넘기면 1배)
-function Config.GoldScale(weaponLevel)
-	return Config.GetDamageMultiplier(weaponLevel or 0)
-end
-function Config.GetSkillUpgradeCost(level, weaponLevel)
-	return math.floor(Config.SkillUpgrade.BaseCost * Config.SkillUpgrade.CostGrowth ^ (level - 1) * Config.GoldScale(weaponLevel))
+function Config.GetSkillUpgradeCost(level)
+	return math.floor(Config.SkillUpgrade.BaseCost * Config.SkillUpgrade.CostGrowth ^ (level - 1))
 end
 
 -- 펫: 골드를 한 번 내서 "펫 기능"을 열면 따라다니는 동료가 생긴다. 골드로 레벨을 올릴 때마다 기능이 하나씩 늘어난다 (자동 루팅 / 공격 속도 / 보조 사격 ...).
@@ -110,11 +105,8 @@ Config.Pet = {
 		Color3.fromRGB(255, 110, 150), Color3.fromRGB(255, 225, 110), Color3.fromRGB(235, 235, 245), Color3.fromRGB(100, 140, 255),
 	},
 }
-function Config.GetPetLevelCost(level, weaponLevel)
-	return math.floor(Config.Pet.LevelCostBase * Config.Pet.LevelCostGrowth ^ (level - 1) * Config.GoldScale(weaponLevel))
-end
-function Config.GetPetUnlockCost(weaponLevel)
-	return math.floor(Config.Pet.UnlockCost * Config.GoldScale(weaponLevel))
+function Config.GetPetLevelCost(level)
+	return math.floor(Config.Pet.LevelCostBase * Config.Pet.LevelCostGrowth ^ (level - 1))
 end
 -- 이 레벨에서 켜지는 기능들의 능력치 합 { PetSpeed = ..., PetLoot = ... }
 function Config.GetPetStats(level)
@@ -1456,9 +1448,9 @@ Config.FinalLord = {
 }
 Config.Sets.AugSlotZones = { 0, 4, 7 }
 Config.Sets.AugCostMult = { 1, 2.5, 6 } -- 1단계 / 2단계 / 3단계 비용 배수
-function Config.Sets.AugCost(zone, level, weaponLevel)
+function Config.Sets.AugCost(zone, level)
 	local base = math.floor(1500 * 1.75 ^ (zone - 1) / 100 + 0.5) * 100
-	return math.floor(base * (Config.Sets.AugCostMult[level] or 8) * Config.GoldScale(weaponLevel))
+	return base * (Config.Sets.AugCostMult[level] or 8)
 end
 -- 던전 상자의 구역 세트 장비: 깊이가 깊을수록 확률이 오르고, 나오는 구역은 "내가 클리어한 구역" 중 깊이에 맞는 구역 이하로 정한다
 --   (필드가 세트의 첫 입구로 남는다: 7구역 군주를 잡기 전에는 던전에서도 7구역 세트가 나오지 않는다)

@@ -179,7 +179,7 @@ local function refresh()
 			r.Buy.Text = "Max level"
 			r.Buy.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
 		else
-			local cost = Config.Sets.AugCost(zone, level + 1, Players.LocalPlayer:GetAttribute("WeaponLevel"))
+			local cost = Config.Sets.AugCost(zone, level + 1)
 			r.Buy.Text = string.format("%s %s G", level == 0 and "Activate" or "Upgrade", commas(cost))
 			r.Buy.BackgroundColor3 = gold >= cost and Color3.fromRGB(150, 110, 40) or Color3.fromRGB(80, 74, 66)
 			if gold >= cost and level == 0 then affordable += 1 end

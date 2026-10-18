@@ -90,8 +90,8 @@ local function rebuild()
 	local head = row(98, Color3.fromRGB(44, 40, 30))
 	if not pet or not pet.Unlocked then
 		label({ Size = UDim2.new(1, -24, 0, 40), Position = UDim2.new(0, 12, 0, 8), Text = "Unlock pet features and your pet will follow and help you.\nEvery level you buy with gold adds a new feature!", TextSize = 11, TextWrapped = true, TextYAlignment = Enum.TextYAlignment.Top }, head)
-		button({ Size = UDim2.new(0, 220, 0, 36), Position = UDim2.new(0, 12, 1, -46), BackgroundColor3 = gold >= Config.GetPetUnlockCost(player:GetAttribute("WeaponLevel")) and Color3.fromRGB(60, 130, 80) or Color3.fromRGB(95, 60, 62),
-			Text = string.format("🐾 Unlock Pet  💰 %s G", comma(Config.GetPetUnlockCost(player:GetAttribute("WeaponLevel")))), TextSize = 13 }, head, function()
+		button({ Size = UDim2.new(0, 220, 0, 36), Position = UDim2.new(0, 12, 1, -46), BackgroundColor3 = gold >= P.UnlockCost and Color3.fromRGB(60, 130, 80) or Color3.fromRGB(95, 60, 62),
+			Text = string.format("🐾 Unlock Pet  💰 %s G", comma(P.UnlockCost)), TextSize = 13 }, head, function()
 			Remotes.Meta:FireServer("PetUnlock")
 		end)
 	else
@@ -105,12 +105,12 @@ local function rebuild()
 		local reachText = ""
 		if nextFn then -- 다음 기능까지 몇 레벨 / 골드가 드는지
 			local total = 0
-			for lv = pet.Level, nextFn.Level - 1 do total += Config.GetPetLevelCost(lv, player:GetAttribute("WeaponLevel")) end
+			for lv = pet.Level, nextFn.Level - 1 do total += Config.GetPetLevelCost(lv) end
 			reachText = string.format("  (%d lvl · ~%s G)", nextFn.Level - pet.Level, comma(total))
 		end
 		label({ Size = UDim2.new(1, -90, 0, 18), Position = UDim2.new(0, 72, 0, 36), Text = nextFn and string.format("▶ Next feature: Lv.%d %s %s%s", nextFn.Level, nextFn.Icon, nextFn.Name, reachText) or "All features unlocked!", TextSize = 10, TextColor3 = Color3.fromRGB(255, 225, 140) }, head)
 		if pet.Level < P.MaxLevel then
-			local cost = Config.GetPetLevelCost(pet.Level, player:GetAttribute("WeaponLevel"))
+			local cost = Config.GetPetLevelCost(pet.Level)
 			button({ Size = UDim2.new(0, 230, 0, 34), Position = UDim2.new(0, 12, 1, -42), BackgroundColor3 = gold >= cost and Color3.fromRGB(60, 130, 80) or Color3.fromRGB(95, 60, 62),
 				Text = string.format("⬆ Level Up  💰 %s G", comma(cost)), TextSize = 13 }, head, function()
 				Remotes.Meta:FireServer("PetLevel")
@@ -186,7 +186,7 @@ player:GetAttributeChangedSignal("Gold"):Connect(function()
 	if not panel.Visible then return end
 	-- 골드가 1씩 늘 때마다 다시 그리지 않는다: 살 수 있는지 여부가 바뀔 때만 (버튼이 초록 / 붉은색으로)
 	local pet = state and state.Pet
-	local cost = (pet and pet.Unlocked) and (pet.Level < P.MaxLevel and Config.GetPetLevelCost(pet.Level, player:GetAttribute("WeaponLevel")) or math.huge) or Config.GetPetUnlockCost(player:GetAttribute("WeaponLevel"))
+	local cost = (pet and pet.Unlocked) and (pet.Level < P.MaxLevel and Config.GetPetLevelCost(pet.Level) or math.huge) or P.UnlockCost
 	local afford = (player:GetAttribute("Gold") or 0) >= cost
 	if afford ~= lastAfford then
 		lastAfford = afford
