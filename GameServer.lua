@@ -29,6 +29,7 @@ local Meta = require(Modules:WaitForChild("MetaService"))
 local Tutorial = require(Modules:WaitForChild("TutorialService"))
 local EventService = require(Modules:WaitForChild("EventService"))
 local Showcase = require(Modules:WaitForChild("ShowcaseService"))
+local Titles = require(Modules:WaitForChild("TitleService")) -- 머리 위 칭호 (주간 챔피언 / 명예의 전당 / 던전 깊이)
 local Quest = require(Modules:WaitForChild("QuestService"))
 local Level = require(Modules:WaitForChild("LevelService"))
 local Rank = require(Modules:WaitForChild("RankService"))
@@ -86,7 +87,8 @@ Npc.Init(lobby.DummyStart.Y, { -- 시설마다 NPC 가 서서 말을 건다 (허
 		Lines = { "Only those who conquer the field may enter the Boss Rush.", "Bosses keep coming. Survive longer, hit harder.", "Your score is seconds survived x damage dealt - the weekly ranking resets every week." } },
 })
 Rank.Init(lobby.RankBoardCFrame)
-Showcase.Init(lobby.RankBoardCFrame) -- 랭킹판 앞 명예의 전당 (최강 3명)
+Showcase.Init(lobby.RankBoardCFrame) -- 랭킹판 앞 명예의 전당 (전 서버 최강 3명) + 이번 주 챔피언
+Titles.Start()
 Field.Init(lobby.SpawnCFrame)
 Rift.Init(lobby.RiftPrompt) -- 심연 도전 포탈
 do -- 튜토리얼 이후 안내 (구역 2 / 심연 / 새 던전 게이트 표지, 전투 중 첫 위기 한 줄)

@@ -104,6 +104,16 @@ local function loadBoard()
 	return boardCache
 end
 
+-- 이번 주 상위 count 명 (명예의 전당 옆 "이번 주 챔피언" 전시대가 읽는다): { { Rank, UserId, Name, Score } ... }
+function Rift.WeeklyTop(count)
+	local board = loadBoard()
+	local out = {}
+	for index = 1, math.min(count, #board.List) do
+		out[index] = board.List[index]
+	end
+	return out
+end
+
 local function submitScore(player, score)
 	if score <= 0 then return end
 	local value = math.floor(math.min(score, SCORE_MAX))

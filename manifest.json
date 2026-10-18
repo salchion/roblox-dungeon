@@ -260,6 +260,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/TitleService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "TitleService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/ShowcaseService.lua",
       "parent": "ServerScriptService/Modules",
       "name": "ShowcaseService",

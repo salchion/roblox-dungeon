@@ -133,6 +133,13 @@ Remotes.Admin.OnServerEvent:Connect(function(player, action, a, b, c)
 		grant(player, a, b, c)
 	elseif action == "Announce" then
 		announce(player, a)
+	elseif action == "HallRemove" then -- 명예의 전당 a 번째 기록을 지우고 그 유저가 다시 올라오지 못하게 막는다 (이상한 점수 대응)
+		local showcase = module("ShowcaseService")
+		if typeof(a) == "number" and showcase and showcase.RemoveHall then
+			local ok, info = showcase.RemoveHall(a)
+			log(player, string.format("HALL REMOVE rank %d -> %s %s", a, tostring(ok), tostring(info)))
+			note(player, ok and ("Removed " .. tostring(info) .. " from the Hall of Fame.") or ("Could not remove: " .. tostring(info)))
+		end
 	elseif action == "ResetArm" then -- 저장 초기화는 두 단계: 먼저 확인을 열고, 30초 안에 한 번 더 눌러야 실행된다
 		armedAt[player] = now
 		Remotes.Admin:FireClient(player, "ResetArmed")

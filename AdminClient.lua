@@ -14,7 +14,7 @@ local player = Players.LocalPlayer
 local function start()
 	local gui = create("ScreenGui", { Name = "AdminGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 90 }, player:WaitForChild("PlayerGui"))
 	local panel = makePanel({
-		Size = UDim2.new(0, 640, 0, 560), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+		Size = UDim2.new(0, 640, 0, 604), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
 		BackgroundColor3 = Color3.fromRGB(22, 24, 38), BackgroundTransparency = 0.02, Visible = false, ZIndex = 10,
 	}, gui)
 	local function text(props) props.ZIndex = 11 props.TextXAlignment = props.TextXAlignment or Enum.TextXAlignment.Left return makeLabel(props, panel) end
@@ -106,6 +106,13 @@ local function start()
 		confirmButton.Visible, cancelButton.Visible = false, false
 		resetNote.Text = "Cancelled."
 	end)
+
+	text({ Size = UDim2.new(0, 230, 0, 22), Position = UDim2.new(0, 16, 0, 534), Text = "Hall of Fame: remove an entry (all servers)", TextSize = 12, TextColor3 = Color3.fromRGB(190, 195, 220) })
+	for rank = 1, 3 do
+		button({ Size = UDim2.new(0, 120, 0, 30), Position = UDim2.new(0, 16 + (rank - 1) * 130, 0, 560), Text = "Remove #" .. rank, TextSize = 12, BackgroundColor3 = Color3.fromRGB(110, 70, 70) }, function()
+			Remotes.Admin:FireServer("HallRemove", rank)
+		end)
+	end
 
 	Remotes.Admin.OnClientEvent:Connect(function(action, data)
 		if action == "ResetArmed" then
