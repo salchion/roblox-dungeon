@@ -16,7 +16,8 @@ local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 local COMPACT = UserInputService.TouchEnabled and not UserInputService.MouseEnabled -- 폰 / 태블릿: 알약을 작게 (숫자만), 눌러서 열고 닫는다
-local MAX_ROWS = 12
+local MAX_ROWS = 8 -- 목록은 상위 8명만 (전투력 순)
+local TOAST_MAX_PLAYERS = 8 -- 서버 인원이 이보다 많으면 들어오고 나가는 알림은 끈다 (계속 뜨면 화면을 가린다)
 
 local gui = create("ScreenGui", { Name = "OnlineGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 4 }, player:WaitForChild("PlayerGui"))
 
@@ -123,11 +124,11 @@ local ready = false
 task.delay(4, function() ready = true end) -- 내가 막 들어왔을 때 이미 있던 사람들은 알리지 않는다
 Players.PlayerAdded:Connect(function(other)
 	refresh()
-	if ready and other ~= player then announce("👋 " .. other.DisplayName .. " joined") end
+	if ready and other ~= player and #Players:GetPlayers() <= TOAST_MAX_PLAYERS then announce("👋 " .. other.DisplayName .. " joined") end
 end)
 Players.PlayerRemoving:Connect(function(other)
 	task.defer(refresh)
-	if other ~= player then announce(other.DisplayName .. " left") end
+	if other ~= player and #Players:GetPlayers() <= TOAST_MAX_PLAYERS then announce(other.DisplayName .. " left") end
 end)
 refresh()
 task.spawn(function()
