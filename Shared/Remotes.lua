@@ -8,7 +8,7 @@
 --   OpenEnhance  S->C  ()                                      모루(강화대) 사용 -> 강화창 열기
 --   Party        C->S  ("Invite", userId) ("Accept", userId) ("Decline", userId) ("Leave") ("Kick", userId)
 --                S->C  ("State", partyData|nil) ("Invite", inviterUserId, inviterName)
---   Dungeon      C->S  ("Ready") ("Leave") ("Start", typeKey, difficultyKey)
+--   Dungeon      C->S  ("StartDepth", "All", depth) ("Leave")
 --                S->C  ("State", stateTable) ("Result", resultTable) ("OpenSelect")
 --   Gear         C->S  ("Enhance", slotKey) ("Roll")                    장비 강화 / 티켓 뽑기
 --                S->C  ("Result", { Ok, Message, Roll })             결과

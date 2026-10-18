@@ -1673,7 +1673,7 @@ local function refreshBanner()
 		bannerSub.Text = string.format("[%s] Starts in %ds! Survive the incoming monsters", state.DifficultyName or "", state.TimeLeft)
 	elseif state.Phase == "Wave" and state.SurviveLeft then
 		bannerTitle.Text = string.format("🛡 Survive!  %ds", state.SurviveLeft)
-		bannerSub.Text = string.format("%s · %s · Fail if monsters pile up! Survive to the end and the boss appears", state.TypeName or "", state.DifficultyName or "", state.MonstersLeft)
+		bannerSub.Text = string.format("%s · %s · Fail if monsters pile up! Survive to the end and the boss appears", state.TypeName or "", state.DifficultyName or "")
 	elseif state.Phase == "Wave" then
 		bannerTitle.Text = state.TotalWaves == 0 and string.format("🏯 Floor %d", state.Wave) or string.format("Zone %d / %d", state.Wave, state.TotalWaves)
 		bannerSub.Text = string.format("%s · %s · Monsters left %d · Keep going!", state.TypeName or "", state.DifficultyName or "", state.MonstersLeft)
