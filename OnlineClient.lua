@@ -2,7 +2,7 @@
 -- "이 서버에 나 말고 누가 있는지" 보여 준다 (Roblox 기본 플레이어 목록은 다른 화면과 겹쳐서 꺼 두었다).
 --   * 화면 위 가운데 작은 알약: 👥 접속 중 N명 (누르면 이 서버 유저의 이름 / 레벨 / 전투력이 펼쳐진다)
 --   * 누가 들어오면 / 나가면 위쪽에 짧은 한 줄 알림 (내가 막 들어왔을 때 이미 있던 사람은 알리지 않는다)
---   마을(Lobby)에서는 위 가운데, 필드(Field)에서는 오른쪽 위 (필드의 오른쪽 위는 비어 있다). 던전은 위쪽을 웨이브 표시 / 보스 체력바가 쓰므로 보이지 않는다.
+--   마을(Lobby)에서는 위 가운데, 필드(Field)에서는 오른쪽 (파티 / 효과 카드 아래의 빈 곳). 던전은 위쪽을 웨이브 표시 / 보스 체력바가 쓰므로 보이지 않는다.
 --   서버 부하는 없다: 클라이언트가 Players 서비스와 유저 Attribute(Level / Power)만 읽는다.
 
 local Players = game:GetService("Players")
@@ -21,6 +21,7 @@ local TOAST_MAX_PLAYERS = 8 -- 서버 인원이 이보다 많으면 들어오고
 
 local gui = create("ScreenGui", { Name = "OnlineGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 4 }, player:WaitForChild("PlayerGui"))
 
+local toastBaseY = 44
 local pill, listFrame, toast -- 아래에서 만든다 (위치를 구역에 따라 바꾸려고 먼저 선언)
 local function place()
 	local zone = player:GetAttribute("Zone")
@@ -30,9 +31,11 @@ local function place()
 	local anchor = atRight and Vector2.new(1, 0) or Vector2.new(0.5, 0)
 	local x = atRight and UDim2.new(1, -16, 0, 0) or UDim2.new(0.5, 0, 0, 0)
 	pill.AnchorPoint, listFrame.AnchorPoint, toast.AnchorPoint = anchor, anchor, anchor
-	pill.Position = UDim2.new(x.X.Scale, x.X.Offset, 0, 8)
-	listFrame.Position = UDim2.new(x.X.Scale, x.X.Offset, 0, 44)
-	toast.Position = UDim2.new(x.X.Scale, x.X.Offset, 0, 44)
+	local y = atRight and 300 or 8 -- 필드: 오른쪽 위의 파티 / 효과 카드 아래 빈 곳 (레이더는 오른쪽 아래)
+	toastBaseY = y + 36
+	pill.Position = UDim2.new(x.X.Scale, x.X.Offset, 0, y)
+	listFrame.Position = UDim2.new(x.X.Scale, x.X.Offset, 0, y + 36)
+	toast.Position = UDim2.new(x.X.Scale, x.X.Offset, 0, toastBaseY)
 	toast.TextXAlignment = atRight and Enum.TextXAlignment.Right or Enum.TextXAlignment.Center
 end
 
@@ -109,7 +112,7 @@ local function announce(text)
 	local mine = toastToken
 	toast.Text = text
 	toast.TextTransparency = 0
-	toast.Position = UDim2.new(toast.Position.X.Scale, toast.Position.X.Offset, 0, listFrame.Visible and (listFrame.AbsoluteSize.Y + 52) or 44)
+	toast.Position = UDim2.new(toast.Position.X.Scale, toast.Position.X.Offset, 0, listFrame.Visible and (toastBaseY + listFrame.AbsoluteSize.Y + 8) or toastBaseY)
 	task.delay(3, function()
 		if toastToken == mine then
 			TweenService:Create(toast, TweenInfo.new(0.6), { TextTransparency = 1 }):Play()
