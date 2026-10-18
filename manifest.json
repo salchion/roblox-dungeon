@@ -512,6 +512,13 @@
       "overwrite": true
     },
     {
+      "path": "OnlineClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "OnlineClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "LowSpecClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "LowSpecClient",
