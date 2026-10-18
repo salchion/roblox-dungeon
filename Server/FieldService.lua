@@ -1560,7 +1560,7 @@ local function reward(player, data, part)
 					local count = math.min(drop.Count or 1, (Config.Keys.DailyDropCapByTier[drop.Tier] or 0) - (riftState.KeyDropsTier[drop.Tier] or 0))
 					riftState.KeyDropsTier[drop.Tier] = (riftState.KeyDropsTier[drop.Tier] or 0) + count
 					Keys.Add(other, count)
-					notify(other, string.format("🔑 You got %d key(s)! (Lord drop) — Enter a dungeon with 1 (Easy) · 2 (Normal) · 3 (Hard)", count))
+					notify(other, string.format("🔑 You got %d key(s)! (Lord drop) — Use them at the town Dungeon Gate", count))
 					Effects.FloatText(rootForKey.Position + Vector3.new(0, 6, 0), "🔑 Key +" .. count, Color3.fromRGB(160, 255, 200))
 				end
 			end
