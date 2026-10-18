@@ -8,6 +8,8 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local TextService = game:GetService("TextService")
+
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 
 local Admin = {}
@@ -64,20 +66,92 @@ for _, player in ipairs(Players:GetPlayers()) do
 	end)
 end
 
-Remotes.Admin.OnServerEvent:Connect(function(player, action)
-	if not isAdmin(player) then return end
-	if action == "RestartTutorial" then -- 내 튜토리얼 진행만 처음으로 (레벨 / 장비 / 골드는 그대로)
-		local okTut, Tutorial = pcall(function() return require(script.Parent:FindFirstChild("TutorialService")) end)
-		if okTut and Tutorial and Tutorial.Restart and Tutorial.Restart(player) then
-			Remotes.Notify:FireClient(player, "Tutorial restarted from the first mission.")
-		end
-		return
+local armedAt = setmetatable({}, { __mode = "k" }) -- [player] = 저장 초기화 확인 단계를 연 시각
+local lastAction = setmetatable({}, { __mode = "k" })
+
+local GRANT_MAX = { Gold = 1000000000, Tickets = 10000, Keys = 30 }
+
+local function note(player, text)
+	Remotes.Notify:FireClient(player, text)
+end
+
+local function module(name)
+	local ok, result = pcall(function() return require(script.Parent:FindFirstChild(name)) end)
+	return ok and result or nil
+end
+
+local function log(player, text)
+	local ops = module("OpsLog")
+	if ops and ops.Admin then ops.Admin(player, text) else print("[OPS] ADMIN " .. player.Name .. " " .. text) end
+end
+
+local function grant(admin, targetUserId, kind, amount)
+	local limit = GRANT_MAX[kind]
+	if not limit or typeof(targetUserId) ~= "number" or typeof(amount) ~= "number" or amount ~= amount then return end
+	amount = math.clamp(math.floor(amount), 1, limit)
+	local target = Players:GetPlayerByUserId(targetUserId)
+	if not target then note(admin, "That player is not in this server.") return end
+	if kind == "Keys" then
+		local keys = module("KeyService")
+		if not keys then return end
+		keys.Add(target, amount)
+	else
+		target:SetAttribute(kind, (target:GetAttribute(kind) or 0) + amount)
 	end
-	if action ~= "List" then return end
+	log(admin, string.format("GRANT %s +%d -> %s(%d)", kind, amount, target.Name, target.UserId))
+	note(admin, string.format("Gave %s +%d %s.", target.Name, amount, kind))
+	if target ~= admin then note(target, string.format("🎁 You received +%d %s!", amount, kind)) end
+end
+
+local function announce(admin, text)
+	if typeof(text) ~= "string" then return end
+	text = string.gsub(string.sub(text, 1, 100), "^%s+", "")
+	text = string.gsub(text, "%s+$", "")
+	if #text == 0 then return end
+	local ok, filtered = pcall(function() -- 모두에게 보이는 글이므로 Roblox 필터를 거친다
+		return TextService:FilterStringAsync(text, admin.UserId):GetNonChatStringForBroadcastAsync()
+	end)
+	if not ok or typeof(filtered) ~= "string" or #filtered == 0 then note(admin, "Could not send the announcement.") return end
+	log(admin, "ANNOUNCE " .. filtered)
+	for _, other in ipairs(Players:GetPlayers()) do
+		note(other, "📢 " .. filtered)
+	end
+end
+
+Remotes.Admin.OnServerEvent:Connect(function(player, action, a, b, c)
+	if not isAdmin(player) then return end
 	local now = os.clock()
-	if now - (lastRequest[player] or 0) < 1 then return end
-	lastRequest[player] = now
-	Remotes.Admin:FireClient(player, "List", { Players = listPlayers(), JobId = string.sub(game.JobId, 1, 8), Count = #Players:GetPlayers() })
+	if now - (lastAction[player] or 0) < 0.3 and action ~= "List" then return end
+	if action ~= "List" then lastAction[player] = now end
+
+	if action == "RestartTutorial" then -- 내 튜토리얼 진행만 처음으로 (레벨 / 장비 / 골드는 그대로)
+		local tutorial = module("TutorialService")
+		if tutorial and tutorial.Restart and tutorial.Restart(player) then
+			note(player, "Tutorial restarted from the first mission.")
+		end
+	elseif action == "Grant" then
+		grant(player, a, b, c)
+	elseif action == "Announce" then
+		announce(player, a)
+	elseif action == "ResetArm" then -- 저장 초기화는 두 단계: 먼저 확인을 열고, 30초 안에 한 번 더 눌러야 실행된다
+		armedAt[player] = now
+		Remotes.Admin:FireClient(player, "ResetArmed")
+	elseif action == "ResetConfirm" then
+		local armed = armedAt[player]
+		armedAt[player] = nil
+		if not armed or now - armed > 30 then note(player, "Reset expired. Start again.") return end
+		local data = module("DataService")
+		log(player, "RESET own save")
+		if data and data.Wipe and data.Wipe(player) then
+			player:Kick("Your save was reset. Rejoin to start fresh.")
+		else
+			note(player, "Reset failed (DataStore unavailable). Nothing was changed.")
+		end
+	elseif action == "List" then
+		if now - (lastRequest[player] or 0) < 1 then return end
+		lastRequest[player] = now
+		Remotes.Admin:FireClient(player, "List", { Players = listPlayers(), JobId = string.sub(game.JobId, 1, 8), Count = #Players:GetPlayers() })
+	end
 end)
 
 return Admin

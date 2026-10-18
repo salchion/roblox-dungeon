@@ -40,6 +40,11 @@ local function describe(s)
 	return string.format("Lv%d Power%d Gold%d Tickets%d MaxZone%d", s.Level, s.Power, s.Gold, s.Tickets, s.Zone)
 end
 
+-- 운영자 작업 기록 (지급 / 공지 / 저장 초기화): 누가 무엇을 했는지 남긴다
+function OpsLog.Admin(player, text)
+	line("ADMIN", player, text)
+end
+
 function OpsLog.Purchase(player, productKey, robux)
 	local entry = joined[player]
 	if entry then entry.BuyAt = os.clock() end
