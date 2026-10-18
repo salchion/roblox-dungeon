@@ -2,7 +2,7 @@
 -- "이 서버에 나 말고 누가 있는지" 보여 준다 (Roblox 기본 플레이어 목록은 다른 화면과 겹쳐서 꺼 두었다).
 --   * 화면 위 가운데 작은 알약: 👥 접속 중 N명 (누르면 이 서버 유저의 이름 / 레벨 / 전투력이 펼쳐진다)
 --   * 누가 들어오면 / 나가면 위쪽에 짧은 한 줄 알림 (내가 막 들어왔을 때 이미 있던 사람은 알리지 않는다)
---   마을(Lobby)에서는 위 가운데, 필드(Field)에서는 오른쪽 (파티 / 효과 카드 아래의 빈 곳). 던전은 위쪽을 웨이브 표시 / 보스 체력바가 쓰므로 보이지 않는다.
+--   마을(Lobby) / 필드(Field)에서만 보인다 (던전은 위쪽을 웨이브 표시 / 보스 체력바가 쓴다). 위치는 자동: 화면의 다른 UI 와 겹치지 않는 빈 자리를 찾는다.
 --   서버 부하는 없다: 클라이언트가 Players 서비스와 유저 Attribute(Level / Power)만 읽는다.
 
 local Players = game:GetService("Players")
@@ -21,22 +21,107 @@ local TOAST_MAX_PLAYERS = 8 -- 서버 인원이 이보다 많으면 들어오고
 
 local gui = create("ScreenGui", { Name = "OnlineGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 4 }, player:WaitForChild("PlayerGui"))
 
-local toastBaseY = 44
-local pill, listFrame, toast -- 아래에서 만든다 (위치를 구역에 따라 바꾸려고 먼저 선언)
-local function place()
+local GuiService = game:GetService("GuiService")
+local playerGui = player:WaitForChild("PlayerGui")
+local pill, listFrame, toast -- 아래에서 만든다 (위치를 자동으로 잡으려고 먼저 선언)
+local spot = nil -- 알약의 현재 위치 (화면 픽셀, 왼쪽 위 기준)
+
+-- 자동 배치: 지금 화면에 보이는 다른 UI 들의 사각형을 모아서, 겹치지 않는 빈 자리를 찾는다 (폰마다 해상도 / 비율이 달라도 같은 방식).
+--   후보 순서: (PC 마을) 위 가운데 -> 오른쪽 줄 위에서 아래로 -> 왼쪽 줄 위에서 아래로. 다 겹치면 오른쪽 위에 둔다.
+local function visibleChain(instance)
+	local current = instance
+	while current and current ~= playerGui do
+		if current:IsA("GuiObject") and not current.Visible then return false end
+		if current:IsA("ScreenGui") and not current.Enabled then return false end
+		current = current.Parent
+	end
+	return true
+end
+
+local function collectRects(screen)
+	local rects = {}
+	local inset = GuiService:GetGuiInset().Y
+	for _, instance in ipairs(playerGui:GetDescendants()) do
+		if instance:IsA("GuiObject") and not instance:IsDescendantOf(gui) then
+			local size = instance.AbsoluteSize
+			if size.X > 4 and size.Y > 4 and size.X < screen.X * 0.7 and size.Y < screen.Y * 0.7 then -- 화면을 덮는 배경은 뺀다
+				local visibleContent = instance.BackgroundTransparency < 0.9
+					or ((instance:IsA("TextLabel") or instance:IsA("TextButton")) and instance.Text ~= "" and instance.TextTransparency < 0.9)
+					or ((instance:IsA("ImageLabel") or instance:IsA("ImageButton")) and instance.ImageTransparency < 0.9)
+				if visibleContent and visibleChain(instance) then
+					local screenGui = instance:FindFirstAncestorOfClass("ScreenGui")
+					local offsetY = (screenGui and not screenGui.IgnoreGuiInset) and inset or 0
+					table.insert(rects, { X = instance.AbsolutePosition.X, Y = instance.AbsolutePosition.Y + offsetY, W = size.X, H = size.Y })
+				end
+			end
+		end
+	end
+	return rects
+end
+
+local function hits(rects, x, y, w, h)
+	local pad = 4
+	for _, r in ipairs(rects) do
+		if x < r.X + r.W + pad and x + w + pad > r.X and y < r.Y + r.H + pad and y + h + pad > r.Y then return true end
+	end
+	return false
+end
+
+local function findSpot()
+	local screen = gui.AbsoluteSize
+	local w, h = pill.AbsoluteSize.X, pill.AbsoluteSize.Y
+	if screen.X < 50 or screen.Y < 50 or w < 1 then return spot or Vector2.new(12, 12) end
+	local rects = collectRects(screen)
+	local margin = 12
+	local zone = player:GetAttribute("Zone")
+	if zone == "Lobby" and not COMPACT then -- PC 마을: 위 가운데를 먼저 본다
+		local x = (screen.X - w) / 2
+		if not hits(rects, x, 8, w, h) then return Vector2.new(x, 8) end
+	end
+	local rightX = screen.X - w - margin
+	for y = 8, screen.Y - h - margin, 8 do
+		if not hits(rects, rightX, y, w, h) then return Vector2.new(rightX, y) end
+	end
+	for y = 8, screen.Y - h - margin, 8 do
+		if not hits(rects, margin, y, w, h) then return Vector2.new(margin, y) end
+	end
+	return Vector2.new(rightX, 8)
+end
+
+-- 목록 / 알림은 알약 아래(자리가 모자라면 위)에 붙인다
+local function layoutExtras()
+	if not spot then return end
+	local screen = gui.AbsoluteSize
+	local w, h = pill.AbsoluteSize.X, pill.AbsoluteSize.Y
+	local listW, listH = listFrame.AbsoluteSize.X, listFrame.AbsoluteSize.Y
+	local lx = math.clamp(spot.X + w - listW, 8, math.max(8, screen.X - listW - 8))
+	local below = spot.Y + h + 6 + listH <= screen.Y - 8
+	listFrame.AnchorPoint = Vector2.new(0, below and 0 or 1)
+	listFrame.Position = UDim2.fromOffset(lx, below and (spot.Y + h + 6) or (spot.Y - 6))
+	local toastW = toast.AbsoluteSize.X
+	local tx = math.clamp(spot.X + w / 2 - toastW / 2, 8, math.max(8, screen.X - toastW - 8))
+	local toastY = spot.Y + h + 6
+	if listFrame.Visible and below then toastY += listH + 6 end
+	if not below then toastY = spot.Y - 6 - 24 - (listFrame.Visible and (listH + 6) or 0) end
+	toast.AnchorPoint = Vector2.new(0, 0)
+	toast.Position = UDim2.fromOffset(tx, toastY)
+	toast.TextXAlignment = Enum.TextXAlignment.Center
+end
+
+local function place(force)
 	local zone = player:GetAttribute("Zone")
 	gui.Enabled = zone == "Lobby" or zone == "Field"
-	if not pill then return end
-	local atRight = zone == "Field" or COMPACT -- 폰은 위 가운데에 안내 글이 있어서 마을에서도 오른쪽으로
-	local anchor = atRight and Vector2.new(1, 0) or Vector2.new(0.5, 0)
-	local x = atRight and UDim2.new(1, -16, 0, 0) or UDim2.new(0.5, 0, 0, 0)
-	pill.AnchorPoint, listFrame.AnchorPoint, toast.AnchorPoint = anchor, anchor, anchor
-	local y = COMPACT and 44 or (atRight and 300 or 8) -- 폰: 오른쪽 위 버튼 줄(상점 / 랭킹 / 파티) 바로 아래 / 필드(PC): 파티 / 효과 카드 아래 빈 곳 (레이더는 오른쪽 아래)
-	toastBaseY = y + 36
-	pill.Position = UDim2.new(x.X.Scale, x.X.Offset, 0, y)
-	listFrame.Position = UDim2.new(x.X.Scale, x.X.Offset, 0, y + 36)
-	toast.Position = UDim2.new(x.X.Scale, x.X.Offset, 0, toastBaseY)
-	toast.TextXAlignment = atRight and Enum.TextXAlignment.Right or Enum.TextXAlignment.Center
+	if not pill or not gui.Enabled then return end
+	local w, h = pill.AbsoluteSize.X, pill.AbsoluteSize.Y
+	if w < 1 or gui.AbsoluteSize.X < 50 then return end -- 아직 화면 크기가 정해지지 않았다 (잠깐 뒤에 다시 부른다)
+	if not force and spot and not hits(collectRects(gui.AbsoluteSize), spot.X, spot.Y, w, h) then
+		layoutExtras()
+		return -- 지금 자리가 아직 비어 있으면 그대로 둔다 (자리가 계속 바뀌면 눈에 거슬린다)
+	end
+	spot = findSpot()
+	pill.AnchorPoint = Vector2.new(0, 0)
+	pill.Position = UDim2.fromOffset(spot.X, spot.Y)
+	layoutExtras()
 end
 
 pill = create("TextButton", {
@@ -73,6 +158,7 @@ local function refreshList()
 	end
 	listText.Text = table.concat(rows, "\n")
 	listFrame.Size = UDim2.new(0, 260, 0, 18 + 18 * math.min(#all, MAX_ROWS + 1))
+	layoutExtras()
 end
 
 local function refresh()
@@ -112,7 +198,7 @@ local function announce(text)
 	local mine = toastToken
 	toast.Text = text
 	toast.TextTransparency = 0
-	toast.Position = UDim2.new(toast.Position.X.Scale, toast.Position.X.Offset, 0, listFrame.Visible and (toastBaseY + listFrame.AbsoluteSize.Y + 8) or toastBaseY)
+	layoutExtras()
 	task.delay(3, function()
 		if toastToken == mine then
 			TweenService:Create(toast, TweenInfo.new(0.6), { TextTransparency = 1 }):Play()
@@ -120,8 +206,13 @@ local function announce(text)
 	end)
 end
 
-player:GetAttributeChangedSignal("Zone"):Connect(place)
-place()
+player:GetAttributeChangedSignal("Zone"):Connect(function()
+	task.delay(1.5, function() place(true) end) -- 구역이 바뀌면 화면 UI 가 다시 짜이므로 잠깐 뒤에 빈 자리를 다시 찾는다
+	place(true)
+end)
+gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() place(true) end)
+place(true)
+task.delay(2, function() place(true) end)
 
 local ready = false
 task.delay(4, function() ready = true end) -- 내가 막 들어왔을 때 이미 있던 사람들은 알리지 않는다
@@ -136,7 +227,8 @@ end)
 refresh()
 task.spawn(function()
 	while true do
-		task.wait(5)
+		task.wait(2)
 		if listFrame.Visible then refreshList() end
+		place(false) -- 지금 자리가 다른 UI 와 겹치게 되었으면 다시 찾는다
 	end
 end)
