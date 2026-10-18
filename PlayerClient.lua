@@ -3595,11 +3595,11 @@ RunService.RenderStepped:Connect(function(dt)
 	local modalOpen = menuPanel.Visible or enhancePanel.Visible or gearPanel.Visible or selectPanel.Visible or warpPanel.Visible
 	if not modalOpen then
 		-- 다른 스크립트의 큰 창(펫 / 상점 / 스탯)이 열려 있으면 진짜 마우스 커서를 되살린다
-		for _, name in ipairs({ "PetGui", "ShopGui", "LevelStatGui", "CodexGui" }) do
+		for _, name in ipairs({ "PetGui", "ShopGui", "LevelStatGui", "CodexGui", "AdminGui", "AugGui", "DepthGui", "OddsGui", "ChestGui" }) do
 			local g = playerGui:FindFirstChild(name)
-			if g then
+			if g and g:IsA("ScreenGui") and g.Enabled then
 				for _, child in ipairs(g:GetChildren()) do
-					if child:IsA("Frame") and child.Visible and child.Size.Y.Offset >= 300 then modalOpen = true break end
+					if child:IsA("Frame") and child.Visible and (child.Size.Y.Offset >= 300 or child.Size.Y.Scale >= 0.4) then modalOpen = true break end
 				end
 			end
 			if modalOpen then break end
