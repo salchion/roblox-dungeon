@@ -1308,9 +1308,9 @@ Config.LevelStats = {
 	Order = { "Move", "Range", "Double", "Haste", "CritDmg" },
 	Move  = { Name = "Move Speed",   Icon = "👟", Per = 0.3,  Desc = "Move speed +0.3 per point" },
 	Range = { Name = "Range",    Icon = "🎯", Per = 0.04, Desc = "Weapon range +4% per point" },
-	Double = { Name = "Double Shot", Icon = "🔫", Per = 0.007, Desc = "+0.7% chance per point to fire a second shot right after the first (\"bang-bang\")", Note = "Double Shot: each time you shoot, there's a chance the same shot fires again 0.09s later (same power). With all 49 points, about 34%." },
+	Double = { Name = "Double Shot", Icon = "🔫", Per = 0.007, Desc = "+0.7% chance per point to fire a second shot right after the first (\"bang-bang\")", Note = "Double Shot: each time you shoot, there's a chance the same shot fires again 0.09s later (same power)." },
 	Haste = { Name = "Skill Cooldown", Icon = "⏱", Per = 0.01, Desc = "Skill cooldown -1% per point" },
-	CritDmg = { Name = "Crit Damage", Icon = "💥", Per = 0.015, Desc = "Crit damage +1.5%p per point (base 2x)", Note = "Crit Damage: crits hit even harder. With all 49 points, crits go from 2x to about 2.7x. Combine with crit chance gear / pet / Double Shot for a big-hit build." },
+	CritDmg = { Name = "Crit Damage", Icon = "💥", Per = 0.015, Desc = "Crit damage +1.5%p per point (base 2x)", Note = "Crit Damage: crits hit even harder. Combine with crit chance gear / pet / Double Shot for a big-hit build." },
 	-- 스탯 하나에 넣을 수 있는 최대 포인트 (포인트가 199개로 늘어도 한 스탯이 한계를 넘지 않게: 더블샷 확률 100% 초과 같은 일 방지)
 	Cap = { Move = 40, Range = 50, Double = 60, Haste = 50, CritDmg = 60 },
 	-- 최대 레벨(200)을 찍은 뒤에는 골드로 포인트를 더 살 수 있다 (골드 사용처). n 번째(0부터) 포인트 비용 = Base x Growth^n. 살 수 있는 총 개수는 아래 MaxGoldPoints.
@@ -1318,6 +1318,12 @@ Config.LevelStats = {
 	GoldPointMinLevel = 100, -- 이 레벨부터 골드로 포인트를 살 수 있다 (예전에는 200 레벨이라 중반에 쓸 골드가 마땅치 않았다)
 	OtherExtraShotValue = 0.5, -- 장비 옵션 / 던전 특성으로 늘어난 탄 한 발의 가치 (예전에는 100%여서 탄이 늘면 딜이 그대로 배수로 늘었다)
 }
+-- 설명 속 "최대 포인트일 때" 수치는 위 Cap / Per 에서 계산한다 (포인트 한계를 바꿔도 설명이 어긋나지 않게)
+do
+	local LS = Config.LevelStats
+	LS.Double.Note = LS.Double.Note .. string.format(" With the max %d points, about %d%%.", LS.Cap.Double, math.floor(LS.Cap.Double * LS.Double.Per * 100 + 0.5))
+	LS.CritDmg.Note = LS.CritDmg.Note:gsub(" Combine", string.format(" With the max %d points, crits go from 2x to about %.1fx. Combine", LS.Cap.CritDmg, 2 + LS.Cap.CritDmg * LS.CritDmg.Per), 1)
+end
 function Config.GetLevelStatPoints(level)
 	return math.max(0, (math.min(level or 1, Config.Level.StatCap) - 1) * Config.LevelStats.PointsPerLevel)
 end
