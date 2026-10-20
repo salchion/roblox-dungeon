@@ -267,6 +267,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/FieldPartyShare.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "FieldPartyShare",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/ShowcaseService.lua",
       "parent": "ServerScriptService/Modules",
       "name": "ShowcaseService",

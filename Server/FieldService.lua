@@ -31,6 +31,7 @@ local MonsterTypes = require(script.Parent:WaitForChild("MonsterTypes"))
 local Stage = require(script.Parent:WaitForChild("BossStage")) -- 군주 전투 연출 (등장 / 격노 / 처치)
 local Combo = require(script.Parent:WaitForChild("ComboService"))
 local Loot = require(script.Parent:WaitForChild("LootService"))
+local PartyShare = require(script.Parent:WaitForChild("FieldPartyShare")) -- 파티 경험치 나눔 / 파티원별 드랍
 local Inventory = require(script.Parent:WaitForChild("InventoryService"))
 local Journey = require(script.Parent:WaitForChild("JourneyService"))
 
@@ -1508,7 +1509,7 @@ local function reward(player, data, part)
 		xp = Config.Xp.FieldPerMonsterLevel * data.XpLevel * (data.Kind == "Elite" and Config.Xp.EliteMult or 1)
 	end
 	xp = xp * ((Config.Xp.ZoneMult and Config.Xp.ZoneMult[data.Zone]) or 1) -- 구역이 깊을수록 경험치 배율
-	Level.AddXP(player, xp)
+	if data.Kind == "Boss" then Level.AddXP(player, xp) else PartyShare.Xp(player, part.Position, xp) end -- 군주는 근처 모두가 각자 받는다(아래). 그 외는 파티가 나눈다
 
 	gateProgress(player, data)
 	Quest.Add(player, "Kills", 1)
@@ -1535,6 +1536,7 @@ local function reward(player, data, part)
 	-- 장비 전리품 (개인 전리품: 처치한 본인에게만 보임)
 	if data.Kind ~= "Boss" then
 		Loot.DropFor(player, dropPosition(part), data.Kind, data.Zone)
+		PartyShare.Drops(player, dropPosition(part), data.Kind, data.Zone)
 	end
 
 	if data.Kind == "Elite" and math.random() < F.EliteTicketChance then
