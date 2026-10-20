@@ -530,11 +530,11 @@ buildChampStages = function()
 		glow.Parent = backdrop
 		champSlots[rank] = {
 			Platform = platform, Top = Vector3.new(platform.Position.X, 1.45, z), Scale = 2.2, Look = CHAMP_LOOK, Key = nil, Model = nil, Weapon = nil,
-			Label = makeLabel(platform, 18, 110, 230, 90),
+			Label = makeLabel(platform, 16, 60, 200, 64), -- 멀리서는 안 보이게(60 스터드): 세 라벨이 겹쳐 보이는 걸 막는다
 		}
-		champSlots[rank].Label.Text = MEDAL[rank] .. " Boss Rush champion\n<font size='14'>Resets every week</font>"
+		champSlots[rank].Label.Text = MEDAL[rank] .. " Weekly champion\n<font size='12'>Resets every week</font>"
 	end
-	local header = makeLabel(champSlots[1].Platform, 28, 220, 330, 80)
+	local header = makeLabel(champSlots[1].Platform, 27, 90, 260, 56)
 	header.Text = "👑 This Week's Champions 👑"
 	header.TextColor3 = Color3.fromRGB(255, 226, 120)
 end
@@ -562,7 +562,7 @@ function Showcase.RefreshChampions()
 			end
 		elseif slot.Key ~= nil then
 			clearSlot(slot)
-			slot.Label.Text = MEDAL[rank] .. " Boss Rush champion\n<font size='14'>Resets every week</font>"
+			slot.Label.Text = MEDAL[rank] .. " Weekly champion\n<font size='12'>Resets every week</font>"
 		end
 	end
 end

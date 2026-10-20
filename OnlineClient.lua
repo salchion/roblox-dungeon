@@ -27,7 +27,7 @@ local pill, listFrame, toast -- 아래에서 만든다 (위치를 자동으로 �
 local spot = nil -- 알약의 현재 위치 (화면 픽셀, 왼쪽 위 기준)
 
 -- 자동 배치: 지금 화면에 보이는 다른 UI 들의 사각형을 모아서, 겹치지 않는 빈 자리를 찾는다 (폰마다 해상도 / 비율이 달라도 같은 방식).
---   후보 순서: (PC 마을) 위 가운데 -> 오른쪽 줄 위에서 아래로 -> 왼쪽 줄 위에서 아래로. 다 겹치면 오른쪽 위에 둔다.
+--   후보 순서: 오른쪽 줄 위에서 아래로 -> 왼쪽 줄 위에서 아래로. 다 겹치면 오른쪽 위에 둔다. (위 가운데는 3D 이름표 / 명예의 전당 글자와 겹치므로 쓰지 않는다)
 local function visibleChain(instance)
 	local current = instance
 	while current and current ~= playerGui do
@@ -73,11 +73,6 @@ local function findSpot()
 	if screen.X < 50 or screen.Y < 50 or w < 1 then return spot or Vector2.new(12, 12) end
 	local rects = collectRects(screen)
 	local margin = 12
-	local zone = player:GetAttribute("Zone")
-	if zone == "Lobby" and not COMPACT then -- PC 마을: 위 가운데를 먼저 본다
-		local x = (screen.X - w) / 2
-		if not hits(rects, x, 8, w, h) then return Vector2.new(x, 8) end
-	end
 	local rightX = screen.X - w - margin
 	for y = 8, screen.Y - h - margin, 8 do
 		if not hits(rects, rightX, y, w, h) then return Vector2.new(rightX, y) end
