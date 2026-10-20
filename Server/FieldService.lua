@@ -1356,6 +1356,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		BaseColor = part.Color,
 		Aggro = false,
 		Ambush = ambush == true,
+		Contrib = (kind ~= "Boss") and {} or nil, -- 누가 얼마나 때렸나 (일반 / 엘리트 보상을 준 피해로 나눈다: FieldPartyShare)
 		LastHit = ambush and os.clock() or nil, -- 습격으로 나온 몬스터는 처음부터 플레이어를 노린다
 	}
 	newData.WeakPart = weakOrb
@@ -1497,10 +1498,12 @@ local function reward(player, data, part)
 	end
 
 	local gold = math.floor(data.Stats.Gold + 0.5)
-	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + math.floor(gold * Config.GoldBonus(player) + 0.5))
 	BL.Kill(player, data.Kind or "Normal")
-	BL.Gold(player, "Kills", math.floor(gold * Config.GoldBonus(player) + 0.5))
-	Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2, 0), string.format("+%d G", gold), Color3.fromRGB(255, 220, 90))
+	if data.Kind == "Boss" then -- 군주: 막타를 친 사람의 골드 (그 외는 아래에서 준 피해로 나눈다)
+		player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + math.floor(gold * Config.GoldBonus(player) + 0.5))
+		BL.Gold(player, "Kills", math.floor(gold * Config.GoldBonus(player) + 0.5))
+		Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2, 0), string.format("+%d G", gold), Color3.fromRGB(255, 220, 90))
+	end
 
 	local xp
 	if data.Kind == "Boss" then
@@ -1509,7 +1512,8 @@ local function reward(player, data, part)
 		xp = Config.Xp.FieldPerMonsterLevel * data.XpLevel * (data.Kind == "Elite" and Config.Xp.EliteMult or 1)
 	end
 	xp = xp * ((Config.Xp.ZoneMult and Config.Xp.ZoneMult[data.Zone]) or 1) -- 구역이 깊을수록 경험치 배율
-	if data.Kind == "Boss" then Level.AddXP(player, xp) else PartyShare.Xp(player, part.Position, xp) end -- 군주는 근처 모두가 각자 받는다(아래). 그 외는 파티가 나눈다
+	local rewarded = nil -- 골드 / 경험치를 받은 사람들 (드랍을 각자 굴린다)
+	if data.Kind == "Boss" then Level.AddXP(player, xp) else rewarded = PartyShare.Distribute(player, data, part, gold, xp) end -- 군주는 근처 모두가 각자 받는다(아래). 그 외는 준 피해로 나눈다 (파티는 하나로)
 
 	gateProgress(player, data)
 	Quest.Add(player, "Kills", 1)
@@ -1535,8 +1539,7 @@ local function reward(player, data, part)
 
 	-- 장비 전리품 (개인 전리품: 처치한 본인에게만 보임)
 	if data.Kind ~= "Boss" then
-		Loot.DropFor(player, dropPosition(part), data.Kind, data.Zone)
-		PartyShare.Drops(player, dropPosition(part), data.Kind, data.Zone)
+		PartyShare.DropFor(rewarded or { player }, dropPosition(part), data.Kind, data.Zone)
 	end
 
 	if data.Kind == "Elite" and math.random() < F.EliteTicketChance then
