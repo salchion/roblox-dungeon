@@ -216,7 +216,7 @@ function Showcase.Init(_boardCFrame)
 	header.Text = "🏆 Hall of Fame 🏆"
 	header.TextColor3 = Color3.fromRGB(255, 226, 120)
 
-	if buildChampStages then buildChampStages() end
+	-- (동쪽 성벽의 "이번 주 챔피언" 전시대는 쓰지 않는다: buildChampStages 를 부르지 않는다. 주간 순위는 칭호용으로 계속 읽는다)
 
 	task.spawn(function()
 		task.wait(8)
@@ -540,7 +540,6 @@ buildChampStages = function()
 end
 
 function Showcase.RefreshChampions()
-	if #champSlots == 0 then return end
 	local okRift, Rift = pcall(function() return require(script.Parent:FindFirstChild("RiftService")) end)
 	local top = {}
 	if okRift and Rift and Rift.WeeklyTop then
@@ -551,8 +550,10 @@ function Showcase.RefreshChampions()
 	for rank = 1, 3 do
 		local entry = top[rank]
 		local slot = champSlots[rank]
-		if entry then
-			weeklyRanks[entry.UserId] = rank
+		if entry then weeklyRanks[entry.UserId] = rank end
+		if not slot then
+			-- 전시대가 없으면 순위만 기록한다
+		elseif entry then
 			local key = string.format("%d_%d", entry.UserId, math.floor(entry.Score))
 			if slot.Key ~= key then
 				clearSlot(slot)
