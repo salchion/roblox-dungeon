@@ -30,12 +30,13 @@ local SPECS = {
 	Shot_Rail     = { Base = "Shot", CustomLength = 1.4, Pitch = 1.9, Volume = 0.9, Length = 1.0, Fx = { { "chorus", { Depth = 0.8, Mix = 0.7 } }, { "echo", { Delay = 0.07, Feedback = 0.45, WetLevel = -5 } } },
 		Layers = { { Pitch = 0.9, Volume = 0.6, Delay = 0.02 } } },
 	-- 적중 / 처치 / 치명타 (짧고 선명하게)
-	Hit  = { Base = "Shot", CustomLength = 0.6, Pitch = 3.0, Volume = 0.5, Length = 0.09 },
+	Hit  = { Base = "Shot", CustomLength = 0.6, Pitch = 3.0, Volume = 0.32, Length = 0.09 }, -- (0.5 -> 0.32: 적중음이 총소리보다 커서 총소리가 묻힌다는 의견)
 	-- 치명타 (오버워치 헤드샷 느낌, 귀가 아프지 않게): 낮고 단단한 "텅!" + 살짝 얹은 맑은 배음, 고음은 깎아 낸다
-	Crit = { Base = "Enh_Success", Pitch = 1.45, Volume = 0.5, Length = 0.2, CustomLength = 0.5,
+	Crit = { Base = "Enh_Success", Pitch = 1.45, Volume = 0.32, Length = 0.2, CustomLength = 0.5, -- (0.5 -> 0.32: 총소리가 묻힌다는 의견)
 		Fx = { { "eq", { LowGain = -24, MidGain = 0, HighGain = -8 } }, { "echo", { Delay = 0.05, Feedback = 0.15, WetLevel = -14 } } },
 		Layers = { { Pitch = 2.0, Volume = 0.3, Delay = 0.01 } } },
-	Kill = { Base = "EnhanceSuccess", CustomLength = 1.2, Pitch = 1.5, Volume = 0.7, Length = 0.35, Fx = { { "reverb", { DecayTime = 0.6, WetLevel = -10 } } } },
+	Kill = { Base = "EnhanceSuccess", CustomLength = 1.2, Pitch = 1.5, Volume = 0.5, -- (0.7 -> 0.5)
+	 Length = 0.35, Fx = { { "reverb", { DecayTime = 0.6, WetLevel = -10 } } } },
 	-- 스킬 / 폭발 / 레벨업
 	Skill_Heal = { CustomLength = 2.5, Base = "Enh_Success", Pitch = 1.1, Volume = 0.8, Length = 0.9, Fx = { { "reverb", { DecayTime = 1.6, WetLevel = -6 } } } },
 	Skill_Ult  = { Base = "Shot", CustomLength = 3.0, Pitch = 0.4, Volume = 1.6, Length = 1.8, Fx = { { "reverb", { DecayTime = 3.0, WetLevel = -2 } }, { "distortion", { Level = 0.4 } } },

@@ -646,7 +646,7 @@ Config.Audio = {
 		Doom = ids.Doom or 0,        -- 최후의 군주와의 결투 음악 (0이면 보스전 음악을 더 빠르게 틀어 준다)
 	},
 	Shot = ids.Shot or 0,            -- 총 쏘는 소리 (무기가 강해질수록 낮고 묵직하게 재생됨)
-	ShotVolume = 0.06, -- 총소리 기본 크기 (예전 0.3 에서 슬라이더를 20% 로 낮춰 두었을 때의 소리)
+	ShotVolume = 0.07, -- 총소리 기본 크기 (0.06 -> 0.07: 적중 / 치명타 / 처치 소리에 묻힌다는 의견) (예전 0.3 에서 슬라이더를 20% 로 낮춰 두었을 때의 소리)
 	EnhanceSuccess = ids.EnhanceSuccess or 0, -- 강화 성공 소리
 	Hit = ids.Hit or 0,              -- 적중음
 	Kill = ids.Kill or 0,            -- 처치음
