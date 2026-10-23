@@ -19,6 +19,13 @@ fxFolder.Parent = workspace
 local WHITE = Color3.new(1, 1, 1)
 local MAX_ACTIVE_SHOTS = 90
 local activeShots = 0
+-- 동시 탄 수 세기: 탄 하나를 "정해진 시간 뒤 자동으로 빠지는" 방식으로 센다.
+-- (예전에는 탄이 끝날 때 직접 1 을 뺐는데, 중간에 오류가 나거나 레일건처럼 두 번 더하는 경로가 있으면 숫자가 계속 쌓여서
+--  상한(90)에 닿는 순간부터 내 탄이 전부 안 보이는 문제가 생겼다)
+local function claimShot(seconds)
+	activeShots += 1
+	task.delay(seconds, function() activeShots = math.max(0, activeShots - 1) end)
+end
 
 ------------------------------------------------------------
 -- 풀: 폭발 입자 / 떠오르는 글자 / 피해 숫자는 부품을 돌려 쓴다
@@ -177,7 +184,6 @@ local function fly(part, from, to, speed, minTime, onDone)
 	local tween = TweenService:Create(part, TweenInfo.new(duration, Enum.EasingStyle.Linear), { CFrame = CFrame.lookAt(to, to + (to - from)) })
 	tween.Completed:Connect(function()
 		onDone()
-		activeShots -= 1
 	end)
 	tween:Play()
 end
@@ -246,8 +252,6 @@ SPECIAL.Rail = function(from, to, size, _, color, era)
 	local ringPart = rootPart(CFrame.new(to) * CFrame.Angles(0, 0, math.rad(90)), Vector3.new(0.2, 1, 1), color, Enum.Material.Neon, Enum.PartType.Cylinder, 0.2)
 	TweenService:Create(ringPart, TweenInfo.new(0.25), { Size = Vector3.new(0.2, 9, 9), Transparency = 1 }):Play()
 	Debris:AddItem(ringPart, 0.3)
-	activeShots += 1
-	task.delay(0.35, function() activeShots -= 1 end)
 end
 
 -- 저격총: 아주 빠른 흰 줄기 + 지나간 자리에 남는 가는 궤적선
@@ -689,7 +693,7 @@ local function playShot(event)
 	local style = eraStyle
 	local special = class and SPECIAL[class]
 	if special then
-		activeShots += 1 -- (fly 가 끝나면 스스로 줄인다)
+		claimShot(1.4) -- (가장 긴 비행 1.2초 + 여유: 시간이 지나면 저절로 빠진다)
 		eraMuzzle(from, (to - from).Unit, era, color, inEra, false)
 		classFlourish(class, from, to, size, color, era, richness)
 		if era == 7 and (class == "Rail" or class == "Sniper") then pathLightning(from, to, Color3.fromRGB(255, 245, 140), 0.28, 3) end
@@ -714,7 +718,7 @@ local function playShot(event)
 	if not rainbow then color = color:Lerp(Color3.fromRGB(120, 125, 135), 0.18) end -- 너무 쨍하지 않게 살짝 가라앉힌다
 	if mini then size *= 1 + 0.7 * richness end -- 연사 무기도 번호가 오르면 탄이 굵고 밝아진다 (앞 무기보다 초라해지지 않게)
 	size = math.max(size, mini and 0.45 or 0.5) -- 뒤에서 봐도 보이게 바닥 굵기 (연사 / 산탄 탄이 너무 가늘어 안 보인다는 말이 있어 키웠다)
-	activeShots += 1
+	claimShot(1.4)
 
 	local part = Instance.new("Part")
 	part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch = true, false, false, false
@@ -858,7 +862,6 @@ local function playShot(event)
 			eraRing(to, color, 1, 3 + 6 * richness, 0.18 + 0.1 * richness)
 			if vt >= 50 and not mini then eraRing(to + Vector3.new(0, 0.5, 0), color, 0.6, 2 + 4 * richness, 0.14) end
 		end
-		activeShots -= 1
 		Debris:AddItem(part, 0.5)
 	end)
 	tween:Play()
