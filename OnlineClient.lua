@@ -25,6 +25,7 @@ local GuiService = game:GetService("GuiService")
 local playerGui = player:WaitForChild("PlayerGui")
 local pill, listFrame, toast -- 아래에서 만든다 (위치를 자동으로 잡으려고 먼저 선언)
 local spot = nil -- 알약의 현재 위치 (화면 픽셀, 왼쪽 위 기준)
+local collideSince = nil -- 지금 자리가 다른 UI 와 겹치기 시작한 시각
 
 -- 자동 배치: 지금 화면에 보이는 다른 UI 들의 사각형을 모아서, 겹치지 않는 빈 자리를 찾는다 (폰마다 해상도 / 비율이 달라도 같은 방식).
 --   후보 순서: 오른쪽 줄 위에서 아래로 -> 왼쪽 줄 위에서 아래로. 다 겹치면 오른쪽 위에 둔다. (위 가운데는 3D 이름표 / 명예의 전당 글자와 겹치므로 쓰지 않는다)
@@ -109,10 +110,25 @@ local function place(force)
 	if not pill or not gui.Enabled then return end
 	local w, h = pill.AbsoluteSize.X, pill.AbsoluteSize.Y
 	if w < 1 or gui.AbsoluteSize.X < 50 then return end -- 아직 화면 크기가 정해지지 않았다 (잠깐 뒤에 다시 부른다)
-	if not force and spot and not hits(collectRects(gui.AbsoluteSize), spot.X, spot.Y, w, h) then
-		layoutExtras()
-		return -- 지금 자리가 아직 비어 있으면 그대로 둔다 (자리가 계속 바뀌면 눈에 거슬린다)
+	-- 자리는 "계속 겹칠 때만" 옮긴다: 알림 카드 / 떠오르는 글자 같은 잠깐의 UI 때문에 자리가 튀지 않게.
+	--   force(구역 / 화면 크기가 바뀜): 지금 겹치면 바로 옮긴다 / 아니면(2초마다 확인): 5초 넘게 계속 겹칠 때만 옮긴다. 화면 밖으로 나갔으면 바로 옮긴다.
+	if spot then
+		local screen = gui.AbsoluteSize
+		local outside = spot.X < 0 or spot.Y < 0 or spot.X + w > screen.X or spot.Y + h > screen.Y
+		if not outside and not hits(collectRects(screen), spot.X, spot.Y, w, h) then
+			collideSince = nil
+			layoutExtras()
+			return
+		end
+		if not outside then
+			collideSince = collideSince or os.clock()
+			if not force and os.clock() - collideSince < 5 then
+				layoutExtras()
+				return
+			end
+		end
 	end
+	collideSince = nil
 	spot = findSpot()
 	pill.AnchorPoint = Vector2.new(0, 0)
 	pill.Position = UDim2.fromOffset(spot.X, spot.Y)

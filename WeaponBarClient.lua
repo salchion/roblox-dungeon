@@ -155,6 +155,7 @@ end)
 -- 자동 배치 (OnlineClient 와 같은 방식): 다른 UI 와 겹치지 않는 빈 자리를 찾는다
 ------------------------------------------------------------
 local spot = nil
+local collideSince = nil -- 지금 자리가 다른 UI 와 겹치기 시작한 시각
 local function visibleChain(instance)
 	local current = instance
 	while current and current ~= playerGui do
@@ -216,7 +217,20 @@ local function place(force)
 	gui.Enabled = show
 	if not show then return end
 	if gui.AbsoluteSize.X < 50 then return end
-	if not force and spot and not hits(collectRects(gui.AbsoluteSize), spot.X, spot.Y, BAR_W, HOLDER_H) then return end
+	-- 자리는 "계속 겹칠 때만" 옮긴다 (알림 카드 같은 잠깐의 UI 때문에 바가 튀지 않게): force 면 겹칠 때 바로, 아니면 5초 넘게 계속 겹칠 때 / 화면 밖이면 바로
+	if spot then
+		local screen = gui.AbsoluteSize
+		local outside = spot.X < 0 or spot.Y < 0 or spot.X + BAR_W > screen.X or spot.Y + HOLDER_H > screen.Y
+		if not outside and not hits(collectRects(screen), spot.X, spot.Y, BAR_W, HOLDER_H) then
+			collideSince = nil
+			return
+		end
+		if not outside then
+			collideSince = collideSince or os.clock()
+			if not force and os.clock() - collideSince < 5 then return end
+		end
+	end
+	collideSince = nil
 	spot = findSpot()
 	holder.Position = UDim2.fromOffset(spot.X, spot.Y)
 end
