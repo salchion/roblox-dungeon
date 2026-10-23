@@ -77,7 +77,7 @@ SPECS.Gacha_Drop  = { Base = "Enh_Hammer", Pitch = 0.9, Volume = 0.6, Length = 0
 SPECS.Gacha_Tick  = { Base = "Hit", Pitch = 0.75, Volume = 0.6, Length = 0.1, CustomLength = 0.2, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -14 } } } }                                                      -- 흔들릴 때 "틱틱"
 SPECS.Gacha_Card  = { Base = "Kill", Pitch = 0.9, Volume = 0.5, Length = 0.25, Fx = { { "eq", { LowGain = 1, MidGain = 0, HighGain = -8 } } } }                                            -- 10연 카드 한 장씩
 SPECS.Dash   = { Base = "Shot", Pitch = 0.35, Volume = 5.5, Length = 0.4, CustomLength = 1.0, Fx = { { "eq", { HighGain = -12 } } } }  -- 대시 "슈웅"
-SPECS.Pickup = { Base = "Enh_Success", Pitch = 1.5, Volume = 0.5, Length = 0.25, CustomLength = 1.0, Fx = { { "eq", { LowGain = 0, MidGain = 0, HighGain = -8 } } } }                        -- 전리품 줍기 "팅"
+SPECS.Pickup = { Base = "Enh_Success", Pitch = 1.5, Volume = 0.3, Length = 0.25, CustomLength = 1.0, Fx = { { "eq", { LowGain = 0, MidGain = 0, HighGain = -8 } } } }                        -- 전리품 줍기 "팅"
 local POP_PITCHES = { 0.85, 1.06, 1.27, 1.5, 1.8 } -- (완전 5도 / 3도로 쌓이는 맑은 화음: 높은 음으로 치솟지 않게)
 for rarity = 1, 5 do                                                                                                                   -- 퍽! 등급이 높을수록 음이 더 많이 쌓인다
 	local layers = {}
@@ -220,8 +220,11 @@ end
 
 -- opts: Pitch(배율) / Volume(배율) / Name(소리 이름; 총소리는 "GunShot" 으로 두면 설정창 볼륨이 적용된다)
 -- 연속으로 터져도 "따따따따" 겹치지 않게: 이 시간(초) 안에 같은 소리가 또 울리면 건너뛴다
-local MIN_GAP = { Crit = 0.38, Hit = 0.09, Kill = 0.12, NearMiss_Get = 0.2 } -- (연사할 때 적중 / 치명타 / 처치 소리가 촘촘히 겹쳐 총소리를 덮지 않게 간격을 넓혔다)
+local MIN_GAP = { Crit = 0.38, Hit = 0.09, Kill = 0.18, Pickup = 0.1, Rare_Drop = 0.15, NearMiss_Get = 0.2 } -- (연사할 때 적중 / 치명타 / 처치 소리가 촘촘히 겹쳐 총소리를 덮지 않게 간격을 넓혔다)
 local lastPlayed = {}
+-- 몬스터를 확확 잡을 때 적중 / 치명타 / 처치 / 줍기 소리가 한꺼번에 울려 총소리를 덮는다: 이 "반응 소리"들은 종류와 상관없이 0.06초에 하나만 낸다 (총소리가 먼저 들리게)
+local FEEDBACK = { Hit = true, Crit = true, Kill = true, Pickup = true }
+local lastFeedback = 0
 
 function SoundBank.Play(parent, key, opts)
 	local spec = SPECS[key]
@@ -234,6 +237,11 @@ function SoundBank.Play(parent, key, opts)
 	end
 	local id, custom = idFor(key, spec)
 	if not id then return end
+	if FEEDBACK[key] then
+		local nowFeedback = os.clock()
+		if nowFeedback - lastFeedback < 0.06 then return end
+		lastFeedback = nowFeedback
+	end
 	opts = opts or {}
 	local volumeScale = (opts.Volume or 1) * spec.Volume
 	if string.sub(key, 1, 4) == "Shot" then
