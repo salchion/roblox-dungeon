@@ -184,7 +184,9 @@ local function collectRects(screen)
 					local offsetY = (screenGui and not screenGui.IgnoreGuiInset) and inset or 0
 					present[instance] = true
 					seen[instance] = seen[instance] or now
-					table.insert(rects, { X = instance.AbsolutePosition.X, Y = instance.AbsolutePosition.Y + offsetY, W = size.X, H = size.Y, Young = now - seen[instance] < 6 })
+					local young = now - seen[instance] < 6
+					-- AbsolutePosition 에 상단 여백이 들어가는지 환경마다 헷갈리므로, 두 경우를 모두 막는다 (조금 넉넉하게 피한다)
+					table.insert(rects, { X = instance.AbsolutePosition.X, Y = instance.AbsolutePosition.Y, W = size.X, H = size.Y + offsetY, Young = young })
 				end
 			end
 		end
