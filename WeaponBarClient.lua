@@ -236,7 +236,15 @@ local function attachToSkillBar()
 	return true
 end
 
+local FIXED = not COMPACT -- 컴퓨터: 왼쪽 퀘스트 카드 바로 아래 고정 (계산 없이 항상 같은 자리)
 local function place(force)
+	if FIXED then
+		local zone = player:GetAttribute("Zone")
+		holder.Position = UDim2.new(0, 14, 0, 480)
+		gui.Enabled = (zone == "Lobby" or zone == "Field" or zone == "Dungeon")
+			and not player:GetAttribute("ModalOpen") and not player:GetAttribute("TutorialActive") and not player:GetAttribute("ChestOpening")
+		return
+	end
 	if attached then
 		local zone = player:GetAttribute("Zone")
 		holder.Visible = (zone == "Lobby" or zone == "Field" or zone == "Dungeon")
@@ -283,6 +291,7 @@ refresh()
 place(true)
 task.delay(2, function() place(true) end)
 task.spawn(function()
+	if FIXED then return end
 	for _ = 1, 40 do -- 스킬 바가 만들어질 때까지 (최대 20초) 기다렸다가 붙인다. 못 찾으면 예전 자동 배치를 쓴다
 		if attachToSkillBar() then place(true) return end
 		task.wait(0.5)
