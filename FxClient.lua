@@ -115,9 +115,9 @@ local RAINBOW = ColorSequence.new({
 local FIRE = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 240, 120)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 50, 20)) })
 local CLASS_LOOK = {
 	Pistol = { SizeMul = 1.0, Muzzle = 2.4 }, -- 총구에 작은 고리
-	Revolver = { Style = "Ball", SizeMul = 1.35, Impact = 10, Muzzle = 3.6 }, -- 묵직한 한 발 + 큰 총구 고리
+	Revolver = { Style = "Ball", SizeMul = 1.6, Impact = 10, Muzzle = 3.6 }, -- 묵직한 한 발 + 큰 총구 고리
 	Smg = { Style = "Bolt", Length = 2.2, SizeMul = 0.55, Mini = true }, -- 가늘고 짧은 연사 탄 (시대 효과는 최소)
-	Rifle = { Style = "Bolt", Length = 3.5 },
+	Rifle = { Style = "Bolt", Length = 6 }, -- 길고 가는 탄 (SMG 의 짧은 탄 / 권총의 둥근 탄과 한눈에 구분되게)
 	Shotgun = { Style = "Ball", SizeMul = 0.55, Mini = true, Puff = true }, -- 작은 산탄 알갱이 + 총구 원뿔 연기
 }
 -- 로켓 / 레일건 / 저격총 / 캐논 / 화염방사기는 아래 SPECIAL 이 따로 그린다
@@ -422,6 +422,93 @@ local function pathLightning(from, to, color, width, jitterSize)
 	end
 end
 
+-- 무기 종류마다 눈에 확 띄게 다른 "발사 연출" (쨍하지 않게: 색은 회색 쪽으로 가라앉히고 고리 / 줄은 반투명, 한 번에 부품 몇 개만, 종류마다 간격을 둔다)
+--   권총: 작은 팝 고리 / 리볼버: 묵직한 충격 고리 + 먼지 / SMG: 아주 얇은 줄 하나 / 소총: 길고 가는 궤적이 잠깐 남는다 /
+--   샷건: 부채꼴 줄 + 연기 / 저격: 지나가는 길을 따라 퍼지는 고리 여러 개(증기) / 레일건: 크고 느슨한 고리 물결 / 로켓: 뒤로 뿜는 연기 /
+--   캐논: 총구로 빨려드는 충전 고리 / 화염방사기: 불씨 부채꼴
+local lastFlourish = {}
+local FLOURISH_GAP = { Pistol = 0.06, Revolver = 0.05, Smg = 0.14, Rifle = 0.09, Shotgun = 0.05, Sniper = 0.05, Rocket = 0.05, Rail = 0.05, Cannon = 0.05, Flamer = 0.12 }
+local function soft(color) return color:Lerp(Color3.fromRGB(135, 140, 150), 0.3) end
+
+local function ringAt(position, dir, color, d0, d1, dur, transparency, delay)
+	local cf = CFrame.lookAt(position, position + dir) * CFrame.Angles(0, math.rad(90), 0)
+	local make = function()
+		local ring = rootPart(cf, Vector3.new(0.15, d0, d0), color, Enum.Material.Neon, Enum.PartType.Cylinder, transparency)
+		TweenService:Create(ring, TweenInfo.new(dur), { Size = Vector3.new(0.15, d1, d1), Transparency = 1 }):Play()
+		Debris:AddItem(ring, dur + 0.05)
+	end
+	if delay and delay > 0 then task.delay(delay, make) else make() end
+end
+
+local function fanLines(front, dir, color, count, spreadDeg, len, dur)
+	local up = Vector3.new(0, 1, 0)
+	for i = 1, count do
+		local t = count == 1 and 0 or (i - 1) / (count - 1) - 0.5
+		local rotated = (CFrame.fromAxisAngle(up, math.rad(spreadDeg * t)) * CFrame.new(dir * 10)).Position.Unit
+		local line = rootPart(CFrame.lookAt(front, front + rotated) * CFrame.new(0, 0, -len / 2), Vector3.new(0.16, 0.16, len), color, Enum.Material.Neon, nil, 0.35)
+		TweenService:Create(line, TweenInfo.new(dur), { Transparency = 1, Size = Vector3.new(0.05, 0.05, len * 1.6) }):Play()
+		Debris:AddItem(line, dur + 0.05)
+	end
+end
+
+local function classFlourish(class, from, to, size, color, era, richness)
+	if lowSpecOn() or not class then return end
+	local gap = FLOURISH_GAP[class]
+	if not gap then return end
+	local now = os.clock()
+	if now - (lastFlourish[class] or 0) < gap then return end
+	lastFlourish[class] = now
+	local total = to - from
+	local distance = total.Magnitude
+	if distance < 2 then return end
+	local dir = total.Unit
+	local front = from + dir * 1.4
+	local tone = soft(elementOf(era).Core)
+	local smokeColor = Color3.fromRGB(150, 150, 158)
+	local grow = 1 + richness -- 번호가 높을수록 조금 더 크다
+
+	if class == "Pistol" then
+		ringAt(front, dir, tone, 0.5, 2.6 * grow, 0.12, 0.5)
+	elseif class == "Revolver" then
+		ringAt(front, dir, tone, 0.8, 6.5 * grow, 0.2, 0.45)
+		ringAt(front + dir * 2, dir, smokeColor, 0.6, 4.5 * grow, 0.28, 0.6, 0.04)
+		burst(front, smokeColor, 6)
+	elseif class == "Smg" then
+		local line = rootPart(CFrame.lookAt(from, to) * CFrame.new(0, 0, -math.min(distance, 26) / 2), Vector3.new(0.1, 0.1, math.min(distance, 26)), tone, Enum.Material.Neon, nil, 0.55)
+		TweenService:Create(line, TweenInfo.new(0.1), { Transparency = 1 }):Play()
+		Debris:AddItem(line, 0.15)
+	elseif class == "Rifle" then
+		local length = math.min(distance, 60)
+		local line = rootPart(CFrame.lookAt(from, to) * CFrame.new(0, 0, -length / 2), Vector3.new(0.14, 0.14, length), tone, Enum.Material.Neon, nil, 0.5)
+		TweenService:Create(line, TweenInfo.new(0.28), { Transparency = 1, Size = Vector3.new(0.04, 0.04, length) }):Play()
+		Debris:AddItem(line, 0.33)
+		ringAt(front, dir, tone, 0.5, 2.2 * grow, 0.12, 0.55)
+	elseif class == "Shotgun" then
+		fanLines(front, dir, tone, 5, 34, 7 * grow, 0.12)
+		burst(front + dir * 1.5, smokeColor, 6)
+	elseif class == "Sniper" then
+		local count = math.clamp(math.floor(distance / 40), 3, 7)
+		for i = 1, count do
+			ringAt(from + dir * (distance * i / (count + 1)), dir, tone, 0.8, 4 + 3 * richness, 0.4, 0.7, i * 0.02)
+		end
+		ringAt(front, dir, tone, 1, 7 * grow, 0.2, 0.45)
+	elseif class == "Rail" then
+		local count = math.clamp(math.floor(distance / 55), 3, 6)
+		for i = 1, count do
+			ringAt(from + dir * (distance * i / (count + 1)), dir, tone, 1.2, 9 + 4 * richness, 0.35, 0.6, i * 0.03)
+		end
+	elseif class == "Rocket" then
+		burst(from - dir * 2.5, smokeColor, 10) -- 뒤로 뿜는 연기
+		ringAt(front, dir, smokeColor, 1.5, 7 * grow, 0.3, 0.6)
+	elseif class == "Cannon" then
+		ringAt(front + dir * 3.5, dir, tone, 7 * grow, 0.8, 0.14, 0.45) -- 총구로 빨려드는 충전 고리
+		ringAt(front + dir * 1.5, dir, tone, 0.8, 5 * grow, 0.25, 0.5, 0.12)
+	elseif class == "Flamer" then
+		fanLines(front, dir, soft(elementOf(era).Flame), 4, 40, 5 * grow, 0.14)
+		burst(front + dir * 2, elementOf(era).Smoke, 3)
+	end
+end
+
 -- c = { size, back(머리에서 꼬리쪽 거리), color, mini, inEra(같은 시대 안 번호 0~1), low(저사양) }. 돌려주는 함수는 탄이 끝날 때 부른다 (반복 트윈 정리)
 local ERA_SIG = {}
 ERA_SIG[1] = function(part, c) -- 녹슨: 탁한 회갈색 탄 + 작은 먼지
@@ -604,6 +691,7 @@ local function playShot(event)
 	if special then
 		activeShots += 1 -- (fly 가 끝나면 스스로 줄인다)
 		eraMuzzle(from, (to - from).Unit, era, color, inEra, false)
+		classFlourish(class, from, to, size, color, era, richness)
 		if era == 7 and (class == "Rail" or class == "Sniper") then pathLightning(from, to, Color3.fromRGB(255, 245, 140), 0.28, 3) end
 		special(from, to, size, speed, color, era)
 		if vt >= 6 then -- 로켓 / 레일건 / 저격 / 캐논 / 화염방사도 번호가 오를수록 착탄 고리가 커진다
@@ -734,6 +822,7 @@ local function playShot(event)
 	Debris:AddItem(part, 3) -- 안전장치: 어떤 이유로든 도착 처리가 안 돼도 탄이 화면에 남지 않게
 	local dir = (to - from).Unit
 	eraMuzzle(from, dir, era, color, inEra, mini)
+	classFlourish(class or "Pistol", from, to, size, color, era, richness)
 	if era == 7 and not mini then pathLightning(from, to, color, 0.2, 2.2) end
 	if look and look.Muzzle then -- 권총 / 리볼버: 총구 고리 (총구 앞쪽에서 퍼지며 사라진다)
 		eraRing(from + dir * 0.8, color, 0.6, look.Muzzle, 0.14, dir)
