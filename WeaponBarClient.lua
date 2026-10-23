@@ -42,7 +42,7 @@ local gui = create("ScreenGui", { Name = "WeaponBarGui", ResetOnSpawn = false, I
 local holder = create("Frame", { Size = UDim2.new(0, BAR_W, 0, HOLDER_H), BackgroundTransparency = 1 }, gui)
 
 local info = create("TextLabel", {
-	Size = UDim2.new(1, 0, 0, INFO_H), BackgroundTransparency = 1, Font = Enum.Font.GothamBold, TextSize = 12, TextColor3 = Color3.fromRGB(225, 230, 250),
+	Size = UDim2.new(1, 0, 0, INFO_H), BackgroundTransparency = 1, Font = Enum.Font.GothamBold, TextSize = 12, TextColor3 = Color3.fromRGB(225, 230, 250), TextTruncate = Enum.TextTruncate.AtEnd,
 	TextStrokeTransparency = 0.5, Text = "", ZIndex = 2,
 }, holder)
 
@@ -166,8 +166,11 @@ local function visibleChain(instance)
 	return true
 end
 
+local seen = {} -- 화면 요소가 처음 보인 시각 (오래 있던 요소 = 고정 UI, 방금 생긴 요소 = 잠깐 뜨는 알림)
 local function collectRects(screen)
 	local rects = {}
+	local present = {}
+	local now = os.clock()
 	local inset = GuiService:GetGuiInset().Y
 	for _, instance in ipairs(playerGui:GetDescendants()) do
 		if instance:IsA("GuiObject") and not instance:IsDescendantOf(gui) then
@@ -179,18 +182,23 @@ local function collectRects(screen)
 				if visibleContent and visibleChain(instance) then
 					local screenGui = instance:FindFirstAncestorOfClass("ScreenGui")
 					local offsetY = (screenGui and not screenGui.IgnoreGuiInset) and inset or 0
-					table.insert(rects, { X = instance.AbsolutePosition.X, Y = instance.AbsolutePosition.Y + offsetY, W = size.X, H = size.Y })
+					present[instance] = true
+					seen[instance] = seen[instance] or now
+					table.insert(rects, { X = instance.AbsolutePosition.X, Y = instance.AbsolutePosition.Y + offsetY, W = size.X, H = size.Y, Young = now - seen[instance] < 6 })
 				end
 			end
 		end
 	end
+	for instance in pairs(seen) do
+		if not present[instance] then seen[instance] = nil end
+	end
 	return rects
 end
 
-local function hits(rects, x, y, w, h)
+local function hits(rects, x, y, w, h, stableOnly)
 	local pad = 4
 	for _, r in ipairs(rects) do
-		if x < r.X + r.W + pad and x + w + pad > r.X and y < r.Y + r.H + pad and y + h + pad > r.Y then return true end
+		if not (stableOnly and r.Young) and x < r.X + r.W + pad and x + w + pad > r.X and y < r.Y + r.H + pad and y + h + pad > r.Y then return true end
 	end
 	return false
 end
@@ -221,11 +229,13 @@ local function place(force)
 	if spot then
 		local screen = gui.AbsoluteSize
 		local outside = spot.X < 0 or spot.Y < 0 or spot.X + BAR_W > screen.X or spot.Y + HOLDER_H > screen.Y
-		if not outside and not hits(collectRects(screen), spot.X, spot.Y, BAR_W, HOLDER_H) then
+		local rects = collectRects(screen)
+		if not outside and not hits(rects, spot.X, spot.Y, BAR_W, HOLDER_H) then
 			collideSince = nil
 			return
 		end
-		if not outside then
+		-- 오래 있던 고정 UI(스킬 바 등)와 겹치면 바로 옮기고, 방금 뜬 알림과만 겹치면 5초 기다린다
+		if not outside and not hits(rects, spot.X, spot.Y, BAR_W, HOLDER_H, true) then
 			collideSince = collideSince or os.clock()
 			if not force and os.clock() - collideSince < 5 then return end
 		end
@@ -250,7 +260,7 @@ place(true)
 task.delay(2, function() place(true) end)
 task.spawn(function()
 	while true do
-		task.wait(2)
+		task.wait(1)
 		place(false) -- 지금 자리가 다른 UI 와 겹치게 되었으면 다시 찾는다
 	end
 end)
