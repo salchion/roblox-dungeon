@@ -1151,7 +1151,6 @@ end
 local function spawnMonster(zone, kind, at, ambush)
 	local stats, text, color, barWidth
 	local level = F.GetZoneLevel(zone)
-	local earlyGold = (Config.Economy.EarlyZoneGold or {})[zone] or 1 -- 초반 구역은 골드를 조금 줄인다 (Config.Economy.EarlyZoneGold)
 	local typeKey, def, xpLevel
 	local preX -- 일반 / 엘리트 몬스터가 태어날 X (구간에 맞는 종류를 고르기 위해 먼저 정한다)
 
@@ -1168,7 +1167,7 @@ local function spawnMonster(zone, kind, at, ambush)
 			ShotDamage = math.max(10, math.floor(base.ShotDamage * (zone >= 7 and 1.3 or 1.5) * danger.Damage[zone])), -- (후반 군주는 한 방에 체력이 크게 깎이지 않게 살짝 낮춤)
 			ShotInterval = math.max(0.9, boss.ShotInterval - zone * 0.05),
 			ShotSpeed = boss.ShotSpeed,
-			Gold = math.floor(boss.Gold * danger.Reward[zone] * earlyGold),
+			Gold = math.floor(boss.Gold * danger.Reward[zone]),
 		}
 		xpLevel = bossLevel
 		text, color, barWidth = string.format("👑 Lord of %s (Zone %d) · Rec. ⚡%d", F.ZoneNames[zone], zone, F.RecommendPower[zone] or 0), Color3.fromRGB(255, 120, 120), 360
@@ -1210,7 +1209,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		stats.MaxHealth = math.floor(stats.MaxHealth * danger.Health[zone])
 		stats.ShotDamage = math.max(1, math.floor(stats.ShotDamage * danger.Damage[zone]))
 		stats.Speed *= danger.Speed[zone]
-		stats.Gold = math.floor(stats.Gold * danger.Reward[zone] * Config.Economy.FieldGoldMult * earlyGold)
+		stats.Gold = math.floor(stats.Gold * danger.Reward[zone] * Config.Economy.FieldGoldMult)
 	end
 
 	local x0, x1 = zoneBounds(zone)

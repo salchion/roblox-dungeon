@@ -18,6 +18,12 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 local sfxParent = game:GetService("SoundService")
+local ENH_VOLUME = 0.7 -- 강화 소리(망치 / 성공 / 실패 / 진화)가 너무 크다는 의견: 30% 줄임
+local function enhSound(key, opts)
+	opts = opts or {}
+	opts.Volume = (opts.Volume or 1) * ENH_VOLUME
+	SoundBank.Play(sfxParent, key, opts)
+end
 
 local player = Players.LocalPlayer
 local camera = workspace.CurrentCamera
@@ -337,7 +343,7 @@ local enhanceButton = makeButton({
 	local swing = TweenService:Create(hammer, TweenInfo.new(0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Rotation = 25, Position = UDim2.new(0.5, 20, 0, 190) })
 	swing:Play()
 	swing.Completed:Connect(function()
-		SoundBank.Play(sfxParent, "Enh_Hammer")
+		enhSound("Enh_Hammer")
 		for i = 1, 8 do
 			local spark = create("Frame", {
 				Size = UDim2.new(0, 8, 0, 8), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 205),
@@ -580,16 +586,16 @@ Remotes.Enhance.OnClientEvent:Connect(function(ok, message, summary)
 		local tierNow = Config.GetWeaponTier(level)
 		local stageFrac = (level - tierNow.MinLevel) / math.max(1, tierNow.Steps)
 		if evolved then
-			SoundBank.Play(sfxParent, "Enh_Evolve")
+			enhSound("Enh_Evolve")
 		elseif summary and summary.Attempts and summary.Attempts > 1 then
 			for i = 1, math.min(8, summary.Successes or 0) do
-				task.delay((i - 1) * 0.09, function() SoundBank.Play(sfxParent, "Enh_Success", { Pitch = 0.8 + 0.04 * i }) end)
+				task.delay((i - 1) * 0.09, function() enhSound("Enh_Success", { Pitch = 0.8 + 0.04 * i }) end)
 			end
-			if (summary.Successes or 0) == 0 then SoundBank.Play(sfxParent, "Enh_Fail") end
+			if (summary.Successes or 0) == 0 then enhSound("Enh_Fail") end
 		elseif ok then
-			SoundBank.Play(sfxParent, "Enh_Success", { Pitch = 0.8 + 0.3 * stageFrac })
+			enhSound("Enh_Success", { Pitch = 0.8 + 0.3 * stageFrac })
 		else
-			SoundBank.Play(sfxParent, "Enh_Fail")
+			enhSound("Enh_Fail")
 		end
 	end
 	enhanceBanner.Visible = true
@@ -885,7 +891,7 @@ Remotes.Gear.OnClientEvent:Connect(function(action, result)
 	gearMessage.Text = result.Message
 	gearMessage.TextColor3 = color
 	if not result.Roll then
-		SoundBank.Play(sfxParent, "Enh_Hammer")
+		enhSound("Enh_Hammer")
 		task.delay(0.12, function() SoundBank.Play(sfxParent, result.Ok and "Enh_Success" or "Enh_Fail") end)
 	end
 	task.delay(0.3, function() if gearHooks.Rebuild then gearHooks.Rebuild() end end)
@@ -972,10 +978,10 @@ do
 				paint(card, "💤", "No buff (already maxed)", setLine, color)
 			end
 			if setInfo and setInfo.Icon then card.Icon.Text = buff and buff.Icon or setInfo.Icon end
-			SoundBank.Play(sfxParent, "Enh_Success")
+			enhSound("Enh_Success")
 			if data.Penalty then
 				paint(penCard, data.Penalty.Icon, "⚠ " .. data.Penalty.Name, string.format("%s\nGold +%d%% instead", data.Penalty.Desc, data.Penalty.Gold), Color3.fromRGB(255, 130, 120))
-				task.delay(0.12, function() SoundBank.Play(sfxParent, "Enh_Fail") end)
+				task.delay(0.12, function() enhSound("Enh_Fail") end)
 			else
 				paint(penCard, "🍀", "No penalty!", "Lucky this time", Color3.fromRGB(150, 255, 170))
 			end
