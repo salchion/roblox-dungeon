@@ -346,7 +346,83 @@ local function eraRing(pos, color, d0, d1, dur, facing)
 	Debris:AddItem(p, dur + 0.05)
 end
 
--- c = { size, back(머리에서 꼬리쪽 거리), color, mini }. 돌려주는 함수는 탄이 끝날 때 부른다 (반복 트윈 정리)
+-- 저사양 모드(설정 창)면 아래 "드라마틱" 추가 연출은 건너뛴다
+local function lowSpecOn()
+	return Players.LocalPlayer:GetAttribute("LowSpec") == true
+end
+
+-- 총구 연출: 시대마다 다른 모양 (모든 무기 종류에 붙는다). 같은 시대 안에서 번호가 오르면(inEra 0~1) 더 크다. 연사 무기(mini)는 작게 / 간격을 둔다
+local lastMuzzle = 0
+local function eraMuzzle(from, dir, era, color, inEra, mini)
+	if era < 2 or lowSpecOn() then return end
+	local now = os.clock()
+	if now - lastMuzzle < (mini and 0.09 or 0.03) then return end
+	lastMuzzle = now
+	local E = elementOf(era)
+	local power = mini and 0.5 or (1 + (inEra or 0.5))
+	local front = from + dir * 1.2
+	if era == 2 then
+		burst(front, E.Hot, math.floor(4 * power)) -- 불꽃 틱
+	elseif era == 3 then
+		eraRing(front, E.Core, 0.5, 4 * power, 0.2, dir) -- 마법진 고리
+		burst(front, E.Hot, math.floor(4 * power))
+	elseif era == 4 then
+		burst(front, E.Hot, math.floor(8 * power)) -- 금가루
+	elseif era == 5 then
+		burst(front, E.Flame, math.floor(8 * power)) -- 불꽃 + 연기
+		burst(front, E.Smoke, 3)
+	elseif era == 6 then
+		burst(front, E.Hot, math.floor(7 * power)) -- 서리 입김 + 얼음 고리
+		eraRing(front, E.Core, 0.5, 3.5 * power, 0.18, dir)
+	elseif era == 7 then
+		burst(front, WHITE, math.floor(6 * power)) -- 번쩍 스파크 + 얇은 충격 고리
+		eraRing(front, E.Core, 0.4, 5 * power, 0.12, dir)
+	elseif era == 8 then
+		eraRing(front + dir * 3, E.Core, 6 * power, 0.8, 0.22, dir) -- 앞에서 총구로 빨려드는 고리
+	elseif era == 9 then
+		burst(front, E.Flame, math.floor(12 * power)) -- 불 내뿜기
+		burst(front + dir * 2, E.Hot, 5)
+	else
+		burst(front, E.Hot, math.floor(8 * power)) -- 별 터짐
+		eraRing(front, WHITE, 0.5, 5 * power, 0.2, dir)
+	end
+end
+
+-- 번개 시대: 발사하는 순간 총구에서 맞는 곳까지 지그재그 번개가 번쩍 지나간다 (한 번에 부품 3~9개, 0.14초 뒤 사라진다)
+local lastPath = 0
+local function pathLightning(from, to, color, width, jitterSize)
+	if lowSpecOn() then return end
+	local now = os.clock()
+	if now - lastPath < 0.06 then return end
+	lastPath = now
+	local total = to - from
+	local distance = total.Magnitude
+	if distance < 6 then return end
+	local dir = total.Unit
+	local right = dir:Cross(Vector3.new(0, 1, 0))
+	if right.Magnitude < 0.1 then right = Vector3.new(1, 0, 0) end
+	right = right.Unit
+	local up = right:Cross(dir)
+	local count = math.clamp(math.floor(distance / 12), 3, 9)
+	local points = { from }
+	for i = 1, count - 1 do
+		local base = from + dir * (distance * i / count)
+		local jitter = jitterSize or 2.2
+		table.insert(points, base + right * (math.random() - 0.5) * 2 * jitter + up * (math.random() - 0.5) * 2 * jitter)
+	end
+	table.insert(points, to)
+	for i = 1, #points - 1 do
+		local a, b = points[i], points[i + 1]
+		local len = (b - a).Magnitude
+		if len > 0.2 then
+			local bolt = rootPart(CFrame.lookAt((a + b) / 2, b), Vector3.new(width, width, len), color, Enum.Material.Neon, nil, 0.1)
+			TweenService:Create(bolt, TweenInfo.new(0.14), { Transparency = 1, Size = Vector3.new(width * 0.3, width * 0.3, len) }):Play()
+			Debris:AddItem(bolt, 0.18)
+		end
+	end
+end
+
+-- c = { size, back(머리에서 꼬리쪽 거리), color, mini, inEra(같은 시대 안 번호 0~1), low(저사양) }. 돌려주는 함수는 탄이 끝날 때 부른다 (반복 트윈 정리)
 local ERA_SIG = {}
 ERA_SIG[1] = function(part, c) -- 녹슨: 탁한 회갈색 탄 + 작은 먼지
 	sigEmitter(part, ColorSequence.new(Color3.fromRGB(125, 108, 90)), c.mini and 10 or 16, math.max(c.size * 0.7, 0.3), 0.45, 2, nil, SMOKE, 0)
@@ -364,24 +440,49 @@ ERA_SIG[3] = function(part, c) -- 마력: 보라 구슬 + 돌아가는 알갱이
 	end
 	sigEmitter(part, ColorSequence.new(Color3.fromRGB(215, 160, 255)), c.mini and 14 or 24, math.max(c.size * 0.5, 0.35), 0.5, 1.5, nil, SPARKLE)
 end
-ERA_SIG[4] = function(part, c) -- 황금: 금빛 혜성 (꼬리 덩어리) + 반짝이
+ERA_SIG[4] = function(part, c) -- 황금: 금빛 혜성 + 빙글 도는 4갈래 금별 날 (번호가 오를수록 커진다) + 반짝이
 	if not c.mini then
 		local len = c.size * 2.6
 		solid(part, Vector3.new(c.size * 0.55, c.size * 0.55, len), Color3.fromRGB(255, 225, 120), Enum.Material.Neon, CFrame.new(0, 0, c.back + len * 0.5), 0.45)
+		if not c.low then
+			local blade = c.size * (1.6 + (c.inEra or 0.5)) + 0.5
+			for _, rot in ipairs({ 45, 135 }) do
+				solid(part, Vector3.new(blade, 0.12, 0.5), Color3.fromRGB(255, 232, 140), Enum.Material.Neon, CFrame.Angles(0, 0, math.rad(rot)), 0.1)
+			end
+			c.roll = math.rad(170) -- 날아가는 동안 반 바퀴 돈다 (트윈은 180 도를 넘는 회전을 짧은 쪽으로 돌려서 170 도로 둔다)
+		end
 	end
 	sigEmitter(part, ColorSequence.new(Color3.fromRGB(255, 240, 150)), c.mini and 16 or 30, math.max(c.size * 0.45, 0.3), 0.6, 2.5, nil, SPARKLE)
 end
-ERA_SIG[5] = function(part, c) -- 불꽃: 불꽃 물방울 (머리 + 뾰족 꼬리) + 위로 오르는 불씨
+ERA_SIG[5] = function(part, c) -- 불꽃: 불꽃 물방울 + 일렁이는 불길 (길이가 출렁인다) + 위로 오르는 불씨
+	local flicker
 	if not c.mini then
 		local len = c.size * 2.4
 		solid(part, Vector3.new(c.size * 0.55, c.size * 0.55, len), Color3.fromRGB(255, 90, 25), Enum.Material.Neon, CFrame.new(0, 0, c.back + len * 0.5), 0.3)
+		if not c.low then
+			local flameLen = c.size * (3 + 2 * (c.inEra or 0.5))
+			local flame = solid(part, Vector3.new(c.size * 0.9, c.size * 0.9, flameLen), Color3.fromRGB(255, 170, 60), Enum.Material.Neon, CFrame.new(0, 0, c.back + flameLen * 0.5), 0.55)
+			flicker = TweenService:Create(flame, TweenInfo.new(0.07, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1, true), { Size = Vector3.new(c.size * 0.5, c.size * 0.5, flameLen * 1.3), Transparency = 0.75 })
+			flicker:Play()
+		end
 	end
 	sigEmitter(part, FIRE, c.mini and 16 or 30, math.max(c.size * 0.35, 0.28), 0.6, 3, Vector3.new(0, 6, 0))
+	if flicker then return function() flicker:Cancel() end end
 end
-ERA_SIG[6] = function(part, c) -- 빙결: 옅은 하늘색 결정 조각 + 눈송이 안개
+ERA_SIG[6] = function(part, c) -- 빙결: 결정 + 바깥으로 뻗은 얼음 가시 세 개 (천천히 돈다) + 눈송이 안개
 	if not c.mini then
 		local s = c.size * 0.9
 		solid(part, Vector3.new(s, s, s), Color3.fromRGB(215, 245, 255), Enum.Material.Neon, CFrame.Angles(math.rad(45), math.rad(45), 0), 0.15)
+		if not c.low then
+			local r = c.size * 0.9 + 0.5
+			local len = c.size * (1.4 + (c.inEra or 0.5)) + 0.6
+			for i = 0, 2 do
+				local a = math.rad(i * 120)
+				solid(part, Vector3.new(0.22, 0.22, len), Color3.fromRGB(215, 245, 255), Enum.Material.Neon,
+					CFrame.new(math.cos(a) * r, math.sin(a) * r, 0) * CFrame.Angles(math.sin(a) * 0.35, -math.cos(a) * 0.35, 0), 0.1)
+			end
+			c.roll = math.rad(170)
+		end
 	end
 	sigEmitter(part, ColorSequence.new(Color3.fromRGB(220, 242, 255)), c.mini and 14 or 22, math.max(c.size * 0.5, 0.35), 0.8, 1.5, Vector3.new(0, -3, 0), SPARKLE)
 end
@@ -400,10 +501,30 @@ ERA_SIG[7] = function(part, c) -- 번개: 지그재그 가는 마디 3개 (하�
 	flicker:Play()
 	return function() flicker:Cancel() end
 end
-ERA_SIG[8] = function(part, c) -- 암흑: 검보라 구 + 보랏빛 막 + 연기 꼬리
+ERA_SIG[8] = function(part, c) -- 암흑: 검보라 구 + 몸을 감싼 어두운 고리 + 주변에서 빨려 들어오는 보랏빛 입자 + 연기 꼬리
 	if not c.mini then
 		local s = c.size * 1.7
 		solid(part, Vector3.new(s, s, s), c.color, Enum.Material.Neon, CFrame.identity, 0.55, Enum.PartType.Ball)
+		if not c.low then
+			local d = c.size * 2.6 + 0.8
+			solid(part, Vector3.new(0.15, d, d), Color3.fromRGB(110, 55, 190), Enum.Material.Neon, CFrame.Angles(0, math.rad(90), 0), 0.5, Enum.PartType.Cylinder)
+		end
+	end
+	if not c.low then
+		local pull = Instance.new("ParticleEmitter") -- 바깥에서 가운데로 빨려드는 입자 (지원하지 않는 환경이면 그냥 퍼지는 입자가 된다)
+		pull.Rate = c.mini and 10 or 30
+		pull.Lifetime = NumberRange.new(0.25, 0.45)
+		pull.Speed = NumberRange.new(4, 8)
+		pull.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, math.max(c.size * 0.5, 0.3)), NumberSequenceKeypoint.new(1, 0) })
+		pull.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) })
+		pull.Color = ColorSequence.new(Color3.fromRGB(150, 80, 240))
+		pull.LightEmission = 0.4
+		pcall(function()
+			pull.Shape = Enum.ParticleEmitterShape.Sphere
+			pull.ShapeInOut = Enum.ParticleEmitterShapeInOut.Inward
+			pull.ShapeStyle = Enum.ParticleEmitterShapeStyle.Surface
+		end)
+		pull.Parent = part
 	end
 	sigEmitter(part, ColorSequence.new(Color3.fromRGB(70, 30, 115)), c.mini and 14 or 28, math.max(c.size * 0.9, 0.5), 0.7, 1.5, nil, SMOKE, 0)
 end
@@ -474,6 +595,7 @@ local function playShot(event)
 	local color, rainbow, class, era = event[9], event[10], event[11], event[12] or 1
 	local vt = event[13] or 1 -- 무기 진행도 (1 ~ 100): 높을수록 탄이 꾸준히 더 화려해진다 (후광 / 꼬리 / 착탄 고리)
 	local richness = math.clamp(vt / 100, 0, 1)
+	local inEra = ((math.floor(vt) - 1) % 10) / 9 -- 같은 시대 안에서 몇 번째 무기인가 (0 ~ 1): 번호가 오르면 시대 연출이 더 커진다
 	if Players.LocalPlayer:GetAttribute("InDoomArena") then color = color:Lerp(WHITE, 0.6) end -- 최후의 군주 결투장: 바닥이 붉어도 내 탄이 또렷하게
 	local distance = (to - from).Magnitude
 	if distance < 0.5 then return end
@@ -481,6 +603,8 @@ local function playShot(event)
 	local special = class and SPECIAL[class]
 	if special then
 		activeShots += 1 -- (fly 가 끝나면 스스로 줄인다)
+		eraMuzzle(from, (to - from).Unit, era, color, inEra, false)
+		if era == 7 and (class == "Rail" or class == "Sniper") then pathLightning(from, to, Color3.fromRGB(255, 245, 140), 0.28, 3) end
 		special(from, to, size, speed, color, era)
 		if vt >= 6 then -- 로켓 / 레일건 / 저격 / 캐논 / 화염방사도 번호가 오를수록 착탄 고리가 커진다
 			task.delay(math.clamp(distance / speed, 0.03, 1.2), function()
@@ -542,7 +666,7 @@ local function playShot(event)
 	local sigCleanup, roll
 	if sig then
 		local isBolt = style == "Bolt" or style == "Rocket"
-		local ctx = { size = size, back = (isBolt and (length or 3) or size) / 2, color = color, mini = mini }
+		local ctx = { size = size, back = (isBolt and (length or 3) or size) / 2, color = color, mini = mini, inEra = inEra, low = lowSpecOn() }
 		sigCleanup = sig(part, ctx)
 		roll = ctx.roll
 	end
@@ -609,6 +733,8 @@ local function playShot(event)
 	part.Parent = fxFolder
 	Debris:AddItem(part, 3) -- 안전장치: 어떤 이유로든 도착 처리가 안 돼도 탄이 화면에 남지 않게
 	local dir = (to - from).Unit
+	eraMuzzle(from, dir, era, color, inEra, mini)
+	if era == 7 and not mini then pathLightning(from, to, color, 0.2, 2.2) end
 	if look and look.Muzzle then -- 권총 / 리볼버: 총구 고리 (총구 앞쪽에서 퍼지며 사라진다)
 		eraRing(from + dir * 0.8, color, 0.6, look.Muzzle, 0.14, dir)
 	elseif look and look.Puff then -- 샷건: 총구 원뿔 연기 (펠릿마다 만들지 않고 간격을 둔다)
@@ -617,8 +743,6 @@ local function playShot(event)
 			lastPuff = now
 			burst(from + dir * 1.2, Color3.fromRGB(215, 215, 220):Lerp(color, 0.25), 5)
 		end
-	elseif era >= 2 and not mini then
-		burst(from, color, 2 + era)
 	end
 
 	local duration = math.clamp(distance / speed, 0.03, 1.2)
