@@ -1028,6 +1028,33 @@ do
 	local ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
 	local SHAKE = { 0.35, 0.5, 0.85, 1.25, 1.7 }  -- 등급별 흔들리는 시간
 	local HOLD = { 1.0, 1.1, 1.6, 2.2, 3.0 }       -- 카드 유지 시간
+	local MYTHIC_STARS = { Color3.fromRGB(255, 140, 140), Color3.fromRGB(255, 225, 120), Color3.fromRGB(130, 230, 160), Color3.fromRGB(130, 210, 255), Color3.fromRGB(205, 145, 255) }
+	-- 최고 등급(신화)만 보는 연출: 별이 사방으로 흩어지는 ✦ 와 "MYTHIC" 글자 (눈이 아프지 않게 부드러운 색 / 천천히 사라진다)
+	local function mythicBurst(parent, position, count, spread)
+		for _ = 1, count do
+			local angle = math.random() * math.pi * 2
+			local dist = spread * (0.5 + math.random() * 0.7)
+			local star = create("TextLabel", {
+				Size = UDim2.new(0, 24, 0, 24), AnchorPoint = Vector2.new(0.5, 0.5), Position = position, BackgroundTransparency = 1,
+				Text = "✦", TextSize = 14 + math.random(0, 14), TextColor3 = MYTHIC_STARS[math.random(#MYTHIC_STARS)], Font = Enum.Font.GothamBlack, ZIndex = 71,
+			}, parent)
+			TweenService:Create(star, TweenInfo.new(0.9 + math.random() * 0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+				Position = position + UDim2.new(0, math.cos(angle) * dist, 0, math.sin(angle) * dist), TextTransparency = 1, Rotation = math.random(-90, 90),
+			}):Play()
+			game:GetService("Debris"):AddItem(star, 1.8)
+		end
+	end
+	local function mythicBanner(parent, position)
+		local label = makeLabel({
+			Size = UDim2.new(0, 360, 0, 50), AnchorPoint = Vector2.new(0.5, 0.5), Position = position, Text = "✦ MYTHIC ✦", TextSize = 20,
+			Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 226, 140), TextStrokeTransparency = 0.4, ZIndex = 72,
+		}, parent)
+		TweenService:Create(label, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { TextSize = 40 }):Play()
+		task.delay(1.8, function()
+			if label.Parent then TweenService:Create(label, TweenInfo.new(0.7), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play() end
+		end)
+		game:GetService("Debris"):AddItem(label, 2.6)
+	end
 	Remotes.Gear.OnClientEvent:Connect(function(action, result)
 		local roll = action == "Result" and result.Roll
 		if not roll then return end
@@ -1098,19 +1125,33 @@ do
 					fade(stroke, { Transparency = 1, Thickness = 1 }, 0.9)
 				end)
 			end
-			local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = rarity == 5 and Color3.new(1, 1, 1) or color, BackgroundTransparency = rarity >= 3 and 0.2 or 0.65, BorderSizePixel = 0, ZIndex = 70 }, root)
+			local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = rarity == 5 and Color3.fromRGB(255, 232, 170) or color, BackgroundTransparency = rarity == 5 and 0.5 or (rarity >= 3 and 0.2 or 0.65), BorderSizePixel = 0, ZIndex = 70 }, root) -- (신화의 번쩍임은 눈이 아프지 않게 부드러운 금빛으로)
+			if rarity == 5 then -- 신화: 별이 흩어지고 MYTHIC 글자 + 웅장한 소리 (다른 등급에는 없다)
+				SoundBank.Play(sfxParent, "Aug_Synergy", { Volume = 0.6 })
+				mythicBurst(root, UDim2.new(0.5, 0, 0.5, 0), 40, 360)
+				mythicBanner(root, UDim2.new(0.5, 0, 0.5, -190))
+			end
 			fade(flash, { BackgroundTransparency = 1 }, 0.5)
 
 			if multi then
 				local grid = create("Frame", { Size = UDim2.new(0, 660, 0, 380), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 62 }, root)
 				makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 0), Text = string.format("🎰 %d-Roll Results", #result.Rolls), TextSize = 22, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 230, 150), ZIndex = 63 }, grid)
 				local counts = {}
+				local chimeAt = 0
 				local STATUS = { Equipped = "Equipped!", Bag = "Bag" }
 				for index, r in ipairs(result.Rolls) do
 					counts[r.Rarity] = (counts[r.Rarity] or 0) + 1
 					task.delay((index - 1) * 0.1, function()
 						if not root.Parent then return end
-						SoundBank.Play(sfxParent, "Gacha_Card", { Pitch = 0.9 + 0.12 * r.Rarity })
+						-- 카드마다 같은 소리가 10번 나던 것을 줄였다: 높은 등급 카드만 맑은 소리 (등급마다 다른 음, 0.3초에 하나만), 평범한 카드는 가끔 작은 "틱"
+						if r.Rarity >= 3 then
+							if os.clock() - (chimeAt or 0) > 0.3 then
+								chimeAt = os.clock()
+								SoundBank.Play(sfxParent, "Gacha_Pop" .. (r.Rarity - 1), { Volume = 0.55 })
+							end
+						elseif index % 3 == 1 then
+							SoundBank.Play(sfxParent, "Gacha_Tick", { Pitch = 1.1, Volume = 0.7 })
+						end
 						local col, row = (index - 1) % 5, (index - 1) // 5
 						local rc = Config.Gear.RarityColors[r.Rarity]
 						local cx, cy = 66 + col * 132, 122 + row * 158
@@ -1135,6 +1176,10 @@ do
 						makeLabel({ Size = UDim2.new(1, -8, 0, 34), Position = UDim2.new(0, 4, 0, 64), Text = r.Name or "", TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = rc, ZIndex = 64 }, cardM)
 						makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 100), Text = string.format("★ %s", Config.Gear.RarityNames[r.Rarity]), TextSize = 11, Font = Enum.Font.GothamBlack, TextColor3 = rc, ZIndex = 64 }, cardM)
 						makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 1, -20), Text = STATUS[r.Status] or "Scrap", TextSize = 10, TextColor3 = Color3.fromRGB(190, 190, 210), ZIndex = 64 }, cardM)
+						if r.Rarity == 5 then -- 신화 카드: 별이 흩어지고 위에 MYTHIC 글자
+							mythicBurst(grid, UDim2.new(0, cx, 0, cy), 20, 150)
+							mythicBanner(grid, UDim2.new(0, cx, 0, cy - 96))
+						end
 						if r.Rarity >= 3 then
 							local ringM = create("Frame", { Size = UDim2.new(0, 40, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy), BackgroundTransparency = 1, ZIndex = 61 }, grid)
 							create("UICorner", { CornerRadius = UDim.new(1, 0) }, ringM)
