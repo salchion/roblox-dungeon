@@ -2667,18 +2667,28 @@ local function surviveLoop(run)
 			run.OverrunSince, run.OverrunLeft = nil, nil
 		end
 
+		-- 튜토리얼 던전: 몬스터가 빨리 죽어 화면이 비면 템포가 떨어진다. 남은 몬스터가 적으면 정해진 간격을 기다리지 않고 바로 몇 마리 더 채운다
+		if run.Tutorial and run.MonsterCount < 8 and now - (run.LastTopUp or 0) >= 0.7 then
+			run.LastTopUp = now
+			run.SpawnPoints = nearSpawnPoints(run, 22, 75) or run.AllSpawns
+			local topUpLevel = math.max(1, D.GetWaveMonsterLevel(run.Wave) + run.LevelBonus)
+			for _ = 1, 3 do
+				spawnMonster(run, topUpLevel)
+			end
+		end
+
 		if now >= nextSpawn then
 			local cap = math.floor(limit * 1.3) -- 성능 보호용 상한 (한도를 넘겨 쌓이긴 하지만 무한정은 아니다)
 			if run.MonsterCount < cap then
 				run.SpawnPoints = nearSpawnPoints(run, 22, 75) or run.AllSpawns
 				local level = math.max(1, D.GetWaveMonsterLevel(run.Wave) + run.LevelBonus)
 				local theme = run.Type.Theme or { Spawn = 1, Burst = 1 }
-				local burst = math.floor(((now - startedAt < 1) and 7 or math.random(3, 4)) * theme.Burst * (run.Tutorial and 0.6 or 1) + 0.5) -- 시작하자마자 우르르 (던전 성격에 따라 많거나 적다)
+				local burst = math.floor(((now - startedAt < 1) and 7 or math.random(3, 4)) * theme.Burst * (run.Tutorial and 0.8 or 1) + 0.5) -- 시작하자마자 우르르 (던전 성격에 따라 많거나 적다)
 				for _ = 1, burst do
 					spawnMonster(run, level)
 				end
 			end
-			nextSpawn = now + (2.0 - 0.7 * progress) * (run.Tutorial and 1.5 or 1) / ((run.PenCount or 1) * ((run.Type.Theme and run.Type.Theme.Spawn) or 1))
+			nextSpawn = now + (2.0 - 0.7 * progress) * (run.Tutorial and 1.1 or 1) / ((run.PenCount or 1) * ((run.Type.Theme and run.Type.Theme.Spawn) or 1))
 		end
 
 		if now >= nextBonus then
