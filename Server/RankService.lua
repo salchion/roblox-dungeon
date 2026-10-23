@@ -66,15 +66,17 @@ local function renderBoard()
 	boardLabel.Text = table.concat(lines, "\n")
 end
 
+local lastWritten = setmetatable({}, { __mode = "k" }) -- 마지막으로 저장한 전투력
 local function refresh()
 	-- 1) 내 점수 올리기
 	if store then
 		for _, player in ipairs(Players:GetPlayers()) do
 			local power = player:GetAttribute("Power") or 0
-			if power > 0 then
-				pcall(function()
+			if power > 0 and lastWritten[player] ~= power then -- 바뀐 사람만 쓴다 (저장소 쓰기 횟수 절약)
+				local ok = pcall(function()
 					store:SetAsync(tostring(player.UserId), power)
 				end)
+				if ok then lastWritten[player] = power end
 			end
 		end
 	end

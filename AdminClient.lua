@@ -102,7 +102,8 @@ local function start()
 	local confirmButton = button({ Size = UDim2.new(0, 260, 0, 36), Position = UDim2.new(0, 236, 0, 490), Text = "⚠ Yes, wipe my save now", TextSize = 13, BackgroundColor3 = Color3.fromRGB(200, 40, 40), Visible = false }, function()
 		Remotes.Admin:FireServer("ResetConfirm")
 	end)
-	local cancelButton = button({ Size = UDim2.new(0, 110, 0, 36), Position = UDim2.new(0, 506, 0, 490), Text = "Cancel", TextSize = 13, BackgroundColor3 = Color3.fromRGB(54, 58, 82), Visible = false }, function()
+	local cancelButton
+	cancelButton = button({ Size = UDim2.new(0, 110, 0, 36), Position = UDim2.new(0, 506, 0, 490), Text = "Cancel", TextSize = 13, BackgroundColor3 = Color3.fromRGB(54, 58, 82), Visible = false }, function()
 		confirmButton.Visible, cancelButton.Visible = false, false
 		resetNote.Text = "Cancelled."
 	end)

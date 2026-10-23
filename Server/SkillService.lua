@@ -67,6 +67,8 @@ local function ring(position, radius, color, duration)
 	Debris:AddItem(part, duration + 0.1)
 end
 
+local BL = require(script.Parent:WaitForChild("BalanceLog")) -- Studio 전용 밸런스 로그
+
 local function damageAt(player, center, radius, mult)
 	local base = Dungeon.ComputeDamage(player)
 	local damage = math.max(1, math.floor(base * mult))
@@ -76,7 +78,6 @@ local function damageAt(player, center, radius, mult)
 	return hit
 end
 
-local BL = require(script.Parent:WaitForChild("BalanceLog")) -- Studio 전용 밸런스 로그
 local U = Config.SkillUpgrade
 
 local function skillLevel(player, key)

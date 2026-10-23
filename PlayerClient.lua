@@ -3650,13 +3650,18 @@ local barLeft = makeCrosshairPart(11, 2)
 local barRight = makeCrosshairPart(11, 2)
 local centerDot = makeCrosshairPart(3, 3)
 
-local function isMouseOverButton(position)
+local overPos, overResult, overAt = nil, false, 0
+local function isMouseOverButton(position) -- (매 프레임 불린다: 마우스가 그대로면 0.15초 동안 결과를 재사용)
+	local now = os.clock()
+	if overPos == position and now - overAt < 0.15 then return overResult end
+	overPos, overAt, overResult = position, now, false
 	for _, object in ipairs(playerGui:GetGuiObjectsAtPosition(position.X, position.Y)) do
 		if object:IsA("GuiButton") and object.Visible then
-			return true
+			overResult = true
+			break
 		end
 	end
-	return false
+	return overResult
 end
 
 RunService.RenderStepped:Connect(function(dt)

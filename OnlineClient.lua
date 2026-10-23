@@ -2,7 +2,7 @@
 -- "이 서버에 나 말고 누가 있는지" 보여 준다 (Roblox 기본 플레이어 목록은 다른 화면과 겹쳐서 꺼 두었다).
 --   * 화면 위 가운데 작은 알약: 👥 접속 중 N명 (누르면 이 서버 유저의 이름 / 레벨 / 전투력이 펼쳐진다)
 --   * 누가 들어오면 / 나가면 위쪽에 짧은 한 줄 알림 (내가 막 들어왔을 때 이미 있던 사람은 알리지 않는다)
---   마을(Lobby) / 필드(Field)에서만 보인다 (던전은 위쪽을 웨이브 표시 / 보스 체력바가 쓴다). 위치는 자동: 화면의 다른 UI 와 겹치지 않는 빈 자리를 찾는다.
+--   마을(Lobby) / 필드(Field)에서만 보인다 (던전은 위쪽을 웨이브 표시 / 보스 체력바가 쓴다). 위치는 고정: 화면 맨 위, Roblox 기본 버튼들 바로 오른쪽.
 --   서버 부하는 없다: 클라이언트가 Players 서비스와 유저 Attribute(Level / Power)만 읽는다.
 
 local Players = game:GetService("Players")
@@ -110,28 +110,16 @@ local function place(force)
 	if not pill or not gui.Enabled then return end
 	local w, h = pill.AbsoluteSize.X, pill.AbsoluteSize.Y
 	if w < 1 or gui.AbsoluteSize.X < 50 then return end -- 아직 화면 크기가 정해지지 않았다 (잠깐 뒤에 다시 부른다)
-	-- 자리는 "계속 겹칠 때만" 옮긴다: 알림 카드 / 떠오르는 글자 같은 잠깐의 UI 때문에 자리가 튀지 않게.
-	--   force(구역 / 화면 크기가 바뀜): 지금 겹치면 바로 옮긴다 / 아니면(2초마다 확인): 5초 넘게 계속 겹칠 때만 옮긴다. 화면 밖으로 나갔으면 바로 옮긴다.
-	if spot then
-		local screen = gui.AbsoluteSize
-		local outside = spot.X < 0 or spot.Y < 0 or spot.X + w > screen.X or spot.Y + h > screen.Y
-		if not outside and not hits(collectRects(screen), spot.X, spot.Y, w, h) then
-			collideSince = nil
-			layoutExtras()
-			return
-		end
-		if not outside then
-			collideSince = collideSince or os.clock()
-			if not force and os.clock() - collideSince < 5 then
-				layoutExtras()
-				return
-			end
-		end
+	-- 고정 자리: 화면 맨 위, Roblox 기본 버튼들(로고 / 채팅 등) 바로 오른쪽 빈칸. (예전의 빈자리 자동 찾기는 좌표 계산이 환경마다 어긋나 다른 버튼과 겹쳤다)
+	local x, y = 210, 14
+	local okInset, inset = pcall(function() return GuiService.TopbarInset end)
+	if okInset and inset and inset.Width > 0 then
+		x = inset.Min.X + 8
+		y = inset.Min.Y + math.max(0, (inset.Height - h) / 2)
 	end
-	collideSince = nil
-	spot = findSpot()
+	spot = Vector2.new(x, y)
 	pill.AnchorPoint = Vector2.new(0, 0)
-	pill.Position = UDim2.fromOffset(spot.X, spot.Y)
+	pill.Position = UDim2.fromOffset(x, y)
 	layoutExtras()
 end
 
@@ -222,6 +210,7 @@ player:GetAttributeChangedSignal("Zone"):Connect(function()
 	place(true)
 end)
 gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() place(true) end)
+pcall(function() GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(function() place(true) end) end)
 place(true)
 task.delay(2, function() place(true) end)
 
@@ -240,6 +229,5 @@ task.spawn(function()
 	while true do
 		task.wait(2)
 		if listFrame.Visible then refreshList() end
-		place(false) -- 지금 자리가 다른 UI 와 겹치게 되었으면 다시 찾는다
 	end
 end)

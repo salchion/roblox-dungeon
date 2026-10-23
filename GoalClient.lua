@@ -170,12 +170,15 @@ end
 pg:GetAttributeChangedSignal("UiCompact"):Connect(function() refreshQuests() end)
 
 -- 던전 게이트에 은은한 빛기둥: 설명 없이 시선이 그쪽으로 가게 한다 (처음 던전에 들어가면 사라진다)
+local beaconSearchAt = 0
 local function updateBeacon(active)
 	if not active or beaconDone then
 		if beacon then beacon:Destroy() beacon = nil end
 		return
 	end
 	if not beacon then
+		if os.clock() < beaconSearchAt then return end -- 월드 전체 검색은 무거우므로 못 찾았으면 2초에 한 번만 (매 프레임 불린다)
+		beaconSearchAt = os.clock() + 2
 		local gate = workspace:FindFirstChild("DungeonGate1", true)
 		if not gate then return end
 		beacon = Instance.new("Part")
@@ -230,10 +233,6 @@ idleBarFill.BackgroundColor3 = Color3.fromRGB(120, 215, 255)
 idleBarFill.BorderSizePixel = 0
 idleBarFill.Parent = idleBarBack
 addCorner(idleBarFill, 4)
-local function commas(n)
-	local text = tostring(math.floor(n or 0))
-	return (text:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
-end
 local function timeLeft(seconds)
 	seconds = math.max(0, math.ceil(seconds))
 	if seconds >= 3600 then return string.format("%dh %dm", seconds // 3600, (seconds % 3600) // 60) end
