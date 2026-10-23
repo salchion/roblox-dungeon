@@ -37,6 +37,7 @@ local INFO_H = 20
 local HOLDER_H = INFO_H + 2 + SLOT
 
 local GOLD = Color3.fromRGB(255, 210, 90)
+local attached = false -- 스킬 바에 붙었는지 (아래 attachToSkillBar)
 
 local gui = create("ScreenGui", { Name = "WeaponBarGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 3, Enabled = false }, playerGui)
 local holder = create("Frame", { Size = UDim2.new(0, BAR_W, 0, HOLDER_H), BackgroundTransparency = 1 }, gui)
@@ -146,7 +147,7 @@ for index, slot in ipairs(slots) do
 	slot.Button.Activated:Connect(function() equip(index) end)
 end
 UserInputService.InputBegan:Connect(function(input, processed)
-	if processed or not gui.Enabled then return end
+	if processed or not holder.Visible or not holder:IsDescendantOf(playerGui) or not (gui.Enabled or attached) then return end
 	local index = KEY_TO_SLOT[input.KeyCode]
 	if index then equip(index) end
 end)
@@ -220,7 +221,28 @@ local function findSpot()
 	return Vector2.new(columns[1], bottom)
 end
 
+-- 스킬 바 위에 붙이기: 화면 좌표를 계산하지 않고 스킬 바(SkillBar)의 자식으로 넣어서 항상 바로 위에 따라다니게 한다 (폰 배치가 바뀌어도 같이 움직인다)
+local function attachToSkillBar()
+	local bar = nil
+	for _, instance in ipairs(playerGui:GetDescendants()) do
+		if instance.Name == "SkillBar" and instance:IsA("GuiObject") then bar = instance break end
+	end
+	if not bar then return false end
+	bar.ClipsDescendants = false
+	holder.AnchorPoint = Vector2.new(0.5, 1)
+	holder.Position = UDim2.new(0.5, 0, 0, -8)
+	holder.Parent = bar
+	attached = true
+	return true
+end
+
 local function place(force)
+	if attached then
+		local zone = player:GetAttribute("Zone")
+		holder.Visible = (zone == "Lobby" or zone == "Field" or zone == "Dungeon")
+			and not player:GetAttribute("ModalOpen") and not player:GetAttribute("TutorialActive") and not player:GetAttribute("ChestOpening")
+		return
+	end
 	local zone = player:GetAttribute("Zone")
 	local show = (zone == "Lobby" or zone == "Field" or zone == "Dungeon")
 		and not player:GetAttribute("ModalOpen") and not player:GetAttribute("TutorialActive") and not player:GetAttribute("ChestOpening")
@@ -260,6 +282,12 @@ gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() place(true) end)
 refresh()
 place(true)
 task.delay(2, function() place(true) end)
+task.spawn(function()
+	for _ = 1, 40 do -- 스킬 바가 만들어질 때까지 (최대 20초) 기다렸다가 붙인다. 못 찾으면 예전 자동 배치를 쓴다
+		if attachToSkillBar() then place(true) return end
+		task.wait(0.5)
+	end
+end)
 task.spawn(function()
 	while true do
 		task.wait(1)
