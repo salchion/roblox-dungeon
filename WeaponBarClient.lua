@@ -30,7 +30,7 @@ local KEYS = {
 local KEY_TO_SLOT = {}
 for index, code in ipairs(KEYS) do KEY_TO_SLOT[code] = index end
 
-local SLOT = COMPACT and 32 or 40
+local SLOT = COMPACT and 26 or 32 -- (칸 아이콘이 너무 크다는 의견: 40 -> 32 / 폰 32 -> 26)
 local GAP = 4
 local BAR_W = #ORDER * SLOT + (#ORDER - 1) * GAP
 local INFO_H = 20
@@ -51,13 +51,13 @@ for index, key in ipairs(ORDER) do
 	local button = create("TextButton", {
 		Name = "Slot" .. index, Size = UDim2.new(0, SLOT, 0, SLOT), Position = UDim2.new(0, (index - 1) * (SLOT + GAP), 0, INFO_H + 2),
 		BackgroundColor3 = Color3.fromRGB(26, 28, 44), BackgroundTransparency = 0.12, BorderSizePixel = 0, AutoButtonColor = true,
-		Font = Enum.Font.GothamBold, TextSize = COMPACT and 15 or 19, Text = ICONS[key] or "?", TextColor3 = Color3.new(1, 1, 1), ZIndex = 2,
+		Font = Enum.Font.GothamBold, TextSize = COMPACT and 12 or 15, Text = ICONS[key] or "?", TextColor3 = Color3.new(1, 1, 1), ZIndex = 2,
 	}, holder)
 	rounded(button, 8)
 	local stroke = create("UIStroke", { Color = Color3.fromRGB(90, 96, 130), Thickness = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, button)
 	create("TextLabel", {
-		Size = UDim2.new(0, 14, 0, 12), Position = UDim2.new(0, 2, 0, 0), BackgroundTransparency = 1, Font = Enum.Font.GothamBold,
-		TextSize = 10, TextColor3 = Color3.fromRGB(190, 195, 220), Text = tostring(index % 10), ZIndex = 3,
+		Size = UDim2.new(0, 12, 0, 10), Position = UDim2.new(0, 2, 0, 0), BackgroundTransparency = 1, Font = Enum.Font.GothamBold,
+		TextSize = 9, TextColor3 = Color3.fromRGB(190, 195, 220), Text = tostring(index % 10), ZIndex = 3,
 	}, button)
 	slots[index] = { Button = button, Stroke = stroke, Key = key }
 end
