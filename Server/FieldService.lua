@@ -1151,6 +1151,7 @@ end
 local function spawnMonster(zone, kind, at, ambush)
 	local stats, text, color, barWidth
 	local level = F.GetZoneLevel(zone)
+	local earlyGold = (Config.Economy.EarlyZoneGold or {})[zone] or 1 -- 초반 구역은 골드를 조금 줄인다 (Config.Economy.EarlyZoneGold)
 	local typeKey, def, xpLevel
 	local preX -- 일반 / 엘리트 몬스터가 태어날 X (구간에 맞는 종류를 고르기 위해 먼저 정한다)
 
@@ -1167,7 +1168,7 @@ local function spawnMonster(zone, kind, at, ambush)
 			ShotDamage = math.max(10, math.floor(base.ShotDamage * (zone >= 7 and 1.3 or 1.5) * danger.Damage[zone])), -- (후반 군주는 한 방에 체력이 크게 깎이지 않게 살짝 낮춤)
 			ShotInterval = math.max(0.9, boss.ShotInterval - zone * 0.05),
 			ShotSpeed = boss.ShotSpeed,
-			Gold = math.floor(boss.Gold * danger.Reward[zone]),
+			Gold = math.floor(boss.Gold * danger.Reward[zone] * earlyGold),
 		}
 		xpLevel = bossLevel
 		text, color, barWidth = string.format("👑 Lord of %s (Zone %d) · Rec. ⚡%d", F.ZoneNames[zone], zone, F.RecommendPower[zone] or 0), Color3.fromRGB(255, 120, 120), 360
@@ -1209,7 +1210,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		stats.MaxHealth = math.floor(stats.MaxHealth * danger.Health[zone])
 		stats.ShotDamage = math.max(1, math.floor(stats.ShotDamage * danger.Damage[zone]))
 		stats.Speed *= danger.Speed[zone]
-		stats.Gold = math.floor(stats.Gold * danger.Reward[zone] * Config.Economy.FieldGoldMult)
+		stats.Gold = math.floor(stats.Gold * danger.Reward[zone] * Config.Economy.FieldGoldMult * earlyGold)
 	end
 
 	local x0, x1 = zoneBounds(zone)
@@ -1618,6 +1619,28 @@ task.spawn(function()
 	end
 end)
 
+-- 다시 태어나는 몬스터의 절반은 그 구역에서 싸우는 플레이어 근처(60~140 스터드 앞뒤)에 나온다: 잡은 자리가 비어서 썰렁해지지 않게.
+-- (나머지 절반은 예전처럼 구역 어디서나 태어난다. 꺾임 벽 위는 피한다)
+local function respawnSpot(zone)
+	if math.random() < 0.5 then return nil end
+	local spots = {}
+	for _, other in ipairs(Players:GetPlayers()) do
+		local root = other:GetAttribute("Zone") == "Field" and getAliveParts(other)
+		if root and zoneOfX(root.Position.X) == zone then table.insert(spots, root.Position) end
+	end
+	if #spots == 0 then return nil end
+	local center = spots[math.random(#spots)]
+	local x0, x1 = zoneBounds(zone)
+	local lo, hi = math.floor(x0 + F.CampSafe + 70), math.floor(x1 - 25)
+	local x
+	for _ = 1, 6 do
+		x = freeX(math.floor(math.max(lo, center.X - 140)), math.floor(math.min(hi, center.X + 140)))
+		if math.abs(x - center.X) >= 60 then break end
+	end
+	local half = F.Width / 2 - 25
+	return Vector3.new(x, 0, math.clamp(center.Z + math.random(-60, 60), -half, half))
+end
+
 local function killMonster(player, part, data)
 	recordKill(player, data)
 	if augRun then Dungeon.AugOnKill(augRun, player, part.Position) end -- 처치 폭발 / 화염 지대 (monsters 에서 지우기 전: 자기 자신은 다시 맞지 않는다)
@@ -1660,7 +1683,7 @@ local function killMonster(player, part, data)
 		workspace:SetAttribute("BossNext_" .. zone, os.time() + delay) -- 다음 군주 등장 시각 (화면 표시용)
 	end
 	task.delay(delay, function()
-		spawnMonster(zone, kind)
+		spawnMonster(zone, kind, kind ~= "Boss" and respawnSpot(zone) or nil)
 		if kind == "Boss" then
 			workspace:SetAttribute("BossNext_" .. zone, 0)
 			for _, other in ipairs(Players:GetPlayers()) do -- 그 구역에 있는 사람들에게 알린다
