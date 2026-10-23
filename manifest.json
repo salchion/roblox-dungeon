@@ -533,6 +533,13 @@
       "overwrite": true
     },
     {
+      "path": "WeaponBarClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "WeaponBarClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "LowSpecClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "LowSpecClient",

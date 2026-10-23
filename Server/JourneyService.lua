@@ -108,6 +108,29 @@ local function townBeat(player, now)
 	end
 end
 
+-- 기능 안내 카드 (한 번씩만 / 저장됨): 세트 효과가 처음 열렸을 때, 튜토리얼이 끝난 뒤 무기 슬롯 바
+local function anyAugOpen(player)
+	for zone = 1, Config.Field.ZoneCount do
+		if player:GetAttribute("AugOpenZ_" .. zone) == true then return true end
+	end
+	return false
+end
+local function tipBeat(player, now)
+	if player:GetAttribute("TutorialActive") or not player:GetAttribute("QuestHud") then return end
+	if now - (lastBeat[player] or 0) < 12 then return end
+	if not Journey.IsDone(player, "SetsHint") and anyAugOpen(player) then
+		Journey.Mark(player, "SetsHint")
+		lastBeat[player] = now
+		prompt(player, "🌟", "Set effect unlocked!", "Press Y (or the 🌟 Sets button) to switch it on with gold. Beat more zone lords to unlock more effects.", 10)
+		return
+	end
+	if not Journey.IsDone(player, "WeaponBar") and player:GetAttribute("Zone") == "Lobby" then
+		Journey.Mark(player, "WeaponBar")
+		lastBeat[player] = now
+		prompt(player, "1", "Switch guns with 1-0!", "The bar at the bottom shows every gun. Upgrade your weapon (⬆) to unlock new ones, then press its number or tap it.", 10)
+	end
+end
+
 -- 전투 중 첫 위기 한 줄 (이미 해 본 사람 / 한 번 본 사람에게는 안 뜸)
 local function combatBeat(player, now)
 	if player:GetAttribute("TutorialActive") then return end
@@ -138,6 +161,7 @@ function Journey.Start()
 			local now = os.clock()
 			for _, player in ipairs(Players:GetPlayers()) do
 				local zone = player:GetAttribute("Zone")
+				if zone == "Lobby" or zone == "Field" then tipBeat(player, now) end
 				if zone == "Lobby" then
 					townBeat(player, now)
 				elseif zone == "Dungeon" or zone == "Field" then
@@ -191,6 +215,8 @@ end
 Remotes.Tutorial.OnServerEvent:Connect(function(player, action)
 	if action == "Dashed" then
 		dashedAt[player] = os.clock()
+	elseif action == "SetsOpened" then
+		Journey.Mark(player, "SetsOpened") -- 세트 효과 창을 한 번 열어 봤다: 버튼 반짝임을 멈춘다
 	end
 end)
 

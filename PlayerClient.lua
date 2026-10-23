@@ -3656,6 +3656,7 @@ RunService.RenderStepped:Connect(function(dt)
 			if modalOpen then break end
 		end
 	end
+	if player:GetAttribute("ModalOpen") ~= modalOpen then player:SetAttribute("ModalOpen", modalOpen) end -- (무기 슬롯 바 같은 다른 화면이 큰 창이 열렸는지 알 수 있게)
 	local position = UserInputService:GetMouseLocation()
 	local show = hasMouse and not modalOpen and player.Character ~= nil and not isMouseOverButton(position)
 

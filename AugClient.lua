@@ -215,6 +215,26 @@ RunService.RenderStepped:Connect(function()
 end)
 
 pill.Activated:Connect(function() panel.Visible = not panel.Visible end)
+
+-- 처음 세트 효과가 열리면 버튼이 빛나고 "Press Y!" 말풍선이 뜬다. 한 번 열어 보면 서버에 기록되어 다시 안 뜬다 (HintDone_SetsOpened)
+local callout = label({
+	Size = UDim2.new(0, 96, 0, 18), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 0, -3),
+	BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(255, 190, 110), TextColor3 = Color3.fromRGB(40, 28, 10),
+	Text = "▼ Press Y!", TextSize = 11, Visible = false, ZIndex = 6,
+}, pill)
+make("UICorner", { CornerRadius = UDim.new(0, 6) }, callout)
+local pillStroke = pill:FindFirstChildOfClass("UIStroke")
+RunService.Heartbeat:Connect(function()
+	local hinting = pill.Visible and not player:GetAttribute("HintDone_SetsOpened")
+	callout.Visible = hinting
+	if pillStroke then pillStroke.Thickness = hinting and (2 + 1.6 * (0.5 + 0.5 * math.sin(os.clock() * 4))) or 1.5 end
+end)
+panel:GetPropertyChangedSignal("Visible"):Connect(function()
+	if panel.Visible and not player:GetAttribute("HintDone_SetsOpened") then
+		player:SetAttribute("HintDone_SetsOpened", true) -- 바로 멈추게 여기서도 켠다 (서버가 저장한다)
+		Remotes.Tutorial:FireServer("SetsOpened")
+	end
+end)
 UserInputService.InputBegan:Connect(function(input, processed)
 	if processed then return end
 	if input.KeyCode == Enum.KeyCode.Y then panel.Visible = not panel.Visible end
