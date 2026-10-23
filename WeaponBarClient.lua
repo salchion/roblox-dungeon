@@ -1,7 +1,7 @@
 -- WeaponBarClient (StarterPlayer > StarterPlayerScripts 안의 LocalScript, 이름: WeaponBarClient)
 -- 화면 아래의 "무기 슬롯 바": 무기 종류 10개를 번호 1~0 으로 바로 바꾼다 (폰은 칸을 누른다).
 --   * 열린 종류만 켜지고, 지금 쓰는 무기는 테두리가 강조된다. 잠긴 칸은 🔒 이고, 누르면 "+N 단계에서 열려요 (몇 단계 남음)" 이 뜬다.
---   * 오른쪽 "⬆ 비용" 버튼: 무기를 한 단계 강화한다 (골드가 모자라면 회색, 눌러도 모자란 만큼 알려 준다).
+--   (강화 버튼은 두지 않는다: 무기 강화는 대장간 / 메뉴(B)에서만 한다.)
 --   * 새 무기 종류가 열리면 그 칸이 반짝이고 "새 총: ○○ — 숫자 N 을 누르세요" 가 뜬다 (무기를 올리면 새 총이 열린다는 걸 자연스럽게 알려 준다).
 --   * 위치는 자동: 화면의 다른 UI 와 겹치지 않는 빈 자리를 찾는다 (아래 가운데부터). 메뉴 / 큰 창이 열려 있으면 숨는다.
 --   무기 바꾸기 / 강화는 서버가 다시 검사한다 (이 스크립트는 요청만 보낸다).
@@ -32,14 +32,11 @@ for index, code in ipairs(KEYS) do KEY_TO_SLOT[code] = index end
 
 local SLOT = COMPACT and 32 or 40
 local GAP = 4
-local UP_W = COMPACT and 66 or 94
-local BAR_W = #ORDER * SLOT + (#ORDER - 1) * GAP + 8 + UP_W
+local BAR_W = #ORDER * SLOT + (#ORDER - 1) * GAP
 local INFO_H = 20
 local HOLDER_H = INFO_H + 2 + SLOT
 
 local GOLD = Color3.fromRGB(255, 210, 90)
-local GREEN = Color3.fromRGB(60, 130, 90)
-local GRAY = Color3.fromRGB(70, 72, 92)
 
 local gui = create("ScreenGui", { Name = "WeaponBarGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 3, Enabled = false }, playerGui)
 local holder = create("Frame", { Size = UDim2.new(0, BAR_W, 0, HOLDER_H), BackgroundTransparency = 1 }, gui)
@@ -63,20 +60,6 @@ for index, key in ipairs(ORDER) do
 		TextSize = 10, TextColor3 = Color3.fromRGB(190, 195, 220), Text = tostring(index % 10), ZIndex = 3,
 	}, button)
 	slots[index] = { Button = button, Stroke = stroke, Key = key }
-end
-
-local upgrade = create("TextButton", {
-	Name = "Upgrade", Size = UDim2.new(0, UP_W, 0, SLOT), Position = UDim2.new(0, BAR_W - UP_W, 0, INFO_H + 2),
-	BackgroundColor3 = GRAY, BorderSizePixel = 0, AutoButtonColor = true, Font = Enum.Font.GothamBold, TextSize = COMPACT and 11 or 13,
-	TextColor3 = Color3.new(1, 1, 1), Text = "⬆", ZIndex = 2,
-}, holder)
-rounded(upgrade, 8)
-
-local function short(n)
-	if n >= 1e9 then return string.format("%.1fB", n / 1e9) end
-	if n >= 1e6 then return string.format("%.1fM", n / 1e6) end
-	if n >= 1e3 then return string.format("%.1fK", n / 1e3) end
-	return tostring(math.floor(n))
 end
 
 local function weaponName(key)
@@ -143,14 +126,6 @@ local function refresh()
 		end
 	end
 
-	if level >= Config.Weapon.MaxLevel then
-		upgrade.Text = "MAX"
-		upgrade.BackgroundColor3 = GRAY
-	else
-		local cost = Config.GetEnhanceCost(level)
-		upgrade.Text = "⬆ " .. short(cost)
-		upgrade.BackgroundColor3 = (player:GetAttribute("Gold") or 0) >= cost and GREEN or GRAY
-	end
 	if os.clock() >= sayUntil then info.Text = idleText() end
 end
 
@@ -164,24 +139,12 @@ local function equip(index)
 		end
 	else
 		local need = Config.GetUnlockLevel(slot.Key)
-		say(string.format("🔒 %s unlocks at +%d (%d to go) - upgrade your weapon!", weaponName(slot.Key), need, math.max(0, need - level)), 3)
+		say(string.format("🔒 %s unlocks at +%d (%d to go) - upgrade your weapon at the Forge or in the Menu (B)", weaponName(slot.Key), need, math.max(0, need - level)), 4)
 	end
 end
 for index, slot in ipairs(slots) do
 	slot.Button.Activated:Connect(function() equip(index) end)
 end
-upgrade.Activated:Connect(function()
-	local level = player:GetAttribute("WeaponLevel") or 0
-	if level >= Config.Weapon.MaxLevel then return end
-	local cost = Config.GetEnhanceCost(level)
-	local gold = player:GetAttribute("Gold") or 0
-	if gold < cost then
-		say(string.format("Not enough gold: need %s G (you have %s G)", short(cost), short(gold)), 3)
-		return
-	end
-	Remotes.Enhance:FireServer()
-end)
-
 UserInputService.InputBegan:Connect(function(input, processed)
 	if processed or not gui.Enabled then return end
 	local index = KEY_TO_SLOT[input.KeyCode]

@@ -127,7 +127,7 @@ local function tipBeat(player, now)
 	if not Journey.IsDone(player, "WeaponBar") and player:GetAttribute("Zone") == "Lobby" then
 		Journey.Mark(player, "WeaponBar")
 		lastBeat[player] = now
-		prompt(player, "1", "Switch guns with 1-0!", "The bar at the bottom shows every gun. Upgrade your weapon (⬆) to unlock new ones, then press its number or tap it.", 10)
+		prompt(player, "1", "Switch guns with 1-0!", "The bar at the bottom shows every gun. Upgrade your weapon at the Forge (or Menu B) to unlock new ones, then press its number or tap it.", 10)
 	end
 end
 
