@@ -39,6 +39,7 @@ local HOLDER_H = INFO_H + 2 + SLOT
 local GOLD = Color3.fromRGB(255, 210, 90)
 local attached = false -- 스킬 바에 붙었는지 (아래 attachToSkillBar)
 
+print("[WeaponBar] version: center-77 (fixed)") -- 출력창에서 어떤 버전이 돌고 있는지 바로 확인용
 local gui = create("ScreenGui", { Name = "WeaponBarGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 3, Enabled = false }, playerGui)
 local holder = create("Frame", { Size = UDim2.new(0, BAR_W, 0, HOLDER_H), BackgroundTransparency = 1 }, gui)
 
