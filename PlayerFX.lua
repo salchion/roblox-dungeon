@@ -775,10 +775,17 @@ do
 	local from = nil
 	local token = 0
 	local joinedAt = os.clock()
+	local switchedAt = -100 -- 무기 종류를 바꾼 시각 (바꿔서 오른 전투력은 소리를 내지 않는다)
+	local peak, peakAt = 0, 0 -- 크리티컬 등으로 전투력이 오르내릴 때, 최근에 이미 도달했던 값으로 돌아온 건 소리를 내지 않는다
+	player:GetAttributeChangedSignal("WeaponType"):Connect(function() switchedAt = os.clock() end)
 	local function show(fromPower, toPower)
 		local diff = toPower - fromPower
 		if diff == 0 then return end
 		local up = diff > 0
+		local now = os.clock()
+		if now - peakAt > 20 then peak = fromPower end
+		local quiet = now - switchedAt < 2.5 or toPower <= peak
+		if toPower >= peak then peak, peakAt = toPower, now end
 		local color = up and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(255, 130, 120)
 		local holder = create("Frame", { Size = UDim2.new(0, 300, 0, 74), AnchorPoint = Vector2.new(0, 1), Position = gui.Parent:GetAttribute("UiCompact") and UDim2.new(0.5, -150, 0.4, 0) or UDim2.new(0, 14, 1, -(((player:GetAttribute("Zone") == "Dungeon") and 210 or 112) + 232)), BackgroundTransparency = 1, ZIndex = 60 }, gui)
 		local main = makeLabel({
@@ -800,7 +807,7 @@ do
 			task.wait(0.45)
 			holder:Destroy()
 		end)
-		if up then SoundBank.Play(workspace, "Enh_Success", { Pitch = 1.25 }) end
+		if up and not quiet then SoundBank.Play(workspace, "Enh_Success", { Pitch = 1.25 }) end
 	end
 	player:GetAttributeChangedSignal("Power"):Connect(function()
 		local power = player:GetAttribute("Power") or 0
