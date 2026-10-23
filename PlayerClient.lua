@@ -1055,7 +1055,23 @@ do
 		end)
 		game:GetService("Debris"):AddItem(label, 2.6)
 	end
+	local lockedUntil, pending = 0, nil -- 신화(최고 등급)가 뜬 직후에는 잠깐 강제로 보게 한다: 이 시간까지는 탭으로 건너뛸 수 없고, 연타로 들어온 다음 결과는 끝난 뒤에 보여 준다
+	local reveal
 	Remotes.Gear.OnClientEvent:Connect(function(action, result)
+		if action == "Result" and result.Roll and os.clock() < lockedUntil then
+			local mine = {}
+			pending = mine -- 여러 개가 밀려도 마지막 것만 (어차피 앞의 것은 바로 덮어써진다)
+			task.delay(lockedUntil - os.clock() + 0.05, function()
+				if pending == mine then
+					pending = nil
+					reveal(action, result)
+				end
+			end)
+			return
+		end
+		reveal(action, result)
+	end)
+	reveal = function(action, result)
 		local roll = action == "Result" and result.Roll
 		if not roll then return end
 		local multi = result.Rolls ~= nil and #result.Rolls > 1
@@ -1069,7 +1085,7 @@ do
 			Text = "", AutoButtonColor = false, ZIndex = 60,
 		}, gui)
 		local skipped = false
-		root.Activated:Connect(function() skipped = true end)
+		root.Activated:Connect(function() if os.clock() >= lockedUntil then skipped = true end end) -- (신화 강제 감상 시간에는 탭을 무시한다)
 		local function fade(object, goal, time, style, direction)
 			TweenService:Create(object, TweenInfo.new(time, style or Enum.EasingStyle.Quad, direction or Enum.EasingDirection.Out), goal):Play()
 		end
@@ -1112,6 +1128,7 @@ do
 
 			capsule:Destroy()
 			SoundBank.Play(sfxParent, "Gacha_Pop" .. rarity)
+			if rarity == 5 then lockedUntil = os.clock() + (multi and 3.4 or 2.6) end -- 신화: 잠깐(10연 3.4초 / 단일 2.6초) 멈춰서 꼭 보게 한다
 			if rarity >= 4 then SoundBank.Play(sfxParent, "Skill_Ult", { Volume = 0.5 }) end
 			for i = 1, math.max(1, rarity - 1) do
 				task.delay((i - 1) * 0.18, function()
@@ -1251,7 +1268,7 @@ do
 			fade(card, { Size = UDim2.new(0, 60, 0, 40) }, 0.25)
 			game:GetService("Debris"):AddItem(root, 0.3)
 		end)
-	end)
+	end
 end
 
 Remotes.OpenGear.OnClientEvent:Connect(function()
