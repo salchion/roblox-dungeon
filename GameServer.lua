@@ -512,7 +512,8 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 	local progressTier = Config.GetWeaponTier(level) -- 강화 진행도 (탄 크기가 이어서 커지게)
 	local tier = Config.GetLookTier(level, Config.ResolveWeaponType(level, player:GetAttribute("WeaponType"))) -- 고른 무기 형 + 지금 시대의 색 / 탄 모양
 	local color = tier.Rainbow and Color3.fromHSV((now * 0.5) % 1, 0.8, 1) or tier.Color
-	local extra = (player:GetAttribute("Zone") == "Dungeon" and (player:GetAttribute("PerkMulti") or 0) or 0) + (player:GetAttribute("GearShot") or 0)
+	local extra = player:GetAttribute("Zone") == "Dungeon" and (player:GetAttribute("PerkMulti") or 0) or 0 -- 던전 특성 "분산탄": 부채꼴로 +N발
+	local gearShots = math.clamp(player:GetAttribute("GearShot") or 0, 0, 3) -- 장비(신화) 옵션 "추가 탄": 부채꼴이 아니라 같은 방향으로 한 번 더 쏜다 (가운데 적이 안 맞던 문제)
 	local shot = table.clone(tier.Shot)
 	local stageNow = Config.GetWeaponStage(level)
 	local progress = Config.Weapon.VisualProgress(progressTier, stageNow)
@@ -556,10 +557,10 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 			last = pick.Position
 		end
 	end
-	local function fireVolley(volleyOrigin, volleyTip)
+	local function fireVolley(volleyOrigin, volleyTip, volleyScale)
 		Dungeon.AssistLeft[player] = 2 -- 이번 사격에서 조준 보정(구 레이캐스트)은 처음 2발까지만 (서버 부담)
 		player:SetAttribute("ShotManual", isManual) -- Dungeon / Field.Shoot 이 읽는다: 약점 보너스는 직접 조준한 탄에만
-		player:SetAttribute("ShotDmgScale", extra > 0 and (pellets - extra + extra * Config.LevelStats.OtherExtraShotValue) / pellets or 1) -- 추가 탄은 위력이 낮다 (합계 피해가 배수로 뛰지 않게)
+		player:SetAttribute("ShotDmgScale", (extra > 0 and (pellets - extra + extra * Config.LevelStats.OtherExtraShotValue) / pellets or 1) * (volleyScale or 1)) -- 추가 탄은 위력이 낮다 (합계 피해가 배수로 뛰지 않게)
 		for pellet = 1, pellets do
 			local direction
 			if weaponType.Pellets == 1 then
@@ -582,15 +583,25 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 		Weapon.PlayShot(player)
 	end
 	fireVolley(origin, tipPosition)
-	-- 더블샷: 레벨 스탯 확률로 한 번 더 "따-땅" 이어서 나간다 (같은 방향, 위력도 같다)
-	if math.random() < (player:GetAttribute("LvDouble") or 0) then
-		task.delay(0.09, function()
+	-- 이어 쏘기: 같은 방향으로 "따-땅" 한 번 더 (지금 몸 위치에서)
+	local followIndex = 0
+	local function followUp(volleyScale)
+		followIndex += 1
+		task.delay(0.09 * followIndex, function()
 			local liveRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 			local liveHumanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 			if not liveRoot or not liveHumanoid or liveHumanoid.Health <= 0 then return end
 			local liveOrigin = liveRoot.Position + Vector3.new(0, 1.5, 0)
-			fireVolley(liveOrigin, Weapon.GetTipPosition(player) or liveOrigin)
+			fireVolley(liveOrigin, Weapon.GetTipPosition(player) or liveOrigin, volleyScale)
 		end)
+	end
+	-- 장비 "추가 탄": 100% 로 한 번 더 (위력은 예전 추가 탄 한 발과 같게: 산탄총은 한 번에 여러 알이므로 알 수로 나눈다)
+	for _ = 1, gearShots do
+		followUp(Config.LevelStats.OtherExtraShotValue / math.max(1, weaponType.Pellets))
+	end
+	-- 더블샷: 레벨 스탯 확률로 한 번 더 (같은 방향, 위력도 같다). 장비 추가 탄과 따로 계산한다 (둘 다 터지면 3번)
+	if math.random() < (player:GetAttribute("LvDouble") or 0) then
+		followUp(1)
 	end
 	if isManual and (player:GetAttribute("HitTick") or 0) > hitsBefore then
 		player:SetAttribute("ManualHitTick", (player:GetAttribute("ManualHitTick") or 0) + 1) -- 연습장 "직접 조준" 판정

@@ -1527,7 +1527,7 @@ end
 Config.Uniques = {
 	Order = { "Split", "Chrono", "Slayer", "Fortune" },
 	Chance = 0.30,
-	Split = { Name = "Splitting Bullets", Desc = "Fires +1 extra shot", Effects = { { Stat = "Shot", Value = 1 } } },
+	Split = { Name = "Splitting Bullets", Desc = "Fires 1 more shot right after (same direction)", Effects = { { Stat = "Shot", Value = 1 } } },
 	Chrono = { Name = "Time Warp", Desc = "Skill cooldown -25%", Effects = { { Stat = "Haste", Value = 0.25 } } },
 	Slayer = { Name = "Slaughterer", Desc = "Attack +25%", Effects = { { Stat = "Damage", Value = 0.25 } } },
 	Fortune = { Name = "Lucky Star", Desc = "Luck +50%, XP +30%", Effects = { { Stat = "Luck", Value = 0.5 }, { Stat = "Xp", Value = 0.3 } } },
