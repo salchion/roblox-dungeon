@@ -236,11 +236,12 @@ local function attachToSkillBar()
 	return true
 end
 
-local FIXED = not COMPACT -- 컴퓨터: 왼쪽 퀘스트 카드 바로 아래 고정 (계산 없이 항상 같은 자리)
+local FIXED = true -- 항상 같은 자리 (계산 없음): 가로 가운데, 캐릭터와 스킬 바 사이에서 살짝 아래쪽
 local function place(force)
 	if FIXED then
 		local zone = player:GetAttribute("Zone")
-		holder.Position = UDim2.new(0, 14, 0, 480)
+		holder.AnchorPoint = Vector2.new(0.5, 0.5)
+		holder.Position = UDim2.new(0.5, 0, 0.77, 0)
 		gui.Enabled = (zone == "Lobby" or zone == "Field" or zone == "Dungeon")
 			and not player:GetAttribute("ModalOpen") and not player:GetAttribute("TutorialActive") and not player:GetAttribute("ChestOpening")
 		return
