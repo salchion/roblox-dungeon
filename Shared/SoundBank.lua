@@ -226,6 +226,7 @@ local lastPlayed = {}
 local FEEDBACK = { Hit = true, Crit = true, Kill = true, Pickup = true }
 local lastFeedback = 0
 
+local lastShot = 0
 function SoundBank.Play(parent, key, opts)
 	local spec = SPECS[key]
 	if not spec or not parent then return end
@@ -246,6 +247,9 @@ function SoundBank.Play(parent, key, opts)
 	local volumeScale = (opts.Volume or 1) * spec.Volume
 	if string.sub(key, 1, 4) == "Shot" then
 		volumeScale *= Config.Audio.ShotVolume / 0.3 -- 총소리 기본 크기 설정(ShotVolume)을 그대로 따른다
+		lastShot = os.clock()
+	elseif os.clock() - lastShot < 0.2 then
+		volumeScale *= 0.55 -- 덕킹: 총을 쏘는 중에는 다른 소리(적중 / 처치 / 줍기 등)를 절반쯤으로 낮춰 총소리가 묻히지 않게 한다
 	end
 	local baseVolume = 0.35 * volumeScale
 	local pitch = custom and (opts.Pitch or 1) * (spec.CustomPitch or 1) or spec.Pitch * (opts.Pitch or 1) -- CustomPitch: 같은 소리를 여러 항목에 재사용할 때 높낮이를 달리한다
