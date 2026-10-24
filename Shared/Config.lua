@@ -339,26 +339,26 @@ Config.RunBuffs = {
 
 -- 세트 효과 (구역 세트 2부위 = 1단계 / 3부위 = 3단계): 수치가 아니라 "플레이 방식"이 바뀌는 효과. 필드 / 던전 / 심연 어디서나 작동한다.
 Config.AugInfo = {
-	AugMissile = { Icon = "🚀", Name = "Crit Missile", Desc = "Every crit launches an extra missile that blasts nearby enemies", Color = Color3.fromRGB(255, 150, 60) },
+	AugMissile = { Icon = "🚀", Name = "Crit Missile", Desc = "Every crit fires a salvo of missiles into the enemy you hit", Color = Color3.fromRGB(255, 150, 60) },
 	AugNova = { Icon = "☄", Name = "Kill Burst", Desc = "Killing an enemy causes a big explosion that spreads to nearby enemies", Color = Color3.fromRGB(255, 80, 70) },
 	AugOrbit = { Icon = "🌀", Name = "Ricochet Blades", Desc = "Every few shots, a blade bounces between enemies, slashing them in a row (faster-firing weapons throw it more often)", Color = Color3.fromRGB(110, 230, 255) },
 	AugStorm = { Icon = "⛈", Name = "Lightning Strike", Desc = "Lightning periodically strikes nearby enemies from the sky", Color = Color3.fromRGB(255, 240, 110) },
-	AugFlame = { Icon = "🔥", Name = "Flame Zone", Desc = "Flames linger where an enemy died, burning those who pass", Color = Color3.fromRGB(255, 130, 40) },
-	AugExecute = { Icon = "💀", Name = "Execute", Desc = "Enemies (bosses excluded) with very low HP are executed the moment they're hit", Color = Color3.fromRGB(210, 90, 255) },
-	AugMeteor = { Icon = "🌠", Name = "Meteor Shower", Desc = "Meteors periodically fall where enemies are most clustered", Color = Color3.fromRGB(255, 190, 90) },
+	AugFlame = { Icon = "🔥", Name = "Ignite", Desc = "Your hits stack burning on the target; the longer you hit it, the hotter it burns", Color = Color3.fromRGB(255, 130, 40) },
+	AugExecute = { Icon = "💀", Name = "Execute", Desc = "Low-HP enemies are executed on hit; bosses take more damage the lower their HP", Color = Color3.fromRGB(210, 90, 255) },
+	AugMeteor = { Icon = "🌠", Name = "Meteor Shower", Desc = "Meteors fall on the biggest crowd (or on a nearby boss) and hit hard", Color = Color3.fromRGB(255, 190, 90) },
 	AugPulse = { Icon = "💥", Name = "Shockwave Shot", Desc = "Explosive shots fly at nearby enemies and burst big on impact", Color = Color3.fromRGB(110, 255, 190) },
 }
 
 -- 세트 효과 단계별 수치 (서버 DungeonService 의 공식과 같다. 바꿀 때는 같이 바꾼다). 돌려주는 값: 설명 글자, 한 번 맞을 때 "내 공격력의 몇 배"
 local AUG_LEVEL = {
-	AugMissile = function(l) return string.format("on crit, %d extra missiles (60%% of the crit damage each)", 1 + l), 0.6 end,
+	AugMissile = function(l) return string.format("on crit, %d missiles into the enemy you hit (25%% of the crit hit each)", 1 + l), 0.25 end,
 	AugNova = function(l) return string.format("kill → explosion, radius %d, hits up to 8 enemies", 12 + 3 * l), 1.2 + 0.6 * l end,
-	AugOrbit = function(l) return string.format("every %d shots a blade bounces across %d enemies", ({ 6, 6, 5, 5, 4, 4 })[math.min(l, 6)], l + 2), 0.9 + 0.4 * l end,
-	AugStorm = function(l) return string.format("every %.1fs lightning hits %d enemies", math.max(1.2, 3.4 - 0.5 * l), 2 + l), 1.5 + 0.5 * l end,
-	AugFlame = function(l) return string.format("flames radius %d for %ds, damage every 0.5s", 7 + 2 * l, 5 + l), 0.25 + 0.1 * l end,
-	AugExecute = function(l) return string.format("enemies below %d%% HP are executed (not bosses)", math.floor(math.min(0.4, 0.1 + 0.06 * l) * 100 + 0.5)), nil end,
-	AugMeteor = function(l) return string.format("every %.1fs a meteor, radius %d", math.max(3, 8.5 - 1.5 * l), 14 + 2 * l), 2.2 + 0.8 * l end,
-	AugPulse = function(l) return string.format("every %.1fs shock shots at %d enemies, burst radius %d", math.max(2.2, 4.8 - 0.8 * l), 2 + l, 10 + 2 * l), 1.4 + 0.6 * l end,
+	AugOrbit = function(l) return string.format("every %d shots a blade bounces across %d enemies", ({ 6, 6, 5, 5, 4, 4 })[math.min(l, 6)], l + 2 + (l >= 5 and 2 or 0)), 0.9 + 0.4 * l end,
+	AugStorm = function(l) return string.format("every %.1fs lightning hits %d enemies", math.max(1.2, 3.4 - 0.5 * l), 2 + l), (1.4 + 0.45 * l) * (l >= 5 and 1.2 or 1) end,
+	AugFlame = function(l) return string.format("each hit adds a burn stack (max %d, lasts 4s); every 0.5s per stack", 4 + l + (l >= 5 and 3 or 0)), 0.05 + 0.025 * l end,
+	AugExecute = function(l) return string.format("enemies below %d%% HP are executed · bosses take up to +%d%% damage (all your damage) as their HP drops", math.floor(Config.AugExecuteThreshold(l) * 100 + 0.5), math.floor(0.15 * l * 100 + 0.5)), nil end,
+	AugMeteor = function(l) return string.format("every %.1fs a meteor, radius %d (x1.5 on bosses)", math.max(3, 8.5 - 1.5 * l), 14 + 2 * l), 2.6 + 1.0 * l end,
+	AugPulse = function(l) return string.format("every %.1fs shock shots at %d enemies, burst radius %d", math.max(2.2, 4.8 - 0.8 * l), 2 + math.floor(l / 2) + (l >= 6 and 1 or 0), 10 + 2 * l), 0.9 + 0.4 * l end,
 }
 -- 지금 내 공격력으로 한 번 맞힐 때의 대략적인 피해 (치명타 / 콤보 제외, 클라이언트에서 계산)
 function Config.BaseAttackEstimate(player)
@@ -370,14 +370,14 @@ function Config.BaseAttackEstimate(player)
 end
 -- 4셋 / 5셋 / 6셋에서 새로 생기는 효과 (수치만 오르는 게 아니라 투사체 / 지속 효과가 늘어난다. 서버 DungeonService 와 같이 바꾼다)
 local AUG_EXTRA = {
-	AugMissile = { [4] = "missiles explode (splash)", [5] = "+ second salvo 0.45s later", [6] = "+ a giant missile at the toughest enemy" },
+	AugMissile = { [4] = "missiles explode (splash)", [5] = "+ second salvo 0.45s later", [6] = "+ a giant missile (150% of the crit hit)" },
 	AugNova = { [4] = "explodes again 0.5s later", [5] = "wider blast + third explosion", [6] = "+ leaves flames behind" },
-	AugOrbit = { [4] = "2 blades at once", [5] = "3 blades at once", [6] = "4 blades at once" },
-	AugStorm = { [4] = "lightning arcs to 1 nearby enemy", [5] = "arcs to 2", [6] = "arcs to 3" },
-	AugFlame = { [4] = "flames appear in 2 places", [5] = "burns 40% longer", [6] = "big explosion when the flames die" },
+	AugOrbit = { [4] = "2 blades at once", [5] = "blades bounce +2 more", [6] = "3 blades at once" },
+	AugStorm = { [4] = "lightning arcs to 1 nearby enemy", [5] = "lightning 20% stronger", [6] = "arcs to 2" },
+	AugFlame = { [4] = "burning enemies spread 3 stacks when they die", [5] = "+3 max stacks", [6] = "at max stacks: fire blast every 3s (300%)" },
 	AugExecute = { [4] = "executed enemies explode", [5] = "bigger explosion", [6] = "+ heal 4% HP per execution" },
 	AugMeteor = { [4] = "2 meteors per cast", [5] = "3 meteors", [6] = "4 meteors, bigger" },
-	AugPulse = { [4] = "fires twice (0.45s apart)", [5] = "fires 3 times", [6] = "+3 more targets" },
+	AugPulse = { [4] = "fires twice (0.45s apart)", [5] = "bursts 25% wider", [6] = "+1 target" },
 }
 function Config.AugLevelLine(attr, level)
 	local fn = AUG_LEVEL[attr]
@@ -391,11 +391,50 @@ end
 -- 세트 효과 시너지: 두 어그먼트를 모두 가지면 숨은 추가 효과가 켜진다 (획득하는 순간 알림 + 오라 폭발)
 Config.AugSynergies = {
 	Order = { "Inferno", "StormEye", "BladeMissile", "Reaper" },
-	Inferno      = { Need = { "AugNova", "AugFlame" },      Icon = "🌋", Name = "Sea of Flames",    Desc = "Kill Burst is 30% wider and flames burn 1.5x longer" },
+	Inferno      = { Need = { "AugNova", "AugFlame" },      Icon = "🌋", Name = "Sea of Flames",    Desc = "Kill Burst is 30% wider and sets every enemy it hits on fire (2 Ignite stacks)" },
 	StormEye     = { Need = { "AugStorm", "AugMeteor" },    Icon = "🌩", Name = "Eye of the Storm", Desc = "Each time a meteor lands, extra lightning strikes nearby enemies" },
 	BladeMissile = { Need = { "AugOrbit", "AugMissile" },   Icon = "🗡", Name = "Homing Blades", Desc = "Blades occasionally launch a missile when they slash" },
 	Reaper       = { Need = { "AugExecute", "AugMissile" }, Icon = "☠", Name = "Reaper's Scythe", Desc = "When an execute happens, 2 missiles burst out" },
 }
+
+-- 세트 효과 역할 / 무기 궁합: 보스에 강하면 몹에 약하고, 몹에 강하면 보스에 약하다. 잘 맞는 무기를 들면 세트 피해 +40% 와 작은 특수 효과.
+--   Mob(사냥형): 보스에게 50% / Boss(보스형): 일반 몬스터에게 60% / All(만능, 마지막 구역): 둘 다 100%
+--   구역 배수: 뒤 구역 세트일수록 기본 위력이 조금씩 높다 (구역마다 +6%)
+Config.AugRoles = {
+	AugPulse   = { Role = "Mob",  Weapons = { "Shotgun", "Cannon" },  Perk = "burst radius +30%" },
+	AugOrbit   = { Role = "Mob",  Weapons = { "Pistol", "Smg" },      Perk = "blade thrown 1 shot sooner" },
+	AugStorm   = { Role = "Mob",  Weapons = { "Rifle", "Rail" },      Perk = "lightning arcs to +1 enemy" },
+	AugMissile = { Role = "Boss", Weapons = { "Revolver", "Sniper" }, Perk = "+1 missile per salvo" },
+	AugNova    = { Role = "Mob",  Weapons = { "Rocket", "Cannon" },   Perk = "+1 extra blast" },
+	AugFlame   = { Role = "Boss", Weapons = { "Flamer", "Shotgun" },  Perk = "2 burn stacks per hit" },
+	AugExecute = { Role = "Boss", Weapons = { "Sniper", "Rail" },     Perk = "boss damage bonus cap +30%" },
+	AugMeteor  = { Role = "All",  Weapons = { "Rocket", "Flamer" },   Perk = "+1 meteor" },
+}
+Config.AugRoleMult = { Mob = { Boss = 0.5, Mob = 1 }, Boss = { Boss = 1, Mob = 0.6 }, All = { Boss = 1, Mob = 1 } }
+Config.AugRoleLabel = { Mob = "🌪 Mob hunter", Boss = "🎯 Boss hunter", All = "⚖ All-round" }
+Config.AugWeaponBonus = 1.4
+Config.AugZoneStep = 0.06
+function Config.AugWeaponMatch(player, attr)
+	local role = Config.AugRoles[attr]
+	if not role then return false end
+	local key = Config.ResolveWeaponType(player:GetAttribute("WeaponLevel") or 0, player:GetAttribute("WeaponType"))
+	return table.find(role.Weapons, key) ~= nil
+end
+-- 세트 효과 한 번 맞힐 때 곱하는 값 (서버 DungeonService.hitMonster)
+function Config.AugHitMult(player, attr, targetIsBoss)
+	local role = Config.AugRoles[attr]
+	if not role then return 1 end
+	local roleMult = Config.AugRoleMult[role.Role][targetIsBoss and "Boss" or "Mob"]
+	local zone = table.find(Config.Sets.ZoneAug, attr) or 1
+	local weapon = attr ~= "AugExecute" and Config.AugWeaponMatch(player, attr) and Config.AugWeaponBonus or 1 -- (처형의 궁합은 보스 추가 피해 상한으로 따로)
+	return roleMult * weapon * (1 + Config.AugZoneStep * (zone - 1))
+end
+function Config.AugExecuteThreshold(level)
+	return math.min(0.4, 0.08 + 0.04 * level)
+end
+function Config.AugExecuteBossCap(player, level)
+	return 0.15 * level + (Config.AugWeaponMatch(player, "AugExecute") and 0.3 or 0)
+end
 
 -- 랜덤 패널티 (적이 강해지는 대신 골드를 더 준다. 누적되지만 상한이 있다)
 Config.RunPenalties = {

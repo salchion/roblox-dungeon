@@ -166,6 +166,21 @@ local function refresh()
 		r.Title.RichText = true
 		r.Title.Text = string.format("%sZone %d · %s  %s", on and "<font color='#78ffb4'>●</font> " or "", zone, info.Name, level > 0 and (gear > 0 and string.format("[Lv.%d + gear %d = %d]", level, gear, level + gear) or ("[Lv." .. level .. "]")) or "")
 		r.Title.TextColor3 = open and Color3.fromRGB(255, 240, 200) or Color3.fromRGB(130, 134, 156)
+		-- 역할(보스형 / 사냥형) + 잘 맞는 무기 (지금 든 무기가 맞으면 초록으로 빛난다)
+		local attrKey = Config.Sets.ZoneAug[zone]
+		local role = Config.AugRoles and Config.AugRoles[attrKey]
+		if role then
+			local names = {}
+			for _, key in ipairs(role.Weapons) do
+				local w = Config.WeaponTypes[key]
+				table.insert(names, w and w.Name or key)
+			end
+			local match = Config.AugWeaponMatch(player, attrKey)
+			r.Desc.RichText = true
+			r.Desc.Text = string.format("<b>%s</b>  ·  %s🔫 Best with %s%s</font>\n%s",
+				Config.AugRoleLabel[role.Role], match and "<font color='#78ff8c'>✔ " or "<font color='#c8cce0'>", table.concat(names, " / "),
+				match and (" — +40% & " .. role.Perk) or "", info.Desc)
+		end
 		r.Toggle.Visible = false -- ON/OFF 글자는 없앴다: 칸을 누르면 켜지고 꺼지며, 켜진 칸은 테두리가 빛나고 제목 앞에 ● 가 붙는다
 		r.Toggle.Text = on and "● ON" or "○ OFF" -- 지금 상태를 보여 주고, 누르면 반대로 바뀐다
 		r.Toggle.BackgroundColor3 = on and Color3.fromRGB(46, 112, 84) or Color3.fromRGB(62, 64, 84)
@@ -191,7 +206,7 @@ local function refresh()
 	badge.Visible = affordable > 0 and used < slots
 end
 
-for _, name in ipairs({ "Gold", "AugSlots", "TutorialActive" }) do
+for _, name in ipairs({ "Gold", "AugSlots", "TutorialActive", "WeaponType", "WeaponLevel" }) do
 	player:GetAttributeChangedSignal(name):Connect(refresh)
 end
 for zone = 1, ZONES do
