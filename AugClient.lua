@@ -89,7 +89,7 @@ for zone = 1, ZONES do
 	make("UICorner", { CornerRadius = UDim.new(0, 8) }, row)
 	label({ Size = UDim2.new(0, 34, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = info.Icon, TextSize = 20 }, row)
 	local title = label({ Size = UDim2.new(1, -250, 0, 20), Position = UDim2.new(0, 44, 0, 5), Text = "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, row)
-	local desc = label({ Size = UDim2.new(1, -250, 0, 32), Position = UDim2.new(0, 44, 0, 25), Text = info.Desc, TextSize = 9, TextColor3 = Color3.fromRGB(170, 215, 190), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = true }, row)
+	local desc = label({ Size = UDim2.new(1, -250, 0, 14), Position = UDim2.new(0, 44, 0, 32), Text = info.Desc, TextSize = 10, TextColor3 = Color3.fromRGB(170, 215, 190), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = false }, row)
 	-- 칸 어디를 눌러도 켜고 꺼진다 (맨 아래에 깔린 투명 버튼). 오른쪽 위 ON/OFF 는 상태만 보여 준다.
 	local hit = make("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", AutoButtonColor = false, ZIndex = 1 }, row)
 	hit.Activated:Connect(function() Remotes.Aug:FireServer("Toggle", zone) end)
@@ -133,8 +133,21 @@ for zone = 1, ZONES do
 			r.Row.Size = UDim2.new(1, -8, 0, 62)
 			return
 		end
-		local lines = { "<b>Per level</b>  (Lv.1–3 from gold · Lv.4–6 with set gear; damage ≈ one hit at your current attack, before crit/combo)" }
 		local attr = Config.Sets.ZoneAug[zone]
+		local info = Config.AugInfo[attr]
+		local role = Config.AugRoles and Config.AugRoles[attr]
+		local lines = { "<font color='#aaf0c8'>" .. info.Desc .. "</font>" }
+		if role then
+			local mult = Config.AugRoleMult[role.Role]
+			table.insert(lines, string.format("%s: vs bosses %d%% · vs monsters %d%%", Config.AugRoleLabel[role.Role], mult.Boss * 100, mult.Mob * 100))
+			local names = {}
+			for _, key in ipairs(role.Weapons) do
+				local w = Config.WeaponTypes[key]
+				table.insert(names, w and w.Name or key)
+			end
+			table.insert(lines, string.format("🔫 Best with %s: set damage +40%% and %s", table.concat(names, " / "), role.Perk))
+		end
+		table.insert(lines, "<b>Per level</b>  (Lv.1–3 from gold · Lv.4–6 with set gear; damage ≈ one hit at your current attack, before crit/combo)")
 		for l = 1, 6 do
 			local text, mult = Config.AugLevelLine(attr, l)
 			local dmg = mult and atk > 0 and string.format("  <font color='#ffd966'>≈ %d dmg</font>", math.floor(atk * mult + 0.5)) or ""
@@ -143,9 +156,10 @@ for zone = 1, ZONES do
 			table.insert(lines, line)
 		end
 		r.Detail.Text = table.concat(lines, "\n")
-		r.Detail.Size = UDim2.new(1, -20, 0, 14 + 15 * 8)
+		local height = 24 + 16 * #lines -- (긴 줄이 접혀도 넘치지 않게 여유)
+		r.Detail.Size = UDim2.new(1, -20, 0, height)
 		r.Detail.Visible = true
-		r.Row.Size = UDim2.new(1, -8, 0, 62 + 14 + 15 * 8 + 6)
+		r.Row.Size = UDim2.new(1, -8, 0, 62 + height + 6)
 	end
 end
 
@@ -177,9 +191,10 @@ local function refresh()
 			end
 			local match = Config.AugWeaponMatch(player, attrKey)
 			r.Desc.RichText = true
-			r.Desc.Text = string.format("<b>%s</b>  ·  %s🔫 Best with %s%s</font>\n%s",
-				Config.AugRoleLabel[role.Role], match and "<font color='#78ff8c'>✔ " or "<font color='#c8cce0'>", table.concat(names, " / "),
-				match and (" — +40% & " .. role.Perk) or "", info.Desc)
+			-- 칸에는 역할 + 잘 맞는 무기만 한 줄로 (자세한 설명은 Details+ 에서)
+			r.Desc.TextTruncate = Enum.TextTruncate.AtEnd
+			r.Desc.Text = string.format("<b>%s</b>  ·  %s🔫 %s%s</font>",
+				Config.AugRoleLabel[role.Role], match and "<font color='#78ff8c'>✔ " or "<font color='#c8cce0'>", table.concat(names, " / "), match and " (+40%)" or "")
 		end
 		r.Toggle.Visible = false -- ON/OFF 글자는 없앴다: 칸을 누르면 켜지고 꺼지며, 켜진 칸은 테두리가 빛나고 제목 앞에 ● 가 붙는다
 		r.Toggle.Text = on and "● ON" or "○ OFF" -- 지금 상태를 보여 주고, 누르면 반대로 바뀐다
