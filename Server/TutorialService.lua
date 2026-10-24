@@ -10,6 +10,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
+local FunnelLog = require(script.Parent:WaitForChild("FunnelLog")) -- 분석: 튜토리얼 몇 번째 미션까지 했는지
 local Keys = require(script.Parent:WaitForChild("KeyService"))
 local Level = require(script.Parent:WaitForChild("LevelService"))
 
@@ -149,6 +150,7 @@ function Tutorial.Load(player, saved)
 		state = { Step = #Steps + 1, Progress = 0 } -- 이미 진행한 유저는 건너뜀
 	else
 		state = { Step = 1, Progress = 0 }
+		FunnelLog.Onboarding(player, 1, "Start")
 	end
 	state.StepStartedAt = os.clock()
 	state.ReelDone = not (typeof(saved) == "table" and saved.ReelDone == false) -- 예전 저장본 / 새 사용자는 이미 받았거나 아직 때가 아니다
@@ -298,6 +300,7 @@ function complete(player, state, step)
 		state.ReelDone = false -- 장비는 필드로 처음 나갈 때 준다 (아래 Zone 감시)
 	end
 	state.Step += 1
+	FunnelLog.Onboarding(player, state.Step, string.format("Mission%d_%s", state.Step - 1, tostring(step.Stat)))
 	state.Progress = 0
 	state.DynGoal = nil
 	state.StepStartedAt = os.clock()

@@ -47,6 +47,7 @@ local Journey = require(Modules:WaitForChild("JourneyService"))
 local Npc = require(Modules:WaitForChild("NpcService"))
 local _admin = require(Modules:WaitForChild("AdminService")) -- 운영자 전용 읽기 화면
 local _ops = require(Modules:WaitForChild("OpsLog")) -- 운영 로그(접속/퇴장/구매): 불러오기만 해도 동작한다
+require(Modules:WaitForChild("FunnelLog")).Start(Quest) -- 분석: 튜토리얼 / 이정표 / 접속 요약 (Creator Hub 애널리틱스)
 
 Monetization.SaveHook = Data.Save -- 결제 영수증 처리 때 "저장 성공"을 확인하는 데 사용
 

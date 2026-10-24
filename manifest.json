@@ -582,6 +582,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/FunnelLog.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "FunnelLog",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/AdminService.lua",
       "parent": "ServerScriptService/Modules",
       "name": "AdminService",
