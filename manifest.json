@@ -547,6 +547,13 @@
       "overwrite": true
     },
     {
+      "path": "GearHideClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "GearHideClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "ChestOpenClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "ChestOpenClient",
