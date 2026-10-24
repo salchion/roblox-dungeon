@@ -2003,7 +2003,7 @@ do
 			augSum += progressive((zone - 1) / (zones - 1)) * mult
 		end
 	end
-	local augK = T / augSum
+	local augK = T / augSum * 0.6 -- 세트 효과는 다른 성장보다 40% 싸게 (전부 올리는 데 기준 수입 약 6시간)
 	function Config.Sets.AugCost(zone, level)
 		local f = (math.clamp(zone, 1, zones) - 1) / (zones - 1)
 		return math.max(1, math.floor(RI(f) * augK * progressive(f) * ease(f) * (Config.Sets.AugCostMult[level] or 8)))
