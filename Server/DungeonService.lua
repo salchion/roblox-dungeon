@@ -587,7 +587,8 @@ end
 -- 보스 패턴 5종 (Fan / Ring / Spiral / Meteor + 광폭화 시 더 빨라짐).
 -- 아래 함수들은 task.spawn 안에서 실행되므로 task.wait 를 쓸 수 있고, 보스가 죽거나 던전이 끝나면 중단한다.
 local function bossAlive(run, part, data)
-	return run.Monsters[part] == data and run.Phase == "Boss"
+	-- (보스러쉬는 단계가 "Wave" 로 유지된다: 예전에는 여기서 걸려 보스러쉬 보스의 패턴이 시작하자마자 전부 멈췄다 = 체력만 많은 표적)
+	return run.Monsters[part] == data and (run.Phase == "Boss" or (run.RiftMode and run.Phase == "Wave"))
 end
 
 -- 패턴 시작 전 예고: 보스 색을 잠깐 바꿈
@@ -1315,13 +1316,16 @@ local function stepRun(run, dt)
 				end
 				end
 
-				if not data.Casting and now >= data.NextPattern then
+				-- 보스러쉬: 보스가 여러 마리 쌓여도 동시에 패턴을 쓰는 보스는 최대 3마리 (화면이 탄으로 덮이지 않게 + 서버 부담)
+				if not data.Casting and now >= data.NextPattern and (not run.RiftMode or (run.RushCasting or 0) < 3) then
 					data.Casting = true
+					if run.RiftMode then run.RushCasting = (run.RushCasting or 0) + 1 end
 					local name = pickBossPattern(run, data)
 					data.LastPattern = name
 					task.spawn(function()
-						BOSS_PATTERNS[name](run, part, data)
+						pcall(BOSS_PATTERNS[name], run, part, data)
 						data.Casting = false
+						if run.RiftMode then run.RushCasting = math.max(0, (run.RushCasting or 1) - 1) end
 						data.NextPattern = os.clock() + (data.Enraged and 1.6 or 2.6)
 					end)
 				end
