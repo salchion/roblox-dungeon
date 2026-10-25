@@ -147,6 +147,32 @@ local function play()
 	local title = text({ Size = UDim2.new(1, 0, 0, 80), Position = UDim2.new(0.5, 0, 0.47, 0), TextSize = 66, TextColor3 = Color3.fromRGB(242, 228, 196), Text = "GEAR RUSH" })
 	local subtitle = text({ Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0.5, 0, 0.47, 56), TextSize = 17, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(190, 175, 150), Text = "D U N G E O N   S H O O T E R" })
 
+	-- 날아가는 동안 보이는 "여정" 표시: 지나가는 구역 이름 + 아래 검은 띠 속 진행 막대 (끝에는 ☠). 이걸 다 뚫고 가야 보스가 있다는 걸 보여 준다
+	local zoneLabel = text({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0.5, 0, 0.84, 0), TextSize = 22, TextColor3 = Color3.fromRGB(236, 226, 200), Text = "" })
+	local barBack = frame({ Size = UDim2.new(0.5, 0, 0, 4), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.955, 0), BackgroundColor3 = Color3.fromRGB(70, 66, 78), BackgroundTransparency = 1, ZIndex = 6 })
+	local barFill = Instance.new("Frame")
+	barFill.Size = UDim2.new(0, 0, 1, 0)
+	barFill.BorderSizePixel = 0
+	barFill.BackgroundColor3 = Color3.fromRGB(226, 176, 96)
+	barFill.BackgroundTransparency = 1
+	barFill.ZIndex = 7
+	barFill.Parent = barBack
+	local ticks = {}
+	for index = 1, F.ZoneCount - 1 do -- 구역 경계 눈금
+		local tick = Instance.new("Frame")
+		tick.Size = UDim2.new(0, 2, 0, 10)
+		tick.AnchorPoint = Vector2.new(0.5, 0.5)
+		tick.Position = UDim2.new((F.ZoneEnd(index) - F.StartX) / F.TotalLength(), 0, 0.5, 0)
+		tick.BorderSizePixel = 0
+		tick.BackgroundColor3 = Color3.fromRGB(150, 144, 160)
+		tick.BackgroundTransparency = 1
+		tick.ZIndex = 7
+		tick.Parent = barBack
+		ticks[#ticks + 1] = tick
+	end
+	local skull = text({ Size = UDim2.new(0, 40, 0, 26), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0.75, 12, 0.955, 0), TextSize = 22, TextColor3 = Color3.fromRGB(230, 90, 90), Text = "☠" })
+	local lordLabel = text({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0.5, 0, 0.84, 0), TextSize = 26, TextColor3 = Color3.fromRGB(235, 90, 90), Text = "☠  THE FINAL LORD  ☠" })
+
 	-- 다른 화면 잠깐 끄기 (끝나면 원래 켜져 있던 것만 복구)
 	for _, other in ipairs(playerGui:GetChildren()) do
 		if other:IsA("ScreenGui") and other ~= gui and other.Enabled then
@@ -285,11 +311,36 @@ local function play()
 	end)
 	task.delay(2.5, function() if not finished then sfx("Aug_Flame", 0.8, 0.6) end end)
 	task.delay(5.2, function() if not finished then sfx("Aug_Flame", 0.7, 0.5) end end)
-	task.wait(FLY_TIME + 0.1)
+	-- 날아가는 동안: 진행 막대가 차오르고, 구역을 지날 때마다 구역 이름이 뜬다
+	TweenService:Create(barBack, TweenInfo.new(0.6), { BackgroundTransparency = 0.2 }):Play()
+	TweenService:Create(barFill, TweenInfo.new(0.6), { BackgroundTransparency = 0 }):Play()
+	TweenService:Create(skull, TweenInfo.new(0.6), { TextTransparency = 0 }):Play()
+	for _, tick in ipairs(ticks) do TweenService:Create(tick, TweenInfo.new(0.6), { BackgroundTransparency = 0.2 }):Play() end
+	local flyStart = os.clock()
+	local lastZone = 0
+	while os.clock() - flyStart < FLY_TIME + 0.1 and not finished do
+		local x = camera.CFrame.Position.X
+		barFill.Size = UDim2.new(math.clamp((x - F.StartX) / F.TotalLength() + 0.02, 0, 1), 0, 1, 0)
+		local zone = x < F.StartX and 0 or F.ZoneOfX(x)
+		if zone ~= lastZone and zone >= 1 then
+			lastZone = zone
+			zoneLabel.Text = string.format("ZONE %d  ·  %s   %s", zone, F.ZoneNames[zone] or "", string.rep("☠", zone))
+			zoneLabel.TextTransparency = 0.6
+			TweenService:Create(zoneLabel, TweenInfo.new(0.25), { TextTransparency = 0, TextStrokeTransparency = 0.6 }):Play()
+			task.delay(0.8, function()
+				if not finished and lastZone == zone then
+					TweenService:Create(zoneLabel, TweenInfo.new(0.5), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+				end
+			end)
+		end
+		RunService.RenderStepped:Wait()
+	end
 	if finished then return end
+	TweenService:Create(zoneLabel, TweenInfo.new(0.3), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
 
 	-- 2) 보스가 눈을 뜬다 -> 에너지를 모은다 (구슬이 커지고 화면이 떨린다)
 	sfx("Lord_Voice", 0.9)
+	TweenService:Create(lordLabel, TweenInfo.new(0.6), { TextTransparency = 0, TextStrokeTransparency = 0.5 }):Play()
 	for _, eye in ipairs(eyes) do
 		TweenService:Create(eye, TweenInfo.new(0.7), { Transparency = 0 }):Play()
 	end
@@ -317,6 +368,9 @@ local function play()
 	if finished then return end
 
 	-- 3) 발사: 광선이 화면으로 날아오고, 화면이 깨진다 (유리 판 + 금 -> 와장창 조각으로 흩어진다)
+	for _, item in ipairs({ lordLabel, skull }) do TweenService:Create(item, TweenInfo.new(0.3), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play() end
+	for _, item in ipairs({ barBack, barFill }) do TweenService:Create(item, TweenInfo.new(0.3), { BackgroundTransparency = 1 }):Play() end
+	for _, tick in ipairs(ticks) do TweenService:Create(tick, TweenInfo.new(0.3), { BackgroundTransparency = 1 }):Play() end
 	sfx("Lord_Blast", 1.0)
 	sfx("Ult_Finale", 0.8)
 	local distance = (arrivePos - orb.Position).Magnitude
