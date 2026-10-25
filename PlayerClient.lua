@@ -3120,6 +3120,13 @@ end
 Remotes.Quest.OnClientEvent:Connect(function(action, data)
 	if action == "State" then
 		questState = data
+		local ready = false
+		for _, list in ipairs({ data and data.Daily or {}, data and data.Achievements or {} }) do
+			for _, entry in ipairs(list) do
+				if not entry.Claimed and entry.Progress >= entry.Goal then ready = true end
+			end
+		end
+		player:SetAttribute("DotQuest", ready) -- 왼쪽 메뉴 버튼의 빨간 점
 		if menuPanel.Visible then
 			refreshMenu()
 		end
@@ -3998,6 +4005,22 @@ end)
 function toggleHelp()
 	helpPanel.Visible = not helpPanel.Visible
 end
+
+-- 왼쪽 메뉴 버튼 줄(MenuDockClient)이 보내는 신호: "OpenMenuTab" = "탭" 또는 "탭:하위", "OpenHelp" = 설정 창
+player:GetAttributeChangedSignal("OpenHelp"):Connect(toggleHelp)
+player:GetAttributeChangedSignal("OpenMenuTab"):Connect(function()
+	local want = player:GetAttribute("OpenMenuTab")
+	if type(want) ~= "string" then return end
+	local key, subKey = string.match(want, "^([^:]+):?(.*)$")
+	if subKey == "" then subKey = nil end
+	if menuPanel.Visible and currentTab == key and (not subKey or MENU.Sub[key] == subKey) then
+		menuPanel.Visible = false -- 같은 버튼을 한 번 더 누르면 닫는다
+		return
+	end
+	if not menuPanel.Visible then toggleMenu() end
+	local ok, err = pcall(selectTab, key, subKey)
+	if not ok then warn("[Menu] " .. tostring(err)) end
+end)
 
 workspace.DescendantAdded:Connect(function(instance)
 	if instance:IsA("Sound") then

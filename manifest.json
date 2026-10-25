@@ -463,6 +463,13 @@
       "overwrite": true
     },
     {
+      "path": "MenuDockClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "MenuDockClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "MobileLayoutClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "MobileLayoutClient",

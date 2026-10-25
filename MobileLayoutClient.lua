@@ -29,7 +29,7 @@ local PANEL_Y = 52      -- 접이식 패널 / 레이더 시작 높이 (버튼 �
 local THEIRS = { HUD = true, ShopGui = true, GoalHUD = true, RiftHUD = true, TutorialHUD = true }
 local OWN = { HudGui = true, LevelStatGui = true, PetGui = true, HUDFx = true, EvolveFx = true, AugGui = true }
 
-local GROW = { WeaponBarGui = true, DpsPanelGui = true, DepthGui = true, OnlineGui = true } -- 데스크톱에서만 크게 키우는 화면
+local GROW = { WeaponBarGui = true, DpsPanelGui = true, DepthGui = true, OnlineGui = true, MenuDockGui = true } -- 데스크톱에서만 크게 키우는 화면
 local st = { compact = false, s = 1 }
 local saved = {}      -- [객체] = { [속성] = { 원래 값 } }
 local cache = {}
