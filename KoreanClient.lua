@@ -1,0 +1,142 @@
+-- KoreanClient (StarterPlayer > StarterPlayerScripts 안의 LocalScript, 이름: KoreanClient)
+-- 설정 창의 "Language" 버튼(Attribute UiLang = "ko" / "en")에 맞춰, 화면에 보이는 글자를 한국어로 바꿔 보여 준다.
+-- 방식: 글자가 "사전(DICT)에 있는 문장"과 똑같으면 한국어로 바꾼다 (숫자가 들어가는 문장은 PATTERNS). 영어로 돌아가면 원래 글자로 되돌린다.
+-- 아직 사전에 없는 문장(긴 설명 등)은 영어 그대로 보인다: 사전에 줄을 추가하면 늘어난다.
+-- 기본값: Roblox 언어 설정이 한국어면 "ko", 아니면 "en".
+
+local Players = game:GetService("Players")
+local LocalizationService = game:GetService("LocalizationService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local DICT = {
+	-- 메뉴 / 탭
+	["Character"] = "캐릭터", ["Skills·Growth"] = "스킬·성장", ["Quests"] = "퀘스트", ["Ranking"] = "랭킹",
+	["🛡 Gear"] = "🛡 장비", ["🔫 Weapon"] = "🔫 무기", ["📊 Info"] = "📊 정보",
+	["Gear"] = "장비", ["Weapon"] = "무기", ["Growth"] = "성장", ["Pets"] = "펫", ["Shop"] = "상점", ["Settings"] = "설정",
+	["📋 Menu(B)"] = "📋 메뉴(B)", ["📋 Menu"] = "📋 메뉴", ["⚙ Settings(H)"] = "⚙ 설정(H)", ["✨ Stats (T)"] = "✨ 스탯 (T)",
+	["⚙ Settings / ❓ Help"] = "⚙ 설정 / ❓ 도움말", ["✨ Level Stats"] = "✨ 레벨 스탯",
+	["Close"] = "닫기", ["Close (B)"] = "닫기 (B)", ["Close (H)"] = "닫기 (H)", ["Close (J)"] = "닫기 (J)",
+	["🎁 Shop"] = "🎁 상점", ["📖 Codex"] = "📖 도감", ["🐾 Pet"] = "🐾 펫", ["🏆 Power Ranking"] = "🏆 전투력 랭킹", ["🏆 Weekly Ranking"] = "🏆 주간 랭킹",
+	["🏆 Ranking"] = "🏆 랭킹", ["🎒 Gear"] = "🎒 장비",
+	-- 자주 보이는 버튼
+	["OK"] = "확인", ["Accept"] = "수락", ["Decline"] = "거절", ["Enter"] = "입장", ["Back to Lobby"] = "로비로", ["Leave Dungeon"] = "던전 나가기",
+	["Leave Party"] = "파티 나가기", ["Invite"] = "초대", ["Kick"] = "추방", ["In party"] = "파티 중", ["Upgrade"] = "강화", ["MAX"] = "최대", ["Max"] = "최대",
+	["Reset"] = "초기화", ["Reset All (Free)"] = "전체 초기화 (무료)", ["Start Training"] = "훈련 시작", ["Start Breakthrough"] = "돌파 시작",
+	["Dash"] = "대시", ["Tallying..."] = "집계 중...", ["Loading..."] = "불러오는 중...", ["Rolling"] = "뽑는 중",
+	["⛺ Warp"] = "⛺ 이동", ["✔ Unlocked"] = "✔ 해금됨", ["▶ Next!"] = "▶ 다음!", ["SUCCESS!"] = "성공!", ["FAIL"] = "실패", ["BOSS"] = "보스",
+	["🔨 Weapon Upgrade"] = "🔨 무기 강화", ["🔫 Fight with this weapon"] = "🔫 이 무기로 싸우기", ["👀 Preview"] = "👀 미리보기",
+	["⬆ Auto-equip stronger gear"] = "⬆ 더 좋은 장비 자동 장착",
+	["⚔ Select Dungeon"] = "⚔ 던전 선택", ["🏰 Dungeon"] = "🏰 던전", ["⚔ Enter the Boss Rush"] = "⚔ 보스 러시 입장", ["👹 Boss Rush"] = "👹 보스 러시",
+	["👹 Boss Rush Results"] = "👹 보스 러시 결과", ["Difficulty"] = "난이도", ["Lobby Players (Invite)"] = "로비 유저 (초대)",
+	["🛡 Gear · Gacha"] = "🛡 장비 · 뽑기", ["📊 Chest Odds"] = "📊 상자 확률", ["📊 Odds"] = "📊 확률", ["📊 Full odds table"] = "📊 전체 확률표",
+	["🎯 Dummy DPS"] = "🎯 허수아비 DPS", ["Perks (this dungeon only)"] = "특성 (이번 던전 한정)", ["A special room!"] = "특별한 방!",
+	["A random buff was applied"] = "무작위 강화가 적용되었습니다", ["Got it, let's get stronger!"] = "알겠어요, 강해지러 가요!",
+	["Follow the sky-blue light beam"] = "하늘색 빛줄기를 따라가세요", ["🏆 NEW WEEKLY BEST! Ranking updated"] = "🏆 주간 신기록! 랭킹이 갱신되었습니다",
+	["✦ MYTHIC ✦"] = "✦ 신화 ✦", ["◎ DEADEYE ◎"] = "◎ 데드아이 ◎", ["🎁 Bonus triggered!"] = "🎁 보너스 발동!",
+	["⏱ Use Time Skip"] = "⏱ 시간 건너뛰기 사용", ["⚙ Features (more unlock as you level up)"] = "⚙ 기능 (레벨이 오르면 더 열려요)",
+	["🎨 Looks (cosmetic only)"] = "🎨 외형 (꾸미기 전용)", ["🖌 Color"] = "🖌 색상",
+	-- 스킬 / 전투
+	["Gale Sweep"] = "돌풍", ["First Aid"] = "응급 치료", ["Deadeye"] = "데드아이", ["Auto-Attack"] = "자동 공격",
+	["🌪"] = "🌪", ["Dungeon Lord"] = "던전 군주",
+	-- 설정 창 안내 (줄 단위가 아니라 통째로 쓰는 문장만)
+	["Auto-Attack ON"] = "자동 공격 켜짐", ["Auto-Attack OFF"] = "자동 공격 꺼짐",
+}
+
+-- 숫자 등이 들어가는 문장: { 영어 패턴, 한국어 서식 } (영어 패턴의 (캡처)가 한국어 서식의 %s 자리에 순서대로 들어간다)
+local PATTERNS = {
+	{ "^Upgrade (%d+) G$", "강화 %s G" },
+	{ "^Lv%.(%d+)$", "Lv.%s" },
+	{ "^Depth (%d+)$", "깊이 %s" },
+	{ "^🔊 Music Volume: (%d+)%%$", "🔊 음악 볼륨: %s%%" },
+	{ "^🔫 Gunshot Volume: (%d+)%%$", "🔫 총소리 볼륨: %s%%" },
+	{ "^📳 Screen Shake: ON$", "📳 화면 흔들림: 켜짐" }, { "^📳 Screen Shake: OFF$", "📳 화면 흔들림: 꺼짐" },
+	{ "^📡 Radar: ON$", "📡 레이더: 켜짐" }, { "^📡 Radar: OFF$", "📡 레이더: 꺼짐" },
+	{ "^🖥 Low%-spec mode %(less lag%): ON$", "🖥 저사양 모드 (렉 줄이기): 켜짐" }, { "^🖥 Low%-spec mode %(less lag%): OFF$", "🖥 저사양 모드 (렉 줄이기): 꺼짐" },
+	{ "^👕 Hide gear look %(weapon stays%): ON$", "👕 장비 외형 숨기기 (무기는 유지): 켜짐" }, { "^👕 Hide gear look %(weapon stays%): OFF$", "👕 장비 외형 숨기기 (무기는 유지): 꺼짐" },
+	{ "^🔍 UI Size: Small %(PC%)$", "🔍 UI 크기: 작게 (PC)" }, { "^🔍 UI Size: Normal %(PC%)$", "🔍 UI 크기: 보통 (PC)" },
+	{ "^🔍 UI Size: Large %(PC%)$", "🔍 UI 크기: 크게 (PC)" }, { "^🔍 UI Size: X%-Large %(PC%)$", "🔍 UI 크기: 아주 크게 (PC)" },
+	{ "^🌐 Language: English$", "🌐 언어: English" }, { "^🌐 Language: 한국어$", "🌐 언어: 한국어" },
+}
+
+local lang = player:GetAttribute("UiLang")
+if lang ~= "ko" and lang ~= "en" then
+	local ok, id = pcall(function() return LocalizationService.RobloxLocaleId end)
+	lang = (ok and type(id) == "string" and string.sub(id, 1, 2) == "ko") and "ko" or "en"
+	player:SetAttribute("UiLang", lang)
+end
+
+local originals = setmetatable({}, { __mode = "k" }) -- [글자 객체] = 원래(영어) 글자
+
+local function translate(text)
+	local direct = DICT[text]
+	if direct then return direct end
+	for _, entry in ipairs(PATTERNS) do
+		local captures = { string.match(text, entry[1]) }
+		if #captures > 0 or string.find(text, entry[1]) then
+			local ok, result = pcall(string.format, entry[2], table.unpack(captures))
+			if ok then return result end
+		end
+	end
+	return nil
+end
+
+local applying = false
+local function apply(obj)
+	if lang ~= "ko" then return end
+	local text = obj.Text
+	local ko = translate(text)
+	if ko and ko ~= text then
+		applying = true
+		originals[obj] = text
+		obj.Text = ko
+		applying = false
+	end
+end
+
+local watched = setmetatable({}, { __mode = "k" })
+local function watch(obj)
+	if watched[obj] then return end
+	if not (obj:IsA("TextLabel") or obj:IsA("TextButton")) then return end
+	watched[obj] = true
+	apply(obj)
+	obj:GetPropertyChangedSignal("Text"):Connect(function()
+		if applying then return end
+		originals[obj] = nil -- 게임이 새 글자를 넣었다 (영어로 온다): 다시 번역한다
+		apply(obj)
+	end)
+end
+
+local function watchTree(root)
+	for _, obj in ipairs(root:GetDescendants()) do watch(obj) end
+	root.DescendantAdded:Connect(watch)
+end
+
+local function refreshAll()
+	for obj, english in pairs(originals) do
+		if obj.Parent and lang ~= "ko" then
+			applying = true
+			obj.Text = english
+			applying = false
+		end
+	end
+	if lang ~= "ko" then originals = setmetatable({}, { __mode = "k" }) return end
+	for obj in pairs(watched) do
+		if obj.Parent then apply(obj) end
+	end
+end
+
+player:GetAttributeChangedSignal("UiLang"):Connect(function()
+	local want = player:GetAttribute("UiLang")
+	if want ~= "ko" and want ~= "en" then return end
+	lang = want
+	refreshAll()
+end)
+
+for _, gui in ipairs(playerGui:GetChildren()) do
+	if gui:IsA("ScreenGui") then watchTree(gui) end
+end
+playerGui.ChildAdded:Connect(function(gui)
+	if gui:IsA("ScreenGui") then task.defer(watchTree, gui) end
+end)

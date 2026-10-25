@@ -470,6 +470,13 @@
       "overwrite": true
     },
     {
+      "path": "KoreanClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "KoreanClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "MobileLayoutClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "MobileLayoutClient",

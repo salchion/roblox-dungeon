@@ -3900,7 +3900,7 @@ end
 
 do
 local helpPanel = makePanel({
-	Size = UDim2.new(0, 560, 0, 704), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
+	Size = UDim2.new(0, 560, 0, 748), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
 }, gui)
 makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8), Text = "⚙ Settings / ❓ Help", Font = Enum.Font.GothamBlack, TextSize = 19 }, helpPanel)
 makeLabel({
@@ -4004,6 +4004,9 @@ do
 		end
 		return 2
 	end
+	settingButton(628, function() return "🌐 Language: " .. (player:GetAttribute("UiLang") == "ko" and "한국어" or "English") end, function()
+		player:SetAttribute("UiLang", player:GetAttribute("UiLang") == "ko" and "en" or "ko")
+	end)
 	settingButton(588, function() return "🔍 UI Size: " .. sizes[sizeIndex()][2] .. " (PC)" end, function()
 		player:SetAttribute("UiPref", sizes[sizeIndex() % #sizes + 1][1])
 	end)
