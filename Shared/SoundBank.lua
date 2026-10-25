@@ -20,10 +20,10 @@ local SPECS = {
 	-- (SMG 는 AudioBank 의 소리 ID 를 그대로 쓴다: 직접 넣은 소리는 Fx / Layers 가공이 적용되지 않는다. 연사라서 길이는 짧게 끊는다)
 	-- (소리 파일이 2초라서 연사(약 0.14초 간격)하면 서로 겹쳐 "총소리 같으면서 아닌" 소리가 났다: 앞 소리를 0.3초에서 끊고(CustomLength), 다음 발이 나갈 때 앞 소리를 바로 줄여 끊는다(Choke) -> 한 발 한 발 또렷한 연사음)
 	-- ("방망이로 두드리는 둔탁한 느낌" 의견: 저음이 많고 갈라지는 소리가 약해서 -> 음을 12% 높이고, 저음을 깎고 고음을 살렸다)
-	--  후보 A (지금, AudioBank 에 ID 가 없을 때): 기본 총소리를 조금 낮게(0.95) + 아주 짧게(0.2초) 끊어 "두두두두" 하는 한 발 한 발의 연사음으로 (Choke 가 앞 소리를 끊어 겹치지 않는다)
-	--  후보 B (AudioBank 에 ID 가 있을 때): 아래 Custom* 값이 쓰인다
-	Shot_Smg      = { Base = "Shot", Pitch = 0.95, Volume = 1.25, Length = 0.2, Choke = true,
-		Fx = { { "distortion", { Level = 0.22 } }, { "eq", { LowGain = 2, MidGain = 1, HighGain = -3 } } },
+	--  후보 C (지금, AudioBank 에 ID 가 없을 때): 소총(Rifle) 소리에서 변형 - 소총과 같은 기본 소리 / 같은 짧은 잔향 느낌에서, 꼬리를 0.24초로 잘라 한 발 한 발 짧게 만들고 음을 5% 높였다. Choke 가 앞 소리를 끊어 "두두두두" 로 이어진다
+	--  (후보 B = AudioBank 에 ID 를 적으면 아래 Custom* 값이 쓰인다)
+	Shot_Smg      = { Base = "Shot", Pitch = 1.05, Volume = 1.0, Length = 0.24, Choke = true,
+		Fx = { { "reverb", { DecayTime = 0.5, WetLevel = -9 } } },
 		CustomLength = 0.3, CustomPitch = 1.12, CustomFx = { { "eq", { LowGain = -10, MidGain = 1, HighGain = 5 } } } },
 	Shot_Revolver = { Base = "Shot", CustomLength = 1.4, Volume = 0.9, Pitch = 0.82, Length = 1.3, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -4 } } } },
 	Shot_Rifle    = { Base = "Shot", Pitch = 1.0, Volume = 0.9, Length = 0.9, Fx = { { "reverb", { DecayTime = 0.8, WetLevel = -9 } } } },
