@@ -66,14 +66,14 @@ local function promptPosition(prompt)
 	return parent:GetPivot().Position
 end
 Tutorial.SetTargets({ -- 튜토리얼 미션 표지 위치
-	Dummy = lobby.StarterDummy + Vector3.new(0, 4, 0), -- 경사로 아래 입문용 허수아비 (스폰에서 내려오면 바로 보인다)
+	Dummy = lobby.DummyStart + Vector3.new(0, 1, 0), -- 대장간 옆 훈련장의 큰 허수아비 (입문용 둘째 허수아비는 없앴다)
 	Anvil = promptPosition(lobby.AnvilPrompt),
 	Gacha = promptPosition(lobby.GachaPrompt),
 	Field = promptPosition(lobby.WarpPrompt),
 	Gate = promptPosition(lobby.GatePrompt),
 })
 Dungeon.Init(lobby.SpawnCFrame)
-Dummy.Build(lobby.DummyStart, lobby.StarterDummy)
+Dummy.Build(lobby.DummyStart)
 Dummy.BuildRest(lobby.RestStart) -- 휴식 구역 (방치 수입)
 Npc.Init(lobby.DummyStart.Y, { -- 시설마다 NPC 가 서서 말을 건다 (허공에 대고 말하는 느낌을 없애려고)
 	{ Name = "Tom", Title = "🔨 Blacksmith", Position = promptPosition(lobby.AnvilPrompt), Shirt = Color3.fromRGB(150, 98, 60), Pants = Color3.fromRGB(70, 56, 48), Hat = "cap", Accent = Color3.fromRGB(110, 70, 44), Prop = "hammer",

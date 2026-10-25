@@ -131,7 +131,7 @@ Config.Tutorial = {
 	Steps = {
 		-- 허수아비를 쏘고 나면 바로 사냥하러 나간다 (예전의 "모루에서 강화 2번" 미션은 흐름을 끊어서 뺐다: 강화는 마지막 미션에서 배운다)
 		-- Reel: 필드에 처음 들어서면 슬롯 릴이 돌면서 겹치지 않는 부위 장비 3개를 준다
-		{ Text = "🎯 Shoot the practice dummy right in front of you! Click the mouse to fire (R key = auto-aim)", Stat = "DummyHits", Goal = 8, Target = "Dummy", TargetName = "Dummy", Reel = true,
+		{ Text = "🎯 Shoot the dummy at the training ground next to the forge! Click the mouse to fire (R key = auto-aim)", Stat = "DummyHits", Goal = 8, Target = "Dummy", TargetName = "Dummy", Reel = true,
 			Reward = { Gold = 250, Tickets = 1 } },
 		-- 이야기: 필드 군주를 쓰러뜨리면 열쇠가 떨어져 바닥이 갈라지고 -> 던전 -> 던전 보스를 쓰러뜨리면 최후의 군주가 나타나 압도당하고 -> 마을에서 전리품으로 뽑기 / 강화
 		{ Text = "Head east to the field and defeat the first zone's Lord (👑)! (You'll get your first gear when you enter the field) ...You sense an ominous presence. Be careful!", Stat = "BossKills", Goal = 1, Target = "Field", TargetName = "Field Entrance", Doom = true,
