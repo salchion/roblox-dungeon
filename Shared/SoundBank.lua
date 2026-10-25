@@ -6,6 +6,7 @@
 -- 서버(총소리 / 스킬 / 폭발)와 클라이언트(적중음 / 처치음)가 같이 쓴다.
 
 local Debris = game:GetService("Debris")
+local TweenService = game:GetService("TweenService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
@@ -22,7 +23,7 @@ local SPECS = {
 	-- ("방망이로 두드리는 둔탁한 느낌" 의견: 저음이 많고 갈라지는 소리가 약해서 -> 음을 12% 높이고, 저음을 깎고 고음을 살렸다)
 	--  후보 C (지금, AudioBank 에 ID 가 없을 때): 소총(Rifle) 소리에서 변형 - 소총과 같은 기본 소리 / 같은 짧은 잔향 느낌에서, 꼬리를 0.24초로 잘라 한 발 한 발 짧게 만들고 음을 5% 높였다. Choke 가 앞 소리를 끊어 "두두두두" 로 이어진다
 	--  (후보 B = AudioBank 에 ID 를 적으면 아래 Custom* 값이 쓰인다)
-	Shot_Smg      = { Base = "Shot", Pitch = 1.25, Volume = 0.95, Length = 0.16, Choke = true, -- ("더 가볍게 / 덜 겹치게": 음 1.05 -> 1.25, 길이 0.19 -> 0.16, 잔향 줄임, 저음 약간 깎음)
+	Shot_Smg      = { Base = "Shot", Pitch = 1.25, Volume = 0.95, Length = 0.2, Choke = true, -- ("더 가볍게 / 덜 겹치게": 음 1.05 -> 1.25, 길이 0.19 -> 0.16, 잔향 줄임, 저음 약간 깎음)
 		Fx = { { "reverb", { DecayTime = 0.3, WetLevel = -14 } }, { "eq", { LowGain = -5, MidGain = 0, HighGain = 2 } } },
 		CustomLength = 0.3, CustomPitch = 1.12, CustomFx = { { "eq", { LowGain = -10, MidGain = 1, HighGain = 5 } } } },
 	Shot_Revolver = { Base = "Shot", CustomLength = 1.4, Volume = 0.9, Pitch = 0.82, Length = 1.3, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -4 } } } },
@@ -271,8 +272,9 @@ function SoundBank.Play(parent, key, opts)
 	if spec.Choke then
 		local previous = chokeLast[key]
 		if previous and previous.Parent then
-			previous.Volume = previous.Volume * 0.08 -- 앞 소리를 거의 즉시 줄이고 짧게 끊는다 (살짝 겹쳐 들린다는 의견)
-			task.delay(0.02, function() if previous.Parent then previous:Stop() end end)
+			-- 앞 소리는 뚝 끊지 않고 아주 짧게(0.05초) 줄여 없앤다: 겹치지는 않으면서 "툭툭 끊어진다"는 느낌은 없게
+			TweenService:Create(previous, TweenInfo.new(0.05, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Volume = 0 }):Play()
+			task.delay(0.07, function() if previous.Parent then previous:Stop() end end)
 		end
 		chokeLast[key] = main
 	end
@@ -286,12 +288,21 @@ function SoundBank.Play(parent, key, opts)
 		end
 	end
 	-- 길이를 넘는 꼬리는 잘라 낸다 (짧고 또렷하게)
-	task.delay(length, function()
-		if main.Parent then
-			main.Volume = main.Volume * 0.5
-			task.delay(spec.Choke and 0.04 or 0.15, function() if main.Parent then main:Stop() end end)
-		end
-	end)
+	if spec.Choke then -- 연사음: 끝나기 전 0.06초 동안 부드럽게 줄여서 끝낸다 (갑자기 잘리면 "툭툭" 소리가 난다)
+		task.delay(math.max(0, length - 0.06), function()
+			if main.Parent then
+				TweenService:Create(main, TweenInfo.new(0.06, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Volume = 0 }):Play()
+				task.delay(0.08, function() if main.Parent then main:Stop() end end)
+			end
+		end)
+	else
+		task.delay(length, function()
+			if main.Parent then
+				main.Volume = main.Volume * 0.5
+				task.delay(0.15, function() if main.Parent then main:Stop() end end)
+			end
+		end)
+	end
 	return main
 end
 
