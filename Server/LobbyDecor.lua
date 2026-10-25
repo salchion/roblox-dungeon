@@ -9,7 +9,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 
 local LobbyDecor = {}
 
-local MAX_PARTS = 640
+local MAX_PARTS = 820 -- (전부 고정 / 충돌 없음 / 그림자 없음이라 부품 수가 늘어도 부담이 작다)
 local MAX_LIGHTS = 4
 local MAX_EMITTERS = 3
 
@@ -141,8 +141,10 @@ function LobbyDecor.Build(parent, ctx)
 		box("PlanterStone", Vector3.new(4, 1.1, 2.2), base + Vector3.new(0, 0.55, 0), STONE, M.Cobblestone, yaw)
 		box("PlanterSoil", Vector3.new(3.4, 0.2, 1.6), base + Vector3.new(0, 1.15, 0), SOIL, M.Ground, yaw)
 		local cf = CFrame.new(base) * CFrame.Angles(0, yaw, 0)
+		-- 잎 덤불 위에 납작한 꽃송이 (예전: 동그란 공 3개가 달걀처럼 보였다)
+		add("PlanterLeaves", Vector3.new(3.3, 0.9, 1.5), cf * CFrame.new(0, 1.45, 0), LEAF[flowerCounter % 3 + 1], M.Grass, Enum.PartType.Ball)
 		for i = -1, 1 do
-			add("Flower", Vector3.new(0.9, 0.9, 0.9), cf * CFrame.new(i * 1.1, 1.55, 0), nextFlower(), M.SmoothPlastic, Enum.PartType.Ball)
+			add("Flower", Vector3.new(0.75, 0.32, 0.75), cf * CFrame.new(i * 1.05, 1.95 + (i == 0 and 0.12 or 0), (i % 2) * 0.25), nextFlower(), M.Fabric, Enum.PartType.Ball)
 		end
 	end
 	local function tree(x, z, h, y)
@@ -328,7 +330,7 @@ function LobbyDecor.Build(parent, ctx)
 			local x, z = cx + math.cos(a) * 37, cz + math.sin(a) * 37
 			bush(x, z, 3.6, 0.2)
 			for k = 0, 2 do
-				ball("Flower", 0.9, g(x + 2.2 + k * 0.8, z + (k % 2) * 1.2, 0.7), nextFlower(), M.SmoothPlastic)
+				ball("Flower", 0.75, g(x + 2.2 + k * 0.8, z + (k % 2) * 1.2, 0.45), nextFlower(), M.Fabric, 0.32)
 			end
 		end
 		label(anchorPart("PlazaSignAnchor", g(cx, cz, 11)), "⛲ Town Plaza", rgb(255, 232, 170), 0, 240, 56, 50)
@@ -370,7 +372,7 @@ function LobbyDecor.Build(parent, ctx)
 		end
 		for i = 0, 7 do
 			local a = i / 8 * math.pi * 2 + 0.3
-			ball("Flower", 0.9, hc + Vector3.new(math.cos(a) * 11.5, 0.6, math.sin(a) * 11.5), nextFlower(), M.SmoothPlastic)
+			ball("Flower", 0.75, hc + Vector3.new(math.cos(a) * 11.5, 0.4, math.sin(a) * 11.5), nextFlower(), M.Fabric, 0.32)
 		end
 		for i = 0, 7 do -- 언덕 옆면 이끼 / 덩굴
 			local a = math.rad(212 + i * 17)
@@ -568,6 +570,22 @@ function LobbyDecor.Build(parent, ctx)
 		for i = 0, 11 do -- 사거리 돌 고리
 			local a = i / 12 * math.pi * 2
 			box("CrossTile", Vector3.new(4.6, 0.07, 2.4), g(math.cos(a) * 11.5, math.sin(a) * 11.5, 0.3), i % 2 == 0 and STONE_LIGHT or STONE, M.Cobblestone, -(a + math.pi / 2))
+		end
+		-- 길가 등불 기둥: 돌 받침 + 쇠기둥 + 팔 + 매달린 등 (빛 부품 없이 따뜻한 색만: 조명 비용 없음)
+		local function lanternPost(x, z, armDir)
+			box("LanternBase", Vector3.new(1.4, 0.6, 1.4), g(x, z, 0.3), STONE_DARK, M.Cobblestone)
+			vcyl("LanternPole", 8.5, 0.45, g(x, z, 0.6), rgb(52, 50, 58), M.Metal)
+			box("LanternArm", Vector3.new(armDir.X ~= 0 and 2 or 0.25, 0.25, armDir.Z ~= 0 and 2 or 0.25), g(x + armDir.X, z + armDir.Z, 8.8), rgb(52, 50, 58), M.Metal)
+			box("LanternCap", Vector3.new(1.3, 0.35, 1.3), g(x + armDir.X * 2, z + armDir.Z * 2, 8.45), rgb(52, 50, 58), M.Metal)
+			box("LanternGlass", Vector3.new(0.95, 1.2, 0.95), g(x + armDir.X * 2, z + armDir.Z * 2, 7.65), rgb(255, 196, 120), M.Neon, nil, 0.15)
+		end
+		for _, z in ipairs({ -82, -42 }) do
+			lanternPost(-10.6, z, Vector3.new(1, 0, 0) * 0.5)
+			lanternPost(10.6, z, Vector3.new(-1, 0, 0) * 0.5)
+		end
+		for _, x in ipairs({ -46, 46 }) do
+			lanternPost(x, -8.6, Vector3.new(0, 0, 1) * 0.5)
+			lanternPost(x, 8.6, Vector3.new(0, 0, -1) * 0.5)
 		end
 		flag(-13, -13, 9, SAGE, 0, 1)
 		flag(13, -13, 9, MUSTARD, 0, 1)

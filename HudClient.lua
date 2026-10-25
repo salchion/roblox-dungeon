@@ -139,3 +139,16 @@ player:GetAttributeChangedSignal("Level"):Connect(function()
 	end
 	lastLevel = level
 end)
+
+-- 내 머리 위 칭호 글자(예: 🏆 Hall of Fame #1)는 내 화면에서는 숨긴다: 화면 가운데를 가리고, 칭호는 이 카드 이름 앞에 이미 보인다 (다른 사람에게는 보인다)
+local function hideOwnTitle(character)
+	local head = character:WaitForChild("Head", 10)
+	if not head then return end
+	local function check(child)
+		if child.Name == "TitleTag" and child:IsA("BillboardGui") then child.Enabled = false end
+	end
+	for _, child in ipairs(head:GetChildren()) do check(child) end
+	head.ChildAdded:Connect(check)
+end
+player.CharacterAdded:Connect(hideOwnTitle)
+if player.Character then task.spawn(hideOwnTitle, player.Character) end

@@ -46,9 +46,9 @@ local function apply(player)
 		gui = Instance.new("BillboardGui")
 		gui.Name = "TitleTag"
 		gui.Adornee = head
-		gui.Size = UDim2.new(0, 220, 0, 26)
-		gui.StudsOffset = Vector3.new(0, 3.4, 0)
-		gui.MaxDistance = 70
+		gui.Size = UDim2.new(0, 150, 0, 17) -- (예전 220x26: 화면 가운데를 크게 가렸다)
+		gui.StudsOffset = Vector3.new(0, 3.1, 0)
+		gui.MaxDistance = 60
 		gui.AlwaysOnTop = false
 		local label = Instance.new("TextLabel")
 		label.Name = "Label"

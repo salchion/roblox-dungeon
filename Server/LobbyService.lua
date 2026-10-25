@@ -273,7 +273,7 @@ function Lobby.Build()
 	-- 바닥 (잔디) + 동쪽 필드로 이어지는 다리
 	makePart({
 		Name = "Floor", Size = Vector3.new(HALF * 2, 2, HALF * 2), Position = Vector3.new(0, TOP - 1, 0),
-		Color = Color3.fromRGB(58, 60, 78), Material = Enum.Material.Slate,
+		Color = Color3.fromRGB(62, 58, 58), Material = Enum.Material.Slate, -- (판 사이 줄눈 색)
 	}, folder)
 	-- 바닥 타일: 큰 정사각 석판을 번갈아 깔아서 풀밭이 아니라 "돌로 포장된 마을"처럼 보이게 한다
 	do
@@ -281,12 +281,13 @@ function Lobby.Build()
 		local count = HALF * 2 // tile
 		for ix = 0, count - 1 do
 			for iz = 0, count - 1 do
-				local dark = (ix + iz) % 2 == 0
+				-- 체스판처럼 두 색을 번갈아 깔면 Studio 기본 바닥처럼 보여서: 따뜻한 돌색에 판마다 살짝 다른 색 / 재질 (부품 수는 같다)
+				local shade = (ix * 7 + iz * 13) % 5
+				local warm = Color3.fromRGB(104 + shade * 5, 98 + shade * 4, 94 + shade * 3)
 				makePart({
-					Name = "FloorTile", Size = Vector3.new(tile - 0.6, 0.1, tile - 0.6),
+					Name = "FloorTile", Size = Vector3.new(tile - 0.5, 0.1, tile - 0.5),
 					Position = Vector3.new(-HALF + tile * (ix + 0.5), TOP + 0.04, -HALF + tile * (iz + 0.5)),
-					Color = dark and Color3.fromRGB(74, 78, 100) or Color3.fromRGB(88, 93, 118),
-					Material = Enum.Material.Slate, CanCollide = false, CanQuery = false,
+					Color = warm, Material = (ix + iz) % 3 == 0 and Enum.Material.Pavement or Enum.Material.Slate, CanCollide = false, CanQuery = false,
 				}, folder)
 			end
 		end
@@ -636,7 +637,39 @@ function Lobby.Build()
 		local sign = part("StallSign", Vector3.new(11, 3.2, 0.5), Vector3.new(0, 9.6, -9.9), Color3.fromRGB(70, 48, 32), Enum.Material.Wood)
 		part("SignRopeL", Vector3.new(0.15, 1.6, 0.15), Vector3.new(-4.5, 11.2, -9.9), Color3.fromRGB(200, 190, 160), Enum.Material.Fabric, { CanCollide = false })
 		part("SignRopeR", Vector3.new(0.15, 1.6, 0.15), Vector3.new(4.5, 11.2, -9.9), Color3.fromRGB(200, 190, 160), Enum.Material.Fabric, { CanCollide = false })
-		makeLabel(sign, signText, signColor, 3.4, 360, 80, 60, true) -- 지붕 위로 띄우고 항상 보이게: 가게 이름이 지붕에 가려 잘리던 문제
+		-- 간판 글자는 간판 나무판에 직접 새긴다 (예전: 공중에 뜬 큰 글자가 NPC 이름표 / 다른 글자와 겹쳐 지저분했다)
+		part("SignFrame", Vector3.new(11.8, 4, 0.3), Vector3.new(0, 9.6, -9.7), Color3.fromRGB(150, 112, 60), Enum.Material.Wood, { CanCollide = false })
+		do
+			local title, sub = string.match(signText, "^(.-) · (.+)$")
+			title = title or signText
+			local surface = Instance.new("SurfaceGui")
+			surface.Face = Enum.NormalId.Front
+			surface.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+			surface.PixelsPerStud = 30
+			surface.LightInfluence = 0.2
+			surface.MaxDistance = 220
+			surface.Parent = sign
+			local titleLabel = Instance.new("TextLabel")
+			titleLabel.BackgroundTransparency = 1
+			titleLabel.Size = sub and UDim2.new(1, -20, 0.62, 0) or UDim2.new(1, -20, 1, -10)
+			titleLabel.Position = UDim2.new(0, 10, 0, 4)
+			titleLabel.Font = Enum.Font.FredokaOne
+			titleLabel.TextScaled = true
+			titleLabel.TextColor3 = signColor
+			titleLabel.TextStrokeTransparency = 0.4
+			titleLabel.TextStrokeColor3 = Color3.fromRGB(40, 24, 14)
+			titleLabel.Text = title
+			titleLabel.Parent = surface
+			if sub then
+				local subLabel = titleLabel:Clone()
+				subLabel.Size = UDim2.new(1, -40, 0.3, 0)
+				subLabel.Position = UDim2.new(0, 20, 0.64, 0)
+				subLabel.Font = Enum.Font.GothamBold
+				subLabel.TextColor3 = Color3.fromRGB(245, 230, 200)
+				subLabel.Text = sub
+				subLabel.Parent = surface
+			end
+		end
 		for _, side in ipairs({ -1, 1 }) do
 			local lantern = part("StallLantern", Vector3.new(1.4, 1.8, 1.4), Vector3.new(side * 9.6, 8.5, -8.6), Color3.fromRGB(255, 200, 110), Enum.Material.Neon, { CanCollide = false })
 			addLight(lantern, 24, 1.3, Color3.fromRGB(255, 205, 130))
@@ -681,7 +714,7 @@ function Lobby.Build()
 	-- 뽑기 상점 (왼쪽 / 서): 반짝이는 뽑기 머신 + 선반
 	local shopCenter = Vector3.new(-44, TOP, 28) -- 뽑기 상점은 서쪽: 동선에서 비켜 있어서 필드로 가는 길을 막지 않는다
 	local gachaBody
-	makeStall(shopCenter, Color3.fromRGB(120, 70, 200), Color3.fromRGB(255, 225, 150), "🎰 Gear Gacha Shop", Color3.fromRGB(255, 225, 140), function(base, part)
+	makeStall(shopCenter, Color3.fromRGB(120, 70, 200), Color3.fromRGB(255, 225, 150), "🎰 Gacha · Gear Shop", Color3.fromRGB(255, 225, 140), function(base, part)
 		part("GachaBase", Vector3.new(8, 2, 6), Vector3.new(0, 1.6, 1.5), Color3.fromRGB(60, 40, 90), Enum.Material.Metal)
 		gachaBody = part("GachaBody", Vector3.new(7, 8, 5), Vector3.new(0, 6.6, 1.5), Color3.fromRGB(150, 70, 230), Enum.Material.SmoothPlastic)
 		part("GachaGlass", Vector3.new(5, 4.6, 0.6), Vector3.new(0, 7.2, -1.2), Color3.fromRGB(180, 230, 255), Enum.Material.Glass, { Transparency = 0.4, CanCollide = false })
