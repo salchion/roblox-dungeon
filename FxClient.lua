@@ -681,11 +681,14 @@ end
 -- event = { "S", from, to, size, speed, impact, style, length, color, rainbow, class, era }
 -- 내 캐릭터에서 나가는 투사체는 "지금 내 화면의 총구"에서 출발하게 한다.
 -- (서버가 보낸 출발점은 통신 지연만큼 예전 위치라, 움직이며 쏘면 탄 / 미사일이 내 몸 뒤쪽 허공에서 나가는 것처럼 보였다)
-local function snapToMe(pos, maxDistance)
+local function snapToMe(pos, maxDistance, body)
 	if typeof(pos) ~= "Vector3" then return pos end
 	local character = Players.LocalPlayer.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	if not root or (pos - root.Position).Magnitude > (maxDistance or 12) then return pos end
+	if body then -- 세트 효과 / 스킬 투사체: 총구가 아니라 등 뒤 어깨 위에서 솟아오른다 (몸에서 뿜어져 나가는 느낌)
+		return (root.CFrame * CFrame.new(0, 3.2, 1.2)).Position
+	end
 	local tool = character:FindFirstChild("Weapon")
 	local barrel = tool and tool:FindFirstChild("Barrel")
 	local tip = barrel and barrel:FindFirstChild("Tip")
@@ -1347,7 +1350,7 @@ local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간
 	local from, target, mid, duration = event[2], event[3], event[4], event[5]
 	local scale = event[6] or 1
 	if scale >= 1 then -- (펫이 쏘는 작은 구슬은 펫에서 나가므로 제외)
-		local snapped = snapToMe(from, 12)
+		local snapped = snapToMe(from, 12, true)
 		if snapped ~= from and typeof(mid) == "Vector3" then mid += (snapped - from) * 0.5 end -- 곡선 중간점도 같이 옮긴다
 		from = snapped
 	end
