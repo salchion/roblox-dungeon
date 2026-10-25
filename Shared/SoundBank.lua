@@ -18,7 +18,8 @@ local SPECS = {
 	-- 무기 종류별 총소리 (Shot 소리를 가공)
 	Shot_Pistol   = { Base = "Shot", Pitch = 1.15, Volume = 1.0, Length = 0.7 },
 	-- (SMG 는 AudioBank 의 소리 ID 를 그대로 쓴다: 직접 넣은 소리는 Fx / Layers 가공이 적용되지 않는다. 연사라서 길이는 짧게 끊는다)
-	Shot_Smg      = { Base = "Shot", CustomLength = 0.6, Pitch = 1.0, Volume = 1.2, Length = 0.4 },
+	-- (소리 파일이 2초라서 연사(약 0.14초 간격)하면 서로 겹쳐 "총소리 같으면서 아닌" 소리가 났다: 앞 소리를 0.3초에서 끊고(CustomLength), 다음 발이 나갈 때 앞 소리를 바로 줄여 끊는다(Choke) -> 한 발 한 발 또렷한 연사음)
+	Shot_Smg      = { Base = "Shot", CustomLength = 0.3, Pitch = 1.0, Volume = 1.2, Length = 0.4, Choke = true },
 	Shot_Revolver = { Base = "Shot", CustomLength = 1.4, Volume = 0.9, Pitch = 0.82, Length = 1.3, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -4 } } } },
 	Shot_Rifle    = { Base = "Shot", Pitch = 1.0, Volume = 0.9, Length = 0.9, Fx = { { "reverb", { DecayTime = 0.8, WetLevel = -9 } } } },
 	Shot_Shotgun  = { Base = "Shot", CustomLength = 1.2, Pitch = 0.7, Volume = 1.0, Length = 1.0, Fx = { { "distortion", { Level = 0.35 } } },
@@ -228,6 +229,7 @@ local FEEDBACK = { Hit = true, Crit = true, Kill = true, Pickup = true }
 local lastFeedback = 0
 
 local lastShot = 0
+local chokeLast = {} -- [소리 이름] = 가장 최근에 울린 Sound (Choke 소리는 다음 발이 나갈 때 앞 소리를 끊는다)
 -- 방금(0.2초 안) 총을 쐈는가: 서버가 만든 소리(세트 효과 폭발 등)도 클라이언트에서 낮추는 데 쓴다 (PlayerClient)
 function SoundBank.RecentShot()
 	return os.clock() - lastShot < 0.2
@@ -261,6 +263,14 @@ function SoundBank.Play(parent, key, opts)
 	local length = spec.Length or 1
 	if custom then length = spec.CustomLength or 2 end -- 내가 넣은 소리는 자연스러운 꼬리를 살리고, 너무 길 때만 끊는다
 	local main = playOne(parent, id, baseVolume, pitch, length, opts.Name, not custom and spec.Fx or nil)
+	if spec.Choke then
+		local previous = chokeLast[key]
+		if previous and previous.Parent then
+			previous.Volume = previous.Volume * 0.25
+			task.delay(0.04, function() if previous.Parent then previous:Stop() end end)
+		end
+		chokeLast[key] = main
+	end
 	if not custom then
 		for _, layer in ipairs(spec.Layers or {}) do
 			task.delay(layer.Delay or 0, function()
