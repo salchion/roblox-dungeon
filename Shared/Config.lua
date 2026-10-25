@@ -70,6 +70,7 @@ end
 -- 외형은 능력과 상관없는 꾸미기: 필드 군주를 쓰러뜨리거나 칭호(업적)를 따면 새 외형이 열리고, 열린 외형 중에서 마음대로 고른다.
 Config.Pet = {
 	UnlockCost = 5000,       -- 펫 기능 열기 (한 번)
+	MarkEvery = 4, MarkBonus = 1.25, MarkRange = 80, -- 사냥 표식 (13레벨): 4초마다 근처에서 가장 튼튼한 적에게, 내 피해 +25%
 	MaxLevel = 15,
 	LevelCostBase = 3000,    -- 레벨 1 -> 2 비용
 	LevelCostGrowth = 1.45,  -- 레벨이 오를수록 비용이 늘어난다
@@ -83,7 +84,7 @@ Config.Pet = {
 		{ Level = 8,  Icon = "🛡", Name = "Guardian",         Desc = "Invincible for 3s when HP drops below 25% (every 90s)", Stats = { PetGuard = 1 } },
 		{ Level = 10, Icon = "⏩", Name = "Haste",         Desc = "Attack speed +10%",                                 Stats = { PetAtkSpeed = 0.10 } },
 		{ Level = 12, Icon = "🧲", Name = "Wide Loot",    Desc = "Auto-loot radius grows to 100",                Stats = { PetLoot = 50 } },
-		{ Level = 13, Icon = "🔫", Name = "Support Fire",    Desc = "Your pet fires a missile at a nearby enemy every 1.6s",    Stats = { PetShoot = 1 } },
+		{ Level = 13, Icon = "🎯", Name = "Hunter's Mark",  Desc = "Every 4s your pet marks the toughest nearby enemy: it takes +25% damage from you", Stats = { PetMark = 1 } },
 		{ Level = 15, Icon = "✨", Name = "Great Awakening",       Desc = "Gold +10% · Skill cooldown -10%",              Stats = { PetGold = 0.10, PetHaste = 0.10 } },
 	},
 	-- 외형: Unlock = Free / { Zone = N } (필드 N구역 군주를 쓰러뜨림) / { Ach = 업적Id } (그 업적을 달성해 칭호를 얻음)
@@ -508,7 +509,7 @@ Config.Boss = {
 ------------------------------------------------------------
 Config.Economy = {
 	IncomeBase = 1500,        -- 공격력 배율 1.0(처음 무기)일 때 열심히 플레이한 분당 골드
-	StepMinutesEarly = 0.28,  -- 초반 무기 강화 한 단계에 걸리길 바라는 분 (15단계 = 약 4분 -> 0.4 에서 30% 줄여 약 2.8분: 초반 소모 골드가 과하다는 의견. LateLevel 로 갈수록 StepMinutesLate 에 가까워진다)
+	StepMinutesEarly = 0.2,   -- (0.28 -> 0.2: 초반 골드 소모 커브를 더 완만하게) 초반 무기 강화 한 단계에 걸리길 바라는 분 (15단계 = 약 4분 -> 0.4 에서 30% 줄여 약 2.8분: 초반 소모 골드가 과하다는 의견. LateLevel 로 갈수록 StepMinutesLate 에 가까워진다)
 	StepMinutesLate = 1.4,    -- 강화 단계 LateLevel 이후 (0.9 -> 1.4: 무기만 올리면 점점 비싸져서 장비 / 다른 성장에도 골드를 나누게 된다. 무기 전체 약 900분 분량)
 	LateLevel = 600,
 	FieldGoldMult = 2.6,      -- 필드 몬스터 처치 골드 배율 (구역 보상표 x 이 값)
@@ -1993,8 +1994,8 @@ local function progressive(f)
 	return 0.3 + 0.7 * f
 end
 -- 초반 소모 골드가 과하다는 의견: 각 성장의 처음 단계는 30% 싸게 (진행 40% 지점에서 정상 가격이 된다). 총량 계산(k)에는 넣지 않아서 총 비용이 조금(약 4%) 줄어든다
-local function ease(f)
-	return 0.7 + 0.3 * math.min(1, math.clamp(f, 0, 1) / 0.4)
+local function ease(f) -- (더 완만하게: 처음 50% 가격에서 시작해 진행 50% 지점에서 정상 가격)
+	return 0.5 + 0.5 * math.min(1, math.clamp(f, 0, 1) / 0.5)
 end
 
 do

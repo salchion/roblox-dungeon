@@ -1727,6 +1727,7 @@ function Field.HitPart(player, part, damage)
 	if data.Invincible then damage = 1 end
 	if data.Doom then data.DoomHits = (data.DoomHits or 0) + 1 end
 	if data.IntroUntil and os.clock() < data.IntroUntil then damage = 0 end -- 군주 등장 포효 중에는 피해 없음
+	damage = math.floor(damage * Dungeon.MarkMult(player, data)) -- 펫 사냥 표식
 	data.Health -= damage
 	BL.Dmg(player, damage, false)
 	if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
@@ -1759,8 +1760,9 @@ function Field.AreaDamage(player, center, radius, damage)
 			if data.Invincible then damage = 1 end
 			if data.ExposedUntil and os.clock() < data.ExposedUntil then damage = math.floor(damage * 3) end -- 약점 노출 중 x3
 			if data.IntroUntil and os.clock() < data.IntroUntil then damage = 0 end -- 군주 등장 포효 중에는 피해 없음
-			data.Health -= damage
-			BL.Dmg(player, damage, false)
+			local dealt = math.floor(damage * Dungeon.MarkMult(player, data)) -- 펫 사냥 표식
+			data.Health -= dealt
+			BL.Dmg(player, dealt, false)
 			if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
 			data.FirstHit = data.FirstHit or os.clock()
 			data.LastHit = os.clock()
@@ -1901,6 +1903,7 @@ function Field.Shoot(player, origin, direction)
 			end
 		end
 		if data.IntroUntil and os.clock() < data.IntroUntil then damage = 0 end -- 군주 등장 포효 중에는 피해 없음
+		damage = math.floor(damage * Dungeon.MarkMult(player, data)) -- 펫 사냥 표식
 		data.Health -= damage
 		BL.Dmg(player, damage, isCrit)
 		data.LastHit = os.clock() -- 맞은 몬스터는 멀리서 맞아도 깨어나 반응하고, 한동안 체력을 되찾지 않는다
@@ -3724,7 +3727,7 @@ local function fieldAugHit(player, entry, amount, quiet)
 	local part, data = entry.Part, entry.Data
 	if monsters[part] ~= data or data.Health <= 0 or data.Invincible then return end
 	if not canHitZone(player, part.Position.X) then return end -- 아직 못 가는 구역(닫힌 관문 너머)의 몬스터는 세트 효과로도 못 때린다
-	amount = math.max(1, math.floor(amount))
+	amount = math.max(1, math.floor(amount * Dungeon.MarkMult(player, data)))
 	if data.IntroUntil and os.clock() < data.IntroUntil then return end
 	data.Health -= amount
 	BL.DmgAs(player, "세트·펫", amount)

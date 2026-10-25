@@ -27,7 +27,7 @@ end
 ------------------------------------------------------------
 -- 펫 능력치 / 모델
 ------------------------------------------------------------
-local PET_ATTRS = { "PetSpeed", "PetXp", "PetDamage", "PetCrit", "PetHaste", "PetAtkSpeed", "PetGold", "PetLoot", "PetGuard", "PetShoot" }
+local PET_ATTRS = { "PetSpeed", "PetXp", "PetDamage", "PetCrit", "PetHaste", "PetAtkSpeed", "PetGold", "PetLoot", "PetGuard", "PetShoot", "PetMark" }
 
 local function applyPetStats(player, state)
 	for _, attr in ipairs(PET_ATTRS) do

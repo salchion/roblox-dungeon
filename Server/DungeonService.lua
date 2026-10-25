@@ -1126,7 +1126,12 @@ local function enrageBoss(run, part, data)
 end
 
 local augOnHit, augOnKill -- 어그먼트 효과 (아래 Dungeon.ComputeDamage 뒤에서 정의)
+-- 펫 "사냥 표식": 내 펫이 표식을 찍은 적은 나에게 더 아프게 맞는다 (필드도 이 함수를 쓴다)
+function Dungeon.MarkMult(player, data)
+	return (data and data.MarkedBy == player and os.clock() < (data.MarkedUntil or 0)) and Config.Pet.MarkBonus or 1
+end
 local function damageMonster(run, player, part, data, amount, isCrit, hitPosition, quiet)
+	amount = math.floor(amount * Dungeon.MarkMult(player, data))
 	local shooterRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if shooterRoot and data.Def and data.Def.Shield then -- 방패 기사: 정면 공격은 막힌다
 		local factor = MonsterTypes.ShieldFactor(part, data, shooterRoot.Position)
@@ -1929,14 +1934,35 @@ local function startAugLoop(run)
 						end
 					end
 				end
-				-- 펫 보조 사격 (펫 레벨 기능): 1.6초마다 가까운 적 한 마리에게 미사일
-				if root and (member:GetAttribute("PetShoot") or 0) > 0 and now >= (nextPet[member] or 0) then
-					nextPet[member] = now + 1.6
-					local entries = nearestMonsters(run, root.Position, 80, 1)
-					if entries[1] then
+				-- 펫 사냥 표식 (펫 13레벨): 4초마다 근처에서 가장 튼튼한 적(보스 우선)에게 표식 -> 그 적은 나에게 +25% 피해
+				if root and (member:GetAttribute("PetMark") or 0) > 0 and now >= (nextPet[member] or 0) then
+					nextPet[member] = now + Config.Pet.MarkEvery
+					local pick, pickScore = nil, -1
+					for _, entry in ipairs(nearestMonsters(run, root.Position, Config.Pet.MarkRange, 14)) do
+						local score = entry.Data.Health + (isBossData(entry.Data) and 1e12 or 0)
+						if score > pickScore then pick, pickScore = entry, score end
+					end
+					if pick then
+						pick.Data.MarkedBy, pick.Data.MarkedUntil = member, now + Config.Pet.MarkEvery + 0.5
+						local old = pick.Part:FindFirstChild("PetMarkTag")
+						if old then old:Destroy() end
+						local tag = Instance.new("BillboardGui")
+						tag.Name = "PetMarkTag"
+						tag.Size = UDim2.new(0, 34, 0, 34)
+						tag.StudsOffset = Vector3.new(0, pick.Part.Size.Y / 2 + 4.5, 0)
+						tag.AlwaysOnTop = true
+						tag.MaxDistance = 140
+						local icon = Instance.new("TextLabel")
+						icon.Size = UDim2.new(1, 0, 1, 0)
+						icon.BackgroundTransparency = 1
+						icon.TextScaled = true
+						icon.Text = "🎯"
+						icon.Parent = tag
+						tag.Parent = pick.Part
+						Debris:AddItem(tag, Config.Pet.MarkEvery + 0.5)
 						local petModel = member.Character and member.Character:FindFirstChild("PetModel")
 						local from = petModel and petModel.PrimaryPart and petModel.PrimaryPart.Position or (root.Position + Vector3.new(3, 3, 3))
-						launchMissile(run, member, from, entries[1], augDamage(member) * 0.55, "orb", Color3.fromRGB(255, 190, 220), 0.45)
+						Effects.Tracer(from, pick.Part.Position, Color3.fromRGB(255, 200, 120), 0.18) -- 펫에서 표식 대상까지 가는 빛줄기
 					end
 				end
 				-- 충격파 -> 충격파탄: 가까운 적들에게 폭발 투사체를 동시에 쏜다 (몸에서 터지는 게 아니라 날아가 맞은 자리에서 터진다)
