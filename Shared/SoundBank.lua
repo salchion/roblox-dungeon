@@ -35,7 +35,7 @@ local SPECS = {
 	Crit = { Base = "Enh_Success", Pitch = 1.45, Volume = 0.26, Length = 0.2, CustomLength = 0.5, -- (0.5 -> 0.32: 총소리가 묻힌다는 의견)
 		Fx = { { "eq", { LowGain = -24, MidGain = 0, HighGain = -8 } }, { "echo", { Delay = 0.05, Feedback = 0.15, WetLevel = -14 } } },
 		Layers = { { Pitch = 2.0, Volume = 0.3, Delay = 0.01 } } },
-	Kill = { Base = "EnhanceSuccess", CustomLength = 1.2, Pitch = 1.5, Volume = 0.4, -- (0.7 -> 0.5)
+	Kill = { Base = "EnhanceSuccess", CustomLength = 1.2, Pitch = 1.5, Volume = 0.3, -- (0.7 -> 0.5)
 	 Length = 0.35, Fx = { { "reverb", { DecayTime = 0.6, WetLevel = -10 } } } },
 	-- 스킬 / 폭발 / 레벨업
 	Skill_Heal = { CustomLength = 2.5, Base = "Enh_Success", Pitch = 1.1, Volume = 0.8, Length = 0.9, Fx = { { "reverb", { DecayTime = 1.6, WetLevel = -6 } } } },

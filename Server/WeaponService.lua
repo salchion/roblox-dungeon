@@ -668,17 +668,17 @@ function Weapon.PlayShot(player)
 	local count = (shotCount[player] or 0) + 1
 	shotCount[player] = count
 	local gap = now - (lastShotSound[player] or 0)
-	if gap < 0.1 and count % 2 == 0 then return end -- 초고속 연사: 두 발에 한 발만 소리를 낸다
+	if gap < 0.06 and count % 2 == 0 then return end -- 아주 빠른 연사(0.06초 미만)만 두 발에 한 발 (예전 0.1초: 기관단총 소리가 절반 빠져 묻혔다)
 	lastShotSound[player] = now
 	-- 박자가 일정하면 지루하므로: 높낮이를 무작위로 고르되 바로 앞과 같은 음은 피하고, 가끔 아주 낮은 "쿵" / 높은 "탕" 강조음을 섞는다
 	local index = math.random(#SHOT_PITCH_PATTERN)
 	if index == lastPitchIndex[player] then index = index % #SHOT_PITCH_PATTERN + 1 end
 	lastPitchIndex[player] = index
 	local pitch = eraFactor * SHOT_PITCH_PATTERN[index] * (0.9 + math.random() * 0.2)
-	local volume = (0.65 + math.random() * 0.6) * (gap < 0.2 and 0.85 or 1)
+	local volume = 0.85 + math.random() * 0.3 -- (예전 0.65~1.25 x 연사 0.85: 작게 나는 발사음이 많아 묻혔다)
 	if math.random() < 0.14 then
 		pitch *= (math.random() < 0.5) and 0.72 or 1.38
-		volume *= 1.35
+		volume *= 1.2
 	end
 	Effects.GunSound(barrel.Position, tier.Class, pitch, volume, tier.Era) -- 소리는 근처 플레이어 화면에서 재생 (서버가 소리 부품을 만들지 않는다)
 end
