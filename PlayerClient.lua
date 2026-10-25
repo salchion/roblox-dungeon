@@ -3855,8 +3855,12 @@ function toggleHelp()
 end
 
 workspace.DescendantAdded:Connect(function(instance)
-	if instance:IsA("Sound") and instance.Name == "GunShot" then
-		instance.Volume = instance.Volume * settings.ShotVolume
+	if instance:IsA("Sound") then
+		if instance.Name == "GunShot" then
+			instance.Volume = instance.Volume * settings.ShotVolume
+		elseif SoundBank.RecentShot() then
+			instance.Volume = instance.Volume * 0.5 -- 덕킹: 서버가 만든 소리(세트 효과 폭발 / 몬스터 등)도 내가 쏘는 중에는 절반으로 (총소리가 묻히지 않게)
+		end
 	end
 end)
 
