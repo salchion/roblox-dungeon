@@ -2181,7 +2181,7 @@ local function isTargetValid(target, root)
 		local zoneIndex = F.ZoneOfX(target.Part.Position.X)
 		if zoneIndex > math.min(F.ZoneCount, (player:GetAttribute("ClearedZone") or 0) + 1) then return false end
 	end
-	local reach = currentZone() == "Dungeon" and math.min(weaponRange() * 0.95, 80) or weaponRange() * 0.95
+	local reach = currentZone() == "Dungeon" and math.min(weaponRange() * 0.95, 200) or weaponRange() * 0.95 -- (예전 80: 긴 길 던전 시절 제한. 지금 투기장은 지름 약 220이라 자동 조준이 가까운 적만 잡아 사거리가 짧게 느껴졌다)
 	if (target.Part.Position - root.Position).Magnitude > reach then return false end
 	return isTargetVisible(target, root)
 end
