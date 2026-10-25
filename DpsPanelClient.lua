@@ -83,7 +83,13 @@ local collapsed = COMPACT
 
 local meter = Instance.new("Frame")
 meter.Name = "DamageMeter"
-meter.Position = UDim2.new(0, 16, 0.47, 0) -- 왼쪽 가운데 (위: 퀘스트 카드 / 아래: 알림 카드 사이)
+if COMPACT then
+	meter.Position = UDim2.new(0, 16, 0.47, 0) -- 폰: 왼쪽 가운데 (접힌 한 줄)
+else
+	-- PC: 오른쪽 가운데 아래 (더미 DPS 패널 / 콤보 글자 아래). 왼쪽은 미션 카드 + 오늘의 퀘스트가 길게 내려와서 겹쳤다
+	meter.AnchorPoint = Vector2.new(1, 0)
+	meter.Position = UDim2.new(1, -16, 0.5, 0)
+end
 meter.Size = UDim2.new(0, WIDTH, 0, HEAD_H)
 meter.BackgroundColor3 = Color3.fromRGB(18, 20, 32)
 meter.BackgroundTransparency = 0.12
