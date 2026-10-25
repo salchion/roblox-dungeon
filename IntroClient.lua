@@ -1,6 +1,6 @@
 -- IntroClient (StarterPlayer > StarterPlayerScripts 안의 LocalScript, 이름: IntroClient)
 -- 처음 접속(레벨 1 / 경험치 0 / 무기 +0 / 튜토리얼 진행 중)한 사람에게만 나오는 약 6초짜리 오프닝:
---   어둠에서 밝아지며 필드 위 높은 하늘에서 저 멀리 우뚝 선 최후의 군주를 내려다보고(게임 이름이 뜬다) -> 마을 쪽으로 빠르게 줌 인 하며 스폰의 내 캐릭터 뒤로 내려앉는다.
+--   어둠에서 밝아지며 필드 위 높은 하늘에서 동쪽으로 길게 뻗은 필드를 내려다보고(게임 이름이 뜬다) -> 마을 쪽으로 빠르게 줌 인 하며 스폰의 내 캐릭터 뒤로 내려앉는다.
 --   * 화면을 누르거나 아무 키나 누르면 바로 건너뛴다. 끝나면 카메라는 원래대로 돌아온다.
 --   * 오프닝이 도는 동안 player Attribute "IntroPlaying" 이 켜져 있어서 TutorialClient 가 미션 카드를 미룬다.
 --   * 다른 화면(HUD)은 잠깐 꺼 두었다가 끝나면 원래 켜져 있던 것만 다시 켠다.
@@ -15,7 +15,7 @@ local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-local LORD_AT = Vector3.new(620, 200, 0) -- 마을 동쪽 하늘의 군주 그림자 (LobbyDecor 의 DistantLord)
+local FIELD_FOCUS = Vector3.new(1400, 40, 0) -- 높은 하늘에서 바라보는 필드 저 멀리 (동쪽으로 길게 펼쳐진다)
 local shownThisSession = false
 local hiddenGuis = {} -- 오프닝 동안 잠깐 끈 화면들 (끝나거나 오류가 나면 이것만 다시 켠다)
 
@@ -103,21 +103,16 @@ local function play()
 
 	-- 카메라: 군주 그림자를 보는 먼 시점 -> 내 캐릭터 뒤
 	local look = root.CFrame.LookVector
-	local startPos = Vector3.new(230, 240, -190) -- 필드 입구 위 높은 하늘: 동쪽으로 펼쳐진 필드와 그 끝의 군주가 한눈에 보인다
+	local startPos = Vector3.new(120, 360, -90) -- 마을 동쪽 문 위 높은 하늘: 동쪽으로 길게 뻗은 필드가 한눈에 보인다
 	camera.CameraType = Enum.CameraType.Scriptable
-	camera.FieldOfView = 68
-	camera.CFrame = CFrame.lookAt(startPos, LORD_AT)
+	camera.FieldOfView = 70
+	camera.CFrame = CFrame.lookAt(startPos, FIELD_FOCUS)
 	TweenService:Create(topBar, TweenInfo.new(0.8), { Size = UDim2.new(1, 0, 0.1, 0) }):Play()
 	TweenService:Create(bottomBar, TweenInfo.new(0.8), { Size = UDim2.new(1, 0, 0.1, 0) }):Play()
 	TweenService:Create(veil, TweenInfo.new(1.0), { BackgroundTransparency = 1 }):Play()
-	pcall(function()
-		local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
-		if SoundBank.Has("Lord_Voice") then SoundBank.Play(SoundService, "Lord_Voice", { Volume = 0.6 }) end -- 낮고 묵직한 울림 (군주의 목소리)
-	end)
-
-	-- 1) 높은 하늘에서 군주 쪽으로 천천히 다가간다 (군주가 또렷하게 커진다)
+	-- 1) 높은 하늘에서 필드를 따라 동쪽으로 천천히 나아간다 (끝없이 이어진 길이 보인다)
 	TweenService:Create(camera, TweenInfo.new(3.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
-		CFrame = CFrame.lookAt(startPos + Vector3.new(110, -28, 70), LORD_AT), FieldOfView = 54,
+		CFrame = CFrame.lookAt(startPos + Vector3.new(420, -70, 30), FIELD_FOCUS + Vector3.new(700, 0, 0)), FieldOfView = 58,
 	}):Play()
 	task.delay(1.6, function()
 		if finished then return end

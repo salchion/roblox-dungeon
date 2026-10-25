@@ -930,17 +930,8 @@ local function buildGateway(zone, x0)
 		label.Parent = gui
 	end
 
-	-- 동쪽으로 갈수록 극적으로: 구역마다 더 높고 더 넓고 더 진한 하늘 빛기둥 (멀리서도 "저 너머가 점점 위험하다"가 보인다) + 바닥 경고 줄무늬
+	-- 바닥 경고 줄무늬 (구역 번호만큼): 위험도가 눈에 보인다. (예전에 있던 구역 입구의 하늘 빛기둥 + 불빛은 눈이 부시고 시야를 가려서 껐다)
 	do
-		local beamHeight = 90 + zone * 55
-		local beamWidth = 7 + zone * 1.6
-		local beacon = part("GateBeacon", Vector3.new(beamWidth, beamHeight, beamWidth), Vector3.new(x0 + 2, beamHeight / 2, 0), accent, Enum.Material.Neon,
-			{ Transparency = math.max(0.72, 0.9 - zone * 0.025), CanCollide = false, CanQuery = false })
-		local glow = Instance.new("PointLight")
-		glow.Range = 60 + zone * 8
-		glow.Brightness = 1.2 + zone * 0.15
-		glow.Color = accent
-		glow.Parent = beacon
 		for stripe = 1, zone do -- 구역 번호만큼 줄무늬: 위험도가 눈에 보인다
 			part("GateWarnStripe", Vector3.new(1.6, 0.25, open + 8), Vector3.new(x0 - 4 - stripe * 4, TOP + 0.2, 0), accent, Enum.Material.Neon,
 				{ Transparency = 0.25 + 0.05 * (stripe % 2), CanCollide = false, CanQuery = false })
