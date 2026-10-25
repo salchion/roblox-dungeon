@@ -419,6 +419,7 @@ local function showProc(attr, position)
 	local info = Config.AugInfo[attr]
 	if not info then return end
 	procWorldFx(info, position)
+	if player:GetAttribute("ModalOpen") then return end -- 메뉴 같은 큰 창이 열려 있으면 화면 가운데 글자를 띄우지 않는다 (창 위에 겹쳐 보였다)
 	procUntil[attr] = os.clock() + 0.5
 	refreshHud()
 	task.delay(0.55, refreshHud)

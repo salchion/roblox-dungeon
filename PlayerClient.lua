@@ -2481,17 +2481,50 @@ local function buildCharacterTab()
 	local critOver = math.max(0, rawCrit - 0.9) * 100 -- 넘친 만큼 치명타 피해로
 	local speed = Config.Player.WalkSpeed + (player:GetAttribute("GearSpeed") or 0)
 
-	local summary = newRow(142)
+	-- 정보 카드: 레벨 + 경험치 막대 / 전투력 / 능력치 타일 8칸 (예전: 이모지 섞인 글자 덩어리 한 장)
 	local menuLevel = player:GetAttribute("Level") or 1
-	rowText(summary, string.format(
-		"🎖 <font color='#8fd8ff'>Lv.%d</font>  (%s)   Damage +%d%% · HP +%d\n⚡ Power <font color='#ffe16e'>%d</font>\n❤ Max HP %d    🎯 Crit Chance %.1f%%%s    💨 Move Speed %.1f\n💰 %d G    🎫 Tickets %d\n🏔 Best field zone cleared: %d    🏰 Dungeons cleared: %d",
-		menuLevel,
-		menuLevel >= Config.Level.Max and "MAX" or string.format("%d / %d XP", player:GetAttribute("XP") or 0, player:GetAttribute("XPNeeded") or 1),
-		math.floor((Config.GetLevelDamageMult(menuLevel) - 1) * 100 + 0.5), Config.GetLevelHealth(menuLevel),
-		player:GetAttribute("Power") or 0, health, crit, critOver > 0 and string.format(" (max · +%.0f%% crit dmg)", critOver) or " (max 90%)", speed,
-		player:GetAttribute("Gold") or 0, player:GetAttribute("Tickets") or 0,
-		player:GetAttribute("MaxZone") or 0, questState and questState.Stats and questState.Stats.DungeonClears or 0
-	), 16)
+	local function groupDigits(n)
+		return (tostring(math.floor(n or 0)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
+	end
+	local function shortNum(n)
+		n = n or 0
+		if n >= 1e9 then return string.format("%.2fB", n / 1e9) end
+		if n >= 1e6 then return string.format("%.2fM", n / 1e6) end
+		return groupDigits(n)
+	end
+	local summary = newRow(214)
+	local xp, xpNeeded = player:GetAttribute("XP") or 0, math.max(1, player:GetAttribute("XPNeeded") or 1)
+	local maxed = menuLevel >= Config.Level.Max
+	makeLabel({ Size = UDim2.new(0, 120, 0, 34), Position = UDim2.new(0, 14, 0, 10), Text = "Lv." .. menuLevel, TextSize = 26, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(143, 216, 255), TextXAlignment = Enum.TextXAlignment.Left }, summary)
+	makeLabel({ Size = UDim2.new(1, -150, 0, 34), Position = UDim2.new(0, 136, 0, 10), Text = "⚡ " .. groupDigits(player:GetAttribute("Power") or 0), TextSize = 24, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110), TextXAlignment = Enum.TextXAlignment.Right }, summary)
+	local xpBack = create("Frame", { Size = UDim2.new(1, -28, 0, 8), Position = UDim2.new(0, 14, 0, 48), BackgroundColor3 = Color3.fromRGB(20, 22, 34), BorderSizePixel = 0 }, summary)
+	rounded(xpBack, 4)
+	local xpFill = create("Frame", { Size = UDim2.new(maxed and 1 or math.clamp(xp / xpNeeded, 0, 1), 0, 1, 0), BackgroundColor3 = Color3.fromRGB(110, 200, 255), BorderSizePixel = 0 }, xpBack)
+	rounded(xpFill, 4)
+	makeLabel({ Size = UDim2.new(1, -28, 0, 16), Position = UDim2.new(0, 14, 0, 58), Text = maxed and "MAX LEVEL" or string.format("%s / %s XP", groupDigits(xp), groupDigits(xpNeeded)), TextSize = 12, TextColor3 = Color3.fromRGB(150, 158, 190), TextXAlignment = Enum.TextXAlignment.Right }, summary)
+	local tiles = {
+		{ "Damage", string.format("+%d%%", math.floor((Config.GetLevelDamageMult(menuLevel) - 1) * 100 + 0.5)), "from level" },
+		{ "Max HP", groupDigits(health), string.format("+%d from level", Config.GetLevelHealth(menuLevel)) },
+		{ "Crit Chance", string.format("%.1f%%", crit), critOver > 0 and string.format("max · +%.0f%% crit dmg", critOver) or "max 90%" },
+		{ "Move Speed", string.format("%.1f", speed), "" },
+		{ "Gold", shortNum(player:GetAttribute("Gold") or 0), "" },
+		{ "Tickets", groupDigits(player:GetAttribute("Tickets") or 0), "" },
+		{ "Best Zone", tostring(player:GetAttribute("MaxZone") or 0) .. " / " .. Config.Field.ZoneCount, "field cleared" },
+		{ "Dungeons", groupDigits(questState and questState.Stats and questState.Stats.DungeonClears or 0), "cleared" },
+	}
+	for index, tile in ipairs(tiles) do
+		local column, line = (index - 1) % 4, math.floor((index - 1) / 4)
+		local box = create("Frame", {
+			Size = UDim2.new(0.25, -10, 0, 58), Position = UDim2.new(column * 0.25, 10 - column * 2, 0, 82 + line * 64),
+			BackgroundColor3 = Color3.fromRGB(26, 28, 44), BorderSizePixel = 0,
+		}, summary)
+		rounded(box, 8)
+		makeLabel({ Size = UDim2.new(1, -12, 0, 14), Position = UDim2.new(0, 8, 0, 5), Text = tile[1], TextSize = 12, TextColor3 = Color3.fromRGB(150, 158, 190), TextXAlignment = Enum.TextXAlignment.Left }, box)
+		makeLabel({ Size = UDim2.new(1, -12, 0, 22), Position = UDim2.new(0, 8, 0, 19), Text = tile[2], TextSize = 18, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, box)
+		if tile[3] ~= "" then
+			makeLabel({ Size = UDim2.new(1, -12, 0, 13), Position = UDim2.new(0, 8, 0, 41), Text = tile[3], TextSize = 12, TextColor3 = Color3.fromRGB(120, 128, 160), TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, box)
+		end
+	end
 
 	sectionTitle("Equipped Gear")
 	local level = player:GetAttribute("WeaponLevel") or 0
