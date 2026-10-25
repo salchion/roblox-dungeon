@@ -145,7 +145,7 @@ Config.Tutorial = {
 		{ Text = "💀 The Lord vanished, leaving only the words \"I'll be waiting at the end of the 8th land.\" You need to get stronger! Use your loot tickets for a 10-pull at the gacha machine!", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "Gacha Machine", RollMode = "Hero", ShowQuests = true, -- 여기서부터 화면에 오늘의 퀘스트가 나타난다
 			Reward = { Gold = 500, Xp = 100 } },
 		-- EvolveToTier: 이 번째 무기(3 = 기관단총)가 될 때까지 필요한 강화 횟수를 미션이 시작될 때 계산해서 목표로 쓴다. {무기} = 그 무기 이름
-		{ Text = "💰 Use your gold to upgrade your weapon to +15 and unlock the SMG! Once unlocked, you can pick any weapon you like in the Weapons tab", Stat = "Enhances", Goal = 15, EvolveToTier = 2, Target = "Anvil", TargetName = "Anvil",
+		{ Text = "💰 Use your gold to upgrade your weapon to +15 and unlock the Sniper Rifle! Once unlocked, you can pick any weapon you like in the Weapons tab", Stat = "Enhances", Goal = 15, EvolveToTier = 2, Target = "Anvil", TargetName = "Anvil",
 			Reward = { Tickets = 2, Xp = 150 } },
 	},
 }
@@ -406,11 +406,11 @@ Config.AugSynergies = {
 Config.AugRoles = { -- Weapons: 이 세트 효과와 잘 맞는 무기 (총 / 활 / 투척 / 대포 / 마법 5종이 골고루 걸리게)
 	AugPulse   = { Role = "Mob",  Weapons = { "Cannon", "Revolver" },  Perk = "burst radius +30%" },
 	AugOrbit   = { Role = "Mob",  Weapons = { "Shotgun", "Rifle" },    Perk = "blade thrown 1 shot sooner" },
-	AugStorm   = { Role = "Mob",  Weapons = { "Rail", "Smg" },         Perk = "lightning arcs to +1 enemy" },
+	AugStorm   = { Role = "Mob",  Weapons = { "Rail", "Pistol" },         Perk = "lightning arcs to +1 enemy" },
 	AugMissile = { Role = "Boss", Weapons = { "Pistol", "Rifle" },     Perk = "+1 missile per salvo" },
 	AugNova    = { Role = "Mob",  Weapons = { "Rocket", "Flamer" },    Perk = "+1 extra blast" },
 	AugFlame   = { Role = "Boss", Weapons = { "Flamer", "Shotgun" },   Perk = "2 burn stacks per hit" },
-	AugExecute = { Role = "Boss", Weapons = { "Sniper", "Pistol" },    Perk = "boss damage bonus cap +30%" },
+	AugExecute = { Role = "Boss", Weapons = { "Sniper", "Smg" },    Perk = "boss damage bonus cap +30%" },
 	AugMeteor  = { Role = "All",  Weapons = { "Cannon", "Rail" },      Perk = "+1 meteor" },
 }
 Config.AugRoleMult = { Mob = { Boss = 0.5, Mob = 1 }, Boss = { Boss = 1, Mob = 0.6 }, All = { Boss = 1, Mob = 1 } }
@@ -582,13 +582,13 @@ local ERAS = {
 -- 시대 안에서 뒤로 갈수록 "한 방 / 폭발 / 관통" 같은 묵직한 무기가 오고, 기본 화력(DPS)도 조금씩 올라간다
 local CLASS_ORDER = { "Pistol", "Smg", "Revolver", "Rifle", "Shotgun", "Flamer", "Cannon", "Sniper", "Rocket", "Rail" }
 local CLASS_NAMES = {
-	Pistol = "Pistol", Smg = "SMG", Revolver = "Bomb", Rifle = "Bow", Shotgun = "Shuriken",
+	Pistol = "Rifle", Smg = "Sniper Rifle", Revolver = "Bomb", Rifle = "Bow", Shotgun = "Shuriken",
 	Flamer = "Tome", Cannon = "Mortar", Sniper = "Crossbow", Rocket = "Rocket Cannon", Rail = "Wand",
 }
 -- 무기 이름: 종류 x 시대마다 전부 다른 이름 (접두사만 바뀌는 게 아니라 무기 자체가 다른 이름 / 다른 모양)
 local WEAPON_NAMES = {
-	Pistol = { "Rusty Pistol", "Steel Pistol", "Arcane Hand Cannon", "Golden Ace", "Flame Igniter", "Frost Spike Pistol", "Lightning Trigger", "Shadow Fang", "Dragonfang Pistol", "Mythic Astra" },
-	Smg = { "Rusty SMG", "Steel Repeater", "Arcane Whisper SMG", "Golden Storm SMG", "Flame Rapid-Fire", "Frost Rapid-Fire", "Discharge SMG", "Shadow Rapid-Fire", "Dragonflame SMG", "Mythic Spray" },
+	Pistol = { "Rusty Rifle", "Steel Carbine", "Arcane Rifle", "Golden Ranger", "Flame Rifle", "Frost Rifle", "Shock Rifle", "Shadow Rifle", "Dragonscale Rifle", "Mythic Galaxy Rifle" },
+	Smg = { "Rusty Sniper", "Steel Long-Range Sniper", "Arcane Sniper", "Golden Eagle Sniper", "Flame Sniper", "Snowfield Sniper", "Lightning Sniper", "Assassin's Sniper", "Dragon Eye Sniper", "Galaxy Sniper" },
 	Revolver = { "Rusty Bomb", "Steel Grenade", "Arcane Bomb", "Golden Bomb", "Inferno Bomb", "Ice Bomb", "Thunder Bomb", "Cursed Bomb", "Dragon Bomb", "Mythic Bomb" },
 	Rifle = { "Rusty Shortbow", "Steel Longbow", "Arcane Bow", "Golden Recurve", "Flame Bow", "Frost Bow", "Thunder Bow", "Shadow Bow", "Dragonbone Bow", "Mythic Starbow" },
 	Shotgun = { "Rusty Throwing Star", "Steel Shuriken", "Arcane Chakram", "Golden Kunai", "Flame Shuriken", "Frost Shuriken", "Thunder Kunai", "Shadow Shuriken", "Dragon Shuriken", "Mythic Chakram" },
@@ -950,14 +950,14 @@ Config.WeaponTypes = {
 	Order = { "Pistol", "Smg", "Revolver", "Rifle", "Shotgun", "Flamer", "Cannon", "Sniper", "Rocket", "Rail" },
 	-- 초당 피해 계수 F = 한 발 x 탄 수(산탄은 60%만 맞는다고 계산. 허수아비처럼 붙어서 쏘면 100% 맞으므로 샷건 / 화염방사기는 100% 기준으로 약 1.8배가 되게 잡았다) / 간격. 사거리가 긴 무기는 F 가 1.0 근처, 사거리가 짧은 무기는 F 가 1.5 근처
 	Pistol = {
-		Name = "Pistol", Form = "Basic", DamageMult = 1.0, Cooldown = 1, Range = 300, Pellets = 1, Spread = 0,
-		ShotScale = 1, SpeedScale = 1, BarrelLength = 1, BarrelThickness = 1,
+		Name = "Rifle", Form = "Basic", DamageMult = 1.0, Cooldown = 1, Range = 300, Pellets = 1, Spread = 0,
+		ShotScale = 1, SpeedScale = 1, BarrelLength = 1.4, BarrelThickness = 0.9,
 		Trait = "The most balanced weapon", Desc = "Solid fundamentals with no weak points",
 	},
 	Smg = {
-		Name = "SMG", Form = "Smg", DamageMult = 0.44, Cooldown = 0.4, Range = 190, Pellets = 1, Spread = 0,
-		ShotScale = 0.7, SpeedScale = 1.1, BarrelLength = 0.8, BarrelThickness = 0.9,
-		Trait = "Very fast fire rate · Short range", Desc = "A gun that pours out shots at a blistering fire rate",
+		Name = "Sniper Rifle", Form = "Basic", DamageMult = 1.65, Cooldown = 1.5, Range = 650, Pellets = 1, Spread = 0,
+		ShotScale = 1.3, SpeedScale = 2.4, CritBonus = 0.25, BarrelLength = 1.9, BarrelThickness = 0.7,
+		Trait = "Long range · Crit +25%", Desc = "Slow but each shot is powerful",
 	},
 	Revolver = {
 		Name = "Bomb", Form = "Steel", DamageMult = 1.12, Cooldown = 1.1, Range = 320, Pellets = 1, Spread = 0,

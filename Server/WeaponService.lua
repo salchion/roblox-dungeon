@@ -57,34 +57,37 @@ local EraDecor = {} -- 시대별 장식: EraDecor[시대](c)
 local Flair = {}    -- 무기마다 뽑혀서 붙는 추가 장식 목록
 
 ------------------ 종류별 몸체 (부품 10개 안팎. 종류마다 실루엣이 확 다르다) ------------------
-Bodies.Pistol = function(c) -- 작고 둥근 권총: 슬라이드 + 방아쇠울
+Bodies.Pistol = function(c) -- 라이플 (Pistol = 라이플): 긴 핸드가드 + 개머리판 + (조준경 / 홀로 조준기 중 번호로 선택)
 	local k = c.k
-	c.add("Slide", V(0.5 * k, 0.42 * k, 1.7), CFrame.new(0, 0.38 * k, -0.15), c.steel, c.bodyMat)
-	c.add("GuardBottom", V(0.08, 0.08, 0.5), CFrame.new(0, -0.62, 0), c.dark, STEEL)
-	c.add("Trigger", V(0.06, 0.2, 0.06), CFrame.new(0, -0.4, 0.05) * CFrame.Angles(math.rad(15), 0, 0), c.accent(), NEON)
-	c.add("FrontSight", V(0.08, 0.14, 0.1), CFrame.new(0, 0.65 * k, c.muzzleZ + 0.15), c.accent(), NEON)
-	c.add("RearSight", V(0.3, 0.1, 0.1), CFrame.new(0, 0.62 * k, 0.65), c.dark, STEEL)
-	c.cyl("MuzzleBrake", 0.45, 0.46 * k, CFrame.new(0, 0.05, c.muzzleZ + 0.1), c.dark, STEEL)
-	c.add("Laser", V(0.1, 0.1, 0.5), CFrame.new(0, -0.22, c.muzzleZ * 0.5), c.accent(), NEON)
+	c.add("Receiver", V(0.5 * k, 0.6 * k, 1.8), CFrame.new(0, 0.2, 0.1), c.steel, c.bodyMat)
+	c.add("Handguard", V(0.6 * k, 0.6 * k, c.bl * 0.8), CFrame.new(0, 0.05, -(0.8 + c.bl * 0.4)), c.dark, STEEL)
+	c.add("TopRail", V(0.2, 0.08, 1.9), CFrame.new(0, 0.62 * k, -0.9), c.steel, STEEL)
+	if c.holo then
+		c.add("HoloFrame", V(0.34, 0.3, 0.45), CFrame.new(0, 0.82 * k, -0.3), c.dark, STEEL)
+		c.add("HoloGlass", V(0.28, 0.26, 0.04), CFrame.new(0, 0.88 * k, -0.54), c.accent(), NEON, { Transparency = 0.45 })
+	else
+		c.cyl("ScopeTube", 1.1, 0.34, CFrame.new(0, 0.85 * k, -0.35), c.dark, STEEL)
+		c.cyl("ScopeLens", 0.06, 0.3, CFrame.new(0, 0.85 * k, -0.93), c.accent(), NEON)
+		c.add("ScopeMount", V(0.18, 0.24, 0.16), CFrame.new(0, 0.68 * k, -0.3), c.dark, STEEL)
+	end
+	c.add("Magazine", V(0.3, 1.1, 0.5), CFrame.new(0, -0.95, 0.05) * CFrame.Angles(math.rad(14), 0, 0), c.dark, STEEL)
+	c.add("Stock", V(0.42, 0.75, 1.5), CFrame.new(0, -0.05, 1.55) * CFrame.Angles(math.rad(-6), 0, 0), c.stockColor, c.stockMat)
+	c.add("ButtPad", V(0.46, 0.8, 0.14), CFrame.new(0, -0.05, 2.35), c.dark, STEEL)
 end
 
-Bodies.Smg = function(c) -- 긴 직사각 리시버 + 곧은 탄창 + 어깨 개머리판
+Bodies.Smg = function(c) -- 저격총 (Smg = 저격총): 아주 긴 총열 + 큰 조준경 + 접힌 양각대
 	local k = c.k
-	c.add("Receiver", V(0.55 * k, 0.55 * k, 1.9), CFrame.new(0, 0.2, 0.05), c.steel, c.bodyMat)
-	c.cyl("Shroud", c.bl * 0.55, 0.62 * k, CFrame.new(0, 0.05, -(0.7 + c.bl * 0.3)), c.dark, STEEL)
-	for i = 0, 1 do -- 총열 덮개의 통풍구 (빛난다)
-		c.add("Vent" .. i, V(0.66 * k, 0.07, 0.14), CFrame.new(0, 0.05, -(0.9 + i * c.bl * 0.2)), c.accent(), NEON)
+	c.add("Receiver", V(0.5 * k, 0.55 * k, 1.7), CFrame.new(0, 0.2, 0.2), c.steel, c.bodyMat)
+	c.cyl("Suppressor", 1.1, 0.46 * k, CFrame.new(0, 0.05, c.muzzleZ + 0.1), c.dark, STEEL)
+	c.cyl("SuppRing", 0.06, 0.5 * k, CFrame.new(0, 0.05, c.muzzleZ + 0.4), c.accent(), NEON)
+	c.cyl("ScopeTube", 1.6, 0.46, CFrame.new(0, 0.95 * k, -0.2), c.dark, STEEL)
+	c.cyl("ScopeLens", 0.06, 0.42, CFrame.new(0, 0.95 * k, -1.02), c.accent(), NEON)
+	c.add("ScopeMount", V(0.2, 0.34, 0.2), CFrame.new(0, 0.7 * k, -0.3), c.dark, STEEL)
+	for i = -1, 1, 2 do
+		c.add("Bipod" .. i, V(0.08, 0.9, 0.08), CFrame.new(i * 0.28, -0.35, -(0.9 + c.bl * 0.5)) * CFrame.Angles(math.rad(-65), 0, math.rad(i * 12)), c.dark, STEEL)
 	end
-	c.add("Magazine", V(0.34, 1.5, 0.5), CFrame.new(0, -1.0, -0.35) * CFrame.Angles(math.rad(6), 0, 0), c.dark, STEEL)
-	c.add("Foregrip", V(0.3, 0.8, 0.3), CFrame.new(0, -0.55, -(0.9 + c.bl * 0.35)), c.dark, STEEL)
-	c.add("StockTop", V(0.1, 0.1, 1.2), CFrame.new(0, 0.3, 1.45), c.dark, STEEL)
-	c.add("StockPad", V(0.3, 0.55, 0.12), CFrame.new(0, 0.1, 2.05), c.dark, STEEL)
-	if c.holo then -- 홀로그램 조준기: 투명한 빛나는 창
-		c.add("HoloFrame", V(0.34, 0.3, 0.4), CFrame.new(0, 0.62 * k, -0.2), c.dark, STEEL)
-		c.add("HoloGlass", V(0.26, 0.22, 0.04), CFrame.new(0, 0.66 * k, -0.42), c.accent(), NEON, { Transparency = 0.45 })
-	else
-		c.add("RedDot", V(0.12, 0.12, 0.05), CFrame.new(0, 0.7 * k, -0.4), Color3.fromRGB(255, 60, 60), NEON)
-	end
+	c.add("BoltKnob", V(0.2, 0.2, 0.2), CFrame.new(0.5 * k, 0.28, 0.55), c.accent(), NEON, { Shape = Enum.PartType.Ball })
+	c.add("Stock", V(0.46, 0.8, 1.7), CFrame.new(0, -0.05, 1.7) * CFrame.Angles(math.rad(-5), 0, 0), c.stockColor, c.stockMat)
 end
 
 Bodies.Revolver = function(c) -- 폭탄: 손에 쥔 둥근 쇠 폭탄 + 타는 퓨즈 + 시대색 띠 (Revolver = 폭탄)

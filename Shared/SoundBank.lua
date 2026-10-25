@@ -17,17 +17,10 @@ local SoundBank = {}
 -- Fx: 효과 목록 { 종류, 속성표 } / Layers: 겹쳐 울리는 소리 { Pitch, Volume, Delay }
 local SPECS = {
 	-- 무기 종류별 총소리 (Shot 소리를 가공)
-	Shot_Pistol   = { Base = "Shot", Pitch = 1.15, Volume = 1.0, Length = 0.7 },
-	-- (SMG 는 AudioBank 의 소리 ID 를 그대로 쓴다: 직접 넣은 소리는 Fx / Layers 가공이 적용되지 않는다. 연사라서 길이는 짧게 끊는다)
-	-- (소리 파일이 2초라서 연사(약 0.14초 간격)하면 서로 겹쳐 "총소리 같으면서 아닌" 소리가 났다: 앞 소리를 0.3초에서 끊고(CustomLength), 다음 발이 나갈 때 앞 소리를 바로 줄여 끊는다(Choke) -> 한 발 한 발 또렷한 연사음)
-	-- ("방망이로 두드리는 둔탁한 느낌" 의견: 저음이 많고 갈라지는 소리가 약해서 -> 음을 12% 높이고, 저음을 깎고 고음을 살렸다)
-	--  후보 C (지금, AudioBank 에 ID 가 없을 때): 소총(Rifle) 소리에서 변형 - 소총과 같은 기본 소리 / 같은 짧은 잔향 느낌에서, 꼬리를 0.24초로 잘라 한 발 한 발 짧게 만들고 음을 5% 높였다. Choke 가 앞 소리를 끊어 "두두두두" 로 이어진다
-	--  (후보 B = AudioBank 에 ID 를 적으면 아래 Custom* 값이 쓰인다)
-	Shot_Smg      = { Base = "Shot", Pitch = 1.25, Volume = 0.95, Length = 0.2, Choke = true, -- ("더 가볍게 / 덜 겹치게": 음 1.05 -> 1.25, 길이 0.19 -> 0.16, 잔향 줄임, 저음 약간 깎음)
-		Fx = { { "reverb", { DecayTime = 0.3, WetLevel = -14 } }, { "eq", { LowGain = -5, MidGain = 0, HighGain = 2 } } },
-		-- 후보 D (지금 AudioBank 에 저격총과 같은 ID 가 적혀 있다): 저격총의 또렷한 "탕" 소리를 1.3배 높게, 0.22초만 쓴다
-		CustomLength = 0.22, CustomPitch = 1.3, CustomFx = { { "eq", { LowGain = -6, MidGain = 0, HighGain = 2 } } } },
-	-- 폭탄: 던지는 "휙" + 낮은 퉁 (무기 이름은 Config.WeaponTypes 참고: Revolver = 폭탄)
+	-- 라이플 (Pistol = 라이플)
+	Shot_Pistol   = { Base = "Shot", Pitch = 1.0, Volume = 0.9, Length = 0.9, Fx = { { "reverb", { DecayTime = 0.8, WetLevel = -9 } } } },
+	-- 저격총 (Smg = 저격총): AudioBank 의 저격총 소리 ID 를 그대로 쓴다. ID 가 없으면 기본 총소리를 낮고 길게 가공해서 쓴다
+	Shot_Smg      = { Base = "Shot", CustomLength = 2.2, Pitch = 0.8, Volume = 1.0, Length = 2.0, Fx = { { "reverb", { DecayTime = 2.8, WetLevel = -3 } }, { "echo", { Delay = 0.22, Feedback = 0.3, WetLevel = -8 } } } },
 	Shot_Revolver = { Base = "Dash", Pitch = 0.9, Volume = 0.8, Length = 0.5, Layers = { { Pitch = 0.5, Volume = 0.5, Delay = 0 } } },
 	-- 활: 높고 가벼운 "슉" (Rifle = 활)
 	Shot_Rifle    = { Base = "Dash", Pitch = 1.7, Volume = 0.8, Length = 0.4, Fx = { { "eq", { LowGain = -8, MidGain = 0, HighGain = 3 } } } },
@@ -160,7 +153,7 @@ end
 -- 사운드 테스트 창(Studio 에서 K 키)에 보이는 항목별 설명
 SoundBank.Descriptions = {
 	Dash = "Dash (Q)", Pickup = "Loot pickup",
-	Shot_Pistol = "Pistol shot", Shot_Smg = "SMG shot", Shot_Revolver = "Bomb throw", Shot_Rifle = "Bow shot", Shot_Shotgun = "Shuriken throw",
+	Shot_Pistol = "Rifle shot", Shot_Smg = "Sniper Rifle shot", Shot_Revolver = "Bomb throw", Shot_Rifle = "Bow shot", Shot_Shotgun = "Shuriken throw",
 	Shot_Flamer = "Tome spell", Shot_Cannon = "Mortar shot", Shot_Sniper = "Crossbow shot", Shot_Rocket = "Rocket Cannon shot", Shot_Rail = "Wand spell",
 	Hit = "Enemy hit (short)", Crit = "Critical hit", Kill = "Enemy kill (pitch rises with kill streak)",
 	Skill_Heal = "First Aid used", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Ult_Missile = "Dead Eye missile launch", Ult_Hit = "Dead Eye missile impact", Ult_Launch = "Dead Eye launch thump", Ult_Finale = "Dead Eye final blast", Boom = "Monster explosion / shockwave / meteor",
