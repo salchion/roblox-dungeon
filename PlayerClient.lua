@@ -2194,9 +2194,11 @@ local function findNearestTarget(root)
 		if isTargetValid(target, root) then
 			local screen = camera:WorldToViewportPoint(target.Part.Position)
 			local viewport = camera.ViewportSize
-			local fromCenter = (Vector2.new(screen.X, screen.Y) - viewport / 2).Magnitude / viewport.Y -- 0 = 정중앙
+			local fromCenter = math.min(1.5, (Vector2.new(screen.X, screen.Y) - viewport / 2).Magnitude / viewport.Y) -- 0 = 정중앙
 			local distance = (target.Part.Position - root.Position).Magnitude
-			local score = fromCenter * 100 + distance * 0.35
+			-- 가까운 적이 먼저: 거리가 기본이고, 화면 가운데에 있으면 조금만 가산점 (예전: 화면 가운데 비중이 커서 멀리 있는 적에게 먼저 쏘는 일이 많았다)
+			local score = distance * (1 + 0.6 * fromCenter)
+			if screen.Z < 0 then score *= 1.3 end -- 카메라 뒤쪽 적은 살짝 뒤로
 			if score < bestDistance then
 				best, bestDistance = target, score
 			end
