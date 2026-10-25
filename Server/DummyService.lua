@@ -365,6 +365,7 @@ function Dummy.Shoot(player, origin, direction)
 		local damage, isCrit = Dungeon.ComputeDamage(player)
 		Effects.DamageNumber(result.Position, damage, isCrit)
 		showDps(model, data, player, damage)
+		require(script.Parent:WaitForChild("DamageMeter")).Add(player, "Gun", damage)
 		-- 세트 효과 시험
 		local run = ensureAugRun(Dungeon)
 		local body = model.PrimaryPart

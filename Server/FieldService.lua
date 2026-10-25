@@ -1905,6 +1905,7 @@ function Field.Shoot(player, origin, direction)
 		if data.IntroUntil and os.clock() < data.IntroUntil then damage = 0 end -- 군주 등장 포효 중에는 피해 없음
 		damage = math.floor(damage * Dungeon.MarkMult(player, data)) -- 펫 사냥 표식
 		data.Health -= damage
+		require(script.Parent.DamageMeter).Add(player, "Gun", damage)
 		BL.Dmg(player, damage, isCrit)
 		data.LastHit = os.clock() -- 맞은 몬스터는 멀리서 맞아도 깨어나 반응하고, 한동안 체력을 되찾지 않는다
 		if data.Contrib then

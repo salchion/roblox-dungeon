@@ -589,6 +589,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/DamageMeter.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "DamageMeter",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/AdminService.lua",
       "parent": "ServerScriptService/Modules",
       "name": "AdminService",

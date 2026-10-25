@@ -929,9 +929,11 @@ function Config.GetPower(weaponLevel, critPoints, speedPoints, gearHealth, gearC
 	local pellets = weaponType.Pellets > 1 and weaponType.Pellets * 0.6 or 1
 	local typeFactor = weaponType.DamageMult * pellets / weaponType.Cooldown
 	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel) * Config.GetLevelDamageMult(level) * (1 + (gearDamage or 0))
-	local crit = math.min(0.9, (critPoints or 0) * P.CritPerPoint + (gearCrit or 0) + (weaponType.CritBonus or 0))
+	local rawCrit = (critPoints or 0) * P.CritPerPoint + (gearCrit or 0) + (weaponType.CritBonus or 0)
+	local crit = math.min(0.9, rawCrit)
+	local critMult = P.CritMultiplier + math.max(0, rawCrit - 0.9) -- 넘친 치명타 -> 치명타 피해
 	local rate = 1 / (P.BaseCooldown / (1 + (speedPoints or 0) * P.SpeedPerPoint))
-	local dps = damage * (1 + crit * (P.CritMultiplier - 1)) * rate * typeFactor
+	local dps = damage * (1 + crit * (critMult - 1)) * rate * typeFactor
 	return math.floor(dps * 10 + ((gearHealth or 0) + Config.GetLevelHealth(level)) * 0.5)
 end
 

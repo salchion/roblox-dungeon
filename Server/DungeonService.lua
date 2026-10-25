@@ -12,6 +12,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Guard = require(script.Parent:WaitForChild("DamageGuard"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local BL = require(script.Parent:WaitForChild("BalanceLog")) -- Studio 전용 밸런스 로그
+local Meter = require(script.Parent:WaitForChild("DamageMeter")) -- 대미지 미터기 (총 / 세트 효과별)
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Party = require(script.Parent:WaitForChild("PartyService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
@@ -1434,14 +1435,16 @@ function Dungeon.ComputeDamage(player)
 		* Combo.GetDamageMult(player)
 		* Dungeon.PartyBonus(player)
 		* (player:GetAttribute("ShotDmgScale") or 1) -- 레벨 스탯 추가 탄: 발당 피해 감소 (사격 중에만 적용)
-	local chance = math.min(0.9, (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint
-		+ (player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0) + (player:GetAttribute("PetCrit") or 0) + (weaponType.CritBonus or 0))
+	local rawChance = (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint
+		+ (player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0) + (player:GetAttribute("PetCrit") or 0) + (weaponType.CritBonus or 0)
+	local chance = math.min(0.9, rawChance)
+	local overflow = math.max(0, rawChance - 0.9) -- 90% 를 넘친 치명타 확률은 1% 당 치명타 피해 +1% 로 바뀐다 (버려지는 스탯이 없게)
 	if os.clock() < (player:GetAttribute("NearMissUntil") or 0) then -- NEAR MISS 보상: 연속으로 피할수록 공격력이 누적해서 오른다
 		damage *= 1 + Config.NearMiss.DamagePerStack * math.min(player:GetAttribute("NearMissStreak") or 0, Config.NearMiss.MaxStacks)
 	end
 	local isCrit = math.random() < chance
 	if isCrit then
-		damage *= P.CritMultiplier + (player:GetAttribute("LvCritDmg") or 0)
+		damage *= P.CritMultiplier + (player:GetAttribute("LvCritDmg") or 0) + overflow
 	end
 	return math.max(1, math.floor(damage + 0.5)), isCrit
 end
@@ -1472,7 +1475,10 @@ local function isBossData(data)
 end
 -- attr(세트 효과 이름)이 있으면: 역할(사냥형은 보스에게 절반 / 보스형은 몹에게 60%) x 무기 궁합(+40%) x 구역 배수를 곱한다 (Config.AugHitMult)
 local function hitMonster(run, player, entry, amount, quiet, tint, attr)
-	if attr then amount *= Config.AugHitMult(player, attr, isBossData(entry.Data)) end
+	if attr then
+		amount *= Config.AugHitMult(player, attr, isBossData(entry.Data))
+		Meter.Add(player, attr, amount)
+	end
 	Effects.DamageTint = tint -- 세트 효과 피해: 그 효과 색으로 피해 숫자를 띄운다 (아래 호출이 끝나면 지운다)
 	if run.HitFn then -- 필드: 필드 몬스터에게 피해를 주는 함수를 따로 받는다
 		run.HitFn(player, entry, amount, quiet)
@@ -1689,6 +1695,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 		if bonus > 0.005 then
 			augDepth += 1
 			hitMonster(run, player, { Part = part, Data = data }, amount * bonus, true) -- (궁합 / 역할 배수는 이미 cap 에 들어 있다)
+			Meter.Add(player, "AugExecute", amount * bonus)
 			augDepth -= 1
 		end
 	end
@@ -2145,6 +2152,7 @@ function Dungeon.Shoot(player, origin, direction)
 			end
 		end
 		damageMonster(run, player, part, data, damage, isCrit, hitPosition)
+		Meter.Add(player, "Gun", damage)
 		player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1) -- 궁극기 게이지는 실제로 맞혔을 때만 찬다
 
 		if vamp > 0 then
