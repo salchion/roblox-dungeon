@@ -1,6 +1,6 @@
 -- IntroClient (StarterPlayer > StarterPlayerScripts 안의 LocalScript, 이름: IntroClient)
 -- 처음 접속(레벨 1 / 경험치 0 / 무기 +0 / 튜토리얼 진행 중)한 사람에게만 나오는 약 6초짜리 오프닝:
---   어둠에서 밝아지며 하늘 끝에 우뚝 선 최후의 군주 그림자를 보여 주고 -> 카메라가 내 캐릭터 뒤로 내려오며 게임 이름이 뜬다.
+--   어둠에서 밝아지며 필드 위 높은 하늘에서 저 멀리 우뚝 선 최후의 군주를 내려다보고(게임 이름이 뜬다) -> 마을 쪽으로 빠르게 줌 인 하며 스폰의 내 캐릭터 뒤로 내려앉는다.
 --   * 화면을 누르거나 아무 키나 누르면 바로 건너뛴다. 끝나면 카메라는 원래대로 돌아온다.
 --   * 오프닝이 도는 동안 player Attribute "IntroPlaying" 이 켜져 있어서 TutorialClient 가 미션 카드를 미룬다.
 --   * 다른 화면(HUD)은 잠깐 꺼 두었다가 끝나면 원래 켜져 있던 것만 다시 켠다.
@@ -103,10 +103,10 @@ local function play()
 
 	-- 카메라: 군주 그림자를 보는 먼 시점 -> 내 캐릭터 뒤
 	local look = root.CFrame.LookVector
-	local start = root.Position + Vector3.new(-10, 16, 0)
+	local startPos = Vector3.new(230, 240, -190) -- 필드 입구 위 높은 하늘: 동쪽으로 펼쳐진 필드와 그 끝의 군주가 한눈에 보인다
 	camera.CameraType = Enum.CameraType.Scriptable
-	camera.FieldOfView = 64
-	camera.CFrame = CFrame.lookAt(start, LORD_AT)
+	camera.FieldOfView = 68
+	camera.CFrame = CFrame.lookAt(startPos, LORD_AT)
 	TweenService:Create(topBar, TweenInfo.new(0.8), { Size = UDim2.new(1, 0, 0.1, 0) }):Play()
 	TweenService:Create(bottomBar, TweenInfo.new(0.8), { Size = UDim2.new(1, 0, 0.1, 0) }):Play()
 	TweenService:Create(veil, TweenInfo.new(1.0), { BackgroundTransparency = 1 }):Play()
@@ -115,29 +115,29 @@ local function play()
 		if SoundBank.Has("Lord_Voice") then SoundBank.Play(SoundService, "Lord_Voice", { Volume = 0.6 }) end -- 낮고 묵직한 울림 (군주의 목소리)
 	end)
 
-	-- 1) 천천히 앞으로 (군주 그림자가 또렷해진다)
-	TweenService:Create(camera, TweenInfo.new(3.4, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
-		CFrame = CFrame.lookAt(start + Vector3.new(16, 3, 0), LORD_AT), FieldOfView = 52,
+	-- 1) 높은 하늘에서 군주 쪽으로 천천히 다가간다 (군주가 또렷하게 커진다)
+	TweenService:Create(camera, TweenInfo.new(3.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+		CFrame = CFrame.lookAt(startPos + Vector3.new(110, -28, 70), LORD_AT), FieldOfView = 54,
 	}):Play()
 	task.delay(1.6, function()
 		if finished then return end
 		TweenService:Create(title, TweenInfo.new(0.9), { TextTransparency = 0, TextStrokeTransparency = 0.7 }):Play()
 		TweenService:Create(subtitle, TweenInfo.new(1.2), { TextTransparency = 0.1 }):Play()
 	end)
-	task.wait(3.5)
+	task.wait(3.7)
 	if finished then return end
 
-	-- 2) 내 캐릭터 뒤로 내려온다
+	-- 2) 마을 쪽으로 빠르게 줌 인: 하늘에서 스폰의 내 캐릭터 뒤로 내려앉는다
 	local finalPos = root.Position - look * 14 + Vector3.new(0, 7, 0)
 	local finalLook = root.Position + look * 30 + Vector3.new(0, 4, 0)
-	TweenService:Create(camera, TweenInfo.new(2.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+	TweenService:Create(camera, TweenInfo.new(2.8, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
 		CFrame = CFrame.lookAt(finalPos, finalLook), FieldOfView = 70,
 	}):Play()
 	TweenService:Create(title, TweenInfo.new(1.2), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
 	TweenService:Create(subtitle, TweenInfo.new(1.2), { TextTransparency = 1 }):Play()
 	TweenService:Create(topBar, TweenInfo.new(1.4), { Size = UDim2.new(1, 0, 0, 0) }):Play()
 	TweenService:Create(bottomBar, TweenInfo.new(1.4), { Size = UDim2.new(1, 0, 0, 0) }):Play()
-	task.wait(2.3)
+	task.wait(2.9)
 	finish()
 end
 
