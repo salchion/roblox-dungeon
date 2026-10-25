@@ -678,6 +678,69 @@ do
 	end)
 end
 
+-- 발밑 길 안내 화살표 (HUD 느낌): 캐릭터 발 앞 바닥에 겹화살표(»)가 떠서 미션 목표 쪽을 가리킨다. 내 화면에만 보인다 (Camera 안에 둔다)
+-- 목표에 가까워지면(25m) / 던전 / 큰 창이 열려 있으면 숨는다. 눈부시지 않게 은은한 노란색 + 반투명.
+do
+	local GUIDE_COLOR = Color3.fromRGB(235, 195, 95)
+	local folder = Instance.new("Folder")
+	folder.Name = "TutorialGuideArrow"
+	local bars = {} -- { Part, Local (화살표 기준 CFrame), Row (1 = 앞쪽 꺾쇠, 2 = 뒤쪽) }
+	local function chevron(offsetZ, row)
+		local tip = Vector3.new(0, 0, offsetZ - 1)
+		for _, side in ipairs({ -1, 1 }) do
+			local tail = Vector3.new(side * 1.3, 0, offsetZ + 0.3)
+			local part = Instance.new("Part")
+			part.Name = "GuideBar"
+			part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch, part.CastShadow = true, false, false, false, false
+			part.Material = Enum.Material.Neon
+			part.Color = GUIDE_COLOR
+			part.Transparency = 1
+			part.Size = Vector3.new(0.55, 0.12, (tip - tail).Magnitude + 0.3)
+			part.Parent = folder
+			table.insert(bars, { Part = part, Local = CFrame.lookAt((tip + tail) / 2, tip), Row = row })
+		end
+	end
+	chevron(0, 1)
+	chevron(1.3, 2)
+	local rayParams = RaycastParams.new()
+	rayParams.FilterType = Enum.RaycastFilterType.Exclude
+	local shown = false
+	local function hide()
+		if not shown then return end
+		shown = false
+		for _, bar in ipairs(bars) do bar.Part.Transparency = 1 end
+	end
+	RunService.RenderStepped:Connect(function()
+		local camera = workspace.CurrentCamera
+		if folder.Parent ~= camera then folder.Parent = camera end
+		local character = player.Character
+		local root = character and character:FindFirstChild("HumanoidRootPart")
+		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+		local target = current and current.Target
+		if not (root and humanoid and humanoid.Health > 0 and typeof(target) == "Vector3")
+			or player:GetAttribute("Zone") == "Dungeon" or player:GetAttribute("ModalOpen") or player:GetAttribute("ChestOpening") then
+			hide()
+			return
+		end
+		local flat = Vector3.new(target.X - root.Position.X, 0, target.Z - root.Position.Z)
+		if flat.Magnitude < 25 then hide() return end
+		local dir = flat.Unit
+		local ahead = root.Position + dir * 5
+		rayParams.FilterDescendantsInstances = { character, folder }
+		local hit = workspace:Raycast(ahead + Vector3.new(0, 4, 0), Vector3.new(0, -14, 0), rayParams)
+		local groundY = hit and hit.Position.Y or (root.Position.Y - 3)
+		local base = CFrame.lookAt(Vector3.new(ahead.X, groundY + 0.2, ahead.Z), Vector3.new(ahead.X, groundY + 0.2, ahead.Z) + dir)
+		local t = os.clock() * 2.2
+		for _, bar in ipairs(bars) do
+			bar.Part.CFrame = base * bar.Local
+			-- 앞뒤 꺾쇠가 번갈아 밝아져 "그쪽으로" 흐르는 느낌
+			local wave = 0.5 + 0.5 * math.sin(t - (bar.Row == 1 and 0 or 1.4))
+			bar.Part.Transparency = 0.35 + 0.3 * wave
+		end
+		shown = true
+	end)
+end
+
 -- 필드로 걸어가는 길의 대시 힌트: "필드 입구" 미션 중 마을에서 걷고 있으면(대시를 아직 안 썼으면) 왼쪽 옆에 작게 "Q = 대시로 빨리 가요!" 가 떠 있다.
 -- 대시를 쓰거나 필드에 들어서면 사라진다. (가운데 시야를 가리지 않는 측면 표시)
 do
