@@ -627,17 +627,24 @@ local function play()
 	-- 활공: 옆으로 크게 휘어지는 곡선을 따라 3.4초 동안 천천히 내려온다 (처음엔 조금 빠르게, 땅에 가까워질수록 부드럽게 느려진다)
 	local fromPos = skyPos - Vector3.new(60, 90, 0)
 	local toPos = homePose.Position
-	local descendTime = 3.4
+	local descendTime = 3.8
 	local descendStart = os.clock()
 	local landed = false
+	local fovStart = camera.FieldOfView
+	-- 다리(브릿지): 올라갔다가 내려오는 순간 화면이 툭 바뀌지 않게, 화면이 잠깐 어두워졌다 밝아지며(숨 고르기) 바람 소리와 함께 천천히 속도가 붙는다
+	TweenService:Create(veil, TweenInfo.new(0.5, Enum.EasingStyle.Sine), { BackgroundTransparency = 0.5 }):Play()
+	task.delay(0.55, function()
+		if not finished then TweenService:Create(veil, TweenInfo.new(1.1, Enum.EasingStyle.Sine), { BackgroundTransparency = 1 }):Play() end
+	end)
+	sfx("Aug_Flame", 0.9, 0.35)
 	while not finished do
 		local t = math.clamp((os.clock() - descendStart) / descendTime, 0, 1)
-		local eased = 1 - (1 - t) ^ 2.4 -- ease out
+		local eased = t * t * (3 - 2 * t) -- 느리게 출발 -> 가속 -> 땅 가까이에서 다시 부드럽게 (멈춰 있던 카메라가 갑자기 튀어 나가지 않는다)
 		local swing = math.sin(math.pi * eased) * 70 -- 옆으로 휘어지는 정도
 		local pos = fromPos:Lerp(toPos, eased) + Vector3.new(0, 0, swing)
 		local lookAtPoint = spawnPos:Lerp(spawnPos + look * 30 + Vector3.new(0, 4, 0), eased)
 		camera.CFrame = CFrame.lookAt(pos, lookAtPoint)
-		camera.FieldOfView = 76 - 6 * eased
+		camera.FieldOfView = fovStart + (70 - fovStart) * eased
 		if t > 0.62 then setBodyAlpha(math.max(0, 1 - (t - 0.62) / 0.34)) end -- 거의 다 내려오면 몸이 서서히 나타난다
 		if t >= 1 then landed = true break end
 		RunService.RenderStepped:Wait()
