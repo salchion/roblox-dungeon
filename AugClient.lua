@@ -370,9 +370,55 @@ end
 
 -- 세트 효과가 발동했을 때: 조준점 아래에 이름 팝업이 떠올랐다 사라지고, 오른쪽 위 목록의 그 효과가 잠깐 노랗게 켜지며 상자 테두리가 번쩍인다
 local procLabels = {}
-local function showProc(attr)
+-- 발동 체감: 내 발밑에 그 효과 색의 고리가 퍼지고, 효과가 터진 자리 위로 아이콘이 떠오른다 (은은하게: 반투명 / 짧게). 저사양 모드면 생략
+local procFolder = Instance.new("Folder")
+procFolder.Name = "AugProcFx"
+procFolder.Parent = workspace
+local function procWorldFx(info, position)
+	if player:GetAttribute("LowSpec") then return end
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if root then
+		local ring = Instance.new("Part")
+		ring.Shape = Enum.PartType.Cylinder
+		ring.Anchored, ring.CanCollide, ring.CanQuery, ring.CanTouch, ring.CastShadow = true, false, false, false, false
+		ring.Material = Enum.Material.Neon
+		ring.Color = info.Color:Lerp(Color3.fromRGB(40, 40, 50), 0.25)
+		ring.Transparency = 0.5
+		ring.Size = Vector3.new(0.2, 3, 3)
+		ring.CFrame = CFrame.new(root.Position - Vector3.new(0, 2.8, 0)) * CFrame.Angles(0, 0, math.rad(90))
+		ring.Parent = procFolder
+		TweenService:Create(ring, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.2, 15, 15), Transparency = 1 }):Play()
+		task.delay(0.45, function() ring:Destroy() end)
+	end
+	if typeof(position) == "Vector3" then
+		local anchor = Instance.new("Part")
+		anchor.Anchored, anchor.CanCollide, anchor.CanQuery, anchor.CanTouch = true, false, false, false
+		anchor.Transparency = 1
+		anchor.Size = Vector3.new(0.2, 0.2, 0.2)
+		anchor.Position = position + Vector3.new(0, 5, 0)
+		anchor.Parent = procFolder
+		local board = Instance.new("BillboardGui")
+		board.Size = UDim2.new(0, 54, 0, 54)
+		board.AlwaysOnTop = true
+		board.MaxDistance = 160
+		board.Parent = anchor
+		local icon = Instance.new("TextLabel")
+		icon.Size = UDim2.new(1, 0, 1, 0)
+		icon.BackgroundTransparency = 1
+		icon.Text = info.Icon
+		icon.TextScaled = true
+		icon.Font = Enum.Font.GothamBlack
+		icon.Parent = board
+		TweenService:Create(anchor, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = anchor.Position + Vector3.new(0, 5, 0) }):Play()
+		task.delay(0.4, function() TweenService:Create(icon, TweenInfo.new(0.4), { TextTransparency = 1 }):Play() end)
+		task.delay(0.85, function() anchor:Destroy() end)
+	end
+end
+
+local function showProc(attr, position)
 	local info = Config.AugInfo[attr]
 	if not info then return end
+	procWorldFx(info, position)
 	procUntil[attr] = os.clock() + 0.5
 	refreshHud()
 	task.delay(0.55, refreshHud)
@@ -397,8 +443,8 @@ local function showProc(attr)
 	end)
 end
 
-Remotes.Aug.OnClientEvent:Connect(function(action, pick)
+Remotes.Aug.OnClientEvent:Connect(function(action, pick, extra)
 	if action == "Demo" then task.spawn(playRoll, pick)
-	elseif action == "Proc" then showProc(pick) end
+	elseif action == "Proc" then showProc(pick, extra) end
 end)
 refreshCorner()
