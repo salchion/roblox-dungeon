@@ -10,8 +10,8 @@ Config.StartGold = 0 -- 처음 접속했을 때 지급되는 골드 (튜토리�
 ------------------------------------------------------------
 Config.Player = {
 	BaseHealth = 100,
-	WalkSpeed = 34,         -- 기본 이동 속도 (30 -> 34: 초반이 답답하다는 의견. 달리기 키는 없애서 항상 이 속도로 달린다)
-	RunSpeed = 36,          -- (대시 속도 계산에만 쓴다)
+	WalkSpeed = 40,         -- 기본 이동 속도 (30 -> 34: 초반이 답답하다는 의견. 달리기 키는 없애서 항상 이 속도로 달린다)
+	RunSpeed = 42,          -- (대시 속도 계산에만 쓴다)
 	DashSpeed = 135,        -- Q 대시 속도 (순간 폭발적으로 튀어 나감)
 	DashTime = 0.24,        -- 대시 지속 시간(초): 짧고 굵게
 	DashCooldown = 3.0,     -- 대시 1회 충전에 걸리는 시간(초) = 대시 쿨타임
@@ -471,7 +471,7 @@ function Config.Monster.GetStats(level)
 	return {
 		Size = math.min(3 + (level - 1) * 0.8, 40),
 		MaxHealth = math.floor(40 * 1.22 ^ (level - 1)),
-		Speed = 12.5,
+		Speed = 16,
 		ShotDamage = 8 + level * 2,
 		ShotInterval = math.max(1.2, 2.6 - level * 0.05),
 		ShotSpeed = 45,

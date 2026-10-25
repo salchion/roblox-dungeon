@@ -2385,15 +2385,27 @@ do
 
 	local shownAt = os.clock() + 9
 	local used = false
+	-- 필드에 나갔는데 자동 공격이 꺼져 있으면: 큰 R 안내를 잠깐(최대 2번, 6초) 띄우고, 버튼이 계속 금빛으로 뛴다
+	local fieldHintUntil, fieldHintCount = 0, 0
+	local function onZone()
+		if player:GetAttribute("Zone") == "Field" and not autoMode and fieldHintCount < 2 then
+			fieldHintCount += 1
+			fieldHintUntil = os.clock() + 6
+		end
+	end
+	player:GetAttributeChangedSignal("Zone"):Connect(onZone)
+	task.defer(onZone)
 	RunService.RenderStepped:Connect(function()
 		if autoMode then used = true end
-		autoStroke.Color = autoMode and Color3.fromRGB(110, 255, 150) or Color3.fromRGB(120, 130, 190)
-		autoStroke.Thickness = autoMode and 3 or 2
+		local nudge = not autoMode and currentZone() == "Field"
+		autoStroke.Color = autoMode and Color3.fromRGB(110, 255, 150) or (nudge and Color3.fromRGB(255, 215, 90) or Color3.fromRGB(120, 130, 190))
+		autoStroke.Thickness = autoMode and 3 or (nudge and 3 + 3 * math.abs(math.sin(os.clock() * 4)) or 2)
 		autoButton.BackgroundColor3 = autoMode and Color3.fromRGB(32, 70, 52) or Color3.fromRGB(34, 36, 58)
 		autoText.Text = autoMode and "<font color='#8fffb0'><b>Auto-Attack</b>\nON</font>" or "<b>Auto-Attack</b>\n<font color='#9aa0c8'>OFF</font>"
 		local zone = currentZone()
 		autoButton.Visible = zone == "Lobby" or zone == "Field" or zone == "Dungeon"
 		local showHint = not used and player:GetAttribute("TutorialActive") == true and os.clock() > shownAt and os.clock() < shownAt + 40 and zone ~= "Dungeon" and not (settings.MenuPanel and settings.MenuPanel.Visible)
+		showHint = showHint or (not autoMode and os.clock() < fieldHintUntil and not (settings.MenuPanel and settings.MenuPanel.Visible))
 		hint.Visible = showHint
 	end)
 end

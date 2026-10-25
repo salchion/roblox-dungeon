@@ -14,7 +14,7 @@ local player = Players.LocalPlayer
 local function start()
 	local gui = create("ScreenGui", { Name = "AdminGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 90 }, player:WaitForChild("PlayerGui"))
 	local panel = makePanel({
-		Size = UDim2.new(0, 640, 0, 604), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+		Size = UDim2.new(0, 640, 0, 656), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
 		BackgroundColor3 = Color3.fromRGB(22, 24, 38), BackgroundTransparency = 0.02, Visible = false, ZIndex = 10,
 	}, gui)
 	local function text(props) props.ZIndex = 11 props.TextXAlignment = props.TextXAlignment or Enum.TextXAlignment.Left return makeLabel(props, panel) end
@@ -108,9 +108,33 @@ local function start()
 		resetNote.Text = "Cancelled."
 	end)
 
-	text({ Size = UDim2.new(0, 230, 0, 22), Position = UDim2.new(0, 16, 0, 534), Text = "Hall of Fame: remove an entry (all servers)", TextSize = 12, TextColor3 = Color3.fromRGB(190, 195, 220) })
+	-- 4-2) 다른 사람(위 Give 에서 고른 유저)의 저장 초기화: 친구와 처음부터 테스트할 때. 두 단계 + 대상 확인
+	local otherTarget = nil
+	local otherConfirm, otherCancel
+	local function otherReset()
+		otherConfirm.Visible, otherCancel.Visible = false, false
+		otherTarget = nil
+	end
+	button({ Size = UDim2.new(0, 230, 0, 36), Position = UDim2.new(0, 16, 0, 536), Text = "Reset selected player's save...", TextSize = 13, BackgroundColor3 = Color3.fromRGB(150, 60, 60) }, function()
+		local row = targets[targetIndex]
+		if not row then return end
+		otherTarget = row
+		Remotes.Admin:FireServer("ResetOtherArm", row.UserId)
+		otherConfirm.Text = "⚠ Wipe " .. row.Name .. " now"
+		otherConfirm.Visible, otherCancel.Visible = true, true
+		task.delay(30, function()
+			if otherTarget == row then otherReset() end
+		end)
+	end)
+	otherConfirm = button({ Size = UDim2.new(0, 260, 0, 36), Position = UDim2.new(0, 252, 0, 536), Text = "", TextSize = 13, BackgroundColor3 = Color3.fromRGB(200, 40, 40), Visible = false }, function()
+		if otherTarget then Remotes.Admin:FireServer("ResetOtherConfirm", otherTarget.UserId) end
+		otherReset()
+	end)
+	otherCancel = button({ Size = UDim2.new(0, 100, 0, 36), Position = UDim2.new(0, 522, 0, 536), Text = "Cancel", TextSize = 13, BackgroundColor3 = Color3.fromRGB(54, 58, 82), Visible = false }, otherReset)
+
+	text({ Size = UDim2.new(0, 230, 0, 22), Position = UDim2.new(0, 16, 0, 586), Text = "Hall of Fame: remove an entry (all servers)", TextSize = 12, TextColor3 = Color3.fromRGB(190, 195, 220) })
 	for rank = 1, 3 do
-		button({ Size = UDim2.new(0, 120, 0, 30), Position = UDim2.new(0, 16 + (rank - 1) * 130, 0, 560), Text = "Remove #" .. rank, TextSize = 12, BackgroundColor3 = Color3.fromRGB(110, 70, 70) }, function()
+		button({ Size = UDim2.new(0, 120, 0, 30), Position = UDim2.new(0, 16 + (rank - 1) * 130, 0, 612), Text = "Remove #" .. rank, TextSize = 12, BackgroundColor3 = Color3.fromRGB(110, 70, 70) }, function()
 			Remotes.Admin:FireServer("HallRemove", rank)
 		end)
 	end

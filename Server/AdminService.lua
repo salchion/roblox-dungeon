@@ -67,6 +67,7 @@ for _, player in ipairs(Players:GetPlayers()) do
 end
 
 local armedAt = setmetatable({}, { __mode = "k" }) -- [player] = 저장 초기화 확인 단계를 연 시각
+local armedOther = setmetatable({}, { __mode = "k" }) -- [admin] = { UserId, At }
 local lastAction = setmetatable({}, { __mode = "k" })
 
 local GRANT_MAX = { Gold = 1000000000, Tickets = 10000, Keys = 30 }
@@ -151,6 +152,23 @@ Remotes.Admin.OnServerEvent:Connect(function(player, action, a, b, c)
 		log(player, "RESET own save")
 		if data and data.Wipe and data.Wipe(player) then
 			player:Kick("Your save was reset. Rejoin to start fresh.")
+		else
+			note(player, "Reset failed (DataStore unavailable). Nothing was changed.")
+		end
+	elseif action == "ResetOtherArm" then -- 다른 유저의 저장 초기화도 두 단계: 같은 대상으로 30초 안에 한 번 더
+		if typeof(a) ~= "number" or not Players:GetPlayerByUserId(a) then return end
+		armedOther[player] = { UserId = a, At = now }
+	elseif action == "ResetOtherConfirm" then
+		local armed = armedOther[player]
+		armedOther[player] = nil
+		if not armed or armed.UserId ~= a or now - armed.At > 30 then note(player, "Reset expired. Start again.") return end
+		local target = Players:GetPlayerByUserId(a)
+		if not target then note(player, "That player is not in this server.") return end
+		local data = module("DataService")
+		log(player, string.format("RESET save of %s(%d)", target.Name, target.UserId))
+		if data and data.Wipe and data.Wipe(target) then
+			note(player, "Reset " .. target.Name .. "'s save.")
+			target:Kick("Your save was reset by an admin. Rejoin to start fresh.")
 		else
 			note(player, "Reset failed (DataStore unavailable). Nothing was changed.")
 		end
