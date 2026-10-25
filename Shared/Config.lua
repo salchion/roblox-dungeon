@@ -403,15 +403,15 @@ Config.AugSynergies = {
 -- 세트 효과 역할 / 무기 궁합: 보스에 강하면 몹에 약하고, 몹에 강하면 보스에 약하다. 잘 맞는 무기를 들면 세트 피해 +40% 와 작은 특수 효과.
 --   Mob(사냥형): 보스에게 50% / Boss(보스형): 일반 몬스터에게 60% / All(만능, 마지막 구역): 둘 다 100%
 --   구역 배수: 뒤 구역 세트일수록 기본 위력이 조금씩 높다 (구역마다 +6%)
-Config.AugRoles = {
-	AugPulse   = { Role = "Mob",  Weapons = { "Shotgun", "Cannon" },  Perk = "burst radius +30%" },
-	AugOrbit   = { Role = "Mob",  Weapons = { "Pistol", "Smg" },      Perk = "blade thrown 1 shot sooner" },
-	AugStorm   = { Role = "Mob",  Weapons = { "Rifle", "Rail" },      Perk = "lightning arcs to +1 enemy" },
-	AugMissile = { Role = "Boss", Weapons = { "Revolver", "Sniper" }, Perk = "+1 missile per salvo" },
-	AugNova    = { Role = "Mob",  Weapons = { "Rocket", "Cannon" },   Perk = "+1 extra blast" },
-	AugFlame   = { Role = "Boss", Weapons = { "Flamer", "Shotgun" },  Perk = "2 burn stacks per hit" },
-	AugExecute = { Role = "Boss", Weapons = { "Sniper", "Rail" },     Perk = "boss damage bonus cap +30%" },
-	AugMeteor  = { Role = "All",  Weapons = { "Rocket", "Flamer" },   Perk = "+1 meteor" },
+Config.AugRoles = { -- Weapons: 이 세트 효과와 잘 맞는 무기 (총 / 활 / 투척 / 대포 / 마법 5종이 골고루 걸리게)
+	AugPulse   = { Role = "Mob",  Weapons = { "Cannon", "Revolver" },  Perk = "burst radius +30%" },
+	AugOrbit   = { Role = "Mob",  Weapons = { "Shotgun", "Rifle" },    Perk = "blade thrown 1 shot sooner" },
+	AugStorm   = { Role = "Mob",  Weapons = { "Rail", "Smg" },         Perk = "lightning arcs to +1 enemy" },
+	AugMissile = { Role = "Boss", Weapons = { "Pistol", "Rifle" },     Perk = "+1 missile per salvo" },
+	AugNova    = { Role = "Mob",  Weapons = { "Rocket", "Flamer" },    Perk = "+1 extra blast" },
+	AugFlame   = { Role = "Boss", Weapons = { "Flamer", "Shotgun" },   Perk = "2 burn stacks per hit" },
+	AugExecute = { Role = "Boss", Weapons = { "Sniper", "Pistol" },    Perk = "boss damage bonus cap +30%" },
+	AugMeteor  = { Role = "All",  Weapons = { "Cannon", "Rail" },      Perk = "+1 meteor" },
 }
 Config.AugRoleMult = { Mob = { Boss = 0.5, Mob = 1 }, Boss = { Boss = 1, Mob = 0.6 }, All = { Boss = 1, Mob = 1 } }
 Config.AugRoleLabel = { Mob = "🌪 Mob hunter", Boss = "🎯 Boss hunter", All = "⚖ All-round" }
@@ -582,21 +582,21 @@ local ERAS = {
 -- 시대 안에서 뒤로 갈수록 "한 방 / 폭발 / 관통" 같은 묵직한 무기가 오고, 기본 화력(DPS)도 조금씩 올라간다
 local CLASS_ORDER = { "Pistol", "Smg", "Revolver", "Rifle", "Shotgun", "Flamer", "Cannon", "Sniper", "Rocket", "Rail" }
 local CLASS_NAMES = {
-	Pistol = "Pistol", Revolver = "Revolver", Smg = "SMG", Shotgun = "Shotgun", Rifle = "Rifle",
-	Sniper = "Sniper Rifle", Rocket = "Rocket Launcher", Rail = "Railgun", Flamer = "Flamethrower", Cannon = "Plasma Cannon",
+	Pistol = "Pistol", Smg = "SMG", Revolver = "Bomb", Rifle = "Bow", Shotgun = "Shuriken",
+	Flamer = "Tome", Cannon = "Mortar", Sniper = "Crossbow", Rocket = "Rocket Cannon", Rail = "Wand",
 }
 -- 무기 이름: 종류 x 시대마다 전부 다른 이름 (접두사만 바뀌는 게 아니라 무기 자체가 다른 이름 / 다른 모양)
 local WEAPON_NAMES = {
 	Pistol = { "Rusty Pistol", "Steel Pistol", "Arcane Hand Cannon", "Golden Ace", "Flame Igniter", "Frost Spike Pistol", "Lightning Trigger", "Shadow Fang", "Dragonfang Pistol", "Mythic Astra" },
 	Smg = { "Rusty SMG", "Steel Repeater", "Arcane Whisper SMG", "Golden Storm SMG", "Flame Rapid-Fire", "Frost Rapid-Fire", "Discharge SMG", "Shadow Rapid-Fire", "Dragonflame SMG", "Mythic Spray" },
-	Revolver = { "Rusty Revolver", "Steel Six-Shooter", "Arcane Magnum", "Golden Hunter", "Inferno Revolver", "Icebreaker Revolver", "Thunder Revolver", "Cursed Revolver", "Dragon's Magnum", "Eternal Revolver" },
-	Rifle = { "Rusty Rifle", "Steel Carbine", "Arcane Rifle", "Golden Ranger", "Flame Rifle", "Frost Rifle", "Shock Rifle", "Shadow Rifle", "Dragonscale Rifle", "Mythic Galaxy Rifle" },
-	Shotgun = { "Rusty Shotgun", "Steel Pump Shotgun", "Arcane Double-Barrel", "Golden Shredder", "Flame Scattergun", "Glacier Scattergun", "Lightning Scattergun", "Slaughterer Shotgun", "Dragon Blunderbuss", "Mythic Blunderbuss" },
-	Flamer = { "Rusty Flamethrower", "Steel Sprayer", "Arcane Flame Sprayer", "Golden Furnace", "Flame Inferno Torch", "Frostfire Sprayer", "Plasma Torch", "Hellfire Sprayer", "Dragon's Breath", "Star Flame" },
-	Cannon = { "Rusty Plasma Cannon", "Steel Cannon", "Arcane Cannon", "Golden Cannon", "Volcano Cannon", "Frost Cannon", "Thunder Cannon", "Dark Cannon", "Dragon Cannon", "Star Breaker" },
-	Sniper = { "Rusty Sniper", "Steel Long-Range Sniper", "Arcane Sniper", "Golden Eagle Sniper", "Flame Sniper", "Snowfield Sniper", "Lightning Sniper", "Assassin's Sniper", "Dragon Eye Sniper", "Galaxy Sniper" },
-	Rocket = { "Rusty Rocket Launcher", "Steel Bazooka", "Arcane Launcher", "Golden Missile", "Flame Rocket", "Frost Missile", "Lightning Missile", "Dark Missile", "Dragon Rocket", "Comet Launcher" },
-	Rail = { "Rusty Railgun", "Steel Gauss Gun", "Arcane Railgun", "Golden Railgun", "Flame Railgun", "Frost Railgun", "Electromagnetic Railgun", "Void Railgun", "Dragon Core Railgun", "Mythic Railgun" },
+	Revolver = { "Rusty Bomb", "Steel Grenade", "Arcane Bomb", "Golden Bomb", "Inferno Bomb", "Ice Bomb", "Thunder Bomb", "Cursed Bomb", "Dragon Bomb", "Mythic Bomb" },
+	Rifle = { "Rusty Shortbow", "Steel Longbow", "Arcane Bow", "Golden Recurve", "Flame Bow", "Frost Bow", "Thunder Bow", "Shadow Bow", "Dragonbone Bow", "Mythic Starbow" },
+	Shotgun = { "Rusty Throwing Star", "Steel Shuriken", "Arcane Chakram", "Golden Kunai", "Flame Shuriken", "Frost Shuriken", "Thunder Kunai", "Shadow Shuriken", "Dragon Shuriken", "Mythic Chakram" },
+	Flamer = { "Rusty Tome", "Steel Tome", "Arcane Grimoire", "Golden Tome", "Flame Grimoire", "Frost Tome", "Storm Tome", "Shadow Grimoire", "Dragon Tome", "Mythic Tome" },
+	Cannon = { "Rusty Mortar", "Steel Mortar", "Arcane Mortar", "Golden Mortar", "Volcano Mortar", "Frost Mortar", "Thunder Mortar", "Dark Mortar", "Dragon Mortar", "Star Mortar" },
+	Sniper = { "Rusty Crossbow", "Steel Arbalest", "Arcane Crossbow", "Golden Ballista", "Flame Crossbow", "Frost Crossbow", "Lightning Crossbow", "Shadow Crossbow", "Dragon Ballista", "Mythic Crossbow" },
+	Rocket = { "Rusty Rocket Cannon", "Steel Bazooka", "Arcane Launcher", "Golden Missile", "Flame Rocket", "Frost Missile", "Lightning Missile", "Dark Missile", "Dragon Rocket", "Comet Cannon" },
+	Rail = { "Rusty Wand", "Steel Wand", "Arcane Staff", "Golden Staff", "Flame Staff", "Frost Staff", "Thunder Staff", "Void Staff", "Dragon Staff", "Mythic Staff" },
 }
 
 -- Tiers[i] = i번째 무기 (MinLevel = 이 무기가 되는 최소 강화 단계). 이름은 시대 + 종류.
@@ -960,44 +960,44 @@ Config.WeaponTypes = {
 		Trait = "Very fast fire rate · Short range", Desc = "A gun that pours out shots at a blistering fire rate",
 	},
 	Revolver = {
-		Name = "Revolver", Form = "Steel", DamageMult = 1.12, Cooldown = 1.1, Range = 320, Pellets = 1, Spread = 0,
-		ShotScale = 1.15, SpeedScale = 1.1, CritBonus = 0.1, BarrelLength = 0.9, BarrelThickness = 1.2,
-		Trait = "Heavy hitter · Crit +10%", Desc = "Slow but hits hard",
+		Name = "Bomb", Form = "Steel", DamageMult = 1.12, Cooldown = 1.1, Range = 320, Pellets = 1, Spread = 0,
+		ShotScale = 1.15, SpeedScale = 1.1, CritBonus = 0.1, BarrelLength = 0.35, BarrelThickness = 1,
+		Trait = "Heavy hitter · Crit +10%", Desc = "A heavy bomb lobbed at the target: slow but hits hard",
 	},
 	Rifle = {
-		Name = "Rifle", Form = "Rifle", DamageMult = 0.62, Cooldown = 0.6, Range = 420, Pellets = 1, Spread = 0,
-		ShotScale = 0.9, SpeedScale = 1.4, CritBonus = 0.05, BarrelLength = 1.4, BarrelThickness = 0.9,
-		Trait = "Fast fire rate · Long range", Desc = "Accurate sustained fire at long range",
+		Name = "Bow", Form = "Rifle", DamageMult = 0.62, Cooldown = 0.6, Range = 420, Pellets = 1, Spread = 0,
+		ShotScale = 0.9, SpeedScale = 1.4, CritBonus = 0.05, BarrelLength = 1.4, BarrelThickness = 0.45,
+		Trait = "Fast fire rate · Long range", Desc = "Arrows fly far and true: steady shots from a distance",
 	},
 	Shotgun = {
-		Name = "Shotgun", Form = "Basic", DamageMult = 0.36, Cooldown = 1.2, Range = 80, Pellets = 6, Spread = 9,
-		ShotScale = 0.55, SpeedScale = 1, BarrelLength = 0.75, BarrelThickness = 1.5,
-		Trait = "Point-blank burst damage · Very short range", Desc = "6 pellets fan out in a spread (fewer hit at range)",
+		Name = "Shuriken", Form = "Basic", DamageMult = 0.36, Cooldown = 1.2, Range = 80, Pellets = 6, Spread = 9,
+		ShotScale = 0.55, SpeedScale = 1, BarrelLength = 0.35, BarrelThickness = 1,
+		Trait = "Point-blank burst damage · Very short range", Desc = "6 throwing stars fan out in a spread (fewer hit at range)",
 	},
 	Flamer = {
-		Name = "Flamethrower", Form = "Flamer", DamageMult = 0.25, Cooldown = 0.4, Range = 45, Pellets = 3, Spread = 16,
-		ShotScale = 0.9, SpeedScale = 0.6, BarrelLength = 0.7, BarrelThickness = 1.4,
-		Trait = "Highest firepower · Shortest range", Desc = "Sprays flames in a fan (get up close and burn them)",
+		Name = "Tome", Form = "Flamer", DamageMult = 0.25, Cooldown = 0.4, Range = 45, Pellets = 3, Spread = 16,
+		ShotScale = 0.9, SpeedScale = 0.6, BarrelLength = 0.5, BarrelThickness = 1,
+		Trait = "Highest firepower · Shortest range", Desc = "Sprays magic flames in a fan (get up close and burn them)",
 	},
 	Cannon = {
-		Name = "Plasma Cannon", Form = "Cannon", DamageMult = 1.5, Cooldown = 1.3, Range = 360, Pellets = 1, Spread = 0, Splash = 7,
+		Name = "Mortar", Form = "Cannon", DamageMult = 1.5, Cooldown = 1.3, Range = 360, Pellets = 1, Spread = 0, Splash = 7,
 		ShotScale = 1.5, SpeedScale = 0.8, BarrelLength = 1.1, BarrelThickness = 1.8,
-		Trait = "Small explosion · Slow shots", Desc = "Big plasma shots that cause a small explosion around the impact (radius 7)",
+		Trait = "Small explosion · Slow shots", Desc = "Big shells that burst into a small explosion around the impact (radius 7)",
 	},
 	Sniper = {
-		Name = "Sniper Rifle", Form = "Basic", DamageMult = 1.6, Cooldown = 1.6, Range = 650, Pellets = 1, Spread = 0,
-		ShotScale = 1.4, SpeedScale = 2.4, CritBonus = 0.25, BarrelLength = 1.9, BarrelThickness = 0.7,
-		Trait = "Long range · Crit +25%", Desc = "Slow but each shot is powerful",
+		Name = "Crossbow", Form = "Basic", DamageMult = 1.6, Cooldown = 1.6, Range = 650, Pellets = 1, Spread = 0,
+		ShotScale = 1.4, SpeedScale = 2.4, CritBonus = 0.25, BarrelLength = 1.9, BarrelThickness = 0.5,
+		Trait = "Long range · Crit +25%", Desc = "Slow but each bolt is powerful",
 	},
 	Rocket = {
-		Name = "Rocket Launcher", Form = "Rocket", DamageMult = 1.7, Cooldown = 1.5, Range = 340, Pellets = 1, Spread = 0, Splash = 12,
+		Name = "Rocket Cannon", Form = "Rocket", DamageMult = 1.7, Cooldown = 1.5, Range = 340, Pellets = 1, Spread = 0, Splash = 12,
 		ShotScale = 1.8, SpeedScale = 0.55, BarrelLength = 1.3, BarrelThickness = 1.6,
 		Trait = "Wide explosion · Crowd clearing", Desc = "Explodes on impact, damaging nearby enemies too (radius 12)",
 	},
 	Rail = {
-		Name = "Railgun", Form = "Rail", DamageMult = 1.45, Cooldown = 1.4, Range = 700, Pellets = 1, Spread = 0, Bounce = 2, BounceRange = 34, BounceMult = 0.85,
-		ShotScale = 1.2, SpeedScale = 3, BarrelLength = 1.6, BarrelThickness = 0.8,
-		Trait = "Bounces to 3 nearby enemies · Longest range", Desc = "Ultra-fast shot that bounces from the target to the 2 nearest enemies around it (within 34)",
+		Name = "Wand", Form = "Rail", DamageMult = 1.45, Cooldown = 1.4, Range = 700, Pellets = 1, Spread = 0, Bounce = 2, BounceRange = 34, BounceMult = 0.85,
+		ShotScale = 1.2, SpeedScale = 3, BarrelLength = 1.8, BarrelThickness = 0.6,
+		Trait = "Bounces to 3 nearby enemies · Longest range", Desc = "Ultra-fast magic bolt that bounces from the target to the 2 nearest enemies around it (within 34)",
 	},
 }
 

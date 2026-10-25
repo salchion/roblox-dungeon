@@ -404,7 +404,7 @@ task.spawn(function()
 	end
 end)
 
-local WEAPON_ICONS = { Pistol = "🔫", Smg = "💨", Revolver = "🎯", Rifle = "🪖", Shotgun = "💥", Flamer = "🔥", Cannon = "🟣", Sniper = "🔭", Rocket = "🚀", Rail = "⚡" }
+local WEAPON_ICONS = { Pistol = "🔫", Smg = "💨", Revolver = "💣", Rifle = "🏹", Shotgun = "✴", Flamer = "📖", Cannon = "🧨", Sniper = "🎯", Rocket = "🚀", Rail = "🪄" }
 
 -- 가차 화면처럼 보이는 위쪽 무대: 내 캐릭터가 지금 무기를 들고 천천히 돈다 (글만 가득하던 위쪽 카드를 그림으로)
 local stage3d = create("ViewportFrame", {
