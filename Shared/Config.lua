@@ -828,6 +828,8 @@ Config.Field = {
 		Speed = { 1, 1.05, 1.1, 1.18, 1.26, 1.35, 1.45, 1.55 },
 		Reward = { 1, 1.5, 2.2, 3.2, 4.6, 6.5, 9, 13 },
 	},
+	-- 초반 일반 몬스터 / 엘리트만 체력을 더 낮춘다 (군주는 제외): 처음 사냥이 "잘 안 죽어서 답답하다"는 의견. 1구역 x0.45, 2구역 x0.8
+	EarlyMobHealth = { 0.45, 0.8 },
 	ZoneNames = { "Meadow", "Forest", "Wasteland", "Desert", "Snowfield", "Volcano", "Darklands", "Abyss" },
 	-- 구역별로 나오는 몬스터 종류와 비중 (MonsterTypes.lua 의 Defs 이름)
 	ZonePools = {
