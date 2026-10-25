@@ -3545,7 +3545,7 @@ for index, skillKey in ipairs(Config.Skills.Order) do
 			useSkill(skillKey)
 		end)
 	end
-	skillSlots[skillKey] = { Cover = cover, Timer = timer, Stroke = slotStroke }
+	skillSlots[skillKey] = { Cover = cover, Timer = timer, Stroke = slotStroke, Slot = slot }
 end
 
 do
@@ -3645,6 +3645,26 @@ RunService.RenderStepped:Connect(function()
 			slot.Timer.TextSize = 14
 			slot.Stroke.Thickness = full and (3 + 2 * math.abs(math.sin(os.clock() * 5))) or 2
 			slot.Stroke.Color = full and Color3.fromRGB(255, 225, 90) or Color3.fromRGB(255, 90, 90)
+			-- 처음 게이지가 가득 찼을 때 한 번만: 스킬 버튼 바로 위에 작은 표식 (메시지 카드 대신 눈에 잘 띄는 자리). 초반(레벨 10 이하)에만, 쓰거나 12초가 지나면 사라진다
+			if full and not slot.CueDone and (player:GetAttribute("Level") or 1) <= 10 and not player:GetAttribute("UltCueShown") then
+				slot.CueDone = true
+				player:SetAttribute("UltCueShown", true)
+				local cue = create("TextLabel", {
+					Name = "UltCue", Size = UDim2.new(0, 96, 0, 26), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 0, -8),
+					BackgroundColor3 = Color3.fromRGB(46, 38, 20), BackgroundTransparency = 0.05, BorderSizePixel = 0, Font = Enum.Font.GothamBlack, TextSize = 13,
+					TextColor3 = Color3.fromRGB(255, 225, 120), Text = UserInputService.TouchEnabled and "▼ Tap Deadeye!" or "▼ Press V!", ZIndex = 20,
+				}, slot.Slot)
+				rounded(cue, 8)
+				create("UIStroke", { Color = Color3.fromRGB(255, 217, 102), Thickness = 1.5 }, cue)
+				task.spawn(function()
+					local started = os.clock()
+					while cue.Parent and os.clock() - started < 12 and (player:GetAttribute("UltCharge") or 0) >= cfg.Cost do
+						cue.Position = UDim2.new(0.5, 0, 0, -8 - 4 * math.abs(math.sin((os.clock() - started) * 4)))
+						task.wait()
+					end
+					cue:Destroy()
+				end)
+			end
 		elseif remain > 0 then
 			slot.Cover.Size = UDim2.new(1, 0, math.clamp(remain / (skillCooldownTotal[skillKey] or cfg.Cooldown), 0, 1), 0)
 			slot.Timer.Text = string.format("%.0f", math.ceil(remain))

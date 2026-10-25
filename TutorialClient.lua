@@ -132,25 +132,23 @@ local activeCard = nil
 local activeWhere = nil -- 새 미션 카드 안의 "목표가 어느 쪽에 있는지" 줄 (매 프레임 갱신)
 local function popupMission()
 	if activeCard then activeCard:Destroy() end -- 이전 카드가 남아 글자가 겹치지 않게
-	local card = create("Frame", {
-		Size = UDim2.new(0, 520, 0, 150), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.22, 0),
-		BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.02, BorderSizePixel = 0, ZIndex = 30,
+	local card = create("CanvasGroup", { -- (CanvasGroup: 글자까지 한꺼번에 부드럽게 사라지게)
+		Size = UDim2.new(0, 380, 0, 92), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.14, 0),
+		BackgroundColor3 = Color3.fromRGB(18, 20, 34), BackgroundTransparency = 0.08, BorderSizePixel = 0, ZIndex = 30, GroupTransparency = 1,
 	}, gui)
 	activeCard = card
-	rounded(card, 18)
-	local cardStroke = create("UIStroke", { Color = Color3.fromRGB(235, 208, 128), Thickness = 3 }, card)
-	label({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 10), TextSize = 22, Font = Enum.Font.GothamBlack, RichText = true, ZIndex = 31,
-		Text = string.format("<font color='#ffd966'>🎯 Mission %d/%d</font>", current.Index, current.Total) }, card)
-	label({ Size = UDim2.new(1, -40, 0, 56), Position = UDim2.new(0, 20, 0, 50), TextSize = 19, Font = Enum.Font.GothamBold, TextWrapped = true, TextTruncate = Enum.TextTruncate.AtEnd, ZIndex = 31,
+	rounded(card, 12)
+	create("UIStroke", { Color = Color3.fromRGB(190, 168, 110), Thickness = 1.5, Transparency = 0.2 }, card)
+	label({ Size = UDim2.new(1, -24, 0, 20), Position = UDim2.new(0, 14, 0, 8), TextSize = 12, Font = Enum.Font.GothamBold, RichText = true, ZIndex = 31, TextXAlignment = Enum.TextXAlignment.Left, TextStrokeTransparency = 1,
+		Text = string.format("<font color='#d9bd78'>MISSION %d / %d</font>", current.Index, current.Total) }, card)
+	label({ Size = UDim2.new(1, -28, 0, 38), Position = UDim2.new(0, 14, 0, 28), TextSize = 14, Font = Enum.Font.GothamBold, TextWrapped = true, TextTruncate = Enum.TextTruncate.AtEnd, ZIndex = 31, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextStrokeTransparency = 1,
 		Text = current.Text }, card)
-	activeWhere = label({ Size = UDim2.new(1, -40, 0, 26), Position = UDim2.new(0, 20, 1, -34), TextSize = 17, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(130, 255, 160), ZIndex = 31,
+	activeWhere = label({ Size = UDim2.new(1, -28, 0, 18), Position = UDim2.new(0, 14, 1, -24), TextSize = 12, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(150, 225, 170), ZIndex = 31, TextXAlignment = Enum.TextXAlignment.Left, TextStrokeTransparency = 1,
 		Text = current.TargetName and ("📍 " .. current.TargetName) or "" }, card)
-	card.Size = UDim2.new(0, 400, 0, 110)
-	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.new(0, 520, 0, 150) }):Play()
-	TweenService:Create(cardStroke, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 5 }):Play()
+	TweenService:Create(card, TweenInfo.new(0.4), { GroupTransparency = 0 }):Play()
 	task.delay(4.5, function()
-		TweenService:Create(card, TweenInfo.new(0.4), { Position = compact() and missionPos(58) or UDim2.new(0, 146, 0, 288 + 58), Size = UDim2.new(0, 260, 0, 116), BackgroundTransparency = 1 }):Play() -- 왼쪽 미션 카드 자리로 빨려 들어간다
-		task.wait(0.4)
+		TweenService:Create(card, TweenInfo.new(0.5), { GroupTransparency = 1 }):Play() -- 그냥 부드럽게 사라진다 (왼쪽 카드와 글자가 겹쳐 보이던 문제)
+		task.wait(0.5)
 		card:Destroy()
 		if activeCard == card then activeCard = nil end
 	end)
@@ -358,22 +356,21 @@ local function showPrompt(data)
 	player:SetAttribute("SidePromptUp", true)
 	local small = compact() -- 작은 화면: 아래 가운데(스킬 바 위)에 줄여서 띄운다 (왼쪽 아래는 조이스틱 자리)
 	local promptY = pgui:GetAttribute("UiPromptY") or -sideBase
-	local card = create("Frame", { Size = UDim2.new(0, 400, 0, 130), AnchorPoint = small and Vector2.new(0.5, 1) or Vector2.new(0, 1),
-		Position = small and UDim2.new(0.5, 0, 1, 140) or UDim2.new(0, -420, 1, -sideBase),
-		BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.05, BorderSizePixel = 0, ZIndex = 70 }, gui)
+	local card = create("Frame", { Size = UDim2.new(0, 300, 0, 92), AnchorPoint = small and Vector2.new(0.5, 1) or Vector2.new(0, 1),
+		Position = small and UDim2.new(0.5, 0, 1, 140) or UDim2.new(0, -320, 1, -sideBase),
+		BackgroundColor3 = Color3.fromRGB(18, 20, 34), BackgroundTransparency = 0.1, BorderSizePixel = 0, ZIndex = 70 }, gui)
 	activePrompt = card
-	rounded(card, 16)
+	rounded(card, 12)
 	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = small and UDim2.new(0.5, 0, 1, promptY) or UDim2.new(0, 14, 1, -sideBase) }):Play() -- 왼쪽에서 스르륵 들어온다
 	if small then create("UIScale", { Scale = 0.8 }, card) end
-	local cardStroke = create("UIStroke", { Color = Color3.fromRGB(255, 225, 110), Thickness = 4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
-	TweenService:Create(cardStroke, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 8 }):Play()
-	local keycap = create("Frame", { Size = UDim2.new(0, 78, 0, 78), Position = UDim2.new(0, 16, 0.5, -39), BackgroundColor3 = Color3.fromRGB(245, 245, 250), BorderSizePixel = 0, ZIndex = 71 }, card)
-	rounded(keycap, 12)
-	label({ Size = UDim2.new(1, 0, 1, 0), Text = data.Key or "?", TextSize = 44, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 34, 50), TextStrokeTransparency = 1, ZIndex = 72 }, keycap)
-	label({ Size = UDim2.new(1, -120, 0, 34), Position = UDim2.new(0, 108, 0, 12), Text = data.Title or "", TextSize = 20, Font = Enum.Font.GothamBlack,
-		TextColor3 = Color3.fromRGB(255, 225, 110), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 71 }, card)
-	label({ Size = UDim2.new(1, -120, 0, 76), Position = UDim2.new(0, 108, 0, 46), Text = data.Text or "", TextSize = 14, Font = Enum.Font.GothamBold, TextWrapped = true,
-		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 71 }, card)
+	create("UIStroke", { Color = Color3.fromRGB(190, 168, 110), Thickness = 1.5, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
+	local keycap = create("Frame", { Size = UDim2.new(0, 46, 0, 46), Position = UDim2.new(0, 12, 0, 12), BackgroundColor3 = Color3.fromRGB(232, 232, 240), BorderSizePixel = 0, ZIndex = 71 }, card)
+	rounded(keycap, 9)
+	label({ Size = UDim2.new(1, 0, 1, 0), Text = data.Key or "?", TextSize = 24, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(30, 34, 50), TextStrokeTransparency = 1, ZIndex = 72 }, keycap)
+	label({ Size = UDim2.new(1, -82, 0, 20), Position = UDim2.new(0, 68, 0, 8), Text = data.Title or "", TextSize = 14, Font = Enum.Font.GothamBlack,
+		TextColor3 = Color3.fromRGB(235, 210, 140), TextXAlignment = Enum.TextXAlignment.Left, TextStrokeTransparency = 1, ZIndex = 71 }, card)
+	label({ Size = UDim2.new(1, -82, 0, 58), Position = UDim2.new(0, 68, 0, 28), Text = data.Text or "", TextSize = 11, Font = Enum.Font.GothamMedium, TextWrapped = true, TextColor3 = Color3.fromRGB(205, 210, 228),
+		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextStrokeTransparency = 1, ZIndex = 71 }, card)
 	task.delay(data.Duration or 7, function()
 		if card.Parent then
 			TweenService:Create(card, TweenInfo.new(0.4), { BackgroundTransparency = 1 }):Play()
