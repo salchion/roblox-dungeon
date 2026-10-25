@@ -25,7 +25,8 @@ local SPECS = {
 	--  (후보 B = AudioBank 에 ID 를 적으면 아래 Custom* 값이 쓰인다)
 	Shot_Smg      = { Base = "Shot", Pitch = 1.25, Volume = 0.95, Length = 0.2, Choke = true, -- ("더 가볍게 / 덜 겹치게": 음 1.05 -> 1.25, 길이 0.19 -> 0.16, 잔향 줄임, 저음 약간 깎음)
 		Fx = { { "reverb", { DecayTime = 0.3, WetLevel = -14 } }, { "eq", { LowGain = -5, MidGain = 0, HighGain = 2 } } },
-		CustomLength = 0.3, CustomPitch = 1.12, CustomFx = { { "eq", { LowGain = -10, MidGain = 1, HighGain = 5 } } } },
+		-- 후보 D (지금 AudioBank 에 저격총과 같은 ID 가 적혀 있다): 저격총의 또렷한 "탕" 소리를 1.3배 높게, 0.22초만 쓴다
+		CustomLength = 0.22, CustomPitch = 1.3, CustomFx = { { "eq", { LowGain = -6, MidGain = 0, HighGain = 2 } } } },
 	Shot_Revolver = { Base = "Shot", CustomLength = 1.4, Volume = 0.9, Pitch = 0.82, Length = 1.3, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -4 } } } },
 	Shot_Rifle    = { Base = "Shot", Pitch = 1.0, Volume = 0.9, Length = 0.9, Fx = { { "reverb", { DecayTime = 0.8, WetLevel = -9 } } } },
 	Shot_Shotgun  = { Base = "Shot", CustomLength = 1.2, Pitch = 0.7, Volume = 1.0, Length = 1.0, Fx = { { "distortion", { Level = 0.35 } } },
