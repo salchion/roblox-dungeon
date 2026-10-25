@@ -3656,6 +3656,37 @@ RunService.RenderStepped:Connect(function()
 				}, slot.Slot)
 				rounded(cue, 8)
 				create("UIStroke", { Color = Color3.fromRGB(255, 217, 102), Thickness = 1.5 }, cue)
+				-- 놓칠 수 없게: 캐릭터 머리 위에도 큼직한 스킬 아이콘 + "PRESS V" 를 띄운다 (처음 한 번만, 쓰거나 12초가 지나면 사라진다)
+				local board
+				local rootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+				if rootPart then
+					board = create("BillboardGui", {
+						Name = "UltCueBillboard", Adornee = rootPart, Size = UDim2.new(0, 200, 0, 170), StudsOffset = Vector3.new(0, 7.5, 0),
+						AlwaysOnTop = true, MaxDistance = 300, ResetOnSpawn = false,
+					}, player:WaitForChild("PlayerGui"))
+					local scale = create("UIScale", { Scale = 1 }, board)
+					local glowRing = create("Frame", { Size = UDim2.new(0, 128, 0, 128), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, -4), BackgroundColor3 = Color3.fromRGB(255, 217, 102), BackgroundTransparency = 0.7, BorderSizePixel = 0 }, board)
+					create("UICorner", { CornerRadius = UDim.new(1, 0) }, glowRing)
+					local disc = create("Frame", { Size = UDim2.new(0, 96, 0, 96), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 12), BackgroundColor3 = Color3.fromRGB(40, 32, 18), BackgroundTransparency = 0.05, BorderSizePixel = 0 }, board)
+					create("UICorner", { CornerRadius = UDim.new(1, 0) }, disc)
+					create("UIStroke", { Color = Color3.fromRGB(255, 217, 102), Thickness = 3.5 }, disc)
+					makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = cfg.Icon, TextSize = 58 }, disc)
+					local pill = create("Frame", { Size = UDim2.new(0, 170, 0, 38), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 116), BackgroundColor3 = Color3.fromRGB(40, 32, 18), BackgroundTransparency = 0.05, BorderSizePixel = 0 }, board)
+					rounded(pill, 10)
+					create("UIStroke", { Color = Color3.fromRGB(255, 217, 102), Thickness = 2 }, pill)
+					makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = UserInputService.TouchEnabled and "TAP DEADEYE!" or "PRESS  [ V ]", TextSize = 19, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 120) }, pill)
+					pcall(function() if SoundBank.Has("Rare_Drop") then SoundBank.Play(sfxParent, "Rare_Drop", { Volume = 0.9 }) end end)
+					task.spawn(function()
+						local began = os.clock()
+						while board.Parent and os.clock() - began < 12 and (player:GetAttribute("UltCharge") or 0) >= cfg.Cost do
+							local t = os.clock() - began
+							scale.Scale = 1 + 0.1 * math.sin(t * 6)
+							glowRing.BackgroundTransparency = 0.55 + 0.3 * (0.5 + 0.5 * math.sin(t * 6))
+							task.wait()
+						end
+						board:Destroy()
+					end)
+				end
 				task.spawn(function()
 					local started = os.clock()
 					while cue.Parent and os.clock() - started < 12 and (player:GetAttribute("UltCharge") or 0) >= cfg.Cost do
