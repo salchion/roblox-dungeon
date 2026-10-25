@@ -82,12 +82,33 @@ local function buildDoomLord(parent)
 		-- 칼날 날개 (등 뒤로 부챗살)
 		for k = 0, 3 do
 			add(Vector3.new(1, 22 - k * 3, 5), CFrame.new(side * (8 + k * 3.4), 6 + k * 0.5, 7) * CFrame.Angles(math.rad(-10), math.rad(side * -12), math.rad(side * (-22 - k * 14))), rgb(90, 20, 40), Enum.Material.Metal)
-			add(Vector3.new(0.4, 20 - k * 3, 1.2), CFrame.new(side * (8 + k * 3.4), 6 + k * 0.5, 4.6) * CFrame.Angles(math.rad(-10), math.rad(side * -12), math.rad(side * (-22 - k * 14))), red, Enum.Material.Neon, 0.15)
+			add(Vector3.new(0.4, 20 - k * 3, 1.2), CFrame.new(side * (8 + k * 3.4), 6 + k * 0.5, 4.6) * CFrame.Angles(math.rad(-10), math.rad(side * -12), math.rad(side * (-22 - k * 14))), red, Enum.Material.Neon, 0.15).Name = "WingEdge"
 		end
 	end
+	-- (보강) 왕관 고리 + 가시 / 찢어진 망토 / 허리 갑옷 판 / 가슴 갈비 장갑 / 아래쪽 두 번째 팔 한 쌍 (팔 넷: 더 위압적으로)
+	local gold, cloak = rgb(150, 116, 60), rgb(70, 14, 26)
+	add(Vector3.new(8, 1.2, 8), CFrame.new(0, 17.6, 0), gold, Enum.Material.Metal).Name = "Crown"
+	for k = 0, 6 do
+		local a = k / 7 * math.pi * 2
+		add(Vector3.new(0.8, 3.2 + (k % 2) * 1.6, 0.8), CFrame.new(math.cos(a) * 3.4, 19.2 + (k % 2) * 0.8, math.sin(a) * 3.4) * CFrame.Angles(math.sin(a) * 0.25, 0, -math.cos(a) * 0.25), gold, Enum.Material.Metal)
+	end
+	for k = -1, 1 do -- 망토: 세 갈래로 찢어져 등 뒤로 늘어진다
+		add(Vector3.new(5.5, 26 - math.abs(k) * 4, 0.5), CFrame.new(k * 5, -4 - math.abs(k) * 2, 5.6) * CFrame.Angles(math.rad(12), 0, math.rad(k * 8)), cloak, Enum.Material.Fabric).Name = "Cape"
+	end
+	for k = -1, 1 do -- 허리 갑옷 판 (치마처럼)
+		add(Vector3.new(3.6, 6, 0.8), CFrame.new(k * 3.6, -14, -3) * CFrame.Angles(math.rad(-10), 0, math.rad(k * -6)), steel, Enum.Material.Metal)
+	end
+	for k = 0, 2 do -- 가슴 갈비 장갑
+		add(Vector3.new(10 - k * 1.5, 0.8, 1), CFrame.new(0, 6 - k * 2.4, -3.9), rgb(40, 34, 48), Enum.Material.Metal)
+	end
+	for _, side in ipairs({ -1, 1 }) do -- 아래쪽 두 번째 팔 (조금 작게, 앞으로 뻗음)
+		add(Vector3.new(3, 11, 3), CFrame.new(side * 10.5, -6, -2.5) * CFrame.Angles(math.rad(-25), 0, math.rad(side * 20)), dark)
+		add(Vector3.new(5, 5, 5), CFrame.new(side * 13, -12, -6), steel)
+		add(Vector3.new(1, 6, 1), CFrame.new(side * 13, -16, -6.5) * CFrame.Angles(0, 0, math.rad(side * 10)), gold, Enum.Material.Metal) -- 손톱
+	end
 	-- 후광 (머리 뒤 큰 고리 두 겹)
-	add(Vector3.new(0.7, 30, 30), CFrame.new(0, 15, 8) * CFrame.Angles(0, math.rad(90), 0), red, Enum.Material.Neon, 0.25, Enum.PartType.Cylinder)
-	add(Vector3.new(0.5, 38, 38), CFrame.new(0, 15, 9) * CFrame.Angles(0, math.rad(90), 0), rgb(255, 150, 60), Enum.Material.Neon, 0.5, Enum.PartType.Cylinder)
+	add(Vector3.new(0.7, 30, 30), CFrame.new(0, 15, 8) * CFrame.Angles(0, math.rad(90), 0), red, Enum.Material.Neon, 0.25, Enum.PartType.Cylinder).Name = "Halo"
+	add(Vector3.new(0.5, 38, 38), CFrame.new(0, 15, 9) * CFrame.Angles(0, math.rad(90), 0), rgb(255, 150, 60), Enum.Material.Neon, 0.5, Enum.PartType.Cylinder).Name = "HaloOuter"
 	-- 주변을 도는 칼날 4개
 	local orbit = {}
 	for k = 1, 4 do
@@ -105,8 +126,10 @@ local function buildDoomLord(parent)
 	aura.Color = ColorSequence.new(rgb(255, 70, 60), rgb(255, 170, 60))
 	aura.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 3), NumberSequenceKeypoint.new(1, 0) })
 	aura.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) })
+	aura.Name = "LordAura"
 	aura.Parent = core
 	local light = Instance.new("PointLight")
+	light.Name = "LordLight"
 	light.Color = red
 	light.Range = 60
 	light.Brightness = 3
@@ -602,6 +625,44 @@ local function doomWaveInner(player, zone, center, real)
 		rock.Parent = arena
 	end
 
+	-- (보강) 결투장 꾸밈: 가장자리 부서진 기둥 / 하늘에 떠 있는 거대한 돌 고리 / 군주 뒤 왕좌. 전부 충돌 없음, 빛나지 않음
+	do
+		local function slab(name, size, cf, color, material)
+			local part = Instance.new("Part")
+			part.Name = name
+			part.Size = size
+			part.CFrame = cf
+			part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch = true, false, false, false
+			part.Color = color
+			part.Material = material
+			part.Parent = arena
+			return part
+		end
+		local rngA = Random.new(4242)
+		for index = 0, 7 do -- 가장자리 부서진 기둥 (반지름 72)
+			local angle = (index + 0.5) / 8 * math.pi * 2
+			local h = rngA:NextNumber(6, 16)
+			local at = center + Vector3.new(math.cos(angle) * 72, 1 + h / 2, math.sin(angle) * 72)
+			slab("DoomPillar", Vector3.new(4.5, h, 4.5), CFrame.new(at) * CFrame.Angles(rngA:NextNumber(-0.08, 0.08), angle, rngA:NextNumber(-0.12, 0.12)), rgb(38, 30, 44), Enum.Material.Slate)
+			slab("DoomPillarTop", Vector3.new(5.4, 1.2, 5.4), CFrame.new(at + Vector3.new(0, h / 2 + 0.4, 0)) * CFrame.Angles(rngA:NextNumber(-0.25, 0.25), angle, rngA:NextNumber(-0.25, 0.25)), rgb(30, 24, 36), Enum.Material.Slate)
+		end
+		for index = 0, 17 do -- 하늘의 거대한 돌 고리 (군주 머리 위로 비스듬히): 끊어진 조각들
+			if index % 6 ~= 5 then
+				local angle = index / 18 * math.pi * 2
+				local ringCenter = center + Vector3.new(0, 78, -40)
+				local at = ringCenter + CFrame.Angles(math.rad(70), 0, 0):VectorToWorldSpace(Vector3.new(math.cos(angle) * 70, 0, math.sin(angle) * 70))
+				slab("DoomSkyRing", Vector3.new(22, 5, 7), CFrame.lookAt(at, ringCenter) * CFrame.Angles(0, math.rad(90), 0), rgb(32, 22, 36), Enum.Material.Basalt)
+			end
+		end
+		-- 군주 뒤 왕좌 (등받이 + 팔걸이)
+		local throne = center + Vector3.new(0, 0, -74)
+		slab("DoomThroneBack", Vector3.new(30, 52, 6), CFrame.new(throne + Vector3.new(0, 26, 0)), rgb(28, 18, 30), Enum.Material.Slate)
+		for _, side in ipairs({ -1, 1 }) do
+			slab("DoomThroneSpike", Vector3.new(4, 30, 4), CFrame.new(throne + Vector3.new(side * 13, 60, 0)) * CFrame.Angles(0, 0, math.rad(side * -12)), rgb(40, 26, 40), Enum.Material.Slate)
+			slab("DoomThroneArm", Vector3.new(6, 14, 16), CFrame.new(throne + Vector3.new(side * 18, 7, 6)), rgb(34, 22, 36), Enum.Material.Slate)
+		end
+	end
+
 	local model, body, place = buildDoomLord(arena)
 	for _, item in ipairs(arena:GetDescendants()) do -- 그림자 계산이 가장 무겁다: 결투장 장식은 전부 그림자를 끈다
 		if item:IsA("BasePart") then item.CastShadow = false end
@@ -850,10 +911,11 @@ local function doomWaveInner(player, zone, center, real)
 		local function bossAlive() return body.Parent ~= nil and data.Health > 0 end
 		local function fraction() return math.max(0, data.Health) / maxHealth end
 		local function flat(v) return Vector3.new(v.X, 0, v.Z) end
+		local dmgMult = 1 -- 3단계 / 격노(4분 경과)에서 커진다
 		local function hurt(percent, text)
 			local r2, h2 = getAliveParts(player)
 			if r2 and h2.Health > 0 then
-				Guard.Take(h2, h2.MaxHealth * percent)
+				Guard.Take(h2, h2.MaxHealth * percent * dmgMult)
 				if text then notify(player, text) end
 			end
 		end
@@ -1102,6 +1164,115 @@ local function doomWaveInner(player, zone, center, real)
 			task.wait(1.4)
 		end
 
+		-- 패턴 8) 충격파 고리: 군주 발밑에서 바닥 고리가 3번 퍼져 나온다. 고리가 지나갈 때 대시로 넘어야 한다 (대시 중이면 안 맞는다)
+		local function shockwaves()
+			notify(player, "⚠ Shockwaves! DASH (Q) through the rings as they reach you!")
+			lordSfx("Lord_Charge")
+			shake(0.5)
+			local origin = Vector3.new(body.Position.X, floorY, body.Position.Z)
+			task.wait(1.0)
+			for wave = 1, 3 do
+				if not alive() or not bossAlive() then return end
+				lordSfx("Lord_Blast")
+				local ringPart = floorPart(Vector3.new(1.2, 2, 2), CFrame.new(origin) * CFrame.Angles(0, 0, math.rad(90)), rgb(255, 110, 60), 0.2)
+				ringPart.Shape = Enum.PartType.Cylinder
+				local inner = floorPart(Vector3.new(1.3, 1, 1), CFrame.new(origin + Vector3.new(0, 0.05, 0)) * CFrame.Angles(0, 0, math.rad(90)), rgb(40, 14, 22), 0)
+				inner.Shape = Enum.PartType.Cylinder
+				local speed, band = 38 + wave * 6, 4.5
+				local started, hit = os.clock(), false
+				while os.clock() - started < 2.6 and alive() do
+					local radius = (os.clock() - started) * speed
+					ringPart.Size = Vector3.new(1.2, radius * 2 + band, radius * 2 + band)
+					inner.Size = Vector3.new(1.3, math.max(0.5, radius * 2 - band), math.max(0.5, radius * 2 - band))
+					local r2 = select(1, getAliveParts(player))
+					if r2 and not hit then
+						local d = (flat(r2.Position) - flat(origin)).Magnitude
+						if math.abs(d - radius) <= band / 2 + 1.2 then
+							if isDashing(r2, player) then
+								awardNearMiss(player, r2)
+							else
+								hit = true
+								hurt(0.22, "💥 The shockwave knocked you down! (Dash through it)")
+								shake(0.7)
+							end
+						end
+					end
+					task.wait()
+				end
+				ringPart:Destroy()
+				inner:Destroy()
+				task.wait(0.35)
+			end
+			task.wait(1.0)
+		end
+
+		-- 패턴 9) 십자 광선 (2단계부터): 네 갈래 광선이 돌다가 한 번 방향을 바꾼다
+		local function crossBeams()
+			notify(player, "⚠⚠ Cross beams! Watch them reverse!")
+			local pivot = Vector3.new(center.X, floorY, center.Z)
+			local length, width = 82, 6
+			local base = math.random() * math.pi
+			local arms = {}
+			for _ = 1, 4 do arms[#arms + 1] = floorPart(Vector3.new(width, 0.4, length), CFrame.new(pivot), rgb(255, 60, 50), 0.65) end
+			local function place(angle)
+				for index, arm in ipairs(arms) do
+					local a = angle + (index - 1) * math.pi / 2
+					local dir = Vector3.new(math.cos(a), 0, math.sin(a))
+					arm.CFrame = CFrame.lookAt(pivot + dir * (length / 2), pivot + dir * length)
+				end
+			end
+			place(base)
+			for _, arm in ipairs(arms) do TweenService:Create(arm, TweenInfo.new(1.2), { Transparency = 0.15 }):Play() end
+			lordSfx("Lord_Charge")
+			task.wait(1.3)
+			for _, arm in ipairs(arms) do arm.Color, arm.Transparency = rgb(255, 170, 70), 0.05 end
+			lordSfx("Lord_Blast")
+			local started, duration, hitAt = os.clock(), 4.2, 0
+			local sign = math.random() < 0.5 and 1 or -1
+			while os.clock() - started < duration and alive() and bossAlive() do
+				local t = os.clock() - started
+				local turn = t < duration / 2 and t or (duration / 2 - (t - duration / 2)) -- 절반이 지나면 거꾸로 돈다
+				local angle = base + sign * turn * 0.7
+				place(angle)
+				local r2 = select(1, getAliveParts(player))
+				if r2 and os.clock() - hitAt > 0.8 then
+					for index = 1, 4 do
+						local a = angle + (index - 1) * math.pi / 2
+						local dir = Vector3.new(math.cos(a), 0, math.sin(a))
+						if distToSegment(r2.Position, pivot, pivot + dir * length) <= width / 2 + 1.5 then
+							hitAt = os.clock()
+							hurt(0.24, "💥 Caught by the cross beams!")
+							shake(0.6)
+							break
+						end
+					end
+				end
+				task.wait()
+			end
+			for _, arm in ipairs(arms) do
+				TweenService:Create(arm, TweenInfo.new(0.35), { Transparency = 1 }):Play()
+				task.delay(0.4, function() arm:Destroy() end)
+			end
+			task.wait(0.8)
+		end
+
+		-- 단계별 외형 변화: 2단계 날개가 불타오르고, 3단계 후광이 검붉게 변하며 기운이 짙어진다
+		local function phaseLook(phase)
+			for _, item in ipairs(model:GetDescendants()) do
+				if item:IsA("BasePart") then
+					if item.Name == "WingEdge" then item.Color = phase >= 3 and rgb(170, 30, 60) or rgb(255, 130, 60) end
+					if item.Name == "Halo" and phase >= 3 then item.Color = rgb(120, 10, 30) end
+					if item.Name == "HaloOuter" and phase >= 3 then item.Color = rgb(150, 40, 90) end
+					if item.Name == "Cape" and phase >= 3 then item.Color = rgb(40, 8, 20) end
+				end
+			end
+			local aura = body:FindFirstChild("LordAura")
+			if aura then
+				aura.Rate = phase >= 3 and 70 or 55
+				if phase >= 3 then aura.Color = ColorSequence.new(rgb(170, 30, 70), rgb(80, 10, 40)) end
+			end
+		end
+
 		-- 단계 안내
 		local function phaseBanner(text, sub)
 			notify(player, text)
@@ -1114,17 +1285,28 @@ local function doomWaveInner(player, zone, center, real)
 		task.wait(1.5)
 		local order = 0
 		local lastPattern
+		local fightStart = os.clock()
+		local enraged = false
 		while alive() and bossAlive() do
 			local fractionNow = fraction()
 			local newPhase = fractionNow <= FL.Phase3 and 3 or (fractionNow <= FL.Phase2 and 2 or 1)
 			if newPhase > phaseNow then
 				phaseNow = newPhase
+				phaseLook(phaseNow)
 				if phaseNow == 2 then phaseBanner("🔥 PHASE 2 — The Lord's fury grows!", "...Not bad. But I am only getting started.")
-				else phaseBanner("☠ PHASE 3 — Final form! Stay inside the circles!", "Now... witness true despair.") end
+				else
+					dmgMult = math.max(dmgMult, 1.15)
+					phaseBanner("☠ PHASE 3 — Final form! Attacks now come TWO at a time!", "Now... witness true despair.")
+				end
 				task.wait(1.8)
 			end
-			local pool = { tripleStrike, ringOfRuin, sweepBeam }
-			if phaseNow >= 2 then table.insert(pool, meteorStorm) table.insert(pool, lanes) end
+			if not enraged and os.clock() - fightStart > 240 then -- 4분이 넘으면 격노: 더 아프고 더 빨라진다 (질질 끌 수 없게)
+				enraged = true
+				dmgMult = 1.35
+				phaseBanner("💢 ENRAGED — The Lord grows impatient!", "Enough games.")
+			end
+			local pool = { tripleStrike, ringOfRuin, sweepBeam, shockwaves }
+			if phaseNow >= 2 then table.insert(pool, meteorStorm) table.insert(pool, lanes) table.insert(pool, crossBeams) end
 			if phaseNow >= 3 then table.insert(pool, orbBarrage) table.insert(pool, judgement) end
 			order += 1
 			local pick
@@ -1137,9 +1319,15 @@ local function doomWaveInner(player, zone, center, real)
 				end
 			end
 			lastPattern = pick
+			-- 3단계: 두 패턴이 겹쳐 온다 (바닥 폭격 계열 하나를 같이 깐다). 심판 중에는 겹치지 않는다
+			if phaseNow >= 3 and pick ~= judgement then
+				local partner = ({ tripleStrike, meteorStorm, ringOfRuin })[math.random(3)]
+				if partner ~= pick then task.spawn(partner) end
+			end
 			pick()
 			if not alive() or not bossAlive() then break end
-			task.wait(phaseNow == 1 and 1.4 or (phaseNow == 2 and 1.0 or 0.7))
+			local rest = phaseNow == 1 and 1.2 or (phaseNow == 2 and 0.9 or 0.6)
+			task.wait(enraged and rest * 0.6 or rest)
 		end
 
 		running = false
