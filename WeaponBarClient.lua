@@ -244,18 +244,18 @@ local function place(force)
 		holder.AnchorPoint = Vector2.new(0.5, 0.5)
 		holder.Position = UDim2.new(0.5, 0, 0.77, 0)
 		gui.Enabled = (zone == "Lobby" or zone == "Field" or zone == "Dungeon")
-			and not player:GetAttribute("ModalOpen") and not player:GetAttribute("TutorialActive") and not player:GetAttribute("ChestOpening")
+			and not player:GetAttribute("ModalOpen") and not player:GetAttribute("ChestOpening")
 		return
 	end
 	if attached then
 		local zone = player:GetAttribute("Zone")
 		holder.Visible = (zone == "Lobby" or zone == "Field" or zone == "Dungeon")
-			and not player:GetAttribute("ModalOpen") and not player:GetAttribute("TutorialActive") and not player:GetAttribute("ChestOpening")
+			and not player:GetAttribute("ModalOpen") and not player:GetAttribute("ChestOpening")
 		return
 	end
 	local zone = player:GetAttribute("Zone")
 	local show = (zone == "Lobby" or zone == "Field" or zone == "Dungeon")
-		and not player:GetAttribute("ModalOpen") and not player:GetAttribute("TutorialActive") and not player:GetAttribute("ChestOpening")
+		and not player:GetAttribute("ModalOpen") and not player:GetAttribute("ChestOpening")
 	gui.Enabled = show
 	if not show then return end
 	if gui.AbsoluteSize.X < 50 then return end
