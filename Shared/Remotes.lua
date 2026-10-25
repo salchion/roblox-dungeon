@@ -30,13 +30,14 @@
 --   Notify       S->C  (text)                                  화면 알림
 --   BossStage    S->C  ("Intro"|"Enrage"|"Victory", { Zone, Name, ... })   구역 군주 연출 (배너 / 번쩍임)
 --   Admin        C->S  ("List")   S->C ("List", { Players, JobId, Count })   운영자 전용(서버가 확인)
+--   Intro        C->S  ("Stream")  S->C ("Ready")                 오프닝 연출: 필드 전체를 미리 불러와 달라는 요청 / 다 불러왔다는 알림
 --   Meter        C->S  ("Reset")                              대미지 미터기 처음부터 다시 세기
 --   Banner       S->C  ("Zone", { Zone, Name, Stars, HealthMult, DamageMult, RewardMult })   구역에 들어설 때 뜨는 큰 경고 배너
 
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon", "Notify", "Gear", "OpenGear", "Quest", "Rank", "Weapon", "Inventory", "Loot", "Warp", "Shop", "Growth", "Rift", "Skill", "Hit", "Meta", "Tutorial", "Banner", "LevelStat", "Fx", "Aug", "Admin", "BossStage", "Meter" }
+local NAMES = { "Attack", "Upgrade", "Enhance", "OpenEnhance", "Party", "Dungeon", "Notify", "Gear", "OpenGear", "Quest", "Rank", "Weapon", "Inventory", "Loot", "Warp", "Shop", "Growth", "Rift", "Skill", "Hit", "Meta", "Tutorial", "Banner", "LevelStat", "Fx", "Aug", "Admin", "BossStage", "Meter", "Intro" }
 
 local folder
 if RunService:IsServer() then

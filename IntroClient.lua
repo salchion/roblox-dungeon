@@ -287,6 +287,24 @@ local function play()
 	camera.CameraType = Enum.CameraType.Scriptable
 	camera.FieldOfView = 66
 	camera.CFrame = CFrame.lookAt(startPos, startPos + Vector3.new(1000, -70, 0))
+	-- 필드 미리 불러오기: 이 게임은 멀리 있는 지형을 아껴서 불러오기 때문에(StreamingEnabled), 날아가기 전에 서버에 필드를 미리 보내 달라고 한다. 검은 화면에서 잠깐 기다린다 (최대 9초)
+	do
+		local loadingLabel = text({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0.5, 0, 0.9, 0), TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(150, 146, 160), Text = "Preparing the field..." })
+		TweenService:Create(loadingLabel, TweenInfo.new(0.4), { TextTransparency = 0.2 }):Play()
+		local ready = false
+		local remote
+		pcall(function() remote = require(ReplicatedStorage:WaitForChild("Remotes")).Intro end)
+		local listener
+		if remote then
+			listener = remote.OnClientEvent:Connect(function(action) if action == "Ready" then ready = true end end)
+			remote:FireServer("Stream")
+			local waited = os.clock()
+			while not ready and os.clock() - waited < 9 and not finished do task.wait(0.1) end
+			listener:Disconnect()
+		end
+		TweenService:Create(loadingLabel, TweenInfo.new(0.3), { TextTransparency = 1 }):Play()
+		if finished then return end
+	end
 	TweenService:Create(topBar, TweenInfo.new(0.7), { Size = UDim2.new(1, 0, 0.1, 0) }):Play()
 	TweenService:Create(bottomBar, TweenInfo.new(0.7), { Size = UDim2.new(1, 0, 0.1, 0) }):Play()
 	TweenService:Create(veil, TweenInfo.new(0.9), { BackgroundTransparency = 1 }):Play()

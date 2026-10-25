@@ -659,6 +659,35 @@ Remotes.Enhance.OnServerEvent:Connect(function(player, count)
 	Remotes.Enhance:FireClient(player, successes > 0, evolvedMessage or summary, { Attempts = attempts, Successes = successes, Spent = spent, Evolved = evolvedMessage ~= nil, Summary = summary })
 end)
 
+-- 오프닝 연출: StreamingEnabled 가 켜져 있어서 캐릭터에서 먼 곳(필드 대부분)은 클라이언트에 없다.
+-- 첫 접속 때 한 번만 필드 곳곳을 미리 불러 달라는 요청을 받아 RequestStreamAroundAsync 로 불러 주고, 끝나면 Ready 를 보낸다.
+local introStreamed = setmetatable({}, { __mode = "k" })
+Remotes.Intro.OnServerEvent:Connect(function(player, action)
+	if action ~= "Stream" or introStreamed[player] then return end
+	if (player:GetAttribute("Level") or 1) > 1 or (player:GetAttribute("XP") or 0) > 0 or (player:GetAttribute("WeaponLevel") or 0) > 0 then return end
+	introStreamed[player] = true
+	task.spawn(function()
+		local F = Config.Field
+		local last = F.ZoneEnd(F.ZoneCount) + 20
+		local points, x = {}, F.StartX
+		while x < last do
+			table.insert(points, x)
+			x += 650
+		end
+		table.insert(points, last)
+		local pending = #points
+		for _, px in ipairs(points) do
+			task.spawn(function()
+				pcall(function() player:RequestStreamAroundAsync(Vector3.new(px, 60, 0), 5) end)
+				pending -= 1
+			end)
+		end
+		local waited = os.clock()
+		while pending > 0 and os.clock() - waited < 8 and player.Parent do task.wait(0.1) end
+		if player.Parent then Remotes.Intro:FireClient(player, "Ready") end
+	end)
+end)
+
 Remotes.Weapon.OnServerEvent:Connect(function(player, action, typeKey)
 	local now = os.clock()
 	if now - (lastWeapon[player] or 0) < 0.25 then return end
