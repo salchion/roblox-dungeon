@@ -1721,7 +1721,9 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 	local level = augLv(run, player, "AugMissile")
 	if level <= 0 or not isCrit or augDepth > 0 then return end
 	-- 크리 미사일 (보스형): 치명타가 터지면 미사일 (1 + 단계 발, 궁합 무기 +1) 이 "맞힌 그 적" 에게 몰려 꽂힌다
-	local from = part.Position + Vector3.new(0, 3, 0)
+	-- 발사 위치는 내 어깨 위 (예전: 맞은 적 바로 위에서 자기 자신에게 쏘아서 미사일이 거의 안 보였다)
+	local shooterRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	local from = shooterRoot and (shooterRoot.Position + Vector3.new(0, 4, 0)) or (part.Position + Vector3.new(0, 12, 0))
 	local count = 1 + level + (Config.AugWeaponMatch(player, "AugMissile") and 1 or 0)
 	if not allowMissiles(player, count) then return end
 	procAug(player, "AugMissile")
