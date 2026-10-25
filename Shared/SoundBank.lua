@@ -19,7 +19,9 @@ local SPECS = {
 	Shot_Pistol   = { Base = "Shot", Pitch = 1.15, Volume = 1.0, Length = 0.7 },
 	-- (SMG 는 AudioBank 의 소리 ID 를 그대로 쓴다: 직접 넣은 소리는 Fx / Layers 가공이 적용되지 않는다. 연사라서 길이는 짧게 끊는다)
 	-- (소리 파일이 2초라서 연사(약 0.14초 간격)하면 서로 겹쳐 "총소리 같으면서 아닌" 소리가 났다: 앞 소리를 0.3초에서 끊고(CustomLength), 다음 발이 나갈 때 앞 소리를 바로 줄여 끊는다(Choke) -> 한 발 한 발 또렷한 연사음)
-	Shot_Smg      = { Base = "Shot", CustomLength = 0.3, Pitch = 1.0, Volume = 1.2, Length = 0.4, Choke = true },
+	-- ("방망이로 두드리는 둔탁한 느낌" 의견: 저음이 많고 갈라지는 소리가 약해서 -> 음을 12% 높이고, 저음을 깎고 고음을 살렸다)
+	Shot_Smg      = { Base = "Shot", CustomLength = 0.3, CustomPitch = 1.12, Pitch = 1.0, Volume = 1.2, Length = 0.4, Choke = true,
+		CustomFx = { { "eq", { LowGain = -10, MidGain = 1, HighGain = 5 } } } },
 	Shot_Revolver = { Base = "Shot", CustomLength = 1.4, Volume = 0.9, Pitch = 0.82, Length = 1.3, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -4 } } } },
 	Shot_Rifle    = { Base = "Shot", Pitch = 1.0, Volume = 0.9, Length = 0.9, Fx = { { "reverb", { DecayTime = 0.8, WetLevel = -9 } } } },
 	Shot_Shotgun  = { Base = "Shot", CustomLength = 1.2, Pitch = 0.7, Volume = 1.0, Length = 1.0, Fx = { { "distortion", { Level = 0.35 } } },
@@ -262,7 +264,7 @@ function SoundBank.Play(parent, key, opts)
 	local pitch = custom and (opts.Pitch or 1) * (spec.CustomPitch or 1) or spec.Pitch * (opts.Pitch or 1) -- CustomPitch: 같은 소리를 여러 항목에 재사용할 때 높낮이를 달리한다
 	local length = spec.Length or 1
 	if custom then length = spec.CustomLength or 2 end -- 내가 넣은 소리는 자연스러운 꼬리를 살리고, 너무 길 때만 끊는다
-	local main = playOne(parent, id, baseVolume, pitch, length, opts.Name, not custom and spec.Fx or nil)
+	local main = playOne(parent, id, baseVolume, pitch, length, opts.Name, (custom and spec.CustomFx) or (not custom and spec.Fx) or nil) -- CustomFx: 직접 넣은 소리에도 걸 수 있는 가공 (예: 저음을 깎고 고음을 살려 "탕" 하는 갈라짐을 또렷하게)
 	if spec.Choke then
 		local previous = chokeLast[key]
 		if previous and previous.Parent then
