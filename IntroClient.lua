@@ -232,6 +232,7 @@ local function play()
 	TweenService:Create(Lighting, TweenInfo.new(0.8), { ExposureCompensation = saved.Exposure + 0.45 }):Play()
 	if atmosphere then TweenService:Create(atmosphere, TweenInfo.new(0.8), { Density = 0.05, Haze = 0 }):Play() end
 
+	local introRemote -- 서버와 주고받는 통신 (필드 불러오기 / 카메라 위치 알림)
 	local finished = false
 	local connection
 	local function finish()
@@ -239,6 +240,7 @@ local function play()
 		finished = true
 		if connection then connection:Disconnect() end
 		guardConnection:Disconnect()
+		if introRemote then pcall(function() introRemote:FireServer("End") end) end -- 불러오기 기준점을 다시 내 캐릭터로
 		pcall(function()
 			TweenService:Create(Lighting, TweenInfo.new(1.0), { ExposureCompensation = saved.Exposure }):Play()
 			if atmosphere and saved.Density then TweenService:Create(atmosphere, TweenInfo.new(1.0), { Density = saved.Density, Haze = saved.Haze }):Play() end
@@ -354,6 +356,7 @@ local function play()
 		local ready = false
 		local remote
 		pcall(function() remote = require(ReplicatedStorage:WaitForChild("Remotes")).Intro end)
+		introRemote = remote
 		local listener
 		if remote then
 			listener = remote.OnClientEvent:Connect(function(action, done, total)
@@ -397,6 +400,21 @@ local function play()
 		TweenService:Create(page, TweenInfo.new(0.5), { BackgroundTransparency = 1 }):Play()
 		task.delay(0.6, function() page:Destroy() end)
 		if finished then return end
+	end
+	-- 카메라가 날아가는 동안 서버에 카메라 위치(x)를 계속 알려서, 서버가 그 둘레의 지형을 불러 준다 (캐릭터는 스폰에 있어서 그냥은 멀리 있는 필드가 안 불러와진다)
+	if introRemote then
+		task.spawn(function()
+			local lastX = camera.CFrame.Position.X
+			local lastAt = os.clock()
+			while not finished do
+				task.wait(0.2)
+				local now = os.clock()
+				local x = camera.CFrame.Position.X
+				local velocity = (x - lastX) / math.max(now - lastAt, 0.05)
+				lastX, lastAt = x, now
+				introRemote:FireServer("Focus", x + math.clamp(velocity * 0.8, -700, 700)) -- 가는 방향 앞쪽을 미리 불러 준다
+			end
+		end)
 	end
 	TweenService:Create(topBar, TweenInfo.new(0.7), { Size = UDim2.new(1, 0, 0.1, 0) }):Play()
 	TweenService:Create(bottomBar, TweenInfo.new(0.7), { Size = UDim2.new(1, 0, 0.1, 0) }):Play()

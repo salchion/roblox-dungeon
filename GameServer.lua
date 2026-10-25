@@ -662,7 +662,40 @@ end)
 -- 오프닝 연출: StreamingEnabled 가 켜져 있어서 캐릭터에서 먼 곳(필드 대부분)은 클라이언트에 없다.
 -- 첫 접속 때 한 번만 필드 곳곳을 미리 불러 달라는 요청을 받아 RequestStreamAroundAsync 로 불러 주고, 끝나면 Ready 를 보낸다.
 local introStreamed = setmetatable({}, { __mode = "k" })
-Remotes.Intro.OnServerEvent:Connect(function(player, action)
+local introFocus = setmetatable({}, { __mode = "k" }) -- [player] = 오프닝 카메라를 따라다니는 투명한 점 (Player.ReplicationFocus)
+local function endIntroFocus(player)
+	local part = introFocus[player]
+	introFocus[player] = nil
+	if part then
+		if player.Parent then pcall(function() player.ReplicationFocus = nil end) end -- 다시 내 캐릭터 주변을 불러온다
+		part:Destroy()
+	end
+end
+Players.PlayerRemoving:Connect(endIntroFocus)
+Remotes.Intro.OnServerEvent:Connect(function(player, action, x)
+	if action == "Focus" then
+		-- 날아가는 카메라 위치(x)를 알려 주면, 서버가 그 둘레의 지형을 불러 주도록 "불러오기 기준점"을 그쪽으로 옮긴다
+		if not introStreamed[player] or typeof(x) ~= "number" or x ~= x then return end
+		x = math.clamp(x, -300, Config.Field.ZoneEnd(Config.Field.ZoneCount) + 400)
+		local part = introFocus[player]
+		if not part then
+			part = Instance.new("Part")
+			part.Name = "IntroFocus"
+			part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch = true, false, false, false
+			part.Transparency = 1
+			part.Size = Vector3.new(1, 1, 1)
+			part.Position = Vector3.new(x, 60, 0)
+			part.Parent = workspace
+			introFocus[player] = part
+			player.ReplicationFocus = part
+			task.delay(45, function() if introFocus[player] == part then endIntroFocus(player) end end) -- 안전장치: 오래 남지 않는다
+		end
+		part.Position = Vector3.new(x, 60, 0)
+		return
+	elseif action == "End" then
+		endIntroFocus(player)
+		return
+	end
 	if action ~= "Stream" or introStreamed[player] then return end
 	if (player:GetAttribute("Level") or 1) > 1 or (player:GetAttribute("XP") or 0) > 0 or (player:GetAttribute("WeaponLevel") or 0) > 0 then return end
 	introStreamed[player] = true
