@@ -87,6 +87,14 @@ local waypoint = nil    -- 던전 안에서 다음 방을 가리키는 빛기둥
 local waypointLabel = nil
 local current = nil     -- 지금 미션 정보
 -- 목표가 "필드 입구"인데 이미 필드에 들어왔다: 입구를 가리키면 뒤로 돌아가라는 것처럼 보이므로 화살표들을 숨긴다
+-- 안내 화살표 / 빛기둥을 숨겨야 하는 때: 목표가 "마을의 던전 문"인 미션인데 지금 필드(군주를 쓰러뜨리고 임시 던전 문으로 빨려 들어가는 장면)나 던전에 있으면, 화살표가 엉뚱하게 마을을 가리키므로 숨긴다
+local function guidesHidden()
+	if not current then return false end
+	local zone = player:GetAttribute("Zone")
+	if current.TargetKey == "Field" and zone == "Field" then return true end
+	if current.TargetKey == "Gate" and zone ~= "Lobby" then return true end
+	return false
+end
 local function targetReached()
 	return current ~= nil and current.TargetKey == "Field" and player:GetAttribute("Zone") == "Field"
 end
@@ -590,12 +598,12 @@ RunService.RenderStepped:Connect(function()
 					where = side .. " (" .. where .. ")"
 				end
 			end
-			local line = targetReached() and "👑 Hunt here and find the Lord!" or string.format("📍 %s  %s  %dm", current.TargetName or "Goal", where, meters)
+			local line = targetReached() and "👑 Hunt here and find the Lord!" or (guidesHidden() and "" or string.format("📍 %s  %s  %dm", current.TargetName or "Goal", where, meters))
 			barText.Text = cardH <= 80 and string.format("%d / %d", current.Progress, current.Goal) or string.format("%d / %d     %s", current.Progress, current.Goal, line)
 			if activeWhere and activeWhere.Parent then activeWhere.Text = line end
-			beacon.Transparency = targetReached() and 1 or (flat < 40 and 0.85 or 0.35) -- 가까워지면 투명하게 (시야 방해 방지). 필드에 들어왔으면 입구 표지는 숨긴다
+			beacon.Transparency = guidesHidden() and 1 or (flat < 40 and 0.85 or 0.35) -- 가까워지면 투명하게 (시야 방해 방지). 필드에 들어왔으면 입구 표지는 숨긴다
 			local board = beacon:FindFirstChildOfClass("BillboardGui")
-			if board then board.Enabled = not targetReached() end
+			if board then board.Enabled = not guidesHidden() end
 		end
 	end
 end)
@@ -670,7 +678,7 @@ do
 
 	RunService.RenderStepped:Connect(function()
 		local inDungeon = player:GetAttribute("Zone") == "Dungeon"
-		if current and current.Target and not inDungeon and not targetReached() then
+		if current and current.Target and not inDungeon and not guidesHidden() then
 			point(goalFrame, goalArrow, goalText, current.Target, current.TargetName)
 		else
 			goalFrame.Visible = false
@@ -723,7 +731,7 @@ do
 		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 		local target = current and current.Target
 		if not (root and humanoid and humanoid.Health > 0 and typeof(target) == "Vector3")
-			or player:GetAttribute("Zone") == "Dungeon" or player:GetAttribute("ModalOpen") or player:GetAttribute("ChestOpening") or targetReached() then
+			or player:GetAttribute("Zone") == "Dungeon" or player:GetAttribute("ModalOpen") or player:GetAttribute("ChestOpening") or guidesHidden() then
 			hide()
 			return
 		end
