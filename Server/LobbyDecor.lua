@@ -637,6 +637,30 @@ function LobbyDecor.Build(parent, ctx)
 		label(anchorPart("MarketSignAnchor", g(mx, mz, 9)), "🛒 Market", rgb(255, 232, 170), 0, 160, 50, 40)
 	end
 
+	--------------------------------------------------------------------
+	-- 9) 필드로 가는 다리: 돌 난간 + 다리 양끝 등불 + 다리 위 판석 무늬 (게임 첫 동선: 마을 -> 필드)
+	--------------------------------------------------------------------
+	section("FieldBridgeDecor")
+	do
+		local half = ctx.Half or 130
+		local x0, x1 = half, half + 22 -- 필드 문(탑) 바로 뒤부터 다리 끝까지
+		for _, side in ipairs({ -1, 1 }) do
+			local z = side * 18.6
+			for x = x0, x1, 5.5 do
+				box("BridgePost", Vector3.new(1.2, 2.6, 1.2), g(x, z, 1.3), STONE_LIGHT, M.Cobblestone)
+			end
+			box("BridgeRail", Vector3.new(x1 - x0 + 1.2, 0.6, 0.9), g((x0 + x1) / 2, z, 2.75), STONE, M.Marble)
+			box("BridgeCurb", Vector3.new(x1 - x0 + 1.2, 0.5, 2), g((x0 + x1) / 2, z, 0.25), STONE_DARK, M.Cobblestone)
+			-- 다리 끝 등불 (빛 부품 없이 따뜻한 색만)
+			vcyl("BridgeLampPole", 6, 0.5, g(x1 + 1, z, 0), rgb(52, 50, 58), M.Metal)
+			box("BridgeLampCap", Vector3.new(1.4, 0.35, 1.4), g(x1 + 1, z, 6.35), rgb(52, 50, 58), M.Metal)
+			box("BridgeLampGlass", Vector3.new(1, 1.2, 1), g(x1 + 1, z, 5.55), rgb(255, 196, 120), M.Neon, nil, 0.15)
+		end
+		for i = 0, 6 do -- 다리 가운데 판석 (밟는 길이 다리 위에서도 이어진다)
+			box("BridgeSlab", Vector3.new(3, 0.06, 9), g(x0 + 1.5 + i * 3.2, 0, 0.03), i % 2 == 0 and STONE_LIGHT or STONE, M.Slate)
+		end
+	end
+
 	return { Parts = count, Lights = lights, Emitters = emitters }
 end
 

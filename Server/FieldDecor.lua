@@ -15,6 +15,19 @@ local MAX_LIGHTS = 12
 local MAX_EMITTERS = 10
 local BOSS_CLEAR = 90 -- 구역 끝에서 이만큼은 비운다 (보스 자리는 끝 - 45)
 
+-- 구역마다 캠프 -> 군주 자리까지 이어지는 "오솔길": 꺾임 벽의 틈을 지나가도록 굽어서, 어디로 가면 되는지 바닥만 봐도 보인다.
+-- (높낮이는 건드리지 않는다: 경사로 위에는 놓지 않고, 평지 바닥 위에 얇게 깐다)
+local TRAIL = {
+	{ Color = Color3.fromRGB(150, 122, 86), Material = Enum.Material.Ground, Edge = Color3.fromRGB(122, 160, 84) },     -- 1 초원: 흙길 + 풀 테두리
+	{ Color = Color3.fromRGB(112, 120, 96), Material = Enum.Material.Cobblestone, Edge = Color3.fromRGB(70, 118, 70) }, -- 2 숲: 이끼 낀 돌길
+	{ Color = Color3.fromRGB(170, 150, 120), Material = Enum.Material.Slate, Edge = Color3.fromRGB(128, 104, 78) },     -- 3 협곡: 판석
+	{ Color = Color3.fromRGB(176, 148, 100), Material = Enum.Material.Sandstone, Edge = Color3.fromRGB(196, 170, 112) },-- 4 사막: 사암 판
+	{ Color = Color3.fromRGB(150, 160, 176), Material = Enum.Material.Pavement, Edge = Color3.fromRGB(236, 242, 248) }, -- 5 설원: 다져진 눈 / 자갈
+	{ Color = Color3.fromRGB(70, 56, 56), Material = Enum.Material.Basalt, Edge = Color3.fromRGB(150, 70, 44) },        -- 6 화산: 현무암 판
+	{ Color = Color3.fromRGB(84, 74, 104), Material = Enum.Material.Slate, Edge = Color3.fromRGB(120, 92, 150) },       -- 7 그림자: 보랏빛 판석
+	{ Color = Color3.fromRGB(58, 50, 72), Material = Enum.Material.Marble, Edge = Color3.fromRGB(140, 90, 170) },       -- 8 심연: 검은 대리석
+}
+
 local function rgb(r: number, g: number, b: number): Color3
 	return Color3.fromRGB(r, g, b)
 end
@@ -31,6 +44,52 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 	local blocked = helpers.Blocked
 
 	local lightCount, emitterCount, totalParts = 0, 0, 0
+
+	-- 오솔길 경로: 캠프 출구 -> (꺾임 벽은 틈으로 / 경사로는 가운데 계단으로) -> 군주 자리 앞. 반환: 점 목록, 그 구역의 벽 목록
+	local function trailFor(zone: number)
+		local x0, x1 = zoneBounds(zone)
+		local walls = {}
+		for _, rect in ipairs(helpers.Baffles or {}) do
+			if rect.X0 > x0 and rect.X1 < x1 then table.insert(walls, rect) end
+		end
+		table.sort(walls, function(a, b) return a.X0 < b.X0 end)
+		local passes = {} -- { A, B, Wall } : 지나가야 하는 구간
+		for _, rect in ipairs(walls) do table.insert(passes, { A = rect.X0, B = rect.X1, Wall = rect }) end
+		if blocked then -- 경사로(계단통) 구간 찾기: 막힌 곳 중 벽이 아닌 곳
+			local inStair, startX = false, 0
+			for x = x0 + F.CampSafe, x1 - 60, 6 do
+				local isWall = false
+				for _, rect in ipairs(walls) do
+					if x > rect.X0 - 22 and x < rect.X1 + 22 then isWall = true end
+				end
+				local stair = blocked(zone, x - x0) and not isWall
+				if stair and not inStair then inStair, startX = true, x end
+				if not stair and inStair then
+					inStair = false
+					table.insert(passes, { A = startX, B = x })
+				end
+			end
+		end
+		table.sort(passes, function(a, b) return a.A < b.A end)
+		local points = { Vector2.new(x0 + F.CampSafe - 6, 0) }
+		local z = 0
+		for _, pass in ipairs(passes) do
+			local gz = 0
+			local rect = pass.Wall
+			if rect then
+				local lowGap, highGap = rect.Z0 + half, half - rect.Z1 -- 벽 아래쪽(-Z) / 위쪽(+Z) 틈의 폭
+				local lowZ, highZ = (-half + rect.Z0) / 2, (rect.Z1 + half) / 2
+				if lowGap > 12 and (highGap <= 12 or math.abs(z - lowZ) <= math.abs(z - highZ)) then gz = lowZ else gz = highZ end
+				gz = math.clamp(gz, -half + 18, half - 18)
+			end
+			local before = math.max(pass.A - 34, points[#points].X + 8)
+			table.insert(points, Vector2.new(before, gz))
+			table.insert(points, Vector2.new(math.max(pass.B + 34, before + 8), gz))
+			z = gz
+		end
+		table.insert(points, Vector2.new(math.max(x1 - 70, points[#points].X + 8), 0))
+		return points, walls
+	end
 
 	for zone = 1, F.ZoneCount do
 		local rng = Random.new(9100 + zone * 31)
@@ -114,10 +173,23 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 			return CFrame.new(pos) * CFrame.Angles(math.rad(R(-amount, amount)), math.rad(R(0, 360)), math.rad(R(-amount, amount)))
 		end
 
-		-- 놓을 수 있는 자리인가: 캠프 / 보스 자리 / 관문 / 경사로 / 꺾임 벽 밖
+		local trailPoints = trailFor(zone)
+		local function nearTrail(x: number, z: number, margin: number): boolean
+			for i = 1, #trailPoints - 1 do
+				local a, b = trailPoints[i], trailPoints[i + 1]
+				local ab = b - a
+				local t = math.clamp(((x - a.X) * ab.X + (z - a.Y) * ab.Y) / math.max(ab.X * ab.X + ab.Y * ab.Y, 1), 0, 1)
+				local px, pz = a.X + ab.X * t, a.Y + ab.Y * t
+				if (px - x) * (px - x) + (pz - z) * (pz - z) < margin * margin then return true end
+			end
+			return false
+		end
+
+		-- 놓을 수 있는 자리인가: 캠프 / 보스 자리 / 관문 / 경사로 / 꺾임 벽 / 오솔길 밖
 		local function okAt(x: number, z: number): boolean
 			if x < minX or x > maxX or math.abs(z) > half - 8 then return false end
 			if blocked and blocked(zone, x - x0) then return false end
+			if nearTrail(x, z, 9) then return false end
 			return true
 		end
 		-- count 번 시도해서 자리가 맞으면 builder 를 부른다 (builder 는 바닥 위 위치를 받는다)
@@ -155,18 +227,24 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 					ball("Bush", Vector3.new(s, s * 0.7, s), p + Vector3.new(R(-1.5, 1.5), s * 0.25, R(-1.5, 1.5)), tint(rgb(86, 150, 76), R(-0.12, 0.1)), Enum.Material.Grass)
 				end
 			end)
-			scatter(11, function(p) -- 꽃밭
+			scatter(11, function(p) -- 꽃밭: 낮은 잎 덤불 위에 납작한 꽃송이 (동그란 공은 사탕처럼 보였다)
+				ball("FlowerLeaves", Vector3.new(R(4, 6), 0.8, R(3, 5)), p + Vector3.new(0, 0.25, 0), tint(rgb(90, 150, 76), R(-0.1, 0.1)), Enum.Material.Grass)
 				for _ = 1, 5 do
-					local s = R(0.6, 0.9)
-					ball("Flower", Vector3.new(s, s, s), p + Vector3.new(R(-3, 3), 0.5, R(-3, 3)), bloomColors[rng:NextInteger(1, #bloomColors)], Enum.Material.SmoothPlastic)
+					local s = R(0.6, 0.85)
+					ball("Flower", Vector3.new(s, s * 0.4, s), p + Vector3.new(R(-2.4, 2.4), 0.75, R(-1.8, 1.8)), bloomColors[rng:NextInteger(1, #bloomColors)], Enum.Material.Fabric)
 				end
 			end)
 			scatter(10, function(p) -- 바위
 				local s = R(2, 4.5)
 				block("Rock", Vector3.new(s, s * 0.7, s * R(0.8, 1.2)), lean(p + Vector3.new(0, s * 0.2, 0), 10), tint(rgb(140, 138, 130), R(-0.12, 0.1)), Enum.Material.Slate)
 			end)
-			scatter(7, function(p)
-				patch(p, tint(rgb(112, 168, 84), R(-0.1, 0.12)), rng:NextNumber() < 0.5 and Enum.Material.LeafyGrass or Enum.Material.Grass, R(16, 28))
+			scatter(14, function(p) -- 바닥 색 얼룩: 한 가지 초록 바닥이 넓게 밋밋하지 않게 (풀 / 짙은 풀 / 흙)
+				local roll = rng:NextNumber()
+				if roll < 0.2 then
+					patch(p, tint(rgb(132, 112, 80), R(-0.08, 0.08)), Enum.Material.Ground, R(10, 18))
+				else
+					patch(p, tint(rgb(112, 168, 84), R(-0.14, 0.12)), roll < 0.6 and Enum.Material.LeafyGrass or Enum.Material.Grass, R(16, 30))
+				end
 			end)
 
 		------------------------------------------------------------
@@ -433,6 +511,84 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 			scatter(8, function(p)
 				patch(p, tint(rgb(36, 28, 54), R(-0.1, 0.15)), rng:NextNumber() < 0.5 and Enum.Material.Slate or Enum.Material.Basalt, R(16, 30))
 			end)
+		end
+	end
+
+	-- 오솔길 + 꺾임 벽 꾸미기 (구역 장식 예산과 별도로 센다)
+	local function plain(name: string, size: Vector3, cframe: CFrame, color: Color3, material: Enum.Material, shape: Enum.PartType?)
+		totalParts += 1
+		local part = Instance.new("Part")
+		part.Name = name
+		part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch, part.CastShadow = true, false, false, false, false
+		part.TopSurface, part.BottomSurface = Enum.SurfaceType.Smooth, Enum.SurfaceType.Smooth
+		if shape then part.Shape = shape end
+		part.Size, part.CFrame, part.Color, part.Material = size, cframe, color, material
+		part.Parent = folder
+		return part
+	end
+	for zone = 1, F.ZoneCount do
+		local style = TRAIL[zone] or TRAIL[1]
+		local rng = Random.new(5300 + zone * 17)
+		local points, walls = trailFor(zone)
+		-- 판 깔기: 짧은 판(13)을 이어서. 높이가 바뀌는 곳(경사로)과 꺾임 벽 안은 건너뛴다
+		local pieceIndex = 0
+		for i = 1, #points - 1 do
+			local a, b = points[i], points[i + 1]
+			local length = (b - a).Magnitude
+			local steps = math.max(1, math.floor(length / 13))
+			for k = 0, steps - 1 do
+				local pa = a:Lerp(b, k / steps)
+				local pb = a:Lerp(b, (k + 1) / steps)
+				local ya, yb = floorAt(pa.X), floorAt(pb.X)
+				local inWall = false
+				for _, rect in ipairs(walls) do
+					local mx, mz = (pa.X + pb.X) / 2, (pa.Y + pb.Y) / 2
+					if mx > rect.X0 - 4 and mx < rect.X1 + 4 and mz > rect.Z0 - 4 and mz < rect.Z1 + 4 then inWall = true end
+				end
+				if math.abs(ya - yb) < 0.05 and not inWall then
+					pieceIndex += 1
+					local y = ya + 0.16
+					local from, to = Vector3.new(pa.X, y, pa.Y), Vector3.new(pb.X, y, pb.Y)
+					local mid = (from + to) / 2
+					local len = (to - from).Magnitude
+					local cf = CFrame.lookAt(mid, to)
+					local shade = style.Color:Lerp(Color3.new(0, 0, 0), rng:NextNumber(0, 0.12))
+					plain("Trail", Vector3.new(9 + rng:NextNumber(-0.8, 0.8), 0.1, len - 1.2), cf * CFrame.Angles(0, math.rad(rng:NextNumber(-3, 3)), 0), shade, style.Material)
+					if pieceIndex % 2 == 0 then -- 길 가장자리: 풀 / 자갈 띠 (번갈아 좌우)
+						local side = (pieceIndex % 4 == 0) and 1 or -1
+						plain("TrailEdge", Vector3.new(2.2, 0.08, len * 0.8), cf * CFrame.new(side * 5.4, -0.02, 0), style.Edge, zone <= 2 and Enum.Material.Grass or Enum.Material.Pebble)
+					end
+					if pieceIndex % 5 == 0 then -- 길가 작은 돌
+						local side = (pieceIndex % 10 == 0) and 1 or -1
+						local s = rng:NextNumber(1, 1.8)
+						plain("TrailStone", Vector3.new(s, s * 0.6, s * 1.2), cf * CFrame.new(side * 6.6, s * 0.2, rng:NextNumber(-3, 3)) * CFrame.Angles(0, rng:NextNumber(0, 6.28), 0), style.Color:Lerp(Color3.fromRGB(120, 116, 110), 0.5), Enum.Material.Slate)
+					end
+				end
+			end
+		end
+		-- 꺾임 벽: 밋밋한 큰 판 대신 바위 벽처럼 (아랫단 바위 무더기 + 벽면 덩굴 / 줄무늬). 충돌 / 크기는 그대로
+		for _, rect in ipairs(walls) do
+			local wx = (rect.X0 + rect.X1) / 2
+			local baseY = floorAt(wx)
+			local wallColor = (F.ZoneColors[zone] or Color3.fromRGB(100, 100, 100)):Lerp(Color3.fromRGB(70, 65, 72), 0.5)
+			for _, face in ipairs({ -1, 1 }) do
+				local fx = face < 0 and rect.X0 - 0.6 or rect.X1 + 0.6
+				local span = rect.Z1 - rect.Z0
+				local count = math.clamp(math.floor(span / 26), 2, 8)
+				for k = 1, count do
+					local zz = rect.Z0 + span * (k - 0.5) / count + rng:NextNumber(-4, 4)
+					local s = rng:NextNumber(4, 7.5)
+					plain("WallRock", Vector3.new(s, s * 0.8, s * 1.3), CFrame.new(fx + face * s * 0.25, baseY + s * 0.3, zz) * CFrame.Angles(rng:NextNumber(-0.2, 0.2), rng:NextNumber(0, 6.28), rng:NextNumber(-0.2, 0.2)), wallColor:Lerp(Color3.new(0, 0, 0), rng:NextNumber(0, 0.15)), Enum.Material.Slate)
+					if zone <= 3 and k % 2 == 1 then -- 초원 / 숲 / 협곡: 벽을 타고 내려오는 덩굴
+						local h = rng:NextNumber(16, 34)
+						plain("WallVine", Vector3.new(0.3, h, rng:NextNumber(2.5, 4)), CFrame.new(fx - face * 0.05, baseY + h / 2 + 2, zz + rng:NextNumber(-6, 6)), (TRAIL[zone].Edge):Lerp(Color3.new(0, 0, 0), 0.25), Enum.Material.LeafyGrass)
+					end
+				end
+				-- 가로 띠 (지층 무늬): 큰 판이 한 덩어리로 보이지 않게
+				for band = 1, 2 do
+					plain("WallBand", Vector3.new(0.25, rng:NextNumber(1.2, 2.2), span - 2), CFrame.new(fx - face * 0.1, baseY + 9 + band * rng:NextNumber(8, 12), (rect.Z0 + rect.Z1) / 2), wallColor:Lerp(Color3.new(1, 1, 1), 0.12), Enum.Material.Slate)
+				end
+			end
 		end
 	end
 
