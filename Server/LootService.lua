@@ -80,7 +80,7 @@ function Loot.DropFor(player, position, kind, zoneIndex)
 	drops[player] = drops[player] or {}
 	for _ = 1, count do
 		if math.random() < chance then
-			local item = Loot.RollItem(player, row, kind, zoneIndex, nil, 0) -- 필드 드랍: 세트가 섞여 나온다 / 유니크는 없다 (유니크는 던전 쪽 보상)
+			local item = Loot.RollItem(player, row, kind, zoneIndex, nil, Config.Uniques.FieldChance or 0.08) -- 필드 드랍: 세트가 섞여 나온다 / 신화에 유니크는 낮은 확률로만 (유니크는 주로 던전 쪽 보상)
 			-- 세트 장비가 붙으면, 어느 구역 세트인지는 "1구역 ~ 내가 클리어한 가장 깊은 구역" 중에서 무작위 (등급은 지금 사냥하는 구역 기준: 깊을수록 신화가 잘 나온다)
 			-- -> 앞 구역 세트를 모으려고 앞 구역으로 돌아갈 필요가 없다. 가장 깊은 곳에서 사냥하는 게 언제나 이득
 			if item.Set then

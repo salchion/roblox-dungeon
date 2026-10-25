@@ -1585,6 +1585,7 @@ Config.Uniques = {
 
 -- 던전 상자의 유니크 확률(신화 장비): 깊이마다 +0.7%p, 최대 60%
 Config.Uniques.DepthBonus = 0.007
+Config.Uniques.FieldChance = 0.08 -- 필드 신화에도 낮은 확률로 유니크 (던전은 30% ~ 60%)
 Config.Uniques.RerollTickets = 30 -- 유니크 재굴림 (티켓): 후반에 티켓을 쓸 곳
 Config.Uniques.MaxChance = 0.60
 function Config.Uniques.ChanceAtDepth(depth)
