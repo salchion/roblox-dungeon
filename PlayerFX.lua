@@ -67,6 +67,24 @@ do
 		{ ClockTime = 19.5, Brightness = 1.7, Ambient = Color3.fromRGB(94, 78, 130), OutdoorAmbient = Color3.fromRGB(130, 108, 172), Fog = Color3.fromRGB(150, 110, 230), Density = 0.44 }, -- 암흑 지대: 보랏빛 저녁 (밤 -> 저녁, 더 밝게)
 		{ ClockTime = 20.5, Brightness = 1.6, Ambient = Color3.fromRGB(104, 62, 116), OutdoorAmbient = Color3.fromRGB(142, 86, 152), Fog = Color3.fromRGB(255, 100, 180), Density = 0.46 }, -- 심연: 분홍 어둠 (밤 -> 늦은 저녁, 더 밝게)
 	}
+	-- 구역마다 색보정 / 먼 하늘 안개 결도 조금씩 다르게 (눈이 편하도록 값은 작게): Tint 색조, Sat 채도, Con 대비, Haze 안개 번짐, Decay 지평선 색
+	local FIELD_GRADES = {
+		{ Tint = Color3.fromRGB(255, 250, 238), Sat = -0.10, Con = 0.00, Haze = 0.4, Decay = Color3.fromRGB(160, 190, 150) },  -- 초원: 따뜻하고 선명하게
+		{ Tint = Color3.fromRGB(236, 252, 240), Sat = -0.14, Con = -0.02, Haze = 0.9, Decay = Color3.fromRGB(90, 130, 100) },  -- 숲: 초록 기운
+		{ Tint = Color3.fromRGB(255, 246, 232), Sat = -0.20, Con = 0.02, Haze = 0.8, Decay = Color3.fromRGB(150, 120, 90) },   -- 폐허: 바랜 흙빛
+		{ Tint = Color3.fromRGB(255, 244, 220), Sat = -0.12, Con = 0.00, Haze = 1.0, Decay = Color3.fromRGB(190, 150, 100) },  -- 사막: 뜨거운 열기
+		{ Tint = Color3.fromRGB(238, 246, 255), Sat = -0.22, Con = -0.02, Haze = 1.2, Decay = Color3.fromRGB(150, 170, 200) }, -- 설원: 차가운 푸른 기
+		{ Tint = Color3.fromRGB(255, 236, 224), Sat = -0.10, Con = 0.04, Haze = 1.0, Decay = Color3.fromRGB(170, 80, 50) },    -- 화산: 붉은 열기
+		{ Tint = Color3.fromRGB(242, 236, 255), Sat = -0.14, Con = 0.03, Haze = 0.9, Decay = Color3.fromRGB(110, 80, 150) },   -- 그림자: 보랏빛
+		{ Tint = Color3.fromRGB(250, 236, 252), Sat = -0.12, Con = 0.04, Haze = 1.1, Decay = Color3.fromRGB(140, 70, 120) },   -- 심연: 분홍 어둠
+	}
+	local BASE_GRADE = { Tint = Color3.fromRGB(252, 249, 244), Sat = -0.18, Con = -0.04, Haze = 0, Decay = Color3.fromRGB(106, 112, 125) }
+	local function setGrade(grade, duration)
+		local info = TweenInfo.new(duration or 1.2)
+		TweenService:Create(soft, info, { TintColor = grade.Tint, Saturation = grade.Sat, Contrast = grade.Con }):Play()
+		local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
+		if atmosphere then TweenService:Create(atmosphere, info, { Haze = grade.Haze, Decay = grade.Decay }):Play() end
+	end
 	-- 던전 변이 화면 분위기 (서버가 던전 시작 때 DungeonVisual 을 정한다)
 	local DUNGEON_VISUALS = {
 		Dark  = { Lighting = { ClockTime = 0, Brightness = 0.5, Ambient = Color3.fromRGB(26, 26, 44), OutdoorAmbient = Color3.fromRGB(34, 34, 58) }, Atmosphere = { Color = Color3.fromRGB(20, 20, 40), Density = 0.5 } },
@@ -109,6 +127,7 @@ do
 			local fog = theme.Fog:Lerp(NIGHT_FOG, smooth * 0.55):Lerp(DUSK_FOG, warm)
 			TweenService:Create(atmosphere, TweenInfo.new(1.2), { Color = fog, Density = theme.Density }):Play()
 		end
+		setGrade(FIELD_GRADES[index or fieldIndex] or BASE_GRADE, 1.2)
 		local name = n < 0.15 and "Day" or (n > 0.85 and "Night" or "Dusk")
 		if name ~= phaseName then
 			phaseName = name
@@ -147,6 +166,7 @@ do
 	}
 	local function apply()
 		local zone = player:GetAttribute("Zone")
+		if zone ~= "Field" then setGrade(BASE_GRADE, 0.8) end -- 마을 / 던전에서는 기본 색보정으로 되돌린다 (구역별 색은 필드에서만)
 		local grade = Lighting:FindFirstChild("LobbyGrade")
 		local bloom = Lighting:FindFirstChild("LobbyBloom")
 		if zone == "Lobby" then
