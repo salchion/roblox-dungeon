@@ -241,6 +241,11 @@ function Effects.Warn(position, radius, duration, color)
 	emit(position, { "W", position, radius, duration, color })
 end
 
+-- 착탄 충격 고리 { "R", 위치, 반지름, 색 }: 경고 원이 다 찬 순간 "터졌다"는 걸 보여 준다
+function Effects.Ring(position, radius, color)
+	emit(position, { "R", position, radius, color })
+end
+
 -- 거대한 군주 외형(뿔 / 날개 / 꼬리 / 눈). 던전 보스와 필드 구역 보스가 같이 쓴다
 -- 거신(필드 월드 보스): 이끼 낀 거대한 돌 거인. 몸통 구체가 판정이고, 머리 / 어깨 / 팔 / 가슴의 용암 핵은 장식(맞지 않는다).
 function Effects.DecorateGolem(part, size, glow)

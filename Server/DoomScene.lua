@@ -859,21 +859,10 @@ local function doomWaveInner(player, zone, center, real)
 
 	-- 한 번의 폭격: 바닥에 붉은 경고 원 -> 시간이 지나면 군주의 광선이 내리꽂힌다 (맞으면 최대 체력의 일부, 죽지는 않는다)
 	local function strike(at, radius, telegraph, percent, lethal)
-		local warn = Instance.new("Part")
-		warn.Shape = Enum.PartType.Cylinder
-		warn.Size = Vector3.new(0.3, radius * 2, radius * 2)
-		warn.CFrame = CFrame.new(at.X, center.Y + 1.3, at.Z) * CFrame.Angles(0, 0, math.rad(90))
-		warn.Anchored = true
-		warn.CanCollide = false
-		warn.CanQuery = false
-		warn.Material = Enum.Material.Neon
-		warn.Color = rgb(255, 40, 40)
-		warn.Transparency = 0.6
-		warn.Parent = arena
+		-- 경고는 클라이언트가 그린다 (Effects.Warn): 가장자리 원 + 안쪽에서 차오르는 원. 다 차는 순간 광선이 내리꽂힌다
+		Effects.Warn(Vector3.new(at.X, center.Y + 1.3, at.Z), radius, telegraph, rgb(255, 60, 50))
 		lordSfx("Lord_Charge")
-		TweenService:Create(warn, TweenInfo.new(telegraph), { Transparency = 0.05 }):Play()
 		task.delay(telegraph, function()
-			warn:Destroy()
 			if not arena.Parent then return end
 			lordSfx("Lord_Blast")
 			beam(body.Position + Vector3.new(0, 4, -6), at + Vector3.new(0, 1, 0), radius * 0.28, 0.35)

@@ -13,24 +13,29 @@ local function worldFolder() return ctx.GetWorldFolder() end
 
 local function alive(part, data) return ctx.Monsters[part] == data end
 
+-- 맞았다는 걸 분명히: 머리 위에 💥 글자 + 화면 흔들림 (피해가 들어오는지 모르겠다는 의견)
+local function hitFeedback(entry, damage)
+	ctx.Effects.FloatText(entry.Root.Position + Vector3.new(0, 4.5, 0), "💥 Hit!", Color3.fromRGB(255, 110, 100))
+	local owner = game:GetService("Players"):GetPlayerFromCharacter(entry.Root.Parent)
+	if owner then
+		owner:SetAttribute("ShakeStrength", 0.45)
+		owner:SetAttribute("ShakeTick", (owner:GetAttribute("ShakeTick") or 0) + 1)
+	end
+end
+
 -- 바닥에 원 경고 -> delay 뒤 폭발 (반지름 안의 플레이어에게 피해)
+-- 경고는 클라이언트가 그린다(Effects.Warn): 가장자리 원이 보이고 안쪽에서 원이 차오르다가 가장자리에 닿는 순간 터진다 = "다 차면 맞는다". 터질 때 충격 고리가 퍼진다.
 local function disc(part, data, spot, radius, delay, damage, color)
-	local warn = Instance.new("Part")
-	warn.Shape = Enum.PartType.Cylinder
-	warn.Size = Vector3.new(0.3, radius * 2, radius * 2)
-	warn.CFrame = CFrame.new(spot.X, ctx.FloorAt(spot.X) + 0.3, spot.Z) * CFrame.Angles(0, 0, math.rad(90))
-	warn.Anchored, warn.CanCollide, warn.CanQuery = true, false, false
-	warn.Material = Enum.Material.Neon
-	warn.Color = color or Color3.fromRGB(255, 90, 60)
-	warn.Transparency = 0.6
-	warn.Parent = worldFolder()
-	TweenService:Create(warn, TweenInfo.new(delay), { Transparency = 0.15 }):Play()
+	local floorPos = Vector3.new(spot.X, ctx.FloorAt(spot.X) + 0.2, spot.Z)
+	local tint = color or Color3.fromRGB(255, 90, 60)
+	ctx.Effects.Warn(floorPos, radius, delay, tint)
 	task.delay(delay, function()
-		warn:Destroy()
 		if not alive(part, data) then return end
-		ctx.Effects.Burst(Vector3.new(spot.X, ctx.FloorAt(spot.X) + 2, spot.Z), color or Color3.fromRGB(255, 140, 70), 40)
+		ctx.Effects.Burst(floorPos + Vector3.new(0, 1.8, 0), tint, 40)
+		ctx.Effects.Ring(floorPos, radius, tint)
 		for _, entry in ipairs(ctx.PlayersNear(spot, radius)) do
 			ctx.Guard.Take(entry.Humanoid, damage)
+			hitFeedback(entry, damage)
 		end
 	end)
 end
@@ -44,11 +49,20 @@ local function strip(part, data, origin, dir, length, width, delay, damage, colo
 	warn.Anchored, warn.CanCollide, warn.CanQuery = true, false, false
 	warn.Material = Enum.Material.Neon
 	warn.Color = color or Color3.fromRGB(255, 90, 60)
-	warn.Transparency = 0.6
+	warn.Transparency = 0.8
 	warn.Parent = worldFolder()
-	TweenService:Create(warn, TweenInfo.new(delay), { Transparency = 0.15 }):Play()
+	-- 안쪽에서 앞쪽 끝으로 차오르는 띠 (다 차면 맞는다)
+	local fill = warn:Clone()
+	fill.Transparency = 0.35
+	fill.Size = Vector3.new(width, 0.35, 0.1)
+	fill.CFrame = CFrame.lookAt(base + dir * 0.05, base + dir * 1.05)
+	fill.Parent = worldFolder()
+	TweenService:Create(fill, TweenInfo.new(delay, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+		Size = Vector3.new(width, 0.35, length), CFrame = CFrame.lookAt(base + dir * (length / 2), base + dir * length),
+	}):Play()
 	task.delay(delay, function()
 		warn:Destroy()
+		fill:Destroy()
 		if not alive(part, data) then return end
 		ctx.Effects.Burst(base + dir * (length / 2), color or Color3.fromRGB(255, 140, 70), 25)
 		for _, entry in ipairs(ctx.PlayersNear(base + dir * (length / 2), length / 2 + width)) do
@@ -57,6 +71,7 @@ local function strip(part, data, origin, dir, length, width, delay, damage, colo
 			local side = math.abs(rel.X * dir.Z - rel.Z * dir.X)
 			if along >= 0 and along <= length and side <= width / 2 + 1 then
 				ctx.Guard.Take(entry.Humanoid, damage)
+				hitFeedback(entry, damage)
 			end
 		end
 	end)

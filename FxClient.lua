@@ -1107,7 +1107,7 @@ end
 -- 땅 위 경고 { "W", 위치, 반지름, 지속 초, 색 }: 착탄 지점에 흐린 원이 나타나고 안쪽에서 차오른다
 local activeWarns = 0
 local function groundWarn(event)
-	if activeWarns >= 12 then return end
+	if activeWarns >= 24 then return end -- (보스 패턴의 경고 원이 한꺼번에 여러 개 뜬다)
 	local position, radius, duration, color = event[2], event[3], math.clamp(event[4] or 1.5, 0.3, 4), event[5] or Color3.fromRGB(235, 110, 90)
 	activeWarns += 1
 	local cframe = CFrame.new(position + Vector3.new(0, 0.35, 0)) * CFrame.Angles(0, 0, math.rad(90))
