@@ -277,13 +277,15 @@ local function play()
 	if finished then return end
 
 	-- 1) 마을에서 보스까지 한 번에 날아간다 (빠르게 가속했다가 보스 앞에서 멈춘다. 시야각이 넓어졌다가 좁아진다)
-	TweenService:Create(camera, TweenInfo.new(3.2, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut), { CFrame = CFrame.lookAt(arrivePos, arriveLook) }):Play()
-	TweenService:Create(camera, TweenInfo.new(1.4, Enum.EasingStyle.Sine, Enum.EasingDirection.In), { FieldOfView = 100 }):Play()
-	task.delay(1.4, function()
-		if not finished then TweenService:Create(camera, TweenInfo.new(1.8, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { FieldOfView = 58 }):Play() end
+	local FLY_TIME = 8.0 -- 필드가 잘 보이도록 천천히 (예전 3.2초는 너무 빨라서 지나가는 필드가 흐릿했다)
+	TweenService:Create(camera, TweenInfo.new(FLY_TIME, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { CFrame = CFrame.lookAt(arrivePos, arriveLook) }):Play()
+	TweenService:Create(camera, TweenInfo.new(2.0, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { FieldOfView = 82 }):Play()
+	task.delay(FLY_TIME - 2.4, function()
+		if not finished then TweenService:Create(camera, TweenInfo.new(2.4, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { FieldOfView = 58 }):Play() end
 	end)
-	task.delay(1.5, function() if not finished then sfx("Aug_Flame", 0.9, 0.55) end end)
-	task.wait(3.3)
+	task.delay(2.5, function() if not finished then sfx("Aug_Flame", 0.8, 0.6) end end)
+	task.delay(5.2, function() if not finished then sfx("Aug_Flame", 0.7, 0.5) end end)
+	task.wait(FLY_TIME + 0.1)
 	if finished then return end
 
 	-- 2) 보스가 눈을 뜬다 -> 에너지를 모은다 (구슬이 커지고 화면이 떨린다)
