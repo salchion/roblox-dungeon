@@ -67,7 +67,7 @@ end)
 ------------------------------------------------------------
 -- 대미지 미터기 (필드 / 던전 / 허수아비): 총과 세트 효과가 각각 얼마나 피해를 줬는지 나눠서 보여 준다
 -- 서버(DamageMeter)가 1초마다 Attribute "DmgMeter" (JSON) 를 갱신한다. 15초 동안 피해가 없으면 사라진다.
--- 머리줄을 누르면 접고 편다 (폰은 접힌 채로 시작: DPS 한 줄만). ↺ 버튼은 0 부터 다시 센다. 큰 창이 열려 있으면 숨는다.
+-- 머리줄을 누르면 접고 편다 (폰은 접힌 채로 시작: DPS 한 줄만). Reset 버튼은 0 부터 다시 센다. 큰 창이 열려 있으면 숨는다.
 ------------------------------------------------------------
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local HttpService = game:GetService("HttpService")
@@ -125,21 +125,21 @@ header.BackgroundTransparency = 1
 header.Text = ""
 header.Size = UDim2.new(1, 0, 0, HEAD_H)
 header.Parent = meter
-local meterTitle = text(meter, { Position = UDim2.new(0, 12, 0, 6), Size = UDim2.new(1, -72, 0, 14), TextSize = 11, TextColor3 = Color3.fromRGB(150, 158, 190) })
+local meterTitle = text(meter, { Position = UDim2.new(0, 12, 0, 6), Size = UDim2.new(1, -92, 0, 14), TextSize = 11, TextColor3 = Color3.fromRGB(150, 158, 190) })
 local meterDps = text(meter, { Position = UDim2.new(0, 12, 0, 20), Size = UDim2.new(1, -40, 0, 26), TextSize = 22, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 217, 102) })
-local toggleIcon = text(meter, { Position = UDim2.new(1, -28, 0, 14), Size = UDim2.new(0, 20, 0, 20), TextSize = 14, TextXAlignment = Enum.TextXAlignment.Center, TextColor3 = Color3.fromRGB(170, 180, 215) })
--- ↺ 리셋 버튼: 지금까지 센 피해를 지우고 0 부터 다시 센다 (머리줄 접기 버튼보다 위에 놓아 눌리게)
+local toggleIcon = text(meter, { Position = UDim2.new(1, -30, 0, 13), Size = UDim2.new(0, 24, 0, 24), TextSize = 18, TextXAlignment = Enum.TextXAlignment.Center, TextColor3 = Color3.fromRGB(170, 180, 215) })
+-- Reset 버튼: 지금까지 센 피해를 지우고 0 부터 다시 센다 (머리줄 접기 버튼보다 위에 놓아 눌리게)
 local resetButton = Instance.new("TextButton")
 resetButton.Name = "Reset"
-resetButton.Size = UDim2.new(0, 28, 0, 28)
-resetButton.Position = UDim2.new(1, -62, 0, 11)
+resetButton.Size = UDim2.new(0, 44, 0, 24)
+resetButton.Position = UDim2.new(1, -78, 0, 13)
 resetButton.BackgroundColor3 = Color3.fromRGB(54, 58, 82)
 resetButton.BackgroundTransparency = 0.2
 resetButton.AutoButtonColor = true
 resetButton.Font = Enum.Font.GothamBold
-resetButton.TextSize = 15
+resetButton.TextSize = 11
 resetButton.TextColor3 = Color3.fromRGB(200, 205, 230)
-resetButton.Text = "↺"
+resetButton.Text = "Reset" -- (↺ / ▸ 같은 기호는 로블록스 글꼴에 없어 네모로 보였다: 글자로 쓴다)
 resetButton.ZIndex = 3
 resetButton.Parent = meter
 do
@@ -172,11 +172,11 @@ end
 
 local function sourceName(source)
 	if source == "Gun" then return "🔫 Gun" end
-	local fixed = { Ult = "🎯 Deadeye", Blast = "💥 Shockwave", Bounce = "↪ Ricochet", PerkBoom = "💥 Explosive Shot", PerkChain = "⚡ Chain Lightning", Other = "• Other" }
+	local fixed = { Ult = "🎯 Deadeye", Blast = "💥 Shockwave", Bounce = "🔁 Ricochet", PerkBoom = "💥 Explosive Shot", PerkChain = "⚡ Chain Lightning", Other = "❔ Other" }
 	if fixed[source] then return fixed[source] end
 	if typeof(source) == "string" and string.sub(source, 1, 2) == "U_" then
 		local unique = Config.Uniques[string.sub(source, 3)]
-		return "✦ " .. (unique and unique.Name or string.sub(source, 3))
+		return "✨ " .. (unique and unique.Name or string.sub(source, 3))
 	end
 	local info = Config.AugInfo[source]
 	if info then return info.Icon .. " " .. info.Name end
@@ -191,7 +191,7 @@ end
 
 local shownRows = 0
 local function layout()
-	toggleIcon.Text = collapsed and "▸" or "▾"
+	toggleIcon.Text = collapsed and "+" or "-"
 	for i, row in ipairs(rows) do
 		local on = not collapsed and i <= shownRows
 		row.Track.Visible, row.Name.Visible, row.Value.Visible = on, on, on
@@ -209,7 +209,7 @@ player:GetAttributeChangedSignal("DmgMeter"):Connect(function()
 	if not ok or typeof(data) ~= "table" then return end
 	local list = data.Src or {}
 	local total = math.max(1, data.Total or 1)
-	meterTitle.Text = string.format("DAMAGE METER  ·  %ds  ·  total %s", data.Time or 0, short(total))
+	meterTitle.Text = string.format("DAMAGE · %ds · %s", data.Time or 0, short(total))
 	meterDps.Text = short(data.Dps or 0) .. " <font size='12' color='#9aa2c6'>DPS</font>"
 	shownRows = 0
 	for i, row in ipairs(rows) do
