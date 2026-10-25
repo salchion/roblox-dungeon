@@ -181,6 +181,16 @@ local function play()
 		end
 	end
 
+	-- 오프닝 동안 다른 화면이 다시 켜지는 것(예: 무기 바 1~0)을 막는다: 매 프레임 확인해서 꺼 둔다 (끝나면 원래 켜져 있던 것만 복구)
+	local guardConnection = RunService.Heartbeat:Connect(function()
+		for _, other in ipairs(playerGui:GetChildren()) do
+			if other:IsA("ScreenGui") and other ~= gui and other.Enabled then
+				hiddenGuis[#hiddenGuis + 1] = other
+				other.Enabled = false
+			end
+		end
+	end)
+
 	-- 내 캐릭터는 마지막에 하늘에서 떨어지며 "나타난다": 그때까지 내 화면에서만 투명하게 (머리 위 이름표도 잠깐 끈다)
 	local bodyParts, billboards = {}, {}
 	for _, item in ipairs(character:GetDescendants()) do
@@ -228,6 +238,7 @@ local function play()
 		if finished then return end
 		finished = true
 		if connection then connection:Disconnect() end
+		guardConnection:Disconnect()
 		pcall(function()
 			TweenService:Create(Lighting, TweenInfo.new(1.0), { ExposureCompensation = saved.Exposure }):Play()
 			if atmosphere and saved.Density then TweenService:Create(atmosphere, TweenInfo.new(1.0), { Density = saved.Density, Haze = saved.Haze }):Play() end
@@ -281,12 +292,14 @@ local function play()
 	local face = bodyPos + Vector3.new(0, 14 * S, 0)
 
 	-- 카메라 준비: 마을 동쪽 문 위에서 필드를 따라 동쪽을 본다
-	local startPos = Vector3.new(110, 70, 0)
+	local FLY_HEIGHT = 260 -- 날아가는 높이: 낮으면 벽 / 절벽에 가려 바닥의 필드가 안 보인다. 높이 떠서 아래를 내려다본다
+	local TILT = Vector3.new(600, -300, 0) -- 아래로 약 27도 기울여 바라본다
+	local startPos = Vector3.new(110, FLY_HEIGHT, 0)
 	local arrivePos = Vector3.new(bossX - 250, groundY + 120, 0)
 	local arriveLook = face + Vector3.new(0, -8, 0)
 	camera.CameraType = Enum.CameraType.Scriptable
-	camera.FieldOfView = 66
-	camera.CFrame = CFrame.lookAt(startPos, startPos + Vector3.new(1000, -70, 0))
+	camera.FieldOfView = 70
+	camera.CFrame = CFrame.lookAt(startPos, startPos + TILT)
 	-- 필드 미리 불러오기: 이 게임은 멀리 있는 지형을 아껴서 불러오기 때문에(StreamingEnabled), 날아가기 전에 서버에 필드를 미리 보내 달라고 한다. 검은 화면에서 잠깐 기다린다 (최대 9초)
 	do
 		-- 로딩 화면: 게임 이름 + 진행 막대 + 팁 (검은 화면으로 멈춘 것처럼 보이지 않게)
@@ -390,14 +403,15 @@ local function play()
 	if finished then return end
 
 	-- 1) 마을에서 보스까지 한 번에 날아간다 (빠르게 가속했다가 보스 앞에서 멈춘다. 시야각이 넓어졌다가 좁아진다)
-	local FLY_TIME = 8.0 -- 필드가 잘 보이도록 천천히 (예전 3.2초는 너무 빨라서 지나가는 필드가 흐릿했다)
-	TweenService:Create(camera, TweenInfo.new(FLY_TIME, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { CFrame = CFrame.lookAt(arrivePos, arriveLook) }):Play()
-	TweenService:Create(camera, TweenInfo.new(2.0, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { FieldOfView = 82 }):Play()
-	task.delay(FLY_TIME - 2.4, function()
-		if not finished then TweenService:Create(camera, TweenInfo.new(2.4, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { FieldOfView = 58 }):Play() end
-	end)
+	-- 먼저 높은 하늘에서 아래를 내려다보며 일정한 속도로 날아가고(필드가 한눈에 보인다), 끝에서 보스 앞으로 내려오며 속도를 줄인다
+	local FLY_TIME = 7.0
+	local DESCEND_TIME = 1.9
+	local midPos = Vector3.new(bossX - 650, FLY_HEIGHT, 0)
+	TweenService:Create(camera, TweenInfo.new(FLY_TIME, Enum.EasingStyle.Linear), { CFrame = CFrame.lookAt(midPos, midPos + TILT) }):Play()
+	TweenService:Create(camera, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { FieldOfView = 84 }):Play()
+	local descending = false
 	task.delay(2.5, function() if not finished then sfx("Aug_Flame", 0.8, 0.6) end end)
-	task.delay(5.2, function() if not finished then sfx("Aug_Flame", 0.7, 0.5) end end)
+	task.delay(5.0, function() if not finished then sfx("Aug_Flame", 0.7, 0.5) end end)
 	-- 날아가는 동안: 진행 막대가 차오르고, 구역을 지날 때마다 구역 이름이 뜬다
 	TweenService:Create(barBack, TweenInfo.new(0.6), { BackgroundTransparency = 0.2 }):Play()
 	TweenService:Create(barFill, TweenInfo.new(0.6), { BackgroundTransparency = 0 }):Play()
@@ -405,7 +419,11 @@ local function play()
 	for _, tick in ipairs(ticks) do TweenService:Create(tick, TweenInfo.new(0.6), { BackgroundTransparency = 0.2 }):Play() end
 	local flyStart = os.clock()
 	local lastZone = 0
-	while os.clock() - flyStart < FLY_TIME + 0.1 and not finished do
+	while os.clock() - flyStart < FLY_TIME + DESCEND_TIME + 0.05 and not finished do
+		if not descending and os.clock() - flyStart >= FLY_TIME then
+			descending = true
+			TweenService:Create(camera, TweenInfo.new(DESCEND_TIME, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { CFrame = CFrame.lookAt(arrivePos, arriveLook), FieldOfView = 58 }):Play()
+		end
 		local x = camera.CFrame.Position.X
 		barFill.Size = UDim2.new(math.clamp((x - F.StartX) / F.TotalLength() + 0.02, 0, 1), 0, 1, 0)
 		local zone = x < F.StartX and 0 or F.ZoneOfX(x)
