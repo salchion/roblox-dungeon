@@ -131,6 +131,8 @@ local lastPopupIndex = 0
 local activeCard = nil
 local activeWhere = nil -- 새 미션 카드 안의 "목표가 어느 쪽에 있는지" 줄 (매 프레임 갱신)
 local function popupMission()
+	while player:GetAttribute("IntroPlaying") do task.wait(0.2) end -- 오프닝 연출이 끝난 뒤에 보여 준다
+	if not current then return end
 	if activeCard then activeCard:Destroy() end -- 이전 카드가 남아 글자가 겹치지 않게
 	local card = create("CanvasGroup", { -- (CanvasGroup: 글자까지 한꺼번에 부드럽게 사라지게)
 		Size = UDim2.new(0, 380, 0, 92), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.14, 0),
@@ -157,7 +159,7 @@ end
 local function refresh()
 	if current and current.Index ~= lastPopupIndex then
 		lastPopupIndex = current.Index
-		popupMission()
+		task.spawn(popupMission)
 	end
 	if not current then
 		objective.Visible = false
