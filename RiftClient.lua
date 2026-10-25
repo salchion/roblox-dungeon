@@ -51,11 +51,11 @@ local panel = makePanel({
 	Size = UDim2.new(0, 560, 0, 560), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.52, 0),
 	BackgroundColor3 = Color3.fromRGB(20, 18, 34), BackgroundTransparency = 0.03, Visible = false, ZIndex = 10,
 }, gui)
-create("UIStroke", { Color = Color3.fromRGB(230, 100, 180), Thickness = 2, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, panel)
+create("UIStroke", { Color = Color3.fromRGB(230, 100, 180), Thickness = 2, Transparency = 0.25, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, panel)
 
-makeLabel({ Size = UDim2.new(1, -90, 0, 40), Position = UDim2.new(0, 18, 0, 10), Text = "👹 Boss Rush", Font = Enum.Font.GothamBlack, TextSize = 24,
+makeLabel({ Size = UDim2.new(1, -90, 0, 40), Position = UDim2.new(0, 18, 0, 10), Text = "👹 Boss Rush", Font = Enum.Font.GothamBlack, TextSize = 20,
 	TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 170, 225), ZIndex = 11 }, panel)
-makeButton({ Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -78, 0, 14), Text = "Close", BackgroundColor3 = Color3.fromRGB(54, 58, 82), ZIndex = 11 }, panel, function()
+makeButton({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), TextSize = 12, Text = "Close", BackgroundColor3 = Color3.fromRGB(54, 58, 82), ZIndex = 11 }, panel, function()
 	panel.Visible = false
 end)
 makeLabel({ Size = UDim2.new(1, -36, 0, 44), Position = UDim2.new(0, 18, 0, 52), TextSize = 14, ZIndex = 11, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,

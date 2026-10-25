@@ -72,13 +72,13 @@ SHOP.Panel = makePanel({
 	Size = UDim2.new(0, 860, 0, 580), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.55, 0),
 	BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.03, Visible = false,
 }, gui)
-create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35 }, SHOP.Panel)
+create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 2, Transparency = 0.25 }, SHOP.Panel)
 makeLabel({
 	Size = UDim2.new(1, -120, 0, 36), Position = UDim2.new(0, 16, 0, 8),
 	Text = "🎁 Shop", Font = Enum.Font.GothamBlack, TextSize = 20, TextXAlignment = Enum.TextXAlignment.Left,
 }, SHOP.Panel)
 makeButton({
-	Size = UDim2.new(0, 64, 0, 28), Position = UDim2.new(1, -76, 0, 10), Text = "Close", TextSize = 11, BackgroundColor3 = GRAY,
+	Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), Text = "Close", TextSize = 12, BackgroundColor3 = Color3.fromRGB(54, 58, 82),
 }, SHOP.Panel, function()
 	SHOP.Panel.Visible = false
 end)

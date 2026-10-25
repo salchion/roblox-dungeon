@@ -20,10 +20,10 @@ local panel = makePanel({
 	Size = UDim2.new(0, 480, 0, 420), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
 	BackgroundColor3 = Color3.fromRGB(22, 24, 38), BackgroundTransparency = 0.02, Visible = false, ZIndex = 10,
 }, gui)
-create("UIStroke", { Color = Color3.fromRGB(150, 130, 230), Thickness = 2, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, panel)
+create("UIStroke", { Color = Color3.fromRGB(150, 130, 230), Thickness = 2, Transparency = 0.25, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, panel)
 
-local title = makeLabel({ Size = UDim2.new(1, -110, 0, 36), Position = UDim2.new(0, 18, 0, 10), Text = "", Font = Enum.Font.GothamBlack, TextSize = 21, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 11 }, panel)
-makeButton({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -86, 0, 13), Text = "Close", BackgroundColor3 = Color3.fromRGB(54, 58, 82), ZIndex = 11 }, panel, function()
+local title = makeLabel({ Size = UDim2.new(1, -110, 0, 36), Position = UDim2.new(0, 18, 0, 10), Text = "", Font = Enum.Font.GothamBlack, TextSize = 20, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 11 }, panel)
+makeButton({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), TextSize = 12, Text = "Close", BackgroundColor3 = Color3.fromRGB(54, 58, 82), ZIndex = 11 }, panel, function()
 	panel.Visible = false
 end)
 makeLabel({ Size = UDim2.new(1, -36, 0, 20), Position = UDim2.new(0, 18, 0, 46), Text = "Deeper depths have better drop odds and tougher monsters. The dungeon theme is random.", TextSize = 12, TextColor3 = Color3.fromRGB(180, 188, 220), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 11 }, panel)

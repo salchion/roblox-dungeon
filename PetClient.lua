@@ -58,11 +58,11 @@ local panel = make("Frame", {
 	BackgroundColor3 = Color3.fromRGB(26, 28, 42), BorderSizePixel = 0, Visible = false,
 }, gui)
 make("UICorner", { CornerRadius = UDim.new(0, 12) }, panel)
-make("UIStroke", { Color = Color3.fromRGB(255, 200, 100), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, panel)
+make("UIStroke", { Color = Color3.fromRGB(255, 200, 100), Thickness = 2, Transparency = 0.25, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, panel)
 make("UISizeConstraint", { MaxSize = Vector2.new(480, 540) }, panel)
 
-label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "🐾 Pet", TextSize = 19 }, panel)
-button({ Size = UDim2.new(0, 60, 0, 28), Position = UDim2.new(1, -72, 0, 10), BackgroundColor3 = Color3.fromRGB(70, 70, 90), Text = "Close", TextSize = 11 }, panel, function() panel.Visible = false end)
+label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "🐾 Pet", TextSize = 20, Font = Enum.Font.GothamBlack }, panel)
+button({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), BackgroundColor3 = Color3.fromRGB(54, 58, 82), Text = "Close", TextSize = 12 }, panel, function() panel.Visible = false end)
 
 local scroll = make("ScrollingFrame", {
 	Size = UDim2.new(1, -20, 1, -54), Position = UDim2.new(0, 10, 0, 46), BackgroundTransparency = 1, BorderSizePixel = 0,

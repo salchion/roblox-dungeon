@@ -33,12 +33,12 @@ local function start()
 		return b
 	end
 
-	text({ Size = UDim2.new(1, -330, 0, 36), Position = UDim2.new(0, 16, 0, 8), Text = "Admin (F6)", Font = Enum.Font.GothamBlack, TextSize = 18 })
+	text({ Size = UDim2.new(1, -330, 0, 36), Position = UDim2.new(0, 16, 0, 8), Text = "Admin (F6)", Font = Enum.Font.GothamBlack, TextSize = 20 })
 	button({ Size = UDim2.new(0, 170, 0, 28), Position = UDim2.new(1, -266, 0, 12), Text = "Restart my tutorial", TextSize = 12, BackgroundColor3 = Color3.fromRGB(110, 70, 70) }, function()
 		Remotes.Admin:FireServer("RestartTutorial")
 		panel.Visible = false
 	end)
-	button({ Size = UDim2.new(0, 72, 0, 28), Position = UDim2.new(1, -86, 0, 12), Text = "Close", BackgroundColor3 = Color3.fromRGB(54, 58, 82) }, function()
+	button({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), TextSize = 12, Text = "Close", BackgroundColor3 = Color3.fromRGB(54, 58, 82) }, function()
 		panel.Visible = false
 	end)
 

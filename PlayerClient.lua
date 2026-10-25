@@ -210,7 +210,7 @@ makeLabel({
 	Text = "🔨 Weapon Upgrade", Font = Enum.Font.GothamBlack, TextSize = 20, TextColor3 = Color3.fromRGB(255, 220, 130),
 }, enhancePanel)
 makeButton({
-	Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -74, 0, 12), Text = "Close", TextSize = 13, BackgroundColor3 = Color3.fromRGB(110, 60, 70),
+	Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), Text = "Close", TextSize = 12, BackgroundColor3 = Color3.fromRGB(54, 58, 82),
 }, enhancePanel, function()
 	enhancePanel.Visible = false
 end)
@@ -675,7 +675,7 @@ makeLabel({
 	Text = "🛡 Gear · Gacha", Font = Enum.Font.GothamBlack, TextSize = 20, TextColor3 = Color3.fromRGB(235, 200, 255),
 }, gearPanel)
 makeButton({
-	Size = UDim2.new(0, 64, 0, 30), Position = UDim2.new(1, -74, 0, 12), Text = "Close", TextSize = 13, BackgroundColor3 = Color3.fromRGB(110, 60, 70),
+	Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), Text = "Close", TextSize = 12, BackgroundColor3 = Color3.fromRGB(54, 58, 82),
 }, gearPanel, function()
 	gearPanel.Visible = false
 end)
@@ -2411,7 +2411,7 @@ settings.MenuInfo = makeLabel({
 }, menuPanel)
 
 makeButton({
-	Size = UDim2.new(0, 64, 0, 28), Position = UDim2.new(1, -76, 0, 10), Text = "Close (B)", TextSize = 11, BackgroundColor3 = GRAY,
+	Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), Text = "Close (B)", TextSize = 12, BackgroundColor3 = Color3.fromRGB(54, 58, 82),
 }, menuPanel, function()
 	menuPanel.Visible = false
 end)

@@ -65,13 +65,13 @@ local panel = make("Frame", {
 	BackgroundColor3 = Color3.fromRGB(26, 28, 42), BorderSizePixel = 0, Visible = false,
 }, gui)
 make("UICorner", { CornerRadius = UDim.new(0, 12) }, panel)
-make("UIStroke", { Color = Color3.fromRGB(150, 160, 255), Thickness = 2 }, panel)
+make("UIStroke", { Color = Color3.fromRGB(150, 160, 255), Thickness = 2, Transparency = 0.25 }, panel)
 make("UISizeConstraint", { MaxSize = Vector2.new(460, 452) }, panel)
 
-label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "✨ Level Stats", TextSize = 19, TextXAlignment = Enum.TextXAlignment.Left }, panel)
+label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "✨ Level Stats", TextSize = 20, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left }, panel)
 local pointsLabel = label({ Size = UDim2.new(1, -32, 0, 22), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, panel)
 label({ Size = UDim2.new(1, -32, 0, 18), Position = UDim2.new(0, 16, 0, 62), Text = "These stats shape your play style, not your attack or HP. You can respec for free anytime!", TextSize = 10, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
-button({ Size = UDim2.new(0, 60, 0, 28), Position = UDim2.new(1, -72, 0, 10), BackgroundColor3 = Color3.fromRGB(70, 70, 90), Text = "Close", TextSize = 11 }, panel, function() panel.Visible = false end)
+button({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), BackgroundColor3 = Color3.fromRGB(54, 58, 82), Text = "Close", TextSize = 12 }, panel, function() panel.Visible = false end)
 
 local rows = {}
 for index, key in ipairs(LS.Order) do

@@ -36,7 +36,7 @@ function Kit.makePanel(props, parent)
 	local frame = Kit.create("Frame", base, parent)
 	Kit.rounded(frame, (not props.BackgroundColor3 or (props.Size and props.Size.Y.Offset >= 100)) and 12 or 8)
 	if not props.BackgroundColor3 then
-		Kit.create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame)
+		Kit.create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 2, Transparency = 0.25, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame) -- (모든 큰 창 공통: 테두리 2 / 투명 0.25, 제목 20 GothamBlack, 닫기 72x30 오른쪽 위)
 	end
 	return frame
 end
