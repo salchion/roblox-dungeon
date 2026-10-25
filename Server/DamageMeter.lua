@@ -7,6 +7,7 @@ local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
 
 local Meter = {}
+Meter.Source = nil -- 지금 피해를 주는 출처 (스킬 / 데드아이 / 튕김 ...): 부르는 쪽이 잠깐 켜고 끈다. HitPart / AreaDamage 가 이걸 보고 센다
 
 local RESET_AFTER = 15 -- 초: 이만큼 피해가 없으면 다음 피해부터 새로 센다
 local WINDOW = 10      -- 초: 최근 DPS 를 재는 구간

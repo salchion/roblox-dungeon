@@ -68,12 +68,15 @@ local function ring(position, radius, color, duration)
 end
 
 local BL = require(script.Parent:WaitForChild("BalanceLog")) -- Studio 전용 밸런스 로그
+local Meter = require(script.Parent:WaitForChild("DamageMeter")) -- 대미지 미터기
 
 local function damageAt(player, center, radius, mult)
 	local base = Dungeon.ComputeDamage(player)
 	local damage = math.max(1, math.floor(base * mult))
 	BL.Ctx = "스킬"
+	Meter.Source = "Blast" -- 대미지 미터기: 충격파(F)
 	local hit = Dungeon.AreaDamage(player, center, radius, damage) or Field.AreaDamage(player, center, radius, damage) or {}
+	Meter.Source = nil
 	BL.Ctx = nil
 	return hit
 end
@@ -328,7 +331,9 @@ handlers.Ult = function(player, root, _, character)
 					hitsOn[hitPart] = previousHits + 1
 					local damage = math.max(1, math.floor(perMissile * decay ^ previousHits)) -- 같은 적에게 거듭 맞을수록 줄어든다
 					Effects.DamageTint = Color3.fromRGB(90, 200, 255) -- 데드아이 피해 숫자는 하늘색으로 크게
+					Meter.Source = "Ult" -- 대미지 미터기: 데드아이(V)
 					local landed = Dungeon.HitPart(player, hitPart, damage) or Field.HitPart(player, hitPart, damage)
+					Meter.Source = nil
 					Effects.DamageTint = nil
 					BL.Ctx = nil
 					pcall(function() SoundBank.Play(hitPart, "Ult_Hit", { Pitch = 0.85 + math.random() * 0.4, Volume = 1 }) end) -- 미사일마다 "쾅"

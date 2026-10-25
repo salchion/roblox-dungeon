@@ -2074,6 +2074,7 @@ function Dungeon.HitPart(player, part, damage)
 	local data = run and run.Monsters[part]
 	if not data or not part.Parent then return false end
 	damageMonster(run, player, part, data, damage, false, part.Position)
+	Meter.Add(player, Meter.Source or "Other", damage) -- 대미지 미터기 (데드아이 / 튕김 ...)
 	return true
 end
 
@@ -2091,6 +2092,7 @@ function Dungeon.AreaDamage(player, center, radius, damage)
 		if run.Monsters[target.Part] then
 			table.insert(positions, target.Part.Position)
 			damageMonster(run, player, target.Part, target.Data, damage, false, target.Part.Position)
+			Meter.Add(player, Meter.Source or "Other", damage) -- 대미지 미터기 (스킬 범위 피해)
 		end
 	end
 	return positions
@@ -2196,7 +2198,9 @@ function Dungeon.Shoot(player, origin, direction)
 			Effects.Burst(hitPosition, Color3.fromRGB(255, 140, 50), 10 + boom * 8)
 			for otherPart, otherData in pairs(run.Monsters) do
 				if otherPart ~= part and otherPart.Parent and (otherPart.Position - hitPosition).Magnitude <= radius + otherPart.Size.X / 2 then
-					damageMonster(run, player, otherPart, otherData, math.max(1, math.floor(damage * Config.Perks.BoomRatio)), false, otherPart.Position)
+					local boomDamage = math.max(1, math.floor(damage * Config.Perks.BoomRatio))
+					damageMonster(run, player, otherPart, otherData, boomDamage, false, otherPart.Position)
+					Meter.Add(player, "PerkBoom", boomDamage)
 				end
 			end
 		end
@@ -2218,7 +2222,9 @@ function Dungeon.Shoot(player, origin, direction)
 				local targetData = run.Monsters[target]
 				if targetData then
 					Effects.Tracer(hitPosition, target.Position, Color3.fromRGB(120, 200, 255), 0.35)
-					damageMonster(run, player, target, targetData, math.max(1, math.floor(damage * Config.Perks.ChainRatio)), false, target.Position)
+					local chainDamage = math.max(1, math.floor(damage * Config.Perks.ChainRatio))
+					damageMonster(run, player, target, targetData, chainDamage, false, target.Position)
+					Meter.Add(player, "PerkChain", chainDamage)
 				end
 			end
 		end

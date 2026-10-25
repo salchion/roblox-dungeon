@@ -1730,6 +1730,8 @@ function Field.HitPart(player, part, damage)
 	damage = math.floor(damage * Dungeon.MarkMult(player, data)) -- 펫 사냥 표식
 	data.Health -= damage
 	BL.Dmg(player, damage, false)
+	local Meter = require(script.Parent.DamageMeter)
+	Meter.Add(player, Meter.Source or "Other", damage) -- 대미지 미터기 (데드아이 / 튕김 / 관통 ...)
 	if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
 	data.FirstHit = data.FirstHit or os.clock()
 	data.LastHit = os.clock()
@@ -1763,6 +1765,8 @@ function Field.AreaDamage(player, center, radius, damage)
 			local dealt = math.floor(damage * Dungeon.MarkMult(player, data)) -- 펫 사냥 표식
 			data.Health -= dealt
 			BL.Dmg(player, dealt, false)
+			local Meter = require(script.Parent.DamageMeter)
+			Meter.Add(player, Meter.Source or "Other", dealt) -- 대미지 미터기 (스킬 범위 피해)
 			if data.Invincible then data.Health = math.max(data.Health, data.MaxHealth * 0.08) end
 			data.FirstHit = data.FirstHit or os.clock()
 			data.LastHit = os.clock()
@@ -1860,6 +1864,7 @@ function Field.Shoot(player, origin, direction)
 					local splashDamage = math.max(1, math.floor(damage * 0.5))
 					otherData.Health -= splashDamage
 					BL.DmgAs(player, "스플래시", splashDamage)
+					require(script.Parent.DamageMeter).Add(player, "Gun", splashDamage)
 					otherData.LastHit = os.clock()
 					if otherData.Contrib then
 						otherData.Contrib[player] = (otherData.Contrib[player] or 0) + splashDamage
@@ -1940,7 +1945,10 @@ function Field.Shoot(player, origin, direction)
 			if not (segmentClear(rayStart, nextResult.Position)) then break end -- 중간에 벽이 있으면 막힌다
 			hitParts[nextResult.Instance] = true
 			local pierceDamage = Dungeon.ComputeDamage(player)
+			local Meter = require(script.Parent.DamageMeter)
+			Meter.Source = "Gun" -- (관통탄도 총 피해로 센다)
 			Field.HitPart(player, nextResult.Instance, pierceDamage)
+			Meter.Source = nil
 			player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1)
 			endPosition = nextResult.Position
 			remaining -= (nextResult.Position - rayStart).Magnitude

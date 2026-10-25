@@ -552,8 +552,10 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 			if index > 0 then -- (index 0 = 방금 직접 맞힌 적: 표시만 해 두고 건너뛴다)
 				local bounceDamage = math.max(1, math.floor(Dungeon.ComputeDamage(player) * (weaponType.BounceMult or 0.7)))
 				Effects.Shot(last, pick.Position, { Size = 0.9, Speed = 700, Impact = 0, Style = "Bolt", Length = 3 }, color, false, "Rail", tier.Era, progress)
-				Dungeon.HitPart(player, pick, bounceDamage)
-				Field.HitPart(player, pick, bounceDamage)
+				local Meter = require(Modules:WaitForChild("DamageMeter"))
+				Meter.Source = "Bounce" -- 대미지 미터기: 튕김 (레일건 / 유니크 Ricochet)
+				local _ = Dungeon.HitPart(player, pick, bounceDamage) or Field.HitPart(player, pick, bounceDamage)
+				Meter.Source = nil
 				player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1)
 			end
 			last = pick.Position
