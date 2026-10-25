@@ -289,20 +289,89 @@ local function play()
 	camera.CFrame = CFrame.lookAt(startPos, startPos + Vector3.new(1000, -70, 0))
 	-- 필드 미리 불러오기: 이 게임은 멀리 있는 지형을 아껴서 불러오기 때문에(StreamingEnabled), 날아가기 전에 서버에 필드를 미리 보내 달라고 한다. 검은 화면에서 잠깐 기다린다 (최대 9초)
 	do
-		local loadingLabel = text({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0.5, 0, 0.9, 0), TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(150, 146, 160), Text = "Preparing the field..." })
-		TweenService:Create(loadingLabel, TweenInfo.new(0.4), { TextTransparency = 0.2 }):Play()
+		-- 로딩 화면: 게임 이름 + 진행 막대 + 팁 (검은 화면으로 멈춘 것처럼 보이지 않게)
+		local page = Instance.new("Frame")
+		page.Name = "LoadingPage"
+		page.Size = UDim2.new(1, 0, 1, 0)
+		page.BackgroundColor3 = Color3.fromRGB(12, 12, 20)
+		page.BorderSizePixel = 0
+		page.ZIndex = 13
+		page.Parent = gui
+		local function pageText(props)
+			local l = Instance.new("TextLabel")
+			l.BackgroundTransparency = 1
+			l.AnchorPoint = Vector2.new(0.5, 0.5)
+			l.Font = Enum.Font.GothamBold
+			l.ZIndex = 14
+			for k, v in pairs(props) do l[k] = v end
+			l.Parent = page
+			return l
+		end
+		pageText({ Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0.5, 0, 0.36, 0), TextSize = 56, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(226, 208, 168), Text = "GEAR RUSH" })
+		pageText({ Size = UDim2.new(1, 0, 0, 22), Position = UDim2.new(0.5, 0, 0.36, 50), TextSize = 15, TextColor3 = Color3.fromRGB(150, 138, 118), Text = "D U N G E O N   S H O O T E R" })
+		local barBackLoad = Instance.new("Frame")
+		barBackLoad.Size = UDim2.new(0, 360, 0, 6)
+		barBackLoad.AnchorPoint = Vector2.new(0.5, 0.5)
+		barBackLoad.Position = UDim2.new(0.5, 0, 0.58, 0)
+		barBackLoad.BackgroundColor3 = Color3.fromRGB(46, 44, 58)
+		barBackLoad.BorderSizePixel = 0
+		barBackLoad.ZIndex = 14
+		barBackLoad.Parent = page
+		local barFillLoad = Instance.new("Frame")
+		barFillLoad.Size = UDim2.new(0.04, 0, 1, 0)
+		barFillLoad.BackgroundColor3 = Color3.fromRGB(226, 176, 96)
+		barFillLoad.BorderSizePixel = 0
+		barFillLoad.ZIndex = 15
+		barFillLoad.Parent = barBackLoad
+		for _, bar in ipairs({ barBackLoad, barFillLoad }) do
+			local corner = Instance.new("UICorner")
+			corner.CornerRadius = UDim.new(0, 3)
+			corner.Parent = bar
+		end
+		local status = pageText({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0.5, 0, 0.58, 24), TextSize = 13, TextColor3 = Color3.fromRGB(160, 156, 172), Text = "Preparing the field..." })
+		local tips = {
+			"Tip · Defeat each zone's Lord to open the next zone.",
+			"Tip · Press Q to dash. Narrowly dodging enemy shots gives a bonus.",
+			"Tip · Set effects stack: mix gear from different zones to build your style.",
+			"Tip · Mythic gear can carry a Unique effect. Dungeons are the best place to find them.",
+		}
+		local tipLabel = pageText({ Size = UDim2.new(1, -60, 0, 20), Position = UDim2.new(0.5, 0, 0.82, 0), TextSize = 13, Font = Enum.Font.GothamMedium, TextColor3 = Color3.fromRGB(190, 182, 160), Text = tips[math.random(#tips)] })
+		pageText({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0.5, 0, 0.95, 0), TextSize = 11, Font = Enum.Font.GothamMedium, TextColor3 = Color3.fromRGB(110, 106, 122), Text = "Tap or press any key to skip" })
+
 		local ready = false
 		local remote
 		pcall(function() remote = require(ReplicatedStorage:WaitForChild("Remotes")).Intro end)
 		local listener
 		if remote then
-			listener = remote.OnClientEvent:Connect(function(action) if action == "Ready" then ready = true end end)
+			listener = remote.OnClientEvent:Connect(function(action, done, total)
+				if action == "Ready" then
+					ready = true
+				elseif action == "Progress" and total then
+					TweenService:Create(barFillLoad, TweenInfo.new(0.25), { Size = UDim2.new(math.clamp(done / total, 0.04, 1), 0, 1, 0) }):Play()
+					status.Text = string.format("Preparing the field...  %d / %d", done, total)
+				end
+			end)
 			remote:FireServer("Stream")
 			local waited = os.clock()
-			while not ready and os.clock() - waited < 9 and not finished do task.wait(0.1) end
+			local lastTip = waited
+			while not ready and os.clock() - waited < 9 and not finished do
+				if os.clock() - lastTip > 2.5 then
+					lastTip = os.clock()
+					tipLabel.Text = tips[math.random(#tips)]
+				end
+				task.wait(0.1)
+			end
 			listener:Disconnect()
 		end
-		TweenService:Create(loadingLabel, TweenInfo.new(0.3), { TextTransparency = 1 }):Play()
+		TweenService:Create(barFillLoad, TweenInfo.new(0.2), { Size = UDim2.new(1, 0, 1, 0) }):Play()
+		status.Text = "Ready"
+		task.wait(0.35)
+		for _, item in ipairs(page:GetDescendants()) do -- 로딩 화면이 부드럽게 사라진다
+			if item:IsA("TextLabel") then TweenService:Create(item, TweenInfo.new(0.5), { TextTransparency = 1 }):Play() end
+			if item:IsA("Frame") then TweenService:Create(item, TweenInfo.new(0.5), { BackgroundTransparency = 1 }):Play() end
+		end
+		TweenService:Create(page, TweenInfo.new(0.5), { BackgroundTransparency = 1 }):Play()
+		task.delay(0.6, function() page:Destroy() end)
 		if finished then return end
 	end
 	TweenService:Create(topBar, TweenInfo.new(0.7), { Size = UDim2.new(1, 0, 0.1, 0) }):Play()

@@ -675,11 +675,13 @@ Remotes.Intro.OnServerEvent:Connect(function(player, action)
 			x += 650
 		end
 		table.insert(points, last)
-		local pending = #points
+		local total = #points
+		local pending = total
 		for _, px in ipairs(points) do
 			task.spawn(function()
 				pcall(function() player:RequestStreamAroundAsync(Vector3.new(px, 60, 0), 5) end)
 				pending -= 1
+				if player.Parent then Remotes.Intro:FireClient(player, "Progress", total - pending, total) end -- 로딩 화면의 막대가 차오른다
 			end)
 		end
 		local waited = os.clock()
