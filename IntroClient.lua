@@ -376,6 +376,17 @@ local function play()
 			end
 			listener:Disconnect()
 		end
+		-- (진단) 필드 바닥이 실제로 내 화면에 불러와졌는지 Output 에 한 줄 남긴다
+		pcall(function()
+			local fieldFolder = workspace:FindFirstChild("Field")
+			local found = 0
+			if fieldFolder then
+				for _, item in ipairs(fieldFolder:GetChildren()) do
+					if string.sub(item.Name, 1, 6) == "Ground" then found += 1 end
+				end
+			end
+			print(string.format("[오프닝 진단] Ready=%s · Field 폴더 %s · 불러온 바닥 조각 %d개", tostring(ready), fieldFolder and "있음" or "없음", found))
+		end)
 		TweenService:Create(barFillLoad, TweenInfo.new(0.2), { Size = UDim2.new(1, 0, 1, 0) }):Play()
 		status.Text = "Ready"
 		task.wait(0.35)
@@ -418,6 +429,7 @@ local function play()
 	TweenService:Create(skull, TweenInfo.new(0.6), { TextTransparency = 0 }):Play()
 	for _, tick in ipairs(ticks) do TweenService:Create(tick, TweenInfo.new(0.6), { BackgroundTransparency = 0.2 }):Play() end
 	local flyStart = os.clock()
+	local lastProbe = 0
 	local lastZone = 0
 	while os.clock() - flyStart < FLY_TIME + DESCEND_TIME + 0.05 and not finished do
 		if not descending and os.clock() - flyStart >= FLY_TIME then
@@ -425,6 +437,11 @@ local function play()
 			TweenService:Create(camera, TweenInfo.new(DESCEND_TIME, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { CFrame = CFrame.lookAt(arrivePos, arriveLook), FieldOfView = 58 }):Play()
 		end
 		local x = camera.CFrame.Position.X
+		if os.clock() - (lastProbe or 0) > 1.5 then -- (진단) 지금 카메라 아래에 지면이 있는지
+			lastProbe = os.clock()
+			local probe = workspace:Raycast(camera.CFrame.Position, Vector3.new(0, -1500, 0))
+			print(string.format("[오프닝 진단] 카메라 x=%.0f y=%.0f · 아래 지면 %s", x, camera.CFrame.Position.Y, probe and string.format("있음(y=%.0f, %s)", probe.Position.Y, probe.Instance.Name) or "없음"))
+		end
 		barFill.Size = UDim2.new(math.clamp((x - F.StartX) / F.TotalLength() + 0.02, 0, 1), 0, 1, 0)
 		local zone = x < F.StartX and 0 or F.ZoneOfX(x)
 		if zone ~= lastZone and zone >= 1 then

@@ -679,7 +679,8 @@ Remotes.Intro.OnServerEvent:Connect(function(player, action)
 		local pending = total
 		for _, px in ipairs(points) do
 			task.spawn(function()
-				pcall(function() player:RequestStreamAroundAsync(Vector3.new(px, 60, 0), 5) end)
+				local okStream, errStream = pcall(function() player:RequestStreamAroundAsync(Vector3.new(px, 60, 0), 5) end)
+				if not okStream then warn("[오프닝] 필드 미리 불러오기 실패 (x=" .. tostring(px) .. "): " .. tostring(errStream)) end
 				pending -= 1
 				if player.Parent then Remotes.Intro:FireClient(player, "Progress", total - pending, total) end -- 로딩 화면의 막대가 차오른다
 			end)
