@@ -67,7 +67,7 @@ end)
 ------------------------------------------------------------
 -- 대미지 미터기 (필드 / 던전 / 허수아비): 총과 세트 효과가 각각 얼마나 피해를 줬는지 나눠서 보여 준다
 -- 서버(DamageMeter)가 1초마다 Attribute "DmgMeter" (JSON) 를 갱신한다. 15초 동안 피해가 없으면 사라진다.
--- 머리줄을 누르면 접고 편다 (폰은 접힌 채로 시작: DPS 한 줄만). 큰 창이 열려 있으면 숨는다.
+-- 머리줄을 누르면 접고 편다 (폰은 접힌 채로 시작: DPS 한 줄만). ↺ 버튼은 0 부터 다시 센다. 큰 창이 열려 있으면 숨는다.
 ------------------------------------------------------------
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local HttpService = game:GetService("HttpService")
@@ -125,9 +125,33 @@ header.BackgroundTransparency = 1
 header.Text = ""
 header.Size = UDim2.new(1, 0, 0, HEAD_H)
 header.Parent = meter
-local meterTitle = text(meter, { Position = UDim2.new(0, 12, 0, 6), Size = UDim2.new(1, -40, 0, 14), TextSize = 11, TextColor3 = Color3.fromRGB(150, 158, 190) })
+local meterTitle = text(meter, { Position = UDim2.new(0, 12, 0, 6), Size = UDim2.new(1, -72, 0, 14), TextSize = 11, TextColor3 = Color3.fromRGB(150, 158, 190) })
 local meterDps = text(meter, { Position = UDim2.new(0, 12, 0, 20), Size = UDim2.new(1, -40, 0, 26), TextSize = 22, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 217, 102) })
 local toggleIcon = text(meter, { Position = UDim2.new(1, -28, 0, 14), Size = UDim2.new(0, 20, 0, 20), TextSize = 14, TextXAlignment = Enum.TextXAlignment.Center, TextColor3 = Color3.fromRGB(170, 180, 215) })
+-- ↺ 리셋 버튼: 지금까지 센 피해를 지우고 0 부터 다시 센다 (머리줄 접기 버튼보다 위에 놓아 눌리게)
+local resetButton = Instance.new("TextButton")
+resetButton.Name = "Reset"
+resetButton.Size = UDim2.new(0, 28, 0, 28)
+resetButton.Position = UDim2.new(1, -62, 0, 11)
+resetButton.BackgroundColor3 = Color3.fromRGB(54, 58, 82)
+resetButton.BackgroundTransparency = 0.2
+resetButton.AutoButtonColor = true
+resetButton.Font = Enum.Font.GothamBold
+resetButton.TextSize = 15
+resetButton.TextColor3 = Color3.fromRGB(200, 205, 230)
+resetButton.Text = "↺"
+resetButton.ZIndex = 3
+resetButton.Parent = meter
+do
+	local c = Instance.new("UICorner")
+	c.CornerRadius = UDim.new(0, 6)
+	c.Parent = resetButton
+end
+resetButton.Activated:Connect(function()
+	local remotes = ReplicatedStorage:FindFirstChild("RemoteEvents")
+	local remote = remotes and remotes:FindFirstChild("Meter")
+	if remote then remote:FireServer("Reset") end
+end)
 local rows = {}
 for i = 1, MAX_ROWS do
 	local y = HEAD_H + 2 + (i - 1) * ROW_H

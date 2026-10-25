@@ -728,9 +728,10 @@ local function doomWaveInner(player, zone, center, real)
 		hudText.Parent = frame
 		hudGui.Parent = playerGui
 	end
+	local fightChar = player.Character -- (쓰러져 마을에서 다시 태어난 몸은 "살아 있음"으로 치지 않는다: 패턴이 마을까지 이어지지 않게)
 	local alive = function()
 		local r, h = getAliveParts(player)
-		return r ~= nil and h.Health > 0
+		return r ~= nil and h.Health > 0 and player.Character == fightChar
 	end
 	local running, clock = true, 0
 	local diagAt, diagFrames = 0, 0
@@ -883,7 +884,7 @@ local function doomWaveInner(player, zone, center, real)
 			Effects.Burst(at + Vector3.new(0, 14, 0), rgb(255, 170, 110), 30)
 			shake(0.6)
 			local r2, h2 = getAliveParts(player)
-			if r2 and h2.Health > 0 then
+			if r2 and h2.Health > 0 and data.Health > 0 and alive() then -- (군주가 쓰러진 뒤 남은 폭격에 맞아 승리가 패배로 바뀌지 않게)
 				local gap = (Vector3.new(r2.Position.X, center.Y, r2.Position.Z) - at).Magnitude
 				if gap <= radius then
 					local dmg = lethal and (h2.MaxHealth * percent) or math.min(h2.MaxHealth * percent, h2.Health - 1) -- (진짜 결전에서는 죽을 수 있다)
@@ -913,8 +914,9 @@ local function doomWaveInner(player, zone, center, real)
 		local function flat(v) return Vector3.new(v.X, 0, v.Z) end
 		local dmgMult = 1 -- 3단계 / 격노(4분 경과)에서 커진다
 		local function hurt(percent, text)
+			if not bossAlive() then return end -- (군주가 쓰러진 뒤에는 남은 패턴이 피해를 주지 않는다)
 			local r2, h2 = getAliveParts(player)
-			if r2 and h2.Health > 0 then
+			if r2 and h2.Health > 0 and alive() then
 				Guard.Take(h2, h2.MaxHealth * percent * dmgMult)
 				if text then notify(player, text) end
 			end

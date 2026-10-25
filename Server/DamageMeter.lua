@@ -1,6 +1,6 @@
 -- DamageMeter (ServerScriptService > Modules 안의 ModuleScript, 이름: DamageMeter)
 -- 대미지 미터기: 내가 준 피해를 "어디서 나왔는지"(총 / 세트 효과별)로 나눠서 센다. 필드 / 던전 / 허수아비 어디서나.
---   * 전투가 15초 넘게 끊기면 새로 센다 (한 번의 사냥 / 한 판 단위)
+--   * 전투가 15초 넘게 끊기면 새로 센다 (한 번의 사냥 / 한 판 단위). ↺ 버튼(Remotes.Meter "Reset")으로 바로 새로 셀 수도 있다
 --   * 1초마다 바뀐 사람에게만 Attribute "DmgMeter" (JSON 한 줄)로 보낸다 -> DpsPanelClient 가 화면에 그린다. 서버 부담은 작다.
 
 local Players = game:GetService("Players")
@@ -48,6 +48,20 @@ local function publish(player, state, now)
 	while #list > 8 do table.remove(list) end
 	player:SetAttribute("DmgMeter", HttpService:JSONEncode({ Dps = math.floor(windowTotal / span), Total = math.floor(total), Time = math.floor(now - state.Start), Src = list }))
 end
+
+-- 미터기 리셋 (머리줄의 ↺ 버튼): 지금까지 센 것을 지우고 0 부터 다시 센다. 0.5초에 한 번만 받는다
+local resetAt = setmetatable({}, { __mode = "k" })
+task.spawn(function()
+	local Remotes = require(game:GetService("ReplicatedStorage"):WaitForChild("Remotes"))
+	Remotes.Meter.OnServerEvent:Connect(function(player, action)
+		if action ~= "Reset" then return end
+		local now = os.clock()
+		if now - (resetAt[player] or 0) < 0.5 then return end
+		resetAt[player] = now
+		states[player] = { Start = now, Last = now, Totals = {}, Recent = {}, Dirty = false }
+		player:SetAttribute("DmgMeter", HttpService:JSONEncode({ Dps = 0, Total = 0, Time = 0, Src = {}, Reset = true }))
+	end)
+end)
 
 task.spawn(function()
 	while true do
