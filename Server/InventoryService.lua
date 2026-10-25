@@ -246,6 +246,23 @@ local function smartPrune(player, state, slotKey)
 	return count, essenceTotal, goldTotal
 end
 
+-- 가방이 가득할 때 세트 / 유니크 장비가 들어오면: 그 장비를 버리는 대신 가방에서 가장 약한 "일반" 장비(세트 / 유니크 / 장착 중이 아닌 것) 하나를 분해해 자리를 만든다
+local function makeRoomFor(player, state, incoming)
+	if not (incoming.Set or incoming.Unique) then return false end
+	local worst, worstQuality = nil, math.huge
+	for _, item in pairs(state.Items) do
+		if not item.Set and not item.Unique and not isEquipped(state, item.Id) then
+			local quality = rawQuality(item)
+			if quality < worstQuality then worst, worstQuality = item, quality end
+		end
+	end
+	if not worst then return false end
+	state.Items[worst.Id] = nil
+	local essence, gold = giveScrap(player, state, worst)
+	notify(player, string.format("🎒 Bag full: dismantled a weaker plain item to keep your %s gear (Essence +%d, %d G)", incoming.Set and "set" or "unique", essence, gold))
+	return true
+end
+
 -- 아이템을 가방에 넣는다. 반환: status ("Equipped" | "Bag" | "Scrapped" | "Full"), item, essence, gold
 --   빈 부위면 자동 장착 / 자동 분해 등급 이하면 분해 / 가방이 가득하면 분해
 -- 도감이 가방 / 장착 아이템을 훑을 때 쓴다
@@ -284,6 +301,7 @@ function Inventory.Add(player, item)
 		if bagCount(state) >= Inventory.Capacity(player) then
 			smartPrune(player, state, nil)
 		end
+		if bagCount(state) >= Inventory.Capacity(player) then makeRoomFor(player, state, item) end
 		if bagCount(state) >= Inventory.Capacity(player) then
 			local essence, gold = giveScrap(player, state, item)
 			Inventory.Push(player)
@@ -309,6 +327,7 @@ function Inventory.Add(player, item)
 		return "Scrapped", item, essence, gold
 	end
 
+	if bagCount(state) >= Inventory.Capacity(player) then makeRoomFor(player, state, item) end
 	if bagCount(state) >= Inventory.Capacity(player) then
 		local essence, gold = giveScrap(player, state, item)
 		Inventory.Push(player)
@@ -409,7 +428,7 @@ function Inventory.ScrapBelow(player, rarity)
 
 	local count, essenceTotal, goldTotal = 0, 0, 0
 	for id, item in pairs(state.Items) do
-		if item.Rarity <= rarity and not isEquipped(state, id) then
+		if item.Rarity <= rarity and not isEquipped(state, id) and not item.Set and not item.Unique then -- (세트 / 유니크는 등급이 낮아도 지킨다)
 			state.Items[id] = nil
 			local essence, gold = giveScrap(player, state, item)
 			essenceTotal += essence
