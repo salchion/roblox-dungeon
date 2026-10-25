@@ -602,7 +602,13 @@ function Lobby.Build()
 		swirl.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.7), NumberSequenceKeypoint.new(1, 0) })
 		swirl.Parent = portal
 
-		makeLabel(portal, string.format("⚔ Dungeon\nPick a depth · Lv.%d+", entry.MinLevel), difficulty.Color, GH / 2 + 9, 280, 64, 60, true) -- 문틀 / 지붕에 가려지지 않게 항상 위에 그린다
+		-- 멀리서도 "저기가 던전이다 / 가면 보상이 있다"가 보이게: 문 위로 솟는 은은한 빛줄기 (아주 연하게: 눈부시지 않게)
+		local beacon = makePart({
+			Name = "DungeonBeacon" .. index, Size = Vector3.new(5, 230, 5), Position = gatePos + Vector3.new(0, GH + 110, 0),
+			Color = color, Material = Enum.Material.Neon, Transparency = 0.93, CanCollide = false, CanQuery = false, CanTouch = false,
+		}, folder)
+		beacon.CastShadow = false
+		makeLabel(portal, string.format("⚔ DUNGEON\n✨ Mythic gear & Unique effects · Lv.%d+", entry.MinLevel), difficulty.Color, GH / 2 + 9, 300, 64, 60, true) -- 문틀 / 지붕에 가려지지 않게 항상 위에 그린다
 
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText = "Enter (Lv." .. entry.MinLevel .. ")"

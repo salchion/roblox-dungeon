@@ -101,11 +101,23 @@ function Showcase.Init(_boardCFrame)
 			local trim = Instance.new("Part")
 			trim.Anchored = true
 			trim.CanCollide = false
-			trim.Size = edge[1]
+			trim.Size = Vector3.new(edge[1].X + (edge[1].X < 2 and 0.8 or 0), edge[1].Y + (edge[1].Y < 2 and 0.8 or 0), 2)
 			trim.Position = backdrop.Position + edge[2]
-			trim.Color = color
-			trim.Material = Enum.Material.Neon
+			trim.Color = color:Lerp(Color3.fromRGB(214, 176, 96), 0.55) -- 번쩍이는 형광 테두리 대신 금빛 금속 액자 테두리 (싸구려 느낌을 줄인다)
+			trim.Material = Enum.Material.Metal
 			trim.Parent = folder
+			local inner = Instance.new("Part") -- 안쪽 얇은 순위 색 선: 액자 속에서 은은하게만 빛난다
+			inner.Anchored = true
+			inner.CanCollide = false
+			inner.CanQuery = false
+			inner.CastShadow = false
+			local horizontal = edge[1].X > edge[1].Y
+			inner.Size = horizontal and Vector3.new(edge[1].X - 1.6, 0.3, 0.3) or Vector3.new(0.3, edge[1].Y - 1.6, 0.3)
+			inner.Position = backdrop.Position + edge[2] + (horizontal and Vector3.new(0, edge[2].Y > 0 and -0.9 or 0.9, -1.1) or Vector3.new(edge[2].X > 0 and -0.9 or 0.9, 0, -1.1))
+			inner.Color = color
+			inner.Material = Enum.Material.Neon
+			inner.Transparency = 0.45
+			inner.Parent = folder
 		end
 
 		-- 장식: 양옆 돌기둥(순위 색 머리) + 위쪽 박공 + 아래로 늘어진 깃발 -> 신전 벽감 느낌
