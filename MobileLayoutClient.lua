@@ -29,7 +29,7 @@ local PANEL_Y = 52      -- 접이식 패널 / 레이더 시작 높이 (버튼 �
 local THEIRS = { HUD = true, ShopGui = true, GoalHUD = true, RiftHUD = true, TutorialHUD = true }
 local OWN = { HudGui = true, LevelStatGui = true, PetGui = true, HUDFx = true, EvolveFx = true, AugGui = true }
 
-local GROW = { WeaponBarGui = true, DpsPanelGui = true, DepthGui = true, OnlineGui = true, MenuDockGui = true } -- 데스크톱에서만 크게 키우는 화면
+local GROW = { WeaponBarGui = true, DpsPanelGui = true, DepthGui = true, OnlineGui = true, MenuDockGui = true, BigHudGui = true } -- 데스크톱에서만 크게 키우는 화면
 local st = { compact = false, s = 1 }
 local saved = {}      -- [객체] = { [속성] = { 원래 값 } }
 local cache = {}
@@ -620,7 +620,7 @@ function layoutCalm(viewport)
 	local beside = dps ~= nil and dps.Visible and (shopY + 40 + 6) * scale > dps.AbsolutePosition.Y
 	pillShop.Size = UDim2.new(0, beside and 96 or 130, 0, 40)
 	pillShop.Position = beside and UDim2.new(1, -(16 + 220 + 8), 0, rankY) or UDim2.new(1, -16, 0, shopY)
-	pillShop.Visible = lobbyOn
+	pillShop.Visible = false -- 왼쪽 메뉴 버튼 줄(MenuDockClient)에 상점 버튼이 있어서 중복이라 숨긴다
 end
 
 local function update()

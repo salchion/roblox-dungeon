@@ -155,3 +155,29 @@ local function hideOwnTitle(character)
 end
 player.CharacterAdded:Connect(hideOwnTitle)
 if player.Character then task.spawn(hideOwnTitle, player.Character) end
+
+-- 데스크톱: 전투력 / 경험치는 화면 아래 가운데(무기 바와 스킬 바 사이, BigHudClient)로 옮겼다. 카드에서는 그 두 줄을 숨기고 아래 줄들을 끌어올린다.
+-- 폰(작은 화면)은 아래 가운데가 좁아서 예전처럼 카드 안에 그대로 둔다 (MobileLayoutClient 의 UiCompact 속성으로 구분).
+local chipFrames = { goldText.Parent, ticketText.Parent, keyText.Parent }
+local sepLine = card:FindFirstChild("HudSep")
+local function applyCardLayout()
+	local desktop = playerGui:GetAttribute("UiCompact") ~= true
+	powerText.Visible = not desktop
+	xpBack.Visible = not desktop
+	for _, frame in ipairs(chipFrames) do
+		frame.Position = UDim2.new(0, frame.Position.X.Offset, 0, desktop and 66 or 88)
+	end
+	if sepLine then sepLine.Position = UDim2.new(0, 10, 0, desktop and 96 or 118) end
+	weaponText.Position = UDim2.new(0, 10, 0, desktop and 100 or 122)
+	zoneText.Position = UDim2.new(0, 10, 0, desktop and 124 or 146)
+	nameText.Position = desktop and UDim2.new(0, 68, 0, 18) or UDim2.new(0, 68, 0, 9)
+	nameText.TextSize = desktop and 15 or 10
+	nameText.Size = desktop and UDim2.new(1, -76, 0, 22) or UDim2.new(1, -76, 0, 16)
+	if desktop then card.Size = UDim2.new(0, 244, 0, 150) end
+end
+task.spawn(function()
+	while true do
+		applyCardLayout()
+		task.wait(0.5)
+	end
+end)

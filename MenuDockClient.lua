@@ -15,7 +15,7 @@ local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
 local SIZE, GAP = 66, 6 -- (미션 카드 / 던전 상태창과 겹치지 않게 줄였다: 5줄 높이 = 5 * 72 - 6)
-local TOP_Y = 252 -- HUD 카드(60 ~ 236) 바로 아래
+local TOP_Y = 226 -- HUD 카드(60 ~ 210, 전투력 / 경험치 줄을 아래로 옮겨 줄였다) 바로 아래
 
 -- 색은 진하지만 채도를 낮춰 눈이 편하게 (위쪽이 조금 밝은 그라데이션)
 local function attr(name) return player:GetAttribute(name) end

@@ -491,6 +491,13 @@
       "overwrite": true
     },
     {
+      "path": "BigHudClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "BigHudClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "MobileLayoutClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "MobileLayoutClient",

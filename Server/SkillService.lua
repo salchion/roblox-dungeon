@@ -152,25 +152,32 @@ handlers.Sweep = function(player, root, _, _, aimPoint)
 		end
 	end
 
-	-- 이펙트: 눈이 편한 하늘색 바람 띠 3장이 앞으로 퍼져 나간다
-	local origin = CFrame.lookAt(root.Position + dir * 3 - Vector3.new(0, 1.5, 0), root.Position + dir * 10 - Vector3.new(0, 1.5, 0))
-	for index = 1, 3 do
-		task.delay((index - 1) * 0.07, function()
+	-- 이펙트: 하늘색 바람 띠 5장이 겹쳐 넓게 퍼져 나가고, 바닥에 충격 고리 두 겹 + 길을 따라 먼지가 터진다 (눈이 편한 색, 부품은 몇 개만)
+	local origin = CFrame.lookAt(root.Position + dir * 2 - Vector3.new(0, 1.5, 0), root.Position + dir * 10 - Vector3.new(0, 1.5, 0))
+	for index = 1, 5 do
+		task.delay((index - 1) * 0.05, function()
 			local wave = Instance.new("Part")
 			wave.Anchored, wave.CanCollide, wave.CanQuery, wave.CanTouch = true, false, false, false
 			wave.Material = Enum.Material.Neon
-			wave.Color = Color3.fromRGB(170, 215, 235)
-			wave.Transparency = 0.35 + 0.1 * index
-			wave.Size = Vector3.new(14, 0.6, 1.4)
-			wave.CFrame = origin * CFrame.new(0, index * 1.2, 0)
+			wave.Color = index % 2 == 0 and Color3.fromRGB(190, 230, 250) or Color3.fromRGB(120, 190, 235)
+			wave.Transparency = 0.25 + 0.08 * index
+			wave.Size = Vector3.new(16, 1.4, 1.8)
+			wave.CFrame = origin * CFrame.new(0, 0.4 + index * 1.1, 0)
 			wave.Parent = workspace
-			TweenService:Create(wave, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-				Size = Vector3.new(cfg.Radius * 2, 0.3, 3), Transparency = 1, CFrame = origin * CFrame.new(0, index * 1.2, -cfg.Reach * 1.5),
+			TweenService:Create(wave, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+				Size = Vector3.new(cfg.Radius * 2.6, 0.5, 5), Transparency = 1, CFrame = origin * CFrame.new(0, 0.4 + index * 1.1, -cfg.Reach * 2.0),
 			}):Play()
-			Debris:AddItem(wave, 0.6)
+			Debris:AddItem(wave, 0.7)
 		end)
 	end
-	Effects.Burst(center - Vector3.new(0, 1, 0), Color3.fromRGB(200, 225, 240), 30)
+	ring(center - Vector3.new(0, 1, 0), cfg.Radius * 1.1, Color3.fromRGB(150, 210, 240), 0.5)
+	task.delay(0.12, function() ring(center - Vector3.new(0, 1, 0), cfg.Radius * 1.5, Color3.fromRGB(190, 230, 250), 0.6) end)
+	for step = 0, 3 do -- 쓸고 지나간 길을 따라 먼지가 차례로 터진다
+		task.delay(step * 0.06, function()
+			Effects.Burst(root.Position + dir * (6 + step * 9) - Vector3.new(0, 1.2, 0), Color3.fromRGB(200, 225, 240), 26)
+		end)
+	end
+	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), "🌪 Gale Sweep!", Color3.fromRGB(170, 220, 245))
 	return true
 end
 
