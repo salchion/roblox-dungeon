@@ -22,7 +22,7 @@ local SPECS = {
 	-- ("방망이로 두드리는 둔탁한 느낌" 의견: 저음이 많고 갈라지는 소리가 약해서 -> 음을 12% 높이고, 저음을 깎고 고음을 살렸다)
 	--  후보 C (지금, AudioBank 에 ID 가 없을 때): 소총(Rifle) 소리에서 변형 - 소총과 같은 기본 소리 / 같은 짧은 잔향 느낌에서, 꼬리를 0.24초로 잘라 한 발 한 발 짧게 만들고 음을 5% 높였다. Choke 가 앞 소리를 끊어 "두두두두" 로 이어진다
 	--  (후보 B = AudioBank 에 ID 를 적으면 아래 Custom* 값이 쓰인다)
-	Shot_Smg      = { Base = "Shot", Pitch = 1.05, Volume = 1.0, Length = 0.24, Choke = true,
+	Shot_Smg      = { Base = "Shot", Pitch = 1.05, Volume = 1.0, Length = 0.19, Choke = true,
 		Fx = { { "reverb", { DecayTime = 0.5, WetLevel = -9 } } },
 		CustomLength = 0.3, CustomPitch = 1.12, CustomFx = { { "eq", { LowGain = -10, MidGain = 1, HighGain = 5 } } } },
 	Shot_Revolver = { Base = "Shot", CustomLength = 1.4, Volume = 0.9, Pitch = 0.82, Length = 1.3, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -4 } } } },
@@ -271,8 +271,8 @@ function SoundBank.Play(parent, key, opts)
 	if spec.Choke then
 		local previous = chokeLast[key]
 		if previous and previous.Parent then
-			previous.Volume = previous.Volume * 0.25
-			task.delay(0.04, function() if previous.Parent then previous:Stop() end end)
+			previous.Volume = previous.Volume * 0.08 -- 앞 소리를 거의 즉시 줄이고 짧게 끊는다 (살짝 겹쳐 들린다는 의견)
+			task.delay(0.02, function() if previous.Parent then previous:Stop() end end)
 		end
 		chokeLast[key] = main
 	end
@@ -289,7 +289,7 @@ function SoundBank.Play(parent, key, opts)
 	task.delay(length, function()
 		if main.Parent then
 			main.Volume = main.Volume * 0.5
-			task.delay(0.15, function() if main.Parent then main:Stop() end end)
+			task.delay(spec.Choke and 0.04 or 0.15, function() if main.Parent then main:Stop() end end)
 		end
 	end)
 	return main
