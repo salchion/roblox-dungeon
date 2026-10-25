@@ -1,8 +1,8 @@
 -- TutorialService (ServerScriptService > Modules 안의 ModuleScript, 이름: TutorialService)
--- 처음 가이드 미션: 허수아비 -> 무기 강화(무료) -> 장비 뽑기 -> 필드 첫 군주 -> 최종 군주에게 패배 -> 전리품으로 10연 뽑기 / 무기 진화 (훈련은 2구역 클리어로 해금: GrowthService) (튜토리얼 던전 없음).
+-- 처음 가이드 미션: 허수아비 -> (바로 사냥) 필드 첫 군주 -> 최종 군주에게 패배 -> 전리품으로 10연 뽑기 / 무기 진화 (훈련은 2구역 클리어로 해금: GrowthService) (튜토리얼 던전 없음).
 -- 미션마다 목표 위치에 빛기둥/표지가 나타나고, 완료하면 곧바로 보상이 터진다 (숫자가 빠르게 오르는 초반 쾌감).
 -- Quest.Add 에 올라오는 카운터(DummyHits / Enhances / Rolls / Kills / DungeonClears)를 그대로 듣는다.
--- 미션 2~3 동안은 무기 강화가 공짜 + 100% 성공 (TutorialFree Attribute 로 WeaponService 가 확인).
+-- FreeEnhance 가 켜진 미션 동안은 무기 강화가 공짜 + 100% 성공 (TutorialFree Attribute 로 WeaponService 가 확인). 지금은 쓰는 미션이 없다.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -145,7 +145,15 @@ function Tutorial.Load(player, saved)
 			if mapped ~= savedStep then saved.Progress = 0 end
 			savedStep = mapped
 		end
-		state = { Step = math.clamp(savedStep, 1, #Steps + 1), Progress = math.max(0, math.floor(tonumber(saved.Progress) or 0)) }
+		local owedReel = false
+		if version < 9 then -- "모루에서 강화 2번" 미션(옛 2번)을 없앴다: 옛 2~6 -> 새 2~5 (옛 2번에 있던 사람은 필드 미션 + 첫 장비를 받는다)
+			local map = { [1] = 1, [2] = 2, [3] = 2, [4] = 3, [5] = 4, [6] = 5 }
+			local mapped = savedStep >= 7 and #Steps + 1 or (map[savedStep] or savedStep)
+			if savedStep == 2 then owedReel = true end
+			if mapped ~= savedStep or savedStep == 2 then saved.Progress = 0 end
+			savedStep = mapped
+		end
+		state = { Step = math.clamp(savedStep, 1, #Steps + 1), Progress = math.max(0, math.floor(tonumber(saved.Progress) or 0)), OwedReel = owedReel }
 	elseif (player:GetAttribute("Level") or 1) >= 5 then
 		state = { Step = #Steps + 1, Progress = 0 } -- 이미 진행한 유저는 건너뜀
 	else
@@ -153,7 +161,7 @@ function Tutorial.Load(player, saved)
 		FunnelLog.Onboarding(player, 1, "Start")
 	end
 	state.StepStartedAt = os.clock()
-	state.ReelDone = not (typeof(saved) == "table" and saved.ReelDone == false) -- 예전 저장본 / 새 사용자는 이미 받았거나 아직 때가 아니다
+	state.ReelDone = not (typeof(saved) == "table" and saved.ReelDone == false) and not state.OwedReel -- 예전 저장본 / 새 사용자는 이미 받았거나 아직 때가 아니다
 	states[player] = state
 	-- 첫 던전 미션 중 던전에서 나왔거나(죽음 / 나가기 / 접속 종료) 다시 접속했다면: 게이트로 다시 들어가면 된다고 알려 준다 (열쇠 / 무료 입장 소모 없음)
 	local function nudgeDungeon()
@@ -171,7 +179,7 @@ function Tutorial.Load(player, saved)
 			state.ReelDone = true
 			task.delay(1.2, function() if player.Parent then giveReelGear(player) end end)
 		end
-		if state.Step >= 5 and not state.ShadowHint then -- 최후의 군주를 만난 뒤 처음 필드에 나가면: 동쪽 끝 그림자 안내
+		if state.Step >= 4 and not state.ShadowHint then -- 최후의 군주를 만난 뒤 처음 필드에 나가면: 동쪽 끝 그림자 안내
 			state.ShadowHint = true
 			task.delay(3, function()
 				if player.Parent and player:GetAttribute("Zone") == "Field" then
@@ -231,7 +239,7 @@ end
 
 function Tutorial.Serialize(player)
 	local state = states[player] or { Step = #Steps + 1, Progress = 0 }
-	return { Step = state.Step, Progress = state.Progress, V = 8, ReelDone = state.ReelDone }
+	return { Step = state.Step, Progress = state.Progress, V = 9, ReelDone = state.ReelDone }
 end
 
 function Tutorial.Forget(player)

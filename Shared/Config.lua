@@ -129,11 +129,10 @@ end
 ------------------------------------------------------------
 Config.Tutorial = {
 	Steps = {
-		{ Text = "🎯 Shoot the dummy at the training ground next to the forge! Click the mouse to fire (R key = auto-aim)", Stat = "DummyHits", Goal = 8, Target = "Dummy", TargetName = "Dummy",
-			Reward = { Gold = 100 } },
-		-- 강화 2번이 끝나면 슬롯 릴이 돌면서 겹치지 않는 부위 장비 3개를 바로 준다 (Reel). 뽑기 머신은 마을에 있다고 카드로 알려 주고, 일일 퀘스트에도 뽑기가 있다.
-		{ Text = "Upgrade your weapon at the anvil! The more you upgrade, the stronger it gets, and a new weapon unlocks every 15 levels (free)", Stat = "Enhances", Goal = 2, Target = "Anvil", TargetName = "Anvil", FreeEnhance = true, Reel = true,
-			Reward = { Tickets = 1, Gold = 150 } },
+		-- 허수아비를 쏘고 나면 바로 사냥하러 나간다 (예전의 "모루에서 강화 2번" 미션은 흐름을 끊어서 뺐다: 강화는 마지막 미션에서 배운다)
+		-- Reel: 필드에 처음 들어서면 슬롯 릴이 돌면서 겹치지 않는 부위 장비 3개를 준다
+		{ Text = "🎯 Shoot the dummy at the training ground next to the forge! Click the mouse to fire (R key = auto-aim)", Stat = "DummyHits", Goal = 8, Target = "Dummy", TargetName = "Dummy", Reel = true,
+			Reward = { Gold = 250, Tickets = 1 } },
 		-- 이야기: 필드 군주를 쓰러뜨리면 열쇠가 떨어져 바닥이 갈라지고 -> 던전 -> 던전 보스를 쓰러뜨리면 최후의 군주가 나타나 압도당하고 -> 마을에서 전리품으로 뽑기 / 강화
 		{ Text = "Head east to the field and defeat the first zone's Lord (👑)! (You'll get your first gear when you enter the field) ...You sense an ominous presence. Be careful!", Stat = "BossKills", Goal = 1, Target = "Field", TargetName = "Field Entrance", Doom = true,
 			Intro = { { Key = "Q", Title = "Q Key: Dash!", Text = "Good to know for the field: press Q to burst forward in your moving direction (2 in a row, recharges every 3s). Narrowly dodge enemy shots for a bonus!", Duration = 6 } },
