@@ -614,10 +614,11 @@ do
 	uiScale.Parent = gui
 	local function fit()
 		local viewport = workspace.CurrentCamera.ViewportSize
-		uiScale.Scale = math.clamp(math.min(viewport.X / 1100, viewport.Y / 720), 0.55, 1)
+		uiScale.Scale = math.clamp(math.min(viewport.X / 1100, viewport.Y / 720), 0.55, math.max(1, game:GetService("Players").LocalPlayer:GetAttribute("UiMul") or 1))
 	end
 	fit()
 	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fit)
+	game:GetService("Players").LocalPlayer:GetAttributeChangedSignal("UiMul"):Connect(fit)
 end
 
 -- 화면 가장자리 화살표: 목표가 화면 밖에 있으면 그쪽을 가리키는 화살표 + 이름 + 거리를 보여준다

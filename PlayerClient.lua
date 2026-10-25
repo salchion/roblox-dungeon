@@ -3881,7 +3881,7 @@ end
 
 do
 local helpPanel = makePanel({
-	Size = UDim2.new(0, 560, 0, 660), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
+	Size = UDim2.new(0, 560, 0, 704), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
 }, gui)
 makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8), Text = "⚙ Settings / ❓ Help", Font = Enum.Font.GothamBlack, TextSize = 19 }, helpPanel)
 makeLabel({
@@ -3976,6 +3976,19 @@ settingButton(428, function() return "📳 Screen Shake: " .. (settings.Shake an
 settingButton(468, function() return "📡 Radar: " .. (settings.Radar and "ON" or "OFF") end, function() settings.Radar = not settings.Radar end)
 settingButton(508, function() return "🖥 Low-spec mode (less lag): " .. (player:GetAttribute("LowSpec") and "ON" or "OFF") end, function() player:SetAttribute("LowSpec", not player:GetAttribute("LowSpec")) end)
 settingButton(548, function() return "👕 Hide gear look (weapon stays): " .. (player:GetAttribute("HideGear") and "ON" or "OFF") end, function() player:SetAttribute("HideGear", not player:GetAttribute("HideGear")) end)
+do
+	local sizes = { { 0.85, "Small" }, { 1, "Normal" }, { 1.25, "Large" }, { 1.5, "X-Large" } }
+	local function sizeIndex()
+		local pref = player:GetAttribute("UiPref") or 1
+		for index, entry in ipairs(sizes) do
+			if math.abs(entry[1] - pref) < 0.01 then return index end
+		end
+		return 2
+	end
+	settingButton(588, function() return "🔍 UI Size: " .. sizes[sizeIndex()][2] .. " (PC)" end, function()
+		player:SetAttribute("UiPref", sizes[sizeIndex() % #sizes + 1][1])
+	end)
+end
 makeButton({
 	Size = UDim2.new(0, 160, 0, 36), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14), Text = "Close (H)", BackgroundColor3 = GRAY,
 }, helpPanel, function()
@@ -4012,10 +4025,11 @@ do
 	uiScale.Parent = gui
 	local function fit()
 		local viewport = workspace.CurrentCamera.ViewportSize
-		uiScale.Scale = math.clamp(math.min(viewport.X / 1100, viewport.Y / 720), 0.55, 1)
+		uiScale.Scale = math.clamp(math.min(viewport.X / 1100, viewport.Y / 720), 0.55, math.max(1, player:GetAttribute("UiMul") or 1))
 	end
 	fit()
 	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fit)
+	player:GetAttributeChangedSignal("UiMul"):Connect(fit)
 end
 
 do

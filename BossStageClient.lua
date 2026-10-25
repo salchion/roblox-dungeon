@@ -17,10 +17,11 @@ local gui = create("ScreenGui", { Name = "BossStageGui", ResetOnSpawn = false, I
 local uiScale = create("UIScale", {}, gui)
 local function fit()
 	local viewport = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1280, 720)
-	uiScale.Scale = math.clamp(math.min(viewport.X / 760, viewport.Y / 440), 0.55, 1)
+	uiScale.Scale = math.clamp(math.min(viewport.X / 760, viewport.Y / 440), 0.55, math.max(1, game:GetService("Players").LocalPlayer:GetAttribute("UiMul") or 1))
 end
 fit()
 if workspace.CurrentCamera then workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fit) end
+game:GetService("Players").LocalPlayer:GetAttributeChangedSignal("UiMul"):Connect(fit)
 
 -- 번쩍임(전체 화면)
 local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 1 }, gui)

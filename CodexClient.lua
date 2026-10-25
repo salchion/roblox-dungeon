@@ -30,10 +30,11 @@ rounded(panel, 14)
 local panelScale = create("UIScale", {}, panel)
 local function fitPanel()
 	local viewport = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1280, 720)
-	panelScale.Scale = math.clamp(math.min(viewport.X / 540, viewport.Y / 560), 0.55, 1)
+	panelScale.Scale = math.clamp(math.min(viewport.X / 540, viewport.Y / 560), 0.55, math.max(1, game:GetService("Players").LocalPlayer:GetAttribute("UiMul") or 1))
 end
 fitPanel()
 if workspace.CurrentCamera then workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fitPanel) end
+game:GetService("Players").LocalPlayer:GetAttributeChangedSignal("UiMul"):Connect(fitPanel)
 create("UIStroke", { Color = Color3.fromRGB(130, 150, 230), Thickness = 2, Transparency = 0.25, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, panel)
 makeLabel({ Size = UDim2.new(1, -100, 0, 34), Position = UDim2.new(0, 16, 0, 8), Text = "📖 Codex", TextSize = 20, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left }, panel)
 makeButton({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), Text = "Close (J)", TextSize = 12, BackgroundColor3 = Color3.fromRGB(54, 58, 82) }, panel, function() panel.Visible = false end)

@@ -34,10 +34,11 @@ do -- HUD 와 같은 맞춤 (모바일에서는 MobileLayoutClient 가 이 UISca
 	uiScale.Parent = gui
 	local function fit()
 		local viewport = workspace.CurrentCamera.ViewportSize
-		uiScale.Scale = math.clamp(math.min(viewport.X / 1100, viewport.Y / 720), 0.55, 1)
+		uiScale.Scale = math.clamp(math.min(viewport.X / 1100, viewport.Y / 720), 0.55, math.max(1, game:GetService("Players").LocalPlayer:GetAttribute("UiMul") or 1))
 	end
 	fit()
 	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fit)
+	game:GetService("Players").LocalPlayer:GetAttributeChangedSignal("UiMul"):Connect(fit)
 end
 
 -- 미리보기 알림 (HUD 의 토스트와 같은 모양)

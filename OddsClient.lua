@@ -17,10 +17,11 @@ local gui = create("ScreenGui", { Name = "OddsGui", ResetOnSpawn = false, Ignore
 local uiScale = create("UIScale", {}, gui)
 local function fit()
 	local viewport = workspace.CurrentCamera.ViewportSize
-	uiScale.Scale = math.clamp(math.min(viewport.X / 900, viewport.Y / 640), 0.6, 1)
+	uiScale.Scale = math.clamp(math.min(viewport.X / 900, viewport.Y / 640), 0.6, math.max(1, game:GetService("Players").LocalPlayer:GetAttribute("UiMul") or 1))
 end
 fit()
 workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fit)
+game:GetService("Players").LocalPlayer:GetAttributeChangedSignal("UiMul"):Connect(fit)
 
 local panel = makePanel({
 	Size = UDim2.new(0, 640, 0, 520), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),

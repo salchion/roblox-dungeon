@@ -29,6 +29,7 @@ local PANEL_Y = 52      -- 접이식 패널 / 레이더 시작 높이 (버튼 �
 local THEIRS = { HUD = true, ShopGui = true, GoalHUD = true, RiftHUD = true, TutorialHUD = true }
 local OWN = { HudGui = true, LevelStatGui = true, PetGui = true, HUDFx = true, EvolveFx = true, AugGui = true }
 
+local GROW = { WeaponBarGui = true, DpsPanelGui = true, DepthGui = true, OnlineGui = true } -- 데스크톱에서만 크게 키우는 화면
 local st = { compact = false, s = 1 }
 local saved = {}      -- [객체] = { [속성] = { 원래 값 } }
 local cache = {}
@@ -76,8 +77,15 @@ local function find(root, name)
 	return found
 end
 
+-- 데스크톱 UI 확대 배수: 큰 화면에서 기본 1.3배(화면에 맞는 만큼만), 설정 창의 "UI Size" 로 0.85~1.5 를 곱한다. 폰(작은 화면)은 1 로 고정.
+local function uiMul()
+	if st.compact then return 1 end
+	local pref = player:GetAttribute("UiPref")
+	return 1.3 * math.clamp(type(pref) == "number" and pref or 1, 0.5, 1.6)
+end
+
 local function desktopScale(viewport)
-	return math.clamp(math.min(viewport.X / 1100, viewport.Y / 720), 0.55, 1) -- 다른 스크립트들의 fit() 과 같은 식
+	return math.clamp(math.min(viewport.X / 1100, viewport.Y / 720), 0.55, math.max(1, uiMul())) -- 다른 스크립트들의 fit() 과 같은 식
 end
 
 ------------------------------------------------------------
@@ -220,6 +228,8 @@ end
 -- UIScale 맞추기
 ------------------------------------------------------------
 local function applyScales(viewport)
+	local mul = uiMul()
+	if player:GetAttribute("UiMul") ~= mul then player:SetAttribute("UiMul", mul) end -- 각 화면 스크립트의 fit() 이 읽는 값
 	for _, g in ipairs(playerGui:GetChildren()) do
 		if g:IsA("ScreenGui") then
 			if THEIRS[g.Name] then
@@ -236,7 +246,11 @@ local function applyScales(viewport)
 				end
 			elseif OWN[g.Name] then
 				local sc = g:FindFirstChild("MobileScale") or make("UIScale", { Name = "MobileScale" }, g)
-				local want = st.compact and st.s or 1
+				local want = st.compact and st.s or math.clamp(math.min(viewport.X / 1100, viewport.Y / 720), 1, math.max(1, mul))
+				if sc.Scale ~= want then sc.Scale = want end
+			elseif GROW[g.Name] then
+				local sc = g:FindFirstChild("MobileScale") or make("UIScale", { Name = "MobileScale" }, g)
+				local want = st.compact and 1 or math.clamp(math.min(viewport.X / 1100, viewport.Y / 720), 1, math.max(1, mul))
 				if sc.Scale ~= want then sc.Scale = want end
 			end
 		end
