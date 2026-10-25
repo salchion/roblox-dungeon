@@ -661,6 +661,36 @@ function LobbyDecor.Build(parent, ctx)
 		end
 	end
 
+	--------------------------------------------------------------------
+	-- 10) 멀리 동쪽 하늘의 거대한 그림자 (최후의 군주): 시작 언덕에서 필드 문 쪽을 보면 안개 너머에 우뚝 서 있다.
+	--     "저걸 잡으러 가는 게임이구나" 를 첫 화면에서 보여 주는 맛보기. 충돌 / 빛 / 그림자 없음, 눈이 부시지 않게 붉은 눈만 어둡게 켜 둔다.
+	--------------------------------------------------------------------
+	section("DistantLord")
+	do
+		count = math.min(count, MAX_PARTS - 16) -- (이 그림자 14개는 예산과 별개로 항상 만든다)
+		local cx, cz = 620, 0
+		local void, void2 = rgb(26, 20, 34), rgb(38, 28, 46)
+		local function part(name, size, offset, color, shape, rotation)
+			return add(name, size, CFrame.new(cx, 0, cz) * CFrame.new(offset) * (rotation or CFrame.new()), color, M.SmoothPlastic, shape)
+		end
+		part("LordLegs", Vector3.new(60, 90, 100), Vector3.new(0, 60, 0), void)
+		part("LordTorso", Vector3.new(76, 110, 120), Vector3.new(0, 175, 0), void2)
+		part("LordShoulderL", Vector3.new(34, 34, 36), Vector3.new(0, 215, -78), void, Enum.PartType.Ball)
+		part("LordShoulderR", Vector3.new(34, 34, 36), Vector3.new(0, 215, 78), void, Enum.PartType.Ball)
+		part("LordHead", Vector3.new(40, 40, 40), Vector3.new(-8, 262, 0), void2, Enum.PartType.Ball)
+		for i = -2, 2 do -- 왕관 뿔
+			part("LordCrown", Vector3.new(6, 36 - math.abs(i) * 6, 6), Vector3.new(-8, 290, i * 9), void, nil, CFrame.Angles(math.rad(i * 8), 0, 0))
+		end
+		part("LordCape", Vector3.new(8, 150, 170), Vector3.new(30, 150, 0), rgb(20, 14, 26))
+		local eyeColor = rgb(150, 40, 52)
+		for _, z in ipairs({ -8, 8 }) do
+			local eye = part("LordEye", Vector3.new(4, 4, 8), Vector3.new(-27, 266, z), eyeColor, nil)
+			if eye then eye.Material = M.Neon end
+		end
+		local halo = part("LordHalo", Vector3.new(4, 140, 140), Vector3.new(30, 262, 0), rgb(110, 40, 60), Enum.PartType.Cylinder, CFrame.Angles(0, 0, math.pi / 2))
+		if halo then halo.Transparency = 0.55 end
+	end
+
 	return { Parts = count, Lights = lights, Emitters = emitters }
 end
 
