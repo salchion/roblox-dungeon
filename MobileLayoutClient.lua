@@ -278,7 +278,7 @@ function layoutCompact(viewport)
 	local btnY = topY + 118
 	local missionY = narrow and (btnY + 40) or 8
 	-- 가로 화면이고 폭이 충분하면 스킬 바 + 자동 공격 버튼을 "오른쪽 아래, 점프 버튼 영역 바로 왼쪽"으로 옮긴다 (모바일 게임처럼 스킬은 오른손 쪽)
-	local dockRight = (not narrow) and (vw - zone - 14 - (204 + 8 + 64) - 24) > 0 -- (점프 버튼을 없앴으므로 오른쪽 끝(5시 방향)까지 붙인다)
+	local dockRight = (not narrow) and (vw - zone - 14 - (272 + 8 + 64) - 24) > 0 -- (점프 버튼을 없앴으므로 오른쪽 끝(5시 방향)까지 붙인다)
 	local barBottom = raised and (math.ceil(zone) + 10) or 14
 	local barTop = barBottom + 64
 	if dockRight then

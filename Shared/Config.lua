@@ -202,19 +202,22 @@ Config.Dungeon.Mutators = {
 -- 스킬 데미지 = 일반 공격 데미지 x Mult. 궁극기는 공격할수록(발사 1회 = +ChargePerShot) 게이지가 찬다.
 ------------------------------------------------------------
 Config.Skills = {
-	Order = { "Heal", "Ult" }, -- 방벽 / 충격파는 임팩트가 약해서 뺐다 (정의만 남겨둠)
+	Order = { "Heal", "Sweep", "Ult" }, -- 방벽 / 충격파는 임팩트가 약해서 뺐다 (정의만 남겨둠)
 	Barrier = { Name = "Energy Barrier", Icon = "🛡", Key = "Z", KeyCode = "Z", Cooldown = 14, Duration = 3,
 		Desc = "A barrier that blocks all damage for 3s" },
+	-- F: 앞쪽 넓은 범위를 쓸어버리는 돌풍. 잡몹은 뒤로 밀려나고 모여 있을수록 한 번에 많이 잡힌다 (쿨타임 9초)
+	Sweep = { Name = "Gale Sweep", Icon = "🌪", Key = "F", KeyCode = "F", Cooldown = 9, Radius = 26, Reach = 20, Mult = 2.4, Push = 22,
+		Desc = "Sweeps a wide area in front of you: damages every enemy and shoves small ones back. Great for packs!" },
 	Blast = { Name = "Shockwave", Icon = "💥", Key = "F", KeyCode = "F", Cooldown = 8, Radius = 16, Range = 90, Mult = 3,
 		Desc = "Explodes where you aim (radius 16, attack x3)" },
 	Heal = { Name = "First Aid", Icon = "💚", Key = "C", KeyCode = "C", Cooldown = 30, Radius = 40, Ratio = 0.08,
 		Desc = "Restores 8% HP to you and nearby party members (+1%p per skill level)" },
 	Ult = { Name = "Deadeye", Icon = "🎯", Key = "V", KeyCode = "V", Cooldown = 3, Radius = 110, Mult = 8, Cost = 100, MaxTargets = 6, Volleys = 12, VolleyGap = 0.09, -- 대상 수 / 일제 사격 횟수를 줄여 렉을 막는다 (빔 / 피해 숫자 / 폭발 효과가 대상 x 횟수만큼 생긴다)
 		ShotsPerTarget = 8, ShotGap = 0.03,
-		Missiles = 12, PoolMult = 4, RepeatDecay = 0.82, -- RepeatDecay: 같은 적에게 미사일이 거듭 맞을수록 한 발 피해가 이 배율씩 줄어든다 (한 마리에 12발이면 합계가 약 5발 분량)
+		Missiles = 16, PoolMult = 4.5, RepeatDecay = 0.82, -- RepeatDecay: 같은 적에게 미사일이 거듭 맞을수록 한 발 피해가 이 배율씩 줄어든다 (한 마리에 12발이면 합계가 약 5발 분량)
 		 -- 미사일 총 발수(대상 수와 상관없이 고정, 대상들에게 번갈아 나눠 간다) / 총 피해 배율 (한 마리면 12발이 전부 그 적에게 꽂힌다)
-		Desc = "Ultimate: use it when the gauge is full! Locks onto nearby enemies, then fires 12 missiles split between them (nearest 6 first, up to 12 as the skill levels up). Against a single target like a boss, all 12 hit it" },
-	ChargePerShot = 4,
+		Desc = "Ultimate: use it when the gauge is full! Locks onto nearby enemies, then fires 16 missiles split between them (nearest 6 first, up to 12 as the skill levels up). Against a single target like a boss, all 16 hit it" },
+	ChargePerShot = 7,
 	-- 패시브 스킬 (스킬 강화 창에서 골드로 레벨업, 스킬 바에는 안 나온다)
 	Focus = { Name = "Aura Focus", Icon = "⚡", Key = "Passive", Cooldown = 0, Passive = true,
 		Desc = "The attack bonus built up by NEAR MISS lasts longer. At higher levels, part of the bonus (half at max level) stays even if your streak breaks" },
@@ -795,10 +798,10 @@ Config.Field = {
 	ZoneCount = 8,
 	Width = 320,
 	MonstersPerZone = 22,
-	ZoneCountMult = { 1, 1.9, 2.0, 2.1, 2.2, 2.4, 2.7, 3.0 }, -- 구역별 몬스터 수 배율 (1구역은 길이가 340이라 22마리로 촘촘하고, 700 길이인 2구역 이후는 배율로 맞춘다: 2구역 22 -> 약 42마리)
+	ZoneCountMult = { 1.7, 2.9, 2.8, 2.1, 2.2, 2.4, 2.7, 3.0 }, -- 구역별 몬스터 수 배율 (1구역은 길이가 340이라 22마리로 촘촘하고, 700 길이인 2구역 이후는 배율로 맞춘다: 2구역 22 -> 약 42마리)
 	ElitesPerZone = 3,
 	CampSafe = 70,             -- 각 구역 입구 캠프 주변 안전지대 반경(몬스터가 노리지 않음)
-	RespawnTime = 10,
+	RespawnTime = 7,
 	AggroRange = 55,
 	LeashRange = 110,
 	EliteMultiplier = 3.5,     -- 엘리트 몬스터 체력 배율 (5였는데 3구역부터 너무 오래 걸려 낮춤)

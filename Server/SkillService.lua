@@ -70,11 +70,11 @@ end
 local BL = require(script.Parent:WaitForChild("BalanceLog")) -- Studio 전용 밸런스 로그
 local Meter = require(script.Parent:WaitForChild("DamageMeter")) -- 대미지 미터기
 
-local function damageAt(player, center, radius, mult)
+local function damageAt(player, center, radius, mult, source)
 	local base = Dungeon.ComputeDamage(player)
 	local damage = math.max(1, math.floor(base * mult))
 	BL.Ctx = "스킬"
-	Meter.Source = "Blast" -- 대미지 미터기: 충격파(F)
+	Meter.Source = source or "Blast" -- 대미지 미터기: 충격파 / 돌풍(F)
 	local hit = Dungeon.AreaDamage(player, center, radius, damage) or Field.AreaDamage(player, center, radius, damage) or {}
 	Meter.Source = nil
 	BL.Ctx = nil
@@ -114,6 +114,63 @@ handlers.Blast = function(player, root, _, _, aimPoint)
 	Effects.Burst(aimPoint, Color3.fromRGB(255, 190, 90), 60)
 	Effects.Tracer(root.Position + Vector3.new(0, 1.5, 0), aimPoint, Color3.fromRGB(255, 200, 100), 0.5)
 	damageAt(player, aimPoint, radius, cfg.Mult * (1 + U.BlastMult * lv))
+	return true
+end
+
+-- 돌풍(F): 앞쪽 넓은 범위에 피해 + 작은 몬스터는 뒤로 밀어낸다. 이펙트는 서버 부품 3장이 앞으로 미끄러지며 사라지는 정도로 가볍게.
+local fieldMonsterParams = OverlapParams.new()
+fieldMonsterParams.FilterType = Enum.RaycastFilterType.Include
+handlers.Sweep = function(player, root, _, _, aimPoint)
+	local cfg = S.Sweep
+	local flat = Vector3.new(aimPoint.X - root.Position.X, 0, aimPoint.Z - root.Position.Z)
+	if flat.Magnitude < 1 then
+		local look = root.CFrame.LookVector
+		flat = Vector3.new(look.X, 0, look.Z)
+	end
+	local dir = flat.Unit
+	local center = root.Position + dir * cfg.Reach
+	local lv = skillLevel(player, "Sweep") - 1
+	damageAt(player, center, cfg.Radius, cfg.Mult * (1 + U.BlastMult * lv), "Sweep")
+
+	-- 밀치기 (필드의 일반 몬스터만; 군주 / 큰 몸집은 그대로)
+	local folder = workspace:FindFirstChild("FieldMonsters")
+	if folder then
+		fieldMonsterParams.FilterDescendantsInstances = { folder }
+		local fieldCfg = Config.Field
+		local halfWidth = fieldCfg.Width / 2 - 4
+		for _, part in ipairs(workspace:GetPartBoundsInRadius(center, cfg.Radius, fieldMonsterParams)) do
+			if part.Parent == folder and part.Size.X < 9 and not part.Anchored then
+				task.spawn(function()
+					for _ = 1, 6 do
+						if not part.Parent then return end
+						local target = part.Position + dir * (cfg.Push / 6)
+						part.Position = Vector3.new(math.max(target.X, fieldCfg.StartX + 2), target.Y, math.clamp(target.Z, -halfWidth, halfWidth))
+						task.wait(0.03)
+					end
+				end)
+			end
+		end
+	end
+
+	-- 이펙트: 눈이 편한 하늘색 바람 띠 3장이 앞으로 퍼져 나간다
+	local origin = CFrame.lookAt(root.Position + dir * 3 - Vector3.new(0, 1.5, 0), root.Position + dir * 10 - Vector3.new(0, 1.5, 0))
+	for index = 1, 3 do
+		task.delay((index - 1) * 0.07, function()
+			local wave = Instance.new("Part")
+			wave.Anchored, wave.CanCollide, wave.CanQuery, wave.CanTouch = true, false, false, false
+			wave.Material = Enum.Material.Neon
+			wave.Color = Color3.fromRGB(170, 215, 235)
+			wave.Transparency = 0.35 + 0.1 * index
+			wave.Size = Vector3.new(14, 0.6, 1.4)
+			wave.CFrame = origin * CFrame.new(0, index * 1.2, 0)
+			wave.Parent = workspace
+			TweenService:Create(wave, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+				Size = Vector3.new(cfg.Radius * 2, 0.3, 3), Transparency = 1, CFrame = origin * CFrame.new(0, index * 1.2, -cfg.Reach * 1.5),
+			}):Play()
+			Debris:AddItem(wave, 0.6)
+		end)
+	end
+	Effects.Burst(center - Vector3.new(0, 1, 0), Color3.fromRGB(200, 225, 240), 30)
 	return true
 end
 
@@ -403,7 +460,11 @@ function Skill.Use(player, skillKey, aimPoint)
 	local haste = (player:GetAttribute("GearHaste") or 0) + (player:GetAttribute("PetHaste") or 0) + (player:GetAttribute("LvHaste") or 0) + U.CooldownPerLevel * (skillLevel(player, skillKey) - 1)
 	local cooldown = S[skillKey].Cooldown * (1 - math.min(0.6, haste))
 	cooldowns[skillKey] = now + cooldown
-	SoundBank.Play(root, skillKey == "Ult" and "Skill_Ult" or "Skill_Heal")
+	if skillKey == "Sweep" then
+		pcall(function() SoundBank.Play(root, "Ult_Launch", { Pitch = 0.75, Volume = 1.1 }) end)
+	else
+		SoundBank.Play(root, skillKey == "Ult" and "Skill_Ult" or "Skill_Heal")
+	end
 	Quest.Add(player, "SkillUses", 1)
 	BL.Count(player, skillKey, 1) -- (밸런스 로그: Ult = 궁극기, 나머지 = 스킬)
 	Remotes.Skill:FireClient(player, "Cast", skillKey, cooldown)

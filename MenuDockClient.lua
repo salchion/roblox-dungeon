@@ -7,6 +7,9 @@
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Config = require(ReplicatedStorage:WaitForChild("Config"))
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
@@ -17,7 +20,7 @@ local TOP_Y = 252 -- HUD 카드(60 ~ 236) 바로 아래
 -- 색은 진하지만 채도를 낮춰 눈이 편하게 (위쪽이 조금 밝은 그라데이션)
 local BUTTONS = {
 	{ Icon = "🎒", Text = "Gear",     Color = Color3.fromRGB(70, 110, 190), Tab = "Character:Gear" },
-	{ Icon = "🔫", Text = "Weapon",   Color = Color3.fromRGB(190, 95, 70),  Tab = "Character:Weapon" },
+	{ Icon = "🔫", Text = "Weapon",   Color = Color3.fromRGB(190, 95, 70),  Tab = "Character:Weapon", Dot = "CanEnhance" },
 	{ Icon = "📈", Text = "Growth",   Color = Color3.fromRGB(70, 150, 100), Tab = "Growth", Dot = "GrowthNew" },
 	{ Icon = "📜", Text = "Quests",   Color = Color3.fromRGB(175, 130, 60), Tab = "Quest", Dot = "DotQuest" },
 	{ Icon = "🐾", Text = "Pets",     Color = Color3.fromRGB(150, 90, 170), Signal = "OpenPet" },
@@ -134,6 +137,17 @@ end
 
 for index, def in ipairs(BUTTONS) do build(index, def) end
 
+-- 무기 강화에 쓸 골드가 모이면 Weapon 버튼에 빨간 점 (골드는 자주 바뀌어서 0.5초마다 한 번 확인)
+local function refreshEnhance()
+	local level = player:GetAttribute("WeaponLevel") or 0
+	local ready = false
+	if player:GetAttribute("DataReady") then
+		local ok, cost = pcall(Config.GetEnhanceCost, level)
+		ready = ok and (player:GetAttribute("Gold") or 0) >= cost and level < Config.Weapon.MaxLevel
+	end
+	if player:GetAttribute("CanEnhance") ~= ready then player:SetAttribute("CanEnhance", ready) end
+end
+
 local function refreshDots()
 	for def, dot in pairs(dots) do
 		dot.Visible = def.Dot ~= nil and player:GetAttribute(def.Dot) == true
@@ -160,6 +174,7 @@ local function sync()
 end
 task.spawn(function()
 	while true do
+		pcall(refreshEnhance)
 		sync()
 		task.wait(0.5)
 	end

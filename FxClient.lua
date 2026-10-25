@@ -121,10 +121,10 @@ local RAINBOW = ColorSequence.new({
 })
 local FIRE = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 240, 120)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 50, 20)) })
 local CLASS_LOOK = {
-	Pistol = { SizeMul = 1.0, Muzzle = 2.4 }, -- 총구에 작은 고리
-	Revolver = { Style = "Ball", SizeMul = 1.6, Impact = 10, Muzzle = 3.6 }, -- 묵직한 한 발 + 큰 총구 고리
-	Smg = { Style = "Bolt", Length = 2.2, SizeMul = 0.55, Mini = true }, -- 가늘고 짧은 연사 탄 (시대 효과는 최소)
-	Rifle = { Style = "Bolt", Length = 6 }, -- 길고 가는 탄 (SMG 의 짧은 탄 / 권총의 둥근 탄과 한눈에 구분되게)
+	Pistol = { SizeMul = 1.25, Muzzle = 2.4 }, -- 작고 또렷한 둥근 탄 + 총구에 작은 고리
+	Revolver = { Style = "Ball", SizeMul = 2.1, Impact = 14, Muzzle = 4.2 }, -- 굵고 묵직한 한 발 + 큰 총구 고리 (권총보다 확실히 크다)
+	Smg = { Style = "Bolt", Length = 1.8, SizeMul = 0.5, Mini = true }, -- 가늘고 아주 짧은 연사 탄 (시대 효과는 최소)
+	Rifle = { Style = "Bolt", Length = 9, SizeMul = 0.9 }, -- 아주 길고 가는 탄 (SMG 의 짧은 탄 / 권총의 둥근 탄과 한눈에 구분되게)
 	Shotgun = { Style = "Ball", SizeMul = 0.55, Mini = true, Puff = true }, -- 작은 산탄 알갱이 + 총구 원뿔 연기
 }
 -- 로켓 / 레일건 / 저격총 / 캐논 / 화염방사기는 아래 SPECIAL 이 따로 그린다
