@@ -2474,13 +2474,15 @@ end
 local function buildCharacterTab()
 	local weaponType = Config.GetPlayerWeapon(player)
 	local health = Config.Player.BaseHealth + (player:GetAttribute("HealthPoints") or 0) * Config.Player.HealthPerPoint + (player:GetAttribute("GearHealth") or 0) + Config.GetLevelHealth(player:GetAttribute("Level") or 1)
-	local crit = ((player:GetAttribute("CritPoints") or 0) * Config.Player.CritPerPoint + (player:GetAttribute("GearCrit") or 0) + (weaponType.CritBonus or 0)) * 100
+	-- 실제 공식(DungeonService.ComputeDamage)과 같게: 훈련 / 펫 치명타 포함, 최대 90%
+	local crit = math.min(0.9, (player:GetAttribute("CritPoints") or 0) * Config.Player.CritPerPoint + (player:GetAttribute("GearCrit") or 0)
+		+ (player:GetAttribute("TrainCrit") or 0) + (player:GetAttribute("PetCrit") or 0) + (weaponType.CritBonus or 0)) * 100
 	local speed = Config.Player.WalkSpeed + (player:GetAttribute("GearSpeed") or 0)
 
 	local summary = newRow(142)
 	local menuLevel = player:GetAttribute("Level") or 1
 	rowText(summary, string.format(
-		"🎖 <font color='#8fd8ff'>Lv.%d</font>  (%s)   Damage +%d%% · HP +%d\n⚡ Power <font color='#ffe16e'>%d</font>\n❤ Max HP %d    🎯 Crit Chance %.1f%%    💨 Move Speed %.1f\n💰 %d G    🎫 Tickets %d\n🏔 Best field zone cleared: %d    🏰 Dungeons cleared: %d",
+		"🎖 <font color='#8fd8ff'>Lv.%d</font>  (%s)   Damage +%d%% · HP +%d\n⚡ Power <font color='#ffe16e'>%d</font>\n❤ Max HP %d    🎯 Crit Chance %.1f%% (max 90%%)    💨 Move Speed %.1f\n💰 %d G    🎫 Tickets %d\n🏔 Best field zone cleared: %d    🏰 Dungeons cleared: %d",
 		menuLevel,
 		menuLevel >= Config.Level.Max and "MAX" or string.format("%d / %d XP", player:GetAttribute("XP") or 0, player:GetAttribute("XPNeeded") or 1),
 		math.floor((Config.GetLevelDamageMult(menuLevel) - 1) * 100 + 0.5), Config.GetLevelHealth(menuLevel),
