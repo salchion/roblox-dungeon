@@ -1567,12 +1567,20 @@ function Config.ItemDisplayName(item)
 end
 
 Config.Uniques = {
-	Order = { "Split", "Chrono", "Slayer", "Fortune" },
+	Order = { "Split", "Chrono", "Slayer", "Fortune", "Ricochet", "Vampire", "Giant", "Adrenaline", "Thunder", "Jackpot", "Bulwark" },
 	Chance = 0.30,
 	Split = { Name = "Splitting Bullets", Desc = "Fires 1 more shot right after (same direction)", Effects = { { Stat = "Shot", Value = 1 } } },
 	Chrono = { Name = "Time Warp", Desc = "Skill cooldown -25%", Effects = { { Stat = "Haste", Value = 0.25 } } },
 	Slayer = { Name = "Slaughterer", Desc = "Attack +25%", Effects = { { Stat = "Damage", Value = 0.25 } } },
 	Fortune = { Name = "Lucky Star", Desc = "Luck +50%, XP +30%", Effects = { { Stat = "Luck", Value = 0.5 }, { Stat = "Xp", Value = 0.3 } } },
+	-- 플레이 방식이 바뀌는 유니크 (신화 장비에만 붙는다: 파밍할 이유)
+	Ricochet = { Name = "Ricochet Rounds", Desc = "Your shots bounce to 1 more nearby enemy (70% damage)", Effects = { { Stat = "Bounce", Value = 1 } } },
+	Vampire = { Name = "Bloodthirst", Desc = "Heal 1.5% max HP on every kill", Effects = { { Stat = "LifeOnKill", Value = 0.015 } } },
+	Giant = { Name = "Giant Slayer", Desc = "+35% damage to bosses, lords and elites", Effects = { { Stat = "BossDmg", Value = 0.35 } } },
+	Adrenaline = { Name = "Adrenaline", Desc = "After a kill, attack speed +30% for 3s", Effects = { { Stat = "KillHaste", Value = 0.3 } } },
+	Thunder = { Name = "Thunder Rounds", Desc = "Every 6th hit calls down a lightning bolt (250% damage)", Effects = { { Stat = "Thunder", Value = 1 } } },
+	Jackpot = { Name = "Jackpot", Desc = "4% chance for a shot to deal 5x damage", Effects = { { Stat = "Jackpot", Value = 0.04 } } },
+	Bulwark = { Name = "Bulwark", Desc = "Take 15% less damage", Effects = { { Stat = "Bulwark", Value = 0.15 } } },
 }
 
 -- 던전 상자의 유니크 확률(신화 장비): 깊이마다 +0.7%p, 최대 60%
@@ -1582,15 +1590,18 @@ function Config.Uniques.ChanceAtDepth(depth)
 	return math.min(Config.Uniques.MaxChance, Config.Uniques.Chance + Config.Uniques.DepthBonus * math.max(0, (depth or 1) - 1))
 end
 
-Config.BonusNames = { Health = "Max HP", Crit = "Crit Chance", Speed = "Move Speed", Damage = "Attack", Xp = "XP", Luck = "Luck", Haste = "Skill Cooldown Reduction", Shot = "Shot Count" }
+Config.BonusNames = { Health = "Max HP", Crit = "Crit Chance", Speed = "Move Speed", Damage = "Attack", Xp = "XP", Luck = "Luck", Haste = "Skill Cooldown Reduction", Shot = "Shot Count",
+	Bounce = "Bounce", LifeOnKill = "Heal on Kill", BossDmg = "Boss Damage", KillHaste = "Attack Speed after Kill", Thunder = "Thunder Rounds", Jackpot = "Jackpot Chance", Bulwark = "Damage Taken Reduction" }
 function Config.FormatBonus(stat, value)
 	local name = Config.BonusNames[stat] or stat
 	if stat == "Health" then
 		return string.format("%s +%d", name, math.floor(value + 0.5))
 	elseif stat == "Speed" then
 		return string.format("%s +%.1f", name, value)
-	elseif stat == "Shot" then
+	elseif stat == "Shot" or stat == "Bounce" or stat == "Thunder" then
 		return string.format("%s +%d", name, math.floor(value + 0.5))
+	elseif stat == "LifeOnKill" then
+		return string.format("%s +%.1f%%", name, value * 100)
 	end
 	return string.format("%s +%d%%", name, math.floor(value * 100 + 0.5))
 end

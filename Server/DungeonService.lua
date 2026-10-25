@@ -1128,8 +1128,13 @@ end
 
 local augOnHit, augOnKill -- 어그먼트 효과 (아래 Dungeon.ComputeDamage 뒤에서 정의)
 -- 펫 "사냥 표식": 내 펫이 표식을 찍은 적은 나에게 더 아프게 맞는다 (필드도 이 함수를 쓴다)
+-- (유니크 "Giant Slayer": 보스 / 군주 / 엘리트에게 주는 피해 증가도 여기서 같이 곱한다)
 function Dungeon.MarkMult(player, data)
-	return (data and data.MarkedBy == player and os.clock() < (data.MarkedUntil or 0)) and Config.Pet.MarkBonus or 1
+	if not data then return 1 end
+	local mult = (data.MarkedBy == player and os.clock() < (data.MarkedUntil or 0)) and Config.Pet.MarkBonus or 1
+	local bossDmg = player:GetAttribute("GearBossDmg") or 0
+	if bossDmg > 0 and (data.IsBoss or data.BossLike or data.Kind == "Boss" or data.Elite) then mult *= 1 + bossDmg end
+	return mult
 end
 local function damageMonster(run, player, part, data, amount, isCrit, hitPosition, quiet)
 	amount = math.floor(amount * Dungeon.MarkMult(player, data))
@@ -1446,6 +1451,10 @@ function Dungeon.ComputeDamage(player)
 	if isCrit then
 		damage *= P.CritMultiplier + (player:GetAttribute("LvCritDmg") or 0) + overflow
 	end
+	if math.random() < (player:GetAttribute("GearJackpot") or 0) then -- 유니크 "Jackpot": 가끔 5배 (큰 피해 숫자로 보인다)
+		damage *= 5
+		isCrit = true
+	end
 	return math.max(1, math.floor(damage + 0.5)), isCrit
 end
 
@@ -1685,6 +1694,7 @@ local function addIgnite(run, player, part, data, stacks)
 	end)
 end
 
+local uniqueHits = setmetatable({}, { __mode = "k" })
 augOnHit = function(run, player, part, data, amount, isCrit)
 	local targetIsBoss = isBossData(data)
 	-- 처형 (보스형): 체력이 얼마 안 남은 일반 몬스터는 맞는 즉시 쓰러진다 / 보스는 체력이 낮을수록 더 아프게 맞는다
@@ -1726,6 +1736,15 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 			end
 		end
 	end
+	-- 유니크 "Thunder Rounds": 직접 맞힌 6번째마다 그 적에게 번개 (250%)
+	local thunder = player:GetAttribute("GearThunder") or 0
+	if thunder > 0 and augDepth == 0 and data.Health > 0 then
+		uniqueHits[player] = (uniqueHits[player] or 0) + 1
+		if uniqueHits[player] >= math.max(3, 7 - thunder) then
+			uniqueHits[player] = 0
+			strikeBolt(run, player, { Part = part, Data = data }, augDamage(player) * 2.5, "U_Thunder")
+		end
+	end
 	-- 점화 (보스형): 직접 맞힐 때마다 중첩 (궁합 무기는 2중첩)
 	if augDepth == 0 and data.Health > 0 and augLv(run, player, "AugFlame") > 0 then
 		addIgnite(run, player, part, data, Config.AugWeaponMatch(player, "AugFlame") and 2 or 1)
@@ -1763,6 +1782,13 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 end
 
 augOnKill = function(run, player, position)
+	-- 유니크 "Bloodthirst" (처치할 때 회복) / "Adrenaline" (처치 뒤 3초 공격 속도 증가)
+	local heal = player:GetAttribute("GearLifeOnKill") or 0
+	if heal > 0 then
+		local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+		if humanoid and humanoid.Health > 0 then humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * heal) end
+	end
+	if (player:GetAttribute("GearKillHaste") or 0) > 0 then player:SetAttribute("AdrenalineUntil", os.clock() + 3) end
 	local flame = augLv(run, player, "AugFlame")
 	if flame >= 4 and augDepth == 0 then -- 점화 4셋: 불타던 적이 쓰러지면 근처 적 3마리에게 불이 옮겨 붙는다
 		for _, entry in ipairs(nearestMonsters(run, position, 22, 3)) do

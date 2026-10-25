@@ -99,7 +99,8 @@ end
 
 -- 장착 중인 아이템들의 랜덤 옵션 합계
 function Inventory.GetTotals(player)
-	local totals = { Health = 0, Crit = 0, Speed = 0, Damage = 0, Xp = 0, Luck = 0, Haste = 0, Shot = 0 }
+	local totals = { Health = 0, Crit = 0, Speed = 0, Damage = 0, Xp = 0, Luck = 0, Haste = 0, Shot = 0,
+		Bounce = 0, LifeOnKill = 0, BossDmg = 0, KillHaste = 0, Thunder = 0, Jackpot = 0, Bulwark = 0 } -- (아래 줄: 유니크 전용 효과)
 	local state = states[player]
 	if not state then return totals end
 	local setCounts = {}

@@ -21,7 +21,7 @@ function Guard.Take(humanoid, amount)
 	if not humanoid or humanoid.Health <= 0 then return end
 	local player = humanoid.Parent and Players:GetPlayerFromCharacter(humanoid.Parent)
 	if player then
-		amount = amount * (1 - Guard.Reduction(player))
+		amount = amount * (1 - Guard.Reduction(player)) * (1 - (player:GetAttribute("GearBulwark") or 0)) -- (유니크 "Bulwark")
 		if (player:GetAttribute("RiftLeft") or 0) <= 0 then -- (보스러쉬 중에는 상한이 없다: 체력이 낮은 사람이 상한 덕에 유리해지면 순위가 불공정해진다)
 			amount = math.min(amount, humanoid.MaxHealth * Config.Defense.HitCap)
 		end

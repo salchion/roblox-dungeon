@@ -498,7 +498,8 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 	local weaponType = Config.GetPlayerWeapon(player)
 	local now = os.clock()
 	local speedPoints = player:GetAttribute("SpeedPoints") or 0
-	local cooldown = Config.Player.BaseCooldown * weaponType.Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0))) -- 펫 가속 포함
+	local adrenaline = os.clock() < (player:GetAttribute("AdrenalineUntil") or 0) and (player:GetAttribute("GearKillHaste") or 0) or 0 -- 유니크 "Adrenaline"
+	local cooldown = Config.Player.BaseCooldown * weaponType.Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0)) * (1 + adrenaline)) -- 펫 가속 포함
 	if now - (lastAttack[player] or 0) < cooldown * 0.9 then return end -- 연타 제한 (네트워크 오차 10% 허용)
 	lastAttack[player] = now
 	Dungeon.NoteShot(player) -- 세트 효과 "튕기는 표창"이 쏜 횟수를 센다
@@ -537,7 +538,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 		local used = {}
 		local last = startPosition
 		local bounceRange = weaponType.BounceRange or 34
-		for index = 0, weaponType.Bounce do
+		for index = 0, (weaponType.Bounce or 0) + (player:GetAttribute("GearBounce") or 0) do -- (유니크 "Ricochet Rounds" 로 튕김 +1)
 			local list = Dungeon.TargetsIn(player, last, bounceRange, 8) or Field.TargetsIn(player, last, bounceRange, 8)
 			local pick
 			for _, candidate in ipairs(list or {}) do
@@ -549,7 +550,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 			if not pick then break end
 			used[pick] = true
 			if index > 0 then -- (index 0 = 방금 직접 맞힌 적: 표시만 해 두고 건너뛴다)
-				local bounceDamage = math.max(1, math.floor(Dungeon.ComputeDamage(player) * (weaponType.BounceMult or 0.85)))
+				local bounceDamage = math.max(1, math.floor(Dungeon.ComputeDamage(player) * (weaponType.BounceMult or 0.7)))
 				Effects.Shot(last, pick.Position, { Size = 0.9, Speed = 700, Impact = 0, Style = "Bolt", Length = 3 }, color, false, "Rail", tier.Era, progress)
 				Dungeon.HitPart(player, pick, bounceDamage)
 				Field.HitPart(player, pick, bounceDamage)
@@ -578,7 +579,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 				or Dummy.Shoot(player, volleyOrigin, direction)
 			endPosition = endPosition or (volleyOrigin + direction * Config.GetRange(player, weaponType))
 			Effects.Shot(volleyTip, endPosition, shot, color, tier.Rainbow, tier.Class, tier.Era, progress)
-			if weaponType.Bounce and (player:GetAttribute("HitTick") or 0) > hitsBefore then bounceChain(endPosition) end
+			if ((weaponType.Bounce or 0) + (player:GetAttribute("GearBounce") or 0)) > 0 and (player:GetAttribute("HitTick") or 0) > hitsBefore then bounceChain(endPosition) end
 		end
 		player:SetAttribute("ShotDmgScale", 1)
 		Weapon.PlayShot(player)
