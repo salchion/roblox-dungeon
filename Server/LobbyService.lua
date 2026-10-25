@@ -602,13 +602,70 @@ function Lobby.Build()
 		swirl.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.7), NumberSequenceKeypoint.new(1, 0) })
 		swirl.Parent = portal
 
+		-- 소용돌이: 문 한가운데가 안쪽으로 빨려 들어가는 것처럼 보인다 (글자 대신 눈길이 가는 조형 + 움직임).
+		--   부품은 서버가 한 번만 만들고, 돌아가는 / 줄어드는 움직임은 클라이언트(GateVortexClient)가 내 화면에서만 계산한다 (서버 부담 없음).
+		do
+			local vortexColor = color:Lerp(Color3.fromRGB(235, 230, 255), 0.25)
+			local center = Vector3.new(gatePos.X, TOP + 12.5, gatePos.Z + 1.1)
+			local model = Instance.new("Model")
+			model.Name = "GateVortex" .. index
+			local function vpart(name, size, offset, partColor, material, transparency, rotation, shape)
+				local part = makePart({
+					Name = name, Size = size, CFrame = CFrame.new(center + offset) * (rotation or CFrame.new()), Color = partColor, Material = material,
+					Transparency = transparency, CanCollide = false, CanQuery = false, CanTouch = false, CastShadow = false, Shape = shape or Enum.PartType.Block,
+				}, model)
+				return part
+			end
+			local core = vpart("VortexCore", Vector3.new(2.6, 2.6, 2.6), Vector3.new(0, 0, 0.3), rgb(8, 5, 16), Enum.Material.SmoothPlastic, 0, nil, Enum.PartType.Ball)
+			model.PrimaryPart = core
+			vpart("VortexRim", Vector3.new(0.2, 3.8, 3.8), Vector3.new(0, 0, 0.1), vortexColor, Enum.Material.Neon, 0.4, CFrame.Angles(0, math.rad(90), 0), Enum.PartType.Cylinder)
+			for k = 0, 5 do -- 소용돌이 팔: 안쪽에서 바깥으로 휘어지며 퍼지는 6가닥 (돌아가면 빨려 들어가는 모양)
+				for j = 0, 2 do
+					local a = k * math.pi / 3 + j * 0.38
+					local r = 1.9 + j * 1.8
+					vpart("VortexArm", Vector3.new(0.5, 2.0 + j * 0.45, 0.3), Vector3.new(math.cos(a) * r, math.sin(a) * r, 0), vortexColor, Enum.Material.Neon, 0.3 + j * 0.14, CFrame.Angles(0, 0, a + math.pi / 2 + 0.55))
+				end
+			end
+			for ringIndex = 1, 3 do -- 바깥에서 안쪽으로 줄어들며 사라지는 고리 (클라이언트가 크기를 바꾼다)
+				local ring = vpart("VortexRing", Vector3.new(0.12, 12, 12), Vector3.new(0, 0, 0.2), vortexColor, Enum.Material.Neon, 0.5, CFrame.Angles(0, math.rad(90), 0), Enum.PartType.Cylinder)
+				ring:SetAttribute("Phase", ringIndex / 3)
+				ring:SetAttribute("Diameter", 12)
+			end
+			local dustHolder = vpart("VortexDust", Vector3.new(13, 13, 13), Vector3.new(0, 0, 0.5), vortexColor, Enum.Material.SmoothPlastic, 1, nil, Enum.PartType.Ball)
+			local dust = Instance.new("ParticleEmitter") -- 둘레에서 한가운데로 빨려 드는 가루
+			dust.Shape = Enum.ParticleEmitterShape.Sphere
+			dust.ShapeInOut = Enum.ParticleEmitterShapeInOut.Inward
+			dust.ShapeStyle = Enum.ParticleEmitterShapeStyle.Surface
+			dust.Rate = 16
+			dust.Lifetime = NumberRange.new(0.9, 1.4)
+			dust.Speed = NumberRange.new(5, 8)
+			dust.LightEmission = 0.5
+			dust.Color = ColorSequence.new(vortexColor)
+			dust.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5), NumberSequenceKeypoint.new(1, 0) })
+			dust.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.4), NumberSequenceKeypoint.new(1, 1) })
+			dust.Parent = dustHolder
+			model.Parent = gateFolder
+			game:GetService("CollectionService"):AddTag(model, "GateVortex")
+		end
+
 		-- 멀리서도 "저기가 던전이다 / 가면 보상이 있다"가 보이게: 문 위로 솟는 은은한 빛줄기 (아주 연하게: 눈부시지 않게)
 		local beacon = makePart({
 			Name = "DungeonBeacon" .. index, Size = Vector3.new(5, 230, 5), Position = gatePos + Vector3.new(0, GH + 110, 0),
 			Color = color, Material = Enum.Material.Neon, Transparency = 0.93, CanCollide = false, CanQuery = false, CanTouch = false,
 		}, folder)
 		beacon.CastShadow = false
-		makeLabel(portal, string.format("⚔ DUNGEON\n✨ Mythic gear & Unique effects · Lv.%d+", entry.MinLevel), difficulty.Color, GH / 2 + 9, 300, 64, 60, true) -- 문틀 / 지붕에 가려지지 않게 항상 위에 그린다
+		makeLabel(portal, string.format("⚔ DUNGEON  ·  Lv.%d+", entry.MinLevel), difficulty.Color, GH / 2 + 9, 240, 40, 60, true) -- (글자는 짧게: 설명은 소용돌이 / 불꽃 / 빛줄기 같은 조형이 대신한다)
+		for _, side in ipairs({ -1, 1 }) do -- 문 앞 양옆에서 타오르는 화로: 어두운 마을에서 이 문 쪽이 먼저 눈에 들어온다
+			local standPos = Vector3.new(side * 12.6, 0, 7)
+			gp("GateFireStand", Vector3.new(1.6, 3.4, 1.6), standPos + Vector3.new(0, 1.7, 0), rgb(54, 50, 58), Enum.Material.Basalt)
+			local bowl2 = gp("GateFireBowl", Vector3.new(0.9, 3, 3), standPos + Vector3.new(0, 3.8, 0), rgb(48, 44, 50), Enum.Material.Metal, CFrame.Angles(0, 0, math.rad(90)), { Shape = Enum.PartType.Cylinder })
+			local flame2 = Instance.new("Fire")
+			flame2.Size = 6
+			flame2.Heat = 6
+			flame2.Color = color:Lerp(rgb(255, 160, 80), 0.5)
+			flame2.SecondaryColor = color
+			flame2.Parent = bowl2
+		end -- 문틀 / 지붕에 가려지지 않게 항상 위에 그린다
 
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText = "Enter (Lv." .. entry.MinLevel .. ")"

@@ -547,6 +547,13 @@
       "overwrite": true
     },
     {
+      "path": "GateVortexClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "GateVortexClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "IntroClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "IntroClient",
