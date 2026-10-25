@@ -118,7 +118,14 @@ local function ensureUi()
 	pillParty = pill("PartyPill", "👥 Party", 116, function() toggle("party") end)
 	pillStat = pill("StatPill", "✨ Traits / Exit", 150, function() toggle("stat") end)
 	pillShop = pill("ShopPill", "🎁 Shop", 96, function() player:SetAttribute("OpenShop", os.clock()) end) -- PlayerClient 가 신호를 받아 상점 창을 연다
-	pillShop.BackgroundColor3 = Color3.fromRGB(86, 52, 40)
+	pillShop.BackgroundColor3 = Color3.fromRGB(190, 70, 105)
+	pillShop.TextSize = 16 -- 모바일 게임 상점 배너처럼 크고 굵게
+	pillShop.Font = Enum.Font.GothamBlack
+	pillShop.TextStrokeTransparency = 0.2
+	pillShop.TextStrokeColor3 = Color3.fromRGB(40, 12, 24)
+	local shopStroke = pillShop:FindFirstChildOfClass("UIStroke")
+	if shopStroke then shopStroke.Color, shopStroke.Thickness, shopStroke.Transparency = Color3.fromRGB(30, 10, 20), 3, 0 end
+	make("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(190, 190, 200)), Rotation = 90 }, pillShop)
 	-- 카메라 거리 버튼 (왼쪽 가운데): 시점을 뒤로 빼거나 당긴다. 눌러도 손가락 두 개로 벌리고 오므리는 줌은 그대로 쓸 수 있다.
 	local function zoomButton(name, text, offsetY, delta)
 		local button = make("TextButton", {

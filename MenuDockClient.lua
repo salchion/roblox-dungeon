@@ -18,12 +18,49 @@ local SIZE, GAP = 74, 8
 local TOP_Y = 252 -- HUD 카드(60 ~ 236) 바로 아래
 
 -- 색은 진하지만 채도를 낮춰 눈이 편하게 (위쪽이 조금 밝은 그라데이션)
+local function attr(name) return player:GetAttribute(name) end
+local function gold() return attr("Gold") or 0 end
+
+-- 빨간 점 조건 (전부 내 Attribute 로만 계산: 서버 호출 없음). 할 일이 생기면 true
+local function dotGear() return attr("DotGear") == true end
+local function dotWeapon()
+	local level = attr("WeaponLevel") or 0
+	local ok, cost = pcall(Config.GetEnhanceCost, level)
+	return attr("DataReady") == true and ok and gold() >= cost and level < Config.Weapon.MaxLevel
+end
+local function dotGrowth()
+	if attr("GrowthNew") == true then return true end
+	for _, key in ipairs(Config.Skills.UpgradeOrder) do -- 스킬 강화에 쓸 골드가 모였나
+		local level = math.max(1, attr("SkillLv_" .. key) or 1)
+		if level < Config.SkillUpgrade.MaxLevel and gold() >= Config.GetSkillUpgradeCost(level) then return true end
+	end
+	return false
+end
+local function dotQuest() return attr("DotQuest") == true end
+local function dotPet()
+	if attr("DataReady") ~= true then return false end
+	local level = attr("PetLevel") or 0
+	if level <= 0 then return gold() >= Config.Pet.UnlockCost end
+	return level < Config.Pet.MaxLevel and gold() >= Config.GetPetLevelCost(level)
+end
+local function dotSets() -- 군주를 쓰러뜨려 열린 세트 효과 중 골드로 올릴 수 있는 것
+	for zone = 1, Config.Field.ZoneCount do
+		if attr("AugOpenZ_" .. zone) == true then
+			local level = attr("AugLvZ_" .. zone) or 0
+			if level < 3 and gold() >= Config.Sets.AugCost(zone, level + 1) then return true end
+		end
+	end
+	return false
+end
+
 local BUTTONS = {
-	{ Icon = "🎒", Text = "Gear",     Color = Color3.fromRGB(70, 110, 190), Tab = "Character:Gear" },
-	{ Icon = "🔫", Text = "Weapon",   Color = Color3.fromRGB(190, 95, 70),  Tab = "Character:Weapon", Dot = "CanEnhance" },
-	{ Icon = "📈", Text = "Growth",   Color = Color3.fromRGB(70, 150, 100), Tab = "Growth", Dot = "GrowthNew" },
-	{ Icon = "📜", Text = "Quests",   Color = Color3.fromRGB(175, 130, 60), Tab = "Quest", Dot = "DotQuest" },
-	{ Icon = "🐾", Text = "Pets",     Color = Color3.fromRGB(150, 90, 170), Signal = "OpenPet" },
+	{ Icon = "🎒", Text = "Gear",     Color = Color3.fromRGB(70, 110, 190), Tab = "Character:Gear", Dot = dotGear },
+	{ Icon = "🔫", Text = "Weapon",   Color = Color3.fromRGB(190, 95, 70),  Tab = "Character:Weapon", Dot = dotWeapon },
+	{ Icon = "📈", Text = "Growth",   Color = Color3.fromRGB(70, 150, 100), Tab = "Growth", Dot = dotGrowth },
+	{ Icon = "📜", Text = "Quests",   Color = Color3.fromRGB(175, 130, 60), Tab = "Quest", Dot = dotQuest },
+	{ Icon = "🐾", Text = "Pets",     Color = Color3.fromRGB(150, 90, 170), Signal = "OpenPet", Dot = dotPet },
+	{ Icon = "🌟", Text = "Sets",     Color = Color3.fromRGB(60, 130, 160), Signal = "OpenAug", Dot = dotSets },
+	{ Icon = "📖", Text = "Codex",    Color = Color3.fromRGB(110, 100, 170), Signal = "OpenCodex" },
 	{ Icon = "🎁", Text = "Shop",     Color = Color3.fromRGB(185, 75, 105), Signal = "OpenShop" },
 	{ Icon = "🏆", Text = "Ranking",  Color = Color3.fromRGB(170, 150, 60), Tab = "Rank" },
 	{ Icon = "⚙", Text = "Settings", Color = Color3.fromRGB(95, 105, 130), Signal = "OpenHelp" },
@@ -137,26 +174,13 @@ end
 
 for index, def in ipairs(BUTTONS) do build(index, def) end
 
--- 무기 강화에 쓸 골드가 모이면 Weapon 버튼에 빨간 점 (골드는 자주 바뀌어서 0.5초마다 한 번 확인)
-local function refreshEnhance()
-	local level = player:GetAttribute("WeaponLevel") or 0
-	local ready = false
-	if player:GetAttribute("DataReady") then
-		local ok, cost = pcall(Config.GetEnhanceCost, level)
-		ready = ok and (player:GetAttribute("Gold") or 0) >= cost and level < Config.Weapon.MaxLevel
-	end
-	if player:GetAttribute("CanEnhance") ~= ready then player:SetAttribute("CanEnhance", ready) end
-end
-
+-- 할 일이 생겼는지 0.5초마다 확인해서 빨간 점을 켜고 끈다 (골드는 자주 바뀌어서 이벤트 대신 주기 확인)
 local function refreshDots()
 	for def, dot in pairs(dots) do
-		dot.Visible = def.Dot ~= nil and player:GetAttribute(def.Dot) == true
+		local ok, on = pcall(function() return def.Dot ~= nil and def.Dot() end)
+		dot.Visible = ok and on == true
 	end
 end
-for _, def in ipairs(BUTTONS) do
-	if def.Dot then player:GetAttributeChangedSignal(def.Dot):Connect(refreshDots) end
-end
-refreshDots()
 
 -- 큰 화면에서만 보이고, 그때는 기존 작은 Menu / Settings 버튼을 숨긴다 (단축키 B / H 는 그대로)
 local function sync()
@@ -174,7 +198,7 @@ local function sync()
 end
 task.spawn(function()
 	while true do
-		pcall(refreshEnhance)
+		pcall(refreshDots)
 		sync()
 		task.wait(0.5)
 	end

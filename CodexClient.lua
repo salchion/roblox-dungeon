@@ -214,6 +214,7 @@ UserInputService.InputBegan:Connect(function(input, processed)
 	if processed then return end
 	if input.KeyCode == Enum.KeyCode.J then toggle() end
 end)
+player:GetAttributeChangedSignal("OpenCodex"):Connect(function() toggle() end) -- 왼쪽 메뉴 버튼(MenuDockClient)
 
 -- 튜토리얼 / 던전 / 심연 등 전투 화면에서는 버튼만 숨긴다 (J 키는 그대로)
 local function refreshButton()

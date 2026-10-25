@@ -35,6 +35,8 @@ local function text(props, parent)
 	props.TextColor3 = props.TextColor3 or Color3.new(1, 1, 1)
 	props.TextSize = props.TextSize or 13
 	props.TextXAlignment = props.TextXAlignment or Enum.TextXAlignment.Left
+	props.TextStrokeColor3 = props.TextStrokeColor3 or Color3.fromRGB(10, 12, 24) -- 굵은 외곽선 글씨 (모바일 게임처럼 또렷하게)
+	props.TextStrokeTransparency = props.TextStrokeTransparency or 0.35
 	return make("TextLabel", props, parent)
 end
 
@@ -52,7 +54,7 @@ local card = make("Frame", {
 }, gui)
 round(card, 12)
 make("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(34, 38, 62), Color3.fromRGB(14, 16, 26)), Rotation = 90 }, card)
-local cardStroke = make("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
+local cardStroke = make("UIStroke", { Color = Color3.fromRGB(14, 16, 30), Thickness = 3, Transparency = 0, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
 
 -- 레벨 배지
 local badge = make("Frame", { Size = UDim2.new(0, 50, 0, 50), Position = UDim2.new(0, 10, 0, 10), BackgroundColor3 = Color3.fromRGB(70, 120, 230), BorderSizePixel = 0 }, card)
@@ -64,23 +66,24 @@ local levelText = text({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 
 
 -- 이름 + 전투력
 local nameText = text({ Size = UDim2.new(1, -76, 0, 16), Position = UDim2.new(0, 68, 0, 9), Text = player.DisplayName, TextSize = 10, TextColor3 = Color3.fromRGB(175, 185, 220), TextTruncate = Enum.TextTruncate.AtEnd }, card)
-local powerText = text({ Size = UDim2.new(1, -76, 0, 26), Position = UDim2.new(0, 68, 0, 24), Text = "⚡ 0", TextSize = 19, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110), RichText = true }, card)
+local powerText = text({ Size = UDim2.new(1, -76, 0, 26), Position = UDim2.new(0, 68, 0, 24), Text = "⚡ 0", TextSize = 22, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110), RichText = true }, card)
 
 -- 경험치 막대 (글자를 막대 안에)
-local xpBack = make("Frame", { Size = UDim2.new(1, -20, 0, 14), Position = UDim2.new(0, 10, 0, 66), BackgroundColor3 = Color3.fromRGB(34, 38, 58), BorderSizePixel = 0 }, card)
-round(xpBack, 7)
+local xpBack = make("Frame", { Size = UDim2.new(1, -20, 0, 16), Position = UDim2.new(0, 10, 0, 66), BackgroundColor3 = Color3.fromRGB(34, 38, 58), BorderSizePixel = 0 }, card)
+round(xpBack, 8)
+make("UIStroke", { Color = Color3.fromRGB(10, 12, 24), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, xpBack)
 local xpFill = make("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(110, 200, 255), BorderSizePixel = 0 }, xpBack)
 round(xpFill, 7)
 make("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(150, 225, 255), Color3.fromRGB(80, 150, 255)) }, xpFill)
-local xpText = text({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 10, TextXAlignment = Enum.TextXAlignment.Center, ZIndex = 3 }, xpBack)
-xpText.TextStrokeTransparency = 0.6
+local xpText = text({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 11, TextXAlignment = Enum.TextXAlignment.Center, ZIndex = 3 }, xpBack)
+xpText.TextStrokeTransparency = 0.2
 
 -- 자원 칩 3개: 골드 / 티켓 / 열쇠
 local function chip(x, width, color)
 	local frame = make("Frame", { Size = UDim2.new(0, width, 0, 26), Position = UDim2.new(0, x, 0, 88), BackgroundColor3 = Color3.fromRGB(26, 29, 46), BorderSizePixel = 0 }, card)
 	round(frame, 8)
 	make("UIStroke", { Color = color, Thickness = 1, Transparency = 0.55, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame)
-	return text({ Size = UDim2.new(1, -8, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = "", TextSize = 10, RichText = true }, frame)
+	return text({ Size = UDim2.new(1, -8, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = "", TextSize = 11, RichText = true }, frame)
 end
 local goldText = chip(10, 106, Color3.fromRGB(255, 215, 90))
 local ticketText = chip(120, 54, Color3.fromRGB(215, 160, 255))

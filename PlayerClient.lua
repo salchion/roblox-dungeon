@@ -3148,6 +3148,15 @@ end)
 Remotes.Inventory.OnClientEvent:Connect(function(action, data)
 	if action == "State" then
 		inventoryState = data
+		local better = false -- 가방에 지금 입은 것보다 좋은 장비가 있으면 왼쪽 메뉴 버튼에 빨간 점
+		local worn = {}
+		for _, item in ipairs(data and data.Items or {}) do
+			if item.Equipped then worn[item.Slot] = item end
+		end
+		for _, item in ipairs(data and data.Items or {}) do
+			if not item.Equipped and (not worn[item.Slot] or item.Score > worn[item.Slot].Score) then better = true break end
+		end
+		player:SetAttribute("DotGear", better)
 		if menuPanel.Visible and currentTab == "Character" and MENU.Sub.Character == "Gear" then
 			refreshMenu()
 		end
