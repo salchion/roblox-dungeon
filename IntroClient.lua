@@ -280,7 +280,7 @@ local function play()
 	end)
 
 	-- 보스 자리: 필드 맨 끝 (최후의 군주 포탈 뒤), 마을 쪽(서쪽)을 바라본다. 실제 보스와 같은 모습
-	local S = 2.4
+	local S = 3.8 -- 보스 크기 (이전 2.4: 왕관 / 뿔 / 날개 장식이 작아서 안 보였다)
 	local bossX = F.ZoneEnd(F.ZoneCount) + 6
 	local groundY = 0
 	do
@@ -292,12 +292,29 @@ local function play()
 	local eyes = buildLord(props, bossCF, S)
 	for _, eye in ipairs(eyes) do eye.Transparency = 1 end -- 눈은 감고 있다가 뜬다
 	local face = bodyPos + Vector3.new(0, 14 * S, 0)
+	-- 어두운 보스의 장식(왕관 / 뿔 / 어깨 가시 / 날개)이 보이도록 연출용 조명 두 개 (내 화면에만, 끝나면 같이 사라진다)
+	local function lightAt(offset, color, range, brightness)
+		local holder = Instance.new("Part")
+		holder.Anchored, holder.CanCollide, holder.CanQuery, holder.CanTouch, holder.CastShadow = true, false, false, false, false
+		holder.Transparency = 1
+		holder.Size = Vector3.new(1, 1, 1)
+		holder.Position = bodyPos + offset
+		holder.Parent = props
+		local light = Instance.new("PointLight")
+		light.Color = color
+		light.Range = range
+		light.Brightness = brightness
+		light.Shadows = false
+		light.Parent = holder
+	end
+	lightAt(Vector3.new(-120, 40, 0), Color3.fromRGB(190, 200, 235), 240, 2.4) -- 앞쪽 차가운 빛: 윤곽과 장식이 드러난다
+	lightAt(Vector3.new(-30, 10, 0), Color3.fromRGB(255, 120, 100), 160, 2.2) -- 가슴 앞 붉은 빛: 코어에서 번지는 느낌
 
 	-- 카메라 준비: 마을 동쪽 문 위에서 필드를 따라 동쪽을 본다
 	local FLY_HEIGHT = 260 -- 날아가는 높이: 낮으면 벽 / 절벽에 가려 바닥의 필드가 안 보인다. 높이 떠서 아래를 내려다본다
 	local TILT = Vector3.new(600, -300, 0) -- 아래로 약 27도 기울여 바라본다
 	local startPos = Vector3.new(110, FLY_HEIGHT, 0)
-	local arrivePos = Vector3.new(bossX - 250, groundY + 120, 0)
+	local arrivePos = Vector3.new(bossX - 320, groundY + 150, 0)
 	local arriveLook = face + Vector3.new(0, -8, 0)
 	camera.CameraType = Enum.CameraType.Scriptable
 	camera.FieldOfView = 70
@@ -500,9 +517,9 @@ local function play()
 	orb.Color = Color3.fromRGB(255, 110, 70)
 	orb.Transparency = 0.25
 	orb.Size = Vector3.new(3, 3, 3)
-	orb.Position = face + Vector3.new(-34, -6, 0)
+	orb.Position = face + Vector3.new(-54, -8, 0)
 	orb.Parent = props
-	TweenService:Create(orb, TweenInfo.new(1.7, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Size = Vector3.new(80, 80, 80), Transparency = 0.1 }):Play()
+	TweenService:Create(orb, TweenInfo.new(1.7, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Size = Vector3.new(120, 120, 120), Transparency = 0.1 }):Play()
 	local chargeStart = os.clock()
 	local baseCFrame = CFrame.lookAt(arrivePos, arriveLook)
 	while os.clock() - chargeStart < 1.7 and not finished do
@@ -525,7 +542,7 @@ local function play()
 	beam.Material = Enum.Material.Neon
 	beam.Color = Color3.fromRGB(255, 150, 100)
 	beam.Transparency = 0.1
-	beam.Size = Vector3.new(60, 60, distance)
+	beam.Size = Vector3.new(90, 90, distance)
 	beam.CFrame = CFrame.lookAt((orb.Position + arrivePos) / 2, arrivePos)
 	beam.Parent = props
 	flash.BackgroundTransparency = 0.25
