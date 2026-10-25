@@ -22,8 +22,8 @@ local SPECS = {
 	-- ("방망이로 두드리는 둔탁한 느낌" 의견: 저음이 많고 갈라지는 소리가 약해서 -> 음을 12% 높이고, 저음을 깎고 고음을 살렸다)
 	--  후보 C (지금, AudioBank 에 ID 가 없을 때): 소총(Rifle) 소리에서 변형 - 소총과 같은 기본 소리 / 같은 짧은 잔향 느낌에서, 꼬리를 0.24초로 잘라 한 발 한 발 짧게 만들고 음을 5% 높였다. Choke 가 앞 소리를 끊어 "두두두두" 로 이어진다
 	--  (후보 B = AudioBank 에 ID 를 적으면 아래 Custom* 값이 쓰인다)
-	Shot_Smg      = { Base = "Shot", Pitch = 1.05, Volume = 1.0, Length = 0.19, Choke = true,
-		Fx = { { "reverb", { DecayTime = 0.5, WetLevel = -9 } } },
+	Shot_Smg      = { Base = "Shot", Pitch = 1.25, Volume = 0.95, Length = 0.16, Choke = true, -- ("더 가볍게 / 덜 겹치게": 음 1.05 -> 1.25, 길이 0.19 -> 0.16, 잔향 줄임, 저음 약간 깎음)
+		Fx = { { "reverb", { DecayTime = 0.3, WetLevel = -14 } }, { "eq", { LowGain = -5, MidGain = 0, HighGain = 2 } } },
 		CustomLength = 0.3, CustomPitch = 1.12, CustomFx = { { "eq", { LowGain = -10, MidGain = 1, HighGain = 5 } } } },
 	Shot_Revolver = { Base = "Shot", CustomLength = 1.4, Volume = 0.9, Pitch = 0.82, Length = 1.3, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -4 } } } },
 	Shot_Rifle    = { Base = "Shot", Pitch = 1.0, Volume = 0.9, Length = 0.9, Fx = { { "reverb", { DecayTime = 0.8, WetLevel = -9 } } } },
