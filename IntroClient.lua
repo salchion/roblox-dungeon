@@ -644,81 +644,150 @@ local function play()
 	task.wait(1.2)
 	if finished then return end
 
-	-- 5) 하늘 높은 곳에서 제목을 보여 주다가 -> 마을 스폰으로 천천히 곡선을 그리며 내려앉는다 (내려오는 동안 빛줄기가 켜지고, 닿을 때 캐릭터가 나타난다)
+	-- 5) 하늘 높은 곳에서 제목을 보여 주다가 -> 내 캐릭터가 하늘에서 "슝" 내려와 아이언맨처럼 착지한다
+	--    (진짜 캐릭터는 스폰에 숨겨 두고, 내 화면에만 보이는 분신이 떨어진다. 착지가 끝나면 분신을 지우고 진짜 캐릭터가 나타난다)
 	local homePose = CFrame.lookAt(spawnPos - look * 14 + Vector3.new(0, 7, 0), spawnPos + look * 30 + Vector3.new(0, 4, 0))
-	local pillar = Instance.new("Part") -- 하늘에서 스폰까지 내려오는 부드러운 빛줄기
-	pillar.Anchored, pillar.CanCollide, pillar.CanQuery, pillar.CanTouch, pillar.CastShadow = true, false, false, false, false
-	pillar.Material = Enum.Material.Neon
-	pillar.Color = Color3.fromRGB(150, 215, 255)
-	pillar.Transparency = 1
-	pillar.Size = Vector3.new(5, 700, 5)
-	pillar.Position = spawnPos + Vector3.new(0, 330, 0)
-	pillar.Parent = props
-	TweenService:Create(pillar, TweenInfo.new(1.6), { Transparency = 0.6 }):Play()
-	TweenService:Create(camera, TweenInfo.new(1.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { CFrame = CFrame.lookAt(skyPos - Vector3.new(60, 90, 0), spawnPos) }):Play() -- 정점에서 천천히 다가온다
-	task.delay(0.9, function()
+	local right = root.CFrame.RightVector
+	local function pitched(position, degrees) -- 몸을 앞으로 기울인다 (머리가 바라보는 쪽으로)
+		return CFrame.new(position) * CFrame.fromAxisAngle(right, -math.rad(degrees)) * (root.CFrame - root.CFrame.Position)
+	end
+	local double
+	do
+		character.Archivable = true
+		double = character:Clone()
+		for _, item in ipairs(double:GetDescendants()) do
+			if item:IsA("Script") or item:IsA("LocalScript") or item:IsA("BillboardGui") or item:IsA("ForceField") or item:IsA("Sound") then
+				item:Destroy()
+			elseif item:IsA("BasePart") then
+				item.Anchored, item.CanCollide, item.CanQuery, item.CanTouch = true, false, false, false
+				item.LocalTransparencyModifier = 0
+			end
+		end
+		local humanoid = double:FindFirstChildOfClass("Humanoid")
+		if humanoid then humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None end
+		double.Parent = props
+	end
+	local FALL_HEIGHT = 520
+	double:PivotTo(pitched(spawnPos + Vector3.new(0, FALL_HEIGHT, 0), 25))
+	local streak = Instance.new("Part") -- 떨어지는 몸 뒤로 길게 남는 빛줄기
+	streak.Anchored, streak.CanCollide, streak.CanQuery, streak.CanTouch, streak.CastShadow = true, false, false, false, false
+	streak.Material = Enum.Material.Neon
+	streak.Color = Color3.fromRGB(150, 215, 255)
+	streak.Transparency = 0.45
+	streak.Size = Vector3.new(3.5, 110, 3.5)
+	streak.Position = spawnPos + Vector3.new(0, FALL_HEIGHT + 60, 0)
+	streak.Parent = props
+
+	TweenService:Create(camera, TweenInfo.new(1.4, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { CFrame = CFrame.lookAt(skyPos - Vector3.new(40, 60, 0), spawnPos + Vector3.new(0, FALL_HEIGHT * 0.5, 0)) }):Play() -- 하늘 정점에서 떨어질 자리를 향해 자세를 잡는다
+	task.delay(0.7, function()
 		if finished then return end
-		TweenService:Create(title, TweenInfo.new(0.9), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
-		TweenService:Create(subtitle, TweenInfo.new(0.9), { TextTransparency = 1 }):Play()
+		TweenService:Create(title, TweenInfo.new(0.8), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+		TweenService:Create(subtitle, TweenInfo.new(0.8), { TextTransparency = 1 }):Play()
 	end)
 	sfx("Aug_Flame", 0.8, 0.4)
-	task.wait(1.8)
+	task.wait(1.5)
 	if finished then return end
 
-	-- 활공: 옆으로 크게 휘어지는 곡선을 따라 3.4초 동안 천천히 내려온다 (처음엔 조금 빠르게, 땅에 가까워질수록 부드럽게 느려진다)
-	local fromPos = skyPos - Vector3.new(60, 90, 0)
-	local toPos = homePose.Position
-	local descendTime = 4.8
-	local descendStart = os.clock()
-	local landed = false
-	local fovStart = camera.FieldOfView
-	-- 다리(브릿지): 올라갔다가 내려오는 순간 화면이 툭 바뀌지 않게, 화면이 잠깐 어두워졌다 밝아지며(숨 고르기) 바람 소리와 함께 천천히 속도가 붙는다
-	TweenService:Create(veil, TweenInfo.new(0.5, Enum.EasingStyle.Sine), { BackgroundTransparency = 0.5 }):Play()
-	task.delay(0.55, function()
-		if not finished then TweenService:Create(veil, TweenInfo.new(1.1, Enum.EasingStyle.Sine), { BackgroundTransparency = 1 }):Play() end
+	-- 낙하: 점점 빨라지며 "슝" (카메라는 떨어지는 몸을 쫓아 내려온다). 브릿지: 시작하는 순간 화면이 살짝 어두워졌다 밝아진다
+	TweenService:Create(veil, TweenInfo.new(0.3, Enum.EasingStyle.Sine), { BackgroundTransparency = 0.55 }):Play()
+	task.delay(0.35, function()
+		if not finished then TweenService:Create(veil, TweenInfo.new(0.9, Enum.EasingStyle.Sine), { BackgroundTransparency = 1 }):Play() end
 	end)
-	sfx("Aug_Flame", 0.9, 0.35)
+	sfx("Aug_Flame", 1.0, 0.3)
+	local camFrom = camera.CFrame.Position
+	local camLand = spawnPos - look * 26 + Vector3.new(0, 11, 0)
+	local fovStart = camera.FieldOfView
+	local fallTime = 1.7
+	local fallStart = os.clock()
 	while not finished do
-		local t = math.clamp((os.clock() - descendStart) / descendTime, 0, 1)
-		local eased = t * t * (3 - 2 * t) -- 느리게 출발 -> 가속 -> 땅 가까이에서 다시 부드럽게 (멈춰 있던 카메라가 갑자기 튀어 나가지 않는다)
-		local swing = math.sin(math.pi * eased) * 70 -- 옆으로 휘어지는 정도
-		local pos = fromPos:Lerp(toPos, eased) + Vector3.new(0, 0, swing)
-		local lookAtPoint = spawnPos:Lerp(spawnPos + look * 30 + Vector3.new(0, 4, 0), eased)
-		camera.CFrame = CFrame.lookAt(pos, lookAtPoint)
-		camera.FieldOfView = fovStart + (70 - fovStart) * eased
-		if t > 0.62 then setBodyAlpha(math.max(0, 1 - (t - 0.62) / 0.34)) end -- 거의 다 내려오면 몸이 서서히 나타난다
-		if t >= 1 then landed = true break end
+		local t = math.clamp((os.clock() - fallStart) / fallTime, 0, 1)
+		local fall = t * t -- 중력처럼 가속
+		local charPos = spawnPos + Vector3.new(0, FALL_HEIGHT * (1 - fall), 0)
+		local tilt = 25 * (1 - t) + 35 * t -- 기울기는 땅에 닿을 때 앞으로 숙인 자세로
+		double:PivotTo(pitched(charPos, tilt))
+		streak.Position = charPos + Vector3.new(0, 62, 0)
+		local f = t * t * (3 - 2 * t)
+		camera.CFrame = CFrame.lookAt(camFrom:Lerp(camLand, f), charPos + Vector3.new(0, 2, 0))
+		camera.FieldOfView = fovStart + (82 - fovStart) * math.sin(math.pi * t) -- 떨어질 때 시야가 넓어졌다가 돌아온다
+		if t >= 1 then break end
 		RunService.RenderStepped:Wait()
 	end
-	if finished or not landed then return end
-	camera.CFrame = homePose
-	camera.FieldOfView = 70
-	setBodyAlpha(0)
+	if finished then return end
 
-	-- 착지: 부드러운 충격 고리 + 빛줄기가 사라진다
-	sfx("Boom", 0.7, 0.9)
-	sfx("LevelUp", 0.6, 0.8)
+	-- 착지: 쾅! 숙인 자세로 땅을 짚고 충격이 퍼진다 (흙먼지 조각 + 충격 고리 + 번쩍 + 화면 흔들림)
+	sfx("Boom", 1.0, 0.7)
+	sfx("Aug_MeteorHit", 0.9, 1.0)
+	sfx("Ult_Finale", 0.6, 0.9)
+	TweenService:Create(streak, TweenInfo.new(0.5), { Transparency = 1 }):Play()
+	flash.BackgroundColor3 = Color3.fromRGB(190, 225, 255)
+	flash.BackgroundTransparency = 0.45
+	TweenService:Create(flash, TweenInfo.new(0.5), { BackgroundTransparency = 1 }):Play()
 	local ring = Instance.new("Part")
 	ring.Shape = Enum.PartType.Cylinder
 	ring.Anchored, ring.CanCollide, ring.CanQuery, ring.CanTouch, ring.CastShadow = true, false, false, false, false
 	ring.Material = Enum.Material.Neon
-	ring.Color = Color3.fromRGB(150, 215, 255)
-	ring.Transparency = 0.3
+	ring.Color = Color3.fromRGB(160, 220, 255)
+	ring.Transparency = 0.2
 	ring.Size = Vector3.new(0.4, 4, 4)
 	ring.CFrame = CFrame.new(spawnPos - Vector3.new(0, 2.8, 0)) * CFrame.Angles(0, 0, math.rad(90))
 	ring.Parent = props
-	TweenService:Create(ring, TweenInfo.new(1.0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.4, 60, 60), Transparency = 1 }):Play()
-	TweenService:Create(pillar, TweenInfo.new(0.9), { Transparency = 1, Size = Vector3.new(0.5, 700, 0.5) }):Play()
-	TweenService:Create(topBar, TweenInfo.new(1.0), { Size = UDim2.new(1, 0, 0, 0) }):Play()
-	TweenService:Create(bottomBar, TweenInfo.new(1.0), { Size = UDim2.new(1, 0, 0, 0) }):Play()
-	local landStart = os.clock()
-	while os.clock() - landStart < 0.7 and not finished do
-		local k = (os.clock() - landStart) / 0.7
-		local jitter = 0.9 * (1 - k)
-		camera.CFrame = homePose * CFrame.new(math.random() * jitter - jitter / 2, math.random() * jitter - jitter / 2, 0)
+	TweenService:Create(ring, TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.4, 70, 70), Transparency = 1 }):Play()
+	local scar = Instance.new("Part") -- 땅에 남는 어두운 균열 자국
+	scar.Shape = Enum.PartType.Cylinder
+	scar.Anchored, scar.CanCollide, scar.CanQuery, scar.CanTouch, scar.CastShadow = true, false, false, false, false
+	scar.Material = Enum.Material.Slate
+	scar.Color = Color3.fromRGB(34, 32, 40)
+	scar.Transparency = 0.25
+	scar.Size = Vector3.new(0.2, 16, 16)
+	scar.CFrame = CFrame.new(spawnPos - Vector3.new(0, 2.7, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	scar.Parent = props
+	TweenService:Create(scar, TweenInfo.new(2.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Transparency = 1 }):Play()
+	for i = 1, 14 do -- 튀어 오르는 돌 조각
+		local angle = i / 14 * math.pi * 2 + math.random() * 0.4
+		local chunk = Instance.new("Part")
+		chunk.Anchored, chunk.CanCollide, chunk.CanQuery, chunk.CanTouch, chunk.CastShadow = true, false, false, false, false
+		chunk.Material = Enum.Material.Slate
+		chunk.Color = Color3.fromRGB(110 + math.random(-15, 15), 104, 100)
+		local size = 0.5 + math.random() * 0.9
+		chunk.Size = Vector3.new(size, size, size)
+		local base = spawnPos - Vector3.new(0, 2.5, 0) + Vector3.new(math.cos(angle) * 2, 0, math.sin(angle) * 2)
+		chunk.CFrame = CFrame.new(base) * CFrame.Angles(math.random() * 6, math.random() * 6, 0)
+		chunk.Parent = props
+		local up = base + Vector3.new(math.cos(angle) * (6 + math.random() * 7), 4 + math.random() * 6, math.sin(angle) * (6 + math.random() * 7))
+		local down = up + Vector3.new(math.cos(angle) * 4, -(5 + math.random() * 3), math.sin(angle) * 4)
+		TweenService:Create(chunk, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = up }):Play()
+		task.delay(0.35, function()
+			if not chunk.Parent then return end
+			local fade = TweenService:Create(chunk, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Position = down, Transparency = 1 })
+			fade:Play()
+		end)
+	end
+	TweenService:Create(topBar, TweenInfo.new(1.2), { Size = UDim2.new(1, 0, 0, 0) }):Play()
+	TweenService:Create(bottomBar, TweenInfo.new(1.2), { Size = UDim2.new(1, 0, 0, 0) }):Play()
+	-- 숙인 자세(앞으로 기울이고 낮게)로 잠깐 버틴다 -> 천천히 일어선다. 카메라는 흔들리며 캐릭터 뒤로 자리 잡는다
+	local crouchPos = spawnPos - Vector3.new(0, 1.3, 0)
+	double:PivotTo(pitched(crouchPos, 38))
+	local holdStart = os.clock()
+	while os.clock() - holdStart < 0.55 and not finished do
+		local k = (os.clock() - holdStart) / 0.55
+		local jitter = 2.2 * (1 - k)
+		camera.CFrame = CFrame.lookAt(camLand:Lerp(homePose.Position, k * 0.5), crouchPos + Vector3.new(0, 2, 0)) * CFrame.new(math.random() * jitter - jitter / 2, math.random() * jitter - jitter / 2, 0)
 		RunService.RenderStepped:Wait()
 	end
+	local riseStart = os.clock()
+	local riseTime = 0.9
+	while os.clock() - riseStart < riseTime and not finished do
+		local k = (os.clock() - riseStart) / riseTime
+		local eased = k * k * (3 - 2 * k)
+		double:PivotTo(pitched(crouchPos:Lerp(spawnPos, eased), 38 * (1 - eased)))
+		camera.CFrame = CFrame.lookAt(camLand:Lerp(homePose.Position, 0.5 + 0.5 * eased), spawnPos:Lerp(spawnPos + look * 30 + Vector3.new(0, 4, 0), eased) + Vector3.new(0, 2, 0))
+		camera.FieldOfView = 70
+		RunService.RenderStepped:Wait()
+	end
+	setBodyAlpha(0) -- 분신 대신 진짜 캐릭터가 나타난다 (같은 자세 / 같은 자리)
+	double:Destroy()
 	camera.CFrame = homePose
+	camera.FieldOfView = 70
 	sfx("Reel_Stop", 0.8, 0.9)
 	task.wait(0.4)
 	finish()
