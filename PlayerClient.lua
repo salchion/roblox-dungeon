@@ -404,8 +404,46 @@ task.spawn(function()
 	end
 end)
 
+local WEAPON_ICONS = { Pistol = "🔫", Smg = "💨", Revolver = "🎯", Rifle = "🪖", Shotgun = "💥", Flamer = "🔥", Cannon = "🟣", Sniper = "🔭", Rocket = "🚀", Rail = "⚡" }
+
+-- 가차 화면처럼 보이는 위쪽 무대: 내 캐릭터가 지금 무기를 들고 천천히 돈다 (글만 가득하던 위쪽 카드를 그림으로)
+local stage3d = create("ViewportFrame", {
+	Size = UDim2.new(0, 150, 0, 150), Position = UDim2.new(0, 12, 0, 84), BackgroundColor3 = Color3.fromRGB(26, 24, 44), BorderSizePixel = 0,
+	Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1), ZIndex = 2,
+}, enhancePanel)
+create("UICorner", { CornerRadius = UDim.new(0, 12) }, stage3d)
+local stage3dStroke = create("UIStroke", { Color = Color3.fromRGB(150, 110, 220), Thickness = 2 }, stage3d)
+local stageCam = create("Camera", { FieldOfView = 36 }, stage3d)
+stage3d.CurrentCamera = stageCam
+local stageClone, stagePivot
+local function rebuildStage()
+	if stageClone then stageClone:Destroy() stageClone = nil end
+	local character = player.Character
+	if not character then return end
+	character.Archivable = true
+	stageClone = character:Clone()
+	for _, descendant in ipairs(stageClone:GetDescendants()) do
+		if descendant:IsA("Script") or descendant:IsA("LocalScript") or descendant:IsA("BillboardGui") or descendant:IsA("ForceField") then
+			descendant:Destroy()
+		elseif descendant:IsA("BasePart") then
+			descendant.Anchored = true
+		end
+	end
+	stageClone.Parent = stage3d
+	stagePivot = stageClone:GetPivot()
+end
+RunService.RenderStepped:Connect(function(dt)
+	if not enhancePanel.Visible or not stageClone or not stagePivot then return end
+	E.Spin = (E.Spin or 0) + dt * 0.8
+	stageClone:PivotTo(CFrame.new(stagePivot.Position) * CFrame.Angles(0, E.Spin, 0))
+	stageCam.CFrame = CFrame.lookAt(stagePivot.Position + Vector3.new(0, 1.0, 11), stagePivot.Position + Vector3.new(0, 0.3, 0))
+end)
+player.CharacterAdded:Connect(function() task.delay(1, function() if enhancePanel.Visible then rebuildStage() end end) end)
+enhancePanel:GetPropertyChangedSignal("Visible"):Connect(function() if enhancePanel.Visible then rebuildStage() end end)
+
 local function buildTrack(level, color)
 	for _, child in ipairs(track:GetChildren()) do child:Destroy() end
+	stage3dStroke.Color = color
 	local order = Config.WeaponTypes.Order
 	local tiers = Config.Weapon.Tiers
 	local unlocked = Config.GetUnlockedCount(level)
@@ -434,50 +472,54 @@ local function buildTrack(level, color)
 	end
 	local milestone = Config.GetNextMilestone(level)
 
-	-- 위쪽 카드: 다음에 무엇이 열리는지
-	local cardText
+	-- 오른쪽 카드: 다음에 무엇이 열리는지 (큰 아이콘 + 이름 + 한 줄 설명 + 남은 횟수)
+	local card = create("Frame", { Size = UDim2.new(0, 214, 0, 150), Position = UDim2.new(0, 164, 0, -2), BackgroundColor3 = Color3.fromRGB(26, 24, 44), BorderSizePixel = 0 }, track)
+	create("UICorner", { CornerRadius = UDim.new(0, 12) }, card)
+	create("UIStroke", { Color = Color3.fromRGB(110, 90, 160), Thickness = 2 }, card)
+	local icon, name, note, remain, header = "🏆", "Max level!", "", "", "Final weapon"
 	if milestone and milestone.Kind == "Form" then
 		local info = Config.WeaponTypes[milestone.Key]
-		cardText = string.format("<font size='12' color='#aab0cc'>Next unlock · +%d</font>\n<font size='22' color='#ffd966'><b>🔓 %s</b></font>\n<font size='12' color='#dfe6ff'>%s</font>\n<font size='12' color='#78ff8c'><b>%d more upgrades</b></font>", milestone.Level, info.Name, info.Trait, milestone.Level - level)
+		icon, name, note, header = WEAPON_ICONS[milestone.Key] or "🔓", info.Name, info.Trait, string.format("NEXT UNLOCK · +%d", milestone.Level)
+		remain = string.format("%d more upgrades", milestone.Level - level)
 	elseif milestone then
 		local perk = milestone.Tier.Perk
-		cardText = string.format("<font size='12' color='#aab0cc'>Next era · +%d</font>\n<font size='22' color='#ffd966'><b>✨ %s</b></font>\n<font size='12' color='#dfe6ff'>%s</font>\n<font size='12' color='#78ff8c'><b>%d more upgrades</b></font>", milestone.Level, milestone.Name, perk and (perk.Icon .. " " .. perk.Name) or "New look and shot color", milestone.Level - level)
-	else
-		cardText = "<font size='22' color='#ffd966'><b>🏆 Max level!</b></font>"
+		icon, name, note, header = "✨", milestone.Name, perk and (perk.Icon .. " " .. perk.Name) or "New look and shot color", string.format("NEXT ERA · +%d", milestone.Level)
+		remain = string.format("%d more upgrades", milestone.Level - level)
 	end
-	makeLabel({
-		Size = UDim2.new(1, 0, 0, 100), Position = UDim2.new(0, 0, 0, 8), RichText = true, TextSize = 14, Text = cardText,
-		TextWrapped = true, TextYAlignment = Enum.TextYAlignment.Top,
-	}, track)
+	makeLabel({ Size = UDim2.new(1, -16, 0, 16), Position = UDim2.new(0, 8, 0, 8), Text = header, TextSize = 10, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(150, 158, 190), TextXAlignment = Enum.TextXAlignment.Left }, card)
+	local tile = create("Frame", { Size = UDim2.new(0, 58, 0, 58), Position = UDim2.new(0, 10, 0, 30), BackgroundColor3 = Color3.fromRGB(58, 50, 28), BorderSizePixel = 0 }, card)
+	create("UICorner", { CornerRadius = UDim.new(0, 12) }, tile)
+	create("UIStroke", { Color = Color3.fromRGB(255, 217, 102), Thickness = 2 }, tile)
+	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = icon, TextSize = 34 }, tile)
+	makeLabel({ Size = UDim2.new(1, -84, 0, 26), Position = UDim2.new(0, 76, 0, 30), Text = name, TextSize = 19, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 217, 102), TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, card)
+	makeLabel({ Size = UDim2.new(1, -84, 0, 34), Position = UDim2.new(0, 76, 0, 56), Text = note, TextSize = 11, TextColor3 = Color3.fromRGB(205, 212, 235), TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top }, card)
+	if remain ~= "" then
+		local chip = create("Frame", { Size = UDim2.new(1, -20, 0, 30), Position = UDim2.new(0, 10, 1, -40), BackgroundColor3 = Color3.fromRGB(34, 62, 44), BorderSizePixel = 0 }, card)
+		create("UICorner", { CornerRadius = UDim.new(0, 8) }, chip)
+		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = remain, TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(120, 255, 140) }, chip)
+	end
 
-	-- 길: 어두운 바탕 + 나아간 만큼 차오르는 막대 + 해금 지점(동그라미)
-	local left, width, y = 18, 340, 150
-	local bar = create("Frame", { Size = UDim2.new(0, width, 0, 10), Position = UDim2.new(0, left, 0, y - 5), BackgroundColor3 = Color3.fromRGB(52, 50, 72), BorderSizePixel = 0 }, track)
-	create("UICorner", { CornerRadius = UDim.new(0, 5) }, bar)
-	local fillWidth = math.max(4, width * math.min(1, pos / math.max(1, n - 1)))
-	local fill = create("Frame", { Size = UDim2.new(0, fillWidth, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 96, 84), BorderSizePixel = 0 }, bar)
-	create("UICorner", { CornerRadius = UDim.new(0, 5) }, fill)
-	create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 120, 90), Color3.fromRGB(255, 205, 100)) }, fill)
-	makeLabel({ Size = UDim2.new(0, 40, 0, 16), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0, left + fillWidth, 0, y - 12), Text = "▼", TextSize = 13, TextColor3 = Color3.fromRGB(255, 205, 100) }, track)
+	-- 아래 줄: 무기 아이콘 칸들 (끝낸 칸 / 다음 칸 / 잠긴 칸). 글자 대신 그림으로 한눈에
+	local count = #nodes
+	local tileSize, gap = 30, 4
+	local rowWidth = count * tileSize + (count - 1) * gap
+	local left = (376 - rowWidth) / 2
 	for i, node in ipairs(nodes) do
-		local x = left + width * (i - 1) / math.max(1, n - 1)
+		local x = left + (i - 1) * (tileSize + gap)
 		local done = level >= node.Level
 		local isNext = i == nextIndex
-		local dot = create("Frame", {
-			Size = UDim2.new(0, 26, 0, 26), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, x, 0, y), BorderSizePixel = 0,
-			BackgroundColor3 = done and color or (isNext and Color3.fromRGB(70, 60, 30) or Color3.fromRGB(36, 36, 52)),
+		local key = order[i]
+		local box = create("Frame", {
+			Size = UDim2.new(0, tileSize, 0, tileSize), Position = UDim2.new(0, x, 0, 164), BorderSizePixel = 0,
+			BackgroundColor3 = done and color:Lerp(Color3.fromRGB(24, 22, 38), 0.65) or (isNext and Color3.fromRGB(70, 60, 30) or Color3.fromRGB(30, 30, 46)),
 		}, track)
-		create("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
-		create("UIStroke", { Color = isNext and Color3.fromRGB(255, 217, 102) or (done and Color3.new(1, 1, 1) or Color3.fromRGB(80, 82, 110)), Thickness = isNext and 3 or 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, dot)
-		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = done and "✔" or (isNext and "★" or (node.Era and "✦" or "🔒")), TextSize = done and 13 or 11, TextColor3 = done and Color3.fromRGB(20, 20, 30) or Color3.fromRGB(190, 192, 215) }, dot)
-		makeLabel({ Size = UDim2.new(0, 44, 0, 14), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, x, 0, y + 17), Text = "+" .. node.Level, TextSize = 9, TextColor3 = done and Color3.fromRGB(200, 205, 230) or Color3.fromRGB(120, 122, 150) }, track)
-		-- 이름은 칸이 좁아서 위아래로 엇갈려 쓴다 (다음 해금은 굵게)
-		local above = i % 2 == 0
-		makeLabel({
-			Size = UDim2.new(0, 60, 0, 14), AnchorPoint = Vector2.new(0.5, above and 1 or 0), Position = UDim2.new(0, x, 0, above and (y - 20) or (y + 32)),
-			Text = node.Name, TextSize = 9, TextColor3 = isNext and Color3.fromRGB(255, 217, 102) or (done and Color3.fromRGB(215, 220, 240) or Color3.fromRGB(130, 132, 160)),
-			Font = isNext and Enum.Font.GothamBlack or Enum.Font.GothamBold,
-		}, track)
+		create("UICorner", { CornerRadius = UDim.new(0, 8) }, box)
+		create("UIStroke", { Color = isNext and Color3.fromRGB(255, 217, 102) or (done and color or Color3.fromRGB(70, 72, 100)), Thickness = isNext and 2.5 or 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, box)
+		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = node.Era and "✨" or (WEAPON_ICONS[key] or "?"), TextSize = 17, TextTransparency = done and 0 or (isNext and 0.15 or 0.65) }, box)
+		if not done then
+			makeLabel({ Size = UDim2.new(0, 12, 0, 12), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, 1, 1, 1), Text = isNext and "★" or "🔒", TextSize = 9, TextColor3 = Color3.fromRGB(255, 217, 102) }, box)
+		end
+		makeLabel({ Size = UDim2.new(0, 36, 0, 12), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, x + tileSize / 2, 0, 198), Text = "+" .. node.Level, TextSize = 9, TextColor3 = done and Color3.fromRGB(200, 205, 230) or Color3.fromRGB(120, 122, 150) }, track)
 	end
 end
 
