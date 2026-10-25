@@ -193,17 +193,29 @@ end
 
 local originals = setmetatable({}, { __mode = "k" }) -- [글자 객체] = 원래(영어) 글자
 
+-- 번역이 없는 글자를 모아 둔다 (Studio 에서만): 영어로 남은 문장을 Output 에 한꺼번에 찍어 주면 사전에 추가할 수 있다
+local RunService = game:GetService("RunService")
+local missing, missingCount, missingPrinted = {}, 0, {}
+local function noteMissing(text)
+	if not RunService:IsStudio() or missingCount >= 600 or missing[text] then return end
+	if string.find(text, "[\234-\237]") then return end -- 이미 한글이 섞여 있으면 제외 (한글 첫 바이트 0xEA~0xED)
+	missing[text] = true
+	missingCount += 1
+end
+
 local applying = false
 local function apply(obj)
 	if lang ~= "ko" then return end
 	local text = obj.Text
-	if text == "" then return end
+	if text == "" or not string.find(text, "%a%a%a") then return end -- (숫자뿐인 글자는 번역할 게 없다)
 	local ko = translate(text)
 	if ko and ko ~= text then
 		applying = true
 		originals[obj] = text
 		obj.Text = ko
 		applying = false
+	else
+		noteMissing(text)
 	end
 end
 
@@ -258,6 +270,23 @@ player:GetAttributeChangedSignal("UiLang"):Connect(function()
 	refreshAll()
 end)
 
+-- 월드 안의 이름표 / 간판(BillboardGui / SurfaceGui): NPC 이름, 대장간 간판, 몬스터 이름 등
+local function inWorldGui(obj)
+	return obj:FindFirstAncestorWhichIsA("BillboardGui") ~= nil or obj:FindFirstAncestorWhichIsA("SurfaceGui") ~= nil
+end
+local function watchWorld(obj)
+	if (obj:IsA("TextLabel") or obj:IsA("TextButton")) and inWorldGui(obj) then watch(obj) end
+end
+task.spawn(function()
+	local count = 0
+	for _, obj in ipairs(workspace:GetDescendants()) do
+		watchWorld(obj)
+		count += 1
+		if count % 3000 == 0 then task.wait() end
+	end
+	workspace.DescendantAdded:Connect(function(obj) task.defer(watchWorld, obj) end)
+end)
+
 for _, gui in ipairs(playerGui:GetChildren()) do
 	if gui:IsA("ScreenGui") then watchTree(gui) end
 end
@@ -270,3 +299,28 @@ task.spawn(function()
 	memo, memoCount = {}, 0
 	refreshAll()
 end)
+
+-- Studio 에서만: 20초마다 새로 모인 "번역이 없는 글자"를 Output 에 찍는다 (한글 모드로 게임을 돌아다니면 영어로 남은 곳이 모인다)
+if RunService:IsStudio() then
+	task.spawn(function()
+		while true do
+			task.wait(20)
+			if lang == "ko" then
+				local fresh = {}
+				for text in pairs(missing) do
+					if not missingPrinted[text] then
+						missingPrinted[text] = true
+						table.insert(fresh, text)
+					end
+				end
+				if #fresh > 0 then
+					table.sort(fresh)
+					print(string.format("[번역 누락 %d개] 아래 문장을 복사해서 보내 주세요", #fresh))
+					for _, text in ipairs(fresh) do
+						print("  " .. string.gsub(string.sub(text, 1, 240), "\n", "⏎"))
+					end
+				end
+			end
+		end
+	end)
+end

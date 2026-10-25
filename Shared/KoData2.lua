@@ -336,6 +336,9 @@ return {
 		["Void Staff"] = "공허 지팡이",
 		["Dragon Staff"] = "용 지팡이",
 		["Mythic Staff"] = "신화 지팡이",
+		["🌪 Gale Sweep!"] = "🌪 돌풍!",
+		["Weapon Upgrade"] = "무기 강화",
+		["Blacksmith Tom"] = "대장장이 톰",
 	},
 	pats = {
 		{ "^≈ ([%d,%.%-]+) dmg$", "≈ %s 피해", "dmg", -6 },
