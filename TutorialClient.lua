@@ -709,7 +709,7 @@ do
 			part.Material = Enum.Material.Neon
 			part.Color = GUIDE_COLOR
 			part.Transparency = 1
-			part.Size = Vector3.new(0.55, 0.12, (tip - tail).Magnitude + 0.3)
+			part.Size = Vector3.new(0.7, 0.16, (tip - tail).Magnitude + 0.3)
 			part.Parent = folder
 			table.insert(bars, { Part = part, Local = CFrame.lookAt((tip + tail) / 2, tip), Row = row })
 		end
@@ -739,11 +739,10 @@ do
 		local flat = Vector3.new(target.X - root.Position.X, 0, target.Z - root.Position.Z)
 		if flat.Magnitude < 25 then hide() return end
 		local dir = flat.Unit
-		local ahead = root.Position + dir * 5
-		rayParams.FilterDescendantsInstances = { character, folder }
-		local hit = workspace:Raycast(ahead + Vector3.new(0, 4, 0), Vector3.new(0, -14, 0), rayParams)
-		local groundY = hit and hit.Position.Y or (root.Position.Y - 3)
-		local base = CFrame.lookAt(Vector3.new(ahead.X, groundY + 0.2, ahead.Z), Vector3.new(ahead.X, groundY + 0.2, ahead.Z) + dir)
+		-- 캐릭터에 가려지지 않게 머리 위 높이(캐릭터 앞쪽)에 떠 있는다: 어느 시점에서도 보이고, 살짝 위아래로 뛴다
+		local ahead = root.Position + dir * 6
+		local hover = root.Position.Y + 3.6 + 0.25 * math.sin(os.clock() * 3)
+		local base = CFrame.lookAt(Vector3.new(ahead.X, hover, ahead.Z), Vector3.new(ahead.X, hover, ahead.Z) + dir)
 		local t = os.clock() * 2.2
 		for _, bar in ipairs(bars) do
 			bar.Part.CFrame = base * bar.Local
