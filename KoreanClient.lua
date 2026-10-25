@@ -19,7 +19,7 @@ local DICT = {
 	["Character"] = "캐릭터", ["Skills·Growth"] = "스킬·성장", ["Quests"] = "퀘스트", ["Ranking"] = "랭킹",
 	["🛡 Gear"] = "🛡 장비", ["🔫 Weapon"] = "🔫 무기", ["📊 Info"] = "📊 정보",
 	["Gear"] = "장비", ["Weapon"] = "무기", ["Growth"] = "성장", ["Pets"] = "펫", ["Shop"] = "상점", ["Settings"] = "설정",
-	["📋 Menu(B)"] = "📋 메뉴(B)", ["📋 Menu"] = "📋 메뉴", ["⚙ Settings(H)"] = "⚙ 설정(H)", ["✨ Stats (T)"] = "✨ 스탯 (T)",
+	["📋 Menu(B)"] = "📋 메뉴(B)", ["☰ Menu"] = "☰ 메뉴", ["📋 Menu"] = "📋 메뉴", ["⚙ Settings(H)"] = "⚙ 설정(H)", ["✨ Stats (T)"] = "✨ 스탯 (T)",
 	["⚙ Settings / ❓ Help"] = "⚙ 설정 / ❓ 도움말", ["✨ Level Stats"] = "✨ 레벨 스탯",
 	["Close"] = "닫기", ["Close (B)"] = "닫기 (B)", ["Close (H)"] = "닫기 (H)", ["Close (J)"] = "닫기 (J)",
 	["🎁 Shop"] = "🎁 상점", ["📖 Codex"] = "📖 도감", ["🐾 Pet"] = "🐾 펫", ["🏆 Power Ranking"] = "🏆 전투력 랭킹", ["🏆 Weekly Ranking"] = "🏆 주간 랭킹",
@@ -88,6 +88,31 @@ local function loadData()
 		index += 1
 		module = ReplicatedStorage:WaitForChild("KoData" .. index, 3)
 	end
+	-- 패턴 앞뒤의 "고정 글자"를 미리 뽑아 둔다: 글자가 그 앞뒤로 시작 / 끝나지 않으면 비싼 패턴 맞추기를 아예 건너뛴다 (화면 글자가 많을 때 멈추지 않게)
+	local function literalEnds(pat)
+		local body = string.sub(pat, 2, -2) -- ^ 와 $ 제거
+		local firstOpen, lastClose, i = nil, nil, 1
+		while i <= #body do
+			local c = string.sub(body, i, i)
+			if c == "%" then
+				i += 2
+			else
+				if c == "(" and not firstOpen then firstOpen = i end
+				if c == ")" then lastClose = i end
+				i += 1
+			end
+		end
+		local prefix = firstOpen and string.sub(body, 1, firstOpen - 1) or ""
+		local suffix = lastClose and string.sub(body, lastClose + 1) or ""
+		return (string.gsub(prefix, "%%(.)", "%1")), (string.gsub(suffix, "%%(.)", "%1"))
+	end
+	local kept = {}
+	for _, entry in ipairs(data.pats) do
+		local prefix, suffix = literalEnds(entry[1])
+		entry[5], entry[6] = prefix, suffix
+		if not (prefix == "" and suffix == "" and (entry[3] or "") == "") then table.insert(kept, entry) end
+	end
+	data.pats = kept
 	table.sort(data.pats, function(a, b) return (a[4] or 0) < (b[4] or 0) end)
 end
 
@@ -110,9 +135,11 @@ local function lookup(piece)
 			if ok then return result end
 		end
 	end
+	if #piece > 300 then return nil end -- (긴 글은 패턴으로 맞추지 않는다: 와일드카드가 여러 개인 패턴은 긴 글에서 아주 느려질 수 있다)
 	for _, entry in ipairs(data.pats) do
-		local anchor = entry[3]
-		if anchor == "" or string.find(piece, anchor, 1, true) then
+		local anchor, prefix, suffix = entry[3], entry[5] or "", entry[6] or ""
+		if (prefix == "" or string.sub(piece, 1, #prefix) == prefix) and (suffix == "" or string.sub(piece, -#suffix) == suffix)
+			and (anchor == "" or string.find(piece, anchor, 1, true)) then
 			local captures = { string.match(piece, entry[1]) }
 			if #captures > 0 then
 				local ok, result = pcall(string.format, entry[2], table.unpack(captures))
@@ -210,8 +237,17 @@ local function refreshAll()
 		originals = setmetatable({}, { __mode = "k" })
 		return
 	end
-	for obj in pairs(watched) do
+	-- 글자가 많아도 화면이 멈추지 않게 200개씩 나눠서 바꾼다
+	local list = {}
+	for obj in pairs(watched) do table.insert(list, obj) end -- (돌다가 새 글자가 생겨도 안전하게 복사해서 돈다)
+	local batch = 0
+	for _, obj in ipairs(list) do
 		if obj.Parent then apply(obj) end
+		batch += 1
+		if batch >= 200 then
+			batch = 0
+			task.wait()
+		end
 	end
 end
 

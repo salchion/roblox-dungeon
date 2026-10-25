@@ -105,13 +105,13 @@ gui.Parent = playerGui
 
 local dots = {} -- [버튼 정의] = 빨간 점
 
+local entries = {} -- { Button, Icon, Label } (위치 / 글자 크기는 layout() 이 화면에 맞게 정한다)
+local menuOpen = false -- 폰: 접힌 메뉴(☰)가 열려 있나
+
 local function build(index, def)
-	local column = (index - 1) % 2
-	local row = math.floor((index - 1) / 2)
 	local button = Instance.new("TextButton")
 	button.Name = "Dock" .. def.Text
 	button.Size = UDim2.new(0, SIZE, 0, SIZE)
-	button.Position = UDim2.new(0, 16 + column * (SIZE + GAP), 0, TOP_Y + row * (SIZE + GAP))
 	button.BackgroundColor3 = def.Color
 	button.BorderSizePixel = 0
 	button.Text = ""
@@ -134,8 +134,8 @@ local function build(index, def)
 
 	local icon = Instance.new("TextLabel")
 	icon.BackgroundTransparency = 1
-	icon.Size = UDim2.new(1, 0, 0, 40)
-	icon.Position = UDim2.new(0, 0, 0, 4)
+	icon.Size = UDim2.new(1, 0, 0.6, 0)
+	icon.Position = UDim2.new(0, 0, 0.03, 0)
 	icon.Text = def.Icon
 	icon.TextSize = 30
 	icon.Font = Enum.Font.GothamBold
@@ -143,8 +143,8 @@ local function build(index, def)
 
 	local label = Instance.new("TextLabel")
 	label.BackgroundTransparency = 1
-	label.Size = UDim2.new(1, 0, 0, 20)
-	label.Position = UDim2.new(0, 0, 1, -21)
+	label.Size = UDim2.new(1, 0, 0.3, 0)
+	label.Position = UDim2.new(0, 0, 0.67, 0)
 	label.Text = def.Text
 	label.TextSize = 13
 	label.Font = Enum.Font.GothamBlack
@@ -183,6 +183,7 @@ local function build(index, def)
 	dotScale.Parent = dot
 	TweenService:Create(dotScale, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Scale = 1.25 }):Play()
 	dots[def] = dot
+	entries[index] = { Button = button, Icon = icon, Label = label }
 
 	button.MouseEnter:Connect(function()
 		TweenService:Create(scale, TweenInfo.new(0.1), { Scale = 1.08 }):Play()
@@ -193,6 +194,7 @@ local function build(index, def)
 	button.Activated:Connect(function()
 		scale.Scale = 0.92
 		TweenService:Create(scale, TweenInfo.new(0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+		menuOpen = false -- (폰: 고르면 메뉴가 접힌다)
 		if def.Tab then
 			player:SetAttribute("OpenMenuTab", def.Tab)
 		else
@@ -212,24 +214,109 @@ local function refreshDots()
 	end
 end
 
--- 큰 화면에서만 보이고, 그때는 기존 작은 Menu / Settings 버튼을 숨긴다 (단축키 B / H 는 그대로)
+-- 폰(작은 화면)용: 왼쪽 위 카드 아래에 "☰ Menu" 버튼 하나만 두고, 누르면 작은 아이콘 5 x 2 격자가 펼쳐진다 (화면을 가리지 않게). 빨간 점이 하나라도 있으면 ☰ 버튼에도 점이 뜬다.
+local toggle = Instance.new("TextButton")
+toggle.Name = "DockToggle"
+toggle.Size = UDim2.new(0, 84, 0, 34)
+toggle.BackgroundColor3 = Color3.fromRGB(52, 62, 110)
+toggle.BorderSizePixel = 0
+toggle.AutoButtonColor = true
+toggle.Text = "☰ Menu"
+toggle.TextSize = 14
+toggle.Font = Enum.Font.GothamBlack
+toggle.TextColor3 = Color3.new(1, 1, 1)
+toggle.TextStrokeColor3 = Color3.fromRGB(20, 22, 36)
+toggle.TextStrokeTransparency = 0.2
+toggle.Visible = false
+toggle.Parent = gui
+do
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 10)
+	corner.Parent = toggle
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = Color3.fromRGB(20, 22, 36)
+	stroke.Thickness = 3
+	stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	stroke.Parent = toggle
+	local gradient = Instance.new("UIGradient")
+	gradient.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(190, 190, 200))
+	gradient.Rotation = 90
+	gradient.Parent = toggle
+end
+local toggleDot = Instance.new("Frame")
+toggleDot.Size = UDim2.new(0, 18, 0, 18)
+toggleDot.AnchorPoint = Vector2.new(0.5, 0.5)
+toggleDot.Position = UDim2.new(1, -2, 0, 2)
+toggleDot.BackgroundColor3 = Color3.fromRGB(225, 60, 60)
+toggleDot.BorderSizePixel = 0
+toggleDot.Visible = false
+toggleDot.ZIndex = 5
+toggleDot.Parent = toggle
+do
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(1, 0)
+	corner.Parent = toggleDot
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = Color3.new(1, 1, 1)
+	stroke.Thickness = 2
+	stroke.Parent = toggleDot
+	local mark = Instance.new("TextLabel")
+	mark.BackgroundTransparency = 1
+	mark.Size = UDim2.new(1, 0, 1, 0)
+	mark.Text = "!"
+	mark.TextSize = 12
+	mark.Font = Enum.Font.GothamBlack
+	mark.TextColor3 = Color3.new(1, 1, 1)
+	mark.ZIndex = 6
+	mark.Parent = toggleDot
+end
+toggle.Activated:Connect(function() menuOpen = not menuOpen end)
+
+-- 화면에 맞게 버튼 자리 / 크기를 정한다 (0.5초마다). 큰 화면: 왼쪽 카드 아래 2열 5줄 / 폰: ☰ 아래에 5열 2줄 (펼쳤을 때만)
+local function layout(compact, hud)
+	local size, gap, columns, x, y, iconSize, labelSize
+	if compact then
+		local old = hud and hud:FindFirstChild("MenuButton")
+		local baseY = old and old.Position.Y.Offset or 190 -- MobileLayoutClient 가 정한 "메뉴 / 설정 버튼 줄" 높이를 그대로 쓴다
+		toggle.Position = UDim2.new(0, 12, 0, baseY)
+		size, gap, columns, x, y, iconSize, labelSize = 50, 6, 5, 12, baseY + 42, 22, 10
+	else
+		size, gap, columns, x, y, iconSize, labelSize = SIZE, GAP, 2, 16, TOP_Y, 30, 13
+	end
+	toggle.Visible = compact
+	local anyDot = false
+	for index, entry in ipairs(entries) do
+		local column = (index - 1) % columns
+		local row = math.floor((index - 1) / columns)
+		entry.Button.Size = UDim2.new(0, size, 0, size)
+		entry.Button.Position = UDim2.new(0, x + column * (size + gap), 0, y + row * (size + gap))
+		entry.Button.Visible = (not compact) or menuOpen
+		entry.Icon.TextSize = iconSize
+		entry.Label.TextSize = labelSize
+		local dot = dots[BUTTONS[index]]
+		if dot and dot.Visible then anyDot = true end
+	end
+	toggleDot.Visible = compact and anyDot and not menuOpen
+end
+
+-- 기존 작은 Menu / Settings 버튼은 숨긴다 (단축키 B / H 는 그대로, 설정은 Settings 버튼으로)
 local function sync()
 	local compact = playerGui:GetAttribute("UiCompact") == true
 	local hud = playerGui:FindFirstChild("HUD")
 	local hudOn = hud ~= nil and hud.Enabled
-	local show = hudOn and not compact
-	gui.Enabled = show
-	if hud then
-		for _, name in ipairs({ "MenuButton", "HelpButton" }) do
-			local old = hud:FindFirstChild(name)
-			if old then old.Visible = compact end
-		end
+	gui.Enabled = hudOn
+	if not hudOn then return end
+	if not compact then menuOpen = false end
+	for _, name in ipairs({ "MenuButton", "HelpButton" }) do
+		local old = hud:FindFirstChild(name)
+		if old then old.Visible = false end
 	end
+	layout(compact, hud)
 end
 task.spawn(function()
 	while true do
 		pcall(refreshDots)
-		sync()
+		pcall(sync)
 		task.wait(0.5)
 	end
 end)
