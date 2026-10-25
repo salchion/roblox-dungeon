@@ -10,6 +10,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
+local Lighting = game:GetService("Lighting")
 local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
@@ -97,12 +98,25 @@ local function play()
 		music.Parent = SoundService
 	end
 
+	-- 날아가는 동안만 안개를 걷고 노출을 조금 올려서 아래 지형이 더 보이게 한다 (끝나면 원래대로)
+	local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
+	local saved = {
+		Exposure = Lighting.ExposureCompensation,
+		Density = atmosphere and atmosphere.Density, Haze = atmosphere and atmosphere.Haze,
+	}
+	TweenService:Create(Lighting, TweenInfo.new(0.8), { ExposureCompensation = saved.Exposure + 0.45 }):Play()
+	if atmosphere then TweenService:Create(atmosphere, TweenInfo.new(0.8), { Density = 0.05, Haze = 0 }):Play() end
+
 	local finished = false
 	local connection
 	local function finish()
 		if finished then return end
 		finished = true
 		if connection then connection:Disconnect() end
+		pcall(function()
+			TweenService:Create(Lighting, TweenInfo.new(1.0), { ExposureCompensation = saved.Exposure }):Play()
+			if atmosphere and saved.Density then TweenService:Create(atmosphere, TweenInfo.new(1.0), { Density = saved.Density, Haze = saved.Haze }):Play() end
+		end)
 		if music then
 			local fading = music
 			music = nil
@@ -171,11 +185,11 @@ local function play()
 	local face = B + Vector3.new(-20, 150, 0)
 
 	-- 카메라 준비: 마을 동쪽 문 위에서 필드를 따라 동쪽을 본다
-	local startPos = Vector3.new(110, 100, 0)
+	local startPos = Vector3.new(110, 70, 0)
 	local arrivePos = Vector3.new(bossX - 215, groundY + 165, 0)
 	camera.CameraType = Enum.CameraType.Scriptable
 	camera.FieldOfView = 66
-	camera.CFrame = CFrame.lookAt(startPos, startPos + Vector3.new(1000, -30, 0))
+	camera.CFrame = CFrame.lookAt(startPos, startPos + Vector3.new(1000, -70, 0))
 	TweenService:Create(topBar, TweenInfo.new(0.7), { Size = UDim2.new(1, 0, 0.1, 0) }):Play()
 	TweenService:Create(bottomBar, TweenInfo.new(0.7), { Size = UDim2.new(1, 0, 0.1, 0) }):Play()
 	TweenService:Create(veil, TweenInfo.new(0.9), { BackgroundTransparency = 1 }):Play()
@@ -275,31 +289,41 @@ local function play()
 	end
 	if finished then return end
 
-	-- 4) 화면이 깨지며 어두워지고, 게임 이름이 나온다
-	TweenService:Create(veil, TweenInfo.new(0.35), { BackgroundTransparency = 0 }):Play()
-	task.wait(0.4)
+	-- 4) 화면이 깨진 채로 바로 마을 쪽으로 되돌아 날아간다 (검은 화면으로 끊기지 않고 이어진다). 날아가는 동안 게임 이름이 뜬다
+	local look = root.CFrame.LookVector
+	local homePose = CFrame.lookAt(root.Position - look * 14 + Vector3.new(0, 7, 0), root.Position + look * 30 + Vector3.new(0, 4, 0))
+	sfx("Aug_Flame", 1.0, 0.6)
+	TweenService:Create(camera, TweenInfo.new(3.0, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut), { CFrame = homePose }):Play()
+	TweenService:Create(camera, TweenInfo.new(1.3, Enum.EasingStyle.Sine, Enum.EasingDirection.In), { FieldOfView = 105 }):Play()
+	task.delay(1.3, function()
+		if not finished then TweenService:Create(camera, TweenInfo.new(1.7, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { FieldOfView = 70 }):Play() end
+	end)
+	for _, child in ipairs(gui:GetChildren()) do -- 금은 천천히 사라진다
+		if child:IsA("Frame") and child ~= veil and child ~= topBar and child ~= bottomBar and child ~= flash then
+			TweenService:Create(child, TweenInfo.new(1.6), { BackgroundTransparency = 1 }):Play()
+			local stroke = child:FindFirstChildOfClass("UIStroke")
+			if stroke then TweenService:Create(stroke, TweenInfo.new(1.6), { Transparency = 1 }):Play() end
+		end
+	end
+	task.delay(0.8, function() -- 보스 모습은 카메라가 멀어진 뒤에 치운다
+		if not finished then props:ClearAllChildren() end
+	end)
+	task.wait(0.5)
 	if finished then return end
 	sfx("Dungeon_Start", 0.9, 0.8)
-	TweenService:Create(title, TweenInfo.new(0.9), { TextTransparency = 0, TextStrokeTransparency = 0.7 }):Play()
-	TweenService:Create(subtitle, TweenInfo.new(1.2), { TextTransparency = 0.1 }):Play()
-	task.wait(2.3)
+	TweenService:Create(title, TweenInfo.new(0.7), { TextTransparency = 0, TextStrokeTransparency = 0.6 }):Play()
+	TweenService:Create(subtitle, TweenInfo.new(1.0), { TextTransparency = 0.1 }):Play()
+	task.wait(1.9)
 	if finished then return end
 
-	-- 5) 로비로: 스폰의 내 캐릭터 뒤로 바로 이어진다 (어둠에서 밝아진다)
-	local look = root.CFrame.LookVector
-	camera.CFrame = CFrame.lookAt(root.Position - look * 14 + Vector3.new(0, 7, 0), root.Position + look * 30 + Vector3.new(0, 4, 0))
-	camera.FieldOfView = 70
-	props:ClearAllChildren()
-	for _, child in ipairs(gui:GetChildren()) do
-		if child:IsA("Frame") and child ~= veil and child ~= topBar and child ~= bottomBar and child ~= flash then child:Destroy() end -- 금 지우기
-	end
+	-- 5) 마을에 내려앉으며 제목이 사라지고 검은 띠가 걷힌다
+	TweenService:Create(title, TweenInfo.new(0.7), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+	TweenService:Create(subtitle, TweenInfo.new(0.7), { TextTransparency = 1 }):Play()
+	TweenService:Create(topBar, TweenInfo.new(0.9), { Size = UDim2.new(1, 0, 0, 0) }):Play()
+	TweenService:Create(bottomBar, TweenInfo.new(0.9), { Size = UDim2.new(1, 0, 0, 0) }):Play()
+	task.wait(0.7)
 	sfx("Reel_Stop", 0.8, 0.9)
-	TweenService:Create(title, TweenInfo.new(0.6), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
-	TweenService:Create(subtitle, TweenInfo.new(0.6), { TextTransparency = 1 }):Play()
-	TweenService:Create(veil, TweenInfo.new(1.2), { BackgroundTransparency = 1 }):Play()
-	TweenService:Create(topBar, TweenInfo.new(1.2), { Size = UDim2.new(1, 0, 0, 0) }):Play()
-	TweenService:Create(bottomBar, TweenInfo.new(1.2), { Size = UDim2.new(1, 0, 0, 0) }):Play()
-	task.wait(1.3)
+	task.wait(0.4)
 	finish()
 end
 
