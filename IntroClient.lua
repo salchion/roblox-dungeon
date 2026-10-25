@@ -586,51 +586,74 @@ local function play()
 	task.wait(0.7)
 	if finished then return end
 
-	-- 5) 하늘 높은 곳에서 잠깐 멈췄다가 -> 마을 스폰으로 확 떨어지며 캐릭터가 나타난다
+	-- 5) 하늘 높은 곳에서 제목을 보여 주다가 -> 마을 스폰으로 천천히 곡선을 그리며 내려앉는다 (내려오는 동안 빛줄기가 켜지고, 닿을 때 캐릭터가 나타난다)
 	local homePose = CFrame.lookAt(spawnPos - look * 14 + Vector3.new(0, 7, 0), spawnPos + look * 30 + Vector3.new(0, 4, 0))
-	TweenService:Create(camera, TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { CFrame = CFrame.lookAt(skyPos - Vector3.new(30, 60, 0), spawnPos) }):Play() -- 정점에서 살짝 다가온다
-	task.wait(1.2)
-	if finished then return end
-	local pillar = Instance.new("Part") -- 하늘에서 스폰까지 내려꽂히는 부드러운 빛줄기
+	local pillar = Instance.new("Part") -- 하늘에서 스폰까지 내려오는 부드러운 빛줄기
 	pillar.Anchored, pillar.CanCollide, pillar.CanQuery, pillar.CanTouch, pillar.CastShadow = true, false, false, false, false
 	pillar.Material = Enum.Material.Neon
 	pillar.Color = Color3.fromRGB(150, 215, 255)
-	pillar.Transparency = 0.55
+	pillar.Transparency = 1
 	pillar.Size = Vector3.new(5, 700, 5)
 	pillar.Position = spawnPos + Vector3.new(0, 330, 0)
 	pillar.Parent = props
-	sfx("Aug_Flame", 1.0, 0.45)
-	TweenService:Create(title, TweenInfo.new(0.5), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
-	TweenService:Create(subtitle, TweenInfo.new(0.5), { TextTransparency = 1 }):Play()
-	TweenService:Create(camera, TweenInfo.new(0.95, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { CFrame = homePose, FieldOfView = 70 }):Play()
-	task.wait(0.95)
+	TweenService:Create(pillar, TweenInfo.new(1.6), { Transparency = 0.6 }):Play()
+	TweenService:Create(camera, TweenInfo.new(1.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { CFrame = CFrame.lookAt(skyPos - Vector3.new(60, 90, 0), spawnPos) }):Play() -- 정점에서 천천히 다가온다
+	task.delay(0.9, function()
+		if finished then return end
+		TweenService:Create(title, TweenInfo.new(0.9), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+		TweenService:Create(subtitle, TweenInfo.new(0.9), { TextTransparency = 1 }):Play()
+	end)
+	sfx("Aug_Flame", 0.8, 0.4)
+	task.wait(1.8)
 	if finished then return end
 
-	-- 착지: 충격 고리 + 빛줄기가 사라지며 캐릭터가 나타난다
-	sfx("Boom", 0.8, 0.9)
+	-- 활공: 옆으로 크게 휘어지는 곡선을 따라 3.4초 동안 천천히 내려온다 (처음엔 조금 빠르게, 땅에 가까워질수록 부드럽게 느려진다)
+	local fromPos = skyPos - Vector3.new(60, 90, 0)
+	local toPos = homePose.Position
+	local descendTime = 3.4
+	local descendStart = os.clock()
+	local landed = false
+	while not finished do
+		local t = math.clamp((os.clock() - descendStart) / descendTime, 0, 1)
+		local eased = 1 - (1 - t) ^ 2.4 -- ease out
+		local swing = math.sin(math.pi * eased) * 70 -- 옆으로 휘어지는 정도
+		local pos = fromPos:Lerp(toPos, eased) + Vector3.new(0, 0, swing)
+		local lookAtPoint = spawnPos:Lerp(spawnPos + look * 30 + Vector3.new(0, 4, 0), eased)
+		camera.CFrame = CFrame.lookAt(pos, lookAtPoint)
+		camera.FieldOfView = 76 - 6 * eased
+		if t > 0.62 then setBodyAlpha(math.max(0, 1 - (t - 0.62) / 0.34)) end -- 거의 다 내려오면 몸이 서서히 나타난다
+		if t >= 1 then landed = true break end
+		RunService.RenderStepped:Wait()
+	end
+	if finished or not landed then return end
+	camera.CFrame = homePose
+	camera.FieldOfView = 70
+	setBodyAlpha(0)
+
+	-- 착지: 부드러운 충격 고리 + 빛줄기가 사라진다
+	sfx("Boom", 0.7, 0.9)
 	sfx("LevelUp", 0.6, 0.8)
 	local ring = Instance.new("Part")
 	ring.Shape = Enum.PartType.Cylinder
 	ring.Anchored, ring.CanCollide, ring.CanQuery, ring.CanTouch, ring.CastShadow = true, false, false, false, false
 	ring.Material = Enum.Material.Neon
 	ring.Color = Color3.fromRGB(150, 215, 255)
-	ring.Transparency = 0.25
+	ring.Transparency = 0.3
 	ring.Size = Vector3.new(0.4, 4, 4)
 	ring.CFrame = CFrame.new(spawnPos - Vector3.new(0, 2.8, 0)) * CFrame.Angles(0, 0, math.rad(90))
 	ring.Parent = props
-	TweenService:Create(ring, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.4, 60, 60), Transparency = 1 }):Play()
-	TweenService:Create(pillar, TweenInfo.new(0.7), { Transparency = 1, Size = Vector3.new(0.5, 700, 0.5) }):Play()
-	TweenService:Create(topBar, TweenInfo.new(0.9), { Size = UDim2.new(1, 0, 0, 0) }):Play()
-	TweenService:Create(bottomBar, TweenInfo.new(0.9), { Size = UDim2.new(1, 0, 0, 0) }):Play()
+	TweenService:Create(ring, TweenInfo.new(1.0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.4, 60, 60), Transparency = 1 }):Play()
+	TweenService:Create(pillar, TweenInfo.new(0.9), { Transparency = 1, Size = Vector3.new(0.5, 700, 0.5) }):Play()
+	TweenService:Create(topBar, TweenInfo.new(1.0), { Size = UDim2.new(1, 0, 0, 0) }):Play()
+	TweenService:Create(bottomBar, TweenInfo.new(1.0), { Size = UDim2.new(1, 0, 0, 0) }):Play()
 	local landStart = os.clock()
-	while os.clock() - landStart < 0.8 and not finished do
-		local k = (os.clock() - landStart) / 0.8
-		setBodyAlpha(math.max(0, 1 - k * 1.6)) -- 몸이 서서히 나타난다
-		local jitter = 1.6 * (1 - k)
+	while os.clock() - landStart < 0.7 and not finished do
+		local k = (os.clock() - landStart) / 0.7
+		local jitter = 0.9 * (1 - k)
 		camera.CFrame = homePose * CFrame.new(math.random() * jitter - jitter / 2, math.random() * jitter - jitter / 2, 0)
 		RunService.RenderStepped:Wait()
 	end
-	setBodyAlpha(0)
+	camera.CFrame = homePose
 	sfx("Reel_Stop", 0.8, 0.9)
 	task.wait(0.4)
 	finish()
