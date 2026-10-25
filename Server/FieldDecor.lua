@@ -22,7 +22,7 @@ local TRAIL = {
 	{ Color = Color3.fromRGB(112, 120, 96), Material = Enum.Material.Cobblestone, Edge = Color3.fromRGB(70, 118, 70) }, -- 2 숲: 이끼 낀 돌길
 	{ Color = Color3.fromRGB(170, 150, 120), Material = Enum.Material.Slate, Edge = Color3.fromRGB(128, 104, 78) },     -- 3 협곡: 판석
 	{ Color = Color3.fromRGB(176, 148, 100), Material = Enum.Material.Sandstone, Edge = Color3.fromRGB(196, 170, 112) },-- 4 사막: 사암 판
-	{ Color = Color3.fromRGB(150, 160, 176), Material = Enum.Material.Pavement, Edge = Color3.fromRGB(236, 242, 248) }, -- 5 설원: 다져진 눈 / 자갈
+	{ Color = Color3.fromRGB(150, 160, 176), Material = Enum.Material.Pavement, Edge = Color3.fromRGB(206, 212, 220) }, -- 5 설원: 다져진 눈 / 자갈
 	{ Color = Color3.fromRGB(70, 56, 56), Material = Enum.Material.Basalt, Edge = Color3.fromRGB(150, 70, 44) },        -- 6 화산: 현무암 판
 	{ Color = Color3.fromRGB(84, 74, 104), Material = Enum.Material.Slate, Edge = Color3.fromRGB(120, 92, 150) },       -- 7 그림자: 보랏빛 판석
 	{ Color = Color3.fromRGB(58, 50, 72), Material = Enum.Material.Marble, Edge = Color3.fromRGB(140, 90, 170) },       -- 8 심연: 검은 대리석

@@ -577,7 +577,7 @@ function LobbyDecor.Build(parent, ctx)
 			vcyl("LanternPole", 8.5, 0.45, g(x, z, 0.6), rgb(52, 50, 58), M.Metal)
 			box("LanternArm", Vector3.new(armDir.X ~= 0 and 2 or 0.25, 0.25, armDir.Z ~= 0 and 2 or 0.25), g(x + armDir.X, z + armDir.Z, 8.8), rgb(52, 50, 58), M.Metal)
 			box("LanternCap", Vector3.new(1.3, 0.35, 1.3), g(x + armDir.X * 2, z + armDir.Z * 2, 8.45), rgb(52, 50, 58), M.Metal)
-			box("LanternGlass", Vector3.new(0.95, 1.2, 0.95), g(x + armDir.X * 2, z + armDir.Z * 2, 7.65), rgb(255, 196, 120), M.Neon, nil, 0.15)
+			box("LanternGlass", Vector3.new(0.95, 1.2, 0.95), g(x + armDir.X * 2, z + armDir.Z * 2, 7.65), rgb(214, 172, 116), M.SmoothPlastic, nil, 0.1) -- (네온은 눈이 아파서: 은은한 따뜻한 색만)
 		end
 		for _, z in ipairs({ -82, -42 }) do
 			lanternPost(-10.6, z, Vector3.new(1, 0, 0) * 0.5)
@@ -654,7 +654,7 @@ function LobbyDecor.Build(parent, ctx)
 			-- 다리 끝 등불 (빛 부품 없이 따뜻한 색만)
 			vcyl("BridgeLampPole", 6, 0.5, g(x1 + 1, z, 0), rgb(52, 50, 58), M.Metal)
 			box("BridgeLampCap", Vector3.new(1.4, 0.35, 1.4), g(x1 + 1, z, 6.35), rgb(52, 50, 58), M.Metal)
-			box("BridgeLampGlass", Vector3.new(1, 1.2, 1), g(x1 + 1, z, 5.55), rgb(255, 196, 120), M.Neon, nil, 0.15)
+			box("BridgeLampGlass", Vector3.new(1, 1.2, 1), g(x1 + 1, z, 5.55), rgb(214, 172, 116), M.SmoothPlastic, nil, 0.1)
 		end
 		for i = 0, 6 do -- 다리 가운데 판석 (밟는 길이 다리 위에서도 이어진다)
 			box("BridgeSlab", Vector3.new(3, 0.06, 9), g(x0 + 1.5 + i * 3.2, 0, 0.03), i % 2 == 0 and STONE_LIGHT or STONE, M.Slate)

@@ -646,7 +646,7 @@ function Lobby.Build()
 			surface.Face = Enum.NormalId.Front
 			surface.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
 			surface.PixelsPerStud = 30
-			surface.LightInfluence = 0.2
+			surface.LightInfluence = 0.7 -- (스스로 빛나는 글자는 밤에 쨍하다: 주변 밝기를 따라가게)
 			surface.MaxDistance = 220
 			surface.Parent = sign
 			local titleLabel = Instance.new("TextLabel")
