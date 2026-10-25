@@ -1415,6 +1415,19 @@ function Config.GetLevelDamageMult(level)
 	return 1 + Config.Level.DamagePerLevel * early + Config.Level.LateDamagePerLevel * late
 end
 
+-- 초보자 가호: 튜토리얼을 마치고 필드에 나갔을 때 캐릭터가 약하게 느껴지지 않게, 초반(2구역 군주를 잡기 전 / 레벨 20 전)에만 공격력은 올리고 받는 피해는 줄여 준다.
+--   레벨 9 까지는 100%, 레벨 20 에 가까울수록 서서히 0 이 된다. 튜토리얼의 첫 군주 / 첫 던전은 이미 따로 보정이 있어서 제외한다.
+Config.Newbie = { EndZone = 2, FullLevel = 9, EndLevel = 20, Damage = 0.6, Defense = 0.25 }
+function Config.NewbieStrength(player)
+	local N = Config.Newbie
+	if (player:GetAttribute("ClearedZone") or 0) >= N.EndZone then return 0 end
+	if player:GetAttribute("TutorialDoom") == true or player:GetAttribute("TutorialDungeonRun") == true then return 0 end
+	local level = player:GetAttribute("Level") or 1
+	if level >= N.EndLevel then return 0 end
+	if level <= N.FullLevel then return 1 end
+	return (N.EndLevel - level) / (N.EndLevel - N.FullLevel)
+end
+
 function Config.GetLevelHealth(level)
 	local L = Config.Level
 	return (math.min(level, L.StatCap) - 1) * L.HealthPerLevel + math.max(0, level - L.StatCap) * L.PostHealthPerLevel

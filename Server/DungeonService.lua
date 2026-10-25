@@ -1435,6 +1435,7 @@ function Dungeon.ComputeDamage(player)
 	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
 	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel) * weaponType.DamageMult
 		* Config.GetLevelDamageMult(player:GetAttribute("Level") or 1)
+		* (1 + Config.Newbie.Damage * Config.NewbieStrength(player)) -- 초보자 가호
 		* (1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0) + (player:GetAttribute("PetDamage") or 0))
 		* (1 + (player:GetAttribute("PerkPower") or 0) * Config.Perks.PowerPerStack)
 		* Combo.GetDamageMult(player)

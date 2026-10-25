@@ -395,6 +395,15 @@ local function setupPlayer(player)
 			player:GetAttributeChangedSignal("ClearedZone"):Connect(function() log(string.format("%d구역 관문 열림 (군주 격파)", player:GetAttribute("ClearedZone") or 0)) end)
 			player:GetAttributeChangedSignal("MaxZone"):Connect(function() log(string.format("%d구역에 처음 도착", player:GetAttribute("MaxZone") or 0)) end)
 			player:GetAttributeChangedSignal("Zone"):Connect(function() once("zone_" .. tostring(player:GetAttribute("Zone")), "처음 입장: " .. tostring(player:GetAttribute("Zone"))) end)
+			local boonNoticed = false
+			player:GetAttributeChangedSignal("Zone"):Connect(function() -- 초보자 가호 안내 (필드에 처음 나갔을 때 한 번)
+				if boonNoticed or player:GetAttribute("Zone") ~= "Field" or player:GetAttribute("InDoomArena") or player:GetAttribute("TutorialDoom") then return end
+				if Config.NewbieStrength(player) > 0 then
+					boonNoticed = true
+					local N = Config.Newbie
+					Remotes.Notify:FireClient(player, string.format("🌱 Beginner's Boon: +%d%% damage and -%d%% damage taken until you clear Zone %d (it fades by Lv %d)", N.Damage * 100, N.Defense * 100, N.EndZone, N.EndLevel))
+				end
+			end)
 			player:GetAttributeChangedSignal("TutorialActive"):Connect(function() if player:GetAttribute("TutorialActive") ~= true then once("tut_end", "튜토리얼 종료") end end)
 			player:GetAttributeChangedSignal("InDoomArena"):Connect(function() if player:GetAttribute("InDoomArena") then once("doom", "최후의 군주 결투장 입장") end end)
 			player:GetAttributeChangedSignal("GrowthUnlocked"):Connect(function() if player:GetAttribute("GrowthUnlocked") then once("growth", "성장 훈련 해금") end end)
