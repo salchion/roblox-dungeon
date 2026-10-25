@@ -397,7 +397,7 @@ local function setupPlayer(player)
 			player:GetAttributeChangedSignal("Zone"):Connect(function() once("zone_" .. tostring(player:GetAttribute("Zone")), "처음 입장: " .. tostring(player:GetAttribute("Zone"))) end)
 			local boonNoticed = false
 			player:GetAttributeChangedSignal("Zone"):Connect(function() -- 초보자 가호 안내 (필드에 처음 나갔을 때 한 번)
-				if boonNoticed or player:GetAttribute("Zone") ~= "Field" or player:GetAttribute("InDoomArena") or player:GetAttribute("TutorialDoom") then return end
+				if boonNoticed or player:GetAttribute("Zone") ~= "Field" or player:GetAttribute("InDoomArena") then return end
 				if Config.NewbieStrength(player) > 0 then
 					boonNoticed = true
 					local N = Config.Newbie

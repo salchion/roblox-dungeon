@@ -1709,7 +1709,7 @@ function Field.HitPart(player, part, damage)
 	if not data or not part.Parent then return false end
 	if not canHitZone(player, part.Position.X) then return false end
 	if data.ExposedUntil and os.clock() < data.ExposedUntil then damage = math.floor(damage * 3) end -- 약점 노출 중 x3
-	if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then damage = damage * (player:GetAttribute("TutorialRetryBuff") and 8 or 4) end
+	if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then damage = damage * (player:GetAttribute("TutorialRetryBuff") and 10 or 5) end
 	local shooterRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if shooterRoot and data.Def and data.Def.Shield then -- 방패 기사: 정면 공격은 막힌다
 		local factor = MonsterTypes.ShieldFactor(part, data, shooterRoot.Position)
@@ -1844,7 +1844,7 @@ function Field.Shoot(player, origin, direction)
 		end
 		-- 첫 구역 군주는 튜토리얼 중에는 훨씬 약하게 (군주를 쓰러뜨려야 다음 장면이 이어진다)
 		if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then
-			damage = damage * (player:GetAttribute("TutorialRetryBuff") and 8 or 4) -- 쓰러졌다 다시 도전하면 일회성 힘 (x8)
+			damage = damage * (player:GetAttribute("TutorialRetryBuff") and 10 or 5) -- 쓰러졌다 다시 도전하면 일회성 힘 (x10)
 		end
 		-- 로켓 런처 / 플라즈마 캐논: 맞은 곳 주변 적에게도 피해
 		local splash = Config.GetPlayerWeapon(player).Splash
