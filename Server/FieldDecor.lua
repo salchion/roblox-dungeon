@@ -1,7 +1,7 @@
 -- FieldDecor: 필드 8구역 분위기 장식 (나무 / 선인장 / 얼음 / 용암 줄기 / 결정 등) + 구역별 바닥 무늬
 -- 모든 장식은 앵커 + 충돌 / 질의 / 접촉 없음이라 길, 총알 판정, 몬스터 이동을 전혀 막지 않는다.
 -- 캠프 안전지대, 구역 끝 보스 자리, 관문, 경사로 / 꺾임 벽 주변에는 놓지 않는다. 구역마다 고정 시드라 매번 똑같이 만들어진다.
--- 예산: 전체 약 1500 부품 이하 / PointLight 12 이하 / ParticleEmitter 10 이하 (낮은 Rate). 프레임마다 도는 코드 없음.
+-- 예산: 전체 약 1800 부품 이하 (1~3구역은 구역당 300, 나머지 185) / PointLight 12 이하 / ParticleEmitter 10 이하 (낮은 Rate). 프레임마다 도는 코드 없음.
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
@@ -11,6 +11,7 @@ local F = Config.Field
 local FieldDecor = {}
 
 local MAX_PARTS_PER_ZONE = 185
+local EARLY_ZONE_PARTS = 300 -- 1~3구역(처음 보는 구역)은 볼거리를 더 촘촘하게: 전부 고정 / 충돌 없음 / 그림자 없음 / 불빛 없음이라 부담은 작다
 local MAX_LIGHTS = 12
 local MAX_EMITTERS = 10
 local BOSS_CLEAR = 90 -- 구역 끝에서 이만큼은 비운다 (보스 자리는 끝 - 45)
@@ -98,6 +99,7 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 		local maxX = x1 - BOSS_CLEAR
 		local zoneParts = 0
 		local patchLayer = 0
+		local budget = zone <= 3 and EARLY_ZONE_PARTS or MAX_PARTS_PER_ZONE
 
 		local function R(a: number, b: number): number
 			return rng:NextNumber(a, b)
@@ -105,7 +107,7 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 
 		-- 부품 하나 (예산이 다 차면 nil)
 		local function add(name: string, size: Vector3, cframe: CFrame, color: Color3, material: Enum.Material, shape: Enum.PartType?, transparency: number?): Part?
-			if zoneParts >= MAX_PARTS_PER_ZONE then return nil end
+			if zoneParts >= budget then return nil end
 			zoneParts += 1
 			totalParts += 1
 			local part = Instance.new("Part")
@@ -196,7 +198,7 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 		local function scatter(count: number, builder: (Vector3) -> ())
 			for _ = 1, count do
 				local x, z = R(minX, maxX), R(-half + 8, half - 8)
-				if okAt(x, z) and zoneParts < MAX_PARTS_PER_ZONE then
+				if okAt(x, z) and zoneParts < budget then
 					builder(Vector3.new(x, floorAt(x), z))
 				end
 			end
@@ -511,6 +513,129 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 			scatter(8, function(p)
 				patch(p, tint(rgb(36, 28, 54), R(-0.1, 0.15)), rng:NextNumber() < 0.5 and Enum.Material.Slate or Enum.Material.Basalt, R(16, 30))
 			end)
+		end
+
+		------------------------------------------------------------
+		-- 1~3구역 추가 볼거리: 오솔길 가까이(길에서 9~26 떨어진 곳)에 작은 소품 무리를 놓아, 걸어가면서 계속 뭔가 보이게 한다.
+		-- 눈부신 재질 / 불빛은 쓰지 않는다 (따뜻한 색의 불투명 유리 정도만).
+		------------------------------------------------------------
+		if zone <= 3 then
+			local function alongTrail(count: number, builder: (Vector3) -> ())
+				local placed, tries = 0, 0
+				while placed < count and tries < count * 14 and zoneParts < budget do
+					tries += 1
+					local x, z = R(minX, maxX), R(-half + 8, half - 8)
+					if okAt(x, z) and nearTrail(x, z, 26) then
+						placed += 1
+						builder(Vector3.new(x, floorAt(x), z))
+					end
+				end
+			end
+			local wood, woodDark = rgb(120, 88, 58), rgb(92, 66, 44)
+			local lampGlass = rgb(214, 172, 116)
+			local function lantern(p: Vector3)
+				post("LanternPole", 6.5, 0.5, p, rgb(58, 54, 60), Enum.Material.Metal)
+				block("LanternCap", Vector3.new(1.5, 0.35, 1.5), CFrame.new(p + Vector3.new(0, 6.8, 0)), rgb(58, 54, 60), Enum.Material.Metal)
+				block("LanternGlass", Vector3.new(1, 1.2, 1), CFrame.new(p + Vector3.new(0, 6.1, 0)), lampGlass, Enum.Material.SmoothPlastic, 0.1)
+			end
+			local function banner(p: Vector3, color: Color3)
+				post("BannerPole", 9, 0.4, p, wood, Enum.Material.Wood)
+				block("BannerCloth", Vector3.new(0.2, 4.2, 2.6), yaw(p + Vector3.new(0, 6.6, 1.4), 90) * CFrame.Angles(0, 0, math.rad(R(-4, 4))), color, Enum.Material.Fabric)
+			end
+
+			if zone == 1 then
+				alongTrail(8, function(p) -- 나무 울타리 토막
+					local d = R(-16, 16)
+					local base = yaw(p, d)
+					for _, offset in ipairs({ -3.4, 0, 3.4 }) do
+						post("FencePost", 3, 0.5, (base * CFrame.new(offset, 0, 0)).Position, wood, Enum.Material.Wood)
+					end
+					block("FenceRail", Vector3.new(7.6, 0.4, 0.4), base * CFrame.new(0, 2.5, 0), woodDark, Enum.Material.Wood)
+					block("FenceRail", Vector3.new(7.6, 0.4, 0.4), base * CFrame.new(0, 1.5, 0), woodDark, Enum.Material.Wood)
+				end)
+				alongTrail(6, function(p) -- 건초 더미
+					local s = R(3.2, 4.4)
+					ball("Haystack", Vector3.new(s, s * 0.85, s), p + Vector3.new(0, s * 0.3, 0), tint(rgb(214, 186, 98), R(-0.08, 0.06)), Enum.Material.Fabric)
+					ball("HayTop", Vector3.new(s * 0.6, s * 0.5, s * 0.6), p + Vector3.new(0, s * 0.8, 0), tint(rgb(222, 196, 108), R(-0.06, 0.06)), Enum.Material.Fabric)
+				end)
+				alongTrail(4, function(p) -- 이정표
+					post("SignPost", 4.5, 0.5, p, wood, Enum.Material.Wood)
+					block("SignBoard", Vector3.new(3.6, 1.1, 0.25), yaw(p + Vector3.new(0, 3.9, 0), R(-30, 30)), woodDark, Enum.Material.Wood)
+				end)
+				alongTrail(8, lantern)
+				alongTrail(6, function(p) -- 쌓은 돌탑
+					for i = 1, 3 do
+						local s = 2.2 - i * 0.45
+						block("Cairn", Vector3.new(s * 1.3, s * 0.7, s * 1.2), lean(p + Vector3.new(R(-0.2, 0.2), s * 0.35 + (i - 1) * 1.1, R(-0.2, 0.2)), 6), tint(rgb(150, 146, 138), R(-0.1, 0.08)), Enum.Material.Slate)
+					end
+				end)
+				local windmills = 0 -- 풍차: 멀리서도 보이는 이정표 (1개)
+				scatter(24, function(p)
+					if windmills >= 1 then return end
+					windmills += 1
+					block("WindmillBody", Vector3.new(9, 16, 9), CFrame.new(p + Vector3.new(0, 8, 0)), rgb(196, 176, 148), Enum.Material.Brick)
+					block("WindmillRoof", Vector3.new(10.5, 3.5, 10.5), CFrame.new(p + Vector3.new(0, 17.5, 0)) * CFrame.Angles(0, math.rad(45), 0), rgb(140, 70, 60), Enum.Material.Slate)
+					local hub = p + Vector3.new(0, 14, 5.4)
+					ball("WindmillHub", Vector3.new(1.6, 1.6, 1.6), hub, woodDark, Enum.Material.Wood)
+					for i = 0, 3 do
+						local a = math.rad(i * 90 + 20)
+						block("WindmillBlade", Vector3.new(1.6, 9, 0.3), CFrame.new(hub) * CFrame.Angles(0, 0, a) * CFrame.new(0, 4.8, 0.2), rgb(228, 220, 200), Enum.Material.Fabric)
+					end
+				end)
+			elseif zone == 2 then
+				alongTrail(10, function(p) -- 나무 그루터기
+					local h = R(1.2, 2)
+					post("Stump", h, R(2.6, 3.4), p, rgb(92, 66, 46), Enum.Material.Wood)
+					post("StumpTop", 0.2, R(2.2, 2.8), p + Vector3.new(0, h, 0), rgb(168, 134, 96), Enum.Material.Wood)
+				end)
+				local giantColors = { rgb(176, 96, 108), rgb(190, 140, 88), rgb(140, 104, 160) }
+				alongTrail(6, function(p) -- 거대 버섯
+					local h = R(5, 8)
+					post("GiantStem", h, 1.7, p, rgb(226, 218, 198), Enum.Material.SmoothPlastic)
+					local w = R(7, 10)
+					ball("GiantCap", Vector3.new(w, w * 0.45, w), p + Vector3.new(0, h, 0), giantColors[rng:NextInteger(1, #giantColors)], Enum.Material.SmoothPlastic)
+				end)
+				alongTrail(3, function(p) -- 통나무 문 (작은 사당 입구)
+					local gap = R(7, 9)
+					local base = yaw(p, R(-12, 12))
+					for _, side in ipairs({ -1, 1 }) do
+						post("ShrinePost", 9, 1.2, (base * CFrame.new(side * gap / 2, 0, 0)).Position, rgb(104, 76, 52), Enum.Material.Wood)
+					end
+					block("ShrineBeam", Vector3.new(gap + 3.4, 0.9, 1.2), base * CFrame.new(0, 9.2, 0), rgb(120, 88, 58), Enum.Material.Wood)
+					block("ShrineBeam", Vector3.new(gap + 1.6, 0.6, 0.9), base * CFrame.new(0, 7.8, 0), rgb(96, 70, 48), Enum.Material.Wood)
+				end)
+				alongTrail(6, lantern)
+				alongTrail(8, function(p) -- 부러진 가지
+					add("Branch", Vector3.new(R(5, 8), 0.7, 0.7), CFrame.new(p + Vector3.new(0, 0.5, 0)) * CFrame.Angles(0, math.rad(R(0, 360)), math.rad(R(-6, 6))), rgb(90, 66, 46), Enum.Material.Wood, Enum.PartType.Cylinder)
+				end)
+			else
+				local flagColors = { rgb(128, 52, 56), rgb(52, 76, 118), rgb(110, 92, 52) }
+				alongTrail(8, function(p) banner(p, flagColors[rng:NextInteger(1, #flagColors)]) end)
+				alongTrail(5, function(p) -- 부서진 석상
+					local stone = rgb(160, 154, 144)
+					block("StatueBase", Vector3.new(4.4, 1.4, 4.4), CFrame.new(p + Vector3.new(0, 0.7, 0)), tint(stone, -0.1), Enum.Material.Cobblestone)
+					block("StatueBody", Vector3.new(2.2, R(4, 6), 1.6), lean(p + Vector3.new(0, 4, 0), 5), stone, Enum.Material.Marble)
+					ball("StatueHead", Vector3.new(1.6, 1.6, 1.6), p + Vector3.new(R(-0.4, 0.4), 6.8, R(-0.3, 0.3)), tint(stone, 0.05), Enum.Material.Marble)
+					block("StatueRubble", Vector3.new(2.4, 0.9, 1.8), lean(p + Vector3.new(R(2.5, 3.5), 0.5, R(-1, 1)), 12), tint(stone, -0.08), Enum.Material.Cobblestone)
+				end)
+				alongTrail(4, function(p) -- 오벨리스크
+					block("ObeliskBase", Vector3.new(3.4, 1.2, 3.4), CFrame.new(p + Vector3.new(0, 0.6, 0)), rgb(110, 106, 100), Enum.Material.Cobblestone)
+					block("Obelisk", Vector3.new(2.2, R(11, 14), 2.2), lean(p + Vector3.new(0, 7.5, 0), 3), rgb(138, 134, 142), Enum.Material.Basalt)
+					block("ObeliskCap", Vector3.new(1.6, 1.6, 1.6), CFrame.new(p + Vector3.new(0, 14.4, 0)) * CFrame.Angles(math.rad(45), math.rad(45), 0), rgb(150, 146, 154), Enum.Material.Basalt)
+				end)
+				alongTrail(6, function(p) -- 낮은 무너진 담
+					local base = yaw(p, R(-30, 30))
+					for i = -1, 1 do
+						local h = R(1.4, 3)
+						block("LowWall", Vector3.new(6.4, h, 1.4), base * CFrame.new(i * 7, h / 2, 0) * CFrame.Angles(0, math.rad(R(-6, 6)), 0), tint(rgb(152, 146, 136), R(-0.12, 0.06)), Enum.Material.Cobblestone)
+					end
+				end)
+				alongTrail(5, function(p) -- 불 꺼진 화로
+					post("BrazierStand", 2.2, 1, p, rgb(64, 60, 66), Enum.Material.Metal)
+					post("BrazierBowl", 0.8, 2.4, p + Vector3.new(0, 2.2, 0), rgb(54, 50, 56), Enum.Material.Metal)
+				end)
+				alongTrail(5, lantern)
+			end
 		end
 	end
 
