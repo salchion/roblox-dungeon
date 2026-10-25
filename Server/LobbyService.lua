@@ -332,7 +332,23 @@ function Lobby.Build()
 		makePart({ Name = "HillGrass", Shape = Enum.PartType.Cylinder, Size = Vector3.new(1, HILL_R * 2 + 2, HILL_R * 2 + 2),
 			CFrame = CFrame.new(center + Vector3.new(0, TOP + HILL_H - 0.25, 0)) * CFrame.Angles(0, 0, math.rad(90)),
 			Color = Color3.fromRGB(88, 130, 84), Material = Enum.Material.Grass }, folder)
-		-- (경사로는 없앴다: 시작할 때 언덕에서 마을로 뛰어내려 오고, 다시 올라갈 일은 없다)
+		-- 동쪽(필드 문 쪽)으로 내려가는 완만한 돌 경사로: 언덕 위 스폰에서 마을로 걸어 내려가고, 다시 걸어 올라올 수도 있다
+		do
+			local topY = TOP + HILL_H + 0.25
+			local from = Vector3.new(HILL_NX + 15, topY, HILL_NZ) -- 언덕 가장자리 안쪽 (풀밭 높이와 같게 이어진다)
+			local to = Vector3.new(HILL_NX + 72, TOP + 0.05, HILL_NZ) -- 마을 바닥에 닿는 끝
+			local mid = (from + to) / 2
+			local length = (to - from).Magnitude
+			local aim = CFrame.lookAt(mid, to)
+			local function slab(name, size, offset, color, material)
+				return makePart({ Name = name, Size = size, CFrame = aim * CFrame.new(offset), Color = color, Material = material }, folder)
+			end
+			slab("HillRamp", Vector3.new(8, 1.2, length), Vector3.new(0, -0.6, 0), Color3.fromRGB(128, 120, 112), Enum.Material.Cobblestone)
+			for _, side in ipairs({ -1, 1 }) do -- 양옆 낮은 돌 턱 (걸어 다니는 데 방해되지 않게 충돌 없음)
+				local curb = slab("HillRampCurb", Vector3.new(0.7, 1.1, length), Vector3.new(side * 4.35, 0.3, 0), Color3.fromRGB(104, 98, 96), Enum.Material.Slate)
+				curb.CanCollide = false
+			end
+		end
 	end
 
 	local spawn = Instance.new("SpawnLocation")
@@ -963,7 +979,7 @@ function Lobby.Build()
 		WarpPrompt = warpPrompt,
 		RiftPrompt = riftPrompt,
 		DummyStart = Vector3.new(0, TOP, 28), -- 허수아비 하나가 서는 자리
-		StarterDummy = Vector3.new(HILL_NX + 9, TOP + HILL_H + 0.25, HILL_NZ - 7), -- 입문용 허수아비: 스폰 언덕 위 눈앞 (길을 막지 않게 옆으로 조금 비껴서)
+		StarterDummy = Vector3.new(HILL_NX + 84, TOP, HILL_NZ + 11), -- 입문용 허수아비: 언덕 경사로가 끝나는 곳 옆 (스폰 자리에는 두지 않는다)
 		RestStart = Vector3.new(-84, TOP, 70), -- 휴식 구역(방치 수입): 훈련장과 따로 떨어진 아늑한 모닥불 쉼터
 		RankBoardCFrame = CFrame.lookAt(Vector3.new(-52, TOP + 16.5, 100), Vector3.new(0, TOP + 16.5, 72)),
 	}

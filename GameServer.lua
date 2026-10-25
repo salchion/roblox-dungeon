@@ -66,7 +66,7 @@ local function promptPosition(prompt)
 	return parent:GetPivot().Position
 end
 Tutorial.SetTargets({ -- 튜토리얼 미션 표지 위치
-	Dummy = lobby.StarterDummy + Vector3.new(0, 4, 0), -- 스폰 언덕 위 눈앞의 입문용 허수아비 (첫 미션을 몇 초 안에 시작)
+	Dummy = lobby.StarterDummy + Vector3.new(0, 4, 0), -- 경사로 아래 입문용 허수아비 (스폰에서 내려오면 바로 보인다)
 	Anvil = promptPosition(lobby.AnvilPrompt),
 	Gacha = promptPosition(lobby.GachaPrompt),
 	Field = promptPosition(lobby.WarpPrompt),
