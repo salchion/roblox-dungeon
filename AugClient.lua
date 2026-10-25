@@ -106,7 +106,7 @@ for zone = 1, ZONES do
 		Size = UDim2.new(1, -20, 0, 0), Position = UDim2.new(0, 10, 0, 64), Text = "", TextSize = 9, RichText = true, Visible = false,
 		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = true, TextColor3 = Color3.fromRGB(205, 210, 235), ZIndex = 2,
 	}, row)
-	local infoButton = button({ Size = UDim2.new(0, 74, 0, 26), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -166, 0, 32), BackgroundColor3 = Color3.fromRGB(64, 72, 112), Text = "Details +", TextSize = 9 }, row, function() end)
+	local infoButton = button({ Size = UDim2.new(0, 32, 0, 26), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -164, 0, 32), BackgroundColor3 = Color3.fromRGB(64, 72, 112), Text = "ⓘ", TextSize = 14 }, row, function() end)
 	infoButton.ZIndex = 3
 	-- 켜져 있으면 테두리가 효과 색으로 빛나며 천천히 도는 띠가 된다 (꺼져 있으면 테두리 없음)
 	local rowStroke = make("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Transparency = 1 }, row)
@@ -127,7 +127,7 @@ for zone = 1, ZONES do
 		local r = rows[zone]
 		local levelNow = (player:GetAttribute("AugLvZ_" .. zone) or 0) + (player:GetAttribute("AugGearZ_" .. zone) or 0)
 		local atk = Config.BaseAttackEstimate and Config.BaseAttackEstimate(player) or 0
-		r.Info.Text = r.Open and "Details –" or "Details +"
+		r.Info.Text = r.Open and "▲" or "ⓘ" -- (작은 버튼: 왼쪽 설명 줄과 겹치지 않게)
 		if not r.Open then
 			r.Detail.Visible = false
 			r.Row.Size = UDim2.new(1, -8, 0, 62)
@@ -191,7 +191,7 @@ local function refresh()
 			end
 			local match = Config.AugWeaponMatch(player, attrKey)
 			r.Desc.RichText = true
-			-- 칸에는 역할 + 잘 맞는 무기만 한 줄로 (자세한 설명은 Details+ 에서)
+			-- 칸에는 역할 + 잘 맞는 무기만 한 줄로 (자세한 설명은 ⓘ 버튼에서)
 			r.Desc.TextTruncate = Enum.TextTruncate.AtEnd
 			r.Desc.Text = string.format("<b>%s</b>  ·  %s🔫 %s%s</font>",
 				Config.AugRoleLabel[role.Role], match and "<font color='#78ff8c'>✔ " or "<font color='#c8cce0'>", table.concat(names, " / "), match and " (+40%)" or "")
