@@ -283,6 +283,14 @@ function DungeonTerrain.BuildColosseum(run, theme, D, folder)
 	end
 
 	-- 2) 돌벽 (바깥으로 점점 높아지는 관중석 3단) + 8개의 출입문 + 횃불
+	-- 테마마다 벽의 생김새가 다르다 (안쪽 1단 높이 / 위치는 같아서 움직임 / 판정은 그대로):
+	--   동굴: 거친 바위 + 들쭉날쭉한 높이 + 비스듬한 바위 봉우리 / 얼음: 빙하 벽 + 눈 덮인 윗면 / 화염: 현무암 + 식은 용암 띠 / 보스러쉬: 공중에 뜬 부서진 벽
+	local STYLE = ({
+		Cave = { Mats = { Enum.Material.Rock, Enum.Material.Slate, Enum.Material.Rock }, Tint = Color3.fromRGB(104, 88, 70), Jitter = 6, Tilt = 0.22, Gate = Color3.fromRGB(92, 66, 44), GateMat = Enum.Material.Wood, Post = Enum.Material.Wood },
+		Ice = { Mats = { Enum.Material.Glacier, Enum.Material.Ice, Enum.Material.Glacier }, Tint = Color3.fromRGB(120, 150, 180), Jitter = 3, Tilt = 0, Cap = { Color3.fromRGB(214, 224, 236), Enum.Material.Snow }, Gate = Color3.fromRGB(150, 196, 226), GateMat = Enum.Material.Ice, Post = Enum.Material.Metal },
+		Fire = { Mats = { Enum.Material.Basalt, Enum.Material.Basalt, Enum.Material.Basalt }, Tint = Color3.fromRGB(58, 46, 46), Jitter = 4, Tilt = 0.08, Cap = { Color3.fromRGB(120, 52, 34), Enum.Material.CrackedLava }, Gate = Color3.fromRGB(70, 52, 48), GateMat = Enum.Material.Metal, Post = Enum.Material.Metal },
+		Rift = { Mats = { Enum.Material.Slate, Enum.Material.Slate, Enum.Material.Marble }, Tint = Color3.fromRGB(70, 52, 96), Jitter = 2, Tilt = 0.12, Float = 7, Gate = Color3.fromRGB(110, 70, 150), GateMat = Enum.Material.Glass, Post = Enum.Material.Metal },
+	})[run.TypeKey or ""]
 	local SEGMENTS = 48
 	local gateEvery = SEGMENTS / 8
 	local segmentWidth = 2 * math.pi * (R + 3) / SEGMENTS + 0.6
@@ -293,14 +301,35 @@ function DungeonTerrain.BuildColosseum(run, theme, D, folder)
 		for tier = 1, 3 do
 			local radius = R + 3 + (tier - 1) * 7
 			local height = isGate and tier == 1 and 10 or (14 + tier * 12)
-			local position = center + radial * radius + Vector3.new(0, height / 2, 0)
-			part("Stand" .. tier, Vector3.new(segmentWidth, height, 7), CFrame.lookAt(position, position + radial) , tier == 1 and stone or stone:Lerp(dark, 0.25 * tier), tier == 1 and Enum.Material.Brick or Enum.Material.Slate)
+			local lift = 0
+			local tilt = CFrame.new()
+			local color = tier == 1 and stone or stone:Lerp(dark, 0.25 * tier)
+			local material = tier == 1 and Enum.Material.Brick or Enum.Material.Slate
+			if STYLE then
+				color = STYLE.Tint:Lerp(Color3.new(0, 0, 0), 0.08 * tier + rng:NextNumber(0, 0.1))
+				material = STYLE.Mats[tier]
+				if tier > 1 then height += rng:NextNumber(-STYLE.Jitter, STYLE.Jitter) end -- (안쪽 1단은 그대로: 움직임에 영향 없음)
+				if tier == 3 and STYLE.Tilt > 0 then tilt = CFrame.Angles(rng:NextNumber(-STYLE.Tilt, STYLE.Tilt), 0, rng:NextNumber(-STYLE.Tilt, STYLE.Tilt)) end
+				if tier == 3 and STYLE.Float then lift = STYLE.Float + rng:NextNumber(0, 5) end -- 보스러쉬: 바깥 벽이 공중에 떠 있다
+			end
+			local position = center + radial * radius + Vector3.new(0, height / 2 + lift, 0)
+			part("Stand" .. tier, Vector3.new(segmentWidth, height, 7), CFrame.lookAt(position, position + radial) * tilt, color, material)
+			if STYLE and STYLE.Cap and tier < 3 and not (isGate and tier == 1) then -- 얼음: 눈 덮인 윗면 / 화염: 식은 용암 띠
+				part("StandCap", Vector3.new(segmentWidth, 0.8, 7.4), CFrame.lookAt(position + Vector3.new(0, height / 2 + 0.3, 0), position + Vector3.new(0, height / 2 + 0.3, 0) + radial), STYLE.Cap[1], STYLE.Cap[2], { CanCollide = false, CanQuery = false })
+			end
 		end
 		if isGate then
 			-- 출입문: 어두운 아치 + 테마색 테두리 (여기서 몬스터가 나온다)
 			local gatePos = center + radial * (R + 1.5)
 			part("GateDark", Vector3.new(segmentWidth * 0.7, 16, 2), CFrame.lookAt(gatePos + Vector3.new(0, 8, 0), gatePos + Vector3.new(0, 8, 0) + radial), Color3.fromRGB(12, 10, 14), Enum.Material.SmoothPlastic, { CanCollide = false })
-			local frame = part("GateGlow", Vector3.new(segmentWidth * 0.85, 1, 2.4), CFrame.lookAt(gatePos + Vector3.new(0, 16.5, 0), gatePos + Vector3.new(0, 16.5, 0) + radial), theme.Torch, Enum.Material.Neon, { CanCollide = false })
+			local frame = part("GateGlow", Vector3.new(segmentWidth * 0.85, 1, 2.4), CFrame.lookAt(gatePos + Vector3.new(0, 16.5, 0), gatePos + Vector3.new(0, 16.5, 0) + radial), STYLE and STYLE.Gate or theme.Torch, STYLE and STYLE.GateMat or Enum.Material.Neon, { CanCollide = false })
+			if STYLE then -- 문 양옆 기둥 (테마 재질)
+				for _, side in ipairs({ -1, 1 }) do
+					local tangent = Vector3.new(-radial.Z, 0, radial.X)
+					local postPos = gatePos + tangent * side * segmentWidth * 0.42 + Vector3.new(0, 8.5, 0)
+					part("GatePost", Vector3.new(1.6, 17, 2.6), CFrame.lookAt(postPos, postPos + radial), STYLE.Gate:Lerp(Color3.new(0, 0, 0), 0.25), STYLE.GateMat, { CanCollide = false, CanQuery = false })
+				end
+			end
 			local light = Instance.new("PointLight")
 			light.Range = 34
 			light.Brightness = 1.6
@@ -309,7 +338,7 @@ function DungeonTerrain.BuildColosseum(run, theme, D, folder)
 		elseif i % 3 == 1 then
 			-- 횃불 기둥
 			local base = center + radial * (R - 1.5)
-			part("TorchPost", Vector3.new(1.6, 9, 1.6), CFrame.new(base + Vector3.new(0, 4.5, 0)), dark, Enum.Material.Metal, { CanCollide = false })
+			part("TorchPost", Vector3.new(1.6, 9, 1.6), CFrame.new(base + Vector3.new(0, 4.5, 0)), dark, STYLE and STYLE.Post or Enum.Material.Metal, { CanCollide = false })
 			local flame = part("Torch", Vector3.new(2, 2, 2), CFrame.new(base + Vector3.new(0, 10, 0)), theme.Torch, Enum.Material.Neon, { CanCollide = false, Shape = Enum.PartType.Ball })
 			local light = Instance.new("PointLight")
 			light.Range = 40

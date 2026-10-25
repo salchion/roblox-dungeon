@@ -398,10 +398,52 @@ local function decorateFire(run, ctx)
 	ctx.BossEmphasis(run, lava, obsidian, Mat.Slate, flameColor)
 end
 
+------------------------------------------------------------
+-- 보스러쉬 (심연): 공중에 뜬 부서진 바위 / 보랏빛 결정 / 바닥의 별자리 문양 (은은하게)
+------------------------------------------------------------
+local function decorateRift(run, ctx)
+	local rng = ctx.Rng
+	local rock = Color3.fromRGB(56, 44, 72)
+	local violet = Color3.fromRGB(150, 110, 200)
+	local center = ctx.Center
+	-- 가장자리 위로 떠 있는 바위 조각들
+	for _ = 1, 22 do
+		local angle = ctx.RimAngle(false)
+		local s = rng:NextNumber(3, 8)
+		local pos = ctx.Polar(angle, RADIUS + rng:NextNumber(4, 30), WALL_TOP + rng:NextNumber(6, 30))
+		ctx.Part("VoidRock", Vector3.new(s, s * rng:NextNumber(0.6, 1.1), s * rng:NextNumber(0.8, 1.3)), CFrame.new(pos) * CFrame.Angles(rng:NextNumber(0, 6), rng:NextNumber(0, 6), rng:NextNumber(0, 6)), rock:Lerp(Color3.new(0, 0, 0), rng:NextNumber(0, 0.2)), Mat.Slate)
+	end
+	-- 벽 아래 보랏빛 결정 무리
+	for _ = 1, 10 do
+		local angle = ctx.RimAngle(true)
+		local base = ctx.Polar(angle, RADIUS - 4)
+		for _ = 1, 3 do
+			local h = rng:NextNumber(3, 8)
+			ctx.Part("VoidCrystal", Vector3.new(rng:NextNumber(1, 2), h, rng:NextNumber(1, 2)), CFrame.new(base + Vector3.new(rng:NextNumber(-2, 2), h / 2 - 0.3, rng:NextNumber(-2, 2))) * CFrame.Angles(rng:NextNumber(-0.4, 0.4), rng:NextNumber(0, 6), rng:NextNumber(-0.4, 0.4)), violet:Lerp(rock, rng:NextNumber(0.2, 0.5)), Mat.Glass, { Transparency = 0.2 })
+		end
+	end
+	-- 바닥 별자리: 작은 점 + 잇는 선 (아주 옅게)
+	local stars = {}
+	for i = 1, 12 do
+		local angle = (i / 12) * math.pi * 2 + rng:NextNumber(-0.2, 0.2)
+		local dist = rng:NextNumber(36, 88)
+		local pos = Vector3.new(center.X + math.cos(angle) * dist, center.Y + 0.32, center.Z + math.sin(angle) * dist)
+		table.insert(stars, pos)
+		ctx.Disc("StarDot", pos, 2.2, 0.08, violet, Mat.Neon, { Transparency = 0.6 })
+	end
+	for i = 1, #stars do
+		local a, b = stars[i], stars[i % #stars + 1]
+		local mid = (a + b) / 2
+		ctx.Part("StarLine", Vector3.new(0.3, 0.06, (b - a).Magnitude), CFrame.lookAt(mid, b), violet, Mat.Neon, { Transparency = 0.82 })
+	end
+	ctx.BossEmphasis(run, violet, rock, Mat.Slate, violet)
+end
+
 local DECORATORS = {
 	Cave = decorateCave,
 	Ice = decorateIce,
 	Fire = decorateFire,
+	Rift = decorateRift,
 }
 
 -- 아레나가 만들어진 직후 한 번 호출한다. typeKey: "Cave" / "Ice" / "Fire" (다른 종류면 아무것도 안 함)

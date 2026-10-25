@@ -138,6 +138,13 @@ do
 			end
 		end
 	end
+	-- 던전 종류마다 하늘 / 안개 색이 확실히 다르다 (밝기는 낮게: 쨍하지 않게). 변이(어둠 / 안개 등)가 걸리면 변이가 우선
+	local TYPE_LOOK = {
+		Cave = { Lighting = { ClockTime = 20, Brightness = 1.0, Ambient = Color3.fromRGB(70, 58, 46), OutdoorAmbient = Color3.fromRGB(92, 76, 60), ExposureCompensation = -0.2 }, Atmosphere = { Color = Color3.fromRGB(120, 96, 72), Density = 0.38 } },
+		Ice = { Lighting = { Brightness = 1.15, ExposureCompensation = -0.45, Ambient = Color3.fromRGB(46, 58, 80), OutdoorAmbient = Color3.fromRGB(62, 78, 104) }, Atmosphere = { Color = Color3.fromRGB(150, 180, 210), Density = 0.32 } },
+		Fire = { Lighting = { ClockTime = 21, Brightness = 1.1, Ambient = Color3.fromRGB(86, 46, 40), OutdoorAmbient = Color3.fromRGB(110, 58, 48), ExposureCompensation = -0.25 }, Atmosphere = { Color = Color3.fromRGB(150, 70, 50), Density = 0.36 } },
+		Rift = { Lighting = { ClockTime = 0, Brightness = 0.9, Ambient = Color3.fromRGB(66, 50, 90), OutdoorAmbient = Color3.fromRGB(84, 64, 112), ExposureCompensation = -0.2 }, Atmosphere = { Color = Color3.fromRGB(80, 56, 120), Density = 0.4 } },
+	}
 	local function apply()
 		local zone = player:GetAttribute("Zone")
 		local grade = Lighting:FindFirstChild("LobbyGrade")
@@ -172,19 +179,17 @@ do
 					for key, value in pairs(DAY) do look[key] = value end
 					for key, value in pairs(visual.Lighting) do look[key] = value end
 				end
-				if player:GetAttribute("DungeonTypeKey") == "Ice" then -- 얼음 성채: 눈 / 얼음이 하얗게 번쩍여 눈부시지 않게 밝기를 낮추고 푸른 어둑한 톤으로
-					local dim = {}
-					for key, value in pairs(look) do dim[key] = value end
-					dim.Brightness = math.min(dim.Brightness or 1.85, 1.15)
-					dim.ExposureCompensation = -0.45
-					dim.Ambient = Color3.fromRGB(46, 58, 80)
-					dim.OutdoorAmbient = Color3.fromRGB(62, 78, 104)
-					look = dim
+				local typeLook = TYPE_LOOK[player:GetAttribute("DungeonTypeKey") or ""]
+				if typeLook and not visual then
+					local themed = {}
+					for key, value in pairs(look) do themed[key] = value end
+					for key, value in pairs(typeLook.Lighting) do themed[key] = value end
+					look = themed
 				end
 				TweenService:Create(Lighting, TweenInfo.new(visual and 2 or 0.8), look):Play()
 				local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
 				if atmosphere and dusk and dusk.Atmosphere then
-					TweenService:Create(atmosphere, TweenInfo.new(2), visual and visual.Atmosphere or dusk.Atmosphere):Play()
+					TweenService:Create(atmosphere, TweenInfo.new(2), visual and visual.Atmosphere or (typeLook and typeLook.Atmosphere) or dusk.Atmosphere):Play()
 				end
 				fieldIndex = 0
 			end
