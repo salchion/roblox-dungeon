@@ -9,6 +9,7 @@ local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 
 local player = Players.LocalPlayer
 local ZONES = Config.Field.ZoneCount
@@ -333,7 +334,7 @@ end
 player:GetAttributeChangedSignal("AugDemo"):Connect(refreshCorner)
 player:GetAttributeChangedSignal("Zone"):Connect(refreshCorner)
 
-local function playRoll(pick)
+local function playRollCompact(pick)
 	local winner = Config.AugInfo[pick]
 	if not winner then return end
 	corner:SetAttribute("Rolling", true)
@@ -366,6 +367,98 @@ local function playRoll(pick)
 	box:Destroy()
 	corner:SetAttribute("Rolling", nil)
 	refreshCorner()
+end
+
+-- 튜토리얼 던전(처음 체험): 세트 효과 8개를 한 줄로 쭉 늘어놓고, 커서가 빠르게 훑다가 천천히 멈추며 하나가 "선택된다".
+-- "세트 효과라는 게 구역마다 하나씩 8가지가 있구나" 를 알려 주는 안내를 겸한다.
+local function tick(key, volume)
+	pcall(function() if SoundBank.Has(key) then SoundBank.Play(game:GetService("SoundService"), key, { Volume = volume or 0.6 }) end end)
+end
+local function playRollFull(pick)
+	local winner = Config.AugInfo[pick]
+	if not winner then return end
+	corner:SetAttribute("Rolling", true)
+	corner.Visible = false
+	local phoneLayout = UserInputService.TouchEnabled and not UserInputService.MouseEnabled
+	local cols = phoneLayout and 4 or 8
+	local rows = 8 // cols
+	local cardW, cardH, gap = 64, 86, 6
+	local panelW = cols * cardW + (cols + 1) * gap + 20
+	local panelH = 78 + rows * (cardH + gap) + 96
+	local box = make("CanvasGroup", {
+		Size = UDim2.new(0, panelW, 0, panelH), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0.09, 0),
+		BackgroundColor3 = Color3.fromRGB(22, 24, 38), BackgroundTransparency = 0.04, BorderSizePixel = 0, ZIndex = 60, GroupTransparency = 1,
+	}, gui)
+	make("UICorner", { CornerRadius = UDim.new(0, 14) }, box)
+	local stroke = make("UIStroke", { Color = Color3.fromRGB(190, 168, 110), Thickness = 2 }, box)
+	label({ Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0, 0, 0, 10), Text = "✨ SET EFFECTS", TextSize = 18, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(235, 215, 160), ZIndex = 61 }, box)
+	label({ Size = UDim2.new(1, -24, 0, 34), Position = UDim2.new(0, 12, 0, 36), Text = "8 effects, one for every zone. Defeat a zone's Lord and collect its gear to make that effect stronger. Here is one to try!", TextSize = 11, TextWrapped = true, TextColor3 = Color3.fromRGB(190, 196, 220), Font = Enum.Font.GothamMedium, ZIndex = 61 }, box)
+	local cards = {}
+	for index = 1, 8 do
+		local info = Config.AugInfo[Config.Sets.ZoneAug[index]]
+		local col, row = (index - 1) % cols, (index - 1) // cols
+		local card = make("Frame", {
+			Size = UDim2.new(0, cardW, 0, cardH), Position = UDim2.new(0, 10 + gap + col * (cardW + gap), 0, 78 + row * (cardH + gap)),
+			BackgroundColor3 = Color3.fromRGB(34, 36, 56), BackgroundTransparency = 0.1, BorderSizePixel = 0, ZIndex = 61,
+		}, box)
+		make("UICorner", { CornerRadius = UDim.new(0, 10) }, card)
+		local cardStroke = make("UIStroke", { Color = Color3.fromRGB(70, 74, 104), Thickness = 1.5 }, card)
+		local scale = make("UIScale", { Scale = 1 }, card)
+		local zoneText = label({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 4), Text = "ZONE " .. index, TextSize = 9, TextColor3 = Color3.fromRGB(150, 156, 184), ZIndex = 62 }, card)
+		local iconText = label({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 20), Text = info.Icon, TextSize = 28, ZIndex = 62 }, card)
+		local nameText = label({ Size = UDim2.new(1, -6, 0, 26), Position = UDim2.new(0, 3, 0, 56), Text = info.Name, TextSize = 9, TextWrapped = true, TextColor3 = Color3.fromRGB(205, 210, 232), ZIndex = 62 }, card)
+		cards[index] = { Card = card, Stroke = cardStroke, Scale = scale, Texts = { zoneText, iconText, nameText }, Color = info.Color }
+	end
+	local function setState(index, state)
+		local c = cards[index]
+		if not c then return end
+		local active = state == "hover" or state == "win"
+		c.Card.BackgroundTransparency = state == "dim" and 0.6 or (active and 0 or 0.1)
+		c.Card.BackgroundColor3 = state == "win" and c.Color:Lerp(Color3.fromRGB(34, 36, 56), 0.65) or Color3.fromRGB(34, 36, 56)
+		c.Stroke.Color = state == "win" and c.Color or (state == "hover" and Color3.fromRGB(255, 217, 102) or Color3.fromRGB(70, 74, 104))
+		c.Stroke.Thickness = state == "win" and 4 or (state == "hover" and 3 or 1.5)
+		c.Scale.Scale = state == "win" and 1.14 or (state == "hover" and 1.08 or 1)
+		for _, text in ipairs(c.Texts) do text.TextTransparency = state == "dim" and 0.65 or 0 end
+	end
+	local nameLine = label({ Size = UDim2.new(1, -20, 0, 24), Position = UDim2.new(0, 10, 0, panelH - 92), Text = "", TextSize = 16, Font = Enum.Font.GothamBlack, ZIndex = 61, RichText = true }, box)
+	local descLine = label({ Size = UDim2.new(1, -28, 0, 38), Position = UDim2.new(0, 14, 0, panelH - 66), Text = "", TextSize = 11, TextWrapped = true, TextColor3 = Color3.fromRGB(200, 208, 232), Font = Enum.Font.GothamMedium, ZIndex = 61 }, box)
+	local hintLine = label({ Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 1, -26), Text = "", TextSize = 10, TextColor3 = Color3.fromRGB(255, 217, 102), ZIndex = 61 }, box)
+	TweenService:Create(box, TweenInfo.new(0.35), { GroupTransparency = 0 }):Play()
+	task.wait(0.9) -- 8개를 먼저 훑어볼 시간
+
+	local winIndex = table.find(Config.Sets.ZoneAug, pick) or 1
+	local startIndex = math.random(8)
+	local steps = 16 + ((winIndex - startIndex) % 8) + 1 -- 두 바퀴를 돌고 정확히 뽑힌 칸에서 멈춘다
+	local previous
+	for i = 1, steps do
+		local index = ((startIndex - 1 + i - 1) % 8) + 1
+		if previous then setState(previous, "idle") end
+		setState(index, "hover")
+		previous = index
+		tick("Gacha_Tick", 0.5)
+		task.wait(0.045 + 0.24 * (i / steps) ^ 3) -- 처음엔 빠르게, 끝에서 천천히
+	end
+	for index = 1, 8 do setState(index, index == winIndex and "win" or "dim") end
+	stroke.Color = winner.Color
+	nameLine.Text = string.format("%s  %s", winner.Icon, winner.Name)
+	nameLine.TextColor3 = winner.Color
+	descLine.Text = winner.Desc
+	hintLine.Text = string.format("Zone %d set effect · Trial Lv.3 — for this dungeon only", winIndex)
+	tick("Rare_Drop", 0.8)
+	task.wait(3.6)
+	TweenService:Create(box, TweenInfo.new(0.4), { GroupTransparency = 1 }):Play()
+	task.wait(0.45)
+	box:Destroy()
+	corner:SetAttribute("Rolling", nil)
+	refreshCorner()
+end
+
+local function playRoll(pick)
+	if player:GetAttribute("TutorialDungeonRun") == true then
+		playRollFull(pick)
+	else
+		playRollCompact(pick)
+	end
 end
 
 -- 세트 효과가 발동했을 때: 조준점 아래에 이름 팝업이 떠올랐다 사라지고, 오른쪽 위 목록의 그 효과가 잠깐 노랗게 켜지며 상자 테두리가 번쩍인다
