@@ -15,6 +15,7 @@ local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
+local INTRO_SOUND_ID = 132046898251409 -- 오프닝 음악 (로블록스 오디오 에셋 ID). 0 으로 바꾸면 이 음악은 끈다
 local shownThisSession = false
 local hiddenGuis = {} -- 오프닝 동안 잠깐 끈 화면들 (끝나거나 오류가 나면 이것만 다시 켠다)
 
@@ -86,12 +87,28 @@ local function play()
 	props.Name = "IntroProps"
 	props.Parent = workspace
 
+	-- 오프닝 음악: 불러와지면 재생하고, 건너뛰거나 끝나면 부드럽게 줄인다 (못 불러오면 조용히 넘어간다)
+	local music
+	if INTRO_SOUND_ID ~= 0 then
+		music = Instance.new("Sound")
+		music.Name = "IntroMusic"
+		music.SoundId = "rbxassetid://" .. INTRO_SOUND_ID
+		music.Volume = 0.7
+		music.Parent = SoundService
+	end
+
 	local finished = false
 	local connection
 	local function finish()
 		if finished then return end
 		finished = true
 		if connection then connection:Disconnect() end
+		if music then
+			local fading = music
+			music = nil
+			TweenService:Create(fading, TweenInfo.new(0.7), { Volume = 0 }):Play()
+			task.delay(0.8, function() fading:Destroy() end)
+		end
 		pcall(function()
 			camera.CameraType = Enum.CameraType.Custom
 			camera.FieldOfView = 70
@@ -162,6 +179,14 @@ local function play()
 	TweenService:Create(topBar, TweenInfo.new(0.7), { Size = UDim2.new(1, 0, 0.1, 0) }):Play()
 	TweenService:Create(bottomBar, TweenInfo.new(0.7), { Size = UDim2.new(1, 0, 0.1, 0) }):Play()
 	TweenService:Create(veil, TweenInfo.new(0.9), { BackgroundTransparency = 1 }):Play()
+	if music then
+		local loading = music
+		task.spawn(function()
+			local waited = os.clock()
+			while not loading.IsLoaded and os.clock() - waited < 3 do task.wait(0.1) end
+			if not finished and loading.Parent and loading.IsLoaded then loading:Play() end
+		end)
+	end
 	sfx("Aug_Flame", 1.0, 0.7) -- 바람을 가르는 소리
 	task.wait(0.6)
 	if finished then return end
