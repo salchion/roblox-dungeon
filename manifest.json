@@ -477,6 +477,20 @@
       "overwrite": true
     },
     {
+      "path": "Shared/KoData1.lua",
+      "parent": "ReplicatedStorage",
+      "name": "KoData1",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/KoData2.lua",
+      "parent": "ReplicatedStorage",
+      "name": "KoData2",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "MobileLayoutClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "MobileLayoutClient",

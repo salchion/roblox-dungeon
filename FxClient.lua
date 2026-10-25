@@ -314,10 +314,10 @@ end
 ------------------------------------------------------------
 local SPARKLE = "rbxasset://textures/particles/sparkles_main.dds"
 local SMOKE = "rbxasset://textures/particles/smoke_main.dds"
-local ERA_TINT = { -- 탄 색을 시대 느낌으로 덮어쓴다
-	[1] = Color3.fromRGB(150, 130, 105), [2] = Color3.fromRGB(205, 230, 255), [4] = Color3.fromRGB(255, 205, 70),
-	[5] = Color3.fromRGB(255, 140, 45), [6] = Color3.fromRGB(170, 235, 255), [7] = Color3.fromRGB(255, 245, 110),
-	[8] = Color3.fromRGB(135, 75, 220), [9] = Color3.fromRGB(255, 95, 35),
+local ERA_TINT = { -- 탄 색을 시대 느낌으로 덮어쓴다 (예전에는 연한 색이 많아 전부 흰 줄기처럼 보였다: 시대마다 확실히 다른 진한 색)
+	[1] = Color3.fromRGB(190, 120, 60), [2] = Color3.fromRGB(70, 140, 255), [3] = Color3.fromRGB(170, 70, 255), [4] = Color3.fromRGB(255, 185, 30),
+	[5] = Color3.fromRGB(255, 100, 25), [6] = Color3.fromRGB(40, 195, 255), [7] = Color3.fromRGB(255, 230, 40),
+	[8] = Color3.fromRGB(135, 75, 220), [9] = Color3.fromRGB(255, 70, 30),
 }
 local ERA_CORE = { [8] = Color3.fromRGB(35, 15, 60) } -- 암흑: 몸통은 검보라, 꼬리 / 폭발은 보라 빛
 local DRAGON = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 170, 60)), ColorSequenceKeypoint.new(1, Color3.fromRGB(190, 30, 15)) })
@@ -732,7 +732,7 @@ local function playShot(event)
 	end
 	local mini = look ~= nil and look.Mini == true -- 기관단총 / 샷건: 연사가 많아 시대 효과를 최소로
 	if not rainbow and ERA_TINT[era] then color = ERA_TINT[era] end
-	if not rainbow then color = color:Lerp(Color3.fromRGB(120, 125, 135), 0.18) end -- 너무 쨍하지 않게 살짝 가라앉힌다
+	if not rainbow then color = color:Lerp(Color3.fromRGB(120, 125, 135), 0.08) end -- 너무 쨍하지 않게 아주 살짝만 가라앉힌다
 	if mini then size *= 1 + 0.7 * richness end -- 연사 무기도 번호가 오르면 탄이 굵고 밝아진다 (앞 무기보다 초라해지지 않게)
 	size = math.max(size, mini and 0.45 or 0.5) -- 뒤에서 봐도 보이게 바닥 굵기 (연사 / 산탄 탄이 너무 가늘어 안 보인다는 말이 있어 키웠다)
 	claimShot(1.4)

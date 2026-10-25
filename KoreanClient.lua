@@ -1,11 +1,15 @@
 -- KoreanClient (StarterPlayer > StarterPlayerScripts 안의 LocalScript, 이름: KoreanClient)
 -- 설정 창의 "Language" 버튼(Attribute UiLang = "ko" / "en")에 맞춰, 화면에 보이는 글자를 한국어로 바꿔 보여 준다.
--- 방식: 글자가 "사전(DICT)에 있는 문장"과 똑같으면 한국어로 바꾼다 (숫자가 들어가는 문장은 PATTERNS). 영어로 돌아가면 원래 글자로 되돌린다.
--- 아직 사전에 없는 문장(긴 설명 등)은 영어 그대로 보인다: 사전에 줄을 추가하면 늘어난다.
+-- 방식: 화면 글자가 사전과 똑같으면 한국어로 바꾼다. 사전은 둘이다:
+--   1) 이 파일의 DICT / PATTERNS: 설정 창처럼 손으로 적은 짧은 문장
+--   2) Shared/KoData1.lua, KoData2.lua ... : 게임 안 문장 약 2000개 (Tools/ko_pairs.json 에서 Tools/build_ko.py 가 자동으로 만든다)
+--      숫자가 들어가는 문장은 패턴(%d / %s 자리)으로 맞추고, <font> 태그나 줄바꿈이 있는 글은 조각 단위로 번역한다.
+-- 영어로 돌아가면 원래 글자로 되돌린다. 사전에 없는 문장은 영어 그대로 보인다: ko_pairs.json 에 줄을 추가하고 build_ko.py 를 다시 돌리면 늘어난다.
 -- 기본값: Roblox 언어 설정이 한국어면 "ko", 아니면 "en".
 
 local Players = game:GetService("Players")
 local LocalizationService = game:GetService("LocalizationService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
@@ -67,25 +71,106 @@ if lang ~= "ko" and lang ~= "en" then
 	player:SetAttribute("UiLang", lang)
 end
 
-local originals = setmetatable({}, { __mode = "k" }) -- [글자 객체] = 원래(영어) 글자
+-- 자동 생성 사전 (KoData1, KoData2 ...): exact = { [영어] = 한국어 }, pats = { { 영어 패턴, 한국어 서식, 꼭 들어 있는 글자, 점수 }, ... } (점수가 낮은 패턴부터 맞춰 본다)
+local data = { exact = {}, pats = {} }
+local function loadData()
+	local first = ReplicatedStorage:WaitForChild("KoData1", 10)
+	local index = 1
+	local module = first
+	while module do
+		local ok, result = pcall(require, module)
+		if ok and type(result) == "table" then
+			for en, ko in pairs(result.exact or {}) do data.exact[en] = ko end
+			for _, entry in ipairs(result.pats or {}) do table.insert(data.pats, entry) end
+		else
+			warn("[KoreanClient] " .. module.Name .. " load failed: " .. tostring(result))
+		end
+		index += 1
+		module = ReplicatedStorage:WaitForChild("KoData" .. index, 3)
+	end
+	table.sort(data.pats, function(a, b) return (a[4] or 0) < (b[4] or 0) end)
+end
 
-local function translate(text)
-	local direct = DICT[text]
+local memo, memoCount = {}, 0
+local function remember(text, result)
+	if memoCount > 6000 then memo, memoCount = {}, 0 end
+	memo[text] = result
+	memoCount += 1
+	return result
+end
+
+-- 조각 하나(태그 / 줄바꿈이 없는 글자)를 번역한다. 못 찾으면 nil
+local function lookup(piece)
+	local direct = DICT[piece] or data.exact[piece]
 	if direct then return direct end
 	for _, entry in ipairs(PATTERNS) do
-		local captures = { string.match(text, entry[1]) }
-		if #captures > 0 or string.find(text, entry[1]) then
+		local captures = { string.match(piece, entry[1]) }
+		if #captures > 0 or string.find(piece, entry[1]) then
 			local ok, result = pcall(string.format, entry[2], table.unpack(captures))
 			if ok then return result end
+		end
+	end
+	for _, entry in ipairs(data.pats) do
+		local anchor = entry[3]
+		if anchor == "" or string.find(piece, anchor, 1, true) then
+			local captures = { string.match(piece, entry[1]) }
+			if #captures > 0 then
+				local ok, result = pcall(string.format, entry[2], table.unpack(captures))
+				if ok then return result end
+			end
 		end
 	end
 	return nil
 end
 
+-- 앞뒤 공백은 그대로 두고 가운데만 번역한다
+local function lookupTrimmed(piece)
+	local found = lookup(piece)
+	if found then return found end
+	local lead, core, trail = string.match(piece, "^(%s*)(.-)(%s*)$")
+	if core and core ~= "" and (lead ~= "" or trail ~= "") then
+		local ko = lookup(core)
+		if ko then return lead .. ko .. trail end
+	end
+	return nil
+end
+
+local function translate(text)
+	local cached = memo[text]
+	if cached ~= nil then return cached or nil end
+	local whole = lookupTrimmed(text)
+	if whole then return remember(text, whole) end
+	-- <태그> 와 줄바꿈 사이의 글자 조각마다 번역한다
+	local out, changed, position = {}, false, 1
+	while position <= #text do
+		local tagStart, tagEnd = string.find(text, "<[^>]*>", position)
+		local newline = string.find(text, "\n", position, true)
+		local cutStart, cutEnd
+		if tagStart and (not newline or tagStart < newline) then
+			cutStart, cutEnd = tagStart, tagEnd
+		elseif newline then
+			cutStart, cutEnd = newline, newline
+		end
+		local piece = string.sub(text, position, (cutStart or #text + 1) - 1)
+		if piece ~= "" then
+			local ko = lookupTrimmed(piece)
+			if ko then changed = true end
+			table.insert(out, ko or piece)
+		end
+		if not cutStart then break end
+		table.insert(out, string.sub(text, cutStart, cutEnd))
+		position = cutEnd + 1
+	end
+	return remember(text, changed and table.concat(out) or false)
+end
+
+local originals = setmetatable({}, { __mode = "k" }) -- [글자 객체] = 원래(영어) 글자
+
 local applying = false
 local function apply(obj)
 	if lang ~= "ko" then return end
 	local text = obj.Text
+	if text == "" then return end
 	local ko = translate(text)
 	if ko and ko ~= text then
 		applying = true
@@ -114,14 +199,17 @@ local function watchTree(root)
 end
 
 local function refreshAll()
-	for obj, english in pairs(originals) do
-		if obj.Parent and lang ~= "ko" then
-			applying = true
-			obj.Text = english
-			applying = false
+	if lang ~= "ko" then
+		for obj, english in pairs(originals) do
+			if obj.Parent then
+				applying = true
+				obj.Text = english
+				applying = false
+			end
 		end
+		originals = setmetatable({}, { __mode = "k" })
+		return
 	end
-	if lang ~= "ko" then originals = setmetatable({}, { __mode = "k" }) return end
 	for obj in pairs(watched) do
 		if obj.Parent then apply(obj) end
 	end
@@ -139,4 +227,10 @@ for _, gui in ipairs(playerGui:GetChildren()) do
 end
 playerGui.ChildAdded:Connect(function(gui)
 	if gui:IsA("ScreenGui") then task.defer(watchTree, gui) end
+end)
+
+task.spawn(function()
+	loadData()
+	memo, memoCount = {}, 0
+	refreshAll()
 end)

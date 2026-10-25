@@ -1,0 +1,7738 @@
+[
+[
+"  (now)</b></font>",
+"  (지금)</b></font>"
+],
+[
+"  <font color='#ffd966'>≈ %d dmg</font>",
+"  <font color='#ffd966'>≈ %d 피해</font>"
+],
+[
+" <font color='#aab0c8'>(gold %d + gear %d)</font>",
+" <font color='#aab0c8'>(골드 %d + 장비 %d)</font>"
+],
+[
+"%s\n<font size='10' color='#ffd966'>Zone %d set effect · Trial Lv.3</font>",
+"%s\n<font size='10' color='#ffd966'>%d구역 세트 효과 · 체험 Lv.3</font>"
+],
+[
+"%s <b>%s</b>  <font size='9' color='#ffd966'>Zone %d · Trial Lv.3</font>\n<font size='9' color='#c8d0e8'>%s</font>",
+"%s <b>%s</b>  <font size='9' color='#ffd966'>%d구역 · 체험 Lv.3</font>\n<font size='9' color='#c8d0e8'>%s</font>"
+],
+[
+"%s%s %s  <font color='#8fe0ff'><b>Lv.%d</b></font>%s",
+"%s%s %s  <font color='#8fe0ff'><b>Lv.%d</b></font>%s"
+],
+[
+"%s: vs bosses %d%% · vs monsters %d%%",
+"%s: 보스 상대 %d%% · 몬스터 상대 %d%%"
+],
+[
+"%sZone %d · %s  %s",
+"%s%d구역 · %s  %s"
+],
+[
+"8 effects, one for every zone. Defeat a zone's Lord and collect its gear to make that effect stronger. Here is one to try!",
+"8가지 효과가 구역마다 하나씩 있어요. 구역의 군주를 쓰러뜨리고 그 장비를 모으면 효과가 강해집니다. 하나 써 보세요!"
+],
+[
+"<b>%s</b>  ·  %s🔫 %s%s</font>",
+"<b>%s</b>  ·  %s🔫 %s%s</font>"
+],
+[
+"<b>Per level</b>  (Lv.1–3 from gold · Lv.4–6 with set gear; damage ≈ one hit at your current attack, before crit/combo)",
+"<b>레벨별</b>  (Lv.1–3은 골드 · Lv.4–6은 세트 장비 · 피해 ≈ 현재 공격력 한 방 기준, 치명타/콤보 제외)"
+],
+[
+"<font color='#ffd966'><b>🌟 Set Effects</b></font>",
+"<font color='#ffd966'><b>🌟 세트 효과</b></font>"
+],
+[
+"Activate",
+"활성화"
+],
+[
+"Active %d / %d slots   (💰 %s G)",
+"활성 %d / %d 칸   (💰 %s G)"
+],
+[
+"Buy",
+"구매"
+],
+[
+"Close",
+"닫기"
+],
+[
+"Max level",
+"최대 레벨"
+],
+[
+"Rolling",
+"뽑는 중"
+],
+[
+"Tap a slot to toggle it. Defeat a lord to unlock its effect, then upgrade it with gold up to Lv.3. Wear that zone's set gear for Lv.4 at 1 piece · Lv.5 at 2 pieces · Lv.6 at 3 pieces! The real power shows up in field hunting.",
+"칸을 눌러 켜고 끌 수 있어요. 군주를 쓰러뜨리면 효과가 열리고, 골드로 Lv.3까지 강화할 수 있어요. 그 구역의 세트 장비를 입으면 1부위 Lv.4 · 2부위 Lv.5 · 3부위 Lv.6! 진짜 힘은 필드 사냥에서 나옵니다."
+],
+[
+"Toggle",
+"전환"
+],
+[
+"Upgrade",
+"강화"
+],
+[
+"Zone %d set effect · Trial Lv.3 — for this dungeon only",
+"%d구역 세트 효과 · 체험 Lv.3 — 이번 던전에서만"
+],
+[
+"▼ Press Y!",
+"▼ Y를 누르세요!"
+],
+[
+"○ OFF",
+"○ 꺼짐"
+],
+[
+"✨ SET EFFECTS",
+"✨ 세트 효과"
+],
+[
+"🌟 Set Effects",
+"🌟 세트 효과"
+],
+[
+"🌟 Sets (Y)",
+"🌟 세트 (Y)"
+],
+[
+"🎲 This Dungeon's Trial Effect",
+"🎲 이번 던전의 체험 효과"
+],
+[
+"🔒 Defeat the Zone %d lord",
+"🔒 %d구역 군주를 쓰러뜨리세요"
+],
+[
+"🔫 Best with %s: set damage +40%% and %s",
+"🔫 %s와 함께라면: 세트 피해 +40%% 그리고 %s"
+],
+[
+"Enrage",
+"격노"
+],
+[
+"It attacks faster now",
+"이제 더 빠르게 공격해요"
+],
+[
+"Lord",
+"군주"
+],
+[
+"Lord of %s  ·  Zone %d",
+"%s의 군주  ·  %d구역"
+],
+[
+"Recommended ⚡%s  ·  Aim at the yellow orb for 3x damage!",
+"권장 ⚡%s  ·  노란 구슬을 노리면 피해 3배!"
+],
+[
+"Victory",
+"승리"
+],
+[
+"⭐ First kill!",
+"⭐ 첫 처치!"
+],
+[
+"🏆 LORD DEFEATED",
+"🏆 군주 처치"
+],
+[
+"😡 ENRAGED!",
+"😡 격노!"
+],
+[
+"Result",
+"결과"
+],
+[
+"Tap to skip",
+"탭하면 건너뛰기"
+],
+[
+"%s  <font size='10' color='#aab0c8'>Zone %d %s</font>",
+"%s  <font size='10' color='#aab0c8'>%d구역 %s</font>"
+],
+[
+"%s (Lord of %s)",
+"%s (%s의 군주)"
+],
+[
+"??? (Lord of this zone)",
+"??? (이 구역의 군주)"
+],
+[
+"A special effect that can come with Mythic gear",
+"신화 장비에 붙을 수 있는 특별한 효과"
+],
+[
+"Close (J)",
+"닫기 (J)"
+],
+[
+"Codex",
+"도감"
+],
+[
+"Defeat it to open the next zone",
+"쓰러뜨리면 다음 구역이 열려요"
+],
+[
+"Gear found %d / %d  ·  Higher-rarity gear you have held shows its name",
+"장비 발견 %d / %d  ·  가진 적 있는 높은 등급 장비는 이름이 보여요"
+],
+[
+"Got ",
+"획득 "
+],
+[
+"Kills ",
+"처치 "
+],
+[
+"Lobby",
+"로비"
+],
+[
+"Monster",
+"몬스터"
+],
+[
+"Monsters met %d / %d (incl. zone lords)",
+"만난 몬스터 %d / %d (구역 군주 포함)"
+],
+[
+"Not met yet",
+"아직 못 만남"
+],
+[
+"Not obtained",
+"미획득"
+],
+[
+"Set",
+"세트"
+],
+[
+"Sets obtained %d / %d  ·  Monsters / lord of that zone drop them at a set rate",
+"획득한 세트 %d / %d  ·  그 구역의 몬스터 / 군주가 일정 확률로 떨어뜨려요"
+],
+[
+"The boss waiting at the end of the zone. Aim for the weak-point orb",
+"구역 끝에서 기다리는 보스. 약점 구슬을 노리세요"
+],
+[
+"Unique",
+"유니크"
+],
+[
+"Unique effects found %d / %d  ·  Mythic gear can carry one (about %d%% chance)",
+"발견한 유니크 효과 %d / %d  ·  신화 장비에 하나 붙을 수 있어요 (약 %d%% 확률)"
+],
+[
+"Weapon",
+"무기"
+],
+[
+"Weapons reached %d / %d  ·  Enhance your weapon to meet the next one",
+"도달한 무기 %d / %d  ·  무기를 강화하면 다음 무기를 만나요"
+],
+[
+"Zone %d · %s",
+"%d구역 · %s"
+],
+[
+"✨ Uniques",
+"✨ 유니크"
+],
+[
+"🎽 Gear",
+"🎽 장비"
+],
+[
+"👾 Monsters",
+"👾 몬스터"
+],
+[
+"📖\nCodex",
+"📖\n도감"
+],
+[
+"📖 Codex",
+"📖 도감"
+],
+[
+"🔫 Weapons",
+"🔫 무기"
+],
+[
+"🛡 Sets",
+"🛡 세트"
+],
+[
+" <font size='12' color='#9aa2c6'>DPS</font>",
+" <font size='12' color='#9aa2c6'>DPS</font>"
+],
+[
+"%s  <font color='#8c93b8'>%d%%</font>",
+"%s  <font color='#8c93b8'>%d%%</font>"
+],
+[
+"Best %s  ·  Max hit %s",
+"최고 %s  ·  최대 한 방 %s"
+],
+[
+"DAMAGE · %ds · %s",
+"피해 · %d초 · %s"
+],
+[
+"Gun",
+"총"
+],
+[
+"Meter",
+"미터기"
+],
+[
+"Reset",
+"초기화"
+],
+[
+"⚡ Chain Lightning",
+"⚡ 연쇄 번개"
+],
+[
+"❔ Other",
+"❔ 기타"
+],
+[
+"🌪 Gale Sweep",
+"🌪 돌풍"
+],
+[
+"🎯 Deadeye",
+"🎯 데드아이"
+],
+[
+"🎯 Dummy DPS",
+"🎯 허수아비 DPS"
+],
+[
+"💥 Explosive Shot",
+"💥 폭발탄"
+],
+[
+"💥 Shockwave",
+"💥 충격파"
+],
+[
+"🔁 Ricochet",
+"🔁 도탄"
+],
+[
+"🔫 Gun",
+"🔫 총"
+],
+[
+"<b>🎁 Boss chest · %d gear pieces</b>",
+"<b>🎁 보스 상자 · 장비 %d개</b>"
+],
+[
+"<font color='#%s'><b>%s</b></font> %s",
+"<font color='#%s'><b>%s</b></font> %s"
+],
+[
+"Chest",
+"상자"
+],
+[
+"Cleared up to depth %d  ·  You can enter up to depth %d",
+"깊이 %d까지 클리어  ·  깊이 %d까지 입장할 수 있어요"
+],
+[
+"Deeper depths have better drop odds and tougher monsters. The dungeon theme is random.",
+"깊을수록 드랍 확률이 좋아지고 몬스터가 강해집니다. 던전 테마는 무작위예요."
+],
+[
+"Depth ",
+"깊이 "
+],
+[
+"Enter",
+"입장"
+],
+[
+"Odds",
+"확률"
+],
+[
+"✦ Unique effect on Mythic gear: <b>%.1f%%</b>",
+"✦ 신화 장비의 유니크 효과: <b>%.1f%%</b>"
+],
+[
+"🎫 Tickets for the boss: <b>%d</b>  ·  Gold / XP x%.1f",
+"🎫 보스 티켓: <b>%d</b>  ·  골드 / 경험치 x%.1f"
+],
+[
+"🏰 Dungeon",
+"🏰 던전"
+],
+[
+"👹 Monster health x%.1f  ·  damage x%.1f",
+"👹 몬스터 체력 x%.1f  ·  피해 x%.1f"
+],
+[
+"📊 Full odds table",
+"📊 전체 확률표"
+],
+[
+"🔑 Entry: <b>%d key</b> (or 1 of your daily free entries)",
+"🔑 입장: <b>열쇠 %d개</b> (또는 매일 무료 입장 1회)"
+],
+[
+"🧩 Zone set gear: <b>%.0f%%</b> per piece (%s)",
+"🧩 구역 세트 장비: 부위당 <b>%.0f%%</b> (%s)"
+],
+[
+"🧩 Zone set gear: clear a field zone lord to unlock",
+"🧩 구역 세트 장비: 필드 구역 군주를 쓰러뜨리면 열려요"
+],
+[
+"Ball",
+"구체"
+],
+[
+"Bolt",
+"볼트"
+],
+[
+"Bomb",
+"폭탄"
+],
+[
+"Cannon",
+"캐논"
+],
+[
+"Crescent",
+"초승달"
+],
+[
+"Crystal",
+"수정"
+],
+[
+"Dart",
+"다트"
+],
+[
+"Fire",
+"불꽃"
+],
+[
+"Flamer",
+"화염방사기"
+],
+[
+"Halo",
+"후광"
+],
+[
+"Missile",
+"미사일"
+],
+[
+"Needle",
+"가시"
+],
+[
+"Pistol",
+"권총"
+],
+[
+"Rail",
+"레일건"
+],
+[
+"Revolver",
+"리볼버"
+],
+[
+"Rifle",
+"라이플"
+],
+[
+"Rocket",
+"로켓"
+],
+[
+"Seeker",
+"유도탄"
+],
+[
+"Shard",
+"파편"
+],
+[
+"Shotgun",
+"샷건"
+],
+[
+"Skull",
+"해골"
+],
+[
+"Smg",
+"SMG"
+],
+[
+"Snake",
+"뱀"
+],
+[
+"Sniper",
+"저격총"
+],
+[
+"Spear",
+"창"
+],
+[
+"%d pulls done! Best rarity: %s",
+"%d회 뽑기 완료! 최고 등급: %s"
+],
+[
+"%d upgrades: %d success / %d fail  (Gold -%d)",
+"%d회 강화: 성공 %d / 실패 %d  (골드 -%d)"
+],
+[
+"Aura",
+"오라"
+],
+[
+"Banner",
+"배너"
+],
+[
+"Belle",
+"벨"
+],
+[
+"Bosses keep coming. Survive longer, hit harder.",
+"보스는 계속 나옵니다. 오래 버티고 더 세게 때리세요."
+],
+[
+"Bounce",
+"도탄"
+],
+[
+"Can't pull.",
+"뽑을 수 없어요."
+],
+[
+"Clang clang! Shall we hammer out a weapon?",
+"쾅쾅! 무기 한 자루 두드려 볼까요?"
+],
+[
+"Don't worry, failing won't lower your level!",
+"걱정 마세요, 실패해도 레벨은 떨어지지 않아요!"
+],
+[
+"Dungeons have free daily entries.",
+"던전은 매일 무료 입장이 있어요."
+],
+[
+"Effects",
+"효과"
+],
+[
+"Enhance",
+"강화"
+],
+[
+"Equip",
+"장착"
+],
+[
+"Every dungeon has different monsters and bosses!",
+"던전마다 몬스터와 보스가 달라요!"
+],
+[
+"Field lords drop the keys.",
+"열쇠는 필드 군주가 떨어뜨려요."
+],
+[
+"Final",
+"최종"
+],
+[
+"Focus",
+"집중"
+],
+[
+"Got a ticket? Try your luck!",
+"티켓 있어요? 운을 시험해 보세요!"
+],
+[
+"Head to the gate when you're ready!",
+"준비되면 문으로 가세요!"
+],
+[
+"Health",
+"체력"
+],
+[
+"Hero",
+"영웅"
+],
+[
+"Kai",
+"카이"
+],
+[
+"Keep upgrading and you'll unlock new weapons!",
+"계속 강화하면 새 무기가 열려요!"
+],
+[
+"Keys",
+"열쇠"
+],
+[
+"Level",
+"레벨"
+],
+[
+"Luna",
+"루나"
+],
+[
+"Mira",
+"미라"
+],
+[
+"Only those who conquer the field may enter the Boss Rush.",
+"필드를 정복한 사람만 보스 러시에 들어갈 수 있어요."
+],
+[
+"Open",
+"열기"
+],
+[
+"Power",
+"전투력"
+],
+[
+"Progress",
+"진행도"
+],
+[
+"Lowest",
+"최저"
+],
+[
+"Rolls",
+"굴림"
+],
+[
+"The gacha is only available in the lobby.",
+"뽑기는 로비에서만 할 수 있어요."
+],
+[
+"Unknown slot.",
+"알 수 없는 칸이에요."
+],
+[
+"Upgrade failed... (only the Gold was lost)",
+"강화 실패... (골드만 사라졌어요)"
+],
+[
+"You have no ",
+"없어요: "
+],
+[
+"🎫 No tickets! Clear dungeons, defeat field lords/elites, or do daily quests to get more",
+"🎫 티켓이 없어요! 던전을 클리어하거나, 필드 군주/엘리트를 쓰러뜨리거나, 일일 퀘스트를 하면 더 얻어요"
+],
+[
+"💰 Not enough Gold. (%d needed) Earn Gold at the Training Dummy / field hunting / dungeons / Boss Rush rewards",
+"💰 골드가 부족해요. (%d 필요) 훈련 허수아비 / 필드 사냥 / 던전 / 보스 러시 보상으로 골드를 얻으세요"
+],
+[
+"%s %s complete! Lv.%d (%s)",
+"%s %s 완료! Lv.%d (%s)"
+],
+[
+"%s training started! (%s)",
+"%s 훈련 시작! (%s)"
+],
+[
+"Growth Unlocked!",
+"성장 해금!"
+],
+[
+"You cleared Zone 2! Open Menu (B) → Skills & Growth (Passive/Training) and start training to get stronger even while offline. Reward: 1000 G · 1 Key · 2 Tickets · 300 XP",
+"2구역을 클리어했어요! 메뉴 (B) → 스킬·성장 (패시브/훈련)을 열어 훈련을 시작하면 오프라인에서도 강해져요. 보상: 1000 G · 열쇠 1개 · 티켓 2장 · 경험치 300"
+],
+[
+"⏱ Used %s Time Skip!",
+"⏱ 시간 건너뛰기 %s 사용!"
+],
+[
+"⚠ Already at max level!",
+"⚠ 이미 최대 레벨이에요!"
+],
+[
+"⚠ Already breaking through.",
+"⚠ 이미 돌파 중이에요."
+],
+[
+"⚠ Already training.",
+"⚠ 이미 훈련 중이에요."
+],
+[
+"⚠ Not enough gold. (%d G needed)",
+"⚠ 골드가 부족해요. (%d G 필요)"
+],
+[
+"⚠ Nothing left to break through!",
+"⚠ 더 돌파할 게 없어요!"
+],
+[
+"⚠ Reach level %d to break through.",
+"⚠ 돌파하려면 레벨 %d에 도달하세요."
+],
+[
+"⚠ Training slots are full. (Get more slots with VIP / in the Shop)",
+"⚠ 훈련 칸이 가득 찼어요. (VIP / 상점에서 칸을 늘릴 수 있어요)"
+],
+[
+"⚠ You have no Time Skips.",
+"⚠ 시간 건너뛰기가 없어요."
+],
+[
+"🌟 Level %d breakthrough complete! You can grow even more now.",
+"🌟 %d레벨 돌파 완료! 이제 더 성장할 수 있어요."
+],
+[
+"🌟 Level %d breakthrough started! (%s)",
+"🌟 %d레벨 돌파 시작! (%s)"
+],
+[
+"🎁 First breakthrough gift! Received %s Time Skip — press [Use Time Skip] in Growth to finish right away!",
+"🎁 첫 돌파 선물! 시간 건너뛰기 %s개를 받았어요 — 성장에서 [시간 건너뛰기 사용]을 눌러 바로 끝내세요!"
+],
+[
+"💪 Growth unlocked! You cleared Zone 2. Start training and you'll get stronger even while offline",
+"💪 성장 해금! 2구역을 클리어했어요. 훈련을 시작하면 오프라인에서도 강해져요"
+],
+[
+"🔒 Clear Zone 2 to unlock Growth!",
+"🔒 2구역을 클리어하면 성장이 열려요!"
+],
+[
+"\n(Idle Booster applied for %d min)",
+"\n(방치 부스터 %d분 적용 중)"
+],
+[
+"\n(Idle income bonus +%d%% active)",
+"\n(방치 수입 보너스 +%d%% 적용 중)"
+],
+[
+"\n⚠ The %d-hour cap was reached, so %.1f hours' worth couldn't be saved. You can raise the cap in the Shop",
+"\n⚠ %d시간 상한에 도달해서 %.1f시간 분량은 저장하지 못했어요. 상한은 상점에서 올릴 수 있어요"
+],
+[
+"%.1f hours of idle gold (%d G) piled up!",
+"방치 골드 %.1f시간분(%d G)이 쌓였어요!"
+],
+[
+"While you were away…",
+"자리를 비운 사이…"
+],
+[
+"🌙 Idle reward +%d G",
+"🌙 방치 보상 +%d G"
+],
+[
+"Affix reroll complete!",
+"옵션 재굴림 완료!"
+],
+[
+"Already equipped.",
+"이미 장착 중이에요."
+],
+[
+"Auto-equipped the best gear in %d slot(s)!",
+"%d칸의 최고 장비를 자동 장착했어요!"
+],
+[
+"Dismantled %d! Essence +%d, %d G",
+"%d개 분해! 정수 +%d, %d G"
+],
+[
+"Dismantled! Essence +%d, %d G",
+"분해 완료! 정수 +%d, %d G"
+],
+[
+"Full",
+"가득 참"
+],
+[
+"No items to dismantle.",
+"분해할 아이템이 없어요."
+],
+[
+"No weak gear to clean up. (Set / Unique / best-in-slot gear is kept)",
+"정리할 약한 장비가 없어요. (세트 / 유니크 / 칸별 최고 장비는 남겨요)"
+],
+[
+"None",
+"없음"
+],
+[
+"Not enough Essence. (%d needed)",
+"정수가 부족해요. (%d 필요)"
+],
+[
+"Not enough tickets. (%d needed)",
+"티켓이 부족해요. (%d 필요)"
+],
+[
+"Nothing to reroll into.",
+"재굴림할 대상이 없어요."
+],
+[
+"Only Mythic gear with a unique effect can be rerolled.",
+"유니크 효과가 있는 신화 장비만 재굴림할 수 있어요."
+],
+[
+"Scrapped",
+"분해됨"
+],
+[
+"This item has no affixes.",
+"이 아이템에는 옵션이 없어요."
+],
+[
+"You can't change gear in the dungeon.",
+"던전에서는 장비를 바꿀 수 없어요."
+],
+[
+"You can't dismantle equipped gear.",
+"장착 중인 장비는 분해할 수 없어요."
+],
+[
+"You don't have that item.",
+"그 아이템이 없어요."
+],
+[
+"You're already wearing the best gear in every slot.",
+"이미 모든 칸에 최고 장비를 착용하고 있어요."
+],
+[
+"✦ New unique: %s — %s",
+"✦ 새 유니크: %s — %s"
+],
+[
+"🎒 Bag full: dismantled a weaker item to keep your new %s gear (Essence +%d, %d G)",
+"🎒 가방이 가득 차서 더 약한 아이템을 분해하고 새 %s 장비를 지켰어요 (정수 +%d, %d G)"
+],
+[
+"🧹 Auto-cleaned %d weaker gear (Essence +%d, %d G)",
+"🧹 더 약한 장비 %d개를 자동 정리했어요 (정수 +%d, %d G)"
+],
+[
+"🧹 Cleaned up %d! Essence +%d, %d G",
+"🧹 %d개 정리 완료! 정수 +%d, %d G"
+],
+[
+"A new dungeon theme can now appear (%s, Level %d+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.",
+"새 던전 테마가 나올 수 있어요 (%s, 레벨 %d+). 깊이를 고르세요: 깊을수록 드랍 확률이 좋고 보스가 강해요. 이제 표시가 문을 가리켜요."
+],
+[
+"Boss Rush",
+"보스 러시"
+],
+[
+"Challenge the Boss Rush at the purple portal in town. 2 runs a day - score = seconds survived x damage dealt, ranked weekly worldwide!",
+"마을의 보라색 포탈에서 보스 러시에 도전하세요. 하루 2회 - 점수 = 버틴 시간(초) x 준 피해, 전 세계 주간 랭킹!"
+],
+[
+"Dash to dodge!",
+"대시로 피하세요!"
+],
+[
+"Defeat the next zone's lord for better set gear and big rewards. A marker now points to the field entrance.",
+"다음 구역의 군주를 쓰러뜨려 더 좋은 세트 장비와 큰 보상을 얻으세요. 이제 표시가 필드 입구를 가리켜요."
+],
+[
+"Field Entrance",
+"필드 입구"
+],
+[
+"Field conquered! Boss Rush is open!",
+"필드 정복! 보스 러시가 열렸어요!"
+],
+[
+"Low health!",
+"체력이 낮아요!"
+],
+[
+"New dungeon unlocked!",
+"새 던전 해금!"
+],
+[
+"Press C for first aid to restore health. (green button on the skill bar)",
+"C를 눌러 응급 치료로 체력을 회복하세요. (스킬 바의 초록 버튼)"
+],
+[
+"Press Q to dash past enemy bullets. A close shave earns a NEAR MISS bonus!",
+"Q를 눌러 적의 탄 사이로 대시하세요. 아슬아슬하게 피하면 NEAR MISS 보너스!"
+],
+[
+"Press V for Dead Eye! Lock onto all nearby enemies and fire at once (invincible while active).",
+"V로 데드아이! 근처의 모든 적을 조준하고 한꺼번에 쏴요 (사용 중에는 무적)."
+],
+[
+"Press Y (or the 🌟 Sets button) to switch it on with gold. Beat more zone lords to unlock more effects.",
+"Y(또는 🌟 세트 버튼)를 눌러 골드로 켜세요. 군주를 더 쓰러뜨리면 효과가 더 열려요."
+],
+[
+"Set effect unlocked!",
+"세트 효과 해금!"
+],
+[
+"Switch guns with 1-0!",
+"1-0으로 총을 바꾸세요!"
+],
+[
+"The bar at the bottom shows every gun. Upgrade your weapon at the Forge (or Menu B) to unlock new ones, then press its number or tap it.",
+"아래 막대에 모든 총이 보여요. 대장간(또는 메뉴 B)에서 무기를 강화하면 새 총이 열리고, 번호를 누르거나 눌러서 바꾸세요."
+],
+[
+"Ultimate ready!",
+"궁극기 준비 완료!"
+],
+[
+"Zone 2 is open!",
+"2구역이 열렸어요!"
+],
+[
+"🎉 Level up! Lv.%d  (Max HP +%d, Attack +%.1f%%)",
+"🎉 레벨 업! Lv.%d  (최대 체력 +%d, 공격력 +%.1f%%)"
+],
+[
+"🚧 Stuck at level %d! Go to Menu (B) → Skills & Growth tab (Passives · Training) to break through.",
+"🚧 레벨 %d에서 막혔어요! 메뉴 (B) → 스킬·성장 탭 (패시브 · 훈련)에서 돌파하세요."
+],
+[
+"Double",
+"더블"
+],
+[
+"Move",
+"이동"
+],
+[
+"Range",
+"사거리"
+],
+[
+"Reach level %d to buy points with gold.",
+"골드로 포인트를 사려면 레벨 %d에 도달하세요."
+],
+[
+"You've bought all the points available with gold!",
+"골드로 살 수 있는 포인트를 모두 샀어요!"
+],
+[
+"✨ Stat points +%d! %d unspent (press T to raise move speed / range / double shot)",
+"✨ 스탯 포인트 +%d! 미사용 %d (T를 눌러 이동 속도 / 사거리 / 더블샷을 올리세요)"
+],
+[
+"💰 Bought +1 stat point! (%d / %d)",
+"💰 스탯 포인트 +1 구매! (%d / %d)"
+],
+[
+"Coal",
+"석탄"
+],
+[
+"Crate",
+"상자"
+],
+[
+"Forge",
+"대장간"
+],
+[
+"Hill",
+"언덕"
+],
+[
+"Ingot",
+"주괴"
+],
+[
+"Market",
+"시장"
+],
+[
+"Plaza",
+"광장"
+],
+[
+"Workshop",
+"작업장"
+],
+[
+"⚔ Dungeon Gate District",
+"⚔ 던전 문 구역"
+],
+[
+"⛲ Town Plaza",
+"⛲ 마을 광장"
+],
+[
+"🏔 Hunting Field\n",
+"🏔 사냥 필드\n"
+],
+[
+"🛒 Market",
+"🛒 시장"
+],
+[
+"Dungeon · pick a depth (deeper = better drop odds) · random theme · %s",
+"던전 · 깊이를 고르세요 (깊을수록 드랍 확률 좋음) · 무작위 테마 · %s"
+],
+[
+"Enter (Lv.",
+"입장 (Lv."
+],
+[
+"Enter / Ranking",
+"입장 / 랭킹"
+],
+[
+"Field Warp",
+"필드 이동"
+],
+[
+"Gacha Shop",
+"뽑기 상점"
+],
+[
+"Gear Gacha / Upgrade",
+"장비 뽑기 / 강화"
+],
+[
+"Upgrade Weapon",
+"무기 강화"
+],
+[
+"▲ Dungeon Gate (North)",
+"▲ 던전 문 (북쪽)"
+],
+[
+"▶ Hunting Field (East)",
+"▶ 사냥 필드 (동쪽)"
+],
+[
+"▶ Hunting Field Entrance ◀",
+"▶ 사냥 필드 입구 ◀"
+],
+[
+"◀ Dummy Training Yard (West)",
+"◀ 허수아비 훈련장 (서쪽)"
+],
+[
+"⚔ DUNGEON  ·  Lv.%d+",
+"⚔ 던전  ·  Lv.%d+"
+],
+[
+"🎰 Gacha · Gear Shop",
+"🎰 뽑기 · 장비 상점"
+],
+[
+"🏔 Hunting Field Entrance  ▶",
+"🏔 사냥 필드 입구  ▶"
+],
+[
+"🔨 Forge · Weapon Upgrade",
+"🔨 대장간 · 무기 강화"
+],
+[
+"  ▲ Better than your current gear! (I → Bag)",
+"  ▲ 현재 장비보다 좋아요! (I → 가방)"
+],
+[
+" (equipped)",
+" (장착 중)"
+],
+[
+"%s %s got %s!",
+"%s %s이(가) %s을(를) 얻었어요!"
+],
+[
+"♻ %s (auto-salvage +%d Essence)",
+"♻ %s (자동 분해 +정수 %d)"
+],
+[
+"♻ %s auto-salvaged (Essence +%d, %d G)",
+"♻ %s 자동 분해 (정수 +%d, %d G)"
+],
+[
+"⚔ New gear equipped! ",
+"⚔ 새 장비를 장착했어요! "
+],
+[
+"🌟 LEGENDARY!",
+"🌟 전설!"
+],
+[
+"👑 MYTHIC!",
+"👑 신화!"
+],
+[
+"Already at max level!",
+"이미 최대 레벨이에요!"
+],
+[
+"Free",
+"무료"
+],
+[
+"Items",
+"아이템"
+],
+[
+"Not enough gold. (%d G needed)",
+"골드가 부족해요. (%d G 필요)"
+],
+[
+"Sets",
+"세트"
+],
+[
+"This look isn't unlocked yet.",
+"이 외형은 아직 해금되지 않았어요."
+],
+[
+"Your pet is already at max level!",
+"펫이 이미 최대 레벨이에요!"
+],
+[
+"🐾 Pet Lv.%d!",
+"🐾 펫 Lv.%d!"
+],
+[
+"🐾 Pet Lv.%d! New ability %s %s — %s",
+"🐾 펫 Lv.%d! 새 능력 %s %s — %s"
+],
+[
+"🐾 Pets unlocked! Level up with gold to gain new abilities. (More looks unlock by defeating Lords or earning titles)",
+"🐾 펫 해금! 골드로 레벨을 올려 새 능력을 얻으세요. (군주를 쓰러뜨리거나 칭호를 얻으면 외형이 더 열려요)"
+],
+[
+"🛡 Pet's Guard! Invincible for 3 seconds (every 90 seconds)",
+"🛡 펫의 수호! 3초간 무적 (90초마다)"
+],
+[
+" applied!",
+" 적용!"
+],
+[
+"Cosmetic",
+"꾸미기"
+],
+[
+"Cosmetics",
+"꾸미기"
+],
+[
+"Pass",
+"패스"
+],
+[
+"Product",
+"상품"
+],
+[
+"This item isn't available for your account (paid random item restrictions).",
+"이 아이템은 계정에서 사용할 수 없어요 (유료 무작위 아이템 제한)."
+],
+[
+"This item isn't available yet.",
+"이 아이템은 아직 이용할 수 없어요."
+],
+[
+"You already own this pass!",
+"이미 이 패스를 가지고 있어요!"
+],
+[
+"You've reached today's purchase limit for this item. Come back tomorrow!",
+"이 아이템의 오늘 구매 한도에 도달했어요. 내일 다시 오세요!"
+],
+[
+"⚠ You haven't unlocked this aura yet.",
+"⚠ 아직 이 오라를 해금하지 않았어요."
+],
+[
+"⚠ You haven't unlocked this cosmetic yet.",
+"⚠ 아직 이 꾸미기를 해금하지 않았어요."
+],
+[
+"💰 +%d G (%d min of your idle income) · %d left today",
+"💰 +%d G (방치 수입 %d분 분량) · 오늘 %d회 남음"
+],
+[
+"🛍 Purchase complete: ",
+"🛍 구매 완료: "
+],
+[
+"🧪 [Studio test grant] ",
+"🧪 [Studio 테스트 지급] "
+],
+[
+"Approach",
+"접근"
+],
+[
+"Bat",
+"박쥐"
+],
+[
+"Bomber",
+"폭격수"
+],
+[
+"Burst",
+"폭발"
+],
+[
+"Charge",
+"돌진"
+],
+[
+"Charging Boar",
+"돌진하는 멧돼지"
+],
+[
+"Color",
+"색상"
+],
+[
+"Curse Totem",
+"저주 토템"
+],
+[
+"Explode",
+"폭발"
+],
+[
+"Fan",
+"부채"
+],
+[
+"Healer Priest",
+"치유 사제"
+],
+[
+"Heavy",
+"중량"
+],
+[
+"Hover",
+"맴돌기"
+],
+[
+"Keep",
+"유지"
+],
+[
+"Mage Ghost",
+"마법사 유령"
+],
+[
+"Magic Turret",
+"마법 포탑"
+],
+[
+"Mortar",
+"박격포"
+],
+[
+"Rock Golem",
+"바위 골렘"
+],
+[
+"Rush",
+"돌격"
+],
+[
+"Shield Knight",
+"방패 기사"
+],
+[
+"Single",
+"단일"
+],
+[
+"Slam",
+"내려찍기"
+],
+[
+"Slime",
+"슬라임"
+],
+[
+"Sniper Imp",
+"저격 임프"
+],
+[
+"Spike Bug",
+"가시벌레"
+],
+[
+"Spit",
+"침 뱉기"
+],
+[
+"Split",
+"분열"
+],
+[
+"Static",
+"정지"
+],
+[
+"Sword",
+"검"
+],
+[
+"Venom Spider",
+"독거미"
+],
+[
+"NEAR MISS!",
+"NEAR MISS!"
+],
+[
+"NEAR MISS! x%d",
+"NEAR MISS! x%d"
+],
+[
+" declined your invite.",
+"님이 초대를 거절했어요."
+],
+[
+" is already in a party.",
+"님은 이미 파티에 있어요."
+],
+[
+"Invite sent to ",
+"초대를 보냈어요: "
+],
+[
+"Only the party leader can invite.",
+"파티장만 초대할 수 있어요."
+],
+[
+"That invite has expired or is invalid.",
+"초대가 만료되었거나 올바르지 않아요."
+],
+[
+"The inviter is no longer the party leader.",
+"초대한 사람이 더 이상 파티장이 아니에요."
+],
+[
+"The party is full.",
+"파티가 가득 찼어요."
+],
+[
+"The party is full. (max ",
+"파티가 가득 찼어요. (최대 "
+],
+[
+"You are the new party leader.",
+"당신이 새 파티장이에요."
+],
+[
+"You can only invite players who are in the lobby.",
+"로비에 있는 유저만 초대할 수 있어요."
+],
+[
+"You can't kick a party member who is inside a dungeon.",
+"던전 안에 있는 파티원은 추방할 수 없어요."
+],
+[
+"You were kicked from the party.",
+"파티에서 추방되었어요."
+],
+[
+"Dragon",
+"용"
+],
+[
+"Fox",
+"여우"
+],
+[
+"Golem",
+"골렘"
+],
+[
+"Phoenix",
+"불사조"
+],
+[
+"Spirit",
+"정령"
+],
+[
+"Star",
+"별"
+],
+[
+"  / Title 『",
+"  / 칭호 『"
+],
+[
+"Trains",
+"훈련"
+],
+[
+"⏱ %d min",
+"⏱ %d분"
+],
+[
+"✅ Daily quest complete! Reward: %s",
+"✅ 일일 퀘스트 완료! 보상: %s"
+],
+[
+"』 unlocked",
+"』 해금"
+],
+[
+"🏅 Achievement unlocked! Reward: %s%s",
+"🏅 업적 달성! 보상: %s%s"
+],
+[
+"🏆 Power Ranking TOP ",
+"🏆 전투력 랭킹 TOP "
+],
+[
+"Please try again in a moment.",
+"잠시 후 다시 시도해 주세요."
+],
+[
+"This can only be done in town.",
+"마을에서만 할 수 있어요."
+],
+[
+"You've used all of today's runs. Come back tomorrow!",
+"오늘 도전을 모두 사용했어요. 내일 다시 오세요!"
+],
+[
+"🎁 Weekly Boss Rush chest: Mythic %s with ✦ %s!",
+"🎁 주간 보스 러시 상자: 신화 %s, ✦ %s 포함!"
+],
+[
+"📢 %s took down %d bosses in the Boss Rush! (%s)",
+"📢 %s님이 보스 러시에서 보스 %d마리를 쓰러뜨렸어요! (%s)"
+],
+[
+"🔒 Defeat the Zone 8 Lord in the field to unlock the Boss Rush!",
+"🔒 필드에서 8구역 군주를 쓰러뜨리면 보스 러시가 열려요!"
+],
+[
+"🔒 Finish all tutorial missions to unlock!",
+"🔒 모든 튜토리얼 미션을 끝내면 열려요!"
+],
+[
+" Weekly champion\n<font size='12'>Resets every week</font>",
+" 주간 챔피언\n<font size='12'>매주 초기화돼요</font>"
+],
+[
+" Who will take this spot?\n<font size='14'>Raise your power to claim it!</font>",
+" 이 자리의 주인은 누구일까요?\n<font size='14'>전투력을 올려 차지하세요!</font>"
+],
+[
+"%s %s\n<font color='#ffe16e'>⚔ %s</font>\n<font color='#9ad7ff'>Boss Rush score</font>",
+"%s %s\n<font color='#ffe16e'>⚔ %s</font>\n<font color='#9ad7ff'>보스 러시 점수</font>"
+],
+[
+"%s %s\n<font color='#ffe16e'>⚡ %d</font> Lv.%d\n<font color='#9ad7ff'>%s</font>",
+"%s %s\n<font color='#ffe16e'>⚡ %d</font> Lv.%d\n<font color='#9ad7ff'>%s</font>"
+],
+[
+"no entry",
+"기록 없음"
+],
+[
+"🏆 Hall of Fame 🏆",
+"🏆 명예의 전당 🏆"
+],
+[
+"👑 This Week's Champions 👑",
+"👑 이번 주 챔피언 👑"
+],
+[
+"No enemies in range! (Your gauge is unchanged)",
+"사거리 안에 적이 없어요! (게이지는 그대로예요)"
+],
+[
+"Not enough Ultimate gauge! (It fills as you attack enemies)",
+"궁극기 게이지가 부족해요! (적을 공격하면 차요)"
+],
+[
+"Sweep",
+"쓸어내기"
+],
+[
+"🎯 Deadeye!",
+"🎯 데드아이!"
+],
+[
+"🎯 Deadeye! Barrage on %d enemies",
+"🎯 데드아이! 적 %d마리에게 일제 사격"
+],
+[
+"🛡 Barrier!",
+"🛡 방벽!"
+],
+[
+"⛏ Depth ",
+"⛏ 깊이 "
+],
+[
+"🏆 Hall of Fame #",
+"🏆 명예의 전당 #"
+],
+[
+"👑 Weekly Champion",
+"👑 주간 챔피언"
+],
+[
+"🥈 Boss Rush #2",
+"🥈 보스 러시 #2"
+],
+[
+"🥉 Boss Rush #3",
+"🥉 보스 러시 #3"
+],
+[
+"A giant shadow looms at the end of the field. It is the Final Lord. It grows clearer the further east you go through the zones.",
+"필드 끝에 거대한 그림자가 어른거려요. 최후의 군주예요. 동쪽 구역으로 갈수록 더 또렷해져요."
+],
+[
+"Far off in the eastern sky…",
+"저 멀리 동쪽 하늘에…"
+],
+[
+"Take on the dungeon again!",
+"던전에 다시 도전하세요!"
+],
+[
+"You can re-enter from the town Dungeon Gate (follow the mission arrow). No key needed. It picks up right where the scene left off!",
+"마을 던전 문에서 다시 들어갈 수 있어요 (미션 화살표를 따라가세요). 열쇠는 필요 없어요. 장면이 끝난 곳에서 이어져요!"
+],
+[
+"✅ Mission complete!",
+"✅ 미션 완료!"
+],
+[
+"✅ Mission complete! Reward: %s",
+"✅ 미션 완료! 보상: %s"
+],
+[
+"🎉 Tutorial complete! The giant shadow flickering at the end of the field is your final goal. Grow stronger by clearing zones, and gather gear in dungeons too. (Settings/Help: H)",
+"🎉 튜토리얼 완료! 필드 끝에서 어른거리는 거대한 그림자가 최종 목표예요. 구역을 클리어하며 강해지고, 던전에서도 장비를 모으세요. (설정/도움말: H)"
+],
+[
+" · New era 『%s %s』!",
+" · 새 시대 『%s %s』!"
+],
+[
+"%s equipped! (%s)",
+"%s 장착! (%s)"
+],
+[
+"%s unlocks at +%d.",
+"%s은(는) +%d에서 해금돼요."
+],
+[
+"Unknown weapon.",
+"알 수 없는 무기예요."
+],
+[
+"Upgrade failed... (only the gold was lost)",
+"강화 실패... (골드만 사라졌어요)"
+],
+[
+"Upgrade success! +%d",
+"강화 성공! +%d"
+],
+[
+"Weapon types unlock through upgrade levels! Pick one in the Weapons tab.",
+"무기 종류는 강화 단계로 해금돼요! 무기 탭에서 하나를 고르세요."
+],
+[
+"Weapons can only be upgraded in the lobby.",
+"무기는 로비에서만 강화할 수 있어요."
+],
+[
+"You are already holding %s.",
+"이미 %s을(를) 들고 있어요."
+],
+[
+"You maxed out the final weapon!",
+"마지막 무기까지 강화했어요!"
+],
+[
+"✨ Free upgrades end here! Check your next mission",
+"✨ 무료 강화는 여기까지예요! 다음 미션을 확인하세요"
+],
+[
+"🎉 Evolved to %s! Your weapon look and bullet color changed%s",
+"🎉 %s(으)로 진화! 무기 외형과 탄 색이 바뀌었어요%s"
+],
+[
+"💰 Not enough gold. (%d needed) Earn gold at the dummy yard, field hunting, dungeons, or the Boss Rush",
+"💰 골드가 부족해요. (%d 필요) 허수아비 훈련장 / 필드 사냥 / 던전 / 보스 러시에서 골드를 얻으세요"
+],
+[
+"📢 %s's weapon evolved into [%s]!",
+"📢 %s님의 무기가 [%s](으)로 진화했어요!"
+],
+[
+"🔓 %s unlocked! (%s) Pick it in the Weapons tab",
+"🔓 %s 해금! (%s) 무기 탭에서 고르세요"
+],
+[
+"Back",
+"뒤로"
+],
+[
+" Combine",
+" 조합"
+],
+[
+" Era",
+" 시대"
+],
+[
+" With the max %d points, about %d%%.",
+" 최대 %d포인트일 때 약 %d%%."
+],
+[
+" With the max %d points, crits go from 2x to about %.1fx. Combine",
+" 최대 %d포인트일 때 치명타가 2배에서 약 %.1f배로. 조합"
+],
+[
+"+ a giant missile (150% of the crit hit)",
+"+ 거대한 미사일 (치명타 피해의 150%)"
+],
+[
+"+ heal 4% HP per execution",
+"+ 처치마다 체력 4% 회복"
+],
+[
+"+ leaves flames behind",
+"+ 불꽃을 남겨요"
+],
+[
+"+ second salvo 0.45s later",
+"+ 0.45초 뒤 두 번째 일제 사격"
+],
+[
+"+0.7% chance per point to fire a second shot right after the first (\"bang-bang\")",
+"+ 포인트당 0.7% 확률로 첫 발 직후 한 발 더 발사 (\"탕탕\")"
+],
+[
+"+1 extra blast",
+"+ 추가 폭발 1회"
+],
+[
+"+1 meteor",
+"+ 운석 1개"
+],
+[
+"+1 missile per salvo",
+"+ 일제 사격당 미사일 1발"
+],
+[
+"+1 target",
+"+ 대상 1명"
+],
+[
+"+3 max stacks",
+"+ 최대 중첩 3"
+],
+[
+"+35% damage to bosses, lords and elites",
+"+ 보스, 군주, 엘리트에게 피해 35%"
+],
+[
+"2 blades at once",
+"칼날 2개 동시에"
+],
+[
+"2 burn stacks per hit",
+"명중당 화상 2중첩"
+],
+[
+"2 meteors per cast",
+"시전당 운석 2개"
+],
+[
+"2x idle income (applies while online and to offline accrual)",
+"방치 수입 2배 (접속 중과 오프라인 누적에 적용)"
+],
+[
+"3 blades at once",
+"칼날 3개 동시에"
+],
+[
+"3 meteors",
+"운석 3개"
+],
+[
+"4 meteors, bigger",
+"운석 4개, 더 크게"
+],
+[
+"4% chance for a shot to deal 5x damage",
+"4% 확률로 한 발이 5배 피해"
+],
+[
+"5 Dungeon Keys",
+"던전 열쇠 5개"
+],
+[
+"5 Gear Roll Tickets",
+"장비 뽑기 티켓 5장"
+],
+[
+"6 pellets fan out in a spread (fewer hit at range)",
+"산탄 6발이 부채꼴로 퍼져요 (멀수록 적게 맞아요)"
+],
+[
+"A barrier that blocks all damage for 3s",
+"3초간 모든 피해를 막는 방벽"
+],
+[
+"A comet-like golden tail with glittering gold dust",
+"혜성 같은 황금 꼬리와 반짝이는 금가루"
+],
+[
+"A fireball trailing a long S-curved tail, dragon flames",
+"S자로 굽은 긴 꼬리를 끄는 화염구, 용의 불꽃"
+],
+[
+"A gun that pours out shots at a blistering fire rate",
+"엄청난 연사 속도로 탄을 쏟아내는 총"
+],
+[
+"A red moon rises: monster speed x1.25 · attack x1.25, rewards x1.5",
+"붉은 달이 떠요: 몬스터 속도 x1.25 · 공격력 x1.25, 보상 x1.5"
+],
+[
+"A squishy droplet. Approaches slowly and shoots one shot at a time.",
+"말랑한 방울. 천천히 다가와 한 발씩 쏴요."
+],
+[
+"Abyss",
+"심연"
+],
+[
+"Abyss Conqueror",
+"심연 정복자"
+],
+[
+"Abyss Dominion",
+"심연의 지배자"
+],
+[
+"Abyss Gatekeeper",
+"심연의 문지기"
+],
+[
+"Accrues up to 8 hours while you're away (default 4 hours)",
+"자리를 비운 동안 최대 8시간까지 쌓여요 (기본 4시간)"
+],
+[
+"Accrues up to a full day while you're away",
+"자리를 비운 동안 최대 하루까지 쌓여요"
+],
+[
+"Accurate sustained fire at long range",
+"먼 거리에서 정확한 지속 사격"
+],
+[
+"Adrenaline",
+"아드레날린"
+],
+[
+"Adventurer",
+"모험가"
+],
+[
+"After a kill, attack speed +30% for 3s",
+"처치 후 3초간 공격 속도 +30%"
+],
+[
+"Allocate Stats",
+"스탯 배분"
+],
+[
+"Ancient Stag Spirit",
+"고대 사슴 정령"
+],
+[
+"Arcane",
+"비전"
+],
+[
+"Arcane Cannon",
+"비전 캐논"
+],
+[
+"Arcane Double-Barrel",
+"비전 쌍열 산탄총"
+],
+[
+"Arcane Flame Sprayer",
+"비전 화염 분사기"
+],
+[
+"Arcane Hand Cannon",
+"비전 핸드캐논"
+],
+[
+"Arcane Launcher",
+"비전 발사기"
+],
+[
+"Arcane Magnum",
+"비전 매그넘"
+],
+[
+"Arcane Railgun",
+"비전 레일건"
+],
+[
+"Arcane Rifle",
+"비전 라이플"
+],
+[
+"Arcane Sniper",
+"비전 저격총"
+],
+[
+"Arcane Whisper SMG",
+"비전 속삭임 SMG"
+],
+[
+"Assassin's Sniper",
+"암살자의 저격총"
+],
+[
+"Attack",
+"공격"
+],
+[
+"Attack +%.0f%%",
+"공격력 +%.0f%%"
+],
+[
+"Attack +18%",
+"공격력 +18%"
+],
+[
+"Attack +25%",
+"공격력 +25%"
+],
+[
+"Attack +36%!",
+"공격력 +36%!"
+],
+[
+"Attack +4%",
+"공격력 +4%"
+],
+[
+"Attack Speed after Kill",
+"처치 후 공격 속도"
+],
+[
+"Attack Training",
+"공격 훈련"
+],
+[
+"Attack speed +10%",
+"공격 속도 +10%"
+],
+[
+"Attack speed +24%!",
+"공격 속도 +24%!"
+],
+[
+"Attack speed +8%",
+"공격 속도 +8%"
+],
+[
+"Aura Focus",
+"오라 집중"
+],
+[
+"Auto-loot radius grows to 100",
+"자동 줍기 반경이 100까지 늘어나요"
+],
+[
+"Baby Dragon",
+"아기 용"
+],
+[
+"Bag +20 slots",
+"가방 +20칸"
+],
+[
+"Basic",
+"기본"
+],
+[
+"Berserk",
+"광폭"
+],
+[
+"Best Value",
+"가성비 최고"
+],
+[
+"Big plasma shots that cause a small explosion around the impact (radius 7)",
+"착탄 지점 주변에 작은 폭발(반경 7)을 일으키는 큰 플라즈마 탄"
+],
+[
+"Blacksmith",
+"대장장이"
+],
+[
+"Blades occasionally launch a missile when they slash",
+"칼날이 베면 가끔 미사일을 발사해요"
+],
+[
+"Blocks almost all frontal attacks. Shoot from the side or behind.",
+"정면 공격을 거의 다 막아요. 옆이나 뒤에서 쏘세요."
+],
+[
+"Blood",
+"피"
+],
+[
+"Blood Moon",
+"붉은 달"
+],
+[
+"Bloodthirst",
+"피에 굶주림"
+],
+[
+"Blue Steel Shots",
+"강철 푸른 탄"
+],
+[
+"Board",
+"판자"
+],
+[
+"Boots of Wind",
+"바람의 장화"
+],
+[
+"Boss Damage",
+"보스 피해"
+],
+[
+"Boss Hunt",
+"보스 사냥"
+],
+[
+"Boss Hunter",
+"보스 사냥꾼"
+],
+[
+"Bosses arrive one after another! Score = seconds survived x damage dealt",
+"보스가 연이어 와요! 점수 = 버틴 시간(초) x 준 피해"
+],
+[
+"Bounces to 3 nearby enemies · Longest range",
+"근처 적 3명에게 튕겨요 · 가장 긴 사거리"
+],
+[
+"Bronze",
+"동"
+],
+[
+"Bullet Storm",
+"탄환 폭풍"
+],
+[
+"Bulwark",
+"보루"
+],
+[
+"Carpet",
+"양탄자"
+],
+[
+"Chain",
+"사슬"
+],
+[
+"Chain Lightning",
+"연쇄 번개"
+],
+[
+"Chainmail",
+"사슬 갑옷"
+],
+[
+"Chance for an attack to crit (2x damage)",
+"공격이 치명타(2배 피해)가 될 확률"
+],
+[
+"Chrono",
+"시간의"
+],
+[
+"Clean white-blue streak shots with short spark ticks",
+"짧은 불꽃 틱이 튀는 깔끔한 흰푸른 줄기 탄"
+],
+[
+"Clear %d dungeon(s)",
+"던전 %d회 클리어"
+],
+[
+"Clear field zone %d",
+"필드 %d구역 클리어"
+],
+[
+"Cloth Gloves",
+"천 장갑"
+],
+[
+"Cloud",
+"구름"
+],
+[
+"Colossus",
+"거신"
+],
+[
+"Comet Launcher",
+"혜성 발사기"
+],
+[
+"Commander",
+"지휘관"
+],
+[
+"Common",
+"일반"
+],
+[
+"Common or lower",
+"일반 이하"
+],
+[
+"Companion",
+"동료"
+],
+[
+"Constantly summons minions",
+"계속 부하를 소환해요"
+],
+[
+"Cooldown -%d%%",
+"쿨타임 -%d%%"
+],
+[
+"Copper Ring",
+"구리 반지"
+],
+[
+"Crit Damage",
+"치명타 피해"
+],
+[
+"Crit Damage: crits hit even harder. Combine with crit chance gear / pet / Double Shot for a big-hit build.",
+"치명타 피해: 치명타가 더 세게 들어가요. 치명타 확률 장비 / 펫 / 더블샷과 조합해 한 방 빌드를 만드세요."
+],
+[
+"Crit Missile",
+"치명타 미사일"
+],
+[
+"Crit Training",
+"치명타 훈련"
+],
+[
+"Crit chance +%.1f%%",
+"치명타 확률 +%.1f%%"
+],
+[
+"Crit chance +12%!",
+"치명타 확률 +12%!"
+],
+[
+"Crit chance +4%",
+"치명타 확률 +4%"
+],
+[
+"Crit damage +%d%%p",
+"치명타 피해 +%d%%p"
+],
+[
+"Crit damage +1.5%p per point (base 2x)",
+"포인트당 치명타 피해 +1.5%p (기본 2배)"
+],
+[
+"Currency",
+"재화"
+],
+[
+"Cursed Revolver",
+"저주받은 리볼버"
+],
+[
+"Damage Taken Reduction",
+"받는 피해 감소"
+],
+[
+"Dark",
+"어둠"
+],
+[
+"Dark Cannon",
+"어둠 캐논"
+],
+[
+"Dark Missile",
+"어둠 미사일"
+],
+[
+"Dark Pact",
+"어둠의 계약"
+],
+[
+"Dark Reaper",
+"어둠의 사신"
+],
+[
+"Dark Spheres",
+"암흑 구체"
+],
+[
+"Dark purple spheres with smoke tails and spreading void ripples",
+"연기 꼬리와 퍼지는 공허 파문을 가진 짙은 보라 구체"
+],
+[
+"Darklands",
+"암흑의 땅"
+],
+[
+"Deadeye",
+"데드아이"
+],
+[
+"Deco",
+"장식"
+],
+[
+"Defeat %d Golden Goblin(s)",
+"황금 고블린 %d마리 처치"
+],
+[
+"Defeat %d boss(es)",
+"보스 %d마리 처치"
+],
+[
+"Defeat %d bosses in one Boss Rush run",
+"한 번의 보스 러시에서 보스 %d마리 처치"
+],
+[
+"Defeat %d elite monsters",
+"엘리트 몬스터 %d마리 처치"
+],
+[
+"Defeat %d field monsters",
+"필드 몬스터 %d마리 처치"
+],
+[
+"Defeat %d monsters",
+"몬스터 %d마리 처치"
+],
+[
+"Defeat %d monsters (dungeons included)",
+"몬스터 %d마리 처치 (던전 포함)"
+],
+[
+"Defeat the Zone 1 Lord",
+"1구역 군주 처치"
+],
+[
+"Defeat the Zone 2 Lord",
+"2구역 군주 처치"
+],
+[
+"Defeat the Zone 3 Lord",
+"3구역 군주 처치"
+],
+[
+"Defeat the Zone 4 Lord",
+"4구역 군주 처치"
+],
+[
+"Defeat the Zone 7 Lord",
+"7구역 군주 처치"
+],
+[
+"Desert",
+"사막"
+],
+[
+"Desert Sun",
+"사막의 태양"
+],
+[
+"Diamond",
+"다이아몬드"
+],
+[
+"Discharge SMG",
+"방전 SMG"
+],
+[
+"Double Shot",
+"더블샷"
+],
+[
+"Double Shot chance %.1f%%",
+"더블샷 확률 %.1f%%"
+],
+[
+"Double Shot: each time you shoot, there's a chance the same shot fires again 0.09s later (same power).",
+"더블샷: 쏠 때마다 0.09초 뒤 같은 탄이 한 번 더 나갈 확률이 있어요 (같은 위력)."
+],
+[
+"Dragon Banner",
+"용의 깃발"
+],
+[
+"Dragon Blunderbuss",
+"용 나팔총"
+],
+[
+"Dragon Cannon",
+"용 캐논"
+],
+[
+"Dragon Core Railgun",
+"용핵 레일건"
+],
+[
+"Dragon Eye Sniper",
+"용의 눈 저격총"
+],
+[
+"Dragon Fireball",
+"용 화염구"
+],
+[
+"Dragon Rocket",
+"용 로켓"
+],
+[
+"Dragon's Breath",
+"용의 숨결"
+],
+[
+"Dragon's Magnum",
+"용의 매그넘"
+],
+[
+"Dragonclaw Gauntlets",
+"용발톱 장갑"
+],
+[
+"Dragonfang Pistol",
+"용 송곳니 권총"
+],
+[
+"Dragonflame SMG",
+"용화염 SMG"
+],
+[
+"Dragonhorn Crown",
+"용뿔 왕관"
+],
+[
+"Dragonscale Armor",
+"용비늘 갑옷"
+],
+[
+"Dragonscale Rifle",
+"용비늘 라이플"
+],
+[
+"Dull gray-brown shots and dust. Where every weapon begins",
+"칙칙한 회갈색 탄과 먼지. 모든 무기의 시작"
+],
+[
+"Dummy Practice",
+"허수아비 연습"
+],
+[
+"Dummy Slayer",
+"허수아비 사냥꾼"
+],
+[
+"Dungeon Gate",
+"던전 문"
+],
+[
+"Dungeon Lord",
+"던전 군주"
+],
+[
+"Dungeon Master",
+"던전 마스터"
+],
+[
+"Dungeon Newbie",
+"던전 초보"
+],
+[
+"Dungeon Regular",
+"던전 단골"
+],
+[
+"Dungeon Run",
+"던전 도전"
+],
+[
+"Each time a meteor lands, extra lightning strikes nearby enemies",
+"운석이 떨어질 때마다 근처 적에게 추가 번개가 내려쳐요"
+],
+[
+"Earn more XP from monsters so you level up faster",
+"몬스터에게서 경험치를 더 얻어 더 빨리 레벨업해요"
+],
+[
+"Electromagnetic Railgun",
+"전자기 레일건"
+],
+[
+"Elite Day",
+"엘리트의 날"
+],
+[
+"Elite Hunter",
+"엘리트 사냥꾼"
+],
+[
+"Enemies swarm in more often",
+"적이 더 자주 몰려와요"
+],
+[
+"Enemy HP +25%",
+"적 체력 +25%"
+],
+[
+"Enemy HP +40%, attack +10%",
+"적 체력 +40%, 공격력 +10%"
+],
+[
+"Enemy HP/attack +15%, speed +5%",
+"적 체력/공격력 +15%, 속도 +5%"
+],
+[
+"Enemy attack +30%",
+"적 공격력 +30%"
+],
+[
+"Enemy fire interval -15%",
+"적 발사 간격 -15%"
+],
+[
+"Enemy move speed +12%",
+"적 이동 속도 +12%"
+],
+[
+"Energy Barrier",
+"에너지 방벽"
+],
+[
+"Enter the Boss Rush %d times",
+"보스 러시 %d회 입장"
+],
+[
+"Epic",
+"에픽"
+],
+[
+"Epic or lower",
+"에픽 이하"
+],
+[
+"Eternal Revolver",
+"영원의 리볼버"
+],
+[
+"Every 4s your pet marks the toughest nearby enemy: it takes +25% damage from you",
+"4초마다 펫이 근처에서 가장 튼튼한 적에게 표식을 남겨요: 그 적이 내게 받는 피해 +25%"
+],
+[
+"Every 6th hit calls down a lightning bolt (250% damage)",
+"6번째 명중마다 번개가 떨어져요 (피해 250%)"
+],
+[
+"Every crit fires a salvo of missiles into the enemy you hit",
+"치명타마다 맞은 적에게 미사일 일제 사격"
+],
+[
+"Every few shots, a blade bounces between enemies, slashing them in a row (faster-firing weapons throw it more often)",
+"몇 발마다 칼날이 적 사이를 튕기며 연달아 베어요 (연사가 빠른 무기일수록 더 자주 던져요)"
+],
+[
+"Execute",
+"처형"
+],
+[
+"Explodes around the enemy hit",
+"맞은 적 주변에서 폭발"
+],
+[
+"Explodes around the enemy hit (40% of damage, radius grows per level)",
+"맞은 적 주변에서 폭발 (피해의 40%, 레벨마다 반경 증가)"
+],
+[
+"Explodes on impact, damaging nearby enemies too (radius 12)",
+"착탄하면 폭발해서 주변 적에게도 피해 (반경 12)"
+],
+[
+"Explodes where you aim (radius 16, attack x3)",
+"조준한 곳에서 폭발 (반경 16, 공격력 x3)"
+],
+[
+"Explorer",
+"탐험가"
+],
+[
+"Explosive Shot",
+"폭발탄"
+],
+[
+"Explosive shots fly at nearby enemies and burst big on impact",
+"폭발탄이 근처 적에게 날아가 크게 터져요"
+],
+[
+"Extra Shots",
+"추가 사격"
+],
+[
+"Eye of the Abyss",
+"심연의 눈"
+],
+[
+"Eye of the Storm",
+"폭풍의 눈"
+],
+[
+"Fast Enemies",
+"빠른 적"
+],
+[
+"Fast and fierce",
+"빠르고 사나워요"
+],
+[
+"Fast fire rate · Long range",
+"빠른 연사 · 긴 사거리"
+],
+[
+"Field Hunt",
+"필드 사냥"
+],
+[
+"Field Overlord",
+"필드의 지배자"
+],
+[
+"Fierce Enemies",
+"사나운 적"
+],
+[
+"Fiery heads with pointed tails and rising embers",
+"뾰족한 꼬리와 피어오르는 불씨가 있는 불타는 머리"
+],
+[
+"Firepower",
+"화력"
+],
+[
+"Fires 1 more shot right after (same direction)",
+"바로 이어서 같은 방향으로 한 발 더 발사"
+],
+[
+"Fires homing shots from afar. Shoots slowly but relentlessly.",
+"멀리서 유도탄을 쏴요. 느리지만 집요하게 쏴요."
+],
+[
+"Fires ring shots in all directions from a fixed spot.",
+"한 자리에서 사방으로 고리 모양 탄을 쏴요."
+],
+[
+"First Aid",
+"응급 치료"
+],
+[
+"First Dungeon",
+"첫 던전"
+],
+[
+"Flame Aura",
+"화염 오라"
+],
+[
+"Flame Droplets",
+"불꽃 방울"
+],
+[
+"Flame Igniter",
+"불꽃 점화기"
+],
+[
+"Flame Inferno Torch",
+"불꽃 지옥 토치"
+],
+[
+"Flame Lord",
+"화염 군주"
+],
+[
+"Flame Railgun",
+"불꽃 레일건"
+],
+[
+"Flame Rapid-Fire",
+"불꽃 속사포"
+],
+[
+"Flame Rifle",
+"불꽃 라이플"
+],
+[
+"Flame Rocket",
+"불꽃 로켓"
+],
+[
+"Flame Scattergun",
+"불꽃 산탄총"
+],
+[
+"Flame Sniper",
+"불꽃 저격총"
+],
+[
+"Flame Temple",
+"화염 신전"
+],
+[
+"Flamethrower",
+"화염방사기"
+],
+[
+"Flies around quickly, throwing crescent-moon shots.",
+"빠르게 날아다니며 초승달 모양 탄을 던져요."
+],
+[
+"Floats around quickly, emitting ring-shaped shots.",
+"빠르게 떠다니며 고리 모양 탄을 내뿜어요."
+],
+[
+"Fog",
+"안개"
+],
+[
+"For when you want to run more dungeons",
+"던전을 더 많이 돌고 싶을 때"
+],
+[
+"Forest",
+"숲"
+],
+[
+"Forest's Blessing",
+"숲의 축복"
+],
+[
+"Fortune",
+"행운"
+],
+[
+"Frenzy",
+"광란"
+],
+[
+"From the start",
+"처음부터"
+],
+[
+"Frost Aura",
+"냉기 오라"
+],
+[
+"Frost Cannon",
+"얼음 캐논"
+],
+[
+"Frost Lord",
+"얼음 군주"
+],
+[
+"Frost Missile",
+"얼음 미사일"
+],
+[
+"Frost Railgun",
+"얼음 레일건"
+],
+[
+"Frost Rapid-Fire",
+"얼음 속사포"
+],
+[
+"Frost Rifle",
+"얼음 라이플"
+],
+[
+"Frost Spike Pistol",
+"서리 가시 권총"
+],
+[
+"Frost's Breath",
+"서리의 숨결"
+],
+[
+"Frostfire Sprayer",
+"서리불 분사기"
+],
+[
+"Frozen",
+"빙결"
+],
+[
+"Frozen Crystals",
+"얼음 결정"
+],
+[
+"Full Heal",
+"완전 회복"
+],
+[
+"Furious",
+"분노"
+],
+[
+"Gain a big chunk of XP",
+"경험치를 크게 얻어요"
+],
+[
+"Galaxy Sniper",
+"은하 저격총"
+],
+[
+"Gale",
+"질풍"
+],
+[
+"Gale Sweep",
+"돌풍"
+],
+[
+"Gale Wind",
+"질풍의 바람"
+],
+[
+"Gear drop rarity +50%",
+"장비 드랍 등급 +50%"
+],
+[
+"Gear ticket +1",
+"장비 티켓 +1"
+],
+[
+"Gem Necklace",
+"보석 목걸이"
+],
+[
+"Gem Ring",
+"보석 반지"
+],
+[
+"Giant",
+"거인"
+],
+[
+"Giant Scorpion",
+"거대 전갈"
+],
+[
+"Giant Slayer",
+"거인 사냥꾼"
+],
+[
+"Glacier Scattergun",
+"빙하 산탄총"
+],
+[
+"Goblin Cave",
+"고블린 동굴"
+],
+[
+"Goblin King",
+"고블린 왕"
+],
+[
+"Gold +10% · Skill cooldown -10%",
+"골드 +10% · 스킬 쿨타임 -10%"
+],
+[
+"Gold +20% this dungeon",
+"이번 던전 골드 +20%"
+],
+[
+"Gold Necklace",
+"금 목걸이"
+],
+[
+"Gold Pack L",
+"골드 팩 L"
+],
+[
+"Gold Pack M",
+"골드 팩 M"
+],
+[
+"Gold Pack S",
+"골드 팩 S"
+],
+[
+"Gold Ring",
+"금 반지"
+],
+[
+"Gold/XP x2, monster HP x1.2",
+"골드/경험치 x2, 몬스터 체력 x1.2"
+],
+[
+"Golden",
+"황금"
+],
+[
+"Golden Ace",
+"황금 에이스"
+],
+[
+"Golden Aura",
+"황금 오라"
+],
+[
+"Golden Banner",
+"황금 깃발"
+],
+[
+"Golden Cannon",
+"황금 캐논"
+],
+[
+"Golden Comet",
+"황금 혜성"
+],
+[
+"Golden Day",
+"황금의 날"
+],
+[
+"Golden Eagle Sniper",
+"황금 독수리 저격총"
+],
+[
+"Golden Furnace",
+"황금 용광로"
+],
+[
+"Golden Hunt",
+"황금 사냥"
+],
+[
+"Golden Hunter",
+"황금 사냥꾼"
+],
+[
+"Golden Missile",
+"황금 미사일"
+],
+[
+"Golden Railgun",
+"황금 레일건"
+],
+[
+"Golden Ranger",
+"황금 레인저"
+],
+[
+"Golden Shredder",
+"황금 분쇄기"
+],
+[
+"Golden Storm SMG",
+"황금 폭풍 SMG"
+],
+[
+"Golden Thief",
+"황금 도둑"
+],
+[
+"Golden Touch",
+"황금 손길"
+],
+[
+"Golden Training Dummy",
+"황금 훈련 허수아비"
+],
+[
+"Good to know for the field: press Q to burst forward in your moving direction (2 in a row, recharges every 3s). Narrowly dodge enemy shots for a bonus!",
+"필드 팁: Q를 누르면 움직이는 방향으로 돌진해요 (연속 2번, 3초마다 충전). 적의 탄을 아슬아슬하게 피하면 보너스!"
+],
+[
+"Great Awakening",
+"대각성"
+],
+[
+"Growing Adventurer",
+"성장하는 모험가"
+],
+[
+"Guardian",
+"수호자"
+],
+[
+"Guardian's Oath",
+"수호자의 맹세"
+],
+[
+"HP Training",
+"체력 훈련"
+],
+[
+"HP is fully restored",
+"체력이 완전히 회복돼요"
+],
+[
+"Hard",
+"어려움"
+],
+[
+"Head east to the field and defeat the first zone's Lord (👑)! (You'll get your first gear when you enter the field) ...You sense an ominous presence. Be careful!",
+"동쪽 필드로 가서 첫 구역의 군주(👑)를 쓰러뜨리세요! (필드에 들어가면 첫 장비를 얻어요) ...불길한 기운이 느껴져요. 조심하세요!"
+],
+[
+"Heal 1.5% max HP on every kill",
+"처치할 때마다 최대 체력의 1.5% 회복"
+],
+[
+"Heal on Kill",
+"처치 시 회복"
+],
+[
+"Healing Priest",
+"치유 사제"
+],
+[
+"Heals nearby monsters. Best to take it out first.",
+"근처 몬스터를 치료해요. 먼저 처치하는 게 좋아요."
+],
+[
+"Heavy Hit",
+"강타"
+],
+[
+"Heavy Hit + Rapid Fire + Weak Spot all at once",
+"강타 + 속사 + 약점을 한꺼번에"
+],
+[
+"Heavy hitter · Crit +10%",
+"강타 · 치명타 +10%"
+],
+[
+"Hellfire Sprayer",
+"지옥불 분사기"
+],
+[
+"Hero's Banner",
+"영웅의 깃발"
+],
+[
+"Highest firepower · Shortest range",
+"최고 화력 · 가장 짧은 사거리"
+],
+[
+"Hit the dummy %d times",
+"허수아비 %d회 타격"
+],
+[
+"Homing Blades",
+"유도 칼날"
+],
+[
+"Hoverboard",
+"호버보드"
+],
+[
+"How much damage you can take. Higher means fewer deaths",
+"버틸 수 있는 피해량. 높을수록 덜 죽어요"
+],
+[
+"Hunter",
+"사냥꾼"
+],
+[
+"Hunter's Emblem",
+"사냥꾼의 휘장"
+],
+[
+"Hunter's Mark",
+"사냥 표식"
+],
+[
+"Hurls fast spears from very far away. Some shots split apart.",
+"아주 먼 곳에서 빠른 창을 던져요. 일부 탄은 갈라져요."
+],
+[
+"Ice Crystal Lord",
+"얼음 수정 군주"
+],
+[
+"Ice Fortress",
+"얼음 요새"
+],
+[
+"Icebreaker Revolver",
+"빙파 리볼버"
+],
+[
+"Idle Accrual Cap: 24 Hours",
+"방치 누적 한도: 24시간"
+],
+[
+"Idle Accrual Cap: 8 Hours",
+"방치 누적 한도: 8시간"
+],
+[
+"Idle Booster (1 hour)",
+"방치 부스터 (1시간)"
+],
+[
+"Idle Income +100%",
+"방치 수입 +100%"
+],
+[
+"Idle Income +25%",
+"방치 수입 +25%"
+],
+[
+"Idle Income +50%",
+"방치 수입 +50%"
+],
+[
+"Idle income +20%",
+"방치 수입 +20%"
+],
+[
+"Ignite",
+"점화"
+],
+[
+"Increases the damage of all your attacks (gun & skills)",
+"모든 공격(총 & 스킬)의 피해가 늘어요"
+],
+[
+"Inferno Revolver",
+"지옥불 리볼버"
+],
+[
+"Instantly get 2 hours of YOUR idle income · max 3 per day",
+"내 방치 수입 2시간분을 즉시 획득 · 하루 최대 3회"
+],
+[
+"Instantly get 30 minutes of YOUR idle income · max 3 per day",
+"내 방치 수입 30분분을 즉시 획득 · 하루 최대 3회"
+],
+[
+"Instantly get 8 hours of YOUR idle income · max 3 per day",
+"내 방치 수입 8시간분을 즉시 획득 · 하루 최대 3회"
+],
+[
+"Invincible for 10s",
+"10초간 무적"
+],
+[
+"Invincible for 3s when HP drops below 25% (every 90s)",
+"체력이 25% 아래로 떨어지면 3초간 무적 (90초마다)"
+],
+[
+"Iron Helm",
+"철 투구"
+],
+[
+"Ironclad Legion",
+"철갑 군단"
+],
+[
+"Jackpot",
+"잭팟"
+],
+[
+"Jackpot Chance",
+"잭팟 확률"
+],
+[
+"Key",
+"열쇠"
+],
+[
+"Kill Burst",
+"처치 폭발"
+],
+[
+"Kill Burst is 30% wider and sets every enemy it hits on fire (2 Ignite stacks)",
+"처치 폭발이 30% 넓어지고 맞은 모든 적을 불태워요 (점화 2중첩)"
+],
+[
+"Killing an enemy causes a big explosion that spreads to nearby enemies",
+"적을 처치하면 큰 폭발이 일어나 주변 적에게 퍼져요"
+],
+[
+"Lava Demon",
+"용암 악마"
+],
+[
+"Lava Heart",
+"용암의 심장"
+],
+[
+"Learning",
+"배우는 중"
+],
+[
+"Leather Armor",
+"가죽 갑옷"
+],
+[
+"Leather Boots",
+"가죽 장화"
+],
+[
+"Leather Cap",
+"가죽 모자"
+],
+[
+"Leather Gloves",
+"가죽 장갑"
+],
+[
+"Legend Wielder",
+"전설의 소지자"
+],
+[
+"Legendary",
+"전설"
+],
+[
+"Legendary Blacksmith",
+"전설의 대장장이"
+],
+[
+"Legendary Hero",
+"전설의 영웅"
+],
+[
+"Lifesteal",
+"흡혈"
+],
+[
+"Light Orb",
+"빛의 구슬"
+],
+[
+"Light Spirit",
+"빛의 정령"
+],
+[
+"Lightning",
+"번개"
+],
+[
+"Lightning Links",
+"번개 사슬"
+],
+[
+"Lightning Missile",
+"번개 미사일"
+],
+[
+"Lightning Scattergun",
+"번개 산탄총"
+],
+[
+"Lightning Sniper",
+"번개 저격총"
+],
+[
+"Lightning Strike",
+"번개 일격"
+],
+[
+"Lightning Trigger",
+"번개 방아쇠"
+],
+[
+"Lightning jumps from the enemy hit",
+"맞은 적에게서 번개가 튀어요"
+],
+[
+"Lightning jumps from the enemy hit to +1 nearby enemy (60% of damage)",
+"맞은 적에게서 근처 적 +1명에게 번개가 튀어요 (피해의 60%)"
+],
+[
+"Lightning periodically strikes nearby enemies from the sky",
+"번개가 주기적으로 하늘에서 근처 적을 내리쳐요"
+],
+[
+"Lightspeed Fire",
+"광속 사격"
+],
+[
+"Limit Breaker",
+"한계 돌파"
+],
+[
+"Little Fox",
+"아기 여우"
+],
+[
+"Long range · Crit +25%",
+"긴 사거리 · 치명타 +25%"
+],
+[
+"Loot within a 50 radius gets pulled in automatically",
+"반경 50 안의 전리품이 자동으로 끌려와요"
+],
+[
+"Low-HP enemies are executed on hit; bosses take more damage the lower their HP",
+"체력이 낮은 적은 명중 시 처형되고, 보스는 체력이 낮을수록 더 큰 피해를 받아요"
+],
+[
+"Lowers its tusks and charges. Watch for the tell before the charge and dodge!",
+"엄니를 낮추고 돌진해요. 돌진 전 예고 동작을 보고 피하세요!"
+],
+[
+"Luck (Drop Rarity)",
+"행운 (드랍 등급)"
+],
+[
+"Luck +50%, XP +30%",
+"행운 +50%, 경험치 +30%"
+],
+[
+"Luck Booster (1 hour)",
+"행운 부스터 (1시간)"
+],
+[
+"Lucky Hunter",
+"행운의 사냥꾼"
+],
+[
+"Lucky One",
+"행운아"
+],
+[
+"Lucky Star",
+"행운의 별"
+],
+[
+"Lucky Ticket",
+"행운의 티켓"
+],
+[
+"Magic Carpet",
+"마법 양탄자"
+],
+[
+"Mana Orbs",
+"마나 구슬"
+],
+[
+"Master",
+"마스터"
+],
+[
+"Max Efficiency",
+"최대 효율"
+],
+[
+"Max HP +%d",
+"최대 체력 +%d"
+],
+[
+"Max HP +15, instant heal",
+"최대 체력 +15, 즉시 회복"
+],
+[
+"Max HP +45, instant heal!",
+"최대 체력 +45, 즉시 회복!"
+],
+[
+"Meadow",
+"초원"
+],
+[
+"Meadow's Guard",
+"초원의 수호"
+],
+[
+"Meet Your Pet",
+"펫 만나기"
+],
+[
+"Mega Hit",
+"메가 히트"
+],
+[
+"Meteor Shower",
+"유성우"
+],
+[
+"Meteors are falling! Avoid the red circles (survive to the end for a reward)",
+"운석이 떨어져요! 붉은 원을 피하세요 (끝까지 살아남으면 보상)"
+],
+[
+"Meteors fall on the biggest crowd (or on a nearby boss) and hit hard",
+"운석이 가장 많이 모인 곳(또는 근처 보스)에 떨어져 큰 피해를 줘요"
+],
+[
+"Mithril Armor",
+"미스릴 갑옷"
+],
+[
+"Mithril Boots",
+"미스릴 장화"
+],
+[
+"Mithril Gauntlets",
+"미스릴 건틀릿"
+],
+[
+"Mithril Helm",
+"미스릴 투구"
+],
+[
+"Mob",
+"잡몹"
+],
+[
+"Monster Cleanup",
+"몬스터 청소"
+],
+[
+"Monster HP x1.6, rewards x1.5",
+"몬스터 체력 x1.6, 보상 x1.5"
+],
+[
+"Monster attack x1.5, rewards x1.5",
+"몬스터 공격력 x1.5, 보상 x1.5"
+],
+[
+"Monster count x0.6, HP x2.0 · attack x1.2, rewards x1.7",
+"몬스터 수 x0.6, 체력 x2.0 · 공격력 x1.2, 보상 x1.7"
+],
+[
+"Monster count x1.6 (HP x0.7), rewards x1.4",
+"몬스터 수 x1.6 (체력 x0.7), 보상 x1.4"
+],
+[
+"Monsters move/attack faster, rewards x1.3",
+"몬스터가 더 빠르게 움직이고 공격해요, 보상 x1.3"
+],
+[
+"More shots fire at once (in a fan)",
+"더 많은 탄이 한꺼번에 나가요 (부채꼴)"
+],
+[
+"Move Speed +%.1f",
+"이동 속도 +%.1f"
+],
+[
+"Move speed +0.3 per point",
+"포인트당 이동 속도 +0.3"
+],
+[
+"Mythic",
+"신화"
+],
+[
+"Mythic Astra",
+"신화 아스트라"
+],
+[
+"Mythic Blunderbuss",
+"신화 나팔총"
+],
+[
+"Mythic Galaxy Rifle",
+"신화 은하 라이플"
+],
+[
+"Mythic Master",
+"신화 마스터"
+],
+[
+"Mythic Railgun",
+"신화 레일건"
+],
+[
+"Mythic Rainbow",
+"신화 무지개"
+],
+[
+"Mythic Spray",
+"신화 분무기"
+],
+[
+"Nightmare Aura",
+"악몽의 오라"
+],
+[
+"Obtain Legendary gear",
+"전설 장비 획득"
+],
+[
+"Obtain Mythic gear",
+"신화 장비 획득"
+],
+[
+"Off",
+"꺼짐"
+],
+[
+"One-Eyed Rock Giant",
+"외눈 바위 거인"
+],
+[
+"Open the pet window (P key / Growth > Pet)",
+"펫 창 열기 (P 키 / 성장 > 펫)"
+],
+[
+"Particles orbit purple orbs, trailing a star tail",
+"별 꼬리를 끄는 보라색 구슬 주위를 입자가 돌아요"
+],
+[
+"Permanent",
+"영구"
+],
+[
+"Permanent (replaces +25%)",
+"영구 (+25%를 대체)"
+],
+[
+"Permanent (replaces the previous tier)",
+"영구 (이전 단계를 대체)"
+],
+[
+"Permanent · Train one more at the same time",
+"영구 · 동시에 하나 더 훈련"
+],
+[
+"Pierce",
+"관통"
+],
+[
+"Piercing Shot",
+"관통탄"
+],
+[
+"Pitch Black",
+"칠흑"
+],
+[
+"Plasma Cannon",
+"플라즈마 캐논"
+],
+[
+"Plasma Torch",
+"플라즈마 토치"
+],
+[
+"Platinum",
+"백금"
+],
+[
+"Point-blank burst damage · Very short range",
+"근접 폭발 피해 · 아주 짧은 사거리"
+],
+[
+"Popular",
+"인기"
+],
+[
+"Powerhouse",
+"파워하우스"
+],
+[
+"Q Key: Dash!",
+"Q 키: 대시!"
+],
+[
+"Railgun",
+"레일건"
+],
+[
+"Rainbow",
+"무지개"
+],
+[
+"Rainbow ribbon shots and stardust, with star bursts on impact",
+"착탄 시 별이 터지는 무지개 리본 탄과 별가루"
+],
+[
+"Rains down bullet barrages and meteors",
+"탄막과 운석을 쏟아부어요"
+],
+[
+"Raises the chance that gear dropped by field monsters is high rarity (Epic or above)",
+"필드 몬스터가 떨어뜨리는 장비가 높은 등급(에픽 이상)일 확률을 올려요"
+],
+[
+"Range +%d%%",
+"사거리 +%d%%"
+],
+[
+"Rapid",
+"속사"
+],
+[
+"Rapid Fire",
+"속사"
+],
+[
+"Rare",
+"레어"
+],
+[
+"Rare or lower",
+"레어 이하"
+],
+[
+"Reach %d Power",
+"전투력 %d 달성"
+],
+[
+"Reach character level %d",
+"캐릭터 레벨 %d 달성"
+],
+[
+"Reach weapon upgrade level %d (about the 10th weapon)",
+"무기 강화 레벨 %d 달성 (약 10번째 무기)"
+],
+[
+"Reach weapon upgrade level %d (about the 50th weapon)",
+"무기 강화 레벨 %d 달성 (약 50번째 무기)"
+],
+[
+"Reaper's Scythe",
+"사신의 낫"
+],
+[
+"Rec",
+"권장"
+],
+[
+"Reduces training / breakthrough wait time by 1 hour",
+"훈련 / 돌파 대기 시간 1시간 단축"
+],
+[
+"Reduces training / breakthrough wait time by 10 min (the skip bar fills instantly)",
+"훈련 / 돌파 대기 시간 10분 단축 (건너뛰기 게이지가 바로 차요)"
+],
+[
+"Reduces training / breakthrough wait time by 8 hours",
+"훈련 / 돌파 대기 시간 8시간 단축"
+],
+[
+"Rest",
+"휴식"
+],
+[
+"Restore +1 HP each time a shot hits",
+"탄이 명중할 때마다 체력 +1 회복"
+],
+[
+"Restore HP on every hit",
+"명중할 때마다 체력 회복"
+],
+[
+"Restores 8% HP to you and nearby party members (+1%p per skill level)",
+"나와 근처 파티원의 체력 8% 회복 (스킬 레벨당 +1%p)"
+],
+[
+"Ricochet",
+"도탄"
+],
+[
+"Ricochet Blades",
+"도탄 칼날"
+],
+[
+"Ricochet Rounds",
+"도탄 사격"
+],
+[
+"Ring of Time",
+"시간의 반지"
+],
+[
+"Rocket Launcher",
+"로켓 발사기"
+],
+[
+"Roll for gear %d times",
+"장비 %d회 뽑기"
+],
+[
+"Rookie Shooter",
+"신입 사수"
+],
+[
+"Ruins",
+"폐허"
+],
+[
+"Runs up and explodes. Take it out before it gets close.",
+"달려와서 폭발해요. 가까워지기 전에 처치하세요."
+],
+[
+"Rushes in fast, firing poison stingers in succession.",
+"빠르게 돌격하며 독침을 연달아 쏴요."
+],
+[
+"Rusty",
+"녹슨"
+],
+[
+"Rusty Bullets",
+"녹슨 탄환"
+],
+[
+"Rusty Flamethrower",
+"녹슨 화염방사기"
+],
+[
+"Rusty Pistol",
+"녹슨 권총"
+],
+[
+"Rusty Plasma Cannon",
+"녹슨 플라즈마 캐논"
+],
+[
+"Rusty Railgun",
+"녹슨 레일건"
+],
+[
+"Rusty Revolver",
+"녹슨 리볼버"
+],
+[
+"Rusty Rifle",
+"녹슨 라이플"
+],
+[
+"Rusty Rocket Launcher",
+"녹슨 로켓 발사기"
+],
+[
+"Rusty SMG",
+"녹슨 SMG"
+],
+[
+"Rusty Shotgun",
+"녹슨 샷건"
+],
+[
+"Rusty Sniper",
+"녹슨 저격총"
+],
+[
+"Sage",
+"현자"
+],
+[
+"Sage's Wisdom",
+"현자의 지혜"
+],
+[
+"Scout",
+"정찰병"
+],
+[
+"Sea of Flames",
+"불꽃의 바다"
+],
+[
+"Shadow Fang",
+"그림자 송곳니"
+],
+[
+"Shadow Rapid-Fire",
+"그림자 속사포"
+],
+[
+"Shadow Rifle",
+"그림자 라이플"
+],
+[
+"Shock Rifle",
+"충격 라이플"
+],
+[
+"Shockwave",
+"충격파"
+],
+[
+"Shockwave Shot",
+"충격파 탄"
+],
+[
+"Shooting Star",
+"별똥별"
+],
+[
+"Shot Count",
+"발사 수"
+],
+[
+"Shots pierce +1 more enemy",
+"탄이 적 1명 더 관통해요"
+],
+[
+"Silver",
+"은"
+],
+[
+"Silver Necklace",
+"은 목걸이"
+],
+[
+"Silver Ring",
+"은 반지"
+],
+[
+"Skill Cooldown",
+"스킬 쿨타임"
+],
+[
+"Skill Cooldown Reduction",
+"스킬 쿨타임 감소"
+],
+[
+"Skill Master",
+"스킬 마스터"
+],
+[
+"Skill Practice",
+"스킬 연습"
+],
+[
+"Skill cooldown -1% per point",
+"포인트당 스킬 쿨타임 -1%"
+],
+[
+"Skill cooldown -25%",
+"스킬 쿨타임 -25%"
+],
+[
+"Skilled Warrior",
+"숙련된 전사"
+],
+[
+"Sky-blue crystal shards and snowflake mist, bursting into ice fragments",
+"얼음 조각으로 터지는 하늘색 수정 파편과 눈송이 안개"
+],
+[
+"Slaughterer",
+"학살자"
+],
+[
+"Slaughterer Shotgun",
+"학살자 샷건"
+],
+[
+"Slayer",
+"처단자"
+],
+[
+"Slow but each shot is powerful",
+"느리지만 한 발 한 발이 강력해요"
+],
+[
+"Slow but hits hard",
+"느리지만 세게 때려요"
+],
+[
+"Slow but tough, and its smash really hurts.",
+"느리지만 튼튼하고, 내려찍기가 정말 아파요."
+],
+[
+"Slow but tough, with powerful shockwaves",
+"느리지만 튼튼하고, 강력한 충격파를 써요"
+],
+[
+"Small explosion · Slow shots",
+"작은 폭발 · 느린 탄"
+],
+[
+"Smart (Recommended)",
+"스마트 (추천)"
+],
+[
+"Sniper Rifle",
+"저격총"
+],
+[
+"Sniper's Eye",
+"저격수의 눈"
+],
+[
+"Snowfield",
+"설원"
+],
+[
+"Snowfield Sniper",
+"설원 저격총"
+],
+[
+"Solid fundamentals with no weak points",
+"약점 없는 탄탄한 기본기"
+],
+[
+"Spark",
+"불꽃"
+],
+[
+"Sparkle Aura",
+"반짝임 오라"
+],
+[
+"Speed Training",
+"속도 훈련"
+],
+[
+"Spend %d stat points (T key / Stats button)",
+"스탯 포인트 %d개 사용 (T 키 / 스탯 버튼)"
+],
+[
+"Spiny Venomworm",
+"가시 독벌레"
+],
+[
+"Spits thorns from afar. Keeps its distance while shooting.",
+"멀리서 가시를 뱉어요. 거리를 유지하며 쏴요."
+],
+[
+"Splitting Bullets",
+"분열탄"
+],
+[
+"Sprays flames in a fan (get up close and burn them)",
+"부채꼴로 불꽃을 뿜어요 (가까이 다가가 태우세요)"
+],
+[
+"Spring of Experience",
+"경험의 샘"
+],
+[
+"Star Breaker",
+"별 파괴자"
+],
+[
+"Star Flame",
+"별의 불꽃"
+],
+[
+"Starlight Necklace",
+"별빛 목걸이"
+],
+[
+"Stays put and fires beams. Long range.",
+"제자리에서 광선을 쏴요. 긴 사거리."
+],
+[
+"Steel",
+"강철"
+],
+[
+"Steel Armor",
+"강철 갑옷"
+],
+[
+"Steel Bazooka",
+"강철 바주카"
+],
+[
+"Steel Boots",
+"강철 장화"
+],
+[
+"Steel Cannon",
+"강철 캐논"
+],
+[
+"Steel Carbine",
+"강철 카빈"
+],
+[
+"Steel Gauntlets",
+"강철 건틀릿"
+],
+[
+"Steel Gauss Gun",
+"강철 가우스건"
+],
+[
+"Steel Heart",
+"강철 심장"
+],
+[
+"Steel Helm",
+"강철 투구"
+],
+[
+"Steel Long-Range Sniper",
+"강철 장거리 저격총"
+],
+[
+"Steel Pistol",
+"강철 권총"
+],
+[
+"Steel Pump Shotgun",
+"강철 펌프 샷건"
+],
+[
+"Steel Repeater",
+"강철 연발총"
+],
+[
+"Steel Six-Shooter",
+"강철 육연발"
+],
+[
+"Steel Sprayer",
+"강철 분사기"
+],
+[
+"Stone Golem",
+"돌 골렘"
+],
+[
+"String Necklace",
+"끈 목걸이"
+],
+[
+"Succeed at upgrading %d times",
+"강화 %d회 성공"
+],
+[
+"Summoner",
+"소환사"
+],
+[
+"Survive %d seconds in the Boss Rush",
+"보스 러시에서 %d초 버티기"
+],
+[
+"Survivor",
+"생존자"
+],
+[
+"Swarm",
+"무리"
+],
+[
+"Sweeps a wide area in front of you: damages every enemy and shoves small ones back. Great for packs!",
+"앞쪽 넓은 범위를 쓸어버려요: 모든 적에게 피해를 주고 작은 적은 뒤로 밀어내요. 무리를 상대할 때 좋아요!"
+],
+[
+"Swift",
+"질주"
+],
+[
+"Take 15% less damage",
+"받는 피해 15% 감소"
+],
+[
+"Test Your Luck",
+"운을 시험하다"
+],
+[
+"The attack bonus built up by NEAR MISS lasts longer. At higher levels, part of the bonus (half at max level) stays even if your streak breaks",
+"NEAR MISS로 쌓은 공격력 보너스가 더 오래가요. 레벨이 높으면 연속이 끊겨도 보너스 일부(최대 레벨에서 절반)가 남아요"
+],
+[
+"The most balanced weapon",
+"가장 균형 잡힌 무기"
+],
+[
+"The screen goes dark (fight by the glow of monster eyes), monster HP x1.15, rewards x1.6",
+"화면이 어두워져요 (몬스터의 눈빛에 의지해 싸우세요), 몬스터 체력 x1.15, 보상 x1.6"
+],
+[
+"The spring fully restores your HP + one more perk",
+"샘이 체력을 완전히 회복해 주고 특성 하나를 더 줘요"
+],
+[
+"There's a treasure chest! Get close to open it",
+"보물 상자가 있어요! 가까이 가면 열려요"
+],
+[
+"Thick Fog",
+"짙은 안개"
+],
+[
+"Thunder",
+"천둥"
+],
+[
+"Thunder Cannon",
+"천둥 캐논"
+],
+[
+"Thunder Revolver",
+"천둥 리볼버"
+],
+[
+"Thunder Rounds",
+"천둥 사격"
+],
+[
+"Time Skip 1 hour",
+"시간 건너뛰기 1시간"
+],
+[
+"Time Skip 10 min",
+"시간 건너뛰기 10분"
+],
+[
+"Time Skip 8 hours",
+"시간 건너뛰기 8시간"
+],
+[
+"Time Warp",
+"시간 왜곡"
+],
+[
+"Titan",
+"거인"
+],
+[
+"Title 『Abyss Conqueror』",
+"칭호 『심연 정복자』"
+],
+[
+"Title 『Boss Hunter』",
+"칭호 『보스 사냥꾼』"
+],
+[
+"Title 『Dungeon Regular』",
+"칭호 『던전 단골』"
+],
+[
+"Top Pick",
+"추천 상품"
+],
+[
+"Tough Enemies",
+"튼튼한 적"
+],
+[
+"Toughness",
+"강인함"
+],
+[
+"Trainee Banner",
+"수습 깃발"
+],
+[
+"Training slot +1",
+"훈련 칸 +1"
+],
+[
+"Training time -20%",
+"훈련 시간 -20%"
+],
+[
+"Transcendent",
+"초월"
+],
+[
+"Trap",
+"함정"
+],
+[
+"Treasure",
+"보물"
+],
+[
+"Ultimate Charge",
+"궁극기 충전"
+],
+[
+"Ultimate gauge fills up",
+"궁극기 게이지가 가득 차요"
+],
+[
+"Ultimate: use it when the gauge is full! Locks onto nearby enemies, then fires 16 missiles split between them (nearest 6 first, up to 12 as the skill levels up). Against a single target like a boss, all 16 hit it",
+"궁극기: 게이지가 가득 차면 쓰세요! 근처 적을 조준하고 미사일 16발을 나눠 쏴요 (가까운 6마리부터, 스킬 레벨이 오르면 최대 12마리). 보스 같은 단일 대상에게는 16발이 모두 명중해요"
+],
+[
+"Ultra-fast shot that bounces from the target to the 2 nearest enemies around it (within 34)",
+"명중한 적에서 주변 가장 가까운 적 2명(34 이내)에게 튕기는 초고속 탄"
+],
+[
+"Unbreakable",
+"부서지지 않는"
+],
+[
+"Upgrade Master",
+"강화의 달인"
+],
+[
+"Upgrade all the way to the last weapon (level %d)",
+"마지막 무기까지 강화 (레벨 %d)"
+],
+[
+"Use First Aid · Ultimate more often (max 60%)",
+"응급 치료 · 궁극기를 더 자주 사용 (최대 60%)"
+],
+[
+"Use skills %d times",
+"스킬 %d회 사용"
+],
+[
+"Use tickets to roll for gear",
+"티켓으로 장비를 뽑아요"
+],
+[
+"VIP Pass",
+"VIP 패스"
+],
+[
+"Vamp",
+"흡혈"
+],
+[
+"Vampire",
+"뱀파이어"
+],
+[
+"Very fast fire rate · Short range",
+"아주 빠른 연사 · 짧은 사거리"
+],
+[
+"Veteran",
+"베테랑"
+],
+[
+"Vine Giant",
+"덩굴 거인"
+],
+[
+"Vital",
+"생명력"
+],
+[
+"Void",
+"공허"
+],
+[
+"Void Aura",
+"공허 오라"
+],
+[
+"Void Railgun",
+"공허 레일건"
+],
+[
+"Volcano Cannon",
+"화산 캐논"
+],
+[
+"Walking and running speed",
+"걷기와 달리기 속도"
+],
+[
+"Wasteland",
+"황무지"
+],
+[
+"Weak Spot",
+"약점"
+],
+[
+"Weapon Collector",
+"무기 수집가"
+],
+[
+"Weapon range +4% per point",
+"포인트당 무기 사거리 +4%"
+],
+[
+"When an execute happens, 2 missiles burst out",
+"처형이 일어나면 미사일 2발이 터져 나가요"
+],
+[
+"Wide Loot",
+"넓은 줍기"
+],
+[
+"Wide explosion · Crowd clearing",
+"넓은 폭발 · 무리 정리"
+],
+[
+"Will of the Ruins",
+"폐허의 의지"
+],
+[
+"Will-o'-Wisp",
+"도깨비불"
+],
+[
+"Worn Shoes",
+"낡은 신발"
+],
+[
+"XP +20% · Idle income +20% · Training slot +1 · Training/breakthrough time -20% · Bag +20 slots · Golden aura",
+"경험치 +20% · 방치 수입 +20% · 훈련 칸 +1 · 훈련/돌파 시간 -20% · 가방 +20칸 · 황금 오라"
+],
+[
+"XP Booster (1 hour)",
+"경험치 부스터 (1시간)"
+],
+[
+"XP Gain",
+"경험치 획득"
+],
+[
+"You can't see far, monsters pop out suddenly (speed x1.2), rewards x1.4",
+"멀리 볼 수 없고 몬스터가 갑자기 튀어나와요 (속도 x1.2), 보상 x1.4"
+],
+[
+"Your hits stack burning on the target; the longer you hit it, the hotter it burns",
+"명중할 때마다 대상에게 화상이 쌓여요. 오래 때릴수록 더 뜨겁게 타요"
+],
+[
+"Your pet follows you · Move speed +1",
+"펫이 따라다녀요 · 이동 속도 +1"
+],
+[
+"Your shots bounce to 1 more nearby enemy (70% damage)",
+"탄이 근처 적 1명에게 더 튕겨요 (피해 70%)"
+],
+[
+"Zigzag flickering lightning links and flying sparks",
+"지그재그로 깜빡이는 번개 사슬과 튀는 불꽃"
+],
+[
+"arcs to 2",
+"2명에게 번개가 튀어요"
+],
+[
+"at max stacks: fire blast every 3s (300%)",
+"최대 중첩 시: 3초마다 화염 폭발 (300%)"
+],
+[
+"bigger explosion",
+"더 큰 폭발"
+],
+[
+"blade thrown 1 shot sooner",
+"칼날을 1발 더 일찍 던져요"
+],
+[
+"blades bounce +2 more",
+"칼날이 +2번 더 튕겨요"
+],
+[
+"boss damage bonus cap +30%",
+"보스 피해 보너스 상한 +30%"
+],
+[
+"burning enemies spread 3 stacks when they die",
+"불타는 적이 죽으면 3중첩이 퍼져요"
+],
+[
+"burst radius +30%",
+"폭발 반경 +30%"
+],
+[
+"bursts 25% wider",
+"폭발이 25% 넓어져요"
+],
+[
+"each hit adds a burn stack (max %d, lasts 4s); every 0.5s per stack",
+"명중마다 화상 1중첩 (최대 %d, 4초 지속); 중첩마다 0.5초에 한 번"
+],
+[
+"enemies below %d%% HP are executed · bosses take up to +%d%% damage (all your damage) as their HP drops",
+"체력 %d%% 이하의 적은 처형 · 보스는 체력이 줄수록 최대 +%d%% 피해 (모든 내 피해)"
+],
+[
+"every %.1fs a meteor, radius %d (x1.5 on bosses)",
+"%.1f초마다 운석 (반경 %d, 보스에게 x1.5)"
+],
+[
+"every %.1fs lightning hits %d enemies",
+"%.1f초마다 번개가 %d명에게 내려쳐요"
+],
+[
+"every %.1fs shock shots at %d enemies, burst radius %d",
+"%.1f초마다 충격탄이 %d명에게 날아가 반경 %d로 터져요"
+],
+[
+"every %d shots a blade bounces across %d enemies",
+"%d발마다 칼날이 적 %d명 사이를 튕겨요"
+],
+[
+"executed enemies explode",
+"처형된 적이 폭발해요"
+],
+[
+"explodes again 0.5s later",
+"0.5초 뒤 한 번 더 폭발"
+],
+[
+"fires twice (0.45s apart)",
+"두 번 발사 (0.45초 간격)"
+],
+[
+"kill → explosion, radius %d, hits up to 8 enemies",
+"처치 → 폭발, 반경 %d, 최대 8명 타격"
+],
+[
+"lightning 20% stronger",
+"번개가 20% 강해져요"
+],
+[
+"lightning arcs to +1 enemy",
+"번개가 +1명에게 튀어요"
+],
+[
+"lightning arcs to 1 nearby enemy",
+"번개가 근처 적 1명에게 튀어요"
+],
+[
+"missiles explode (splash)",
+"미사일이 폭발해요 (범위 피해)"
+],
+[
+"on crit, %d missiles into the enemy you hit (25%% of the crit hit each)",
+"치명타 시 맞은 적에게 미사일 %d발 (각각 치명타 피해의 25%%)"
+],
+[
+"wider blast + third explosion",
+"더 넓은 폭발 + 세 번째 폭발"
+],
+[
+"⏱ Idle",
+"⏱ 방치"
+],
+[
+"☄ Trap Room",
+"☄ 함정 방"
+],
+[
+"⚖ All-round",
+"⚖ 올라운드"
+],
+[
+"⛲ Rest Room",
+"⛲ 쉼터 방"
+],
+[
+"❄ Bullet hell! Many enemies shoot from afar, and the Frost Lord unleashes spiral / all-direction barrages (intermediate)",
+"❄ 탄막 지옥! 많은 적이 멀리서 쏘고, 얼음 군주가 나선 / 전방위 탄막을 쏟아내요 (중급)"
+],
+[
+"🌪 Mob hunter",
+"🌪 잡몹 사냥꾼"
+],
+[
+"🎨 Cosmetics",
+"🎨 꾸미기"
+],
+[
+"🎫 Currency",
+"🎫 재화"
+],
+[
+"🎯 Boss hunter",
+"🎯 보스 사냥꾼"
+],
+[
+"🎯 Shoot the dummy at the training ground next to the forge! Click the mouse to fire (R key = auto-aim)",
+"🎯 대장간 옆 훈련장의 허수아비를 쏘세요! 마우스를 클릭해 발사 (R 키 = 자동 조준)"
+],
+[
+"🐀 Swarm! Weak but overwhelming in number, and the Goblin King keeps summoning minions (beginner)",
+"🐀 무리! 약하지만 수가 압도적이고, 고블린 왕이 계속 부하를 소환해요 (초급)"
+],
+[
+"💀 The Lord vanished, leaving only the words \"I'll be waiting at the end of the 8th land.\" You need to get stronger! Use your loot tickets for a 10-pull at the gacha machine!",
+"💀 군주는 \"8번째 땅의 끝에서 기다리겠다\"는 말만 남기고 사라졌어요. 더 강해져야 해요! 전리품 티켓으로 뽑기 기계에서 10회 뽑기를 해 보세요!"
+],
+[
+"💎 Treasure Room",
+"💎 보물 방"
+],
+[
+"💰 Use your gold to upgrade your weapon to +15 and unlock the SMG! Once unlocked, you can pick any weapon you like in the Weapons tab",
+"💰 골드로 무기를 +15까지 강화해 SMG를 해금하세요! 해금하면 무기 탭에서 원하는 무기를 마음대로 고를 수 있어요"
+],
+[
+"📈 Growth",
+"📈 성장"
+],
+[
+"🔥 Charges and explosions! Charging enemies are tough and fast, and the Flame Lord rains down meteors and shockwaves (advanced)",
+"🔥 돌진과 폭발! 돌진하는 적은 튼튼하고 빠르며, 화염 군주가 운석과 충격파를 쏟아내요 (고급)"
+],
+[
+"🔥 Featured",
+"🔥 추천"
+],
+[
+"🗝 The key dropped by the Lord opened a dungeon! Clear the dungeon ...You sense an even greater presence",
+"🗝 군주가 떨어뜨린 열쇠로 던전이 열렸어요! 던전을 클리어하세요 ...더 큰 기운이 느껴져요"
+],
+[
+"  <font color='#8a90aa' size='10'>Step %d/%d · %s</font>",
+"  <font color='#8a90aa' size='10'>%d/%d 단계 · %s</font>"
+],
+[
+"  ✔ Active",
+"  ✔ 적용 중"
+],
+[
+"Auras",
+"오라"
+],
+[
+"Banners",
+"배너"
+],
+[
+"Coming Soon",
+"출시 예정"
+],
+[
+"Cosmetic only, no stats · visible to other players",
+"꾸미기 전용, 능력치 없음 · 다른 플레이어에게 보여요"
+],
+[
+"Default",
+"기본"
+],
+[
+"Higher step",
+"더 높은 단계"
+],
+[
+"Mounts",
+"탈것"
+],
+[
+"Next step",
+"다음 단계"
+],
+[
+"Not available in your region",
+"이 지역에서는 이용할 수 없어요"
+],
+[
+"Owned",
+"보유 중"
+],
+[
+"Owned +",
+"보유 +"
+],
+[
+"Shop item: ",
+"상점 아이템: "
+],
+[
+"Test Grant",
+"테스트 지급"
+],
+[
+"The Shop sells time savers, conveniences, and cosmetics. You can reach every level of progress without spending, and gear must be earned in the field.",
+"상점에서는 시간 단축, 편의 기능, 꾸미기를 팔아요. 돈을 쓰지 않아도 모든 진행 단계에 도달할 수 있고, 장비는 필드에서 얻어야 해요."
+],
+[
+"Unequip",
+"해제"
+],
+[
+"⏳ Active ",
+"⏳ 적용 중 "
+],
+[
+"★ Equipped",
+"★ 장착 중"
+],
+[
+"✔ Owned",
+"✔ 보유 중"
+],
+[
+"👀 Preview",
+"👀 미리보기"
+],
+[
+"👀 [%s] 5-second preview!",
+"👀 [%s] 5초 미리보기!"
+],
+[
+"🔒 Locked",
+"🔒 잠김"
+],
+[
+"<font color='#d9bd78'>MISSION %d / %d</font>",
+"<font color='#d9bd78'>미션 %d / %d</font>"
+],
+[
+"<font color='#ffd966'>🎯 Mission %d/%d</font>",
+"<font color='#ffd966'>🎯 미션 %d/%d</font>"
+],
+[
+"Dash to get there fast!",
+"대시로 빠르게 가세요!"
+],
+[
+"Menu",
+"메뉴"
+],
+[
+"Next room",
+"다음 방"
+],
+[
+"Next zone",
+"다음 구역"
+],
+[
+"Open the menu! (B)",
+"메뉴를 여세요! (B)"
+],
+[
+"Press Q to burst forward",
+"Q를 눌러 앞으로 돌진하세요"
+],
+[
+"Tap Start Training!",
+"훈련 시작을 누르세요!"
+],
+[
+"Tap the Skills/Growth tab!",
+"스킬/성장 탭을 누르세요!"
+],
+[
+"to the left",
+"왼쪽으로"
+],
+[
+"to the right",
+"오른쪽으로"
+],
+[
+"🎁 First gear granted!",
+"🎁 첫 장비 지급!"
+],
+[
+"🎰 Want more pulls? Use tickets at the gacha machine in town! Daily quests have pulls too",
+"🎰 더 뽑고 싶나요? 마을 뽑기 기계에서 티켓을 쓰세요! 일일 퀘스트에도 뽑기가 있어요"
+],
+[
+"👑 Hunt here and find the Lord!",
+"👑 여기서 사냥하며 군주를 찾으세요!"
+],
+[
+"  ·  keys 1-0 switch guns",
+"  ·  1-0 키로 총 바꾸기"
+],
+[
+"  ·  next gun: %s at +%d",
+"  ·  다음 총: %s (+%d에서)"
+],
+[
+"🆕 New gun: %s - press %d!",
+"🆕 새 총: %s - %d를 누르세요!"
+],
+[
+"🔒 %s unlocks at +%d (%d to go) - upgrade your weapon at the Forge or in the Menu (B)",
+"🔒 %s은(는) +%d에서 해금 (%d 남음) - 대장간이나 메뉴 (B)에서 무기를 강화하세요"
+],
+[
+"Aim directly at a boss's weak-point orb to deal x3 damage",
+"보스의 약점 구슬을 직접 조준하면 피해 x3"
+],
+[
+"Press Q to dash! Narrowly dodge enemy bullets to stack attack power",
+"Q를 눌러 대시! 적의 탄을 아슬아슬하게 피하면 공격력이 쌓여요"
+],
+[
+"Press R to auto-aim at the nearest enemy",
+"R을 눌러 가장 가까운 적을 자동 조준하세요"
+],
+[
+"Set gear drops in field zones at a set rate. Wear 1-3 pieces of the same zone's set and effects you unlocked with gold get boosted to Lv.4-6. Preview effects in the J key Codex",
+"세트 장비는 필드 구역에서 일정 확률로 떨어져요. 같은 구역 세트를 1~3부위 입으면 골드로 해금한 효과가 Lv.4~6으로 강해져요. 효과 미리보기는 J 키 도감에서"
+],
+[
+"Stand in the rest area to earn gold (even while you're offline)",
+"쉼터에 서 있으면 골드가 쌓여요 (오프라인에서도)"
+],
+[
+"Start by shooting the dummy. Click to fire",
+"먼저 허수아비를 쏘세요. 클릭하면 발사해요"
+],
+[
+"Starting a dungeon lets you try one random set effect. Defeat a zone lord to unlock it yourself with gold (Y key)",
+"던전을 시작하면 무작위 세트 효과 하나를 체험할 수 있어요. 구역 군주를 쓰러뜨리면 골드로 직접 해금할 수 있어요 (Y 키)"
+],
+[
+"When you level up, press T to spend stat points (respec for free anytime)",
+"레벨이 오르면 T를 눌러 스탯 포인트를 쓰세요 (언제든 무료로 다시 배분)"
+],
+[
+"🎮 Welcome to the world of adventure, %s!",
+"🎮 모험의 세계에 온 걸 환영해요, %s님!"
+],
+[
+"👋 Welcome back, %s!",
+"👋 다시 오셨네요, %s님!"
+],
+[
+"📅 %d-day login streak · Get stronger today!",
+"📅 %d일 연속 접속 · 오늘도 강해지세요!"
+],
+[
+"Ready",
+"준비"
+],
+[
+"Retry",
+"다시"
+],
+[
+"Roll",
+"뽑기"
+],
+[
+"The field is dangerous. Defeat the lord and the next zone opens.",
+"필드는 위험해요. 군주를 쓰러뜨리면 다음 구역이 열립니다."
+],
+[
+"They say multi-pulls sometimes hide good stuff.",
+"여러 번 뽑으면 가끔 좋은 게 숨어 있다더라고요."
+],
+[
+"Tickets",
+"티켓"
+],
+[
+"Title",
+"칭호"
+],
+[
+"Tom",
+"톰"
+],
+[
+"Try dodging shots narrowly with the Q dash!",
+"Q 대시로 적의 탄을 아슬아슬하게 피해 보세요!"
+],
+[
+"Weapons can only be bought in the lobby.",
+"무기는 로비에서만 살 수 있어요."
+],
+[
+"You have to collect set gear out in the field!",
+"세트 장비는 필드에서 모아야 해요!"
+],
+[
+"Your save data could not be loaded. Please rejoin in a moment - your progress is safe.",
+"저장 데이터를 불러오지 못했어요. 잠시 후 다시 접속해 주세요 - 진행 상황은 안전해요."
+],
+[
+"Your score is seconds survived x damage dealt - the weekly ranking resets every week.",
+"점수는 버틴 시간(초) x 준 피해이고, 주간 랭킹은 매주 초기화돼요."
+],
+[
+"🌱 Beginner's Boon: +%d%% damage and -%d%% damage taken until you clear Zone %d (it fades by Lv %d)",
+"🌱 초보자의 가호: 구역 %d을 클리어할 때까지 피해 +%d%% / 받는 피해 -%d%% (Lv %d에서 사라져요)"
+],
+[
+"🎫 A %dx pull needs %d tickets (you have %d)",
+"🎫 %d회 뽑기에는 티켓 %d장이 필요해요 (보유 %d장)"
+],
+[
+"🎰 Gacha Merchant",
+"🎰 뽑기 상인"
+],
+[
+"👹 Boss Rush Keeper",
+"👹 보스 러시 관리인"
+],
+[
+"💀 You fell and returned to town. Gear up and try again!",
+"💀 쓰러져서 마을로 돌아왔어요. 장비를 갖추고 다시 도전하세요!"
+],
+[
+"💀 You fell! A one-time power surges within you (big damage boost vs. the lord + full ultimate) — challenge the lord again!",
+"💀 쓰러졌어요! 한 번뿐인 힘이 솟아나요 (군주 상대 큰 피해 증가 + 궁극기 가득) — 군주에게 다시 도전하세요!"
+],
+[
+"💀 You were defeated by the Final Lord... but the loot remains!",
+"💀 최후의 군주에게 쓰러졌지만... 전리품은 남아 있어요!"
+],
+[
+"🔨 Blacksmith",
+"🔨 대장장이"
+],
+[
+"🗝 Dungeon Guide",
+"🗝 던전 안내원"
+],
+[
+"🛡 Field Gatekeeper",
+"🛡 필드 문지기"
+],
+[
+"  <font color='#78ff8c'>✅ tap to claim!</font>",
+"  <font color='#78ff8c'>✅ 눌러서 받기!</font>"
+],
+[
+"  <font color='#9aa0b8'>(tap to open)</font>",
+"  <font color='#9aa0b8'>(눌러서 열기)</font>"
+],
+[
+"%s <b>%s</b> — %s\n      <font size='10' color='#ffd966'>%s</font>",
+"%s <b>%s</b> — %s\n      <font size='10' color='#ffd966'>%s</font>"
+],
+[
+"<font color='#78ff8c'>✅ %s — tap to claim!</font>",
+"<font color='#78ff8c'>✅ %s — 눌러서 받기!</font>"
+],
+[
+"<font color='#78ff8c'>🎯 Ready to challenge the Zone %d Lord!</font>  <font size='10' color='#c9c0e0'>(Recommended %s · Yours %s)</font>",
+"<font color='#78ff8c'>🎯 %d구역 군주에게 도전할 준비 완료!</font>  <font size='10' color='#c9c0e0'>(권장 %s · 내 전투력 %s)</font>"
+],
+[
+"<font color='#7a7f95'>✔ %s</font>",
+"<font color='#7a7f95'>✔ %s</font>"
+],
+[
+"<font color='#9ad7ff'>🎯 Goal: Defeat Zone %d Lord</font>  <font size='10' color='#c9c0e0'>(Recommended power %s · Your power %s)</font>",
+"<font color='#9ad7ff'>🎯 목표: %d구역 군주 처치</font>  <font size='10' color='#c9c0e0'>(권장 전투력 %s · 내 전투력 %s)</font>"
+],
+[
+"<font color='#ffd966'><b>📋 Daily Quests</b></font>",
+"<font color='#ffd966'><b>📋 일일 퀘스트</b></font>"
+],
+[
+"<font color='#ffd966'><b>📋 Daily Quests</b></font> %d/%d%s",
+"<font color='#ffd966'><b>📋 일일 퀘스트</b></font> %d/%d%s"
+],
+[
+"<font color='#ffe16e'>Full! (still earning)</font>",
+"<font color='#ffe16e'>가득 참! (계속 쌓이는 중)</font>"
+],
+[
+"<font size='17' color='#ffd966'><b>💪 How to Get Stronger</b></font>",
+"<font size='17' color='#ffd966'><b>💪 강해지는 방법</b></font>"
+],
+[
+"Claim",
+"받기"
+],
+[
+"Form",
+"형태"
+],
+[
+"Full in <font color='#8fffb0'>%s</font>",
+"<font color='#8fffb0'>%s</font> 후 가득 참"
+],
+[
+"Got it, let's get stronger!",
+"알겠어요, 강해지러 가요!"
+],
+[
+"Growth",
+"성장"
+],
+[
+"weapon unlock",
+"무기 해금"
+],
+[
+"• %s <font color='#ffd966'>%d/%d</font>",
+"• %s <font color='#ffd966'>%d/%d</font>"
+],
+[
+"✔ Defeated",
+"✔ 처치함"
+],
+[
+"⭐ Next level Lv.%d\nXP %d / %d",
+"⭐ 다음 레벨 Lv.%d\n경험치 %d / %d"
+],
+[
+"🎟 %d free entries today · 🗝 %d keys!\nChallenge the dungeon at the north gate",
+"🎟 오늘 무료 입장 %d회 · 🗝 열쇠 %d개!\n북쪽 문에서 던전에 도전하세요"
+],
+[
+"🎫 %d tickets!\nPull gear at the gacha machine",
+"🎫 티켓 %d장!\n뽑기 기계에서 장비를 뽑으세요"
+],
+[
+"👑 Defeat the Lord of the final Zone 8!\nConquer the field to unlock the Boss Rush",
+"👑 마지막 8구역의 군주를 쓰러뜨리세요!\n필드를 정복하면 보스 러시가 열려요"
+],
+[
+"👑 Not defeated",
+"👑 미처치"
+],
+[
+"👹 Field conquered! Now for the Boss Rush\nEnter at the town portal - 2 runs a day, weekly ranking",
+"👹 필드 정복 완료! 이제 보스 러시\n마을 포탈에서 입장 - 하루 2회, 주간 랭킹"
+],
+[
+"💤 Idle income  +%s G/sec   <font color='#9ad7ff'>x%.2f</font>  ·  Earned <font color='#ffe16e'>%s G</font>\n%s  ·  When full: +%s G",
+"💤 방치 수입  +%s G/초   <font color='#9ad7ff'>x%.2f</font>  ·  획득 <font color='#ffe16e'>%s G</font>\n%s  ·  가득 차면: +%s G"
+],
+[
+"🔒 Zone %d · %s Sealed\nOpen the previous gate first",
+"🔒 %d구역 · %s 봉인\n먼저 이전 문을 여세요"
+],
+[
+"🔒 Zone %d · %s Sealed\nZone %d monsters %d / %d defeated · Lord %s\nOpen to earn the %s %s set!",
+"🔒 %d구역 · %s 봉인\n%d구역 몬스터 %d / %d 처치 · 군주 %s\n열면 %s %s 세트를 얻어요!"
+],
+[
+"🔫 Next %s <font color='#ffd966'>%s</font>\n✨ Upgrades are free right now! (%d left)",
+"🔫 다음 %s <font color='#ffd966'>%s</font>\n✨ 지금은 강화가 무료예요! (%d회 남음)"
+],
+[
+"🔫 Next %s <font color='#ffd966'>%s</font> (+%d)\nUpgrade cost %s G · You have %s G",
+"🔫 다음 %s <font color='#ffd966'>%s</font> (+%d)\n강화 비용 %s G · 보유 %s G"
+],
+[
+"🚧 Your level is capped!\nMenu (B) → Skills & Growth (Passive/Training) to break through",
+"🚧 레벨 상한에 도달했어요!\n메뉴 (B) → 스킬·성장 (패시브/훈련)에서 돌파하세요"
+],
+[
+"🚪 Open Zone %d Gate\nDefeat Zone %d monsters %d / %d · Reward %s G + Ticket",
+"🚪 %d구역 문 열기\n%d구역 몬스터 %d / %d 처치 · 보상 %s G + 티켓"
+],
+[
+" <font size='9' color='#9aa4cc'>Power</font>",
+" <font size='9' color='#9aa4cc'>전투력</font>"
+],
+[
+"Breakthrough needed!",
+"돌파가 필요해요!"
+],
+[
+"Field · Best Zone %d",
+"필드 · 최고 %d구역"
+],
+[
+"Town",
+"마을"
+],
+[
+"⏳ <font color='#ffe16e'>Loading your data...</font>",
+"⏳ <font color='#ffe16e'>데이터 불러오는 중...</font>"
+],
+[
+"⚔ <font color='#%s'>%s</font>",
+"⚔ <font color='#%s'>%s</font>"
+],
+[
+"📍 %s   <font color='#8fd8ff'>🎟 Free %d/%d</font>",
+"📍 %s   <font color='#8fd8ff'>🎟 무료 %d/%d</font>"
+],
+[
+"GEAR RUSH",
+"GEAR RUSH"
+],
+[
+"Preparing the field...",
+"필드를 준비하는 중..."
+],
+[
+"Preparing the field...  %d / %d",
+"필드를 준비하는 중...  %d / %d"
+],
+[
+"Tap or press any key to skip",
+"아무 키나 눌러 건너뛰기"
+],
+[
+"Tip · Defeat each zone's Lord to open the next zone.",
+"팁 · 각 구역의 군주를 쓰러뜨리면 다음 구역이 열려요."
+],
+[
+"Tip · Mythic gear can carry a Unique effect. Dungeons are the best place to find them.",
+"팁 · 신화 장비에는 유니크 효과가 붙을 수 있어요. 던전이 가장 좋은 곳이에요."
+],
+[
+"Tip · Press Q to dash. Narrowly dodging enemy shots gives a bonus.",
+"팁 · Q를 누르면 대시해요. 적의 탄을 아슬아슬하게 피하면 보너스가 있어요."
+],
+[
+"Tip · Set effects stack: mix gear from different zones to build your style.",
+"팁 · 세트 효과는 겹쳐요: 여러 구역의 장비를 섞어 나만의 스타일을 만드세요."
+],
+[
+"ZONE %d  ·  %s   %s",
+"%d구역  ·  %s   %s"
+],
+[
+"☠  THE FINAL LORD  ☠",
+"☠  최후의 군주  ☠"
+],
+[
+" <font size='9' color='#8a8aa8'>Range %s</font> <font size='9' color='%s'><b>(%d%%)</b></font>",
+" <font size='9' color='#8a8aa8'>범위 %s</font> <font size='9' color='%s'><b>(%d%%)</b></font>"
+],
+[
+" · Equipped",
+" · 장착 중"
+],
+[
+"%s <b>%s Set</b>   %s %d/3 <font size='9'>worn</font>",
+"%s <b>%s 세트</b>   %s %d/3 <font size='9'>착용</font>"
+],
+[
+"%s <b>%s</b>  <font color='#%s'>%s</font> %d/3",
+"%s <b>%s</b>  <font color='#%s'>%s</font> %d/3"
+],
+[
+"<font color='#78ff8c'>vs. equipped ▲ +%d</font>",
+"<font color='#78ff8c'>장착 중보다 ▲ +%d</font>"
+],
+[
+"<font color='#888888'>Loading bag...</font>",
+"<font color='#888888'>가방 불러오는 중...</font>"
+],
+[
+"<font color='#aaaacc' size='10'>%s · Score %d%s</font>",
+"<font color='#aaaacc' size='10'>%s · 점수 %d%s</font>"
+],
+[
+"<font color='#e1c476'><b>🎒 Bag — tap a slot to see details above</b></font>",
+"<font color='#e1c476'><b>🎒 가방 — 칸을 눌러 위에서 자세히 보기</b></font>"
+],
+[
+"<font color='#ff8c8c'>vs. equipped ▼ %d</font>",
+"<font color='#ff8c8c'>장착 중보다 ▼ %d</font>"
+],
+[
+"<font size='10' color='%s'>%s <b>%d pieces</b>  %s</font>",
+"<font size='10' color='%s'>%s <b>%d부위</b>  %s</font>"
+],
+[
+"<font size='10' color='%s'>📍 Zone %d %s · Drops in that zone · Dungeon chests (deeper = better odds)</font>",
+"<font size='10' color='%s'>📍 %d구역 %s · 그 구역에서 드랍 · 던전 상자 (깊을수록 확률 높음)</font>"
+],
+[
+"<font size='11' color='#ddddee'>Base  ",
+"<font size='11' color='#ddddee'>기본  "
+],
+[
+"<font size='11' color='#ffb84d'>✦ Unique: ",
+"<font size='11' color='#ffb84d'>✦ 유니크: "
+],
+[
+"<font size='14'><b>🔫 Weapons</b></font>  <font color='#aab0cc'>%s · +%d</font>\n<font size='10' color='#9aa4cc'>A new weapon unlocks every 15 levels. Tap one to use it.</font>",
+"<font size='14'><b>🔫 무기</b></font>  <font color='#aab0cc'>%s · +%d</font>\n<font size='10' color='#9aa4cc'>15레벨마다 새 무기가 열려요. 눌러서 사용하세요.</font>"
+],
+[
+"<font size='9' color='#7f86a8'>🎲 Reroll: re-rolls affix values within the range above (brackets = position in range, 100% is best). Can get better or worse</font>",
+"<font size='9' color='#7f86a8'>🎲 재굴림: 위 범위 안에서 옵션 값을 다시 굴려요 (괄호 = 범위 안 위치, 100%가 최고). 더 좋아지거나 나빠질 수 있어요</font>"
+],
+[
+"Armor",
+"갑옷"
+],
+[
+"Boots",
+"신발"
+],
+[
+"Camera",
+"카메라"
+],
+[
+"Dismantle",
+"분해"
+],
+[
+"Empty",
+"비어 있음"
+],
+[
+"Gloves",
+"장갑"
+],
+[
+"Helmet",
+"투구"
+],
+[
+"Max Upgrade MAX",
+"최대 강화 MAX"
+],
+[
+"Max!",
+"최대!"
+],
+[
+"Necklace",
+"목걸이"
+],
+[
+"No gear yet.\nDefeat monsters in the field or use the gacha!",
+"아직 장비가 없어요.\n필드에서 몬스터를 잡거나 뽑기를 해 보세요!"
+],
+[
+"Orb",
+"구슬"
+],
+[
+"Reroll",
+"재굴림"
+],
+[
+"Reroll ✨%d",
+"재굴림 ✨%d"
+],
+[
+"Ring",
+"반지"
+],
+[
+"Scrap",
+"고철"
+],
+[
+"Unlock\nPet (P)",
+"해금\n펫 (P)"
+],
+[
+"Use",
+"사용"
+],
+[
+"Wear 1·2·3 pieces of the same zone set → set effect tiers 4·5·6 (Set window: Y)",
+"같은 구역 세트를 1·2·3부위 착용 → 세트 효과 4·5·6단계 (세트 창: Y)"
+],
+[
+"Your bag is empty",
+"가방이 비었어요"
+],
+[
+"▶ In use",
+"▶ 사용 중"
+],
+[
+"○ Gold Tier 3 + 1·2·3 gear pieces = Tier 4·5·6 (Y)",
+"○ 골드 3단계 + 장비 1·2·3부위 = 4·5·6단계 (Y)"
+],
+[
+"⚡ Auto-equip best gear",
+"⚡ 최고 장비 자동 장착"
+],
+[
+"⚡ Power %d",
+"⚡ 전투력 %d"
+],
+[
+"✔ Tier ",
+"✔ 단계 "
+],
+[
+"🎒 Bag <b>%d / %d</b>    ✨ Essence <font color='#9ad7ff'><b>%d</b></font>",
+"🎒 가방 <b>%d / %d</b>    ✨ 정수 <font color='#9ad7ff'><b>%d</b></font>"
+],
+[
+"💰 %d G Slot Upgrade (%d%% success)",
+"💰 %d G 칸 강화 (성공 %d%%)"
+],
+[
+"🧹 Smart Clean",
+"🧹 스마트 정리"
+],
+[
+"  (max %d)",
+"  (최대 %d)"
+],
+[
+"Add",
+"추가"
+],
+[
+"Max",
+"최대"
+],
+[
+"Points left %d  /  total %d  (Level %d)",
+"남은 포인트 %d  /  전체 %d  (레벨 %d)"
+],
+[
+"Reset All (Free)",
+"전체 초기화 (무료)"
+],
+[
+"Sub",
+"감소"
+],
+[
+"These stats shape your play style, not your attack or HP. You can respec for free anytime!",
+"이 능력치는 공격력이나 체력이 아니라 플레이 스타일을 바꿔요. 언제든 무료로 다시 배분할 수 있어요!"
+],
+[
+"✨ Level Stats",
+"✨ 레벨 스탯"
+],
+[
+"✨ Stats (T)",
+"✨ 스탯 (T)"
+],
+[
+"💰 All points bought",
+"💰 포인트를 모두 구매했어요"
+],
+[
+"💰 Buy Point %s G (%d/%d)",
+"💰 포인트 구매 %s G (%d/%d)"
+],
+[
+"Eye",
+"눈"
+],
+[
+"Robe",
+"로브"
+],
+[
+"Shoulders",
+"어깨"
+],
+[
+"Torso",
+"상의"
+],
+[
+"Pets",
+"펫"
+],
+[
+"Quest",
+"퀘스트"
+],
+[
+"Quests",
+"퀘스트"
+],
+[
+"Rank",
+"랭킹"
+],
+[
+"Ranking",
+"랭킹"
+],
+[
+"Settings",
+"설정"
+],
+[
+"Shop",
+"상점"
+],
+[
+"✨ Traits / Exit",
+"✨ 특성 / 나가기"
+],
+[
+"🎁 Shop",
+"🎁 상점"
+],
+[
+"🏆 Ranking",
+"🏆 랭킹"
+],
+[
+"👥 Party",
+"👥 파티"
+],
+[
+"Elite",
+"엘리트"
+],
+[
+"Normal",
+"일반"
+],
+[
+"Highlight",
+"강조"
+],
+[
+"   <font color='#78ff8c'>(active now)</font>",
+"   <font color='#78ff8c'>(지금 적용 중)</font>"
+],
+[
+" (no zone cleared yet)",
+" (아직 클리어한 구역 없음)"
+],
+[
+" (zones ",
+" (구역 "
+],
+[
+" + Luck Booster ",
+" + 행운 부스터 "
+],
+[
+" of the time (dungeon chests: much higher).",
+" 의 시간 (던전 상자: 훨씬 높음)."
+],
+[
+", dungeon chests x",
+", 던전 상자 x"
+],
+[
+", field lords x",
+", 필드 군주 x"
+],
+[
+". Field Mythic drops carry a Unique effect ",
+". 필드 신화 드랍에는 유니크 효과가 붙어요 "
+],
+[
+"<b>Dungeon depth</b>  (your record: depth %d · the dungeon theme is random, odds are the same)",
+"<b>던전 깊이</b>  (내 기록: 깊이 %d · 던전 테마는 무작위, 확률은 같아요)"
+],
+[
+"<b>Gear slot</b> (total 100.00%)",
+"<b>장비 부위</b> (합계 100.00%)"
+],
+[
+"<b>Rarity</b> (total ",
+"<b>등급</b> (합계 "
+],
+[
+"<b>With the booster</b>",
+"<b>부스터 사용 시</b>"
+],
+[
+"<b>Without the booster</b>",
+"<b>부스터 없이</b>"
+],
+[
+"<b>Zone set gear</b> (each chest piece can be a field-zone set piece; only zones whose lord you have defeated can appear, the deepest 3 that fit the depth)",
+"<b>구역 세트 장비</b> (상자의 각 장비는 필드 구역 세트일 수 있어요. 군주를 쓰러뜨린 구역만, 깊이에 맞는 가장 깊은 3개 구역이 나와요)"
+],
+[
+"<b>🍀 Luck Booster — effect on gear drop odds</b>",
+"<b>🍀 행운 부스터 — 장비 드랍 확률 효과</b>"
+],
+[
+"<b>🎰 Gear Gacha — each ticket gives 1 gear piece</b>",
+"<b>🎰 장비 뽑기 — 티켓 1장당 장비 1개</b>"
+],
+[
+"<b>🏰 Dungeon boss chest — %d gear pieces, +1 every %d depth (max %d)</b>",
+"<b>🏰 던전 보스 상자 — 장비 %d개, 깊이 %d마다 +1 (최대 %d)</b>"
+],
+[
+"Bonus stats on every piece roll randomly within a range that depends on its rarity (shown on the item).",
+"모든 장비의 추가 옵션은 등급에 따른 범위 안에서 무작위로 정해져요 (아이템에 표시돼요)."
+],
+[
+"Cave",
+"동굴"
+],
+[
+"Depth %d (total %s, Unique %s, keys %d): %s",
+"깊이 %d (합계 %s, 유니크 %s, 열쇠 %d): %s"
+],
+[
+"Depth %d: %s%s",
+"깊이 %d: %s%s"
+],
+[
+"Drop Odds",
+"드랍 확률"
+],
+[
+"Dungeon Chest Odds",
+"던전 상자 확률"
+],
+[
+"Every result is useful: gear you can't improve on is converted into Gold and Essence.",
+"어떤 결과든 쓸모가 있어요: 더 좋아지지 않는 장비는 골드와 정수로 바뀌어요."
+],
+[
+"Gacha",
+"뽑기"
+],
+[
+"Gacha gear never carries a Unique effect. <b>Unique effects</b> (one of %d) come on Mythic gear: dungeon chests (see below), field drops (%s), the weekly Boss Rush chest and the weekly Final Lord reward.",
+"뽑기 장비에는 유니크 효과가 붙지 않아요. <b>유니크 효과</b>(%d종 중 하나)는 신화 장비에 붙어요: 던전 상자(아래 참고), 필드 드랍(%s), 주간 보스 러시 상자, 주간 최후의 군주 보상."
+],
+[
+"Gear Gacha Odds",
+"장비 뽑기 확률"
+],
+[
+"Gear slot is uniformly random (each slot equal chance). Every result is useful: gear you can't improve on is converted into Gold and Essence.",
+"장비 부위는 균등하게 무작위예요 (칸마다 확률이 같아요). 어떤 결과든 쓸모가 있어요: 더 좋아지지 않는 장비는 골드와 정수로 바뀌어요."
+],
+[
+"Luck",
+"행운"
+],
+[
+"Luck Booster Odds",
+"행운 부스터 확률"
+],
+[
+"Luck and the boss bonus multiply the weights of Epic and above; the percentages below already include them.",
+"행운과 보스 보너스는 에픽 이상의 가중치에 곱해져요. 아래 퍼센트에는 이미 포함돼 있어요."
+],
+[
+"Luck multiplies the weights of Epic, Legendary and Mythic drops (not Common / Rare). Elite monsters add x",
+"행운은 에픽 / 레전더리 / 신화 드랍의 가중치에 곱해져요 (일반 / 레어 제외). 엘리트 몬스터는 x"
+],
+[
+"Odds below are for a regular monster drop, per zone. These tables already update with your current Luck.",
+"아래 확률은 구역별 일반 몬스터 드랍 기준이에요. 표는 현재 행운에 맞춰 자동으로 바뀌어요."
+],
+[
+"Odds rise smoothly with every depth; the depth window shows the exact odds of the depth you pick.",
+"확률은 깊이마다 부드럽게 올라요. 깊이 창에서 고른 깊이의 정확한 확률을 볼 수 있어요."
+],
+[
+"The booster does not change gacha odds. Every drop is useful: gear you can't improve on is converted into Gold and Essence.",
+"부스터는 뽑기 확률을 바꾸지 않아요. 모든 드랍은 쓸모가 있어요: 더 좋아지지 않는 장비는 골드와 정수로 바뀌어요."
+],
+[
+"Your Luck right now: <b>%s</b>  (gear %s%s)",
+"지금 내 행운: <b>%s</b>  (장비 %s%s)"
+],
+[
+"Your Luck stat and Luck Booster do <b>not</b> change gacha odds.",
+"행운 능력치와 행운 부스터는 뽑기 확률을 <b>바꾸지 않아요</b>."
+],
+[
+"Your Luck without the booster: <b>%s</b> · with the booster: <b>%s</b>%s",
+"부스터 없이 내 행운: <b>%s</b> · 부스터 사용 시: <b>%s</b>%s"
+],
+[
+"Zone %d: %s",
+"%d구역: %s"
+],
+[
+"%s<b>%s</b>  <font color='#9aa0c0'>Lv %d · ⚡%d</font>",
+"%s<b>%s</b>  <font color='#9aa0c0'>Lv %d · ⚡%d</font>"
+],
+[
+"<font color='#9aa0c0'>… and %d more</font>",
+"<font color='#9aa0c0'>… 외 %d명</font>"
+],
+[
+"👥 Online: %d players",
+"👥 접속: %d명"
+],
+[
+"👥 Online: just you",
+"👥 접속: 나 혼자"
+],
+[
+"  (%d lvl · ~%s G)",
+"  (%d 레벨 · 약 %s G)"
+],
+[
+"  ⚙ Features (more unlock as you level up)",
+"  ⚙ 기능 (레벨이 오르면 더 열려요)"
+],
+[
+"  🎨 Looks (cosmetic only)",
+"  🎨 외형 (꾸미기 전용)"
+],
+[
+"  🖌 Color",
+"  🖌 색상"
+],
+[
+"%s  <font color='#ffd966'>Lv.%d / %d</font>",
+"%s  <font color='#ffd966'>Lv.%d / %d</font>"
+],
+[
+"All features unlocked!",
+"모든 기능이 열렸어요!"
+],
+[
+"In use",
+"사용 중"
+],
+[
+"Unlock pet features and your pet will follow and help you.\nEvery level you buy with gold adds a new feature!",
+"펫 기능을 열면 펫이 따라다니며 도와줘요.\n골드로 레벨을 올릴 때마다 새 기능이 늘어나요!"
+],
+[
+"▶ Next feature: Lv.%d %s %s%s",
+"▶ 다음 기능: Lv.%d %s %s%s"
+],
+[
+"▶ Next!",
+"▶ 다음!"
+],
+[
+"✔ Unlocked",
+"✔ 해금됨"
+],
+[
+"⬆ Level Up  💰 %s G",
+"⬆ 레벨 업  💰 %s G"
+],
+[
+"🐾 Pet",
+"🐾 펫"
+],
+[
+"🐾 Unlock Pet  💰 %s G",
+"🐾 펫 열기  💰 %s G"
+],
+[
+"\n<font color='#c9c0e0'>Same or lower rarity converts to Gold · Tickets drop from dungeons / field bosses</font>",
+"\n<font color='#c9c0e0'>같거나 낮은 등급은 골드로 바뀌어요 · 티켓은 던전 / 필드 보스에서 나와요</font>"
+],
+[
+"\n<font color='#ffd966'>Max upgrade level!</font>",
+"\n<font color='#ffd966'>최대 강화 레벨!</font>"
+],
+[
+"   <font color='#9ad7ff'>Title 『%s』</font>",
+"   <font color='#9ad7ff'>칭호 『%s』</font>"
+],
+[
+"   <font color='#aaaabb' size='11'>(tap to close)</font>",
+"   <font color='#aaaabb' size='11'>(눌러서 닫기)</font>"
+],
+[
+"   ✨ %d-piece set complete! %s Lv.%d",
+"   ✨ %d부위 세트 완성! %s Lv.%d"
+],
+[
+"  %s Zone %d · %s   (Rec. ⚡%d)  %s %s Set",
+"  %s %d구역 · %s   (권장 ⚡%d)  %s %s 세트"
+],
+[
+"  (max)",
+"  (최대)"
+],
+[
+"  — Danger!",
+"  — 위험!"
+],
+[
+"  🏠 Town (Lobby)",
+"  🏠 마을 (로비)"
+],
+[
+" (empty)",
+" (비어 있음)"
+],
+[
+" range to lock on! (Camps are safe zones with no enemies)",
+" 거리 안이면 조준! (캠프는 적이 없는 안전지대예요)"
+],
+[
+" · Cooldown %.1fs",
+" · 쿨타임 %.1f초"
+],
+[
+" · Unlocks at +%d",
+" · +%d에서 해금"
+],
+[
+"%d more upgrades",
+"%d회 더 강화"
+],
+[
+"%d upgrades! %d succeeded",
+"%d회 강화! %d회 성공"
+],
+[
+"%s\nGold +%d%% instead",
+"%s\n대신 골드 +%d%%"
+],
+[
+"%s\nGold earned  +%d G   🎫 Tickets +%d\n%s\nReturning to lobby in %ds",
+"%s\n획득 골드  +%d G   🎫 티켓 +%d\n%s\n%d초 후 로비로 돌아가요"
+],
+[
+"%s  <font color='#%s'><b>%s</b></font>   <font size='10' color='#8888aa'>%s%s</font>",
+"%s  <font color='#%s'><b>%s</b></font>   <font size='10' color='#8888aa'>%s%s</font>"
+],
+[
+"%s <font color='#%s'>%s</font>  <font color='#ffe16e'>⚡%d</font>",
+"%s <font color='#%s'>%s</font>  <font color='#ffe16e'>⚡%d</font>"
+],
+[
+"%s invited you to a party!",
+"%s님이 파티에 초대했어요!"
+],
+[
+"%s · %s · Fail if monsters pile up! Survive to the end and the boss appears",
+"%s · %s · 몬스터가 쌓이면 실패! 끝까지 버티면 보스가 나와요"
+],
+[
+"%s · %s · Monsters left %d · Keep going!",
+"%s · %s · 남은 몬스터 %d · 계속 가요!"
+],
+[
+"+%d from level",
+"레벨 보너스 +%d"
+],
+[
+"1. Collect Gold in the field / dungeons to upgrade your weapon (the lobby dummy is for damage / DPS practice; standing in the rest area earns idle Gold)",
+"1. 필드 / 던전에서 골드를 모아 무기를 강화하세요 (로비 허수아비는 피해 / DPS 연습용이고, 쉼터에 서 있으면 방치 골드가 쌓여요)"
+],
+[
+"2. Defeat monsters in the eastern <b>Field</b> to get gear and level up (don't miss the Golden Goblin!)",
+"2. 동쪽 <b>필드</b>에서 몬스터를 잡아 장비를 얻고 레벨을 올리세요 (황금 고블린을 놓치지 마세요!)"
+],
+[
+"3. The northern <b>Dungeon</b> needs a Key. Survive the set time and the boss appears. Random buffs (and penalties) pop up along the way, and you get gear from the boss chest",
+"3. 북쪽 <b>던전</b>은 열쇠가 필요해요. 정해진 시간을 버티면 보스가 나와요. 중간에 무작위 버프(와 페널티)가 나오고, 보스 상자에서 장비를 얻어요"
+],
+[
+"4. Clearing Zone 2 unlocks Growth (training). Queue up training, and collect gear sets/uniques to boost your Power",
+"4. 2구역을 클리어하면 성장(훈련)이 열려요. 훈련을 예약하고, 장비 세트/유니크를 모아 전투력을 키우세요"
+],
+[
+"5. Once the field is conquered, challenge the Final Lord, then the weekly <b>Boss Rush</b> ranking",
+"5. 필드를 정복하면 최후의 군주에 도전하고, 이어서 주간 <b>보스 러시</b> 랭킹에 도전하세요"
+],
+[
+"<b>%s · %s</b>\n%s → Boss <font color='#ff9a9a'>%s</font>\nRecommended Power <font color='#ffe16e'>%d</font>  (Your Power %d)\nGold x%.1f · Tickets %d · Boss chest gear %d\n🎟 Free entries today <b>%d / %d</b> · After that you need <b>🔑 %d Key(s)</b> (you have %d)\n🔑 Keys are dropped by field zone lords (more and more often in later zones). Easy 1 · Normal 2 · Hard 3",
+"<b>%s · %s</b>\n%s → 보스 <font color='#ff9a9a'>%s</font>\n권장 전투력 <font color='#ffe16e'>%d</font>  (내 전투력 %d)\n골드 x%.1f · 티켓 %d · 보스 상자 장비 %d\n🎟 오늘 무료 입장 <b>%d / %d</b> · 그 뒤에는 <b>🔑 열쇠 %d개</b>가 필요해요 (보유 %d)\n🔑 열쇠는 필드 구역 군주가 떨어뜨려요 (뒤 구역일수록 자주). 쉬움 1 · 보통 2 · 어려움 3"
+],
+[
+"<b>%s</b>\n<font color='#78ff8c'>▶ %s</font>",
+"<b>%s</b>\n<font color='#78ff8c'>▶ %s</font>"
+],
+[
+"<b>%s</b>  <font color='#bbbbcc'>%s</font>",
+"<b>%s</b>  <font color='#bbbbcc'>%s</font>"
+],
+[
+"<b>Auto-Attack!</b>\n<font size='13' color='#cfd3ea'>Press <b>R</b> to automatically\naim at and shoot nearby enemies</font>",
+"<b>자동 공격!</b>\n<font size='13' color='#cfd3ea'><b>R</b>을 누르면 근처 적을\n자동으로 조준해서 쏴요</font>"
+],
+[
+"<b>Auto-Attack!</b>\n<font size='13' color='#cfd3ea'>Tap the <b>R Auto-Attack</b> button\nat the bottom right to fire automatically</font>",
+"<b>자동 공격!</b>\n<font size='13' color='#cfd3ea'>오른쪽 아래 <b>R 자동 공격</b> 버튼을\n누르면 자동으로 발사해요</font>"
+],
+[
+"<b>Auto-Attack</b>\n<font color='#9aa0c8'>OFF</font>",
+"<b>자동 공격</b>\n<font color='#9aa0c8'>꺼짐</font>"
+],
+[
+"<b>Auto-Attack</b>  R — auto-aims at the nearest enemy (click an enemy to lock onto it)",
+"<b>자동 공격</b>  R — 가장 가까운 적을 자동 조준 (적을 클릭하면 그 적을 고정)"
+],
+[
+"<b>Menu</b>  I — Character (Gear·Weapon·Info) · Growth (Training·Skills·Pets) · Quests (Achievements) · Ranking   |   🎁 Shop button is on the right of the screen",
+"<b>메뉴</b>  I — 캐릭터 (장비·무기·정보) · 성장 (훈련·스킬·펫) · 퀘스트 (업적) · 랭킹   |   🎁 상점 버튼은 화면 오른쪽에 있어요"
+],
+[
+"<b>Move/Attack</b>  WASD move · Q dash · Mouse click (hold for rapid fire) to attack",
+"<b>이동/공격</b>  WASD 이동 · Q 대시 · 마우스 클릭 (누르고 있으면 연사)으로 공격"
+],
+[
+"<b>Music</b>  M — on/off",
+"<b>음악</b>  M — 켜기/끄기"
+],
+[
+"<b>Skills</b>  C Emergency Heal · V Ultimate (usable when the gauge is 100% from attacking enemies)  — field/dungeons only",
+"<b>스킬</b>  C 응급 치료 · V 궁극기 (적을 공격해 게이지가 100%일 때 사용)  — 필드/던전에서만"
+],
+[
+"<b>🎯 Game Flow</b>",
+"<b>🎯 게임 흐름</b>"
+],
+[
+"<b>📦 Boss Chest</b>\n",
+"<b>📦 보스 상자</b>\n"
+],
+[
+"<font color='#78ff8c'>All breakthroughs complete! You can now grow freely up to max level.</font>",
+"<font color='#78ff8c'>모든 돌파 완료! 이제 최대 레벨까지 자유롭게 성장할 수 있어요.</font>"
+],
+[
+"<font color='#78ff8c'>Max level!</font>",
+"<font color='#78ff8c'>최대 레벨!</font>"
+],
+[
+"<font color='#78ff8c'>▶ In use</font>",
+"<font color='#78ff8c'>▶ 사용 중</font>"
+],
+[
+"<font color='#888888'>Loading...</font>",
+"<font color='#888888'>불러오는 중...</font>"
+],
+[
+"<font color='#888888'>No titles unlocked yet. Try the achievements under Quests!</font>",
+"<font color='#888888'>아직 해금한 칭호가 없어요. 퀘스트의 업적에 도전해 보세요!</font>"
+],
+[
+"<font color='#888888'>Tallying...</font>",
+"<font color='#888888'>집계 중...</font>"
+],
+[
+"<font color='#8fffb0'><b>Auto-Attack</b>\nON</font>",
+"<font color='#8fffb0'><b>자동 공격</b>\n켜짐</font>"
+],
+[
+"<font color='#9affc0'>Next era → %s <b>%s</b></font> <font color='#aeb4cc'>%s</font>",
+"<font color='#9affc0'>다음 시대 → %s <b>%s</b></font> <font color='#aeb4cc'>%s</font>"
+],
+[
+"<font color='#9affc0'>Next weapon → <b>%s</b></font> <font color='#aeb4cc'>%s</font>",
+"<font color='#9affc0'>다음 무기 → <b>%s</b></font> <font color='#aeb4cc'>%s</font>"
+],
+[
+"<font color='#bbbbcc'>Time needed %s · 💰 %d G</font>",
+"<font color='#bbbbcc'>필요 시간 %s · 💰 %d G</font>"
+],
+[
+"<font color='#c9c0e0' size='13'>Opening the chest...</font>",
+"<font color='#c9c0e0' size='13'>상자를 여는 중...</font>"
+],
+[
+"<font color='#ff9a6e'>🔒 Unlocks at +%d (%d to go)</font>",
+"<font color='#ff9a6e'>🔒 +%d에서 해금 (%d 남음)</font>"
+],
+[
+"<font color='#ffd966'>Training · Time left %s</font>",
+"<font color='#ffd966'>훈련 중 · 남은 시간 %s</font>"
+],
+[
+"<font color='#ffd966'>You maxed out the final weapon!</font>",
+"<font color='#ffd966'>마지막 무기까지 강화했어요!</font>"
+],
+[
+"<font color='#ffd966'>✔ Unlocked</font>",
+"<font color='#ffd966'>✔ 해금됨</font>"
+],
+[
+"<font size='14'><b>%s %s</b></font>  Lv.%d / %d\n<font color='#ddddee'>%s%s</font>\n%s",
+"<font size='14'><b>%s %s</b></font>  Lv.%d / %d\n<font color='#ddddee'>%s%s</font>\n%s"
+],
+[
+"<font size='14'><b>%s</b></font>%s\n<font color='#bbbbcc'>%s</font>\n<font color='#%s'>%d / %d</font>   <font color='#ffd966'>Reward: %s</font>",
+"<font size='14'><b>%s</b></font>%s\n<font color='#bbbbcc'>%s</font>\n<font color='#%s'>%d / %d</font>   <font color='#ffd966'>보상: %s</font>"
+],
+[
+"<font size='14'><b>Level %d Breakthrough in progress</b></font>\n<font color='#ffd966'>Time left %s</font>",
+"<font size='14'><b>%d레벨 돌파 진행 중</b></font>\n<font color='#ffd966'>남은 시간 %s</font>"
+],
+[
+"<font size='14'><b>Level %d Breakthrough</b></font>   (Current Lv.%d)\n<font color='#bbbbcc'>Time needed %s · 💰 %d G</font>\n<font size='11' color='#bbbbcc'>%s</font>",
+"<font size='14'><b>%d레벨 돌파</b></font>   (현재 Lv.%d)\n<font color='#bbbbcc'>필요 시간 %s · 💰 %d G</font>\n<font size='11' color='#bbbbcc'>%s</font>"
+],
+[
+"<font size='14'><b>[%s] %s %s</b></font>  <font color='#ffd966'>Lv.%d / %d</font>\n<font color='#bbbbcc'>%s</font>\n<font color='#9ad7ff'>%s%s</font>",
+"<font size='14'><b>[%s] %s %s</b></font>  <font color='#ffd966'>Lv.%d / %d</font>\n<font color='#bbbbcc'>%s</font>\n<font color='#9ad7ff'>%s%s</font>"
+],
+[
+"<font size='15'><b>%s</b></font>\n<font color='#9a9ab5'>Empty</font>\n\n%s effect\n<font color='#c9c0e0'>Get gear with the gacha below, or equip gear dropped in the field from your Bag (B).</font>",
+"<font size='15'><b>%s</b></font>\n<font color='#9a9ab5'>비어 있음</font>\n\n%s 효과\n<font color='#c9c0e0'>아래 뽑기로 장비를 얻거나, 필드에서 얻은 장비를 가방 (B)에서 장착하세요.</font>"
+],
+[
+"<font size='17'><b>%s</b></font>\n\n<font color='#bbbbcc' size='11'>%s</font>\n\n%s\nRecommended Power %d",
+"<font size='17'><b>%s</b></font>\n\n<font color='#bbbbcc' size='11'>%s</font>\n\n%s\n권장 전투력 %d"
+],
+[
+"<font size='17'><b><font color='#%s'>%s</font></b></font>  <font size='10' color='#aab0cc'>%s</font>\n%s\n<font color='#ffe9a0'><b>%s</b></font>\n<font color='#bbbbcc'>%s</font>\n\n<b>🔫 Attack Style</b>\n<font color='#dfe6ff'>• Shot type: %s\n• %s\n• About %.1f shots/sec · Firepower %d · Range %d</font>",
+"<font size='17'><b><font color='#%s'>%s</font></b></font>  <font size='10' color='#aab0cc'>%s</font>\n%s\n<font color='#ffe9a0'><b>%s</b></font>\n<font color='#bbbbcc'>%s</font>\n\n<b>🔫 공격 스타일</b>\n<font color='#dfe6ff'>• 탄 종류: %s\n• %s\n• 초당 약 %.1f발 · 화력 %d · 사거리 %d</font>"
+],
+[
+"<font size='19'><b>🔒 Unlocks after clearing Zone 2</b></font>\n<font size='12' color='#bbbbcc'>Open the gate of Field Zone 2 to unlock training.\nTraining continues even while offline, making you permanently stronger. (Skills / Pets are available now)</font>",
+"<font size='19'><b>🔒 2구역을 클리어하면 열려요</b></font>\n<font size='12' color='#bbbbcc'>필드 2구역의 문을 열면 훈련이 해금돼요.\n훈련은 오프라인에서도 계속되어 영구적으로 강해져요. (스킬 / 펫은 지금 쓸 수 있어요)</font>"
+],
+[
+"A random buff was applied",
+"무작위 버프가 적용되었어요"
+],
+[
+"A special room!",
+"특별한 방!"
+],
+[
+"Accept",
+"수락"
+],
+[
+"Ach",
+"업적"
+],
+[
+"Achievements",
+"업적"
+],
+[
+"Active",
+"액티브"
+],
+[
+"Added to bag",
+"가방에 추가됨"
+],
+[
+"Anvil",
+"모루"
+],
+[
+"Auto-Attack OFF",
+"자동 공격 꺼짐"
+],
+[
+"Back to Lobby",
+"로비로"
+],
+[
+"Bag",
+"가방"
+],
+[
+"Barrier",
+"방벽"
+],
+[
+"Best Zone",
+"최고 구역"
+],
+[
+"Blast",
+"폭발"
+],
+[
+"Boss",
+"보스"
+],
+[
+"Bounces to %d nearby enemies (within %d)",
+"근처 적 %d명(%d 이내)에게 튕겨요"
+],
+[
+"Bullet",
+"탄환"
+],
+[
+"Cast",
+"시전"
+],
+[
+"Character",
+"캐릭터"
+],
+[
+"Close (B)",
+"닫기 (B)"
+],
+[
+"Close (H)",
+"닫기 (H)"
+],
+[
+"Combo",
+"콤보"
+],
+[
+"Crit",
+"치명타"
+],
+[
+"Crit +%d%%",
+"치명타 +%d%%"
+],
+[
+"Crit Chance",
+"치명타 확률"
+],
+[
+"Crosshair",
+"조준점"
+],
+[
+"Daily",
+"일일"
+],
+[
+"Damage",
+"피해"
+],
+[
+"Damage  <b>x%.2f</b> <font color='#78ff8c'>▶ x%.2f</font>\nSuccess rate  <font color='#%s'><b>%d%%</b></font>   <font size='10' color='#aaaabb'>(level kept on failure)</font>",
+"피해  <b>x%.2f</b> <font color='#78ff8c'>▶ x%.2f</font>\n성공 확률  <font color='#%s'><b>%d%%</b></font>   <font size='10' color='#aaaabb'>(실패해도 레벨 유지)</font>"
+],
+[
+"Damage x%.2f · %d targets (gauge %d)",
+"피해 x%.2f · 대상 %d명 (게이지 %d)"
+],
+[
+"Dash",
+"대시"
+],
+[
+"Decline",
+"거절"
+],
+[
+"Difficulty",
+"난이도"
+],
+[
+"Done",
+"완료"
+],
+[
+"Doom",
+"파멸"
+],
+[
+"Dummy",
+"허수아비"
+],
+[
+"Dungeons",
+"던전"
+],
+[
+"Ended",
+"종료"
+],
+[
+"Energy Orb",
+"에너지 구슬"
+],
+[
+"English",
+"한국어 / English"
+],
+[
+"Entering %s!",
+"%s 입장!"
+],
+[
+"Equipped Gear",
+"장착 장비"
+],
+[
+"Equipped!",
+"장착했어요!"
+],
+[
+"Era",
+"시대"
+],
+[
+"Event",
+"이벤트"
+],
+[
+"Event Room",
+"이벤트 방"
+],
+[
+"Explodes on hit (radius %d)",
+"명중 시 폭발 (반경 %d)"
+],
+[
+"Field (best: Zone %d)",
+"필드 (최고: %d구역)"
+],
+[
+"Final weapon",
+"마지막 무기"
+],
+[
+"Finding target...",
+"목표 찾는 중..."
+],
+[
+"Fireball",
+"화염구"
+],
+[
+"Fires %d pellets in a spread",
+"산탄 %d발을 퍼뜨려 발사"
+],
+[
+"Flies straight and hits one enemy",
+"똑바로 날아가 적 하나를 맞춰요"
+],
+[
+"Follow the sky-blue light beam",
+"하늘색 빛줄기를 따라가세요"
+],
+[
+"Free today %d/%d",
+"오늘 무료 %d/%d"
+],
+[
+"Gacha Machine",
+"뽑기 기계"
+],
+[
+"Gate",
+"문"
+],
+[
+"Haste",
+"가속"
+],
+[
+"Head to the next room",
+"다음 방으로 가세요"
+],
+[
+"Heal",
+"치료"
+],
+[
+"Heavy Shell",
+"중탄"
+],
+[
+"Hit",
+"명중"
+],
+[
+"In party",
+"파티 중"
+],
+[
+"In progress",
+"진행 중"
+],
+[
+"Info",
+"정보"
+],
+[
+"Invite",
+"초대"
+],
+[
+"Kick",
+"추방"
+],
+[
+"Kill",
+"처치"
+],
+[
+"Large",
+"큼"
+],
+[
+"Lasts %.1fs",
+"%.1f초 지속"
+],
+[
+"Leave",
+"나가기"
+],
+[
+"Leave Dungeon",
+"던전 나가기"
+],
+[
+"Leave Party",
+"파티 나가기"
+],
+[
+"Light Bolt",
+"광선탄"
+],
+[
+"List",
+"목록"
+],
+[
+"Lobby Players (Invite)",
+"로비 유저 (초대)"
+],
+[
+"Lucky this time",
+"이번엔 운이 좋았어요"
+],
+[
+"MAX LEVEL",
+"최대 레벨"
+],
+[
+"Max\nUpgrade",
+"최대\n강화"
+],
+[
+"Max HP",
+"최대 체력"
+],
+[
+"Max level!",
+"최대 레벨!"
+],
+[
+"Model",
+"모델"
+],
+[
+"Monsters",
+"몬스터"
+],
+[
+"Monsters left: %d",
+"남은 몬스터: %d"
+],
+[
+"Move Speed",
+"이동 속도"
+],
+[
+"Moving",
+"이동 중"
+],
+[
+"My Weapon · Fire Demo",
+"내 무기 · 발사 시연"
+],
+[
+"NEAR MISS lasts %.1fs · keeps at least %d stacks even if broken",
+"NEAR MISS %.1f초 지속 · 끊겨도 최소 %d단계 유지"
+],
+[
+"NEXT ERA · +%d",
+"다음 시대 · +%d"
+],
+[
+"NEXT UNLOCK · +%d",
+"다음 해금 · +%d"
+],
+[
+"New Era",
+"새 시대"
+],
+[
+"New look and shot color",
+"새 외형과 탄 색"
+],
+[
+"No buff (already maxed)",
+"버프 없음 (이미 최대)"
+],
+[
+"No party yet.\nInvite someone below!",
+"아직 파티가 없어요.\n아래에서 초대해 보세요!"
+],
+[
+"No penalty!",
+"페널티 없음!"
+],
+[
+"No records yet",
+"아직 기록이 없어요"
+],
+[
+"None yet",
+"아직 없음"
+],
+[
+"North: Dungeon Gate · West: Training Dummy · Far East: Hunting Field   |   Q Dash · R Auto-Attack · I Menu · M Music",
+"북쪽: 던전 문 · 서쪽: 훈련 허수아비 · 동쪽 끝: 사냥 필드   |   Q 대시 · R 자동 공격 · I 메뉴 · M 음악"
+],
+[
+"Order",
+"순서"
+],
+[
+"PRESS  [ V ]",
+"[ V ] 를 누르세요"
+],
+[
+"Party (%d/%d)",
+"파티 (%d/%d)"
+],
+[
+"Passive",
+"패시브"
+],
+[
+"Perks (this dungeon only)",
+"특성 (이번 던전 한정)"
+],
+[
+"Pet",
+"펫"
+],
+[
+"Pierces up to %d enemies",
+"최대 %d명의 적을 관통해요"
+],
+[
+"Radius %.1f · Damage x%.2f",
+"반경 %.1f · 피해 x%.2f"
+],
+[
+"Rainbow Orb",
+"무지개 구슬"
+],
+[
+"Reach level %d to break through",
+"돌파하려면 레벨 %d에 도달하세요"
+],
+[
+"Remove",
+"제거"
+],
+[
+"Restores %d%% HP",
+"체력 %d%% 회복"
+],
+[
+"Rolling…",
+"뽑는 중…"
+],
+[
+"SUCCESS!",
+"성공!"
+],
+[
+"Seen",
+"확인함"
+],
+[
+"Shot",
+"발사"
+],
+[
+"Skills can only be used in the field and dungeons.",
+"스킬은 필드와 던전에서만 쓸 수 있어요."
+],
+[
+"Skills·Growth",
+"스킬·성장"
+],
+[
+"Skip",
+"건너뛰기"
+],
+[
+"Small",
+"작음"
+],
+[
+"Small Bullet",
+"작은 탄환"
+],
+[
+"Speed",
+"속도"
+],
+[
+"Start",
+"시작"
+],
+[
+"Start Breakthrough",
+"돌파 시작"
+],
+[
+"Start Training",
+"훈련 시작"
+],
+[
+"Starting",
+"시작하는 중"
+],
+[
+"Step",
+"단계"
+],
+[
+"Stroke",
+"테두리"
+],
+[
+"Success rate <b><font color='#%s'>%d%%</font></b>   <font size='10' color='#aaaabb'>(kept on failure)</font>",
+"성공 확률 <b><font color='#%s'>%d%%</font></b>   <font size='10' color='#aaaabb'>(실패해도 유지)</font>"
+],
+[
+"Survive %ds",
+"%d초 버티기"
+],
+[
+"Survive %ds + Boss",
+"%d초 버티기 + 보스"
+],
+[
+"Survived and defeated the boss!",
+"버텨서 보스를 쓰러뜨렸어요!"
+],
+[
+"TAP DEADEYE!",
+"데드아이를 누르세요!"
+],
+[
+"Titles (unlocked via achievements, shown on your nameplate)",
+"칭호 (업적으로 해금, 닉네임 위에 표시돼요)"
+],
+[
+"Today's Quests",
+"오늘의 퀘스트"
+],
+[
+"Train",
+"훈련"
+],
+[
+"Training Dummy",
+"훈련 허수아비"
+],
+[
+"Ult",
+"궁극기"
+],
+[
+"Upgrade %d G",
+"강화 %d G"
+],
+[
+"Warp to the camp of any zone you've reached. If you die in the field, you respawn at the nearest camp.",
+"도달한 구역의 캠프로 이동해요. 필드에서 죽으면 가장 가까운 캠프에서 되살아나요."
+],
+[
+"Wave",
+"웨이브"
+],
+[
+"You can break through now!",
+"이제 돌파할 수 있어요!"
+],
+[
+"You couldn't hold out",
+"버티지 못했어요"
+],
+[
+"Zone %d / %d",
+"%d / %d 구역"
+],
+[
+"field cleared",
+"필드 클리어"
+],
+[
+"from level",
+"레벨 기준"
+],
+[
+"max 90%",
+"최대 90%"
+],
+[
+"max · +%.0f%% crit dmg",
+"최대 · 치명타 피해 +%.0f%%"
+],
+[
+"x10\nUpgrade",
+"x10\n강화"
+],
+[
+"⏱ Skip gauge ",
+"⏱ 건너뛰기 게이지 "
+],
+[
+"⏱ Time Skip <font color='#ffe16e'><b>%s</b></font> owned      🏋 Training slots <b>%d / %d</b> in use\n<font size='11' color='#bbbbcc'>Training and breakthroughs finish on their own over time (even while offline). Time Skips shorten the wait, and you also earn them slowly from quests. You can reach everything without spending money.</font>",
+"⏱ 시간 건너뛰기 <font color='#ffe16e'><b>%s</b></font>개 보유      🏋 훈련 칸 <b>%d / %d</b> 사용 중\n<font size='11' color='#bbbbcc'>훈련과 돌파는 시간이 지나면 저절로 끝나요 (오프라인에서도). 시간 건너뛰기는 대기 시간을 줄여 주고, 퀘스트로도 천천히 얻을 수 있어요. 돈을 쓰지 않아도 모든 걸 얻을 수 있어요.</font>"
+],
+[
+"⏱ Use Time Skip",
+"⏱ 시간 건너뛰기 사용"
+],
+[
+"▶ <b>%d more</b> to evolve into <font color='#9ad7ff'><b>%s</b></font>!",
+"▶ <b>%d</b> 남음 — <font color='#9ad7ff'><b>%s</b></font>(으)로 진화!"
+],
+[
+"▶ <b>%d more</b> to unlock <font color='#9ad7ff'><b>%s</b></font>!",
+"▶ <b>%d</b> 남음 — <font color='#9ad7ff'><b>%s</b></font> 해금!"
+],
+[
+"▼ Press V!",
+"▼ V를 누르세요!"
+],
+[
+"▼ Tap Deadeye!",
+"▼ 데드아이를 누르세요!"
+],
+[
+"◎ DEADEYE ◎",
+"◎ 데드아이 ◎"
+],
+[
+"★ Rare ",
+"★ 레어 "
+],
+[
+"⚔ Active Skills",
+"⚔ 액티브 스킬"
+],
+[
+"⚔ Active Skills — press the key in the field / dungeons (C Heal · V Ultimate). Level up with Gold to get stronger and cut cooldowns",
+"⚔ 액티브 스킬 — 필드 / 던전에서 키를 눌러 사용 (C 치료 · V 궁극기). 골드로 레벨을 올리면 더 강해지고 쿨타임이 줄어요"
+],
+[
+"⚔ Select Dungeon",
+"⚔ 던전 선택"
+],
+[
+"⚙ Settings / ❓ Help",
+"⚙ 설정 / ❓ 도움말"
+],
+[
+"⚙ Settings(H)",
+"⚙ 설정(H)"
+],
+[
+"⚠ Monster overrun! Thin them out within %ds!  (%d / %d)",
+"⚠ 몬스터 과밀! %d초 안에 줄이세요!  (%d / %d)"
+],
+[
+"⛺ Warp",
+"⛺ 이동"
+],
+[
+"✦ MYTHIC ✦",
+"✦ 신화 ✦"
+],
+[
+"✨ Free!\nUpgrade",
+"✨ 무료!\n강화"
+],
+[
+"✨ Unlock · Evolve! ✨",
+"✨ 해금 · 진화! ✨"
+],
+[
+"⬆ Auto-equip stronger gear",
+"⬆ 더 좋은 장비 자동 장착"
+],
+[
+"🌐 Language: ",
+"🌐 언어: "
+],
+[
+"🌟 Guaranteed Rare! ",
+"🌟 레어 확정! "
+],
+[
+"🌿 Passive Skills — always active, no key press needed. Level up with Gold",
+"🌿 패시브 스킬 — 항상 적용돼요, 키를 누를 필요 없어요. 골드로 레벨을 올리세요"
+],
+[
+"🌿 Passive · Training",
+"🌿 패시브 · 훈련"
+],
+[
+"🎁 Bonus triggered!",
+"🎁 보너스 발동!"
+],
+[
+"🎖 <font color='#8fd8ff'>Lv.%d</font>  <font size='10' color='#aaaacc'>%s</font>\n💰 <font color='#ffd966'>%d G</font>   🎫 <font color='#d9a6ff'>%d</font>\n🔑<font color='#ffe08a'>%d</font> <font size='10' color='#aaaacc'>(%s)</font>\n⚡ Power <font color='#ffe16e'>%d</font>\n⚔ <font color='#%s'>%s</font>\n📍 %s",
+"🎖 <font color='#8fd8ff'>Lv.%d</font>  <font size='10' color='#aaaacc'>%s</font>\n💰 <font color='#ffd966'>%d G</font>   🎫 <font color='#d9a6ff'>%d</font>\n🔑<font color='#ffe08a'>%d</font> <font size='10' color='#aaaacc'>(%s)</font>\n⚡ 전투력 <font color='#ffe16e'>%d</font>\n⚔ <font color='#%s'>%s</font>\n📍 %s"
+],
+[
+"🎫 Tickets: %d",
+"🎫 티켓: %d"
+],
+[
+"🎯 Deadeye: an enemy must be within ",
+"🎯 데드아이: 적이 가까이 있어야 해요: "
+],
+[
+"🎯 Ultimate gauge not full yet! (Attack enemies to fill it)",
+"🎯 궁극기 게이지가 아직 가득 차지 않았어요! (적을 공격하면 차요)"
+],
+[
+"🎰 %d-Roll Results",
+"🎰 %d회 뽑기 결과"
+],
+[
+"🎰 Multi Roll\nNeeds 2+ Tickets (max 10)",
+"🎰 여러 번 뽑기\n티켓 2장 이상 필요 (최대 10)"
+],
+[
+"🎰 Multi Roll!\nUses all Tickets (max 10)",
+"🎰 여러 번 뽑기!\n티켓을 전부 사용 (최대 10)"
+],
+[
+"🎰 Roll x%d!\n%d Tickets",
+"🎰 %d회 뽑기!\n티켓 %d장"
+],
+[
+"🎰 Roll x1\n1 Ticket",
+"🎰 1회 뽑기\n티켓 1장"
+],
+[
+"🎲 Coming up!!",
+"🎲 곧 나와요!!"
+],
+[
+"🎲 Random bonus in %ds",
+"🎲 %d초 뒤 무작위 보너스"
+],
+[
+"🏅 Achievements — earn rewards and titles",
+"🏅 업적 — 보상과 칭호를 얻어요"
+],
+[
+"🏆 Dungeon Cleared!",
+"🏆 던전 클리어!"
+],
+[
+"🏆 Power Ranking",
+"🏆 전투력 랭킹"
+],
+[
+"🏆 Power Ranking TOP 10 (same as the small ranking on the right of the screen)",
+"🏆 전투력 랭킹 TOP 10 (화면 오른쪽의 작은 랭킹과 같아요)"
+],
+[
+"🏋 Training Grounds — get permanently stronger",
+"🏋 훈련장 — 영구적으로 강해져요"
+],
+[
+"🏋 Training · Breakthrough — permanent growth that runs even while offline (a kind of passive)",
+"🏋 훈련 · 돌파 — 오프라인에서도 진행되는 영구 성장 (패시브의 한 종류)"
+],
+[
+"🏯 Floor %d",
+"🏯 %d층"
+],
+[
+"🐾 Pet (P)",
+"🐾 펫 (P)"
+],
+[
+"👀 Preview · Fire Demo",
+"👀 미리보기 · 발사 시연"
+],
+[
+"👕 Hide gear look (weapon stays): ",
+"👕 장비 외형 숨기기 (무기는 유지): "
+],
+[
+"👹 Monsters %d / %d%s",
+"👹 몬스터 %d / %d%s"
+],
+[
+"💀 Dungeon Failed",
+"💀 던전 실패"
+],
+[
+"💰 %d G   Upgrade",
+"💰 %d G   강화"
+],
+[
+"💰 %s G\nUpgrade",
+"💰 %s G\n강화"
+],
+[
+"📅 Today's Daily Quests (changes every day)",
+"📅 오늘의 일일 퀘스트 (매일 바뀌어요)"
+],
+[
+"📊 Chest Odds",
+"📊 상자 확률"
+],
+[
+"📊 Info",
+"📊 정보"
+],
+[
+"📊 Odds",
+"📊 확률"
+],
+[
+"📋 Menu",
+"📋 메뉴"
+],
+[
+"📋 Menu(B)",
+"📋 메뉴(B)"
+],
+[
+"📖 Stat Guide",
+"📖 스탯 안내"
+],
+[
+"📡 Radar: ",
+"📡 레이더: "
+],
+[
+"📳 Screen Shake: ",
+"📳 화면 흔들림: "
+],
+[
+"🔇 Music OFF (M)",
+"🔇 음악 꺼짐 (M)"
+],
+[
+"🔊 Music ON (M)",
+"🔊 음악 켜짐 (M)"
+],
+[
+"🔊 Music Volume",
+"🔊 음악 볼륨"
+],
+[
+"🔍 UI Size: ",
+"🔍 UI 크기: "
+],
+[
+"🔒\nMax",
+"🔒\n최대"
+],
+[
+"🔒 Auto-Attack ON — click a dummy/monster to lock onto it (R to turn off)",
+"🔒 자동 공격 켜짐 — 허수아비/몬스터를 클릭하면 그 대상을 고정해요 (R로 끄기)"
+],
+[
+"🔒 Do your first upgrades with [Upgrade] yourself! x10 / Max Upgrade unlock soon.",
+"🔒 첫 강화는 [강화]를 직접 눌러 보세요! x10 / 최대 강화는 곧 열려요."
+],
+[
+"🔥 Better gear dropped! (%d slot(s))",
+"🔥 더 좋은 장비가 떨어졌어요! (%d칸)"
+],
+[
+"🔥 Combo x%d\nDamage +%d%%",
+"🔥 콤보 x%d\n피해 +%d%%"
+],
+[
+"🔨 Weapon Upgrade",
+"🔨 무기 강화"
+],
+[
+"🔫 10 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: %s",
+"🔫 무기 10종 — 강화 단계(15마다)마다 하나씩 열려요. 해금한 무기 중 싸울 무기를 고르세요 · 현재: %s"
+],
+[
+"🔫 Fight with this weapon",
+"🔫 이 무기로 싸우기"
+],
+[
+"🔫 Gunshot Volume",
+"🔫 총소리 볼륨"
+],
+[
+"🔫 Weapon",
+"🔫 무기"
+],
+[
+"🔫 Weapon   <font color='#%s'>%s</font>",
+"🔫 무기   <font color='#%s'>%s</font>"
+],
+[
+"🖥 Low-spec mode (less lag): ",
+"🖥 저사양 모드 (렉 줄이기): "
+],
+[
+"🚧 Breakthrough — pass the level caps",
+"🚧 돌파 — 레벨 상한을 넘으세요"
+],
+[
+"🛡 %s   <font color='#%s'>[%s] %s +%d</font>   %s",
+"🛡 %s   <font color='#%s'>[%s] %s +%d</font>   %s"
+],
+[
+"🛡 %s   <font color='#888888'>Empty (roll with Boss Tickets)</font>",
+"🛡 %s   <font color='#888888'>비어 있음 (보스 티켓으로 뽑기)</font>"
+],
+[
+"🛡 Gear",
+"🛡 장비"
+],
+[
+"🛡 Gear · Gacha",
+"🛡 장비 · 뽑기"
+],
+[
+"🛡 Survive!  %ds",
+"🛡 버티세요!  %d초"
+],
+[
+"🛡 This dummy has high defense, so your attacks bounce off at your current Power",
+"🛡 이 허수아비는 방어력이 높아서 지금 전투력으로는 공격이 튕겨 나가요"
+],
+[
+"%s  <font color='#9aa0c8'>%s</font>",
+"%s  <font color='#9aa0c8'>%s</font>"
+],
+[
+"Danger ",
+"위험 "
+],
+[
+"Dashed",
+"대시함"
+],
+[
+"Day",
+"낮"
+],
+[
+"Dead Eye gauge +  ·  Attack power keeps rising!",
+"데드아이 게이지 +  ·  공격력이 계속 올라가요!"
+],
+[
+"Drop",
+"드랍"
+],
+[
+"Dusk",
+"해질녘"
+],
+[
+"Edge",
+"가장자리"
+],
+[
+"Era %d  ·  Your weapon look and bullet color changed!",
+"%d시대  ·  무기 외형과 탄 색이 바뀌었어요!"
+],
+[
+"Fill",
+"채우기"
+],
+[
+"Gone",
+"사라짐"
+],
+[
+"It triggers when you <font color='#78ffff'>dash (Q) through enemy shots or attacks at the last moment</font>!\n<font color='#ffe16e'>Your Dead Eye gauge fills up, and your attack power stacks with every consecutive success! (The bar above your head turns red)</font>\nKeep succeeding within 8 seconds to keep stacking. (In Abyss challenges, your score goes up too)",
+"<font color='#78ffff'>적의 탄이나 공격을 아슬아슬하게 (Q) 대시로 통과하면</font> 발동해요!\n<font color='#ffe16e'>데드아이 게이지가 차고, 연속으로 성공할수록 공격력이 쌓여요! (머리 위 막대가 빨갛게 변해요)</font>\n8초 안에 계속 성공하면 계속 쌓여요. (심연 도전에서는 점수도 올라가요)"
+],
+[
+"Left",
+"왼쪽"
+],
+[
+"Monster HP <font color='#ff8c7a'><b>x%.1f</b></font> · ATK <font color='#ff8c7a'><b>x%.1f</b></font>   |   Reward <font color='#8cff9c'><b>x%.1f</b></font>   (Lv.%d~)",
+"몬스터 체력 <font color='#ff8c7a'><b>x%.1f</b></font> · 공격력 <font color='#ff8c7a'><b>x%.1f</b></font>   |   보상 <font color='#8cff9c'><b>x%.1f</b></font>   (Lv.%d~)"
+],
+[
+"Night",
+"밤"
+],
+[
+"Pickup",
+"획득"
+],
+[
+"Raid",
+"레이드"
+],
+[
+"Right",
+"오른쪽"
+],
+[
+"The sun is setting",
+"해가 지고 있어요"
+],
+[
+"▶ Now",
+"▶ 지금"
+],
+[
+"☀ Morning has come",
+"☀ 아침이 밝았어요"
+],
+[
+"☾ Night has fallen - watch your sight",
+"☾ 밤이 되었어요 - 시야에 주의하세요"
+],
+[
+"⚠ Zone %d · %s ⚠",
+"⚠ %d구역 · %s ⚠"
+],
+[
+"⚡ 25 Kill Streak!!",
+"⚡ 25연속 처치!!"
+],
+[
+"⚡ NEAR MISS!",
+"⚡ NEAR MISS!"
+],
+[
+"⚡ NEAR MISS!  x%d",
+"⚡ NEAR MISS!  x%d"
+],
+[
+"⚡ Power %s%d %s",
+"⚡ 전투력 %s%d %s"
+],
+[
+"⚡ What is NEAR MISS?",
+"⚡ NEAR MISS가 뭐예요?"
+],
+[
+"✨ New Era! ✨",
+"✨ 새 시대! ✨"
+],
+[
+"🌋 200 Streak — Legendary!",
+"🌋 200연속 — 전설!"
+],
+[
+"👑 100 Kill Streak!!!!",
+"👑 100연속 처치!!!!"
+],
+[
+"💥 50 Kill Streak!!!",
+"💥 50연속 처치!!!"
+],
+[
+"🔥 10 Kill Streak!",
+"🔥 10연속 처치!"
+],
+[
+"%s %s Tier · %d bosses defeated",
+"%s %s 등급 · 보스 %d마리 처치"
+],
+[
+"<font color='#6c7194'>%d. -</font>",
+"<font color='#6c7194'>%d. -</font>"
+],
+[
+"<font color='#aab0d0'>All-time best %s pts · most bosses %d · longest %s</font>",
+"<font color='#aab0d0'>역대 최고 %s점 · 최다 보스 %d · 최장 %s</font>"
+],
+[
+"<font color='%s'>%d. %s</font>  <font color='#ffe16e'>%s</font>",
+"<font color='%s'>%d. %s</font>  <font color='#ffe16e'>%s</font>"
+],
+[
+"A boss arrives every %d~%ds, and they pile up if you don't take them down. Score = seconds survived x damage dealt. The run ends when you fall (max %d min).",
+"보스가 %d~%d초마다 나오고, 쓰러뜨리지 못하면 쌓여요. 점수 = 버틴 시간(초) x 준 피해. 쓰러지면 끝나요 (최대 %d분)."
+],
+[
+"Bosses %d · Damage %s · Next boss %ds",
+"보스 %d · 피해 %s · 다음 보스 %d초"
+],
+[
+"Ranking resets in <font color='#ffe16e'>%dd %dh</font> · rewards: tier by bosses defeated",
+"랭킹 초기화까지 <font color='#ffe16e'>%d일 %d시간</font> · 보상: 처치한 보스 수에 따른 등급"
+],
+[
+"Ranking unavailable right now (in Studio, enable API Services)",
+"지금은 랭킹을 쓸 수 없어요 (Studio에서는 API Services를 켜세요)"
+],
+[
+"Reward  ",
+"보상  "
+],
+[
+"Runs left today  <font color='#%s'>%d / %d</font>",
+"오늘 남은 도전  <font color='#%s'>%d / %d</font>"
+],
+[
+"This week's best  <font color='#ffe16e'>%s pts</font>",
+"이번 주 최고  <font color='#ffe16e'>%s점</font>"
+],
+[
+"This week's best  ❔ None yet",
+"이번 주 최고  ❔ 아직 없음"
+],
+[
+"Tier rewards by total damage dealt (gold · tickets · time skip):\n",
+"총 피해에 따른 등급 보상 (골드 · 티켓 · 시간 건너뛰기):\n"
+],
+[
+"Weekly best: %s pts",
+"주간 최고: %s점"
+],
+[
+"Your best tier: %s %s  <font color='#aab0d0'>(%s damage)</font>",
+"내 최고 등급: %s %s  <font color='#aab0d0'>(피해 %s)</font>"
+],
+[
+"⏱ %s survived  ×  💥 %s damage",
+"⏱ %s 생존  ×  💥 피해 %s"
+],
+[
+"⚔ Enter the Boss Rush",
+"⚔ 보스 러시 입장"
+],
+[
+"🏆 NEW WEEKLY BEST! Ranking updated",
+"🏆 주간 신기록! 랭킹이 갱신되었어요"
+],
+[
+"🏆 Weekly Ranking",
+"🏆 주간 랭킹"
+],
+[
+"👹 Boss Rush",
+"👹 보스 러시"
+],
+[
+"👹 Boss Rush Results",
+"👹 보스 러시 결과"
+],
+[
+"💡 Every player faces the same bosses, so gear and level decide your score. Dash through shots for NEAR MISS, and aim at the yellow weak-spot orb (x3 damage).",
+"💡 모든 플레이어가 같은 보스를 만나서 장비와 레벨이 점수를 가릅니다. 탄을 대시로 통과해 NEAR MISS를 만들고, 노란 약점 구슬(피해 x3)을 노리세요."
+],
+[
+"%s Set effect 『%s』 unlocked! Activate it with gold (Y key / ✨ Set button)",
+"%s 세트 효과 『%s』 해금! 골드로 활성화하세요 (Y 키 / ✨ 세트 버튼)"
+],
+[
+"%s Set synergy activated! 『%s』 - %s",
+"%s 세트 시너지 발동! 『%s』 - %s"
+],
+[
+"%s 『%s』 %s done! (Lv.%d)",
+"%s 『%s』 %s 완료! (Lv.%d)"
+],
+[
+"Activation",
+"활성화"
+],
+[
+"Defeat the Zone %d lord to unlock",
+"%d구역 군주를 쓰러뜨리면 해금돼요"
+],
+[
+"Not enough gold (need %d G)",
+"골드가 부족해요 (%d G 필요)"
+],
+[
+"You can run %d effects at once. Turn another one off first",
+"효과는 한 번에 %d개까지 쓸 수 있어요. 먼저 다른 하나를 끄세요"
+],
+[
+"🔓 You can now run %d set effects at once!",
+"🔓 이제 세트 효과를 한 번에 %d개 쓸 수 있어요!"
+],
+[
+"ROAAAR!",
+"크아아앙!"
+],
+[
+"Keys ",
+"열쇠 "
+],
+[
+"Tickets ",
+"티켓 "
+],
+[
+"📅 %d-day login streak! Reward: %s",
+"📅 %d일 연속 접속! 보상: %s"
+],
+[
+"\"I will wait at the end of the 8th land\"",
+"\"8번째 땅의 끝에서 기다리겠다\""
+],
+[
+"...How dare you.",
+"...감히."
+],
+[
+"...Impossible. You... have surpassed me. The world is yours.",
+"...불가능해. 네가... 나를 넘어섰구나. 세상은 네 것이다."
+],
+[
+"...Listen. Beneath this world, a rift is opening. The seals I held are breaking. Bosses will come, one after another... Show me how long you can stand.",
+"...들어라. 이 세상 아래에서 균열이 열리고 있다. 내가 지키던 봉인이 깨지고 있어. 보스들이 연이어 올 것이다... 얼마나 버틸 수 있는지 보여 다오."
+],
+[
+"...Not bad. But I am only getting started.",
+"...나쁘지 않군. 하지만 나는 이제 시작일 뿐이다."
+],
+[
+"...You defeated my servants. Impressive. Now I shall face you myself.",
+"...내 부하들을 쓰러뜨렸군. 인상적이다. 이제 내가 직접 상대해 주마."
+],
+[
+"...You have conquered all eight lands. Come. This time, I will not hold back.",
+"...여덟 땅을 모두 정복했군. 오라. 이번에는 봐주지 않겠다."
+],
+[
+"...You scratched me. But it is not enough.",
+"...나를 긁었군. 하지만 그걸론 부족하다."
+],
+[
+"A big key fell where the Lord went down. Walk up and grab it!",
+"군주가 쓰러진 자리에 큰 열쇠가 떨어졌어요. 걸어가서 주우세요!"
+],
+[
+"A key dropped!",
+"열쇠가 떨어졌어요!"
+],
+[
+"Black",
+"검정"
+],
+[
+"Body",
+"몸체"
+],
+[
+"Cape",
+"망토"
+],
+[
+"Cinema",
+"시네마"
+],
+[
+"Crown",
+"왕관"
+],
+[
+"Dome",
+"돔"
+],
+[
+"Easy",
+"쉬움"
+],
+[
+"Enough games.",
+"장난은 여기까지다."
+],
+[
+"Enter the Final Lord's realm",
+"최후의 군주의 영역에 입장"
+],
+[
+"Follow the purple light to the portal in town. Bosses arrive one by one - survive as long as you can. Score = seconds survived x damage dealt, ranked weekly!",
+"보라색 빛을 따라 마을의 포탈로 가세요. 보스가 하나씩 나타나요 - 최대한 오래 버티세요. 점수 = 버틴 시간(초) x 준 피해, 매주 랭킹!"
+],
+[
+"Hull",
+"선체"
+],
+[
+"Now... witness true despair.",
+"이제... 진짜 절망을 보아라."
+],
+[
+"Portal",
+"포탈"
+],
+[
+"Prompt",
+"입력"
+],
+[
+"Reacting to the key, a dungeon gate is about to open somewhere...",
+"열쇠에 반응해, 어딘가에서 던전 문이 열리려 해요..."
+],
+[
+"Rim",
+"테두리"
+],
+[
+"That power is still not enough.",
+"그 힘으로는 아직 부족하다."
+],
+[
+"The Boss Rush is open!",
+"보스 러시가 열렸어요!"
+],
+[
+"The Final Lord",
+"최후의 군주"
+],
+[
+"The Lord vanished after saying only that. You fell, but you kept the loot (4000 gold / 10 tickets)!\n🎰 10-pull gacha → 🔨 Upgrade (evolve) — that is how you get stronger. Head to the gacha machine first!",
+"군주는 그 말만 남기고 사라졌어요. 쓰러졌지만 전리품은 지켰어요 (골드 4000 / 티켓 10장)!\n🎰 10회 뽑기 → 🔨 강화 (진화) — 이렇게 강해져요. 먼저 뽑기 기계로 가세요!"
+],
+[
+"The dungeon is not open yet. You can enter from the Dungeon Gates in the north of town",
+"던전이 아직 열리지 않았어요. 마을 북쪽의 던전 문에서 입장할 수 있어요"
+],
+[
+"The key glows",
+"열쇠가 빛나요"
+],
+[
+"⏳ The portal is still recovering (%d s).",
+"⏳ 포탈이 아직 회복 중이에요 (%d초)."
+],
+[
+"☄ Meteors are falling — keep moving!",
+"☄ 운석이 떨어져요 — 계속 움직이세요!"
+],
+[
+"☠ PHASE 3 — Final form! Attacks now come TWO at a time!",
+"☠ 3페이즈 — 최종 형태! 이제 공격이 두 개씩 와요!"
+],
+[
+"☠ The Final Lord's Portal",
+"☠ 최후의 군주의 포탈"
+],
+[
+"⚠ A dungeon gate bursts up through the ground!",
+"⚠ 땅을 뚫고 던전 문이 솟아올라요!"
+],
+[
+"⚠ Shockwaves! DASH (Q) through the rings as they reach you!",
+"⚠ 충격파! 고리가 닿을 때 대시(Q)로 통과하세요!"
+],
+[
+"⚠ Something huge descends from the sky...!",
+"⚠ 하늘에서 거대한 무언가가 내려와요...!"
+],
+[
+"⚠ The Lord raised his hand!",
+"⚠ 군주가 손을 들었어요!"
+],
+[
+"⚠ The Lord's gaze turns red — don't touch the beams!",
+"⚠ 군주의 눈이 붉게 변해요 — 광선에 닿지 마세요!"
+],
+[
+"⚠ The sky grows dark...",
+"⚠ 하늘이 어두워져요..."
+],
+[
+"⚠⚠ An overwhelming presence... something is calling you!!",
+"⚠⚠ 압도적인 기운... 무언가가 당신을 부르고 있어요!!"
+],
+[
+"⚠⚠ Cross beams! Watch them reverse!",
+"⚠⚠ 십자 광선! 방향이 뒤집히는 걸 보세요!"
+],
+[
+"⚠⚠ Everything turns red — find a gap to escape!",
+"⚠⚠ 모든 것이 붉게 변해요 — 빈틈을 찾아 탈출하세요!"
+],
+[
+"⚠⚠ Find the gap in the ring!",
+"⚠⚠ 고리의 빈틈을 찾으세요!"
+],
+[
+"⚠⚠ The portal pulls you in... the Final Lord awaits!!",
+"⚠⚠ 포탈이 당신을 끌어당겨요... 최후의 군주가 기다려요!!"
+],
+[
+"⚠⚠ Walls of fire! Reach the one safe lane!",
+"⚠⚠ 불의 벽! 하나뿐인 안전한 길로 가세요!"
+],
+[
+"✅ Survived the judgement!",
+"✅ 심판에서 살아남았어요!"
+],
+[
+"🌀 A rift opens... you are pulled back to town.",
+"🌀 균열이 열려요... 마을로 끌려가요."
+],
+[
+"🌀 The dungeon gate opened — it pulls you in!",
+"🌀 던전 문이 열렸어요 — 당신을 끌어당겨요!"
+],
+[
+"🎁 Dungeon loot: ",
+"🎁 던전 전리품: "
+],
+[
+"🏆 You defeated the Final Lord!  +%d gold  +%d tickets",
+"🏆 최후의 군주를 쓰러뜨렸어요!  +%d 골드  +%d 티켓"
+],
+[
+"👑 Weekly Final Lord reward already claimed this week (resets Thursday).",
+"👑 이번 주 최후의 군주 보상은 이미 받았어요 (목요일에 초기화)."
+],
+[
+"👑 Weekly Final Lord reward: Mythic %s · %s Set · ✦ %s!",
+"👑 주간 최후의 군주 보상: 신화 %s · %s 세트 · ✦ %s!"
+],
+[
+"💀 JUDGEMENT! Stand inside a green circle!",
+"💀 심판! 초록 원 안에 서세요!"
+],
+[
+"💀 The Final Lord",
+"💀 최후의 군주"
+],
+[
+"💀 The Final Lord  %d%%",
+"💀 최후의 군주  %d%%"
+],
+[
+"💀 The Final Lord! This time your attacks count — dodge the warnings and bring him down!",
+"💀 최후의 군주! 이번엔 공격이 통해요 — 경고를 피해서 쓰러뜨리세요!"
+],
+[
+"💀 The Lord gathers all his power... there is nowhere to hide!!",
+"💀 군주가 모든 힘을 모아요... 숨을 곳이 없어요!!"
+],
+[
+"💀 You face the Final Lord! Your attacks land, but... you cannot defeat him. Dodge the red warnings on the floor, and try your V ultimate too!",
+"💀 최후의 군주와 마주했어요! 공격은 들어가지만... 쓰러뜨릴 수는 없어요. 바닥의 붉은 경고를 피하고 V 궁극기도 써 보세요!"
+],
+[
+"💢 ENRAGED — The Lord grows impatient!",
+"💢 격노 — 군주가 인내심을 잃었어요!"
+],
+[
+"💥 A fireball hit you!",
+"💥 화염구에 맞았어요!"
+],
+[
+"💥 Burned by the wall of fire!",
+"💥 불의 벽에 화상을 입었어요!"
+],
+[
+"💥 Caught by the beam!",
+"💥 광선에 맞았어요!"
+],
+[
+"💥 Caught by the cross beams!",
+"💥 십자 광선에 맞았어요!"
+],
+[
+"💥 Hit by the Lord's attack!",
+"💥 군주의 공격에 맞았어요!"
+],
+[
+"💥 Judgement struck you down!",
+"💥 심판에 쓰러졌어요!"
+],
+[
+"💥 The shockwave knocked you down! (Dash through it)",
+"💥 충격파에 쓰러졌어요! (대시로 통과하세요)"
+],
+[
+"📢 %s defeated the Final Lord!",
+"📢 %s님이 최후의 군주를 쓰러뜨렸어요!"
+],
+[
+"🔒 Defeat the Lord of Zone %d first — only then will the portal open for you.",
+"🔒 먼저 %d구역 군주를 쓰러뜨리세요 — 그래야 포탈이 열려요."
+],
+[
+"🔥 PHASE 2 — The Lord's fury grows!",
+"🔥 2페이즈 — 군주의 분노가 커져요!"
+],
+[
+"🔴 Homing fireballs! Keep your distance!",
+"🔴 유도 화염구! 거리를 유지하세요!"
+],
+[
+"🗝 Got the Lord's Key!",
+"🗝 군주의 열쇠를 얻었어요!"
+],
+[
+"🗝 Lord's Key — go close and pick it up!",
+"🗝 군주의 열쇠 — 가까이 가서 주우세요!"
+],
+[
+"🗝 The Lord dropped a dungeon key!",
+"🗝 군주가 던전 열쇠를 떨어뜨렸어요!"
+],
+[
+"🗝 You got the Lord's Key! The key begins to resonate...",
+"🗝 군주의 열쇠를 얻었어요! 열쇠가 공명하기 시작해요..."
+],
+[
+"💤 Rest Zone",
+"💤 쉼터"
+],
+[
+"🛡 Knocked back! Power %d required (you: %d)",
+"🛡 튕겨 났어요! 전투력 %d 필요 (내 전투력: %d)"
+],
+[
+" (changes every run)",
+" (매번 바뀌어요)"
+],
+[
+" has appeared! Dodge its attacks and take it down!",
+" 등장! 공격을 피하고 쓰러뜨리세요!"
+],
+[
+" has been alive too long — it's enraged!",
+" 너무 오래 살아남아 격노했어요!"
+],
+[
+" is enraged!",
+" 격노!"
+],
+[
+" summoned minions!",
+" 부하를 소환했어요!"
+],
+[
+"%s %s piece (%d/3)",
+"%s %s 부위 (%d/3)"
+],
+[
+"%s Dungeon mutation: %s — %s",
+"%s 던전 변이: %s — %s"
+],
+[
+"%s Trial effect for this dungeon: [%s] (Lv.3) — %s",
+"%s 이번 던전 체험 효과: [%s] (Lv.3) — %s"
+],
+[
+"%s has used up today's free entries and doesn't have %d key(s). Defeat a field zone lord to get keys",
+"%s님은 오늘 무료 입장을 다 썼고 열쇠 %d개도 없어요. 필드 구역 군주를 쓰러뜨려 열쇠를 얻으세요"
+],
+[
+"%s hasn't unlocked depth %d yet. (Clear depth %d first)",
+"%s님은 아직 깊이 %d를 열지 못했어요. (먼저 깊이 %d를 클리어하세요)"
+],
+[
+"%s's level is too low. (This dungeon requires Lv.%d+)",
+"%s님의 레벨이 너무 낮아요. (이 던전은 Lv.%d 이상 필요)"
+],
+[
+"'s minions are rushing in from both sides!",
+"의 부하가 양쪽에서 몰려와요!"
+],
+[
+"A boss",
+"보스"
+],
+[
+"Aim at the yellow orb circling the boss with your mouse and click it to expose the weak spot: damage taken x3 for 4s! + Deadeye gauge (auto-attacks don't count)",
+"마우스로 보스 주위를 도는 노란 구슬을 조준해 클릭하면 약점이 드러나요: 4초간 받는 피해 x3! + 데드아이 게이지 (자동 공격은 해당 안 돼요)"
+],
+[
+"Aim for the weak spot!",
+"약점을 노리세요!"
+],
+[
+"All",
+"전체"
+],
+[
+"All dungeons are full right now. Please try again shortly.",
+"지금은 모든 던전이 가득 찼어요. 잠시 후 다시 시도해 주세요."
+],
+[
+"All sets complete! XP bonus",
+"모든 세트 완성! 경험치 보너스"
+],
+[
+"Kills",
+"처치"
+],
+[
+"Only the party leader can start a dungeon.",
+"파티장만 던전을 시작할 수 있어요."
+],
+[
+"Other",
+"기타"
+],
+[
+"Your party couldn't enter: not enough free entries / keys.",
+"파티가 입장하지 못했어요: 무료 입장 / 열쇠가 부족해요."
+],
+[
+"⚠ Mirror barrage! Bullets close in from every side — dash out!",
+"⚠ 거울 탄막! 사방에서 탄이 조여 와요 — 대시로 빠져나가세요!"
+],
+[
+"⚠ The arena is closing in! Stay inside the bright floor!",
+"⚠ 경기장이 좁아져요! 밝은 바닥 안에 계세요!"
+],
+[
+"⚠⚠ COMBO ATTACK! Two bosses strike together!",
+"⚠⚠ 콤보 공격! 보스 둘이 함께 공격해요!"
+],
+[
+"✨ %d-piece set complete! %s %s Lv.%d",
+"✨ %d부위 세트 완성! %s %s Lv.%d"
+],
+[
+"⭐ New record! Depth %d cleared. Depth %d is unlocked.",
+"⭐ 신기록! 깊이 %d 클리어. 깊이 %d가 열렸어요."
+],
+[
+"🎟 Free entry used! (%d / %d left today)",
+"🎟 무료 입장 사용! (오늘 %d / %d 남음)"
+],
+[
+"🎯 Weak spot! Hit here",
+"🎯 약점! 여기를 맞추세요"
+],
+[
+"👹 Boss #%d: %s appeared!",
+"👹 보스 #%d: %s 등장!"
+],
+[
+"👹 Boss Rush! Bosses arrive one after another. Deal damage and survive as long as you can!",
+"👹 보스 러시! 보스가 연이어 나와요. 피해를 주면서 최대한 오래 버티세요!"
+],
+[
+"👹 Boss this run: %s — %s",
+"👹 이번 보스: %s — %s"
+],
+[
+"💀 Too many monsters! You were overwhelmed",
+"💀 몬스터가 너무 많아요! 압도당했어요"
+],
+[
+"💚 Emergency rescue! HP restored (%d left)",
+"💚 긴급 구조! 체력이 회복되었어요 (%d회 남음)"
+],
+[
+"💢 Boss #%d is AWAKENED — it attacks twice in a row!",
+"💢 보스 #%d 각성 — 연속으로 두 번 공격해요!"
+],
+[
+"🔒 You can't enter dungeons yet. Complete the tutorial missions first!",
+"🔒 아직 던전에 들어갈 수 없어요. 먼저 튜토리얼 미션을 완료하세요!"
+],
+[
+"🗺 Dungeon layout: ",
+"🗺 던전 구조: "
+],
+[
+"🛡 Blocked! Turn around",
+"🛡 막혔어요! 돌아서세요"
+],
+[
+"🛡 Defeat the incoming monsters! If too many pile up you'll be overwhelmed and fail. Hold out to the end and the boss appears",
+"🛡 몰려오는 몬스터를 처치하세요! 너무 많이 쌓이면 압도당해 실패해요. 끝까지 버티면 보스가 나와요"
+],
+[
+"Canyon",
+"협곡"
+],
+[
+"Cave Cluster",
+"동굴 군락"
+],
+[
+"Cavern",
+"동굴"
+],
+[
+"Colosseum (hold the center!)",
+"콜로세움 (중앙을 지키세요!)"
+],
+[
+"💥 Weak Spot Hit!  x3 Damage",
+"💥 약점 명중!  피해 x3"
+],
+[
+"💥 Weak Spot Hit! x3 damage for %.1fs",
+"💥 약점 명중! %.1f초간 피해 x3"
+],
+[
+"⚠ Abyss Beam!",
+"⚠ 심연 광선!"
+],
+[
+"⚠ Boulder Rain!",
+"⚠ 바위 비!"
+],
+[
+"⚠ Ice Spikes!",
+"⚠ 얼음 가시!"
+],
+[
+"⚠ Meteor Shower!",
+"⚠ 유성우!"
+],
+[
+"⚠ Poison Pools!",
+"⚠ 독 웅덩이!"
+],
+[
+"⚠ Reaper's Blink!",
+"⚠ 사신의 점멸!"
+],
+[
+"⚠ Stampede!",
+"⚠ 쇄도!"
+],
+[
+"💥 Hit!",
+"💥 명중!"
+],
+[
+"  %s zone%s %s dist%d HP %d/%d aggro=%s hittable=%s ambush=%s falling=%s safe=%s",
+"  %s 구역%s %s 거리%d 체력 %d/%d 어그로=%s 피격가능=%s 매복=%s 낙하=%s 안전=%s"
+],
+[
+"  %s: %d kills · avg %.1fs · HP %d · actual DPS %d",
+"  %s: 처치 %d · 평균 %.1f초 · 체력 %d · 실제 DPS %d"
+],
+[
+" (Lord ✔)",
+" (군주 ✔)"
+],
+[
+" my zone gate ",
+" 내 구역 문 "
+],
+[
+"A one-time surge of power!",
+"한 번뿐인 힘의 분출!"
+],
+[
+"Aim at the yellow glowing orb (🎯) circling the boss with your mouse and click it. Hit it to expose a weak spot!",
+"마우스로 보스 주위를 도는 노란 빛 구슬(🎯)을 조준해 클릭하세요. 맞히면 약점이 드러나요!"
+],
+[
+"Aim at the yellow orb circling the boss with your mouse and click it to expose a weak spot: x3 damage taken for 4s! + Dead Eye gauge (auto-attack won't work)",
+"마우스로 보스 주위를 도는 노란 구슬을 조준해 클릭하면 약점이 드러나요: 4초간 받는 피해 x3! + 데드아이 게이지 (자동 공격은 안 돼요)"
+],
+[
+"Aim for the yellow orb!",
+"노란 구슬을 노리세요!"
+],
+[
+"Ambush",
+"매복"
+],
+[
+"Colossus!",
+"거신!"
+],
+[
+"Cooldown",
+"쿨타임"
+],
+[
+"Damage to the Lord is greatly increased and your ultimate is full. Use V-key Dead Eye and the yellow orb weak spot to take it down this time!",
+"군주에게 주는 피해가 크게 늘고 궁극기가 가득 찼어요. V 데드아이와 노란 구슬 약점으로 이번엔 쓰러뜨리세요!"
+],
+[
+"Elite ",
+"엘리트 "
+],
+[
+"Entered the Field! Monsters get stronger the farther east you go.",
+"필드에 입장! 동쪽으로 갈수록 몬스터가 강해져요."
+],
+[
+"Everyone who fought gets loot. Keep shooting from afar while dodging shots!",
+"싸운 모두가 전리품을 받아요. 탄을 피하면서 멀리서 계속 쏘세요!"
+],
+[
+"Fallen",
+"쓰러짐"
+],
+[
+"Goblin",
+"고블린"
+],
+[
+"Healer",
+"힐러"
+],
+[
+"Hit the yellow orb like that and the boss takes triple damage for 4 seconds! Fire away!",
+"그렇게 노란 구슬을 맞히면 보스가 4초간 3배 피해를 받아요! 쏘세요!"
+],
+[
+"Idle",
+"대기"
+],
+[
+"Not enough power! (You %d / Rec. %d)",
+"전투력이 부족해요! (내 전투력 %d / 권장 %d)"
+],
+[
+"Returned to town.",
+"마을로 돌아왔어요."
+],
+[
+"Rune",
+"룬"
+],
+[
+"Stampede",
+"쇄도"
+],
+[
+"Target the weak spot!",
+"약점을 노리세요!"
+],
+[
+"The Colossus vanished underground... (wait for its next appearance)",
+"거신이 땅속으로 사라졌어요... (다음 등장을 기다리세요)"
+],
+[
+"Upgrade your weapon with gold at the town blacksmith to raise your power. Upgrade and try again — it'll be much easier!",
+"마을 대장장이에게서 골드로 무기를 강화해 전투력을 올리세요. 강화하고 다시 도전하면 훨씬 쉬워요!"
+],
+[
+"Warp / Camp",
+"이동 / 캠프"
+],
+[
+"Waypoint",
+"이정표"
+],
+[
+"Weak Spot Exposed!",
+"약점 노출!"
+],
+[
+"You can't warp inside a dungeon.",
+"던전 안에서는 이동할 수 없어요."
+],
+[
+"You haven't reached that zone yet. Walk there first!",
+"아직 그 구역에 도달하지 못했어요. 먼저 걸어서 가세요!"
+],
+[
+"You were knocked out of the Field and returned to town.",
+"필드에서 쓰러져 마을로 돌아왔어요."
+],
+[
+"Zone %d %s%s",
+"%d구역 %s%s"
+],
+[
+"Zone %d Camp",
+"%d구역 캠프"
+],
+[
+"Zone %d · %s\n%s · Rec. ⚡%d\nDanger %s\n%s New set from here: %s Set",
+"%d구역 · %s\n%s · 권장 ⚡%d\n위험도 %s\n%s 여기서 얻는 새 세트: %s 세트"
+],
+[
+"★ Elite %s",
+"★ 엘리트 %s"
+],
+[
+"⚠ A powerful presence approaches! It's an Elite monster!",
+"⚠ 강력한 기운이 다가와요! 엘리트 몬스터예요!"
+],
+[
+"⚠ Charge!",
+"⚠ 돌진!"
+],
+[
+"⚠ Raid! Monster hordes are swarming from all sides!",
+"⚠ 습격! 몬스터 무리가 사방에서 몰려와요!"
+],
+[
+"⚠ Slam!",
+"⚠ 내려찍기!"
+],
+[
+"⚠ Spiral Barrage!",
+"⚠ 나선 탄막!"
+],
+[
+"⛺ Camp · Warp",
+"⛺ 캠프 · 이동"
+],
+[
+"⛺ Moved to Zone %d · %s Camp!",
+"⛺ %d구역 · %s 캠프로 이동했어요!"
+],
+[
+"❄ Ice Palace Gate",
+"❄ 얼음 궁전의 문"
+],
+[
+"🌀 Gate of the Abyss",
+"🌀 심연의 문"
+],
+[
+"🌋 Lava Fortress Gate",
+"🌋 용암 요새의 문"
+],
+[
+"🌾 Adventure Begins",
+"🌾 모험의 시작"
+],
+[
+"🌿 The bush is rustling strangely...!",
+"🌿 수풀이 이상하게 흔들려요...!"
+],
+[
+"🌿 The bushes are rustling strangely...! Ambush!",
+"🌿 수풀들이 이상하게 흔들려요...! 매복이에요!"
+],
+[
+"🎫 You got a gear draw ticket from an Elite!",
+"🎫 엘리트에게서 장비 뽑기 티켓을 얻었어요!"
+],
+[
+"🏆 Colossus defeated! Everyone worked together (%d player(s) rewarded)",
+"🏆 거신 처치! 모두가 힘을 합쳤어요 (%d명 보상)"
+],
+[
+"🏆 Field conquered! You defeated the final Lord — the Boss Rush opened at the town portal!",
+"🏆 필드 정복! 마지막 군주를 쓰러뜨렸어요 — 마을 포탈에서 보스 러시가 열렸어요!"
+],
+[
+"🏔 Zone %d · %s cleared!",
+"🏔 %d구역 · %s 클리어!"
+],
+[
+"🏚 Ruined Fortress Gate",
+"🏚 폐허 요새의 문"
+],
+[
+"🏜 Desert Temple Entrance",
+"🏜 사막 신전 입구"
+],
+[
+"🏰 Forest Castle Gate",
+"🏰 숲 성의 문"
+],
+[
+"🐃 Monster stampede! They're charging in a line from the %s — step aside and sweep them away!",
+"🐃 몬스터 쇄도! %s쪽에서 일렬로 돌진해요 — 옆으로 비켜서 쓸어버리세요!"
+],
+[
+"👑 Elite squad incoming! Elite monsters approach — defeat them for big rewards!",
+"👑 엘리트 부대 접근! 엘리트 몬스터가 다가와요 — 쓰러뜨리면 큰 보상!"
+],
+[
+"👑 Field Boss defeated! Tickets +%d, loot dropped",
+"👑 필드 보스 처치! 티켓 +%d, 전리품 드랍"
+],
+[
+"👑 First Zone Lord",
+"👑 첫 구역 군주"
+],
+[
+"👑 Kill goal reached! Defeat the Lord of Zone %d to open the gate!",
+"👑 처치 목표 달성! %d구역 군주를 쓰러뜨려 문을 여세요!"
+],
+[
+"👑 Lord of %s (Zone %d) · Rec. ⚡%d",
+"👑 %s의 군주 (%d구역) · 권장 ⚡%d"
+],
+[
+"👑 Zone %d · The Lord of %s has reappeared!",
+"👑 %d구역 · %s의 군주가 다시 나타났어요!"
+],
+[
+"💀 You were crushed by overwhelming power...",
+"💀 압도적인 힘에 짓눌렸어요..."
+],
+[
+"💥 Incoming barrage! Watch the circles on the ground — keep moving!",
+"💥 탄막 접근! 바닥의 원을 보고 계속 움직이세요!"
+],
+[
+"💨 The Golden Goblin ran away...",
+"💨 황금 고블린이 도망갔어요..."
+],
+[
+"💰 A Golden Goblin appeared in Zone %d · %s! Catch it for a jackpot! (75s)",
+"💰 %d구역 · %s에 황금 고블린 등장! 잡으면 대박! (75초)"
+],
+[
+"💰 Golden Goblin",
+"💰 황금 고블린"
+],
+[
+"💰 Golden Goblin defeated! +%d G, 3 loot drops!",
+"💰 황금 고블린 처치! +%d G, 전리품 3개!"
+],
+[
+"💰 Golden Goblin!",
+"💰 황금 고블린!"
+],
+[
+"📍 Zone %d Section %d — lots of %s here",
+"📍 %d구역 %d구간 — 이곳에는 %s이(가) 많아요"
+],
+[
+"🔑 Key +",
+"🔑 열쇠 +"
+],
+[
+"🔑 You got %d key(s)! (Lord drop) — Use them at the town Dungeon Gate",
+"🔑 열쇠 %d개를 얻었어요! (군주 드랍) — 마을 던전 문에서 사용하세요"
+],
+[
+"🔒 The gate is closed! Defeat Zone %d monsters %d/%d + the zone Lord%s",
+"🔒 문이 닫혀 있어요! %d구역 몬스터 %d/%d + 구역 군주%s 처치 필요"
+],
+[
+"🔓 Zone %d gate opened! Reward 💰%d G · 🎫%d  — %s · %s-only drops: %s %s Set",
+"🔓 %d구역 문이 열렸어요! 보상 💰%d G · 🎫%d  — %s · %s 전용 드랍: %s %s 세트"
+],
+[
+"🔥 The Lord's domain draws near... guards are swarming in!",
+"🔥 군주의 영역이 가까워요... 호위병이 몰려와요!"
+],
+[
+"🗿 %s · World Boss (Zone %d)",
+"🗿 %s · 월드 보스 (%d구역)"
+],
+[
+"🗿 Colossus defeated! Gear + 🎫 +1 + %d G",
+"🗿 거신 처치! 장비 + 🎫 +1 + %d G"
+],
+[
+"🗿 [World Boss] Zone %d · %s: %s appeared! Follow the orange light pillar and defeat it together for gear + tickets!",
+"🗿 [월드 보스] %d구역 · %s: %s 등장! 주황색 빛기둥을 따라가 함께 쓰러뜨리면 장비 + 티켓!"
+],
+[
+"😡 Enraged!",
+"😡 격노!"
+],
+[
+"🚨 Air raid! Watch the bombers in the sky — stay out of the red circles on the ground!",
+"🚨 공습! 하늘의 폭격기를 보고 — 바닥의 붉은 원을 피하세요!"
+],
+[
+"🛡 Blocked! Go around",
+"🛡 막혔어요! 돌아가세요"
+],
+[
+"🛡 Danger! A shield wrapped around you. Now is your chance!",
+"🛡 위험! 방패가 당신을 감쌌어요. 지금이 기회예요!"
+],
+[
+"🛡 Safe Zone Edge (no shooting inside)",
+"🛡 안전지대 경계 (안에서는 사격 불가)"
+],
+[
+"🛡 Shots do nothing inside the safe zone! Leave the camp to fight",
+"🛡 안전지대 안에서는 사격이 통하지 않아요! 캠프를 벗어나 싸우세요"
+],
+[
+"🦇 Dark Castle Gate",
+"🦇 어둠의 성 문"
+],
+[
+" gear. Get one from the field or the gacha.",
+" 장비. 필드나 뽑기에서 얻으세요."
+],
+[
+" obtained! Added to your bag. (I → equip from Bag)",
+" 획득! 가방에 추가되었어요. (I → 가방에서 장착)"
+],
+[
+" obtained! Equipped.",
+" 획득! 장착했어요."
+],
+[
+"%s upgrade success! +%d",
+"%s 강화 성공! +%d"
+],
+[
+"%s... auto-dismantled! Essence +%d, %d G",
+"%s... 자동 분해! 정수 +%d, %d G"
+],
+[
+"Already at max upgrade level!",
+"이미 최대 강화 레벨이에요!"
+],
+[
+"Enhances",
+"강화"
+],
+[
+"Equipped",
+"장착됨"
+],
+[
+"Gear upgrades are only available in the lobby.",
+"장비 강화는 로비에서만 할 수 있어요."
+],
+[
+"Volcano",
+"화산"
+],
+[
+"Zone",
+"구역"
+],
+[
+"Gold",
+"골드"
+]
+]
