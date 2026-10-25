@@ -353,6 +353,7 @@ local function play()
 		local tipLabel = pageText({ Size = UDim2.new(1, -60, 0, 20), Position = UDim2.new(0.5, 0, 0.82, 0), TextSize = 13, Font = Enum.Font.GothamMedium, TextColor3 = Color3.fromRGB(190, 182, 160), Text = tips[math.random(#tips)] })
 		pageText({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0.5, 0, 0.95, 0), TextSize = 11, Font = Enum.Font.GothamMedium, TextColor3 = Color3.fromRGB(110, 106, 122), Text = "Tap or press any key to skip" })
 
+		local pageStart = os.clock()
 		local ready = false
 		local remote
 		pcall(function() remote = require(ReplicatedStorage:WaitForChild("Remotes")).Intro end)
@@ -378,6 +379,11 @@ local function play()
 				task.wait(0.1)
 			end
 			listener:Disconnect()
+		end
+		local stillNeeded = 2.2 - (os.clock() - pageStart) -- 로딩이 빨리 끝나도 로딩 화면은 최소 2.2초는 보여 준다 (첫 화면이 번쩍 지나가지 않게)
+		if stillNeeded > 0 and not finished then
+			TweenService:Create(barFillLoad, TweenInfo.new(stillNeeded, Enum.EasingStyle.Sine), { Size = UDim2.new(0.92, 0, 1, 0) }):Play()
+			task.wait(stillNeeded)
 		end
 		-- (진단) 필드 바닥이 실제로 내 화면에 불러와졌는지 Output 에 한 줄 남긴다
 		pcall(function()
@@ -433,14 +439,14 @@ local function play()
 
 	-- 1) 마을에서 보스까지 한 번에 날아간다 (빠르게 가속했다가 보스 앞에서 멈춘다. 시야각이 넓어졌다가 좁아진다)
 	-- 먼저 높은 하늘에서 아래를 내려다보며 일정한 속도로 날아가고(필드가 한눈에 보인다), 끝에서 보스 앞으로 내려오며 속도를 줄인다
-	local FLY_TIME = 7.0
-	local DESCEND_TIME = 1.9
+	local FLY_TIME = 10.5
+	local DESCEND_TIME = 2.6
 	local midPos = Vector3.new(bossX - 650, FLY_HEIGHT, 0)
 	TweenService:Create(camera, TweenInfo.new(FLY_TIME, Enum.EasingStyle.Linear), { CFrame = CFrame.lookAt(midPos, midPos + TILT) }):Play()
 	TweenService:Create(camera, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { FieldOfView = 84 }):Play()
 	local descending = false
-	task.delay(2.5, function() if not finished then sfx("Aug_Flame", 0.8, 0.6) end end)
-	task.delay(5.0, function() if not finished then sfx("Aug_Flame", 0.7, 0.5) end end)
+	task.delay(3.5, function() if not finished then sfx("Aug_Flame", 0.8, 0.6) end end)
+	task.delay(7.0, function() if not finished then sfx("Aug_Flame", 0.7, 0.5) end end)
 	-- 날아가는 동안: 진행 막대가 차오르고, 구역을 지날 때마다 구역 이름이 뜬다
 	TweenService:Create(barBack, TweenInfo.new(0.6), { BackgroundTransparency = 0.2 }):Play()
 	TweenService:Create(barFill, TweenInfo.new(0.6), { BackgroundTransparency = 0 }):Play()
@@ -607,18 +613,18 @@ local function play()
 	local skyPos = spawnPos + Vector3.new(210, 600, 0)
 	local skyLook = CFrame.lookAt(skyPos, spawnPos)
 	sfx("Aug_Flame", 1.0, 0.5)
-	TweenService:Create(camera, TweenInfo.new(2.1, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut), { CFrame = skyLook }):Play()
-	TweenService:Create(camera, TweenInfo.new(1.0, Enum.EasingStyle.Sine, Enum.EasingDirection.In), { FieldOfView = 110 }):Play()
-	task.delay(1.0, function()
-		if not finished then TweenService:Create(camera, TweenInfo.new(1.1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { FieldOfView = 72 }):Play() end
+	TweenService:Create(camera, TweenInfo.new(3.6, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut), { CFrame = skyLook }):Play()
+	TweenService:Create(camera, TweenInfo.new(1.6, Enum.EasingStyle.Sine, Enum.EasingDirection.In), { FieldOfView = 105 }):Play()
+	task.delay(1.6, function()
+		if not finished then TweenService:Create(camera, TweenInfo.new(1.9, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { FieldOfView = 72 }):Play() end
 	end)
-	task.delay(0.9, function() if not finished then props:ClearAllChildren() end end) -- 보스는 멀어진 뒤에 치운다
-	task.wait(1.4)
+	task.delay(1.4, function() if not finished then props:ClearAllChildren() end end) -- 보스는 멀어진 뒤에 치운다
+	task.wait(2.4)
 	if finished then return end
 	sfx("Dungeon_Start", 0.9, 0.8)
 	TweenService:Create(title, TweenInfo.new(0.8), { TextTransparency = 0, TextStrokeTransparency = 0.6 }):Play()
 	TweenService:Create(subtitle, TweenInfo.new(1.1), { TextTransparency = 0.1 }):Play()
-	task.wait(0.7)
+	task.wait(1.2)
 	if finished then return end
 
 	-- 5) 하늘 높은 곳에서 제목을 보여 주다가 -> 마을 스폰으로 천천히 곡선을 그리며 내려앉는다 (내려오는 동안 빛줄기가 켜지고, 닿을 때 캐릭터가 나타난다)
@@ -645,7 +651,7 @@ local function play()
 	-- 활공: 옆으로 크게 휘어지는 곡선을 따라 3.4초 동안 천천히 내려온다 (처음엔 조금 빠르게, 땅에 가까워질수록 부드럽게 느려진다)
 	local fromPos = skyPos - Vector3.new(60, 90, 0)
 	local toPos = homePose.Position
-	local descendTime = 3.8
+	local descendTime = 4.8
 	local descendStart = os.clock()
 	local landed = false
 	local fovStart = camera.FieldOfView
