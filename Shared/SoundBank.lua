@@ -17,11 +17,8 @@ local SoundBank = {}
 local SPECS = {
 	-- 무기 종류별 총소리 (Shot 소리를 가공)
 	Shot_Pistol   = { Base = "Shot", Pitch = 1.15, Volume = 1.0, Length = 0.7 },
-	-- (예전: 높은 음 하나만 짧게 "톡톡" -> 연사하면 팝콘 튀기는 소리. 낮은 몸통 소리 + 짧은 갈라짐 + 약한 왜곡을 겹쳐 "드르륵" 묵직한 연사음으로. 잔향은 연사가 뭉개져서 뺐다)
-	-- (화약 "퐁" 하는 가운데 울림이 없다는 의견: 아주 짧은 잔향 + 더 깊은 둥 소리 + 중간 몸통 소리를 40밀리초 안에 더 겹쳤다)
-	Shot_Smg      = { Base = "Shot", CustomLength = 1.0, Pitch = 1.0, Volume = 1.2, Length = 0.42,
-		Fx = { { "distortion", { Level = 0.3 } }, { "eq", { LowGain = 4, MidGain = 2, HighGain = -9 } }, { "reverb", { DecayTime = 0.35, WetLevel = -11 } } },
-		Layers = { { Pitch = 0.75, Volume = 0.85, Delay = 0 }, { Pitch = 1.15, Volume = 0.45, Delay = 0.012 }, { Pitch = 0.5, Volume = 0.7, Delay = 0.018 }, { Pitch = 0.9, Volume = 0.45, Delay = 0.035 } } },
+	-- (SMG 는 AudioBank 의 소리 ID 를 그대로 쓴다: 직접 넣은 소리는 Fx / Layers 가공이 적용되지 않는다. 연사라서 길이는 짧게 끊는다)
+	Shot_Smg      = { Base = "Shot", CustomLength = 0.6, Pitch = 1.0, Volume = 1.2, Length = 0.4 },
 	Shot_Revolver = { Base = "Shot", CustomLength = 1.4, Volume = 0.9, Pitch = 0.82, Length = 1.3, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -4 } } } },
 	Shot_Rifle    = { Base = "Shot", Pitch = 1.0, Volume = 0.9, Length = 0.9, Fx = { { "reverb", { DecayTime = 0.8, WetLevel = -9 } } } },
 	Shot_Shotgun  = { Base = "Shot", CustomLength = 1.2, Pitch = 0.7, Volume = 1.0, Length = 1.0, Fx = { { "distortion", { Level = 0.35 } } },
