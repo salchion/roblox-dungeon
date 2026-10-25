@@ -679,9 +679,23 @@ ERA_IMPACT[10] = function(to, _, n) -- 별 터짐: 세 빛깔 + 흰 고리
 end
 
 -- event = { "S", from, to, size, speed, impact, style, length, color, rainbow, class, era }
+-- 내 캐릭터에서 나가는 투사체는 "지금 내 화면의 총구"에서 출발하게 한다.
+-- (서버가 보낸 출발점은 통신 지연만큼 예전 위치라, 움직이며 쏘면 탄 / 미사일이 내 몸 뒤쪽 허공에서 나가는 것처럼 보였다)
+local function snapToMe(pos, maxDistance)
+	if typeof(pos) ~= "Vector3" then return pos end
+	local character = Players.LocalPlayer.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if not root or (pos - root.Position).Magnitude > (maxDistance or 12) then return pos end
+	local tool = character:FindFirstChild("Weapon")
+	local barrel = tool and tool:FindFirstChild("Barrel")
+	local tip = barrel and barrel:FindFirstChild("Tip")
+	if tip and tip:IsA("Attachment") then return tip.WorldPosition end
+	return root.Position + Vector3.new(0, 3, 0)
+end
+
 local function playShot(event)
 	if activeShots >= MAX_ACTIVE_SHOTS then return end
-	local from, to = event[2], event[3]
+	local from, to = snapToMe(event[2], 10), event[3]
 	local size, speed, impact, eraStyle, length = event[4], event[5], event[6], event[7], event[8]
 	local color, rainbow, class, era = event[9], event[10], event[11], event[12] or 1
 	local vt = event[13] or 1 -- 무기 진행도 (1 ~ 100): 높을수록 탄이 꾸준히 더 화려해진다 (후광 / 꼬리 / 착탄 고리)
@@ -1332,6 +1346,11 @@ local missiles = {}
 local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간, 크기, 모양, 색 }: 날아가 폭발하는 투사체. 모양: icbm(솟았다 급강하) / rocket(꼬리 불꽃 미사일) / blade(회전 표창) / orb(에너지 구체) / 없으면 노란 큰 구
 	local from, target, mid, duration = event[2], event[3], event[4], event[5]
 	local scale = event[6] or 1
+	if scale >= 1 then -- (펫이 쏘는 작은 구슬은 펫에서 나가므로 제외)
+		local snapped = snapToMe(from, 12)
+		if snapped ~= from and typeof(mid) == "Vector3" then mid += (snapped - from) * 0.5 end -- 곡선 중간점도 같이 옮긴다
+		from = snapped
+	end
 	local style = event[7]
 	local tint = event[8] -- (선택) 불꽃 / 폭발 색
 	if tint then tint = tint:Lerp(Color3.fromRGB(120, 125, 135), 0.14) end -- 너무 쨍하지 않게
