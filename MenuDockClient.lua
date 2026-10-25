@@ -14,7 +14,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-local SIZE, GAP = 74, 8
+local SIZE, GAP = 66, 6 -- (미션 카드 / 던전 상태창과 겹치지 않게 줄였다: 5줄 높이 = 5 * 72 - 6)
 local TOP_Y = 252 -- HUD 카드(60 ~ 236) 바로 아래
 
 -- 색은 진하지만 채도를 낮춰 눈이 편하게 (위쪽이 조금 밝은 그라데이션)
@@ -134,19 +134,19 @@ local function build(index, def)
 
 	local icon = Instance.new("TextLabel")
 	icon.BackgroundTransparency = 1
-	icon.Size = UDim2.new(1, 0, 0, 44)
+	icon.Size = UDim2.new(1, 0, 0, 40)
 	icon.Position = UDim2.new(0, 0, 0, 4)
 	icon.Text = def.Icon
-	icon.TextSize = 32
+	icon.TextSize = 30
 	icon.Font = Enum.Font.GothamBold
 	icon.Parent = button
 
 	local label = Instance.new("TextLabel")
 	label.BackgroundTransparency = 1
 	label.Size = UDim2.new(1, 0, 0, 20)
-	label.Position = UDim2.new(0, 0, 1, -23)
+	label.Position = UDim2.new(0, 0, 1, -21)
 	label.Text = def.Text
-	label.TextSize = 14
+	label.TextSize = 13
 	label.Font = Enum.Font.GothamBlack
 	label.TextColor3 = Color3.fromRGB(255, 255, 255)
 	label.TextStrokeColor3 = Color3.fromRGB(20, 22, 36)

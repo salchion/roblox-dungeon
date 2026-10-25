@@ -26,7 +26,7 @@ local function lay(dy) -- dy = 미션 쌓기 맨 위에서 아래로 내려온 �
 		if pg:GetAttribute("UiNarrow") then return UDim2.new(0, 12, 0, y) end
 		return UDim2.new(0.5, -130, 0, y)
 	end
-	return UDim2.new(0, 16, 0, 288 + dy)
+	return UDim2.new(0, 172, 0, 288 + dy) -- (x 172: 왼쪽 메뉴 버튼 줄(MenuDockClient, x 16~154) 오른쪽에 둔다)
 end
 
 local function addCorner(instance, radius)

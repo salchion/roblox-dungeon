@@ -46,7 +46,7 @@ local function label(props, parent)
 end
 
 -- 미션 카드: 화면 왼쪽(다른 패널들과 같은 줄)에 계속 떠 있는 섹션 카드 (목표 / 진행 막대가 늘 같은 자리에 보인다)
-local CARD_POSITION = UDim2.new(0, 16, 0, 288)
+local CARD_POSITION = UDim2.new(0, 172, 0, 288) -- (x 172: 왼쪽 메뉴 버튼 줄(MenuDockClient) 오른쪽)
 -- 작은 화면(MobileLayoutClient 가 PlayerGui 의 Ui* 속성으로 알려 준다)에서는 위쪽 가운데(세로 화면은 왼쪽 버튼 줄 아래)에 놓는다
 local pgui = gui.Parent
 local function compact() return pgui:GetAttribute("UiCompact") == true end
@@ -56,7 +56,7 @@ local function missionPos(dy)
 		if pgui:GetAttribute("UiNarrow") then return UDim2.new(0, 12, 0, y) end
 		return UDim2.new(0.5, -130, 0, y)
 	end
-	return UDim2.new(0, 16, 0, 288 + dy)
+	return UDim2.new(0, 172, 0, 288 + dy)
 end
 local CARD_SIZE = UDim2.new(0, 260, 0, 116)
 local cardH, scriptStart = 116, os.clock() -- 카드 높이: 마을이거나 20초가 지나면 80 (한 줄 제목 + 한 줄 목표)
