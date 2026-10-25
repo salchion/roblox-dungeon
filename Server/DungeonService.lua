@@ -1619,7 +1619,7 @@ local function dropMeteor(run, player, position, radius, damage, level)
 	task.delay(0.9, function()
 		if run.Destroyed or run.Phase == "Ended" then return end
 		sfxAt(run, position, "Aug_MeteorHit", nil, 0.2) -- 착탄 고리 / 구덩이 / 파편은 클라이언트 "E" 가 낙하 끝에 그린다
-		for _, entry in ipairs(nearestMonsters(run, position, radius, 12)) do
+		for _, entry in ipairs(nearestMonsters(run, position + Vector3.new(0, 4, 0), radius + 4, 12)) do -- (바닥 위 몸통 중심까지 닿게 살짝 위에서 잰다)
 			hitMonster(run, player, entry, damage * (isBossData(entry.Data) and 1.5 or 1), nil, Color3.fromRGB(255, 190, 90), attr) -- 만능형: 보스에게는 한 방이 더 크다
 		end
 		if synergy(player, "StormEye") then -- 폭풍의 눈: 유성이 떨어질 때 번개가 추가로
@@ -1884,7 +1884,7 @@ local function startAugLoop(run)
 				-- 유성우: 적이 가장 많이 모인 곳에
 				local meteor = augLv(run, member, "AugMeteor")
 				if root and meteor > 0 and now >= (nextMeteor[member] or 0) then
-					nextMeteor[member] = now + math.max(3, 8.5 - 1.5 * meteor)
+					nextMeteor[member] = now + math.max(2.5, 7 - 1.5 * meteor) -- (예전 8.5 - 1.5단계: 3단계 4초에 한 번이라 체감이 약했다)
 					local candidates = nearestMonsters(run, root.Position, 90, 18)
 					local best, bestCount = nil, 0
 					for _, a in ipairs(candidates) do
@@ -1902,7 +1902,7 @@ local function startAugLoop(run)
 						local p = best.Part.Position
 						local meteorRadius = (14 + 2 * meteor) * (meteor >= 6 and 1.2 or 1)
 						local meteorDamage = augDamage(member) * (2.6 + 1.0 * meteor)
-						dropMeteor(run, member, Vector3.new(p.X, root.Position.Y - 2.5, p.Z), meteorRadius, meteorDamage, meteor)
+						dropMeteor(run, member, Vector3.new(p.X, p.Y - best.Part.Size.Y / 2, p.Z), meteorRadius, meteorDamage, meteor) -- (예전: 내 발 높이에 떨어져서, 높낮이가 다른 필드에서는 적에게 안 닿았다)
 						-- 4셋부터 유성이 연달아 더 떨어진다 (4셋 2발 / 5셋 3발 / 6셋 4발, 서로 다른 곳에)
 						local extra = (meteor >= 6 and 3 or (meteor >= 5 and 2 or (meteor >= 4 and 1 or 0))) + (Config.AugWeaponMatch(member, "AugMeteor") and 1 or 0) -- 궁합 무기 +1
 						local spots = { p }
@@ -1915,10 +1915,10 @@ local function startAugLoop(run)
 							if not tooClose then
 								table.insert(spots, other.Part.Position)
 								extra -= 1
-								local spotPosition = other.Part.Position
+								local spotPosition = other.Part.Position - Vector3.new(0, other.Part.Size.Y / 2, 0)
 								task.delay(0.5 * (#spots - 1), function()
 									if run.Destroyed or run.Phase == "Ended" then return end
-									dropMeteor(run, member, Vector3.new(spotPosition.X, root.Position.Y - 2.5, spotPosition.Z), meteorRadius, meteorDamage, meteor)
+									dropMeteor(run, member, spotPosition, meteorRadius, meteorDamage, meteor)
 								end)
 							end
 						end

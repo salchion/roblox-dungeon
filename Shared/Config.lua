@@ -357,7 +357,7 @@ local AUG_LEVEL = {
 	AugStorm = function(l) return string.format("every %.1fs lightning hits %d enemies", math.max(1.2, 3.4 - 0.5 * l), 2 + l), (1.4 + 0.45 * l) * (l >= 5 and 1.2 or 1) end,
 	AugFlame = function(l) return string.format("each hit adds a burn stack (max %d, lasts 4s); every 0.5s per stack", 4 + l + (l >= 5 and 3 or 0)), 0.05 + 0.025 * l end,
 	AugExecute = function(l) return string.format("enemies below %d%% HP are executed · bosses take up to +%d%% damage (all your damage) as their HP drops", math.floor(Config.AugExecuteThreshold(l) * 100 + 0.5), math.floor(0.15 * l * 100 + 0.5)), nil end,
-	AugMeteor = function(l) return string.format("every %.1fs a meteor, radius %d (x1.5 on bosses)", math.max(3, 8.5 - 1.5 * l), 14 + 2 * l), 2.6 + 1.0 * l end,
+	AugMeteor = function(l) return string.format("every %.1fs a meteor, radius %d (x1.5 on bosses)", math.max(2.5, 7 - 1.5 * l), 14 + 2 * l), 2.6 + 1.0 * l end,
 	AugPulse = function(l) return string.format("every %.1fs shock shots at %d enemies, burst radius %d", math.max(2.2, 4.8 - 0.8 * l), 2 + math.floor(l / 2) + (l >= 6 and 1 or 0), 10 + 2 * l), 0.9 + 0.4 * l end,
 }
 -- 지금 내 공격력으로 한 번 맞힐 때의 대략적인 피해 (치명타 / 콤보 제외, 클라이언트에서 계산)
