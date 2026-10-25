@@ -215,6 +215,8 @@ end
 Remotes.Tutorial.OnServerEvent:Connect(function(player, action)
 	if action == "Dashed" then
 		dashedAt[player] = os.clock()
+	elseif action == "IntroSeen" then
+		Journey.Mark(player, "IntroSeen") -- 오프닝을 끝까지 한 번 봤다: 다음부터는 건너뛸 수 있다
 	elseif action == "SetsOpened" then
 		Journey.Mark(player, "SetsOpened") -- 세트 효과 창을 한 번 열어 봤다: 버튼 반짝임을 멈춘다
 	end

@@ -1,7 +1,7 @@
 -- IntroClient (StarterPlayer > StarterPlayerScripts 안의 LocalScript, 이름: IntroClient)
 -- 처음 접속(레벨 1 / 경험치 0 / 무기 +0 / 튜토리얼 진행 중)한 사람에게만 나오는 약 15초짜리 오프닝:
 --   마을 문 위에서 필드를 따라 맨 끝의 보스까지 빠르게 날아가고 -> 보스가 눈을 뜨고 에너지를 모아 쏘면 화면이 와장창 깨지고 -> 카메라가 뒤로 빠지며 하늘로 솟구쳐 게임 이름이 뜨고 -> 스폰으로 확 떨어지며 내 캐릭터가 나타난다.
---   * 화면을 누르거나 아무 키나 누르면 바로 건너뛴다. 끝나면 카메라는 원래대로 돌아온다.
+--   * 처음 한 번은 건너뛸 수 없다(끝까지 봐야 한다). 한 번 끝까지 본 뒤에는 화면을 누르거나 아무 키나 누르면 바로 건너뛴다. 끝나면 카메라는 원래대로 돌아온다.
 --   * 오프닝이 도는 동안 player Attribute "IntroPlaying" 이 켜져 있어서 TutorialClient 가 미션 카드를 미룬다.
 --   * 다른 화면(HUD)은 잠깐 꺼 두었다가 끝나면 원래 켜져 있던 것만 다시 켠다.
 
@@ -241,6 +241,7 @@ local function play()
 		if connection then connection:Disconnect() end
 		guardConnection:Disconnect()
 		if introRemote then pcall(function() introRemote:FireServer("End") end) end -- 불러오기 기준점을 다시 내 캐릭터로
+		pcall(function() require(ReplicatedStorage:WaitForChild("Remotes")).Tutorial:FireServer("IntroSeen") end) -- 끝까지 봤다: 다음부터는 건너뛸 수 있다
 		pcall(function()
 			TweenService:Create(Lighting, TweenInfo.new(1.0), { ExposureCompensation = saved.Exposure }):Play()
 			if atmosphere and saved.Density then TweenService:Create(atmosphere, TweenInfo.new(1.0), { Density = saved.Density, Haze = saved.Haze }):Play() end
@@ -269,9 +270,10 @@ local function play()
 		task.delay(0.1, function() gui:Destroy() end)
 	end
 
-	-- 건너뛰기 (시작하고 0.7초 뒤부터)
+	-- 건너뛰기 (시작하고 0.7초 뒤부터). 처음 한 번은 끝까지 봐야 한다(마구 눌러서 넘기는 사람이 많아서): 끝까지 본 기록이 있어야 건너뛸 수 있다
 	local startedAt = os.clock()
 	connection = UserInputService.InputBegan:Connect(function(input)
+		if player:GetAttribute("HintDone_IntroSeen") ~= true then return end
 		if os.clock() - startedAt < 0.7 then return end
 		local t = input.UserInputType
 		if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch or t == Enum.UserInputType.Keyboard then
@@ -368,7 +370,9 @@ local function play()
 			"Tip · Mythic gear can carry a Unique effect. Dungeons are the best place to find them.",
 		}
 		local tipLabel = pageText({ Size = UDim2.new(1, -60, 0, 20), Position = UDim2.new(0.5, 0, 0.82, 0), TextSize = 13, Font = Enum.Font.GothamMedium, TextColor3 = Color3.fromRGB(190, 182, 160), Text = tips[math.random(#tips)] })
-		pageText({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0.5, 0, 0.95, 0), TextSize = 11, Font = Enum.Font.GothamMedium, TextColor3 = Color3.fromRGB(110, 106, 122), Text = "Tap or press any key to skip" })
+		if player:GetAttribute("HintDone_IntroSeen") == true then
+			pageText({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0.5, 0, 0.95, 0), TextSize = 11, Font = Enum.Font.GothamMedium, TextColor3 = Color3.fromRGB(110, 106, 122), Text = "Tap or press any key to skip" })
+		end
 
 		local pageStart = os.clock()
 		local ready = false
