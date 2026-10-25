@@ -22,36 +22,65 @@ local function attr(name) return player:GetAttribute(name) end
 local function gold() return attr("Gold") or 0 end
 
 -- 빨간 점 조건 (전부 내 Attribute 로만 계산: 서버 호출 없음). 할 일이 생기면 true
-local function dotGear() return attr("DotGear") == true end
-local function dotWeapon()
+-- 골드로 하는 일(무기 강화 / 스킬 / 세트 / 펫)은 재화가 하나라서, 하나를 쓰면 다른 점이 한꺼번에 사라지면 어색하다.
+-- 그래서 "우선순위대로 골드를 차례로 나눠 보고, 모두 함께 살 수 있는 것에만" 점을 켠다: 무기 -> 세트 -> 스킬 -> 펫.
+-- (하나를 사면 그 점만 꺼지고, 나머지는 남은 골드로도 살 수 있을 때만 남는다)
+local function weaponCost()
 	local level = attr("WeaponLevel") or 0
+	if attr("DataReady") ~= true or level >= Config.Weapon.MaxLevel then return nil end
 	local ok, cost = pcall(Config.GetEnhanceCost, level)
-	return attr("DataReady") == true and ok and gold() >= cost and level < Config.Weapon.MaxLevel
+	return ok and cost or nil
 end
-local function dotGrowth()
-	if attr("GrowthNew") == true then return true end
-	for _, key in ipairs(Config.Skills.UpgradeOrder) do -- 스킬 강화에 쓸 골드가 모였나
+local function skillCost()
+	local best
+	for _, key in ipairs(Config.Skills.UpgradeOrder) do
 		local level = math.max(1, attr("SkillLv_" .. key) or 1)
-		if level < Config.SkillUpgrade.MaxLevel and gold() >= Config.GetSkillUpgradeCost(level) then return true end
+		if level < Config.SkillUpgrade.MaxLevel then
+			local cost = Config.GetSkillUpgradeCost(level)
+			if not best or cost < best then best = cost end
+		end
 	end
-	return false
+	return best
 end
-local function dotQuest() return attr("DotQuest") == true end
-local function dotPet()
-	if attr("DataReady") ~= true then return false end
-	local level = attr("PetLevel") or 0
-	if level <= 0 then return gold() >= Config.Pet.UnlockCost end
-	return level < Config.Pet.MaxLevel and gold() >= Config.GetPetLevelCost(level)
-end
-local function dotSets() -- 군주를 쓰러뜨려 열린 세트 효과 중 골드로 올릴 수 있는 것
+local function setsCost() -- 군주를 쓰러뜨려 열린 세트 효과 중 가장 싼 강화
+	local best
 	for zone = 1, Config.Field.ZoneCount do
 		if attr("AugOpenZ_" .. zone) == true then
 			local level = attr("AugLvZ_" .. zone) or 0
-			if level < 3 and gold() >= Config.Sets.AugCost(zone, level + 1) then return true end
+			if level < 3 then
+				local cost = Config.Sets.AugCost(zone, level + 1)
+				if not best or cost < best then best = cost end
+			end
 		end
 	end
-	return false
+	return best
 end
+local function petCost()
+	if attr("DataReady") ~= true then return nil end
+	local level = attr("PetLevel") or 0
+	if level <= 0 then return Config.Pet.UnlockCost end
+	return level < Config.Pet.MaxLevel and Config.GetPetLevelCost(level) or nil
+end
+local GOLD_ORDER = { { "Weapon", weaponCost }, { "Sets", setsCost }, { "Growth", skillCost }, { "Pets", petCost } }
+local goldDots = {}
+local function computeGoldDots()
+	local budget = gold()
+	for _, entry in ipairs(GOLD_ORDER) do
+		local cost = entry[2]()
+		if cost and cost <= budget then
+			goldDots[entry[1]] = true
+			budget -= cost
+		else
+			goldDots[entry[1]] = false
+		end
+	end
+end
+local function dotGear() return attr("DotGear") == true end
+local function dotQuest() return attr("DotQuest") == true end
+local function dotWeapon() return goldDots.Weapon == true end
+local function dotGrowth() return attr("GrowthNew") == true or goldDots.Growth == true end
+local function dotPet() return goldDots.Pets == true end
+local function dotSets() return goldDots.Sets == true end
 
 local BUTTONS = {
 	{ Icon = "🎒", Text = "Gear",     Color = Color3.fromRGB(70, 110, 190), Tab = "Character:Gear", Dot = dotGear },
@@ -176,6 +205,7 @@ for index, def in ipairs(BUTTONS) do build(index, def) end
 
 -- 할 일이 생겼는지 0.5초마다 확인해서 빨간 점을 켜고 끈다 (골드는 자주 바뀌어서 이벤트 대신 주기 확인)
 local function refreshDots()
+	computeGoldDots()
 	for def, dot in pairs(dots) do
 		local ok, on = pcall(function() return def.Dot ~= nil and def.Dot() end)
 		dot.Visible = ok and on == true
