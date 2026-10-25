@@ -213,6 +213,7 @@ end
 
 local function isRedundant(state, item)
 	if item.Unique or isEquipped(state, item.Id) then return false end
+	if item.Set and item.Rarity >= #G.RarityNames then return false end -- 신화 세트(최종 파밍)는 자동 정리가 절대 건드리지 않는다 (같은 세트의 더 좋은 신화가 있어도: 직접 분해만)
 	for _, other in pairs(state.Items) do
 		if other ~= item and other.Slot == item.Slot then
 			if item.Set then
@@ -256,10 +257,18 @@ local function makeRoomFor(player, state, incoming)
 			if quality < worstQuality then worst, worstQuality = item, quality end
 		end
 	end
+	if not worst then -- 일반 장비가 없으면: 들어오는 것보다 낮은 등급의 세트 / 유니크 중 가장 약한 것 (신화 세트는 끝까지 지킨다)
+		for _, item in pairs(state.Items) do
+			if item.Rarity < incoming.Rarity and not isEquipped(state, item.Id) and not (item.Set and item.Rarity >= #G.RarityNames) then
+				local quality = rawQuality(item)
+				if quality < worstQuality then worst, worstQuality = item, quality end
+			end
+		end
+	end
 	if not worst then return false end
 	state.Items[worst.Id] = nil
 	local essence, gold = giveScrap(player, state, worst)
-	notify(player, string.format("🎒 Bag full: dismantled a weaker plain item to keep your %s gear (Essence +%d, %d G)", incoming.Set and "set" or "unique", essence, gold))
+	notify(player, string.format("🎒 Bag full: dismantled a weaker item to keep your new %s gear (Essence +%d, %d G)", incoming.Set and "set" or "unique", essence, gold))
 	return true
 end
 
