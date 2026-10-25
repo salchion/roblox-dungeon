@@ -200,6 +200,24 @@ function Data.Forget(player)
 	wiped[player] = nil
 end
 
+-- 운영자 전용: 접속하지 않은 유저(UserId)의 저장을 지운다. 돌려주는 값: 성공 여부, 이유("none" = 저장이 없었다 / "online" = 지금 다른 서버에서 접속 중이라 지우지 않았다 / "error")
+-- 접속 중인 서버가 잠금을 쥐고 계속 저장하기 때문에, 최근에 잠금이 갱신된 저장은 건드리지 않는다 (지워도 곧 되살아난다). 잠금이 풀리고 2분쯤 지나면 지울 수 있다.
+function Data.WipeUserId(userId)
+	if not store or typeof(userId) ~= "number" then return false, "error" end
+	local key = "u_" .. userId
+	local okRead, old = pcall(function() return store:GetAsync(key) end)
+	if not okRead then return false, "error" end
+	if old == nil then return true, "none" end
+	if lockedByOther(old) then return false, "online" end
+	local ok = false
+	for attempt = 1, 4 do
+		ok = pcall(function() store:RemoveAsync(key) end)
+		if ok then break end
+		task.wait(attempt)
+	end
+	return ok, ok and "wiped" or "error"
+end
+
 -- 운영자 전용(AdminService 가 부른다): 이 유저의 저장을 통째로 지운다. 성공하면 true. 지운 뒤에는 저장하지 않으므로 호출한 쪽이 바로 내보내야 한다.
 function Data.Wipe(player)
 	if not store then return false end

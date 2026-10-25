@@ -14,7 +14,7 @@ local player = Players.LocalPlayer
 local function start()
 	local gui = create("ScreenGui", { Name = "AdminGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 90 }, player:WaitForChild("PlayerGui"))
 	local panel = makePanel({
-		Size = UDim2.new(0, 640, 0, 656), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+		Size = UDim2.new(0, 640, 0, 708), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
 		BackgroundColor3 = Color3.fromRGB(22, 24, 38), BackgroundTransparency = 0.02, Visible = false, ZIndex = 10,
 	}, gui)
 	local function text(props) props.ZIndex = 11 props.TextXAlignment = props.TextXAlignment or Enum.TextXAlignment.Left return makeLabel(props, panel) end
@@ -132,14 +132,40 @@ local function start()
 	end)
 	otherCancel = button({ Size = UDim2.new(0, 100, 0, 36), Position = UDim2.new(0, 522, 0, 536), Text = "Cancel", TextSize = 13, BackgroundColor3 = Color3.fromRGB(54, 58, 82), Visible = false }, otherReset)
 
-	text({ Size = UDim2.new(0, 230, 0, 22), Position = UDim2.new(0, 16, 0, 586), Text = "Hall of Fame: remove an entry (all servers)", TextSize = 12, TextColor3 = Color3.fromRGB(190, 195, 220) })
+	-- 4-3) 접속하지 않은 유저(UserId)의 저장 초기화: 두 단계. 지금 다른 서버에서 접속 중이면 지워지지 않는다고 알려 준다.
+	local userBox = box({ Size = UDim2.new(0, 190, 0, 34), Position = UDim2.new(0, 16, 0, 580), PlaceholderText = "UserId (offline too)", Text = "" })
+	local userArmed = nil
+	local userConfirm, userCancel
+	local function userDisarm()
+		userConfirm.Visible, userCancel.Visible = false, false
+		userArmed = nil
+	end
+	button({ Size = UDim2.new(0, 190, 0, 34), Position = UDim2.new(0, 214, 0, 580), Text = "Reset by UserId...", TextSize = 13, BackgroundColor3 = Color3.fromRGB(150, 60, 60) }, function()
+		local id = tonumber(userBox.Text)
+		if not id then return end
+		Remotes.Admin:FireServer("ResetUserArm", id)
+	end)
+	userConfirm = button({ Size = UDim2.new(0, 150, 0, 34), Position = UDim2.new(0, 412, 0, 580), Text = "", TextSize = 12, BackgroundColor3 = Color3.fromRGB(200, 40, 40), Visible = false }, function()
+		if userArmed then Remotes.Admin:FireServer("ResetUserConfirm", userArmed) end
+		userDisarm()
+	end)
+	userCancel = button({ Size = UDim2.new(0, 60, 0, 34), Position = UDim2.new(0, 566, 0, 580), Text = "Cancel", TextSize = 12, BackgroundColor3 = Color3.fromRGB(54, 58, 82), Visible = false }, userDisarm)
+
+	text({ Size = UDim2.new(0, 230, 0, 22), Position = UDim2.new(0, 16, 0, 638), Text = "Hall of Fame: remove an entry (all servers)", TextSize = 12, TextColor3 = Color3.fromRGB(190, 195, 220) })
 	for rank = 1, 3 do
-		button({ Size = UDim2.new(0, 120, 0, 30), Position = UDim2.new(0, 16 + (rank - 1) * 130, 0, 612), Text = "Remove #" .. rank, TextSize = 12, BackgroundColor3 = Color3.fromRGB(110, 70, 70) }, function()
+		button({ Size = UDim2.new(0, 120, 0, 30), Position = UDim2.new(0, 16 + (rank - 1) * 130, 0, 664), Text = "Remove #" .. rank, TextSize = 12, BackgroundColor3 = Color3.fromRGB(110, 70, 70) }, function()
 			Remotes.Admin:FireServer("HallRemove", rank)
 		end)
 	end
 
-	Remotes.Admin.OnClientEvent:Connect(function(action, data)
+	Remotes.Admin.OnClientEvent:Connect(function(action, data, extra)
+		if action == "ResetUserArmed" then
+			userArmed = data
+			userConfirm.Text = "⚠ Wipe " .. tostring(extra or data)
+			userConfirm.Visible, userCancel.Visible = true, true
+			task.delay(30, function() if userArmed == data then userDisarm() end end)
+			return
+		end
 		if action == "ResetArmed" then
 			confirmButton.Visible, cancelButton.Visible = true, true
 			resetNote.Text = "Are you sure? This cannot be undone. Press the red button within 30 seconds."

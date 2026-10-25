@@ -67,6 +67,7 @@ for _, player in ipairs(Players:GetPlayers()) do
 end
 
 local armedAt = setmetatable({}, { __mode = "k" }) -- [player] = 저장 초기화 확인 단계를 연 시각
+local armedUser = setmetatable({}, { __mode = "k" }) -- [admin] = { UserId, At } (접속하지 않은 유저)
 local armedOther = setmetatable({}, { __mode = "k" }) -- [admin] = { UserId, At }
 local lastAction = setmetatable({}, { __mode = "k" })
 
@@ -169,6 +170,30 @@ Remotes.Admin.OnServerEvent:Connect(function(player, action, a, b, c)
 		if data and data.Wipe and data.Wipe(target) then
 			note(player, "Reset " .. target.Name .. "'s save.")
 			target:Kick("Your save was reset by an admin. Rejoin to start fresh.")
+		else
+			note(player, "Reset failed (DataStore unavailable). Nothing was changed.")
+		end
+	elseif action == "ResetUserArm" then -- 접속하지 않은 유저(UserId)의 저장 초기화: 같은 두 단계
+		if typeof(a) ~= "number" or a ~= a or a < 1 or a % 1 ~= 0 then note(player, "Enter a valid UserId (a number).") return end
+		armedUser[player] = { UserId = a, At = now }
+		local okName, name = pcall(function() return Players:GetNameFromUserIdAsync(a) end)
+		Remotes.Admin:FireClient(player, "ResetUserArmed", a, okName and name or "?")
+	elseif action == "ResetUserConfirm" then
+		local armed = armedUser[player]
+		armedUser[player] = nil
+		if not armed or armed.UserId ~= a or now - armed.At > 30 then note(player, "Reset expired. Start again.") return end
+		local target = Players:GetPlayerByUserId(a)
+		if target then note(player, "That player is in this server: use \"Reset selected player's save\" above.") return end
+		local data = module("DataService")
+		log(player, string.format("RESET offline save of %d", a))
+		local ok, why = false, "error"
+		if data and data.WipeUserId then ok, why = data.WipeUserId(a) end
+		if ok and why == "none" then
+			note(player, string.format("UserId %d has no saved data.", a))
+		elseif ok then
+			note(player, string.format("Reset the saved data of UserId %d. They start fresh next time they join.", a))
+		elseif why == "online" then
+			note(player, "That player seems to be online in another server right now, so nothing was changed. Try again in a few minutes after they leave.")
 		else
 			note(player, "Reset failed (DataStore unavailable). Nothing was changed.")
 		end
