@@ -1349,6 +1349,22 @@ local function doomWaveInner(player, zone, center, real)
 			notify(player, string.format("🏆 You defeated the Final Lord!  +%d gold  +%d tickets", FL.RewardGold, FL.RewardTickets))
 			player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + FL.RewardGold)
 			player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + FL.RewardTickets)
+			-- 주간 보상: 이번 주 첫 처치면 "세트 + 유니크 확정 신화" 1개 (매주 다시 도전할 이유)
+			pcall(function()
+				local Meta = require(script.Parent:WaitForChild("MetaService"))
+				local Inventory = require(script.Parent:WaitForChild("InventoryService"))
+				local rift = Meta.GetRift(player)
+				local week = math.floor(os.time() / 604800)
+				if rift and (rift.LordWeek or 0) ~= week then
+					rift.LordWeek = week
+					local item = Inventory.GrantMythic(player, { Unique = true, Set = true })
+					local def = item.Unique and Config.Uniques[item.Unique]
+					local setDef = item.Set and Config.Sets[item.Set]
+					notify(player, string.format("👑 Weekly Final Lord reward: Mythic %s · %s Set · ✦ %s!", item.Slot, setDef and setDef.Name or "?", def and def.Name or "?"))
+				else
+					notify(player, "👑 Weekly Final Lord reward already claimed this week (resets Thursday).")
+				end
+			end)
 			Remotes.Notify:FireAllClients(string.format("📢 %s defeated the Final Lord!", player.DisplayName))
 			task.wait(4.5)
 			-- 이어지는 연출: 군주의 마지막 말 -> 하늘에 보랏빛 균열이 열린다 -> 마을로 돌아가 보스러쉬 포탈로 안내

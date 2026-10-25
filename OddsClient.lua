@@ -74,7 +74,7 @@ local function gachaText()
 		"<b>Gear slot</b> (total 100.00%)",
 		table.concat(slots, "   ·   "),
 		"",
-		string.format("<b>Mythic gear</b> has a %s chance to carry a Unique effect (one of %d).", Odds.Format(g.UniqueChance), #Config.Uniques.Order),
+		string.format("Gacha gear never carries a Unique effect. <b>Unique effects</b> (one of %d) come from Mythic gear in dungeon chests, the weekly Boss Rush chest and the weekly Final Lord reward.", #Config.Uniques.Order),
 		"",
 		"Bonus stats on every piece roll randomly within a range that depends on its rarity (shown on the item).",
 		"Every result is useful: gear you can't improve on is converted into Gold and Essence.",
@@ -85,7 +85,7 @@ end
 local function chestText()
 	local luck = Odds.LuckOf(player)
 	local lines = {
-		"<b>🏰 Dungeon boss chest — " .. Config.Loot.DungeonChestCount .. " gear pieces per chest</b>",
+		string.format("<b>🏰 Dungeon boss chest — %d gear pieces, +1 every %d depth (max %d)</b>", Config.Loot.DungeonChestCount, Config.Loot.ChestPerDepth or 10, Config.Loot.ChestMax or 6),
 		string.format("Your Luck right now: <b>%s</b>  (gear %s%s)", luckText(luck), luckText(player:GetAttribute("GearLuck") or 0),
 			(player:GetAttribute("LuckBoostUntil") or 0) > os.time() and (" + Luck Booster " .. luckText(Config.Shop.LuckBoostBonus)) or ""),
 		"Luck and the boss bonus multiply the weights of Epic and above; the percentages below already include them.",
@@ -118,7 +118,7 @@ local function luckBoosterText()
 	local lines = {
 		"<b>🍀 Luck Booster — effect on gear drop odds</b>",
 		string.format("Your Luck without the booster: <b>%s</b> · with the booster: <b>%s</b>%s", luckText(base), luckText(boosted), active and "   <font color='#78ff8c'>(active now)</font>" or ""),
-		"Luck multiplies the weights of Epic, Legendary and Mythic drops (not Common / Rare). Elite monsters add x" .. Config.Loot.EliteBonus .. ", bosses x" .. Config.Loot.BossBonus .. ".",
+		"Luck multiplies the weights of Epic, Legendary and Mythic drops (not Common / Rare). Elite monsters add x" .. Config.Loot.EliteBonus .. ", field lords x" .. Config.Loot.BossBonus .. ", dungeon chests x" .. (Config.Loot.DungeonBossBonus or Config.Loot.BossBonus) .. ". Field drops never carry Unique effects.",
 		"Odds below are for a regular monster drop, per zone. These tables already update with your current Luck.",
 		"",
 		"<b>Without the booster</b>",

@@ -49,7 +49,9 @@ end
 local function kindMultiplier(kind)
 	if kind == "Elite" then
 		return L.EliteBonus
-	elseif kind == "Boss" or kind == "Event" or kind == "DungeonBoss" then
+	elseif kind == "DungeonBoss" then
+		return L.DungeonBossBonus or L.BossBonus
+	elseif kind == "Boss" or kind == "Event" then
 		return L.BossBonus
 	end
 	return 1
@@ -78,7 +80,7 @@ function Loot.DropFor(player, position, kind, zoneIndex)
 	drops[player] = drops[player] or {}
 	for _ = 1, count do
 		if math.random() < chance then
-			local item = Loot.RollItem(player, row, kind, zoneIndex) -- 필드 드랍: 그 구역 전용 세트가 섞여 나온다
+			local item = Loot.RollItem(player, row, kind, zoneIndex, nil, 0) -- 필드 드랍: 세트가 섞여 나온다 / 유니크는 없다 (유니크는 던전 쪽 보상)
 			-- 세트 장비가 붙으면, 어느 구역 세트인지는 "1구역 ~ 내가 클리어한 가장 깊은 구역" 중에서 무작위 (등급은 지금 사냥하는 구역 기준: 깊을수록 신화가 잘 나온다)
 			-- -> 앞 구역 세트를 모으려고 앞 구역으로 돌아갈 필요가 없다. 가장 깊은 곳에서 사냥하는 게 언제나 이득
 			if item.Set then
@@ -146,7 +148,8 @@ function Loot.DungeonChest(player, typeKey, difficultyKey, count)
 	local uniqueChance = depth and Config.Uniques.ChanceAtDepth(depth) or nil
 
 	local lines = {}
-	for _ = 1, count or L.DungeonChestCount do
+	count = count or (depth and math.min(L.ChestMax or 6, L.DungeonChestCount + math.floor(depth / (L.ChestPerDepth or 10)))) or L.DungeonChestCount -- 깊을수록 상자가 늘어난다
+	for _ = 1, count do
 		local item = Loot.RollItem(player, row, "DungeonBoss", nil, extra, uniqueChance)
 		if depth then -- 구역 세트 장비 (확률 / 구역은 Odds.ChestSet 과 같은 규칙)
 			local chance, zones = Odds.ChestSet(difficultyKey, player:GetAttribute("ClearedZone") or 0)

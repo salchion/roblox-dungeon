@@ -947,7 +947,7 @@ function Gear.Roll(player, forced)
 	end
 
 	local slot = G.Slots[math.random(#G.Slots)]
-	local item = Inventory.NewItem(slot.Key, rarity, 0)
+	local item = Inventory.NewItem(slot.Key, rarity, 0, nil, 0) -- (뽑기 장비에는 유니크가 붙지 않는다: 유니크는 던전 쪽 보상)
 	local status, _, essence, gold = Inventory.Add(player, item)
 
 	local name = string.format("[%s] %s", G.RarityNames[rarity], slot.Names[rarity])

@@ -357,6 +357,14 @@ local function buildInventoryTab(state)
 				Remotes.Inventory:FireServer("Scrap", selected.Id)
 			end)
 		end
+		if selected.Unique then -- 유니크 재굴림 (티켓)
+			makeButton({
+				Size = UDim2.new(0, 84, 0, 30), Position = UDim2.new(1, -220, 0, bandH + 6),
+				Text = string.format("✦ 🎫%d", Config.Uniques.RerollTickets or 30), TextSize = 11, BackgroundColor3 = Color3.fromRGB(150, 90, 200),
+			}, detail, function()
+				Remotes.Inventory:FireServer("RerollUnique", selected.Id)
+			end)
+		end
 		if #selected.Affixes > 0 then
 			makeButton({
 				Size = UDim2.new(0, 120, 0, 30), Position = UDim2.new(1, -130, 0, bandH + 6),

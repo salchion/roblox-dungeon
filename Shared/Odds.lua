@@ -76,7 +76,7 @@ function Odds.Gacha()
 	for index, slot in ipairs(Config.Gear.Slots) do
 		slots[index] = { Name = slot.Name, Pct = slotPct[index] }
 	end
-	return { Rarities = rarities, Slots = slots, UniqueChance = Config.Uniques.Chance * 100 }
+	return { Rarities = rarities, Slots = slots, UniqueChance = 0 } -- (뽑기 장비에는 유니크가 붙지 않는다)
 end
 
 -- 던전 보스 상자 한 개: 던전 종류 / 깊이("D12") 또는 옛 난이도("Normal") -> 등급 표의 줄(소수 가능)과 높은 등급 추가 배율
@@ -101,7 +101,7 @@ end
 
 function Odds.Chest(typeKey, diffKey, luck)
 	local row, extra = Odds.ChestParams(typeKey, diffKey)
-	local pct = Odds.Percentages(Odds.Weights(row, luck, Config.Loot.BossBonus * extra))
+	local pct = Odds.Percentages(Odds.Weights(row, luck, (Config.Loot.DungeonBossBonus or Config.Loot.BossBonus) * extra))
 	local out = {}
 	for index, p in ipairs(pct) do
 		out[index] = { Name = Config.Gear.RarityNames[index], Color = Config.Gear.RarityColors[index], Pct = p }

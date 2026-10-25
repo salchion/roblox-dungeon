@@ -475,6 +475,42 @@ function Inventory.Reroll(player, id)
 	return true, "Affix reroll complete!"
 end
 
+-- 유니크 재굴림 (티켓): 신화 장비의 유니크 효과를 다른 것으로 다시 뽑는다 (지금 것은 나오지 않는다)
+function Inventory.RerollUnique(player, id)
+	local state = states[player]
+	local item = state and state.Items[id]
+	if not item then return false, "You don't have that item." end
+	if not item.Unique then return false, "Only Mythic gear with a unique effect can be rerolled." end
+	local cost = Config.Uniques.RerollTickets or 30
+	local tickets = player:GetAttribute("Tickets") or 0
+	if tickets < cost then return false, string.format("Not enough tickets. (%d needed)", cost) end
+	local pool = {}
+	for _, key in ipairs(Config.Uniques.Order) do
+		if key ~= item.Unique then table.insert(pool, key) end
+	end
+	if #pool == 0 then return false, "Nothing to reroll into." end
+	player:SetAttribute("Tickets", tickets - cost)
+	item.Unique = pool[math.random(#pool)]
+	if isEquipped(state, id) then applyEquipAttributes(player, state) end
+	Inventory.Push(player)
+	local def = Config.Uniques[item.Unique]
+	return true, string.format("✦ New unique: %s — %s", def.Name, def.Desc)
+end
+
+-- 확정 보상: 신화 장비 한 개를 바로 가방에 (보스러쉬 주간 상자 / 최후의 군주 주간 보상)
+--   opts.Unique: 유니크 확정 / opts.Set: 1 ~ 클리어한 구역 세트 중 하나 확정
+function Inventory.GrantMythic(player, opts)
+	opts = opts or {}
+	local slot = G.Slots[math.random(#G.Slots)]
+	local item = Inventory.NewItem(slot.Key, #G.RarityNames, 0, nil, opts.Unique and 1 or 0)
+	if opts.Set then
+		local maxZone = math.clamp(player:GetAttribute("ClearedZone") or 1, 1, Config.Field.ZoneCount)
+		item.Set = Config.Sets.ZoneKeys[math.random(1, maxZone)]
+	end
+	Inventory.Add(player, item)
+	return item
+end
+
 -- (세트 조각 / 세트 각인은 없어졌다: 세트 장비는 필드 드랍으로만 얻는다)
 
 -- 강화 레벨 변경 (GearService 의 장비 강화가 호출)
@@ -638,6 +674,8 @@ Remotes.Inventory.OnServerEvent:Connect(function(player, action, arg, arg2)
 		ok, message = Inventory.Scrap(player, arg)
 	elseif action == "Reroll" and typeof(arg) == "number" then
 		ok, message = Inventory.Reroll(player, arg)
+	elseif action == "RerollUnique" and typeof(arg) == "number" then
+		ok, message = Inventory.RerollUnique(player, arg)
 	elseif action == "SmartClean" then
 		ok, message = Inventory.SmartClean(player)
 	elseif action == "ScrapBelow" and typeof(arg) == "number" then

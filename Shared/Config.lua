@@ -1585,6 +1585,7 @@ Config.Uniques = {
 
 -- 던전 상자의 유니크 확률(신화 장비): 깊이마다 +0.7%p, 최대 60%
 Config.Uniques.DepthBonus = 0.007
+Config.Uniques.RerollTickets = 30 -- 유니크 재굴림 (티켓): 후반에 티켓을 쓸 곳
 Config.Uniques.MaxChance = 0.60
 function Config.Uniques.ChanceAtDepth(depth)
 	return math.min(Config.Uniques.MaxChance, Config.Uniques.Chance + Config.Uniques.DepthBonus * math.max(0, (depth or 1) - 1))
@@ -1667,10 +1668,14 @@ end
 Config.Loot = {
 	PickupRadius = 12,
 	DropLifetime = 90,
-	DropChance = { Normal = 0.07, Elite = 0.45, Boss = 1, Event = 1 },
-	Counts = { Boss = 3, Event = 3 },
+	-- 역할 나누기: 필드 = 골드 + 세트 장비 (군주 몰이가 압도적이지 않게 군주 장비 3 -> 1개, 등급 가중치 x3 -> x2 / 대신 일반 몹 드롭 7% -> 9%)
+	--             던전 = 신화 + 유니크 (유니크는 던전 상자 / 보스러쉬 / 최후의 군주 보상에서만)
+	DropChance = { Normal = 0.09, Elite = 0.45, Boss = 1, Event = 1 },
+	Counts = { Boss = 1, Event = 2 },
 	EliteBonus = 1.6,    -- 엘리트: 영웅 이상 가중치 x1.6
-	BossBonus = 3,       -- 보스 / 이벤트: x3
+	BossBonus = 2,       -- 필드 군주 / 이벤트: x2
+	DungeonBossBonus = 3, -- 던전 보스 상자: x3
+	ChestPerDepth = 10, ChestMax = 6, -- 던전 상자 수: 3 + 깊이 10마다 1 (최대 6)
 	-- 구역별 등급 가중치 (일반, 희귀, 영웅, 전설, 신화)
 	ZoneRarity = {
 		{ 80, 18, 2, 0, 0 },

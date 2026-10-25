@@ -225,6 +225,18 @@ local function onFinished(player, result)
 	if result.Dealt >= R.Tiers[4].Min and newWeekBest then
 		Event.Announce(string.format("📢 %s took down %d bosses in the Boss Rush! (%s)", player.DisplayName, result.Bosses, tier.Name))
 	end
+	-- 주간 상자: 이번 주 처음으로 Diamond 등급 이상이면 "유니크 확정 신화" 1개
+	local boxLine = nil
+	if state and result.Dealt >= R.Tiers[5].Min and (state.BoxWeek or 0) ~= thisWeek() then
+		state.BoxWeek = thisWeek()
+		local okInv, Inventory = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
+		if okInv then
+			local item = Inventory.GrantMythic(player, { Unique = true })
+			local def = item.Unique and Config.Uniques[item.Unique]
+			boxLine = string.format("🎁 Weekly Boss Rush chest: Mythic %s with ✦ %s!", item.Slot, def and def.Name or "?")
+			notify(player, boxLine)
+		end
+	end
 	Quest.Add(player, "RiftRuns", 1)
 	task.spawn(push, player, false) -- (순위표를 읽느라 기다리지 않게)
 	return { Gold = gold, Tickets = tickets, TimeSkip = timeSkip, Tier = tier.Name, TierIcon = tier.Icon, Best = best, NewBest = newBest, WeekBest = weekBest, NewWeekBest = newWeekBest }
