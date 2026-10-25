@@ -193,7 +193,7 @@ local function buildDummy(index, info, position, nameIndex, bigScale)
 end
 
 -- start: 허수아비 위치. 허수아비는 하나만 놓고, 주변은 훈련장 바닥 + 빛나는 원으로 꾸민다.
-function Dummy.Build(start)
+function Dummy.Build(start, starterPosition)
 	folder = Instance.new("Folder")
 	folder.Name = "Dummies"
 	folder.Parent = workspace
@@ -231,6 +231,8 @@ function Dummy.Build(start)
 
 	-- 허수아비 하나: 8번 모양(어깨 보호대 / 투구 / 뿔 / 가슴 갑옷 / 빛나는 눈)을 써서 크고 듬직하게. 이름은 Dummy1.
 	buildDummy(8, Config.Dummy.List[1], start, 1, 0.8) -- 너무 크면 화면을 가려서 작게 (약 1.5배)
+	-- 입문용 허수아비: 스폰 언덕 위, 눈앞에 하나 더 (첫 미션을 몇 초 안에 시작하게). 이름이 같아도(Dummy1) 따로 등록되어 똑같이 맞는다.
+	if starterPosition then buildDummy(8, Config.Dummy.List[1], starterPosition, 1, 0.7) end
 end
 
 local restFire, restCenter = nil, Vector3.zero -- 휴식 구역 모닥불 (IdleHit 가 타오르게 한다)

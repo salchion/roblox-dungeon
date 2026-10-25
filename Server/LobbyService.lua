@@ -963,6 +963,7 @@ function Lobby.Build()
 		WarpPrompt = warpPrompt,
 		RiftPrompt = riftPrompt,
 		DummyStart = Vector3.new(0, TOP, 28), -- 허수아비 하나가 서는 자리
+		StarterDummy = Vector3.new(HILL_NX + 9, TOP + HILL_H + 0.25, HILL_NZ - 7), -- 입문용 허수아비: 스폰 언덕 위 눈앞 (길을 막지 않게 옆으로 조금 비껴서)
 		RestStart = Vector3.new(-84, TOP, 70), -- 휴식 구역(방치 수입): 훈련장과 따로 떨어진 아늑한 모닥불 쉼터
 		RankBoardCFrame = CFrame.lookAt(Vector3.new(-52, TOP + 16.5, 100), Vector3.new(0, TOP + 16.5, 72)),
 	}
