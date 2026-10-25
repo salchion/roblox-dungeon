@@ -950,7 +950,7 @@ local function buildGateway(zone, x0)
 	-- 간판: 구역 이름 + 컨셉 + 몬스터 레벨
 	local signPart = part("GateSign", Vector3.new(1, 1, 1), Vector3.new(x0 + 2, H + 24, 0), accent, Enum.Material.Neon, { Transparency = 1, CanCollide = false, CanQuery = false })
 	local zoneSet = Config.Sets[Config.Sets.ZoneKeys[zone]]
-	makeSign(signPart, string.format("Zone %d · %s\n%s · Rec. ⚡%d\nDanger %s\n%s Drops only here: %s Set", zone, F.ZoneNames[zone], theme.Tag, F.RecommendPower[zone] or 0, string.rep("☠", zone), zoneSet.Icon, zoneSet.Name), Color3.fromRGB(255, 240, 190), 0)
+	makeSign(signPart, string.format("Zone %d · %s\n%s · Rec. ⚡%d\nDanger %s\n%s New set from here: %s Set", zone, F.ZoneNames[zone], theme.Tag, F.RecommendPower[zone] or 0, string.rep("☠", zone), zoneSet.Icon, zoneSet.Name), Color3.fromRGB(255, 240, 190), 0)
 end
 
 local function buildWorld()

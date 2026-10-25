@@ -1833,161 +1833,165 @@ local function startAugLoop(run)
 				for _, member in ipairs(members) do syncAura(member, run) end
 			end
 			for _, member in ipairs(members) do
-				local root = getAliveParts(member)
-				-- 회전 칼날 -> 표창: 가까운 적에게 던진 칼날이 튕기며 다른 적들을 연달아 벤다 (몸 주위가 아니라 날아가는 칼날에 효과가 붙는다)
-				local orbit = augLv(run, member, "AugOrbit")
-				local bladeShots = BLADE_SHOTS[math.min(orbit, 6)] - (orbit > 0 and Config.AugWeaponMatch(member, "AugOrbit") and 1 or 0) -- 궁합 무기: 한 발 일찍
-				if root and orbit > 0 and (shotCount[member] or 0) >= bladeShots and now >= (nextTick[member] or 0) then
-					shotCount[member] = 0
-					nextTick[member] = now + 0.8 -- (연사가 아주 빠르면 최소 0.8초 간격)
-					-- 4셋부터 칼날이 동시에 여러 줄기로 날아간다 (4셋 2줄 / 5셋 2줄 + 튕김 +2 / 6셋 3줄)
-					local chains = orbit >= 6 and 3 or (orbit >= 4 and 2 or 1)
-					local starts = nearestMonsters(run, root.Position, 70, chains)
-					if starts[1] then procAug(member, "AugOrbit", starts[1].Part.Position) end
-					for _, first in ipairs(starts) do
-						local chain, used = { first }, { [first.Part] = true }
-						for _ = 1, orbit + 1 + (orbit >= 5 and 2 or 0) do
-							local last = chain[#chain]
-							for _, cand in ipairs(nearestMonsters(run, last.Part.Position, 38, 6, last.Part)) do
-								if not used[cand.Part] then
-									used[cand.Part] = true
-									table.insert(chain, cand)
-									break
-								end
-							end
-						end
-						local damage = augDamage(member) * (0.9 + 0.4 * orbit)
-						local fromPos = root.Position + Vector3.new(0, 3, 0)
-						for index, entry in ipairs(chain) do
-							local start = fromPos
-							task.delay((index - 1) * 0.2, function()
-								if run.Destroyed or run.Phase == "Ended" or not entry.Part.Parent then return end
-								launchMissile(run, member, start, entry, damage, "blade", Color3.fromRGB(110, 230, 255), 1.6, nil, "AugOrbit")
-								sfxAt(run, entry.Part.Position, "Aug_Blade", nil, 0.15)
-								if synergy(member, "BladeMissile") and math.random() < 0.3 then
-									for _, extra in ipairs(nearestMonsters(run, entry.Part.Position, 60, 1, entry.Part)) do
-										launchMissile(run, member, entry.Part.Position + Vector3.new(0, 3, 0), extra, damage * 0.8, "rocket", Color3.fromRGB(110, 230, 255), 1.5, nil, "AugOrbit")
+				-- 한 사람의 효과에서 오류가 나도 반복 전체(모든 사람의 세트 효과)가 멈추지 않게 보호한다
+				local okMember, errMember = pcall(function()
+					local root = getAliveParts(member)
+					-- 회전 칼날 -> 표창: 가까운 적에게 던진 칼날이 튕기며 다른 적들을 연달아 벤다 (몸 주위가 아니라 날아가는 칼날에 효과가 붙는다)
+					local orbit = augLv(run, member, "AugOrbit")
+					local bladeShots = orbit > 0 and (BLADE_SHOTS[math.min(orbit, 6)] - (Config.AugWeaponMatch(member, "AugOrbit") and 1 or 0)) or math.huge -- 궁합 무기: 한 발 일찍 (칼날이 없으면 계산하지 않는다: 예전에 nil 계산 오류로 이 반복 전체가 멈췄다)
+					if root and orbit > 0 and (shotCount[member] or 0) >= bladeShots and now >= (nextTick[member] or 0) then
+						shotCount[member] = 0
+						nextTick[member] = now + 0.8 -- (연사가 아주 빠르면 최소 0.8초 간격)
+						-- 4셋부터 칼날이 동시에 여러 줄기로 날아간다 (4셋 2줄 / 5셋 2줄 + 튕김 +2 / 6셋 3줄)
+						local chains = orbit >= 6 and 3 or (orbit >= 4 and 2 or 1)
+						local starts = nearestMonsters(run, root.Position, 70, chains)
+						if starts[1] then procAug(member, "AugOrbit", starts[1].Part.Position) end
+						for _, first in ipairs(starts) do
+							local chain, used = { first }, { [first.Part] = true }
+							for _ = 1, orbit + 1 + (orbit >= 5 and 2 or 0) do
+								local last = chain[#chain]
+								for _, cand in ipairs(nearestMonsters(run, last.Part.Position, 38, 6, last.Part)) do
+									if not used[cand.Part] then
+										used[cand.Part] = true
+										table.insert(chain, cand)
+										break
 									end
 								end
-							end)
-							fromPos = entry.Part.Position + Vector3.new(0, 3, 0)
-						end
-					end
-				end
-				-- 낙뢰
-				local storm = augLv(run, member, "AugStorm")
-				if root and storm > 0 and now >= (nextStorm[member] or 0) then
-					nextStorm[member] = now + math.max(1.2, 3.4 - 0.5 * storm)
-					procAug(member, "AugStorm")
-					-- 4셋부터 번개가 근처 적에게 번져 튄다 (4 / 5셋 1마리, 6셋 2마리, 궁합 무기 +1) / 5셋: 번개 위력 x1.2
-					local arcs = (storm >= 6 and 2 or (storm >= 4 and 1 or 0)) + (Config.AugWeaponMatch(member, "AugStorm") and 1 or 0)
-					local boltDamage = augDamage(member) * (1.4 + 0.45 * storm) * (storm >= 5 and 1.2 or 1)
-					for _, entry in ipairs(nearestMonsters(run, root.Position, 75, 2 + storm)) do
-						strikeBolt(run, member, entry, boltDamage, "AugStorm")
-						if arcs > 0 then
-							for _, neighbor in ipairs(nearestMonsters(run, entry.Part.Position, 30, arcs, entry.Part)) do
-								strikeBolt(run, member, neighbor, boltDamage * 0.6, "AugStorm")
 							end
-						end
-					end
-				end
-				-- 유성우: 적이 가장 많이 모인 곳에
-				local meteor = augLv(run, member, "AugMeteor")
-				if root and meteor > 0 and now >= (nextMeteor[member] or 0) then
-					nextMeteor[member] = now + math.max(2.5, 7 - 1.5 * meteor) -- (예전 8.5 - 1.5단계: 3단계 4초에 한 번이라 체감이 약했다)
-					local candidates = nearestMonsters(run, root.Position, 90, 18)
-					local best, bestCount = nil, 0
-					for _, a in ipairs(candidates) do
-						local count = 0
-						for _, b in ipairs(candidates) do
-							if (a.Part.Position - b.Part.Position).Magnitude <= 14 then count += 1 end
-						end
-						if count > bestCount then best, bestCount = a, count end
-					end
-					for _, a in ipairs(candidates) do -- 만능형: 근처에 보스가 있으면 첫 유성은 보스에게
-						if isBossData(a.Data) then best = a break end
-					end
-					if best then
-						procAug(member, "AugMeteor", best.Part.Position)
-						local p = best.Part.Position
-						local meteorRadius = (14 + 2 * meteor) * (meteor >= 6 and 1.2 or 1)
-						local meteorDamage = augDamage(member) * (2.6 + 1.0 * meteor)
-						dropMeteor(run, member, Vector3.new(p.X, p.Y - best.Part.Size.Y / 2, p.Z), meteorRadius, meteorDamage, meteor) -- (예전: 내 발 높이에 떨어져서, 높낮이가 다른 필드에서는 적에게 안 닿았다)
-						-- 4셋부터 유성이 연달아 더 떨어진다 (4셋 2발 / 5셋 3발 / 6셋 4발, 서로 다른 곳에)
-						local extra = (meteor >= 6 and 3 or (meteor >= 5 and 2 or (meteor >= 4 and 1 or 0))) + (Config.AugWeaponMatch(member, "AugMeteor") and 1 or 0) -- 궁합 무기 +1
-						local spots = { p }
-						for _, other in ipairs(candidates) do
-							if extra <= 0 then break end
-							local tooClose = false
-							for _, spot in ipairs(spots) do
-								if (spot - other.Part.Position).Magnitude < meteorRadius * 1.2 then tooClose = true break end
-							end
-							if not tooClose then
-								table.insert(spots, other.Part.Position)
-								extra -= 1
-								local spotPosition = other.Part.Position - Vector3.new(0, other.Part.Size.Y / 2, 0)
-								task.delay(0.5 * (#spots - 1), function()
-									if run.Destroyed or run.Phase == "Ended" then return end
-									dropMeteor(run, member, spotPosition, meteorRadius, meteorDamage, meteor)
+							local damage = augDamage(member) * (0.9 + 0.4 * orbit)
+							local fromPos = root.Position + Vector3.new(0, 3, 0)
+							for index, entry in ipairs(chain) do
+								local start = fromPos
+								task.delay((index - 1) * 0.2, function()
+									if run.Destroyed or run.Phase == "Ended" or not entry.Part.Parent then return end
+									launchMissile(run, member, start, entry, damage, "blade", Color3.fromRGB(110, 230, 255), 1.6, nil, "AugOrbit")
+									sfxAt(run, entry.Part.Position, "Aug_Blade", nil, 0.15)
+									if synergy(member, "BladeMissile") and math.random() < 0.3 then
+										for _, extra in ipairs(nearestMonsters(run, entry.Part.Position, 60, 1, entry.Part)) do
+											launchMissile(run, member, entry.Part.Position + Vector3.new(0, 3, 0), extra, damage * 0.8, "rocket", Color3.fromRGB(110, 230, 255), 1.5, nil, "AugOrbit")
+										end
+									end
 								end)
+								fromPos = entry.Part.Position + Vector3.new(0, 3, 0)
 							end
 						end
 					end
-				end
-				-- 펫 사냥 표식 (펫 13레벨): 4초마다 근처에서 가장 튼튼한 적(보스 우선)에게 표식 -> 그 적은 나에게 +25% 피해
-				if root and (member:GetAttribute("PetMark") or 0) > 0 and now >= (nextPet[member] or 0) then
-					nextPet[member] = now + Config.Pet.MarkEvery
-					local pick, pickScore = nil, -1
-					for _, entry in ipairs(nearestMonsters(run, root.Position, Config.Pet.MarkRange, 14)) do
-						local score = entry.Data.Health + (isBossData(entry.Data) and 1e12 or 0)
-						if score > pickScore then pick, pickScore = entry, score end
-					end
-					if pick then
-						pick.Data.MarkedBy, pick.Data.MarkedUntil = member, now + Config.Pet.MarkEvery + 0.5
-						local old = pick.Part:FindFirstChild("PetMarkTag")
-						if old then old:Destroy() end
-						local tag = Instance.new("BillboardGui")
-						tag.Name = "PetMarkTag"
-						tag.Size = UDim2.new(0, 34, 0, 34)
-						tag.StudsOffset = Vector3.new(0, pick.Part.Size.Y / 2 + 4.5, 0)
-						tag.AlwaysOnTop = true
-						tag.MaxDistance = 140
-						local icon = Instance.new("TextLabel")
-						icon.Size = UDim2.new(1, 0, 1, 0)
-						icon.BackgroundTransparency = 1
-						icon.TextScaled = true
-						icon.Text = "🎯"
-						icon.Parent = tag
-						tag.Parent = pick.Part
-						Debris:AddItem(tag, Config.Pet.MarkEvery + 0.5)
-						local petModel = member.Character and member.Character:FindFirstChild("PetModel")
-						local from = petModel and petModel.PrimaryPart and petModel.PrimaryPart.Position or (root.Position + Vector3.new(3, 3, 3))
-						Effects.Tracer(from, pick.Part.Position, Color3.fromRGB(255, 200, 120), 0.18) -- 펫에서 표식 대상까지 가는 빛줄기
-					end
-				end
-				-- 충격파 -> 충격파탄: 가까운 적들에게 폭발 투사체를 동시에 쏜다 (몸에서 터지는 게 아니라 날아가 맞은 자리에서 터진다)
-				local pulse = augLv(run, member, "AugPulse")
-				if root and pulse > 0 and now >= (nextPulse[member] or 0) then
-					nextPulse[member] = now + math.max(2.2, 4.8 - 0.8 * pulse)
-					local origin = root.Position + Vector3.new(0, 3, 0)
-					local blastDamage = augDamage(member) * (0.9 + 0.4 * pulse)
-					procAug(member, "AugPulse")
-					-- 4셋: 0.45초 뒤 두 번째 발사 / 5셋: 폭발 범위 +25% / 6셋: 노리는 적 +1 / 궁합 무기: 폭발 범위 +30%
-					local volleys = pulse >= 4 and 2 or 1
-					local targetCount = 2 + math.floor(pulse / 2) + (pulse >= 6 and 1 or 0)
-					local blastRadius = (10 + 2 * pulse) * (pulse >= 5 and 1.25 or 1) * (Config.AugWeaponMatch(member, "AugPulse") and 1.3 or 1)
-					for volley = 1, volleys do
-						task.delay((volley - 1) * 0.45, function()
-							if run.Destroyed or run.Phase == "Ended" then return end
-							local liveRoot = getAliveParts(member)
-							if not liveRoot then return end
-							local liveOrigin = liveRoot.Position + Vector3.new(0, 3, 0)
-							for _, entry in ipairs(nearestMonsters(run, liveRoot.Position, 75, targetCount)) do
-								launchBlast(run, member, liveOrigin, entry, blastDamage, blastRadius, Color3.fromRGB(110, 255, 190), "AugPulse")
+					-- 낙뢰
+					local storm = augLv(run, member, "AugStorm")
+					if root and storm > 0 and now >= (nextStorm[member] or 0) then
+						nextStorm[member] = now + math.max(1.2, 3.4 - 0.5 * storm)
+						procAug(member, "AugStorm")
+						-- 4셋부터 번개가 근처 적에게 번져 튄다 (4 / 5셋 1마리, 6셋 2마리, 궁합 무기 +1) / 5셋: 번개 위력 x1.2
+						local arcs = (storm >= 6 and 2 or (storm >= 4 and 1 or 0)) + (Config.AugWeaponMatch(member, "AugStorm") and 1 or 0)
+						local boltDamage = augDamage(member) * (1.4 + 0.45 * storm) * (storm >= 5 and 1.2 or 1)
+						for _, entry in ipairs(nearestMonsters(run, root.Position, 75, 2 + storm)) do
+							strikeBolt(run, member, entry, boltDamage, "AugStorm")
+							if arcs > 0 then
+								for _, neighbor in ipairs(nearestMonsters(run, entry.Part.Position, 30, arcs, entry.Part)) do
+									strikeBolt(run, member, neighbor, boltDamage * 0.6, "AugStorm")
+								end
 							end
-						end)
+						end
 					end
-				end
+					-- 유성우: 적이 가장 많이 모인 곳에
+					local meteor = augLv(run, member, "AugMeteor")
+					if root and meteor > 0 and now >= (nextMeteor[member] or 0) then
+						nextMeteor[member] = now + math.max(2.5, 7 - 1.5 * meteor) -- (예전 8.5 - 1.5단계: 3단계 4초에 한 번이라 체감이 약했다)
+						local candidates = nearestMonsters(run, root.Position, 90, 18)
+						local best, bestCount = nil, 0
+						for _, a in ipairs(candidates) do
+							local count = 0
+							for _, b in ipairs(candidates) do
+								if (a.Part.Position - b.Part.Position).Magnitude <= 14 then count += 1 end
+							end
+							if count > bestCount then best, bestCount = a, count end
+						end
+						for _, a in ipairs(candidates) do -- 만능형: 근처에 보스가 있으면 첫 유성은 보스에게
+							if isBossData(a.Data) then best = a break end
+						end
+						if best then
+							procAug(member, "AugMeteor", best.Part.Position)
+							local p = best.Part.Position
+							local meteorRadius = (14 + 2 * meteor) * (meteor >= 6 and 1.2 or 1)
+							local meteorDamage = augDamage(member) * (2.6 + 1.0 * meteor)
+							dropMeteor(run, member, Vector3.new(p.X, p.Y - best.Part.Size.Y / 2, p.Z), meteorRadius, meteorDamage, meteor) -- (예전: 내 발 높이에 떨어져서, 높낮이가 다른 필드에서는 적에게 안 닿았다)
+							-- 4셋부터 유성이 연달아 더 떨어진다 (4셋 2발 / 5셋 3발 / 6셋 4발, 서로 다른 곳에)
+							local extra = (meteor >= 6 and 3 or (meteor >= 5 and 2 or (meteor >= 4 and 1 or 0))) + (Config.AugWeaponMatch(member, "AugMeteor") and 1 or 0) -- 궁합 무기 +1
+							local spots = { p }
+							for _, other in ipairs(candidates) do
+								if extra <= 0 then break end
+								local tooClose = false
+								for _, spot in ipairs(spots) do
+									if (spot - other.Part.Position).Magnitude < meteorRadius * 1.2 then tooClose = true break end
+								end
+								if not tooClose then
+									table.insert(spots, other.Part.Position)
+									extra -= 1
+									local spotPosition = other.Part.Position - Vector3.new(0, other.Part.Size.Y / 2, 0)
+									task.delay(0.5 * (#spots - 1), function()
+										if run.Destroyed or run.Phase == "Ended" then return end
+										dropMeteor(run, member, spotPosition, meteorRadius, meteorDamage, meteor)
+									end)
+								end
+							end
+						end
+					end
+					-- 펫 사냥 표식 (펫 13레벨): 4초마다 근처에서 가장 튼튼한 적(보스 우선)에게 표식 -> 그 적은 나에게 +25% 피해
+					if root and (member:GetAttribute("PetMark") or 0) > 0 and now >= (nextPet[member] or 0) then
+						nextPet[member] = now + Config.Pet.MarkEvery
+						local pick, pickScore = nil, -1
+						for _, entry in ipairs(nearestMonsters(run, root.Position, Config.Pet.MarkRange, 14)) do
+							local score = entry.Data.Health + (isBossData(entry.Data) and 1e12 or 0)
+							if score > pickScore then pick, pickScore = entry, score end
+						end
+						if pick then
+							pick.Data.MarkedBy, pick.Data.MarkedUntil = member, now + Config.Pet.MarkEvery + 0.5
+							local old = pick.Part:FindFirstChild("PetMarkTag")
+							if old then old:Destroy() end
+							local tag = Instance.new("BillboardGui")
+							tag.Name = "PetMarkTag"
+							tag.Size = UDim2.new(0, 34, 0, 34)
+							tag.StudsOffset = Vector3.new(0, pick.Part.Size.Y / 2 + 4.5, 0)
+							tag.AlwaysOnTop = true
+							tag.MaxDistance = 140
+							local icon = Instance.new("TextLabel")
+							icon.Size = UDim2.new(1, 0, 1, 0)
+							icon.BackgroundTransparency = 1
+							icon.TextScaled = true
+							icon.Text = "🎯"
+							icon.Parent = tag
+							tag.Parent = pick.Part
+							Debris:AddItem(tag, Config.Pet.MarkEvery + 0.5)
+							local petModel = member.Character and member.Character:FindFirstChild("PetModel")
+							local from = petModel and petModel.PrimaryPart and petModel.PrimaryPart.Position or (root.Position + Vector3.new(3, 3, 3))
+							Effects.Tracer(from, pick.Part.Position, Color3.fromRGB(255, 200, 120), 0.18) -- 펫에서 표식 대상까지 가는 빛줄기
+						end
+					end
+					-- 충격파 -> 충격파탄: 가까운 적들에게 폭발 투사체를 동시에 쏜다 (몸에서 터지는 게 아니라 날아가 맞은 자리에서 터진다)
+					local pulse = augLv(run, member, "AugPulse")
+					if root and pulse > 0 and now >= (nextPulse[member] or 0) then
+						nextPulse[member] = now + math.max(2.2, 4.8 - 0.8 * pulse)
+						local origin = root.Position + Vector3.new(0, 3, 0)
+						local blastDamage = augDamage(member) * (0.9 + 0.4 * pulse)
+						procAug(member, "AugPulse")
+						-- 4셋: 0.45초 뒤 두 번째 발사 / 5셋: 폭발 범위 +25% / 6셋: 노리는 적 +1 / 궁합 무기: 폭발 범위 +30%
+						local volleys = pulse >= 4 and 2 or 1
+						local targetCount = 2 + math.floor(pulse / 2) + (pulse >= 6 and 1 or 0)
+						local blastRadius = (10 + 2 * pulse) * (pulse >= 5 and 1.25 or 1) * (Config.AugWeaponMatch(member, "AugPulse") and 1.3 or 1)
+						for volley = 1, volleys do
+							task.delay((volley - 1) * 0.45, function()
+								if run.Destroyed or run.Phase == "Ended" then return end
+								local liveRoot = getAliveParts(member)
+								if not liveRoot then return end
+								local liveOrigin = liveRoot.Position + Vector3.new(0, 3, 0)
+								for _, entry in ipairs(nearestMonsters(run, liveRoot.Position, 75, targetCount)) do
+									launchBlast(run, member, liveOrigin, entry, blastDamage, blastRadius, Color3.fromRGB(110, 255, 190), "AugPulse")
+								end
+							end)
+						end
+					end
+				end)
+				if not okMember and RunService:IsStudio() then warn("[Aug] " .. tostring(errMember)) end
 			end
 			task.wait(0.05)
 
