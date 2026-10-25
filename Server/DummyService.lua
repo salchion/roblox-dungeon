@@ -292,6 +292,47 @@ end
 
 local goldRemainder = setmetatable({}, { __mode = "k" }) -- [player] = 아직 지급하지 못한 소수점 골드
 
+-- 세트 효과 시험: 허수아비를 쏘는 동안 내 세트 효과(미사일 / 번개 / 메테오 / 칼날 / 충격파 / 점화 / 펫 표식)가 허수아비에게도 터진다.
+-- 던전 / 필드와 같은 효과 코드(DungeonService)를 "허수아비만 있는 작은 판"으로 돌린다. 허수아비는 쓰러지지 않으므로
+-- 처치 효과(처치 폭발 / 처형 폭발)는 10발마다 "쓰러진 셈"으로 한 번 보여 준다. 최근 6초 안에 허수아비를 쏜 사람에게만 작동한다.
+local Players = game:GetService("Players")
+local augRun = nil
+local lastDummyHit = setmetatable({}, { __mode = "k" })
+local hitCount = setmetatable({}, { __mode = "k" })
+local function ensureAugRun(Dungeon)
+	if augRun or not folder then return augRun end
+	local monsters = {}
+	local partToModel = {}
+	for model, data in pairs(dummies) do
+		local body = model.PrimaryPart
+		if body then
+			monsters[body] = { Health = 1e12, MaxHealth = 1e12, Kind = "Dummy", Stats = { Size = body.Size.Y } }
+			partToModel[body] = model
+		end
+	end
+	augRun = {
+		Monsters = monsters, Folder = folder, Phase = "Wave", Destroyed = false, Members = {},
+		MembersFn = function()
+			local list = {}
+			for _, player in ipairs(Players:GetPlayers()) do
+				if player:GetAttribute("Zone") == "Lobby" and os.clock() - (lastDummyHit[player] or -100) < 6 then table.insert(list, player) end
+			end
+			return list
+		end,
+		HitFn = function(player, entry, amount, quiet)
+			local model = partToModel[entry.Part]
+			local data = model and dummies[model]
+			if not data or (player:GetAttribute("Power") or 0) < data.RequiredPower then return end
+			entry.Data.Health = entry.Data.MaxHealth -- (쓰러지지 않는다)
+			amount = math.max(1, math.floor(amount))
+			if not quiet then Effects.DamageNumber(entry.Part.Position, amount, false) end
+			showDps(model, data, player, amount) -- DPS 패널에 세트 효과 피해도 더해진다
+		end,
+	}
+	Dungeon.StartAugLoop(augRun)
+	return augRun
+end
+
 function Dummy.Shoot(player, origin, direction)
 	if not folder or player:GetAttribute("Zone") ~= "Lobby" then return nil end
 
@@ -324,6 +365,15 @@ function Dummy.Shoot(player, origin, direction)
 		local damage, isCrit = Dungeon.ComputeDamage(player)
 		Effects.DamageNumber(result.Position, damage, isCrit)
 		showDps(model, data, player, damage)
+		-- 세트 효과 시험
+		local run = ensureAugRun(Dungeon)
+		local body = model.PrimaryPart
+		if run and body and run.Monsters[body] then
+			lastDummyHit[player] = os.clock()
+			Dungeon.AugOnHit(run, player, body, run.Monsters[body], damage, isCrit)
+			hitCount[player] = (hitCount[player] or 0) + 1
+			if hitCount[player] % 10 == 0 then Dungeon.AugOnKill(run, player, body.Position) end -- 처치 효과 보여 주기
+		end
 	end
 	return result.Position
 end
