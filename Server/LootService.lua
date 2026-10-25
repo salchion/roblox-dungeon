@@ -79,6 +79,15 @@ function Loot.DropFor(player, position, kind, zoneIndex)
 	for _ = 1, count do
 		if math.random() < chance then
 			local item = Loot.RollItem(player, row, kind, zoneIndex) -- 필드 드랍: 그 구역 전용 세트가 섞여 나온다
+			-- 앞 구역 세트를 모으러 돌아와도 손해가 없게: 세트 장비의 등급은 "내가 클리어한 가장 깊은 구역" 기준으로 뽑는다
+			-- (예: 7구역까지 깬 사람이 1구역에서 사냥하면 1구역 세트가 7구역 등급표로 나온다 -> 앞 구역 세트도 신화가 나온다)
+			local bestRow = math.clamp(math.max(zoneIndex, player:GetAttribute("ClearedZone") or 0), 1, #L.ZoneRarity)
+			if item.Set and bestRow > row then
+				local upgraded = Inventory.NewItem(item.Slot, rollRarity(bestRow, luckOf(player), kindMultiplier(kind)), 0)
+				upgraded.Set = item.Set
+				upgraded.Unique = nil
+				item = upgraded
+			end
 			nextDropId += 1
 			local scatter = count > 1 and Vector3.new(math.random(-7, 7), 0, math.random(-7, 7)) or Vector3.zero
 			local spot = position + scatter
