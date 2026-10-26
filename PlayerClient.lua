@@ -53,10 +53,11 @@ local function rounded(instance, radius)
 	create("UICorner", { CornerRadius = UDim.new(0, radius or 8) }, instance)
 end
 
+local Theme = require(ReplicatedStorage:WaitForChild("UiTheme")) -- 사탕 느낌 공통 색 / 모양
 local function makePanel(props, parent)
 	local base = {
-		BackgroundColor3 = Color3.fromRGB(16, 18, 30),
-		BackgroundTransparency = 0.1,
+		BackgroundColor3 = Theme.PANEL,
+		BackgroundTransparency = 0.06,
 		BorderSizePixel = 0,
 	}
 	for key, value in pairs(props) do
@@ -65,7 +66,7 @@ local function makePanel(props, parent)
 	local frame = create("Frame", base, parent)
 	rounded(frame, (not props.BackgroundColor3 or (props.Size and props.Size.Y.Offset >= 100)) and 12 or 8)
 	if not props.BackgroundColor3 then
-		create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame)
+		Theme.panelLook(frame)
 	end
 	return frame
 end
@@ -98,7 +99,8 @@ local function makeButton(props, parent, onClick)
 		base[key] = value
 	end
 	local button = create("TextButton", base, parent)
-	rounded(button, 8)
+	rounded(button, 10)
+	Theme.glossy(button)
 	if button.TextSize < 12 then button.TextSize = 10 end
 	local hs = create("UIStroke", { Color = Color3.fromRGB(230, 236, 255), Thickness = 1.5, Transparency = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, button) -- 마우스 올리면 테두리
 	button.MouseEnter:Connect(function() hs.Transparency = 0.55 end)
@@ -2356,7 +2358,7 @@ end)
 do
 	local autoButton = makeButton({
 		Name = "AutoButton", Size = UDim2.new(0, 140, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0.5, 150, 1, -14),
-		Text = "", BackgroundColor3 = Color3.fromRGB(34, 36, 58),
+		Text = "", BackgroundColor3 = Theme.SLOT,
 	}, gui, toggleAuto)
 	local autoStroke = create("UIStroke", { Color = Color3.fromRGB(120, 130, 190), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, autoButton)
 	local keycap = create("Frame", { Size = UDim2.new(0, 34, 0, 34), Position = UDim2.new(0, 10, 0.5, -17), BackgroundColor3 = Color3.fromRGB(235, 235, 245), BorderSizePixel = 0 }, autoButton)
@@ -2400,7 +2402,7 @@ do
 		local nudge = not autoMode and currentZone() == "Field"
 		autoStroke.Color = autoMode and Color3.fromRGB(110, 255, 150) or (nudge and Color3.fromRGB(255, 215, 90) or Color3.fromRGB(120, 130, 190))
 		autoStroke.Thickness = autoMode and 3 or (nudge and 3 + 3 * math.abs(math.sin(os.clock() * 4)) or 2)
-		autoButton.BackgroundColor3 = autoMode and Color3.fromRGB(32, 70, 52) or Color3.fromRGB(34, 36, 58)
+		autoButton.BackgroundColor3 = autoMode and Theme.SLOT_ON or Theme.SLOT
 		autoText.Text = autoMode and "<font color='#8fffb0'><b>Auto-Attack</b>\nON</font>" or "<b>Auto-Attack</b>\n<font color='#9aa0c8'>OFF</font>"
 		local zone = currentZone()
 		autoButton.Visible = zone == "Lobby" or zone == "Field" or zone == "Dungeon"
@@ -3553,10 +3555,10 @@ for index, skillKey in ipairs(Config.Skills.Order) do
 	skillByKey[Enum.KeyCode[cfg.KeyCode]] = skillKey
 	local slot = create("Frame", {
 		Size = UDim2.new(0, 62, 0, 62), Position = UDim2.new(0, index * 68, 0, 0),
-		BackgroundColor3 = Color3.fromRGB(28, 28, 42), BorderSizePixel = 0,
+		BackgroundColor3 = Theme.SLOT, BorderSizePixel = 0,
 	}, skillBar)
 	rounded(slot)
-	local slotStroke = create("UIStroke", { Color = skillKey == "Ult" and Color3.fromRGB(255, 90, 90) or Color3.fromRGB(110, 150, 220), Thickness = 2 }, slot)
+	local slotStroke = create("UIStroke", { Color = skillKey == "Ult" and Color3.fromRGB(255, 90, 90) or Color3.fromRGB(110, 150, 220), Thickness = 3 }, slot)
 	makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = cfg.Icon, TextSize = 20 }, slot)
 	makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 34), Text = cfg.Name, TextSize = 9 }, slot)
 	makeLabel({ Size = UDim2.new(0, 18, 0, 16), Position = UDim2.new(0, 3, 0, 3), Text = cfg.Key, TextSize = 10, Font = Enum.Font.GothamBlack,
@@ -3577,7 +3579,7 @@ for index, skillKey in ipairs(Config.Skills.Order) do
 end
 
 do
-	local slot = create("Frame", { Size = UDim2.new(0, 62, 0, 62), Position = UDim2.new(0, 0, 0, 0), BackgroundColor3 = Color3.fromRGB(28, 28, 42), BorderSizePixel = 0 }, skillBar)
+	local slot = create("Frame", { Size = UDim2.new(0, 62, 0, 62), Position = UDim2.new(0, 0, 0, 0), BackgroundColor3 = Theme.SLOT, BorderSizePixel = 0 }, skillBar)
 	rounded(slot)
 	create("UIStroke", { Color = Color3.fromRGB(120, 210, 255), Thickness = 2 }, slot)
 	makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = "💨", TextSize = 20 }, slot)

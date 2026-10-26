@@ -52,11 +52,11 @@ local slots = {}
 for index, key in ipairs(ORDER) do
 	local button = create("TextButton", {
 		Name = "Slot" .. index, Size = UDim2.new(0, SLOT, 0, SLOT), Position = UDim2.new(0, (index - 1) * (SLOT + GAP), 0, INFO_H + 2),
-		BackgroundColor3 = Color3.fromRGB(26, 28, 44), BackgroundTransparency = 0.12, BorderSizePixel = 0, AutoButtonColor = true,
+		BackgroundColor3 = Color3.fromRGB(78, 60, 138), BackgroundTransparency = 0.04, BorderSizePixel = 0, AutoButtonColor = true,
 		Font = Enum.Font.GothamBold, TextSize = COMPACT and 12 or 15, Text = ICONS[key] or "?", TextColor3 = Color3.new(1, 1, 1), ZIndex = 2,
 	}, holder)
 	rounded(button, 8)
-	local stroke = create("UIStroke", { Color = Color3.fromRGB(90, 96, 130), Thickness = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, button)
+	local stroke = create("UIStroke", { Color = Color3.fromRGB(16, 12, 34), Thickness = 2.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, button)
 	create("TextLabel", {
 		Size = UDim2.new(0, 12, 0, 10), Position = UDim2.new(0, 2, 0, 0), BackgroundTransparency = 1, Font = Enum.Font.GothamBold,
 		TextSize = 9, TextColor3 = Color3.fromRGB(190, 195, 220), Text = tostring(index % 10), ZIndex = 3,
@@ -118,12 +118,12 @@ local function refresh()
 		local isCurrent = slot.Key == current
 		slot.Button.Text = unlocked and (ICONS[slot.Key] or "?") or "🔒"
 		slot.Button.TextTransparency = unlocked and 0 or 0.35
-		slot.Button.BackgroundColor3 = unlocked and Color3.fromRGB(26, 28, 44) or Color3.fromRGB(18, 19, 30)
+		slot.Button.BackgroundColor3 = unlocked and Color3.fromRGB(78, 60, 138) or Color3.fromRGB(46, 36, 82)
 		if isCurrent and unlocked then
 			slot.Stroke.Color = GOLD
 			slot.Stroke.Thickness = 2.5
 		else
-			slot.Stroke.Color = Color3.fromRGB(90, 96, 130)
+			slot.Stroke.Color = Color3.fromRGB(16, 12, 34)
 			slot.Stroke.Thickness = 1
 		end
 	end

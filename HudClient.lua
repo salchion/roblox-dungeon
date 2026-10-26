@@ -50,10 +50,10 @@ end
 ------------------------------------------------------------
 local card = make("Frame", {
 	Name = "HudCard", Size = UDim2.new(0, 244, 0, 176), Position = UDim2.new(0, 16, 0, 60),
-	BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.12, BorderSizePixel = 0,
+	BackgroundColor3 = Color3.fromRGB(98, 72, 172), BackgroundTransparency = 0.04, BorderSizePixel = 0,
 }, gui)
 round(card, 12)
-make("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(34, 38, 62), Color3.fromRGB(14, 16, 26)), Rotation = 90 }, card)
+make("UIGradient", { Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.new(0.6, 0.55, 0.72)), Rotation = 90 }, card)
 local cardStroke = make("UIStroke", { Color = Color3.fromRGB(14, 16, 30), Thickness = 3, Transparency = 0, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
 
 -- 레벨 배지
@@ -80,7 +80,7 @@ xpText.TextStrokeTransparency = 0.2
 
 -- 자원 칩 3개: 골드 / 티켓 / 열쇠
 local function chip(x, width, color)
-	local frame = make("Frame", { Size = UDim2.new(0, width, 0, 26), Position = UDim2.new(0, x, 0, 88), BackgroundColor3 = Color3.fromRGB(26, 29, 46), BorderSizePixel = 0 }, card)
+	local frame = make("Frame", { Size = UDim2.new(0, width, 0, 26), Position = UDim2.new(0, x, 0, 88), BackgroundColor3 = Color3.fromRGB(56, 42, 104), BorderSizePixel = 0 }, card)
 	round(frame, 8)
 	make("UIStroke", { Color = color, Thickness = 1, Transparency = 0.55, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame)
 	return text({ Size = UDim2.new(1, -8, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = "", TextSize = 11, RichText = true }, frame)

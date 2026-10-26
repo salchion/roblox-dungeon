@@ -95,10 +95,13 @@ local function pill(name, text, width, onClick)
 	local button = make("TextButton", {
 		Name = name, Size = UDim2.new(0, width, 0, 40), AnchorPoint = Vector2.new(1, 0), Text = text,
 		Font = Enum.Font.GothamBold, TextSize = 12, TextColor3 = Color3.fromRGB(240, 242, 250),
-		BackgroundColor3 = Color3.fromRGB(34, 40, 70), BackgroundTransparency = 0.05, BorderSizePixel = 0, AutoButtonColor = true, Visible = false,
+		BackgroundColor3 = Color3.fromRGB(98, 72, 172), BackgroundTransparency = 0.04, BorderSizePixel = 0, AutoButtonColor = true, Visible = false,
 	}, ui)
-	make("UICorner", { CornerRadius = UDim.new(0, 8) }, button)
-	make("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, button)
+	make("UICorner", { CornerRadius = UDim.new(0, 10) }, button)
+	make("UIStroke", { Color = Color3.fromRGB(16, 12, 34), Thickness = 3, Transparency = 0, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, button)
+	make("UIGradient", { Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.new(0.76, 0.76, 0.86)), Rotation = 90 }, button)
+	button.TextStrokeColor3 = Color3.fromRGB(16, 12, 34)
+	button.TextStrokeTransparency = 0.45
 	button.Activated:Connect(onClick)
 	return button
 end

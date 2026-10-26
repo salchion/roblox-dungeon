@@ -218,7 +218,7 @@ end
 local toggle = Instance.new("TextButton")
 toggle.Name = "DockToggle"
 toggle.Size = UDim2.new(0, 84, 0, 34)
-toggle.BackgroundColor3 = Color3.fromRGB(52, 62, 110)
+toggle.BackgroundColor3 = Color3.fromRGB(120, 86, 200)
 toggle.BorderSizePixel = 0
 toggle.AutoButtonColor = true
 toggle.Text = "☰ Menu"

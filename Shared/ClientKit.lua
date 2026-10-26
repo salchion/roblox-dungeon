@@ -1,5 +1,6 @@
 -- ClientKit (ReplicatedStorage 안의 ModuleScript, 이름: ClientKit)
 -- 클라이언트 스크립트들이 같이 쓰는 UI 도구 (PlayerClient 가 너무 커져서 나눈 스크립트들이 사용한다).
+local Theme = require(script.Parent:WaitForChild("UiTheme"))
 local Kit = {}
 local MIN_TEXT = 12 -- 이보다 작은 글씨는 모바일에서 안 읽힌다
 
@@ -29,14 +30,14 @@ function Kit.rounded(instance, radius)
 end
 
 function Kit.makePanel(props, parent)
-	local base = { BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.1, BorderSizePixel = 0 }
+	local base = { BackgroundColor3 = Theme.PANEL, BackgroundTransparency = 0.06, BorderSizePixel = 0 }
 	for key, value in pairs(props) do
 		base[key] = value
 	end
 	local frame = Kit.create("Frame", base, parent)
 	Kit.rounded(frame, (not props.BackgroundColor3 or (props.Size and props.Size.Y.Offset >= 100)) and 12 or 8)
 	if not props.BackgroundColor3 then
-		Kit.create("UIStroke", { Color = Color3.fromRGB(110, 130, 220), Thickness = 2, Transparency = 0.25, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame) -- (모든 큰 창 공통: 테두리 2 / 투명 0.25, 제목 20 GothamBlack, 닫기 72x30 오른쪽 위)
+		Theme.panelLook(frame) -- (모든 큰 창 공통: 보라 그라데이션 + 굵은 외곽선)
 	end
 	return frame
 end
@@ -59,7 +60,8 @@ function Kit.makeButton(props, parent, onClick)
 		base[key] = value
 	end
 	local button = Kit.create("TextButton", base, parent)
-	Kit.rounded(button, 8)
+	Kit.rounded(button, 10)
+	Theme.glossy(button)
 	if base.TextSize < MIN_TEXT then button.TextSize = MIN_TEXT end
 	Kit.hover(button)
 	if onClick then

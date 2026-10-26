@@ -309,6 +309,13 @@
       "overwrite": true
     },
     {
+      "path": "Shared/UiTheme.lua",
+      "parent": "ReplicatedStorage",
+      "name": "UiTheme",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Shared/AudioBank.lua",
       "parent": "ReplicatedStorage",
       "name": "AudioBank",
