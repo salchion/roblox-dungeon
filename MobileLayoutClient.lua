@@ -217,9 +217,27 @@ local function anyModalOpen()
 end
 
 -- 큰 창(메뉴 / 상점 / 도감 ...)이 열려 있는 동안: 폰은 카드 + 미션을 숨기고, 큰 화면은 창 뒤에 깔려 겹쳐 보이는 미션 카드 / DPS 미터를 숨긴다 (창을 닫으면 돌아온다)
-local COVERED_DESKTOP = { "GoalHUD", "TutorialHUD", "DpsPanelGui", "HudGui" } -- (왼쪽 위 카드 / 스탯 버튼이 큰 창의 왼쪽 가장자리와 겹쳐서 창이 열려 있는 동안만 숨긴다)
+local COVERED_DESKTOP = { "GoalHUD", "TutorialHUD", "DpsPanelGui", "HudGui", "BigHudGui", "WeaponBarGui" } -- (왼쪽 위 카드 / 스탯 버튼이 큰 창의 왼쪽 가장자리와 겹쳐서 창이 열려 있는 동안만 숨긴다)
+local COVER_BUTTONS = { "LevelStatGui", "AugGui" } -- (창이 이 화면 안에 같이 들어 있어서 화면째 숨길 수 없다: 떠 있는 버튼(스탯 T / 세트 Y)만 숨긴다)
+local hiddenButtons = {}
 local function updateModalCover(compact)
 	local open = anyModalOpen()
+	for _, name in ipairs(COVER_BUTTONS) do
+		local g = playerGui:FindFirstChild(name)
+		if g then
+			for _, child in ipairs(g:GetChildren()) do
+				if child:IsA("TextButton") then
+					if open and not compact and child.Visible then
+						child.Visible = false
+						hiddenButtons[child] = true
+					elseif (not open or compact) and hiddenButtons[child] then
+						child.Visible = true
+						hiddenButtons[child] = nil
+					end
+				end
+			end
+		end
+	end
 	local active = compact and COVERED or COVERED_DESKTOP
 	local seen = {}
 	for _, list in ipairs({ COVERED, COVERED_DESKTOP }) do

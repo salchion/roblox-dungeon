@@ -131,6 +131,9 @@ local function lookup(piece)
 	for _, entry in ipairs(PATTERNS) do
 		local captures = { string.match(piece, entry[1]) }
 		if #captures > 0 or string.find(piece, entry[1]) then
+			for index, cap in ipairs(captures) do -- (패턴 안에 들어간 이름 / 문장도 사전에 있으면 번역: "Zone 4 · Crit Missile")
+				if type(cap) == "string" and string.find(cap, "%a%a") then captures[index] = DICT[cap] or data.exact[cap] or cap end
+			end
 			local ok, result = pcall(string.format, entry[2], table.unpack(captures))
 			if ok then return result end
 		end
@@ -142,6 +145,9 @@ local function lookup(piece)
 			and (anchor == "" or string.find(piece, anchor, 1, true)) then
 			local captures = { string.match(piece, entry[1]) }
 			if #captures > 0 then
+				for index, cap in ipairs(captures) do
+					if type(cap) == "string" and string.find(cap, "%a%a") then captures[index] = DICT[cap] or data.exact[cap] or cap end
+				end
 				local ok, result = pcall(string.format, entry[2], table.unpack(captures))
 				if ok then return result end
 			end
@@ -158,6 +164,55 @@ local function lookupTrimmed(piece)
 	if core and core ~= "" and (lead ~= "" or trail ~= "") then
 		local ko = lookup(core)
 		if ko then return lead .. ko .. trail end
+	end
+	return nil
+end
+
+-- 통째로 못 찾은 조각: [등급] 머리말 / 끝의 숫자(+5.0%) / 구분자(" · ", " / ", ", ") 로 나눠 한 토막씩 번역한다
+local SEPARATORS = { " · ", " / ", "  ", ", ", " - " }
+local function lookupLoose(piece, depth)
+	local found = lookupTrimmed(piece)
+	if found then return found end
+	if depth >= 3 or #piece > 300 then return nil end
+	local tag, rest = string.match(piece, "^(%[[^%]]+%]%s*)(.+)$") -- "[Epic] Gold Ring"
+	if tag then
+		local inner = string.match(tag, "^%[(.-)%]")
+		local koTag = inner and lookupTrimmed(inner)
+		local koRest = lookupLoose(rest, depth + 1)
+		if koTag or koRest then
+			return (koTag and string.gsub(tag, "%[.-%]", function() return "[" .. koTag .. "]" end) or tag) .. (koRest or rest)
+		end
+	end
+	local head, num = string.match(piece, "^(.-)(%s*[%+%-x]?[%d,%.]+[%%p]?%s*)$") -- "Move Speed +0.8"
+	if head and head ~= "" and string.find(head, "%a%a") then
+		local ko = lookupLoose(head, depth + 1)
+		if ko then return ko .. num end
+	end
+	local numHead, numTail = string.match(piece, "^([%+%-x]?[%d,%.]+[%%p]?%s+)(.+)$") -- "+5% Crit Chance"
+	if numHead then
+		local ko = lookupLoose(numTail, depth + 1)
+		if ko then return numHead .. ko end
+	end
+	local lead, core = string.match(piece, "^([^%a%[]+)(%a.*)$") -- 앞의 기호 / 이모지 ("🔒 Skills·Growth")
+	if lead and core and lead ~= "" then
+		local ko = lookupLoose(core, depth + 1)
+		if ko then return lead .. ko end
+	end
+	for _, sep in ipairs(SEPARATORS) do
+		if string.find(piece, sep, 1, true) then
+			local parts, hit = {}, false
+			local from = 1
+			while true do
+				local a, b = string.find(piece, sep, from, true)
+				local chunk = string.sub(piece, from, (a or #piece + 1) - 1)
+				local ko = chunk ~= "" and lookupLoose(chunk, depth + 1)
+				if ko then hit = true end
+				table.insert(parts, ko or chunk)
+				if not a then break end
+				from = b + 1
+			end
+			if hit then return table.concat(parts, sep) end
+		end
 	end
 	return nil
 end
@@ -180,7 +235,7 @@ local function translate(text)
 		end
 		local piece = string.sub(text, position, (cutStart or #text + 1) - 1)
 		if piece ~= "" then
-			local ko = lookupTrimmed(piece)
+			local ko = lookupLoose(piece, 0)
 			if ko then changed = true end
 			table.insert(out, ko or piece)
 		end
