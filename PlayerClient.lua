@@ -2413,7 +2413,7 @@ do
 		autoButton.BackgroundColor3 = autoMode and Theme.SLOT_ON or Theme.SLOT
 		autoText.Text = autoMode and "<font color='#8fffb0'><b>Auto-Attack</b>\nON</font>" or "<b>Auto-Attack</b>\n<font color='#9aa0c8'>OFF</font>"
 		local zone = currentZone()
-		autoButton.Visible = zone == "Lobby" or zone == "Field" or zone == "Dungeon"
+		autoButton.Visible = (zone == "Lobby" or zone == "Field" or zone == "Dungeon") and not (player:GetAttribute("ModalOpen") == true and playerGui:GetAttribute("UiCompact") ~= true) -- (큰 화면: 큰 창이 열려 있는 동안은 창 위에 겹쳐 보이지 않게 숨긴다)
 		local showHint = not used and player:GetAttribute("TutorialActive") == true and os.clock() > shownAt and os.clock() < shownAt + 40 and zone ~= "Dungeon" and not (settings.MenuPanel and settings.MenuPanel.Visible)
 		showHint = showHint or (not autoMode and os.clock() < fieldHintUntil and not (settings.MenuPanel and settings.MenuPanel.Visible))
 		hint.Visible = showHint
@@ -3672,7 +3672,7 @@ end)
 
 RunService.RenderStepped:Connect(function()
 	local zone = currentZone()
-	skillBar.Visible = zone == "Lobby" or zone == "Field" or zone == "Dungeon"
+	skillBar.Visible = (zone == "Lobby" or zone == "Field" or zone == "Dungeon") and not (player:GetAttribute("ModalOpen") == true and playerGui:GetAttribute("UiCompact") ~= true) -- (큰 화면: 큰 창이 열려 있는 동안은 창 위에 겹쳐 보이지 않게 숨긴다)
 	if not skillBar.Visible then return end
 	for skillKey, slot in pairs(skillSlots) do
 		local cfg = Config.Skills[skillKey]

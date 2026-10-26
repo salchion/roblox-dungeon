@@ -74,7 +74,8 @@ local function scan()
 				local ar, br = a.Rect, b.Rect
 				local w = math.min(ar.X + ar.W, br.X + br.W) - math.max(ar.X, br.X)
 				local h = math.min(ar.Y + ar.H, br.Y + br.H) - math.max(ar.Y, br.Y)
-				if w > 0 and h > 0 and w * h >= MIN_OVERLAP and a.Gui ~= b.Gui then -- (서로 다른 화면(ScreenGui)끼리만: 한 화면 안은 일부러 쌓은 것이 많다)
+				local bigA, bigB = ar.W >= 400 and ar.H >= 300, br.W >= 400 and br.H >= 300
+				if w > 0 and h > 0 and w * h >= MIN_OVERLAP and (a.Gui ~= b.Gui or bigA ~= bigB) then -- (서로 다른 화면끼리 + 한 화면 안에서도 큰 창(400x300 이상)과 작은 부품이 겹칠 때: 메뉴 창 위에 스킬 바가 얹히는 경우)
 					local key = a.Gui.Name .. "/" .. a.Obj.Name .. "<>" .. b.Gui.Name .. "/" .. b.Obj.Name
 					if not printed[key] and printedCount < 80 then
 						printed[key] = true
