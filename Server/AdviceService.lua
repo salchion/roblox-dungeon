@@ -13,45 +13,22 @@ local Meta = require(script.Parent:WaitForChild("MetaService"))
 
 local Advice = {}
 
--- 지금 가장 도움이 되는 조언 목록 (우선순위 순)
-local function collect(player)
-	local tips = {}
-	local gold = player:GetAttribute("Gold") or 0
-	local level = player:GetAttribute("WeaponLevel") or 0
-	local cost = Config.GetEnhanceCost(level)
-	if gold >= cost * 2 then
-		table.insert(tips, string.format("💰 You have %d G left! Upgrade your weapon at the town anvil to get much stronger", gold))
-	end
-	local tickets = player:GetAttribute("Tickets") or 0
-	if tickets >= 1 then
-		table.insert(tips, string.format("🎫 You have %d gear ticket(s) left! Draw gear at the gacha machine", tickets))
-	end
-	local empty = {}
-	for _, slot in ipairs(Config.Gear.Slots) do
-		if not Inventory.GetEquipped(player, slot.Key) then
-			table.insert(empty, slot.Name)
-		end
-	end
-	if #empty > 0 then
-		table.insert(tips, string.format("🛡 Your %s slot(s) are empty! Get gear from dungeon boss chests or the gacha and equip it", table.concat(empty, " · ")))
-	end
-	if Growth.IdleSlots(player) > 0 then
-		table.insert(tips, "🏋 Your training slot is empty! Set up training in Menu (B) → Skills & Growth (Passives · Training) and you'll get stronger over time")
-	end
-	if (player:GetAttribute("DungeonFree") or 0) > 0 then
-		table.insert(tips, string.format("🏰 %d free dungeon entries left! Earn gear and tickets in dungeons", player:GetAttribute("DungeonFree")))
-	end
-	return tips
-end
+-- 쓰러졌을 때 보여주는 전투 팁 (한 줄만, 돌아가며): 골드 / 티켓 같은 살림살이 안내는 화면 위쪽이 시끄러워져서 뺐다
+local COMBAT_TIPS = {
+	"💡 Dash (Q) through enemy attacks at the last moment for a NEAR MISS: your damage stacks up",
+	"💡 Use First Aid (C) before your HP gets low, not after",
+	"💡 Deadeye (V) hits many enemies at once: save it for crowds and bosses",
+	"💡 Keep moving! Enemies that surround you deal a lot of damage",
+	"💡 Fight near the camp edge first, then push forward a little at a time",
+	"💡 Spirit Guard (F) fights for you for a while: cast it before a big crowd arrives",
+	"💡 Aim for the glowing weak point on bosses for triple damage",
+}
+local tipIndex = setmetatable({}, { __mode = "k" })
 
 function Advice.AfterDefeat(player)
-	local tips = collect(player)
-	if #tips == 0 then return end
-	local text = "💡 " .. tips[1]
-	if tips[2] then
-		text ..= "\n💡 " .. tips[2]
-	end
-	Remotes.Notify:FireClient(player, text)
+	local index = (tipIndex[player] or 0) % #COMBAT_TIPS + 1
+	tipIndex[player] = index
+	Remotes.Notify:FireClient(player, COMBAT_TIPS[index])
 end
 
 -- 처음 던전을 마치고 마을로 돌아왔을 때 딱 한 번: "다음 목표(전투력)"와 "무엇으로 강해지는가"를 한 장으로 보여준다 (저장됨)

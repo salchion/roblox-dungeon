@@ -218,7 +218,7 @@ local function refresh()
 	end
 	for zone = 1, ZONES do rows[zone].Update() end
 	slotLabel.Text = string.format("Active %d / %d slots   (💰 %s G)", used, slots, commas(gold))
-	pill.Visible = anyOpen and not player:GetAttribute("TutorialActive")
+	pill.Visible = false -- (왼쪽 메뉴 버튼 줄의 "세트" 버튼과 빨간 점이 대신한다: 창 위에 떠서 겹치던 버튼)
 	badge.Visible = affordable > 0 and used < slots
 end
 

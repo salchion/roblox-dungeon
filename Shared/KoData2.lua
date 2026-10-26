@@ -360,6 +360,13 @@ return {
 		["Charged elemental burst · Hits several enemies"] = "차징 원소 폭발 · 여러 적 동시 타격",
 		["Gathers fire, ice and lightning above your head for 1.5s, then fires a rapid volley at 3+ nearby enemies (all at one enemy if only one is near)"] = "머리 위에 불 · 얼음 · 번개를 1.5초 동안 모았다가 주변 적 3마리 이상에게 연달아 쏟아 부어요 (적이 한 마리면 전부 그 한 마리에게)",
 		["Stats"] = "스탯",
+		["💡 Dash (Q) through enemy attacks at the last moment for a NEAR MISS: your damage stacks up"] = "💡 적의 공격이 닿기 직전에 대시(Q)로 뚫고 지나가면 NEAR MISS! 공격력이 계속 쌓여요",
+		["💡 Use First Aid (C) before your HP gets low, not after"] = "💡 응급 치료(C)는 체력이 바닥나기 전에 쓰세요",
+		["💡 Deadeye (V) hits many enemies at once: save it for crowds and bosses"] = "💡 데드아이(V)는 여러 적을 한 번에 맞혀요. 무리나 보스를 위해 아껴 두세요",
+		["💡 Keep moving! Enemies that surround you deal a lot of damage"] = "💡 계속 움직이세요! 둘러싸이면 피해가 커요",
+		["💡 Fight near the camp edge first, then push forward a little at a time"] = "💡 캠프 가까이에서 먼저 싸우고, 조금씩 앞으로 나아가세요",
+		["💡 Spirit Guard (F) fights for you for a while: cast it before a big crowd arrives"] = "💡 정령 소환(F)은 한동안 대신 싸워 줘요. 큰 무리가 오기 전에 쓰세요",
+		["💡 Aim for the glowing weak point on bosses for triple damage"] = "💡 보스의 빛나는 약점을 맞히면 피해가 3배예요",
 	},
 	pats = {
 		{ "^≈ ([%d,%.%-]+) dmg$", "≈ %s 피해", "dmg", -6 },
