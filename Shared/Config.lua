@@ -202,12 +202,13 @@ Config.Dungeon.Mutators = {
 -- 스킬 데미지 = 일반 공격 데미지 x Mult. 궁극기는 공격할수록(발사 1회 = +ChargePerShot) 게이지가 찬다.
 ------------------------------------------------------------
 Config.Skills = {
-	Order = { "Heal", "Sweep", "Ult" }, -- 방벽 / 충격파는 임팩트가 약해서 뺐다 (정의만 남겨둠)
+	Order = { "Heal", "Spirit", "Ult" }, -- 방벽 / 충격파는 임팩트가 약해서 뺐다 (정의만 남겨둠)
 	Barrier = { Name = "Energy Barrier", Icon = "🛡", Key = "Z", KeyCode = "Z", Cooldown = 14, Duration = 3,
 		Desc = "A barrier that blocks all damage for 3s" },
-	-- F: 앞쪽 넓은 범위를 쓸어버리는 돌풍. 잡몹은 뒤로 밀려나고 모여 있을수록 한 번에 많이 잡힌다 (쿨타임 9초)
-	Sweep = { Name = "Gale Sweep", Icon = "🌪", Key = "F", KeyCode = "F", Cooldown = 9, Radius = 26, Reach = 20, Mult = 2.4, Push = 22,
-		Desc = "Sweeps a wide area in front of you: damages every enemy and shoves small ones back. Great for packs!" },
+	-- F: 빛의 정령 소환: 정령 4마리가 10초 동안 내 주변을 돌며 가까운 적을 알아서 쏜다 (한 방 폭발인 V 와 달리 "지속" 스킬).
+	-- 한 번 맞는 피해 = 무기 초당 피해 계수 기준 한 발 x Mult. 4마리가 Interval 초마다 한 번씩 번갈아 쏜다.
+	Spirit = { Name = "Spirit Guard", Icon = "🧚", Key = "F", KeyCode = "F", Cooldown = 22, Count = 4, Duration = 10, Interval = 0.6, Mult = 0.3, Range = 60,
+		Desc = "Summons 4 light spirits for 10s: they circle you and shoot nearby enemies on their own. Great for sustained damage!" },
 	Blast = { Name = "Shockwave", Icon = "💥", Key = "F", KeyCode = "F", Cooldown = 8, Radius = 16, Range = 90, Mult = 3,
 		Desc = "Explodes where you aim (radius 16, attack x3)" },
 	Heal = { Name = "First Aid", Icon = "💚", Key = "C", KeyCode = "C", Cooldown = 30, Radius = 40, Ratio = 0.08,

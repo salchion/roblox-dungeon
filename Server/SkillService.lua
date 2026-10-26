@@ -1,5 +1,5 @@
 -- SkillService (ServerScriptService > Modules 안의 ModuleScript, 이름: SkillService)
--- 액티브 스킬: 응급 치료 / 궁극기(데드아이). (방벽 / 충격파 핸들러는 남아 있지만 Config.Skills.Order 에 없어 쓰이지 않는다)
+-- 액티브 스킬: 응급 치료 / 정령 소환(F, 지속) / 궁극기(데드아이). (방벽 / 충격파 핸들러는 남아 있지만 Config.Skills.Order 에 없어 쓰이지 않는다)
 -- 쿨타임과 게이지는 서버가 검사하고, 클라이언트는 키를 눌렀다고 알려주기만 한다.
 -- 궁극기 게이지는 Attribute "UltCharge"(0~100) 로 클라이언트에 보인다.
 
@@ -44,7 +44,9 @@ function Skill.AddCharge(player, amount)
 	player:SetAttribute("UltCharge", math.min(S.Ult.Cost, charge + amount))
 end
 
+local spiritToken = setmetatable({}, { __mode = "k" }) -- [player] = 지금 도는 정령 묶음 (다시 쓰면 앞 것은 끝난다 / 리셋하면 끝난다)
 function Skill.Reset(player)
+	spiritToken[player] = nil
 	player:SetAttribute("UltCharge", 0)
 	readyAt[player] = nil
 end
@@ -117,67 +119,64 @@ handlers.Blast = function(player, root, _, _, aimPoint)
 	return true
 end
 
--- 돌풍(F): 앞쪽 넓은 범위에 피해 + 작은 몬스터는 뒤로 밀어낸다. 이펙트는 서버 부품 3장이 앞으로 미끄러지며 사라지는 정도로 가볍게.
-local fieldMonsterParams = OverlapParams.new()
-fieldMonsterParams.FilterType = Enum.RaycastFilterType.Include
-handlers.Sweep = function(player, root, _, _, aimPoint)
-	local cfg = S.Sweep
-	local flat = Vector3.new(aimPoint.X - root.Position.X, 0, aimPoint.Z - root.Position.Z)
-	if flat.Magnitude < 1 then
-		local look = root.CFrame.LookVector
-		flat = Vector3.new(look.X, 0, look.Z)
-	end
-	local dir = flat.Unit
-	local center = root.Position + dir * cfg.Reach
-	local lv = skillLevel(player, "Sweep") - 1
-	damageAt(player, center, cfg.Radius, cfg.Mult * (1 + U.BlastMult * lv), "Sweep")
+-- 정령(F): 정령 4마리가 일정 시간 내 주변을 돌며 가까운 적을 알아서 쏜다. 모습은 각자 화면에서 그리고(FxClient "Y" / "J"),
+-- 서버는 0.15초마다 "누가 누구를 쏠 차례인지"만 정해서 피해를 준다 (정령마다 부품 / 위치 복제 없음).
+handlers.Spirit = function(player, root, _, character)
+	local cfg = S.Spirit
+	local token = {}
+	spiritToken[player] = token
+	local count = cfg.Count
+	local until_ = os.clock() + cfg.Duration
+	local userId = player.UserId
+	local weaponType = Config.GetPlayerWeapon(player)
+	local baseShot = Dungeon.ComputeDamage(player) / weaponType.DamageMult * Config.WeaponDpsFactor(weaponType)
+	local perHit = math.max(1, math.floor(baseShot * cfg.Mult))
+	local tint = Color3.fromRGB(190, 235, 255)
 
-	-- 밀치기 (필드의 일반 몬스터만; 군주 / 큰 몸집은 그대로)
-	local folder = workspace:FindFirstChild("FieldMonsters")
-	if folder then
-		fieldMonsterParams.FilterDescendantsInstances = { folder }
-		local fieldCfg = Config.Field
-		local halfWidth = fieldCfg.Width / 2 - 4
-		for _, part in ipairs(workspace:GetPartBoundsInRadius(center, cfg.Radius, fieldMonsterParams)) do
-			if part.Parent == folder and part.Size.X < 9 and not part.Anchored then
-				task.spawn(function()
-					for _ = 1, 6 do
-						if not part.Parent then return end
-						local target = part.Position + dir * (cfg.Push / 6)
-						part.Position = Vector3.new(math.max(target.X, fieldCfg.StartX + 2), target.Y, math.clamp(target.Z, -halfWidth, halfWidth))
-						task.wait(0.03)
-					end
-				end)
+	local feet = root.Position - Vector3.new(0, 2.5, 0)
+	Effects.Raw(feet, { "R", feet, 22, Color3.fromRGB(170, 225, 255) })
+	Effects.Raw(root.Position, { "Y", userId, count, cfg.Duration })
+	Effects.Burst(root.Position + Vector3.new(0, 3, 0), tint, 40)
+	Effects.FloatText(root.Position + Vector3.new(0, 5, 0), "🧚 Spirits!", Color3.fromRGB(170, 230, 255))
+	Remotes.Notify:FireClient(player, string.format("🧚 %d spirits will fight for you for %ds!", count, cfg.Duration))
+
+	task.spawn(function()
+		local nextShot = {}
+		for index = 1, count do nextShot[index] = os.clock() + 0.4 + (index - 1) * (cfg.Interval / count) end
+		local lastBeat = 0
+		while os.clock() < until_ and spiritToken[player] == token and player.Parent do
+			local now = os.clock()
+			local nowRoot, humanoid = aliveParts(player)
+			local zone = player:GetAttribute("Zone")
+			if not nowRoot or (zone ~= "Field" and zone ~= "Dungeon") then break end
+			if now - lastBeat > 3 then -- 3초마다 다시 알린다: 늦게 들어온 사람 / 끊긴 화면도 이어서 보인다
+				lastBeat = now
+				Effects.Raw(nowRoot.Position, { "Y", userId, count, until_ - now })
 			end
+			local targets
+			for index = 1, count do
+				if now >= nextShot[index] then
+					nextShot[index] = now + cfg.Interval
+					targets = targets or (Dungeon.TargetsIn(player, nowRoot.Position, cfg.Range, 8) or Field.TargetsIn(player, nowRoot.Position, cfg.Range, 8) or {})
+					local part = targets[((index - 1) % math.max(1, #targets)) + 1]
+					if part and part.Parent then
+						BL.Ctx = "정령"
+						Meter.Source = "Spirit" -- 대미지 미터기: 정령(F)
+						Effects.DamageTint = tint
+						local landed = Dungeon.HitPart(player, part, perHit) or Field.HitPart(player, part, perHit)
+						Effects.DamageTint = nil
+						Meter.Source = nil
+						BL.Ctx = nil
+						if landed then Effects.Raw(part.Position, { "J", userId, index, part.Position }) end
+					end
+				end
+			end
+			task.wait(0.15)
 		end
-	end
-
-	-- 이펙트: 하늘색 바람 띠 5장이 겹쳐 넓게 퍼져 나가고, 바닥에 충격 고리 두 겹 + 길을 따라 먼지가 터진다 (눈이 편한 색, 부품은 몇 개만)
-	local origin = CFrame.lookAt(root.Position + dir * 2 - Vector3.new(0, 1.5, 0), root.Position + dir * 10 - Vector3.new(0, 1.5, 0))
-	for index = 1, 5 do
-		task.delay((index - 1) * 0.05, function()
-			local wave = Instance.new("Part")
-			wave.Anchored, wave.CanCollide, wave.CanQuery, wave.CanTouch = true, false, false, false
-			wave.Material = Enum.Material.Neon
-			wave.Color = index % 2 == 0 and Color3.fromRGB(190, 230, 250) or Color3.fromRGB(120, 190, 235)
-			wave.Transparency = 0.25 + 0.08 * index
-			wave.Size = Vector3.new(16, 1.4, 1.8)
-			wave.CFrame = origin * CFrame.new(0, 0.4 + index * 1.1, 0)
-			wave.Parent = workspace
-			TweenService:Create(wave, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-				Size = Vector3.new(cfg.Radius * 2.6, 0.5, 5), Transparency = 1, CFrame = origin * CFrame.new(0, 0.4 + index * 1.1, -cfg.Reach * 2.0),
-			}):Play()
-			Debris:AddItem(wave, 0.7)
-		end)
-	end
-	ring(center - Vector3.new(0, 1, 0), cfg.Radius * 1.1, Color3.fromRGB(150, 210, 240), 0.5)
-	task.delay(0.12, function() ring(center - Vector3.new(0, 1, 0), cfg.Radius * 1.5, Color3.fromRGB(190, 230, 250), 0.6) end)
-	for step = 0, 3 do -- 쓸고 지나간 길을 따라 먼지가 차례로 터진다
-		task.delay(step * 0.06, function()
-			Effects.Burst(root.Position + dir * (6 + step * 9) - Vector3.new(0, 1.2, 0), Color3.fromRGB(200, 225, 240), 26)
-		end)
-	end
-	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), "🌪 Gale Sweep!", Color3.fromRGB(170, 220, 245))
+		if spiritToken[player] == token then spiritToken[player] = nil end
+		local endRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		Effects.Raw(endRoot and endRoot.Position or nil, { "Y", userId, 0 }) -- 끝: 정령이 사라진다
+	end)
 	return true
 end
 
@@ -467,8 +466,8 @@ function Skill.Use(player, skillKey, aimPoint)
 	local haste = (player:GetAttribute("GearHaste") or 0) + (player:GetAttribute("PetHaste") or 0) + (player:GetAttribute("LvHaste") or 0) + U.CooldownPerLevel * (skillLevel(player, skillKey) - 1)
 	local cooldown = S[skillKey].Cooldown * (1 - math.min(0.6, haste))
 	cooldowns[skillKey] = now + cooldown
-	if skillKey == "Sweep" then
-		pcall(function() SoundBank.Play(root, "Ult_Launch", { Pitch = 0.75, Volume = 1.1 }) end)
+	if skillKey == "Spirit" then
+		pcall(function() SoundBank.Play(root, "Skill_Heal", { Pitch = 1.45, Volume = 0.9 }) end) -- 맑은 소환음
 	else
 		SoundBank.Play(root, skillKey == "Ult" and "Skill_Ult" or "Skill_Heal")
 	end

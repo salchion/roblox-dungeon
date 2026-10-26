@@ -339,6 +339,10 @@ return {
 		["🌪 Gale Sweep!"] = "🌪 돌풍!",
 		["Weapon Upgrade"] = "무기 강화",
 		["Blacksmith Tom"] = "대장장이 톰",
+		["Spirit Guard"] = "정령 소환",
+		["Summons 4 light spirits for 10s: they circle you and shoot nearby enemies on their own. Great for sustained damage!"] = "빛의 정령 4마리를 10초 동안 소환해요: 정령이 내 주위를 돌며 근처 적을 알아서 쏴요. 꾸준한 피해에 좋아요!",
+		["🧚 Spirits!"] = "🧚 정령 소환!",
+		["🧚 Spirits"] = "🧚 정령",
 	},
 	pats = {
 		{ "^≈ ([%d,%.%-]+) dmg$", "≈ %s 피해", "dmg", -6 },
@@ -665,5 +669,6 @@ return {
 		{ "^(.-)%.%.%. auto%-dismantled! Essence %+([%d,%.%-]+), ([%d,%.%-]+) G$", "%s... 자동 분해! 정수 +%s, %s G", "dismantled", 966 },
 		{ "^🗿 Colossus defeated! Gear %+ 🎫 %+([%d,%.%-]+) %+ ([%d,%.%-]+) G %(time bonus x([%d,%.%-]+)%)$", "🗿 거신 처치! 장비 + 🎫 +%s + %s G (시간 보너스 x%s)", "Colossus", -51 },
 		{ "^🗿 (.-) · Zone (.-)$", "🗿 %s · %s구역", "Zone", 1990 },
+		{ "^🧚 ([%d,%.%-]+) spirits will fight for you for ([%d,%.%-]+)s!$", "🧚 정령 %s마리가 %s초 동안 대신 싸워요!", "spirits", -36 },
 	},
 }

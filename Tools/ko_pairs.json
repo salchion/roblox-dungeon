@@ -8094,5 +8094,25 @@
 [
 "🗿 %s · Zone %s",
 "🗿 %s · %s구역"
+],
+[
+"Spirit Guard",
+"정령 소환"
+],
+[
+"Summons 4 light spirits for 10s: they circle you and shoot nearby enemies on their own. Great for sustained damage!",
+"빛의 정령 4마리를 10초 동안 소환해요: 정령이 내 주위를 돌며 근처 적을 알아서 쏴요. 꾸준한 피해에 좋아요!"
+],
+[
+"🧚 Spirits!",
+"🧚 정령 소환!"
+],
+[
+"🧚 %d spirits will fight for you for %ds!",
+"🧚 정령 %d마리가 %d초 동안 대신 싸워요!"
+],
+[
+"🧚 Spirits",
+"🧚 정령"
 ]
 ]

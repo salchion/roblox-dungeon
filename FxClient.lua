@@ -1762,6 +1762,93 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
+------------------------------------------------------------
+-- 빛의 정령 (F 스킬): 소환한 사람 주위를 도는 작은 빛의 구슬 몇 마리. 모습은 각자 화면에서 그린다 (서버는 "Y" 로 시작 / 끝, "J" 로 쏘는 순간만 알린다).
+--   "Y" { userId, 개수(0이면 끝), 남은 초 }  /  "J" { userId, 번호, 맞은 위치 }
+------------------------------------------------------------
+local spirits = {} -- [userId] = { Parts = { { Orb, Lunge, LungeDir } }, Count, Expire }
+local SPIRIT_TINT = Color3.fromRGB(190, 235, 255)
+local function killSpirits(entry, withBurst)
+	for _, sp in ipairs(entry.Parts) do
+		if withBurst and sp.Orb.Parent then burst(sp.Orb.Position, SPIRIT_TINT, 8) end
+		sp.Orb:Destroy()
+	end
+end
+local function spiritEvent(event)
+	local userId, count = event[2], event[3]
+	local entry = spirits[userId]
+	if not count or count <= 0 then
+		if entry then
+			killSpirits(entry, true)
+			spirits[userId] = nil
+		end
+		return
+	end
+	if entry and entry.Count ~= count then
+		killSpirits(entry, false)
+		entry = nil
+	end
+	if not entry then
+		local owners = 0
+		for _ in pairs(spirits) do owners += 1 end
+		if owners >= 6 then return end -- (화면에 정령이 너무 많아지지 않게: 동시에 6명까지)
+		entry = { Parts = {}, Count = count }
+		for index = 1, count do
+			local orb = neonPart(Vector3.new(1.5, 1.5, 1.5), Color3.fromRGB(225, 248, 255), 0, Enum.PartType.Ball)
+			if not lowSpecOn() then
+				solid(orb, Vector3.new(2.8, 2.8, 2.8), Color3.fromRGB(150, 215, 255), Enum.Material.Neon, CFrame.identity, 0.62, Enum.PartType.Ball) -- 은은한 빛무리
+				for side = -1, 1, 2 do -- 작은 날개 한 쌍
+					solid(orb, Vector3.new(1.7, 0.1, 0.9), Color3.fromRGB(235, 250, 255), Enum.Material.Neon, CFrame.new(side * 1.05, 0.2, 0.1) * CFrame.Angles(0, 0, math.rad(side * -22)), 0.3)
+				end
+				local sparks = addEmitter(orb, SPIRIT_TINT, 14, 0.6, 0.6, 2)
+				sparks.Texture = SPARKLE
+			end
+			local light = Instance.new("PointLight")
+			light.Color, light.Range, light.Brightness = SPIRIT_TINT, 9, 1.2
+			light.Parent = orb
+			orb.Parent = fxFolder
+			table.insert(entry.Parts, { Orb = orb })
+		end
+		spirits[userId] = entry
+		local owner = Players:GetPlayerByUserId(userId)
+		local root = owner and owner.Character and owner.Character:FindFirstChild("HumanoidRootPart")
+		if root then burst(root.Position + Vector3.new(0, 3, 0), SPIRIT_TINT, 24) end -- 나타날 때 한 번 빛이 터진다
+	end
+	entry.Expire = os.clock() + (event[4] or 10) + 1.5 -- 서버가 3초마다 다시 알린다: 끊기면 저절로 사라진다
+end
+local function spiritHit(event)
+	local entry = spirits[event[1 + 1]]
+	local sp = entry and entry.Parts[event[3]]
+	local target = event[4]
+	if not sp or not sp.Orb.Parent or typeof(target) ~= "Vector3" then return end
+	local from = sp.Orb.Position
+	local length = (target - from).Magnitude
+	if length < 1 then return end
+	sp.Lunge, sp.LungeDir = os.clock() + 0.12, (target - from).Unit -- 쏠 때 살짝 앞으로 튄다
+	local beam = rootPart(CFrame.lookAt((from + target) / 2, target), Vector3.new(0.45, 0.45, length), SPIRIT_TINT, Enum.Material.Neon, nil, 0.15)
+	TweenService:Create(beam, TweenInfo.new(0.22), { Size = Vector3.new(0.05, 0.05, length), Transparency = 1 }):Play()
+	Debris:AddItem(beam, 0.3)
+	burst(target, SPIRIT_TINT, 5)
+end
+RunService.RenderStepped:Connect(function()
+	local now = os.clock()
+	for userId, entry in pairs(spirits) do
+		local owner = Players:GetPlayerByUserId(userId)
+		local root = owner and owner.Character and owner.Character:FindFirstChild("HumanoidRootPart")
+		if now > entry.Expire or not root then
+			killSpirits(entry, false)
+			spirits[userId] = nil
+		else
+			for index, sp in ipairs(entry.Parts) do
+				local angle = now * 1.5 + index * (2 * math.pi / entry.Count)
+				local pos = root.Position + Vector3.new(math.cos(angle) * 5.5, 3.4 + math.sin(now * 3 + index * 1.7) * 0.7, math.sin(angle) * 5.5)
+				if sp.Lunge and now < sp.Lunge then pos += sp.LungeDir * 1.6 end
+				sp.Orb.CFrame = CFrame.new(pos)
+			end
+		end
+	end
+end)
+
 local FLOAT_SIZE, DAMAGE_SIZE = UDim2.new(0, 140, 0, 36), UDim2.new(0, 90, 0, 40)
 lootTicker = { G = { Pending = 0, Last = 0, Scheduled = false }, XP = { Pending = 0, Last = 0, Scheduled = false } } -- 골드 / 경험치 글자 합치기용
 local HANDLERS = {
@@ -1813,11 +1900,11 @@ local HANDLERS = {
 	end,
 	H = function(event) flash(event[2]) end,
 	G = gunSound,
-	R = ring, Z = bolt, M = missile, L = flame, E = meteor, O = orbit,
+	R = ring, Z = bolt, M = missile, L = flame, E = meteor, O = orbit, Y = spiritEvent, J = spiritHit,
 }
 
 -- 한 배치(한 프레임)에서 종류별로 그릴 수 있는 최대 개수: 넘치는 것은 건너뛴다 (지우기 "X" / 끄기 "O" / 번쩍임 "H" 는 제한 없음)
-local BATCH_LIMIT = { G = 10, T = 48, R = 16, Z = 8, M = 12, L = 8, E = 8, U = 6, N = 6, V = 8, K = 14, P = 100, Q = 40, W = 10, S = 100, B = 60 }
+local BATCH_LIMIT = { Y = 8, J = 24, G = 10, T = 48, R = 16, Z = 8, M = 12, L = 8, E = 8, U = 6, N = 6, V = 8, K = 14, P = 100, Q = 40, W = 10, S = 100, B = 60 }
 Remotes.Fx.OnClientEvent:Connect(function(batch)
 	if typeof(batch) ~= "table" then return end
 	local used = {}
