@@ -3842,7 +3842,8 @@ local function isMouseOverButton(position) -- (매 프레임 불린다: 마우�
 end
 
 RunService.RenderStepped:Connect(function(dt)
-	local modalOpen = menuPanel.Visible or enhancePanel.Visible or gearPanel.Visible or selectPanel.Visible or warpPanel.Visible
+	local helpOpen = gui:FindFirstChild("HelpPanel")
+	local modalOpen = menuPanel.Visible or enhancePanel.Visible or gearPanel.Visible or selectPanel.Visible or warpPanel.Visible or (helpOpen ~= nil and helpOpen.Visible) -- (설정 창도 큰 창: 아래 HUD 가 비쳐 보이지 않게)
 	if not modalOpen then
 		-- 다른 스크립트의 큰 창(펫 / 상점 / 스탯)이 열려 있으면 진짜 마우스 커서를 되살린다
 		for _, name in ipairs({ "PetGui", "ShopGui", "LevelStatGui", "CodexGui", "AdminGui", "AugGui", "DepthGui", "OddsGui", "ChestGui" }) do
@@ -3926,7 +3927,7 @@ end
 
 do
 local helpPanel = makePanel({
-	Size = UDim2.new(0, 560, 0, 748), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
+	Name = "HelpPanel", Size = UDim2.new(0, 560, 0, 748), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
 }, gui)
 makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8), Text = "⚙ Settings / ❓ Help", Font = Enum.Font.GothamBlack, TextSize = 19 }, helpPanel)
 makeLabel({
