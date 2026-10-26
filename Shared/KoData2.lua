@@ -357,6 +357,8 @@ return {
 		["Blocked by shield"] = "방패에 막힘",
 		["Tutorial restarted from the first mission."] = "첫 미션부터 튜토리얼을 다시 시작해요.",
 		["🏋 Your training slot is empty! Set up training in Menu (B) → Skills & Growth (Passives · Training) and you'll get stronger over time"] = "🏋 훈련 칸이 비어 있어요! 메뉴 (B) → 스킬·성장 (패시브 · 훈련)에서 훈련을 맞춰 두면 시간이 지날수록 강해져요",
+		["Charged elemental burst · Hits several enemies"] = "차징 원소 폭발 · 여러 적 동시 타격",
+		["Gathers fire, ice or lightning above your head, then sends it at up to 3+ nearby enemies at once (all at one enemy if only one is near)"] = "머리 위에 불 / 얼음 / 번개를 모았다가 주변 적 3마리 이상에게 한꺼번에 날려요 (적이 한 마리면 전부 그 한 마리에게)",
 	},
 	pats = {
 		{ "^≈ ([%d,%.%-]+) dmg$", "≈ %s 피해", "dmg", -6 },

@@ -8206,5 +8206,13 @@
 [
 "[%s] Starts in %ds! Survive the incoming monsters",
 "[%s] %d초 뒤 시작! 몰려오는 몬스터에서 살아남으세요"
+],
+[
+"Charged elemental burst · Hits several enemies",
+"차징 원소 폭발 · 여러 적 동시 타격"
+],
+[
+"Gathers fire, ice or lightning above your head, then sends it at up to 3+ nearby enemies at once (all at one enemy if only one is near)",
+"머리 위에 불 / 얼음 / 번개를 모았다가 주변 적 3마리 이상에게 한꺼번에 날려요 (적이 한 마리면 전부 그 한 마리에게)"
 ]
 ]

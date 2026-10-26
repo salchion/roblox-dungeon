@@ -1857,6 +1857,73 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
+
+-- 마법책: 머리 위에 원소(불 / 얼음 / 번개)를 모았다가 주변 적들에게 한꺼번에 날린다. 이벤트 { "A", 쏜 사람 UserId, 원소(1 불 / 2 얼음 / 3 번개), 모으는 시간, { 대상 위치... } }
+local TOME_COLORS = { Color3.fromRGB(255, 150, 60), Color3.fromRGB(150, 220, 255), Color3.fromRGB(255, 240, 120) }
+local function tomeCast(event)
+	local owner = Players:GetPlayerByUserId(event[2])
+	local root = owner and owner.Character and owner.Character:FindFirstChild("HumanoidRootPart")
+	local targets = event[5]
+	if not root or typeof(targets) ~= "table" then return end
+	local element = math.clamp(event[3] or 1, 1, 3)
+	local color = TOME_COLORS[element]
+	local charge = math.clamp(event[4] or 0.55, 0.2, 1.2)
+	local started = os.clock()
+	local core = rootPart(CFrame.new(root.Position + Vector3.new(0, 5.2, 0)), Vector3.new(0.4, 0.4, 0.4), color, Enum.Material.Neon, Enum.PartType.Ball, 0.1)
+	local orbs = {}
+	for index = 1, 5 do
+		orbs[index] = rootPart(core.CFrame, Vector3.new(0.6, 0.6, 0.6), color, Enum.Material.Neon, Enum.PartType.Ball, 0.25)
+	end
+	task.spawn(function()
+		while true do
+			local t = (os.clock() - started) / charge
+			if t >= 1 or not core.Parent or not root.Parent then break end
+			local top = root.Position + Vector3.new(0, 5.2, 0)
+			core.Size = Vector3.one * (0.4 + 1.6 * t)
+			core.CFrame = CFrame.new(top)
+			local radius = 4 * (1 - t) + 0.4
+			for index, orb in ipairs(orbs) do
+				local angle = os.clock() * 7 + index * (2 * math.pi / #orbs)
+				orb.CFrame = CFrame.new(top + Vector3.new(math.cos(angle) * radius, math.sin(os.clock() * 4 + index) * 0.5 * (1 - t), math.sin(angle) * radius))
+			end
+			RunService.RenderStepped:Wait()
+		end
+		for _, orb in ipairs(orbs) do orb:Destroy() end
+		local from = core.Parent and core.Position or (root.Parent and root.Position + Vector3.new(0, 5.2, 0))
+		core:Destroy()
+		if not from then return end
+		for _, target in ipairs(targets) do
+			if typeof(target) == "Vector3" then
+				if element == 3 then -- 번개: 곧바로 꺾이는 번쩍임
+					local last = from
+					for step = 1, 4 do
+						local point = step == 4 and target or from:Lerp(target, step / 4) + Vector3.new(math.random() - 0.5, math.random() - 0.5, math.random() - 0.5) * 3
+						local length = (point - last).Magnitude
+						if length > 0.1 then
+							local seg = rootPart(CFrame.lookAt((last + point) / 2, point), Vector3.new(0.35, 0.35, length), color, Enum.Material.Neon, nil, 0.05)
+							TweenService:Create(seg, TweenInfo.new(0.25), { Size = Vector3.new(0.05, 0.05, length), Transparency = 1 }):Play()
+							Debris:AddItem(seg, 0.3)
+						end
+						last = point
+					end
+					burst(target, color, 14)
+				else
+					local size = element == 1 and Vector3.new(1.3, 1.3, 1.3) or Vector3.new(0.5, 0.5, 2.4)
+					local missile = rootPart(CFrame.lookAt(from, target), size, color, Enum.Material.Neon, element == 1 and Enum.PartType.Ball or nil, 0.05)
+					addTrail(missile, color, 0.9, 0.25)
+					local flight = TweenService:Create(missile, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { CFrame = CFrame.lookAt(target, target + (target - from)) })
+					flight.Completed:Connect(function()
+						missile:Destroy()
+						burst(target, color, element == 1 and 22 or 16)
+					end)
+					flight:Play()
+					Debris:AddItem(missile, 1)
+				end
+			end
+		end
+	end)
+end
+
 local FLOAT_SIZE, DAMAGE_SIZE = UDim2.new(0, 140, 0, 36), UDim2.new(0, 90, 0, 40)
 lootTicker = { G = { Pending = 0, Last = 0, Scheduled = false }, XP = { Pending = 0, Last = 0, Scheduled = false } } -- 골드 / 경험치 글자 합치기용
 local HANDLERS = {
@@ -1908,11 +1975,11 @@ local HANDLERS = {
 	end,
 	H = function(event) flash(event[2]) end,
 	G = gunSound,
-	R = ring, Z = bolt, M = missile, L = flame, E = meteor, O = orbit, Y = spiritEvent, J = spiritHit,
+	R = ring, Z = bolt, M = missile, L = flame, E = meteor, O = orbit, Y = spiritEvent, J = spiritHit, A = tomeCast,
 }
 
 -- 한 배치(한 프레임)에서 종류별로 그릴 수 있는 최대 개수: 넘치는 것은 건너뛴다 (지우기 "X" / 끄기 "O" / 번쩍임 "H" 는 제한 없음)
-local BATCH_LIMIT = { Y = 8, J = 24, G = 10, T = 48, R = 16, Z = 8, M = 12, L = 8, E = 8, U = 6, N = 6, V = 8, K = 14, P = 100, Q = 40, W = 10, S = 100, B = 60 }
+local BATCH_LIMIT = { A = 6, Y = 8, J = 24, G = 10, T = 48, R = 16, Z = 8, M = 12, L = 8, E = 8, U = 6, N = 6, V = 8, K = 14, P = 100, Q = 40, W = 10, S = 100, B = 60 }
 Remotes.Fx.OnClientEvent:Connect(function(batch)
 	if typeof(batch) ~= "table" then return end
 	local used = {}

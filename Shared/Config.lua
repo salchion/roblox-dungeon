@@ -977,9 +977,9 @@ Config.WeaponTypes = {
 		Trait = "Point-blank burst damage · Very short range", Desc = "6 pellets fan out in a spread (fewer hit at range)",
 	},
 	Flamer = {
-		Name = "Spell Tome", Form = "Flamer", DamageMult = 0.9, Cooldown = 0.9, Range = 320, Pellets = 1, Spread = 0, Splash = 7,
+		Name = "Spell Tome", Form = "Flamer", DamageMult = 0.9, Cooldown = 1.1, Range = 320, Pellets = 1, Spread = 0, Splash = 7,
 		ShotScale = 1.5, SpeedScale = 0.9, BarrelLength = 0.5, BarrelThickness = 1,
-		Trait = "Fireball · small explosion", Desc = "Hurls a fireball that bursts into a small explosion around the impact (radius 7)",
+		Trait = "Charged elemental burst · Hits several enemies", Desc = "Gathers fire, ice or lightning above your head, then sends it at up to 3+ nearby enemies at once (all at one enemy if only one is near)",
 	},
 	Cannon = {
 		Name = "Mortar", Form = "Cannon", DamageMult = 1.5, Cooldown = 1.3, Range = 360, Pellets = 1, Spread = 0, Splash = 7,

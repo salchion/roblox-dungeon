@@ -18,7 +18,7 @@ local SoundBank = {}
 local SPECS = {
 	-- 무기 종류별 총소리 (Shot 소리를 가공)
 	-- 저격총 모양 라이플 (Pistol = 저격총 외형): AudioBank 의 저격총 소리 ID 를 쓴다. 라이플 속도로 쏘면 소리가 겹치므로 길이를 줄이고 앞 소리는 부드럽게 끊는다 (Choke)
-	Shot_Pistol   = { Base = "Shot", CustomLength = 0.9, Pitch = 0.9, Volume = 0.9, Length = 0.9, Choke = true, Fx = { { "reverb", { DecayTime = 1.2, WetLevel = -6 } } } },
+	Shot_Pistol   = { Base = "Shot", Pitch = 1.15, Volume = 1.0, Length = 0.7 },
 	Shot_Revolver = { Base = "Dash", Pitch = 0.9, Volume = 0.8, Length = 0.5, Layers = { { Pitch = 0.5, Volume = 0.5, Delay = 0 } } },
 	-- 활: 높고 가벼운 "슉" (Rifle = 활)
 	Shot_Rifle    = { Base = "Dash", Pitch = 1.7, Volume = 0.8, Length = 0.4, Fx = { { "eq", { LowGain = -8, MidGain = 0, HighGain = 3 } } } },
@@ -155,7 +155,7 @@ end
 -- 사운드 테스트 창(Studio 에서 K 키)에 보이는 항목별 설명
 SoundBank.Descriptions = {
 	Dash = "Dash (Q)", Pickup = "Loot pickup",
-	Shot_Pistol = "Sniper Rifle shot", Shot_Smg = "SMG shot", Shot_Revolver = "Bomb throw", Shot_Rifle = "Bow shot", Shot_Shotgun = "Shotgun shot",
+	Shot_Pistol = "Rifle shot", Shot_Smg = "SMG shot", Shot_Revolver = "Bomb throw", Shot_Rifle = "Bow shot", Shot_Shotgun = "Shotgun shot",
 	Shot_Flamer = "Spell Tome fireball", Shot_Cannon = "Mortar shot", Shot_Sniper = "Crossbow shot", Shot_Rocket = "Rocket Launcher shot", Shot_Rail = "Railgun shot",
 	Hit = "Enemy hit (short)", Crit = "Critical hit", Kill = "Enemy kill (pitch rises with kill streak)",
 	Skill_Heal = "First Aid used", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Ult_Missile = "Dead Eye missile launch", Ult_Hit = "Dead Eye missile impact", Ult_Launch = "Dead Eye launch thump", Ult_Finale = "Dead Eye final blast", Boom = "Monster explosion / shockwave / meteor",

@@ -595,6 +595,37 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 		player:SetAttribute("ShotDmgScale", 1)
 		Weapon.PlayShot(player)
 	end
+	-- 마법책: 총처럼 쏘지 않고 머리 위에 원소를 모았다가(0.55초) 주변 적 최대 N마리에게 한꺼번에 날린다 (적이 한 마리면 전부 그 한 마리에게). 주변에 적이 없으면 아래의 일반 사격으로 넘어간다
+	if weaponType.Form == "Flamer" then
+		local count = math.min(6, 3 + math.floor(level / 80))
+		local list = Dungeon.TargetsIn(player, root.Position, 75, count) or Field.TargetsIn(player, root.Position, 75, count)
+		if list and #list > 0 then
+			local positions = {}
+			for _, part in ipairs(list) do table.insert(positions, part.Position) end
+			local charge = 0.55
+			Effects.Raw(root.Position, { "A", player.UserId, math.random(3), charge, positions })
+			task.delay(charge, function()
+				if player.Parent then Weapon.PlayShot(player) end
+			end)
+			task.delay(charge + 0.2, function()
+				if not player.Parent then return end
+				local landedAny = false
+				for _, part in ipairs(list) do
+					if part.Parent then
+						local damage = Dungeon.ComputeDamage(player)
+						damage = math.max(1, math.floor(damage * (#list > 1 and 0.8 or 1)))
+						local landed = Dungeon.HitPart(player, part, damage) or Field.HitPart(player, part, damage)
+						if landed then
+							landedAny = true
+							player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1)
+						end
+					end
+				end
+				if landedAny then Skill.AddCharge(player, Config.Skills.ChargePerShot * weaponType.Cooldown) end
+			end)
+			return
+		end
+	end
 	fireVolley(origin, tipPosition)
 	-- 이어 쏘기: 같은 방향으로 "따-땅" 한 번 더 (지금 몸 위치에서)
 	local followIndex = 0
