@@ -140,7 +140,7 @@ handlers.Spirit = function(player, root, _, character)
 			if spiritToken[player] ~= token or not player.Parent or not current or not current.Parent then break end
 			local position = current.Position
 			local again = hit[current] == true
-			Effects.Raw(position, { "C", last, position })
+			Effects.Raw(position, { "C", last, position, hop == 1 })
 			BL.Ctx = "스킬"
 			Meter.Source = "Spirit" -- 대미지 미터기: 연쇄 번개(F)
 			Effects.DamageTint = Color3.fromRGB(255, 240, 120)

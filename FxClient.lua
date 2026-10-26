@@ -1933,28 +1933,61 @@ local function tomeCast(event)
 	end)
 end
 
--- 연쇄 번개 한 칸: { "C", 시작, 끝 }: 가늘고 밝은 지그재그 번개가 한 적에서 다음 적으로 튄다 (하늘에서 내리꽂는 굵은 번개는 "Z")
-local function chainHop(event)
-	local a, b = event[2], event[3]
-	if typeof(a) ~= "Vector3" or typeof(b) ~= "Vector3" then return end
-	local yellow, white = Color3.fromRGB(255, 240, 110), Color3.fromRGB(255, 255, 240)
+-- 연쇄 번개 한 칸: { "C", 시작, 끝, 첫 타인가 }: 푸른 빛 번개 한 줄기(겉 빛 + 노란 몸통 + 하얀 심지)가 지그재그로 꺾이며 뻗고, 곁가지가 갈라지고, 한 번 더 지직 하고 떨리며, 맞은 곳에서 번쩍 터진다 ("Z" 는 하늘에서 내리꽂는 굵은 번개)
+local BOLT_BLUE, BOLT_YELLOW, BOLT_WHITE = Color3.fromRGB(110, 150, 255), Color3.fromRGB(255, 240, 130), Color3.fromRGB(255, 255, 245)
+local function boltPoints(a, b, segments, jitter)
 	local points = { a }
-	for i = 1, 3 do
-		table.insert(points, a:Lerp(b, i / 4) + Vector3.new((math.random() - 0.5) * 5, (math.random() - 0.5) * 3, (math.random() - 0.5) * 5))
+	for i = 1, segments - 1 do
+		local fade = math.sin(math.pi * i / segments) -- 양 끝은 덜 흔들리고 가운데가 크게 꺾인다
+		table.insert(points, a:Lerp(b, i / segments) + Vector3.new((math.random() - 0.5) * jitter * fade * 2, (math.random() - 0.5) * jitter * fade * 1.2, (math.random() - 0.5) * jitter * fade * 2))
 	end
 	table.insert(points, b)
+	return points
+end
+local function drawBolt(points, width, color, transparency, life)
 	for i = 1, #points - 1 do
 		local p0, p1 = points[i], points[i + 1]
 		local length = (p1 - p0).Magnitude
 		if length > 0.1 then
-			local part = neonPart(Vector3.new(1.4, 1.4, length), i % 2 == 0 and white or yellow, 0.05)
+			local part = neonPart(Vector3.new(width, width, length + width * 0.5), color, transparency)
 			part.CFrame = CFrame.lookAt((p0 + p1) / 2, p1)
 			part.Parent = fxFolder
-			TweenService:Create(part, TweenInfo.new(0.3), { Transparency = 1, Size = Vector3.new(0.12, 0.12, length) }):Play()
-			Debris:AddItem(part, 0.35)
+			TweenService:Create(part, TweenInfo.new(life), { Transparency = 1, Size = Vector3.new(width * 0.15, width * 0.15, length) }):Play()
+			Debris:AddItem(part, life + 0.05)
 		end
 	end
-	burst(b, yellow, 12)
+end
+local function chainHop(event)
+	local a, b = event[2], event[3]
+	if typeof(a) ~= "Vector3" or typeof(b) ~= "Vector3" then return end
+	local first = event[4] == true
+	local thick = first and 1.5 or 1
+	local length = (b - a).Magnitude
+	local main = boltPoints(a, b, math.clamp(math.floor(length / 5) + 3, 4, 7), math.clamp(length * 0.18, 1.5, 5))
+	drawBolt(main, 3.4 * thick, BOLT_BLUE, 0.55, 0.38) -- 겉 빛
+	drawBolt(main, 1.5 * thick, BOLT_YELLOW, 0.1, 0.3) -- 몸통
+	drawBolt(main, 0.6 * thick, BOLT_WHITE, 0, 0.22) -- 하얀 심지
+	for _ = 1, 2 do -- 곁가지: 줄기 중간에서 옆으로 갈라지는 짧은 번개
+		local at = main[math.random(2, #main - 1)]
+		local tip = at + Vector3.new((math.random() - 0.5) * 14, (math.random() - 0.3) * 6, (math.random() - 0.5) * 14)
+		drawBolt(boltPoints(at, tip, 3, 2), 0.7, BOLT_YELLOW, 0.2, 0.25)
+	end
+	task.delay(0.07, function() -- 지직: 같은 길이 살짝 다르게 한 번 더 번쩍
+		drawBolt(boltPoints(a, b, #main - 1, math.clamp(length * 0.2, 2, 6)), 1.1 * thick, BOLT_WHITE, 0.1, 0.2)
+	end)
+	-- 맞은 곳: 번쩍 + 불꽃 + 고리 + 그을음
+	burst(b, BOLT_YELLOW, first and 28 or 18)
+	burst(b, BOLT_WHITE, 8)
+	ring({ "R", b, first and 12 or 8, BOLT_BLUE })
+	if scorch then scorch(b, first and 5 or 3, 1.2) end
+	local glow = rootPart(CFrame.new(b), Vector3.new(0.5, 0.5, 0.5), BOLT_WHITE, Enum.Material.Neon, Enum.PartType.Ball, 0.2)
+	local light = Instance.new("PointLight")
+	light.Color, light.Range, light.Brightness = BOLT_YELLOW, first and 26 or 18, 4
+	light.Parent = glow
+	TweenService:Create(glow, TweenInfo.new(0.25), { Size = Vector3.one * (first and 7 or 4.5), Transparency = 1 }):Play()
+	TweenService:Create(light, TweenInfo.new(0.25), { Brightness = 0 }):Play()
+	Debris:AddItem(glow, 0.3)
+	if first then burst(a, BOLT_BLUE, 14) end -- 손끝에서 튀는 불꽃
 end
 
 local FLOAT_SIZE, DAMAGE_SIZE = UDim2.new(0, 140, 0, 36), UDim2.new(0, 90, 0, 40)
