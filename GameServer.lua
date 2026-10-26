@@ -221,6 +221,11 @@ local function syncWeaponLevel(player)
 end
 
 local function setupPlayer(player)
+	-- 접속한 나라(예: "KR")를 알려 준다: 클라이언트가 한국이면 한국어로 시작한다 (KoreanClient). 못 알아내면 빈 글자.
+	task.spawn(function()
+		local ok, region = pcall(function() return game:GetService("LocalizationService"):GetCountryRegionForPlayerAsync(player) end)
+		if player.Parent then player:SetAttribute("CountryCode", ok and typeof(region) == "string" and region or "") end
+	end)
 	-- 3인칭 카메라 (1인칭으로 들어가지 못하게 최소 거리를 둠)
 	player.CameraMode = Enum.CameraMode.Classic
 	player.CameraMinZoomDistance = 8

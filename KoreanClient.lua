@@ -369,6 +369,22 @@ task.spawn(function()
 	refreshAll()
 end)
 
+-- 접속한 나라가 한국이면 한국어로 시작한다 (로블록스 계정 언어가 영어여도). 서버가 알려 주는 CountryCode 를 받았을 때 한 번만 정하고, 이후에는 건드리지 않는다.
+task.spawn(function()
+	local code = player:GetAttribute("CountryCode")
+	local waited = 0
+	while code == nil and waited < 10 do
+		task.wait(0.5)
+		waited += 0.5
+		code = player:GetAttribute("CountryCode")
+	end
+	if code == "KR" and lang ~= "ko" and not player:GetAttribute("UiLangChosen") then
+		lang = "ko"
+		player:SetAttribute("UiLang", "ko")
+		refreshAll()
+	end
+end)
+
 -- Studio 에서만: 20초마다 새로 모인 "번역이 없는 글자"를 Output 에 찍는다 (한글 모드로 게임을 돌아다니면 영어로 남은 곳이 모인다)
 if RunService:IsStudio() then
 	task.spawn(function()

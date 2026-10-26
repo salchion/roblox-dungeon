@@ -4031,9 +4031,7 @@ do
 		end
 		return 2
 	end
-	settingButton(628, function() return "🌐 Language: " .. (player:GetAttribute("UiLang") == "ko" and "한국어" or "English") end, function()
-		player:SetAttribute("UiLang", player:GetAttribute("UiLang") == "ko" and "en" or "ko")
-	end)
+	-- (언어는 접속할 때 정해진다: 나라가 한국이거나 로블록스 언어가 한국어면 한국어. 전환 버튼은 뺐다)
 	settingButton(588, function() return "🔍 UI Size: " .. sizes[sizeIndex()][2] .. " (PC)" end, function()
 		player:SetAttribute("UiPref", sizes[sizeIndex() % #sizes + 1][1])
 	end)
