@@ -366,7 +366,7 @@ local function showPrompt(data)
 	player:SetAttribute("SidePromptUp", true)
 	local small = compact() -- 작은 화면: 아래 가운데(스킬 바 위)에 줄여서 띄운다 (왼쪽 아래는 조이스틱 자리)
 	local promptY = pgui:GetAttribute("UiPromptY") or -sideBase
-	local card = create("Frame", { Size = UDim2.new(0, 300, 0, 92), AnchorPoint = small and Vector2.new(0.5, 1) or Vector2.new(0, 1),
+	local card = create("Frame", { Size = UDim2.new(0, 268, 0, 96), AnchorPoint = small and Vector2.new(0.5, 1) or Vector2.new(0, 1),
 		Position = small and UDim2.new(0.5, 0, 1, 140) or UDim2.new(0, -320, 1, -sideBase),
 		BackgroundColor3 = Color3.fromRGB(18, 20, 34), BackgroundTransparency = 0.1, BorderSizePixel = 0, ZIndex = 70 }, gui)
 	activePrompt = card

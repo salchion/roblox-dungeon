@@ -64,6 +64,10 @@ end
 local GOLD_ORDER = { { "Weapon", weaponCost }, { "Sets", setsCost }, { "Growth", skillCost }, { "Pets", petCost } }
 local goldDots = {}
 local function computeGoldDots()
+	if attr("TutorialActive") == true then -- 튜토리얼 중에는 골드 빨간 점을 켜지 않는다 (막 시작했는데 "강화하세요" 점이 먼저 뜨면 어색하다)
+		for _, entry in ipairs(GOLD_ORDER) do goldDots[entry[1]] = false end
+		return
+	end
 	local budget = gold()
 	for _, entry in ipairs(GOLD_ORDER) do
 		local cost = entry[2]()
