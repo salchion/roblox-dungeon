@@ -180,7 +180,7 @@ local SEPARATORS = { " · ", " / ", "  ", ", ", " - " }
 function lookupLoose(piece, depth)
 	local found = lookupTrimmed(piece)
 	if found then return found end
-	if depth >= 3 or #piece > 300 then return nil end
+	if depth >= 3 or #piece > 160 then return nil end
 	local tag, rest = string.match(piece, "^(%[[^%]]+%]%s*)(.+)$") -- "[Epic] Gold Ring"
 	if tag then
 		local inner = string.match(tag, "^%[(.-)%]")
@@ -273,6 +273,7 @@ local function apply(obj)
 	if lang ~= "ko" then return end
 	local text = obj.Text
 	if text == "" or not string.find(text, "%a%a%a") then return end -- (숫자뿐인 글자는 번역할 게 없다)
+	if not string.find(string.gsub(string.gsub(text, "<[^>]*>", " "), "DPS", " "), "%a%a%a") then return end -- (태그 / DPS 만 있는 글자: 매 프레임 바뀌는 DPS 미터기 같은 곳은 건너뛴다)
 	local ko = translate(text)
 	if ko and ko ~= text then
 		record[obj] = { En = text, Ko = ko }
@@ -317,13 +318,12 @@ local function refreshAll()
 	-- 한국어로: 모든 글자를 다시 훑는다. 글자가 많아도 화면이 멈추지 않게 200개씩 나눠서 바꾼다
 	local list = {}
 	for obj in pairs(watched) do table.insert(list, obj) end -- (돌다가 새 글자가 생겨도 안전하게 복사해서 돈다)
-	local batch = 0
+	local sliceStart = os.clock()
 	for _, obj in ipairs(list) do
 		if obj.Parent then apply(obj) end
-		batch += 1
-		if batch >= 200 then
-			batch = 0
+		if os.clock() - sliceStart > 0.004 then -- (한 프레임에 4ms 만 쓰고 다음 프레임으로: 전환할 때 화면이 멈칫하지 않게)
 			task.wait()
+			sliceStart = os.clock()
 		end
 	end
 end
