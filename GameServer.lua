@@ -410,7 +410,7 @@ local function setupPlayer(player)
 			player:GetAttributeChangedSignal("WeaponLevel"):Connect(function()
 				once("weapon1", string.format("첫 무기 강화 (%d단계)", player:GetAttribute("WeaponLevel") or 0))
 				local tier = Config.GetUnlockedCount(player:GetAttribute("WeaponLevel") or 0)
-				if tier ~= lastWeaponTier then lastWeaponTier = tier log(string.format("무기 형 해금 → %d/10형", tier)) end
+				if tier ~= lastWeaponTier then lastWeaponTier = tier log(string.format("무기 형 해금 → %d/%d형", tier, #Config.WeaponTypes.Order)) end
 			end)
 			for _, minutes in ipairs({ 5, 10, 20, 30 }) do
 				task.delay(minutes * 60 - (os.clock() - startedAt), function()

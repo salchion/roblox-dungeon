@@ -1,5 +1,5 @@
 -- WeaponBarClient (StarterPlayer > StarterPlayerScripts 안의 LocalScript, 이름: WeaponBarClient)
--- 화면 아래의 "무기 슬롯 바": 무기 종류 10개를 번호 1~0 으로 바로 바꾼다 (폰은 칸을 누른다).
+-- 화면 아래의 "무기 슬롯 바": 무기 종류 5개를 번호 1~5 로 바로 바꾼다 (폰은 칸을 누른다).
 --   * 열린 종류만 켜지고, 지금 쓰는 무기는 테두리가 강조된다. 잠긴 칸은 🔒 이고, 누르면 "+N 단계에서 열려요 (몇 단계 남음)" 이 뜬다.
 --   (강화 버튼은 두지 않는다: 무기 강화는 대장간 / 메뉴(B)에서만 한다.)
 --   * 새 무기 종류가 열리면 그 칸이 반짝이고 "새 총: ○○ — 숫자 N 을 누르세요" 가 뜬다 (무기를 올리면 새 총이 열린다는 걸 자연스럽게 알려 준다).
@@ -78,9 +78,9 @@ local function idleText()
 	local milestone = Config.GetNextMilestone(level)
 	local text = string.format("%s", weaponName(current))
 	if milestone and milestone.Kind == "Form" then
-		text = text .. string.format("  ·  next gun: %s at +%d", milestone.Name, milestone.Level)
+		text = text .. string.format("  ·  next weapon: %s at +%d", milestone.Name, milestone.Level)
 	elseif not COMPACT then
-		text = text .. "  ·  keys 1-0 switch guns"
+		text = text .. "  ·  keys 1-5 switch weapons"
 	end
 	return text
 end
@@ -109,7 +109,7 @@ local function refresh()
 	local count = Config.GetUnlockedCount(level)
 	if lastUnlocked and count > lastUnlocked then
 		flash(count)
-		say(string.format("🆕 New gun: %s - press %d!", weaponName(ORDER[count]), count % 10), 6)
+		say(string.format("🆕 New weapon: %s - press %d!", weaponName(ORDER[count]), count % 10), 6)
 	end
 	lastUnlocked = count
 

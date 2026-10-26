@@ -916,12 +916,12 @@
 "세트 효과 해금!"
 ],
 [
-"Switch guns with 1-0!",
-"1-0으로 총을 바꾸세요!"
+"Switch weapons with 1-5!",
+"1-5 키로 무기를 바꾸세요!"
 ],
 [
-"The bar at the bottom shows every gun. Upgrade your weapon at the Forge (or Menu B) to unlock new ones, then press its number or tap it.",
-"아래 막대에 모든 총이 보여요. 대장간(또는 메뉴 B)에서 무기를 강화하면 새 총이 열리고, 번호를 누르거나 눌러서 바꾸세요."
+"The bar at the bottom shows every weapon. Upgrade your weapon at the Forge (or Menu B) to unlock new ones, then press its number or tap it.",
+"아래 막대에 모든 무기이 보여요. 대장간(또는 메뉴 B)에서 무기를 강화하면 새 무기이 열리고, 번호를 누르거나 눌러서 바꾸세요."
 ],
 [
 "Ultimate ready!",
@@ -4332,8 +4332,8 @@
 "💎 보물 방"
 ],
 [
-"💰 Use your gold to upgrade your weapon to +15 and unlock the Sniper Rifle! Once unlocked, you can pick any weapon you like in the Weapons tab",
-"💰 골드로 무기를 +15까지 강화해 저격총을 해금하세요! 해금하면 무기 탭에서 원하는 무기를 마음대로 고를 수 있어요"
+"💰 Use your gold to upgrade your weapon to +15 and unlock the Bow! Once unlocked, you can pick any weapon you like in the Weapons tab",
+"💰 골드로 무기를 +15까지 강화해 활을 해금하세요! 해금하면 무기 탭에서 원하는 무기를 마음대로 고를 수 있어요"
 ],
 [
 "📈 Growth",
@@ -4504,16 +4504,16 @@
 "👑 여기서 사냥하며 군주를 찾으세요!"
 ],
 [
-"  ·  keys 1-0 switch guns",
-"  ·  1-0 키로 총 바꾸기"
+"  ·  keys 1-5 switch weapons",
+"  ·  1-5 키로 무기 바꾸기"
 ],
 [
-"  ·  next gun: %s at +%d",
-"  ·  다음 총: %s (+%d에서)"
+"  ·  next weapon: %s at +%d",
+"  ·  다음 무기: %s (+%d에서)"
 ],
 [
-"🆕 New gun: %s - press %d!",
-"🆕 새 총: %s - %d를 누르세요!"
+"🆕 New weapon: %s - press %d!",
+"🆕 새 무기: %s - %d를 누르세요!"
 ],
 [
 "🔒 %s unlocks at +%d (%d to go) - upgrade your weapon at the Forge or in the Menu (B)",
@@ -6492,8 +6492,8 @@
 "🔨 무기 강화"
 ],
 [
-"🔫 10 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: %s",
-"🔫 무기 10종 — 강화 단계(15마다)마다 하나씩 열려요. 해금한 무기 중 싸울 무기를 고르세요 · 현재: %s"
+"🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: %s",
+"🔫 무기 5종 — 강화 단계(15마다)마다 하나씩 열려요. 해금한 무기 중 싸울 무기를 고르세요 · 현재: %s"
 ],
 [
 "🔫 Fight with this weapon",

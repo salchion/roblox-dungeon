@@ -2650,7 +2650,7 @@ local function buildWeaponTab()
 	local order = Config.WeaponTypes.Order
 	local equippedKey = Config.ResolveWeaponType(level, player:GetAttribute("WeaponType"))
 	local eraTier = Config.GetWeaponTier(level)
-	sectionTitle(string.format("🔫 10 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: %s", Config.GetEraName(eraTier.Era)))
+	sectionTitle(string.format("🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: %s", Config.GetEraName(eraTier.Era)))
 
 	local previewKey = Config.WeaponTypes[settings.PreviewForm or ""] and settings.PreviewForm ~= "Order" and settings.PreviewForm or equippedKey
 	local shown = Config.GetLookTier(level, previewKey) -- 그 무기 형 + 지금 시대의 외모 / 탄 색

@@ -637,11 +637,13 @@ function Weapon.PlayShot(player)
 	local tip = barrel and barrel:FindFirstChild("Tip")
 	if not tip then return end
 
-	local muzzle = tip:FindFirstChild("Muzzle")
+	-- 총구 불꽃 / 반동은 총(라이플)만: 활 / 수리검 / 박격포 / 지팡이는 총처럼 번쩍이거나 튀지 않는다
+	local isGun = Config.ResolveWeaponType(player:GetAttribute("WeaponLevel") or 0, player:GetAttribute("WeaponType")) == "Pistol"
+	local muzzle = isGun and tip:FindFirstChild("Muzzle")
 	if muzzle then
 		muzzle:Emit(6)
 	end
-	local light = tip:FindFirstChild("MuzzleLight")
+	local light = isGun and tip:FindFirstChild("MuzzleLight")
 	if light then
 		light.Enabled = true
 		task.delay(0.05, function()
@@ -653,7 +655,7 @@ function Weapon.PlayShot(player)
 
 	-- 반동: 손과 총을 잇는 RightGrip의 위치를 잠깐 뒤로 밀었다가 되돌림
 	local hand = character:FindFirstChild("RightHand") or character:FindFirstChild("Right Arm")
-	local grip = hand and hand:FindFirstChild("RightGrip")
+	local grip = isGun and hand and hand:FindFirstChild("RightGrip")
 	if grip then
 		local rest = grip:GetAttribute("RestC1")
 		if not rest then

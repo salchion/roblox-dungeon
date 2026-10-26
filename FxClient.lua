@@ -413,9 +413,8 @@ local function classFlourish(class, from, to, size, color, era, richness)
 		burst(front, smokeColor, 4)
 	elseif class == "Rifle" then -- 활: 시위가 튕기는 작은 고리
 		ringAt(front, dir, tone, 0.4, 1.8 * grow, 0.1, 0.6)
-	elseif class == "Shotgun" then
-		fanLines(front, dir, tone, 5, 34, 7 * grow, 0.12)
-		burst(front + dir * 1.5, smokeColor, 6)
+	elseif class == "Shotgun" then -- 수리검: 던지는 순간 작은 바람 먼지만
+		burst(front, Color3.fromRGB(210, 215, 225), 3)
 	elseif class == "Sniper" then -- 석궁: 묵직한 한 번의 고리
 		ringAt(front, dir, tone, 0.8, 5 * grow, 0.18, 0.5)
 	elseif class == "Rail" then -- 지팡이: 끝에서 반짝이는 가루
@@ -839,7 +838,7 @@ local function playShot(event)
 	local special = class and SPECIAL[class]
 	if special then
 		claimShot(1.4) -- (가장 긴 비행 1.2초 + 여유: 시간이 지나면 저절로 빠진다)
-		eraMuzzle(from, (to - from).Unit, era, color, inEra, false)
+		if class == "Pistol" then eraMuzzle(from, (to - from).Unit, era, color, inEra, false) end -- (총구 섬광은 총만: 활 / 수리검 / 박격포 / 지팡이는 총처럼 번쩍이지 않는다)
 		classFlourish(class, from, to, size, color, era, richness)
 		if era == 7 and (class == "Rail" or class == "Sniper") then pathLightning(from, to, Color3.fromRGB(255, 245, 140), 0.28, 3) end
 		special(from, to, size, speed, color, era)

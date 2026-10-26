@@ -2,6 +2,7 @@
 -- 자동 생성 파일: Tools/build_ko.py 가 Tools/ko_pairs.json 에서 만든다. 직접 고치지 말고 ko_pairs.json 을 고친 뒤 다시 만든다.
 return {
 	exact = {
+		["🔊 Music Volume"] = "🔊 음악 볼륨",
 		["🔍 UI Size: "] = "🔍 UI 크기: ",
 		["🔒 Auto-Attack ON — click a dummy/monster to lock onto it (R to turn off)"] = "🔒 자동 공격 켜짐 — 허수아비/몬스터를 클릭하면 그 대상을 고정해요 (R로 끄기)",
 		["🔒 Do your first upgrades with [Upgrade] yourself! x10 / Max Upgrade unlock soon."] = "🔒 첫 강화는 [강화]를 직접 눌러 보세요! x10 / 최대 강화는 곧 열려요.",
@@ -472,8 +473,8 @@ return {
 		{ "^👀 %[(.-)%] 5%-second preview!$", "👀 [%s] 5초 미리보기!", "preview", 978 },
 		{ "^MISSION ([%d,%.%-]+) / ([%d,%.%-]+)$", "미션 %s / %s", "MISSION", -11 },
 		{ "^🎯 Mission ([%d,%.%-]+)/([%d,%.%-]+)$", "🎯 미션 %s/%s", "Mission", -11 },
-		{ "^  ·  next gun: (.-) at %+([%d,%.%-]+)$", "  ·  다음 총: %s (+%s에서)", "next", 980 },
-		{ "^🆕 New gun: (.-) %- press ([%d,%.%-]+)!$", "🆕 새 총: %s - %s를 누르세요!", "press", 979 },
+		{ "^  ·  next weapon: (.-) at %+([%d,%.%-]+)$", "  ·  다음 무기: %s (+%s에서)", "weapon", 977 },
+		{ "^🆕 New weapon: (.-) %- press ([%d,%.%-]+)!$", "🆕 새 무기: %s - %s를 누르세요!", "weapon", 976 },
 		{ "^🔒 (.-) unlocks at %+([%d,%.%-]+) %(([%d,%.%-]+) to go%) %- upgrade your weapon at the Forge or in the Menu %(B%)$", "🔒 %s은(는) +%s에서 해금 (%s 남음) - 대장간이나 메뉴 (B)에서 무기를 강화하세요", "unlocks", 922 },
 		{ "^🎮 Welcome to the world of adventure, (.-)!$", "🎮 모험의 세계에 온 걸 환영해요, %s님!", "adventure", 962 },
 		{ "^👋 Welcome back, (.-)!$", "👋 다시 오셨네요, %s님!", "Welcome", 983 },
@@ -596,7 +597,7 @@ return {
 		{ "^🔥 Better gear dropped! %(([%d,%.%-]+) slot%(s%)%)$", "🔥 더 좋은 장비가 떨어졌어요! (%s칸)", "dropped", -33 },
 		{ "^🔥 Combo x([%d,%.%-]+)$", "🔥 콤보 x%s", "Combo", -9 },
 		{ "^Damage %+([%d,%.%-]+)%%$", "피해 +%s%%", "Damage", -8 },
-		{ "^🔫 10 Weapon Types — one unlocks per upgrade milestone %(every 15%)%. Pick which unlocked weapon to fight with · Now: (.-)$", "🔫 무기 10종 — 강화 단계(15마다)마다 하나씩 열려요. 해금한 무기 중 싸울 무기를 고르세요 · 현재: %s", "milestone", 886 },
+		{ "^🔫 5 Weapon Types — one unlocks per upgrade milestone %(every 15%)%. Pick which unlocked weapon to fight with · Now: (.-)$", "🔫 무기 5종 — 강화 단계(15마다)마다 하나씩 열려요. 해금한 무기 중 싸울 무기를 고르세요 · 현재: %s", "milestone", 887 },
 		{ "^🛡 Survive!  ([%d,%.%-]+)s$", "🛡 버티세요!  %s초", "Survive", -13 },
 		{ "^Era ([%d,%.%-]+)  ·  Your weapon look and bullet color changed!$", "%s시대  ·  무기 외형과 탄 색이 바뀌었어요!", "changed", -51 },
 		{ "^⚠ Zone ([%d,%.%-]+) · (.-) ⚠$", "⚠ %s구역 · %s ⚠", "Zone", 988 },
