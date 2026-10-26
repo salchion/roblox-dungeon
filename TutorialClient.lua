@@ -371,7 +371,7 @@ local function showPrompt(data)
 		BackgroundColor3 = Color3.fromRGB(18, 20, 34), BackgroundTransparency = 0.1, BorderSizePixel = 0, ZIndex = 70 }, gui)
 	activePrompt = card
 	rounded(card, 12)
-	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = small and UDim2.new(0.5, 0, 1, promptY) or UDim2.new(0, 14, 1, -sideBase) }):Play() -- 왼쪽에서 스르륵 들어온다
+	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = small and UDim2.new(0.5, 0, 1, promptY) or UDim2.new(0, 172, 1, -sideBase) }):Play() -- 왼쪽에서 스르륵 들어온다
 	if small then create("UIScale", { Scale = 0.8 }, card) end
 	create("UIStroke", { Color = Color3.fromRGB(190, 168, 110), Thickness = 1.5, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
 	local keycap = create("Frame", { Size = UDim2.new(0, 46, 0, 46), Position = UDim2.new(0, 12, 0, 12), BackgroundColor3 = Color3.fromRGB(232, 232, 240), BorderSizePixel = 0, ZIndex = 71 }, card)
@@ -777,7 +777,7 @@ do
 		if on == shown then return end
 		shown = on
 		if on then tip.Visible = true end
-		TweenService:Create(tip, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, on and 14 or -360, 1, -112) }):Play()
+		TweenService:Create(tip, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, on and 172 or -360, 1, -112) }):Play()
 		if not on then task.delay(0.4, function() if not shown then tip.Visible = false end end) end
 	end
 	RunService.Heartbeat:Connect(function()

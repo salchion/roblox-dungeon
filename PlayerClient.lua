@@ -170,9 +170,17 @@ local function toast(text)
 	local y = cy or -(base + 138)
 	local tx = cy and pg:GetAttribute("UiToastX") or 14
 	toastLabel.Text = text
-	toastLabel.Position = UDim2.new(0, -430, 1, y)
 	toastLabel.Visible = true
-	TweenService:Create(toastLabel, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, tx, 1, y) }):Play()
+	if pg:GetAttribute("UiCompact") ~= true then
+		-- 큰 화면: 알림은 위쪽 가운데(접속자 표시 / 보스 시간 표시 아래)에서 내려온다: 왼쪽 메뉴 버튼 줄 / 미션 카드와 겹치지 않는다
+		toastLabel.AnchorPoint = Vector2.new(0.5, 0)
+		toastLabel.Position = UDim2.new(0.5, 0, 0, -90)
+		TweenService:Create(toastLabel, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0.5, 0, 0, 160) }):Play()
+	else
+		toastLabel.AnchorPoint = Vector2.new(0, 1)
+		toastLabel.Position = UDim2.new(0, -430, 1, y)
+		TweenService:Create(toastLabel, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, tx, 1, y) }):Play()
+	end
 	task.delay(4, function()
 		if token == toastToken then
 			toastLabel.Visible = false
