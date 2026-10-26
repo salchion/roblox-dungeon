@@ -157,11 +157,11 @@ function refreshQuests()
 	for _, quest in ipairs(dailyList) do
 		local done = quest.Progress >= quest.Goal
 		if quest.Claimed then
-			table.insert(lines, string.format("<font color='#7a7f95'>✔ %s</font>", quest.Desc))
+			table.insert(lines, string.format("<font color='#7a7f95'>✔</font> <font color='#7a7f95'>%s</font>", quest.Desc))
 		elseif done then
-			table.insert(lines, string.format("<font color='#78ff8c'>✅ %s — tap to claim!</font>", quest.Desc))
+			table.insert(lines, string.format("<font color='#78ff8c'>%s</font>  <font color='#78ff8c'>✅ tap to claim!</font>", quest.Desc))
 		else
-			table.insert(lines, string.format("• %s <font color='#ffd966'>%d/%d</font>", quest.Desc, quest.Progress, quest.Goal))
+			table.insert(lines, string.format("• <font color='#ffffff'>%s</font> <font color='#ffd966'>%d/%d</font>", quest.Desc, quest.Progress, quest.Goal))
 		end
 	end
 	questLabel.Text = table.concat(lines, "\n")

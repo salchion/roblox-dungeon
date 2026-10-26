@@ -372,7 +372,7 @@ do
 		local streak = info and info.Streak or 1
 		if info and info.First then -- 처음 한 번: NEAR MISS 가 뭔지 설명 카드
 			local card = makePanel({
-				Size = UDim2.new(0, 380, 0, 168), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 16, 1, -96), -- 화면 가운데를 가리지 않게 왼쪽 아래
+				Size = UDim2.new(0, 380, 0, 168), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -16, 0.5, 0), -- 왼쪽 메뉴/튜토리얼 카드와 안 겹치게 오른쪽 가운데
 				BackgroundColor3 = Color3.fromRGB(14, 24, 36), BackgroundTransparency = 0.03, ZIndex = 58,
 			}, gui)
 			create("UIStroke", { Color = Color3.fromRGB(120, 255, 255), Thickness = 4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
