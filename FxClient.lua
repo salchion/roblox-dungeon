@@ -1990,6 +1990,36 @@ local function chainHop(event)
 	if first then burst(a, BOLT_BLUE, 14) end -- 손끝에서 튀는 불꽃
 end
 
+-- 연쇄 번개 시전: { "I", 쏜 사람 UserId, 모으는 시간 }: 몸 주위로 짧은 푸른 전기가 지직거리며 튀고, 발밑에 푸른 고리, 가슴에 빛이 모인다
+local function chainCharge(event)
+	local owner = Players:GetPlayerByUserId(event[2])
+	local root = owner and owner.Character and owner.Character:FindFirstChild("HumanoidRootPart")
+	if not root then return end
+	local secs = math.clamp(event[3] or 0.25, 0.1, 0.6)
+	ring({ "R", root.Position - Vector3.new(0, 2.5, 0), 10, BOLT_BLUE })
+	local glow = rootPart(CFrame.new(root.Position + Vector3.new(0, 1.5, 0)), Vector3.new(0.5, 0.5, 0.5), BOLT_WHITE, Enum.Material.Neon, Enum.PartType.Ball, 0.3)
+	local light = Instance.new("PointLight")
+	light.Color, light.Range, light.Brightness = BOLT_BLUE, 22, 3
+	light.Parent = glow
+	TweenService:Create(glow, TweenInfo.new(secs, Enum.EasingStyle.Quad), { Size = Vector3.one * 4.5, Transparency = 0.7 }):Play()
+	Debris:AddItem(glow, secs + 0.1)
+	task.spawn(function()
+		local started = os.clock()
+		while os.clock() - started < secs and root.Parent do
+			glow.CFrame = CFrame.new(root.Position + Vector3.new(0, 1.5, 0))
+			for _ = 1, 3 do -- 몸 주위의 짧은 전기 줄기
+				local function around(r)
+					local angle, height = math.random() * math.pi * 2, (math.random() - 0.3) * 4
+					return root.Position + Vector3.new(math.cos(angle) * r, height, math.sin(angle) * r)
+				end
+				drawBolt(boltPoints(around(1.8), around(3.6), 3, 1.2), 0.5, math.random() < 0.5 and BOLT_BLUE or BOLT_YELLOW, 0.1, 0.16)
+			end
+			task.wait(0.06)
+		end
+		if root.Parent then burst(root.Position + Vector3.new(0, 1.5, 0), BOLT_BLUE, 18) end
+	end)
+end
+
 local FLOAT_SIZE, DAMAGE_SIZE = UDim2.new(0, 140, 0, 36), UDim2.new(0, 90, 0, 40)
 lootTicker = { G = { Pending = 0, Last = 0, Scheduled = false }, XP = { Pending = 0, Last = 0, Scheduled = false } } -- 골드 / 경험치 글자 합치기용
 local HANDLERS = {
@@ -2041,11 +2071,11 @@ local HANDLERS = {
 	end,
 	H = function(event) flash(event[2]) end,
 	G = gunSound,
-	R = ring, Z = bolt, M = missile, L = flame, E = meteor, O = orbit, Y = spiritEvent, J = spiritHit, A = tomeCast, C = chainHop,
+	R = ring, Z = bolt, M = missile, L = flame, E = meteor, O = orbit, Y = spiritEvent, J = spiritHit, A = tomeCast, C = chainHop, I = chainCharge,
 }
 
 -- 한 배치(한 프레임)에서 종류별로 그릴 수 있는 최대 개수: 넘치는 것은 건너뛴다 (지우기 "X" / 끄기 "O" / 번쩍임 "H" 는 제한 없음)
-local BATCH_LIMIT = { C = 16, A = 6, Y = 8, J = 24, G = 10, T = 48, R = 16, Z = 8, M = 12, L = 8, E = 8, U = 6, N = 6, V = 8, K = 14, P = 100, Q = 40, W = 10, S = 100, B = 60 }
+local BATCH_LIMIT = { I = 4, C = 16, A = 6, Y = 8, J = 24, G = 10, T = 48, R = 16, Z = 8, M = 12, L = 8, E = 8, U = 6, N = 6, V = 8, K = 14, P = 100, Q = 40, W = 10, S = 100, B = 60 }
 Remotes.Fx.OnClientEvent:Connect(function(batch)
 	if typeof(batch) ~= "table" then return end
 	local used = {}

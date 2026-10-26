@@ -133,14 +133,32 @@ handlers.Spirit = function(player, root, _, character)
 	end
 	if not current then return false, "⚡ No enemy nearby" end
 	local last = root.Position + Vector3.new(0, 1.5, 0) -- 번개는 내 몸에서 시작
-	Effects.Burst(last, Color3.fromRGB(255, 240, 120), 18)
+	Effects.Raw(root.Position, { "I", player.UserId, 0.25 }) -- 시전: 몸 주위로 전기가 모였다가 (0.25초) 번개가 나간다
+	pcall(function() SoundBank.Play(root, "Skill_ChainCast", { Volume = 1.0 }) end)
 	task.spawn(function()
+		task.wait(0.25)
+		if spiritToken[player] ~= token or not player.Parent then return end
+		local startRoot = aliveParts(player)
+		if startRoot then last = startRoot.Position + Vector3.new(0, 1.5, 0) end
+		if not current.Parent then -- 모으는 사이에 첫 적이 쓰러졌으면 아직 살아 있는 가장 가까운 적으로
+			current = nil
+			local from = startRoot and startRoot.Position or root.Position
+			local best = cfg.Range + 6
+			for _, part in ipairs(all) do
+				if part.Parent and (part.Position - from).Magnitude < best then current, best = part, (part.Position - from).Magnitude end
+			end
+			if not current then return end
+		end
 		local hit = {}
 		for hop = 1, cfg.Chain do
 			if spiritToken[player] ~= token or not player.Parent or not current or not current.Parent then break end
 			local position = current.Position
 			local again = hit[current] == true
 			Effects.Raw(position, { "C", last, position, hop == 1 })
+			pcall(function()
+				if hop == 1 then SoundBank.Play(current, "Aug_Storm", { Volume = 0.9 }) end -- 첫 타: 우르릉 + 찌직
+				SoundBank.Play(current, "Skill_ChainHit", { Volume = 0.8, Pitch = 1 + 0.05 * hop }) -- 튈 때마다 점점 높은 "치직"
+			end)
 			BL.Ctx = "스킬"
 			Meter.Source = "Spirit" -- 대미지 미터기: 연쇄 번개(F)
 			Effects.DamageTint = Color3.fromRGB(255, 240, 120)

@@ -374,6 +374,8 @@ return {
 		["Wisp"] = "위습",
 		["▼ 👑 First Zone Lord"] = "▼ 👑 첫 구역 군주",
 		["💨 Swift — Monsters move/attack faster, rewards x1.3"] = "💨 신속 — 몬스터가 더 빠르게 움직이고 공격해요, 보상 x1.3",
+		["Chain Lightning cast"] = "연쇄 번개 시전",
+		["Chain Lightning hit"] = "연쇄 번개 적중",
 	},
 	pats = {
 		{ "^≈ ([%d,%.%-]+) dmg$", "≈ %s 피해", "dmg", -6 },
