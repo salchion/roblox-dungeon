@@ -8240,11 +8240,27 @@
 "💡 캠프 가까이에서 먼저 싸우고, 조금씩 앞으로 나아가세요"
 ],
 [
-"💡 Spirit Guard (F) fights for you for a while: cast it before a big crowd arrives",
-"💡 정령 소환(F)은 한동안 대신 싸워 줘요. 큰 무리가 오기 전에 쓰세요"
-],
-[
 "💡 Aim for the glowing weak point on bosses for triple damage",
 "💡 보스의 빛나는 약점을 맞히면 피해가 3배예요"
+],
+[
+"Chain Lightning",
+"연쇄 번개"
+],
+[
+"Lightning strikes the nearest enemy, then leaps from enemy to enemy (10 jumps) three times in a row. Great against crowds!",
+"번개가 가장 가까운 적을 내리치고 적에서 적으로 10번 튀어요. 이걸 세 번 연달아! 무리에게 좋아요"
+],
+[
+"⚡ Chain Lightning!",
+"⚡ 연쇄 번개!"
+],
+[
+"💡 Chain Lightning (F) leaps from enemy to enemy: cast it when many enemies gather",
+"💡 연쇄 번개(F)는 적에서 적으로 튀어요. 적이 모였을 때 쓰세요"
+],
+[
+"%d jumps x %d strikes · Damage x%.2f per hit",
+"%d번 튕김 x %d회 · 맞을 때마다 피해 x%.2f"
 ]
 ]

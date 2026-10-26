@@ -205,10 +205,9 @@ Config.Skills = {
 	Order = { "Heal", "Spirit", "Ult" }, -- 방벽 / 충격파는 임팩트가 약해서 뺐다 (정의만 남겨둠)
 	Barrier = { Name = "Energy Barrier", Icon = "🛡", Key = "Z", KeyCode = "Z", Cooldown = 14, Duration = 3,
 		Desc = "A barrier that blocks all damage for 3s" },
-	-- F: 빛의 정령 소환: 정령 4마리가 10초 동안 내 주변을 돌며 가까운 적을 알아서 쏜다 (한 방 폭발인 V 와 달리 "지속" 스킬).
-	-- 한 번 맞는 피해 = 무기 초당 피해 계수 기준 한 발 x Mult. 4마리가 Interval 초마다 한 번씩 번갈아 쏜다.
-	Spirit = { Name = "Spirit Guard", Icon = "🧚", Key = "F", KeyCode = "F", Cooldown = 22, Count = 4, Duration = 10, Interval = 0.6, Mult = 0.3, Range = 60,
-		Desc = "Summons 4 light spirits for 10s: they circle you and shoot nearby enemies on their own. Great for sustained damage!" },
+	-- F: 연쇄 번개: 가장 가까운 적에게 번개가 내리꽂히고 적에서 적으로 튄다 (최대 Chain 마리, Waves 번 연달아). 맞을 때마다 일반 공격 x Mult. 저장 / 슬롯 이름은 예전 그대로 Spirit.
+	Spirit = { Name = "Chain Lightning", Icon = "⚡", Key = "F", KeyCode = "F", Cooldown = 18, Waves = 3, Chain = 10, WaveGap = 0.5, HopGap = 0.07, Hop = 26, Mult = 1.5, Range = 60,
+		Desc = "Lightning strikes the nearest enemy, then leaps from enemy to enemy (10 jumps) three times in a row. Great against crowds!" },
 	Blast = { Name = "Shockwave", Icon = "💥", Key = "F", KeyCode = "F", Cooldown = 8, Radius = 16, Range = 90, Mult = 3,
 		Desc = "Explodes where you aim (radius 16, attack x3)" },
 	Heal = { Name = "First Aid", Icon = "💚", Key = "C", KeyCode = "C", Cooldown = 30, Radius = 40, Ratio = 0.08,

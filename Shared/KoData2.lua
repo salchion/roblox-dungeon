@@ -365,8 +365,10 @@ return {
 		["💡 Deadeye (V) hits many enemies at once: save it for crowds and bosses"] = "💡 데드아이(V)는 여러 적을 한 번에 맞혀요. 무리나 보스를 위해 아껴 두세요",
 		["💡 Keep moving! Enemies that surround you deal a lot of damage"] = "💡 계속 움직이세요! 둘러싸이면 피해가 커요",
 		["💡 Fight near the camp edge first, then push forward a little at a time"] = "💡 캠프 가까이에서 먼저 싸우고, 조금씩 앞으로 나아가세요",
-		["💡 Spirit Guard (F) fights for you for a while: cast it before a big crowd arrives"] = "💡 정령 소환(F)은 한동안 대신 싸워 줘요. 큰 무리가 오기 전에 쓰세요",
 		["💡 Aim for the glowing weak point on bosses for triple damage"] = "💡 보스의 빛나는 약점을 맞히면 피해가 3배예요",
+		["Lightning strikes the nearest enemy, then leaps from enemy to enemy (10 jumps) three times in a row. Great against crowds!"] = "번개가 가장 가까운 적을 내리치고 적에서 적으로 10번 튀어요. 이걸 세 번 연달아! 무리에게 좋아요",
+		["⚡ Chain Lightning!"] = "⚡ 연쇄 번개!",
+		["💡 Chain Lightning (F) leaps from enemy to enemy: cast it when many enemies gather"] = "💡 연쇄 번개(F)는 적에서 적으로 튀어요. 적이 모였을 때 쓰세요",
 	},
 	pats = {
 		{ "^≈ ([%d,%.%-]+) dmg$", "≈ %s 피해", "dmg", -6 },
@@ -703,5 +705,6 @@ return {
 		{ "^🎁 You received %+([%d,%.%-]+) (.-)!$", "🎁 +%s %s을(를) 받았어요!", "received", 982 },
 		{ "^🛡 Your (.-) slot%(s%) are empty! Get gear from dungeon boss chests or the gacha and equip it$", "🛡 %s 칸이 비어 있어요! 던전 보스 상자나 뽑기에서 장비를 얻어 장착하세요", "dungeon", 914 },
 		{ "^%[(.-)%] Starts in ([%d,%.%-]+)s! Survive the incoming monsters$", "[%s] %s초 뒤 시작! 몰려오는 몬스터에서 살아남으세요", "incoming", 955 },
+		{ "^([%d,%.%-]+) jumps x ([%d,%.%-]+) strikes · Damage x([%d,%.%-]+) per hit$", "%s번 튕김 x %s회 · 맞을 때마다 피해 x%s", "strikes", -36 },
 	},
 }

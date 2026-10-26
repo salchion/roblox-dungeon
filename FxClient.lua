@@ -1933,6 +1933,30 @@ local function tomeCast(event)
 	end)
 end
 
+-- 연쇄 번개 한 칸: { "C", 시작, 끝 }: 가늘고 밝은 지그재그 번개가 한 적에서 다음 적으로 튄다 (하늘에서 내리꽂는 굵은 번개는 "Z")
+local function chainHop(event)
+	local a, b = event[2], event[3]
+	if typeof(a) ~= "Vector3" or typeof(b) ~= "Vector3" then return end
+	local yellow, white = Color3.fromRGB(255, 240, 110), Color3.fromRGB(255, 255, 240)
+	local points = { a }
+	for i = 1, 3 do
+		table.insert(points, a:Lerp(b, i / 4) + Vector3.new((math.random() - 0.5) * 5, (math.random() - 0.5) * 3, (math.random() - 0.5) * 5))
+	end
+	table.insert(points, b)
+	for i = 1, #points - 1 do
+		local p0, p1 = points[i], points[i + 1]
+		local length = (p1 - p0).Magnitude
+		if length > 0.1 then
+			local part = neonPart(Vector3.new(1.4, 1.4, length), i % 2 == 0 and white or yellow, 0.05)
+			part.CFrame = CFrame.lookAt((p0 + p1) / 2, p1)
+			part.Parent = fxFolder
+			TweenService:Create(part, TweenInfo.new(0.3), { Transparency = 1, Size = Vector3.new(0.12, 0.12, length) }):Play()
+			Debris:AddItem(part, 0.35)
+		end
+	end
+	burst(b, yellow, 12)
+end
+
 local FLOAT_SIZE, DAMAGE_SIZE = UDim2.new(0, 140, 0, 36), UDim2.new(0, 90, 0, 40)
 lootTicker = { G = { Pending = 0, Last = 0, Scheduled = false }, XP = { Pending = 0, Last = 0, Scheduled = false } } -- 골드 / 경험치 글자 합치기용
 local HANDLERS = {
@@ -1984,11 +2008,11 @@ local HANDLERS = {
 	end,
 	H = function(event) flash(event[2]) end,
 	G = gunSound,
-	R = ring, Z = bolt, M = missile, L = flame, E = meteor, O = orbit, Y = spiritEvent, J = spiritHit, A = tomeCast,
+	R = ring, Z = bolt, M = missile, L = flame, E = meteor, O = orbit, Y = spiritEvent, J = spiritHit, A = tomeCast, C = chainHop,
 }
 
 -- 한 배치(한 프레임)에서 종류별로 그릴 수 있는 최대 개수: 넘치는 것은 건너뛴다 (지우기 "X" / 끄기 "O" / 번쩍임 "H" 는 제한 없음)
-local BATCH_LIMIT = { A = 6, Y = 8, J = 24, G = 10, T = 48, R = 16, Z = 8, M = 12, L = 8, E = 8, U = 6, N = 6, V = 8, K = 14, P = 100, Q = 40, W = 10, S = 100, B = 60 }
+local BATCH_LIMIT = { C = 16, A = 6, Y = 8, J = 24, G = 10, T = 48, R = 16, Z = 8, M = 12, L = 8, E = 8, U = 6, N = 6, V = 8, K = 14, P = 100, Q = 40, W = 10, S = 100, B = 60 }
 Remotes.Fx.OnClientEvent:Connect(function(batch)
 	if typeof(batch) ~= "table" then return end
 	local used = {}

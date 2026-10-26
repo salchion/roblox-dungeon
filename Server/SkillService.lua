@@ -119,63 +119,62 @@ handlers.Blast = function(player, root, _, _, aimPoint)
 	return true
 end
 
--- 정령(F): 정령 4마리가 일정 시간 내 주변을 돌며 가까운 적을 알아서 쏜다. 모습은 각자 화면에서 그리고(FxClient "Y" / "J"),
--- 서버는 0.15초마다 "누가 누구를 쏠 차례인지"만 정해서 피해를 준다 (정령마다 부품 / 위치 복제 없음).
+-- 연쇄 번개(F, 저장 이름은 예전 그대로 "Spirit"): 가장 가까운 적에게 번개가 내리꽂히고, 거기서 가까운 다음 적으로 튀고 또 튄다 (한 번 맞은 적은 건너뛴다). 이걸 Waves 번 연달아.
+-- 번개 모습은 각자 화면에서 그린다 (FxClient "Z" = 하늘에서 첫 타, "C" = 적 사이 한 칸). 적이 한 마리뿐이면 그 한 마리를 번개가 연달아 때린다.
 handlers.Spirit = function(player, root, _, character)
 	local cfg = S.Spirit
 	local token = {}
 	spiritToken[player] = token
-	local count = cfg.Count
-	local until_ = os.clock() + cfg.Duration
-	local userId = player.UserId
-	local weaponType = Config.GetPlayerWeapon(player)
-	local baseShot = Dungeon.ComputeDamage(player) / weaponType.DamageMult * Config.WeaponDpsFactor(weaponType)
-	local perHit = math.max(1, math.floor(baseShot * cfg.Mult))
-	local tint = Color3.fromRGB(190, 235, 255)
-
-	local feet = root.Position - Vector3.new(0, 2.5, 0)
-	Effects.Raw(feet, { "R", feet, 22, Color3.fromRGB(170, 225, 255) })
-	Effects.Raw(root.Position, { "Y", userId, count, cfg.Duration })
-	Effects.Burst(root.Position + Vector3.new(0, 3, 0), tint, 40)
-	Effects.FloatText(root.Position + Vector3.new(0, 5, 0), "🧚 Spirits!", Color3.fromRGB(170, 230, 255))
-	Remotes.Notify:FireClient(player, string.format("🧚 %d spirits will fight for you for %ds!", count, cfg.Duration))
-
+	local scale = cfg.Mult * (1 + U.BlastMult * (skillLevel(player, "Spirit") - 1))
+	Effects.Burst(root.Position + Vector3.new(0, 2, 0), Color3.fromRGB(255, 240, 120), 40)
+	Effects.FloatText(root.Position + Vector3.new(0, 5, 0), "⚡ Chain Lightning!", Color3.fromRGB(255, 240, 130))
 	task.spawn(function()
-		local nextShot = {}
-		for index = 1, count do nextShot[index] = os.clock() + 0.4 + (index - 1) * (cfg.Interval / count) end
-		local lastBeat = 0
-		while os.clock() < until_ and spiritToken[player] == token and player.Parent do
-			local now = os.clock()
-			local nowRoot, humanoid = aliveParts(player)
+		for wave = 1, cfg.Waves do
+			if spiritToken[player] ~= token or not player.Parent then break end
+			local nowRoot = aliveParts(player)
 			local zone = player:GetAttribute("Zone")
 			if not nowRoot or (zone ~= "Field" and zone ~= "Dungeon") then break end
-			if now - lastBeat > 3 then -- 3초마다 다시 알린다: 늦게 들어온 사람 / 끊긴 화면도 이어서 보인다
-				lastBeat = now
-				Effects.Raw(nowRoot.Position, { "Y", userId, count, until_ - now })
+			local all = Dungeon.TargetsIn(player, nowRoot.Position, cfg.Range + cfg.Hop, 40) or Field.TargetsIn(player, nowRoot.Position, cfg.Range + cfg.Hop, 40) or {}
+			local current
+			for _, part in ipairs(all) do -- 가장 가까운 적(목록은 가까운 순)
+				if (part.Position - nowRoot.Position).Magnitude <= cfg.Range + part.Size.X / 2 then current = part break end
 			end
-			local targets
-			for index = 1, count do
-				if now >= nextShot[index] then
-					nextShot[index] = now + cfg.Interval
-					targets = targets or (Dungeon.TargetsIn(player, nowRoot.Position, cfg.Range, 8) or Field.TargetsIn(player, nowRoot.Position, cfg.Range, 8) or {})
-					local part = targets[((index - 1) % math.max(1, #targets)) + 1]
-					if part and part.Parent then
-						BL.Ctx = "정령"
-						Meter.Source = "Spirit" -- 대미지 미터기: 정령(F)
-						Effects.DamageTint = tint
-						local landed = Dungeon.HitPart(player, part, perHit) or Field.HitPart(player, part, perHit)
-						Effects.DamageTint = nil
-						Meter.Source = nil
-						BL.Ctx = nil
-						if landed then Effects.Raw(part.Position, { "J", userId, index, part.Position }) end
+			if current then
+				local used = {}
+				local last
+				for hop = 1, cfg.Chain do
+					if not current or not current.Parent then break end
+					used[current] = true
+					local position = current.Position
+					if not last then
+						Effects.Raw(position, { "Z", position + Vector3.new(0, 70, 0), position }) -- 첫 타: 하늘에서 내리꽂는 굵은 번개
+					else
+						Effects.Raw(position, { "C", last, position })
 					end
+					BL.Ctx = "스킬"
+					Meter.Source = "Spirit" -- 대미지 미터기: 연쇄 번개(F)
+					Effects.DamageTint = Color3.fromRGB(255, 240, 120)
+					local damage = math.max(1, math.floor(Dungeon.ComputeDamage(player) * scale))
+					local _ = Dungeon.HitPart(player, current, damage) or Field.HitPart(player, current, damage)
+					Effects.DamageTint = nil
+					Meter.Source = nil
+					BL.Ctx = nil
+					last = position
+					-- 다음: 지금 적에서 가장 가까운, 아직 안 맞은 적 (없으면 끝)
+					local nextPart, best = nil, cfg.Hop
+					for _, part in ipairs(all) do
+						if not used[part] and part.Parent then
+							local distance = (part.Position - position).Magnitude
+							if distance < best then nextPart, best = part, distance end
+						end
+					end
+					current = nextPart
+					if hop < cfg.Chain then task.wait(cfg.HopGap) end
 				end
 			end
-			task.wait(0.15)
+			if wave < cfg.Waves then task.wait(cfg.WaveGap) end
 		end
 		if spiritToken[player] == token then spiritToken[player] = nil end
-		local endRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-		Effects.Raw(endRoot and endRoot.Position or nil, { "Y", userId, 0 }) -- 끝: 정령이 사라진다
 	end)
 	return true
 end
@@ -467,7 +466,7 @@ function Skill.Use(player, skillKey, aimPoint)
 	local cooldown = S[skillKey].Cooldown * (1 - math.min(0.6, haste))
 	cooldowns[skillKey] = now + cooldown
 	if skillKey == "Spirit" then
-		pcall(function() SoundBank.Play(root, "Skill_Heal", { Pitch = 1.45, Volume = 0.9 }) end) -- 맑은 소환음
+		pcall(function() SoundBank.Play(root, "Aug_Storm", { Volume = 0.9 }) end) -- 번개 소리
 	else
 		SoundBank.Play(root, skillKey == "Ult" and "Skill_Ult" or "Skill_Heal")
 	end
