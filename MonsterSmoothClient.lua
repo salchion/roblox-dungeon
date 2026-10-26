@@ -18,7 +18,7 @@ task.spawn(function()
 				if body:IsA("BasePart") and now - (reportedAt[body] or -10) > 5 then
 					local limit = body.Size.Magnitude * 2 + 6
 					for _, decor in ipairs(body:GetChildren()) do
-						if decor:IsA("BasePart") and (decor.Position - body.Position).Magnitude > limit then
+						if decor:IsA("BasePart") and decor.Size.Y < 60 and (decor.Position - body.Position).Magnitude > limit then -- (하늘까지 닿는 빛기둥은 일부러 위쪽으로 멀리 떨어져 있다: 진단에서 뺀다)
 							reportedAt[body] = now
 							print(string.format("[Monster desync] Body '%s' X=%d, visual part '%s' (%s, anchored=%s) is %d studs away (body size %.0f) · decor path: %s",
 								body.Name, math.floor(body.Position.X), decor.Name, decor.ClassName, tostring(decor.Anchored), math.floor((decor.Position - body.Position).Magnitude), body.Size.Magnitude, decor:GetFullName()))
