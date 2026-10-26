@@ -191,7 +191,9 @@ local function translate(text)
 	return remember(text, changed and table.concat(out) or false)
 end
 
-local originals = setmetatable({}, { __mode = "k" }) -- [글자 객체] = 원래(영어) 글자
+-- 바꾼 글자 기록: [글자 객체] = { En = 원래 영어, Ko = 우리가 넣은 한국어 }.
+-- (Roblox 는 글자가 바뀐 신호를 "나중에" 보내서, 우리가 바꾼 글자인지 게임이 새로 쓴 글자인지는 "지금 글자 == 우리가 넣은 한국어" 로 구분한다)
+local record = setmetatable({}, { __mode = "k" })
 
 -- 번역이 없는 글자를 모아 둔다 (Studio 에서만): 영어로 남은 문장을 Output 에 한꺼번에 찍어 주면 사전에 추가할 수 있다
 local RunService = game:GetService("RunService")
@@ -203,18 +205,16 @@ local function noteMissing(text)
 	missingCount += 1
 end
 
-local applying = false
 local function apply(obj)
 	if lang ~= "ko" then return end
 	local text = obj.Text
 	if text == "" or not string.find(text, "%a%a%a") then return end -- (숫자뿐인 글자는 번역할 게 없다)
 	local ko = translate(text)
 	if ko and ko ~= text then
-		applying = true
-		originals[obj] = text
+		record[obj] = { En = text, Ko = ko }
 		obj.Text = ko
-		applying = false
 	else
+		record[obj] = nil
 		noteMissing(text)
 	end
 end
@@ -226,9 +226,10 @@ local function watch(obj)
 	watched[obj] = true
 	apply(obj)
 	obj:GetPropertyChangedSignal("Text"):Connect(function()
-		if applying then return end
-		originals[obj] = nil -- 게임이 새 글자를 넣었다 (영어로 온다): 다시 번역한다
-		apply(obj)
+		local rec = record[obj]
+		if rec and obj.Text == rec.Ko then return end -- 우리가 넣은 한국어: 건드리지 않는다
+		record[obj] = nil -- 게임이 새 글자(영어)를 넣었다
+		apply(obj) -- 한국어 모드면 다시 번역한다 (영어 모드면 아무것도 안 한다)
 	end)
 end
 
@@ -239,17 +240,17 @@ end
 
 local function refreshAll()
 	if lang ~= "ko" then
-		for obj, english in pairs(originals) do
-			if obj.Parent then
-				applying = true
-				obj.Text = english
-				applying = false
-			end
+		-- 영어로 되돌린다: 우리가 한국어로 바꿔 둔 글자만 (지금도 우리가 넣은 한국어일 때) 원래 영어로
+		local list = {}
+		for obj in pairs(record) do table.insert(list, obj) end
+		for _, obj in ipairs(list) do
+			local rec = record[obj]
+			if obj.Parent and rec and obj.Text == rec.Ko then obj.Text = rec.En end
+			record[obj] = nil
 		end
-		originals = setmetatable({}, { __mode = "k" })
 		return
 	end
-	-- 글자가 많아도 화면이 멈추지 않게 200개씩 나눠서 바꾼다
+	-- 한국어로: 모든 글자를 다시 훑는다. 글자가 많아도 화면이 멈추지 않게 200개씩 나눠서 바꾼다
 	local list = {}
 	for obj in pairs(watched) do table.insert(list, obj) end -- (돌다가 새 글자가 생겨도 안전하게 복사해서 돈다)
 	local batch = 0

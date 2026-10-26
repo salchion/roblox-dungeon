@@ -4038,6 +4038,7 @@ end)
 
 function toggleHelp()
 	helpPanel.Visible = not helpPanel.Visible
+	if helpPanel.Visible then menuPanel.Visible = false end -- 큰 창은 한 번에 하나 (설정 창 뒤에 메뉴가 겹쳐 비치지 않게)
 end
 
 -- 왼쪽 메뉴 버튼 줄(MenuDockClient)이 보내는 신호: "OpenMenuTab" = "탭" 또는 "탭:하위", "OpenHelp" = 설정 창
