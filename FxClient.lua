@@ -1774,84 +1774,80 @@ end)
 -- 빛의 정령 (F 스킬): 소환한 사람 주위를 도는 작은 빛의 구슬 몇 마리. 모습은 각자 화면에서 그린다 (서버는 "Y" 로 시작 / 끝, "J" 로 쏘는 순간만 알린다).
 --   "Y" { userId, 개수(0이면 끝), 남은 초 }  /  "J" { userId, 번호, 맞은 위치 }
 ------------------------------------------------------------
-local spirits = {} -- [userId] = { Parts = { { Orb, Lunge, LungeDir } }, Count, Expire }
-local SPIRIT_TINT = Color3.fromRGB(190, 235, 255)
-local function killSpirits(entry, withBurst)
-	for _, sp in ipairs(entry.Parts) do
-		if withBurst and sp.Orb.Parent then burst(sp.Orb.Position, SPIRIT_TINT, 8) end
-		sp.Orb:Destroy()
-	end
+-- 죽음의 연꽃(F, 저장 이름은 예전 그대로 Spirit): 몸 주위로 붉은 / 하얀 단검 고리 두 겹이 반대 방향으로 빠르게 돈다. 서버가 단검을 던질 때마다 "J" 가 몸에서 적에게 날아가 꽂힌다.
+local lotus = {} -- [userId] = { Blades = { 부품... }, Expire }
+local LOTUS_RED, LOTUS_WHITE = Color3.fromRGB(235, 55, 90), Color3.fromRGB(255, 236, 242)
+local function killLotus(entry)
+	for _, blade in ipairs(entry.Blades) do blade:Destroy() end
 end
-local function spiritEvent(event)
-	local userId, count = event[2], event[3]
-	local entry = spirits[userId]
-	if not count or count <= 0 then
+local function lotusEvent(event) -- { "Y", userId, 남은 초 (0 이면 끝) }
+	local userId, secs = event[2], event[3]
+	local entry = lotus[userId]
+	if not secs or secs <= 0 then
 		if entry then
-			killSpirits(entry, true)
-			spirits[userId] = nil
+			killLotus(entry)
+			lotus[userId] = nil
 		end
 		return
 	end
-	if entry and entry.Count ~= count then
-		killSpirits(entry, false)
-		entry = nil
+	if entry then
+		entry.Expire = os.clock() + secs + 0.8
+		return
 	end
-	if not entry then
-		local owners = 0
-		for _ in pairs(spirits) do owners += 1 end
-		if owners >= 6 then return end -- (화면에 정령이 너무 많아지지 않게: 동시에 6명까지)
-		entry = { Parts = {}, Count = count }
-		for index = 1, count do
-			local orb = neonPart(Vector3.new(1.5, 1.5, 1.5), Color3.fromRGB(225, 248, 255), 0, Enum.PartType.Ball)
-			if not lowSpecOn() then
-				solid(orb, Vector3.new(2.8, 2.8, 2.8), Color3.fromRGB(150, 215, 255), Enum.Material.Neon, CFrame.identity, 0.62, Enum.PartType.Ball) -- 은은한 빛무리
-				for side = -1, 1, 2 do -- 작은 날개 한 쌍
-					solid(orb, Vector3.new(1.7, 0.1, 0.9), Color3.fromRGB(235, 250, 255), Enum.Material.Neon, CFrame.new(side * 1.05, 0.2, 0.1) * CFrame.Angles(0, 0, math.rad(side * -22)), 0.3)
-				end
-				local sparks = addEmitter(orb, SPIRIT_TINT, 14, 0.6, 0.6, 2)
-				sparks.Texture = SPARKLE
-			end
-			local light = Instance.new("PointLight")
-			light.Color, light.Range, light.Brightness = SPIRIT_TINT, 9, 1.2
-			light.Parent = orb
-			orb.Parent = fxFolder
-			table.insert(entry.Parts, { Orb = orb })
-		end
-		spirits[userId] = entry
-		local owner = Players:GetPlayerByUserId(userId)
-		local root = owner and owner.Character and owner.Character:FindFirstChild("HumanoidRootPart")
-		if root then burst(root.Position + Vector3.new(0, 3, 0), SPIRIT_TINT, 24) end -- 나타날 때 한 번 빛이 터진다
+	local owners = 0
+	for _ in pairs(lotus) do owners += 1 end
+	if owners >= 6 then return end -- (화면에 단검 고리가 너무 많아지지 않게: 동시에 6명까지)
+	entry = { Blades = {}, Expire = os.clock() + secs + 0.8 }
+	for index = 1, 12 do
+		local blade = neonPart(Vector3.new(0.35, 0.12, 3.2), index % 2 == 0 and LOTUS_RED or LOTUS_WHITE, 0.05)
+		if not lowSpecOn() then addTrail(blade, index % 2 == 0 and LOTUS_RED or LOTUS_WHITE, 0.5, 0.25) end
+		blade.Parent = fxFolder
+		table.insert(entry.Blades, blade)
 	end
-	entry.Expire = os.clock() + (event[4] or 10) + 1.5 -- 서버가 3초마다 다시 알린다: 끊기면 저절로 사라진다
+	lotus[userId] = entry
+	local owner = Players:GetPlayerByUserId(userId)
+	local root = owner and owner.Character and owner.Character:FindFirstChild("HumanoidRootPart")
+	if root then
+		ring({ "R", root.Position - Vector3.new(0, 2.5, 0), 12, LOTUS_RED })
+		burst(root.Position + Vector3.new(0, 1, 0), LOTUS_RED, 26)
+		burst(root.Position + Vector3.new(0, 1, 0), LOTUS_WHITE, 10)
+	end
 end
-local function spiritHit(event)
-	local entry = spirits[event[1 + 1]]
-	local sp = entry and entry.Parts[event[3]]
-	local target = event[4]
-	if not sp or not sp.Orb.Parent or typeof(target) ~= "Vector3" then return end
-	local from = sp.Orb.Position
-	local length = (target - from).Magnitude
-	if length < 1 then return end
-	sp.Lunge, sp.LungeDir = os.clock() + 0.12, (target - from).Unit -- 쏠 때 살짝 앞으로 튄다
-	local beam = rootPart(CFrame.lookAt((from + target) / 2, target), Vector3.new(0.45, 0.45, length), SPIRIT_TINT, Enum.Material.Neon, nil, 0.15)
-	TweenService:Create(beam, TweenInfo.new(0.22), { Size = Vector3.new(0.05, 0.05, length), Transparency = 1 }):Play()
-	Debris:AddItem(beam, 0.3)
-	burst(target, SPIRIT_TINT, 5)
+local function lotusHit(event) -- { "J", 시작, 끝 }: 단검 한 자루가 날아가 꽂힌다
+	local from, to = event[2], event[3]
+	if typeof(from) ~= "Vector3" or typeof(to) ~= "Vector3" or (to - from).Magnitude < 1 then return end
+	local dir = (to - from).Unit
+	local dagger = rootPart(CFrame.lookAt(from, to), Vector3.new(0.3, 0.3, 2.6), LOTUS_WHITE, Enum.Material.Neon, nil, 0)
+	addTrail(dagger, LOTUS_RED, 0.5, 0.2)
+	local flight = TweenService:Create(dagger, TweenInfo.new(0.1, Enum.EasingStyle.Linear), { CFrame = CFrame.lookAt(to, to + dir) })
+	flight.Completed:Connect(function()
+		dagger:Destroy()
+		burst(to, LOTUS_RED, 7)
+		local slash = rootPart(CFrame.lookAt(to, to + dir) * CFrame.Angles(0, 0, math.rad(math.random(0, 180))), Vector3.new(0.18, 3.4, 0.18), LOTUS_WHITE, Enum.Material.Neon, nil, 0.1) -- 베인 자국
+		TweenService:Create(slash, TweenInfo.new(0.16), { Transparency = 1, Size = Vector3.new(0.05, 4.5, 0.05) }):Play()
+		Debris:AddItem(slash, 0.2)
+	end)
+	flight:Play()
+	Debris:AddItem(dagger, 0.4)
 end
 RunService.RenderStepped:Connect(function()
 	local now = os.clock()
-	for userId, entry in pairs(spirits) do
+	for userId, entry in pairs(lotus) do
 		local owner = Players:GetPlayerByUserId(userId)
 		local root = owner and owner.Character and owner.Character:FindFirstChild("HumanoidRootPart")
 		if now > entry.Expire or not root then
-			killSpirits(entry, false)
-			spirits[userId] = nil
+			killLotus(entry)
+			lotus[userId] = nil
 		else
-			for index, sp in ipairs(entry.Parts) do
-				local angle = now * 1.5 + index * (2 * math.pi / entry.Count)
-				local pos = root.Position + Vector3.new(math.cos(angle) * 5.5, 3.4 + math.sin(now * 3 + index * 1.7) * 0.7, math.sin(angle) * 5.5)
-				if sp.Lunge and now < sp.Lunge then pos += sp.LungeDir * 1.6 end
-				sp.Orb.CFrame = CFrame.new(pos)
+			for index, blade in ipairs(entry.Blades) do
+				local outer = index <= 6
+				local dirSign = outer and 1 or -1
+				local angle = dirSign * now * 9 + index * (2 * math.pi / 6)
+				local radius = outer and 4.6 or 3
+				local height = outer and 0.2 or 1.6
+				local pos = root.Position + Vector3.new(math.cos(angle) * radius, height, math.sin(angle) * radius)
+				local tangent = Vector3.new(-math.sin(angle), 0, math.cos(angle)) * dirSign
+				blade.CFrame = CFrame.lookAt(pos, pos + tangent)
 			end
 		end
 	end
@@ -2071,7 +2067,7 @@ local HANDLERS = {
 	end,
 	H = function(event) flash(event[2]) end,
 	G = gunSound,
-	R = ring, Z = bolt, M = missile, L = flame, E = meteor, O = orbit, Y = spiritEvent, J = spiritHit, A = tomeCast, C = chainHop, I = chainCharge,
+	R = ring, Z = bolt, M = missile, L = flame, E = meteor, O = orbit, Y = lotusEvent, J = lotusHit, A = tomeCast, C = chainHop, I = chainCharge,
 }
 
 -- 한 배치(한 프레임)에서 종류별로 그릴 수 있는 최대 개수: 넘치는 것은 건너뛴다 (지우기 "X" / 끄기 "O" / 번쩍임 "H" 는 제한 없음)

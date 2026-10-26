@@ -2,7 +2,6 @@
 -- 자동 생성 파일: Tools/build_ko.py 가 Tools/ko_pairs.json 에서 만든다. 직접 고치지 말고 ko_pairs.json 을 고친 뒤 다시 만든다.
 return {
 	exact = {
-		["🔊 Music Volume"] = "🔊 음악 볼륨",
 		["🔍 UI Size: "] = "🔍 UI 크기: ",
 		["🔒 Auto-Attack ON — click a dummy/monster to lock onto it (R to turn off)"] = "🔒 자동 공격 켜짐 — 허수아비/몬스터를 클릭하면 그 대상을 고정해요 (R로 끄기)",
 		["🔒 Do your first upgrades with [Upgrade] yourself! x10 / Max Upgrade unlock soon."] = "🔒 첫 강화는 [강화]를 직접 눌러 보세요! x10 / 최대 강화는 곧 열려요.",
@@ -366,16 +365,15 @@ return {
 		["💡 Keep moving! Enemies that surround you deal a lot of damage"] = "💡 계속 움직이세요! 둘러싸이면 피해가 커요",
 		["💡 Fight near the camp edge first, then push forward a little at a time"] = "💡 캠프 가까이에서 먼저 싸우고, 조금씩 앞으로 나아가세요",
 		["💡 Aim for the glowing weak point on bosses for triple damage"] = "💡 보스의 빛나는 약점을 맞히면 피해가 3배예요",
-		["💡 Chain Lightning (F) leaps from enemy to enemy: cast it when many enemies gather"] = "💡 연쇄 번개(F)는 적에서 적으로 튀어요. 적이 모였을 때 쓰세요",
-		["A bolt strikes the nearest enemy, then jumps to nearby enemies one after another (up to 8 hits)"] = "번개가 가장 가까운 적을 때리고, 주변 적에게 차례로 튀어요 (최대 8번)",
-		["⚡ No enemy nearby"] = "⚡ 근처에 적이 없어요",
 		["Double Shot: each time you shoot, there's a chance the same shot fires again 0.09s later (same power). With the max 60 points, about 42%."] = "더블샷: 쏠 때마다 같은 공격이 0.09초 뒤 한 번 더 나갈 확률이 있어요 (위력은 같아요). 최대 60포인트면 약 42%예요.",
 		["Gear Shop"] = "장비 상점",
 		["Wisp"] = "위습",
 		["▼ 👑 First Zone Lord"] = "▼ 👑 첫 구역 군주",
 		["💨 Swift — Monsters move/attack faster, rewards x1.3"] = "💨 신속 — 몬스터가 더 빠르게 움직이고 공격해요, 보상 x1.3",
-		["Chain Lightning cast"] = "연쇄 번개 시전",
-		["Chain Lightning hit"] = "연쇄 번개 적중",
+		["Death Lotus"] = "죽음의 연꽃",
+		["Daggers whirl around you for 2.5s and fly at nearby enemies, three at a time. You can keep moving and shooting!"] = "2.5초 동안 단검이 몸 주위를 휘돌며 주변 적에게 세 자루씩 날아가요. 움직이며 쏠 수 있어요!",
+		["💡 Death Lotus (F) whirls daggers around you: keep moving and shooting while it spins"] = "💡 죽음의 연꽃(F)은 단검이 몸 주위를 휘돌아요. 도는 동안 계속 움직이며 쏘세요",
+		["🌸 No enemy nearby"] = "🌸 근처에 적이 없어요",
 	},
 	pats = {
 		{ "^≈ ([%d,%.%-]+) dmg$", "≈ %s 피해", "dmg", -6 },
@@ -712,7 +710,6 @@ return {
 		{ "^🎁 You received %+([%d,%.%-]+) (.-)!$", "🎁 +%s %s을(를) 받았어요!", "received", 982 },
 		{ "^🛡 Your (.-) slot%(s%) are empty! Get gear from dungeon boss chests or the gacha and equip it$", "🛡 %s 칸이 비어 있어요! 던전 보스 상자나 뽑기에서 장비를 얻어 장착하세요", "dungeon", 914 },
 		{ "^%[(.-)%] Starts in ([%d,%.%-]+)s! Survive the incoming monsters$", "[%s] %s초 뒤 시작! 몰려오는 몬스터에서 살아남으세요", "incoming", 955 },
-		{ "^Up to ([%d,%.%-]+) hits · Damage x([%d,%.%-]+) per hit$", "최대 %s번 적중 · 맞을 때마다 피해 x%s", "Damage", -30 },
 		{ "^%+(.-)%% chance per point to fire a second shot right after the first %(\"bang%-bang\"%)  %(max ([%d,%.%-]+)%)$", "포인트당 +%s%% 확률로 첫 발 직후 한 발 더 쏴요 (\"탕탕\")  (최대 %s)", "chance", 916 },
 		{ "^Crit damage %+(.-)%%p per point %(base 2x%)  %(max ([%d,%.%-]+)%)$", "치명타 피해 포인트당 +%s%%p (기본 2배)  (최대 %s)", "damage", 958 },
 		{ "^Move speed %+(.-) per point  %(max ([%d,%.%-]+)%)$", "이동 속도 포인트당 +%s  (최대 %s)", "speed", 970 },
@@ -723,5 +720,6 @@ return {
 		{ "^🎒 (.-)  ▲ Better than your current gear! %(I → Bag%)$", "🎒 %s  ▲ 지금 장비보다 좋아요! (I → 가방)", "current", 954 },
 		{ "^Activate (.-) G$", "활성화 %s G", "Activate", 989 },
 		{ "^ZONE ([%d,%.%-]+)$", "%s구역", "ZONE", -5 },
+		{ "^([%d,%.%-]+)s · ([%d,%.%-]+) daggers every ([%d,%.%-]+)s · Damage x([%d,%.%-]+) each$", "%s초 · 단검 %s자루씩 %s초마다 · 자루당 피해 x%s", "daggers", -36 },
 	},
 }

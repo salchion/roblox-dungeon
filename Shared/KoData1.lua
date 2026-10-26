@@ -413,7 +413,6 @@ return {
 		["Bulwark"] = "보루",
 		["Carpet"] = "양탄자",
 		["Chain"] = "사슬",
-		["Chain Lightning"] = "연쇄 번개",
 		["Chainmail"] = "사슬 갑옷",
 		["Chance for an attack to crit (2x damage)"] = "공격이 치명타(2배 피해)가 될 확률",
 		["Chrono"] = "시간의",
@@ -1413,6 +1412,7 @@ return {
 		["📳 Screen Shake: "] = "📳 화면 흔들림: ",
 		["🔇 Music OFF (M)"] = "🔇 음악 꺼짐 (M)",
 		["🔊 Music ON (M)"] = "🔊 음악 켜짐 (M)",
+		["🔊 Music Volume"] = "🔊 음악 볼륨",
 	},
 	pats = {
 	},

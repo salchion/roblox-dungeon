@@ -205,9 +205,9 @@ Config.Skills = {
 	Order = { "Heal", "Spirit", "Ult" }, -- 방벽 / 충격파는 임팩트가 약해서 뺐다 (정의만 남겨둠)
 	Barrier = { Name = "Energy Barrier", Icon = "🛡", Key = "Z", KeyCode = "Z", Cooldown = 14, Duration = 3,
 		Desc = "A barrier that blocks all damage for 3s" },
-	-- F: 연쇄 번개(디아블로2 소서리스 체인 라이트닝처럼): 내 손에서 가장 가까운 적으로 번개가 나가고, 거기서 주변 적에게 차례로 튄다 (최대 Chain 번). 맞을 때마다 일반 공격 x Mult. 쿨타임이 짧다(5초). 저장 / 슬롯 이름은 예전 그대로 Spirit.
-	Spirit = { Name = "Chain Lightning", Icon = "⚡", Key = "F", KeyCode = "F", Cooldown = 5, Chain = 8, HopGap = 0.06, Hop = 24, Mult = 1.6, Range = 60,
-		Desc = "A bolt strikes the nearest enemy, then jumps to nearby enemies one after another (up to 8 hits)" },
+	-- F: 죽음의 연꽃(롤 카타리나 R 처럼): 2.5초 동안 몸 주위로 단검이 휘돌고, 0.12초마다 주변 적에게 단검이 최대 Daggers 자루씩 날아가 꽂힌다 (움직이며 쏠 수 있다). 한 자루 = 일반 공격 x Mult. 저장 / 슬롯 이름은 예전 그대로 Spirit.
+	Spirit = { Name = "Death Lotus", Icon = "🌸", Key = "F", KeyCode = "F", Cooldown = 10, Duration = 2.5, Interval = 0.12, Daggers = 3, Range = 32, Mult = 0.5,
+		Desc = "Daggers whirl around you for 2.5s and fly at nearby enemies, three at a time. You can keep moving and shooting!" },
 	Blast = { Name = "Shockwave", Icon = "💥", Key = "F", KeyCode = "F", Cooldown = 8, Radius = 16, Range = 90, Mult = 3,
 		Desc = "Explodes where you aim (radius 16, attack x3)" },
 	Heal = { Name = "First Aid", Icon = "💚", Key = "C", KeyCode = "C", Cooldown = 30, Radius = 40, Ratio = 0.08,

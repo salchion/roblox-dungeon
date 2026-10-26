@@ -2004,10 +2004,6 @@
 "사슬"
 ],
 [
-"Chain Lightning",
-"연쇄 번개"
-],
-[
 "Chainmail",
 "사슬 갑옷"
 ],
@@ -8244,26 +8240,6 @@
 "💡 보스의 빛나는 약점을 맞히면 피해가 3배예요"
 ],
 [
-"Chain Lightning",
-"연쇄 번개"
-],
-[
-"💡 Chain Lightning (F) leaps from enemy to enemy: cast it when many enemies gather",
-"💡 연쇄 번개(F)는 적에서 적으로 튀어요. 적이 모였을 때 쓰세요"
-],
-[
-"A bolt strikes the nearest enemy, then jumps to nearby enemies one after another (up to 8 hits)",
-"번개가 가장 가까운 적을 때리고, 주변 적에게 차례로 튀어요 (최대 8번)"
-],
-[
-"Up to %d hits · Damage x%.2f per hit",
-"최대 %d번 적중 · 맞을 때마다 피해 x%.2f"
-],
-[
-"⚡ No enemy nearby",
-"⚡ 근처에 적이 없어요"
-],
-[
 "+%s%% chance per point to fire a second shot right after the first (\"bang-bang\")  (max %d)",
 "포인트당 +%s%% 확률로 첫 발 직후 한 발 더 쏴요 (\"탕탕\")  (최대 %d)"
 ],
@@ -8324,11 +8300,23 @@
 "💨 신속 — 몬스터가 더 빠르게 움직이고 공격해요, 보상 x1.3"
 ],
 [
-"Chain Lightning cast",
-"연쇄 번개 시전"
+"Death Lotus",
+"죽음의 연꽃"
 ],
 [
-"Chain Lightning hit",
-"연쇄 번개 적중"
+"Daggers whirl around you for 2.5s and fly at nearby enemies, three at a time. You can keep moving and shooting!",
+"2.5초 동안 단검이 몸 주위를 휘돌며 주변 적에게 세 자루씩 날아가요. 움직이며 쏠 수 있어요!"
+],
+[
+"%.1fs · %d daggers every %.2fs · Damage x%.2f each",
+"%.1f초 · 단검 %d자루씩 %.2f초마다 · 자루당 피해 x%.2f"
+],
+[
+"💡 Death Lotus (F) whirls daggers around you: keep moving and shooting while it spins",
+"💡 죽음의 연꽃(F)은 단검이 몸 주위를 휘돌아요. 도는 동안 계속 움직이며 쏘세요"
+],
+[
+"🌸 No enemy nearby",
+"🌸 근처에 적이 없어요"
 ]
 ]

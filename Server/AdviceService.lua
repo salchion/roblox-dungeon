@@ -20,7 +20,7 @@ local COMBAT_TIPS = {
 	"💡 Deadeye (V) hits many enemies at once: save it for crowds and bosses",
 	"💡 Keep moving! Enemies that surround you deal a lot of damage",
 	"💡 Fight near the camp edge first, then push forward a little at a time",
-	"💡 Chain Lightning (F) leaps from enemy to enemy: cast it when many enemies gather",
+	"💡 Death Lotus (F) whirls daggers around you: keep moving and shooting while it spins",
 	"💡 Aim for the glowing weak point on bosses for triple damage",
 }
 local tipIndex = setmetatable({}, { __mode = "k" })

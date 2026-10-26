@@ -119,77 +119,53 @@ handlers.Blast = function(player, root, _, _, aimPoint)
 	return true
 end
 
--- 연쇄 번개(F, 저장 이름은 예전 그대로 "Spirit"): 디아블로2 소서리스 체인 라이트닝처럼, 내 손에서 가장 가까운 적으로 번개가 나가고 거기서 주변 적에게 차례로 튄다 (최대 Chain 번).
--- 아직 안 맞은 가까운 적을 먼저 찾고, 없으면 이미 맞은 적(방금 맞은 적 제외)으로 되돌아가 한 번 더 때린다 (그 타격은 위력 60%). 번개 모습은 각자 화면에서 "C" 가 그린다.
+-- 죽음의 연꽃(F, 저장 이름은 예전 그대로 "Spirit"): 롤의 카타리나 R 처럼 2.5초 동안 몸 주위로 단검이 휘돈다 (FxClient "Y" 가 단검 고리를 그린다).
+-- 0.12초마다 주변(Range) 적 중 가까운 쪽에서 Daggers 마리를 골라 단검을 날린다 (같은 틱에 한 적에게 두 자루는 안 간다). 한 자루 = 일반 공격 x Mult. 이동 / 사격은 그대로 할 수 있다.
 handlers.Spirit = function(player, root, _, character)
 	local cfg = S.Spirit
+	local nearby = Dungeon.TargetsIn(player, root.Position, cfg.Range, 6) or Field.TargetsIn(player, root.Position, cfg.Range, 6)
+	if not nearby or #nearby == 0 then return false, "🌸 No enemy nearby" end
 	local token = {}
 	spiritToken[player] = token
 	local scale = cfg.Mult * (1 + U.BlastMult * (skillLevel(player, "Spirit") - 1))
-	local all = Dungeon.TargetsIn(player, root.Position, cfg.Range + cfg.Hop, 40) or Field.TargetsIn(player, root.Position, cfg.Range + cfg.Hop, 40) or {}
-	local current
-	for _, part in ipairs(all) do -- 가장 가까운 적 (목록은 가까운 순)
-		if (part.Position - root.Position).Magnitude <= cfg.Range + part.Size.X / 2 then current = part break end
-	end
-	if not current then return false, "⚡ No enemy nearby" end
-	local last = root.Position + Vector3.new(0, 1.5, 0) -- 번개는 내 몸에서 시작
-	Effects.Raw(root.Position, { "I", player.UserId, 0.25 }) -- 시전: 몸 주위로 전기가 모였다가 (0.25초) 번개가 나간다
-	pcall(function() SoundBank.Play(root, "Skill_ChainCast", { Volume = 1.0 }) end)
+	local userId = player.UserId
+	Effects.Raw(root.Position, { "Y", userId, cfg.Duration })
+	pcall(function() SoundBank.Play(root, "Aug_Blade", { Volume = 1.1, Pitch = 0.8 }) end)
 	task.spawn(function()
-		task.wait(0.25)
-		if spiritToken[player] ~= token or not player.Parent then return end
-		local startRoot = aliveParts(player)
-		if startRoot then last = startRoot.Position + Vector3.new(0, 1.5, 0) end
-		if not current.Parent then -- 모으는 사이에 첫 적이 쓰러졌으면 아직 살아 있는 가장 가까운 적으로
-			current = nil
-			local from = startRoot and startRoot.Position or root.Position
-			local best = cfg.Range + 6
-			for _, part in ipairs(all) do
-				if part.Parent and (part.Position - from).Magnitude < best then current, best = part, (part.Position - from).Magnitude end
-			end
-			if not current then return end
-		end
-		local hit = {}
-		for hop = 1, cfg.Chain do
-			if spiritToken[player] ~= token or not player.Parent or not current or not current.Parent then break end
-			local position = current.Position
-			local again = hit[current] == true
-			Effects.Raw(position, { "C", last, position, hop == 1 })
-			pcall(function()
-				if hop == 1 then SoundBank.Play(current, "Aug_Storm", { Volume = 0.9 }) end -- 첫 타: 우르릉 + 찌직
-				SoundBank.Play(current, "Skill_ChainHit", { Volume = 0.8, Pitch = 1 + 0.05 * hop }) -- 튈 때마다 점점 높은 "치직"
-			end)
-			BL.Ctx = "스킬"
-			Meter.Source = "Spirit" -- 대미지 미터기: 연쇄 번개(F)
-			Effects.DamageTint = Color3.fromRGB(255, 240, 120)
-			local damage = math.max(1, math.floor(Dungeon.ComputeDamage(player) * scale * (again and 0.6 or 1)))
-			local _ = Dungeon.HitPart(player, current, damage) or Field.HitPart(player, current, damage)
-			Effects.DamageTint = nil
-			Meter.Source = nil
-			BL.Ctx = nil
-			hit[current] = true
-			last = position
-			-- 다음: 지금 적에서 가까운, 아직 안 맞은 적. 없으면 이미 맞은 적(지금 적 제외) 중 가장 가까운 적
-			local nextPart, best = nil, cfg.Hop
-			for _, part in ipairs(all) do
-				if part ~= current and part.Parent and not hit[part] then
-					local distance = (part.Position - position).Magnitude
-					if distance < best then nextPart, best = part, distance end
-				end
-			end
-			if not nextPart then
-				best = cfg.Hop
-				for _, part in ipairs(all) do
-					if part ~= current and part.Parent then
-						local distance = (part.Position - position).Magnitude
-						if distance < best then nextPart, best = part, distance end
+		local untilAt = os.clock() + cfg.Duration
+		local tick = 0
+		while os.clock() < untilAt and spiritToken[player] == token and player.Parent do
+			local nowRoot = aliveParts(player)
+			local zone = player:GetAttribute("Zone")
+			if not nowRoot or (zone ~= "Field" and zone ~= "Dungeon") then break end
+			tick += 1
+			local targets = Dungeon.TargetsIn(player, nowRoot.Position, cfg.Range, 6) or Field.TargetsIn(player, nowRoot.Position, cfg.Range, 6) or {}
+			if #targets > 0 then
+				local from = nowRoot.Position + Vector3.new(0, 1.5, 0)
+				local offset = tick -- 가까운 적만 두들기지 않게 시작 위치를 틱마다 돌린다
+				for index = 1, math.min(cfg.Daggers, #targets) do
+					local part = targets[(offset + index - 2) % #targets + 1]
+					if part and part.Parent then
+						Effects.Raw(part.Position, { "J", from, part.Position })
+						BL.Ctx = "스킬"
+						Meter.Source = "Spirit" -- 대미지 미터기: 죽음의 연꽃(F)
+						Effects.DamageTint = Color3.fromRGB(255, 120, 150)
+						local damage = math.max(1, math.floor(Dungeon.ComputeDamage(player) * scale))
+						local _ = Dungeon.HitPart(player, part, damage) or Field.HitPart(player, part, damage)
+						Effects.DamageTint = nil
+						Meter.Source = nil
+						BL.Ctx = nil
 					end
 				end
+				if tick % 3 == 1 then
+					pcall(function() SoundBank.Play(nowRoot, "Aug_Blade", { Volume = 0.6, Pitch = 1 + math.random() * 0.4 }) end) -- 슉슉 (세 틱에 한 번)
+				end
 			end
-			current = nextPart
-			if hop < cfg.Chain and current then task.wait(cfg.HopGap) end
+			task.wait(cfg.Interval)
 		end
 		if spiritToken[player] == token then spiritToken[player] = nil end
+		local endRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		Effects.Raw(endRoot and endRoot.Position or nil, { "Y", userId, 0 }) -- 끝: 단검 고리가 사라진다
 	end)
 	return true
 end
