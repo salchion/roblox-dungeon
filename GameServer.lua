@@ -600,29 +600,36 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 		local count = math.min(6, 3 + math.floor(level / 80))
 		local list = Dungeon.TargetsIn(player, root.Position, 75, count) or Field.TargetsIn(player, root.Position, 75, count)
 		if list and #list > 0 then
-			local positions = {}
-			for _, part in ipairs(list) do table.insert(positions, part.Position) end
-			local charge = 0.55
-			Effects.Raw(root.Position, { "A", player.UserId, math.random(3), charge, positions })
+			-- 1.5초 동안 여러 원소를 모았다가, 탄이 "파파파팍" 줄지어 뻗어 나간다: 적이 적어도 최소 6발 (한 마리면 전부 그 한 마리에게), 한 발마다 원소가 다르다
+			local charge, gap = 1.5, 0.09
+			local bolts = math.max(6, #list * 2)
+			local perTarget = {}
+			local plan = {}
+			for index = 1, bolts do
+				local part = list[(index - 1) % #list + 1]
+				perTarget[part] = (perTarget[part] or 0) + 1
+				plan[index] = { Part = part, Element = math.random(3) }
+			end
+			local events = {}
+			for index, bolt in ipairs(plan) do events[index] = { bolt.Part.Position, bolt.Element } end
+			Effects.Raw(root.Position, { "A", player.UserId, charge, events, gap })
 			task.delay(charge, function()
 				if player.Parent then Weapon.PlayShot(player) end
 			end)
-			task.delay(charge + 0.2, function()
-				if not player.Parent then return end
-				local landedAny = false
-				for _, part in ipairs(list) do
-					if part.Parent then
-						local damage = Dungeon.ComputeDamage(player)
-						damage = math.max(1, math.floor(damage * (#list > 1 and 0.8 or 1)))
-						local landed = Dungeon.HitPart(player, part, damage) or Field.HitPart(player, part, damage)
-						if landed then
-							landedAny = true
-							player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1)
-						end
+			local multiScale = #list > 1 and 0.7 or 1 -- 여러 마리를 한꺼번에 맞히는 대신 마리당 피해는 조금 낮춘다
+			for index, bolt in ipairs(plan) do
+				task.delay(charge + 0.2 + (index - 1) * gap, function()
+					if not player.Parent or not bolt.Part.Parent then return end
+					local damage = Dungeon.ComputeDamage(player)
+					damage = math.max(1, math.floor(damage * multiScale / perTarget[bolt.Part]))
+					local landed = Dungeon.HitPart(player, bolt.Part, damage) or Field.HitPart(player, bolt.Part, damage)
+					if landed then
+						player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1)
+						if index % 3 == 0 then Weapon.PlayShot(player) end
 					end
-				end
-				if landedAny then Skill.AddCharge(player, Config.Skills.ChargePerShot * weaponType.Cooldown) end
-			end)
+					if index == 1 then Skill.AddCharge(player, Config.Skills.ChargePerShot * weaponType.Cooldown) end
+				end)
+			end
 			return
 		end
 	end

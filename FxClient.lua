@@ -1858,67 +1858,76 @@ RunService.RenderStepped:Connect(function()
 end)
 
 
--- 마법책: 머리 위에 원소(불 / 얼음 / 번개)를 모았다가 주변 적들에게 한꺼번에 날린다. 이벤트 { "A", 쏜 사람 UserId, 원소(1 불 / 2 얼음 / 3 번개), 모으는 시간, { 대상 위치... } }
+-- 마법책: 머리 위에 원소(불 / 얼음 / 번개)를 1.5초 모았다가 "파파파팍" 줄지어 쏟아 낸다. 이벤트 { "A", 쏜 사람 UserId, 모으는 시간, { { 대상 위치, 원소(1 불 / 2 얼음 / 3 번개) } ... }, 발 사이 간격 }
 local TOME_COLORS = { Color3.fromRGB(255, 150, 60), Color3.fromRGB(150, 220, 255), Color3.fromRGB(255, 240, 120) }
+local function tomeBolt(from, target, element, delay)
+	task.delay(delay, function()
+		local color = TOME_COLORS[element]
+		if element == 3 then -- 번개: 곧바로 꺾이는 번쩍임
+			local last = from
+			for step = 1, 4 do
+				local point = step == 4 and target or from:Lerp(target, step / 4) + Vector3.new(math.random() - 0.5, math.random() - 0.5, math.random() - 0.5) * 3
+				local length = (point - last).Magnitude
+				if length > 0.1 then
+					local seg = rootPart(CFrame.lookAt((last + point) / 2, point), Vector3.new(0.35, 0.35, length), color, Enum.Material.Neon, nil, 0.05)
+					TweenService:Create(seg, TweenInfo.new(0.25), { Size = Vector3.new(0.05, 0.05, length), Transparency = 1 }):Play()
+					Debris:AddItem(seg, 0.3)
+				end
+				last = point
+			end
+			burst(target, color, 14)
+		else
+			local size = element == 1 and Vector3.new(1.3, 1.3, 1.3) or Vector3.new(0.5, 0.5, 2.4)
+			local missile = rootPart(CFrame.lookAt(from, target), size, color, Enum.Material.Neon, element == 1 and Enum.PartType.Ball or nil, 0.05)
+			addTrail(missile, color, 0.9, 0.25)
+			local flight = TweenService:Create(missile, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { CFrame = CFrame.lookAt(target, target + (target - from)) })
+			flight.Completed:Connect(function()
+				missile:Destroy()
+				burst(target, color, element == 1 and 22 or 16)
+			end)
+			flight:Play()
+			Debris:AddItem(missile, 1)
+		end
+	end)
+end
 local function tomeCast(event)
 	local owner = Players:GetPlayerByUserId(event[2])
 	local root = owner and owner.Character and owner.Character:FindFirstChild("HumanoidRootPart")
-	local targets = event[5]
-	if not root or typeof(targets) ~= "table" then return end
-	local element = math.clamp(event[3] or 1, 1, 3)
-	local color = TOME_COLORS[element]
-	local charge = math.clamp(event[4] or 0.55, 0.2, 1.2)
+	local bolts = event[4]
+	if not root or typeof(bolts) ~= "table" then return end
+	local charge = math.clamp(event[3] or 1.5, 0.3, 3)
+	local gap = math.clamp(event[5] or 0.09, 0.03, 0.3)
 	local started = os.clock()
-	local core = rootPart(CFrame.new(root.Position + Vector3.new(0, 5.2, 0)), Vector3.new(0.4, 0.4, 0.4), color, Enum.Material.Neon, Enum.PartType.Ball, 0.1)
+	local core = rootPart(CFrame.new(root.Position + Vector3.new(0, 5.4, 0)), Vector3.new(0.4, 0.4, 0.4), TOME_COLORS[1], Enum.Material.Neon, Enum.PartType.Ball, 0.1)
 	local orbs = {}
-	for index = 1, 5 do
-		orbs[index] = rootPart(core.CFrame, Vector3.new(0.6, 0.6, 0.6), color, Enum.Material.Neon, Enum.PartType.Ball, 0.25)
+	for index = 1, 9 do -- 세 원소 구슬이 번갈아 돌며 모여든다
+		orbs[index] = rootPart(core.CFrame, Vector3.new(0.6, 0.6, 0.6), TOME_COLORS[(index - 1) % 3 + 1], Enum.Material.Neon, Enum.PartType.Ball, 0.2)
 	end
 	task.spawn(function()
 		while true do
 			local t = (os.clock() - started) / charge
 			if t >= 1 or not core.Parent or not root.Parent then break end
-			local top = root.Position + Vector3.new(0, 5.2, 0)
-			core.Size = Vector3.one * (0.4 + 1.6 * t)
+			local top = root.Position + Vector3.new(0, 5.4, 0)
+			core.Size = Vector3.one * (0.4 + 2.4 * t)
 			core.CFrame = CFrame.new(top)
-			local radius = 4 * (1 - t) + 0.4
+			core.Color = TOME_COLORS[math.floor(os.clock() * 5) % 3 + 1] -- 불 -> 얼음 -> 번개 색이 빠르게 번갈아 번쩍인다
+			local radius = 5.5 * (1 - t) + 0.6
 			for index, orb in ipairs(orbs) do
-				local angle = os.clock() * 7 + index * (2 * math.pi / #orbs)
-				orb.CFrame = CFrame.new(top + Vector3.new(math.cos(angle) * radius, math.sin(os.clock() * 4 + index) * 0.5 * (1 - t), math.sin(angle) * radius))
+				local angle = os.clock() * (4 + 6 * t) + index * (2 * math.pi / #orbs)
+				orb.CFrame = CFrame.new(top + Vector3.new(math.cos(angle) * radius, math.sin(os.clock() * 4 + index) * 0.7 * (1 - t), math.sin(angle) * radius))
 			end
 			RunService.RenderStepped:Wait()
 		end
 		for _, orb in ipairs(orbs) do orb:Destroy() end
-		local from = core.Parent and core.Position or (root.Parent and root.Position + Vector3.new(0, 5.2, 0))
-		core:Destroy()
+		local from = core.Parent and core.Position or (root.Parent and root.Position + Vector3.new(0, 5.4, 0))
+		if core.Parent then
+			burst(core.Position, Color3.new(1, 1, 1), 20)
+			core:Destroy()
+		end
 		if not from then return end
-		for _, target in ipairs(targets) do
-			if typeof(target) == "Vector3" then
-				if element == 3 then -- 번개: 곧바로 꺾이는 번쩍임
-					local last = from
-					for step = 1, 4 do
-						local point = step == 4 and target or from:Lerp(target, step / 4) + Vector3.new(math.random() - 0.5, math.random() - 0.5, math.random() - 0.5) * 3
-						local length = (point - last).Magnitude
-						if length > 0.1 then
-							local seg = rootPart(CFrame.lookAt((last + point) / 2, point), Vector3.new(0.35, 0.35, length), color, Enum.Material.Neon, nil, 0.05)
-							TweenService:Create(seg, TweenInfo.new(0.25), { Size = Vector3.new(0.05, 0.05, length), Transparency = 1 }):Play()
-							Debris:AddItem(seg, 0.3)
-						end
-						last = point
-					end
-					burst(target, color, 14)
-				else
-					local size = element == 1 and Vector3.new(1.3, 1.3, 1.3) or Vector3.new(0.5, 0.5, 2.4)
-					local missile = rootPart(CFrame.lookAt(from, target), size, color, Enum.Material.Neon, element == 1 and Enum.PartType.Ball or nil, 0.05)
-					addTrail(missile, color, 0.9, 0.25)
-					local flight = TweenService:Create(missile, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { CFrame = CFrame.lookAt(target, target + (target - from)) })
-					flight.Completed:Connect(function()
-						missile:Destroy()
-						burst(target, color, element == 1 and 22 or 16)
-					end)
-					flight:Play()
-					Debris:AddItem(missile, 1)
-				end
+		for index, bolt in ipairs(bolts) do
+			if typeof(bolt) == "table" and typeof(bolt[1]) == "Vector3" then
+				tomeBolt(from + Vector3.new(math.random() - 0.5, math.random() * 0.8, math.random() - 0.5) * 1.5, bolt[1], math.clamp(bolt[2] or 1, 1, 3), (index - 1) * gap)
 			end
 		end
 	end)
