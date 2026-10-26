@@ -303,7 +303,10 @@ local function watchTree(root)
 	root.DescendantAdded:Connect(watch)
 end
 
+local refreshGen = 0
 local function refreshAll()
+	refreshGen += 1
+	local gen = refreshGen -- (전환 버튼을 연달아 누르면 앞의 훑기는 멈추고 마지막 것만 이어 간다)
 	if lang ~= "ko" then
 		-- 영어로 되돌린다: 우리가 한국어로 바꿔 둔 글자만 (지금도 우리가 넣은 한국어일 때) 원래 영어로
 		local list = {}
@@ -320,8 +323,9 @@ local function refreshAll()
 	for obj in pairs(watched) do table.insert(list, obj) end -- (돌다가 새 글자가 생겨도 안전하게 복사해서 돈다)
 	local sliceStart = os.clock()
 	for _, obj in ipairs(list) do
+		if gen ~= refreshGen then return end
 		if obj.Parent then apply(obj) end
-		if os.clock() - sliceStart > 0.004 then -- (한 프레임에 4ms 만 쓰고 다음 프레임으로: 전환할 때 화면이 멈칫하지 않게)
+		if os.clock() - sliceStart > 0.008 then -- (한 프레임에 8ms 만 쓰고 다음 프레임으로: 전환할 때 화면이 멈칫하지 않게)
 			task.wait()
 			sliceStart = os.clock()
 		end
