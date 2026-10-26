@@ -344,6 +344,10 @@ return {
 		["Summons 4 light spirits for 10s: they circle you and shoot nearby enemies on their own. Great for sustained damage!"] = "빛의 정령 4마리를 10초 동안 소환해요: 정령이 내 주위를 돌며 근처 적을 알아서 쏴요. 꾸준한 피해에 좋아요!",
 		["🧚 Spirits!"] = "🧚 정령 소환!",
 		["🧚 Spirits"] = "🧚 정령",
+		["Spell Tome"] = "마법책",
+		["Fireball · small explosion"] = "화염구 · 작은 폭발",
+		["Hurls a fireball that bursts into a small explosion around the impact (radius 7)"] = "화염구를 던져요: 맞은 곳 주변에서 작게 폭발해요 (반경 7)",
+		["Spell Tome fireball"] = "마법책 화염구",
 	},
 	pats = {
 		{ "^≈ ([%d,%.%-]+) dmg$", "≈ %s 피해", "dmg", -6 },

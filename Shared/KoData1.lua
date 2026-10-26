@@ -959,7 +959,7 @@ return {
 		["🐀 Swarm! Weak but overwhelming in number, and the Goblin King keeps summoning minions (beginner)"] = "🐀 무리! 약하지만 수가 압도적이고, 고블린 왕이 계속 부하를 소환해요 (초급)",
 		["💀 The Lord vanished, leaving only the words \"I'll be waiting at the end of the 8th land.\" You need to get stronger! Use your loot tickets for a 10-pull at the gacha machine!"] = "💀 군주는 \"8번째 땅의 끝에서 기다리겠다\"는 말만 남기고 사라졌어요. 더 강해져야 해요! 전리품 티켓으로 뽑기 기계에서 10회 뽑기를 해 보세요!",
 		["💎 Treasure Room"] = "💎 보물 방",
-		["💰 Use your gold to upgrade your weapon to +15 and unlock the Bow! Once unlocked, you can pick any weapon you like in the Weapons tab"] = "💰 골드로 무기를 +15까지 강화해 활을 해금하세요! 해금하면 무기 탭에서 원하는 무기를 마음대로 고를 수 있어요",
+		["💰 Use your gold to upgrade your weapon to +15 and unlock the Sniper Rifle! Once unlocked, you can pick any weapon you like in the Weapons tab"] = "💰 골드로 무기를 +15까지 강화해 저격총을 해금하세요! 해금하면 무기 탭에서 원하는 무기를 마음대로 고를 수 있어요",
 		["📈 Growth"] = "📈 성장",
 		["🔥 Charges and explosions! Charging enemies are tough and fast, and the Flame Lord rains down meteors and shockwaves (advanced)"] = "🔥 돌진과 폭발! 돌진하는 적은 튼튼하고 빠르며, 화염 군주가 운석과 충격파를 쏟아내요 (고급)",
 		["🔥 Featured"] = "🔥 추천",

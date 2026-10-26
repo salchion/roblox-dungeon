@@ -75,20 +75,7 @@ Bodies.Pistol = function(c) -- 라이플 (Pistol = 라이플): 긴 핸드가드 
 	c.add("ButtPad", V(0.46, 0.8, 0.14), CFrame.new(0, -0.05, 2.35), c.dark, STEEL)
 end
 
-Bodies.Smg = function(c) -- 저격총 (Smg = 저격총): 아주 긴 총열 + 큰 조준경 + 접힌 양각대
-	local k = c.k
-	c.add("Receiver", V(0.5 * k, 0.55 * k, 1.7), CFrame.new(0, 0.2, 0.2), c.steel, c.bodyMat)
-	c.cyl("Suppressor", 1.1, 0.46 * k, CFrame.new(0, 0.05, c.muzzleZ + 0.1), c.dark, STEEL)
-	c.cyl("SuppRing", 0.06, 0.5 * k, CFrame.new(0, 0.05, c.muzzleZ + 0.4), c.accent(), NEON)
-	c.cyl("ScopeTube", 1.6, 0.46, CFrame.new(0, 0.95 * k, -0.2), c.dark, STEEL)
-	c.cyl("ScopeLens", 0.06, 0.42, CFrame.new(0, 0.95 * k, -1.02), c.accent(), NEON)
-	c.add("ScopeMount", V(0.2, 0.34, 0.2), CFrame.new(0, 0.7 * k, -0.3), c.dark, STEEL)
-	for i = -1, 1, 2 do
-		c.add("Bipod" .. i, V(0.08, 0.9, 0.08), CFrame.new(i * 0.28, -0.35, -(0.9 + c.bl * 0.5)) * CFrame.Angles(math.rad(-65), 0, math.rad(i * 12)), c.dark, STEEL)
-	end
-	c.add("BoltKnob", V(0.2, 0.2, 0.2), CFrame.new(0.5 * k, 0.28, 0.55), c.accent(), NEON, { Shape = Enum.PartType.Ball })
-	c.add("Stock", V(0.46, 0.8, 1.7), CFrame.new(0, -0.05, 1.7) * CFrame.Angles(math.rad(-5), 0, 0), c.stockColor, c.stockMat)
-end
+Bodies.Smg = Bodies.Pistol -- 저격총은 라이플과 같은 모양 (소리 / 위력만 다르다)
 
 Bodies.Revolver = function(c) -- 폭탄: 손에 쥔 둥근 쇠 폭탄 + 타는 퓨즈 + 시대색 띠 (Revolver = 폭탄)
 	local k = c.k
@@ -198,19 +185,19 @@ Bodies.Rocket = function(c) -- 굵은 발사관 + 빛나는 탄두 + 어깨받�
 	c.add("Sight", V(0.14, 0.4, 0.14), CFrame.new(0.55 * k, 0.65 * k, -0.4), c.dark, STEEL)
 end
 
-Bodies.Rail = function(c) -- 지팡이: 긴 지팡이 + 윗머리의 빛나는 수정 + 떠 있는 고리 (Rail = 지팡이)
+Bodies.Rail = function(c) -- 평행한 두 레일 + 가속 고리 + 빛나는 코일 관
 	local k = c.k
-	c.hideGrip, c.noTrim = true, true
-	local top = -(0.7 + c.bl)
-	c.cyl("Wrap", 0.5, 0.42, CFrame.new(0, 0.05, -0.6), c.accent(), NEON)
-	c.add("Gem", V(0.8 * k, 0.8 * k, 0.8 * k), CFrame.new(0, 0.05, top - 0.15), c.accent(), NEON, { Shape = Enum.PartType.Ball })
-	c.add("GemShell", V(1.15 * k, 1.15 * k, 1.15 * k), CFrame.new(0, 0.05, top - 0.15), Color3.fromRGB(215, 235, 255), Enum.Material.Glass, { Shape = Enum.PartType.Ball, Transparency = 0.6 })
-	for i = 0, 3 do -- 수정을 감싼 네 개의 발톱
-		local a = math.rad(i * 90 + 45)
-		c.add("Claw" .. i, V(0.12, 0.12, 0.8 * k), CFrame.new(math.cos(a) * 0.38 * k, 0.05 + math.sin(a) * 0.38 * k, top + 0.1) * CFrame.Angles(math.rad(math.sin(a) * 14), math.rad(-math.cos(a) * 14), 0), c.steel, STEEL)
+	c.add("Receiver", V(0.6 * k, 0.65 * k, 1.8), CFrame.new(0, 0.2, 0.2), c.steel, c.bodyMat)
+	for side = -1, 1, 2 do
+		c.add("Rail" .. side, V(0.14, 0.14, c.bl * 1.2), CFrame.new(side * 0.42 * k, 0.05, -(0.7 + c.bl * 0.6)), c.accent(), NEON)
 	end
-	c.cyl("Halo", 0.08, 1.6 * k, CFrame.new(0, 0.05, top - 0.15) * CFrame.Angles(0, math.rad(90), 0), c.accent(), NEON, { Transparency = 0.35 })
-	c.add("Butt", V(0.32, 0.32, 0.4), CFrame.new(0, 0.05, 0.55), c.steel, STEEL)
+	for i = 1, 2 do -- 떠 있는 가속 고리
+		c.cyl("Ring" .. i, 0.12, 1.2 * k - i * 0.05, CFrame.new(0, 0.05, -(0.6 + c.bl * i / 3)), Color3.new(1, 1, 1), NEON)
+	end
+	c.cyl("CoreTube", 1.0, 0.5 * k, CFrame.new(0, 0.7 * k, 0.1), Color3.fromRGB(190, 230, 255), Enum.Material.Glass, { Transparency = 0.45 })
+	c.cyl("CoreGlow", 0.8, 0.3 * k, CFrame.new(0, 0.7 * k, 0.1), c.accent(), NEON)
+	c.add("Fin1", V(0.08, 0.9, 0.9), CFrame.new(-0.4 * k, 0.5 * k, 0.75) * CFrame.Angles(0, 0, math.rad(20)), c.steel, STEEL)
+	c.add("Fin2", V(0.08, 0.9, 0.9), CFrame.new(0.4 * k, 0.5 * k, 0.75) * CFrame.Angles(0, 0, math.rad(-20)), c.steel, STEEL)
 end
 
 ------------------ 시대별 장식 (가장 눈에 띄는 것부터. 부품 예산이 차면 뒤쪽은 생략된다) ------------------
@@ -637,8 +624,8 @@ function Weapon.PlayShot(player)
 	local tip = barrel and barrel:FindFirstChild("Tip")
 	if not tip then return end
 
-	-- 총구 불꽃 / 반동은 총(라이플)만: 활 / 수리검 / 박격포 / 지팡이는 총처럼 번쩍이거나 튀지 않는다
-	local isGun = Config.ResolveWeaponType(player:GetAttribute("WeaponLevel") or 0, player:GetAttribute("WeaponType")) == "Pistol"
+	-- 총구 불꽃 / 반동은 총 종류(라이플 / 저격총 / 로켓 / 레일건)만: 마법책은 총처럼 번쩍이거나 튀지 않는다
+	local isGun = Config.ResolveWeaponType(player:GetAttribute("WeaponLevel") or 0, player:GetAttribute("WeaponType")) ~= "Flamer"
 	local muzzle = isGun and tip:FindFirstChild("Muzzle")
 	if muzzle then
 		muzzle:Emit(6)

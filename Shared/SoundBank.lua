@@ -26,16 +26,17 @@ local SPECS = {
 	Shot_Rifle    = { Base = "Dash", Pitch = 1.7, Volume = 0.8, Length = 0.4, Fx = { { "eq", { LowGain = -8, MidGain = 0, HighGain = 3 } } } },
 	-- 수리검: 가볍게 갈라지는 "쉭쉭" (Shotgun = 수리검)
 	Shot_Shotgun  = { Base = "Dash", Pitch = 2.2, Volume = 0.6, Length = 0.3, Layers = { { Pitch = 2.8, Volume = 0.4, Delay = 0.04 } } },
-	-- 마도서: 마법 불꽃 (Flamer = 마도서)
-	Shot_Flamer   = { Base = "Shot", CustomLength = 0.7, Pitch = 0.6, Volume = 0.8, Length = 0.4, Fx = { { "chorus", { Depth = 0.7, Mix = 0.6 } }, { "distortion", { Level = 0.3 } } } },
+	-- 마법책 (Flamer = 마법책): 낮게 "우웅" 하고 불덩이가 터져 나가는 소리 (기본 소리를 낮추고 코러스 + 짧은 폭발음을 겹친다)
+	Shot_Flamer   = { Base = "Boom", Pitch = 1.35, Volume = 0.7, Length = 0.7, Fx = { { "chorus", { Depth = 0.6, Mix = 0.5 } }, { "reverb", { DecayTime = 0.9, WetLevel = -8 } } }, Layers = { { Pitch = 2.2, Volume = 0.4, Delay = 0.02 } } },
 	-- 박격포: 묵직한 "쿵" (Cannon = 박격포)
 	Shot_Cannon   = { Base = "Boom", Pitch = 0.8, Volume = 0.8, Length = 0.9, Fx = { { "distortion", { Level = 0.3 } } } },
 	-- 석궁: 시위가 튕기는 "탕" (Sniper = 석궁)
 	Shot_Sniper   = { Base = "Shot", CustomLength = 0.5, Pitch = 2.0, Volume = 0.7, Length = 0.3, Fx = { { "eq", { LowGain = -14, MidGain = 2, HighGain = -2 } } }, Layers = { { Pitch = 1.1, Volume = 0.5, Delay = 0.03 } } },
 	Shot_Rocket   = { Base = "Shot", CustomLength = 1.8, Pitch = 0.55, Volume = 1.0, Length = 1.5, Fx = { { "distortion", { Level = 0.5 } }, { "echo", { Delay = 0.15, Feedback = 0.35, WetLevel = -6 } } },
 		Layers = { { Pitch = 0.4, Volume = 1.0, Delay = 0.12 } } },
-	-- 지팡이: 맑은 마법 울림 (Rail = 지팡이)
-	Shot_Rail     = { Base = "Enh_Success", CustomLength = 0.6, Pitch = 2.2, Volume = 0.55, Length = 0.45, Fx = { { "echo", { Delay = 0.09, Feedback = 0.4, WetLevel = -6 } } } },
+	-- 레일건 (Rail = 레일건): AudioBank 의 레일건 소리 ID 가 있으면 그걸 쓰고, 없으면 아래를 가공해서 쓴다
+	Shot_Rail     = { Base = "Shot", CustomLength = 1.4, Pitch = 1.9, Volume = 0.9, Length = 1.0, Fx = { { "chorus", { Depth = 0.8, Mix = 0.7 } }, { "echo", { Delay = 0.07, Feedback = 0.45, WetLevel = -5 } } },
+		Layers = { { Pitch = 0.9, Volume = 0.6, Delay = 0.02 } } },
 	-- 적중 / 처치 / 치명타 (짧고 선명하게)
 	Hit  = { Base = "Shot", CustomLength = 0.6, Pitch = 3.0, Volume = 0.24, Length = 0.09 }, -- (0.5 -> 0.32: 적중음이 총소리보다 커서 총소리가 묻힌다는 의견)
 	-- 치명타 (오버워치 헤드샷 느낌, 귀가 아프지 않게): 낮고 단단한 "텅!" + 살짝 얹은 맑은 배음, 고음은 깎아 낸다
@@ -154,7 +155,7 @@ end
 SoundBank.Descriptions = {
 	Dash = "Dash (Q)", Pickup = "Loot pickup",
 	Shot_Pistol = "Rifle shot", Shot_Smg = "Sniper Rifle shot", Shot_Revolver = "Bomb throw", Shot_Rifle = "Bow shot", Shot_Shotgun = "Shuriken throw",
-	Shot_Flamer = "Tome spell", Shot_Cannon = "Mortar shot", Shot_Sniper = "Crossbow shot", Shot_Rocket = "Rocket Cannon shot", Shot_Rail = "Wand spell",
+	Shot_Flamer = "Spell Tome fireball", Shot_Cannon = "Mortar shot", Shot_Sniper = "Crossbow shot", Shot_Rocket = "Rocket Launcher shot", Shot_Rail = "Railgun shot",
 	Hit = "Enemy hit (short)", Crit = "Critical hit", Kill = "Enemy kill (pitch rises with kill streak)",
 	Skill_Heal = "First Aid used", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Ult_Missile = "Dead Eye missile launch", Ult_Hit = "Dead Eye missile impact", Ult_Launch = "Dead Eye launch thump", Ult_Finale = "Dead Eye final blast", Boom = "Monster explosion / shockwave / meteor",
 	LevelUp = "Level up", Enh_Hammer = "Enhance: hammer strike", Enh_Success = "Enhance success (pitch rises with level)", Enh_Fail = "Enhance failed",
