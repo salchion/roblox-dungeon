@@ -217,7 +217,7 @@ local function anyModalOpen()
 end
 
 -- 큰 창(메뉴 / 상점 / 도감 ...)이 열려 있는 동안: 폰은 카드 + 미션을 숨기고, 큰 화면은 창 뒤에 깔려 겹쳐 보이는 미션 카드 / DPS 미터를 숨긴다 (창을 닫으면 돌아온다)
-local COVERED_DESKTOP = { "GoalHUD", "DpsPanelGui" }
+local COVERED_DESKTOP = { "GoalHUD", "DpsPanelGui", "HudGui", "LevelStatGui" } -- (왼쪽 위 카드 / 스탯 버튼이 큰 창의 왼쪽 가장자리와 겹쳐서 창이 열려 있는 동안만 숨긴다)
 local function updateModalCover(compact)
 	local open = anyModalOpen()
 	local active = compact and COVERED or COVERED_DESKTOP

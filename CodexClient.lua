@@ -218,11 +218,8 @@ player:GetAttributeChangedSignal("OpenCodex"):Connect(function() toggle() end) -
 
 -- 튜토리얼 / 던전 / 심연 등 전투 화면에서는 버튼만 숨긴다 (J 키는 그대로)
 local function refreshButton()
-	local zone = player:GetAttribute("Zone")
-	-- 처음엔 숨겼다가 1구역을 클리어하면 연다 (처음 화면을 단순하게). J 키는 항상 된다.
-	local unlocked = (player:GetAttribute("ClearedZone") or 0) >= 1 and not player:GetAttribute("TutorialActive")
-	openButton.Visible = unlocked and (zone == "Lobby" or zone == "Field")
-	if player:GetAttribute("InDoomArena") then openButton.Visible = false end
+	-- 오른쪽 가운데 떠 있던 도감 버튼은 숨긴다: 왼쪽 메뉴 버튼 줄(MenuDockClient)에 도감 버튼이 있고, DPS 미터와 겹쳤다. (J 키는 그대로)
+	openButton.Visible = false
 end
 player:GetAttributeChangedSignal("ClearedZone"):Connect(refreshButton)
 player:GetAttributeChangedSignal("TutorialActive"):Connect(refreshButton)

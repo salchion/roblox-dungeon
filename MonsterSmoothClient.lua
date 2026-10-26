@@ -20,8 +20,8 @@ task.spawn(function()
 					for _, decor in ipairs(body:GetChildren()) do
 						if decor:IsA("BasePart") and (decor.Position - body.Position).Magnitude > limit then
 							reportedAt[body] = now
-							print(string.format("[Monster desync] Body X=%d, visual part '%s' is %d studs away (body size %.0f)",
-								math.floor(body.Position.X), decor.Name, math.floor((decor.Position - body.Position).Magnitude), body.Size.Magnitude))
+							print(string.format("[Monster desync] Body '%s' X=%d, visual part '%s' (%s, anchored=%s) is %d studs away (body size %.0f) · decor path: %s",
+								body.Name, math.floor(body.Position.X), decor.Name, decor.ClassName, tostring(decor.Anchored), math.floor((decor.Position - body.Position).Magnitude), body.Size.Magnitude, decor:GetFullName()))
 							break
 						end
 					end

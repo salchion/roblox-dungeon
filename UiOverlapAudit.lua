@@ -12,7 +12,7 @@ if not RunService:IsStudio() then return end
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-local SKIP_GUIS = { TouchGui = true, EvolveFx = true, HUDFx = true, IntroGui = true, MobileUi = false }
+local SKIP_GUIS = { TouchGui = true, EvolveFx = true, HUDFx = true, IntroGui = true, ProximityPrompts = true }
 local MIN_W, MIN_H, MIN_OVERLAP = 48, 22, 700
 local printed = {}
 local printedCount = 0
@@ -33,6 +33,7 @@ local function qualifies(obj, viewport)
 	local size = obj.AbsoluteSize
 	if size.X < MIN_W or size.Y < MIN_H then return false end
 	if size.X > viewport.X * 0.75 and size.Y > viewport.Y * 0.75 then return false end -- (화면을 덮는 막 / 배경은 제외)
+	if size.X >= viewport.X * 0.9 then return false end -- (화면 폭 전체를 덮는 검은 띠 = 연출용 레터박스는 제외)
 	return true
 end
 
