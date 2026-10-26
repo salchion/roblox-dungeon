@@ -356,7 +356,7 @@ local function setupPlayer(player)
 	-- 저장된 데이터 적용 (DataStore 대기 중에도 캐릭터는 이미 스폰될 수 있음)
 	local saved = Data.Load(player)
 	if saved.LoadFailed and player.Parent then -- 저장 데이터를 못 읽었다: 이 상태로 하면 저장이 막혀서 진행이 사라지므로 안내 후 내보낸다
-		player:Kick("Your save data could not be loaded. Please rejoin in a moment - your progress is safe.")
+		player:Kick("Your save data could not be loaded (you may be logged in on another device). Wait 1-2 minutes and rejoin - your progress is safe. / 저장 데이터를 불러오지 못했어요 (다른 기기에서 접속 중일 수 있어요). 1~2분 뒤 다시 접속해 주세요. 진행 상황은 안전해요.")
 		return
 	end
 	if player.Parent then

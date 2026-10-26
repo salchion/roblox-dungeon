@@ -3,6 +3,8 @@
 -- Studio에서 "Enable Studio Access to API Services"가 꺼져 있으면 저장 없이 기본값으로 동작한다.
 
 local DataStoreService = game:GetService("DataStoreService")
+local Players = game:GetService("Players")
+local MessagingService = game:GetService("MessagingService")
 
 local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Config"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
@@ -28,6 +30,7 @@ end
 -- 자동 저장(60초마다)이 잠금 시각을 갱신하고, 나갈 때 / 서버 종료 때는 잠금을 풀어서 바로 다른 서버에서 이어서 할 수 있다. 서버가 갑자기 죽어도 LOCK_TIMEOUT 뒤에는 풀린다.
 local LOCK_TIMEOUT = 120
 local LOAD_TRIES = 8
+local TAKEOVER_TOPIC = "SessionTakeover_v1" -- 새로 접속한 서버가 "이 유저는 내가 이어받는다"고 알리는 채널
 local function lockedByOther(value)
 	local lock = typeof(value) == "table" and value.Lock
 	return typeof(lock) == "table" and lock.JobId ~= game.JobId and os.time() - (tonumber(lock.At) or 0) < LOCK_TIMEOUT
@@ -90,6 +93,7 @@ function Data.Load(player)
 	if not store then return defaults end
 
 	local busy = false
+	local askedTakeover = false
 	for attempt = 1, LOAD_TRIES do
 		busy = false
 		local ok, saved = pcall(function()
@@ -130,6 +134,10 @@ function Data.Load(player)
 			return defaults
 		end
 		if busy then
+			if not askedTakeover then -- 같은 계정이 다른 곳(다른 기기 / Studio 테스트)에서 접속 중: 그쪽에 "저장하고 나가라"고 알린다 (이어받기)
+				askedTakeover = true
+				pcall(function() MessagingService:PublishAsync(TAKEOVER_TOPIC, { UserId = player.UserId, JobId = game.JobId }) end)
+			end
 			task.wait(2) -- 다른 서버가 저장하고 잠금을 풀 때까지 잠깐 기다린다
 		else
 			task.wait(attempt)
@@ -231,5 +239,18 @@ function Data.Wipe(player)
 	if not ok then wiped[player] = nil end
 	return ok
 end
+
+-- 이어받기: 같은 계정이 다른 서버에서 새로 접속하면, 지금 이 서버에 있던 쪽은 저장하고(잠금을 풀고) 내보낸다.
+-- (폰으로 접속했는데 PC 에서 테스트 중이거나, 그 반대일 때 "저장 데이터를 불러오지 못했어요" 로 막히던 것을 풀어 준다)
+pcall(function()
+	MessagingService:SubscribeAsync(TAKEOVER_TOPIC, function(message)
+		local info = message.Data
+		if typeof(info) ~= "table" or info.JobId == game.JobId then return end
+		local target = Players:GetPlayerByUserId(tonumber(info.UserId) or 0)
+		if not target or not loaded[target] then return end
+		pcall(function() Data.Save(target, true) end)
+		target:Kick("You joined from another device, so this session was closed. / 다른 기기에서 접속해서 이 접속이 종료되었어요.")
+	end)
+end)
 
 return Data
