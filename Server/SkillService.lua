@@ -457,7 +457,7 @@ function Skill.Use(player, skillKey, aimPoint)
 	local cooldown = S[skillKey].Cooldown * (1 - math.min(0.6, haste))
 	cooldowns[skillKey] = now + cooldown
 	if skillKey == "Spirit" then
-		pcall(function() SoundBank.Play(root, "Aug_Storm", { Volume = 0.9 }) end) -- 번개 소리
+		-- (죽음의 연꽃 소리는 handlers.Spirit 가 낸다: 칼날 소리. 예전 번개 소리는 뺐다)
 	else
 		SoundBank.Play(root, skillKey == "Ult" and "Skill_Ult" or "Skill_Heal")
 	end
