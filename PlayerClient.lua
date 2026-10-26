@@ -4043,6 +4043,18 @@ end
 
 -- 왼쪽 메뉴 버튼 줄(MenuDockClient)이 보내는 신호: "OpenMenuTab" = "탭" 또는 "탭:하위", "OpenHelp" = 설정 창
 player:GetAttributeChangedSignal("OpenHelp"):Connect(toggleHelp)
+player:GetAttributeChangedSignal("OpenEnhance"):Connect(function() -- 왼쪽 무기 버튼(마을): 대장장이 모루와 같은 강화 창
+	if player:GetAttribute("Zone") ~= "Lobby" then return end
+	menuPanel.Visible = false
+	if enhancePanel.Visible then
+		enhancePanel.Visible = false
+		return
+	end
+	enhanceResult.Text = ""
+	E.EnhanceShownTier = nil
+	refreshEnhance()
+	enhancePanel.Visible = true
+end)
 player:GetAttributeChangedSignal("OpenMenuTab"):Connect(function()
 	local want = player:GetAttribute("OpenMenuTab")
 	if type(want) ~= "string" then return end

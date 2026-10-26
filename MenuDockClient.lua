@@ -28,6 +28,7 @@ local function gold() return attr("Gold") or 0 end
 local function weaponCost()
 	local level = attr("WeaponLevel") or 0
 	if attr("DataReady") ~= true or level >= Config.Weapon.MaxLevel then return nil end
+	if attr("Zone") ~= "Lobby" then return nil end -- 무기 강화는 마을에서만 된다: 필드 / 던전에서는 눌러도 할 일이 없으니 점을 켜지 않는다
 	local ok, cost = pcall(Config.GetEnhanceCost, level)
 	return ok and cost or nil
 end
@@ -88,7 +89,7 @@ local function dotSets() return goldDots.Sets == true end
 
 local BUTTONS = {
 	{ Icon = "🎒", Text = "Gear",     Color = Color3.fromRGB(70, 110, 190), Tab = "Character:Gear", Dot = dotGear },
-	{ Icon = "🔫", Text = "Weapon",   Color = Color3.fromRGB(190, 95, 70),  Tab = "Character:Weapon", Dot = dotWeapon },
+	{ Icon = "🔫", Text = "Weapon",   Color = Color3.fromRGB(190, 95, 70),  Tab = "Character:Weapon", LobbySignal = "OpenEnhance", Dot = dotWeapon },
 	{ Icon = "📈", Text = "Growth",   Color = Color3.fromRGB(70, 150, 100), Tab = "Growth", Dot = dotGrowth },
 	{ Icon = "📜", Text = "Quests",   Color = Color3.fromRGB(175, 130, 60), Tab = "Quest", Dot = dotQuest },
 	{ Icon = "🐾", Text = "Pets",     Color = Color3.fromRGB(150, 90, 170), Signal = "OpenPet", Dot = dotPet },
@@ -199,7 +200,9 @@ local function build(index, def)
 		scale.Scale = 0.92
 		TweenService:Create(scale, TweenInfo.new(0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
 		menuOpen = false -- (폰: 고르면 메뉴가 접힌다)
-		if def.Tab then
+		if def.LobbySignal and player:GetAttribute("Zone") == "Lobby" then
+			player:SetAttribute(def.LobbySignal, os.clock()) -- 마을에서는 무기 버튼이 곧바로 강화 창을 연다 (메뉴의 무기 탭은 고르기만 되고 강화는 못 한다)
+		elseif def.Tab then
 			player:SetAttribute("OpenMenuTab", def.Tab)
 		else
 			player:SetAttribute(def.Signal, os.clock())
