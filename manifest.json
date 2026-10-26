@@ -512,6 +512,13 @@
       "overwrite": true
     },
     {
+      "path": "UiOverlapAudit.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "UiOverlapAudit",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "MobileLayoutClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "MobileLayoutClient",

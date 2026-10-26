@@ -216,19 +216,28 @@ local function anyModalOpen()
 	return false
 end
 
+-- 큰 창(메뉴 / 상점 / 도감 ...)이 열려 있는 동안: 폰은 카드 + 미션을 숨기고, 큰 화면은 창 뒤에 깔려 겹쳐 보이는 미션 카드 / DPS 미터를 숨긴다 (창을 닫으면 돌아온다)
+local COVERED_DESKTOP = { "GoalHUD", "DpsPanelGui" }
 local function updateModalCover(compact)
-	local want = compact and anyModalOpen()
-	for _, name in ipairs(COVERED) do
-		local g = playerGui:FindFirstChild(name)
-		if g then
-			if want then
-				if g.Enabled then
-					g.Enabled = false
-					hiddenByModal[g] = true
+	local open = anyModalOpen()
+	local active = compact and COVERED or COVERED_DESKTOP
+	local seen = {}
+	for _, list in ipairs({ COVERED, COVERED_DESKTOP }) do
+		for _, name in ipairs(list) do
+			if not seen[name] then
+				seen[name] = true
+				local g = playerGui:FindFirstChild(name)
+				if g then
+					if open and table.find(active, name) then
+						if g.Enabled then
+							g.Enabled = false
+							hiddenByModal[g] = true
+						end
+					elseif hiddenByModal[g] then
+						g.Enabled = true
+						hiddenByModal[g] = nil
+					end
 				end
-			elseif hiddenByModal[g] then
-				g.Enabled = true
-				hiddenByModal[g] = nil
 			end
 		end
 	end
