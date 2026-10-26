@@ -124,6 +124,13 @@ local function remember(text, result)
 	return result
 end
 
+local lookupLoose -- (아래에서 정의: 패턴에 들어간 이름 / 문장도 같은 방식으로 번역하려고 미리 선언)
+local function captureKo(cap)
+	local ko = DICT[cap] or data.exact[cap]
+	if ko then return ko end
+	return lookupLoose and lookupLoose(cap, 2) or cap
+end
+
 -- 조각 하나(태그 / 줄바꿈이 없는 글자)를 번역한다. 못 찾으면 nil
 local function lookup(piece)
 	local direct = DICT[piece] or data.exact[piece]
@@ -132,7 +139,7 @@ local function lookup(piece)
 		local captures = { string.match(piece, entry[1]) }
 		if #captures > 0 or string.find(piece, entry[1]) then
 			for index, cap in ipairs(captures) do -- (패턴 안에 들어간 이름 / 문장도 사전에 있으면 번역: "Zone 4 · Crit Missile")
-				if type(cap) == "string" and string.find(cap, "%a%a") then captures[index] = DICT[cap] or data.exact[cap] or cap end
+				if type(cap) == "string" and string.find(cap, "%a%a") then captures[index] = captureKo(cap) end
 			end
 			local ok, result = pcall(string.format, entry[2], table.unpack(captures))
 			if ok then return result end
@@ -146,7 +153,7 @@ local function lookup(piece)
 			local captures = { string.match(piece, entry[1]) }
 			if #captures > 0 then
 				for index, cap in ipairs(captures) do
-					if type(cap) == "string" and string.find(cap, "%a%a") then captures[index] = DICT[cap] or data.exact[cap] or cap end
+					if type(cap) == "string" and string.find(cap, "%a%a") then captures[index] = captureKo(cap) end
 				end
 				local ok, result = pcall(string.format, entry[2], table.unpack(captures))
 				if ok then return result end
@@ -170,7 +177,7 @@ end
 
 -- 통째로 못 찾은 조각: [등급] 머리말 / 끝의 숫자(+5.0%) / 구분자(" · ", " / ", ", ") 로 나눠 한 토막씩 번역한다
 local SEPARATORS = { " · ", " / ", "  ", ", ", " - " }
-local function lookupLoose(piece, depth)
+function lookupLoose(piece, depth)
 	local found = lookupTrimmed(piece)
 	if found then return found end
 	if depth >= 3 or #piece > 300 then return nil end
@@ -256,6 +263,8 @@ local missing, missingCount, missingPrinted = {}, 0, {}
 local function noteMissing(text)
 	if not RunService:IsStudio() or missingCount >= 600 or missing[text] then return end
 	if string.find(text, "[\234-\237]") then return end -- 이미 한글이 섞여 있으면 제외 (한글 첫 바이트 0xEA~0xED)
+	local bare = string.gsub(string.gsub(text, "<[^>]*>", " "), "DPS", " ")
+	if not string.find(bare, "%a%a%a") then return end -- (숫자 / DPS 글자뿐이면 번역할 게 없다)
 	missing[text] = true
 	missingCount += 1
 end

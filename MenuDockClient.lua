@@ -14,7 +14,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-local SIZE, GAP = 66, 6 -- (미션 카드 / 던전 상태창과 겹치지 않게 줄였다: 6줄 높이 = 6 * 72 - 6)
+local SIZE, GAP = 58, 5 -- (미션 카드 / 던전 상태창과 겹치지 않게 줄였다: 6줄 높이 = 6 * 63 - 5 = 373, 손을 올리면 1.1배)
 local TOP_Y = 226 -- HUD 카드(60 ~ 210, 전투력 / 경험치 줄을 아래로 옮겨 줄였다) 바로 아래
 
 -- 색은 진하지만 채도를 낮춰 눈이 편하게 (위쪽이 조금 밝은 그라데이션)
@@ -88,17 +88,18 @@ local function dotPet() return goldDots.Pets == true end
 local function dotSets() return goldDots.Sets == true end
 local function dotStats() return (attr("LvPointsLeft") or 0) > 0 and attr("TutorialActive") ~= true end -- 안 쓴 스탯 포인트가 있으면 (골드와 상관없다)
 
+local closeOtherWindows
 local BUTTONS = {
-	{ Icon = "🎒", Text = "Gear",     Color = Color3.fromRGB(70, 110, 190), Tab = "Character:Gear", Dot = dotGear },
-	{ Icon = "🔫", Text = "Weapon",   Color = Color3.fromRGB(190, 95, 70),  Tab = "Character:Weapon", LobbySignal = "OpenEnhance", Dot = dotWeapon },
-	{ Icon = "📈", Text = "Growth",   Color = Color3.fromRGB(70, 150, 100), Tab = "Growth", Dot = dotGrowth },
-	{ Icon = "✨", Text = "Stats",    Color = Color3.fromRGB(120, 95, 190), Signal = "OpenStats", Dot = dotStats },
-	{ Icon = "📜", Text = "Quests",   Color = Color3.fromRGB(175, 130, 60), Tab = "Quest", Dot = dotQuest },
-	{ Icon = "🐾", Text = "Pets",     Color = Color3.fromRGB(150, 90, 170), Signal = "OpenPet", Dot = dotPet },
-	{ Icon = "🌟", Text = "Sets",     Color = Color3.fromRGB(60, 130, 160), Signal = "OpenAug", Dot = dotSets },
-	{ Icon = "📖", Text = "Codex",    Color = Color3.fromRGB(110, 100, 170), Signal = "OpenCodex" },
-	{ Icon = "🎁", Text = "Shop",     Color = Color3.fromRGB(185, 75, 105), Signal = "OpenShop" },
-	{ Icon = "🏆", Text = "Ranking",  Color = Color3.fromRGB(170, 150, 60), Tab = "Rank" },
+	{ Icon = "🎒", Text = "Gear",     Color = Color3.fromRGB(70, 110, 190), Tab = "Character:Gear", Window = "HUD", Dot = dotGear },
+	{ Icon = "🔫", Text = "Weapon",   Color = Color3.fromRGB(190, 95, 70),  Tab = "Character:Weapon", Window = "HUD", LobbySignal = "OpenEnhance", Dot = dotWeapon },
+	{ Icon = "📈", Text = "Growth",   Color = Color3.fromRGB(70, 150, 100), Tab = "Growth", Window = "HUD", Dot = dotGrowth },
+	{ Icon = "✨", Text = "Stats",    Color = Color3.fromRGB(120, 95, 190), Signal = "OpenStats", Window = "LevelStatGui", Dot = dotStats },
+	{ Icon = "📜", Text = "Quests",   Color = Color3.fromRGB(175, 130, 60), Tab = "Quest", Window = "HUD", Dot = dotQuest },
+	{ Icon = "🐾", Text = "Pets",     Color = Color3.fromRGB(150, 90, 170), Signal = "OpenPet", Window = "PetGui", Dot = dotPet },
+	{ Icon = "🌟", Text = "Sets",     Color = Color3.fromRGB(60, 130, 160), Signal = "OpenAug", Window = "AugGui", Dot = dotSets },
+	{ Icon = "📖", Text = "Codex",    Color = Color3.fromRGB(110, 100, 170), Signal = "OpenCodex", Window = "CodexGui" },
+	{ Icon = "🎁", Text = "Shop",     Color = Color3.fromRGB(185, 75, 105), Signal = "OpenShop", Window = "ShopGui" },
+	{ Icon = "🏆", Text = "Ranking",  Color = Color3.fromRGB(170, 150, 60), Tab = "Rank", Window = "HUD" },
 	{ Icon = "⚙", Text = "Settings", Color = Color3.fromRGB(95, 105, 130), Signal = "OpenHelp" },
 }
 
@@ -114,6 +115,24 @@ local dots = {} -- [버튼 정의] = 빨간 점
 
 local entries = {} -- { Button, Icon, Label } (위치 / 글자 크기는 layout() 이 화면에 맞게 정한다)
 local menuOpen = false -- 폰: 접힌 메뉴(☰)가 열려 있나
+
+-- 큰 창은 한 번에 하나: 어떤 버튼을 누르면 지금 열려 있는 다른 큰 창(펫 / 스탯 / 세트 / 도감 / 상점 / 메뉴)을 먼저 닫는다 (창끼리 겹쳐 보이지 않게). def.Window = 이 버튼이 여는 창이 들어 있는 화면 이름 (그 창은 그대로 둔다: 같은 버튼을 한 번 더 누르면 닫히는 토글이 유지된다)
+local WINDOW_GUIS = { "PetGui", "ShopGui", "LevelStatGui", "CodexGui", "AugGui", "OddsGui" }
+function closeOtherWindows(keep)
+	for _, name in ipairs(WINDOW_GUIS) do
+		local g = playerGui:FindFirstChild(name)
+		if g and name ~= keep then
+			for _, child in ipairs(g:GetChildren()) do
+				if child:IsA("Frame") and child.Visible and child.AbsoluteSize.Y >= 300 then child.Visible = false end
+			end
+		end
+	end
+	if keep ~= "HUD" then
+		local hud = playerGui:FindFirstChild("HUD")
+		local menu = hud and hud:FindFirstChild("MenuPanel")
+		if menu and menu.Visible then menu.Visible = false end
+	end
+end
 
 local function build(index, def)
 	local button = Instance.new("TextButton")
@@ -199,6 +218,7 @@ local function build(index, def)
 		TweenService:Create(scale, TweenInfo.new(0.1), { Scale = 1 }):Play()
 	end)
 	button.Activated:Connect(function()
+		closeOtherWindows(def.Window)
 		scale.Scale = 0.92
 		TweenService:Create(scale, TweenInfo.new(0.15, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
 		menuOpen = false -- (폰: 고르면 메뉴가 접힌다)
