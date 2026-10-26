@@ -3825,11 +3825,16 @@ local function isMouseOverButton(position) -- (매 프레임 불린다: 마우�
 	local now = os.clock()
 	if overPos == position and now - overAt < 0.15 then return overResult end
 	overPos, overAt, overResult = position, now, false
-	for _, object in ipairs(playerGui:GetGuiObjectsAtPosition(position.X, position.Y)) do
-		if object:IsA("GuiButton") and object.Visible then
-			overResult = true
-			break
+	-- 마우스 위치는 위쪽 바(약 36픽셀)를 포함한 값이라, 화면 안쪽 기준(IgnoreGuiInset 가 꺼진 화면)과 전체 기준 둘 다 확인한다 (한쪽만 보면 DPS 미터기 같은 곳 위에서 커서가 십자선으로 남는다)
+	local inset = GuiService:GetGuiInset()
+	for _, point in ipairs({ position, position - inset }) do
+		for _, object in ipairs(playerGui:GetGuiObjectsAtPosition(point.X, point.Y)) do
+			if object.Visible and (object:IsA("GuiButton") or object.Active) then
+				overResult = true
+				break
+			end
 		end
+		if overResult then break end
 	end
 	return overResult
 end
