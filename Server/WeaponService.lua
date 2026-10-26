@@ -57,25 +57,21 @@ local EraDecor = {} -- 시대별 장식: EraDecor[시대](c)
 local Flair = {}    -- 무기마다 뽑혀서 붙는 추가 장식 목록
 
 ------------------ 종류별 몸체 (부품 10개 안팎. 종류마다 실루엣이 확 다르다) ------------------
-Bodies.Pistol = function(c) -- 라이플 (Pistol = 라이플): 긴 핸드가드 + 개머리판 + (조준경 / 홀로 조준기 중 번호로 선택)
+Bodies.Pistol = function(c) -- 저격총 모양 라이플 (Pistol = 저격총 외형): 아주 긴 총열 + 큰 조준경 + 접힌 양각대
 	local k = c.k
-	c.add("Receiver", V(0.5 * k, 0.6 * k, 1.8), CFrame.new(0, 0.2, 0.1), c.steel, c.bodyMat)
-	c.add("Handguard", V(0.6 * k, 0.6 * k, c.bl * 0.8), CFrame.new(0, 0.05, -(0.8 + c.bl * 0.4)), c.dark, STEEL)
-	c.add("TopRail", V(0.2, 0.08, 1.9), CFrame.new(0, 0.62 * k, -0.9), c.steel, STEEL)
-	if c.holo then
-		c.add("HoloFrame", V(0.34, 0.3, 0.45), CFrame.new(0, 0.82 * k, -0.3), c.dark, STEEL)
-		c.add("HoloGlass", V(0.28, 0.26, 0.04), CFrame.new(0, 0.88 * k, -0.54), c.accent(), NEON, { Transparency = 0.45 })
-	else
-		c.cyl("ScopeTube", 1.1, 0.34, CFrame.new(0, 0.85 * k, -0.35), c.dark, STEEL)
-		c.cyl("ScopeLens", 0.06, 0.3, CFrame.new(0, 0.85 * k, -0.93), c.accent(), NEON)
-		c.add("ScopeMount", V(0.18, 0.24, 0.16), CFrame.new(0, 0.68 * k, -0.3), c.dark, STEEL)
+	c.add("Receiver", V(0.5 * k, 0.55 * k, 1.7), CFrame.new(0, 0.2, 0.2), c.steel, c.bodyMat)
+	c.cyl("Suppressor", 1.1, 0.46 * k, CFrame.new(0, 0.05, c.muzzleZ + 0.1), c.dark, STEEL)
+	c.cyl("SuppRing", 0.06, 0.5 * k, CFrame.new(0, 0.05, c.muzzleZ + 0.4), c.accent(), NEON)
+	c.cyl("ScopeTube", 1.6, 0.46, CFrame.new(0, 0.95 * k, -0.2), c.dark, STEEL)
+	c.cyl("ScopeLens", 0.06, 0.42, CFrame.new(0, 0.95 * k, -1.02), c.accent(), NEON)
+	c.add("ScopeMount", V(0.2, 0.34, 0.2), CFrame.new(0, 0.7 * k, -0.3), c.dark, STEEL)
+	for i = -1, 1, 2 do
+		c.add("Bipod" .. i, V(0.08, 0.9, 0.08), CFrame.new(i * 0.28, -0.35, -(0.9 + c.bl * 0.5)) * CFrame.Angles(math.rad(-65), 0, math.rad(i * 12)), c.dark, STEEL)
 	end
-	c.add("Magazine", V(0.3, 1.1, 0.5), CFrame.new(0, -0.95, 0.05) * CFrame.Angles(math.rad(14), 0, 0), c.dark, STEEL)
-	c.add("Stock", V(0.42, 0.75, 1.5), CFrame.new(0, -0.05, 1.55) * CFrame.Angles(math.rad(-6), 0, 0), c.stockColor, c.stockMat)
-	c.add("ButtPad", V(0.46, 0.8, 0.14), CFrame.new(0, -0.05, 2.35), c.dark, STEEL)
+	c.add("BoltKnob", V(0.2, 0.2, 0.2), CFrame.new(0.5 * k, 0.28, 0.55), c.accent(), NEON, { Shape = Enum.PartType.Ball })
+	c.add("Stock", V(0.46, 0.8, 1.7), CFrame.new(0, -0.05, 1.7) * CFrame.Angles(math.rad(-5), 0, 0), c.stockColor, c.stockMat)
 end
 
-Bodies.Smg = Bodies.Pistol -- 저격총은 라이플과 같은 모양 (소리 / 위력만 다르다)
 
 Bodies.Revolver = function(c) -- 폭탄: 손에 쥔 둥근 쇠 폭탄 + 타는 퓨즈 + 시대색 띠 (Revolver = 폭탄)
 	local k = c.k
@@ -105,20 +101,19 @@ Bodies.Rifle = function(c) -- 활: 세로로 선 활 + 팽팽한 시위 + 시위
 	end
 end
 
-Bodies.Shotgun = function(c) -- 수리검: 손 앞에 떠 있는 네 갈래 별 + 가운데 빛나는 구슬 (Shotgun = 수리검)
+Bodies.Shotgun = function(c) -- 굵은 총열 아래 펌프 + 옆구리 산탄
 	local k = c.k
-	c.hideBarrel, c.hideGrip, c.noTrim = true, true, true
-	local at = CFrame.new(0, 0.3, -0.85)
-	for i = 0, 1 do
-		c.add("Blade" .. i, V(2.1 * k, 0.12, 0.5 * k), at * CFrame.Angles(0, 0, math.rad(i * 90)) * CFrame.Angles(math.rad(90), 0, 0), c.steel, STEEL)
+	c.cyl("LowerBarrel", c.bl * 1.0, 0.34 * k * c.thick, CFrame.new(0, 0.05 - 0.46 * k * c.thick, -(0.7 + c.bl / 2)), c.steel, c.bodyMat)
+	c.add("Pump", V(0.6 * k, 0.5 * k, 1.1), CFrame.new(0, -0.2, -(0.9 + c.bl * 0.3)), c.stockColor, c.stockMat)
+	for i = 0, 1 do -- 펌프의 홈
+		c.add("PumpGroove" .. i, V(0.64 * k, 0.5 * k, 0.06), CFrame.new(0, -0.2, -(0.6 + c.bl * 0.3) - i * 0.3), c.dark, STEEL)
 	end
-	for i = 0, 3 do -- 끝이 뾰족한 날 끝
-		local a = math.rad(i * 90)
-		c.add("Point" .. i, V(0.3 * k, 0.12, 0.3 * k), at * CFrame.Angles(0, 0, a) * CFrame.new(0, 1.15 * k, 0) * CFrame.Angles(math.rad(90), math.rad(45), 0), c.accent(), NEON)
+	c.add("Receiver", V(0.55 * k, 0.55 * k, 1.5), CFrame.new(0, 0.12, 0.3), c.steel, c.bodyMat)
+	for i = 0, 1 do -- 옆구리에 꽂은 산탄 (빨강 / 노랑)
+		c.cyl("Shell" .. i, 0.45, 0.2, CFrame.new(0.36 * k, 0.15 + (i - 0.5) * 0.25, 0.35) * CFrame.Angles(0, 0, math.rad(90)), i % 2 == 0 and Color3.fromRGB(210, 60, 50) or Color3.fromRGB(235, 200, 80), Enum.Material.SmoothPlastic)
 	end
-	c.add("Hub", V(0.62 * k, 0.62 * k, 0.62 * k), at, c.dark, STEEL, { Shape = Enum.PartType.Ball })
-	c.add("Core", V(0.36 * k, 0.36 * k, 0.36 * k), at, c.accent(), NEON, { Shape = Enum.PartType.Ball })
-	c.add("Cord", V(0.06, 0.06, 1.0), CFrame.new(0, -0.1, -0.1), c.stockColor, Enum.Material.Fabric)
+	c.add("Stock", V(0.5, 0.8, 1.5), CFrame.new(0, -0.1, 1.7) * CFrame.Angles(math.rad(-9), 0, 0), c.stockColor, c.stockMat)
+	c.cyl("MuzzleFlare", 0.4, 0.62 * k * c.thick, CFrame.new(0, 0.05, c.muzzleZ + 0.15), c.dark, STEEL)
 end
 
 Bodies.Flamer = function(c) -- 마도서: 펼친 마법책 + 빛나는 룬 + 떠 있는 불꽃 구슬 (Flamer = 마도서)

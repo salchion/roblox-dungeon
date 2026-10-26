@@ -58,7 +58,7 @@ do
 			Sniper = { Style = "Bolt", Length = 8, SizeMul = 0.8 },
 			Rifle = { Style = "Bolt", Length = 3.5 },
 			Smg = { Style = "Bolt", Length = 8, SizeMul = 0.8 },
-			Pistol = { Style = "Bolt", Length = 3.5 },
+			Pistol = { Style = "Bolt", Length = 8, SizeMul = 0.8 },
 			Shotgun = { Style = "Ball", SizeMul = 0.9 },
 		}
 		local eraStyle = shot.Style

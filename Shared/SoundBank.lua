@@ -17,15 +17,16 @@ local SoundBank = {}
 -- Fx: 효과 목록 { 종류, 속성표 } / Layers: 겹쳐 울리는 소리 { Pitch, Volume, Delay }
 local SPECS = {
 	-- 무기 종류별 총소리 (Shot 소리를 가공)
-	-- 라이플 (Pistol = 라이플)
-	Shot_Pistol   = { Base = "Shot", Pitch = 1.0, Volume = 0.9, Length = 0.9, Fx = { { "reverb", { DecayTime = 0.8, WetLevel = -9 } } } },
-	-- 저격총 (Smg = 저격총): AudioBank 의 저격총 소리 ID 를 그대로 쓴다. ID 가 없으면 기본 총소리를 낮고 길게 가공해서 쓴다
-	Shot_Smg      = { Base = "Shot", CustomLength = 2.2, Pitch = 0.8, Volume = 1.0, Length = 2.0, Fx = { { "reverb", { DecayTime = 2.8, WetLevel = -3 } }, { "echo", { Delay = 0.22, Feedback = 0.3, WetLevel = -8 } } } },
+	-- 저격총 모양 라이플 (Pistol = 저격총 외형): AudioBank 의 저격총 소리 ID 를 쓴다. 라이플 속도로 쏘면 소리가 겹치므로 길이를 줄이고 앞 소리는 부드럽게 끊는다 (Choke)
+	Shot_Pistol   = { Base = "Shot", CustomLength = 0.9, Pitch = 0.9, Volume = 0.9, Length = 0.9, Choke = true, Fx = { { "reverb", { DecayTime = 1.2, WetLevel = -6 } } } },
 	Shot_Revolver = { Base = "Dash", Pitch = 0.9, Volume = 0.8, Length = 0.5, Layers = { { Pitch = 0.5, Volume = 0.5, Delay = 0 } } },
 	-- 활: 높고 가벼운 "슉" (Rifle = 활)
 	Shot_Rifle    = { Base = "Dash", Pitch = 1.7, Volume = 0.8, Length = 0.4, Fx = { { "eq", { LowGain = -8, MidGain = 0, HighGain = 3 } } } },
-	-- 수리검: 가볍게 갈라지는 "쉭쉭" (Shotgun = 수리검)
-	Shot_Shotgun  = { Base = "Dash", Pitch = 2.2, Volume = 0.6, Length = 0.3, Layers = { { Pitch = 2.8, Volume = 0.4, Delay = 0.04 } } },
+	-- (SMG 는 지금 무기 목록에 없다: 옛 정의만 남겨 둔다)
+	Shot_Smg      = { Base = "Shot", Pitch = 1.25, Volume = 0.95, Length = 0.2, Choke = true, Fx = { { "reverb", { DecayTime = 0.3, WetLevel = -14 } } } },
+	-- 샷건
+	Shot_Shotgun  = { Base = "Shot", CustomLength = 1.2, Pitch = 0.7, Volume = 1.0, Length = 1.0, Fx = { { "distortion", { Level = 0.35 } } },
+		Layers = { { Pitch = 0.5, Volume = 0.9, Delay = 0 }, { Pitch = 1.3, Volume = 0.5, Delay = 0.03 } } },
 	-- 마법책 (Flamer = 마법책): 낮게 "우웅" 하고 불덩이가 터져 나가는 소리 (기본 소리를 낮추고 코러스 + 짧은 폭발음을 겹친다)
 	Shot_Flamer   = { Base = "Boom", Pitch = 1.35, Volume = 0.7, Length = 0.7, Fx = { { "chorus", { Depth = 0.6, Mix = 0.5 } }, { "reverb", { DecayTime = 0.9, WetLevel = -8 } } }, Layers = { { Pitch = 2.2, Volume = 0.4, Delay = 0.02 } } },
 	-- 박격포: 묵직한 "쿵" (Cannon = 박격포)
@@ -154,7 +155,7 @@ end
 -- 사운드 테스트 창(Studio 에서 K 키)에 보이는 항목별 설명
 SoundBank.Descriptions = {
 	Dash = "Dash (Q)", Pickup = "Loot pickup",
-	Shot_Pistol = "Rifle shot", Shot_Smg = "Sniper Rifle shot", Shot_Revolver = "Bomb throw", Shot_Rifle = "Bow shot", Shot_Shotgun = "Shuriken throw",
+	Shot_Pistol = "Sniper Rifle shot", Shot_Smg = "SMG shot", Shot_Revolver = "Bomb throw", Shot_Rifle = "Bow shot", Shot_Shotgun = "Shotgun shot",
 	Shot_Flamer = "Spell Tome fireball", Shot_Cannon = "Mortar shot", Shot_Sniper = "Crossbow shot", Shot_Rocket = "Rocket Launcher shot", Shot_Rail = "Railgun shot",
 	Hit = "Enemy hit (short)", Crit = "Critical hit", Kill = "Enemy kill (pitch rises with kill streak)",
 	Skill_Heal = "First Aid used", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Ult_Missile = "Dead Eye missile launch", Ult_Hit = "Dead Eye missile impact", Ult_Launch = "Dead Eye launch thump", Ult_Finale = "Dead Eye final blast", Boom = "Monster explosion / shockwave / meteor",

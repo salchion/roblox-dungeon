@@ -786,7 +786,7 @@ local CLASS_LOOK = {
 	Sniper = { Style = "Bolt", Length = 8, SizeMul = 0.8, Impact = 6 },
 	Rifle = { Style = "Bolt", Length = 3.5 },
 	Smg = { Style = "Bolt", Length = 8, SizeMul = 0.8 }, -- 저격총
-	Pistol = { Style = "Bolt", Length = 3.5 }, -- 라이플
+	Pistol = { Style = "Bolt", Length = 8, SizeMul = 0.8, Impact = 6 }, -- 저격총 외형 라이플
 	Shotgun = { Style = "Ball", SizeMul = 0.9 },
 }
 

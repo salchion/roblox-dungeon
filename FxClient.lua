@@ -122,8 +122,7 @@ local RAINBOW = ColorSequence.new({
 })
 local FIRE = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 240, 120)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 50, 20)) })
 local CLASS_LOOK = {
-	Pistol = { Style = "Bolt", Length = 6, SizeMul = 0.9, Muzzle = 2.4 }, -- 라이플 (Pistol = 라이플): 길고 가는 탄
-	Smg = { Style = "Bolt", Length = 6, SizeMul = 0.9, Muzzle = 2.4 },    -- 저격총 (Smg = 저격총): 라이플과 같은 모양 (소리 / 위력만 다르다)
+	Shotgun = { Style = "Ball", SizeMul = 0.55, Mini = true, Puff = true }, -- 샷건: 작은 산탄 알갱이 + 총구 원뿔 연기
 }
 -- 로켓 / 레일건 / 저격총 / 캐논 / 화염방사기는 아래 SPECIAL 이 따로 그린다
 local RATE_ERA = { Orb = 40, Cannon = 25, Fire = 90, Rocket = 110, Rainbow = 80 }
@@ -358,7 +357,7 @@ end
 --   샷건: 부채꼴 줄 + 연기 / 저격: 지나가는 길을 따라 퍼지는 고리 여러 개(증기) / 레일건: 크고 느슨한 고리 물결 / 로켓: 뒤로 뿜는 연기 /
 --   캐논: 총구로 빨려드는 충전 고리 / 화염방사기: 불씨 부채꼴
 local lastFlourish = {}
-local FLOURISH_GAP = { Pistol = 0.09, Revolver = 0.05, Smg = 0.09, Rifle = 0.09, Shotgun = 0.05, Sniper = 0.05, Rocket = 0.05, Rail = 0.05, Cannon = 0.05, Flamer = 0.12 }
+local FLOURISH_GAP = { Pistol = 0.06, Revolver = 0.05, Smg = 0.09, Rifle = 0.09, Shotgun = 0.05, Sniper = 0.05, Rocket = 0.05, Rail = 0.05, Cannon = 0.05, Flamer = 0.12 }
 local function soft(color) return color:Lerp(Color3.fromRGB(135, 140, 150), 0.3) end
 
 local function ringAt(position, dir, color, d0, d1, dur, transparency, delay)
@@ -398,18 +397,19 @@ local function classFlourish(class, from, to, size, color, era, richness)
 	local smokeColor = Color3.fromRGB(150, 150, 158)
 	local grow = 1 + richness -- 번호가 높을수록 조금 더 크다
 
-	if class == "Pistol" or class == "Smg" then -- 라이플 / 저격총: 길고 가는 궤적 + 작은 고리
-		local length = math.min(distance, 60)
-		local line = rootPart(CFrame.lookAt(from, to) * CFrame.new(0, 0, -length / 2), Vector3.new(0.14, 0.14, length), tone, Enum.Material.Neon, nil, 0.5)
-		TweenService:Create(line, TweenInfo.new(0.28), { Transparency = 1, Size = Vector3.new(0.04, 0.04, length) }):Play()
-		Debris:AddItem(line, 0.33)
-		ringAt(front, dir, tone, 0.5, 2.2 * grow, 0.12, 0.55)
+	if class == "Pistol" then -- 저격총 모양 라이플: 궤적을 따라 퍼지는 고리들
+		local count = math.clamp(math.floor(distance / 40), 3, 7)
+		for i = 1, count do
+			ringAt(from + dir * (distance * i / (count + 1)), dir, tone, 0.8, 4 + 3 * richness, 0.4, 0.7, i * 0.02)
+		end
+		ringAt(front, dir, tone, 1, 7 * grow, 0.2, 0.45)
 	elseif class == "Revolver" then -- 폭탄: 던지는 연기 한 번
 		burst(front, smokeColor, 4)
 	elseif class == "Rifle" then -- 활: 시위가 튕기는 작은 고리
 		ringAt(front, dir, tone, 0.4, 1.8 * grow, 0.1, 0.6)
-	elseif class == "Shotgun" then -- 수리검: 던지는 순간 작은 바람 먼지만
-		burst(front, Color3.fromRGB(210, 215, 225), 3)
+	elseif class == "Shotgun" then
+		fanLines(front, dir, tone, 5, 34, 7 * grow, 0.12)
+		burst(front + dir * 1.5, smokeColor, 6)
 	elseif class == "Sniper" then -- 석궁: 묵직한 한 번의 고리
 		ringAt(front, dir, tone, 0.8, 5 * grow, 0.18, 0.5)
 	elseif class == "Rail" then
@@ -642,6 +642,24 @@ local function arcFly(part, from, to, speed, height, spin, onDone, minTime)
 			connection:Disconnect()
 			onDone()
 		end
+	end)
+end
+
+-- 저격총 모양 라이플 (Pistol = 저격총 외형): 아주 빠른 줄기 + 지나간 자리에 남는 가는 궤적선
+SPECIAL.Pistol = function(from, to, size, speed, color, era)
+	local E = elementOf(era)
+	color = E.Core
+	local length = (to - from).Magnitude
+	local cf = CFrame.lookAt(from, to)
+	local slugWidth, lineWidth = math.max(0.7, size * 0.6), math.max(0.4, size * 0.3)
+	local slug = rootPart(cf, Vector3.new(slugWidth, slugWidth, 12), E.Hot, Enum.Material.Neon)
+	local line = rootPart(CFrame.lookAt((from + to) / 2, to), Vector3.new(lineWidth, lineWidth, length), color, Enum.Material.Neon, nil, 0.3)
+	TweenService:Create(line, TweenInfo.new(0.4), { Size = Vector3.new(0.03, 0.03, length), Transparency = 1 }):Play()
+	Debris:AddItem(line, 0.45)
+	burst(from, color, 3)
+	fly(slug, from, to, math.max(speed, 700), 0.03, function()
+		burst(to, color, 10)
+		slug:Destroy()
 	end)
 end
 
