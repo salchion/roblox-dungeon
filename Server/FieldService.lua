@@ -1405,17 +1405,20 @@ end
 local function rewardEvent(data, part)
 	local position = dropPosition(part)
 	local rewarded = 0
+	local leftFrac = data.ExpireAt and math.clamp((data.ExpireAt - os.clock()) / Config.Events.Lifetime, 0, 1) or 0
+	local bonus = 1 + Config.Events.TimeBonus * leftFrac -- 제한 시간이 많이 남을수록 보상이 커진다
+	local tickets = leftFrac > 0.5 and 2 or 1
 	for player, damage in pairs(data.Contrib) do
 		if player.Parent and damage >= data.MaxHealth * Config.Events.ContribMin then
 			rewarded += 1
-			player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + math.floor(data.Stats.Gold * Config.GoldBonus(player) + 0.5))
-			player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + 1)
+			player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + math.floor(data.Stats.Gold * bonus * Config.GoldBonus(player) + 0.5))
+			player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + tickets)
 			Level.AddXP(player, Config.Xp.FieldBoss * 1.5)
 			Quest.Add(player, "BossKills", 1)
 			Quest.Add(player, "Kills", 1)
 			Loot.DropFor(player, position, "Event", data.Zone)
 			Loot.DropFor(player, position, "Event", data.Zone) -- 월드 보스: 장비를 두 번 떨어뜨린다
-			notify(player, string.format("🗿 Colossus defeated! Gear + 🎫 +1 + %d G", data.Stats.Gold))
+			notify(player, string.format("🗿 Colossus defeated! Gear + 🎫 +%d + %d G (time bonus x%.1f)", tickets, math.floor(data.Stats.Gold * bonus + 0.5), bonus))
 		end
 	end
 	for _, other in ipairs(Players:GetPlayers()) do
@@ -3071,9 +3074,16 @@ local function runEvents()
 			end
 
 			local expire = os.clock() + Config.Events.Lifetime
+			data.ExpireAt = expire
+			workspace:SetAttribute("BossEventZone", zone) -- 화면 위 카운트다운(EventBossClient)이 읽는 값
 			while monsters[part] == data and os.clock() < expire do
+				workspace:SetAttribute("BossEventEnd", workspace:GetServerTimeNow() + (expire - os.clock()))
+				workspace:SetAttribute("BossEventHp", math.clamp(data.Health / data.MaxHealth, 0, 1))
 				task.wait(1)
 			end
+			workspace:SetAttribute("BossEventEnd", nil)
+			workspace:SetAttribute("BossEventHp", nil)
+			workspace:SetAttribute("BossEventZone", nil)
 			if monsters[part] == data then
 				monsters[part] = nil
 				part:Destroy()

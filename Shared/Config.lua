@@ -1753,9 +1753,10 @@ Config.Keys = {
 ------------------------------------------------------------
 Config.Events = {
 	FirstDelay = 90,
-	MinInterval = 360,
-	MaxInterval = 540,
-	Lifetime = 420,
+	MinInterval = 240,
+	MaxInterval = 360,
+	Lifetime = 240,       -- 제한 시간(초): 이 안에 못 잡으면 땅속으로 사라진다. 빨리 잡을수록 보상이 최대 x1.5 (TimeBonus)
+	TimeBonus = 0.5,
 	ContribMin = 0.03,    -- 보스 체력의 3% 이상 피해를 준 사람이 보상 대상
 	Name = "Colossus",   -- 구역마다 몇 분에 한 번 나타나는 필드 월드 보스 (돌 거인): 모두 같이 잡으면 장비 + 세트 조각 + 티켓
 }

@@ -663,5 +663,7 @@ return {
 		{ "^🗿 %[World Boss%] Zone ([%d,%.%-]+) · (.-): (.-) appeared! Follow the orange light pillar and defeat it together for gear %+ tickets!$", "🗿 [월드 보스] %s구역 · %s: %s 등장! 주황색 빛기둥을 따라가 함께 쓰러뜨리면 장비 + 티켓!", "appeared", 1891 },
 		{ "^(.-) upgrade success! %+([%d,%.%-]+)$", "%s 강화 성공! +%s", "upgrade", 981 },
 		{ "^(.-)%.%.%. auto%-dismantled! Essence %+([%d,%.%-]+), ([%d,%.%-]+) G$", "%s... 자동 분해! 정수 +%s, %s G", "dismantled", 966 },
+		{ "^🗿 Colossus defeated! Gear %+ 🎫 %+([%d,%.%-]+) %+ ([%d,%.%-]+) G %(time bonus x([%d,%.%-]+)%)$", "🗿 거신 처치! 장비 + 🎫 +%s + %s G (시간 보너스 x%s)", "Colossus", -51 },
+		{ "^🗿 (.-) · Zone (.-)$", "🗿 %s · %s구역", "Zone", 1990 },
 	},
 }

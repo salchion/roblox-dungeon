@@ -8086,5 +8086,13 @@
 [
 "Blacksmith Tom",
 "대장장이 톰"
+],
+[
+"🗿 Colossus defeated! Gear + 🎫 +%d + %d G (time bonus x%.1f)",
+"🗿 거신 처치! 장비 + 🎫 +%d + %d G (시간 보너스 x%.1f)"
+],
+[
+"🗿 %s · Zone %s",
+"🗿 %s · %s구역"
 ]
 ]
