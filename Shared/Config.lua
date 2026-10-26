@@ -221,7 +221,7 @@ Config.Skills = {
 	-- 패시브 스킬 (스킬 강화 창에서 골드로 레벨업, 스킬 바에는 안 나온다)
 	Focus = { Name = "Aura Focus", Icon = "⚡", Key = "Passive", Cooldown = 0, Passive = true,
 		Desc = "The attack bonus built up by NEAR MISS lasts longer. At higher levels, part of the bonus (half at max level) stays even if your streak breaks" },
-	UpgradeOrder = { "Heal", "Ult", "Focus" }, -- 스킬 강화 창 / 저장에 쓰는 목록
+	UpgradeOrder = { "Heal", "Spirit", "Ult", "Focus" }, -- 스킬 강화 창 / 저장에 쓰는 목록
 }
 
 ------------------------------------------------------------
