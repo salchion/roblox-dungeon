@@ -3842,11 +3842,7 @@ function Field.Init(lobbySpawnCFrame)
 							local first = lastKey[player] == nil
 							lastKey[player] = key
 							if not first then
-								local names = {}
-								for _, typeKey in ipairs(segmentFeatures(zone, key % 10)) do
-									table.insert(names, MonsterTypes.Defs[typeKey].Name)
-								end
-								notify(player, string.format("📍 Zone %d Section %d — lots of %s here", zone, key % 10, table.concat(names, " · ")))
+								-- ("이 구간엔 ~가 많아요" 알림은 쓸모가 적어 뺐다. 구간마다 몬스터 구성은 그대로 다르다)
 							end
 						end
 					end
