@@ -119,60 +119,57 @@ handlers.Blast = function(player, root, _, _, aimPoint)
 	return true
 end
 
--- 연쇄 번개(F, 저장 이름은 예전 그대로 "Spirit"): 가장 가까운 적에게 번개가 내리꽂히고, 거기서 가까운 다음 적으로 튀고 또 튄다 (한 번 맞은 적은 건너뛴다). 이걸 Waves 번 연달아.
--- 번개 모습은 각자 화면에서 그린다 (FxClient "Z" = 하늘에서 첫 타, "C" = 적 사이 한 칸). 적이 한 마리뿐이면 그 한 마리를 번개가 연달아 때린다.
+-- 연쇄 번개(F, 저장 이름은 예전 그대로 "Spirit"): 디아블로2 소서리스 체인 라이트닝처럼, 내 손에서 가장 가까운 적으로 번개가 나가고 거기서 주변 적에게 차례로 튄다 (최대 Chain 번).
+-- 아직 안 맞은 가까운 적을 먼저 찾고, 없으면 이미 맞은 적(방금 맞은 적 제외)으로 되돌아가 한 번 더 때린다 (그 타격은 위력 60%). 번개 모습은 각자 화면에서 "C" 가 그린다.
 handlers.Spirit = function(player, root, _, character)
 	local cfg = S.Spirit
 	local token = {}
 	spiritToken[player] = token
 	local scale = cfg.Mult * (1 + U.BlastMult * (skillLevel(player, "Spirit") - 1))
-	Effects.Burst(root.Position + Vector3.new(0, 2, 0), Color3.fromRGB(255, 240, 120), 40)
-	Effects.FloatText(root.Position + Vector3.new(0, 5, 0), "⚡ Chain Lightning!", Color3.fromRGB(255, 240, 130))
+	local all = Dungeon.TargetsIn(player, root.Position, cfg.Range + cfg.Hop, 40) or Field.TargetsIn(player, root.Position, cfg.Range + cfg.Hop, 40) or {}
+	local current
+	for _, part in ipairs(all) do -- 가장 가까운 적 (목록은 가까운 순)
+		if (part.Position - root.Position).Magnitude <= cfg.Range + part.Size.X / 2 then current = part break end
+	end
+	if not current then return false, "⚡ No enemy nearby" end
+	local last = root.Position + Vector3.new(0, 1.5, 0) -- 번개는 내 몸에서 시작
+	Effects.Burst(last, Color3.fromRGB(255, 240, 120), 18)
 	task.spawn(function()
-		for wave = 1, cfg.Waves do
-			if spiritToken[player] ~= token or not player.Parent then break end
-			local nowRoot = aliveParts(player)
-			local zone = player:GetAttribute("Zone")
-			if not nowRoot or (zone ~= "Field" and zone ~= "Dungeon") then break end
-			local all = Dungeon.TargetsIn(player, nowRoot.Position, cfg.Range + cfg.Hop, 40) or Field.TargetsIn(player, nowRoot.Position, cfg.Range + cfg.Hop, 40) or {}
-			local current
-			for _, part in ipairs(all) do -- 가장 가까운 적(목록은 가까운 순)
-				if (part.Position - nowRoot.Position).Magnitude <= cfg.Range + part.Size.X / 2 then current = part break end
-			end
-			if current then
-				local used = {}
-				local last
-				for hop = 1, cfg.Chain do
-					if not current or not current.Parent then break end
-					used[current] = true
-					local position = current.Position
-					if not last then
-						Effects.Raw(position, { "Z", position + Vector3.new(0, 70, 0), position }) -- 첫 타: 하늘에서 내리꽂는 굵은 번개
-					else
-						Effects.Raw(position, { "C", last, position })
-					end
-					BL.Ctx = "스킬"
-					Meter.Source = "Spirit" -- 대미지 미터기: 연쇄 번개(F)
-					Effects.DamageTint = Color3.fromRGB(255, 240, 120)
-					local damage = math.max(1, math.floor(Dungeon.ComputeDamage(player) * scale))
-					local _ = Dungeon.HitPart(player, current, damage) or Field.HitPart(player, current, damage)
-					Effects.DamageTint = nil
-					Meter.Source = nil
-					BL.Ctx = nil
-					last = position
-					-- 다음: 지금 적에서 가장 가까운, 아직 안 맞은 적 (없으면 끝)
-					local nextPart, best = nil, cfg.Hop
-					for _, part in ipairs(all) do
-						if not used[part] and part.Parent then
-							local distance = (part.Position - position).Magnitude
-							if distance < best then nextPart, best = part, distance end
-						end
-					end
-					current = nextPart
-					if hop < cfg.Chain then task.wait(cfg.HopGap) end
+		local hit = {}
+		for hop = 1, cfg.Chain do
+			if spiritToken[player] ~= token or not player.Parent or not current or not current.Parent then break end
+			local position = current.Position
+			local again = hit[current] == true
+			Effects.Raw(position, { "C", last, position })
+			BL.Ctx = "스킬"
+			Meter.Source = "Spirit" -- 대미지 미터기: 연쇄 번개(F)
+			Effects.DamageTint = Color3.fromRGB(255, 240, 120)
+			local damage = math.max(1, math.floor(Dungeon.ComputeDamage(player) * scale * (again and 0.6 or 1)))
+			local _ = Dungeon.HitPart(player, current, damage) or Field.HitPart(player, current, damage)
+			Effects.DamageTint = nil
+			Meter.Source = nil
+			BL.Ctx = nil
+			hit[current] = true
+			last = position
+			-- 다음: 지금 적에서 가까운, 아직 안 맞은 적. 없으면 이미 맞은 적(지금 적 제외) 중 가장 가까운 적
+			local nextPart, best = nil, cfg.Hop
+			for _, part in ipairs(all) do
+				if part ~= current and part.Parent and not hit[part] then
+					local distance = (part.Position - position).Magnitude
+					if distance < best then nextPart, best = part, distance end
 				end
 			end
-			if wave < cfg.Waves then task.wait(cfg.WaveGap) end
+			if not nextPart then
+				best = cfg.Hop
+				for _, part in ipairs(all) do
+					if part ~= current and part.Parent then
+						local distance = (part.Position - position).Magnitude
+						if distance < best then nextPart, best = part, distance end
+					end
+				end
+			end
+			current = nextPart
+			if hop < cfg.Chain and current then task.wait(cfg.HopGap) end
 		end
 		if spiritToken[player] == token then spiritToken[player] = nil end
 	end)

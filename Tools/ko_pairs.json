@@ -8248,19 +8248,19 @@
 "연쇄 번개"
 ],
 [
-"Lightning strikes the nearest enemy, then leaps from enemy to enemy (10 jumps) three times in a row. Great against crowds!",
-"번개가 가장 가까운 적을 내리치고 적에서 적으로 10번 튀어요. 이걸 세 번 연달아! 무리에게 좋아요"
-],
-[
-"⚡ Chain Lightning!",
-"⚡ 연쇄 번개!"
-],
-[
 "💡 Chain Lightning (F) leaps from enemy to enemy: cast it when many enemies gather",
 "💡 연쇄 번개(F)는 적에서 적으로 튀어요. 적이 모였을 때 쓰세요"
 ],
 [
-"%d jumps x %d strikes · Damage x%.2f per hit",
-"%d번 튕김 x %d회 · 맞을 때마다 피해 x%.2f"
+"A bolt strikes the nearest enemy, then jumps to nearby enemies one after another (up to 8 hits)",
+"번개가 가장 가까운 적을 때리고, 주변 적에게 차례로 튀어요 (최대 8번)"
+],
+[
+"Up to %d hits · Damage x%.2f per hit",
+"최대 %d번 적중 · 맞을 때마다 피해 x%.2f"
+],
+[
+"⚡ No enemy nearby",
+"⚡ 근처에 적이 없어요"
 ]
 ]

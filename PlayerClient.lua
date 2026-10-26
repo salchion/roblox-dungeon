@@ -2945,7 +2945,7 @@ local function buildSkillTab(passiveOnly)
 		elseif key == "Focus" then
 			detail = string.format("NEAR MISS lasts %.1fs · keeps at least %d stacks even if broken", Config.NearMiss.Duration + U.FocusDuration * lv, math.floor(Config.NearMiss.MaxStacks * 0.5 * lv / math.max(1, U.MaxLevel - 1)))
 		elseif key == "Spirit" then
-			detail = string.format("%d jumps x %d strikes · Damage x%.2f per hit", cfg.Chain, cfg.Waves, cfg.Mult * (1 + U.BlastMult * lv))
+			detail = string.format("Up to %d hits · Damage x%.2f per hit", cfg.Chain, cfg.Mult * (1 + U.BlastMult * lv))
 		elseif key == "Heal" then
 			detail = string.format("Restores %d%% HP", math.floor((cfg.Ratio + U.HealRatio * lv) * 100 + 0.5))
 		else
