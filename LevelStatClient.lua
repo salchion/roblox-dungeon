@@ -127,7 +127,7 @@ local function refresh()
 		pillStroke.Thickness, pillStroke.Color = 1.5, Color3.fromRGB(150, 160, 255)
 		pill.BackgroundColor3 = Color3.fromRGB(34, 38, 60)
 	end
-	pill.Visible = not player:GetAttribute("TutorialActive")
+	pill.Visible = false -- (왼쪽 메뉴 버튼 줄의 "스탯" 버튼과 빨간 점이 대신한다: 창 위에 떠서 겹치던 버튼)
 end
 
 for _, name in ipairs({ "LvPointsLeft", "Level", "TutorialActive", "LvTotal", "LvGoldBought", "LvGoldCost" }) do
@@ -143,3 +143,5 @@ UserInputService.InputBegan:Connect(function(input, processed)
 	if processed then return end
 	if input.KeyCode == Enum.KeyCode.T then panel.Visible = not panel.Visible end
 end)
+
+player:GetAttributeChangedSignal("OpenStats"):Connect(function() panel.Visible = not panel.Visible end) -- 왼쪽 메뉴 버튼(MenuDockClient)

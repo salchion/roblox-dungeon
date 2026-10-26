@@ -14,7 +14,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-local SIZE, GAP = 66, 6 -- (미션 카드 / 던전 상태창과 겹치지 않게 줄였다: 5줄 높이 = 5 * 72 - 6)
+local SIZE, GAP = 66, 6 -- (미션 카드 / 던전 상태창과 겹치지 않게 줄였다: 6줄 높이 = 6 * 72 - 6)
 local TOP_Y = 226 -- HUD 카드(60 ~ 210, 전투력 / 경험치 줄을 아래로 옮겨 줄였다) 바로 아래
 
 -- 색은 진하지만 채도를 낮춰 눈이 편하게 (위쪽이 조금 밝은 그라데이션)
@@ -86,11 +86,13 @@ local function dotWeapon() return goldDots.Weapon == true end
 local function dotGrowth() return attr("GrowthNew") == true or goldDots.Growth == true end
 local function dotPet() return goldDots.Pets == true end
 local function dotSets() return goldDots.Sets == true end
+local function dotStats() return (attr("LvPointsLeft") or 0) > 0 and attr("TutorialActive") ~= true end -- 안 쓴 스탯 포인트가 있으면 (골드와 상관없다)
 
 local BUTTONS = {
 	{ Icon = "🎒", Text = "Gear",     Color = Color3.fromRGB(70, 110, 190), Tab = "Character:Gear", Dot = dotGear },
 	{ Icon = "🔫", Text = "Weapon",   Color = Color3.fromRGB(190, 95, 70),  Tab = "Character:Weapon", LobbySignal = "OpenEnhance", Dot = dotWeapon },
 	{ Icon = "📈", Text = "Growth",   Color = Color3.fromRGB(70, 150, 100), Tab = "Growth", Dot = dotGrowth },
+	{ Icon = "✨", Text = "Stats",    Color = Color3.fromRGB(120, 95, 190), Signal = "OpenStats", Dot = dotStats },
 	{ Icon = "📜", Text = "Quests",   Color = Color3.fromRGB(175, 130, 60), Tab = "Quest", Dot = dotQuest },
 	{ Icon = "🐾", Text = "Pets",     Color = Color3.fromRGB(150, 90, 170), Signal = "OpenPet", Dot = dotPet },
 	{ Icon = "🌟", Text = "Sets",     Color = Color3.fromRGB(60, 130, 160), Signal = "OpenAug", Dot = dotSets },
