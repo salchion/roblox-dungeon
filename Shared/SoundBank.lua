@@ -23,8 +23,9 @@ local SPECS = {
 	-- 활: 높고 가벼운 "슉" (Rifle = 활)
 	Shot_Rifle    = { Base = "Dash", Pitch = 1.7, Volume = 0.8, Length = 0.4, Fx = { { "eq", { LowGain = -8, MidGain = 0, HighGain = 3 } } } },
 	-- (SMG 는 지금 무기 목록에 없다: 옛 정의만 남겨 둔다)
-	Skill_ChainCast = { Base = "Enh_Success", Pitch = 1.9, Volume = 0.85, Length = 0.7, Fx = { { "chorus", { Depth = 0.8, Mix = 0.6 } }, { "distortion", { Level = 0.3 } }, { "reverb", { DecayTime = 1.0, WetLevel = -8 } } } }, -- 연쇄 번개 시전: 전기가 차오르는 "위잉"
-	Skill_ChainHit = { Base = "Shot", Pitch = 2.3, Volume = 0.6, Length = 0.18, Fx = { { "distortion", { Level = 0.7 } }, { "eq", { LowGain = -12, MidGain = 0, HighGain = 4 } } } }, -- 번개가 한 적에게 닿을 때 "치직" (튈 때마다 조금씩 높아진다)
+	Skill_LotusCast  = { Base = "Dash", Pitch = 0.5, Volume = 1.5, Length = 0.9, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -6 } }, { "distortion", { Level = 0.25 } } }, Layers = { { Pitch = 1.6, Volume = 0.9, Delay = 0.02 }, { Pitch = 3.2, Volume = 0.5, Delay = 0.05 } } }, -- 죽음의 연꽃 시전: 낮은 "후우웅" + 높은 칼날 소리를 겹친다
+	Skill_LotusSlash = { Base = "Dash", Pitch = 1.9, Volume = 1.0, Length = 0.25, Fx = { { "eq", { LowGain = -12, MidGain = 0, HighGain = 4 } } }, Layers = { { Pitch = 2.8, Volume = 0.5, Delay = 0.03 } } }, -- 도는 동안 "슈슉"
+	Skill_LotusStab  = { Base = "Enh_Hammer", Pitch = 2.6, Volume = 0.7, Length = 0.16, Fx = { { "eq", { LowGain = -10, MidGain = 2, HighGain = 5 } } } }, -- 단검이 꽂힐 때 짧은 "챙"
 	Shot_Smg      = { Base = "Shot", Pitch = 1.25, Volume = 0.95, Length = 0.2, Choke = true, Fx = { { "reverb", { DecayTime = 0.3, WetLevel = -14 } } } },
 	-- 샷건
 	Shot_Shotgun  = { Base = "Shot", CustomLength = 1.2, Pitch = 0.7, Volume = 1.0, Length = 1.0, Fx = { { "distortion", { Level = 0.35 } } },
@@ -160,7 +161,7 @@ SoundBank.Descriptions = {
 	Shot_Pistol = "Rifle shot", Shot_Smg = "SMG shot", Shot_Revolver = "Bomb throw", Shot_Rifle = "Bow shot", Shot_Shotgun = "Shotgun shot",
 	Shot_Flamer = "Spell Tome fireball", Shot_Cannon = "Mortar shot", Shot_Sniper = "Crossbow shot", Shot_Rocket = "Rocket Launcher shot", Shot_Rail = "Railgun shot",
 	Hit = "Enemy hit (short)", Crit = "Critical hit", Kill = "Enemy kill (pitch rises with kill streak)",
-	Skill_Heal = "First Aid used", Skill_ChainCast = "Chain Lightning cast", Skill_ChainHit = "Chain Lightning hit", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Ult_Missile = "Dead Eye missile launch", Ult_Hit = "Dead Eye missile impact", Ult_Launch = "Dead Eye launch thump", Ult_Finale = "Dead Eye final blast", Boom = "Monster explosion / shockwave / meteor",
+	Skill_Heal = "First Aid used", Skill_LotusCast = "Death Lotus cast", Skill_LotusSlash = "Death Lotus whirl", Skill_LotusStab = "Death Lotus stab", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Ult_Missile = "Dead Eye missile launch", Ult_Hit = "Dead Eye missile impact", Ult_Launch = "Dead Eye launch thump", Ult_Finale = "Dead Eye final blast", Boom = "Monster explosion / shockwave / meteor",
 	LevelUp = "Level up", Enh_Hammer = "Enhance: hammer strike", Enh_Success = "Enhance success (pitch rises with level)", Enh_Fail = "Enhance failed",
 	Enh_Evolve = "Weapon evolution", Gacha_Drop = "Gacha: capsule drop", Gacha_Tick = "Gacha: rattling ticks", Gacha_Card = "10-pull gacha: one card",
 	Aug_Get = "Augment acquired", Aug_Synergy = "Augment synergy triggered", Aug_Missile = "Crit missile launched", Aug_MissileHit = "Missile hit", Aug_Nova = "Kill explosion",
@@ -172,7 +173,7 @@ SoundBank.Descriptions = {
 }
 SoundBank.Order = {
 	"Shot_Pistol", "Shot_Smg", "Shot_Revolver", "Shot_Rifle", "Shot_Shotgun", "Shot_Flamer", "Shot_Cannon", "Shot_Sniper", "Shot_Rocket", "Shot_Rail",
-	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_ChainCast", "Skill_ChainHit", "Skill_Ult", "Ult_Lock", "Ult_Missile", "Ult_Hit", "Ult_Launch", "Ult_Finale", "UltShot", "Boom", "LevelUp",
+	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_LotusCast", "Skill_LotusSlash", "Skill_LotusStab", "Skill_Ult", "Ult_Lock", "Ult_Missile", "Ult_Hit", "Ult_Launch", "Ult_Finale", "UltShot", "Boom", "LevelUp",
 	"Dash", "Pickup", "Enh_Hammer", "Enh_Success", "Enh_Fail", "Enh_Evolve", "Gacha_Drop", "Gacha_Tick", "Gacha_Card",
 	"Gacha_Pop1", "Gacha_Pop2", "Gacha_Pop3", "Gacha_Pop4", "Gacha_Pop5",
 	"Aug_Get", "Aug_Synergy", "Aug_Missile", "Aug_MissileHit", "Aug_Nova", "Aug_Blade", "Aug_Storm", "Aug_MeteorFall", "Aug_MeteorHit", "Aug_Flame", "Aug_Execute", "Aug_Skull", "Aug_Pulse",

@@ -374,6 +374,9 @@ return {
 		["Daggers whirl around you for 2.5s and fly at nearby enemies, three at a time. You can keep moving and shooting!"] = "2.5초 동안 단검이 몸 주위를 휘돌며 주변 적에게 세 자루씩 날아가요. 움직이며 쏠 수 있어요!",
 		["💡 Death Lotus (F) whirls daggers around you: keep moving and shooting while it spins"] = "💡 죽음의 연꽃(F)은 단검이 몸 주위를 휘돌아요. 도는 동안 계속 움직이며 쏘세요",
 		["🌸 No enemy nearby"] = "🌸 근처에 적이 없어요",
+		["Death Lotus cast"] = "죽음의 연꽃 시전",
+		["Death Lotus whirl"] = "죽음의 연꽃 회전",
+		["Death Lotus stab"] = "죽음의 연꽃 꽂힘",
 	},
 	pats = {
 		{ "^≈ ([%d,%.%-]+) dmg$", "≈ %s 피해", "dmg", -6 },
