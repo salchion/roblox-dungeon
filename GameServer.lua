@@ -621,7 +621,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 			task.delay(charge, function()
 				if player.Parent then Weapon.PlayShot(player) end
 			end)
-			local multiScale = #list > 1 and 0.7 or 1 -- 여러 마리를 한꺼번에 맞히는 대신 마리당 피해는 조금 낮춘다
+			local multiScale = #list > 1 and 0.6 or 1 -- 여러 마리를 한꺼번에 맞히는 대신 마리당 피해는 조금 낮춘다
 			for index, bolt in ipairs(plan) do
 				task.delay(charge + 0.2 + (index - 1) * gap, function()
 					if not player.Parent or not bolt.Part.Parent then return end

@@ -131,8 +131,8 @@ handlers.Spirit = function(player, root, _, character)
 	local userId = player.UserId
 	Effects.Raw(root.Position, { "Y", userId, cfg.Duration })
 	pcall(function()
-		SoundBank.Play(root, "Skill_LotusCast") -- 시전: power up 소리를 크게
-		SoundBank.Play(root, "Skill_LotusThump") -- + 낮은 "쿵"
+		SoundBank.Play(root, "Skill_LotusCast") -- 시전: 날카로운 칼날 소리
+		SoundBank.Play(root, "Skill_LotusSlash", { Pitch = 0.8 }) -- + 조금 더 낮은 칼날 한 번 (두께감: 둔탁한 "쿵"은 뺐다)
 	end)
 	task.spawn(function()
 		local untilAt = os.clock() + cfg.Duration

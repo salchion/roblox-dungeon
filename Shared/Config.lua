@@ -976,7 +976,7 @@ Config.WeaponTypes = {
 		Trait = "Point-blank burst damage · Very short range", Desc = "6 pellets fan out in a spread (fewer hit at range)",
 	},
 	Flamer = {
-		Name = "Spell Tome", Form = "Flamer", DamageMult = 2.0, Cooldown = 2.0, Range = 320, Pellets = 1, Spread = 0, Splash = 7,
+		Name = "Spell Tome", Form = "Flamer", DamageMult = 2.7, Cooldown = 2.0, Range = 320, Pellets = 1, Spread = 0, Splash = 7,
 		ShotScale = 1.5, SpeedScale = 0.9, BarrelLength = 0.5, BarrelThickness = 1,
 		Trait = "Charged elemental burst · Hits several enemies", Desc = "Gathers fire, ice and lightning above your head for 1.5s, then fires a rapid volley at 3+ nearby enemies (all at one enemy if only one is near)",
 	},
