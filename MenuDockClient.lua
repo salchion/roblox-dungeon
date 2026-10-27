@@ -225,7 +225,7 @@ local function build(index, def)
 		if def.LobbySignal and player:GetAttribute("Zone") == "Lobby" then
 			player:SetAttribute(def.LobbySignal, os.clock()) -- 마을에서는 무기 버튼이 곧바로 강화 창을 연다 (메뉴의 무기 탭은 고르기만 되고 강화는 못 한다)
 		elseif def.Tab then
-			player:SetAttribute("OpenMenuTab", def.Tab)
+			player:SetAttribute("OpenMenuTab", def.Tab .. "|" .. tostring(os.clock())) -- (뒤에 시각을 붙여 매번 값이 달라지게: 같은 값을 다시 넣으면 변화 신호가 안 와서 "껐다 바로 다시 켜기"가 안 됐다)
 		else
 			player:SetAttribute(def.Signal, os.clock())
 		end

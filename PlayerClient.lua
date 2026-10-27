@@ -4064,7 +4064,7 @@ end)
 player:GetAttributeChangedSignal("OpenMenuTab"):Connect(function()
 	local want = player:GetAttribute("OpenMenuTab")
 	if type(want) ~= "string" then return end
-	local key, subKey = string.match(want, "^([^:]+):?(.*)$")
+	local key, subKey = string.match(want, "^([^:|]+):?([^|]*)") -- ("탭:하위|시각" 형태: 시각은 같은 버튼을 연달아 눌러도 신호가 오게 하는 용도)
 	if subKey == "" then subKey = nil end
 	if menuPanel.Visible and currentTab == key and (not subKey or MENU.Sub[key] == subKey) then
 		menuPanel.Visible = false -- 같은 버튼을 한 번 더 누르면 닫는다
