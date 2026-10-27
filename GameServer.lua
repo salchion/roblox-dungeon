@@ -135,14 +135,23 @@ end)
 local function onCharacterAdded(player, character)
 	local humanoid = character:WaitForChild("Humanoid")
 	Tutorial.EarlyFreeze(player, character) -- 튜토리얼 상태가 로드되기 전까지 움직이지 못하게 (처음 접속 시)
-	do -- 마을에서 시작할 때는 항상 시작 언덕(lobby.SpawnCFrame)에서: 로블록스가 스폰 패드가 만들어지기 전에 캐릭터를 월드 중앙(0,3,0)에 세워 버리는 경우가 있어서 직접 옮긴다
-		local zone = player:GetAttribute("Zone")
-		if (zone == nil or zone == "Lobby") and not player:GetAttribute("DiedInField") then
-			local rootPart = character:WaitForChild("HumanoidRootPart", 5)
-			if rootPart and (rootPart.Position - lobby.SpawnCFrame.Position).Magnitude > 40 then
-				character:PivotTo(lobby.SpawnCFrame)
+	do -- 마을에서 시작할 때는 항상 시작 언덕(lobby.SpawnCFrame)에서: 로블록스가 스폰 패드가 만들어지기 전에 캐릭터를 월드 중앙(0,3,0)에 세워 버리는 경우가 있어서 직접 옮긴다 (다른 곳이 되돌리는 경우를 막으려고 1.5초 동안 몇 번 더 확인한다)
+		local isStudio = game:GetService("RunService"):IsStudio()
+		task.spawn(function()
+			for attempt = 1, 5 do
+				local zone = player:GetAttribute("Zone")
+				local rootPart = character:FindFirstChild("HumanoidRootPart") or character:WaitForChild("HumanoidRootPart", 5)
+				if not rootPart or not character.Parent then return end
+				local far = (rootPart.Position - lobby.SpawnCFrame.Position).Magnitude
+				if (zone == nil or zone == "Lobby") and not player:GetAttribute("DiedInField") and far > 40 then
+					character:PivotTo(lobby.SpawnCFrame)
+					if isStudio then print(string.format("[스폰 이동] 시도 %d · Zone=%s · (%d,%d,%d) -> (%d,%d,%d)", attempt, tostring(zone), rootPart.Position.X, rootPart.Position.Y, rootPart.Position.Z, lobby.SpawnCFrame.Position.X, lobby.SpawnCFrame.Position.Y, lobby.SpawnCFrame.Position.Z)) end
+				elseif isStudio and attempt == 1 then
+					print(string.format("[스폰 이동] 건너뜀 · Zone=%s · DiedInField=%s · 스폰까지 거리 %d", tostring(zone), tostring(player:GetAttribute("DiedInField")), far))
+				end
+				task.wait(0.3)
 			end
-		end
+		end)
 	end
 	humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None -- 기본 이름표 대신 전투력/무기 레벨이 보이는 이름표 사용
 	humanoid.MaxHealth = Dungeon.GetMaxHealth(player)
