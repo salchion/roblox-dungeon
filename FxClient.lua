@@ -1774,19 +1774,51 @@ end)
 -- 빛의 정령 (F 스킬): 소환한 사람 주위를 도는 작은 빛의 구슬 몇 마리. 모습은 각자 화면에서 그린다 (서버는 "Y" 로 시작 / 끝, "J" 로 쏘는 순간만 알린다).
 --   "Y" { userId, 개수(0이면 끝), 남은 초 }  /  "J" { userId, 번호, 맞은 위치 }
 ------------------------------------------------------------
--- 죽음의 연꽃(F, 저장 이름은 예전 그대로 Spirit): 몸 주위로 붉은 / 하얀 단검 고리 두 겹이 반대 방향으로 빠르게 돈다. 서버가 단검을 던질 때마다 "J" 가 몸에서 적에게 날아가 꽂힌다.
-local lotus = {} -- [userId] = { Blades = { 부품... }, Expire }
-local LOTUS_RED, LOTUS_WHITE = Color3.fromRGB(235, 55, 90), Color3.fromRGB(255, 236, 242)
+-- 죽음의 연꽃(F, 저장 이름은 예전 그대로 Spirit): 시전하면 발밑에 붉은 연꽃이 활짝 피고(꽃잎 8장), 몸 주위로 붉은 / 하얀 단검 고리 두 겹이 반대 방향으로 빠르게 돈다.
+-- 도는 동안 발밑에 회전하는 룬 고리 + 붉은 빛무리, 0.35초마다 퍼지는 충격 고리. 서버가 단검을 던질 때마다 "J" 가 몸에서 적에게 날아가 X 자로 베고 꽂힌다. 끝나면 꽃잎이 흩날린다.
+local lotus = {} -- [userId] = { Blades = { 부품... }, Rune, Glow, Expire, NextPulse }
+local LOTUS_RED, LOTUS_WHITE, LOTUS_PINK = Color3.fromRGB(235, 55, 90), Color3.fromRGB(255, 236, 242), Color3.fromRGB(255, 130, 170)
 local function killLotus(entry)
 	for _, blade in ipairs(entry.Blades) do blade:Destroy() end
+	if entry.Rune then releaseDashes(entry.Rune) end
+	if entry.Glow then entry.Glow:Destroy() end
+end
+local function lotusBloom(center) -- 발밑에 연꽃이 피어난다: 꽃잎 8장이 눕혀 있다가 일어서며 퍼지고 사라진다
+	for i = 1, 8 do
+		local angle = i * (math.pi / 4)
+		local base = CFrame.new(center) * CFrame.Angles(0, angle, 0)
+		local petal = rootPart(base * CFrame.new(0, 0.3, -1.4) * CFrame.Angles(math.rad(-85), 0, 0), Vector3.new(1.5, 4.2, 0.2), i % 2 == 0 and LOTUS_RED or LOTUS_PINK, Enum.Material.Neon, nil, 0.1)
+		TweenService:Create(petal, TweenInfo.new(0.9, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+			CFrame = base * CFrame.new(0, 1.6, -3.4) * CFrame.Angles(math.rad(-28), 0, 0), Transparency = 0.85,
+		}):Play()
+		Debris:AddItem(petal, 1)
+	end
+	for i = 1, 5 do -- 안쪽 작은 꽃잎
+		local angle = i * (2 * math.pi / 5) + 0.3
+		local base = CFrame.new(center) * CFrame.Angles(0, angle, 0)
+		local petal = rootPart(base * CFrame.new(0, 0.3, -0.8) * CFrame.Angles(math.rad(-85), 0, 0), Vector3.new(1.0, 2.6, 0.2), LOTUS_WHITE, Enum.Material.Neon, nil, 0.1)
+		TweenService:Create(petal, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+			CFrame = base * CFrame.new(0, 2.2, -2.0) * CFrame.Angles(math.rad(-40), 0, 0), Transparency = 0.9,
+		}):Play()
+		Debris:AddItem(petal, 0.9)
+	end
+	ringWave(center, 12, LOTUS_RED, 0.7, 30, 2.2)
+	ring({ "R", center, 16, LOTUS_PINK })
 end
 local function lotusEvent(event) -- { "Y", userId, 남은 초 (0 이면 끝) }
 	local userId, secs = event[2], event[3]
 	local entry = lotus[userId]
+	local owner = Players:GetPlayerByUserId(userId)
+	local root = owner and owner.Character and owner.Character:FindFirstChild("HumanoidRootPart")
 	if not secs or secs <= 0 then
 		if entry then
 			killLotus(entry)
 			lotus[userId] = nil
+		end
+		if root then -- 끝: 꽃잎이 흩날린다
+			burst(root.Position + Vector3.new(0, 1.5, 0), LOTUS_PINK, 50)
+			burst(root.Position + Vector3.new(0, 1.5, 0), LOTUS_WHITE, 20)
+			ring({ "R", root.Position - Vector3.new(0, 2.5, 0), 14, LOTUS_RED })
 		end
 		return
 	end
@@ -1797,35 +1829,47 @@ local function lotusEvent(event) -- { "Y", userId, 남은 초 (0 이면 끝) }
 	local owners = 0
 	for _ in pairs(lotus) do owners += 1 end
 	if owners >= 6 then return end -- (화면에 단검 고리가 너무 많아지지 않게: 동시에 6명까지)
-	entry = { Blades = {}, Expire = os.clock() + secs + 0.8 }
+	entry = { Blades = {}, Expire = os.clock() + secs + 0.8, NextPulse = 0 }
 	for index = 1, 12 do
-		local blade = neonPart(Vector3.new(0.35, 0.12, 3.2), index % 2 == 0 and LOTUS_RED or LOTUS_WHITE, 0.05)
-		if not lowSpecOn() then addTrail(blade, index % 2 == 0 and LOTUS_RED or LOTUS_WHITE, 0.5, 0.25) end
+		local blade = neonPart(Vector3.new(0.45, 0.14, 3.8), index % 2 == 0 and LOTUS_RED or LOTUS_WHITE, 0.03)
+		if not lowSpecOn() then
+			addTrail(blade, index % 2 == 0 and LOTUS_RED or LOTUS_PINK, 0.8, 0.35)
+			local light = Instance.new("PointLight")
+			light.Color, light.Range, light.Brightness = LOTUS_RED, 8, 1.2
+			light.Parent = blade
+		end
 		blade.Parent = fxFolder
 		table.insert(entry.Blades, blade)
 	end
+	entry.Rune = makeDashes(20, LOTUS_RED, 1.4, 3.4, 0.1) -- 발밑에서 도는 룬 고리
+	entry.Glow = neonPart(Vector3.new(0.25, 17, 17), LOTUS_RED, 0.78, CYL) -- 발밑 붉은 빛무리
+	entry.Glow.Parent = fxFolder
 	lotus[userId] = entry
-	local owner = Players:GetPlayerByUserId(userId)
-	local root = owner and owner.Character and owner.Character:FindFirstChild("HumanoidRootPart")
 	if root then
-		ring({ "R", root.Position - Vector3.new(0, 2.5, 0), 12, LOTUS_RED })
-		burst(root.Position + Vector3.new(0, 1, 0), LOTUS_RED, 26)
-		burst(root.Position + Vector3.new(0, 1, 0), LOTUS_WHITE, 10)
+		lotusBloom(root.Position - Vector3.new(0, 2.4, 0))
+		burst(root.Position + Vector3.new(0, 1, 0), LOTUS_RED, 40)
+		burst(root.Position + Vector3.new(0, 1, 0), LOTUS_WHITE, 16)
 	end
 end
-local function lotusHit(event) -- { "J", 시작, 끝 }: 단검 한 자루가 날아가 꽂힌다
+local function lotusHit(event) -- { "J", 시작, 끝 }: 단검 한 자루가 날아가 X 자로 베고 꽂힌다
 	local from, to = event[2], event[3]
 	if typeof(from) ~= "Vector3" or typeof(to) ~= "Vector3" or (to - from).Magnitude < 1 then return end
 	local dir = (to - from).Unit
-	local dagger = rootPart(CFrame.lookAt(from, to), Vector3.new(0.3, 0.3, 2.6), LOTUS_WHITE, Enum.Material.Neon, nil, 0)
-	addTrail(dagger, LOTUS_RED, 0.5, 0.2)
+	local dagger = rootPart(CFrame.lookAt(from, to), Vector3.new(0.4, 0.4, 3.2), LOTUS_WHITE, Enum.Material.Neon, nil, 0)
+	addTrail(dagger, LOTUS_RED, 0.8, 0.25)
 	local flight = TweenService:Create(dagger, TweenInfo.new(0.1, Enum.EasingStyle.Linear), { CFrame = CFrame.lookAt(to, to + dir) })
 	flight.Completed:Connect(function()
 		dagger:Destroy()
-		burst(to, LOTUS_RED, 7)
-		local slash = rootPart(CFrame.lookAt(to, to + dir) * CFrame.Angles(0, 0, math.rad(math.random(0, 180))), Vector3.new(0.18, 3.4, 0.18), LOTUS_WHITE, Enum.Material.Neon, nil, 0.1) -- 베인 자국
-		TweenService:Create(slash, TweenInfo.new(0.16), { Transparency = 1, Size = Vector3.new(0.05, 4.5, 0.05) }):Play()
-		Debris:AddItem(slash, 0.2)
+		burst(to, LOTUS_RED, 12)
+		burst(to, LOTUS_WHITE, 5)
+		for _, tilt in ipairs({ 35, -35 }) do -- X 자 베임
+			local slash = rootPart(CFrame.lookAt(to, to + dir) * CFrame.Angles(0, 0, math.rad(tilt)), Vector3.new(0.3, 6, 0.3), LOTUS_WHITE, Enum.Material.Neon, nil, 0.05)
+			TweenService:Create(slash, TweenInfo.new(0.22), { Transparency = 1, Size = Vector3.new(0.06, 9, 0.06) }):Play()
+			Debris:AddItem(slash, 0.26)
+		end
+		local shock = rootPart(CFrame.new(to), Vector3.new(0.6, 0.6, 0.6), LOTUS_PINK, Enum.Material.Neon, Enum.PartType.Ball, 0.3) -- 맞은 곳 번쩍이는 구
+		TweenService:Create(shock, TweenInfo.new(0.2), { Size = Vector3.one * 5, Transparency = 1 }):Play()
+		Debris:AddItem(shock, 0.25)
 	end)
 	flight:Play()
 	Debris:AddItem(dagger, 0.4)
@@ -1843,11 +1887,21 @@ RunService.RenderStepped:Connect(function()
 				local outer = index <= 6
 				local dirSign = outer and 1 or -1
 				local angle = dirSign * now * 9 + index * (2 * math.pi / 6)
-				local radius = outer and 4.6 or 3
-				local height = outer and 0.2 or 1.6
+				local radius = outer and 4.8 or 3.1
+				local height = (outer and 0.2 or 1.6) + math.sin(now * 6 + index) * 0.35 -- 위아래로 출렁인다
 				local pos = root.Position + Vector3.new(math.cos(angle) * radius, height, math.sin(angle) * radius)
 				local tangent = Vector3.new(-math.sin(angle), 0, math.cos(angle)) * dirSign
 				blade.CFrame = CFrame.lookAt(pos, pos + tangent)
+			end
+			local feet = root.Position - Vector3.new(0, 2.5, 0)
+			if entry.Rune then placeDashes(entry.Rune, feet + Vector3.new(0, 0.15, 0), 8.5, now * 2.2) end
+			if entry.Glow then
+				entry.Glow.CFrame = CFrame.new(feet + Vector3.new(0, 0.1, 0)) * CFrame.Angles(0, 0, math.rad(90))
+				entry.Glow.Transparency = 0.72 + 0.1 * math.sin(now * 8) -- 숨 쉬듯 깜빡인다
+			end
+			if now >= entry.NextPulse then -- 0.35초마다 발밑에서 충격 고리가 퍼진다
+				entry.NextPulse = now + 0.35
+				ring({ "R", feet, 13, LOTUS_RED })
 			end
 		end
 	end
