@@ -19,7 +19,10 @@ if not ok or not translator then
 end
 local localeId = string.lower(tostring(translator.LocaleId))
 if string.sub(localeId, 1, 2) == "en" then return end -- 원본 언어(영어)이면 번역할 게 없다
-if RunService:IsStudio() then print("[LocalizeClient] 번역기 준비됨 · 언어 " .. localeId) end
+if RunService:IsStudio() then
+	print(string.format("[LocalizeClient] 번역기 준비됨 · 번역기 언어 %s · RobloxLocaleId %s · SystemLocaleId %s · 플레이어 LocaleId %s",
+		localeId, tostring(LocalizationService.RobloxLocaleId), tostring(LocalizationService.SystemLocaleId), tostring(player.LocaleId)))
+end
 
 local memo = {}
 local function translatePiece(obj, piece)
@@ -100,4 +103,24 @@ workspace.DescendantAdded:Connect(function(obj) -- 월드 안의 이름표 / 간
 end)
 for _, obj in ipairs(workspace:GetDescendants()) do
 	if (obj:IsA("TextLabel") or obj:IsA("TextButton")) and (obj:FindFirstAncestorWhichIsA("BillboardGui") or obj:FindFirstAncestorWhichIsA("SurfaceGui")) then watch(obj) end
+end
+
+-- (Studio 진단) 번역기가 실제로 번역을 돌려주는지 / 화면 글자를 몇 개나 번역했는지 8초 뒤에 한 번 찍는다
+if RunService:IsStudio() then
+	local stats = { Translated = 0 }
+	local originalApply = apply
+	task.delay(8, function()
+		local tests = { "Gear", "Weapon", "Settings", "Dash", "First Aid", "Death Lotus", "Auto-Attack", "Power Ranking" }
+		for _, word in ipairs(tests) do
+			local okA, withContext = pcall(function() return translator:Translate(playerGui, word) end)
+			local okB, generic = pcall(function() return translator:Translate(game, word) end)
+			print(string.format("[LocalizeClient 진단] %q -> 컨텍스트 있음: %s · 없음: %s", word, okA and tostring(withContext) or "오류", okB and tostring(generic) or "오류"))
+		end
+		local total, changed = 0, 0
+		for obj in pairs(watched) do
+			total += 1
+			if record[obj] ~= nil then changed += 1 end
+		end
+		print(string.format("[LocalizeClient 진단] 지켜보는 글자 %d개 중 번역해서 바꾼 글자 %d개", total, changed))
+	end)
 end
