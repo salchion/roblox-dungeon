@@ -378,6 +378,10 @@ return {
 		["Death Lotus whirl"] = "죽음의 연꽃 회전",
 		["Death Lotus stab"] = "죽음의 연꽃 꽂힘",
 		["Death Lotus thump"] = "죽음의 연꽃 쿵",
+		["Defeat each zone's Lord to open the next zone."] = "구역의 군주를 쓰러뜨리면 다음 구역이 열려요.",
+		["Press Q to dash. Narrowly dodging enemy shots gives a bonus."] = "Q로 대시해요. 적의 공격을 아슬아슬하게 피하면 보너스가 있어요.",
+		["Set effects stack: mix gear from different zones to build your style."] = "세트 효과는 쌓여요. 다른 구역의 장비를 섞어 나만의 스타일을 만드세요.",
+		["Mythic gear can carry a Unique effect. Dungeons are the best place to find them."] = "신화 장비에는 유니크 효과가 붙을 수 있어요. 던전이 찾기 가장 좋아요.",
 	},
 	pats = {
 		{ "^≈ ([%d,%.%-]+) dmg$", "≈ %s 피해", "dmg", -6 },
@@ -725,5 +729,6 @@ return {
 		{ "^Activate (.-) G$", "활성화 %s G", "Activate", 989 },
 		{ "^ZONE ([%d,%.%-]+)$", "%s구역", "ZONE", -5 },
 		{ "^([%d,%.%-]+)s · ([%d,%.%-]+) daggers every ([%d,%.%-]+)s · Damage x([%d,%.%-]+) each$", "%s초 · 단검 %s자루씩 %s초마다 · 자루당 피해 x%s", "daggers", -36 },
+		{ "^Loading the world%.%.%.  ·  (.-)$", "세계를 불러오는 중...  ·  %s", "Loading", 975 },
 	},
 }

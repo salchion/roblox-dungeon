@@ -270,16 +270,8 @@ local function play()
 		task.delay(0.1, function() gui:Destroy() end)
 	end
 
-	-- 건너뛰기 (시작하고 0.7초 뒤부터). 처음 한 번은 끝까지 봐야 한다(마구 눌러서 넘기는 사람이 많아서): 끝까지 본 기록이 있어야 건너뛸 수 있다
+	-- (건너뛰기 없음: 로딩 화면처럼 처음부터 끝까지 그냥 보여 준다. 오프닝 길이는 이전보다 약 10% 줄였다)
 	local startedAt = os.clock()
-	connection = UserInputService.InputBegan:Connect(function(input)
-		if player:GetAttribute("HintDone_IntroSeen") ~= true then return end
-		if os.clock() - startedAt < 0.7 then return end
-		local t = input.UserInputType
-		if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch or t == Enum.UserInputType.Keyboard then
-			finish()
-		end
-	end)
 
 	-- 보스 자리: 필드 맨 끝 (최후의 군주 포탈 뒤), 마을 쪽(서쪽)을 바라본다. 실제 보스와 같은 모습
 	local S = 3.8 -- 보스 크기 (이전 2.4: 왕관 / 뿔 / 날개 장식이 작아서 안 보였다)
@@ -370,9 +362,6 @@ local function play()
 			"Tip · Mythic gear can carry a Unique effect. Dungeons are the best place to find them.",
 		}
 		local tipLabel = pageText({ Size = UDim2.new(1, -60, 0, 20), Position = UDim2.new(0.5, 0, 0.82, 0), TextSize = 13, Font = Enum.Font.GothamMedium, TextColor3 = Color3.fromRGB(190, 182, 160), Text = tips[math.random(#tips)] })
-		if player:GetAttribute("HintDone_IntroSeen") == true then
-			pageText({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0.5, 0, 0.95, 0), TextSize = 11, Font = Enum.Font.GothamMedium, TextColor3 = Color3.fromRGB(110, 106, 122), Text = "Tap or press any key to skip" })
-		end
 
 		local pageStart = os.clock()
 		local ready = false
@@ -401,7 +390,7 @@ local function play()
 			end
 			listener:Disconnect()
 		end
-		local stillNeeded = 2.2 - (os.clock() - pageStart) -- 로딩이 빨리 끝나도 로딩 화면은 최소 2.2초는 보여 준다 (첫 화면이 번쩍 지나가지 않게)
+		local stillNeeded = 1.9 - (os.clock() - pageStart) -- 로딩이 빨리 끝나도 로딩 화면은 최소 1.9초는 보여 준다 (첫 화면이 번쩍 지나가지 않게)
 		if stillNeeded > 0 and not finished then
 			TweenService:Create(barFillLoad, TweenInfo.new(stillNeeded, Enum.EasingStyle.Sine), { Size = UDim2.new(0.92, 0, 1, 0) }):Play()
 			task.wait(stillNeeded)
@@ -454,14 +443,41 @@ local function play()
 			if not finished and loading.Parent and loading.IsLoaded then loading:Play() end
 		end)
 	end
+	-- 로딩 화면처럼: 아래 검은 띠에 "Loading the world..." + 돌아가는 팁 (건너뛸 수 없으니 그냥 보게)
+	do
+		local caption = Instance.new("TextLabel")
+		caption.BackgroundTransparency = 1
+		caption.AnchorPoint = Vector2.new(0.5, 0.5)
+		caption.Size = UDim2.new(1, -40, 0, 22)
+		caption.Position = UDim2.new(0.5, 0, 0.955, 0)
+		caption.Font = Enum.Font.GothamMedium
+		caption.TextSize = 13
+		caption.TextColor3 = Color3.fromRGB(190, 182, 160)
+		caption.ZIndex = 20
+		caption.Parent = gui
+		local captionTips = {
+			"Defeat each zone's Lord to open the next zone.",
+			"Press Q to dash. Narrowly dodging enemy shots gives a bonus.",
+			"Set effects stack: mix gear from different zones to build your style.",
+			"Mythic gear can carry a Unique effect. Dungeons are the best place to find them.",
+		}
+		task.spawn(function()
+			local index = math.random(#captionTips)
+			while not finished and caption.Parent do
+				caption.Text = "Loading the world...  ·  " .. captionTips[index]
+				index = index % #captionTips + 1
+				task.wait(3.5)
+			end
+		end)
+	end
 	sfx("Aug_Flame", 1.0, 0.7) -- 바람을 가르는 소리
 	task.wait(0.6)
 	if finished then return end
 
 	-- 1) 마을에서 보스까지 한 번에 날아간다 (빠르게 가속했다가 보스 앞에서 멈춘다. 시야각이 넓어졌다가 좁아진다)
 	-- 먼저 높은 하늘에서 아래를 내려다보며 일정한 속도로 날아가고(필드가 한눈에 보인다), 끝에서 보스 앞으로 내려오며 속도를 줄인다
-	local FLY_TIME = 10.5
-	local DESCEND_TIME = 2.6
+	local FLY_TIME = 9.0
+	local DESCEND_TIME = 2.3
 	local midPos = Vector3.new(bossX - 650, FLY_HEIGHT, 0)
 	TweenService:Create(camera, TweenInfo.new(FLY_TIME, Enum.EasingStyle.Linear), { CFrame = CFrame.lookAt(midPos, midPos + TILT) }):Play()
 	TweenService:Create(camera, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { FieldOfView = 84 }):Play()
@@ -511,7 +527,7 @@ local function play()
 	for _, eye in ipairs(eyes) do
 		TweenService:Create(eye, TweenInfo.new(0.7), { Transparency = 0 }):Play()
 	end
-	task.wait(0.7)
+	task.wait(0.6)
 	if finished then return end
 	sfx("Lord_Charge", 1.0)
 	local orb = Instance.new("Part")
@@ -640,12 +656,12 @@ local function play()
 		if not finished then TweenService:Create(camera, TweenInfo.new(1.9, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { FieldOfView = 72 }):Play() end
 	end)
 	task.delay(1.4, function() if not finished then props:ClearAllChildren() end end) -- 보스는 멀어진 뒤에 치운다
-	task.wait(2.4)
+	task.wait(1.9)
 	if finished then return end
 	sfx("Dungeon_Start", 0.9, 0.8)
 	TweenService:Create(title, TweenInfo.new(0.8), { TextTransparency = 0, TextStrokeTransparency = 0.6 }):Play()
 	TweenService:Create(subtitle, TweenInfo.new(1.1), { TextTransparency = 0.1 }):Play()
-	task.wait(1.2)
+	task.wait(1.0)
 	if finished then return end
 
 	-- 5) 하늘 높은 곳에서 제목을 보여 주다가 -> 내 캐릭터가 하늘에서 "슝" 내려와 아이언맨처럼 착지한다
@@ -689,7 +705,7 @@ local function play()
 		TweenService:Create(subtitle, TweenInfo.new(0.8), { TextTransparency = 1 }):Play()
 	end)
 	sfx("Aug_Flame", 0.8, 0.4)
-	task.wait(1.5)
+	task.wait(1.2)
 	if finished then return end
 
 	-- 낙하: 점점 빨라지며 "슝" (카메라는 떨어지는 몸을 쫓아 내려온다). 브릿지: 시작하는 순간 화면이 살짝 어두워졌다 밝아진다
