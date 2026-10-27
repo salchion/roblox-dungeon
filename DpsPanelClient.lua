@@ -20,7 +20,7 @@ local HttpService = game:GetService("HttpService")
 local UserInputService = game:GetService("UserInputService")
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 
-local COMPACT = UserInputService.TouchEnabled and not UserInputService.MouseEnabled
+local COMPACT = UserInputService.TouchEnabled and not UserInputService.MouseEnabled and not Config.PhonePcStyle
 local MAX_ROWS = 6
 local ROW_H = 20
 local HEAD_H = 50

@@ -6,6 +6,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
 
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Kit = require(ReplicatedStorage:WaitForChild("ClientKit"))
 local create, rounded, makePanel, makeLabel, makeButton = Kit.create, Kit.rounded, Kit.makePanel, Kit.makeLabel, Kit.makeButton
 
@@ -212,7 +213,7 @@ local function start()
 	-- 폰 / 태블릿(키보드가 없는 기기): F6 키가 없으니 운영자에게만 작은 "Admin" 버튼을 보여 준다 (위쪽 가운데, 접속자 알약 옆). 창은 화면 크기에 맞게 줄인다.
 	if UserInputService.TouchEnabled then
 		local openButton = makeButton({
-			Size = UDim2.new(0, 56, 0, 28), AnchorPoint = Vector2.new(0, 0), Position = UDim2.new(0.5, 44, 0, 6),
+			Size = UDim2.new(0, 56, 0, 28), AnchorPoint = Vector2.new(0, 0), Position = UDim2.new(0.5, Config.PhonePcStyle and 84 or 44, 0, 6), -- (PC 배치의 접속자 알약은 폭 150 이라 더 오른쪽에)
 			Text = "Admin", TextSize = 12, BackgroundColor3 = Color3.fromRGB(70, 56, 110), ZIndex = 5,
 		}, gui, toggle)
 		openButton.Name = "AdminOpenButton"

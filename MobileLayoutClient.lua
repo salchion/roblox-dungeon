@@ -16,6 +16,8 @@ local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
+local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Config"))
+local PHONE_PC = Config.PhonePcStyle == true and UserInputService.TouchEnabled and not UserInputService.MouseEnabled -- 폰도 PC 배치를 줄여 쓴다 (Config.PhonePcStyle)
 
 -- 폰에서 화면을 자동으로 가로로 (센서: 폰을 왼쪽 / 오른쪽으로 돌려도 가로 유지). PC 에서는 아무 영향이 없다.
 pcall(function() playerGui.ScreenOrientation = Enum.ScreenOrientation.LandscapeSensor end)
@@ -283,11 +285,11 @@ local function applyScales(viewport)
 				end
 			elseif OWN[g.Name] then
 				local sc = g:FindFirstChild("MobileScale") or make("UIScale", { Name = "MobileScale" }, g)
-				local want = st.compact and st.s or math.clamp(math.min(viewport.X / 1100, viewport.Y / 720), 1, math.max(1, mul))
+				local want = st.compact and st.s or math.clamp(math.min(viewport.X / 1100, viewport.Y / 720), PHONE_PC and 0.55 or 1, math.max(1, mul))
 				if sc.Scale ~= want then sc.Scale = want end
 			elseif GROW[g.Name] then
 				local sc = g:FindFirstChild("MobileScale") or make("UIScale", { Name = "MobileScale" }, g)
-				local want = st.compact and 1 or math.clamp(math.min(viewport.X / 1100, viewport.Y / 720), 1, math.max(1, mul))
+				local want = st.compact and 1 or math.clamp(math.min(viewport.X / 1100, viewport.Y / 720), PHONE_PC and 0.55 or 1, math.max(1, mul))
 				if sc.Scale ~= want then sc.Scale = want end
 			end
 		end
@@ -658,7 +660,7 @@ local function update()
 	if not camera then return end
 	local viewport = camera.ViewportSize
 	if viewport.X < 1 or viewport.Y < 1 then return end
-	local compact = viewport.Y < 560 or viewport.X < 900
+	local compact = (viewport.Y < 560 or viewport.X < 900) and not PHONE_PC -- 폰도 PC 배치로 (Config.PhonePcStyle)
 	if compact then
 		st.s = math.clamp(math.min(viewport.Y / 560, viewport.X / 820), MIN_SCALE, 1)
 	end

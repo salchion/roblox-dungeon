@@ -19,7 +19,7 @@ local create, rounded = Kit.create, Kit.rounded
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
-local COMPACT = UserInputService.TouchEnabled and not UserInputService.MouseEnabled
+local COMPACT = UserInputService.TouchEnabled and not UserInputService.MouseEnabled and not Config.PhonePcStyle
 
 local ORDER = Config.WeaponTypes.Order
 local ICONS = { Pistol = "🔫", Smg = "🔭", Revolver = "💣", Rifle = "🏹", Shotgun = "✴", Flamer = "📖", Cannon = "🧨", Sniper = "🎯", Rocket = "🚀", Rail = "⚡" }
