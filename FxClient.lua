@@ -2011,13 +2011,14 @@ local function chainHop(event)
 	local a, b = event[2], event[3]
 	if typeof(a) ~= "Vector3" or typeof(b) ~= "Vector3" then return end
 	local first = event[4] == true
-	local thick = first and 1.5 or 1
+	local big = event[5] == true -- 마법책 무기: 더 굵고 눈에 띄게
+	local thick = (first and 1.5 or 1) * (big and 1.45 or 1)
 	local length = (b - a).Magnitude
 	local main = boltPoints(a, b, math.clamp(math.floor(length / 5) + 3, 4, 7), math.clamp(length * 0.18, 1.5, 5))
 	drawBolt(main, 3.4 * thick, BOLT_BLUE, 0.55, 0.38) -- 겉 빛
 	drawBolt(main, 1.5 * thick, BOLT_YELLOW, 0.1, 0.3) -- 몸통
 	drawBolt(main, 0.6 * thick, BOLT_WHITE, 0, 0.22) -- 하얀 심지
-	for _ = 1, 2 do -- 곁가지: 줄기 중간에서 옆으로 갈라지는 짧은 번개
+	for _ = 1, (big and 3 or 2) do -- 곁가지: 줄기 중간에서 옆으로 갈라지는 짧은 번개
 		local at = main[math.random(2, #main - 1)]
 		local tip = at + Vector3.new((math.random() - 0.5) * 14, (math.random() - 0.3) * 6, (math.random() - 0.5) * 14)
 		drawBolt(boltPoints(at, tip, 3, 2), 0.7, BOLT_YELLOW, 0.2, 0.25)

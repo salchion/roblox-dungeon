@@ -28,7 +28,7 @@ local SPECS = {
 	Shot_Shotgun  = { Base = "Shot", CustomLength = 1.2, Pitch = 0.7, Volume = 1.0, Length = 1.0, Fx = { { "distortion", { Level = 0.35 } } },
 		Layers = { { Pitch = 0.5, Volume = 0.9, Delay = 0 }, { Pitch = 1.3, Volume = 0.5, Delay = 0.03 } } },
 	-- 마법책 (Flamer = 마법책): 낮게 "우웅" 하고 불덩이가 터져 나가는 소리 (기본 소리를 낮추고 코러스 + 짧은 폭발음을 겹친다)
-	Shot_Flamer   = { Base = "Boom", Pitch = 1.35, Volume = 0.7, Length = 0.7, Fx = { { "chorus", { Depth = 0.6, Mix = 0.5 } }, { "reverb", { DecayTime = 0.9, WetLevel = -8 } } }, Layers = { { Pitch = 2.2, Volume = 0.4, Delay = 0.02 } } },
+	Shot_Flamer   = { Base = "Shot", Pitch = 2.1, Volume = 0.9, Length = 0.4, Fx = { { "distortion", { Level = 0.75 } }, { "chorus", { Depth = 0.7, Mix = 0.5 } } } }, -- 마법책 체인 라이트닝: 높고 지직거리는 전기 소리
 	-- 박격포: 묵직한 "쿵" (Cannon = 박격포)
 	Shot_Cannon   = { Base = "Boom", Pitch = 0.8, Volume = 0.8, Length = 0.9, Fx = { { "distortion", { Level = 0.3 } } } },
 	-- 석궁: 시위가 튕기는 "탕" (Sniper = 석궁)
@@ -160,7 +160,7 @@ end
 SoundBank.Descriptions = {
 	Dash = "Dash (Q)", Pickup = "Loot pickup",
 	Shot_Pistol = "Rifle shot", Shot_Smg = "SMG shot", Shot_Revolver = "Bomb throw", Shot_Rifle = "Bow shot", Shot_Shotgun = "Shotgun shot",
-	Shot_Flamer = "Spell Tome fireball", Shot_Cannon = "Mortar shot", Shot_Sniper = "Crossbow shot", Shot_Rocket = "Rocket Launcher shot", Shot_Rail = "Railgun shot",
+	Shot_Flamer = "Spell Tome chain lightning", Shot_Cannon = "Mortar shot", Shot_Sniper = "Crossbow shot", Shot_Rocket = "Rocket Launcher shot", Shot_Rail = "Railgun shot",
 	Hit = "Enemy hit (short)", Crit = "Critical hit", Kill = "Enemy kill (pitch rises with kill streak)",
 	Skill_Heal = "First Aid used", Skill_LotusCast = "Death Lotus cast", Skill_LotusThump = "Death Lotus thump", Skill_LotusSlash = "Death Lotus whirl", Skill_LotusStab = "Death Lotus stab", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Ult_Missile = "Dead Eye missile launch", Ult_Hit = "Dead Eye missile impact", Ult_Launch = "Dead Eye launch thump", Ult_Finale = "Dead Eye final blast", Boom = "Monster explosion / shockwave / meteor",
 	LevelUp = "Level up", Enh_Hammer = "Enhance: hammer strike", Enh_Success = "Enhance success (pitch rises with level)", Enh_Fail = "Enhance failed",

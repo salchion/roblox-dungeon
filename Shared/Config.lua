@@ -976,9 +976,9 @@ Config.WeaponTypes = {
 		Trait = "Point-blank burst damage · Very short range", Desc = "6 pellets fan out in a spread (fewer hit at range)",
 	},
 	Flamer = {
-		Name = "Spell Tome", Form = "Flamer", DamageMult = 2.7, Cooldown = 2.0, Range = 320, Pellets = 1, Spread = 0, Splash = 7,
+		Name = "Spell Tome", Form = "Flamer", DamageMult = 1.15, Cooldown = 0.85, Range = 320, Pellets = 1, Spread = 0, Splash = 7,
 		ShotScale = 1.5, SpeedScale = 0.9, BarrelLength = 0.5, BarrelThickness = 1,
-		Trait = "Charged elemental burst · Hits several enemies", Desc = "Gathers fire, ice and lightning above your head for 1.5s, then fires a rapid volley at 3+ nearby enemies (all at one enemy if only one is near)",
+		Trait = "Chain Lightning · Jumps between enemies", Desc = "Lightning strikes the enemy you aim at, then jumps to nearby enemies one after another (4+ jumps, each hit a little weaker)",
 	},
 	Cannon = {
 		Name = "Mortar", Form = "Cannon", DamageMult = 1.5, Cooldown = 1.3, Range = 360, Pellets = 1, Spread = 0, Splash = 7,
