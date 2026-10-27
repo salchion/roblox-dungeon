@@ -124,7 +124,7 @@ end
 
 local function sourceName(source)
 	if source == "Gun" then return "🔫 Gun" end
-	local fixed = { Ult = "🎯 Deadeye", Blast = "💥 Shockwave", Spirit = "🧚 Spirits", Bounce = "🔁 Ricochet", PerkBoom = "💥 Explosive Shot", PerkChain = "⚡ Chain Lightning", Other = "❔ Other" }
+	local fixed = { Ult = "🎯 Deadeye", Blast = "💥 Shockwave", Spirit = "🧚 Spirits", Bounce = "🔁 Ricochet", Pierce = "➳ Piercing Beam", PerkBoom = "💥 Explosive Shot", PerkChain = "⚡ Chain Lightning", Other = "❔ Other" }
 	if fixed[source] then return fixed[source] end
 	if typeof(source) == "string" and string.sub(source, 1, 2) == "U_" then
 		local unique = Config.Uniques[string.sub(source, 3)]

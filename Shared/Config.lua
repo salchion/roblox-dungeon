@@ -996,9 +996,9 @@ Config.WeaponTypes = {
 		Trait = "Wide explosion · Crowd clearing", Desc = "Explodes on impact, damaging nearby enemies too (radius 12)",
 	},
 	Rail = {
-		Name = "Railgun", Form = "Rail", DamageMult = 1.45, Cooldown = 1.4, Range = 700, Pellets = 1, Spread = 0, Bounce = 2, BounceRange = 34, BounceMult = 0.85,
+		Name = "Railgun", Form = "Rail", DamageMult = 1.45, Cooldown = 1.4, Range = 700, Pellets = 1, Spread = 0, Pierce = 6, PierceMult = 0.9,
 		ShotScale = 1.2, SpeedScale = 3, BarrelLength = 1.6, BarrelThickness = 0.8,
-		Trait = "Bounces to 3 nearby enemies · Longest range", Desc = "Ultra-fast shot that bounces from the target to the 2 nearest enemies around it (within 34)",
+		Trait = "Piercing beam · Hits every enemy in a line", Desc = "An ultra-fast beam that punches straight through up to 7 enemies lined up in front of you (each one a little weaker). Best in corridors and against bosses behind their minions",
 	},
 }
 

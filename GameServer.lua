@@ -607,6 +607,36 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 			last = pick.Position
 		end
 	end
+	-- 레일건 관통: 처음 맞힌 적 뒤로 일직선에 있는 모든 적을 꿰뚫는다 (Pierce 마리까지, 한 마리 지날 때마다 피해 PierceMult 배). 돌려주는 값: 빔이 끝나는 지점
+	local function pierceLine(volleyOrigin, direction, hitPosition)
+		local range = Config.GetRange(player, weaponType)
+		local alongHit = (hitPosition - volleyOrigin):Dot(direction)
+		local middle = volleyOrigin + direction * (range / 2)
+		local list = Dungeon.TargetsIn(player, middle, range / 2, 80) or Field.TargetsIn(player, middle, range / 2, 80) or {}
+		local line = {}
+		for _, part in ipairs(list) do
+			local rel = part.Position - volleyOrigin
+			local along = rel:Dot(direction)
+			local reach = math.max(part.Size.X, part.Size.Z) / 2 + 3.5 -- 빔 굵기 + 적 몸집
+			if along > alongHit - 1 and along <= range and (rel - direction * along).Magnitude <= reach and (part.Position - hitPosition).Magnitude > part.Size.X / 2 + 1.5 then
+				table.insert(line, { Part = part, Along = along })
+			end
+		end
+		table.sort(line, function(a, b) return a.Along < b.Along end)
+		local Meter = require(Modules:WaitForChild("DamageMeter"))
+		local endPoint = hitPosition
+		local damage = Dungeon.ComputeDamage(player)
+		for index = 1, math.min(#line, weaponType.Pierce) do
+			local part = line[index].Part
+			local pierceDamage = math.max(1, math.floor(damage * (weaponType.PierceMult ^ index)))
+			Meter.Source = "Pierce"
+			local landed = Dungeon.HitPart(player, part, pierceDamage) or Field.HitPart(player, part, pierceDamage)
+			Meter.Source = nil
+			if landed then player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1) end
+			endPoint = volleyOrigin + direction * line[index].Along
+		end
+		return endPoint
+	end
 	local function fireVolley(volleyOrigin, volleyTip, volleyScale)
 		Dungeon.AssistLeft[player] = 2 -- 이번 사격에서 조준 보정(구 레이캐스트)은 처음 2발까지만 (서버 부담)
 		player:SetAttribute("ShotManual", isManual) -- Dungeon / Field.Shoot 이 읽는다: 약점 보너스는 직접 조준한 탄에만
@@ -626,6 +656,10 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 				or Field.Shoot(player, volleyOrigin, direction)
 				or Dummy.Shoot(player, volleyOrigin, direction)
 			endPosition = endPosition or (volleyOrigin + direction * Config.GetRange(player, weaponType))
+			if weaponType.Pierce and (player:GetAttribute("HitTick") or 0) > hitsBefore then
+				local through = pierceLine(volleyOrigin, direction, endPosition)
+				if (through - volleyOrigin).Magnitude > (endPosition - volleyOrigin).Magnitude then endPosition = through end -- 빔이 꿰뚫은 끝까지 그린다
+			end
 			Effects.Shot(volleyTip, endPosition, shot, color, tier.Rainbow, tier.Class, tier.Era, progress)
 			if ((weaponType.Bounce or 0) + (player:GetAttribute("GearBounce") or 0)) > 0 and (player:GetAttribute("HitTick") or 0) > hitsBefore then bounceChain(endPosition) end
 		end
