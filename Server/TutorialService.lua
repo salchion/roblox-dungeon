@@ -237,6 +237,18 @@ function Tutorial.Restart(player)
 	return true
 end
 
+-- 운영자 테스트용 (AdminService "MaxOut"): 튜토리얼을 끝난 상태로
+function Tutorial.Finish(player)
+	local state = states[player]
+	if not state then return false end
+	state.Step = #Steps + 1
+	state.Progress = 0
+	state.DynGoal = nil
+	state.DynFor = nil
+	send(player)
+	return true
+end
+
 function Tutorial.Serialize(player)
 	local state = states[player] or { Step = #Steps + 1, Progress = 0 }
 	return { Step = state.Step, Progress = state.Progress, V = 9, ReelDone = state.ReelDone }

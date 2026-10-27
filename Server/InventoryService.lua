@@ -513,6 +513,22 @@ end
 
 -- (세트 조각 / 세트 각인은 없어졌다: 세트 장비는 필드 드랍으로만 얻는다)
 
+-- 운영자 테스트용 (AdminService "MaxOut"): 모든 부위에 최고 등급 + 유니크 + 마지막 구역 세트 장비를 끼우고 강화 단계를 만렙으로
+function Inventory.AdminMax(player)
+	local state = states[player]
+	if not state then return false end
+	local zone = Config.Field.ZoneCount
+	for _, slot in ipairs(G.Slots) do
+		local item = Inventory.NewItem(slot.Key, #G.RarityNames, G.MaxLevel, nil, 1)
+		item.Set = Config.Sets.ZoneKeys[zone]
+		item.Unique = item.Unique or Config.Uniques.Order[math.random(#Config.Uniques.Order)]
+		local status = Inventory.Add(player, item)
+		if status ~= "Equipped" and item.Id and state.Items[item.Id] then Inventory.Equip(player, item.Id) end
+		Inventory.SetLevel(player, slot.Key, G.MaxLevel)
+	end
+	return true
+end
+
 -- 강화 레벨 변경 (GearService 의 장비 강화가 호출)
 function Inventory.SetLevel(player, slotKey, level)
 	local state = states[player]

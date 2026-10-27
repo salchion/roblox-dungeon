@@ -76,6 +76,21 @@ function LevelStat.Refresh(player)
 	end
 end
 
+-- 운영자 테스트용 (AdminService "MaxOut"): 레벨을 만렙으로 올린 뒤 부르면, 포인트를 가능한 만큼 상한까지 채운다
+function LevelStat.AdminMax(player)
+	local stats, rift = statsOf(player)
+	if not stats then return false end
+	rift.LvGold = LS.MaxGoldPoints
+	local left = totalPoints(player, rift)
+	for _, key in ipairs(LS.Order) do
+		local give = math.min(LS.Cap[key], left)
+		stats[key] = give
+		left -= give
+	end
+	apply(player, false)
+	return true
+end
+
 function LevelStat.Forget(player)
 	watching[player] = nil
 	lastPoints[player] = nil

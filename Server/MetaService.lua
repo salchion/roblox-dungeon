@@ -200,6 +200,28 @@ function Meta.Load(player, saved)
 	Meta.Push(player)
 end
 
+-- 운영자 테스트용 (AdminService "MaxOut"): 스킬 / 펫 / 세트 효과 / 레벨 스탯 금 포인트를 전부 만렙으로
+function Meta.AdminMax(player)
+	local state = states[player]
+	if not state then return false end
+	for _, key in ipairs(Config.Skills.UpgradeOrder) do state.Skills[key] = Config.SkillUpgrade.MaxLevel end
+	state.Pet.Unlocked = true
+	state.Pet.Level = Config.Pet.MaxLevel
+	local rift = state.Rift
+	rift.LvGold = Config.LevelStats.MaxGoldPoints
+	rift.AugBoss, rift.AugLv, rift.AugOn = {}, {}, {}
+	for z = 1, Config.Field.ZoneCount do
+		rift.AugBoss[tostring(z)] = true
+		rift.AugLv[tostring(z)] = 3
+		rift.AugOn[tostring(z)] = true
+	end
+	syncSkillAttributes(player, state)
+	applyPetStats(player, state)
+	Meta.RefreshPetModel(player)
+	Meta.Push(player)
+	return true
+end
+
 function Meta.Serialize(player)
 	local state = states[player]
 	if not state then return nil end

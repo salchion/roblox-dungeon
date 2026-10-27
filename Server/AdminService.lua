@@ -120,6 +120,39 @@ local function announce(admin, text)
 	end
 end
 
+-- 내 계정을 만렙 풀옵션 풀강화로 (테스트용): 레벨 / 무기 / 장비 / 스킬 / 펫 / 세트 효과 / 훈련 / 레벨 스탯 / 구역 클리어 / 재화
+local function maxOut(player)
+	local Config = require(ReplicatedStorage:WaitForChild("Config"))
+	local steps = {}
+	local function run(label, fn)
+		local ok, result = pcall(fn)
+		table.insert(steps, string.format("%s %s", ok and (result == false and "⚠" or "✔") or "✖", label))
+		if not ok then warn("[Admin MaxOut] " .. label .. ": " .. tostring(result)) end
+	end
+	run("Level", function()
+		local level = module("LevelService")
+		level.Load(player, Config.Level.Max, 0)
+	end)
+	run("Zones", function()
+		player:SetAttribute("ClearedZone", Config.Field.ZoneCount)
+		player:SetAttribute("MaxZone", Config.Field.ZoneCount)
+	end)
+	run("Weapon", function() player:SetAttribute("WeaponLevel", Config.Weapon.MaxLevel) end)
+	run("Skills / Pet / Sets", function() return module("MetaService").AdminMax(player) end)
+	run("Growth", function() return module("GrowthService").AdminMax(player) end)
+	run("Level stats", function() return module("LevelStatService").AdminMax(player) end)
+	run("Gear", function() return module("InventoryService").AdminMax(player) end)
+	run("Set effects", function() module("AugService").Refresh(player) end)
+	run("Tutorial", function() return module("TutorialService").Finish(player) end)
+	run("Currency", function()
+		player:SetAttribute("Gold", math.max(player:GetAttribute("Gold") or 0, GRANT_MAX.Gold))
+		player:SetAttribute("Tickets", math.max(player:GetAttribute("Tickets") or 0, GRANT_MAX.Tickets))
+		module("KeyService").Add(player, GRANT_MAX.Keys)
+	end)
+	log(player, "MAXOUT own account")
+	note(player, "⭐ Max-out done: " .. table.concat(steps, " · "))
+end
+
 Remotes.Admin.OnServerEvent:Connect(function(player, action, a, b, c)
 	if not isAdmin(player) then return end
 	local now = os.clock()
@@ -131,6 +164,8 @@ Remotes.Admin.OnServerEvent:Connect(function(player, action, a, b, c)
 		if tutorial and tutorial.Restart and tutorial.Restart(player) then
 			note(player, "Tutorial restarted from the first mission.")
 		end
+	elseif action == "MaxOut" then
+		maxOut(player)
 	elseif action == "Grant" then
 		grant(player, a, b, c)
 	elseif action == "Announce" then

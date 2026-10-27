@@ -323,6 +323,21 @@ function Growth.Load(player, saved)
 	Growth.Push(player)
 end
 
+-- 운영자 테스트용 (AdminService "MaxOut"): 훈련 스탯 전부 만렙, 진행 중인 훈련 / 돌파는 정리
+function Growth.AdminMax(player)
+	local state = states[player]
+	if not state then return false end
+	for _, stat in ipairs(R.Stats.Order) do state.Levels[stat] = R.MaxLevel end
+	state.Jobs = {}
+	state.GateJob = nil
+	state.Rewarded = true
+	if not state.Unlocked then unlock(player, state, false) end
+	player:SetAttribute("GatePassed", #Config.Growth.Gates)
+	recompute(player, state)
+	Growth.Push(player)
+	return true
+end
+
 function Growth.Serialize(player)
 	local state = states[player]
 	if not state then return nil end
