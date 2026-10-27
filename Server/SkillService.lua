@@ -130,7 +130,10 @@ handlers.Spirit = function(player, root, _, character)
 	local scale = cfg.Mult * (1 + U.BlastMult * (skillLevel(player, "Spirit") - 1))
 	local userId = player.UserId
 	Effects.Raw(root.Position, { "Y", userId, cfg.Duration })
-	pcall(function() SoundBank.Play(root, "Skill_LotusCast", { Volume = 1.3 }) end) -- 시전: 묵직한 "후우웅" + 칼날
+	pcall(function()
+		SoundBank.Play(root, "Skill_LotusCast") -- 시전: power up 소리를 크게
+		SoundBank.Play(root, "Skill_LotusThump") -- + 낮은 "쿵"
+	end)
 	task.spawn(function()
 		local untilAt = os.clock() + cfg.Duration
 		local tick = 0
@@ -158,8 +161,8 @@ handlers.Spirit = function(player, root, _, character)
 					end
 				end
 				pcall(function()
-					if tick % 2 == 1 then SoundBank.Play(nowRoot, "Skill_LotusSlash", { Volume = 0.9, Pitch = 0.9 + math.random() * 0.4 }) end -- 도는 소리 "슈슉" (두 틱에 한 번)
-					SoundBank.Play(targets[1], "Skill_LotusStab", { Volume = 0.8, Pitch = 0.85 + math.random() * 0.4 }) -- 꽂히는 소리 "챙" (틱마다 한 번)
+					if tick % 2 == 1 then SoundBank.Play(nowRoot, "Skill_LotusSlash", { Pitch = 0.9 + math.random() * 0.4 }) end -- 도는 소리 "슈슉" (두 틱에 한 번)
+					SoundBank.Play(targets[1], "Skill_LotusStab", { Pitch = 0.85 + math.random() * 0.4 }) -- 꽂히는 소리 "챙" (틱마다 한 번)
 				end)
 			end
 			task.wait(cfg.Interval)

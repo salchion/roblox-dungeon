@@ -23,9 +23,6 @@ local SPECS = {
 	-- 활: 높고 가벼운 "슉" (Rifle = 활)
 	Shot_Rifle    = { Base = "Dash", Pitch = 1.7, Volume = 0.8, Length = 0.4, Fx = { { "eq", { LowGain = -8, MidGain = 0, HighGain = 3 } } } },
 	-- (SMG 는 지금 무기 목록에 없다: 옛 정의만 남겨 둔다)
-	Skill_LotusCast  = { Base = "Dash", Pitch = 0.5, Volume = 1.5, Length = 0.9, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -6 } }, { "distortion", { Level = 0.25 } } }, Layers = { { Pitch = 1.6, Volume = 0.9, Delay = 0.02 }, { Pitch = 3.2, Volume = 0.5, Delay = 0.05 } } }, -- 죽음의 연꽃 시전: 낮은 "후우웅" + 높은 칼날 소리를 겹친다
-	Skill_LotusSlash = { Base = "Dash", Pitch = 1.9, Volume = 1.0, Length = 0.25, Fx = { { "eq", { LowGain = -12, MidGain = 0, HighGain = 4 } } }, Layers = { { Pitch = 2.8, Volume = 0.5, Delay = 0.03 } } }, -- 도는 동안 "슈슉"
-	Skill_LotusStab  = { Base = "Enh_Hammer", Pitch = 2.6, Volume = 0.7, Length = 0.16, Fx = { { "eq", { LowGain = -10, MidGain = 2, HighGain = 5 } } } }, -- 단검이 꽂힐 때 짧은 "챙"
 	Shot_Smg      = { Base = "Shot", Pitch = 1.25, Volume = 0.95, Length = 0.2, Choke = true, Fx = { { "reverb", { DecayTime = 0.3, WetLevel = -14 } } } },
 	-- 샷건
 	Shot_Shotgun  = { Base = "Shot", CustomLength = 1.2, Pitch = 0.7, Volume = 1.0, Length = 1.0, Fx = { { "distortion", { Level = 0.35 } } },
@@ -109,6 +106,10 @@ local CUSTOM_ONLY = {
 	Aug_MissileHit = { Volume = 0.5, CustomLength = 0.5, CustomPitch = 1.8 }, -- 미사일 명중
 	Aug_Nova      = { Volume = 0.85, CustomLength = 1.2, CustomPitch = 1.2 }, -- 처치 폭발
 	Aug_Blade     = { Volume = 0.7, CustomLength = 0.6, Base = "Dash", Pitch = 1.7, Length = 0.3, Fx = { { "eq", { LowGain = -10, MidGain = 0, HighGain = 3 } } } }, -- 회전 칼날이 벨 때 "슈웅" (소리 ID 가 없으면 대시 소리를 높게 가공)
+	Skill_LotusCast  = { Volume = 3.5, CustomLength = 1.4, CustomPitch = 1.15 }, -- 죽음의 연꽃 시전 (시전 소리는 크게)
+	Skill_LotusThump = { Volume = 2.4, CustomLength = 1.0, CustomPitch = 0.6 }, -- 시전할 때 깔리는 낮은 "쿵"
+	Skill_LotusSlash = { Volume = 3.2, CustomLength = 0.7, CustomPitch = 1.0 }, -- 도는 동안 "슈슉"
+	Skill_LotusStab  = { Volume = 2.4, CustomLength = 0.4, CustomPitch = 1.4 }, -- 단검이 꽂힐 때 "챙"
 	Aug_Storm     = { Volume = 0.95, CustomLength = 1.8, Base = "Boom", Pitch = 0.75, Length = 1.3, Fx = { { "distortion", { Level = 0.6 } }, { "reverb", { DecayTime = 2.5, WetLevel = -3 } } }, Layers = { { Pitch = 2.4, Volume = 0.6, Delay = 0 } } }, -- 낙뢰: 찌직(높은 소리) + 우르릉(낮은 폭발 가공)
 	Aug_MeteorFall = { Volume = 0.8, CustomLength = 1.6, CustomPitch = 1.0 }, -- 유성이 떨어지는 소리
 	Aug_MeteorHit = { Volume = 1.15, CustomLength = 2.0, CustomPitch = 0.7 }, -- 유성 착탄 (큰 폭발)
@@ -161,7 +162,7 @@ SoundBank.Descriptions = {
 	Shot_Pistol = "Rifle shot", Shot_Smg = "SMG shot", Shot_Revolver = "Bomb throw", Shot_Rifle = "Bow shot", Shot_Shotgun = "Shotgun shot",
 	Shot_Flamer = "Spell Tome fireball", Shot_Cannon = "Mortar shot", Shot_Sniper = "Crossbow shot", Shot_Rocket = "Rocket Launcher shot", Shot_Rail = "Railgun shot",
 	Hit = "Enemy hit (short)", Crit = "Critical hit", Kill = "Enemy kill (pitch rises with kill streak)",
-	Skill_Heal = "First Aid used", Skill_LotusCast = "Death Lotus cast", Skill_LotusSlash = "Death Lotus whirl", Skill_LotusStab = "Death Lotus stab", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Ult_Missile = "Dead Eye missile launch", Ult_Hit = "Dead Eye missile impact", Ult_Launch = "Dead Eye launch thump", Ult_Finale = "Dead Eye final blast", Boom = "Monster explosion / shockwave / meteor",
+	Skill_Heal = "First Aid used", Skill_LotusCast = "Death Lotus cast", Skill_LotusThump = "Death Lotus thump", Skill_LotusSlash = "Death Lotus whirl", Skill_LotusStab = "Death Lotus stab", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Ult_Missile = "Dead Eye missile launch", Ult_Hit = "Dead Eye missile impact", Ult_Launch = "Dead Eye launch thump", Ult_Finale = "Dead Eye final blast", Boom = "Monster explosion / shockwave / meteor",
 	LevelUp = "Level up", Enh_Hammer = "Enhance: hammer strike", Enh_Success = "Enhance success (pitch rises with level)", Enh_Fail = "Enhance failed",
 	Enh_Evolve = "Weapon evolution", Gacha_Drop = "Gacha: capsule drop", Gacha_Tick = "Gacha: rattling ticks", Gacha_Card = "10-pull gacha: one card",
 	Aug_Get = "Augment acquired", Aug_Synergy = "Augment synergy triggered", Aug_Missile = "Crit missile launched", Aug_MissileHit = "Missile hit", Aug_Nova = "Kill explosion",
@@ -173,7 +174,7 @@ SoundBank.Descriptions = {
 }
 SoundBank.Order = {
 	"Shot_Pistol", "Shot_Smg", "Shot_Revolver", "Shot_Rifle", "Shot_Shotgun", "Shot_Flamer", "Shot_Cannon", "Shot_Sniper", "Shot_Rocket", "Shot_Rail",
-	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_LotusCast", "Skill_LotusSlash", "Skill_LotusStab", "Skill_Ult", "Ult_Lock", "Ult_Missile", "Ult_Hit", "Ult_Launch", "Ult_Finale", "UltShot", "Boom", "LevelUp",
+	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_LotusCast", "Skill_LotusThump", "Skill_LotusSlash", "Skill_LotusStab", "Skill_Ult", "Ult_Lock", "Ult_Missile", "Ult_Hit", "Ult_Launch", "Ult_Finale", "UltShot", "Boom", "LevelUp",
 	"Dash", "Pickup", "Enh_Hammer", "Enh_Success", "Enh_Fail", "Enh_Evolve", "Gacha_Drop", "Gacha_Tick", "Gacha_Card",
 	"Gacha_Pop1", "Gacha_Pop2", "Gacha_Pop3", "Gacha_Pop4", "Gacha_Pop5",
 	"Aug_Get", "Aug_Synergy", "Aug_Missile", "Aug_MissileHit", "Aug_Nova", "Aug_Blade", "Aug_Storm", "Aug_MeteorFall", "Aug_MeteorHit", "Aug_Flame", "Aug_Execute", "Aug_Skull", "Aug_Pulse",
@@ -239,6 +240,7 @@ local FEEDBACK = { Hit = true, Crit = true, Kill = true, Pickup = true }
 local lastFeedback = 0
 
 local lastShot = 0
+local NO_DUCK = { Skill_LotusCast = true, Skill_LotusThump = true, Skill_LotusSlash = true, Skill_LotusStab = true } -- (스킬 소리는 총소리 때문에 작아지지 않게)
 local chokeLast = {} -- [소리 이름] = 가장 최근에 울린 Sound (Choke 소리는 다음 발이 나갈 때 앞 소리를 끊는다)
 -- 방금(0.2초 안) 총을 쐈는가: 서버가 만든 소리(세트 효과 폭발 등)도 클라이언트에서 낮추는 데 쓴다 (PlayerClient)
 function SoundBank.RecentShot()
@@ -265,7 +267,7 @@ function SoundBank.Play(parent, key, opts)
 	if string.sub(key, 1, 4) == "Shot" then
 		volumeScale *= Config.Audio.ShotVolume / 0.3 -- 총소리 기본 크기 설정(ShotVolume)을 그대로 따른다
 		lastShot = os.clock()
-	elseif os.clock() - lastShot < 0.2 then
+	elseif not NO_DUCK[key] and os.clock() - lastShot < 0.2 then
 		volumeScale *= 0.55 -- 덕킹: 총을 쏘는 중에는 다른 소리(적중 / 처치 / 줍기 등)를 절반쯤으로 낮춰 총소리가 묻히지 않게 한다
 	end
 	local baseVolume = 0.35 * volumeScale

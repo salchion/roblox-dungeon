@@ -377,6 +377,7 @@ return {
 		["Death Lotus cast"] = "죽음의 연꽃 시전",
 		["Death Lotus whirl"] = "죽음의 연꽃 회전",
 		["Death Lotus stab"] = "죽음의 연꽃 꽂힘",
+		["Death Lotus thump"] = "죽음의 연꽃 쿵",
 	},
 	pats = {
 		{ "^≈ ([%d,%.%-]+) dmg$", "≈ %s 피해", "dmg", -6 },

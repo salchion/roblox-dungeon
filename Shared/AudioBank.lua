@@ -44,6 +44,11 @@ return {
 	Aug_Missile = 542181791,        -- missile launch -> Aug_Missile / Aug_MeteorFall(낮게)
 	Aug_MeteorFall = 130619201421833, -- 유성 낙하 (전용 소리)
 	Aug_Storm = 133560890939895,    -- 낙뢰 (천둥)
+	-- F 스킬(죽음의 연꽃): 이미 있는 소리 ID 를 빌려 쓴다 (가공 소리는 너무 작게 들려서 원본 소리를 크게 튼다)
+	Skill_LotusCast = 130904532062911,  -- 시전: power up
+	Skill_LotusThump = 140615626179933, -- 시전 때 깔리는 낮은 쿵: boom
+	Skill_LotusSlash = 121422898567513, -- 도는 동안 "슈슉": 표창
+	Skill_LotusStab = 3748776946,       -- 꽂힐 때 "챙": 적중음
 	Aug_Blade = 121422898567513,    -- 튕기는 표창
 	Aug_Flame = 138257634793906,    -- 화염 지대
 	Ult_Missile = 112204190873336,  -- 데드아이 미사일 발사
