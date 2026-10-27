@@ -153,6 +153,20 @@ local function onCharacterAdded(player, character)
 
 	Dungeon.OnCharacterAdded(player, character)
 
+	if game:GetService("RunService"):IsStudio() then -- (Studio 진단) 스폰 위치 / 바라보는 방향: "엉뚱한 곳에서 시작한다" 원인 추적용
+		task.delay(1.5, function()
+			local root = character:FindFirstChild("HumanoidRootPart")
+			if not root then return end
+			local spawns = {}
+			for _, item in ipairs(workspace:GetDescendants()) do
+				if item:IsA("SpawnLocation") then table.insert(spawns, string.format("%s(%d,%d,%d)", item.Name, item.Position.X, item.Position.Y, item.Position.Z)) end
+			end
+			local look = root.CFrame.LookVector
+			print(string.format("[스폰 진단] %s 위치 (%d,%d,%d) · 바라보는 방향 (%.2f,%.2f) · Zone=%s · SpawnLocation: %s",
+				player.Name, root.Position.X, root.Position.Y, root.Position.Z, look.X, look.Z, tostring(player:GetAttribute("Zone")), #spawns > 0 and table.concat(spawns, ", ") or "없음"))
+		end)
+	end
+
 	-- 필드에서 죽으면 로비(마을)로 귀환한다: 기본 스폰 위치에서 다시 시작 (진행한 구역 / 관문 / 아이템은 그대로)
 	if player:GetAttribute("DiedInField") then
 		player:SetAttribute("DiedInField", nil)
