@@ -635,7 +635,8 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 	-- 마법책: 디아블로2 소서리스의 체인 라이트닝. 조준한 쪽의 가장 가까운 적에게 번개가 나가고, 거기서 주변 적에게 차례로 튄다 (최대 4 + 무기 레벨 / 80 번, 튈 때마다 피해 80%). 주변에 적이 없으면 아래의 일반 사격으로 넘어간다
 	if weaponType.Form == "Flamer" then
 		local jumps = math.min(7, 4 + math.floor(level / 80))
-		local all = Dungeon.TargetsIn(player, root.Position, 90, 40) or Field.TargetsIn(player, root.Position, 90, 40)
+		local reach = Config.GetRange(player, weaponType) -- 멀리 있는 적도 번개가 닿는다 (예전엔 90 안쪽만 번개, 그 밖은 총알이 나갔다)
+		local all = Dungeon.TargetsIn(player, origin, reach, 80) or Field.TargetsIn(player, origin, reach, 80)
 		if all and #all > 0 then
 			local first, best = nil, math.huge
 			for _, part in ipairs(all) do -- 조준한 곳에 가장 가까운 적부터
@@ -680,6 +681,11 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 				end
 				if landedAny then Skill.AddCharge(player, Config.Skills.ChargePerShot * weaponType.Cooldown) end
 			end)
+			return
+		elseif true then -- 적이 없어도 총알은 나가지 않는다: 조준한 쪽으로 번개만 짧게 번쩍인다
+			local endPoint = origin + baseDirection * math.min(60, offset.Magnitude)
+			Weapon.PlayShot(player)
+			Effects.Raw(endPoint, { "C", tipPosition or origin, endPoint, true, true })
 			return
 		end
 	end
