@@ -699,6 +699,13 @@
       "name": "BossStageClient",
       "class": "LocalScript",
       "overwrite": true
+    },
+    {
+      "path": "NumberLabelFilter.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "NumberLabelFilter",
+      "class": "LocalScript",
+      "overwrite": true
     }
   ]
 }
