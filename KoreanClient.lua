@@ -304,6 +304,7 @@ local function watchTree(root)
 end
 
 local refreshGen = 0
+local sweepErrorShown = false
 local function refreshAll()
 	refreshGen += 1
 	local gen = refreshGen -- (전환 버튼을 연달아 누르면 앞의 훑기는 멈추고 마지막 것만 이어 간다)
@@ -324,7 +325,13 @@ local function refreshAll()
 	local sliceStart = os.clock()
 	for _, obj in ipairs(list) do
 		if gen ~= refreshGen then return end
-		if obj.Parent then apply(obj) end
+		if obj.Parent then
+			local ok, err = pcall(apply, obj) -- (글자 하나가 에러를 내도 나머지 훑기가 멈추지 않게)
+			if not ok and not sweepErrorShown then
+				sweepErrorShown = true
+				warn("[KoreanClient] 번역 중 오류: " .. tostring(err) .. " · " .. obj:GetFullName())
+			end
+		end
 		if os.clock() - sliceStart > 0.008 then -- (한 프레임에 8ms 만 쓰고 다음 프레임으로: 전환할 때 화면이 멈칫하지 않게)
 			task.wait()
 			sliceStart = os.clock()
@@ -366,6 +373,11 @@ end)
 task.spawn(function()
 	loadData()
 	memo, memoCount = {}, 0
+	if RunService:IsStudio() then
+		local exactCount = 0
+		for _ in pairs(data.exact) do exactCount += 1 end
+		print(string.format("[KoreanClient] 사전을 불러왔습니다: 문장 %d개 · 패턴 %d개 · 언어 %s", exactCount, #data.pats, lang))
+	end
 	refreshAll()
 end)
 
