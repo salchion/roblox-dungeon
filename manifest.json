@@ -762,6 +762,20 @@
       "name": "Loc_zh_hans",
       "class": "ModuleScript",
       "overwrite": true
+    },
+    {
+      "path": "Shared/Loc_ko_2.lua",
+      "parent": "ReplicatedStorage",
+      "name": "Loc_ko_2",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/Loc_ko_3.lua",
+      "parent": "ReplicatedStorage",
+      "name": "Loc_ko_3",
+      "class": "ModuleScript",
+      "overwrite": true
     }
   ]
 }

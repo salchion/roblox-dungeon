@@ -37,27 +37,44 @@ local LANG_MODULE = {
 local dict
 do
 	local moduleName = LANG_MODULE[localeId] or LANG_MODULE[string.sub(localeId, 1, 2)]
-	local module = moduleName and game:GetService("ReplicatedStorage"):FindFirstChild(moduleName)
-	if module then
-		local okM, data = pcall(require, module)
-		if okM and typeof(data) == "table" then dict = data end
+	local loaded = 0
+	if moduleName then
+		-- 파일이 크면 Loc_xx, Loc_xx_2, Loc_xx_3 ... 으로 나뉘어 있다: 차례로 찾아 합친다
+		local index = 1
+		while true do
+			local name = index == 1 and moduleName or (moduleName .. "_" .. index)
+			local module = game:GetService("ReplicatedStorage"):FindFirstChild(name)
+			if not module then break end
+			local okM, data = pcall(require, module)
+			if okM and typeof(data) == "table" then
+				dict = dict or { exact = {}, templates = {} }
+				for key, value in pairs(data.exact or {}) do dict.exact[key] = value end
+				for _, pair in ipairs(data.templates or {}) do table.insert(dict.templates, pair) end
+				loaded += 1
+			end
+			index += 1
+		end
 	end
-	print(string.format("[LocalizeClient] 내장 번역표: %s", dict and (moduleName .. " 불러옴") or ("없음 (" .. localeId .. ")")))
+	print(string.format("[LocalizeClient] 내장 번역표: %s", dict and (moduleName .. " " .. loaded .. "개 파일 불러옴") or ("없음 (" .. localeId .. ")")))
 end
 
--- 숫자 자리표시자({number1}) 가 있는 항목은 패턴으로 바꿔 둔다: "Enemy HP +{number1}%" -> "^Enemy HP %+([%-]?%d[%d,%.]*)%%$"
+-- 자리표시자({number1} = 숫자, {text1} = 아무 글자) 가 있는 항목은 패턴으로 바꿔 둔다: "Enemy HP +{number1}%" -> "^Enemy HP %+(%-?%d[%d,%.]*)%%$"
 local NUMBER_CAPTURE = "(%-?%d[%d,%.]*)"
+local TEXT_CAPTURE = "(.-)"
 local compiled = {}
 if dict and dict.templates then
 	for _, pair in ipairs(dict.templates) do
 		local source, translation = pair[1], pair[2]
 		local pattern, names, position = {}, {}, 1
 		while true do
-			local a, b, number = string.find(source, "{number(%d+)}", position)
+			local a, b, kind, number = string.find(source, "{(%a+)(%d+)}", position)
+			while a and kind ~= "number" and kind ~= "text" do -- (다른 중괄호 글자는 그냥 글자로 둔다)
+				a, b, kind, number = string.find(source, "{(%a+)(%d+)}", b + 1)
+			end
 			local plain = string.sub(source, position, (a or #source + 1) - 1)
 			table.insert(pattern, (string.gsub(plain, "[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%0")))
 			if not a then break end
-			table.insert(pattern, NUMBER_CAPTURE)
+			table.insert(pattern, kind == "text" and TEXT_CAPTURE or NUMBER_CAPTURE)
 			table.insert(names, number)
 			position = b + 1
 		end
@@ -87,7 +104,7 @@ function lookupCore(piece)
 		if #captures > 0 then
 			local byName = {}
 			for k, name in ipairs(entry.Names) do byName[name] = captures[k] end
-			return (string.gsub(entry.To, "{number(%d+)}", function(name) return byName[name] or ("{number" .. name .. "}") end))
+			return (string.gsub(entry.To, "{%a+(%d+)}", function(name) return byName[name] end))
 		end
 	end
 	return nil
