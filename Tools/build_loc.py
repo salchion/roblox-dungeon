@@ -24,6 +24,30 @@ def convert(x):
         return "{%s%d}" % ("text" if t.endswith("s") else "number", counter[0])
     return SPEC.sub(sub, x)
 
+LANG_COL = {"ja": 1, "de": 2, "fr": 3, "es": 4, "pt": 5, "zh-hans": 6}
+
+def tr_pairs(lang):
+    """Tools/missing_en.json 의 영어 목록(번호)과 Tools/tr/*.txt (번호¦ja¦de¦fr¦es¦pt¦zh, 빈 칸은 영어 그대로 둠)에서 [영어, 번역] 쌍을 만든다."""
+    col = LANG_COL.get(lang)
+    path = os.path.join(HERE, "missing_en.json")
+    folder = os.path.join(HERE, "tr")
+    if not col or not os.path.exists(path) or not os.path.isdir(folder): return []
+    english = json.load(open(path, encoding="utf-8"))
+    out = []
+    for name in sorted(os.listdir(folder)):
+        if not name.endswith(".txt"): continue
+        for line in open(os.path.join(folder, name), encoding="utf-8").read().split("\n"):
+            parts = line.split("¦")
+            if len(parts) < 7 or not parts[0].strip().isdigit(): continue
+            en, tr = english[int(parts[0])], parts[col].strip()
+            if not tr: continue
+            holes = lambda x: sorted(re.findall(r"\{(?:number|text)\d+\}", x))
+            if holes(en) != holes(tr):
+                print("건너뜀 (자리표시자 다름):", lang, parts[0], en[:50].replace("\n", "⏎"))
+                continue
+            out.append((en, tr))
+    return out
+
 def own_pairs(lang):
     """우리가 손으로 만든 사전(Tools/ko_pairs.json 등)에서 [영어, 번역] 쌍을 읽는다. 지금은 한국어만 있다."""
     path = os.path.join(HERE, {"ko": "ko_pairs.json"}.get(lang, "none"))
@@ -59,7 +83,7 @@ for lang in LANGS:
                 if a and b and a != b and a not in seen:
                     seen.add(a)
                     (tmpl if re.search(r"\{(?:number|text)\d+\}", a) else exact).append((a, b))
-    for src, tr in own_pairs(lang): # 번역표(CSV)에 없는 글자만 우리 사전으로 채운다
+    for src, tr in own_pairs(lang) + tr_pairs(lang): # 번역표(CSV)에 없는 글자만 우리 사전으로 채운다
         if src in seen or not re.search(r"[A-Za-z]{3,}", src) or src == tr: continue
         seen.add(src)
         (tmpl if re.search(r"\{(?:number|text)\d+\}", src) else exact).append((src, tr))
@@ -89,3 +113,14 @@ for lang in LANGS:
         path = os.path.join(ROOT, "Shared", name + ".lua")
         open(path, "w", encoding="utf-8").write("\n".join(out))
         print(name, len(ex), len(tp), os.path.getsize(path))
+
+# manifest.json 에 Shared/Loc_*.lua 모듈이 모두 들어 있게 맞춘다 (나뉜 파일이 늘거나 줄어도 자동으로)
+manifest_path = os.path.join(ROOT, "manifest.json")
+manifest = json.load(open(manifest_path, encoding="utf-8"))
+files = [f for f in manifest["files"] if not re.fullmatch(r"Shared/Loc_[A-Za-z_0-9]+\.lua", f["path"])]
+for name in sorted(os.listdir(os.path.join(ROOT, "Shared"))):
+    if re.fullmatch(r"Loc_[A-Za-z_0-9]+\.lua", name):
+        files.append({"path": "Shared/" + name, "parent": "ReplicatedStorage", "name": name[:-4], "class": "ModuleScript", "overwrite": True})
+manifest["files"] = files
+json.dump(manifest, open(manifest_path, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+open(manifest_path, "a").write("\n")

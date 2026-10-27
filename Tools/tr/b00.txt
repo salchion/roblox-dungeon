@@ -1,0 +1,130 @@
+0¦(今)¦(jetzt)¦(maintenant)¦(ahora)¦(agora)¦(当前)
+1¦≈ {number1} ダメージ¦≈ {number1} Schaden¦≈ {number1} dégâts¦≈ {number1} de daño¦≈ {number1} de dano¦≈ {number1} 伤害
+2¦(ゴールド {number1} + 装備 {number2})¦(Gold {number1} + Ausrüstung {number2})¦(or {number1} + équipement {number2})¦(oro {number1} + equipo {number2})¦(ouro {number1} + equipamento {number2})¦(金币 {number1} + 装备 {number2})
+3¦ゾーン{number1}セット効果 · 試練 Lv.3¦Zone-{number1}-Setbonus · Prüfung Lv.3¦Effet de set de la zone {number1} · Épreuve Niv.3¦Efecto de set de la zona {number1} · Prueba Nv.3¦Efeito de conjunto da zona {number1} · Provação Nv.3¦区域{number1}套装效果 · 试炼 Lv.3
+4¦ゾーン{number1} · 試練 Lv.3¦Zone {number1} · Prüfung Lv.3¦Zone {number1} · Épreuve Niv.3¦Zona {number1} · Prueba Nv.3¦Zona {number1} · Provação Nv.3¦区域{number1} · 试炼 Lv.3
+5¦{text1}: ボス戦 {number2}% · モンスター戦 {number3}%¦{text1}: gegen Bosse {number2}% · gegen Monster {number3}%¦{text1} : contre les boss {number2}% · contre les monstres {number3}%¦{text1}: contra jefes {number2}% · contra monstruos {number3}%¦{text1}: contra chefes {number2}% · contra monstros {number3}%¦{text1}:对首领 {number2}% · 对怪物 {number3}%
+6¦{text1}ゾーン{number2} · {text3}  {text4}¦{text1}Zone {number2} · {text3}  {text4}¦{text1}Zone {number2} · {text3}  {text4}¦{text1}Zona {number2} · {text3}  {text4}¦{text1}Zona {number2} · {text3}  {text4}¦{text1}区域{number2} · {text3}  {text4}
+7¦ゾーンごとに1つ、全8種類の効果があります。ゾーンのロードを倒して装備を集めると、その効果が強くなります。まずはひとつ試してみましょう！¦8 Effekte, einer pro Zone. Besiege den Lord einer Zone und sammle seine Ausrüstung, um den Effekt zu verstärken. Probier einen aus!¦8 effets, un par zone. Vainquez le seigneur d'une zone et récupérez son équipement pour renforcer l'effet. Essayez-en un !¦8 efectos, uno por zona. Derrota al señor de una zona y reúne su equipo para fortalecer ese efecto. ¡Prueba uno!¦8 efeitos, um para cada zona. Derrote o senhor de uma zona e colete o equipamento dele para fortalecer o efeito. Experimente um!¦每个区域对应1种效果,共8种。击败区域领主并收集其装备,即可强化该效果。先试试看吧!
+8¦レベルごと¦Pro Stufe¦Par niveau¦Por nivel¦Por nível¦每级
+9¦(Lv.1–3はゴールド · Lv.4–6はセット装備で解放。ダメージは現在の攻撃力での1発分の目安で、クリティカル/コンボは含みません)¦(Lv.1–3 mit Gold · Lv.4–6 mit Set-Ausrüstung; Schaden ≈ ein Treffer mit deinem aktuellen Angriff, ohne Krit/Combo)¦(Niv.1–3 avec de l'or · Niv.4–6 avec l'équipement de set ; dégâts ≈ un coup avec votre attaque actuelle, hors critique/combo)¦(Nv.1–3 con oro · Nv.4–6 con equipo de set; daño ≈ un golpe con tu ataque actual, sin crítico/combo)¦(Nv.1–3 com ouro · Nv.4–6 com equipamento de conjunto; dano ≈ um golpe com seu ataque atual, sem crítico/combo)¦(Lv.1–3 用金币 · Lv.4–6 用套装装备;伤害 ≈ 当前攻击力下的一次命中,不含暴击/连击)
+10¦発動¦Aktivieren¦Activer¦Activar¦Ativar¦启用
+11¦有効 {number1} / {number2} スロット   (💰 {text3} G)¦Aktiv {number1} / {number2} Plätze   (💰 {text3} G)¦Actifs {number1} / {number2} emplacements   (💰 {text3} G)¦Activos {number1} / {number2} ranuras   (💰 {text3} G)¦Ativos {number1} / {number2} espaços   (💰 {text3} G)¦已启用 {number1} / {number2} 栏位   (💰 {text3} G)
+12¦最大レベル¦Maximale Stufe¦Niveau max.¦Nivel máx.¦Nível máx.¦已满级
+13¦抽選中¦Wird gezogen¦Tirage en cours¦Sorteando¦Sorteando¦抽取中
+14¦スロットをタップして切り替えます。ロードを倒すと効果が解放され、ゴールドでLv.3まで強化できます。そのゾーンのセット装備を着ると、1部位でLv.4・2部位でLv.5・3部位でLv.6になります！本当の力はフィールド狩りで発揮されます。¦Tippe auf einen Platz, um ihn umzuschalten. Besiege einen Lord, um seinen Effekt freizuschalten, und verbessere ihn mit Gold bis Lv.3. Trage die Set-Ausrüstung dieser Zone für Lv.4 mit 1 Teil · Lv.5 mit 2 Teilen · Lv.6 mit 3 Teilen! Die wahre Stärke zeigt sich bei der Jagd im Feld.¦Touchez un emplacement pour l'activer ou le désactiver. Vainquez un seigneur pour débloquer son effet, puis améliorez-le avec de l'or jusqu'au niv.3. Portez l'équipement de set de cette zone pour le niv.4 avec 1 pièce · niv.5 avec 2 pièces · niv.6 avec 3 pièces ! La vraie puissance se révèle en chasse sur le terrain.¦Toca una ranura para activarla o desactivarla. Derrota a un señor para desbloquear su efecto y mejóralo con oro hasta el nivel 3. Equipa el set de esa zona para el nivel 4 con 1 pieza · nivel 5 con 2 piezas · nivel 6 con 3 piezas. El verdadero poder se ve en la caza por el campo.¦Toque em um espaço para ativá-lo ou desativá-lo. Derrote um senhor para desbloquear o efeito e melhore-o com ouro até o nível 3. Use o conjunto dessa zona para o nível 4 com 1 peça · nível 5 com 2 peças · nível 6 com 3 peças! O poder de verdade aparece na caça em campo.¦点击栏位即可开关。击败领主解锁其效果,可用金币强化至 Lv.3。穿戴该区域的套装:1件 Lv.4 · 2件 Lv.5 · 3件 Lv.6!真正的威力会在野外狩猎中体现。
+15¦切り替え¦Umschalten¦Basculer¦Alternar¦Alternar¦切换
+16¦ゾーン{number1}セット効果 · 試練 Lv.3 — このダンジョン限定¦Zone-{number1}-Setbonus · Prüfung Lv.3 — nur für diesen Dungeon¦Effet de set de la zone {number1} · Épreuve niv.3 — pour ce donjon uniquement¦Efecto de set de la zona {number1} · Prueba nv.3 — solo en esta mazmorra¦Efeito de conjunto da zona {number1} · Provação nv.3 — apenas nesta masmorra¦区域{number1}套装效果 · 试炼 Lv.3 — 仅限本地下城
+17¦○ オフ¦○ AUS¦○ OFF¦○ NO¦○ DESL.¦○ 关
+18¦✨ セット効果¦✨ SET-BONI¦✨ EFFETS DE SET¦✨ EFECTOS DE SET¦✨ EFEITOS DE CONJUNTO¦✨ 套装效果
+19¦🌟 セット (Y)¦🌟 Sets (Y)¦🌟 Sets (Y)¦🌟 Sets (Y)¦🌟 Conjuntos (Y)¦🌟 套装 (Y)
+20¦🎲 このダンジョンの試練効果¦🎲 Prüfungseffekt dieses Dungeons¦🎲 Effet d'épreuve de ce donjon¦🎲 Efecto de prueba de esta mazmorra¦🎲 Efeito de provação desta masmorra¦🎲 本地下城的试炼效果
+21¦🔒 ゾーン{number1}のロードを倒そう¦🔒 Besiege den Lord von Zone {number1}¦🔒 Vainquez le seigneur de la zone {number1}¦🔒 Derrota al señor de la zona {number1}¦🔒 Derrote o senhor da zona {number1}¦🔒 击败区域{number1}的领主
+22¦🔫 {text1}と好相性: セットダメージ+40%、さらに{text2}¦🔫 Am besten mit {text1}: Set-Schaden +40% und {text2}¦🔫 Idéal avec {text1} : dégâts de set +40 % et {text2}¦🔫 Ideal con {text1}: daño de set +40% y {text2}¦🔫 Melhor com {text1}: dano do conjunto +40% e {text2}¦🔫 搭配 {text1} 最佳:套装伤害 +40%,并且 {text2}
+23¦激昂¦Raserei¦Enragé¦Furia¦Fúria¦狂暴
+24¦ロード¦Lord¦Seigneur¦Señor¦Senhor¦领主
+25¦{text1}のロード  ·  ゾーン{number2}¦Lord von {text1}  ·  Zone {number2}¦Seigneur de {text1}  ·  Zone {number2}¦Señor de {text1}  ·  Zona {number2}¦Senhor de {text1}  ·  Zona {number2}¦{text1}领主  ·  区域{number2}
+26¦推奨 ⚡{text1}  ·  黄色いオーブを狙うと3倍ダメージ！¦Empfohlen ⚡{text1}  ·  Ziele auf die gelbe Kugel für 3-fachen Schaden!¦Recommandé ⚡{text1}  ·  Visez l'orbe jaune pour 3x dégâts !¦Recomendado ⚡{text1}  ·  ¡Apunta al orbe amarillo para triple daño!¦Recomendado ⚡{text1}  ·  Mire na esfera amarela para dano triplo!¦推荐 ⚡{text1}  ·  瞄准黄色光球可造成3倍伤害!
+27¦勝利¦Sieg¦Victoire¦Victoria¦Vitória¦胜利
+28¦🏆 ロード撃破¦🏆 LORD BESIEGT¦🏆 SEIGNEUR VAINCU¦🏆 SEÑOR DERROTADO¦🏆 SENHOR DERROTADO¦🏆 领主已击败
+29¦結果¦Ergebnis¦Résultat¦Resultado¦Resultado¦结果
+30¦ゾーン{number1} {text2}¦Zone {number1} {text2}¦Zone {number1} {text2}¦Zona {number1} {text2}¦Zona {number1} {text2}¦区域{number1} {text2}
+31¦{text1} ({text2}のロード)¦{text1} (Lord von {text2})¦{text1} (seigneur de {text2})¦{text1} (señor de {text2})¦{text1} (senhor de {text2})¦{text1}({text2}领主)
+32¦ミシック装備に付くことがある特別な効果¦Ein Spezialeffekt, der auf mythischer Ausrüstung vorkommen kann¦Un effet spécial pouvant accompagner l'équipement mythique¦Un efecto especial que puede venir con equipo mítico¦Um efeito especial que pode vir em equipamentos míticos¦神话装备上可能附带的特殊效果
+33¦入手した装備 {number1} / {number2}  ·  持ったことのある高レアリティ装備は名前が表示されます¦Gefundene Ausrüstung {number1} / {number2}  ·  Seltenere Ausrüstung, die du besessen hast, zeigt ihren Namen¦Équipements trouvés {number1} / {number2}  ·  Les équipements de rareté supérieure que vous avez possédés affichent leur nom¦Equipo encontrado {number1} / {number2}  ·  El equipo de mayor rareza que has tenido muestra su nombre¦Equipamentos encontrados {number1} / {number2}  ·  Equipamentos de maior raridade que você já teve mostram o nome¦已获得装备 {number1} / {number2}  ·  你持有过的高稀有度装备会显示名称
+34¦入手¦Erhalten¦Obtenu¦Obtenido¦Obtido¦获得
+35¦撃破数¦Kills¦Éliminations¦Bajas¦Abates¦击杀
+36¦ロビー¦Lobby¦Hall¦Lobby¦Lobby¦大厅
+37¦モンスター¦Monster¦Monstre¦Monstruo¦Monstro¦怪物
+38¦未遭遇¦Noch nicht getroffen¦Pas encore rencontré¦Aún no encontrado¦Ainda não encontrado¦尚未遇到
+39¦未入手¦Nicht erhalten¦Non obtenu¦No obtenido¦Não obtido¦未获得
+40¦セット¦Set¦Set¦Set¦Conjunto¦套装
+41¦入手したセット {number1} / {number2}  ·  そのゾーンのモンスター/ロードが一定確率でドロップします¦Erhaltene Sets {number1} / {number2}  ·  Monster / Lord dieser Zone lassen sie mit einer bestimmten Rate fallen¦Sets obtenus {number1} / {number2}  ·  Les monstres / le seigneur de cette zone les lâchent selon un certain taux¦Sets obtenidos {number1} / {number2}  ·  Los monstruos / el señor de esa zona los sueltan con cierta probabilidad¦Conjuntos obtidos {number1} / {number2}  ·  Monstros / senhor dessa zona os soltam com certa taxa¦已获得套装 {number1} / {number2}  ·  该区域的怪物/领主会按一定几率掉落
+42¦ゾーンの最奥で待つボス。弱点のオーブを狙おう¦Der Boss am Ende der Zone. Ziele auf die Schwachstellen-Kugel¦Le boss qui attend au bout de la zone. Visez l'orbe du point faible¦El jefe que espera al final de la zona. Apunta al orbe del punto débil¦O chefe que espera no fim da zona. Mire na esfera do ponto fraco¦在区域尽头等待的首领。瞄准弱点光球
+43¦ユニーク¦Einzigartig¦Unique¦Único¦Único¦独特
+44¦発見したユニーク効果 {number1} / {number2}  ·  ミシック装備に1つ付くことがあります(確率約{number3}%)¦Gefundene einzigartige Effekte {number1} / {number2}  ·  Mythische Ausrüstung kann einen tragen (ca. {number3}% Chance)¦Effets uniques trouvés {number1} / {number2}  ·  L'équipement mythique peut en porter un (environ {number3} % de chance)¦Efectos únicos encontrados {number1} / {number2}  ·  El equipo mítico puede llevar uno (aprox. {number3}% de probabilidad)¦Efeitos únicos encontrados {number1} / {number2}  ·  Equipamentos míticos podem ter um (cerca de {number3}% de chance)¦已发现独特效果 {number1} / {number2}  ·  神话装备可附带一个(约 {number3}% 几率)
+45¦到達した武器 {number1} / {number2}  ·  武器を強化して次の武器に出会おう¦Erreichte Waffen {number1} / {number2}  ·  Verbessere deine Waffe, um die nächste zu treffen¦Armes atteintes {number1} / {number2}  ·  Améliorez votre arme pour rencontrer la suivante¦Armas alcanzadas {number1} / {number2}  ·  Mejora tu arma para conocer la siguiente¦Armas alcançadas {number1} / {number2}  ·  Melhore sua arma para conhecer a próxima¦已达成武器 {number1} / {number2}  ·  强化武器即可遇到下一把
+46¦ゾーン{number1} · {text2}¦Zone {number1} · {text2}¦Zone {number1} · {text2}¦Zona {number1} · {text2}¦Zona {number1} · {text2}¦区域{number1} · {text2}
+47¦✨ ユニーク¦✨ Einzigartige¦✨ Uniques¦✨ Únicos¦✨ Únicos¦✨ 独特
+48¦📖 図鑑¦📖 Kodex¦📖 Codex¦📖 Códice¦📖 Códex¦📖 图鉴
+49¦最高 {text1}  ·  最大ヒット {text2}¦Bestwert {text1}  ·  Max. Treffer {text2}¦Meilleur {text1}  ·  Coup max {text2}¦Mejor {text1}  ·  Golpe máx. {text2}¦Melhor {text1}  ·  Golpe máx. {text2}¦最高 {text1}  ·  最大单击 {text2}
+50¦ダメージ · {number1}秒 · {text2}¦SCHADEN · {number1}s · {text2}¦DÉGÂTS · {number1} s · {text2}¦DAÑO · {number1}s · {text2}¦DANO · {number1}s · {text2}¦伤害 · {number1}秒 · {text2}
+51¦銃¦Waffe¦Arme¦Arma¦Arma¦枪
+52¦メーター¦Messgerät¦Compteur¦Medidor¦Medidor¦统计
+53¦リセット¦Zurücksetzen¦Réinitialiser¦Reiniciar¦Redefinir¦重置
+54¦🌪 ゲイルスイープ¦🌪 Sturmschwung¦🌪 Balayage tempête¦🌪 Barrido huracanado¦🌪 Varredura de vendaval¦🌪 狂风横扫
+55¦💥 爆裂弾¦💥 Explosivschuss¦💥 Tir explosif¦💥 Disparo explosivo¦💥 Tiro explosivo¦💥 爆裂射击
+56¦💥 衝撃波¦💥 Schockwelle¦💥 Onde de choc¦💥 Onda de choque¦💥 Onda de choque¦💥 冲击波
+57¦🔁 跳弾¦🔁 Querschläger¦🔁 Ricochet¦🔁 Rebote¦🔁 Ricochete¦🔁 跳弹
+58¦🎁 ボス宝箱 · 装備{number1}個¦🎁 Boss-Truhe · {number1} Ausrüstungsteile¦🎁 Coffre de boss · {number1} équipements¦🎁 Cofre del jefe · {number1} piezas de equipo¦🎁 Baú do chefe · {number1} peças de equipamento¦🎁 首领宝箱 · {number1}件装备
+59¦宝箱¦Truhe¦Coffre¦Cofre¦Baú¦宝箱
+60¦深度{number1}までクリア済み  ·  深度{number2}まで入場できます¦Bis Tiefe {number1} abgeschlossen  ·  Du kannst bis Tiefe {number2} eintreten¦Terminé jusqu'à la profondeur {number1}  ·  Vous pouvez entrer jusqu'à la profondeur {number2}¦Completado hasta la profundidad {number1}  ·  Puedes entrar hasta la profundidad {number2}¦Concluído até a profundidade {number1}  ·  Você pode entrar até a profundidade {number2}¦已通关至深度{number1}  ·  最高可进入深度{number2}
+61¦深度¦Tiefe¦Profondeur¦Profundidad¦Profundidade¦深度
+62¦確率¦Chancen¦Probabilités¦Probabilidades¦Probabilidades¦几率
+63¦✦ ミシック装備のユニーク効果:¦✦ Einzigartiger Effekt auf mythischer Ausrüstung:¦✦ Effet unique de l'équipement mythique :¦✦ Efecto único del equipo mítico:¦✦ Efeito único em equipamento mítico:¦✦ 神话装备的独特效果:
+64¦🎫 ボスのチケット:¦🎫 Tickets für den Boss:¦🎫 Tickets pour le boss :¦🎫 Boletos del jefe:¦🎫 Tickets do chefe:¦🎫 首领门票:
+65¦·  ゴールド/経験値 x{number1}¦·  Gold / EP x{number1}¦·  Or / XP x{number1}¦·  Oro / EXP x{number1}¦·  Ouro / XP x{number1}¦·  金币 / 经验 x{number1}
+66¦🏰 ダンジョン¦🏰 Dungeon¦🏰 Donjon¦🏰 Mazmorra¦🏰 Masmorra¦🏰 地下城
+67¦👹 モンスターのHP x{number1}  ·  ダメージ x{number2}¦👹 Monster-Leben x{number1}  ·  Schaden x{number2}¦👹 PV des monstres x{number1}  ·  dégâts x{number2}¦👹 Vida de monstruos x{number1}  ·  daño x{number2}¦👹 Vida dos monstros x{number1}  ·  dano x{number2}¦👹 怪物生命 x{number1}  ·  伤害 x{number2}
+68¦📊 確率の全一覧¦📊 Vollständige Chancentabelle¦📊 Tableau complet des probabilités¦📊 Tabla completa de probabilidades¦📊 Tabela completa de probabilidades¦📊 完整几率表
+69¦🔑 入場:¦🔑 Eintritt:¦🔑 Entrée :¦🔑 Entrada:¦🔑 Entrada:¦🔑 入场:
+70¦鍵{number1}個¦{number1} Schlüssel¦{number1} clé¦{number1} llave¦{number1} chave¦{number1} 把钥匙
+71¦(または1日の無料入場を1回使用)¦(oder 1 deiner täglichen Gratis-Eintritte)¦(ou 1 de vos entrées gratuites quotidiennes)¦(o 1 de tus entradas gratis diarias)¦(ou 1 das suas entradas grátis diárias)¦(或使用1次每日免费入场)
+72¦🧩 ゾーンのセット装備:¦🧩 Zonen-Set-Ausrüstung:¦🧩 Équipement de set de zone :¦🧩 Equipo de set de zona:¦🧩 Equipamento de conjunto da zona:¦🧩 区域套装装备:
+73¦1部位あたり({text1})¦pro Teil ({text1})¦par pièce ({text1})¦por pieza ({text1})¦por peça ({text1})¦每件({text1})
+74¦🧩 ゾーンのセット装備: フィールドゾーンのロードを倒すと解放¦🧩 Zonen-Set-Ausrüstung: Besiege einen Feld-Zonen-Lord zum Freischalten¦🧩 Équipement de set de zone : vainquez un seigneur de zone du terrain pour le débloquer¦🧩 Equipo de set de zona: derrota al señor de una zona del campo para desbloquearlo¦🧩 Equipamento de conjunto da zona: derrote um senhor de zona de campo para desbloquear¦🧩 区域套装装备:击败野外区域领主后解锁
+75¦¦¦¦¦¦
+76¦¦¦¦¦¦
+77¦¦¦¦¦¦
+78¦¦¦¦¦¦
+79¦¦¦¦¦¦
+80¦¦¦¦¦¦
+81¦¦¦¦¦¦
+82¦¦¦¦¦¦
+83¦¦¦¦¦¦
+84¦¦¦¦¦¦
+85¦¦¦¦¦¦
+86¦¦¦¦¦¦
+87¦¦¦¦¦¦
+88¦¦¦¦¦¦
+89¦¦¦¦¦¦
+90¦¦¦¦¦¦
+91¦¦¦¦¦¦
+92¦¦¦¦¦¦
+93¦¦¦¦¦¦
+94¦¦¦¦¦¦
+95¦¦¦¦¦¦
+96¦¦¦¦¦¦
+97¦¦¦¦¦¦
+98¦¦¦¦¦¦
+99¦{number1}回の抽選完了！最高レア度: {text2}¦{number1} Ziehungen abgeschlossen! Beste Seltenheit: {text2}¦{number1} tirages effectués ! Meilleure rareté : {text2}¦¡{number1} tiradas hechas! Mejor rareza: {text2}¦{number1} sorteios feitos! Melhor raridade: {text2}¦已抽取 {number1} 次!最高稀有度:{text2}
+100¦強化{number1}回: 成功{number2} / 失敗{number3}  (ゴールド -{number4})¦{number1} Verbesserungen: {number2} Erfolg / {number3} Fehlschlag  (Gold -{number4})¦{number1} améliorations : {number2} réussies / {number3} échouées  (Or -{number4})¦{number1} mejoras: {number2} éxitos / {number3} fallos  (Oro -{number4})¦{number1} melhorias: {number2} sucessos / {number3} falhas  (Ouro -{number4})¦强化 {number1} 次:成功 {number2} / 失败 {number3}  (金币 -{number4})
+101¦オーラ¦Aura¦Aura¦Aura¦Aura¦光环
+102¦バナー¦Banner¦Bannière¦Estandarte¦Estandarte¦旗帜
+103¦¦¦¦¦¦
+104¦ボスは次々に現れます。長く生き残り、強く攻撃しよう。¦Die Bosse hören nicht auf. Überlebe länger, schlage härter zu.¦Les boss ne cessent d'arriver. Survivez plus longtemps, frappez plus fort.¦Los jefes no paran de llegar. Sobrevive más y golpea más fuerte.¦Os chefes não param de vir. Sobreviva mais, bata mais forte.¦首领会接连出现。活得更久,打得更狠。
+105¦跳ね返り¦Abprallen¦Rebond¦Rebote¦Ricochete¦弹跳
+106¦引けません。¦Ziehen nicht möglich.¦Tirage impossible.¦No se puede tirar.¦Não é possível sortear.¦无法抽取。
+107¦カンカン！武器を打ってみる？¦Klang, klang! Sollen wir eine Waffe schmieden?¦Clang, clang ! On forge une arme ?¦¡Clang, clang! ¿Forjamos un arma?¦Clang, clang! Vamos forjar uma arma?¦叮叮当当!要不要锻造一把武器?
+108¦心配しないで、失敗してもレベルは下がらないよ！¦Keine Sorge, ein Fehlschlag senkt deine Stufe nicht!¦Pas de souci, un échec ne fera pas baisser votre niveau !¦¡Tranquilo, fallar no te baja de nivel!¦Não se preocupe, falhar não reduz o seu nível!¦别担心,失败不会降低等级!
+109¦ダンジョンには毎日無料で入場できる回数があります。¦Dungeons haben tägliche Gratis-Eintritte.¦Les donjons ont des entrées gratuites quotidiennes.¦Las mazmorras tienen entradas gratis diarias.¦As masmorras têm entradas grátis diárias.¦地下城每天都有免费入场次数。
+110¦効果¦Effekte¦Effets¦Efectos¦Efeitos¦效果
+111¦強化¦Verbessern¦Améliorer¦Mejorar¦Melhorar¦强化
+112¦ダンジョンごとにモンスターもボスも違います！¦Jeder Dungeon hat andere Monster und Bosse!¦Chaque donjon a des monstres et des boss différents !¦¡Cada mazmorra tiene monstruos y jefes distintos!¦Cada masmorra tem monstros e chefes diferentes!¦每个地下城的怪物和首领都不一样!
+113¦フィールドのロードが鍵を落とします。¦Feld-Lords lassen die Schlüssel fallen.¦Les seigneurs du terrain lâchent les clés.¦Los señores del campo sueltan las llaves.¦Os senhores do campo soltam as chaves.¦野外领主会掉落钥匙。
+114¦最終¦Finale¦Final¦Final¦Final¦最终
+115¦集中¦Fokus¦Concentration¦Concentración¦Foco¦专注
+116¦チケットはある？運試ししてみよう！¦Ticket dabei? Versuch dein Glück!¦Vous avez un ticket ? Tentez votre chance !¦¿Tienes un boleto? ¡Prueba suerte!¦Tem um ticket? Tente a sorte!¦有票了吗?试试手气吧!
+117¦準備ができたらゲートへ！¦Geh zum Tor, wenn du bereit bist!¦Rendez-vous à la porte quand vous serez prêt !¦¡Ve a la puerta cuando estés listo!¦Vá até o portão quando estiver pronto!¦准备好了就前往大门吧!
+118¦体力¦Leben¦Santé¦Salud¦Vida¦生命
+119¦ヒーロー¦Held¦Héros¦Héroe¦Herói¦英雄
+120¦¦¦¦¦¦
+121¦強化を続ければ新しい武器が解放されるよ！¦Verbessere weiter und du schaltest neue Waffen frei!¦Continuez à améliorer et vous débloquerez de nouvelles armes !¦¡Sigue mejorando y desbloquearás armas nuevas!¦Continue melhorando e você desbloqueará novas armas!¦不断强化就能解锁新武器!
+122¦鍵¦Schlüssel¦Clés¦Llaves¦Chaves¦钥匙
+123¦レベル¦Stufe¦Niveau¦Nivel¦Nível¦等级
+124¦¦¦¦¦¦
+125¦¦¦¦¦¦
+126¦フィールドを制した者だけがボスラッシュに挑めます。¦Nur wer das Feld erobert hat, darf in den Boss Rush.¦Seuls ceux qui ont conquis le terrain peuvent entrer dans le Boss Rush.¦Solo quienes conquisten el campo pueden entrar al Boss Rush.¦Somente quem conquistar o campo pode entrar no Boss Rush.¦只有征服野外的人才能进入首领连战。
+127¦開く¦Öffnen¦Ouvrir¦Abrir¦Abrir¦打开
+128¦戦闘力¦Stärke¦Puissance¦Poder¦Poder¦战力
+129¦進行状況¦Fortschritt¦Progression¦Progreso¦Progresso¦进度

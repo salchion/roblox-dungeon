@@ -715,30 +715,9 @@
       "overwrite": true
     },
     {
-      "path": "Shared/Loc_ko.lua",
-      "parent": "ReplicatedStorage",
-      "name": "Loc_ko",
-      "class": "ModuleScript",
-      "overwrite": true
-    },
-    {
-      "path": "Shared/Loc_ja.lua",
-      "parent": "ReplicatedStorage",
-      "name": "Loc_ja",
-      "class": "ModuleScript",
-      "overwrite": true
-    },
-    {
       "path": "Shared/Loc_de.lua",
       "parent": "ReplicatedStorage",
       "name": "Loc_de",
-      "class": "ModuleScript",
-      "overwrite": true
-    },
-    {
-      "path": "Shared/Loc_fr.lua",
-      "parent": "ReplicatedStorage",
-      "name": "Loc_fr",
       "class": "ModuleScript",
       "overwrite": true
     },
@@ -750,16 +729,23 @@
       "overwrite": true
     },
     {
-      "path": "Shared/Loc_pt.lua",
+      "path": "Shared/Loc_fr.lua",
       "parent": "ReplicatedStorage",
-      "name": "Loc_pt",
+      "name": "Loc_fr",
       "class": "ModuleScript",
       "overwrite": true
     },
     {
-      "path": "Shared/Loc_zh_hans.lua",
+      "path": "Shared/Loc_ja.lua",
       "parent": "ReplicatedStorage",
-      "name": "Loc_zh_hans",
+      "name": "Loc_ja",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/Loc_ko.lua",
+      "parent": "ReplicatedStorage",
+      "name": "Loc_ko",
       "class": "ModuleScript",
       "overwrite": true
     },
@@ -774,6 +760,20 @@
       "path": "Shared/Loc_ko_3.lua",
       "parent": "ReplicatedStorage",
       "name": "Loc_ko_3",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/Loc_pt.lua",
+      "parent": "ReplicatedStorage",
+      "name": "Loc_pt",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/Loc_zh_hans.lua",
+      "parent": "ReplicatedStorage",
+      "name": "Loc_zh_hans",
       "class": "ModuleScript",
       "overwrite": true
     }
