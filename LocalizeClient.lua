@@ -12,7 +12,12 @@ local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-local ok, translator = pcall(function() return LocalizationService:GetTranslatorForPlayerAsync(player) end)
+print("[LocalizeClient] 시작 (v3) · 번역기 받아오는 중...") -- 이 줄이 안 보이면 게시된 게임에 이 스크립트가 안 들어간 것
+local ok, translator
+task.delay(10, function()
+	if ok == nil then warn("[LocalizeClient] 10초가 지나도 번역기를 못 받았습니다 (GetTranslatorForPlayerAsync 가 안 끝남)") end
+end)
+ok, translator = pcall(function() return LocalizationService:GetTranslatorForPlayerAsync(player) end)
 if not ok or not translator then
 	warn("[LocalizeClient] 번역기를 못 불러왔습니다: " .. tostring(translator))
 	return
