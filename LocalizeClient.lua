@@ -18,11 +18,10 @@ if not ok or not translator then
 	return
 end
 local localeId = string.lower(tostring(translator.LocaleId))
+-- (실제 앱에서도 한 줄 찍는다: F9 개발자 콘솔 > Client 탭에서 확인. 번역기 언어가 뭔지 알아야 안 될 때 원인을 찾는다)
+print(string.format("[LocalizeClient] 번역기 언어 %s · RobloxLocaleId %s · SystemLocaleId %s · 플레이어 LocaleId %s",
+	localeId, tostring(LocalizationService.RobloxLocaleId), tostring(LocalizationService.SystemLocaleId), tostring(player.LocaleId)))
 if string.sub(localeId, 1, 2) == "en" then return end -- 원본 언어(영어)이면 번역할 게 없다
-if RunService:IsStudio() then
-	print(string.format("[LocalizeClient] 번역기 준비됨 · 번역기 언어 %s · RobloxLocaleId %s · SystemLocaleId %s · 플레이어 LocaleId %s",
-		localeId, tostring(LocalizationService.RobloxLocaleId), tostring(LocalizationService.SystemLocaleId), tostring(player.LocaleId)))
-end
 
 local memo = {}
 local function translatePiece(obj, piece)
@@ -105,10 +104,8 @@ for _, obj in ipairs(workspace:GetDescendants()) do
 	if (obj:IsA("TextLabel") or obj:IsA("TextButton")) and (obj:FindFirstAncestorWhichIsA("BillboardGui") or obj:FindFirstAncestorWhichIsA("SurfaceGui")) then watch(obj) end
 end
 
--- (Studio 진단) 번역기가 실제로 번역을 돌려주는지 / 화면 글자를 몇 개나 번역했는지 8초 뒤에 한 번 찍는다
-if RunService:IsStudio() then
-	local stats = { Translated = 0 }
-	local originalApply = apply
+-- (진단) 번역기가 실제로 번역을 돌려주는지 / 화면 글자를 몇 개나 번역했는지 8초 뒤에 한 번 찍는다 (실제 앱 포함)
+do
 	task.delay(8, function()
 		local tests = { "Gear", "Weapon", "Settings", "Dash", "First Aid", "Death Lotus", "Auto-Attack", "Power Ranking" }
 		for _, word in ipairs(tests) do
