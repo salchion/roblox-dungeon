@@ -1,9 +1,7 @@
 -- DpsPanelClient (StarterPlayer > StarterPlayerScripts 안의 LocalScript, 이름: DpsPanelClient)
--- 허수아비를 칠 때만 오른쪽에 작은 패널이 나타나 DPS / 최고 기록 / 마지막 한 방을 보여 준다 (3.5초 동안 안 치면 사라진다).
--- 서버(DummyService)가 DummyDps / DummyBest / DummyHit / DummyTick 속성을 갱신한다.
+-- 대미지 미터기만 그린다 (허수아비 전용 작은 패널은 미터기와 겹쳐서 없앴다).
 
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
 
 local player = Players.LocalPlayer
 local gui = Instance.new("ScreenGui")
@@ -11,58 +9,6 @@ gui.Name = "DpsPanelGui"
 gui.ResetOnSpawn = false
 gui.IgnoreGuiInset = true
 gui.Parent = player:WaitForChild("PlayerGui")
-
-local panel = Instance.new("Frame")
-panel.Name = "DpsPanel"
-panel.AnchorPoint = Vector2.new(1, 0.5)
-panel.Position = UDim2.new(1, -16, 0.36, 0)
-panel.Size = UDim2.new(0, 168, 0, 70)
-panel.BackgroundColor3 = Color3.fromRGB(16, 18, 30)
-panel.BackgroundTransparency = 0.1
-panel.BorderSizePixel = 0
-panel.Visible = false
-panel.Parent = gui
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 10)
-corner.Parent = panel
-local stroke = Instance.new("UIStroke")
-stroke.Color = Color3.fromRGB(255, 217, 102)
-stroke.Thickness = 1.5
-stroke.Transparency = 0.35
-stroke.Parent = panel
-
-local function label(y, h, size, color, font)
-	local l = Instance.new("TextLabel")
-	l.BackgroundTransparency = 1
-	l.Position = UDim2.new(0, 10, 0, y)
-	l.Size = UDim2.new(1, -20, 0, h)
-	l.Font = font or Enum.Font.GothamBold
-	l.TextSize = size
-	l.TextColor3 = color
-	l.TextXAlignment = Enum.TextXAlignment.Left
-	l.Parent = panel
-	return l
-end
-local title = label(4, 16, 12, Color3.fromRGB(170, 180, 215))
-title.Text = "🎯 Dummy DPS"
-local dpsText = label(18, 30, 26, Color3.fromRGB(255, 217, 102), Enum.Font.GothamBlack)
-local subText = label(48, 18, 12, Color3.fromRGB(200, 205, 230))
-
-local function commas(n)
-	return (tostring(math.floor(n or 0)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
-end
-
-local lastShown = 0
-player:GetAttributeChangedSignal("DummyTick"):Connect(function()
-	lastShown = os.clock()
-	panel.Visible = true
-	dpsText.Text = commas(player:GetAttribute("DummyDps"))
-	subText.Text = string.format("Best %s  ·  Max hit %s", commas(player:GetAttribute("DummyBest")), commas(player:GetAttribute("DummyHit")))
-	local mine = lastShown
-	task.delay(3.5, function()
-		if lastShown == mine then panel.Visible = false end
-	end)
-end)
 
 ------------------------------------------------------------
 -- 대미지 미터기 (필드 / 던전 / 허수아비): 총과 세트 효과가 각각 얼마나 피해를 줬는지 나눠서 보여 준다
@@ -86,7 +32,7 @@ meter.Name = "DamageMeter"
 if COMPACT then
 	meter.Position = UDim2.new(0, 16, 0.47, 0) -- 폰: 왼쪽 가운데 (접힌 한 줄)
 else
-	-- PC: 오른쪽 가운데 아래 (더미 DPS 패널 / 콤보 글자 아래). 왼쪽은 미션 카드 + 오늘의 퀘스트가 길게 내려와서 겹쳤다
+	-- PC: 오른쪽 가운데 아래. 왼쪽은 미션 카드 + 오늘의 퀘스트가 길게 내려와서 겹쳤다
 	meter.AnchorPoint = Vector2.new(1, 0)
 	meter.Position = UDim2.new(1, -16, 0.5, 0)
 end
