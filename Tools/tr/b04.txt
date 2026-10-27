@@ -1,0 +1,170 @@
+620¦撃破するたびに最大HPの1.5%を回復¦Heilt bei jedem Kill 1,5 % der max. LP¦Soigne 1,5 % des PV max à chaque élimination¦Cura 1,5% de la salud máx. en cada baja¦Cura 1,5% da vida máx. a cada abate¦每次击杀恢复 1.5% 最大生命
+621¦撃破時回復¦Heilung bei Kill¦Soin à l'élimination¦Curación al matar¦Cura ao abater¦击杀回复
+622¦治癒の司祭¦Heilender Priester¦Prêtre guérisseur¦Sacerdote sanador¦Sacerdote curandeiro¦治愈祭司
+623¦近くのモンスターを回復します。最初に倒すのがおすすめ。¦Heilt Monster in der Nähe. Am besten zuerst ausschalten.¦Soigne les monstres proches. Mieux vaut l'éliminer en premier.¦Cura a los monstruos cercanos. Lo mejor es eliminarlo primero.¦Cura monstros próximos. O melhor é eliminá-lo primeiro.¦会治疗附近的怪物。最好优先击杀。
+624¦強打¦Schwerer Treffer¦Coup lourd¦Golpe pesado¦Golpe pesado¦重击
+625¦強打 + 連射 + 弱点を同時に¦Schwerer Treffer + Schnellfeuer + Schwachstelle gleichzeitig¦Coup lourd + tir rapide + point faible en même temps¦Golpe pesado + ráfaga + punto débil a la vez¦Golpe pesado + tiro rápido + ponto fraco ao mesmo tempo¦重击 + 速射 + 弱点,三合一
+626¦高火力 · クリティカル +10%¦Schwerer Treffer · Krit +10 %¦Gros frappeur · Critique +10 %¦Golpe contundente · Crítico +10%¦Golpe pesado · Crítico +10%¦重击手 · 暴击 +10%
+627¦地獄の業火スプレー¦Höllenfeuer-Sprüher¦Pulvérisateur de feu d'enfer¦Rociador de fuego infernal¦Pulverizador de fogo infernal¦地狱火喷射器
+628¦最高の火力 · 最短射程¦Höchste Feuerkraft · Kürzeste Reichweite¦Puissance de feu maximale · Portée la plus courte¦Máxima potencia de fuego · Alcance más corto¦Maior poder de fogo · Menor alcance¦火力最高 · 射程最短
+629¦追尾する刃¦Zielsuchende Klingen¦Lames à tête chercheuse¦Cuchillas teledirigidas¦Lâminas teleguiadas¦追踪飞刀
+630¦耐えられるダメージ量。高いほど死ににくくなります¦Wie viel Schaden du aushältst. Höher bedeutet weniger Tode¦La quantité de dégâts que vous pouvez encaisser. Plus c'est élevé, moins vous mourez¦Cuánto daño puedes aguantar. Más alto significa menos muertes¦Quanto dano você aguenta. Quanto maior, menos mortes¦你能承受的伤害量。越高越不容易死亡
+631¦ハンター¦Jäger¦Chasseur¦Cazador¦Caçador¦猎手
+632¦ハンターの紋章¦Jägeremblem¦Emblème du chasseur¦Emblema del cazador¦Emblema do caçador¦猎手徽章
+633¦狩人の印¦Jägerzeichen¦Marque du chasseur¦Marca del cazador¦Marca do caçador¦猎手印记
+634¦遠くから高速の槍を投げます。一部の弾は分裂します。¦Schleudert aus großer Entfernung schnelle Speere. Manche Schüsse spalten sich.¦Lance des lances rapides de très loin. Certains tirs se divisent.¦Lanza lanzas veloces desde muy lejos. Algunos disparos se dividen.¦Arremessa lanças rápidas de muito longe. Alguns tiros se dividem.¦从很远处投掷高速长矛。部分弹体会分裂。
+635¦氷晶のロード¦Eiskristall-Lord¦Seigneur du cristal de glace¦Señor del cristal de hielo¦Senhor do cristal de gelo¦冰晶领主
+636¦氷の要塞¦Eisfestung¦Forteresse de glace¦Fortaleza de hielo¦Fortaleza de gelo¦冰霜要塞
+637¦アイスブレーカー・リボルバー¦Eisbrecher-Revolver¦Revolver brise-glace¦Revólver rompehielos¦Revólver quebra-gelo¦破冰左轮
+638¦放置蓄積上限: 24時間¦Leerlauf-Limit: 24 Stunden¦Plafond d'inactivité : 24 heures¦Límite de inactividad: 24 horas¦Limite de ociosidade: 24 horas¦挂机累积上限:24 小时
+639¦放置蓄積上限: 8時間¦Leerlauf-Limit: 8 Stunden¦Plafond d'inactivité : 8 heures¦Límite de inactividad: 8 horas¦Limite de ociosidade: 8 horas¦挂机累积上限:8 小时
+640¦放置ブースター(1時間)¦Leerlauf-Booster (1 Stunde)¦Booster d'inactivité (1 heure)¦Potenciador de inactividad (1 hora)¦Impulsionador de ociosidade (1 hora)¦挂机加速(1 小时)
+641¦放置収入 +100%¦Leerlauf-Einkommen +100 %¦Revenu d'inactivité +100 %¦Ingresos inactivos +100%¦Renda ociosa +100%¦挂机收益 +100%
+642¦放置収入 +25%¦Leerlauf-Einkommen +25 %¦Revenu d'inactivité +25 %¦Ingresos inactivos +25%¦Renda ociosa +25%¦挂机收益 +25%
+643¦放置収入 +50%¦Leerlauf-Einkommen +50 %¦Revenu d'inactivité +50 %¦Ingresos inactivos +50%¦Renda ociosa +50%¦挂机收益 +50%
+644¦放置収入 +20%¦Leerlauf-Einkommen +20 %¦Revenu d'inactivité +20 %¦Ingresos inactivos +20%¦Renda ociosa +20%¦挂机收益 +20%
+645¦点火¦Entzünden¦Enflammer¦Prender fuego¦Incendiar¦点燃
+646¦すべての攻撃(銃とスキル)のダメージが増えます¦Erhöht den Schaden all deiner Angriffe (Waffe & Fähigkeiten)¦Augmente les dégâts de toutes vos attaques (arme et compétences)¦Aumenta el daño de todos tus ataques (arma y habilidades)¦Aumenta o dano de todos os seus ataques (arma e habilidades)¦提升你所有攻击(枪械与技能)的伤害
+647¦インフェルノ・リボルバー¦Inferno-Revolver¦Revolver infernal¦Revólver infernal¦Revólver infernal¦地狱左轮
+648¦あなたの放置収入2時間分をすぐに獲得 · 1日最大3回¦Erhalte sofort 2 Stunden DEINES Leerlauf-Einkommens · max. 3 pro Tag¦Obtenez instantanément 2 heures de VOTRE revenu d'inactivité · 3 max. par jour¦Obtén al instante 2 horas de TUS ingresos inactivos · máx. 3 al día¦Receba na hora 2 horas da SUA renda ociosa · máx. 3 por dia¦立即获得你 2 小时的挂机收益 · 每天最多 3 次
+649¦あなたの放置収入30分をすぐに獲得 · 1日最大3回¦Erhalte sofort 30 Minuten DEINES Leerlauf-Einkommens · max. 3 pro Tag¦Obtenez instantanément 30 minutes de VOTRE revenu d'inactivité · 3 max. par jour¦Obtén al instante 30 minutos de TUS ingresos inactivos · máx. 3 al día¦Receba na hora 30 minutos da SUA renda ociosa · máx. 3 por dia¦立即获得你 30 分钟的挂机收益 · 每天最多 3 次
+650¦あなたの放置収入8時間分をすぐに獲得 · 1日最大3回¦Erhalte sofort 8 Stunden DEINES Leerlauf-Einkommens · max. 3 pro Tag¦Obtenez instantanément 8 heures de VOTRE revenu d'inactivité · 3 max. par jour¦Obtén al instante 8 horas de TUS ingresos inactivos · máx. 3 al día¦Receba na hora 8 horas da SUA renda ociosa · máx. 3 por dia¦立即获得你 8 小时的挂机收益 · 每天最多 3 次
+651¦10秒間無敵¦10 s lang unverwundbar¦Invincible pendant 10 s¦Invencible durante 10 s¦Invencível por 10 s¦无敌 10 秒
+652¦HPが25%を下回ると3秒間無敵(90秒ごと)¦3 s unverwundbar, wenn die LP unter 25 % fallen (alle 90 s)¦Invincible 3 s quand les PV passent sous 25 % (toutes les 90 s)¦Invencible durante 3 s cuando la salud baja del 25% (cada 90 s)¦Invencível por 3 s quando a vida cai abaixo de 25% (a cada 90 s)¦生命值低于 25% 时无敌 3 秒(每 90 秒一次)
+653¦鉄壁の軍団¦Eiserne Legion¦Légion de fer¦Legión de hierro¦Legião de ferro¦钢铁军团
+654¦ジャックポット¦Jackpot¦Jackpot¦Jackpot¦Jackpot¦大奖
+655¦ジャックポット確率¦Jackpot-Chance¦Chance de jackpot¦Prob. de jackpot¦Chance de jackpot¦大奖几率
+656¦鍵¦Schlüssel¦Clé¦Llave¦Chave¦钥匙
+657¦撃破爆発¦Kill-Explosion¦Explosion d'élimination¦Explosión al matar¦Explosão ao abater¦击杀爆发
+658¦撃破爆発が30%広がり、命中した敵をすべて燃やします(点火2スタック)¦Kill-Explosion ist 30 % breiter und setzt jeden getroffenen Gegner in Brand (2 Brandstapel)¦L'explosion d'élimination est 30 % plus large et enflamme tous les ennemis touchés (2 cumuls de brûlure)¦La explosión al matar es un 30% más ancha y prende fuego a todos los enemigos que alcanza (2 acumulaciones de quemadura)¦A explosão ao abater é 30% maior e incendeia todos os inimigos atingidos (2 acúmulos de queimadura)¦击杀爆发范围扩大 30%,并点燃所有命中的敌人(2 层灼烧)
+659¦溶岩の悪魔¦Lavadämon¦Démon de lave¦Demonio de lava¦Demônio de lava¦熔岩恶魔
+660¦溶岩の心臓¦Lavaherz¦Cœur de lave¦Corazón de lava¦Coração de lava¦熔岩之心
+661¦学習中¦Lernen¦Apprentissage¦Aprendizaje¦Aprendizado¦学习中
+662¦革の鎧¦Lederrüstung¦Armure de cuir¦Armadura de cuero¦Armadura de couro¦皮甲
+663¦革のブーツ¦Lederstiefel¦Bottes en cuir¦Botas de cuero¦Botas de couro¦皮靴
+664¦革の手袋¦Lederhandschuhe¦Gants en cuir¦Guantes de cuero¦Luvas de couro¦皮手套
+665¦伝説の使い手¦Legendenträger¦Porteur de légende¦Portador de leyendas¦Portador de lendas¦传说持有者
+666¦レジェンダリー¦Legendär¦Légendaire¦Legendario¦Lendário¦传说
+667¦伝説の鍛冶師¦Legendärer Schmied¦Forgeron légendaire¦Herrero legendario¦Ferreiro lendário¦传说铁匠
+668¦伝説の英雄¦Legendärer Held¦Héros légendaire¦Héroe legendario¦Herói lendário¦传说英雄
+669¦ライフスティール¦Lebensraub¦Vol de vie¦Robo de vida¦Roubo de vida¦生命偷取
+670¦光のオーブ¦Lichtkugel¦Orbe de lumière¦Orbe de luz¦Orbe de luz¦光球
+671¦光の精霊¦Lichtgeist¦Esprit de lumière¦Espíritu de luz¦Espírito de luz¦光之精灵
+672¦雷¦Blitz¦Foudre¦Rayo¦Raio¦闪电
+673¦雷の連鎖¦Blitzketten¦Chaînes de foudre¦Cadenas de rayos¦Correntes de raios¦闪电连锁
+674¦雷のミサイル¦Blitzrakete¦Missile de foudre¦Misil de rayo¦Míssil de raio¦闪电导弹
+675¦雷の散弾銃¦Blitz-Streuwaffe¦Fusil à dispersion de foudre¦Escopeta de rayos¦Espingarda de raios¦闪电霰弹枪
+676¦雷のスナイパー¦Blitz-Scharfschützengewehr¦Sniper de foudre¦Francotirador de rayos¦Sniper de raios¦闪电狙击枪
+677¦雷のトリガー¦Blitzabzug¦Détente de foudre¦Gatillo de rayos¦Gatilho de raios¦闪电扳机
+678¦命中した敵から雷が飛び移ります¦Der Blitz springt vom getroffenen Gegner weiter¦La foudre saute depuis l'ennemi touché¦El rayo salta desde el enemigo golpeado¦O raio salta do inimigo atingido¦闪电会从命中的敌人身上跳跃
+679¦命中した敵から近くの敵+1体へ雷が飛び移ります(ダメージの60%)¦Der Blitz springt vom getroffenen Gegner auf +1 nahen Gegner (60 % des Schadens)¦La foudre saute de l'ennemi touché vers +1 ennemi proche (60 % des dégâts)¦El rayo salta desde el enemigo golpeado a +1 enemigo cercano (60% del daño)¦O raio salta do inimigo atingido para +1 inimigo próximo (60% do dano)¦闪电从命中的敌人跳向附近 +1 个敌人(60% 伤害)
+680¦光速連射¦Lichtgeschwindigkeits-Feuer¦Tir à la vitesse de la lumière¦Fuego a la velocidad de la luz¦Fogo à velocidade da luz¦光速射击
+681¦限界突破者¦Grenzbrecher¦Briseur de limites¦Rompe límites¦Quebra-limites¦极限突破者
+682¦子ギツネ¦Kleiner Fuchs¦Petit renard¦Zorrito¦Raposinha¦小狐狸
+683¦長射程 · クリティカル +25%¦Große Reichweite · Krit +25 %¦Longue portée · Critique +25 %¦Largo alcance · Crítico +25%¦Longo alcance · Crítico +25%¦射程远 · 暴击 +25%
+684¦半径50以内の戦利品が自動で引き寄せられます¦Beute im Radius 50 wird automatisch angezogen¦Le butin dans un rayon de 50 est attiré automatiquement¦El botín en un radio de 50 se atrae automáticamente¦O saque em um raio de 50 é atraído automaticamente¦半径 50 内的战利品会被自动吸取
+685¦HPの低い敵は命中時に処刑され、ボスはHPが低いほど大きなダメージを受けます¦Gegner mit niedrigen LP werden beim Treffer hingerichtet; Bosse erleiden mehr Schaden, je niedriger ihre LP sind¦Les ennemis à faibles PV sont exécutés au coup ; les boss subissent plus de dégâts plus leurs PV sont bas¦Los enemigos con poca salud son ejecutados al golpearlos; los jefes reciben más daño cuanto menos salud tienen¦Inimigos com pouca vida são executados ao serem atingidos; chefes recebem mais dano quanto menor a vida¦低生命的敌人会被直接处决;首领生命越低,受到的伤害越高
+686¦牙を下げて突進します。突進前の予兆を見て避けよう！¦Senkt die Hauer und stürmt los. Achte auf die Vorwarnung vor dem Sturmangriff und weiche aus!¦Baisse ses défenses et charge. Repérez le signe avant la charge et esquivez !¦Baja los colmillos y embiste. ¡Fíjate en la señal antes de la embestida y esquiva!¦Abaixa as presas e investe. Observe o sinal antes da investida e desvie!¦会低下獠牙发起冲锋。留意冲锋前的征兆并躲开!
+687¦幸運(ドロップレア度)¦Glück (Drop-Seltenheit)¦Chance (rareté du butin)¦Suerte (rareza del botín)¦Sorte (raridade dos drops)¦幸运(掉落稀有度)
+688¦幸運 +50%、経験値 +30%¦Glück +50 %, EP +30 %¦Chance +50 %, XP +30 %¦Suerte +50%, EXP +30%¦Sorte +50%, XP +30%¦幸运 +50%,经验 +30%
+689¦幸運ブースター(1時間)¦Glücks-Booster (1 Stunde)¦Booster de chance (1 heure)¦Potenciador de suerte (1 hora)¦Impulsionador de sorte (1 hora)¦幸运加速(1 小时)
+690¦幸運のハンター¦Glücklicher Jäger¦Chasseur chanceux¦Cazador afortunado¦Caçador sortudo¦幸运猎手
+691¦幸運の持ち主¦Der Glückliche¦Le chanceux¦El afortunado¦O sortudo¦幸运儿
+692¦幸運の星¦Glücksstern¦Étoile chanceuse¦Estrella de la suerte¦Estrela da sorte¦幸运之星
+693¦幸運のチケット¦Glücksticket¦Ticket chanceux¦Boleto de la suerte¦Ticket da sorte¦幸运券
+694¦マナオーブ¦Manakugeln¦Orbes de mana¦Orbes de maná¦Orbes de mana¦法力球
+695¦マスター¦Meister¦Maître¦Maestro¦Mestre¦大师
+696¦最大HP +{number1}¦Max. LP +{number1}¦PV max +{number1}¦Vida máx. +{number1}¦Vida máx. +{number1}¦最大生命 +{number1}
+697¦最大HP +15、即時回復¦Max. LP +15, sofortige Heilung¦PV max +15, soin instantané¦Vida máx. +15, curación instantánea¦Vida máx. +15, cura instantânea¦最大生命 +15,立即恢复
+698¦最大HP +45、即時回復！¦Max. LP +45, sofortige Heilung!¦PV max +45, soin instantané !¦¡Vida máx. +45, curación instantánea!¦Vida máx. +45, cura instantânea!¦最大生命 +45,立即恢复!
+699¦草原¦Wiese¦Prairie¦Prado¦Campo¦草原
+700¦草原の守り¦Wache der Wiese¦Garde de la prairie¦Guardia del prado¦Guarda do campo¦草原守卫
+701¦ペットと出会おう¦Triff deinen Begleiter¦Rencontrez votre familier¦Conoce a tu mascota¦Conheça seu pet¦遇见你的宠物
+702¦メガヒット¦Mega-Treffer¦Méga coup¦Mega golpe¦Mega golpe¦超级重击
+703¦メテオが降ってきます！赤い円を避けよう(最後まで生き残ると報酬)¦Meteore fallen! Meide die roten Kreise (überlebe bis zum Ende für eine Belohnung)¦Des météores tombent ! Évitez les cercles rouges (survivez jusqu'au bout pour une récompense)¦¡Caen meteoritos! Evita los círculos rojos (sobrevive hasta el final para una recompensa)¦Meteoros estão caindo! Evite os círculos vermelhos (sobreviva até o fim para ganhar uma recompensa)¦流星坠落!避开红色圆圈(坚持到最后可获得奖励)
+704¦ミスリルのブーツ¦Mithril-Stiefel¦Bottes en mithril¦Botas de mithril¦Botas de mithril¦秘银靴
+705¦ミスリルのガントレット¦Mithril-Handschuhe¦Gantelets en mithril¦Guanteletes de mithril¦Manoplas de mithril¦秘银护手
+706¦ミスリルの兜¦Mithril-Helm¦Casque en mithril¦Yelmo de mithril¦Elmo de mithril¦秘银头盔
+707¦雑魚¦Gesindel¦Foule¦Horda¦Horda¦杂兵
+708¦モンスター掃除¦Monster-Aufräumen¦Nettoyage de monstres¦Limpieza de monstruos¦Limpeza de monstros¦清理怪物
+709¦モンスターHP x1.6、報酬 x1.5¦Monster-LP x1,6, Belohnungen x1,5¦PV des monstres x1,6, récompenses x1,5¦Vida de monstruos x1,6, recompensas x1,5¦Vida dos monstros x1,6, recompensas x1,5¦怪物生命 x1.6,奖励 x1.5
+710¦モンスター攻撃 x1.5、報酬 x1.5¦Monster-Angriff x1,5, Belohnungen x1,5¦Attaque des monstres x1,5, récompenses x1,5¦Ataque de monstruos x1,5, recompensas x1,5¦Ataque dos monstros x1,5, recompensas x1,5¦怪物攻击 x1.5,奖励 x1.5
+711¦モンスター数 x0.6、HP x2.0 · 攻撃 x1.2、報酬 x1.7¦Monsteranzahl x0,6, LP x2,0 · Angriff x1,2, Belohnungen x1,7¦Nombre de monstres x0,6, PV x2,0 · attaque x1,2, récompenses x1,7¦Cantidad de monstruos x0,6, vida x2,0 · ataque x1,2, recompensas x1,7¦Quantidade de monstros x0,6, vida x2,0 · ataque x1,2, recompensas x1,7¦怪物数量 x0.6,生命 x2.0 · 攻击 x1.2,奖励 x1.7
+712¦モンスター数 x1.6(HP x0.7)、報酬 x1.4¦Monsteranzahl x1,6 (LP x0,7), Belohnungen x1,4¦Nombre de monstres x1,6 (PV x0,7), récompenses x1,4¦Cantidad de monstruos x1,6 (vida x0,7), recompensas x1,4¦Quantidade de monstros x1,6 (vida x0,7), recompensas x1,4¦怪物数量 x1.6(生命 x0.7),奖励 x1.4
+713¦モンスターの移動/攻撃が速くなり、報酬 x1.3¦Monster bewegen sich/greifen schneller an, Belohnungen x1,3¦Les monstres se déplacent/attaquent plus vite, récompenses x1,3¦Los monstruos se mueven/atacan más rápido, recompensas x1,3¦Monstros se movem/atacam mais rápido, recompensas x1,3¦怪物移动/攻击更快,奖励 x1.3
+714¦より多くの弾が同時に(扇状に)発射されます¦Mehr Schüsse werden gleichzeitig (fächerförmig) abgefeuert¦Plus de tirs partent en même temps (en éventail)¦Se disparan más tiros a la vez (en abanico)¦Mais tiros são disparados ao mesmo tempo (em leque)¦同时发射更多子弹(扇形)
+715¦移動速度 +{number1}¦Lauftempo +{number1}¦Vitesse de déplacement +{number1}¦Velocidad de movimiento +{number1}¦Velocidade de movimento +{number1}¦移动速度 +{number1}
+716¦1ポイントごとに移動速度+0.3¦Lauftempo +0,3 pro Punkt¦Vitesse de déplacement +0,3 par point¦Velocidad de movimiento +0,3 por punto¦Velocidade de movimento +0,3 por ponto¦每点移动速度 +0.3
+717¦ミシック¦Mythisch¦Mythique¦Mítico¦Mítico¦神话
+718¦ミシック・アストラ¦Mythische Astra¦Astra mythique¦Astra mítica¦Astra mítica¦神话星辰
+719¦ミシック・ブランダーバス¦Mythische Donnerbüchse¦Tromblon mythique¦Trabuco mítico¦Bacamarte mítico¦神话鸟铳
+720¦ミシック・ギャラクシーライフル¦Mythisches Galaxie-Gewehr¦Fusil galactique mythique¦Rifle galáctico mítico¦Rifle galáctico mítico¦神话银河步枪
+721¦ミシックマスター¦Mythischer Meister¦Maître mythique¦Maestro mítico¦Mestre mítico¦神话大师
+722¦ミシック・レールガン¦Mythische Railgun¦Canon à rails mythique¦Cañón de riel mítico¦Canhão de trilhos mítico¦神话轨道炮
+723¦ミシック・レインボー¦Mythischer Regenbogen¦Arc-en-ciel mythique¦Arcoíris mítico¦Arco-íris mítico¦神话彩虹
+724¦ミシック・スプレー¦Mythischer Sprüher¦Pulvérisateur mythique¦Rociador mítico¦Pulverizador mítico¦神话喷射器
+725¦悪夢のオーラ¦Albtraum-Aura¦Aura de cauchemar¦Aura de pesadilla¦Aura de pesadelo¦梦魇光环
+726¦オフ¦Aus¦Désactivé¦Desactivado¦Desligado¦关
+727¦一つ目の岩の巨人¦Einäugiger Felsgigant¦Géant de pierre borgne¦Gigante de roca tuerto¦Gigante de pedra de um olho só¦独眼岩石巨人
+728¦ペットウィンドウを開く(Pキー / 成長 > ペット)¦Öffne das Begleiter-Fenster (Taste P / Wachstum > Begleiter)¦Ouvrez la fenêtre du familier (touche P / Croissance > Familier)¦Abre la ventana de mascota (tecla P / Crecimiento > Mascota)¦Abra a janela do pet (tecla P / Crescimento > Pet)¦打开宠物窗口(P 键 / 成长 > 宠物)
+729¦粒子が紫のオーブの周りを回り、星の尾を引きます¦Partikel kreisen um violette Kugeln und ziehen einen Sternenschweif hinter sich her¦Des particules orbitent autour d'orbes violets et laissent une traîne d'étoiles¦Partículas orbitan esferas moradas dejando una cola de estrellas¦Partículas orbitam esferas roxas deixando uma cauda de estrela¦粒子环绕紫色光球旋转,拖着星尘尾迹
+730¦永続(+25%を置き換えます)¦Dauerhaft (ersetzt +25 %)¦Permanent (remplace +25 %)¦Permanente (reemplaza +25%)¦Permanente (substitui +25%)¦永久(取代 +25%)
+731¦貫通¦Durchschlag¦Perforation¦Perforar¦Perfurar¦穿透
+732¦貫通弾¦Durchschlagender Schuss¦Tir perforant¦Disparo perforante¦Tiro perfurante¦穿透射击
+733¦漆黒¦Pechschwarz¦Noir d'encre¦Negro azabache¦Preto-breu¦漆黑
+734¦プラズマキャノン¦Plasmakanone¦Canon à plasma¦Cañón de plasma¦Canhão de plasma¦等离子加农炮
+735¦プラズマトーチ¦Plasmafackel¦Torche à plasma¦Antorcha de plasma¦Tocha de plasma¦等离子火炬
+736¦プラチナ¦Platin¦Platine¦Platino¦Platina¦白金
+737¦至近距離での爆発的ダメージ · 非常に短い射程¦Explosiver Schaden aus nächster Nähe · Sehr kurze Reichweite¦Dégâts explosifs à bout portant · Portée très courte¦Daño explosivo a quemarropa · Alcance muy corto¦Dano explosivo à queima-roupa · Alcance muito curto¦近距离爆发伤害 · 射程极短
+738¦人気¦Beliebt¦Populaire¦Popular¦Popular¦热门
+739¦パワーハウス¦Kraftpaket¦Puissance brute¦Potencia bruta¦Potência bruta¦强力型
+740¦Qキー: ダッシュ！¦Taste Q: Dash!¦Touche Q : Dash !¦Tecla Q: ¡Impulso!¦Tecla Q: Dash!¦Q 键:冲刺!
+741¦レールガン¦Railgun¦Canon à rails¦Cañón de riel¦Canhão de trilhos¦轨道炮
+742¦レインボー¦Regenbogen¦Arc-en-ciel¦Arcoíris¦Arco-íris¦彩虹
+743¦虹色のリボンの弾と星屑、着弾時に星が弾けます¦Regenbogenfarbene Bandschüsse und Sternenstaub, mit Sternenexplosionen beim Einschlag¦Tirs en rubans arc-en-ciel et poussière d'étoiles, avec des éclats d'étoiles à l'impact¦Disparos de cinta arcoíris y polvo de estrellas, con estallidos de estrellas al impactar¦Tiros em fitas de arco-íris e poeira estelar, com explosões de estrelas no impacto¦彩虹丝带般的子弹与星尘,命中时迸发星光
+744¦弾幕とメテオを降らせます¦Lässt Kugelhagel und Meteore niederregnen¦Fait pleuvoir des rafales de balles et des météores¦Hace llover ráfagas de balas y meteoritos¦Faz chover rajadas de balas e meteoros¦倾泻弹幕与流星
+745¦フィールドのモンスターが高レア度(エピック以上)の装備を落とす確率が上がります¦Erhöht die Chance, dass Feldmonster hochseltene Ausrüstung (Episch oder höher) fallen lassen¦Augmente la chance que les monstres du terrain lâchent un équipement de haute rareté (Épique ou supérieur)¦Aumenta la probabilidad de que los monstruos del campo suelten equipo de alta rareza (Épico o superior)¦Aumenta a chance de monstros do campo soltarem equipamento de alta raridade (Épico ou superior)¦提高野外怪物掉落高稀有度装备(史诗及以上)的几率
+746¦射程 +{number1}%¦Reichweite +{number1} %¦Portée +{number1} %¦Alcance +{number1}%¦Alcance +{number1}%¦射程 +{number1}%
+747¦速射¦Schnell¦Rapide¦Rápido¦Rápido¦速射
+748¦速射¦Schnellfeuer¦Tir rapide¦Ráfaga¦Tiro rápido¦速射
+749¦レア¦Selten¦Rare¦Raro¦Raro¦稀有
+750¦レア以下¦Selten oder niedriger¦Rare ou inférieur¦Raro o inferior¦Raro ou inferior¦稀有及以下
+751¦武器強化レベル{number1}に到達(約10番目の武器)¦Erreiche Waffenverbesserungsstufe {number1} (etwa die 10. Waffe)¦Atteignez le niveau d'amélioration d'arme {number1} (environ la 10e arme)¦Alcanza el nivel de mejora de arma {number1} (aprox. la 10.ª arma)¦Alcance o nível de melhoria de arma {number1} (cerca da 10ª arma)¦武器强化等级达到 {number1}(约第 10 把武器)
+752¦武器強化レベル{number1}に到達(約50番目の武器)¦Erreiche Waffenverbesserungsstufe {number1} (etwa die 50. Waffe)¦Atteignez le niveau d'amélioration d'arme {number1} (environ la 50e arme)¦Alcanza el nivel de mejora de arma {number1} (aprox. la 50.ª arma)¦Alcance o nível de melhoria de arma {number1} (cerca da 50ª arma)¦武器强化等级达到 {number1}(约第 50 把武器)
+753¦死神の大鎌¦Sense des Schnitters¦Faux du faucheur¦Guadaña del segador¦Foice do ceifador¦死神镰刀
+754¦推奨¦Empf.¦Rec.¦Rec.¦Rec.¦推荐
+755¦訓練/突破の待ち時間を1時間短縮します¦Verkürzt die Wartezeit für Training / Durchbruch um 1 Stunde¦Réduit de 1 heure le temps d'attente de l'entraînement / de la percée¦Reduce en 1 hora la espera de entrenamiento / superación¦Reduz em 1 hora a espera de treino / avanço¦将训练/突破的等待时间缩短 1 小时
+756¦訓練/突破の待ち時間を10分短縮します(スキップバーが即座に満タンに)¦Verkürzt die Wartezeit für Training / Durchbruch um 10 Min. (die Überspringen-Leiste füllt sich sofort)¦Réduit de 10 min le temps d'attente de l'entraînement / de la percée (la barre d'accélération se remplit instantanément)¦Reduce en 10 min la espera de entrenamiento / superación (la barra de salto se llena al instante)¦Reduz em 10 min a espera de treino / avanço (a barra de salto enche na hora)¦将训练/突破的等待时间缩短 10 分钟(跳过条立即充满)
+757¦訓練/突破の待ち時間を8時間短縮します¦Verkürzt die Wartezeit für Training / Durchbruch um 8 Stunden¦Réduit de 8 heures le temps d'attente de l'entraînement / de la percée¦Reduce en 8 horas la espera de entrenamiento / superación¦Reduz em 8 horas a espera de treino / avanço¦将训练/突破的等待时间缩短 8 小时
+758¦休息¦Ruhe¦Repos¦Descanso¦Descanso¦休息
+759¦弾が命中するたびにHPを1回復¦Stellt bei jedem Treffer 1 LP wieder her¦Restaure 1 PV à chaque tir qui touche¦Restaura 1 de salud cada vez que un disparo acierta¦Restaura 1 de vida cada vez que um tiro acerta¦每次命中恢复 1 点生命
+760¦命中するたびにHPを回復¦Stellt bei jedem Treffer LP wieder her¦Restaure des PV à chaque coup¦Restaura salud en cada golpe¦Restaura vida a cada golpe¦每次命中都恢复生命
+761¦あなたと近くのパーティーメンバーのHPを8%回復します(スキルレベルごとに+1%p)¦Stellt dir und Gruppenmitgliedern in der Nähe 8 % LP wieder her (+1 %p pro Fähigkeitsstufe)¦Restaure 8 % des PV à vous et aux membres du groupe proches (+1 %p par niveau de compétence)¦Restaura un 8% de salud a ti y a los miembros del grupo cercanos (+1%p por nivel de habilidad)¦Restaura 8% da vida de você e dos membros do grupo próximos (+1%p por nível de habilidade)¦为你和附近的队友恢复 8% 生命(每级技能 +1%p)
+762¦跳弾¦Querschläger¦Ricochet¦Rebote¦Ricochete¦跳弹
+763¦跳弾ブレード¦Querschläger-Klingen¦Lames à ricochet¦Cuchillas de rebote¦Lâminas de ricochete¦跳弹飞刀
+764¦跳弾ラウンド¦Querschläger-Munition¦Munitions à ricochet¦Munición de rebote¦Munição de ricochete¦跳弹子弹
+765¦ロケットランチャー¦Raketenwerfer¦Lance-roquettes¦Lanzacohetes¦Lança-foguetes¦火箭发射器
+766¦装備ガチャを{number1}回引く¦Ziehe {number1} Mal Ausrüstung¦Tirez {number1} fois de l'équipement¦Tira equipo {number1} veces¦Sorteie equipamento {number1} vezes¦抽取装备 {number1} 次
+767¦新米シューター¦Anfänger-Schütze¦Tireur débutant¦Tirador novato¦Atirador novato¦新手射手
+768¦遺跡¦Ruinen¦Ruines¦Ruinas¦Ruínas¦遗迹
+769¦走ってきて爆発します。近づかれる前に倒そう。¦Rennt heran und explodiert. Schalte es aus, bevor es nah genug kommt.¦Court vers vous et explose. Éliminez-le avant qu'il n'approche.¦Corre hacia ti y explota. Elimínalo antes de que se acerque.¦Corre até você e explode. Elimine-o antes que chegue perto.¦会冲过来自爆。在它靠近前解决它。
+770¦素早く突進し、毒針を連続で撃ち込みます。¦Stürmt schnell heran und feuert nacheinander Giftstachel ab.¦Fonce rapidement en tirant des dards empoisonnés à la suite.¦Embiste rápido disparando aguijones venenosos en sucesión.¦Avança rápido disparando ferrões venenosos em sequência.¦高速冲来,连续射出毒刺。
+771¦錆びた¦Rostig¦Rouillé¦Oxidado¦Enferrujado¦生锈的
+772¦錆びた弾¦Rostige Kugeln¦Balles rouillées¦Balas oxidadas¦Balas enferrujadas¦生锈的子弹
+773¦錆びた火炎放射器¦Rostiger Flammenwerfer¦Lance-flammes rouillé¦Lanzallamas oxidado¦Lança-chamas enferrujado¦生锈的火焰喷射器
+774¦錆びたピストル¦Rostige Pistole¦Pistolet rouillé¦Pistola oxidada¦Pistola enferrujada¦生锈的手枪
+775¦錆びたプラズマキャノン¦Rostige Plasmakanone¦Canon à plasma rouillé¦Cañón de plasma oxidado¦Canhão de plasma enferrujado¦生锈的等离子加农炮
+776¦錆びたレールガン¦Rostige Railgun¦Canon à rails rouillé¦Cañón de riel oxidado¦Canhão de trilhos enferrujado¦生锈的轨道炮
+777¦錆びたリボルバー¦Rostiger Revolver¦Revolver rouillé¦Revólver oxidado¦Revólver enferrujado¦生锈的左轮
+778¦錆びたライフル¦Rostiges Gewehr¦Fusil rouillé¦Rifle oxidado¦Rifle enferrujado¦生锈的步枪
+779¦錆びたロケットランチャー¦Rostiger Raketenwerfer¦Lance-roquettes rouillé¦Lanzacohetes oxidado¦Lança-foguetes enferrujado¦生锈的火箭发射器
+780¦錆びたSMG¦Rostige MP¦Pistolet-mitrailleur rouillé¦Subfusil oxidado¦Submetralhadora enferrujada¦生锈的冲锋枪
+781¦錆びたショットガン¦Rostige Schrotflinte¦Fusil à pompe rouillé¦Escopeta oxidada¦Espingarda enferrujada¦生锈的霰弹枪
+782¦錆びたスナイパー¦Rostiges Scharfschützengewehr¦Sniper rouillé¦Francotirador oxidado¦Sniper enferrujado¦生锈的狙击枪
+783¦賢者¦Weiser¦Sage¦Sabio¦Sábio¦贤者
+784¦賢者の知恵¦Weisheit des Weisen¦Sagesse du sage¦Sabiduría del sabio¦Sabedoria do sábio¦贤者的智慧
+785¦斥候¦Späher¦Éclaireur¦Explorador¦Batedor¦斥候
+786¦炎の海¦Flammenmeer¦Mer de flammes¦Mar de llamas¦Mar de chamas¦火焰之海
+787¦影の牙¦Schattenzahn¦Croc d'ombre¦Colmillo de sombra¦Presa de sombra¦暗影之牙
+788¦影の連射銃¦Schatten-Schnellfeuerwaffe¦Arme à tir rapide d'ombre¦Arma de ráfaga de sombra¦Arma de tiro rápido de sombra¦暗影速射枪
+789¦影のライフル¦Schattengewehr¦Fusil d'ombre¦Rifle de sombra¦Rifle de sombra¦暗影步枪
