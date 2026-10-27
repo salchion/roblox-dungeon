@@ -316,9 +316,14 @@ function Lobby.Build()
 		{ X = -40, Z = 92, R = 20 },  -- 랭킹판 / 명예의 전당
 	})
 
+	-- 내가 직접 정한 시작 위치: Workspace 안에 "CustomSpawn" 이라는 이름의 부품(Part / SpawnLocation 아무거나)을 놓으면 그 자리에서 시작한다
+	local customSpawn = workspace:FindFirstChild("CustomSpawn", true)
+	local customCF = customSpawn and customSpawn:IsA("BasePart") and customSpawn.CFrame or nil
+	if customSpawn and customSpawn:IsA("BasePart") then customSpawn.Transparency = 1 end
+
 	-- 기본 맵에 원래 있던 스폰 패드는 지운다 (남겨두면 플레이어가 엉뚱한 곳에서 시작할 수 있음)
 	for _, descendant in ipairs(workspace:GetDescendants()) do
-		if descendant:IsA("SpawnLocation") then
+		if descendant:IsA("SpawnLocation") and descendant ~= customSpawn then
 			descendant:Destroy()
 		end
 	end
@@ -357,6 +362,7 @@ function Lobby.Build()
 	spawn.Size = Vector3.new(12, 1, 12)
 	-- 시작 위치: 마을 서쪽 끝(9시)에서 동쪽(필드 문)을 보고 선다 -> 정면은 필드, 왼쪽(북)은 던전 길, 오른쪽(남)은 허수아비 / 대장간 / 뽑기
 	spawn.CFrame = CFrame.lookAt(Vector3.new(HILL_NX, TOP + HILL_H + 0.5, HILL_NZ), Vector3.new(HILL_NX + 1, TOP + HILL_H + 0.5, HILL_NZ))
+	if customCF then spawn.CFrame = customCF end -- (CustomSpawn 이 있으면 그 자리)
 	spawn.Transparency = 1
 	spawn.CanCollide = false
 	spawn.Neutral = true
@@ -1034,7 +1040,7 @@ function Lobby.Build()
 	if not okDecor then warn("LobbyDecor 실패: " .. tostring(decorErr)) end
 
 	return {
-		SpawnCFrame = CFrame.lookAt(Vector3.new(HILL_NX, TOP + HILL_H + 5, HILL_NZ), Vector3.new(HILL_NX + 1, TOP + HILL_H + 5, HILL_NZ)), -- 마을 서쪽 끝(9시) 높은 언덕 위에서 동쪽(필드 문)을 본다
+		SpawnCFrame = customCF and (customCF + Vector3.new(0, 5, 0)) or CFrame.lookAt(Vector3.new(HILL_NX, TOP + HILL_H + 5, HILL_NZ), Vector3.new(HILL_NX + 1, TOP + HILL_H + 5, HILL_NZ)), -- 마을 서쪽 끝(9시) 높은 언덕 위에서 동쪽(필드 문)을 본다
 		GatePrompt = gatePrompt, -- (호환용: 첫 번째 게이트)
 		Gates = gates,
 		AnvilPrompt = anvilPrompt,
