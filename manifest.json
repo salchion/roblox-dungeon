@@ -706,6 +706,13 @@
       "name": "NumberLabelFilter",
       "class": "LocalScript",
       "overwrite": true
+    },
+    {
+      "path": "LocalizeClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "LocalizeClient",
+      "class": "LocalScript",
+      "overwrite": true
     }
   ]
 }
