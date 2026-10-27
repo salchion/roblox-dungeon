@@ -771,6 +771,13 @@
       "overwrite": true
     },
     {
+      "path": "Shared/Loc_ja_3.lua",
+      "parent": "ReplicatedStorage",
+      "name": "Loc_ja_3",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Shared/Loc_ko.lua",
       "parent": "ReplicatedStorage",
       "name": "Loc_ko",
