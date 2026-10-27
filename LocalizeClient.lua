@@ -28,19 +28,74 @@ print(string.format("[LocalizeClient] 번역기 언어 %s · RobloxLocaleId %s �
 	localeId, tostring(LocalizationService.RobloxLocaleId), tostring(LocalizationService.SystemLocaleId), tostring(player.LocaleId)))
 if string.sub(localeId, 1, 2) == "en" then return end -- 원본 언어(영어)이면 번역할 게 없다
 
-local memo = {}
+-- 크리에이터 허브 번역표(CSV)를 게임 안에 넣어 둔 언어별 모듈 (Shared/Loc_xx.lua, Tools/build_loc.py 로 만든다).
+-- 로블록스가 번역표를 클라이언트에 내려주지 않아서(Translate 가 항상 영어 그대로 돌려줌) 직접 찾아 쓴다.
+local LANG_MODULE = {
+	ko = "Loc_ko", ja = "Loc_ja", de = "Loc_de", fr = "Loc_fr", es = "Loc_es", pt = "Loc_pt",
+	["zh-cn"] = "Loc_zh_hans", ["zh-hans"] = "Loc_zh_hans",
+}
+local dict
+do
+	local moduleName = LANG_MODULE[localeId] or LANG_MODULE[string.sub(localeId, 1, 2)]
+	local module = moduleName and game:GetService("ReplicatedStorage"):FindFirstChild(moduleName)
+	if module then
+		local okM, data = pcall(require, module)
+		if okM and typeof(data) == "table" then dict = data end
+	end
+	print(string.format("[LocalizeClient] 내장 번역표: %s", dict and (moduleName .. " 불러옴") or ("없음 (" .. localeId .. ")")))
+end
+
+-- 숫자 자리표시자({number1}) 가 있는 항목은 패턴으로 바꿔 둔다: "Enemy HP +{number1}%" -> "^Enemy HP %+([%-]?%d[%d,%.]*)%%$"
+local NUMBER_CAPTURE = "(%-?%d[%d,%.]*)"
+local compiled = {}
+if dict and dict.templates then
+	for _, pair in ipairs(dict.templates) do
+		local source, translation = pair[1], pair[2]
+		local pattern, names, position = {}, {}, 1
+		while true do
+			local a, b, number = string.find(source, "{number(%d+)}", position)
+			local plain = string.sub(source, position, (a or #source + 1) - 1)
+			table.insert(pattern, (string.gsub(plain, "[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%0")))
+			if not a then break end
+			table.insert(pattern, NUMBER_CAPTURE)
+			table.insert(names, number)
+			position = b + 1
+		end
+		table.insert(compiled, { Pattern = "^" .. table.concat(pattern) .. "$", Names = names, To = translation })
+	end
+end
+
+local function lookupDict(piece)
+	if not dict then return nil end
+	local hit = dict.exact[piece]
+	if hit then return hit end
+	for i = 1, #compiled do
+		local entry = compiled[i]
+		local captures = { string.match(piece, entry.Pattern) }
+		if #captures > 0 then
+			local byName = {}
+			for k, name in ipairs(entry.Names) do byName[name] = captures[k] end
+			return (string.gsub(entry.To, "{number(%d+)}", function(name) return byName[name] or ("{number" .. name .. "}") end))
+		end
+	end
+	return nil
+end
+
+local memo, memoCount = {}, 0
 local function translatePiece(obj, piece)
 	if piece == "" or not string.find(piece, "%a%a%a") then return nil end -- (영어 단어가 없는 글자는 번역할 게 없다)
 	local cached = memo[piece]
 	if cached ~= nil then return cached or nil end
-	local result
-	local okT, translated = pcall(function() return translator:Translate(obj, piece) end)
-	if okT and translated and translated ~= piece then result = translated end
+	local result = lookupDict(piece)
 	if not result then
-		local okG, generic = pcall(function() return translator:Translate(game, piece) end)
-		if okG and generic and generic ~= piece then result = generic end
+		local okT, translated = pcall(function() return translator:Translate(obj, piece) end)
+		if okT and translated and translated ~= piece then result = translated end
 	end
-	if #piece < 200 then memo[piece] = result or false end -- (긴 글은 캐시에 쌓지 않는다)
+	if #piece < 200 then
+		memoCount += 1
+		if memoCount > 4000 then memo, memoCount = {}, 0 end -- (숫자가 계속 바뀌는 글자가 캐시를 키우지 않게)
+		memo[piece] = result or false
+	end
 	return result
 end
 
