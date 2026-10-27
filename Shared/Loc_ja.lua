@@ -1477,6 +1477,8 @@ return {
 		["Event Room"] = "イベントルーム",
 		["Final weapon"] = "最終武器",
 		["Finding target..."] = "ターゲットを探しています...",
+		["Fireball"] = "ファイアボール",
+		["Flies straight and hits one enemy"] = "まっすぐ飛んで敵1体に命中します",
 	},
 	templates = {
 	},

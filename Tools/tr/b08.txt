@@ -1,0 +1,180 @@
+1300¦ファイアボール¦Feuerball¦Boule de feu¦Bola de fuego¦Bola de fogo¦火球
+1301¦{number1}発の散弾を扇状に発射¦Feuert {number1} Schrotkugeln im Fächer ab¦Tire {number1} plombs en éventail¦Dispara {number1} perdigones en abanico¦Dispara {number1} balins em leque¦呈扇形发射 {number1} 颗弹丸
+1302¦まっすぐ飛んで敵1体に命中します¦Fliegt geradeaus und trifft einen Gegner¦Vole en ligne droite et touche un ennemi¦Vuela recto y golpea a un enemigo¦Voa reto e atinge um inimigo¦直线飞行,命中一个敌人
+1303¦空色の光のビームを追いかけよう¦Folge dem himmelblauen Lichtstrahl¦Suivez le faisceau lumineux bleu ciel¦Sigue el haz de luz celeste¦Siga o feixe de luz azul-celeste¦跟随天蓝色光束
+1304¦本日の無料 {number1}/{number2}¦Heute gratis {number1}/{number2}¦Gratuit aujourd'hui {number1}/{number2}¦Gratis hoy {number1}/{number2}¦Grátis hoje {number1}/{number2}¦今日免费 {number1}/{number2}
+1305¦ガチャ機械¦Gacha-Automat¦Machine gacha¦Máquina de gacha¦Máquina de gacha¦扭蛋机
+1306¦ゲート¦Tor¦Porte¦Puerta¦Portão¦大门
+1307¦ヘイスト¦Hast¦Hâte¦Prisa¦Aceleração¦急速
+1308¦次の部屋へ向かおう¦Gehe zum nächsten Raum¦Rendez-vous dans la salle suivante¦Ve a la siguiente sala¦Vá para a próxima sala¦前往下一个房间
+1309¦回復¦Heilen¦Soin¦Curar¦Curar¦治疗
+1310¦重砲弾¦Schwere Granate¦Obus lourd¦Proyectil pesado¦Projétil pesado¦重型炮弹
+1311¦命中¦Treffer¦Touché¦Golpe¦Acerto¦命中
+1312¦パーティー中¦In Gruppe¦En groupe¦En grupo¦Em grupo¦队伍中
+1313¦進行中¦Läuft¦En cours¦En curso¦Em andamento¦进行中
+1314¦情報¦Info¦Infos¦Info¦Info¦信息
+1315¦招待¦Einladen¦Inviter¦Invitar¦Convidar¦邀请
+1316¦キック¦Rauswerfen¦Exclure¦Expulsar¦Expulsar¦踢出
+1317¦撃破¦Kill¦Élimination¦Baja¦Abate¦击杀
+1318¦大¦Groß¦Grand¦Grande¦Grande¦大
+1319¦{number1}秒間持続¦Hält {number1} s¦Dure {number1} s¦Dura {number1} s¦Dura {number1} s¦持续 {number1} 秒
+1320¦退出¦Verlassen¦Quitter¦Salir¦Sair¦离开
+1321¦ダンジョンを出る¦Dungeon verlassen¦Quitter le donjon¦Salir de la mazmorra¦Sair da masmorra¦离开地下城
+1322¦光の矢¦Lichtblitz¦Trait de lumière¦Rayo de luz¦Raio de luz¦光之箭
+1323¦一覧¦Liste¦Liste¦Lista¦Lista¦列表
+1324¦ロビーのプレイヤー(招待)¦Lobby-Spieler (Einladen)¦Joueurs du hall (inviter)¦Jugadores del lobby (invitar)¦Jogadores do lobby (convidar)¦大厅玩家(邀请)
+1325¦今回は運が良かった¦Diesmal Glück gehabt¦De la chance cette fois¦Suerte esta vez¦Sorte desta vez¦这次运气不错
+1326¦最大レベル¦MAX. STUFE¦NIVEAU MAX¦NIVEL MÁXIMO¦NÍVEL MÁXIMO¦已满级
+1327¦最大HP¦Max. LP¦PV max¦Vida máx.¦Vida máx.¦最大生命
+1328¦モデル¦Modell¦Modèle¦Modelo¦Modelo¦模型
+1329¦モンスター¦Monster¦Monstres¦Monstruos¦Monstros¦怪物
+1330¦残りモンスター: {number1}¦Verbleibende Monster: {number1}¦Monstres restants : {number1}¦Monstruos restantes: {number1}¦Monstros restantes: {number1}¦剩余怪物:{number1}
+1331¦移動速度¦Lauftempo¦Vitesse de déplacement¦Velocidad de movimiento¦Velocidade de movimento¦移动速度
+1332¦移動中¦Unterwegs¦En déplacement¦En movimiento¦Em movimento¦移动中
+1333¦自分の武器 · 発射デモ¦Meine Waffe · Feuer-Demo¦Mon arme · Démo de tir¦Mi arma · Demo de disparo¦Minha arma · Demo de tiro¦我的武器 · 开火演示
+1334¦NEAR MISSは{number1}秒持続 · 途切れても最低{number2}スタックは維持¦NEAR MISS hält {number1} s · behält mindestens {number2} Stapel, auch wenn die Serie reißt¦NEAR MISS dure {number1} s · conserve au moins {number2} cumuls même si la série s'interrompt¦NEAR MISS dura {number1} s · mantiene al menos {number2} acumulaciones aunque se rompa¦NEAR MISS dura {number1} s · mantém pelo menos {number2} acúmulos mesmo se quebrar¦NEAR MISS 持续 {number1} 秒 · 即使中断也至少保留 {number2} 层
+1335¦次の時代 · +{number1}¦NÄCHSTE ÄRA · +{number1}¦ÈRE SUIVANTE · +{number1}¦SIGUIENTE ERA · +{number1}¦PRÓXIMA ERA · +{number1}¦下一时代 · +{number1}
+1336¦新時代¦Neue Ära¦Nouvelle ère¦Nueva era¦Nova era¦新时代
+1337¦新しい見た目と弾の色¦Neues Aussehen und neue Schussfarbe¦Nouvelle apparence et nouvelle couleur de tir¦Nuevo aspecto y color de disparo¦Novo visual e cor de tiro¦新外观与新弹色
+1338¦バフなし(すでに最大)¦Kein Bonus (bereits am Maximum)¦Pas de bonus (déjà au maximum)¦Sin mejora (ya al máximo)¦Sem bônus (já no máximo)¦无增益(已达上限)
+1339¦まだパーティーがありません。¦Noch keine Gruppe.¦Pas encore de groupe.¦Aún no hay grupo.¦Ainda não há grupo.¦还没有队伍。
+1340¦下から誰かを招待しよう！¦Lade unten jemanden ein!¦Invitez quelqu'un ci-dessous !¦¡Invita a alguien abajo!¦Convide alguém abaixo!¦在下方邀请其他人吧!
+1341¦ペナルティなし！¦Kein Nachteil!¦Pas de malus !¦¡Sin penalización!¦Sem penalidade!¦无惩罚!
+1342¦まだ記録がありません¦Noch keine Einträge¦Aucun record pour l'instant¦Aún no hay registros¦Ainda não há registros¦暂无记录
+1343¦まだなし¦Noch keine¦Aucun pour l'instant¦Ninguno todavía¦Nenhum ainda¦暂无
+1344¦順序¦Reihenfolge¦Ordre¦Orden¦Ordem¦顺序
+1345¦パッシブ¦Passiv¦Passif¦Pasiva¦Passiva¦被动
+1346¦特性(このダンジョン限定)¦Vorteile (nur in diesem Dungeon)¦Avantages (ce donjon uniquement)¦Ventajas (solo en esta mazmorra)¦Vantagens (somente nesta masmorra)¦特性(仅限本地下城)
+1347¦ペット¦Begleiter¦Familier¦Mascota¦Pet¦宠物
+1348¦最大{number1}体を貫通します¦Durchschlägt bis zu {number1} Gegner¦Transperce jusqu'à {number1} ennemis¦Atraviesa hasta {number1} enemigos¦Perfura até {number1} inimigos¦最多穿透 {number1} 个敌人
+1349¦範囲 {number1} · ダメージ x{number2}¦Radius {number1} · Schaden x{number2}¦Rayon {number1} · Dégâts x{number2}¦Radio {number1} · Daño x{number2}¦Raio {number1} · Dano x{number2}¦范围 {number1} · 伤害 x{number2}
+1350¦虹のオーブ¦Regenbogenkugel¦Orbe arc-en-ciel¦Orbe arcoíris¦Orbe arco-íris¦彩虹光球
+1351¦レベル{number1}に到達すると突破できます¦Erreiche Stufe {number1}, um durchzubrechen¦Atteignez le niveau {number1} pour percer¦Alcanza el nivel {number1} para superar el límite¦Alcance o nível {number1} para avançar¦达到 {number1} 级即可突破
+1352¦削除¦Entfernen¦Retirer¦Quitar¦Remover¦移除
+1353¦HPを{number1}%回復します¦Stellt {number1} % LP wieder her¦Restaure {number1} % des PV¦Restaura un {number1}% de salud¦Restaura {number1}% da vida¦恢复 {number1}% 生命
+1354¦成功！¦ERFOLG!¦RÉUSSITE !¦¡ÉXITO!¦SUCESSO!¦成功!
+1355¦確認済み¦Gesehen¦Vu¦Visto¦Visto¦已见过
+1356¦ショット¦Schuss¦Tir¦Disparo¦Tiro¦射击
+1357¦スキルはフィールドとダンジョンでのみ使用できます。¦Fähigkeiten können nur im Feld und in Dungeons genutzt werden.¦Les compétences ne peuvent être utilisées que sur le terrain et dans les donjons.¦Las habilidades solo se pueden usar en el campo y en las mazmorras.¦As habilidades só podem ser usadas no campo e nas masmorras.¦技能只能在野外和地下城中使用。
+1358¦スキル·成長¦Fähigkeiten·Wachstum¦Compétences·Croissance¦Habilidades·Crecimiento¦Habilidades·Crescimento¦技能·成长
+1359¦スキップ¦Überspringen¦Passer¦Saltar¦Pular¦跳过
+1360¦小¦Klein¦Petit¦Pequeño¦Pequeno¦小
+1361¦小さな弾¦Kleine Kugel¦Petite balle¦Bala pequeña¦Bala pequena¦小子弹
+1362¦速度¦Tempo¦Vitesse¦Velocidad¦Velocidade¦速度
+1363¦開始¦Start¦Démarrer¦Iniciar¦Iniciar¦开始
+1364¦突破開始¦Durchbruch starten¦Démarrer la percée¦Iniciar superación¦Iniciar avanço¦开始突破
+1365¦訓練開始¦Training starten¦Démarrer l'entraînement¦Iniciar entrenamiento¦Iniciar treino¦开始训练
+1366¦開始中¦Wird gestartet¦Démarrage¦Iniciando¦Iniciando¦启动中
+1367¦ステップ¦Schritt¦Étape¦Paso¦Etapa¦阶段
+1368¦ストローク¦Strich¦Trait¦Trazo¦Traço¦描边
+1369¦(失敗時は維持)¦(bleibt bei Fehlschlag erhalten)¦(conservé en cas d'échec)¦(se mantiene al fallar)¦(mantido em caso de falha)¦(失败时保留)
+1370¦{number1}秒生き残れ¦Überlebe {number1} s¦Survivez {number1} s¦Sobrevive {number1} s¦Sobreviva {number1} s¦存活 {number1} 秒
+1371¦生き延びてボスを倒した！¦Überlebt und den Boss besiegt!¦Vous avez survécu et vaincu le boss !¦¡Sobreviviste y derrotaste al jefe!¦Você sobreviveu e derrotou o chefe!¦成功存活并击败了首领!
+1372¦デッドアイをタップ！¦TIPPE AUF DEAD EYE!¦TOUCHEZ DEAD EYE !¦¡TOCA OJO DE MUERTE!¦TOQUE EM OLHO DA MORTE!¦点击神射手!
+1373¦称号(実績で解放され、ネームプレートに表示されます)¦Titel (durch Erfolge freigeschaltet, auf deinem Namensschild angezeigt)¦Titres (débloqués via les succès, affichés sur votre plaque de nom)¦Títulos (se desbloquean con logros y aparecen en tu placa de nombre)¦Títulos (desbloqueados por conquistas, exibidos na sua placa de nome)¦称号(通过成就解锁,显示在你的名牌上)
+1374¦今日のクエスト¦Heutige Quests¦Quêtes du jour¦Misiones de hoy¦Missões de hoje¦今日任务
+1375¦訓練¦Trainieren¦Entraîner¦Entrenar¦Treinar¦训练
+1376¦訓練用ダミー¦Trainingspuppe¦Mannequin d'entraînement¦Muñeco de entrenamiento¦Boneco de treino¦训练木桩
+1377¦必殺¦Ult¦Ult¦Def.¦Supremo¦大招
+1378¦強化 {number1} G¦Verbessern {number1} G¦Améliorer {number1} or¦Mejorar {number1} G¦Melhorar {number1} G¦强化 {number1} 金币
+1379¦到達したどのゾーンのキャンプにもワープできます。フィールドで死ぬと最寄りのキャンプで復活します。¦Warpe zum Lager jeder Zone, die du erreicht hast. Wenn du im Feld stirbst, erscheinst du im nächsten Lager wieder.¦Téléportez-vous au camp de n'importe quelle zone atteinte. Si vous mourez sur le terrain, vous réapparaissez au camp le plus proche.¦Teletranspórtate al campamento de cualquier zona que hayas alcanzado. Si mueres en el campo, reapareces en el campamento más cercano.¦Teletransporte-se para o acampamento de qualquer zona que você alcançou. Se morrer no campo, você renasce no acampamento mais próximo.¦可传送到你已到达的任意区域营地。在野外死亡会在最近的营地复活。
+1380¦ウェーブ¦Welle¦Vague¦Oleada¦Onda¦波次
+1381¦今なら突破できます！¦Du kannst jetzt durchbrechen!¦Vous pouvez percer maintenant !¦¡Ya puedes superar el límite!¦Você já pode avançar!¦现在可以突破了!
+1382¦ゾーン {number1} / {number2}¦Zone {number1} / {number2}¦Zone {number1} / {number2}¦Zona {number1} / {number2}¦Zona {number1} / {number2}¦区域 {number1} / {number2}
+1383¦フィールド制覇¦Feld erobert¦terrain conquis¦campo conquistado¦campo conquistado¦野外已征服
+1384¦レベルから¦durch Stufe¦grâce au niveau¦por nivel¦pelo nível¦来自等级
+1385¦最大90%¦max. 90 %¦max 90 %¦máx. 90%¦máx. 90%¦最高 90%
+1386¦最大 · クリティカルダメージ +{number1}%¦max. · Krit-Schaden +{number1} %¦max · dégâts critiques +{number1} %¦máx. · daño crítico +{number1}%¦máx. · dano crítico +{number1}%¦已满 · 暴击伤害 +{number1}%
+1387¦⏱ スキップゲージ¦⏱ Überspring-Anzeige¦⏱ Jauge d'accélération¦⏱ Medidor de salto¦⏱ Medidor de salto¦⏱ 跳过进度
+1388¦⏱ タイムスキップ¦⏱ Zeitsprung¦⏱ Saut temporel¦⏱ Salto de tiempo¦⏱ Salto de tempo¦⏱ 时间跳跃
+1389¦所持      🏋 訓練スロット¦im Besitz      🏋 Trainingsplätze¦possédés      🏋 Emplacements d'entraînement¦obtenidos      🏋 Ranuras de entrenamiento¦possuídos      🏋 Espaços de treino¦已拥有      🏋 训练栏位
+1390¦使用中¦in Benutzung¦utilisé¦en uso¦em uso¦使用中
+1391¦訓練と突破は時間経過で自動的に完了します(オフライン中も)。タイムスキップで待ち時間を短縮でき、クエストでも少しずつ手に入ります。お金を使わなくてもすべてに到達できます。¦Training und Durchbrüche enden mit der Zeit von selbst (auch offline). Zeitsprünge verkürzen die Wartezeit, und du verdienst sie auch langsam durch Quests. Du kannst alles ohne Geldausgabe erreichen.¦L'entraînement et les percées se terminent d'eux-mêmes avec le temps (même hors ligne). Les sauts temporels raccourcissent l'attente, et vous en gagnez aussi lentement via les quêtes. Vous pouvez tout atteindre sans dépenser d'argent.¦El entrenamiento y las superaciones terminan solos con el tiempo (incluso sin conexión). Los saltos de tiempo acortan la espera y también los ganas poco a poco con misiones. Puedes llegar a todo sin gastar dinero.¦Treino e avanços terminam sozinhos com o tempo (mesmo offline). Saltos de tempo encurtam a espera e você também os ganha aos poucos com missões. Você pode alcançar tudo sem gastar dinheiro.¦训练和突破会随时间自动完成(离线时也一样)。时间跳跃可缩短等待时间,也能通过任务慢慢获得。无需花钱即可达成一切。
+1392¦⏱ タイムスキップを使う¦⏱ Zeitsprung nutzen¦⏱ Utiliser un saut temporel¦⏱ Usar salto de tiempo¦⏱ Usar salto de tempo¦⏱ 使用时间跳跃
+1393¦あと{number1}¦noch {number1}¦encore {number1}¦{number1} más¦mais {number1}¦还差 {number1}
+1394¦に進化¦Weiterentwicklung zu¦pour évoluer en¦para evolucionar a¦para evoluir para¦进化为
+1395¦で解放¦zum Freischalten¦pour débloquer¦para desbloquear¦para desbloquear¦解锁
+1396¦▼ デッドアイをタップ！¦▼ Tippe auf Dead Eye!¦▼ Touchez Dead Eye !¦▼ ¡Toca Ojo de Muerte!¦▼ Toque em Olho da Morte!¦▼ 点击神射手!
+1397¦★ レア¦★ Selten¦★ Rare¦★ Raro¦★ Raro¦★ 稀有
+1398¦⚔ アクティブスキル — フィールド/ダンジョンでキーを押して使用(C 回復 · V 必殺技)。ゴールドでレベルアップすると強くなりクールダウンが短くなります¦⚔ Aktive Fähigkeiten – im Feld / in Dungeons die Taste drücken (C Heilen · V Ultimate). Mit Gold aufwerten für mehr Stärke und kürzere Abklingzeiten¦⚔ Compétences actives — appuyez sur la touche sur le terrain / en donjon (C Soin · V Ultime). Montez-les de niveau avec de l'or pour les renforcer et réduire les récupérations¦⚔ Habilidades activas — pulsa la tecla en el campo / mazmorras (C Curar · V Definitiva). Sube de nivel con oro para ser más fuerte y reducir enfriamientos¦⚔ Habilidades ativas — pressione a tecla no campo / masmorras (C Curar · V Supremo). Suba de nível com ouro para ficar mais forte e reduzir recargas¦⚔ 主动技能 — 在野外/地下城按键使用(C 治疗 · V 大招)。用金币升级可增强并缩短冷却
+1399¦⚙ 設定(H)¦⚙ Einstellungen (H)¦⚙ Paramètres (H)¦⚙ Ajustes (H)¦⚙ Configurações (H)¦⚙ 设置 (H)
+1400¦⚠ モンスターが溢れています！{number1}秒以内に減らそう！({number2} / {number3})¦⚠ Monster überrennen dich! Dünne sie innerhalb von {number1} s aus! ({number2} / {number3})¦⚠ Invasion de monstres ! Éclaircissez-les en {number1} s ! ({number2} / {number3})¦⚠ ¡Invasión de monstruos! ¡Redúcelos en {number1} s! ({number2} / {number3})¦⚠ Invasão de monstros! Reduza-os em {number1} s! ({number2} / {number3})¦⚠ 怪物泛滥!请在 {number1} 秒内削减数量!({number2} / {number3})
+1401¦✦ ミシック ✦¦✦ MYTHISCH ✦¦✦ MYTHIQUE ✦¦✦ MÍTICO ✦¦✦ MÍTICO ✦¦✦ 神话 ✦
+1402¦✨ 無料！¦✨ Gratis!¦✨ Gratuit !¦✨ ¡Gratis!¦✨ Grátis!¦✨ 免费!
+1403¦✨ 解放 · 進化！ ✨¦✨ Freischalten · Weiterentwickeln! ✨¦✨ Débloquer · Évoluer ! ✨¦✨ ¡Desbloquear · Evolucionar! ✨¦✨ Desbloquear · Evoluir! ✨¦✨ 解锁 · 进化! ✨
+1404¦⬆ より強い装備を自動装備¦⬆ Stärkere Ausrüstung automatisch anlegen¦⬆ Équiper automatiquement un meilleur équipement¦⬆ Equipar automáticamente equipo más fuerte¦⬆ Equipar automaticamente equipamento mais forte¦⬆ 自动装备更强的装备
+1405¦🌐 言語:¦🌐 Sprache:¦🌐 Langue :¦🌐 Idioma:¦🌐 Idioma:¦🌐 语言:
+1406¦🌟 レア確定！¦🌟 Garantiert Selten!¦🌟 Rare garanti !¦🌟 ¡Raro garantizado!¦🌟 Raro garantido!¦🌟 必出稀有!
+1407¦🌿 パッシブスキル — 常に有効でキー入力は不要。ゴールドでレベルアップ¦🌿 Passive Fähigkeiten – immer aktiv, kein Tastendruck nötig. Mit Gold aufwerten¦🌿 Compétences passives — toujours actives, aucune touche à presser. Montez-les de niveau avec de l'or¦🌿 Habilidades pasivas — siempre activas, sin pulsar teclas. Sube de nivel con oro¦🌿 Habilidades passivas — sempre ativas, sem pressionar teclas. Suba de nível com ouro¦🌿 被动技能 — 始终生效,无需按键。用金币升级
+1408¦🎁 ボーナス発動！¦🎁 Bonus ausgelöst!¦🎁 Bonus déclenché !¦🎁 ¡Bono activado!¦🎁 Bônus ativado!¦🎁 触发奖励!
+1409¦⚡ 戦闘力¦⚡ Stärke¦⚡ Puissance¦⚡ Poder¦⚡ Poder¦⚡ 战力
+1410¦🎫 チケット: {number1}¦🎫 Tickets: {number1}¦🎫 Tickets : {number1}¦🎫 Boletos: {number1}¦🎫 Tickets: {number1}¦🎫 门票:{number1}
+1411¦🎯 デッドアイ: 範囲内に敵が必要¦🎯 Dead Eye: Ein Gegner muss in Reichweite sein¦🎯 Dead Eye : un ennemi doit être à portée¦🎯 Ojo de Muerte: debe haber un enemigo al alcance¦🎯 Olho da Morte: um inimigo precisa estar ao alcance¦🎯 神射手:范围内必须有敌人
+1412¦🎯 必殺技ゲージがまだ溜まっていません！(敵を攻撃して溜めよう)¦🎯 Ultimate-Anzeige noch nicht voll! (Greife Gegner an, um sie zu füllen)¦🎯 Jauge d'ultime pas encore pleine ! (Attaquez des ennemis pour la remplir)¦🎯 ¡El medidor de definitiva aún no está lleno! (Ataca enemigos para llenarlo)¦🎯 O medidor do supremo ainda não está cheio! (Ataque inimigos para enchê-lo)¦🎯 大招能量还没满!(攻击敌人来积攒)
+1413¦🎰 {number1}連抽の結果¦🎰 Ergebnisse der {number1}er-Ziehung¦🎰 Résultats du tirage x{number1}¦🎰 Resultados de la tirada x{number1}¦🎰 Resultados do sorteio x{number1}¦🎰 {number1} 连抽结果
+1414¦🎰 マルチ抽選¦🎰 Mehrfachziehung¦🎰 Tirage multiple¦🎰 Tirada múltiple¦🎰 Sorteio múltiplo¦🎰 连抽
+1415¦チケット2枚以上が必要(最大10)¦Benötigt 2+ Tickets (max. 10)¦Nécessite 2+ tickets (max 10)¦Necesita 2+ boletos (máx. 10)¦Precisa de 2+ tickets (máx. 10)¦需要 2 张以上门票(最多 10)
+1416¦すべてのチケットを使用(最大10)¦Verbraucht alle Tickets (max. 10)¦Utilise tous les tickets (max 10)¦Usa todos los boletos (máx. 10)¦Usa todos os tickets (máx. 10)¦使用全部门票(最多 10)
+1417¦🎰 {number1}連抽！¦🎰 {number1}x ziehen!¦🎰 Tirer x{number1} !¦🎰 ¡Tirar x{number1}!¦🎰 Sortear x{number1}!¦🎰 {number1} 连抽!
+1418¦チケット{number1}枚¦{number1} Tickets¦{number1} tickets¦{number1} boletos¦{number1} tickets¦{number1} 张门票
+1419¦🎰 1回抽選¦🎰 1x ziehen¦🎰 Tirer x1¦🎰 Tirar x1¦🎰 Sortear x1¦🎰 单抽
+1420¦チケット1枚¦1 Ticket¦1 ticket¦1 boleto¦1 ticket¦1 张门票
+1421¦🎲 {number1}秒後にランダムボーナス¦🎲 Zufälliger Bonus in {number1} s¦🎲 Bonus aléatoire dans {number1} s¦🎲 Bono aleatorio en {number1} s¦🎲 Bônus aleatório em {number1} s¦🎲 {number1} 秒后随机奖励
+1422¦🏅 実績 — 報酬と称号を獲得しよう¦🏅 Erfolge – verdiene Belohnungen und Titel¦🏅 Succès — gagnez des récompenses et des titres¦🏅 Logros — gana recompensas y títulos¦🏅 Conquistas — ganhe recompensas e títulos¦🏅 成就 — 获得奖励和称号
+1423¦🏆 ダンジョンクリア！¦🏆 Dungeon abgeschlossen!¦🏆 Donjon terminé !¦🏆 ¡Mazmorra completada!¦🏆 Masmorra concluída!¦🏆 地下城通关!
+1424¦🏆 戦闘力ランキング¦🏆 Stärke-Rangliste¦🏆 Classement de puissance¦🏆 Clasificación de poder¦🏆 Ranking de poder¦🏆 战力排行
+1425¦🏆 戦闘力ランキングTOP10(画面右の小さなランキングと同じ)¦🏆 Stärke-Rangliste TOP 10 (wie die kleine Rangliste rechts im Bild)¦🏆 Classement de puissance TOP 10 (identique au petit classement à droite de l'écran)¦🏆 Clasificación de poder TOP 10 (igual que la pequeña clasificación a la derecha de la pantalla)¦🏆 Ranking de poder TOP 10 (igual ao pequeno ranking à direita da tela)¦🏆 战力排行 TOP 10(与屏幕右侧的小排行榜相同)
+1426¦🏋 訓練場 — 永続的に強くなる¦🏋 Trainingsgelände – werde dauerhaft stärker¦🏋 Terrain d'entraînement — devenez durablement plus fort¦🏋 Campo de entrenamiento — hazte más fuerte de forma permanente¦🏋 Campo de treino — fique permanentemente mais forte¦🏋 训练场 — 永久变强
+1427¦🏯 {number1}階¦🏯 Etage {number1}¦🏯 Étage {number1}¦🏯 Piso {number1}¦🏯 Andar {number1}¦🏯 第 {number1} 层
+1428¦👀 プレビュー · 発射デモ¦👀 Vorschau · Feuer-Demo¦👀 Aperçu · Démo de tir¦👀 Vista previa · Demo de disparo¦👀 Prévia · Demo de tiro¦👀 预览 · 开火演示
+1429¦👕 装備の見た目を隠す(武器は残ります):¦👕 Ausrüstungs-Look ausblenden (Waffe bleibt):¦👕 Masquer l'apparence de l'équipement (l'arme reste) :¦👕 Ocultar el aspecto del equipo (el arma permanece):¦👕 Ocultar visual do equipamento (a arma permanece):¦👕 隐藏装备外观(武器保留):
+1430¦👹 モンスター {number1} / {number2}{text3}¦👹 Monster {number1} / {number2}{text3}¦👹 Monstres {number1} / {number2}{text3}¦👹 Monstruos {number1} / {number2}{text3}¦👹 Monstros {number1} / {number2}{text3}¦👹 怪物 {number1} / {number2}{text3}
+1431¦💀 ダンジョン失敗¦💀 Dungeon gescheitert¦💀 Donjon échoué¦💀 Mazmorra fallida¦💀 Masmorra fracassada¦💀 地下城失败
+1432¦💰 {number1} G   強化¦💰 {number1} G   Verbessern¦💰 {number1} or   Améliorer¦💰 {number1} G   Mejorar¦💰 {number1} G   Melhorar¦💰 {number1} 金币   强化
+1433¦📅 今日のデイリークエスト(毎日変わります)¦📅 Heutige Tagesquests (ändern sich täglich)¦📅 Quêtes quotidiennes du jour (changent chaque jour)¦📅 Misiones diarias de hoy (cambian cada día)¦📅 Missões diárias de hoje (mudam todo dia)¦📅 今日的每日任务(每天更换)
+1434¦📊 情報¦📊 Info¦📊 Infos¦📊 Info¦📊 Info¦📊 信息
+1435¦📖 ステータスガイド¦📖 Statusführer¦📖 Guide des stats¦📖 Guía de estadísticas¦📖 Guia de atributos¦📖 属性指南
+1436¦📡 レーダー:¦📡 Radar:¦📡 Radar :¦📡 Radar:¦📡 Radar:¦📡 雷达:
+1437¦📳 画面の揺れ:¦📳 Bildschirmwackeln:¦📳 Tremblement d'écran :¦📳 Vibración de pantalla:¦📳 Tremor de tela:¦📳 屏幕震动:
+1438¦🔇 音楽オフ(M)¦🔇 Musik AUS (M)¦🔇 Musique désactivée (M)¦🔇 Música desactivada (M)¦🔇 Música desligada (M)¦🔇 音乐关闭 (M)
+1439¦🔊 音楽オン(M)¦🔊 Musik AN (M)¦🔊 Musique activée (M)¦🔊 Música activada (M)¦🔊 Música ligada (M)¦🔊 音乐开启 (M)
+1440¦🔊 音楽の音量¦🔊 Musiklautstärke¦🔊 Volume de la musique¦🔊 Volumen de la música¦🔊 Volume da música¦🔊 音乐音量
+1441¦🔍 UIサイズ:¦🔍 UI-Größe:¦🔍 Taille de l'interface :¦🔍 Tamaño de la interfaz:¦🔍 Tamanho da interface:¦🔍 界面大小:
+1442¦🔒 最初の強化は[強化]で自分でやってみよう！x10 / 最大強化はもうすぐ解放されます。¦🔒 Mach deine ersten Verbesserungen selbst mit [Verbessern]! x10 / Max. Verbesserung wird bald freigeschaltet.¦🔒 Faites vos premières améliorations vous-même avec [Améliorer] ! x10 / Amélioration max. bientôt débloquées.¦🔒 ¡Haz tus primeras mejoras tú mismo con [Mejorar]! x10 / Mejora máxima se desbloquean pronto.¦🔒 Faça suas primeiras melhorias você mesmo com [Melhorar]! x10 / Melhoria máxima serão desbloqueados em breve.¦🔒 先自己用[强化]完成最初几次强化吧!x10 / 一键最大强化即将解锁。
+1443¦🔥 より良い装備がドロップしました！({number1}スロット)¦🔥 Bessere Ausrüstung gedroppt! ({number1} Platz/Plätze)¦🔥 Un meilleur équipement est tombé ! ({number1} emplacement(s))¦🔥 ¡Cayó mejor equipo! ({number1} ranura(s))¦🔥 Caiu equipamento melhor! ({number1} espaço(s))¦🔥 掉落了更好的装备!({number1} 个栏位)
+1444¦🔫 武器は5種類 — 強化の節目(15ごと)に1つずつ解放されます。解放した武器から戦う武器を選べます · 現在: {text1}¦🔫 5 Waffentypen – einer pro Verbesserungs-Meilenstein (alle 15). Wähle, mit welcher freigeschalteten Waffe du kämpfst · Jetzt: {text1}¦🔫 5 types d'armes — un se débloque à chaque palier d'amélioration (tous les 15). Choisissez avec quelle arme débloquée combattre · Actuelle : {text1}¦🔫 5 tipos de arma — uno se desbloquea en cada hito de mejora (cada 15). Elige con qué arma desbloqueada luchar · Ahora: {text1}¦🔫 5 tipos de arma — um é desbloqueado a cada marco de melhoria (a cada 15). Escolha com qual arma desbloqueada lutar · Agora: {text1}¦🔫 5 种武器 — 每个强化节点(每 15 级)解锁一种。可在已解锁的武器中选择出战武器 · 当前:{text1}
+1445¦🔫 この武器で戦う¦🔫 Mit dieser Waffe kämpfen¦🔫 Combattre avec cette arme¦🔫 Luchar con esta arma¦🔫 Lutar com esta arma¦🔫 使用此武器战斗
+1446¦🔫 銃声の音量¦🔫 Schusslautstärke¦🔫 Volume des tirs¦🔫 Volumen de disparos¦🔫 Volume dos tiros¦🔫 枪声音量
+1447¦🔫 武器¦🔫 Waffe¦🔫 Arme¦🔫 Arma¦🔫 Arma¦🔫 武器
+1448¦🖥 低スペックモード(ラグ軽減):¦🖥 Low-Spec-Modus (weniger Lag):¦🖥 Mode basse config (moins de lag) :¦🖥 Modo de bajas especificaciones (menos lag):¦🖥 Modo de baixa especificação (menos lag):¦🖥 低配模式(减少卡顿):
+1449¦空(ボスチケットで抽選)¦Leer (mit Boss-Tickets ziehen)¦Vide (tirez avec des tickets de boss)¦Vacío (tira con boletos de jefe)¦Vazio (sorteie com tickets de chefe)¦空(用首领门票抽取)
+1450¦🛡 生き残れ！  {number1}秒¦🛡 Überlebe!  {number1} s¦🛡 Survivez !  {number1} s¦🛡 ¡Sobrevive!  {number1} s¦🛡 Sobreviva!  {number1} s¦🛡 存活!  {number1} 秒
+1451¦🛡 このダミーは防御力が高く、現在の戦闘力では攻撃が弾かれます¦🛡 Diese Puppe hat hohe Verteidigung, daher prallen deine Angriffe mit deiner aktuellen Stärke ab¦🛡 Ce mannequin a une défense élevée : vos attaques rebondissent avec votre puissance actuelle¦🛡 Este muñeco tiene mucha defensa, así que tus ataques rebotan con tu poder actual¦🛡 Este boneco tem defesa alta, então seus ataques ricocheteiam com o seu poder atual¦🛡 这个木桩防御很高,以你目前的战力攻击会被弹开
+1452¦危険¦Gefahr¦Danger¦Peligro¦Perigo¦危险
+1453¦ダッシュ済み¦Gedasht¦Dash effectué¦Impulso usado¦Dash feito¦已冲刺
+1454¦昼¦Tag¦Jour¦Día¦Dia¦白天
+1455¦ドロップ¦Drop¦Butin¦Botín¦Drop¦掉落
+1456¦夕暮れ¦Dämmerung¦Crépuscule¦Anochecer¦Entardecer¦黄昏
+1457¦端¦Rand¦Bord¦Borde¦Borda¦边缘
+1458¦時代 {number1}  ·  武器の見た目と弾の色が変わりました！¦Ära {number1}  ·  Aussehen und Kugelfarbe deiner Waffe haben sich geändert!¦Ère {number1}  ·  L'apparence de votre arme et la couleur des balles ont changé !¦Era {number1}  ·  ¡Cambiaron el aspecto de tu arma y el color de las balas!¦Era {number1}  ·  O visual da sua arma e a cor das balas mudaram!¦时代 {number1}  ·  武器外观和子弹颜色已改变!
+1459¦充填¦Füllen¦Remplir¦Llenar¦Encher¦填充
+1460¦消滅¦Weg¦Disparu¦Desaparecido¦Sumiu¦消失
+1461¦8秒以内に成功し続けると積み重なります。(深淵チャレンジではスコアも上がります)¦Bleibe innerhalb von 8 Sekunden erfolgreich, um weiter zu stapeln. (In Abgrund-Herausforderungen steigt auch deine Punktzahl)¦Enchaînez les réussites en moins de 8 secondes pour continuer à cumuler. (Dans les défis de l'abysse, votre score augmente aussi)¦Sigue teniendo éxito en menos de 8 segundos para seguir acumulando. (En los desafíos del abismo, tu puntuación también sube)¦Continue tendo sucesso em até 8 segundos para continuar acumulando. (Nos desafios do abismo, sua pontuação também sobe)¦在 8 秒内持续成功即可不断叠加。(在深渊挑战中,得分也会提高)
+1462¦左¦Links¦Gauche¦Izquierda¦Esquerda¦左
+1463¦モンスターHP¦Monster-LP¦PV des monstres¦Vida de monstruos¦Vida dos monstros¦怪物生命
+1464¦· 攻撃¦· ANG¦· ATQ¦· ATQ¦· ATQ¦· 攻击
+1465¦|   報酬¦|   Belohnung¦|   Récompense¦|   Recompensa¦|   Recompensa¦|   奖励
+1466¦夜¦Nacht¦Nuit¦Noche¦Noite¦夜晚
+1467¦拾得¦Aufheben¦Ramasser¦Recoger¦Coletar¦拾取
+1468¦レイド¦Raid¦Raid¦Incursión¦Raide¦团本
+1469¦右¦Rechts¦Droite¦Derecha¦Direita¦右
+1470¦☀ 朝が来ました¦☀ Der Morgen ist da¦☀ Le matin est arrivé¦☀ Ha llegado la mañana¦☀ A manhã chegou¦☀ 清晨到来
+1471¦⚠ ゾーン{number1} · {text2} ⚠¦⚠ Zone {number1} · {text2} ⚠¦⚠ Zone {number1} · {text2} ⚠¦⚠ Zona {number1} · {text2} ⚠¦⚠ Zona {number1} · {text2} ⚠¦⚠ 区域{number1} · {text2} ⚠
+1472¦⚡ 25連続撃破！！¦⚡ 25er-Kill-Serie!!¦⚡ Série de 25 éliminations !!¦⚡ ¡¡Racha de 25 bajas!!¦⚡ Sequência de 25 abates!!¦⚡ 25 连杀!!
+1473¦⚡ NEAR MISS！  x{number1}¦⚡ NEAR MISS!  x{number1}¦⚡ NEAR MISS !  x{number1}¦⚡ ¡NEAR MISS!  x{number1}¦⚡ NEAR MISS!  x{number1}¦⚡ NEAR MISS!  x{number1}
+1474¦⚡ 戦闘力 {text1}{number2} {text3}¦⚡ Stärke {text1}{number2} {text3}¦⚡ Puissance {text1}{number2} {text3}¦⚡ Poder {text1}{number2} {text3}¦⚡ Poder {text1}{number2} {text3}¦⚡ 战力 {text1}{number2} {text3}
+1475¦✨ 新時代！ ✨¦✨ Neue Ära! ✨¦✨ Nouvelle ère ! ✨¦✨ ¡Nueva era! ✨¦✨ Nova era! ✨¦✨ 新时代! ✨
+1476¦🌋 200連続 — レジェンダリー！¦🌋 200er-Serie – Legendär!¦🌋 Série de 200 — Légendaire !¦🌋 Racha de 200 — ¡Legendaria!¦🌋 Sequência de 200 — Lendária!¦🌋 200 连杀 — 传说!
+1477¦👑 100連続撃破！！！！¦👑 100er-Kill-Serie!!!!¦👑 Série de 100 éliminations !!!!¦👑 ¡¡¡¡Racha de 100 bajas!!!!¦👑 Sequência de 100 abates!!!!¦👑 100 连杀!!!!
+1478¦💥 50連続撃破！！！¦💥 50er-Kill-Serie!!!¦💥 Série de 50 éliminations !!!¦💥 ¡¡¡Racha de 50 bajas!!!¦💥 Sequência de 50 abates!!!¦💥 50 连杀!!!
+1479¦🔥 10連続撃破！¦🔥 10er-Kill-Serie!¦🔥 Série de 10 éliminations !¦🔥 ¡Racha de 10 bajas!¦🔥 Sequência de 10 abates!¦🔥 10 连杀!
