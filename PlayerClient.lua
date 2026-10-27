@@ -132,6 +132,7 @@ local infoLabel = makeLabel({
 	TextXAlignment = Enum.TextXAlignment.Left,
 	TextYAlignment = Enum.TextYAlignment.Top,
 	RichText = true,
+	AutoLocalize = false, -- 숫자가 계속 바뀌는 긴 글자(레벨 / 골드 / 전투력 ...): 번역 표에 수없이 쌓이고 한도를 쓰는 걸 막는다 (로블록스 글자 캡처가 "too long" 으로 거부하던 글자)
 }, infoPanel)
 
 local xpBack = create("Frame", {
@@ -3930,10 +3931,8 @@ local helpPanel = makePanel({
 	Name = "HelpPanel", Size = UDim2.new(0, 560, 0, 748), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
 }, gui)
 makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8), Text = "⚙ Settings / ❓ Help", Font = Enum.Font.GothamBlack, TextSize = 19 }, helpPanel)
-makeLabel({
-	Size = UDim2.new(1, -40, 0, 280), Position = UDim2.new(0, 20, 0, 50), RichText = true, TextSize = 12,
-	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
-	Text = table.concat({
+do -- 도움말 글: 한 줄을 글자 하나(라벨 하나)로 나눈다 (한 덩어리로 길게 두면 로블록스 번역용 글자 캡처가 "too long" 으로 거부해서 번역이 안 된다)
+	local helpLines = {
 		"<b>Move/Attack</b>  WASD move · Q dash · Mouse click (hold for rapid fire) to attack",
 		"<b>Auto-Attack</b>  R — auto-aims at the nearest enemy (click an enemy to lock onto it)",
 		"<b>Skills</b>  C Emergency Heal · V Ultimate (usable when the gauge is 100% from attacking enemies)  — field/dungeons only",
@@ -3946,8 +3945,20 @@ makeLabel({
 		"3. The northern <b>Dungeon</b> needs a Key. Survive the set time and the boss appears. Random buffs (and penalties) pop up along the way, and you get gear from the boss chest",
 		"4. Clearing Zone 2 unlocks Growth (training). Queue up training, and collect gear sets/uniques to boost your Power",
 		"5. Once the field is conquered, challenge the Final Lord, then the weekly <b>Boss Rush</b> ranking",
-	}, "\n"),
-}, helpPanel)
+		}
+	local helpList = create("Frame", { Size = UDim2.new(1, -40, 0, 280), Position = UDim2.new(0, 20, 0, 50), BackgroundTransparency = 1 }, helpPanel)
+	create("UIListLayout", { Padding = UDim.new(0, 3), SortOrder = Enum.SortOrder.LayoutOrder }, helpList)
+	for index, line in ipairs(helpLines) do
+		if line == "" then
+			create("Frame", { Size = UDim2.new(1, 0, 0, 6), BackgroundTransparency = 1, LayoutOrder = index }, helpList)
+		else
+			makeLabel({
+				Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, RichText = true, TextSize = 12, TextWrapped = true, LayoutOrder = index,
+				TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = line,
+			}, helpList)
+		end
+	end
+end
 
 local function settingButton(y, labelFn, onClick)
 	local button
