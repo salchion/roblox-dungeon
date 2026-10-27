@@ -443,13 +443,13 @@ local function play()
 			if not finished and loading.Parent and loading.IsLoaded then loading:Play() end
 		end)
 	end
-	-- 로딩 화면처럼: 아래 검은 띠에 "Loading the world..." + 돌아가는 팁 (건너뛸 수 없으니 그냥 보게)
+	-- 로딩 화면처럼: 위쪽 검은 띠에 "Loading the world..." + 돌아가는 팁 (건너뛸 수 없으니 그냥 보게)
 	do
 		local caption = Instance.new("TextLabel")
 		caption.BackgroundTransparency = 1
 		caption.AnchorPoint = Vector2.new(0.5, 0.5)
 		caption.Size = UDim2.new(1, -40, 0, 22)
-		caption.Position = UDim2.new(0.5, 0, 0.955, 0)
+		caption.Position = UDim2.new(0.5, 0, 0.05, 0) -- 위쪽 검은 띠 가운데 (아래 띠에는 진행 막대 / 구역 이름이 있어서 겹쳤다)
 		caption.Font = Enum.Font.GothamMedium
 		caption.TextSize = 13
 		caption.TextColor3 = Color3.fromRGB(190, 182, 160)
