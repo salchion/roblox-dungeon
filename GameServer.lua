@@ -135,6 +135,15 @@ end)
 local function onCharacterAdded(player, character)
 	local humanoid = character:WaitForChild("Humanoid")
 	Tutorial.EarlyFreeze(player, character) -- 튜토리얼 상태가 로드되기 전까지 움직이지 못하게 (처음 접속 시)
+	do -- 마을에서 시작할 때는 항상 시작 언덕(lobby.SpawnCFrame)에서: 로블록스가 스폰 패드가 만들어지기 전에 캐릭터를 월드 중앙(0,3,0)에 세워 버리는 경우가 있어서 직접 옮긴다
+		local zone = player:GetAttribute("Zone")
+		if (zone == nil or zone == "Lobby") and not player:GetAttribute("DiedInField") then
+			local rootPart = character:WaitForChild("HumanoidRootPart", 5)
+			if rootPart and (rootPart.Position - lobby.SpawnCFrame.Position).Magnitude > 40 then
+				character:PivotTo(lobby.SpawnCFrame)
+			end
+		end
+	end
 	humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None -- 기본 이름표 대신 전투력/무기 레벨이 보이는 이름표 사용
 	humanoid.MaxHealth = Dungeon.GetMaxHealth(player)
 	humanoid.Health = humanoid.MaxHealth
@@ -763,8 +772,7 @@ Remotes.Intro.OnServerEvent:Connect(function(player, action, x)
 		return
 	end
 	if action ~= "Stream" or introStreamed[player] then return end
-	if (player:GetAttribute("Level") or 1) > 1 or (player:GetAttribute("XP") or 0) > 0 or (player:GetAttribute("WeaponLevel") or 0) > 0 then return end
-	introStreamed[player] = true
+	introStreamed[player] = true -- (오프닝이 접속할 때마다 나오므로 새 유저가 아니어도 필드를 미리 불러 준다)
 	task.spawn(function()
 		local F = Config.Field
 		local last = F.ZoneEnd(F.ZoneCount) + 20
