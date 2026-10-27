@@ -199,11 +199,37 @@ local function start()
 		end
 	end
 
-	UserInputService.InputBegan:Connect(function(input, processed)
-		if processed or input.KeyCode ~= Enum.KeyCode.F6 then return end
+	local function toggle()
 		panel.Visible = not panel.Visible
 		if panel.Visible then task.spawn(refreshLoop) end
+	end
+
+	UserInputService.InputBegan:Connect(function(input, processed)
+		if processed or input.KeyCode ~= Enum.KeyCode.F6 then return end
+		toggle()
 	end)
+
+	-- 폰 / 태블릿(키보드가 없는 기기): F6 키가 없으니 운영자에게만 작은 "Admin" 버튼을 보여 준다 (위쪽 가운데, 접속자 알약 옆). 창은 화면 크기에 맞게 줄인다.
+	if UserInputService.TouchEnabled then
+		local openButton = makeButton({
+			Size = UDim2.new(0, 56, 0, 28), AnchorPoint = Vector2.new(0, 0), Position = UDim2.new(0.5, 44, 0, 6),
+			Text = "Admin", TextSize = 12, BackgroundColor3 = Color3.fromRGB(70, 56, 110), ZIndex = 5,
+		}, gui, toggle)
+		openButton.Name = "AdminOpenButton"
+		local closeButton = makeButton({
+			Size = UDim2.new(0, 64, 0, 30), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -12, 0, 8),
+			Text = "Close", TextSize = 13, BackgroundColor3 = Color3.fromRGB(120, 70, 70), ZIndex = 12,
+		}, panel, toggle)
+		closeButton.Name = "AdminCloseButton"
+		local fit = Instance.new("UIScale")
+		fit.Parent = panel
+		local function refit()
+			local view = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1280, 720)
+			fit.Scale = math.clamp(math.min((view.X - 16) / 640, (view.Y - 16) / 708), 0.3, 1)
+		end
+		refit()
+		if workspace.CurrentCamera then workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(refit) end
+	end
 end
 
 if player:GetAttribute("IsAdmin") then
