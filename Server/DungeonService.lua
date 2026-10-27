@@ -1132,7 +1132,7 @@ local augOnHit, augOnKill -- 어그먼트 효과 (아래 Dungeon.ComputeDamage �
 function Dungeon.MarkMult(player, data)
 	if not data then return 1 end
 	local mult = (data.MarkedBy == player and os.clock() < (data.MarkedUntil or 0)) and Config.Pet.MarkBonus or 1
-	local bossDmg = player:GetAttribute("GearBossDmg") or 0
+	local bossDmg = (player:GetAttribute("GearBossDmg") or 0) + (player:GetAttribute("ParBoss") or 0)
 	if bossDmg > 0 and (data.IsBoss or data.BossLike or data.Kind == "Boss" or data.Elite) then mult *= 1 + bossDmg end
 	return mult
 end
@@ -1438,11 +1438,12 @@ function Dungeon.ComputeDamage(player)
 		* (1 + Config.Newbie.Damage * Config.NewbieStrength(player)) -- 초보자 가호
 		* (1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0) + (player:GetAttribute("PetDamage") or 0))
 		* (1 + (player:GetAttribute("PerkPower") or 0) * Config.Perks.PowerPerStack)
+		* (1 + (player:GetAttribute("ParAttack") or 0)) -- 패러건 (400 레벨 이후)
 		* Combo.GetDamageMult(player)
 		* Dungeon.PartyBonus(player)
 		* (player:GetAttribute("ShotDmgScale") or 1) -- 레벨 스탯 추가 탄: 발당 피해 감소 (사격 중에만 적용)
 	local rawChance = (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint
-		+ (player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0) + (player:GetAttribute("PetCrit") or 0) + (weaponType.CritBonus or 0)
+		+ (player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0) + (player:GetAttribute("PetCrit") or 0) + (weaponType.CritBonus or 0) + (player:GetAttribute("ParCrit") or 0)
 	local chance = math.min(0.9, rawChance)
 	local overflow = math.max(0, rawChance - 0.9) -- 90% 를 넘친 치명타 확률은 1% 당 치명타 피해 +1% 로 바뀐다 (버려지는 스탯이 없게)
 	if os.clock() < (player:GetAttribute("NearMissUntil") or 0) then -- NEAR MISS 보상: 연속으로 피할수록 공격력이 누적해서 오른다
@@ -1450,7 +1451,7 @@ function Dungeon.ComputeDamage(player)
 	end
 	local isCrit = math.random() < chance
 	if isCrit then
-		damage *= P.CritMultiplier + (player:GetAttribute("LvCritDmg") or 0) + overflow
+		damage *= P.CritMultiplier + (player:GetAttribute("LvCritDmg") or 0) + (player:GetAttribute("ParCritDmg") or 0) + overflow
 	end
 	if math.random() < (player:GetAttribute("GearJackpot") or 0) then -- 유니크 "Jackpot": 가끔 5배 (큰 피해 숫자로 보인다)
 		damage *= 5

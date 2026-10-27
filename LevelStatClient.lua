@@ -68,10 +68,12 @@ make("UICorner", { CornerRadius = UDim.new(0, 12) }, panel)
 make("UIStroke", { Color = Color3.fromRGB(150, 160, 255), Thickness = 2, Transparency = 0.25 }, panel)
 make("UISizeConstraint", { MaxSize = Vector2.new(460, 452) }, panel)
 
-label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "✨ Level Stats", TextSize = 20, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left }, panel)
+label({ Size = UDim2.new(1, -200, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "✨ Level Stats", TextSize = 20, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left }, panel)
 local pointsLabel = label({ Size = UDim2.new(1, -32, 0, 22), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, panel)
 label({ Size = UDim2.new(1, -32, 0, 18), Position = UDim2.new(0, 16, 0, 62), Text = "These stats shape your play style, not your attack or HP. You can respec for free anytime!", TextSize = 10, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
 button({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), BackgroundColor3 = Color3.fromRGB(54, 58, 82), Text = "Close", TextSize = 12 }, panel, function() panel.Visible = false end)
+
+local paragonButton = button({ Size = UDim2.new(0, 104, 0, 30), Position = UDim2.new(1, -194, 0, 12), BackgroundColor3 = Color3.fromRGB(120, 86, 30), Text = "🌟 Paragon", TextSize = 12 }, panel, function() end)
 
 local rows = {}
 for index, key in ipairs(LS.Order) do
@@ -138,10 +140,96 @@ for _, key in ipairs(LS.Order) do
 end
 refresh()
 
+------------------------------------------------------------
+-- 패러건 창 (400 레벨 이후): 최대 레벨 뒤에 쌓이는 경험치로 포인트를 얻어 공격력 / 치명 / 치명 피해 / 보스 피해에 찍는다. 400 레벨 전에는 잠겨 있다.
+------------------------------------------------------------
+local PG = Config.Paragon
+local ppanel = make("Frame", {
+	Size = UDim2.new(0, 460, 0, 398), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+	BackgroundColor3 = Color3.fromRGB(32, 28, 40), BorderSizePixel = 0, Visible = false,
+}, gui)
+make("UICorner", { CornerRadius = UDim.new(0, 12) }, ppanel)
+make("UIStroke", { Color = Color3.fromRGB(255, 205, 100), Thickness = 2, Transparency = 0.2 }, ppanel)
+make("UISizeConstraint", { MaxSize = Vector2.new(460, 398) }, ppanel)
+label({ Size = UDim2.new(1, -200, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "🌟 Paragon", TextSize = 20, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left }, ppanel)
+local ppoints = label({ Size = UDim2.new(1, -32, 0, 22), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, ppanel)
+local pprogress = label({ Size = UDim2.new(1, -32, 0, 18), Position = UDim2.new(0, 16, 0, 62), Text = "", TextSize = 10, TextColor3 = Color3.fromRGB(190, 180, 210), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, ppanel)
+button({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), BackgroundColor3 = Color3.fromRGB(54, 58, 82), Text = "Close", TextSize = 12 }, ppanel, function() ppanel.Visible = false end)
+button({ Size = UDim2.new(0, 104, 0, 30), Position = UDim2.new(1, -194, 0, 12), BackgroundColor3 = Color3.fromRGB(60, 64, 120), Text = "✨ Level Stats", TextSize = 12 }, ppanel, function()
+	ppanel.Visible = false
+	panel.Visible = true
+end)
+local prows = {}
+for index, key in ipairs(PG.Order) do
+	local def = PG[key]
+	local y = 92 + (index - 1) * 56
+	local row = make("Frame", { Size = UDim2.new(1, -24, 0, 50), Position = UDim2.new(0, 12, 0, y), BackgroundColor3 = Color3.fromRGB(46, 40, 56), BorderSizePixel = 0 }, ppanel)
+	make("UICorner", { CornerRadius = UDim.new(0, 8) }, row)
+	label({ Size = UDim2.new(0, 34, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = def.Icon, TextSize = 20 }, row)
+	label({ Size = UDim2.new(0, 160, 0, 22), Position = UDim2.new(0, 44, 0, 4), Text = def.Name, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left }, row)
+	local valueLabel = label({ Size = UDim2.new(0, 216, 0, 18), Position = UDim2.new(0, 44, 0, 27), Text = "", TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 215, 140), TextTruncate = Enum.TextTruncate.AtEnd }, row)
+	local countLabel = label({ Size = UDim2.new(0, 36, 1, 0), Position = UDim2.new(1, -168, 0, 0), Text = "0", TextSize = 15, TextColor3 = Color3.fromRGB(255, 225, 110) }, row)
+	button({ Size = UDim2.new(0, 30, 0, 32), Position = UDim2.new(1, -132, 0.5, -16), BackgroundColor3 = Color3.fromRGB(110, 60, 70), Text = "−" }, row, function()
+		Remotes.LevelStat:FireServer("PSub", key, 1)
+	end)
+	button({ Size = UDim2.new(0, 30, 0, 32), Position = UDim2.new(1, -98, 0.5, -16), BackgroundColor3 = Color3.fromRGB(60, 120, 80), Text = "+" }, row, function()
+		Remotes.LevelStat:FireServer("PAdd", key, 1)
+	end)
+	button({ Size = UDim2.new(0, 56, 0, 32), Position = UDim2.new(1, -64, 0.5, -16), BackgroundColor3 = Color3.fromRGB(150, 110, 40), Text = "Max", TextSize = 11 }, row, function()
+		Remotes.LevelStat:FireServer("PAdd", key, 99)
+	end)
+	prows[key] = { Row = row, Value = valueLabel, Count = countLabel }
+end
+label({ Size = UDim2.new(1, -32, 0, 30), Position = UDim2.new(0, 16, 0, 322), Text = "After level 400, the XP you earn turns into Paragon points. Spend them here; you can respec for free anytime.", TextSize = 10, TextColor3 = Color3.fromRGB(190, 180, 210), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, ppanel)
+button({ Size = UDim2.new(0, 150, 0, 32), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 1, -42), BackgroundColor3 = Color3.fromRGB(120, 70, 70), Text = "Reset All (Free)", TextSize = 11 }, ppanel, function()
+	Remotes.LevelStat:FireServer("PReset")
+end)
+paragonButton.Activated:Connect(function()
+	panel.Visible = false
+	ppanel.Visible = true
+end)
+
+local function commas(n)
+	return (tostring(math.floor(n)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
+end
+local function refreshParagon()
+	local level = player:GetAttribute("Level") or 1
+	local unlocked = level >= Config.Level.Max
+	local left = player:GetAttribute("ParagonLeft") or 0
+	local earned = player:GetAttribute("ParagonEarned") or 0
+	if unlocked then
+		ppoints.Text = string.format("Points left %d  /  earned %d  (max %d)", left, earned, Config.ParagonMaxPoints)
+		pprogress.Text = earned >= Config.ParagonMaxPoints and "All Paragon points earned!" or string.format("Next point: %s / %s XP", commas(player:GetAttribute("ParagonXp") or 0), commas(player:GetAttribute("ParagonXpNeeded") or Config.ParagonXpPerPoint()))
+	else
+		ppoints.Text = string.format("🔒 Unlocks at level %d  (you are level %d)", Config.Level.Max, level)
+		pprogress.Text = "Reach the max level to start earning Paragon points."
+	end
+	for _, key in ipairs(PG.Order) do
+		local points = player:GetAttribute("ParagonPts_" .. key) or 0
+		prows[key].Count.Text = tostring(points)
+		prows[key].Value.Text = (points > 0 and Config.ParagonText(key, points) or PG[key].Desc) .. string.format("  (max %d)", PG.Cap[key])
+		prows[key].Row.BackgroundTransparency = unlocked and 0 or 0.5
+	end
+	paragonButton.Text = (unlocked and left > 0) and string.format("🌟 Paragon (%d)", left) or "🌟 Paragon"
+end
+for _, name in ipairs({ "Level", "ParagonLeft", "ParagonEarned", "ParagonXp", "ParagonXpNeeded" }) do
+	player:GetAttributeChangedSignal(name):Connect(refreshParagon)
+end
+for _, key in ipairs(PG.Order) do
+	player:GetAttributeChangedSignal("ParagonPts_" .. key):Connect(refreshParagon)
+end
+refreshParagon()
+
 pill.Activated:Connect(function() panel.Visible = not panel.Visible end)
 UserInputService.InputBegan:Connect(function(input, processed)
 	if processed then return end
-	if input.KeyCode == Enum.KeyCode.T then panel.Visible = not panel.Visible end
+	if input.KeyCode == Enum.KeyCode.T then
+		ppanel.Visible = false
+		panel.Visible = not panel.Visible
+	end
 end)
 
-player:GetAttributeChangedSignal("OpenStats"):Connect(function() panel.Visible = not panel.Visible end) -- 왼쪽 메뉴 버튼(MenuDockClient)
+player:GetAttributeChangedSignal("OpenStats"):Connect(function()
+	ppanel.Visible = false
+	panel.Visible = not panel.Visible
+end) -- 왼쪽 메뉴 버튼(MenuDockClient)

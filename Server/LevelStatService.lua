@@ -16,6 +16,75 @@ local LevelStat = {}
 local watching = setmetatable({}, { __mode = "k" })
 local lastPoints = setmetatable({}, { __mode = "k" })
 
+local PG = Config.Paragon
+
+-- 패러건 (400 레벨 이후): rift.Paragon = { Xp, Earned(지금까지 번 포인트), Stats }
+local function paragonOf(player)
+	local rift = Meta.GetRift(player)
+	if not rift then return nil end
+	rift.Paragon = rift.Paragon or { Xp = 0, Earned = 0, Stats = {} }
+	local paragon = rift.Paragon
+	paragon.Stats = paragon.Stats or {}
+	for _, key in ipairs(PG.Order) do paragon.Stats[key] = math.clamp(paragon.Stats[key] or 0, 0, PG.Cap[key]) end
+	return paragon
+end
+
+local function paragonSpent(paragon)
+	local sum = 0
+	for _, key in ipairs(PG.Order) do sum += paragon.Stats[key] end
+	return sum
+end
+
+local function paragonApply(player)
+	local paragon = paragonOf(player)
+	if not paragon then return end
+	local atMax = (player:GetAttribute("Level") or 1) >= Config.Level.Max
+	if not atMax then -- 400 레벨 전에는 효과도 없다 (환생 등으로 레벨이 내려간 경우 포함)
+		for _, key in ipairs(PG.Order) do player:SetAttribute("ParagonPts_" .. key, 0) end
+		player:SetAttribute("ParAttack", 0)
+		player:SetAttribute("ParCrit", 0)
+		player:SetAttribute("ParCritDmg", 0)
+		player:SetAttribute("ParBoss", 0)
+		player:SetAttribute("ParagonLeft", 0)
+		player:SetAttribute("ParagonEarned", 0)
+		player:SetAttribute("ParagonXp", 0)
+		player:SetAttribute("ParagonXpNeeded", Config.ParagonXpPerPoint())
+		return
+	end
+	local stats = paragon.Stats
+	for _, key in ipairs(PG.Order) do player:SetAttribute("ParagonPts_" .. key, stats[key]) end
+	player:SetAttribute("ParAttack", stats.Attack * PG.Attack.Per)
+	player:SetAttribute("ParCrit", stats.Crit * PG.Crit.Per)
+	player:SetAttribute("ParCritDmg", stats.CritDmg * PG.CritDmg.Per)
+	player:SetAttribute("ParBoss", stats.Boss * PG.Boss.Per)
+	player:SetAttribute("ParagonLeft", paragon.Earned - paragonSpent(paragon))
+	player:SetAttribute("ParagonEarned", paragon.Earned)
+	player:SetAttribute("ParagonXp", paragon.Xp)
+	player:SetAttribute("ParagonXpNeeded", Config.ParagonXpPerPoint())
+end
+
+-- 최대 레벨 이후 경험치 -> 패러건 포인트 (LevelService 가 부른다)
+function LevelStat.AddParagonXp(player, amount)
+	if (player:GetAttribute("Level") or 1) < Config.Level.Max then return end
+	local paragon = paragonOf(player)
+	if not paragon or amount <= 0 then return end
+	local per = Config.ParagonXpPerPoint()
+	local before = paragon.Earned
+	if paragon.Earned >= Config.ParagonMaxPoints then
+		paragon.Xp = 0 -- 포인트를 다 모았다: 더 쌓지 않는다
+	else
+		paragon.Xp += amount
+		while paragon.Xp >= per and paragon.Earned < Config.ParagonMaxPoints do
+			paragon.Xp -= per
+			paragon.Earned += 1
+		end
+	end
+	paragonApply(player)
+	if paragon.Earned > before then
+		Remotes.Notify:FireClient(player, string.format("🌟 Paragon point +%d! %d unspent (press T → Paragon)", paragon.Earned - before, paragon.Earned - paragonSpent(paragon)))
+	end
+end
+
 local function statsOf(player)
 	local rift = Meta.GetRift(player)
 	if not rift then return nil end
@@ -70,9 +139,10 @@ end
 -- 저장된 데이터가 적용된 뒤(Meta.Load 후) 호출
 function LevelStat.Refresh(player)
 	apply(player, false)
+	paragonApply(player)
 	if not watching[player] then
 		watching[player] = true
-		player:GetAttributeChangedSignal("Level"):Connect(function() apply(player, true) end)
+		player:GetAttributeChangedSignal("Level"):Connect(function() apply(player, true) paragonApply(player) end)
 	end
 end
 
@@ -99,6 +169,27 @@ end
 Remotes.LevelStat.OnServerEvent:Connect(function(player, action, key, amount)
 	local stats, rift = statsOf(player)
 	if not stats then return end
+	if action == "PAdd" or action == "PSub" or action == "PReset" then -- 패러건: 400 레벨 이후에만
+		if (player:GetAttribute("Level") or 1) < Config.Level.Max then
+			Remotes.Notify:FireClient(player, string.format("🔒 Paragon unlocks at level %d.", Config.Level.Max))
+			return
+		end
+		local paragon = paragonOf(player)
+		if not paragon then return end
+		if action == "PReset" then
+			for _, k in ipairs(PG.Order) do paragon.Stats[k] = 0 end
+		elseif typeof(key) == "string" and PG[key] and table.find(PG.Order, key) then
+			amount = typeof(amount) == "number" and math.clamp(math.floor(amount), 1, 99) or 1
+			if action == "PAdd" then
+				local left = paragon.Earned - paragonSpent(paragon)
+				paragon.Stats[key] += math.min(amount, math.max(0, left), PG.Cap[key] - paragon.Stats[key])
+			else
+				paragon.Stats[key] = math.max(0, paragon.Stats[key] - amount)
+			end
+		end
+		paragonApply(player)
+		return
+	end
 	if action == "Buy" then -- 최대 레벨을 찍은 뒤 골드로 포인트 구매 (비용은 살수록 커진다)
 		if (player:GetAttribute("Level") or 1) < Config.LevelStats.GoldPointMinLevel then
 			Remotes.Notify:FireClient(player, string.format("Reach level %d to buy points with gold.", Config.LevelStats.GoldPointMinLevel))

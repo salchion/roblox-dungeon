@@ -45,7 +45,10 @@ function Level.AddXP(player, amount)
 	local early = level <= Config.Level.EarlyBoostUntil and Config.Level.EarlyBoost or 1 -- 초반 레벨업 가속
 	amount = math.floor(amount * xpMultiplier(player) * early + 0.5)
 	if amount <= 0 then return end
-	if level >= Config.Level.Max then return end
+	if level >= Config.Level.Max then -- 최대 레벨 이후: 경험치는 버려지지 않고 패러건 포인트가 된다 (LevelStatService)
+		pcall(function() require(script.Parent:WaitForChild("LevelStatService")).AddParagonXp(player, amount) end)
+		return
+	end
 	pcall(function() require(script.Parent:WaitForChild("BalanceLog")).Xp(player, amount) end) -- (Studio 밸런스 로그)
 	local xp = (player:GetAttribute("XP") or 0) + amount
 

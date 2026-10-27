@@ -1421,6 +1421,30 @@ function Config.GetLevelDamageMult(level)
 	return 1 + Config.Level.DamagePerLevel * early + Config.Level.LateDamagePerLevel * late
 end
 
+-- 패러건 (최대 레벨 이후 성장): 400 레벨을 찍은 뒤에만 열린다. 그때부터 쌓이는 경험치가 더 이상 버려지지 않고 "패러건 포인트"가 되어,
+-- 아래 스탯에 찍을 수 있다 (400 레벨 전에는 포인트도 없고 찍을 수도 없다). 언제든 무료로 빼고 다시 넣을 수 있다.
+Config.Paragon = {
+	Order = { "Attack", "Crit", "CritDmg", "Boss" },
+	Attack  = { Name = "Attack",       Icon = "⚔", Per = 0.005, Desc = "Attack +0.5% per point" },
+	Crit    = { Name = "Crit Chance",  Icon = "🎯", Per = 0.003, Desc = "Crit chance +0.3% per point" },
+	CritDmg = { Name = "Crit Damage",  Icon = "💥", Per = 0.015, Desc = "Crit damage +1.5%p per point" },
+	Boss    = { Name = "Boss Damage",  Icon = "👹", Per = 0.008, Desc = "Damage to bosses / lords / elites +0.8% per point" },
+	Cap = { Attack = 100, Crit = 100, CritDmg = 100, Boss = 100 }, -- 스탯 하나에 넣을 수 있는 최대 포인트
+	XpPerPointMult = 1.2, -- 포인트 1개에 필요한 경험치 = (399 -> 400 레벨 경험치) x 이 값
+}
+Config.ParagonMaxPoints = 0
+for _, key in ipairs(Config.Paragon.Order) do Config.ParagonMaxPoints += Config.Paragon.Cap[key] end
+function Config.ParagonXpPerPoint()
+	return math.floor(Config.GetXpNeeded(Config.Level.Max - 1) * Config.Paragon.XpPerPointMult)
+end
+function Config.ParagonText(key, points)
+	local value = points * Config.Paragon[key].Per
+	if key == "Attack" then return string.format("Attack +%.1f%%", value * 100)
+	elseif key == "Crit" then return string.format("Crit chance +%.1f%%", value * 100)
+	elseif key == "CritDmg" then return string.format("Crit damage +%d%%p", math.floor(value * 100 + 0.5))
+	else return string.format("Boss damage +%.1f%%", value * 100) end
+end
+
 -- 초보자 가호: 튜토리얼을 마치고 필드에 나갔을 때 캐릭터가 약하게 느껴지지 않게, 초반(2구역 군주를 잡기 전 / 레벨 20 전)에만 공격력은 올리고 받는 피해는 줄여 준다.
 --   레벨 9 까지는 100%, 레벨 20 에 가까울수록 서서히 0 이 된다. 튜토리얼 첫 군주전에도 적용(그 전투의 따로 보정 위에 더해진다), 첫 던전은 제외.
 Config.Newbie = { EndZone = 2, FullLevel = 9, EndLevel = 20, Damage = 0.6, Defense = 0.25 }
