@@ -1,0 +1,170 @@
+960¦所持済み +¦Im Besitz +¦Possédé +¦Obtenido +¦Possuído +¦已拥有 +
+961¦ショップアイテム:¦Shop-Gegenstand:¦Objet de boutique :¦Objeto de tienda:¦Item da loja:¦商店物品:
+962¦テスト付与¦Testgabe¦Don de test¦Concesión de prueba¦Concessão de teste¦测试发放
+963¦ショップでは時短アイテム・便利アイテム・コスメを販売しています。課金しなくてもすべての進行段階に到達でき、装備はフィールドで手に入れる必要があります。¦Der Shop verkauft Zeitsparer, Komfortgegenstände und Kosmetik. Du kannst jede Fortschrittsstufe erreichen, ohne etwas auszugeben, und Ausrüstung muss im Feld verdient werden.¦La boutique vend des gains de temps, du confort et des cosmétiques. Vous pouvez atteindre chaque palier de progression sans rien dépenser, et l'équipement se gagne sur le terrain.¦La tienda vende ahorros de tiempo, comodidades y cosméticos. Puedes alcanzar cualquier nivel de progreso sin gastar, y el equipo se consigue en el campo.¦A loja vende economizadores de tempo, conveniências e cosméticos. Você pode alcançar todos os níveis de progresso sem gastar, e o equipamento deve ser conquistado no campo.¦商店出售节省时间的道具、便利道具和装饰。无需花钱也能达到所有进度,装备必须在野外获得。
+964¦装備解除¦Ablegen¦Retirer¦Desequipar¦Desequipar¦卸下
+965¦⏳ 有効中¦⏳ Aktiv¦⏳ Actif¦⏳ Activo¦⏳ Ativo¦⏳ 生效中
+966¦★ 装備中¦★ Ausgerüstet¦★ Équipé¦★ Equipado¦★ Equipado¦★ 已装备
+967¦👀 [{text1}] 5秒プレビュー！¦👀 [{text1}] 5-Sekunden-Vorschau!¦👀 [{text1}] Aperçu de 5 secondes !¦👀 [{text1}] ¡Vista previa de 5 segundos!¦👀 [{text1}] Prévia de 5 segundos!¦👀 [{text1}] 5 秒预览!
+968¦🔒 ロック中¦🔒 Gesperrt¦🔒 Verrouillé¦🔒 Bloqueado¦🔒 Bloqueado¦🔒 未解锁
+969¦ミッション {number1} / {number2}¦MISSION {number1} / {number2}¦MISSION {number1} / {number2}¦MISIÓN {number1} / {number2}¦MISSÃO {number1} / {number2}¦任务 {number1} / {number2}
+970¦🎯 ミッション {number1}/{number2}¦🎯 Mission {number1}/{number2}¦🎯 Mission {number1}/{number2}¦🎯 Misión {number1}/{number2}¦🎯 Missão {number1}/{number2}¦🎯 任务 {number1}/{number2}
+971¦メニュー¦Menü¦Menu¦Menú¦Menu¦菜单
+972¦次の部屋¦Nächster Raum¦Salle suivante¦Siguiente sala¦Próxima sala¦下一个房间
+973¦次のゾーン¦Nächste Zone¦Zone suivante¦Siguiente zona¦Próxima zona¦下一个区域
+974¦メニューを開こう！(B)¦Öffne das Menü! (B)¦Ouvrez le menu ! (B)¦¡Abre el menú! (B)¦Abra o menu! (B)¦打开菜单!(B)
+975¦「訓練開始」をタップ！¦Tippe auf „Training starten“!¦Touchez « Démarrer l'entraînement » !¦¡Toca «Iniciar entrenamiento»!¦Toque em «Iniciar treino»!¦点击“开始训练”!
+976¦スキル/成長タブをタップ！¦Tippe auf den Tab Fähigkeiten/Wachstum!¦Touchez l'onglet Compétences/Croissance !¦¡Toca la pestaña Habilidades/Crecimiento!¦Toque na aba Habilidades/Crescimento!¦点击技能/成长标签页!
+977¦左へ¦nach links¦vers la gauche¦a la izquierda¦para a esquerda¦向左
+978¦右へ¦nach rechts¦vers la droite¦a la derecha¦para a direita¦向右
+979¦🎁 最初の装備を付与しました！¦🎁 Erste Ausrüstung erhalten!¦🎁 Premier équipement accordé !¦🎁 ¡Primer equipo concedido!¦🎁 Primeiro equipamento concedido!¦🎁 已发放首件装备!
+980¦🎰 もっと引きたい？町のガチャ機械でチケットを使おう！デイリークエストにもガチャがあります¦🎰 Mehr Ziehungen? Nutze Tickets am Gacha-Automaten in der Stadt! Auch Tagesquests bringen Ziehungen¦🎰 Envie de plus de tirages ? Utilisez des tickets au gacha en ville ! Les quêtes quotidiennes offrent aussi des tirages¦🎰 ¿Quieres más tiradas? ¡Usa boletos en la máquina de gacha de la ciudad! Las misiones diarias también dan tiradas¦🎰 Quer mais sorteios? Use tickets na máquina de gacha da cidade! As missões diárias também dão sorteios¦🎰 想要更多抽取?在城镇的扭蛋机使用门票吧!每日任务也有抽取机会
+981¦👑 ここで狩りをしてロードを見つけよう！¦👑 Jage hier und finde den Lord!¦👑 Chassez ici et trouvez le seigneur !¦👑 ¡Caza aquí y encuentra al señor!¦👑 Cace aqui e encontre o senhor!¦👑 在这里狩猎,找到领主!
+982¦·  1〜5キーで武器切り替え¦·  Tasten 1–5 wechseln Waffen¦·  les touches 1-5 changent d'arme¦·  las teclas 1-5 cambian de arma¦·  as teclas 1-5 trocam de arma¦·  按 1-5 键切换武器
+983¦·  次の武器: {text1}(+{number2}で解放)¦·  nächste Waffe: {text1} bei +{number2}¦·  arme suivante : {text1} à +{number2}¦·  siguiente arma: {text1} en +{number2}¦·  próxima arma: {text1} em +{number2}¦·  下一把武器:{text1}(+{number2} 时解锁)
+984¦🆕 新しい武器: {text1} - {number2}キーを押そう！¦🆕 Neue Waffe: {text1} – drücke {number2}!¦🆕 Nouvelle arme : {text1} - appuyez sur {number2} !¦🆕 Arma nueva: {text1} - ¡pulsa {number2}!¦🆕 Nova arma: {text1} - pressione {number2}!¦🆕 新武器:{text1} - 按 {number2} 键!
+985¦🔒 {text1}は+{number2}で解放(あと{number3}) - 鍛冶場またはメニュー(B)で武器を強化しよう¦🔒 {text1} wird bei +{number2} freigeschaltet (noch {number3}) – verbessere deine Waffe in der Schmiede oder im Menü (B)¦🔒 {text1} se débloque à +{number2} (encore {number3}) - améliorez votre arme à la forge ou dans le menu (B)¦🔒 {text1} se desbloquea en +{number2} (faltan {number3}) - mejora tu arma en la Forja o en el menú (B)¦🔒 {text1} é desbloqueado em +{number2} (faltam {number3}) - melhore sua arma na Forja ou no menu (B)¦🔒 {text1} 将在 +{number2} 时解锁(还差 {number3})- 在铁匠铺或菜单 (B) 强化武器
+986¦ボスの弱点オーブを直接狙うと3倍ダメージ¦Ziele direkt auf die Schwachstellen-Kugel eines Bosses für x3 Schaden¦Visez directement l'orbe du point faible d'un boss pour infliger x3 dégâts¦Apunta directamente al orbe del punto débil de un jefe para causar x3 de daño¦Mire diretamente na esfera do ponto fraco de um chefe para causar x3 de dano¦直接瞄准首领的弱点光球可造成 3 倍伤害
+987¦Qキーでダッシュ！敵の弾をギリギリで避けると攻撃力が積み重なります¦Drücke Q zum Dashen! Knappes Ausweichen vor Gegnerkugeln stapelt Angriffskraft¦Appuyez sur Q pour dasher ! Esquiver de justesse les balles ennemies cumule de la puissance d'attaque¦¡Pulsa Q para impulsarte! Esquivar por poco las balas enemigas acumula poder de ataque¦Pressione Q para dar dash! Desviar por pouco das balas inimigas acumula poder de ataque¦按 Q 冲刺!险险躲过敌人子弹可叠加攻击力
+988¦Rキーで最も近い敵にオートエイム¦Drücke R, um auf den nächsten Gegner automatisch zu zielen¦Appuyez sur R pour viser automatiquement l'ennemi le plus proche¦Pulsa R para apuntar automáticamente al enemigo más cercano¦Pressione R para mirar automaticamente no inimigo mais próximo¦按 R 自动瞄准最近的敌人
+989¦セット装備はフィールドゾーンで一定確率でドロップします。同じゾーンのセットを1〜3部位着ると、ゴールドで解放した効果がLv.4〜6に強化されます。効果はJキーの図鑑で確認できます¦Set-Ausrüstung droppt in Feldzonen mit einer festen Rate. Trage 1–3 Teile des Sets derselben Zone, und mit Gold freigeschaltete Effekte werden auf Lv.4–6 verstärkt. Vorschau der Effekte im Kodex (Taste J)¦L'équipement de set tombe dans les zones du terrain selon un taux fixe. Portez 1 à 3 pièces du set d'une même zone et les effets débloqués avec de l'or passent aux niv.4-6. Aperçu des effets dans le Codex (touche J)¦El equipo de set cae en las zonas del campo con una probabilidad fija. Equipa 1-3 piezas del set de la misma zona y los efectos desbloqueados con oro suben a nv.4-6. Previsualiza los efectos en el Códice (tecla J)¦O equipamento de conjunto cai nas zonas do campo com uma taxa fixa. Use 1-3 peças do conjunto da mesma zona e os efeitos desbloqueados com ouro sobem para nv.4-6. Veja os efeitos no Códex (tecla J)¦套装装备会在野外区域按固定几率掉落。穿戴同一区域套装的 1-3 件,用金币解锁的效果会提升到 Lv.4-6。按 J 键在图鉴中预览效果
+990¦休憩エリアに立つとゴールドが稼げます(オフライン中も)¦Stehe im Ruhebereich, um Gold zu verdienen (auch offline)¦Restez dans la zone de repos pour gagner de l'or (même hors ligne)¦Quédate en la zona de descanso para ganar oro (incluso sin conexión)¦Fique na área de descanso para ganhar ouro (mesmo offline)¦站在休息区即可赚取金币(离线时也有效)
+991¦まずダミーを撃ってみよう。クリックで発射¦Schieße zuerst auf die Puppe. Klicken zum Feuern¦Commencez par tirer sur le mannequin. Cliquez pour tirer¦Empieza disparando al muñeco. Haz clic para disparar¦Comece atirando no boneco. Clique para atirar¦先射击木桩吧。点击开火
+992¦ダンジョンを始めるとランダムなセット効果を1つ試せます。ゾーンロードを倒すと、ゴールドで自分で解放できます(Yキー)¦Beim Start eines Dungeons kannst du einen zufälligen Set-Bonus ausprobieren. Besiege einen Zonen-Lord, um ihn selbst mit Gold freizuschalten (Taste Y)¦Au début d'un donjon, vous pouvez essayer un effet de set aléatoire. Vainquez un seigneur de zone pour le débloquer vous-même avec de l'or (touche Y)¦Al empezar una mazmorra puedes probar un efecto de set aleatorio. Derrota a un señor de zona para desbloquearlo tú mismo con oro (tecla Y)¦Ao iniciar uma masmorra você pode experimentar um efeito de conjunto aleatório. Derrote um senhor de zona para desbloqueá-lo você mesmo com ouro (tecla Y)¦开始地下城时可以试用一个随机套装效果。击败区域领主后,可用金币自行解锁(Y 键)
+993¦レベルアップしたらTキーでステータスポイントを使おう(いつでも無料で振り直し可能)¦Wenn du aufsteigst, drücke T, um Statuspunkte auszugeben (jederzeit gratis neu verteilbar)¦Quand vous montez de niveau, appuyez sur T pour dépenser vos points de stats (réinitialisation gratuite à tout moment)¦Al subir de nivel, pulsa T para gastar puntos de estadística (reasignación gratis en cualquier momento)¦Ao subir de nível, pressione T para gastar pontos de atributo (redistribuição grátis a qualquer momento)¦升级后按 T 分配属性点(可随时免费重置)
+994¦🎮 冒険の世界へようこそ、{text1}！¦🎮 Willkommen in der Welt der Abenteuer, {text1}!¦🎮 Bienvenue dans le monde de l'aventure, {text1} !¦🎮 ¡Bienvenido al mundo de la aventura, {text1}!¦🎮 Bem-vindo ao mundo da aventura, {text1}!¦🎮 欢迎来到冒险世界,{text1}!
+995¦👋 おかえりなさい、{text1}！¦👋 Willkommen zurück, {text1}!¦👋 Bon retour, {text1} !¦👋 ¡Bienvenido de nuevo, {text1}!¦👋 Bem-vindo de volta, {text1}!¦👋 欢迎回来,{text1}!
+996¦再挑戦¦Wiederholen¦Réessayer¦Reintentar¦Tentar de novo¦重试
+997¦抽選¦Ziehen¦Tirer¦Tirar¦Sortear¦抽取
+998¦フィールドは危険です。ロードを倒すと次のゾーンが開きます。¦Das Feld ist gefährlich. Besiege den Lord, und die nächste Zone öffnet sich.¦Le terrain est dangereux. Vainquez le seigneur et la zone suivante s'ouvre.¦El campo es peligroso. Derrota al señor y se abre la siguiente zona.¦O campo é perigoso. Derrote o senhor e a próxima zona se abre.¦野外很危险。击败领主,下一个区域就会开启。
+999¦マルチ抽選には良いものが隠れていることがあるらしいよ。¦Man sagt, Mehrfachziehungen verstecken manchmal gute Sachen.¦On dit que les tirages multiples cachent parfois de bonnes choses.¦Dicen que las tiradas múltiples a veces esconden cosas buenas.¦Dizem que os sorteios múltiplos às vezes escondem coisas boas.¦听说连抽有时会藏着好东西。
+1000¦チケット¦Tickets¦Tickets¦Boletos¦Tickets¦门票
+1001¦称号¦Titel¦Titre¦Título¦Título¦称号
+1002¦¦¦¦¦¦
+1003¦武器はロビーでのみ購入できます。¦Waffen können nur in der Lobby gekauft werden.¦Les armes ne peuvent être achetées que dans le hall.¦Las armas solo se pueden comprar en el lobby.¦As armas só podem ser compradas no lobby.¦武器只能在大厅购买。
+1004¦セット装備はフィールドで集めよう！¦Du musst Set-Ausrüstung draußen im Feld sammeln!¦Il faut récupérer l'équipement de set sur le terrain !¦¡Tienes que reunir el equipo de set en el campo!¦Você precisa coletar conjuntos de equipamento no campo!¦套装装备要去野外收集!
+1005¦セーブデータを読み込めませんでした。少ししてからもう一度参加してください。進行状況は無事です。¦Dein Speicherstand konnte nicht geladen werden. Bitte tritt in einem Moment erneut bei – dein Fortschritt ist sicher.¦Vos données de sauvegarde n'ont pas pu être chargées. Veuillez rejoindre à nouveau dans un instant - votre progression est en sécurité.¦No se pudieron cargar tus datos guardados. Vuelve a entrar en un momento: tu progreso está a salvo.¦Não foi possível carregar seus dados salvos. Entre novamente em instantes — seu progresso está seguro.¦无法加载你的存档。请稍后重新加入,你的进度是安全的。
+1006¦スコアは生存秒数 x 与ダメージです。週間ランキングは毎週リセットされます。¦Deine Punktzahl ist überlebte Sekunden x verursachter Schaden – die Wochenrangliste wird jede Woche zurückgesetzt.¦Votre score est les secondes survécues x les dégâts infligés - le classement hebdomadaire est réinitialisé chaque semaine.¦Tu puntuación son los segundos sobrevividos x el daño infligido; la clasificación semanal se reinicia cada semana.¦Sua pontuação é segundos sobrevividos x dano causado — o ranking semanal reinicia toda semana.¦你的得分 = 存活秒数 × 造成伤害,每周排行榜会重置。
+1007¦🎫 {number1}連抽には{number2}枚のチケットが必要です(所持: {number3}枚)¦🎫 Eine {number1}er-Ziehung kostet {number2} Tickets (du hast {number3})¦🎫 Un tirage x{number1} coûte {number2} tickets (vous en avez {number3})¦🎫 Una tirada x{number1} necesita {number2} boletos (tienes {number3})¦🎫 Um sorteio x{number1} precisa de {number2} tickets (você tem {number3})¦🎫 {number1} 连抽需要 {number2} 张门票(你有 {number3} 张)
+1008¦🎰 ガチャ商人¦🎰 Gacha-Händler¦🎰 Marchand de gacha¦🎰 Mercader de gacha¦🎰 Mercador de gacha¦🎰 扭蛋商人
+1009¦👹 ボスラッシュの番人¦👹 Boss-Rush-Wächter¦👹 Gardien du Boss Rush¦👹 Guardián del Boss Rush¦👹 Guardião do Boss Rush¦👹 首领连战守卫
+1010¦💀 倒れて町に戻りました。装備を整えてもう一度挑戦しよう！¦💀 Du bist gefallen und in die Stadt zurückgekehrt. Rüste dich aus und versuche es erneut!¦💀 Vous êtes tombé et revenu en ville. Équipez-vous et réessayez !¦💀 Caíste y volviste a la ciudad. ¡Equípate e inténtalo de nuevo!¦💀 Você caiu e voltou para a cidade. Equipe-se e tente de novo!¦💀 你倒下了,回到了城镇。整备好装备再来挑战吧!
+1011¦💀 倒れた！一度きりの力が湧き上がる(ロードへの大ダメージ増加 + 必殺技ゲージ満タン)— もう一度ロードに挑もう！¦💀 Du bist gefallen! Eine einmalige Kraft durchströmt dich (großer Schadensbonus gegen den Lord + volle Ultimate) – fordere den Lord erneut heraus!¦💀 Vous êtes tombé ! Une puissance unique monte en vous (gros bonus de dégâts contre le seigneur + ultime plein) — défiez à nouveau le seigneur !¦💀 ¡Caíste! Un poder de una sola vez surge en ti (gran bono de daño contra el señor + definitiva llena): ¡desafía otra vez al señor!¦💀 Você caiu! Um poder único surge dentro de você (grande bônus de dano contra o senhor + supremo cheio) — desafie o senhor novamente!¦💀 你倒下了!一股一次性的力量涌上心头(对领主伤害大幅提升 + 大招充满)——再次挑战领主吧!
+1012¦💀 最後のロードに敗れました…が、戦利品は残っています！¦💀 Du wurdest vom Letzten Lord besiegt … aber die Beute bleibt!¦💀 Vous avez été vaincu par le Seigneur final... mais le butin reste !¦💀 Fuiste derrotado por el Señor Final... ¡pero el botín permanece!¦💀 Você foi derrotado pelo Senhor Final... mas o saque permanece!¦💀 你被最终领主击败了……但战利品还在!
+1013¦🔨 鍛冶師¦🔨 Schmied¦🔨 Forgeron¦🔨 Herrero¦🔨 Ferreiro¦🔨 铁匠
+1014¦🗝 ダンジョン案内人¦🗝 Dungeon-Führer¦🗝 Guide des donjons¦🗝 Guía de mazmorras¦🗝 Guia da masmorra¦🗝 地下城向导
+1015¦🛡 フィールドの門番¦🛡 Feld-Torwächter¦🛡 Gardien du terrain¦🛡 Guardián del campo¦🛡 Guardião do campo¦🛡 野外守门人
+1016¦✅ タップして受け取る！¦✅ Tippen zum Abholen!¦✅ Touchez pour récupérer !¦✅ ¡Toca para reclamar!¦✅ Toque para resgatar!¦✅ 点击领取!
+1017¦(タップして開く)¦(zum Öffnen tippen)¦(touchez pour ouvrir)¦(toca para abrir)¦(toque para abrir)¦(点击打开)
+1018¦✅ {text1} — タップして受け取る！¦✅ {text1} — Tippen zum Abholen!¦✅ {text1} — touchez pour récupérer !¦✅ {text1} — ¡toca para reclamar!¦✅ {text1} — toque para resgatar!¦✅ {text1} — 点击领取!
+1019¦🎯 ゾーン{number1}のロードに挑む準備ができました！¦🎯 Bereit, den Lord von Zone {number1} herauszufordern!¦🎯 Prêt à défier le seigneur de la zone {number1} !¦🎯 ¡Listo para desafiar al señor de la zona {number1}!¦🎯 Pronto para desafiar o senhor da zona {number1}!¦🎯 已准备好挑战区域{number1}的领主!
+1020¦(推奨 {text1} · あなた {text2})¦(Empfohlen {text1} · Du {text2})¦(Recommandé {text1} · Vous {text2})¦(Recomendado {text1} · Tú {text2})¦(Recomendado {text1} · Você {text2})¦(推荐 {text1} · 你 {text2})
+1021¦🎯 目標: ゾーン{number1}のロードを倒す¦🎯 Ziel: Besiege den Lord von Zone {number1}¦🎯 Objectif : vaincre le seigneur de la zone {number1}¦🎯 Meta: derrotar al señor de la zona {number1}¦🎯 Meta: derrotar o senhor da zona {number1}¦🎯 目标:击败区域{number1}的领主
+1022¦(推奨戦闘力 {text1} · あなたの戦闘力 {text2})¦(Empfohlene Stärke {text1} · Deine Stärke {text2})¦(Puissance recommandée {text1} · Votre puissance {text2})¦(Poder recomendado {text1} · Tu poder {text2})¦(Poder recomendado {text1} · Seu poder {text2})¦(推荐战力 {text1} · 你的战力 {text2})
+1023¦満杯！(まだ稼いでいます)¦Voll! (verdient weiter)¦Plein ! (continue de gagner)¦¡Lleno! (sigue ganando)¦Cheio! (ainda ganhando)¦已满!(仍在赚取)
+1024¦💪 強くなる方法¦💪 So wirst du stärker¦💪 Comment devenir plus fort¦💪 Cómo hacerte más fuerte¦💪 Como ficar mais forte¦💪 变强的方法
+1025¦受け取る¦Abholen¦Récupérer¦Reclamar¦Resgatar¦领取
+1026¦形態¦Form¦Forme¦Forma¦Forma¦形态
+1027¦武器解放¦Waffenfreischaltung¦déblocage d'arme¦desbloqueo de arma¦desbloqueio de arma¦武器解锁
+1028¦✔ 撃破済み¦✔ Besiegt¦✔ Vaincu¦✔ Derrotado¦✔ Derrotado¦✔ 已击败
+1029¦⭐ 次のレベル Lv.{number1}¦⭐ Nächste Stufe Lv.{number1}¦⭐ Niveau suivant niv.{number1}¦⭐ Siguiente nivel Nv.{number1}¦⭐ Próximo nível Nv.{number1}¦⭐ 下一级 Lv.{number1}
+1030¦👑 最終ゾーン8のロードを倒そう！¦👑 Besiege den Lord der letzten Zone 8!¦👑 Vainquez le seigneur de la dernière zone 8 !¦👑 ¡Derrota al señor de la última zona 8!¦👑 Derrote o senhor da última zona 8!¦👑 击败最终区域8的领主!
+1031¦フィールドを制覇するとボスラッシュが解放されます¦Erobere das Feld, um den Boss Rush freizuschalten¦Conquérez le terrain pour débloquer le Boss Rush¦Conquista el campo para desbloquear el Boss Rush¦Conquiste o campo para desbloquear o Boss Rush¦征服野外即可解锁首领连战
+1032¦👑 未撃破¦👑 Nicht besiegt¦👑 Non vaincu¦👑 No derrotado¦👑 Não derrotado¦👑 未击败
+1033¦👹 フィールド制覇！次はボスラッシュ¦👹 Feld erobert! Jetzt der Boss Rush¦👹 Terrain conquis ! Place au Boss Rush¦👹 ¡Campo conquistado! Ahora el Boss Rush¦👹 Campo conquistado! Agora o Boss Rush¦👹 野外已征服!接下来是首领连战
+1034¦町のポータルから入場 - 1日2回、週間ランキング¦Eintritt am Stadtportal – 2 Läufe pro Tag, Wochenrangliste¦Entrez par le portail de la ville - 2 parties par jour, classement hebdomadaire¦Entra por el portal de la ciudad: 2 intentos al día, clasificación semanal¦Entre pelo portal da cidade - 2 tentativas por dia, ranking semanal¦从城镇传送门进入 - 每天 2 次,每周排行¦
+1035¦💤 放置収入  +{text1} G/秒¦💤 Leerlauf-Einkommen  +{text1} G/Sek.¦💤 Revenu d'inactivité  +{text1} or/s¦💤 Ingresos inactivos  +{text1} G/s¦💤 Renda ociosa  +{text1} G/s¦💤 挂机收益  +{text1} 金币/秒
+1036¦·  獲得¦·  Verdient¦·  Gagné¦·  Ganado¦·  Ganho¦·  已获得
+1037¦{text1}  ·  満杯時: +{text2} G¦{text1}  ·  Wenn voll: +{text2} G¦{text1}  ·  Une fois plein : +{text2} or¦{text1}  ·  Al llenarse: +{text2} G¦{text1}  ·  Quando cheio: +{text2} G¦{text1}  ·  满时:+{text2} 金币
+1038¦🔒 ゾーン{number1} · {text2} 封印中¦🔒 Zone {number1} · {text2} versiegelt¦🔒 Zone {number1} · {text2} scellée¦🔒 Zona {number1} · {text2} sellada¦🔒 Zona {number1} · {text2} selada¦🔒 区域{number1} · {text2} 已封印
+1039¦ゾーン{number1}のモンスター {number2} / {number3} 撃破 · ロード {text4}¦Zone-{number1}-Monster {number2} / {number3} besiegt · Lord {text4}¦Monstres de la zone {number1} {number2} / {number3} vaincus · Seigneur {text4}¦Monstruos de la zona {number1} {number2} / {number3} derrotados · Señor {text4}¦Monstros da zona {number1} {number2} / {number3} derrotados · Senhor {text4}¦区域{number1}怪物 已击败 {number2} / {number3} · 领主 {text4}
+1040¦開放して{text1} {text2}セットを手に入れよう！¦Öffne es, um das Set {text1} {text2} zu erhalten!¦Ouvrez pour obtenir le set {text1} {text2} !¦¡Ábrelo para conseguir el set {text1} {text2}!¦Abra para conseguir o conjunto {text1} {text2}!¦开启后即可获得 {text1} {text2} 套装!
+1041¦🔫 次の{text1}¦🔫 Nächste {text1}¦🔫 Prochaine {text1}¦🔫 Siguiente {text1}¦🔫 Próxima {text1}¦🔫 下一把 {text1}
+1042¦✨ 今は強化が無料です！(残り{number1}回)¦✨ Verbesserungen sind gerade gratis! ({number1} übrig)¦✨ Les améliorations sont gratuites pour l'instant ! ({number1} restantes)¦✨ ¡Las mejoras son gratis por ahora! (quedan {number1})¦✨ As melhorias estão grátis agora! (restam {number1})¦✨ 现在强化免费!(剩余 {number1} 次)
+1043¦強化費用 {text1} G · 所持 {text2} G¦Verbesserungskosten {text1} G · Du hast {text2} G¦Coût d'amélioration {text1} or · Vous avez {text2} or¦Coste de mejora {text1} G · Tienes {text2} G¦Custo da melhoria {text1} G · Você tem {text2} G¦强化费用 {text1} 金币 · 你有 {text2} 金币
+1044¦🚧 レベルが上限に達しました！¦🚧 Deine Stufe ist begrenzt!¦🚧 Votre niveau est plafonné !¦🚧 ¡Tu nivel está limitado!¦🚧 Seu nível está no limite!¦🚧 你的等级已达上限!
+1045¦メニュー(B)→スキル・成長(パッシブ/訓練)で突破しよう¦Menü (B) → Fähigkeiten & Wachstum (Passiv/Training), um durchzubrechen¦Menu (B) → Compétences et croissance (passif/entraînement) pour percer¦Menú (B) → Habilidades y crecimiento (pasivas/entrenamiento) para superar el límite¦Menu (B) → Habilidades e crescimento (passivas/treino) para avançar¦菜单 (B) → 技能·成长(被动/训练)来突破
+1046¦🚪 ゾーン{number1}のゲートを開く¦🚪 Öffne das Tor zu Zone {number1}¦🚪 Ouvrir la porte de la zone {number1}¦🚪 Abrir la puerta de la zona {number1}¦🚪 Abrir o portão da zona {number1}¦🚪 开启区域{number1}的大门
+1047¦ゾーン{number1}のモンスターを倒す {number2} / {number3} · 報酬 {text4} G + チケット¦Besiege Zone-{number1}-Monster {number2} / {number3} · Belohnung {text4} G + Ticket¦Vainquez les monstres de la zone {number1} {number2} / {number3} · Récompense {text4} or + ticket¦Derrota a los monstruos de la zona {number1} {number2} / {number3} · Recompensa {text4} G + boleto¦Derrote os monstros da zona {number1} {number2} / {number3} · Recompensa {text4} G + ticket¦击败区域{number1}怪物 {number2} / {number3} · 奖励 {text4} 金币 + 门票
+1048¦突破が必要です！¦Durchbruch nötig!¦Percée requise !¦¡Se necesita superar el límite!¦Avanço necessário!¦需要突破!
+1049¦フィールド · 最高ゾーン{number1}¦Feld · Beste Zone {number1}¦Terrain · meilleure zone {number1}¦Campo · mejor zona {number1}¦Campo · melhor zona {number1}¦野外 · 最高区域{number1}
+1050¦町¦Stadt¦Ville¦Ciudad¦Cidade¦城镇
+1051¦データを読み込み中...¦Deine Daten werden geladen ...¦Chargement de vos données...¦Cargando tus datos...¦Carregando seus dados...¦正在加载你的数据...
+1052¦タップまたは任意のキーでスキップ¦Tippe oder drücke eine beliebige Taste zum Überspringen¦Touchez ou appuyez sur une touche pour passer¦Toca o pulsa cualquier tecla para saltar¦Toque ou pressione qualquer tecla para pular¦点击或按任意键跳过
+1053¦ヒント · 各ゾーンのロードを倒すと次のゾーンが開きます。¦Tipp · Besiege den Lord jeder Zone, um die nächste zu öffnen.¦Astuce · Vainquez le seigneur de chaque zone pour ouvrir la suivante.¦Consejo · Derrota al señor de cada zona para abrir la siguiente.¦Dica · Derrote o senhor de cada zona para abrir a próxima.¦提示 · 击败每个区域的领主即可开启下一个区域。
+1054¦ヒント · Qキーでダッシュ。敵の弾をギリギリで避けるとボーナスがもらえます。¦Tipp · Drücke Q zum Dashen. Knappes Ausweichen vor Gegnerschüssen gibt einen Bonus.¦Astuce · Appuyez sur Q pour dasher. Esquiver de justesse les tirs ennemis donne un bonus.¦Consejo · Pulsa Q para impulsarte. Esquivar por poco los disparos enemigos da un bono.¦Dica · Pressione Q para dar dash. Desviar por pouco dos tiros inimigos dá um bônus.¦提示 · 按 Q 冲刺。险险躲过敌人射击可获得奖励。
+1055¦ヒント · セット効果は重なります。異なるゾーンの装備を組み合わせて自分のスタイルを作ろう。¦Tipp · Set-Boni stapeln sich: Kombiniere Ausrüstung aus verschiedenen Zonen für deinen Stil.¦Astuce · Les effets de set se cumulent : mélangez l'équipement de zones différentes pour créer votre style.¦Consejo · Los efectos de set se acumulan: combina equipo de distintas zonas para crear tu estilo.¦Dica · Os efeitos de conjunto se acumulam: misture equipamentos de zonas diferentes para criar seu estilo.¦提示 · 套装效果可叠加:混搭不同区域的装备,打造你的风格。
+1056¦ゾーン{number1}  ·  {text2}   {text3}¦ZONE {number1}  ·  {text2}   {text3}¦ZONE {number1}  ·  {text2}   {text3}¦ZONA {number1}  ·  {text2}   {text3}¦ZONA {number1}  ·  {text2}   {text3}¦区域 {number1}  ·  {text2}   {text3}
+1057¦射程 {text1}¦Reichweite {text1}¦Portée {text1}¦Alcance {text1}¦Alcance {text1}¦射程 {text1}
+1058¦· 装備中¦· Ausgerüstet¦· Équipé¦· Equipado¦· Equipado¦· 已装备
+1059¦{text1}セット¦{text1}-Set¦Set {text1}¦Set de {text1}¦Conjunto {text1}¦{text1} 套装
+1060¦着用中¦getragen¦porté¦puesto¦em uso¦已穿戴
+1061¦装備中との比較 ▲ +{number1}¦vs. ausgerüstet ▲ +{number1}¦vs équipé ▲ +{number1}¦vs equipado ▲ +{number1}¦vs equipado ▲ +{number1}¦对比已装备 ▲ +{number1}
+1062¦バッグを読み込み中...¦Rucksack wird geladen ...¦Chargement du sac...¦Cargando mochila...¦Carregando mochila...¦正在加载背包...
+1063¦{text1} · スコア {number2}{text3}¦{text1} · Punktzahl {number2}{text3}¦{text1} · Score {number2}{text3}¦{text1} · Puntuación {number2}{text3}¦{text1} · Pontuação {number2}{text3}¦{text1} · 评分 {number2}{text3}
+1064¦🎒 バッグ — スロットをタップすると上に詳細が表示されます¦🎒 Rucksack — tippe auf einen Platz, um oben Details zu sehen¦🎒 Sac — touchez un emplacement pour voir les détails au-dessus¦🎒 Mochila — toca una ranura para ver los detalles arriba¦🎒 Mochila — toque em um espaço para ver os detalhes acima¦🎒 背包 — 点击栏位可在上方查看详情
+1065¦装備中との比較 ▼ {number1}¦vs. ausgerüstet ▼ {number1}¦vs équipé ▼ {number1}¦vs equipado ▼ {number1}¦vs equipado ▼ {number1}¦对比已装备 ▼ {number1}
+1066¦{number1}部位¦{number1} Teile¦{number1} pièces¦{number1} piezas¦{number1} peças¦{number1} 件
+1067¦📍 ゾーン{number1} {text2} · そのゾーンでドロップ · ダンジョン宝箱(深いほど確率アップ)¦📍 Zone {number1} {text2} · Drops in dieser Zone · Dungeon-Truhen (tiefer = bessere Chancen)¦📍 Zone {number1} {text2} · Butin dans cette zone · Coffres de donjon (plus profond = meilleures chances)¦📍 Zona {number1} {text2} · Botín en esa zona · Cofres de mazmorra (más profundo = mejores probabilidades)¦📍 Zona {number1} {text2} · Drops nessa zona · Baús de masmorra (mais fundo = melhores chances)¦📍 区域{number1} {text2} · 该区域掉落 · 地下城宝箱(越深几率越高)
+1068¦基本¦Basis¦Base¦Base¦Base¦基础
+1069¦✦ ユニーク:¦✦ Einzigartig:¦✦ Unique :¦✦ Único:¦✦ Único:¦✦ 独特:
+1070¦15レベルごとに新しい武器が解放されます。タップして使おう。¦Alle 15 Stufen wird eine neue Waffe freigeschaltet. Tippe auf eine, um sie zu nutzen.¦Une nouvelle arme se débloque tous les 15 niveaux. Touchez-en une pour l'utiliser.¦Se desbloquea un arma nueva cada 15 niveles. Toca una para usarla.¦Uma nova arma é desbloqueada a cada 15 níveis. Toque em uma para usá-la.¦每 15 级解锁一把新武器。点击即可使用。
+1071¦🎲 リロール: 上の範囲内でアフィックスの値を振り直します(括弧内は範囲内の位置、100%が最高)。良くも悪くもなります¦🎲 Neuwürfeln: Würfelt die Affixwerte im obigen Bereich neu (Klammern = Position im Bereich, 100 % ist am besten). Kann besser oder schlechter werden¦🎲 Relance : relance les valeurs d'affixes dans la plage ci-dessus (parenthèses = position dans la plage, 100 % est le meilleur). Peut être meilleur ou pire¦🎲 Rerrolear: vuelve a tirar los valores de los afijos dentro del rango anterior (entre paréntesis = posición en el rango, 100% es lo mejor). Puede salir mejor o peor¦🎲 Rerrolar: sorteia novamente os valores dos afixos dentro do intervalo acima (parênteses = posição no intervalo, 100% é o melhor). Pode ficar melhor ou pior¦🎲 重置:在上述范围内重新随机词缀数值(括号内为范围中的位置,100% 最佳)。可能变好也可能变差
+1072¦ブーツ¦Stiefel¦Bottes¦Botas¦Botas¦靴子
+1073¦カメラ¦Kamera¦Caméra¦Cámara¦Câmera¦相机
+1074¦分解¦Zerlegen¦Démanteler¦Desmantelar¦Desmontar¦分解
+1075¦空¦Leer¦Vide¦Vacío¦Vazio¦空
+1076¦ヘルメット¦Helm¦Casque¦Casco¦Capacete¦头盔
+1077¦最大強化 MAX¦Max. Verbesserung MAX¦Amélioration max. MAX¦Mejora máx. MAX¦Melhoria máx. MAX¦强化已满 MAX
+1078¦最大！¦Max!¦Max !¦¡Máx.!¦Máx.!¦满级!
+1079¦まだ装備がありません。¦Noch keine Ausrüstung.¦Pas encore d'équipement.¦Aún no hay equipo.¦Ainda não há equipamento.¦还没有装备。
+1080¦フィールドでモンスターを倒すか、ガチャを使おう！¦Besiege Monster im Feld oder nutze den Gacha!¦Vainquez des monstres sur le terrain ou utilisez le gacha !¦¡Derrota monstruos en el campo o usa el gacha!¦Derrote monstros no campo ou use o gacha!¦在野外击败怪物,或使用扭蛋吧!
+1081¦オーブ¦Kugel¦Orbe¦Orbe¦Orbe¦光球
+1082¦リロール¦Neuwürfeln¦Relancer¦Rerrolear¦Rerrolar¦重置
+1083¦リロール ✨{number1}¦Neuwürfeln ✨{number1}¦Relancer ✨{number1}¦Rerrolear ✨{number1}¦Rerrolar ✨{number1}¦重置 ✨{number1}
+1084¦スクラップ¦Schrott¦Ferraille¦Chatarra¦Sucata¦废料
+1085¦解放¦Freischalten¦Débloquer¦Desbloquear¦Desbloquear¦解锁
+1086¦ペット(P)¦Begleiter (P)¦Familier (P)¦Mascota (P)¦Pet (P)¦宠物 (P)
+1087¦使用¦Benutzen¦Utiliser¦Usar¦Usar¦使用
+1088¦同じゾーンのセットを1・2・3部位着ると、セット効果がティア4・5・6に(セットウィンドウ: Y)¦Trage 1·2·3 Teile desselben Zonen-Sets → Set-Boni der Stufen 4·5·6 (Set-Fenster: Y)¦Portez 1·2·3 pièces du même set de zone → effets de set de palier 4·5·6 (fenêtre des sets : Y)¦Equipa 1·2·3 piezas del mismo set de zona → efectos de set de nivel 4·5·6 (ventana de sets: Y)¦Use 1·2·3 peças do mesmo conjunto de zona → efeitos de conjunto de nível 4·5·6 (janela de conjuntos: Y)¦穿戴同一区域套装的 1·2·3 件 → 套装效果提升至 4·5·6 阶(套装窗口:Y)
+1089¦バッグは空です¦Dein Rucksack ist leer¦Votre sac est vide¦Tu mochila está vacía¦Sua mochila está vazia¦背包是空的
+1090¦▶ 使用中¦▶ In Benutzung¦▶ Utilisé¦▶ En uso¦▶ Em uso¦▶ 使用中
+1091¦○ ゴールドティア3 + 装備1・2・3部位 = ティア4・5・6(Y)¦○ Gold-Stufe 3 + 1·2·3 Ausrüstungsteile = Stufe 4·5·6 (Y)¦○ Palier or 3 + 1·2·3 pièces d'équipement = palier 4·5·6 (Y)¦○ Nivel de oro 3 + 1·2·3 piezas de equipo = nivel 4·5·6 (Y)¦○ Nível de ouro 3 + 1·2·3 peças de equipamento = nível 4·5·6 (Y)¦○ 金币阶 3 + 1·2·3 件装备 = 4·5·6 阶(Y)
+1092¦⚡ 最良の装備を自動装備¦⚡ Beste Ausrüstung automatisch anlegen¦⚡ Équiper automatiquement le meilleur équipement¦⚡ Equipar automáticamente el mejor equipo¦⚡ Equipar automaticamente o melhor equipamento¦⚡ 自动装备最佳装备
+1093¦✔ ティア¦✔ Stufe¦✔ Palier¦✔ Nivel¦✔ Nível¦✔ 阶
+1094¦🎒 バッグ¦🎒 Rucksack¦🎒 Sac¦🎒 Mochila¦🎒 Mochila¦🎒 背包
+1095¦✨ エッセンス¦✨ Essenz¦✨ Essence¦✨ Esencia¦✨ Essência¦✨ 精华
+1096¦💰 {number1} G スロット強化(成功率 {number2}%)¦💰 {number1} G Platz-Verbesserung ({number2} % Erfolg)¦💰 Amélioration d'emplacement {number1} or ({number2} % de réussite)¦💰 {number1} G Mejora de ranura ({number2}% de éxito)¦💰 {number1} G Melhoria de espaço ({number2}% de sucesso)¦💰 {number1} 金币 栏位强化(成功率 {number2}%)
+1097¦🧹 スマート整理¦🧹 Smartes Aufräumen¦🧹 Nettoyage intelligent¦🧹 Limpieza inteligente¦🧹 Limpeza inteligente¦🧹 智能清理
+1098¦(最大 {number1})¦(max. {number1})¦(max {number1})¦(máx. {number1})¦(máx. {number1})¦(最多 {number1})
+1099¦追加¦Hinzufügen¦Ajouter¦Añadir¦Adicionar¦添加
+1100¦残りポイント {number1}  /  合計 {number2}  (レベル {number3})¦Verbleibende Punkte {number1}  /  gesamt {number2}  (Stufe {number3})¦Points restants {number1}  /  total {number2}  (niveau {number3})¦Puntos restantes {number1}  /  total {number2}  (nivel {number3})¦Pontos restantes {number1}  /  total {number2}  (nível {number3})¦剩余点数 {number1}  /  共 {number2}  (等级 {number3})
+1101¦減らす¦Entfernen¦Retirer¦Quitar¦Remover¦减少
+1102¦💰 ポイント購入 {text1} G ({number2}/{number3})¦💰 Punkt kaufen {text1} G ({number2}/{number3})¦💰 Acheter un point {text1} or ({number2}/{number3})¦💰 Comprar punto {text1} G ({number2}/{number3})¦💰 Comprar ponto {text1} G ({number2}/{number3})¦💰 购买点数 {text1} 金币 ({number2}/{number3})
+1103¦目¦Auge¦Œil¦Ojo¦Olho¦眼睛
+1104¦ローブ¦Robe¦Robe¦Túnica¦Manto¦长袍
+1105¦肩¦Schultern¦Épaules¦Hombros¦Ombros¦肩部
+1106¦胴¦Torso¦Torse¦Torso¦Torso¦躯干
+1107¦クエスト¦Quest¦Quête¦Misión¦Missão¦任务
+1108¦ランク¦Rang¦Rang¦Rango¦Rank¦排名
+1109¦設定¦Einstellungen¦Paramètres¦Ajustes¦Configurações¦设置
+1110¦エリート¦Elite¦Élite¦Élite¦Elite¦精英
+1111¦通常¦Normal¦Normal¦Normal¦Normal¦普通
+1112¦ハイライト¦Highlight¦À la une¦Destacado¦Destaque¦亮点
+1113¦(現在有効)¦(derzeit aktiv)¦(actif actuellement)¦(activo ahora)¦(ativo agora)¦(当前生效)
+1114¦(まだクリアしたゾーンなし)¦(noch keine Zone abgeschlossen)¦(aucune zone terminée)¦(aún no se ha completado ninguna zona)¦(nenhuma zona concluída ainda)¦(尚未通关任何区域)
+1115¦(ゾーン¦(Zonen¦(zones¦(zonas¦(zonas¦(区域
+1116¦+ 幸運ブースター¦+ Glücks-Booster¦+ Booster de chance¦+ Potenciador de suerte¦+ Impulsionador de sorte¦+ 幸运加速
+1117¦の確率(ダンジョン宝箱はさらに大幅に高い)。¦der Zeit (Dungeon-Truhen: viel höher).¦du temps (coffres de donjon : bien plus élevé).¦del tiempo (cofres de mazmorra: mucho más alto).¦do tempo (baús de masmorra: bem mais alto).¦的几率(地下城宝箱高得多)。
+1118¦、ダンジョン宝箱 x¦, Dungeon-Truhen x¦, coffres de donjon x¦, cofres de mazmorra x¦, baús de masmorra x¦,地下城宝箱 x
+1119¦、フィールドロード x¦, Feld-Lords x¦, seigneurs du terrain x¦, señores del campo x¦, senhores do campo x¦,野外领主 x
+1120¦。フィールドのミシックドロップにはユニーク効果が付きます¦. Mythische Feld-Drops tragen einen einzigartigen Effekt¦. Les butins mythiques du terrain portent un effet unique¦. Los botines míticos del campo llevan un efecto único¦. Os drops míticos do campo trazem um efeito único¦。野外的神话掉落带有独特效果
+1121¦ダンジョンの深度¦Dungeon-Tiefe¦Profondeur du donjon¦Profundidad de la mazmorra¦Profundidade da masmorra¦地下城深度
+1122¦(あなたの記録: 深度{number1} · ダンジョンのテーマはランダム、確率は同じ)¦(dein Rekord: Tiefe {number1} · das Dungeon-Thema ist zufällig, die Chancen sind gleich)¦(votre record : profondeur {number1} · le thème du donjon est aléatoire, les probabilités sont les mêmes)¦(tu récord: profundidad {number1} · el tema de la mazmorra es aleatorio, las probabilidades son las mismas)¦(seu recorde: profundidade {number1} · o tema da masmorra é aleatório, as chances são as mesmas)¦(你的记录:深度 {number1} · 地下城主题随机,几率相同)
+1123¦装備スロット¦Ausrüstungsplatz¦Emplacement d'équipement¦Ranura de equipo¦Espaço de equipamento¦装备栏位
+1124¦(合計100.00%)¦(gesamt 100,00 %)¦(total 100,00 %)¦(total 100,00%)¦(total 100,00%)¦(合计 100.00%)
+1125¦レア度¦Seltenheit¦Rareté¦Rareza¦Raridade¦稀有度
+1126¦(合計¦(gesamt¦(total¦(total¦(total¦(合计
+1127¦ブースターあり¦Mit dem Booster¦Avec le booster¦Con el potenciador¦Com o impulsionador¦使用加速时
+1128¦ブースターなし¦Ohne den Booster¦Sans le booster¦Sin el potenciador¦Sem o impulsionador¦不使用加速时
+1129¦ゾーンセット装備¦Zonen-Set-Ausrüstung¦Équipement de set de zone¦Equipo de set de zona¦Equipamento de conjunto de zona¦区域套装装备
