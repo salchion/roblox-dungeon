@@ -1591,6 +1591,12 @@ return {
 		["👑 100 Kill Streak!!!!"] = "👑 Sequência de 100 abates!!!!",
 		["💥 50 Kill Streak!!!"] = "💥 Sequência de 50 abates!!!",
 		["🔥 10 Kill Streak!"] = "🔥 Sequência de 10 abates!",
+		["Ranking resets in"] = "O ranking reinicia em",
+		["· rewards: tier by bosses defeated"] = "· recompensas: nível conforme os chefes derrotados",
+		["Ranking unavailable right now (in Studio, enable API Services)"] = "Ranking indisponível agora (no Studio, ative os API Services)",
+		["Reward"] = "Recompensa",
+		["Runs left today"] = "Tentativas restantes hoje",
+		["This week's best"] = "Melhor desta semana",
 	},
 	templates = {
 	},
