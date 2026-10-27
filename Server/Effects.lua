@@ -8,6 +8,7 @@ local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Guard = require(script.Parent:WaitForChild("DamageGuard"))
 
 local Effects = {}
@@ -104,6 +105,8 @@ end
 -- list: 이 서비스의 탄 목록 (유도탄 상한 확인용). 돌려주는 값: 목록에 넣을 탄 데이터
 function Effects.MakeShot(list, origin, direction, speed, damage, size, color, style, opts)
 	local now = os.clock()
+	local mult = Config.EnemyShotSpeedMult or 1
+	speed *= mult -- 모든 적 탄을 한 곳에서 빠르게 (자식 탄도 MakeShot 을 다시 지나므로 한 번씩만 곱해진다)
 	local dir = direction.Magnitude > 0.001 and direction.Unit or Vector3.new(0, 0, -1)
 	local kind = opts and opts.Kind
 	if kind == "homing" and Effects.CountKind(list, "homing") >= Effects.HomingCap then
@@ -134,8 +137,9 @@ function Effects.MakeShot(list, origin, direction, speed, damage, size, color, s
 			life = opts.Life or 3.5
 			path = { "home" }
 		elseif kind == "split" then
-			entry.SplitAt, entry.Child = now + (opts.SplitTime or 0.6), opts.Child
-			life = (opts.SplitTime or 0.6) + 0.4
+			local splitTime = (opts.SplitTime or 0.6) / mult -- 빨라진 만큼 같은 거리에서 갈라지게
+			entry.SplitAt, entry.Child = now + splitTime, opts.Child
+			life = splitTime + 0.4
 		end
 	end
 	entry.Expire = now + life

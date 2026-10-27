@@ -497,7 +497,7 @@ local function leadAim(part, target, speed)
 	if delta.Magnitude < 0.1 then return nil end
 	local velocity = target.AssemblyLinearVelocity
 	velocity = Vector3.new(velocity.X, 0, velocity.Z)
-	local lead = target.Position + velocity * math.clamp(delta.Magnitude / math.max(speed, 1), 0, G.LeadMaxTime) * G.LeadStrength
+	local lead = target.Position + velocity * math.clamp(delta.Magnitude / math.max(speed * (Config.EnemyShotSpeedMult or 1), 1), 0, G.LeadMaxTime) * G.LeadStrength
 	local aim = lead - part.Position
 	return aim.Magnitude > 0.1 and aim.Unit or delta.Unit
 end
@@ -1259,7 +1259,7 @@ function M.Update(ctx, part, data, dt, now)
 						if not current then return end
 						local landing = current.Position + Vector3.new((math.random() - 0.5) * (i == 0 and 4 or 16), -2.8, (math.random() - 0.5) * (i == 0 and 4 or 16))
 						local reach = flat(landing - part.Position).Magnitude
-						local dur = math.clamp(reach / math.max(stats.ShotSpeed, 12), 1.3, 2.4)
+						local dur = math.clamp(reach / math.max(stats.ShotSpeed, 12), 1.3, 2.4) / (Config.EnemyShotSpeedMult or 1)
 						local aoe = 8
 						local color = Color3.fromRGB(235, 140, 70)
 						Effects.Warn(landing, aoe, dur, color)
