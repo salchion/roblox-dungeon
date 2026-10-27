@@ -7,6 +7,11 @@
 -- 영어로 돌아가면 원래 글자로 되돌린다. 사전에 없는 문장은 영어 그대로 보인다: ko_pairs.json 에 줄을 추가하고 build_ko.py 를 다시 돌리면 늘어난다.
 -- 기본값: Roblox 언어 설정이 한국어면 "ko", 아니면 "en".
 
+-- 자체 사전 번역은 번역 오류가 많아서 꺼 두었다: 기본은 영어, 나라별 번역은 로블록스 자동 번역(Game Settings > Localization)에 맡긴다.
+-- 다시 켜려면 아래를 true 로 바꾼다 (KoData 사전과 접속 국가 판별은 그대로 남아 있다).
+local ENABLED = false
+if not ENABLED then return end
+
 local Players = game:GetService("Players")
 local LocalizationService = game:GetService("LocalizationService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")

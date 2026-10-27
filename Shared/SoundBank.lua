@@ -106,10 +106,10 @@ local CUSTOM_ONLY = {
 	Aug_MissileHit = { Volume = 0.5, CustomLength = 0.5, CustomPitch = 1.8 }, -- 미사일 명중
 	Aug_Nova      = { Volume = 0.85, CustomLength = 1.2, CustomPitch = 1.2 }, -- 처치 폭발
 	Aug_Blade     = { Volume = 0.7, CustomLength = 0.6, Base = "Dash", Pitch = 1.7, Length = 0.3, Fx = { { "eq", { LowGain = -10, MidGain = 0, HighGain = 3 } } } }, -- 회전 칼날이 벨 때 "슈웅" (소리 ID 가 없으면 대시 소리를 높게 가공)
-	Skill_LotusCast  = { Volume = 3.4, CustomLength = 1.0, CustomPitch = 1.15, CustomFx = { { "eq", { LowGain = -24, MidGain = -2, HighGain = 8 } } } }, -- 죽음의 연꽃 시전: 칼날 소리의 낮은 부분을 깎아 날카롭게
+	Skill_LotusCast  = { Volume = 5.1, CustomLength = 1.0, CustomPitch = 1.15, CustomFx = { { "eq", { LowGain = -24, MidGain = -2, HighGain = 8 } } } }, -- 죽음의 연꽃 시전: 칼날 소리의 낮은 부분을 깎아 날카롭게
 	Skill_LotusThump = { Volume = 2.4, CustomLength = 1.0, CustomPitch = 0.6 }, -- 시전할 때 깔리는 낮은 "쿵"
-	Skill_LotusSlash = { Volume = 3.2, CustomLength = 0.6, CustomPitch = 1.5, CustomFx = { { "eq", { LowGain = -26, MidGain = 0, HighGain = 9 } } } }, -- 도는 동안 "쉭쉭" 날카로운 칼 소리
-	Skill_LotusStab  = { Volume = 2.8, CustomLength = 0.3, CustomPitch = 2.1, CustomFx = { { "eq", { LowGain = -28, MidGain = 2, HighGain = 10 } } } }, -- 단검이 꽂힐 때 "챙" (아주 높고 짧게)
+	Skill_LotusSlash = { Volume = 4.8, CustomLength = 0.6, CustomPitch = 1.5, CustomFx = { { "eq", { LowGain = -26, MidGain = 0, HighGain = 9 } } } }, -- 도는 동안 "쉭쉭" 날카로운 칼 소리
+	Skill_LotusStab  = { Volume = 4.2, CustomLength = 0.3, CustomPitch = 2.1, CustomFx = { { "eq", { LowGain = -28, MidGain = 2, HighGain = 10 } } } }, -- 단검이 꽂힐 때 "챙" (아주 높고 짧게)
 	Aug_Storm     = { Volume = 0.95, CustomLength = 1.8, Base = "Boom", Pitch = 0.75, Length = 1.3, Fx = { { "distortion", { Level = 0.6 } }, { "reverb", { DecayTime = 2.5, WetLevel = -3 } } }, Layers = { { Pitch = 2.4, Volume = 0.6, Delay = 0 } } }, -- 낙뢰: 찌직(높은 소리) + 우르릉(낮은 폭발 가공)
 	Aug_MeteorFall = { Volume = 0.8, CustomLength = 1.6, CustomPitch = 1.0 }, -- 유성이 떨어지는 소리
 	Aug_MeteorHit = { Volume = 1.15, CustomLength = 2.0, CustomPitch = 0.7 }, -- 유성 착탄 (큰 폭발)
