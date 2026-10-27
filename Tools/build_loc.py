@@ -24,7 +24,7 @@ def convert(x):
         return "{%s%d}" % ("text" if t.endswith("s") else "number", counter[0])
     return SPEC.sub(sub, x)
 
-LANG_COL = {"ja": 1, "de": 2, "fr": 3, "es": 4, "pt": 5, "zh-hans": 6}
+LANG_COL = {"ja": 1, "de": 2, "fr": 3, "es": 4, "pt": 5, "zh-hans": 6, "ko": 7}
 
 def tr_pairs(lang):
     """Tools/missing_en.json 의 영어 목록(번호)과 Tools/tr/*.txt (번호¦ja¦de¦fr¦es¦pt¦zh, 빈 칸은 영어 그대로 둠)에서 [영어, 번역] 쌍을 만든다."""
@@ -38,7 +38,7 @@ def tr_pairs(lang):
         if not name.endswith(".txt"): continue
         for line in open(os.path.join(folder, name), encoding="utf-8").read().split("\n"):
             parts = line.split("¦")
-            if len(parts) < 7 or not parts[0].strip().isdigit(): continue
+            if len(parts) <= col or not parts[0].strip().isdigit(): continue
             en, tr = english[int(parts[0])], parts[col].strip()
             if not tr: continue
             holes = lambda x: sorted(re.findall(r"\{(?:number|text)\d+\}", x))
