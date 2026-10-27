@@ -820,7 +820,7 @@ task.spawn(function()
 	-- 서버가 레벨 / 튜토리얼 값을 채울 때까지 잠깐 기다린다 (최대 5초)
 	waited = os.clock()
 	while (player:GetAttribute("Level") == nil or player:GetAttribute("TutorialActive") == nil) and os.clock() - waited < 5 do task.wait(0.25) end
-	if shownThisSession or not isNewPlayer() then return end
+	if shownThisSession then return end -- (접속할 때마다 한 번: 새 유저만이 아니라 모두에게 보여 준다)
 	shownThisSession = true
 	local ok, err = pcall(play)
 	if not ok then
