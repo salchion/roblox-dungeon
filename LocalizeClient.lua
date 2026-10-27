@@ -65,8 +65,20 @@ if dict and dict.templates then
 	end
 end
 
+local lookupCore
 local function lookupDict(piece)
 	if not dict then return nil end
+	local hit = lookupCore(piece)
+	if hit then return hit end
+	-- 앞 / 뒤의 이모지 / 공백 / 기호는 그대로 두고 가운데 글자만 찾는다: "⚡ Lightning Strike" -> "⚡ " + 번역
+	local head, core, tail = string.match(piece, "^([^%w]*)(.-)([^%w]*)$")
+	if core and core ~= piece and string.find(core, "%a%a%a") then
+		local inner = lookupCore(core)
+		if inner then return head .. inner .. tail end
+	end
+	return nil
+end
+function lookupCore(piece)
 	local hit = dict.exact[piece]
 	if hit then return hit end
 	for i = 1, #compiled do

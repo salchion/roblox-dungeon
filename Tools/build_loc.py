@@ -20,6 +20,14 @@ for lang in LANGS:
         if not src or not tr or tr == src or src in seen: continue
         seen.add(src)
         (tmpl if re.search(r"\{number\d+\}", src) else exact).append((src, tr))
+        # 여러 줄 묶음은 줄 단위로도 넣는다 (게임 글자는 줄 / 색 태그 조각으로 따로 찾는다). 줄 수가 같을 때만.
+        sl, tl = src.split("\n"), tr.split("\n")
+        if len(sl) > 1 and len(sl) == len(tl):
+            for a, b in zip(sl, tl):
+                a, b = a.strip(), b.strip()
+                if a and b and a != b and a not in seen:
+                    seen.add(a)
+                    (tmpl if re.search(r"\{number\d+\}", a) else exact).append((a, b))
     name = "Loc_" + lang.replace("-", "_")
     out = ["-- %s (ReplicatedStorage 안의 ModuleScript, 이름: %s)" % (name, name),
            "-- 자동 생성 파일: Tools/build_loc.py 가 Tools/loc_table.csv 에서 만든다. 직접 고치지 않는다.",
