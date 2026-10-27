@@ -1,0 +1,170 @@
+450¦クリティカルダメージ +{number1}%p¦Krit-Schaden +{number1} %p¦Dégâts critiques +{number1} %p¦Daño crítico +{number1}%p¦Dano crítico +{number1}%p¦暴击伤害 +{number1}%p
+451¦1ポイントごとにクリティカルダメージ+1.5%p(基本は2倍)¦Krit-Schaden +1,5 %p pro Punkt (Basis 2x)¦Dégâts critiques +1,5 %p par point (base x2)¦Daño crítico +1,5%p por punto (base 2x)¦Dano crítico +1,5%p por ponto (base 2x)¦每点暴击伤害 +1.5%p(基础 2 倍)
+452¦通貨¦Währung¦Monnaie¦Moneda¦Moeda¦货币
+453¦呪われたリボルバー¦Verfluchter Revolver¦Revolver maudit¦Revólver maldito¦Revólver amaldiçoado¦被诅咒的左轮
+454¦被ダメージ軽減¦Schadensreduktion¦Réduction des dégâts subis¦Reducción de daño recibido¦Redução de dano recebido¦受到伤害减免
+455¦ダーク¦Dunkel¦Ténèbres¦Oscuro¦Sombrio¦暗黑
+456¦ダークキャノン¦Dunkle Kanone¦Canon des ténèbres¦Cañón oscuro¦Canhão sombrio¦暗黑加农炮
+457¦ダークミサイル¦Dunkle Rakete¦Missile des ténèbres¦Misil oscuro¦Míssil sombrio¦暗黑导弹
+458¦闇の契約¦Dunkler Pakt¦Pacte noir¦Pacto oscuro¦Pacto sombrio¦暗黑契约
+459¦ダークリーパー¦Dunkler Schnitter¦Faucheur noir¦Segador oscuro¦Ceifador sombrio¦暗黑收割者
+460¦ダークスフィア¦Dunkle Kugeln¦Sphères sombres¦Esferas oscuras¦Esferas sombrias¦暗黑球体
+461¦煙の尾を引き、虚無の波紋が広がる暗紫色の球¦Dunkelviolette Kugeln mit Rauchschweifen und sich ausbreitenden Leerenwellen¦Sphères violet sombre à traînée de fumée et ondulations du vide qui se propagent¦Esferas violeta oscuro con colas de humo y ondas de vacío que se expanden¦Esferas roxo-escuras com caudas de fumaça e ondulações do vazio que se espalham¦拖着烟尾、扩散虚空涟漪的暗紫色球体
+462¦ダークランド¦Dunkelland¦Terres sombres¦Tierras oscuras¦Terras sombrias¦暗黑之地
+463¦デッドアイ¦Dead Eye¦Dead Eye¦Ojo de Muerte¦Olho da Morte¦神射手
+464¦装飾¦Deko¦Déco¦Decoración¦Decoração¦装饰
+465¦エリートモンスターを{number1}体倒す¦Besiege {number1} Elite-Monster¦Vainquez {number1} monstres d'élite¦Derrota a {number1} monstruos de élite¦Derrote {number1} monstros de elite¦击败 {number1} 只精英怪物
+466¦フィールドのモンスターを{number1}体倒す¦Besiege {number1} Feldmonster¦Vainquez {number1} monstres du terrain¦Derrota a {number1} monstruos del campo¦Derrote {number1} monstros do campo¦击败 {number1} 只野外怪物
+467¦モンスターを{number1}体倒す¦Besiege {number1} Monster¦Vainquez {number1} monstres¦Derrota a {number1} monstruos¦Derrote {number1} monstros¦击败 {number1} 只怪物
+468¦モンスターを{number1}体倒す(ダンジョン含む)¦Besiege {number1} Monster (Dungeons eingeschlossen)¦Vainquez {number1} monstres (donjons inclus)¦Derrota a {number1} monstruos (incluye mazmorras)¦Derrote {number1} monstros (masmorras incluídas)¦击败 {number1} 只怪物(含地下城)
+469¦ゾーン1のロードを倒す¦Besiege den Lord von Zone 1¦Vainquez le seigneur de la zone 1¦Derrota al señor de la zona 1¦Derrote o senhor da zona 1¦击败区域1的领主
+470¦ゾーン2のロードを倒す¦Besiege den Lord von Zone 2¦Vainquez le seigneur de la zone 2¦Derrota al señor de la zona 2¦Derrote o senhor da zona 2¦击败区域2的领主
+471¦ゾーン3のロードを倒す¦Besiege den Lord von Zone 3¦Vainquez le seigneur de la zone 3¦Derrota al señor de la zona 3¦Derrote o senhor da zona 3¦击败区域3的领主
+472¦ゾーン4のロードを倒す¦Besiege den Lord von Zone 4¦Vainquez le seigneur de la zone 4¦Derrota al señor de la zona 4¦Derrote o senhor da zona 4¦击败区域4的领主
+473¦ゾーン7のロードを倒す¦Besiege den Lord von Zone 7¦Vainquez le seigneur de la zone 7¦Derrota al señor de la zona 7¦Derrote o senhor da zona 7¦击败区域7的领主
+474¦砂漠¦Wüste¦Désert¦Desierto¦Deserto¦沙漠
+475¦砂漠の太陽¦Wüstensonne¦Soleil du désert¦Sol del desierto¦Sol do deserto¦沙漠之日
+476¦ダイヤモンド¦Diamant¦Diamant¦Diamante¦Diamante¦钻石
+477¦放電SMG¦Entlade-MP¦Pistolet-mitrailleur à décharge¦Subfusil de descarga¦Submetralhadora de descarga¦放电冲锋枪
+478¦ダブルショット確率 {number1}%¦Doppelschuss-Chance {number1} %¦Chance de tir double {number1} %¦Prob. de disparo doble {number1}%¦Chance de tiro duplo {number1}%¦双重射击几率 {number1}%
+479¦ダブルショット: 撃つたびに、同じ弾が0.09秒後にもう一度発射される確率があります(威力は同じ)。¦Doppelschuss: Bei jedem Schuss besteht die Chance, dass derselbe Schuss 0,09 s später erneut abgefeuert wird (gleiche Stärke).¦Tir double : à chaque tir, il y a une chance que le même tir parte à nouveau 0,09 s plus tard (même puissance).¦Disparo doble: cada vez que disparas, hay probabilidad de que el mismo disparo salga de nuevo 0,09 s después (misma potencia).¦Tiro duplo: cada vez que você atira, há chance de o mesmo tiro sair de novo 0,09 s depois (mesma potência).¦双重射击:每次射击都有几率在 0.09 秒后再射出同样的一发(威力相同)。
+480¦ドラゴン・ブランダーバス¦Drachen-Donnerbüchse¦Tromblon draconique¦Trabuco de dragón¦Bacamarte de dragão¦龙之鸟铳
+481¦ドラゴンキャノン¦Drachenkanone¦Canon draconique¦Cañón de dragón¦Canhão de dragão¦龙炮
+482¦ドラゴンコア・レールガン¦Drachenkern-Railgun¦Canon à rails au cœur de dragon¦Cañón de riel núcleo de dragón¦Canhão de trilhos núcleo de dragão¦龙核轨道炮
+483¦ドラゴンアイ・スナイパー¦Drachenaugen-Scharfschützengewehr¦Sniper œil de dragon¦Francotirador ojo de dragón¦Sniper olho de dragão¦龙眼狙击枪
+484¦ドラゴンファイアボール¦Drachen-Feuerball¦Boule de feu draconique¦Bola de fuego de dragón¦Bola de fogo de dragão¦龙焰火球
+485¦ドラゴンロケット¦Drachenrakete¦Roquette draconique¦Cohete de dragón¦Foguete de dragão¦龙之火箭
+486¦ドラゴンブレス¦Drachenatem¦Souffle du dragon¦Aliento de dragón¦Sopro do dragão¦龙息
+487¦ドラゴン・マグナム¦Drachen-Magnum¦Magnum du dragon¦Magnum de dragón¦Magnum de dragão¦龙之马格南
+488¦竜牙のピストル¦Drachenzahn-Pistole¦Pistolet croc de dragon¦Pistola colmillo de dragón¦Pistola presa de dragão¦龙牙手枪
+489¦竜炎SMG¦Drachenflammen-MP¦Pistolet-mitrailleur flamme de dragon¦Subfusil llama de dragón¦Submetralhadora chama de dragão¦龙焰冲锋枪
+490¦竜角の冠¦Drachenhorn-Krone¦Couronne en corne de dragon¦Corona de cuerno de dragón¦Coroa de chifre de dragão¦龙角王冠
+491¦竜鱗の鎧¦Drachenschuppenrüstung¦Armure en écailles de dragon¦Armadura de escamas de dragón¦Armadura de escamas de dragão¦龙鳞铠甲
+492¦竜鱗のライフル¦Drachenschuppen-Gewehr¦Fusil en écailles de dragon¦Rifle de escamas de dragón¦Rifle de escamas de dragão¦龙鳞步枪
+493¦くすんだ灰茶色の弾と土煙。すべての武器の始まり¦Stumpfe graubraune Schüsse und Staub. Hier beginnt jede Waffe¦Tirs gris-brun ternes et poussière. Là où commence chaque arme¦Disparos pardo grisáceos apagados y polvo. Donde empieza toda arma¦Tiros cinza-amarronzados opacos e poeira. Onde toda arma começa¦暗淡灰褐色的子弹与尘土。所有武器的起点
+494¦ダミー練習¦Dummy-Übung¦Entraînement sur mannequin¦Práctica con muñeco¦Treino com boneco¦木桩练习
+495¦ダミーキラー¦Dummy-Bezwinger¦Tueur de mannequins¦Destructor de muñecos¦Destruidor de bonecos¦木桩杀手
+496¦ダンジョンゲート¦Dungeon-Tor¦Porte du donjon¦Puerta de la mazmorra¦Portão da masmorra¦地下城大门
+497¦ダンジョンの支配者¦Dungeon-Lord¦Seigneur du donjon¦Señor de la mazmorra¦Senhor da masmorra¦地下城之主
+498¦ダンジョンマスター¦Dungeon-Meister¦Maître du donjon¦Maestro de mazmorras¦Mestre da masmorra¦地下城大师
+499¦ダンジョン初心者¦Dungeon-Neuling¦Novice des donjons¦Novato de mazmorras¦Novato de masmorras¦地下城新手
+500¦ダンジョン常連¦Dungeon-Stammgast¦Habitué des donjons¦Habitual de mazmorras¦Frequentador de masmorras¦地下城常客
+501¦ダンジョン攻略¦Dungeon-Lauf¦Expédition en donjon¦Incursión en mazmorra¦Incursão na masmorra¦地下城挑战
+502¦メテオが着弾するたびに、近くの敵に追加の雷が落ちる¦Jedes Mal, wenn ein Meteor einschlägt, trifft zusätzlich ein Blitz Gegner in der Nähe¦Chaque fois qu'un météore s'écrase, la foudre frappe en plus les ennemis proches¦Cada vez que cae un meteorito, un rayo extra golpea a los enemigos cercanos¦Cada vez que um meteoro cai, um raio extra atinge inimigos próximos¦每当流星落地,附近的敌人还会被额外的闪电击中
+503¦モンスターから得られる経験値が増え、より早くレベルアップします¦Erhalte mehr EP von Monstern, um schneller aufzusteigen¦Gagnez plus d'XP des monstres pour monter de niveau plus vite¦Gana más EXP de los monstruos para subir de nivel más rápido¦Ganhe mais XP dos monstros para subir de nível mais rápido¦从怪物获得更多经验,升级更快
+504¦電磁レールガン¦Elektromagnetische Railgun¦Canon à rails électromagnétique¦Cañón de riel electromagnético¦Canhão de trilhos eletromagnético¦电磁轨道炮
+505¦エリートの日¦Elite-Tag¦Jour des élites¦Día de élites¦Dia de elites¦精英日
+506¦エリートハンター¦Elite-Jäger¦Chasseur d'élite¦Cazador de élites¦Caçador de elites¦精英猎手
+507¦敵HP +25%¦Gegner-LP +25 %¦PV des ennemis +25 %¦Vida enemiga +25%¦Vida inimiga +25%¦敌人生命 +25%
+508¦敵HP +40%、攻撃 +10%¦Gegner-LP +40 %, Angriff +10 %¦PV des ennemis +40 %, attaque +10 %¦Vida enemiga +40%, ataque +10%¦Vida inimiga +40%, ataque +10%¦敌人生命 +40%,攻击 +10%
+509¦敵HP/攻撃 +15%、速度 +5%¦Gegner-LP/Angriff +15 %, Tempo +5 %¦PV/attaque des ennemis +15 %, vitesse +5 %¦Vida/ataque enemigos +15%, velocidad +5%¦Vida/ataque inimigos +15%, velocidade +5%¦敌人生命/攻击 +15%,速度 +5%
+510¦敵の攻撃 +30%¦Gegner-Angriff +30 %¦Attaque des ennemis +30 %¦Ataque enemigo +30%¦Ataque inimigo +30%¦敌人攻击 +30%
+511¦敵の発射間隔 -15%¦Gegner-Feuerintervall -15 %¦Intervalle de tir des ennemis -15 %¦Intervalo de disparo enemigo -15%¦Intervalo de disparo inimigo -15%¦敌人开火间隔 -15%
+512¦敵の移動速度 +12%¦Gegner-Lauftempo +12 %¦Vitesse de déplacement des ennemis +12 %¦Velocidad de movimiento enemiga +12%¦Velocidade de movimento inimiga +12%¦敌人移动速度 +12%
+513¦エナジーバリア¦Energiebarriere¦Barrière d'énergie¦Barrera de energía¦Barreira de energia¦能量屏障
+514¦ボスラッシュに{number1}回挑戦する¦Betrete den Boss Rush {number1} Mal¦Entrez {number1} fois dans le Boss Rush¦Entra al Boss Rush {number1} veces¦Entre no Boss Rush {number1} vezes¦挑战首领连战 {number1} 次
+515¦エピック¦Episch¦Épique¦Épico¦Épico¦史诗
+516¦エピック以下¦Episch oder niedriger¦Épique ou inférieur¦Épico o inferior¦Épico ou inferior¦史诗及以下
+517¦永遠のリボルバー¦Ewiger Revolver¦Revolver éternel¦Revólver eterno¦Revólver eterno¦永恒左轮
+518¦4秒ごとにペットが近くの最も手強い敵に印を付け、その敵はあなたから受けるダメージが+25%になります¦Alle 4 s markiert dein Begleiter den stärksten Gegner in der Nähe: Er erleidet +25 % Schaden von dir¦Toutes les 4 s, votre familier marque l'ennemi le plus coriace à proximité : il subit +25 % de dégâts de votre part¦Cada 4 s tu mascota marca al enemigo más duro cercano: recibe +25% de daño tuyo¦A cada 4 s seu pet marca o inimigo mais forte por perto: ele recebe +25% de dano seu¦每 4 秒宠物会标记附近最强的敌人:它受到你的伤害 +25%
+519¦6回目の命中ごとに落雷(ダメージ250%)¦Jeder 6. Treffer ruft einen Blitzschlag herbei (250 % Schaden)¦Chaque 6e coup fait tomber la foudre (250 % de dégâts)¦Cada 6.º golpe invoca un rayo (250% de daño)¦A cada 6º golpe cai um raio (250% de dano)¦每第 6 次命中召唤一道闪电(250% 伤害)
+520¦数発ごとに、刃が敵の間を跳ね返りながら連続で斬りつけます(連射武器ほど頻繁に投げます)¦Alle paar Schüsse springt eine Klinge zwischen Gegnern hin und her und schlitzt sie nacheinander (schneller feuernde Waffen werfen sie öfter)¦Tous les quelques tirs, une lame rebondit entre les ennemis et les tranche à la suite (les armes à tir rapide la lancent plus souvent)¦Cada pocos disparos, una cuchilla rebota entre enemigos cortándolos en cadena (las armas de disparo rápido la lanzan más a menudo)¦A cada poucos tiros, uma lâmina quica entre os inimigos cortando-os em sequência (armas de tiro rápido a lançam mais vezes)¦每隔几发,一把飞刀会在敌人之间弹跳并连续劈砍(射速越快的武器投掷越频繁)
+521¦処刑¦Hinrichtung¦Exécution¦Ejecución¦Execução¦处决
+522¦命中した敵の周囲で爆発します¦Explodiert um den getroffenen Gegner¦Explose autour de l'ennemi touché¦Explota alrededor del enemigo golpeado¦Explode ao redor do inimigo atingido¦在命中的敌人周围爆炸
+523¦命中した敵の周囲で爆発します(ダメージの40%、範囲はレベルごとに拡大)¦Explodiert um den getroffenen Gegner (40 % des Schadens, Radius wächst pro Stufe)¦Explose autour de l'ennemi touché (40 % des dégâts, rayon qui croît par niveau)¦Explota alrededor del enemigo golpeado (40% del daño, el radio crece por nivel)¦Explode ao redor do inimigo atingido (40% do dano, raio cresce por nível)¦在命中的敌人周围爆炸(40% 伤害,范围随等级扩大)
+524¦着弾時に爆発し、周囲の敵にもダメージを与えます(範囲12)¦Explodiert beim Aufprall und verletzt auch Gegner in der Nähe (Radius 12)¦Explose à l'impact et blesse aussi les ennemis proches (rayon 12)¦Explota al impactar y daña también a los enemigos cercanos (radio 12)¦Explode ao impacto e causa dano também a inimigos próximos (raio 12)¦命中时爆炸,同时伤害附近敌人(范围 12)
+525¦狙った場所で爆発します(範囲16、攻撃x3)¦Explodiert dort, wo du zielst (Radius 16, Angriff x3)¦Explose là où vous visez (rayon 16, attaque x3)¦Explota donde apuntas (radio 16, ataque x3)¦Explode onde você mira (raio 16, ataque x3)¦在你瞄准处爆炸(范围 16,攻击 x3)
+526¦探検家¦Entdecker¦Explorateur¦Explorador¦Explorador¦探险家
+527¦爆裂弾¦Explosivschuss¦Tir explosif¦Disparo explosivo¦Tiro explosivo¦爆裂射击
+528¦追加弾¦Zusatzschüsse¦Tirs supplémentaires¦Disparos extra¦Tiros extras¦额外子弹
+529¦深淵の目¦Auge des Abgrunds¦Œil de l'abysse¦Ojo del abismo¦Olho do abismo¦深渊之眼
+530¦嵐の目¦Auge des Sturms¦Œil de la tempête¦Ojo de la tormenta¦Olho da tempestade¦风暴之眼
+531¦速い敵¦Schnelle Gegner¦Ennemis rapides¦Enemigos rápidos¦Inimigos rápidos¦迅捷敌人
+532¦速くて凶暴¦Schnell und wild¦Rapide et féroce¦Rápido y feroz¦Rápido e feroz¦迅猛凶悍
+533¦高い連射速度 · 長射程¦Hohe Feuerrate · Große Reichweite¦Cadence de tir élevée · Longue portée¦Alta cadencia de fuego · Largo alcance¦Alta cadência de tiro · Longo alcance¦射速快 · 射程远
+534¦フィールド狩り¦Feldjagd¦Chasse sur le terrain¦Caza en el campo¦Caça em campo¦野外狩猎
+535¦フィールドの覇者¦Feld-Oberherr¦Seigneur suprême du terrain¦Señor supremo del campo¦Soberano do campo¦野外霸主
+536¦凶暴な敵¦Wilde Gegner¦Ennemis féroces¦Enemigos feroces¦Inimigos ferozes¦凶暴敌人
+537¦尖った尾と立ち上る火の粉をまとう燃える頭部¦Feurige Köpfe mit spitzen Schweifen und aufsteigender Glut¦Têtes enflammées à queue pointue et braises qui montent¦Cabezas ardientes con colas puntiagudas y brasas que ascienden¦Cabeças flamejantes com caudas pontiagudas e brasas subindo¦带尖尾和升腾火星的燃烧头颅
+538¦火力¦Feuerkraft¦Puissance de feu¦Potencia de fuego¦Poder de fogo¦火力
+539¦直後に同じ方向へもう1発撃つ¦Feuert direkt danach einen weiteren Schuss ab (gleiche Richtung)¦Tire 1 coup de plus juste après (même direction)¦Dispara 1 tiro más justo después (misma dirección)¦Dispara mais 1 tiro logo depois (mesma direção)¦随后朝同一方向再射一发
+540¦遠くから誘導弾を撃ちます。ゆっくりですが執拗に撃ち続けます。¦Feuert aus der Ferne zielsuchende Schüsse ab. Schießt langsam, aber unerbittlich.¦Tire des projectiles à tête chercheuse de loin. Tire lentement mais sans relâche.¦Dispara proyectiles teledirigidos desde lejos. Dispara despacio pero sin descanso.¦Dispara tiros teleguiados de longe. Atira devagar, mas sem parar.¦从远处发射追踪弹。射速虽慢,却持续不断。
+541¦定位置から全方向にリング状の弾を撃ちます。¦Feuert von einem festen Punkt Ringschüsse in alle Richtungen.¦Tire des projectiles en anneau dans toutes les directions depuis un point fixe.¦Dispara disparos en anillo en todas direcciones desde un punto fijo.¦Dispara tiros em anel em todas as direções de um ponto fixo.¦在固定位置向四面八方发射环形弹幕。
+542¦応急処置¦Erste Hilfe¦Premiers soins¦Primeros auxilios¦Primeiros socorros¦急救
+543¦初めてのダンジョン¦Erster Dungeon¦Premier donjon¦Primera mazmorra¦Primeira masmorra¦首次地下城
+544¦炎のしずく¦Flammentropfen¦Gouttes de flamme¦Gotas de llama¦Gotas de chama¦火焰水滴
+545¦炎の着火器¦Flammenzünder¦Allume-flamme¦Encendedor de llamas¦Acendedor de chamas¦火焰点火器
+546¦業火のトーチ¦Inferno-Fackel¦Torche infernale¦Antorcha infernal¦Tocha infernal¦烈焰地狱火炬
+547¦炎のロード¦Flammen-Lord¦Seigneur des flammes¦Señor de las llamas¦Senhor das chamas¦火焰领主
+548¦炎のレールガン¦Flammen-Railgun¦Canon à rails de flamme¦Cañón de riel de llamas¦Canhão de trilhos de chamas¦火焰轨道炮
+549¦炎の連射銃¦Flammen-Schnellfeuerwaffe¦Arme à tir rapide de flamme¦Arma de ráfaga de llamas¦Arma de tiro rápido de chamas¦火焰速射枪
+550¦炎のライフル¦Flammengewehr¦Fusil de flamme¦Rifle de llamas¦Rifle de chamas¦火焰步枪
+551¦炎のロケット¦Flammenrakete¦Roquette de flamme¦Cohete de llamas¦Foguete de chamas¦火焰火箭
+552¦炎の散弾銃¦Flammen-Streuwaffe¦Fusil à dispersion de flamme¦Escopeta de llamas¦Espingarda de chamas¦火焰霰弹枪
+553¦炎のスナイパー¦Flammen-Scharfschützengewehr¦Sniper de flamme¦Francotirador de llamas¦Sniper de chamas¦火焰狙击枪
+554¦火炎放射器¦Flammenwerfer¦Lance-flammes¦Lanzallamas¦Lança-chamas¦火焰喷射器
+555¦素早く飛び回り、三日月型の弾を投げます。¦Fliegt schnell umher und wirft Halbmond-Schüsse.¦Vole rapidement en lançant des projectiles en croissant de lune.¦Vuela rápido lanzando disparos en forma de media luna.¦Voa rapidamente lançando tiros em forma de lua crescente.¦快速飞行,投掷新月形弹。
+556¦素早く漂い、リング状の弾を放ちます。¦Schwebt schnell umher und sendet ringförmige Schüsse aus.¦Flotte rapidement en émettant des projectiles en anneau.¦Flota rápido emitiendo disparos en forma de anillo.¦Flutua rapidamente emitindo tiros em forma de anel.¦快速漂浮,发射环形弹。
+557¦霧¦Nebel¦Brouillard¦Niebla¦Névoa¦迷雾
+558¦森¦Wald¦Forêt¦Bosque¦Floresta¦森林
+559¦森の祝福¦Segen des Waldes¦Bénédiction de la forêt¦Bendición del bosque¦Bênção da floresta¦森林的祝福
+560¦幸運¦Glück¦Fortune¦Fortuna¦Fortuna¦幸运
+561¦狂乱¦Raserei¦Frénésie¦Frenesí¦Frenesi¦狂热
+562¦最初から¦Von Anfang an¦Dès le début¦Desde el principio¦Desde o início¦从一开始
+563¦氷のキャノン¦Frostkanone¦Canon de givre¦Cañón de escarcha¦Canhão de gelo¦寒霜加农炮
+564¦氷のロード¦Frost-Lord¦Seigneur du givre¦Señor de la escarcha¦Senhor do gelo¦寒霜领主
+565¦氷のミサイル¦Frostrakete¦Missile de givre¦Misil de escarcha¦Míssil de gelo¦寒霜导弹
+566¦氷のレールガン¦Frost-Railgun¦Canon à rails de givre¦Cañón de riel de escarcha¦Canhão de trilhos de gelo¦寒霜轨道炮
+567¦氷の連射銃¦Frost-Schnellfeuerwaffe¦Arme à tir rapide de givre¦Arma de ráfaga de escarcha¦Arma de tiro rápido de gelo¦寒霜速射枪
+568¦氷のライフル¦Frostgewehr¦Fusil de givre¦Rifle de escarcha¦Rifle de gelo¦寒霜步枪
+569¦氷棘のピストル¦Frostdorn-Pistole¦Pistolet à pointes de givre¦Pistola de espina de escarcha¦Pistola de espinho de gelo¦霜刺手枪
+570¦氷の息吹¦Frostatem¦Souffle de givre¦Aliento de escarcha¦Sopro de gelo¦寒霜之息
+571¦霜炎スプレー¦Frostfeuer-Sprüher¦Pulvérisateur de feu de givre¦Rociador de fuego helado¦Pulverizador de fogo gélido¦霜火喷射器
+572¦凍結¦Gefroren¦Gelé¦Congelado¦Congelado¦冻结
+573¦凍てつく結晶¦Gefrorene Kristalle¦Cristaux gelés¦Cristales congelados¦Cristais congelados¦冰冻水晶
+574¦完全回復¦Volle Heilung¦Soin complet¦Curación total¦Cura total¦完全恢复
+575¦怒り狂った¦Wütend¦Furieux¦Furioso¦Furioso¦暴怒
+576¦大量の経験値を獲得¦Erhalte eine große Menge EP¦Gagnez une grosse quantité d'XP¦Gana una gran cantidad de EXP¦Ganhe uma grande quantidade de XP¦获得大量经验
+577¦ギャラクシー・スナイパー¦Galaxie-Scharfschützengewehr¦Sniper galactique¦Francotirador galáctico¦Sniper galáctico¦银河狙击枪
+578¦疾風¦Sturm¦Rafale¦Vendaval¦Vendaval¦疾风
+579¦ゲイルスイープ¦Sturmschwung¦Balayage tempête¦Barrido huracanado¦Varredura de vendaval¦狂风横扫
+580¦疾風の風¦Sturmwind¦Vent de rafale¦Viento de vendaval¦Vento de vendaval¦疾风之风
+581¦装備ドロップのレア度 +50%¦Seltenheit von Ausrüstungs-Drops +50 %¦Rareté du butin d'équipement +50 %¦Rareza del botín de equipo +50%¦Raridade dos drops de equipamento +50%¦装备掉落稀有度 +50%
+582¦装備チケット +1¦Ausrüstungs-Ticket +1¦Ticket d'équipement +1¦Boleto de equipo +1¦Ticket de equipamento +1¦装备券 +1
+583¦宝石のネックレス¦Edelstein-Halskette¦Collier de gemmes¦Collar de gemas¦Colar de gemas¦宝石项链
+584¦宝石の指輪¦Edelstein-Ring¦Bague de gemmes¦Anillo de gemas¦Anel de gemas¦宝石戒指
+585¦巨大¦Riese¦Géant¦Gigante¦Gigante¦巨型
+586¦巨大サソリ¦Riesenskorpion¦Scorpion géant¦Escorpión gigante¦Escorpião gigante¦巨型蝎子
+587¦ジャイアントスレイヤー¦Riesentöter¦Tueur de géants¦Matagigantes¦Matador de gigantes¦巨人杀手
+588¦氷河の散弾銃¦Gletscher-Streuwaffe¦Fusil à dispersion glaciaire¦Escopeta glaciar¦Espingarda glacial¦冰川霰弹枪
+589¦ゴブリンの洞窟¦Goblinhöhle¦Caverne des gobelins¦Cueva de los goblins¦Caverna dos goblins¦哥布林洞穴
+590¦ゴブリンキング¦Goblinkönig¦Roi des gobelins¦Rey goblin¦Rei goblin¦哥布林之王
+591¦ゴールド +10% · スキルクールダウン -10%¦Gold +10 % · Fähigkeits-Abklingzeit -10 %¦Or +10 % · Récupération des compétences -10 %¦Oro +10% · Enfriamiento de habilidades -10%¦Ouro +10% · Recarga de habilidades -10%¦金币 +10% · 技能冷却 -10%
+592¦このダンジョンのゴールド +20%¦Gold +20 % in diesem Dungeon¦Or +20 % dans ce donjon¦Oro +20% en esta mazmorra¦Ouro +20% nesta masmorra¦本地下城金币 +20%
+593¦金の指輪¦Goldring¦Bague en or¦Anillo de oro¦Anel de ouro¦金戒指
+594¦ゴールド/経験値 x2、モンスターHP x1.2¦Gold/EP x2, Monster-LP x1,2¦Or/XP x2, PV des monstres x1,2¦Oro/EXP x2, vida de monstruos x1,2¦Ouro/XP x2, vida dos monstros x1,2¦金币/经验 x2,怪物生命 x1.2
+595¦黄金¦Golden¦Doré¦Dorado¦Dourado¦黄金
+596¦ゴールデンエース¦Goldener Ass¦As doré¦As dorado¦Ás dourado¦黄金王牌
+597¦ゴールデンキャノン¦Goldene Kanone¦Canon doré¦Cañón dorado¦Canhão dourado¦黄金加农炮
+598¦ゴールデンコメット¦Goldener Komet¦Comète dorée¦Cometa dorado¦Cometa dourado¦黄金彗星
+599¦ゴールデンデー¦Goldener Tag¦Jour doré¦Día dorado¦Dia dourado¦黄金日
+600¦金鷲のスナイパー¦Goldadler-Scharfschützengewehr¦Sniper aigle d'or¦Francotirador águila dorada¦Sniper águia dourada¦金鹰狙击枪
+601¦黄金の炉¦Goldener Ofen¦Fournaise dorée¦Horno dorado¦Fornalha dourada¦黄金熔炉
+602¦黄金狩り¦Goldjagd¦Chasse dorée¦Caza dorada¦Caça dourada¦黄金狩猎
+603¦ゴールデンハンター¦Goldener Jäger¦Chasseur doré¦Cazador dorado¦Caçador dourado¦黄金猎手
+604¦ゴールデンミサイル¦Goldene Rakete¦Missile doré¦Misil dorado¦Míssil dourado¦黄金导弹
+605¦ゴールデンレールガン¦Goldene Railgun¦Canon à rails doré¦Cañón de riel dorado¦Canhão de trilhos dourado¦黄金轨道炮
+606¦ゴールデンレンジャー¦Goldener Waldläufer¦Ranger doré¦Guardabosques dorado¦Patrulheiro dourado¦黄金游侠
+607¦ゴールデンシュレッダー¦Goldener Schredder¦Broyeur doré¦Trituradora dorada¦Trituradora dourada¦黄金碎裂者
+608¦ゴールデンストームSMG¦Goldene Sturm-MP¦Pistolet-mitrailleur tempête dorée¦Subfusil tormenta dorada¦Submetralhadora tempestade dourada¦黄金风暴冲锋枪
+609¦黄金の盗賊¦Goldener Dieb¦Voleur doré¦Ladrón dorado¦Ladrão dourado¦黄金盗贼
+610¦黄金の手¦Goldene Hand¦Toucher doré¦Toque dorado¦Toque dourado¦点金之手
+611¦黄金の訓練用ダミー¦Goldene Trainingspuppe¦Mannequin d'entraînement doré¦Muñeco de entrenamiento dorado¦Boneco de treino dourado¦黄金训练木桩
+612¦フィールドで役立つ知識: Qキーで移動方向にダッシュします(連続2回、3秒ごとに回復)。敵の弾をギリギリで避けるとボーナス！¦Gut zu wissen im Feld: Drücke Q, um in Laufrichtung nach vorn zu stürmen (2 hintereinander, lädt alle 3 s auf). Weiche Gegnerschüssen knapp aus für einen Bonus!¦Bon à savoir sur le terrain : appuyez sur Q pour foncer dans votre direction (2 d'affilée, recharge toutes les 3 s). Esquivez de justesse les tirs ennemis pour un bonus !¦Para el campo: pulsa Q para lanzarte hacia delante en tu dirección (2 seguidos, se recarga cada 3 s). ¡Esquiva por poco los disparos enemigos para un bono!¦Bom saber no campo: pressione Q para avançar impulsivamente na sua direção (2 seguidos, recarrega a cada 3 s). Desvie por pouco dos tiros inimigos para ganhar um bônus!¦野外小知识:按 Q 沿移动方向冲刺(可连续 2 次,每 3 秒恢复)。险险躲过敌人的子弹可获得奖励!
+613¦大いなる覚醒¦Großes Erwachen¦Grand éveil¦Gran despertar¦Grande despertar¦伟大觉醒
+614¦成長する冒険者¦Wachsender Abenteurer¦Aventurier en croissance¦Aventurero en crecimiento¦Aventureiro em crescimento¦成长中的冒险者
+615¦守護者¦Wächter¦Gardien¦Guardián¦Guardião¦守护者
+616¦守護者の誓い¦Schwur des Wächters¦Serment du gardien¦Juramento del guardián¦Juramento do guardião¦守护者之誓
+617¦HP訓練¦LP-Training¦Entraînement de PV¦Entrenamiento de vida¦Treino de vida¦生命训练
+618¦HPが全回復します¦Die LP werden vollständig wiederhergestellt¦Les PV sont entièrement restaurés¦La salud se restaura por completo¦A vida é totalmente restaurada¦生命值完全恢复
+619¦ハード¦Schwer¦Difficile¦Difícil¦Difícil¦困难

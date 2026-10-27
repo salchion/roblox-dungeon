@@ -722,9 +722,23 @@
       "overwrite": true
     },
     {
+      "path": "Shared/Loc_de_2.lua",
+      "parent": "ReplicatedStorage",
+      "name": "Loc_de_2",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Shared/Loc_es.lua",
       "parent": "ReplicatedStorage",
       "name": "Loc_es",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/Loc_es_2.lua",
+      "parent": "ReplicatedStorage",
+      "name": "Loc_es_2",
       "class": "ModuleScript",
       "overwrite": true
     },
@@ -736,9 +750,23 @@
       "overwrite": true
     },
     {
+      "path": "Shared/Loc_fr_2.lua",
+      "parent": "ReplicatedStorage",
+      "name": "Loc_fr_2",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Shared/Loc_ja.lua",
       "parent": "ReplicatedStorage",
       "name": "Loc_ja",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/Loc_ja_2.lua",
+      "parent": "ReplicatedStorage",
+      "name": "Loc_ja_2",
       "class": "ModuleScript",
       "overwrite": true
     },
@@ -767,6 +795,13 @@
       "path": "Shared/Loc_pt.lua",
       "parent": "ReplicatedStorage",
       "name": "Loc_pt",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/Loc_pt_2.lua",
+      "parent": "ReplicatedStorage",
+      "name": "Loc_pt_2",
       "class": "ModuleScript",
       "overwrite": true
     },

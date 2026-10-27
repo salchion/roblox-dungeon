@@ -1,0 +1,160 @@
+290¦ゴーレム¦Golem¦Golem¦Gólem¦Golem¦魔像
+291¦精霊¦Geist¦Esprit¦Espíritu¦Espírito¦精灵
+292¦星¦Stern¦Étoile¦Estrella¦Estrela¦星
+293¦/ 称号『¦/ Titel 『¦/ Titre 『¦/ Título 『¦/ Título 『¦/ 称号『
+294¦訓練中¦Training läuft¦Entraînement en cours¦Entrenando¦Treinando¦训练中
+295¦⏱ {number1}分¦⏱ {number1} Min.¦⏱ {number1} min¦⏱ {number1} min¦⏱ {number1} min¦⏱ {number1} 分钟
+296¦✅ デイリークエスト完了！報酬: {text1}¦✅ Tagesquest abgeschlossen! Belohnung: {text1}¦✅ Quête quotidienne terminée ! Récompense : {text1}¦✅ ¡Misión diaria completada! Recompensa: {text1}¦✅ Missão diária concluída! Recompensa: {text1}¦✅ 每日任务完成!奖励:{text1}
+297¦』を解放しました¦』 freigeschaltet¦』 débloqué¦』 desbloqueado¦』 desbloqueado¦』已解锁
+298¦🏅 実績解除！報酬: {text1}{text2}¦🏅 Erfolg freigeschaltet! Belohnung: {text1}{text2}¦🏅 Succès débloqué ! Récompense : {text1}{text2}¦🏅 ¡Logro desbloqueado! Recompensa: {text1}{text2}¦🏅 Conquista desbloqueada! Recompensa: {text1}{text2}¦🏅 成就解锁!奖励:{text1}{text2}
+299¦🏆 戦闘力ランキング TOP¦🏆 Stärke-Rangliste TOP¦🏆 Classement de puissance TOP¦🏆 Clasificación de poder TOP¦🏆 Ranking de poder TOP¦🏆 战力排行 TOP
+300¦しばらくしてからもう一度お試しください。¦Bitte versuche es gleich noch einmal.¦Veuillez réessayer dans un instant.¦Inténtalo de nuevo en un momento.¦Tente novamente em instantes.¦请稍后再试。
+301¦これは町でのみ行えます。¦Das ist nur in der Stadt möglich.¦Cela ne peut se faire qu'en ville.¦Esto solo se puede hacer en la ciudad.¦Isso só pode ser feito na cidade.¦只能在城镇中进行。
+302¦今日の挑戦回数をすべて使い切りました。明日また来てね！¦Du hast alle heutigen Läufe verbraucht. Komm morgen wieder!¦Vous avez utilisé toutes les parties du jour. Revenez demain !¦Usaste todos los intentos de hoy. ¡Vuelve mañana!¦Você usou todas as tentativas de hoje. Volte amanhã!¦你已用完今天的次数。明天再来吧!
+303¦🎁 週間ボスラッシュ宝箱: ミシック{text1}(✦ {text2}付き)！¦🎁 Wöchentliche Boss-Rush-Truhe: Mythisch {text1} mit ✦ {text2}!¦🎁 Coffre hebdomadaire du Boss Rush : {text1} mythique avec ✦ {text2} !¦🎁 Cofre semanal del Boss Rush: ¡{text1} mítico con ✦ {text2}!¦🎁 Baú semanal do Boss Rush: {text1} mítico com ✦ {text2}!¦🎁 每周首领连战宝箱:神话 {text1},附带 ✦ {text2}!
+304¦📢 {text1}がボスラッシュでボスを{number2}体倒しました！({text3})¦📢 {text1} hat im Boss Rush {number2} Bosse besiegt! ({text3})¦📢 {text1} a vaincu {number2} boss dans le Boss Rush ! ({text3})¦📢 ¡{text1} derrotó a {number2} jefes en el Boss Rush! ({text3})¦📢 {text1} derrotou {number2} chefes no Boss Rush! ({text3})¦📢 {text1} 在首领连战中击败了 {number2} 个首领!({text3})
+305¦🔒 フィールドでゾーン8のロードを倒すとボスラッシュが解放されます！¦🔒 Besiege den Lord von Zone 8 im Feld, um den Boss Rush freizuschalten!¦🔒 Vainquez le seigneur de la zone 8 sur le terrain pour débloquer le Boss Rush !¦🔒 ¡Derrota al señor de la zona 8 en el campo para desbloquear el Boss Rush!¦🔒 Derrote o senhor da zona 8 no campo para desbloquear o Boss Rush!¦🔒 在野外击败区域8的领主即可解锁首领连战!
+306¦🔒 すべてのチュートリアルミッションを完了すると解放されます！¦🔒 Schließe alle Tutorial-Missionen ab, um freizuschalten!¦🔒 Terminez toutes les missions du tutoriel pour débloquer !¦🔒 ¡Completa todas las misiones del tutorial para desbloquear!¦🔒 Conclua todas as missões do tutorial para desbloquear!¦🔒 完成所有教程任务即可解锁!
+307¦週間チャンピオン¦Wochenmeister¦Champion de la semaine¦Campeón semanal¦Campeão semanal¦每周冠军
+308¦毎週リセット¦Wöchentlicher Reset¦Réinitialisé chaque semaine¦Se reinicia cada semana¦Reinicia toda semana¦每周重置
+309¦誰がこの座を奪うのか？¦Wer holt sich diesen Platz?¦Qui prendra cette place ?¦¿Quién se llevará este puesto?¦Quem vai conquistar este lugar?¦谁会夺得这个位置?
+310¦ボスラッシュスコア¦Boss-Rush-Punktzahl¦Score du Boss Rush¦Puntuación del Boss Rush¦Pontuação do Boss Rush¦首领连战得分
+311¦記録なし¦kein Eintrag¦aucune entrée¦sin registro¦sem registro¦暂无记录
+312¦👑 今週のチャンピオン 👑¦👑 Champions dieser Woche 👑¦👑 Champions de la semaine 👑¦👑 Campeones de esta semana 👑¦👑 Campeões desta semana 👑¦👑 本周冠军 👑
+313¦範囲内に敵がいません！(ゲージは変わりません)¦Keine Gegner in Reichweite! (Deine Anzeige bleibt unverändert)¦Aucun ennemi à portée ! (Votre jauge reste inchangée)¦¡No hay enemigos al alcance! (Tu medidor no cambia)¦Nenhum inimigo ao alcance! (Seu medidor não muda)¦范围内没有敌人!(能量条不变)
+314¦必殺技ゲージが足りません！(敵を攻撃すると溜まります)¦Nicht genug Ultimate-Anzeige! (Sie füllt sich, wenn du Gegner angreifst)¦Jauge d'ultime insuffisante ! (Elle se remplit en attaquant les ennemis)¦¡Medidor de definitiva insuficiente! (Se llena al atacar enemigos)¦Medidor de supremo insuficiente! (Ele enche ao atacar inimigos)¦大招能量不足!(攻击敌人会积攒能量)
+315¦なぎ払い¦Fegen¦Balayage¦Barrido¦Varredura¦横扫
+316¦🛡 バリア！¦🛡 Barriere!¦🛡 Barrière !¦🛡 ¡Barrera!¦🛡 Barreira!¦🛡 屏障!
+317¦⛏ 深度¦⛏ Tiefe¦⛏ Profondeur¦⛏ Profundidad¦⛏ Profundidade¦⛏ 深度
+318¦🏆 殿堂入り #¦🏆 Ruhmeshalle #¦🏆 Panthéon #¦🏆 Salón de la Fama #¦🏆 Hall da Fama #¦🏆 名人堂 #
+319¦🥈 ボスラッシュ #2¦🥈 Boss Rush #2¦🥈 Boss Rush n°2¦🥈 Boss Rush #2¦🥈 Boss Rush #2¦🥈 首领连战 #2
+320¦🥉 ボスラッシュ #3¦🥉 Boss Rush #3¦🥉 Boss Rush n°3¦🥉 Boss Rush #3¦🥉 Boss Rush #3¦🥉 首领连战 #3
+321¦もう一度ダンジョンに挑戦しよう！¦Fordere den Dungeon erneut heraus!¦Relevez à nouveau le donjon !¦¡Desafía la mazmorra otra vez!¦Desafie a masmorra novamente!¦再次挑战地下城吧!
+322¦町のダンジョンゲートから再入場できます(ミッションの矢印を追ってください)。鍵は不要で、場面の続きから始まります！¦Du kannst am Dungeon-Tor in der Stadt erneut eintreten (folge dem Missionspfeil). Kein Schlüssel nötig. Es geht genau dort weiter, wo die Szene aufgehört hat!¦Vous pouvez y retourner par la porte du donjon en ville (suivez la flèche de mission). Aucune clé requise. Vous reprenez exactement là où la scène s'était arrêtée !¦Puedes volver a entrar por la puerta de la mazmorra de la ciudad (sigue la flecha de misión). No necesitas llave. ¡Continúa justo donde quedó la escena!¦Você pode entrar novamente pelo portão da masmorra na cidade (siga a seta da missão). Não precisa de chave. Continua exatamente de onde a cena parou!¦可从城镇的地下城大门重新进入(跟随任务箭头)。无需钥匙,会从场景中断处继续!
+323¦✅ ミッション完了！¦✅ Mission abgeschlossen!¦✅ Mission terminée !¦✅ ¡Misión completada!¦✅ Missão concluída!¦✅ 任务完成!
+324¦✅ ミッション完了！報酬: {text1}¦✅ Mission abgeschlossen! Belohnung: {text1}¦✅ Mission terminée ! Récompense : {text1}¦✅ ¡Misión completada! Recompensa: {text1}¦✅ Missão concluída! Recompensa: {text1}¦✅ 任务完成!奖励:{text1}
+325¦🎉 チュートリアル完了！フィールドの奥で揺らめく巨大な影が最終目標です。ゾーンを攻略して強くなり、ダンジョンでも装備を集めましょう。(設定/ヘルプ: H)¦🎉 Tutorial abgeschlossen! Der riesige Schatten, der am Ende des Feldes flackert, ist dein Endziel. Werde stärker, indem du Zonen abschließt, und sammle auch in Dungeons Ausrüstung. (Einstellungen/Hilfe: H)¦🎉 Tutoriel terminé ! L'ombre géante qui vacille au bout du terrain est votre objectif final. Devenez plus fort en terminant des zones et récupérez aussi de l'équipement dans les donjons. (Paramètres/Aide : H)¦🎉 ¡Tutorial completado! La sombra gigante que parpadea al final del campo es tu objetivo final. Hazte más fuerte completando zonas y reúne también equipo en las mazmorras. (Ajustes/Ayuda: H)¦🎉 Tutorial concluído! A sombra gigante que pisca no fim do campo é o seu objetivo final. Fique mais forte concluindo zonas e reúna equipamentos nas masmorras também. (Configurações/Ajuda: H)¦🎉 教程完成!野外尽头闪烁的巨大黑影就是你的最终目标。通关区域变强,也别忘了在地下城收集装备。(设置/帮助:H)
+326¦· 新時代 『{text1} {text2}』！¦· Neue Ära 『{text1} {text2}』!¦· Nouvelle ère 『{text1} {text2}』 !¦· ¡Nueva era 『{text1} {text2}』!¦· Nova era 『{text1} {text2}』!¦· 新时代『{text1} {text2}』!
+327¦{text1}を装備しました！({text2})¦{text1} ausgerüstet! ({text2})¦{text1} équipé ! ({text2})¦¡{text1} equipado! ({text2})¦{text1} equipado! ({text2})¦已装备 {text1}!({text2})
+328¦{text1}は+{number2}で解放されます。¦{text1} wird bei +{number2} freigeschaltet.¦{text1} se débloque à +{number2}.¦{text1} se desbloquea en +{number2}.¦{text1} é desbloqueado em +{number2}.¦{text1} 将在 +{number2} 时解锁。
+329¦不明な武器です。¦Unbekannte Waffe.¦Arme inconnue.¦Arma desconocida.¦Arma desconhecida.¦未知的武器。
+330¦強化失敗…(ゴールドだけ失いました)¦Verbesserung fehlgeschlagen … (nur das Gold ist weg)¦Amélioration échouée… (seul l'or est perdu)¦Mejora fallida… (solo se perdió el oro)¦Melhoria falhou… (apenas o ouro foi perdido)¦强化失败……(只损失了金币)
+331¦強化成功！+{number1}¦Verbesserung erfolgreich! +{number1}¦Amélioration réussie ! +{number1}¦¡Mejora exitosa! +{number1}¦Melhoria bem-sucedida! +{number1}¦强化成功!+{number1}
+332¦武器の種類は強化レベルで解放されます！武器タブで選んでください。¦Waffentypen werden durch Verbesserungsstufen freigeschaltet! Wähle im Waffen-Tab eine aus.¦Les types d'armes se débloquent avec les niveaux d'amélioration ! Choisissez-en un dans l'onglet Armes.¦¡Los tipos de arma se desbloquean con los niveles de mejora! Elige uno en la pestaña Armas.¦Os tipos de arma são desbloqueados pelos níveis de melhoria! Escolha um na aba Armas.¦武器类型通过强化等级解锁!请在武器标签页中选择。
+333¦武器の強化はロビーでのみ行えます。¦Waffen können nur in der Lobby verbessert werden.¦Les armes ne peuvent être améliorées que dans le hall.¦Las armas solo se pueden mejorar en el lobby.¦As armas só podem ser melhoradas no lobby.¦武器只能在大厅强化。
+334¦すでに{text1}を持っています。¦Du hältst bereits {text1}.¦Vous tenez déjà {text1}.¦Ya tienes {text1} en la mano.¦Você já está segurando {text1}.¦你已经持有 {text1}。
+335¦最後の武器を最大まで強化しました！¦Du hast die letzte Waffe maximal verbessert!¦Vous avez porté la dernière arme au maximum !¦¡Llevaste el arma final al máximo!¦Você levou a última arma ao máximo!¦最终武器已强化至满级!
+336¦✨ 無料強化はここまでです！次のミッションを確認しよう¦✨ Die kostenlosen Verbesserungen enden hier! Schau dir deine nächste Mission an¦✨ Les améliorations gratuites s'arrêtent ici ! Consultez votre prochaine mission¦✨ ¡Las mejoras gratis terminan aquí! Mira tu próxima misión¦✨ As melhorias grátis terminam aqui! Veja sua próxima missão¦✨ 免费强化到此为止!请查看下一个任务
+337¦🎉 {text1}に進化しました！武器の見た目と弾の色が変わりました{text2}¦🎉 Zu {text1} weiterentwickelt! Aussehen und Kugelfarbe deiner Waffe haben sich geändert{text2}¦🎉 Évolution en {text1} ! L'apparence de votre arme et la couleur des balles ont changé{text2}¦🎉 ¡Evolucionó a {text1}! Cambiaron el aspecto de tu arma y el color de las balas{text2}¦🎉 Evoluiu para {text1}! O visual da sua arma e a cor das balas mudaram{text2}¦🎉 进化为 {text1}!武器外观和子弹颜色已改变{text2}
+338¦💰 ゴールドが足りません。({number1}必要)ゴールドはダミー訓練場・フィールド狩り・ダンジョン・ボスラッシュで稼げます¦💰 Nicht genug Gold. ({number1} nötig) Verdiene Gold auf dem Dummy-Platz, bei der Feldjagd, in Dungeons oder im Boss Rush¦💰 Pas assez d'or. ({number1} requis) Gagnez de l'or au terrain d'entraînement, à la chasse, en donjon ou au Boss Rush¦💰 Oro insuficiente. (se necesitan {number1}) Gana oro en el campo de muñecos, en la caza, en las mazmorras o en el Boss Rush¦💰 Ouro insuficiente. ({number1} necessário) Ganhe ouro no campo de bonecos, na caça, nas masmorras ou no Boss Rush¦💰 金币不足。(需要 {number1})可在木桩训练场、野外狩猎、地下城或首领连战中获得金币
+339¦📢 {text1}の武器が[{text2}]に進化しました！¦📢 Die Waffe von {text1} hat sich zu [{text2}] entwickelt!¦📢 L'arme de {text1} a évolué en [{text2}] !¦📢 ¡El arma de {text1} evolucionó a [{text2}]!¦📢 A arma de {text1} evoluiu para [{text2}]!¦📢 {text1} 的武器进化为【{text2}】!
+340¦🔓 {text1}を解放しました！({text2})武器タブで選べます¦🔓 {text1} freigeschaltet! ({text2}) Wähle sie im Waffen-Tab¦🔓 {text1} débloqué ! ({text2}) Choisissez-le dans l'onglet Armes¦🔓 ¡{text1} desbloqueado! ({text2}) Elígelo en la pestaña Armas¦🔓 {text1} desbloqueado! ({text2}) Escolha na aba Armas¦🔓 已解锁 {text1}!({text2})请在武器标签页中选择
+341¦戻る¦Zurück¦Retour¦Atrás¦Voltar¦返回
+342¦合成¦Kombinieren¦Combiner¦Combinar¦Combinar¦合成
+343¦時代¦Ära¦Ère¦Era¦Era¦时代
+344¦最大{number1}ポイントで約{number2}%。¦Mit den maximalen {number1} Punkten ca. {number2}%.¦Avec le maximum de {number1} points, environ {number2} %.¦Con el máximo de {number1} puntos, aproximadamente {number2}%.¦Com o máximo de {number1} pontos, cerca de {number2}%.¦满 {number1} 点时约为 {number2}%。
+345¦最大{number1}ポイントで、クリティカルは2倍から約{number2}倍になります。組み合わせて¦Mit den maximalen {number1} Punkten steigen Krits von 2x auf etwa {number2}x. Kombiniere¦Avec le maximum de {number1} points, les critiques passent de 2x à environ {number2}x. Combinez¦Con el máximo de {number1} puntos, los críticos pasan de 2x a aproximadamente {number2}x. Combina¦Com o máximo de {number1} pontos, os críticos passam de 2x para cerca de {number2}x. Combine¦满 {number1} 点时,暴击从 2 倍提升到约 {number2} 倍。可搭配
+346¦+ 巨大ミサイル(クリティカル攻撃の150%)¦+ eine riesige Rakete (150 % des Krit-Treffers)¦+ un missile géant (150 % du coup critique)¦+ un misil gigante (150% del golpe crítico)¦+ um míssil gigante (150% do golpe crítico)¦+ 一枚巨型导弹(暴击伤害的150%)
+347¦+ 処刑するたびにHPを4%回復¦+ heilt 4 % LP pro Hinrichtung¦+ soigne 4 % des PV à chaque exécution¦+ cura 4% de la salud por ejecución¦+ cura 4% da vida por execução¦+ 每次处决恢复 4% 生命
+348¦+ 炎を残す¦+ hinterlässt Flammen¦+ laisse des flammes derrière¦+ deja llamas a su paso¦+ deixa chamas para trás¦+ 留下火焰
+349¦+ 0.45秒後に2回目の一斉射撃¦+ zweite Salve 0,45 s später¦+ seconde salve 0,45 s plus tard¦+ segunda salva 0,45 s después¦+ segunda salva 0,45 s depois¦+ 0.45秒后第二轮齐射
+350¦1ポイントごとに、1発目の直後にもう1発撃つ確率+0.7%(「バンバン」)¦Pro Punkt +0,7 % Chance, direkt nach dem ersten einen zweiten Schuss abzufeuern („Bumm-Bumm“)¦+0,7 % de chance par point de tirer un second coup juste après le premier (« bang-bang »)¦+0,7% de probabilidad por punto de disparar un segundo tiro justo después del primero («pum-pum»)¦+0,7% de chance por ponto de disparar um segundo tiro logo após o primeiro («pá-pá»)¦每点 +0.7% 几率在第一发后立刻再射一发(“砰砰”)
+351¦+1 追加爆発¦+1 zusätzliche Explosion¦+1 explosion supplémentaire¦+1 explosión extra¦+1 explosão extra¦+1 次额外爆炸
+352¦+1 メテオ¦+1 Meteor¦+1 météore¦+1 meteorito¦+1 meteoro¦+1 颗流星
+353¦一斉射撃ごとにミサイル+1¦+1 Rakete pro Salve¦+1 missile par salve¦+1 misil por salva¦+1 míssil por salva¦每轮齐射 +1 枚导弹
+354¦+1 ターゲット¦+1 Ziel¦+1 cible¦+1 objetivo¦+1 alvo¦+1 个目标
+355¦最大スタック+3¦+3 max. Stapel¦+3 cumuls max.¦+3 acumulaciones máx.¦+3 acúmulos máx.¦最大层数 +3
+356¦ボス・ロード・エリートへのダメージ+35%¦+35 % Schaden gegen Bosse, Lords und Elite¦+35 % de dégâts aux boss, seigneurs et élites¦+35% de daño a jefes, señores y élites¦+35% de dano a chefes, senhores e elites¦对首领、领主和精英 +35% 伤害
+357¦2枚同時¦2 Klingen gleichzeitig¦2 lames à la fois¦2 cuchillas a la vez¦2 lâminas ao mesmo tempo¦同时 2 把飞刀
+358¦命中ごとに燃焼2スタック¦2 Brandstapel pro Treffer¦2 cumuls de brûlure par coup¦2 acumulaciones de quemadura por golpe¦2 acúmulos de queimadura por golpe¦每次命中 2 层灼烧
+359¦詠唱ごとにメテオ2個¦2 Meteore pro Zauber¦2 météores par incantation¦2 meteoritos por lanzamiento¦2 meteoros por conjuração¦每次施放 2 颗流星
+360¦放置収入2倍(オンライン中もオフライン蓄積にも適用)¦2x Leerlauf-Einkommen (gilt online und für Offline-Ansammlung)¦Revenu d'inactivité x2 (en ligne et pour l'accumulation hors ligne)¦Ingresos inactivos x2 (se aplica en línea y a la acumulación sin conexión)¦Renda ociosa x2 (vale online e para o acúmulo offline)¦挂机收益 2 倍(在线及离线累积均适用)
+361¦3枚同時¦3 Klingen gleichzeitig¦3 lames à la fois¦3 cuchillas a la vez¦3 lâminas ao mesmo tempo¦同时 3 把飞刀
+362¦メテオ3個¦3 Meteore¦3 météores¦3 meteoritos¦3 meteoros¦3 颗流星
+363¦メテオ4個(より大きく)¦4 Meteore, größer¦4 météores, plus gros¦4 meteoritos, más grandes¦4 meteoros, maiores¦4 颗流星,更大
+364¦弾が4%の確率で5倍ダメージ¦4 % Chance, dass ein Schuss 5-fachen Schaden verursacht¦4 % de chances qu'un tir inflige 5x dégâts¦4% de probabilidad de que un disparo cause 5x de daño¦4% de chance de um tiro causar 5x de dano¦子弹有 4% 几率造成 5 倍伤害
+365¦ダンジョンの鍵5個¦5 Dungeon-Schlüssel¦5 clés de donjon¦5 llaves de mazmorra¦5 chaves de masmorra¦5 把地下城钥匙
+366¦装備ガチャチケット5枚¦5 Ausrüstungs-Gacha-Tickets¦5 tickets de gacha d'équipement¦5 boletos de gacha de equipo¦5 tickets de gacha de equipamento¦5 张装备扭蛋券
+367¦6発の散弾が扇状に広がります(遠いと当たる数が減ります)¦6 Schrotkugeln fächern sich auf (auf Distanz treffen weniger)¦6 plombs se dispersent en éventail (moins touchent à distance)¦6 perdigones se abren en abanico (menos aciertan a distancia)¦6 balins se abrem em leque (menos acertam à distância)¦6 颗弹丸呈扇形散开(远处命中更少)
+368¦3秒間すべてのダメージを防ぐバリア¦Eine Barriere, die 3 s lang jeden Schaden blockt¦Une barrière qui bloque tous les dégâts pendant 3 s¦Una barrera que bloquea todo el daño durante 3 s¦Uma barreira que bloqueia todo o dano por 3 s¦可在 3 秒内抵挡所有伤害的屏障
+369¦きらめく金粉をまとう彗星のような金色の尾¦Ein kometenartiger goldener Schweif mit glitzerndem Goldstaub¦Une queue dorée de comète avec de la poussière d'or scintillante¦Una cola dorada como de cometa con polvo de oro reluciente¦Uma cauda dourada como a de um cometa, com pó de ouro cintilante¦如彗星般的金色尾迹,闪烁着金粉
+370¦S字を描く長い尾を引く火の玉、ドラゴンの炎¦Ein Feuerball mit langem, S-förmigem Schweif, Drachenflammen¦Une boule de feu à longue traîne en S, flammes de dragon¦Una bola de fuego con una larga cola en forma de S, llamas de dragón¦Uma bola de fogo com longa cauda em S, chamas de dragão¦拖着长长 S 形尾迹的火球,龙焰
+371¦驚異的な連射速度で弾を撃ち続ける銃¦Eine Waffe, die Schüsse mit atemberaubender Feuerrate verteilt¦Une arme qui crache des tirs à une cadence folle¦Un arma que escupe disparos a una cadencia vertiginosa¦Uma arma que despeja tiros em uma cadência impressionante¦以惊人射速倾泻子弹的枪
+372¦赤い月が昇る: モンスターの速度x1.25 · 攻撃x1.25、報酬x1.5¦Ein roter Mond geht auf: Monstertempo x1,25 · Angriff x1,25, Belohnungen x1,5¦Une lune rouge se lève : vitesse des monstres x1,25 · attaque x1,25, récompenses x1,5¦Sale una luna roja: velocidad de monstruos x1,25 · ataque x1,25, recompensas x1,5¦Uma lua vermelha surge: velocidade dos monstros x1,25 · ataque x1,25, recompensas x1,5¦红月升起:怪物速度 x1.25 · 攻击 x1.25,奖励 x1.5
+373¦深淵¦Abgrund¦Abysse¦Abismo¦Abismo¦深渊
+374¦深淵の征服者¦Abgrund-Bezwinger¦Conquérant de l'abysse¦Conquistador del abismo¦Conquistador do abismo¦深渊征服者
+375¦深淵の支配¦Herrschaft des Abgrunds¦Domination de l'abysse¦Dominio del abismo¦Domínio do abismo¦深渊统御
+376¦深淵の門番¦Torwächter des Abgrunds¦Gardien de l'abysse¦Guardián del abismo¦Guardião do abismo¦深渊守门人
+377¦不在中は最大8時間まで蓄積(初期値は4時間)¦Sammelt bis zu 8 Stunden an, während du weg bist (Standard 4 Stunden)¦S'accumule jusqu'à 8 heures pendant votre absence (4 heures par défaut)¦Se acumula hasta 8 horas mientras no estás (por defecto 4 horas)¦Acumula até 8 horas enquanto você está fora (padrão 4 horas)¦离开时最多累积 8 小时(默认 4 小时)
+378¦不在中は最大1日分まで蓄積¦Sammelt bis zu einem ganzen Tag an, während du weg bist¦S'accumule jusqu'à une journée entière pendant votre absence¦Se acumula hasta un día completo mientras no estás¦Acumula até um dia inteiro enquanto você está fora¦离开时最多累积一整天
+379¦遠距離からの正確な継続射撃¦Präzises Dauerfeuer auf große Distanz¦Tir soutenu précis à longue portée¦Fuego sostenido y preciso a larga distancia¦Fogo contínuo e preciso a longa distância¦远距离精准持续射击
+380¦アドレナリン¦Adrenalin¦Adrénaline¦Adrenalina¦Adrenalina¦肾上腺素
+381¦冒険者¦Abenteurer¦Aventurier¦Aventurero¦Aventureiro¦冒险者
+382¦撃破後3秒間、攻撃速度+30%¦Nach einem Kill 3 s lang Angriffstempo +30 %¦Après une élimination, vitesse d'attaque +30 % pendant 3 s¦Tras una baja, velocidad de ataque +30% durante 3 s¦Após um abate, velocidade de ataque +30% por 3 s¦击杀后 3 秒内攻速 +30%
+383¦古代の鹿の精霊¦Uralter Hirschgeist¦Antique esprit du cerf¦Antiguo espíritu del ciervo¦Antigo espírito do cervo¦远古鹿灵
+384¦アルカナ¦Arkan¦Arcane¦Arcano¦Arcano¦奥术
+385¦アルカナキャノン¦Arkan-Kanone¦Canon arcanique¦Cañón arcano¦Canhão arcano¦奥术加农炮
+386¦アルカナ・ダブルバレル¦Arkane Doppelflinte¦Double canon arcanique¦Doble cañón arcano¦Cano duplo arcano¦奥术双管枪
+387¦アルカナ・フレイムスプレー¦Arkaner Flammenwerfer¦Lance-flammes arcanique¦Lanzallamas arcano¦Lança-chamas arcano¦奥术喷火器
+388¦アルカナ・ハンドキャノン¦Arkane Handkanone¦Canon à main arcanique¦Cañón de mano arcano¦Canhão de mão arcano¦奥术手炮
+389¦アルカナランチャー¦Arkaner Werfer¦Lanceur arcanique¦Lanzador arcano¦Lançador arcano¦奥术发射器
+390¦アルカナマグナム¦Arkane Magnum¦Magnum arcanique¦Magnum arcano¦Magnum arcano¦奥术马格南
+391¦アルカナ・レールガン¦Arkane Railgun¦Canon à rails arcanique¦Cañón de riel arcano¦Canhão de trilhos arcano¦奥术轨道炮
+392¦アルカナライフル¦Arkanes Gewehr¦Fusil arcanique¦Rifle arcano¦Rifle arcano¦奥术步枪
+393¦アルカナスナイパー¦Arkanes Scharfschützengewehr¦Sniper arcanique¦Francotirador arcano¦Sniper arcano¦奥术狙击枪
+394¦アルカナ・ウィスパーSMG¦Arkane Flüster-MP¦Pistolet-mitrailleur arcanique chuchoteur¦Subfusil susurrante arcano¦Submetralhadora sussurrante arcana¦奥术低语冲锋枪
+395¦暗殺者のスナイパー¦Scharfschützengewehr des Assassinen¦Sniper de l'assassin¦Francotirador del asesino¦Sniper do assassino¦刺客狙击枪
+396¦攻撃力¦Angriff¦Attaque¦Ataque¦Ataque¦攻击
+397¦攻撃力+18%¦Angriff +18 %¦Attaque +18 %¦Ataque +18%¦Ataque +18%¦攻击 +18%
+398¦攻撃力+25%¦Angriff +25 %¦Attaque +25 %¦Ataque +25%¦Ataque +25%¦攻击 +25%
+399¦攻撃力+36%！¦Angriff +36 %!¦Attaque +36 % !¦¡Ataque +36%!¦Ataque +36%!¦攻击 +36%!
+400¦攻撃力+4%¦Angriff +4 %¦Attaque +4 %¦Ataque +4%¦Ataque +4%¦攻击 +4%
+401¦撃破後の攻撃速度¦Angriffstempo nach Kill¦Vitesse d'attaque après élimination¦Velocidad de ataque tras baja¦Velocidade de ataque após abate¦击杀后攻速
+402¦攻撃訓練¦Angriffstraining¦Entraînement d'attaque¦Entrenamiento de ataque¦Treino de ataque¦攻击训练
+403¦攻撃速度+10%¦Angriffstempo +10 %¦Vitesse d'attaque +10 %¦Velocidad de ataque +10%¦Velocidade de ataque +10%¦攻速 +10%
+404¦攻撃速度+24%！¦Angriffstempo +24 %!¦Vitesse d'attaque +24 % !¦¡Velocidad de ataque +24%!¦Velocidade de ataque +24%!¦攻速 +24%!
+405¦攻撃速度+8%¦Angriffstempo +8 %¦Vitesse d'attaque +8 %¦Velocidad de ataque +8%¦Velocidade de ataque +8%¦攻速 +8%
+406¦オーラフォーカス¦Aura-Fokus¦Focalisation d'aura¦Enfoque de aura¦Foco de aura¦光环聚焦
+407¦自動回収の範囲が100まで拡大¦Auto-Sammel-Radius wächst auf 100¦Le rayon de ramassage automatique passe à 100¦El radio de recogida automática crece hasta 100¦O raio de coleta automática aumenta para 100¦自动拾取范围扩大到 100
+408¦バッグ+20スロット¦Rucksack +20 Plätze¦Sac +20 emplacements¦Mochila +20 ranuras¦Mochila +20 espaços¦背包 +20 格
+409¦ベーシック¦Standard¦Basique¦Básico¦Básico¦基础
+410¦バーサーク¦Berserker¦Berserker¦Berserker¦Berserker¦狂战
+411¦お得¦Bestes Angebot¦Meilleure offre¦Mejor oferta¦Melhor oferta¦超值
+412¦着弾点の周囲(半径7)に小爆発を起こす大きなプラズマ弾¦Große Plasmaschüsse, die um den Einschlag eine kleine Explosion auslösen (Radius 7)¦Gros tirs de plasma qui provoquent une petite explosion autour de l'impact (rayon 7)¦Grandes disparos de plasma que causan una pequeña explosión alrededor del impacto (radio 7)¦Grandes tiros de plasma que causam uma pequena explosão ao redor do impacto (raio 7)¦会在落点周围(半径7)引发小爆炸的大型等离子弹
+413¦鍛冶師¦Schmied¦Forgeron¦Herrero¦Ferreiro¦铁匠
+414¦刃が斬るたびに、時々ミサイルを発射する¦Die Klingen feuern beim Schneiden gelegentlich eine Rakete ab¦Les lames lancent parfois un missile quand elles tranchent¦Las cuchillas lanzan ocasionalmente un misil al cortar¦As lâminas ocasionalmente lançam um míssil ao cortar¦飞刀劈砍时偶尔会发射一枚导弹
+415¦正面からの攻撃をほぼすべて防ぎます。横か背後から撃とう。¦Blockt fast alle Frontalangriffe. Schieße von der Seite oder von hinten.¦Bloque presque toutes les attaques frontales. Tirez de côté ou par derrière.¦Bloquea casi todos los ataques frontales. Dispara desde un lado o por detrás.¦Bloqueia quase todos os ataques frontais. Atire pelo lado ou por trás.¦几乎能挡住所有正面攻击。请从侧面或背后射击。
+416¦ブラッド¦Blut¦Sang¦Sangre¦Sangue¦鲜血
+417¦ブラッドムーン¦Blutmond¦Lune de sang¦Luna de sangre¦Lua de sangue¦血月
+418¦血への渇望¦Blutdurst¦Soif de sang¦Sed de sangre¦Sede de sangue¦嗜血
+419¦青鋼の弾¦Blaustahl-Schüsse¦Tirs d'acier bleu¦Disparos de acero azul¦Tiros de aço azul¦蓝钢子弹
+420¦掲示板¦Brett¦Tableau¦Tablón¦Quadro¦布告板
+421¦ボスダメージ¦Boss-Schaden¦Dégâts aux boss¦Daño a jefes¦Dano a chefes¦首领伤害
+422¦ボス狩り¦Bossjagd¦Chasse aux boss¦Caza de jefes¦Caça aos chefes¦猎杀首领
+423¦ボスハンター¦Bossjäger¦Chasseur de boss¦Cazador de jefes¦Caçador de chefes¦首领猎手
+424¦ボスが次々に現れます！スコア = 生存秒数 x 与ダメージ¦Die Bosse kommen nacheinander! Punkte = überlebte Sekunden x verursachter Schaden¦Les boss arrivent les uns après les autres ! Score = secondes survécues x dégâts infligés¦¡Los jefes llegan uno tras otro! Puntuación = segundos sobrevividos x daño infligido¦Os chefes chegam um após o outro! Pontuação = segundos sobrevividos x dano causado¦首领接连登场!得分 = 存活秒数 × 造成伤害
+425¦近くの敵3体に跳ね返る · 最長射程¦Prallt auf 3 nahe Gegner ab · Größte Reichweite¦Rebondit sur 3 ennemis proches · Portée maximale¦Rebota en 3 enemigos cercanos · Mayor alcance¦Ricocheteia em 3 inimigos próximos · Maior alcance¦弹跳至附近 3 个敌人 · 射程最远
+426¦ブロンズ¦Bronze¦Bronze¦Bronce¦Bronze¦青铜
+427¦弾幕の嵐¦Kugelhagel¦Pluie de balles¦Tormenta de balas¦Tempestade de balas¦弹幕风暴
+428¦防壁¦Bollwerk¦Rempart¦Baluarte¦Baluarte¦壁垒
+429¦カーペット¦Teppich¦Tapis¦Alfombra¦Tapete¦地毯
+430¦連鎖¦Kette¦Chaîne¦Cadena¦Corrente¦连锁
+431¦チェインメイル¦Kettenhemd¦Cotte de mailles¦Cota de malla¦Cota de malha¦锁子甲
+432¦攻撃がクリティカル(ダメージ2倍)になる確率¦Chance, dass ein Angriff kritisch trifft (2-facher Schaden)¦Chance qu'une attaque soit critique (dégâts x2)¦Probabilidad de que un ataque sea crítico (2x de daño)¦Chance de um ataque ser crítico (2x de dano)¦攻击暴击(2 倍伤害)的几率
+433¦クロノ¦Chrono¦Chrono¦Crono¦Crono¦时空
+434¦短い火花が散る、澄んだ白青の軌跡の弾¦Klare weiß-blaue Leuchtspuren mit kurzen Funken¦Tirs aux traînées blanc-bleu nettes avec de courtes étincelles¦Disparos con estelas blanco azuladas nítidas y chispas cortas¦Tiros com rastros branco-azulados limpos e faíscas curtas¦带短促火花的洁净蓝白拖尾子弹
+435¦コロッサス¦Koloss¦Colosse¦Coloso¦Colosso¦巨像
+436¦コメットランチャー¦Kometenwerfer¦Lance-comètes¦Lanzacometas¦Lança-cometas¦彗星发射器
+437¦司令官¦Kommandant¦Commandant¦Comandante¦Comandante¦指挥官
+438¦コモン¦Gewöhnlich¦Commun¦Común¦Comum¦普通
+439¦コモン以下¦Gewöhnlich oder niedriger¦Commun ou inférieur¦Común o inferior¦Comum ou inferior¦普通及以下
+440¦相棒¦Gefährte¦Compagnon¦Compañero¦Companheiro¦伙伴
+441¦常にミニオンを召喚する¦Beschwört ständig Diener¦Invoque constamment des sbires¦Invoca esbirros constantemente¦Invoca lacaios constantemente¦持续召唤小怪
+442¦クールダウン -{number1}%¦Abklingzeit -{number1} %¦Récupération -{number1} %¦Enfriamiento -{number1}%¦Recarga -{number1}%¦冷却 -{number1}%
+443¦クリティカルダメージ¦Krit-Schaden¦Dégâts critiques¦Daño crítico¦Dano crítico¦暴击伤害
+444¦クリティカルダメージ: クリティカルがさらに強くなります。クリティカル率の装備・ペット・ダブルショットと組み合わせて大ダメージビルドに。¦Krit-Schaden: Krits treffen noch härter. Kombiniere ihn mit Krit-Chance-Ausrüstung / Begleiter / Doppelschuss für einen Big-Hit-Build.¦Dégâts critiques : les critiques frappent encore plus fort. Combinez avec l'équipement de chance critique / le familier / le tir double pour un build gros coups.¦Daño crítico: los críticos golpean aún más fuerte. Combínalo con equipo de probabilidad crítica / mascota / disparo doble para una build de golpes enormes.¦Dano crítico: os críticos batem ainda mais forte. Combine com equipamento de chance de crítico / pet / tiro duplo para uma build de golpes enormes.¦暴击伤害:暴击打得更狠。搭配暴击率装备/宠物/双重射击,打造大招流派。
+445¦クリティカルミサイル¦Krit-Rakete¦Missile critique¦Misil crítico¦Míssil crítico¦暴击导弹
+446¦クリティカル訓練¦Krit-Training¦Entraînement critique¦Entrenamiento crítico¦Treino de crítico¦暴击训练
+447¦クリティカル率 +{number1}%¦Krit-Chance +{number1} %¦Chance critique +{number1} %¦Prob. crítica +{number1}%¦Chance de crítico +{number1}%¦暴击率 +{number1}%
+448¦クリティカル率 +12%！¦Krit-Chance +12 %!¦Chance critique +12 % !¦¡Prob. crítica +12%!¦Chance de crítico +12%!¦暴击率 +12%!
+449¦クリティカル率 +4%¦Krit-Chance +4 %¦Chance critique +4 %¦Prob. crítica +4%¦Chance de crítico +4%¦暴击率 +4%
