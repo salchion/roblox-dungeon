@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ {text1} (auto-salvage +{number2} Essence)", "♻ {text1}(自動分解 エッセンス+{number2})" },
+		{ "✨ {number1}-piece set complete! {text2} Lv.{number3}", "✨ {number1}ピースセット完成！{text2} Lv.{number3}" },
+		{ "📢 {text1} defeated the Final Lord!", "📢 {text1}がファイナルロードを倒した！" },
 		{ "👑 Lord of {text1} (Zone {number2}) · Rec. ⚡{number3}", "👑 {text1}のロード(ゾーン{number2}) · 推奨 ⚡{number3}" },
 		{ "{number1} pulls done! Best rarity: {text2}", "{number1}回の抽選完了！最高レア度: {text2}" },
 		{ "Active {number1} / {number2} slots   (💰 {text3} G)", "有効 {number1} / {number2} スロット   (💰 {text3} G)" },

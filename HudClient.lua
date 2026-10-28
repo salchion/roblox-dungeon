@@ -102,9 +102,17 @@ local function refresh()
 	levelText.Text = tostring(level)
 	local title = player:GetAttribute("Title") or ""
 	nameText.Text = (title ~= "" and ("『" .. title .. "』 ") or "") .. player.DisplayName -- 내 머리 위 이름표는 내 화면에서 숨기므로 칭호는 여기서 보인다
-	xpFill.Size = UDim2.new((maxed or blocked) and 1 or math.clamp(xp / needed, 0, 1), 0, 1, 0)
-	xpFill.BackgroundColor3 = blocked and Color3.fromRGB(255, 170, 60) or Color3.fromRGB(110, 200, 255)
-	xpText.Text = maxed and "MAX" or blocked and "Breakthrough needed!" or string.format("%s / %s XP", comma(xp), comma(needed))
+	if maxed then -- 최대 레벨 이후: 패러건 막대 (다 차면 포인트 +1)
+		local pxp, pneed = player:GetAttribute("ParagonXp") or 0, math.max(1, player:GetAttribute("ParagonXpNeeded") or 1)
+		local earned = player:GetAttribute("ParagonEarned") or 0
+		xpFill.Size = UDim2.new(earned >= Config.ParagonMaxPoints and 1 or math.clamp(pxp / pneed, 0, 1), 0, 1, 0)
+		xpFill.BackgroundColor3 = Color3.fromRGB(120, 190, 255)
+		xpText.Text = string.format("✦ Paragon %d", earned)
+	else
+		xpFill.Size = UDim2.new(blocked and 1 or math.clamp(xp / needed, 0, 1), 0, 1, 0)
+		xpFill.BackgroundColor3 = blocked and Color3.fromRGB(255, 170, 60) or Color3.fromRGB(110, 200, 255)
+		xpText.Text = blocked and "Breakthrough needed!" or string.format("%s / %s XP", comma(xp), comma(needed))
+	end
 	powerText.Text = "⚡ " .. comma(player:GetAttribute("Power") or 0) .. " <font size='9' color='#9aa4cc'>Power</font>"
 	goldText.Text = "💰 <font color='#ffd966'>" .. comma(player:GetAttribute("Gold") or 0) .. "</font>"
 	ticketText.Text = "🎫 <font color='#d9a6ff'>" .. comma(player:GetAttribute("Tickets") or 0) .. "</font>"
@@ -124,7 +132,7 @@ local function refresh()
 	zoneText.Text = string.format("📍 %s   <font color='#8fd8ff'>🎟 Free %d/%d</font>", zoneName, player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily)
 end
 
-for _, name in ipairs({ "DataReady", "Level", "XP", "XPNeeded", "GatePassed", "Power", "Gold", "Tickets", "Keys", "KeysNormal", "KeysHard", "WeaponLevel", "Zone", "MaxZone", "Title", "DungeonFree", "DungeonLabel" }) do
+for _, name in ipairs({ "DataReady", "Level", "XP", "XPNeeded", "ParagonXp", "ParagonXpNeeded", "ParagonEarned", "GatePassed", "Power", "Gold", "Tickets", "Keys", "KeysNormal", "KeysHard", "WeaponLevel", "Zone", "MaxZone", "Title", "DungeonFree", "DungeonLabel" }) do
 	player:GetAttributeChangedSignal(name):Connect(refresh)
 end
 refresh()

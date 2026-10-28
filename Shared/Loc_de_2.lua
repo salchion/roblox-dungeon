@@ -513,6 +513,7 @@ return {
 		{ "🎯 Goal: Defeat Zone {number1} Lord", "🎯 Ziel: Besiege den Lord von Zone {number1}" },
 		{ "Explodes on hit (radius {number1})", "Explodiert beim Treffer (Radius {number1})" },
 		{ "Not enough gold (need {number1} G)", "Nicht genug Gold ({number1} G nötig)" },
+		{ "▲ {number1} unspent (T)  ·  {number2} / {number3} XP", "▲ {number1} unverteilt (T)  ·  {number2} / {number3} EP" },
 		{ "Lord of Forest  ·  Zone {number1}", "Herr des Waldes · Zone {number1}" },
 		{ "Zone {number1} · Shockwave Shot  ", "Zone {number1} · Schockwellen-Schuss" },
 		{ "Spell Tome · Rusty Era +{number1}", "Zauberbuch · Rostige Ära +{number1}" },

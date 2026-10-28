@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Gacha gear never carries a Unique effect. <b>Unique effects</b> (one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "뽑기 장비에는 유니크 효과가 붙지 않아요. <b>유니크 효과</b>({number1}종 중 하나)는 신화 장비에 붙어요: 던전 상자(아래 참고), 필드 드랍({text2}), 주간 보스 러시 상자, 주간 최후의 군주 보상." },
 		{ "<font size='14'><b>🔫 Weapons</b></font>  <font color='#aab0cc'>{text1} · +{number2}</font>\n<font size='10' color='#9aa4cc'>A new weapon unlocks every 15 levels. Tap one to use it.</font>", "<font size='14'><b>🔫 무기</b></font>  <font color='#aab0cc'>{text1} · +{number2}</font>\n<font size='10' color='#9aa4cc'>15레벨마다 새 무기가 열려요. 눌러서 사용하세요.</font>" },
 		{ "Damage  <b>x{number1}</b> <font color='#78ff8c'>▶ x{number2}</font>\nSuccess rate  <font color='#{text3}'><b>{number4}%</b></font>   <font size='10' color='#aaaabb'>(level kept on failure)</font>", "피해  <b>x{number1}</b> <font color='#78ff8c'>▶ x{number2}</font>\n성공 확률  <font color='#{text3}'><b>{number4}%</b></font>   <font size='10' color='#aaaabb'>(실패해도 레벨 유지)</font>" },
 		{ "A new dungeon theme can now appear ({text1}, Level {number2}+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", "새 던전 테마가 나올 수 있어요 ({text1}, 레벨 {number2}+). 깊이를 고르세요: 깊을수록 드랍 확률이 좋고 보스가 강해요. 이제 표시가 문을 가리켜요." },

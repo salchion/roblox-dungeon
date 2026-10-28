@@ -56,8 +56,8 @@ make("UIStroke", { Color = INK, Thickness = 3, ApplyStrokeMode = Enum.ApplyStrok
 local barFill = make("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 200, 90), BorderSizePixel = 0 }, barBack)
 make("UICorner", { CornerRadius = UDim.new(0, 8) }, barFill)
 local fillGradient = make("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 225, 140), Color3.fromRGB(225, 150, 50)), Rotation = 90 }, barFill)
-local levelText = label({ Size = UDim2.new(0.3, 0, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = "", TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3 }, barBack)
-local xpText = label({ Size = UDim2.new(0.6, 0, 1, 0), Position = UDim2.new(0.4, -10, 0, 0), Text = "", TextSize = 13, TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 3 }, barBack)
+local levelText = label({ Size = UDim2.new(0.45, 0, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = "", TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3 }, barBack)
+local xpText = label({ Size = UDim2.new(0.55, 0, 1, 0), Position = UDim2.new(0.45, -10, 0, 0), Text = "", TextSize = 13, TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 3 }, barBack)
 
 local function comma(n)
 	local s = tostring(math.floor(n))
@@ -65,6 +65,7 @@ local function comma(n)
 end
 
 local lastPower = player:GetAttribute("Power") or 0
+local lastEarned = -1
 local function refresh()
 	local level = player:GetAttribute("Level") or 1
 	local xp, needed = player:GetAttribute("XP") or 0, math.max(1, player:GetAttribute("XPNeeded") or 1)
@@ -72,17 +73,41 @@ local function refresh()
 	local blocked = not maxed and level >= Config.GetLevelCap(player:GetAttribute("GatePassed") or 0)
 	local power = player:GetAttribute("Power") or 0
 	powerText.Text = string.format("⚡ <font color='#ffe16e'>%s</font> <font size='15' color='#cfd6f0'>Power</font>", comma(power))
-	levelText.Text = "Lv " .. level
-	barFill.Size = UDim2.new((maxed or blocked) and 1 or math.clamp(xp / needed, 0, 1), 0, 1, 0)
-	fillGradient.Color = blocked and ColorSequence.new(Color3.fromRGB(255, 190, 90), Color3.fromRGB(230, 110, 40)) or ColorSequence.new(Color3.fromRGB(255, 225, 140), Color3.fromRGB(225, 150, 50))
-	xpText.Text = maxed and "MAX" or blocked and "Breakthrough needed!" or string.format("%s / %s XP", comma(xp), comma(needed))
+	if maxed then
+		-- 최대 레벨 이후: 경험치 막대가 "패러건 막대"로 바뀐다 (디아블로 3 처럼 파란빛 막대가 차서 포인트가 쌓인다). 막대가 다 차면 포인트 +1 이고 다시 0 부터.
+		local pxp, pneed = player:GetAttribute("ParagonXp") or 0, math.max(1, player:GetAttribute("ParagonXpNeeded") or 1)
+		local earned, left = player:GetAttribute("ParagonEarned") or 0, player:GetAttribute("ParagonLeft") or 0
+		local full = earned >= Config.ParagonMaxPoints
+		levelText.Text = string.format("Lv %d  ✦ Paragon %d", level, earned)
+		barFill.Size = UDim2.new(full and 1 or math.clamp(pxp / pneed, 0, 1), 0, 1, 0)
+		fillGradient.Color = ColorSequence.new(Color3.fromRGB(150, 235, 255), Color3.fromRGB(70, 130, 255))
+		barBack.BackgroundColor3 = Color3.fromRGB(26, 34, 58)
+		if left > 0 then
+			xpText.Text = string.format("▲ %d unspent (T)  ·  %s / %s XP", left, comma(pxp), comma(pneed))
+		else
+			xpText.Text = string.format("%s / %s XP", comma(pxp), comma(pneed))
+		end
+		if earned > lastEarned and lastEarned >= 0 then -- 포인트를 얻는 순간 막대가 번쩍인다
+			barFill.BackgroundColor3 = Color3.new(1, 1, 1)
+			TweenService:Create(barFill, TweenInfo.new(0.6), { BackgroundColor3 = Color3.fromRGB(110, 200, 255) }):Play()
+			rootScale.Scale = 1.12
+			TweenService:Create(rootScale, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+		end
+		lastEarned = earned
+	else
+		levelText.Text = "Lv " .. level
+		barBack.BackgroundColor3 = Color3.fromRGB(46, 36, 28)
+		barFill.Size = UDim2.new(blocked and 1 or math.clamp(xp / needed, 0, 1), 0, 1, 0)
+		fillGradient.Color = blocked and ColorSequence.new(Color3.fromRGB(255, 190, 90), Color3.fromRGB(230, 110, 40)) or ColorSequence.new(Color3.fromRGB(255, 225, 140), Color3.fromRGB(225, 150, 50))
+		xpText.Text = blocked and "Breakthrough needed!" or string.format("%s / %s XP", comma(xp), comma(needed))
+	end
 	if power > lastPower then -- 전투력이 오르면 숫자가 톡 커졌다 돌아온다
 		rootScale.Scale = 1.12
 		TweenService:Create(rootScale, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
 	end
 	lastPower = power
 end
-for _, name in ipairs({ "Level", "XP", "XPNeeded", "GatePassed", "Power" }) do
+for _, name in ipairs({ "Level", "XP", "XPNeeded", "GatePassed", "Power", "ParagonXp", "ParagonXpNeeded", "ParagonEarned", "ParagonLeft" }) do
 	player:GetAttributeChangedSignal(name):Connect(refresh)
 end
 refresh()

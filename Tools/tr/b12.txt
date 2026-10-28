@@ -1,0 +1,3 @@
+1913¦Lv {number1}  ✦ パラゴン {number2}¦Lv {number1}  ✦ Paragon {number2}¦Niv {number1}  ✦ Parangon {number2}¦Nv {number1}  ✦ Paragón {number2}¦Nv {number1}  ✦ Paragon {number2}¦Lv {number1}  ✦ 巅峰 {number2}¦Lv {number1}  ✦ 패러건 {number2}
+1914¦▲ 未使用 {number1}(T)  ·  {number2} / {number3} XP¦▲ {number1} unverteilt (T)  ·  {number2} / {number3} EP¦▲ {number1} non dépensés (T)  ·  {number2} / {number3} XP¦▲ {number1} sin gastar (T)  ·  {number2} / {number3} EXP¦▲ {number1} não gastos (T)  ·  {number2} / {number3} XP¦▲ 未使用 {number1} 点 (T)  ·  {number2} / {number3} 经验¦▲ 미사용 {number1} (T)  ·  {number2} / {number3} XP
+1915¦✦ パラゴン {number1}¦✦ Paragon {number1}¦✦ Parangon {number1}¦✦ Paragón {number1}¦✦ Paragon {number1}¦✦ 巅峰 {number1}¦✦ 패러건 {number1}

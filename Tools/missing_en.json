@@ -1911,5 +1911,8 @@
 "Piercing Beam",
 "Pierces up to {number1} more enemies in a line",
 "Upgrade",
-"Weapon"
+"Weapon",
+"Lv {number1}  ✦ Paragon {number2}",
+"▲ {number1} unspent (T)  ·  {number2} / {number3} XP",
+"✦ Paragon {number1}"
 ]
