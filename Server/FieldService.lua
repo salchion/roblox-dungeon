@@ -1193,6 +1193,8 @@ local function spawnMonster(zone, kind, at, ambush)
 			xpLevel = level
 			stats = Config.Monster.GetStats(level)
 			MonsterTypes.ApplyDef(typeKey, stats)
+			stats.MaxHealth = math.max(1, math.floor(stats.MaxHealth * Config.Horde.Health)) -- 몬스터 떼: 더 많이, 대신 한 마리는 더 빨리 죽는다
+			stats.Gold *= Config.Horde.Reward
 			text, color, barWidth = def.Name, Color3.new(1, 1, 1), 140
 		end
 		-- 구역 난이도 배율: 구역이 넘어가면 몬스터가 확 강해진다 (체력 / 공격력 / 속도) 대신 보상도 크게 오른다
@@ -1382,6 +1384,13 @@ local function fireProjectile(origin, direction, speed, damage, size, color, sty
 	end
 	-- 부품 없이 숫자로만 (그리기는 클라이언트)
 	table.insert(projectiles, Effects.MakeShot(projectiles, origin, direction, speed, damage, size, color, style, opts))
+	-- 탄막 밀도: 직선탄에는 가끔 옆으로 한 발 더 (서버가 힘들거나 탄이 많으면 안 나간다 - Config.Danmaku)
+	if (not opts or opts.Kind == nil) and style ~= "Bomb" and Effects.ExtraShotOk(#projectiles) then
+		local D = Config.Danmaku
+		local degrees = (math.random() < 0.5 and -1 or 1) * D.ExtraSpread * (0.6 + 0.4 * math.random())
+		local rotated = CFrame.Angles(0, math.rad(degrees), 0):VectorToWorldSpace(direction)
+		table.insert(projectiles, Effects.MakeShot(projectiles, origin, rotated, speed, math.max(1, math.floor(damage * D.ExtraDamage)), size * 0.9, color, style))
+	end
 end
 
 local function rotateY(vector, degrees)
@@ -1503,7 +1512,7 @@ local function reward(player, data, part)
 	if data.Kind == "Boss" then
 		xp = Config.Xp.FieldBoss
 	else
-		xp = Config.Xp.FieldPerMonsterLevel * data.XpLevel * (data.Kind == "Elite" and Config.Xp.EliteMult or 1)
+		xp = Config.Xp.FieldPerMonsterLevel * data.XpLevel * (data.Kind == "Elite" and Config.Xp.EliteMult or 1) * (data.Kind == "Normal" and Config.Horde.Reward or 1)
 	end
 	xp = xp * ((Config.Xp.ZoneMult and Config.Xp.ZoneMult[data.Zone]) or 1) -- 구역이 깊을수록 경험치 배율
 	local rewarded = nil -- 골드 / 경험치를 받은 사람들 (드랍을 각자 굴린다)
@@ -3795,7 +3804,7 @@ function Field.Init(lobbySpawnCFrame)
 
 	for zone = 1, F.ZoneCount do
 		local countMult = F.ZoneCountMult and F.ZoneCountMult[zone] or 1 -- 구역이 올라갈수록 몬스터가 더 많다
-		for _ = 1, math.floor(F.MonstersPerZone * countMult + 0.5) do
+		for _ = 1, math.floor(F.MonstersPerZone * countMult * Config.Horde.Count + 0.5) do
 			spawnMonster(zone, "Normal")
 		end
 		for _ = 1, math.floor(F.ElitesPerZone * countMult + 0.5) do

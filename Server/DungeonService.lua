@@ -383,6 +383,10 @@ local function spawnMonster(run, level, position)
 	stats.MaxHealth = math.floor(stats.MaxHealth * D.GetHealthScale(run.PartySize) * run.Difficulty.HealthMult)
 	stats.ShotDamage = math.floor(stats.ShotDamage * run.Difficulty.DamageMult)
 	MonsterTypes.ApplyDef(typeKey, stats)
+	if not run.RiftMode then -- 몬스터 떼: 더 많이, 대신 한 마리는 더 빨리 죽는다 (보스러쉬 제외)
+		stats.MaxHealth = math.max(1, math.floor(stats.MaxHealth * Config.Horde.Health))
+		stats.Gold *= Config.Horde.Reward
+	end
 	local mutator = run.Mutator
 	if mutator then -- 던전 변이 (거대화 / 신속 / 떼거지 / 황금 / 광폭)
 		stats.MaxHealth = math.floor(stats.MaxHealth * (mutator.HealthMult or 1))
@@ -555,6 +559,13 @@ local function fireProjectile(run, origin, direction, speed, damage, size, color
 	end
 	-- 부품 없이 숫자로만 (그리기는 클라이언트)
 	table.insert(run.Projectiles, Effects.MakeShot(run.Projectiles, origin, direction, speed, damage, size, color, style, opts))
+	-- 탄막 밀도: 직선탄에는 가끔 옆으로 한 발 더 (서버가 힘들거나 탄이 많으면 안 나간다 - Config.Danmaku. 튜토리얼은 제외)
+	if not run.Tutorial and (not opts or opts.Kind == nil) and style ~= "Bomb" and Effects.ExtraShotOk(#run.Projectiles) then
+		local D = Config.Danmaku
+		local degrees = (math.random() < 0.5 and -1 or 1) * D.ExtraSpread * (0.6 + 0.4 * math.random())
+		local rotated = CFrame.Angles(0, math.rad(degrees), 0):VectorToWorldSpace(direction)
+		table.insert(run.Projectiles, Effects.MakeShot(run.Projectiles, origin, rotated, speed, math.max(1, math.floor(damage * D.ExtraDamage)), size * 0.9, color, style))
+	end
 end
 
 -- 몬스터 수십 마리가 매 프레임 "가장 가까운 플레이어"를 묻는다: 살아 있는 몸 목록은 0.05초마다 한 번만 다시 만든다
@@ -1193,7 +1204,7 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 	BL.Kill(player, data.IsBoss and "Boss" or "던전")
 	if not run.RiftMode then -- 보스러쉬는 끝날 때 등급 보상으로만 정산한다
 		giveGold(run, data.Stats.Gold)
-		giveXp(run, data.IsBoss and Config.Xp.DungeonBoss or Config.Xp.DungeonPerMonsterLevel * data.Level)
+		giveXp(run, data.IsBoss and Config.Xp.DungeonBoss or Config.Xp.DungeonPerMonsterLevel * data.Level * Config.Horde.Reward)
 	end
 	Quest.Add(player, "Kills", 1)
 	if data.IsBoss and run.RiftMode then
@@ -2783,7 +2794,7 @@ local function surviveLoop(run)
 	local bonusCount = 0
 	local partyScale = 1 + 0.5 * (run.PartySize - 1)
 	-- 몬스터가 한도를 넘어 쌓이면 졌다: 가만히 버티기만 해서는 클리어할 수 없다 (한도를 넘긴 채 OverrunSeconds 가 지나면 실패)
-	local limit = math.floor(D.MonsterLimit * partyScale * (run.Tutorial and 2 or 1)) -- 튜토리얼은 한도 2배 (쌓여도 바로 지지 않게)
+	local limit = math.floor(D.MonsterLimit * partyScale * (run.Tutorial and 2 or 1) * Config.Horde.DungeonLimit) -- 튜토리얼은 한도 2배 (쌓여도 바로 지지 않게)
 	run.MonsterLimit = limit
 
 	while not run.Destroyed and run.Phase ~= "Ended" do
@@ -2831,12 +2842,12 @@ local function surviveLoop(run)
 				run.SpawnPoints = nearSpawnPoints(run, 22, 75) or run.AllSpawns
 				local level = math.max(1, D.GetWaveMonsterLevel(run.Wave) + run.LevelBonus)
 				local theme = run.Type.Theme or { Spawn = 1, Burst = 1 }
-				local burst = math.floor(((now - startedAt < 1) and 7 or math.random(3, 4)) * theme.Burst * (run.Tutorial and 0.8 or 1) + 0.5) -- 시작하자마자 우르르 (던전 성격에 따라 많거나 적다)
+				local burst = math.floor(((now - startedAt < 1) and 7 or math.random(3, 4)) * theme.Burst * (run.Tutorial and 0.8 or Config.Horde.Count) + 0.5) -- 시작하자마자 우르르 (던전 성격에 따라 많거나 적다)
 				for _ = 1, burst do
 					spawnMonster(run, level)
 				end
 			end
-			nextSpawn = now + (2.0 - 0.7 * progress) * (run.Tutorial and 1.1 or 1) / ((run.PenCount or 1) * ((run.Type.Theme and run.Type.Theme.Spawn) or 1))
+			nextSpawn = now + (2.0 - 0.7 * progress) * (run.Tutorial and 1.1 or Config.Horde.DungeonInterval) / ((run.PenCount or 1) * ((run.Type.Theme and run.Type.Theme.Spawn) or 1))
 		end
 
 		if now >= nextBonus then

@@ -62,6 +62,23 @@ end)
 
 local nextProjectileId = 0
 
+-- 서버 부하 감시: 프레임 시간(Heartbeat dt)을 부드럽게 평균 내서 Load() 를 만든다. 1 = 여유 (20ms 이하), 0 = 빠듯 (40ms 이상).
+-- 동반 탄(탄막 밀도)처럼 "없어도 게임이 되는" 것들이 이 값으로 먼저 줄어든다.
+local frameAverage = 1 / 60
+RunService.Heartbeat:Connect(function(dt)
+	frameAverage += (math.min(dt, 0.2) - frameAverage) * 0.04
+end)
+function Effects.Load()
+	return 1 - math.clamp((frameAverage - 0.020) / 0.020, 0, 1)
+end
+-- 동반 탄을 하나 더 만들어도 되는가 (active = 지금 날아다니는 탄 수)
+function Effects.ExtraShotOk(active)
+	local D = Config.Danmaku
+	if not D or active >= D.SoftCap then return false end
+	local room = math.min(1, (1 - active / D.SoftCap) * 1.5)
+	return math.random() < D.ExtraChance * Effects.Load() * room
+end
+
 function Effects.Tracer(from, to, color, thickness)
 	emit(from, { "T", from, to, color, thickness })
 end
