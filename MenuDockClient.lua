@@ -308,7 +308,11 @@ local function layout(compact, hud)
 	if compact then
 		local old = hud and hud:FindFirstChild("MenuButton")
 		local baseY = old and old.Position.Y.Offset or 190 -- MobileLayoutClient 가 정한 "메뉴 / 설정 버튼 줄" 높이를 그대로 쓴다
-		if PHONE_PC then baseY = TOP_Y - 4 end -- 폰(PC 배치): 카드 바로 아래에 ☰ 버튼 (세로로 긴 버튼 줄이 왼쪽 조이스틱 자리를 가리지 않게)
+		if PHONE_PC then
+			local sc = gui:FindFirstChild("MobileScale")
+			local ds = sc and sc:IsA("UIScale") and sc.Scale or 1
+			baseY = TOP_Y - 4 + math.max(0, math.ceil(54 / ds) - 60) -- Roblox 왼쪽 위 아이콘 줄(약 52px) 아래로 카드와 같이 내려간다 (MobileLayoutClient 와 같은 식)
+		end -- 폰(PC 배치): 카드 바로 아래에 ☰ 버튼 (세로로 긴 버튼 줄이 왼쪽 조이스틱 자리를 가리지 않게)
 		toggle.Position = UDim2.new(0, PHONE_PC and 16 or 12, 0, baseY)
 		size, gap, columns, x, y, iconSize, labelSize = 50, 6, 5, PHONE_PC and 16 or 12, baseY + 42, 22, 10
 	else

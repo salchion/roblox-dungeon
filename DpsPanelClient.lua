@@ -25,7 +25,7 @@ local MAX_ROWS = 6
 local ROW_H = 20
 local HEAD_H = 50
 local WIDTH = 232
-local collapsed = COMPACT
+local collapsed = COMPACT or (UserInputService.TouchEnabled and not UserInputService.MouseEnabled) -- 폰: 머리줄 한 줄로 접어서 시작 (스킬 버튼과 겹치지 않게)
 
 local meter = Instance.new("Frame")
 meter.Name = "DamageMeter"

@@ -300,7 +300,7 @@ local function guardHidden(obj)
 	if not obj or guarded[obj] then return end
 	guarded[obj] = true
 	obj:GetPropertyChangedSignal("Visible"):Connect(function()
-		if st.compact and obj.Visible then obj.Visible = false end
+		if (st.compact or PHONE_PC) and obj.Visible then obj.Visible = false end
 	end)
 end
 
@@ -656,19 +656,76 @@ function layoutCalm(viewport)
 end
 
 
--- 폰(PC 배치): 스킬 바 + 자동 공격 버튼을 오른쪽 아래로 옮긴다 (오른손 엄지로 누르기 쉽게). 점프 버튼 자리(오른쪽 아래 구석)는 비워 두고 그 위에 놓는다.
-local JUMP_ZONE = 150 -- 점프 버튼이 차지하는 실제 픽셀 (오른쪽 아래)
+-- 폰(PC 배치): 오른손 엄지가 점프 버튼 주변에서 바로 누르도록, 스킬 4개 + 자동 공격(R)을 점프 버튼을 둘러싼 호(원 모양)로 놓는다 (모바일 게임처럼).
+-- 점프 버튼의 실제 자리(TouchGui)를 읽어서 그 바깥쪽에 놓으므로 기기마다 점프 버튼 위치가 달라도 맞는다.
+local slotHome = setmetatable({}, { __mode = "k" }) -- [칸] = 원래 X (Dash 0 / 1번 스킬 68 / 2번 136 / 3번 204 순서를 알기 위해)
 local function layoutPhoneSkills(viewport)
 	local hud = playerGui:FindFirstChild("HUD")
 	local bar, auto = find(hud, "SkillBar"), find(hud, "AutoButton")
 	if not (bar and auto) then return end
-	local ds = desktopScale(viewport)
-	local lift = JUMP_ZONE / ds + 8 -- HUD 좌표(=실제 픽셀 / 배율)
-	local edge = 14
-	set(bar, "AnchorPoint", Vector2.new(1, 1))
-	set(bar, "Position", UDim2.new(1, -edge, 1, -lift))
-	set(auto, "AnchorPoint", Vector2.new(1, 1))
-	set(auto, "Position", UDim2.new(1, -(edge + bar.Size.X.Offset + 8), 1, -lift))
+	local hudScale = hud:FindFirstChildOfClass("UIScale")
+	local ds = hudScale and hudScale.Scale or desktopScale(viewport)
+	if ds <= 0 then return end
+
+	-- 점프 버튼 자리 (실제 픽셀). 없으면 오른쪽 아래 구석으로 짐작
+	local touchGui = playerGui:FindFirstChild("TouchGui")
+	local jump = touchGui and touchGui:FindFirstChild("JumpButton", true)
+	local cx, cy, jr
+	if jump and jump:IsA("GuiObject") and jump.AbsoluteSize.X > 10 then
+		cx, cy, jr = jump.AbsolutePosition.X + jump.AbsoluteSize.X / 2, jump.AbsolutePosition.Y + jump.AbsoluteSize.Y / 2, jump.AbsoluteSize.X / 2
+	else
+		cx, cy, jr = viewport.X - 80, viewport.Y - 90, 40
+	end
+
+	-- 칸 목록: 스킬 바 안의 칸들을 원래 순서(Dash, 힐, 정령, 궁극기)대로 + 자동 공격
+	local slots = {}
+	for _, child in ipairs(bar:GetChildren()) do
+		if child:IsA("Frame") then
+			if slotHome[child] == nil then slotHome[child] = child.Position.X.Offset end
+			table.insert(slots, child)
+		end
+	end
+	table.sort(slots, function(l, r) return slotHome[l] < slotHome[r] end)
+
+	set(bar, "AnchorPoint", Vector2.new(0, 0))
+	set(bar, "Position", UDim2.new(0, 0, 0, 0)) -- 칸들이 이 원점 기준으로 자기 자리를 가진다
+	local origin = bar.AbsolutePosition
+	set(auto, "AnchorPoint", Vector2.new(0, 0))
+	set(auto, "Size", UDim2.new(0, 62, 0, 62))
+	for _, child in ipairs(auto:GetChildren()) do
+		if child:IsA("Frame") then
+			set(child, "Position", UDim2.new(0.5, -17, 0.5, -17))
+		elseif child:IsA("TextLabel") then
+			set(child, "Visible", false) -- 켜짐 / 꺼짐은 테두리 색으로 이미 보인다
+		end
+	end
+
+	local slotPx = 62 * ds
+	local radius = jr + slotPx / 2 + 12
+	local step = math.deg(2 * math.asin(math.min(1, (slotPx + 8) / (2 * radius))))
+	local items = {}
+	for _, slot in ipairs(slots) do table.insert(items, slot) end
+	table.insert(items, auto)
+	local angle = 195 -- 왼쪽 약간 아래에서 시작해 위쪽으로 (점프 버튼의 왼쪽 위를 감싼다)
+	for _, item in ipairs(items) do
+		local rad = math.rad(angle)
+		local px = math.clamp(cx + radius * math.cos(rad), slotPx / 2 + 4, viewport.X - slotPx / 2 - 4)
+		local py = math.clamp(cy - radius * math.sin(rad), slotPx / 2 + 4, viewport.Y - slotPx / 2 - 4)
+		local pos = UDim2.new(0, (px - slotPx / 2 - origin.X) / ds, 0, (py - slotPx / 2 - origin.Y) / ds)
+		if item == auto then set(item, "Position", pos) else set(item, "Position", pos) end
+		angle -= step
+	end
+
+	-- 터치 화면에서 필요 없는 키 안내 줄은 숨긴다
+	local hint = find(hud, "ControlsHint")
+	if hint then
+		guardHidden(hint)
+		if hint.Visible then hint.Visible = false end
+	end
+
+	-- 왼쪽 위 카드: Roblox 기본 아이콘 줄(약 52px) 아래로 내린다 (아이콘이 레벨 배지를 가리지 않게). 메뉴 ☰ 버튼도 같은 만큼 내려간다 (MenuDockClient)
+	local card = find(playerGui:FindFirstChild("HudGui"), "HudCard")
+	if card then set(card, "Position", UDim2.new(0, 16, 0, math.max(60, math.ceil(54 / ds)))) end
 end
 
 local function update()
@@ -691,6 +748,12 @@ local function update()
 	else
 		if was then layoutDesktop() end
 		layoutCalm(viewport)
+		if PHONE_PC then -- 폰: 큰 창이 화면 밖으로 나가지 않게 맞추고, 스킬은 점프 버튼 주변으로
+			local hudScale = playerGui:FindFirstChild("HUD") and playerGui.HUD:FindFirstChildOfClass("UIScale")
+			local ds = hudScale and hudScale.Scale or desktopScale(viewport)
+			scanModals(viewport.X / ds, viewport.Y / ds)
+			layoutPhoneSkills(viewport)
+		end
 	end
 end
 

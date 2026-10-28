@@ -117,6 +117,10 @@ local function place(force)
 		x = inset.Min.X + 8
 		y = inset.Min.Y + math.max(0, (inset.Height - h) / 2)
 	end
+	local uiScale = gui:FindFirstChild("MobileScale") -- 폰: 화면 전체가 줄어 있으면 실제 픽셀 좌표를 그 배율로 나눠야 Roblox 버튼 오른쪽에 놓인다
+	if uiScale and uiScale:IsA("UIScale") and uiScale.Scale > 0 then
+		x, y = x / uiScale.Scale, y / uiScale.Scale
+	end
 	spot = Vector2.new(x, y)
 	pill.AnchorPoint = Vector2.new(0, 0)
 	pill.Position = UDim2.fromOffset(x, y)
