@@ -404,6 +404,7 @@ return {
 		["Piercing beam · Hits every enemy in a line"] = "貫通ビーム · 一直線上の全敵に命中",
 		["An ultra-fast beam that punches straight through up to 7 enemies lined up in front of you (each one a little weaker). Best in corridors and against bosses behind their minions"] = "目の前に並んだ最大7体の敵を一直線に貫く超高速ビーム(一体ごとに少しずつ弱くなる)。通路やミニオンの後ろにいるボスに最適",
 		["Piercing Beam"] = "貫通ビーム",
+		["🎰 Pull gear 10 times with your tickets at the gacha machine! (The Lord vanished, leaving only: \"I'll be waiting at the end of the 8th land.\" Get stronger first!)"] = "🎰 チケットでガチャ機械から装備を10回引こう！(ロードは「第8の地の果てで待つ」とだけ言い残して消えた。まずは強くなろう！)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -916,8 +917,5 @@ return {
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 ゾーン{number1} セクション{number2} — ここには{text3}がたくさんいる" },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "ボス {number1} · ダメージ {text2} · 次のボスまで {number3}秒" },
 		{ "Move speed +{text1} per point  (max {number2})", "1ポイントごとに移動速度+{text1}(最大{number2})" },
-		{ "{text1}: vs bosses {number2}% · vs monsters {number3}%", "{text1}: ボス戦 {number2}% · モンスター戦 {number3}%" },
-		{ "📅 {number1}-day login streak! Reward: {text2}", "📅 {number1}日連続ログイン！報酬: {text2}" },
-		{ "✅ Mission complete! Reward: {text1}", "✅ ミッション完了！報酬: {text1}" },
 	},
 }

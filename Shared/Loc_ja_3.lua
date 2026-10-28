@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1}: vs bosses {number2}% · vs monsters {number3}%", "{text1}: ボス戦 {number2}% · モンスター戦 {number3}%" },
+		{ "📅 {number1}-day login streak! Reward: {text2}", "📅 {number1}日連続ログイン！報酬: {text2}" },
+		{ "✅ Mission complete! Reward: {text1}", "✅ ミッション完了！報酬: {text1}" },
 		{ "♻ {text1} (auto-salvage +{number2} Essence)", "♻ {text1}(自動分解 エッセンス+{number2})" },
 		{ "✨ {number1}-piece set complete! {text2} Lv.{number3}", "✨ {number1}ピースセット完成！{text2} Lv.{number3}" },
 		{ "📢 {text1} defeated the Final Lord!", "📢 {text1}がファイナルロードを倒した！" },

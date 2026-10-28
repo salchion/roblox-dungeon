@@ -231,6 +231,7 @@ return {
 		["Piercing beam · Hits every enemy in a line"] = "Durchschlagender Strahl · Trifft jeden Gegner in einer Linie",
 		["An ultra-fast beam that punches straight through up to 7 enemies lined up in front of you (each one a little weaker). Best in corridors and against bosses behind their minions"] = "Ein ultraschneller Strahl, der bis zu 7 in einer Reihe vor dir stehende Gegner glatt durchschlägt (jeder etwas schwächer). Ideal in Gängen und gegen Bosse hinter ihren Dienern",
 		["Piercing Beam"] = "Durchschlagender Strahl",
+		["🎰 Pull gear 10 times with your tickets at the gacha machine! (The Lord vanished, leaving only: \"I'll be waiting at the end of the 8th land.\" Get stronger first!)"] = "🎰 Ziehe mit deinen Tickets 10-mal Ausrüstung am Gacha-Automaten! (Der Lord verschwand und hinterließ nur: „Ich werde am Ende des 8. Landes warten.“ Werde erst stärker!)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },

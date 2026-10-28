@@ -550,6 +550,7 @@ return {
 		["Piercing beam · Hits every enemy in a line"] = "관통 빔 · 일직선상의 모든 적에게 명중",
 		["An ultra-fast beam that punches straight through up to 7 enemies lined up in front of you (each one a little weaker). Best in corridors and against bosses behind their minions"] = "눈앞에 일렬로 선 최대 7명의 적을 곧장 꿰뚫는 초고속 빔입니다 (한 명씩 지날 때마다 조금 약해짐). 복도나 부하 뒤에 숨은 보스에게 최적입니다",
 		["Piercing Beam"] = "관통 빔",
+		["🎰 Pull gear 10 times with your tickets at the gacha machine! (The Lord vanished, leaving only: \"I'll be waiting at the end of the 8th land.\" Get stronger first!)"] = "🎰 티켓으로 가챠 기계에서 장비를 10번 뽑으세요! (군주는 \"8번째 땅의 끝에서 기다리겠다\"는 말만 남기고 사라졌어요. 먼저 강해지세요!)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },

@@ -8,6 +8,7 @@ local gui = Instance.new("ScreenGui")
 gui.Name = "DpsPanelGui"
 gui.ResetOnSpawn = false
 gui.IgnoreGuiInset = true
+gui.DisplayOrder = 8 -- 다른 화면(기본 0)에 가려서 초기화 버튼이 눌리지 않던 문제 방지 (큰 창이 열리면 이 미터는 스스로 숨는다)
 gui.Parent = player:WaitForChild("PlayerGui")
 
 ------------------------------------------------------------
@@ -99,10 +100,17 @@ do
 	c.CornerRadius = UDim.new(0, 6)
 	c.Parent = resetButton
 end
+resetButton.Active = true
+local clearDisplay -- (아래에서 정의) 누르는 순간 화면부터 0 으로: 서버 응답을 기다리지 않아서 "안 눌린 것처럼" 보이지 않는다
 resetButton.Activated:Connect(function()
+	if clearDisplay then clearDisplay() end
 	local remotes = ReplicatedStorage:FindFirstChild("RemoteEvents")
 	local remote = remotes and remotes:FindFirstChild("Meter")
-	if remote then remote:FireServer("Reset") end
+	if remote then
+		remote:FireServer("Reset")
+	else
+		warn("[DPS] 초기화 신호(Meter)를 못 찾았습니다")
+	end
 end)
 local rows = {}
 for i = 1, MAX_ROWS do
@@ -156,6 +164,12 @@ header.Activated:Connect(function()
 end)
 
 local meterToken = 0
+function clearDisplay()
+	meterTitle.Text = "DAMAGE · 0s · 0"
+	meterDps.Text = "0 <font size='12' color='#9aa2c6'>DPS</font>"
+	shownRows = 0
+	layout()
+end
 player:GetAttributeChangedSignal("DmgMeter"):Connect(function()
 	local ok, data = pcall(function() return HttpService:JSONDecode(player:GetAttribute("DmgMeter") or "") end)
 	if not ok or typeof(data) ~= "table" then return end

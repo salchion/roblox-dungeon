@@ -289,6 +289,7 @@ return {
 		["Piercing beam · Hits every enemy in a line"] = "Rayon perforant · Touche chaque ennemi en ligne",
 		["An ultra-fast beam that punches straight through up to 7 enemies lined up in front of you (each one a little weaker). Best in corridors and against bosses behind their minions"] = "Un rayon ultra-rapide qui transperce jusqu'à 7 ennemis alignés devant vous (chacun un peu plus faible). Idéal dans les couloirs et contre les boss cachés derrière leurs sbires",
 		["Piercing Beam"] = "Rayon perforant",
+		["🎰 Pull gear 10 times with your tickets at the gacha machine! (The Lord vanished, leaving only: \"I'll be waiting at the end of the 8th land.\" Get stronger first!)"] = "🎰 Tirez 10 fois de l'équipement avec vos tickets au gacha ! (Le seigneur a disparu en ne laissant que : « Je vous attendrai au bout de la 8e terre. » Devenez d'abord plus fort !)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },

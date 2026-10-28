@@ -156,6 +156,7 @@ return {
 		["Piercing beam · Hits every enemy in a line"] = "穿透光束 · 命中一条直线上的所有敌人",
 		["An ultra-fast beam that punches straight through up to 7 enemies lined up in front of you (each one a little weaker). Best in corridors and against bosses behind their minions"] = "超高速光束,可笔直穿透你面前排成一列的最多 7 个敌人(每个略弱一些)。适合走廊,以及躲在小怪身后的首领",
 		["Piercing Beam"] = "穿透光束",
+		["🎰 Pull gear 10 times with your tickets at the gacha machine! (The Lord vanished, leaving only: \"I'll be waiting at the end of the 8th land.\" Get stronger first!)"] = "🎰 用门票在扭蛋机上抽取装备 10 次!(领主只留下一句“我在第八片土地的尽头等你。”便消失了。先变强吧!)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },

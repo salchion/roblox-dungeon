@@ -142,7 +142,7 @@ Config.Tutorial = {
 		-- 중간에 졌다면 마을의 던전 게이트에서 다시 들어가도 같은 장면으로 이어진다.
 		{ Text = "🗝 The key dropped by the Lord opened a dungeon! Clear the dungeon ...You sense an even greater presence", Stat = "FieldDeaths", Goal = 1, Target = "Gate", TargetName = "Dungeon Gate", Dungeon = true, DungeonDoom = true,
 			Reward = { Gold = 4000, Tickets = 10, Keys = 1, Xp = 150 } }, -- 쓰러져도 전리품(재화)은 남는다 -> 아래 미션에서 바로 쓰게 한다
-		{ Text = "💀 The Lord vanished, leaving only the words \"I'll be waiting at the end of the 8th land.\" You need to get stronger! Use your loot tickets for a 10-pull at the gacha machine!", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "Gacha Machine", RollMode = "Hero", ShowQuests = true, -- 여기서부터 화면에 오늘의 퀘스트가 나타난다
+		{ Text = "🎰 Pull gear 10 times with your tickets at the gacha machine! (The Lord vanished, leaving only: \"I'll be waiting at the end of the 8th land.\" Get stronger first!)", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "Gacha Machine", RollMode = "Hero", ShowQuests = true, -- 여기서부터 화면에 오늘의 퀘스트가 나타난다
 			Reward = { Gold = 500, Xp = 100 } },
 		-- EvolveToTier: 이 번째 무기(3 = 기관단총)가 될 때까지 필요한 강화 횟수를 미션이 시작될 때 계산해서 목표로 쓴다. {무기} = 그 무기 이름
 		{ Text = "💰 Use your gold to upgrade your weapon to +15 and unlock the Shotgun! Once unlocked, you can pick any weapon you like in the Weapons tab", Stat = "Enhances", Goal = 15, EvolveToTier = 2, Target = "Anvil", TargetName = "Anvil",
