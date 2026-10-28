@@ -3467,90 +3467,6 @@ RunService.RenderStepped:Connect(function(dt)
 end)
 end
 
-do
-local RADAR_SIZE, RADAR_RANGE = 150, 100
-local radarFrame = create("Frame", {
-	Name = "RadarFrame", Size = UDim2.new(0, RADAR_SIZE, 0, RADAR_SIZE), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -16, 1, -16),
-	BackgroundColor3 = Color3.fromRGB(14, 18, 28), BackgroundTransparency = 0.25, BorderSizePixel = 0, Visible = false,
-}, gui)
-create("UICorner", { CornerRadius = UDim.new(1, 0) }, radarFrame)
-create("UIStroke", { Color = Color3.fromRGB(110, 150, 220), Thickness = 2 }, radarFrame)
-create("Frame", { -- 나 (중앙)
-	Size = UDim2.new(0, 8, 0, 8), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
-	BackgroundColor3 = Color3.fromRGB(90, 220, 255), BorderSizePixel = 0, ZIndex = 3,
-}, radarFrame)
-local radarDots = {}
-
-local function radarDot(index)
-	local dot = radarDots[index]
-	if not dot then
-		dot = create("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), BorderSizePixel = 0, ZIndex = 2 }, radarFrame)
-		create("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
-		radarDots[index] = dot
-	end
-	return dot
-end
-
-local radarClock = 0
-local radarState = {}
-RunService.RenderStepped:Connect(function(dt)
-	radarClock += dt
-	if radarClock < 0.05 then return end
-	radarClock = 0
-	local zone = currentZone()
-	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-	radarFrame.Visible = settings.Radar and (zone == "Field" or zone == "Dungeon") and root ~= nil
-	if not radarFrame.Visible then return end
-
-	local look = camera.CFrame.LookVector
-	local yaw = math.atan2(look.X, -look.Z) -- 카메라가 -Z를 볼 때 0
-	local cosY, sinY = math.cos(yaw), math.sin(yaw)
-	local used = 0
-	for _, part in ipairs(CollectionService:GetTagged("Monster")) do
-		if part:IsDescendantOf(workspace) and used < 60 then
-			local offset = part.Position - root.Position
-			local rx = offset.X * cosY + offset.Z * sinY   -- 오른쪽
-			local ry = offset.X * sinY - offset.Z * cosY   -- 앞쪽 (+)
-			local dist = math.sqrt(rx * rx + ry * ry)
-			if dist < 400 then
-				used += 1
-				local clamped = dist > RADAR_RANGE
-				local scale = clamped and RADAR_RANGE / dist or 1
-				local px = 0.5 + (rx * scale) / RADAR_RANGE * 0.47
-				local py = 0.5 - (ry * scale) / RADAR_RANGE * 0.47
-				local dot = radarDot(used)
-				local boss, gold = CollectionService:HasTag(part, "RadarBoss"), CollectionService:HasTag(part, "RadarGold")
-				local size = boss and 11 or (gold and 10 or 6)
-				if clamped then size = math.max(4, size - 2) end
-				dot.Position = UDim2.new(px, 0, py, 0)
-				local cache = radarState[dot]
-				if not cache then
-					cache = {}
-					radarState[dot] = cache
-				end
-				if cache.Size ~= size then
-					cache.Size = size
-					dot.Size = UDim2.new(0, size, 0, size)
-				end
-				local color = boss and Color3.fromRGB(190, 90, 255) or gold and Color3.fromRGB(255, 215, 50)
-					or CollectionService:HasTag(part, "RadarElite") and Color3.fromRGB(255, 190, 60) or Color3.fromRGB(255, 80, 80)
-				if cache.Color ~= color then
-					cache.Color = color
-					dot.BackgroundColor3 = color
-				end
-				if cache.Clamped ~= clamped then
-					cache.Clamped = clamped
-					dot.BackgroundTransparency = clamped and 0.5 or 0
-				end
-				if not dot.Visible then dot.Visible = true end
-			end
-		end
-	end
-	for i = used + 1, #radarDots do
-		radarDots[i].Visible = false
-	end
-end)
-end
 
 local useSkill
 local skillByKey = {}
@@ -4030,7 +3946,6 @@ settingSlider(380, "🔫 Gunshot Volume", function() return settings.ShotVolume 
 	settings.ShotVolume = value
 end)
 settingButton(428, function() return "📳 Screen Shake: " .. (settings.Shake and "ON" or "OFF") end, function() settings.Shake = not settings.Shake end)
-settingButton(468, function() return "📡 Radar: " .. (settings.Radar and "ON" or "OFF") end, function() settings.Radar = not settings.Radar end)
 settingButton(508, function() return "🖥 Low-spec mode (less lag): " .. (player:GetAttribute("LowSpec") and "ON" or "OFF") end, function() player:SetAttribute("LowSpec", not player:GetAttribute("LowSpec")) end)
 settingButton(548, function() return "👕 Hide gear look (weapon stays): " .. (player:GetAttribute("HideGear") and "ON" or "OFF") end, function() player:SetAttribute("HideGear", not player:GetAttribute("HideGear")) end)
 do

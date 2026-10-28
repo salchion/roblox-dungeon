@@ -655,6 +655,22 @@ function layoutCalm(viewport)
 	pillShop.Visible = false -- 왼쪽 메뉴 버튼 줄(MenuDockClient)에 상점 버튼이 있어서 중복이라 숨긴다
 end
 
+
+-- 폰(PC 배치): 스킬 바 + 자동 공격 버튼을 오른쪽 아래로 옮긴다 (오른손 엄지로 누르기 쉽게). 점프 버튼 자리(오른쪽 아래 구석)는 비워 두고 그 위에 놓는다.
+local JUMP_ZONE = 150 -- 점프 버튼이 차지하는 실제 픽셀 (오른쪽 아래)
+local function layoutPhoneSkills(viewport)
+	local hud = playerGui:FindFirstChild("HUD")
+	local bar, auto = find(hud, "SkillBar"), find(hud, "AutoButton")
+	if not (bar and auto) then return end
+	local ds = desktopScale(viewport)
+	local lift = JUMP_ZONE / ds + 8 -- HUD 좌표(=실제 픽셀 / 배율)
+	local edge = 14
+	set(bar, "AnchorPoint", Vector2.new(1, 1))
+	set(bar, "Position", UDim2.new(1, -edge, 1, -lift))
+	set(auto, "AnchorPoint", Vector2.new(1, 1))
+	set(auto, "Position", UDim2.new(1, -(edge + bar.Size.X.Offset + 8), 1, -lift))
+end
+
 local function update()
 	local camera = workspace.CurrentCamera
 	if not camera then return end

@@ -15,6 +15,7 @@ local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
 local SIZE, GAP = 58, 5 -- (미션 카드 / 던전 상태창과 겹치지 않게 줄였다: 6줄 높이 = 6 * 63 - 5 = 373, 손을 올리면 1.1배)
+local PHONE_PC = Config.PhonePcStyle == true and game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").MouseEnabled -- 폰: 메뉴 버튼 줄은 ☰ 하나로 접어 둔다
 local TOP_Y = 226 -- HUD 카드(60 ~ 210, 전투력 / 경험치 줄을 아래로 옮겨 줄였다) 바로 아래
 
 -- 색은 진하지만 채도를 낮춰 눈이 편하게 (위쪽이 조금 밝은 그라데이션)
@@ -307,8 +308,9 @@ local function layout(compact, hud)
 	if compact then
 		local old = hud and hud:FindFirstChild("MenuButton")
 		local baseY = old and old.Position.Y.Offset or 190 -- MobileLayoutClient 가 정한 "메뉴 / 설정 버튼 줄" 높이를 그대로 쓴다
-		toggle.Position = UDim2.new(0, 12, 0, baseY)
-		size, gap, columns, x, y, iconSize, labelSize = 50, 6, 5, 12, baseY + 42, 22, 10
+		if PHONE_PC then baseY = TOP_Y - 4 end -- 폰(PC 배치): 카드 바로 아래에 ☰ 버튼 (세로로 긴 버튼 줄이 왼쪽 조이스틱 자리를 가리지 않게)
+		toggle.Position = UDim2.new(0, PHONE_PC and 16 or 12, 0, baseY)
+		size, gap, columns, x, y, iconSize, labelSize = 50, 6, 5, PHONE_PC and 16 or 12, baseY + 42, 22, 10
 	else
 		size, gap, columns, x, y, iconSize, labelSize = SIZE, GAP, 2, 16, TOP_Y, 30, 13
 	end
@@ -330,7 +332,7 @@ end
 
 -- 기존 작은 Menu / Settings 버튼은 숨긴다 (단축키 B / H 는 그대로, 설정은 Settings 버튼으로)
 local function sync()
-	local compact = playerGui:GetAttribute("UiCompact") == true
+	local compact = playerGui:GetAttribute("UiCompact") == true or PHONE_PC
 	local hud = playerGui:FindFirstChild("HUD")
 	local hudOn = hud ~= nil and hud.Enabled
 	gui.Enabled = hudOn
