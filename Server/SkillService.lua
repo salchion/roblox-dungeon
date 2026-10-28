@@ -132,9 +132,7 @@ handlers.Spirit = function(player, root, _, character)
 	Effects.Raw(root.Position, { "Y", userId, cfg.Duration })
 	pcall(function()
 		SoundBank.Play(root, "Skill_LotusCast") -- 시전: 날카로운 칼날 소리
-		SoundBank.Play(root, "Skill_LotusSlash", { Pitch = 0.8 }) -- + 조금 더 낮은 칼날 한 번 (두께감: 둔탁한 "쿵"은 뺐다)
-		SoundBank.Play(root, "Skill_LotusClang", { Pitch = 1.1 }) -- + 칼이 서로 부딪혀 튕기는 금속 "챙!"
-		task.delay(0.07, function() SoundBank.Play(root, "Skill_LotusClang", { Pitch = 1.45 }) end)
+		-- (새로 고른 소리 3개만 쓴다: 시전 / 도는 소리 / 꽂힐 때. 예전에 섞어 본 금속 "챙" 은 뺐다)
 	end)
 	task.spawn(function()
 		local untilAt = os.clock() + cfg.Duration
@@ -163,10 +161,8 @@ handlers.Spirit = function(player, root, _, character)
 					end
 				end
 				pcall(function()
-					if tick % 2 == 1 then SoundBank.Play(nowRoot, "Skill_LotusSlash", { Pitch = 0.9 + math.random() * 0.4 }) end -- 도는 소리 "슈슉" (두 틱에 한 번)
-					SoundBank.Play(targets[1], "Skill_LotusStab", { Pitch = 0.85 + math.random() * 0.4 }) -- 꽂히는 소리 "챙" (틱마다 한 번)
-					SoundBank.Play(nowRoot, "Skill_LotusClang", { Pitch = 0.8 + math.random() * 0.9 }) -- 칼끼리 부딪혀 튕기는 금속 "챙" (틱마다, 높낮이를 매번 달리해 "챙-챙-챙" 으로 들리게)
-					if tick % 2 == 0 then task.delay(0.05, function() SoundBank.Play(targets[1], "Skill_LotusClang", { Pitch = 1.2 + math.random() * 0.8 }) end) end
+					if tick % 2 == 1 then SoundBank.Play(nowRoot, "Skill_LotusSlash", { Pitch = 0.95 + math.random() * 0.2 }) end -- 도는 소리 "슈슉" (두 틱에 한 번)
+					SoundBank.Play(targets[1], "Skill_LotusStab", { Pitch = 0.9 + math.random() * 0.25 }) -- 꽂히는 소리 "챙" (틱마다 한 번)
 				end)
 			end
 			task.wait(cfg.Interval)
