@@ -1952,6 +1952,15 @@ function Config.GetTrainTime(level)
 	return math.floor(Config.Growth.TimeBase * Config.Growth.TimeGrowth ^ level)
 end
 
+-- 스킬 강화 / 펫 레벨업에도 실제 시간이 든다 (훈련과 같은 시간 단축권을 쓴다)
+function Config.GetSkillUpgradeTime(level)
+	return math.floor(180 * 1.5 ^ (level - 1))
+end
+
+function Config.GetPetLevelTime(level)
+	return math.floor(120 * 1.35 ^ (level - 1))
+end
+
 function Config.GetTrainGold(level)
 	return math.floor(Config.Growth.GoldBase * Config.Growth.GoldGrowth ^ level)
 end

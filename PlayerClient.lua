@@ -2926,7 +2926,32 @@ end
 
 local metaState = nil
 
+-- 스킬 강화 / 펫 레벨업 중인 것의 남은 시간 (서버가 UpSkill_<키> Attribute 에 끝나는 시각을 적어 둔다). 없으면 nil
+local function upgradeRemaining(key)
+	local endAt = player:GetAttribute("UpSkill_" .. key)
+	if not endAt then return nil end
+	return math.max(0, endAt - workspace:GetServerTimeNow())
+end
+
+local function anyUpgradePending()
+	for _, key in ipairs(Config.Skills.UpgradeOrder) do
+		if player:GetAttribute("UpSkill_" .. key) then return true end
+	end
+	return false
+end
+
+-- 시간 단축 게이지 (훈련 / 돌파 / 스킬 강화 / 펫이 함께 쓴다)
+local function buildSkipGaugeRow()
+	local owned = player:GetAttribute("TimeSkip") or 0
+	local gaugeRow = newRow(40)
+	local cap = math.max(player:GetAttribute("TimeSkipCap") or 0, owned, 1)
+	local gaugeBack = makePanel({ Size = UDim2.new(1, -24, 0, 18), Position = UDim2.new(0, 12, 0, 11), BackgroundColor3 = Color3.fromRGB(22, 24, 36) }, gaugeRow)
+	makePanel({ Size = UDim2.new(math.clamp(owned / cap, 0, 1), 0, 1, 0), BackgroundColor3 = Color3.fromRGB(215, 150, 60) }, gaugeBack)
+	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "⏱ Skip gauge " .. Config.FormatDuration(owned) .. "  (shared with training · pets)", TextSize = 10, ZIndex = 3 }, gaugeBack)
+end
+
 local function buildSkillTab(passiveOnly)
+	buildSkipGaugeRow()
 	if passiveOnly then
 		sectionTitle("🌿 Passive Skills — always active, no key press needed. Level up with Gold")
 	else
@@ -2956,12 +2981,25 @@ local function buildSkillTab(passiveOnly)
 		rowText(row, string.format("<font size='14'><b>[%s] %s %s</b></font>  <font color='#ffd966'>Lv.%d / %d</font>\n<font color='#bbbbcc'>%s</font>\n<font color='#9ad7ff'>%s%s</font>",
 			cfg.Key, cfg.Icon, cfg.Name, level, U.MaxLevel, cfg.Desc, detail, cfg.Passive and "" or string.format(" · Cooldown %.1fs", cfg.Cooldown * (1 - U.CooldownPerLevel * lv))), 14, 190)
 		local maxed = level >= U.MaxLevel
+		local remaining = upgradeRemaining(key)
+		local owned = player:GetAttribute("TimeSkip") or 0
+		local text
+		if maxed then
+			text = "MAX"
+		elseif remaining then
+			text = string.format("⏱ Time Skip\n%s left", Config.FormatDuration(remaining))
+		else
+			text = string.format("Upgrade %d G\n⏱ %s", Config.GetSkillUpgradeCost(level), Config.FormatDuration(Config.GetSkillUpgradeTime(level)))
+		end
 		makeButton({
-			Size = UDim2.new(0, 150, 0, 34), Position = UDim2.new(1, -162, 0.5, -17),
-			Text = maxed and "MAX" or string.format("Upgrade %d G", Config.GetSkillUpgradeCost(level)),
-			BackgroundColor3 = maxed and GRAY or GREEN,
+			Size = UDim2.new(0, 150, 0, 44), Position = UDim2.new(1, -162, 0.5, -22), TextSize = 12,
+			Text = text,
+			BackgroundColor3 = maxed and GRAY or (remaining and (owned > 0 and Color3.fromRGB(200, 130, 40) or GRAY) or GREEN),
 		}, row, function()
-			if not maxed then
+			if maxed then return end
+			if remaining then
+				Remotes.Growth:FireServer("Skip", "Skill", key)
+			else
 				Remotes.Meta:FireServer("SkillUp", key)
 			end
 		end)
@@ -3195,7 +3233,7 @@ end)
 task.spawn(function()
 	while true do
 		task.wait(1)
-		if menuPanel.Visible and currentTab == "Growth" and MENU.Sub.Growth == "Passive" then
+		if menuPanel.Visible and currentTab == "Growth" and (MENU.Sub.Growth == "Passive" or anyUpgradePending()) then
 			refreshMenu()
 		end
 	end

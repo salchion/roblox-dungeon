@@ -390,7 +390,7 @@ local function play()
 			end
 			listener:Disconnect()
 		end
-		local stillNeeded = 1.9 - (os.clock() - pageStart) -- 로딩이 빨리 끝나도 로딩 화면은 최소 1.9초는 보여 준다 (첫 화면이 번쩍 지나가지 않게)
+		local stillNeeded = 1.5 - (os.clock() - pageStart) -- 로딩이 빨리 끝나도 로딩 화면은 최소 1.5초는 보여 준다 (첫 화면이 번쩍 지나가지 않게)
 		if stillNeeded > 0 and not finished then
 			TweenService:Create(barFillLoad, TweenInfo.new(stillNeeded, Enum.EasingStyle.Sine), { Size = UDim2.new(0.92, 0, 1, 0) }):Play()
 			task.wait(stillNeeded)
@@ -476,8 +476,8 @@ local function play()
 
 	-- 1) 마을에서 보스까지 한 번에 날아간다 (빠르게 가속했다가 보스 앞에서 멈춘다. 시야각이 넓어졌다가 좁아진다)
 	-- 먼저 높은 하늘에서 아래를 내려다보며 일정한 속도로 날아가고(필드가 한눈에 보인다), 끝에서 보스 앞으로 내려오며 속도를 줄인다
-	local FLY_TIME = 9.0
-	local DESCEND_TIME = 2.3
+	local FLY_TIME = 7.2 -- (예전 9.0: 20% 줄임)
+	local DESCEND_TIME = 1.84 -- (예전 2.3: 20% 줄임)
 	local midPos = Vector3.new(bossX - 650, FLY_HEIGHT, 0)
 	TweenService:Create(camera, TweenInfo.new(FLY_TIME, Enum.EasingStyle.Linear), { CFrame = CFrame.lookAt(midPos, midPos + TILT) }):Play()
 	TweenService:Create(camera, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { FieldOfView = 84 }):Play()

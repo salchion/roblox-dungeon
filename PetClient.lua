@@ -111,10 +111,20 @@ local function rebuild()
 		label({ Size = UDim2.new(1, -90, 0, 18), Position = UDim2.new(0, 72, 0, 36), Text = nextFn and string.format("▶ Next feature: Lv.%d %s %s%s", nextFn.Level, nextFn.Icon, nextFn.Name, reachText) or "All features unlocked!", TextSize = 10, TextColor3 = Color3.fromRGB(255, 225, 140) }, head)
 		if pet.Level < P.MaxLevel then
 			local cost = Config.GetPetLevelCost(pet.Level)
-			button({ Size = UDim2.new(0, 230, 0, 34), Position = UDim2.new(0, 12, 1, -42), BackgroundColor3 = gold >= cost and Color3.fromRGB(60, 130, 80) or Color3.fromRGB(95, 60, 62),
-				Text = string.format("⬆ Level Up  💰 %s G", comma(cost)), TextSize = 13 }, head, function()
-				Remotes.Meta:FireServer("PetLevel")
-			end)
+			local upEnd = player:GetAttribute("UpPet")
+			local owned = player:GetAttribute("TimeSkip") or 0
+			if upEnd then -- 레벨업 진행 중: 남은 시간 + 시간 단축 (훈련 / 스킬 강화와 같은 단축 게이지를 쓴다)
+				button({ Size = UDim2.new(0, 230, 0, 34), Position = UDim2.new(0, 12, 1, -42), BackgroundColor3 = owned > 0 and Color3.fromRGB(200, 130, 40) or Color3.fromRGB(95, 60, 62),
+					Text = string.format("⏱ Time Skip · %s left", Config.FormatDuration(math.max(0, upEnd - workspace:GetServerTimeNow()))), TextSize = 13 }, head, function()
+					Remotes.Growth:FireServer("Skip", "Pet", "Pet")
+				end)
+			else
+				button({ Size = UDim2.new(0, 230, 0, 34), Position = UDim2.new(0, 12, 1, -42), BackgroundColor3 = gold >= cost and Color3.fromRGB(60, 130, 80) or Color3.fromRGB(95, 60, 62),
+					Text = string.format("⬆ Level Up  💰 %s G · ⏱ %s", comma(cost), Config.FormatDuration(Config.GetPetLevelTime(pet.Level))), TextSize = 12 }, head, function()
+					Remotes.Meta:FireServer("PetLevel")
+				end)
+			end
+			label({ Size = UDim2.new(0, 190, 0, 34), Position = UDim2.new(0, 250, 1, -42), Text = "⏱ Skip gauge " .. Config.FormatDuration(owned) .. "\n(shared with training · skills)", TextSize = 10, TextColor3 = Color3.fromRGB(215, 170, 90), TextWrapped = true }, head)
 		end
 	end
 
@@ -191,6 +201,15 @@ player:GetAttributeChangedSignal("Gold"):Connect(function()
 	if afford ~= lastAfford then
 		lastAfford = afford
 		rebuild()
+	end
+end)
+
+-- 레벨업 중이면 남은 시간 / 시간 단축 게이지가 보이게 1초마다 다시 그린다
+player:GetAttributeChangedSignal("UpPet"):Connect(function() if panel.Visible then rebuild() end end)
+task.spawn(function()
+	while true do
+		task.wait(1)
+		if panel.Visible and player:GetAttribute("UpPet") then rebuild() end
 	end
 end)
 

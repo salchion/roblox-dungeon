@@ -551,6 +551,10 @@ return {
 		["An ultra-fast beam that punches straight through up to 7 enemies lined up in front of you (each one a little weaker). Best in corridors and against bosses behind their minions"] = "눈앞에 일렬로 선 최대 7명의 적을 곧장 꿰뚫는 초고속 빔입니다 (한 명씩 지날 때마다 조금 약해짐). 복도나 부하 뒤에 숨은 보스에게 최적입니다",
 		["Piercing Beam"] = "관통 빔",
 		["🎰 Pull gear 10 times with your tickets at the gacha machine! (The Lord vanished, leaving only: \"I'll be waiting at the end of the 8th land.\" Get stronger first!)"] = "🎰 티켓으로 가챠 기계에서 장비를 10번 뽑으세요! (군주는 \"8번째 땅의 끝에서 기다리겠다\"는 말만 남기고 사라졌어요. 먼저 강해지세요!)",
+		["(shared with training · skills)"] = "(훈련·스킬과 공유)",
+		["⚠ Already upgrading."] = "⚠ 이미 강화 중이에요.",
+		["⚠ Upgrade slots are full. (Get more slots with VIP / in the Shop)"] = "⚠ 강화 슬롯이 가득 찼어요. (VIP / 상점에서 슬롯을 늘릴 수 있어요)",
+		["⚠ Not ready yet."] = "⚠ 아직 준비 중이에요.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1054,6 +1058,5 @@ return {
 		{ "{number1} key", "열쇠 {number1}개" },
 		{ "Lv {number1}", "레벨 {number1}" },
 		{ "{number1}d {number2}h", "{number1}일 {number2}시간" },
-		{ "⏱ Time Skip <font color='#ffe16e'><b>{text1}</b></font> owned      🏋 Training slots <b>{number2} / {number3}</b> in use\n<font size='11' color='#bbbbcc'>Training and breakthroughs finish on their own over time (even while offline). Time Skips shorten the wait, and you also earn them slowly from quests. You can reach everything without spending money.</font>", "⏱ 시간 건너뛰기 <font color='#ffe16e'><b>{text1}</b></font>개 보유      🏋 훈련 칸 <b>{number2} / {number3}</b> 사용 중\n<font size='11' color='#bbbbcc'>훈련과 돌파는 시간이 지나면 저절로 끝나요 (오프라인에서도). 시간 건너뛰기는 대기 시간을 줄여 주고, 퀘스트로도 천천히 얻을 수 있어요. 돈을 쓰지 않아도 모든 걸 얻을 수 있어요.</font>" },
 	},
 }

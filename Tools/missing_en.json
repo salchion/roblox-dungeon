@@ -1915,5 +1915,16 @@
 "Lv {number1}  ✦ Paragon {number2}",
 "▲ {number1} unspent (T)  ·  {number2} / {number3} XP",
 "✦ Paragon {number1}",
-"🎰 Pull gear 10 times with your tickets at the gacha machine! (The Lord vanished, leaving only: \"I'll be waiting at the end of the 8th land.\" Get stronger first!)"
+"🎰 Pull gear 10 times with your tickets at the gacha machine! (The Lord vanished, leaving only: \"I'll be waiting at the end of the 8th land.\" Get stronger first!)",
+"{text1} left",
+"⏱ Time Skip",
+"⏱ Skip gauge {text1}  (shared with training · pets)",
+"⬆ Level Up  💰 {text1} G · ⏱ {text2}",
+"⏱ Time Skip · {text1} left",
+"(shared with training · skills)",
+"⏳ {text1} upgrade started! ({text2}) — use Time Skip to finish sooner",
+"⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner",
+"⚠ Already upgrading.",
+"⚠ Upgrade slots are full. (Get more slots with VIP / in the Shop)",
+"⚠ Not ready yet."
 ]

@@ -325,6 +325,13 @@ end
 ------------------------------------------------------------
 -- 스킬 강화
 ------------------------------------------------------------
+local function growthModule()
+	local ok, Growth = pcall(function() return require(script.Parent:WaitForChild("GrowthService")) end)
+	return ok and Growth or nil
+end
+
+local completeSkill, completePet
+
 local function upgradeSkill(player, key)
 	local state = states[player]
 	if not state or typeof(key) ~= "string" or key == "Order" or not Config.Skills[key] or not state.Skills[key] then return end
@@ -339,11 +346,31 @@ local function upgradeSkill(player, key)
 		notify(player, string.format("Not enough gold. (%d G needed)", cost))
 		return
 	end
+	local Growth = growthModule()
+	if not Growth then return end
+	local canStart, reason = Growth.CanStartUpgrade(player, "Skill", key)
+	if not canStart then
+		notify(player, "⚠ " .. reason)
+		return
+	end
 	player:SetAttribute("Gold", gold - cost)
-	state.Skills[key] = level + 1
-	player:SetAttribute("SkillLv_" .. key, level + 1)
-	notify(player, string.format("✨ %s Lv.%d!", Config.Skills[key].Name, level + 1))
+	local duration = Growth.StartUpgrade(player, "Skill", key, Config.GetSkillUpgradeTime(level))
+	notify(player, string.format("⏳ %s upgrade started! (%s) — use Time Skip to finish sooner", Config.Skills[key].Name, Config.FormatDuration(duration)))
 	Meta.Push(player)
+end
+
+-- 강화 시간이 끝났을 때 GrowthService 가 부른다: 실제 레벨업. 성공하면 true (false 면 GrowthService 가 나중에 다시 시도)
+function completeSkill(player, key)
+	local state = states[player]
+	if not state or not state.Skills[key] then return false end
+	local level = state.Skills[key]
+	if level < Config.SkillUpgrade.MaxLevel then
+		state.Skills[key] = level + 1
+		player:SetAttribute("SkillLv_" .. key, level + 1)
+		notify(player, string.format("✨ %s Lv.%d!", Config.Skills[key].Name, level + 1))
+		Meta.Push(player)
+	end
+	return true
 end
 
 ------------------------------------------------------------
@@ -385,7 +412,24 @@ local function levelUpPet(player)
 		notify(player, string.format("Not enough gold. (%d G needed)", cost))
 		return
 	end
+	local Growth = growthModule()
+	if not Growth then return end
+	local canStart, reason = Growth.CanStartUpgrade(player, "Pet", "Pet")
+	if not canStart then
+		notify(player, "⚠ " .. reason)
+		return
+	end
 	player:SetAttribute("Gold", gold - cost)
+	local duration = Growth.StartUpgrade(player, "Pet", "Pet", Config.GetPetLevelTime(level))
+	notify(player, string.format("⏳ Pet level-up started! (%s) — use Time Skip to finish sooner", Config.FormatDuration(duration)))
+	Meta.Push(player)
+end
+
+function completePet(player)
+	local state = states[player]
+	if not state or not state.Pet.Unlocked then return false end
+	local level = state.Pet.Level
+	if level >= Config.Pet.MaxLevel then return true end
 	state.Pet.Level = level + 1
 	local gained
 	for _, fn in ipairs(Config.Pet.Functions) do
@@ -398,6 +442,13 @@ local function levelUpPet(player)
 	end
 	applyPetStats(player, state)
 	Meta.Push(player)
+	return true
+end
+
+function Meta.CompleteUpgrade(player, kind, key)
+	if kind == "Skill" then return completeSkill(player, key) end
+	if kind == "Pet" then return completePet(player) end
+	return true
 end
 
 local function setPetLook(player, key)

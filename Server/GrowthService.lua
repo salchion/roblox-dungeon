@@ -25,6 +25,11 @@ local Growth = {}
 local states = {}   -- [player] = { Levels = { [stat] = n }, Jobs = { { Stat, EndAt } }, GateJob = { Level, EndAt } | nil }
 local pushQueued = {}
 
+-- 스킬 강화 / 펫 레벨업 대기열: state.UpJobs = { { Kind = "Skill" | "Pet", Key, EndAt } }. 끝나는 시각은 Attribute 로도 알린다 (UpSkill_<키> / UpPet)
+local function upAttr(kind, key)
+	return kind == "Pet" and "UpPet" or ("UpSkill_" .. tostring(key))
+end
+
 local function notify(player, text)
 	Remotes.Notify:FireClient(player, text)
 end
@@ -84,6 +89,7 @@ function Growth.Push(player)
 			table.insert(jobs, { Stat = job.Stat, EndAt = job.EndAt })
 		end
 		Remotes.Growth:FireClient(player, "State", {
+			UpJobs = state.UpJobs,
 			Levels = state.Levels,
 			Jobs = jobs,
 			Slots = slotsOf(player),
@@ -110,6 +116,18 @@ local function completeJobs(player, state)
 			changed = true
 			local def = R.Stats[job.Stat]
 			notify(player, string.format("%s %s complete! Lv.%d (%s)", def.Icon, def.Name, state.Levels[job.Stat], Config.FormatTrainEffect(job.Stat, state.Levels[job.Stat])))
+		end
+	end
+
+	for index = #state.UpJobs, 1, -1 do
+		local job = state.UpJobs[index]
+		if now >= job.EndAt then
+			local okMeta, Meta = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
+			if okMeta and Meta.CompleteUpgrade(player, job.Kind, job.Key) then
+				table.remove(state.UpJobs, index)
+				player:SetAttribute(upAttr(job.Kind, job.Key), nil)
+				changed = true
+			end
 		end
 	end
 
@@ -227,6 +245,12 @@ function Growth.Skip(player, kind, stat)
 	local job
 	if kind == "Gate" then
 		job = state.GateJob
+	elseif kind == "Skill" or kind == "Pet" then
+		for _, candidate in ipairs(state.UpJobs) do
+			if candidate.Kind == kind and (kind == "Pet" or candidate.Key == stat) then
+				job = candidate
+			end
+		end
 	elseif kind == "Train" then
 		for _, candidate in ipairs(state.Jobs) do
 			if candidate.Stat == stat then
@@ -246,12 +270,39 @@ function Growth.Skip(player, kind, stat)
 	if remaining <= 0 then return end
 	local used = math.min(balance, remaining)
 	job.EndAt -= used
+	if kind == "Skill" or kind == "Pet" then player:SetAttribute(upAttr(kind, job.Key), job.EndAt) end
 	player:SetAttribute("TimeSkip", balance - used)
 	if balance - used <= 0 then player:SetAttribute("TimeSkipCap", 0) end
 	notify(player, string.format("⏱ Used %s Time Skip!", Config.FormatDuration(used)))
 
 	completeJobs(player, state)
 	Growth.Push(player)
+end
+
+-- 스킬 강화 / 펫 레벨업 시작 (MetaService 가 골드를 받기 전에 CanStartUpgrade 로 확인하고, 받은 뒤 StartUpgrade 를 부른다). 동시에 진행하는 스킬 강화는 훈련 슬롯 수만큼
+function Growth.CanStartUpgrade(player, kind, key)
+	local state = states[player]
+	if not state then return false, "Not ready yet." end
+	local skills = 0
+	for _, job in ipairs(state.UpJobs) do
+		if job.Kind == kind and job.Key == key then return false, "Already upgrading." end
+		if job.Kind == "Skill" then skills += 1 end
+	end
+	if kind == "Skill" and skills >= slotsOf(player) then
+		return false, "Upgrade slots are full. (Get more slots with VIP / in the Shop)"
+	end
+	return true
+end
+
+function Growth.StartUpgrade(player, kind, key, seconds)
+	local state = states[player]
+	if not state then return 0 end
+	local duration = math.max(1, math.floor(seconds * timeMultiplier(player)))
+	local endAt = os.time() + duration
+	table.insert(state.UpJobs, { Kind = kind, Key = key, EndAt = endAt })
+	player:SetAttribute(upAttr(kind, key), endAt)
+	Growth.Push(player)
+	return duration
 end
 
 -- 비어 있는 훈련 슬롯 수 (훈련을 안 걸어 둔 칸) - 조언 서비스가 "훈련을 걸어 두세요"를 말할 때 쓴다
@@ -272,7 +323,7 @@ end
 -- 저장 / 불러오기
 ------------------------------------------------------------
 function Growth.Load(player, saved)
-	local state = { Levels = {}, Jobs = {}, GateJob = nil }
+	local state = { Levels = {}, Jobs = {}, UpJobs = {}, GateJob = nil }
 	for _, stat in ipairs(R.Stats.Order) do
 		state.Levels[stat] = 0
 	end
@@ -287,6 +338,14 @@ function Growth.Load(player, saved)
 			for _, job in ipairs(saved.Jobs) do
 				if typeof(job) == "table" and R.Stats[job.Stat] and job.Stat ~= "Order" and tonumber(job.EndAt) then
 					table.insert(state.Jobs, { Stat = job.Stat, EndAt = tonumber(job.EndAt) })
+				end
+			end
+		end
+		if typeof(saved.UpJobs) == "table" then
+			for _, job in ipairs(saved.UpJobs) do
+				if typeof(job) == "table" and (job.Kind == "Skill" or job.Kind == "Pet") and typeof(job.Key) == "string" and tonumber(job.EndAt) then
+					table.insert(state.UpJobs, { Kind = job.Kind, Key = job.Key, EndAt = tonumber(job.EndAt) })
+					player:SetAttribute(upAttr(job.Kind, job.Key), tonumber(job.EndAt))
 				end
 			end
 		end
@@ -329,6 +388,8 @@ function Growth.AdminMax(player)
 	if not state then return false end
 	for _, stat in ipairs(R.Stats.Order) do state.Levels[stat] = R.MaxLevel end
 	state.Jobs = {}
+	for _, job in ipairs(state.UpJobs) do player:SetAttribute(upAttr(job.Kind, job.Key), nil) end
+	state.UpJobs = {}
 	state.GateJob = nil
 	state.Rewarded = true
 	if not state.Unlocked then unlock(player, state, false) end
@@ -346,7 +407,7 @@ function Growth.Serialize(player)
 		table.insert(jobs, { Stat = job.Stat, EndAt = job.EndAt })
 	end
 	return {
-		Levels = state.Levels, Jobs = jobs,
+		Levels = state.Levels, Jobs = jobs, UpJobs = state.UpJobs,
 		GateJob = state.GateJob and { Level = state.GateJob.Level, EndAt = state.GateJob.EndAt } or nil,
 		GatePassed = player:GetAttribute("GatePassed") or 0,
 		TimeSkip = player:GetAttribute("TimeSkip") or 0,
