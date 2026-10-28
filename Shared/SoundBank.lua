@@ -106,10 +106,11 @@ local CUSTOM_ONLY = {
 	Aug_MissileHit = { Volume = 0.5, CustomLength = 0.5, CustomPitch = 1.8 }, -- 미사일 명중
 	Aug_Nova      = { Volume = 0.85, CustomLength = 1.2, CustomPitch = 1.2 }, -- 처치 폭발
 	Aug_Blade     = { Volume = 0.7, CustomLength = 0.6, Base = "Dash", Pitch = 1.7, Length = 0.3, Fx = { { "eq", { LowGain = -10, MidGain = 0, HighGain = 3 } } } }, -- 회전 칼날이 벨 때 "슈웅" (소리 ID 가 없으면 대시 소리를 높게 가공)
-	Skill_LotusCast  = { Volume = 5.1, CustomLength = 1.0, CustomPitch = 1.15, CustomFx = { { "eq", { LowGain = -24, MidGain = -2, HighGain = 8 } } } }, -- 죽음의 연꽃 시전: 칼날 소리의 낮은 부분을 깎아 날카롭게
+	Skill_LotusCast  = { Volume = 8.5, CustomLength = 1.0, CustomPitch = 1.15, CustomFx = { { "eq", { LowGain = -14, MidGain = 0, HighGain = 8 } } } }, -- 죽음의 연꽃 시전: 칼날 소리의 낮은 부분을 깎아 날카롭게
 	Skill_LotusThump = { Volume = 2.4, CustomLength = 1.0, CustomPitch = 0.6 }, -- 시전할 때 깔리는 낮은 "쿵"
-	Skill_LotusSlash = { Volume = 4.8, CustomLength = 0.6, CustomPitch = 1.5, CustomFx = { { "eq", { LowGain = -26, MidGain = 0, HighGain = 9 } } } }, -- 도는 동안 "쉭쉭" 날카로운 칼 소리
-	Skill_LotusStab  = { Volume = 4.2, CustomLength = 0.3, CustomPitch = 2.1, CustomFx = { { "eq", { LowGain = -28, MidGain = 2, HighGain = 10 } } } }, -- 단검이 꽂힐 때 "챙" (아주 높고 짧게)
+	Skill_LotusSlash = { Volume = 8.0, CustomLength = 0.6, CustomPitch = 1.5, CustomFx = { { "eq", { LowGain = -16, MidGain = 1, HighGain = 9 } } } }, -- 도는 동안 "쉭쉭" 날카로운 칼 소리
+	Skill_LotusClang = { Volume = 7.0, CustomLength = 0.5, CustomPitch = 1.9, CustomFx = { { "eq", { LowGain = -18, MidGain = 2, HighGain = 7 } } } }, -- 칼끼리 부딪혀 튕기는 금속 "챙!" (강화 망치 금속음을 높고 짧게)
+	Skill_LotusStab  = { Volume = 7.0, CustomLength = 0.3, CustomPitch = 2.1, CustomFx = { { "eq", { LowGain = -16, MidGain = 2, HighGain = 10 } } } }, -- 단검이 꽂힐 때 "챙" (아주 높고 짧게)
 	Aug_Storm     = { Volume = 0.95, CustomLength = 1.8, Base = "Boom", Pitch = 0.75, Length = 1.3, Fx = { { "distortion", { Level = 0.6 } }, { "reverb", { DecayTime = 2.5, WetLevel = -3 } } }, Layers = { { Pitch = 2.4, Volume = 0.6, Delay = 0 } } }, -- 낙뢰: 찌직(높은 소리) + 우르릉(낮은 폭발 가공)
 	Aug_MeteorFall = { Volume = 0.8, CustomLength = 1.6, CustomPitch = 1.0 }, -- 유성이 떨어지는 소리
 	Aug_MeteorHit = { Volume = 1.15, CustomLength = 2.0, CustomPitch = 0.7 }, -- 유성 착탄 (큰 폭발)
@@ -162,7 +163,7 @@ SoundBank.Descriptions = {
 	Shot_Pistol = "Rifle shot", Shot_Smg = "SMG shot", Shot_Revolver = "Bomb throw", Shot_Rifle = "Bow shot", Shot_Shotgun = "Shotgun shot",
 	Shot_Flamer = "Spell Tome chain lightning", Shot_Cannon = "Mortar shot", Shot_Sniper = "Crossbow shot", Shot_Rocket = "Rocket Launcher shot", Shot_Rail = "Railgun shot",
 	Hit = "Enemy hit (short)", Crit = "Critical hit", Kill = "Enemy kill (pitch rises with kill streak)",
-	Skill_Heal = "First Aid used", Skill_LotusCast = "Death Lotus cast", Skill_LotusThump = "Death Lotus thump", Skill_LotusSlash = "Death Lotus whirl", Skill_LotusStab = "Death Lotus stab", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Ult_Missile = "Dead Eye missile launch", Ult_Hit = "Dead Eye missile impact", Ult_Launch = "Dead Eye launch thump", Ult_Finale = "Dead Eye final blast", Boom = "Monster explosion / shockwave / meteor",
+	Skill_Heal = "First Aid used", Skill_LotusCast = "Death Lotus cast", Skill_LotusThump = "Death Lotus thump", Skill_LotusSlash = "Death Lotus whirl", Skill_LotusStab = "Death Lotus stab", Skill_LotusClang = "Death Lotus blade clang", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Ult_Missile = "Dead Eye missile launch", Ult_Hit = "Dead Eye missile impact", Ult_Launch = "Dead Eye launch thump", Ult_Finale = "Dead Eye final blast", Boom = "Monster explosion / shockwave / meteor",
 	LevelUp = "Level up", Enh_Hammer = "Enhance: hammer strike", Enh_Success = "Enhance success (pitch rises with level)", Enh_Fail = "Enhance failed",
 	Enh_Evolve = "Weapon evolution", Gacha_Drop = "Gacha: capsule drop", Gacha_Tick = "Gacha: rattling ticks", Gacha_Card = "10-pull gacha: one card",
 	Aug_Get = "Augment acquired", Aug_Synergy = "Augment synergy triggered", Aug_Missile = "Crit missile launched", Aug_MissileHit = "Missile hit", Aug_Nova = "Kill explosion",
@@ -174,7 +175,7 @@ SoundBank.Descriptions = {
 }
 SoundBank.Order = {
 	"Shot_Pistol", "Shot_Smg", "Shot_Revolver", "Shot_Rifle", "Shot_Shotgun", "Shot_Flamer", "Shot_Cannon", "Shot_Sniper", "Shot_Rocket", "Shot_Rail",
-	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_LotusCast", "Skill_LotusThump", "Skill_LotusSlash", "Skill_LotusStab", "Skill_Ult", "Ult_Lock", "Ult_Missile", "Ult_Hit", "Ult_Launch", "Ult_Finale", "UltShot", "Boom", "LevelUp",
+	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_LotusCast", "Skill_LotusThump", "Skill_LotusSlash", "Skill_LotusStab", "Skill_LotusClang", "Skill_Ult", "Ult_Lock", "Ult_Missile", "Ult_Hit", "Ult_Launch", "Ult_Finale", "UltShot", "Boom", "LevelUp",
 	"Dash", "Pickup", "Enh_Hammer", "Enh_Success", "Enh_Fail", "Enh_Evolve", "Gacha_Drop", "Gacha_Tick", "Gacha_Card",
 	"Gacha_Pop1", "Gacha_Pop2", "Gacha_Pop3", "Gacha_Pop4", "Gacha_Pop5",
 	"Aug_Get", "Aug_Synergy", "Aug_Missile", "Aug_MissileHit", "Aug_Nova", "Aug_Blade", "Aug_Storm", "Aug_MeteorFall", "Aug_MeteorHit", "Aug_Flame", "Aug_Execute", "Aug_Skull", "Aug_Pulse",
@@ -240,7 +241,7 @@ local FEEDBACK = { Hit = true, Crit = true, Kill = true, Pickup = true }
 local lastFeedback = 0
 
 local lastShot = 0
-local NO_DUCK = { Skill_LotusCast = true, Skill_LotusThump = true, Skill_LotusSlash = true, Skill_LotusStab = true } -- (스킬 소리는 총소리 때문에 작아지지 않게)
+local NO_DUCK = { Skill_LotusCast = true, Skill_LotusThump = true, Skill_LotusSlash = true, Skill_LotusStab = true, Skill_LotusClang = true } -- (스킬 소리는 총소리 때문에 작아지지 않게)
 local chokeLast = {} -- [소리 이름] = 가장 최근에 울린 Sound (Choke 소리는 다음 발이 나갈 때 앞 소리를 끊는다)
 -- 방금(0.2초 안) 총을 쐈는가: 서버가 만든 소리(세트 효과 폭발 등)도 클라이언트에서 낮추는 데 쓴다 (PlayerClient)
 function SoundBank.RecentShot()

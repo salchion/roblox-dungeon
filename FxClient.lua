@@ -1831,7 +1831,7 @@ local function lotusEvent(event) -- { "Y", userId, 남은 초 (0 이면 끝) }
 	if owners >= 6 then return end -- (화면에 단검 고리가 너무 많아지지 않게: 동시에 6명까지)
 	entry = { Blades = {}, Expire = os.clock() + secs + 0.8, NextPulse = 0 }
 	for index = 1, 12 do
-		local blade = neonPart(Vector3.new(0.75, 0.22, 4.8), index % 2 == 0 and LOTUS_RED or LOTUS_WHITE, 0.03)
+		local blade = neonPart(Vector3.new(1.4, 0.5, 8.5), index % 2 == 0 and LOTUS_RED or LOTUS_WHITE, 0.03)
 		if not lowSpecOn() then
 			addTrail(blade, index % 2 == 0 and LOTUS_RED or LOTUS_PINK, 0.8, 0.35)
 			local light = Instance.new("PointLight")
@@ -1857,13 +1857,13 @@ local function lotusHit(event) -- { "J", 시작, 끝 }: 단검 한 자루가 크
 	local dir = (to - from).Unit
 	local distance = (to - from).Magnitude
 	local flightTime = math.clamp(distance / 150, 0.14, 0.28) -- 멀수록 조금 더 오래 날아가서 눈으로 따라갈 수 있다
-	local dagger = rootPart(CFrame.lookAt(from, to), Vector3.new(0.9, 0.5, 7.5), LOTUS_WHITE, Enum.Material.Neon, nil, 0)
-	local halo = rootPart(CFrame.lookAt(from, to), Vector3.new(2.4, 1.6, 9.5), LOTUS_RED, Enum.Material.Neon, nil, 0.55) -- 붉은 빛무리
-	addTrail(dagger, LOTUS_RED, 2.6, 0.5)
-	addTrail(dagger, LOTUS_WHITE, 1.0, 0.3)
+	local dagger = rootPart(CFrame.lookAt(from, to), Vector3.new(2.2, 1.1, 13), LOTUS_WHITE, Enum.Material.Neon, nil, 0)
+	local halo = rootPart(CFrame.lookAt(from, to), Vector3.new(5.5, 3.4, 17), LOTUS_RED, Enum.Material.Neon, nil, 0.5) -- 붉은 빛무리
+	addTrail(dagger, LOTUS_RED, 5.5, 0.6)
+	addTrail(dagger, LOTUS_WHITE, 2.4, 0.4)
 	local streakLength = math.min(distance, 90)
-	local streak = rootPart(CFrame.lookAt(from, to) * CFrame.new(0, 0, -streakLength / 2), Vector3.new(0.35, 0.35, streakLength), LOTUS_PINK, Enum.Material.Neon, nil, 0.35) -- 날아간 길에 남는 빛줄기
-	TweenService:Create(streak, TweenInfo.new(0.35), { Transparency = 1, Size = Vector3.new(0.05, 0.05, streakLength) }):Play()
+	local streak = rootPart(CFrame.lookAt(from, to) * CFrame.new(0, 0, -streakLength / 2), Vector3.new(1.1, 1.1, streakLength), LOTUS_PINK, Enum.Material.Neon, nil, 0.3) -- 날아간 길에 남는 빛줄기
+	TweenService:Create(streak, TweenInfo.new(0.35), { Transparency = 1, Size = Vector3.new(0.15, 0.15, streakLength) }):Play()
 	Debris:AddItem(streak, 0.4)
 	local endCf = CFrame.lookAt(to, to + dir)
 	local info = TweenInfo.new(flightTime, Enum.EasingStyle.Linear)
@@ -1872,17 +1872,17 @@ local function lotusHit(event) -- { "J", 시작, 끝 }: 단검 한 자루가 크
 	flight.Completed:Connect(function()
 		dagger:Destroy()
 		halo:Destroy()
-		burst(to, LOTUS_RED, 22)
+		burst(to, LOTUS_RED, 34)
 		burst(to, LOTUS_WHITE, 10)
 		for _, tilt in ipairs({ 40, -40 }) do -- X 자 베임 (크고 굵게, 잠깐 남는다)
-			local slash = rootPart(endCf * CFrame.Angles(0, 0, math.rad(tilt)), Vector3.new(0.6, 11, 0.6), LOTUS_WHITE, Enum.Material.Neon, nil, 0)
-			TweenService:Create(slash, TweenInfo.new(0.32), { Transparency = 1, Size = Vector3.new(0.1, 16, 0.1) }):Play()
+			local slash = rootPart(endCf * CFrame.Angles(0, 0, math.rad(tilt)), Vector3.new(1.5, 20, 1.5), LOTUS_WHITE, Enum.Material.Neon, nil, 0)
+			TweenService:Create(slash, TweenInfo.new(0.32), { Transparency = 1, Size = Vector3.new(0.2, 28, 0.2) }):Play()
 			Debris:AddItem(slash, 0.36)
 		end
 		local shock = rootPart(CFrame.new(to), Vector3.new(0.8, 0.8, 0.8), LOTUS_PINK, Enum.Material.Neon, Enum.PartType.Ball, 0.15) -- 맞은 곳 번쩍이는 구
-		TweenService:Create(shock, TweenInfo.new(0.25), { Size = Vector3.one * 8, Transparency = 1 }):Play()
+		TweenService:Create(shock, TweenInfo.new(0.25), { Size = Vector3.one * 15, Transparency = 1 }):Play()
 		Debris:AddItem(shock, 0.3)
-		ringWave(to, 7, LOTUS_RED, 0.3, 12, 1.2)
+		ringWave(to, 11, LOTUS_RED, 0.3, 14, 2.2)
 	end)
 	flight:Play()
 	Debris:AddItem(dagger, flightTime + 0.2)

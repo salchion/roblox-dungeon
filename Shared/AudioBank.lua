@@ -49,6 +49,7 @@ return {
 	Skill_LotusThump = 140615626179933, -- 시전 때 깔리는 낮은 쿵: boom
 	Skill_LotusSlash = 121422898567513, -- 도는 동안 "슈슉": 표창
 	Skill_LotusStab = 121422898567513,  -- 꽂힐 때 "챙": 표창 소리를 아주 높게 짧게
+	Skill_LotusClang = 9125819216,      -- 칼끼리 부딪혀 튕기는 "챙": 강화 망치의 금속음(Enh_Hammer)을 아주 높고 짧게
 	Aug_Blade = 121422898567513,    -- 튕기는 표창
 	Aug_Flame = 138257634793906,    -- 화염 지대
 	Ult_Missile = 112204190873336,  -- 데드아이 미사일 발사
