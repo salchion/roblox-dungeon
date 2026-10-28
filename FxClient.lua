@@ -1831,7 +1831,7 @@ local function lotusEvent(event) -- { "Y", userId, 남은 초 (0 이면 끝) }
 	if owners >= 6 then return end -- (화면에 단검 고리가 너무 많아지지 않게: 동시에 6명까지)
 	entry = { Blades = {}, Expire = os.clock() + secs + 0.8, NextPulse = 0 }
 	for index = 1, 12 do
-		local blade = neonPart(Vector3.new(1.4, 0.5, 8.5), index % 2 == 0 and LOTUS_RED or LOTUS_WHITE, 0.03)
+		local blade = neonPart(Vector3.new(1.12, 0.4, 6.8), index % 2 == 0 and LOTUS_RED or LOTUS_WHITE, 0.03)
 		if not lowSpecOn() then
 			addTrail(blade, index % 2 == 0 and LOTUS_RED or LOTUS_PINK, 0.8, 0.35)
 			local light = Instance.new("PointLight")
@@ -1842,7 +1842,7 @@ local function lotusEvent(event) -- { "Y", userId, 남은 초 (0 이면 끝) }
 		table.insert(entry.Blades, blade)
 	end
 	entry.Rune = makeDashes(20, LOTUS_RED, 1.4, 3.4, 0.1) -- 발밑에서 도는 룬 고리
-	entry.Glow = neonPart(Vector3.new(0.25, 17, 17), LOTUS_RED, 0.78, CYL) -- 발밑 붉은 빛무리
+	entry.Glow = neonPart(Vector3.new(0.25, 13.6, 13.6), LOTUS_RED, 0.78, CYL) -- 발밑 붉은 빛무리
 	entry.Glow.Parent = fxFolder
 	lotus[userId] = entry
 	if root then
@@ -1901,14 +1901,14 @@ RunService.RenderStepped:Connect(function()
 				local outer = index <= 6
 				local dirSign = outer and 1 or -1
 				local angle = dirSign * now * 9 + index * (2 * math.pi / 6)
-				local radius = outer and 4.8 or 3.1
+				local radius = outer and 3.85 or 2.5
 				local height = (outer and 0.2 or 1.6) + math.sin(now * 6 + index) * 0.35 -- 위아래로 출렁인다
 				local pos = root.Position + Vector3.new(math.cos(angle) * radius, height, math.sin(angle) * radius)
 				local tangent = Vector3.new(-math.sin(angle), 0, math.cos(angle)) * dirSign
 				blade.CFrame = CFrame.lookAt(pos, pos + tangent)
 			end
 			local feet = root.Position - Vector3.new(0, 2.5, 0)
-			if entry.Rune then placeDashes(entry.Rune, feet + Vector3.new(0, 0.15, 0), 8.5, now * 2.2) end
+			if entry.Rune then placeDashes(entry.Rune, feet + Vector3.new(0, 0.15, 0), 6.8, now * 2.2) end
 			if entry.Glow then
 				entry.Glow.CFrame = CFrame.new(feet + Vector3.new(0, 0.1, 0)) * CFrame.Angles(0, 0, math.rad(90))
 				entry.Glow.Transparency = 0.72 + 0.1 * math.sin(now * 8) -- 숨 쉬듯 깜빡인다
