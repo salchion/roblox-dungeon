@@ -1056,6 +1056,70 @@ function Lobby.Build()
 	local trainingSign = makePart({ Name = "TrainingSign", Size = Vector3.new(1, 1, 1), Position = Vector3.new(0, 24, 38), Transparency = 1, CanCollide = false, CanQuery = false }, folder)
 	-- (글자 표지는 DummyService 의 훈련장 안내판 하나만 쓴다: 중복 방지)
 
+	-- 필드 문 풍경 (시작 언덕에서 동쪽을 바라볼 때 가장 먼저 보이는 장면): 성문 장식 + 먼 산맥 + 구름
+	do
+		local stoneLight, stoneDark = Color3.fromRGB(104, 120, 104), Color3.fromRGB(66, 80, 68)
+		local cloth, gold, ironColor = Color3.fromRGB(34, 92, 64), Color3.fromRGB(226, 190, 90), Color3.fromRGB(52, 54, 60)
+		for _, side in ipairs({ -1, 1 }) do
+			local tower = fieldGate + Vector3.new(0, 0, side * 24)
+			-- 탑 꼭대기 톱니 흉벽 (둘레 8개)
+			for i = 0, 7 do
+				local angle = i / 8 * math.pi * 2
+				makePart({ Name = "FieldMerlon", Size = Vector3.new(2.6, 3.4, 2.6), CFrame = CFrame.new(tower + Vector3.new(math.cos(angle) * 5.4, 50.7, math.sin(angle) * 5.4)) * CFrame.Angles(0, -angle, 0), Color = stoneLight, Material = Enum.Material.Cobblestone, CanCollide = false, CastShadow = false }, folder)
+			end
+			-- 탑 허리띠 돌 띠 + 마을 쪽 창문 (따뜻한 불빛)
+			for _, y in ipairs({ 12, 30 }) do
+				makePart({ Name = "FieldTowerBand", Size = Vector3.new(11, 1.2, 11), Position = tower + Vector3.new(0, y, 0), Color = stoneDark, Material = Enum.Material.Slate, CanCollide = false, CastShadow = false }, folder)
+			end
+			for _, y in ipairs({ 20, 38 }) do
+				makePart({ Name = "FieldTowerWindow", Size = Vector3.new(0.5, 5, 2.2), Position = tower + Vector3.new(-5.1, y, 0), Color = Color3.fromRGB(255, 205, 120), Material = Enum.Material.SmoothPlastic, CanCollide = false, CastShadow = false }, folder)
+				makePart({ Name = "FieldTowerWindowFrame", Size = Vector3.new(0.4, 5.8, 3), Position = tower + Vector3.new(-5.05, y, 0), Color = stoneDark, Material = Enum.Material.Slate, CanCollide = false, CastShadow = false }, folder)
+			end
+			-- 탑 마을 쪽 면에 걸린 긴 깃발 (초록 바탕 + 금 띠)
+			makePart({ Name = "FieldBanner", Size = Vector3.new(0.4, 16, 5), Position = tower + Vector3.new(-5.3, 27, side * 0), Color = cloth, Material = Enum.Material.Fabric, CanCollide = false, CastShadow = false }, folder)
+			makePart({ Name = "FieldBannerStripe", Size = Vector3.new(0.45, 16, 0.7), Position = tower + Vector3.new(-5.35, 27, 0), Color = gold, Material = Enum.Material.Fabric, CanCollide = false, CastShadow = false }, folder)
+			makePart({ Name = "FieldBannerRod", Size = Vector3.new(0.5, 0.5, 6.4), Position = tower + Vector3.new(-5.3, 35.3, 0), Color = ironColor, Material = Enum.Material.Metal, CanCollide = false, CastShadow = false }, folder)
+		end
+		-- 올려 둔 쇠창살(내리닫이 문): 가로보 밑으로 뾰족한 창살이 늘어져 있다
+		makePart({ Name = "FieldPortcullisBar", Size = Vector3.new(0.7, 0.8, 38), Position = fieldGate + Vector3.new(-4.6, 34.2, 0), Color = ironColor, Material = Enum.Material.Metal, CanCollide = false, CastShadow = false }, folder)
+		for k = -6, 6 do
+			makePart({ Name = "FieldPortcullis", Size = Vector3.new(0.5, 5.4, 0.5), Position = fieldGate + Vector3.new(-4.6, 31.4, k * 2.9), Color = ironColor, Material = Enum.Material.Metal, CanCollide = false, CastShadow = false }, folder)
+		end
+		-- 문까지 이어지는 길 가장자리 돌 (길을 한눈에 따라가게)
+		for step = 0, 9 do
+			for _, side in ipairs({ -1, 1 }) do
+				makePart({ Name = "FieldRoadEdge", Size = Vector3.new(4.2, 0.7, 1.4), Position = Vector3.new(66 + step * 6.2, TOP + 0.35, side * 14), Color = step % 2 == 0 and Color3.fromRGB(150, 140, 126) or Color3.fromRGB(128, 120, 108), Material = Enum.Material.Cobblestone, CanCollide = false, CastShadow = false }, folder)
+			end
+		end
+		-- 먼 산맥 (문 너머 동쪽, 마을 벽 바깥): 두 겹. 가까운 겹은 어둡고 먼 겹은 안개에 흐려진다
+		local ranges = {
+			{ 250, -70, 190, 120, Color3.fromRGB(70, 82, 112) }, { 270, 20, 230, 160, Color3.fromRGB(64, 76, 108) }, { 255, 105, 200, 125, Color3.fromRGB(72, 84, 114) },
+			{ 235, -150, 180, 100, Color3.fromRGB(68, 80, 110) }, { 240, 175, 170, 105, Color3.fromRGB(68, 80, 110) },
+			{ 360, -40, 300, 210, Color3.fromRGB(96, 108, 140) }, { 380, 90, 320, 230, Color3.fromRGB(100, 112, 144) }, { 350, -170, 260, 170, Color3.fromRGB(94, 106, 138) },
+		}
+		for _, mountain in ipairs(ranges) do
+			local x, z, width, height, color = mountain[1], mountain[2], mountain[3], mountain[4], mountain[5]
+			makePart({ Name = "FarMountain", Shape = Enum.PartType.Ball, Size = Vector3.new(width, height * 1.6, width * 0.8), Position = Vector3.new(x, height * 0.2 - 8, z), Color = color, Material = Enum.Material.Slate, CanCollide = false, CanQuery = false, CastShadow = false }, folder)
+			if height >= 125 then -- 높은 봉우리는 눈 덮인 꼭대기
+				makePart({ Name = "FarMountainSnow", Shape = Enum.PartType.Ball, Size = Vector3.new(width * 0.34, height * 0.4, width * 0.28), Position = Vector3.new(x - 6, height * 0.2 - 8 + height * 0.68, z), Color = Color3.fromRGB(226, 232, 244), Material = Enum.Material.Snow, CanCollide = false, CanQuery = false, CastShadow = false }, folder)
+			end
+		end
+		-- 하늘: 노을 구름 (Terrain 의 Clouds) + 해가 있는 쪽 번짐을 조금 키운다
+		local terrain = workspace:FindFirstChildOfClass("Terrain")
+		if terrain and not terrain:FindFirstChildOfClass("Clouds") then
+			local clouds = Instance.new("Clouds")
+			clouds.Cover = 0.55
+			clouds.Density = 0.5
+			clouds.Color = Color3.fromRGB(255, 214, 196)
+			clouds.Parent = terrain
+		end
+		local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
+		if atmosphere then
+			atmosphere.Glare = 0.35
+			atmosphere.Haze = 1.2
+		end
+	end
+
 	-- 쨍한 느낌 줄이기: 네온 부품은 색을 살짝 가라앉히고, 조명은 약하게 (은은하게 빛나는 정도)
 	for _, descendant in ipairs(folder:GetDescendants()) do
 		if descendant:IsA("PointLight") then

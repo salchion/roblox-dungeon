@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Defeat Zone {number1} monsters {number2} / {number3} · Reward {text4} G + Ticket", "ゾーン{number1}のモンスターを倒す {number2} / {number3} · 報酬 {text4} G + チケット" },
 		{ "🎒 {text1}  ▲ Better than your current gear! (I → Bag)", "🎒 {text1}  ▲ 今の装備より強い！(I → バッグ)" },
 		{ "[{text1}] Starts in {number2}s! Survive the incoming monsters", "[{text1}] {number2}秒後に開始！迫りくるモンスターを生き延びろ" },
 		{ "⏱ Skip gauge {text1}  (shared with training · pets)", "⏱ 短縮ゲージ {text1}（訓練・ペットと共有）" },

@@ -354,7 +354,7 @@ Config.AugInfo = {
 
 -- 세트 효과 단계별 수치 (서버 DungeonService 의 공식과 같다. 바꿀 때는 같이 바꾼다). 돌려주는 값: 설명 글자, 한 번 맞을 때 "내 공격력의 몇 배"
 local AUG_LEVEL = {
-	AugMissile = function(l) return string.format("on crit, %d missiles into the enemy you hit (25%% of the crit hit each)", 1 + l), 0.25 end,
+	AugMissile = function(l) return string.format("on crit, %d missiles into the enemy you hit (50%% of your attack each)", 1 + l), 0.5 end,
 	AugNova = function(l) return string.format("kill → explosion, radius %d, hits up to 8 enemies", 12 + 3 * l), 1.2 + 0.6 * l end,
 	AugOrbit = function(l) return string.format("every %d shots a blade bounces across %d enemies", ({ 6, 6, 5, 5, 4, 4 })[math.min(l, 6)], l + 2 + (l >= 5 and 2 or 0)), 0.9 + 0.4 * l end,
 	AugStorm = function(l) return string.format("every %.1fs lightning hits %d enemies", math.max(1.2, 3.4 - 0.5 * l), 2 + l), (1.4 + 0.45 * l) * (l >= 5 and 1.2 or 1) end,
@@ -373,7 +373,7 @@ function Config.BaseAttackEstimate(player)
 end
 -- 4셋 / 5셋 / 6셋에서 새로 생기는 효과 (수치만 오르는 게 아니라 투사체 / 지속 효과가 늘어난다. 서버 DungeonService 와 같이 바꾼다)
 local AUG_EXTRA = {
-	AugMissile = { [4] = "missiles explode (splash)", [5] = "+ second salvo 0.45s later", [6] = "+ a giant missile (150% of the crit hit)" },
+	AugMissile = { [4] = "missiles explode (splash)", [5] = "+ second salvo 0.45s later", [6] = "+ a giant missile (300% of your attack)" },
 	AugNova = { [4] = "explodes again 0.5s later", [5] = "wider blast + third explosion", [6] = "+ leaves flames behind" },
 	AugOrbit = { [4] = "2 blades at once", [5] = "blades bounce +2 more", [6] = "3 blades at once" },
 	AugStorm = { [4] = "lightning arcs to 1 nearby enemy", [5] = "lightning 20% stronger", [6] = "arcs to 2" },

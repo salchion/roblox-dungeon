@@ -245,6 +245,7 @@ return {
 		["🖥 Low-spec mode (less lag): OFF"] = "🖥 Low-Spec-Modus (weniger Lag): AUS",
 		["🌲 Hunting Field  ▶"] = "🌲 Jagdgebiet  ▶",
 		["Defeat each zone's Lord to advance"] = "Besiege den Lord jedes Gebiets, um weiterzukommen",
+		["+ a giant missile (300% of your attack)"] = "＋ eine Riesenrakete (300% deines Angriffs)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -309,6 +310,7 @@ return {
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "bei Krit {number1} Raketen in den getroffenen Gegner (je 25 % des Krit-Treffers)" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} boss(es)\n{number2} / {number3}   Reward: 🎫 {number4}", "Boss-Jäger-Titel 『Boss-Jäger』\nBesiege {number1} Bosse\n{number2} / {number3} Belohnung: 🎫 {number4}" },
 		{ "🏆 Colossus defeated! Everyone worked together ({number1} player(s) rewarded)", "🏆 Koloss besiegt! Alle haben zusammengearbeitet ({number1} Spieler belohnt)" },
+		{ "on crit, {number1} missiles into the enemy you hit (50% of your attack each)", "Bei Krit: {number1} Raketen auf den getroffenen Gegner (je 50% deines Angriffs)" },
 		{ "Gear found {number1} / {number2}  ·  Higher-rarity gear you have held shows its name", "Gefundene Ausrüstung {number1} / {number2}  ·  Seltenere Ausrüstung, die du besessen hast, zeigt ihren Namen" },
 		{ "🔑 You got {number1} key(s)! (Lord drop) — Use them at the town Dungeon Gate", "🔑 Du hast {number1} Schlüssel erhalten! (Lord-Drop) – benutze sie am Dungeon-Tor in der Stadt" },
 		{ "Transcendent   Title 『Transcendent』\nReach {number1} Power\n{number2} / {number3}   Reward: 🎫 {number4}", "Transzendenter Titel 『Transzendent』\nErreiche {number1} Kraft\n{number2} / {number3} Belohnung: 🎫 {number4}" },

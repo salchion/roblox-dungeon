@@ -418,6 +418,7 @@ return {
 		["🖥 Low-spec mode (less lag): OFF"] = "🖥 低スペックモード (ラグ軽減): オフ",
 		["🌲 Hunting Field  ▶"] = "🌲 狩り場  ▶",
 		["Defeat each zone's Lord to advance"] = "各エリアのロードを倒して先へ進もう",
+		["+ a giant missile (300% of your attack)"] = "＋巨大ミサイル(攻撃力の300%)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -482,6 +483,7 @@ return {
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "クリティカル時、命中した敵に{number1}発のミサイル(それぞれクリティカル攻撃の25%)" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} boss(es)\n{number2} / {number3}   Reward: 🎫 {number4}", "ボスハンター タイトル『ボスハンター』\n{number1} 個のボスを倒す\n{number2} / {number3}　報酬：🎫 {number4}" },
 		{ "🏆 Colossus defeated! Everyone worked together ({number1} player(s) rewarded)", "🏆 コロッサスを倒した！みんなで力を合わせた({number1}人に報酬)" },
+		{ "on crit, {number1} missiles into the enemy you hit (50% of your attack each)", "クリティカル時、当てた敵に{number1}発のミサイル(それぞれ攻撃力の50%)" },
 		{ "Gear found {number1} / {number2}  ·  Higher-rarity gear you have held shows its name", "入手した装備 {number1} / {number2}  ·  持ったことのある高レアリティ装備は名前が表示されます" },
 		{ "🔑 You got {number1} key(s)! (Lord drop) — Use them at the town Dungeon Gate", "🔑 鍵を{number1}個手に入れた！(ロードのドロップ)— 町のダンジョンゲートで使おう" },
 		{ "Transcendent   Title 『Transcendent』\nReach {number1} Power\n{number2} / {number3}   Reward: 🎫 {number4}", "超越者　タイトル『超越者』\n{number1}パワーに到達する\n{number2} / {number3}　報酬：🎫 {number4}" },
@@ -922,6 +924,5 @@ return {
 		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "推奨 ⚡{text1}  ·  黄色いオーブを狙うと3倍ダメージ！" },
 		{ "{text1} hasn't unlocked depth {number2} yet. (Clear depth {number3} first)", "{text1}はまだ深度{number2}を解放していません。(先に深度{number3}をクリアしてください)" },
 		{ "{text1}'s level is too low. (This dungeon requires Lv.{number2}+)", "{text1}のレベルが低すぎます。(このダンジョンはLv.{number2}以上が必要)" },
-		{ "Defeat Zone {number1} monsters {number2} / {number3} · Reward {text4} G + Ticket", "ゾーン{number1}のモンスターを倒す {number2} / {number3} · 報酬 {text4} G + チケット" },
 	},
 }

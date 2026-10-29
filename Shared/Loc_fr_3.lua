@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👑 Weekly Final Lord reward: Mythic {text1} · {text2} Set · ✦ {text3}!", "👑 Récompense hebdomadaire du Seigneur final : {text1} mythique · set {text2} · ✦ {text3} !" },
+		{ "{text1} Trial effect for this dungeon: [{text2}] (Lv.3) — {text3}", "{text1} Effet d'épreuve pour ce donjon : [{text2}] (niv.3) — {text3}" },
 		{ "Depth {number1} (total {text2}, Unique {text3}, keys {number4}): {text5}", "Profondeur {number1} (total {text2}, unique {text3}, clés {number4}) : {text5}" },
 		{ "{text1} Set synergy activated! 『{text2}』 - {text3}", "Synergie de set {text1} activée ! 『{text2}』 - {text3}" },
 		{ "🐾 Pet Lv.{number1}! New ability {text2} {text3} — {text4}", "🐾 Familier niv.{number1} ! Nouvelle capacité {text2} {text3} — {text4}" },

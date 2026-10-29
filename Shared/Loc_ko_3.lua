@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Range +{number1}%", "사거리 +{number1}%" },
+		{ "Reroll ✨{number1}", "재굴림 ✨{number1}" },
+		{ "  (max {number1})", "  (최대 {number1})" },
+		{ "Zone {number1} / {number2}", "{number1} / {number2} 구역" },
+		{ "{number1} Tickets", "티켓 {number1}장" },
 		{ "🏯 Floor {number1}", "🏯 {number1}층" },
 		{ "{number1} pieces", "{number1}부위" },
 		{ "Crit +{number1}%", "치명타 +{number1}%" },

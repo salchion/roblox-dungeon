@@ -170,6 +170,7 @@ return {
 		["🖥 Low-spec mode (less lag): OFF"] = "🖥 低配模式(减少卡顿):关",
 		["🌲 Hunting Field  ▶"] = "🌲 狩猎场  ▶",
 		["Defeat each zone's Lord to advance"] = "击败每个区域的领主即可前进",
+		["+ a giant missile (300% of your attack)"] = "＋巨型导弹(攻击力的300%)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -234,6 +235,7 @@ return {
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "暴击时向命中的敌人发射 {number1} 枚导弹(每枚为暴击伤害的 25%)" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} boss(es)\n{number2} / {number3}   Reward: 🎫 {number4}", "魔王猎人称号『魔王猎人』\n击败{number1}个Boss\n{number2} / {number3} 奖励：🎫 {number4}" },
 		{ "🏆 Colossus defeated! Everyone worked together ({number1} player(s) rewarded)", "🏆 巨像已被击败!大家齐心协力(已奖励 {number1} 名玩家)" },
+		{ "on crit, {number1} missiles into the enemy you hit (50% of your attack each)", "暴击时向被击中的敌人发射{number1}枚导弹(每枚为攻击力的50%)" },
 		{ "Gear found {number1} / {number2}  ·  Higher-rarity gear you have held shows its name", "已获得装备 {number1} / {number2}  ·  你持有过的高稀有度装备会显示名称" },
 		{ "🔑 You got {number1} key(s)! (Lord drop) — Use them at the town Dungeon Gate", "🔑 获得了 {number1} 把钥匙!(领主掉落)——在城镇的地下城大门使用" },
 		{ "Transcendent   Title 『Transcendent』\nReach {number1} Power\n{number2} / {number3}   Reward: 🎫 {number4}", "超凡称号《超凡者》\n达到{number1}力量\n{number2} / {number3} 奖励：🎫 {number4}" },

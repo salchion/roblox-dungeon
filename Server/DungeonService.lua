@@ -1471,6 +1471,22 @@ function Dungeon.ComputeDamage(player)
 	return math.max(1, math.floor(damage + 0.5)), isCrit
 end
 
+-- 세트 효과 / 펫이 쓰는 "기본 공격력": 치명타 / 잭팟 / 콤보 / 니어미스 누적 / 사격 중 감쇠를 뺀 값에 무기의 초당 피해 계수를 곱한다.
+-- (예전엔 세트 피해도 매번 치명타를 굴리고 콤보 배율을 곱해서, 치명타 빌드 / 콤보가 높을수록 세트가 설명보다 몇 배로 커졌다. 화면 설명은 "내 공격력의 N배 (치명타 / 콤보 제외)".)
+function Dungeon.ComputeSetBase(player)
+	local weaponType = Config.GetPlayerWeapon(player)
+	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
+	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel)
+		* Config.GetLevelDamageMult(player:GetAttribute("Level") or 1)
+		* (1 + Config.Newbie.Damage * Config.NewbieStrength(player))
+		* (1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0) + (player:GetAttribute("PetDamage") or 0))
+		* (1 + (player:GetAttribute("PerkPower") or 0) * Config.Perks.PowerPerStack)
+		* (1 + (player:GetAttribute("ParAttack") or 0))
+		* Dungeon.PartyBonus(player)
+		* Config.WeaponDpsFactor(weaponType)
+	return math.max(1, math.floor(damage + 0.5))
+end
+
 ------------------------------------------------------------
 -- 어그먼트 (랜덤 강화 중 "플레이 방식이 바뀌는" 효과): 크리 미사일 / 처치 폭발 / 회전 칼날 / 낙뢰
 --   각각 최대 3단계. 몸에 색이 다른 오라가 생기고, 효과마다 눈에 보이는 연출이 따른다.
@@ -1488,11 +1504,8 @@ local function nearestMonsters(run, position, radius, limit, exclude)
 	return list
 end
 
--- 세트 효과 / 펫 피해의 기준: 무기의 "한 발 피해(DamageMult)"가 아니라 초당 피해 계수(WeaponDpsFactor)로 맞춘다. (예전엔 한 발이 센 느린 무기를 들면 세트 피해가 몇 배로 뛰었다: 저격 0.6 vs 마법책 2.9 -> 약 5배. 데드아이도 같은 방식이다)
 local function augDamage(player)
-	local damage = Dungeon.ComputeDamage(player)
-	local weaponType = Config.GetPlayerWeapon(player)
-	return math.max(1, math.floor(damage / weaponType.DamageMult * Config.WeaponDpsFactor(weaponType) + 0.5))
+	return Dungeon.ComputeSetBase(player)
 end
 
 local function isBossData(data)
@@ -1562,7 +1575,7 @@ local function launchMissile(run, player, from, entry, amount, style, tint, scal
 end
 
 -- 폭발 투사체: 날아가서 맞은 자리에서 범위로 터진다 (충격파탄)
-local function launchBlast(run, player, from, entry, amount, radius, color, attr)
+local function launchBlast(run, player, from, entry, amount, radius, color, attr, hitSet)
 	sfxAt(run, from, "Aug_Missile", nil, 0.08)
 	local target = entry.Part.Position
 	local mid = from:Lerp(target, 0.5) + Vector3.new((math.random() - 0.5) * 10, 8 + math.random() * 5, (math.random() - 0.5) * 10)
@@ -1577,7 +1590,9 @@ local function launchBlast(run, player, from, entry, amount, radius, color, attr
 		Effects.Burst(position, color, 50)
 		sfxAt(run, position, "Aug_Pulse", nil, 0.5)
 		for _, hit in ipairs(nearestMonsters(run, position, radius, 12)) do
-			hitMonster(run, player, hit, amount, nil, color, attr)
+			local repeatHit = hitSet and hitSet[hit.Part] -- 같은 일제 사격의 다른 폭발이 이미 때린 적: 두 번째부터는 35% 만 (뭉친 몹이 목표 수만큼 겹쳐 맞는 것 방지)
+			if hitSet then hitSet[hit.Part] = true end
+			hitMonster(run, player, hit, repeatHit and amount * 0.35 or amount, nil, color, attr)
 		end
 	end)
 end
@@ -1787,7 +1802,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 		for i = 1, count do -- 한 발씩 살짝 엇갈려 쏴서 "일제 사격"으로 보이게 (한꺼번에 쏘면 한 발처럼 겹쳐 보였다)
 			task.delay((i - 1) * 0.06, function()
 				if run.Destroyed or not part.Parent then return end
-				launchMissile(run, player, from, target, amount * 0.25, "rocket", Color3.fromRGB(255, 120, 60), 2.1, splash, "AugMissile")
+				launchMissile(run, player, from, target, augDamage(player) * 0.5, "rocket", Color3.fromRGB(255, 120, 60), 2.1, splash, "AugMissile")
 			end)
 		end
 	end
@@ -1798,7 +1813,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 		end)
 	end
 	if level >= 6 then
-		launchMissile(run, player, from + Vector3.new(0, 2, 0), target, amount * 1.5, "rocket", Color3.fromRGB(255, 80, 40), 3, 14, "AugMissile")
+		launchMissile(run, player, from + Vector3.new(0, 2, 0), target, augDamage(player) * 3, "rocket", Color3.fromRGB(255, 80, 40), 3, 14, "AugMissile")
 	end
 end
 
@@ -2038,8 +2053,9 @@ local function startAugLoop(run)
 								local liveRoot = getAliveParts(member)
 								if not liveRoot then return end
 								local liveOrigin = liveRoot.Position + Vector3.new(0, 3, 0)
+								local volleyHits = {}
 								for _, entry in ipairs(nearestMonsters(run, liveRoot.Position, 75, targetCount)) do
-									launchBlast(run, member, liveOrigin, entry, blastDamage, blastRadius, Color3.fromRGB(110, 255, 190), "AugPulse")
+									launchBlast(run, member, liveOrigin, entry, blastDamage, blastRadius, Color3.fromRGB(110, 255, 190), "AugPulse", volleyHits)
 								end
 							end)
 						end

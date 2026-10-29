@@ -303,6 +303,7 @@ return {
 		["🖥 Low-spec mode (less lag): OFF"] = "🖥 Mode petite config (moins de lag) : NON",
 		["🌲 Hunting Field  ▶"] = "🌲 Terrain de chasse  ▶",
 		["Defeat each zone's Lord to advance"] = "Battez le seigneur de chaque zone pour avancer",
+		["+ a giant missile (300% of your attack)"] = "+ un missile géant (300% de votre attaque)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -367,6 +368,7 @@ return {
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "sur critique, {number1} missiles dans l'ennemi touché (25 % du coup critique chacun)" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} boss(es)\n{number2} / {number3}   Reward: 🎫 {number4}", "Titre du chasseur de boss\nVaincre {number1} boss\n{number2} / {number3} Récompense : 🎫 {number4}" },
 		{ "🏆 Colossus defeated! Everyone worked together ({number1} player(s) rewarded)", "🏆 Colosse vaincu ! Tout le monde a collaboré ({number1} joueur(s) récompensé(s))" },
+		{ "on crit, {number1} missiles into the enemy you hit (50% of your attack each)", "Sur critique : {number1} missiles sur l'ennemi touché (50% de votre attaque chacun)" },
 		{ "Gear found {number1} / {number2}  ·  Higher-rarity gear you have held shows its name", "Équipements trouvés {number1} / {number2}  ·  Les équipements de rareté supérieure que vous avez possédés affichent leur nom" },
 		{ "🔑 You got {number1} key(s)! (Lord drop) — Use them at the town Dungeon Gate", "🔑 Vous avez obtenu {number1} clé(s) ! (butin du seigneur) — utilisez-les à la porte du donjon en ville" },
 		{ "Transcendent   Title 『Transcendent』\nReach {number1} Power\n{number2} / {number3}   Reward: 🎫 {number4}", "Titre transcendant\nAtteindre {number1} puissance\n{number2} / {number3} Récompense : 🎫 {number4}" },
@@ -912,7 +914,5 @@ return {
 		{ "⚡ Power {text1}{number2} {text3}", "⚡ Puissance {text1}{number2} {text3}" },
 		{ "Depth {number1}: {text2}{text3}", "Profondeur {number1} : {text2}{text3}" },
 		{ "(gear {text1}{text2})", "(équipement {text1}{text2})" },
-		{ "👑 Weekly Final Lord reward: Mythic {text1} · {text2} Set · ✦ {text3}!", "👑 Récompense hebdomadaire du Seigneur final : {text1} mythique · set {text2} · ✦ {text3} !" },
-		{ "{text1} Trial effect for this dungeon: [{text2}] (Lv.3) — {text3}", "{text1} Effet d'épreuve pour ce donjon : [{text2}] (niv.3) — {text3}" },
 	},
 }

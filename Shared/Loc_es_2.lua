@@ -290,6 +290,7 @@ return {
 		["🖥 Low-spec mode (less lag): OFF"] = "🖥 Modo gama baja (menos lag): NO",
 		["🌲 Hunting Field  ▶"] = "🌲 Zona de caza  ▶",
 		["Defeat each zone's Lord to advance"] = "Derrota al señor de cada zona para avanzar",
+		["+ a giant missile (300% of your attack)"] = "+ un misil gigante (300% de tu ataque)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -354,6 +355,7 @@ return {
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "al crítico, {number1} misiles al enemigo golpeado (25% del golpe crítico cada uno)" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} boss(es)\n{number2} / {number3}   Reward: 🎫 {number4}", "Título de cazador de jefes\nDerrota a {number1} jefes\n{number2} / {number3} Recompensa: 🎫 {number4}" },
 		{ "🏆 Colossus defeated! Everyone worked together ({number1} player(s) rewarded)", "🏆 ¡Coloso derrotado! Todos colaboraron ({number1} jugador(es) recompensado(s))" },
+		{ "on crit, {number1} missiles into the enemy you hit (50% of your attack each)", "Con crítico: {number1} misiles al enemigo golpeado (50% de tu ataque cada uno)" },
 		{ "Gear found {number1} / {number2}  ·  Higher-rarity gear you have held shows its name", "Equipo encontrado {number1} / {number2}  ·  El equipo de mayor rareza que has tenido muestra su nombre" },
 		{ "🔑 You got {number1} key(s)! (Lord drop) — Use them at the town Dungeon Gate", "🔑 ¡Conseguiste {number1} llave(s)! (botín del señor): úsalas en la puerta de la mazmorra de la ciudad" },
 		{ "Transcendent   Title 『Transcendent』\nReach {number1} Power\n{number2} / {number3}   Reward: 🎫 {number4}", "Título trascendente 『Trascendente』\nAlcanza el poder {number1}\n{number2} / {number3} Recompensa: 🎫 {number4}" },

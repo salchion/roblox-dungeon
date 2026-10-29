@@ -1942,5 +1942,7 @@
 "Damage to bosses / lords / elites +{number1}% per point  (max {number2})",
 "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})",
 "🌲 Hunting Field  ▶",
-"Defeat each zone's Lord to advance"
+"Defeat each zone's Lord to advance",
+"on crit, {number1} missiles into the enemy you hit (50% of your attack each)",
+"+ a giant missile (300% of your attack)"
 ]
