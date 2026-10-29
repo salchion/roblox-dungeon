@@ -23,6 +23,11 @@ local Effects = require(script.Parent:WaitForChild("Effects"))
 local SoundBank = require(game:GetService("ReplicatedStorage"):WaitForChild("SoundBank"))
 local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Config"))
 local Guard = require(script.Parent:WaitForChild("DamageGuard"))
+local okLooks, NewLooks = pcall(function() return require(script.Parent:WaitForChild("MonsterLooks")) end)
+if not okLooks then
+	warn("[MonsterLooks] 불러오지 못해 예전 모양을 씁니다: " .. tostring(NewLooks))
+	NewLooks = nil
+end
 
 local M = {}
 
@@ -379,6 +384,19 @@ Looks.Totem = function(S, c, d) -- 저주 토템: 3단 기둥 + 얼굴 + 양 날
 	d(BALL, S * 0.28, S * 0.28, S * 0.28, 0, S * 1.05, 0, Color3.fromRGB(235, 90, 80), Neon)                   -- 꼭대기 저주 구슬
 end
 
+-- 도깨비불의 반짝이는 입자 (새 모양에도 붙인다)
+local function addWispGlow(body, S, c)
+	local glow = Instance.new("ParticleEmitter")
+	glow.Rate = 25
+	glow.Lifetime = NumberRange.new(0.4, 0.8)
+	glow.Speed = NumberRange.new(1, 3)
+	glow.SpreadAngle = Vector2.new(180, 180)
+	glow.LightEmission = 1
+	glow.Color = ColorSequence.new(c)
+	glow.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, S * 0.5), NumberSequenceKeypoint.new(1, 0) })
+	glow.Parent = body
+end
+
 function M.Build(typeKey, size, color, position, parent)
 	local def = M.Defs[typeKey]
 
@@ -413,7 +431,11 @@ function M.Build(typeKey, size, color, position, parent)
 		part.Color = partColor
 		part.Material = material or Plastic
 		part.Transparency = opts.T or (def.Transparency and opts.Tint and def.Transparency) or 0
-		part.CFrame = body.CFrame * CFrame.new(x, y, z) * CFrame.Angles(math.rad(opts.Rx or 0), math.rad(opts.Ry or 0), math.rad(opts.Rz or 0))
+		if opts.CF then -- 몸체 기준 CFrame 을 직접 준 경우 (MonsterLooks 의 둥근 팔다리 / 뿔)
+			part.CFrame = body.CFrame * opts.CF
+		else
+			part.CFrame = body.CFrame * CFrame.new(x, y, z) * CFrame.Angles(math.rad(opts.Rx or 0), math.rad(opts.Ry or 0), math.rad(opts.Rz or 0))
+		end
 		local weld = Instance.new("Weld") -- (Weld + 명시적 오프셋: WeldConstraint 는 클라이언트가 받는 순간의 위치로 오프셋을 다시 계산해서, 움직이는 몬스터의 겉모양이 본체에서 어긋나 보였다)
 		weld.Part0 = body
 		weld.Part1 = part
@@ -425,7 +447,20 @@ function M.Build(typeKey, size, color, position, parent)
 		end
 		return part
 	end
-	local build = Looks[typeKey]
+	-- 새 둥근 모양(MonsterLooks)을 먼저 시도하고, 없거나 오류가 나면 예전 모양(Looks)으로 돌아간다
+	local builtNew = false
+	if NewLooks and NewLooks.Has(typeKey) then
+		local ok, err = pcall(NewLooks.Build, typeKey, size, color, d)
+		if ok then
+			builtNew = true
+			if typeKey == "Wisp" then addWispGlow(body, size, color) end
+		else
+			warn("[MonsterLooks] " .. tostring(typeKey) .. " 새 모양 오류, 예전 모양 사용: " .. tostring(err))
+			for _, child in ipairs(body:GetChildren()) do child:Destroy() end
+			table.clear(skins)
+		end
+	end
+	local build = (not builtNew) and Looks[typeKey] or nil
 	if build then
 		-- Wisp 처럼 몸체에 입자를 붙여야 하는 종류가 있어서 d.Body 로 몸체를 알려 준다 (함수 표처럼 쓴다)
 		local helper = setmetatable({ Body = body }, { __call = function(_, ...) return d(...) end })

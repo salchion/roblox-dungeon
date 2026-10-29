@@ -141,6 +141,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/MonsterLooks.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "MonsterLooks",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/MonsterTypes.lua",
       "parent": "ServerScriptService/Modules",
       "name": "MonsterTypes",
