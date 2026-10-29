@@ -526,6 +526,28 @@ local function fireFlanked(ctx, part, target, speed, damage, size, color, style,
 	end
 end
 
+-- 앞쪽 부채꼴: aim 을 가운데로 count 발을 totalDeg(최대 180) 안에 고르게 쏜다. 뒤로는 쏘지 않아서 탄 수가 360도 고리의 절반 이하다.
+local function arcShots(ctx, origin, aim, count, totalDeg, speed, damage, size, color, style, opts)
+	totalDeg = math.min(totalDeg, 180)
+	for i = 1, count do
+		local angle = (count == 1) and 0 or (-totalDeg / 2 + totalDeg * (i - 1) / (count - 1))
+		ctx.Fire(origin, rotateY(aim, angle), speed, damage, size, color, style, opts)
+	end
+end
+
+-- 휩쓸기: 처음 겨눈 방향 기준으로 부채꼴을 따라 시간차를 두고 한 발씩 (한 순간에 탄이 몰리지 않고, 가만히 있지 않으면 피할 수 있다). reverse 로 방향을 뒤집는다
+local function sweepShots(ctx, part, data, aim, count, totalDeg, gap, speed, damage, size, color, style, reverse)
+	totalDeg = math.min(totalDeg, 180)
+	for i = 1, count do
+		local t = (i - 1) / math.max(1, count - 1)
+		local angle = (-totalDeg / 2 + totalDeg * (reverse and (1 - t) or t))
+		task.delay((i - 1) * gap, function()
+			if not ctx.Alive(part, data) then return end
+			ctx.Fire(part.Position, rotateY(aim, angle), speed, damage, size, color, style)
+		end)
+	end
+end
+
 local function telegraph(ctx, part, data, color, delay, action)
 	part.Color = color
 	data.RearUntil = os.clock() + delay -- 공격 직전: 몸을 뒤로 젖힌다 (Update 의 기울임이 읽는다)
@@ -1061,6 +1083,15 @@ function M.Update(ctx, part, data, dt, now)
 
 	if def.Attack == "Single" then
 		data.ShotN = (data.ShotN or 0) + 1
+		if data.ShotN % 4 == 0 then -- 네 번에 한 번: 앞쪽 부채꼴 3발 (넓게 덮는다)
+			telegraph(ctx, part, data, Color3.fromRGB(255, 190, 90), 0.5, function()
+				local current = ctx.GetTarget(part.Position)
+				if current then
+					arcShots(ctx, part.Position, (current.Position - part.Position).Unit, 3, 46, stats.ShotSpeed * 1.1, math.max(1, math.floor(stats.ShotDamage * 0.75)), math.max(1.4, stats.Size / 4.2), nil, def.Style)
+				end
+			end)
+			return
+		end
 		local noFlank = data.ShotN % 2 == 1 -- 옆 탄은 두 번에 한 번만
 		local level = leadLevel(data)
 		local lead = level >= 2 or (level == 1 and data.ShotN % 2 == 0) -- 예측 사격 (옆 탄이 없는 차례에 겹치지 않게 번갈아 쓴다)
@@ -1074,13 +1105,16 @@ function M.Update(ctx, part, data, dt, now)
 	elseif def.Attack == "Spit" then
 		-- 가시 독충: 좌우로 꿈틀대는 뱀 탄 두 줄(반대 위상) / 바늘 두 묶음을 번갈아 쏜다
 		data.ShotN = (data.ShotN or 0) + 1
-		local snake = data.ShotN % 2 == 1
+		local snake = data.ShotN % 3 == 1
+		local fan = data.ShotN % 3 == 0 -- 세 번에 한 번: 바늘 부채꼴 5발 (빠르게)
 		telegraph(ctx, part, data, Color3.fromRGB(215, 190, 255), 0.45, function()
 			local current = ctx.GetTarget(part.Position)
 			if not current then return end
 			local aim = (current.Position - part.Position).Unit
 			local size = math.max(1.4, stats.Size / 3.6)
-			if snake then
+			if fan then
+				arcShots(ctx, part.Position, aim, 5, 74, stats.ShotSpeed * 1.25, math.max(1, math.floor(stats.ShotDamage * 0.7)), size * 0.9, Color3.fromRGB(205, 150, 235), "Needle")
+			elseif snake then
 				for _, sign in ipairs({ 1, -1 }) do
 					ctx.Fire(part.Position, aim, stats.ShotSpeed * 0.8, stats.ShotDamage, size, Color3.fromRGB(165, 205, 90), "Snake", { Kind = "sine", Amp = 7 * sign, Freq = 3.4, Life = 3.5 })
 				end
@@ -1095,12 +1129,15 @@ function M.Update(ctx, part, data, dt, now)
 		-- 박쥐: 좌우에서 휘어 들어오는 초승달 한 쌍 (집게처럼 모인다). 세 번에 한 번은 빠른 표창 두 발.
 		data.ShotN = (data.ShotN or 0) + 1
 		local darts = data.ShotN % 3 == 0
+		local swoop = data.ShotN % 5 == 0 -- 다섯 번에 한 번: 빠른 표창 부채꼴 5발
 		telegraph(ctx, part, data, Color3.fromRGB(255, 220, 80), 0.3, function()
 			local current = ctx.GetTarget(part.Position)
 			if not current then return end
 			local aim = (current.Position - part.Position).Unit
 			local size = math.max(1.4, stats.Size / 3)
-			if darts then
+			if swoop then
+				arcShots(ctx, part.Position, aim, 5, 70, stats.ShotSpeed * 1.35, math.max(1, math.floor(stats.ShotDamage * 0.65)), size * 0.75, Color3.fromRGB(150, 120, 200), "Dart")
+			elseif darts then
 				for i = 0, 1 do
 					task.delay(i * 0.15, function()
 						if not ctx.Alive(part, data) then return end
@@ -1125,6 +1162,14 @@ function M.Update(ctx, part, data, dt, now)
 			local current = ctx.GetTarget(part.Position)
 			if not current then return end
 			local gentle = data.Zone == 1 -- 1구역은 더 느리게 꺾는다
+			if data.ShotN % 3 == 0 then -- 세 번에 한 번: 작은 유도 구슬 3개가 앞쪽 부채꼴로 퍼졌다가 쫓아온다
+				local base = (current.Position - part.Position).Unit
+				for _, angle in ipairs({ -50, 0, 50 }) do
+					ctx.Fire(part.Position + Vector3.new(0, 1.5, 0), rotateY(base, angle), stats.ShotSpeed * (gentle and 0.6 or 0.75), math.max(1, math.floor(stats.ShotDamage * 0.7)), 1.7, Color3.fromRGB(150, 205, 240), "Seeker",
+						{ Kind = "homing", Turn = gentle and 0.7 or 1.2, Life = 3.2 })
+				end
+				return
+			end
 			ctx.Fire(part.Position + Vector3.new(0, 1.5, 0), (current.Position - part.Position).Unit, stats.ShotSpeed * (gentle and 0.75 or 0.9), math.floor(stats.ShotDamage * 1.1), 2.3, Color3.fromRGB(135, 190, 235), "Seeker",
 				{ Kind = "homing", Turn = gentle and 0.9 or 1.6, Life = 3.5 })
 			if withMeteor then
@@ -1141,12 +1186,17 @@ function M.Update(ctx, part, data, dt, now)
 
 	elseif def.Attack == "Split" then
 		-- 저격 임프: 날다가 목표 앞에서 세 갈래 표창으로 갈라지는 창
+		data.ShotN = (data.ShotN or 0) + 1
 		telegraph(ctx, part, data, Color3.fromRGB(255, 120, 150), 0.5, function()
 			local current = ctx.GetTarget(part.Position)
 			if not current then return end
 			local delta = current.Position - part.Position
 			local aim = delta.Unit
 			local speed = stats.ShotSpeed
+			if data.ShotN % 3 == 0 then -- 세 번에 한 번: 창 5자루가 앞쪽 부채꼴로 (갈라지지 않는 대신 넓게)
+				arcShots(ctx, part.Position, aim, 5, 80, speed * 1.1, math.max(1, math.floor(stats.ShotDamage * 0.5)), math.max(1.3, stats.Size / 4), Color3.fromRGB(235, 140, 160), "Spear")
+				return
+			end
 			local splitTime = math.clamp(0.55 * delta.Magnitude / speed, 0.4, 0.9)
 			ctx.Fire(part.Position, aim, speed, math.floor(stats.ShotDamage * 0.8), math.max(1.6, stats.Size / 3.5), Color3.fromRGB(235, 120, 150), "Spear", {
 				Kind = "split", SplitTime = splitTime,
@@ -1216,6 +1266,17 @@ function M.Update(ctx, part, data, dt, now)
 			telegraph(ctx, part, data, Color3.fromRGB(255, 150, 120), 0.6, function() salvo(ctx, part, data, stats, "spread") end)
 			return
 		end
+		if data.ShotN % 4 == 0 then -- 네 번에 한 번: 플레이어 쪽 반원(180도) 7발을 더 빠르게 (뒤쪽은 비운다)
+			telegraph(ctx, part, data, Color3.fromRGB(190, 240, 255), 0.6, function()
+				local current = ctx.GetTarget(part.Position)
+				if not current then return end
+				local aim = flat(current.Position - part.Position)
+				if aim.Magnitude < 0.1 then return end
+				local origin = Vector3.new(part.Position.X, (ctx.GroundY and ctx.GroundY(part.Position.X, part.Position.Z, part.Position.Y) or ctx.FloorY) + 3, part.Position.Z)
+				arcShots(ctx, origin, aim.Unit, 7, 180, 27, math.max(1, math.floor(stats.ShotDamage * 0.7)), 2.1, Color3.fromRGB(135, 215, 235), "Crystal", { Kind = "curve", W = bend * 0.5, Life = 3.2 })
+			end)
+			return
+		end
 		telegraph(ctx, part, data, Color3.new(1, 1, 1), 0.6, function()
 			local offset = math.random() * math.pi * 2
 			for i = 0, 5 do
@@ -1235,6 +1296,16 @@ function M.Update(ctx, part, data, dt, now)
 		end)
 
 	elseif def.Attack == "Burst" then
+		data.ShotN = (data.ShotN or 0) + 1
+		if data.ShotN % 3 == 0 then -- 세 번에 한 번: 독침 거미줄 부채꼴 5발
+			telegraph(ctx, part, data, Color3.fromRGB(255, 200, 90), 0.35, function()
+				local current = ctx.GetTarget(part.Position)
+				if current then
+					arcShots(ctx, part.Position, (current.Position - part.Position).Unit, 5, 84, stats.ShotSpeed * 1.2, math.max(1, math.floor(stats.ShotDamage * 0.6)), math.max(1.1, stats.Size / 4.5), Color3.fromRGB(150, 120, 190), def.Style)
+				end
+			end)
+			return
+		end
 		telegraph(ctx, part, data, Color3.fromRGB(255, 220, 80), 0.3, function()
 			for i = 0, 1 do -- 3연발 -> 2연발
 				task.delay(i * 0.16, function()
@@ -1292,6 +1363,13 @@ function M.Update(ctx, part, data, dt, now)
 		if data.ShotN % 3 == 0 then -- 세 번에 한 번: 일직선 포격 (붉은 원 3개가 줄지어 떨어진다)
 			data.NextAttack = now + stats.ShotInterval * 2.2
 			telegraph(ctx, part, data, Color3.fromRGB(255, 120, 90), 0.5, function() salvo(ctx, part, data, stats, "line") end)
+		elseif data.ShotN % 5 == 0 then -- 다섯 번에 한 번: 부채꼴 휩쓸기 (처음 겨눈 쪽에서 반대쪽까지 0.9초 동안 한 발씩)
+			data.NextAttack = now + stats.ShotInterval * 2.4
+			telegraph(ctx, part, data, Color3.fromRGB(255, 170, 120), 0.5, function()
+				local current = ctx.GetTarget(part.Position)
+				if not current then return end
+				sweepShots(ctx, part, data, (current.Position - part.Position).Unit, 7, 130, 0.15, stats.ShotSpeed * 1.4, math.max(1, math.floor(stats.ShotDamage * 0.7)), 1.8, Color3.fromRGB(190, 170, 240), "Needle", data.ShotN % 10 == 0)
+			end)
 		elseif data.ShotN % 2 == 0 then
 			data.NextAttack = now + stats.ShotInterval * 1.4
 			telegraph(ctx, part, data, Color3.fromRGB(190, 170, 255), 0.4, function()

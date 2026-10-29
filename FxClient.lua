@@ -1122,6 +1122,8 @@ end
 local BALL, BLOCK, CYLINDER = Enum.PartType.Ball, Enum.PartType.Block, Enum.PartType.Cylinder
 local PLASTIC, METAL = Enum.Material.SmoothPlastic, Enum.Material.Metal
 
+local liveTrails = 0
+
 local function spawnProjectile(event)
 	-- { "P", id, origin, direction, speed, size, color, style, life, path }
 	-- path: nil(직선) / { "sine", 진폭, 빈도 } / { "curve", 각속도 } / { "lob", 착지점, 높이 } / { "home" }
@@ -1218,6 +1220,14 @@ local function spawnProjectile(event)
 			local tail = addPiece(part, BALL, Vector3.new(size * 0.6, size * 0.6, size * 0.6), CFrame.new(0, 0, size * 0.75), baseColor, Enum.Material.Neon, 0.35)
 			addFlame(tail, size * 0.9, baseColor:Lerp(WHITE, 0.5), baseColor)
 		end
+	elseif style == "Orb" then -- 치유 / 마력 구슬: 밝은 속 + 크고 투명한 겉껍질
+		part.Shape = BALL
+		part.Size = Vector3.new(size * 0.9, size * 0.9, size * 0.9)
+		part.CFrame = look
+		part.Color = baseColor:Lerp(WHITE, 0.45)
+		pieces = function()
+			addPiece(part, BALL, Vector3.new(size * 1.7, size * 1.7, size * 1.7), CFrame.identity, baseColor, Enum.Material.Neon, 0.62)
+		end
 	elseif style == "Snake" then -- 뱀: 머리 + 점점 작아지는 몸 두 마디
 		part.Shape = BALL
 		part.Size = Vector3.new(size, size, size)
@@ -1232,6 +1242,23 @@ local function spawnProjectile(event)
 		part.Position = origin
 	end
 	part.Color = part.Color:Lerp(Color3.fromRGB(128, 128, 140), 0.3) -- 너무 쨍하지 않게 살짝 가라앉힌다 (특히 보스 탄)
+	-- 꼬리 궤적: 탄이 지나간 자리가 잠깐 남아서 어디서 날아오는지 / 어느 방향인지 더 잘 읽힌다 (동시에 40줄까지만, 저사양 모드는 생략: 탄이 많을 때 렉 방지)
+	if liveTrails < 40 and not lowSpecOn() and size >= 1.1 then
+		liveTrails += 1
+		task.delay(life + 0.3, function() liveTrails -= 1 end)
+		local width = math.clamp(size * 0.55, 0.5, 2.4)
+		local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
+		a0.Position, a1.Position = Vector3.new(0, width / 2, 0), Vector3.new(0, -width / 2, 0)
+		a0.Parent, a1.Parent = part, part
+		local trail = Instance.new("Trail")
+		trail.Attachment0, trail.Attachment1 = a0, a1
+		trail.Lifetime = (style == "Spear" or style == "Dart" or style == "Needle") and 0.22 or 0.32
+		trail.Color = ColorSequence.new(part.Color)
+		trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.25), NumberSequenceKeypoint.new(1, 1) })
+		trail.LightEmission = 0.6
+		trail.FaceCamera = true
+		trail.Parent = part
+	end
 	local light = Instance.new("PointLight")
 	light.Range, light.Brightness, light.Color = 6, 0.5, part.Color
 	light.Shadows = false
