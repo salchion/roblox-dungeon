@@ -213,8 +213,38 @@ local ZONE_LAYOUTS = {
 		Baffles = { { Offset = 330, Type = "Center", Gap = 110 }, { Offset = 600, Side = 1, Gap = 150 } },
 	},
 }
--- 구역 길이를 700 -> 1400 으로 넓힌 만큼 지형도 "늘려서" 채운다: 간격만 벌리면 휑해지므로, 원래 700 짜리 배치(언덕 / 계단 / 벽)를 뒤에 한 번 더 이어 붙인다.
--- (원래 배치는 올라간 만큼 내려와서 끝 높이가 0 이라, 그대로 이어 붙여도 높이가 맞는다)
+-- 구역 길이를 700 -> 1400 으로 넓힌 만큼 지형도 채운다: 앞 700 은 위의 원래 배치, 뒤 700 은 구역마다 따로 짠 "다른 배치"(SECOND_HALF)를 이어 붙인다.
+-- (올라간 만큼 내려와서 끝 높이가 0 인 배치만 쓴다. 벽은 경사로에서 40 이상 떨어뜨리고, 구역 끝(보스 자리) 가까이에는 두지 않는다. Offset / At 은 뒤 700 의 시작 기준)
+local SECOND_HALF = {
+	[2] = { -- 숲 뒤쪽: 지그재그 대신 트인 빈터 + 가운데 벽, 가운데에 낮은 둔덕
+		Stairs = { { At = 250, Rise = 10, Run = 40 }, { At = 420, Rise = -10, Run = 40 } },
+		Baffles = { { Offset = 120, Type = "Center", Gap = 100 }, { Offset = 190, Side = -1, Gap = 110 }, { Offset = 340, Type = "Center", Gap = 90 }, { Offset = 520, Side = 1, Gap = 100 }, { Offset = 610, Side = -1, Gap = 110 } },
+	},
+	[3] = { -- 황무지 뒤쪽: 완만한 고원 하나 + 긴 벽이 번갈아
+		Stairs = { { At = 220, Rise = 10, Run = 50 }, { At = 470, Rise = -10, Run = 50 } },
+		Baffles = { { Offset = 110, Side = -1, Gap = 120 }, { Offset = 340, Side = 1, Gap = 120 }, { Offset = 560, Side = -1, Gap = 120 }, { Offset = 650, Type = "Center", Gap = 120 } },
+	},
+	[4] = { -- 사막 뒤쪽: 모래언덕 6개 대신 큰 언덕 하나 + 낮은 벽
+		Stairs = { { At = 230, Rise = 24, Run = 90 }, { At = 400, Rise = -24, Run = 90 } },
+		Baffles = { { Offset = 110, Side = -1, Gap = 160 }, { Offset = 560, Side = 1, Gap = 150 } },
+	},
+	[5] = { -- 설원 뒤쪽: 비탈 대신 얼음 미로(벽 여섯 개) + 작은 턱
+		Stairs = { { At = 330, Rise = 14, Run = 40 }, { At = 560, Rise = -14, Run = 40 } },
+		Baffles = { { Offset = 120, Side = 1, Gap = 120 }, { Offset = 200, Side = -1, Gap = 120 }, { Offset = 270, Type = "Center", Gap = 100 }, { Offset = 430, Side = 1, Gap = 110 }, { Offset = 500, Side = -1, Gap = 110 }, { Offset = 650, Type = "Center", Gap = 120 } },
+	},
+	[6] = { -- 화산 뒤쪽: 큰 언덕 하나 + 작은 언덕 하나 (앞쪽과 반대로 큰 것부터)
+		Stairs = { { At = 90, Rise = 32, Run = 70 }, { At = 220, Rise = -32, Run = 70 }, { At = 400, Rise = 18, Run = 50 }, { At = 500, Rise = -18, Run = 50 } },
+		Baffles = { { Offset = 340, Side = -1, Gap = 150 }, { Offset = 610, Side = 1, Gap = 140 } },
+	},
+	[7] = { -- 암흑 지대 뒤쪽: 미로 대신 성채 고원 + 고원 위의 벽 셋
+		Stairs = { { At = 150, Rise = 22, Run = 50 }, { At = 520, Rise = -22, Run = 50 } },
+		Baffles = { { Offset = 270, Type = "Center", Gap = 110 }, { Offset = 350, Side = 1, Gap = 110 }, { Offset = 430, Type = "Center", Gap = 110 }, { Offset = 640, Side = -1, Gap = 120 } },
+	},
+	[8] = { -- 심연 뒤쪽: 두 단 계단식 대지 + 기둥 벽
+		Stairs = { { At = 100, Rise = 20, Run = 60 }, { At = 300, Rise = 20, Run = 60 }, { At = 520, Rise = -40, Run = 80 } },
+		Baffles = { { Offset = 200, Side = -1, Gap = 150 }, { Offset = 430, Type = "Center", Gap = 130 }, { Offset = 640, Side = 1, Gap = 140 } },
+	},
+}
 for zone, layout in ipairs(ZONE_LAYOUTS) do
 	local baseLength = zone == 1 and 340 or 700
 	local copies = math.max(1, math.floor((F.ZoneLengths[zone] or F.ZoneLength) / baseLength + 0.5)) - 1
@@ -222,13 +252,14 @@ for zone, layout in ipairs(ZONE_LAYOUTS) do
 		local stairs, baffles = {}, {}
 		for _, stair in ipairs(layout.Stairs) do table.insert(stairs, stair) end
 		for _, wall in ipairs(layout.Baffles) do table.insert(baffles, wall) end
+		local second = SECOND_HALF[zone]
 		for copy = 1, copies do
-			for _, stair in ipairs(stairs) do
+			for _, stair in ipairs(second and second.Stairs or stairs) do
 				local clone = table.clone(stair)
 				clone.At = stair.At + baseLength * copy
 				table.insert(layout.Stairs, clone)
 			end
-			for _, wall in ipairs(baffles) do
+			for _, wall in ipairs(second and second.Baffles or baffles) do
 				local clone = table.clone(wall)
 				clone.Offset = wall.Offset + baseLength * copy
 				table.insert(layout.Baffles, clone)
