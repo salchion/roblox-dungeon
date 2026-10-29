@@ -92,6 +92,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/FieldLayouts.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "FieldLayouts",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/FieldService.lua",
       "parent": "ServerScriptService/Modules",
       "name": "FieldService",
