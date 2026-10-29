@@ -55,6 +55,28 @@ do
 	soft.Contrast = -0.04
 	soft.TintColor = Color3.fromRGB(252, 249, 244)
 	soft.Parent = Lighting
+	-- 화질 올리기: 밝은 곳 번짐(Bloom) / 햇살 줄기 / 먼 곳을 살짝 흐리게 (초점 범위가 넓어서 사정거리 안의 적은 흐려지지 않는다). 저사양 모드는 LowSpecClient 가 이 효과들을 꺼 준다.
+	do
+		local bloom = Lighting:FindFirstChild("QualityBloom") or Instance.new("BloomEffect")
+		bloom.Name = "QualityBloom"
+		bloom.Intensity = 0.22
+		bloom.Size = 28
+		bloom.Threshold = 1.9
+		bloom.Parent = Lighting
+		local rays = Lighting:FindFirstChild("QualityRays") or Instance.new("SunRaysEffect")
+		rays.Name = "QualityRays"
+		rays.Intensity = 0.05
+		rays.Spread = 0.7
+		rays.Parent = Lighting
+		local blur = Lighting:FindFirstChild("QualityDepth") or Instance.new("DepthOfFieldEffect")
+		blur.Name = "QualityDepth"
+		blur.FarIntensity = 0.18
+		blur.NearIntensity = 0
+		blur.FocusDistance = 90
+		blur.InFocusRadius = 140
+		blur.Parent = Lighting
+		Lighting.ShadowSoftness = 0.25
+	end
 	local DAY = { ClockTime = 14, Brightness = 1.6, Ambient = Color3.fromRGB(70, 70, 70), OutdoorAmbient = Color3.fromRGB(70, 70, 70), ExposureCompensation = 0 }
 	-- 필드 구역별 하늘: 시간대 / 밝기 / 주변광 / 안개 색 / 안개 농도
 	local FIELD_THEMES = {
