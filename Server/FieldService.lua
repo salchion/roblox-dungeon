@@ -213,6 +213,14 @@ local ZONE_LAYOUTS = {
 		Baffles = { { Offset = 330, Type = "Center", Gap = 110 }, { Offset = 600, Side = 1, Gap = 150 } },
 	},
 }
+-- 구역 길이를 700 -> 1400 으로 넓힌 만큼 오르막 / 벽 위치도 같은 비율로 늘린다 (언덕 / 틈의 크기는 그대로, 사이 간격만 넓어진다)
+for zone, layout in ipairs(ZONE_LAYOUTS) do
+	local lengthMult = (F.ZoneLengths[zone] or F.ZoneLength) / (zone == 1 and 340 or 700)
+	if lengthMult ~= 1 then
+		for _, stair in ipairs(layout.Stairs) do stair.At = stair.At * lengthMult end
+		for _, wall in ipairs(layout.Baffles) do wall.Offset = wall.Offset * lengthMult end
+	end
+end
 local ZONE_SEGMENTS = {} -- [zone] = { { A, B, H, Kind = "Floor" | "Step", Stair } ... }
 for zone, layout in ipairs(ZONE_LAYOUTS) do
 	local segments = {}

@@ -99,7 +99,8 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 		local maxX = x1 - BOSS_CLEAR
 		local zoneParts = 0
 		local patchLayer = 0
-		local budget = zone <= 3 and EARLY_ZONE_PARTS or MAX_PARTS_PER_ZONE
+		local areaMult = zone >= 2 and 1.7 or 1 -- 2구역 이후는 길이가 두 배: 소품 수 / 예산을 1.7배로 (밀도는 조금 줄어든다)
+		local budget = math.floor((zone <= 3 and EARLY_ZONE_PARTS or MAX_PARTS_PER_ZONE) * (zone >= 2 and 1.6 or 1))
 
 		local function R(a: number, b: number): number
 			return rng:NextNumber(a, b)
@@ -196,7 +197,7 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 		end
 		-- count 번 시도해서 자리가 맞으면 builder 를 부른다 (builder 는 바닥 위 위치를 받는다)
 		local function scatter(count: number, builder: (Vector3) -> ())
-			for _ = 1, count do
+			for _ = 1, math.floor(count * areaMult + 0.5) do
 				local x, z = R(minX, maxX), R(-half + 8, half - 8)
 				if okAt(x, z) and zoneParts < budget then
 					builder(Vector3.new(x, floorAt(x), z))
@@ -581,6 +582,7 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 		------------------------------------------------------------
 		if zone <= 3 then
 			local function alongTrail(count: number, builder: (Vector3) -> ())
+				count = math.floor(count * areaMult + 0.5)
 				local placed, tries = 0, 0
 				while placed < count and tries < count * 14 and zoneParts < budget do
 					tries += 1
