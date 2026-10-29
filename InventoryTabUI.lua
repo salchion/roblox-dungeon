@@ -352,12 +352,6 @@ local function buildInventoryTab(state)
 				}, detail, function()
 					Remotes.Gear:FireServer("Enhance", selected.Slot, 10)
 				end)
-				makeButton({
-					Size = UDim2.new(0, 120, 0, 28), Position = UDim2.new(0, 112, 0, bandH + 40),
-					Text = "All Gold Upgrade", TextSize = 11, BackgroundColor3 = Color3.fromRGB(170, 60, 70),
-				}, detail, function()
-					Remotes.Gear:FireServer("Enhance", selected.Slot, -1)
-				end)
 			else
 				makeButton({ Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 0, bandH + 6), Text = "Max Upgrade MAX", TextSize = 11, BackgroundColor3 = GRAY }, detail, function() end)
 			end
