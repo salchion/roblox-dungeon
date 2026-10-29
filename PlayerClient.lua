@@ -4022,8 +4022,9 @@ player:GetAttributeChangedSignal("OpenEnhance"):Connect(function() -- 왼쪽 무
 	end
 	enhanceResult.Text = ""
 	E.EnhanceShownTier = nil
-	refreshEnhance()
-	enhancePanel.Visible = true
+	enhancePanel.Visible = true -- (먼저 연다: 아래 갱신에서 오류가 나도 창은 뜨게)
+	local ok, err = pcall(refreshEnhance)
+	if not ok then warn("[무기 창] 갱신 오류: " .. tostring(err)) end
 end)
 player:GetAttributeChangedSignal("OpenMenuTab"):Connect(function()
 	local want = player:GetAttribute("OpenMenuTab")
