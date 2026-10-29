@@ -282,6 +282,181 @@ Looks.Wisp = function(S, c, T)
 	T.ball(0, -0.12, -0.32, 0.16, 0.05, 0.05, Color3.fromRGB(20, 60, 50), Plastic)                   -- 웃는 입
 end
 
+------------------------------------------------------------
+-- 마법사 유령: 흐르는 로브 꼬리 + 휜 뾰족 모자 + 모자 밑의 빛나는 눈 + 떠 있는 손 + 구슬 지팡이 (30부품)
+------------------------------------------------------------
+Looks.Mage = function(S, c, T)
+	local robe, gold, deep = c:Lerp(Color3.fromRGB(40, 50, 120), 0.6), Color3.fromRGB(240, 215, 120), c:Lerp(BLACK, 0.35)
+	T.ball(0, 0.05, 0, 0.78, 0.9, 0.78, c, Plastic, { Tint = true, T = 0.3 })                       -- 몸
+	T.ball(0.04, -0.4, 0.1, 0.6, 0.62, 0.6, c, Plastic, { Tint = true, T = 0.4 })                  -- 로브 자락 1
+	T.ball(0.1, -0.7, 0.2, 0.4, 0.44, 0.4, c, Plastic, { Tint = true, T = 0.55 })                  -- 자락 2 (점점 흐려진다)
+	T.ball(0.16, -0.95, 0.3, 0.22, 0.26, 0.22, c, Plastic, { Tint = true, T = 0.7 })               -- 자락 3
+	T.ball(0, 0.1, -0.1, 0.5, 0.5, 0.45, deep, Plastic, { T = 0.1 })                               -- 후드 속 어둠
+	T.ball(0, 0.42, 0, 1.0, 0.1, 1.0, robe, Plastic)                                                -- 챙 (넓은 원반)
+	T.seg(V(0, 0.46, 0), V(0.02, 0.8, 0), 0.26, robe, Plastic)                                      -- 모자 몸통
+	T.seg(V(0.02, 0.8, 0), V(0.1, 1.08, 0), 0.17, robe, Plastic)                                    -- 모자 중간 (휘어진다)
+	T.seg(V(0.1, 1.08, 0), V(0.3, 1.26, 0), 0.09, robe, Plastic)                                    -- 모자 끝
+	T.ball(0.34, 1.3, 0, 0.14, 0.14, 0.14, gold, Neon)                                              -- 끝의 별
+	T.seg(V(-0.3, 0.52, -0.02), V(0.3, 0.52, -0.02), 0.02, gold, Metal)                              -- 모자 금띠
+	for _, side in ipairs({ -1, 1 }) do
+		T.glow(side * 0.14, 0.14, -0.34, 0.075, Color3.fromRGB(235, 250, 255))                       -- 후드 속 눈
+		T.ball(side * 0.5, -0.04, -0.28, 0.18, 0.16, 0.18, c, Plastic, { Tint = true, T = 0.25 })     -- 떠 있는 손
+		T.ball(side * 0.5, -0.04, -0.3, 0.1, 0.1, 0.1, Color3.fromRGB(180, 230, 255), Neon, { T = 0.3 }) -- 손의 마력
+	end
+	T.rod(V(0.58, -0.5, -0.3), V(0.58, 0.82, -0.3), 0.03, 0.03, Color3.fromRGB(105, 75, 55), Wood, nil, false) -- 지팡이
+	T.ball(0.58, 0.9, -0.3, 0.26, 0.26, 0.26, Color3.fromRGB(130, 200, 235), Neon)                   -- 지팡이 구슬
+	T.ball(0.58, 0.9, -0.3, 0.4, 0.4, 0.4, Color3.fromRGB(130, 200, 235), Glass, { T = 0.7 })        -- 구슬 빛무리
+	T.rod(V(0.46, 0.68, -0.3), V(0.7, 0.68, -0.3), 0.02, 0.02, gold, Metal, nil, false)             -- 구슬 받침
+	for i = 0, 2 do -- 몸 둘레를 떠도는 룬 조각
+		local a = i / 3 * math.pi * 2
+		T.ball(math.cos(a) * 0.62, -0.1 + i * 0.1, math.sin(a) * 0.62, 0.07, 0.07, 0.07, Color3.fromRGB(190, 230, 255), Neon, { T = 0.3 })
+	end
+end
+
+------------------------------------------------------------
+-- 폭탄병: 리벳 박힌 쇠 구슬 + 허리띠 + 타들어 가는 심지 + 화난 눈 + 해골 표시 + 작은 발 (28부품)
+------------------------------------------------------------
+Looks.Bomber = function(S, c, T)
+	local dark, belt, rust = c:Lerp(BLACK, 0.35), Color3.fromRGB(160, 72, 55), c:Lerp(Color3.fromRGB(150, 90, 50), 0.35)
+	T.ball(0, -0.02, 0, 0.95, 0.95, 0.95, c, Metal, { Tint = true })                                -- 폭탄 몸통
+	T.ball(0, 0.08, 0, 0.9, 0.5, 0.9, rust, Metal, { T = 0.6 })                                     -- 녹 얼룩
+	T.seg(V(0, -0.2, 0), V(0, -0.06, 0), 0.5, belt, Metal)                                          -- 붉은 허리띠 (세로 축 원반 = 허리를 감는 띠)
+	T.seg(V(0, 0.44, 0), V(0, 0.58, 0), 0.13, dark, Metal)                                          -- 꼭지
+	T.ball(0, 0.6, 0, 0.3, 0.12, 0.3, dark, Metal)
+	T.rod(V(0.02, 0.62, 0), V(0.2, 0.84, 0), 0.025, 0.02, Color3.fromRGB(150, 120, 80), Plastic, nil, false) -- 심지
+	T.ball(0.22, 0.88, 0, 0.2, 0.2, 0.2, Color3.fromRGB(255, 180, 70), Neon)                         -- 불꽃
+	T.ball(0.22, 0.88, 0, 0.32, 0.32, 0.32, Color3.fromRGB(255, 130, 50), Neon, { T = 0.6 })        -- 불꽃 빛무리
+	for i = 0, 5 do -- 허리띠 리벳
+		local a = i / 6 * math.pi * 2
+		T.ball(math.sin(a) * 0.5, -0.12, -math.cos(a) * 0.5, 0.06, 0.06, 0.06, Color3.fromRGB(210, 210, 215), Metal)
+	end
+	for _, side in ipairs({ -1, 1 }) do
+		T.block(side * 0.2, 0.16, -0.46, 0.24, 0.07, 0.05, Color3.fromRGB(240, 75, 55), Neon, { Rz = side * 22 }) -- 화난 눈
+		T.rod(V(side * 0.22, -0.42, -0.04), V(side * 0.24, -0.52, -0.1), 0.1, 0.1, dark, Plastic, nil, true)    -- 발
+		T.rod(V(side * 0.45, -0.1, -0.1), V(side * 0.55, 0.18, -0.2), 0.05, 0.05, dark, Metal, nil, true)       -- 팔 (불끈)
+	end
+	T.ball(0, -0.26, -0.46, 0.3, 0.3, 0.06, Color3.fromRGB(235, 230, 215), Plastic)                  -- 해골 표시
+	T.ball(-0.05, -0.26, -0.49, 0.06, 0.07, 0.02, BLACK, Plastic)
+	T.ball(0.05, -0.26, -0.49, 0.06, 0.07, 0.02, BLACK, Plastic)
+	T.block(0, -0.34, -0.49, 0.1, 0.04, 0.02, BLACK, Plastic)
+end
+
+------------------------------------------------------------
+-- 방패 기사: 판금 갑옷 + 깃털 투구 + 어깨 갑옷 + 정면을 가리는 큰 방패(문장) + 검 (34부품)
+-- (정면 방패는 게임 규칙 그대로: 정면 공격은 거의 막히고 뒤 / 옆에서 쏴야 한다)
+------------------------------------------------------------
+Looks.Knight = function(S, c, T)
+	local dark, gold, plume, steel = c:Lerp(BLACK, 0.4), Color3.fromRGB(255, 205, 70), Color3.fromRGB(215, 50, 50), Color3.fromRGB(200, 208, 228)
+	T.ball(0, 0.02, 0, 0.74, 0.7, 0.5, c, Metal, { Tint = true })                                   -- 흉갑
+	T.block(0, -0.34, 0, 0.58, 0.16, 0.42, dark, Metal)                                              -- 허리 치마
+	T.ball(0, 0.5, -0.02, 0.44, 0.46, 0.44, c, Metal, { Tint = true })                              -- 투구
+	T.block(0, 0.52, -0.22, 0.32, 0.05, 0.04, Color3.fromRGB(255, 200, 90), Neon)                    -- 투구 눈 틈
+	T.seg(V(0, 0.34, -0.22), V(0, 0.7, -0.22), 0.025, dark, Metal)                                   -- 투구 세로 띠
+	T.rod(V(0, 0.76, 0.02), V(0, 0.94, 0.16), 0.04, 0.05, plume, Plastic, nil, true)                 -- 투구 깃털
+	T.rod(V(0, 0.94, 0.16), V(0, 0.8, 0.34), 0.05, 0.03, plume, Plastic, nil, true)
+	T.seg(V(-0.32, 0.18, -0.2), V(0.32, 0.18, -0.2), 0.025, gold, Metal)                             -- 가슴 금띠
+	for _, side in ipairs({ -1, 1 }) do
+		T.ball(side * 0.46, 0.3, 0, 0.3, 0.26, 0.3, dark, Metal)                                      -- 어깨 갑옷
+		T.ball(side * 0.46, 0.34, 0, 0.12, 0.1, 0.12, gold, Metal)                                    -- 어깨 장식
+		T.rod(V(side * 0.5, 0.2, 0), V(side * 0.52, -0.12, -0.04), 0.09, 0.08, c, Metal, { Tint = true }, true) -- 팔
+		T.rod(V(side * 0.18, -0.36, 0), V(side * 0.2, -0.56, 0), 0.11, 0.1, c, Metal, { Tint = true }, true)     -- 다리
+		T.ball(side * 0.2, -0.6, -0.06, 0.2, 0.1, 0.28, dark, Metal)                                  -- 철제 신발
+	end
+	-- 큰 방패: 정면(-Z)을 가린다 (원반 + 테두리 + 문장)
+	T.seg(V(0, 0.02, -0.5), V(0, 0.02, -0.56), 0.5, steel, Metal)
+	T.seg(V(0, 0.02, -0.53), V(0, 0.02, -0.57), 0.54, dark, Metal)
+	T.ball(0, 0.02, -0.6, 0.3, 0.3, 0.08, gold, Neon)                                                -- 문장
+	T.block(0, 0.02, -0.62, 0.08, 0.42, 0.03, plume, Plastic)                                        -- 문장 십자
+	T.block(0, 0.02, -0.62, 0.42, 0.08, 0.03, plume, Plastic)
+	-- 검
+	T.rod(V(0.56, -0.28, -0.12), V(0.56, 0.5, -0.3), 0.025, 0.012, steel, Metal, nil, false)
+	T.rod(V(0.46, -0.16, -0.14), V(0.66, -0.16, -0.14), 0.02, 0.02, gold, Metal, nil, true)           -- 검 날밑
+	T.rod(V(0.56, -0.28, -0.12), V(0.56, -0.4, -0.1), 0.03, 0.03, dark, Wood, nil, true)              -- 손잡이
+end
+
+------------------------------------------------------------
+-- 마법 포탑: 넓은 받침 + 삼각 다리 + 돔 머리 + 마법 수정 + 긴 포신(고리) + 붉은 센서 + 안테나 (30부품)
+------------------------------------------------------------
+Looks.Turret = function(S, c, T)
+	local dark, glow = c:Lerp(BLACK, 0.4), Color3.fromRGB(160, 125, 240)
+	T.seg(V(0, -0.46, 0), V(0, -0.34, 0), 0.5, dark, Metal)                                          -- 넓은 받침
+	T.seg(V(0, -0.34, 0), V(0, -0.24, 0), 0.38, c, Metal)                                            -- 받침 윗단
+	for i = 0, 2 do -- 삼각대 다리
+		local a = i / 3 * math.pi * 2 + 0.4
+		T.rod(V(math.cos(a) * 0.5, -0.4, math.sin(a) * 0.5), V(math.cos(a) * 0.2, -0.1, math.sin(a) * 0.2), 0.07, 0.05, dark, Metal, nil, true)
+	end
+	T.ball(0, 0.18, 0, 0.74, 0.62, 0.74, c, Metal, { Tint = true })                                  -- 돔 머리
+	T.seg(V(0, 0.12, 0), V(0, 0.2, 0), 0.38, dark, Metal)                                            -- 머리 띠
+	T.ball(0, 0.46, 0.02, 0.26, 0.3, 0.26, glow, Neon, { T = 0.2 })                                  -- 머리 위 마법 수정
+	T.ball(0, 0.46, 0.02, 0.4, 0.44, 0.4, glow, Glass, { T = 0.75 })                                 -- 수정 빛무리
+	T.rod(V(0, 0.18, -0.3), V(0, 0.2, -0.95), 0.12, 0.1, Color3.fromRGB(58, 62, 74), Metal, nil, false) -- 포신
+	for _, z in ipairs({ -0.5, -0.74, -0.96 }) do
+		T.seg(V(0, 0.19, z), V(0, 0.19, z - 0.05), 0.15, dark, Metal)                                 -- 포신 고리
+	end
+	T.ball(0, 0.2, -1.04, 0.18, 0.18, 0.18, glow, Neon)                                              -- 포구의 불빛
+	T.ball(0, 0.3, -0.36, 0.2, 0.2, 0.1, Color3.fromRGB(240, 80, 70), Neon)                           -- 붉은 센서
+	T.ball(0, 0.3, -0.38, 0.1, 0.1, 0.06, WHITE, Neon)
+	for _, side in ipairs({ -1, 1 }) do
+		T.block(side * 0.38, 0.22, 0.04, 0.06, 0.4, 0.5, dark, Metal, { Rz = side * -14 })            -- 옆 방어판
+		T.ball(side * 0.4, 0.4, 0.06, 0.08, 0.08, 0.08, glow, Neon)                                   -- 방어판 위 불빛
+	end
+	T.rod(V(-0.2, 0.42, 0.22), V(-0.28, 0.9, 0.3), 0.015, 0.012, dark, Metal, nil, true)            -- 안테나
+	T.ball(-0.28, 0.92, 0.3, 0.07, 0.07, 0.07, Color3.fromRGB(240, 80, 70), Neon)
+end
+
+------------------------------------------------------------
+-- 치유 사제: 두건 쓴 둥근 몸 + 길게 퍼지는 하얀 로브 + 후광 + 십자 + 모은 손 + 가슴의 치유 구슬 (28부품)
+------------------------------------------------------------
+Looks.Healer = function(S, c, T)
+	local cream, green, gold = Color3.fromRGB(240, 244, 232), Color3.fromRGB(130, 225, 165), Color3.fromRGB(250, 228, 140)
+	T.ball(0, 0.12, 0, 0.74, 0.8, 0.74, c, Plastic, { Tint = true, T = 0.15 })                       -- 몸
+	T.ball(0, -0.3, 0, 0.9, 0.5, 0.9, cream, Plastic)                                                -- 로브 윗자락
+	T.ball(0, -0.52, 0, 1.1, 0.3, 1.1, cream, Plastic)                                               -- 로브 아랫자락
+	T.seg(V(0, -0.2, 0), V(0, -0.12, 0), 0.47, green, Plastic)                                       -- 초록 허리 장식띠
+	T.ball(0, 0.26, -0.06, 0.62, 0.6, 0.58, cream, Plastic)                                          -- 두건
+	T.ball(0, 0.22, -0.2, 0.44, 0.4, 0.3, c:Lerp(BLACK, 0.4), Plastic, { T = 0.1 })                  -- 두건 속 그늘
+	T.ball(0, 0.78, 0, 0.8, 0.06, 0.8, gold, Neon, { T = 0.35 })                                      -- 후광 원반
+	T.block(0, 1.15, 0, 0.1, 0.44, 0.1, green, Neon)                                                  -- 십자 세로
+	T.block(0, 1.2, 0, 0.38, 0.1, 0.1, green, Neon)                                                   -- 십자 가로
+	T.ball(0, 0.0, -0.34, 0.22, 0.22, 0.14, green, Neon, { T = 0.2 })                                -- 가슴 치유 구슬
+	T.ball(0, 0.0, -0.34, 0.34, 0.34, 0.2, green, Glass, { T = 0.75 })
+	for _, side in ipairs({ -1, 1 }) do
+		T.eye(side * 0.12, 0.22, -0.34, 0.07, Color3.fromRGB(250, 250, 235), Color3.fromRGB(60, 120, 90))
+		T.rod(V(side * 0.4, 0.1, -0.1), V(side * 0.16, -0.08, -0.36), 0.07, 0.08, cream, Plastic, nil, true) -- 모은 팔 + 손
+		T.ball(side * 0.5, -0.3, 0.2, 0.2, 0.34, 0.2, cream, Plastic, { T = 0.3 })                    -- 날리는 로브 끝
+	end
+	for i = 0, 2 do -- 떠도는 치유의 빛
+		local a = i / 3 * math.pi * 2
+		T.ball(math.cos(a) * 0.6, 0.35 + i * 0.12, math.sin(a) * 0.6, 0.08, 0.08, 0.08, green, Neon, { T = 0.25 })
+	end
+end
+
+------------------------------------------------------------
+-- 저주 토템: 조각된 나무 기둥 3단 + 얼굴 + 날개 + 뿔 + 해골 + 빛나는 룬 + 꼭대기 저주 구슬 (30부품)
+------------------------------------------------------------
+Looks.Totem = function(S, c, T)
+	local dark, red, teal, rune = c:Lerp(BLACK, 0.35), Color3.fromRGB(165, 65, 60), Color3.fromRGB(70, 150, 170), Color3.fromRGB(120, 235, 200)
+	T.seg(V(0, -0.52, 0), V(0, -0.06, 0), 0.4, c, Wood, { Tint = true })                              -- 아래 토막
+	T.seg(V(0, -0.06, 0), V(0, 0.36, 0), 0.33, dark, Wood)                                            -- 가운데 토막
+	T.seg(V(0, 0.36, 0), V(0, 0.88, 0), 0.45, red, Wood, { Tint = true })                             -- 얼굴 토막 (제일 넓다)
+	T.ball(0, -0.52, 0, 0.9, 0.16, 0.9, dark, Wood)                                                   -- 밑동 뿌리
+	T.ball(0, 0.9, 0, 0.9, 0.14, 0.9, dark, Wood)                                                     -- 얼굴 머리 덮개
+	T.block(0, 0.58, -0.43, 0.46, 0.1, 0.06, Color3.new(0.08, 0.04, 0.04), Plastic)                   -- 입
+	for i = -2, 2 do T.block(i * 0.08, 0.58, -0.46, 0.05, 0.12, 0.03, Color3.fromRGB(240, 232, 210), Plastic) end -- 이빨
+	T.block(0, 0.18, -0.34, 0.1, 0.24, 0.03, rune, Neon)                                              -- 룬 (가운데 토막)
+	T.block(0, -0.2, -0.4, 0.26, 0.08, 0.03, rune, Neon)                                              -- 룬 (아래)
+	T.ball(0, 1.0, 0, 0.3, 0.3, 0.3, Color3.fromRGB(240, 92, 82), Neon)                               -- 꼭대기 저주 구슬
+	T.ball(0, 1.0, 0, 0.46, 0.46, 0.46, Color3.fromRGB(240, 92, 82), Glass, { T = 0.75 })
+	for _, side in ipairs({ -1, 1 }) do
+		T.glow(side * 0.2, 0.7, -0.44, 0.075, Color3.fromRGB(245, 215, 90))                            -- 눈
+		T.rod(V(side * 0.34, 0.3, 0), V(side * 0.9, 0.34, 0), 0.07, 0.06, dark, Wood, nil, true)       -- 양 날개 막대
+		T.block(side * 0.7, 0.1, 0, 0.5, 0.34, 0.05, teal, Plastic, { Rz = side * 14 })                -- 날개 깃
+		T.block(side * 0.76, -0.06, 0, 0.3, 0.2, 0.05, teal:Lerp(BLACK, 0.2), Plastic, { Rz = side * 22 })
+		T.horn(V(side * 0.3, 0.86, 0), V(side * 0.46, 1.2, 0.02), 0.07, dark, Wood, V(side * 0.1, 0, 0)) -- 뿔
+		T.ball(side * 0.4, -0.2, -0.3, 0.18, 0.16, 0.14, Color3.fromRGB(235, 228, 205), Plastic)       -- 기둥 아래 해골 장식
+	end
+end
+
 function M.Has(typeKey)
 	return Looks[typeKey] ~= nil
 end
