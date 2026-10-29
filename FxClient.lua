@@ -203,16 +203,18 @@ local ELEMENT = {
 local function elementOf(era) return ELEMENT[era] or ELEMENT[5] end
 
 local SPECIAL = {}
+local empower -- (아래 sigEmitter 뒤에서 정의) 탄에 "무기 진행도에 따라 커지는 후광 + 시대 서명 입자"를 입힌다
 
 -- 로켓: 몸통 + 빨간 머리 + 꼬리 날개 + 불꽃 분사 + 연기 꼬리, 닿으면 큰 폭발
-SPECIAL.Rocket = function(from, to, size, speed, color, era)
-	local s = math.clamp(size, 0.8, 2.0)
+SPECIAL.Rocket = function(from, to, size, speed, color, era, richness, inEra)
+	local s = math.clamp(size, 0.8, 2.0) * (1 + 0.5 * (richness or 0))
 	local cf = CFrame.lookAt(from, to)
 	local body = rootPart(cf, Vector3.new(s * 0.55, s * 0.55, s * 2.6), Color3.fromRGB(205, 208, 215), Enum.Material.Metal)
 	local E = elementOf(era)
 	solid(body, Vector3.new(s * 0.5, s * 0.5, s * 0.9), E.Tip, Enum.Material.Metal, CFrame.new(0, 0, -s * 1.6))
 	solid(body, Vector3.new(s * 0.12, s * 1.3, s * 0.7), color, Enum.Material.Neon, CFrame.new(0, 0, s * 1.0))
 	solid(body, Vector3.new(s * 1.3, s * 0.12, s * 0.7), color, Enum.Material.Neon, CFrame.new(0, 0, s * 1.0))
+	empower(body, era, richness, inEra, s * 1.3, E.Flame)
 	local flame = solid(body, Vector3.new(s * 0.5, s * 0.5, s * 1.4), E.Hot, Enum.Material.Neon, CFrame.new(0, 0, s * 2.0), 0.15)
 	local smoke = addEmitter(flame, E.Smoke, 55, s * 0.9, 0.7, 1.5, 1)
 	smoke.LightEmission = 0.1
@@ -280,6 +282,44 @@ end
 local function lowSpecOn()
 	return Players.LocalPlayer:GetAttribute("LowSpec") == true
 end
+
+-- 탄 강화 연출: 무기 번호(richness 0 ~ 1)가 오를수록 눈에 띄게 커지는 후광 + 시대마다 다른 서명 입자를 탄에 입힌다.
+--   후광 = 탄 둘레의 반투명 큰 구 (번호가 높을수록 크고 진하다) / 서명 = 시대 원소의 입자 (불꽃 / 서리 / 번개 가루 / 어둠 연기 / 용불 / 별가루)
+local function eraSigil(part, era, lv, s, tint, E)
+	local rate = (8 + 22 * lv)
+	if era == 2 then
+		sigEmitter(part, ColorSequence.new(E.Hot), rate * 0.7, s * 0.35, 0.35, 5, nil, SPARKLE, 1) -- 쇠 반짝임
+	elseif era == 3 then
+		sigEmitter(part, ColorSequence.new({ ColorSequenceKeypoint.new(0, E.Hot), ColorSequenceKeypoint.new(1, E.Core) }), rate, s * 0.5, 0.5, 4, Vector3.new(0, 1.5, 0), SPARKLE, 1) -- 마력 가루
+	elseif era == 4 then
+		sigEmitter(part, ColorSequence.new(E.Hot), rate, s * 0.4, 0.6, 3, Vector3.new(0, -6, 0), SPARKLE, 1) -- 금가루가 흩날려 떨어진다
+	elseif era == 5 then
+		sigEmitter(part, FIRE, rate * 1.2, s * 0.85, 0.4, 3, Vector3.new(0, 7, 0), nil, 1) -- 위로 오르는 불꽃
+	elseif era == 6 then
+		sigEmitter(part, ColorSequence.new(E.Hot), rate, s * 0.45, 0.8, 2, Vector3.new(0, -3, 0), SPARKLE, 1) -- 서리 가루가 천천히 떨어진다
+	elseif era == 7 then
+		sigEmitter(part, ColorSequence.new(WHITE, E.Core), rate * 1.3, s * 0.35, 0.22, 11, nil, SPARKLE, 1) -- 빠르게 튀는 번개 가루
+	elseif era == 8 then
+		local smoke = sigEmitter(part, ColorSequence.new(E.Core, E.Tip), rate * 0.8, s * 1.1, 0.8, 1.5, nil, SMOKE, 0) -- 어둠 연기
+		smoke.LightEmission = 0
+	elseif era == 9 then
+		sigEmitter(part, DRAGON, rate * 1.2, s * 0.9, 0.5, 3, Vector3.new(0, 4, 0), nil, 1) -- 용의 불길
+	elseif era >= 10 then
+		sigEmitter(part, RAINBOW, rate * 1.1, s * 0.45, 0.6, 5, nil, SPARKLE, 1) -- 별가루
+	end
+end
+function empower(part, era, richness, inEra, s, tint, mini)
+	if lowSpecOn() then return end
+	local E = elementOf(era)
+	local lv = math.clamp(richness or 0, 0, 1)
+	local shell = s * (1.45 + 1.9 * lv + 0.5 * (inEra or 0))
+	solid(part, Vector3.new(shell, shell, shell), tint, Enum.Material.Neon, CFrame.identity, 0.7 - 0.16 * lv, Enum.PartType.Ball) -- 후광
+	if lv > 0.35 then -- 번호가 꽤 올랐으면 한 겹 더: 밝은 속 구슬
+		solid(part, Vector3.new(s * 0.9, s * 0.9, s * 0.9), E.Hot, Enum.Material.Neon, CFrame.identity, 0.1, Enum.PartType.Ball)
+	end
+	if not mini then eraSigil(part, era, lv, s, tint, E) end -- (연사 무기는 입자를 생략: 한 번에 탄이 많다)
+end
+
 
 -- 총구 연출: 시대마다 다른 모양 (모든 무기 종류에 붙는다). 같은 시대 안에서 번호가 오르면(inEra 0~1) 더 크다. 연사 무기(mini)는 작게 / 간격을 둔다
 local lastMuzzle = 0
@@ -646,13 +686,15 @@ local function arcFly(part, from, to, speed, height, spin, onDone, minTime)
 end
 
 -- 저격총 모양 라이플 (Pistol = 저격총 외형): 아주 빠른 줄기 + 지나간 자리에 남는 가는 궤적선
-SPECIAL.Pistol = function(from, to, size, speed, color, era)
+SPECIAL.Pistol = function(from, to, size, speed, color, era, richness, inEra)
 	local E = elementOf(era)
 	color = E.Core
+	local lv = richness or 0
 	local length = (to - from).Magnitude
 	local cf = CFrame.lookAt(from, to)
-	local slugWidth, lineWidth = math.max(0.7, size * 0.6), math.max(0.4, size * 0.3)
-	local slug = rootPart(cf, Vector3.new(slugWidth, slugWidth, 12), E.Hot, Enum.Material.Neon)
+	local slugWidth, lineWidth = math.max(0.7, size * 0.6) * (1 + 0.9 * lv), math.max(0.4, size * 0.3) * (1 + 1.2 * lv) -- 번호가 오를수록 탄 / 궤적선이 굵어진다
+	local slug = rootPart(cf, Vector3.new(slugWidth, slugWidth, 12 + 16 * lv), E.Hot, Enum.Material.Neon)
+	empower(slug, era, richness, inEra, slugWidth * 1.4, color)
 	local line = rootPart(CFrame.lookAt((from + to) / 2, to), Vector3.new(lineWidth, lineWidth, length), color, Enum.Material.Neon, nil, 0.3)
 	TweenService:Create(line, TweenInfo.new(0.4), { Size = Vector3.new(0.03, 0.03, length), Transparency = 1 }):Play()
 	Debris:AddItem(line, 0.45)
@@ -664,10 +706,11 @@ SPECIAL.Pistol = function(from, to, size, speed, color, era)
 end
 
 -- 활: 나무 화살대 + 빛나는 화살촉 + 깃털, 살짝 호를 그리며 날아가 박힌다
-SPECIAL.Rifle = function(from, to, size, speed, color, era)
+SPECIAL.Rifle = function(from, to, size, speed, color, era, richness, inEra)
 	local tint = tintOf(color, era)
-	local s = math.clamp(size, 0.5, 1.1)
+	local s = math.clamp(size, 0.5, 1.1) * (1 + 0.6 * (richness or 0))
 	local arrow = rootPart(CFrame.lookAt(from, to), Vector3.new(s * 0.22, s * 0.22, 5.2), Color3.fromRGB(150, 112, 72), Enum.Material.Wood)
+	empower(arrow, era, richness, inEra, s * 1.1, tint)
 	solid(arrow, Vector3.new(s * 0.5, s * 0.5, 1.0), tint, Enum.Material.Neon, CFrame.new(0, 0, -2.9))
 	if not lowSpecOn() then
 		for i = 0, 1 do
@@ -682,10 +725,11 @@ SPECIAL.Rifle = function(from, to, size, speed, color, era)
 end
 
 -- 석궁: 짧고 굵은 철제 볼트 + 빛나는 촉, 아주 빠르게 곧장 날아가 "쿵"
-SPECIAL.Sniper = function(from, to, size, speed, color, era)
+SPECIAL.Sniper = function(from, to, size, speed, color, era, richness, inEra)
 	local tint = tintOf(color, era)
-	local s = math.clamp(size, 0.6, 1.5)
+	local s = math.clamp(size, 0.6, 1.5) * (1 + 0.6 * (richness or 0))
 	local bolt = rootPart(CFrame.lookAt(from, to), Vector3.new(s * 0.34, s * 0.34, 3.4), Color3.fromRGB(70, 74, 88), Enum.Material.Metal)
+	empower(bolt, era, richness, inEra, s * 1.1, tint)
 	solid(bolt, Vector3.new(s * 0.5, s * 0.5, 0.9), tint, Enum.Material.Neon, CFrame.new(0, 0, -2.1))
 	addTrail(bolt, tint, s * 0.9, 0.22)
 	local length = (to - from).Magnitude
@@ -700,10 +744,11 @@ SPECIAL.Sniper = function(from, to, size, speed, color, era)
 end
 
 -- 수리검: 앞을 보고 빙글빙글 도는 네 갈래 별 (부채꼴로 여러 장)
-SPECIAL.Shotgun = function(from, to, size, speed, color, era)
+SPECIAL.Shotgun = function(from, to, size, speed, color, era, richness, inEra)
 	local tint = tintOf(color, era)
-	local s = math.clamp(size * 1.7, 1.0, 1.9)
+	local s = math.clamp(size * 1.7, 1.0, 1.9) * (1 + 0.5 * (richness or 0))
 	local star = rootPart(CFrame.lookAt(from, to), Vector3.new(s, s * 0.3, 0.12), Color3.fromRGB(205, 210, 222), Enum.Material.Metal)
+	if (richness or 0) > 0.25 then empower(star, era, (richness or 0) * 0.7, inEra, s * 0.8, tint, true) end
 	if not lowSpecOn() then
 		solid(star, Vector3.new(s * 0.3, s, 0.12), Color3.fromRGB(205, 210, 222), Enum.Material.Metal, CFrame.identity)
 		addTrail(star, tint, s * 0.5, 0.12)
@@ -716,11 +761,12 @@ SPECIAL.Shotgun = function(from, to, size, speed, color, era)
 end
 
 -- 폭탄: 퓨즈가 타는 쇠공을 포물선으로 던진다. 떨어지면 불꽃과 충격 고리
-SPECIAL.Revolver = function(from, to, size, speed, color, era)
+SPECIAL.Revolver = function(from, to, size, speed, color, era, richness, inEra)
 	local tint = tintOf(color, era)
 	local E = elementOf(era)
-	local s = math.clamp(size * 1.2, 1.1, 2.6)
+	local s = math.clamp(size * 1.2, 1.1, 2.6) * (1 + 0.5 * (richness or 0))
 	local bomb = rootPart(CFrame.lookAt(from, to), Vector3.new(s, s, s), Color3.fromRGB(46, 48, 60), Enum.Material.Metal, Enum.PartType.Ball)
+	empower(bomb, era, richness, inEra, s, tint)
 	solid(bomb, Vector3.new(s * 1.04, s * 0.22, s * 1.04), tint, Enum.Material.Neon, CFrame.identity, 0.1, Enum.PartType.Cylinder)
 	local fuse = solid(bomb, Vector3.new(0.2, 0.2, 0.2), Color3.fromRGB(255, 190, 80), Enum.Material.Neon, CFrame.new(0, s * 0.58, 0), 0, Enum.PartType.Ball)
 	if not lowSpecOn() then addEmitter(fuse, Color3.fromRGB(255, 170, 70), 40, 0.35, 0.3, 4) end
@@ -737,10 +783,11 @@ SPECIAL.Revolver = function(from, to, size, speed, color, era)
 end
 
 -- 박격포: 큰 포탄이 높이 솟았다가 내리꽂힌다. 연기 꼬리, 떨어지면 먼지와 큰 충격 고리
-SPECIAL.Cannon = function(from, to, size, speed, color, era)
+SPECIAL.Cannon = function(from, to, size, speed, color, era, richness, inEra)
 	local tint = tintOf(color, era)
-	local s = math.clamp(size, 1.2, 3.2)
+	local s = math.clamp(size, 1.2, 3.2) * (1 + 0.45 * (richness or 0))
 	local shell = rootPart(CFrame.lookAt(from, to), Vector3.new(s * 0.9, s * 0.9, s * 2.0), Color3.fromRGB(64, 66, 78), Enum.Material.Metal)
+	empower(shell, era, richness, inEra, s, tint)
 	solid(shell, Vector3.new(s * 0.9, s * 0.9, s * 0.9), tint, Enum.Material.Neon, CFrame.new(0, 0, -s * 1.15), 0.1, Enum.PartType.Ball)
 	solid(shell, Vector3.new(s * 0.98, s * 0.98, s * 0.25), tint, Enum.Material.Neon, CFrame.new(0, 0, s * 0.4), 0.2)
 	if not lowSpecOn() then
@@ -763,14 +810,20 @@ end
 
 
 -- 레일건: 순식간에 지나가는 얇은 빔 (남았다가 사라진다) + 도착점 충격 고리
-SPECIAL.Rail = function(from, to, size, _, color, era)
+SPECIAL.Rail = function(from, to, size, _, color, era, richness, inEra)
 	local E = elementOf(era)
+	size = size * (1 + 1.1 * (richness or 0)) -- 번호가 오를수록 빔이 눈에 띄게 굵어진다
 	local length = (to - from).Magnitude
 	local mid = (from + to) / 2
 	local cf = CFrame.lookAt(mid, to)
 	local coreWidth, auraWidth = math.max(0.8, size * 0.8), math.max(2.6, size * 2.6) -- (예전엔 가늘어서 거의 안 보였다)
 	local core = rootPart(cf, Vector3.new(coreWidth, coreWidth, length), E.Hot, Enum.Material.Neon)
 	local aura = rootPart(cf, Vector3.new(auraWidth, auraWidth, length), E.Core, Enum.Material.Neon, nil, 0.5)
+	if (richness or 0) > 0.3 and not lowSpecOn() then -- 번호가 높으면 가장 바깥에 넓은 후광 겹이 한 겹 더
+		local outer = rootPart(cf, Vector3.new(auraWidth * 1.9, auraWidth * 1.9, length), E.Flame, Enum.Material.Neon, nil, 0.8)
+		TweenService:Create(outer, TweenInfo.new(0.5), { Size = Vector3.new(0.3, 0.3, length), Transparency = 1 }):Play()
+		Debris:AddItem(outer, 0.55)
+	end
 	TweenService:Create(core, TweenInfo.new(0.34), { Size = Vector3.new(0.1, 0.1, length), Transparency = 1 }):Play()
 	TweenService:Create(aura, TweenInfo.new(0.45), { Size = Vector3.new(0.3, 0.3, length), Transparency = 1 }):Play()
 	Debris:AddItem(core, 0.4)
@@ -783,10 +836,10 @@ SPECIAL.Rail = function(from, to, size, _, color, era)
 end
 
 -- 마법책 (Flamer = 마법책): 이글거리는 화염구 한 발. 날아가며 불씨와 연기를 흘리고, 닿으면 작은 폭발 (시대 색)
-SPECIAL.Flamer = function(from, to, size, speed, color, era)
+SPECIAL.Flamer = function(from, to, size, speed, color, era, richness, inEra)
 	local tint = tintOf(color, era)
 	local E = elementOf(era)
-	local s = math.clamp(size * 1.3, 1.4, 3.2)
+	local s = math.clamp(size * 1.3, 1.4, 3.2) * (1 + 0.4 * (richness or 0))
 	local ball = rootPart(CFrame.lookAt(from, to), Vector3.new(s, s, s), tint:Lerp(WHITE, 0.25), Enum.Material.Neon, Enum.PartType.Ball)
 	solid(ball, Vector3.new(s * 1.9, s * 1.9, s * 1.9), tint, Enum.Material.Neon, CFrame.identity, 0.55, Enum.PartType.Ball) -- 불꽃 겉껍질
 	if not lowSpecOn() then
@@ -850,7 +903,7 @@ local function playShot(event)
 		if class ~= "Flamer" then eraMuzzle(from, (to - from).Unit, era, color, inEra, false) end -- (총구 섬광은 총 종류만: 마법책은 총처럼 번쩍이지 않는다)
 		classFlourish(class, from, to, size, color, era, richness)
 		if era == 7 and (class == "Rail" or class == "Sniper") then pathLightning(from, to, Color3.fromRGB(255, 245, 140), 0.28, 3) end
-		special(from, to, size, speed, color, era)
+		special(from, to, size, speed, color, era, richness, inEra)
 		if vt >= 6 then -- 로켓 / 레일건 / 저격 / 캐논 / 화염방사도 번호가 오를수록 착탄 고리가 커진다
 			task.delay(math.clamp(distance / speed, 0.03, 1.2), function()
 				eraRing(to, color, 1, 3 + 6 * richness, 0.18 + 0.1 * richness)
