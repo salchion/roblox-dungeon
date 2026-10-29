@@ -1488,8 +1488,11 @@ local function nearestMonsters(run, position, radius, limit, exclude)
 	return list
 end
 
+-- 세트 효과 / 펫 피해의 기준: 무기의 "한 발 피해(DamageMult)"가 아니라 초당 피해 계수(WeaponDpsFactor)로 맞춘다. (예전엔 한 발이 센 느린 무기를 들면 세트 피해가 몇 배로 뛰었다: 저격 0.6 vs 마법책 2.9 -> 약 5배. 데드아이도 같은 방식이다)
 local function augDamage(player)
-	return (Dungeon.ComputeDamage(player))
+	local damage = Dungeon.ComputeDamage(player)
+	local weaponType = Config.GetPlayerWeapon(player)
+	return math.max(1, math.floor(damage / weaponType.DamageMult * Config.WeaponDpsFactor(weaponType) + 0.5))
 end
 
 local function isBossData(data)
