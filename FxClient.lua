@@ -2175,7 +2175,6 @@ local DEATH_LOOK = {
 	Charger = { Soul = Color3.fromRGB(255, 160, 110), Round = false, Material = Enum.Material.Wood },
 	Bomber = { Soul = Color3.fromRGB(255, 190, 90), Round = true, Material = Enum.Material.Metal },
 	Imp = { Soul = Color3.fromRGB(255, 110, 140), Round = false, Material = Enum.Material.SmoothPlastic },
-	Knight = { Soul = Color3.fromRGB(200, 220, 255), Round = false, Material = Enum.Material.Metal, Heavy = true },
 	Turret = { Soul = Color3.fromRGB(180, 150, 255), Round = false, Material = Enum.Material.Metal },
 	Spider = { Soul = Color3.fromRGB(255, 100, 100), Round = false, Material = Enum.Material.SmoothPlastic },
 	Wisp = { Soul = Color3.fromRGB(150, 255, 220), Round = true, Material = Enum.Material.Neon },

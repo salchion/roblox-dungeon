@@ -1561,7 +1561,6 @@ Config.Codex = {
 		Charger = { Name = "Charging Boar", Icon = "🐗", Desc = "Lowers its tusks and charges. Watch for the tell before the charge and dodge!" },
 		Bomber = { Name = "Bomber", Icon = "💣", Desc = "Runs up and explodes. Take it out before it gets close." },
 		Imp = { Name = "Sniper Imp", Icon = "😈", Desc = "Hurls fast spears from very far away. Some shots split apart." },
-		Knight = { Name = "Shield Knight", Icon = "🛡", Desc = "Blocks almost all frontal attacks. Shoot from the side or behind." },
 		Turret = { Name = "Magic Turret", Icon = "🔫", Desc = "Stays put and fires beams. Long range." },
 		Spider = { Name = "Venom Spider", Icon = "🕷", Desc = "Rushes in fast, firing poison stingers in succession." },
 		Wisp = { Name = "Will-o'-Wisp", Icon = "🔥", Desc = "Floats around quickly, emitting ring-shaped shots." },

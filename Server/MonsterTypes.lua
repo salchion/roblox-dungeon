@@ -74,11 +74,6 @@ M.Defs = {
 		SizeMult = 0.7, SpeedMult = 0.9, HealthMult = 0.6, DamageMult = 1.55, IntervalMult = 1.6, ShotSpeedMult = 2.2, GoldMult = 1.3,
 		Attack = "Split", Style = "Spear", Move = "Keep", Keep = 55, Range = 130, Horns = true,
 	},
-	Knight = {
-		Name = "Shield Knight", Shape = "Block", Color = Color3.fromRGB(120, 140, 175), Material = Enum.Material.Metal,
-		SizeMult = 1.15, SpeedMult = 0.7, HealthMult = 2.6, DamageMult = 1.3, IntervalMult = 1.4, ShotSpeedMult = 0.8, GoldMult = 1.8,
-		Attack = "Sword", Style = "Spear", Move = "Approach", Keep = 8, Range = 60, Shield = true,
-	},
 	Turret = {
 		Name = "Magic Turret", Shape = "Block", Color = Color3.fromRGB(90, 95, 110), Material = Enum.Material.Metal,
 		SizeMult = 1.0, SpeedMult = 0, HealthMult = 1.7, DamageMult = 1.2, IntervalMult = 0.8, ShotSpeedMult = 1.0, GoldMult = 1.4,
@@ -283,24 +278,6 @@ Looks.Imp = function(S, c, d) -- 저격 임프: 긴 뿔 + 박쥐 날개 + 화살
 	d(BLOCK, S * 0.22, S * 0.22, S * 0.05, 0, -S * 0.1, S * 0.78, horn, Plastic, { Rz = 45 })                 -- 꼬리 끝 화살촉
 	d(BLOCK, S * 0.04, S * 1.0, S * 0.04, S * 0.42, -S * 0.05, -S * 0.3, Color3.fromRGB(120, 90, 60), Wood) -- 삼지창 자루
 	d(BLOCK, S * 0.24, S * 0.05, S * 0.05, S * 0.42, S * 0.44, -S * 0.3, horn, Metal)                         -- 삼지창 날
-end
-
-Looks.Knight = function(S, c, d)
-	local dark, gold = c:Lerp(BLACK, 0.4), Color3.fromRGB(255, 200, 60)
-	d(BLOCK, S * 0.7, S * 0.6, S * 0.45, 0, S * 0.0, 0, c, Metal, { Tint = true })                  -- 갑옷 몸통
-	d(BLOCK, S * 0.55, S * 0.16, S * 0.4, 0, -S * 0.34, 0, dark, Metal)                              -- 허리 치마
-	d(CYL, S * 0.4, S * 0.4, S * 0.4, 0, S * 0.47, 0, c, Metal, { Tint = true, Rz = 90 })           -- 투구
-	d(BLOCK, S * 0.3, S * 0.05, S * 0.04, 0, S * 0.5, -S * 0.2, Color3.fromRGB(255, 190, 90), Neon)  -- 투구 눈 틈
-	d(BLOCK, S * 0.07, S * 0.3, S * 0.3, 0, S * 0.75, 0, Color3.fromRGB(210, 50, 50), Plastic)      -- 투구 깃털
-	for _, side in ipairs({ -1, 1 }) do
-		d(BALL, S * 0.28, S * 0.22, S * 0.28, side * S * 0.45, S * 0.28, 0, dark, Metal)             -- 어깨 갑옷
-		d(BLOCK, S * 0.2, S * 0.5, S * 0.2, side * S * 0.5, -S * 0.02, 0, c, Metal, { Tint = true })  -- 팔
-		d(BLOCK, S * 0.24, S * 0.42, S * 0.24, side * S * 0.18, -S * 0.5 + S * 0.08, 0, c, Metal, { Tint = true }) -- 다리
-	end
-	d(BLOCK, S * 1.0, S * 0.95, S * 0.1, 0, S * 0.02, -S * 0.52, Color3.fromRGB(190, 200, 225), Metal) -- 정면을 가리는 큰 방패 (정면 공격은 거의 안 들어간다, 뒤로 돌아가서 쏴야 함)
-	d(BALL, S * 0.28, S * 0.28, S * 0.06, 0, S * 0.1, -S * 0.6, gold, Neon)
-	d(BLOCK, S * 0.06, S * 0.8, S * 0.04, S * 0.52, S * 0.1, -S * 0.2, Color3.fromRGB(215, 220, 230), Metal, { Rx = -20 }) -- 검
-	d(BLOCK, S * 0.2, S * 0.05, S * 0.05, S * 0.52, -S * 0.2, -S * 0.12, gold, Metal)
 end
 
 Looks.Turret = function(S, c, d) -- 마법 포탑: 넓은 받침 + 삼각 다리 + 돔 머리 + 긴 포신 + 붉은 센서 눈 (12부품)

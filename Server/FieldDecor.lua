@@ -10,7 +10,7 @@ local F = Config.Field
 
 local FieldDecor = {}
 
-local MAX_PARTS_PER_ZONE = 185
+local MAX_PARTS_PER_ZONE = 300 -- (4~8구역도 볼거리를 늘린다: 185 -> 300. 전부 고정 / 충돌 없음이라 서버 부담은 작고, 먼 곳은 스트리밍이 걸러 준다)
 local EARLY_ZONE_PARTS = 340 -- 1~3구역(처음 보는 구역)은 볼거리를 더 촘촘하게: 전부 고정 / 충돌 없음 / 그림자 없음 / 불빛 없음이라 부담은 작다
 local MAX_LIGHTS = 12
 local MAX_EMITTERS = 10
@@ -352,9 +352,23 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 				local h = R(5, 10)
 				local green = tint(rgb(100, 148, 90), R(-0.1, 0.08))
 				post("Cactus", h, 2, p, green, Enum.Material.Grass)
-				local side = rng:NextNumber() < 0.5 and -1 or 1
-				local ah = R(2.5, 4)
-				post("CactusArm", ah, 1.3, p + Vector3.new(side * 1.9, h * 0.4, 0), green, Enum.Material.Grass)
+				ball("CactusTop", Vector3.new(2, 1.6, 2), p + Vector3.new(0, h, 0), green, Enum.Material.Grass)  -- 둥근 윗끝
+				for _, side in ipairs({ -1, 1 }) do
+					if side == 1 or rng:NextNumber() < 0.6 then
+						local ah = R(2.5, 4)
+						local ay = h * R(0.3, 0.5)
+						add("CactusElbow", Vector3.new(1.9, 1.3, 1.3), CFrame.new(p + Vector3.new(side * 1.1, ay, 0)), green, Enum.Material.Grass, Enum.PartType.Cylinder) -- 가로로 뻗은 팔
+						post("CactusArm", ah, 1.3, p + Vector3.new(side * 2.0, ay - 0.6, 0), green, Enum.Material.Grass)
+						ball("CactusArmTop", Vector3.new(1.3, 1.1, 1.3), p + Vector3.new(side * 2.0, ay - 0.6 + ah, 0), green, Enum.Material.Grass)
+					end
+				end
+			end)
+			scatter(12, function(p) -- 마른 덤불: 가는 가지를 사방으로 뻗는다
+				local branch = rgb(150, 118, 78)
+				for _ = 1, 4 do
+					local len = R(2.2, 3.6)
+					add("DryBranch", Vector3.new(len, 0.22, 0.22), CFrame.new(p + Vector3.new(0, len * 0.25, 0)) * CFrame.Angles(0, math.rad(R(0, 360)), math.rad(R(20, 55))) * CFrame.new(len * 0.45, 0, 0), tint(branch, R(-0.1, 0.1)), Enum.Material.Wood, Enum.PartType.Cylinder)
+				end
 			end)
 			scatter(13, function(p) -- 모래 언덕 (바닥에 반쯤 묻힌 납작한 공)
 				local w = R(24, 40)
@@ -366,9 +380,8 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 				block("Rib", Vector3.new(0.5, 0.5, R(3, 5)), lean(p + Vector3.new(R(-2, 2), 0.3, R(-2, 2)), 8), rgb(232, 224, 205), Enum.Material.SmoothPlastic)
 				ball("Skull", Vector3.new(2.2, 1.8, 2), p + Vector3.new(R(-2, 2), 0.9, R(-2, 2)), rgb(236, 230, 214), Enum.Material.SmoothPlastic)
 			end)
-			scatter(15, function(p) -- 하얗게 바랜 돌
-				local s = R(1.8, 4)
-				block("BleachedStone", Vector3.new(s, s * 0.6, s * R(0.8, 1.2)), lean(p + Vector3.new(0, s * 0.18, 0), 10), tint(rgb(222, 212, 192), R(-0.08, 0.05)), Enum.Material.Sandstone)
+			scatter(10, function(p) -- 하얗게 바랜 돌 무리
+				rockCluster(p, R(2, 4.2), rgb(222, 212, 192), Enum.Material.Sandstone, false)
 			end)
 			scatter(7, function(p)
 				patch(p, tint(rgb(212, 184, 126), R(-0.08, 0.06)), rng:NextNumber() < 0.5 and Enum.Material.Sandstone or Enum.Material.Salt, R(16, 30))
@@ -396,9 +409,20 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 				local w = R(6, 12)
 				add("SnowMound", Vector3.new(w, w * 0.4, w * R(0.7, 1)), yaw(p + Vector3.new(0, -0.5, 0)), rgb(244, 248, 252), Enum.Material.Snow, Enum.PartType.Ball)
 			end)
-			scatter(12, function(p) -- 얼어붙은 바위
-				local s = R(2.5, 5)
-				block("FrozenRock", Vector3.new(s, s * 0.7, s), lean(p + Vector3.new(0, s * 0.2, 0), 10), tint(rgb(170, 190, 210), R(-0.08, 0.1)), Enum.Material.Ice, 0.05)
+			scatter(10, function(p) -- 얼어붙은 바위 무리
+				rockCluster(p, R(2.6, 5), rgb(170, 190, 210), Enum.Material.Ice, false)
+			end)
+			scatter(11, function(p) -- 눈 덮인 소나무: 줄기 + 층층이 좁아지는 잎 + 층마다 쌓인 눈
+				local h = R(9, 14)
+				local w = R(7, 10)
+				post("PineTrunk", h * 0.5, 1.4, p, rgb(92, 70, 54), Enum.Material.Wood)
+				for tier = 1, 3 do
+					local ts = w * (1.05 - (tier - 1) * 0.3)
+					local y = h * 0.28 + (tier - 1) * h * 0.2
+					ball("PineTier", Vector3.new(ts, ts * 0.5, ts), p + Vector3.new(0, y, 0), tint(rgb(52, 98, 74), R(-0.1, 0.08)), Enum.Material.Grass)
+					ball("PineSnow", Vector3.new(ts * 0.78, ts * 0.16, ts * 0.78), p + Vector3.new(0, y + ts * 0.2, 0), rgb(244, 248, 252), Enum.Material.Snow)
+				end
+				ball("PineTip", Vector3.new(w * 0.2, w * 0.38, w * 0.2), p + Vector3.new(0, h * 0.28 + 3 * h * 0.2, 0), tint(rgb(52, 98, 74), 0.05), Enum.Material.Grass)
 			end)
 			scatter(8, function(p)
 				local pick = rng:NextInteger(1, 3)
@@ -447,9 +471,18 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 					ball("Ember", Vector3.new(0.5, 0.35, 0.5), Vector3.new(p.X + R(-3, 3), p.Y + 0.2, p.Z + R(-3, 3)), rgb(240, 120, 50), Enum.Material.Neon)
 				end
 			end)
-			scatter(10, function(p)
-				local s = R(2, 4.5)
-				block("BasaltRock", Vector3.new(s, s * 0.7, s), lean(p + Vector3.new(0, s * 0.2, 0), 12), tint(rgb(62, 52, 52), R(-0.1, 0.1)), Enum.Material.Basalt)
+			scatter(9, function(p) -- 현무암 바위 무리
+				rockCluster(p, R(2.4, 4.8), rgb(62, 52, 52), Enum.Material.Basalt, false)
+			end)
+			scatter(8, function(p) -- 불에 탄 나무: 그을린 줄기 + 꺾인 가지
+				local h = R(6, 11)
+				local char = rgb(34, 28, 28)
+				post("CharredTrunk", h, R(1.4, 2), p, char, Enum.Material.Wood, R(-6, 6), R(-6, 6))
+				for i = 1, 3 do
+					local len = R(2.4, 4.2)
+					add("CharredBranch", Vector3.new(len, 0.5, 0.5), CFrame.new(p + Vector3.new(0, h * (0.45 + i * 0.15), 0)) * CFrame.Angles(0, math.rad(R(0, 360)), math.rad(R(25, 60))) * CFrame.new(len * 0.45, 0, 0), char, Enum.Material.Wood, Enum.PartType.Cylinder)
+				end
+				ball("TreeEmber", Vector3.new(0.5, 0.4, 0.5), p + Vector3.new(R(-0.6, 0.6), h * 0.55, R(-0.6, 0.6)), rgb(240, 110, 50), Enum.Material.Neon)
 			end)
 			scatter(7, function(p)
 				patch(p, tint(rgb(70, 40, 36), R(-0.1, 0.1)), rng:NextNumber() < 0.5 and Enum.Material.Slate or Enum.Material.Basalt, R(16, 28))
@@ -487,7 +520,10 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 			scatter(14, function(p) -- 묘비
 				local h = R(3, 5)
 				block("TombBase", Vector3.new(3.2, 0.6, 1.8), yaw(p + Vector3.new(0, 0.3, 0), 0), rgb(70, 66, 80), Enum.Material.Slate)
-				block("Tombstone", Vector3.new(2.4, h, 0.8), CFrame.new(p + Vector3.new(0, 0.6 + h / 2, 0)) * CFrame.Angles(math.rad(R(-6, 6)), 0, math.rad(R(-8, 8))), tint(rgb(92, 88, 104), R(-0.1, 0.08)), Enum.Material.Slate)
+				local stoneColor = tint(rgb(92, 88, 104), R(-0.1, 0.08))
+				block("Tombstone", Vector3.new(2.4, h, 0.8), CFrame.new(p + Vector3.new(0, 0.6 + h / 2, 0)), stoneColor, Enum.Material.Slate)
+				ball("TombstoneTop", Vector3.new(2.4, 1.6, 0.8), p + Vector3.new(0, 0.6 + h, 0), stoneColor, Enum.Material.Slate) -- 둥글게 깎인 윗부분
+				block("TombCross", Vector3.new(0.18, 1.4, 0.12), CFrame.new(p + Vector3.new(0, 0.6 + h * 0.6, -0.45)), rgb(150, 140, 170), Enum.Material.Slate) -- 새겨진 십자
 			end)
 			scatter(8, function(p)
 				patch(p, tint(rgb(50, 40, 70), R(-0.1, 0.12)), rng:NextNumber() < 0.5 and Enum.Material.Slate or Enum.Material.Cobblestone, R(16, 28))
@@ -504,6 +540,10 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 				local top = p + Vector3.new(0, R(14, 28), 0)
 				ball("VoidRock", Vector3.new(w, w * 0.45, w), top, rgb(58, 50, 76), Enum.Material.Slate)
 				block("VoidRockTip", Vector3.new(w * 0.4, w * 0.6, w * 0.4), CFrame.new(top + Vector3.new(0, -w * 0.4, 0)) * CFrame.Angles(math.rad(180), 0, 0), rgb(46, 40, 62), Enum.Material.Slate)
+				for _ = 1, 2 do -- 바위 위에 자란 작은 결정
+					local ch = R(1.6, 3.4)
+					block("RockCrystal", Vector3.new(0.9, ch, 0.9), lean(top + Vector3.new(R(-w * 0.25, w * 0.25), w * 0.18 + ch * 0.4, R(-w * 0.25, w * 0.25)), 14), rng:NextNumber() < 0.5 and pink or violet, Enum.Material.Glass, 0.2)
+				end
 			end)
 			local clusters = 0
 			scatter(12, function(p) -- 분홍보라 결정 무리
