@@ -410,6 +410,8 @@ return {
 		["⚠ Upgrade slots are full. (Get more slots with VIP / in the Shop)"] = "⚠ 強化スロットがいっぱいです。(VIP／ショップでスロットを増やせます)",
 		["⚠ Not ready yet."] = "⚠ まだ準備中です。",
 		["All Gold"] = "すべてのゴールド",
+		["x10 Upgrade"] = "10回強化",
+		["All Gold Upgrade"] = "全ゴールドで強化",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -918,6 +920,5 @@ return {
 		{ "Skill cooldown -{text1}% per point  (max {number2})", "1ポイントごとにスキルクールダウン-{text1}%(最大{number2})" },
 		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}…自動分解しました！エッセンス+{number2}、{number3} G" },
 		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 レベル{number1}の突破を開始しました！({text2})" },
-		{ "Weapon range +{text1}% per point  (max {number2})", "1ポイントごとに武器の射程+{text1}%(最大{number2})" },
 	},
 }

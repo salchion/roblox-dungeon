@@ -328,8 +328,9 @@ local function buildInventoryTab(state)
 				Text = string.format("%s <b>%s Set</b>   %s %d/3 <font size='9'>worn</font>", setDef.Icon or "✦", setDef.Name, setPips(have), have),
 			}, band)
 		end
+		local multiH = (selected.Equipped and selected.Level < Config.Gear.MaxLevel) and 36 or 0 -- 장착 중이면 x10 / 모든 골드 강화 줄이 한 줄 더 들어간다
 		makeLabel({
-			Size = UDim2.new(1, -20, 1, -52 - bandH), Position = UDim2.new(0, 10, 0, 46 + bandH), Text = table.concat(lines, "\n"), TextSize = 12, RichText = true,
+			Size = UDim2.new(1, -20, 1, -52 - bandH - multiH), Position = UDim2.new(0, 10, 0, 46 + bandH + multiH), Text = table.concat(lines, "\n"), TextSize = 12, RichText = true,
 			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 		}, detail)
 		-- (강화 / 재굴림 / 장착 버튼은 상세 창 맨 위로 올렸다: 아래에 두면 메뉴 아래쪽에 가려졌다)
@@ -344,6 +345,18 @@ local function buildInventoryTab(state)
 					Text = string.format("💰 %d G Slot Upgrade (%d%% success)", cost, chance), TextSize = 11, BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62),
 				}, detail, function()
 					Remotes.Gear:FireServer("Enhance", selected.Slot)
+				end)
+				makeButton({
+					Size = UDim2.new(0, 96, 0, 28), Position = UDim2.new(0, 10, 0, bandH + 40),
+					Text = "x10 Upgrade", TextSize = 11, BackgroundColor3 = Color3.fromRGB(60, 120, 200),
+				}, detail, function()
+					Remotes.Gear:FireServer("Enhance", selected.Slot, 10)
+				end)
+				makeButton({
+					Size = UDim2.new(0, 120, 0, 28), Position = UDim2.new(0, 112, 0, bandH + 40),
+					Text = "All Gold Upgrade", TextSize = 11, BackgroundColor3 = Color3.fromRGB(170, 60, 70),
+				}, detail, function()
+					Remotes.Gear:FireServer("Enhance", selected.Slot, -1)
 				end)
 			else
 				makeButton({ Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 0, bandH + 6), Text = "Max Upgrade MAX", TextSize = 11, BackgroundColor3 = GRAY }, detail, function() end)

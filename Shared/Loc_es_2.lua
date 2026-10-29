@@ -282,6 +282,8 @@ return {
 		["⚠ Upgrade slots are full. (Get more slots with VIP / in the Shop)"] = "⚠ Los espacios de mejora están llenos. (Consigue más con VIP / en la tienda)",
 		["⚠ Not ready yet."] = "⚠ Aún no está listo.",
 		["All Gold"] = "Todo el oro",
+		["x10 Upgrade"] = "Mejora x10",
+		["All Gold Upgrade"] = "Mejorar con todo el oro",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },

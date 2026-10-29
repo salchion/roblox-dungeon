@@ -882,14 +882,32 @@ Remotes.Weapon.OnServerEvent:Connect(function(player, action, typeKey)
 	Remotes.Notify:FireClient(player, (ok and "✅ " or "⚠ ") .. message)
 end)
 
-Remotes.Gear.OnServerEvent:Connect(function(player, action, arg)
+Remotes.Gear.OnServerEvent:Connect(function(player, action, arg, arg2)
 	local now = os.clock()
 	if now - (lastGear[player] or 0) < 0.25 then return end
 	lastGear[player] = now
 
 	if action == "Enhance" and typeof(arg) == "string" then
-		local ok, message = Gear.Enhance(player, arg)
-		Remotes.Gear:FireClient(player, "Result", { Ok = ok, Message = message })
+		local times = arg2 == -1 and 3000 or (typeof(arg2) == "number" and math.clamp(math.floor(arg2), 1, 50) or 1) -- -1 = 모든 골드를 쓸 때까지
+		if times == 1 then
+			local ok, message = Gear.Enhance(player, arg)
+			Remotes.Gear:FireClient(player, "Result", { Ok = ok, Message = message })
+		else
+			local attempts, successes, spent = 0, 0, 0
+			local lastMessage = ""
+			for _ = 1, times do
+				local goldBefore = player:GetAttribute("Gold") or 0
+				local ok, message = Gear.Enhance(player, arg)
+				lastMessage = message
+				local used = goldBefore - (player:GetAttribute("Gold") or 0)
+				if used <= 0 then break end -- 골드를 안 썼다 = 더 못 하는 상태 (골드 부족 / 최고 강화)
+				attempts += 1
+				spent += used
+				if ok then successes += 1 end
+			end
+			local message = attempts > 0 and string.format("%d upgrades: %d success / %d fail  (Gold -%d)", attempts, successes, attempts - successes, spent) or lastMessage
+			Remotes.Gear:FireClient(player, "Result", { Ok = successes > 0, Message = message })
+		end
 	elseif action == "Roll" then
 		local count = typeof(arg) == "number" and math.clamp(math.floor(arg), 1, 10) or 1
 		if count == 1 then

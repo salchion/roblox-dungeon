@@ -4046,6 +4046,7 @@ player:GetAttributeChangedSignal("OpenMenuTab"):Connect(function()
 		menuPanel.Visible = false -- 같은 버튼을 한 번 더 누르면 닫는다
 		return
 	end
+	enhancePanel.Visible = false -- 무기 강화 창이 열려 있으면 먼저 닫는다 (메뉴 위에 겹쳐 보이던 문제)
 	if not menuPanel.Visible then toggleMenu() end
 	local ok, err = pcall(selectTab, key, subKey)
 	if not ok then warn("[Menu] " .. tostring(err)) end

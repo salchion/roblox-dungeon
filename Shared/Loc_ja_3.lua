@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Weapon range +{text1}% per point  (max {number2})", "1ポイントごとに武器の射程+{text1}%(最大{number2})" },
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1}を自動分解しました(エッセンス+{number2}、{number3} G)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ デイリークエスト完了！報酬: {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 ゾーン{number1} セクション{number2} — ここには{text3}がたくさんいる" },
