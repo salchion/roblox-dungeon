@@ -156,6 +156,7 @@ local toastLabel = makeLabel({
 	TextWrapped = true,
 	TextXAlignment = Enum.TextXAlignment.Left,
 	Visible = false,
+	ZIndex = 60, -- 큰 창(메뉴 등) 위에 보이게
 }, gui)
 create("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 10) }, toastLabel)
 create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, toastLabel)
@@ -182,7 +183,8 @@ local function toast(text)
 		toastLabel.Position = UDim2.new(0, -430, 1, y)
 		TweenService:Create(toastLabel, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, tx, 1, y) }):Play()
 	end
-	task.delay(4, function()
+	local hold = string.sub(text, 1, 3) == "⚠" and 7 or math.clamp(#text / 14, 4, 7) -- 경고 / 긴 안내는 더 오래 보여 준다
+	task.delay(hold, function()
 		if token == toastToken then
 			toastLabel.Visible = false
 		end
