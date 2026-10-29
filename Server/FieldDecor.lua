@@ -99,8 +99,8 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 		local maxX = x1 - BOSS_CLEAR
 		local zoneParts = 0
 		local patchLayer = 0
-		local areaMult = zone >= 2 and 1.7 or 1 -- 2구역 이후는 길이가 두 배: 소품 수 / 예산을 1.7배로 (밀도는 조금 줄어든다)
-		local budget = math.floor((zone <= 3 and EARLY_ZONE_PARTS or MAX_PARTS_PER_ZONE) * (zone >= 2 and 1.6 or 1))
+		local areaMult = zone >= 2 and 2.0 or 1 -- 2구역 이후는 길이가 두 배: 소품 수 / 예산도 두 배 가까이 (밀도를 유지한다)
+		local budget = math.floor((zone <= 3 and EARLY_ZONE_PARTS or MAX_PARTS_PER_ZONE) * (zone >= 2 and 1.9 or 1))
 
 		local function R(a: number, b: number): number
 			return rng:NextNumber(a, b)
@@ -574,6 +574,42 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 			scatter(8, function(p)
 				patch(p, tint(rgb(36, 28, 54), R(-0.1, 0.15)), rng:NextNumber() < 0.5 and Enum.Material.Slate or Enum.Material.Basalt, R(16, 30))
 			end)
+		end
+
+		------------------------------------------------------------
+		-- 구역마다 길 가운데 군데군데 "유적 / 제단" 같은 큰 볼거리를 세운다 (2구역 이후, 구역 길이를 4등분한 자리에 하나씩): 넓은 평지가 휑해 보이지 않게
+		------------------------------------------------------------
+		if zone >= 2 then
+			local theme = ({
+				[2] = { Stone = rgb(108, 116, 98), Mat = Enum.Material.Cobblestone, Accent = rgb(150, 235, 150), Floor = rgb(78, 100, 78), FloorMat = Enum.Material.Cobblestone },
+				[3] = { Stone = rgb(158, 150, 138), Mat = Enum.Material.Cobblestone, Accent = rgb(255, 210, 130), Floor = rgb(124, 110, 94), FloorMat = Enum.Material.Pavement },
+				[4] = { Stone = rgb(214, 190, 140), Mat = Enum.Material.Sandstone, Accent = rgb(255, 200, 90), Floor = rgb(206, 180, 128), FloorMat = Enum.Material.Sandstone },
+				[5] = { Stone = rgb(176, 214, 238), Mat = Enum.Material.Ice, Accent = rgb(150, 220, 255), Floor = rgb(210, 232, 246), FloorMat = Enum.Material.Glacier },
+				[6] = { Stone = rgb(58, 48, 50), Mat = Enum.Material.Basalt, Accent = rgb(255, 130, 60), Floor = rgb(70, 40, 36), FloorMat = Enum.Material.Basalt },
+				[7] = { Stone = rgb(88, 82, 104), Mat = Enum.Material.Slate, Accent = rgb(190, 140, 245), Floor = rgb(54, 44, 74), FloorMat = Enum.Material.Cobblestone },
+				[8] = { Stone = rgb(60, 52, 80), Mat = Enum.Material.Marble, Accent = rgb(230, 110, 190), Floor = rgb(38, 30, 56), FloorMat = Enum.Material.Slate },
+			})[zone]
+			if theme then
+				for index = 1, 4 do
+					local lx = minX + (maxX - minX) * (index - 0.5) / 4 + R(-40, 40)
+					local lz = R(-half * 0.5, half * 0.5)
+					if okAt(lx, lz) and zoneParts + 16 < budget then
+						local origin = Vector3.new(lx, floorAt(lx), lz)
+						local radius = R(8, 10)
+						patch(origin, theme.Floor, theme.FloorMat, radius * 2.6) -- 바닥 원판
+						for i = 0, 5 do -- 둘레 기둥 6개 + 꼭대기 불빛 구슬
+							local angle = i / 6 * math.pi * 2
+							local h = R(7, 12)
+							local at = origin + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+							post("LandmarkPillar", h, 2.4, at, tint(theme.Stone, R(-0.1, 0.1)), theme.Mat, R(-4, 4), R(-4, 4))
+							local cap = ball("LandmarkCap", Vector3.new(1.1, 1.1, 1.1), at + Vector3.new(0, h + 0.6, 0), theme.Accent, Enum.Material.Neon)
+							if i == 0 then glow(cap, theme.Accent, 24, 0.6) end
+						end
+						block("LandmarkSpire", Vector3.new(2.4, 17, 2.4), CFrame.new(origin + Vector3.new(0, 8.5, 0)) * CFrame.Angles(0, math.rad(45), 0), tint(theme.Stone, -0.15), theme.Mat) -- 가운데 첨탑
+						ball("LandmarkCore", Vector3.new(3.2, 3.2, 3.2), origin + Vector3.new(0, 18.4, 0), theme.Accent, Enum.Material.Neon, 0.15)
+					end
+				end
+			end
 		end
 
 		------------------------------------------------------------
