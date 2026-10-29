@@ -208,5 +208,19 @@ do
 			if record[obj] ~= nil then changed += 1 end
 		end
 		print(string.format("[LocalizeClient 진단] 지켜보는 글자 %d개 중 번역해서 바꾼 글자 %d개", total, changed))
+		-- 번역 안 된 글자 중 영어 단어가 들어 있는 것만 (숫자 / 이모지 / 이미 한국어인 글자는 빼고) 종류별로 모아 보여 준다
+		local seen, list = {}, {}
+		for obj in pairs(watched) do
+			if record[obj] == nil and obj.Parent then
+				local text = obj.Text
+				if typeof(text) == "string" and string.find(text, "%a%a%a") and not seen[text] then
+					seen[text] = true
+					table.insert(list, (string.gsub(string.sub(text, 1, 70), "[\r\n]+", " / ")))
+				end
+			end
+		end
+		table.sort(list)
+		print(string.format("[LocalizeClient 진단] 번역 안 된 영어 글자 %d종류:", #list))
+		for index = 1, math.min(#list, 120) do print("   · " .. list[index]) end
 	end)
 end
