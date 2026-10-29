@@ -1138,6 +1138,24 @@ local function pickTypeAt(zone, x)
 	return MonsterTypes.Pick(pool)
 end
 
+-- 구역 안에서 몬스터가 고르게 퍼지도록: 후보 자리를 6곳 뽑아 "이미 있는 같은 구역 몬스터와 가장 멀리 떨어진" 곳을 고른다.
+-- (예전에는 입구 근처 35% / 군주 근처 25%에 몰려서 구역 한가운데가 휑했다. 몬스터가 죽고 다시 태어날 때도 같은 규칙이라 비는 곳이 먼저 채워진다)
+local function evenX(zone, lo, hi)
+	local bestX, bestGap = nil, -1
+	for _ = 1, 6 do
+		local x = freeX(lo, hi)
+		local gap = math.huge
+		for part, data in pairs(monsters) do
+			if data.Zone == zone and part.Parent and data.Kind ~= "Boss" then
+				local distance = math.abs(part.Position.X - x)
+				if distance < gap then gap = distance end
+			end
+		end
+		if gap > bestGap then bestX, bestGap = x, gap end
+	end
+	return bestX or freeX(lo, hi)
+end
+
 -- kind: "Normal" / "Elite" / "Boss"
 local function spawnMonster(zone, kind, at, ambush)
 	local stats, text, color, barWidth
@@ -1168,15 +1186,7 @@ local function spawnMonster(zone, kind, at, ambush)
 			preX = at.X
 		else
 			local bx0, bx1 = zoneBounds(zone)
-			-- 입구 근처 35% / 군주가 있는 구역 끝(보스 둥지) 근처 25% / 구역 전체 40%: 보스 근처가 썰렁하지 않게 몬스터가 일부 모여 있다
-			local roll = math.random()
-			if roll < 0.35 then
-				preX = freeX(math.floor(bx0 + F.CampSafe + 70), math.floor(bx0 + F.CampSafe + 170))
-			elseif roll < 0.6 then
-				preX = freeX(math.floor(math.max(bx0 + F.CampSafe + 70, bx1 - 170)), math.floor(bx1 - 70))
-			else
-				preX = freeX(math.floor(bx0 + F.CampSafe + 70), math.floor(bx1 - 25))
-			end
+			preX = evenX(zone, math.floor(bx0 + F.CampSafe + 70), math.floor(bx1 - 25)) -- 구역 전체에 고르게
 			-- (몬스터가 안전지대 경계에 붙어 어정쩡하게 서 있지 않게 입구 쪽은 안전지대에서 조금 떨어진 곳부터)
 		end
 		typeKey = pickTypeAt(zone, preX)
