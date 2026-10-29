@@ -213,12 +213,27 @@ local ZONE_LAYOUTS = {
 		Baffles = { { Offset = 330, Type = "Center", Gap = 110 }, { Offset = 600, Side = 1, Gap = 150 } },
 	},
 }
--- 구역 길이를 700 -> 1400 으로 넓힌 만큼 오르막 / 벽 위치도 같은 비율로 늘린다 (언덕 / 틈의 크기는 그대로, 사이 간격만 넓어진다)
+-- 구역 길이를 700 -> 1400 으로 넓힌 만큼 지형도 "늘려서" 채운다: 간격만 벌리면 휑해지므로, 원래 700 짜리 배치(언덕 / 계단 / 벽)를 뒤에 한 번 더 이어 붙인다.
+-- (원래 배치는 올라간 만큼 내려와서 끝 높이가 0 이라, 그대로 이어 붙여도 높이가 맞는다)
 for zone, layout in ipairs(ZONE_LAYOUTS) do
-	local lengthMult = (F.ZoneLengths[zone] or F.ZoneLength) / (zone == 1 and 340 or 700)
-	if lengthMult ~= 1 then
-		for _, stair in ipairs(layout.Stairs) do stair.At = stair.At * lengthMult end
-		for _, wall in ipairs(layout.Baffles) do wall.Offset = wall.Offset * lengthMult end
+	local baseLength = zone == 1 and 340 or 700
+	local copies = math.max(1, math.floor((F.ZoneLengths[zone] or F.ZoneLength) / baseLength + 0.5)) - 1
+	if copies > 0 then
+		local stairs, baffles = {}, {}
+		for _, stair in ipairs(layout.Stairs) do table.insert(stairs, stair) end
+		for _, wall in ipairs(layout.Baffles) do table.insert(baffles, wall) end
+		for copy = 1, copies do
+			for _, stair in ipairs(stairs) do
+				local clone = table.clone(stair)
+				clone.At = stair.At + baseLength * copy
+				table.insert(layout.Stairs, clone)
+			end
+			for _, wall in ipairs(baffles) do
+				local clone = table.clone(wall)
+				clone.Offset = wall.Offset + baseLength * copy
+				table.insert(layout.Baffles, clone)
+			end
+		end
 	end
 end
 local ZONE_SEGMENTS = {} -- [zone] = { { A, B, H, Kind = "Floor" | "Step", Stair } ... }
