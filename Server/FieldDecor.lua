@@ -11,7 +11,7 @@ local F = Config.Field
 local FieldDecor = {}
 
 local MAX_PARTS_PER_ZONE = 185
-local EARLY_ZONE_PARTS = 300 -- 1~3구역(처음 보는 구역)은 볼거리를 더 촘촘하게: 전부 고정 / 충돌 없음 / 그림자 없음 / 불빛 없음이라 부담은 작다
+local EARLY_ZONE_PARTS = 340 -- 1~3구역(처음 보는 구역)은 볼거리를 더 촘촘하게: 전부 고정 / 충돌 없음 / 그림자 없음 / 불빛 없음이라 부담은 작다
 local MAX_LIGHTS = 12
 local MAX_EMITTERS = 10
 local BOSS_CLEAR = 90 -- 구역 끝에서 이만큼은 비운다 (보스 자리는 끝 - 45)
@@ -116,7 +116,7 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 			part.CanCollide = false
 			part.CanQuery = false
 			part.CanTouch = false
-			part.CastShadow = false
+			part.CastShadow = size.Magnitude >= 7 -- 큰 소품(나무 / 바위 / 기둥)만 그림자를 드리운다: 입체감이 크게 늘고, 작은 소품은 그대로 가볍다
 			part.TopSurface = Enum.SurfaceType.Smooth
 			part.BottomSurface = Enum.SurfaceType.Smooth
 			if shape then part.Shape = shape end
@@ -210,18 +210,44 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 			add("FloorPatch", Vector3.new(0.1, size, size * R(0.7, 1)), CFrame.new(pos.X, y, pos.Z) * CFrame.Angles(0, math.rad(R(0, 360)), math.rad(90)), color, material, Enum.PartType.Cylinder)
 		end
 
+		-- 둥근 나무: 밑동 뿌리 + 줄기 + 가지 2 + 잎 뭉치 여러 개 + 위쪽 뭉치 (예전엔 줄기 + 공 2개라 밋밋했다). lumps = 둘레 잎 뭉치 수
+		local function roundTree(p: Vector3, h: number, trunkW: number, trunkColor: Color3, leafColor: Color3, canopy: number, lumps: number)
+			post("Trunk", h, trunkW, p, trunkColor, Enum.Material.Wood)
+			ball("RootFlare", Vector3.new(trunkW * 1.8, trunkW * 0.9, trunkW * 1.8), p + Vector3.new(0, trunkW * 0.15, 0), tint(trunkColor, -0.1), Enum.Material.Wood)
+			for _ = 1, 2 do
+				local length = canopy * R(0.45, 0.6)
+				add("Branch", Vector3.new(length, trunkW * 0.34, trunkW * 0.34),
+					CFrame.new(p + Vector3.new(0, h * 0.72, 0)) * CFrame.Angles(0, math.rad(R(0, 360)), math.rad(R(24, 40))) * CFrame.new(length / 2, 0, 0),
+					trunkColor, Enum.Material.Wood, Enum.PartType.Cylinder)
+			end
+			for i = 1, lumps do
+				local angle = i / lumps * math.pi * 2 + R(-0.3, 0.3)
+				local reach = canopy * 0.3
+				local s = canopy * R(0.55, 0.72)
+				ball("Leaves", Vector3.new(s, s * 0.82, s), p + Vector3.new(math.cos(angle) * reach, h + R(-0.8, 1.0), math.sin(angle) * reach),
+					tint(leafColor, R(-0.12, 0.1)), Enum.Material.Grass)
+			end
+			ball("LeavesTop", Vector3.new(canopy * 0.66, canopy * 0.58, canopy * 0.66), p + Vector3.new(0, h + canopy * 0.36, 0), tint(leafColor, 0.12), Enum.Material.Grass)
+		end
+		-- 둥근 바위 무리: 큰 바위 + 작은 바위 둘 + 이끼 얼룩 (납작한 상자 하나였다)
+		local function rockCluster(p: Vector3, s: number, color: Color3, material: Enum.Material, mossy: boolean)
+			ball("Rock", Vector3.new(s, s * 0.66, s * R(0.9, 1.15)), p + Vector3.new(0, s * 0.22, 0), tint(color, R(-0.1, 0.08)), material)
+			for _ = 1, 2 do
+				local small = s * R(0.3, 0.45)
+				ball("RockSmall", Vector3.new(small, small * 0.7, small * 1.1), p + Vector3.new(R(-1, 1) * s * 0.7, small * 0.2, R(-1, 1) * s * 0.7), tint(color, R(-0.14, 0.06)), material)
+			end
+			if mossy then
+				ball("RockMoss", Vector3.new(s * 0.7, s * 0.14, s * 0.6), p + Vector3.new(R(-0.2, 0.2) * s, s * 0.5, R(-0.2, 0.2) * s), rgb(88, 132, 76), Enum.Material.Grass)
+			end
+		end
+
 		------------------------------------------------------------
 		-- 1 초원
 		------------------------------------------------------------
 		if zone == 1 then
 			local bloomColors = { rgb(240, 150, 170), rgb(245, 220, 120), rgb(200, 170, 235), rgb(245, 240, 235) }
 			scatter(14, function(p) -- 나무
-				local h = R(8, 12)
-				post("Trunk", h, R(1.6, 2.2), p, rgb(112, 82, 56), Enum.Material.Wood)
-				for _ = 1, 2 do
-					local s = R(7, 11)
-					ball("Leaves", Vector3.new(s, s * 0.85, s), p + Vector3.new(R(-2, 2), h + R(-1, 2), R(-2, 2)), tint(rgb(98, 160, 84), R(-0.1, 0.12)), Enum.Material.Grass)
-				end
+				roundTree(p, R(8, 12), R(1.6, 2.2), rgb(112, 82, 56), rgb(98, 160, 84), R(9, 13), 4)
 			end)
 			scatter(16, function(p) -- 덤불
 				for _ = 1, 2 do
@@ -237,8 +263,7 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 				end
 			end)
 			scatter(10, function(p) -- 바위
-				local s = R(2, 4.5)
-				block("Rock", Vector3.new(s, s * 0.7, s * R(0.8, 1.2)), lean(p + Vector3.new(0, s * 0.2, 0), 10), tint(rgb(140, 138, 130), R(-0.12, 0.1)), Enum.Material.Slate)
+				rockCluster(p, R(2.4, 5), rgb(140, 138, 130), Enum.Material.Slate, rng:NextNumber() < 0.6)
 			end)
 			scatter(14, function(p) -- 바닥 색 얼룩: 한 가지 초록 바닥이 넓게 밋밋하지 않게 (풀 / 짙은 풀 / 흙)
 				local roll = rng:NextNumber()
@@ -253,13 +278,8 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 		-- 2 숲
 		------------------------------------------------------------
 		elseif zone == 2 then
-			scatter(26, function(p) -- 높고 빽빽한 나무
-				local h = R(14, 22)
-				post("Trunk", h, R(2, 3), p, rgb(84, 62, 46), Enum.Material.Wood)
-				for i = 1, 3 do
-					local s = R(8, 12) - i * 1.2
-					ball("Canopy", Vector3.new(s, s * 0.8, s), p + Vector3.new(R(-1.5, 1.5), h - 2 + i * 2.5, R(-1.5, 1.5)), tint(rgb(52, 104, 62), R(-0.12, 0.1)), Enum.Material.Grass)
-				end
+			scatter(22, function(p) -- 높고 빽빽한 나무
+				roundTree(p, R(14, 22), R(2, 3), rgb(84, 62, 46), rgb(52, 104, 62), R(11, 15), 3)
 			end)
 			scatter(14, function(p) -- 덤불 / 고사리
 				for _ = 1, 2 do
