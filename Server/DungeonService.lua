@@ -1499,12 +1499,16 @@ local function isBossData(data)
 	return data and (data.IsBoss or data.BossLike or data.Kind == "Boss") and true or false
 end
 -- attr(세트 효과 이름)이 있으면: 역할(사냥형은 보스에게 절반 / 보스형은 몹에게 60%) x 무기 궁합(+40%) x 구역 배수를 곱한다 (Config.AugHitMult)
+-- (세트 효과가 준 피해가 다시 "직접 맞힌 것"으로 세어지지 않게: 점화 중첩 / 천둥 탄환 카운트는 직접 사격만 센다. augOnHit 가 읽는다)
+local inSetHit = false
 local function hitMonster(run, player, entry, amount, quiet, tint, attr)
 	if attr then
 		amount *= Config.AugHitMult(player, attr, isBossData(entry.Data))
 		Meter.Add(player, attr, amount)
 	end
 	Effects.DamageTint = tint -- 세트 효과 피해: 그 효과 색으로 피해 숫자를 띄운다 (아래 호출이 끝나면 지운다)
+	local previousSetHit = inSetHit
+	if attr then inSetHit = true end
 	if run.HitFn then -- 필드: 필드 몬스터에게 피해를 주는 함수를 따로 받는다
 		run.HitFn(player, entry, amount, quiet)
 	elseif run.Monsters[entry.Part] == entry.Data then
@@ -1512,6 +1516,7 @@ local function hitMonster(run, player, entry, amount, quiet, tint, attr)
 		damageMonster(run, player, entry.Part, entry.Data, math.max(1, math.floor(amount)), false, entry.Part.Position, quiet)
 		BL.Ctx = nil
 	end
+	inSetHit = previousSetHit
 	Effects.DamageTint = nil
 end
 
@@ -1754,7 +1759,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 	end
 	-- 유니크 "Thunder Rounds": 직접 맞힌 6번째마다 그 적에게 번개 (250%)
 	local thunder = player:GetAttribute("GearThunder") or 0
-	if thunder > 0 and augDepth == 0 and data.Health > 0 then
+	if thunder > 0 and augDepth == 0 and data.Health > 0 and not inSetHit then
 		uniqueHits[player] = (uniqueHits[player] or 0) + 1
 		if uniqueHits[player] >= math.max(3, 7 - thunder) then
 			uniqueHits[player] = 0
@@ -1762,7 +1767,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 		end
 	end
 	-- 점화 (보스형): 직접 맞힐 때마다 중첩 (궁합 무기는 2중첩)
-	if augDepth == 0 and data.Health > 0 and augLv(run, player, "AugFlame") > 0 then
+	if augDepth == 0 and not inSetHit and data.Health > 0 and augLv(run, player, "AugFlame") > 0 then -- (점화 틱 / 폭발 같은 세트 피해로는 중첩이 쌓이지 않는다: 예전엔 불 틱이 스스로 중첩을 올려 한 번 붙으면 꺼지지 않았다)
 		addIgnite(run, player, part, data, Config.AugWeaponMatch(player, "AugFlame") and 2 or 1)
 	end
 	local level = augLv(run, player, "AugMissile")
