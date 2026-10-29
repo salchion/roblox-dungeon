@@ -324,23 +324,28 @@ local function enhanceMany(count)
 	task.delay(1.1, function() E.EnhanceBusy = false end)
 end
 local enhanceTen = makeButton({
-	Size = UDim2.new(0, 80, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 214, 1, -14),
+	Size = UDim2.new(0, 68, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 166, 1, -14),
 	Text = "x10\nUpgrade", TextSize = 14, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(60, 120, 200),
 }, enhancePanel, function() enhanceMany(10) end)
 local enhanceMax = makeButton({
-	Size = UDim2.new(0, 80, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 302, 1, -14),
+	Size = UDim2.new(0, 68, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 240, 1, -14),
 	Text = "Max\nUpgrade", TextSize = 14, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(190, 110, 40),
 }, enhancePanel, function() enhanceMany(50) end)
+local enhanceAll = makeButton({ -- 모든 골드를 쓸 때까지 (-1 = 끝까지. 무기가 진화하면 새 무기를 보게 거기서 멈춘다)
+	Size = UDim2.new(0, 66, 0, 54), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 314, 1, -14),
+	Text = "All Gold\nUpgrade", TextSize = 12, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(170, 60, 70),
+}, enhancePanel, function() enhanceMany(-1) end)
 do
 	local function lockMany()
 		local locked = manyLocked()
-		for _, button in ipairs({ enhanceTen, enhanceMax }) do
+		for _, button in ipairs({ enhanceTen, enhanceMax, enhanceAll }) do
 			button.AutoButtonColor = not locked
 			button.BackgroundTransparency = locked and 0.6 or 0
 			button.TextTransparency = locked and 0.5 or 0
 		end
 		enhanceTen.Text = locked and "🔒\nx10" or "x10\nUpgrade"
 		enhanceMax.Text = locked and "🔒\nMax" or "Max\nUpgrade"
+		enhanceAll.Text = locked and "🔒\nAll" or "All Gold\nUpgrade"
 	end
 	player:GetAttributeChangedSignal("TutorialActive"):Connect(lockMany)
 	player:GetAttributeChangedSignal("TutorialEnhanceCost"):Connect(lockMany)

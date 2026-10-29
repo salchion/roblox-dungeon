@@ -294,6 +294,7 @@ return {
 		["⚠ Already upgrading."] = "⚠ Amélioration déjà en cours.",
 		["⚠ Upgrade slots are full. (Get more slots with VIP / in the Shop)"] = "⚠ Emplacements d'amélioration pleins. (Obtenez-en plus avec le VIP / la boutique)",
 		["⚠ Not ready yet."] = "⚠ Pas encore prêt.",
+		["All Gold"] = "Tout l'or",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -907,6 +908,5 @@ return {
 		{ "{text1} 『{text2}』 {text3} done! (Lv.{number4})", "{text1} 『{text2}』 {text3} terminé ! (niv.{number4})" },
 		{ "{text1} {text2} got {text3}!", "{text1} {text2} a obtenu {text3} !" },
 		{ "🔓 Zone {number1} gate opened! Reward 💰{number2} G · 🎫{number3}  — {text4} · {text5}-only drops: {text6} {text7} Set", "🔓 La porte de la zone {number1} est ouverte ! Récompense 💰{number2} or · 🎫{number3}  — {text4} · butins exclusifs {text5} : {text6} set {text7}" },
-		{ "{text1} Zone {number2} · {text3}   (Rec. ⚡{number4})  {text5} {text6} Set", "{text1} Zone {number2} · {text3}   (Rec. ⚡{number4})  Set {text5} {text6}" },
 	},
 }

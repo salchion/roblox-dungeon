@@ -761,7 +761,8 @@ Remotes.Enhance.OnServerEvent:Connect(function(player, count)
 	if now - (lastEnhance[player] or 0) < 0.25 then return end
 	lastEnhance[player] = now
 
-	count = typeof(count) == "number" and math.clamp(math.floor(count), 1, 50) or 1
+	local allGold = count == -1 -- "모든 골드로 강화": 골드가 떨어질 때까지 (안전 상한 3000번)
+	count = allGold and 3000 or (typeof(count) == "number" and math.clamp(math.floor(count), 1, 50) or 1)
 	if player:GetAttribute("TutorialActive") and player:GetAttribute("TutorialEnhanceCost") == nil then
 		count = 1 -- 처음 강화 미션에서는 한 번씩만 (무기 진화 미션부터는 x10 / 최대 강화도 쓸 수 있다)
 	end
