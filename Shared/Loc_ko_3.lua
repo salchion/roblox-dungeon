@@ -4,6 +4,18 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "≈ {number1} dmg", "≈ {number1} 피해" },
+		{ "⏱ {number1} min", "⏱ {number1}분" },
+		{ "XP {number1} / {number2}", "경험치 {number1} / {number2}" },
+		{ "Free {number1}/{number2}", "무료 {number1}/{number2}" },
+		{ "ZONE {number1}", "구역 {number1}" },
+		{ "{number1} more", "{number1}" },
+		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
+		{ "{number1}x XP", "{number1}x 경험치" },
+		{ "+{number1} XP", "+{number1} 경험치" },
+		{ "{number1} key", "열쇠 {number1}개" },
+		{ "Lv {number1}", "레벨 {number1}" },
+		{ "{number1}d {number2}h", "{number1}일 {number2}시간" },
 		{ "⏱ Time Skip <font color='#ffe16e'><b>{text1}</b></font> owned      🏋 Training slots <b>{number2} / {number3}</b> in use\n<font size='11' color='#bbbbcc'>Training and breakthroughs finish on their own over time (even while offline). Time Skips shorten the wait, and you also earn them slowly from quests. You can reach everything without spending money.</font>", "⏱ 시간 건너뛰기 <font color='#ffe16e'><b>{text1}</b></font>개 보유      🏋 훈련 칸 <b>{number2} / {number3}</b> 사용 중\n<font size='11' color='#bbbbcc'>훈련과 돌파는 시간이 지나면 저절로 끝나요 (오프라인에서도). 시간 건너뛰기는 대기 시간을 줄여 주고, 퀘스트로도 천천히 얻을 수 있어요. 돈을 쓰지 않아도 모든 걸 얻을 수 있어요.</font>" },
 		{ "Gacha gear never carries a Unique effect. <b>Unique effects</b> (one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "뽑기 장비에는 유니크 효과가 붙지 않아요. <b>유니크 효과</b>({number1}종 중 하나)는 신화 장비에 붙어요: 던전 상자(아래 참고), 필드 드랍({text2}), 주간 보스 러시 상자, 주간 최후의 군주 보상." },
 		{ "<font size='14'><b>🔫 Weapons</b></font>  <font color='#aab0cc'>{text1} · +{number2}</font>\n<font size='10' color='#9aa4cc'>A new weapon unlocks every 15 levels. Tap one to use it.</font>", "<font size='14'><b>🔫 무기</b></font>  <font color='#aab0cc'>{text1} · +{number2}</font>\n<font size='10' color='#9aa4cc'>15레벨마다 새 무기가 열려요. 눌러서 사용하세요.</font>" },

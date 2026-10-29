@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Crit damage +{text1}%p per point (base 2x)  (max {number2})", "1ポイントごとにクリティカルダメージ+{text1}%p(基本は2倍)(最大{number2})" },
+		{ "🎮 Welcome to the world of adventure, {text1}!", "🎮 冒険の世界へようこそ、{text1}！" },
+		{ "👑 Zone {number1} · The Lord of {text2} has reappeared!", "👑 ゾーン{number1} · {text2}のロードが再び現れた！" },
+		{ "Zone {number1} monsters {number2} / {number3} defeated · Lord {text4}", "ゾーン{number1}のモンスター {number2} / {number3} 撃破 · ロード {text4}" },
+		{ "Skill cooldown -{text1}% per point  (max {number2})", "1ポイントごとにスキルクールダウン-{text1}%(最大{number2})" },
+		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}…自動分解しました！エッセンス+{number2}、{number3} G" },
+		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 レベル{number1}の突破を開始しました！({text2})" },
 		{ "Weapon range +{text1}% per point  (max {number2})", "1ポイントごとに武器の射程+{text1}%(最大{number2})" },
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1}を自動分解しました(エッセンス+{number2}、{number3} G)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ デイリークエスト完了！報酬: {text1}" },

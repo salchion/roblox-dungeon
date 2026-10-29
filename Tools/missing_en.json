@@ -1929,5 +1929,15 @@
 "⚠ Not ready yet.",
 "All Gold",
 "x10 Upgrade",
-"All Gold Upgrade"
+"All Gold Upgrade",
+"📳 Screen Shake: ON",
+"📳 Screen Shake: OFF",
+"🔊 Music Volume: {number1}%",
+"🔫 Gunshot Volume: {number1}%",
+"🖥 Low-spec mode (less lag): ON",
+"🖥 Low-spec mode (less lag): OFF",
+"Attack +{number1}% per point  (max {number2})",
+"Crit chance +{number1}% per point  (max {number2})",
+"Crit damage +{number1}%p per point  (max {number2})",
+"Damage to bosses / lords / elites +{number1}% per point  (max {number2})"
 ]
