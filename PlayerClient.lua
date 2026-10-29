@@ -204,6 +204,7 @@ end
 
 local enhancePanel
 local refreshEnhance
+local resetEnhanceView -- 블록 밖(왼쪽 무기 버튼 신호)에서도 쓰는 "결과 글자 비우기"
 do
 local E = {}
 enhancePanel = makePanel({
@@ -684,6 +685,11 @@ Remotes.Enhance.OnClientEvent:Connect(function(ok, message, summary)
 	enhanceResult.Text = message
 	enhanceResult.TextColor3 = ok and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 130, 130)
 end)
+
+function resetEnhanceView()
+	enhanceResult.Text = ""
+	E.EnhanceShownTier = nil
+end
 
 Remotes.OpenEnhance.OnClientEvent:Connect(function()
 	enhanceResult.Text = ""
@@ -4021,8 +4027,7 @@ player:GetAttributeChangedSignal("OpenEnhance"):Connect(function() -- 왼쪽 무
 		enhancePanel.Visible = false
 		return
 	end
-	enhanceResult.Text = ""
-	E.EnhanceShownTier = nil
+	resetEnhanceView()
 	enhancePanel.Visible = true -- (먼저 연다: 아래 갱신에서 오류가 나도 창은 뜨게)
 	local ok, err = pcall(refreshEnhance)
 	if not ok then warn("[무기 창] 갱신 오류: " .. tostring(err)) end
