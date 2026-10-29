@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎒 {text1}  ▲ Better than your current gear! (I → Bag)", "🎒 {text1}  ▲ 今の装備より強い！(I → バッグ)" },
 		{ "[{text1}] Starts in {number2}s! Survive the incoming monsters", "[{text1}] {number2}秒後に開始！迫りくるモンスターを生き延びろ" },
 		{ "⏱ Skip gauge {text1}  (shared with training · pets)", "⏱ 短縮ゲージ {text1}（訓練・ペットと共有）" },
 		{ "Crit damage +{text1}%p per point (base 2x)  (max {number2})", "1ポイントごとにクリティカルダメージ+{text1}%p(基本は2倍)(最大{number2})" },

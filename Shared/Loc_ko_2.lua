@@ -562,6 +562,8 @@ return {
 		["📳 Screen Shake: OFF"] = "📳 화면 흔들림: 꺼짐",
 		["🖥 Low-spec mode (less lag): ON"] = "🖥 저사양 모드 (렉 줄이기): 켜짐",
 		["🖥 Low-spec mode (less lag): OFF"] = "🖥 저사양 모드 (렉 줄이기): 꺼짐",
+		["🌲 Hunting Field  ▶"] = "🌲 사냥터  ▶",
+		["Defeat each zone's Lord to advance"] = "각 구역의 군주를 쓰러뜨리면 다음으로 나아갈 수 있어요",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1053,9 +1055,5 @@ return {
 		{ "  (max {number1})", "  (최대 {number1})" },
 		{ "Zone {number1} / {number2}", "{number1} / {number2} 구역" },
 		{ "{number1} Tickets", "티켓 {number1}장" },
-		{ "🏯 Floor {number1}", "🏯 {number1}층" },
-		{ "{number1} pieces", "{number1}부위" },
-		{ "Crit +{number1}%", "치명타 +{number1}%" },
-		{ "Lasts {number1}s", "{number1}초 지속" },
 	},
 }

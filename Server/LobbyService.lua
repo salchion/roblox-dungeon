@@ -871,6 +871,7 @@ function Lobby.Build()
 	signGui.Size = UDim2.new(0, 300, 0, 44)
 	signGui.MaxDistance = 130
 	signGui.AlwaysOnTop = false
+	signGui.Enabled = false -- (허공에 뜬 글자는 이상해서 끈다: 아래의 진짜 표지판으로 대신한다)
 	signGui.Parent = gateSign
 	local signTitle = Instance.new("TextLabel")
 	signTitle.Size = UDim2.new(1, 0, 1, 0)
@@ -907,6 +908,46 @@ function Lobby.Build()
 	faceText.TextStrokeTransparency = 0
 	faceText.Text = "▶ Hunting Field Entrance ◀"
 	faceText.Parent = faceGui
+
+	-- 사냥터 입구 표지판: 길 왼쪽(북)에 나무 기둥 두 개 + 나무판. 마을 쪽(서)에서 걸어오는 사람이 읽는다.
+	do
+		local signX, signZ = 94, -17
+		local wood, woodDark = Color3.fromRGB(118, 84, 56), Color3.fromRGB(78, 56, 40)
+		for _, dz in ipairs({ -5.4, 5.4 }) do
+			makePart({ Name = "FieldSignPost", Size = Vector3.new(0.9, 11, 0.9), Position = Vector3.new(signX, TOP + 5.5, signZ + dz), Color = woodDark, Material = Enum.Material.Wood, CanCollide = false }, folder)
+		end
+		local board = makePart({ Name = "FieldSignBoard", Size = Vector3.new(0.7, 4.6, 13), Position = Vector3.new(signX, TOP + 8.6, signZ), Color = wood, Material = Enum.Material.WoodPlanks, CanCollide = false }, folder)
+		makePart({ Name = "FieldSignTrim", Size = Vector3.new(0.9, 0.5, 13.6), Position = Vector3.new(signX, TOP + 11.1, signZ), Color = woodDark, Material = Enum.Material.Wood, CanCollide = false }, folder)
+		makePart({ Name = "FieldSignTrim", Size = Vector3.new(0.9, 0.5, 13.6), Position = Vector3.new(signX, TOP + 6.1, signZ), Color = woodDark, Material = Enum.Material.Wood, CanCollide = false }, folder)
+		local surface = Instance.new("SurfaceGui")
+		surface.Face = Enum.NormalId.Left -- 마을(서쪽)을 보는 면
+		surface.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+		surface.PixelsPerStud = 40
+		surface.LightInfluence = 0.2
+		surface.Parent = board
+		local title = Instance.new("TextLabel")
+		title.Size = UDim2.new(1, -30, 0.58, 0)
+		title.Position = UDim2.new(0, 15, 0.04, 0)
+		title.BackgroundTransparency = 1
+		title.Font = Enum.Font.GothamBlack
+		title.TextScaled = true
+		title.TextColor3 = Color3.fromRGB(255, 244, 214)
+		title.TextStrokeColor3 = Color3.fromRGB(60, 40, 24)
+		title.TextStrokeTransparency = 0.2
+		title.Text = "🌲 Hunting Field  ▶"
+		title.Parent = surface
+		local sub = Instance.new("TextLabel")
+		sub.Size = UDim2.new(1, -30, 0.3, 0)
+		sub.Position = UDim2.new(0, 15, 0.64, 0)
+		sub.BackgroundTransparency = 1
+		sub.Font = Enum.Font.GothamBold
+		sub.TextScaled = true
+		sub.TextColor3 = Color3.fromRGB(235, 220, 190)
+		sub.TextStrokeColor3 = Color3.fromRGB(60, 40, 24)
+		sub.TextStrokeTransparency = 0.4
+		sub.Text = "Defeat each zone's Lord to advance"
+		sub.Parent = surface
+	end
 
 	-- 문 사이를 채우는 반투명 빛의 막 (지나가면 필드)
 	local veil = makePart({ Name = "FieldVeil", Size = Vector3.new(1, 36, 40), Position = fieldGate + Vector3.new(0, 18, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.82, CanCollide = false, CanQuery = false }, folder)
@@ -986,7 +1027,7 @@ function Lobby.Build()
 	-- 2) (필드로 이어지는 길가의 등불 / 깃발은 너무 많아서 없앴다: 빛기둥과 문만으로 충분하다)
 
 	-- 3) 문 위로 솟는 빛기둥: 마을 어디서든 "저쪽이 필드"라는 게 보인다
-	local pillar = makePart({ Name = "FieldBeacon", Size = Vector3.new(14, 320, 14), Position = fieldGate + Vector3.new(0, 160, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.88, CanCollide = false, CanQuery = false }, folder)
+	local pillar = makePart({ Name = "FieldBeacon", Size = Vector3.new(14, 320, 14), Position = fieldGate + Vector3.new(0, 160, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.94, CanCollide = false, CanQuery = false }, folder)
 	addLight(pillar, 60, 0.8, green)
 
 	-- 4) 문 앞의 큰 빛 고리 (통과하는 느낌)
@@ -995,8 +1036,8 @@ function Lobby.Build()
 			local angle = index / 20 * math.pi * 2
 			local radius = 12 + ring * 2.5
 			local piece = makePart({
-				Name = "FieldRing", Size = Vector3.new(1, 2.4, 2.4), Position = fieldGate + Vector3.new(-6 - ring * 3, 17 + math.sin(angle) * radius, math.cos(angle) * radius),
-				Color = green, Material = Enum.Material.Neon, CanCollide = false, CanQuery = false, Transparency = 0.15 + ring * 0.15,
+				Name = "FieldRing", Size = Vector3.new(0.6, 1.4, 1.4), Position = fieldGate + Vector3.new(-6 - ring * 3, 17 + math.sin(angle) * radius, math.cos(angle) * radius),
+				Color = green, Material = Enum.Material.Neon, CanCollide = false, CanQuery = false, Transparency = 0.45 + ring * 0.12,
 			}, folder)
 			piece.CFrame = CFrame.new(piece.Position) * CFrame.Angles(angle, 0, 0)
 		end

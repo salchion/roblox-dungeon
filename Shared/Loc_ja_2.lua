@@ -416,6 +416,8 @@ return {
 		["📳 Screen Shake: OFF"] = "📳 画面の揺れ: オフ",
 		["🖥 Low-spec mode (less lag): ON"] = "🖥 低スペックモード (ラグ軽減): オン",
 		["🖥 Low-spec mode (less lag): OFF"] = "🖥 低スペックモード (ラグ軽減): オフ",
+		["🌲 Hunting Field  ▶"] = "🌲 狩り場  ▶",
+		["Defeat each zone's Lord to advance"] = "各エリアのロードを倒して先へ進もう",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -921,6 +923,5 @@ return {
 		{ "{text1} hasn't unlocked depth {number2} yet. (Clear depth {number3} first)", "{text1}はまだ深度{number2}を解放していません。(先に深度{number3}をクリアしてください)" },
 		{ "{text1}'s level is too low. (This dungeon requires Lv.{number2}+)", "{text1}のレベルが低すぎます。(このダンジョンはLv.{number2}以上が必要)" },
 		{ "Defeat Zone {number1} monsters {number2} / {number3} · Reward {text4} G + Ticket", "ゾーン{number1}のモンスターを倒す {number2} / {number3} · 報酬 {text4} G + チケット" },
-		{ "🎒 {text1}  ▲ Better than your current gear! (I → Bag)", "🎒 {text1}  ▲ 今の装備より強い！(I → バッグ)" },
 	},
 }

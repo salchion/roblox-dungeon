@@ -259,6 +259,8 @@ return {
 		["📳 Screen Shake: OFF"] = "📳 Tremor de tela: DESLIGADO",
 		["🖥 Low-spec mode (less lag): ON"] = "🖥 Modo PC fraco (menos lag): LIGADO",
 		["🖥 Low-spec mode (less lag): OFF"] = "🖥 Modo PC fraco (menos lag): DESLIGADO",
+		["🌲 Hunting Field  ▶"] = "🌲 Área de caça  ▶",
+		["Defeat each zone's Lord to advance"] = "Derrote o senhor de cada zona para avançar",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },

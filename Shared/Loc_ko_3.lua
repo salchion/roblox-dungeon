@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🏯 Floor {number1}", "🏯 {number1}층" },
+		{ "{number1} pieces", "{number1}부위" },
+		{ "Crit +{number1}%", "치명타 +{number1}%" },
+		{ "Lasts {number1}s", "{number1}초 지속" },
 		{ "Combo x{number1}", "콤보 x{number1}" },
 		{ "{number1} / {number2} XP", "{number1} / {number2} 경험치" },
 		{ "⚡ {number1} Lv.{number2}", "⚡ {number1} 레벨.{number2}" },
