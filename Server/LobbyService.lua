@@ -1091,19 +1091,7 @@ function Lobby.Build()
 				makePart({ Name = "FieldRoadEdge", Size = Vector3.new(4.2, 0.7, 1.4), Position = Vector3.new(66 + step * 6.2, TOP + 0.35, side * 14), Color = step % 2 == 0 and Color3.fromRGB(150, 140, 126) or Color3.fromRGB(128, 120, 108), Material = Enum.Material.Cobblestone, CanCollide = false, CastShadow = false }, folder)
 			end
 		end
-		-- 먼 산맥 (문 너머 동쪽, 마을 벽 바깥): 두 겹. 가까운 겹은 어둡고 먼 겹은 안개에 흐려진다
-		local ranges = {
-			{ 250, -70, 190, 120, Color3.fromRGB(70, 82, 112) }, { 270, 20, 230, 160, Color3.fromRGB(64, 76, 108) }, { 255, 105, 200, 125, Color3.fromRGB(72, 84, 114) },
-			{ 235, -150, 180, 100, Color3.fromRGB(68, 80, 110) }, { 240, 175, 170, 105, Color3.fromRGB(68, 80, 110) },
-			{ 360, -40, 300, 210, Color3.fromRGB(96, 108, 140) }, { 380, 90, 320, 230, Color3.fromRGB(100, 112, 144) }, { 350, -170, 260, 170, Color3.fromRGB(94, 106, 138) },
-		}
-		for _, mountain in ipairs(ranges) do
-			local x, z, width, height, color = mountain[1], mountain[2], mountain[3], mountain[4], mountain[5]
-			makePart({ Name = "FarMountain", Shape = Enum.PartType.Ball, Size = Vector3.new(width, height * 1.6, width * 0.8), Position = Vector3.new(x, height * 0.2 - 8, z), Color = color, Material = Enum.Material.Slate, CanCollide = false, CanQuery = false, CastShadow = false }, folder)
-			if height >= 125 then -- 높은 봉우리는 눈 덮인 꼭대기
-				makePart({ Name = "FarMountainSnow", Shape = Enum.PartType.Ball, Size = Vector3.new(width * 0.34, height * 0.4, width * 0.28), Position = Vector3.new(x - 6, height * 0.2 - 8 + height * 0.68, z), Color = Color3.fromRGB(226, 232, 244), Material = Enum.Material.Snow, CanCollide = false, CanQuery = false, CastShadow = false }, folder)
-			end
-		end
+		-- (먼 산맥은 뺐다: 문 너머 동쪽은 사냥터 월드라서 산이 필드 한가운데에 거대한 공으로 나타났다)
 		-- 하늘: 노을 구름 (Terrain 의 Clouds) + 해가 있는 쪽 번짐을 조금 키운다
 		local terrain = workspace:FindFirstChildOfClass("Terrain")
 		if terrain and not terrain:FindFirstChildOfClass("Clouds") then
