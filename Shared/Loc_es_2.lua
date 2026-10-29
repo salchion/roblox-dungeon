@@ -347,6 +347,7 @@ return {
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "Efectos únicos encontrados {number1} / {number2}  ·  El equipo mítico puede llevar uno (aprox. {number3}% de probabilidad)" },
 		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "Título de Maestro de Habilidades\nUsa habilidades {number1} veces\n{number2} / {number3} Recompensa: 🎫 {number4}" },
 		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(tu récord: profundidad {number1} · el tema de la mazmorra es aleatorio, las probabilidades son las mismas)" },
+		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "Profundidad {number1} superada  ·  Elige cualquier profundidad según tu poder  (siguiente: {number2})" },
 		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "Título de la persona afortunada\nObtén equipo legendario\n{number1} / {number2} Recompensa: 🎫 {number3}" },
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "al crítico, {number1} misiles al enemigo golpeado (25% del golpe crítico cada uno)" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} boss(es)\n{number2} / {number3}   Reward: 🎫 {number4}", "Título de cazador de jefes\nDerrota a {number1} jefes\n{number2} / {number3} Recompensa: 🎫 {number4}" },

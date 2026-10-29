@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "[{text1}] Starts in {number2}s! Survive the incoming monsters", "[{text1}] {number2}秒後に開始！迫りくるモンスターを生き延びろ" },
+		{ "⏱ Skip gauge {text1}  (shared with training · pets)", "⏱ 短縮ゲージ {text1}（訓練・ペットと共有）" },
 		{ "Crit damage +{text1}%p per point (base 2x)  (max {number2})", "1ポイントごとにクリティカルダメージ+{text1}%p(基本は2倍)(最大{number2})" },
 		{ "🎮 Welcome to the world of adventure, {text1}!", "🎮 冒険の世界へようこそ、{text1}！" },
 		{ "👑 Zone {number1} · The Lord of {text2} has reappeared!", "👑 ゾーン{number1} · {text2}のロードが再び現れた！" },

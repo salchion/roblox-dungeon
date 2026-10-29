@@ -360,6 +360,7 @@ return {
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "Effets uniques trouvés {number1} / {number2}  ·  L'équipement mythique peut en porter un (environ {number3} % de chance)" },
 		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "Titre de maître des compétences\nUtiliser les compétences {number1} fois\n{number2} / {number3} Récompense : 🎫 {number4}" },
 		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(votre record : profondeur {number1} · le thème du donjon est aléatoire, les probabilités sont les mêmes)" },
+		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "Profondeur {number1} terminée  ·  Choisissez la profondeur qui vous convient  (prochaine : {number2})" },
 		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "Titre « Le chanceux »\nObtenez de l'équipement légendaire\n{number1} / {number2} Récompense : 🎫 {number3}" },
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "sur critique, {number1} missiles dans l'ennemi touché (25 % du coup critique chacun)" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} boss(es)\n{number2} / {number3}   Reward: 🎫 {number4}", "Titre du chasseur de boss\nVaincre {number1} boss\n{number2} / {number3} Récompense : 🎫 {number4}" },
@@ -911,7 +912,5 @@ return {
 		{ "(gear {text1}{text2})", "(équipement {text1}{text2})" },
 		{ "👑 Weekly Final Lord reward: Mythic {text1} · {text2} Set · ✦ {text3}!", "👑 Récompense hebdomadaire du Seigneur final : {text1} mythique · set {text2} · ✦ {text3} !" },
 		{ "{text1} Trial effect for this dungeon: [{text2}] (Lv.3) — {text3}", "{text1} Effet d'épreuve pour ce donjon : [{text2}] (niv.3) — {text3}" },
-		{ "Depth {number1} (total {text2}, Unique {text3}, keys {number4}): {text5}", "Profondeur {number1} (total {text2}, unique {text3}, clés {number4}) : {text5}" },
-		{ "{text1} Set synergy activated! 『{text2}』 - {text3}", "Synergie de set {text1} activée ! 『{text2}』 - {text3}" },
 	},
 }

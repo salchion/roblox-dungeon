@@ -625,6 +625,7 @@ return {
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "발견한 유니크 효과 {number1} / {number2}  ·  신화 장비에 하나 붙을 수 있어요 (약 {number3}% 확률)" },
 		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "스킬 마스터 타이틀 『스킬 마스터』\n스킬을 {number1}번 사용하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
 		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(내 기록: 깊이 {number1} · 던전 테마는 무작위, 확률은 같아요)" },
+		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "{number1}층까지 클리어  ·  내 전투력에 맞는 깊이를 자유롭게 고르세요  (다음: {number2})" },
 		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "럭키 원 타이틀 『럭키 원』\n전설 장비 획득\n{number1} / {number2} 보상: 🎫 {number3}" },
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "치명타 시 맞은 적에게 미사일 {number1}발 (각각 치명타 피해의 25%)" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} boss(es)\n{number2} / {number3}   Reward: 🎫 {number4}", "보스 헌터 타이틀 『보스 헌터』\n{number1} 보스 처치\n{number2} / {number3} 보상: 🎫 {number4}" },
@@ -1056,8 +1057,5 @@ return {
 		{ "{number1} pieces", "{number1}부위" },
 		{ "Crit +{number1}%", "치명타 +{number1}%" },
 		{ "Lasts {number1}s", "{number1}초 지속" },
-		{ "Combo x{number1}", "콤보 x{number1}" },
-		{ "{number1} / {number2} XP", "{number1} / {number2} 경험치" },
-		{ "⚡ {number1} Lv.{number2}", "⚡ {number1} 레벨.{number2}" },
 	},
 }

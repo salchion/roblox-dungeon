@@ -52,13 +52,13 @@ end
 local function refresh()
 	if not typeKey then return end
 	local frontier = bestOf(typeKey) + 1
-	depth = math.clamp(depth, 1, frontier)
+	depth = math.clamp(depth, 1, Config.Dungeon.Depth.MaxDepth) -- 아무 깊이나 고를 수 있다 (예전엔 최고 깊이 + 1 까지)
 	local key = Config.Dungeon.DepthKey(depth)
 	local difficulty = Config.Dungeon.GetDifficulty(key)
 	title.Text = "🏰 Dungeon"
 	depthLabel.Text = "Depth " .. depth
 	depthLabel.TextColor3 = difficulty.Color
-	info.Text = string.format("Cleared up to depth %d  ·  You can enter up to depth %d", bestOf(typeKey), frontier)
+	info.Text = string.format("Cleared up to depth %d  ·  Pick any depth to match your power  (next: %d)", bestOf(typeKey), frontier)
 
 	local entries = Odds.Chest(typeKey, key, Odds.LuckOf(player))
 	local parts = {}
@@ -84,10 +84,10 @@ local function stepper(text, delta, x)
 		refresh()
 	end)
 end
-stepper("«", -5, -160)
+stepper("«", -10, -160)
 stepper("◀", -1, -106)
 stepper("▶", 1, 60)
-stepper("»", 5, 114)
+stepper("»", 10, 114)
 
 makeButton({ Size = UDim2.new(0, 210, 0, 44), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 18, 1, -16), Text = "Enter", TextSize = 17, BackgroundColor3 = Color3.fromRGB(58, 160, 90), ZIndex = 11 }, panel, function()
 	if not typeKey then return end

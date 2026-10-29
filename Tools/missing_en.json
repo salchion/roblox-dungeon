@@ -1939,5 +1939,6 @@
 "Attack +{number1}% per point  (max {number2})",
 "Crit chance +{number1}% per point  (max {number2})",
 "Crit damage +{number1}%p per point  (max {number2})",
-"Damage to bosses / lords / elites +{number1}% per point  (max {number2})"
+"Damage to bosses / lords / elites +{number1}% per point  (max {number2})",
+"Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})"
 ]

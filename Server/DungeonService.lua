@@ -3129,20 +3129,7 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 	end
 	if not table.find(members, player) then return end
 
-	-- 깊이: 못 깬 깊이로는 못 들어간다 (파티원 모두 최고 깊이 + 1 까지)
-	local startDepth = D.DepthOf(diffKey)
-	if startDepth and not riftMode and not fromField then
-		local okMeta, MetaD = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
-		if okMeta then
-			for _, member in ipairs(members) do
-				if startDepth > MetaD.DepthBest(member, "All") + 1 then
-					notify(player, string.format("%s hasn't unlocked depth %d yet. (Clear depth %d first)", member.DisplayName, startDepth, startDepth - 1))
-					return
-				end
-			end
-		end
-	end
-
+	-- 깊이: 아무 깊이로나 들어갈 수 있다 (예전엔 최고 깊이 + 1 까지만 돼서, 적정 난이도까지 올리는 동안 던전이 지루했다). 보상은 깊이를 실제로 깨야 받는다.
 	-- 던전 입장 제한: 열쇠 (파티원 모두 필요). 시간이 지나면 자동으로 차오른다.
 	local keyCost = (riftMode or fromField or player:GetAttribute("TutorialDungeonRun") == true) and 0 or (difficulty.KeyCost or 1) -- 튜토리얼 던전 미션은 몇 번을 다시 들어가도 열쇠 / 무료 입장을 쓰지 않는다 -- 심연 도전은 열쇠 대신 하루 도전 횟수를 쓴다 (RiftService 가 관리)
 	local useFree = {}

@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Depth {number1} (total {text2}, Unique {text3}, keys {number4}): {text5}", "Profondeur {number1} (total {text2}, unique {text3}, clés {number4}) : {text5}" },
+		{ "{text1} Set synergy activated! 『{text2}』 - {text3}", "Synergie de set {text1} activée ! 『{text2}』 - {text3}" },
 		{ "🐾 Pet Lv.{number1}! New ability {text2} {text3} — {text4}", "🐾 Familier niv.{number1} ! Nouvelle capacité {text2} {text3} — {text4}" },
 		{ "{text1} Dungeon mutation: {text2} — {text3}", "{text1} Mutation du donjon : {text2} — {text3}" },
 		{ "▶ Next feature: Lv.{number1} {text2} {text3}{text4}", "▶ Prochaine fonctionnalité : niv.{number1} {text2} {text3}{text4}" },

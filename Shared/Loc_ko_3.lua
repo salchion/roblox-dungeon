@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Combo x{number1}", "콤보 x{number1}" },
+		{ "{number1} / {number2} XP", "{number1} / {number2} 경험치" },
+		{ "⚡ {number1} Lv.{number2}", "⚡ {number1} 레벨.{number2}" },
 		{ "≈ {number1} dmg", "≈ {number1} 피해" },
 		{ "⏱ {number1} min", "⏱ {number1}분" },
 		{ "XP {number1} / {number2}", "경험치 {number1} / {number2}" },

@@ -227,6 +227,7 @@ return {
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "已发现独特效果 {number1} / {number2}  ·  神话装备可附带一个(约 {number3}% 几率)" },
 		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "技能大师称号『技能大师』\n使用技能 {number1} 次\n{number2} / {number3} 奖励：🎫 {number4}" },
 		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(你的记录:深度 {number1} · 地下城主题随机,几率相同)" },
+		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "已通关到第{number1}层  ·  可按实力自由选择层数  (下一层:{number2})" },
 		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "幸运者称号『幸运者』\n获取传奇装备\n{number1} / {number2} 奖励：🎫 {number3}" },
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "暴击时向命中的敌人发射 {number1} 枚导弹(每枚为暴击伤害的 25%)" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} boss(es)\n{number2} / {number3}   Reward: 🎫 {number4}", "魔王猎人称号『魔王猎人』\n击败{number1}个Boss\n{number2} / {number3} 奖励：🎫 {number4}" },

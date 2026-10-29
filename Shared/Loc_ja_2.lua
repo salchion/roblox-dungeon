@@ -475,6 +475,7 @@ return {
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "発見したユニーク効果 {number1} / {number2}  ·  ミシック装備に1つ付くことがあります(確率約{number3}%)" },
 		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "スキルマスター　タイトル『スキルマスター』\nスキルを{number1}回使用する\n{number2} / {number3}　報酬：🎫 {number4}" },
 		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(あなたの記録: 深度{number1} · ダンジョンのテーマはランダム、確率は同じ)" },
+		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "クリア済み: 深さ{number1}まで  ·  自分の強さに合う深さを自由に選べます  (次: {number2})" },
 		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "ラッキーワンの称号『ラッキーワン』\nレジェンダリーギアを入手する\n{number1} / {number2}　報酬：🎫 {number3}" },
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "クリティカル時、命中した敵に{number1}発のミサイル(それぞれクリティカル攻撃の25%)" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} boss(es)\n{number2} / {number3}   Reward: 🎫 {number4}", "ボスハンター タイトル『ボスハンター』\n{number1} 個のボスを倒す\n{number2} / {number3}　報酬：🎫 {number4}" },
@@ -921,7 +922,5 @@ return {
 		{ "{text1}'s level is too low. (This dungeon requires Lv.{number2}+)", "{text1}のレベルが低すぎます。(このダンジョンはLv.{number2}以上が必要)" },
 		{ "Defeat Zone {number1} monsters {number2} / {number3} · Reward {text4} G + Ticket", "ゾーン{number1}のモンスターを倒す {number2} / {number3} · 報酬 {text4} G + チケット" },
 		{ "🎒 {text1}  ▲ Better than your current gear! (I → Bag)", "🎒 {text1}  ▲ 今の装備より強い！(I → バッグ)" },
-		{ "[{text1}] Starts in {number2}s! Survive the incoming monsters", "[{text1}] {number2}秒後に開始！迫りくるモンスターを生き延びろ" },
-		{ "⏱ Skip gauge {text1}  (shared with training · pets)", "⏱ 短縮ゲージ {text1}（訓練・ペットと共有）" },
 	},
 }

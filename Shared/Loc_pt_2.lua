@@ -318,6 +318,7 @@ return {
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "Efeitos únicos encontrados {number1} / {number2}  ·  Equipamentos míticos podem ter um (cerca de {number3}% de chance)" },
 		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "Título de Mestre de Habilidades\nUse habilidades {number1} vezes\n{number2} / {number3} Recompensa: 🎫 {number4}" },
 		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(seu recorde: profundidade {number1} · o tema da masmorra é aleatório, as chances são as mesmas)" },
+		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "Profundidade {number1} concluída  ·  Escolha qualquer profundidade conforme seu poder  (próxima: {number2})" },
 		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "Título \"A Sortudo\"\nObtenha equipamento lendário\n{number1} / {number2} Recompensa: 🎫 {number3}" },
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "em crítico, {number1} mísseis no inimigo atingido (25% do golpe crítico cada)" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} boss(es)\n{number2} / {number3}   Reward: 🎫 {number4}", "Título do Caçador de Chefes 『Caçador de Chefes』\nDerrote {number1} chefes\n{number2} / {number3} Recompensa: 🎫 {number4}" },
