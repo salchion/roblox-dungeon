@@ -589,6 +589,13 @@
       "overwrite": true
     },
     {
+      "path": "Shared/LordLook.lua",
+      "parent": "ReplicatedStorage",
+      "name": "LordLook",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Shared/Odds.lua",
       "parent": "ReplicatedStorage",
       "name": "Odds",

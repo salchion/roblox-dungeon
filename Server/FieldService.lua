@@ -649,7 +649,7 @@ local function buildCanyon(rng, totalLength, half)
 	-- 필드 끝 / 로비에서 들어오는 통로 양옆도 절벽으로 막는다
 	makePart({
 		Name = "CanyonEnd", Size = Vector3.new(40, 240, F.Width + 90),
-		Position = Vector3.new(endX + 20, 120, 0), Color = Color3.fromRGB(35, 30, 45), Material = Enum.Material.Slate,
+		Position = Vector3.new(endX + 150, 120, 0), -- (예전 endX + 20: 오프닝의 최후의 군주(endX + 6)가 이 벽 속에 파묻혀 안 보였다. 군주 뒤쪽으로 물린다) Color = Color3.fromRGB(35, 30, 45), Material = Enum.Material.Slate,
 	}, worldFolder)
 	for _, side in ipairs({ -1, 1 }) do
 		makePart({

@@ -48,56 +48,13 @@ local function buildLord(parent, baseCF, S)
 		return part
 	end
 	local function rgb(r, g, b) return Color3.fromRGB(r, g, b) end
-	local dark, steel, red = rgb(26, 12, 22), rgb(60, 52, 70), rgb(255, 50, 60)
-	add(Vector3.new(12, 20, 7), CFrame.new(0, 0, 0), dark)
-	add(Vector3.new(8, 6, 5), CFrame.new(0, -12, 0), dark)
-	add(Vector3.new(4, 7, 3), CFrame.new(0, -18, 0), steel)
-	local core = add(Vector3.new(5, 5, 5), CFrame.new(0, 4, -4.2) * CFrame.Angles(math.rad(45), math.rad(45), 0), red, Enum.Material.Neon)
-	add(Vector3.new(11, 1, 1), CFrame.new(0, 9, -3.8), steel)
-	add(Vector3.new(11, 1, 1), CFrame.new(0, -3, -3.8), steel)
-	add(Vector3.new(6.5, 6.5, 6.5), CFrame.new(0, 14, 0), rgb(18, 8, 16))
-	for _, side in ipairs({ -1, 1 }) do
-		eyes[#eyes + 1] = add(Vector3.new(3, 0.9, 0.6), CFrame.new(side * 1.7, 14.6, -3.3) * CFrame.Angles(0, 0, math.rad(side * 18)), rgb(255, 230, 90), Enum.Material.Neon)
-		add(Vector3.new(1.4, 13, 1.4), CFrame.new(side * 4.2, 21, 0) * CFrame.Angles(0, 0, math.rad(side * -28)), rgb(230, 220, 205), Enum.Material.SmoothPlastic)
-		add(Vector3.new(1.2, 7, 1.2), CFrame.new(side * 9, 27, 0) * CFrame.Angles(0, 0, math.rad(side * -58)), rgb(230, 220, 205), Enum.Material.SmoothPlastic)
-		add(Vector3.new(8, 4, 8), CFrame.new(side * 9.5, 9, 0), steel)
-		for k = 0, 2 do
-			add(Vector3.new(1.4, 8 - k * 1.5, 1.4), CFrame.new(side * (7.5 + k * 2.2), 13 + k * 0.8, 0) * CFrame.Angles(0, 0, math.rad(side * (-15 - k * 14))), red, Enum.Material.Neon)
-		end
-		add(Vector3.new(4, 16, 4), CFrame.new(side * 12, -1, 0), dark)
-		add(Vector3.new(7.5, 7.5, 7.5), CFrame.new(side * 12, -11, -1), steel)
-		add(Vector3.new(8, 0.8, 8), CFrame.new(side * 12, -8, -1), red, Enum.Material.Neon)
-		for k = 0, 3 do
-			add(Vector3.new(1, 22 - k * 3, 5), CFrame.new(side * (8 + k * 3.4), 6 + k * 0.5, 7) * CFrame.Angles(math.rad(-10), math.rad(side * -12), math.rad(side * (-22 - k * 14))), rgb(90, 20, 40), Enum.Material.Metal)
-			add(Vector3.new(0.4, 20 - k * 3, 1.2), CFrame.new(side * (8 + k * 3.4), 6 + k * 0.5, 4.6) * CFrame.Angles(math.rad(-10), math.rad(side * -12), math.rad(side * (-22 - k * 14))), red, Enum.Material.Neon, 0.15)
-		end
-	end
-	local gold, cloak = rgb(150, 116, 60), rgb(70, 14, 26)
-	add(Vector3.new(8, 1.2, 8), CFrame.new(0, 17.6, 0), gold, Enum.Material.Metal)
-	for k = 0, 6 do
-		local a = k / 7 * math.pi * 2
-		add(Vector3.new(0.8, 3.2 + (k % 2) * 1.6, 0.8), CFrame.new(math.cos(a) * 3.4, 19.2 + (k % 2) * 0.8, math.sin(a) * 3.4) * CFrame.Angles(math.sin(a) * 0.25, 0, -math.cos(a) * 0.25), gold, Enum.Material.Metal)
-	end
-	for k = -1, 1 do
-		add(Vector3.new(5.5, 26 - math.abs(k) * 4, 0.5), CFrame.new(k * 5, -4 - math.abs(k) * 2, 5.6) * CFrame.Angles(math.rad(12), 0, math.rad(k * 8)), cloak, Enum.Material.Fabric)
-	end
-	for k = -1, 1 do
-		add(Vector3.new(3.6, 6, 0.8), CFrame.new(k * 3.6, -14, -3) * CFrame.Angles(math.rad(-10), 0, math.rad(k * -6)), steel, Enum.Material.Metal)
-	end
-	for k = 0, 2 do
-		add(Vector3.new(10 - k * 1.5, 0.8, 1), CFrame.new(0, 6 - k * 2.4, -3.9), rgb(40, 34, 48), Enum.Material.Metal)
-	end
-	for _, side in ipairs({ -1, 1 }) do
-		add(Vector3.new(3, 11, 3), CFrame.new(side * 10.5, -6, -2.5) * CFrame.Angles(math.rad(-25), 0, math.rad(side * 20)), dark)
-		add(Vector3.new(5, 5, 5), CFrame.new(side * 13, -12, -6), steel)
-		add(Vector3.new(1, 6, 1), CFrame.new(side * 13, -16, -6.5) * CFrame.Angles(0, 0, math.rad(side * 10)), gold, Enum.Material.Metal)
-	end
-	add(Vector3.new(0.7, 30, 30), CFrame.new(0, 15, 8) * CFrame.Angles(0, math.rad(90), 0), red, Enum.Material.Neon, 0.25, Enum.PartType.Cylinder)
-	add(Vector3.new(0.5, 38, 38), CFrame.new(0, 15, 9) * CFrame.Angles(0, math.rad(90), 0), rgb(255, 150, 60), Enum.Material.Neon, 0.5, Enum.PartType.Cylinder)
+	local red = rgb(255, 50, 60)
+	local look = require(ReplicatedStorage:WaitForChild("LordLook")).Build(add) -- 모양은 결투의 군주와 같은 모듈 (LordLook)
 	for k = 1, 4 do -- 몸 주변에 떠 있는 칼날 (연출에서는 가만히)
 		local angle = k * math.pi / 2
 		add(Vector3.new(1.2, 8, 2.4), CFrame.new(math.cos(angle) * 16, 4, math.sin(angle) * 8) * CFrame.Angles(0, -angle, math.rad(20)), red, Enum.Material.Neon, 0.1)
 	end
+	local eyes, core = look.Eyes, look.Core
 	return eyes, core
 end
 

@@ -55,60 +55,10 @@ local function buildDoomLord(parent)
 		table.insert(parts, { Part = part, Rel = CFrame.new(rel.Position * S) * (rel - rel.Position) })
 		return part
 	end
-	local dark, steel, red = rgb(26, 12, 22), rgb(60, 52, 70), rgb(255, 50, 60)
-	local body = add(Vector3.new(12, 20, 7), CFrame.new(0, 0, 0), dark, Enum.Material.Metal)
+	local red = rgb(255, 50, 60)
+	local look = require(game:GetService("ReplicatedStorage"):WaitForChild("LordLook")).Build(add) -- 모양은 오프닝과 같은 모듈 (LordLook)
+	local body = look.Body
 	body.CanQuery = true
-	body.Name = "Body"
-	add(Vector3.new(8, 6, 5), CFrame.new(0, -12, 0), dark) -- 허리 아래로 좁아지는 하체
-	add(Vector3.new(4, 7, 3), CFrame.new(0, -18, 0), steel)
-	add(Vector3.new(5, 5, 5), CFrame.new(0, 4, -4.2) * CFrame.Angles(math.rad(45), math.rad(45), 0), red, Enum.Material.Neon) -- 가슴 코어
-	add(Vector3.new(11, 1, 1), CFrame.new(0, 9, -3.8), steel)
-	add(Vector3.new(11, 1, 1), CFrame.new(0, -3, -3.8), steel)
-	-- 머리 + 눈 + 뿔 + 왕관
-	add(Vector3.new(6.5, 6.5, 6.5), CFrame.new(0, 14, 0), rgb(18, 8, 16))
-	for _, side in ipairs({ -1, 1 }) do
-		add(Vector3.new(3, 0.9, 0.6), CFrame.new(side * 1.7, 14.6, -3.3) * CFrame.Angles(0, 0, math.rad(side * 18)), rgb(255, 230, 90), Enum.Material.Neon)
-		add(Vector3.new(1.4, 13, 1.4), CFrame.new(side * 4.2, 21, 0) * CFrame.Angles(0, 0, math.rad(side * -28)), rgb(230, 220, 205), Enum.Material.SmoothPlastic)
-		add(Vector3.new(1.2, 7, 1.2), CFrame.new(side * 9, 27, 0) * CFrame.Angles(0, 0, math.rad(side * -58)), rgb(230, 220, 205), Enum.Material.SmoothPlastic)
-		-- 어깨 갑옷 + 가시
-		add(Vector3.new(8, 4, 8), CFrame.new(side * 9.5, 9, 0), steel)
-		for k = 0, 2 do
-			add(Vector3.new(1.4, 8 - k * 1.5, 1.4), CFrame.new(side * (7.5 + k * 2.2), 13 + k * 0.8, 0) * CFrame.Angles(0, 0, math.rad(side * (-15 - k * 14))), red, Enum.Material.Neon)
-		end
-		-- 팔 + 거대한 주먹 + 손목 불꽃줄
-		add(Vector3.new(4, 16, 4), CFrame.new(side * 12, -1, 0), dark)
-		add(Vector3.new(7.5, 7.5, 7.5), CFrame.new(side * 12, -11, -1), steel)
-		add(Vector3.new(8, 0.8, 8), CFrame.new(side * 12, -8, -1), red, Enum.Material.Neon)
-		-- 칼날 날개 (등 뒤로 부챗살)
-		for k = 0, 3 do
-			add(Vector3.new(1, 22 - k * 3, 5), CFrame.new(side * (8 + k * 3.4), 6 + k * 0.5, 7) * CFrame.Angles(math.rad(-10), math.rad(side * -12), math.rad(side * (-22 - k * 14))), rgb(90, 20, 40), Enum.Material.Metal)
-			add(Vector3.new(0.4, 20 - k * 3, 1.2), CFrame.new(side * (8 + k * 3.4), 6 + k * 0.5, 4.6) * CFrame.Angles(math.rad(-10), math.rad(side * -12), math.rad(side * (-22 - k * 14))), red, Enum.Material.Neon, 0.15).Name = "WingEdge"
-		end
-	end
-	-- (보강) 왕관 고리 + 가시 / 찢어진 망토 / 허리 갑옷 판 / 가슴 갈비 장갑 / 아래쪽 두 번째 팔 한 쌍 (팔 넷: 더 위압적으로)
-	local gold, cloak = rgb(150, 116, 60), rgb(70, 14, 26)
-	add(Vector3.new(8, 1.2, 8), CFrame.new(0, 17.6, 0), gold, Enum.Material.Metal).Name = "Crown"
-	for k = 0, 6 do
-		local a = k / 7 * math.pi * 2
-		add(Vector3.new(0.8, 3.2 + (k % 2) * 1.6, 0.8), CFrame.new(math.cos(a) * 3.4, 19.2 + (k % 2) * 0.8, math.sin(a) * 3.4) * CFrame.Angles(math.sin(a) * 0.25, 0, -math.cos(a) * 0.25), gold, Enum.Material.Metal)
-	end
-	for k = -1, 1 do -- 망토: 세 갈래로 찢어져 등 뒤로 늘어진다
-		add(Vector3.new(5.5, 26 - math.abs(k) * 4, 0.5), CFrame.new(k * 5, -4 - math.abs(k) * 2, 5.6) * CFrame.Angles(math.rad(12), 0, math.rad(k * 8)), cloak, Enum.Material.Fabric).Name = "Cape"
-	end
-	for k = -1, 1 do -- 허리 갑옷 판 (치마처럼)
-		add(Vector3.new(3.6, 6, 0.8), CFrame.new(k * 3.6, -14, -3) * CFrame.Angles(math.rad(-10), 0, math.rad(k * -6)), steel, Enum.Material.Metal)
-	end
-	for k = 0, 2 do -- 가슴 갈비 장갑
-		add(Vector3.new(10 - k * 1.5, 0.8, 1), CFrame.new(0, 6 - k * 2.4, -3.9), rgb(40, 34, 48), Enum.Material.Metal)
-	end
-	for _, side in ipairs({ -1, 1 }) do -- 아래쪽 두 번째 팔 (조금 작게, 앞으로 뻗음)
-		add(Vector3.new(3, 11, 3), CFrame.new(side * 10.5, -6, -2.5) * CFrame.Angles(math.rad(-25), 0, math.rad(side * 20)), dark)
-		add(Vector3.new(5, 5, 5), CFrame.new(side * 13, -12, -6), steel)
-		add(Vector3.new(1, 6, 1), CFrame.new(side * 13, -16, -6.5) * CFrame.Angles(0, 0, math.rad(side * 10)), gold, Enum.Material.Metal) -- 손톱
-	end
-	-- 후광 (머리 뒤 큰 고리 두 겹)
-	add(Vector3.new(0.7, 30, 30), CFrame.new(0, 15, 8) * CFrame.Angles(0, math.rad(90), 0), red, Enum.Material.Neon, 0.25, Enum.PartType.Cylinder).Name = "Halo"
-	add(Vector3.new(0.5, 38, 38), CFrame.new(0, 15, 9) * CFrame.Angles(0, math.rad(90), 0), rgb(255, 150, 60), Enum.Material.Neon, 0.5, Enum.PartType.Cylinder).Name = "HaloOuter"
 	-- 주변을 도는 칼날 4개
 	local orbit = {}
 	for k = 1, 4 do

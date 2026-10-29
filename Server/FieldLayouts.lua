@@ -25,7 +25,7 @@ local ZONE_LAYOUTS = {
 		Baffles = { { Offset = 255, Side = 1, Gap = 170 }, { Offset = 470, Side = -1, Gap = 170 } },
 	},
 	{ -- 5 설원: 길고 가파른 눈 덮인 비탈을 한 번에 오르는 고원 + 정상에서 겹쳐진 벽
-		Stairs = { { At = 100, Rise = 60, Run = 250 }, { At = 520, Rise = -60, Run = 140 } },
+		Stairs = { { At = 100, Rise = 60, Run = 120 }, { At = 520, Rise = -60, Run = 100 } }, -- (경사로에는 몬스터 / 소품이 없어서 길면 휑하다: 250 / 140 -> 120 / 100)
 		Baffles = { { Offset = 400, Side = 1, Gap = 130 }, { Offset = 470, Side = -1, Gap = 130 } },
 	},
 	{ -- 6 화산: 용암 계단 (크기가 점점 커지는 세 개의 언덕 = 세 번 오르내림)
