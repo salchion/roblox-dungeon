@@ -2883,7 +2883,6 @@ local function buildGrowthTab()
 		end
 	end
 
-	sectionTitle("🚧 Breakthrough — pass the level caps")
 	local gateIndex
 	for index, gate in ipairs(Config.Growth.Gates) do
 		if gate > state.GatePassed then
@@ -2892,10 +2891,10 @@ local function buildGrowthTab()
 		end
 	end
 
+	if not gateIndex then return end -- 돌파를 다 마쳤으면 이 칸은 아예 보여 주지 않는다
+	sectionTitle("🚧 Breakthrough — pass the level caps")
 	local gateRow = newRow(92)
-	if not gateIndex then
-		rowText(gateRow, "<font color='#78ff8c'>All breakthroughs complete! You can now grow freely up to max level.</font>")
-	else
+	do
 		local gateLevel = Config.Growth.Gates[gateIndex]
 		local myLevel = player:GetAttribute("Level") or 1
 		local text
