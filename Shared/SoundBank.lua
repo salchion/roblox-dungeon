@@ -39,7 +39,7 @@ local SPECS = {
 	Shot_Rail     = { Base = "Shot", CustomLength = 1.4, Pitch = 1.9, Volume = 0.9, Length = 1.0, Fx = { { "chorus", { Depth = 0.8, Mix = 0.7 } }, { "echo", { Delay = 0.07, Feedback = 0.45, WetLevel = -5 } } },
 		Layers = { { Pitch = 0.9, Volume = 0.6, Delay = 0.02 } } },
 	-- 적중 / 처치 / 치명타 (짧고 선명하게)
-	Hit  = { Base = "Shot", CustomLength = 0.6, Pitch = 3.0, Volume = 0.24, Length = 0.09 }, -- (0.5 -> 0.32: 적중음이 총소리보다 커서 총소리가 묻힌다는 의견)
+	Hit  = { Base = "Shot", CustomLength = 0.6, Pitch = 2.0, Volume = 0.2, Length = 0.09 }, -- (0.5 -> 0.32: 적중음이 총소리보다 커서 총소리가 묻힌다는 의견)
 	-- 치명타 (오버워치 헤드샷 느낌, 귀가 아프지 않게): 낮고 단단한 "텅!" + 살짝 얹은 맑은 배음, 고음은 깎아 낸다
 	Crit = { Base = "Enh_Success", Pitch = 1.45, Volume = 0.26, Length = 0.2, CustomLength = 0.5, -- (0.5 -> 0.32: 총소리가 묻힌다는 의견)
 		Fx = { { "eq", { LowGain = -24, MidGain = 0, HighGain = -8 } }, { "echo", { Delay = 0.05, Feedback = 0.15, WetLevel = -14 } } },

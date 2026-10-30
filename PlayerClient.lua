@@ -3857,6 +3857,7 @@ local function playUiSound(id, volume, pitch)
 	game:GetService("Debris"):AddItem(sound, 3)
 end
 
+local lastHitSfx = 0
 Remotes.Hit.OnClientEvent:Connect(function(isCrit, killed)
 	hitMarker = killed and 0.3 or 0.18
 	hitMarkerCrit = isCrit or killed
@@ -3867,7 +3868,8 @@ Remotes.Hit.OnClientEvent:Connect(function(isCrit, killed)
 	elseif isCrit then
 		shake = math.max(shake, 0.25)
 		SoundBank.Play(sfxParent, "Hit", { Pitch = 1.1 + math.random() * 0.15 })
-	else
+	elseif os.clock() - lastHitSfx >= 0.14 then -- 자동 공격은 초당 수십 번 맞혀서 "찡찡" 소리가 이어졌다: 일반 적중음은 0.14초에 한 번만
+		lastHitSfx = os.clock()
 		SoundBank.Play(sfxParent, "Hit", { Pitch = 0.9 + math.random() * 0.25 })
 	end
 end)
