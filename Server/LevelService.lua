@@ -83,10 +83,6 @@ function Level.AddXP(player, amount)
 	setLevel(player, level, xp)
 
 	if gained > 0 then
-		local late = level > Config.Level.StatCap
-		Remotes.Notify:FireClient(player, string.format("🎉 Level up! Lv.%d  (Max HP +%d, Attack +%.1f%%)",
-			level, (late and Config.Level.PostHealthPerLevel or Config.Level.HealthPerLevel) * gained,
-			math.floor((late and Config.Level.LateDamagePerLevel or Config.Level.DamagePerLevel) * 1000 * gained + 0.5) / 10))
 		if root then
 			Effects.Burst(root.Position, Color3.fromRGB(255, 225, 110), 60)
 			SoundBank.Play(root, "LevelUp")

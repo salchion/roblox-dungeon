@@ -2796,7 +2796,6 @@ local function surviveLoop(run)
 			local info = Config.AugInfo[pick]
 			member:SetAttribute("AugDemo", pick) -- 화면 구석 표시 (AugClient)
 			Remotes.Aug:FireClient(member, "Demo", pick) -- 8개 중 뽑는 연출
-			notify(member, string.format("%s Trial effect for this dungeon: [%s] (Lv.3) — %s", info.Icon, info.Name, info.Desc))
 		end
 	end
 	startAugLoop(run)
@@ -3181,7 +3180,6 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 	for _, member in ipairs(members) do
 		if useFree[member] then
 			Dungeon.UseFree(member)
-			notify(member, string.format("🎟 Free entry used! (%d / %d left today)", Dungeon.FreeLeft(member), Config.Keys.FreeDaily))
 		else
 			Keys.SpendTier(member, difficulty.KeyTier or 1, keyCost)
 		end
