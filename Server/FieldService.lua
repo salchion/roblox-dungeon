@@ -1522,7 +1522,6 @@ local function reward(player, data, part)
 
 	if data.Kind == "Elite" and math.random() < F.EliteTicketChance then
 		player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + 1)
-		notify(player, "🎫 You got a gear draw ticket from an Elite!")
 	elseif data.Kind == "Boss" then
 		local bossPosition = part.Position
 		for _, other in ipairs(Players:GetPlayers()) do
@@ -1543,7 +1542,6 @@ local function reward(player, data, part)
 					local count = math.min(drop.Count or 1, (Config.Keys.DailyDropCapByTier[drop.Tier] or 0) - (riftState.KeyDropsTier[drop.Tier] or 0))
 					riftState.KeyDropsTier[drop.Tier] = (riftState.KeyDropsTier[drop.Tier] or 0) + count
 					Keys.Add(other, count)
-					notify(other, string.format("🔑 You got %d key(s)! (Lord drop) — Use them at the town Dungeon Gate", count))
 					Effects.FloatText(rootForKey.Position + Vector3.new(0, 6, 0), "🔑 Key +" .. count, Color3.fromRGB(160, 255, 200))
 				end
 			end
@@ -2766,7 +2764,6 @@ local function updateZones()
 					player:SetAttribute("Zone", newZone)
 					if newZone == "Lobby" then routeBeat[player] = nil end -- 마을로 돌아오면 길목 사건이 처음부터 다시
 					if newZone == "Field" then
-						notify(player, "Entered the Field! Monsters get stronger the farther east you go.")
 						if player:GetAttribute("TutorialDoom") then -- 첫 구역 군주 위치를 표지로 알려준다 (군주는 이 구역에 한 마리뿐)
 							local lord = worldLordOfZone1()
 							if lord then
@@ -3116,7 +3113,6 @@ local function airRaid(player, zone)
 	if not root then return end
 	player:SetAttribute("EventFx", "Raid") -- 사이렌 대신 화면 가장자리가 붉게 맥박친다 (PlayerFX)
 	player:SetAttribute("EventFxTick", (player:GetAttribute("EventFxTick") or 0) + 1)
-	notify(player, "🚨 Air raid! Watch the bombers in the sky — stay out of the red circles on the ground!")
 	player:SetAttribute("ShakeStrength", 0.35)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	local TweenService = game:GetService("TweenService")
@@ -3492,7 +3488,6 @@ local FIELD_EVENTS = {
 }
 
 local function eventAmbush(player, root, zone)
-	notify(player, "⚠ Raid! Monster hordes are swarming from all sides!")
 	player:SetAttribute("ShakeStrength", 0.5)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	local count = 6 + math.min(6, zone)
@@ -3503,7 +3498,6 @@ local function eventAmbush(player, root, zone)
 end
 
 local function eventBarrage(player, root, zone)
-	notify(player, "💥 Incoming barrage! Watch the circles on the ground — keep moving!")
 	player:SetAttribute("ShakeStrength", 0.25)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	local base = Config.Monster.GetStats(F.GetZoneLevel(zone))
@@ -3535,7 +3529,6 @@ local function eventStampede(player, root, zone)
 	if zoneOfX(center.X) ~= zone then return false end
 	player:SetAttribute("EventFx", dirX > 0 and "StampedeR" or "StampedeL") -- 몰려오는 쪽 가장자리가 주황빛으로 번쩍인다
 	player:SetAttribute("EventFxTick", (player:GetAttribute("EventFxTick") or 0) + 1)
-	notify(player, string.format("🐃 Monster stampede! They're charging in a line from the %s — step aside and sweep them away!", dirX > 0 and "right" or "left"))
 	player:SetAttribute("ShakeStrength", 0.35)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 	local count = 9 + math.min(6, zone)
