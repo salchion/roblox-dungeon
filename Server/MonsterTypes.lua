@@ -469,6 +469,27 @@ end
 
 -- 몸 기울임(몸체 CFrame 에 곱하는 값 하나뿐이라 서버 부담이 없다): 이동 방향으로 숙이고, 숨 쉬듯 흔들리고, 공격 직전에는 뒤로 젖힌다.
 -- moving: 이번 프레임에 움직였는가
+-- 종류마다 다른 몸놀림 (전부 몸체 CFrame 에 곱하는 값뿐이라 서버 부담은 그대로):
+-- hopF / hopH: 통통 튀는 빠르기 / 높이(몸 크기 배수, hopLeap=true 면 튀었다 잠깐 쉬는 "뜀뛰기"), pitch: 앞뒤 끄덕임, roll: 좌우 기우뚱, yaw: 고개 돌림(주기 yawF), bob: 가만있을 때 위아래 출렁임, dip: 몸을 낮춘 정도
+local MOTION = {
+	["Slime"] = { hopF = 3.4, hopH = 0.75, hopLeap = true, pitch = 0.1, pitchF = 3.4, roll = 0.03, rollF = 2 },
+	["Spike Bug"] = { hopF = 11, hopH = 0.12, roll = 0.1, rollF = 11, yaw = 0.18, yawF = 7 },
+	["Bat"] = { roll = 0.55, rollF = 4.5, yaw = 0.3, yawF = 3.1, bob = 0.9, pitch = 0.2, pitchF = 9 },
+	["Mage Ghost"] = { roll = 0.1, rollF = 1.3, yaw = 0.35, yawF = 0.8, bob = 1.3 },
+	["Rock Golem"] = { hopF = 3.2, hopH = 0.06, roll = 0.14, rollF = 1.6, pitch = 0.05, pitchF = 3.2 },
+	["Charging Boar"] = { hopF = 7, hopH = 0.1, pitch = 0.16, pitchF = 7, dip = 0.08 },
+	["Bomber"] = { hopF = 9, hopH = 0.35, roll = 0.22, rollF = 9 },
+	["Sniper Imp"] = { hopF = 5, hopH = 0.05, yaw = 0.3, yawF = 2.3, dip = 0.18, roll = 0.05, rollF = 5 },
+	["Magic Turret"] = { yaw = 0.16, yawF = 0.7 },
+	["Venom Spider"] = { hopF = 13, hopH = 0.07, yaw = 0.25, yawF = 15, roll = 0.08, rollF = 13, dip = 0.15 },
+	["Wisp"] = { roll = 0.4, rollF = 2.6, yaw = 0.5, yawF = 2.0, bob = 1.1 },
+	["Healer Priest"] = { yaw = 0.25, yawF = 0.9, bob = 0.9, roll = 0.06, rollF = 1.7 },
+	["Curse Totem"] = { roll = 0.05, rollF = 1.1 },
+}
+M.Motion = MOTION
+
+-- 몸 기울임(몸체 CFrame 에 곱하는 값 하나뿐이라 서버 부담이 없다): 이동 방향으로 숙이고, 숨 쉬듯 흔들리고, 공격 직전에는 뒤로 젖힌다.
+-- moving: 이번 프레임에 움직였는가
 local function bodyTilt(data, def, now, dt, moving)
 	local target
 	if data.RearUntil and now < data.RearUntil then
@@ -480,12 +501,24 @@ local function bodyTilt(data, def, now, dt, moving)
 	end
 	local lean = (data.Lean or 0) + (target - (data.Lean or 0)) * math.min(1, dt * 10)
 	data.Lean = lean
+	local phase = data.Phase or 0
+	local m = MOTION[def.Name]
 	local sway = 0
 	if def.Move ~= "Static" then
-		sway = math.sin(now * (moving and 6 or 2) + (data.Phase or 0)) * (moving and 0.07 or 0.025) -- 걸음 / 숨쉬기 좌우 흔들림
+		sway = math.sin(now * (moving and 6 or 2) + phase) * (moving and 0.07 or 0.025) -- 걸음 / 숨쉬기 좌우 흔들림
 	end
-	local breath = (moving or def.Move == "Static") and 0 or math.sin(now * 2.2 + (data.Phase or 0)) * 0.03
-	return CFrame.Angles(lean + breath, 0, sway)
+	local breath = (moving or def.Move == "Static") and 0 or math.sin(now * 2.2 + phase) * 0.03
+	if not m then
+		return CFrame.Angles(lean + breath, 0, sway)
+	end
+	local rear = data.RearUntil and now < data.RearUntil
+	local pitch, roll, yaw, y = lean + breath, sway, 0, 0
+	if m.roll then roll += math.sin(now * m.rollF + phase) * m.roll * (moving and 1 or 0.5) end
+	if m.pitch and (moving or def.Move == "Hover") then pitch += math.sin(now * m.pitchF + phase * 2) * m.pitch end
+	if m.yaw and not rear then yaw = math.sin(now * m.yawF + phase * 3) * m.yaw * (moving and 0.6 or 1) end
+	if m.bob then y += (math.sin(now * 2.3 + phase) * 0.5 + 0.5) * m.bob end -- 0 이상으로만 (바닥 아래로 꺼지지 않게)
+	if m.dip then y -= m.dip * (def.SizeMult or 1) * (moving and 1 or 0.4) * 1.5 end
+	return CFrame.new(0, y, 0) * CFrame.Angles(pitch, yaw, roll)
 end
 
 -- 잠깐 색을 바꿔 예고한 뒤 action 실행 (그 사이 죽었으면 취소)
@@ -1016,8 +1049,11 @@ function M.Update(ctx, part, data, dt, now)
 		position = snapToGround(ctx, position, stats.Size)
 		-- 통통 튀며 다가온다 (걷는 느낌보다 훨씬 역동적): 종류마다 튀는 높이가 다르다
 		if def.Move ~= "Static" and def.Move ~= "Keep" then
-			local hop = (def.Shape == "Ball" and 0.5 or 0.22) * stats.Size
-			position += Vector3.new(0, math.abs(math.sin(now * 6 + data.Phase)) * hop, 0)
+			local m = MOTION[def.Name]
+			local hop = (m and m.hopH or (def.Shape == "Ball" and 0.5 or 0.22)) * stats.Size
+			local wave = math.sin(now * (m and m.hopF or 6) + data.Phase)
+			wave = (m and m.hopLeap) and math.max(0, wave) or math.abs(wave)
+			position += Vector3.new(0, wave * hop, 0)
 		end
 	end
 	local lookDirection = direction
