@@ -298,7 +298,6 @@ handlers.Ult = function(player, root, _, character)
 	Debris:AddItem(field, 0.5 + 12 * 0.07 + 1.3 + 1.2) -- 먼저 수명을 정해 둔다 (오류가 나도 영구 무적이 되지 않게)
 	field.Parent = character
 	player:SetAttribute("DeadeyeActive", true)
-	Remotes.Notify:FireClient(player, string.format("🎯 Deadeye! Barrage on %d enemies", #targets))
 	Effects.FloatText(origin + Vector3.new(0, 6, 0), "🎯 Deadeye!", Color3.fromRGB(255, 90, 90))
 
 	task.spawn(function()
