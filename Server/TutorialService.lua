@@ -146,6 +146,10 @@ function Tutorial.Load(player, saved)
 			savedStep = mapped
 		end
 		local owedReel = false
+		if version < 10 and savedStep == 1 then -- 첫 미션이 허수아비에서 "몬스터 5마리"로 바뀌었다: 이전 진행도는 버리고, 첫 장비는 필드에 서는 순간 받는다
+			saved.Progress = 0
+			owedReel = true
+		end
 		if version < 9 then -- "모루에서 강화 2번" 미션(옛 2번)을 없앴다: 옛 2~6 -> 새 2~5 (옛 2번에 있던 사람은 필드 미션 + 첫 장비를 받는다)
 			local map = { [1] = 1, [2] = 2, [3] = 2, [4] = 3, [5] = 4, [6] = 5 }
 			local mapped = savedStep >= 7 and #Steps + 1 or (map[savedStep] or savedStep)
@@ -161,6 +165,7 @@ function Tutorial.Load(player, saved)
 		FunnelLog.Onboarding(player, 1, "Start")
 	end
 	state.StepStartedAt = os.clock()
+	state.FieldStarted = typeof(saved) == "table" and saved.FieldStarted == true
 	state.ReelDone = not (typeof(saved) == "table" and saved.ReelDone == false) and not state.OwedReel -- 예전 저장본 / 새 사용자는 이미 받았거나 아직 때가 아니다
 	states[player] = state
 	-- 첫 던전 미션 중 던전에서 나왔거나(죽음 / 나가기 / 접속 종료) 다시 접속했다면: 게이트로 다시 들어가면 된다고 알려 준다 (열쇠 / 무료 입장 소모 없음)
@@ -249,9 +254,28 @@ function Tutorial.Finish(player)
 	return true
 end
 
+-- 오프닝을 끝까지 본 새 유저(첫 미션 단계)를 바로 1구역 캠프에 세우고 첫 장비를 준다. R 키 자동 공격 안내도 같이 띄운다.
+function Tutorial.StartInField(player)
+	local state = states[player]
+	if not state or state.Step ~= 1 or state.Progress > 0 or state.FieldStarted then return end
+	local character = player.Character
+	if not character or player:GetAttribute("Zone") == "Dungeon" then return end
+	local okF, Field = pcall(function() return require(script.Parent:WaitForChild("FieldService")) end)
+	if not okF or not Field.RespawnAtCamp then return end
+	state.FieldStarted = true
+	state.ReelDone = true -- 이 자리에서 바로 주므로 "필드에 처음 나갈 때" 지급은 다시 하지 않는다
+	Field.RespawnAtCamp(player, character, 1)
+	task.delay(1.5, function() if player.Parent then giveReelGear(player) end end)
+	task.delay(4, function()
+		if player.Parent and states[player] == state and state.Step == 1 then
+			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "R", Title = "Press R: auto-attack!", Text = "Press R to aim and fire at nearby monsters automatically. The Zone 1 Lord (👑) is waiting ahead!", Duration = 10, Top = true })
+		end
+	end)
+end
+
 function Tutorial.Serialize(player)
 	local state = states[player] or { Step = #Steps + 1, Progress = 0 }
-	return { Step = state.Step, Progress = state.Progress, V = 9, ReelDone = state.ReelDone }
+	return { Step = state.Step, Progress = state.Progress, V = 10, ReelDone = state.ReelDone, FieldStarted = state.FieldStarted == true }
 end
 
 function Tutorial.Forget(player)

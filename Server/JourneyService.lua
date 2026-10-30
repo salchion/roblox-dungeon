@@ -217,6 +217,10 @@ Remotes.Tutorial.OnServerEvent:Connect(function(player, action)
 		dashedAt[player] = os.clock()
 	elseif action == "IntroSeen" then
 		Journey.Mark(player, "IntroSeen") -- 오프닝을 끝까지 한 번 봤다: 다음부터는 건너뛸 수 있다
+		task.defer(function() -- 새 유저라면 마을이 아니라 바로 1구역 캠프에서 시작한다
+			local okT, Tutorial = pcall(function() return require(script.Parent:WaitForChild("TutorialService")) end)
+			if okT and Tutorial.StartInField then Tutorial.StartInField(player) end
+		end)
 	elseif action == "SetsOpened" then
 		Journey.Mark(player, "SetsOpened") -- 세트 효과 창을 한 번 열어 봤다: 버튼 반짝임을 멈춘다
 	end
