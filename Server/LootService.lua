@@ -141,7 +141,9 @@ local function collect(player, drop)
 	if status == "Equipped" then
 		text = "⚔ New gear equipped! " .. label
 	elseif status == "Bag" then
-		text = "🎒 " .. label .. (betterThanEquipped and "  ▲ Better than your current gear! (I → Bag)" or "")
+		if betterThanEquipped or item.Rarity >= 3 then -- 평범한 가방 추가는 알리지 않는다 (알림이 쉴 새 없이 올라오던 것): 지금 장비보다 좋거나 영웅 이상일 때만
+			text = "🎒 " .. label .. (betterThanEquipped and "  ▲ Better than your current gear! (I → Bag)" or "")
+		end
 	else
 		noteSalvage(player, label, essence, gold)
 	end

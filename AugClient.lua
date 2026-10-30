@@ -509,10 +509,13 @@ local function procWorldFx(info, position)
 	end
 end
 
+local lastProcPop = 0
 local function showProc(attr, position)
 	local info = Config.AugInfo[attr]
 	if not info then return end
 	procWorldFx(info, position)
+	if os.clock() - lastProcPop < 1.4 then return end -- 화면 가운데 "충격파 샷!" 같은 글자는 1.4초에 한 번만 (세트 효과가 계속 터져서 글자가 쉴 새 없이 떴다. 효과 자체의 연출은 그대로)
+	lastProcPop = os.clock()
 	if player:GetAttribute("ModalOpen") then return end -- 메뉴 같은 큰 창이 열려 있으면 화면 가운데 글자를 띄우지 않는다 (창 위에 겹쳐 보였다)
 	procUntil[attr] = os.clock() + 0.5
 	refreshHud()
