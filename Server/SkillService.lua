@@ -142,7 +142,7 @@ handlers.Spirit = function(player, root, _, character)
 			local zone = player:GetAttribute("Zone")
 			if not nowRoot or (zone ~= "Field" and zone ~= "Dungeon") then break end
 			tick += 1
-			local targets = Dungeon.TargetsIn(player, nowRoot.Position, cfg.Range, 6) or Field.TargetsIn(player, nowRoot.Position, cfg.Range, 6) or {}
+			local targets = Dungeon.TargetsIn(player, nowRoot.Position, cfg.Range, 10) or Field.TargetsIn(player, nowRoot.Position, cfg.Range, 10) or {}
 			if #targets > 0 then
 				local from = nowRoot.Position + Vector3.new(0, 1.5, 0)
 				local offset = tick -- 가까운 적만 두들기지 않게 시작 위치를 틱마다 돌린다
@@ -280,6 +280,13 @@ handlers.Ult = function(player, root, _, character)
 	local targets = Dungeon.TargetsIn(player, root.Position, cfg.Radius, maxTargets) or Field.TargetsIn(player, root.Position, cfg.Radius, maxTargets)
 	if not targets or #targets == 0 then
 		return false, "No enemies in range! (Your gauge is unchanged)"
+	end
+	if #targets > 1 then -- 데드아이는 단일 대상: 범위 안에서 가장 덩치 큰 적(보스 / 엘리트 / 거신) 한 마리에 전탄을 집중한다. 광역은 죽음의 연꽃(F)이 맡는다
+		local best = targets[1]
+		for _, candidate in ipairs(targets) do
+			if candidate.Size.Magnitude > best.Size.Magnitude + 0.5 then best = candidate end
+		end
+		targets = { best }
 	end
 	player:SetAttribute("UltCharge", 0)
 

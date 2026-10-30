@@ -205,17 +205,17 @@ Config.Skills = {
 	Barrier = { Name = "Energy Barrier", Icon = "🛡", Key = "Z", KeyCode = "Z", Cooldown = 14, Duration = 3,
 		Desc = "A barrier that blocks all damage for 3s" },
 	-- F: 죽음의 연꽃(롤 카타리나 R 처럼): 2.5초 동안 몸 주위로 단검이 휘돌고, 0.12초마다 주변 적에게 단검이 최대 Daggers 자루씩 날아가 꽂힌다 (움직이며 쏠 수 있다). 한 자루 = 일반 공격 x Mult. 저장 / 슬롯 이름은 예전 그대로 Spirit.
-	Spirit = { Name = "Death Lotus", Icon = "🌸", Key = "F", KeyCode = "F", Cooldown = 10, Duration = 2.5, Interval = 0.12, Daggers = 3, Range = 32, Mult = 0.5,
-		Desc = "Daggers whirl around you for 2.5s and fly at nearby enemies, three at a time. You can keep moving and shooting!" },
+	Spirit = { Name = "Death Lotus", Icon = "🌸", Key = "F", KeyCode = "F", Cooldown = 10, Duration = 2.5, Interval = 0.12, Daggers = 4, Range = 44, Mult = 0.45,
+		Desc = "Area skill: daggers whirl around you for 2.5s and fly at many nearby enemies, four at a time. You can keep moving and shooting!" },
 	Blast = { Name = "Shockwave", Icon = "💥", Key = "F", KeyCode = "F", Cooldown = 8, Radius = 16, Range = 90, Mult = 3,
 		Desc = "Explodes where you aim (radius 16, attack x3)" },
 	Heal = { Name = "First Aid", Icon = "💚", Key = "C", KeyCode = "C", Cooldown = 30, Radius = 40, Ratio = 0.08,
 		Desc = "Restores 8% HP to you and nearby party members (+1%p per skill level)" },
 	Ult = { Name = "Deadeye", Icon = "🎯", Key = "V", KeyCode = "V", Cooldown = 3, Radius = 110, Mult = 8, Cost = 100, MaxTargets = 6, Volleys = 12, VolleyGap = 0.09, -- 대상 수 / 일제 사격 횟수를 줄여 렉을 막는다 (빔 / 피해 숫자 / 폭발 효과가 대상 x 횟수만큼 생긴다)
 		ShotsPerTarget = 8, ShotGap = 0.03,
-		Missiles = 16, PoolMult = 4.5, RepeatDecay = 0.82, -- RepeatDecay: 같은 적에게 미사일이 거듭 맞을수록 한 발 피해가 이 배율씩 줄어든다 (한 마리에 12발이면 합계가 약 5발 분량)
+		Missiles = 16, PoolMult = 4.5, RepeatDecay = 0.92, -- RepeatDecay: 같은 적에게 미사일이 거듭 맞을수록 한 발 피해가 이 배율씩 줄어든다 (한 마리에 12발이면 합계가 약 5발 분량)
 		 -- 미사일 총 발수(대상 수와 상관없이 고정, 대상들에게 번갈아 나눠 간다) / 총 피해 배율 (한 마리면 12발이 전부 그 적에게 꽂힌다)
-		Desc = "Ultimate: use it when the gauge is full! Locks onto nearby enemies, then fires 16 missiles split between them (nearest 6 first, up to 12 as the skill levels up). Against a single target like a boss, all 16 hit it" },
+		Desc = "Single-target ultimate: use it when the gauge is full! Locks onto the biggest enemy in range (boss / elite first) and fires all 16 missiles at it" },
 	ChargePerShot = 7,
 	-- 패시브 스킬 (스킬 강화 창에서 골드로 레벨업, 스킬 바에는 안 나온다)
 	Focus = { Name = "Aura Focus", Icon = "⚡", Key = "Passive", Cooldown = 0, Passive = true,
