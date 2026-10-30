@@ -1,6 +1,6 @@
 -- CharacterMotionClient (StarterPlayer > StarterPlayerScripts 안의 LocalScript, 이름: CharacterMotionClient)
 -- 내 캐릭터의 몸놀림: 달리는 방향으로 기울고, 맞힐 때 반동으로 살짝 젖혀지고, 대시 때 숙이고, 착지하면 낮아졌다 올라온다.
--- 허리 관절(Waist, R6 는 RootJoint)의 C0 에 작은 회전만 곱한다 (애니메이션 / 부품은 건드리지 않아서 부담이 없다).
+-- 허리 관절(Waist, R6 는 RootJoint)의 Transform 에 작은 회전만 준다 (C0 는 읽기 전용이라 쓰면 오류가 났다) (애니메이션 / 부품은 건드리지 않아서 부담이 없다).
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -9,13 +9,13 @@ local RunService = game:GetService("RunService")
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local player = Players.LocalPlayer
 
-local joint, baseC0, humanoid, root
+local joint, humanoid, root
 local pitch, roll = 0, 0 -- 지금 적용 중인 기울임 (부드럽게 따라간다)
 local recoil, landing, dashUntil = 0, 0, 0
 
 local function release()
-	if joint and joint.Parent and baseC0 then joint.C0 = baseC0 end
-	joint, baseC0, humanoid, root = nil, nil, nil, nil
+	if joint and joint.Parent then pcall(function() joint.Transform = CFrame.identity end) end
+	joint, humanoid, root = nil, nil, nil
 	pitch, roll, recoil, landing, dashUntil = 0, 0, 0, 0, 0
 end
 
@@ -32,8 +32,7 @@ local function bind(character)
 			joint = torso and torso:FindFirstChild("RootJoint")
 		end
 	end
-	baseC0 = joint and joint.C0
-	if not (humanoid and root and joint) then
+	if not (humanoid and root and joint and joint:IsA("Motor6D")) then
 		release()
 		return
 	end
@@ -67,7 +66,8 @@ RunService.RenderStepped:Connect(function(dt)
 	pitch += (targetPitch - pitch) * k
 	roll += (targetRoll - roll) * k
 	if humanoid:GetState() == Enum.HumanoidStateType.Seated then return end
-	joint.C0 = baseC0 * CFrame.Angles(pitch, 0, roll)
+	local ok = pcall(function() joint.Transform = CFrame.Angles(pitch, 0, roll) end)
+	if not ok then joint = nil end -- 쓸 수 없는 관절이면 한 번만 실패하고 멈춘다 (출력창에 오류가 반복되지 않게)
 end)
 
 player.CharacterAdded:Connect(bind)
