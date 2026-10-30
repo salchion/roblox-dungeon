@@ -750,6 +750,7 @@ return {
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 레벨 업! Lv.{number1}  (최대 체력 +{number2}, 공격력 +{number3}%)" },
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ 지금은 강화가 무료예요! ({number1}회 남음)" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ 포탈이 아직 회복 중이에요 ({number1}초)." },
+		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ 장비 {number1}개 자동 분해 (정수 +{number2}, {number3} G)" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 멀티 롤!\n모든 티켓 사용 (최대 {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 레벨업! Lv.{number1} (최대 체력 +{number2} 공격 +{number3}%)" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 미션 {number2}/{number3}</font>" },
@@ -1049,8 +1050,5 @@ return {
 		{ "⚡ Power {number9}", "⚡ 파워 {number9}" },
 		{ "⚡ Power {number1}", "⚡ 파워 {number1}" },
 		{ "Remove #{number1}", "#{number1} 제거" },
-		{ "🎟 Free {number1}/{number2}", "🎟 무료 {number1}/{number2}" },
-		{ "⚡ {number1} Power", "⚡ {number1} 파워" },
-		{ "Max HP +{number1}", "최대 체력 +{number1}" },
 	},
 }

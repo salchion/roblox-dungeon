@@ -105,6 +105,31 @@ local function announce(player, item)
 	end
 end
 
+-- 자동 분해 알림 묶기: 몹이 많아 분해가 쉴 새 없이 일어나면 알림이 계속 올라와서, 2.5초 동안 모아 한 줄로 알린다 (한 개뿐이면 예전처럼 이름을 보여 준다)
+local salvageBatch = setmetatable({}, { __mode = "k" })
+local function noteSalvage(player, label, essence, gold)
+	local batch = salvageBatch[player]
+	if batch then
+		batch.Count += 1
+		batch.Essence += essence or 0
+		batch.Gold += gold or 0
+		return
+	end
+	batch = { Count = 1, Label = label, Essence = essence or 0, Gold = gold or 0 }
+	salvageBatch[player] = batch
+	task.delay(2.5, function()
+		salvageBatch[player] = nil
+		if not player.Parent then return end
+		local text
+		if batch.Count == 1 then
+			text = string.format("♻ %s auto-salvaged (Essence +%d, %d G)", batch.Label, batch.Essence, batch.Gold)
+		else
+			text = string.format("♻ Auto-salvaged %d items (Essence +%d, %d G)", batch.Count, batch.Essence, batch.Gold)
+		end
+		Remotes.Notify:FireClient(player, text)
+	end)
+end
+
 local function collect(player, drop)
 	local item = drop.Item
 	local equippedBefore = Inventory.GetEquipped(player, item.Slot)
@@ -118,9 +143,9 @@ local function collect(player, drop)
 	elseif status == "Bag" then
 		text = "🎒 " .. label .. (betterThanEquipped and "  ▲ Better than your current gear! (I → Bag)" or "")
 	else
-		text = string.format("♻ %s auto-salvaged (Essence +%d, %d G)", label, essence or 0, gold or 0)
+		noteSalvage(player, label, essence, gold)
 	end
-	Remotes.Notify:FireClient(player, text)
+	if text then Remotes.Notify:FireClient(player, text) end
 
 	if item.Rarity >= 4 and (status == "Equipped" or status == "Bag") then
 		announce(player, item)

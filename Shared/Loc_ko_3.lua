@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎟 Free {number1}/{number2}", "🎟 무료 {number1}/{number2}" },
+		{ "⚡ {number1} Power", "⚡ {number1} 파워" },
+		{ "Max HP +{number1}", "최대 체력 +{number1}" },
 		{ "Range +{number1}%", "사거리 +{number1}%" },
 		{ "Reroll ✨{number1}", "재굴림 ✨{number1}" },
 		{ "  (max {number1})", "  (최대 {number1})" },

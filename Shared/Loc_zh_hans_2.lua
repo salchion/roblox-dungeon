@@ -341,6 +341,7 @@ return {
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 升级了!Lv.{number1}  (最大生命 +{number2},攻击 +{number3}%)" },
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ 现在强化免费!(剩余 {number1} 次)" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ 传送门仍在恢复中({number1} 秒)。" },
+		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ 自动分解了 {number1} 件(精华 +{number2},{number3} G)" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 多次滚动！\n使用所有门票（最多{number1}张）" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 升级！等级{number1}（最大生命值+{number2} 攻击力+{number3}%）" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 任务 {number2}/{number3}</font>" },

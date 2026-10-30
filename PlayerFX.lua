@@ -489,8 +489,8 @@ Remotes.Loot.OnClientEvent:Connect(function(action, id, position, rarity, itemNa
 
 		local beam = create("Part", {
 			Anchored = true, CanCollide = false, CanQuery = false, CanTouch = false,
-			Material = Enum.Material.Neon, Color = color, Transparency = 0.4,
-			Size = Vector3.new(width, 60, width), Position = position + Vector3.new(0, 30, 0),
+			Material = Enum.Material.Neon, Color = color, Transparency = rarity <= 1 and 0.7 or 0.4,
+			Size = Vector3.new(width, rarity <= 1 and 24 or 60, width), Position = position + Vector3.new(0, rarity <= 1 and 12 or 30, 0), -- 일반 등급은 짧고 옅은 빛줄기 (화면에 빛기둥이 쉴 새 없이 서지 않게)
 		}, lootFolder)
 
 		local base = position + Vector3.new(0, 3, 0)
@@ -500,11 +500,15 @@ Remotes.Loot.OnClientEvent:Connect(function(action, id, position, rarity, itemNa
 			Size = Vector3.new(1.4 + rarity * 0.2, 1.4 + rarity * 0.2, 1.4 + rarity * 0.2), Position = base,
 		}, lootFolder)
 
-		local gui = create("BillboardGui", { Size = UDim2.new(0, 220, 0, 30), StudsOffset = Vector3.new(0, 3, 0), AlwaysOnTop = true, MaxDistance = 150 }, cube)
-		makeLabel({
-			Size = UDim2.new(1, 0, 1, 0), Text = string.format("[%s] %s", Config.Gear.RarityNames[rarity], itemName),
-			Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = color, TextStrokeTransparency = 0,
-		}, gui)
+		-- 이름표: 일반 등급은 이름표를 달지 않는다 (몹을 잡을 때마다 글자가 쉴 새 없이 뜨던 것). 희귀 이상만 보이고, 폰에서는 더 작고 가까이서만 보인다
+		if rarity >= 2 then
+			local compact = game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").MouseEnabled
+			local gui = create("BillboardGui", { Size = UDim2.new(0, compact and 150 or 220, 0, compact and 20 or 30), StudsOffset = Vector3.new(0, 3, 0), AlwaysOnTop = true, MaxDistance = compact and 60 or 110 }, cube)
+			makeLabel({
+				Size = UDim2.new(1, 0, 1, 0), Text = string.format("[%s] %s", Config.Gear.RarityNames[rarity], itemName),
+				Font = Enum.Font.GothamBold, TextSize = compact and 11 or 14, TextColor3 = color, TextStrokeTransparency = 0,
+			}, gui)
+		end
 
 		lootDrops[id] = { Beam = beam, Cube = cube, Base = base, Time = 0, Rarity = rarity }
 	elseif action == "Gone" then

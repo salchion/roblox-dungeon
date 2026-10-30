@@ -589,6 +589,7 @@ return {
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 レベルアップ！Lv.{number1}  (最大HP +{number2}、攻撃力 +{number3}%)" },
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ 今は強化が無料です！(残り{number1}回)" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ ポータルはまだ回復中です({number1}秒)。" },
+		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1}個を自動分解 (エッセンス +{number2}、{number3} G)" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 マルチロール！\nすべてのチケットを使用（最大{number1}枚）" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 レベルアップ！ Lv.{number1}（最大HP +{number2} 攻撃 +{number3}%）" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 ミッション {number2}/{number3}</font>" },
@@ -923,6 +924,5 @@ return {
 		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ ペットのレベルアップを開始！({text1}) — 時間短縮で早く終わらせられます" },
 		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "推奨 ⚡{text1}  ·  黄色いオーブを狙うと3倍ダメージ！" },
 		{ "{text1} hasn't unlocked depth {number2} yet. (Clear depth {number3} first)", "{text1}はまだ深度{number2}を解放していません。(先に深度{number3}をクリアしてください)" },
-		{ "{text1}'s level is too low. (This dungeon requires Lv.{number2}+)", "{text1}のレベルが低すぎます。(このダンジョンはLv.{number2}以上が必要)" },
 	},
 }

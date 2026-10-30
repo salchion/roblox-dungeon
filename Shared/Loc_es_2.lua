@@ -458,6 +458,7 @@ return {
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 ¡Subida de nivel! Nv.{number1}  (Vida máx. +{number2}, ataque +{number3}%)" },
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ ¡Las mejoras son gratis por ahora! (quedan {number1})" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ El portal aún se está recuperando ({number1} s)." },
+		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} objetos desguazados automáticamente (Esencia +{number2}, {number3} G)" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 ¡Lanzamiento múltiple!\nUsa todos los boletos (máximo {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 ¡Subiste de nivel! Nivel {number1} (HP máximo +{number2} Ataque +{number3}%)" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 Misión {number2}/{number3}</font>" },

@@ -473,6 +473,7 @@ return {
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 Niveau supérieur ! Niv.{number1}  (PV max +{number2}, attaque +{number3} %)" },
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ Les améliorations sont gratuites pour l'instant ! ({number1} restantes)" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ Le portail récupère encore ({number1} s)." },
+		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} objets recyclés automatiquement (Essence +{number2}, {number3} G)" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Lancer multiple !\nUtilise tous les tickets (maximum {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Niveau supérieur ! Lv.{number1} (PV max +{number2} Attaque +{number3}%)" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} améliorations : {number2} réussies / {number3} échouées  (Or -{number4})" },
@@ -912,7 +913,5 @@ return {
 		{ "{text1} {text2} piece ({number3}/3)", "{text1} {text2} pièce ({number3}/3)" },
 		{ "{text1} (Lord of {text2})", "{text1} (seigneur de {text2})" },
 		{ "⚡ Power {text1}{number2} {text3}", "⚡ Puissance {text1}{number2} {text3}" },
-		{ "Depth {number1}: {text2}{text3}", "Profondeur {number1} : {text2}{text3}" },
-		{ "(gear {text1}{text2})", "(équipement {text1}{text2})" },
 	},
 }

@@ -416,6 +416,7 @@ return {
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 Stufenaufstieg! Lv.{number1}  (Max. LP +{number2}, Angriff +{number3}%)" },
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ Verbesserungen sind gerade gratis! ({number1} übrig)" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ Das Portal erholt sich noch ({number1} s)." },
+		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} Gegenstände automatisch zerlegt (Essenz +{number2}, {number3} G)" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Mehrfache Rolle!\nVerwendet alle Tickets (max. {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Stufe aufsteigen! Lv.{number1} (Maximale HP +{number2} Angriff +{number3}%)" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} Verbesserungen: {number2} Erfolg / {number3} Fehlschlag  (Gold -{number4})" },

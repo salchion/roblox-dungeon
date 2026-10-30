@@ -1944,5 +1944,6 @@
 "🌲 Hunting Field  ▶",
 "Defeat each zone's Lord to advance",
 "on crit, {number1} missiles into the enemy you hit (50% of your attack each)",
-"+ a giant missile (300% of your attack)"
+"+ a giant missile (300% of your attack)",
+"♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)"
 ]
