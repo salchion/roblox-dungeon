@@ -147,10 +147,14 @@ local function combatBeat(player, now)
 		Journey.Mark(player, "Dash")
 		lastBeat[player] = now
 		prompt(player, "Q", "Dash to dodge!", "Press Q to dash past enemy bullets. A close shave earns a NEAR MISS bonus!", 7)
+	elseif fraction < 0.85 and not Journey.IsDone(player, "Lotus") and (player:GetAttribute("Level") or 1) >= 2 and player:GetAttribute("Zone") == "Field" then
+		Journey.Mark(player, "Lotus")
+		lastBeat[player] = now
+		prompt(player, "F", "Surrounded? Death Lotus!", "Press F: daggers whirl around you and fly at many nearby enemies for 2.5s. You can keep moving and shooting. Great for clearing crowds!", 8)
 	elseif (player:GetAttribute("UltCharge") or 0) >= Config.Skills.Ult.Cost and not Journey.IsDone(player, "Ult") then
 		Journey.Mark(player, "Ult")
 		lastBeat[player] = now
-		prompt(player, "V", "Ultimate ready!", "Press V for Dead Eye! Lock onto all nearby enemies and fire at once (invincible while active).", 7)
+		prompt(player, "V", "Ultimate ready!", "Press V for Dead Eye! It locks onto the biggest enemy nearby (boss / elite first) and fires everything at once (invincible while active).", 7)
 	end
 end
 
