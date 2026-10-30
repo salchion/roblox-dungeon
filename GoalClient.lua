@@ -450,7 +450,7 @@ RunService.RenderStepped:Connect(function()
 		local clearedNow = player:GetAttribute("ClearedZone") or 0
 		for _, seal in ipairs(game:GetService("CollectionService"):GetTagged("ZoneSeal")) do
 			local sealZone = seal:GetAttribute("SealZone") or 0
-			local open = clearedNow >= sealZone - 1
+			local open = clearedNow >= sealZone - 1 or player:GetAttribute("IntroPlaying") == true -- 오프닝 중에는 봉인막을 숨긴다 (군주 앞을 가렸다)
 			seal.Transparency = open and 1 or 0.45
 			local sealGui = seal:FindFirstChild("SealGui")
 			local sealText = sealGui and sealGui:FindFirstChild("Text")
