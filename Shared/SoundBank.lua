@@ -44,8 +44,8 @@ local SPECS = {
 	Crit = { Base = "Enh_Success", Pitch = 1.45, Volume = 0.26, Length = 0.2, CustomLength = 0.5, -- (0.5 -> 0.32: 총소리가 묻힌다는 의견)
 		Fx = { { "eq", { LowGain = -24, MidGain = 0, HighGain = -8 } }, { "echo", { Delay = 0.05, Feedback = 0.15, WetLevel = -14 } } },
 		Layers = { { Pitch = 2.0, Volume = 0.3, Delay = 0.01 } } },
-	Kill = { Base = "EnhanceSuccess", CustomLength = 1.2, Pitch = 1.5, Volume = 0.3, -- (0.7 -> 0.5)
-	 Length = 0.35, Fx = { { "reverb", { DecayTime = 0.6, WetLevel = -10 } } } },
+	Kill = { Base = "EnhanceSuccess", CustomLength = 1.2, Pitch = 1.05, Volume = 0.3, -- (0.7 -> 0.5) (음높이 1.5 -> 1.05: 자동 공격으로 연달아 잡을 때 "찡찡" 하고 날카롭게 들렸다)
+	 Length = 0.3, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -12 } }, { "reverb", { DecayTime = 0.6, WetLevel = -10 } } } },
 	-- 스킬 / 폭발 / 레벨업
 	Skill_Heal = { CustomLength = 2.5, Base = "Enh_Success", Pitch = 1.1, Volume = 0.8, Length = 0.9, Fx = { { "reverb", { DecayTime = 1.6, WetLevel = -6 } } } },
 	Skill_Ult  = { Base = "Shot", CustomLength = 3.0, Pitch = 0.4, Volume = 1.6, Length = 1.8, Fx = { { "reverb", { DecayTime = 3.0, WetLevel = -2 } }, { "distortion", { Level = 0.4 } } },
