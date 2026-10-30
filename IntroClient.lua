@@ -193,6 +193,7 @@ local function play()
 	local finished = false
 	local connection
 	local endWall -- 오프닝 동안 투명하게 만드는 필드 끝 벽 (끝나면 되돌린다)
+	local hiddenBaffles = {} -- 오프닝 동안 숨기는 꺾임 벽 (군주 앞을 가린다)
 	local function finish()
 		if finished then return end
 		finished = true
@@ -216,6 +217,9 @@ local function play()
 		end)
 		setBodyAlpha(0)
 		if endWall and endWall.Parent then endWall.Transparency = 0 end
+		for baffle in pairs(hiddenBaffles) do
+			if baffle.Parent then baffle.LocalTransparencyModifier = 0 end
+		end
 		for _, board in ipairs(billboards) do
 			if board.Parent then board.Enabled = true end
 		end
@@ -465,6 +469,15 @@ local function play()
 		local x = camera.CFrame.Position.X
 		if os.clock() - (lastProbe or 0) > 1.5 then -- (진단) 지금 카메라 아래에 지면이 있는지
 			lastProbe = os.clock()
+			pcall(function() -- 군주 쪽(필드 끝 700 스터드 안)의 꺾임 벽은 오프닝 동안 내 화면에서만 숨긴다 (군주 앞을 가린다)
+				local fieldFolder = workspace:FindFirstChild("Field")
+				for _, item in ipairs(fieldFolder and fieldFolder:GetChildren() or {}) do
+					if item.Name == "Baffle" and item.Position.X > bossX - 700 and not hiddenBaffles[item] then
+						hiddenBaffles[item] = true
+						item.LocalTransparencyModifier = 1
+					end
+				end
+			end)
 			local probe = workspace:Raycast(camera.CFrame.Position, Vector3.new(0, -1500, 0))
 			print(string.format("[오프닝 진단] 카메라 x=%.0f y=%.0f · 아래 지면 %s", x, camera.CFrame.Position.Y, probe and string.format("있음(y=%.0f, %s)", probe.Position.Y, probe.Instance.Name) or "없음"))
 		end
