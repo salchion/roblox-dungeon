@@ -3857,17 +3857,13 @@ local function playUiSound(id, volume, pitch)
 	game:GetService("Debris"):AddItem(sound, 3)
 end
 
-local lastHitSfx, lastKillSfx = 0, 0
+local lastHitSfx = 0
 Remotes.Hit.OnClientEvent:Connect(function(isCrit, killed)
 	hitMarker = killed and 0.3 or 0.18
 	hitMarkerCrit = isCrit or killed
 	if killed then
 		shake = math.max(shake, 0.5)
-		local combo = player:GetAttribute("Combo") or 0
-		if os.clock() - lastKillSfx >= 0.12 then -- 연달아 잡을 때 처치음이 겹쳐 "찡찡" 하지 않게 (음높이 상승 폭도 줄였다)
-			lastKillSfx = os.clock()
-			SoundBank.Play(sfxParent, "Kill", { Pitch = 1 + math.min(0.3, combo * 0.01) })
-		end
+		-- (처치음은 뺐다: 연달아 잡을 때 거슬린다는 의견. 다시 켜려면 SoundBank.Play(sfxParent, "Kill") 를 부르면 된다)
 	elseif isCrit then
 		shake = math.max(shake, 0.25)
 		SoundBank.Play(sfxParent, "Hit", { Pitch = 1.1 + math.random() * 0.15 })
