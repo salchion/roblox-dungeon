@@ -192,6 +192,7 @@ local function play()
 	local introRemote -- 서버와 주고받는 통신 (필드 불러오기 / 카메라 위치 알림)
 	local finished = false
 	local connection
+	local endWall -- 오프닝 동안 투명하게 만드는 필드 끝 벽 (끝나면 되돌린다)
 	local function finish()
 		if finished then return end
 		finished = true
@@ -214,6 +215,7 @@ local function play()
 			camera.FieldOfView = 70
 		end)
 		setBodyAlpha(0)
+		if endWall and endWall.Parent then endWall.Transparency = 0 end
 		for _, board in ipairs(billboards) do
 			if board.Parent then board.Enabled = true end
 		end
@@ -229,6 +231,12 @@ local function play()
 
 	-- (건너뛰기 없음: 로딩 화면처럼 처음부터 끝까지 그냥 보여 준다. 오프닝 길이는 이전보다 약 10% 줄였다)
 	local startedAt = os.clock()
+	-- 오프닝 동안만 필드 끝 벽을 투명하게 (군주 뒤를 가려 보였다). 끝나면 되돌린다
+	pcall(function()
+		local fieldFolder = workspace:FindFirstChild("Field")
+		endWall = fieldFolder and fieldFolder:FindFirstChild("CanyonEnd", true)
+		if endWall then endWall.Transparency = 1 end
+	end)
 
 	-- 보스 자리: 필드 맨 끝 (최후의 군주 포탈 뒤), 마을 쪽(서쪽)을 바라본다. 실제 보스와 같은 모습
 	local S = 3.8 -- 보스 크기 (이전 2.4: 왕관 / 뿔 / 날개 장식이 작아서 안 보였다)
