@@ -828,7 +828,6 @@ local function doomWaveInner(player, zone, center, real)
 				if gap <= radius then
 					local dmg = lethal and (h2.MaxHealth * percent) or math.min(h2.MaxHealth * percent, h2.Health - 1) -- (진짜 결전에서는 죽을 수 있다)
 					if dmg > 0 then Guard.Take(h2, dmg) end
-					notify(player, "💥 Hit by the Lord's attack!")
 				elseif gap <= radius + 16 and isDashing(r2, player) then
 					awardNearMiss(player, r2) -- 경고 원 바로 밖으로 대시로 빠져나갔다
 				end
@@ -881,7 +880,6 @@ local function doomWaveInner(player, zone, center, real)
 
 		-- 패턴 1) 좁은 간격의 3연 폭격 (플레이어 주변)
 		local function tripleStrike()
-			notify(player, "⚠ The Lord raised his hand!")
 			for k = 1, 3 do
 				if not alive() then return end
 				strike(playerAt() + Vector3.new((k - 2) * 20, 0, 0), 13, 1.1, 0.2, true)
@@ -892,7 +890,6 @@ local function doomWaveInner(player, zone, center, real)
 
 		-- 패턴 2) 플레이어를 둘러싼 고리 (한 군데는 비어 있다) + 한가운데 큰 일격
 		local function ringOfRuin()
-			notify(player, "⚠⚠ Find the gap in the ring!")
 			shake(0.5)
 			local around = playerAt()
 			local gap = math.random(7)
@@ -910,7 +907,6 @@ local function doomWaveInner(player, zone, center, real)
 
 		-- 패턴 3) 회전하는 두 갈래 광선 (바닥에 경고 -> 광선이 되어 반원을 훑는다)
 		local function sweepBeam()
-			notify(player, "⚠ The Lord's gaze turns red — don't touch the beams!")
 			local pivot = Vector3.new(center.X, floorY, center.Z)
 			local length, width = 82, 7
 			local base = math.random() * math.pi
@@ -958,7 +954,6 @@ local function doomWaveInner(player, zone, center, real)
 
 		-- 패턴 4) 유성 폭풍 (아레나 곳곳에 경고 원이 줄줄이)
 		local function meteorStorm()
-			notify(player, "☄ Meteors are falling — keep moving!")
 			shake(0.4)
 			for _ = 1, 14 do
 				if not alive() or not bossAlive() then return end
@@ -973,7 +968,6 @@ local function doomWaveInner(player, zone, center, real)
 
 		-- 패턴 5) 가로 / 세로 띠 (다섯 줄 중 한 줄만 비어 있다)
 		local function lanes()
-			notify(player, "⚠⚠ Walls of fire! Reach the one safe lane!")
 			local vertical = math.random() < 0.5
 			local safe = math.random(5)
 			local bands = {}
@@ -1017,7 +1011,6 @@ local function doomWaveInner(player, zone, center, real)
 
 		-- 패턴 6) 쫓아오는 불덩이 (느리게 따라온다: 맞으면 사라진다)
 		local function orbBarrage()
-			notify(player, "🔴 Homing fireballs! Keep your distance!")
 			local orbs = {}
 			for index = 1, 9 do
 				local angle = index / 9 * math.pi * 2
@@ -1061,7 +1054,6 @@ local function doomWaveInner(player, zone, center, real)
 
 		-- 패턴 7) 최후의 심판 (3단계): 아레나가 붉게 물든다. 초록 원 안에 들어가 있어야 산다
 		local function judgement()
-			notify(player, "💀 JUDGEMENT! Stand inside a green circle!")
 			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "The Final Lord", Text = "Perish.", Duration = 2.5, Top = true })
 			shake(0.7)
 			lordSfx("Lord_Charge")
@@ -1107,7 +1099,6 @@ local function doomWaveInner(player, zone, center, real)
 
 		-- 패턴 8) 충격파 고리: 군주 발밑에서 바닥 고리가 3번 퍼져 나온다. 고리가 지나갈 때 대시로 넘어야 한다 (대시 중이면 안 맞는다)
 		local function shockwaves()
-			notify(player, "⚠ Shockwaves! DASH (Q) through the rings as they reach you!")
 			lordSfx("Lord_Charge")
 			shake(0.5)
 			local origin = Vector3.new(body.Position.X, floorY, body.Position.Z)
@@ -1149,7 +1140,6 @@ local function doomWaveInner(player, zone, center, real)
 
 		-- 패턴 9) 십자 광선 (2단계부터): 네 갈래 광선이 돌다가 한 번 방향을 바꾼다
 		local function crossBeams()
-			notify(player, "⚠⚠ Cross beams! Watch them reverse!")
 			local pivot = Vector3.new(center.X, floorY, center.Z)
 			local length, width = 82, 6
 			local base = math.random() * math.pi
@@ -1216,7 +1206,6 @@ local function doomWaveInner(player, zone, center, real)
 
 		-- 단계 안내
 		local function phaseBanner(text, sub)
-			notify(player, text)
 			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "The Final Lord", Text = sub, Duration = 3, Top = true })
 			shake(0.9)
 			Effects.Burst(body.Position, rgb(255, 120, 90), 140)
@@ -1351,7 +1340,6 @@ local function doomWaveInner(player, zone, center, real)
 	task.wait(1.0)
 	-- 1) 좁은 간격의 3연 폭격 (플레이어 주변)
 	if alive() then
-		notify(player, "⚠ The Lord raised his hand!")
 		for k = 1, 3 do
 			local offset = Vector3.new((k - 2) * 20, 0, 0)
 			strike(playerAt() + offset, 13, 1.2, 0.15)
@@ -1361,7 +1349,6 @@ local function doomWaveInner(player, zone, center, real)
 	end
 	-- 2) 플레이어를 둘러싼 고리가 시계 방향으로 하나씩 내리꽂히고, 마지막에 한가운데로 큰 일격
 	if alive() then
-		notify(player, "⚠⚠ Everything turns red — find a gap to escape!")
 		shake(0.5)
 		local around = playerAt()
 		local gap = math.random(6) -- 한 군데는 비워 둔다: 그쪽으로 빠져나가면 맞지 않는다
@@ -1380,7 +1367,6 @@ local function doomWaveInner(player, zone, center, real)
 	end
 	-- 마지막: 아레나 전체가 붉게 물든다 — 어디에도 안전한 곳이 없다
 	if alive() then
-		notify(player, "💀 The Lord gathers all his power... there is nowhere to hide!!")
 		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "The Final Lord",
 			Text = (data.DoomHits or 0) >= 6 and "...You scratched me. But it is not enough." or "That power is still not enough.", Duration = 3, Top = true })
 		Remotes.Tutorial:FireClient(player, "Cinema", "Start")

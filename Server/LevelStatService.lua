@@ -81,7 +81,6 @@ function LevelStat.AddParagonXp(player, amount)
 	end
 	paragonApply(player)
 	if paragon.Earned > before then
-		Remotes.Notify:FireClient(player, string.format("🌟 Paragon point +%d! %d unspent (press T → Paragon)", paragon.Earned - before, paragon.Earned - paragonSpent(paragon)))
 	end
 end
 
@@ -131,7 +130,6 @@ local function apply(player, announce)
 	player:SetAttribute("LvGoldBought", rift.LvGold or 0)
 	player:SetAttribute("LvGoldCost", (rift.LvGold or 0) < LS.MaxGoldPoints and Config.GetLevelGoldPointCost(rift.LvGold or 0) or 0)
 	if announce and lastPoints[player] and total > lastPoints[player] then
-		Remotes.Notify:FireClient(player, string.format("✨ Stat points +%d! %d unspent (press T to raise move speed / range / double shot)", total - lastPoints[player], left))
 	end
 	lastPoints[player] = total
 end

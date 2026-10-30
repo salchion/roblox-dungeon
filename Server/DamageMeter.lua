@@ -52,6 +52,11 @@ end
 
 -- 미터기 리셋 (머리줄의 ↺ 버튼): 지금까지 센 것을 지우고 0 부터 다시 센다. 0.5초에 한 번만 받는다
 local resetAt = setmetatable({}, { __mode = "k" })
+local function clear(player)
+	local now = os.clock()
+	states[player] = { Start = now, Last = now, Totals = {}, Recent = {}, Dirty = false }
+	player:SetAttribute("DmgMeter", HttpService:JSONEncode({ Dps = 0, Total = 0, Time = 0, Src = {}, Reset = true }))
+end
 task.spawn(function()
 	local Remotes = require(game:GetService("ReplicatedStorage"):WaitForChild("Remotes"))
 	Remotes.Meter.OnServerEvent:Connect(function(player, action)
@@ -59,10 +64,22 @@ task.spawn(function()
 		local now = os.clock()
 		if now - (resetAt[player] or 0) < 0.5 then return end
 		resetAt[player] = now
-		states[player] = { Start = now, Last = now, Totals = {}, Recent = {}, Dirty = false }
-		player:SetAttribute("DmgMeter", HttpService:JSONEncode({ Dps = 0, Total = 0, Time = 0, Src = {}, Reset = true }))
+		clear(player)
 	end)
 end)
+
+-- 무기를 바꾸면(WeaponType 이 달라지면) 자동으로 새로 센다: 이전 무기의 피해가 섞이면 새 무기의 DPS 를 비교할 수 없다. (강화로 레벨만 오를 때는 그대로 센다)
+local function watchWeapon(player)
+	local last = player:GetAttribute("WeaponType")
+	player:GetAttributeChangedSignal("WeaponType"):Connect(function()
+		local current = player:GetAttribute("WeaponType")
+		if current == last then return end
+		last = current
+		clear(player)
+	end)
+end
+for _, player in ipairs(Players:GetPlayers()) do watchWeapon(player) end
+Players.PlayerAdded:Connect(watchWeapon)
 
 task.spawn(function()
 	while true do

@@ -355,7 +355,6 @@ local function upgradeSkill(player, key)
 	end
 	player:SetAttribute("Gold", gold - cost)
 	local duration = Growth.StartUpgrade(player, "Skill", key, Config.GetSkillUpgradeTime(level))
-	notify(player, string.format("⏳ %s upgrade started! (%s) — use Time Skip to finish sooner", Config.Skills[key].Name, Config.FormatDuration(duration)))
 	Meta.Push(player)
 end
 
@@ -421,7 +420,6 @@ local function levelUpPet(player)
 	end
 	player:SetAttribute("Gold", gold - cost)
 	local duration = Growth.StartUpgrade(player, "Pet", "Pet", Config.GetPetLevelTime(level))
-	notify(player, string.format("⏳ Pet level-up started! (%s) — use Time Skip to finish sooner", Config.FormatDuration(duration)))
 	Meta.Push(player)
 end
 

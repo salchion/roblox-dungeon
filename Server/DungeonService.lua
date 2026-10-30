@@ -774,7 +774,6 @@ local function bossSummon(run, part, data)
 		spawnMonster(run, level, Vector3.new(x, groundAt(run, x, z, part.Position.Y) + stats.Size / 2, z))
 		Effects.Burst(Vector3.new(x, part.Position.Y, z), Color3.fromRGB(190, 90, 255), 20)
 	end
-	notifyAll(run, "👹 " .. (data.BossName or run.BossName) .. " summoned minions!")
 end
 
 -- 7) 화염 줄기 (디아블로 벨리알식): 보스 앞에 붉은 줄기 여러 개가 예고된 뒤 불길이 치솟는다. 줄기 "사이"로 피하고, 두 번째는 줄기 위치가 어긋난다
@@ -898,7 +897,6 @@ local function bossSideAdds(run, part, data, announce)
 	if not bossAlive(run, part, data) then return end
 	local center = run.ArenaCenter or run.BossPos or part.Position
 	if announce then
-		notifyAll(run, "⚠ " .. (data.BossName or run.BossName) .. "'s minions are rushing in from both sides!")
 	end
 	local level = math.max(1, Config.Boss.MinionLevel + run.LevelBonus + 1)
 	local spots = {}
@@ -1127,7 +1125,6 @@ local function enrageBoss(run, part, data)
 	sfxAt(run, part.Position, "Boss_Enrage", nil, 1)
 	data.BaseColor = Color3.fromRGB(255, 60, 20)
 	part.Color = data.BaseColor
-	notifyAll(run, "⚠ " .. (data.BossName or run.BossName) .. " is enraged!")
 	for _ = 1, Config.Boss.MinionCount do
 		local angle = math.random() * math.pi * 2
 		local position = part.Position + Vector3.new(math.cos(angle) * 20, 0, math.sin(angle) * 20)
@@ -2925,7 +2922,6 @@ local function spawnRushBoss(run, index)
 		bossData.BornAt = os.clock()
 		if index % 10 == 0 then -- 10마리째마다 각성 보스: 패턴을 두 번씩 쓴다
 			bossData.Awakened = true
-			notifyAll(run, string.format("💢 Boss #%d is AWAKENED — it attacks twice in a row!", index))
 		end
 	end
 	notifyAll(run, string.format("👹 Boss #%d: %s appeared!", index, name))
@@ -2985,7 +2981,6 @@ local function rushGimmicks(run)
 			safeR = math.max(64, safeR - 7)
 			drawBand()
 			if safeR <= outer - 7 and safeR > outer - 8 then
-				notifyAll(run, "⚠ The arena is closing in! Stay inside the bright floor!")
 			end
 		end
 		if safeR < outer and now >= nextTick then
@@ -3005,7 +3000,6 @@ local function rushGimmicks(run)
 			if #list >= 2 then
 				local a = table.remove(list, math.random(#list))
 				local b = table.remove(list, math.random(#list))
-				notifyAll(run, "⚠⚠ COMBO ATTACK! Two bosses strike together!")
 				for _, pair in ipairs({ { a, BOSS_PATTERNS.Lanes or BOSS_PATTERNS.Fan }, { b, BOSS_PATTERNS.Meteor or BOSS_PATTERNS.Ring } }) do
 					local entry, fn = pair[1], pair[2]
 					if not entry.Data.Casting then
@@ -3023,7 +3017,6 @@ local function rushGimmicks(run)
 		if now >= nextMirror then
 			nextMirror = now + 12
 			if #bossesAlive() >= 3 then
-				notifyAll(run, "⚠ Mirror barrage! Bullets close in from every side — dash out!")
 				for _, member in ipairs(run.Members) do
 					local root = getAliveParts(member)
 					if root then
@@ -3048,7 +3041,6 @@ local function rushGimmicks(run)
 				data.Enraged = true
 				data.BaseColor = Color3.fromRGB(255, 60, 20)
 				entry.Part.Color = data.BaseColor
-				notifyAll(run, "💢 " .. (data.BossName or "A boss") .. " has been alive too long — it's enraged!")
 			end
 		end
 		task.wait(0.25)

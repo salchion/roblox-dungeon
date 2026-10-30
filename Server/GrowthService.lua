@@ -182,7 +182,6 @@ function Growth.StartTrain(player, stat)
 
 	local duration = math.floor(Config.GetTrainTime(level) * timeMultiplier(player))
 	table.insert(state.Jobs, { Stat = stat, EndAt = os.time() + duration })
-	notify(player, string.format("%s training started! (%s)", R.Stats[stat].Name, Config.FormatDuration(duration)))
 	player:SetAttribute("TrainTick", (player:GetAttribute("TrainTick") or 0) + 1) -- 튜토리얼이 "훈련 시작"을 알아채는 신호
 	Growth.Push(player)
 end
@@ -229,7 +228,6 @@ function Growth.StartGate(player)
 
 	local duration = math.floor(R.GateTime[gateIndex] * timeMultiplier(player))
 	state.GateJob = { Level = gateLevel, EndAt = os.time() + duration }
-	notify(player, string.format("🌟 Level %d breakthrough started! (%s)", gateLevel, Config.FormatDuration(duration)))
 	if gateIndex == 1 then -- 첫 돌파는 30분이라 너무 길다: 같은 시간만큼 단축권을 선물해서 바로 끝낼 수 있게 한다
 		Growth.AddTimeSkip(player, duration)
 		notify(player, string.format("🎁 First breakthrough gift! Received %s Time Skip — press [Use Time Skip] in Growth to finish right away!", Config.FormatDuration(duration)))
