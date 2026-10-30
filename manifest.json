@@ -414,6 +414,13 @@
       "overwrite": true
     },
     {
+      "path": "CharacterMotionClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "CharacterMotionClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "RestPoseClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "RestPoseClient",

@@ -490,7 +490,7 @@ M.Motion = MOTION
 
 -- 몸 기울임(몸체 CFrame 에 곱하는 값 하나뿐이라 서버 부담이 없다): 이동 방향으로 숙이고, 숨 쉬듯 흔들리고, 공격 직전에는 뒤로 젖힌다.
 -- moving: 이번 프레임에 움직였는가
-local function bodyTilt(data, def, now, dt, moving)
+local function bodyTilt(data, def, now, dt, moving, part)
 	local target
 	if data.RearUntil and now < data.RearUntil then
 		target = 0.38 -- 뒤로 젖힘 (앞쪽 = -Z, +X 회전이 머리를 뒤로 넘긴다)
@@ -503,22 +503,30 @@ local function bodyTilt(data, def, now, dt, moving)
 	data.Lean = lean
 	local phase = data.Phase or 0
 	local m = MOTION[def.Name]
+	-- 피격 반동: 맞는 순간 몸이 뒤로 젖혀지며 살짝 밀렸다 돌아온다 (보스는 약하게, 포탑 / 토템은 거의 없이)
+	local kick, push = 0, 0
+	local hitAt = part and Effects.HitAt and Effects.HitAt[part]
+	if hitAt and now - hitAt < 0.2 then
+		local k = 1 - (now - hitAt) / 0.2
+		local weight = (data.IsBoss or data.BossLike) and 0.3 or (def.Move == "Static" and 0.4 or 1)
+		kick, push = 0.3 * k * weight, 0.9 * k * weight
+	end
 	local sway = 0
 	if def.Move ~= "Static" then
 		sway = math.sin(now * (moving and 6 or 2) + phase) * (moving and 0.07 or 0.025) -- 걸음 / 숨쉬기 좌우 흔들림
 	end
 	local breath = (moving or def.Move == "Static") and 0 or math.sin(now * 2.2 + phase) * 0.03
 	if not m then
-		return CFrame.Angles(lean + breath, 0, sway)
+		return CFrame.new(0, 0, push) * CFrame.Angles(lean + breath + kick, 0, sway)
 	end
 	local rear = data.RearUntil and now < data.RearUntil
-	local pitch, roll, yaw, y = lean + breath, sway, 0, 0
+	local pitch, roll, yaw, y = lean + breath + kick, sway, 0, 0
 	if m.roll then roll += math.sin(now * m.rollF + phase) * m.roll * (moving and 1 or 0.5) end
 	if m.pitch and (moving or def.Move == "Hover") then pitch += math.sin(now * m.pitchF + phase * 2) * m.pitch end
 	if m.yaw and not rear then yaw = math.sin(now * m.yawF + phase * 3) * m.yaw * (moving and 0.6 or 1) end
 	if m.bob then y += (math.sin(now * 2.3 + phase) * 0.5 + 0.5) * m.bob end -- 0 이상으로만 (바닥 아래로 꺼지지 않게)
 	if m.dip then y -= m.dip * (def.SizeMult or 1) * (moving and 1 or 0.4) * 1.5 end
-	return CFrame.new(0, y, 0) * CFrame.Angles(pitch, yaw, roll)
+	return CFrame.new(0, y, push) * CFrame.Angles(pitch, yaw, roll)
 end
 
 -- 잠깐 색을 바꿔 예고한 뒤 action 실행 (그 사이 죽었으면 취소)
@@ -973,7 +981,7 @@ function M.Update(ctx, part, data, dt, now)
 
 	-- 돌진 준비 동작 중에는 제자리에서 대상을 노려본다
 	if data.WindupUntil and now < data.WindupUntil then
-		part.CFrame = slopeTilt(ctx, position, stats.Size) * CFrame.lookAt(position, position + direction) * bodyTilt(data, def, now, dt, false)
+		part.CFrame = slopeTilt(ctx, position, stats.Size) * CFrame.lookAt(position, position + direction) * bodyTilt(data, def, now, dt, false, part)
 		return
 	end
 
@@ -1066,7 +1074,7 @@ function M.Update(ctx, part, data, dt, now)
 		data.Facing = facing
 		lookDirection = facing
 	end
-	part.CFrame = ((def.Move == "Hover") and CFrame.identity or slopeTilt(ctx, position, stats.Size)) * CFrame.lookAt(position, position + lookDirection) * bodyTilt(data, def, now, dt, moving)
+	part.CFrame = ((def.Move == "Hover") and CFrame.identity or slopeTilt(ctx, position, stats.Size)) * CFrame.lookAt(position, position + lookDirection) * bodyTilt(data, def, now, dt, moving, part)
 
 	-- 치유 사제: 일정 간격마다 주변 아군(보스 제외)의 체력을 채운다. 먼저 잡아야 하는 몬스터.
 	if def.Attack == "Heal" then

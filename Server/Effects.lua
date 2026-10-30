@@ -817,11 +817,13 @@ function Effects.Shot(from, to, shot, color, rainbow, class, era, progress)
 end
 
 -- 타격감: 맞은 몬스터가 하얗게 번쩍이고, 쏜 사람에게는 적중 표시(Hit)를 보낸다 (치명타 / 처치는 더 크게)
+Effects.HitAt = setmetatable({}, { __mode = "k" }) -- [몬스터 몸체] = 마지막으로 맞은 시각 (MonsterTypes 의 몸 반동이 읽는다)
 function Effects.Hit(player, part, isCrit, killed)
 	if player and player.Parent then
 		Remotes.Hit:FireClient(player, isCrit == true, killed == true)
 	end
 	if killed or not part or not part.Parent then return end
+	Effects.HitAt[part] = os.clock()
 	emit(part.Position, { "H", part }) -- 하얗게 번쩍이는 건 각자 화면에서 (서버가 색을 바꿨다 되돌리지 않는다)
 end
 
