@@ -56,6 +56,22 @@ make("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 170, 120), Co
 local hpText = label({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Center, Parent = hpBack })
 hpText.Parent = hpBack
 
+-- 폰(터치 화면): 위쪽 세계 보스 카드가 화면을 너무 많이 가려서 작고 얇게 줄인다
+if game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").MouseEnabled then
+	panel.Size = UDim2.new(0, 270, 0, 44)
+	panel.Position = UDim2.new(0.5, 0, 0, 42)
+	stroke.Thickness = 2
+	title.Size = UDim2.new(1, -86, 0, 18)
+	title.Position = UDim2.new(0, 10, 0, 3)
+	title.TextSize = 11
+	timer.Size = UDim2.new(0, 76, 0, 20)
+	timer.Position = UDim2.new(1, -84, 0, 2)
+	timer.TextSize = 16
+	hpBack.Size = UDim2.new(1, -20, 0, 10)
+	hpBack.Position = UDim2.new(0, 10, 0, 28)
+	hpText.TextSize = 8
+end
+
 local lastWholeSecond = -1
 task.spawn(function()
 	while true do
