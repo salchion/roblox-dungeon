@@ -74,27 +74,29 @@ local SPECS = {
 }
 
 -- 강화 / 뽑기 연출음 (UI 에서 재생)
--- (8비트 게임 같은 가늘고 높은 "삑삑" 소리를 줄이려고: 피치를 낮추고, 고음을 깎고, 낮은 울림을 깔고, 화음(3도 / 5도)으로 쌓는다)
-SPECS.Enh_Hammer  = { Base = "Shot", CustomLength = 1.5, Pitch = 0.5, Volume = 1.0, Length = 0.2, Fx = { { "distortion", { Level = 0.25 } }, { "eq", { LowGain = 3, MidGain = 0, HighGain = -9 } }, { "reverb", { DecayTime = 0.7, WetLevel = -10 } } },
+-- "장난감 같다"는 의견: 높은 음을 화음으로 쌓던 "띠리링" 을 없애고, 묵직한 금속음 / 폭발 울림 / 파워업 소리(직접 고른 ID)를 낮게 깔아 무게감을 준다.
+--   망치 = 금속 "쾅" 을 조금 낮추고 잔향 / 성공 = 강화 성공음 + 넓은 잔향 / 실패 = 폭발음을 아주 낮고 둔하게 "쿵..."
+--   진화 = 서사적 파워업(Aug_Synergy) 낮게 / 뽑기 흔들림 = 금속 "철컥" / 카드 = 바람 "휙" / 등급 공개 = 일반 "띵" -> 높을수록 파워업 + 낮은 울림
+SPECS.Enh_Hammer  = { Base = "Shot", CustomLength = 1.4, CustomPitch = 0.82, CustomFx = { { "eq", { LowGain = 5, MidGain = 0, HighGain = -5 } }, { "reverb", { DecayTime = 1.1, WetLevel = -8 } } },
+	Pitch = 0.5, Volume = 1.1, Length = 0.2, Fx = { { "distortion", { Level = 0.25 } }, { "eq", { LowGain = 3, MidGain = 0, HighGain = -9 } }, { "reverb", { DecayTime = 0.7, WetLevel = -10 } } },
 	Layers = { { Pitch = 0.3, Volume = 0.7, Delay = 0.0 } } }                       -- 모루를 내려치는 "쾅"
-SPECS.Enh_Success = { Base = "EnhanceSuccess", CustomLength = 1.6, Pitch = 0.82, Volume = 0.9, Length = 0.9, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -10 } }, { "reverb", { DecayTime = 1.3, WetLevel = -7 } } },
-	Layers = { { Pitch = 1.26, Volume = 0.35, Delay = 0.07 }, { Pitch = 0.5, Volume = 0.5, Delay = 0.0 } } }                        -- 성공 "띵~" (단계가 오를수록 음이 높아진다)
-SPECS.Enh_Fail    = { Base = "Enh_Hammer", Pitch = 0.55, Volume = 0.8, Length = 0.6, Fx = { { "reverb", { DecayTime = 1.4, WetLevel = -6 } }, { "eq", { HighGain = -20, MidGain = -4 } } } } -- 둔탁하게 "툭..."
-SPECS.Enh_Evolve  = { Base = "Enh_Success", Pitch = 0.8, Volume = 1.1, Length = 2.0, Fx = { { "eq", { LowGain = 3, MidGain = 0, HighGain = -8 } }, { "reverb", { DecayTime = 2.6, WetLevel = -3 } } },
-	Layers = { { Pitch = 1.12, Volume = 0.8, Delay = 0.12 }, { Pitch = 1.26, Volume = 0.8, Delay = 0.24 }, { Pitch = 1.5, Volume = 0.9, Delay = 0.36 }, { Pitch = 0.4, Volume = 1.1, Delay = 0.0 } } }
-SPECS.Gacha_Drop  = { Base = "Enh_Hammer", Pitch = 0.9, Volume = 0.6, Length = 0.3, Fx = { { "reverb", { DecayTime = 0.8, WetLevel = -8 } } } }   -- 캡슐 낙하 "텅"
-SPECS.Gacha_Tick  = { Base = "Hit", Pitch = 0.75, Volume = 0.6, Length = 0.1, CustomLength = 0.2, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -14 } } } }                                                      -- 흔들릴 때 "틱틱"
-SPECS.Gacha_Card  = { Base = "Kill", Pitch = 0.9, Volume = 0.5, Length = 0.25, Fx = { { "eq", { LowGain = 1, MidGain = 0, HighGain = -8 } } } }                                            -- 10연 카드 한 장씩
+SPECS.Enh_Success = { Base = "EnhanceSuccess", CustomLength = 1.8, CustomPitch = 0.9, CustomFx = { { "eq", { LowGain = 3, MidGain = 0, HighGain = -6 } }, { "reverb", { DecayTime = 1.8, WetLevel = -6 } } },
+	Pitch = 0.82, Volume = 0.9, Length = 0.9, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -10 } }, { "reverb", { DecayTime = 1.3, WetLevel = -7 } } } } -- 성공
+SPECS.Enh_Fail    = { Base = "Boom", Pitch = 0.55, Volume = 0.7, Length = 0.9, Fx = { { "eq", { LowGain = 4, MidGain = -6, HighGain = -24 } }, { "reverb", { DecayTime = 1.6, WetLevel = -6 } } } } -- 둔하게 "쿵..."
+SPECS.Enh_Evolve  = { Base = "Aug_Synergy", Pitch = 0.85, Volume = 1.3, Length = 2.6, Fx = { { "eq", { LowGain = 4, MidGain = 0, HighGain = -4 } }, { "reverb", { DecayTime = 2.6, WetLevel = -4 } } },
+	Layers = { { Pitch = 0.5, Volume = 0.7, Delay = 0.0 } } }                       -- 진화: 묵직한 파워업
+SPECS.Gacha_Drop  = { Base = "Boom", Pitch = 1.1, Volume = 0.5, Length = 0.5, Fx = { { "eq", { LowGain = 4, MidGain = -2, HighGain = -18 } }, { "reverb", { DecayTime = 0.9, WetLevel = -8 } } } } -- 캡슐 낙하 "둥"
+SPECS.Gacha_Tick  = { Base = "Enh_Hammer", Pitch = 0.95, Volume = 0.35, Length = 0.09, Fx = { { "eq", { LowGain = 3, MidGain = 0, HighGain = -12 } } } } -- 흔들릴 때 금속 "철컥"
+SPECS.Gacha_Card  = { Base = "Dash", Pitch = 1.35, Volume = 0.5, Length = 0.3, Fx = { { "eq", { LowGain = -4, MidGain = 0, HighGain = -4 } } } } -- 카드 넘기는 "휙"
 SPECS.Dash   = { Base = "Shot", Pitch = 0.35, Volume = 5.5, Length = 0.4, CustomLength = 1.0, Fx = { { "eq", { HighGain = -12 } } } }  -- 대시 "슈웅"
 SPECS.Pickup = { Base = "Enh_Success", Pitch = 1.5, Volume = 0.3, Length = 0.25, CustomLength = 1.0, Fx = { { "eq", { LowGain = 0, MidGain = 0, HighGain = -8 } } } }                        -- 전리품 줍기 "팅"
-local POP_PITCHES = { 0.85, 1.06, 1.27, 1.5, 1.8 } -- (완전 5도 / 3도로 쌓이는 맑은 화음: 높은 음으로 치솟지 않게)
-for rarity = 1, 5 do                                                                                                                   -- 퍽! 등급이 높을수록 음이 더 많이 쌓인다
-	local layers = {}
-	for i = 2, rarity do
-		table.insert(layers, { Pitch = POP_PITCHES[i], Volume = 0.65, Delay = (i - 1) * 0.1 })
-	end
-	SPECS["Gacha_Pop" .. rarity] = { Base = "Enh_Success", Pitch = POP_PITCHES[1], Volume = 0.8 + rarity * 0.08, Length = 0.9 + rarity * 0.2,
-		Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -8 } }, { "reverb", { DecayTime = 0.8 + rarity * 0.4, WetLevel = -7 + rarity } } }, Layers = layers }
+-- 등급 공개: 일반 / 희귀 = 맑은 "띵", 영웅 = 파워업, 전설 / 신화 = 서사적 파워업 + 아래에 낮은 폭발 울림
+local POP_BASE = { "Reel_Stop", "Reel_Stop", "Aug_Get", "Aug_Synergy", "Aug_Synergy" }
+local POP_PITCH = { 0.85, 1.0, 0.95, 0.9, 0.8 }
+for rarity = 1, 5 do
+	SPECS["Gacha_Pop" .. rarity] = { Base = POP_BASE[rarity], Pitch = POP_PITCH[rarity], Volume = 0.7 + rarity * 0.12, Length = 0.8 + rarity * 0.35,
+		Fx = { { "eq", { LowGain = 2 + rarity, MidGain = 0, HighGain = -6 } }, { "reverb", { DecayTime = 0.8 + rarity * 0.45, WetLevel = -9 + rarity } } },
+		Layers = rarity >= 4 and { { Pitch = POP_PITCH[rarity] * 0.5, Volume = 0.6, Delay = 0 } } or nil }
 end
 -- ★ 직접 고른 소리 전용 항목: 기본 소리를 가공하지 않는다. AudioBank 에 ID 를 적기 전에는 소리가 나지 않는다.
 --   (Volume = 음량 배율 / CustomLength = 이 시간(초)이 지나면 끊는다. 소리가 너무 크거나 길면 여기 숫자를 줄이면 된다.)
