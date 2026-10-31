@@ -395,6 +395,7 @@ return {
 		["Wanderer"] = "Errante",
 		["Wave Rider"] = "Surfista de oleadas",
 		["Wild Warden"] = "Guardián salvaje",
+		["4. Growth (training) is open from the start. Queue up training, and collect gear sets/uniques to boost your Power"] = "4. El crecimiento (entrenamiento) está abierto desde el inicio. Programa entrenamientos y reúne sets/únicos para aumentar tu poder",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -936,7 +937,5 @@ return {
 		{ "Zone {number1} monsters {number2} / {number3} defeated · Lord {text4}", "Monstruos de la zona {number1} {number2} / {number3} derrotados · Señor {text4}" },
 		{ "Skill cooldown -{text1}% per point  (max {number2})", "Enfriamiento de habilidades -{text1}% por punto (máx. {number2})" },
 		{ "Dungeon layout: {text1} (changes every run", "Diseño de mazmorra: {text1} (cambia en cada partida" },
-		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}... ¡desmantelado automáticamente! Esencia +{number2}, {number3} G" },
-		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 ¡Superación del nivel {number1} iniciada! ({text2})" },
 	},
 }

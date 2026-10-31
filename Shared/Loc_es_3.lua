@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}... ¡desmantelado automáticamente! Esencia +{number2}, {number3} G" },
+		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 ¡Superación del nivel {number1} iniciada! ({text2})" },
 		{ "Weapon range +{text1}% per point  (max {number2})", "Alcance del arma +{text1}% por punto (máx. {number2})" },
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} desmantelado automáticamente (esencia +{number2}, {number3} G)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ ¡Misión diaria completada! Recompensa: {text1}" },

@@ -408,6 +408,7 @@ return {
 		["Wanderer"] = "Vagabond",
 		["Wave Rider"] = "Surfeur de vagues",
 		["Wild Warden"] = "Gardien sauvage",
+		["4. Growth (training) is open from the start. Queue up training, and collect gear sets/uniques to boost your Power"] = "4. La croissance (entraînement) est ouverte dès le début. Planifiez l'entraînement et collectez sets/uniques pour augmenter votre puissance",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -927,6 +928,5 @@ return {
 		{ "💰 A Golden Goblin appeared in Zone {number1} · {text2}! Catch it for a jackpot! (75s)", "💰 Un gobelin doré est apparu dans la zone {number1} · {text2} ! Attrapez-le pour le jackpot ! (75 s)" },
 		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "Donjon · choisissez une profondeur (plus profond = meilleures chances de butin) · thème aléatoire · {text1}" },
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "{text1} obtenu ! Ajouté au sac. (I → équiper depuis le sac)  ▲ +{number2}% vs actuel" },
-		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 La porte est fermée ! Vainquez les monstres de la zone {number1} {number2}/{number3} + le seigneur de la zone{text4}" },
 	},
 }

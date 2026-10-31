@@ -523,6 +523,7 @@ return {
 		["Wanderer"] = "放浪者",
 		["Wave Rider"] = "ウェーブライダー",
 		["Wild Warden"] = "荒野の守り手",
+		["4. Growth (training) is open from the start. Queue up training, and collect gear sets/uniques to boost your Power"] = "4. 成長(訓練)は最初から使えます。訓練を予約し、装備セット/ユニークを集めて戦闘力を上げましょう",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -918,8 +919,5 @@ return {
 		{ "Defeat {number1} boss(es)", "{number1} 個のボスを倒す" },
 		{ "{number1} / {number2}   Reward: 🎫 {number3}", "{number1} / {number2}　報酬：🎫 {number3}" },
 		{ "⬆ Level Up  💰 {number1} G", "⬆ レベルアップ 💰 {number1} G" },
-		{ "⚡ {number1} Kill Streak!!", "⚡ {number1} キルストリーク！！" },
-		{ "Survive {number1}s + Boss", "{number1}秒以上+ボスを生き残る" },
-		{ "{number3} / {number4}   Reward: 🎫 {number5}", "{number3} / {number4}　報酬：🎫 {number5}" },
 	},
 }

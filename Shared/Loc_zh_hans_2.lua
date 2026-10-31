@@ -275,6 +275,7 @@ return {
 		["Wanderer"] = "流浪者",
 		["Wave Rider"] = "破浪者",
 		["Wild Warden"] = "荒野守望者",
+		["4. Growth (training) is open from the start. Queue up training, and collect gear sets/uniques to boost your Power"] = "4. 成长（训练）从一开始就开放。预约训练，收集装备套装/独特装备来提升战斗力",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },

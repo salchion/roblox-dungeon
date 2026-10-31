@@ -175,9 +175,13 @@ local function toast(text)
 	toastLabel.Visible = true
 	if pg:GetAttribute("UiCompact") ~= true then
 		-- 큰 화면: 알림은 위쪽 가운데(접속자 표시 / 보스 시간 표시 아래)에서 내려온다: 왼쪽 메뉴 버튼 줄 / 미션 카드와 겹치지 않는다
+		-- (메뉴가 열려 있으면 메뉴 윗부분을 가리지 않게 메뉴 바로 위에 띄운다)
+		local menu = gui:FindFirstChild("MenuPanel")
+		local targetY = 160
+		if menu and menu.Visible then targetY = math.max(4, math.min(160, menu.AbsolutePosition.Y - 82)) end
 		toastLabel.AnchorPoint = Vector2.new(0.5, 0)
 		toastLabel.Position = UDim2.new(0.5, 0, 0, -90)
-		TweenService:Create(toastLabel, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0.5, 0, 0, 160) }):Play()
+		TweenService:Create(toastLabel, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0.5, 0, 0, targetY) }):Play()
 	else
 		toastLabel.AnchorPoint = Vector2.new(0, 1)
 		toastLabel.Position = UDim2.new(0, -430, 1, y)
@@ -3748,7 +3752,7 @@ do -- 도움말 글: 한 줄을 글자 하나(라벨 하나)로 나눈다 (한 �
 		"1. Collect Gold in the field / dungeons to upgrade your weapon (the lobby dummy is for damage / DPS practice; standing in the rest area earns idle Gold)",
 		"2. Defeat monsters in the eastern <b>Field</b> to get gear and level up (don't miss the Golden Goblin!)",
 		"3. The northern <b>Dungeon</b> needs a Key. Survive the set time and the boss appears. Random buffs (and penalties) pop up along the way, and you get gear from the boss chest",
-		"4. Clearing Zone 2 unlocks Growth (training). Queue up training, and collect gear sets/uniques to boost your Power",
+		"4. Growth (training) is open from the start. Queue up training, and collect gear sets/uniques to boost your Power",
 		"5. Once the field is conquered, challenge the Final Lord, then the weekly <b>Boss Rush</b> ranking",
 		}
 	local helpList = create("Frame", { Size = UDim2.new(1, -40, 0, 280), Position = UDim2.new(0, 20, 0, 50), BackgroundTransparency = 1 }, helpPanel)

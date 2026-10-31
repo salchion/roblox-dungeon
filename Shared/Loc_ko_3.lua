@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Pierces up to {number1} enemies", "최대 {number1}명의 적을 관통해요" },
+		{ "Defeat the Zone {number1} Lord", "존 {number1} 군주를 물리치세요" },
+		{ "{number2} / {number3}   Reward: {number4} G + 🎫 {number5}", "{number2} / {number3}   보상: {number4} G + 🎫 {number5}" },
 		{ "{number1} Snowfield · {number2} Volcano", "{number1} 설원 · {number2} 화산" },
 		{ "Railgun · Rusty Era +{number1}", "레일건 · 녹슨 시대 +{number1}" },
 		{ "📍 Field (best: Zone {number11})", "📍 필드 (최적: 구역 {number11})" },

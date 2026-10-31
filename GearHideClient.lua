@@ -8,6 +8,7 @@ local Players = game:GetService("Players")
 
 local player = Players.LocalPlayer
 local saved = setmetatable({}, { __mode = "k" }) -- 숨기기 전 Enabled 값 (빛 / 입자)
+local savedT = setmetatable({}, { __mode = "k" }) -- 숨기기 전 Transparency 값 (조각)
 
 -- 기본은 장비 외형을 숨긴다 (설정 H 의 "Hide gear look" 이 처음부터 ON). 설정에서 끄면 다시 보인다. (저장하지 않는 값이라 접속할 때마다 기본값으로 시작)
 if player:GetAttribute("HideGear") == nil then
@@ -25,8 +26,15 @@ local function isGear(instance, character)
 end
 
 local function apply(instance, hide)
-	if instance:IsA("BasePart") then
-		instance.LocalTransparencyModifier = hide and 1 or 0
+	if instance:IsA("BasePart") or instance:IsA("Decal") then
+		-- (LocalTransparencyModifier 는 기본 카메라가 줌할 때마다 0 으로 되돌려서 장비가 다시 보였다: 내 화면에서만 Transparency 를 직접 바꾼다)
+		if hide then
+			if savedT[instance] == nil then savedT[instance] = instance.Transparency end
+			instance.Transparency = 1
+		elseif savedT[instance] ~= nil then
+			instance.Transparency = savedT[instance]
+			savedT[instance] = nil
+		end
 	elseif instance:IsA("ParticleEmitter") or instance:IsA("Beam") or instance:IsA("Trail") or instance:IsA("Light") then
 		if hide then
 			if saved[instance] == nil then saved[instance] = instance.Enabled end

@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 Buy Point {text1} G ({number2}/{number3})", "💰 Punkt kaufen {text1} G ({number2}/{number3})" },
+		{ "🐾 Unlock Pet  💰 {text1} G", "🐾 Begleiter freischalten  💰 {text1} G" },
 		{ "🎁 You received +{number1} {text2}!", "🎁 Du hast +{number1} {text2} erhalten!" },
 		{ "👋 Welcome back, {text1}!", "👋 Willkommen zurück, {text1}!" },
 		{ "🔒 Zone {number1} · {text2} Sealed", "🔒 Zone {number1} · {text2} versiegelt" },

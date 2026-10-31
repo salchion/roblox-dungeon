@@ -134,6 +134,18 @@ local function buildInventoryTab(state)
 
 	local SLOT_ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Weapon = "🔫", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
 
+	-- 맨 위 버튼 줄: 자동 장착 / 자동 분해 / 정리 (창을 열자마자 보이게: 가방 줄에 두면 스크롤해야 보였다)
+	local actionRow = newRow(34, Color3.fromRGB(26, 28, 42))
+	makeButton({ Size = UDim2.new(0.34, -8, 0, 26), Position = UDim2.new(0, 6, 0.5, -13), Text = "⚡ Auto-equip best gear", TextSize = 11, BackgroundColor3 = GREEN }, actionRow, function()
+		Remotes.Inventory:FireServer("AutoEquip")
+	end)
+	makeButton({ Size = UDim2.new(0.38, -8, 0, 26), Position = UDim2.new(0.34, 2, 0.5, -13), Text = "Auto-Dismantle: " .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 11, BackgroundColor3 = Color3.fromRGB(70, 110, 220) }, actionRow, function()
+		Remotes.Inventory:FireServer("AutoScrap", (state.AutoScrap + 1) % 5)
+	end)
+	makeButton({ Size = UDim2.new(0.28, -8, 0, 26), Position = UDim2.new(0.72, 2, 0.5, -13), Text = "🧹 Smart Clean", TextSize = 11, BackgroundColor3 = RED }, actionRow, function()
+		Remotes.Inventory:FireServer("SmartClean")
+	end)
+
 	local top = newRow(470, Color3.fromRGB(30, 32, 46))
 
 	local viewport = create("ViewportFrame", {
@@ -370,7 +382,14 @@ local function buildInventoryTab(state)
 				Text = string.format("%s <b>%s Set</b>   %s %d/3 <font size='9'>worn</font>", setDef.Icon or "✦", setDef.Name, setPips(have), have),
 			}, band)
 		end
-		local multiH = (selected.Equipped and selected.Level < Config.Gear.MaxLevel) and 54 or 0 -- 장착 중이면 강화 블록(현재 -> 다음 / 확률 막대 / 버튼 2개)이 들어간다
+		local hasBlock = selected.Equipped and selected.Level < Config.Gear.MaxLevel
+		local multiH = hasBlock and 54 or 0 -- 장착 중이면 강화 블록(현재 -> 다음 / 확률 막대 / 버튼 2개)이 들어간다
+		-- 재굴림 / 유니크 버튼 줄: 강화 블록이 있으면 그 아래 (블록 위에 겹쳐 강화 버튼을 가리던 문제)
+		local btnY = bandH + 6
+		if hasBlock and (selected.Unique or #selected.Affixes > 0) then
+			btnY = bandH + 92
+			multiH += 36
+		end
 		makeLabel({
 			Size = UDim2.new(1, -20, 1, -52 - bandH - multiH), Position = UDim2.new(0, 10, 0, 46 + bandH + multiH), Text = table.concat(lines, "\n"), TextSize = 12, RichText = true,
 			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
@@ -432,7 +451,7 @@ local function buildInventoryTab(state)
 		end
 		if selected.Unique then -- 유니크 재굴림 (티켓)
 			makeButton({
-				Size = UDim2.new(0, 84, 0, 30), Position = UDim2.new(1, -220, 0, bandH + 6),
+				Size = UDim2.new(0, 84, 0, 30), Position = UDim2.new(1, -220, 0, btnY),
 				Text = string.format("✦ 🎫%d", Config.Uniques.RerollTickets or 30), TextSize = 11, BackgroundColor3 = Color3.fromRGB(150, 90, 200),
 			}, detail, function()
 				Remotes.Inventory:FireServer("RerollUnique", selected.Id)
@@ -440,7 +459,7 @@ local function buildInventoryTab(state)
 		end
 		if #selected.Affixes > 0 then
 			makeButton({
-				Size = UDim2.new(0, 120, 0, 30), Position = UDim2.new(1, -130, 0, bandH + 6),
+				Size = UDim2.new(0, 120, 0, 30), Position = UDim2.new(1, -130, 0, btnY),
 				Text = string.format("Reroll ✨%d", Config.Inventory.RerollEssence[selected.Rarity]), TextSize = 10, BackgroundColor3 = Color3.fromRGB(70, 110, 220),
 			}, detail, function()
 				Remotes.Inventory:FireServer("Reroll", selected.Id)
@@ -450,18 +469,9 @@ local function buildInventoryTab(state)
 		makeLabel({ Size = UDim2.new(1, -20, 1, -20), Position = UDim2.new(0, 10, 0, 10), Text = "No gear yet.\nDefeat monsters in the field or use the gacha!", TextSize = 13, TextColor3 = Color3.fromRGB(150, 150, 170) }, detail)
 	end
 
-	-- 가방 줄: 제목 + 자동 장착 / 자동 분해 / 정리 버튼 (장비 화면 위쪽 공간을 비우려고 이쪽으로 옮겼다)
+	-- 가방 줄: 제목 (버튼 3개는 맨 위 버튼 줄로 옮겼다)
 	local bagHeader = newRow(34, Color3.fromRGB(26, 28, 42))
 	rowText(bagHeader, "<font color='#e1c476'><b>🎒 Bag — tap a slot to see details above</b></font>", 14)
-	makeButton({ Size = UDim2.new(0, 132, 0, 26), Position = UDim2.new(1, -140, 0.5, -13), Text = "🧹 Smart Clean", TextSize = 10, BackgroundColor3 = RED }, bagHeader, function()
-		Remotes.Inventory:FireServer("SmartClean")
-	end)
-	makeButton({ Size = UDim2.new(0, 172, 0, 26), Position = UDim2.new(1, -318, 0.5, -13), Text = "Auto-Dismantle: " .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 10, BackgroundColor3 = Color3.fromRGB(70, 110, 220) }, bagHeader, function()
-		Remotes.Inventory:FireServer("AutoScrap", (state.AutoScrap + 1) % 5)
-	end)
-	makeButton({ Size = UDim2.new(0, 160, 0, 26), Position = UDim2.new(1, -486, 0.5, -13), Text = "⚡ Auto-equip best gear", TextSize = 10, BackgroundColor3 = GREEN }, bagHeader, function()
-		Remotes.Inventory:FireServer("AutoEquip")
-	end)
 	local columns = 10
 	local rowsNeeded = math.max(1, math.ceil(#bag / columns))
 	local gridRow = newRow(rowsNeeded * 76 + 14)

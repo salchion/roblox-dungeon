@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⛺ Moved to Zone {number1} · {text2} Camp!", "⛺ Movido para o acampamento da zona {number1} · {text2}!" },
+		{ "Loading the world...  ·  {text1}", "Carregando o mundo...  ·  {text1}" },
+		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 Nova arma: {text1} - pressione {number2}!" },
 		{ "{text1} invited you to a party!", "{text1} convidou você para um grupo!" },
 		{ "🗿 {text1} · World Boss (Zone {number2})", "🗿 {text1} · Chefe mundial (zona {number2})" },
 		{ "👀 [{text1}] 5-second preview!", "👀 [{text1}] Prévia de 5 segundos!" },

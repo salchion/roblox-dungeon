@@ -349,6 +349,7 @@ return {
 		["Volcano Strider"] = "Vulkanwanderer",
 		["Wave Rider"] = "Wellenreiter",
 		["Wild Warden"] = "Wildhüter",
+		["4. Growth (training) is open from the start. Queue up training, and collect gear sets/uniques to boost your Power"] = "4. Wachstum (Training) ist von Anfang an offen. Plane Trainings und sammle Ausrüstungssets/Unikate, um deine Kraft zu steigern",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -926,7 +927,5 @@ return {
 		{ "Lord of {text1}  ·  Zone {number2}", "Lord von {text1}  ·  Zone {number2}" },
 		{ "⏱ Used {text1} Time Skip!", "⏱ {text1} Zeitsprung(e) benutzt!" },
 		{ "✅ {text1} — tap to claim!", "✅ {text1} — Tippen zum Abholen!" },
-		{ "💰 Buy Point {text1} G ({number2}/{number3})", "💰 Punkt kaufen {text1} G ({number2}/{number3})" },
-		{ "🐾 Unlock Pet  💰 {text1} G", "🐾 Begleiter freischalten  💰 {text1} G" },
 	},
 }

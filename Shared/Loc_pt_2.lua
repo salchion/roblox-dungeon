@@ -366,6 +366,7 @@ return {
 		["Wanderer"] = "Andarilho",
 		["Wave Rider"] = "Surfista de ondas",
 		["Wild Warden"] = "Guardião selvagem",
+		["4. Growth (training) is open from the start. Queue up training, and collect gear sets/uniques to boost your Power"] = "4. O crescimento (treino) está aberto desde o início. Agende treinos e colete sets/únicos para aumentar seu poder",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -922,8 +923,5 @@ return {
 		{ "{number1} pulls done! Best rarity: {text2}", "{number1} sorteios feitos! Melhor raridade: {text2}" },
 		{ "Active {number1} / {number2} slots   (💰 {text3} G)", "Ativos {number1} / {number2} espaços   (💰 {text3} G)" },
 		{ "You are already holding {text1}.", "Você já está segurando {text1}." },
-		{ "⛺ Moved to Zone {number1} · {text2} Camp!", "⛺ Movido para o acampamento da zona {number1} · {text2}!" },
-		{ "Loading the world...  ·  {text1}", "Carregando o mundo...  ·  {text1}" },
-		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 Nova arma: {text1} - pressione {number2}!" },
 	},
 }

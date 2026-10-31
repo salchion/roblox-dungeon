@@ -47,3 +47,4 @@
 2088¦放浪者¦Wanderer¦Vagabond¦Errante¦Andarilho¦流浪者¦방랑자
 2089¦ウェーブライダー¦Wellenreiter¦Surfeur de vagues¦Surfista de oleadas¦Surfista de ondas¦破浪者¦웨이브 라이더
 2090¦荒野の守り手¦Wildhüter¦Gardien sauvage¦Guardián salvaje¦Guardião selvagem¦荒野守望者¦야생의 수호자
+2091¦4. 成長(訓練)は最初から使えます。訓練を予約し、装備セット/ユニークを集めて戦闘力を上げましょう¦4. Wachstum (Training) ist von Anfang an offen. Plane Trainings und sammle Ausrüstungssets/Unikate, um deine Kraft zu steigern¦4. La croissance (entraînement) est ouverte dès le début. Planifiez l'entraînement et collectez sets/uniques pour augmenter votre puissance¦4. El crecimiento (entrenamiento) está abierto desde el inicio. Programa entrenamientos y reúne sets/únicos para aumentar tu poder¦4. O crescimento (treino) está aberto desde o início. Agende treinos e colete sets/únicos para aumentar seu poder¦4. 成长（训练）从一开始就开放。预约训练，收集装备套装/独特装备来提升战斗力¦4. 성장(훈련)은 처음부터 열려 있어요. 훈련을 예약하고, 장비 세트/유니크를 모아 전투력을 키우세요
