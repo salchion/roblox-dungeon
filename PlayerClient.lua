@@ -319,7 +319,7 @@ local enhanceInfo = makeLabel({ -- (예전 글 줄: 아래 강화 블록이 대�
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 }, enhancePanel)
 -- 강화 블록: +N ➜ +N+1 / 공격력 배율 변화 / 성공 확률 막대
-E.Block = create("Frame", { Size = UDim2.new(1, -24, 0, 98), Position = UDim2.new(0, 12, 0, 446), -- (강화 버튼 바로 위: 누르기 전에 보는 정보) BackgroundColor3 = Color3.fromRGB(30, 28, 46), BorderSizePixel = 0 }, enhancePanel)
+E.Block = create("Frame", { Size = UDim2.new(1, -24, 0, 98), Position = UDim2.new(0, 12, 0, 446), BackgroundColor3 = Color3.fromRGB(30, 28, 46), BorderSizePixel = 0 }, enhancePanel) -- (강화 버튼 바로 위: 누르기 전에 보는 정보)
 create("UICorner", { CornerRadius = UDim.new(0, 12) }, E.Block)
 create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5, Transparency = 0.35 }, E.Block)
 create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(170, 160, 200)), Rotation = 90 }, E.Block)
