@@ -3,6 +3,7 @@
 --   1) 큰 창이 열릴 때: 0.15초 동안 살짝 작았다가 커지며 나타난다 (갑자기 툭 뜨지 않게)
 --   2) 버튼을 누를 때: 살짝 눌렸다 튀어 오른다 + 작은 "틱" 소리 (모든 버튼이 같은 반응)
 --   3) 큰 창이 닫힐 때: 같은 자리의 잔상이 작아지며 흐려진다 (창 자체는 다른 스크립트가 닫은 그대로)
+--   4) 모양 통일: 테두리 / 광택이 없는 버튼과 창에만 공통 테마(굵은 외곽선 + 광택 + 둥근 모서리)를 입힌다
 -- 이미 자기 UIScale 을 쓰는 창 / 버튼(메뉴 아이콘 줄 등)은 건드리지 않는다 (서로 크기를 덮어쓰지 않게).
 
 local Players = game:GetService("Players")
@@ -114,11 +115,61 @@ end
 ------------------------------------------------------------
 -- 화면 전체를 지켜본다: 지금 있는 것 + 새로 생기는 것
 ------------------------------------------------------------
+------------------------------------------------------------
+-- 4) 모양 통일: 화면마다 따로 만든 버튼 / 창 중에 테두리 / 광택이 없는 것만 공통 테마(UiTheme)를 입힌다
+--    (이미 자기 테두리나 그라데이션이 있는 것은 그대로 둔다: 일부러 꾸민 모양을 덮어쓰지 않게)
+------------------------------------------------------------
+local okTheme, Theme = pcall(function() return require(ReplicatedStorage:WaitForChild("UiTheme", 10)) end)
+local INK = (okTheme and Theme and Theme.INK) or Color3.fromRGB(16, 12, 34)
+local function hasChild(obj, className)
+	return obj:FindFirstChildOfClass(className) ~= nil
+end
+local function styleButton(button)
+	if button.BackgroundTransparency >= 0.85 then return end -- (투명 버튼: 아이콘 / 글자만 있는 버튼, 화면을 덮는 버튼)
+	if button.AbsoluteSize.X > 600 or button.AbsoluteSize.Y > 400 then return end
+	if not hasChild(button, "UICorner") then
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(0, 8)
+		corner.Parent = button
+	end
+	if hasChild(button, "UIStroke") or hasChild(button, "UIGradient") then return end
+	local gradient = Instance.new("UIGradient")
+	gradient.Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.new(0.76, 0.76, 0.86))
+	gradient.Rotation = 90
+	gradient.Parent = button
+	local stroke = Instance.new("UIStroke")
+	stroke.Color, stroke.Thickness, stroke.ApplyStrokeMode = INK, 2, Enum.ApplyStrokeMode.Border
+	stroke.Parent = button
+	if button:IsA("TextButton") and button.TextStrokeTransparency >= 1 then
+		button.TextStrokeColor3 = INK
+		button.TextStrokeTransparency = 0.45
+	end
+end
+local function styleWindow(frame)
+	if frame.BackgroundTransparency >= 0.85 then return end
+	if frame.AbsoluteSize.X < MIN_WINDOW or frame.AbsoluteSize.Y < MIN_WINDOW then return end
+	if frame.AbsoluteSize.X > 1600 then return end -- (화면 전체를 덮는 어두운 막은 창이 아니다)
+	if not hasChild(frame, "UICorner") then
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(0, 14)
+		corner.Parent = frame
+	end
+	if not hasChild(frame, "UIStroke") then
+		local stroke = Instance.new("UIStroke")
+		stroke.Color, stroke.Thickness = INK, 3
+		stroke.Parent = frame
+	end
+end
+
 local function consider(obj)
 	if obj:IsA("GuiButton") then
 		watchButton(obj)
+		task.delay(0.1, function() if obj.Parent then pcall(styleButton, obj) end end) -- (크기 / 색이 정해진 뒤에)
 	elseif obj:IsA("Frame") and obj.Parent and obj.Parent:IsA("ScreenGui") then -- (화면 바로 아래의 큰 틀만 창으로 본다)
 		watchWindow(obj)
+		local function tryStyle() if obj.Parent and obj.Visible then pcall(styleWindow, obj) end end
+		task.delay(0.1, tryStyle)
+		obj:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(tryStyle) end) -- (처음엔 숨어 있던 창은 열릴 때)
 	end
 end
 

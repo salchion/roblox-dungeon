@@ -2101,14 +2101,34 @@ local function findNearestTarget(root)
 	return best
 end
 
+-- 마우스가 가리키는 곳: 화면에서 쏜 광선이 처음 맞는 "보이는" 물체. 투명한 부품(보이지 않는 벽 / 안전지대 판정 / 투명 장식)은 건너뛴다.
+-- (예전엔 투명 부품에 먼저 맞아 조준점이 캐릭터 바로 앞에 찍혀서, 탄이 마우스가 아니라 캐릭터가 보는 쪽으로 나갔다)
+-- 몬스터의 판정용 몸통은 투명이지만 조준 대상이므로 맞힌다 (태그 "Monster")
+local CollectionServiceAim = game:GetService("CollectionService")
+local function aimable(hit)
+	if not hit:IsA("BasePart") then return true end
+	if hit.Transparency < 0.9 then return true end
+	local node = hit
+	for _ = 1, 3 do
+		if not node then break end
+		if CollectionServiceAim:HasTag(node, "Monster") then return true end
+		node = node.Parent
+	end
+	return false
+end
 local function getAimPoint(screenPosition)
 	local ray = camera:ViewportPointToRay(screenPosition.X, screenPosition.Y)
 	local params = RaycastParams.new()
 	params.FilterType = Enum.RaycastFilterType.Exclude
-	params.FilterDescendantsInstances = { player.Character }
-	local result = workspace:Raycast(ray.Origin, ray.Direction * 1000, params)
-	if result then
-		return result.Position, result.Instance
+	local ignore = { player.Character }
+	for _ = 1, 8 do
+		params.FilterDescendantsInstances = ignore
+		local result = workspace:Raycast(ray.Origin, ray.Direction * 1000, params)
+		if not result then break end
+		if aimable(result.Instance) then
+			return result.Position, result.Instance
+		end
+		table.insert(ignore, result.Instance) -- 투명 부품은 빼고 다시 쏜다
 	end
 	return ray.Origin + ray.Direction * 300, nil
 end
