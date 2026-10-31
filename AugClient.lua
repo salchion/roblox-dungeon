@@ -63,13 +63,13 @@ local badge = label({
 }, pill)
 make("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
 
--- 창 모양: 가운데 네모(고른 효과의 설명 + 버튼) 둘레에 구역 효과 8개가 원으로 둘러선다 (무협 게임의 팔괘 / 경혈처럼).
--- 한 화면에 다 들어와서 스크롤이 없다. 원을 누르면 가운데에 그 효과가 나온다.
-local PANEL_W, PANEL_H = 680, 548
-local RING_CX, RING_CY = PANEL_W / 2, 300 -- 원들이 둘러서는 중심
-local RING_RX, RING_RY = 250, 178
+-- 창 모양: 왼쪽에 내 캐릭터가 서 있고 그 둘레에 구역 효과 8개가 원으로 둘러선다 (무협 RPG 장비창처럼).
+-- 오른쪽 패널에 고른 효과의 설명 + 버튼. 한 화면에 다 들어와서 스크롤이 없다.
+local PANEL_W, PANEL_H = 760, 548
+local RING_CX, RING_CY = 250, 312 -- 원들이 둘러서는 중심 (= 캐릭터)
+local RING_RX, RING_RY = 172, 172
 local ORB = 66
-local BOX_W, BOX_H = 244, 214
+local BOX_X, BOX_W, BOX_H = 492, 252, 436
 
 local panel = make("Frame", {
 	Size = UDim2.new(0, PANEL_W, 0, PANEL_H), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
@@ -96,24 +96,65 @@ button({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), Ba
 -- 둘레의 은은한 고리 (원들을 잇는 길)
 for i = 0, 47 do
 	local angle = i / 48 * math.pi * 2
-	make("Frame", {
-		Size = UDim2.new(0, 4, 0, 4), AnchorPoint = Vector2.new(0.5, 0.5), BorderSizePixel = 0,
+	local size = (i % 3 == 0) and 6 or 3 -- 금빛 구슬 길 (큰 점 / 작은 점)
+	local dot = make("Frame", {
+		Size = UDim2.new(0, size, 0, size), AnchorPoint = Vector2.new(0.5, 0.5), BorderSizePixel = 0,
 		Position = UDim2.new(0, RING_CX + math.cos(angle) * RING_RX, 0, RING_CY + math.sin(angle) * RING_RY),
-		BackgroundColor3 = Color3.fromRGB(255, 200, 130), BackgroundTransparency = 0.6,
+		BackgroundColor3 = Color3.fromRGB(255, 210, 140), BackgroundTransparency = (i % 3 == 0) and 0.25 or 0.55,
 	}, panel)
+	make("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
 end
 
--- 가운데 네모: 고른 효과
+-- 가운데: 내 캐릭터 (천천히 돈다)
+local viewport = make("ViewportFrame", {
+	Size = UDim2.new(0, 200, 0, 270), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, RING_CX, 0, RING_CY), BackgroundTransparency = 1,
+	Ambient = Color3.fromRGB(200, 190, 210), LightColor = Color3.new(1, 1, 1), ZIndex = 1,
+}, panel)
+local viewCam = make("Camera", { FieldOfView = 36 }, viewport)
+viewport.CurrentCamera = viewCam
+local viewClone, viewPivot
+local function rebuildCharacter()
+	if viewClone then viewClone:Destroy() viewClone = nil end
+	local character = player.Character
+	if not character then return end
+	local ok = pcall(function()
+		character.Archivable = true
+		viewClone = character:Clone()
+	end)
+	if not ok or not viewClone then return end
+	for _, d in ipairs(viewClone:GetDescendants()) do
+		if d:IsA("Script") or d:IsA("LocalScript") or d:IsA("BillboardGui") or d:IsA("ForceField") or d:IsA("Sound") then
+			d:Destroy()
+		elseif d:IsA("BasePart") then
+			d.Anchored = true
+		end
+	end
+	viewClone.Parent = viewport
+	viewPivot = viewClone:GetPivot()
+end
+panel:GetPropertyChangedSignal("Visible"):Connect(function()
+	if panel.Visible then rebuildCharacter() end
+end)
+RunService.RenderStepped:Connect(function()
+	if not panel.Visible or not viewClone or not viewPivot then return end
+	viewClone:PivotTo(CFrame.new(viewPivot.Position) * CFrame.Angles(0, math.rad(200) + math.sin(os.clock() * 0.6) * 0.5, 0))
+	viewCam.CFrame = CFrame.lookAt(viewPivot.Position + Vector3.new(0, 0.8, 12), viewPivot.Position + Vector3.new(0, 0.2, 0))
+end)
+
+-- 오른쪽 패널: 고른 효과
 local box = make("Frame", {
-	Size = UDim2.new(0, BOX_W, 0, BOX_H), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, RING_CX, 0, RING_CY),
+	Size = UDim2.new(0, BOX_W, 0, BOX_H), Position = UDim2.new(0, BOX_X, 0, 96),
 	BackgroundColor3 = Color3.fromRGB(34, 30, 50), BorderSizePixel = 0, ZIndex = 2,
 }, panel)
 make("UICorner", { CornerRadius = UDim.new(0, 10) }, box)
 local boxStroke = make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 2, Transparency = 0.2 }, box)
-local boxIcon = label({ Size = UDim2.new(0, 34, 0, 34), Position = UDim2.new(0, 8, 0, 6), Text = "", TextSize = 24, ZIndex = 3 }, box)
-local boxTitle = label({ Size = UDim2.new(1, -52, 0, 34), Position = UDim2.new(0, 46, 0, 6), Text = "", TextSize = 12, RichText = true, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3 }, box)
+local boxIconBack = make("Frame", { Size = UDim2.new(0, 56, 0, 56), Position = UDim2.new(0, 10, 0, 10), BackgroundColor3 = Color3.fromRGB(50, 44, 70), BorderSizePixel = 0, ZIndex = 3 }, box)
+make("UICorner", { CornerRadius = UDim.new(0, 10) }, boxIconBack)
+local boxIconStroke = make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 2 }, boxIconBack)
+local boxIcon = label({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 30, ZIndex = 4 }, boxIconBack)
+local boxTitle = label({ Size = UDim2.new(1, -84, 0, 56), Position = UDim2.new(0, 74, 0, 10), Text = "", TextSize = 13, RichText = true, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3 }, box)
 local boxBody = label({
-	Size = UDim2.new(1, -16, 1, -94), Position = UDim2.new(0, 8, 0, 44), Text = "", TextSize = 10, RichText = true, TextWrapped = true,
+	Size = UDim2.new(1, -20, 1, -134), Position = UDim2.new(0, 10, 0, 76), Text = "", TextSize = 10, RichText = true, TextWrapped = true,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(205, 210, 235), ZIndex = 3,
 }, box)
 local selectedZone = 1
@@ -220,16 +261,18 @@ function refresh()
 	local gear = player:GetAttribute("AugGearZ_" .. zone) or 0
 	local on = player:GetAttribute("AugOnZ_" .. zone) == true
 	boxIcon.Text = info.Icon
+	boxIconStroke.Color = info.Color
 	boxStroke.Color = on and info.Color or Color3.fromRGB(255, 190, 110)
 	boxTitle.Text = string.format("%sZone %d · %s  %s", on and "<font color='#78ffb4'>●</font> " or "", zone, info.Name,
 		level > 0 and (gear > 0 and string.format("[Lv.%d + gear %d = %d]", level, gear, level + gear) or ("[Lv." .. level .. "]")) or "")
 	local lines = { "<font color='#aaf0c8'>" .. info.Desc .. "</font>" }
 	local role = roleLine(attr)
 	if role then table.insert(lines, role) end
-	-- 단계 수치: 지금 단계와 다음 단계만 (전부 보이면 네모가 넘친다)
+	-- 단계 수치 1~6 (지금 단계는 초록으로)
 	local atk = Config.BaseAttackEstimate and Config.BaseAttackEstimate(player) or 0
 	local now = level + gear
-	for l = math.max(1, now), math.min(6, math.max(1, now) + 1) do
+	table.insert(lines, "")
+	for l = 1, 6 do
 		local text, mult = Config.AugLevelLine(attr, l)
 		local dmg = mult and atk > 0 and string.format("  <font color='#ffd966'>≈ %d dmg</font>", math.floor(atk * mult + 0.5)) or ""
 		local line = string.format("Lv.%d  %s%s", l, text, dmg)
