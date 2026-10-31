@@ -255,6 +255,20 @@ function Tutorial.Finish(player)
 end
 
 -- 오프닝을 끝까지 본 새 유저(첫 미션 단계)를 바로 1구역 캠프에 세우고 첫 장비를 준다. R 키 자동 공격 안내도 같이 띄운다.
+-- 오프닝 비행 중에 부른다 (화면이 "Place" 를 보냄): 첫 미션 단계의 새 유저를 미리 1구역 캠프에 옮겨 둔다.
+-- 그러면 오프닝 마지막의 "하늘에서 떨어지는 착지 장면"이 마을이 아니라 캠프에서 나오고, 끝난 뒤 갑자기 화면이 바뀌지 않는다.
+function Tutorial.PlaceInField(player)
+	local state = states[player]
+	if not state or state.Step ~= 1 or state.Progress > 0 or state.FieldStarted or state.FieldPlaced then return false end
+	local character = player.Character
+	if not character or player:GetAttribute("Zone") == "Dungeon" then return false end
+	local okF, Field = pcall(function() return require(script.Parent:WaitForChild("FieldService")) end)
+	if not okF or not Field.RespawnAtCamp then return false end
+	Field.RespawnAtCamp(player, character, 1)
+	state.FieldPlaced = true
+	return true
+end
+
 function Tutorial.StartInField(player)
 	local state = states[player]
 	if not state or state.Step ~= 1 or state.Progress > 0 or state.FieldStarted then return end
@@ -264,7 +278,7 @@ function Tutorial.StartInField(player)
 	if not okF or not Field.RespawnAtCamp then return end
 	state.FieldStarted = true
 	state.ReelDone = true -- 이 자리에서 바로 주므로 "필드에 처음 나갈 때" 지급은 다시 하지 않는다
-	Field.RespawnAtCamp(player, character, 1)
+	if not state.FieldPlaced then Field.RespawnAtCamp(player, character, 1) end -- (오프닝 중에 이미 옮겨 두었으면 그대로: 착지 장면이 캠프에서 나왔다)
 	task.delay(1.5, function() if player.Parent then giveReelGear(player) end end)
 	task.delay(4, function()
 		if player.Parent and states[player] == state and state.Step == 1 then

@@ -833,6 +833,15 @@ Remotes.Intro.OnServerEvent:Connect(function(player, action, x)
 	elseif action == "End" then
 		endIntroFocus(player)
 		return
+	elseif action == "Place" then -- 새 유저: 오프닝 착지 장면이 1구역 캠프에서 나오도록 미리 옮긴다 (해당 없으면 아무것도 안 함)
+		local placed = false
+		local okT, Tutorial = pcall(function() return require(Modules:WaitForChild("TutorialService")) end)
+		if okT and Tutorial.PlaceInField then
+			local okP, result = pcall(Tutorial.PlaceInField, player)
+			placed = okP and result == true
+		end
+		Remotes.Intro:FireClient(player, "Placed", placed)
+		return
 	end
 	if action ~= "Stream" or introStreamed[player] then return end
 	introStreamed[player] = true -- (오프닝이 접속할 때마다 나오므로 새 유저가 아니어도 필드를 미리 불러 준다)

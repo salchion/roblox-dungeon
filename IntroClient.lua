@@ -409,6 +409,22 @@ local function play()
 		task.delay(0.6, function() page:Destroy() end)
 		if finished then return end
 	end
+	-- 새 유저는 서버가 캐릭터를 미리 1구역 캠프로 옮긴다 (착지 장면이 캠프에서 나오게). 답("Placed")이 오면 착지 직전에 그 자리를 쓴다
+	local placeAnswered = introRemote == nil
+	if introRemote then
+		local placeConn
+		placeConn = introRemote.OnClientEvent:Connect(function(action)
+			if action == "Placed" then
+				placeAnswered = true
+				placeConn:Disconnect()
+			end
+		end)
+		pcall(function() introRemote:FireServer("Place") end)
+		task.delay(8, function()
+			placeAnswered = true
+			if placeConn.Connected then placeConn:Disconnect() end
+		end)
+	end
 	-- 카메라가 날아가는 동안 서버에 카메라 위치(x)를 계속 알려서, 서버가 그 둘레의 지형을 불러 준다 (캐릭터는 스폰에 있어서 그냥은 멀리 있는 필드가 안 불러와진다)
 	if introRemote then
 		task.spawn(function()
@@ -646,6 +662,9 @@ local function play()
 			if stroke then TweenService:Create(stroke, TweenInfo.new(0.3), { Transparency = 1 }):Play() end
 		end
 	end
+	local placeWait = os.clock()
+	while not placeAnswered and os.clock() - placeWait < 3 do task.wait(0.05) end -- (캠프로 옮겨지는 중이면 잠깐 기다린다)
+	task.wait(0.1)
 	local spawnPos = root.Position
 	local look = root.CFrame.LookVector
 	local skyPos = spawnPos + Vector3.new(210, 600, 0)
