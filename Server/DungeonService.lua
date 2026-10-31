@@ -207,7 +207,7 @@ end
 ------------------------------------------------------------
 -- 몬스터 / 보스
 ------------------------------------------------------------
-local function createHealthBar(part, text, width)
+local function createHealthBar(part, text, width, quiet)
 	local gui = Instance.new("BillboardGui")
 	gui.Size = UDim2.new(0, width, 0, 28)
 	gui.StudsOffset = Vector3.new(0, part.Size.Y / 2 + 1.5, 0)
@@ -256,6 +256,21 @@ local function createHealthBar(part, text, width)
 	fill.BackgroundColor3 = Color3.fromRGB(230, 60, 60)
 	fill.BorderSizePixel = 0
 	fill.Parent = back
+
+	-- 평범한 몬스터: 이름 없이 얇은 체력바만, 그것도 처음 맞은 뒤에만 보인다 (화면에 이름 / 막대가 잔뜩 떠서 복잡하던 것을 줄인다. 엘리트 / 보스는 그대로)
+	if quiet then
+		marker.Enabled = false -- (벽 너머 붉은 화살표도 엘리트 / 보스만: 몬스터마다 떠서 화면이 복잡했다)
+		label.Visible = false
+		gui.Size = UDim2.new(0, math.floor(width * 0.6), 0, 8)
+		back.Size = UDim2.new(1, 0, 1, 0)
+		back.Position = UDim2.new(0, 0, 0, 0)
+		gui.Enabled = false
+		local conn
+		conn = fill:GetPropertyChangedSignal("Size"):Connect(function()
+			gui.Enabled = true
+			conn:Disconnect()
+		end)
+	end
 
 	return fill
 end
@@ -381,7 +396,7 @@ local function registerMonster(run, part, stats, text, barWidth, extra)
 		Stats = stats,
 		Health = stats.MaxHealth,
 		MaxHealth = stats.MaxHealth,
-		HealthFill = createHealthBar(part, text, barWidth),
+		HealthFill = createHealthBar(part, text, barWidth, barWidth <= 140 and not (extra and (extra.Elite or extra.IsElite))),
 		NextShot = os.clock() + stats.ShotInterval,
 		BaseColor = part.Color,
 	}

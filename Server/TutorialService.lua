@@ -280,11 +280,7 @@ function Tutorial.StartInField(player)
 	state.ReelDone = true -- 이 자리에서 바로 주므로 "필드에 처음 나갈 때" 지급은 다시 하지 않는다
 	if not state.FieldPlaced then Field.RespawnAtCamp(player, character, 1) end -- (오프닝 중에 이미 옮겨 두었으면 그대로: 착지 장면이 캠프에서 나왔다)
 	task.delay(1.5, function() if player.Parent then giveReelGear(player) end end)
-	task.delay(4, function()
-		if player.Parent and states[player] == state and state.Step == 1 then
-			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "R", Title = "Press R: auto-attack!", Text = "R aims and fires at nearby monsters for you.", Duration = 10, Top = true })
-		end
-	end)
+	-- (R 자동 공격 안내는 화면 가운데의 큰 R 카드(PlayerClient)가 한다: 왼쪽 아래 카드 / 미션 카드까지 세 군데에 같은 말이 겹쳐 떴다)
 end
 
 function Tutorial.Serialize(player)

@@ -69,6 +69,7 @@ local function deathSources(player)
 end
 
 function Advice.AfterDefeat(player)
+	if player:GetAttribute("TutorialActive") == true then return end -- (튜토리얼 중의 패배는 연출(최후의 군주)이라 조언 / 팁을 띄우지 않는다: 미션 안내와 겹쳐 복잡했다)
 	local index = (tipIndex[player] or 0) % #COMBAT_TIPS + 1
 	tipIndex[player] = index
 	Remotes.Notify:FireClient(player, COMBAT_TIPS[index])
@@ -87,6 +88,17 @@ end
 function Advice.GrowthGuide(player)
 	local rift = Meta.GetRift(player)
 	if not rift or rift.GrowthTip then return end
+	-- 튜토리얼 중이면 끝난 뒤에 보여 준다 (미션 카드 / 안내 카드와 한꺼번에 떠서 무엇을 할지 헷갈렸다)
+	if player:GetAttribute("TutorialActive") == true then
+		local conn
+		conn = player:GetAttributeChangedSignal("TutorialActive"):Connect(function()
+			if player:GetAttribute("TutorialActive") ~= true then
+				conn:Disconnect()
+				task.delay(4, function() if player.Parent then Advice.GrowthGuide(player) end end)
+			end
+		end)
+		return
+	end
 	rift.GrowthTip = true
 	local power = player:GetAttribute("Power") or 0
 	local zone = math.min(#Config.Field.RecommendPower, (player:GetAttribute("ClearedZone") or 0) + 1)

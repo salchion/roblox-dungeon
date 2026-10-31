@@ -381,7 +381,7 @@ local function showPrompt(data)
 		TextColor3 = Color3.fromRGB(235, 210, 140), TextXAlignment = Enum.TextXAlignment.Left, TextStrokeTransparency = 1, ZIndex = 71 }, card)
 	label({ Size = UDim2.new(1, -82, 0, 58), Position = UDim2.new(0, 68, 0, 28), Text = data.Text or "", TextSize = 11, Font = Enum.Font.GothamMedium, TextWrapped = true, TextColor3 = Color3.fromRGB(205, 210, 228),
 		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextStrokeTransparency = 1, ZIndex = 71 }, card)
-	task.delay(data.Duration or 7, function()
+	task.delay(math.min(data.Duration or 5, 6), function() -- (안내 카드는 길어도 6초: 오래 떠 있으면 화면이 복잡하다)
 		if card.Parent then
 			TweenService:Create(card, TweenInfo.new(0.4), { BackgroundTransparency = 1 }):Play()
 			task.wait(0.4)

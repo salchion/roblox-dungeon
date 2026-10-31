@@ -117,7 +117,7 @@ local function claimable()
 	end
 	return count
 end
-local questOpen = false -- 작은 화면(폰): 평소엔 한 줄로 접어 두고, 누르면 펼친다 (화면 가운데를 가리지 않게)
+local questOpen = false -- 평소엔 한 줄로 접어 두고, 누르면 펼친다 (화면을 덜 가리게)
 questPanel.Activated:Connect(function()
 	local claimed = false
 	for _, quest in ipairs(dailyList or {}) do
@@ -128,7 +128,7 @@ questPanel.Activated:Connect(function()
 			task.wait(0.15)
 		end
 	end
-	if not claimed and compact() then questOpen = not questOpen end -- 받을 보상이 없으면 접기 / 펼치기
+	if not claimed then questOpen = not questOpen end -- 받을 보상이 없으면 접기 / 펼치기
 	refreshQuests()
 end)
 local questShown = false
@@ -143,7 +143,7 @@ task.defer(function() Remotes.Quest:FireServer("Request") end) -- 퀘스트 상�
 
 function refreshQuests()
 	if not dailyList then return end
-	if compact() and not questOpen then
+	if not questOpen then -- (PC 에서도 평소엔 한 줄로 접어 둔다: 왼쪽 카드가 길게 쌓여 화면이 복잡했다)
 		local done, ready = 0, 0
 		for _, quest in ipairs(dailyList) do
 			if quest.Claimed then done += 1 elseif quest.Progress >= quest.Goal then ready += 1 end

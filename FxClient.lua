@@ -2225,6 +2225,7 @@ end
 
 local FLOAT_SIZE, DAMAGE_SIZE = UDim2.new(0, 140, 0, 36), UDim2.new(0, 90, 0, 40)
 lootTicker = { G = { Pending = 0, Last = 0, Scheduled = false }, XP = { Pending = 0, Last = 0, Scheduled = false } } -- 골드 / 경험치 글자 합치기용
+local recentDamage = {} -- { {위치, 시각} }: 최근에 띄운 평범한 피해 숫자 (겹침 줄이기)
 local HANDLERS = {
 	S = playShot,
 	P = spawnProjectile,
@@ -2266,6 +2267,19 @@ local HANDLERS = {
 		end
 	end,
 	D = function(event) -- { "D", position, amount, isCrit, (색) }: 색이 있으면 세트 효과 / 데드아이 피해 -> 그 색으로 크게
+		-- 같은 자리에 숫자가 겹겹이 쌓여 읽을 수 없던 것을 줄인다: 0.25초 안에 4 스터드 안쪽에 이미 뜬 숫자가 있으면 평범한 숫자는 건너뛴다 (치명타 / 색 숫자는 항상)
+		if not event[5] and not event[4] then
+			local now, at = os.clock(), event[2]
+			for i = #recentDamage, 1, -1 do
+				local r = recentDamage[i]
+				if now - r[2] > 0.25 then
+					table.remove(recentDamage, i)
+				elseif (r[1] - at).Magnitude < 4 then
+					return
+				end
+			end
+			table.insert(recentDamage, { at, now })
+		end
 		if event[5] then
 			showText(event[2], tostring(event[3]), event[5]:Lerp(WHITE, 0.25), UDim2.new(0, 150, 0, 60), 0.75, 3)
 		else
@@ -2278,7 +2292,7 @@ local HANDLERS = {
 }
 
 -- 한 배치(한 프레임)에서 종류별로 그릴 수 있는 최대 개수: 넘치는 것은 건너뛴다 (지우기 "X" / 끄기 "O" / 번쩍임 "H" 는 제한 없음)
-local BATCH_LIMIT = { I = 4, C = 16, A = 6, Y = 8, J = 24, G = 10, T = 48, R = 16, Z = 8, M = 12, L = 8, E = 8, U = 6, N = 6, V = 8, K = 14, P = 100, Q = 40, W = 10, S = 100, B = 60 }
+local BATCH_LIMIT = { D = 12, I = 4, C = 16, A = 6, Y = 8, J = 24, G = 10, T = 48, R = 16, Z = 8, M = 12, L = 8, E = 8, U = 6, N = 6, V = 8, K = 14, P = 100, Q = 40, W = 10, S = 100, B = 60 }
 Remotes.Fx.OnClientEvent:Connect(function(batch)
 	if typeof(batch) ~= "table" then return end
 	local used = {}
