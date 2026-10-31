@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "{text1} obtenu ! Ajouté au sac. (I → équiper depuis le sac)  ▲ +{number2}% vs actuel" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 La porte est fermée ! Vainquez les monstres de la zone {number1} {number2}/{number3} + le seigneur de la zone{text4}" },
 		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ Montée de niveau du familier lancée ! ({text1}) — utilisez l'accélération pour finir plus vite" },
 		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "Recommandé ⚡{text1}  ·  Visez l'orbe jaune pour 3x dégâts !" },

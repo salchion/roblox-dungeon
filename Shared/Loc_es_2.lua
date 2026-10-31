@@ -540,6 +540,7 @@ return {
 		{ "every {number1}s shock shots at {number2} enemies, burst radius {number3}", "cada {number1} s disparos de choque a {number2} enemigos, radio de explosión {number3}" },
 		{ "👑 Field Boss defeated! Tickets +{number1}, loot dropped", "👑 ¡Jefe del campo derrotado! Boletos +{number1}, botín soltado" },
 		{ "👑 Field Boss defeated! Tickets +{number1} loot dropped", "👑 ¡Jefe de campo derrotado! Se han soltado +{number1} entradas de botín" },
+		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3}", "🔒 ¡La puerta está cerrada! Derrota monstruos de la zona {number1}: {number2}/{number3}" },
 		{ "🥇 {player1}\n⚡ {number1} Lv.{number2}\nSpell Tome · Mythic Era +{number3}", "🥇 {player1}\n⚡ {number1} Nivel {number2}\nTomo de Hechizos · Era Mítica +{number3}" },
 		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!" },
 		{ "every {number1} shots a blade bounces across {number2} enemies", "cada {number1} disparos una cuchilla rebota entre {number2} enemigos" },
@@ -665,6 +666,7 @@ return {
 		{ "Succeed at upgrading {number1} times", "Mejora con éxito {number1} veces" },
 		{ "Attack +{number1}% per point  (max {number2})", "Ataque +{number1}% por punto  (máx. {number2})" },
 		{ "Returning to the field in {number1}s", "Volviendo al campo en {number1} s" },
+		{ "Zone {number1} monsters {number2} / {number3} defeated", "Zona {number1}: {number2} / {number3} monstruos derrotados" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Tomo de Hechizos · Era Oxidada +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Puerta del Palacio de Hielo · Rec. ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zona {number1} · Tierra baldía sellada" },
@@ -935,7 +937,5 @@ return {
 		{ "🎮 Welcome to the world of adventure, {text1}!", "🎮 ¡Bienvenido al mundo de la aventura, {text1}!" },
 		{ "👑 Zone {number1} · The Lord of {text2} has reappeared!", "👑 Zona {number1} · ¡El señor de {text2} ha reaparecido!" },
 		{ "Zone {number1} monsters {number2} / {number3} defeated · Lord {text4}", "Monstruos de la zona {number1} {number2} / {number3} derrotados · Señor {text4}" },
-		{ "Skill cooldown -{text1}% per point  (max {number2})", "Enfriamiento de habilidades -{text1}% por punto (máx. {number2})" },
-		{ "Dungeon layout: {text1} (changes every run", "Diseño de mazmorra: {text1} (cambia en cada partida" },
 	},
 }

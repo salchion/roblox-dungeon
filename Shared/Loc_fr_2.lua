@@ -554,6 +554,7 @@ return {
 		{ "every {number1}s shock shots at {number2} enemies, burst radius {number3}", "toutes les {number1} s des tirs de choc sur {number2} ennemis, rayon d'explosion {number3}" },
 		{ "👑 Field Boss defeated! Tickets +{number1}, loot dropped", "👑 Boss du terrain vaincu ! Tickets +{number1}, butin lâché" },
 		{ "👑 Field Boss defeated! Tickets +{number1} loot dropped", "👑 Boss de champ vaincu ! +{number1} tickets de butin récupérés" },
+		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3}", "🔒 La porte est fermée ! Battez les monstres de la zone {number1} : {number2}/{number3}" },
 		{ "Monster HP x{number1} · ATK x{number2}   |   Reward x{number3}   (Lv.{number4}~)", "PV du monstre x{number1} · ATQ x{number2}   |   Récompense x{number3}   (Niv.{number4}~)" },
 		{ "🥇 {player1}\n⚡ {number1} Lv.{number2}\nSpell Tome · Mythic Era +{number3}", "🥇 {player1}\n⚡ {number1} Niveau {number2}\nLivre de sorts · Ère mythique +{number3}" },
 		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "Réussissez {number2} améliorations ✅, appuyez pour réclamer !" },
@@ -679,6 +680,7 @@ return {
 		{ "Succeed at upgrading {number1} times", "Réussissez {number1} améliorations" },
 		{ "Attack +{number1}% per point  (max {number2})", "Attaque +{number1}% par point  (max {number2})" },
 		{ "Returning to the field in {number1}s", "Retour sur le terrain dans {number1} s" },
+		{ "Zone {number1} monsters {number2} / {number3} defeated", "Zone {number1} : {number2} / {number3} monstres vaincus" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Tome de sorts · Ère rouillée +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Porte du palais de glace · Rec. ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zone {number1} · Désert scellé" },
@@ -927,6 +929,5 @@ return {
 		{ "📍 Zone {number1} {text2} · Drops in that zone · Dungeon chests (deeper = better odds)", "📍 Zone {number1} {text2} · Butin dans cette zone · Coffres de donjon (plus profond = meilleures chances)" },
 		{ "💰 A Golden Goblin appeared in Zone {number1} · {text2}! Catch it for a jackpot! (75s)", "💰 Un gobelin doré est apparu dans la zone {number1} · {text2} ! Attrapez-le pour le jackpot ! (75 s)" },
 		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "Donjon · choisissez une profondeur (plus profond = meilleures chances de butin) · thème aléatoire · {text1}" },
-		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "{text1} obtenu ! Ajouté au sac. (I → équiper depuis le sac)  ▲ +{number2}% vs actuel" },
 	},
 }

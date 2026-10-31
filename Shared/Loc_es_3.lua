@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Skill cooldown -{text1}% per point  (max {number2})", "Enfriamiento de habilidades -{text1}% por punto (máx. {number2})" },
+		{ "Dungeon layout: {text1} (changes every run", "Diseño de mazmorra: {text1} (cambia en cada partida" },
 		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}... ¡desmantelado automáticamente! Esencia +{number2}, {number3} G" },
 		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 ¡Superación del nivel {number1} iniciada! ({text2})" },
 		{ "Weapon range +{text1}% per point  (max {number2})", "Alcance del arma +{text1}% por punto (máx. {number2})" },

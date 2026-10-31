@@ -512,6 +512,7 @@ return {
 		{ "every {number1}s shock shots at {number2} enemies, burst radius {number3}", "a cada {number1} s tiros de choque em {number2} inimigos, raio de explosão {number3}" },
 		{ "👑 Field Boss defeated! Tickets +{number1}, loot dropped", "👑 Chefe do campo derrotado! Tickets +{number1}, saque solto" },
 		{ "👑 Field Boss defeated! Tickets +{number1} loot dropped", "👑 Chefe de Campo derrotado! Bilhetes +{number1} de saque foram liberados" },
+		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3}", "🔒 O portão está fechado! Derrote monstros da zona {number1}: {number2}/{number3}" },
 		{ "Monster HP x{number1} · ATK x{number2}   |   Reward x{number3}   (Lv.{number4}~)", "HP do Monstro x{number1} · ATQ x{number2}   |   Recompensa x{number3}   (Lv.{number4}~)" },
 		{ "🥇 {player1}\n⚡ {number1} Lv.{number2}\nSpell Tome · Mythic Era +{number3}", "🥇 {player1}\n⚡ {number1} Nível {number2}\nLivro de Feitiços · Era Mítica +{number3}" },
 		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "Tenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!" },
@@ -639,6 +640,7 @@ return {
 		{ "Succeed at upgrading {number1} times", "Tenha sucesso em {number1} melhorias" },
 		{ "Attack +{number1}% per point  (max {number2})", "Ataque +{number1}% por ponto  (máx. {number2})" },
 		{ "Returning to the field in {number1}s", "Voltando ao campo em {number1} s" },
+		{ "Zone {number1} monsters {number2} / {number3} defeated", "Zona {number1}: {number2} / {number3} monstros derrotados" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Tomo de Feitiços · Era Enferrujada +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Portão do Palácio de Gelo · Rec. ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zona {number1} · Terras Desoladas Seladas" },
@@ -921,7 +923,5 @@ return {
 		{ "📢 {text1} defeated the Final Lord!", "📢 {text1} derrotou o Senhor Final!" },
 		{ "👑 Lord of {text1} (Zone {number2}) · Rec. ⚡{number3}", "👑 Senhor de {text1} (zona {number2}) · Rec. ⚡{number3}" },
 		{ "{number1} pulls done! Best rarity: {text2}", "{number1} sorteios feitos! Melhor raridade: {text2}" },
-		{ "Active {number1} / {number2} slots   (💰 {text3} G)", "Ativos {number1} / {number2} espaços   (💰 {text3} G)" },
-		{ "You are already holding {text1}.", "Você já está segurando {text1}." },
 	},
 }

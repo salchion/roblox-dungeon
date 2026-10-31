@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "▼ 👑 First Zone Lord  {number1}m", "▼ 👑 첫 번째 구역 군주 {number1}m" },
+		{ "Defeat {number1} elite monsters", "엘리트 몬스터 {number1}마리 처치" },
+		{ "Defeat {number1} field monsters", "필드 몬스터 {number1}마리 처치" },
 		{ "Pierces up to {number1} enemies", "최대 {number1}명의 적을 관통해요" },
 		{ "Defeat the Zone {number1} Lord", "존 {number1} 군주를 물리치세요" },
 		{ "{number2} / {number3}   Reward: {number4} G + 🎫 {number5}", "{number2} / {number3}   보상: {number4} G + 🎫 {number5}" },

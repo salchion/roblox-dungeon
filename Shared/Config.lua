@@ -683,7 +683,7 @@ Config.Audio = {
 	Music = {
 		Lobby = ids.Lobby or 0,      -- 로비 배경음악
 		Dungeon = ids.Dungeon or 0,  -- 던전(웨이브) 배경음악
-		Boss = ids.Boss or 0,        -- 보스전 배경음악
+		Boss = { ids.Boss or 0, ids.BossAlt or 132046898251409 }, -- 보스전 배경음악: 2곡 중 하나가 무작위로 (두 번째 = 오프닝 음악)
 		Field = ids.Field or 0,      -- 필드 배경음악 (없으면 로비 음악)
 		Doom = ids.Doom or 0,        -- 최후의 군주와의 결투 음악 (0이면 보스전 음악을 더 빠르게 틀어 준다)
 	},
@@ -820,7 +820,7 @@ Config.Field = {
 	Gate = {
 		KillsNeeded = { 40, 55, 70, 85, 100, 120, 140 }, -- [n] = 구역 n 의 관문(구역 n+1 입구)을 열기 위한 처치 수
 		EliteWeight = 3,
-		BossWeight = 10,
+		BossWeight = 25,      -- (군주는 선택: 거대해진 만큼 잡으면 관문 처치 수가 한 번에 크게 오른다)
 		RewardGold = 400,      -- x 구역 번호
 		RewardTickets = 1,     -- 구역 3부터 +1
 	},
@@ -888,6 +888,9 @@ Config.Field = {
 		[8] = { Speed = 0.9, Keep = 28, Strafe = 0.7, Burst = 1.8, StrafeSpeed = 16 }, -- 심연의 눈: 떠다니며 거리를 유지
 	},
 	BossSizeMult = { [3] = 1.15, [4] = 0.9, [6] = 1.1, [7] = 0.95, [8] = 1.15 }, -- 군주 크기 배율 (실루엣 변화, 나머지는 1)
+	-- 구역 군주를 "거대한 강적"으로: 훨씬 크고 세다. 대신 관문은 처치 수만 채우면 열린다 (군주는 무시하고 지나갈 수 있다. 잡으면 처치 수 BossWeight + 큰 보상)
+	-- (1구역 군주는 튜토리얼에서 꼭 잡아야 해서 체력 / 공격력은 그대로, 크기만 키운다)
+	BossGiant = { Size = 1.7, Health = { 1, 4, 4, 4, 4, 4, 4, 4 }, Damage = { 1, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5 }, Reward = { 1, 3, 3, 3, 3, 3, 3, 3 } },
 	Boss = {
 		Name = "Field Overlord",
 		Size = 18,

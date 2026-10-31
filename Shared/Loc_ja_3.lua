@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Defeat {number1} boss(es)", "{number1} 個のボスを倒す" },
+		{ "{number1} / {number2}   Reward: 🎫 {number3}", "{number1} / {number2}　報酬：🎫 {number3}" },
+		{ "⬆ Level Up  💰 {number1} G", "⬆ レベルアップ 💰 {number1} G" },
 		{ "⚡ {number1} Kill Streak!!", "⚡ {number1} キルストリーク！！" },
 		{ "Survive {number1}s + Boss", "{number1}秒以上+ボスを生き残る" },
 		{ "{number3} / {number4}   Reward: 🎫 {number5}", "{number3} / {number4}　報酬：🎫 {number5}" },

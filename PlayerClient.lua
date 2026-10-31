@@ -1481,6 +1481,11 @@ local function playMusic(name)
 	for trackName, sound in pairs(tracks) do
 		if trackName == name then
 			if not sound.IsPlaying then
+				if trackName == "Boss" and playlists.Boss then -- (보스전: 들어갈 때마다 2곡 중 무작위로 처음부터)
+					local list = playlists.Boss
+					sound.SoundId = "rbxassetid://" .. list[math.random(#list)]
+					sound.TimePosition = 0
+				end
 				sound:Play()
 			end
 			TweenService:Create(sound, TweenInfo.new(1.5), { Volume = musicVolume(trackName) }):Play()

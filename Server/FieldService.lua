@@ -798,14 +798,16 @@ local function spawnMonster(zone, kind, at, ambush)
 		local bossLevel = level + 3
 		local base = Config.Monster.GetStats(bossLevel)
 		local danger = F.ZoneDanger
+		local giant = F.BossGiant or {}
+		local function gz(list) return list and list[zone] or 1 end
 		stats = {
-			Size = (16 + zone * 2) * ((F.BossSizeMult and F.BossSizeMult[zone]) or 1),
-			MaxHealth = math.floor(base.MaxHealth * 60 * danger.Health[zone]),
+			Size = (16 + zone * 2) * ((F.BossSizeMult and F.BossSizeMult[zone]) or 1) * (giant.Size or 1),
+			MaxHealth = math.floor(base.MaxHealth * 60 * danger.Health[zone] * gz(giant.Health)),
 			Speed = boss.Speed * danger.Speed[zone],
-			ShotDamage = math.max(10, math.floor(base.ShotDamage * (zone >= 7 and 1.3 or 1.5) * danger.Damage[zone])), -- (후반 군주는 한 방에 체력이 크게 깎이지 않게 살짝 낮춤)
+			ShotDamage = math.max(10, math.floor(base.ShotDamage * (zone >= 7 and 1.3 or 1.5) * danger.Damage[zone] * gz(giant.Damage))), -- (후반 군주는 한 방에 체력이 크게 깎이지 않게 살짝 낮춤)
 			ShotInterval = math.max(0.9, boss.ShotInterval - zone * 0.05),
 			ShotSpeed = boss.ShotSpeed,
-			Gold = math.floor(boss.Gold * danger.Reward[zone]),
+			Gold = math.floor(boss.Gold * danger.Reward[zone] * gz(giant.Reward)),
 		}
 		xpLevel = bossLevel
 		text, color, barWidth = string.format("👑 Lord of %s (Zone %d) · Rec. ⚡%d", F.ZoneNames[zone], zone, F.RecommendPower[zone] or 0), Color3.fromRGB(255, 120, 120), 360
@@ -1102,19 +1104,11 @@ local function gateProgress(player, data)
 	if not needed or data.Zone ~= frontier then return end
 	local weight = data.Kind == "Elite" and F.Gate.EliteWeight or (data.Kind == "Boss" and F.Gate.BossWeight or 1)
 	local kills = (player:GetAttribute("GateKills") or 0) + weight
-	if data.Kind == "Boss" then
-		player:SetAttribute("GateBossDone", true)
-	end
-	if kills < needed or not player:GetAttribute("GateBossDone") then
-		-- 처치 수를 채워도 구역 보스를 쓰러뜨리지 않으면 관문이 안 열린다
-		local capped = math.min(kills, needed)
-		if kills >= needed and not player:GetAttribute("GateBossDone") and (player:GetAttribute("GateKills") or 0) < needed then
-			notify(player, string.format("👑 Kill goal reached! Defeat the Lord of Zone %d to open the gate!", frontier))
-		end
-		player:SetAttribute("GateKills", capped)
+	if kills < needed then
+		-- (관문은 처치 수만 채우면 열린다: 구역 군주는 선택. 잡으면 처치 수가 BossWeight 만큼 한 번에 오른다)
+		player:SetAttribute("GateKills", kills)
 		return
 	end
-	player:SetAttribute("GateBossDone", false)
 	player:SetAttribute("GateKills", 0)
 	player:SetAttribute("ClearedZone", frontier)
 	local gold = F.Gate.RewardGold * frontier
@@ -2535,8 +2529,8 @@ local function updateZones()
 						root.AssemblyLinearVelocity = Vector3.zero
 						if os.clock() - (lastGateNotice[player] or 0) > 3 then
 							lastGateNotice[player] = os.clock()
-							notify(player, string.format("🔒 The gate is closed! Defeat Zone %d monsters %d/%d + the zone Lord%s",
-								allowed, player:GetAttribute("GateKills") or 0, F.Gate.KillsNeeded[allowed] or 0, player:GetAttribute("GateBossDone") and " (Lord ✔)" or ""))
+							notify(player, string.format("🔒 The gate is closed! Defeat Zone %d monsters %d/%d",
+								allowed, player:GetAttribute("GateKills") or 0, F.Gate.KillsNeeded[allowed] or 0))
 						end
 						fieldZone = allowed
 					end
