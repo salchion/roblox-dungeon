@@ -2574,6 +2574,28 @@ local function buildProgressRows(entries, remoteAction, showTitle)
 		rowText(row, "<font color='#888888'>Loading...</font>")
 		return
 	end
+	-- 받을 수 있는 것 -> 진행 중 -> 받은 것 순서 (업적이 많아도 받을 것부터 보인다) + 받을 게 있으면 맨 위에 "모두 받기"
+	local function rank(entry) return entry.Claimed and 3 or (entry.Progress >= entry.Goal and 1 or 2) end
+	local sorted = table.clone(entries)
+	for i, entry in ipairs(sorted) do entry._order = i end
+	table.sort(sorted, function(a, b)
+		if rank(a) ~= rank(b) then return rank(a) < rank(b) end
+		return a._order < b._order
+	end)
+	entries = sorted
+	local claimable = 0
+	for _, entry in ipairs(entries) do
+		if not entry.Claimed and entry.Progress >= entry.Goal then claimable += 1 end
+	end
+	if claimable > 0 then
+		local allRow = newRow(48, Color3.fromRGB(46, 70, 52))
+		makeButton({
+			Size = UDim2.new(0, 220, 0, 36), Position = UDim2.new(0.5, -110, 0.5, -18), Text = string.format("🎁 Claim All (%d)", claimable),
+			TextSize = 14, Font = Enum.Font.GothamBlack, BackgroundColor3 = GREEN,
+		}, allRow, function()
+			Remotes.Quest:FireServer("ClaimAll")
+		end)
+	end
 	for _, entry in ipairs(entries) do
 		local done = entry.Progress >= entry.Goal
 		local row = newRow(66, entry.Claimed and Color3.fromRGB(32, 38, 36) or Color3.fromRGB(40, 40, 58))

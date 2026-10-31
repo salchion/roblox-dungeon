@@ -370,7 +370,7 @@ function Growth.Load(player, saved)
 	end
 	local function checkZone()
 		if not state.Unlocked and states[player] == state and (player:GetAttribute("ClearedZone") or 0) >= R.UnlockZone then
-			unlock(player, state, true)
+			unlock(player, state, R.UnlockZone > 0) -- (UnlockZone 0 = 처음부터 열림: "2구역 클리어!" 카드 / 보상 없이 조용히)
 		end
 	end
 	player:GetAttributeChangedSignal("ClearedZone"):Connect(checkZone)

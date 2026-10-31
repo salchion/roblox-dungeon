@@ -3153,6 +3153,7 @@ local function feverLoop(run)
 		local startRoot = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
 		if startRoot then SoundBank.Play(startRoot, "Dungeon_Start") end
 		member:SetAttribute("DungeonVisual", "Gold") -- (PlayerFX 의 황금빛 조명 / 대기: 이름이 "Gold" 여야 적용된다)
+		Quest.Add(member, "FeverRuns", 1) -- 업적: 피버 타임 입장 횟수
 		member:SetAttribute("DungeonTypeKey", "Fever")
 		Remotes.Tutorial:FireClient(member, "Prompt", { Key = "🌟", Title = "FEVER TIME!", Text = string.format("%d seconds! Rewards x%d, combo adds up to x%d!", F.Duration, F.GoldMult, F.ComboMax), Duration = 5, Top = true })
 	end

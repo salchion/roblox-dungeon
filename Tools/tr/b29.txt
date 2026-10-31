@@ -1,0 +1,49 @@
+2042¦フィーバータイムに{number1}回入る¦Betrete {number1}-mal die Fieberzeit¦Entrez {number1} fois dans la Fièvre¦Entra {number1} vez/veces en el Tiempo de fiebre¦Entre {number1} vez(es) na Hora da febre¦进入狂热时间{number1}次¦피버 타임 {number1}번 입장
+2043¦フィールドで{number1}回倒れる¦Falle {number1}-mal im Feld¦Tombez {number1} fois sur le terrain¦Cae {number1} veces en el campo¦Caia {number1} vezes no campo¦在野外倒下{number1}次¦필드에서 {number1}번 쓰러지기
+2044¦訓練を{number1}回完了¦Schließe {number1} Trainings ab¦Terminez {number1} entraînements¦Completa {number1} entrenamientos¦Conclua {number1} treinos¦完成{number1}次训练¦훈련 {number1}번 완료
+2045¦ペットをレベル{number1}まで育てる¦Bringe dein Haustier auf Stufe {number1}¦Montez votre familier au niveau {number1}¦Sube tu mascota al nivel {number1}¦Leve seu pet ao nível {number1}¦将宠物提升到{number1}级¦펫을 {number1}레벨까지 키우기
+2046¦ステータスポイントを{number1}使う¦Verteile {number1} Statuspunkte¦Dépensez {number1} points de stats¦Gasta {number1} puntos de estadística¦Gaste {number1} pontos de atributo¦分配{number1}点属性点¦스탯 포인트 {number1} 사용
+2047¦ダンジョンのボーナスウェーブを{number1}回耐える¦Überstehe {number1} Dungeon-Bonuswellen¦Survivez à {number1} vagues bonus de donjon¦Sobrevive {number1} oleadas extra de mazmorra¦Sobreviva a {number1} ondas bônus de masmorra¦撑过{number1}次地下城奖励波次¦던전 보너스 웨이브 {number1}번 버티기
+2048¦装備を+{number1}まで強化¦Verbessere ein Ausrüstungsteil auf +{number1}¦Améliorez une pièce d'équipement à +{number1}¦Mejora una pieza de equipo a +{number1}¦Melhore uma peça de equipamento até +{number1}¦将一件装备强化到+{number1}¦장비 하나를 +{number1}까지 강화
+2049¦殲滅者¦Vernichter¦Annihilateur¦Aniquilador¦Aniquilador¦歼灭者¦섬멸자
+2050¦見習い鍛冶屋¦Schmiedelehrling¦Apprenti forgeron¦Aprendiz de herrero¦Aprendiz de ferreiro¦见习铁匠¦견습 대장장이
+2051¦防具職人¦Rüstmeister¦Armurier¦Armero¦Armeiro¦铸甲师¦갑옷 장인
+2052¦超越者¦Aufgestiegener¦Élevé¦Ascendido¦Ascendido¦飞升者¦초월자
+2053¦猛獣使い¦Bestienbändiger¦Dompteur¦Domador de bestias¦Domador de feras¦驯兽师¦맹수 조련사
+2054¦ビルド職人¦Build-Tüftler¦Artisan du build¦Diseñador de builds¦Montador de builds¦配点大师¦빌드 장인
+2055¦鍛錬者¦Diszipliniert¦Discipliné¦Disciplinado¦Disciplinado¦自律者¦단련된 자
+2056¦エリート砕き¦Elitebrecher¦Briseur d'élite¦Rompeélites¦Quebra-elites¦精英粉碎者¦엘리트 파괴자
+2057¦エリート追跡者¦Elitejäger¦Traqueur d'élite¦Acechador de élites¦Caçador de elites¦精英追猎者¦엘리트 추적자
+2058¦永遠なる者¦Ewiger¦Éternel¦Eterno¦Eterno¦永恒者¦영원한 자
+2059¦駆除者¦Ausrotter¦Exterminateur¦Exterminador¦Exterminador¦灭绝者¦말살자
+2060¦フィーバーキング¦Fieberkönig¦Roi de la Fièvre¦Rey de la fiebre¦Rei da febre¦狂热之王¦피버 킹
+2061¦フィーバー入門¦Fieber-Neuling¦Fièvre débutante¦Iniciado en la fiebre¦Iniciante da febre¦狂热新手¦피버 입문자
+2062¦フィールドレンジャー¦Feldläufer¦Garde des plaines¦Guardabosques¦Patrulheiro do campo¦野外游侠¦필드 레인저
+2063¦初陣¦Erstes Blut¦Premier sang¦Primera sangre¦Primeiro sangue¦首杀¦첫 사냥
+2064¦鍛冶の伝説¦Schmiedelegende¦Légende de la forge¦Leyenda de la forja¦Lenda da forja¦锻造传奇¦대장간의 전설
+2065¦ギャンブラー¦Glücksspieler¦Parieur¦Apostador¦Apostador¦赌徒¦도박사
+2066¦ゴブリンの宿敵¦Goblin-Erzfeind¦Fléau des gobelins¦Némesis de los goblins¦Nêmesis dos goblins¦哥布林克星¦고블린의 천적
+2067¦神の如き者¦Gottgleich¦Divin¦Divino¦Divino¦神一般的存在¦신에 가까운 자
+2068¦黄金ハンター¦Goldjäger¦Chasseur d'or¦Cazador de oro¦Caçador de ouro¦追金者¦황금 추적자
+2069¦大勝負師¦Hoher Einsatz¦Gros joueur¦Gran apostador¦Grande apostador¦豪赌客¦큰손
+2070¦鉄の意志¦Eiserner Wille¦Volonté de fer¦Voluntad de hierro¦Vontade de ferro¦钢铁意志¦강철 의지
+2071¦ジャックポットキング¦Jackpot-König¦Roi du jackpot¦Rey del jackpot¦Rei do jackpot¦大奖之王¦잭팟 킹
+2072¦生ける伝説¦Lebende Legende¦Légende vivante¦Leyenda viviente¦Lenda viva¦活着的传奇¦살아있는 전설
+2073¦領主の災い¦Fürstenfluch¦Fléau des seigneurs¦Azote de señores¦Flagelo dos senhores¦领主克星¦군주의 재앙
+2074¦領主殺し¦Fürstentöter¦Tueur de seigneurs¦Matador de señores¦Matador de senhores¦弑主者¦군주 사냥꾼
+2075¦鍛冶の達人¦Schmiedemeister¦Maître forgeron¦Maestro herrero¦Mestre ferreiro¦铁匠大师¦대장장이 명인
+2076¦不屈¦Gib niemals auf¦N'abandonne jamais¦Nunca te rindas¦Nunca desista¦永不放弃¦포기를 모르는 자
+2077¦完璧な鎧¦Perfekte Rüstung¦Armure parfaite¦Armadura perfecta¦Armadura perfeita¦完美铠甲¦완벽한 갑옷
+2078¦ペットの友¦Haustierfreund¦Ami des familiers¦Amigo de mascotas¦Amigo dos pets¦宠物之友¦펫의 친구
+2079¦不死鳥の心¦Phönixherz¦Cœur de phénix¦Corazón de fénix¦Coração de fênix¦凤凰之心¦불사조의 심장
+2080¦新米ハンター¦Neuling-Jäger¦Chasseur débutant¦Cazador novato¦Caçador novato¦新手猎人¦신입 사냥꾼
+2081¦ラッシュ常連¦Rush-Stammgast¦Habitué du Rush¦Habitual de la Rush¦Frequentador do Rush¦首领连战常客¦러시 단골
+2082¦スキル使い¦Zauberwerfer¦Lanceur de sorts¦Lanzahechizos¦Lançador de feitiços¦技能大师¦스킬 달인
+2083¦鋼の心¦Stahlherz¦Cœur d'acier¦Corazón de acero¦Coração de aço¦钢铁之心¦강철 심장
+2084¦暴君砕き¦Tyrannenbrecher¦Briseur de tyrans¦Rompetiranos¦Quebra-tiranos¦暴君粉碎者¦폭군 파괴자
+2085¦止められない者¦Unaufhaltsam¦Inarrêtable¦Imparable¦Imparável¦势不可挡¦멈출 수 없는 자
+2086¦不屈の者¦Unbeugsam¦Inflexible¦Inquebrantable¦Inabalável¦不屈者¦굴하지 않는 자
+2087¦火山踏破者¦Vulkanwanderer¦Marcheur du volcan¦Caminante del volcán¦Andarilho do vulcão¦火山行者¦화산 정복자
+2088¦放浪者¦Wanderer¦Vagabond¦Errante¦Andarilho¦流浪者¦방랑자
+2089¦ウェーブライダー¦Wellenreiter¦Surfeur de vagues¦Surfista de oleadas¦Surfista de ondas¦破浪者¦웨이브 라이더
+2090¦荒野の守り手¦Wildhüter¦Gardien sauvage¦Guardián salvaje¦Guardião selvagem¦荒野守望者¦야생의 수호자

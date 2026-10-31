@@ -300,7 +300,7 @@ addCorner(guideClose, 8)
 guideClose.Activated:Connect(function() guide.Visible = false end)
 Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 	if action ~= "Growth" then return end
-	local lines = { "<font size='17' color='#ffd966'><b>💪 How to Get Stronger</b></font>" }
+	local lines = { data.Death and "<font size='17' color='#ff9a8a'><b>💀 You fell! Get stronger and try again</b></font>" or "<font size='17' color='#ffd966'><b>💪 How to Get Stronger</b></font>" }
 	local gap = data.Need - data.Power
 	if gap > 0 then
 		table.insert(lines, string.format("<font color='#9ad7ff'>🎯 Goal: Defeat Zone %d Lord</font>  <font size='10' color='#c9c0e0'>(Recommended power %s · Your power %s)</font>", data.Zone, comma(data.Need), comma(data.Power)))

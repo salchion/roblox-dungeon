@@ -25,10 +25,62 @@ local COMBAT_TIPS = {
 }
 local tipIndex = setmetatable({}, { __mode = "k" })
 
+-- 쓰러졌을 때 "지금 바로 할 수 있는 강해지는 방법" 요약 카드 (모바일 게임의 패배 화면처럼). 가능한 것만, 할 수 있는 순서대로 최대 4개
+local lastGuide = setmetatable({}, { __mode = "k" })
+local function deathSources(player)
+	local list = {}
+	local gold = player:GetAttribute("Gold") or 0
+	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
+	if weaponLevel < Config.Weapon.MaxLevel then
+		local okCost, cost = pcall(Config.GetEnhanceCost, weaponLevel)
+		if okCost and cost and gold >= cost then
+			table.insert(list, { Icon = "🔨", Name = "Upgrade your weapon", Desc = "The biggest power boost", Status = string.format("You can afford it now (%d G)", cost) })
+		end
+	end
+	local cheapest
+	for _, slot in ipairs(Config.Gear.Slots) do
+		local rarity = player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0
+		local level = player:GetAttribute("Gear_" .. slot.Key .. "_L") or 0
+		if rarity > 0 and level < Config.Gear.MaxLevel then
+			local okCost, cost = pcall(Config.GetGearCost, slot.Key, rarity, level)
+			if okCost and cost and (not cheapest or cost < cheapest) then cheapest = cost end
+		end
+	end
+	if cheapest and gold >= cheapest then
+		table.insert(list, { Icon = "🛡", Name = "Upgrade your gear", Desc = "More HP and damage", Status = string.format("From %d G", cheapest) })
+	end
+	local points = player:GetAttribute("LvPointsLeft") or 0
+	if points > 0 then
+		table.insert(list, { Icon = "✨", Name = "Spend stat points", Desc = "Press T", Status = string.format("%d unspent", points) })
+	end
+	local tickets = player:GetAttribute("Tickets") or 0
+	if tickets > 0 then
+		table.insert(list, { Icon = "🎰", Name = "Roll for gear", Desc = "Gacha machine in town", Status = string.format("Tickets %d", tickets) })
+	end
+	local okIdle, idle = pcall(Growth.IdleSlots, player)
+	if okIdle and idle and idle > 0 and player:GetAttribute("GrowthUnlocked") == true then
+		table.insert(list, { Icon = "🏋", Name = "Start training", Desc = "Grows even while you're away", Status = string.format("%d empty slot(s)", idle) })
+	end
+	if (player:GetAttribute("DungeonFree") or 0) > 0 then
+		table.insert(list, { Icon = "🏰", Name = "Run a dungeon", Desc = "Gear and tickets from the boss chest", Status = string.format("Free entries %d", player:GetAttribute("DungeonFree")) })
+	end
+	while #list > 4 do table.remove(list) end
+	return list
+end
+
 function Advice.AfterDefeat(player)
 	local index = (tipIndex[player] or 0) % #COMBAT_TIPS + 1
 	tipIndex[player] = index
 	Remotes.Notify:FireClient(player, COMBAT_TIPS[index])
+	-- 성장 요약 카드: 튜토리얼 중이 아니고, 2분에 한 번만
+	if player:GetAttribute("TutorialActive") == true or os.clock() - (lastGuide[player] or -1000) < 120 then return end
+	local sources = deathSources(player)
+	if #sources == 0 then return end
+	lastGuide[player] = os.clock()
+	local zone = math.min(#Config.Field.RecommendPower, (player:GetAttribute("ClearedZone") or 0) + 1)
+	Remotes.Tutorial:FireClient(player, "Growth", {
+		Death = true, Power = player:GetAttribute("Power") or 0, Zone = zone, Need = Config.Field.RecommendPower[zone], Sources = sources,
+	})
 end
 
 -- 처음 던전을 마치고 마을로 돌아왔을 때 딱 한 번: "다음 목표(전투력)"와 "무엇으로 강해지는가"를 한 장으로 보여준다 (저장됨)

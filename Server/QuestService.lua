@@ -14,7 +14,7 @@ local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 
 local Quest = {}
 
-local COUNTERS = { "DummyHits", "FieldKills", "EliteKills", "Kills", "BossKills", "DungeonClears", "Enhances", "Rolls", "GoblinKills", "SkillUses", "FieldDeaths", "Trains", "DungeonWaves", "RiftRuns", "StatPoints", "PetPeek" }
+local COUNTERS = { "DummyHits", "FieldKills", "EliteKills", "Kills", "BossKills", "DungeonClears", "Enhances", "Rolls", "GoblinKills", "SkillUses", "FieldDeaths", "Trains", "DungeonWaves", "RiftRuns", "StatPoints", "PetPeek", "FeverRuns" }
 
 -- 카운터가 아니라 플레이어의 현재 값을 읽는 Stat
 local function readLive(player, stat)
@@ -30,6 +30,16 @@ local function readLive(player, stat)
 		return player:GetAttribute("Power") or 0
 	elseif stat == "WeaponLevel" then
 		return player:GetAttribute("WeaponLevel") or 0
+	elseif stat == "PetLevel" then
+		return player:GetAttribute("PetLevel") or 0
+	elseif stat == "GearLevel" then -- 장착한 장비 중 가장 높은 강화 단계
+		local best = 0
+		for _, slot in ipairs(Config.Gear.Slots) do
+			if (player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0) > 0 then
+				best = math.max(best, player:GetAttribute("Gear_" .. slot.Key .. "_L") or 0)
+			end
+		end
+		return best
 	elseif stat == "BestRarity" then
 		local best = 0
 		for _, slot in ipairs(Config.Gear.Slots) do
@@ -321,6 +331,30 @@ Remotes.Quest.OnServerEvent:Connect(function(player, action, arg)
 				Quest.Push(player)
 				return
 			end
+		end
+
+	elseif action == "ClaimAll" then -- 모두 받기: 받을 수 있는 오늘의 퀘스트 + 업적을 한 번에
+		local count = 0
+		for _, quest in ipairs(todaysQuests(state.Day, player)) do
+			if not state.Claimed[quest.Id] and (state.Progress[quest.Id] or 0) >= quest.Goal then
+				state.Claimed[quest.Id] = true
+				applyReward(player, quest.Reward)
+				count += 1
+			end
+		end
+		local titles = 0
+		for _, achievement in ipairs(Config.Achievements) do
+			if not state.AchClaimed[achievement.Id] and achievementDone(player, state, achievement) then
+				state.AchClaimed[achievement.Id] = true
+				applyReward(player, achievement.Reward)
+				count += 1
+				if achievement.Title then titles += 1 end
+			end
+		end
+		if count > 0 then
+			claimSound(player)
+			notify(player, titles > 0 and string.format("🎁 Claimed %d rewards! (%d new titles)", count, titles) or string.format("🎁 Claimed %d rewards!", count))
+			Quest.Push(player)
 		end
 
 	elseif action == "Title" then
