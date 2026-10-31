@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🗿 Colossus · Zone {number1}", "🗿 コロッサス · ゾーン {number1}" },
+		{ "⚔ DUNGEON  ·  Lv.{number1}+", "⚔ ダンジョン · Lv.{number1}+" },
+		{ "Zone {number1} · Trial Lv.3", "ゾーン{number1} · 試練 Lv.3" },
+		{ "Upgrade success! +{number1}", "強化成功！+{number1}" },
+		{ "Field · Best Zone {number1}", "フィールド · 最高ゾーン{number1}" },
+		{ "👥 Online: {number1} players", "👥 オンライン: {number1}人" },
 		{ "Recommended Power {number1}", "推奨戦闘力 {number1}" },
 		{ "Radius {number1} · Damage x{number2}", "範囲 {number1} · ダメージ x{number2}" },
 		{ "Power Ranking TOP {number1}", "戦闘力ランキング TOP {number1}" },
@@ -101,6 +107,7 @@ return {
 		{ "🌟 Paragon ({number1})", "🌟 パラゴン({number1})" },
 		{ "Best combo: {number1}", "最高コンボ：{number1}" },
 		{ "x{number1} · {number2} SUCCESS", "x{number1} · {number2}回成功" },
+		{ "🌈 Mythic in {number1}", "🌈 神話まで {number1}" },
 		{ "Enemy HP +{number1}%", "敵のHP +{number1}%" },
 		{ "Activate {number1} G", "{number1}Gをアクティベートする" },
 		{ "👥 Party ({number1}/{number2})", "👥 パーティー ({number1}/{number2})" },

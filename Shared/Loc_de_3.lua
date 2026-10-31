@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 Zone {number1} Abschnitt {number2} — hier gibt es viele {text3}" },
+		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "Bosse {number1} · Schaden {text2} · Nächster Boss in {number3} s" },
+		{ "Move speed +{text1} per point  (max {number2})", "Lauftempo +{text1} pro Punkt (max. {number2})" },
+		{ "{text1}: vs bosses {number2}% · vs monsters {number3}%", "{text1}: gegen Bosse {number2}% · gegen Monster {number3}%" },
+		{ "📅 {number1}-day login streak! Reward: {text2}", "📅 {number1}-Tage-Login-Serie! Belohnung: {text2}" },
 		{ "✅ Mission complete! Reward: {text1}", "✅ Mission abgeschlossen! Belohnung: {text1}" },
 		{ "{text1}  ·  keys 1-5 switch weapons", "{text1}  ·  Tasten 1-5 wechseln Waffen" },
 		{ "♻ {text1} (auto-salvage +{number2} Essence)", "♻ {text1} (Auto-Zerlegung +{number2} Essenz)" },

@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "▲ {number1} unspent (T)  ·  {number2} / {number3} XP", "▲ 미사용 {number1} (T)  ·  {number2} / {number3} XP" },
+		{ "Enter Fever Time {number1} time(s)", "피버 타임 {number1}번 입장" },
+		{ "Upgrade a gear piece to +{number1}", "장비 하나를 +{number1}까지 강화" },
+		{ "Lord of Forest  ·  Zone {number1}", "숲의 군주 · 구역 {number1}" },
+		{ "Zone {number1} · Shockwave Shot  ", "존 {number1} · 충격파 샷" },
+		{ "Spell Tome · Rusty Era +{number1}", "스펠 토메 · 녹슨 시대 +{number1}" },
 		{ "Defeat {number1} Golden Goblin(s)", "황금 고블린 {number1}마리를 물리치세요" },
 		{ "🔒 Zone {number1} · Volcano Sealed", "🔒 구역 {number1} · 화산 봉쇄됨" },
 		{ "Lord of Meadow  ·  Zone {number1}", "초원의 군주 · 구역 {number1}" },
@@ -165,6 +171,7 @@ return {
 		{ "🌟 Paragon ({number1})", "🌟 패러건 ({number1})" },
 		{ "Best combo: {number1}", "최고 콤보: {number1}" },
 		{ "x{number1} · {number2} SUCCESS", "x{number1} · {number2}번 성공" },
+		{ "🌈 Mythic in {number1}", "🌈 신화 확정까지 {number1}회" },
 		{ "Enemy HP +{number1}%", "적의 HP +{number1}%" },
 		{ "Activate {number1} G", "{number1} G 활성화" },
 		{ "👥 Party ({number1}/{number2})", "👥 파티 ({number1}/{number2})" },

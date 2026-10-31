@@ -2138,5 +2138,9 @@
 "Surrounded? Press F!",
 "Death Lotus hits everything around you for 2.5s.",
 "🏆 POWER RANKING  TOP 20",
-"All servers · updates every 45s"
+"All servers · updates every 45s",
+"⭐ Legendary guaranteed in {number1}",
+"🌈 Mythic in {number1}",
+"Pity",
+": if no Legendary or better drops in {number1} pulls, the {number2}th pull is a guaranteed Legendary. If no Mythic drops in {number3} pulls, the {number4}th pull is a guaranteed Mythic. The counts are saved."
 ]

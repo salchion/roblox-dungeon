@@ -886,6 +886,21 @@ makeLabel({
 	Size = UDim2.new(1, -420, 0, 50), Position = UDim2.new(0, 20, 0, 40), RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 	Text = table.concat(rateParts, "  ") .. "\n<font color='#c9c0e0'>Same or lower rarity converts to Gold · Tickets drop from dungeons / field bosses</font>",
 }, gachaBar)
+do -- 천장 표시: "전설 확정까지 N회 · 신화 확정까지 M회" (서버가 GachaPityL / GachaPityM 로 알려 준다)
+	local pityLabel = makeLabel({
+		Size = UDim2.new(1, -560, 0, 26), Position = UDim2.new(0, 134, 1, -34), RichText = true, TextSize = 12, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Left,
+	}, gachaBar)
+	local function refreshPity()
+		local l, m = player:GetAttribute("GachaPityL"), player:GetAttribute("GachaPityM")
+		pityLabel.Visible = l ~= nil and m ~= nil
+		if l and m then
+			pityLabel.Text = string.format("<font color='#ffd966'>⭐ Legendary guaranteed in %d</font>  ·  <font color='#ff9ad8'>🌈 Mythic in %d</font>", l, m)
+		end
+	end
+	player:GetAttributeChangedSignal("GachaPityL"):Connect(refreshPity)
+	player:GetAttributeChangedSignal("GachaPityM"):Connect(refreshPity)
+	refreshPity()
+end
 local rollOne = makeButton({
 	Size = UDim2.new(0, 176, 0, 80), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -218, 0.5, 0),
 	Text = "🎰 Roll x1\n1 Ticket", TextSize = 17, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(120, 80, 210),

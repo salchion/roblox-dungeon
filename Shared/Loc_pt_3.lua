@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "[{text1}] Starts in {number2}s! Survive the incoming monsters", "[{text1}] Começa em {number2} s! Sobreviva aos monstros que se aproximam" },
+		{ "⏱ Skip gauge {text1}  (shared with training · pets)", "⏱ Medidor de aceleração {text1}  (compartilhado com treino · pets)" },
+		{ "{text1} can now appear (Lv {number2}+). Deeper = better loot", "{text1} já pode aparecer (Nv {number2}+). Mais fundo = melhor espólio" },
+		{ "Crit damage +{text1}%p per point (base 2x)  (max {number2})", "Dano crítico +{text1}%p por ponto (base 2x) (máx. {number2})" },
 		{ "{text1}  ▲ Better than your current gear! (I → Bag", "{text1}  ▲ Melhor que seu equipamento atual! (I → Bolsa" },
 		{ "🎮 Welcome to the world of adventure, {text1}!", "🎮 Bem-vindo ao mundo da aventura, {text1}!" },
 		{ "👑 Zone {number1} · The Lord of {text2} has reappeared!", "👑 Zona {number1} · O senhor de {text2} reapareceu!" },

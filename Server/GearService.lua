@@ -946,6 +946,26 @@ function Gear.Roll(player, forced)
 		if rarity >= 3 then player:SetAttribute("TutorialHero", true) end
 	end
 
+	-- 천장 (튜토리얼 뽑기가 아닐 때만): 전설 이상 / 신화가 오래 안 나오면 확정
+	local pity = Config.Gacha.Pity
+	if pity and not mode then
+		local okMeta, Meta = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
+		local saved = okMeta and Meta.GetRift and Meta.GetRift(player)
+		if saved then
+			saved.PityL = (saved.PityL or 0) + 1
+			saved.PityM = (saved.PityM or 0) + 1
+			if saved.PityM >= pity.Mythic then
+				rarity = 5
+			elseif saved.PityL >= pity.Legendary and rarity < 4 then
+				rarity = 4
+			end
+			if rarity >= 4 then saved.PityL = 0 end
+			if rarity >= 5 then saved.PityM = 0 end
+			player:SetAttribute("GachaPityL", pity.Legendary - saved.PityL)
+			player:SetAttribute("GachaPityM", pity.Mythic - saved.PityM)
+		end
+	end
+
 	local slot = G.Slots[math.random(#G.Slots)]
 	local item = Inventory.NewItem(slot.Key, rarity, 0, nil, 0) -- (뽑기 장비에는 유니크가 붙지 않는다: 유니크는 던전 쪽 보상)
 	local before = Inventory.GetEquipped(player, slot.Key)
@@ -970,5 +990,23 @@ function Gear.Roll(player, forced)
 	end
 	return true, message, { Slot = slot.Key, Rarity = rarity, Name = slot.Names[rarity], Equipped = status == "Equipped", Status = status, Gold = gold or 0, Better = better }
 end
+
+-- 접속하면 저장된 천장 횟수를 화면에 보여 줄 수 있게 Attribute 로 알려 준다
+game:GetService("Players").PlayerAdded:Connect(function(player)
+	task.spawn(function()
+		local okMeta, Meta = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
+		local pity = Config.Gacha.Pity
+		if not okMeta or not Meta.GetRift or not pity then return end
+		for _ = 1, 60 do
+			local saved = player.Parent and Meta.GetRift(player)
+			if saved then
+				player:SetAttribute("GachaPityL", pity.Legendary - (saved.PityL or 0))
+				player:SetAttribute("GachaPityM", pity.Mythic - (saved.PityM or 0))
+				return
+			end
+			task.wait(1)
+		end
+	end)
+end)
 
 return Gear
