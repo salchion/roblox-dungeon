@@ -18,6 +18,7 @@ return {
 	Enh_Success = 2686079706,     -- 강화 성공: level up sound effect (예전: 9116384799 Magic Burst 2)
 	Enh_Fail = 9119049679,        -- 강화 실패: Shale Break 9 (ProSoundEffects) 바위가 부서지는 "콰직"
 	Enh_Evolve = 9120769331,      -- 무기 진화: Wind Whoosh Sonic Boom Low End Impact 1 (ProSoundEffects)
+	Thunder_Crack = 9126069842,   -- 마법서 번개 끝 천둥: Synth Lightning Crack Sharp Some Rolling Tails (ProSoundEffects)
 	Gacha_Shake = 9116420445,     -- 뽑기 흔들림: Magic Tone Tonal Shimmer Shaking Rattle 1 (ProSoundEffects)
 	Chime = 73627822697931,       -- 예전 강화 성공 "띵": 치명타 / 줍기 / 레벨업 / 힐 / 데드아이 락온 소리의 기본 재료로 계속 쓴다
 	Enh_Hammer = 9125819216,      -- 강화 망치 (metal clang)

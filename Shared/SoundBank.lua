@@ -28,7 +28,7 @@ local SPECS = {
 	Shot_Shotgun  = { Base = "Shot", CustomLength = 1.2, Pitch = 0.7, Volume = 1.0, Length = 1.0, Fx = { { "distortion", { Level = 0.35 } } },
 		Layers = { { Pitch = 0.5, Volume = 0.9, Delay = 0 }, { Pitch = 1.3, Volume = 0.5, Delay = 0.03 } } },
 	-- 마법책 (Flamer = 마법책): 낮게 "우웅" 하고 불덩이가 터져 나가는 소리 (기본 소리를 낮추고 코러스 + 짧은 폭발음을 겹친다)
-	Shot_Flamer   = { Volume = 1.1, CustomLength = 0.8, CustomPitch = 1.0, Choke = true }, -- 마법책 체인 라이트닝: 번개 "치직" (원본은 3초: 연사 때 겹치지 않게 앞 0.8초만. 길거나 짧으면 CustomLength 조절)
+	Shot_Flamer   = { Volume = 1.1, CustomLength = 0.8, CustomPitch = 1.0, Choke = true, Tail = { Key = "Thunder_Crack", Delay = 0.14 } }, -- (끝에 천둥 "꽝" 이 따라온다: Tail) -- 마법책 체인 라이트닝: 번개 "치직" (원본은 3초: 연사 때 겹치지 않게 앞 0.8초만. 길거나 짧으면 CustomLength 조절)
 	-- 박격포: 묵직한 "쿵" (Cannon = 박격포)
 	Shot_Cannon   = { Base = "Boom", Pitch = 0.8, Volume = 0.8, Length = 0.9, Fx = { { "distortion", { Level = 0.3 } } } },
 	-- 석궁: 시위가 튕기는 "탕" (Sniper = 석궁)
@@ -145,6 +145,7 @@ local CUSTOM_ONLY = {
 	Rare_Drop     = { Volume = 0.8, CustomLength = 1.8, CustomPitch = 1.15 }, -- 희귀 이상 장비 획득
 	Reel_Stop     = { Volume = 0.8, CustomLength = 1.0 }, -- 첫 장비 슬롯 릴이 멈출 때 ("띵")
 	NearMiss_Get  = { Volume = 0.7, CustomLength = 1.0 }, -- NEAR MISS 성공 (스택이 쌓일 때)
+	Thunder_Crack = { Volume = 0.75, CustomLength = 1.3, CustomPitch = 1.0, Choke = true }, -- 마법서 번개 끝의 천둥 "꽝" (Shot_Flamer 의 Tail. 연사 때 겹치지 않게 앞 소리를 줄인다)
 	Gacha_Shake   = { Volume = 1.0, CustomLength = 2.0, CustomPitch = 1.0 }, -- 뽑기 캡슐 / 카드가 떨릴 때 마법 기운이 떨리는 소리 (연출 시간만큼만 울린다)
 }
 for key, spec in pairs(CUSTOM_ONLY) do
@@ -170,7 +171,7 @@ SoundBank.Descriptions = {
 	Hit = "Enemy hit (short)", Crit = "Critical hit", Kill = "Enemy kill (pitch rises with kill streak)",
 	Skill_Heal = "First Aid used", Skill_LotusCast = "Death Lotus cast", Skill_LotusThump = "Death Lotus thump", Skill_LotusSlash = "Death Lotus whirl", Skill_LotusStab = "Death Lotus stab", Skill_LotusClang = "Death Lotus blade clang", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Ult_Missile = "Dead Eye missile launch", Ult_Hit = "Dead Eye missile impact", Ult_Launch = "Dead Eye launch thump", Ult_Finale = "Dead Eye final blast", Boom = "Monster explosion / shockwave / meteor",
 	LevelUp = "Level up", Enh_Hammer = "Enhance: hammer strike", Enh_Success = "Enhance success (pitch rises with level)", Enh_Fail = "Enhance failed",
-	Enh_Evolve = "Weapon evolution", Gacha_Drop = "Gacha: capsule drop", Gacha_Tick = "Gacha: rattling ticks", Gacha_Card = "10-pull gacha: one card", Gacha_Shake = "Gacha: magic shimmer while shaking",
+	Enh_Evolve = "Weapon evolution", Gacha_Drop = "Gacha: capsule drop", Gacha_Tick = "Gacha: rattling ticks", Gacha_Card = "10-pull gacha: one card", Gacha_Shake = "Gacha: magic shimmer while shaking", Thunder_Crack = "Spell Tome: thunder crack after the lightning",
 	Aug_Get = "Augment acquired", Aug_Synergy = "Augment synergy triggered", Aug_Missile = "Crit missile launched", Aug_MissileHit = "Missile hit", Aug_Nova = "Kill explosion",
 	Aug_Blade = "Spinning blade slash", Aug_Storm = "Lightning strike", Aug_MeteorFall = "Meteor falling", Aug_MeteorHit = "Meteor impact", Aug_Flame = "Flame zone", Aug_Execute = "Execute", Aug_Skull = "Execute skull (short low thud)", Aug_Pulse = "Guardian pulse",
 	Buff_Get = "Normal buff acquired", Penalty_Get = "Penalty triggered", Player_Hurt = "I got hit", Low_Health = "Low health", Warn_Overrun = "Monster limit warning", Shield_Block = "Blocked by shield",
@@ -181,7 +182,7 @@ SoundBank.Descriptions = {
 SoundBank.Order = {
 	"Shot_Pistol", "Shot_Smg", "Shot_Revolver", "Shot_Rifle", "Shot_Shotgun", "Shot_Flamer", "Shot_Cannon", "Shot_Sniper", "Shot_Rocket", "Shot_Rail",
 	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_LotusCast", "Skill_LotusThump", "Skill_LotusSlash", "Skill_LotusStab", "Skill_LotusClang", "Skill_Ult", "Ult_Lock", "Ult_Missile", "Ult_Hit", "Ult_Launch", "Ult_Finale", "UltShot", "Boom", "LevelUp",
-	"Dash", "Pickup", "Enh_Hammer", "Enh_Success", "Enh_Fail", "Enh_Evolve", "Gacha_Drop", "Gacha_Shake", "Gacha_Tick", "Gacha_Card",
+	"Dash", "Pickup", "Enh_Hammer", "Enh_Success", "Enh_Fail", "Enh_Evolve", "Gacha_Drop", "Gacha_Shake", "Thunder_Crack", "Gacha_Tick", "Gacha_Card",
 	"Gacha_Pop1", "Gacha_Pop2", "Gacha_Pop3", "Gacha_Pop4", "Gacha_Pop5",
 	"Aug_Get", "Aug_Synergy", "Aug_Missile", "Aug_MissileHit", "Aug_Nova", "Aug_Blade", "Aug_Storm", "Aug_MeteorFall", "Aug_MeteorHit", "Aug_Flame", "Aug_Execute", "Aug_Skull", "Aug_Pulse",
 	"Buff_Get", "Penalty_Get", "Player_Hurt", "Low_Health", "Warn_Overrun", "Shield_Block",
@@ -246,7 +247,7 @@ local FEEDBACK = { Hit = true, Crit = true, Kill = true, Pickup = true }
 local lastFeedback = 0
 
 local lastShot = 0
-local NO_DUCK = { Skill_LotusCast = true, Skill_LotusThump = true, Skill_LotusSlash = true, Skill_LotusStab = true, Skill_LotusClang = true } -- (스킬 소리는 총소리 때문에 작아지지 않게)
+local NO_DUCK = { Thunder_Crack = true, Skill_LotusCast = true, Skill_LotusThump = true, Skill_LotusSlash = true, Skill_LotusStab = true, Skill_LotusClang = true } -- (스킬 소리는 총소리 때문에 작아지지 않게)
 local chokeLast = {} -- [소리 이름] = 가장 최근에 울린 Sound (Choke 소리는 다음 발이 나갈 때 앞 소리를 끊는다)
 -- 방금(0.2초 안) 총을 쐈는가: 서버가 만든 소리(세트 효과 폭발 등)도 클라이언트에서 낮추는 데 쓴다 (PlayerClient)
 function SoundBank.RecentShot()
@@ -314,6 +315,11 @@ function SoundBank.Play(parent, key, opts)
 				main.Volume = main.Volume * 0.5
 				task.delay(0.15, function() if main.Parent then main:Stop() end end)
 			end
+		end)
+	end
+	if spec.Tail then -- 뒤따라오는 소리 (예: 번개 "찌지직" 끝의 천둥 "꽝")
+		task.delay(spec.Tail.Delay or 0.1, function()
+			if parent.Parent then SoundBank.Play(parent, spec.Tail.Key, { Volume = opts.Volume }) end
 		end)
 	end
 	return main
