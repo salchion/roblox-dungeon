@@ -1094,39 +1094,7 @@ do
 	end)
 end
 
-do
-	local popup = create("Frame", {
-		Name = "UpgradePopup", Size = UDim2.new(0, 330, 0, 84), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 96),
-		BackgroundColor3 = Color3.fromRGB(28, 40, 34), BorderSizePixel = 0, Visible = false, ZIndex = 80,
-	}, gui)
-	rounded(popup, 14)
-	create("UIStroke", { Color = Color3.fromRGB(120, 255, 150), Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, popup)
-	local popupText = makeLabel({ Size = UDim2.new(1, -20, 0, 26), Position = UDim2.new(0, 10, 0, 6), Font = Enum.Font.GothamBlack, TextSize = 14, ZIndex = 81 }, popup)
-	local popupButton = makeButton({
-		Size = UDim2.new(1, -24, 0, 38), Position = UDim2.new(0, 12, 0, 38), Text = "⬆ Auto-equip stronger gear", TextSize = 15,
-		Font = Enum.Font.GothamBlack, BackgroundColor3 = Color3.fromRGB(60, 190, 100), ZIndex = 81,
-	}, popup)
-	local shownAt = 0
-	local function hide() popup.Visible = false end
-	popupButton.Activated:Connect(function()
-		Remotes.Inventory:FireServer("AutoEquip")
-		hide()
-	end)
-	Remotes.Gear.OnClientEvent:Connect(function(action, result)
-		if action ~= "Result" or not result.Roll or (result.Upgrades or 0) <= 0 then return end
-		task.delay(1.8, function()
-			-- (뽑기 결과 화면이 떠 있으면 닫힌 뒤에 띄운다: 결과 위를 덮지 않게)
-			local layer = gui.Parent:FindFirstChild("GachaRevealGui")
-			local waited = 0
-			while layer and layer:FindFirstChild("GachaReveal") and waited < 20 do waited += task.wait(0.25) end
-			popupText.Text = string.format("🔥 Better gear dropped! (%d slot(s))", result.Upgrades)
-			popup.Visible = true
-			shownAt = os.clock()
-			local mine = shownAt
-			task.delay(14, function() if shownAt == mine then hide() end end)
-		end)
-	end)
-end
+-- ("더 좋은 장비가 떨어졌어요" 자동 장착 팝업은 뺐다: 왼쪽 장비 버튼의 느낌표가 이미 알려 준다)
 
 do -- 장비 뽑기 결과 연출: ReplicatedStorage.GachaReveal 모듈 (용량 때문에 떼어 냈다)
 	local ok, err = pcall(function()

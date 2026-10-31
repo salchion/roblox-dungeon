@@ -205,6 +205,7 @@ function M.Init(deps)
 						fade(holder, { Position = pos, Size = UDim2.new(0, CW, 0, CH), Rotation = 0 }, 0.32, Enum.EasingStyle.Back)
 					end)
 				end
+				local dealDone = os.clock() + #rolls * 0.05 + 0.4 -- (카드가 깔리는 움직임이 끝나는 시각: 건너뛰어도 마지막 정렬은 이 뒤에)
 				pause(#rolls * 0.05 + 0.4)
 
 				local counts = {}
@@ -313,6 +314,9 @@ function M.Init(deps)
 				pause(0.3)
 				if not root.Parent then return end
 
+				while root.Parent and os.clock() < dealDone do task.wait() end
+				task.wait(0.3) -- (마지막으로 뒤집힌 카드의 크기 움직임이 끝날 때까지)
+				if not root.Parent then return end
 				-- 3) 마지막 배치: 가장 좋은 장비를 가운데 크게, 나머지는 양옆에 작게 (좋은 것일수록 가운데 가까이)
 				local order = table.clone(cards)
 				table.sort(order, function(a, b) return a.Roll.Rarity > b.Roll.Rarity end)
@@ -330,7 +334,6 @@ function M.Init(deps)
 					if holder.Parent then
 						local sc = create("UIScale", { Scale = 1 }, holder)
 						if i == 1 then
-							holder.ZIndex = 68
 							fade(holder, { Position = UDim2.new(0, cx, 0, cy) }, 0.45, Enum.EasingStyle.Back)
 							fade(sc, { Scale = 1.45 }, 0.45, Enum.EasingStyle.Back)
 							local halo = create("Frame", { Size = UDim2.new(0, 60, 0, 60), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy), BackgroundColor3 = card.Color, BackgroundTransparency = 0.6, BorderSizePixel = 0, ZIndex = 62 }, grid)
