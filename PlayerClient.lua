@@ -162,54 +162,57 @@ create("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 
 create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, toastLabel)
 rounded(toastLabel, 12)
 
-local toastToken = 0
-local lastToast, toastRepeat = nil, 1
-local toastCount = makeLabel({
-	Size = UDim2.new(0, 44, 0, 22), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 6, 0, -8), BackgroundColor3 = Color3.fromRGB(255, 200, 70), BackgroundTransparency = 0,
-	Font = Enum.Font.GothamBlack, TextSize = 13, TextColor3 = Color3.fromRGB(40, 24, 0), TextStrokeTransparency = 1, Visible = false, ZIndex = 61, AutoLocalize = false,
-}, toastLabel)
-rounded(toastCount, 11)
-local function toast(text)
-	-- 같은 알림이 떠 있는 동안 또 오면 새로 띄우지 않고 "x2, x3..." 만 붙인다 (같은 글이 연달아 깜빡이며 화면을 덮던 것)
-	if toastLabel.Visible and text == lastToast then
-		toastRepeat += 1
-		toastCount.Text = "x" .. toastRepeat -- (글자에 붙이면 번역이 깨져서 오른쪽 위 작은 배지로)
-		toastCount.Visible = true
-		return
-	end
-	lastToast, toastRepeat = text, 1
-	toastCount.Visible = false
-	toastToken += 1
-	local token = toastToken
-	local base = (player:GetAttribute("Zone") == "Dungeon") and 210 or 112
-	local pg = gui.Parent
-	local cy = pg:GetAttribute(player:GetAttribute("SidePromptUp") and "UiToastYUp" or "UiToastY")
-	local y = cy or -(base + 138)
-	local tx = cy and pg:GetAttribute("UiToastX") or 14
-	toastLabel.Text = text
-	toastLabel.Visible = true
-	if pg:GetAttribute("UiCompact") ~= true then
-		-- 큰 화면: 알림은 위쪽 가운데(접속자 표시 / 보스 시간 표시 아래)에서 내려온다: 왼쪽 메뉴 버튼 줄 / 미션 카드와 겹치지 않는다
-		-- (메뉴가 열려 있으면 메뉴 윗부분을 가리지 않게 메뉴 바로 위에 띄운다)
-		local targetY = 160
-		for _, name in ipairs({ "MenuPanel", "EnhancePanel" }) do -- (메뉴 / 강화 창이 열려 있으면 그 창 윗부분을 가리지 않게 창 바로 위에)
-			local window = gui:FindFirstChild(name)
-			if window and window.Visible then targetY = math.max(4, math.min(targetY, window.AbsolutePosition.Y - 82)) end
+local toast -- (상태는 do 블록 안에: PlayerClient 는 맨 바깥 지역 변수가 200개 한도에 닿아 있다)
+do
+	local toastToken = 0
+	local lastToast, toastRepeat = nil, 1
+	local toastCount = makeLabel({
+		Size = UDim2.new(0, 44, 0, 22), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 6, 0, -8), BackgroundColor3 = Color3.fromRGB(255, 200, 70), BackgroundTransparency = 0,
+		Font = Enum.Font.GothamBlack, TextSize = 13, TextColor3 = Color3.fromRGB(40, 24, 0), TextStrokeTransparency = 1, Visible = false, ZIndex = 61, AutoLocalize = false,
+	}, toastLabel)
+	rounded(toastCount, 11)
+	toast = function(text)
+		-- 같은 알림이 떠 있는 동안 또 오면 새로 띄우지 않고 "x2, x3..." 만 붙인다 (같은 글이 연달아 깜빡이며 화면을 덮던 것)
+		if toastLabel.Visible and text == lastToast then
+			toastRepeat += 1
+			toastCount.Text = "x" .. toastRepeat -- (글자에 붙이면 번역이 깨져서 오른쪽 위 작은 배지로)
+			toastCount.Visible = true
+			return
 		end
-		toastLabel.AnchorPoint = Vector2.new(0.5, 0)
-		toastLabel.Position = UDim2.new(0.5, 0, 0, -90)
-		TweenService:Create(toastLabel, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0.5, 0, 0, targetY) }):Play()
-	else
-		toastLabel.AnchorPoint = Vector2.new(0, 1)
-		toastLabel.Position = UDim2.new(0, -430, 1, y)
-		TweenService:Create(toastLabel, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, tx, 1, y) }):Play()
-	end
-	local hold = string.sub(text, 1, 3) == "⚠" and 7 or math.clamp(#text / 14, 4, 7) -- 경고 / 긴 안내는 더 오래 보여 준다
-	task.delay(hold, function()
-		if token == toastToken then
-			toastLabel.Visible = false
+		lastToast, toastRepeat = text, 1
+		toastCount.Visible = false
+		toastToken += 1
+		local token = toastToken
+		local base = (player:GetAttribute("Zone") == "Dungeon") and 210 or 112
+		local pg = gui.Parent
+		local cy = pg:GetAttribute(player:GetAttribute("SidePromptUp") and "UiToastYUp" or "UiToastY")
+		local y = cy or -(base + 138)
+		local tx = cy and pg:GetAttribute("UiToastX") or 14
+		toastLabel.Text = text
+		toastLabel.Visible = true
+		if pg:GetAttribute("UiCompact") ~= true then
+			-- 큰 화면: 알림은 위쪽 가운데(접속자 표시 / 보스 시간 표시 아래)에서 내려온다: 왼쪽 메뉴 버튼 줄 / 미션 카드와 겹치지 않는다
+			-- (메뉴가 열려 있으면 메뉴 윗부분을 가리지 않게 메뉴 바로 위에 띄운다)
+			local targetY = 160
+			for _, name in ipairs({ "MenuPanel", "EnhancePanel" }) do -- (메뉴 / 강화 창이 열려 있으면 그 창 윗부분을 가리지 않게 창 바로 위에)
+				local window = gui:FindFirstChild(name)
+				if window and window.Visible then targetY = math.max(4, math.min(targetY, window.AbsolutePosition.Y - 82)) end
+			end
+			toastLabel.AnchorPoint = Vector2.new(0.5, 0)
+			toastLabel.Position = UDim2.new(0.5, 0, 0, -90)
+			TweenService:Create(toastLabel, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0.5, 0, 0, targetY) }):Play()
+		else
+			toastLabel.AnchorPoint = Vector2.new(0, 1)
+			toastLabel.Position = UDim2.new(0, -430, 1, y)
+			TweenService:Create(toastLabel, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, tx, 1, y) }):Play()
 		end
-	end)
+		local hold = string.sub(text, 1, 3) == "⚠" and 7 or math.clamp(#text / 14, 4, 7) -- 경고 / 긴 안내는 더 오래 보여 준다
+		task.delay(hold, function()
+			if token == toastToken then
+				toastLabel.Visible = false
+			end
+		end)
+	end
 end
 
 Remotes.Notify.OnClientEvent:Connect(toast)
@@ -3297,6 +3300,7 @@ local function refreshWarp()
 	end
 end
 
+do -- (파일 뒷부분은 블록 안에: 맨 바깥 지역 변수가 Luau 한도 200개를 넘으면 스크립트 전체가 시작하자마자 멈춘다 - "Out of local registers")
 player:GetAttributeChangedSignal("Zone"):Connect(function()
 	if currentZone() == "Dungeon" then
 		warpPanel.Visible = false
@@ -4021,4 +4025,5 @@ do
 			jd.Used = 0
 		end
 	end)
+end
 end
