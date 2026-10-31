@@ -14,6 +14,13 @@ local Lighting = game:GetService("Lighting")
 local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
+-- 로블록스 기본 아이템 칸(무기 "Weapon" 칸)을 오프닝이 시작되자마자 끈다: 화면 스크립트(PlayerClient)가 늦게 돌면 로딩 화면 아래에 잠깐 보였다
+task.spawn(function()
+	for _ = 1, 20 do
+		if pcall(function() game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false) end) then break end
+		task.wait(0.25)
+	end
+end)
 local playerGui = player:WaitForChild("PlayerGui")
 
 local INTRO_SOUND_ID = 132046898251409 -- 오프닝 음악 (로블록스 오디오 에셋 ID). 0 으로 바꾸면 이 음악은 끈다
