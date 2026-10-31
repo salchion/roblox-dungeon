@@ -371,6 +371,15 @@ function P.ColossusAttack(part, data)
 	local pick
 	repeat pick = COLOSSUS_ORDER[math.random(#COLOSSUS_ORDER)] until pick ~= data.LastPattern
 	data.LastPattern = pick
+	-- 기 모으기: 0.5초 동안 몸을 들며 뒤로 젖혔다가, 0.12초에 앞으로 내리찍고 제자리로 (FieldService 가 이 값으로 몸을 움직인다)
+	for i = 1, 10 do
+		local k = i / 10
+		data.CastLift, data.CastLean = 5 * k, -0.22 * k
+		task.wait(0.05)
+	end
+	data.CastLift, data.CastLean = -0.5, 0.14
+	if ctx.Effects and ctx.Effects.Burst then pcall(ctx.Effects.Burst, part.Position - Vector3.new(0, (data.Stats and data.Stats.Size or 30) / 2, 0), Color3.fromRGB(230, 200, 160), 30) end
+	task.delay(0.15, function() data.CastLift, data.CastLean = 0, 0 end)
 	COLOSSUS[pick](part, data, damage)
 	return pick == "quake" and 4.2 or 3.6
 end
