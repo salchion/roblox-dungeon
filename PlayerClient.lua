@@ -176,9 +176,11 @@ local function toast(text)
 	if pg:GetAttribute("UiCompact") ~= true then
 		-- 큰 화면: 알림은 위쪽 가운데(접속자 표시 / 보스 시간 표시 아래)에서 내려온다: 왼쪽 메뉴 버튼 줄 / 미션 카드와 겹치지 않는다
 		-- (메뉴가 열려 있으면 메뉴 윗부분을 가리지 않게 메뉴 바로 위에 띄운다)
-		local menu = gui:FindFirstChild("MenuPanel")
 		local targetY = 160
-		if menu and menu.Visible then targetY = math.max(4, math.min(160, menu.AbsolutePosition.Y - 82)) end
+		for _, name in ipairs({ "MenuPanel", "EnhancePanel" }) do -- (메뉴 / 강화 창이 열려 있으면 그 창 윗부분을 가리지 않게 창 바로 위에)
+			local window = gui:FindFirstChild(name)
+			if window and window.Visible then targetY = math.max(4, math.min(targetY, window.AbsolutePosition.Y - 82)) end
+		end
 		toastLabel.AnchorPoint = Vector2.new(0.5, 0)
 		toastLabel.Position = UDim2.new(0.5, 0, 0, -90)
 		TweenService:Create(toastLabel, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0.5, 0, 0, targetY) }):Play()
@@ -317,7 +319,7 @@ local enhanceInfo = makeLabel({ -- (예전 글 줄: 아래 강화 블록이 대�
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 }, enhancePanel)
 -- 강화 블록: +N ➜ +N+1 / 공격력 배율 변화 / 성공 확률 막대
-E.Block = create("Frame", { Size = UDim2.new(1, -24, 0, 98), Position = UDim2.new(0, 12, 0, 340), BackgroundColor3 = Color3.fromRGB(30, 28, 46), BorderSizePixel = 0 }, enhancePanel)
+E.Block = create("Frame", { Size = UDim2.new(1, -24, 0, 98), Position = UDim2.new(0, 12, 0, 446), -- (강화 버튼 바로 위: 누르기 전에 보는 정보) BackgroundColor3 = Color3.fromRGB(30, 28, 46), BorderSizePixel = 0 }, enhancePanel)
 create("UICorner", { CornerRadius = UDim.new(0, 12) }, E.Block)
 create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5, Transparency = 0.35 }, E.Block)
 create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(170, 160, 200)), Rotation = 90 }, E.Block)
@@ -331,7 +333,7 @@ E.BarText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), RichText = true, Font = En
 
 -- 무기 특성: 지금 무기의 싸우는 방식 + 다음 시대로 진화하면 생기는 새 특성 (업그레이드할 이유를 눈에 보이게)
 local enhancePerk = makeLabel({
-	Size = UDim2.new(1, -40, 0, 58), Position = UDim2.new(0, 20, 0, 446), TextSize = 11, RichText = true,
+	Size = UDim2.new(1, -40, 0, 58), Position = UDim2.new(0, 20, 0, 340), TextSize = 11, RichText = true,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 }, enhancePanel)
 
@@ -340,7 +342,7 @@ local enhanceBanner = makeLabel({
 	Font = Enum.Font.GothamBlack, TextSize = 37, TextStrokeTransparency = 0, Visible = false, ZIndex = 8,
 }, enhancePanel)
 local enhanceResult = makeLabel({
-	Size = UDim2.new(1, -24, 0, 22), Position = UDim2.new(0, 12, 0, 506), Font = Enum.Font.GothamBold, TextSize = 12,
+	Size = UDim2.new(1, -24, 0, 40), Position = UDim2.new(0, 12, 0, 402), Font = Enum.Font.GothamBold, TextSize = 12, TextWrapped = true,
 }, enhancePanel)
 
 local hammer = makeLabel({
@@ -623,8 +625,8 @@ function refreshEnhance()
 	end
 	enhanceInfo.Text = string.format("Damage  <b>x%.2f</b> <font color='#78ff8c'>▶ x%.2f</font>\nSuccess rate  <font color='#%s'><b>%d%%</b></font>   <font size='10' color='#aaaabb'>(level kept on failure)</font>",
 		Config.GetDamageMultiplier(level), Config.GetDamageMultiplier(level + 1), chance >= 80 and "78ff8c" or (chance >= 60 and "ffd966" or "ff9a6e"), chance)
-	E.BlockLevel.Text = string.format("<font color='#e6e6f0'>+%d</font>  <font color='#6ec3ff'>➜</font>  <font color='#78ff8c'>+%d</font>", level, level + 1)
-	E.BlockDamage.Text = string.format("<font color='#9aa3b8'>⚔ Damage</font>  x%.2f  <font color='#78ff8c'>➜ x%.2f</font>", Config.GetDamageMultiplier(level), Config.GetDamageMultiplier(level + 1))
+	E.BlockLevel.Text = string.format("<font color='#e6e6f0'>+%d</font>  <font color='#6ec3ff'>→</font>  <font color='#78ff8c'>+%d</font>", level, level + 1)
+	E.BlockDamage.Text = string.format("<font color='#9aa3b8'>⚔ Damage</font>  x%.2f  <font color='#78ff8c'>→ x%.2f</font>", Config.GetDamageMultiplier(level), Config.GetDamageMultiplier(level + 1))
 	E.BarFill.BackgroundColor3 = Color3.fromRGB(255, 90, 80):Lerp(Color3.fromRGB(110, 230, 120), math.clamp((chance / 100 - 0.35) / 0.65, 0, 1))
 	TweenService:Create(E.BarFill, TweenInfo.new(0.3), { Size = UDim2.new(chance / 100, 0, 1, 0) }):Play()
 	E.BarText.Text = string.format("Success %d%%<font size='10'>  </font><font size='10' color='#c9cde0'>(level kept on failure)</font>", chance)

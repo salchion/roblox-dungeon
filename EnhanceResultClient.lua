@@ -118,10 +118,10 @@ local function show(ok, summary)
 	end
 	label({ Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, tileY + 76), Text = Config.GetWeaponName(typeKey, level), TextSize = 14, TextColor3 = color, ZIndex = 22 }, card)
 
-	-- +이전 ➜ +지금 (실패면 그대로 + "Level kept")
+	-- +이전 → +지금 (실패면 그대로 + "Level kept")
 	local rowY = tileY + 96
 	label({ Size = UDim2.new(0.38, 0, 0, 36), Position = UDim2.new(0, 0, 0, rowY), Text = "+" .. before, TextSize = 30, TextColor3 = Color3.fromRGB(235, 235, 245), TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 22 }, card)
-	local arrow = label({ Size = UDim2.new(0.24, 0, 0, 36), Position = UDim2.new(0.38, 0, 0, rowY), Text = "➜", TextSize = 30, TextColor3 = success and Color3.fromRGB(110, 190, 255) or Color3.fromRGB(130, 130, 150), ZIndex = 22 }, card)
+	local arrow = label({ Size = UDim2.new(0.24, 0, 0, 36), Position = UDim2.new(0.38, 0, 0, rowY), Text = "→", TextSize = 30, TextColor3 = success and Color3.fromRGB(110, 190, 255) or Color3.fromRGB(130, 130, 150), ZIndex = 22 }, card)
 	local after = label({ Size = UDim2.new(0.38, 0, 0, 36), Position = UDim2.new(0.62, 0, 0, rowY), Text = "+" .. level, TextSize = 18, TextColor3 = success and GREEN or Color3.fromRGB(200, 200, 215), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 22 }, card)
 	tween(after, 0.3, { TextSize = 30 }, Enum.EasingStyle.Back)
 	if success then
