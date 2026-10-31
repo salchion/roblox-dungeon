@@ -130,21 +130,21 @@ end
 Config.Tutorial = {
 	Steps = {
 		-- 처음 접속하면 오프닝이 끝난 뒤 바로 1구역 캠프에 서고(첫 장비 3개도 그때 지급), R 키 자동 공격을 안내받으며 몬스터를 잡는다 (예전의 허수아비 미션은 보상이 없어 이탈이 많았다)
-		{ Text = "⚔ Defeat 5 monsters! Press R for auto-attack. Your gear is equipped. The Zone 1 Lord (👑) waits ahead!", Stat = "FieldKills", Goal = 5, Target = "Field", TargetName = "Field Entrance",
+		{ Text = "⚔ Defeat 5 monsters! (R = auto-attack)", Stat = "FieldKills", Goal = 5, Target = "Field", TargetName = "Field Entrance",
 			Reward = { Gold = 250, Tickets = 1 } },
 		-- 이야기: 필드 군주를 쓰러뜨리면 열쇠가 떨어져 바닥이 갈라지고 -> 던전 -> 던전 보스를 쓰러뜨리면 최후의 군주가 나타나 압도당하고 -> 마을에서 전리품으로 뽑기 / 강화
-		{ Text = "Head east to the field and defeat the first zone's Lord (👑)! (You'll get your first gear when you enter the field) ...You sense an ominous presence. Be careful!", Stat = "BossKills", Goal = 1, Target = "Field", TargetName = "Field Entrance", Doom = true,
-			Intro = { { Key = "Q", Title = "Q Key: Dash!", Text = "Good to know for the field: press Q to burst forward in your moving direction (2 in a row, recharges every 3s). Narrowly dodge enemy shots for a bonus!", Duration = 6 } },
+		{ Text = "👑 Defeat the Zone 1 Lord! Something ominous stirs...", Stat = "BossKills", Goal = 1, Target = "Field", TargetName = "Field Entrance", Doom = true,
+			Intro = { { Key = "Q", Title = "Q Key: Dash!", Text = "Q dashes forward. Dodge shots at the last second for a bonus!", Duration = 6 } },
 			IntroAnyZone = true, -- (마을에서 나가는 길에 읽는다. 첫 장비 지급 릴은 필드에 들어선 뒤에 뜬다)
 			Reward = { Gold = 300, Xp = 100 } },
 		-- 군주가 떨어뜨린 열쇠로 던전이 열린다 (자동으로 들어간다). 던전은 짧게(30초 버티기) + 받는 피해 절반. 보스를 쓰러뜨리면 최후의 군주가 나타나 쓰러진다 (그때 이 미션이 끝난다)
 		-- 중간에 졌다면 마을의 던전 게이트에서 다시 들어가도 같은 장면으로 이어진다.
-		{ Text = "🗝 The key dropped by the Lord opened a dungeon! Clear the dungeon ...You sense an even greater presence", Stat = "FieldDeaths", Goal = 1, Target = "Gate", TargetName = "Dungeon Gate", Dungeon = true, DungeonDoom = true,
+		{ Text = "🗝 Clear the dungeon the Lord's key opened!", Stat = "FieldDeaths", Goal = 1, Target = "Gate", TargetName = "Dungeon Gate", Dungeon = true, DungeonDoom = true,
 			Reward = { Gold = 4000, Tickets = 10, Keys = 1, Xp = 150 } }, -- 쓰러져도 전리품(재화)은 남는다 -> 아래 미션에서 바로 쓰게 한다
-		{ Text = "🎰 Pull gear 10 times with your tickets at the gacha machine! (The Lord vanished, leaving only: \"I'll be waiting at the end of the 8th land.\" Get stronger first!)", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "Gacha Machine", RollMode = "Hero", ShowQuests = true, -- 여기서부터 화면에 오늘의 퀘스트가 나타난다
+		{ Text = "🎰 Pull gear 10 times at the gacha machine!", Stat = "Rolls", Goal = 10, Target = "Gacha", TargetName = "Gacha Machine", RollMode = "Hero", ShowQuests = true, -- 여기서부터 화면에 오늘의 퀘스트가 나타난다
 			Reward = { Gold = 500, Xp = 100 } },
 		-- EvolveToTier: 이 번째 무기(3 = 기관단총)가 될 때까지 필요한 강화 횟수를 미션이 시작될 때 계산해서 목표로 쓴다. {무기} = 그 무기 이름
-		{ Text = "💰 Use your gold to upgrade your weapon to +15 and unlock the Shotgun! Once unlocked, you can pick any weapon you like in the Weapons tab", Stat = "Enhances", Goal = 15, EvolveToTier = 2, Target = "Anvil", TargetName = "Anvil",
+		{ Text = "💰 Upgrade your weapon to +15 to unlock the Shotgun!", Stat = "Enhances", Goal = 15, EvolveToTier = 2, Target = "Anvil", TargetName = "Anvil",
 			Reward = { Tickets = 2, Xp = 150 } },
 	},
 }

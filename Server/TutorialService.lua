@@ -268,7 +268,7 @@ function Tutorial.StartInField(player)
 	task.delay(1.5, function() if player.Parent then giveReelGear(player) end end)
 	task.delay(4, function()
 		if player.Parent and states[player] == state and state.Step == 1 then
-			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "R", Title = "Press R: auto-attack!", Text = "Press R to aim and fire at nearby monsters automatically. The Zone 1 Lord (👑) is waiting ahead!", Duration = 10, Top = true })
+			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "R", Title = "Press R: auto-attack!", Text = "R aims and fires at nearby monsters for you.", Duration = 10, Top = true })
 		end
 	end)
 end

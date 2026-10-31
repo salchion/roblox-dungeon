@@ -74,7 +74,7 @@ local function townBeat(player, now)
 	if (player:GetAttribute("ClearedZone") or 0) >= 1 and not Journey.IsDone(player, "Zone2") then
 		Journey.Mark(player, "Zone2")
 		lastBeat[player] = now
-		prompt(player, "🚪", "Zone 2 is open!", "Defeat the next zone's lord for better set gear and big rewards. A marker now points to the field entrance.")
+		prompt(player, "🚪", "Zone 2 is open!", "Beat the next Lord for better gear. Follow the marker.")
 		beacon(player, positions.Field, "Field Entrance")
 		return
 	end
@@ -82,7 +82,7 @@ local function townBeat(player, now)
 	if Journey.RiftOpen(player) and not Journey.IsDone(player, "RiftOpen") then
 		Journey.Mark(player, "RiftOpen")
 		lastBeat[player] = now
-		prompt(player, "👹", "Field conquered! Boss Rush is open!", "Challenge the Boss Rush at the purple portal in town. 2 runs a day - score = seconds survived x damage dealt, ranked weekly worldwide!")
+		prompt(player, "👹", "Field conquered! Boss Rush is open!", "Purple portal in town. 2 runs a day, weekly ranking!")
 		beacon(player, positions.Rift, "Boss Rush")
 		return
 	end
@@ -102,7 +102,7 @@ local function townBeat(player, now)
 		local dungeonType = Config.Dungeon.Types[entry.Type]
 		if dungeonType and positions.Gates and positions.Gates[1] and not player:GetAttribute("Journey_Silent") then
 			lastBeat[player] = now
-			prompt(player, "🏰", "New dungeon unlocked!", string.format("A new dungeon theme can now appear (%s, Level %d+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", dungeonType.Name, entry.MinLevel))
+			prompt(player, "🏰", "New dungeon unlocked!", string.format("%s can now appear (Lv %d+). Deeper = better loot.", dungeonType.Name, entry.MinLevel))
 			beacon(player, positions.Gates[1], "Dungeon")
 		end
 	end
@@ -121,13 +121,13 @@ local function tipBeat(player, now)
 	if not Journey.IsDone(player, "SetsHint") and anyAugOpen(player) then
 		Journey.Mark(player, "SetsHint")
 		lastBeat[player] = now
-		prompt(player, "🌟", "Set effect unlocked!", "Press Y (or the 🌟 Sets button) to switch it on with gold. Beat more zone lords to unlock more effects.", 10)
+		prompt(player, "🌟", "Set effect unlocked!", "Press Y to turn it on with gold.", 10)
 		return
 	end
 	if not Journey.IsDone(player, "WeaponBar") and player:GetAttribute("Zone") == "Lobby" then
 		Journey.Mark(player, "WeaponBar")
 		lastBeat[player] = now
-		prompt(player, "1", "Switch weapons with 1-5!", "The bar at the bottom shows every weapon. Upgrade your weapon at the Forge (or Menu B) to unlock new ones, then press its number or tap it.", 10)
+		prompt(player, "1", "Switch weapons with 1-5!", "Press 1-5 (or tap) to switch. Upgrade to unlock more.", 10)
 	end
 end
 
@@ -142,19 +142,19 @@ local function combatBeat(player, now)
 	if fraction < 0.35 and not Journey.IsDone(player, "Heal") and (player:GetAttribute("Level") or 1) >= 3 then
 		Journey.Mark(player, "Heal")
 		lastBeat[player] = now
-		prompt(player, "C", "Low health!", "Press C for first aid to restore health. (green button on the skill bar)", 7)
+		prompt(player, "C", "Low health!", "Press C to heal.", 7)
 	elseif fraction < 0.6 and not Journey.IsDone(player, "Dash") and now - (dashedAt[player] or -1000) > 120 then
 		Journey.Mark(player, "Dash")
 		lastBeat[player] = now
-		prompt(player, "Q", "Dash to dodge!", "Press Q to dash past enemy bullets. A close shave earns a NEAR MISS bonus!", 7)
+		prompt(player, "Q", "Dash to dodge!", "Press Q to dash through bullets. Close shaves give a bonus!", 7)
 	elseif fraction < 0.85 and not Journey.IsDone(player, "Lotus") and (player:GetAttribute("Level") or 1) >= 2 and player:GetAttribute("Zone") == "Field" then
 		Journey.Mark(player, "Lotus")
 		lastBeat[player] = now
-		prompt(player, "F", "Surrounded? Death Lotus!", "Press F: daggers whirl around you and fly at many nearby enemies for 2.5s. You can keep moving and shooting. Great for clearing crowds!", 8)
+		prompt(player, "F", "Surrounded? Death Lotus!", "Press F: daggers hit everything around you for 2.5s.", 8)
 	elseif (player:GetAttribute("UltCharge") or 0) >= Config.Skills.Ult.Cost and not Journey.IsDone(player, "Ult") then
 		Journey.Mark(player, "Ult")
 		lastBeat[player] = now
-		prompt(player, "V", "Ultimate ready!", "Press V for Dead Eye! It locks onto the biggest enemy nearby (boss / elite first) and fires everything at once (invincible while active).", 7)
+		prompt(player, "V", "Ultimate ready!", "Press V: Dead Eye blasts the biggest enemy. You're invincible meanwhile.", 7)
 	end
 end
 

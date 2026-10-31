@@ -3136,7 +3136,7 @@ local function feverLoop(run)
 		if startRoot then SoundBank.Play(startRoot, "Dungeon_Start") end
 		member:SetAttribute("DungeonVisual", "Gold") -- (PlayerFX 의 황금빛 조명 / 대기: 이름이 "Gold" 여야 적용된다)
 		member:SetAttribute("DungeonTypeKey", "Fever")
-		Remotes.Tutorial:FireClient(member, "Prompt", { Key = "🌟", Title = "FEVER TIME!", Text = string.format("Defeat as many monsters as you can in %d seconds. Rewards x%d, and keep your combo going for up to x%d more!", F.Duration, F.GoldMult, F.ComboMax), Duration = 5, Top = true })
+		Remotes.Tutorial:FireClient(member, "Prompt", { Key = "🌟", Title = "FEVER TIME!", Text = string.format("%d seconds! Rewards x%d, combo adds up to x%d!", F.Duration, F.GoldMult, F.ComboMax), Duration = 5, Top = true })
 	end
 	run.PhaseEnd = os.clock() + 3
 	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end

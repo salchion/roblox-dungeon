@@ -402,7 +402,7 @@ do
 				TextColor3 = Color3.fromRGB(120, 255, 255), ZIndex = 59 }, card)
 			makeLabel({ Size = UDim2.new(1, -28, 0, 116), Position = UDim2.new(0, 14, 0, 42), TextSize = 13, Font = Enum.Font.GothamBold, TextWrapped = true, RichText = true,
 				TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 59,
-				Text = "It triggers when you <font color='#78ffff'>dash (Q) through enemy shots or attacks at the last moment</font>!\n<font color='#ffe16e'>Your Dead Eye gauge fills up, and your attack power stacks with every consecutive success! (The bar above your head turns red)</font>\nKeep succeeding within 8 seconds to keep stacking. (In Abyss challenges, your score goes up too)" }, card)
+				Text = "<font color='#78ffff'>Dash (Q) through a shot at the last moment!</font>\n<font color='#ffe16e'>Dead Eye fills up and your attack stacks.</font>\nChain them within 8 seconds." }, card)
 			task.delay(8, function()
 				if card.Parent then
 					TweenService:Create(card, TweenInfo.new(0.4), { BackgroundTransparency = 1 }):Play()
