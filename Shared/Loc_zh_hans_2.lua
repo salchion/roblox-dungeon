@@ -340,6 +340,10 @@ return {
 		["🎰 Gear gacha Mythics never carry a Unique"] = "🎰 装备扭蛋的神话不带独特效果",
 		["Mythic gear · dungeon chests / Boss Rush / Final Lord"] = "神话装备 · 地下城宝箱 / 首领连战 / 最终君主",
 		["Stored in your bag"] = "已放入背包",
+		["🧩 Target set:"] = "🧩 目标套装：",
+		["(every pull is a piece of it)"] = "(每次抽取都是该套装部件)",
+		["🧩 Pick a set to target"] = "🧩 选择目标套装",
+		["(gacha only · every pull becomes that set's piece)"] = "(扭蛋限定 · 每次抽取都会成为该套装部件)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1039,9 +1043,5 @@ return {
 		{ "Your best tier: {text1} {text2}", "你的最高阶位:{text1} {text2}" },
 		{ "· New era 『{text1} {text2}』!", "· 新时代『{text1} {text2}』!" },
 		{ "{text1} equipped! ({text2})", "已装备 {text1}!({text2})" },
-		{ "ZONE {number1}  ·  {text2}   {text3}", "区域 {number1}  ·  {text2}   {text3}" },
-		{ "[{text1}] {text2} equipped!", "[{text1}] {text2} 已装备！" },
-		{ "{text1} {text2} piece ({number3}/3)", "{text1} {text2} 件({number3}/3)" },
-		{ "{text1} (Lord of {text2})", "{text1}({text2}领主)" },
 	},
 }

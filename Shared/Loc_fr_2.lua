@@ -472,6 +472,10 @@ return {
 		["🎰 Gear gacha Mythics never carry a Unique"] = "🎰 Les mythiques du gacha n'ont jamais d'effet unique",
 		["Mythic gear · dungeon chests / Boss Rush / Final Lord"] = "Équipement mythique · coffres de donjon / Boss Rush / Seigneur final",
 		["Stored in your bag"] = "Rangé dans votre sac",
+		["🧩 Target set:"] = "🧩 Set visé :",
+		["(every pull is a piece of it)"] = "(chaque tirage en est une pièce)",
+		["🧩 Pick a set to target"] = "🧩 Choisissez un set à viser",
+		["(gacha only · every pull becomes that set's piece)"] = "(gacha uniquement · chaque tirage devient une pièce du set)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -939,10 +943,5 @@ return {
 		{ "⬆ Level Up {number1} G", "⬆ Niveau supérieur {number1} G" },
 		{ "Reach {number1} Power", "Atteindre {number1} puissance" },
 		{ "Next zone  {number1}m", "Prochaine zone {number1}m" },
-		{ "▼ Dungeon  {number1}m", "▼ Donjon {number1}m" },
-		{ "NEAR MISS! x{number1}", "NEAR MISS ! x{number1}" },
-		{ "Move Speed +{number1}", "Vitesse de déplacement +{number1}" },
-		{ "· Cooldown {number1}s", "· Récupération {number1} s" },
-		{ "+{number1} from level", "+{number1} grâce au niveau" },
 	},
 }

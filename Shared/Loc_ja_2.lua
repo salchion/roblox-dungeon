@@ -588,6 +588,10 @@ return {
 		["🎰 Gear gacha Mythics never carry a Unique"] = "🎰 装備ガチャの神話にはユニークが付きません",
 		["Mythic gear · dungeon chests / Boss Rush / Final Lord"] = "神話装備 · ダンジョン宝箱 / ボスラッシュ / 最後の君主",
 		["Stored in your bag"] = "バッグに入れました",
+		["🧩 Target set:"] = "🧩 狙うセット:",
+		["(every pull is a piece of it)"] = "(引くたびにそのセットの装備)",
+		["🧩 Pick a set to target"] = "🧩 狙うセットを選ぼう",
+		["(gacha only · every pull becomes that set's piece)"] = "(ガチャ限定 · 引くたびにそのセットの装備に)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -920,9 +924,5 @@ return {
 		{ "🔒 Defeat the Zone {number1} lord", "🔒 ゾーン{number1}のロードを倒そう" },
 		{ "🔒 Unlocks at +{number1} ({number2} to go)", "🔒 +{number1}で解放(あと{number2})" },
 		{ "★☆  Step {number1}/{number2} · Next step", "★☆ ステップ {number1}/{number2} · 次のステップ" },
-		{ "🌋 {number1} Streak — Legendary!", "🌋 {number1} ストリーク - レジェンダリー！" },
-		{ "Reach character level {number1}", "キャラクターレベル{number1}に到達する" },
-		{ "▼ 👑 First Zone Lord  {number1}m", "▼ 👑 最初のゾーンの領主 {number1}m" },
-		{ "Defeat {number1} elite monsters", "エリートモンスターを{number1}体倒す" },
 	},
 }

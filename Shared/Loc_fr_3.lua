@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "▼ Dungeon  {number1}m", "▼ Donjon {number1}m" },
+		{ "NEAR MISS! x{number1}", "NEAR MISS ! x{number1}" },
+		{ "Move Speed +{number1}", "Vitesse de déplacement +{number1}" },
+		{ "· Cooldown {number1}s", "· Récupération {number1} s" },
+		{ "+{number1} from level", "+{number1} grâce au niveau" },
 		{ "Free today {number1}/{number2}", "Gratuit aujourd'hui {number1}/{number2}" },
 		{ "NEXT ERA · +{number1}", "ÈRE SUIVANTE · +{number1}" },
 		{ "🌟 Paragon ({number1})", "🌟 Parangon ({number1})" },

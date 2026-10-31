@@ -431,6 +431,10 @@ return {
 		["🎰 Gear gacha Mythics never carry a Unique"] = "🎰 Míticos do gacha nunca têm efeito único",
 		["Mythic gear · dungeon chests / Boss Rush / Final Lord"] = "Equipamento mítico · baús de masmorra / Boss Rush / Senhor final",
 		["Stored in your bag"] = "Guardado na sua bolsa",
+		["🧩 Target set:"] = "🧩 Set alvo:",
+		["(every pull is a piece of it)"] = "(cada puxada é uma peça dele)",
+		["🧩 Pick a set to target"] = "🧩 Escolha um set alvo",
+		["(gacha only · every pull becomes that set's piece)"] = "(só no gacha · cada puxada vira peça do set)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -968,6 +972,5 @@ return {
 		{ "🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: {text1}", "🔫 5 tipos de arma — um é desbloqueado a cada marco de melhoria (a cada 15). Escolha com qual arma desbloqueada lutar · Agora: {text1}" },
 		{ "🎁 First breakthrough gift! Received {text1} Time Skip — press [Use Time Skip] in Growth to finish right away!", "🎁 Presente do primeiro avanço! Você recebeu {text1} salto de tempo — pressione [Usar salto de tempo] em Crescimento para concluir na hora!" },
 		{ "{text1} has used up today's free entries and doesn't have {number2} key(s). Defeat a field zone lord to get keys", "{text1} usou as entradas grátis de hoje e não tem {number2} chave(s). Derrote um senhor de zona do campo para conseguir chaves" },
-		{ "🐃 Monster stampede! They're charging in a line from the {text1} — step aside and sweep them away!", "🐃 Debandada de monstros! Eles avançam em fila vindo de {text1} — saia do caminho e varra todos!" },
 	},
 }

@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🌋 {number1} Streak — Legendary!", "🌋 {number1} ストリーク - レジェンダリー！" },
+		{ "Reach character level {number1}", "キャラクターレベル{number1}に到達する" },
+		{ "▼ 👑 First Zone Lord  {number1}m", "▼ 👑 最初のゾーンの領主 {number1}m" },
+		{ "Defeat {number1} elite monsters", "エリートモンスターを{number1}体倒す" },
 		{ "Defeat {number1} field monsters", "フィールドのモンスターを{number1}体倒す" },
 		{ "Pierces up to {number1} enemies", "最大{number1}体を貫通します" },
 		{ "Defeat the Zone {number1} Lord", "ゾーン{number1}の領主を倒す" },

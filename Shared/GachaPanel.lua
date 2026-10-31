@@ -10,7 +10,7 @@ function M.Init(deps)
 	local Config, Remotes, TweenService, RunService = deps.Config, deps.Remotes, deps.TweenService, deps.RunService
 	local create, makeLabel, makeButton, makePanel, rounded = deps.create, deps.makeLabel, deps.makeButton, deps.makePanel, deps.rounded
 	local player, gui = deps.player, deps.gui
-	local W, H = 720, 520
+	local W, H = 720, 560
 	local PURPLE = Color3.fromRGB(165, 70, 245)
 
 	local panel = makePanel({
@@ -112,6 +112,43 @@ function M.Init(deps)
 		TweenService:Create(g.Fill, TweenInfo.new(0.4, Enum.EasingStyle.Quad), { Size = UDim2.new(math.clamp(done / g.Total, 0, 1), 0, 1, 0) }):Play()
 		g.Count.Text = string.format("%d / %d", done, g.Total)
 	end
+
+	------------------------------------------------------------
+	-- 세트 고르기 (뽑기만의 장점): 고른 구역 세트 조각으로 나온다. 도달한 구역까지만
+	------------------------------------------------------------
+	local setTitle = makeLabel({ Size = UDim2.new(0, 360, 0, 16), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, CX, 0, CY + 142), Text = "", RichText = true, TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(230, 210, 255), ZIndex = 4 }, panel)
+	local setRow = create("Frame", { Size = UDim2.new(0, 10 * 36, 0, 32), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, CX, 0, CY + 160), BackgroundTransparency = 1, ZIndex = 4 }, panel)
+	local setButtons = {}
+	for zone = 0, Config.Field.ZoneCount do
+		local def = zone > 0 and Config.Sets[Config.Sets.ZoneKeys[zone]]
+		local b = makeButton({
+			Size = UDim2.new(0, 32, 0, 32), Position = UDim2.new(0, zone * 36, 0, 0), Text = def and (def.Icon or "✦") or "✖", TextSize = 15,
+			BackgroundColor3 = def and def.Color:Lerp(Color3.fromRGB(26, 22, 40), 0.55) or Color3.fromRGB(50, 46, 70), ZIndex = 5,
+		}, setRow, function()
+			Remotes.Gear:FireServer("GachaSet", zone)
+		end)
+		rounded(b, 16)
+		setButtons[zone] = { Button = b, Stroke = create("UIStroke", { Color = def and def.Color or Color3.fromRGB(150, 150, 180), Thickness = 1.5 }, b), Def = def }
+	end
+	local function paintSets()
+		local chosen = player:GetAttribute("GachaSet") or 0
+		local reached = player:GetAttribute("MaxZone") or 1
+		for zone, entry in pairs(setButtons) do
+			local open = zone <= reached
+			entry.Button.Text = open and (entry.Def and (entry.Def.Icon or "✦") or "✖") or "🔒"
+			entry.Button.AutoButtonColor = open
+			entry.Button.Active = open
+			entry.Button.BackgroundTransparency = open and 0 or 0.6
+			entry.Stroke.Thickness = zone == chosen and 3.5 or 1.2
+			entry.Stroke.Color = zone == chosen and Color3.new(1, 1, 1) or (entry.Def and entry.Def.Color or Color3.fromRGB(150, 150, 180))
+		end
+		local def = chosen > 0 and Config.Sets[Config.Sets.ZoneKeys[chosen]]
+		setTitle.Text = def and string.format("🧩 Target set: <font color='#%s'><b>%s</b></font>  <font color='#c8bde0'>(every pull is a piece of it)</font>", def.Color:ToHex(), def.Name)
+			or "🧩 Pick a set to target <font color='#c8bde0'>(gacha only · every pull becomes that set's piece)</font>"
+	end
+	player:GetAttributeChangedSignal("GachaSet"):Connect(paintSets)
+	player:GetAttributeChangedSignal("MaxZone"):Connect(paintSets)
+	paintSets()
 
 	------------------------------------------------------------
 	-- 아래: 뽑기 버튼

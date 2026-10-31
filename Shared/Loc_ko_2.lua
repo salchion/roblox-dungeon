@@ -734,6 +734,10 @@ return {
 		["🎰 Gear gacha Mythics never carry a Unique"] = "🎰 장비 뽑기 신화에는 유니크가 붙지 않아요",
 		["Mythic gear · dungeon chests / Boss Rush / Final Lord"] = "신화 장비 · 던전 상자 / 보스러쉬 / 최후의 군주",
 		["Stored in your bag"] = "가방에 넣었어요",
+		["🧩 Target set:"] = "🧩 노리는 세트:",
+		["(every pull is a piece of it)"] = "(뽑을 때마다 그 세트 조각)",
+		["🧩 Pick a set to target"] = "🧩 노릴 세트를 골라 봐",
+		["(gacha only · every pull becomes that set's piece)"] = "(뽑기 전용 · 뽑을 때마다 그 세트 조각으로)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1027,8 +1031,5 @@ return {
 		{ "Preparing the field...  {number1} / {number2}", "밭 준비 중... {number1} / {number2}" },
 		{ "🌾 Adventure Begins · Rec. ⚡{number2}", "🌾 모험의 시작 · 레코 ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number3}", "저격 소총 · 신비로운 시대 +{number3}" },
-		{ "ZONE {number1}  ·  Snowfield   ☠☠☠☠☠", "존 {number1} · 설원 ☠☠☠☠☠" },
-		{ "🎁 Boss chest · {number1} gear pieces", "🎁 보스 상자 · 장비 {number1}개" },
-		{ "Succeed at upgrading {number1} times", "강화 {number1}회 성공" },
 	},
 }

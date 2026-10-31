@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🐃 Monster stampede! They're charging in a line from the {text1} — step aside and sweep them away!", "🐃 Debandada de monstros! Eles avançam em fila vindo de {text1} — saia do caminho e varra todos!" },
 		{ "🛡 Your {text1} slot(s) are empty! Get gear from dungeon boss chests or the gacha and equip it", "🛡 {text1} espaço(s) vazio(s)! Consiga equipamento nos baús de chefe da masmorra ou no gacha e equipe-o" },
 		{ "+{text1}% chance per point to fire a second shot right after the first (\"bang-bang\")  (max {number2})", "+{text1}% de chance por ponto de disparar um segundo tiro logo após o primeiro («pá-pá») (máx. {number2})" },
 		{ "🔒 {text1} unlocks at +{number2} ({number3} to go) - upgrade your weapon at the Forge or in the Menu (B)", "🔒 {text1} é desbloqueado em +{number2} (faltam {number3}) - melhore sua arma na Forja ou no menu (B)" },

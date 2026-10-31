@@ -460,6 +460,10 @@ return {
 		["🎰 Gear gacha Mythics never carry a Unique"] = "🎰 Los míticos del gacha nunca tienen efecto único",
 		["Mythic gear · dungeon chests / Boss Rush / Final Lord"] = "Equipo mítico · cofres de mazmorra / Boss Rush / Señor final",
 		["Stored in your bag"] = "Guardado en tu bolsa",
+		["🧩 Target set:"] = "🧩 Set objetivo:",
+		["(every pull is a piece of it)"] = "(cada tirada es una pieza)",
+		["🧩 Pick a set to target"] = "🧩 Elige un set objetivo",
+		["(gacha only · every pull becomes that set's piece)"] = "(solo gacha · cada tirada será pieza de ese set)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -985,10 +989,5 @@ return {
 		{ "Gold {number1} G", "Oro {number1} G" },
 		{ "Gold +{number1}%", "Oro +{number1}%" },
 		{ "{number1} / {number2} XP", "{number1} / {number2} EXP" },
-		{ "⚡ {number1} Lv.{number2}", "⚡ {number1} Nivel {number2}" },
-		{ "≈ {number1} dmg", "≈ {number1} de daño" },
-		{ "(max {number1})", "(máx. {number1})" },
-		{ "Free {number1}/{number2}", "Gratis {number1}/{number2}" },
-		{ "ZONE {number1}", "Zona {number1}" },
 	},
 }

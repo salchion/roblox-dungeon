@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "ZONE {number1}  ·  {text2}   {text3}", "区域 {number1}  ·  {text2}   {text3}" },
+		{ "[{text1}] {text2} equipped!", "[{text1}] {text2} 已装备！" },
+		{ "{text1} {text2} piece ({number3}/3)", "{text1} {text2} 件({number3}/3)" },
+		{ "{text1} (Lord of {text2})", "{text1}({text2}领主)" },
 		{ "🗿 {text1} · Zone {text2}", "🗿 {text1} · 区域{text2}" },
 		{ "{text1} · Score {number2}{text3}", "{text1} · 评分 {number2}{text3}" },
 		{ "⚡ Power {text1}{number2} {text3}", "⚡ 战力 {text1}{number2} {text3}" },

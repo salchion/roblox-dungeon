@@ -414,6 +414,10 @@ return {
 		["🎰 Gear gacha Mythics never carry a Unique"] = "🎰 Gacha-Mythen haben nie einen Unique-Effekt",
 		["Mythic gear · dungeon chests / Boss Rush / Final Lord"] = "Mythische Ausrüstung · Dungeontruhen / Boss Rush / Letzter Fürst",
 		["Stored in your bag"] = "In deiner Tasche verstaut",
+		["🧩 Target set:"] = "🧩 Ziel-Set:",
+		["(every pull is a piece of it)"] = "(jeder Zug ist ein Teil davon)",
+		["🧩 Pick a set to target"] = "🧩 Wähle ein Ziel-Set",
+		["(gacha only · every pull becomes that set's piece)"] = "(nur Gacha · jeder Zug wird ein Teil dieses Sets)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -957,6 +961,5 @@ return {
 		{ "💰 A Golden Goblin appeared in Zone {number1} · {text2}! Catch it for a jackpot! (75s)", "💰 Ein Goldener Goblin ist in Zone {number1} · {text2} erschienen! Fang ihn für einen Jackpot! (75 s)" },
 		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "Dungeon · wähle eine Tiefe (tiefer = bessere Drop-Chancen) · zufälliges Thema · {text1}" },
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "{text1} erhalten! Zur Tasche hinzugefügt. (I → aus der Tasche ausrüsten)  ▲ +{number2}% ggü. aktuell" },
-		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 Das Tor ist geschlossen! Besiege Zone-{number1}-Monster {number2}/{number3} + den Zonen-Lord{text4}" },
 	},
 }

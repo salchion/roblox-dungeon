@@ -152,3 +152,7 @@
 2193¦発見したユニーク効果 {number1} / {number2}  ·  神話装備に付くことがあります¦Gefundene Unique-Effekte {number1} / {number2}  ·  Mythische Ausrüstung kann einen tragen¦Effets uniques trouvés {number1} / {number2}  ·  l'équipement mythique peut en porter un¦Efectos únicos encontrados {number1} / {number2}  ·  el equipo mítico puede tener uno¦Efeitos únicos encontrados {number1} / {number2}  ·  equipamento mítico pode ter um¦已发现独特效果 {number1} / {number2}  ·  神话装备可能带有¦발견한 유니크 효과 {number1} / {number2}  ·  신화 장비에 붙을 수 있어요
 2194¦▲ 装備中より強い  +{number1}¦▲ Besser als ausgerüstet  +{number1}¦▲ Meilleur que l'équipé  +{number1}¦▲ Mejor que lo equipado  +{number1}¦▲ Melhor que o equipado  +{number1}¦▲ 比当前装备更好  +{number1}¦▲ 끼고 있는 것보다 좋아요  +{number1}
 2195¦バッグに入れました¦In deiner Tasche verstaut¦Rangé dans votre sac¦Guardado en tu bolsa¦Guardado na sua bolsa¦已放入背包¦가방에 넣었어요
+2196¦🧩 狙うセット:¦🧩 Ziel-Set:¦🧩 Set visé :¦🧩 Set objetivo:¦🧩 Set alvo:¦🧩 目标套装：¦🧩 노리는 세트:
+2197¦(引くたびにそのセットの装備)¦(jeder Zug ist ein Teil davon)¦(chaque tirage en est une pièce)¦(cada tirada es una pieza)¦(cada puxada é uma peça dele)¦(每次抽取都是该套装部件)¦(뽑을 때마다 그 세트 조각)
+2198¦🧩 狙うセットを選ぼう¦🧩 Wähle ein Ziel-Set¦🧩 Choisissez un set à viser¦🧩 Elige un set objetivo¦🧩 Escolha um set alvo¦🧩 选择目标套装¦🧩 노릴 세트를 골라 봐
+2199¦(ガチャ限定 · 引くたびにそのセットの装備に)¦(nur Gacha · jeder Zug wird ein Teil dieses Sets)¦(gacha uniquement · chaque tirage devient une pièce du set)¦(solo gacha · cada tirada será pieza de ese set)¦(só no gacha · cada puxada vira peça do set)¦(扭蛋限定 · 每次抽取都会成为该套装部件)¦(뽑기 전용 · 뽑을 때마다 그 세트 조각으로)

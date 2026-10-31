@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⚡ {number1} Lv.{number2}", "⚡ {number1} Nivel {number2}" },
+		{ "≈ {number1} dmg", "≈ {number1} de daño" },
+		{ "(max {number1})", "(máx. {number1})" },
+		{ "Free {number1}/{number2}", "Gratis {number1}/{number2}" },
+		{ "ZONE {number1}", "Zona {number1}" },
 		{ "{number1} more", "{number1} más" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1}x XP", "{number1}x EXP" },

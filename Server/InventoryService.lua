@@ -289,7 +289,9 @@ function Inventory.Add(player, item)
 	state.NextId += 1
 	item.Id = state.NextId
 	item.Level = state.SlotLevels[item.Slot] or 0 -- 새 장비도 그 부위의 강화 단계를 바로 받는다
-	if item.Rarity >= 3 then -- 영웅 이상: 화면에 "획득 카드" (기본 능력치 + 옵션 줄이 하나씩 튀어나온다, LootCardClient)
+	local noCard = item.NoCard
+	item.NoCard = nil -- (저장되지 않게 바로 지운다)
+	if item.Rarity >= 3 and not noCard then -- 영웅 이상: 화면에 "획득 카드" (기본 능력치 + 옵션 줄이 하나씩 튀어나온다, LootCardClient)
 		local worn = state.Equipped[item.Slot] and state.Items[state.Equipped[item.Slot]]
 		Remotes.Inventory:FireClient(player, "Got", {
 			Slot = item.Slot, Rarity = item.Rarity, Level = item.Level, Affixes = item.Affixes, Unique = item.Unique, Set = item.Set,

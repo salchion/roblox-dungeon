@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "ZONE {number1}  ·  Snowfield   ☠☠☠☠☠", "존 {number1} · 설원 ☠☠☠☠☠" },
+		{ "🎁 Boss chest · {number1} gear pieces", "🎁 보스 상자 · 장비 {number1}개" },
+		{ "Succeed at upgrading {number1} times", "강화 {number1}회 성공" },
 		{ "Attack +{number1}% per point  (max {number2})", "공격력 +{number1}% / 포인트당  (최대 {number2})" },
 		{ "Returning to the field in {number1}s", "{number1}초 뒤 필드로 돌아가요" },
 		{ "Zone {number1} monsters {number2} / {number3} defeated", "{number1}구역 몬스터 {number2} / {number3} 처치" },
