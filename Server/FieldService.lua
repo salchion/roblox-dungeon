@@ -2741,16 +2741,29 @@ local function spawnEvent(zone)
 	}
 
 	local x0, x1 = zoneBounds(zone)
-	local eventX = freeX(math.floor(x0 + 200), math.floor(x1 - 80))
-	for _ = 1, 12 do -- 그 구역 군주(보스)와 150 이상 떨어진 곳을 고른다 (군주 근처에서 겹치지 않게)
+	-- 자리 고르기: 그 구역 군주와 150 이상 떨어지고, 몸 둘레(크기의 1.2배)가 모두 평평한 바닥이어야 한다
+	--   (경사로 / 단 끝에 서면 거대한 몸이 비탈에 파묻혀 바닥이 안 보였다)
+	local function flatAt(x)
+		local h, reach = floorAt(x), stats.Size * 1.2
+		for _, dx in ipairs({ -reach, -reach / 2, reach / 2, reach }) do
+			if math.abs(floorAt(x + dx) - h) > 0.5 then return false end
+		end
+		return true
+	end
+	local eventX, fallbackX
+	for _ = 1, 40 do
+		local candidate = freeX(math.floor(x0 + 200), math.floor(x1 - 80))
 		local tooClose = false
 		for otherPart, otherData in pairs(monsters) do
-			if otherData.Kind == "Boss" and otherData.Zone == zone and math.abs(otherPart.Position.X - eventX) < 150 then tooClose = true break end
+			if otherData.Kind == "Boss" and otherData.Zone == zone and math.abs(otherPart.Position.X - candidate) < 150 then tooClose = true break end
 		end
-		if not tooClose then break end
-		eventX = freeX(math.floor(x0 + 200), math.floor(x1 - 80))
+		if not tooClose then
+			fallbackX = fallbackX or candidate
+			if flatAt(candidate) then eventX = candidate break end
+		end
 	end
-	local position = Vector3.new(eventX, floorAt(eventX) + stats.Size / 2, math.random(-F.Width / 2 + 70, F.Width / 2 - 70))
+	eventX = eventX or fallbackX or freeX(math.floor(x0 + 200), math.floor(x1 - 80))
+	local position = Vector3.new(eventX, floorAt(eventX) + stats.Size / 2, math.random(-60, 60)) -- (가운데 쪽: 양옆 비탈 / 벽과 겹치지 않게)
 
 	local part = Instance.new("Part")
 	part.Name = "EventBoss"

@@ -3011,7 +3011,22 @@ function useSkill(skillKey)
 	if os.clock() < (skillReadyAt[skillKey] or 0) then return end
 	if skillKey == "Ult" then
 		if (player:GetAttribute("UltCharge") or 0) < Config.Skills.Ult.Cost then
-			toast("🎯 Ultimate gauge not full yet! (Attack enemies to fill it)")
+			-- (게이지가 덜 찼을 때 누르면 알림 대신 V 칸만 하얗게 번쩍이며 흔들린다: 연타하면 알림이 x6 처럼 쌓이던 것)
+			local ui = skillSlots[skillKey]
+			if ui and ui.Slot and not ui.Shaking then
+				ui.Shaking = true
+				local base, oldColor = ui.Slot.Position, ui.Stroke.Color
+				ui.Stroke.Color = Color3.new(1, 1, 1)
+				task.spawn(function()
+					for i = 1, 6 do
+						ui.Slot.Position = base + UDim2.new(0, (i % 2 == 0 and 1 or -1) * (7 - i), 0, 0)
+						task.wait(0.035)
+					end
+					ui.Slot.Position = base
+					ui.Stroke.Color = oldColor
+					ui.Shaking = false
+				end)
+			end
 			return
 		end
 		local character = player.Character
