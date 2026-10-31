@@ -3122,13 +3122,26 @@ local function feverFinish(run)
 	for _, projectile in ipairs(run.Projectiles) do projectile.Part:Destroy() end
 	run.Projectiles = {}
 	local fever = run.Fever
+	local F = Config.Fever
 	for _, member in ipairs(run.Members) do
 		local endRoot = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
 		if endRoot then SoundBank.Play(endRoot, "Dungeon_Clear") end
+		-- 끝 보너스: 황금 상자 장비 + 뽑기 티켓 (많이 잡을수록 더)
+		local tickets = math.min(F.TicketMax or 3, 1 + math.floor(fever.Kills / (F.TicketPerKills or 60)))
+		member:SetAttribute("Tickets", (member:GetAttribute("Tickets") or 0) + tickets)
+		run.TicketsEarned[member] = (run.TicketsEarned[member] or 0) + tickets
+		local gearCount = math.min(F.GearMax or 4, 1 + math.floor(fever.Kills / (F.GearPerKills or 50)))
+		local okLoot, lines = pcall(Loot.DungeonChest, member, "Cave", run.DiffKey, gearCount)
+		local gearBest = 0
+		if okLoot and lines then
+			for _, line in ipairs(lines) do gearBest = math.max(gearBest, line.Rarity or 0) end
+		else
+			gearCount = 0
+		end
 		Remotes.Dungeon:FireClient(member, "Result", { -- (피버 전용 황금 결과 카드는 FeverResultClient 가 그린다: Fever 가 있으면 일반 결과 카드는 뜨지 않는다)
 			Victory = true, Gold = run.Earned[member] or 0, Tickets = run.TicketsEarned[member] or 0, Loot = {},
 			Wave = 0, TotalWaves = 0, TypeName = "🌟 Fever Time", DifficultyName = "", ReturnDelay = D.ReturnDelay,
-			Fever = { Kills = fever.Kills, BestCombo = fever.BestCombo, Seconds = Config.Fever.Duration },
+			Fever = { Kills = fever.Kills, BestCombo = fever.BestCombo, Seconds = Config.Fever.Duration, GearCount = gearCount, GearBest = gearBest },
 		})
 	end
 	broadcast(run)

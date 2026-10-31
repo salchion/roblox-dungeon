@@ -33,7 +33,7 @@ local function show(result)
 	local dim = new("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 1, BorderSizePixel = 0 }, gui)
 	TweenService:Create(dim, TweenInfo.new(0.3), { BackgroundTransparency = 0.45 }):Play()
 
-	local card = new("Frame", { Size = UDim2.fromOffset(420, 300), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), BackgroundColor3 = Color3.fromRGB(40, 28, 16), BorderSizePixel = 0 }, gui)
+	local card = new("Frame", { Size = UDim2.fromOffset(420, 330), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), BackgroundColor3 = Color3.fromRGB(40, 28, 16), BorderSizePixel = 0 }, gui)
 	new("UICorner", { CornerRadius = UDim.new(0, 18) }, card)
 	new("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(120, 80, 30), Color3.fromRGB(36, 24, 14)), Rotation = 90 }, card)
 	local stroke = new("UIStroke", { Color = GOLD, Thickness = 4 }, card)
@@ -50,6 +50,13 @@ local function show(result)
 	label({ Size = UDim2.new(1, -40, 0, 26), Position = UDim2.fromOffset(20, 182), Text = string.format("🔥 Best combo  <font color='#ffe16e'>%d</font>", fever.BestCombo or 0), TextSize = 18, TextXAlignment = Enum.TextXAlignment.Left }, card)
 	if (result.Tickets or 0) > 0 then
 		label({ Size = UDim2.new(1, -40, 0, 26), Position = UDim2.fromOffset(20, 212), Text = string.format("🎫 Tickets  <font color='#d9a6ff'>+%d</font>", result.Tickets), TextSize = 18, TextXAlignment = Enum.TextXAlignment.Left }, card)
+	end
+	if (fever.GearCount or 0) > 0 then -- 황금 상자 장비 (가장 좋은 등급 색으로)
+		local okCfg, Config = pcall(function() return require(ReplicatedStorage:WaitForChild("Config", 5)) end)
+		local best = fever.GearBest or 1
+		local name = okCfg and Config.Gear.RarityNames[best] or ""
+		local color = okCfg and Config.Gear.RarityColors[best]:ToHex() or "ffffff"
+		label({ Size = UDim2.new(1, -40, 0, 26), Position = UDim2.fromOffset(20, 242), Text = string.format("🎁 Gear  <font color='#ffe16e'>x%d</font>  <font color='#%s'>★ %s</font>", fever.GearCount, color, name), TextSize = 18, TextXAlignment = Enum.TextXAlignment.Left }, card)
 	end
 	local footer = label({ Size = UDim2.new(1, 0, 0, 22), Position = UDim2.new(0, 0, 1, -34), Text = "", TextSize = 13, TextColor3 = Color3.fromRGB(220, 210, 190), Font = Enum.Font.GothamBold }, card)
 
