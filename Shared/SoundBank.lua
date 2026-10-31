@@ -28,7 +28,7 @@ local SPECS = {
 	Shot_Shotgun  = { Base = "Shot", CustomLength = 1.2, Pitch = 0.7, Volume = 1.0, Length = 1.0, Fx = { { "distortion", { Level = 0.35 } } },
 		Layers = { { Pitch = 0.5, Volume = 0.9, Delay = 0 }, { Pitch = 1.3, Volume = 0.5, Delay = 0.03 } } },
 	-- 마법책 (Flamer = 마법책): 낮게 "우웅" 하고 불덩이가 터져 나가는 소리 (기본 소리를 낮추고 코러스 + 짧은 폭발음을 겹친다)
-	Shot_Flamer   = { Volume = 1.3, CustomLength = 1.6, CustomPitch = 1.0, Choke = true }, -- 마법책 체인 라이트닝: 직접 고른 번개 소리 (처음엔 원본 높낮이 / 가공 없음)
+	Shot_Flamer   = { Volume = 1.1, CustomLength = 0.8, CustomPitch = 1.0, Choke = true }, -- 마법책 체인 라이트닝: 번개 "치직" (원본은 3초: 연사 때 겹치지 않게 앞 0.8초만. 길거나 짧으면 CustomLength 조절)
 	-- 박격포: 묵직한 "쿵" (Cannon = 박격포)
 	Shot_Cannon   = { Base = "Boom", Pitch = 0.8, Volume = 0.8, Length = 0.9, Fx = { { "distortion", { Level = 0.3 } } } },
 	-- 석궁: 시위가 튕기는 "탕" (Sniper = 석궁)
