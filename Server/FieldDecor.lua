@@ -786,6 +786,33 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 						local s = rng:NextNumber(1, 1.8)
 						plain("TrailStone", Vector3.new(s, s * 0.6, s * 1.2), cf * CFrame.new(side * 6.6, s * 0.2, rng:NextNumber(-3, 3)) * CFrame.Angles(0, rng:NextNumber(0, 6.28), 0), style.Color:Lerp(Color3.fromRGB(120, 116, 110), 0.5), Enum.Material.Slate)
 					end
+					-- 1~2구역(사람이 가장 오래 머무는 곳) 길가를 더 아기자기하게: 나무 울타리 / 등불 기둥 / 풀숲과 꽃 (충돌 / 판정 없음)
+					if zone <= 2 then
+						local wood = Color3.fromRGB(120, 86, 56)
+						if pieceIndex % 6 == 3 then -- 울타리 한 칸: 기둥 2 + 가로대 2
+							local side = (pieceIndex % 12 == 3) and 1 or -1
+							for _, dz in ipairs({ -3, 3 }) do
+								plain("FencePost", Vector3.new(0.6, 3, 0.6), cf * CFrame.new(side * 8, 1.5, dz), wood, Enum.Material.Wood)
+							end
+							plain("FenceRail", Vector3.new(0.3, 0.35, 6.6), cf * CFrame.new(side * 8, 2.3, 0), wood:Lerp(Color3.new(0, 0, 0), 0.1), Enum.Material.Wood)
+							plain("FenceRail", Vector3.new(0.3, 0.35, 6.6), cf * CFrame.new(side * 8, 1.2, 0), wood:Lerp(Color3.new(0, 0, 0), 0.1), Enum.Material.Wood)
+						end
+						if pieceIndex % 9 == 0 then -- 등불 기둥 (빛 없이 은은한 Neon: 불빛 개수 한도 / 성능 때문)
+							local side = (pieceIndex % 18 == 0) and -1 or 1
+							plain("LampPost", Vector3.new(0.5, 6, 0.5), cf * CFrame.new(side * 7.4, 3, 0), Color3.fromRGB(70, 60, 50), Enum.Material.Wood)
+							plain("LampArm", Vector3.new(0.3, 0.3, 1.6), cf * CFrame.new(side * 7.4, 5.8, -0.6), Color3.fromRGB(70, 60, 50), Enum.Material.Wood)
+							plain("LampGlow", Vector3.new(0.9, 1.1, 0.9), cf * CFrame.new(side * 7.4, 5.2, -1.3), Color3.fromRGB(255, 214, 140), Enum.Material.Neon)
+						end
+						if pieceIndex % 4 == 1 then -- 풀숲 + 꽃 한 송이
+							local side = (pieceIndex % 8 == 1) and -1 or 1
+							local grass = zone == 1 and Color3.fromRGB(96, 168, 74) or Color3.fromRGB(52, 110, 56)
+							for t = 1, 3 do
+								plain("GrassTuft", Vector3.new(0.35, rng:NextNumber(1.2, 2), 0.9), cf * CFrame.new(side * (6 + t * 0.5), 0.7, rng:NextNumber(-2.5, 2.5)) * CFrame.Angles(0, rng:NextNumber(0, 6.28), math.rad(rng:NextNumber(-18, 18))), grass, Enum.Material.Grass)
+							end
+							local petals = ({ Color3.fromRGB(255, 220, 90), Color3.fromRGB(255, 140, 170), Color3.fromRGB(190, 160, 255), Color3.fromRGB(255, 255, 255) })[rng:NextInteger(1, 4)]
+							plain("Flower", Vector3.new(0.7, 0.7, 0.7), cf * CFrame.new(side * 6.8, 1.1, rng:NextNumber(-2, 2)), petals, Enum.Material.SmoothPlastic, Enum.PartType.Ball)
+						end
+					end
 				end
 			end
 		end
