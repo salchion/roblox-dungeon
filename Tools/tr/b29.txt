@@ -121,3 +121,6 @@
 2162¦🔒 ロック中！先に上のつながったノードを訓練しよう¦🔒 Gesperrt! Trainiere zuerst die verbundenen Knoten darüber¦🔒 Verrouillé ! Entraînez d'abord les nœuds reliés au-dessus¦🔒 ¡Bloqueado! Entrena primero los nodos conectados de arriba¦🔒 Bloqueado! Treine primeiro os nós conectados acima¦🔒 未解锁！请先训练上方相连的节点¦🔒 잠김! 먼저 위에 이어진 칸을 훈련하세요
 2163¦🎰 装備ガチャ¦🎰 Ausrüstungs-Gacha¦🎰 Gacha d'équipement¦🎰 Gacha de equipo¦🎰 Gacha de equipamento¦🎰 装备扭蛋¦🎰 장비 뽑기
 2164¦排出率¦Wahrscheinlichkeiten¦Taux¦Probabilidades¦Taxas¦概率¦등급 확률
+2165¦成功率¦Erfolg¦Réussite¦Éxito¦Sucesso¦成功率¦성공 확률
+2166¦費用¦Kosten¦Coût¦Coste¦Custo¦花费¦필요 골드
+2167¦所持¦Vorhanden¦Possédé¦Tienes¦Você tem¦持有¦보유 골드

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔓 Zone {number1} gate opened! Reward 💰{number2} G · 🎫{number3}  — {text4} · {text5}-only drops: {text6} {text7} Set", "🔓 区域{number1}的大门已开启!奖励 💰{number2} 金币 · 🎫{number3}  — {text4} · {text5} 专属掉落:{text6} {text7} 套装" },
 		{ "{text1} Zone {number2} · {text3}   (Rec. ⚡{number4})  {text5} {text6} Set", "{text1} 区域{number2} · {text3}   (推荐 ⚡{number4})  {text5} {text6} 套装" },
 	},
 }

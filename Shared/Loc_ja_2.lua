@@ -562,6 +562,9 @@ return {
 		["🔒 Locked! Train the connected nodes above first"] = "🔒 ロック中！先に上のつながったノードを訓練しよう",
 		["🎰 Gear Gacha"] = "🎰 装備ガチャ",
 		["Rates"] = "排出率",
+		["Success"] = "成功率",
+		["Cost"] = "費用",
+		["You have"] = "所持",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -918,6 +921,5 @@ return {
 		{ "Gear drop rarity +{number1}%", "ギアドロップのレア度 +{number1}%" },
 		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 コンボ x{number1}\nダメージ +{number2}%" },
 		{ "{number7} Darklands · {number8} Abyss", "{number7} ダークランド · {number8} アビス" },
-		{ "Level {number1} Breakthrough", "レベル{number1}の突破" },
 	},
 }

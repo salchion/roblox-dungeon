@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎟 Free {number1}/{number2}", "🎟 Gratuit {number1}/{number2}" },
 		{ "⚡ {number1} Power", "⚡ {number1} Puissance" },
 		{ "Max HP +{number1}", "PV max +{number1}" },
 		{ "Range +{number1}%", "Portée +{number1} %" },

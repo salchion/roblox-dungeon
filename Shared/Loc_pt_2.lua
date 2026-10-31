@@ -405,6 +405,9 @@ return {
 		["🔒 Locked! Train the connected nodes above first"] = "🔒 Bloqueado! Treine primeiro os nós conectados acima",
 		["🎰 Gear Gacha"] = "🎰 Gacha de equipamento",
 		["Rates"] = "Taxas",
+		["Success"] = "Sucesso",
+		["Cost"] = "Custo",
+		["You have"] = "Você tem",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
