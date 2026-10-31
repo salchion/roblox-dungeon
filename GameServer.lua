@@ -7,6 +7,7 @@
 --                           LobbyService, DummyService, FieldService, DungeonService, QuestService, RankService, DataService)
 
 local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 
@@ -464,6 +465,25 @@ local function setupPlayer(player)
 end
 
 Players.PlayerAdded:Connect(setupPlayer)
+
+-- 캐릭터 물리 소유권 지키기: 순간이동 / 연출 중에 몸을 잠깐 고정(Anchored)했다가 풀면 소유권이 서버로 넘어가는 일이 있다.
+-- 그러면 서버가 대신 움직여서 이동이 느리고(서버 기준 WalkSpeed 16) 끊긴다 (군주전 / 피버 던전 뒤에 필드에서도 느려지던 문제).
+-- 1초마다 확인해서 서버로 넘어가 있으면 다시 그 플레이어에게 돌려준다.
+task.spawn(function()
+	while true do
+		task.wait(1)
+		for _, player in ipairs(Players:GetPlayers()) do
+			local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+			if root and not root.Anchored and root:IsDescendantOf(workspace) then
+				local okOwner, owner = pcall(function() return root:GetNetworkOwner() end)
+				if okOwner and owner ~= player then
+					local okSet, err = pcall(function() root:SetNetworkOwner(player) end)
+					if not okSet and RunService:IsStudio() then warn("[소유권] 복구 실패: " .. tostring(err)) end
+				end
+			end
+		end
+	end
+end)
 for _, player in ipairs(Players:GetPlayers()) do
 	task.spawn(setupPlayer, player)
 end

@@ -138,6 +138,7 @@ local function pivotTo(player, cframe)
 		if root.Parent then
 			root.AssemblyLinearVelocity = Vector3.zero
 			root.Anchored = false
+			pcall(function() root:SetNetworkOwner(player) end) -- (고정을 풀면 소유권이 서버로 넘어갈 수 있다: 내 컴퓨터가 다시 움직이게)
 		end
 	end)
 end
@@ -3140,12 +3141,12 @@ local function feverFinish(run)
 		end
 		Remotes.Dungeon:FireClient(member, "Result", { -- (피버 전용 황금 결과 카드는 FeverResultClient 가 그린다: Fever 가 있으면 일반 결과 카드는 뜨지 않는다)
 			Victory = true, Gold = run.Earned[member] or 0, Tickets = run.TicketsEarned[member] or 0, Loot = {},
-			Wave = 0, TotalWaves = 0, TypeName = "🌟 Fever Time", DifficultyName = "", ReturnDelay = D.ReturnDelay,
+			Wave = 0, TotalWaves = 0, TypeName = "🌟 Fever Time", DifficultyName = "", ReturnDelay = F.ReturnDelay or D.ReturnDelay,
 			Fever = { Kills = fever.Kills, BestCombo = fever.BestCombo, Seconds = Config.Fever.Duration, GearCount = gearCount, GearBest = gearBest },
 		})
 	end
 	broadcast(run)
-	task.delay(D.ReturnDelay, function()
+	task.delay(F.ReturnDelay or D.ReturnDelay, function()
 		-- 필드의 원래 자리로 돌려보낸다 (마을이 아니라)
 		for _, member in ipairs(table.clone(run.Members)) do
 			playerRun[member] = nil

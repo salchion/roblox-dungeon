@@ -1814,11 +1814,12 @@ Config.Fever = {
 	Duration = 40,        -- 피버 시간(초) (60 -> 40: 짧고 굵게. 몬스터가 쏟아지는 만큼 처치 수는 비슷하다)
 	GoldMult = 8,         -- 처치 골드 배율 (같은 깊이의 던전 몬스터 대비)
 	XpMult = 8,
-	MonsterHealth = 0.25, -- 몬스터 체력 배율 (약하지만 많다: 쓸어 담는 느낌)
+	MonsterHealth = 0.2,  -- 몬스터 체력 배율 (약하지만 많다: 쓸어 담는 느낌)
 	MonsterDamage = 0.5,
-	MaxMonsters = 45,     -- 동시에 있는 몬스터 상한 (28 -> 45: 띄엄띄엄 있지 않고 쏟아지게)
-	SpawnEvery = 0.5,     -- 이 간격마다 Burst 마리씩
-	Burst = 7,
+	MaxMonsters = 30,     -- 동시에 있는 몬스터 상한 (45 는 화면이 버벅이고 걷기가 느려졌다: 30 + 빨리 죽고 빨리 다시 나오는 쪽으로)
+	SpawnEvery = 0.4,     -- 이 간격마다 Burst 마리씩 (죽는 만큼 바로 채운다)
+	Burst = 5,
+	ReturnDelay = 4,      -- 끝난 뒤 결과 카드를 보고 필드로 돌아가기까지 (일반 던전 10초는 너무 길었다)
 	EventEvery = 10,      -- 이 간격마다 이벤트 (골드 러시 / 보물 비)
 	ComboMax = 2,         -- 처치 콤보가 쌓일수록 골드 배율이 최대 x2 (콤보 50에서 최대)
 	-- 끝날 때 보너스: 황금 상자 장비 (1개 + 처치 GearPerKills 마다 1개, 최대 GearMax) / 뽑기 티켓 (1장 + 처치 TicketPerKills 마다 1장, 최대 TicketMax)
