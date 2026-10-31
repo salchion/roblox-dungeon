@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⚡ {number1} Power", "⚡ {number1} Puissance" },
+		{ "Max HP +{number1}", "PV max +{number1}" },
 		{ "Range +{number1}%", "Portée +{number1} %" },
 		{ "Reroll ✨{number1}", "Relancer ✨{number1}" },
 		{ "{number1} Tickets", "{number1} tickets" },

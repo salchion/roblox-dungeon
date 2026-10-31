@@ -403,6 +403,8 @@ return {
 		["Gold Sense"] = "Faro de ouro",
 		["Attack Speed"] = "Velocidade de ataque",
 		["🔒 Locked! Train the connected nodes above first"] = "🔒 Bloqueado! Treine primeiro os nós conectados acima",
+		["🎰 Gear Gacha"] = "🎰 Gacha de equipamento",
+		["Rates"] = "Taxas",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -947,6 +949,5 @@ return {
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "{text1} obtido! Adicionado à bolsa. (I → equipar pela bolsa)  ▲ +{number2}% vs atual" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 O portão está fechado! Derrote os monstros da zona {number1} {number2}/{number3} + o senhor da zona{text4}" },
 		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ Subida de nível do pet iniciada! ({text1}) — use Pular tempo para terminar mais rápido" },
-		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "Recomendado ⚡{text1}  ·  Mire na esfera amarela para dano triplo!" },
 	},
 }

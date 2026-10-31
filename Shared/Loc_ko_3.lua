@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "★★★  Step {number1}/{number2} · Higher step", "★★★ 단계 {number1}/{number2} · 더 높은 단계" },
 		{ "★★☆  Step {number1}/{number2} · Higher step", "★★☆ 단계 {number1}/{number2} · 더 높은 단계" },
 		{ "Spell Tome · Mythic Era +{number3}", "스펠 토메 · 신화 시대 +{number3}" },
 		{ "ZONE {number1}  ·  Wasteland   ☠☠☠", "존 {number1} · 황무지 ☠☠☠" },

@@ -312,6 +312,8 @@ return {
 		["Gold Sense"] = "黄金嗅觉",
 		["Attack Speed"] = "攻击速度",
 		["🔒 Locked! Train the connected nodes above first"] = "🔒 未解锁！请先训练上方相连的节点",
+		["🎰 Gear Gacha"] = "🎰 装备扭蛋",
+		["Rates"] = "概率",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },

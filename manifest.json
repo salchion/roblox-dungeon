@@ -659,6 +659,13 @@
       "overwrite": true
     },
     {
+      "path": "Shared/GachaPanel.lua",
+      "parent": "ReplicatedStorage",
+      "name": "GachaPanel",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Shared/TrainingTree.lua",
       "parent": "ReplicatedStorage",
       "name": "TrainingTree",

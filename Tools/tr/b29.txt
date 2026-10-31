@@ -119,3 +119,5 @@
 2160¦クリティカルダメージ +{number1}%¦Kritischer Schaden +{number1}%¦Dégâts critiques +{number1}%¦Daño crítico +{number1}%¦Dano crítico +{number1}%¦暴击伤害 +{number1}%¦치명타 피해 +{number1}%
 2161¦ゴールド +{number1}%¦Gold +{number1} %¦Or +{number1}%¦Oro +{number1}%¦Ouro +{number1}%¦金币 +{number1}%¦골드 +{number1}%
 2162¦🔒 ロック中！先に上のつながったノードを訓練しよう¦🔒 Gesperrt! Trainiere zuerst die verbundenen Knoten darüber¦🔒 Verrouillé ! Entraînez d'abord les nœuds reliés au-dessus¦🔒 ¡Bloqueado! Entrena primero los nodos conectados de arriba¦🔒 Bloqueado! Treine primeiro os nós conectados acima¦🔒 未解锁！请先训练上方相连的节点¦🔒 잠김! 먼저 위에 이어진 칸을 훈련하세요
+2163¦🎰 装備ガチャ¦🎰 Ausrüstungs-Gacha¦🎰 Gacha d'équipement¦🎰 Gacha de equipo¦🎰 Gacha de equipamento¦🎰 装备扭蛋¦🎰 장비 뽑기
+2164¦排出率¦Wahrscheinlichkeiten¦Taux¦Probabilidades¦Taxas¦概率¦등급 확률

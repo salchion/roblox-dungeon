@@ -755,271 +755,22 @@ Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 end)
 end -- (강화창 do 블록 끝)
 
-local gearHooks = {}
-local gearPanel
-local gearMessage
-local refreshGear
+-- 로비 뽑기 기계 창: 뽑기만 크게 보여 준다 (GachaPanel 모듈). 장비 착용 / 강화는 장비 창(캐릭터 탭)에서
+local gearPanel, gearMessage, refreshGear, gachaFlash
 do
-local GEAR_ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
-local LEFT_SLOTS = { "Helmet", "Armor", "Gloves" }
-local RIGHT_SLOTS = { "Necklace", "Ring", "Boots" }
-local state = { Selected = "Armor", Boxes = {} }
-
-gearPanel = makePanel({
-	Size = UDim2.new(0, 760, 0, 560),
-	AnchorPoint = Vector2.new(0.5, 0.5),
-	Position = UDim2.new(0.5, 0, 0.5, 0),
-	BackgroundColor3 = Color3.fromRGB(18, 20, 34), BackgroundTransparency = 0.05,
-	Visible = false,
-}, gui)
-create("UIStroke", { Color = Color3.fromRGB(150, 130, 230), Thickness = 2, Transparency = 0.2 }, gearPanel)
-create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(70, 46, 100), Color3.fromRGB(22, 18, 34)), Rotation = 90 }, gearPanel)
-
-makeLabel({
-	Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8),
-	Text = "🛡 Gear · Gacha", Font = Enum.Font.GothamBlack, TextSize = 20, TextColor3 = Color3.fromRGB(235, 200, 255),
-}, gearPanel)
-makeButton({
-	Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), Text = "Close", TextSize = 12, BackgroundColor3 = Color3.fromRGB(54, 58, 82),
-}, gearPanel, function()
-	gearPanel.Visible = false
-end)
-
-local viewport = create("ViewportFrame", {
-	Size = UDim2.new(0, 210, 0, 330), Position = UDim2.new(0, 135, 0, 54), BackgroundColor3 = Color3.fromRGB(26, 24, 44), BorderSizePixel = 0,
-	Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1),
-}, gearPanel)
-rounded(viewport, 12)
-create("UIStroke", { Color = Color3.fromRGB(150, 110, 220), Thickness = 2 }, viewport)
-local cam = create("Camera", { FieldOfView = 38 }, viewport)
-viewport.CurrentCamera = cam
-local clone, pivot
-local function rebuildCharacter()
-	if clone then clone:Destroy() clone = nil end
-	local character = player.Character
-	if not character then return end
-	character.Archivable = true
-	clone = character:Clone()
-	for _, descendant in ipairs(clone:GetDescendants()) do
-		if descendant:IsA("Script") or descendant:IsA("LocalScript") or descendant:IsA("BillboardGui") or descendant:IsA("ForceField") then
-			descendant:Destroy()
-		elseif descendant:IsA("BasePart") then
-			descendant.Anchored = true
-		end
-	end
-	clone.Parent = viewport
-	pivot = clone:GetPivot()
-end
-RunService.RenderStepped:Connect(function(dt)
-	if not gearPanel.Visible or not clone or not pivot then return end
-	state.Spin = (state.Spin or 0) + dt * 0.9
-	clone:PivotTo(CFrame.new(pivot.Position) * CFrame.Angles(0, state.Spin, 0))
-	cam.CFrame = CFrame.lookAt(pivot.Position + Vector3.new(0, 1.2, 12.5), pivot.Position + Vector3.new(0, 0.4, 0))
-end)
-local powerLabel = makeLabel({
-	Size = UDim2.new(0, 210, 0, 24), Position = UDim2.new(0, 135, 0, 390), TextSize = 14, Font = Enum.Font.GothamBlack,
-	TextColor3 = Color3.fromRGB(255, 225, 110),
-}, gearPanel)
-
-local function makeSlotBox(slotKey, x, y)
-	local box = create("TextButton", {
-		Size = UDim2.new(0, 104, 0, 100), Position = UDim2.new(0, x, 0, y), BackgroundColor3 = Color3.fromRGB(34, 32, 54), BorderSizePixel = 0, Text = "", AutoButtonColor = false,
-	}, gearPanel)
-	rounded(box, 12)
-	local stroke = create("UIStroke", { Color = Color3.fromRGB(90, 90, 120), Thickness = 2 }, box)
-	local icon = makeLabel({ Size = UDim2.new(1, 0, 0, 44), Position = UDim2.new(0, 0, 0, 6), TextSize = 27 }, box)
-	local name = makeLabel({ Size = UDim2.new(1, -6, 0, 30), Position = UDim2.new(0, 3, 0, 48), TextSize = 9, Font = Enum.Font.GothamBold, TextWrapped = true }, box)
-	local level = makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 1, -20), TextSize = 11, Font = Enum.Font.GothamBlack }, box)
-	box.Activated:Connect(function()
-		state.Selected = slotKey
-		refreshGear()
+	local okG, gacha = pcall(function()
+		return require(ReplicatedStorage:WaitForChild("GachaPanel", 10)).Init({ Config = Config, Remotes = Remotes, TweenService = TweenService, RunService = RunService,
+			create = create, makeLabel = makeLabel, makeButton = makeButton, makePanel = makePanel, rounded = rounded, player = player, gui = gui })
 	end)
-	state.Boxes[slotKey] = { Box = box, Stroke = stroke, Icon = icon, Name = name, Level = level }
-end
-for index, slotKey in ipairs(LEFT_SLOTS) do makeSlotBox(slotKey, 18, 54 + (index - 1) * 112) end
-for index, slotKey in ipairs(RIGHT_SLOTS) do makeSlotBox(slotKey, 358, 54 + (index - 1) * 112) end
-
-local detail = create("Frame", { Size = UDim2.new(0, 262, 0, 336), Position = UDim2.new(1, -278, 0, 54), BackgroundColor3 = Color3.fromRGB(24, 22, 40), BorderSizePixel = 0 }, gearPanel)
-rounded(detail, 12)
-local detailStroke = create("UIStroke", { Color = Color3.fromRGB(110, 90, 160), Thickness = 2 }, detail)
-local detailText = makeLabel({
-	Size = UDim2.new(1, -20, 0, 180), Position = UDim2.new(0, 10, 0, 10), RichText = true, TextSize = 12,
-	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
-}, detail)
-local enhanceSlotButton = makeButton({
-	Size = UDim2.new(0.64, -12, 0, 50), Position = UDim2.new(0, 12, 1, -112), Text = "Upgrade", TextSize = 14, Font = Enum.Font.GothamBold, BackgroundColor3 = GREEN,
-}, detail, function()
-	Remotes.Gear:FireServer("Enhance", state.Selected)
-end)
-local enhanceSlotTen = makeButton({ -- x10: 성공할 때까지가 아니라 최대 10번 (골드가 모자라면 그만)
-	Size = UDim2.new(0.36, -16, 0, 50), Position = UDim2.new(0.64, 4, 1, -112), Text = "x10\nUpgrade", TextSize = 12, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(60, 120, 200),
-}, detail, function()
-	Remotes.Gear:FireServer("Enhance", state.Selected, 10)
-end)
--- 성공 확률 막대: 높을수록 초록, 낮을수록 빨강
-local chanceBack = create("Frame", { Size = UDim2.new(1, -24, 0, 20), Position = UDim2.new(0, 12, 1, -140), BackgroundColor3 = Color3.fromRGB(16, 16, 26), BorderSizePixel = 0 }, detail)
-rounded(chanceBack, 10)
-local chanceFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = GREEN, BorderSizePixel = 0 }, chanceBack)
-rounded(chanceFill, 10)
-local chanceText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), TextSize = 11, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0.4, ZIndex = 3 }, chanceBack)
-create("UIStroke", { Color = Color3.fromRGB(190, 255, 190), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 2 }, enhanceSlotButton)
-gearMessage = makeLabel({
-	Size = UDim2.new(1, -16, 0, 40), Position = UDim2.new(0, 8, 1, -54), Font = Enum.Font.GothamBold, TextSize = 12, RichText = true,
-}, detail)
-
-local gachaBar = create("Frame", { Size = UDim2.new(1, -36, 0, 128), Position = UDim2.new(0, 18, 1, -142), BackgroundColor3 = Color3.fromRGB(58, 38, 92), BorderSizePixel = 0 }, gearPanel)
-rounded(gachaBar, 14)
-create("UIStroke", { Color = Color3.fromRGB(255, 210, 120), Thickness = 2 }, gachaBar)
-create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(110, 60, 170), Color3.fromRGB(48, 30, 80)), Rotation = 0 }, gachaBar)
-local ticketLabel = makeLabel({
-	Size = UDim2.new(1, -420, 0, 30), Position = UDim2.new(0, 20, 0, 8), Font = Enum.Font.GothamBlack, TextSize = 19, TextXAlignment = Enum.TextXAlignment.Left,
-}, gachaBar)
-makeButton({ Size = UDim2.new(0, 104, 0, 26), Position = UDim2.new(0, 20, 1, -34), Text = "📊 Odds", TextSize = 13, BackgroundColor3 = Color3.fromRGB(60, 72, 130) }, gachaBar, function()
-	player:SetAttribute("OddsKind", "Gacha") -- OddsClient 가 확률 창을 연다 (유료 랜덤 아이템 정책)
-	player:SetAttribute("OddsOpen", os.clock())
-end)
-local rateParts = {}
-for index, rate in ipairs(Config.Gacha.Rates) do
-	table.insert(rateParts, string.format("<font color='#%s'>%s %d%%</font>", Config.Gear.RarityColors[index]:ToHex(), Config.Gear.RarityNames[index], rate))
-end
-makeLabel({
-	Size = UDim2.new(1, -420, 0, 50), Position = UDim2.new(0, 20, 0, 40), RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
-	Text = table.concat(rateParts, "  ") .. "\n<font color='#c9c0e0'>Same or lower rarity converts to Gold · Tickets drop from dungeons / field bosses</font>",
-}, gachaBar)
-do -- 천장 표시: "전설 확정까지 N회 · 신화 확정까지 M회" (서버가 GachaPityL / GachaPityM 로 알려 준다)
-	local pityLabel = makeLabel({
-		Size = UDim2.new(1, -560, 0, 26), Position = UDim2.new(0, 134, 1, -34), RichText = true, TextSize = 12, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Left,
-	}, gachaBar)
-	local function refreshPity()
-		local l, m = player:GetAttribute("GachaPityL"), player:GetAttribute("GachaPityM")
-		pityLabel.Visible = l ~= nil and m ~= nil
-		if l and m then
-			pityLabel.Text = string.format("<font color='#ffd966'>⭐ Legendary guaranteed in %d</font>  ·  <font color='#ff9ad8'>🌈 Mythic in %d</font>", l, m)
-		end
-	end
-	player:GetAttributeChangedSignal("GachaPityL"):Connect(refreshPity)
-	player:GetAttributeChangedSignal("GachaPityM"):Connect(refreshPity)
-	refreshPity()
-end
-local rollOne = makeButton({
-	Size = UDim2.new(0, 176, 0, 80), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -218, 0.5, 0),
-	Text = "🎰 Roll x1\n1 Ticket", TextSize = 17, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(120, 80, 210),
-}, gachaBar, function()
-	Remotes.Gear:FireServer("Roll", 1)
-end)
-create("UIStroke", { Color = Color3.fromRGB(190, 170, 255), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 2 }, rollOne)
-local rollButton = makeButton({
-	Size = UDim2.new(0, 200, 0, 80), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -14, 0.5, 0),
-	Text = "🎰 Multi Roll!\nUses all Tickets (max 10)", TextSize = 19, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(165, 70, 245),
-}, gachaBar, function()
-	local many = math.min(10, player:GetAttribute("Tickets") or 0)
-	if many >= 2 then Remotes.Gear:FireServer("Roll", many) end
-end)
-create("UIStroke", { Color = Color3.fromRGB(255, 225, 140), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 3 }, rollButton)
-rollButton.ClipsDescendants = true
-local rollShimmer = create("Frame", {
-	Size = UDim2.new(0, 40, 1.8, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(-0.2, 0, 0.5, 0), Rotation = 20,
-	BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.7, BorderSizePixel = 0, ZIndex = 3,
-}, rollButton)
-task.spawn(function()
-	while gearPanel.Parent do
-		if gearPanel.Visible and (player:GetAttribute("Tickets") or 0) > 0 then
-			rollShimmer.Position = UDim2.new(-0.1, 0, 0.5, 0)
-			TweenService:Create(rollShimmer, TweenInfo.new(0.9, Enum.EasingStyle.Quad), { Position = UDim2.new(1.1, 0, 0.5, 0) }):Play()
-		end
-		task.wait(2)
-	end
-end)
-
-function refreshGear()
-	local gold = player:GetAttribute("Gold") or 0
-	local tickets = player:GetAttribute("Tickets") or 0
-	local maxLevel = Config.Gear.MaxLevel
-	if not clone and gearPanel.Visible then rebuildCharacter() end
-
-	for _, slot in ipairs(Config.Gear.Slots) do
-		local ui = state.Boxes[slot.Key]
-		local rarity = player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0
-		local level = player:GetAttribute("Gear_" .. slot.Key .. "_L") or 0
-		ui.Icon.Text = GEAR_ICONS[slot.Key] or "?"
-		if rarity > 0 then
-			local color = Config.Gear.RarityColors[rarity]
-			ui.Stroke.Color = color
-			ui.Stroke.Thickness = (slot.Key == state.Selected) and 5 or ({ 2, 2, 3, 3.5, 4 })[rarity]
-			ui.Name.Text = slot.Names[rarity]
-			ui.Name.TextColor3 = color
-			ui.Level.Text = string.format("+%d", level)
-			ui.Level.TextColor3 = Color3.new(1, 1, 1)
-			ui.Icon.TextTransparency = 0
-		else
-			ui.Stroke.Color = (slot.Key == state.Selected) and Color3.fromRGB(255, 225, 120) or Color3.fromRGB(90, 90, 120)
-			ui.Stroke.Thickness = (slot.Key == state.Selected) and 4 or 2
-			ui.Name.Text = slot.Name .. " (empty)"
-			ui.Name.TextColor3 = Color3.fromRGB(130, 130, 150)
-			ui.Level.Text = ""
-			ui.Icon.TextTransparency = 0.6
-		end
-		ui.Box.BackgroundColor3 = slot.Key == state.Selected and Color3.fromRGB(52, 48, 82) or Color3.fromRGB(34, 32, 54)
-	end
-
-	local slot = Config.GetGearSlot(state.Selected)
-	local rarity = player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0
-	local level = player:GetAttribute("Gear_" .. slot.Key .. "_L") or 0
-	if rarity <= 0 then
-		detailText.Text = string.format("<font size='15'><b>%s</b></font>\n<font color='#9a9ab5'>Empty</font>\n\n%s effect\n<font color='#c9c0e0'>Get gear with the gacha below, or equip gear dropped in the field from your Bag (B).</font>", slot.Name, slot.StatName)
-		enhanceSlotButton.Text = "—"
-		enhanceSlotButton.BackgroundColor3 = GRAY
-		chanceBack.Visible = false
-		enhanceSlotTen.Visible = false
-		detailStroke.Color = Color3.fromRGB(110, 90, 160)
+	if okG and gacha then
+		gearPanel, gearMessage, refreshGear, gachaFlash = gacha.Panel, gacha.Message, gacha.Refresh, gacha.Flash
 	else
-		local color = Config.Gear.RarityColors[rarity]
-		detailStroke.Color = color
-		local lines = {
-			string.format("<font size='15'><b><font color='#%s'>[%s] %s</font></b></font>  <b>+%d</b>", color:ToHex(), Config.Gear.RarityNames[rarity], slot.Names[rarity], level),
-			"",
-			"<font color='#c9c0e0'>" .. slot.StatName .. "</font>",
-		}
-		local now = Config.FormatGearStat(slot.Key, Config.GetGearStat(slot.Key, rarity, level))
-		if level < maxLevel then
-			local cost = Config.GetGearCost(slot.Key, rarity, level)
-			local chance = math.floor(Config.GetGearEnhanceChance(level) * 100 + 0.5)
-			table.insert(lines, string.format("<font size='18'><b>+%d</b> <font color='#ffd966'>▶</font> <font color='#78ff8c'><b>+%d</b></font></font>", level, level + 1))
-			table.insert(lines, string.format("<b>%s</b>\n<font color='#78ff8c'>▶ %s</font>", now, Config.FormatGearStat(slot.Key, Config.GetGearStat(slot.Key, rarity, level + 1))))
-			table.insert(lines, "<font size='10' color='#aaaabb'>Level is kept on failure</font>")
-			local chanceRaw = Config.GetGearEnhanceChance(level)
-			chanceBack.Visible = true
-			chanceFill.BackgroundColor3 = Color3.fromRGB(255, 90, 80):Lerp(Color3.fromRGB(110, 230, 120), math.clamp((chanceRaw - 0.35) / 0.65, 0, 1))
-			TweenService:Create(chanceFill, TweenInfo.new(0.3, Enum.EasingStyle.Quad), { Size = UDim2.new(chanceRaw, 0, 1, 0) }):Play()
-			chanceText.Text = string.format("Success %d%%", chance)
-			enhanceSlotButton.Text = string.format("🔨 Upgrade\n💰 %d G", cost)
-			enhanceSlotButton.BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62)
-			enhanceSlotTen.Visible = true
-		else
-			table.insert(lines, "<b>" .. now .. "</b>")
-			table.insert(lines, "\n<font color='#ffd966'>Max upgrade level!</font>")
-			enhanceSlotButton.Text = "MAX"
-			enhanceSlotButton.BackgroundColor3 = GRAY
-			chanceBack.Visible = false
-			enhanceSlotTen.Visible = false
-		end
-		detailText.Text = table.concat(lines, "\n")
+		warn("[PlayerClient] 뽑기 창 모듈(GachaPanel) 오류: " .. tostring(gacha))
+		gearPanel = create("Frame", { Visible = false }, gui)
+		gearMessage = create("TextLabel", { Visible = false }, gearPanel)
+		refreshGear = function() end
 	end
-
-	powerLabel.Text = string.format("⚡ Power %d", player:GetAttribute("Power") or 0)
-	ticketLabel.Text = string.format("🎫 Tickets: %d", tickets)
-	rollOne.BackgroundColor3 = tickets > 0 and Color3.fromRGB(120, 80, 210) or Color3.fromRGB(80, 70, 100)
-	local many = math.min(10, tickets)
-	local canTen = many >= 2
-	rollButton.AutoButtonColor = canTen
-	rollButton.BackgroundColor3 = canTen and Color3.fromRGB(165, 70, 245) or Color3.fromRGB(62, 58, 78)
-	rollButton.TextTransparency = canTen and 0 or 0.45
-	rollButton.Text = canTen and string.format("🎰 Roll x%d!\n%d Tickets", many, many) or "🎰 Multi Roll\nNeeds 2+ Tickets (max 10)"
-	state.Rebuild = rebuildCharacter
 end
-state.Reopen = function() rebuildCharacter() end
-gearHooks.Rebuild = rebuildCharacter
-end -- (장비 창 do 블록 끝)
 
 Remotes.Gear.OnClientEvent:Connect(function(action, result)
 	if action ~= "Result" then return end
@@ -1031,24 +782,11 @@ Remotes.Gear.OnClientEvent:Connect(function(action, result)
 	end
 	gearMessage.Text = result.Message
 	gearMessage.TextColor3 = color
-	if not result.Roll and gearPanel.Visible then -- 장비 강화 결과: 상세 칸 위에 크게 "SUCCESS! / FAILED"
-		local pop = makeLabel({
-			Size = UDim2.new(0, 260, 0, 50), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -147, 0, 190), ZIndex = 20,
-			Text = result.Ok and "✨ SUCCESS!" or "💥 FAILED", TextSize = 30, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0.1,
-			TextColor3 = result.Ok and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(255, 110, 100),
-		}, gearPanel)
-		local popScale = create("UIScale", { Scale = 0.4 }, pop)
-		TweenService:Create(popScale, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
-		task.delay(0.55, function()
-			TweenService:Create(pop, TweenInfo.new(0.45), { Position = UDim2.new(1, -147, 0, 150), TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
-		end)
-		game:GetService("Debris"):AddItem(pop, 1.1)
-	end
+	if result.Roll and gachaFlash and gearPanel.Visible then gachaFlash(color) end
 	if not result.Roll then
 		enhSound("Enh_Hammer")
 		task.delay(0.12, function() SoundBank.Play(sfxParent, result.Ok and "Enh_Success" or "Enh_Fail") end)
 	end
-	task.delay(0.3, function() if gearHooks.Rebuild then gearHooks.Rebuild() end end)
 	refreshGear()
 end)
 
@@ -1161,7 +899,6 @@ end
 Remotes.OpenGear.OnClientEvent:Connect(function()
 	gearMessage.Text = ""
 	gearPanel.Visible = true
-	if gearHooks.Rebuild then gearHooks.Rebuild() end
 	refreshGear()
 end)
 

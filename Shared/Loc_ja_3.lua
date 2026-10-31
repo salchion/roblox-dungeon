@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Field (best: Zone {number1})", "フィールド(最高: ゾーン{number1})" },
 		{ "🎲 Random bonus in {number1}s", "🎲 {number1}秒後にランダムボーナス" },
 		{ "💀 The Final Lord  {number1}%", "💀 ファイナルロード  {number1}%" },
 		{ "🔫 Gunshot Volume: {number1}%", "🔫 銃声の音量: {number1}%" },

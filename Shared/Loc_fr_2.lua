@@ -445,6 +445,8 @@ return {
 		["Gold Sense"] = "Flair de l'or",
 		["Attack Speed"] = "Vitesse d'attaque",
 		["🔒 Locked! Train the connected nodes above first"] = "🔒 Verrouillé ! Entraînez d'abord les nœuds reliés au-dessus",
+		["🎰 Gear Gacha"] = "🎰 Gacha d'équipement",
+		["Rates"] = "Taux",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -948,7 +950,5 @@ return {
 		{ "⚡ Power {number1}", "⚡ Puissance {number1}" },
 		{ "Remove #{number1}", "Supprimer #{number1}" },
 		{ "🎟 Free {number1}/{number2}", "🎟 Gratuit {number1}/{number2}" },
-		{ "⚡ {number1} Power", "⚡ {number1} Puissance" },
-		{ "Max HP +{number1}", "PV max +{number1}" },
 	},
 }
