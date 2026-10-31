@@ -18,6 +18,7 @@ local camera = workspace.CurrentCamera
 local uiHidden = false
 local freeCam = false
 local hidden = {}          -- 숨긴 ScreenGui 들 (다시 켤 때 되돌린다)
+local hiddenSet = setmetatable({}, { __mode = "k" })
 local saved = {}           -- 바꾸기 전 카메라 / 조명 / 줌 값
 local yaw, pitch = 0, 0
 local fov = 70
@@ -64,6 +65,7 @@ local function hideUi()
 		if gui:IsA("ScreenGui") and gui.Enabled and gui.Name ~= "PhotoModeHint" then
 			gui.Enabled = false
 			table.insert(hidden, gui)
+			hiddenSet[gui] = true
 		end
 	end
 	-- (로블록스 기본 UI 는 하나씩 원래 상태를 기억했다가 그대로 되돌린다: 게임이 일부러 꺼 둔 아이템 칸(Backpack)이 다시 켜지지 않게)
@@ -87,6 +89,7 @@ local function showUi()
 		if gui.Parent then gui.Enabled = true end
 	end
 	table.clear(hidden)
+	table.clear(hiddenSet)
 	for coreType, on in pairs(saved.Core or {}) do
 		pcall(function() StarterGui:SetCoreGuiEnabled(coreType, on) end)
 	end
@@ -213,6 +216,16 @@ end)
 
 RunService.RenderStepped:Connect(function(dt)
 	if not uiHidden then return end
+	-- (각 화면 스크립트가 숫자를 갱신하면서 자기 화면을 다시 켜기도 한다: 숨기는 동안은 매 프레임 다시 끈다. 처음 끈 화면만 나중에 되돌린다)
+	for _, gui in ipairs(player.PlayerGui:GetChildren()) do
+		if gui:IsA("ScreenGui") and gui.Enabled and gui.Name ~= "PhotoModeHint" then
+			gui.Enabled = false
+			if not hiddenSet[gui] then
+				hiddenSet[gui] = true
+				table.insert(hidden, gui)
+			end
+		end
+	end
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if dof then -- 초점은 내 캐릭터까지의 거리
 		dof.FocusDistance = root and (root.Position - camera.CFrame.Position).Magnitude or 30
