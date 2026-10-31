@@ -239,12 +239,32 @@ local enhanceWeapon = makeLabel({
 	Font = Enum.Font.GothamBlack, TextSize = 19, TextWrapped = true,
 }, enhancePanel)
 
-local medal = create("Frame", {
-	Size = UDim2.new(0, 230, 0, 230), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 86),
-	BackgroundColor3 = Color3.fromRGB(34, 30, 52), BorderSizePixel = 0,
+-- 위쪽 무대: 무기 시대 색으로 빛나는 배경 + 천천히 도는 빛줄기 + 가운데 큰 무기 칸 (+강화 수치)
+E.Hero = create("Frame", {
+	Size = UDim2.new(1, -24, 0, 170), Position = UDim2.new(0, 12, 0, 84), BackgroundColor3 = Color3.fromRGB(14, 22, 36), BorderSizePixel = 0, ClipsDescendants = true, ZIndex = 1,
 }, enhancePanel)
-create("UICorner", { CornerRadius = UDim.new(1, 0) }, medal)
+create("UICorner", { CornerRadius = UDim.new(0, 14) }, E.Hero)
+E.HeroStroke = create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5, Transparency = 0.4 }, E.Hero)
+E.HeroGlow = create("Frame", { Size = UDim2.new(0, 260, 0, 260), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 70), BackgroundColor3 = Color3.fromRGB(255, 200, 90), BackgroundTransparency = 0.82, BorderSizePixel = 0, ZIndex = 1 }, E.Hero)
+create("UICorner", { CornerRadius = UDim.new(1, 0) }, E.HeroGlow)
+E.Rays = {}
+for i = 1, 6 do
+	local ray = create("Frame", { Size = UDim2.new(0, 700, 0, 26), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 70), Rotation = i * 30, BackgroundColor3 = Color3.fromRGB(255, 200, 90), BackgroundTransparency = 0.88, BorderSizePixel = 0, ZIndex = 1 }, E.Hero)
+	create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.5, 0), NumberSequenceKeypoint.new(1, 1) }) }, ray)
+	E.Rays[i] = ray
+end
+for _, y in ipairs({ 0, 1 }) do -- 위 / 아래 금선 (가운데가 진하고 양끝이 사라진다)
+	local line = create("Frame", { Size = UDim2.new(0.8, 0, 0, 2), AnchorPoint = Vector2.new(0.5, y), Position = UDim2.new(0.5, 0, y, y == 0 and 6 or -6), BackgroundColor3 = Color3.fromRGB(225, 196, 118), BorderSizePixel = 0, ZIndex = 2 }, E.Hero)
+	create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.5, 0), NumberSequenceKeypoint.new(1, 1) }) }, line)
+end
+local medal = create("Frame", {
+	Size = UDim2.new(0, 104, 0, 104), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 100),
+	BackgroundColor3 = Color3.fromRGB(34, 30, 52), BorderSizePixel = 0, ZIndex = 3,
+}, enhancePanel)
+create("UICorner", { CornerRadius = UDim.new(0, 16) }, medal)
+create("UIGradient", { Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(120, 115, 150)), Rotation = 90 }, medal)
 local medalStroke = create("UIStroke", { Color = Color3.fromRGB(255, 200, 90), Thickness = 5 }, medal)
+E.MedalIcon = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "🔫", TextSize = 58, ZIndex = 4 }, medal)
 E.Stars = {}
 for i = 1, 16 do
 	local dot = 3 + (i % 3) * 2
@@ -266,9 +286,8 @@ if rim then
 end
 
 -- 무기 모형 대신 "해금 진행 길": 강화할수록 막대가 앞으로 나아가고, 도착하면 무엇이 해금되는지 보인다
-medal.Visible = false
-local track = create("Frame", {
-	Size = UDim2.new(1, -24, 0, 230), Position = UDim2.new(0, 12, 0, 86), BackgroundTransparency = 1, BorderSizePixel = 0,
+local track = create("Frame", { -- 아래쪽 해금 길 (무기 아이콘 줄)
+	Size = UDim2.new(1, -24, 0, 50), Position = UDim2.new(0, 12, 0, 262), BackgroundTransparency = 1, BorderSizePixel = 0,
 }, enhancePanel)
 
 RunService.RenderStepped:Connect(function()
@@ -278,27 +297,41 @@ RunService.RenderStepped:Connect(function()
 		star.Label.BackgroundTransparency = 0.25 + 0.7 * (0.5 + 0.5 * math.sin(t * star.Speed + star.Phase))
 	end
 	if E.RimGradient then E.RimGradient.Rotation = (t * 60) % 360 end
+	for i, ray in ipairs(E.Rays) do ray.Rotation = i * 30 + t * 8 end
+	E.HeroGlow.BackgroundTransparency = 0.8 + 0.06 * math.sin(t * 2)
 end)
 
 local enhanceStage = makeLabel({
-	Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 322), Font = Enum.Font.GothamBlack, TextSize = 29,
+	Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 208), Font = Enum.Font.GothamBlack, TextSize = 32, ZIndex = 5,
 }, enhancePanel)
 local segmentBar = create("Frame", {
-	Size = UDim2.new(1, -60, 0, 14), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 366), BackgroundTransparency = 1,
+	Size = UDim2.new(1, -60, 0, 14), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 366), BackgroundTransparency = 1, Visible = false, -- (진행 칸 대신 아래 해금 길 + 강화 블록으로)
 }, enhancePanel)
 create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder }, segmentBar)
 local enhanceNext = makeLabel({
-	Size = UDim2.new(1, -30, 0, 22), Position = UDim2.new(0, 15, 0, 386), TextSize = 12, RichText = true,
+	Size = UDim2.new(1, -30, 0, 20), Position = UDim2.new(0, 15, 0, 314), TextSize = 12, RichText = true,
 }, enhancePanel)
 
-local enhanceInfo = makeLabel({
-	Size = UDim2.new(1, -40, 0, 50), Position = UDim2.new(0, 20, 0, 414), TextSize = 13, RichText = true,
+local enhanceInfo = makeLabel({ -- (예전 글 줄: 아래 강화 블록이 대신 보여 준다)
+	Size = UDim2.new(1, -40, 0, 50), Position = UDim2.new(0, 20, 0, 414), TextSize = 13, RichText = true, Visible = false,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 }, enhancePanel)
+-- 강화 블록: +N ➜ +N+1 / 공격력 배율 변화 / 성공 확률 막대
+E.Block = create("Frame", { Size = UDim2.new(1, -24, 0, 98), Position = UDim2.new(0, 12, 0, 340), BackgroundColor3 = Color3.fromRGB(30, 28, 46), BorderSizePixel = 0 }, enhancePanel)
+create("UICorner", { CornerRadius = UDim.new(0, 12) }, E.Block)
+create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5, Transparency = 0.35 }, E.Block)
+create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(170, 160, 200)), Rotation = 90 }, E.Block)
+E.BlockLevel = makeLabel({ Size = UDim2.new(1, 0, 0, 32), Position = UDim2.new(0, 0, 0, 4), RichText = true, Font = Enum.Font.GothamBlack, TextSize = 26 }, E.Block)
+E.BlockDamage = makeLabel({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 0, 38), RichText = true, Font = Enum.Font.GothamBold, TextSize = 14 }, E.Block)
+E.BarBack = create("Frame", { Size = UDim2.new(1, -28, 0, 22), Position = UDim2.new(0, 14, 0, 66), BackgroundColor3 = Color3.fromRGB(16, 16, 26), BorderSizePixel = 0 }, E.Block)
+create("UICorner", { CornerRadius = UDim.new(0, 11) }, E.BarBack)
+E.BarFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(110, 230, 120), BorderSizePixel = 0 }, E.BarBack)
+create("UICorner", { CornerRadius = UDim.new(0, 11) }, E.BarFill)
+E.BarText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), RichText = true, Font = Enum.Font.GothamBlack, TextSize = 12, TextStrokeTransparency = 0.4, ZIndex = 3 }, E.BarBack)
 
 -- 무기 특성: 지금 무기의 싸우는 방식 + 다음 시대로 진화하면 생기는 새 특성 (업그레이드할 이유를 눈에 보이게)
 local enhancePerk = makeLabel({
-	Size = UDim2.new(1, -40, 0, 62), Position = UDim2.new(0, 20, 0, 464), TextSize = 11, RichText = true,
+	Size = UDim2.new(1, -40, 0, 58), Position = UDim2.new(0, 20, 0, 446), TextSize = 11, RichText = true,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 }, enhancePanel)
 
@@ -307,7 +340,7 @@ local enhanceBanner = makeLabel({
 	Font = Enum.Font.GothamBlack, TextSize = 37, TextStrokeTransparency = 0, Visible = false, ZIndex = 8,
 }, enhancePanel)
 local enhanceResult = makeLabel({
-	Size = UDim2.new(1, -24, 0, 22), Position = UDim2.new(0, 12, 0, 530), Font = Enum.Font.GothamBold, TextSize = 12,
+	Size = UDim2.new(1, -24, 0, 22), Position = UDim2.new(0, 12, 0, 506), Font = Enum.Font.GothamBold, TextSize = 12,
 }, enhancePanel)
 
 local hammer = makeLabel({
@@ -365,13 +398,13 @@ local enhanceButton = makeButton({
 		enhSound("Enh_Hammer")
 		for i = 1, 8 do
 			local spark = create("Frame", {
-				Size = UDim2.new(0, 8, 0, 8), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 205),
+				Size = UDim2.new(0, 8, 0, 8), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 152),
 				BackgroundColor3 = i % 2 == 0 and Color3.fromRGB(255, 220, 110) or Color3.fromRGB(255, 140, 60), BorderSizePixel = 0, ZIndex = 7,
 			}, enhancePanel)
 			create("UICorner", { CornerRadius = UDim.new(1, 0) }, spark)
 			local angle = (i / 8) * math.pi * 2
 			TweenService:Create(spark, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-				Position = UDim2.new(0.5, math.cos(angle) * 130, 0, 205 + math.sin(angle) * 110), BackgroundTransparency = 1,
+				Position = UDim2.new(0.5, math.cos(angle) * 130, 0, 152 + math.sin(angle) * 80), BackgroundTransparency = 1,
 			}):Play()
 			game:GetService("Debris"):AddItem(spark, 0.5)
 		end
@@ -428,7 +461,7 @@ local WEAPON_ICONS = { Pistol = "🔫", Smg = "🔭", Revolver = "💣", Rifle =
 -- 가차 화면처럼 보이는 위쪽 무대: 내 캐릭터가 지금 무기를 들고 천천히 돈다 (글만 가득하던 위쪽 카드를 그림으로)
 local stage3d = create("ViewportFrame", {
 	Size = UDim2.new(0, 150, 0, 150), Position = UDim2.new(0, 12, 0, 84), BackgroundColor3 = Color3.fromRGB(26, 24, 44), BorderSizePixel = 0,
-	Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1), ZIndex = 2,
+	Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1), ZIndex = 2, Visible = false, -- (캐릭터 미리보기 대신 가운데 큰 무기 칸)
 }, enhancePanel)
 create("UICorner", { CornerRadius = UDim.new(0, 12) }, stage3d)
 local stage3dStroke = create("UIStroke", { Color = Color3.fromRGB(150, 110, 220), Thickness = 2 }, stage3d)
@@ -437,6 +470,7 @@ stage3d.CurrentCamera = stageCam
 local stageClone, stagePivot
 local function rebuildStage()
 	if stageClone then stageClone:Destroy() stageClone = nil end
+	if not stage3d.Visible then return end
 	local character = player.Character
 	if not character then return end
 	character.Archivable = true
@@ -489,35 +523,6 @@ local function buildTrack(level, color)
 	for i = 1, n do
 		if nodes[i].Level > level then nextIndex = i break end
 	end
-	local milestone = Config.GetNextMilestone(level)
-
-	-- 오른쪽 카드: 다음에 무엇이 열리는지 (큰 아이콘 + 이름 + 한 줄 설명 + 남은 횟수)
-	local card = create("Frame", { Size = UDim2.new(0, 214, 0, 150), Position = UDim2.new(0, 164, 0, -2), BackgroundColor3 = Color3.fromRGB(26, 24, 44), BorderSizePixel = 0 }, track)
-	create("UICorner", { CornerRadius = UDim.new(0, 12) }, card)
-	create("UIStroke", { Color = Color3.fromRGB(110, 90, 160), Thickness = 2 }, card)
-	local icon, name, note, remain, header = "🏆", "Max level!", "", "", "Final weapon"
-	if milestone and milestone.Kind == "Form" then
-		local info = Config.WeaponTypes[milestone.Key]
-		icon, name, note, header = WEAPON_ICONS[milestone.Key] or "🔓", info.Name, info.Trait, string.format("NEXT UNLOCK · +%d", milestone.Level)
-		remain = string.format("%d more upgrades", milestone.Level - level)
-	elseif milestone then
-		local perk = milestone.Tier.Perk
-		icon, name, note, header = "✨", milestone.Name, perk and (perk.Icon .. " " .. perk.Name) or "New look and shot color", string.format("NEXT ERA · +%d", milestone.Level)
-		remain = string.format("%d more upgrades", milestone.Level - level)
-	end
-	makeLabel({ Size = UDim2.new(1, -16, 0, 16), Position = UDim2.new(0, 8, 0, 8), Text = header, TextSize = 10, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(150, 158, 190), TextXAlignment = Enum.TextXAlignment.Left }, card)
-	local tile = create("Frame", { Size = UDim2.new(0, 58, 0, 58), Position = UDim2.new(0, 10, 0, 30), BackgroundColor3 = Color3.fromRGB(58, 50, 28), BorderSizePixel = 0 }, card)
-	create("UICorner", { CornerRadius = UDim.new(0, 12) }, tile)
-	create("UIStroke", { Color = Color3.fromRGB(255, 217, 102), Thickness = 2 }, tile)
-	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = icon, TextSize = 34 }, tile)
-	makeLabel({ Size = UDim2.new(1, -84, 0, 26), Position = UDim2.new(0, 76, 0, 30), Text = name, TextSize = 19, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 217, 102), TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, card)
-	makeLabel({ Size = UDim2.new(1, -84, 0, 34), Position = UDim2.new(0, 76, 0, 56), Text = note, TextSize = 11, TextColor3 = Color3.fromRGB(205, 212, 235), TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top }, card)
-	if remain ~= "" then
-		local chip = create("Frame", { Size = UDim2.new(1, -20, 0, 30), Position = UDim2.new(0, 10, 1, -40), BackgroundColor3 = Color3.fromRGB(34, 62, 44), BorderSizePixel = 0 }, card)
-		create("UICorner", { CornerRadius = UDim.new(0, 8) }, chip)
-		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = remain, TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(120, 255, 140) }, chip)
-	end
-
 	-- 아래 줄: 무기 아이콘 칸들 (끝낸 칸 / 다음 칸 / 잠긴 칸). 글자 대신 그림으로 한눈에
 	local count = #nodes
 	local tileSize, gap = 30, 4
@@ -529,7 +534,7 @@ local function buildTrack(level, color)
 		local isNext = i == nextIndex
 		local key = order[i]
 		local box = create("Frame", {
-			Size = UDim2.new(0, tileSize, 0, tileSize), Position = UDim2.new(0, x, 0, 164), BorderSizePixel = 0,
+			Size = UDim2.new(0, tileSize, 0, tileSize), Position = UDim2.new(0, x, 0, 0), BorderSizePixel = 0,
 			BackgroundColor3 = done and color:Lerp(Color3.fromRGB(24, 22, 38), 0.65) or (isNext and Color3.fromRGB(70, 60, 30) or Color3.fromRGB(30, 30, 46)),
 		}, track)
 		create("UICorner", { CornerRadius = UDim.new(0, 8) }, box)
@@ -538,7 +543,7 @@ local function buildTrack(level, color)
 		if not done then
 			makeLabel({ Size = UDim2.new(0, 12, 0, 12), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, 1, 1, 1), Text = isNext and "★" or "🔒", TextSize = 9, TextColor3 = Color3.fromRGB(255, 217, 102) }, box)
 		end
-		makeLabel({ Size = UDim2.new(0, 36, 0, 12), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, x + tileSize / 2, 0, 198), Text = "+" .. node.Level, TextSize = 9, TextColor3 = done and Color3.fromRGB(200, 205, 230) or Color3.fromRGB(120, 122, 150) }, track)
+		makeLabel({ Size = UDim2.new(0, 36, 0, 12), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, x + tileSize / 2, 0, 34), Text = "+" .. node.Level, TextSize = 9, TextColor3 = done and Color3.fromRGB(200, 205, 230) or Color3.fromRGB(120, 122, 150) }, track)
 	end
 end
 
@@ -556,6 +561,11 @@ function refreshEnhance()
 	enhanceWeapon.Text = string.format("%s · %s", Config.GetWeaponName(typeKey, level), Config.GetEraName(tier.Era))
 	enhanceWeapon.TextColor3 = color
 	medalStroke.Color = color
+	E.MedalIcon.Text = WEAPON_ICONS[typeKey] or "🔫"
+	medal.BackgroundColor3 = color:Lerp(Color3.fromRGB(20, 18, 32), 0.7)
+	E.HeroGlow.BackgroundColor3 = color
+	for _, ray in ipairs(E.Rays) do ray.BackgroundColor3 = color end
+	E.Hero.BackgroundColor3 = color:Lerp(Color3.fromRGB(10, 12, 22), 0.88)
 	E.Milestone = Config.GetUnlockedCount(level) + 100 * tier.Era -- 새 무기 해금 / 새 시대 때만 "진화!" 연출
 	E.EnhanceShownTier = tierIndex
 
@@ -586,6 +596,10 @@ function refreshEnhance()
 	if level >= Config.Weapon.MaxLevel then
 		enhanceNext.Text = "<font color='#ffd966'>You maxed out the final weapon!</font>"
 		enhanceInfo.Text = ""
+		E.BlockLevel.Text = string.format("<font color='#ffd966'>+%d MAX</font>", level)
+		E.BlockDamage.Text = string.format("⚔ x%.2f", Config.GetDamageMultiplier(level))
+		E.BarFill.Size = UDim2.new(1, 0, 1, 0)
+		E.BarText.Text = "MAX"
 		enhanceButton.Text = "MAX"
 		enhanceButton.BackgroundColor3 = GRAY
 		return
@@ -609,6 +623,11 @@ function refreshEnhance()
 	end
 	enhanceInfo.Text = string.format("Damage  <b>x%.2f</b> <font color='#78ff8c'>▶ x%.2f</font>\nSuccess rate  <font color='#%s'><b>%d%%</b></font>   <font size='10' color='#aaaabb'>(level kept on failure)</font>",
 		Config.GetDamageMultiplier(level), Config.GetDamageMultiplier(level + 1), chance >= 80 and "78ff8c" or (chance >= 60 and "ffd966" or "ff9a6e"), chance)
+	E.BlockLevel.Text = string.format("<font color='#e6e6f0'>+%d</font>  <font color='#6ec3ff'>➜</font>  <font color='#78ff8c'>+%d</font>", level, level + 1)
+	E.BlockDamage.Text = string.format("<font color='#9aa3b8'>⚔ Damage</font>  x%.2f  <font color='#78ff8c'>➜ x%.2f</font>", Config.GetDamageMultiplier(level), Config.GetDamageMultiplier(level + 1))
+	E.BarFill.BackgroundColor3 = Color3.fromRGB(255, 90, 80):Lerp(Color3.fromRGB(110, 230, 120), math.clamp((chance / 100 - 0.35) / 0.65, 0, 1))
+	TweenService:Create(E.BarFill, TweenInfo.new(0.3), { Size = UDim2.new(chance / 100, 0, 1, 0) }):Play()
+	E.BarText.Text = string.format("Success %d%%<font size='10'>  </font><font size='10' color='#c9cde0'>(level kept on failure)</font>", chance)
 	do
 		local perk = Config.GetWeaponPerk(level)
 		local lines = {}
@@ -620,7 +639,7 @@ function refreshEnhance()
 			table.insert(lines, string.format("<font color='#9affc0'>Next era → %s <b>%s</b></font> <font color='#aeb4cc'>%s</font>", nextPerk.Icon, nextPerk.Name, nextPerk.Desc))
 		elseif milestone and milestone.Kind == "Form" then
 			local info = Config.WeaponTypes[milestone.Key]
-			table.insert(lines, string.format("<font color='#9affc0'>Next weapon → <b>%s</b></font> <font color='#aeb4cc'>%s</font>", info.Name, info.Trait))
+			table.insert(lines, string.format("<font color='#9affc0'>Next weapon →</font> <font color='#9affc0'><b>%s</b></font> <font color='#aeb4cc'>%s</font>", info.Name, info.Trait))
 		end
 		enhancePerk.Text = table.concat(lines, "\n")
 	end
