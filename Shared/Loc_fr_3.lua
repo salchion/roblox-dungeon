@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👑 Lord of {text1} (Zone {number2}) · Rec. ⚡{number3}", "👑 Seigneur de {text1} (zone {number2}) · Rec. ⚡{number3}" },
+		{ "{number1} pulls done! Best rarity: {text2}", "{number1} tirages effectués ! Meilleure rareté : {text2}" },
+		{ "Active {number1} / {number2} slots   (💰 {text3} G)", "Actifs {number1} / {number2} emplacements   (💰 {text3} G)" },
+		{ "You are already holding {text1}.", "Vous tenez déjà {text1}." },
+		{ "⛺ Moved to Zone {number1} · {text2} Camp!", "⛺ Déplacé au camp de la zone {number1} · {text2} !" },
+		{ "Loading the world...  ·  {text1}", "Chargement du monde...  ·  {text1}" },
+		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 Nouvelle arme : {text1} - appuyez sur {number2} !" },
+		{ "{text1} invited you to a party!", "{text1} vous a invité dans un groupe !" },
 		{ "🗿 {text1} · World Boss (Zone {number2})", "🗿 {text1} · Boss mondial (zone {number2})" },
 		{ "👀 [{text1}] 5-second preview!", "👀 [{text1}] Aperçu de 5 secondes !" },
 		{ "💤 Idle income  +{text1} G/sec", "💤 Revenu d'inactivité  +{text1} or/s" },

@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} Meadow · {number2} Forest", "{number1} 초원 · {number2} 숲" },
+		{ "🚪 Open Zone {number1} Gate", "🚪 {number1}구역 문 열기" },
+		{ "max · +{number1}% crit dmg", "최대 · 치명타 피해 +{number1}%" },
+		{ "🔊 Music Volume: {number1}%", "🔊 음악 볼륨: {number1}%" },
+		{ "Training time -{number1}%", "훈련 시간 -{number1}%" },
+		{ "🔑{number6} (Free today {number7}/{number8})", "🔑{number6} (오늘 무료 {number7}/{number8})" },
+		{ "{number2} / {number3}   Reward: {number4} G", "{number2} / {number3}   보상: {number4} G" },
+		{ "{number2} / {number3}   Reward: 🎫 {number4}", "{number2} / {number3} 보상: 🎫 {number4}" },
 		{ "💥Explosive Shot {number1}", "💥폭발적인 샷 {number1}" },
 		{ "Defeat {number1} boss(es)", "{number1} 보스 처치" },
 		{ "{number1} / {number2}   Reward: 🎫 {number3}", "{number1} / {number2} 보상: 🎫 {number3}" },
@@ -58,6 +66,7 @@ return {
 		{ "Restores {number1}% HP", "체력 {number1}% 회복" },
 		{ "🛡 Survive!  {number1}s", "🛡 버티세요!  {number1}초" },
 		{ "Boss damage +{number1}", "보스 피해 +{number1}" },
+		{ "{number1} empty slot(s", "빈 슬롯 {number1}개" },
 		{ "Reach {number1} Power", "{number1} 파워 달성" },
 		{ "Next zone  {number1}m", "다음 구역 {number1}m" },
 		{ "▼ Dungeon  {number1}m", "▼ 던전 {number1}m" },

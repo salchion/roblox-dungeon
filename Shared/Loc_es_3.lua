@@ -4,6 +4,17 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} unlocks at +{number2}.", "{text1} se desbloquea en +{number2}." },
+		{ "👹 Monsters {number1} / {number2}{text3}", "👹 Monstruos {number1} / {number2}{text3}" },
+		{ "Dungeon loot: {text1}", "Botín de mazmorra: {text1}" },
+		{ "DAMAGE · {number1}s · {text2}", "DAÑO · {number1}s · {text2}" },
+		{ "• Shot type: {text1}", "• Tipo de disparo: {text1}" },
+		{ "per piece ({text1})", "por pieza ({text1})" },
+		{ "({number1} lvl · ~{text2} G)", "({number1} niveles · ~{text2} G)" },
+		{ "⚠ Zone {number1} · {text2} ⚠", "⚠ Zona {number1} · {text2} ⚠" },
+		{ "Next era → {text1}", "Siguiente era → {text1}" },
+		{ "Activate {text1} G", "Activar por {text1} G" },
+		{ "Shop item: {text1}", "Artículo de la tienda: {text1}" },
 		{ "Skip gauge {text1}", "Medidor de salto {text1}" },
 		{ "Time left {text1}", "Tiempo restante {text1}" },
 		{ "Entering {text1}!", "¡Entrando a {text1}!" },

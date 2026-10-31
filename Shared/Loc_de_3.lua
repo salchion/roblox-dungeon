@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} {text2} Tier · {number3} bosses defeated", "{text1} {text2}-Stufe · {number3} Bosse besiegt" },
+		{ "⏱ {text1} survived  ×  💥 {text2} damage", "⏱ {text1} überlebt  ×  💥 {text2} Schaden" },
+		{ "{text1} New set from here: {text2} Set", "{text1} Neues Set ab hier: {text2}-Set" },
+		{ "(Recommended {text1} · Yours {text2})", "(Empfohlen {text1} · Du {text2})" },
+		{ "Open to earn the {text1} {text2} set!", "Öffne es, um das Set {text1} {text2} zu erhalten!" },
+		{ "{text1} training started! ({text2})", "{text1}-Training gestartet! ({text2})" },
+		{ "⬆ Level Up  💰 {text1} G · ⏱ {text2}", "⬆ Aufstieg  💰 {text1} G · ⏱ {text2}" },
+		{ "👹 Boss this run: {text1} — {text2}", "👹 Boss dieses Laufs: {text1} — {text2}" },
 		{ "{text1}  ·  When full: +{text2} G", "{text1}  ·  Wenn voll: +{text2} G" },
 		{ "Best {text1}  ·  Max hit {text2}", "Bestwert {text1}  ·  Max. Treffer {text2}" },
 		{ "Next point: {text1} / {text2} XP", "Nächster Punkt: {text1} / {text2} EP" },

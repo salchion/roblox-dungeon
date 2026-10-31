@@ -4,6 +4,18 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎫 {number1} tickets!", "🎫 {number1} チケット！" },
+		{ "Cooldown -{number1}%", "クールダウン -{number1}%" },
+		{ "MISSION {number1} / {number2}", "ミッション {number1} / {number2}" },
+		{ "🎯 Mission {number1}/{number2}", "🎯 ミッション {number1}/{number2}" },
+		{ "… and {number1} more", "…ほか{number1}件" },
+		{ "(you have {number1})", "(所持 {number1})" },
+		{ "🎫 Tickets: {number1}", "🎫 チケット: {number1}" },
+		{ "Next: Zone {number1}", "次: ゾーン{number1}" },
+		{ "Zone {number1} Camp", "ゾーン{number1}キャンプ" },
+		{ "🐾 Pet Lv.{number1}!", "🐾 ペット Lv.{number1}！" },
+		{ "Upgrade {number1} G", "強化 {number1} G" },
+		{ "✦ Paragon {number1}", "✦ パラゴン {number1}" },
 		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
 		{ "🔥 Combo x{number1}", "🔥 コンボ x{number1}" },
 		{ "Damage +{number2}%", "ダメージ +{number2}%" },
