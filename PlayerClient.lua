@@ -2150,7 +2150,7 @@ local function buildWeaponTab()
 	local power = Config.WeaponDpsFactor(classInfo)
 	local nameColor = hex(shown.Rainbow and Color3.fromRGB(255, 120, 255) or shown.Color)
 	makeLabel({
-		Size = UDim2.new(1, -306, 1, -64), Position = UDim2.new(0, 294, 0, 10), RichText = true, TextSize = 12,
+		Size = UDim2.new(1, -366, 1, -64), Position = UDim2.new(0, 294, 0, 10), RichText = true, TextSize = 12, TextWrapped = true,
 		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 		Text = string.format(
 			"<font size='17'><b><font color='#%s'>%s</font></b></font>  <font size='10' color='#aab0cc'>%s</font>\n%s\n<font color='#ffe9a0'><b>%s</b></font>\n<font color='#bbbbcc'>%s</font>\n\n<b>🔫 Attack Style</b>\n<font color='#dfe6ff'>• Shot type: %s\n• %s\n• About %.1f shots/sec · Firepower %d · Range %d</font>",
@@ -2169,37 +2169,40 @@ local function buildWeaponTab()
 		end)
 	end
 
-	-- 무기 목록은 높이가 정해진 작은 창 안에서만 스크롤된다: 위쪽 시연 / 설명이 목록을 내려도 화면 밖으로 밀려나지 않는다 (엑셀 틀 고정처럼)
-	local listHost = newRow(178)
-	local inner = create("ScrollingFrame", {
-		Size = UDim2.new(1, -12, 1, -12), Position = UDim2.new(0, 6, 0, 6), BackgroundTransparency = 1, BorderSizePixel = 0,
-		ScrollBarThickness = 5, CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.Y,
-	}, listHost)
-	create("UIListLayout", { Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder }, inner)
-	local outerContent, outerOrder = activeContent, rowOrder
-	activeContent, rowOrder = inner, 0
-	task.defer(function() inner.CanvasPosition = Vector2.new(0, settings.WeaponListY or 0) end)
-	for _, key in ipairs(order) do
+	-- 목록 대신 < > 화살표로 넘긴다 (+ 아래 무기 구슬 줄: 지금 보는 무기 / 쓰는 무기 / 잠김)
+	local function show(key)
+		settings.PreviewForm = key
+		settings.DemoClock = 0
+		settings.RefreshMenu()
+	end
+	local index = table.find(order, previewKey) or 1
+	for _, arrow in ipairs({ { "◀", -1, UDim2.new(0, 16, 0, 108) }, { "▶", 1, UDim2.new(1, -60, 0, 108) } }) do
+		local b = makeButton({ Size = UDim2.new(0, 44, 0, 44), Position = arrow[3], Text = arrow[1], TextSize = 18, Font = Enum.Font.GothamBlack, BackgroundColor3 = Color3.fromRGB(46, 50, 84), ZIndex = 6 }, header, function()
+			show(order[(index - 1 + arrow[2]) % #order + 1])
+		end)
+		rounded(b, 22)
+		create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5, Transparency = 0.3 }, b)
+	end
+	local pips = newRow(64, Color3.fromRGB(26, 28, 44))
+	local spacing = 64
+	for i, key in ipairs(order) do
 		local info = Config.WeaponTypes[key]
 		local look = Config.GetLookTier(level, key)
 		local open = Config.IsWeaponUnlocked(level, key)
-		local using = key == equippedKey
-		local row = newRow(34, using and Color3.fromRGB(45, 70, 50) or (open and Color3.fromRGB(34, 38, 48) or Color3.fromRGB(28, 28, 38)))
-		local mark = using and "▶" or (open and "✔" or "🔒")
-		rowText(row, string.format("%s  <font color='#%s'><b>%s</b></font>   <font size='10' color='#8888aa'>%s%s</font>",
-			mark, open and hex(look.Color) or "777788", info.Name, info.Trait, open and "" or string.format(" · Unlocks at +%d", Config.GetUnlockLevel(key))), 14, 24)
-		if previewKey == key then
-			create("UIStroke", { Color = Color3.fromRGB(255, 225, 120), Thickness = 2 }, row)
+		local here = key == previewKey
+		local orb = create("TextButton", {
+			Size = UDim2.new(0, here and 46 or 38, 0, here and 46 or 38), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, (i - (#order + 1) / 2) * spacing, 0.5, 0),
+			BackgroundColor3 = open and look.Color:Lerp(Color3.fromRGB(20, 22, 36), 0.55) or Color3.fromRGB(34, 34, 46), BorderSizePixel = 0, Text = open and (key == equippedKey and "▶" or "") or "🔒",
+			TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(150, 255, 170), AutoButtonColor = true,
+		}, pips)
+		rounded(orb, here and 23 or 19)
+		create("UIStroke", { Color = here and Color3.new(1, 1, 1) or (open and look.Color or Color3.fromRGB(70, 72, 100)), Thickness = here and 3 or 1.5 }, orb)
+		if i < #order then
+			create("Frame", { Size = UDim2.new(0, spacing - 48, 0, 2), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0.5, (i - (#order + 1) / 2) * spacing + 24, 0.5, 0), BackgroundColor3 = Color3.fromRGB(80, 80, 110), BorderSizePixel = 0 }, pips)
 		end
-		local pick = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", ZIndex = 5 }, row)
-		pick.Activated:Connect(function()
-			settings.PreviewForm = key
-			settings.DemoClock = 0
-			settings.WeaponListY = inner.CanvasPosition.Y -- 다시 그려도 보던 자리에 머문다
-			settings.RefreshMenu()
-		end)
+		orb:SetAttribute("Tip", info.Name)
+		orb.Activated:Connect(function() show(key) end)
 	end
-	activeContent, rowOrder = outerContent, outerOrder
 end
 
 local function buildProgressRows(entries, remoteAction, showTitle)
