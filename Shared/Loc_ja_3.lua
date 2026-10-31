@@ -4,6 +4,18 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Defeat {number1} field monsters", "フィールドのモンスターを{number1}体倒す" },
+		{ "Pierces up to {number1} enemies", "最大{number1}体を貫通します" },
+		{ "Defeat the Zone {number1} Lord", "ゾーン{number1}の領主を倒す" },
+		{ "{number2} / {number3}   Reward: {number4} G + 🎫 {number5}", "{number2} / {number3}　報酬：{number4}G + 🎫 {number5}" },
+		{ "{number1} Snowfield · {number2} Volcano", "{number1} 雪原 · {number2} 火山" },
+		{ "Railgun · Rusty Era +{number1}", "レールガン・錆の時代 +{number1}" },
+		{ "📍 Field (best: Zone {number11})", "📍 フィールド（ベスト：ゾーン{number11}）" },
+		{ "{number5} Snowfield · {number6} Volcano", "{number5} 雪原 · {number6} 火山" },
+		{ "ZONE {number1}  ·  Forest   ☠☠", "ゾーン {number1} ・森 ☠☠" },
+		{ "{number1} upgrades! {number2} succeeded", "強化{number1}回! 成功{number2}回" },
+		{ "Free entries {number1} · Keys {number2}", "無料入場 {number1}・鍵 {number2}" },
+		{ "Loading the land...  {number1}", "大地を読み込み中...  {number1}" },
 		{ "Double Shot chance +{number1}%", "ダブルショット確率 +{number1}%" },
 		{ "ZONE {number1}  ·  Meadow   ☠", "ゾーン {number1} ・草原 ☠" },
 		{ "Luck Booster ({number1} hour)", "ラッキーブースター（{number1}時間）" },

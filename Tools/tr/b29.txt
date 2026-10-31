@@ -138,3 +138,17 @@
 2179¦{text1}セットを装着！({number1}部位変更)¦{text1}-Set angelegt! ({number1} Plätze geändert)¦Set {text1} équipé ! ({number1} emplacement(s) changé(s))¦¡Set {text1} equipado! ({number1} espacio(s) cambiado(s))¦Set {text1} equipado! ({number1} espaço(s) trocado(s))¦已装备{text1}套装！(更换{number1}个部位)¦{text1} 세트 장착! ({number1}부위 교체)
 2180¦そのセットの最良の装備をもう着けています。¦Du trägst bereits die besten Teile dieses Sets.¦Vous portez déjà les meilleures pièces de ce set.¦Ya llevas las mejores piezas de ese set.¦Você já está usando as melhores peças desse set.¦你已穿着该套装的最佳部件。¦이미 그 세트의 가장 좋은 조각을 끼고 있어요.
 2181¦そのセットの装備を持っていません。¦Du hast keine Teile dieses Sets.¦Vous n'avez aucune pièce de ce set.¦No tienes piezas de ese set.¦Você não tem peças desse set.¦你没有该套装的部件。¦그 세트 조각이 없어요.
+2182¦📍 ユニーク効果の入手先¦📍 Wo gibt es Unique-Effekte¦📍 Où obtenir les effets uniques¦📍 Dónde conseguir efectos únicos¦📍 Onde obter efeitos únicos¦📍 独特效果获取途径¦📍 유니크 효과 얻는 곳
+2183¦(神話装備のみ)¦(nur auf mythischer Ausrüstung)¦(uniquement sur l'équipement mythique)¦(solo en equipo mítico)¦(só em equipamento mítico)¦(仅限神话装备)¦(신화 장비에만 붙음)
+2184¦ダンジョンボスの宝箱¦Dungeon-Bosstruhen¦Coffres de boss de donjon¦Cofres de jefe de mazmorra¦Baús de chefe de masmorra¦地下城首领宝箱¦던전 보스 상자
+2185¦{number1}% → 最大{number2}% (深いほど高い)¦{number1}% → bis {number2}% (tiefer = höher)¦{number1}% → jusqu'à {number2}% (plus profond = plus élevé)¦{number1}% → hasta {number2}% (más profundo = más alto)¦{number1}% → até {number2}% (mais fundo = maior)¦{number1}% → 最高{number2}%（越深越高）¦{number1}% → 최대 {number2}% (깊을수록 높음)
+2186¦ボスラッシュ報酬¦Boss-Rush-Belohnungen¦Récompenses du Boss Rush¦Recompensas de Boss Rush¦Recompensas do Boss Rush¦首领连战奖励¦보스러쉬 보상
+2187¦最後の君主の報酬¦Belohnung des letzten Fürsten¦Récompense du Seigneur final¦Recompensa del Señor final¦Recompensa do Senhor final¦最终君主奖励¦최후의 군주 보상
+2188¦確定¦garantiert¦garanti¦garantizado¦garantido¦必定¦확정
+2189¦フィールドの神話ドロップ¦Mythische Feld-Beute¦Butin mythique du terrain¦Botín mítico del campo¦Drops míticos do campo¦野外神话掉落¦필드 신화 드롭
+2190¦(5区域以降)¦(ab Zone 5)¦(Zone 5+)¦(Zona 5+)¦(Zona 5+)¦(5区域以后)¦(5구역부터)
+2191¦🎰 装備ガチャの神話にはユニークが付きません¦🎰 Gacha-Mythen haben nie einen Unique-Effekt¦🎰 Les mythiques du gacha n'ont jamais d'effet unique¦🎰 Los míticos del gacha nunca tienen efecto único¦🎰 Míticos do gacha nunca têm efeito único¦🎰 装备扭蛋的神话不带独特效果¦🎰 장비 뽑기 신화에는 유니크가 붙지 않아요
+2192¦神話装備 · ダンジョン宝箱 / ボスラッシュ / 最後の君主¦Mythische Ausrüstung · Dungeontruhen / Boss Rush / Letzter Fürst¦Équipement mythique · coffres de donjon / Boss Rush / Seigneur final¦Equipo mítico · cofres de mazmorra / Boss Rush / Señor final¦Equipamento mítico · baús de masmorra / Boss Rush / Senhor final¦神话装备 · 地下城宝箱 / 首领连战 / 最终君主¦신화 장비 · 던전 상자 / 보스러쉬 / 최후의 군주
+2193¦発見したユニーク効果 {number1} / {number2}  ·  神話装備に付くことがあります¦Gefundene Unique-Effekte {number1} / {number2}  ·  Mythische Ausrüstung kann einen tragen¦Effets uniques trouvés {number1} / {number2}  ·  l'équipement mythique peut en porter un¦Efectos únicos encontrados {number1} / {number2}  ·  el equipo mítico puede tener uno¦Efeitos únicos encontrados {number1} / {number2}  ·  equipamento mítico pode ter um¦已发现独特效果 {number1} / {number2}  ·  神话装备可能带有¦발견한 유니크 효과 {number1} / {number2}  ·  신화 장비에 붙을 수 있어요
+2194¦▲ 装備中より強い  +{number1}¦▲ Besser als ausgerüstet  +{number1}¦▲ Meilleur que l'équipé  +{number1}¦▲ Mejor que lo equipado  +{number1}¦▲ Melhor que o equipado  +{number1}¦▲ 比当前装备更好  +{number1}¦▲ 끼고 있는 것보다 좋아요  +{number1}
+2195¦バッグに入れました¦In deiner Tasche verstaut¦Rangé dans votre sac¦Guardado en tu bolsa¦Guardado na sua bolsa¦已放入背包¦가방에 넣었어요

@@ -442,6 +442,13 @@
       "overwrite": true
     },
     {
+      "path": "LootCardClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "LootCardClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "PhotoModeClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "PhotoModeClient",

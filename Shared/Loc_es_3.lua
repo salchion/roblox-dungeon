@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} more", "{number1} más" },
+		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
+		{ "{number1}x XP", "{number1}x EXP" },
+		{ "+{number1} XP", "+{number1} EXP" },
+		{ "{number1} key", "{number1} llave" },
+		{ "Lv {number1}", "Nivel {number1}" },
+		{ "A new dungeon theme can now appear ({text1}, Level {number2}+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", "Ahora puede aparecer un nuevo tema de mazmorra ({text1}, nivel {number2}+). Elige una profundidad: más profundo significa mejores probabilidades de botín y jefes más duros. Una marca señala ahora la puerta." },
+		{ "(one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "(uno de {number1}) aparecen en equipo mítico: cofres de mazmorra (ver abajo), botín del campo ({text2}), el cofre semanal del Boss Rush y la recompensa semanal del Señor Final." },
 		{ "🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: {text1}", "🔫 5 tipos de arma — uno se desbloquea en cada hito de mejora (cada 15). Elige con qué arma desbloqueada luchar · Ahora: {text1}" },
 		{ "🎁 First breakthrough gift! Received {text1} Time Skip — press [Use Time Skip] in Growth to finish right away!", "🎁 ¡Regalo por la primera superación! Recibiste {text1} salto de tiempo: pulsa [Usar salto de tiempo] en Crecimiento para terminar al instante." },
 		{ "{text1} has used up today's free entries and doesn't have {number2} key(s). Defeat a field zone lord to get keys", "{text1} ha usado las entradas gratis de hoy y no tiene {number2} llave(s). Derrota a un señor de zona del campo para conseguir llaves" },

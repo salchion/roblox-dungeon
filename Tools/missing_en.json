@@ -2180,5 +2180,19 @@
 "🧩 Equip set",
 "{text1} Set equipped! ({number1} slot(s) changed)",
 "You're already wearing the best pieces of that set.",
-"You don't have any pieces of that set."
+"You don't have any pieces of that set.",
+"📍 Where to get Unique effects",
+"(only on Mythic gear)",
+"Dungeon boss chests",
+"{number1}% → up to {number2}% (deeper = higher)",
+"Boss Rush rewards",
+"Final Lord reward",
+"guaranteed",
+"Field Mythic drops",
+"(Zone 5+)",
+"🎰 Gear gacha Mythics never carry a Unique",
+"Mythic gear · dungeon chests / Boss Rush / Final Lord",
+"Unique effects found {number1} / {number2}  ·  Mythic gear can carry one",
+"▲ Better than equipped  +{number1}",
+"Stored in your bag"
 ]

@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🛡 Your {text1} slot(s) are empty! Get gear from dungeon boss chests or the gacha and equip it", "🛡 {text1} espaço(s) vazio(s)! Consiga equipamento nos baús de chefe da masmorra ou no gacha e equipe-o" },
+		{ "+{text1}% chance per point to fire a second shot right after the first (\"bang-bang\")  (max {number2})", "+{text1}% de chance por ponto de disparar um segundo tiro logo após o primeiro («pá-pá») (máx. {number2})" },
+		{ "🔒 {text1} unlocks at +{number2} ({number3} to go) - upgrade your weapon at the Forge or in the Menu (B)", "🔒 {text1} é desbloqueado em +{number2} (faltam {number3}) - melhore sua arma na Forja ou no menu (B)" },
+		{ "🎒 Bag full: dismantled a weaker item to keep your new {text1} gear (Essence +{number2}, {number3} G)", "🎒 Mochila cheia: um item mais fraco foi desmontado para manter seu novo equipamento {text1} (Essência +{number2}, {number3} G)" },
+		{ "📍 Zone {number1} {text2} · Drops in that zone · Dungeon chests (deeper = better odds)", "📍 Zona {number1} {text2} · Drops nessa zona · Baús de masmorra (mais fundo = melhores chances)" },
 		{ "💰 A Golden Goblin appeared in Zone {number1} · {text2}! Catch it for a jackpot! (75s)", "💰 Um goblin dourado apareceu na zona {number1} · {text2}! Pegue-o para um jackpot! (75 s)" },
 		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "Masmorra · escolha uma profundidade (mais fundo = melhores chances de drop) · tema aleatório · {text1}" },
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "{text1} obtido! Adicionado à bolsa. (I → equipar pela bolsa)  ▲ +{number2}% vs atual" },

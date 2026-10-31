@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ Haustier-Aufstieg gestartet! ({text1}) — Mit Zeit überspringen geht es schneller" },
+		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "Empfohlen ⚡{text1}  ·  Ziele auf die gelbe Kugel für 3-fachen Schaden!" },
+		{ "You have no {text1} gear. Get one from the field or the gacha", "Du hast keine {text1}-Ausrüstung. Hol dir welche im Feld oder aus der Gacha" },
+		{ "{text1} hasn't unlocked depth {number2} yet. (Clear depth {number3} first)", "{text1} hat Tiefe {number2} noch nicht freigeschaltet. (Schließe zuerst Tiefe {number3} ab)" },
+		{ "{text1}'s level is too low. (This dungeon requires Lv.{number2}+)", "Die Stufe von {text1} ist zu niedrig. (Dieser Dungeon erfordert Lv.{number2}+)" },
+		{ "{text1} has appeared! Dodge its attacks and take it down", "{text1} ist erschienen! Weiche seinen Angriffen aus und besiege ihn" },
+		{ "{text1} obtained! Added to your bag. (I → equip from Bag", "{text1} erhalten! Zur Tasche hinzugefügt. (I → aus der Tasche ausrüsten" },
 		{ "Defeat Zone {number1} monsters {number2} / {number3} · Reward {text4} G + Ticket", "Besiege Zone-{number1}-Monster {number2} / {number3} · Belohnung {text4} G + Ticket" },
 		{ "🎒 {text1}  ▲ Better than your current gear! (I → Bag)", "🎒 {text1}  ▲ Besser als deine aktuelle Ausrüstung! (I → Rucksack)" },
 		{ "{text1}  ▲ +{number2}% better than your current gear! (I → Bag", "{text1}  ▲ +{number2}% besser als deine aktuelle Ausrüstung! (I → Tasche" },

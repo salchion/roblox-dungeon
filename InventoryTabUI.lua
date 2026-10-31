@@ -536,6 +536,10 @@ local function buildInventoryTab(state)
 		rarityOutline(tile, item.Rarity, (selected and selected.Id == item.Id) and 5 or nil)
 		makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = SLOT_ICONS[item.Slot], TextSize = 22 }, tile)
 		makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 36), Text = string.format("+%d", item.Level), TextSize = 10, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, tile)
+		local affixCount = #(item.Affixes or {})
+		if affixCount > 0 or item.Unique then -- 옵션 개수 점: 높은 등급일수록 꽉 찬다 (✦ = 유니크)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 10), Position = UDim2.new(0, 0, 0, item.Set and 42 or 52), Text = string.rep("◆", affixCount) .. (item.Unique and "✦" or ""), TextSize = 8, TextColor3 = item.Unique and Color3.fromRGB(255, 200, 110) or Color3.fromRGB(140, 210, 255), Font = Enum.Font.GothamBlack }, tile)
+		end
 		local equippedItem = equipped[item.Slot]
 		local compare = ""
 		if equippedItem then

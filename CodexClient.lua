@@ -154,6 +154,19 @@ local function rebuild()
 		summary.Text = string.format("Weapons reached %d / %d  ·  Enhance your weapon to meet the next one", reached, #Config.Weapon.Tiers)
 	elseif tab == "Unique" then
 		local found = 0
+		do -- 어디서 얻나: 유니크는 신화 장비에만 붙고, 주로 던전 쪽 보상에서 나온 신화에 붙는다
+			local U = Config.Uniques
+			local r = row(118, Color3.fromRGB(58, 44, 30))
+			create("UIStroke", { Color = Color3.fromRGB(255, 184, 77), Thickness = 1.5, Transparency = 0.3 }, r)
+			makeLabel({ Size = UDim2.new(1, -20, 1, -10), Position = UDim2.new(0, 10, 0, 5), RichText = true, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+				Text = table.concat({
+					"<font size='13' color='#ffb84d'><b>📍 Where to get Unique effects</b></font>  <font color='#c8cce0'>(only on Mythic gear)</font>",
+					string.format("🏰 <b>Dungeon boss chests</b>  <font color='#ffd966'>%d%% → up to %d%% (deeper = higher)</font>", math.floor(U.Chance * 100 + 0.5), math.floor(U.MaxChance * 100 + 0.5)),
+					"👹 <b>Boss Rush rewards</b> · 👑 <b>Final Lord reward</b>  <font color='#78ff8c'>guaranteed</font>",
+					string.format("🌲 <b>Field Mythic drops</b> <font color='#c8cce0'>(Zone 5+)</font>  <font color='#ffd966'>%d%%</font>", math.floor((U.FieldChance or 0.08) * 100 + 0.5)),
+					"<font color='#8a90aa'>🎰 Gear gacha Mythics never carry a Unique</font>",
+				}, "\n") }, r)
+		end
 		for _, key in ipairs(Config.Uniques.Order) do
 			local info = Config.Uniques[key]
 			local got = data.Items["U_" .. key] or 0
@@ -161,10 +174,10 @@ local function rebuild()
 			local r = row(54, Color3.fromRGB(46, 38, 64))
 			makeLabel({ Size = UDim2.new(0, 40, 1, 0), Position = UDim2.new(0, 4, 0, 0), Text = got > 0 and "✨" or "❔", TextSize = 20 }, r)
 			makeLabel({ Size = UDim2.new(1, -150, 0, 22), Position = UDim2.new(0, 48, 0, 6), Text = got > 0 and info.Name or "???", TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 140), TextXAlignment = Enum.TextXAlignment.Left }, r)
-			makeLabel({ Size = UDim2.new(1, -150, 0, 20), Position = UDim2.new(0, 48, 0, 28), Text = got > 0 and info.Desc or "A special effect that can come with Mythic gear", TextSize = 10, TextColor3 = Color3.fromRGB(190, 196, 225), TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, r)
+			makeLabel({ Size = UDim2.new(1, -150, 0, 20), Position = UDim2.new(0, 48, 0, 28), Text = got > 0 and info.Desc or "Mythic gear · dungeon chests / Boss Rush / Final Lord", TextSize = 10, TextColor3 = Color3.fromRGB(190, 196, 225), TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, r)
 			makeLabel({ Size = UDim2.new(0, 90, 1, 0), Position = UDim2.new(1, -96, 0, 0), Text = got > 0 and ("Got " .. got) or "Not obtained", TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = got > 0 and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(150, 150, 170), TextXAlignment = Enum.TextXAlignment.Right }, r)
 		end
-		summary.Text = string.format("Unique effects found %d / %d  ·  Mythic gear can carry one (about %d%% chance)", found, #Config.Uniques.Order, math.floor(Config.Uniques.Chance * 100 + 0.5))
+		summary.Text = string.format("Unique effects found %d / %d  ·  Mythic gear can carry one", found, #Config.Uniques.Order)
 	else
 		-- 장비 도감: 부위마다 5개 등급 이름. 얻어 본 등급만 공개된다
 		local total, found = 0, 0
