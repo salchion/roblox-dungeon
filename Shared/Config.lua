@@ -1807,18 +1807,18 @@ Config.Danmaku = {
 Config.PhonePcStyle = true -- 폰 / 태블릿(터치 전용 기기)도 PC 와 같은 UI 배치를 화면에 맞게 줄여서 쓴다. false 로 바꾸면 예전의 "작은 화면용" 접힌 배치로 돌아간다 (MobileLayoutClient 등이 읽는다)
 -- 피버 타임: 필드 군주를 쓰러뜨리면 가끔 황금 균열(포탈)이 열린다. 들어가면 60초 동안 약한 몬스터가 쏟아지는 보너스 투기장 (보상 x5, 처치 콤보가 이어질수록 최대 x2 더)
 Config.Fever = {
-	PortalChance = 1,     -- 군주 처치 시 포탈이 열릴 확률 (쿨타임 / 하루 횟수 제한이 있으니 조건이 되면 항상 열린다)
-	PortalSeconds = 15,   -- 포탈이 열려 있는 시간 (막타를 친 사람만 들어갈 수 있다)
+	PortalChance = 1,     -- 필드 보스(거신) 처치 시 포탈이 열릴 확률 (쿨타임 / 하루 횟수 제한이 있으니 조건이 되면 항상 열린다)
+	PortalSeconds = 20,   -- 포탈이 열려 있는 시간 (거신 보상을 받은 사람마다 자기 포탈이 열린다)
 	Cooldown = 600,       -- 한 번 들어가면 이 시간(초) 동안 포탈이 다시 열리지 않는다
 	DailyMax = 5,         -- 하루(접속 중) 최대 횟수
 	Duration = 60,        -- 피버 시간(초)
 	GoldMult = 8,         -- 처치 골드 배율 (같은 깊이의 던전 몬스터 대비)
 	XpMult = 8,
-	MonsterHealth = 0.35, -- 몬스터 체력 배율 (약하지만 많다)
+	MonsterHealth = 0.25, -- 몬스터 체력 배율 (약하지만 많다: 쓸어 담는 느낌)
 	MonsterDamage = 0.5,
-	MaxMonsters = 28,     -- 동시에 있는 몬스터 상한
-	SpawnEvery = 0.8,     -- 이 간격마다 Burst 마리씩
-	Burst = 4,
+	MaxMonsters = 45,     -- 동시에 있는 몬스터 상한 (28 -> 45: 띄엄띄엄 있지 않고 쏟아지게)
+	SpawnEvery = 0.5,     -- 이 간격마다 Burst 마리씩
+	Burst = 7,
 	EventEvery = 12,      -- 이 간격마다 이벤트 (골드 러시 / 보물 비)
 	ComboMax = 2,         -- 처치 콤보가 쌓일수록 골드 배율이 최대 x2 (콤보 50에서 최대)
 	-- 끝날 때 보너스: 황금 상자 장비 (1개 + 처치 GearPerKills 마다 1개, 최대 GearMax) / 뽑기 티켓 (1장 + 처치 TicketPerKills 마다 1장, 최대 TicketMax)

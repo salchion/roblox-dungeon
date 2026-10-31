@@ -1338,7 +1338,7 @@ local function maybeFeverPortal(player, bossAt, zone)
 	text.TextColor3, text.TextStrokeTransparency = gold, 0.2
 	text.Parent = sign
 	model.Parent = worldFolder
-	notify(player, string.format("🌟 A golden FEVER portal opened where the Lord fell! Step in within %d seconds!", Fv.PortalSeconds))
+	notify(player, string.format("🌟 A golden FEVER portal opened where the Colossus fell! Step in within %d seconds!", Fv.PortalSeconds))
 	task.spawn(function()
 		local expires = os.clock() + Fv.PortalSeconds
 		while model.Parent and os.clock() < expires and player.Parent do
@@ -1364,9 +1364,17 @@ local function maybeFeverPortal(player, bossAt, zone)
 end
 
 local function killMonster(player, part, data)
-	if data.Kind == "Boss" and Config.Fever then
+	if data.Kind == "Event" and Config.Fever then
+		-- 피버 포탈: 필드 보스(거신)를 쓰러뜨리면 보상을 받는 사람(막타 + 충분히 싸운 사람)마다 자기 포탈이 열린다
 		local bossAt, bossZone = part.Position, data.Zone
-		task.defer(maybeFeverPortal, player, bossAt, bossZone)
+		local index = 0
+		for member, damage in pairs(data.Contrib or {}) do
+			if typeof(member) == "Instance" and member.Parent and (member == player or damage >= data.MaxHealth * Config.Events.ContribMin) then
+				index += 1
+				task.defer(maybeFeverPortal, member, bossAt + Vector3.new(0, 0, (index - 1) * 18 * (index % 2 == 0 and 1 or -1)), bossZone)
+			end
+		end
+		if index == 0 then task.defer(maybeFeverPortal, player, bossAt, bossZone) end
 	end
 	recordKill(player, data)
 	if augRun then Dungeon.AugOnKill(augRun, player, part.Position) end -- 처치 폭발 / 화염 지대 (monsters 에서 지우기 전: 자기 자신은 다시 맞지 않는다)

@@ -56,3 +56,37 @@
 2097¦レベル維持¦Stufe bleibt¦Niveau conservé¦Nivel conservado¦Nível mantido¦等级保持¦단계 유지
 2098¦🎰 もう一度引く  🎫{number1}¦🎰 Nochmal ziehen  🎫{number1}¦🎰 Retirer  🎫{number1}¦🎰 Tirar otra vez  🎫{number1}¦🎰 Girar de novo  🎫{number1}¦🎰 再抽一次  🎫{number1}¦🎰 다시 뽑기  🎫{number1}
 2099¦チケットなし¦Keine Tickets¦Pas de tickets¦Sin boletos¦Sem tickets¦没有抽奖券¦티켓 없음
+2100¦💀 倒れた！強くなって再挑戦しよう¦💀 Besiegt! Werde stärker und versuch es nochmal¦💀 Vous êtes tombé ! Devenez plus fort et réessayez¦💀 ¡Caíste! Hazte más fuerte e inténtalo de nuevo¦💀 Você caiu! Fique mais forte e tente de novo¦💀 你倒下了！变强后再来¦💀 쓰러졌어요! 더 강해져서 다시 도전해요
+2101¦武器を強化¦Waffe verbessern¦Améliorez votre arme¦Mejora tu arma¦Aprimore sua arma¦强化武器¦무기 강화하기
+2102¦一番大きく強くなる¦Der größte Kraftschub¦Le plus gros gain de puissance¦El mayor aumento de poder¦O maior aumento de poder¦提升最大¦가장 크게 강해져요
+2103¦今すぐ強化できる ({number1} G)¦Jetzt bezahlbar ({number1} G)¦Abordable maintenant ({number1} G)¦Ya puedes pagarlo ({number1} G)¦Você já pode pagar ({number1} G)¦现在就能强化 ({number1} G)¦지금 바로 가능 ({number1} G)
+2104¦装備を強化¦Ausrüstung verbessern¦Améliorez votre équipement¦Mejora tu equipo¦Aprimore seu equipamento¦强化装备¦장비 강화하기
+2105¦HPと攻撃力アップ¦Mehr LP und Schaden¦Plus de PV et de dégâts¦Más vida y daño¦Mais vida e dano¦更多生命和伤害¦체력과 공격력 증가
+2106¦{number1} Gから¦Ab {number1} G¦À partir de {number1} G¦Desde {number1} G¦A partir de {number1} G¦{number1} G 起¦{number1} G부터
+2107¦ステータスポイントを使う¦Statuspunkte verteilen¦Dépensez vos points de stats¦Gasta puntos de estadística¦Gaste pontos de atributo¦分配属性点¦스탯 포인트 쓰기
+2108¦Tキーを押す¦Drücke T¦Appuyez sur T¦Pulsa T¦Aperte T¦按T¦T 키
+2109¦{number1} 未使用¦{number1} übrig¦{number1} non dépensés¦{number1} sin usar¦{number1} não usados¦{number1} 未分配¦{number1}개 남음
+2110¦装備ガチャ¦Ausrüstung ziehen¦Tirez de l'équipement¦Tira por equipo¦Gire por equipamento¦抽装备¦장비 뽑기
+2111¦町のガチャマシン¦Gacha-Automat in der Stadt¦Machine à gacha en ville¦Máquina gacha en el pueblo¦Máquina de gacha na cidade¦城镇里的扭蛋机¦마을의 뽑기 기계
+2112¦チケット {number1}¦Tickets {number1}¦Tickets {number1}¦Boletos {number1}¦Tickets {number1}¦抽奖券 {number1}¦티켓 {number1}장
+2113¦訓練を始める¦Training starten¦Commencez l'entraînement¦Empieza a entrenar¦Comece a treinar¦开始训练¦훈련 시작하기
+2114¦離れている間も成長¦Wächst auch, wenn du weg bist¦Progresse même en votre absence¦Crece aunque no estés¦Cresce mesmo quando você está fora¦离开时也会成长¦자리를 비워도 성장해요
+2115¦ダンジョンに挑戦¦Dungeon spielen¦Faites un donjon¦Haz una mazmorra¦Faça uma masmorra¦挑战地下城¦던전 도전하기
+2116¦ボス宝箱から装備とチケット¦Ausrüstung und Tickets aus der Bosstruhe¦Équipement et tickets du coffre du boss¦Equipo y boletos del cofre del jefe¦Equipamento e tickets do baú do chefe¦首领宝箱掉落装备和抽奖券¦보스 상자에서 장비와 티켓
+2117¦無料入場 {number1}¦Freie Eintritte {number1}¦Entrées gratuites {number1}¦Entradas gratis {number1}¦Entradas grátis {number1}¦免费进入 {number1}¦무료 입장 {number1}회
+2118¦ゴールド {number1} G¦Gold {number1} G¦Or {number1} G¦Oro {number1} G¦Ouro {number1} G¦金币 {number1} G¦골드 {number1} G
+2119¦🎁 すべて受け取る ({number1})¦🎁 Alle abholen ({number1})¦🎁 Tout récupérer ({number1})¦🎁 Reclamar todo ({number1})¦🎁 Resgatar tudo ({number1})¦🎁 全部领取 ({number1})¦🎁 모두 받기 ({number1})
+2120¦🎁 報酬を{number1}個受け取った！(新しい称号 {number2}個)¦🎁 {number1} Belohnungen abgeholt! ({number2} neue Titel)¦🎁 {number1} récompenses récupérées ! ({number2} nouveaux titres)¦🎁 ¡{number1} recompensas reclamadas! ({number2} títulos nuevos)¦🎁 {number1} recompensas resgatadas! ({number2} novos títulos)¦🎁 领取了{number1}个奖励！(新称号{number2}个)¦🎁 보상 {number1}개를 받았어요! (새 칭호 {number2}개)
+2121¦🎁 報酬を{number1}個受け取った！¦🎁 {number1} Belohnungen abgeholt!¦🎁 {number1} récompenses récupérées !¦🎁 ¡{number1} recompensas reclamadas!¦🎁 {number1} recompensas resgatadas!¦🎁 领取了{number1}个奖励！¦🎁 보상 {number1}개를 받았어요!
+2122¦🌟 巨神が倒れた場所に黄金のフィーバーポータルが開いた！{number1}秒以内に入ろう！¦🌟 Wo der Koloss fiel, öffnete sich ein goldenes FIEBER-Portal! Tritt in {number1} Sekunden ein!¦🌟 Un portail FIÈVRE doré s'est ouvert là où le Colosse est tombé ! Entrez dans les {number1} secondes !¦🌟 ¡Se abrió un portal dorado de FIEBRE donde cayó el Coloso! ¡Entra en {number1} segundos!¦🌟 Um portal dourado de FEBRE abriu onde o Colosso caiu! Entre em {number1} segundos!¦🌟 巨像倒下的地方打开了黄金狂热传送门！{number1}秒内进入！¦🌟 거신이 쓰러진 자리에 황금 피버 포탈이 열렸어요! {number1}초 안에 들어가세요!
+2123¦[{text1}] {text2} を装備！¦[{text1}] {text2} ausgerüstet!¦[{text1}] {text2} équipé !¦¡[{text1}] {text2} equipado!¦[{text1}] {text2} equipado!¦[{text1}] {text2} 已装备！¦[{text1}] {text2} 장착!
+2124¦▲ 今より +{number1}%¦▲ +{number1}% ggü. aktuell¦▲ +{number1}% vs actuel¦▲ +{number1}% vs actual¦▲ +{number1}% vs atual¦▲ 比当前 +{number1}%¦▲ 지금보다 +{number1}%
+2125¦▲ 今の装備より +{number1}% 強い！(I → バッグ)¦▲ +{number1}% besser als deine Ausrüstung! (I → Tasche)¦▲ +{number1}% mieux que votre équipement ! (I → Sac)¦▲ ¡+{number1}% mejor que tu equipo! (I → Bolsa)¦▲ +{number1}% melhor que seu equipamento! (I → Bolsa)¦▲ 比当前装备强 +{number1}%！(I → 背包)¦▲ 지금 장비보다 +{number1}% 좋아요! (I → 가방)
+2126¦▲ {number1} 未使用 (T)  ·  {text2} / {text3} XP¦▲ {number1} übrig (T)  ·  {text2} / {text3} XP¦▲ {number1} non dépensés (T)  ·  {text2} / {text3} XP¦▲ {number1} sin usar (T)  ·  {text2} / {text3} XP¦▲ {number1} não usados (T)  ·  {text2} / {text3} XP¦▲ {number1} 未分配 (T)  ·  {text2} / {text3} XP¦▲ 포인트 {number1} 남음 (T)  ·  {text2} / {text3} XP
+2127¦{text1}  ·  次の武器: {text2} (+{number3})¦{text1}  ·  nächste Waffe: {text2} bei +{number3}¦{text1}  ·  arme suivante : {text2} à +{number3}¦{text1}  ·  siguiente arma: {text2} en +{number3}¦{text1}  ·  próxima arma: {text2} em +{number3}¦{text1}  ·  下一把武器：{text2} (+{number3})¦{text1}  ·  다음 무기: {text2} (+{number3})
+2128¦{text1}  ·  1-5キーで武器切替¦{text1}  ·  Tasten 1-5 wechseln Waffen¦{text1}  ·  touches 1-5 pour changer d'arme¦{text1}  ·  teclas 1-5 cambian arma¦{text1}  ·  teclas 1-5 trocam a arma¦{text1}  ·  1-5键切换武器¦{text1}  ·  1-5 키로 무기 바꾸기
+2129¦👋 {text1} が参加¦👋 {text1} ist beigetreten¦👋 {text1} a rejoint¦👋 {text1} se unió¦👋 {text1} entrou¦👋 {text1} 加入了¦👋 {text1} 님이 들어왔어요
+2130¦実績: {text1}¦Erfolg: {text1}¦Succès : {text1}¦Logro: {text1}¦Conquista: {text1}¦成就：{text1}¦업적: {text1}
+2131¦+ {text1} パーツ {text2}¦+ {text1}-Teil {text2}¦+ pièce {text1} {text2}¦+ pieza {text1} {text2}¦+ peça {text1} {text2}¦+ {text1} 部件 {text2}¦+ {text1} 조각 {text2}
+2132¦曲がりくねった峡谷¦Gewundener Canyonpfad¦Sentier du canyon sinueux¦Sendero del cañón sinuoso¦Trilha do cânion sinuoso¦蜿蜒峡谷小径¦구불구불한 협곡 길
+2133¦🚪 {text1} が退出¦🚪 {text1} hat verlassen¦🚪 {text1} est parti¦🚪 {text1} se fue¦🚪 {text1} saiu¦🚪 {text1} 离开了¦🚪 {text1} 님이 나갔어요

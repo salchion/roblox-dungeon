@@ -226,7 +226,7 @@ Players.PlayerAdded:Connect(function(other)
 end)
 Players.PlayerRemoving:Connect(function(other)
 	task.defer(refresh)
-	if other ~= player and #Players:GetPlayers() <= TOAST_MAX_PLAYERS then announce(other.DisplayName .. " left") end
+	if other ~= player and #Players:GetPlayers() <= TOAST_MAX_PLAYERS then announce("🚪 " .. other.DisplayName .. " left") end
 end)
 refresh()
 task.spawn(function()

@@ -538,26 +538,91 @@ end
 
 -- 피버 타임: 황금 동전 무더기 + 금빛 불씨 (공통 층은 황금색으로)
 local function decorateFever(run, ctx)
+	-- 피버 투기장: "돈이 쏟아지는 보물 창고" 느낌. 바닥 / 벽을 금빛으로 물들이고, 금화 더미 / 금괴 / 보물 상자 / 거대 금화를 깐다
 	local rng = ctx.Rng
-	local gold, goldDark = Color3.fromRGB(255, 205, 70), Color3.fromRGB(200, 150, 50)
-	for _ = 1, 14 do -- 가장자리의 금화 무더기
-		local base = ctx.Polar(ctx.RimAngle(true), RADIUS - rng:NextNumber(3, 8), 0.6)
-		for k = 1, 4 do
-			local s = rng:NextNumber(1.2, 2.2)
-			ctx.Part("CoinPile", Vector3.new(0.3, s * 1.6, s * 1.6), CFrame.new(base + Vector3.new(rng:NextNumber(-1.5, 1.5), k * 0.3, rng:NextNumber(-1.5, 1.5))) * CFrame.Angles(rng:NextNumber(-0.3, 0.3), rng:NextNumber(0, 6), math.rad(90) + rng:NextNumber(-0.3, 0.3)), k % 2 == 0 and gold or goldDark, Mat.Metal, { Shape = Shape.Cylinder, Reflectance = 0.2 })
+	local center = ctx.Center
+	local gold, goldDark, goldLight = Color3.fromRGB(255, 205, 70), Color3.fromRGB(200, 150, 50), Color3.fromRGB(255, 232, 140)
+	local wood, woodDark = Color3.fromRGB(120, 72, 38), Color3.fromRGB(80, 46, 24)
+	local y0 = center.Y
+
+	-- 1) 기존 지형(바닥 / 벽 / 기둥)을 금빛으로 물들인다: 일반 던전과 한눈에 달라 보이게
+	for _, obj in ipairs(run.Folder:GetDescendants()) do
+		if obj:IsA("BasePart") and not obj:IsDescendantOf(ctx.Folder) and obj.Transparency < 0.9 then
+			obj.Color = obj.Color:Lerp(gold, obj.Material == Mat.Neon and 0.3 or 0.5)
+			if obj.Size.Y < 3 and obj.Size.X > 20 then obj.Material = Mat.Marble end -- (넓고 얇은 판 = 바닥: 반들반들한 대리석)
 		end
 	end
-	local sky = ctx.Part("GoldSparkle", Vector3.new(160, 1, 160), CFrame.new(ctx.Center + Vector3.new(0, 2, 0)), gold, Mat.SmoothPlastic, { Transparency = 1 })
+	-- 바닥 가운데 금빛 고리 무늬
+	ctx.Disc("FeverRing", Vector3.new(center.X, y0 + 0.35, center.Z), 70, 0.12, gold, Mat.Neon, { Transparency = 0.75 })
+	ctx.Disc("FeverRingInner", Vector3.new(center.X, y0 + 0.37, center.Z), 40, 0.12, goldLight, Mat.Neon, { Transparency = 0.82 })
+
+	local function coinPile(base, coins, spread)
+		for k = 1, coins do
+			local s = rng:NextNumber(1.2, 2.4)
+			ctx.Part("CoinPile", Vector3.new(0.35, s * 1.6, s * 1.6),
+				CFrame.new(base + Vector3.new(rng:NextNumber(-spread, spread), 0.2 + k * 0.32, rng:NextNumber(-spread, spread)))
+					* CFrame.Angles(rng:NextNumber(-0.35, 0.35), rng:NextNumber(0, 6), math.rad(90) + rng:NextNumber(-0.35, 0.35)),
+				k % 3 == 0 and goldLight or (k % 2 == 0 and gold or goldDark), Mat.Metal, { Shape = Shape.Cylinder, Reflectance = 0.25 })
+		end
+	end
+	-- 2) 가장자리: 큰 금화 산
+	for _ = 1, 22 do
+		coinPile(ctx.Polar(ctx.RimAngle(true), RADIUS - rng:NextNumber(4, 12), 0), rng:NextInteger(6, 10), 2.2)
+	end
+	-- 3) 바닥 곳곳에 흩어진 금화 (누워 있는 동전)
+	for _ = 1, 60 do
+		local angle, dist = rng:NextNumber(0, math.pi * 2), rng:NextNumber(18, RADIUS - 14)
+		local base = ctx.Polar(angle, dist, 0.2)
+		ctx.Part("Coin", Vector3.new(0.25, 1.6, 1.6), CFrame.new(base) * CFrame.Angles(0, rng:NextNumber(0, 6), math.rad(90)), rng:NextNumber() < 0.5 and gold or goldLight, Mat.Metal, { Shape = Shape.Cylinder, Reflectance = 0.3 })
+	end
+	-- 4) 금괴 더미 (피라미드처럼 쌓기)
+	for _ = 1, 8 do
+		local angle = ctx.RimAngle(true)
+		local base = ctx.Polar(angle, RADIUS - rng:NextNumber(14, 22), 0)
+		local facing = CFrame.lookAt(base, Vector3.new(center.X, base.Y, center.Z))
+		for row = 0, 2 do
+			for col = 0, 2 - row do
+				local offset = Vector3.new((col - (2 - row) / 2) * 2.3, 0.55 + row * 1.0, 0)
+				ctx.Part("GoldBar", Vector3.new(2.1, 0.9, 1.1), facing * CFrame.new(offset), row == 2 and goldLight or gold, Mat.Metal, { Reflectance = 0.3 })
+			end
+		end
+	end
+	-- 5) 열린 보물 상자 (안에서 금빛이 새어 나온다)
+	for n = 1, 6 do
+		local angle = ctx.RimAngle(true)
+		local base = ctx.Polar(angle, RADIUS - rng:NextNumber(10, 18), 0)
+		local facing = CFrame.lookAt(base, Vector3.new(center.X, base.Y, center.Z))
+		ctx.Part("ChestBody", Vector3.new(6, 3.4, 4), facing * CFrame.new(0, 1.7, 0), wood, Mat.Wood)
+		ctx.Part("ChestBand", Vector3.new(6.2, 0.5, 4.2), facing * CFrame.new(0, 1.2, 0), goldDark, Mat.Metal)
+		ctx.Part("ChestBand", Vector3.new(0.6, 3.5, 4.2), facing * CFrame.new(-2.2, 1.7, 0), goldDark, Mat.Metal)
+		ctx.Part("ChestBand", Vector3.new(0.6, 3.5, 4.2), facing * CFrame.new(2.2, 1.7, 0), goldDark, Mat.Metal)
+		ctx.Part("ChestLid", Vector3.new(6, 0.8, 4), facing * CFrame.new(0, 4.6, 1.8) * CFrame.Angles(math.rad(-70), 0, 0), woodDark, Mat.Wood)
+		local glow = ctx.Part("ChestGold", Vector3.new(5.4, 0.9, 3.4), facing * CFrame.new(0, 3.5, 0), goldLight, Mat.Neon, { Transparency = 0.1 })
+		if n <= 4 then ctx.Light(glow, gold, 18, 0.8) end
+		coinPile(facing * Vector3.new(0, 0, -4), 5, 1.8) -- 상자 앞으로 흘러넘친 금화
+	end
+	-- 6) 벽 쪽에 세운 거대 금화 (멀리서도 보이는 상징)
+	for i = 1, 4 do
+		local angle = (i - 0.5) / 4 * math.pi * 2 + 0.3
+		local base = ctx.Polar(angle, RADIUS - 6, 0)
+		local facing = CFrame.lookAt(base, Vector3.new(center.X, base.Y, center.Z))
+		local coin = ctx.Part("GiantCoin", Vector3.new(1.6, 16, 16), facing * CFrame.new(0, 9, 0) * CFrame.Angles(0, math.rad(90), 0), gold, Mat.Metal, { Shape = Shape.Cylinder, Reflectance = 0.35 })
+		ctx.Part("GiantCoinFace", Vector3.new(1.7, 11, 11), facing * CFrame.new(0, 9, 0) * CFrame.Angles(0, math.rad(90), 0), goldLight, Mat.Neon, { Shape = Shape.Cylinder, Transparency = 0.55 })
+		ctx.Part("GiantCoinBase", Vector3.new(6, 1.4, 4), facing * CFrame.new(0, 0.7, 0), goldDark, Mat.Metal)
+		if i <= 2 then ctx.Light(coin, gold, 26, 0.7) end
+	end
+	-- 7) 공중에서 반짝이는 금가루
+	local sky = ctx.Part("GoldSparkle", Vector3.new(200, 1, 200), CFrame.new(center + Vector3.new(0, 2, 0)), gold, Mat.SmoothPlastic, { Transparency = 1 })
 	local sparkle = ctx.Emitter(sky)
 	if sparkle then
-		sparkle.Rate = 14
+		sparkle.Rate = 30
 		sparkle.Lifetime = NumberRange.new(3, 5)
-		sparkle.Speed = NumberRange.new(2, 4)
+		sparkle.Speed = NumberRange.new(2, 5)
 		sparkle.EmissionDirection = Enum.NormalId.Top
-		sparkle.Size = NumberSequence.new(0.3)
-		sparkle.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.2, 0.2), NumberSequenceKeypoint.new(1, 1) })
-		sparkle.Color = ColorSequence.new(gold)
-		sparkle.LightEmission = 0.8
+		sparkle.Size = NumberSequence.new(0.35)
+		sparkle.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.2, 0.15), NumberSequenceKeypoint.new(1, 1) })
+		sparkle.Color = ColorSequence.new(gold, goldLight)
+		sparkle.LightEmission = 0.9
 		sparkle.Shape = Enum.ParticleEmitterShape.Box
 	end
 end

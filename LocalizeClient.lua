@@ -60,7 +60,7 @@ end
 
 -- 자리표시자({number1} = 숫자, {text1} = 아무 글자) 가 있는 항목은 패턴으로 바꿔 둔다: "Enemy HP +{number1}%" -> "^Enemy HP %+(%-?%d[%d,%.]*)%%$"
 local NUMBER_CAPTURE = "(%-?%d[%d,%.]*)"
-local TEXT_CAPTURE = "(.-)"
+local TEXT_CAPTURE = "([^\n]-)" -- (줄바꿈은 넘지 않는다: 짧은 틀이 여러 줄짜리 문장을 통째로 삼키지 않게)
 local compiled = {}
 if dict and dict.templates then
 	for _, pair in ipairs(dict.templates) do
@@ -78,8 +78,11 @@ if dict and dict.templates then
 			table.insert(names, number)
 			position = b + 1
 		end
-		table.insert(compiled, { Pattern = "^" .. table.concat(pattern) .. "$", Names = names, To = translation })
+		local literal = string.gsub(source, "{%a+%d+}", "")
+		table.insert(compiled, { Pattern = "^" .. table.concat(pattern) .. "$", Names = names, To = translation, Literal = #literal })
 	end
+	-- 글자가 많은(더 구체적인) 틀부터 맞춰 본다: "🔫 Next {text1}" 같은 짧은 틀이 긴 문장의 전용 틀보다 먼저 걸리지 않게
+	table.sort(compiled, function(a, b) return a.Literal > b.Literal end)
 end
 
 local lookupCore
@@ -103,7 +106,20 @@ function lookupCore(piece)
 		local captures = { string.match(piece, entry.Pattern) }
 		if #captures > 0 then
 			local byName = {}
-			for k, name in ipairs(entry.Names) do byName[name] = captures[k] end
+			for k, name in ipairs(entry.Names) do
+				local captured = captures[k]
+				-- 틀 안에 끼워 넣은 이름(무기 / 던전 / 장소 ...)도 번역표에 있으면 바꾼다: "📍 Town" -> "📍 마을"
+				if captured and string.find(captured, "%a%a") then
+					local hit = dict.exact[captured]
+					if not hit then
+						local head, core, tail = string.match(captured, "^([^%w]*)(.-)([^%w]*)$")
+						local inner = core and core ~= "" and dict.exact[core]
+						if inner then hit = head .. inner .. tail end
+					end
+					captured = hit or captured
+				end
+				byName[name] = captured
+			end
 			return (string.gsub(entry.To, "{%a+(%d+)}", function(name) return byName[name] end))
 		end
 	end
