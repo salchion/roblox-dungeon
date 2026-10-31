@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "📢 {text1} defeated the Final Lord!", "📢 {text1} derrotou o Senhor Final!" },
+		{ "👑 Lord of {text1} (Zone {number2}) · Rec. ⚡{number3}", "👑 Senhor de {text1} (zona {number2}) · Rec. ⚡{number3}" },
+		{ "{number1} pulls done! Best rarity: {text2}", "{number1} sorteios feitos! Melhor raridade: {text2}" },
 		{ "Active {number1} / {number2} slots   (💰 {text3} G)", "Ativos {number1} / {number2} espaços   (💰 {text3} G)" },
 		{ "You are already holding {text1}.", "Você já está segurando {text1}." },
 		{ "⛺ Moved to Zone {number1} · {text2} Camp!", "⛺ Movido para o acampamento da zona {number1} · {text2}!" },

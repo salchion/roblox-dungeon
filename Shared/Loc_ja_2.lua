@@ -524,6 +524,10 @@ return {
 		["Wave Rider"] = "ウェーブライダー",
 		["Wild Warden"] = "荒野の守り手",
 		["4. Growth (training) is open from the start. Queue up training, and collect gear sets/uniques to boost your Power"] = "4. 成長(訓練)は最初から使えます。訓練を予約し、装備セット/ユニークを集めて戦闘力を上げましょう",
+		["UPGRADE SUCCESS"] = "強化成功",
+		["UPGRADE FAILED"] = "強化失敗",
+		["Level kept"] = "レベル維持",
+		["No tickets"] = "チケットなし",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -916,7 +920,5 @@ return {
 		{ "Training time -{number1}%", "トレーニング時間 -{number1}%" },
 		{ "🔑{number6} (Free today {number7}/{number8})", "🔑{number6}（本日無料 {number7}/{number8}）" },
 		{ "{number2} / {number3}   Reward: {number4} G", "{number2} / {number3}　報酬：{number4}G" },
-		{ "{number2} / {number3}   Reward: 🎫 {number4}", "{number2} / {number3}　報酬：🎫 {number4}" },
-		{ "💥Explosive Shot {number1}", "💥爆発ショット {number1}" },
 	},
 }

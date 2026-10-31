@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👑 Zone {number1} · The Lord of {text2} has reappeared!", "👑 Zona {number1} · ¡El señor de {text2} ha reaparecido!" },
+		{ "Zone {number1} monsters {number2} / {number3} defeated · Lord {text4}", "Monstruos de la zona {number1} {number2} / {number3} derrotados · Señor {text4}" },
 		{ "Skill cooldown -{text1}% per point  (max {number2})", "Enfriamiento de habilidades -{text1}% por punto (máx. {number2})" },
 		{ "Dungeon layout: {text1} (changes every run", "Diseño de mazmorra: {text1} (cambia en cada partida" },
 		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}... ¡desmantelado automáticamente! Esencia +{number2}, {number3} G" },

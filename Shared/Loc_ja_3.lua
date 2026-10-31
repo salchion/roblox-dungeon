@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number2} / {number3}   Reward: 🎫 {number4}", "{number2} / {number3}　報酬：🎫 {number4}" },
+		{ "💥Explosive Shot {number1}", "💥爆発ショット {number1}" },
 		{ "Defeat {number1} boss(es)", "{number1} 個のボスを倒す" },
 		{ "{number1} / {number2}   Reward: 🎫 {number3}", "{number1} / {number2}　報酬：🎫 {number3}" },
 		{ "⬆ Level Up  💰 {number1} G", "⬆ レベルアップ 💰 {number1} G" },
@@ -32,6 +34,7 @@ return {
 		{ "⚡ NEAR MISS!  x{number1}", "⚡ NEAR MISS！  x{number1}" },
 		{ "Lv {number1}  ✦ Paragon {number2}", "Lv {number1}  ✦ パラゴン {number2}" },
 		{ "FEVER PORTAL  {number1}s", "フィーバーポータル  {number1}秒" },
+		{ "🎰 Roll again  🎫{number1}", "🎰 もう一度引く  🎫{number1}" },
 		{ "Zone {number1} · Forest", "ゾーン {number1} ・森" },
 		{ "{number1} more upgrades", "{number1} 個のアップグレード" },
 		{ "Zone {number1} · Desert", "ゾーン {number1} ・砂漠" },
@@ -69,6 +72,7 @@ return {
 		{ "NEXT ERA · +{number1}", "次の時代 · +{number1}" },
 		{ "🌟 Paragon ({number1})", "🌟 パラゴン({number1})" },
 		{ "Best combo: {number1}", "最高コンボ：{number1}" },
+		{ "x{number1} · {number2} SUCCESS", "x{number1} · {number2}回成功" },
 		{ "Enemy HP +{number1}%", "敵のHP +{number1}%" },
 		{ "Activate {number1} G", "{number1}Gをアクティベートする" },
 		{ "👥 Party ({number1}/{number2})", "👥 パーティー ({number1}/{number2})" },

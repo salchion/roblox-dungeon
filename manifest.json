@@ -428,6 +428,13 @@
       "overwrite": true
     },
     {
+      "path": "EnhanceResultClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "EnhanceResultClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "FeverResultClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "FeverResultClient",

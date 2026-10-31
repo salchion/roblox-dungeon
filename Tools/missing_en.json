@@ -2092,5 +2092,11 @@
 "Wild Warden",
 "4. Growth (training) is open from the start. Queue up training, and collect gear sets/uniques to boost your Power",
 "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3}",
-"Zone {number1} monsters {number2} / {number3} defeated"
+"Zone {number1} monsters {number2} / {number3} defeated",
+"UPGRADE SUCCESS",
+"UPGRADE FAILED",
+"x{number1} · {number2} SUCCESS",
+"Level kept",
+"🎰 Roll again  🎫{number1}",
+"No tickets"
 ]

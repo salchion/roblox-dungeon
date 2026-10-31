@@ -174,11 +174,11 @@ function M.Init(deps)
 				local best = 1
 				for _, r in ipairs(rolls) do best = math.max(best, r.Rarity) end
 				lightRays(root, Config.Gear.RarityColors[best], best)
-				local grid = create("Frame", { Size = UDim2.new(0, gridW, 0, gridH + 96), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 62 }, root)
+				local grid = create("Frame", { Size = UDim2.new(0, gridW, 0, gridH + 150), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 62 }, root)
 				local fit = create("UIScale", {}, grid) -- (작은 화면: 카드 판 전체를 화면에 맞게 줄인다)
 				local function refit()
 					local size = root.AbsoluteSize
-					fit.Scale = math.min(1, (size.X - 24) / gridW, (size.Y - 24) / (gridH + 96))
+					fit.Scale = math.min(1, (size.X - 24) / gridW, (size.Y - 24) / (gridH + 150))
 				end
 				refit()
 				root:GetPropertyChangedSignal("AbsoluteSize"):Connect(refit)
@@ -227,6 +227,11 @@ function M.Init(deps)
 					end
 					-- 위쪽에 등급색 빛 (아래로 갈수록 흐려진다)
 					local glow = create("Frame", { Size = UDim2.new(1, 0, 0.6, 0), BackgroundColor3 = rc, BorderSizePixel = 0, ZIndex = 64 }, holder)
+					-- 금테 안쪽 선 + 왼쪽 위 등급 글자 (카드 게임 느낌)
+					local inner = create("Frame", { Size = UDim2.new(1, -10, 1, -10), Position = UDim2.new(0, 5, 0, 5), BackgroundTransparency = 1, ZIndex = 66 }, holder)
+					rounded(inner, 9)
+					create("UIStroke", { Color = Color3.fromRGB(230, 190, 110), Thickness = 1.5, Transparency = 0.25 }, inner)
+					makeLabel({ Size = UDim2.new(0, 40, 0, 26), Position = UDim2.new(0, 8, 0, 6), Text = ({ "C", "R", "E", "L", "M" })[r.Rarity], TextSize = 24, Font = Enum.Font.Fantasy, TextColor3 = rc:Lerp(Color3.fromRGB(255, 230, 160), 0.35), TextStrokeTransparency = 0.3, TextXAlignment = Enum.TextXAlignment.Left, AutoLocalize = false, ZIndex = 67 }, holder)
 					create("UIGradient", { Rotation = 90, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, r.Rarity >= 3 and 0.45 or 0.75), NumberSequenceKeypoint.new(1, 1) }) }, glow)
 					makeLabel({ Size = UDim2.new(1, 0, 0, 60), Position = UDim2.new(0, 0, 0, 12), Text = ICONS[r.Slot] or "🎁", TextSize = 40, ZIndex = 65 }, holder)
 					makeLabel({ Size = UDim2.new(1, -8, 0, 34), Position = UDim2.new(0, 4, 0, 72), Text = r.Name or "", TextSize = 12, Font = Enum.Font.GothamBold, TextColor3 = Color3.new(1, 1, 1), ZIndex = 65 }, holder)
@@ -308,18 +313,74 @@ function M.Init(deps)
 				pause(0.3)
 				if not root.Parent then return end
 
+				-- 3) 마지막 배치: 가장 좋은 장비를 가운데 크게, 나머지는 양옆에 작게 (좋은 것일수록 가운데 가까이)
+				local order = table.clone(cards)
+				table.sort(order, function(a, b) return a.Roll.Rarity > b.Roll.Rarity end)
+				local cx, cy = gridW / 2, 48 + gridH / 2 + 10
+				local slots = {}
+				for _, dy in ipairs({ -136, 0, 136 }) do
+					for _, dx in ipairs({ -164, 164, -268, 268 }) do table.insert(slots, { cx + dx, cy + dy }) end
+				end
+				table.sort(slots, function(a, b) -- (가운데에 가까운 칸부터)
+					local da, db = math.abs(a[1] - cx) + math.abs(a[2] - cy) * 0.6, math.abs(b[1] - cx) + math.abs(b[2] - cy) * 0.6
+					return da < db
+				end)
+				for i, card in ipairs(order) do
+					local holder = card.Holder
+					if holder.Parent then
+						local sc = create("UIScale", { Scale = 1 }, holder)
+						if i == 1 then
+							holder.ZIndex = 68
+							fade(holder, { Position = UDim2.new(0, cx, 0, cy) }, 0.45, Enum.EasingStyle.Back)
+							fade(sc, { Scale = 1.45 }, 0.45, Enum.EasingStyle.Back)
+							local halo = create("Frame", { Size = UDim2.new(0, 60, 0, 60), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy), BackgroundColor3 = card.Color, BackgroundTransparency = 0.6, BorderSizePixel = 0, ZIndex = 62 }, grid)
+							create("UICorner", { CornerRadius = UDim.new(1, 0) }, halo)
+							fade(halo, { Size = UDim2.new(0, 330, 0, 330), BackgroundTransparency = 0.82 }, 0.6)
+						elseif slots[i - 1] then
+							fade(holder, { Position = UDim2.new(0, slots[i - 1][1], 0, slots[i - 1][2]) }, 0.4, Enum.EasingStyle.Quad)
+							fade(sc, { Scale = 0.72 }, 0.4, Enum.EasingStyle.Quad)
+						end
+					end
+				end
+				SoundBank.Play(sfxParent, "Gacha_Pop" .. math.min(5, best), { Volume = 0.5 })
+
 				local parts = {}
 				for rarity = 5, 1, -1 do
 					if counts[rarity] then
 						table.insert(parts, string.format("<font color='#%s'>%s %d</font>", Config.Gear.RarityColors[rarity]:ToHex(), Config.Gear.RarityNames[rarity], counts[rarity]))
 					end
 				end
-				makeLabel({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 1, -34), RichText = true, Text = table.concat(parts, "   ") .. "   <font color='#aaaabb' size='11'>(tap to close)</font>", TextSize = 16, Font = Enum.Font.GothamBold, TextStrokeTransparency = 0.4, ZIndex = 63 }, grid)
+				makeLabel({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 1, -80), RichText = true, Text = table.concat(parts, "   "), TextSize = 16, Font = Enum.Font.GothamBold, TextStrokeTransparency = 0.4, ZIndex = 63 }, grid)
+				-- 아래 버튼: 확인 / 다시 뽑기 (티켓)
+				local function bottomButton(text, x, color, onClick)
+					local b = create("TextButton", {
+						Size = UDim2.new(0, 200, 0, 46), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, x, 1, -4), Text = text, TextSize = 15,
+						Font = Enum.Font.GothamBlack, TextColor3 = Color3.new(1, 1, 1), BackgroundColor3 = color, AutoButtonColor = true, ZIndex = 69,
+					}, grid)
+					rounded(b, 10)
+					create("UIStroke", { Color = Color3.fromRGB(230, 190, 110), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, b)
+					create("UIGradient", { Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(170, 170, 190)), Rotation = 90 }, b)
+					b.Activated:Connect(onClick)
+					return b
+				end
+				local function close()
+					if not root.Parent then return end
+					fade(root, { BackgroundTransparency = 1 }, 0.2)
+					game:GetService("Debris"):AddItem(root, 0.25)
+				end
+				bottomButton("OK", -110, Color3.fromRGB(50, 80, 150), close)
+				local me = game:GetService("Players").LocalPlayer
+				local tickets = me:GetAttribute("Tickets") or 0
+				local again = math.min(10, tickets)
+				local againButton = bottomButton(again > 0 and string.format("🎰 Roll again  🎫%d", again) or "🎫 No tickets", 110, again > 0 and Color3.fromRGB(60, 140, 80) or Color3.fromRGB(70, 70, 86), function()
+					local n = math.min(10, me:GetAttribute("Tickets") or 0)
+					if n <= 0 then return end
+					Remotes.Gear:FireServer("Roll", n)
+				end)
+				againButton.AutoButtonColor = again > 0
 				skipped = false
-				pause(8)
-				if not root.Parent then return end
-				fade(root, { BackgroundTransparency = 1 }, 0.25)
-				game:GetService("Debris"):AddItem(root, 0.3)
+				pause(30)
+				close()
 				return
 			end
 

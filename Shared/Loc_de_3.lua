@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} upgrade success! +{number2}", "{text1}-Verbesserung erfolgreich! +{number2}" },
+		{ "⏱ Time Skip · {text1} left", "⏱ Zeit überspringen · noch {text1}" },
+		{ "Purchase complete: {text1}", "Kauf abgeschlossen: {text1}" },
+		{ "{text1} obtained! Equipped", "{text1} erhalten! Ausgerüstet" },
 		{ "New gear equipped! {text1}", "Neue Ausrüstung angelegt! {text1}" },
 		{ "Lord of {text1}  ·  Zone {number2}", "Lord von {text1}  ·  Zone {number2}" },
 		{ "⏱ Used {text1} Time Skip!", "⏱ {text1} Zeitsprung(e) benutzt!" },

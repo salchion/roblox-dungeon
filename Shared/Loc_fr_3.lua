@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 A Golden Goblin appeared in Zone {number1} · {text2}! Catch it for a jackpot! (75s)", "💰 Un gobelin doré est apparu dans la zone {number1} · {text2} ! Attrapez-le pour le jackpot ! (75 s)" },
+		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "Donjon · choisissez une profondeur (plus profond = meilleures chances de butin) · thème aléatoire · {text1}" },
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "{text1} obtenu ! Ajouté au sac. (I → équiper depuis le sac)  ▲ +{number2}% vs actuel" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 La porte est fermée ! Vainquez les monstres de la zone {number1} {number2}/{number3} + le seigneur de la zone{text4}" },
 		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ Montée de niveau du familier lancée ! ({text1}) — utilisez l'accélération pour finir plus vite" },

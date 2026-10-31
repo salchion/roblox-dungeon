@@ -670,6 +670,10 @@ return {
 		["Wave Rider"] = "웨이브 라이더",
 		["Wild Warden"] = "야생의 수호자",
 		["4. Growth (training) is open from the start. Queue up training, and collect gear sets/uniques to boost your Power"] = "4. 성장(훈련)은 처음부터 열려 있어요. 훈련을 예약하고, 장비 세트/유니크를 모아 전투력을 키우세요",
+		["UPGRADE SUCCESS"] = "강화 성공",
+		["UPGRADE FAILED"] = "강화 실패",
+		["Level kept"] = "단계 유지",
+		["No tickets"] = "티켓 없음",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1013,7 +1017,5 @@ return {
 		{ "⭐ Next level Lv.{number1}\nXP {number2} / {number3}", "⭐ 다음 레벨 Lv.{number1}\n경험치 {number2} / {number3}" },
 		{ "🔒 Unlocks at +{number1} ({number2} to go)", "🔒 +{number1}에서 해금 ({number2} 남음)" },
 		{ "★☆  Step {number1}/{number2} · Next step", "★☆ 단계 {number1}/{number2} · 다음 단계" },
-		{ "🌋 {number1} Streak — Legendary!", "🌋 {number1} 연승 - 전설!" },
-		{ "Reach character level {number1}", "캐릭터 레벨 {number1} 달성" },
 	},
 }

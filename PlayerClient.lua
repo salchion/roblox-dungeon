@@ -212,6 +212,7 @@ local resetEnhanceView -- 블록 밖(왼쪽 무기 버튼 신호)에서도 쓰�
 do
 local E = {}
 enhancePanel = makePanel({
+	Name = "EnhancePanel", -- (EnhanceResultClient 가 이 창 위에 결과 카드를 그린다)
 	Size = UDim2.new(0, 400, 0, 620),
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Position = UDim2.new(0.5, 0, 0.5, 0),
@@ -658,7 +659,7 @@ Remotes.Enhance.OnClientEvent:Connect(function(ok, message, summary)
 			enhSound("Enh_Fail")
 		end
 	end
-	enhanceBanner.Visible = true
+	enhanceBanner.Visible = false -- (결과는 EnhanceResultClient 의 카드가 크게 보여 준다)
 	enhanceBanner.Position = UDim2.new(0.5, 0, 0, 200)
 	enhanceBanner.TextTransparency = 0
 	enhanceBanner.TextStrokeTransparency = 0

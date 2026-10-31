@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🌋 {number1} Streak — Legendary!", "🌋 {number1} 연승 - 전설!" },
+		{ "Reach character level {number1}", "캐릭터 레벨 {number1} 달성" },
 		{ "▼ 👑 First Zone Lord  {number1}m", "▼ 👑 첫 번째 구역 군주 {number1}m" },
 		{ "Defeat {number1} elite monsters", "엘리트 몬스터 {number1}마리 처치" },
 		{ "Defeat {number1} field monsters", "필드 몬스터 {number1}마리 처치" },
@@ -102,6 +104,7 @@ return {
 		{ "🎰 {number1}-Roll Results", "🎰 {number1}회 뽑기 결과" },
 		{ "Lv {number1}  ✦ Paragon {number2}", "Lv {number1}  ✦ 패러건 {number2}" },
 		{ "FEVER PORTAL  {number1}s", "피버 포탈  {number1}초" },
+		{ "🎰 Roll again  🎫{number1}", "🎰 다시 뽑기  🎫{number1}" },
 		{ "Zone {number1} · Forest", "구역 {number1} · 숲" },
 		{ "{number1} more upgrades", "{number1} 더 많은 업그레이드" },
 		{ "Zone {number1} · Desert", "구역 {number1} · 사막" },
@@ -137,6 +140,7 @@ return {
 		{ "NEXT ERA · +{number1}", "다음 시대 · +{number1}" },
 		{ "🌟 Paragon ({number1})", "🌟 패러건 ({number1})" },
 		{ "Best combo: {number1}", "최고 콤보: {number1}" },
+		{ "x{number1} · {number2} SUCCESS", "x{number1} · {number2}번 성공" },
 		{ "Enemy HP +{number1}%", "적의 HP +{number1}%" },
 		{ "Activate {number1} G", "{number1} G 활성화" },
 		{ "👥 Party ({number1}/{number2})", "👥 파티 ({number1}/{number2})" },
