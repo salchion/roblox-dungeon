@@ -1088,6 +1088,7 @@ local STYLE_COLOR = {
 	Crescent = Color3.fromRGB(180, 150, 225), Halo = Color3.fromRGB(110, 215, 185), Crystal = Color3.fromRGB(125, 200, 225),
 	Skull = Color3.fromRGB(225, 220, 200), Needle = Color3.fromRGB(200, 160, 230), Bomb = Color3.fromRGB(235, 140, 70),
 	Missile = Color3.fromRGB(235, 165, 95), Seeker = Color3.fromRGB(135, 190, 235), Snake = Color3.fromRGB(165, 205, 90),
+	Drop = Color3.fromRGB(120, 215, 100), Bolt = Color3.fromRGB(200, 185, 255), Star = Color3.fromRGB(205, 150, 245), Ember = Color3.fromRGB(255, 140, 60),
 }
 
 -- 메인 부품에 용접되어 같이 움직이는 덧붙임 부품 (한 탄이 1~3개 부품으로 이루어진다)
@@ -1238,6 +1239,42 @@ local function spawnProjectile(event)
 		pieces = function()
 			addPiece(part, BALL, Vector3.new(size * 0.75, size * 0.75, size * 0.75), CFrame.new(0, 0, size * 0.85), baseColor, Enum.Material.Neon, 0.15)
 			addPiece(part, BALL, Vector3.new(size * 0.55, size * 0.55, size * 0.55), CFrame.new(0, 0, size * 1.55), baseColor, Enum.Material.Neon, 0.3)
+		end
+	elseif style == "Drop" then -- 슬라임 방울: 물컹한 유리 방울 + 하이라이트 + 뒤에 매달린 작은 방울
+		part.Shape = BALL
+		part.Size = Vector3.new(size, size, size)
+		part.CFrame = look
+		part.Material = Enum.Material.Glass
+		part.Transparency = 0.15
+		pieces = function()
+			addPiece(part, BALL, Vector3.new(size * 0.38, size * 0.38, size * 0.38), CFrame.new(size * 0.18, size * 0.22, -size * 0.2), baseColor:Lerp(WHITE, 0.65), Enum.Material.Neon, 0.2)
+			addPiece(part, BALL, Vector3.new(size * 0.55, size * 0.55, size * 0.55), CFrame.new(0, -size * 0.05, size * 0.7), baseColor, Enum.Material.Glass, 0.3)
+		end
+	elseif style == "Bolt" then -- 전기 볼트: 밝은 심 + 앞뒤로 꺾인 번개 조각
+		local k = size
+		part.Size = Vector3.new(k * 0.25, k * 0.25, k * 2.2)
+		part.CFrame = look
+		part.Color = baseColor:Lerp(WHITE, 0.5)
+		pieces = function()
+			addPiece(part, BLOCK, Vector3.new(k * 0.18, k * 0.18, k * 1.1), CFrame.new(k * 0.25, 0, -k * 0.5) * CFrame.Angles(0, math.rad(35), 0), baseColor)
+			addPiece(part, BLOCK, Vector3.new(k * 0.18, k * 0.18, k * 1.1), CFrame.new(-k * 0.25, 0, k * 0.5) * CFrame.Angles(0, math.rad(35), 0), baseColor)
+		end
+	elseif style == "Star" then -- 별 표창: 납작한 네 갈래 별 + 밝은 가운데
+		local k = size * 1.3
+		part.Size = Vector3.new(k, k * 0.14, k * 0.3)
+		part.CFrame = look
+		pieces = function()
+			addPiece(part, BLOCK, Vector3.new(k * 0.3, k * 0.14, k), CFrame.identity, baseColor:Lerp(WHITE, 0.25))
+			addPiece(part, BALL, Vector3.new(k * 0.35, k * 0.35, k * 0.35), CFrame.identity, baseColor:Lerp(WHITE, 0.6))
+		end
+	elseif style == "Ember" then -- 불덩이: 뜨거운 핵 + 이글거리는 겉불 + 꼬리 불꽃
+		part.Shape = BALL
+		part.Size = Vector3.new(size, size, size)
+		part.CFrame = look
+		part.Color = Color3.fromRGB(255, 200, 110)
+		pieces = function()
+			addPiece(part, BALL, Vector3.new(size * 1.5, size * 1.5, size * 1.5), CFrame.identity, Color3.fromRGB(255, 100, 35), Enum.Material.Neon, 0.6)
+			addFlame(part, size, Color3.fromRGB(255, 190, 90), Color3.fromRGB(200, 60, 20))
 		end
 	else
 		part.Shape = BALL

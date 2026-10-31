@@ -1755,13 +1755,13 @@ Config.Horde = {
 -- 탄막 밀도: 적이 탄을 쏠 때 가끔 "동반 탄"이 옆으로 한 발 더 나간다. 동반 탄은 서버가 힘들어하거나(Effects.Load) 이미 탄이 많으면 가장 먼저 줄어든다.
 -- 기본 패턴의 탄은 줄이지 않는다: 늘어난 밀도만 탄력적으로 줄어서 렉이 걸리지 않는다.
 Config.Danmaku = {
-	ExtraChance = 0.6,   -- 여유가 있을 때 탄 한 발당 동반 탄이 붙을 확률
+	ExtraChance = 0.12,  -- 여유가 있을 때 탄 한 발당 동반 탄이 붙을 확률 (0.6 -> 0.12: 패턴과 상관없는 군더더기 탄이 너무 많았다. 대신 모든 적 탄을 더 빠르게)
 	ExtraSpread = 8,     -- 동반 탄이 옆으로 벌어지는 각도(도)
 	ExtraDamage = 0.7,   -- 동반 탄의 피해 배율
 	SoftCap = 130,       -- 이만큼 탄이 날아다니면 동반 탄은 더 만들지 않는다 (기본 패턴의 탄은 계속 나간다)
 }
 Config.PhonePcStyle = true -- 폰 / 태블릿(터치 전용 기기)도 PC 와 같은 UI 배치를 화면에 맞게 줄여서 쓴다. false 로 바꾸면 예전의 "작은 화면용" 접힌 배치로 돌아간다 (MobileLayoutClient 등이 읽는다)
-Config.EnemyShotSpeedMult = 1.5 -- 몬스터 / 보스 투사체가 날아오는 속도 배율 (Effects.MakeShot 한 곳에서 모든 적 탄에 적용)
+Config.EnemyShotSpeedMult = 1.75 -- (1.5 -> 1.75: 탄 수를 줄인 만큼 빠르게 해서 긴장감을 유지) 몬스터 / 보스 투사체가 날아오는 속도 배율 (Effects.MakeShot 한 곳에서 모든 적 탄에 적용)
 Config.Gimmick = {
 	LeadFromZone = 3,     -- 이 구역부터 슬라임 / 기사의 탄 중 두 번에 한 번은 내 움직임을 예측해서 쏜다
 	LeadAlwaysZone = 5,   -- 이 구역부터는 항상 예측해서 쏜다

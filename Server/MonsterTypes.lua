@@ -36,7 +36,7 @@ M.Defs = {
 	Slime = {
 		Name = "Slime", Shape = "Ball", Color = Color3.fromRGB(110, 205, 95), Material = Enum.Material.Glass, Transparency = 0.1,
 		SizeMult = 1, SpeedMult = 1, HealthMult = 1, DamageMult = 1.2, IntervalMult = 1, ShotSpeedMult = 0.9, GoldMult = 1,
-		Attack = "Single", Move = "Approach", Keep = 14, Range = 75,
+		Attack = "Single", Style = "Drop", Move = "Approach", Keep = 14, Range = 75,
 	},
 	Spitter = {
 		Name = "Spike Bug", Shape = "Ball", Color = Color3.fromRGB(165, 80, 215), Material = Enum.Material.SmoothPlastic,
@@ -77,7 +77,7 @@ M.Defs = {
 	Turret = {
 		Name = "Magic Turret", Shape = "Block", Color = Color3.fromRGB(90, 95, 110), Material = Enum.Material.Metal,
 		SizeMult = 1.0, SpeedMult = 0, HealthMult = 1.7, DamageMult = 1.2, IntervalMult = 0.8, ShotSpeedMult = 1.0, GoldMult = 1.4,
-		Attack = "Beam", Style = "Needle", Move = "Static", Keep = 0, Range = 110, Barrel = true,
+		Attack = "Beam", Style = "Bolt", Move = "Static", Keep = 0, Range = 110, Barrel = true,
 	},
 	Spider = {
 		Name = "Venom Spider", Shape = "Ball", Color = Color3.fromRGB(60, 50, 60), Material = Enum.Material.SmoothPlastic,
@@ -571,6 +571,7 @@ end
 -- 앞쪽 부채꼴: aim 을 가운데로 count 발을 totalDeg(최대 180) 안에 고르게 쏜다. 뒤로는 쏘지 않아서 탄 수가 360도 고리의 절반 이하다.
 local function arcShots(ctx, origin, aim, count, totalDeg, speed, damage, size, color, style, opts)
 	totalDeg = math.min(totalDeg, 180)
+	if count >= 7 then count -= 2 end -- (7발 이상의 부채꼴은 2발 줄인다: 패턴 모양은 그대로, 대신 탄이 더 빠르다)
 	for i = 1, count do
 		local angle = (count == 1) and 0 or (-totalDeg / 2 + totalDeg * (i - 1) / (count - 1))
 		ctx.Fire(origin, rotateY(aim, angle), speed, damage, size, color, style, opts)
@@ -580,6 +581,10 @@ end
 -- 휩쓸기: 처음 겨눈 방향 기준으로 부채꼴을 따라 시간차를 두고 한 발씩 (한 순간에 탄이 몰리지 않고, 가만히 있지 않으면 피할 수 있다). reverse 로 방향을 뒤집는다
 local function sweepShots(ctx, part, data, aim, count, totalDeg, gap, speed, damage, size, color, style, reverse)
 	totalDeg = math.min(totalDeg, 180)
+	if count >= 7 then -- (휩쓸기도 2발 줄이고, 걸리는 시간은 같게)
+		gap *= (count - 1) / (count - 3)
+		count -= 2
+	end
 	for i = 1, count do
 		local t = (i - 1) / math.max(1, count - 1)
 		local angle = (-totalDeg / 2 + totalDeg * (reverse and (1 - t) or t))
@@ -1421,7 +1426,7 @@ function M.Update(ctx, part, data, dt, now)
 			telegraph(ctx, part, data, Color3.fromRGB(255, 170, 120), 0.5, function()
 				local current = ctx.GetTarget(part.Position)
 				if not current then return end
-				sweepShots(ctx, part, data, (current.Position - part.Position).Unit, 7, 130, 0.15, stats.ShotSpeed * 1.4, math.max(1, math.floor(stats.ShotDamage * 0.7)), 1.8, Color3.fromRGB(190, 170, 240), "Needle", data.ShotN % 10 == 0)
+				sweepShots(ctx, part, data, (current.Position - part.Position).Unit, 7, 130, 0.15, stats.ShotSpeed * 1.4, math.max(1, math.floor(stats.ShotDamage * 0.7)), 1.8, Color3.fromRGB(190, 170, 240), "Bolt", data.ShotN % 10 == 0)
 			end)
 		elseif data.ShotN % 2 == 0 then
 			data.NextAttack = now + stats.ShotInterval * 1.4

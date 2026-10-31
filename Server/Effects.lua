@@ -408,7 +408,8 @@ local function zoneBossPiece(part)
 	end
 end
 
-local function zoneBossEmitter(parent, color, rate, size, speed, life, accel)
+local zoneBossEmitter
+function zoneBossEmitter(parent, color, rate, size, speed, life, accel)
 	local e = Instance.new("ParticleEmitter")
 	e.Rate = rate
 	e.Lifetime = NumberRange.new(life * 0.6, life)
@@ -421,6 +422,54 @@ local function zoneBossEmitter(parent, color, rate, size, speed, life, accel)
 	e.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 1) })
 	e.Parent = parent
 	return e
+end
+
+-- 새 보스 겉모양 (BossLooks 모듈: 둥근 팔다리 / 뿔 / 눈 / 날개). 없거나 오류가 나면 아래 예전 모양을 쓴다.
+local okBossLooks, BossLooks = pcall(function() return require(script.Parent:WaitForChild("BossLooks", 5)) end)
+local function lookPiece(part)
+	return function(shape, sx, sy, sz, x, y, z, color, material, opts)
+		opts = opts or {}
+		local p = Instance.new("Part")
+		p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.Massless, p.CastShadow = false, false, false, false, true, false
+		p.Shape = shape
+		p.Size = Vector3.new(math.max(0.05, sx), math.max(0.05, sy), math.max(0.05, sz))
+		p.Color = color
+		p.Material = material or Enum.Material.SmoothPlastic
+		p.Transparency = opts.T or 0
+		if opts.CF then -- 몸 기준 CFrame (둥근 팔다리 / 판)
+			p.CFrame = part.CFrame * opts.CF
+		else
+			p.CFrame = part.CFrame * CFrame.new(x, y, z) * CFrame.Angles(math.rad(opts.Rx or 0), math.rad(opts.Ry or 0), math.rad(opts.Rz or 0))
+		end
+		local weld = Instance.new("Weld")
+		weld.Part0 = part
+		weld.Part1 = p
+		weld.C0 = part.CFrame:ToObjectSpace(p.CFrame)
+		weld.Parent = p
+		p.Parent = part
+		return p
+	end
+end
+-- key: "Zone1" ~ "Zone8" / "Cave" / "Ice" / "Fire". 성공하면 true
+local function buildBossLook(part, size, key)
+	if not okBossLooks or not BossLooks or not BossLooks.Has(key) then return false end
+	local ok, err = pcall(BossLooks.Build, key, size, nil, lookPiece(part))
+	if not ok then
+		warn("[BossLooks] " .. tostring(key) .. " 새 모양 오류, 예전 모양 사용: " .. tostring(err))
+		for _, child in ipairs(part:GetChildren()) do
+			if child:IsA("BasePart") then child:Destroy() end
+		end
+		return false
+	end
+	local body = BossLooks.Body[key]
+	if body then
+		part.Material = body.Material or part.Material
+		part.Color = body.Color or part.Color
+		if body.Transparency then part.Transparency = body.Transparency end
+	end
+	local fx = BossLooks.Fx[key]
+	if fx and zoneBossEmitter then zoneBossEmitter(part, fx[1], fx[2], size * fx[3], fx[4], fx[5], fx[6]) end
+	return true
 end
 
 local ZONE_BOSS = {}
@@ -575,6 +624,9 @@ end
 
 function Effects.DecorateZoneBoss(part, size, glow, zone)
 	local build = ZONE_BOSS[zone]
+	if buildBossLook(part, size, "Zone" .. tostring(zone)) then
+		build = function() end -- 새 모양을 붙였으면 예전 장식은 건너뛴다 (아래 후광 불빛은 그대로)
+	end
 	if not build then
 		Effects.DecorateBoss(part, size, glow)
 		return
@@ -735,6 +787,9 @@ function Effects.DecorateDungeonBoss(part, size, glow, typeKey, variantKey)
 	local piece = zoneBossPiece(part)
 	local Ball, Block = Enum.PartType.Ball, Enum.PartType.Block
 	local build = DUNGEON_BOSS[typeKey]
+	if buildBossLook(part, size, typeKey) then
+		build = function() end -- 새 모양 (변이 장식과 후광은 그대로 붙는다)
+	end
 	if build then
 		local ok, err = pcall(build, part, size, piece, Ball, Block)
 		if not ok then warn("[Dungeon boss look]", typeKey, err) end

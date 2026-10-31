@@ -92,6 +92,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/BossLooks.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "BossLooks",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/FieldZoneProps.lua",
       "parent": "ServerScriptService/Modules",
       "name": "FieldZoneProps",

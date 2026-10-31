@@ -625,8 +625,8 @@ local function bossFan(run, part, data)
 		local target = getNearestTarget(run, part.Position)
 		if not target then return end
 		local direction = (target.Position - part.Position).Unit
-		for _, angle in ipairs({ -22, 0, 22 }) do
-			fireProjectile(run, part.Position, rotateY(direction, angle), data.Stats.ShotSpeed * 0.9, math.floor(data.Stats.ShotDamage * 1.2), 3.2, Color3.fromRGB(235, 110, 100), "Crystal")
+		for _, angle in ipairs({ -22, 0, 22 }) do -- (가운데는 불덩이, 양옆은 수정)
+			fireProjectile(run, part.Position, rotateY(direction, angle), data.Stats.ShotSpeed * 0.9, math.floor(data.Stats.ShotDamage * 1.2), 3.2, angle == 0 and Color3.fromRGB(255, 140, 60) or Color3.fromRGB(235, 110, 100), angle == 0 and "Ember" or "Crystal")
 		end
 		if volley >= 2 then
 			fireProjectile(run, part.Position + Vector3.new(0, 2, 0), direction, 28, math.floor(data.Stats.ShotDamage * 1.1), 2.6, Color3.fromRGB(240, 170, 90), "Missile", { Kind = "homing", Turn = 1.7, Life = 3.5 })
@@ -639,7 +639,7 @@ end
 local function bossRing(run, part, data)
 	bossWarn(run, part, data, Color3.new(1, 1, 1), 0.8)
 	-- 개수 -30%, 더 느리게, 피해 +20%. 1번째 고리는 곧은 수정, 2번째 고리는 엇갈리게 휘어 도는 후광 (격노하면 후광이 더 크게 휜다)
-	local count = math.max(8, math.floor((data.Enraged and 24 or Config.Boss.RingCount) * 0.7))
+	local count = math.max(8, math.floor((data.Enraged and 24 or Config.Boss.RingCount) * 0.56)) -- (0.7 -> 0.56: 고리 탄 수 -20%, 대신 탄 속도 +17%)
 	local radius = part.Size.X / 2 + 1
 	for wave = 0, 1 do
 		if not bossAlive(run, part, data) then return end
@@ -664,10 +664,10 @@ local function bossSpiral(run, part, data)
 		for arm = 0, 1 do
 			local a = angle + arm * math.pi
 			local direction = Vector3.new(math.cos(a), 0, math.sin(a))
-			fireProjectile(run, flatOrigin(run, part) + direction * (part.Size.X / 2 + 1), direction, 26, math.floor(data.Stats.ShotDamage * 0.72), 2.4, Color3.fromRGB(190, 120, 235), arm == 0 and "Crystal" or "Skull") -- 팔마다 모양이 다르다
+			fireProjectile(run, flatOrigin(run, part) + direction * (part.Size.X / 2 + 1), direction, 26, math.floor(data.Stats.ShotDamage * 0.72), 2.4, Color3.fromRGB(190, 120, 235), arm == 0 and "Star" or "Skull") -- 팔마다 모양이 다르다
 		end
 		angle += 0.6
-		task.wait(0.14) -- 탄 수 약 -35%
+		task.wait(0.18) -- 탄 수 약 -50% (0.14 -> 0.18)
 	end
 end
 

@@ -9,8 +9,8 @@
 
 local DungeonDecor = {}
 
-local MAX_PARTS = 480
-local MAX_LIGHTS = 10
+local MAX_PARTS = 800 -- (480 -> 800: 모든 테마 공통 층 — 문 아치 / 깃발 / 바닥 모자이크 / 암벽 위 수호상 — 약 300개)
+local MAX_LIGHTS = 12
 local MAX_EMITTERS = 4
 
 local RADIUS = 110 -- DungeonTerrain.BuildColosseum 의 R 과 같은 값 (바닥 반지름)
@@ -439,6 +439,102 @@ local function decorateRift(run, ctx)
 	ctx.BossEmphasis(run, violet, rock, Mat.Slate, violet)
 end
 
+------------------------------------------------------------
+-- 모든 테마 공통: 투기장을 웅장하게 (판정 없음)
+--   문 8개: 돌 아치 + 빛나는 쐐기돌 + 반쯤 올린 창살 / 벽 아랫단: 테마색 깃발 8장 / 보스 문 위: 큰 문장
+--   바닥: 테마색 모자이크 고리(24칸) + 제단 둘레 룬 8개 / 암벽 꼭대기(높이 90): 투기장을 내려다보는 거대 수호상 4개
+------------------------------------------------------------
+local ARENA_STYLE = {
+	Cave = { Stone = Color3.fromRGB(104, 90, 74), Mat = Mat.Rock, Cloth = Color3.fromRGB(120, 44, 38), Accent = Color3.fromRGB(150, 200, 90), Metal = Color3.fromRGB(70, 60, 52) },
+	Ice = { Stone = Color3.fromRGB(150, 180, 205), Mat = Mat.Glacier, Cloth = Color3.fromRGB(60, 100, 160), Accent = Color3.fromRGB(150, 220, 255), Metal = Color3.fromRGB(110, 130, 160) },
+	Fire = { Stone = Color3.fromRGB(62, 48, 48), Mat = Mat.Basalt, Cloth = Color3.fromRGB(140, 40, 26), Accent = Color3.fromRGB(255, 120, 40), Metal = Color3.fromRGB(52, 40, 40) },
+	Rift = { Stone = Color3.fromRGB(70, 56, 96), Mat = Mat.Slate, Cloth = Color3.fromRGB(80, 50, 130), Accent = Color3.fromRGB(190, 130, 255), Metal = Color3.fromRGB(60, 50, 80) },
+}
+local ARENA_ROCK_TOP = 90 -- DungeonTerrain 의 WALL_HEIGHT (암벽 윗면)
+
+local function decorateArena(run, ctx, typeKey)
+	local style = ARENA_STYLE[typeKey]
+	if not style then return end
+	local rng = ctx.Rng
+	local center = ctx.Center
+	local stoneDark = style.Stone:Lerp(Color3.new(0, 0, 0), 0.3)
+	local function faceIn(position)
+		return CFrame.lookAt(position, Vector3.new(center.X, position.Y, center.Z))
+	end
+
+	-- 1) 문 8개: 아치 돌 7개 + 쐐기돌 + 반쯤 올린 창살
+	for i = 0, 7 do
+		local angle = i / 8 * math.pi * 2
+		local radial = Vector3.new(math.cos(angle), 0, math.sin(angle))
+		local tangent = Vector3.new(-radial.Z, 0, radial.X)
+		local base = ctx.Polar(angle, RADIUS - 0.6)
+		local archCenter = base + Vector3.new(0, 16, 0)
+		local big = i == 0 -- 동쪽 보스 문은 더 크다
+		local archR = big and 8.5 or 6.6
+		for k = 0, 6 do
+			local t = math.pi * k / 6
+			local pos = archCenter + tangent * math.cos(t) * archR + Vector3.new(0, math.sin(t) * archR * 0.7, 0)
+			ctx.Part("GateArch", Vector3.new(2.4, 2.2, 3.2), faceIn(pos) * CFrame.Angles(0, 0, t - math.pi / 2), k % 2 == 0 and style.Stone or stoneDark, style.Mat)
+		end
+		local key = ctx.Part("GateKeystone", Vector3.new(2, 2.8, 1.2), faceIn(archCenter + Vector3.new(0, archR * 0.7 + 1.2, 0) - radial * 1.2), style.Accent, Mat.Neon, { Transparency = 0.15 })
+		if big then ctx.Light(key, style.Accent, 30, 0.6) end
+		for k = -2, 2 do -- 창살 (윗부분만: 반쯤 올린 문)
+			ctx.Part("Portcullis", Vector3.new(0.4, 6, 0.4), CFrame.new(base + tangent * k * 1.9 + Vector3.new(0, 13.5, 0) - radial * 0.4), style.Metal, Mat.Metal)
+		end
+		ctx.Part("PortcullisBar", Vector3.new(9.6, 0.5, 0.5), faceIn(base + Vector3.new(0, 11, 0) - radial * 0.4), style.Metal, Mat.Metal)
+	end
+
+	-- 2) 벽 아랫단에 걸린 깃발 (문 사이 8곳): 천 + 가장자리 띠 + 문장 + 아래 술
+	for i = 0, 7 do
+		local angle = (i + 0.5) / 8 * math.pi * 2
+		local top = ctx.Polar(angle, RADIUS - 0.4, WALL_TOP - 0.6)
+		local face = faceIn(top)
+		ctx.Part("BannerRod", Vector3.new(6, 0.5, 0.5), face, style.Metal, Mat.Metal)
+		ctx.Part("BannerCloth", Vector3.new(5, 12, 0.2), face * CFrame.new(0, -6.2, -0.3), style.Cloth, Mat.Fabric)
+		ctx.Part("BannerTrim", Vector3.new(5.2, 0.6, 0.25), face * CFrame.new(0, -1.2, -0.35), style.Accent:Lerp(style.Cloth, 0.3), Mat.Fabric)
+		ctx.Part("BannerEmblem", Vector3.new(2.2, 2.2, 0.25), face * CFrame.new(0, -6, -0.45) * CFrame.Angles(0, 0, math.rad(45)), style.Accent, Mat.Neon, { Transparency = 0.25 })
+		ctx.Part("BannerTail", Vector3.new(3.6, 3.6, 0.2), face * CFrame.new(0, -12, -0.3) * CFrame.Angles(0, 0, math.rad(45)), style.Cloth, Mat.Fabric)
+	end
+
+	-- 3) 보스 문 위의 큰 문장 (원판 + 테두리 빛)
+	local crest = ctx.Polar(0, RADIUS - 0.3, 32)
+	ctx.Part("BossCrest", Vector3.new(0.6, 12, 12), faceIn(crest) * CFrame.Angles(0, math.rad(90), 0), stoneDark, style.Mat, { Shape = Shape.Cylinder })
+	ctx.Part("BossCrestGlow", Vector3.new(0.5, 13.4, 13.4), faceIn(crest + (crest - Vector3.new(center.X, crest.Y, center.Z)).Unit * 0.2) * CFrame.Angles(0, math.rad(90), 0), style.Accent, Mat.Neon, { Shape = Shape.Cylinder, Transparency = 0.45 })
+	ctx.Part("BossCrestMark", Vector3.new(4, 4, 0.4), faceIn(crest - (crest - Vector3.new(center.X, crest.Y, center.Z)).Unit * 0.5) * CFrame.Angles(0, 0, math.rad(45)), style.Accent, Mat.Neon, { Transparency = 0.1 })
+
+	-- 4) 바닥 모자이크: 반지름 36 ~ 56 사이 24칸 (테마색 / 돌색 번갈아, 옅게) + 제단 둘레 룬 8개
+	for i = 0, 23 do
+		local angle = (i + 0.5) / 24 * math.pi * 2
+		local pos = ctx.Polar(angle, 46, 0.32)
+		ctx.Part("FloorTile", Vector3.new(10.6, 0.08, 18), CFrame.lookAt(pos, Vector3.new(center.X, pos.Y, center.Z)), i % 2 == 0 and style.Accent:Lerp(style.Stone, 0.55) or stoneDark, i % 2 == 0 and Mat.Neon or style.Mat, { Transparency = i % 2 == 0 and 0.78 or 0.35 })
+	end
+	for i = 0, 7 do
+		local angle = (i + 0.5) / 8 * math.pi * 2
+		local pos = ctx.Polar(angle, 18, 0.45)
+		ctx.Part("FloorRune", Vector3.new(2.4, 0.1, 2.4), CFrame.new(pos) * CFrame.Angles(0, angle + math.rad(45), 0), style.Accent, Mat.Neon, { Transparency = 0.4 })
+	end
+
+	-- 5) 암벽 꼭대기의 거대 수호상 4개 (대각선 방향, 투기장을 내려다본다): 받침 + 다리 + 몸 + 어깨 + 머리 + 빛나는 눈 + 칼
+	for i = 0, 3 do
+		local angle = math.rad(45 + i * 90 + rng:NextNumber(-6, 6))
+		local foot = ctx.Polar(angle, RADIUS + 14, ARENA_ROCK_TOP)
+		local face = faceIn(foot)
+		local function at(x, y, z) return face * CFrame.new(x, y, z) end
+		ctx.Part("StatueBase", Vector3.new(14, 5, 14), at(0, 2.5, 0), stoneDark, style.Mat)
+		for _, side in ipairs({ -1, 1 }) do
+			ctx.Part("StatueLeg", Vector3.new(4.2, 13, 4.6), at(side * 3, 11.5, 0), style.Stone, style.Mat)
+			ctx.Part("StatueShoulder", Vector3.new(7, 6, 7), at(side * 7.5, 34, 0), stoneDark, style.Mat, { Shape = Shape.Ball })
+			ctx.Part("StatueArm", Vector3.new(3.4, 12, 3.4), at(side * 8, 27, -1.5) * CFrame.Angles(math.rad(-12), 0, 0), style.Stone, style.Mat)
+			ctx.Part("StatueEye", Vector3.new(1.1, 0.8, 0.5), at(side * 1.4, 40.5, -3.3), style.Accent, Mat.Neon)
+		end
+		ctx.Part("StatueBody", Vector3.new(12, 16, 7), at(0, 26, 0), style.Stone, style.Mat)
+		ctx.Part("StatueHead", Vector3.new(7, 7, 7), at(0, 40, 0), stoneDark, style.Mat, { Shape = Shape.Ball })
+		ctx.Part("StatueHelmCrest", Vector3.new(1.4, 4, 7), at(0, 44, 0.4), style.Stone, style.Mat)
+		ctx.Part("StatueSword", Vector3.new(2, 26, 0.8), at(0, 14, -5.2), style.Metal, Mat.Metal) -- 두 손을 모아 칼끝을 땅에 꽂았다
+		ctx.Part("StatueGuard", Vector3.new(7, 1.2, 1.2), at(0, 25.5, -5.2), stoneDark, style.Mat)
+	end
+end
+
 local DECORATORS = {
 	Cave = decorateCave,
 	Ice = decorateIce,
@@ -455,6 +551,8 @@ function DungeonDecor.Decorate(run, typeKey, helpers)
 	end
 	local ctx = newContext(run, run.Folder)
 	-- 장식 실패가 던전 시작을 막지 않도록 보호 호출
+	local okArena, errArena = pcall(decorateArena, run, ctx, typeKey) -- 모든 테마 공통 층 (먼저: 부품 한도 안에 확실히 들어가게)
+	if not okArena then warn("[DungeonDecor] arena layer failed: " .. tostring(errArena)) end
 	local ok, err = pcall(decorate, run, ctx)
 	if not ok then
 		warn("[DungeonDecor] decoration failed: " .. tostring(err))
