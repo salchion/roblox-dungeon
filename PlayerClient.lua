@@ -1443,7 +1443,10 @@ local function slide()
 	if sliding then return end
 	local now = os.clock()
 	local P = Config.Player
-	if settings.DashCharges <= 0 then return end
+	if settings.DashCharges <= 0 then
+		if settings.ShakeSlot then settings.ShakeSlot(settings.DashUi) end -- 대시 횟수가 없을 때: Q 칸이 흔들린다
+		return
+	end
 
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
@@ -2966,10 +2969,33 @@ for index, skillKey in ipairs(Config.Skills.Order) do
 	skillSlots[skillKey] = { Cover = cover, Timer = timer, Stroke = slotStroke, Slot = slot }
 end
 
+-- 지금 쓸 수 없는 스킬을 누르면 (쿨타임 / 게이지 부족 / 주변에 적 없음) 그 칸이 하얗게 번쩍이며 좌우로 흔들린다
+function settings.ShakeSlot(ui)
+	if not ui or not ui.Slot or ui.Shaking then return end
+	ui.Shaking = true
+	local base = ui.Slot.Position
+	local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.55, BorderSizePixel = 0, ZIndex = 6 }, ui.Slot)
+	rounded(flash)
+	TweenService:Create(flash, TweenInfo.new(0.25), { BackgroundTransparency = 1 }):Play()
+	task.spawn(function()
+		for i = 1, 6 do
+			ui.Slot.Position = base + UDim2.new(0, (i % 2 == 0 and 1 or -1) * (7 - i), 0, 0)
+			task.wait(0.035)
+		end
+		ui.Slot.Position = base
+		flash:Destroy()
+		ui.Shaking = false
+	end)
+end
+function settings.ShakeSkill(skillKey)
+	settings.ShakeSlot(skillSlots[skillKey])
+end
+
 do
 	local slot = create("Frame", { Size = UDim2.new(0, 62, 0, 62), Position = UDim2.new(0, 0, 0, 0), BackgroundColor3 = Theme.SLOT, BorderSizePixel = 0 }, skillBar)
 	rounded(slot)
 	create("UIStroke", { Color = Color3.fromRGB(120, 210, 255), Thickness = 2 }, slot)
+	settings.DashUi = { Slot = slot }
 	makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = "💨", TextSize = 20 }, slot)
 	makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 34), Text = "Dash", TextSize = 9 }, slot)
 	makeLabel({ Size = UDim2.new(0, 18, 0, 16), Position = UDim2.new(0, 3, 0, 3), Text = "Q", TextSize = 10, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 220, 90) }, slot)
@@ -3008,40 +3034,30 @@ function useSkill(skillKey)
 		toast("Skills can only be used in the field and dungeons.")
 		return
 	end
-	if os.clock() < (skillReadyAt[skillKey] or 0) then return end
+	if os.clock() < (skillReadyAt[skillKey] or 0) then
+		settings.ShakeSkill(skillKey) -- 쿨타임 중: 칸만 흔들린다
+		return
+	end
+	-- 주변에 적이 없으면 (데드아이 / 죽음의 연꽃) 서버에 보내지 않고 칸만 흔들린다 (알림이 쌓이지 않게)
+	local function enemyWithin(range)
+		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		if not root then return false end
+		for _, monster in ipairs(game:GetService("CollectionService"):GetTagged("Monster")) do
+			if monster:IsA("BasePart") and (monster.Position - root.Position).Magnitude <= range then return true end
+		end
+		return false
+	end
+	if skillKey == "Spirit" and not enemyWithin((Config.Skills.Spirit.Range or 44) + 5) then
+		settings.ShakeSkill(skillKey)
+		return
+	end
 	if skillKey == "Ult" then
 		if (player:GetAttribute("UltCharge") or 0) < Config.Skills.Ult.Cost then
-			-- (게이지가 덜 찼을 때 누르면 알림 대신 V 칸만 하얗게 번쩍이며 흔들린다: 연타하면 알림이 x6 처럼 쌓이던 것)
-			local ui = skillSlots[skillKey]
-			if ui and ui.Slot and not ui.Shaking then
-				ui.Shaking = true
-				local base, oldColor = ui.Slot.Position, ui.Stroke.Color
-				ui.Stroke.Color = Color3.new(1, 1, 1)
-				task.spawn(function()
-					for i = 1, 6 do
-						ui.Slot.Position = base + UDim2.new(0, (i % 2 == 0 and 1 or -1) * (7 - i), 0, 0)
-						task.wait(0.035)
-					end
-					ui.Slot.Position = base
-					ui.Stroke.Color = oldColor
-					ui.Shaking = false
-				end)
-			end
+			settings.ShakeSkill(skillKey) -- (게이지가 덜 찼을 때 누르면 알림 대신 V 칸만 번쩍이며 흔들린다: 연타하면 알림이 x6 처럼 쌓이던 것)
 			return
 		end
-		local character = player.Character
-		local root = character and character:FindFirstChild("HumanoidRootPart")
-		local found = false
-		if root then
-			for _, monster in ipairs(game:GetService("CollectionService"):GetTagged("Monster")) do
-				if monster:IsA("BasePart") and (monster.Position - root.Position).Magnitude <= Config.Skills.Ult.Radius + 5 then
-					found = true
-					break
-				end
-			end
-		end
-		if not found then
-			toast("🎯 Deadeye: an enemy must be within " .. Config.Skills.Ult.Radius .. " range to lock on! (Camps are safe zones with no enemies)")
+		if not enemyWithin(Config.Skills.Ult.Radius + 5) then
+			settings.ShakeSkill(skillKey)
 			return
 		end
 	end
