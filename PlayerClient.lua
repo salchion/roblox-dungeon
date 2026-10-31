@@ -2883,15 +2883,15 @@ function refreshMenu()
 		end
 	elseif currentTab == "Growth" then
 		-- 스킬 / 훈련 / 펫을 한 화면의 특성 나무로 (TrainingTree 모듈)
-		if locked then buildSkipGaugeRow() else buildGrowthTab() end
 		local okTree, treeErr = pcall(function()
 			require(ReplicatedStorage:WaitForChild("TrainingTree", 5)).BuildAll({
 				Config = Config, Remotes = Remotes, Player = player, Meta = metaState, Growth = growthState, Remaining = growthRemaining,
-				UpgradeRemaining = upgradeRemaining, SkillDetail = skillDetail, TrainLocked = locked and MENU.locked or nil,
+				UpgradeRemaining = upgradeRemaining, SkillDetail = skillDetail, TrainLocked = locked or nil,
 				NewRow = newRow, MakeLabel = makeLabel, MakeButton = makeButton, Create = create, GREEN = GREEN, GRAY = GRAY, Refresh = refreshMenu,
 			})
 		end)
 		if not okTree then warn("[TrainingTree] " .. tostring(treeErr)) end
+		if locked then buildSkipGaugeRow() else buildGrowthTab() end -- 시간 건너뛰기 / 돌파는 나무 아래에
 	elseif currentTab == "Quest" then
 		if sub == "Ach" then
 			sectionTitle("🏅 Achievements — earn rewards and titles")
