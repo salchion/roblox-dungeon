@@ -117,11 +117,29 @@ local function resetStats(player)
 	applyMaxHealth(player, math.huge)
 end
 
+-- 먼 곳으로 순간이동 (던전 입장 / 피버 입장 / 마을 복귀 / 피버 후 필드 복귀).
+-- StreamingEnabled 라서 도착지 주변(땅 / 벽)이 아직 내 화면에 없을 수 있다: 점프 속도를 지우고, 도착지를 먼저 불러오는 동안 몸을 잠깐 고정한다
+-- (예전엔 점프 중에 빨려 들어가면 땅이 불러와지기 전에 떨어지거나, 까만 빈 공간에 서 있는 것처럼 보였다)
 local function pivotTo(player, cframe)
 	local character = player.Character
-	if character then
-		character:PivotTo(cframe)
+	if not character then return end
+	local root = character:FindFirstChild("HumanoidRootPart")
+	local heldHere = root ~= nil and not root.Anchored -- (다른 곳에서 일부러 고정해 둔 몸은 풀지 않는다)
+	if root then
+		root.AssemblyLinearVelocity = Vector3.zero
+		root.AssemblyAngularVelocity = Vector3.zero
+		if heldHere then root.Anchored = true end
 	end
+	character:PivotTo(cframe)
+	if not heldHere then return end
+	task.spawn(function()
+		pcall(function() player:RequestStreamAroundAsync(cframe.Position, 4) end) -- (최대 4초: 도착지 주변을 먼저 받는다)
+		task.wait(0.2)
+		if root.Parent then
+			root.AssemblyLinearVelocity = Vector3.zero
+			root.Anchored = false
+		end
+	end)
 end
 
 local function arenaSpawnCFrame(run)
