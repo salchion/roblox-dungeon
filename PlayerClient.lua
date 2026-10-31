@@ -1114,6 +1114,10 @@ do
 	Remotes.Gear.OnClientEvent:Connect(function(action, result)
 		if action ~= "Result" or not result.Roll or (result.Upgrades or 0) <= 0 then return end
 		task.delay(1.8, function()
+			-- (뽑기 결과 화면이 떠 있으면 닫힌 뒤에 띄운다: 결과 위를 덮지 않게)
+			local layer = gui.Parent:FindFirstChild("GachaRevealGui")
+			local waited = 0
+			while layer and layer:FindFirstChild("GachaReveal") and waited < 20 do waited += task.wait(0.25) end
 			popupText.Text = string.format("🔥 Better gear dropped! (%d slot(s))", result.Upgrades)
 			popup.Visible = true
 			shownAt = os.clock()

@@ -37,6 +37,29 @@ function M.Init(deps)
 		end)
 		game:GetService("Debris"):AddItem(label, 2.6)
 	end
+	-- 결과 뒤에서 천천히 도는 빛줄기 (등급이 높을수록 진하고 굵다)
+	local function lightRays(parent, color, rarity)
+		local holder = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, ZIndex = 61 }, parent)
+		local bars = {}
+		for i = 1, 8 do
+			local bar = create("Frame", {
+				Size = UDim2.new(0, 2400, 0, 40 + rarity * 14), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Rotation = i * 22.5,
+				BackgroundColor3 = color, BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 61,
+			}, holder)
+			create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.5, 0.25), NumberSequenceKeypoint.new(1, 1) }) }, bar)
+			TweenService:Create(bar, TweenInfo.new(0.5), { BackgroundTransparency = 0.9 - rarity * 0.07 }):Play()
+			bars[i] = bar
+		end
+		task.spawn(function()
+			local angle = 0
+			while holder.Parent do
+				angle += 0.25
+				for i, bar in ipairs(bars) do bar.Rotation = i * 22.5 + angle end
+				task.wait()
+			end
+		end)
+		return holder
+	end
 	local lockedUntil, pending = 0, nil -- 신화(최고 등급)가 뜬 직후에는 잠깐 강제로 보게 한다: 이 시간까지는 탭으로 건너뛸 수 없고, 연타로 들어온 다음 결과는 끝난 뒤에 보여 준다
 	local reveal
 	Remotes.Gear.OnClientEvent:Connect(function(action, result)
@@ -57,7 +80,12 @@ function M.Init(deps)
 		local roll = action == "Result" and result.Roll
 		if not roll then return end
 		local multi = result.Rolls ~= nil and #result.Rolls > 1
-		local old = gui:FindFirstChild("GachaReveal")
+		-- 결과 화면은 따로 맨 위 화면에 그린다 (HUD 의 알림 / "더 좋은 장비" 팝업이 결과 위를 덮던 문제)
+		local layer = gui.Parent:FindFirstChild("GachaRevealGui")
+		if not layer then
+			layer = create("ScreenGui", { Name = "GachaRevealGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 50 }, gui.Parent)
+		end
+		local old = layer:FindFirstChild("GachaReveal")
 		if old then old:Destroy() end
 
 		local rarity = roll.Rarity
@@ -65,7 +93,7 @@ function M.Init(deps)
 		local root = create("TextButton", {
 			Name = "GachaReveal", Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 1,
 			Text = "", AutoButtonColor = false, ZIndex = 60,
-		}, gui)
+		}, layer)
 		local skipped = false
 		root.Activated:Connect(function() if os.clock() >= lockedUntil then skipped = true end end) -- (신화 강제 감상 시간에는 탭을 무시한다)
 		local function fade(object, goal, time, style, direction)
@@ -75,7 +103,7 @@ function M.Init(deps)
 			local untilTime = os.clock() + seconds
 			while not skipped and root.Parent and os.clock() < untilTime do task.wait() end
 		end
-		fade(root, { BackgroundTransparency = 0.35 }, 0.2)
+		fade(root, { BackgroundTransparency = multi and 0.12 or 0.3 }, 0.2)
 
 		task.spawn(function()
 			local capsule = create("Frame", {
@@ -109,23 +137,26 @@ function M.Init(deps)
 			if not root.Parent then return end
 
 			capsule:Destroy()
-			SoundBank.Play(sfxParent, "Gacha_Pop" .. rarity)
-			if rarity == 5 then lockedUntil = os.clock() + (multi and 3.4 or 2.6) end -- 신화: 잠깐(10연 3.4초 / 단일 2.6초) 멈춰서 꼭 보게 한다
-			if rarity >= 4 then SoundBank.Play(sfxParent, "Skill_Ult", { Volume = 0.5 }) end
-			for i = 1, math.max(1, rarity - 1) do
+			-- (10연은 여기서 등급을 미리 보여 주지 않는다: 카드를 뒤집을 때 공개)
+			local popRarity = multi and 1 or rarity
+			local popColor = multi and Color3.fromRGB(200, 190, 255) or color
+			SoundBank.Play(sfxParent, "Gacha_Pop" .. popRarity)
+			if popRarity == 5 then lockedUntil = os.clock() + 2.6 end -- 신화: 잠깐(2.6초) 멈춰서 꼭 보게 한다 (10연은 카드를 뒤집을 때)
+			if popRarity >= 4 then SoundBank.Play(sfxParent, "Skill_Ult", { Volume = 0.5 }) end
+			for i = 1, math.max(1, popRarity - 1) do
 				task.delay((i - 1) * 0.18, function()
 					if not root.Parent then return end
 					local ring = create("Frame", {
 						Size = UDim2.new(0, 40, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 61,
 					}, root)
 					create("UICorner", { CornerRadius = UDim.new(1, 0) }, ring)
-					local stroke = create("UIStroke", { Color = color, Thickness = 8 }, ring)
+					local stroke = create("UIStroke", { Color = popColor, Thickness = 8 }, ring)
 					fade(ring, { Size = UDim2.new(0, 900, 0, 900) }, 0.9)
 					fade(stroke, { Transparency = 1, Thickness = 1 }, 0.9)
 				end)
 			end
-			local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = rarity == 5 and Color3.fromRGB(255, 232, 170) or color, BackgroundTransparency = rarity == 5 and 0.5 or (rarity >= 3 and 0.2 or 0.65), BorderSizePixel = 0, ZIndex = 70 }, root) -- (신화의 번쩍임은 눈이 아프지 않게 부드러운 금빛으로)
-			if rarity == 5 then -- 신화: 별이 흩어지고 MYTHIC 글자 + 웅장한 소리 (다른 등급에는 없다)
+			local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = popRarity == 5 and Color3.fromRGB(255, 232, 170) or popColor, BackgroundTransparency = popRarity == 5 and 0.5 or (popRarity >= 3 and 0.2 or 0.65), BorderSizePixel = 0, ZIndex = 70 }, root) -- (신화의 번쩍임은 눈이 아프지 않게 부드러운 금빛으로)
+			if popRarity == 5 then -- 신화: 별이 흩어지고 MYTHIC 글자 + 웅장한 소리 (다른 등급에는 없다)
 				SoundBank.Play(sfxParent, "Aug_Synergy", { Volume = 0.6 })
 				mythicBurst(root, UDim2.new(0.5, 0, 0.5, 0), 40, 360)
 				mythicBanner(root, UDim2.new(0.5, 0, 0.5, -190))
@@ -133,71 +164,159 @@ function M.Init(deps)
 			fade(flash, { BackgroundTransparency = 1 }, 0.5)
 
 			if multi then
-				local grid = create("Frame", { Size = UDim2.new(0, 660, 0, 380), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 62 }, root)
-				makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 0), Text = string.format("🎰 %d-Roll Results", #result.Rolls), TextSize = 22, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 230, 150), ZIndex = 63 }, grid)
-				local counts = {}
-				local chimeAt = 0
-				local STATUS = { Equipped = "Equipped!", Bag = "Bag" }
-				for index, r in ipairs(result.Rolls) do
-					counts[r.Rarity] = (counts[r.Rarity] or 0) + 1
-					task.delay((index - 1) * 0.1, function()
-						if not root.Parent then return end
-						-- 카드마다 같은 소리가 10번 나던 것을 줄였다: 높은 등급 카드만 맑은 소리 (등급마다 다른 음, 0.3초에 하나만), 평범한 카드는 가끔 작은 "틱"
-						if r.Rarity >= 3 then
-							if os.clock() - (chimeAt or 0) > 0.3 then
-								chimeAt = os.clock()
-								SoundBank.Play(sfxParent, "Gacha_Pop" .. (r.Rarity - 1), { Volume = 0.55 })
-							end
-						elseif index % 3 == 1 then
-							SoundBank.Play(sfxParent, "Gacha_Tick", { Pitch = 1.1, Volume = 0.7 })
-						end
-						local col, row = (index - 1) % 5, (index - 1) // 5
-						local rc = Config.Gear.RarityColors[r.Rarity]
-						local cx, cy = 66 + col * 132, 122 + row * 158
-						local cardM = create("Frame", {
-							Size = UDim2.new(0, 10, 0, 10), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy),
-							BackgroundColor3 = Color3.fromRGB(24, 22, 36), BorderSizePixel = 0, ZIndex = 63,
-						}, grid)
-						rounded(cardM, 12)
-						local st = create("UIStroke", { Color = rc, Thickness = ({ 2, 2, 3, 4, 5 })[r.Rarity] }, cardM)
-						if r.Rarity == 5 then
-							local g = create("UIGradient", { Color = ColorSequence.new({
-								ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 80, 80)), ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 230, 80)),
-								ColorSequenceKeypoint.new(0.66, Color3.fromRGB(80, 220, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(220, 90, 255)),
-							}) }, st)
-							task.spawn(function()
-								local rot = 0
-								while cardM.Parent do rot += 8 g.Rotation = rot task.wait() end
-							end)
-						end
-						fade(cardM, { Size = UDim2.new(0, 120, 0, 146) }, 0.3, Enum.EasingStyle.Back)
-						makeLabel({ Size = UDim2.new(1, 0, 0, 56), Position = UDim2.new(0, 0, 0, 10), Text = ICONS[r.Slot] or "🎁", TextSize = 36, ZIndex = 64 }, cardM)
-						makeLabel({ Size = UDim2.new(1, -8, 0, 34), Position = UDim2.new(0, 4, 0, 64), Text = r.Name or "", TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = rc, ZIndex = 64 }, cardM)
-						makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 100), Text = string.format("★ %s", Config.Gear.RarityNames[r.Rarity]), TextSize = 11, Font = Enum.Font.GothamBlack, TextColor3 = rc, ZIndex = 64 }, cardM)
-						makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 1, -20), Text = r.Better and string.format("▲ +%d%%", r.Better) or (STATUS[r.Status] or "Scrap"), TextSize = r.Better and 12 or 10, Font = r.Better and Enum.Font.GothamBlack or nil, TextColor3 = r.Better and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(190, 190, 210), ZIndex = 64 }, cardM) -- 지금 장비보다 좋으면 초록 "▲ +N%"
-						if r.Rarity == 5 then -- 신화 카드: 별이 흩어지고 위에 MYTHIC 글자
-							mythicBurst(grid, UDim2.new(0, cx, 0, cy), 20, 150)
-							mythicBanner(grid, UDim2.new(0, cx, 0, cy - 96))
-						end
-						if r.Rarity >= 3 then
-							local ringM = create("Frame", { Size = UDim2.new(0, 40, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy), BackgroundTransparency = 1, ZIndex = 61 }, grid)
-							create("UICorner", { CornerRadius = UDim.new(1, 0) }, ringM)
-							local rs = create("UIStroke", { Color = rc, Thickness = 6 }, ringM)
-							fade(ringM, { Size = UDim2.new(0, 260, 0, 260) }, 0.6)
-							fade(rs, { Transparency = 1, Thickness = 1 }, 0.6)
-						end
+				-- 10연: 카드가 뒷면으로 깔린다 -> 한 장씩 뒤집힌다. 높은 등급(전설 / 신화)은 뒷면이 그 색으로 빛나며 떨리다가 마지막에 따로 뒤집힌다 (두근거림)
+				-- 화면을 누르면 남은 카드를 한꺼번에 뒤집는다
+				local rolls = result.Rolls
+				local CW, CH, GAP = 132, 176, 14
+				local cols = math.min(5, #rolls)
+				local rowsN = math.ceil(#rolls / 5)
+				local gridW, gridH = cols * CW + (cols - 1) * GAP, rowsN * CH + (rowsN - 1) * GAP
+				local best = 1
+				for _, r in ipairs(rolls) do best = math.max(best, r.Rarity) end
+				lightRays(root, Config.Gear.RarityColors[best], best)
+				local grid = create("Frame", { Size = UDim2.new(0, gridW, 0, gridH + 96), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 62 }, root)
+				local fit = create("UIScale", {}, grid) -- (작은 화면: 카드 판 전체를 화면에 맞게 줄인다)
+				local function refit()
+					local size = root.AbsoluteSize
+					fit.Scale = math.min(1, (size.X - 24) / gridW, (size.Y - 24) / (gridH + 96))
+				end
+				refit()
+				root:GetPropertyChangedSignal("AbsoluteSize"):Connect(refit)
+				local title = makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 0), Text = string.format("🎰 %d-Roll Results", #rolls), TextSize = 16, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 230, 150), TextStrokeTransparency = 0.3, ZIndex = 63 }, grid)
+				fade(title, { TextSize = 28 }, 0.35, Enum.EasingStyle.Back)
+				local center = UDim2.new(0, gridW / 2, 0, 48 + gridH / 2)
+				local cards = {}
+				for index, r in ipairs(rolls) do
+					local col, row = (index - 1) % 5, (index - 1) // 5
+					local rc = Config.Gear.RarityColors[r.Rarity]
+					local pos = UDim2.new(0, col * (CW + GAP) + CW / 2, 0, 48 + row * (CH + GAP) + CH / 2)
+					local holder = create("Frame", {
+						Size = UDim2.new(0, CW * 0.4, 0, CH * 0.4), AnchorPoint = Vector2.new(0.5, 0.5), Position = center, Rotation = math.random(-25, 25),
+						BackgroundColor3 = Color3.fromRGB(46, 34, 84), BorderSizePixel = 0, ClipsDescendants = true, ZIndex = 63,
+					}, grid)
+					rounded(holder, 12)
+					local stroke = create("UIStroke", { Color = Color3.fromRGB(140, 120, 200), Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, holder)
+					create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(120, 110, 170)), Rotation = 90 }, holder)
+					local backMark = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "?", TextSize = 54, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(190, 170, 255), TextTransparency = 0.25, ZIndex = 64 }, holder)
+					cards[index] = { Roll = r, Holder = holder, Stroke = stroke, Back = backMark, Color = rc, Pos = pos, Open = false }
+					task.delay((index - 1) * 0.05, function()
+						if not holder.Parent then return end
+						SoundBank.Play(sfxParent, "Gacha_Tick", { Pitch = 1.3 + index * 0.03, Volume = 0.45 })
+						fade(holder, { Position = pos, Size = UDim2.new(0, CW, 0, CH), Rotation = 0 }, 0.32, Enum.EasingStyle.Back)
 					end)
 				end
-				pause(#result.Rolls * 0.1 + 0.4)
+				pause(#rolls * 0.05 + 0.4)
+
+				local counts = {}
+				local STATUS = { Equipped = "Equipped!", Bag = "Bag" }
+				local function showFace(card)
+					local r, rc, holder = card.Roll, card.Color, card.Holder
+					card.Back:Destroy()
+					holder.BackgroundColor3 = Color3.fromRGB(22, 20, 34):Lerp(rc, 0.22)
+					card.Stroke.Color = rc
+					card.Stroke.Thickness = ({ 2, 3, 4, 5, 6 })[r.Rarity]
+					if r.Rarity == 5 then
+						local g = create("UIGradient", { Color = ColorSequence.new({
+							ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 80, 80)), ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 230, 80)),
+							ColorSequenceKeypoint.new(0.66, Color3.fromRGB(80, 220, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(220, 90, 255)),
+						}) }, card.Stroke)
+						task.spawn(function()
+							local rot = 0
+							while holder.Parent do rot += 8 g.Rotation = rot task.wait() end
+						end)
+					end
+					-- 위쪽에 등급색 빛 (아래로 갈수록 흐려진다)
+					local glow = create("Frame", { Size = UDim2.new(1, 0, 0.6, 0), BackgroundColor3 = rc, BorderSizePixel = 0, ZIndex = 64 }, holder)
+					create("UIGradient", { Rotation = 90, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, r.Rarity >= 3 and 0.45 or 0.75), NumberSequenceKeypoint.new(1, 1) }) }, glow)
+					makeLabel({ Size = UDim2.new(1, 0, 0, 60), Position = UDim2.new(0, 0, 0, 12), Text = ICONS[r.Slot] or "🎁", TextSize = 40, ZIndex = 65 }, holder)
+					makeLabel({ Size = UDim2.new(1, -8, 0, 34), Position = UDim2.new(0, 4, 0, 72), Text = r.Name or "", TextSize = 12, Font = Enum.Font.GothamBold, TextColor3 = Color3.new(1, 1, 1), ZIndex = 65 }, holder)
+					makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 108), Text = string.rep("★", r.Rarity), TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = rc, TextStrokeTransparency = 0.5, ZIndex = 65 }, holder)
+					makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 128), Text = Config.Gear.RarityNames[r.Rarity], TextSize = 11, Font = Enum.Font.GothamBlack, TextColor3 = rc, ZIndex = 65 }, holder)
+					makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 1, -24), Text = r.Better and string.format("▲ +%d%%", r.Better) or (STATUS[r.Status] or "Scrap"), TextSize = r.Better and 14 or 10, Font = r.Better and Enum.Font.GothamBlack or nil, TextColor3 = r.Better and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(170, 170, 190), ZIndex = 65 }, holder) -- 지금 장비보다 좋으면 초록 "▲ +N%"
+					if r.Rarity >= 3 then -- 빛줄기가 카드를 한 번 쓸고 지나간다
+						local shine = create("Frame", { Size = UDim2.new(0, 34, 1.6, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, -30, 0.5, 0), Rotation = 20, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.55, BorderSizePixel = 0, ZIndex = 66 }, holder)
+						fade(shine, { Position = UDim2.new(1, 30, 0.5, 0) }, 0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+						game:GetService("Debris"):AddItem(shine, 0.5)
+					end
+				end
+				local function flip(card, quiet)
+					if card.Open then return end
+					card.Open = true
+					local r, holder = card.Roll, card.Holder
+					counts[r.Rarity] = (counts[r.Rarity] or 0) + 1
+					fade(holder, { Size = UDim2.new(0, 0, 0, CH) }, 0.09, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+					task.delay(0.09, function()
+						if not holder.Parent then return end
+						showFace(card)
+						fade(holder, { Size = UDim2.new(0, CW, 0, CH) }, 0.16, Enum.EasingStyle.Back)
+					end)
+					if not quiet then
+						SoundBank.Play(sfxParent, r.Rarity >= 3 and ("Gacha_Pop" .. (r.Rarity - 1)) or "Gacha_Tick", r.Rarity >= 3 and { Volume = 0.55 } or { Pitch = 1.1, Volume = 0.7 })
+					end
+					if r.Rarity >= 3 then
+						local ringM = create("Frame", { Size = UDim2.new(0, 40, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = card.Pos, BackgroundTransparency = 1, ZIndex = 62 }, grid)
+						create("UICorner", { CornerRadius = UDim.new(1, 0) }, ringM)
+						local rs = create("UIStroke", { Color = card.Color, Thickness = 6 }, ringM)
+						fade(ringM, { Size = UDim2.new(0, 280, 0, 280) }, 0.6)
+						fade(rs, { Transparency = 1, Thickness = 1 }, 0.6)
+						game:GetService("Debris"):AddItem(ringM, 0.7)
+					end
+					if r.Rarity == 5 then -- 신화 카드: 별이 흩어지고 위에 MYTHIC 글자
+						mythicBurst(grid, card.Pos, 20, 150)
+						mythicBanner(grid, card.Pos + UDim2.new(0, 0, 0, -100))
+					end
+				end
+
+				-- 1) 평범한 카드(일반 ~ 에픽)부터 차례로 뒤집는다
+				local big = {}
+				for _, card in ipairs(cards) do
+					if card.Roll.Rarity >= 4 then
+						table.insert(big, card)
+						card.Stroke.Color = card.Color -- 뒷면이 등급색으로 빛난다: "뭔가 있다"
+						card.Back.TextColor3 = card.Color
+					elseif root.Parent then
+						flip(card, skipped)
+						if not skipped then pause(0.11) end
+					end
+				end
+				-- 2) 전설 / 신화: 떨리다가 크게 뒤집힌다
+				for _, card in ipairs(big) do
+					if not root.Parent then return end
+					if not skipped then
+						local started, nextTick = os.clock(), 0
+						while not skipped and root.Parent and os.clock() - started < 0.7 do
+							local t = (os.clock() - started) / 0.7
+							if os.clock() >= nextTick then
+								nextTick = os.clock() + 0.14 - 0.08 * t
+								SoundBank.Play(sfxParent, "Gacha_Tick", { Pitch = 0.9 + t * 0.9 })
+							end
+							card.Holder.Rotation = math.sin(os.clock() * 50) * (3 + t * 7)
+							card.Stroke.Thickness = 3 + t * 6
+							task.wait()
+						end
+						card.Holder.Rotation = 0
+						local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = card.Color, BackgroundTransparency = 0.55, BorderSizePixel = 0, ZIndex = 70 }, root)
+						fade(flash, { BackgroundTransparency = 1 }, 0.4)
+						game:GetService("Debris"):AddItem(flash, 0.5)
+						if card.Roll.Rarity >= 4 then SoundBank.Play(sfxParent, "Skill_Ult", { Volume = 0.45 }) end
+					end
+					flip(card, false)
+					if card.Roll.Rarity == 5 then lockedUntil = math.max(lockedUntil, os.clock() + 2.2) end
+					pause(0.45)
+				end
+				for _, card in ipairs(cards) do flip(card, true) end -- (건너뛰기로 남은 카드)
+				pause(0.3)
+				if not root.Parent then return end
+
 				local parts = {}
 				for rarity = 5, 1, -1 do
 					if counts[rarity] then
 						table.insert(parts, string.format("<font color='#%s'>%s %d</font>", Config.Gear.RarityColors[rarity]:ToHex(), Config.Gear.RarityNames[rarity], counts[rarity]))
 					end
 				end
-				makeLabel({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 1, -26), RichText = true, Text = table.concat(parts, "   ") .. "   <font color='#aaaabb' size='11'>(tap to close)</font>", TextSize = 15, Font = Enum.Font.GothamBold, ZIndex = 63 }, grid)
+				makeLabel({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 1, -34), RichText = true, Text = table.concat(parts, "   ") .. "   <font color='#aaaabb' size='11'>(tap to close)</font>", TextSize = 16, Font = Enum.Font.GothamBold, TextStrokeTransparency = 0.4, ZIndex = 63 }, grid)
 				skipped = false
-				pause(6)
+				pause(8)
 				if not root.Parent then return end
 				fade(root, { BackgroundTransparency = 1 }, 0.25)
 				game:GetService("Debris"):AddItem(root, 0.3)
@@ -226,6 +345,7 @@ function M.Init(deps)
 					end
 				end)
 			end
+			if rarity >= 2 then lightRays(root, color, rarity) end
 			fade(card, { Size = UDim2.new(0, 340, 0, 220) }, 0.45, Enum.EasingStyle.Back)
 			pause(0.3)
 			if not root.Parent then return end
