@@ -428,6 +428,13 @@
       "overwrite": true
     },
     {
+      "path": "PhotoModeClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "PhotoModeClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "EnhanceResultClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "EnhanceResultClient",
