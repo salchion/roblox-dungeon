@@ -62,6 +62,14 @@ local function enable()
 			table.insert(hidden, gui)
 		end
 	end
+	-- (로블록스 기본 UI 는 하나씩 원래 상태를 기억했다가 그대로 되돌린다: 게임이 일부러 꺼 둔 아이템 칸(Backpack)이 다시 켜지지 않게)
+	saved.Core = {}
+	for _, coreType in ipairs(Enum.CoreGuiType:GetEnumItems()) do
+		if coreType ~= Enum.CoreGuiType.All then
+			local okGet, on = pcall(function() return StarterGui:GetCoreGuiEnabled(coreType) end)
+			if okGet then saved.Core[coreType] = on end
+		end
+	end
 	pcall(function() StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false) end)
 	-- 2) 카메라를 지금 자리에서 자유 비행으로
 	saved.CameraType = camera.CameraType
@@ -90,7 +98,9 @@ local function disable()
 		if gui.Parent then gui.Enabled = true end
 	end
 	table.clear(hidden)
-	pcall(function() StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, true) end)
+	for coreType, on in pairs(saved.Core or {}) do
+		pcall(function() StarterGui:SetCoreGuiEnabled(coreType, on) end)
+	end
 	camera.CameraType = saved.CameraType or Enum.CameraType.Custom
 	camera.FieldOfView = saved.FieldOfView or 70
 	if saved.ClockTime then Lighting.ClockTime = saved.ClockTime end
