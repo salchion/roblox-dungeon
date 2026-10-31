@@ -133,8 +133,15 @@ local function pivotTo(player, cframe)
 	character:PivotTo(cframe)
 	if not heldHere then return end
 	task.spawn(function()
-		pcall(function() player:RequestStreamAroundAsync(cframe.Position, 4) end) -- (최대 4초: 도착지 주변을 먼저 받는다)
-		task.wait(0.2)
+		-- 도착지 주변 지형을 먼저 받는 동안만 잠깐 고정한다. 최대 1.2초 (예전 최대 4초: 던전에 들어가서 한참 못 움직였다)
+		local streamed = false
+		task.spawn(function()
+			pcall(function() player:RequestStreamAroundAsync(cframe.Position, 2) end)
+			streamed = true
+		end)
+		local waitStart = os.clock()
+		while not streamed and os.clock() - waitStart < 1.2 do task.wait(0.05) end
+		task.wait(0.1)
 		if root.Parent then
 			root.AssemblyLinearVelocity = Vector3.zero
 			root.Anchored = false
