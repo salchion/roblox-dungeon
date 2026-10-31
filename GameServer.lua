@@ -842,22 +842,28 @@ Remotes.Intro.OnServerEvent:Connect(function(player, action, x)
 		local points, x = {}, F.StartX
 		while x < last do
 			table.insert(points, x)
-			x += 650
+			x += 400 -- (650 -> 400: 촘촘하게 불러야 날아가는 동안 빈 곳이 덜 보인다)
 		end
 		table.insert(points, last)
 		local total = #points
 		local pending = total
 		for _, px in ipairs(points) do
 			task.spawn(function()
-				local okStream, errStream = pcall(function() player:RequestStreamAroundAsync(Vector3.new(px, 60, 0), 5) end)
+				local okStream, errStream = pcall(function() player:RequestStreamAroundAsync(Vector3.new(px, 60, 0), 10) end)
 				if not okStream then warn("[오프닝] 필드 미리 불러오기 실패 (x=" .. tostring(px) .. "): " .. tostring(errStream)) end
 				pending -= 1
 				if player.Parent then Remotes.Intro:FireClient(player, "Progress", total - pending, total) end -- 로딩 화면의 막대가 차오른다
 			end)
 		end
 		local waited = os.clock()
-		while pending > 0 and os.clock() - waited < 8 and player.Parent do task.wait(0.1) end
-		if player.Parent then Remotes.Intro:FireClient(player, "Ready") end
+		while pending > 0 and os.clock() - waited < 20 and player.Parent do task.wait(0.1) end -- (8 -> 20초: 로딩 화면에서 조금 더 기다려 필드를 다 받아 둔다)
+		-- 필드 바닥 조각이 모두 몇 개인지 같이 알려 준다: 화면 쪽이 그만큼 실제로 도착했는지 확인하고 출발한다
+		local groundTotal = 0
+		local fieldFolder = workspace:FindFirstChild("Field")
+		for _, item in ipairs(fieldFolder and fieldFolder:GetChildren() or {}) do
+			if string.sub(item.Name, 1, 6) == "Ground" then groundTotal += 1 end
+		end
+		if player.Parent then Remotes.Intro:FireClient(player, "Ready", groundTotal) end
 	end)
 end)
 

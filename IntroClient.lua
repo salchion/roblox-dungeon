@@ -334,6 +334,7 @@ local function play()
 
 		local pageStart = os.clock()
 		local ready = false
+		local groundExpected = 0
 		local remote
 		pcall(function() remote = require(ReplicatedStorage:WaitForChild("Remotes")).Intro end)
 		introRemote = remote
@@ -342,6 +343,7 @@ local function play()
 			listener = remote.OnClientEvent:Connect(function(action, done, total)
 				if action == "Ready" then
 					ready = true
+					groundExpected = tonumber(done) or 0
 				elseif action == "Progress" and total then
 					TweenService:Create(barFillLoad, TweenInfo.new(0.25), { Size = UDim2.new(math.clamp(done / total, 0.04, 1), 0, 1, 0) }):Play()
 					status.Text = string.format("Preparing the field...  %d / %d", done, total)
@@ -350,7 +352,21 @@ local function play()
 			remote:FireServer("Stream")
 			local waited = os.clock()
 			local lastTip = waited
-			while not ready and os.clock() - waited < 9 and not finished do
+			-- 서버가 필드를 다 보냈다고 할 때까지 + 필드 바닥 조각이 실제로 90% 이상 도착할 때까지 기다린다 (최대 22초: 비행 중에 땅이 늦게 나타나지 않게)
+			local function groundLoaded()
+				local fieldFolder = workspace:FindFirstChild("Field")
+				local found = 0
+				for _, item in ipairs(fieldFolder and fieldFolder:GetChildren() or {}) do
+					if string.sub(item.Name, 1, 6) == "Ground" then found += 1 end
+				end
+				return found
+			end
+			while not finished and os.clock() - waited < 22 do
+				if ready and (groundExpected <= 0 or groundLoaded() >= groundExpected * 0.9) then break end
+				if ready and groundExpected > 0 then
+					local found = groundLoaded()
+					status.Text = string.format("Loading the land...  %d%%", math.floor(math.min(1, found / groundExpected) * 100))
+				end
 				if os.clock() - lastTip > 2.5 then
 					lastTip = os.clock()
 					tipLabel.Text = tips[math.random(#tips)]
