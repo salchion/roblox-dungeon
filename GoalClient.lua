@@ -264,7 +264,14 @@ guide.BackgroundTransparency = 0.06
 guide.BorderSizePixel = 0
 guide.Visible = false
 guide.ZIndex = 50
-guide.Parent = gui
+-- (따로 맨 위 화면에 둔다: 미션 화면(GoalHUD)은 층이 낮아서 위에 덮인 다른 화면이 버튼 클릭을 가로챘다)
+local guideGui = Instance.new("ScreenGui")
+guideGui.Name = "GrowthGuide"
+guideGui.ResetOnSpawn = false
+guideGui.IgnoreGuiInset = true
+guideGui.DisplayOrder = 120
+guideGui.Parent = gui.Parent
+guide.Parent = guideGui
 addCorner(guide, 14)
 local guideStroke = Instance.new("UIStroke")
 guideStroke.Color = Color3.fromRGB(255, 205, 90)

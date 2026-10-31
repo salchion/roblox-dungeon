@@ -105,7 +105,7 @@ function M.Init(deps)
 		end
 		fade(root, { BackgroundTransparency = multi and 0.12 or 0.3 }, 0.2)
 
-		task.spawn(function()
+		task.spawn(function() local okRun, errRun = pcall(function() -- (연출 중 오류가 나도 화면을 덮는 투명 버튼이 남지 않게 아래에서 지운다)
 			local capsule = create("Frame", {
 				Size = UDim2.new(0, 96, 0, 96), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, -80),
 				BackgroundColor3 = Color3.fromRGB(235, 235, 245), BorderSizePixel = 0, ZIndex = 62,
@@ -439,7 +439,7 @@ function M.Init(deps)
 			fade(root, { BackgroundTransparency = 1 }, 0.25)
 			fade(card, { Size = UDim2.new(0, 60, 0, 40) }, 0.25)
 			game:GetService("Debris"):AddItem(root, 0.3)
-		end)
+		end) if not okRun then warn("[GachaReveal] " .. tostring(errRun)) if root.Parent then root:Destroy() end end end)
 	end
 end
 

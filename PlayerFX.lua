@@ -697,6 +697,12 @@ do
 		local skipped = false
 		local root = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 1, Text = "", AutoButtonColor = false, ZIndex = 1 }, evolveGui)
 		root.Activated:Connect(function() skipped = true end)
+		task.delay(20, function() -- (연출 중 오류가 나도 화면 전체를 덮는 투명 버튼이 남아 클릭을 막지 않게)
+			if root.Parent then
+				root:Destroy()
+				playing = false
+			end
+		end)
 		local function pause(seconds)
 			local untilTime = os.clock() + seconds
 			while not skipped and root.Parent and os.clock() < untilTime do task.wait() end
