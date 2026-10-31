@@ -1811,7 +1811,7 @@ Config.Fever = {
 	PortalSeconds = 20,   -- 포탈이 열려 있는 시간 (거신 보상을 받은 사람마다 자기 포탈이 열린다)
 	Cooldown = 600,       -- 한 번 들어가면 이 시간(초) 동안 포탈이 다시 열리지 않는다
 	DailyMax = 5,         -- 하루(접속 중) 최대 횟수
-	Duration = 60,        -- 피버 시간(초)
+	Duration = 40,        -- 피버 시간(초) (60 -> 40: 짧고 굵게. 몬스터가 쏟아지는 만큼 처치 수는 비슷하다)
 	GoldMult = 8,         -- 처치 골드 배율 (같은 깊이의 던전 몬스터 대비)
 	XpMult = 8,
 	MonsterHealth = 0.25, -- 몬스터 체력 배율 (약하지만 많다: 쓸어 담는 느낌)
@@ -1819,11 +1819,11 @@ Config.Fever = {
 	MaxMonsters = 45,     -- 동시에 있는 몬스터 상한 (28 -> 45: 띄엄띄엄 있지 않고 쏟아지게)
 	SpawnEvery = 0.5,     -- 이 간격마다 Burst 마리씩
 	Burst = 7,
-	EventEvery = 12,      -- 이 간격마다 이벤트 (골드 러시 / 보물 비)
+	EventEvery = 10,      -- 이 간격마다 이벤트 (골드 러시 / 보물 비)
 	ComboMax = 2,         -- 처치 콤보가 쌓일수록 골드 배율이 최대 x2 (콤보 50에서 최대)
 	-- 끝날 때 보너스: 황금 상자 장비 (1개 + 처치 GearPerKills 마다 1개, 최대 GearMax) / 뽑기 티켓 (1장 + 처치 TicketPerKills 마다 1장, 최대 TicketMax)
-	GearPerKills = 50, GearMax = 4,
-	TicketPerKills = 60, TicketMax = 3,
+	GearPerKills = 40, GearMax = 4,
+	TicketPerKills = 45, TicketMax = 3,
 }
 
 Config.EnemyShotSpeedMult = 1.75 -- (1.5 -> 1.75: 탄 수를 줄인 만큼 빠르게 해서 긴장감을 유지) 몬스터 / 보스 투사체가 날아오는 속도 배율 (Effects.MakeShot 한 곳에서 모든 적 탄에 적용)
