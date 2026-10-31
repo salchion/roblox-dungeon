@@ -1280,6 +1280,7 @@ local function queuePartyRefresh()
 	end)
 end
 
+do -- (이 구역의 지역 변수는 아래에서 쓰지 않는다: 맨 바깥 지역 변수 200개 한도 여유를 만들려고 블록으로 감쌌다)
 local watched = {}
 local function watchPlayer(other)
 	if watched[other] then return end
@@ -1301,12 +1302,14 @@ Players.PlayerRemoving:Connect(function(other)
 	queuePartyRefresh()
 end)
 
+end -- (지역 변수 범위 블록 끝)
 local invitePanel = makePanel({
 	Size = UDim2.new(0, 340, 0, 100),
 	AnchorPoint = Vector2.new(0.5, 0),
 	Position = UDim2.new(0.5, 0, 0, 160),
 	Visible = false,
 }, gui)
+do -- (이 구역의 지역 변수는 아래에서 쓰지 않는다: 맨 바깥 지역 변수 200개 한도 여유를 만들려고 블록으로 감쌌다)
 local inviteLabel = makeLabel({
 	Size = UDim2.new(1, -20, 0, 44), Position = UDim2.new(0, 10, 0, 6),
 	Font = Enum.Font.GothamBold, TextSize = 14,
@@ -1361,6 +1364,7 @@ makeLabel({
 	TextSize = 12, TextColor3 = Color3.fromRGB(220, 220, 235), TextStrokeTransparency = 0.5,
 }, lobbyFrame)
 
+end -- (지역 변수 범위 블록 끝)
 local dungeonFrame = create("Frame", { Name = "DungeonFrame", Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Visible = false }, gui)
 
 local banner = makePanel({
@@ -1519,6 +1523,7 @@ local function toggleMusic()
 	toast(musicEnabled and "🔊 Music ON (M)" or "🔇 Music OFF (M)")
 end
 
+do -- (이 구역의 지역 변수는 아래에서 쓰지 않는다: 맨 바깥 지역 변수 200개 한도 여유를 만들려고 블록으로 감쌌다)
 local function updateMusic()
 	local zone = currentZone()
 	if tracks.Boss then tracks.Boss.PlaybackSpeed = 1 end
@@ -1786,6 +1791,7 @@ end)
 refreshZone()
 refreshEnhance()
 
+end -- (지역 변수 범위 블록 끝)
 local holding = false
 local nextAttack = 0
 
@@ -3116,6 +3122,7 @@ end)
 
 -- 메뉴 자동 갱신: 방치 중에는 골드 / 방치 게이지 속성이 매초 바뀌므로, 전부 다시 그리면 창이 툭툭 끊겨 보인다.
 -- 화면에 영향이 없는 값은 무시하고, 골드 / 경험치처럼 자주 바뀌는 값은 2초에 한 번만 갱신한다.
+do -- (이 구역의 지역 변수는 아래에서 쓰지 않는다: 맨 바깥 지역 변수 200개 한도 여유를 만들려고 블록으로 감쌌다)
 local menuRefreshQueued = false
 local MENU_IGNORE = {
 	IdleSeconds = true, IdleEarned = true, IdleRate = true, IdleMultTotal = true, IdleCapHours = true, IdleFullGold = true, IdleActive = true,
@@ -3137,6 +3144,7 @@ player.AttributeChanged:Connect(function(name)
 	end)
 end)
 
+end -- (지역 변수 범위 블록 끝)
 local refreshSelect
 local selectedType = "Cave"
 local selectedDifficulty = "Normal"
@@ -3153,6 +3161,7 @@ makeLabel({
 	Text = "⚔ Select Dungeon", Font = Enum.Font.GothamBlack, TextSize = 20,
 }, selectPanel)
 
+do -- (이 구역의 지역 변수는 아래에서 쓰지 않는다: 맨 바깥 지역 변수 200개 한도 여유를 만들려고 블록으로 감쌌다)
 local typeCards = {}
 for index, key in ipairs(Config.Dungeon.Types.Order) do
 	local info = Config.Dungeon.Types[key]
@@ -3249,6 +3258,7 @@ player:GetAttributeChangedSignal("Zone"):Connect(function()
 	updateLockVisual()
 end)
 
+end -- (지역 변수 범위 블록 끝)
 local warpPanel = makePanel({
 	Size = UDim2.new(0, 440, 0, 520),
 	AnchorPoint = Vector2.new(0.5, 0.5),
