@@ -565,7 +565,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 	local now = os.clock()
 	local speedPoints = player:GetAttribute("SpeedPoints") or 0
 	local adrenaline = os.clock() < (player:GetAttribute("AdrenalineUntil") or 0) and (player:GetAttribute("GearKillHaste") or 0) or 0 -- 유니크 "Adrenaline"
-	local cooldown = Config.Player.BaseCooldown * weaponType.Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0)) * (1 + adrenaline)) -- 펫 가속 포함
+	local cooldown = Config.Player.BaseCooldown * weaponType.Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0) + (player:GetAttribute("TrainAtkSpeed") or 0)) * (1 + adrenaline)) -- 펫 가속 포함
 	if now - (lastAttack[player] or 0) < cooldown * 0.9 then return end -- 연타 제한 (네트워크 오차 10% 허용)
 	lastAttack[player] = now
 	Dungeon.NoteShot(player) -- 세트 효과 "튕기는 표창"이 쏜 횟수를 센다
@@ -761,7 +761,7 @@ Remotes.Attack.OnServerEvent:Connect(function(player, aimPoint, manual)
 		followUp(Config.LevelStats.OtherExtraShotValue / math.max(1, weaponType.Pellets))
 	end
 	-- 더블샷: 레벨 스탯 확률로 한 번 더 (같은 방향, 위력도 같다). 장비 추가 탄과 따로 계산한다 (둘 다 터지면 3번)
-	if math.random() < (player:GetAttribute("LvDouble") or 0) then
+	if math.random() < (player:GetAttribute("LvDouble") or 0) + (player:GetAttribute("TrainDouble") or 0) then
 		followUp(1)
 	end
 	if isManual and (player:GetAttribute("HitTick") or 0) > hitsBefore then

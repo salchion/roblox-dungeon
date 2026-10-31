@@ -2147,5 +2147,19 @@
 "TAP DEATH LOTUS!",
 "Training slots {number1} / {number2}",
 "{number1} / {number2}     {text3}",
-"🏆 Hall of Fame #{number1}"
+"🏆 Hall of Fame #{number1}",
+"⚔ Skills — tap a node to upgrade",
+"🏋 Training Tree — fill the upper node to open the one below",
+"Slots {number1} / {number2}",
+"🐾 Pet — features open as it levels up",
+"🔒 Needs",
+"🐾 Unlock Pet",
+"⬆ Level Up {number1} G",
+"🎨 Pet looks / colors: press P",
+"Gold Sense",
+"Attack Speed",
+"Double Shot chance +{number1}%",
+"Crit damage +{number1}%",
+"Gold +{number1}%",
+"🔒 Locked! Train the connected nodes above first"
 ]

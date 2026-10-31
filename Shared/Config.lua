@@ -154,7 +154,7 @@ Config.Tutorial = {
 ------------------------------------------------------------
 -- 환생: 최고 레벨에서 레벨을 1로 되돌리는 대신 영구 보너스. 골드를 더 벌려면 환생한다 (영구 공격력 + 골드 획득량).
 function Config.GoldBonus(player)
-	return 1 + (player:GetAttribute("PetGold") or 0) -- 펫(대각성)
+	return 1 + (player:GetAttribute("PetGold") or 0) + (player:GetAttribute("TrainGold") or 0) -- 펫(대각성) + 훈련(골드 감각)
 end
 
 Config.Dungeon = {} -- 아래에서 여러 블록이 채우고, "던전" 절에서 기본 값이 합쳐진다
@@ -2012,12 +2012,18 @@ Config.Growth = {
 	TimeGrowth = 1.22,  -- 단계마다 시간이 1.22배 (30단계에서 약 10시간)
 	GoldBase = 300,
 	GoldGrowth = 1.3,
+	-- 훈련 = 특성 나무. Tier 1 은 바로 찍을 수 있고, 아래 칸은 Req(위 칸의 단계)를 채워야 열린다. Max 가 없으면 MaxLevel(30)
+	-- 동시에 여러 칸을 훈련할 수 있다 (훈련 칸 수만큼). 효과는 Attribute "Train<키>" 로 전투 계산에 더해진다
 	Stats = {
-		Order = { "Attack", "Health", "Crit", "Speed" },
-		Attack = { Name = "Attack Training", Icon = "⚔", Per = 0.02 },
-		Health = { Name = "HP Training", Icon = "❤", Per = 12 },
-		Crit = { Name = "Crit Training", Icon = "🎯", Per = 0.004 },
-		Speed = { Name = "Speed Training", Icon = "💨", Per = 0.12 },
+		Order = { "Attack", "Health", "Crit", "Speed", "Double", "CritDmg", "Gold", "AtkSpeed" },
+		Attack = { Name = "Attack Training", Icon = "⚔", Per = 0.02, Tier = 1 },
+		Health = { Name = "HP Training", Icon = "❤", Per = 12, Tier = 1 },
+		Crit = { Name = "Crit Training", Icon = "🎯", Per = 0.004, Tier = 1 },
+		Speed = { Name = "Speed Training", Icon = "💨", Per = 0.12, Tier = 1 },
+		Double = { Name = "Double Shot", Icon = "🔫", Per = 0.004, Max = 20, Tier = 2, Req = { { Stat = "Attack", Level = 5 } } },
+		CritDmg = { Name = "Crit Damage", Icon = "💥", Per = 0.01, Max = 20, Tier = 2, Req = { { Stat = "Crit", Level = 5 } } },
+		Gold = { Name = "Gold Sense", Icon = "💰", Per = 0.01, Max = 20, Tier = 2, Req = { { Stat = "Health", Level = 5 } } },
+		AtkSpeed = { Name = "Attack Speed", Icon = "⏩", Per = 0.005, Max = 20, Tier = 3, Req = { { Stat = "CritDmg", Level = 5 }, { Stat = "Double", Level = 5 } } },
 	},
 	Gates = {},                            -- (예전: 레벨 10 / 20 / 30 / 40 에서 멈추고 시간 돌파 -> 기다리는 느낌이라 없앴다. 이제 막힘 없이 성장하고 골드는 환생으로 더 번다)
 	GateTime = { 1800, 7200, 21600, 43200 }, -- 돌파 시간(초): 30분 / 2시간 / 6시간 / 12시간
@@ -2050,8 +2056,29 @@ function Config.FormatTrainEffect(stat, level)
 		return string.format("Max HP +%d", math.floor(value + 0.5))
 	elseif stat == "Crit" then
 		return string.format("Crit chance +%.1f%%", value * 100)
+	elseif stat == "Double" then
+		return string.format("Double Shot chance +%.1f%%", value * 100)
+	elseif stat == "CritDmg" then
+		return string.format("Crit damage +%.0f%%", value * 100)
+	elseif stat == "Gold" then
+		return string.format("Gold +%.0f%%", value * 100)
+	elseif stat == "AtkSpeed" then
+		return string.format("Attack speed +%.1f%%", value * 100)
 	end
 	return string.format("Move Speed +%.1f", value)
+end
+
+-- 훈련 칸의 최대 단계 / 열렸는가 (Req 를 모두 채웠는가). levels = { [키] = 단계 }
+function Config.TrainMax(stat)
+	local def = Config.Growth.Stats[stat]
+	return def and def.Max or Config.Growth.MaxLevel
+end
+function Config.TrainUnlocked(stat, levels)
+	local def = Config.Growth.Stats[stat]
+	for _, req in ipairs(def and def.Req or {}) do
+		if (levels[req.Stat] or 0) < req.Level then return false end
+	end
+	return true
 end
 
 -- 돌파를 몇 번째까지 마쳤는지(gatePassed = 마친 돌파 레벨, 0이면 없음)에 따라 지금 오를 수 있는 최대 레벨
@@ -2220,7 +2247,7 @@ do
 	local trainSteps = Config.Growth.MaxLevel
 	local trainSum = 0
 	for level = 0, trainSteps - 1 do trainSum += progressive(level / (trainSteps - 1)) end
-	local trainK = T / (#Config.Growth.Stats.Order * trainSum)
+	local trainK = T / (4 * trainSum) -- (기본 4종 기준: 아래 칸(더블샷 등)을 추가해도 기존 훈련 비용이 바뀌지 않게)
 	function Config.GetTrainGold(level)
 		local f = math.clamp(level, 0, trainSteps - 1) / (trainSteps - 1)
 		return math.max(1, math.floor(RI(f) * trainK * progressive(f) * ease(f)))

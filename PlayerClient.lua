@@ -2289,7 +2289,7 @@ end
 
 local function attackCooldown()
 	local speedPoints = player:GetAttribute("SpeedPoints") or 0
-	return Config.Player.BaseCooldown * Config.GetPlayerWeapon(player).Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0))) -- 펫 가속 포함
+	return Config.Player.BaseCooldown * Config.GetPlayerWeapon(player).Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0) + (player:GetAttribute("TrainAtkSpeed") or 0))) -- 펫 / 훈련 가속 포함
 end
 
 local questState = nil
@@ -2358,7 +2358,6 @@ local TABS = {
 local MENU = { Sub = { Character = "Gear", Growth = "Active", Quest = "Daily" } }
 MENU.Subs = { -- 탭 안의 작은 버튼 줄
 	Character = { { "Gear", "🛡 Gear" }, { "Weapon", "🔫 Weapon" }, { "Info", "📊 Info" } },
-	Growth = { { "Active", "⚔ Active Skills" }, { "Passive", "🌿 Passive · Training" }, { "Pet", "🐾 Pet (P)" } },
 	Quest = { { "Daily", "Today's Quests" }, { "Ach", "Achievements" } },
 }
 MENU.Alias = {
@@ -2726,15 +2725,6 @@ local function buildGrowthTab()
 	game:GetService("TweenService"):Create(gaugeFill, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = UDim2.new(frac, 0, 1, 0) }):Play()
 	skipShownFrac = frac
 
-	sectionTitle("🏋 Training Grounds — get permanently stronger")
-	-- 훈련장은 특성 나무 모양 (TrainingTree 모듈). 모듈을 못 불러오면 아무것도 안 그린다 (오류로 메뉴 전체가 멈추지 않게)
-	local okTree, treeErr = pcall(function()
-		require(ReplicatedStorage:WaitForChild("TrainingTree", 5)).Build({
-			Config = Config, Remotes = Remotes, State = state, NewRow = newRow, MakeLabel = makeLabel, MakeButton = makeButton,
-			Create = create, Rounded = rounded, Remaining = growthRemaining, GREEN = GREEN, GRAY = GRAY, Refresh = refreshMenu,
-		})
-	end)
-	if not okTree then warn("[TrainingTree] " .. tostring(treeErr)) end
 
 	local gateIndex
 	for index, gate in ipairs(Config.Growth.Gates) do
@@ -2804,60 +2794,26 @@ local function buildSkipGaugeRow()
 	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "⏱ Skip gauge " .. Config.FormatDuration(owned) .. "  (shared with training · pets)", TextSize = 10, ZIndex = 3 }, gaugeBack)
 end
 
-local function buildSkillTab(passiveOnly)
-	buildSkipGaugeRow()
-	if passiveOnly then
-		sectionTitle("🌿 Passive Skills — always active, no key press needed. Level up with Gold")
-	else
-		sectionTitle("⚔ Active Skills — press the key in the field / dungeons (C Heal · V Ultimate). Level up with Gold to get stronger and cut cooldowns")
-	end
+-- 스킬 노드 상세 설명 한 줄 (TrainingTree 가 부른다)
+local function skillDetail(key, level)
 	local U = Config.SkillUpgrade
-	for _, key in ipairs(Config.Skills.UpgradeOrder) do
-		local cfg = Config.Skills[key]
-		if (cfg.Passive == true) ~= (passiveOnly == true) then continue end
-		local level = metaState and metaState.Skills[key] or 1
-		local lv = level - 1
-		local detail
-		if key == "Barrier" then
-			detail = string.format("Lasts %.1fs", cfg.Duration + U.BarrierDuration * lv)
-		elseif key == "Blast" then
-			detail = string.format("Radius %.1f · Damage x%.2f", cfg.Radius + U.BlastRadius * lv, cfg.Mult * (1 + U.BlastMult * lv))
-		elseif key == "Focus" then
-			detail = string.format("NEAR MISS lasts %.1fs · keeps at least %d stacks even if broken", Config.NearMiss.Duration + U.FocusDuration * lv, math.floor(Config.NearMiss.MaxStacks * 0.5 * lv / math.max(1, U.MaxLevel - 1)))
-		elseif key == "Spirit" then
-			detail = string.format("%.1fs · %d daggers every %.2fs · Damage x%.2f each", cfg.Duration, cfg.Daggers, cfg.Interval, cfg.Mult * (1 + U.BlastMult * lv))
-		elseif key == "Heal" then
-			detail = string.format("Restores %d%% HP", math.floor((cfg.Ratio + U.HealRatio * lv) * 100 + 0.5))
-		else
-			detail = string.format("Damage x%.2f · %d targets (gauge %d)", cfg.Mult * (1 + U.UltMult * lv), cfg.MaxTargets + math.floor(U.UltTargets * lv + 0.001), cfg.Cost)
-		end
-		local row = newRow(74)
-		rowText(row, string.format("<font size='14'><b>[%s] %s %s</b></font>  <font color='#ffd966'>Lv.%d / %d</font>\n<font color='#bbbbcc'>%s</font>\n<font color='#9ad7ff'>%s%s</font>",
-			cfg.Key, cfg.Icon, cfg.Name, level, U.MaxLevel, cfg.Desc, detail, cfg.Passive and "" or string.format(" · Cooldown %.1fs", cfg.Cooldown * (1 - U.CooldownPerLevel * lv))), 14, 190)
-		local maxed = level >= U.MaxLevel
-		local remaining = upgradeRemaining(key)
-		local owned = player:GetAttribute("TimeSkip") or 0
-		local text
-		if maxed then
-			text = "MAX"
-		elseif remaining then
-			text = string.format("⏱ Time Skip\n%s left", Config.FormatDuration(remaining))
-		else
-			text = string.format("Upgrade %d G\n⏱ %s", Config.GetSkillUpgradeCost(level), Config.FormatDuration(Config.GetSkillUpgradeTime(level)))
-		end
-		makeButton({
-			Size = UDim2.new(0, 150, 0, 44), Position = UDim2.new(1, -162, 0.5, -22), TextSize = 12,
-			Text = text,
-			BackgroundColor3 = maxed and GRAY or (remaining and (owned > 0 and Color3.fromRGB(200, 130, 40) or GRAY) or GREEN),
-		}, row, function()
-			if maxed then return end
-			if remaining then
-				Remotes.Growth:FireServer("Skip", "Skill", key)
-			else
-				Remotes.Meta:FireServer("SkillUp", key)
-			end
-		end)
+	local cfg = Config.Skills[key]
+	local lv = level - 1
+	local detail
+	if key == "Barrier" then
+		detail = string.format("Lasts %.1fs", cfg.Duration + U.BarrierDuration * lv)
+	elseif key == "Blast" then
+		detail = string.format("Radius %.1f · Damage x%.2f", cfg.Radius + U.BlastRadius * lv, cfg.Mult * (1 + U.BlastMult * lv))
+	elseif key == "Focus" then
+		detail = string.format("NEAR MISS lasts %.1fs · keeps at least %d stacks even if broken", Config.NearMiss.Duration + U.FocusDuration * lv, math.floor(Config.NearMiss.MaxStacks * 0.5 * lv / math.max(1, U.MaxLevel - 1)))
+	elseif key == "Spirit" then
+		detail = string.format("%.1fs · %d daggers every %.2fs · Damage x%.2f each", cfg.Duration, cfg.Daggers, cfg.Interval, cfg.Mult * (1 + U.BlastMult * lv))
+	elseif key == "Heal" then
+		detail = string.format("Restores %d%% HP", math.floor((cfg.Ratio + U.HealRatio * lv) * 100 + 0.5))
+	else
+		detail = string.format("Damage x%.2f · %d targets (gauge %d)", cfg.Mult * (1 + U.UltMult * lv), cfg.MaxTargets + math.floor(U.UltTargets * lv + 0.001), cfg.Cost)
 	end
+	return detail .. (cfg.Passive and "" or string.format(" · Cooldown %.1fs", cfg.Cooldown * (1 - U.CooldownPerLevel * lv)))
 end
 
 Remotes.Meta.OnClientEvent:Connect(function(action, data)
@@ -2926,17 +2882,16 @@ function refreshMenu()
 			buildCharacterTab()
 		end
 	elseif currentTab == "Growth" then
-		if sub == "Passive" then
-			buildSkillTab(true)
-			sectionTitle("🏋 Training · Breakthrough — permanent growth that runs even while offline (a kind of passive)")
-			if locked then
-				MENU.locked()
-			else
-				buildGrowthTab()
-			end
-		else
-			buildSkillTab(false)
-		end
+		-- 스킬 / 훈련 / 펫을 한 화면의 특성 나무로 (TrainingTree 모듈)
+		if locked then buildSkipGaugeRow() else buildGrowthTab() end
+		local okTree, treeErr = pcall(function()
+			require(ReplicatedStorage:WaitForChild("TrainingTree", 5)).BuildAll({
+				Config = Config, Remotes = Remotes, Player = player, Meta = metaState, Growth = growthState, Remaining = growthRemaining,
+				UpgradeRemaining = upgradeRemaining, SkillDetail = skillDetail, TrainLocked = locked and MENU.locked or nil,
+				NewRow = newRow, MakeLabel = makeLabel, MakeButton = makeButton, Create = create, GREEN = GREEN, GRAY = GRAY, Refresh = refreshMenu,
+			})
+		end)
+		if not okTree then warn("[TrainingTree] " .. tostring(treeErr)) end
 	elseif currentTab == "Quest" then
 		if sub == "Ach" then
 			sectionTitle("🏅 Achievements — earn rewards and titles")

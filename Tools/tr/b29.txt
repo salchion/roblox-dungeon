@@ -105,3 +105,17 @@
 2146¦訓練枠 {number1} / {number2}¦Trainingsplätze {number1} / {number2}¦Emplacements d'entraînement {number1} / {number2}¦Espacios de entrenamiento {number1} / {number2}¦Vagas de treino {number1} / {number2}¦训练栏位 {number1} / {number2}¦훈련 칸 {number1} / {number2}
 2147¦{number1} / {number2}    {text3}¦{number1} / {number2}    {text3}¦{number1} / {number2}    {text3}¦{number1} / {number2}    {text3}¦{number1} / {number2}    {text3}¦{number1} / {number2}    {text3}¦{number1} / {number2}    {text3}
 2148¦🏆 殿堂入り #{number1}¦🏆 Ruhmeshalle #{number1}¦🏆 Panthéon #{number1}¦🏆 Salón de la Fama #{number1}¦🏆 Hall da Fama #{number1}¦🏆 名人堂 #{number1}¦🏆 명예의 전당 #{number1}
+2149¦⚔ スキル — ノードをタップして強化¦⚔ Fähigkeiten — tippe auf einen Knoten zum Verbessern¦⚔ Compétences — touchez un nœud pour améliorer¦⚔ Habilidades — toca un nodo para mejorar¦⚔ Habilidades — toque em um nó para melhorar¦⚔ 技能 — 点击节点进行强化¦⚔ 스킬 — 노드를 눌러 강화
+2150¦🏋 訓練ツリー — 上のノードを育てると下が開く¦🏋 Trainingsbaum — fülle den oberen Knoten, um den unteren zu öffnen¦🏋 Arbre d'entraînement — remplissez le nœud du haut pour ouvrir celui du bas¦🏋 Árbol de entrenamiento — llena el nodo de arriba para abrir el de abajo¦🏋 Árvore de treino — complete o nó de cima para abrir o de baixo¦🏋 训练树 — 点满上方节点即可开启下方节点¦🏋 훈련 나무 — 위 칸을 채우면 아래 칸이 열려요
+2151¦枠 {number1} / {number2}¦Plätze {number1} / {number2}¦Emplacements {number1} / {number2}¦Espacios {number1} / {number2}¦Vagas {number1} / {number2}¦栏位 {number1} / {number2}¦칸 {number1} / {number2}
+2152¦🐾 ペット — レベルが上がると機能が開く¦🐾 Haustier — Funktionen öffnen sich mit dem Level¦🐾 Familier — des fonctions s'ouvrent en montant de niveau¦🐾 Mascota — se abren funciones al subir de nivel¦🐾 Pet — funções abrem ao subir de nível¦🐾 宠物 — 升级后开启新功能¦🐾 펫 — 레벨이 오르면 기능이 열려요
+2153¦🔒 必要¦🔒 Benötigt¦🔒 Requis¦🔒 Requiere¦🔒 Requer¦🔒 需要¦🔒 필요
+2154¦🐾 ペット解放¦🐾 Haustier freischalten¦🐾 Débloquer le familier¦🐾 Desbloquear mascota¦🐾 Desbloquear pet¦🐾 解锁宠物¦🐾 펫 해금
+2155¦⬆ レベルアップ {number1} G¦⬆ Stufenaufstieg {number1} G¦⬆ Niveau supérieur {number1} G¦⬆ Subir de nivel {number1} G¦⬆ Subir de nível {number1} G¦⬆ 升级 {number1} G¦⬆ 레벨업 {number1} G
+2156¦🎨 ペットの見た目・色：Pキー¦🎨 Aussehen / Farben des Haustiers: P drücken¦🎨 Apparence / couleurs du familier : touche P¦🎨 Aspecto / colores de la mascota: pulsa P¦🎨 Visual / cores do pet: aperte P¦🎨 宠物外观 / 颜色：按 P¦🎨 펫 외형 / 색상: P 키
+2157¦ゴールド感知¦Goldgespür¦Flair de l'or¦Olfato de oro¦Faro de ouro¦黄金嗅觉¦골드 감각
+2158¦攻撃速度¦Angriffstempo¦Vitesse d'attaque¦Velocidad de ataque¦Velocidade de ataque¦攻击速度¦공격 속도
+2159¦ダブルショット確率 +{number1}%¦Doppelschuss-Chance +{number1}%¦Chance de double tir +{number1}%¦Probabilidad de disparo doble +{number1}%¦Chance de tiro duplo +{number1}%¦双发几率 +{number1}%¦더블 샷 확률 +{number1}%
+2160¦クリティカルダメージ +{number1}%¦Kritischer Schaden +{number1}%¦Dégâts critiques +{number1}%¦Daño crítico +{number1}%¦Dano crítico +{number1}%¦暴击伤害 +{number1}%¦치명타 피해 +{number1}%
+2161¦ゴールド +{number1}%¦Gold +{number1} %¦Or +{number1}%¦Oro +{number1}%¦Ouro +{number1}%¦金币 +{number1}%¦골드 +{number1}%
+2162¦🔒 ロック中！先に上のつながったノードを訓練しよう¦🔒 Gesperrt! Trainiere zuerst die verbundenen Knoten darüber¦🔒 Verrouillé ! Entraînez d'abord les nœuds reliés au-dessus¦🔒 ¡Bloqueado! Entrena primero los nodos conectados de arriba¦🔒 Bloqueado! Treine primeiro os nós conectados acima¦🔒 未解锁！请先训练上方相连的节点¦🔒 잠김! 먼저 위에 이어진 칸을 훈련하세요

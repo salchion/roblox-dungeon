@@ -4,6 +4,15 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1}  ▲ Better than your current gear! (I → Bag", "{text1}  ▲ Besser als deine aktuelle Ausrüstung! (I → Tasche" },
+		{ "🎮 Welcome to the world of adventure, {text1}!", "🎮 Willkommen in der Welt der Abenteuer, {text1}!" },
+		{ "👑 Zone {number1} · The Lord of {text2} has reappeared!", "👑 Zone {number1} · Der Lord von {text2} ist wieder erschienen!" },
+		{ "Zone {number1} monsters {number2} / {number3} defeated · Lord {text4}", "Zone-{number1}-Monster {number2} / {number3} besiegt · Lord {text4}" },
+		{ "Skill cooldown -{text1}% per point  (max {number2})", "Fähigkeits-Abklingzeit -{text1} % pro Punkt (max. {number2})" },
+		{ "Dungeon layout: {text1} (changes every run", "Dungeon-Aufbau: {text1} (ändert sich bei jedem Lauf" },
+		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1} … automatisch zerlegt! Essenz +{number2}, {number3} G" },
+		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 Durchbruch auf Stufe {number1} gestartet! ({text2})" },
+		{ "Weapon range +{text1}% per point  (max {number2})", "Waffenreichweite +{text1} % pro Punkt (max. {number2})" },
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} automatisch zerlegt (Essenz +{number2}, {number3} G)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ Tagesquest abgeschlossen! Belohnung: {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 Zone {number1} Abschnitt {number2} — hier gibt es viele {text3}" },

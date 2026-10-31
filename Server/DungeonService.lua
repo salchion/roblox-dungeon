@@ -1508,7 +1508,7 @@ function Dungeon.ComputeDamage(player)
 	end
 	local isCrit = math.random() < chance
 	if isCrit then
-		damage *= P.CritMultiplier + (player:GetAttribute("LvCritDmg") or 0) + (player:GetAttribute("ParCritDmg") or 0) + overflow
+		damage *= P.CritMultiplier + (player:GetAttribute("LvCritDmg") or 0) + (player:GetAttribute("TrainCritDmg") or 0) + (player:GetAttribute("ParCritDmg") or 0) + overflow
 	end
 	if math.random() < (player:GetAttribute("GearJackpot") or 0) then -- 유니크 "Jackpot": 가끔 5배 (큰 피해 숫자로 보인다)
 		damage *= 5

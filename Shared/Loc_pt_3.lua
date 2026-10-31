@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "You have no {text1} gear. Get one from the field or the gacha", "Você não tem equipamento de {text1}. Consiga um no campo ou no gacha" },
+		{ "{text1} hasn't unlocked depth {number2} yet. (Clear depth {number3} first)", "{text1} ainda não desbloqueou a profundidade {number2}. (Conclua primeiro a profundidade {number3})" },
+		{ "{text1}'s level is too low. (This dungeon requires Lv.{number2}+)", "O nível de {text1} é muito baixo. (Esta masmorra exige Nv.{number2}+)" },
+		{ "{text1} has appeared! Dodge its attacks and take it down", "{text1} apareceu! Desvie dos ataques e derrube-o" },
+		{ "{text1} obtained! Added to your bag. (I → equip from Bag", "{text1} obtido! Adicionado à bolsa. (I → equipar pela bolsa" },
+		{ "Defeat Zone {number1} monsters {number2} / {number3} · Reward {text4} G + Ticket", "Derrote os monstros da zona {number1} {number2} / {number3} · Recompensa {text4} G + ticket" },
 		{ "🎒 {text1}  ▲ Better than your current gear! (I → Bag)", "🎒 {text1}  ▲ Melhor que seu equipamento atual! (I → Mochila)" },
 		{ "{text1}  ▲ +{number2}% better than your current gear! (I → Bag", "{text1}  ▲ +{number2}% melhor que seu equipamento atual! (I → Bolsa" },
 		{ "[{text1}] Starts in {number2}s! Survive the incoming monsters", "[{text1}] Começa em {number2} s! Sobreviva aos monstros que se aproximam" },

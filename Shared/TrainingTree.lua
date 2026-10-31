@@ -1,144 +1,280 @@
 -- TrainingTree (ReplicatedStorage 안의 ModuleScript, 이름: TrainingTree)
--- 성장 탭의 "훈련장"을 목록 대신 특성 나무처럼 그린다 (서버 동작은 그대로: Remotes.Growth "Train" / "Skip").
---   맨 위 뿌리(🏋) -> 가지 4개(공격 / 체력 / 치명타 / 속도). 가지마다 5단계마다 노드 하나(Lv5 ~ Lv30), 찍은 만큼 색이 채워진다.
---   가지를 누르면 아래 칸에 다음 단계 효과 / 시간 / 골드와 [훈련 시작] 또는 [시간 건너뛰기] 버튼이 나온다.
--- PlayerClient 의 buildGrowthTab 이 Build(env) 를 부른다 (PlayerClient 가 용량 / 지역 변수 한도에 가까워서 따로 뺐다).
+-- 성장 탭 전체를 하나의 "특성 나무" 화면으로 그린다 (예전: 액티브 스킬 / 패시브·훈련 / 펫이 따로 나뉜 목록)
+--   1) ⚔ 스킬: C / F / V ... 노드. 누르면 아래 칸에서 강화 (Remotes.Meta "SkillUp", 진행 중이면 시간 건너뛰기)
+--   2) 🏋 훈련: 1층(공격 / 체력 / 치명타 / 속도) -> 2층(더블샷 / 골드 감각 / 치명타 피해) -> 3층(공격 속도)
+--      아래 칸은 선으로 이어진 위 칸의 단계를 채워야 열린다 (Config.Growth.Stats[키].Req). 동시에 여러 칸 훈련 가능
+--   3) 🐾 펫: 기능들이 사슬처럼 이어진다. 누르면 열기 / 레벨업 / 시간 건너뛰기
+-- 서버 동작은 그대로다 (Growth "Train" / "Skip", Meta "SkillUp" / "PetUnlock" / "PetLevel"). 잠긴 칸은 서버도 막는다.
+-- PlayerClient 가 BuildAll(env) 을 부른다 (PlayerClient 가 용량 / 지역 변수 한도에 가까워서 따로 뺐다).
 
 local M = {}
 
-local COLORS = {
-	Attack = Color3.fromRGB(255, 120, 80),
-	Health = Color3.fromRGB(255, 90, 130),
-	Crit = Color3.fromRGB(255, 210, 80),
-	Speed = Color3.fromRGB(90, 210, 255),
+local DARK = Color3.fromRGB(20, 18, 34)
+local DIM = Color3.fromRGB(70, 66, 96)
+local GOLD = Color3.fromRGB(225, 196, 118)
+local NODE = 56
+local selected = { Skill = nil, Train = nil, Pet = nil } -- 칸마다 마지막으로 고른 노드 (메뉴를 다시 그려도 유지)
+
+local TRAIN_COLORS = {
+	Attack = Color3.fromRGB(255, 120, 80), Health = Color3.fromRGB(255, 90, 130), Crit = Color3.fromRGB(255, 210, 80), Speed = Color3.fromRGB(90, 210, 255),
+	Double = Color3.fromRGB(255, 160, 90), Gold = Color3.fromRGB(255, 215, 90), CritDmg = Color3.fromRGB(255, 120, 60), AtkSpeed = Color3.fromRGB(140, 220, 255),
 }
-local TIER_STEP = 5
-local selected = nil -- 마지막으로 고른 가지 (메뉴를 다시 그려도 유지)
+-- 훈련 노드 자리: { x(0~1), 층 }
+local TRAIN_POS = {
+	Attack = { 0.125, 1 }, Health = { 0.375, 1 }, Crit = { 0.625, 1 }, Speed = { 0.875, 1 },
+	Double = { 0.125, 2 }, Gold = { 0.375, 2 }, CritDmg = { 0.625, 2 }, AtkSpeed = { 0.375, 3 },
+}
+local TIER_Y = { 70, 190, 310 }
 
--- env: { Config, Remotes, State, NewRow, MakeLabel, MakeButton, Create, Rounded, Remaining(endAt), GREEN, GRAY, Refresh }
-function M.Build(env)
-	local Config, state = env.Config, env.State
-	local G = Config.Growth
-	local order = G.Stats.Order
-	local maxLevel = G.MaxLevel
-	local tiers = math.floor(maxLevel / TIER_STEP)
+local function comma(n)
+	local s = tostring(math.floor(n or 0))
+	local out = s:reverse():gsub("(%d%d%d)", "%1,"):reverse()
+	return (out:gsub("^,", ""))
+end
+
+-- 한 칸(섹션)을 그리는 도구 모음
+local function canvas(env, height, title)
 	local create, label = env.Create, env.MakeLabel
-
-	local jobs = {}
-	for _, job in ipairs(state.Jobs) do jobs[job.Stat] = job end
-	if not selected or not G.Stats[selected] then
-		selected = order[1]
-		for _, stat in ipairs(order) do if jobs[stat] then selected = stat break end end
-	end
-
-	-- 1) 나무
-	local treeH = 120 + tiers * 44 + 20
-	local row = env.NewRow(treeH, Color3.fromRGB(20, 18, 34))
+	local row = env.NewRow(height, DARK)
 	row.ClipsDescendants = true
 	create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(150, 140, 190)), Rotation = 90 }, row)
-	local function line(x0, y0, x1, y1, color, thick)
-		-- 가로 / 세로 선만 (x 는 0~1 비율, y 는 픽셀)
+	label({ Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 12, 0, 6), Text = title, RichText = true, TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = GOLD, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5 }, row)
+	local C = {}
+	function C.line(x0, y0, x1, y1, color, thick)
 		local f = create("Frame", { BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 2 }, row)
 		if x0 == x1 then
 			f.Size = UDim2.new(0, thick, 0, math.abs(y1 - y0))
 			f.Position = UDim2.new(x0, -thick / 2, 0, math.min(y0, y1))
 		else
-			f.Size = UDim2.new(math.abs(x1 - x0), 0, 0, thick)
-			f.Position = UDim2.new(math.min(x0, x1), 0, 0, y0 - thick / 2)
+			f.Size = UDim2.new(math.abs(x1 - x0), thick, 0, thick)
+			f.Position = UDim2.new(math.min(x0, x1), -thick / 2, 0, y0 - thick / 2)
 		end
-		return f
 	end
-	local function node(x, y, size, fill, stroke, strokeW, text, textSize)
-		local n = create("Frame", { Size = UDim2.new(0, size, 0, size), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y), BackgroundColor3 = fill, BorderSizePixel = 0, ZIndex = 4 }, row)
+	-- ㄴ자 연결선: (x0, y0) 아래로 -> 가운데 높이에서 옆으로 -> (x1, y1) 위까지
+	function C.elbow(x0, y0, x1, y1, color, thick)
+		local mid = (y0 + y1) / 2
+		C.line(x0, y0, x0, mid, color, thick)
+		if x0 ~= x1 then C.line(x0, mid, x1, mid, color, thick) end
+		C.line(x1, mid, x1, y1, color, thick)
+	end
+	-- 노드: state = "done" (다 찍음) / "active" (찍는 중) / "open" (찍을 수 있음) / "locked"
+	function C.node(id, x, y, icon, color, state, ratio, caption, sub, isSel, onClick)
+		local fill = state == "locked" and Color3.fromRGB(32, 30, 48) or color:Lerp(DARK, state == "done" and 0.25 or 0.65)
+		local n = create("Frame", { Size = UDim2.new(0, NODE, 0, NODE), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y), BackgroundColor3 = fill, BorderSizePixel = 0, ZIndex = 4 }, row)
 		create("UICorner", { CornerRadius = UDim.new(1, 0) }, n)
-		local s = create("UIStroke", { Color = stroke, Thickness = strokeW }, n)
-		if text then label({ Size = UDim2.new(1, 0, 1, 0), Text = text, TextSize = textSize or 16, ZIndex = 5 }, n) end
-		return n, s
+		create("UIStroke", { Color = isSel and Color3.new(1, 1, 1) or (state == "locked" and DIM or color), Thickness = isSel and 4 or (state == "done" and 3 or 2) }, n)
+		label({ Size = UDim2.new(1, 0, 1, 0), Text = state == "locked" and "🔒" or icon, TextSize = state == "locked" and 20 or 26, ZIndex = 5, TextTransparency = state == "locked" and 0.2 or 0 }, n)
+		-- 진행 막대 (노드 아래)
+		local bar = create("Frame", { Size = UDim2.new(0, NODE + 10, 0, 5), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(x, 0, 0, y + NODE / 2 + 4), BackgroundColor3 = Color3.fromRGB(14, 12, 24), BorderSizePixel = 0, ZIndex = 4 }, row)
+		create("UICorner", { CornerRadius = UDim.new(1, 0) }, bar)
+		local barFill = create("Frame", { Size = UDim2.new(math.clamp(ratio or 0, 0, 1), 0, 1, 0), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 5 }, bar)
+		create("UICorner", { CornerRadius = UDim.new(1, 0) }, barFill)
+		label({ Size = UDim2.new(0, 150, 0, 15), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(x, 0, 0, y + NODE / 2 + 11), Text = caption, RichText = true, TextSize = 11, Font = Enum.Font.GothamBold, ZIndex = 5, TextColor3 = state == "locked" and Color3.fromRGB(140, 136, 165) or Color3.new(1, 1, 1) }, row)
+		if sub and sub ~= "" then
+			label({ Size = UDim2.new(0, 150, 0, 13), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(x, 0, 0, y + NODE / 2 + 26), Text = sub, RichText = true, TextSize = 10, ZIndex = 5, TextColor3 = state == "active" and Color3.fromRGB(255, 225, 120) or Color3.fromRGB(170, 166, 195) }, row)
+		end
+		if state == "active" then -- 찍는 중: 금빛 고리
+			local ring = create("Frame", { Size = UDim2.new(0, NODE + 12, 0, NODE + 12), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y), BackgroundTransparency = 1, ZIndex = 3 }, row)
+			create("UICorner", { CornerRadius = UDim.new(1, 0) }, ring)
+			create("UIStroke", { Color = Color3.fromRGB(255, 225, 120), Thickness = 2, Transparency = 0.2 }, ring)
+		end
+		local hit = create("TextButton", { Size = UDim2.new(0, NODE + 30, 0, NODE + 46), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(x, 0, 0, y - NODE / 2 - 4), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, row)
+		hit.Activated:Connect(onClick)
+		return n
 	end
+	return C, row
+end
 
-	local dim = Color3.fromRGB(70, 66, 96)
-	local xs = {}
-	for i = 1, #order do xs[i] = (i - 0.5) / #order end
-	-- 뿌리 + 가로 가지
-	local rootY, barY, headY = 26, 52, 92
-	line(0.5, rootY, 0.5, barY, Color3.fromRGB(225, 196, 118), 3)
-	line(xs[1], barY, xs[#xs], barY, Color3.fromRGB(225, 196, 118), 3)
-	node(0.5, rootY, 40, Color3.fromRGB(48, 40, 24), Color3.fromRGB(225, 196, 118), 2.5, "🏋", 20)
-	label({ Size = UDim2.new(0, 220, 0, 18), Position = UDim2.new(0.5, 26, 0, rootY - 9), Text = string.format("Training slots %d / %d", #state.Jobs, state.Slots), TextSize = 12, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(225, 196, 118), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5 }, row)
+-- 고른 노드의 설명 + 버튼 한 줄
+local function detailRow(env, color, text, button)
+	local create, label = env.Create, env.MakeLabel
+	local detail = env.NewRow(84, Color3.fromRGB(30, 28, 46))
+	create("UIStroke", { Color = color, Thickness = 1.5, Transparency = 0.3 }, detail)
+	label({ Size = UDim2.new(1, -210, 1, -12), Position = UDim2.new(0, 14, 0, 6), RichText = true, TextSize = 12, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center, Text = text }, detail)
+	if button then
+		env.MakeButton({ Size = UDim2.new(0, 180, 0, 44), Position = UDim2.new(1, -192, 0.5, -22), Text = button.Text, TextSize = 12, BackgroundColor3 = button.Color }, detail, button.OnClick)
+	end
+end
 
-	for i, stat in ipairs(order) do
-		local def = G.Stats[stat]
-		local color = COLORS[stat] or Color3.fromRGB(200, 200, 220)
-		local level = state.Levels[stat] or 0
-		local x = xs[i]
-		local isSel = stat == selected
-		-- 고른 가지는 은은하게 밝은 기둥
-		if isSel then
-			local glow = create("Frame", { Size = UDim2.new(1 / #order, -8, 1, -barY - 4), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(x, 0, 0, barY + 4), BackgroundColor3 = color, BackgroundTransparency = 0.88, BorderSizePixel = 0, ZIndex = 1 }, row)
-			create("UICorner", { CornerRadius = UDim.new(0, 12) }, glow)
-		end
-		line(x, barY, x, headY, level > 0 and color or dim, 3)
-		-- 머리 노드: 큰 아이콘 + 이름 / 레벨
-		local _, headStroke = node(x, headY, 50, color:Lerp(Color3.fromRGB(20, 18, 34), 0.7), level > 0 and color or dim, isSel and 4 or 2.5, def.Icon, 24)
-		if jobs[stat] then headStroke.Color = Color3.fromRGB(255, 225, 120) end
-		label({ Size = UDim2.new(1 / #order, -10, 0, 16), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(x, 0, 0, headY + 28), Text = string.format("<b>%s</b>  Lv.%d", def.Name, level), RichText = true, TextSize = 12, ZIndex = 5 }, row)
-		if jobs[stat] then
-			label({ Size = UDim2.new(1 / #order, -10, 0, 14), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(x, 0, 0, headY + 44), Text = "⏳ " .. Config.FormatDuration(env.Remaining(jobs[stat].EndAt)), TextSize = 11, TextColor3 = Color3.fromRGB(255, 225, 120), ZIndex = 5 }, row)
-		end
-		-- 단계 노드: Lv5, 10, ... 30
-		local prevY = headY + 25
-		for t = 1, tiers do
-			local tierLevel = t * TIER_STEP
-			local y = headY + 70 + (t - 1) * 44
-			local reached = level >= tierLevel
-			local partial = not reached and level > tierLevel - TIER_STEP -- 지금 채우는 중인 단계
-			line(x, prevY, x, y - 13, reached and color or dim, reached and 3 or 2)
-			local fill = reached and color or (partial and color:Lerp(Color3.fromRGB(20, 18, 34), 0.7) or Color3.fromRGB(32, 30, 48))
-			local _, s = node(x, y, 26, fill, reached and Color3.fromRGB(255, 255, 255) or (partial and color or dim), reached and 2 or 1.5, nil)
-			if partial then
-				label({ Size = UDim2.new(1, 0, 1, 0), Text = string.format("%d/%d", level - (tierLevel - TIER_STEP), TIER_STEP), TextSize = 9, Font = Enum.Font.GothamBold, ZIndex = 6 }, s.Parent)
-			end
-			label({ Size = UDim2.new(0, 120, 0, 16), Position = UDim2.new(x, 18, 0, y - 8), Text = Config.FormatTrainEffect(stat, tierLevel), TextSize = 10, TextColor3 = reached and color or Color3.fromRGB(130, 128, 155), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5 }, row)
-			prevY = y + 13
-		end
-		-- 가지 전체를 누르면 고른다
-		local hit = create("TextButton", { Size = UDim2.new(1 / #order, 0, 1, -barY), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(x, 0, 0, barY), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, row)
-		hit.Activated:Connect(function()
-			selected = stat
+------------------------------------------------------------
+-- 1) 스킬
+------------------------------------------------------------
+local function buildSkills(env)
+	local Config, meta = env.Config, env.Meta
+	local U = Config.SkillUpgrade
+	local keys = Config.Skills.UpgradeOrder
+	local C = canvas(env, 150, "⚔ Skills — tap a node to upgrade")
+	if not selected.Skill then selected.Skill = keys[1] end
+	local owned = env.Player:GetAttribute("TimeSkip") or 0
+	for i, key in ipairs(keys) do
+		local cfg = Config.Skills[key]
+		local level = meta and meta.Skills and meta.Skills[key] or 1
+		local x = (i - 0.5) / #keys
+		local remaining = env.UpgradeRemaining(key)
+		local state = level >= U.MaxLevel and "done" or (remaining and "active" or "open")
+		local color = key == "Ult" and Color3.fromRGB(255, 200, 80) or (key == "Heal" and Color3.fromRGB(120, 230, 140) or Color3.fromRGB(255, 140, 200))
+		C.node(key, x, 66, cfg.Icon, color, state, level / U.MaxLevel, string.format("[%s] <b>%s</b>", cfg.Key or "", cfg.Name), remaining and ("⏳ " .. Config.FormatDuration(remaining)) or string.format("Lv.%d / %d", level, U.MaxLevel), selected.Skill == key, function()
+			selected.Skill = key
 			if env.Refresh then env.Refresh() end
 		end)
 	end
-
-	-- 2) 고른 가지의 상세 + 버튼
-	local stat = selected
-	local def = G.Stats[stat]
-	local level = state.Levels[stat] or 0
-	local job = jobs[stat]
-	local detail = env.NewRow(76, Color3.fromRGB(30, 28, 46))
-	local color = COLORS[stat] or Color3.fromRGB(200, 200, 220)
-	create("UIStroke", { Color = color, Thickness = 1.5, Transparency = 0.3 }, detail)
-	local status
-	if job then
-		status = string.format("<font color='#ffd966'>Training · Time left %s</font>", Config.FormatDuration(env.Remaining(job.EndAt)))
-	elseif level >= maxLevel then
-		status = "<font color='#78ff8c'>Max level!</font>"
+	-- 상세
+	local key = selected.Skill
+	local cfg = Config.Skills[key]
+	local level = meta and meta.Skills and meta.Skills[key] or 1
+	local remaining = env.UpgradeRemaining(key)
+	local maxed = level >= U.MaxLevel
+	local button
+	if maxed then
+		button = nil
+	elseif remaining then
+		button = { Text = string.format("⏱ Time Skip\n%s left", Config.FormatDuration(remaining)), Color = owned > 0 and Color3.fromRGB(200, 130, 40) or env.GRAY, OnClick = function() env.Remotes.Growth:FireServer("Skip", "Skill", key) end }
 	else
-		status = string.format("<font color='#bbbbcc'>Time needed %s · 💰 %d G</font>", Config.FormatDuration(Config.GetTrainTime(level)), Config.GetTrainGold(level))
+		button = { Text = string.format("Upgrade %s G\n⏱ %s", comma(Config.GetSkillUpgradeCost(level)), Config.FormatDuration(Config.GetSkillUpgradeTime(level))), Color = env.GREEN, OnClick = function() env.Remotes.Meta:FireServer("SkillUp", key) end }
 	end
-	local nextText = level < maxLevel and ("  →  <font color='#78ff8c'>" .. Config.FormatTrainEffect(stat, level + 1) .. "</font>") or ""
-	label({
-		Size = UDim2.new(1, -200, 1, -12), Position = UDim2.new(0, 14, 0, 6), RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center,
-		Text = string.format("<font size='15'><b>%s %s</b></font>  Lv.%d / %d\n%s%s\n%s", def.Icon, def.Name, level, maxLevel, Config.FormatTrainEffect(stat, level), nextText, status),
-	}, detail)
-	if job then
-		env.MakeButton({
-			Size = UDim2.new(0, 170, 0, 40), Position = UDim2.new(1, -182, 0.5, -20), Text = "⏱ Use Time Skip", TextSize = 13,
-			BackgroundColor3 = state.TimeSkip > 0 and Color3.fromRGB(200, 130, 40) or env.GRAY,
-		}, detail, function() env.Remotes.Growth:FireServer("Skip", "Train", stat) end)
-	elseif level < maxLevel then
-		env.MakeButton({
-			Size = UDim2.new(0, 170, 0, 40), Position = UDim2.new(1, -182, 0.5, -20), Text = "Start Training", TextSize = 14, BackgroundColor3 = env.GREEN,
-		}, detail, function() env.Remotes.Growth:FireServer("Train", stat) end)
+	detailRow(env, GOLD, string.format("<font size='14'><b>[%s] %s %s</b></font>  <font color='#ffd966'>Lv.%d / %d</font>%s\n<font color='#bbbbcc'>%s</font>",
+		cfg.Key or "", cfg.Icon, cfg.Name, level, U.MaxLevel, maxed and "  <font color='#78ff8c'>MAX</font>" or "", cfg.Desc or "") .. (env.SkillDetail and ("\n<font color='#9ad7ff'>" .. env.SkillDetail(key, level) .. "</font>") or ""), button)
+end
+
+------------------------------------------------------------
+-- 2) 훈련 나무
+------------------------------------------------------------
+local function buildTraining(env)
+	local Config, state = env.Config, env.Growth
+	local G = Config.Growth
+	if env.TrainLocked then env.TrainLocked() return end -- 2구역을 깨기 전에는 훈련 대신 안내만
+	if not state then return end
+	local levels = state.Levels
+	local jobs = {}
+	for _, job in ipairs(state.Jobs) do jobs[job.Stat] = job end
+	local C = canvas(env, TIER_Y[3] + 70, string.format("🏋 Training Tree — fill the upper node to open the one below<font size='11' color='#cfc8e8'>   Slots %d / %d</font>", #state.Jobs, state.Slots))
+	if not selected.Train or not G.Stats[selected.Train] then selected.Train = G.Stats.Order[1] end
+	-- 선 먼저 (노드 아래에 깔리게)
+	for _, stat in ipairs(G.Stats.Order) do
+		local def, pos = G.Stats[stat], TRAIN_POS[stat]
+		if pos then
+			for _, req in ipairs(def.Req or {}) do
+				local from = TRAIN_POS[req.Stat]
+				if from then
+					local met = (levels[req.Stat] or 0) >= req.Level
+					C.elbow(from[1], TIER_Y[from[2]] + NODE / 2 + 34, pos[1], TIER_Y[pos[2]] - NODE / 2, met and (TRAIN_COLORS[stat] or GOLD) or DIM, met and 3 or 2)
+				end
+			end
+		end
+	end
+	for _, stat in ipairs(G.Stats.Order) do
+		local def, pos = G.Stats[stat], TRAIN_POS[stat]
+		if pos then
+			local level = levels[stat] or 0
+			local max = Config.TrainMax(stat)
+			local unlocked = Config.TrainUnlocked(stat, levels)
+			local nodeState = not unlocked and "locked" or (jobs[stat] and "active" or (level >= max and "done" or "open"))
+			local sub = jobs[stat] and ("⏳ " .. Config.FormatDuration(env.Remaining(jobs[stat].EndAt))) or string.format("Lv.%d / %d", level, max)
+			C.node(stat, pos[1], TIER_Y[pos[2]], def.Icon, TRAIN_COLORS[stat] or GOLD, nodeState, level / max, def.Name, sub, selected.Train == stat, function()
+				selected.Train = stat
+				if env.Refresh then env.Refresh() end
+			end)
+		end
+	end
+	-- 상세
+	local stat = selected.Train
+	local def = G.Stats[stat]
+	local level = levels[stat] or 0
+	local max = Config.TrainMax(stat)
+	local job = jobs[stat]
+	local unlocked = Config.TrainUnlocked(stat, levels)
+	local lines = { string.format("<font size='14'><b>%s %s</b></font>  <font color='#ffd966'>Lv.%d / %d</font>", def.Icon, def.Name, level, max) }
+	table.insert(lines, Config.FormatTrainEffect(stat, level) .. (level < max and ("  →  <font color='#78ff8c'>" .. Config.FormatTrainEffect(stat, level + 1) .. "</font>") or ""))
+	local button
+	if not unlocked then
+		local need = {}
+		for _, req in ipairs(def.Req or {}) do
+			local ok = (levels[req.Stat] or 0) >= req.Level
+			table.insert(need, string.format("<font color='#%s'>%s</font><font color='#%s'> Lv.%d</font>", ok and "78ff8c" or "ff8a8a", G.Stats[req.Stat].Name, ok and "78ff8c" or "ff8a8a", req.Level))
+		end
+		table.insert(lines, "🔒 Needs<font> </font>" .. table.concat(need, " + "))
+	elseif job then
+		table.insert(lines, string.format("<font color='#ffd966'>Training · Time left %s</font>", Config.FormatDuration(env.Remaining(job.EndAt))))
+		button = { Text = "⏱ Use Time Skip", Color = state.TimeSkip > 0 and Color3.fromRGB(200, 130, 40) or env.GRAY, OnClick = function() env.Remotes.Growth:FireServer("Skip", "Train", stat) end }
+	elseif level >= max then
+		table.insert(lines, "<font color='#78ff8c'>Max level!</font>")
+	else
+		table.insert(lines, string.format("<font color='#bbbbcc'>Time needed %s · 💰 %s G</font>", Config.FormatDuration(Config.GetTrainTime(level)), comma(Config.GetTrainGold(level))))
+		button = { Text = "Start Training", Color = env.GREEN, OnClick = function() env.Remotes.Growth:FireServer("Train", stat) end }
+	end
+	detailRow(env, TRAIN_COLORS[stat] or GOLD, table.concat(lines, "\n"), button)
+end
+
+------------------------------------------------------------
+-- 3) 펫 사슬
+------------------------------------------------------------
+local function buildPet(env)
+	local Config, meta = env.Config, env.Meta
+	local P = Config.Pet
+	local pet = meta and meta.Pet
+	local level = pet and pet.Unlocked and pet.Level or 0
+	local fns = P.Functions
+	local perRow = 6
+	local rows = math.ceil(#fns / perRow)
+	local rowGap = 110
+	local C = canvas(env, 50 + rows * rowGap, string.format("🐾 Pet — features open as it levels up<font size='11' color='#cfc8e8'>   Lv.%d / %d</font>", level, P.MaxLevel))
+	local nextFn
+	for _, fn in ipairs(fns) do
+		if fn.Level > level then nextFn = fn break end
+	end
+	if not selected.Pet then selected.Pet = (nextFn or fns[1]).Level end
+	local function posOf(i)
+		local r = (i - 1) // perRow
+		local c = (i - 1) % perRow
+		if r % 2 == 1 then c = perRow - 1 - c end -- 뱀처럼 꺾어서 이어진다
+		return (c + 0.5) / perRow, 70 + r * rowGap
+	end
+	for i = 2, #fns do
+		local x0, y0 = posOf(i - 1)
+		local x1, y1 = posOf(i)
+		local lit = level >= fns[i].Level
+		if y0 == y1 then
+			C.line(x0, y0, x1, y1, lit and Color3.fromRGB(255, 200, 120) or DIM, lit and 3 or 2)
+		else
+			C.line(x0, y0, x0, y1, lit and Color3.fromRGB(255, 200, 120) or DIM, lit and 3 or 2)
+		end
+	end
+	local upEnd = env.Player:GetAttribute("UpPet")
+	for i, fn in ipairs(fns) do
+		local x, y = posOf(i)
+		local open = level >= fn.Level
+		local isNext = nextFn == fn
+		local nodeState = open and "done" or (isNext and (upEnd and "active" or "open") or "locked")
+		C.node(fn.Level, x, y, fn.Icon, Color3.fromRGB(255, 200, 120), nodeState, open and 1 or 0, string.format("Lv.%d <b>%s</b>", fn.Level, fn.Name), "", selected.Pet == fn.Level, function()
+			selected.Pet = fn.Level
+			if env.Refresh then env.Refresh() end
+		end)
+	end
+	-- 상세: 고른 기능 설명 + 열기 / 레벨업 / 시간 건너뛰기 버튼
+	local chosen = fns[1]
+	for _, fn in ipairs(fns) do if fn.Level == selected.Pet then chosen = fn end end
+	local gold = env.Player:GetAttribute("Gold") or 0
+	local owned = env.Player:GetAttribute("TimeSkip") or 0
+	local button
+	if not pet or not pet.Unlocked then
+		button = { Text = string.format("🐾 Unlock Pet\n💰 %s G", comma(P.UnlockCost)), Color = gold >= P.UnlockCost and env.GREEN or Color3.fromRGB(95, 60, 62), OnClick = function() env.Remotes.Meta:FireServer("PetUnlock") end }
+	elseif pet.Level < P.MaxLevel then
+		if upEnd then
+			button = { Text = string.format("⏱ Time Skip\n%s left", Config.FormatDuration(math.max(0, upEnd - workspace:GetServerTimeNow()))), Color = owned > 0 and Color3.fromRGB(200, 130, 40) or env.GRAY, OnClick = function() env.Remotes.Growth:FireServer("Skip", "Pet", "Pet") end }
+		else
+			local cost = Config.GetPetLevelCost(pet.Level)
+			button = { Text = string.format("⬆ Level Up %s G\n⏱ %s", comma(cost), Config.FormatDuration(Config.GetPetLevelTime(pet.Level))), Color = gold >= cost and env.GREEN or Color3.fromRGB(95, 60, 62), OnClick = function() env.Remotes.Meta:FireServer("PetLevel") end }
+		end
+	end
+	detailRow(env, Color3.fromRGB(255, 200, 120), string.format("<font size='14'><b>%s Lv.%d %s</b></font>  %s\n<font color='#bbbbcc'>%s</font>\n<font size='10' color='#9aa0b8'>🎨 Pet looks / colors: press P</font>",
+		chosen.Icon, chosen.Level, chosen.Name, level >= chosen.Level and "<font color='#78ff8c'>✔ Unlocked</font>" or "<font color='#ff8a8a'>🔒 Locked</font>", chosen.Desc), button)
+end
+
+-- env: { Config, Remotes, Player, Meta, Growth, Remaining(endAt), UpgradeRemaining(key), SkillDetail(key, level), TrainLocked(), NewRow, MakeLabel, MakeButton, Create, GREEN, GRAY, Refresh }
+function M.BuildAll(env)
+	for _, part in ipairs({ buildSkills, buildTraining, buildPet }) do
+		local ok, err = pcall(part, env)
+		if not ok then warn("[TrainingTree] " .. tostring(err)) end
 	end
 end
 

@@ -70,6 +70,10 @@ local function recompute(player, state)
 	player:SetAttribute("TrainHealth", math.floor(state.Levels.Health * R.Stats.Health.Per + 0.5))
 	player:SetAttribute("TrainCrit", state.Levels.Crit * R.Stats.Crit.Per)
 	player:SetAttribute("TrainSpeed", state.Levels.Speed * R.Stats.Speed.Per)
+	player:SetAttribute("TrainDouble", (state.Levels.Double or 0) * R.Stats.Double.Per)
+	player:SetAttribute("TrainCritDmg", (state.Levels.CritDmg or 0) * R.Stats.CritDmg.Per)
+	player:SetAttribute("TrainGold", (state.Levels.Gold or 0) * R.Stats.Gold.Per)
+	player:SetAttribute("TrainAtkSpeed", (state.Levels.AtkSpeed or 0) * R.Stats.AtkSpeed.Per)
 end
 
 ------------------------------------------------------------
@@ -156,9 +160,13 @@ function Growth.StartTrain(player, stat)
 	end
 	if typeof(stat) ~= "string" or not R.Stats[stat] or stat == "Order" then return end
 
-	local level = state.Levels[stat]
-	if level >= R.MaxLevel then
+	local level = state.Levels[stat] or 0
+	if level >= Config.TrainMax(stat) then
 		notify(player, "⚠ Already at max level!")
+		return
+	end
+	if not Config.TrainUnlocked(stat, state.Levels) then -- 특성 나무: 위 칸을 먼저 찍어야 열린다
+		notify(player, "🔒 Locked! Train the connected nodes above first")
 		return
 	end
 	for _, job in ipairs(state.Jobs) do
@@ -329,7 +337,7 @@ function Growth.Load(player, saved)
 	if typeof(saved) == "table" then
 		if typeof(saved.Levels) == "table" then
 			for _, stat in ipairs(R.Stats.Order) do
-				state.Levels[stat] = math.clamp(math.floor(tonumber(saved.Levels[stat]) or 0), 0, R.MaxLevel)
+				state.Levels[stat] = math.clamp(math.floor(tonumber(saved.Levels[stat]) or 0), 0, Config.TrainMax(stat))
 			end
 		end
 		if typeof(saved.Jobs) == "table" then
@@ -384,7 +392,7 @@ end
 function Growth.AdminMax(player)
 	local state = states[player]
 	if not state then return false end
-	for _, stat in ipairs(R.Stats.Order) do state.Levels[stat] = R.MaxLevel end
+	for _, stat in ipairs(R.Stats.Order) do state.Levels[stat] = Config.TrainMax(stat) end
 	state.Jobs = {}
 	for _, job in ipairs(state.UpJobs) do player:SetAttribute(upAttr(job.Kind, job.Key), nil) end
 	state.UpJobs = {}
