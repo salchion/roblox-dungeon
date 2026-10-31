@@ -372,6 +372,8 @@ return {
 		["Dead Eye blasts the boss. You're invincible meanwhile."] = "Dead Eye zerlegt den Boss. Währenddessen bist du unverwundbar.",
 		["Surrounded? Press F!"] = "Umzingelt? Drück F!",
 		["Death Lotus hits everything around you for 2.5s."] = "Todeslotus trifft 2,5 s lang alles um dich herum.",
+		["🏆 POWER RANKING  TOP 20"] = "🏆 KRAFT-RANGLISTE TOP 20",
+		["All servers · updates every 45s"] = "Alle Server · Aktualisierung alle 45 s",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -932,7 +934,5 @@ return {
 		{ "Move speed +{text1} per point  (max {number2})", "Lauftempo +{text1} pro Punkt (max. {number2})" },
 		{ "{text1}: vs bosses {number2}% · vs monsters {number3}%", "{text1}: gegen Bosse {number2}% · gegen Monster {number3}%" },
 		{ "📅 {number1}-day login streak! Reward: {text2}", "📅 {number1}-Tage-Login-Serie! Belohnung: {text2}" },
-		{ "✅ Mission complete! Reward: {text1}", "✅ Mission abgeschlossen! Belohnung: {text1}" },
-		{ "{text1}  ·  keys 1-5 switch weapons", "{text1}  ·  Tasten 1-5 wechseln Waffen" },
 	},
 }

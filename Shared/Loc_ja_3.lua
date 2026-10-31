@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Recommended Power {number1}", "推奨戦闘力 {number1}" },
+		{ "Radius {number1} · Damage x{number2}", "範囲 {number1} · ダメージ x{number2}" },
 		{ "Power Ranking TOP {number1}", "戦闘力ランキング TOP {number1}" },
 		{ "Spend {number1} stat points", "ステータスポイントを{number1}使う" },
 		{ "Zone {number1} · Darklands", "ゾーン {number1} ・ダークランド" },

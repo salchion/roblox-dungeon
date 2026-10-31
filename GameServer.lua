@@ -857,8 +857,13 @@ Remotes.Intro.OnServerEvent:Connect(function(player, action, x)
 		local placed = false
 		local okT, Tutorial = pcall(function() return require(Modules:WaitForChild("TutorialService")) end)
 		if okT and Tutorial.PlaceInField then
-			local okP, result = pcall(Tutorial.PlaceInField, player)
-			placed = okP and result == true
+			-- (튜토리얼 진행 상태를 아직 못 불러왔으면 실패하므로 최대 2.5초 동안 다시 시도한다: 가끔 마을에 착지한 뒤 필드로 넘어가던 문제)
+			local started = os.clock()
+			repeat
+				local okP, result = pcall(Tutorial.PlaceInField, player)
+				placed = okP and result == true
+				if not placed then task.wait(0.25) end
+			until placed or os.clock() - started > 2.5 or not player.Parent
 		end
 		Remotes.Intro:FireClient(player, "Placed", placed)
 		return

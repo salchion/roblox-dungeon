@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Defeat {number1} Golden Goblin(s)", "황금 고블린 {number1}마리를 물리치세요" },
 		{ "🔒 Zone {number1} · Volcano Sealed", "🔒 구역 {number1} · 화산 봉쇄됨" },
 		{ "Lord of Meadow  ·  Zone {number1}", "초원의 군주 · 구역 {number1}" },
 		{ "Idle Accrual Cap: {number1} Hours", "유휴 누적 한도: {number1} 시간" },

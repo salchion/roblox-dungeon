@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "✅ Mission complete! Reward: {text1}", "✅ Mission abgeschlossen! Belohnung: {text1}" },
+		{ "{text1}  ·  keys 1-5 switch weapons", "{text1}  ·  Tasten 1-5 wechseln Waffen" },
 		{ "♻ {text1} (auto-salvage +{number2} Essence)", "♻ {text1} (Auto-Zerlegung +{number2} Essenz)" },
 		{ "✨ {number1}-piece set complete! {text2} Lv.{number3}", "✨ {number1}-teiliges Set komplett! {text2} Lv.{number3}" },
 		{ "📢 {text1} defeated the Final Lord!", "📢 {text1} hat den Letzten Lord besiegt!" },

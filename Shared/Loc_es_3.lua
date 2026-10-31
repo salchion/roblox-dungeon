@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ ¡Subida de nivel de la mascota iniciada! ({text1}) — usa Acelerar tiempo para terminar antes" },
 		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "Recomendado ⚡{text1}  ·  ¡Apunta al orbe amarillo para triple daño!" },
 		{ "You have no {text1} gear. Get one from the field or the gacha", "No tienes equipo de {text1}. Consigue uno en el campo o en el gacha" },
 		{ "{text1} hasn't unlocked depth {number2} yet. (Clear depth {number3} first)", "{text1} aún no ha desbloqueado la profundidad {number2}. (Completa primero la profundidad {number3})" },

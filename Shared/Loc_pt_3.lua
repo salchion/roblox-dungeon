@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1}  ▲ Better than your current gear! (I → Bag", "{text1}  ▲ Melhor que seu equipamento atual! (I → Bolsa" },
+		{ "🎮 Welcome to the world of adventure, {text1}!", "🎮 Bem-vindo ao mundo da aventura, {text1}!" },
 		{ "👑 Zone {number1} · The Lord of {text2} has reappeared!", "👑 Zona {number1} · O senhor de {text2} reapareceu!" },
 		{ "Zone {number1} monsters {number2} / {number3} defeated · Lord {text4}", "Monstros da zona {number1} {number2} / {number3} derrotados · Senhor {text4}" },
 		{ "Skill cooldown -{text1}% per point  (max {number2})", "Recarga de habilidades -{text1}% por ponto (máx. {number2})" },

@@ -546,6 +546,8 @@ return {
 		["Dead Eye blasts the boss. You're invincible meanwhile."] = "デッドアイがボスを撃ち抜く。発動中は無敵！",
 		["Surrounded? Press F!"] = "囲まれた？Fを押そう！",
 		["Death Lotus hits everything around you for 2.5s."] = "死の蓮が2.5秒間まわりの敵すべてを攻撃。",
+		["🏆 POWER RANKING  TOP 20"] = "🏆 戦闘力ランキング TOP 20",
+		["All servers · updates every 45s"] = "全サーバー · 45秒ごとに更新",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -918,7 +920,5 @@ return {
 		{ "Upgrade success! +{number1}", "強化成功！+{number1}" },
 		{ "Field · Best Zone {number1}", "フィールド · 最高ゾーン{number1}" },
 		{ "👥 Online: {number1} players", "👥 オンライン: {number1}人" },
-		{ "Recommended Power {number1}", "推奨戦闘力 {number1}" },
-		{ "Radius {number1} · Damage x{number2}", "範囲 {number1} · ダメージ x{number2}" },
 	},
 }

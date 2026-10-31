@@ -178,6 +178,12 @@ local function startTutorialRift(player, at)
 		local root = getAliveParts(player)
 		if not root then print("[튜토리얼 열쇠] 중단: 캐릭터 없음") return end
 		print(string.format("[튜토리얼 열쇠] %s 시작", player.Name))
+		-- 열쇠 장면 동안은 무적 (보이지 않는 방패): 열쇠를 주우러 가는 사이 주변 몬스터에게 쓰러져 마을로 돌아가던 문제
+		local keyShield = Instance.new("ForceField")
+		keyShield.Name = "TutorialKeyShield"
+		keyShield.Visible = false
+		keyShield.Parent = player.Character
+		game:GetService("Debris"):AddItem(keyShield, 40)
 		notify(player, "🗝 The Lord dropped a dungeon key!")
 		Remotes.Tutorial:FireClient(player, "WaypointClear")
 		-- 열쇠: 군주가 쓰러진 자리 위에 크게 떠올라 천천히 돈다. 흰색으로 날아가 보이지 않게 진한 주황빛 금색 + 큰 후광 + 바닥 고리 + 불꽃 + 굵은 빛기둥으로 멀리서도 눈에 띄게 한다
@@ -248,7 +254,7 @@ local function startTutorialRift(player, at)
 			aura.CFrame = key.CFrame
 			ring.Transparency = 0.6 + 0.2 * math.sin(hover * 4)
 			local near = (Vector3.new(root.Position.X, 0, root.Position.Z) - Vector3.new(at.X, 0, at.Z)).Magnitude
-			if near <= 8 or os.clock() - waitStart > 45 then break end
+			if near <= 8 or os.clock() - waitStart > 12 then break end -- (12초 안에 안 주우면 열쇠가 스스로 날아온다: 예전 45초)
 			task.wait()
 		end
 		beam:Destroy()
@@ -341,6 +347,8 @@ local function startTutorialRift(player, at)
 		root = getAliveParts(player)
 		if root then root.Anchored = false end
 		shield:Destroy()
+		local leftShield = player.Character and player.Character:FindFirstChild("TutorialKeyShield")
+		if leftShield then leftShield:Destroy() end
 		player:SetAttribute("CombatLocked", nil)
 		print(string.format("[튜토리얼 열쇠] %s 던전 입장 시도 (Zone=%s, TutorialDungeonRun=%s)", player.Name, tostring(player:GetAttribute("Zone")), tostring(player:GetAttribute("TutorialDungeonRun"))))
 		Dungeon.Start(player, "Cave", "Easy", nil, nil, true)
