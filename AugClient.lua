@@ -63,54 +63,99 @@ local badge = label({
 }, pill)
 make("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
 
+-- 창 모양: 가운데 네모(고른 효과의 설명 + 버튼) 둘레에 구역 효과 8개가 원으로 둘러선다 (무협 게임의 팔괘 / 경혈처럼).
+-- 한 화면에 다 들어와서 스크롤이 없다. 원을 누르면 가운데에 그 효과가 나온다.
+local PANEL_W, PANEL_H = 680, 548
+local RING_CX, RING_CY = PANEL_W / 2, 300 -- 원들이 둘러서는 중심
+local RING_RX, RING_RY = 250, 178
+local ORB = 66
+local BOX_W, BOX_H = 244, 214
+
 local panel = make("Frame", {
-	Size = UDim2.new(0, 480, 0, 470), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
-	BackgroundColor3 = Color3.fromRGB(26, 28, 42), BorderSizePixel = 0, Visible = false,
+	Size = UDim2.new(0, PANEL_W, 0, PANEL_H), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+	BackgroundColor3 = Color3.fromRGB(22, 20, 34), BorderSizePixel = 0, Visible = false,
 }, gui)
-make("UICorner", { CornerRadius = UDim.new(0, 12) }, panel)
+make("UICorner", { CornerRadius = UDim.new(0, 14) }, panel)
 make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 2, Transparency = 0.25 }, panel)
-make("UISizeConstraint", { MaxSize = Vector2.new(480, 470) }, panel)
+make("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(150, 130, 180)), Rotation = 90 }, panel)
+local panelScale = make("UIScale", { Scale = 1 }, panel) -- 작은 화면에서는 통째로 줄인다
+local function fitPanel()
+	local camera = workspace.CurrentCamera
+	if not camera then return end
+	local view = camera.ViewportSize
+	panelScale.Scale = math.clamp(math.min((view.X - 20) / PANEL_W, (view.Y - 20) / PANEL_H), 0.45, 1)
+end
+fitPanel()
+if workspace.CurrentCamera then workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fitPanel) end
 
 label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "🌟 Set Effects", TextSize = 20, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left }, panel)
 local slotLabel = label({ Size = UDim2.new(1, -32, 0, 20), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, panel)
-label({ Size = UDim2.new(1, -32, 0, 32), Position = UDim2.new(0, 16, 0, 60), Text = "Tap a slot to toggle it. Defeat a lord to unlock its effect, then upgrade it with gold up to Lv.3. Wear that zone's set gear for Lv.4 at 1 piece · Lv.5 at 2 pieces · Lv.6 at 3 pieces! The real power shows up in field hunting.", TextSize = 10, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
+label({ Size = UDim2.new(1, -32, 0, 28), Position = UDim2.new(0, 16, 0, 60), Text = "Tap a slot to toggle it. Defeat a lord to unlock its effect, then upgrade it with gold up to Lv.3. Wear that zone's set gear for Lv.4 at 1 piece · Lv.5 at 2 pieces · Lv.6 at 3 pieces! The real power shows up in field hunting.", TextSize = 10, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
 button({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), BackgroundColor3 = Color3.fromRGB(54, 58, 82), Text = "Close", TextSize = 12 }, panel, function() panel.Visible = false end)
 
-local list = make("ScrollingFrame", {
-	Size = UDim2.new(1, -24, 1, -104), Position = UDim2.new(0, 12, 0, 94), BackgroundTransparency = 1, BorderSizePixel = 0,
-	ScrollBarThickness = 5, CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.Y,
-}, panel)
-make("UIListLayout", { Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder }, list)
+-- 둘레의 은은한 고리 (원들을 잇는 길)
+for i = 0, 47 do
+	local angle = i / 48 * math.pi * 2
+	make("Frame", {
+		Size = UDim2.new(0, 4, 0, 4), AnchorPoint = Vector2.new(0.5, 0.5), BorderSizePixel = 0,
+		Position = UDim2.new(0, RING_CX + math.cos(angle) * RING_RX, 0, RING_CY + math.sin(angle) * RING_RY),
+		BackgroundColor3 = Color3.fromRGB(255, 200, 130), BackgroundTransparency = 0.6,
+	}, panel)
+end
 
+-- 가운데 네모: 고른 효과
+local box = make("Frame", {
+	Size = UDim2.new(0, BOX_W, 0, BOX_H), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, RING_CX, 0, RING_CY),
+	BackgroundColor3 = Color3.fromRGB(34, 30, 50), BorderSizePixel = 0, ZIndex = 2,
+}, panel)
+make("UICorner", { CornerRadius = UDim.new(0, 10) }, box)
+local boxStroke = make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 2, Transparency = 0.2 }, box)
+local boxIcon = label({ Size = UDim2.new(0, 34, 0, 34), Position = UDim2.new(0, 8, 0, 6), Text = "", TextSize = 24, ZIndex = 3 }, box)
+local boxTitle = label({ Size = UDim2.new(1, -52, 0, 34), Position = UDim2.new(0, 46, 0, 6), Text = "", TextSize = 12, RichText = true, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3 }, box)
+local boxBody = label({
+	Size = UDim2.new(1, -16, 1, -94), Position = UDim2.new(0, 8, 0, 44), Text = "", TextSize = 10, RichText = true, TextWrapped = true,
+	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(205, 210, 235), ZIndex = 3,
+}, box)
+local selectedZone = 1
+local toggleButton = button({ Size = UDim2.new(0.5, -12, 0, 38), Position = UDim2.new(0, 8, 1, -46), BackgroundColor3 = Color3.fromRGB(62, 64, 84), Text = "", TextSize = 12 }, box, function()
+	Remotes.Aug:FireServer("Toggle", selectedZone)
+end)
+toggleButton.ZIndex = 3
+local buyButton = button({ Size = UDim2.new(0.5, -8, 0, 38), Position = UDim2.new(0.5, 0, 1, -46), BackgroundColor3 = Color3.fromRGB(140, 104, 40), Text = "", TextSize = 10 }, box, function()
+	Remotes.Aug:FireServer("Buy", selectedZone)
+end)
+buyButton.ZIndex = 3
+buyButton.TextWrapped = true
+
+local refresh -- (아래에서 정의)
 local rows = {}
 for zone = 1, ZONES do
 	local attr = Config.Sets.ZoneAug[zone]
 	local info = Config.AugInfo[attr]
-	local row = make("Frame", { Size = UDim2.new(1, -8, 0, 62), BackgroundColor3 = Color3.fromRGB(36, 39, 58), BorderSizePixel = 0, LayoutOrder = zone }, list)
-	make("UICorner", { CornerRadius = UDim.new(0, 8) }, row)
-	label({ Size = UDim2.new(0, 34, 1, 0), Position = UDim2.new(0, 6, 0, 0), Text = info.Icon, TextSize = 20 }, row)
-	local title = label({ Size = UDim2.new(1, -250, 0, 20), Position = UDim2.new(0, 44, 0, 5), Text = "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, row)
-	local desc = label({ Size = UDim2.new(1, -250, 0, 14), Position = UDim2.new(0, 44, 0, 32), Text = info.Desc, TextSize = 10, TextColor3 = Color3.fromRGB(170, 215, 190), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = false }, row)
-	-- 칸 어디를 눌러도 켜고 꺼진다 (맨 아래에 깔린 투명 버튼). 오른쪽 위 ON/OFF 는 상태만 보여 준다.
-	local hit = make("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", AutoButtonColor = false, ZIndex = 1 }, row)
-	hit.Activated:Connect(function() Remotes.Aug:FireServer("Toggle", zone) end)
-	local toggle = make("TextLabel", {
-		Size = UDim2.new(0, 64, 0, 24), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 6), BackgroundColor3 = Color3.fromRGB(62, 64, 84),
-		BorderSizePixel = 0, Font = Enum.Font.GothamBold, TextSize = 10, TextColor3 = Color3.fromRGB(150, 154, 180), Text = "○ OFF", ZIndex = 2,
-	}, row)
-	make("UICorner", { CornerRadius = UDim.new(0, 12) }, toggle)
-	local buy = button({ Size = UDim2.new(0, 150, 0, 26), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 32), BackgroundColor3 = Color3.fromRGB(140, 104, 40), Text = "", TextSize = 10 }, row, function()
-		Remotes.Aug:FireServer("Buy", zone)
-	end)
-	-- ⓘ 자세히: 1~6단계 수치 (눌러서 펼치고 접는다)
-	local detail = label({
-		Size = UDim2.new(1, -20, 0, 0), Position = UDim2.new(0, 10, 0, 64), Text = "", TextSize = 9, RichText = true, Visible = false,
-		TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = true, TextColor3 = Color3.fromRGB(205, 210, 235), ZIndex = 2,
-	}, row)
-	local infoButton = button({ Size = UDim2.new(0, 32, 0, 26), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -164, 0, 32), BackgroundColor3 = Color3.fromRGB(64, 72, 112), Text = "ⓘ", TextSize = 14 }, row, function() end)
-	infoButton.ZIndex = 3
-	-- 켜져 있으면 테두리가 효과 색으로 빛나며 천천히 도는 띠가 된다 (꺼져 있으면 테두리 없음)
-	local rowStroke = make("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Transparency = 1 }, row)
+	local angle = -math.pi / 2 + (zone - 1) / ZONES * math.pi * 2 -- 맨 위부터 시계 방향
+	local cx, cy = RING_CX + math.cos(angle) * RING_RX, RING_CY + math.sin(angle) * RING_RY
+	local orb = make("Frame", {
+		Size = UDim2.new(0, ORB, 0, ORB), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy),
+		BackgroundColor3 = Color3.fromRGB(36, 34, 52), BorderSizePixel = 0, ZIndex = 3,
+	}, panel)
+	make("UICorner", { CornerRadius = UDim.new(1, 0) }, orb)
+	local icon = label({ Size = UDim2.new(1, 0, 1, 0), Text = info.Icon, TextSize = 28, ZIndex = 4 }, orb)
+	local zoneTag = label({
+		Size = UDim2.new(0, 22, 0, 22), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.15, 0, 0.15, 0), BackgroundTransparency = 0,
+		BackgroundColor3 = Color3.fromRGB(60, 50, 80), Text = tostring(zone), TextSize = 11, Font = Enum.Font.GothamBlack, ZIndex = 5,
+	}, orb)
+	make("UICorner", { CornerRadius = UDim.new(1, 0) }, zoneTag)
+	local levelTag = label({
+		Size = UDim2.new(0, 34, 0, 16), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 1, 0), BackgroundTransparency = 0,
+		BackgroundColor3 = Color3.fromRGB(30, 26, 44), Text = "", TextSize = 10, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 120), ZIndex = 5,
+	}, orb)
+	make("UICorner", { CornerRadius = UDim.new(1, 0) }, levelTag)
+	local caption = label({
+		Size = UDim2.new(0, 120, 0, 14), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, cx, 0, cy + ORB / 2 + 10),
+		Text = info.Name, TextSize = 11, ZIndex = 4, TextTruncate = Enum.TextTruncate.AtEnd,
+	}, panel)
+	-- 켜져 있으면 테두리가 효과 색으로 빛나며 천천히 도는 띠가 된다. 고른 원은 흰 고리
+	local rowStroke = make("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Transparency = 1 }, orb)
 	local gradient = make("UIGradient", {
 		Color = ColorSequence.new({
 			ColorSequenceKeypoint.new(0, info.Color),
@@ -119,104 +164,100 @@ for zone = 1, ZONES do
 			ColorSequenceKeypoint.new(1, info.Color),
 		}),
 	}, rowStroke)
-	rows[zone] = { Title = title, Toggle = toggle, Buy = buy, Row = row, Stroke = rowStroke, Gradient = gradient, Detail = detail, Info = infoButton, Desc = desc, Open = false }
-	infoButton.Activated:Connect(function()
-		rows[zone].Open = not rows[zone].Open
-		rows[zone].Update()
+	local selRing = make("Frame", { Size = UDim2.new(0, ORB + 12, 0, ORB + 12), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy), BackgroundTransparency = 1, ZIndex = 2, Visible = false }, panel)
+	make("UICorner", { CornerRadius = UDim.new(1, 0) }, selRing)
+	make("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 2, Transparency = 0.15 }, selRing)
+	local hit = make("TextButton", { Size = UDim2.new(0, ORB + 30, 0, ORB + 34), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy + 10), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, panel)
+	hit.Activated:Connect(function()
+		selectedZone = zone
+		refresh()
 	end)
-	rows[zone].Update = function()
-		local r = rows[zone]
-		local levelNow = (player:GetAttribute("AugLvZ_" .. zone) or 0) + (player:GetAttribute("AugGearZ_" .. zone) or 0)
-		local atk = Config.BaseAttackEstimate and Config.BaseAttackEstimate(player) or 0
-		r.Info.Text = r.Open and "▲" or "ⓘ" -- (작은 버튼: 왼쪽 설명 줄과 겹치지 않게)
-		if not r.Open then
-			r.Detail.Visible = false
-			r.Row.Size = UDim2.new(1, -8, 0, 62)
-			return
-		end
-		local attr = Config.Sets.ZoneAug[zone]
-		local info = Config.AugInfo[attr]
-		local role = Config.AugRoles and Config.AugRoles[attr]
-		local lines = { "<font color='#aaf0c8'>" .. info.Desc .. "</font>" }
-		if role then
-			local mult = Config.AugRoleMult[role.Role]
-			table.insert(lines, string.format("%s: vs bosses %d%% · vs monsters %d%%", Config.AugRoleLabel[role.Role], mult.Boss * 100, mult.Mob * 100))
-			local names = {}
-			for _, key in ipairs(role.Weapons) do
-				local w = Config.WeaponTypes[key]
-				table.insert(names, w and w.Name or key)
-			end
-			table.insert(lines, string.format("🔫 Best with %s: set damage +40%% and %s", table.concat(names, " / "), role.Perk))
-		end
-		table.insert(lines, "<b>Per level</b>  (Lv.1–3 from gold · Lv.4–6 with set gear; damage ≈ one hit at your current attack, before crit/combo)")
-		for l = 1, 6 do
-			local text, mult = Config.AugLevelLine(attr, l)
-			local dmg = mult and atk > 0 and string.format("  <font color='#ffd966'>≈ %d dmg</font>", math.floor(atk * mult + 0.5)) or ""
-			local line = string.format("Lv.%d  %s%s", l, text, dmg)
-			if l == levelNow then line = "<font color='#78ff8c'><b>▶ " .. line .. "  (now)</b></font>" end
-			table.insert(lines, line)
-		end
-		r.Detail.Text = table.concat(lines, "\n")
-		local height = 24 + 16 * #lines -- (긴 줄이 접혀도 넘치지 않게 여유)
-		r.Detail.Size = UDim2.new(1, -20, 0, height)
-		r.Detail.Visible = true
-		r.Row.Size = UDim2.new(1, -8, 0, 62 + height + 6)
-	end
+	rows[zone] = { Orb = orb, Icon = icon, Level = levelTag, Caption = caption, Stroke = rowStroke, Gradient = gradient, Sel = selRing }
 end
 
-local function refresh()
+local function roleLine(attrKey)
+	local role = Config.AugRoles and Config.AugRoles[attrKey]
+	if not role then return nil end
+	local names = {}
+	for _, key in ipairs(role.Weapons) do
+		local w = Config.WeaponTypes[key]
+		table.insert(names, w and w.Name or key)
+	end
+	local match = Config.AugWeaponMatch(player, attrKey)
+	return string.format("<b>%s</b>  ·  %s🔫 %s%s</font>",
+		Config.AugRoleLabel[role.Role], match and "<font color='#78ff8c'>✔ " or "<font color='#c8cce0'>", table.concat(names, " / "), match and " (+40%)" or "")
+end
+
+function refresh()
 	local gold = player:GetAttribute("Gold") or 0
 	local slots = player:GetAttribute("AugSlots") or 1
 	local used, affordable = 0, 0
-	local anyOpen = false
 	for zone = 1, ZONES do
 		local open = player:GetAttribute("AugOpenZ_" .. zone) == true
 		local level = player:GetAttribute("AugLvZ_" .. zone) or 0
+		local gear = player:GetAttribute("AugGearZ_" .. zone) or 0
 		local on = player:GetAttribute("AugOnZ_" .. zone) == true
 		local r = rows[zone]
-		anyOpen = anyOpen or open
 		if on then used += 1 end
 		local info = Config.AugInfo[Config.Sets.ZoneAug[zone]]
-		local gear = player:GetAttribute("AugGearZ_" .. zone) or 0
-		r.Title.RichText = true
-		r.Title.Text = string.format("%sZone %d · %s  %s", on and "<font color='#78ffb4'>●</font> " or "", zone, info.Name, level > 0 and (gear > 0 and string.format("[Lv.%d + gear %d = %d]", level, gear, level + gear) or ("[Lv." .. level .. "]")) or "")
-		r.Title.TextColor3 = open and Color3.fromRGB(255, 240, 200) or Color3.fromRGB(130, 134, 156)
-		-- 역할(보스형 / 사냥형) + 잘 맞는 무기 (지금 든 무기가 맞으면 초록으로 빛난다)
-		local attrKey = Config.Sets.ZoneAug[zone]
-		local role = Config.AugRoles and Config.AugRoles[attrKey]
-		if role then
-			local names = {}
-			for _, key in ipairs(role.Weapons) do
-				local w = Config.WeaponTypes[key]
-				table.insert(names, w and w.Name or key)
-			end
-			local match = Config.AugWeaponMatch(player, attrKey)
-			r.Desc.RichText = true
-			-- 칸에는 역할 + 잘 맞는 무기만 한 줄로 (자세한 설명은 ⓘ 버튼에서)
-			r.Desc.TextTruncate = Enum.TextTruncate.AtEnd
-			r.Desc.Text = string.format("<b>%s</b>  ·  %s🔫 %s%s</font>",
-				Config.AugRoleLabel[role.Role], match and "<font color='#78ff8c'>✔ " or "<font color='#c8cce0'>", table.concat(names, " / "), match and " (+40%)" or "")
-		end
-		r.Toggle.Visible = false -- ON/OFF 글자는 없앴다: 칸을 누르면 켜지고 꺼지며, 켜진 칸은 테두리가 빛나고 제목 앞에 ● 가 붙는다
-		r.Toggle.Text = on and "● ON" or "○ OFF" -- 지금 상태를 보여 주고, 누르면 반대로 바뀐다
-		r.Toggle.BackgroundColor3 = on and Color3.fromRGB(46, 112, 84) or Color3.fromRGB(62, 64, 84)
-		r.Toggle.TextColor3 = on and Color3.fromRGB(190, 255, 215) or Color3.fromRGB(150, 154, 180)
-		r.Stroke.Transparency = on and 0.1 or 1
-		r.Row.BackgroundColor3 = on and Color3.fromRGB(50, 52, 74) or Color3.fromRGB(36, 39, 58)
-		if not open then
-			r.Buy.Text = string.format("🔒 Defeat the Zone %d lord", zone)
-			r.Buy.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
-		elseif level >= 3 then
-			r.Buy.Text = "Max level"
-			r.Buy.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
+		r.Orb.BackgroundColor3 = not open and Color3.fromRGB(28, 26, 38) or (on and info.Color:Lerp(Color3.fromRGB(20, 18, 30), 0.45) or Color3.fromRGB(44, 40, 62))
+		r.Icon.Text = open and info.Icon or "🔒"
+		r.Icon.TextTransparency = open and 0 or 0.3
+		r.Level.Text = level + gear > 0 and ("Lv." .. (level + gear)) or ""
+		r.Level.Visible = level + gear > 0
+		r.Caption.TextColor3 = on and Color3.fromRGB(150, 255, 190) or (open and Color3.fromRGB(255, 240, 200) or Color3.fromRGB(130, 134, 156))
+		r.Stroke.Transparency = on and 0.05 or (open and 0.6 or 0.85)
+		r.Sel.Visible = zone == selectedZone
+		if open and level == 0 and gold >= Config.Sets.AugCost(zone, 1) then affordable += 1 end
+	end
+
+	-- 가운데 네모: 고른 효과
+	local zone = selectedZone
+	local attr = Config.Sets.ZoneAug[zone]
+	local info = Config.AugInfo[attr]
+	local open = player:GetAttribute("AugOpenZ_" .. zone) == true
+	local level = player:GetAttribute("AugLvZ_" .. zone) or 0
+	local gear = player:GetAttribute("AugGearZ_" .. zone) or 0
+	local on = player:GetAttribute("AugOnZ_" .. zone) == true
+	boxIcon.Text = info.Icon
+	boxStroke.Color = on and info.Color or Color3.fromRGB(255, 190, 110)
+	boxTitle.Text = string.format("%sZone %d · %s  %s", on and "<font color='#78ffb4'>●</font> " or "", zone, info.Name,
+		level > 0 and (gear > 0 and string.format("[Lv.%d + gear %d = %d]", level, gear, level + gear) or ("[Lv." .. level .. "]")) or "")
+	local lines = { "<font color='#aaf0c8'>" .. info.Desc .. "</font>" }
+	local role = roleLine(attr)
+	if role then table.insert(lines, role) end
+	-- 단계 수치: 지금 단계와 다음 단계만 (전부 보이면 네모가 넘친다)
+	local atk = Config.BaseAttackEstimate and Config.BaseAttackEstimate(player) or 0
+	local now = level + gear
+	for l = math.max(1, now), math.min(6, math.max(1, now) + 1) do
+		local text, mult = Config.AugLevelLine(attr, l)
+		local dmg = mult and atk > 0 and string.format("  <font color='#ffd966'>≈ %d dmg</font>", math.floor(atk * mult + 0.5)) or ""
+		local line = string.format("Lv.%d  %s%s", l, text, dmg)
+		if l == now then line = "<font color='#78ff8c'><b>▶ " .. line .. "  (now)</b></font>" end
+		table.insert(lines, line)
+	end
+	boxBody.Text = table.concat(lines, "\n")
+	toggleButton.Text = on and "● ON" or "○ OFF"
+	toggleButton.BackgroundColor3 = on and Color3.fromRGB(46, 112, 84) or Color3.fromRGB(62, 64, 84)
+	toggleButton.TextColor3 = on and Color3.fromRGB(190, 255, 215) or Color3.fromRGB(170, 174, 200)
+	toggleButton.Visible = open
+	if not open then
+		buyButton.Text = string.format("🔒 Defeat the Zone %d lord", zone)
+		buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
+		buyButton.Size = UDim2.new(1, -16, 0, 38)
+		buyButton.Position = UDim2.new(0, 8, 1, -46)
+	else
+		buyButton.Size = UDim2.new(0.5, -8, 0, 38)
+		buyButton.Position = UDim2.new(0.5, 0, 1, -46)
+		if level >= 3 then
+			buyButton.Text = "Max level"
+			buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
 		else
 			local cost = Config.Sets.AugCost(zone, level + 1)
-			r.Buy.Text = string.format("%s %s G", level == 0 and "Activate" or "Upgrade", commas(cost))
-			r.Buy.BackgroundColor3 = gold >= cost and Color3.fromRGB(150, 110, 40) or Color3.fromRGB(80, 74, 66)
-			if gold >= cost and level == 0 then affordable += 1 end
+			buyButton.Text = string.format("%s %s G", level == 0 and "Activate" or "Upgrade", commas(cost))
+			buyButton.BackgroundColor3 = gold >= cost and Color3.fromRGB(150, 110, 40) or Color3.fromRGB(80, 74, 66)
 		end
 	end
-	for zone = 1, ZONES do rows[zone].Update() end
 	slotLabel.Text = string.format("Active %d / %d slots   (💰 %s G)", used, slots, commas(gold))
 	pill.Visible = false -- (왼쪽 메뉴 버튼 줄의 "세트" 버튼과 빨간 점이 대신한다: 창 위에 떠서 겹치던 버튼)
 	badge.Visible = affordable > 0 and used < slots
@@ -238,9 +279,9 @@ RunService.RenderStepped:Connect(function()
 	local t = os.clock()
 	for zone = 1, ZONES do
 		local r = rows[zone]
-		if r.Stroke.Transparency < 1 then
+		if r.Stroke.Transparency < 0.5 then -- (켜진 원만)
 			r.Gradient.Rotation = (t * 110 + zone * 40) % 360
-			r.Stroke.Thickness = 2 + 0.6 * math.sin(t * 3 + zone)
+			r.Stroke.Thickness = 3 + 0.8 * math.sin(t * 3 + zone)
 		end
 	end
 end)
