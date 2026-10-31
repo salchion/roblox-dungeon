@@ -22,7 +22,7 @@ local ENH_VOLUME = 0.7 -- 강화 소리(망치 / 성공 / 실패 / 진화)가 �
 local function enhSound(key, opts)
 	opts = opts or {}
 	opts.Volume = (opts.Volume or 1) * ENH_VOLUME
-	SoundBank.Play(sfxParent, key, opts)
+	return SoundBank.Play(sfxParent, key, opts)
 end
 
 local player = Players.LocalPlayer
@@ -348,6 +348,7 @@ local function enhanceMany(count)
 	end
 	if E.EnhanceBusy then return end
 	E.EnhanceBusy = true
+	E.hammer()
 	Remotes.Enhance:FireServer(count)
 	task.delay(1.1, function() E.EnhanceBusy = false end)
 end
@@ -391,7 +392,7 @@ local enhanceButton = pill(makeButton({
 	local swing = TweenService:Create(hammer, TweenInfo.new(0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Rotation = 25, Position = UDim2.new(0.5, 20, 0, 150) })
 	swing:Play()
 	swing.Completed:Connect(function()
-		enhSound("Enh_Hammer")
+		E.hammer()
 		for i = 1, 8 do
 			local spark = circle(8, DX, 120, i % 2 == 0 and Color3.fromRGB(255, 220, 110) or Color3.fromRGB(255, 140, 60), 8)
 			local angle = (i / 8) * math.pi * 2
@@ -424,6 +425,7 @@ do
 			while holding and enhancePanel.Visible and E.EnhanceAffordable do
 				if not E.EnhanceBusy then
 					E.EnhanceBusy = true
+					E.hammer()
 					Remotes.Enhance:FireServer()
 					task.delay(0.35, function() E.EnhanceBusy = false end)
 				end
@@ -447,6 +449,26 @@ task.spawn(function()
 		task.wait(2.2)
 	end
 end)
+
+-- 강화 소리: 망치는 금속 "땡땡" 두 번, 결과는 한 번만 (x10 / 최대 / 꾹 누르기로 여러 번 해도 소리가 섞이지 않게)
+function E.hammer()
+	local now = os.clock()
+	if now - (E.LastHammer or 0) < 0.3 then return end
+	E.LastHammer = now
+	enhSound("Enh_Hammer")
+	task.delay(0.13, function() enhSound("Enh_Hammer", { Pitch = 1.12, Volume = 0.8 }) end)
+end
+function E.result(key, opts)
+	local now = os.clock()
+	if E.LastResultKey == key and now - (E.LastResultAt or 0) < 0.6 then return end -- (같은 결과가 연달아 오면 앞 소리를 그대로 둔다)
+	local old = E.LastResultSound
+	if old and old.Parent then -- 다른 결과 소리가 울리고 있으면 짧게 줄여 끊는다
+		TweenService:Create(old, TweenInfo.new(0.08), { Volume = 0 }):Play()
+		task.delay(0.1, function() if old.Parent then old:Stop() end end)
+	end
+	E.LastResultKey, E.LastResultAt = key, now
+	E.LastResultSound = enhSound(key, opts)
+end
 
 function E.comma(n)
 	return (tostring(math.floor(n)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
@@ -547,16 +569,13 @@ Remotes.Enhance.OnClientEvent:Connect(function(ok, message, summary)
 	local tierNow = Config.GetWeaponTier(level)
 	local stageFrac = (level - tierNow.MinLevel) / math.max(1, tierNow.Steps)
 	if evolved then
-		enhSound("Enh_Evolve")
-	elseif summary and summary.Attempts and summary.Attempts > 1 then
-		for i = 1, math.min(8, summary.Successes or 0) do
-			task.delay((i - 1) * 0.09, function() enhSound("Enh_Success", { Pitch = 0.8 + 0.04 * i }) end)
-		end
-		if (summary.Successes or 0) == 0 then enhSound("Enh_Fail") end
+		E.result("Enh_Evolve")
+	elseif summary and summary.Attempts and summary.Attempts > 1 then -- 여러 번 강화: 한 번이라도 오르면 성공 소리 한 번, 아니면 실패 소리 한 번
+		E.result((summary.Successes or 0) > 0 and "Enh_Success" or "Enh_Fail")
 	elseif ok then
-		enhSound("Enh_Success", { Pitch = 0.8 + 0.3 * stageFrac })
+		E.result("Enh_Success", { Pitch = 0.95 + 0.1 * stageFrac })
 	else
-		enhSound("Enh_Fail")
+		E.result("Enh_Fail")
 	end
 	-- (결과는 EnhanceResultClient 의 카드가 크게 보여 준다) 여기서는 구슬 테두리만 번쩍
 	if evolved or ok then
