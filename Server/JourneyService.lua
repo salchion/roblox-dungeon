@@ -135,11 +135,13 @@ end
 
 -- 전투 중 첫 위기 한 줄 (이미 해 본 사람 / 한 번 본 사람에게는 안 뜸)
 local function combatBeat(player, now)
-	if player:GetAttribute("TutorialActive") then return end
+	local inTutorial = player:GetAttribute("TutorialActive") == true
+	if player:GetAttribute("CombatLocked") or player:GetAttribute("IntroPlaying") then return end -- (연출 / 오프닝 중에는 안내하지 않는다)
 	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 	if not humanoid or humanoid.Health <= 0 then return end
 	local fraction = humanoid.Health / math.max(1, humanoid.MaxHealth)
 	if now - (lastBeat[player] or 0) < 12 then return end
+	if inTutorial then fraction = 1 end -- (튜토리얼 중에는 위기 안내(C / Q)는 튜토리얼 카드가 맡는다: 아래 스킬 안내(F)만 띄운다)
 
 	if fraction < 0.35 and not Journey.IsDone(player, "Heal") and (player:GetAttribute("Level") or 1) >= 3 then
 		Journey.Mark(player, "Heal")
@@ -166,7 +168,7 @@ local function combatBeat(player, now)
 		lastBeat[player] = now
 		prompt(player, icon, title, text, duration)
 	end
-	if canTip("V") and (player:GetAttribute("UltCharge") or 0) >= Config.Skills.Ult.Cost then
+	if canTip("V") and not inTutorial and (player:GetAttribute("UltCharge") or 0) >= Config.Skills.Ult.Cost then -- (튜토리얼의 군주전 V 안내는 튜토리얼이 따로 띄운다)
 		local bossNear = player:GetAttribute("BossFight") == true or player:GetAttribute("InDoomArena") == true
 		if not bossNear then
 			for _, part in ipairs(CollectionService:GetTagged("RadarBoss")) do
@@ -178,7 +180,7 @@ local function combatBeat(player, now)
 			return
 		end
 	end
-	if canTip("F") and (player:GetAttribute("Level") or 1) >= 2 then
+	if canTip("F") then -- (레벨 조건 없음: 튜토리얼 첫 몬스터 떼에서도 알려 준다)
 		local near = 0
 		for _, part in ipairs(CollectionService:GetTagged("Monster")) do
 			if part:IsA("BasePart") and (part.Position - root.Position).Magnitude < 28 then
