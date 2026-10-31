@@ -2412,14 +2412,30 @@ function MENU.seg(options, current, onPick)
 	local row = newRow(44, Color3.fromRGB(26, 28, 42))
 	for index, option in ipairs(options) do
 		local active = option[1] == current
-		makeButton({
+		local button = makeButton({
 			Size = UDim2.new(0, 150, 0, 32), Position = UDim2.new(0, 10 + (index - 1) * 158, 0.5, -16), Text = option[2], TextSize = 13,
 			BackgroundColor3 = active and Color3.fromRGB(70, 104, 206) or Color3.fromRGB(44, 48, 72),
 			TextColor3 = active and Color3.fromRGB(255, 232, 160) or Color3.fromRGB(170, 176, 200),
 		}, row, function()
 			onPick(option[1])
 		end)
+		if MENU.HasClaim(option[1]) then -- 받을 보상이 있는 칸: 빨간 점
+			local dot = makeLabel({ Size = UDim2.new(0, 20, 0, 20), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -4, 0, 4), Text = "!", TextSize = 12, Font = Enum.Font.GothamBlack,
+				BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(235, 60, 60), ZIndex = 5 }, button)
+			create("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
+			create("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 1.5 }, dot)
+		end
 	end
+end
+
+-- 퀘스트 / 업적 칸에 받을 보상이 있는가 (진행이 목표에 닿았고 아직 안 받음)
+function MENU.HasClaim(key)
+	local list = questState and (key == "Ach" and questState.Achievements or (key == "Daily" and questState.Daily))
+	if type(list) ~= "table" then return false end
+	for _, entry in ipairs(list) do
+		if not entry.Claimed and (entry.Progress or 0) >= (entry.Goal or math.huge) then return true end
+	end
+	return false
 end
 
 function MENU.locked()
