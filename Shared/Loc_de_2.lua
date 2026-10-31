@@ -395,6 +395,9 @@ return {
 		["🛡 Defense"] = "🛡 Verteidigung",
 		["🧭 Utility"] = "🧭 Nützliches",
 		["Damage Taken"] = "Erlittener Schaden",
+		["Perfect weapon match! Set damage +40%"] = "Perfekte Waffe! Set-Schaden +40%",
+		["Switch to it for set damage +40%"] = "Wechsle für +40% Set-Schaden",
+		["🔫 Best with"] = "🔫 Am besten mit",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -946,7 +949,5 @@ return {
 		{ "Defeat Zone {number1} monsters {number2} / {number3} · Reward {text4} G + Ticket", "Besiege Zone-{number1}-Monster {number2} / {number3} · Belohnung {text4} G + Ticket" },
 		{ "🎒 {text1}  ▲ Better than your current gear! (I → Bag)", "🎒 {text1}  ▲ Besser als deine aktuelle Ausrüstung! (I → Rucksack)" },
 		{ "{text1}  ▲ +{number2}% better than your current gear! (I → Bag", "{text1}  ▲ +{number2}% besser als deine aktuelle Ausrüstung! (I → Tasche" },
-		{ "[{text1}] Starts in {number2}s! Survive the incoming monsters", "[{text1}] Startet in {number2} s! Überlebe die anrückenden Monster" },
-		{ "⏱ Skip gauge {text1}  (shared with training · pets)", "⏱ Zeit-Skip-Anzeige {text1}  (geteilt mit Training · Haustieren)" },
 	},
 }

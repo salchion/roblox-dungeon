@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Roll for gear {number1} times", "装備ガチャを{number1}回引く" },
+		{ "Gear drop rarity +{number1}%", "ギアドロップのレア度 +{number1}%" },
 		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 コンボ x{number1}\nダメージ +{number2}%" },
 		{ "{number7} Darklands · {number8} Abyss", "{number7} ダークランド · {number8} アビス" },
 		{ "Level {number1} Breakthrough", "レベル{number1}の突破" },

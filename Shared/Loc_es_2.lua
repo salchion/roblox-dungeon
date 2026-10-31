@@ -441,6 +441,9 @@ return {
 		["🛡 Defense"] = "🛡 Defensa",
 		["🧭 Utility"] = "🧭 Utilidad",
 		["Damage Taken"] = "Daño recibido",
+		["Perfect weapon match! Set damage +40%"] = "¡Arma perfecta! Daño de set +40%",
+		["Switch to it for set damage +40%"] = "Cámbiala para +40% de daño de set",
+		["🔫 Best with"] = "🔫 Mejor con",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -978,6 +981,5 @@ return {
 		{ "(one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "(uno de {number1}) aparecen en equipo mítico: cofres de mazmorra (ver abajo), botín del campo ({text2}), el cofre semanal del Boss Rush y la recompensa semanal del Señor Final." },
 		{ "🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: {text1}", "🔫 5 tipos de arma — uno se desbloquea en cada hito de mejora (cada 15). Elige con qué arma desbloqueada luchar · Ahora: {text1}" },
 		{ "🎁 First breakthrough gift! Received {text1} Time Skip — press [Use Time Skip] in Growth to finish right away!", "🎁 ¡Regalo por la primera superación! Recibiste {text1} salto de tiempo: pulsa [Usar salto de tiempo] en Crecimiento para terminar al instante." },
-		{ "{text1} has used up today's free entries and doesn't have {number2} key(s). Defeat a field zone lord to get keys", "{text1} ha usado las entradas gratis de hoy y no tiene {number2} llave(s). Derrota a un señor de zona del campo para conseguir llaves" },
 	},
 }

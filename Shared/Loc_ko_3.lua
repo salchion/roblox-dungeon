@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Dismantled {number1}! Essence +{number2}, {number3} G", "{number1}개 분해! 정수 +{number2}, {number3} G" },
+		{ "Enter the Boss Rush {number1} times", "보스 러시 {number1}회 입장" },
+		{ "Fires {number1} pellets in a spread", "산탄 {number1}발을 퍼뜨려 발사" },
 		{ "You can afford it now ({number1} G)", "지금 바로 가능 ({number1} G)" },
 		{ "⭐ Legendary guaranteed in {number1}", "⭐ 전설 확정까지 {number1}회" },
 		{ "★★★  Step {number1}/{number2} · Higher step", "★★★ 단계 {number1}/{number2} · 더 높은 단계" },

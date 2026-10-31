@@ -153,8 +153,13 @@ make("UICorner", { CornerRadius = UDim.new(0, 10) }, boxIconBack)
 local boxIconStroke = make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 2 }, boxIconBack)
 local boxIcon = label({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 30, ZIndex = 4 }, boxIconBack)
 local boxTitle = label({ Size = UDim2.new(1, -84, 0, 56), Position = UDim2.new(0, 74, 0, 10), Text = "", TextSize = 13, RichText = true, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3 }, box)
+-- 무기 궁합 띠: 지금 무기가 이 효과와 잘 맞으면 초록 "✔ 찰떡", 아니면 주황으로 "이 무기로 바꾸면 +40%"
+local matchBar = make("Frame", { Size = UDim2.new(1, -20, 0, 50), Position = UDim2.new(0, 10, 0, 74), BackgroundColor3 = Color3.fromRGB(40, 110, 70), BorderSizePixel = 0, ZIndex = 3 }, box)
+make("UICorner", { CornerRadius = UDim.new(0, 10) }, matchBar)
+local matchStroke = make("UIStroke", { Color = Color3.fromRGB(120, 255, 160), Thickness = 2 }, matchBar)
+local matchText = label({ Size = UDim2.new(1, -12, 1, -6), Position = UDim2.new(0, 6, 0, 3), Text = "", TextSize = 11, RichText = true, TextWrapped = true, ZIndex = 4 }, matchBar)
 local boxBody = label({
-	Size = UDim2.new(1, -20, 1, -134), Position = UDim2.new(0, 10, 0, 76), Text = "", TextSize = 10, RichText = true, TextWrapped = true,
+	Size = UDim2.new(1, -20, 1, -186), Position = UDim2.new(0, 10, 0, 130), Text = "", TextSize = 10, RichText = true, TextWrapped = true,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(205, 210, 235), ZIndex = 3,
 }, box)
 local selectedZone = 1
@@ -213,7 +218,13 @@ for zone = 1, ZONES do
 		selectedZone = zone
 		refresh()
 	end)
-	rows[zone] = { Orb = orb, Icon = icon, Level = levelTag, Caption = caption, Stroke = rowStroke, Gradient = gradient, Sel = selRing }
+	local matchTag = label({ -- 지금 무기와 잘 맞는 효과: 원 왼쪽 아래 초록 🔫
+		Size = UDim2.new(0, 24, 0, 24), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.12, 0, 0.88, 0), BackgroundTransparency = 0,
+		BackgroundColor3 = Color3.fromRGB(46, 160, 90), Text = "🔫", TextSize = 13, ZIndex = 6, Visible = false,
+	}, orb)
+	make("UICorner", { CornerRadius = UDim.new(1, 0) }, matchTag)
+	make("UIStroke", { Color = Color3.fromRGB(180, 255, 200), Thickness = 1.5 }, matchTag)
+	rows[zone] = { Orb = orb, Icon = icon, Level = levelTag, Caption = caption, Stroke = rowStroke, Gradient = gradient, Sel = selRing, Match = matchTag }
 end
 
 local function roleLine(attrKey)
@@ -249,6 +260,7 @@ function refresh()
 		r.Caption.TextColor3 = on and Color3.fromRGB(150, 255, 190) or (open and Color3.fromRGB(255, 240, 200) or Color3.fromRGB(130, 134, 156))
 		r.Stroke.Transparency = on and 0.05 or (open and 0.6 or 0.85)
 		r.Sel.Visible = zone == selectedZone
+		r.Match.Visible = open and Config.AugWeaponMatch(player, Config.Sets.ZoneAug[zone]) == true
 		if open and level == 0 and gold >= Config.Sets.AugCost(zone, 1) then affordable += 1 end
 	end
 
@@ -266,8 +278,26 @@ function refresh()
 	boxTitle.Text = string.format("%sZone %d · %s  %s", on and "<font color='#78ffb4'>●</font> " or "", zone, info.Name,
 		level > 0 and (gear > 0 and string.format("[Lv.%d + gear %d = %d]", level, gear, level + gear) or ("[Lv." .. level .. "]")) or "")
 	local lines = { "<font color='#aaf0c8'>" .. info.Desc .. "</font>" }
-	local role = roleLine(attr)
-	if role then table.insert(lines, role) end
+	local roleInfo = Config.AugRoles and Config.AugRoles[attr]
+	if roleInfo then
+		table.insert(lines, 1, "<b>" .. Config.AugRoleLabel[roleInfo.Role] .. "</b>")
+		local names = {}
+		for _, key in ipairs(roleInfo.Weapons) do
+			local w = Config.WeaponTypes[key]
+			table.insert(names, "<font color='#ffffff'>" .. (w and w.Name or key) .. "</font>") -- (이름마다 따로 감싸야 각각 번역된다)
+		end
+		local mine = Config.GetPlayerWeapon(player)
+		if Config.AugWeaponMatch(player, attr) then
+			matchBar.BackgroundColor3, matchStroke.Color = Color3.fromRGB(36, 110, 66), Color3.fromRGB(120, 255, 160)
+			matchText.Text = string.format("<font size='13'><b>✔ 🔫 %s</b></font>\n<font color='#c8ffd8'>Perfect weapon match! Set damage +40%%</font>", mine and mine.Name or "")
+		else
+			matchBar.BackgroundColor3, matchStroke.Color = Color3.fromRGB(110, 70, 26), Color3.fromRGB(255, 190, 90)
+			matchText.Text = string.format("<font size='12'><b>🔫 Best with</b><b> %s</b></font>\n<font color='#ffe2b0'>Switch to it for set damage +40%%</font>", table.concat(names, " / "))
+		end
+		matchBar.Visible = true
+	else
+		matchBar.Visible = false
+	end
 	-- 단계 수치 1~6 (지금 단계는 초록으로)
 	local atk = Config.BaseAttackEstimate and Config.BaseAttackEstimate(player) or 0
 	local now = level + gear

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 O portão está fechado! Derrote os monstros da zona {number1} {number2}/{number3} + o senhor da zona{text4}" },
 		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ Subida de nível do pet iniciada! ({text1}) — use Pular tempo para terminar mais rápido" },
 		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "Recomendado ⚡{text1}  ·  Mire na esfera amarela para dano triplo!" },
 		{ "You have no {text1} gear. Get one from the field or the gacha", "Você não tem equipamento de {text1}. Consiga um no campo ou no gacha" },
