@@ -121,19 +121,16 @@ function M.Init(deps)
 			local shakeTime = SHAKE[rarity]
 			local started = os.clock()
 			local hintColor = rarity >= 3 and color or Color3.fromRGB(190, 190, 210)
-			local nextTick = 0
+			local shakeSound = SoundBank.Play(sfxParent, "Gacha_Shake", { Length = shakeTime + 0.15 }) -- 마법 기운이 떨리는 소리 (흔들리는 동안만)
 			while not skipped and root.Parent and os.clock() - started < shakeTime do
 				local t = (os.clock() - started) / shakeTime
-				if os.clock() >= nextTick then -- 점점 빨라지는 틱틱 소리
-					nextTick = os.clock() + 0.2 - 0.12 * t
-					SoundBank.Play(sfxParent, "Gacha_Tick", { Pitch = 0.8 + t * 0.8 })
-				end
 				capsule.Rotation = math.sin((os.clock() - started) * 40) * (6 + t * 14)
 				capStroke.Color = Color3.fromRGB(160, 160, 190):Lerp(hintColor, t)
 				capStroke.Thickness = 4 + t * (rarity >= 3 and 10 or 3)
 				capsule.Position = UDim2.new(0.5, math.sin(os.clock() * 55) * t * 6, 0.5, 0)
 				task.wait()
 			end
+			if shakeSound and shakeSound.Parent and skipped then shakeSound:Stop() end
 			if not root.Parent then return end
 
 			capsule:Destroy()
@@ -289,13 +286,10 @@ function M.Init(deps)
 				for _, card in ipairs(big) do
 					if not root.Parent then return end
 					if not skipped then
-						local started, nextTick = os.clock(), 0
+						local started = os.clock()
+						SoundBank.Play(sfxParent, "Gacha_Shake", { Length = 0.8, Pitch = 1.1 })
 						while not skipped and root.Parent and os.clock() - started < 0.7 do
 							local t = (os.clock() - started) / 0.7
-							if os.clock() >= nextTick then
-								nextTick = os.clock() + 0.14 - 0.08 * t
-								SoundBank.Play(sfxParent, "Gacha_Tick", { Pitch = 0.9 + t * 0.9 })
-							end
 							card.Holder.Rotation = math.sin(os.clock() * 50) * (3 + t * 7)
 							card.Stroke.Thickness = 3 + t * 6
 							task.wait()

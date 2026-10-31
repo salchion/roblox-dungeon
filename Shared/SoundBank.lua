@@ -144,6 +144,7 @@ local CUSTOM_ONLY = {
 	Rare_Drop     = { Volume = 0.8, CustomLength = 1.8, CustomPitch = 1.15 }, -- 희귀 이상 장비 획득
 	Reel_Stop     = { Volume = 0.8, CustomLength = 1.0 }, -- 첫 장비 슬롯 릴이 멈출 때 ("띵")
 	NearMiss_Get  = { Volume = 0.7, CustomLength = 1.0 }, -- NEAR MISS 성공 (스택이 쌓일 때)
+	Gacha_Shake   = { Volume = 1.0, CustomLength = 2.0, CustomPitch = 1.0 }, -- 뽑기 캡슐 / 카드가 떨릴 때 마법 기운이 떨리는 소리 (연출 시간만큼만 울린다)
 }
 for key, spec in pairs(CUSTOM_ONLY) do
 	SPECS[key] = spec
@@ -168,7 +169,7 @@ SoundBank.Descriptions = {
 	Hit = "Enemy hit (short)", Crit = "Critical hit", Kill = "Enemy kill (pitch rises with kill streak)",
 	Skill_Heal = "First Aid used", Skill_LotusCast = "Death Lotus cast", Skill_LotusThump = "Death Lotus thump", Skill_LotusSlash = "Death Lotus whirl", Skill_LotusStab = "Death Lotus stab", Skill_LotusClang = "Death Lotus blade clang", Skill_Ult = "Dead Eye activated", UltShot = "Dead Eye rapid shot", Ult_Lock = "Dead Eye lock-on beep", Ult_Missile = "Dead Eye missile launch", Ult_Hit = "Dead Eye missile impact", Ult_Launch = "Dead Eye launch thump", Ult_Finale = "Dead Eye final blast", Boom = "Monster explosion / shockwave / meteor",
 	LevelUp = "Level up", Enh_Hammer = "Enhance: hammer strike", Enh_Success = "Enhance success (pitch rises with level)", Enh_Fail = "Enhance failed",
-	Enh_Evolve = "Weapon evolution", Gacha_Drop = "Gacha: capsule drop", Gacha_Tick = "Gacha: rattling ticks", Gacha_Card = "10-pull gacha: one card",
+	Enh_Evolve = "Weapon evolution", Gacha_Drop = "Gacha: capsule drop", Gacha_Tick = "Gacha: rattling ticks", Gacha_Card = "10-pull gacha: one card", Gacha_Shake = "Gacha: magic shimmer while shaking",
 	Aug_Get = "Augment acquired", Aug_Synergy = "Augment synergy triggered", Aug_Missile = "Crit missile launched", Aug_MissileHit = "Missile hit", Aug_Nova = "Kill explosion",
 	Aug_Blade = "Spinning blade slash", Aug_Storm = "Lightning strike", Aug_MeteorFall = "Meteor falling", Aug_MeteorHit = "Meteor impact", Aug_Flame = "Flame zone", Aug_Execute = "Execute", Aug_Skull = "Execute skull (short low thud)", Aug_Pulse = "Guardian pulse",
 	Buff_Get = "Normal buff acquired", Penalty_Get = "Penalty triggered", Player_Hurt = "I got hit", Low_Health = "Low health", Warn_Overrun = "Monster limit warning", Shield_Block = "Blocked by shield",
@@ -179,7 +180,7 @@ SoundBank.Descriptions = {
 SoundBank.Order = {
 	"Shot_Pistol", "Shot_Smg", "Shot_Revolver", "Shot_Rifle", "Shot_Shotgun", "Shot_Flamer", "Shot_Cannon", "Shot_Sniper", "Shot_Rocket", "Shot_Rail",
 	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_LotusCast", "Skill_LotusThump", "Skill_LotusSlash", "Skill_LotusStab", "Skill_LotusClang", "Skill_Ult", "Ult_Lock", "Ult_Missile", "Ult_Hit", "Ult_Launch", "Ult_Finale", "UltShot", "Boom", "LevelUp",
-	"Dash", "Pickup", "Enh_Hammer", "Enh_Success", "Enh_Fail", "Enh_Evolve", "Gacha_Drop", "Gacha_Tick", "Gacha_Card",
+	"Dash", "Pickup", "Enh_Hammer", "Enh_Success", "Enh_Fail", "Enh_Evolve", "Gacha_Drop", "Gacha_Shake", "Gacha_Tick", "Gacha_Card",
 	"Gacha_Pop1", "Gacha_Pop2", "Gacha_Pop3", "Gacha_Pop4", "Gacha_Pop5",
 	"Aug_Get", "Aug_Synergy", "Aug_Missile", "Aug_MissileHit", "Aug_Nova", "Aug_Blade", "Aug_Storm", "Aug_MeteorFall", "Aug_MeteorHit", "Aug_Flame", "Aug_Execute", "Aug_Skull", "Aug_Pulse",
 	"Buff_Get", "Penalty_Get", "Player_Hurt", "Low_Health", "Warn_Overrun", "Shield_Block",
@@ -277,7 +278,8 @@ function SoundBank.Play(parent, key, opts)
 	local baseVolume = 0.35 * volumeScale
 	local pitch = custom and (opts.Pitch or 1) * (spec.CustomPitch or 1) or spec.Pitch * (opts.Pitch or 1) -- CustomPitch: 같은 소리를 여러 항목에 재사용할 때 높낮이를 달리한다
 	local length = spec.Length or 1
-	if custom then length = spec.CustomLength or 2 end -- 내가 넣은 소리는 자연스러운 꼬리를 살리고, 너무 길 때만 끊는다
+	if custom then length = spec.CustomLength or 2 end
+	if opts.Length then length = opts.Length end -- (부르는 쪽이 길이를 정할 때: 뽑기 흔들림처럼 연출 시간에 맞춘다) -- 내가 넣은 소리는 자연스러운 꼬리를 살리고, 너무 길 때만 끊는다
 	local main = playOne(parent, id, baseVolume, pitch, length, opts.Name, (custom and spec.CustomFx) or (not custom and spec.Fx) or nil) -- CustomFx: 직접 넣은 소리에도 걸 수 있는 가공 (예: 저음을 깎고 고음을 살려 "탕" 하는 갈라짐을 또렷하게)
 	if spec.Choke then
 		local previous = chokeLast[key]
