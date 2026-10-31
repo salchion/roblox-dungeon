@@ -324,6 +324,8 @@ return {
 		["Perfect weapon match! Set damage +40%"] = "武器完美契合！套装伤害 +40%",
 		["Switch to it for set damage +40%"] = "换上它，套装伤害 +40%",
 		["🔫 Best with"] = "🔫 最佳搭配",
+		["🏰 The dungeon you fell into... there's an entrance in town too!"] = "🏰 刚才掉进去的地下城……镇上也有入口！",
+		["Follow the light pillar north · free entries today"] = "跟着北边的光柱走 · 今天可免费进入",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1036,7 +1038,5 @@ return {
 		{ "{text1} Set synergy activated! 『{text2}』 - {text3}", "{text1} 套装协同已激活!『{text2}』- {text3}" },
 		{ "🐾 Pet Lv.{number1}! New ability {text2} {text3} — {text4}", "🐾 宠物 Lv.{number1}!新能力 {text2} {text3} — {text4}" },
 		{ "{text1} Dungeon mutation: {text2} — {text3}", "{text1} 地下城变异:{text2} — {text3}" },
-		{ "▶ Next feature: Lv.{number1} {text2} {text3}{text4}", "▶ 下一项功能:Lv.{number1} {text2} {text3}{text4}" },
-		{ "{text1} {text2} complete! Lv.{number3} ({text4})", "{text1} {text2} 完成!Lv.{number3}({text4})" },
 	},
 }

@@ -718,6 +718,8 @@ return {
 		["Perfect weapon match! Set damage +40%"] = "무기 궁합 찰떡! 세트 피해 +40%",
 		["Switch to it for set damage +40%"] = "이 무기로 바꾸면 세트 피해 +40%",
 		["🔫 Best with"] = "🔫 잘 맞는 무기:",
+		["🏰 The dungeon you fell into... there's an entrance in town too!"] = "🏰 아까 빠졌던 그 던전… 마을에도 입구가 있잖아!",
+		["Follow the light pillar north · free entries today"] = "북쪽 빛기둥을 따라가 봐 · 오늘은 무료 입장",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1025,7 +1027,5 @@ return {
 		{ "Zone {number1} · Lightning Strike  ", "구역 {number1} · 번개 공격" },
 		{ "🔒 Zone {number1} · Snowfield Sealed", "🔒 구역 {number1} · 설원 봉쇄됨" },
 		{ "Sniper Rifle · Rusty Era +{number1}", "저격 소총 · 녹슨 시대 +{number1}" },
-		{ "❄ Ice Palace Gate · Rec. ⚡{number2}", "❄ 얼음 궁전 문 · 추천 수 {number2}" },
-		{ "ZONE {number1}  ·  Abyss   ☠☠☠☠☠☠☠☠", "존 {number1} · 심연 ☠☠☠☠☠☠☠☠" },
 	},
 }

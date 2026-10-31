@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎒 {text1}  ▲ Better than your current gear! (I → Bag)", "🎒 {text1}  ▲ Besser als deine aktuelle Ausrüstung! (I → Rucksack)" },
+		{ "{text1}  ▲ +{number2}% better than your current gear! (I → Bag", "{text1}  ▲ +{number2}% besser als deine aktuelle Ausrüstung! (I → Tasche" },
 		{ "[{text1}] Starts in {number2}s! Survive the incoming monsters", "[{text1}] Startet in {number2} s! Überlebe die anrückenden Monster" },
 		{ "⏱ Skip gauge {text1}  (shared with training · pets)", "⏱ Zeit-Skip-Anzeige {text1}  (geteilt mit Training · Haustieren)" },
 		{ "{text1} can now appear (Lv {number2}+). Deeper = better loot", "{text1} kann jetzt erscheinen (Lv {number2}+). Tiefer = bessere Beute" },

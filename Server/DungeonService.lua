@@ -3555,6 +3555,9 @@ end
 function Dungeon.StartGate(player, index)
 	local entry = D.List[1] -- 입장구는 하나
 	if index ~= 1 or not gateChecks(player, entry) then return end
+	if not player:GetAttribute("TutorialActive") then -- 마을 던전 입구를 스스로 찾아 들어왔다: 게이트 빛기둥 / "마을에도 던전이!" 안내를 끈다
+		pcall(function() require(script.Parent:WaitForChild("JourneyService", 2)).Mark(player, "GateDungeon") end)
+	end
 	local okMeta, MetaD = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
 	local best = okMeta and MetaD.DepthBest(player, "All") or 0
 	if best == 0 or player:GetAttribute("TutorialActive") or player:GetAttribute("TutorialDungeonRun") == true then

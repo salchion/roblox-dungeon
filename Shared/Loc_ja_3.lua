@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Idle Booster ({number1} hour)", "アイドルブースター（{number1}時間）" },
+		{ "Hit the dummy {number1} times", "ダミーを{number1}回攻撃する" },
+		{ "{number3} Wasteland · {number4} Desert", "{number3} 荒地 · {number4} 砂漠" },
+		{ "Double Shot chance {number1}%", "ダブルショット確率 {number1}%" },
 		{ "Roll for gear {number1} times", "装備ガチャを{number1}回引く" },
 		{ "Gear drop rarity +{number1}%", "ギアドロップのレア度 +{number1}%" },
 		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 コンボ x{number1}\nダメージ +{number2}%" },

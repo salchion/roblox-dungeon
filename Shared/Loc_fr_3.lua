@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "x{number1}\nUpgrade", "x {number1}\nAmélioration" },
+		{ "Damage +{number1}%", "Dégâts +{number1}%" },
+		{ "Admin (F{number1})", "Administrateur (F{number1})" },
+		{ "Party ({number1}/{number2})", "Fête ({number1}/{number2})" },
+		{ "Attack +{number1}%", "Attaque +{number1}%" },
 		{ "🔑 {number1} Key(s)", "🔑 {number1} clé(s)" },
 		{ "Survive {number1}s", "Survivez {number1} s" },
 		{ "🎰 Roll x{number1}!", "🎰 Tirer x{number1} !" },

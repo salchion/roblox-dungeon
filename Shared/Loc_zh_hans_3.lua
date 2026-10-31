@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "▶ Next feature: Lv.{number1} {text2} {text3}{text4}", "▶ 下一项功能:Lv.{number1} {text2} {text3}{text4}" },
+		{ "{text1} {text2} complete! Lv.{number3} ({text4})", "{text1} {text2} 完成!Lv.{number3}({text4})" },
 		{ "{text1} 『{text2}』 {text3} done! (Lv.{number4})", "{text1}『{text2}』{text3} 完成!(Lv.{number4})" },
 		{ "{text1}Zone {number2} · {text3}  {text4}", "{text1}区域{number2} · {text3}  {text4}" },
 		{ "{text1} {text2} got {text3}!", "{text1} {text2} 获得了 {text3}!" },

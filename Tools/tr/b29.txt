@@ -132,3 +132,5 @@
 2173¦武器の相性ばっちり！セット効果ダメージ +40%¦Perfekte Waffe! Set-Schaden +40%¦Arme parfaite ! Dégâts de set +40%¦¡Arma perfecta! Daño de set +40%¦Arma perfeita! Dano do set +40%¦武器完美契合！套装伤害 +40%¦무기 궁합 찰떡! 세트 피해 +40%
 2174¦持ち替えるとセット効果ダメージ +40%¦Wechsle für +40% Set-Schaden¦Changez d'arme pour +40% de dégâts de set¦Cámbiala para +40% de daño de set¦Troque para +40% de dano do set¦换上它，套装伤害 +40%¦이 무기로 바꾸면 세트 피해 +40%
 2175¦🔫 相性の良い武器:¦🔫 Am besten mit¦🔫 Idéal avec¦🔫 Mejor con¦🔫 Melhor com¦🔫 最佳搭配¦🔫 잘 맞는 무기:
+2176¦🏰 さっき落ちたダンジョン…町にも入口がある！¦🏰 Der Dungeon von vorhin... auch in der Stadt gibt es einen Eingang!¦🏰 Le donjon de tout à l'heure... il y a aussi une entrée en ville !¦🏰 La mazmorra de antes... ¡también hay una entrada en el pueblo!¦🏰 A masmorra de antes... tem uma entrada na cidade também!¦🏰 刚才掉进去的地下城……镇上也有入口！¦🏰 아까 빠졌던 그 던전… 마을에도 입구가 있잖아!
+2177¦北の光の柱へ · 今日は無料で入れる¦Folge der Lichtsäule nach Norden · heute kostenlos¦Suivez le pilier de lumière au nord · entrées gratuites aujourd'hui¦Sigue el pilar de luz al norte · entradas gratis hoy¦Siga o pilar de luz ao norte · entradas grátis hoje¦跟着北边的光柱走 · 今天可免费进入¦북쪽 빛기둥을 따라가 봐 · 오늘은 무료 입장

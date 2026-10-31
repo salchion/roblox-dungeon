@@ -457,6 +457,8 @@ return {
 		["Perfect weapon match! Set damage +40%"] = "Arme parfaite ! Dégâts de set +40%",
 		["Switch to it for set damage +40%"] = "Changez d'arme pour +40% de dégâts de set",
 		["🔫 Best with"] = "🔫 Idéal avec",
+		["🏰 The dungeon you fell into... there's an entrance in town too!"] = "🏰 Le donjon de tout à l'heure... il y a aussi une entrée en ville !",
+		["Follow the light pillar north · free entries today"] = "Suivez le pilier de lumière au nord · entrées gratuites aujourd'hui",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -948,10 +950,5 @@ return {
 		{ "✦ Paragon {number1}", "✦ Parangon {number1}" },
 		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
 		{ "Damage +{number2}%", "Dégâts +{number2}%" },
-		{ "x{number1}\nUpgrade", "x {number1}\nAmélioration" },
-		{ "Damage +{number1}%", "Dégâts +{number1}%" },
-		{ "Admin (F{number1})", "Administrateur (F{number1})" },
-		{ "Party ({number1}/{number2})", "Fête ({number1}/{number2})" },
-		{ "Attack +{number1}%", "Attaque +{number1}%" },
 	},
 }

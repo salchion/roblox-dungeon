@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "Masmorra · escolha uma profundidade (mais fundo = melhores chances de drop) · tema aleatório · {text1}" },
+		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "{text1} obtido! Adicionado à bolsa. (I → equipar pela bolsa)  ▲ +{number2}% vs atual" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 O portão está fechado! Derrote os monstros da zona {number1} {number2}/{number3} + o senhor da zona{text4}" },
 		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ Subida de nível do pet iniciada! ({text1}) — use Pular tempo para terminar mais rápido" },
 		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "Recomendado ⚡{text1}  ·  Mire na esfera amarela para dano triplo!" },

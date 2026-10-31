@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "❄ Ice Palace Gate · Rec. ⚡{number2}", "❄ 얼음 궁전 문 · 추천 수 {number2}" },
+		{ "ZONE {number1}  ·  Abyss   ☠☠☠☠☠☠☠☠", "존 {number1} · 심연 ☠☠☠☠☠☠☠☠" },
 		{ "Dismantled {number1}! Essence +{number2}, {number3} G", "{number1}개 분해! 정수 +{number2}, {number3} G" },
 		{ "Enter the Boss Rush {number1} times", "보스 러시 {number1}회 입장" },
 		{ "Fires {number1} pellets in a spread", "산탄 {number1}발을 퍼뜨려 발사" },

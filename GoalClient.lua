@@ -196,7 +196,7 @@ local function updateBeacon(active)
 		beaconStart = os.clock()
 	end
 	beacon.Transparency = 0.6 + 0.2 * math.sin((os.clock() - beaconStart) * 3)
-	if os.clock() - beaconStart > 240 then beaconDone = true end
+
 end
 
 -- 방치 수입 표시: 휴식 구역에서 방치 중일 때 초당 골드와 배율 (BM 배율이 올라가면 눈에 보인다)
@@ -373,8 +373,9 @@ local function pickGoal()
 	end
 
 	-- 지금 바로 쓸 수 있는 것
-	if (player:GetAttribute("DungeonFree") or 0) >= 1 or (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0) >= 1 then
-		table.insert(candidates, { Text = string.format("🎟 %d free entries today · 🗝 %d keys!\nChallenge the dungeon at the north gate", player:GetAttribute("DungeonFree") or 0, (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0)), Ratio = 0.95, Priority = 3 })
+	if player:GetAttribute("HintDone_GateDungeon") ~= true or (player:GetAttribute("DungeonFree") or 0) >= 1 or (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0) >= 1 then
+		local fresh = player:GetAttribute("HintDone_GateDungeon") ~= true -- 아직 마을 던전 입구를 안 써 봤다: 이 카드가 맨 위로
+		table.insert(candidates, { Text = fresh and "🏰 The dungeon you fell into... there's an entrance in town too!\nFollow the light pillar north · free entries today" or string.format("🎟 %d free entries today · 🗝 %d keys!\nChallenge the dungeon at the north gate", player:GetAttribute("DungeonFree") or 0, (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0)), Ratio = fresh and 2 or 0.95, Priority = fresh and -1 or 3 })
 	end
 	if (player:GetAttribute("ClearedZone") or 0) >= Config.Field.ZoneCount - 1 and not player:GetAttribute("HintDone_FieldClear") and not player:GetAttribute("TutorialActive") then
 		table.insert(candidates, { Text = "👑 Defeat the Lord of the final Zone 8!\nConquer the field to unlock the Boss Rush", Ratio = 0.95, Priority = 3 })
@@ -408,7 +409,8 @@ RunService.RenderStepped:Connect(function()
 		barBack.Visible = not smallCard
 		titleLabel.Size = UDim2.new(1, -16, 0, smallCard and 36 or 34)
 	end
-	if zone == "Dungeon" then beaconDone = true end
+	-- (빛기둥은 튜토리얼 던전과 상관없이, 마을 북쪽 입구로 스스로 처음 들어갈 때까지 켜 둔다: HintDone_GateDungeon)
+	beaconDone = player:GetAttribute("HintDone_GateDungeon") == true
 
 	-- 왼쪽 카드는 한 번에 하나만: 튜토리얼 중에는 미션 카드만, 그 뒤에는 "다음 목표" 카드만. 오늘의 퀘스트 줄은 받을 보상이 있을 때만 (진행 상황은 메뉴 > 퀘스트)
 	local questOn = player:GetAttribute("QuestHud") == true and zone ~= "Dungeon" and dailyList ~= nil
@@ -439,7 +441,7 @@ RunService.RenderStepped:Connect(function()
 	else
 		idleLabel.Position = UDim2.new(0.5, 0, 0, 128)
 	end
-	updateBeacon(questOn and zone == "Lobby")
+	updateBeacon(zone == "Lobby" and not player:GetAttribute("TutorialActive"))
 
 	local now = os.clock()
 	if now - last >= 0.5 then
@@ -451,7 +453,7 @@ RunService.RenderStepped:Connect(function()
 		local goal = pickGoal()
 		if goal then
 			titleLabel.Text = goal.Text
-			barFill.Size = UDim2.new(goal.Ratio, 0, 1, 0)
+			barFill.Size = UDim2.new(math.min(1, goal.Ratio), 0, 1, 0)
 			barFill.BackgroundColor3 = goal.Ratio >= 1 and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(110, 210, 255)
 		end
 
