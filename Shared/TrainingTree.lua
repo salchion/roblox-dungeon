@@ -25,9 +25,10 @@ local TRAIN_COLORS = {
 	Double = Color3.fromRGB(255, 160, 90), Gold = Color3.fromRGB(255, 215, 90), CritDmg = Color3.fromRGB(255, 120, 60), AtkSpeed = Color3.fromRGB(140, 220, 255),
 }
 -- 훈련 노드 자리: { 칸 안의 x(0~1), 층 }
+-- 유형별 줄: 왼쪽 두 줄 = 공격(공격 -> 더블샷, 치명타 -> 치명타 피해, 둘 다 -> 공격 속도) / 체력 = 방어 / 오른쪽 = 유틸(속도 -> 골드 감각)
 local TRAIN_POS = {
-	Attack = { 0.125, 1 }, Health = { 0.375, 1 }, Crit = { 0.625, 1 }, Speed = { 0.875, 1 },
-	Double = { 0.125, 2 }, Gold = { 0.375, 2 }, CritDmg = { 0.625, 2 }, AtkSpeed = { 0.375, 3 },
+	Attack = { 0.125, 1 }, Crit = { 0.375, 1 }, Health = { 0.625, 1 }, Speed = { 0.875, 1 },
+	Double = { 0.125, 2 }, CritDmg = { 0.375, 2 }, Gold = { 0.875, 2 }, AtkSpeed = { 0.25, 3 },
 }
 
 local function colX(col, fraction)

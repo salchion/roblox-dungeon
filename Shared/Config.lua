@@ -2022,7 +2022,7 @@ Config.Growth = {
 		Speed = { Name = "Speed Training", Icon = "💨", Per = 0.12, Tier = 1 },
 		Double = { Name = "Double Shot", Icon = "🔫", Per = 0.004, Max = 20, Tier = 2, Req = { { Stat = "Attack", Level = 5 } } },
 		CritDmg = { Name = "Crit Damage", Icon = "💥", Per = 0.01, Max = 20, Tier = 2, Req = { { Stat = "Crit", Level = 5 } } },
-		Gold = { Name = "Gold Sense", Icon = "💰", Per = 0.01, Max = 20, Tier = 2, Req = { { Stat = "Health", Level = 5 } } },
+		Gold = { Name = "Gold Sense", Icon = "💰", Per = 0.01, Max = 20, Tier = 2, Req = { { Stat = "Speed", Level = 5 } } }, -- (유틸: 이동 속도 아래)
 		AtkSpeed = { Name = "Attack Speed", Icon = "⏩", Per = 0.005, Max = 20, Tier = 3, Req = { { Stat = "CritDmg", Level = 5 }, { Stat = "Double", Level = 5 } } },
 	},
 	Gates = {},                            -- (예전: 레벨 10 / 20 / 30 / 40 에서 멈추고 시간 돌파 -> 기다리는 느낌이라 없앴다. 이제 막힘 없이 성장하고 골드는 환생으로 더 번다)
