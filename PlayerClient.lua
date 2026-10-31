@@ -232,7 +232,7 @@ local resetEnhanceView -- 블록 밖(왼쪽 무기 버튼 신호)에서도 쓰�
 do
 -- 무기 강화 창: 둥근 다이얼. 위에 무기 구슬(+N), 가운데 성공 확률 링, 아래 재료 칸(필요 골드 / 가진 골드), 맨 아래 강화 버튼.
 local E = {}
-local PW, PH = 440, 600
+local PW, PH = 440, 644
 local DX, DY = PW / 2, 300 -- 다이얼 중심
 enhancePanel = makePanel({
 	Name = "EnhancePanel", -- (EnhanceResultClient 가 이 창 위에 결과 카드를 그린다)
@@ -320,8 +320,8 @@ end
 E.Cost = materialOrb(DX - 78, DY + 138, "Cost")
 E.Owned = materialOrb(DX + 78, DY + 138, "You have")
 
-local enhanceNext = makeLabel({ Size = UDim2.new(1, -30, 0, 18), Position = UDim2.new(0, 15, 0, 496), TextSize = 12, RichText = true, ZIndex = 6 }, enhancePanel)
-local enhanceResult = makeLabel({ Size = UDim2.new(1, -24, 0, 16), Position = UDim2.new(0, 12, 0, 514), Font = Enum.Font.GothamBold, TextSize = 11, TextWrapped = true, ZIndex = 6 }, enhancePanel)
+local enhanceNext = makeLabel({ Size = UDim2.new(1, -30, 0, 18), Position = UDim2.new(0, 15, 0, 500), TextSize = 12, RichText = true, ZIndex = 6 }, enhancePanel)
+local enhanceResult = makeLabel({ Size = UDim2.new(1, -24, 0, 34), Position = UDim2.new(0, 12, 0, 520), Font = Enum.Font.GothamBold, TextSize = 11, TextWrapped = true, ZIndex = 6 }, enhancePanel)
 local hammer = makeLabel({
 	Size = UDim2.new(0, 70, 0, 70), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 70, 0, 110),
 	Text = "🔨", TextSize = 48, Visible = false, ZIndex = 9, Rotation = -50,
