@@ -1,0 +1,36 @@
+-- Loc_es_3 (ReplicatedStorage 안의 ModuleScript, 이름: Loc_es_3)
+-- 자동 생성 파일: Tools/build_loc.py 가 Tools/loc_table.csv (+ 우리 사전) 에서 만든다. 직접 고치지 않는다.
+return {
+	exact = {
+	},
+	templates = {
+		{ "Best {text1}  ·  Max hit {text2}", "Mejor {text1}  ·  Golpe máx. {text2}" },
+		{ "Next point: {text1} / {text2} XP", "Siguiente punto: {text1} / {text2} EXP" },
+		{ "✦ New unique: {text1} — {text2}", "✦ Nuevo único: {text1} — {text2}" },
+		{ "Your best tier: {text1} {text2}", "Tu mejor nivel: {text1} {text2}" },
+		{ "· New era 『{text1} {text2}』!", "· ¡Nueva era 『{text1} {text2}』!" },
+		{ "{text1} equipped! ({text2})", "¡{text1} equipado! ({text2})" },
+		{ "ZONE {number1}  ·  {text2}   {text3}", "ZONA {number1}  ·  {text2}   {text3}" },
+		{ "{text1} {text2} piece ({number3}/3)", "{text1} {text2} pieza ({number3}/3)" },
+		{ "{text1} (Lord of {text2})", "{text1} (señor de {text2})" },
+		{ "🗿 {text1} · Zone {text2}", "🗿 {text1} · Zona {text2}" },
+		{ "{text1} · Score {number2}{text3}", "{text1} · Puntuación {number2}{text3}" },
+		{ "⚡ Power {text1}{number2} {text3}", "⚡ Poder {text1}{number2} {text3}" },
+		{ "Depth {number1}: {text2}{text3}", "Profundidad {number1}: {text2}{text3}" },
+		{ "(gear {text1}{text2})", "(equipo {text1}{text2})" },
+		{ "Zone {number1} {text2}{text3}", "Zona {number1} {text2}{text3}" },
+		{ "👑 Weekly Final Lord reward: Mythic {text1} · {text2} Set · ✦ {text3}!", "👑 Recompensa semanal del Señor Final: {text1} mítico · set {text2} · ✦ {text3}!" },
+		{ "{text1} Trial effect for this dungeon: [{text2}] (Lv.3) — {text3}", "{text1} Efecto de prueba de esta mazmorra: [{text2}] (Nv.3) — {text3}" },
+		{ "Depth {number1} (total {text2}, Unique {text3}, keys {number4}): {text5}", "Profundidad {number1} (total {text2}, único {text3}, llaves {number4}): {text5}" },
+		{ "{text1} Set synergy activated! 『{text2}』 - {text3}", "¡Sinergia de set {text1} activada! 『{text2}』 - {text3}" },
+		{ "🐾 Pet Lv.{number1}! New ability {text2} {text3} — {text4}", "🐾 ¡Mascota Nv.{number1}! Nueva habilidad {text2} {text3} — {text4}" },
+		{ "{text1} Dungeon mutation: {text2} — {text3}", "{text1} Mutación de la mazmorra: {text2} — {text3}" },
+		{ "▶ Next feature: Lv.{number1} {text2} {text3}{text4}", "▶ Siguiente función: Nv.{number1} {text2} {text3}{text4}" },
+		{ "{text1} {text2} complete! Lv.{number3} ({text4})", "¡{text1} {text2} completado! Nv.{number3} ({text4})" },
+		{ "{text1} 『{text2}』 {text3} done! (Lv.{number4})", "¡{text1} 『{text2}』 {text3} completado! (Nv.{number4})" },
+		{ "{text1}Zone {number2} · {text3}  {text4}", "{text1}Zona {number2} · {text3}  {text4}" },
+		{ "{text1} {text2} got {text3}!", "¡{text1} {text2} consiguió {text3}!" },
+		{ "🔓 Zone {number1} gate opened! Reward 💰{number2} G · 🎫{number3}  — {text4} · {text5}-only drops: {text6} {text7} Set", "🔓 ¡La puerta de la zona {number1} se abrió! Recompensa 💰{number2} G · 🎫{number3}  — {text4} · botín exclusivo de {text5}: {text6} set {text7}" },
+		{ "{text1} Zone {number2} · {text3}   (Rec. ⚡{number4})  {text5} {text6} Set", "{text1} Zona {number2} · {text3}   (Rec. ⚡{number4})  Set {text5} {text6}" },
+	},
+}

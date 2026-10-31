@@ -402,6 +402,7 @@ function M.Build(typeKey, size, color, position, parent)
 		part.CanCollide = false
 		part.CanQuery = false
 		part.CanTouch = false
+		part.CastShadow = false -- 몬스터 1천여 마리 x 장식 30개: 작은 부품까지 그림자를 그리면 렌더 부담이 크다
 		part.Massless = true
 		part.Shape = shape
 		part.Size = Vector3.new(math.max(0.05, sx), math.max(0.05, sy), math.max(0.05, sz))
@@ -587,6 +588,14 @@ local function sweepShots(ctx, part, data, aim, count, totalDeg, gap, speed, dam
 			ctx.Fire(part.Position, rotateY(aim, angle), speed, damage, size, color, style)
 		end)
 	end
+end
+
+-- 벽에 가렸는지(시야) 검사는 무겁다(선을 따라 점마다 벽을 비교): 몬스터마다 0.15초 동안 결과를 다시 쓴다 (매 프레임 검사하던 것)
+local function sightClear(ctx, data, from, to, now)
+	if data.SightUntil and now < data.SightUntil then return data.SightClear end
+	data.SightClear = ctx.LineOfSight(from, to) and true or false
+	data.SightUntil = now + 0.12 + math.random() * 0.06 -- (몬스터마다 검사 시점이 겹치지 않게 조금씩 어긋나게)
+	return data.SightClear
 end
 
 local function telegraph(ctx, part, data, color, delay, action)
@@ -939,7 +948,7 @@ function M.Update(ctx, part, data, dt, now)
 	local direction = toTarget.Magnitude > 0.1 and toTarget.Unit or Vector3.new(0, 0, -1)
 	local position = part.Position
 	-- 벽 때문에 플레이어가 안 보이면 곧장 가지 않고 길(방 사이 통로 / 벽의 틈)을 따라 돌아서 간다
-	if ctx.NextStep and ctx.LineOfSight and not ctx.LineOfSight(position, target.Position) then
+	if ctx.NextStep and ctx.LineOfSight and not sightClear(ctx, data, position, target.Position, now) then
 		local waypoint = ctx.NextStep(data, position, target.Position)
 		if waypoint then
 			local toWaypoint = flat(waypoint - position)
@@ -1122,7 +1131,7 @@ function M.Update(ctx, part, data, dt, now)
 	end
 	if distance > def.Range or now < data.NextAttack then return end
 	-- 벽 너머로는 공격하지 않는다
-	if ctx.LineOfSight and not ctx.LineOfSight(part.Position, target.Position) then return end
+	if ctx.LineOfSight and not sightClear(ctx, data, part.Position, target.Position, now) then return end
 	data.NextAttack = now + stats.ShotInterval
 
 	if def.Attack == "Single" then

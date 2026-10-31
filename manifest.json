@@ -92,6 +92,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/FieldZoneProps.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "FieldZoneProps",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/FieldLayouts.lua",
       "parent": "ServerScriptService/Modules",
       "name": "FieldLayouts",
@@ -596,6 +603,13 @@
       "overwrite": true
     },
     {
+      "path": "Shared/GachaReveal.lua",
+      "parent": "ReplicatedStorage",
+      "name": "GachaReveal",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Shared/LordLook.lua",
       "parent": "ReplicatedStorage",
       "name": "LordLook",
@@ -771,6 +785,13 @@
       "overwrite": true
     },
     {
+      "path": "Shared/Loc_es_3.lua",
+      "parent": "ReplicatedStorage",
+      "name": "Loc_es_3",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Shared/Loc_fr.lua",
       "parent": "ReplicatedStorage",
       "name": "Loc_fr",
@@ -844,6 +865,13 @@
       "path": "Shared/Loc_pt_2.lua",
       "parent": "ReplicatedStorage",
       "name": "Loc_pt_2",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/Loc_pt_3.lua",
+      "parent": "ReplicatedStorage",
+      "name": "Loc_pt_3",
       "class": "ModuleScript",
       "overwrite": true
     },

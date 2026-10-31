@@ -2228,11 +2228,12 @@ function Dungeon.Shoot(player, origin, direction)
 		local splash = weaponType.Splash or 0
 		if boom > 0 or splash > 0 then
 			local radius = math.max(boom > 0 and (8 + boom * 4) or 0, splash)
+			local boomRatio = (splash > 0 and boom == 0) and 0.5 or Config.Perks.BoomRatio -- 무기 고유 폭발(로켓)은 필드와 같은 50% (예전엔 던전만 40%)
 			boom = math.max(boom, 1)
 			Effects.Burst(hitPosition, Color3.fromRGB(255, 140, 50), 10 + boom * 8)
 			for otherPart, otherData in pairs(run.Monsters) do
 				if otherPart ~= part and otherPart.Parent and (otherPart.Position - hitPosition).Magnitude <= radius + otherPart.Size.X / 2 then
-					local boomDamage = math.max(1, math.floor(damage * Config.Perks.BoomRatio))
+					local boomDamage = math.max(1, math.floor(damage * boomRatio))
 					damageMonster(run, player, otherPart, otherData, boomDamage, false, otherPart.Position)
 					Meter.Add(player, "PerkBoom", boomDamage)
 				end
