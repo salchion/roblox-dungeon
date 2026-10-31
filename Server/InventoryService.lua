@@ -410,6 +410,41 @@ function Inventory.AutoEquipBest(player, emptyOnly)
 	return changed
 end
 
+-- 세트 맞추기: 그 세트 조각 중 부위마다 가장 좋은 것을 골라, 점수 높은 순으로 3부위까지 끼운다 (세트 효과는 3부위까지)
+-- 다른 부위는 그대로 둔다. 반환: 바꾼 부위 수, 실패 이유
+function Inventory.EquipSet(player, setKey)
+	local state = states[player]
+	if not state then return 0 end
+	if player:GetAttribute("Zone") == "Dungeon" then
+		return 0, "You can't change gear in the dungeon."
+	end
+	if not Config.Sets[setKey] then return 0, "Unknown set." end
+	local best = {}
+	for id, item in pairs(state.Items) do
+		if item.Set == setKey then
+			local score = Config.GetItemScore(item)
+			if not best[item.Slot] or score > best[item.Slot].Score then best[item.Slot] = { Id = id, Score = score, Slot = item.Slot } end
+		end
+	end
+	local picks = {}
+	for _, pick in pairs(best) do table.insert(picks, pick) end
+	if #picks == 0 then return 0, "You don't have any pieces of that set." end
+	table.sort(picks, function(a, b) return a.Score > b.Score end)
+	local changed = 0
+	for i = 1, math.min(3, #picks) do
+		local pick = picks[i]
+		if state.Equipped[pick.Slot] ~= pick.Id then
+			state.Equipped[pick.Slot] = pick.Id
+			changed += 1
+		end
+	end
+	if changed > 0 then
+		applyEquipAttributes(player, state)
+		Inventory.Push(player)
+	end
+	return changed
+end
+
 function Inventory.Scrap(player, id)
 	local state = states[player]
 	local item = state and state.Items[id]
@@ -704,6 +739,15 @@ Remotes.Inventory.OnServerEvent:Connect(function(player, action, arg, arg2)
 			ok, message = true, string.format("Auto-equipped the best gear in %d slot(s)!", changed)
 		else
 			ok, message = true, "You're already wearing the best gear in every slot."
+		end
+	elseif action == "EquipSet" and typeof(arg) == "string" then
+		local changed, reason = Inventory.EquipSet(player, arg)
+		if reason then
+			ok, message = false, reason
+		elseif changed > 0 then
+			ok, message = true, string.format("%s Set equipped! (%d slot(s) changed)", Config.Sets[arg].Name, changed)
+		else
+			ok, message = true, "You're already wearing the best pieces of that set."
 		end
 	elseif action == "AutoScrap" and typeof(arg) == "number" then
 		Inventory.SetAutoScrap(player, arg)

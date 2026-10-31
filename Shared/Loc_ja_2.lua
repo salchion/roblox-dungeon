@@ -574,6 +574,9 @@ return {
 		["🔫 Best with"] = "🔫 相性の良い武器:",
 		["🏰 The dungeon you fell into... there's an entrance in town too!"] = "🏰 さっき落ちたダンジョン…町にも入口がある！",
 		["Follow the light pillar north · free entries today"] = "北の光の柱へ · 今日は無料で入れる",
+		["🧩 Equip set"] = "🧩 セット装着",
+		["You're already wearing the best pieces of that set."] = "そのセットの最良の装備をもう着けています。",
+		["You don't have any pieces of that set."] = "そのセットの装備を持っていません。",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -919,8 +922,5 @@ return {
 		{ "{number1} upgrades! {number2} succeeded", "強化{number1}回! 成功{number2}回" },
 		{ "Free entries {number1} · Keys {number2}", "無料入場 {number1}・鍵 {number2}" },
 		{ "Loading the land...  {number1}", "大地を読み込み中...  {number1}" },
-		{ "Double Shot chance +{number1}%", "ダブルショット確率 +{number1}%" },
-		{ "ZONE {number1}  ·  Meadow   ☠", "ゾーン {number1} ・草原 ☠" },
-		{ "Luck Booster ({number1} hour)", "ラッキーブースター（{number1}時間）" },
 	},
 }

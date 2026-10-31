@@ -134,3 +134,7 @@
 2175¦🔫 相性の良い武器:¦🔫 Am besten mit¦🔫 Idéal avec¦🔫 Mejor con¦🔫 Melhor com¦🔫 最佳搭配¦🔫 잘 맞는 무기:
 2176¦🏰 さっき落ちたダンジョン…町にも入口がある！¦🏰 Der Dungeon von vorhin... auch in der Stadt gibt es einen Eingang!¦🏰 Le donjon de tout à l'heure... il y a aussi une entrée en ville !¦🏰 La mazmorra de antes... ¡también hay una entrada en el pueblo!¦🏰 A masmorra de antes... tem uma entrada na cidade também!¦🏰 刚才掉进去的地下城……镇上也有入口！¦🏰 아까 빠졌던 그 던전… 마을에도 입구가 있잖아!
 2177¦北の光の柱へ · 今日は無料で入れる¦Folge der Lichtsäule nach Norden · heute kostenlos¦Suivez le pilier de lumière au nord · entrées gratuites aujourd'hui¦Sigue el pilar de luz al norte · entradas gratis hoy¦Siga o pilar de luz ao norte · entradas grátis hoje¦跟着北边的光柱走 · 今天可免费进入¦북쪽 빛기둥을 따라가 봐 · 오늘은 무료 입장
+2178¦🧩 セット装着¦🧩 Set anlegen¦🧩 Équiper set¦🧩 Equipar set¦🧩 Equipar set¦🧩 套装装备¦🧩 세트 장착
+2179¦{text1}セットを装着！({number1}部位変更)¦{text1}-Set angelegt! ({number1} Plätze geändert)¦Set {text1} équipé ! ({number1} emplacement(s) changé(s))¦¡Set {text1} equipado! ({number1} espacio(s) cambiado(s))¦Set {text1} equipado! ({number1} espaço(s) trocado(s))¦已装备{text1}套装！(更换{number1}个部位)¦{text1} 세트 장착! ({number1}부위 교체)
+2180¦そのセットの最良の装備をもう着けています。¦Du trägst bereits die besten Teile dieses Sets.¦Vous portez déjà les meilleures pièces de ce set.¦Ya llevas las mejores piezas de ese set.¦Você já está usando as melhores peças desse set.¦你已穿着该套装的最佳部件。¦이미 그 세트의 가장 좋은 조각을 끼고 있어요.
+2181¦そのセットの装備を持っていません。¦Du hast keine Teile dieses Sets.¦Vous n'avez aucune pièce de ce set.¦No tienes piezas de ese set.¦Você não tem peças desse set.¦你没有该套装的部件。¦그 세트 조각이 없어요.

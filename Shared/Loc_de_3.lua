@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Defeat Zone {number1} monsters {number2} / {number3} · Reward {text4} G + Ticket", "Besiege Zone-{number1}-Monster {number2} / {number3} · Belohnung {text4} G + Ticket" },
 		{ "🎒 {text1}  ▲ Better than your current gear! (I → Bag)", "🎒 {text1}  ▲ Besser als deine aktuelle Ausrüstung! (I → Rucksack)" },
 		{ "{text1}  ▲ +{number2}% better than your current gear! (I → Bag", "{text1}  ▲ +{number2}% besser als deine aktuelle Ausrüstung! (I → Tasche" },
 		{ "[{text1}] Starts in {number2}s! Survive the incoming monsters", "[{text1}] Startet in {number2} s! Überlebe die anrückenden Monster" },
@@ -19,6 +20,7 @@ return {
 		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1} … automatisch zerlegt! Essenz +{number2}, {number3} G" },
 		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 Durchbruch auf Stufe {number1} gestartet! ({text2})" },
 		{ "Weapon range +{text1}% per point  (max {number2})", "Waffenreichweite +{text1} % pro Punkt (max. {number2})" },
+		{ "{text1} Set equipped! ({number1} slot(s) changed)", "{text1}-Set angelegt! ({number1} Plätze geändert)" },
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} automatisch zerlegt (Essenz +{number2}, {number3} G)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ Tagesquest abgeschlossen! Belohnung: {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 Zone {number1} Abschnitt {number2} — hier gibt es viele {text3}" },

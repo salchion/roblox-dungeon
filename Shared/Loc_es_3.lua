@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: {text1}", "🔫 5 tipos de arma — uno se desbloquea en cada hito de mejora (cada 15). Elige con qué arma desbloqueada luchar · Ahora: {text1}" },
 		{ "🎁 First breakthrough gift! Received {text1} Time Skip — press [Use Time Skip] in Growth to finish right away!", "🎁 ¡Regalo por la primera superación! Recibiste {text1} salto de tiempo: pulsa [Usar salto de tiempo] en Crecimiento para terminar al instante." },
 		{ "{text1} has used up today's free entries and doesn't have {number2} key(s). Defeat a field zone lord to get keys", "{text1} ha usado las entradas gratis de hoy y no tiene {number2} llave(s). Derrota a un señor de zona del campo para conseguir llaves" },
 		{ "🐃 Monster stampede! They're charging in a line from the {text1} — step aside and sweep them away!", "🐃 ¡Estampida de monstruos! Cargan en línea desde {text1}: ¡hazte a un lado y bárrelos!" },
@@ -39,6 +40,7 @@ return {
 		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}... ¡desmantelado automáticamente! Esencia +{number2}, {number3} G" },
 		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 ¡Superación del nivel {number1} iniciada! ({text2})" },
 		{ "Weapon range +{text1}% per point  (max {number2})", "Alcance del arma +{text1}% por punto (máx. {number2})" },
+		{ "{text1} Set equipped! ({number1} slot(s) changed)", "¡Set {text1} equipado! ({number1} espacio(s) cambiado(s))" },
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} desmantelado automáticamente (esencia +{number2}, {number3} G)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ ¡Misión diaria completada! Recompensa: {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 Zona {number1} sección {number2}: aquí hay muchos {text3}" },

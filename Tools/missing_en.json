@@ -2176,5 +2176,9 @@
 "Switch to it for set damage +40%",
 "🔫 Best with",
 "🏰 The dungeon you fell into... there's an entrance in town too!",
-"Follow the light pillar north · free entries today"
+"Follow the light pillar north · free entries today",
+"🧩 Equip set",
+"{text1} Set equipped! ({number1} slot(s) changed)",
+"You're already wearing the best pieces of that set.",
+"You don't have any pieces of that set."
 ]

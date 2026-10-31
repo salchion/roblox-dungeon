@@ -446,6 +446,9 @@ return {
 		["🔫 Best with"] = "🔫 Mejor con",
 		["🏰 The dungeon you fell into... there's an entrance in town too!"] = "🏰 La mazmorra de antes... ¡también hay una entrada en el pueblo!",
 		["Follow the light pillar north · free entries today"] = "Sigue el pilar de luz al norte · entradas gratis hoy",
+		["🧩 Equip set"] = "🧩 Equipar set",
+		["You're already wearing the best pieces of that set."] = "Ya llevas las mejores piezas de ese set.",
+		["You don't have any pieces of that set."] = "No tienes piezas de ese set.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -981,6 +984,5 @@ return {
 		{ "Lv {number1}", "Nivel {number1}" },
 		{ "A new dungeon theme can now appear ({text1}, Level {number2}+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", "Ahora puede aparecer un nuevo tema de mazmorra ({text1}, nivel {number2}+). Elige una profundidad: más profundo significa mejores probabilidades de botín y jefes más duros. Una marca señala ahora la puerta." },
 		{ "(one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "(uno de {number1}) aparecen en equipo mítico: cofres de mazmorra (ver abajo), botín del campo ({text2}), el cofre semanal del Boss Rush y la recompensa semanal del Señor Final." },
-		{ "🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: {text1}", "🔫 5 tipos de arma — uno se desbloquea en cada hito de mejora (cada 15). Elige con qué arma desbloqueada luchar · Ahora: {text1}" },
 	},
 }

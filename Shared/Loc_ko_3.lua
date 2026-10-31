@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Zone {number1} · Lightning Strike  ", "구역 {number1} · 번개 공격" },
+		{ "🔒 Zone {number1} · Snowfield Sealed", "🔒 구역 {number1} · 설원 봉쇄됨" },
+		{ "Sniper Rifle · Rusty Era +{number1}", "저격 소총 · 녹슨 시대 +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number2}", "❄ 얼음 궁전 문 · 추천 수 {number2}" },
 		{ "ZONE {number1}  ·  Abyss   ☠☠☠☠☠☠☠☠", "존 {number1} · 심연 ☠☠☠☠☠☠☠☠" },
 		{ "Dismantled {number1}! Essence +{number2}, {number3} G", "{number1}개 분해! 정수 +{number2}, {number3} G" },
@@ -320,6 +323,7 @@ return {
 		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}... 자동 분해! 정수 +{number2}, {number3} G" },
 		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 {number1}레벨 돌파 시작! ({text2})" },
 		{ "Weapon range +{text1}% per point  (max {number2})", "무기 사거리 포인트당 +{text1}%  (최대 {number2})" },
+		{ "{text1} Set equipped! ({number1} slot(s) changed)", "{text1} 세트 장착! ({number1}부위 교체)" },
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} 자동 분해 (정수 +{number2}, {number3} G)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ 일일 퀘스트 완료! 보상: {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 {number1}구역 {number2}구간 — 이곳에는 {text3}이(가) 많아요" },

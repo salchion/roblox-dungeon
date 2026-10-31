@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Double Shot chance +{number1}%", "ダブルショット確率 +{number1}%" },
+		{ "ZONE {number1}  ·  Meadow   ☠", "ゾーン {number1} ・草原 ☠" },
+		{ "Luck Booster ({number1} hour)", "ラッキーブースター（{number1}時間）" },
 		{ "Idle Booster ({number1} hour)", "アイドルブースター（{number1}時間）" },
 		{ "Hit the dummy {number1} times", "ダミーを{number1}回攻撃する" },
 		{ "{number3} Wasteland · {number4} Desert", "{number3} 荒地 · {number4} 砂漠" },
@@ -231,6 +234,7 @@ return {
 		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}…自動分解しました！エッセンス+{number2}、{number3} G" },
 		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 レベル{number1}の突破を開始しました！({text2})" },
 		{ "Weapon range +{text1}% per point  (max {number2})", "1ポイントごとに武器の射程+{text1}%(最大{number2})" },
+		{ "{text1} Set equipped! ({number1} slot(s) changed)", "{text1}セットを装着！({number1}部位変更)" },
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1}を自動分解しました(エッセンス+{number2}、{number3} G)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ デイリークエスト完了！報酬: {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 ゾーン{number1} セクション{number2} — ここには{text3}がたくさんいる" },

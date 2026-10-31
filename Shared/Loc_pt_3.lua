@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 A Golden Goblin appeared in Zone {number1} · {text2}! Catch it for a jackpot! (75s)", "💰 Um goblin dourado apareceu na zona {number1} · {text2}! Pegue-o para um jackpot! (75 s)" },
 		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "Masmorra · escolha uma profundidade (mais fundo = melhores chances de drop) · tema aleatório · {text1}" },
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "{text1} obtido! Adicionado à bolsa. (I → equipar pela bolsa)  ▲ +{number2}% vs atual" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 O portão está fechado! Derrote os monstros da zona {number1} {number2}/{number3} + o senhor da zona{text4}" },
@@ -30,6 +31,7 @@ return {
 		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}... desmontado automaticamente! Essência +{number2}, {number3} G" },
 		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 Avanço do nível {number1} iniciado! ({text2})" },
 		{ "Weapon range +{text1}% per point  (max {number2})", "Alcance da arma +{text1}% por ponto (máx. {number2})" },
+		{ "{text1} Set equipped! ({number1} slot(s) changed)", "Set {text1} equipado! ({number1} espaço(s) trocado(s))" },
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} desmontado automaticamente (essência +{number2}, {number3} G)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ Missão diária concluída! Recompensa: {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 Zona {number1} seção {number2} — há muitos {text3} aqui" },

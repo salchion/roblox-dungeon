@@ -459,6 +459,9 @@ return {
 		["🔫 Best with"] = "🔫 Idéal avec",
 		["🏰 The dungeon you fell into... there's an entrance in town too!"] = "🏰 Le donjon de tout à l'heure... il y a aussi une entrée en ville !",
 		["Follow the light pillar north · free entries today"] = "Suivez le pilier de lumière au nord · entrées gratuites aujourd'hui",
+		["🧩 Equip set"] = "🧩 Équiper set",
+		["You're already wearing the best pieces of that set."] = "Vous portez déjà les meilleures pièces de ce set.",
+		["You don't have any pieces of that set."] = "Vous n'avez aucune pièce de ce set.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -946,9 +949,5 @@ return {
 		{ "🏰 Dungeons {number1}", "🏰 Donjons {number1}" },
 		{ "Zone {number1} Camp", "Camp de la zone {number1}" },
 		{ "🐾 Pet Lv.{number1}!", "🐾 Familier niv.{number1} !" },
-		{ "Upgrade {number1} G", "Améliorer {number1} or" },
-		{ "✦ Paragon {number1}", "✦ Parangon {number1}" },
-		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
-		{ "Damage +{number2}%", "Dégâts +{number2}%" },
 	},
 }

@@ -326,6 +326,9 @@ return {
 		["🔫 Best with"] = "🔫 最佳搭配",
 		["🏰 The dungeon you fell into... there's an entrance in town too!"] = "🏰 刚才掉进去的地下城……镇上也有入口！",
 		["Follow the light pillar north · free entries today"] = "跟着北边的光柱走 · 今天可免费进入",
+		["🧩 Equip set"] = "🧩 套装装备",
+		["You're already wearing the best pieces of that set."] = "你已穿着该套装的最佳部件。",
+		["You don't have any pieces of that set."] = "你没有该套装的部件。",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -904,6 +907,7 @@ return {
 		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}……已自动分解!精华 +{number2},{number3} 金币" },
 		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 {number1} 级突破已开始!({text2})" },
 		{ "Weapon range +{text1}% per point  (max {number2})", "每点武器射程 +{text1}%(最多 {number2})" },
+		{ "{text1} Set equipped! ({number1} slot(s) changed)", "已装备{text1}套装！(更换{number1}个部位)" },
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} 已自动分解(精华 +{number2},{number3} 金币)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ 每日任务完成!奖励:{text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 区域{number1} 第 {number2} 段 — 这里有很多 {text3}" },
@@ -1035,8 +1039,5 @@ return {
 		{ "👑 Weekly Final Lord reward: Mythic {text1} · {text2} Set · ✦ {text3}!", "👑 每周最终领主奖励:神话 {text1} · {text2} 套装 · ✦ {text3}!" },
 		{ "{text1} Trial effect for this dungeon: [{text2}] (Lv.3) — {text3}", "{text1} 本地下城的试炼效果:[{text2}](Lv.3)— {text3}" },
 		{ "Depth {number1} (total {text2}, Unique {text3}, keys {number4}): {text5}", "深度 {number1}(合计 {text2},独特 {text3},钥匙 {number4}):{text5}" },
-		{ "{text1} Set synergy activated! 『{text2}』 - {text3}", "{text1} 套装协同已激活!『{text2}』- {text3}" },
-		{ "🐾 Pet Lv.{number1}! New ability {text2} {text3} — {text4}", "🐾 宠物 Lv.{number1}!新能力 {text2} {text3} — {text4}" },
-		{ "{text1} Dungeon mutation: {text2} — {text3}", "{text1} 地下城变异:{text2} — {text3}" },
 	},
 }

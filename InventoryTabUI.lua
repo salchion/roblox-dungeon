@@ -146,6 +146,49 @@ local function buildInventoryTab(state)
 		Remotes.Inventory:FireServer("SmartClean")
 	end)
 
+	-- 세트 맞추기 줄: 가진 세트 조각이 있는 세트마다 칩 하나. 누르면 그 세트의 가장 좋은 조각들로 한 번에 갈아 낀다
+	do
+		local owned = {} -- [세트] = 가진 부위 수 (가방 + 착용)
+		local slotsSeen = {}
+		for _, item in ipairs(state.Items) do
+			if item.Set and Config.Sets[item.Set] then
+				slotsSeen[item.Set] = slotsSeen[item.Set] or {}
+				if not slotsSeen[item.Set][item.Slot] then
+					slotsSeen[item.Set][item.Slot] = true
+					owned[item.Set] = (owned[item.Set] or 0) + 1
+				end
+			end
+		end
+		local keys = {}
+		for _, key in ipairs(Config.Sets.ZoneKeys) do
+			if owned[key] then table.insert(keys, key) end
+		end
+		if #keys > 0 then
+			local setRow = newRow(46, Color3.fromRGB(24, 26, 40))
+			makeLabel({ Size = UDim2.new(0, 96, 1, 0), Position = UDim2.new(0, 8, 0, 0), Text = "🧩 Equip set", TextSize = 12, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(225, 196, 118), TextXAlignment = Enum.TextXAlignment.Left }, setRow)
+			local strip = create("ScrollingFrame", {
+				Size = UDim2.new(1, -110, 1, -6), Position = UDim2.new(0, 106, 0, 3), BackgroundTransparency = 1, BorderSizePixel = 0,
+				ScrollBarThickness = 3, ScrollingDirection = Enum.ScrollingDirection.X, CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.X,
+			}, setRow)
+			create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Center }, strip)
+			for i, key in ipairs(keys) do
+				local def = Config.Sets[key]
+				local worn = setCounts[key] or 0
+				local effectOn = def.Zone and player:GetAttribute("AugOnZ_" .. def.Zone) == true
+				local chip = makeButton({
+					Size = UDim2.new(0, 0, 0, 34), AutomaticSize = Enum.AutomaticSize.X, LayoutOrder = i, RichText = true, TextSize = 11,
+					Text = string.format("%s %s  <font color='#ffe9a0'>%s</font>%s", def.Icon or "✦", def.Name, setPips(math.min(worn, 3)), effectOn and "  <font color='#78ff8c'>● ON</font>" or ""),
+					BackgroundColor3 = def.Color:Lerp(Color3.fromRGB(26, 28, 42), worn >= math.min(3, owned[key]) and 0.35 or 0.7),
+				}, strip, function()
+					Remotes.Inventory:FireServer("EquipSet", key)
+				end)
+				rounded(chip, 17)
+				create("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 12) }, chip)
+				create("UIStroke", { Color = def.Color, Thickness = effectOn and 2.5 or 1.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, chip)
+			end
+		end
+	end
+
 	local top = newRow(470, Color3.fromRGB(30, 32, 46))
 
 	local viewport = create("ViewportFrame", {

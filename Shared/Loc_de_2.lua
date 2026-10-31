@@ -400,6 +400,9 @@ return {
 		["🔫 Best with"] = "🔫 Am besten mit",
 		["🏰 The dungeon you fell into... there's an entrance in town too!"] = "🏰 Der Dungeon von vorhin... auch in der Stadt gibt es einen Eingang!",
 		["Follow the light pillar north · free entries today"] = "Folge der Lichtsäule nach Norden · heute kostenlos",
+		["🧩 Equip set"] = "🧩 Set anlegen",
+		["You're already wearing the best pieces of that set."] = "Du trägst bereits die besten Teile dieses Sets.",
+		["You don't have any pieces of that set."] = "Du hast keine Teile dieses Sets.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -948,6 +951,5 @@ return {
 		{ "{text1}'s level is too low. (This dungeon requires Lv.{number2}+)", "Die Stufe von {text1} ist zu niedrig. (Dieser Dungeon erfordert Lv.{number2}+)" },
 		{ "{text1} has appeared! Dodge its attacks and take it down", "{text1} ist erschienen! Weiche seinen Angriffen aus und besiege ihn" },
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag", "{text1} erhalten! Zur Tasche hinzugefügt. (I → aus der Tasche ausrüsten" },
-		{ "Defeat Zone {number1} monsters {number2} / {number3} · Reward {text4} G + Ticket", "Besiege Zone-{number1}-Monster {number2} / {number3} · Belohnung {text4} G + Ticket" },
 	},
 }

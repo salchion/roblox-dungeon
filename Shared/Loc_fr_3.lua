@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Upgrade {number1} G", "Améliorer {number1} or" },
+		{ "✦ Paragon {number1}", "✦ Parangon {number1}" },
+		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
+		{ "Damage +{number2}%", "Dégâts +{number2}%" },
 		{ "x{number1}\nUpgrade", "x {number1}\nAmélioration" },
 		{ "Damage +{number1}%", "Dégâts +{number1}%" },
 		{ "Admin (F{number1})", "Administrateur (F{number1})" },
@@ -82,6 +86,7 @@ return {
 		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}... démantelé automatiquement ! Essence +{number2}, {number3} or" },
 		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 Percée du niveau {number1} commencée ! ({text2})" },
 		{ "Weapon range +{text1}% per point  (max {number2})", "Portée de l'arme +{text1} % par point (max {number2})" },
+		{ "{text1} Set equipped! ({number1} slot(s) changed)", "Set {text1} équipé ! ({number1} emplacement(s) changé(s))" },
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} recyclé automatiquement (essence +{number2}, {number3} or)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ Quête quotidienne terminée ! Récompense : {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 Zone {number1} section {number2} — beaucoup de {text3} ici" },

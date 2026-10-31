@@ -417,6 +417,9 @@ return {
 		["🔫 Best with"] = "🔫 Melhor com",
 		["🏰 The dungeon you fell into... there's an entrance in town too!"] = "🏰 A masmorra de antes... tem uma entrada na cidade também!",
 		["Follow the light pillar north · free entries today"] = "Siga o pilar de luz ao norte · entradas grátis hoje",
+		["🧩 Equip set"] = "🧩 Equipar set",
+		["You're already wearing the best pieces of that set."] = "Você já está usando as melhores peças desse set.",
+		["You don't have any pieces of that set."] = "Você não tem peças desse set.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -957,6 +960,5 @@ return {
 		{ "🔒 {text1} unlocks at +{number2} ({number3} to go) - upgrade your weapon at the Forge or in the Menu (B)", "🔒 {text1} é desbloqueado em +{number2} (faltam {number3}) - melhore sua arma na Forja ou no menu (B)" },
 		{ "🎒 Bag full: dismantled a weaker item to keep your new {text1} gear (Essence +{number2}, {number3} G)", "🎒 Mochila cheia: um item mais fraco foi desmontado para manter seu novo equipamento {text1} (Essência +{number2}, {number3} G)" },
 		{ "📍 Zone {number1} {text2} · Drops in that zone · Dungeon chests (deeper = better odds)", "📍 Zona {number1} {text2} · Drops nessa zona · Baús de masmorra (mais fundo = melhores chances)" },
-		{ "💰 A Golden Goblin appeared in Zone {number1} · {text2}! Catch it for a jackpot! (75s)", "💰 Um goblin dourado apareceu na zona {number1} · {text2}! Pegue-o para um jackpot! (75 s)" },
 	},
 }

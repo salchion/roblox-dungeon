@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} Set synergy activated! 『{text2}』 - {text3}", "{text1} 套装协同已激活!『{text2}』- {text3}" },
+		{ "🐾 Pet Lv.{number1}! New ability {text2} {text3} — {text4}", "🐾 宠物 Lv.{number1}!新能力 {text2} {text3} — {text4}" },
+		{ "{text1} Dungeon mutation: {text2} — {text3}", "{text1} 地下城变异:{text2} — {text3}" },
 		{ "▶ Next feature: Lv.{number1} {text2} {text3}{text4}", "▶ 下一项功能:Lv.{number1} {text2} {text3}{text4}" },
 		{ "{text1} {text2} complete! Lv.{number3} ({text4})", "{text1} {text2} 完成!Lv.{number3}({text4})" },
 		{ "{text1} 『{text2}』 {text3} done! (Lv.{number4})", "{text1}『{text2}』{text3} 完成!(Lv.{number4})" },
