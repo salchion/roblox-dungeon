@@ -435,6 +435,13 @@
       "overwrite": true
     },
     {
+      "path": "FpsLogClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "FpsLogClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "PhotoModeClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "PhotoModeClient",
