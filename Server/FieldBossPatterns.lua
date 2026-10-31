@@ -266,6 +266,115 @@ for zone, entry in pairs(P) do
 	entry.Skip = zone == 7 or zone == 8 -- 격노해도 두 번째로 겹쳐 쓰지 않는다 (순간이동 / 긴 광선)
 end
 
+------------------------------------------------------------
+-- 필드 보스(거신) 전용: 제자리에 버티고 서서 바닥 전체를 압박하는 "빡센" 패턴들
+-- 모두 경고 -> 잠깐 뒤 피해. 피할 길은 항상 있다 (안전한 원 / 바둑판 빈칸 / 바퀴살 사이 / 움직이면 피하는 추적탄)
+------------------------------------------------------------
+local function players(part, range)
+	return ctx.PlayersNear(part.Position, range or 140)
+end
+
+local COLOSSUS = {}
+-- 1) 대지진: 거신 주변 넓은 원 전체가 터진다. 초록 안전 원 3개 안에 들어가야 산다
+COLOSSUS.quake = function(part, data, damage)
+	local center = Vector3.new(part.Position.X, ctx.FloorAt(part.Position.X) + 0.2, part.Position.Z)
+	local radius, delay = 62, 2.6
+	cue(part, "⚠ QUAKE! Get in a green circle!", Color3.fromRGB(255, 110, 80))
+	ctx.Effects.Warn(center, radius, delay, Color3.fromRGB(255, 70, 50))
+	local safes = {}
+	local base = math.random() * math.pi * 2
+	for i = 1, 3 do
+		local a = base + i * math.pi * 2 / 3
+		local spot = center + Vector3.new(math.cos(a), 0, math.sin(a)) * rand(26, 44)
+		spot = Vector3.new(spot.X, ctx.FloorAt(spot.X) + 0.25, spot.Z)
+		ctx.Effects.Warn(spot, 7, delay, Color3.fromRGB(90, 255, 120))
+		table.insert(safes, spot)
+	end
+	task.delay(delay, function()
+		if not alive(part, data) then return end
+		ctx.Effects.Ring(center, radius, Color3.fromRGB(255, 120, 70))
+		ctx.Effects.Burst(center + Vector3.new(0, 3, 0), Color3.fromRGB(255, 140, 70), 60)
+		for _, entry in ipairs(ctx.PlayersNear(center, radius)) do
+			local safe = false
+			for _, spot in ipairs(safes) do
+				if (Vector3.new(entry.Root.Position.X, 0, entry.Root.Position.Z) - Vector3.new(spot.X, 0, spot.Z)).Magnitude <= 7.5 then safe = true break end
+			end
+			if not safe then
+				ctx.Guard.Take(entry.Humanoid, damage * 1.6)
+				hitFeedback(entry, damage)
+			end
+		end
+	end)
+end
+-- 2) 바둑판: 플레이어 주변 바닥이 두 번에 나눠 터진다 (첫 번째가 터진 칸으로 옮겨야 두 번째를 피한다)
+COLOSSUS.checker = function(part, data, damage)
+	local target = ctx.NearestFieldPlayer(part.Position)
+	if not target then return end
+	cue(part, "⚠ Checkerboard!", Color3.fromRGB(255, 200, 80))
+	local origin = target.Position
+	local cell = 11
+	for wave = 0, 1 do
+		for gx = -2, 2 do
+			for gz = -2, 2 do
+				if (gx + gz) % 2 == wave then
+					local spot = origin + Vector3.new(gx * cell, 0, gz * cell)
+					disc(part, data, spot, cell / 2 + 0.3, 1.5 + wave * 1.3, damage, wave == 0 and Color3.fromRGB(255, 160, 60) or Color3.fromRGB(255, 70, 90))
+				end
+			end
+		end
+	end
+end
+-- 3) 바퀴살: 거신에서 사방으로 뻗는 띠 8줄 -> 엇갈린 각도로 8줄 더 (띠 사이에 서 있다가 옮겨야 한다)
+COLOSSUS.spokes = function(part, data, damage)
+	cue(part, "⚠ Shockwave lines!", Color3.fromRGB(255, 120, 200))
+	local origin = part.Position
+	local base = math.random() * math.pi * 2
+	for wave = 0, 1 do
+		for i = 0, 7 do
+			local a = base + i * math.pi / 4 + wave * math.pi / 8
+			strip(part, data, origin, Vector3.new(math.cos(a), 0, math.sin(a)), 75, 8, 1.6 + wave * 1.4, damage, wave == 0 and Color3.fromRGB(255, 120, 200) or Color3.fromRGB(200, 90, 255))
+		end
+	end
+end
+-- 4) 추적 낙석: 각 플레이어 발밑에 연달아 6번 떨어진다 (계속 움직이면 피한다)
+COLOSSUS.barrage = function(part, data, damage)
+	cue(part, "⚠ Keep moving!", Color3.fromRGB(255, 220, 120))
+	for _, entry in ipairs(players(part)) do
+		task.spawn(function()
+			for _ = 1, 6 do
+				if not alive(part, data) or not entry.Root.Parent then return end
+				disc(part, data, entry.Root.Position, 8, 1.0, damage * 0.8, Color3.fromRGB(255, 190, 90))
+				task.wait(0.4)
+			end
+		end)
+	end
+end
+-- 5) 휩쓸기: 나란한 굵은 띠가 파도처럼 세 번 밀려온다 (띠 사이 틈으로)
+COLOSSUS.sweep = function(part, data, damage)
+	local target = ctx.NearestFieldPlayer(part.Position)
+	if not target then return end
+	local dir = flatDir(part.Position, target.Position) or Vector3.new(1, 0, 0)
+	local side = Vector3.new(-dir.Z, 0, dir.X)
+	cue(part, "⚠ Sweep!", Color3.fromRGB(120, 200, 255))
+	for wave = 0, 2 do
+		local offset = (wave % 2 == 0) and 0 or 9
+		for k = -3, 3 do
+			local origin = part.Position + side * (k * 18 + offset)
+			strip(part, data, origin, dir, 80, 9, 1.4 + wave * 1.1, damage, Color3.fromRGB(120, 200, 255))
+		end
+	end
+end
+local COLOSSUS_ORDER = { "quake", "checker", "spokes", "barrage", "sweep" }
+-- 한 번 부를 때마다 패턴 하나 (같은 패턴이 연달아 나오지 않게). 반환: 다음 패턴까지 쉬는 시간
+function P.ColossusAttack(part, data)
+	local damage = math.max(10, (data.Stats and data.Stats.ShotDamage or 30) * 1.2)
+	local pick
+	repeat pick = COLOSSUS_ORDER[math.random(#COLOSSUS_ORDER)] until pick ~= data.LastPattern
+	data.LastPattern = pick
+	COLOSSUS[pick](part, data, damage)
+	return pick == "quake" and 4.2 or 3.6
+end
+
 -- FieldService 가 필요한 도구를 넘겨준다: Monsters, GetWorldFolder, FloorAt, NearestFieldPlayer, PlayersNear, WalkableAt, Effects, Guard
 function P.Init(context)
 	ctx = context

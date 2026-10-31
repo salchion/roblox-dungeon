@@ -3146,10 +3146,19 @@ local MENU_IGNORE = {
 }
 local MENU_SLOW = { Gold = true, XP = true, XPNeeded = true }
 local lastMenuRefresh = 0
+local lastMenuClick = 0 -- 메뉴에서 마지막으로 누른 시각: 방금 누른 것(강화 / 장착 ...)의 결과만 바로 보여 주고, 싸우면서 바뀌는 값은 천천히
+UserInputService.InputBegan:Connect(function(input)
+	if menuPanel.Visible and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+		lastMenuClick = os.clock()
+	end
+end)
 player.AttributeChanged:Connect(function(name)
 	if not menuPanel.Visible or menuRefreshQueued or MENU_IGNORE[name] then return end
 	menuRefreshQueued = true
-	local wait = MENU_SLOW[name] and math.max(0, 2 - (os.clock() - lastMenuRefresh)) or 0
+	-- (싸우는 중 메뉴를 열어 두면 처치할 때마다 바뀌는 값 때문에 메뉴 전체(3D 미리보기 포함)를 계속 다시 그려 렉이 걸렸다:
+	--  방금 메뉴를 누른 게 아니면 2.5초에 한 번만 다시 그린다)
+	local recentClick = os.clock() - lastMenuClick < 1.5
+	local wait = (recentClick and not MENU_SLOW[name]) and 0 or math.max(0, 2.5 - (os.clock() - lastMenuRefresh))
 	task.delay(wait, function()
 		menuRefreshQueued = false
 		if menuPanel.Visible then

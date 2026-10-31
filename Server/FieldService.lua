@@ -2215,6 +2215,7 @@ local function stepMonsters(dt)
 			data.WeakPart.Position = part.Position + Vector3.new(math.cos(angle) * radius, math.sin(now * 0.9) * radius * 0.35, math.sin(angle) * radius)
 		end
 		if data.Static then continue end -- 소환 결투의 군주: 제자리에서 연출만 한다
+		if data.Rooted then continue end -- 필드 보스(거신): 움직이지 않고 자기 패턴 루프(spawnEvent)로만 싸운다
 		if data.Falling then
 			-- 공습 낙하병: 낙하산을 펴고 하늘에서 내려온다. 땅에 닿으면 충격으로 주변이 피해를 입고 그때부터 싸운다
 			local landY = floorAt(part.Position.X) + data.Stats.Size / 2
@@ -2800,6 +2801,23 @@ local function spawnEvent(zone)
 		Beam = beam,
 	}
 	monsters[part] = data
+	-- 움직이지 않는 대신 바닥 전체를 압박하는 빡센 패턴 (FieldBossPatterns.ColossusAttack). 먼저 때려야 깨어나고, 10초 동안 안 맞으면 다시 잠든다
+	data.Rooted = true
+	task.spawn(function()
+		while monsters[part] == data do
+			local now = os.clock()
+			local target = nearestFieldPlayer(part.Position)
+			local awake = data.LastHit ~= nil and now - data.LastHit < 10 and target ~= nil and (target.Position - part.Position).Magnitude < 170
+			data.Aggro = awake
+			if awake and not workspace:GetAttribute("PhotoFreeze") then
+				local ok, rest = pcall(ExtraBossPatterns.ColossusAttack, part, data)
+				if not ok then warn("[Colossus] pattern error: " .. tostring(rest)) end
+				task.wait(ok and rest or 3)
+			else
+				task.wait(0.5)
+			end
+		end
+	end)
 	return part, data
 end
 
