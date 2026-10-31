@@ -375,6 +375,8 @@ return {
 		["🏆 POWER RANKING  TOP 20"] = "🏆 KRAFT-RANGLISTE TOP 20",
 		["All servers · updates every 45s"] = "Alle Server · Aktualisierung alle 45 s",
 		["Pity"] = "Garantie",
+		["PRESS  [ F ]"] = "Drück [F]",
+		["TAP DEATH LOTUS!"] = "Todeslotus tippen!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -932,6 +934,5 @@ return {
 		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 Durchbruch auf Stufe {number1} gestartet! ({text2})" },
 		{ "Weapon range +{text1}% per point  (max {number2})", "Waffenreichweite +{text1} % pro Punkt (max. {number2})" },
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} automatisch zerlegt (Essenz +{number2}, {number3} G)" },
-		{ "✅ Daily quest complete! Reward: {text1}", "✅ Tagesquest abgeschlossen! Belohnung: {text1}" },
 	},
 }

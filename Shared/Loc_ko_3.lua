@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Not enough gold (need {number1} G)", "골드가 부족해요 ({number1} G 필요)" },
 		{ "▲ {number1} unspent (T)  ·  {number2} / {number3} XP", "▲ 미사용 {number1} (T)  ·  {number2} / {number3} XP" },
 		{ "Enter Fever Time {number1} time(s)", "피버 타임 {number1}번 입장" },
 		{ "Upgrade a gear piece to +{number1}", "장비 하나를 +{number1}까지 강화" },

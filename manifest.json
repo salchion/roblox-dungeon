@@ -428,6 +428,13 @@
       "overwrite": true
     },
     {
+      "path": "SkillCueClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "SkillCueClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "PhotoModeClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "PhotoModeClient",

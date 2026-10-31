@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Best {number1}  ·  Max hit {number2}", "ベスト{number1} · 最大ヒット数{number2}" },
 		{ "🗿 Colossus · Zone {number1}", "🗿 コロッサス · ゾーン {number1}" },
 		{ "⚔ DUNGEON  ·  Lv.{number1}+", "⚔ ダンジョン · Lv.{number1}+" },
 		{ "Zone {number1} · Trial Lv.3", "ゾーン{number1} · 試練 Lv.3" },

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "✅ Daily quest complete! Reward: {text1}", "✅ Tagesquest abgeschlossen! Belohnung: {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 Zone {number1} Abschnitt {number2} — hier gibt es viele {text3}" },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "Bosse {number1} · Schaden {text2} · Nächster Boss in {number3} s" },
 		{ "Move speed +{text1} per point  (max {number2})", "Lauftempo +{text1} pro Punkt (max. {number2})" },

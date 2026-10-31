@@ -695,6 +695,8 @@ return {
 		["🏆 POWER RANKING  TOP 20"] = "🏆 전투력 랭킹 TOP 20",
 		["All servers · updates every 45s"] = "전 서버 통합 · 45초마다 갱신",
 		["Pity"] = "천장",
+		["PRESS  [ F ]"] = "[F]를 누르세요",
+		["TAP DEATH LOTUS!"] = "죽음의 연꽃을 누르세요!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1017,6 +1019,5 @@ return {
 		{ "Dismantled! Essence +{number1}, {number2} G", "분해 완료! 정수 +{number1}, {number2} G" },
 		{ "🎯 Goal: Defeat Zone {number1} Lord", "🎯 목표: {number1}구역 군주 처치" },
 		{ "Explodes on hit (radius {number1})", "명중 시 폭발 (반경 {number1})" },
-		{ "Not enough gold (need {number1} G)", "골드가 부족해요 ({number1} G 필요)" },
 	},
 }

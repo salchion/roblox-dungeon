@@ -102,11 +102,8 @@ local function townBeat(player, now)
 		Journey.Mark(player, "Gate" .. newest)
 		local entry = Config.Dungeon.List[newest]
 		local dungeonType = Config.Dungeon.Types[entry.Type]
-		if dungeonType and positions.Gates and positions.Gates[1] and not player:GetAttribute("Journey_Silent") then
-			lastBeat[player] = now
-			prompt(player, "🏰", "New dungeon unlocked!", string.format("%s can now appear (Lv %d+). Deeper = better loot.", dungeonType.Name, entry.MinLevel))
-			beacon(player, positions.Gates[1], "Dungeon")
-		end
+		-- (알림은 끈다: 던전은 이제 레벨이 아니라 "깊이(단계)"를 올리는 방식이라 레벨업 때 "새 던전 열림"이 맞지 않았다. 기록만 남긴다)
+		local _ = dungeonType
 	end
 end
 

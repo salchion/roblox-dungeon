@@ -549,6 +549,8 @@ return {
 		["🏆 POWER RANKING  TOP 20"] = "🏆 戦闘力ランキング TOP 20",
 		["All servers · updates every 45s"] = "全サーバー · 45秒ごとに更新",
 		["Pity"] = "天井",
+		["PRESS  [ F ]"] = "[F]を押そう",
+		["TAP DEATH LOTUS!"] = "死の蓮をタップ！",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -916,6 +918,5 @@ return {
 		{ "XP Booster ({number1} hour)", "XPブースター（{number1}時間）" },
 		{ "Recommended Power {number2}", "推奨パワー {number2}" },
 		{ "💰 Buy Point {number1} G ({number2}/{number3})", "💰 ポイント{number1}Gを購入（{number2}/{number3}）" },
-		{ "Best {number1}  ·  Max hit {number2}", "ベスト{number1} · 最大ヒット数{number2}" },
 	},
 }
