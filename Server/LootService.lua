@@ -134,6 +134,7 @@ local function collect(player, drop)
 	local item = drop.Item
 	local equippedBefore = Inventory.GetEquipped(player, item.Slot)
 	local betterThanEquipped = equippedBefore ~= nil and Config.GetItemScore(item) > Config.GetItemScore(equippedBefore)
+	local betterPct = betterThanEquipped and math.max(1, math.floor((Config.GetItemScore(item) / math.max(1, Config.GetItemScore(equippedBefore)) - 1) * 100 + 0.5)) or nil -- 지금 장비보다 몇 % 좋은가
 
 	local status, _, essence, gold = Inventory.Add(player, item)
 	local label = itemLabel(item)
@@ -142,7 +143,7 @@ local function collect(player, drop)
 		text = "⚔ New gear equipped! " .. label
 	elseif status == "Bag" then
 		if betterThanEquipped or item.Rarity >= 3 then -- 평범한 가방 추가는 알리지 않는다 (알림이 쉴 새 없이 올라오던 것): 지금 장비보다 좋거나 영웅 이상일 때만
-			text = "🎒 " .. label .. (betterThanEquipped and "  ▲ Better than your current gear! (I → Bag)" or "")
+			text = "🎒 " .. label .. (betterPct and string.format("  ▲ +%d%% better than your current gear! (I → Bag)", betterPct) or "")
 		end
 	else
 		noteSalvage(player, label, essence, gold)

@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "✨ {number1}-piece set complete! {text2} {text3} Lv.{number4}", "✨ Conjunto de {number1} peças completo! {text2} {text3} Nv.{number4}" },
+		{ "{text1} {text2} Tier · {number3} bosses defeated", "{text1} nível {text2} · {number3} chefes derrotados" },
+		{ "⏱ {text1} survived  ×  💥 {text2} damage", "⏱ {text1} sobrevividos  ×  💥 {text2} de dano" },
 		{ "{text1} New set from here: {text2} Set", "{text1} Novo conjunto a partir daqui: conjunto {text2}" },
 		{ "(Recommended {text1} · Yours {text2})", "(Recomendado {text1} · Você {text2})" },
 		{ "Open to earn the {text1} {text2} set!", "Abra para conseguir o conjunto {text1} {text2}!" },

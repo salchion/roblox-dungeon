@@ -948,6 +948,11 @@ function Gear.Roll(player, forced)
 
 	local slot = G.Slots[math.random(#G.Slots)]
 	local item = Inventory.NewItem(slot.Key, rarity, 0, nil, 0) -- (뽑기 장비에는 유니크가 붙지 않는다: 유니크는 던전 쪽 보상)
+	local before = Inventory.GetEquipped(player, slot.Key)
+	local better -- 지금 장비보다 몇 % 좋은가 (좋을 때만)
+	if before and Config.GetItemScore(item) > Config.GetItemScore(before) then
+		better = math.max(1, math.floor((Config.GetItemScore(item) / math.max(1, Config.GetItemScore(before)) - 1) * 100 + 0.5))
+	end
 	local status, _, essence, gold = Inventory.Add(player, item)
 
 	local name = string.format("[%s] %s", G.RarityNames[rarity], slot.Names[rarity])
@@ -959,11 +964,11 @@ function Gear.Roll(player, forced)
 			Effects.Burst(root.Position, G.RarityColors[rarity], 20 + rarity * 12)
 		end
 	elseif status == "Bag" then
-		message = name .. " obtained! Added to your bag. (I → equip from Bag)"
+		message = name .. " obtained! Added to your bag. (I → equip from Bag)" .. (better and string.format("  ▲ +%d%% vs current", better) or "")
 	else
 		message = string.format("%s... auto-dismantled! Essence +%d, %d G", name, essence or 0, gold or 0)
 	end
-	return true, message, { Slot = slot.Key, Rarity = rarity, Name = slot.Names[rarity], Equipped = status == "Equipped", Status = status, Gold = gold or 0 }
+	return true, message, { Slot = slot.Key, Rarity = rarity, Name = slot.Names[rarity], Equipped = status == "Equipped", Status = status, Gold = gold or 0, Better = better }
 end
 
 return Gear

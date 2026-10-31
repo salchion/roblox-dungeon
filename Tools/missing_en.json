@@ -1994,5 +1994,7 @@
 "Power Ranking TOP {number1}",
 "New gear equipped! {text1}",
 "{text1}  ▲ Better than your current gear! (I → Bag",
-"Boss damage +{number1}"
+"Boss damage +{number1}",
+"{text1}  ▲ +{number2}% better than your current gear! (I → Bag",
+"{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current"
 ]

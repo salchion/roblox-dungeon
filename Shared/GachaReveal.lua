@@ -174,7 +174,7 @@ function M.Init(deps)
 						makeLabel({ Size = UDim2.new(1, 0, 0, 56), Position = UDim2.new(0, 0, 0, 10), Text = ICONS[r.Slot] or "🎁", TextSize = 36, ZIndex = 64 }, cardM)
 						makeLabel({ Size = UDim2.new(1, -8, 0, 34), Position = UDim2.new(0, 4, 0, 64), Text = r.Name or "", TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = rc, ZIndex = 64 }, cardM)
 						makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 100), Text = string.format("★ %s", Config.Gear.RarityNames[r.Rarity]), TextSize = 11, Font = Enum.Font.GothamBlack, TextColor3 = rc, ZIndex = 64 }, cardM)
-						makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 1, -20), Text = STATUS[r.Status] or "Scrap", TextSize = 10, TextColor3 = Color3.fromRGB(190, 190, 210), ZIndex = 64 }, cardM)
+						makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 1, -20), Text = r.Better and string.format("▲ +%d%%", r.Better) or (STATUS[r.Status] or "Scrap"), TextSize = r.Better and 12 or 10, Font = r.Better and Enum.Font.GothamBlack or nil, TextColor3 = r.Better and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(190, 190, 210), ZIndex = 64 }, cardM) -- 지금 장비보다 좋으면 초록 "▲ +N%"
 						if r.Rarity == 5 then -- 신화 카드: 별이 흩어지고 위에 MYTHIC 글자
 							mythicBurst(grid, UDim2.new(0, cx, 0, cy), 20, 150)
 							mythicBanner(grid, UDim2.new(0, cx, 0, cy - 96))
@@ -242,6 +242,12 @@ function M.Init(deps)
 				Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 1, -28), Text = roll.Equipped and "Equipped!" or "Added to bag",
 				TextSize = 11, TextColor3 = Color3.fromRGB(190, 190, 210), ZIndex = 63,
 			}, card)
+			if roll.Better then -- 지금 장비보다 좋으면 크게 "▲ +N%" (뽑기의 손맛)
+				makeLabel({
+					Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0, 0, 1, -54), Text = string.format("▲ +%d%%", roll.Better),
+					TextSize = 20, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(120, 255, 150), ZIndex = 63,
+				}, card)
+			end
 
 			skipped = false
 			pause(HOLD[rarity])

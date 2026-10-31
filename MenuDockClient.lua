@@ -89,7 +89,28 @@ local function dotPet() return goldDots.Pets == true end
 local function dotSets() return goldDots.Sets == true end
 local function dotStats() return (attr("LvPointsLeft") or 0) > 0 and attr("TutorialActive") ~= true end -- 안 쓴 스탯 포인트가 있으면 (골드와 상관없다)
 
+-- 새 유저에게 버튼이 한꺼번에 쏟아지지 않게: 진행도에 맞춰 하나씩 열린다 (한 번 열리면 계속 보인다). Unlock 이 없으면 처음부터 보인다.
+local function lv() return attr("Level") or 1 end
+local function cleared() return attr("ClearedZone") or 0 end
+local function tutorialDone() return attr("DataReady") == true and attr("TutorialActive") ~= true end
+local function anySetOpen()
+	for zone = 1, Config.Field.ZoneCount do
+		if attr("AugOpenZ_" .. zone) == true then return true end
+	end
+	return false
+end
+local UNLOCK = {
+	Growth = function() return lv() >= 5 or cleared() >= 1 end,
+	Stats = function() return lv() >= 5 end,
+	Quests = function() return tutorialDone() or lv() >= 6 end,
+	Pets = function() return cleared() >= 1 or lv() >= 8 end,
+	Sets = function() return anySetOpen() end,
+	Codex = function() return cleared() >= 2 or lv() >= 15 end,
+	Ranking = function() return lv() >= 10 or cleared() >= 2 end,
+}
+
 local closeOtherWindows
+local isUnlocked -- (아래에서 정의)
 local BUTTONS = {
 	{ Icon = "🎒", Text = "Gear",     Color = Color3.fromRGB(70, 110, 190), Tab = "Character:Gear", Window = "HUD", Dot = dotGear },
 	{ Icon = "🔫", Text = "Weapon",   Color = Color3.fromRGB(190, 95, 70),  Tab = "Character:Weapon", Window = "HUD", LobbySignal = "OpenEnhance", Dot = dotWeapon },
@@ -302,6 +323,35 @@ do
 end
 toggle.Activated:Connect(function() menuOpen = not menuOpen end)
 
+-- 버튼이 열렸는가 (한 번 열리면 이번 접속 동안 계속 열림). 막 열린 순간에는 통통 튀며 빨간 점으로 알린다
+local unlockedOnce = {}
+local readyAt = nil
+function isUnlocked(def)
+	local check = UNLOCK[def.Text]
+	if not check or unlockedOnce[def] then return true end
+	local ok, open = pcall(check)
+	if ok and open then
+		unlockedOnce[def] = true
+		if readyAt and os.clock() - readyAt > 3 then -- (접속 직후 저장된 진행도로 한꺼번에 열리는 것은 알리지 않는다)
+			local entry
+			for index, d in ipairs(BUTTONS) do if d == def then entry = entries[index] end end
+			local scale = entry and entry.Button:FindFirstChildOfClass("UIScale")
+			if scale then
+				task.spawn(function()
+					for _ = 1, 3 do
+						TweenService:Create(scale, TweenInfo.new(0.18, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1.25 }):Play()
+						task.wait(0.22)
+						TweenService:Create(scale, TweenInfo.new(0.18), { Scale = 1 }):Play()
+						task.wait(0.22)
+					end
+				end)
+			end
+		end
+		return true
+	end
+	return false
+end
+
 -- 화면에 맞게 버튼 자리 / 크기를 정한다 (0.5초마다). 큰 화면: 왼쪽 카드 아래 2열 5줄 / 폰: ☰ 아래에 5열 2줄 (펼쳤을 때만)
 local function layout(compact, hud)
 	local size, gap, columns, x, y, iconSize, labelSize
@@ -320,16 +370,19 @@ local function layout(compact, hud)
 	end
 	toggle.Visible = compact
 	local anyDot = false
+	local slot = 0
 	for index, entry in ipairs(entries) do
-		local column = (index - 1) % columns
-		local row = math.floor((index - 1) / columns)
+		local unlocked = isUnlocked(BUTTONS[index])
+		local column = slot % columns
+		local row = math.floor(slot / columns)
+		if unlocked then slot += 1 end -- (잠긴 버튼은 자리를 차지하지 않는다: 열린 버튼끼리 빈칸 없이 모인다)
 		entry.Button.Size = UDim2.new(0, size, 0, size)
 		entry.Button.Position = UDim2.new(0, x + column * (size + gap), 0, y + row * (size + gap))
-		entry.Button.Visible = (not compact) or menuOpen
+		entry.Button.Visible = unlocked and ((not compact) or menuOpen)
 		entry.Icon.TextSize = iconSize
 		entry.Label.TextSize = labelSize
 		local dot = dots[BUTTONS[index]]
-		if dot and dot.Visible then anyDot = true end
+		if dot and dot.Visible and unlocked then anyDot = true end
 	end
 	toggleDot.Visible = compact and anyDot and not menuOpen
 end
@@ -350,6 +403,7 @@ local function sync()
 end
 task.spawn(function()
 	while true do
+		if not readyAt and attr("DataReady") == true then readyAt = os.clock() end
 		pcall(refreshDots)
 		pcall(sync)
 		task.wait(0.5)

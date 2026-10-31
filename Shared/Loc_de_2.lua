@@ -773,6 +773,7 @@ return {
 		{ "📍 Zone {number1} {text2} · Drops in that zone · Dungeon chests (deeper = better odds)", "📍 Zone {number1} {text2} · Drops in dieser Zone · Dungeon-Truhen (tiefer = bessere Chancen)" },
 		{ "💰 A Golden Goblin appeared in Zone {number1} · {text2}! Catch it for a jackpot! (75s)", "💰 Ein Goldener Goblin ist in Zone {number1} · {text2} erschienen! Fang ihn für einen Jackpot! (75 s)" },
 		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "Dungeon · wähle eine Tiefe (tiefer = bessere Drop-Chancen) · zufälliges Thema · {text1}" },
+		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "{text1} erhalten! Zur Tasche hinzugefügt. (I → aus der Tasche ausrüsten)  ▲ +{number2}% ggü. aktuell" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 Das Tor ist geschlossen! Besiege Zone-{number1}-Monster {number2}/{number3} + den Zonen-Lord{text4}" },
 		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ Haustier-Aufstieg gestartet! ({text1}) — Mit Zeit überspringen geht es schneller" },
 		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "Empfohlen ⚡{text1}  ·  Ziele auf die gelbe Kugel für 3-fachen Schaden!" },
@@ -783,6 +784,7 @@ return {
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag", "{text1} erhalten! Zur Tasche hinzugefügt. (I → aus der Tasche ausrüsten" },
 		{ "Defeat Zone {number1} monsters {number2} / {number3} · Reward {text4} G + Ticket", "Besiege Zone-{number1}-Monster {number2} / {number3} · Belohnung {text4} G + Ticket" },
 		{ "🎒 {text1}  ▲ Better than your current gear! (I → Bag)", "🎒 {text1}  ▲ Besser als deine aktuelle Ausrüstung! (I → Rucksack)" },
+		{ "{text1}  ▲ +{number2}% better than your current gear! (I → Bag", "{text1}  ▲ +{number2}% besser als deine aktuelle Ausrüstung! (I → Tasche" },
 		{ "[{text1}] Starts in {number2}s! Survive the incoming monsters", "[{text1}] Startet in {number2} s! Überlebe die anrückenden Monster" },
 		{ "⏱ Skip gauge {text1}  (shared with training · pets)", "⏱ Zeit-Skip-Anzeige {text1}  (geteilt mit Training · Haustieren)" },
 		{ "Crit damage +{text1}%p per point (base 2x)  (max {number2})", "Krit-Schaden +{text1} %p pro Punkt (Basis 2x) (max. {number2})" },
@@ -906,7 +908,5 @@ return {
 		{ "Depth {number1}: {text2}{text3}", "Tiefe {number1}: {text2}{text3}" },
 		{ "(gear {text1}{text2})", "(Ausrüstung {text1}{text2})" },
 		{ "👑 Weekly Final Lord reward: Mythic {text1} · {text2} Set · ✦ {text3}!", "👑 Wöchentliche Belohnung des Letzten Lords: Mythisch {text1} · {text2}-Set · ✦ {text3}!" },
-		{ "{text1} Trial effect for this dungeon: [{text2}] (Lv.3) — {text3}", "{text1} Prüfungseffekt für diesen Dungeon: [{text2}] (Lv.3) — {text3}" },
-		{ "Depth {number1} (total {text2}, Unique {text3}, keys {number4}): {text5}", "Tiefe {number1} (gesamt {text2}, Unikat {text3}, Schlüssel {number4}): {text5}" },
 	},
 }

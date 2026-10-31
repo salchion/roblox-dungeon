@@ -823,6 +823,7 @@ return {
 		{ "📍 Zone {number1} {text2} · Drops in that zone · Dungeon chests (deeper = better odds)", "📍 Zona {number1} {text2} · Botín en esa zona · Cofres de mazmorra (más profundo = mejores probabilidades)" },
 		{ "💰 A Golden Goblin appeared in Zone {number1} · {text2}! Catch it for a jackpot! (75s)", "💰 ¡Un goblin dorado apareció en la zona {number1} · {text2}! ¡Atrápalo para un jackpot! (75 s)" },
 		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "Mazmorra · elige una profundidad (más profundo = mejores probabilidades de botín) · tema aleatorio · {text1}" },
+		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "¡{text1} obtenido! Añadido a la bolsa. (I → equipar desde la bolsa)  ▲ +{number2}% vs actual" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 ¡La puerta está cerrada! Derrota a los monstruos de la zona {number1} {number2}/{number3} + al señor de la zona{text4}" },
 		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ ¡Subida de nivel de la mascota iniciada! ({text1}) — usa Acelerar tiempo para terminar antes" },
 		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "Recomendado ⚡{text1}  ·  ¡Apunta al orbe amarillo para triple daño!" },
@@ -833,6 +834,7 @@ return {
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag", "¡{text1} obtenido! Añadido a la bolsa. (I → equipar desde la bolsa" },
 		{ "Defeat Zone {number1} monsters {number2} / {number3} · Reward {text4} G + Ticket", "Derrota a los monstruos de la zona {number1} {number2} / {number3} · Recompensa {text4} G + boleto" },
 		{ "🎒 {text1}  ▲ Better than your current gear! (I → Bag)", "🎒 {text1}  ▲ ¡Mejor que tu equipo actual! (I → Mochila)" },
+		{ "{text1}  ▲ +{number2}% better than your current gear! (I → Bag", "{text1}  ▲ ¡+{number2}% mejor que tu equipo actual! (I → Bolsa" },
 		{ "[{text1}] Starts in {number2}s! Survive the incoming monsters", "[{text1}] ¡Empieza en {number2} s! Sobrevive a los monstruos que se acercan" },
 		{ "⏱ Skip gauge {text1}  (shared with training · pets)", "⏱ Medidor de aceleración {text1}  (compartido con entrenamiento · mascotas)" },
 		{ "Crit damage +{text1}%p per point (base 2x)  (max {number2})", "Daño crítico +{text1}%p por punto (base 2x) (máx. {number2})" },
@@ -921,7 +923,5 @@ return {
 		{ "{text1} left", "faltan {text1}" },
 		{ "{text1} Set", "Set de {text1}" },
 		{ "{text1} Era", "Era {text1}" },
-		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [Jefe mundial] Zona {number1} · {text2}: ¡{text3} ha aparecido! Sigue el pilar de luz naranja y derrótenlo juntos para conseguir equipo + boletos." },
-		{ "{text1} · {text2} · Fail if monsters pile up! Survive to the end and the boss appears", "{text1} · {text2} · ¡Fallas si se acumulan los monstruos! Sobrevive hasta el final y aparece el jefe" },
 	},
 }

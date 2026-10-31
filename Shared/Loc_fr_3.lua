@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} obtained! Equipped", "{text1} obtenu ! Équipé" },
+		{ "New gear equipped! {text1}", "Nouvel équipement équipé ! {text1}" },
+		{ "Lord of {text1}  ·  Zone {number2}", "Seigneur de {text1}  ·  Zone {number2}" },
+		{ "⏱ Used {text1} Time Skip!", "⏱ {text1} saut(s) temporel(s) utilisé(s) !" },
+		{ "✅ {text1} — tap to claim!", "✅ {text1} — touchez pour récupérer !" },
 		{ "💰 Buy Point {text1} G ({number2}/{number3})", "💰 Acheter un point {text1} or ({number2}/{number3})" },
 		{ "🐾 Unlock Pet  💰 {text1} G", "🐾 Débloquer le familier  💰 {text1} or" },
 		{ "🎁 You received +{number1} {text2}!", "🎁 Vous avez reçu +{number1} {text2} !" },

@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [Jefe mundial] Zona {number1} · {text2}: ¡{text3} ha aparecido! Sigue el pilar de luz naranja y derrótenlo juntos para conseguir equipo + boletos." },
+		{ "{text1} · {text2} · Fail if monsters pile up! Survive to the end and the boss appears", "{text1} · {text2} · ¡Fallas si se acumulan los monstruos! Sobrevive hasta el final y aparece el jefe" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Activate it with gold (Y key / ✨ Set button)", "¡Efecto de set {text1} 『{text2}』 desbloqueado! Actívalo con oro (tecla Y / botón ✨ Sets)" },
 		{ "🎉 Evolved to {text1}! Your weapon look and bullet color changed{text2}", "🎉 ¡Evolucionó a {text1}! Cambiaron el aspecto de tu arma y el color de las balas{text2}" },
 		{ "⏳ {text1} upgrade started! ({text2}) — use Time Skip to finish sooner", "⏳ ¡Mejora de {text1} iniciada! ({text2}) — usa Acelerar tiempo para terminar antes" },
