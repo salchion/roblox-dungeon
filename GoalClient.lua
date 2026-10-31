@@ -410,7 +410,9 @@ RunService.RenderStepped:Connect(function()
 	end
 	if zone == "Dungeon" then beaconDone = true end
 
+	-- 왼쪽 카드는 한 번에 하나만: 튜토리얼 중에는 미션 카드만, 그 뒤에는 "다음 목표" 카드만. 오늘의 퀘스트 줄은 받을 보상이 있을 때만 (진행 상황은 메뉴 > 퀘스트)
 	local questOn = player:GetAttribute("QuestHud") == true and zone ~= "Dungeon" and dailyList ~= nil
+		and not player:GetAttribute("TutorialActive") and (claimable() > 0 or questOpen)
 	questPanel.Visible = questOn
 	if questOn then
 		local targetDy = panel.Visible and (panelH + 10) or (player:GetAttribute("TutorialCardUp") and (player:GetAttribute("TutorialCardH") or 116) + 8 or 0)

@@ -163,7 +163,22 @@ create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5, Tra
 rounded(toastLabel, 12)
 
 local toastToken = 0
+local lastToast, toastRepeat = nil, 1
+local toastCount = makeLabel({
+	Size = UDim2.new(0, 44, 0, 22), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 6, 0, -8), BackgroundColor3 = Color3.fromRGB(255, 200, 70), BackgroundTransparency = 0,
+	Font = Enum.Font.GothamBlack, TextSize = 13, TextColor3 = Color3.fromRGB(40, 24, 0), TextStrokeTransparency = 1, Visible = false, ZIndex = 61, AutoLocalize = false,
+}, toastLabel)
+rounded(toastCount, 11)
 local function toast(text)
+	-- 같은 알림이 떠 있는 동안 또 오면 새로 띄우지 않고 "x2, x3..." 만 붙인다 (같은 글이 연달아 깜빡이며 화면을 덮던 것)
+	if toastLabel.Visible and text == lastToast then
+		toastRepeat += 1
+		toastCount.Text = "x" .. toastRepeat -- (글자에 붙이면 번역이 깨져서 오른쪽 위 작은 배지로)
+		toastCount.Visible = true
+		return
+	end
+	lastToast, toastRepeat = text, 1
+	toastCount.Visible = false
 	toastToken += 1
 	local token = toastToken
 	local base = (player:GetAttribute("Zone") == "Dungeon") and 210 or 112
@@ -238,7 +253,7 @@ end)
 
 local enhanceWeapon = makeLabel({
 	Size = UDim2.new(1, -24, 0, 30), Position = UDim2.new(0, 12, 0, 50),
-	Font = Enum.Font.GothamBlack, TextSize = 19, TextWrapped = true,
+	Font = Enum.Font.GothamBlack, TextSize = 19, TextWrapped = true, RichText = true,
 }, enhancePanel)
 
 -- 위쪽 무대: 무기 시대 색으로 빛나는 배경 + 천천히 도는 빛줄기 + 가운데 큰 무기 칸 (+강화 수치)
@@ -560,7 +575,7 @@ function refreshEnhance()
 	local color = tier.Rainbow and Color3.fromRGB(255, 120, 255) or tier.Color
 
 	buildTrack(level, color)
-	enhanceWeapon.Text = string.format("%s · %s", Config.GetWeaponName(typeKey, level), Config.GetEraName(tier.Era))
+	enhanceWeapon.Text = string.format("<b>%s</b> · <b>%s</b>", Config.GetWeaponName(typeKey, level), Config.GetEraName(tier.Era)) -- (이름 / 시대를 따로 감싸야 각각 번역된다: 통째로는 "Sniper Rifle · 녹슨 시대"처럼 반만 번역됐다)
 	enhanceWeapon.TextColor3 = color
 	medalStroke.Color = color
 	E.MedalIcon.Text = WEAPON_ICONS[typeKey] or "🔫"
