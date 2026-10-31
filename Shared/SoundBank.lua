@@ -82,7 +82,7 @@ SPECS.Enh_Hammer  = { Base = "Shot", CustomLength = 1.4, CustomPitch = 0.82, Cus
 	Layers = { { Pitch = 0.3, Volume = 0.7, Delay = 0.0 } } }                       -- 모루를 내려치는 "쾅"
 SPECS.Enh_Success = { Base = "Chime", CustomLength = 1.6, CustomPitch = 1.0, CustomFx = { { "reverb", { DecayTime = 1.4, WetLevel = -9 } } }, -- 강화 성공: 마법 폭발 (직접 고른 ID: Magic Burst 2)
 	Pitch = 0.82, Volume = 0.8, Length = 0.9, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -10 } }, { "reverb", { DecayTime = 1.3, WetLevel = -7 } } } }
-SPECS.Enh_Fail    = { Base = "Boom", Pitch = 0.55, Volume = 0.7, Length = 0.9, Fx = { { "eq", { LowGain = 4, MidGain = -6, HighGain = -24 } }, { "reverb", { DecayTime = 1.6, WetLevel = -6 } } } } -- 둔하게 "쿵..."
+SPECS.Enh_Fail    = { CustomLength = 1.2, CustomPitch = 1.0, Base = "Boom", Pitch = 0.55, Volume = 0.7, Length = 0.9, Fx = { { "eq", { LowGain = 4, MidGain = -6, HighGain = -24 } }, { "reverb", { DecayTime = 1.6, WetLevel = -6 } } } } -- 둔하게 "쿵..."
 SPECS.Enh_Evolve  = { Base = "Aug_Synergy", CustomLength = 4.0, CustomPitch = 1.0, Volume = 1.1, -- 무기 진화: 바람 + 저음 충격 (직접 고른 ID: Wind Whoosh Sonic Boom). 너무 길면 CustomLength 를 줄인다
 	Pitch = 0.85, Length = 2.6, Fx = { { "eq", { LowGain = 4, MidGain = 0, HighGain = -4 } }, { "reverb", { DecayTime = 2.6, WetLevel = -4 } } },
 	Layers = { { Pitch = 0.5, Volume = 0.7, Delay = 0.0 } } }
