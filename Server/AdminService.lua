@@ -166,6 +166,15 @@ Remotes.Admin.OnServerEvent:Connect(function(player, action, a, b, c)
 		end
 	elseif action == "MaxOut" then
 		maxOut(player)
+	elseif action == "PhotoFreeze" then -- 사진 모드: 이 서버의 몬스터 / 탄을 잠깐 멈춘다 (켜고 끄기, 60초 뒤 자동으로 풀림)
+		local on = not workspace:GetAttribute("PhotoFreeze")
+		workspace:SetAttribute("PhotoFreeze", on or nil)
+		log(player, on and "PHOTO FREEZE on" or "PHOTO FREEZE off")
+		if on then
+			task.delay(60, function()
+				if workspace:GetAttribute("PhotoFreeze") then workspace:SetAttribute("PhotoFreeze", nil) end
+			end)
+		end
 	elseif action == "Grant" then
 		grant(player, a, b, c)
 	elseif action == "Announce" then

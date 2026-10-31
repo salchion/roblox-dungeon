@@ -13,6 +13,20 @@ local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 
+-- 연출 시계: 운영자 사진 모드의 "멈추기"(workspace PhotoFreeze)가 켜지면 멈춘다. 날아가는 탄 / 미사일 / 조각이 그 자리에 선다 (트윈 / 입자는 그대로)
+local frozenAt, frozenTotal = nil, 0
+local function fxNow()
+	local clock = os.clock()
+	if workspace:GetAttribute("PhotoFreeze") then
+		frozenAt = frozenAt or clock
+		return frozenAt - frozenTotal
+	elseif frozenAt then
+		frozenTotal += clock - frozenAt
+		frozenAt = nil
+	end
+	return clock - frozenTotal
+end
+
 local fxFolder = Instance.new("Folder")
 fxFolder.Name = "ClientFx"
 fxFolder.Parent = workspace
@@ -274,7 +288,7 @@ end
 
 local lastRing, lastPuff = 0, 0
 local function eraRing(pos, color, d0, d1, dur, facing)
-	local now = os.clock()
+	local now = fxNow()
 	if now - lastRing < 0.04 then return end -- 연사 때 고리가 쌓이지 않게
 	lastRing = now
 	local cf = facing and (CFrame.lookAt(pos, pos + facing) * CFrame.Angles(0, math.rad(90), 0)) or (CFrame.new(pos) * CFrame.Angles(0, 0, math.rad(90)))
@@ -330,7 +344,7 @@ end
 local lastMuzzle = 0
 local function eraMuzzle(from, dir, era, color, inEra, mini)
 	if era < 2 or lowSpecOn() then return end
-	local now = os.clock()
+	local now = fxNow()
 	if now - lastMuzzle < (mini and 0.09 or 0.03) then return end
 	lastMuzzle = now
 	local E = elementOf(era)
@@ -367,7 +381,7 @@ end
 local lastPath = 0
 local function pathLightning(from, to, color, width, jitterSize)
 	if lowSpecOn() then return end
-	local now = os.clock()
+	local now = fxNow()
 	if now - lastPath < 0.06 then return end
 	lastPath = now
 	local total = to - from
@@ -430,7 +444,7 @@ local function classFlourish(class, from, to, size, color, era, richness)
 	if lowSpecOn() or not class then return end
 	local gap = FLOURISH_GAP[class]
 	if not gap then return end
-	local now = os.clock()
+	local now = fxNow()
 	if now - (lastFlourish[class] or 0) < gap then return end
 	lastFlourish[class] = now
 	local total = to - from
@@ -669,17 +683,17 @@ end
 -- 곡선으로 날아가는 탄: height 만큼 솟았다 내려온다 (피해는 서버가 이미 계산했고, 이건 보이는 연출뿐이다). spin = 비행 방향 축 회전(라디안/초)
 local function arcFly(part, from, to, speed, height, spin, onDone, minTime)
 	local duration = math.clamp((to - from).Magnitude / math.max(speed, 1), minTime or 0.05, 1.2)
-	local startAt = os.clock()
+	local startAt = fxNow()
 	local up = Vector3.new(0, 1, 0)
 	local last = from
 	local connection
 	connection = RunService.Heartbeat:Connect(function()
 		if not part.Parent then connection:Disconnect() return end
-		local alpha = math.min((os.clock() - startAt) / duration, 1)
+		local alpha = math.min((fxNow() - startAt) / duration, 1)
 		local position = from:Lerp(to, alpha) + up * (height * 4 * alpha * (1 - alpha))
 		local heading = position - last
 		if heading.Magnitude > 0.01 then
-			part.CFrame = CFrame.lookAt(position, position + heading) * CFrame.Angles(0, 0, spin * (os.clock() - startAt))
+			part.CFrame = CFrame.lookAt(position, position + heading) * CFrame.Angles(0, 0, spin * (fxNow() - startAt))
 		else
 			part.Position = position
 		end
@@ -1040,7 +1054,7 @@ local function playShot(event)
 	if look and look.Muzzle then -- 권총 / 리볼버: 총구 고리 (총구 앞쪽에서 퍼지며 사라진다)
 		eraRing(from + dir * 0.8, color, 0.6, look.Muzzle, 0.14, dir)
 	elseif look and look.Puff then -- 샷건: 총구 원뿔 연기 (펠릿마다 만들지 않고 간격을 둔다)
-		local now = os.clock()
+		local now = fxNow()
 		if now - lastPuff > 0.08 then
 			lastPuff = now
 			burst(from + dir * 1.2, Color3.fromRGB(215, 215, 220):Lerp(color, 0.25), 5)
@@ -1314,7 +1328,7 @@ local function spawnProjectile(event)
 	local pathKind = path and path[1]
 	if pathKind and #movers < MAX_MOVERS then
 		-- 직선이 아닌 탄: 부품 모양을 진행 방향에 맞춰 돌릴 때 쓸 "처음 자세 대비 회전" 을 기억한다
-		local mover = { Part = part, Kind = pathKind, Origin = origin, Dir = direction, Speed = speed, T0 = os.clock(), End = os.clock() + life + 0.3, Rel = look:ToObjectSpace(part.CFrame) }
+		local mover = { Part = part, Kind = pathKind, Origin = origin, Dir = direction, Speed = speed, T0 = fxNow(), End = fxNow() + life + 0.3, Rel = look:ToObjectSpace(part.CFrame) }
 		mover.Rel = mover.Rel.Rotation
 		if pathKind == "sine" then
 			local side = Vector3.new(-direction.Z, 0, direction.X)
@@ -1384,8 +1398,9 @@ local function groundWarn(event)
 end
 
 game:GetService("RunService").RenderStepped:Connect(function(dt)
+	if workspace:GetAttribute("PhotoFreeze") then fxNow() return end -- (사진 모드 멈추기)
 	if #movers == 0 then return end
-	local now = os.clock()
+	local now = fxNow()
 	for i = #movers, 1, -1 do
 		local m = movers[i]
 		local part = m.Part
@@ -1549,7 +1564,7 @@ local function ringWave(center, radius, color, dur, n, thick)
 	if #waves >= 8 then return end
 	n = n or math.clamp(math.floor(radius * 1.1), 14, 26)
 	local length = math.max(1.6, 2 * math.pi * radius / n * 0.6)
-	table.insert(waves, { List = makeDashes(n, color, thick or (0.9 + radius * 0.04), length), Center = center + Vector3.new(0, 0.5, 0), Radius = radius, Dur = dur or 0.5, T0 = os.clock() })
+	table.insert(waves, { List = makeDashes(n, color, thick or (0.9 + radius * 0.04), length), Center = center + Vector3.new(0, 0.5, 0), Radius = radius, Dur = dur or 0.5, T0 = fxNow() })
 end
 
 local activeRings = 0
@@ -1693,7 +1708,7 @@ local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간
 	light.Color, light.Range, light.Brightness = tint or Color3.fromRGB(255, 150, 70), 12, 2
 	light.Parent = ball
 	ball.Parent = fxFolder
-	table.insert(missiles, { Ball = ball, From = from, Target = target, Last = event[3] and event[3].Parent and event[3].Position or from, Mid = mid, Duration = duration, Started = os.clock(), Scale = scale, Icbm = icbm, Style = style, Tint = tint, Prev = from })
+	table.insert(missiles, { Ball = ball, From = from, Target = target, Last = event[3] and event[3].Parent and event[3].Position or from, Mid = mid, Duration = duration, Started = fxNow(), Scale = scale, Icbm = icbm, Style = style, Tint = tint, Prev = from })
 end
 
 local function flame(event) -- { "L", 위치, 반지름, 초 }: 큰 불길 지대 + 안쪽 밝은 불씨 판 + 튀는 불똥
@@ -1822,11 +1837,12 @@ local function orbit(event) -- { "O", userId, 개수(0이면 끔), 반지름, �
 		orbiters[userId] = entry
 	end
 	entry.Radius, entry.Spin = event[4] or 9, event[5] or 5
-	entry.Expire = os.clock() + 8 -- 서버가 3초마다 다시 알린다: 끊기면 저절로 사라진다
+	entry.Expire = fxNow() + 8 -- 서버가 3초마다 다시 알린다: 끊기면 저절로 사라진다
 end
 
 RunService.RenderStepped:Connect(function()
-	local now = os.clock()
+	if workspace:GetAttribute("PhotoFreeze") then fxNow() return end -- (사진 모드 멈추기)
+	local now = fxNow()
 	-- 미사일
 	for i = #missiles, 1, -1 do
 		local m = missiles[i]
@@ -1961,13 +1977,13 @@ local function lotusEvent(event) -- { "Y", userId, 남은 초 (0 이면 끝) }
 		return
 	end
 	if entry then
-		entry.Expire = os.clock() + secs + 0.8
+		entry.Expire = fxNow() + secs + 0.8
 		return
 	end
 	local owners = 0
 	for _ in pairs(lotus) do owners += 1 end
 	if owners >= 6 then return end -- (화면에 단검 고리가 너무 많아지지 않게: 동시에 6명까지)
-	entry = { Blades = {}, Expire = os.clock() + secs + 0.8, NextPulse = 0 }
+	entry = { Blades = {}, Expire = fxNow() + secs + 0.8, NextPulse = 0 }
 	for index = 1, 12 do
 		local blade = neonPart(Vector3.new(1.12, 0.4, 6.8), index % 2 == 0 and LOTUS_RED or LOTUS_WHITE, 0.03)
 		if not lowSpecOn() then
@@ -2027,7 +2043,8 @@ local function lotusHit(event) -- { "J", 시작, 끝 }: 단검 한 자루가 크
 	Debris:AddItem(halo, flightTime + 0.2)
 end
 RunService.RenderStepped:Connect(function()
-	local now = os.clock()
+	if workspace:GetAttribute("PhotoFreeze") then fxNow() return end -- (사진 모드 멈추기)
+	local now = fxNow()
 	for userId, entry in pairs(lotus) do
 		local owner = Players:GetPlayerByUserId(userId)
 		local root = owner and owner.Character and owner.Character:FindFirstChild("HumanoidRootPart")
@@ -2099,7 +2116,7 @@ local function tomeCast(event)
 	if not root or typeof(bolts) ~= "table" then return end
 	local charge = math.clamp(event[3] or 1.5, 0.3, 3)
 	local gap = math.clamp(event[5] or 0.09, 0.03, 0.3)
-	local started = os.clock()
+	local started = fxNow()
 	local core = rootPart(CFrame.new(root.Position + Vector3.new(0, 5.4, 0)), Vector3.new(0.4, 0.4, 0.4), TOME_COLORS[1], Enum.Material.Neon, Enum.PartType.Ball, 0.1)
 	local orbs = {}
 	for index = 1, 9 do -- 세 원소 구슬이 번갈아 돌며 모여든다
@@ -2107,16 +2124,16 @@ local function tomeCast(event)
 	end
 	task.spawn(function()
 		while true do
-			local t = (os.clock() - started) / charge
+			local t = (fxNow() - started) / charge
 			if t >= 1 or not core.Parent or not root.Parent then break end
 			local top = root.Position + Vector3.new(0, 5.4, 0)
 			core.Size = Vector3.one * (0.4 + 2.4 * t)
 			core.CFrame = CFrame.new(top)
-			core.Color = TOME_COLORS[math.floor(os.clock() * 5) % 3 + 1] -- 불 -> 얼음 -> 번개 색이 빠르게 번갈아 번쩍인다
+			core.Color = TOME_COLORS[math.floor(fxNow() * 5) % 3 + 1] -- 불 -> 얼음 -> 번개 색이 빠르게 번갈아 번쩍인다
 			local radius = 5.5 * (1 - t) + 0.6
 			for index, orb in ipairs(orbs) do
-				local angle = os.clock() * (4 + 6 * t) + index * (2 * math.pi / #orbs)
-				orb.CFrame = CFrame.new(top + Vector3.new(math.cos(angle) * radius, math.sin(os.clock() * 4 + index) * 0.7 * (1 - t), math.sin(angle) * radius))
+				local angle = fxNow() * (4 + 6 * t) + index * (2 * math.pi / #orbs)
+				orb.CFrame = CFrame.new(top + Vector3.new(math.cos(angle) * radius, math.sin(fxNow() * 4 + index) * 0.7 * (1 - t), math.sin(angle) * radius))
 			end
 			RunService.RenderStepped:Wait()
 		end
@@ -2207,8 +2224,8 @@ local function chainCharge(event)
 	TweenService:Create(glow, TweenInfo.new(secs, Enum.EasingStyle.Quad), { Size = Vector3.one * 4.5, Transparency = 0.7 }):Play()
 	Debris:AddItem(glow, secs + 0.1)
 	task.spawn(function()
-		local started = os.clock()
-		while os.clock() - started < secs and root.Parent do
+		local started = fxNow()
+		while fxNow() - started < secs and root.Parent do
 			glow.CFrame = CFrame.new(root.Position + Vector3.new(0, 1.5, 0))
 			for _ = 1, 3 do -- 몸 주위의 짧은 전기 줄기
 				local function around(r)
@@ -2242,14 +2259,14 @@ local HANDLERS = {
 			if not amount then amount, unit = string.match(text, "^%+(%d+) (XP)$") end
 			if amount then
 				local slot = lootTicker[unit]
-				local now = os.clock()
+				local now = fxNow()
 				slot.Pending += tonumber(amount)
 				slot.Position, slot.Color = event[2], event[4]
 				if not slot.Scheduled then
 					slot.Scheduled = true
 					task.delay(math.max(0, slot.Last + 0.3 - now), function()
 						slot.Scheduled = false
-						slot.Last = os.clock()
+						slot.Last = fxNow()
 						local total = slot.Pending
 						slot.Pending = 0
 						showText(slot.Position, string.format("+%d %s", total, unit), slot.Color, UDim2.new(0, 80, 0, 20), 0.55, 2, 0.45)
@@ -2269,7 +2286,7 @@ local HANDLERS = {
 	D = function(event) -- { "D", position, amount, isCrit, (색) }: 색이 있으면 세트 효과 / 데드아이 피해 -> 그 색으로 크게
 		-- 같은 자리에 숫자가 겹겹이 쌓여 읽을 수 없던 것을 줄인다: 0.25초 안에 4 스터드 안쪽에 이미 뜬 숫자가 있으면 평범한 숫자는 건너뛴다 (치명타 / 색 숫자는 항상)
 		if not event[5] and not event[4] then
-			local now, at = os.clock(), event[2]
+			local now, at = fxNow(), event[2]
 			for i = #recentDamage, 1, -1 do
 				local r = recentDamage[i]
 				if now - r[2] > 0.25 then
@@ -2364,7 +2381,7 @@ local function deathBurst(event) -- { "K", position, color, size, typeKey }
 		local speed = (look.Heavy and 9 or 15) + math.random() * 10
 		local angle = math.random() * math.pi * 2
 		table.insert(shards, {
-			Part = part, Size = part.Size, Born = os.clock(), Life = 0.7 + math.random() * 0.4,
+			Part = part, Size = part.Size, Born = fxNow(), Life = 0.7 + math.random() * 0.4,
 			Velocity = Vector3.new(math.cos(angle) * speed, 10 + math.random() * 12, math.sin(angle) * speed),
 			Spin = Vector3.new(math.random() * 10 - 5, math.random() * 10 - 5, math.random() * 10 - 5),
 			FloorY = position.Y - size * 0.45,
@@ -2375,8 +2392,9 @@ local function deathBurst(event) -- { "K", position, color, size, typeKey }
 end
 
 game:GetService("RunService").RenderStepped:Connect(function(dt)
+	if workspace:GetAttribute("PhotoFreeze") then fxNow() return end -- (사진 모드 멈추기)
 	if #shards == 0 then return end
-	local now = os.clock()
+	local now = fxNow()
 	for i = #shards, 1, -1 do
 		local shard = shards[i]
 		local age = now - shard.Born

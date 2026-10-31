@@ -1468,6 +1468,7 @@ local function stepRun(run, dt)
 end
 
 RunService.Heartbeat:Connect(function(dt)
+	if workspace:GetAttribute("PhotoFreeze") then return end -- (운영자 사진 모드 "멈추기")
 	for _, run in pairs(runs) do
 		if run.Phase == "Wave" or run.Phase == "Boss" or run.Phase == "Drill" then -- 연습장(Drill)에서도 약점 구슬이 돌고 미사일이 날아가야 한다
 			stepRun(run, dt)

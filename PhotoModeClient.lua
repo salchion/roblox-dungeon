@@ -3,6 +3,7 @@
 --   F7 = 화면 글자만 딱 숨긴다 (안내 글도 안 뜬다. 이동 / 사격 / 스킬 그대로, 줌을 더 멀리까지 뺄 수 있다) -> 싸우는 장면을 녹화 / 촬영할 때
 --   F8 = 자유 카메라: 캐릭터는 멈추고 카메라만 날린다 -> 구도를 잡은 풍경 / 정지 장면을 찍을 때
 --        WASD 이동 · Space / X 위아래 · 오른쪽 마우스 누른 채 끌기 = 둘러보기 · Shift 빠르게 · Ctrl 느리게 · 마우스 휠 = 확대 / 축소
+--   F9 = 멈추기: 이 서버의 몬스터 / 탄 / 날아가는 연출이 그 자리에 선다 (다시 누르면 풀림, 60초 뒤 자동으로 풀림)
 --   두 모드 공통: [ / ] = 시간대(아침 ~ 밤) · G = 배경 흐림(심도) · N = 색감 진하게. 같은 키를 다시 누르면 원래대로.
 --   (Q / C / F / V / Z / R 은 게임 스킬 키라서 쓰지 않는다)
 
@@ -139,6 +140,12 @@ end
 local HINT_CAM = "🎥 자유 카메라 (F8 끄기 · F7 = 싸우는 모드로)\nWASD 이동 · Space/X 위아래 · 오른쪽 마우스 끌기 = 둘러보기 · Shift 빠르게 · Ctrl 느리게 · 휠 = 확대\n[ ] = 시간대 · G = 배경 흐림 · N = 색감 · 이 안내는 3초 뒤 사라져요"
 
 UserInputService.InputBegan:Connect(function(input, processed)
+	if input.KeyCode == Enum.KeyCode.F9 then -- 멈추기: 몬스터 / 탄 / 날아가는 연출이 그 자리에 선다 (다시 누르면 풀림, 60초 뒤 자동으로 풀림). 서버 전체에 적용
+		if player:GetAttribute("IsAdmin") then
+			pcall(function() require(game:GetService("ReplicatedStorage"):WaitForChild("Remotes")).Admin:FireServer("PhotoFreeze") end)
+		end
+		return
+	end
 	if input.KeyCode == Enum.KeyCode.F7 or input.KeyCode == Enum.KeyCode.F8 then
 		if not player:GetAttribute("IsAdmin") then return end
 		if input.KeyCode == Enum.KeyCode.F7 then

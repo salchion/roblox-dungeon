@@ -2219,7 +2219,7 @@ local function stepMonsters(dt)
 			-- 공습 낙하병: 낙하산을 펴고 하늘에서 내려온다. 땅에 닿으면 충격으로 주변이 피해를 입고 그때부터 싸운다
 			local landY = floorAt(part.Position.X) + data.Stats.Size / 2
 			local newY = math.max(landY, part.Position.Y - 48 * dt)
-			part.Position = Vector3.new(part.Position.X, newY, part.Position.Z)
+			part.CFrame = CFrame.new(part.Position.X, newY, part.Position.Z) * part.CFrame.Rotation
 			if newY <= landY + 0.01 then
 				data.Falling = nil
 				local chute = part:FindFirstChild("Chute")
@@ -2950,7 +2950,8 @@ local function airRaid(player, zone)
 				if part and data then
 					data.Falling = true
 					local drop = floorAt(at.X) + 90
-					part.Position = Vector3.new(at.X, drop, at.Z)
+					-- (Position 이 아니라 CFrame 으로 옮긴다: Position 으로 크게 순간이동하면 용접된 겉모양 조각이 땅에 남아 본체와 87 정도 어긋나 보였다 - [Monster desync] 로그)
+					part.CFrame = CFrame.new(at.X, drop, at.Z) * part.CFrame.Rotation
 					local canopy = Instance.new("Part")
 					canopy.Name = "Chute"
 					canopy.Anchored, canopy.CanCollide, canopy.CanQuery, canopy.CanTouch, canopy.Massless = false, false, false, false, true
@@ -3561,8 +3562,10 @@ function Field.Init(lobbySpawnCFrame)
 	local zoneTimer = 0
 	local orphanTimer = 0
 	RunService.Heartbeat:Connect(function(dt)
-		stepMonsters(dt)
-		stepProjectiles(dt)
+		if not workspace:GetAttribute("PhotoFreeze") then -- (운영자 사진 모드 "멈추기": 몬스터 / 탄이 그 자리에 선다)
+			stepMonsters(dt)
+			stepProjectiles(dt)
+		end
 		zoneTimer += dt
 		if zoneTimer >= 0.4 then
 			zoneTimer = 0
