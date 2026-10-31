@@ -344,8 +344,8 @@ local function play()
 				if action == "Ready" then
 					ready = true
 					groundExpected = tonumber(done) or 0
-				elseif action == "Progress" and total then
-					TweenService:Create(barFillLoad, TweenInfo.new(0.25), { Size = UDim2.new(math.clamp(done / total, 0.04, 1), 0, 1, 0) }):Play()
+				elseif action == "Progress" and total then -- 1단계(서버가 필드를 보낼 준비): 막대의 앞 35%
+					TweenService:Create(barFillLoad, TweenInfo.new(0.25), { Size = UDim2.new(math.clamp(0.35 * done / total, 0.03, 0.35), 0, 1, 0) }):Play()
 					status.Text = string.format("Preparing the field...  %d / %d", done, total)
 				end
 			end)
@@ -361,11 +361,18 @@ local function play()
 				end
 				return found
 			end
+			-- 2단계(실제로 땅이 내 화면에 도착): 막대의 나머지 65%. 막대와 숫자가 실제 도착량을 따라 올라간다.
+			-- 땅 조각이 3초 동안 더 늘지 않으면(더 받을 게 없거나 기기가 더 담지 못함) 22초를 다 기다리지 않고 출발한다.
+			local lastFound, lastGrowAt = -1, os.clock()
 			while not finished and os.clock() - waited < 22 do
-				if ready and (groundExpected <= 0 or groundLoaded() >= groundExpected * 0.9) then break end
-				if ready and groundExpected > 0 then
+				if ready then
 					local found = groundLoaded()
-					status.Text = string.format("Loading the land...  %d%%", math.floor(math.min(1, found / groundExpected) * 100))
+					if found > lastFound then lastFound, lastGrowAt = found, os.clock() end
+					local ratio = groundExpected > 0 and math.min(1, found / (groundExpected * 0.9)) or 1
+					local overall = 0.35 + 0.65 * ratio
+					TweenService:Create(barFillLoad, TweenInfo.new(0.2), { Size = UDim2.new(overall, 0, 1, 0) }):Play()
+					status.Text = string.format("Loading the land...  %d%%", math.floor(overall * 100))
+					if ratio >= 1 or groundExpected <= 0 or (found > 0 and os.clock() - lastGrowAt > 3) then break end
 				end
 				if os.clock() - lastTip > 2.5 then
 					lastTip = os.clock()
