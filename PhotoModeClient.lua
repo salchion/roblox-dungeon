@@ -1,10 +1,10 @@
 -- PhotoModeClient (StarterPlayer > StarterPlayerScripts 안의 LocalScript, 이름: PhotoModeClient)
--- 운영자 전용 사진 모드 (F7 켜고 끄기): 게임 홍보용 스크린샷 / 썸네일을 깔끔하게 찍는다. 내 화면에서만 바뀐다.
---   * 모든 화면 UI + 로블록스 기본 UI(채팅 / 메뉴 버튼)를 숨긴다
---   * 카메라를 자유롭게 날린다: WASD 이동 · Space / X 위아래 · 오른쪽 마우스 누른 채 끌기 = 둘러보기 · Shift = 빠르게 · Ctrl = 느리게
---   * 마우스 휠 = 확대 / 축소 (시야각) · [ / ] = 시간대(아침 ~ 밤) · G = 배경 흐림(심도) · N = 색감 진하게
---   (Q / C / F / V / Z / R 은 게임 스킬 키라서 쓰지 않는다: 누르면 스킬이 나간다)
---   * 캐릭터는 그 자리에 그대로 있다 (카메라만 움직인다). 끄면 원래대로 돌아간다.
+-- 운영자 전용 사진 모드: 게임 홍보용 스크린샷 / 썸네일을 깔끔하게 찍는다. 내 화면에서만 바뀐다.
+--   F7 = 화면 글자만 숨기고 평소처럼 싸운다 (이동 / 사격 / 스킬 그대로, 줌을 더 멀리까지 뺄 수 있다) -> 싸우는 장면을 찍을 때
+--   F8 = 자유 카메라: 캐릭터는 멈추고 카메라만 날린다 -> 구도를 잡은 풍경 / 정지 장면을 찍을 때
+--        WASD 이동 · Space / X 위아래 · 오른쪽 마우스 누른 채 끌기 = 둘러보기 · Shift 빠르게 · Ctrl 느리게 · 마우스 휠 = 확대 / 축소
+--   두 모드 공통: [ / ] = 시간대(아침 ~ 밤) · G = 배경 흐림(심도) · N = 색감 진하게. 같은 키를 다시 누르면 원래대로.
+--   (Q / C / F / V / Z / R 은 게임 스킬 키라서 쓰지 않는다)
 
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
@@ -15,23 +15,25 @@ local Lighting = game:GetService("Lighting")
 local player = Players.LocalPlayer
 local camera = workspace.CurrentCamera
 
-local active = false
-local hidden = {}          -- 숨긴 ScreenGui 들 (끌 때 다시 켠다)
-local saved = {}           -- 켜기 전 카메라 / 조명 값
+local uiHidden = false
+local freeCam = false
+local hidden = {}          -- 숨긴 ScreenGui 들 (다시 켤 때 되돌린다)
+local saved = {}           -- 바꾸기 전 카메라 / 조명 / 줌 값
 local yaw, pitch = 0, 0
 local fov = 70
 local rotating = false
 local dof, grade
 local hint
 
-local function makeHint()
+local function showHint(text)
+	if hint and hint.Parent then hint:Destroy() end
 	local gui = Instance.new("ScreenGui")
 	gui.Name = "PhotoModeHint"
 	gui.ResetOnSpawn = false
 	gui.IgnoreGuiInset = true
 	gui.DisplayOrder = 200
 	local label = Instance.new("TextLabel")
-	label.Size = UDim2.new(0, 560, 0, 92)
+	label.Size = UDim2.new(0, 600, 0, 92)
 	label.AnchorPoint = Vector2.new(0.5, 0)
 	label.Position = UDim2.new(0.5, 0, 0, 20)
 	label.BackgroundColor3 = Color3.fromRGB(10, 12, 20)
@@ -41,23 +43,25 @@ local function makeHint()
 	label.TextSize = 14
 	label.TextWrapped = true
 	label.AutoLocalize = false
-	label.Text = "📷 사진 모드 (F7 끄기)\nWASD 이동 · Space/X 위아래 · 오른쪽 마우스 끌기 = 둘러보기 · Shift 빠르게 · Ctrl 느리게\n휠 = 확대 · [ ] = 시간대 · G = 배경 흐림 · N = 색감 · 이 안내는 3초 뒤 사라져요"
+	label.Text = text
 	local corner = Instance.new("UICorner")
 	corner.CornerRadius = UDim.new(0, 12)
 	corner.Parent = label
 	label.Parent = gui
 	gui.Parent = player:WaitForChild("PlayerGui")
 	task.delay(3, function() if gui.Parent then gui:Destroy() end end)
-	return gui
+	hint = gui
 end
 
-local function enable()
-	if active then return end
-	active = true
-	-- 1) UI 숨기기
+------------------------------------------------------------
+-- 화면 글자 숨기기 / 되돌리기
+------------------------------------------------------------
+local function hideUi()
+	if uiHidden then return end
+	uiHidden = true
 	table.clear(hidden)
 	for _, gui in ipairs(player.PlayerGui:GetChildren()) do
-		if gui:IsA("ScreenGui") and gui.Enabled then
+		if gui:IsA("ScreenGui") and gui.Enabled and gui.Name ~= "PhotoModeHint" then
 			gui.Enabled = false
 			table.insert(hidden, gui)
 		end
@@ -71,29 +75,14 @@ local function enable()
 		end
 	end
 	pcall(function() StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false) end)
-	-- 2) 카메라를 지금 자리에서 자유 비행으로
-	saved.CameraType = camera.CameraType
-	saved.FieldOfView = camera.FieldOfView
 	saved.ClockTime = Lighting.ClockTime
-	saved.MouseBehavior = UserInputService.MouseBehavior
-	camera.CameraType = Enum.CameraType.Scriptable
-	local look = camera.CFrame.LookVector
-	yaw = math.atan2(-look.X, -look.Z)
-	pitch = math.asin(math.clamp(look.Y, -1, 1))
-	fov = camera.FieldOfView
-	-- 3) 캐릭터가 움직이지 않게 (WASD 는 카메라가 쓴다)
-	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
-	if humanoid then
-		saved.WalkSpeed, saved.JumpPower, saved.JumpHeight = humanoid.WalkSpeed, humanoid.JumpPower, humanoid.JumpHeight
-		humanoid.WalkSpeed, humanoid.JumpPower, humanoid.JumpHeight = 0, 0, 0
-		saved.Humanoid = humanoid
-	end
-	hint = makeHint()
+	saved.MaxZoom = player.CameraMaxZoomDistance
+	player.CameraMaxZoomDistance = math.max(saved.MaxZoom, 160) -- (싸우는 장면도 멀리서 넓게 찍을 수 있게)
 end
 
-local function disable()
-	if not active then return end
-	active = false
+local function showUi()
+	if not uiHidden then return end
+	uiHidden = false
 	for _, gui in ipairs(hidden) do
 		if gui.Parent then gui.Enabled = true end
 	end
@@ -101,28 +90,79 @@ local function disable()
 	for coreType, on in pairs(saved.Core or {}) do
 		pcall(function() StarterGui:SetCoreGuiEnabled(coreType, on) end)
 	end
+	if saved.ClockTime then Lighting.ClockTime = saved.ClockTime end
+	if saved.MaxZoom then player.CameraMaxZoomDistance = saved.MaxZoom end
+	if dof then dof:Destroy() dof = nil end
+	if grade then grade:Destroy() grade = nil end
+	if hint and hint.Parent then hint:Destroy() end
+end
+
+------------------------------------------------------------
+-- 자유 카메라 켜기 / 끄기
+------------------------------------------------------------
+local function camOn()
+	if freeCam then return end
+	freeCam = true
+	saved.CameraType = camera.CameraType
+	saved.FieldOfView = camera.FieldOfView
+	saved.MouseBehavior = UserInputService.MouseBehavior
+	camera.CameraType = Enum.CameraType.Scriptable
+	local look = camera.CFrame.LookVector
+	yaw = math.atan2(-look.X, -look.Z)
+	pitch = math.asin(math.clamp(look.Y, -1, 1))
+	fov = camera.FieldOfView
+	-- 캐릭터가 움직이지 않게 (WASD 는 카메라가 쓴다)
+	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	if humanoid then
+		saved.WalkSpeed, saved.JumpPower, saved.JumpHeight = humanoid.WalkSpeed, humanoid.JumpPower, humanoid.JumpHeight
+		humanoid.WalkSpeed, humanoid.JumpPower, humanoid.JumpHeight = 0, 0, 0
+		saved.Humanoid = humanoid
+	end
+end
+
+local function camOff()
+	if not freeCam then return end
+	freeCam = false
 	camera.CameraType = saved.CameraType or Enum.CameraType.Custom
 	camera.FieldOfView = saved.FieldOfView or 70
-	if saved.ClockTime then Lighting.ClockTime = saved.ClockTime end
 	UserInputService.MouseBehavior = saved.MouseBehavior or Enum.MouseBehavior.Default
 	if saved.Humanoid and saved.Humanoid.Parent then
 		saved.Humanoid.WalkSpeed, saved.Humanoid.JumpPower, saved.Humanoid.JumpHeight = saved.WalkSpeed or 16, saved.JumpPower or 50, saved.JumpHeight or 7.2
 	end
 	saved.Humanoid = nil
-	if dof then dof:Destroy() dof = nil end
-	if grade then grade:Destroy() grade = nil end
-	if hint and hint.Parent then hint:Destroy() end
 	rotating = false
 end
 
+local HINT_UI = "📷 사진 모드: 화면 글자만 숨김 (F7 끄기 · F8 자유 카메라)\n평소처럼 싸우세요. 줌을 더 멀리 뺄 수 있어요\n[ ] = 시간대 · G = 배경 흐림 · N = 색감 · 이 안내는 3초 뒤 사라져요"
+local HINT_CAM = "🎥 자유 카메라 (F8 끄기 · F7 = 싸우는 모드로)\nWASD 이동 · Space/X 위아래 · 오른쪽 마우스 끌기 = 둘러보기 · Shift 빠르게 · Ctrl 느리게 · 휠 = 확대\n[ ] = 시간대 · G = 배경 흐림 · N = 색감 · 이 안내는 3초 뒤 사라져요"
+
 UserInputService.InputBegan:Connect(function(input, processed)
-	if input.KeyCode == Enum.KeyCode.F7 then
+	if input.KeyCode == Enum.KeyCode.F7 or input.KeyCode == Enum.KeyCode.F8 then
 		if not player:GetAttribute("IsAdmin") then return end
-		if active then disable() else enable() end
+		if input.KeyCode == Enum.KeyCode.F7 then
+			if freeCam then -- 자유 카메라 -> 싸우는 모드
+				camOff()
+				showHint(HINT_UI)
+			elseif uiHidden then
+				showUi()
+			else
+				hideUi()
+				showHint(HINT_UI)
+			end
+		else
+			if freeCam then
+				camOff()
+				showUi()
+			else
+				hideUi()
+				camOn()
+				showHint(HINT_CAM)
+			end
+		end
 		return
 	end
-	if not active then return end
-	if input.UserInputType == Enum.UserInputType.MouseButton2 then
+	if not uiHidden then return end
+	if input.UserInputType == Enum.UserInputType.MouseButton2 and freeCam then
 		rotating = true
 		UserInputService.MouseBehavior = Enum.MouseBehavior.LockCurrentPosition
 	elseif processed then
@@ -157,14 +197,14 @@ UserInputService.InputBegan:Connect(function(input, processed)
 end)
 
 UserInputService.InputEnded:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton2 and active then
+	if input.UserInputType == Enum.UserInputType.MouseButton2 and freeCam then
 		rotating = false
 		UserInputService.MouseBehavior = Enum.MouseBehavior.Default
 	end
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-	if not active then return end
+	if not freeCam then return end
 	if input.UserInputType == Enum.UserInputType.MouseMovement and rotating then
 		yaw -= input.Delta.X * 0.004
 		pitch = math.clamp(pitch - input.Delta.Y * 0.004, -1.45, 1.45)
@@ -174,8 +214,13 @@ UserInputService.InputChanged:Connect(function(input)
 end)
 
 RunService.RenderStepped:Connect(function(dt)
-	if not active then return end
-	if camera.CameraType ~= Enum.CameraType.Scriptable then camera.CameraType = Enum.CameraType.Scriptable end -- (다른 스크립트가 카메라를 되돌려도 사진 모드 유지)
+	if not uiHidden then return end
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if dof then -- 초점은 내 캐릭터까지의 거리
+		dof.FocusDistance = root and (root.Position - camera.CFrame.Position).Magnitude or 30
+	end
+	if not freeCam then return end
+	if camera.CameraType ~= Enum.CameraType.Scriptable then camera.CameraType = Enum.CameraType.Scriptable end -- (다른 스크립트가 카메라를 되돌려도 자유 카메라 유지)
 	local speed = 40
 	if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then speed = 140 end
 	if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then speed = 8 end
@@ -190,8 +235,4 @@ RunService.RenderStepped:Connect(function(dt)
 	if UserInputService:IsKeyDown(Enum.KeyCode.X) then position -= Vector3.new(0, speed * dt, 0) end
 	camera.CFrame = CFrame.new(position) * rotation
 	camera.FieldOfView = fov
-	if dof then -- 초점은 내 캐릭터까지의 거리
-		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-		dof.FocusDistance = root and (root.Position - position).Magnitude or 30
-	end
 end)
