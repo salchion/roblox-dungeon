@@ -15,7 +15,9 @@ return {
 	Skill_Heal = 136612911524402, -- 응급 치료 스킬
 	Hit = 3748776946,             -- 적중
 	Kill = 98731043228812,        -- 적 처치 (enemy defeat)
-	Enh_Success = 73627822697931, -- 강화 성공 (upgrade success)
+	Enh_Success = 9116384799,     -- 강화 성공: Magic Burst 2 (ProSoundEffects)
+	Enh_Evolve = 9120769331,      -- 무기 진화: Wind Whoosh Sonic Boom Low End Impact 1 (ProSoundEffects)
+	Chime = 73627822697931,       -- 예전 강화 성공 "띵": 치명타 / 줍기 / 레벨업 / 힐 / 데드아이 락온 소리의 기본 재료로 계속 쓴다
 	Enh_Hammer = 9125819216,      -- 강화 망치 (metal clang)
 	Skill_Ult = 70952641415058,   -- 데드아이 발동 (power up charge)
 	Dash = 90661028523798,        -- 대시 (dash whoosh)

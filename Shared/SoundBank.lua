@@ -41,13 +41,13 @@ local SPECS = {
 	-- 적중 / 처치 / 치명타 (짧고 선명하게)
 	Hit  = { Base = "Shot", CustomLength = 0.6, Pitch = 2.0, Volume = 0.2, Length = 0.09 }, -- (0.5 -> 0.32: 적중음이 총소리보다 커서 총소리가 묻힌다는 의견)
 	-- 치명타 (오버워치 헤드샷 느낌, 귀가 아프지 않게): 낮고 단단한 "텅!" + 살짝 얹은 맑은 배음, 고음은 깎아 낸다
-	Crit = { Base = "Enh_Success", Pitch = 1.45, Volume = 0.26, Length = 0.2, CustomLength = 0.5, -- (0.5 -> 0.32: 총소리가 묻힌다는 의견)
+	Crit = { Base = "Chime", Pitch = 1.45, Volume = 0.26, Length = 0.2, CustomLength = 0.5, -- (0.5 -> 0.32: 총소리가 묻힌다는 의견)
 		Fx = { { "eq", { LowGain = -24, MidGain = 0, HighGain = -8 } }, { "echo", { Delay = 0.05, Feedback = 0.15, WetLevel = -14 } } },
 		Layers = { { Pitch = 2.0, Volume = 0.3, Delay = 0.01 } } },
 	Kill = { Base = "EnhanceSuccess", CustomLength = 1.2, Pitch = 1.05, Volume = 0.3, -- (0.7 -> 0.5) (음높이 1.5 -> 1.05: 자동 공격으로 연달아 잡을 때 "찡찡" 하고 날카롭게 들렸다)
 	 Length = 0.3, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -12 } }, { "reverb", { DecayTime = 0.6, WetLevel = -10 } } } },
 	-- 스킬 / 폭발 / 레벨업
-	Skill_Heal = { CustomLength = 2.5, Base = "Enh_Success", Pitch = 1.1, Volume = 0.8, Length = 0.9, Fx = { { "reverb", { DecayTime = 1.6, WetLevel = -6 } } } },
+	Skill_Heal = { CustomLength = 2.5, Base = "Chime", Pitch = 1.1, Volume = 0.8, Length = 0.9, Fx = { { "reverb", { DecayTime = 1.6, WetLevel = -6 } } } },
 	Skill_Ult  = { Base = "Shot", CustomLength = 3.0, Pitch = 0.4, Volume = 1.6, Length = 1.8, Fx = { { "reverb", { DecayTime = 3.0, WetLevel = -2 } }, { "distortion", { Level = 0.4 } } },
 		Layers = { { Pitch = 1.6, Volume = 0.6, Delay = 0.08 } } },
 	-- 최후의 군주의 목소리: 아주 낮게 깔리는 "웅... 어어... 크으..." 울림 (기본 소리를 몇 옥타브 내리고 잔향 / 코러스 / 왜곡으로 사람 같지 않게 가공해 음절처럼 이어 붙인다)
@@ -60,7 +60,7 @@ local SPECS = {
 		Layers = { { Pitch = 0.24, Volume = 1.2, Delay = 0.3 }, { Pitch = 0.32, Volume = 1.3, Delay = 0.65 }, { Pitch = 0.43, Volume = 1.4, Delay = 1.0 }, { Pitch = 0.58, Volume = 1.5, Delay = 1.35 }, { Pitch = 0.8, Volume = 1.5, Delay = 1.7 } } },
 	Lord_Blast = { Base = "Enh_Hammer", CustomLength = 2.6, Pitch = 0.3, Volume = 2.0, Length = 1.4, Fx = { { "distortion", { Level = 0.5 } }, { "reverb", { DecayTime = 3.4, WetLevel = -2 } } },
 		Layers = { { Pitch = 0.18, Volume = 1.8, Delay = 0.0 }, { Pitch = 0.6, Volume = 1.0, Delay = 0.05 }, { Pitch = 0.12, Volume = 1.5, Delay = 0.25 } } },
-	Ult_Lock = { Base = "Enh_Success", Pitch = 2.6, Volume = 1.3, Length = 0.09, CustomLength = 0.3, Fx = { { "eq", { LowGain = -12, MidGain = 0, HighGain = -4 } } } }, -- 데드아이 락온 "띠" (연속으로 피치를 올려 "띠띠띠띠")
+	Ult_Lock = { Base = "Chime", Pitch = 2.6, Volume = 1.3, Length = 0.09, CustomLength = 0.3, Fx = { { "eq", { LowGain = -12, MidGain = 0, HighGain = -4 } } } }, -- 데드아이 락온 "띠" (연속으로 피치를 올려 "띠띠띠띠")
 	-- 데드아이 "콰콰콰쾅": 미사일마다 쿵(착탄) + 발사 때 낮은 퐁(발사) + 마지막 대폭발 (폭발음을 낮게 가공해 겹쳐 쌓는다)
 	Ult_Hit = { Base = "Boom", Pitch = 1.0, Volume = 1.0, Length = 0.8, Fx = { { "distortion", { Level = 0.3 } } } },
 	Ult_Launch = { Base = "Boom", Pitch = 1.7, Volume = 0.45, Length = 0.3, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -10 } } } },
@@ -69,7 +69,7 @@ local SPECS = {
 	UltShot = { Base = "Shot", Pitch = 1.4, Volume = 0.8, Length = 0.3, Fx = { { "chorus", { Depth = 0.5, Mix = 0.5 } } } },
 	Boom    = { CustomLength = 1.6, Base = "Enh_Hammer", Pitch = 0.45, Volume = 0.75, Length = 1.1, Fx = { { "distortion", { Level = 0.55 } }, { "reverb", { DecayTime = 1.8, WetLevel = -4 } } } },
 	Aug_Skull = { CustomLength = 0.9, Base = "Enh_Hammer", Pitch = 0.32, Volume = 0.85, Length = 0.5, Fx = { { "distortion", { Level = 0.45 } }, { "reverb", { DecayTime = 1.0, WetLevel = -6 } } } }, -- 처형 해골: 짧고 낮은 쿵
-	LevelUp = { Base = "Enh_Success", Pitch = 0.9, Volume = 1.0, Length = 1.4, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -8 } }, { "reverb", { DecayTime = 2.0, WetLevel = -5 } } },
+	LevelUp = { Base = "Chime", Pitch = 0.9, Volume = 1.0, Length = 1.4, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -8 } }, { "reverb", { DecayTime = 2.0, WetLevel = -5 } } },
 		Layers = { { Pitch = 1.19, Volume = 0.7, Delay = 0.12 }, { Pitch = 1.5, Volume = 0.5, Delay = 0.26 } } },
 }
 
@@ -80,16 +80,17 @@ local SPECS = {
 SPECS.Enh_Hammer  = { Base = "Shot", CustomLength = 1.4, CustomPitch = 0.82, CustomFx = { { "eq", { LowGain = 5, MidGain = 0, HighGain = -5 } }, { "reverb", { DecayTime = 1.1, WetLevel = -8 } } },
 	Pitch = 0.5, Volume = 1.1, Length = 0.2, Fx = { { "distortion", { Level = 0.25 } }, { "eq", { LowGain = 3, MidGain = 0, HighGain = -9 } }, { "reverb", { DecayTime = 0.7, WetLevel = -10 } } },
 	Layers = { { Pitch = 0.3, Volume = 0.7, Delay = 0.0 } } }                       -- 모루를 내려치는 "쾅"
-SPECS.Enh_Success = { Base = "EnhanceSuccess", CustomLength = 1.8, CustomPitch = 0.9, CustomFx = { { "eq", { LowGain = 3, MidGain = 0, HighGain = -6 } }, { "reverb", { DecayTime = 1.8, WetLevel = -6 } } },
-	Pitch = 0.82, Volume = 0.9, Length = 0.9, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -10 } }, { "reverb", { DecayTime = 1.3, WetLevel = -7 } } } } -- 성공
+SPECS.Enh_Success = { Base = "Chime", CustomLength = 1.6, CustomPitch = 1.0, CustomFx = { { "reverb", { DecayTime = 1.4, WetLevel = -9 } } }, -- 강화 성공: 마법 폭발 (직접 고른 ID: Magic Burst 2)
+	Pitch = 0.82, Volume = 0.8, Length = 0.9, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -10 } }, { "reverb", { DecayTime = 1.3, WetLevel = -7 } } } }
 SPECS.Enh_Fail    = { Base = "Boom", Pitch = 0.55, Volume = 0.7, Length = 0.9, Fx = { { "eq", { LowGain = 4, MidGain = -6, HighGain = -24 } }, { "reverb", { DecayTime = 1.6, WetLevel = -6 } } } } -- 둔하게 "쿵..."
-SPECS.Enh_Evolve  = { Base = "Aug_Synergy", Pitch = 0.85, Volume = 1.3, Length = 2.6, Fx = { { "eq", { LowGain = 4, MidGain = 0, HighGain = -4 } }, { "reverb", { DecayTime = 2.6, WetLevel = -4 } } },
-	Layers = { { Pitch = 0.5, Volume = 0.7, Delay = 0.0 } } }                       -- 진화: 묵직한 파워업
+SPECS.Enh_Evolve  = { Base = "Aug_Synergy", CustomLength = 4.0, CustomPitch = 1.0, Volume = 1.1, -- 무기 진화: 바람 + 저음 충격 (직접 고른 ID: Wind Whoosh Sonic Boom). 너무 길면 CustomLength 를 줄인다
+	Pitch = 0.85, Length = 2.6, Fx = { { "eq", { LowGain = 4, MidGain = 0, HighGain = -4 } }, { "reverb", { DecayTime = 2.6, WetLevel = -4 } } },
+	Layers = { { Pitch = 0.5, Volume = 0.7, Delay = 0.0 } } }
 SPECS.Gacha_Drop  = { Base = "Boom", Pitch = 1.1, Volume = 0.5, Length = 0.5, Fx = { { "eq", { LowGain = 4, MidGain = -2, HighGain = -18 } }, { "reverb", { DecayTime = 0.9, WetLevel = -8 } } } } -- 캡슐 낙하 "둥"
 SPECS.Gacha_Tick  = { Base = "Enh_Hammer", Pitch = 0.95, Volume = 0.35, Length = 0.09, Fx = { { "eq", { LowGain = 3, MidGain = 0, HighGain = -12 } } } } -- 흔들릴 때 금속 "철컥"
 SPECS.Gacha_Card  = { Base = "Dash", Pitch = 1.35, Volume = 0.5, Length = 0.3, Fx = { { "eq", { LowGain = -4, MidGain = 0, HighGain = -4 } } } } -- 카드 넘기는 "휙"
 SPECS.Dash   = { Base = "Shot", Pitch = 0.35, Volume = 5.5, Length = 0.4, CustomLength = 1.0, Fx = { { "eq", { HighGain = -12 } } } }  -- 대시 "슈웅"
-SPECS.Pickup = { Base = "Enh_Success", Pitch = 1.5, Volume = 0.3, Length = 0.25, CustomLength = 1.0, Fx = { { "eq", { LowGain = 0, MidGain = 0, HighGain = -8 } } } }                        -- 전리품 줍기 "팅"
+SPECS.Pickup = { Base = "Chime", Pitch = 1.5, Volume = 0.3, Length = 0.25, CustomLength = 1.0, Fx = { { "eq", { LowGain = 0, MidGain = 0, HighGain = -8 } } } }                        -- 전리품 줍기 "팅"
 -- 등급 공개: 일반 / 희귀 = 맑은 "띵", 영웅 = 파워업, 전설 / 신화 = 서사적 파워업 + 아래에 낮은 폭발 울림
 local POP_BASE = { "Reel_Stop", "Reel_Stop", "Aug_Get", "Aug_Synergy", "Aug_Synergy" }
 local POP_PITCH = { 0.85, 1.0, 0.95, 0.9, 0.8 }
