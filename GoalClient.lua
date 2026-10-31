@@ -461,7 +461,7 @@ RunService.RenderStepped:Connect(function()
 				local need = Config.Field.Gate.KillsNeeded[sealZone - 1] or 0
 				if sealZone - 1 == clearedNow + 1 then
 					local zoneSet = Config.Sets[Config.Sets.ZoneKeys[sealZone]]
-					sealText.Text = string.format("🔒 Zone %d · %s Sealed\nZone %d monsters %d / %d defeated\nOpen to earn the %s %s set!", sealZone, Config.Field.ZoneNames[sealZone], sealZone - 1, player:GetAttribute("GateKills") or 0, need, zoneSet.Icon, zoneSet.Name)
+					sealText.Text = string.format("🔒 Zone %d · %s Sealed\nZone %d monsters %d / %d defeated · Lord %s\nOpen to earn the %s %s set!", sealZone, Config.Field.ZoneNames[sealZone], sealZone - 1, player:GetAttribute("GateKills") or 0, need, player:GetAttribute("GateBossDone") and "✔ Defeated" or "👑 Not defeated", zoneSet.Icon, zoneSet.Name)
 				else
 					sealText.Text = string.format("🔒 Zone %d · %s Sealed\nOpen the previous gate first", sealZone, Config.Field.ZoneNames[sealZone])
 				end
