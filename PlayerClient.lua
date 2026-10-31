@@ -2294,30 +2294,13 @@ local function growthRemaining(endAt)
 	return endAt - (growthState.ServerTime + (os.clock() - growthReceivedAt))
 end
 
-local skipShownFrac = 0 -- 단축칸 게이지가 마지막으로 보여 준 비율 (줄어드는 연출용)
-local function buildGrowthTab()
+local function buildGrowthTab() -- (돌파 칸만: 시간 건너뛰기 / 훈련 칸 수는 맨 위 한 줄 buildSkipGaugeRow 가 보여 준다)
 	local state = growthState
 	if not state then
 		local row = newRow(36)
 		rowText(row, "<font color='#888888'>Loading...</font>")
 		return
 	end
-
-	local header = newRow(78)
-	rowText(header, string.format(
-		"⏱ Time Skip <font color='#ffe16e'><b>%s</b></font> owned      🏋 Training slots <b>%d / %d</b> in use\n<font size='11' color='#bbbbcc'>Training and breakthroughs finish on their own over time (even while offline). Time Skips shorten the wait, and you also earn them slowly from quests. You can reach everything without spending money.</font>",
-		Config.FormatDuration(state.TimeSkip), #state.Jobs, state.Slots
-	), 15, 24)
-
-	local gaugeRow = newRow(40) -- 단축칸: 얻으면 가득 차고, 쓰면 줄어든다
-	local cap = math.max(player:GetAttribute("TimeSkipCap") or 0, state.TimeSkip, 1)
-	local frac = math.clamp(state.TimeSkip / cap, 0, 1)
-	local gaugeBack = makePanel({ Size = UDim2.new(1, -24, 0, 18), Position = UDim2.new(0, 12, 0, 11), BackgroundColor3 = Color3.fromRGB(22, 24, 36) }, gaugeRow)
-	local gaugeFill = makePanel({ Size = UDim2.new(skipShownFrac, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(215, 150, 60) }, gaugeBack)
-	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "⏱ Skip gauge " .. Config.FormatDuration(state.TimeSkip), TextSize = 10, ZIndex = 3 }, gaugeBack)
-	game:GetService("TweenService"):Create(gaugeFill, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = UDim2.new(frac, 0, 1, 0) }):Play()
-	skipShownFrac = frac
-
 
 	local gateIndex
 	for index, gate in ipairs(Config.Growth.Gates) do
@@ -2378,13 +2361,15 @@ local function anyUpgradePending()
 end
 
 -- 시간 단축 게이지 (훈련 / 돌파 / 스킬 강화 / 펫이 함께 쓴다)
-local function buildSkipGaugeRow()
+local function buildSkipGaugeRow() -- 성장 탭 맨 위 한 줄: ⏱ 시간 건너뛰기 보유량 + 게이지 + 훈련 칸 수
 	local owned = player:GetAttribute("TimeSkip") or 0
-	local gaugeRow = newRow(40)
+	local row = newRow(40, Color3.fromRGB(30, 28, 46))
+	makeLabel({ Size = UDim2.new(0.62, -12, 1, 0), Position = UDim2.new(0, 12, 0, 0), RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left,
+		Text = growthState and string.format("⏱ Time Skip <font color='#ffe16e'><b>%s</b></font> owned      🏋 Training slots <b>%d / %d</b> in use", Config.FormatDuration(owned), #growthState.Jobs, growthState.Slots)
+			or string.format("⏱ Time Skip <font color='#ffe16e'><b>%s</b></font> owned", Config.FormatDuration(owned)) }, row)
 	local cap = math.max(player:GetAttribute("TimeSkipCap") or 0, owned, 1)
-	local gaugeBack = makePanel({ Size = UDim2.new(1, -24, 0, 18), Position = UDim2.new(0, 12, 0, 11), BackgroundColor3 = Color3.fromRGB(22, 24, 36) }, gaugeRow)
+	local gaugeBack = makePanel({ Size = UDim2.new(0.34, 0, 0, 14), Position = UDim2.new(0.64, 0, 0.5, -7), BackgroundColor3 = Color3.fromRGB(22, 24, 36) }, row)
 	makePanel({ Size = UDim2.new(math.clamp(owned / cap, 0, 1), 0, 1, 0), BackgroundColor3 = Color3.fromRGB(215, 150, 60) }, gaugeBack)
-	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "⏱ Skip gauge " .. Config.FormatDuration(owned) .. "  (shared with training · pets)", TextSize = 10, ZIndex = 3 }, gaugeBack)
 end
 
 -- 스킬 노드 상세 설명 한 줄 (TrainingTree 가 부른다)
@@ -2476,6 +2461,7 @@ function refreshMenu()
 		end
 	elseif currentTab == "Growth" then
 		-- 스킬 / 훈련 / 펫을 한 화면의 특성 나무로 (TrainingTree 모듈)
+		buildSkipGaugeRow() -- 시간 건너뛰기는 맨 위 한 줄
 		local okTree, treeErr = pcall(function()
 			require(ReplicatedStorage:WaitForChild("TrainingTree", 5)).BuildAll({
 				Config = Config, Remotes = Remotes, Player = player, Meta = metaState, Growth = growthState, Remaining = growthRemaining,
@@ -2484,7 +2470,7 @@ function refreshMenu()
 			})
 		end)
 		if not okTree then warn("[TrainingTree] " .. tostring(treeErr)) end
-		if locked then buildSkipGaugeRow() else buildGrowthTab() end -- 시간 건너뛰기 / 돌파는 나무 아래에
+		if not locked then buildGrowthTab() end -- 돌파는 나무 아래에
 	elseif currentTab == "Quest" then
 		if sub == "Ach" then
 			sectionTitle("🏅 Achievements — earn rewards and titles")

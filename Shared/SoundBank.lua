@@ -88,6 +88,7 @@ SPECS.Enh_Evolve  = { Base = "Aug_Synergy", CustomLength = 4.0, CustomPitch = 1.
 	Layers = { { Pitch = 0.5, Volume = 0.7, Delay = 0.0 } } }
 SPECS.Gacha_Drop  = { Base = "Boom", Pitch = 1.1, Volume = 0.5, Length = 0.5, Fx = { { "eq", { LowGain = 4, MidGain = -2, HighGain = -18 } }, { "reverb", { DecayTime = 0.9, WetLevel = -8 } } } } -- 캡슐 낙하 "둥"
 SPECS.Gacha_Tick  = { Base = "Enh_Hammer", Pitch = 0.95, Volume = 0.35, Length = 0.09, Fx = { { "eq", { LowGain = 3, MidGain = 0, HighGain = -12 } } } } -- 흔들릴 때 금속 "철컥"
+SPECS.UI_Click    = { Base = "Hit", Pitch = 0.75, Volume = 0.6, Length = 0.1, CustomLength = 0.2, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -14 } } } } -- 버튼 누를 때 작은 "톡" (예전 뽑기 틱 소리)
 SPECS.Gacha_Card  = { Base = "Dash", Pitch = 1.35, Volume = 0.5, Length = 0.3, Fx = { { "eq", { LowGain = -4, MidGain = 0, HighGain = -4 } } } } -- 카드 넘기는 "휙"
 SPECS.Dash   = { Base = "Shot", Pitch = 0.35, Volume = 5.5, Length = 0.4, CustomLength = 1.0, Fx = { { "eq", { HighGain = -12 } } } }  -- 대시 "슈웅"
 SPECS.Pickup = { Base = "Chime", Pitch = 1.5, Volume = 0.3, Length = 0.25, CustomLength = 1.0, Fx = { { "eq", { LowGain = 0, MidGain = 0, HighGain = -8 } } } }                        -- 전리품 줍기 "팅"

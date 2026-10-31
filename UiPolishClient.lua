@@ -107,7 +107,7 @@ local function watchButton(button)
 		local now = os.clock()
 		if okSound and now - lastClick > 0.06 then
 			lastClick = now
-			pcall(function() SoundBank.Play(sfxParent, "Gacha_Tick", { Pitch = 1.25, Volume = 0.35 }) end)
+			pcall(function() SoundBank.Play(sfxParent, "UI_Click", { Pitch = 1.25, Volume = 0.35 }) end)
 		end
 	end)
 end
