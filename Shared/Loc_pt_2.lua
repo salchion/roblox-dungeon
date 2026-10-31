@@ -408,6 +408,10 @@ return {
 		["Success"] = "Sucesso",
 		["Cost"] = "Custo",
 		["You have"] = "Você tem",
+		["⚔ Offense"] = "⚔ Ataque",
+		["🛡 Defense"] = "🛡 Defesa",
+		["🧭 Utility"] = "🧭 Utilidade",
+		["Damage Taken"] = "Dano recebido",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -892,6 +896,7 @@ return {
 		{ "… and {number1} more", "… e mais {number1}" },
 		{ "(you have {number1})", "(você tem {number1})" },
 		{ "Next: Zone {number1}", "Próxima: zona {number1}" },
+		{ "🏰 Dungeons {number1}", "🏰 Masmorras {number1}" },
 		{ "Zone {number1} Camp", "Acampamento da Zona {number1}" },
 		{ "🐾 Pet Lv.{number1}!", "🐾 Pet Nv.{number1}!" },
 		{ "Upgrade {number1} G", "Melhorar {number1} G" },
@@ -951,6 +956,5 @@ return {
 		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "Masmorra · escolha uma profundidade (mais fundo = melhores chances de drop) · tema aleatório · {text1}" },
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "{text1} obtido! Adicionado à bolsa. (I → equipar pela bolsa)  ▲ +{number2}% vs atual" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 O portão está fechado! Derrote os monstros da zona {number1} {number2}/{number3} + o senhor da zona{text4}" },
-		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ Subida de nível do pet iniciada! ({text1}) — use Pular tempo para terminar mais rápido" },
 	},
 }

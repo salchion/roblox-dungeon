@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 コンボ x{number1}\nダメージ +{number2}%" },
+		{ "{number7} Darklands · {number8} Abyss", "{number7} ダークランド · {number8} アビス" },
 		{ "Level {number1} Breakthrough", "レベル{number1}の突破" },
 		{ "Field (best: Zone {number1})", "フィールド(最高: ゾーン{number1})" },
 		{ "🎲 Random bonus in {number1}s", "🎲 {number1}秒後にランダムボーナス" },
@@ -136,6 +138,7 @@ return {
 		{ "(you have {number1})", "(所持 {number1})" },
 		{ "🎫 Tickets: {number1}", "🎫 チケット: {number1}" },
 		{ "Next: Zone {number1}", "次: ゾーン{number1}" },
+		{ "🏰 Dungeons {number1}", "🏰 ダンジョン {number1}" },
 		{ "Zone {number1} Camp", "ゾーン{number1}キャンプ" },
 		{ "🐾 Pet Lv.{number1}!", "🐾 ペット Lv.{number1}！" },
 		{ "Upgrade {number1} G", "強化 {number1} G" },

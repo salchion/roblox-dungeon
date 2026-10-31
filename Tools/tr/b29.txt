@@ -124,3 +124,8 @@
 2165¦成功率¦Erfolg¦Réussite¦Éxito¦Sucesso¦成功率¦성공 확률
 2166¦費用¦Kosten¦Coût¦Coste¦Custo¦花费¦필요 골드
 2167¦所持¦Vorhanden¦Possédé¦Tienes¦Você tem¦持有¦보유 골드
+2168¦⚔ 攻撃¦⚔ Angriff¦⚔ Attaque¦⚔ Ataque¦⚔ Ataque¦⚔ 攻击¦⚔ 공격
+2169¦🛡 防御¦🛡 Verteidigung¦🛡 Défense¦🛡 Defensa¦🛡 Defesa¦🛡 防御¦🛡 방어
+2170¦🧭 ユーティリティ¦🧭 Nützliches¦🧭 Utilitaire¦🧭 Utilidad¦🧭 Utilidade¦🧭 辅助¦🧭 유틸
+2171¦被ダメージ¦Erlittener Schaden¦Dégâts subis¦Daño recibido¦Dano recebido¦受到伤害¦받는 피해
+2172¦🏰 ダンジョン {number1}¦🏰 Dungeons {number1}x¦🏰 Donjons {number1}¦🏰 Mazmorras {number1}¦🏰 Masmorras {number1}¦🏰 地下城 {number1}¦🏰 던전 {number1}회

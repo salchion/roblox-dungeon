@@ -450,6 +450,10 @@ return {
 		["Success"] = "Réussite",
 		["Cost"] = "Coût",
 		["You have"] = "Possédé",
+		["⚔ Offense"] = "⚔ Attaque",
+		["🛡 Defense"] = "🛡 Défense",
+		["🧭 Utility"] = "🧭 Utilitaire",
+		["Damage Taken"] = "Dégâts subis",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -934,6 +938,7 @@ return {
 		{ "(you have {number1})", "(vous en avez {number1})" },
 		{ "🎫 Tickets: {number1}", "🎫 Tickets : {number1}" },
 		{ "Next: Zone {number1}", "Suivante : zone {number1}" },
+		{ "🏰 Dungeons {number1}", "🏰 Donjons {number1}" },
 		{ "Zone {number1} Camp", "Camp de la zone {number1}" },
 		{ "🐾 Pet Lv.{number1}!", "🐾 Familier niv.{number1} !" },
 		{ "Upgrade {number1} G", "Améliorer {number1} or" },
@@ -948,9 +953,5 @@ return {
 		{ "🔑 {number1} Key(s)", "🔑 {number1} clé(s)" },
 		{ "Survive {number1}s", "Survivez {number1} s" },
 		{ "🎰 Roll x{number1}!", "🎰 Tirer x{number1} !" },
-		{ "Slots {number1} / {number2}", "Emplacements {number1} / {number2}" },
-		{ "⚡ Power {number9}", "⚡ Puissance {number9}" },
-		{ "⚡ Power {number1}", "⚡ Puissance {number1}" },
-		{ "Remove #{number1}", "Supprimer #{number1}" },
 	},
 }

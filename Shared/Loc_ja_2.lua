@@ -565,6 +565,10 @@ return {
 		["Success"] = "成功率",
 		["Cost"] = "費用",
 		["You have"] = "所持",
+		["⚔ Offense"] = "⚔ 攻撃",
+		["🛡 Defense"] = "🛡 防御",
+		["🧭 Utility"] = "🧭 ユーティリティ",
+		["Damage Taken"] = "被ダメージ",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -919,7 +923,5 @@ return {
 		{ "Double Shot chance {number1}%", "ダブルショット確率 {number1}%" },
 		{ "Roll for gear {number1} times", "装備ガチャを{number1}回引く" },
 		{ "Gear drop rarity +{number1}%", "ギアドロップのレア度 +{number1}%" },
-		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 コンボ x{number1}\nダメージ +{number2}%" },
-		{ "{number7} Darklands · {number8} Abyss", "{number7} ダークランド · {number8} アビス" },
 	},
 }

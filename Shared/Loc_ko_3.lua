@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "You can afford it now ({number1} G)", "지금 바로 가능 ({number1} G)" },
 		{ "⭐ Legendary guaranteed in {number1}", "⭐ 전설 확정까지 {number1}회" },
 		{ "★★★  Step {number1}/{number2} · Higher step", "★★★ 단계 {number1}/{number2} · 더 높은 단계" },
 		{ "★★☆  Step {number1}/{number2} · Higher step", "★★☆ 단계 {number1}/{number2} · 더 높은 단계" },
@@ -198,6 +199,7 @@ return {
 		{ "(you have {number1})", "가 필요해요 (보유 {number1})" },
 		{ "🎫 Tickets: {number1}", "🎫 티켓: {number1}" },
 		{ "Next: Zone {number1}", "다음: {number1}구역" },
+		{ "🏰 Dungeons {number1}", "🏰 던전 {number1}회" },
 		{ "Zone {number1} Camp", "존 {number1} 캠프" },
 		{ "🐾 Pet Lv.{number1}!", "🐾 펫 Lv.{number1}!" },
 		{ "Upgrade {number1} G", "강화 {number1} G" },

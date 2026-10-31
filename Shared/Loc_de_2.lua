@@ -391,6 +391,10 @@ return {
 		["Success"] = "Erfolg",
 		["Cost"] = "Kosten",
 		["You have"] = "Vorhanden",
+		["⚔ Offense"] = "⚔ Angriff",
+		["🛡 Defense"] = "🛡 Verteidigung",
+		["🧭 Utility"] = "🧭 Nützliches",
+		["Damage Taken"] = "Erlittener Schaden",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -871,6 +875,7 @@ return {
 		{ "… and {number1} more", "… und {number1} weitere" },
 		{ "(you have {number1})", "(du hast {number1})" },
 		{ "Next: Zone {number1}", "Nächste: Zone {number1}" },
+		{ "🏰 Dungeons {number1}", "🏰 Dungeons {number1}x" },
 		{ "Zone {number1} Camp", "Zone {number1} Lager" },
 		{ "🐾 Pet Lv.{number1}!", "🐾 Begleiter Lv.{number1}!" },
 		{ "Upgrade {number1} G", "Verbessern {number1} G" },
@@ -943,6 +948,5 @@ return {
 		{ "{text1}  ▲ +{number2}% better than your current gear! (I → Bag", "{text1}  ▲ +{number2}% besser als deine aktuelle Ausrüstung! (I → Tasche" },
 		{ "[{text1}] Starts in {number2}s! Survive the incoming monsters", "[{text1}] Startet in {number2} s! Überlebe die anrückenden Monster" },
 		{ "⏱ Skip gauge {text1}  (shared with training · pets)", "⏱ Zeit-Skip-Anzeige {text1}  (geteilt mit Training · Haustieren)" },
-		{ "{text1} can now appear (Lv {number2}+). Deeper = better loot", "{text1} kann jetzt erscheinen (Lv {number2}+). Tiefer = bessere Beute" },
 	},
 }

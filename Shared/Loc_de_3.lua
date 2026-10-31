@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} can now appear (Lv {number2}+). Deeper = better loot", "{text1} kann jetzt erscheinen (Lv {number2}+). Tiefer = bessere Beute" },
 		{ "Crit damage +{text1}%p per point (base 2x)  (max {number2})", "Krit-Schaden +{text1} %p pro Punkt (Basis 2x) (max. {number2})" },
 		{ "{text1}  ▲ Better than your current gear! (I → Bag", "{text1}  ▲ Besser als deine aktuelle Ausrüstung! (I → Tasche" },
 		{ "🎮 Welcome to the world of adventure, {text1}!", "🎮 Willkommen in der Welt der Abenteuer, {text1}!" },

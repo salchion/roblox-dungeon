@@ -1996,7 +1996,7 @@ end
 
 local function buildCharacterTab()
 	local weaponType = Config.GetPlayerWeapon(player)
-	local health = Config.Player.BaseHealth + (player:GetAttribute("HealthPoints") or 0) * Config.Player.HealthPerPoint + (player:GetAttribute("GearHealth") or 0) + Config.GetLevelHealth(player:GetAttribute("Level") or 1)
+	local health = Config.Player.BaseHealth + (player:GetAttribute("HealthPoints") or 0) * Config.Player.HealthPerPoint + (player:GetAttribute("GearHealth") or 0) + (player:GetAttribute("TrainHealth") or 0) + Config.GetLevelHealth(player:GetAttribute("Level") or 1)
 	-- 실제 공식(DungeonService.ComputeDamage)과 같게: 훈련 / 펫 치명타 포함, 최대 90%
 	local rawCrit = (player:GetAttribute("CritPoints") or 0) * Config.Player.CritPerPoint + (player:GetAttribute("GearCrit") or 0)
 		+ (player:GetAttribute("TrainCrit") or 0) + (player:GetAttribute("PetCrit") or 0) + (weaponType.CritBonus or 0)
@@ -2015,7 +2015,7 @@ local function buildCharacterTab()
 		if n >= 1e6 then return string.format("%.2fM", n / 1e6) end
 		return groupDigits(n)
 	end
-	local summary = newRow(214)
+	local summary = newRow(116)
 	local xp, xpNeeded = player:GetAttribute("XP") or 0, math.max(1, player:GetAttribute("XPNeeded") or 1)
 	local maxed = menuLevel >= Config.Level.Max
 	makeLabel({ Size = UDim2.new(0, 120, 0, 34), Position = UDim2.new(0, 14, 0, 10), Text = "Lv." .. menuLevel, TextSize = 26, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(143, 216, 255), TextXAlignment = Enum.TextXAlignment.Left }, summary)
@@ -2024,60 +2024,62 @@ local function buildCharacterTab()
 	rounded(xpBack, 4)
 	local xpFill = create("Frame", { Size = UDim2.new(maxed and 1 or math.clamp(xp / xpNeeded, 0, 1), 0, 1, 0), BackgroundColor3 = Color3.fromRGB(110, 200, 255), BorderSizePixel = 0 }, xpBack)
 	rounded(xpFill, 4)
-	makeLabel({ Size = UDim2.new(1, -28, 0, 16), Position = UDim2.new(0, 14, 0, 58), Text = maxed and "MAX LEVEL" or string.format("%s / %s XP", groupDigits(xp), groupDigits(xpNeeded)), TextSize = 12, TextColor3 = Color3.fromRGB(150, 158, 190), TextXAlignment = Enum.TextXAlignment.Right }, summary)
-	local tiles = {
-		{ "Damage", string.format("+%d%%", math.floor((Config.GetLevelDamageMult(menuLevel) - 1) * 100 + 0.5)), "from level" },
-		{ "Max HP", groupDigits(health), string.format("+%d from level", Config.GetLevelHealth(menuLevel)) },
-		{ "Crit Chance", string.format("%.1f%%", crit), critOver > 0 and string.format("max · +%.0f%% crit dmg", critOver) or "max 90%" },
-		{ "Move Speed", string.format("%.1f", speed), "" },
-		{ "Gold", shortNum(player:GetAttribute("Gold") or 0), "" },
-		{ "Tickets", groupDigits(player:GetAttribute("Tickets") or 0), "" },
-		{ "Best Zone", tostring(player:GetAttribute("MaxZone") or 0) .. " / " .. Config.Field.ZoneCount, "field cleared" },
-		{ "Dungeons", groupDigits(questState and questState.Stats and questState.Stats.DungeonClears or 0), "cleared" },
+	makeLabel({ Size = UDim2.new(0.5, 0, 0, 16), Position = UDim2.new(0.5, -14, 0, 58), Text = maxed and "MAX LEVEL" or string.format("%s / %s XP", groupDigits(xp), groupDigits(xpNeeded)), TextSize = 12, TextColor3 = Color3.fromRGB(150, 158, 190), TextXAlignment = Enum.TextXAlignment.Right }, summary)
+	-- 진행 칩 (골드 / 티켓 / 최고 구역 / 던전)
+	local chips = {
+		"💰 " .. shortNum(player:GetAttribute("Gold") or 0), "🎫 " .. groupDigits(player:GetAttribute("Tickets") or 0),
+		"🗺 Zone " .. tostring(player:GetAttribute("MaxZone") or 0) .. " / " .. Config.Field.ZoneCount, "🏰 Dungeons " .. groupDigits(questState and questState.Stats and questState.Stats.DungeonClears or 0),
 	}
-	for index, tile in ipairs(tiles) do
-		local column, line = (index - 1) % 4, math.floor((index - 1) / 4)
-		local box = create("Frame", {
-			Size = UDim2.new(0.25, -10, 0, 58), Position = UDim2.new(column * 0.25, 10 - column * 2, 0, 82 + line * 64),
-			BackgroundColor3 = Color3.fromRGB(26, 28, 44), BorderSizePixel = 0,
-		}, summary)
-		rounded(box, 8)
-		makeLabel({ Size = UDim2.new(1, -12, 0, 14), Position = UDim2.new(0, 8, 0, 5), Text = tile[1], TextSize = 12, TextColor3 = Color3.fromRGB(150, 158, 190), TextXAlignment = Enum.TextXAlignment.Left }, box)
-		makeLabel({ Size = UDim2.new(1, -12, 0, 22), Position = UDim2.new(0, 8, 0, 19), Text = tile[2], TextSize = 18, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, box)
-		if tile[3] ~= "" then
-			makeLabel({ Size = UDim2.new(1, -12, 0, 13), Position = UDim2.new(0, 8, 0, 41), Text = tile[3], TextSize = 12, TextColor3 = Color3.fromRGB(120, 128, 160), TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, box)
-		end
+	for i, text in ipairs(chips) do
+		local chip = makeLabel({ Size = UDim2.new(0.25, -12, 0, 26), Position = UDim2.new((i - 1) * 0.25, 10, 0, 80), Text = text, TextSize = 12, Font = Enum.Font.GothamBold, BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(26, 28, 44) }, summary)
+		rounded(chip, 13)
 	end
 
-	sectionTitle("Equipped Gear")
-	local level = player:GetAttribute("WeaponLevel") or 0
-	local weaponName, weaponColor = weaponText(level)
-	local weaponRow = newRow(40)
-	rowText(weaponRow, string.format("🔫 Weapon   <font color='#%s'>%s</font>", hex(weaponColor), weaponName))
-
-	for _, slot in ipairs(Config.Gear.Slots) do
-		local rarity = player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0
-		local gearLevel = player:GetAttribute("Gear_" .. slot.Key .. "_L") or 0
-		local row = newRow(40)
-		if rarity <= 0 then
-			rowText(row, string.format("🛡 %s   <font color='#888888'>Empty (roll with Boss Tickets)</font>", slot.Name))
-		else
-			local color = Config.Gear.RarityColors[rarity]
-			rowText(row, string.format("🛡 %s   <font color='#%s'>[%s] %s +%d</font>   %s", slot.Name, hex(color),
-				Config.Gear.RarityNames[rarity], slot.Names[rarity], gearLevel,
-				Config.FormatGearStat(slot.Key, Config.GetGearStat(slot.Key, rarity, gearLevel))))
+	-- 능력치: 공격 / 방어 / 유틸 세 장의 카드 (각 줄 = 아이콘 구슬 + 이름 + 큰 값)
+	local weaponNow = weaponType
+	local critMult = Config.Player.CritMultiplier + (player:GetAttribute("LvCritDmg") or 0) + (player:GetAttribute("TrainCritDmg") or 0) + (player:GetAttribute("ParCritDmg") or 0) + critOver / 100
+	local D = Config.Defense
+	local defense = menuLevel * D.LevelDef + (player:GetAttribute("GearHealth") or 0) * D.GearDef
+	local reduction = 1 - (1 - math.min(D.MaxReduction, defense / (defense + D.K))) * (1 - (player:GetAttribute("GearBulwark") or 0))
+	local moveSpeed = Config.Player.WalkSpeed + (player:GetAttribute("GearSpeed") or 0) + (player:GetAttribute("TrainSpeed") or 0) + (player:GetAttribute("PetSpeed") or 0) + (player:GetAttribute("LvMove") or 0)
+	local function pct(v, digits) return string.format(digits and "%.1f%%" or "%d%%", digits and v * 100 or math.floor(v * 100 + 0.5)) end
+	local groups = {
+		{ "⚔ Offense", Color3.fromRGB(255, 120, 90), {
+			{ "⚔", "Attack", groupDigits(Config.BaseAttackEstimate(player) * (1 + (player:GetAttribute("ParAttack") or 0))) },
+			{ "🎯", "Crit Chance", string.format("%.1f%%", crit) },
+			{ "💥", "Crit Damage", string.format("x%.2f", critMult) },
+			{ "⏩", "Attack Speed", string.format("%.1f/s", 1 / math.max(0.05, attackCooldown())) },
+			{ "🔫", "Double Shot", pct((player:GetAttribute("LvDouble") or 0) + (player:GetAttribute("TrainDouble") or 0), true) },
+			{ "👑", "Boss Damage", "+" .. pct((player:GetAttribute("GearBossDmg") or 0) + (player:GetAttribute("ParBoss") or 0)) },
+			{ "📏", "Range", tostring(math.floor(Config.GetRange(player, weaponNow) + 0.5)) },
+		} },
+		{ "🛡 Defense", Color3.fromRGB(110, 170, 255), {
+			{ "❤", "Max HP", groupDigits(health) },
+			{ "🛡", "Damage Taken", "-" .. pct(reduction, true) },
+			{ "🩸", "Heal on Kill", pct(player:GetAttribute("GearLifeOnKill") or 0, true) },
+		} },
+		{ "🧭 Utility", Color3.fromRGB(110, 220, 150), {
+			{ "💨", "Move Speed", string.format("%.1f", moveSpeed) },
+			{ "⏱", "Skill Cooldown", "-" .. pct((player:GetAttribute("GearHaste") or 0) + (player:GetAttribute("PetHaste") or 0) + (player:GetAttribute("LvHaste") or 0)) },
+			{ "🍀", "Luck", "+" .. pct(player:GetAttribute("GearLuck") or 0) },
+			{ "📘", "XP", "+" .. pct((player:GetAttribute("GearXp") or 0) + (player:GetAttribute("PetXp") or 0)) },
+			{ "💰", "Gold", "+" .. pct(Config.GoldBonus(player) - 1) },
+		} },
+	}
+	local cardRow = newRow(46 + 7 * 38 + 10, Color3.fromRGB(20, 22, 34))
+	for gi, group in ipairs(groups) do
+		local card = create("Frame", { Size = UDim2.new(1 / 3, -12, 1, -12), Position = UDim2.new((gi - 1) / 3, 8, 0, 6), BackgroundColor3 = group[2]:Lerp(Color3.fromRGB(22, 24, 38), 0.86), BorderSizePixel = 0 }, cardRow)
+		rounded(card, 14)
+		create("UIStroke", { Color = group[2], Thickness = 1.5, Transparency = 0.35 }, card)
+		makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 6), Text = group[1], TextSize = 16, Font = Enum.Font.GothamBlack, TextColor3 = group[2] }, card)
+		for si, stat in ipairs(group[3]) do
+			local y = 44 + (si - 1) * 38
+			local orb = create("Frame", { Size = UDim2.new(0, 30, 0, 30), Position = UDim2.new(0, 10, 0, y), BackgroundColor3 = group[2]:Lerp(Color3.fromRGB(20, 22, 34), 0.6), BorderSizePixel = 0 }, card)
+			rounded(orb, 15)
+			makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = stat[1], TextSize = 15 }, orb)
+			makeLabel({ Size = UDim2.new(0.55, -46, 0, 30), Position = UDim2.new(0, 46, 0, y), Text = stat[2], TextSize = 12, TextColor3 = Color3.fromRGB(190, 196, 220), TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, card)
+			makeLabel({ Size = UDim2.new(0.45, -12, 0, 30), Position = UDim2.new(0.55, 0, 0, y), Text = stat[3], TextSize = 16, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Right }, card)
 		end
-	end
-
-	sectionTitle("📖 Stat Guide")
-	do
-		local glossary = {}
-		for _, key in ipairs({ "Health", "Crit", "Speed", "Damage", "Xp", "Luck", "Haste", "Shot" }) do
-			local info = Config.StatDesc[key]
-			table.insert(glossary, string.format("<b>%s</b>  <font color='#bbbbcc'>%s</font>", info.Name, info.Desc))
-		end
-		local row = newRow(#glossary * 22 + 16)
-		rowText(row, table.concat(glossary, "\n"), 13)
 	end
 
 	sectionTitle("Titles (unlocked via achievements, shown on your nameplate)")

@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Slots {number1} / {number2}", "Emplacements {number1} / {number2}" },
+		{ "⚡ Power {number9}", "⚡ Puissance {number9}" },
+		{ "⚡ Power {number1}", "⚡ Puissance {number1}" },
+		{ "Remove #{number1}", "Supprimer #{number1}" },
 		{ "🎟 Free {number1}/{number2}", "🎟 Gratuit {number1}/{number2}" },
 		{ "⚡ {number1} Power", "⚡ {number1} Puissance" },
 		{ "Max HP +{number1}", "PV max +{number1}" },
