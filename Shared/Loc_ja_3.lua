@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Power Ranking TOP {number1}", "戦闘力ランキング TOP {number1}" },
+		{ "Spend {number1} stat points", "ステータスポイントを{number1}使う" },
+		{ "Zone {number1} · Darklands", "ゾーン {number1} ・ダークランド" },
+		{ "Clear field zone {number1}", "フィールドゾーン{number1}をクリアする" },
+		{ "🌙 Idle reward +{number1} G", "🌙 アイドル報酬 +{number1} G" },
 		{ "🥈  {player1}   ⚡ {number1}", "🥈 {player1} ⚡ {number1}" },
 		{ "📍 Town   🎟 Free {number1}/{number2}", "📍町 🎟 無料 {number1}/{number2}" },
 		{ "💥 {number1} Kill Streak!!!", "💥 {number1} キルストリーク!!!" },

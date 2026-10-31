@@ -294,6 +294,10 @@ return {
 		["Run a dungeon"] = "挑战地下城",
 		["Gear and tickets from the boss chest"] = "首领宝箱掉落装备和抽奖券",
 		["Winding Canyon Path"] = "蜿蜒峡谷小径",
+		["Boss fight: press V!"] = "首领战：按V！",
+		["Dead Eye blasts the boss. You're invincible meanwhile."] = "死神之眼轰击首领，期间无敌。",
+		["Surrounded? Press F!"] = "被包围了？按F！",
+		["Death Lotus hits everything around you for 2.5s."] = "死亡莲花在2.5秒内攻击周围所有敌人。",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },

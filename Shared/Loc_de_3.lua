@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ {text1} (auto-salvage +{number2} Essence)", "♻ {text1} (Auto-Zerlegung +{number2} Essenz)" },
+		{ "✨ {number1}-piece set complete! {text2} Lv.{number3}", "✨ {number1}-teiliges Set komplett! {text2} Lv.{number3}" },
+		{ "📢 {text1} defeated the Final Lord!", "📢 {text1} hat den Letzten Lord besiegt!" },
 		{ "👑 Lord of {text1} (Zone {number2}) · Rec. ⚡{number3}", "👑 Lord von {text1} (Zone {number2}) · Empf. ⚡{number3}" },
 		{ "{number1} pulls done! Best rarity: {text2}", "{number1} Ziehungen abgeschlossen! Beste Seltenheit: {text2}" },
 		{ "Active {number1} / {number2} slots   (💰 {text3} G)", "Aktiv {number1} / {number2} Plätze   (💰 {text3} G)" },

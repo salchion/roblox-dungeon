@@ -688,6 +688,10 @@ return {
 		["Run a dungeon"] = "던전 도전하기",
 		["Gear and tickets from the boss chest"] = "보스 상자에서 장비와 티켓",
 		["Winding Canyon Path"] = "구불구불한 협곡 길",
+		["Boss fight: press V!"] = "보스전: V를 누르세요!",
+		["Dead Eye blasts the boss. You're invincible meanwhile."] = "데드아이가 보스를 쏟아붓듯 공격해요. 그동안은 무적!",
+		["Surrounded? Press F!"] = "둘러싸였나요? F를 누르세요!",
+		["Death Lotus hits everything around you for 2.5s."] = "죽음의 연꽃이 2.5초 동안 주변 적을 모두 공격해요.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1016,10 +1020,5 @@ return {
 		{ "Zone {number1} · Shockwave Shot  ", "존 {number1} · 충격파 샷" },
 		{ "Spell Tome · Rusty Era +{number1}", "스펠 토메 · 녹슨 시대 +{number1}" },
 		{ "Defeat {number1} Golden Goblin(s)", "황금 고블린 {number1}마리를 물리치세요" },
-		{ "🔒 Zone {number1} · Volcano Sealed", "🔒 구역 {number1} · 화산 봉쇄됨" },
-		{ "Lord of Meadow  ·  Zone {number1}", "초원의 군주 · 구역 {number1}" },
-		{ "Idle Accrual Cap: {number1} Hours", "유휴 누적 한도: {number1} 시간" },
-		{ "🔫 Next era Steel Era (+{number1})", "🔫 다음 시대 강철 시대 (+{number1})" },
-		{ "The party is full. (max {number1}", "파티가 가득 찼어요. (최대 {number1}" },
 	},
 }

@@ -398,7 +398,7 @@ local function buildCamp(zone, x0)
 		makePart({ Name = "SafeCap", Shape = Enum.PartType.Ball, Size = Vector3.new(0.9, 0.9, 0.9), Position = Vector3.new(boundaryX, TOP + 3.2, z), Color = teal, Material = Enum.Material.Neon, Transparency = 0.35, CanCollide = false, CanQuery = false }, worldFolder)
 	end
 
-	campCFrames[zone] = CFrame.new(x0 + 40, TOP + 4, 16)
+	campCFrames[zone] = CFrame.lookAt(Vector3.new(x0 + 40, TOP + 4, 16), Vector3.new(x0 + 140, TOP + 4, 16)) -- (필드 안쪽(동쪽)을 바라보고 선다: 등 뒤가 마을)
 end
 
 -- 구역 관문: 구역마다 컨셉이 다른 성문 / 입구. 문은 활짝 열려 있고, 이름 / 컨셉 / 몬스터 레벨이 위에 걸려 있다.

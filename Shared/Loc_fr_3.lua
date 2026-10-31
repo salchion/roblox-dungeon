@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: {text1}", "🔫 5 types d'armes — un se débloque à chaque palier d'amélioration (tous les 15). Choisissez avec quelle arme débloquée combattre · Actuelle : {text1}" },
 		{ "🎁 First breakthrough gift! Received {text1} Time Skip — press [Use Time Skip] in Growth to finish right away!", "🎁 Cadeau de la première percée ! {text1} saut temporel reçu — appuyez sur [Utiliser un saut temporel] dans Croissance pour terminer tout de suite !" },
 		{ "{text1} has used up today's free entries and doesn't have {number2} key(s). Defeat a field zone lord to get keys", "{text1} a utilisé les entrées gratuites du jour et n'a pas {number2} clé(s). Vainquez un seigneur de zone du terrain pour obtenir des clés" },
 		{ "🐃 Monster stampede! They're charging in a line from the {text1} — step aside and sweep them away!", "🐃 Débandade de monstres ! Ils chargent en ligne depuis {text1} — écartez-vous et balayez-les !" },

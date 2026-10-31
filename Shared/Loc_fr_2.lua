@@ -427,6 +427,10 @@ return {
 		["Run a dungeon"] = "Faites un donjon",
 		["Gear and tickets from the boss chest"] = "Équipement et tickets du coffre du boss",
 		["Winding Canyon Path"] = "Sentier du canyon sinueux",
+		["Boss fight: press V!"] = "Combat de boss : appuyez sur V !",
+		["Dead Eye blasts the boss. You're invincible meanwhile."] = "Dead Eye pulvérise le boss. Vous êtes invincible pendant ce temps.",
+		["Surrounded? Press F!"] = "Encerclé ? Appuyez sur F !",
+		["Death Lotus hits everything around you for 2.5s."] = "Lotus mortel frappe tout autour de vous pendant 2,5 s.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -949,6 +953,5 @@ return {
 		{ "x{number1}", "x {number1}" },
 		{ "A new dungeon theme can now appear ({text1}, Level {number2}+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", "Un nouveau thème de donjon peut maintenant apparaître ({text1}, niveau {number2}+). Choisissez une profondeur : plus c'est profond, meilleures sont les chances de butin et plus les boss sont durs. Un marqueur indique désormais la porte." },
 		{ "(one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "(un parmi {number1}) apparaissent sur l'équipement mythique : coffres de donjon (voir ci-dessous), butin du terrain ({text2}), coffre hebdomadaire du Boss Rush et récompense hebdomadaire du Seigneur final." },
-		{ "🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: {text1}", "🔫 5 types d'armes — un se débloque à chaque palier d'amélioration (tous les 15). Choisissez avec quelle arme débloquée combattre · Actuelle : {text1}" },
 	},
 }

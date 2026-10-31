@@ -2132,5 +2132,9 @@
 "Achievement: {text1}",
 "+ {text1} piece {text2}",
 "Winding Canyon Path",
-"🚪 {text1} left"
+"🚪 {text1} left",
+"Boss fight: press V!",
+"Dead Eye blasts the boss. You're invincible meanwhile.",
+"Surrounded? Press F!",
+"Death Lotus hits everything around you for 2.5s."
 ]

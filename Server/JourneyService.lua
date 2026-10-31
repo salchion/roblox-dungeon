@@ -6,6 +6,7 @@
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
+local CollectionService = game:GetService("CollectionService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
@@ -16,6 +17,7 @@ local Journey = {}
 
 local positions = {}  -- { Field = Vector3, Rift = Vector3, Gates = { [index] = Vector3 } }
 local lastBeat = setmetatable({}, { __mode = "k" })   -- [player] = 마지막으로 마을 안내를 보낸 시각 (너무 자주 안 뜨게)
+local skillTips = setmetatable({}, { __mode = "k" }) -- [player] = { F = {횟수, 마지막 시각}, V = {...} }: 스킬 안내는 접속 중 몇 번만, 간격을 두고
 local dashedAt = setmetatable({}, { __mode = "k" })   -- [player] = 마지막으로 대시한 시각 (클라이언트가 알려 줌)
 
 local function hintsOf(player)
@@ -147,14 +149,46 @@ local function combatBeat(player, now)
 		Journey.Mark(player, "Dash")
 		lastBeat[player] = now
 		prompt(player, "Q", "Dash to dodge!", "Press Q to dash through bullets. Close shaves give a bonus!", 7)
-	elseif fraction < 0.85 and not Journey.IsDone(player, "Lotus") and (player:GetAttribute("Level") or 1) >= 2 and player:GetAttribute("Zone") == "Field" then
-		Journey.Mark(player, "Lotus")
+	end
+	if now - (lastBeat[player] or 0) < 12 then return end
+	-- 스킬 안내: V(데드아이)는 보스전에서, F(죽음의 연꽃)는 주변에 몬스터가 4마리 이상 몰렸을 때. 접속 중 각각 최대 3번, 2분 간격
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if not root then return end
+	local tips = skillTips[player]
+	if not tips then
+		tips = { F = { 0, -1000 }, V = { 0, -1000 } }
+		skillTips[player] = tips
+	end
+	local function canTip(key) return tips[key][1] < 3 and now - tips[key][2] > 120 end
+	local function tip(key, icon, title, text, duration)
+		tips[key][1] += 1
+		tips[key][2] = now
 		lastBeat[player] = now
-		prompt(player, "F", "Surrounded? Death Lotus!", "Press F: daggers hit everything around you for 2.5s.", 8)
-	elseif (player:GetAttribute("UltCharge") or 0) >= Config.Skills.Ult.Cost and not Journey.IsDone(player, "Ult") then
-		Journey.Mark(player, "Ult")
-		lastBeat[player] = now
-		prompt(player, "V", "Ultimate ready!", "Press V: Dead Eye blasts the biggest enemy. You're invincible meanwhile.", 7)
+		prompt(player, icon, title, text, duration)
+	end
+	if canTip("V") and (player:GetAttribute("UltCharge") or 0) >= Config.Skills.Ult.Cost then
+		local bossNear = player:GetAttribute("BossFight") == true or player:GetAttribute("InDoomArena") == true
+		if not bossNear then
+			for _, part in ipairs(CollectionService:GetTagged("RadarBoss")) do
+				if part:IsA("BasePart") and (part.Position - root.Position).Magnitude < 120 then bossNear = true break end
+			end
+		end
+		if bossNear then
+			tip("V", "V", "Boss fight: press V!", "Dead Eye blasts the boss. You're invincible meanwhile.", 7)
+			return
+		end
+	end
+	if canTip("F") and (player:GetAttribute("Level") or 1) >= 2 then
+		local near = 0
+		for _, part in ipairs(CollectionService:GetTagged("Monster")) do
+			if part:IsA("BasePart") and (part.Position - root.Position).Magnitude < 28 then
+				near += 1
+				if near >= 4 then break end
+			end
+		end
+		if near >= 4 then
+			tip("F", "F", "Surrounded? Press F!", "Death Lotus hits everything around you for 2.5s.", 7)
+		end
 	end
 end
 

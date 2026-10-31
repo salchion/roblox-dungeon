@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 Zone {number1} · Volcano Sealed", "🔒 구역 {number1} · 화산 봉쇄됨" },
+		{ "Lord of Meadow  ·  Zone {number1}", "초원의 군주 · 구역 {number1}" },
+		{ "Idle Accrual Cap: {number1} Hours", "유휴 누적 한도: {number1} 시간" },
+		{ "🔫 Next era Steel Era (+{number1})", "🔫 다음 시대 강철 시대 (+{number1})" },
+		{ "The party is full. (max {number1}", "파티가 가득 찼어요. (최대 {number1}" },
 		{ "Fall in the field {number1} times", "필드에서 {number1}번 쓰러지기" },
 		{ "Raise your pet to level {number1}", "펫을 {number1}레벨까지 키우기" },
 		{ "Uses all Tickets (max {number1})", "모든 티켓 사용 (최대 {number1})" },

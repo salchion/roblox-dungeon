@@ -98,7 +98,7 @@ local function lookupDict(piece)
 	end
 	return nil
 end
-function lookupCore(piece)
+function lookupCore(piece, nested)
 	local hit = dict.exact[piece]
 	if hit then return hit end
 	for i = 1, #compiled do
@@ -109,11 +109,11 @@ function lookupCore(piece)
 			for k, name in ipairs(entry.Names) do
 				local captured = captures[k]
 				-- 틀 안에 끼워 넣은 이름(무기 / 던전 / 장소 ...)도 번역표에 있으면 바꾼다: "📍 Town" -> "📍 마을"
-				if captured and string.find(captured, "%a%a") then
-					local hit = dict.exact[captured]
+				if captured and not nested and string.find(captured, "%a%a") then
+					local hit = lookupCore(captured, true) -- (한 단계만: 안쪽 틀의 이름은 다시 바꾸지 않는다)
 					if not hit then
 						local head, core, tail = string.match(captured, "^([^%w]*)(.-)([^%w]*)$")
-						local inner = core and core ~= "" and dict.exact[core]
+						local inner = core and core ~= "" and lookupCore(core, true)
 						if inner then hit = head .. inner .. tail end
 					end
 					captured = hit or captured

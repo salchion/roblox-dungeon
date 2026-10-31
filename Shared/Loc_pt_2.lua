@@ -385,6 +385,10 @@ return {
 		["Run a dungeon"] = "Faça uma masmorra",
 		["Gear and tickets from the boss chest"] = "Equipamento e tickets do baú do chefe",
 		["Winding Canyon Path"] = "Trilha do cânion sinuoso",
+		["Boss fight: press V!"] = "Luta de chefe: aperte V!",
+		["Dead Eye blasts the boss. You're invincible meanwhile."] = "Dead Eye detona o chefe. Você fica invencível enquanto isso.",
+		["Surrounded? Press F!"] = "Cercado? Aperte F!",
+		["Death Lotus hits everything around you for 2.5s."] = "Lótus da Morte atinge tudo ao seu redor por 2,5 s.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -934,7 +938,5 @@ return {
 		{ "Crit damage +{text1}%p per point (base 2x)  (max {number2})", "Dano crítico +{text1}%p por ponto (base 2x) (máx. {number2})" },
 		{ "{text1}  ▲ Better than your current gear! (I → Bag", "{text1}  ▲ Melhor que seu equipamento atual! (I → Bolsa" },
 		{ "🎮 Welcome to the world of adventure, {text1}!", "🎮 Bem-vindo ao mundo da aventura, {text1}!" },
-		{ "👑 Zone {number1} · The Lord of {text2} has reappeared!", "👑 Zona {number1} · O senhor de {text2} reapareceu!" },
-		{ "Zone {number1} monsters {number2} / {number3} defeated · Lord {text4}", "Monstros da zona {number1} {number2} / {number3} derrotados · Senhor {text4}" },
 	},
 }

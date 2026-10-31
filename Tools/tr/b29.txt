@@ -90,3 +90,7 @@
 2131¦+ {text1} パーツ {text2}¦+ {text1}-Teil {text2}¦+ pièce {text1} {text2}¦+ pieza {text1} {text2}¦+ peça {text1} {text2}¦+ {text1} 部件 {text2}¦+ {text1} 조각 {text2}
 2132¦曲がりくねった峡谷¦Gewundener Canyonpfad¦Sentier du canyon sinueux¦Sendero del cañón sinuoso¦Trilha do cânion sinuoso¦蜿蜒峡谷小径¦구불구불한 협곡 길
 2133¦🚪 {text1} が退出¦🚪 {text1} hat verlassen¦🚪 {text1} est parti¦🚪 {text1} se fue¦🚪 {text1} saiu¦🚪 {text1} 离开了¦🚪 {text1} 님이 나갔어요
+2134¦ボス戦：Vを押そう！¦Bosskampf: Drück V!¦Combat de boss : appuyez sur V !¦¡Pelea de jefe: pulsa V!¦Luta de chefe: aperte V!¦首领战：按V！¦보스전: V를 누르세요!
+2135¦デッドアイがボスを撃ち抜く。発動中は無敵！¦Dead Eye zerlegt den Boss. Währenddessen bist du unverwundbar.¦Dead Eye pulvérise le boss. Vous êtes invincible pendant ce temps.¦Dead Eye revienta al jefe. Eres invencible mientras dura.¦Dead Eye detona o chefe. Você fica invencível enquanto isso.¦死神之眼轰击首领，期间无敌。¦데드아이가 보스를 쏟아붓듯 공격해요. 그동안은 무적!
+2136¦囲まれた？Fを押そう！¦Umzingelt? Drück F!¦Encerclé ? Appuyez sur F !¦¿Rodeado? ¡Pulsa F!¦Cercado? Aperte F!¦被包围了？按F！¦둘러싸였나요? F를 누르세요!
+2137¦死の蓮が2.5秒間まわりの敵すべてを攻撃。¦Todeslotus trifft 2,5 s lang alles um dich herum.¦Lotus mortel frappe tout autour de vous pendant 2,5 s.¦Loto mortal golpea todo a tu alrededor durante 2,5 s.¦Lótus da Morte atinge tudo ao seu redor por 2,5 s.¦死亡莲花在2.5秒内攻击周围所有敌人。¦죽음의 연꽃이 2.5초 동안 주변 적을 모두 공격해요.

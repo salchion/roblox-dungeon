@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "Recomendado ⚡{text1}  ·  ¡Apunta al orbe amarillo para triple daño!" },
+		{ "You have no {text1} gear. Get one from the field or the gacha", "No tienes equipo de {text1}. Consigue uno en el campo o en el gacha" },
 		{ "{text1} hasn't unlocked depth {number2} yet. (Clear depth {number3} first)", "{text1} aún no ha desbloqueado la profundidad {number2}. (Completa primero la profundidad {number3})" },
 		{ "{text1}'s level is too low. (This dungeon requires Lv.{number2}+)", "El nivel de {text1} es demasiado bajo. (Esta mazmorra requiere Nv.{number2}+)" },
 		{ "{text1} has appeared! Dodge its attacks and take it down", "¡{text1} ha aparecido! Esquiva sus ataques y derríbalo" },

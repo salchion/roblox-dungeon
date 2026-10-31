@@ -200,6 +200,14 @@ local function play()
 		if connection then connection:Disconnect() end
 		guardConnection:Disconnect()
 		if introRemote then pcall(function() introRemote:FireServer("End") end) end -- 불러오기 기준점을 다시 내 캐릭터로
+		-- 끝난 뒤 카메라를 조금 멀리서 시작한다 (잠깐 줌을 한 거리로 묶었다가 풀면 그 거리에서 시작하고, 이후에는 마음대로 줌할 수 있다)
+		pcall(function()
+			local minZoom, maxZoom = player.CameraMinZoomDistance, player.CameraMaxZoomDistance
+			player.CameraMinZoomDistance, player.CameraMaxZoomDistance = 26, 26
+			task.delay(0.5, function()
+				player.CameraMinZoomDistance, player.CameraMaxZoomDistance = math.min(minZoom, 8), math.max(maxZoom, 60)
+			end)
+		end)
 		pcall(function() require(ReplicatedStorage:WaitForChild("Remotes")).Tutorial:FireServer("IntroSeen") end) -- 끝까지 봤다: 다음부터는 건너뛸 수 있다
 		pcall(function()
 			TweenService:Create(Lighting, TweenInfo.new(1.0), { ExposureCompensation = saved.Exposure }):Play()
@@ -686,7 +694,7 @@ local function play()
 
 	-- 5) 하늘 높은 곳에서 제목을 보여 주다가 -> 내 캐릭터가 하늘에서 "슝" 내려와 아이언맨처럼 착지한다
 	--    (진짜 캐릭터는 스폰에 숨겨 두고, 내 화면에만 보이는 분신이 떨어진다. 착지가 끝나면 분신을 지우고 진짜 캐릭터가 나타난다)
-	local homePose = CFrame.lookAt(spawnPos - look * 14 + Vector3.new(0, 7, 0), spawnPos + look * 30 + Vector3.new(0, 4, 0))
+	local homePose = CFrame.lookAt(spawnPos - look * 24 + Vector3.new(0, 12, 0), spawnPos + look * 40 + Vector3.new(0, 2, 0)) -- (조금 멀고 높게: 시작하자마자 앞쪽 필드가 넓게 보이게)
 	local right = root.CFrame.RightVector
 	local function pitched(position, degrees) -- 몸을 앞으로 기울인다 (머리가 바라보는 쪽으로)
 		return CFrame.new(position) * CFrame.fromAxisAngle(right, -math.rad(degrees)) * (root.CFrame - root.CFrame.Position)

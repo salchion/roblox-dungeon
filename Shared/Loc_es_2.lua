@@ -414,6 +414,10 @@ return {
 		["Run a dungeon"] = "Haz una mazmorra",
 		["Gear and tickets from the boss chest"] = "Equipo y boletos del cofre del jefe",
 		["Winding Canyon Path"] = "Sendero del cañón sinuoso",
+		["Boss fight: press V!"] = "¡Pelea de jefe: pulsa V!",
+		["Dead Eye blasts the boss. You're invincible meanwhile."] = "Dead Eye revienta al jefe. Eres invencible mientras dura.",
+		["Surrounded? Press F!"] = "¿Rodeado? ¡Pulsa F!",
+		["Death Lotus hits everything around you for 2.5s."] = "Loto mortal golpea todo a tu alrededor durante 2,5 s.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -952,7 +956,5 @@ return {
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "¡{text1} obtenido! Añadido a la bolsa. (I → equipar desde la bolsa)  ▲ +{number2}% vs actual" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 ¡La puerta está cerrada! Derrota a los monstruos de la zona {number1} {number2}/{number3} + al señor de la zona{text4}" },
 		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ ¡Subida de nivel de la mascota iniciada! ({text1}) — usa Acelerar tiempo para terminar antes" },
-		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "Recomendado ⚡{text1}  ·  ¡Apunta al orbe amarillo para triple daño!" },
-		{ "You have no {text1} gear. Get one from the field or the gacha", "No tienes equipo de {text1}. Consigue uno en el campo o en el gacha" },
 	},
 }
