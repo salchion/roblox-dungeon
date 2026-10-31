@@ -315,8 +315,8 @@ handlers.Ult = function(player, root, _, character)
 			player:SetAttribute("ShakeStrength", 0.25) -- 시작할 때 약한 흔들림
 			player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 			do local feet = root.Position - Vector3.new(0, 2.5, 0); Effects.Raw(feet, { "R", feet, 16, Color3.fromRGB(150, 225, 255) }) end
-			for index, part in ipairs(targets) do
-				if not part.Parent then continue end
+			local function lockOn(part) -- 대상 머리 위에 빨간 ◎ (돌면서 조여든다)
+				if not part.Parent or markers[part] then return end
 				local gui = Instance.new("BillboardGui")
 				gui.Size = UDim2.fromOffset(160, 160)
 				gui.AlwaysOnTop = true
@@ -334,8 +334,24 @@ handlers.Ult = function(player, root, _, character)
 				label.Parent = gui
 				TweenService:Create(gui, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.fromOffset(50, 50) }):Play()
 				TweenService:Create(label, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Rotation = 0 }):Play()
-				markers[index] = gui
+				markers[part] = gui
 				Debris:AddItem(gui, 4)
+			end
+			for _, part in ipairs(targets) do lockOn(part) end
+			-- 대상이 죽으면 범위 안의 다음 적(가장 덩치 큰 적)에게 새로 락온한다: 남은 미사일이 끊기지 않고 계속 날아간다
+			local function relock()
+				if not root.Parent then return nil end
+				local fresh = Dungeon.TargetsIn(player, root.Position, cfg.Radius, maxTargets) or Field.TargetsIn(player, root.Position, cfg.Radius, maxTargets)
+				local best
+				for _, candidate in ipairs(fresh or {}) do
+					if candidate.Parent and (not best or candidate.Size.Magnitude > best.Size.Magnitude + 0.5) then best = candidate end
+				end
+				if best then
+					table.insert(targets, best)
+					lockOn(best)
+					pcall(function() SoundBank.Play(root, "Ult_Lock", { Pitch = 1.3, Volume = 1.2 }) end)
+				end
+				return best
 			end
 			-- 락온 "띠띠띠띠": 점점 높아지는 짧은 경고음 네 번
 			for beep = 1, 4 do
@@ -357,10 +373,12 @@ handlers.Ult = function(player, root, _, character)
 				for _, candidate in ipairs(targets) do
 					if candidate.Parent then table.insert(alive, candidate) end
 				end
-				if #alive == 0 then break end
-				local index = (shotNumber - 1) % #targets + 1
-				local original = targets[index]
-				local part = original.Parent and original or alive[(shotNumber - 1) % #alive + 1]
+				if #alive == 0 then -- 락온한 적이 다 죽었다: 다음 적을 찾아 계속 쏜다
+					local nextTarget = relock()
+					if not nextTarget then break end
+					alive = { nextTarget }
+				end
+				local part = alive[(shotNumber - 1) % #alive + 1]
 				local shoulder = root.Position + Vector3.new((math.random() - 0.5) * 3, 3 + math.random() * 1.5, (math.random() - 0.5) * 3)
 				Effects.Burst(shoulder, Color3.fromRGB(190, 235, 255), 18) -- 발사 불꽃 (크게)
 				if shotNumber % 3 == 1 then -- 세 발마다 발밑에서 충격 고리가 퍼진다
@@ -382,12 +400,15 @@ handlers.Ult = function(player, root, _, character)
 				task.delay(flight, function()
 					if not player.Parent then return end
 					local hitPart = part
-					if not hitPart.Parent then -- 날아가는 사이에 죽었다: 살아 있는 다른 적에게 피해를 넘긴다
-						local others = {}
+					if not hitPart.Parent then -- 날아가는 사이에 죽었다: 떨어진 자리에서 가장 가까운 살아 있는 락온 대상이 대신 맞는다 (피해가 버려지지 않게)
+						local landedAt, nearest, nearestDist = hitPart.Position, nil, math.huge
 						for _, candidate in ipairs(targets) do
-							if candidate.Parent then table.insert(others, candidate) end
+							if candidate.Parent then
+								local dist = (candidate.Position - landedAt).Magnitude
+								if dist < nearestDist then nearest, nearestDist = candidate, dist end
+							end
 						end
-						hitPart = #others > 0 and others[math.random(#others)] or nil
+						hitPart = nearest
 					end
 					if not hitPart then return end
 					BL.Ctx = "데드아이"
@@ -401,7 +422,7 @@ handlers.Ult = function(player, root, _, character)
 					Effects.DamageTint = nil
 					BL.Ctx = nil
 					pcall(function() SoundBank.Play(hitPart, "Ult_Hit", { Pitch = 0.85 + math.random() * 0.4, Volume = 1 }) end) -- 미사일마다 "쾅"
-					local label = markers[index] and markers[index]:FindFirstChildOfClass("TextLabel")
+					local label = markers[hitPart] and markers[hitPart]:FindFirstChildOfClass("TextLabel")
 					if landed and label then label.TextColor3 = Color3.fromRGB(255, 255, 255) end
 				end)
 				task.wait(missileGap)
