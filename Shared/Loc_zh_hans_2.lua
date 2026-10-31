@@ -681,6 +681,7 @@ return {
 		{ "Radius {number1} · Damage x{number2}", "范围 {number1} · 伤害 x{number2}" },
 		{ "Power Ranking TOP {number1}", "战力排行 TOP {number1}" },
 		{ "Spend {number1} stat points", "分配{number1}点属性点" },
+		{ "Training slots {number1} / {number2}", "训练栏位 {number1} / {number2}" },
 		{ "Zone {number1} · Darklands", "区域 {number1} · 黑暗之地" },
 		{ "Clear field zone {number1}", "清理区域{number1}" },
 		{ "🌙 Idle reward +{number1} G", "🌙 闲置奖励 +{number1} 金币" },

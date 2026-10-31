@@ -81,6 +81,7 @@ return {
 		{ "🎰 Roll x{number1}!\n{number2} Tickets", "🎰 {number1}회 뽑기!\n티켓 {number2}장" },
 		{ "Power Ranking TOP {number1}", "전투력 랭킹 TOP {number1}" },
 		{ "Spend {number1} stat points", "스탯 포인트 {number1} 사용" },
+		{ "Training slots {number1} / {number2}", "훈련 칸 {number1} / {number2}" },
 		{ "Zone {number1} · Darklands", "구역 {number1} · 다크랜드" },
 		{ "Clear field zone {number1}", "필드 구역 {number1} 클리어" },
 		{ "🌙 Idle reward +{number1} G", "🌙 유휴 보상 +{number1} G" },

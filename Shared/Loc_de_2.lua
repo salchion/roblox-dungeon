@@ -754,6 +754,7 @@ return {
 		{ "Radius {number1} · Damage x{number2}", "Radius {number1} · Schaden x{number2}" },
 		{ "Power Ranking TOP {number1}", "Kraft-Rangliste TOP {number1}" },
 		{ "Spend {number1} stat points", "Verteile {number1} Statuspunkte" },
+		{ "Training slots {number1} / {number2}", "Trainingsplätze {number1} / {number2}" },
 		{ "Zone {number1} · Darklands", "Zone {number1} · Dunkle Länder" },
 		{ "Clear field zone {number1}", "Feldzone {number1} löschen" },
 		{ "🌙 Idle reward +{number1} G", "🌙 Inaktive Belohnung +{number1} G" },
@@ -933,6 +934,5 @@ return {
 		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1} … automatisch zerlegt! Essenz +{number2}, {number3} G" },
 		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 Durchbruch auf Stufe {number1} gestartet! ({text2})" },
 		{ "Weapon range +{text1}% per point  (max {number2})", "Waffenreichweite +{text1} % pro Punkt (max. {number2})" },
-		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} automatisch zerlegt (Essenz +{number2}, {number3} G)" },
 	},
 }

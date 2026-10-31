@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 A Golden Goblin appeared in Zone {number1} · {text2}! Catch it for a jackpot! (75s)", "💰 ¡Un goblin dorado apareció en la zona {number1} · {text2}! ¡Atrápalo para un jackpot! (75 s)" },
 		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "Mazmorra · elige una profundidad (más profundo = mejores probabilidades de botín) · tema aleatorio · {text1}" },
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "¡{text1} obtenido! Añadido a la bolsa. (I → equipar desde la bolsa)  ▲ +{number2}% vs actual" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 ¡La puerta está cerrada! Derrota a los monstruos de la zona {number1} {number2}/{number3} + al señor de la zona{text4}" },

@@ -652,6 +652,13 @@
       "overwrite": true
     },
     {
+      "path": "Shared/TrainingTree.lua",
+      "parent": "ReplicatedStorage",
+      "name": "TrainingTree",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Shared/LordLook.lua",
       "parent": "ReplicatedStorage",
       "name": "LordLook",

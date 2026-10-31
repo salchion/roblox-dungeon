@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1}  ▲ +{number2}% better than your current gear! (I → Bag", "{text1}  ▲ +{number2}% melhor que seu equipamento atual! (I → Bolsa" },
 		{ "[{text1}] Starts in {number2}s! Survive the incoming monsters", "[{text1}] Começa em {number2} s! Sobreviva aos monstros que se aproximam" },
 		{ "⏱ Skip gauge {text1}  (shared with training · pets)", "⏱ Medidor de aceleração {text1}  (compartilhado com treino · pets)" },
 		{ "{text1} can now appear (Lv {number2}+). Deeper = better loot", "{text1} já pode aparecer (Nv {number2}+). Mais fundo = melhor espólio" },

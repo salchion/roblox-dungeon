@@ -15,6 +15,7 @@ return {
 		{ "Radius {number1} · Damage x{number2}", "範囲 {number1} · ダメージ x{number2}" },
 		{ "Power Ranking TOP {number1}", "戦闘力ランキング TOP {number1}" },
 		{ "Spend {number1} stat points", "ステータスポイントを{number1}使う" },
+		{ "Training slots {number1} / {number2}", "訓練枠 {number1} / {number2}" },
 		{ "Zone {number1} · Darklands", "ゾーン {number1} ・ダークランド" },
 		{ "Clear field zone {number1}", "フィールドゾーン{number1}をクリアする" },
 		{ "🌙 Idle reward +{number1} G", "🌙 アイドル報酬 +{number1} G" },

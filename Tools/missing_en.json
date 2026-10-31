@@ -2144,5 +2144,6 @@
 "Pity",
 ": if no Legendary or better drops in {number1} pulls, the {number2}th pull is a guaranteed Legendary. If no Mythic drops in {number3} pulls, the {number4}th pull is a guaranteed Mythic. The counts are saved.",
 "PRESS  [ F ]",
-"TAP DEATH LOTUS!"
+"TAP DEATH LOTUS!",
+"Training slots {number1} / {number2}"
 ]

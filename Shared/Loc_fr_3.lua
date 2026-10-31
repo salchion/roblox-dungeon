@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Lv {number1}", "Niveau {number1}" },
+		{ "x{number1}", "x {number1}" },
 		{ "A new dungeon theme can now appear ({text1}, Level {number2}+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", "Un nouveau thème de donjon peut maintenant apparaître ({text1}, niveau {number2}+). Choisissez une profondeur : plus c'est profond, meilleures sont les chances de butin et plus les boss sont durs. Un marqueur indique désormais la porte." },
 		{ "(one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "(un parmi {number1}) apparaissent sur l'équipement mythique : coffres de donjon (voir ci-dessous), butin du terrain ({text2}), coffre hebdomadaire du Boss Rush et récompense hebdomadaire du Seigneur final." },
 		{ "🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: {text1}", "🔫 5 types d'armes — un se débloque à chaque palier d'amélioration (tous les 15). Choisissez avec quelle arme débloquée combattre · Actuelle : {text1}" },

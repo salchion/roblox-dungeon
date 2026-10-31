@@ -798,6 +798,7 @@ return {
 		{ "Radius {number1} · Damage x{number2}", "Radio {number1} · Daño x{number2}" },
 		{ "Power Ranking TOP {number1}", "Ranking de poder TOP {number1}" },
 		{ "Spend {number1} stat points", "Gasta {number1} puntos de estadística" },
+		{ "Training slots {number1} / {number2}", "Espacios de entrenamiento {number1} / {number2}" },
 		{ "Zone {number1} · Darklands", "Zona {number1} · Tierras oscuras" },
 		{ "Clear field zone {number1}", "Limpiar la zona de campo {number1}" },
 		{ "🌙 Idle reward +{number1} G", "🌙 Recompensa de inactividad +{number1} G" },
@@ -959,6 +960,5 @@ return {
 		{ "🔒 {text1} unlocks at +{number2} ({number3} to go) - upgrade your weapon at the Forge or in the Menu (B)", "🔒 {text1} se desbloquea en +{number2} (faltan {number3}) - mejora tu arma en la Forja o en el menú (B)" },
 		{ "🎒 Bag full: dismantled a weaker item to keep your new {text1} gear (Essence +{number2}, {number3} G)", "🎒 Mochila llena: se desmanteló un objeto más débil para conservar tu nuevo equipo {text1} (Esencia +{number2}, {number3} G)" },
 		{ "📍 Zone {number1} {text2} · Drops in that zone · Dungeon chests (deeper = better odds)", "📍 Zona {number1} {text2} · Botín en esa zona · Cofres de mazmorra (más profundo = mejores probabilidades)" },
-		{ "💰 A Golden Goblin appeared in Zone {number1} · {text2}! Catch it for a jackpot! (75s)", "💰 ¡Un goblin dorado apareció en la zona {number1} · {text2}! ¡Atrápalo para un jackpot! (75 s)" },
 	},
 }

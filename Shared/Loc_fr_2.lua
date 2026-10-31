@@ -812,6 +812,7 @@ return {
 		{ "Radius {number1} · Damage x{number2}", "Rayon {number1} · Dégâts x{number2}" },
 		{ "Power Ranking TOP {number1}", "Classement de puissance TOP {number1}" },
 		{ "Spend {number1} stat points", "Dépensez {number1} points de stats" },
+		{ "Training slots {number1} / {number2}", "Emplacements d'entraînement {number1} / {number2}" },
 		{ "Zone {number1} · Darklands", "Zone {number1} · Terres sombres" },
 		{ "Clear field zone {number1}", "Nettoyer la zone de champ {number1}" },
 		{ "🌙 Idle reward +{number1} G", "🌙 Récompense d'inactivité +{number1} G" },
@@ -957,7 +958,5 @@ return {
 		{ "{number1}x XP", "{number1}x d'EXP" },
 		{ "+{number1} XP", "+{number1} d'EXP" },
 		{ "{number1} key", "{number1} clé" },
-		{ "Lv {number1}", "Niveau {number1}" },
-		{ "x{number1}", "x {number1}" },
 	},
 }

@@ -772,6 +772,7 @@ return {
 		{ "Radius {number1} · Damage x{number2}", "Raio {number1} · Dano x{number2}" },
 		{ "Power Ranking TOP {number1}", "Ranking de poder TOP {number1}" },
 		{ "Spend {number1} stat points", "Gaste {number1} pontos de atributo" },
+		{ "Training slots {number1} / {number2}", "Vagas de treino {number1} / {number2}" },
 		{ "Zone {number1} · Darklands", "Zona {number1} · Terras Sombrias" },
 		{ "Clear field zone {number1}", "Limpar zona de campo {number1}" },
 		{ "🌙 Idle reward +{number1} G", "🌙 Recompensa de inatividade +{number1} G" },
@@ -939,6 +940,5 @@ return {
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag", "{text1} obtido! Adicionado à bolsa. (I → equipar pela bolsa" },
 		{ "Defeat Zone {number1} monsters {number2} / {number3} · Reward {text4} G + Ticket", "Derrote os monstros da zona {number1} {number2} / {number3} · Recompensa {text4} G + ticket" },
 		{ "🎒 {text1}  ▲ Better than your current gear! (I → Bag)", "🎒 {text1}  ▲ Melhor que seu equipamento atual! (I → Mochila)" },
-		{ "{text1}  ▲ +{number2}% better than your current gear! (I → Bag", "{text1}  ▲ +{number2}% melhor que seu equipamento atual! (I → Bolsa" },
 	},
 }

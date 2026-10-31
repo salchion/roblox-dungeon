@@ -2727,47 +2727,14 @@ local function buildGrowthTab()
 	skipShownFrac = frac
 
 	sectionTitle("🏋 Training Grounds — get permanently stronger")
-	for _, stat in ipairs(Config.Growth.Stats.Order) do
-		local def = Config.Growth.Stats[stat]
-		local level = state.Levels[stat] or 0
-		local job
-		for _, candidate in ipairs(state.Jobs) do
-			if candidate.Stat == stat then
-				job = candidate
-			end
-		end
-
-		local current = Config.FormatTrainEffect(stat, level)
-		local nextText = level < Config.Growth.MaxLevel and ("  →  " .. Config.FormatTrainEffect(stat, level + 1)) or "  (max)"
-		local status
-		if job then
-			status = string.format("<font color='#ffd966'>Training · Time left %s</font>", Config.FormatDuration(growthRemaining(job.EndAt)))
-		elseif level >= Config.Growth.MaxLevel then
-			status = "<font color='#78ff8c'>Max level!</font>"
-		else
-			status = string.format("<font color='#bbbbcc'>Time needed %s · 💰 %d G</font>", Config.FormatDuration(Config.GetTrainTime(level)), Config.GetTrainGold(level))
-		end
-
-		local row = newRow(84)
-		rowText(row, string.format("<font size='14'><b>%s %s</b></font>  Lv.%d / %d\n<font color='#ddddee'>%s%s</font>\n%s",
-			def.Icon, def.Name, level, Config.Growth.MaxLevel, current, nextText, status), 14, 190)
-
-		if job then
-			makeButton({
-				Size = UDim2.new(0, 160, 0, 34), Position = UDim2.new(1, -172, 0.5, -17),
-				Text = "⏱ Use Time Skip", TextSize = 12, BackgroundColor3 = state.TimeSkip > 0 and Color3.fromRGB(200, 130, 40) or GRAY,
-			}, row, function()
-				Remotes.Growth:FireServer("Skip", "Train", stat)
-			end)
-		elseif level < Config.Growth.MaxLevel then
-			makeButton({
-				Size = UDim2.new(0, 160, 0, 34), Position = UDim2.new(1, -172, 0.5, -17),
-				Text = "Start Training", TextSize = 13, BackgroundColor3 = GREEN,
-			}, row, function()
-				Remotes.Growth:FireServer("Train", stat)
-			end)
-		end
-	end
+	-- 훈련장은 특성 나무 모양 (TrainingTree 모듈). 모듈을 못 불러오면 아무것도 안 그린다 (오류로 메뉴 전체가 멈추지 않게)
+	local okTree, treeErr = pcall(function()
+		require(ReplicatedStorage:WaitForChild("TrainingTree", 5)).Build({
+			Config = Config, Remotes = Remotes, State = state, NewRow = newRow, MakeLabel = makeLabel, MakeButton = makeButton,
+			Create = create, Rounded = rounded, Remaining = growthRemaining, GREEN = GREEN, GRAY = GRAY, Refresh = refreshMenu,
+		})
+	end)
+	if not okTree then warn("[TrainingTree] " .. tostring(treeErr)) end
 
 	local gateIndex
 	for index, gate in ipairs(Config.Growth.Gates) do
