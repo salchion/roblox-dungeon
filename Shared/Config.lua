@@ -1761,6 +1761,24 @@ Config.Danmaku = {
 	SoftCap = 130,       -- 이만큼 탄이 날아다니면 동반 탄은 더 만들지 않는다 (기본 패턴의 탄은 계속 나간다)
 }
 Config.PhonePcStyle = true -- 폰 / 태블릿(터치 전용 기기)도 PC 와 같은 UI 배치를 화면에 맞게 줄여서 쓴다. false 로 바꾸면 예전의 "작은 화면용" 접힌 배치로 돌아간다 (MobileLayoutClient 등이 읽는다)
+-- 피버 타임: 필드 군주를 쓰러뜨리면 가끔 황금 균열(포탈)이 열린다. 들어가면 60초 동안 약한 몬스터가 쏟아지는 보너스 투기장 (보상 x5, 처치 콤보가 이어질수록 최대 x2 더)
+Config.Fever = {
+	PortalChance = 0.3,   -- 군주 처치 시 포탈이 열릴 확률
+	PortalSeconds = 15,   -- 포탈이 열려 있는 시간 (막타를 친 사람만 들어갈 수 있다)
+	Cooldown = 600,       -- 한 번 들어가면 이 시간(초) 동안 포탈이 다시 열리지 않는다
+	DailyMax = 5,         -- 하루(접속 중) 최대 횟수
+	Duration = 60,        -- 피버 시간(초)
+	GoldMult = 5,         -- 처치 골드 배율 (같은 깊이의 던전 몬스터 대비)
+	XpMult = 5,
+	MonsterHealth = 0.35, -- 몬스터 체력 배율 (약하지만 많다)
+	MonsterDamage = 0.5,
+	MaxMonsters = 28,     -- 동시에 있는 몬스터 상한
+	SpawnEvery = 0.8,     -- 이 간격마다 Burst 마리씩
+	Burst = 4,
+	EventEvery = 12,      -- 이 간격마다 이벤트 (골드 러시 / 보물 비)
+	ComboMax = 2,         -- 처치 콤보가 쌓일수록 골드 배율이 최대 x2 (콤보 50에서 최대)
+}
+
 Config.EnemyShotSpeedMult = 1.75 -- (1.5 -> 1.75: 탄 수를 줄인 만큼 빠르게 해서 긴장감을 유지) 몬스터 / 보스 투사체가 날아오는 속도 배율 (Effects.MakeShot 한 곳에서 모든 적 탄에 적용)
 Config.Gimmick = {
 	LeadFromZone = 3,     -- 이 구역부터 슬라임 / 기사의 탄 중 두 번에 한 번은 내 움직임을 예측해서 쏜다

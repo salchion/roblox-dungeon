@@ -11,6 +11,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 
 local InventoryTab = {}
+local upgradeAnchor -- 지금 화면의 장비 강화 블록 (결과 연출 위치)
 
 function InventoryTab.Init(env)
 local player, create, rounded = env.player, env.create, env.rounded
@@ -19,6 +20,47 @@ local GREEN, RED, GRAY = env.GREEN, env.RED, env.GRAY
 local settings, menuContent = env.settings, env.menuContent
 local newRow, rowText, hex = env.newRow, env.rowText, env.hex
 local function refreshMenu() env.refreshMenu() end
+
+-- 장비 강화 결과 연출: 강화 블록 자리에 "SUCCESS! / FAILED" 가 크게 튀어나왔다 사라진다 (메뉴가 다시 그려져도 사라지지 않게 따로 띄운다)
+upgradeAnchor = nil
+local fxGui = Instance.new("ScreenGui")
+fxGui.Name = "GearUpgradeFx"
+fxGui.ResetOnSpawn, fxGui.IgnoreGuiInset, fxGui.DisplayOrder = false, true, 40
+fxGui.Parent = player:WaitForChild("PlayerGui")
+Remotes.Gear.OnClientEvent:Connect(function(action, result)
+	if action ~= "Result" or type(result) ~= "table" or result.Roll or not upgradeAnchor or not upgradeAnchor.Parent then return end
+	if upgradeAnchor.AbsoluteSize.X < 10 then return end
+	local ok = result.Ok == true
+	local center = upgradeAnchor.AbsolutePosition + upgradeAnchor.AbsoluteSize / 2
+	local label = Instance.new("TextLabel")
+	label.BackgroundTransparency = 1
+	label.AnchorPoint = Vector2.new(0.5, 0.5)
+	label.Size = UDim2.fromOffset(320, 60)
+	label.Position = UDim2.fromOffset(center.X, center.Y)
+	label.Font = Enum.Font.GothamBlack
+	label.TextSize = 34
+	label.Text = ok and "✨ SUCCESS!" or "💥 FAILED"
+	label.TextColor3 = ok and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(255, 110, 100)
+	label.TextStrokeTransparency = 0.1
+	label.Parent = fxGui
+	local scale = Instance.new("UIScale")
+	scale.Scale = 0.4
+	scale.Parent = label
+	TweenService:Create(scale, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	if not ok then -- 실패: 좌우로 흔들린다
+		task.spawn(function()
+			for i = 1, 6 do
+				label.Position = UDim2.fromOffset(center.X + (i % 2 == 0 and 1 or -1) * (10 - i), center.Y)
+				task.wait(0.03)
+			end
+			label.Position = UDim2.fromOffset(center.X, center.Y)
+		end)
+	end
+	task.delay(0.55, function()
+		TweenService:Create(label, TweenInfo.new(0.45), { Position = UDim2.fromOffset(center.X, center.Y - 40), TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+	end)
+	game:GetService("Debris"):AddItem(label, 1.1)
+end)
 
 local function buildInventoryTab(state)
 	if not state then
@@ -328,7 +370,7 @@ local function buildInventoryTab(state)
 				Text = string.format("%s <b>%s Set</b>   %s %d/3 <font size='9'>worn</font>", setDef.Icon or "✦", setDef.Name, setPips(have), have),
 			}, band)
 		end
-		local multiH = (selected.Equipped and selected.Level < Config.Gear.MaxLevel) and 36 or 0 -- 장착 중이면 x10 / 모든 골드 강화 줄이 한 줄 더 들어간다
+		local multiH = (selected.Equipped and selected.Level < Config.Gear.MaxLevel) and 54 or 0 -- 장착 중이면 강화 블록(현재 -> 다음 / 확률 막대 / 버튼 2개)이 들어간다
 		makeLabel({
 			Size = UDim2.new(1, -20, 1, -52 - bandH - multiH), Position = UDim2.new(0, 10, 0, 46 + bandH + multiH), Text = table.concat(lines, "\n"), TextSize = 12, RichText = true,
 			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
@@ -338,20 +380,44 @@ local function buildInventoryTab(state)
 			-- 장착 중인 장비는 여기서도 바로 강화 (뽑기 창의 강화와 같다: 로비에서만)
 			if selected.Level < Config.Gear.MaxLevel then
 				local cost = Config.GetGearCost(selected.Slot, selected.Rarity, selected.Level)
-				local chance = math.floor(Config.GetGearEnhanceChance(selected.Level) * 100 + 0.5)
+				local chanceRaw = Config.GetGearEnhanceChance(selected.Level)
+				local chance = math.floor(chanceRaw * 100 + 0.5)
 				local gold = player:GetAttribute("Gold") or 0
+				-- 강화 블록: 왼쪽 = 지금 +N -> 다음 +N+1 과 효과 변화, 그 아래 성공 확률 막대 / 오른쪽 = 강화 버튼 (비용) + x10
+				local block = create("Frame", { Size = UDim2.new(1, -20, 0, 84), Position = UDim2.new(0, 10, 0, bandH + 4), BackgroundColor3 = Color3.fromRGB(34, 30, 50), BorderSizePixel = 0 }, detail)
+				rounded(block, 10)
+				create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5, Transparency = 0.35 }, block)
+				create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(170, 160, 200)), Rotation = 90 }, block)
+				makeLabel({
+					Size = UDim2.new(1, -176, 0, 30), Position = UDim2.new(0, 12, 0, 4), RichText = true, Font = Enum.Font.GothamBlack, TextSize = 20, TextXAlignment = Enum.TextXAlignment.Left,
+					Text = string.format("<font color='#cfd6f0'>+%d</font>  <font color='#ffd966'>▶</font>  <font color='#78ff8c'>+%d</font>", selected.Level, selected.Level + 1),
+				}, block)
+				local nowStat = Config.GetGearStat(selected.Slot, selected.Rarity, selected.Level)
+				local nextStat = Config.GetGearStat(selected.Slot, selected.Rarity, selected.Level + 1)
+				makeLabel({
+					Size = UDim2.new(1, -176, 0, 16), Position = UDim2.new(0, 12, 0, 34), RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left,
+					Text = string.format("%s  <font color='#78ff8c'>→ %s</font>", Config.FormatGearStat(selected.Slot, nowStat), Config.FormatGearStat(selected.Slot, nextStat)),
+				}, block)
+				local barBack = create("Frame", { Size = UDim2.new(1, -176, 0, 18), Position = UDim2.new(0, 12, 0, 56), BackgroundColor3 = Color3.fromRGB(18, 18, 28), BorderSizePixel = 0 }, block)
+				rounded(barBack, 9)
+				local barColor = Color3.fromRGB(255, 90, 80):Lerp(Color3.fromRGB(110, 230, 120), math.clamp((chanceRaw - 0.35) / 0.65, 0, 1)) -- 확률이 높을수록 초록, 낮을수록 빨강
+				local barFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = barColor, BorderSizePixel = 0 }, barBack)
+				rounded(barFill, 9)
+				TweenService:Create(barFill, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = UDim2.new(chanceRaw, 0, 1, 0) }):Play()
+				makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = string.format("Success %d%%", chance), TextSize = 11, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0.4, ZIndex = 3 }, barBack)
 				makeButton({
-					Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 0, bandH + 6),
-					Text = string.format("💰 %d G Slot Upgrade (%d%% success)", cost, chance), TextSize = 11, BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62),
-				}, detail, function()
+					Size = UDim2.new(0, 152, 0, 40), Position = UDim2.new(1, -162, 0, 6),
+					Text = string.format("🔨 Upgrade\n💰 %d G", cost), TextSize = 12, Font = Enum.Font.GothamBlack, BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62),
+				}, block, function()
 					Remotes.Gear:FireServer("Enhance", selected.Slot)
 				end)
 				makeButton({
-					Size = UDim2.new(0, 96, 0, 28), Position = UDim2.new(0, 10, 0, bandH + 40),
+					Size = UDim2.new(0, 152, 0, 28), Position = UDim2.new(1, -162, 0, 50),
 					Text = "x10 Upgrade", TextSize = 11, BackgroundColor3 = Color3.fromRGB(60, 120, 200),
-				}, detail, function()
+				}, block, function()
 					Remotes.Gear:FireServer("Enhance", selected.Slot, 10)
 				end)
+				upgradeAnchor = block
 			else
 				makeButton({ Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 10, 0, bandH + 6), Text = "Max Upgrade MAX", TextSize = 11, BackgroundColor3 = GRAY }, detail, function() end)
 			end

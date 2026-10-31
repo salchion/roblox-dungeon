@@ -1200,8 +1200,15 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 	Combo.Kill(player)
 	BL.Kill(player, data.IsBoss and "Boss" or "던전")
 	if not run.RiftMode then -- 보스러쉬는 끝날 때 등급 보상으로만 정산한다
-		giveGold(run, data.Stats.Gold)
-		giveXp(run, data.IsBoss and Config.Xp.DungeonBoss or Config.Xp.DungeonPerMonsterLevel * data.Level * Config.Horde.Reward)
+		local feverBonus = 1
+		if run.Fever then -- 피버: 처치 콤보가 이어질수록 골드가 최대 x2, 골드 러시 몬스터는 x3, 경험치 x5
+			local combo = player:GetAttribute("Combo") or 0
+			run.Fever.Kills += 1
+			run.Fever.BestCombo = math.max(run.Fever.BestCombo, combo)
+			feverBonus = (1 + (Config.Fever.ComboMax - 1) * math.min(combo, 50) / 50) * (data.FeverGold and 3 or 1)
+		end
+		giveGold(run, data.Stats.Gold * feverBonus)
+		giveXp(run, (data.IsBoss and Config.Xp.DungeonBoss or Config.Xp.DungeonPerMonsterLevel * data.Level * Config.Horde.Reward) * (run.Fever and Config.Fever.XpMult or 1))
 	end
 	Quest.Add(player, "Kills", 1)
 	if data.IsBoss and run.RiftMode then
@@ -3084,8 +3091,119 @@ local function riftLoop(run)
 	riftFinish(run)
 end
 
+------------------------------------------------------------
+-- 피버 타임: 60초 동안 약한 몬스터가 사방 문에서 쏟아진다. 12초마다 이벤트(골드 러시 / 보물 비). 끝나면 결과 카드 후 필드의 원래 자리로 돌아간다.
+------------------------------------------------------------
+local function feverFinish(run)
+	if run.Phase == "Ended" then return end
+	run.Phase = "Ended"
+	run.PhaseEnd, run.SurviveEnd = nil, nil
+	for part in pairs(run.Monsters) do part:Destroy() end
+	run.Monsters = {}
+	run.MonsterCount = 0
+	for _, projectile in ipairs(run.Projectiles) do projectile.Part:Destroy() end
+	run.Projectiles = {}
+	local fever = run.Fever
+	for _, member in ipairs(run.Members) do
+		local endRoot = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
+		if endRoot then SoundBank.Play(endRoot, "Dungeon_Clear") end
+		Remotes.Dungeon:FireClient(member, "Result", {
+			Victory = true, Gold = run.Earned[member] or 0, Tickets = run.TicketsEarned[member] or 0,
+			Loot = { string.format("⚔ Kills: %d", fever.Kills), string.format("🔥 Best combo: %d", fever.BestCombo) },
+			Wave = 0, TotalWaves = 0, TypeName = "🌟 Fever Time", DifficultyName = "", ReturnDelay = D.ReturnDelay,
+		})
+	end
+	broadcast(run)
+	task.delay(D.ReturnDelay, function()
+		-- 필드의 원래 자리로 돌려보낸다 (마을이 아니라)
+		for _, member in ipairs(table.clone(run.Members)) do
+			playerRun[member] = nil
+			if member.Parent then
+				member:SetAttribute("Zone", "Field")
+				resetStats(member)
+				if fever.Return then pivotTo(member, fever.Return) end
+			end
+		end
+		run.Members = {}
+		destroyRun(run)
+	end)
+end
+
+local function feverLoop(run)
+	local F = Config.Fever
+	for _, member in ipairs(run.Members) do
+		local startRoot = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
+		if startRoot then SoundBank.Play(startRoot, "Dungeon_Start") end
+		member:SetAttribute("DungeonVisual", "Golden")
+		member:SetAttribute("DungeonTypeKey", "Fever")
+		Remotes.Tutorial:FireClient(member, "Prompt", { Key = "🌟", Title = "FEVER TIME!", Text = string.format("Defeat as many monsters as you can in %d seconds. Rewards x%d, and keep your combo going for up to x%d more!", F.Duration, F.GoldMult, F.ComboMax), Duration = 5, Top = true })
+	end
+	run.PhaseEnd = os.clock() + 3
+	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
+	run.PhaseEnd = nil
+	local startedAt = os.clock()
+	run.SurviveEnd = startedAt + F.Duration -- (화면의 남은 시간 표시)
+	run.Phase = "Wave"
+	run.Wave, run.TotalWaves = 1, 0
+	local level = math.max(1, D.GetWaveMonsterLevel(3) + run.LevelBonus)
+	local nextSpawn, nextEvent, eventIndex = startedAt, startedAt + F.EventEvery, 0
+	while not run.Destroyed and run.Phase ~= "Ended" do
+		local now = os.clock()
+		if now >= run.SurviveEnd or allDown(run) then break end
+		if now >= nextSpawn then
+			nextSpawn = now + F.SpawnEvery
+			if run.MonsterCount < F.MaxMonsters then
+				run.SpawnPoints = nearSpawnPoints(run, 22, 75) or run.AllSpawns
+				for _ = 1, math.min(F.Burst, F.MaxMonsters - run.MonsterCount) do
+					local data = spawnMonster(run, level)
+					if data and run.FeverRushUntil and now < run.FeverRushUntil then data.FeverGold = true end
+				end
+			end
+		end
+		if now >= nextEvent then
+			nextEvent = now + F.EventEvery
+			eventIndex += 1
+			if eventIndex % 2 == 1 then -- 골드 러시: 6초 동안 나오는 몬스터가 황금 몬스터 (골드 x3)
+				run.FeverRushUntil = now + 6
+				nextSpawn = now -- 바로 한 무더기
+				for part, data in pairs(run.Monsters) do
+					data.FeverGold = true
+					part.Color = Color3.fromRGB(255, 205, 70)
+				end
+				notifyAll(run, "💰 GOLD RUSH! Golden monsters drop x3 gold for 6s!")
+			else -- 보물 비: 내 주변에 골드가 쏟아진다
+				giveGold(run, D.WaveClearGold * (2 + eventIndex))
+				for _, member in ipairs(run.Members) do
+					local root = getAliveParts(member)
+					if root then
+						for k = 1, 6 do
+							local at = root.Position + Vector3.new(math.cos(k) * 6, 4, math.sin(k) * 6)
+							Effects.Burst(at, Color3.fromRGB(255, 215, 80), 18)
+						end
+						SoundBank.Play(root, "Gacha_Drop")
+					end
+				end
+				notifyAll(run, "🎁 TREASURE RAIN! Bonus gold!")
+			end
+		end
+		task.wait(0.2)
+	end
+	feverFinish(run)
+end
+
+-- 필드에서 부른다: 황금 균열에 들어간 플레이어 혼자 피버 투기장으로. returnCFrame = 끝나고 돌아올 자리
+function Dungeon.StartFever(player, zone, returnCFrame)
+	local diffKey = (zone or 1) <= 2 and "Easy" or ((zone or 1) <= 5 and "Normal" or "Hard")
+	Dungeon.Start(player, "Cave", diffKey, false, nil, true, { Zone = zone or 1, Return = returnCFrame })
+	return playerRun[player] ~= nil
+end
+
 local function runLoop(run)
 	run.Phase = "Starting"
+	if run.Fever then
+		feverLoop(run)
+		return
+	end
 	for _, member in ipairs(run.Members) do
 		local startRoot = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
 		if startRoot then SoundBank.Play(startRoot, "Dungeon_Start") end
@@ -3111,8 +3229,10 @@ end
 ------------------------------------------------------------
 -- 입장 (던전 게이트에서 호출). 파티가 있으면 파티장만 가능, 없으면 혼자 입장.
 ------------------------------------------------------------
-function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
+function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField, fever)
 	-- fromField: 튜토리얼에서 필드 군주가 떨어뜨린 열쇠로 필드에서 바로 던전으로 떨어질 때만 true (혼자, 열쇠 / 무료 입장 소모 없음)
+	-- fever: 피버 타임 { Zone, Return(CFrame) } — 필드의 황금 균열에서 혼자 들어간다 (열쇠 없음, 끝나면 그 자리로 돌아간다)
+	if fever then fromField = true end
 	if player:GetAttribute("Zone") ~= "Lobby" and not (fromField and player:GetAttribute("Zone") == "Field") then return end
 	if player:GetAttribute("TutorialDungeonLocked") then
 		notify(player, "🔒 You can't enter dungeons yet. Complete the tutorial missions first!")
@@ -3178,7 +3298,15 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 		end
 	end
 
-	local tutorialRun = not riftMode and #members == 1 and player:GetAttribute("TutorialDungeonRun") == true
+	local tutorialRun = not riftMode and not fever and #members == 1 and player:GetAttribute("TutorialDungeonRun") == true
+	if fever then -- 피버: 약하지만 많은 몬스터
+		difficulty = table.clone(difficulty)
+		difficulty.DamageMult = (difficulty.DamageMult or 1) * Config.Fever.MonsterDamage
+		difficulty.HealthMult = (difficulty.HealthMult or 1) * Config.Fever.MonsterHealth
+		dungeonType = table.clone(dungeonType)
+		dungeonType.Name = "Fever Time"
+		dungeonType.Torch = Color3.fromRGB(255, 205, 80) -- 황금빛 투기장
+	end
 	if tutorialRun then
 		-- 튜토리얼 첫 던전: 받는 피해 절반 + 몬스터 체력 약간 감소 (처음 보는 던전에서 막히지 않게)
 		difficulty = table.clone(difficulty)
@@ -3207,8 +3335,9 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 		Dealt = riftMode == true and {} or nil, -- 보스러쉬: [player] = 준 피해
 		Felled = riftMode == true and {} or nil, -- [player] = 쓰러뜨린 보스 수
 		Type = dungeonType,
-		TypeKey = typeKey,
+		TypeKey = fever and "Fever" or typeKey,
 		DiffKey = diffKey,
+		Fever = fever and { Zone = fever.Zone, Return = fever.Return, Kills = 0, BestCombo = 0 } or nil,
 		LootLines = {},
 		Difficulty = difficulty,
 		Tutorial = tutorialRun, -- 튜토리얼 첫 던전: 쫄 구간이 짧고(30초), 보스를 쓰러뜨리면 최후의 군주로 이어진다
@@ -3219,8 +3348,9 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField)
 		LevelBonus = dungeonType.LevelOffset + difficulty.LevelOffset,
 	}
 	run.BossName = run.BossVariant.Prefix .. " " .. run.BossName -- 보스 변종 (매번 다름)
+	if fever then run.GoldMult *= Config.Fever.GoldMult end
 	-- 던전 변이: 확률로 한 가지가 붙는다 (위험 + 보상)
-	if math.random() < D.MutatorChance then
+	if not fever and math.random() < D.MutatorChance then
 		local key = D.Mutators.Order[math.random(#D.Mutators.Order)]
 		run.Mutator = D.Mutators[key]
 		run.GoldMult *= run.Mutator.GoldMult or 1

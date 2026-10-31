@@ -449,6 +449,7 @@ local ARENA_STYLE = {
 	Ice = { Stone = Color3.fromRGB(150, 180, 205), Mat = Mat.Glacier, Cloth = Color3.fromRGB(60, 100, 160), Accent = Color3.fromRGB(150, 220, 255), Metal = Color3.fromRGB(110, 130, 160) },
 	Fire = { Stone = Color3.fromRGB(62, 48, 48), Mat = Mat.Basalt, Cloth = Color3.fromRGB(140, 40, 26), Accent = Color3.fromRGB(255, 120, 40), Metal = Color3.fromRGB(52, 40, 40) },
 	Rift = { Stone = Color3.fromRGB(70, 56, 96), Mat = Mat.Slate, Cloth = Color3.fromRGB(80, 50, 130), Accent = Color3.fromRGB(190, 130, 255), Metal = Color3.fromRGB(60, 50, 80) },
+	Fever = { Stone = Color3.fromRGB(196, 160, 90), Mat = Mat.Marble, Cloth = Color3.fromRGB(170, 40, 50), Accent = Color3.fromRGB(255, 210, 80), Metal = Color3.fromRGB(230, 185, 70) }, -- 피버 타임: 황금 투기장
 }
 local ARENA_ROCK_TOP = 90 -- DungeonTerrain 의 WALL_HEIGHT (암벽 윗면)
 
@@ -535,7 +536,34 @@ local function decorateArena(run, ctx, typeKey)
 	end
 end
 
+-- 피버 타임: 황금 동전 무더기 + 금빛 불씨 (공통 층은 황금색으로)
+local function decorateFever(run, ctx)
+	local rng = ctx.Rng
+	local gold, goldDark = Color3.fromRGB(255, 205, 70), Color3.fromRGB(200, 150, 50)
+	for _ = 1, 14 do -- 가장자리의 금화 무더기
+		local base = ctx.Polar(ctx.RimAngle(true), RADIUS - rng:NextNumber(3, 8), 0.6)
+		for k = 1, 4 do
+			local s = rng:NextNumber(1.2, 2.2)
+			ctx.Part("CoinPile", Vector3.new(0.3, s * 1.6, s * 1.6), CFrame.new(base + Vector3.new(rng:NextNumber(-1.5, 1.5), k * 0.3, rng:NextNumber(-1.5, 1.5))) * CFrame.Angles(rng:NextNumber(-0.3, 0.3), rng:NextNumber(0, 6), math.rad(90) + rng:NextNumber(-0.3, 0.3)), k % 2 == 0 and gold or goldDark, Mat.Metal, { Shape = Shape.Cylinder, Reflectance = 0.2 })
+		end
+	end
+	local sky = ctx.Part("GoldSparkle", Vector3.new(160, 1, 160), CFrame.new(ctx.Center + Vector3.new(0, 2, 0)), gold, Mat.SmoothPlastic, { Transparency = 1 })
+	local sparkle = ctx.Emitter(sky)
+	if sparkle then
+		sparkle.Rate = 14
+		sparkle.Lifetime = NumberRange.new(3, 5)
+		sparkle.Speed = NumberRange.new(2, 4)
+		sparkle.EmissionDirection = Enum.NormalId.Top
+		sparkle.Size = NumberSequence.new(0.3)
+		sparkle.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.2, 0.2), NumberSequenceKeypoint.new(1, 1) })
+		sparkle.Color = ColorSequence.new(gold)
+		sparkle.LightEmission = 0.8
+		sparkle.Shape = Enum.ParticleEmitterShape.Box
+	end
+end
+
 local DECORATORS = {
+	Fever = decorateFever,
 	Cave = decorateCave,
 	Ice = decorateIce,
 	Fire = decorateFire,

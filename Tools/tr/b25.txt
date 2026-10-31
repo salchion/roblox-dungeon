@@ -1,0 +1,12 @@
+1998¦領主が倒れた場所に黄金のフィーバーポータルが開いた！{number1}秒以内に入ろう¦Wo der Fürst fiel, hat sich ein goldenes FIEBER-Portal geöffnet! Tritt innerhalb von {number1} Sekunden ein¦Un portail FIÈVRE doré s'est ouvert là où le Seigneur est tombé ! Entrez dans les {number1} secondes¦¡Se abrió un portal dorado de FIEBRE donde cayó el Señor! Entra en {number1} segundos¦Um portal dourado de FEBRE abriu onde o Senhor caiu! Entre em {number1} segundos¦领主倒下的地方开启了黄金狂热传送门！{number1}秒内进入¦군주가 쓰러진 자리에 황금 피버 포탈이 열렸어요! {number1}초 안에 들어가세요
+1999¦フィーバーポータル  {number1}秒¦FIEBER-PORTAL  {number1}s¦PORTAIL FIÈVRE  {number1}s¦PORTAL DE FIEBRE  {number1}s¦PORTAL DE FEBRE  {number1}s¦狂热传送门  {number1}秒¦피버 포탈  {number1}초
+2000¦フィーバータイム¦FIEBERZEIT¦FIÈVRE¦TIEMPO DE FIEBRE¦HORA DA FEBRE¦狂热时间¦피버 타임
+2001¦{number1}秒でできるだけ多くのモンスターを倒そう。報酬 x{number2}、コンボを続ければさらに最大 x{number3}¦Besiege in {number1} Sekunden so viele Monster wie möglich. Belohnung x{number2}, und halte deine Combo für bis zu x{number3} mehr¦Vainquez un maximum de monstres en {number1} secondes. Récompenses x{number2}, et gardez votre combo pour jusqu'à x{number3} de plus¦Derrota tantos monstruos como puedas en {number1} segundos. Recompensas x{number2}, y mantén tu combo para hasta x{number3} más¦Derrote o máximo de monstros em {number1} segundos. Recompensas x{number2}, e mantenha o combo para até x{number3} a mais¦在{number1}秒内尽可能多地击败怪物。奖励 x{number2}，连击不断最多再 x{number3}¦{number1}초 동안 몬스터를 최대한 많이 처치하세요. 보상 x{number2}, 콤보를 이어 가면 최대 x{number3} 더
+2002¦ゴールドラッシュ！6秒間、黄金モンスターのゴールドが3倍¦GOLDRAUSCH! Goldene Monster geben 6 s lang dreifaches Gold¦RUÉE VERS L'OR ! Les monstres dorés donnent x3 d'or pendant 6 s¦¡FIEBRE DEL ORO! Los monstruos dorados dan x3 de oro durante 6 s¦CORRIDA DO OURO! Monstros dourados dão x3 de ouro por 6 s¦淘金热！6秒内黄金怪物掉落3倍金币¦골드 러시! 6초 동안 황금 몬스터의 골드 3배
+2003¦宝の雨！ボーナスゴールド¦SCHATZREGEN! Bonusgold¦PLUIE DE TRÉSORS ! Or bonus¦¡LLUVIA DE TESOROS! Oro extra¦CHUVA DE TESOUROS! Ouro bônus¦宝藏雨！额外金币¦보물 비! 보너스 골드
+2004¦撃破数：{number1}¦Besiegt: {number1}¦Victimes : {number1}¦Derrotados: {number1}¦Abates: {number1}¦击败：{number1}¦처치: {number1}
+2005¦最高コンボ：{number1}¦Beste Combo: {number1}¦Meilleur combo : {number1}¦Mejor combo: {number1}¦Melhor combo: {number1}¦最高连击：{number1}¦최고 콤보: {number1}
+2006¦フィーバータイム¦Fieberzeit¦Fièvre¦Tiempo de fiebre¦Hora da febre¦狂热时间¦피버 타임
+2007¦成功率 {number1}¦Erfolg {number1}¦Réussite {number1}¦Éxito {number1}¦Sucesso {number1}¦成功率 {number1}¦성공 {number1}
+2008¦成功¦ERFOLG¦RÉUSSITE¦ÉXITO¦SUCESSO¦成功¦성공
+2009¦失敗¦FEHLGESCHLAGEN¦ÉCHEC¦FALLÓ¦FALHOU¦失败¦실패

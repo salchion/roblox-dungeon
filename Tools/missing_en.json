@@ -1996,5 +1996,17 @@
 "{text1}  ▲ Better than your current gear! (I → Bag",
 "Boss damage +{number1}",
 "{text1}  ▲ +{number2}% better than your current gear! (I → Bag",
-"{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current"
+"{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current",
+"A golden FEVER portal opened where the Lord fell! Step in within {number1} seconds",
+"FEVER PORTAL  {number1}s",
+"FEVER TIME",
+"Defeat as many monsters as you can in {number1} seconds. Rewards x{number2}, and keep your combo going for up to x{number3} more",
+"GOLD RUSH! Golden monsters drop x3 gold for 6s",
+"TREASURE RAIN! Bonus gold",
+"Kills: {number1}",
+"Best combo: {number1}",
+"Fever Time",
+"Success {number1}",
+"SUCCESS",
+"FAILED"
 ]

@@ -4,6 +4,18 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💤 Idle income  +{text1} G/sec", "💤 Revenu d'inactivité  +{text1} or/s" },
+		{ "{text1} is already in a party", "{text1} est déjà dans un groupe" },
+		{ "·  next weapon: {text1} at +{number2}", "·  arme suivante : {text1} à +{number2}" },
+		{ "Training · Time left {text1}", "Entraînement · Temps restant {text1}" },
+		{ "⚔ New gear equipped! {text1}", "⚔ Nouvel équipement équipé ! {text1}" },
+		{ "{text1} declined your invite", "{text1} a refusé votre invitation" },
+		{ "👹 Boss #{number1}: {text2} appeared!", "👹 Boss n°{number1} : {text2} est apparu !" },
+		{ "Time needed {text1} · 💰 {number2} G", "Temps requis {text1} · 💰 {number2} or" },
+		{ "🏔 Zone {number1} · {text2} cleared!", "🏔 Zone {number1} · {text2} terminée !" },
+		{ "{text1} upgrade success! +{number2}", "Amélioration de {text1} réussie ! +{number2}" },
+		{ "⏱ Time Skip · {text1} left", "⏱ Accélérer · {text1} restant" },
+		{ "Purchase complete: {text1}", "Achat terminé : {text1}" },
 		{ "{text1} obtained! Equipped", "{text1} obtenu ! Équipé" },
 		{ "New gear equipped! {text1}", "Nouvel équipement équipé ! {text1}" },
 		{ "Lord of {text1}  ·  Zone {number2}", "Seigneur de {text1}  ·  Zone {number2}" },

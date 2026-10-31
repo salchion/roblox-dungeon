@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "📢 {text1} took down {number2} bosses in the Boss Rush! ({text3})", "📢 {text1} derrotou {number2} chefes no Boss Rush! ({text3})" },
+		{ "🔫 Best with {text1}: set damage +40% and {text2}", "🔫 Melhor com {text1}: dano do conjunto +40% e {text2}" },
+		{ "(Recommended power {text1} · Your power {text2})", "(Poder recomendado {text1} · Seu poder {text2})" },
+		{ "{text1} · {text2} · Monsters left {number3} · Keep going!", "{text1} · {text2} · Monstros restantes {number3} · Continue assim!" },
+		{ "🏅 Achievement unlocked! Reward: {text1}{text2}", "🏅 Conquista desbloqueada! Recompensa: {text1}{text2}" },
+		{ "Upgrade cost {text1} G · You have {text2} G", "Custo da melhoria {text1} G · Você tem {text2} G" },
+		{ "📢 {text1}'s weapon evolved into [{text2}]!", "📢 A arma de {text1} evoluiu para [{text2}]!" },
 		{ "✨ {number1}-piece set complete! {text2} {text3} Lv.{number4}", "✨ Conjunto de {number1} peças completo! {text2} {text3} Nv.{number4}" },
 		{ "{text1} {text2} Tier · {number3} bosses defeated", "{text1} nível {text2} · {number3} chefes derrotados" },
 		{ "⏱ {text1} survived  ×  💥 {text2} damage", "⏱ {text1} sobrevividos  ×  💥 {text2} de dano" },

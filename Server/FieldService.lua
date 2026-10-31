@@ -1280,7 +1280,87 @@ local function respawnSpot(zone)
 	return Vector3.new(x, 0, math.clamp(center.Z + math.random(-60, 60), -half, half))
 end
 
+-- 피버 타임 포탈: 군주를 쓰러뜨리면 가끔 그 자리에 황금 균열이 15초 동안 열린다 (막타를 친 사람만 들어간다). 하루 횟수 / 재사용 대기는 접속 중에만 센다
+local feverState = setmetatable({}, { __mode = "k" }) -- [player] = { Day, Count, Until }
+local function maybeFeverPortal(player, bossAt, zone)
+	local Fv = Config.Fever
+	if not Fv or player:GetAttribute("TutorialActive") == true or player:GetAttribute("TutorialDoom") or player:GetAttribute("InDoomArena") then return end
+	local today = os.date("!%Y-%m-%d")
+	local st = feverState[player]
+	if not st or st.Day ~= today then
+		st = { Day = today, Count = 0, Until = 0 }
+		feverState[player] = st
+	end
+	if st.Count >= Fv.DailyMax or os.clock() < st.Until or math.random() >= Fv.PortalChance then return end
+	st.Until = os.clock() + Fv.PortalSeconds + 1 -- (열려 있는 동안 다른 군주로 또 열리지 않게)
+	local ground = Vector3.new(bossAt.X, floorAt(bossAt.X), bossAt.Z)
+	local center = ground + Vector3.new(0, 7, 0)
+	local model = Instance.new("Model")
+	model.Name = "FeverPortal"
+	local gold, deep = Color3.fromRGB(255, 205, 70), Color3.fromRGB(255, 140, 40)
+	local function piece(size, cf, color, transparency, shape)
+		local p = Instance.new("Part")
+		p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false
+		p.Size, p.CFrame, p.Color, p.Material, p.Transparency = size, cf, color, Enum.Material.Neon, transparency or 0
+		if shape then p.Shape = shape end
+		p.Parent = model
+		return p
+	end
+	for i = 0, 13 do -- 세로로 선 고리 (필드 진행 방향 X 를 바라본다)
+		local a = i / 14 * math.pi * 2
+		piece(Vector3.new(1.2, 2.6, 1.2), CFrame.new(center + Vector3.new(0, math.sin(a) * 6.5, math.cos(a) * 6.5)) * CFrame.Angles(a, 0, 0), i % 2 == 0 and gold or deep)
+	end
+	local veil = piece(Vector3.new(0.4, 12, 12), CFrame.new(center) * CFrame.Angles(0, 0, 0), gold, 0.45, Enum.PartType.Cylinder)
+	piece(Vector3.new(0.3, 26, 26), CFrame.new(ground + Vector3.new(0, 0.3, 0)) * CFrame.Angles(0, 0, math.rad(90)), gold, 0.7, Enum.PartType.Cylinder)
+	local light = Instance.new("PointLight")
+	light.Color, light.Range, light.Brightness = gold, 40, 2
+	light.Parent = veil
+	local sparks = Instance.new("ParticleEmitter")
+	sparks.Rate, sparks.Lifetime, sparks.Speed = 30, NumberRange.new(1, 2), NumberRange.new(4, 8)
+	sparks.SpreadAngle = Vector2.new(180, 180)
+	sparks.Color = ColorSequence.new(gold)
+	sparks.LightEmission = 1
+	sparks.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.6), NumberSequenceKeypoint.new(1, 0) })
+	sparks.Parent = veil
+	local sign = Instance.new("BillboardGui")
+	sign.Size, sign.StudsOffset, sign.AlwaysOnTop, sign.MaxDistance = UDim2.fromOffset(260, 60), Vector3.new(0, 9, 0), true, 220
+	sign.Parent = veil
+	local text = Instance.new("TextLabel")
+	text.Size, text.BackgroundTransparency = UDim2.fromScale(1, 1), 1
+	text.Font, text.TextScaled = Enum.Font.GothamBlack, true
+	text.TextColor3, text.TextStrokeTransparency = gold, 0.2
+	text.Parent = sign
+	model.Parent = worldFolder
+	notify(player, string.format("🌟 A golden FEVER portal opened where the Lord fell! Step in within %d seconds!", Fv.PortalSeconds))
+	task.spawn(function()
+		local expires = os.clock() + Fv.PortalSeconds
+		while model.Parent and os.clock() < expires and player.Parent do
+			text.Text = string.format("🌟 FEVER PORTAL  %ds", math.ceil(expires - os.clock()))
+			veil.CFrame = veil.CFrame * CFrame.Angles(0.15, 0, 0)
+			local root = getAliveParts(player)
+			if root and player:GetAttribute("Zone") == "Field" and (root.Position - center).Magnitude <= 9 then
+				st.Count += 1
+				st.Until = os.clock() + Fv.Cooldown
+				model:Destroy()
+				Effects.Burst(center, gold, 90)
+				if not Dungeon.StartFever(player, zone, CFrame.new(ground + Vector3.new(-14, 4, 0))) then
+					st.Count -= 1
+					st.Until = os.clock() + 20
+				end
+				return
+			end
+			task.wait(0.15)
+		end
+		if model.Parent then model:Destroy() end
+		st.Until = math.min(st.Until, os.clock() + 5) -- 못 들어갔으면 다음 군주에서 다시 기회
+	end)
+end
+
 local function killMonster(player, part, data)
+	if data.Kind == "Boss" and Config.Fever then
+		local bossAt, bossZone = part.Position, data.Zone
+		task.defer(maybeFeverPortal, player, bossAt, bossZone)
+	end
 	recordKill(player, data)
 	if augRun then Dungeon.AugOnKill(augRun, player, part.Position) end -- 처치 폭발 / 화염 지대 (monsters 에서 지우기 전: 자기 자신은 다시 맞지 않는다)
 	monsters[part] = nil
