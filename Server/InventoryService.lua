@@ -34,10 +34,20 @@ local function rollAffixValue(stat, rarity)
 end
 
 local function newAffixes(rarity)
+	-- 비중(AffixWeight)대로 겹치지 않게 뽑는다
 	local pool = table.clone(I.AffixOrder)
+	local weights = I.AffixWeight or {}
 	local list = {}
 	for _ = 1, I.AffixCount[rarity] do
-		local stat = table.remove(pool, math.random(#pool))
+		if #pool == 0 then break end
+		local total = 0
+		for _, stat in ipairs(pool) do total += weights[stat] or 1 end
+		local roll, index = math.random() * total, #pool
+		for i, stat in ipairs(pool) do
+			roll -= weights[stat] or 1
+			if roll <= 0 then index = i break end
+		end
+		local stat = table.remove(pool, index)
 		table.insert(list, { Stat = stat, Value = rollAffixValue(stat, rarity) })
 	end
 	return list
@@ -100,7 +110,7 @@ end
 -- 장착 중인 아이템들의 랜덤 옵션 합계
 function Inventory.GetTotals(player)
 	local totals = { Health = 0, Crit = 0, Speed = 0, Damage = 0, Xp = 0, Luck = 0, Haste = 0, Shot = 0,
-		Bounce = 0, LifeOnKill = 0, BossDmg = 0, KillHaste = 0, Thunder = 0, Jackpot = 0, Bulwark = 0 } -- (아래 줄: 유니크 전용 효과)
+		Bounce = 0, LifeOnKill = 0, BossDmg = 0, KillHaste = 0, Thunder = 0, Jackpot = 0, Bulwark = 0, CritDmg = 0, AtkSpeed = 0 } -- (아래 줄: 유니크 전용 효과)
 	local state = states[player]
 	if not state then return totals end
 	local setCounts = {}
@@ -108,7 +118,7 @@ function Inventory.GetTotals(player)
 		local item = state.Items[state.Equipped[slot.Key]]
 		if item then
 			for _, affix in ipairs(item.Affixes) do
-				totals[affix.Stat] += affix.Value
+				if totals[affix.Stat] then totals[affix.Stat] += affix.Value end
 			end
 			if item.Unique and Config.Uniques[item.Unique] then
 				for _, effect in ipairs(Config.Uniques[item.Unique].Effects) do

@@ -1527,7 +1527,9 @@ Config.Inventory = {
 	AffixCount = { 0, 1, 2, 3, 4 },              -- 등급별 랜덤 옵션 개수
 	AffixRarityScale = { 1, 1.3, 1.7, 2.2, 3.0 },-- 등급별 옵션 수치 배율
 	AutoScrapNames = { [0] = "Off", "Common or lower", "Rare or lower", "Epic or lower", "Smart (Recommended)" },
-	AffixOrder = { "Health", "Crit", "Speed", "Damage", "Xp", "Luck" },
+	AffixOrder = { "Health", "Crit", "Speed", "Damage", "Xp", "Luck", "CritDmg", "AtkSpeed", "BossDmg", "Haste", "Bulwark", "LifeOnKill" },
+	-- 옵션이 뽑힐 비중: 전투와 거리가 먼 옵션(경험치 / 행운 / 이동 속도)은 덜 나온다 ("신화인데 꽝" 줄이기)
+	AffixWeight = { Xp = 0.5, Luck = 0.5, Speed = 0.6 },
 	Affixes = {
 		Health = { Name = "Max HP", Base = 30 },
 		Crit = { Name = "Crit Chance", Base = 0.012, Percent = true },
@@ -1535,6 +1537,12 @@ Config.Inventory = {
 		Damage = { Name = "Attack", Base = 0.03, Percent = true },
 		Xp = { Name = "XP Gain", Base = 0.04, Percent = true },
 		Luck = { Name = "Luck (Drop Rarity)", Base = 0.05, Percent = true },
+		CritDmg = { Name = "Crit Damage", Base = 0.04, Percent = true },        -- 치명타 배율에 더한다 (신화 약 +12~16%p)
+		AtkSpeed = { Name = "Attack Speed", Base = 0.008, Percent = true },     -- 공격 간격 단축 (신화 약 +2.4~3.1%)
+		BossDmg = { Name = "Boss Damage", Base = 0.03, Percent = true },        -- 보스 / 군주 / 엘리트에게 주는 피해 (유니크 "거인 학살자"와 합산)
+		Haste = { Name = "Skill Cooldown Reduction", Base = 0.012, Percent = true },
+		Bulwark = { Name = "Damage Taken Reduction", Base = 0.012, Percent = true },
+		LifeOnKill = { Name = "Heal on Kill", Base = 0.0015, Percent = true },  -- 처치할 때 최대 체력의 %
 	},
 }
 
@@ -1709,6 +1717,11 @@ Config.StatDesc = {
 	Luck = { Name = "Luck", Desc = "Raises the chance that gear dropped by field monsters is high rarity (Epic or above)" },
 	Haste = { Name = "Skill Cooldown Reduction", Desc = "Use First Aid · Ultimate more often (max 60%)" },
 	Shot = { Name = "Extra Shots", Desc = "More shots fire at once (in a fan)" },
+	CritDmg = { Name = "Crit Damage", Desc = "Crits hit even harder (adds to the 2x crit multiplier)" },
+	AtkSpeed = { Name = "Attack Speed", Desc = "Fire more shots per second" },
+	BossDmg = { Name = "Boss Damage", Desc = "More damage to bosses, lords and elites" },
+	Bulwark = { Name = "Damage Taken Reduction", Desc = "Take less damage from every hit" },
+	LifeOnKill = { Name = "Heal on Kill", Desc = "Recover a % of max HP each time you defeat an enemy" },
 }
 
 function Config.FormatAffix(stat, value)

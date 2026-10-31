@@ -156,3 +156,20 @@
 2197¦(引くたびにそのセットの装備)¦(jeder Zug ist ein Teil davon)¦(chaque tirage en est une pièce)¦(cada tirada es una pieza)¦(cada puxada é uma peça dele)¦(每次抽取都是该套装部件)¦(뽑을 때마다 그 세트 조각)
 2198¦🧩 狙うセットを選ぼう¦🧩 Wähle ein Ziel-Set¦🧩 Choisissez un set à viser¦🧩 Elige un set objetivo¦🧩 Escolha um set alvo¦🧩 选择目标套装¦🧩 노릴 세트를 골라 봐
 2199¦(ガチャ限定 · 引くたびにそのセットの装備に)¦(nur Gacha · jeder Zug wird ein Teil dieses Sets)¦(gacha uniquement · chaque tirage devient une pièce du set)¦(solo gacha · cada tirada será pieza de ese set)¦(só no gacha · cada puxada vira peça do set)¦(扭蛋限定 · 每次抽取都会成为该套装部件)¦(뽑기 전용 · 뽑을 때마다 그 세트 조각으로)
+2200¦◆ 最大HP +{number1}¦◆ Max. LP +{number1}¦◆ PV max +{number1}¦◆ PV máx. +{number1}¦◆ PV máx. +{number1}¦◆ 最大生命 +{number1}¦◆ 최대 체력 +{number1}
+2201¦◆ クリティカル率 +{number1}%¦◆ Krit-Chance +{number1}%¦◆ Chance de critique +{number1}%¦◆ Prob. de crítico +{number1}%¦◆ Chance de crítico +{number1}%¦◆ 暴击率 +{number1}%¦◆ 치명타 확률 +{number1}%
+2202¦◆ 移動速度 +{number1}¦◆ Laufgeschw. +{number1}¦◆ Vitesse de déplacement +{number1}¦◆ Velocidad de movimiento +{number1}¦◆ Velocidade de movimento +{number1}¦◆ 移动速度 +{number1}¦◆ 이동 속도 +{number1}
+2203¦◆ 攻撃力 +{number1}%¦◆ Angriff +{number1}%¦◆ Attaque +{number1}%¦◆ Ataque +{number1}%¦◆ Ataque +{number1}%¦◆ 攻击力 +{number1}%¦◆ 공격력 +{number1}%
+2204¦◆ 経験値獲得 +{number1}%¦◆ EP-Gewinn +{number1}%¦◆ Gain d'XP +{number1}%¦◆ Ganancia de EXP +{number1}%¦◆ Ganho de XP +{number1}%¦◆ 经验获取 +{number1}%¦◆ 경험치 획득 +{number1}%
+2205¦◆ 幸運(ドロップ等級) +{number1}%¦◆ Glück (Seltenheit) +{number1}%¦◆ Chance (rareté) +{number1}%¦◆ Suerte (rareza) +{number1}%¦◆ Sorte (raridade) +{number1}%¦◆ 幸运(掉落品质) +{number1}%¦◆ 행운 (드롭 등급) +{number1}%
+2206¦◆ クリティカルダメージ +{number1}%¦◆ Kritischer Schaden +{number1}%¦◆ Dégâts critiques +{number1}%¦◆ Daño crítico +{number1}%¦◆ Dano crítico +{number1}%¦◆ 暴击伤害 +{number1}%¦◆ 치명타 피해 +{number1}%
+2207¦◆ 攻撃速度 +{number1}%¦◆ Angriffstempo +{number1}%¦◆ Vitesse d'attaque +{number1}%¦◆ Velocidad de ataque +{number1}%¦◆ Velocidade de ataque +{number1}%¦◆ 攻击速度 +{number1}%¦◆ 공격 속도 +{number1}%
+2208¦◆ ボスダメージ +{number1}%¦◆ Bossschaden +{number1}%¦◆ Dégâts aux boss +{number1}%¦◆ Daño a jefes +{number1}%¦◆ Dano a chefes +{number1}%¦◆ 首领伤害 +{number1}%¦◆ 보스 피해 +{number1}%
+2209¦◆ スキルCT短縮 +{number1}%¦◆ Fähigkeiten-Abklingzeit +{number1}%¦◆ Réduction de recharge +{number1}%¦◆ Reducción de enfriamiento +{number1}%¦◆ Redução de recarga +{number1}%¦◆ 技能冷却缩减 +{number1}%¦◆ 스킬 쿨타임 감소 +{number1}%
+2210¦◆ 被ダメージ軽減 +{number1}%¦◆ Schadensreduktion +{number1}%¦◆ Réduction des dégâts subis +{number1}%¦◆ Reducción de daño recibido +{number1}%¦◆ Redução de dano recebido +{number1}%¦◆ 受到伤害减少 +{number1}%¦◆ 받는 피해 감소 +{number1}%
+2211¦◆ 撃破時回復 +{number1}%¦◆ Heilung pro Kill +{number1}%¦◆ Soin à l'élimination +{number1}%¦◆ Curación al matar +{number1}%¦◆ Cura ao abater +{number1}%¦◆ 击杀回复 +{number1}%¦◆ 처치 시 회복 +{number1}%
+2212¦クリティカルがさらに強くなる(2倍の倍率に加算)¦Krits treffen noch härter (zum 2x-Multiplikator addiert)¦Les critiques frappent plus fort (s'ajoute au x2)¦Los críticos golpean más fuerte (se suma al x2)¦Críticos batem mais forte (soma ao x2)¦暴击更痛（加到2倍暴击倍率上）¦치명타가 더 세게 들어가요 (기본 2배에 더해짐)
+2213¦1秒あたりの射撃数が増える¦Mehr Schüsse pro Sekunde¦Plus de tirs par seconde¦Más disparos por segundo¦Mais tiros por segundo¦每秒射击次数增加¦초당 더 많이 쏴요
+2214¦ボス・君主・エリートへのダメージ増加¦Mehr Schaden an Bossen, Fürsten und Elite¦Plus de dégâts aux boss, seigneurs et élites¦Más daño a jefes, señores y élites¦Mais dano a chefes, senhores e elites¦对首领、君主和精英的伤害增加¦보스 · 군주 · 엘리트에게 주는 피해 증가
+2215¦受けるダメージが減る¦Weniger Schaden durch jeden Treffer¦Subissez moins de dégâts¦Recibes menos daño¦Receba menos dano¦受到的每次伤害减少¦맞을 때마다 받는 피해가 줄어요
+2216¦敵を倒すたびに最大HPの%を回復¦Heile % deiner max. LP pro besiegtem Gegner¦Récupérez un % de vos PV max à chaque ennemi vaincu¦Recupera un % de PV máx. al derrotar enemigos¦Recupere % do PV máx. a cada inimigo derrotado¦每击败一个敌人回复最大生命的百分比¦적을 쓰러뜨릴 때마다 최대 체력의 %만큼 회복

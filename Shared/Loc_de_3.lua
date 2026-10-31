@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 {text1} unlocks at +{number2} ({number3} to go) - upgrade your weapon at the Forge or in the Menu (B)", "🔒 {text1} wird bei +{number2} freigeschaltet (noch {number3}) – verbessere deine Waffe in der Schmiede oder im Menü (B)" },
+		{ "🎒 Bag full: dismantled a weaker item to keep your new {text1} gear (Essence +{number2}, {number3} G)", "🎒 Rucksack voll: ein schwächerer Gegenstand wurde zerlegt, um deine neue {text1}-Ausrüstung zu behalten (Essenz +{number2}, {number3} G)" },
+		{ "📍 Zone {number1} {text2} · Drops in that zone · Dungeon chests (deeper = better odds)", "📍 Zone {number1} {text2} · Drops in dieser Zone · Dungeon-Truhen (tiefer = bessere Chancen)" },
+		{ "💰 A Golden Goblin appeared in Zone {number1} · {text2}! Catch it for a jackpot! (75s)", "💰 Ein Goldener Goblin ist in Zone {number1} · {text2} erschienen! Fang ihn für einen Jackpot! (75 s)" },
+		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "Dungeon · wähle eine Tiefe (tiefer = bessere Drop-Chancen) · zufälliges Thema · {text1}" },
+		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "{text1} erhalten! Zur Tasche hinzugefügt. (I → aus der Tasche ausrüsten)  ▲ +{number2}% ggü. aktuell" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 Das Tor ist geschlossen! Besiege Zone-{number1}-Monster {number2}/{number3} + den Zonen-Lord{text4}" },
 		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ Haustier-Aufstieg gestartet! ({text1}) — Mit Zeit überspringen geht es schneller" },
 		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "Empfohlen ⚡{text1}  ·  Ziele auf die gelbe Kugel für 3-fachen Schaden!" },

@@ -1885,7 +1885,7 @@ end
 
 local function attackCooldown()
 	local speedPoints = player:GetAttribute("SpeedPoints") or 0
-	return Config.Player.BaseCooldown * Config.GetPlayerWeapon(player).Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0) + (player:GetAttribute("TrainAtkSpeed") or 0))) -- 펫 / 훈련 가속 포함
+	return Config.Player.BaseCooldown * Config.GetPlayerWeapon(player).Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0) + (player:GetAttribute("TrainAtkSpeed") or 0) + (player:GetAttribute("GearAtkSpeed") or 0))) -- 펫 / 훈련 / 장비 가속 포함
 end
 
 local questState = nil
@@ -2040,7 +2040,7 @@ local function buildCharacterTab()
 
 	-- 능력치: 공격 / 방어 / 유틸 세 장의 카드 (각 줄 = 아이콘 구슬 + 이름 + 큰 값)
 	local weaponNow = weaponType
-	local critMult = Config.Player.CritMultiplier + (player:GetAttribute("LvCritDmg") or 0) + (player:GetAttribute("TrainCritDmg") or 0) + (player:GetAttribute("ParCritDmg") or 0) + critOver / 100
+	local critMult = Config.Player.CritMultiplier + (player:GetAttribute("LvCritDmg") or 0) + (player:GetAttribute("TrainCritDmg") or 0) + (player:GetAttribute("GearCritDmg") or 0) + (player:GetAttribute("ParCritDmg") or 0) + critOver / 100
 	local D = Config.Defense
 	local defense = menuLevel * D.LevelDef + (player:GetAttribute("GearHealth") or 0) * D.GearDef
 	local reduction = 1 - (1 - math.min(D.MaxReduction, defense / (defense + D.K))) * (1 - (player:GetAttribute("GearBulwark") or 0))

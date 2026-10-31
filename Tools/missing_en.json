@@ -2198,5 +2198,22 @@
 "🧩 Target set:",
 "(every pull is a piece of it)",
 "🧩 Pick a set to target",
-"(gacha only · every pull becomes that set's piece)"
+"(gacha only · every pull becomes that set's piece)",
+"◆ Max HP +{number1}",
+"◆ Crit Chance +{number1}%",
+"◆ Move Speed +{number1}",
+"◆ Attack +{number1}%",
+"◆ XP Gain +{number1}%",
+"◆ Luck (Drop Rarity) +{number1}%",
+"◆ Crit Damage +{number1}%",
+"◆ Attack Speed +{number1}%",
+"◆ Boss Damage +{number1}%",
+"◆ Skill Cooldown Reduction +{number1}%",
+"◆ Damage Taken Reduction +{number1}%",
+"◆ Heal on Kill +{number1}%",
+"Crits hit even harder (adds to the 2x crit multiplier)",
+"Fire more shots per second",
+"More damage to bosses, lords and elites",
+"Take less damage from every hit",
+"Recover a % of max HP each time you defeat an enemy"
 ]

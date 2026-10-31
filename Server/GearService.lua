@@ -48,6 +48,8 @@ local function recompute(player)
 	player:SetAttribute("GearThunder", math.min(3, math.floor(affix.Thunder + 0.5)))
 	player:SetAttribute("GearJackpot", math.min(0.15, affix.Jackpot))
 	player:SetAttribute("GearBulwark", math.min(0.4, affix.Bulwark))
+	player:SetAttribute("GearCritDmg", math.min(2, affix.CritDmg)) -- (장비 옵션: 치명타 피해 / 공격 속도)
+	player:SetAttribute("GearAtkSpeed", math.min(0.5, affix.AtkSpeed))
 
 	-- 세트 효과(미사일 / 번개 / 유성 ...)는 장비가 아니라 골드로 활성화한다: AugService 가 Attribute 를 채운다
 	local okAug, Aug = pcall(function() return require(script.Parent:WaitForChild("AugService")) end)

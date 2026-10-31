@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "A new dungeon theme can now appear ({text1}, Level {number2}+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", "Um novo tema de masmorra agora pode aparecer ({text1}, nível {number2}+). Escolha uma profundidade: mais fundo significa melhores chances de drop e chefes mais fortes. Um marcador agora aponta para o portão." },
+		{ "(one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "(um entre {number1}) aparecem em equipamentos míticos: baús de masmorra (veja abaixo), drops do campo ({text2}), o baú semanal do Boss Rush e a recompensa semanal do Senhor Final." },
+		{ "🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: {text1}", "🔫 5 tipos de arma — um é desbloqueado a cada marco de melhoria (a cada 15). Escolha com qual arma desbloqueada lutar · Agora: {text1}" },
+		{ "🎁 First breakthrough gift! Received {text1} Time Skip — press [Use Time Skip] in Growth to finish right away!", "🎁 Presente do primeiro avanço! Você recebeu {text1} salto de tempo — pressione [Usar salto de tempo] em Crescimento para concluir na hora!" },
+		{ "{text1} has used up today's free entries and doesn't have {number2} key(s). Defeat a field zone lord to get keys", "{text1} usou as entradas grátis de hoje e não tem {number2} chave(s). Derrote um senhor de zona do campo para conseguir chaves" },
 		{ "🐃 Monster stampede! They're charging in a line from the {text1} — step aside and sweep them away!", "🐃 Debandada de monstros! Eles avançam em fila vindo de {text1} — saia do caminho e varra todos!" },
 		{ "🛡 Your {text1} slot(s) are empty! Get gear from dungeon boss chests or the gacha and equip it", "🛡 {text1} espaço(s) vazio(s)! Consiga equipamento nos baús de chefe da masmorra ou no gacha e equipe-o" },
 		{ "+{text1}% chance per point to fire a second shot right after the first (\"bang-bang\")  (max {number2})", "+{text1}% de chance por ponto de disparar um segundo tiro logo após o primeiro («pá-pá») (máx. {number2})" },
