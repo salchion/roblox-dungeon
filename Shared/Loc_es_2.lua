@@ -833,6 +833,7 @@ return {
 		{ "⭐ Next level Lv.{number1}", "⭐ Siguiente nivel Nv.{number1}" },
 		{ "vs. equipped ▲ +{number1}", "vs equipado ▲ +{number1}" },
 		{ "Online: {number1} players", "En línea: {number1} jugadores" },
+		{ "🏆 Hall of Fame #{number1}", "🏆 Salón de la Fama #{number1}" },
 		{ "Gold +{number2}% instead", "Oro +{number2}% en su lugar" },
 		{ "Attack speed +{number1}%", "Velocidad de ataque +{number1}%" },
 		{ "Training slot +{number1}", "Espacio de entrenamiento +{number1}" },

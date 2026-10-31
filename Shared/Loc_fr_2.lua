@@ -847,6 +847,7 @@ return {
 		{ "⭐ Next level Lv.{number1}", "⭐ Niveau suivant niv.{number1}" },
 		{ "vs. equipped ▲ +{number1}", "vs équipé ▲ +{number1}" },
 		{ "Online: {number1} players", "En ligne : {number1} joueurs" },
+		{ "🏆 Hall of Fame #{number1}", "🏆 Panthéon #{number1}" },
 		{ "Gold +{number2}% instead", "Or +{number2}% à la place" },
 		{ "Attack speed +{number1}%", "Vitesse d'attaque +{number1}%" },
 		{ "Training slot +{number1}", "Emplacement d'entraînement +{number1}" },
@@ -956,7 +957,5 @@ return {
 		{ "{number1} more", "encore {number1}" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1}x XP", "{number1}x d'EXP" },
-		{ "+{number1} XP", "+{number1} d'EXP" },
-		{ "{number1} key", "{number1} clé" },
 	},
 }

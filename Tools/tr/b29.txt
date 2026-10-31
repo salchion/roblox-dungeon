@@ -103,3 +103,5 @@
 2144¦[F]を押そう¦Drück [F]¦Appuyez sur [F]¦Pulsa [F]¦Aperte [F]¦按[F]¦[F]를 누르세요
 2145¦死の蓮をタップ！¦Todeslotus tippen!¦Touchez Lotus mortel !¦¡Toca Loto mortal!¦Toque em Lótus da Morte!¦点击死亡莲花！¦죽음의 연꽃을 누르세요!
 2146¦訓練枠 {number1} / {number2}¦Trainingsplätze {number1} / {number2}¦Emplacements d'entraînement {number1} / {number2}¦Espacios de entrenamiento {number1} / {number2}¦Vagas de treino {number1} / {number2}¦训练栏位 {number1} / {number2}¦훈련 칸 {number1} / {number2}
+2147¦{number1} / {number2}    {text3}¦{number1} / {number2}    {text3}¦{number1} / {number2}    {text3}¦{number1} / {number2}    {text3}¦{number1} / {number2}    {text3}¦{number1} / {number2}    {text3}¦{number1} / {number2}    {text3}
+2148¦🏆 殿堂入り #{number1}¦🏆 Ruhmeshalle #{number1}¦🏆 Panthéon #{number1}¦🏆 Salón de la Fama #{number1}¦🏆 Hall da Fama #{number1}¦🏆 名人堂 #{number1}¦🏆 명예의 전당 #{number1}

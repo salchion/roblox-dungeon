@@ -71,6 +71,7 @@ return {
 		{ "👋 {text1} joined", "👋 {text1} ist beigetreten" },
 		{ "Title 『{text1}』", "Titel 『{text1}』" },
 		{ "Reward: {text1}", "Belohnung: {text1}" },
+		{ "{number1} / {number2}     {text3}", "{number1} / {number2}    {text3}" },
 		{ "🔫 Next {text1}", "🔫 Nächste {text1}" },
 		{ "{text1} effect", "{text1}-Effekt" },
 		{ "Danger {text1}", "Gefahr {text1}" },

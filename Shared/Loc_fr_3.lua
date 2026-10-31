@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "+{number1} XP", "+{number1} d'EXP" },
+		{ "{number1} key", "{number1} clé" },
 		{ "Lv {number1}", "Niveau {number1}" },
 		{ "x{number1}", "x {number1}" },
 		{ "A new dungeon theme can now appear ({text1}, Level {number2}+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", "Un nouveau thème de donjon peut maintenant apparaître ({text1}, niveau {number2}+). Choisissez une profondeur : plus c'est profond, meilleures sont les chances de butin et plus les boss sont durs. Un marqueur indique désormais la porte." },
@@ -111,6 +113,7 @@ return {
 		{ "Title 『{text1}』", "Titre 『{text1}』" },
 		{ "Reward: {text1}", "Récompense : {text1}" },
 		{ "★ Elite {text1}", "★ Élite {text1}" },
+		{ "{number1} / {number2}     {text3}", "{number1} / {number2}    {text3}" },
 		{ "🔫 Next {text1}", "🔫 Prochaine {text1}" },
 		{ "Zone {number1}: {text2}", "Zone {number1} : {text2}" },
 		{ "{text1} effect", "Effet de {text1}" },

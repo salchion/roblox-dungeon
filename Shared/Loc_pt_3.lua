@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎒 {text1}  ▲ Better than your current gear! (I → Bag)", "🎒 {text1}  ▲ Melhor que seu equipamento atual! (I → Mochila)" },
 		{ "{text1}  ▲ +{number2}% better than your current gear! (I → Bag", "{text1}  ▲ +{number2}% melhor que seu equipamento atual! (I → Bolsa" },
 		{ "[{text1}] Starts in {number2}s! Survive the incoming monsters", "[{text1}] Começa em {number2} s! Sobreviva aos monstros que se aproximam" },
 		{ "⏱ Skip gauge {text1}  (shared with training · pets)", "⏱ Medidor de aceleração {text1}  (compartilhado com treino · pets)" },
@@ -86,6 +87,7 @@ return {
 		{ "Zone {number1} · {text2}", "Zona {number1} · {text2}" },
 		{ "Title 『{text1}』", "Título 『{text1}』" },
 		{ "Reward: {text1}", "Recompensa: {text1}" },
+		{ "{number1} / {number2}     {text3}", "{number1} / {number2}    {text3}" },
 		{ "🔫 Next {text1}", "🔫 Próxima {text1}" },
 		{ "Zone {number1}: {text2}", "Zona {number1}: {text2}" },
 		{ "{text1} → Boss", "{text1} → Chefe" },

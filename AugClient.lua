@@ -272,6 +272,19 @@ UserInputService.InputBegan:Connect(function(input, processed)
 end)
 player:GetAttributeChangedSignal("OpenAug"):Connect(function() panel.Visible = not panel.Visible end) -- 왼쪽 메뉴 버튼(MenuDockClient)
 
+-- 큰 창은 한 번에 하나만: 세트 효과 창을 열면 메뉴 창을 닫고, 메뉴 창을 열면 세트 효과 창을 닫는다 (두 창이 겹쳐 떠 있었다)
+task.spawn(function()
+	local hud = player:WaitForChild("PlayerGui"):WaitForChild("HUD", 30)
+	local menu = hud and hud:WaitForChild("MenuPanel", 30)
+	if not menu then return end
+	panel:GetPropertyChangedSignal("Visible"):Connect(function()
+		if panel.Visible and menu.Visible then menu.Visible = false end
+	end)
+	menu:GetPropertyChangedSignal("Visible"):Connect(function()
+		if menu.Visible and panel.Visible then panel.Visible = false end
+	end)
+end)
+
 ------------------------------------------------------------
 -- 켜 둔 세트 효과 상태창: 필드 / 던전에서 오른쪽 위에 작게 (효과 이름 + 현재 몇 단계인지, 골드 단계 + 장비 단계)
 ------------------------------------------------------------

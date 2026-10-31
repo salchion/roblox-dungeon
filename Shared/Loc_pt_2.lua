@@ -807,6 +807,7 @@ return {
 		{ "⭐ Next level Lv.{number1}", "⭐ Próximo nível Nv.{number1}" },
 		{ "vs. equipped ▲ +{number1}", "vs equipado ▲ +{number1}" },
 		{ "Online: {number1} players", "Online: {number1} jogadores" },
+		{ "🏆 Hall of Fame #{number1}", "🏆 Hall da Fama #{number1}" },
 		{ "Gold +{number2}% instead", "Ouro +{number2}% em vez disso" },
 		{ "Attack speed +{number1}%", "Velocidade de ataque +{number1}%" },
 		{ "Training slot +{number1}", "Espaço de treinamento +{number1}" },
@@ -939,6 +940,5 @@ return {
 		{ "{text1} has appeared! Dodge its attacks and take it down", "{text1} apareceu! Desvie dos ataques e derrube-o" },
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag", "{text1} obtido! Adicionado à bolsa. (I → equipar pela bolsa" },
 		{ "Defeat Zone {number1} monsters {number2} / {number3} · Reward {text4} G + Ticket", "Derrote os monstros da zona {number1} {number2} / {number3} · Recompensa {text4} G + ticket" },
-		{ "🎒 {text1}  ▲ Better than your current gear! (I → Bag)", "🎒 {text1}  ▲ Melhor que seu equipamento atual! (I → Mochila)" },
 	},
 }
