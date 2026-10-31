@@ -327,6 +327,9 @@ return {
 		["Fever Time"] = "Tiempo de fiebre",
 		["SUCCESS"] = "ÉXITO",
 		["FAILED"] = "FALLÓ",
+		["Level is kept on failure"] = "El nivel se mantiene si falla",
+		["Gold earned"] = "Oro ganado",
+		["Best combo"] = "Mejor combo",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -593,6 +596,7 @@ return {
 		{ "🎁 Boss chest · {number1} gear pieces", "🎁 Cofre del jefe · {number1} piezas de equipo" },
 		{ "Succeed at upgrading {number1} times", "Mejora con éxito {number1} veces" },
 		{ "Attack +{number1}% per point  (max {number2})", "Ataque +{number1}% por punto  (máx. {number2})" },
+		{ "Returning to the field in {number1}s", "Volviendo al campo en {number1} s" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Tomo de Hechizos · Era Oxidada +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Puerta del Palacio de Hielo · Rec. ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zona {number1} · Tierra baldía sellada" },
@@ -916,9 +920,5 @@ return {
 		{ "Next era → {text1}", "Siguiente era → {text1}" },
 		{ "Activate {text1} G", "Activar por {text1} G" },
 		{ "Shop item: {text1}", "Artículo de la tienda: {text1}" },
-		{ "Skip gauge {text1}", "Medidor de salto {text1}" },
-		{ "Time left {text1}", "Tiempo restante {text1}" },
-		{ "Entering {text1}!", "¡Entrando a {text1}!" },
-		{ "Step {number1}/{number2} · {text3}", "Paso {number1}/{number2} · {text3}" },
 	},
 }

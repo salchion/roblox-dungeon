@@ -340,6 +340,9 @@ return {
 		["Fever Time"] = "Fièvre",
 		["SUCCESS"] = "RÉUSSITE",
 		["FAILED"] = "ÉCHEC",
+		["Level is kept on failure"] = "Le niveau est conservé en cas d'échec",
+		["Gold earned"] = "Or gagné",
+		["Best combo"] = "Meilleur combo",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -607,6 +610,7 @@ return {
 		{ "🎁 Boss chest · {number1} gear pieces", "🎁 Coffre de boss · {number1} équipements" },
 		{ "Succeed at upgrading {number1} times", "Réussissez {number1} améliorations" },
 		{ "Attack +{number1}% per point  (max {number2})", "Attaque +{number1}% par point  (max {number2})" },
+		{ "Returning to the field in {number1}s", "Retour sur le terrain dans {number1} s" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Tome de sorts · Ère rouillée +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Porte du palais de glace · Rec. ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zone {number1} · Désert scellé" },
@@ -890,7 +894,5 @@ return {
 		{ "Loading the world...  ·  {text1}", "Chargement du monde...  ·  {text1}" },
 		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 Nouvelle arme : {text1} - appuyez sur {number2} !" },
 		{ "{text1} invited you to a party!", "{text1} vous a invité dans un groupe !" },
-		{ "🗿 {text1} · World Boss (Zone {number2})", "🗿 {text1} · Boss mondial (zone {number2})" },
-		{ "👀 [{text1}] 5-second preview!", "👀 [{text1}] Aperçu de 5 secondes !" },
 	},
 }

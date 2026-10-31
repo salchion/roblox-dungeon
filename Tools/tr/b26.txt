@@ -1,0 +1,4 @@
+2010¦失敗してもレベルは下がりません¦Bei Fehlschlag bleibt die Stufe erhalten¦Le niveau est conservé en cas d'échec¦El nivel se mantiene si falla¦O nível é mantido se falhar¦失败时等级不会下降¦실패해도 레벨은 유지돼요
+2011¦{number1}秒後にフィールドへ戻ります¦Rückkehr ins Feld in {number1} s¦Retour sur le terrain dans {number1} s¦Volviendo al campo en {number1} s¦Voltando ao campo em {number1} s¦{number1}秒后返回野外¦{number1}초 뒤 필드로 돌아가요
+2012¦獲得ゴールド¦Verdientes Gold¦Or gagné¦Oro ganado¦Ouro ganho¦获得金币¦획득 골드
+2013¦最高コンボ¦Beste Combo¦Meilleur combo¦Mejor combo¦Melhor combo¦最高连击¦최고 콤보

@@ -455,6 +455,9 @@ return {
 		["Fever Time"] = "フィーバータイム",
 		["SUCCESS"] = "成功",
 		["FAILED"] = "失敗",
+		["Level is kept on failure"] = "失敗してもレベルは下がりません",
+		["Gold earned"] = "獲得ゴールド",
+		["Best combo"] = "最高コンボ",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -724,6 +727,7 @@ return {
 		{ "🎁 Boss chest · {number1} gear pieces", "🎁 ボス宝箱 · 装備{number1}個" },
 		{ "Succeed at upgrading {number1} times", "強化に{number1}回成功する" },
 		{ "Attack +{number1}% per point  (max {number2})", "攻撃力 +{number1}% / 1ポイント  (最大 {number2})" },
+		{ "Returning to the field in {number1}s", "{number1}秒後にフィールドへ戻ります" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ スペル・トーム · 錆びた時代 +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ 氷の宮殿の門 · レコメンド ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 ゾーン {number1} · 荒地が封鎖されました" },
@@ -916,10 +920,5 @@ return {
 		{ "🐾 Pet Lv.{number1}!", "🐾 ペット Lv.{number1}！" },
 		{ "Upgrade {number1} G", "強化 {number1} G" },
 		{ "✦ Paragon {number1}", "✦ パラゴン {number1}" },
-		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
-		{ "🔥 Combo x{number1}", "🔥 コンボ x{number1}" },
-		{ "Damage +{number2}%", "ダメージ +{number2}%" },
-		{ "x{number1}\nUpgrade", "x{number1}\nアップグレード" },
-		{ "Damage +{number1}%", "ダメージ +{number1}%" },
 	},
 }

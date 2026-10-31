@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🗿 {text1} · World Boss (Zone {number2})", "🗿 {text1} · Boss mondial (zone {number2})" },
+		{ "👀 [{text1}] 5-second preview!", "👀 [{text1}] Aperçu de 5 secondes !" },
 		{ "💤 Idle income  +{text1} G/sec", "💤 Revenu d'inactivité  +{text1} or/s" },
 		{ "{text1} is already in a party", "{text1} est déjà dans un groupe" },
 		{ "·  next weapon: {text1} at +{number2}", "·  arme suivante : {text1} à +{number2}" },

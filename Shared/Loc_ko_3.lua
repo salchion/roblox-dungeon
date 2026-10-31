@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💥Explosive Shot {number1}", "💥폭발적인 샷 {number1}" },
+		{ "Defeat {number1} boss(es)", "{number1} 보스 처치" },
+		{ "{number1} / {number2}   Reward: 🎫 {number3}", "{number1} / {number2} 보상: 🎫 {number3}" },
 		{ "⬆ Level Up  💰 {number1} G", "⬆ 레벨 업 💰 {number1} G" },
 		{ "⚡ {number1} Kill Streak!!", "⚡ {number1} 연속 킬!!" },
 		{ "Survive {number1}s + Boss", "{number1}초 + 보스 생존" },

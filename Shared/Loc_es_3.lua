@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Skip gauge {text1}", "Medidor de salto {text1}" },
+		{ "Time left {text1}", "Tiempo restante {text1}" },
+		{ "Entering {text1}!", "¡Entrando a {text1}!" },
+		{ "Step {number1}/{number2} · {text3}", "Paso {number1}/{number2} · {text3}" },
 		{ "({text1} damage)", "({text1} de daño)" },
 		{ "Zone {number1} · {text2}", "Zona {number1} · {text2}" },
 		{ "Title 『{text1}』", "Título 『{text1}』" },

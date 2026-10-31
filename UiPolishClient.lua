@@ -2,6 +2,7 @@
 -- 모든 화면(PlayerGui)에 공통으로 손맛을 더한다. 다른 스크립트는 건드리지 않는다.
 --   1) 큰 창이 열릴 때: 0.15초 동안 살짝 작았다가 커지며 나타난다 (갑자기 툭 뜨지 않게)
 --   2) 버튼을 누를 때: 살짝 눌렸다 튀어 오른다 + 작은 "틱" 소리 (모든 버튼이 같은 반응)
+--   3) 큰 창이 닫힐 때: 같은 자리의 잔상이 작아지며 흐려진다 (창 자체는 다른 스크립트가 닫은 그대로)
 -- 이미 자기 UIScale 을 쓰는 창 / 버튼(메뉴 아이콘 줄 등)은 건드리지 않는다 (서로 크기를 덮어쓰지 않게).
 
 local Players = game:GetService("Players")
@@ -39,12 +40,42 @@ local function popIn(frame)
 	scale.Scale = 0.9
 	TweenService:Create(scale, TweenInfo.new(POP_TIME, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
 end
+-- 닫힐 때: 창 자체는 바로 사라지고(다른 스크립트의 동작 그대로), 같은 자리 / 색의 "잔상"이 0.14초 동안 작아지며 흐려진다
+local function ghostOut(frame)
+	local screen = frame:FindFirstAncestorOfClass("ScreenGui")
+	local size, position = frame.AbsoluteSize, frame.AbsolutePosition
+	if not screen or size.X < MIN_WINDOW or size.Y < MIN_WINDOW then return end
+	local ghost = Instance.new("Frame")
+	ghost.Name = "CloseGhost"
+	ghost.AnchorPoint = Vector2.new(0.5, 0.5)
+	ghost.Size = UDim2.fromOffset(size.X, size.Y)
+	ghost.Position = UDim2.fromOffset(position.X - screen.AbsolutePosition.X + size.X / 2, position.Y - screen.AbsolutePosition.Y + size.Y / 2)
+	ghost.BackgroundColor3 = frame.BackgroundColor3
+	ghost.BackgroundTransparency = math.max(frame.BackgroundTransparency, 0.15)
+	ghost.BorderSizePixel = 0
+	ghost.ZIndex = frame.ZIndex + 20
+	local corner = frame:FindFirstChildOfClass("UICorner")
+	if corner then
+		local copy = Instance.new("UICorner")
+		copy.CornerRadius = corner.CornerRadius
+		copy.Parent = ghost
+	end
+	ghost.Parent = screen
+	TweenService:Create(ghost, TweenInfo.new(0.14, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+		Size = UDim2.fromOffset(size.X * 0.9, size.Y * 0.9), BackgroundTransparency = 1,
+	}):Play()
+	game:GetService("Debris"):AddItem(ghost, 0.2)
+end
 local function watchWindow(frame)
 	if watchedWindow[frame] then return end
 	watchedWindow[frame] = true
+	local openedAt = 0
 	frame:GetPropertyChangedSignal("Visible"):Connect(function()
 		if frame.Visible then
+			openedAt = os.clock()
 			task.defer(popIn, frame) -- (크기가 정해진 다음 프레임에 잰다)
+		elseif os.clock() - openedAt > 0.25 then -- (열리자마자 닫히는 깜빡임에는 잔상을 만들지 않는다)
+			ghostOut(frame)
 		end
 	end)
 end

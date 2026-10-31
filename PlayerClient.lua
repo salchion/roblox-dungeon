@@ -799,14 +799,25 @@ local detail = create("Frame", { Size = UDim2.new(0, 262, 0, 336), Position = UD
 rounded(detail, 12)
 local detailStroke = create("UIStroke", { Color = Color3.fromRGB(110, 90, 160), Thickness = 2 }, detail)
 local detailText = makeLabel({
-	Size = UDim2.new(1, -20, 0, 214), Position = UDim2.new(0, 10, 0, 10), RichText = true, TextSize = 12,
+	Size = UDim2.new(1, -20, 0, 180), Position = UDim2.new(0, 10, 0, 10), RichText = true, TextSize = 12,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 }, detail)
 local enhanceSlotButton = makeButton({
-	Size = UDim2.new(1, -24, 0, 50), Position = UDim2.new(0, 12, 1, -112), Text = "Upgrade", TextSize = 15, Font = Enum.Font.GothamBold, BackgroundColor3 = GREEN,
+	Size = UDim2.new(0.64, -12, 0, 50), Position = UDim2.new(0, 12, 1, -112), Text = "Upgrade", TextSize = 14, Font = Enum.Font.GothamBold, BackgroundColor3 = GREEN,
 }, detail, function()
 	Remotes.Gear:FireServer("Enhance", state.Selected)
 end)
+local enhanceSlotTen = makeButton({ -- x10: 성공할 때까지가 아니라 최대 10번 (골드가 모자라면 그만)
+	Size = UDim2.new(0.36, -16, 0, 50), Position = UDim2.new(0.64, 4, 1, -112), Text = "x10\nUpgrade", TextSize = 12, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(60, 120, 200),
+}, detail, function()
+	Remotes.Gear:FireServer("Enhance", state.Selected, 10)
+end)
+-- 성공 확률 막대: 높을수록 초록, 낮을수록 빨강
+local chanceBack = create("Frame", { Size = UDim2.new(1, -24, 0, 20), Position = UDim2.new(0, 12, 1, -140), BackgroundColor3 = Color3.fromRGB(16, 16, 26), BorderSizePixel = 0 }, detail)
+rounded(chanceBack, 10)
+local chanceFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = GREEN, BorderSizePixel = 0 }, chanceBack)
+rounded(chanceFill, 10)
+local chanceText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), TextSize = 11, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0.4, ZIndex = 3 }, chanceBack)
 create("UIStroke", { Color = Color3.fromRGB(190, 255, 190), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 2 }, enhanceSlotButton)
 gearMessage = makeLabel({
 	Size = UDim2.new(1, -16, 0, 40), Position = UDim2.new(0, 8, 1, -54), Font = Enum.Font.GothamBold, TextSize = 12, RichText = true,
@@ -899,6 +910,8 @@ function refreshGear()
 		detailText.Text = string.format("<font size='15'><b>%s</b></font>\n<font color='#9a9ab5'>Empty</font>\n\n%s effect\n<font color='#c9c0e0'>Get gear with the gacha below, or equip gear dropped in the field from your Bag (B).</font>", slot.Name, slot.StatName)
 		enhanceSlotButton.Text = "—"
 		enhanceSlotButton.BackgroundColor3 = GRAY
+		chanceBack.Visible = false
+		enhanceSlotTen.Visible = false
 		detailStroke.Color = Color3.fromRGB(110, 90, 160)
 	else
 		local color = Config.Gear.RarityColors[rarity]
@@ -912,16 +925,24 @@ function refreshGear()
 		if level < maxLevel then
 			local cost = Config.GetGearCost(slot.Key, rarity, level)
 			local chance = math.floor(Config.GetGearEnhanceChance(level) * 100 + 0.5)
+			table.insert(lines, string.format("<font size='18'><b>+%d</b> <font color='#ffd966'>▶</font> <font color='#78ff8c'><b>+%d</b></font></font>", level, level + 1))
 			table.insert(lines, string.format("<b>%s</b>\n<font color='#78ff8c'>▶ %s</font>", now, Config.FormatGearStat(slot.Key, Config.GetGearStat(slot.Key, rarity, level + 1))))
-			table.insert(lines, "")
-			table.insert(lines, string.format("Success rate <b><font color='#%s'>%d%%</font></b>   <font size='10' color='#aaaabb'>(kept on failure)</font>", chance >= 80 and "78ff8c" or (chance >= 60 and "ffd966" or "ff9a6e"), chance))
-			enhanceSlotButton.Text = string.format("💰 %d G   Upgrade", cost)
+			table.insert(lines, "<font size='10' color='#aaaabb'>Level is kept on failure</font>")
+			local chanceRaw = Config.GetGearEnhanceChance(level)
+			chanceBack.Visible = true
+			chanceFill.BackgroundColor3 = Color3.fromRGB(255, 90, 80):Lerp(Color3.fromRGB(110, 230, 120), math.clamp((chanceRaw - 0.35) / 0.65, 0, 1))
+			TweenService:Create(chanceFill, TweenInfo.new(0.3, Enum.EasingStyle.Quad), { Size = UDim2.new(chanceRaw, 0, 1, 0) }):Play()
+			chanceText.Text = string.format("Success %d%%", chance)
+			enhanceSlotButton.Text = string.format("🔨 Upgrade\n💰 %d G", cost)
 			enhanceSlotButton.BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62)
+			enhanceSlotTen.Visible = true
 		else
 			table.insert(lines, "<b>" .. now .. "</b>")
 			table.insert(lines, "\n<font color='#ffd966'>Max upgrade level!</font>")
 			enhanceSlotButton.Text = "MAX"
 			enhanceSlotButton.BackgroundColor3 = GRAY
+			chanceBack.Visible = false
+			enhanceSlotTen.Visible = false
 		end
 		detailText.Text = table.concat(lines, "\n")
 	end
@@ -951,6 +972,19 @@ Remotes.Gear.OnClientEvent:Connect(function(action, result)
 	end
 	gearMessage.Text = result.Message
 	gearMessage.TextColor3 = color
+	if not result.Roll and gearPanel.Visible then -- 장비 강화 결과: 상세 칸 위에 크게 "SUCCESS! / FAILED"
+		local pop = makeLabel({
+			Size = UDim2.new(0, 260, 0, 50), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -147, 0, 190), ZIndex = 20,
+			Text = result.Ok and "✨ SUCCESS!" or "💥 FAILED", TextSize = 30, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0.1,
+			TextColor3 = result.Ok and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(255, 110, 100),
+		}, gearPanel)
+		local popScale = create("UIScale", { Scale = 0.4 }, pop)
+		TweenService:Create(popScale, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+		task.delay(0.55, function()
+			TweenService:Create(pop, TweenInfo.new(0.45), { Position = UDim2.new(1, -147, 0, 150), TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+		end)
+		game:GetService("Debris"):AddItem(pop, 1.1)
+	end
 	if not result.Roll then
 		enhSound("Enh_Hammer")
 		task.delay(0.12, function() SoundBank.Play(sfxParent, result.Ok and "Enh_Success" or "Enh_Fail") end)
@@ -1600,6 +1634,7 @@ end)
 
 local resultToken = 0
 local function showResult(result)
+	if result.Fever then return end -- 피버 타임은 FeverResultClient 의 황금 결과 카드
 	resultToken += 1
 	local token = resultToken
 	resultPanel.Visible = true

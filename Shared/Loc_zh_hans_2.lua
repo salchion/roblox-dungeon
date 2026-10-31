@@ -207,6 +207,9 @@ return {
 		["Fever Time"] = "狂热时间",
 		["SUCCESS"] = "成功",
 		["FAILED"] = "失败",
+		["Level is kept on failure"] = "失败时等级不会下降",
+		["Gold earned"] = "获得金币",
+		["Best combo"] = "最高连击",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -476,6 +479,7 @@ return {
 		{ "🎁 Boss chest · {number1} gear pieces", "🎁 首领宝箱 · {number1}件装备" },
 		{ "Succeed at upgrading {number1} times", "成功强化 {number1} 次" },
 		{ "Attack +{number1}% per point  (max {number2})", "攻击 +{number1}%/点  (上限 {number2})" },
+		{ "Returning to the field in {number1}s", "{number1}秒后返回野外" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ 魔法书 · 锈蚀时代 +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ 冰宫之门 · 推荐 ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 区域 {number1} · 荒地已封锁" },

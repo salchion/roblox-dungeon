@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
+		{ "🔥 Combo x{number1}", "🔥 コンボ x{number1}" },
+		{ "Damage +{number2}%", "ダメージ +{number2}%" },
+		{ "x{number1}\nUpgrade", "x{number1}\nアップグレード" },
+		{ "Damage +{number1}%", "ダメージ +{number1}%" },
 		{ "Admin (F{number1})", "管理者（F{number1}）" },
 		{ "Party ({number1}/{number2})", "パーティー ({number1}/{number2})" },
 		{ "Attack +{number1}%", "攻撃力 +{number1}%" },

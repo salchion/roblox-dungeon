@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1}  ·  When full: +{text2} G", "{text1}  ·  Wenn voll: +{text2} G" },
+		{ "Best {text1}  ·  Max hit {text2}", "Bestwert {text1}  ·  Max. Treffer {text2}" },
 		{ "Next point: {text1} / {text2} XP", "Nächster Punkt: {text1} / {text2} EP" },
 		{ "✦ New unique: {text1} — {text2}", "✦ Neues Unikat: {text1} — {text2}" },
 		{ "Your best tier: {text1} {text2}", "Deine beste Stufe: {text1} {text2}" },

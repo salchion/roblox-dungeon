@@ -282,6 +282,9 @@ return {
 		["Fever Time"] = "Fieberzeit",
 		["SUCCESS"] = "ERFOLG",
 		["FAILED"] = "FEHLGESCHLAGEN",
+		["Level is kept on failure"] = "Bei Fehlschlag bleibt die Stufe erhalten",
+		["Gold earned"] = "Verdientes Gold",
+		["Best combo"] = "Beste Combo",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -550,6 +553,7 @@ return {
 		{ "🎁 Boss chest · {number1} gear pieces", "🎁 Boss-Truhe · {number1} Ausrüstungsteile" },
 		{ "Succeed at upgrading {number1} times", "Verbessere erfolgreich {number1} Mal" },
 		{ "Attack +{number1}% per point  (max {number2})", "Angriff +{number1}% pro Punkt  (max. {number2})" },
+		{ "Returning to the field in {number1}s", "Rückkehr ins Feld in {number1} s" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Zauberbuch · Rostige Ära +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Eispalast-Tor · Rec. ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zone {number1} · Ödland versiegelt" },
@@ -906,7 +910,5 @@ return {
 		{ "{text1} training started! ({text2})", "{text1}-Training gestartet! ({text2})" },
 		{ "⬆ Level Up  💰 {text1} G · ⏱ {text2}", "⬆ Aufstieg  💰 {text1} G · ⏱ {text2}" },
 		{ "👹 Boss this run: {text1} — {text2}", "👹 Boss dieses Laufs: {text1} — {text2}" },
-		{ "{text1}  ·  When full: +{text2} G", "{text1}  ·  Wenn voll: +{text2} G" },
-		{ "Best {text1}  ·  Max hit {text2}", "Bestwert {text1}  ·  Max. Treffer {text2}" },
 	},
 }

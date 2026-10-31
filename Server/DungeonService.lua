@@ -3107,10 +3107,10 @@ local function feverFinish(run)
 	for _, member in ipairs(run.Members) do
 		local endRoot = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
 		if endRoot then SoundBank.Play(endRoot, "Dungeon_Clear") end
-		Remotes.Dungeon:FireClient(member, "Result", {
-			Victory = true, Gold = run.Earned[member] or 0, Tickets = run.TicketsEarned[member] or 0,
-			Loot = { string.format("⚔ Kills: %d", fever.Kills), string.format("🔥 Best combo: %d", fever.BestCombo) },
+		Remotes.Dungeon:FireClient(member, "Result", { -- (피버 전용 황금 결과 카드는 FeverResultClient 가 그린다: Fever 가 있으면 일반 결과 카드는 뜨지 않는다)
+			Victory = true, Gold = run.Earned[member] or 0, Tickets = run.TicketsEarned[member] or 0, Loot = {},
 			Wave = 0, TotalWaves = 0, TypeName = "🌟 Fever Time", DifficultyName = "", ReturnDelay = D.ReturnDelay,
+			Fever = { Kills = fever.Kills, BestCombo = fever.BestCombo, Seconds = Config.Fever.Duration },
 		})
 	end
 	broadcast(run)

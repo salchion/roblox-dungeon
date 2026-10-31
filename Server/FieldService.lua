@@ -1280,18 +1280,25 @@ local function respawnSpot(zone)
 	return Vector3.new(x, 0, math.clamp(center.Z + math.random(-60, 60), -half, half))
 end
 
--- 피버 타임 포탈: 군주를 쓰러뜨리면 가끔 그 자리에 황금 균열이 15초 동안 열린다 (막타를 친 사람만 들어간다). 하루 횟수 / 재사용 대기는 접속 중에만 센다
-local feverState = setmetatable({}, { __mode = "k" }) -- [player] = { Day, Count, Until }
+-- 피버 타임 포탈: 군주를 쓰러뜨리면 가끔 그 자리에 황금 균열이 15초 동안 열린다 (막타를 친 사람만 들어간다). 하루 횟수는 저장 / 재사용 대기(10분)는 접속 중에만 센다
+local feverState = setmetatable({}, { __mode = "k" }) -- [player] = { Until }
 local function maybeFeverPortal(player, bossAt, zone)
 	local Fv = Config.Fever
 	if not Fv or player:GetAttribute("TutorialActive") == true or player:GetAttribute("TutorialDoom") or player:GetAttribute("InDoomArena") then return end
-	local today = os.date("!%Y-%m-%d")
+	local today = math.floor(os.time() / 86400)
 	local st = feverState[player]
-	if not st or st.Day ~= today then
-		st = { Day = today, Count = 0, Until = 0 }
+	if not st then
+		st = { Until = 0 }
 		feverState[player] = st
 	end
-	if st.Count >= Fv.DailyMax or os.clock() < st.Until or math.random() >= Fv.PortalChance then return end
+	-- 하루 횟수는 저장 데이터(MetaService 의 Rift 기록: FeverDay / FeverUsed)에 남긴다: 다시 접속해도 늘어나지 않는다
+	local okMeta, Meta = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
+	local saved = okMeta and Meta.GetRift and Meta.GetRift(player)
+	if not saved then return end -- (저장 데이터를 아직 못 불러왔으면 열지 않는다)
+	if saved.FeverDay ~= today then
+		saved.FeverDay, saved.FeverUsed = today, 0
+	end
+	if (saved.FeverUsed or 0) >= Fv.DailyMax or os.clock() < st.Until or math.random() >= Fv.PortalChance then return end
 	st.Until = os.clock() + Fv.PortalSeconds + 1 -- (열려 있는 동안 다른 군주로 또 열리지 않게)
 	local ground = Vector3.new(bossAt.X, floorAt(bossAt.X), bossAt.Z)
 	local center = ground + Vector3.new(0, 7, 0)
@@ -1339,12 +1346,12 @@ local function maybeFeverPortal(player, bossAt, zone)
 			veil.CFrame = veil.CFrame * CFrame.Angles(0.15, 0, 0)
 			local root = getAliveParts(player)
 			if root and player:GetAttribute("Zone") == "Field" and (root.Position - center).Magnitude <= 9 then
-				st.Count += 1
+				saved.FeverUsed = (saved.FeverUsed or 0) + 1
 				st.Until = os.clock() + Fv.Cooldown
 				model:Destroy()
 				Effects.Burst(center, gold, 90)
 				if not Dungeon.StartFever(player, zone, CFrame.new(ground + Vector3.new(-14, 4, 0))) then
-					st.Count -= 1
+					saved.FeverUsed = math.max(0, (saved.FeverUsed or 1) - 1)
 					st.Until = os.clock() + 20
 				end
 				return

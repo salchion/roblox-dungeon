@@ -298,6 +298,9 @@ return {
 		["Fever Time"] = "Hora da febre",
 		["SUCCESS"] = "SUCESSO",
 		["FAILED"] = "FALHOU",
+		["Level is kept on failure"] = "O nível é mantido se falhar",
+		["Gold earned"] = "Ouro ganho",
+		["Best combo"] = "Melhor combo",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -567,6 +570,7 @@ return {
 		{ "🎁 Boss chest · {number1} gear pieces", "🎁 Baú do chefe · {number1} peças de equipamento" },
 		{ "Succeed at upgrading {number1} times", "Tenha sucesso em {number1} melhorias" },
 		{ "Attack +{number1}% per point  (max {number2})", "Ataque +{number1}% por ponto  (máx. {number2})" },
+		{ "Returning to the field in {number1}s", "Voltando ao campo em {number1} s" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Tomo de Feitiços · Era Enferrujada +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Portão do Palácio de Gelo · Rec. ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zona {number1} · Terras Desoladas Seladas" },
@@ -908,7 +912,5 @@ return {
 		{ "🎉 Evolved to {text1}! Your weapon look and bullet color changed{text2}", "🎉 Evoluiu para {text1}! O visual da sua arma e a cor das balas mudaram{text2}" },
 		{ "⏳ {text1} upgrade started! ({text2}) — use Time Skip to finish sooner", "⏳ Melhoria de {text1} iniciada! ({text2}) — use Pular tempo para terminar mais rápido" },
 		{ "All-time best {text1} pts · most bosses {number2} · longest {text3}", "Melhor de todos os tempos {text1} pts · mais chefes {number2} · mais longo {text3}" },
-		{ "🎁 Weekly Boss Rush chest: Mythic {text1} with ✦ {text2}!", "🎁 Baú semanal do Boss Rush: {text1} mítico com ✦ {text2}!" },
-		{ "🔓 {text1} unlocked! ({text2}) Pick it in the Weapons tab", "🔓 {text1} desbloqueado! ({text2}) Escolha na aba Armas" },
 	},
 }

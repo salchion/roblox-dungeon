@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎁 Weekly Boss Rush chest: Mythic {text1} with ✦ {text2}!", "🎁 Baú semanal do Boss Rush: {text1} mítico com ✦ {text2}!" },
+		{ "🔓 {text1} unlocked! ({text2}) Pick it in the Weapons tab", "🔓 {text1} desbloqueado! ({text2}) Escolha na aba Armas" },
 		{ "📢 {text1} took down {number2} bosses in the Boss Rush! ({text3})", "📢 {text1} derrotou {number2} chefes no Boss Rush! ({text3})" },
 		{ "🔫 Best with {text1}: set damage +40% and {text2}", "🔫 Melhor com {text1}: dano do conjunto +40% e {text2}" },
 		{ "(Recommended power {text1} · Your power {text2})", "(Poder recomendado {text1} · Seu poder {text2})" },

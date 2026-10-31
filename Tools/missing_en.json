@@ -2008,5 +2008,9 @@
 "Fever Time",
 "Success {number1}",
 "SUCCESS",
-"FAILED"
+"FAILED",
+"Level is kept on failure",
+"Returning to the field in {number1}s",
+"Gold earned",
+"Best combo"
 ]
