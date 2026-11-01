@@ -407,10 +407,11 @@ local function playReel(list)
 	local count = #list
 	local panelW = count * CARD_W + (count - 1) * GAP + 56
 	local panel = create("Frame", {
-		Size = UDim2.new(0, panelW, 0, 300), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0.13, 0),
+		Size = UDim2.new(0, panelW, 0, 300), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0.015, 0),
 		BackgroundColor3 = Color3.fromRGB(20, 18, 36), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 70,
 	}, gui)
 	rounded(panel, 18)
+	create("UIScale", { Scale = 0.72 }, panel) -- 작게 위쪽으로: 아래 튜토리얼 안내와 화면 가운데를 가리지 않는다
 	create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(140, 130, 190)), Rotation = 90 }, panel)
 	local panelStroke = create("UIStroke", { Color = Color3.fromRGB(255, 205, 110), Thickness = 2.5, Transparency = 1 }, panel)
 	local title = label({ Size = UDim2.new(1, 0, 0, 38), Position = UDim2.new(0, 0, 0, 10), TextSize = 22, Font = Enum.Font.GothamBlack,
