@@ -33,6 +33,9 @@ local token = 0
 local function close()
 	token += 1
 	gui.Enabled = false
+	dim.Visible = true
+	hint.Visible = true
+	stage.Position = UDim2.new(0.5, 0, 0.5, 0)
 	player:SetAttribute("ChestOpening", nil)
 	for _, child in ipairs(stage:GetChildren()) do
 		if child:IsA("GuiObject") and child ~= hint then child:Destroy() end
@@ -165,8 +168,13 @@ local function play(loot)
 		end
 		task.wait(rarity >= 5 and 0.95 or (rarity >= 4 and 0.75 or 0.5))
 	end
-	task.wait(1.4)
-	if token == mine then close() end
+	task.wait(0.6)
+	if token ~= mine then return end
+	-- 끝: 어두운 막을 걷고 카드는 화면 위쪽으로 올려 둔다 -> 아래 결과 창(골드 / 티켓 / 로비로)과 한 화면에 같이 보인다 (던전을 떠나면 치워진다)
+	hint.Visible = false
+	dim.Visible = false
+	player:SetAttribute("ChestOpening", nil)
+	tween(stage, 0.45, { Position = UDim2.new(0.5, 0, 0.17, 0) })
 end
 
 Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
