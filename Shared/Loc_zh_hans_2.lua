@@ -958,6 +958,7 @@ return {
 		{ "Gold {number1} G", "金币 {number1} G" },
 		{ "Gold +{number1}%", "金币 +{number1}%" },
 		{ "🧩 Set {number1}%", "🧩 套装 {number1}%" },
+		{ "Era {number1} / {number2}", "时代 {number1} / {number2}" },
 		{ "{number1} / {number2} XP", "{number1} / {number2} 经验值" },
 		{ "⚡ {number1} Lv.{number2}", "⚡ {number1} 等级{number2}" },
 		{ "≈ {number1} dmg", "≈ {number1} 伤害" },
@@ -1052,6 +1053,5 @@ return {
 		{ "{text1} obtained! Equipped", "获得{text1}！已装备" },
 		{ "New gear equipped! {text1}", "已装备新装备！{text1}" },
 		{ "Lord of {text1}  ·  Zone {number2}", "{text1}领主  ·  区域{number2}" },
-		{ "⏱ Used {text1} Time Skip!", "⏱ 已使用 {text1} 个时间跳跃!" },
 	},
 }

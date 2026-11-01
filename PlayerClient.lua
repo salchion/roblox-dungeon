@@ -261,6 +261,26 @@ makeButton({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12)
 end)
 local enhanceWeapon = makeLabel({ Size = UDim2.new(1, -24, 0, 24), Position = UDim2.new(0, 12, 0, 44), Font = Enum.Font.GothamBlack, TextSize = 16, RichText = true }, enhancePanel)
 
+-- 전체 진행: 시대 10칸 (지나온 시대는 가득, 지금 시대는 일부, 앞은 비어 있다) + 몇 번째 시대 / 최종 강화 단계
+do
+	local order = Config.WeaponTypes.Order
+	local eras = #Config.Weapon.Tiers // #order
+	E.EraSegs = {}
+	E.EraLabel = makeLabel({ Size = UDim2.new(0.5, -24, 0, 14), Position = UDim2.new(0, 24, 0, 66), RichText = true, TextSize = 10, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(200, 196, 225) }, enhancePanel)
+	E.MaxLabel = makeLabel({ Size = UDim2.new(0.5, -24, 0, 14), Position = UDim2.new(0.5, 0, 0, 66), RichText = true, TextSize = 10, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = Color3.fromRGB(200, 196, 225) }, enhancePanel)
+	local gap = 3
+	local segW = (PW - 48 - (eras - 1) * gap) / eras
+	for era = 1, eras do
+		local look = Config.Weapon.Tiers[(era - 1) * #order + 1]
+		local color = look.Rainbow and Color3.fromRGB(255, 120, 255) or look.Color
+		local back = create("Frame", { Size = UDim2.new(0, segW, 0, 6), Position = UDim2.new(0, 24 + (era - 1) * (segW + gap), 0, 82), BackgroundColor3 = Color3.fromRGB(40, 36, 58), BorderSizePixel = 0, ZIndex = 5 }, enhancePanel)
+		create("UICorner", { CornerRadius = UDim.new(1, 0) }, back)
+		local fill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 6 }, back)
+		create("UICorner", { CornerRadius = UDim.new(1, 0) }, fill)
+		E.EraSegs[era] = fill
+	end
+end
+
 local function circle(size, x, y, color, z, parent)
 	local f = create("Frame", { Size = UDim2.new(0, size, 0, size), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, x, 0, y), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = z }, parent or enhancePanel)
 	create("UICorner", { CornerRadius = UDim.new(1, 0) }, f)
@@ -520,6 +540,17 @@ function refreshEnhance()
 	E.Milestone = Config.GetUnlockedCount(level) + 100 * tier.Era -- 새 무기 해금 / 새 시대 때만 "진화!" 연출
 	E.EnhanceShownTier = tier.Index
 	E.Owned.Value.Text = E.comma(gold)
+	do -- 전체 진행: 시대 칸 채우기 / 몇 번째 시대인지 / 최종 단계
+		local n = #Config.WeaponTypes.Order
+		local eras = #E.EraSegs
+		for era = 1, eras do
+			local from = Config.Weapon.Tiers[(era - 1) * n + 1].MinLevel
+			local to = era < eras and Config.Weapon.Tiers[era * n + 1].MinLevel or Config.Weapon.MaxLevel
+			E.EraSegs[era].Size = UDim2.new(math.clamp((level - from) / math.max(1, to - from), 0, 1), 0, 1, 0)
+		end
+		E.EraLabel.Text = string.format("Era %d / %d", tier.Era, eras)
+		E.MaxLabel.Text = string.format("Max level +%s", E.comma(Config.Weapon.MaxLevel))
+	end
 
 	-- 위쪽: [지금 무기] ──막대──▶ [다음 무기 / 다음 시대]
 	do

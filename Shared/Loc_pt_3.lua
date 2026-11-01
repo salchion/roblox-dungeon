@@ -193,6 +193,7 @@ return {
 		{ "Activate {text1} G", "Ativar por {text1} G" },
 		{ "Shop item: {text1}", "Item da loja: {text1}" },
 		{ "Skip gauge {text1}", "Medidor de pulo {text1}" },
+		{ "Max level +{text1}", "Nível máx. +{text1}" },
 		{ "Time left {text1}", "Tempo restante {text1}" },
 		{ "Entering {text1}!", "Entrando em {text1}!" },
 		{ "Next Lv.{number1}  {text2}", "Próximo Nv.{number1}  {text2}" },

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⏱ Used {text1} Time Skip!", "⏱ 已使用 {text1} 个时间跳跃!" },
 		{ "✅ {text1} — tap to claim!", "✅ {text1} — 点击领取!" },
 		{ "💰 Buy Point {text1} G ({number2}/{number3})", "💰 购买点数 {text1} 金币 ({number2}/{number3})" },
 		{ "🐾 Unlock Pet  💰 {text1} G", "🐾 解锁宠物  💰 {text1} 金币" },
@@ -26,6 +27,7 @@ return {
 		{ "Activate {text1} G", "花费 {text1} 金币启用" },
 		{ "Shop item: {text1}", "商店商品：{text1}" },
 		{ "Skip gauge {text1}", "跳过槽 {text1}" },
+		{ "Max level +{text1}", "最高等级 +{text1}" },
 		{ "Time left {text1}", "剩余时间 {text1}" },
 		{ "Entering {text1}!", "正在进入 {text1}!" },
 		{ "Next Lv.{number1}  {text2}", "下一级 Lv.{number1}  {text2}" },
