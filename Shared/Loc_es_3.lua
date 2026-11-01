@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Time Skip {number1} hour", "Saltar tiempo {number1} horas" },
+		{ "(gold {number1} + gear {number2})", "(oro {number1} + equipo {number2})" },
+		{ "Crit damage +{number1}%p", "Daño crítico +{number1}%p" },
+		{ "vs. equipped ▼ {number1}", "vs equipado ▼ {number1}" },
 		{ "Monsters left: {number1}", "Monstruos restantes: {number1}" },
 		{ "🎰 {number1}-Roll Results", "🎰 Resultados de la tirada x{number1}" },
 		{ "⚡ NEAR MISS!  x{number1}", "⚡ ¡NEAR MISS!  x{number1}" },

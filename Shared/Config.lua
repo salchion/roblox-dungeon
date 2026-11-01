@@ -1185,13 +1185,14 @@ Config.Dungeon.XpMult = { Easy = 0.8, Normal = 1.0, Hard = 1.4 }
 --   보스 상자의 높은 등급 확률 / 유니크 확률 / 보상이 깊이마다 오른다. 못 깬 깊이로는 못 들어간다(최고 깊이 + 1 까지).
 ------------------------------------------------------------
 Config.Dungeon.Depth = {
-	HealthGrowth = 1.15,   -- 깊이마다 몬스터 체력 x1.15
-	DamageGrowth = 1.05,   -- 깊이마다 몬스터 피해 x1.05
-	GoldGrowth = 1.12,     -- 깊이마다 골드 x1.12
+	-- (한 칸 올릴 때 "빡세졌다 + 보상이 좋아졌다"가 느껴지게: 예전엔 체력 +15% / 피해 +5% 라 1칸 차이가 거의 안 보였다)
+	HealthGrowth = 1.22,   -- 깊이마다 몬스터 체력 x1.22
+	DamageGrowth = 1.08,   -- 깊이마다 몬스터 피해 x1.08
+	GoldGrowth = 1.15,     -- 깊이마다 골드 x1.15 (체력보다 느리게 올라야 깊을수록 시간당 골드가 폭주하지 않는다)
 	XpGrowth = 1.12,       -- 깊이마다 경험치 x1.12
-	TicketBase = 2, TicketEvery = 6, TicketMax = 8, -- 보스 클리어 티켓 = 2 + floor(깊이 / 6), 최대 8
+	TicketBase = 2, TicketEvery = 4, TicketMax = 8, -- 보스 클리어 티켓 = 2 + floor(깊이 / 4), 최대 8
 	KeyBrackets = { { Upto = 10, Cost = 1 }, { Upto = 25, Cost = 2 }, { Upto = 1e9, Cost = 3 } }, -- 열쇠 비용
-	RowPerDepth = 0.25,    -- 깊이마다 상자 등급 표(Config.Loot.ZoneRarity)를 0.25 줄씩 이동
+	RowPerDepth = 0.4,     -- 깊이마다 상자 등급 표(Config.Loot.ZoneRarity)를 0.4 줄씩 이동 (깊이 1칸에 높은 등급 확률이 눈에 보이게 오른다)
 	ExtraPerRow = 0.15,    -- 표의 마지막 줄을 넘으면 줄마다 높은 등급 가중치 +15%
 	MaxDepth = 999,
 }
@@ -1753,7 +1754,7 @@ Config.Uniques = {
 }
 
 -- 던전 상자의 유니크 확률(신화 장비): 깊이마다 +0.7%p, 최대 60%
-Config.Uniques.DepthBonus = 0.007
+Config.Uniques.DepthBonus = 0.01
 Config.Uniques.FieldChance = 0.08 -- 필드 신화에도 낮은 확률로 유니크 (던전은 30% ~ 60%)
 Config.Uniques.RerollTickets = 30 -- 유니크 재굴림 (티켓): 후반에 티켓을 쓸 곳
 Config.Uniques.MaxChance = 0.60

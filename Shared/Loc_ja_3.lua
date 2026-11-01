@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ 氷の宮殿の門 · レコメンド ⚡{number1}" },
+		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 ゾーン {number1} · 荒地が封鎖されました" },
+		{ "Auto-loot radius grows to {number1}", "自動略奪の範囲が{number1}に拡大します" },
 		{ "ZONE {number1}  ·  Volcano   ☠☠☠☠☠☠", "ゾーン {number1}  · 火山 ☠☠☠☠☠☠" },
 		{ "⚔ Spell Tome · Rusty Era +{number10}", "⚔ スペル・トーム · 錆の時代 +{number10}" },
 		{ "🔒 Zone {number1} · Darklands Sealed", "🔒 ゾーン {number1} · ダークランドが封鎖されました" },

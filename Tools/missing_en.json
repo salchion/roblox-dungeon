@@ -2292,5 +2292,6 @@
 "♻ Essence +{number1}",
 "Tap a slot to choose · Defeat the lord to unlock · Gold: Lv.1–3 · Set gear: Lv.4–6",
 "Next Lv.{number1}  {text2}",
-"Set gear"
+"Set gear",
+"Each depth up: monster HP +{number1}% · damage +{number2}% · gold +{number3}% · better chest odds"
 ]

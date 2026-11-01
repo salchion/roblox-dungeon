@@ -700,6 +700,7 @@ return {
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "発見したユニーク効果 {number1} / {number2}  ·  ミシック装備に1つ付くことがあります(確率約{number3}%)" },
 		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "スキルマスター　タイトル『スキルマスター』\nスキルを{number1}回使用する\n{number2} / {number3}　報酬：🎫 {number4}" },
 		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(あなたの記録: 深度{number1} · ダンジョンのテーマはランダム、確率は同じ)" },
+		{ "Each depth up: monster HP +{number1}% · damage +{number2}% · gold +{number3}% · better chest odds", "深さが1つ上がるごとに：モンスターHP+{number1}%・ダメージ+{number2}%・ゴールド+{number3}%・宝箱の確率アップ" },
 		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "クリア済み: 深さ{number1}まで  ·  自分の強さに合う深さを自由に選べます  (次: {number2})" },
 		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "ラッキーワンの称号『ラッキーワン』\nレジェンダリーギアを入手する\n{number1} / {number2}　報酬：🎫 {number3}" },
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "クリティカル時、命中した敵に{number1}発のミサイル(それぞれクリティカル攻撃の25%)" },
@@ -934,8 +935,5 @@ return {
 		{ "◆ Damage Taken Reduction +{number1}%", "◆ 被ダメージ軽減 +{number1}%" },
 		{ "Gives back {number1} gauge after use", "使用後にゲージ{number1}が戻る" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ スペル・トーム · 錆びた時代 +{number1}" },
-		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ 氷の宮殿の門 · レコメンド ⚡{number1}" },
-		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 ゾーン {number1} · 荒地が封鎖されました" },
-		{ "Auto-loot radius grows to {number1}", "自動略奪の範囲が{number1}に拡大します" },
 	},
 }

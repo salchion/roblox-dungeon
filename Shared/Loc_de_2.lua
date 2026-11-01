@@ -525,6 +525,7 @@ return {
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "Gefundene einzigartige Effekte {number1} / {number2}  ·  Mythische Ausrüstung kann einen tragen (ca. {number3}% Chance)" },
 		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "Fähigkeitsmeister-Titel 『Fähigkeitsmeister』\nVerwende Fähigkeiten {number1} Mal\n{number2} / {number3} Belohnung: 🎫 {number4}" },
 		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(dein Rekord: Tiefe {number1} · das Dungeon-Thema ist zufällig, die Chancen sind gleich)" },
+		{ "Each depth up: monster HP +{number1}% · damage +{number2}% · gold +{number3}% · better chest odds", "Pro Tiefe: Monster-LP +{number1} % · Schaden +{number2} % · Gold +{number3} % · bessere Truhenchancen" },
 		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "Bis Tiefe {number1} geschafft  ·  Wähle eine beliebige Tiefe passend zu deiner Stärke  (nächste: {number2})" },
 		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "Glücklicher Titel 『Lucky One』\nErhalte legendäre Ausrüstung\n{number1} / {number2} Belohnung: 🎫 {number3}" },
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "bei Krit {number1} Raketen in den getroffenen Gegner (je 25 % des Krit-Treffers)" },
@@ -971,8 +972,5 @@ return {
 		{ "x{number1} · {number2} SUCCESS", "x{number1} · {number2} ERFOLGE" },
 		{ "🌈 Mythic in {number1}", "🌈 Mythisch in {number1}" },
 		{ "◆ XP Gain +{number1}%", "◆ EP-Gewinn +{number1}%" },
-		{ "Enemy HP +{number1}%", "Gegner-HP +{number1}%" },
-		{ "Activate {number1} G", "Aktiviere {number1} G" },
-		{ "👥 Party ({number1}/{number2})", "👥 Gruppe ({number1}/{number2})" },
 	},
 }

@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎁 Claim All ({number1})", "🎁 Resgatar tudo ({number1})" },
+		{ "Crit damage +{number1}%", "Dano crítico +{number1}%" },
+		{ "◆ Move Speed +{number1}", "◆ Velocidade de movimento +{number1}" },
 		{ "💰 Warp fee -{number1} G", "💰 Taxa de warp -{number1} G" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Nível {number1} {number2} / {number3} XP" },
 		{ "DAMAGE · {number1}s · {number2}", "DANO · {number1}s · {number2}" },

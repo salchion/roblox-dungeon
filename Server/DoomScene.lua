@@ -351,7 +351,7 @@ local function startTutorialRift(player, at)
 		if leftShield then leftShield:Destroy() end
 		player:SetAttribute("CombatLocked", nil)
 		print(string.format("[튜토리얼 열쇠] %s 던전 입장 시도 (Zone=%s, TutorialDungeonRun=%s)", player.Name, tostring(player:GetAttribute("Zone")), tostring(player:GetAttribute("TutorialDungeonRun"))))
-		Dungeon.Start(player, "Cave", "Easy", nil, nil, true)
+		Dungeon.Start(player, "Cave", Config.Dungeon.DepthKey(1), nil, nil, true) -- (옛 "Easy" 가 아니라 깊이 1: 깨면 최고 깊이가 1 로 기록돼 다음부터 깊이 창이 뜬다)
 		if player:GetAttribute("Zone") ~= "Dungeon" then
 			warn("[튜토리얼 열쇠] 던전 입장 실패: Zone=" .. tostring(player:GetAttribute("Zone")) .. " TutorialDungeonLocked=" .. tostring(player:GetAttribute("TutorialDungeonLocked")))
 			notify(player, "The dungeon is not open yet. You can enter from the Dungeon Gates in the north of town")

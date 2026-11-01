@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Enemy HP +{number1}%", "Gegner-HP +{number1}%" },
+		{ "Activate {number1} G", "Aktiviere {number1} G" },
+		{ "👥 Party ({number1}/{number2})", "👥 Gruppe ({number1}/{number2})" },
 		{ "🎫 {number1} tickets!", "🎫 {number1} Tickets!" },
 		{ "Cooldown -{number1}%", "Abklingzeit -{number1} %" },
 		{ "… and {number1} more", "… und {number1} weitere" },

@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "✅ {text1} — tap to claim!", "✅ {text1} — 点击领取!" },
+		{ "💰 Buy Point {text1} G ({number2}/{number3})", "💰 购买点数 {text1} 金币 ({number2}/{number3})" },
 		{ "🐾 Unlock Pet  💰 {text1} G", "🐾 解锁宠物  💰 {text1} 金币" },
 		{ "🎁 You received +{number1} {text2}!", "🎁 你获得了 +{number1} {text2}!" },
 		{ "👋 Welcome back, {text1}!", "👋 欢迎回来,{text1}!" },

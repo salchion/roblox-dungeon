@@ -3562,8 +3562,9 @@ function Dungeon.StartGate(player, index)
 	end
 	local okMeta, MetaD = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
 	local best = okMeta and MetaD.DepthBest(player, "All") or 0
-	if best == 0 or player:GetAttribute("TutorialActive") or player:GetAttribute("TutorialDungeonRun") == true then
-		Dungeon.Start(player, pickDungeonType(player), D.DepthKey(1)) -- 처음이거나 튜토리얼: 깊이 1 로 바로
+	local _ = best -- (처음 들어올 때도 깊이 창을 띄운다: 깊이를 고를 수 있다는 걸 알게. 기본 선택은 깊이 1)
+	if player:GetAttribute("TutorialActive") or player:GetAttribute("TutorialDungeonRun") == true then
+		Dungeon.Start(player, pickDungeonType(player), D.DepthKey(1)) -- 튜토리얼 중: 깊이 1 로 바로
 	else
 		Remotes.Dungeon:FireClient(player, "OpenDepth", { Type = "All" })
 	end

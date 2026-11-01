@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "📍 Field · Best Zone {number1}   🎟 Free {number2}/{number3}", "📍 필드 · 베스트 존 {number1}   🎟 무료 {number2}/{number3}" },
+		{ "⚔ Rocket Launcher · Rusty Era +{number10}", "⚔ 로켓 발사기 · 녹슨 시대 +{number10}" },
 		{ "⚔ Rocket Launcher · Rusty Era +{number1}", "⚔ 로켓 발사기 · 녹슨 시대 +{number1}" },
 		{ "👹 Monster health x{number1}  ·  damage x{number2}", "👹 몬스터 체력 x{number1}  ·  피해 x{number2}" },
 		{ "(Idle Booster applied for {number1} min)", "(방치 부스터 {number1}분 적용 중)" },

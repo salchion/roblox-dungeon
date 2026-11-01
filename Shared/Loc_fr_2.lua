@@ -584,6 +584,7 @@ return {
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "Effets uniques trouvés {number1} / {number2}  ·  L'équipement mythique peut en porter un (environ {number3} % de chance)" },
 		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "Titre de maître des compétences\nUtiliser les compétences {number1} fois\n{number2} / {number3} Récompense : 🎫 {number4}" },
 		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(votre record : profondeur {number1} · le thème du donjon est aléatoire, les probabilités sont les mêmes)" },
+		{ "Each depth up: monster HP +{number1}% · damage +{number2}% · gold +{number3}% · better chest odds", "Par profondeur : PV des monstres +{number1} % · dégâts +{number2} % · or +{number3} % · meilleures chances de coffre" },
 		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "Profondeur {number1} terminée  ·  Choisissez la profondeur qui vous convient  (prochaine : {number2})" },
 		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "Titre « Le chanceux »\nObtenez de l'équipement légendaire\n{number1} / {number2} Récompense : 🎫 {number3}" },
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "sur critique, {number1} missiles dans l'ennemi touché (25 % du coup critique chacun)" },
@@ -931,8 +932,5 @@ return {
 		{ "🥈  {player1}   ⚡ {number1}", "🥈 {player1} ⚡ {number1}" },
 		{ "📍 Town   🎟 Free {number1}/{number2}", "📍 Ville 🎟 Gratuit {number1}/{number2}" },
 		{ "💥 {number1} Kill Streak!!!", "💥 Série de {number1} éliminations !!!" },
-		{ "Use skills {number1} times", "Utiliser les compétences {number1} fois" },
-		{ "Clear {number1} dungeon(s)", "Terminer {number1} donjon(s)" },
-		{ "Light Orb  Lv.{number1} / {number2}", "Orbe de lumière Niv.{number1} / {number2}" },
 	},
 }

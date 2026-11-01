@@ -17,7 +17,7 @@ local player = Players.LocalPlayer
 
 local gui = create("ScreenGui", { Name = "DepthGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 9 }, player:WaitForChild("PlayerGui"))
 local panel = makePanel({
-	Size = UDim2.new(0, 480, 0, 392), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+	Size = UDim2.new(0, 480, 0, 412), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
 	BackgroundColor3 = Color3.fromRGB(22, 24, 38), BackgroundTransparency = 0.02, Visible = false, ZIndex = 10,
 }, gui)
 create("UIStroke", { Color = Color3.fromRGB(150, 130, 230), Thickness = 2, Transparency = 0.25, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, panel)
@@ -33,11 +33,13 @@ local function bestOf(key) return player:GetAttribute("DepthBest_" .. tostring(k
 
 local depthLabel = makeLabel({ Size = UDim2.new(0, 180, 0, 44), Position = UDim2.new(0.5, -90, 0, 54), Text = "", Font = Enum.Font.GothamBlack, TextSize = 26, ZIndex = 11 }, panel)
 local info = makeLabel({ Size = UDim2.new(1, -36, 0, 18), Position = UDim2.new(0, 18, 0, 102), Text = "", TextSize = 12, TextColor3 = Color3.fromRGB(255, 225, 130), ZIndex = 11 }, panel)
+-- 한 칸 올릴 때마다 얼마나 달라지는지 (빡세짐 + 보상 좋아짐)
+local stepInfo = makeLabel({ Size = UDim2.new(1, -36, 0, 18), Position = UDim2.new(0, 18, 0, 122), Text = "", TextSize = 11, TextColor3 = Color3.fromRGB(190, 196, 225), ZIndex = 11 }, panel)
 
 -- 글줄 대신 작은 카드로: 입장 열쇠 / 보스 티켓 / 골드·경험치 / 몬스터 강함
 local function tile(index, caption)
 	local width = (480 - 36 - 3 * 8) / 4
-	local box = create("Frame", { Size = UDim2.new(0, width, 0, 62), Position = UDim2.new(0, 18 + (index - 1) * (width + 8), 0, 130), BackgroundColor3 = Color3.fromRGB(32, 34, 54), BorderSizePixel = 0, ZIndex = 11 }, panel)
+	local box = create("Frame", { Size = UDim2.new(0, width, 0, 62), Position = UDim2.new(0, 18 + (index - 1) * (width + 8), 0, 150), BackgroundColor3 = Color3.fromRGB(32, 34, 54), BorderSizePixel = 0, ZIndex = 11 }, panel)
 	rounded(box, 10)
 	local value = makeLabel({ Size = UDim2.new(1, -6, 0, 30), Position = UDim2.new(0, 3, 0, 6), Text = "", TextSize = 17, Font = Enum.Font.GothamBlack, ZIndex = 12 }, box)
 	makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 38), Text = caption, TextSize = 10, TextColor3 = Color3.fromRGB(170, 176, 205), ZIndex = 12 }, box)
@@ -49,20 +51,20 @@ local tileGold = tile(3, "Gold / XP")
 local tileMonster = tile(4, "Monster HP / Damage")
 tileMonster.TextSize = 13
 
-local chestHead = makeLabel({ Size = UDim2.new(1, -36, 0, 20), Position = UDim2.new(0, 18, 0, 206), Text = "", RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 11 }, panel)
+local chestHead = makeLabel({ Size = UDim2.new(1, -36, 0, 20), Position = UDim2.new(0, 18, 0, 226), Text = "", RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 11 }, panel)
 local rarityChips = {}
 for index = 1, #Config.Gear.RarityNames do
 	local width = (480 - 36 - 4 * 6) / 5
-	local box = create("Frame", { Size = UDim2.new(0, width, 0, 48), Position = UDim2.new(0, 18 + (index - 1) * (width + 6), 0, 232), BackgroundColor3 = Color3.fromRGB(32, 34, 54), BorderSizePixel = 0, ZIndex = 11 }, panel)
+	local box = create("Frame", { Size = UDim2.new(0, width, 0, 48), Position = UDim2.new(0, 18 + (index - 1) * (width + 6), 0, 252), BackgroundColor3 = Color3.fromRGB(32, 34, 54), BorderSizePixel = 0, ZIndex = 11 }, panel)
 	rounded(box, 10)
 	local stroke = create("UIStroke", { Thickness = 1.5, Transparency = 0.3 }, box)
 	local nameLabel = makeLabel({ Size = UDim2.new(1, -4, 0, 18), Position = UDim2.new(0, 2, 0, 5), Text = "", TextSize = 11, Font = Enum.Font.GothamBold, ZIndex = 12 }, box)
 	local pctLabel = makeLabel({ Size = UDim2.new(1, -4, 0, 20), Position = UDim2.new(0, 2, 0, 23), Text = "", TextSize = 13, Font = Enum.Font.GothamBlack, ZIndex = 12 }, box)
 	rarityChips[index] = { Stroke = stroke, Name = nameLabel, Pct = pctLabel }
 end
-local uniqueChip = makeLabel({ Size = UDim2.new(0.5, -24, 0, 30), Position = UDim2.new(0, 18, 0, 290), Text = "", TextSize = 12, Font = Enum.Font.GothamBold, BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(52, 42, 30), TextColor3 = Color3.fromRGB(255, 200, 110), ZIndex = 11 }, panel)
+local uniqueChip = makeLabel({ Size = UDim2.new(0.5, -24, 0, 30), Position = UDim2.new(0, 18, 0, 310), Text = "", TextSize = 12, Font = Enum.Font.GothamBold, BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(52, 42, 30), TextColor3 = Color3.fromRGB(255, 200, 110), ZIndex = 11 }, panel)
 rounded(uniqueChip, 10)
-local setChip = makeLabel({ Size = UDim2.new(0.5, -24, 0, 30), Position = UDim2.new(0.5, 6, 0, 290), Text = "", TextSize = 12, Font = Enum.Font.GothamBold, BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(32, 48, 40), TextColor3 = Color3.fromRGB(150, 235, 170), ZIndex = 11 }, panel)
+local setChip = makeLabel({ Size = UDim2.new(0.5, -24, 0, 30), Position = UDim2.new(0.5, 6, 0, 310), Text = "", TextSize = 12, Font = Enum.Font.GothamBold, BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(32, 48, 40), TextColor3 = Color3.fromRGB(150, 235, 170), ZIndex = 11 }, panel)
 rounded(setChip, 10)
 
 local function refresh()
@@ -76,6 +78,8 @@ local function refresh()
 	depthLabel.TextColor3 = difficulty.Color
 	info.Text = string.format("Cleared up to depth %d  ·  next: %d", bestOf(typeKey), frontier)
 
+	local G = Config.Dungeon.Depth
+	stepInfo.Text = string.format("Each depth up: monster HP +%d%% · damage +%d%% · gold +%d%% · better chest odds", math.floor((G.HealthGrowth - 1) * 100 + 0.5), math.floor((G.DamageGrowth - 1) * 100 + 0.5), math.floor((G.GoldGrowth - 1) * 100 + 0.5))
 	tileKey.Text = string.format("🔑 %d", difficulty.KeyCost)
 	tileKey.TextColor3 = Color3.fromRGB(255, 224, 138)
 	tileTickets.Text = string.format("🎫 %d", difficulty.Tickets)
