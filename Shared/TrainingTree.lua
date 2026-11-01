@@ -105,51 +105,62 @@ local function canvas(env)
 end
 
 -- 고른 노드의 설명 + 버튼 한 줄 (나무 바로 아래)
-local function detailRow(env, color, text, button)
-	local create, label = env.Create, env.MakeLabel
-	local detail = env.NewRow(76, Color3.fromRGB(30, 28, 46))
-	create("UIStroke", { Color = color, Thickness = 1.5, Transparency = 0.3 }, detail)
-	label({ Size = UDim2.new(1, -210, 1, -12), Position = UDim2.new(0, 14, 0, 6), RichText = true, TextSize = 12, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center, Text = text }, detail)
-	if button then
-		if env.InTown == false then -- 필드에서는 업그레이드 못 한다: 버튼이 "마을에서"로 바뀐다 (서버도 막는다)
-			button = { Text = "🏘 Upgrade in town", Color = env.GRAY, OnClick = function() end }
-		end
-		env.MakeButton({ Size = UDim2.new(0, 180, 0, 44), Position = UDim2.new(1, -192, 0.5, -22), Text = button.Text, TextSize = 12, BackgroundColor3 = button.Color }, detail, button.OnClick)
-	end
-end
-
 -- 스킬 갈래 (레벨 5 / 10): 두 길 중 하나를 고른다. 처음 고르는 건 무료, 바꾸면 골드가 든다 (서버도 확인한다)
-local function branchRows(env, key)
+-- 스킬을 고르면 설명 줄 오른쪽에 두 줄(Lv.5 / Lv.10)로 붙는다: 스크롤 없이 한 화면에서 본다
+local function branchCards(env, key, parent)
 	local Config = env.Config
 	local defs = Config.SkillBranch and Config.SkillBranch[key]
 	if not defs then return end
 	local level = env.Meta and env.Meta.Skills and env.Meta.Skills[key] or 1
-	for _, tier in ipairs(Config.SkillBranchTiers) do
+	for rowIndex, tier in ipairs(Config.SkillBranchTiers) do
 		local pair = defs[tier]
 		if pair then
 			local chosen = env.Player:GetAttribute("SkillBr" .. tier .. "_" .. key)
 			local unlocked = level >= tier
-			local row = env.NewRow(92, Color3.fromRGB(28, 26, 42))
-			local header = string.format("<font color='#ffd966'><b>Lv.%d</b></font>  %s", tier, unlocked and (chosen and "<font color='#78ff8c'>✔ Path chosen</font>" or "Choose a path") or "<font color='#9a9ab4'>🔒 Locked</font>")
-			env.MakeLabel({ Size = UDim2.new(0.6, -12, 0, 18), Position = UDim2.new(0, 12, 0, 4), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, Text = header }, row)
-			if unlocked and chosen then
-				local cost = math.floor(Config.GetSkillUpgradeCost(tier) * Config.SkillBranchSwapRatio)
-				env.MakeLabel({ Size = UDim2.new(0.4, -12, 0, 18), Position = UDim2.new(0.6, 0, 0, 4), TextSize = 11, TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = Color3.fromRGB(190, 190, 215),
-					Text = string.format("Switch path: %s G", comma(cost)) }, row)
-			end
+			local y = 6 + (rowIndex - 1) * 52
+			local tag = env.MakeLabel({ Size = UDim2.new(0, 46, 0, 48), Position = UDim2.new(0.44, 0, 0, y), RichText = true, TextSize = 12, TextWrapped = true,
+				Text = string.format("<font color='#ffd966'><b>Lv.%d</b></font>\n%s", tier, unlocked and (chosen and "<font color='#78ff8c' size='10'>✔</font>" or "") or "🔒") }, parent)
+			tag.ZIndex = 3
 			for index, side in ipairs({ "A", "B" }) do
 				local def = pair[side]
 				local picked = chosen == side
-				env.MakeButton({
-					Size = UDim2.new(0.5, -14, 0, 62), Position = UDim2.new(index == 1 and 0 or 0.5, index == 1 and 8 or 6, 0, 26), TextSize = 11, TextWrapped = true,
-					Text = string.format("%s %s%s\n%s", picked and "✔" or def.Icon, def.Name, picked and "" or "", def.Desc),
+				local cost = chosen and not picked and math.floor(Config.GetSkillUpgradeCost(tier) * Config.SkillBranchSwapRatio) or nil
+				local text = string.format("%s %s\n%s", picked and "✔" or def.Icon, def.Name, def.Desc)
+				if cost then text = text .. string.format("\nSwitch path: %s G", comma(cost)) end
+				local button = env.MakeButton({
+					Size = UDim2.new(0.56, -52, 0, 48), Position = UDim2.new(0.44, 46 + (index - 1) * 0, 0, y), TextSize = 10, TextWrapped = true, Text = text,
 					BackgroundColor3 = picked and Color3.fromRGB(46, 112, 84) or (unlocked and Color3.fromRGB(58, 60, 92) or Color3.fromRGB(44, 44, 56)),
-					TextColor3 = unlocked and Color3.new(1, 1, 1) or Color3.fromRGB(140, 140, 160),
-				}, row, function()
+					TextColor3 = unlocked and Color3.new(1, 1, 1) or Color3.fromRGB(150, 150, 170),
+				}, parent, function()
 					if unlocked and not picked then env.Remotes.Meta:FireServer("SkillBranch", string.format("%s|%d|%s", key, tier, side)) end
 				end)
+				button.AnchorPoint = Vector2.new(0, 0)
+				button.Size = UDim2.new((0.56 - 0.07) / 2, -4, 0, 48)
+				button.Position = UDim2.new(0.44 + 0.07 + (index - 1) * ((0.56 - 0.07) / 2), 2, 0, y)
 			end
 		end
+	end
+end
+
+local function detailRow(env, color, text, button, skillKey)
+	local create, label = env.Create, env.MakeLabel
+	local withBranch = skillKey ~= nil and env.Config.SkillBranch ~= nil and env.Config.SkillBranch[skillKey] ~= nil
+	local detail = env.NewRow(withBranch and 116 or 76, Color3.fromRGB(30, 28, 46))
+	create("UIStroke", { Color = color, Thickness = 1.5, Transparency = 0.3 }, detail)
+	if button and env.InTown == false then -- 필드에서는 업그레이드 못 한다: 버튼이 "마을에서"로 바뀐다 (서버도 막는다)
+		button = { Text = "🏘 Upgrade in town", Color = env.GRAY, OnClick = function() end }
+	end
+	if withBranch then
+		label({ Size = UDim2.new(0.44, -16, 1, -50), Position = UDim2.new(0, 12, 0, 4), RichText = true, TextSize = 11, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = text }, detail)
+		if button then
+			env.MakeButton({ Size = UDim2.new(0.44, -24, 0, 38), Position = UDim2.new(0, 12, 1, -44), Text = button.Text, TextSize = 12, BackgroundColor3 = button.Color }, detail, button.OnClick)
+		end
+		branchCards(env, skillKey, detail)
+		return
+	end
+	label({ Size = UDim2.new(1, -210, 1, -12), Position = UDim2.new(0, 14, 0, 6), RichText = true, TextSize = 12, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center, Text = text }, detail)
+	if button then
+		env.MakeButton({ Size = UDim2.new(0, 180, 0, 44), Position = UDim2.new(1, -192, 0.5, -22), Text = button.Text, TextSize = 12, BackgroundColor3 = button.Color }, detail, button.OnClick)
 	end
 end
 
@@ -361,11 +372,7 @@ function M.BuildAll(env)
 	if not ok then
 		warn("[TrainingTree] " .. tostring(color))
 	elseif color then
-		detailRow(env, color, text, button)
-	end
-	if selected.Kind == "Skill" then
-		local okB, errB = pcall(branchRows, env, selected.Key)
-		if not okB then warn("[TrainingTree] " .. tostring(errB)) end
+		detailRow(env, color, text, button, selected.Kind == "Skill" and selected.Key or nil)
 	end
 end
 
