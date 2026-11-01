@@ -109,7 +109,7 @@ local function play()
 		return l
 	end
 	local title = text({ Size = UDim2.new(1, 0, 0, 80), Position = UDim2.new(0.5, 0, 0.47, 0), TextSize = 66, TextColor3 = Color3.fromRGB(242, 228, 196), Text = "GEAR RUSH" })
-	local subtitle = text({ Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0.5, 0, 0.47, 56), TextSize = 17, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(190, 175, 150), Text = "D U N G E O N   S H O O T E R" })
+	local subtitle = text({ Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0.5, 0, 0.47, 56), TextSize = 17, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(190, 175, 150), Text = "L O O T   H U N T E R   R P G" })
 
 	-- 날아가는 동안 보이는 "여정" 표시: 지나가는 구역 이름 + 아래 검은 띠 속 진행 막대 (끝에는 ☠). 이걸 다 뚫고 가야 보스가 있다는 걸 보여 준다
 	local zoneLabel = text({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0.5, 0, 0.84, 0), TextSize = 22, TextColor3 = Color3.fromRGB(236, 226, 200), Text = "" })
@@ -318,7 +318,7 @@ local function play()
 			return l
 		end
 		pageText({ Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0.5, 0, 0.36, 0), TextSize = 56, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(226, 208, 168), Text = "GEAR RUSH" })
-		pageText({ Size = UDim2.new(1, 0, 0, 22), Position = UDim2.new(0.5, 0, 0.36, 50), TextSize = 15, TextColor3 = Color3.fromRGB(150, 138, 118), Text = "D U N G E O N   S H O O T E R" })
+		pageText({ Size = UDim2.new(1, 0, 0, 22), Position = UDim2.new(0.5, 0, 0.36, 50), TextSize = 15, TextColor3 = Color3.fromRGB(150, 138, 118), Text = "L O O T   H U N T E R   R P G" })
 		local barBackLoad = Instance.new("Frame")
 		barBackLoad.Size = UDim2.new(0, 360, 0, 6)
 		barBackLoad.AnchorPoint = Vector2.new(0.5, 0.5)
