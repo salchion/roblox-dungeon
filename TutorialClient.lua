@@ -394,76 +394,127 @@ local function showPrompt(data)
 	end)
 end
 
--- 첫 장비 슬롯 릴: 화면 가운데 위쪽에서 세 칸이 차례로 멈추며 장비 3개를 보여 준다 (장비는 이미 지급되어 장착됐다)
+-- 첫 장비 지급 연출: 화면 가운데 위쪽에서 장비 카드 3장이 차례로 돌다가 멈추며 등급 색으로 번쩍인다
+-- (큰 아이콘 + 등급 + 이름 + 능력치 한 줄. 장비는 이미 지급되어 장착됐다)
 local reelActive = false
 local function playReel(list)
 	if reelActive or typeof(list) ~= "table" or #list == 0 then return end
 	reelActive = true
 	local G = Config.Gear
+	local ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
+	local ORDER = { "Armor", "Gloves", "Boots", "Helmet", "Ring", "Necklace" }
+	local CARD_W, CARD_H, GAP = 148, 176, 16
+	local count = #list
+	local panelW = count * CARD_W + (count - 1) * GAP + 56
 	local panel = create("Frame", {
-		Size = UDim2.new(0, 460, 0, 196), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0.16, 0),
-		BackgroundColor3 = Color3.fromRGB(26, 30, 46), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 70,
+		Size = UDim2.new(0, panelW, 0, 300), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0.13, 0),
+		BackgroundColor3 = Color3.fromRGB(20, 18, 36), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 70,
 	}, gui)
-	rounded(panel, 14)
-	local panelStroke = create("UIStroke", { Color = Color3.fromRGB(120, 140, 200), Thickness = 2, Transparency = 1 }, panel)
-	local title = label({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 8), TextSize = 19, Font = Enum.Font.GothamBlack,
-		Text = "🎁 First gear granted!", TextTransparency = 1, ZIndex = 71 }, panel)
-	local footer = label({ Size = UDim2.new(1, -24, 0, 40), Position = UDim2.new(0, 12, 1, -46), TextSize = 12, TextWrapped = true,
-		TextColor3 = Color3.fromRGB(200, 210, 235), Text = "🎰 Want more pulls? Use tickets at the gacha machine in town! Daily quests have pulls too", TextTransparency = 1, ZIndex = 71 }, panel)
-	TweenService:Create(panel, TweenInfo.new(0.3), { BackgroundTransparency = 0.08 }):Play()
-	TweenService:Create(panelStroke, TweenInfo.new(0.3), { Transparency = 0.3 }):Play()
-	TweenService:Create(title, TweenInfo.new(0.3), { TextTransparency = 0 }):Play()
-	TweenService:Create(footer, TweenInfo.new(0.6), { TextTransparency = 0 }):Play()
+	rounded(panel, 18)
+	create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(140, 130, 190)), Rotation = 90 }, panel)
+	local panelStroke = create("UIStroke", { Color = Color3.fromRGB(255, 205, 110), Thickness = 2.5, Transparency = 1 }, panel)
+	local title = label({ Size = UDim2.new(1, 0, 0, 38), Position = UDim2.new(0, 0, 0, 10), TextSize = 22, Font = Enum.Font.GothamBlack,
+		Text = "🎁 First gear granted!", TextColor3 = Color3.fromRGB(255, 226, 140), TextTransparency = 1, TextStrokeTransparency = 1, ZIndex = 71 }, panel)
+	local footer = label({ Size = UDim2.new(1, -40, 0, 40), Position = UDim2.new(0, 20, 1, -50), TextSize = 12, TextWrapped = true,
+		TextColor3 = Color3.fromRGB(205, 212, 238), Text = "🎰 Want more pulls? Use tickets at the gacha machine in town! Daily quests have pulls too", TextTransparency = 1, ZIndex = 71 }, panel)
+	TweenService:Create(panel, TweenInfo.new(0.3), { BackgroundTransparency = 0.04 }):Play()
+	TweenService:Create(panelStroke, TweenInfo.new(0.3), { Transparency = 0.15 }):Play()
+	TweenService:Create(title, TweenInfo.new(0.3), { TextTransparency = 0, TextStrokeTransparency = 0.5 }):Play()
+	TweenService:Create(footer, TweenInfo.new(0.7), { TextTransparency = 0 }):Play()
 
-	local windows = {}
-	for index = 1, #list do
-		local width = 130
-		local x = (460 - (#list * width + (#list - 1) * 12)) / 2 + (index - 1) * (width + 12)
-		local frame = create("Frame", { Size = UDim2.new(0, width, 0, 84), Position = UDim2.new(0, x, 0, 54), BackgroundColor3 = Color3.fromRGB(14, 16, 28),
-			BorderSizePixel = 0, ClipsDescendants = true, ZIndex = 71 }, panel)
-		rounded(frame, 10)
-		local stroke = create("UIStroke", { Color = Color3.fromRGB(70, 80, 110), Thickness = 2 }, frame)
-		local slotText = label({ Size = UDim2.new(1, 0, 0, 28), Position = UDim2.new(0, 0, 0, 10), TextSize = 17, Font = Enum.Font.GothamBold, Text = "?", ZIndex = 72 }, frame)
-		local nameText = label({ Size = UDim2.new(1, -8, 0, 36), Position = UDim2.new(0, 4, 0, 40), TextSize = 12, TextWrapped = true, Text = "", ZIndex = 72 }, frame)
-		windows[index] = { Slot = slotText, Name = nameText, Stroke = stroke, Frame = frame }
+	local cards = {}
+	for index = 1, count do
+		local x = (panelW - (count * CARD_W + (count - 1) * GAP)) / 2 + (index - 1) * (CARD_W + GAP)
+		local holder = create("Frame", { Size = UDim2.new(0, CARD_W, 0, CARD_H), Position = UDim2.new(0, x, 0, 58), BackgroundTransparency = 1, ZIndex = 71 }, panel)
+		local glow = create("Frame", { Size = UDim2.new(1, 18, 1, 18), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+			BackgroundColor3 = Color3.fromRGB(255, 255, 255), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 70 }, holder)
+		rounded(glow, 22)
+		local frame = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(16, 16, 30), BorderSizePixel = 0, ZIndex = 72 }, holder)
+		rounded(frame, 16)
+		local stroke = create("UIStroke", { Color = Color3.fromRGB(70, 76, 108), Thickness = 2 }, frame)
+		local rarityText = label({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 0, 8), TextSize = 12, Font = Enum.Font.GothamBlack, Text = "", ZIndex = 73 }, frame)
+		local icon = label({ Size = UDim2.new(1, 0, 0, 62), Position = UDim2.new(0, 0, 0, 30), TextSize = 46, Text = "❔", TextTransparency = 0.35, ZIndex = 73 }, frame)
+		local slotText = label({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 94), TextSize = 12, Font = Enum.Font.GothamBold, Text = "?", TextColor3 = Color3.fromRGB(150, 160, 190), ZIndex = 73 }, frame)
+		local nameText = label({ Size = UDim2.new(1, -10, 0, 34), Position = UDim2.new(0, 5, 0, 114), TextSize = 13, Font = Enum.Font.GothamBlack, TextWrapped = true, Text = "", ZIndex = 73 }, frame)
+		local statText = label({ Size = UDim2.new(1, -10, 0, 18), Position = UDim2.new(0, 5, 1, -26), TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(150, 220, 255), Text = "", TextTransparency = 1, ZIndex = 73 }, frame)
+		local scale = create("UIScale", { Scale = 0.6 }, holder)
+		TweenService:Create(scale, TweenInfo.new(0.35 + index * 0.08, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+		cards[index] = { Holder = holder, Glow = glow, Frame = frame, Stroke = stroke, Rarity = rarityText, Icon = icon, Slot = slotText, Name = nameText, Stat = statText, Scale = scale }
 	end
-	-- 돌아가는 동안: 부위 이름이 빠르게 바뀐다 -> 왼쪽부터 차례로 멈춘다
+
+	-- 별가루: 멈추는 카드에서 사방으로 튀어나간다 (등급이 높을수록 많이)
+	local function sparkle(card, color, amount)
+		for _ = 1, amount do
+			local angle = math.random() * math.pi * 2
+			local dist = 50 + math.random() * 70
+			local star = label({ Size = UDim2.new(0, 22, 0, 22), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Text = "✦",
+				TextSize = 12 + math.random(0, 12), TextColor3 = color, Font = Enum.Font.GothamBlack, ZIndex = 74 }, card.Holder)
+			TweenService:Create(star, TweenInfo.new(0.6 + math.random() * 0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+				Position = UDim2.new(0.5, math.cos(angle) * dist, 0.5, math.sin(angle) * dist), TextTransparency = 1, Rotation = math.random(-90, 90),
+			}):Play()
+			game:GetService("Debris"):AddItem(star, 1.1)
+		end
+	end
+
+	-- 돌아가는 동안: 아이콘 / 부위 이름이 빠르게 바뀐다 -> 왼쪽부터 차례로 멈춘다
 	local startedAt = os.clock()
-	local stopAt = {}
-	for index = 1, #list do stopAt[index] = 0.5 + (index - 1) * 0.25 end
 	local done = 0
-	while done < #list do
+	local stopAt = {}
+	for index = 1, count do stopAt[index] = 0.7 + (index - 1) * 0.4 end
+	while done < count do
 		local elapsed = os.clock() - startedAt
-		for index, window in ipairs(windows) do
+		for index, card in ipairs(cards) do
 			local item = list[index]
-			if not window.Stopped then
+			if not card.Stopped then
 				if elapsed >= stopAt[index] then
-					window.Stopped = true
+					card.Stopped = true
 					done += 1
-					SoundBank.Play(game:GetService("SoundService"), "Reel_Stop", { Pitch = 0.92 + 0.12 * index }) -- 멈출 때마다 "띵" (음이 조금씩 올라간다)
-					window.Slot.Text = item.Slot
-					window.Name.Text = item.Name .. "\n[" .. G.RarityNames[item.Rarity] .. "]"
 					local color = G.RarityColors[item.Rarity]
-					window.Name.TextColor3 = color
-					window.Stroke.Color = color
-					window.Frame.Size = UDim2.new(0, 142, 0, 92)
-					TweenService:Create(window.Frame, TweenInfo.new(0.25, Enum.EasingStyle.Back), { Size = UDim2.new(0, 130, 0, 84) }):Play()
+					SoundBank.Play(game:GetService("SoundService"), "Reel_Stop", { Pitch = 0.92 + 0.12 * index })
+					card.Icon.Text = ICONS[item.Key or ""] or "🎁"
+					card.Icon.TextTransparency = 0
+					card.Slot.Text = item.Slot
+					card.Slot.TextColor3 = Color3.fromRGB(205, 210, 235)
+					card.Name.Text = item.Name
+					card.Name.TextColor3 = color
+					card.Rarity.Text = G.RarityNames[item.Rarity]
+					card.Rarity.TextColor3 = color
+					card.Stroke.Color = color
+					card.Stroke.Thickness = 3.5
+					card.Frame.BackgroundColor3 = color:Lerp(Color3.fromRGB(16, 16, 30), 0.82)
+					if item.Key then
+						local ok, text = pcall(function() return Config.FormatGearStat(item.Key, Config.GetGearStat(item.Key, item.Rarity, 0)) end)
+						if ok then card.Stat.Text = text end
+					end
+					TweenService:Create(card.Stat, TweenInfo.new(0.4), { TextTransparency = 0 }):Play()
+					card.Glow.BackgroundColor3 = color
+					card.Glow.BackgroundTransparency = 0.35
+					TweenService:Create(card.Glow, TweenInfo.new(0.7), { BackgroundTransparency = 1 }):Play()
+					card.Scale.Scale = 1.18
+					TweenService:Create(card.Scale, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+					sparkle(card, color, 6 + item.Rarity * 4)
 				else
-					local slot = G.Slots[math.random(#G.Slots)]
-					window.Slot.Text = slot.Name
-					window.Name.Text = slot.Names[math.random(#slot.Names)]
-					window.Name.TextColor3 = Color3.fromRGB(150, 160, 190)
+					local key = ORDER[math.random(#ORDER)]
+					card.Icon.Text = ICONS[key]
+					card.Slot.Text = "…"
 				end
 			end
 		end
 		task.wait(0.07)
 	end
-	task.wait(0.9)
+	task.wait(1.6)
 	for _, inst in ipairs({ panel, panelStroke, title, footer }) do
 		local prop = inst:IsA("Frame") and "BackgroundTransparency" or inst:IsA("UIStroke") and "Transparency" or "TextTransparency"
-		TweenService:Create(inst, TweenInfo.new(0.3), { [prop] = 1 }):Play()
+		TweenService:Create(inst, TweenInfo.new(0.35), { [prop] = 1 }):Play()
 	end
-	task.wait(0.35)
+	for _, card in ipairs(cards) do
+		TweenService:Create(card.Frame, TweenInfo.new(0.35), { BackgroundTransparency = 1 }):Play()
+		TweenService:Create(card.Stroke, TweenInfo.new(0.35), { Transparency = 1 }):Play()
+		for _, text in ipairs({ card.Rarity, card.Icon, card.Slot, card.Name, card.Stat }) do
+			TweenService:Create(text, TweenInfo.new(0.35), { TextTransparency = 1 }):Play()
+		end
+	end
+	task.wait(0.4)
 	panel:Destroy()
 	reelActive = false
 end

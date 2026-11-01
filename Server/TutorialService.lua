@@ -320,7 +320,7 @@ function giveReelGear(player)
 	for index = 1, 3 do
 		local slot, rarity = slots[index], rarities[index]
 		Inventory.Add(player, Inventory.NewItem(slot.Key, rarity, 0))
-		table.insert(list, { Slot = slot.Name, Name = slot.Names[rarity], Rarity = rarity })
+		table.insert(list, { Key = slot.Key, Slot = slot.Name, Name = slot.Names[rarity], Rarity = rarity })
 	end
 	Remotes.Tutorial:FireClient(player, "Reel", list)
 end
