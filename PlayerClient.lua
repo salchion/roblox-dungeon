@@ -1415,6 +1415,7 @@ local resultBack = makeButton({
 	Text = "Back to Lobby", TextSize = 14,
 }, resultPanel, function()
 	Remotes.Dungeon:FireServer("Leave")
+	resultPanel:SetAttribute("Keep", nil)
 	resultPanel.Visible = false -- (소탕 결과는 던전 안이 아니라서 서버가 돌려보내지 않는다: 창을 직접 닫는다)
 end)
 
@@ -1426,6 +1427,7 @@ local function showResult(result)
 	resultPanel.Visible = true
 	resultTitle.Text = result.Sweep and "⚡ Sweep Complete!" or (result.Victory and "🏆 Dungeon Cleared!" or "💀 Dungeon Failed")
 	resultBack.Text = result.Sweep and "OK" or "Back to Lobby"
+	resultPanel:SetAttribute("Keep", result.Sweep == true or nil) -- 소탕 결과는 마을에서 뜬다: 구역 갱신이 바로 닫지 않게 표시
 	resultTitle.TextColor3 = result.Victory and Color3.fromRGB(255, 220, 90) or Color3.fromRGB(255, 110, 110)
 	do -- 번 골드 / 티켓 칩 (세 자리마다 쉼표)
 		local goldText = tostring(math.floor(result.Gold or 0)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
@@ -1524,10 +1526,13 @@ local function refreshZone()
 		enhancePanel.Visible = false
 		gearPanel.Visible = false
 	end
+	if zone ~= "Lobby" then resultPanel:SetAttribute("Keep", nil) end
 	if zone ~= "Dungeon" then
 		dungeonState = nil
-		resultToken += 1
-		resultPanel.Visible = false
+		if resultPanel:GetAttribute("Keep") ~= true then
+			resultToken += 1
+			resultPanel.Visible = false
+		end
 		bossBar.Visible = false
 	else
 		enhancePanel.Visible = false
