@@ -1446,12 +1446,31 @@ local function doomWaveInner(player, zone, center, real)
 			Effects.Burst(r.Position + Vector3.new(0, 10, 0), rgb(255, 170, 110), 80)
 			shake(1)
 			Remotes.Tutorial:FireClient(player, "Cinema", "Blast")
-			task.wait(0.35)
-			local _, h = getAliveParts(player)
-			if h then
-				Remotes.Tutorial:FireClient(player, "Cinema", "Black")
-				task.wait(0.5)
-				h.Health = 0
+			-- 장풍에 맞아 멀리 날아간다: 군주 반대쪽으로 포물선을 그리며 빙글빙글 튕겨 나가고, 날아가는 중간에 암전 (그 뒤 마을 시작 위치로 돌아간다)
+			do
+				local flyRoot = getAliveParts(player)
+				if flyRoot then
+					local away = (flyRoot.Position - body.Position) * Vector3.new(1, 0, 1)
+					local dir = away.Magnitude > 0.1 and away.Unit or Vector3.new(0, 0, 1)
+					local startPos = flyRoot.Position
+					flyRoot.Anchored = true
+					local flightTime, started, blackSent = 1.1, os.clock(), false
+					while true do
+						local t = (os.clock() - started) / flightTime
+						if t >= 1 or not flyRoot.Parent then break end
+						local pos = startPos + dir * (t * (2 - t) * 150) + Vector3.new(0, math.sin(t * math.pi) * 16 + t * 10, 0)
+						flyRoot.CFrame = CFrame.new(pos) * CFrame.Angles(t * 14, t * 6, t * 3)
+						if t > 0.5 and not blackSent then
+							blackSent = true
+							Remotes.Tutorial:FireClient(player, "Cinema", "Black")
+						end
+						task.wait()
+					end
+					if not blackSent then Remotes.Tutorial:FireClient(player, "Cinema", "Black") end
+					task.wait(0.4)
+				end
+				local _, h = getAliveParts(player)
+				if h then h.Health = 0 end
 			end
 		end
 		charge:Destroy()
