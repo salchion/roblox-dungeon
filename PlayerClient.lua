@@ -524,7 +524,8 @@ function refreshEnhance()
 	-- 위쪽: [지금 무기] ──막대──▶ [다음 무기 / 다음 시대]
 	do
 		local order = Config.WeaponTypes.Order
-		E.CurCaption.Text = Config.GetWeaponName(typeKey, level)
+		-- 무기가 다 열렸으면 [지금 시대] → [다음 시대] (둘 다 시대 이름), 아직 안 열린 무기가 있으면 [지금 무기] → [다음 무기]
+		E.CurCaption.Text = (milestone and milestone.Kind == "Era") and Config.GetEraName(tier.Era) or Config.GetWeaponName(typeKey, level)
 		E.CurCaption.TextColor3 = color
 		if not milestone then -- 마지막 무기까지 끝냈다
 			E.NextIcon.Text = "👑"
