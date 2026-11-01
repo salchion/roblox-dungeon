@@ -3595,4 +3595,34 @@ Remotes.Dungeon.OnServerEvent:Connect(function(player, action, typeKey, depth)
 	end
 end)
 
+-- 안전장치: 던전 안에서 몸이 고정(Anchored)된 채 2.5초 넘게 남아 있으면 풀어 준다 (도착지 지형을 불러오는 동안 잠깐 고정하는 것은 0.45초면 끝난다).
+-- 어떤 이유로 풀리지 않아 "던전에 들어갔는데 움직일 수 없다"가 되는 것을 막는다. 걷는 속도가 0 / 비정상이면 같이 바로잡는다.
+task.spawn(function()
+	local heldSince = setmetatable({}, { __mode = "k" })
+	while true do
+		task.wait(0.5)
+		for _, player in ipairs(Players:GetPlayers()) do
+			local character = player.Character
+			local root = character and character:FindFirstChild("HumanoidRootPart")
+			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+			if root and humanoid and player:GetAttribute("Zone") == "Dungeon" and not workspace:GetAttribute("PhotoFreeze") and humanoid.Health > 0 then
+				if root.Anchored then
+					heldSince[player] = heldSince[player] or os.clock()
+					if os.clock() - heldSince[player] > 2.5 then
+						root.Anchored = false
+						pcall(function() root:SetNetworkOwner(player) end)
+						heldSince[player] = nil
+						warn("[Dungeon] " .. player.Name .. " 의 몸이 던전에서 고정된 채 남아 있어 풀었습니다")
+					end
+				else
+					heldSince[player] = nil
+				end
+				if humanoid.WalkSpeed <= 0 or humanoid.WalkSpeed ~= humanoid.WalkSpeed then humanoid.WalkSpeed = Config.Player.WalkSpeed end
+			else
+				heldSince[player] = nil
+			end
+		end
+	end
+end)
+
 return Dungeon
