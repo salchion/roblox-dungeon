@@ -67,7 +67,7 @@ local function sparks(color, count)
 	end
 end
 
-local function play(loot)
+local function play(loot, sweep)
 	token += 1
 	local mine = token
 	close()
@@ -176,13 +176,16 @@ local function play(loot)
 	player:SetAttribute("ChestOpening", nil)
 	tween(stage, 0.45, { Position = UDim2.new(0.5, 0, 0.23, 0) })
 	tween(scale, 0.45, { Scale = scale.Scale * 0.78 }) -- 작게 올려서 위쪽에서 잘리지 않게
+	if sweep then -- 소탕은 던전 밖(마을)이라 구역이 바뀌어도 치워지지 않는다: 몇 초 뒤 스스로 걷는다
+		task.delay(5, function() if token == mine then close() end end)
+	end
 end
 
 Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
 	if action ~= "Result" or typeof(data) ~= "table" or data.Victory ~= true then return end
 	local loot = data.Loot
 	if typeof(loot) ~= "table" or #loot == 0 then return end
-	task.spawn(play, loot)
+	task.spawn(play, loot, data.Sweep == true)
 end)
 
 player:GetAttributeChangedSignal("Zone"):Connect(function()
