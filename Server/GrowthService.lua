@@ -94,6 +94,8 @@ function Growth.Push(player)
 		for _, job in ipairs(state.Jobs) do
 			table.insert(jobs, { Stat = job.Stat, EndAt = job.EndAt })
 		end
+		player:SetAttribute("TrainJobs", #jobs) -- (다음 목표 카드가 "훈련 칸이 비었어요"를 알려 줄 때 쓴다)
+		player:SetAttribute("TrainSlots", slotsOf(player))
 		Remotes.Growth:FireClient(player, "State", {
 			UpJobs = state.UpJobs,
 			Levels = state.Levels,

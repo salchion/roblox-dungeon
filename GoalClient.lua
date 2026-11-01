@@ -57,6 +57,14 @@ titleLabel.TextWrapped = true
 titleLabel.RichText = true
 titleLabel.Parent = panel
 
+local panelStroke = Instance.new("UIStroke") -- 목표를 채우면 초록으로 번쩍 (완료 연출)
+panelStroke.Color = Color3.fromRGB(120, 255, 150)
+panelStroke.Thickness = 2
+panelStroke.Transparency = 1
+panelStroke.Parent = panel
+local slide = Instance.new("NumberValue") -- 새 목표가 왼쪽에서 밀려 들어온다
+slide.Value = 0
+
 local barBack = Instance.new("Frame")
 barBack.Size = UDim2.new(1, -16, 0, 10)
 barBack.Position = UDim2.new(0, 8, 1, -18)
@@ -342,7 +350,7 @@ local function pickGoal()
 			local freeLeft = player:GetAttribute("TutorialFree") == true and level < 3
 			table.insert(candidates, {
 				Text = freeLeft and string.format("🔫 Next %s <font color='#ffd966'>%s</font>\n✨ Upgrades are free right now! (%d left)", nextTier.Kind == "Form" and "weapon unlock" or "era", nextTier.Name, 3 - level) or string.format("🔫 Next %s <font color='#ffd966'>%s</font> (+%d)\nUpgrade cost %s G · You have %s G", nextTier.Kind == "Form" and "weapon unlock" or "era", nextTier.Name, nextTier.Level, comma(cost), comma(gold)),
-				Ratio = freeLeft and 1 or math.min(1, gold / cost), Priority = 1,
+				Ratio = freeLeft and 1 or math.min(1, gold / cost), Priority = 1, Id = "weapon:" .. nextTier.Name, Celebrate = true,
 			})
 		end
 	end
@@ -351,11 +359,11 @@ local function pickGoal()
 	local charLevel = player:GetAttribute("Level") or 1
 	if charLevel < Config.Level.Max then
 		if player:GetAttribute("GateBlocked") then
-			table.insert(candidates, { Text = "🚧 Your level is capped!\nMenu (B) → Skills & Growth (Passive/Training) to break through", Ratio = 1, Priority = 0 })
+			table.insert(candidates, { Text = "🚧 Your level is capped!\nMenu (B) → Skills & Growth (Passive/Training) to break through", Ratio = 1, Priority = 0, Id = "cap" })
 		else
 			local xp, needed = player:GetAttribute("XP") or 0, math.max(1, player:GetAttribute("XPNeeded") or 1)
 			table.insert(candidates, {
-				Text = string.format("⭐ Next level Lv.%d\nXP %d / %d", charLevel + 1, xp, needed), Ratio = math.min(1, xp / needed), Priority = 2,
+				Text = string.format("⭐ Next level Lv.%d\nXP %d / %d", charLevel + 1, xp, needed), Ratio = math.min(1, xp / needed), Priority = 2, Id = "lv:" .. (charLevel + 1), Celebrate = true,
 			})
 		end
 	end
@@ -368,23 +376,80 @@ local function pickGoal()
 		local gold = Config.Field.Gate.RewardGold * (cleared + 1)
 		table.insert(candidates, {
 			Text = string.format("🚪 Open Zone %d Gate\nDefeat Zone %d monsters %d / %d · Reward %s G + Ticket", cleared + 2, cleared + 1, kills, needed, comma(gold)),
-			Ratio = math.min(0.9, kills / needed), Priority = 1,
+			Ratio = math.min(0.9, kills / needed), Priority = 1, Id = "gate:" .. (cleared + 1), Celebrate = true,
 		})
 	end
 
 	-- 지금 바로 쓸 수 있는 것
 	if player:GetAttribute("HintDone_GateDungeon") ~= true or (player:GetAttribute("DungeonFree") or 0) >= 1 or (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0) >= 1 then
 		local fresh = player:GetAttribute("HintDone_GateDungeon") ~= true -- 아직 마을 던전 입구를 안 써 봤다: 이 카드가 맨 위로
-		table.insert(candidates, { Text = fresh and "🏰 The dungeon you fell into... there's an entrance in town too!\nFollow the light pillar north · free entries today" or string.format("🎟 %d free entries today · 🗝 %d keys!\nChallenge the dungeon at the north gate", player:GetAttribute("DungeonFree") or 0, (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0)), Ratio = fresh and 2 or 0.95, Priority = fresh and -1 or 3 })
+		table.insert(candidates, { Text = fresh and "🏰 The dungeon you fell into... there's an entrance in town too!\nFollow the light pillar north · free entries today" or string.format("🎟 %d free entries today · 🗝 %d keys!\nChallenge the dungeon at the north gate", player:GetAttribute("DungeonFree") or 0, (player:GetAttribute("Keys") or 0) + (player:GetAttribute("KeysNormal") or 0) + (player:GetAttribute("KeysHard") or 0)), Ratio = fresh and 2 or 0.95, Priority = fresh and -1 or 3, Id = "dungeon" })
 	end
 	if (player:GetAttribute("ClearedZone") or 0) >= Config.Field.ZoneCount - 1 and not player:GetAttribute("HintDone_FieldClear") and not player:GetAttribute("TutorialActive") then
-		table.insert(candidates, { Text = "👑 Defeat the Lord of the final Zone 8!\nConquer the field to unlock the Boss Rush", Ratio = 0.95, Priority = 3 })
+		table.insert(candidates, { Text = "👑 Defeat the Lord of the final Zone 8!\nConquer the field to unlock the Boss Rush", Ratio = 0.95, Priority = 3, Id = "zone8" })
 	end
 	if player:GetAttribute("HintDone_FieldClear") and not player:GetAttribute("TutorialActive") then
-		table.insert(candidates, { Text = "👹 Field conquered! Now for the Boss Rush\nEnter at the town portal - 2 runs a day, weekly ranking", Ratio = 0.98, Priority = 3 })
+		table.insert(candidates, { Text = "👹 Field conquered! Now for the Boss Rush\nEnter at the town portal - 2 runs a day, weekly ranking", Ratio = 0.98, Priority = 3, Id = "rift" })
 	end
 	if (player:GetAttribute("Tickets") or 0) >= 1 then
-		table.insert(candidates, { Text = string.format("🎫 %d tickets!\nPull gear at the gacha machine", player:GetAttribute("Tickets")), Ratio = 0.97, Priority = 4 })
+		table.insert(candidates, { Text = string.format("🎫 %d tickets!\nPull gear at the gacha machine", player:GetAttribute("Tickets")), Ratio = 0.97, Priority = 4, Id = "tickets" })
+	end
+
+	-- 안 해 본 성장부터 하나씩: 마을에 있을 때만 (강화는 모두 마을에서 한다). 하고 나면 조건이 풀려서 자연스럽게 다음 것으로 넘어간다
+	if player:GetAttribute("Zone") == "Lobby" and not player:GetAttribute("TutorialActive") then
+		local function discovery(id, line1, line2)
+			table.insert(candidates, { Text = line1 .. "\n" .. line2, Ratio = 1, Priority = -0.5, Id = "disc:" .. id, Celebrate = true })
+		end
+		local goldNow = player:GetAttribute("Gold") or 0
+		local busySkill = false
+		for _, key in ipairs(Config.Skills.UpgradeOrder) do
+			if player:GetAttribute("UpSkill_" .. key) then busySkill = true end
+		end
+		if player:GetAttribute("GrowthUnlocked") == true and (player:GetAttribute("TrainJobs") or 0) < (player:GetAttribute("TrainSlots") or 1) and goldNow >= Config.GetTrainGold(0) then
+			discovery("train", "🏋 Training slot is empty!", "Menu (B) → Skills & Growth: train for extra power")
+		end
+		if not busySkill then
+			for _, key in ipairs(Config.Skills.UpgradeOrder) do
+				local skillLevel = player:GetAttribute("SkillLv_" .. key) or 1
+				local cost = skillLevel < Config.SkillUpgrade.MaxLevel and Config.GetSkillUpgradeCost(skillLevel) or nil
+				if cost and goldNow >= cost then
+					table.insert(candidates, { Text = string.format("⚔ A skill upgrade is ready (%s G)\nMenu (B) → Skills & Growth", comma(cost)), Ratio = 1, Priority = -0.4, Id = "disc:skill:" .. key .. skillLevel, Celebrate = true })
+					break
+				end
+			end
+		end
+		if player:GetAttribute("AugOpenZ_1") == true then
+			local anyOn = false
+			for zone = 1, Config.Field.ZoneCount do
+				if player:GetAttribute("AugOnZ_" .. zone) == true then anyOn = true end
+			end
+			if not anyOn then discovery("aug", "🌟 Turn on a Set Effect!", "Menu → Sets: a free power boost") end
+		end
+		for _, slot in ipairs(Config.Gear.Slots) do
+			if (player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0) <= 0 then
+				table.insert(candidates, { Text = string.format("🛡 Empty gear slot: <b>%s</b>\nPull the gacha or clear dungeons", slot.Name), Ratio = 1, Priority = -0.3, Id = "disc:gear:" .. slot.Key, Celebrate = true })
+				break
+			end
+		end
+		if (player:GetAttribute("PetLevel") or 0) <= 0 and goldNow >= Config.Pet.UnlockCost then
+			discovery("pet", string.format("🐾 Unlock your pet! (%s G)", comma(Config.Pet.UnlockCost)), "Menu → Pets: it loots and boosts you")
+		end
+		for _, key in ipairs(Config.Skills.UpgradeOrder) do
+			if Config.SkillBranch and Config.SkillBranch[key] and (player:GetAttribute("SkillLv_" .. key) or 1) >= 5 and not Config.GetSkillBranch(player, key, 5) then
+				table.insert(candidates, { Text = string.format("🔀 Choose a path for <b>%s</b>\nMenu (B) → Skills & Growth", Config.Skills[key].Name), Ratio = 1, Priority = -0.2, Id = "disc:branch:" .. key, Celebrate = true })
+				break
+			end
+		end
+	end
+
+	-- 다음 구역 군주 권장 전투력 (막혔을 때 무엇이 모자란지)
+	if not player:GetAttribute("TutorialActive") then
+		local nextZone = math.min(Config.Field.ZoneCount, (player:GetAttribute("ClearedZone") or 0) + 1)
+		local need = Config.Field.RecommendPower[nextZone]
+		local power = player:GetAttribute("Power") or 0
+		if need and power < need then
+			table.insert(candidates, { Text = string.format("💪 Zone %d Lord: power %s / %s\nTrain, upgrade gear, or enhance your weapon", nextZone, comma(power), comma(need)), Ratio = math.min(0.85, 0.85 * power / need), Priority = 3, Id = "pow:" .. nextZone })
+		end
 	end
 
 	table.sort(candidates, function(a, b)
@@ -394,12 +459,42 @@ local function pickGoal()
 	return candidates[1]
 end
 
+local shownId, shownCelebrate, shownZone, celebrating = nil, false, nil, false
+local celebrate -- (아래에서 정의)
+local function applyGoal(goal, zone)
+	local changed = shownId ~= nil and goal.Id ~= shownId
+	shownId, shownCelebrate, shownZone = goal.Id, goal.Celebrate == true, zone
+	titleLabel.Text = goal.Text
+	barFill.Size = UDim2.new(math.min(1, goal.Ratio), 0, 1, 0)
+	barFill.BackgroundColor3 = goal.Ratio >= 1 and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(110, 210, 255)
+	if changed then -- 새 목표: 왼쪽에서 밀려 들어온다
+		slide.Value = -40
+		TweenService:Create(slide, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Value = 0 }):Play()
+	end
+end
+-- 목표를 채웠다: "✔ 완료!" 로 잠깐 초록으로 번쩍였다가 다음 목표로 넘어간다
+celebrate = function()
+	celebrating = true
+	titleLabel.Text = "<font color='#78ff8c'><b>✔ Goal complete!</b></font>"
+	barFill.Size = UDim2.new(1, 0, 1, 0)
+	barFill.BackgroundColor3 = Color3.fromRGB(120, 255, 150)
+	panelStroke.Transparency = 0
+	panelStroke.Thickness = 4
+	TweenService:Create(panelStroke, TweenInfo.new(0.9), { Transparency = 1, Thickness = 2 }):Play()
+	task.delay(0.9, function()
+		celebrating = false
+		local nextGoal = pickGoal()
+		if nextGoal then applyGoal(nextGoal, player:GetAttribute("Zone")) end
+	end)
+end
+
 local last = 0
 RunService.RenderStepped:Connect(function()
 	local zone = player:GetAttribute("Zone")
 	-- 튜토리얼 중에는 미션 바가 목표를 안내하므로 숨김. 던전 안에서도 숨김
 	panel.Visible = not player:GetAttribute("TutorialActive") and zone ~= "Dungeon"
-	panel.Position = lay(0)
+	local basePos = lay(0)
+	panel.Position = UDim2.new(basePos.X.Scale, basePos.X.Offset + slide.Value, basePos.Y.Scale, basePos.Y.Offset)
 	-- 마을이거나 20초가 지나면 작게: 제목 한 줄 + 목표 한 줄 (진행 막대는 숨김)
 	local smallCard = zone == "Lobby" or os.clock() - goalStart > 20
 	local wantH = smallCard and 46 or 66
@@ -450,10 +545,12 @@ RunService.RenderStepped:Connect(function()
 			questStroke.Thickness = claimable() > 0 and 4 or 2
 		end
 		local goal = pickGoal()
-		if goal then
-			titleLabel.Text = goal.Text
-			barFill.Size = UDim2.new(math.min(1, goal.Ratio), 0, 1, 0)
-			barFill.BackgroundColor3 = goal.Ratio >= 1 and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(110, 210, 255)
+		if goal and not celebrating then
+			if shownId and goal.Id ~= shownId and shownCelebrate and shownZone == zone then
+				celebrate()
+			else
+				applyGoal(goal, zone)
+			end
 		end
 
 		-- 관문 봉인막: 내 진행도에 맞춰 열려 보이게 / 닫혀 보이게 (내 화면에서만)

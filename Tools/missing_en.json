@@ -2295,5 +2295,19 @@
 "Set gear",
 "Each depth up: monster HP +{number1}% · damage +{number2}% · gold +{number3}% · better chest odds",
 "Era {number1} / {number2}",
-"Max level +{text1}"
+"Max level +{text1}",
+"✔ Goal complete!",
+"🏋 Training slot is empty!",
+"Menu (B) → Skills & Growth: train for extra power",
+"⚔ A skill upgrade is ready ({number1} G)",
+"Menu (B) → Skills & Growth",
+"🌟 Turn on a Set Effect!",
+"Menu → Sets: a free power boost",
+"🛡 Empty gear slot: <b>{text1}</b>",
+"Pull the gacha or clear dungeons",
+"🐾 Unlock your pet! ({number1} G)",
+"Menu → Pets: it loots and boosts you",
+"🔀 Choose a path for <b>{text1}</b>",
+"💪 Zone {number1} Lord: power {number2} / {number3}",
+"Train, upgrade gear, or enhance your weapon"
 ]
