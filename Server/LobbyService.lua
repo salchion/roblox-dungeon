@@ -1030,17 +1030,36 @@ function Lobby.Build()
 	local pillar = makePart({ Name = "FieldBeacon", Size = Vector3.new(14, 320, 14), Position = fieldGate + Vector3.new(0, 160, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.94, CanCollide = false, CanQuery = false }, folder)
 	addLight(pillar, 60, 0.8, green)
 
-	-- 4) 문 앞의 큰 빛 고리 (통과하는 느낌)
-	for ring = 1, 3 do
-		for index = 0, 19 do
-			local angle = index / 20 * math.pi * 2
-			local radius = 12 + ring * 2.5
-			local piece = makePart({
-				Name = "FieldRing", Size = Vector3.new(0.6, 1.4, 1.4), Position = fieldGate + Vector3.new(-6 - ring * 3, 17 + math.sin(angle) * radius, math.cos(angle) * radius),
-				Color = green, Material = Enum.Material.Neon, CanCollide = false, CanQuery = false, Transparency = 0.45 + ring * 0.12,
-			}, folder)
-			piece.CFrame = CFrame.new(piece.Position) * CFrame.Angles(angle, 0, 0)
+	-- 4) 문 앞의 빛 고리 + 바닥 룬 원: 예전에는 작은 네온 조각 60개가 점점이 떠 있어서 색종이처럼 지저분해 보였다.
+	--    이제는 이어진 두 겹 고리(바깥은 두껍고 은은하게, 안쪽은 가늘고 또렷하게) + 길 위의 룬 원으로 "여기가 문"이라는 느낌만 남긴다.
+	do
+		local function glowRing(radius, thick, segs, x, color, transparency)
+			local len = 2 * math.pi * radius / segs * 1.14 -- (조금씩 겹쳐서 이어진 띠로 보이게)
+			for index = 0, segs - 1 do
+				local angle = index / segs * math.pi * 2
+				local piece = makePart({
+					Name = "FieldRing", Size = Vector3.new(thick, thick, len),
+					Position = fieldGate + Vector3.new(x, 17 + math.sin(angle) * radius, math.cos(angle) * radius),
+					Color = color, Material = Enum.Material.Neon, CanCollide = false, CanQuery = false, CastShadow = false, Transparency = transparency,
+				}, folder)
+				piece.CFrame = CFrame.new(piece.Position) * CFrame.Angles(math.pi / 2 - angle, 0, 0) -- (긴 쪽이 원의 접선 방향)
+			end
 		end
+		glowRing(17, 1.3, 40, -8, Color3.fromRGB(255, 226, 140), 0.55)
+		glowRing(14, 0.6, 36, -8, green, 0.35)
+		-- 바닥 룬 원: 문 앞 길 위에 은은하게 빛나는 원 두 겹
+		local runeCenter = Vector3.new(fieldGate.X - 18, TOP + 0.18, 0)
+		local outer = makeDisc(runeCenter, 30, 0.12, green, Enum.Material.Neon, folder)
+		outer.CanCollide = false
+		outer.CanQuery = false
+		outer.Transparency = 0.82
+		local inner = makeDisc(runeCenter + Vector3.new(0, 0.05, 0), 27, 0.12, Color3.fromRGB(44, 58, 48), Enum.Material.Slate, folder)
+		inner.CanCollide = false
+		inner.CanQuery = false
+		local core = makeDisc(runeCenter + Vector3.new(0, 0.1, 0), 10, 0.12, green, Enum.Material.Neon, folder)
+		core.CanCollide = false
+		core.CanQuery = false
+		core.Transparency = 0.8
 	end
 
 	-- 도달한 필드 구역 캠프로 바로 워프 (캠프의 비콘에서도 같은 메뉴가 열린다)
