@@ -460,7 +460,7 @@ local function playReel(list)
 	local startedAt = os.clock()
 	local done = 0
 	local stopAt = {}
-	for index = 1, count do stopAt[index] = 0.7 + (index - 1) * 0.4 end
+	for index = 1, count do stopAt[index] = 0.4 + (index - 1) * 0.22 end
 	while done < count do
 		local elapsed = os.clock() - startedAt
 		for index, card in ipairs(cards) do
@@ -502,7 +502,7 @@ local function playReel(list)
 		end
 		task.wait(0.07)
 	end
-	task.wait(1.6)
+	task.wait(0.8)
 	for _, inst in ipairs({ panel, panelStroke, title, footer }) do
 		local prop = inst:IsA("Frame") and "BackgroundTransparency" or inst:IsA("UIStroke") and "Transparency" or "TextTransparency"
 		TweenService:Create(inst, TweenInfo.new(0.35), { [prop] = 1 }):Play()
