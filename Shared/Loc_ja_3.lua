@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🧹 Cleaned up {number1}! Essence +{number2}, {number3} G", "🧹 {number1}個を整理しました！エッセンス+{number2}、{number3} G" },
+		{ "Damage x{number1} · {number2} targets (gauge {number3})", "ダメージ x{number1} · {number2}体 (ゲージ {number3})" },
 		{ "🔒 Paragon unlocks at level {number1}.", "🔒 パラゴンはレベル{number1}で解放されます。" },
 		{ "Survive {number1} dungeon bonus waves", "ダンジョンのボーナスウェーブを{number1}回耐える" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "敵のHP +{number1}%\nゴールド +{number2}%" },

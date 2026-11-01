@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Points left {number1}  /  total {number2}  (Level {number3})", "남은 포인트 {number1}  /  전체 {number2}  (레벨 {number3})" },
+		{ "🔥 Better gear dropped! ({number1} slot(s))", "🔥 더 좋은 장비가 떨어졌어요! ({number1}칸)" },
 		{ "Crit damage +{number1}%p per point  (max {number2})", "치명타 피해 +{number1}%p / 포인트당  (최대 {number2})" },
 		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 보상 {number1}개를 받았어요! (새 칭호 {number2}개)" },
 		{ "Keeps {number1} more stacks even if broken", "끊겨도 스택이 {number1}개 더 남아요" },

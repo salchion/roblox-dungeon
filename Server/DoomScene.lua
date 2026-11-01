@@ -648,7 +648,7 @@ local function doomWaveInner(player, zone, center, real)
 	root.AssemblyLinearVelocity = Vector3.zero
 	player:SetAttribute("InDoomArena", true)
 	player:SetAttribute("UltCharge", Config.Skills.Ult.Cost) -- 궁극기(V)를 써볼 수 있게 게이지를 가득 채워 둔다
-	notify(player, real and "💀 The Final Lord! This time your attacks count — dodge the warnings and bring him down!" or "💀 You face the Final Lord! Your attacks land, but... you cannot defeat him. Dodge the red warnings on the floor, and try your V ultimate too!")
+	notify(player, real and "💀 The Final Lord! This time your attacks count — dodge the warnings and bring him down!" or "💀 You face the Final Lord! Dodge the red warnings on the floor, and try your V ultimate too!")
 	Effects.Burst(bossPos, rgb(255, 70, 60), 100)
 
 	-- 진짜 결전: 화면 위쪽에 군주 체력바를 고정해서 보여 준다 (머리 위 체력바는 높이 떠 있어서 화면 밖으로 나간다)

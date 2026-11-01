@@ -480,6 +480,7 @@ return {
 		["Your gear rush starts now"] = "Dein Gear Rush beginnt jetzt",
 		["🛡 Set gear"] = "🛡 Set-Ausrüstung",
 		["🛡 Set gear <font size='10'>(no set yet)</font>"] = "🛡 Set-Ausrüstung <font size='10'>(noch kein Set)</font>",
+		["💀 You face the Final Lord! Dodge the red warnings on the floor, and try your V ultimate too!"] = "💀 Du stehst dem Letzten Lord gegenüber! Weiche den roten Warnungen am Boden aus und probiere auch deine V-Ultimate!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -962,9 +963,5 @@ return {
 		{ "Time Skip {number1} min", "Zeitüberspringung {number1} Minuten" },
 		{ "Idle Income +{number1}%", "Inaktives Einkommen +{number1}%" },
 		{ "Zone {number1} · Meadow", "Zone {number1} · Wiese" },
-		{ "🥈 {player1}  ⚡{number2}", "🥈 {player1} ⚡{number2}" },
-		{ "·  Gold / XP x{number1}", "·  Gold / EP x{number1}" },
-		{ "Crit chance +{number1}%", "Krit-Chance +{number1} %" },
-		{ "· Unlocks at +{number1}", "· Wird bei +{number1} freigeschaltet" },
 	},
 }

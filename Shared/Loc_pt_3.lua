@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Zone {number1} · Volcano", "Zona {number1} · Vulcão" },
+		{ "NEXT UNLOCK · +{number1}", "Próximo Desbloqueio · +{number1}" },
 		{ "🔥 {number1} Kill Streak!", "🔥 {number1} Sequência de Eliminações!" },
 		{ "Gold +{number1}% instead", "Ouro +{number1}% em vez disso" },
 		{ "Time Skip {number1} hour", "Pular Tempo {number1} horas" },

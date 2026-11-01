@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} pulls done! Best rarity: {text2}", "已抽取 {number1} 次!最高稀有度:{text2}" },
+		{ "🛡 Empty gear slot: <b>{text1}</b>", "🛡 空装备栏：<b>{text1}</b>" },
 		{ "Active {number1} / {number2} slots   (💰 {text3} G)", "已启用 {number1} / {number2} 栏位   (💰 {text3} G)" },
 		{ "You are already holding {text1}.", "你已经持有 {text1}。" },
 		{ "⛺ Moved to Zone {number1} · {text2} Camp!", "⛺ 已移动到区域{number1} · {text2}的营地!" },

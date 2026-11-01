@@ -655,6 +655,7 @@ return {
 		["Your gear rush starts now"] = "ギアラッシュの始まりです",
 		["🛡 Set gear"] = "🛡 セット装備",
 		["🛡 Set gear <font size='10'>(no set yet)</font>"] = "🛡 セット装備 <font size='10'>(セットなし)</font>",
+		["💀 You face the Final Lord! Dodge the red warnings on the floor, and try your V ultimate too!"] = "💀 最後の君主と対峙した！床の赤い警告を避けて、Vの必殺技も使ってみよう！",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -938,7 +939,5 @@ return {
 		{ "e.g. Maintenance in {number1} minutes", "例：{number1}分後のメンテナンス" },
 		{ "🥇 LeeGoAll  ⚡{number1}\n🥈 {player1}  ⚡{number2}", "🥇 LeeGoAll ⚡{number1}\n🥈 {player1} ⚡{number2}" },
 		{ "🌀 Gate of the Abyss · Rec. ⚡{number2}", "🌀 深淵の門 · レコード ⚡{number2}" },
-		{ "🧹 Cleaned up {number1}! Essence +{number2}, {number3} G", "🧹 {number1}個を整理しました！エッセンス+{number2}、{number3} G" },
-		{ "Damage x{number1} · {number2} targets (gauge {number3})", "ダメージ x{number1} · {number2}体 (ゲージ {number3})" },
 	},
 }

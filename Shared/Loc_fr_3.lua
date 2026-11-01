@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎲 Random bonus in {number1}s", "🎲 Bonus aléatoire dans {number1} s" },
+		{ "💀 The Final Lord  {number1}%", "💀 Le Seigneur final  {number1} %" },
+		{ "🔫 Gunshot Volume: {number1}%", "🔫 Volume des tirs : {number1}%" },
 		{ "🎁 Claimed {number1} rewards!", "🎁 {number1} récompenses récupérées !" },
 		{ "⚠ Zone {number1} · Forest ⚠", "⚠ Zone {number1} · Forêt ⚠" },
 		{ "{number1} Gear Roll Tickets", "{number1} tickets de roulement d'équipement" },

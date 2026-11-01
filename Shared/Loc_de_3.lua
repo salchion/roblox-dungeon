@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🥈 {player1}  ⚡{number2}", "🥈 {player1} ⚡{number2}" },
+		{ "·  Gold / XP x{number1}", "·  Gold / EP x{number1}" },
+		{ "Crit chance +{number1}%", "Krit-Chance +{number1} %" },
+		{ "· Unlocks at +{number1}", "· Wird bei +{number1} freigeschaltet" },
 		{ "💰 {number1} G   Upgrade", "💰 {number1} G   Verbessern" },
 		{ "🎁 Claim All ({number1})", "🎁 Alle abholen ({number1})" },
 		{ "Crit damage +{number1}%", "Kritischer Schaden +{number1}%" },

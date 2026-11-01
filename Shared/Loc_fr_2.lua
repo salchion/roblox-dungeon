@@ -539,6 +539,7 @@ return {
 		["Your gear rush starts now"] = "Votre Gear Rush commence maintenant",
 		["🛡 Set gear"] = "🛡 Équipement de set",
 		["🛡 Set gear <font size='10'>(no set yet)</font>"] = "🛡 Équipement de set <font size='10'>(aucun set)</font>",
+		["💀 You face the Final Lord! Dodge the red warnings on the floor, and try your V ultimate too!"] = "💀 Tu affrontes le Seigneur final ! Esquive les alertes rouges au sol et essaie aussi ton ultime V !",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -927,8 +928,5 @@ return {
 		{ "{number7} Darklands · {number8} Abyss", "{number7} Terres sombres · {number8} Abysse" },
 		{ "Level {number1} Breakthrough", "Percée du niveau {number1}" },
 		{ "Field (best: Zone {number1})", "Terrain (meilleure : zone {number1})" },
-		{ "🎲 Random bonus in {number1}s", "🎲 Bonus aléatoire dans {number1} s" },
-		{ "💀 The Final Lord  {number1}%", "💀 Le Seigneur final  {number1} %" },
-		{ "🔫 Gunshot Volume: {number1}%", "🔫 Volume des tirs : {number1}%" },
 	},
 }
