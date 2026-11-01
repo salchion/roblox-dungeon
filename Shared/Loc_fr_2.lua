@@ -533,6 +533,8 @@ return {
 		["🎁 This week's Mythic reward!"] = "🎁 Récompense mythique de la semaine !",
 		["👑 This week's Mythic reward was already claimed (resets Thursday)"] = "👑 La récompense mythique de la semaine est déjà récupérée (réinitialisation jeudi)",
 		["🌀 The Boss Rush is open!"] = "🌀 Le Boss Rush est ouvert !",
+		["Equip mode"] = "Mode d'équipement",
+		["⚡ Best gear"] = "⚡ Meilleur équipement",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -927,7 +929,5 @@ return {
 		{ "🎁 Claimed {number1} rewards!", "🎁 {number1} récompenses récupérées !" },
 		{ "⚠ Zone {number1} · Forest ⚠", "⚠ Zone {number1} · Forêt ⚠" },
 		{ "{number1} Gear Roll Tickets", "{number1} tickets de roulement d'équipement" },
-		{ "👑 {number1} Kill Streak!!!!", "👑 Série de {number1} éliminations !!!!" },
-		{ "XP Booster ({number1} hour)", "Booster d'EXP ({number1} heure)" },
 	},
 }

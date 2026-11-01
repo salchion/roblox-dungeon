@@ -134,19 +134,8 @@ local function buildInventoryTab(state)
 
 	local SLOT_ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Weapon = "🔫", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
 
-	-- 맨 위 버튼 줄: 자동 장착 / 자동 분해 / 정리 (창을 열자마자 보이게: 가방 줄에 두면 스크롤해야 보였다)
-	local actionRow = newRow(32, Color3.fromRGB(26, 28, 42))
-	makeButton({ Size = UDim2.new(0.34, -8, 0, 26), Position = UDim2.new(0, 6, 0.5, -13), Text = "⚡ Auto-equip best gear", TextSize = 11, BackgroundColor3 = GREEN }, actionRow, function()
-		Remotes.Inventory:FireServer("AutoEquip")
-	end)
-	makeButton({ Size = UDim2.new(0.38, -8, 0, 26), Position = UDim2.new(0.34, 2, 0.5, -13), Text = "Auto-Dismantle: " .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 11, BackgroundColor3 = Color3.fromRGB(70, 110, 220) }, actionRow, function()
-		Remotes.Inventory:FireServer("AutoScrap", (state.AutoScrap + 1) % 5)
-	end)
-	makeButton({ Size = UDim2.new(0.28, -8, 0, 26), Position = UDim2.new(0.72, 2, 0.5, -13), Text = "🧹 Smart Clean", TextSize = 11, BackgroundColor3 = RED }, actionRow, function()
-		Remotes.Inventory:FireServer("SmartClean")
-	end)
-
-	-- 세트 맞추기 줄: 가진 세트 조각이 있는 세트마다 칩 하나. 누르면 그 세트의 가장 좋은 조각들로 한 번에 갈아 낀다
+	-- 장착 방식 줄: "최강 장비"와 가진 세트가 한 줄에 칩으로 나란히 있고, 지금 쓰는 방식에 ✔ 가 붙는다. 칩을 누르면 그 방식으로 바로 갈아 끼운다 (이미 쓰는 칩을 다시 누르면 새로 얻은 장비까지 다시 맞춘다).
+	-- (예전엔 "최고 장비 자동 장착" 버튼과 "세트 장착" 칩이 따로 있어서, 어느 쪽으로 껴졌는지 오락가락했다)
 	do
 		local owned = {} -- [세트] = 가진 부위 수 (가방 + 착용)
 		local slotsSeen = {}
@@ -159,35 +148,48 @@ local function buildInventoryTab(state)
 				end
 			end
 		end
-		local keys = {}
-		for _, key in ipairs(Config.Sets.ZoneKeys) do
-			if owned[key] then table.insert(keys, key) end
+		local mode = state.EquipMode or "Best"
+		local setRow = newRow(46, Color3.fromRGB(24, 26, 40))
+		makeLabel({ Size = UDim2.new(0, 84, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = "Equip mode", TextSize = 12, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(225, 196, 118), TextXAlignment = Enum.TextXAlignment.Left }, setRow)
+		local strip = create("ScrollingFrame", {
+			Size = UDim2.new(1, -100, 1, -4), Position = UDim2.new(0, 96, 0, 2), BackgroundTransparency = 1, BorderSizePixel = 0,
+			ScrollBarThickness = 3, ScrollingDirection = Enum.ScrollingDirection.X, CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.X,
+		}, setRow)
+		create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Center }, strip)
+		local function modeChip(order, key, text, color)
+			local active = mode == key
+			local chip = makeButton({
+				Size = UDim2.new(0, 0, 0, 32), AutomaticSize = Enum.AutomaticSize.X, LayoutOrder = order, RichText = true, TextSize = 12,
+				Text = (active and "<font color='#78ff8c'>✔</font> " or "") .. text,
+				BackgroundColor3 = active and color:Lerp(Color3.fromRGB(26, 28, 42), 0.45) or Color3.fromRGB(34, 37, 54),
+			}, strip, function()
+				Remotes.Inventory:FireServer(key == "Best" and "AutoEquip" or "EquipSet", key)
+			end)
+			rounded(chip, 16)
+			create("UIPadding", { PaddingLeft = UDim.new(0, 14), PaddingRight = UDim.new(0, 14) }, chip)
+			create("UIStroke", { Color = active and Color3.fromRGB(255, 255, 255) or color, Thickness = active and 2 or 1, Transparency = active and 0.1 or 0.55, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, chip)
 		end
-		if #keys > 0 then
-			local setRow = newRow(40, Color3.fromRGB(24, 26, 40))
-			makeLabel({ Size = UDim2.new(0, 96, 1, 0), Position = UDim2.new(0, 8, 0, 0), Text = "🧩 Equip set", TextSize = 12, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(225, 196, 118), TextXAlignment = Enum.TextXAlignment.Left }, setRow)
-			local strip = create("ScrollingFrame", {
-				Size = UDim2.new(1, -110, 1, -4), Position = UDim2.new(0, 106, 0, 2), BackgroundTransparency = 1, BorderSizePixel = 0,
-				ScrollBarThickness = 3, ScrollingDirection = Enum.ScrollingDirection.X, CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.X,
-			}, setRow)
-			create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Center }, strip)
-			for i, key in ipairs(keys) do
+		modeChip(0, "Best", "⚡ Best gear", Color3.fromRGB(80, 200, 130))
+		for i, key in ipairs(Config.Sets.ZoneKeys) do
+			if owned[key] then
 				local def = Config.Sets[key]
 				local worn = setCounts[key] or 0
 				local effectOn = def.Zone and player:GetAttribute("AugOnZ_" .. def.Zone) == true
-				local chip = makeButton({
-					Size = UDim2.new(0, 0, 0, 30), AutomaticSize = Enum.AutomaticSize.X, LayoutOrder = i, RichText = true, TextSize = 11,
-					Text = string.format("%s %s  <font color='#ffe9a0'>%s</font>%s", def.Icon or "✦", def.Name, setPips(math.min(worn, 3)), effectOn and "  <font color='#78ff8c'>● ON</font>" or ""),
-					BackgroundColor3 = def.Color:Lerp(Color3.fromRGB(26, 28, 42), worn >= math.min(3, owned[key]) and 0.35 or 0.7),
-				}, strip, function()
-					Remotes.Inventory:FireServer("EquipSet", key)
-				end)
-				rounded(chip, 17)
-				create("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 12) }, chip)
-				create("UIStroke", { Color = def.Color, Thickness = effectOn and 2.5 or 1.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, chip)
+				modeChip(i, key, string.format("%s %s  <font color='#ffe9a0'>%s</font>%s", def.Icon or "✦", def.Name, setPips(math.min(worn, 3)), effectOn and "  <font color='#78ff8c'>● ON</font>" or ""), def.Color)
 			end
 		end
 	end
+
+	-- 자동 분해 / 정리 (알약 모양 버튼 두 개)
+	local actionRow = newRow(36, Color3.fromRGB(26, 28, 42))
+	local scrapButton = makeButton({ Size = UDim2.new(0.5, -10, 0, 28), Position = UDim2.new(0, 6, 0.5, -14), Text = "Auto-Dismantle: " .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 11, BackgroundColor3 = Color3.fromRGB(70, 110, 220) }, actionRow, function()
+		Remotes.Inventory:FireServer("AutoScrap", (state.AutoScrap + 1) % 5)
+	end)
+	rounded(scrapButton, 14)
+	local cleanButton = makeButton({ Size = UDim2.new(0.5, -10, 0, 28), Position = UDim2.new(0.5, 4, 0.5, -14), Text = "🧹 Smart Clean", TextSize = 11, BackgroundColor3 = Color3.fromRGB(176, 76, 84) }, actionRow, function()
+		Remotes.Inventory:FireServer("SmartClean")
+	end)
+	rounded(cleanButton, 14)
 
 	local top = newRow(372, Color3.fromRGB(30, 32, 46)) -- (예전 470: 아래쪽 칸이 잘려서 스크롤해야 했다)
 
@@ -254,7 +256,7 @@ local function buildInventoryTab(state)
 		local rarity = item and item.Rarity or 0
 		local box = makeButton({
 			Size = UDim2.new(0, 88, 0, 76), Position = UDim2.new(0, x, 0, y), Text = "",
-			BackgroundColor3 = item and Color3.fromRGB(46, 48, 68) or Color3.fromRGB(34, 34, 48), AutoButtonColor = true,
+			BackgroundColor3 = item and Color3.fromRGB(34, 36, 54) or Color3.fromRGB(26, 27, 40), AutoButtonColor = true,
 		}, top, function()
 			if slotKey == "Weapon" then
 				menuContent:SetAttribute("ShowWeapons", true) -- 무기 칸: 오른쪽에 무기 10형 목록을 보여준다
@@ -265,25 +267,32 @@ local function buildInventoryTab(state)
 				refreshMenu()
 			end
 		end)
-		rounded(box, 10)
+		rounded(box, 16) -- (네모 → 둥글게: 칸마다 부드러운 윗면 빛과 가는 테두리, 아이콘은 등급 색 원 안에)
+		create("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(160, 160, 178)) }, box)
+		local function iconDisc(color, icon)
+			local disc = create("Frame", { Size = UDim2.new(0, 38, 0, 38), Position = UDim2.new(0.5, -19, 0, 4), BackgroundColor3 = color:Lerp(Color3.fromRGB(20, 22, 34), 0.72), BorderSizePixel = 0, Active = false }, box)
+			create("UICorner", { CornerRadius = UDim.new(1, 0) }, disc)
+			create("UIStroke", { Color = color, Thickness = 1.5, Transparency = 0.35 }, disc)
+			makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = icon, TextSize = 21 }, disc)
+		end
 		if slotKey == "Weapon" then
 			local weaponLevel = player:GetAttribute("WeaponLevel") or 0
 			local tier = Config.GetLookTier(weaponLevel, Config.ResolveWeaponType(weaponLevel, player:GetAttribute("WeaponType")))
-			rarityOutline(box, 4, 3.5).Color = tier.Color
-			makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 3), Text = "🔫", TextSize = 25 }, box)
-			makeLabel({ Size = UDim2.new(1, -6, 0, 30), Position = UDim2.new(0, 3, 0, 40), Text = Config.WeaponTypes[tier.Class].Name, TextSize = 10, TextWrapped = true, TextColor3 = tier.Color, Font = Enum.Font.GothamBold }, box)
+			rarityOutline(box, 4, 2).Color = tier.Color
+			iconDisc(tier.Color, "🔫")
+			makeLabel({ Size = UDim2.new(1, -6, 0, 26), Position = UDim2.new(0, 3, 0, 46), Text = Config.WeaponTypes[tier.Class].Name, TextSize = 10, TextWrapped = true, TextColor3 = tier.Color, Font = Enum.Font.GothamBold }, box)
 		elseif item then
-			rarityOutline(box, rarity)
-			setDecor(box, item.Set, setCounts[item.Set], UDim2.new(0, 4, 0, 4), UDim2.new(0, 44, 0, 16), 10)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 2), Text = SLOT_ICONS[slotKey], TextSize = 25 }, box)
-			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 38), Text = Config.ItemDisplayName(item), TextSize = 9, TextWrapped = true, TextColor3 = Config.Gear.RarityColors[rarity], Font = Enum.Font.GothamBold }, box)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 56), Text = string.format("+%d", item.Level), TextSize = 11, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, box)
+			rarityOutline(box, rarity, 1.8)
+			setDecor(box, item.Set, setCounts[item.Set], UDim2.new(0, 5, 0, 5), UDim2.new(0, 36, 0, 15), 16)
+			iconDisc(Config.Gear.RarityColors[rarity], SLOT_ICONS[slotKey])
+			makeLabel({ Size = UDim2.new(1, -6, 0, 13), Position = UDim2.new(0, 3, 0, 44), Text = Config.ItemDisplayName(item), TextSize = 9, TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd, TextColor3 = Config.Gear.RarityColors[rarity], Font = Enum.Font.GothamBold }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 58), Text = string.format("+%d", item.Level), TextSize = 11, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, box)
 			if item.Unique then
 				makeLabel({ Size = UDim2.new(0, 16, 0, 16), Position = UDim2.new(1, -18, 0, 2), Text = "✦", TextSize = 12, TextColor3 = Color3.fromRGB(255, 184, 77) }, box)
 			end
 		else
-			create("UIStroke", { Color = Color3.fromRGB(70, 70, 90), Thickness = 1.5 }, box)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 6), Text = SLOT_ICONS[slotKey], TextSize = 24, TextTransparency = 0.6 }, box)
+			create("UIStroke", { Color = Color3.fromRGB(70, 74, 96), Thickness = 1, Transparency = 0.3 }, box)
+			iconDisc(Color3.fromRGB(110, 114, 140), SLOT_ICONS[slotKey])
 			makeLabel({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 0, 48), Text = "Empty", TextSize = 10, TextColor3 = Color3.fromRGB(120, 120, 140) }, box)
 		end
 		return box
@@ -301,7 +310,8 @@ local function buildInventoryTab(state)
 		local box = makeButton({ Size = UDim2.new(0, 88, 0, 76), Position = UDim2.new(0, 10, 0, 260), Text = "", BackgroundColor3 = petLevel > 0 and Color3.fromRGB(46, 48, 68) or Color3.fromRGB(34, 34, 48), AutoButtonColor = true }, top, function()
 			player:SetAttribute("OpenPet", os.clock())
 		end)
-		rounded(box, 10)
+		rounded(box, 16)
+		create("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(160, 160, 178)) }, box)
 		if petLevel > 0 then
 			create("UIStroke", { Color = Color3.fromRGB(255, 200, 90), Thickness = 2.5 }, box)
 			makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 2), Text = look.Icon, TextSize = 24 }, box)
@@ -318,7 +328,7 @@ local function buildInventoryTab(state)
 		end
 	end
 	local detail = create("Frame", { Size = UDim2.new(1, -462, 1, -24), Position = UDim2.new(0, 450, 0, 12), BackgroundColor3 = Color3.fromRGB(24, 26, 38), BorderSizePixel = 0 }, top)
-	rounded(detail, 10)
+	rounded(detail, 16)
 	local showWeapons = menuContent:GetAttribute("ShowWeapons") == true
 	if showWeapons then
 		-- 무기 칸을 눌렀을 때: 10형 목록 (해금 / 사용 중 / 잠김) + 눌러서 바로 장착
@@ -364,7 +374,7 @@ local function buildInventoryTab(state)
 	end
 	if selected then
 		local color = Config.Gear.RarityColors[selected.Rarity]
-		rarityOutline(detail, selected.Rarity)
+		rarityOutline(detail, selected.Rarity, 2)
 		local slot = Config.GetGearSlot(selected.Slot)
 		-- 짧게: 기본 능력치 1줄 + 옵션 줄(값 + 범위 안 위치 %) + 유니크 / 세트 한 줄. 긴 설명 줄은 뺐다
 		local lines = {

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} / {number2}   Reward: 🎫 {number3}", "{number1} / {number2} Recompensa: 🎫 {number3}" },
 		{ "⬆ Level Up  💰 {number1} G", "⬆ Subir de nivel 💰 {number1} G" },
 		{ "⚡ {number1} Kill Streak!!", "⚡ ¡{number1} racha de muertes!" },
 		{ "Survive {number1}s + Boss", "Sobrevive {number1} segundos + Jefe" },

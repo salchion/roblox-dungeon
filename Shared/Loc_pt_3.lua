@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Crit damage +{number1}%p", "Dano crítico +{number1}%p" },
+		{ "vs. equipped ▼ {number1}", "vs equipado ▼ {number1}" },
 		{ "Monsters left: {number1}", "Monstros restantes: {number1}" },
 		{ "🎰 {number1}-Roll Results", "🎰 Resultados do sorteio x{number1}" },
 		{ "Lv {number1}  ✦ Paragon {number2}", "Nv {number1}  ✦ Paragon {number2}" },

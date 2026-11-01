@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 Warp fee -{number1} G", "💰 Warp-Gebühr -{number1} G" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Stufe {number1} {number2} / {number3} Erfahrungspunkte" },
 		{ "DAMAGE · {number1}s · {number2}", "Schaden · {number1}s · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} Dungeon-Schlüssel" },

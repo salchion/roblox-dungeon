@@ -168,7 +168,7 @@ local function buildPayload(player, state)
 
 	return {
 		Items = items, Capacity = Inventory.Capacity(player), BagCount = bagCount(state),
-		Essence = state.Essence, AutoScrap = state.AutoScrap, Shards = state.Shards,
+		Essence = state.Essence, AutoScrap = state.AutoScrap, Shards = state.Shards, EquipMode = state.EquipMode or "Best",
 	}
 end
 
@@ -407,6 +407,7 @@ function Inventory.AutoEquipBest(player, emptyOnly)
 	if player:GetAttribute("Zone") == "Dungeon" then
 		return 0, "You can't change gear in the dungeon."
 	end
+	if not emptyOnly then state.EquipMode = "Best" end -- 장착 방식: "최강 장비" (세트는 따지지 않고 부위마다 점수가 가장 높은 것)
 	local best = {}      -- [slotKey] = { Id, Score }
 	for id, item in pairs(state.Items) do
 		local score = Config.GetItemScore(item)
@@ -449,11 +450,27 @@ function Inventory.EquipSet(player, setKey)
 	for _, pick in pairs(best) do table.insert(picks, pick) end
 	if #picks == 0 then return 0, "You don't have any pieces of that set." end
 	table.sort(picks, function(a, b) return a.Score > b.Score end)
+	state.EquipMode = setKey -- 장착 방식: 이 세트 (세트 효과가 켜지는 3부위까지 세트 조각을 우선하고, 나머지 부위는 가장 좋은 것으로 채운다)
 	local changed = 0
+	local setSlots = {}
 	for i = 1, math.min(3, #picks) do
 		local pick = picks[i]
+		setSlots[pick.Slot] = true
 		if state.Equipped[pick.Slot] ~= pick.Id then
 			state.Equipped[pick.Slot] = pick.Id
+			changed += 1
+		end
+	end
+	local rest = {} -- 세트 3부위에 안 쓰인 부위: 점수가 가장 높은 것
+	for id, item in pairs(state.Items) do
+		if not setSlots[item.Slot] then
+			local score = Config.GetItemScore(item)
+			if not rest[item.Slot] or score > rest[item.Slot].Score then rest[item.Slot] = { Id = id, Score = score } end
+		end
+	end
+	for slotKey, pick in pairs(rest) do
+		if state.Equipped[slotKey] ~= pick.Id then
+			state.Equipped[slotKey] = pick.Id
 			changed += 1
 		end
 	end
@@ -620,7 +637,7 @@ end
 ------------------------------------------------------------
 -- saved: 저장된 Inventory 테이블. legacyGear: 예전 저장 형식({ Armor = { R, L }, ... })이면 아이템으로 바꿔서 이어받는다
 function Inventory.Load(player, saved, legacyGear)
-	local state = { Items = {}, NextId = 0, Equipped = {}, Essence = 0, AutoScrap = SMART, Rev = 0, Shards = {}, SlotLevels = {} }
+	local state = { Items = {}, NextId = 0, Equipped = {}, Essence = 0, AutoScrap = SMART, Rev = 0, Shards = {}, SlotLevels = {}, EquipMode = "Best" }
 
 	if typeof(saved) == "table" and typeof(saved.Items) == "table" then
 		for _, entry in ipairs(saved.Items) do
@@ -654,6 +671,7 @@ function Inventory.Load(player, saved, legacyGear)
 			end
 		end
 		state.Essence = math.max(0, math.floor(tonumber(saved.Essence) or 0))
+		if typeof(saved.EquipMode) == "string" and (saved.EquipMode == "Best" or Config.Sets[saved.EquipMode]) then state.EquipMode = saved.EquipMode end -- 장착 방식: 최강 장비 / 세트(구역 세트 키)
 		local savedScrap = math.clamp(math.floor(tonumber(saved.AutoScrap) or 1), 0, SMART)
 		state.AutoScrap = savedScrap == 1 and SMART or savedScrap -- (옛 기본값 "일반 이하" 는 새 기본값 "스마트"로)
 		if typeof(saved.Shards) == "table" then
@@ -714,7 +732,7 @@ function Inventory.Serialize(player)
 	for zone = 1, Config.Field.ZoneCount do
 		shards[tostring(zone)] = state.Shards[zone] or 0
 	end
-	return { Items = items, Equipped = state.Equipped, Essence = state.Essence, AutoScrap = state.AutoScrap, Shards = shards, SlotLevels = state.SlotLevels }
+	return { Items = items, Equipped = state.Equipped, Essence = state.Essence, AutoScrap = state.AutoScrap, Shards = shards, SlotLevels = state.SlotLevels, EquipMode = state.EquipMode }
 end
 
 function Inventory.Forget(player)

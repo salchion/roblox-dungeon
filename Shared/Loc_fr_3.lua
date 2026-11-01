@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👑 {number1} Kill Streak!!!!", "👑 Série de {number1} éliminations !!!!" },
+		{ "XP Booster ({number1} hour)", "Booster d'EXP ({number1} heure)" },
 		{ "Recommended Power {number2}", "Puissance recommandée {number2}" },
 		{ "💰 Buy Point {number1} G ({number2}/{number3})", "💰 Acheter point {number1} G ({number2}/{number3})" },
 		{ "Best {number1}  ·  Max hit {number2}", "Meilleur {number1} · Coup maximum {number2}" },

@@ -649,6 +649,8 @@ return {
 		["🎁 This week's Mythic reward!"] = "🎁 今週の神話報酬！",
 		["👑 This week's Mythic reward was already claimed (resets Thursday)"] = "👑 今週の神話報酬は受け取り済みです（木曜にリセット）",
 		["🌀 The Boss Rush is open!"] = "🌀 ボスラッシュが開放された！",
+		["Equip mode"] = "装備モード",
+		["⚡ Best gear"] = "⚡ 最強装備",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -936,6 +938,5 @@ return {
 		{ "Damage x{number1} · {number2} targets (gauge {number3})", "ダメージ x{number1} · {number2}体 (ゲージ {number3})" },
 		{ "🔒 Paragon unlocks at level {number1}.", "🔒 パラゴンはレベル{number1}で解放されます。" },
 		{ "Survive {number1} dungeon bonus waves", "ダンジョンのボーナスウェーブを{number1}回耐える" },
-		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "敵のHP +{number1}%\nゴールド +{number2}%" },
 	},
 }

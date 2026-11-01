@@ -493,6 +493,8 @@ return {
 		["🎁 This week's Mythic reward!"] = "🎁 Recompensa mítica da semana!",
 		["👑 This week's Mythic reward was already claimed (resets Thursday)"] = "👑 A recompensa mítica desta semana já foi resgatada (reinicia na quinta)",
 		["🌀 The Boss Rush is open!"] = "🌀 O Boss Rush está aberto!",
+		["Equip mode"] = "Modo de equipamento",
+		["⚡ Best gear"] = "⚡ Melhor equipamento",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -957,7 +959,5 @@ return {
 		{ "Gold +{number1}% instead", "Ouro +{number1}% em vez disso" },
 		{ "Time Skip {number1} hour", "Pular Tempo {number1} horas" },
 		{ "(gold {number1} + gear {number2})", "(ouro {number1} + equipamento {number2})" },
-		{ "Crit damage +{number1}%p", "Dano crítico +{number1}%p" },
-		{ "vs. equipped ▼ {number1}", "vs equipado ▼ {number1}" },
 	},
 }

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Loading the world...  ·  {text1}", "正在加载世界...  ·  {text1}" },
 		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 新武器:{text1} - 按 {number2} 键!" },
 		{ "{text1} invited you to a party!", "{text1} 邀请你加入队伍!" },
 		{ "Recommended ⚡ {number1}   Danger {text2}", "推荐 ⚡ {number1}   危险 {text2}" },
