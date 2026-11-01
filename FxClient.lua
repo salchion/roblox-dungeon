@@ -2240,7 +2240,7 @@ local function chainCharge(event)
 	end)
 end
 
-local FLOAT_SIZE, DAMAGE_SIZE = UDim2.new(0, 140, 0, 36), UDim2.new(0, 90, 0, 40)
+local FLOAT_SIZE, DAMAGE_SIZE = UDim2.new(0, 140, 0, 36), UDim2.new(0, 72, 0, 32) -- (피해 숫자는 예전 90x40 에서 20% 줄였다)
 lootTicker = { G = { Pending = 0, Last = 0, Scheduled = false }, XP = { Pending = 0, Last = 0, Scheduled = false } } -- 골드 / 경험치 글자 합치기용
 local recentDamage = {} -- { {위치, 시각} }: 최근에 띄운 평범한 피해 숫자 (겹침 줄이기)
 local HANDLERS = {
@@ -2298,7 +2298,7 @@ local HANDLERS = {
 			table.insert(recentDamage, { at, now })
 		end
 		if event[5] then
-			showText(event[2], tostring(event[3]), event[5]:Lerp(WHITE, 0.25), UDim2.new(0, 150, 0, 60), 0.75, 3)
+			showText(event[2], tostring(event[3]), event[5]:Lerp(WHITE, 0.25), UDim2.new(0, 120, 0, 48), 0.75, 3)
 		else
 			showText(event[2], event[4] and (tostring(event[3]) .. "!") or tostring(event[3]), event[4] and Color3.fromRGB(255, 220, 60) or WHITE, DAMAGE_SIZE, 0.5, nil)
 		end
