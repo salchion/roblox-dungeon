@@ -324,6 +324,14 @@ local function buildInventoryTab(state)
 			local badge = create("Frame", { Size = UDim2.new(0, 30, 0, 16), Position = UDim2.new(1, -35, 0, 5), BackgroundColor3 = Color3.fromRGB(10, 12, 22), BackgroundTransparency = 0.2, BorderSizePixel = 0, ZIndex = 10, Active = false }, box)
 			create("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
 			makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = string.format("+%d", item.Level), TextSize = 10, TextColor3 = Color3.fromRGB(255, 220, 120), Font = Enum.Font.GothamBlack, ZIndex = 11 }, badge)
+			-- 지금 골드로 바로 강화할 수 있으면: 오른쪽 아래에 숨 쉬듯 깜빡이는 초록 ▲ 배지 (눌러서 오른쪽 강화 버튼으로)
+			if item.Level < Config.Gear.MaxLevel and (player:GetAttribute("Gold") or 0) >= Config.GetGearCost(item.Slot, item.Rarity, item.Level) then
+				local up = create("Frame", { Size = UDim2.new(0, 22, 0, 22), Position = UDim2.new(1, -27, 1, -29), BackgroundColor3 = Color3.fromRGB(70, 210, 110), BorderSizePixel = 0, ZIndex = 12, Active = false }, box)
+				create("UICorner", { CornerRadius = UDim.new(1, 0) }, up)
+				create("UIStroke", { Color = Color3.fromRGB(220, 255, 230), Thickness = 1.5 }, up)
+				makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "▲", TextSize = 13, TextColor3 = Color3.fromRGB(10, 40, 20), Font = Enum.Font.GothamBlack, ZIndex = 13 }, up)
+				TweenService:Create(up, TweenInfo.new(0.7, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Size = UDim2.new(0, 26, 0, 26), Position = UDim2.new(1, -29, 1, -31) }):Play()
+			end
 			if item.Unique then
 				makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0, 5, 1, -20), Text = "✦", TextSize = 12, TextColor3 = Color3.fromRGB(255, 184, 77), ZIndex = 11 }, box)
 			end
@@ -499,12 +507,16 @@ local function buildInventoryTab(state)
 				rounded(barFill, 9)
 				TweenService:Create(barFill, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = UDim2.new(chanceRaw, 0, 1, 0) }):Play()
 				makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = string.format("Success %d%%", chance), TextSize = 11, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0.4, ZIndex = 3 }, barBack)
-				makeButton({
+				local upgradeButton = makeButton({
 					Size = UDim2.new(0, 152, 0, 40), Position = UDim2.new(1, -162, 0, 6),
 					Text = string.format("🔨 Upgrade\n💰 %d G", cost), TextSize = 12, Font = Enum.Font.GothamBlack, BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62),
 				}, block, function()
 					Remotes.Gear:FireServer("Enhance", selected.Slot)
 				end)
+				if gold >= cost then -- 강화할 수 있을 때: 밝은 테두리가 숨 쉬듯 반짝여서 가장 먼저 눈에 들어오게
+					local glow = create("UIStroke", { Color = Color3.fromRGB(200, 255, 215), Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, upgradeButton)
+					TweenService:Create(glow, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.75 }):Play()
+				end
 				makeButton({
 					Size = UDim2.new(0, 152, 0, 28), Position = UDim2.new(1, -162, 0, 50),
 					Text = "x10 Upgrade", TextSize = 11, BackgroundColor3 = Color3.fromRGB(60, 120, 200),
