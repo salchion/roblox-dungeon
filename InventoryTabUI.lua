@@ -189,14 +189,34 @@ local function buildInventoryTab(state)
 		end
 	end
 
-	local top = newRow(372, Color3.fromRGB(30, 32, 46)) -- (예전 470: 아래쪽 칸이 잘려서 스크롤해야 했다)
+	local top = newRow(372, Color3.fromRGB(26, 31, 58)) -- (예전 470: 아래쪽 칸이 잘려서 스크롤해야 했다)
+	rounded(top, 18)
+	create("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(120, 124, 150)) }, top)
+	create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.3, Transparency = 0.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, top)
+
+	-- 캐릭터 무대: 가장 높은 장비 등급 색으로 은은하게 빛나는 원 + 바닥 받침 (캐릭터 뒤)
+	do
+		local best = 0
+		for _, item in pairs(equipped) do best = math.max(best, item.Rarity or 0) end
+		local glow = best > 0 and Config.Gear.RarityColors[best] or Color3.fromRGB(255, 205, 110)
+		local stage = create("Frame", { Size = UDim2.new(0, 230, 0, 282), Position = UDim2.new(0, 108, 0, 8), BackgroundColor3 = Color3.new(1, 1, 1), BorderSizePixel = 0, ZIndex = 1 }, top)
+		rounded(stage, 16)
+		create("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.fromRGB(42, 52, 96), Color3.fromRGB(12, 14, 26)) }, stage)
+		create("UIStroke", { Color = Color3.fromRGB(110, 130, 200), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, stage)
+		stage.ClipsDescendants = true
+		for index, spec in ipairs({ { 260, 0.9 }, { 190, 0.82 }, { 120, 0.7 } }) do -- 바깥에서 안쪽으로 점점 진해지는 빛 번짐
+			local halo = create("Frame", { Size = UDim2.new(0, spec[1], 0, spec[1]), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.46, 0), BackgroundColor3 = glow, BackgroundTransparency = spec[2], BorderSizePixel = 0, ZIndex = 1 + index }, stage)
+			create("UICorner", { CornerRadius = UDim.new(1, 0) }, halo)
+		end
+		local floorDisc = create("Frame", { Size = UDim2.new(0, 150, 0, 22), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 252), BackgroundColor3 = glow, BackgroundTransparency = 0.55, BorderSizePixel = 0, ZIndex = 5 }, stage)
+		create("UICorner", { CornerRadius = UDim.new(1, 0) }, floorDisc)
+		create("UIStroke", { Color = Color3.fromRGB(255, 225, 150), Thickness = 1.5, Transparency = 0.3 }, floorDisc)
+	end
 
 	local viewport = create("ViewportFrame", {
-		Size = UDim2.new(0, 230, 0, 282), Position = UDim2.new(0, 108, 0, 8), BackgroundColor3 = Color3.fromRGB(20, 22, 34), BorderSizePixel = 0,
+		Size = UDim2.new(0, 230, 0, 282), Position = UDim2.new(0, 108, 0, 8), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 8,
 		Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1),
 	}, top)
-	rounded(viewport, 10)
-	create("UIStroke", { Color = Color3.fromRGB(90, 110, 170), Thickness = 2 }, viewport)
 	local cam = create("Camera", { FieldOfView = 38 }, viewport)
 	viewport.CurrentCamera = cam
 	local character = player.Character
@@ -254,7 +274,7 @@ local function buildInventoryTab(state)
 		local rarity = item and item.Rarity or 0
 		local box = makeButton({
 			Size = UDim2.new(0, 88, 0, 76), Position = UDim2.new(0, x, 0, y), Text = "",
-			BackgroundColor3 = item and Color3.fromRGB(34, 36, 54) or Color3.fromRGB(26, 27, 40), AutoButtonColor = true,
+			BackgroundColor3 = item and Config.Gear.RarityColors[rarity]:Lerp(Color3.fromRGB(20, 22, 36), 0.78) or Color3.fromRGB(26, 27, 42), AutoButtonColor = true, ZIndex = 9,
 		}, top, function()
 			if slotKey == "Weapon" then
 				menuContent:SetAttribute("ShowWeapons", true) -- 무기 칸: 오른쪽에 무기 10형 목록을 보여준다
@@ -268,30 +288,39 @@ local function buildInventoryTab(state)
 		rounded(box, 16) -- (네모 → 둥글게: 칸마다 부드러운 윗면 빛과 가는 테두리, 아이콘은 등급 색 원 안에)
 		create("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(160, 160, 178)) }, box)
 		local function iconDisc(color, icon)
-			local disc = create("Frame", { Size = UDim2.new(0, 38, 0, 38), Position = UDim2.new(0.5, -19, 0, 4), BackgroundColor3 = color:Lerp(Color3.fromRGB(20, 22, 34), 0.72), BorderSizePixel = 0, Active = false }, box)
+			local disc = create("Frame", { Size = UDim2.new(0, 36, 0, 36), Position = UDim2.new(0.5, -18, 0, 16), BackgroundColor3 = color:Lerp(Color3.fromRGB(14, 16, 28), 0.6), BorderSizePixel = 0, Active = false, ZIndex = 10 }, box)
 			create("UICorner", { CornerRadius = UDim.new(1, 0) }, disc)
-			create("UIStroke", { Color = color, Thickness = 1.5, Transparency = 0.35 }, disc)
-			makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = icon, TextSize = 21 }, disc)
+			create("UIStroke", { Color = color, Thickness = 1.8, Transparency = 0.15 }, disc)
+			makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = icon, TextSize = 20, ZIndex = 11 }, disc)
+		end
+		local function accentBar(color) -- 칸 아래 등급 색 막대
+			local bar = create("Frame", { Size = UDim2.new(0, 44, 0, 3), Position = UDim2.new(0.5, -22, 1, -7), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 10, Active = false }, box)
+			create("UICorner", { CornerRadius = UDim.new(1, 0) }, bar)
 		end
 		if slotKey == "Weapon" then
 			local weaponLevel = player:GetAttribute("WeaponLevel") or 0
 			local tier = Config.GetLookTier(weaponLevel, Config.ResolveWeaponType(weaponLevel, player:GetAttribute("WeaponType")))
 			rarityOutline(box, 4, 2).Color = tier.Color
 			iconDisc(tier.Color, "🔫")
-			makeLabel({ Size = UDim2.new(1, -6, 0, 26), Position = UDim2.new(0, 3, 0, 46), Text = Config.WeaponTypes[tier.Class].Name, TextSize = 10, TextWrapped = true, TextColor3 = tier.Color, Font = Enum.Font.GothamBold }, box)
+			accentBar(tier.Color)
+			makeLabel({ Size = UDim2.new(1, -6, 0, 14), Position = UDim2.new(0, 3, 0, 52), Text = Config.WeaponTypes[tier.Class].Name, TextSize = 10, TextColor3 = tier.Color, Font = Enum.Font.GothamBold, ZIndex = 10 }, box)
 		elseif item then
 			rarityOutline(box, rarity, 1.8)
-			setDecor(box, item.Set, setCounts[item.Set], UDim2.new(0, 5, 0, 5), UDim2.new(0, 36, 0, 15), 16)
+			setDecor(box, item.Set, setCounts[item.Set], UDim2.new(0, 5, 0, 5), UDim2.new(0, 30, 0, 14), 16)
 			iconDisc(Config.Gear.RarityColors[rarity], SLOT_ICONS[slotKey])
-			makeLabel({ Size = UDim2.new(1, -6, 0, 13), Position = UDim2.new(0, 3, 0, 44), Text = Config.ItemDisplayName(item), TextSize = 9, TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd, TextColor3 = Config.Gear.RarityColors[rarity], Font = Enum.Font.GothamBold }, box)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 58), Text = string.format("+%d", item.Level), TextSize = 11, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, box)
+			accentBar(Config.Gear.RarityColors[rarity])
+			makeLabel({ Size = UDim2.new(1, -6, 0, 13), Position = UDim2.new(0, 3, 0, 53), Text = Config.ItemDisplayName(item), TextSize = 9, TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd, TextColor3 = Color3.fromRGB(245, 246, 255), Font = Enum.Font.GothamBold, ZIndex = 10 }, box)
+			-- 강화 단계: 오른쪽 위 둥근 배지 (금색)
+			local badge = create("Frame", { Size = UDim2.new(0, 30, 0, 16), Position = UDim2.new(1, -35, 0, 5), BackgroundColor3 = Color3.fromRGB(10, 12, 22), BackgroundTransparency = 0.2, BorderSizePixel = 0, ZIndex = 10, Active = false }, box)
+			create("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
+			makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = string.format("+%d", item.Level), TextSize = 10, TextColor3 = Color3.fromRGB(255, 220, 120), Font = Enum.Font.GothamBlack, ZIndex = 11 }, badge)
 			if item.Unique then
-				makeLabel({ Size = UDim2.new(0, 16, 0, 16), Position = UDim2.new(1, -18, 0, 2), Text = "✦", TextSize = 12, TextColor3 = Color3.fromRGB(255, 184, 77) }, box)
+				makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0, 5, 1, -20), Text = "✦", TextSize = 12, TextColor3 = Color3.fromRGB(255, 184, 77), ZIndex = 11 }, box)
 			end
 		else
 			create("UIStroke", { Color = Color3.fromRGB(70, 74, 96), Thickness = 1, Transparency = 0.3 }, box)
 			iconDisc(Color3.fromRGB(110, 114, 140), SLOT_ICONS[slotKey])
-			makeLabel({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 0, 48), Text = "Empty", TextSize = 10, TextColor3 = Color3.fromRGB(120, 120, 140) }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 55), Text = "Empty", TextSize = 10, TextColor3 = Color3.fromRGB(120, 120, 140), ZIndex = 10 }, box)
 		end
 		return box
 	end
