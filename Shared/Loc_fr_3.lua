@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Zone {number1} · Wasteland", "Zone {number1} · Désert aride" },
+		{ "Zone {number1} · Snowfield", "Zone {number1} · Champ de neige" },
+		{ "Field Entrance  {number1}m", "Entrée du champ {number1}m" },
 		{ "Zone {number1} · Execute  ", "Zone {number1} · Exécuter" },
 		{ "{number1} Meadow · {number2} Forest", "{number1} Prairie · {number2} Forêt" },
 		{ "🚪 Open Zone {number1} Gate", "🚪 Ouvrir la porte de la zone {number1}" },
@@ -262,6 +265,7 @@ return {
 		{ "Skip gauge {text1}", "Jauge d'accélération {text1}" },
 		{ "Time left {text1}", "Temps restant {text1}" },
 		{ "Entering {text1}!", "Entrée dans {text1} !" },
+		{ "Next Lv.{number1}  {text2}", "Suivant Nv.{number1}  {text2}" },
 		{ "Step {number1}/{number2} · {text3}", "Étape {number1}/{number2} · {text3}" },
 		{ "({text1} damage)", "({text1} dégâts)" },
 		{ "👋 {text1} joined", "👋 {text1} a rejoint" },

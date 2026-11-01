@@ -457,6 +457,8 @@ return {
 		["🧩 Set: clear a zone lord"] = "🧩 Set: Besiege einen Zonenherrscher",
 		["⚔ Equipped"] = "⚔ Ausgerüstet",
 		["🎒 In bag"] = "🎒 In der Tasche",
+		["Tap a slot to choose · Defeat the lord to unlock · Gold: Lv.1–3 · Set gear: Lv.4–6"] = "Slot antippen · Herrscher besiegen zum Freischalten · Gold: Lv.1–3 · Set-Ausrüstung: Lv.4–6",
+		["Set gear"] = "Set-Ausrüstung",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -972,10 +974,5 @@ return {
 		{ "Enemy HP +{number1}%", "Gegner-HP +{number1}%" },
 		{ "Activate {number1} G", "Aktiviere {number1} G" },
 		{ "👥 Party ({number1}/{number2})", "👥 Gruppe ({number1}/{number2})" },
-		{ "🎫 {number1} tickets!", "🎫 {number1} Tickets!" },
-		{ "Cooldown -{number1}%", "Abklingzeit -{number1} %" },
-		{ "… and {number1} more", "… und {number1} weitere" },
-		{ "(you have {number1})", "(du hast {number1})" },
-		{ "Next: Zone {number1}", "Nächste: Zone {number1}" },
 	},
 }

@@ -247,3 +247,6 @@
 2288¦⚔ 装備中¦⚔ Ausgerüstet¦⚔ Équipé¦⚔ Equipado¦⚔ Equipado¦⚔ 已装备¦⚔ 장착함
 2289¦🎒 バッグ内¦🎒 In der Tasche¦🎒 Dans le sac¦🎒 En la bolsa¦🎒 Na bolsa¦🎒 在背包中¦🎒 가방에 있음
 2290¦♻ エッセンス +{number1}¦♻ Essenz +{number1}¦♻ Essence +{number1}¦♻ Esencia +{number1}¦♻ Essência +{number1}¦♻ 精华 +{number1}¦♻ 정수 +{number1}
+2291¦スロットをタップして選択・主を倒して解放・ゴールド：Lv.1〜3・セット装備：Lv.4〜6¦Slot antippen · Herrscher besiegen zum Freischalten · Gold: Lv.1–3 · Set-Ausrüstung: Lv.4–6¦Touchez un emplacement · Battez le seigneur pour débloquer · Or : Nv.1–3 · Équipement de set : Nv.4–6¦Toca una ranura · Derrota al señor para desbloquear · Oro: Nv.1–3 · Equipo de set: Nv.4–6¦Toque em um espaço · Derrote o senhor para desbloquear · Ouro: Nv.1–3 · Equipamento de set: Nv.4–6¦点击栏位选择 · 击败领主解锁 · 金币：Lv.1–3 · 套装装备：Lv.4–6¦슬롯을 눌러 고르세요 · 군주를 잡으면 해금 · 골드: Lv.1–3 · 세트 장비: Lv.4–6
+2292¦次 Lv.{number1}  {text2}¦Nächste Lv.{number1}  {text2}¦Suivant Nv.{number1}  {text2}¦Siguiente Nv.{number1}  {text2}¦Próximo Nv.{number1}  {text2}¦下一级 Lv.{number1}  {text2}¦다음 Lv.{number1}  {text2}
+2293¦セット装備¦Set-Ausrüstung¦Équipement de set¦Equipo de set¦Equipamento de set¦套装装备¦세트 장비

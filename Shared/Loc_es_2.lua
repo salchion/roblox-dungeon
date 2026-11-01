@@ -505,6 +505,8 @@ return {
 		["🧩 Set: clear a zone lord"] = "🧩 Set: derrota a un señor de zona",
 		["⚔ Equipped"] = "⚔ Equipado",
 		["🎒 In bag"] = "🎒 En la bolsa",
+		["Tap a slot to choose · Defeat the lord to unlock · Gold: Lv.1–3 · Set gear: Lv.4–6"] = "Toca una ranura · Derrota al señor para desbloquear · Oro: Nv.1–3 · Equipo de set: Nv.4–6",
+		["Set gear"] = "Equipo de set",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -964,8 +966,5 @@ return {
 		{ "(gold {number1} + gear {number2})", "(oro {number1} + equipo {number2})" },
 		{ "Crit damage +{number1}%p", "Daño crítico +{number1}%p" },
 		{ "vs. equipped ▼ {number1}", "vs equipado ▼ {number1}" },
-		{ "Monsters left: {number1}", "Monstruos restantes: {number1}" },
-		{ "🎰 {number1}-Roll Results", "🎰 Resultados de la tirada x{number1}" },
-		{ "⚡ NEAR MISS!  x{number1}", "⚡ ¡NEAR MISS!  x{number1}" },
 	},
 }

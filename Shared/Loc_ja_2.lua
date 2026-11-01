@@ -632,6 +632,8 @@ return {
 		["🧩 Set: clear a zone lord"] = "🧩 セット：エリアの主を倒そう",
 		["⚔ Equipped"] = "⚔ 装備中",
 		["🎒 In bag"] = "🎒 バッグ内",
+		["Tap a slot to choose · Defeat the lord to unlock · Gold: Lv.1–3 · Set gear: Lv.4–6"] = "スロットをタップして選択・主を倒して解放・ゴールド：Lv.1〜3・セット装備：Lv.4〜6",
+		["Set gear"] = "セット装備",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -935,7 +937,5 @@ return {
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ 氷の宮殿の門 · レコメンド ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 ゾーン {number1} · 荒地が封鎖されました" },
 		{ "Auto-loot radius grows to {number1}", "自動略奪の範囲が{number1}に拡大します" },
-		{ "ZONE {number1}  ·  Volcano   ☠☠☠☠☠☠", "ゾーン {number1}  · 火山 ☠☠☠☠☠☠" },
-		{ "⚔ Spell Tome · Rusty Era +{number10}", "⚔ スペル・トーム · 錆の時代 +{number10}" },
 	},
 }

@@ -90,7 +90,7 @@ if workspace.CurrentCamera then workspace.CurrentCamera:GetPropertyChangedSignal
 
 label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "🌟 Set Effects", TextSize = 20, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left }, panel)
 local slotLabel = label({ Size = UDim2.new(1, -32, 0, 20), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, panel)
-label({ Size = UDim2.new(1, -32, 0, 28), Position = UDim2.new(0, 16, 0, 60), Text = "Tap a slot to toggle it. Defeat a lord to unlock its effect, then upgrade it with gold up to Lv.3. Wear that zone's set gear for Lv.4 at 1 piece · Lv.5 at 2 pieces · Lv.6 at 3 pieces! The real power shows up in field hunting.", TextSize = 10, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
+label({ Size = UDim2.new(1, -32, 0, 28), Position = UDim2.new(0, 16, 0, 60), Text = "Tap a slot to choose · Defeat the lord to unlock · Gold: Lv.1–3 · Set gear: Lv.4–6", TextSize = 11, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
 button({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), BackgroundColor3 = Color3.fromRGB(54, 58, 82), Text = "Close", TextSize = 12 }, panel, function() panel.Visible = false end)
 
 -- 원들을 잇는 길: 1 -> 2 -> ... -> 8 한 방향 (8 에서 1 로는 이어지지 않는다). 구간마다 화살표
@@ -171,8 +171,18 @@ local matchBar = make("Frame", { Size = UDim2.new(1, -20, 0, 50), Position = UDi
 make("UICorner", { CornerRadius = UDim.new(0, 10) }, matchBar)
 local matchStroke = make("UIStroke", { Color = Color3.fromRGB(120, 255, 160), Thickness = 2 }, matchBar)
 local matchText = label({ Size = UDim2.new(1, -12, 1, -6), Position = UDim2.new(0, 6, 0, 3), Text = "", TextSize = 11, RichText = true, TextWrapped = true, ZIndex = 4 }, matchBar)
+-- 단계 점 6개: 1~3 은 골드로 강화 / 4~6 은 세트 장비 (지금 단계까지 색이 찬다)
+local pips = {}
+for step = 1, 6 do
+	local pip = make("Frame", { Size = UDim2.new(0, 22, 0, 22), Position = UDim2.new(0, 14 + (step - 1) * 28 + (step > 3 and 14 or 0), 0, 132), BackgroundColor3 = Color3.fromRGB(44, 40, 62), BorderSizePixel = 0, ZIndex = 3 }, box)
+	make("UICorner", { CornerRadius = UDim.new(1, 0) }, pip)
+	label({ Size = UDim2.new(1, 0, 1, 0), Text = tostring(step), TextSize = 11, Font = Enum.Font.GothamBlack, ZIndex = 4 }, pip)
+	pips[step] = pip
+end
+label({ Size = UDim2.new(0, 84, 0, 12), Position = UDim2.new(0, 14, 0, 156), Text = "Gold", TextSize = 9, TextColor3 = Color3.fromRGB(255, 215, 120), ZIndex = 3 }, box)
+label({ Size = UDim2.new(0, 84, 0, 12), Position = UDim2.new(0, 14 + 3 * 28 + 14, 0, 156), Text = "Set gear", TextSize = 9, TextColor3 = Color3.fromRGB(150, 235, 170), ZIndex = 3 }, box)
 local boxBody = label({
-	Size = UDim2.new(1, -20, 1, -186), Position = UDim2.new(0, 10, 0, 130), Text = "", TextSize = 10, RichText = true, TextWrapped = true,
+	Size = UDim2.new(1, -20, 1, -232), Position = UDim2.new(0, 10, 0, 174), Text = "", TextSize = 11, RichText = true, TextWrapped = true,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(205, 210, 235), ZIndex = 3,
 }, box)
 local selectedZone = 1
@@ -321,12 +331,19 @@ function refresh()
 	local atk = Config.BaseAttackEstimate and Config.BaseAttackEstimate(player) or 0
 	local now = level + gear
 	table.insert(lines, "")
-	for l = 1, 6 do
+	for step = 1, 6 do -- 단계 점: 지금 단계까지 효과 색으로 찬다
+		pips[step].BackgroundColor3 = step <= now and info.Color or Color3.fromRGB(44, 40, 62)
+	end
+	local function levelText(l)
 		local text, mult = Config.AugLevelLine(attr, l)
 		local dmg = mult and atk > 0 and string.format("  <font color='#ffd966'>≈ %d dmg</font>", math.floor(atk * mult + 0.5)) or ""
-		local line = string.format("Lv.%d  %s%s", l, text, dmg)
-		if l == now then line = "<font color='#78ff8c'><b>▶ " .. line .. "  (now)</b></font>" end
-		table.insert(lines, line)
+		return string.format("%s%s", text, dmg)
+	end
+	if now >= 1 then -- 지금 단계와 다음 단계만 (여섯 줄을 다 나열하지 않는다)
+		table.insert(lines, string.format("<font color='#78ff8c'><b>Lv.%d  %s</b></font>", now, levelText(now)))
+	end
+	if now < 6 then
+		table.insert(lines, string.format("<font color='#9a9ab8'>Next Lv.%d  %s</font>", now + 1, levelText(now + 1)))
 	end
 	boxBody.Text = table.concat(lines, "\n")
 	toggleButton.Text = on and "● ON" or "○ OFF"

@@ -476,6 +476,8 @@ return {
 		["🧩 Set: clear a zone lord"] = "🧩 Set: derrote um senhor de zona",
 		["⚔ Equipped"] = "⚔ Equipado",
 		["🎒 In bag"] = "🎒 Na bolsa",
+		["Tap a slot to choose · Defeat the lord to unlock · Gold: Lv.1–3 · Set gear: Lv.4–6"] = "Toque em um espaço · Derrote o senhor para desbloquear · Ouro: Nv.1–3 · Equipamento de set: Nv.4–6",
+		["Set gear"] = "Equipamento de set",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -964,8 +966,5 @@ return {
 		{ "🎁 Claim All ({number1})", "🎁 Resgatar tudo ({number1})" },
 		{ "Crit damage +{number1}%", "Dano crítico +{number1}%" },
 		{ "◆ Move Speed +{number1}", "◆ Velocidade de movimento +{number1}" },
-		{ "💰 Warp fee -{number1} G", "💰 Taxa de warp -{number1} G" },
-		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Nível {number1} {number2} / {number3} XP" },
-		{ "DAMAGE · {number1}s · {number2}", "DANO · {number1}s · {number2}" },
 	},
 }

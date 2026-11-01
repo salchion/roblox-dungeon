@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎫 {number1} tickets!", "🎫 {number1} Tickets!" },
+		{ "Cooldown -{number1}%", "Abklingzeit -{number1} %" },
+		{ "… and {number1} more", "… und {number1} weitere" },
+		{ "(you have {number1})", "(du hast {number1})" },
+		{ "Next: Zone {number1}", "Nächste: Zone {number1}" },
 		{ "🏰 Dungeons {number1}", "🏰 Dungeons {number1}x" },
 		{ "◆ Attack +{number1}%", "◆ Angriff +{number1}%" },
 		{ "♻ Essence +{number1}", "♻ Essenz +{number1}" },
@@ -157,6 +162,7 @@ return {
 		{ "Skip gauge {text1}", "Überspringen-Leiste {text1}" },
 		{ "Time left {text1}", "Verbleibende Zeit {text1}" },
 		{ "Entering {text1}!", "Betrete {text1}!" },
+		{ "Next Lv.{number1}  {text2}", "Nächste Lv.{number1}  {text2}" },
 		{ "Step {number1}/{number2} · {text3}", "Schritt {number1}/{number2} · {text3}" },
 		{ "({text1} damage)", "({text1} Schaden)" },
 		{ "{text1} · Rec. ⚡{number2}", "{text1} · Empf. ⚡{number2}" },

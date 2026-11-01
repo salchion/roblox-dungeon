@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⚔ Rocket Launcher · Rusty Era +{number1}", "⚔ 로켓 발사기 · 녹슨 시대 +{number1}" },
+		{ "👹 Monster health x{number1}  ·  damage x{number2}", "👹 몬스터 체력 x{number1}  ·  피해 x{number2}" },
 		{ "(Idle Booster applied for {number1} min)", "(방치 부스터 {number1}분 적용 중)" },
 		{ " With the max {number1} points, about {number2}%.", " 최대 {number1}포인트일 때 약 {number2}%." },
 		{ "every {number1}s lightning hits {number2} enemies", "{number1}초마다 번개가 {number2}명에게 내려쳐요" },
@@ -472,6 +474,7 @@ return {
 		{ "Skip gauge {text1}", "스킵 게이지 {text1}" },
 		{ "Time left {text1}", "남은 시간 {text1}" },
 		{ "Entering {text1}!", "{text1} 입장!" },
+		{ "Next Lv.{number1}  {text2}", "다음 Lv.{number1}  {text2}" },
 		{ "Step {number1}/{number2} · {text3}", "{number1}/{number2} 단계 · {text3}" },
 		{ "({text1} damage)", "(피해 {text1})" },
 		{ "{text1} · Rec. ⚡{number2}", "{text1} · 권장 ⚡{number2}" },

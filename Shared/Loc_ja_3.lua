@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "ZONE {number1}  ·  Volcano   ☠☠☠☠☠☠", "ゾーン {number1}  · 火山 ☠☠☠☠☠☠" },
+		{ "⚔ Spell Tome · Rusty Era +{number10}", "⚔ スペル・トーム · 錆の時代 +{number10}" },
 		{ "🔒 Zone {number1} · Darklands Sealed", "🔒 ゾーン {number1} · ダークランドが封鎖されました" },
 		{ "Zone {number1} · Lightning Strike  ", "ゾーン {number1} · ライトニングストライク" },
 		{ "🔒 Zone {number1} · Snowfield Sealed", "🔒 ゾーン {number1} · 雪原が封鎖されています" },
@@ -385,6 +387,7 @@ return {
 		{ "Skip gauge {text1}", "スキップゲージ {text1}" },
 		{ "Time left {text1}", "残り時間 {text1}" },
 		{ "Entering {text1}!", "{text1}に入場中！" },
+		{ "Next Lv.{number1}  {text2}", "次 Lv.{number1}  {text2}" },
 		{ "Step {number1}/{number2} · {text3}", "ステップ {number1}/{number2} · {text3}" },
 		{ "({text1} damage)", "(ダメージ {text1})" },
 		{ "{text1} · Rec. ⚡{number2}", "{text1} · 推奨 ⚡{number2}" },

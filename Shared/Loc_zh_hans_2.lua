@@ -385,6 +385,8 @@ return {
 		["🧩 Set: clear a zone lord"] = "🧩 套装：击败区域领主",
 		["⚔ Equipped"] = "⚔ 已装备",
 		["🎒 In bag"] = "🎒 在背包中",
+		["Tap a slot to choose · Defeat the lord to unlock · Gold: Lv.1–3 · Set gear: Lv.4–6"] = "点击栏位选择 · 击败领主解锁 · 金币：Lv.1–3 · 套装装备：Lv.4–6",
+		["Set gear"] = "套装装备",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1052,8 +1054,5 @@ return {
 		{ "⏱ Used {text1} Time Skip!", "⏱ 已使用 {text1} 个时间跳跃!" },
 		{ "✅ {text1} — tap to claim!", "✅ {text1} — 点击领取!" },
 		{ "💰 Buy Point {text1} G ({number2}/{number3})", "💰 购买点数 {text1} 金币 ({number2}/{number3})" },
-		{ "🐾 Unlock Pet  💰 {text1} G", "🐾 解锁宠物  💰 {text1} 金币" },
-		{ "🎁 You received +{number1} {text2}!", "🎁 你获得了 +{number1} {text2}!" },
-		{ "👋 Welcome back, {text1}!", "👋 欢迎回来,{text1}!" },
 	},
 }

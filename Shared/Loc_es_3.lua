@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Monsters left: {number1}", "Monstruos restantes: {number1}" },
+		{ "🎰 {number1}-Roll Results", "🎰 Resultados de la tirada x{number1}" },
+		{ "⚡ NEAR MISS!  x{number1}", "⚡ ¡NEAR MISS!  x{number1}" },
 		{ "Lv {number1}  ✦ Paragon {number2}", "Nv {number1}  ✦ Paragón {number2}" },
 		{ "FEVER PORTAL  {number1}s", "PORTAL DE FIEBRE  {number1}s" },
 		{ "🎰 Roll again  🎫{number1}", "🎰 Tirar otra vez  🎫{number1}" },
@@ -223,6 +226,7 @@ return {
 		{ "Skip gauge {text1}", "Medidor de salto {text1}" },
 		{ "Time left {text1}", "Tiempo restante {text1}" },
 		{ "Entering {text1}!", "¡Entrando a {text1}!" },
+		{ "Next Lv.{number1}  {text2}", "Siguiente Nv.{number1}  {text2}" },
 		{ "Step {number1}/{number2} · {text3}", "Paso {number1}/{number2} · {text3}" },
 		{ "({text1} damage)", "({text1} de daño)" },
 		{ "👋 {text1} joined", "👋 {text1} se unió" },

@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 Warp fee -{number1} G", "💰 Taxa de warp -{number1} G" },
+		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Nível {number1} {number2} / {number3} XP" },
+		{ "DAMAGE · {number1}s · {number2}", "DANO · {number1}s · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} Chaves de Masmorra" },
 		{ "🥇 LeeGoAll  ⚡{number1}", "🥇 LeeGoAll ⚡{number1}" },
 		{ "Zone {number1} · Abyss", "Zona {number1} · Abismo" },
@@ -189,6 +192,7 @@ return {
 		{ "Skip gauge {text1}", "Medidor de pulo {text1}" },
 		{ "Time left {text1}", "Tempo restante {text1}" },
 		{ "Entering {text1}!", "Entrando em {text1}!" },
+		{ "Next Lv.{number1}  {text2}", "Próximo Nv.{number1}  {text2}" },
 		{ "Step {number1}/{number2} · {text3}", "Etapa {number1}/{number2} · {text3}" },
 		{ "({text1} damage)", "({text1} de dano)" },
 		{ "👋 {text1} joined", "👋 {text1} entrou" },

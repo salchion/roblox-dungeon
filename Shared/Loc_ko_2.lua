@@ -779,6 +779,8 @@ return {
 		["🧩 Set: clear a zone lord"] = "🧩 세트: 구역 군주를 잡으세요",
 		["⚔ Equipped"] = "⚔ 장착함",
 		["🎒 In bag"] = "🎒 가방에 있음",
+		["Tap a slot to choose · Defeat the lord to unlock · Gold: Lv.1–3 · Set gear: Lv.4–6"] = "슬롯을 눌러 고르세요 · 군주를 잡으면 해금 · 골드: Lv.1–3 · 세트 장비: Lv.4–6",
+		["Set gear"] = "세트 장비",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1044,7 +1046,5 @@ return {
 		{ "🏚 Ruined Fortress Gate · Rec. ⚡{number2}", "🏚 파괴된 요새 문 · 레벨 {number2}" },
 		{ "📍 Field · Best Zone {number1}   🎟 Free {number2}/{number3}", "📍 필드 · 베스트 존 {number1}   🎟 무료 {number2}/{number3}" },
 		{ "⚔ Rocket Launcher · Rusty Era +{number10}", "⚔ 로켓 발사기 · 녹슨 시대 +{number10}" },
-		{ "⚔ Rocket Launcher · Rusty Era +{number1}", "⚔ 로켓 발사기 · 녹슨 시대 +{number1}" },
-		{ "👹 Monster health x{number1}  ·  damage x{number2}", "👹 몬스터 체력 x{number1}  ·  피해 x{number2}" },
 	},
 }

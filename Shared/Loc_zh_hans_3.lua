@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🐾 Unlock Pet  💰 {text1} G", "🐾 解锁宠物  💰 {text1} 金币" },
+		{ "🎁 You received +{number1} {text2}!", "🎁 你获得了 +{number1} {text2}!" },
+		{ "👋 Welcome back, {text1}!", "👋 欢迎回来,{text1}!" },
 		{ "🔒 Zone {number1} · {text2} Sealed", "🔒 区域{number1} · {text2} 已封印" },
 		{ "Weekly best: {text1} pts", "每周最佳:{text1} 分" },
 		{ "⬆ Level Up  💰 {text1} G", "⬆ 升级  💰 {text1} 金币" },
@@ -23,6 +26,7 @@ return {
 		{ "Skip gauge {text1}", "跳过槽 {text1}" },
 		{ "Time left {text1}", "剩余时间 {text1}" },
 		{ "Entering {text1}!", "正在进入 {text1}!" },
+		{ "Next Lv.{number1}  {text2}", "下一级 Lv.{number1}  {text2}" },
 		{ "Step {number1}/{number2} · {text3}", "第 {number1}/{number2} 步 · {text3}" },
 		{ "({text1} damage)", "(伤害 {text1})" },
 		{ "{text1} · Rec. ⚡{number2}", "{text1} · 推荐 ⚡{number2}" },
