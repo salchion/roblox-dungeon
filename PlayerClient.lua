@@ -2116,6 +2116,31 @@ local function buildWeaponTab()
 	local eraTier = Config.GetWeaponTier(level)
 	sectionTitle(string.format("🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: %s", Config.GetEraName(eraTier.Era)))
 
+	do -- 맨 위: 무기 강화 바로가기 (골드가 모이면 빨간 점 + 초록 버튼). 강화는 마을에서만 된다
+		local row = newRow(46, Color3.fromRGB(34, 30, 50))
+		local can = MENU.WeaponUpgradable()
+		local inLobby = player:GetAttribute("Zone") == "Lobby"
+		local maxed = level >= Config.Weapon.MaxLevel
+		local okCost, upCost = pcall(Config.GetEnhanceCost, level)
+		makeLabel({ Size = UDim2.new(1, -230, 1, 0), Position = UDim2.new(0, 14, 0, 0), RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left,
+			Text = maxed and "🔨 <b>Weapon Upgrade</b>  <font color='#ffd966'>MAX</font>"
+				or string.format("🔨 <b>Weapon Upgrade</b>  <font color='#bbbbcc'>+%d → +%d</font>  <font color='#ffd966'>💰 %s G</font>", level, level + 1, okCost and tostring(upCost) or "?") }, row)
+		local go = makeButton({
+			Size = UDim2.new(0, 190, 0, 34), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), TextSize = 12, Font = Enum.Font.GothamBlack,
+			Text = maxed and "MAX" or (inLobby and (can and "🔨 Upgrade now!" or "🔨 Open Upgrade") or "Upgrade in town"),
+			BackgroundColor3 = (can and GREEN) or ((inLobby and not maxed) and Color3.fromRGB(70, 90, 170) or GRAY),
+		}, row, function()
+			if inLobby and not maxed then player:SetAttribute("OpenEnhance", os.clock()) end
+		end)
+		rounded(go, 17)
+		if can then
+			local dot = makeLabel({ Size = UDim2.new(0, 20, 0, 20), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -2, 0, 2), Text = "!", TextSize = 12, Font = Enum.Font.GothamBlack,
+				BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(235, 60, 60), ZIndex = 5 }, go)
+			create("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
+			create("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 1.5 }, dot)
+		end
+	end
+
 	local previewKey = Config.WeaponTypes[settings.PreviewForm or ""] and settings.PreviewForm ~= "Order" and settings.PreviewForm or equippedKey
 	local shown = Config.GetLookTier(level, previewKey) -- 그 무기 형 + 지금 시대의 외모 / 탄 색
 	local classInfo = Config.WeaponTypes[previewKey]
@@ -2432,7 +2457,18 @@ function MENU.seg(options, current, onPick)
 end
 
 -- 퀘스트 / 업적 칸에 받을 보상이 있는가 (진행이 목표에 닿았고 아직 안 받음)
+-- 무기 강화 골드가 모였나 (마을에서만 강화할 수 있어서 마을에서만 켠다. 왼쪽 무기 버튼의 빨간 점과 같은 조건)
+function MENU.WeaponUpgradable()
+	if player:GetAttribute("TutorialActive") == true or player:GetAttribute("Zone") ~= "Lobby" then return false end
+	local level = player:GetAttribute("WeaponLevel") or 0
+	if level >= Config.Weapon.MaxLevel then return false end
+	local ok, cost = pcall(Config.GetEnhanceCost, level)
+	return ok and (player:GetAttribute("Gold") or 0) >= cost
+end
+
 function MENU.HasClaim(key)
+	if key == "Weapon" then return MENU.WeaponUpgradable() end
+	if key == "Gear" then return player:GetAttribute("DotGear") == true end
 	local list = questState and (key == "Ach" and questState.Achievements or (key == "Daily" and questState.Daily))
 	if type(list) ~= "table" then return false end
 	for _, entry in ipairs(list) do

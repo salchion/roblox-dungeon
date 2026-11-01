@@ -135,7 +135,7 @@ local function buildInventoryTab(state)
 	local SLOT_ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Weapon = "🔫", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
 
 	-- 맨 위 버튼 줄: 자동 장착 / 자동 분해 / 정리 (창을 열자마자 보이게: 가방 줄에 두면 스크롤해야 보였다)
-	local actionRow = newRow(34, Color3.fromRGB(26, 28, 42))
+	local actionRow = newRow(32, Color3.fromRGB(26, 28, 42))
 	makeButton({ Size = UDim2.new(0.34, -8, 0, 26), Position = UDim2.new(0, 6, 0.5, -13), Text = "⚡ Auto-equip best gear", TextSize = 11, BackgroundColor3 = GREEN }, actionRow, function()
 		Remotes.Inventory:FireServer("AutoEquip")
 	end)
@@ -164,10 +164,10 @@ local function buildInventoryTab(state)
 			if owned[key] then table.insert(keys, key) end
 		end
 		if #keys > 0 then
-			local setRow = newRow(46, Color3.fromRGB(24, 26, 40))
+			local setRow = newRow(40, Color3.fromRGB(24, 26, 40))
 			makeLabel({ Size = UDim2.new(0, 96, 1, 0), Position = UDim2.new(0, 8, 0, 0), Text = "🧩 Equip set", TextSize = 12, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(225, 196, 118), TextXAlignment = Enum.TextXAlignment.Left }, setRow)
 			local strip = create("ScrollingFrame", {
-				Size = UDim2.new(1, -110, 1, -6), Position = UDim2.new(0, 106, 0, 3), BackgroundTransparency = 1, BorderSizePixel = 0,
+				Size = UDim2.new(1, -110, 1, -4), Position = UDim2.new(0, 106, 0, 2), BackgroundTransparency = 1, BorderSizePixel = 0,
 				ScrollBarThickness = 3, ScrollingDirection = Enum.ScrollingDirection.X, CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.X,
 			}, setRow)
 			create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Center }, strip)
@@ -176,7 +176,7 @@ local function buildInventoryTab(state)
 				local worn = setCounts[key] or 0
 				local effectOn = def.Zone and player:GetAttribute("AugOnZ_" .. def.Zone) == true
 				local chip = makeButton({
-					Size = UDim2.new(0, 0, 0, 34), AutomaticSize = Enum.AutomaticSize.X, LayoutOrder = i, RichText = true, TextSize = 11,
+					Size = UDim2.new(0, 0, 0, 30), AutomaticSize = Enum.AutomaticSize.X, LayoutOrder = i, RichText = true, TextSize = 11,
 					Text = string.format("%s %s  <font color='#ffe9a0'>%s</font>%s", def.Icon or "✦", def.Name, setPips(math.min(worn, 3)), effectOn and "  <font color='#78ff8c'>● ON</font>" or ""),
 					BackgroundColor3 = def.Color:Lerp(Color3.fromRGB(26, 28, 42), worn >= math.min(3, owned[key]) and 0.35 or 0.7),
 				}, strip, function()
@@ -189,10 +189,10 @@ local function buildInventoryTab(state)
 		end
 	end
 
-	local top = newRow(470, Color3.fromRGB(30, 32, 46))
+	local top = newRow(372, Color3.fromRGB(30, 32, 46)) -- (예전 470: 아래쪽 칸이 잘려서 스크롤해야 했다)
 
 	local viewport = create("ViewportFrame", {
-		Size = UDim2.new(0, 230, 0, 330), Position = UDim2.new(0, 108, 0, 12), BackgroundColor3 = Color3.fromRGB(20, 22, 34), BorderSizePixel = 0,
+		Size = UDim2.new(0, 230, 0, 282), Position = UDim2.new(0, 108, 0, 8), BackgroundColor3 = Color3.fromRGB(20, 22, 34), BorderSizePixel = 0,
 		Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1),
 	}, top)
 	rounded(viewport, 10)
@@ -225,7 +225,7 @@ local function buildInventoryTab(state)
 			cam.CFrame = CFrame.lookAt(pivot.Position + Vector3.new(0, 1.2, 12.5), pivot.Position + Vector3.new(0, 0.4, 0))
 		end)
 	end
-	makeLabel({ Size = UDim2.new(0, 230, 0, 22), Position = UDim2.new(0, 108, 0, 350), Text = string.format("⚡ Power %d", player:GetAttribute("Power") or 0), TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, top)
+	makeLabel({ Size = UDim2.new(0, 230, 0, 22), Position = UDim2.new(0, 108, 0, 292), Text = string.format("⚡ Power %d", player:GetAttribute("Power") or 0), TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, top)
 
 	do
 		local rowsShown = 0
@@ -233,7 +233,7 @@ local function buildInventoryTab(state)
 			local count = setCounts[key] or 0
 			if count >= 2 then
 				local def = Config.Sets[key]
-				local bar = create("Frame", { Size = UDim2.new(0, 230, 0, 26), Position = UDim2.new(0, 108, 0, 378 + rowsShown * 30), BackgroundColor3 = def.Color, BorderSizePixel = 0 }, top)
+				local bar = create("Frame", { Size = UDim2.new(0, 230, 0, 24), Position = UDim2.new(0, 108, 0, 318 + rowsShown * 26), BackgroundColor3 = def.Color, BorderSizePixel = 0 }, top)
 				rounded(bar, 8)
 				create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.55), NumberSequenceKeypoint.new(1, 0.9) }) }, bar)
 				local glow = create("UIStroke", { Color = def.Color, Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, bar)
@@ -246,14 +246,14 @@ local function buildInventoryTab(state)
 			end
 		end
 		if rowsShown == 0 then
-			makeLabel({ Size = UDim2.new(0, 230, 0, 30), Position = UDim2.new(0, 108, 0, 378), Text = "Wear 1·2·3 pieces of the same zone set → set effect tiers 4·5·6 (Set window: Y)", TextSize = 10, TextWrapped = true, TextColor3 = Color3.fromRGB(120, 124, 150) }, top)
+			makeLabel({ Size = UDim2.new(0, 230, 0, 30), Position = UDim2.new(0, 108, 0, 318), Text = "Wear 1·2·3 pieces of the same zone set → set effect tiers 4·5·6 (Set window: Y)", TextSize = 10, TextWrapped = true, TextColor3 = Color3.fromRGB(120, 124, 150) }, top)
 		end
 	end
 	local function slotBox(slotKey, x, y)
 		local item = equipped[slotKey]
 		local rarity = item and item.Rarity or 0
 		local box = makeButton({
-			Size = UDim2.new(0, 88, 0, 88), Position = UDim2.new(0, x, 0, y), Text = "",
+			Size = UDim2.new(0, 88, 0, 76), Position = UDim2.new(0, x, 0, y), Text = "",
 			BackgroundColor3 = item and Color3.fromRGB(46, 48, 68) or Color3.fromRGB(34, 34, 48), AutoButtonColor = true,
 		}, top, function()
 			if slotKey == "Weapon" then
@@ -270,51 +270,51 @@ local function buildInventoryTab(state)
 			local weaponLevel = player:GetAttribute("WeaponLevel") or 0
 			local tier = Config.GetLookTier(weaponLevel, Config.ResolveWeaponType(weaponLevel, player:GetAttribute("WeaponType")))
 			rarityOutline(box, 4, 3.5).Color = tier.Color
-			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 6), Text = "🔫", TextSize = 27 }, box)
-			makeLabel({ Size = UDim2.new(1, -6, 0, 36), Position = UDim2.new(0, 3, 0, 46), Text = Config.WeaponTypes[tier.Class].Name, TextSize = 10, TextWrapped = true, TextColor3 = tier.Color, Font = Enum.Font.GothamBold }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 3), Text = "🔫", TextSize = 25 }, box)
+			makeLabel({ Size = UDim2.new(1, -6, 0, 30), Position = UDim2.new(0, 3, 0, 40), Text = Config.WeaponTypes[tier.Class].Name, TextSize = 10, TextWrapped = true, TextColor3 = tier.Color, Font = Enum.Font.GothamBold }, box)
 		elseif item then
 			rarityOutline(box, rarity)
 			setDecor(box, item.Set, setCounts[item.Set], UDim2.new(0, 4, 0, 4), UDim2.new(0, 44, 0, 16), 10)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 4), Text = SLOT_ICONS[slotKey], TextSize = 27 }, box)
-			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 44), Text = Config.ItemDisplayName(item), TextSize = 9, TextWrapped = true, TextColor3 = Config.Gear.RarityColors[rarity], Font = Enum.Font.GothamBold }, box)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 64), Text = string.format("+%d", item.Level), TextSize = 11, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 2), Text = SLOT_ICONS[slotKey], TextSize = 25 }, box)
+			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 38), Text = Config.ItemDisplayName(item), TextSize = 9, TextWrapped = true, TextColor3 = Config.Gear.RarityColors[rarity], Font = Enum.Font.GothamBold }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 56), Text = string.format("+%d", item.Level), TextSize = 11, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, box)
 			if item.Unique then
 				makeLabel({ Size = UDim2.new(0, 16, 0, 16), Position = UDim2.new(1, -18, 0, 2), Text = "✦", TextSize = 12, TextColor3 = Color3.fromRGB(255, 184, 77) }, box)
 			end
 		else
 			create("UIStroke", { Color = Color3.fromRGB(70, 70, 90), Thickness = 1.5 }, box)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 10), Text = SLOT_ICONS[slotKey], TextSize = 26, TextTransparency = 0.6 }, box)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 0, 56), Text = "Empty", TextSize = 10, TextColor3 = Color3.fromRGB(120, 120, 140) }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 6), Text = SLOT_ICONS[slotKey], TextSize = 24, TextTransparency = 0.6 }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 0, 48), Text = "Empty", TextSize = 10, TextColor3 = Color3.fromRGB(120, 120, 140) }, box)
 		end
 		return box
 	end
-	slotBox("Helmet", 10, 12)
-	slotBox("Armor", 10, 108)
-	slotBox("Gloves", 10, 204)
-	slotBox("Necklace", 350, 12)
-	slotBox("Ring", 350, 108)
-	slotBox("Boots", 350, 204)
-	slotBox("Weapon", 350, 300)
+	slotBox("Helmet", 10, 8)
+	slotBox("Armor", 10, 92)
+	slotBox("Gloves", 10, 176)
+	slotBox("Necklace", 350, 8)
+	slotBox("Ring", 350, 92)
+	slotBox("Boots", 350, 176)
+	slotBox("Weapon", 350, 260)
 	do
 		local petLevel = player:GetAttribute("PetLevel") or 0
 		local look = Config.Pet.Looks[player:GetAttribute("PetLook") or "Orb"] or Config.Pet.Looks.Orb
-		local box = makeButton({ Size = UDim2.new(0, 88, 0, 88), Position = UDim2.new(0, 10, 0, 300), Text = "", BackgroundColor3 = petLevel > 0 and Color3.fromRGB(46, 48, 68) or Color3.fromRGB(34, 34, 48), AutoButtonColor = true }, top, function()
+		local box = makeButton({ Size = UDim2.new(0, 88, 0, 76), Position = UDim2.new(0, 10, 0, 260), Text = "", BackgroundColor3 = petLevel > 0 and Color3.fromRGB(46, 48, 68) or Color3.fromRGB(34, 34, 48), AutoButtonColor = true }, top, function()
 			player:SetAttribute("OpenPet", os.clock())
 		end)
 		rounded(box, 10)
 		if petLevel > 0 then
 			create("UIStroke", { Color = Color3.fromRGB(255, 200, 90), Thickness = 2.5 }, box)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 4), Text = look.Icon, TextSize = 26 }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 34), Position = UDim2.new(0, 0, 0, 2), Text = look.Icon, TextSize = 24 }, box)
 			local nextFn
 			for _, fn in ipairs(Config.Pet.Functions) do
 				if fn.Level > petLevel then nextFn = fn break end
 			end
-			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 42), Text = nextFn and string.format("▶ %s Lv.%d", nextFn.Icon, nextFn.Level) or "Max!", TextSize = 9, TextWrapped = true, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(190, 220, 255) }, box) -- 다음에 열리는 펫 기능
-			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 62), Text = string.format("Lv.%d", petLevel), TextSize = 11, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, box)
+			makeLabel({ Size = UDim2.new(1, -6, 0, 16), Position = UDim2.new(0, 3, 0, 36), Text = nextFn and string.format("▶ %s Lv.%d", nextFn.Icon, nextFn.Level) or "Max!", TextSize = 9, TextWrapped = true, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(190, 220, 255) }, box) -- 다음에 열리는 펫 기능
+			makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 54), Text = string.format("Lv.%d", petLevel), TextSize = 11, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, box)
 		else
 			create("UIStroke", { Color = Color3.fromRGB(70, 70, 90), Thickness = 1.5 }, box)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 0, 8), Text = "🐾", TextSize = 26, TextTransparency = 0.6 }, box)
-			makeLabel({ Size = UDim2.new(1, -4, 0, 30), Position = UDim2.new(0, 2, 0, 52), Text = "Unlock\nPet (P)", TextSize = 9, TextWrapped = true, TextColor3 = Color3.fromRGB(150, 150, 175) }, box)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 5), Text = "🐾", TextSize = 24, TextTransparency = 0.6 }, box)
+			makeLabel({ Size = UDim2.new(1, -4, 0, 30), Position = UDim2.new(0, 2, 0, 44), Text = "Unlock\nPet (P)", TextSize = 9, TextWrapped = true, TextColor3 = Color3.fromRGB(150, 150, 175) }, box)
 		end
 	end
 	local detail = create("Frame", { Size = UDim2.new(1, -462, 1, -24), Position = UDim2.new(0, 450, 0, 12), BackgroundColor3 = Color3.fromRGB(24, 26, 38), BorderSizePixel = 0 }, top)
@@ -366,45 +366,30 @@ local function buildInventoryTab(state)
 		local color = Config.Gear.RarityColors[selected.Rarity]
 		rarityOutline(detail, selected.Rarity)
 		local slot = Config.GetGearSlot(selected.Slot)
+		-- 짧게: 기본 능력치 1줄 + 옵션 줄(값 + 범위 안 위치 %) + 유니크 / 세트 한 줄. 긴 설명 줄은 뺐다
 		local lines = {
 			string.format("<font color='#%s' size='15'><b>[%s] %s</b></font>  +%d", hex(color), Config.Gear.RarityNames[selected.Rarity], Config.ItemDisplayName(selected), selected.Level),
 			string.format("<font color='#aaaacc' size='10'>%s · Score %d%s</font>", slot.Name, selected.Score, selected.Equipped and " · Equipped" or ""),
-			"<font size='11' color='#ddddee'>Base  " .. Config.FormatGearStat(selected.Slot, Config.GetGearStat(selected.Slot, selected.Rarity, selected.Level)) .. "</font>"
-				.. (Config.StatDesc[slot.Stat] and ("\n<font size='9' color='#8a8aa8'>   → " .. Config.StatDesc[slot.Stat].Desc .. "</font>") or ""),
+			"<font size='12' color='#ffffff'><b>Base</b>  " .. Config.FormatGearStat(selected.Slot, Config.GetGearStat(selected.Slot, selected.Rarity, selected.Level)) .. "</font>",
 		}
 		for _, affix in ipairs(selected.Affixes) do
-			local info = Config.StatDesc[affix.Stat]
 			local lo, hi = Config.AffixRange(affix.Stat, selected.Rarity)
 			local pos = hi > lo and math.clamp((affix.Value - lo) / (hi - lo), 0, 1) or 1
 			local posColor = pos >= 0.75 and "#78ff8c" or (pos >= 0.4 and "#ffd966" or "#ff9a6e")
-			table.insert(lines, "<font size='11' color='#9ad7ff'>◆ " .. Config.FormatAffix(affix.Stat, affix.Value) .. "</font>"
-				.. string.format(" <font size='9' color='#8a8aa8'>Range %s</font> <font size='9' color='%s'><b>(%d%%)</b></font>", Config.FormatAffixRange(affix.Stat, selected.Rarity), posColor, math.floor(pos * 100 + 0.5))
-				.. (info and ("\n<font size='9' color='#8a8aa8'>   → " .. info.Desc .. "</font>") or ""))
-		end
-		if #selected.Affixes > 0 then
-			table.insert(lines, "<font size='9' color='#7f86a8'>🎲 Reroll: re-rolls affix values within the range above (brackets = position in range, 100% is best). Can get better or worse</font>")
+			table.insert(lines, string.format("<font size='12' color='#9ad7ff'>◆ %s</font> <font size='10' color='%s'><b>%d%%</b></font>", Config.FormatAffix(affix.Stat, affix.Value), posColor, math.floor(pos * 100 + 0.5)))
 		end
 		if selected.Unique and Config.Uniques[selected.Unique] then
-			table.insert(lines, "<font size='11' color='#ffb84d'>✦ Unique: " .. Config.Uniques[selected.Unique].Desc .. "</font>")
+			table.insert(lines, "<font size='12' color='#ffb84d'>✦ " .. Config.Uniques[selected.Unique].Name .. "</font> <font size='10' color='#d9b878'>" .. Config.Uniques[selected.Unique].Desc .. "</font>")
 		end
 		if selected.Set and Config.Sets[selected.Set] then
 			local setDef = Config.Sets[selected.Set]
 			local have = setCounts[selected.Set] or 0
 			local lit, dim = "#" .. hex(setDef.Color), "#6c7088"
-			if setDef.Zone then
-				table.insert(lines, string.format("<font size='10' color='%s'>📍 Zone %d %s · Drops in that zone · Dungeon chests (deeper = better odds)</font>", lit, setDef.Zone, Config.Field.ZoneNames[setDef.Zone]))
-			end
 			for _, tier in ipairs({ 2, 3 }) do
 				local parts = {}
 				for _, b in ipairs(setDef.Bonuses[tier]) do table.insert(parts, Config.FormatBonus(b.Stat, b.Value)) end
 				local on = have >= tier
-				table.insert(lines, string.format("<font size='10' color='%s'>%s <b>%d pieces</b>  %s</font>", on and lit or dim, on and "✔" or "○", tier, table.concat(parts, ", ")))
-			end
-			local augInfo = setDef.Aug and Config.AugInfo[setDef.Aug]
-			if augInfo then
-				local lv = player:GetAttribute("AugLvZ_" .. setDef.Zone) or 0
-				local ac = lv > 0 and ("#" .. hex(augInfo.Color)) or dim
-				table.insert(lines, string.format("<font size='10' color='%s'><b>%s %s</b> %s</font>\n  <font color='%s'>%s</font>", ac, augInfo.Icon, augInfo.Name, lv > 0 and ("✔ Tier " .. lv) or "○ Gold Tier 3 + 1·2·3 gear pieces = Tier 4·5·6 (Y)", lv > 0 and "#cfd6f0" or dim, augInfo.Desc))
+				table.insert(lines, string.format("<font size='10' color='%s'>%s %d pieces  %s</font>", on and lit or dim, on and "✔" or "○", tier, table.concat(parts, ", ")))
 			end
 		end
 		local current = equipped[selected.Slot]
