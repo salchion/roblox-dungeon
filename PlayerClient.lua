@@ -1422,6 +1422,7 @@ end)
 local resultToken = 0
 local function showResult(result)
 	if result.Fever then return end -- 피버 타임은 FeverResultClient 의 황금 결과 카드
+	if result.Victory and #(result.Loot or {}) > 0 then return end -- 보스 상자 연출(ChestOpenClient)이 카드 / 골드 / 버튼을 한 화면에 보여 준다 (결과 창을 또 띄우지 않는다)
 	resultToken += 1
 	local token = resultToken
 	resultPanel.Visible = true

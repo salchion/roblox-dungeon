@@ -13,7 +13,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 local Kit = require(ReplicatedStorage:WaitForChild("ClientKit"))
-local create, rounded, makeLabel = Kit.create, Kit.rounded, Kit.makeLabel
+local create, rounded, makeLabel, makeButton = Kit.create, Kit.rounded, Kit.makeLabel, Kit.makeButton
 
 local player = Players.LocalPlayer
 
@@ -21,7 +21,7 @@ local gui = create("ScreenGui", { Name = "ChestGui", ResetOnSpawn = false, Ignor
 local dim = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.04, Text = "", AutoButtonColor = false, ZIndex = 30 }, gui) -- (카드가 나오는 동안은 아래 결과 창이 비치지 않게 거의 검게)
 local stage = create("Frame", { Size = UDim2.new(0, 560, 0, 320), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 31 }, gui)
 local scale = create("UIScale", {}, stage)
-local hint = makeLabel({ Size = UDim2.new(1, 0, 0, 20), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, 0), Text = "Tap to skip", TextSize = 12, TextColor3 = Color3.fromRGB(190, 195, 220), ZIndex = 32 }, stage)
+local hint = makeLabel({ Size = UDim2.new(1, 0, 0, 20), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, 0), Text = "", Visible = false, TextSize = 12, TextColor3 = Color3.fromRGB(190, 195, 220), ZIndex = 32 }, stage)
 
 local function fit()
 	local size = Workspace.CurrentCamera and Workspace.CurrentCamera.ViewportSize or Vector2.new(1280, 720)
@@ -30,18 +30,20 @@ end
 fit()
 
 local token = 0
+local summaryShown = false -- 카드 아래 골드 / 버튼이 떠 있는 동안은 화면을 눌러도 닫히지 않는다 (버튼으로 닫는다)
 local function close()
 	token += 1
+	summaryShown = false
 	gui.Enabled = false
 	dim.Visible = true
-	hint.Visible = true
 	stage.Position = UDim2.new(0.5, 0, 0.5, 0)
 	player:SetAttribute("ChestOpening", nil)
 	for _, child in ipairs(stage:GetChildren()) do
 		if child:IsA("GuiObject") and child ~= hint then child:Destroy() end
 	end
 end
-dim.MouseButton1Click:Connect(close)
+-- (카드가 다 나온 뒤 버튼으로만 닫는다: 중간에 닫으면 골드 / 로비로 버튼을 놓친다)
+dim.MouseButton1Click:Connect(function() end)
 
 local function tween(object, time, props, style, direction)
 	local t = TweenService:Create(object, TweenInfo.new(time, style or Enum.EasingStyle.Quad, direction or Enum.EasingDirection.Out), props)
@@ -67,7 +69,12 @@ local function sparks(color, count)
 	end
 end
 
-local function play(loot, sweep)
+local function commaText(n)
+	return (tostring(math.floor(n or 0)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
+end
+
+local function play(loot, data)
+	local sweep = data.Sweep == true
 	token += 1
 	local mine = token
 	close()
@@ -102,6 +109,19 @@ local function play(loot, sweep)
 	task.wait(0.35)
 	chest:Destroy()
 
+	-- 번 골드 / 티켓: 카드 아래에 같이 떠 있는다 (결과 창을 따로 또 보지 않게)
+	local chipRow = {}
+	for index, spec in ipairs({
+		{ Text = "💰 +" .. commaText(data.Gold) .. " G", Color = Color3.fromRGB(255, 220, 110), X = -112 },
+		{ Text = "🎫 +" .. commaText(data.Tickets), Color = Color3.fromRGB(220, 170, 255), X = 112 },
+	}) do
+		local chip = makeLabel({ Size = UDim2.new(0, 200, 0, 38), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, spec.X, 0.5, 132), Text = spec.Text, TextSize = 21, Font = Enum.Font.GothamBlack,
+			TextColor3 = spec.Color, BackgroundTransparency = 1, BackgroundColor3 = Color3.fromRGB(30, 28, 48), TextTransparency = 1, ZIndex = 33 }, stage)
+		rounded(chip, 12)
+		create("UIStroke", { Color = spec.Color, Thickness = 1.5, Transparency = 0.35 }, chip)
+		tween(chip, 0.4, { BackgroundTransparency = 0, TextTransparency = 0 })
+		chipRow[index] = chip
+	end
 	-- 2) 장비가 한 장씩 펼쳐진다: 부위 그림 + 이름 + 상태 배지가 있는 카드 (높은 등급일수록 크고 오래 머문다)
 	local ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Helmet = "⛑", Ring = "💍", Necklace = "📿", Weapon = "🔫" }
 	local count = math.max(1, #loot)
@@ -170,14 +190,17 @@ local function play(loot, sweep)
 	end
 	task.wait(0.6)
 	if token ~= mine then return end
-	-- 끝: 어두운 막을 걷고 카드는 화면 위쪽으로 올려 둔다 -> 아래 결과 창(골드 / 티켓 / 로비로)과 한 화면에 같이 보인다 (던전을 떠나면 치워진다)
+	-- 끝: 카드 / 골드 아래에 버튼 (소탕은 확인으로 닫고, 던전은 로비로 돌아간다)
 	hint.Visible = false
-	dim.Visible = false
-	player:SetAttribute("ChestOpening", nil)
-	tween(stage, 0.45, { Position = UDim2.new(0.5, 0, 0.23, 0) })
-	tween(scale, 0.45, { Scale = scale.Scale * 0.78 }) -- 작게 올려서 위쪽에서 잘리지 않게
-	if sweep then -- 소탕은 던전 밖(마을)이라 구역이 바뀌어도 치워지지 않는다: 몇 초 뒤 스스로 걷는다
-		task.delay(5, function() if token == mine then close() end end)
+	summaryShown = true
+	local back = makeButton({ Size = UDim2.new(0, 200, 0, 42), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 188), Text = sweep and "OK" or "Back to Lobby",
+		TextSize = 15, BackgroundColor3 = Color3.fromRGB(58, 120, 210), ZIndex = 34 }, stage, function()
+		if not sweep then Remotes.Dungeon:FireServer("Leave") end
+		close()
+	end)
+	rounded(back, 21)
+	if sweep then -- 소탕은 마을에서 일어나 구역이 바뀌지 않는다: 버튼을 못 눌러도 스스로 닫힌다
+		task.delay(15, function() if token == mine then close() end end)
 	end
 end
 
@@ -185,7 +208,7 @@ Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
 	if action ~= "Result" or typeof(data) ~= "table" or data.Victory ~= true then return end
 	local loot = data.Loot
 	if typeof(loot) ~= "table" or #loot == 0 then return end
-	task.spawn(play, loot, data.Sweep == true)
+	task.spawn(play, loot, data)
 end)
 
 player:GetAttributeChangedSignal("Zone"):Connect(function()
