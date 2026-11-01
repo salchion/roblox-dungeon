@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Range +{number1}%  (max {number2})", "Rango +{number1}% (máximo {number2})" },
+		{ "Defeat {number1} monsters", "Derrota a {number1} monstruos" },
 		{ "⭐ Next level Lv.{number1}", "⭐ Siguiente nivel Nv.{number1}" },
 		{ "vs. equipped ▲ +{number1}", "vs equipado ▲ +{number1}" },
 		{ "Online: {number1} players", "En línea: {number1} jugadores" },

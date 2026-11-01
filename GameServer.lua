@@ -74,7 +74,7 @@ Tutorial.SetTargets({ -- 튜토리얼 미션 표지 위치
 	Gate = promptPosition(lobby.GatePrompt),
 })
 Dungeon.Init(lobby.SpawnCFrame)
-Dummy.Build(lobby.DummyStart)
+Dummy.Build(lobby.DummyStart, lobby.DummyFacing)
 Dummy.BuildRest(lobby.RestStart) -- 휴식 구역 (방치 수입)
 Npc.Init(lobby.DummyStart.Y, { -- 시설마다 NPC 가 서서 말을 건다 (허공에 대고 말하는 느낌을 없애려고)
 	{ Name = "Tom", Title = "🔨 Blacksmith", Position = promptPosition(lobby.AnvilPrompt), Shirt = Color3.fromRGB(150, 98, 60), Pants = Color3.fromRGB(70, 56, 48), Hat = "cap", Accent = Color3.fromRGB(110, 70, 44), Prop = "hammer",

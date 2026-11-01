@@ -610,9 +610,6 @@ function LobbyDecor.Build(parent, ctx)
 			barrel(sx > 0 and sx - 3 or sx + 3, 49)
 			flag(sx / 2 - (sx > 0 and 0.5 or -0.5), 48, 8, sx > 0 and RED or TEAL, 0, 1)
 		end
-		for i = 0, 7 do -- 휴식 구역으로 가는 징검돌
-			box("RestStep", Vector3.new(2.8, 0.07, 2.2), g(-37 - i * 3.6, 70 + (i % 2) * 0.9, 0.3), i % 2 == 0 and STONE_LIGHT or STONE, M.Cobblestone, 0.2 * (i % 3))
-		end
 	end
 
 	section("Market")

@@ -1159,9 +1159,10 @@ function Lobby.Build()
 		GachaPrompt = gachaPrompt,
 		WarpPrompt = warpPrompt,
 		RiftPrompt = riftPrompt,
-		DummyStart = Vector3.new(0, TOP, 28), -- 허수아비 하나가 서는 자리
+		DummyStart = Vector3.new(-64, TOP, -58), -- 허수아비 훈련장(5마리): 서북쪽 열린 땅. 스폰 언덕에서 가깝고, 가게 사이 길을 막지 않는다
+		DummyFacing = Vector3.new(64, 0, 58), -- 훈련장 앞(플레이어가 오는 쪽 = 마을 중앙 방향)
 		StarterDummy = Vector3.new(HILL_NX + 84, TOP, HILL_NZ + 11), -- 입문용 허수아비: 언덕 경사로가 끝나는 곳 옆 (스폰 자리에는 두지 않는다)
-		RestStart = Vector3.new(-84, TOP, 70), -- 휴식 구역(방치 수입): 훈련장과 따로 떨어진 아늑한 모닥불 쉼터
+		RestStart = Vector3.new(66, TOP, -58), -- 휴식 구역(방치 수입): 동북쪽, 필드를 오가는 길에서 잘 보이는 모닥불 쉼터
 		RankBoardCFrame = CFrame.lookAt(Vector3.new(-52, TOP + 16.5, 100), Vector3.new(0, TOP + 16.5, 72)),
 	}
 end

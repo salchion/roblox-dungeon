@@ -14,20 +14,6 @@ local Dummy = {}
 local dummies = {}   -- [Model] = { Multiplier, RequiredLevel, Parts..., BaseColor, Flashing }
 local folder
 
--- 번호별 몸 색/재질: 짚 -> 나무 -> 강철 -> 금 -> 진홍 -> 마력
-local STYLES = {
-	{ Color = Color3.fromRGB(205, 175, 110), Material = Enum.Material.Fabric },
-	{ Color = Color3.fromRGB(190, 160, 100), Material = Enum.Material.Fabric },
-	{ Color = Color3.fromRGB(160, 120, 75), Material = Enum.Material.Wood },
-	{ Color = Color3.fromRGB(140, 105, 70), Material = Enum.Material.Wood },
-	{ Color = Color3.fromRGB(150, 155, 165), Material = Enum.Material.Metal },
-	{ Color = Color3.fromRGB(120, 140, 175), Material = Enum.Material.Metal },
-	{ Color = Color3.fromRGB(95, 140, 200), Material = Enum.Material.DiamondPlate },
-	{ Color = Color3.fromRGB(240, 190, 60), Material = Enum.Material.Foil },
-	{ Color = Color3.fromRGB(200, 40, 55), Material = Enum.Material.Neon },
-	{ Color = Color3.fromRGB(170, 70, 255), Material = Enum.Material.Neon },
-}
-
 local function newPart(props, parent)
 	local part = Instance.new("Part")
 	part.Anchored = true
@@ -40,199 +26,223 @@ local function newPart(props, parent)
 	return part
 end
 
-local function formatMultiplier(multiplier)
-	if multiplier == math.floor(multiplier) then
-		return tostring(multiplier)
-	end
-	return string.format("%.1f", multiplier)
+-- 훈련장 장식 (맞지도 막지도 않는다): 충돌 / 질의 / 접촉 / 그림자 없음
+local function deco(props, parent)
+	props.CanCollide, props.CanQuery, props.CanTouch, props.CastShadow = false, false, false, false
+	return newPart(props, parent)
 end
 
-local function addGlow(part, color, range)
-	local light = Instance.new("PointLight")
-	light.Range = range
-	light.Brightness = 1.5
-	light.Color = color
-	light.Parent = part
-end
+local WOOD = Color3.fromRGB(110, 78, 50)
+local WOOD_DARK = Color3.fromRGB(78, 56, 40)
+local LEATHER = Color3.fromRGB(86, 58, 40)
+local GOLD = Color3.fromRGB(232, 190, 80)
+local STEEL = Color3.fromRGB(150, 156, 170)
+local RED = Color3.fromRGB(176, 52, 56)
+local STRAW = Color3.fromRGB(214, 184, 112)
 
-local function buildDummy(index, info, position, nameIndex, bigScale)
+-- 허수아비 한 마리. variant: "Knight" (투구 + 방패) / "Mage" (마법사 모자 + 구슬) / "Brute" (뿔 + 가시 어깨). s: 크기 배율.
+-- 맞는 곳(몸통 / 머리 / 장비)은 FlashParts 에 모아서 맞을 때 번쩍인다. 바닥 문양 / 끈 같은 장식은 맞지 않는다.
+local function buildDummy(info, position, s, variant, nameIndex)
 	local model = Instance.new("Model")
-	model.Name = "Dummy" .. (nameIndex or index)
-
-	local style = STYLES[index] or STYLES[#STYLES]
-	local s = (1 + 0.12 * (index - 1)) * (bigScale or 1) -- 번호가 오를수록 커짐 (1.0 ~ 2.1배)
+	model.Name = "Dummy" .. nameIndex
 	local V = function(x, y, z) return Vector3.new(x * s, y * s, z * s) end
 	local O = function(x, y, z) return position + Vector3.new(x * s, y * s, z * s) end
-	local wood = Color3.fromRGB(95, 65, 40)
-	local metal = Color3.fromRGB(70, 75, 85)
+	local function disc(name, diameter, thickness, pos, color, material, faceZ, extra)
+		local cf = CFrame.new(pos) * (faceZ and CFrame.Angles(0, math.rad(90), 0) or CFrame.Angles(0, 0, math.rad(90)))
+		local props = { Name = name, Shape = Enum.PartType.Cylinder, Size = Vector3.new(thickness, diameter, diameter), CFrame = cf, Color = color, Material = material }
+		for key, value in pairs(extra or {}) do props[key] = value end
+		return deco(props, model)
+	end
 
-	-- 받침대 + 기둥 + 팔
-	newPart({ Name = "Base", Size = V(4, 0.6, 4), Position = O(0, 0.3, 0), Color = Color3.fromRGB(80, 75, 70), Material = Enum.Material.Cobblestone }, model)
-	newPart({ Name = "Post", Size = V(0.9, 7, 0.9), Position = O(0, 3.5, 0), Color = wood, Material = Enum.Material.Wood }, model)
-	newPart({ Name = "Arms", Size = V(6.4, 0.8, 0.8), Position = O(0, 5.7, 0), Color = wood, Material = Enum.Material.Wood }, model)
+	-- 받침: 돌 단 + 금빛 룬 고리 (바닥에 은은하게)
+	newPart({ Name = "Base", Shape = Enum.PartType.Cylinder, Size = V(0.8, 5.4, 5.4), CFrame = CFrame.new(O(0, 0.4, 0)) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(96, 92, 90), Material = Enum.Material.Cobblestone }, model)
+	disc("RuneRing", 6.6 * s, 0.1, position + Vector3.new(0, 0.06, 0), GOLD, Enum.Material.Neon, false, { Transparency = 0.45 })
+	disc("RuneRingInner", 4.2 * s, 0.12, position + Vector3.new(0, 0.07, 0), GOLD, Enum.Material.Neon, false, { Transparency = 0.7 })
 
-	-- 몸통 / 머리 (맞을 때 번쩍이는 부분)
-	local body = newPart({ Name = "Body", Size = V(3, 3.6, 2), Position = O(0, 4.7, 0), Color = style.Color, Material = style.Material }, model)
-	local head = newPart({ Name = "Head", Shape = Enum.PartType.Ball, Size = V(2.3, 2.3, 2.3), Position = O(0, 7.4, 0), Color = style.Color, Material = style.Material }, model)
+	-- 기둥 + 팔 (밧줄로 묶음)
+	newPart({ Name = "Post", Size = V(0.9, 7, 0.9), Position = O(0, 3.9, 0), Color = WOOD, Material = Enum.Material.Wood }, model)
+	newPart({ Name = "Arms", Size = V(6.6, 0.8, 0.8), Position = O(0, 5.9, 0), Color = WOOD, Material = Enum.Material.Wood }, model)
+	for _, x in ipairs({ -3, 3 }) do
+		deco({ Name = "Rope", Size = V(0.5, 1, 1), Position = O(x, 5.9, 0), Color = Color3.fromRGB(196, 176, 130), Material = Enum.Material.Fabric }, model)
+	end
+
+	-- 몸통 / 머리
+	local body = newPart({ Name = "Body", Size = V(3.2, 3.8, 2.2), Position = O(0, 5, 0), Color = STRAW, Material = Enum.Material.Fabric }, model)
+	local head = newPart({ Name = "Head", Shape = Enum.PartType.Ball, Size = V(2.4, 2.4, 2.4), Position = O(0, 7.8, 0), Color = Color3.fromRGB(226, 198, 130), Material = Enum.Material.Fabric }, model)
 	model.PrimaryPart = body
-	local flashParts = { body, head }
+	local flash = { body, head }
+	-- 가죽 끈 (X 자) + 허리띠 + 금 버클
+	for _, side in ipairs({ -1, 1 }) do
+		deco({ Name = "Strap", Size = V(0.45, 4.2, 0.2), CFrame = CFrame.new(O(0, 5, 1.12)) * CFrame.Angles(0, 0, math.rad(side * 32)), Color = LEATHER, Material = Enum.Material.Leather }, model)
+	end
+	deco({ Name = "Belt", Size = V(3.4, 0.5, 2.4), Position = O(0, 3.55, 0), Color = LEATHER, Material = Enum.Material.Leather }, model)
+	deco({ Name = "Buckle", Size = V(0.7, 0.5, 0.2), Position = O(0, 3.55, 1.25), Color = GOLD, Material = Enum.Material.Metal }, model)
+	-- 가슴 과녁: 빨강 / 흰색 / 빨강 동심원
+	disc("TargetOuter", 2.5 * s, 0.06, O(0, 5.2, 1.13), RED, Enum.Material.SmoothPlastic, true)
+	disc("TargetMid", 1.7 * s, 0.07, O(0, 5.2, 1.15), Color3.fromRGB(240, 236, 226), Enum.Material.SmoothPlastic, true)
+	disc("TargetCore", 0.9 * s, 0.08, O(0, 5.2, 1.17), RED, Enum.Material.SmoothPlastic, true)
+	-- 꿰맨 얼굴: X 눈 + 입
+	for _, ex in ipairs({ -0.55, 0.55 }) do
+		for _, angle in ipairs({ 45, -45 }) do
+			deco({ Name = "FaceStitch", Size = V(0.5, 0.1, 0.1), CFrame = CFrame.new(O(ex, 8, 1.16)) * CFrame.Angles(0, 0, math.rad(angle)), Color = Color3.fromRGB(60, 42, 34), Material = Enum.Material.Fabric }, model)
+		end
+	end
+	deco({ Name = "FaceMouth", Size = V(1.1, 0.1, 0.1), Position = O(0, 7.35, 1.15), Color = Color3.fromRGB(60, 42, 34), Material = Enum.Material.Fabric }, model)
 
-	-- 4번~: 어깨 보호대
-	if index >= 4 then
+	-- 뒤쪽 찢어진 붉은 망토
+	deco({ Name = "Cape", Size = V(3.4, 4.4, 0.18), Position = O(0, 4.6, -1.35), Color = Color3.fromRGB(150, 42, 50), Material = Enum.Material.Fabric }, model)
+	for i = -1, 1 do
+		deco({ Name = "CapeTatter", Size = V(0.9, 1 + (i % 2) * 0.5, 0.16), Position = O(i * 1.15, 2.1 - (i % 2) * 0.25, -1.35), Color = Color3.fromRGB(150, 42, 50), Material = Enum.Material.Fabric }, model)
+	end
+
+	-- 모양별 장비
+	if variant == "Knight" then
+		local helm = newPart({ Name = "Helm", Size = V(2.7, 1.5, 2.7), Position = O(0, 8.55, 0), Color = STEEL, Material = Enum.Material.Metal }, model)
+		table.insert(flash, helm)
+		deco({ Name = "Crest", Size = V(0.4, 1.1, 2.2), Position = O(0, 9.5, 0), Color = RED, Material = Enum.Material.Fabric }, model)
 		for _, side in ipairs({ -1, 1 }) do
-			local pad = newPart({ Name = "Shoulder", Size = V(1.6, 1.0, 1.8), Position = O(side * 2.6, 5.9, 0), Color = metal, Material = Enum.Material.Metal }, model)
-			table.insert(flashParts, pad)
+			table.insert(flash, newPart({ Name = "Shoulder", Size = V(1.6, 1, 1.9), Position = O(side * 2.5, 6.6, 0), Color = STEEL, Material = Enum.Material.Metal }, model))
 		end
-	end
-
-	-- 6번~: 투구
-	if index >= 6 then
-		local helm = newPart({ Name = "Helm", Size = V(2.6, 1.3, 2.6), Position = O(0, 8.3, 0), Color = metal, Material = Enum.Material.Metal }, model)
-		table.insert(flashParts, helm)
-	end
-
-	-- 7번~: 뿔
-	if index >= 7 then
+		local shield = newPart({ Name = "Shield", Shape = Enum.PartType.Cylinder, Size = V(0.4, 3, 3), CFrame = CFrame.new(O(-3.6, 5.2, 0.7)) * CFrame.Angles(0, math.rad(90), 0), Color = WOOD, Material = Enum.Material.WoodPlanks }, model)
+		table.insert(flash, shield)
+		disc("ShieldRim", 3.2 * s, 0.3, O(-3.6, 5.2, 0.62), STEEL, Enum.Material.Metal, true)
+		disc("ShieldBoss", 0.9 * s, 0.25, O(-3.6, 5.2, 0.95), GOLD, Enum.Material.Metal, true)
+	elseif variant == "Mage" then
+		local brim = newPart({ Name = "HatBrim", Shape = Enum.PartType.Cylinder, Size = V(0.3, 3.8, 3.8), CFrame = CFrame.new(O(0, 8.9, 0)) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(60, 56, 120), Material = Enum.Material.Fabric }, model)
+		table.insert(flash, brim)
+		for i, d in ipairs({ 2.5, 1.8, 1.1, 0.5 }) do
+			table.insert(flash, newPart({ Name = "HatCone", Shape = Enum.PartType.Cylinder, Size = V(0.9, d, d), CFrame = CFrame.new(O(0, 9.3 + (i - 1) * 0.85, 0)) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(70, 66, 140), Material = Enum.Material.Fabric }, model))
+		end
+		deco({ Name = "HatBand", Shape = Enum.PartType.Cylinder, Size = V(0.3, 2.6, 2.6), CFrame = CFrame.new(O(0, 9.1, 0)) * CFrame.Angles(0, 0, math.rad(90)), Color = GOLD, Material = Enum.Material.Metal }, model)
+		-- 오른손의 빛나는 구슬 (살짝 위아래로 떠 있는 느낌의 고정 구슬 + 은은한 빛)
+		deco({ Name = "StaffPole", Size = V(0.35, 5, 0.35), Position = O(3.8, 4.1, 0.6), Color = WOOD_DARK, Material = Enum.Material.Wood }, model)
+		local orb = deco({ Name = "Orb", Shape = Enum.PartType.Ball, Size = V(1.2, 1.2, 1.2), Position = O(3.8, 7, 0.6), Color = Color3.fromRGB(120, 200, 255), Material = Enum.Material.Neon }, model)
+		local light = Instance.new("PointLight")
+		light.Color, light.Range, light.Brightness, light.Shadows = Color3.fromRGB(120, 200, 255), 10, 0.5, false
+		light.Parent = orb
+	else -- Brute
 		for _, side in ipairs({ -1, 1 }) do
-			local horn = newPart({
-				Name = "Horn", Size = V(0.5, 2.2, 0.5),
-				CFrame = CFrame.new(O(side * 1.3, 9.2, 0)) * CFrame.Angles(0, 0, math.rad(-side * 25)),
-				Color = Color3.fromRGB(235, 225, 200), Material = Enum.Material.SmoothPlastic,
-			}, model)
-			table.insert(flashParts, horn)
+			table.insert(flash, newPart({ Name = "Horn", Size = V(0.5, 2.3, 0.5), CFrame = CFrame.new(O(side * 1.3, 9.2, 0)) * CFrame.Angles(0, 0, math.rad(-side * 25)), Color = Color3.fromRGB(236, 226, 202), Material = Enum.Material.SmoothPlastic }, model))
+			table.insert(flash, newPart({ Name = "Pauldron", Size = V(1.8, 1.1, 2), Position = O(side * 2.6, 6.6, 0), Color = Color3.fromRGB(80, 74, 80), Material = Enum.Material.Metal }, model))
+			for k = 0, 2 do
+				deco({ Name = "Spike", Size = V(0.35, 1.1, 0.35), CFrame = CFrame.new(O(side * (2.2 + k * 0.4), 7.4, (k - 1) * 0.6)) * CFrame.Angles(0, 0, math.rad(-side * 20)), Color = Color3.fromRGB(226, 218, 196), Material = Enum.Material.SmoothPlastic }, model)
+			end
 		end
+		local brow = newPart({ Name = "Brow", Size = V(2.6, 0.5, 1), Position = O(0, 8.55, 0.95), Color = Color3.fromRGB(80, 74, 80), Material = Enum.Material.Metal }, model)
+		table.insert(flash, brow)
 	end
-
-	-- 8번~: 가슴 갑옷 + 빛나는 눈
-	if index >= 8 then
-		local plate = newPart({ Name = "Chest", Size = V(3.4, 2.4, 2.4), Position = O(0, 4.9, 0), Color = style.Color:Lerp(Color3.new(1, 1, 1), 0.2), Material = style.Material }, model)
-		table.insert(flashParts, plate)
-		for _, side in ipairs({ -0.5, 0.5 }) do
-			newPart({ Name = "Eye", Shape = Enum.PartType.Ball, Size = V(0.4, 0.4, 0.4), Position = O(side, 7.5, 1.1), Color = Color3.fromRGB(255, 240, 120), Material = Enum.Material.Neon, CanCollide = false }, model)
-		end
-	end
-
-	-- 9번~: 오라(불꽃 입자 + 빛)
-	if index >= 9 then
-		local aura = Instance.new("ParticleEmitter")
-		aura.Rate = index == 10 and 45 or 25
-		aura.Lifetime = NumberRange.new(0.8, 1.4)
-		aura.Speed = NumberRange.new(2, 5)
-		aura.SpreadAngle = Vector2.new(30, 30)
-		aura.EmissionDirection = Enum.NormalId.Top
-		aura.LightEmission = 1
-		aura.Color = ColorSequence.new(style.Color)
-		aura.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.2 * s), NumberSequenceKeypoint.new(1, 0) })
-		aura.Parent = body
-		addGlow(body, style.Color, 24)
-	end
-
-	-- 10번: 머리 위에 떠 있는 왕관 고리
-	if index == 10 then
-		newPart({
-			Name = "Crown", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.5, 4.2 * s, 4.2 * s),
-			CFrame = CFrame.new(O(0, 10.4, 0)) * CFrame.Angles(0, 0, math.rad(90)),
-			Color = Color3.fromRGB(255, 220, 90), Material = Enum.Material.Neon, CanCollide = false,
-		}, model)
-	end
-
-	-- 보스 더미: 어깨 가시 + 붉은 눈 + 떠 있는 파편으로 "진짜 보스 같은" 위압감
-	if info.Boss then
-		for i = -2, 2 do
-			newPart({ Name = "Spike", Size = V(0.4, 1.8, 0.4), CFrame = CFrame.new(O(i * 1.1, 6.7, -1.1)) * CFrame.Angles(math.rad(-20), 0, 0), Color = Color3.fromRGB(235, 225, 200), Material = Enum.Material.SmoothPlastic }, model)
-		end
-		for i = 1, 5 do
-			local a = i / 5 * math.pi * 2
-			newPart({ Name = "Shard", Size = V(0.5, 1.2, 0.5), CFrame = CFrame.new(O(math.cos(a) * 4, 6 + math.sin(a * 2), math.sin(a) * 4)) * CFrame.Angles(a, a, 0), Color = Color3.fromRGB(255, 60, 70), Material = Enum.Material.Neon, CanCollide = false }, model)
-		end
-	end
-
-	-- 이름표: 이름 + 배율 / 방어력(필요 전투력)
-	local gui = Instance.new("BillboardGui")
-	gui.Enabled = false -- (허수아비 이름표는 훈련장 표지와 중복이라 숨긴다)
-	gui.Size = UDim2.new(0, 190, 0, 52)
-	gui.StudsOffset = Vector3.new(0, 3.5 + 2.2 * s, 0)
-	gui.MaxDistance = 40 -- 가까이 가야 이름 / 방어력이 보인다 (작은 화면에서 글자 겹침 방지)
-	gui.Parent = head
-
-	local title = Instance.new("TextLabel")
-	title.Size = UDim2.new(1, 0, 0.55, 0)
-	title.BackgroundTransparency = 1
-	title.Font = Enum.Font.GothamBlack
-	title.TextScaled = true
-	title.TextStrokeTransparency = 0
-	title.TextColor3 = style.Color:Lerp(Color3.new(1, 1, 1), 0.35)
-	title.Text = info.Name
-	title.Parent = gui
-
-	local sub = Instance.new("TextLabel")
-	sub.Size = UDim2.new(1, 0, 0.45, 0)
-	sub.Position = UDim2.new(0, 0, 0.55, 0)
-	sub.BackgroundTransparency = 1
-	sub.Font = Enum.Font.GothamBold
-	sub.TextScaled = true
-	sub.TextStrokeTransparency = 0.3
-	sub.TextColor3 = Color3.fromRGB(230, 230, 240)
-	sub.Text = ""
-	sub.Parent = gui
 
 	model.Parent = folder
-
 	local baseColors = {}
-	for _, part in ipairs(flashParts) do
-		baseColors[part] = part.Color
-	end
-	dummies[model] = {
-		Multiplier = info.Multiplier,
-		RequiredPower = info.RequiredPower,
-		Name = info.Name,
-		FlashParts = flashParts,
-		BaseColors = baseColors,
-		Flashing = false,
-	}
+	for _, part in ipairs(flash) do baseColors[part] = part.Color end
+	dummies[model] = { Multiplier = info.Multiplier, RequiredPower = info.RequiredPower, Name = info.Name, FlashParts = flash, BaseColors = baseColors, Flashing = false }
+	return model
 end
 
--- start: 허수아비 위치. 허수아비는 하나만 놓고, 주변은 훈련장 바닥 + 빛나는 원으로 꾸민다.
-function Dummy.Build(start, starterPosition)
+-- 모델을 자기 받침 위치를 축으로 돌린다 (앞면(+Z)이 yaw 방향을 보게)
+local function faceModel(model, position, yaw)
+	local turn = CFrame.new(position) * CFrame.Angles(0, yaw, 0) * CFrame.new(-position)
+	model:PivotTo(turn * model:GetPivot())
+end
+
+-- start: 훈련장 중심. facing: 훈련장 앞(플레이어가 오는 쪽) 방향. 허수아비 5마리가 호를 그리며 서 있고 (세트 효과 / 스킬이 여러 마리에 터지는 걸 볼 수 있게),
+-- 둘레는 흙바닥 + 울타리 + 깃발 + 무기 걸이 + 간판으로 꾸민다.
+function Dummy.Build(start, facing)
 	folder = Instance.new("Folder")
 	folder.Name = "Dummies"
 	folder.Parent = workspace
 
-	newPart({
-		Name = "TrainingGround",
-		Size = Vector3.new(34, 0.3, 34),
-		Position = start + Vector3.new(0, 0.15, 0),
-		Color = Color3.fromRGB(125, 100, 70),
-		Material = Enum.Material.Ground,
-		CanCollide = false,
-	}, folder)
-	local ring = newPart({
-		Name = "TrainingRing", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.3, 26, 26),
-		CFrame = CFrame.new(start + Vector3.new(0, 0.35, 0)) * CFrame.Angles(0, 0, math.rad(90)),
-		Color = Color3.fromRGB(255, 215, 90), Material = Enum.Material.Neon, CanCollide = false, CanQuery = false, Transparency = 1, -- (눈에 안 보이는 받침: 안내판만 붙인다)
-	}, folder)
+	local fwd = facing and Vector3.new(facing.X, 0, facing.Z) or Vector3.new(0, 0, 1)
+	fwd = fwd.Magnitude > 0.01 and fwd.Unit or Vector3.new(0, 0, 1)
+	local yaw = math.atan2(fwd.X, fwd.Z)
+	local turn = CFrame.Angles(0, yaw, 0)
 
-	-- 훈련장 안내판
-	local signGui = Instance.new("BillboardGui")
-	signGui.Size = UDim2.new(0, 240, 0, 50)
-	signGui.StudsOffset = Vector3.new(0, 15, 0)
-	signGui.MaxDistance = 50
-	signGui.Parent = ring
-	local signLabel = Instance.new("TextLabel")
-	signLabel.Size = UDim2.new(1, 0, 1, 0)
-	signLabel.BackgroundTransparency = 1
-	signLabel.Font = Enum.Font.GothamBlack
-	signLabel.TextScaled = true
-	signLabel.TextColor3 = Color3.fromRGB(255, 225, 120)
-	signLabel.TextStrokeTransparency = 0
-	signLabel.Text = ""
-	signLabel.Visible = false -- (로비에 "허수아비 훈련장" 글자는 필요 없어서 뺐다)
-	signLabel.Parent = signGui
+	-- 장식: 앞(+Z)이 플레이어 쪽이 되게 만든 뒤 통째로 돌린다
+	local yard = Instance.new("Model")
+	yard.Name = "TrainingYard"
+	local function at(x, z, y) return start + Vector3.new(x, y or 0, z) end
+	deco({ Name = "TrainingGround", Size = Vector3.new(70, 0.3, 48), Position = at(0, 0, 0.15), Color = Color3.fromRGB(104, 92, 80), Material = Enum.Material.Cobblestone }, yard)
+	deco({ Name = "TrainingDirt", Size = Vector3.new(62, 0.34, 40), Position = at(0, 0, 0.17), Color = Color3.fromRGB(142, 116, 86), Material = Enum.Material.Ground }, yard)
+	-- 울타리: 뒤쪽 + 양옆 (앞은 열어 둔다)
+	local function fenceRun(x1, z1, x2, z2)
+		local a, b = at(x1, z1), at(x2, z2)
+		local length = (b - a).Magnitude
+		local steps = math.max(1, math.floor(length / 6))
+		for i = 0, steps do
+			local p = a:Lerp(b, i / steps)
+			deco({ Name = "FencePost", Size = Vector3.new(0.8, 4, 0.8), Position = p + Vector3.new(0, 2, 0), Color = WOOD_DARK, Material = Enum.Material.Wood }, yard)
+		end
+		local mid = (a + b) / 2
+		for _, h in ipairs({ 1.4, 3 }) do
+			deco({ Name = "FenceRail", Size = Vector3.new(0.35, 0.4, length), CFrame = CFrame.lookAt(mid + Vector3.new(0, h, 0), b + Vector3.new(0, h, 0)), Color = WOOD, Material = Enum.Material.WoodPlanks }, yard)
+		end
+	end
+	fenceRun(-33, -22, 33, -22)
+	fenceRun(-33, -22, -33, 12)
+	fenceRun(33, -22, 33, 12)
+	-- 앞쪽 모서리 깃발 두 개
+	for _, x in ipairs({ -33, 33 }) do
+		deco({ Name = "BannerPole", Size = Vector3.new(0.5, 11, 0.5), Position = at(x, 20, 5.5), Color = WOOD_DARK, Material = Enum.Material.Wood }, yard)
+		deco({ Name = "Banner", Size = Vector3.new(3.4, 5.6, 0.2), Position = at(x + (x > 0 and -1.9 or 1.9), 20, 7.6), Color = RED, Material = Enum.Material.Fabric }, yard)
+		deco({ Name = "BannerEmblem", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.22, 1.8, 1.8), CFrame = CFrame.new(at(x + (x > 0 and -1.9 or 1.9), 20, 8.2)) * CFrame.Angles(0, math.rad(90), 0), Color = GOLD, Material = Enum.Material.Metal }, yard)
+	end
+	-- 무기 걸이 (오른쪽 뒤): 가로대 + 창 / 검 세 자루
+	do
+		local rx, rz = 27, -17
+		deco({ Name = "RackBeam", Size = Vector3.new(8, 0.5, 0.6), Position = at(rx, rz, 3.6), Color = WOOD_DARK, Material = Enum.Material.Wood }, yard)
+		for _, side in ipairs({ -1, 1 }) do
+			deco({ Name = "RackLeg", Size = Vector3.new(0.6, 3.8, 0.6), Position = at(rx + side * 3.6, rz, 1.9), Color = WOOD_DARK, Material = Enum.Material.Wood }, yard)
+		end
+		for i = -1, 1 do
+			deco({ Name = "RackSpear", Size = Vector3.new(0.25, 5.2, 0.25), CFrame = CFrame.new(at(rx + i * 2.2, rz, 3)) * CFrame.Angles(0, 0, math.rad(i * 6)), Color = WOOD, Material = Enum.Material.Wood }, yard)
+			deco({ Name = "RackTip", Size = Vector3.new(0.5, 0.9, 0.2), CFrame = CFrame.new(at(rx + i * 2.2 - i * 0.27, rz, 5.7)) * CFrame.Angles(0, 0, math.rad(i * 6)), Color = STEEL, Material = Enum.Material.Metal }, yard)
+		end
+	end
+	-- 건초 더미 / 통 / 화살 꽂힌 과녁 판
+	for _, p in ipairs({ { -27, -17 }, { -30, -14 } }) do
+		deco({ Name = "HayBale", Size = Vector3.new(3.2, 2, 2.2), Position = at(p[1], p[2], 1), Color = Color3.fromRGB(206, 178, 104), Material = Enum.Material.Fabric }, yard)
+	end
+	deco({ Name = "YardBarrel", Shape = Enum.PartType.Cylinder, Size = Vector3.new(2.8, 2.4, 2.4), CFrame = CFrame.new(at(-24, -18, 1.4)) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(116, 82, 54), Material = Enum.Material.Wood }, yard)
+	-- 간판: 나무 판 + 나무 기둥 두 개 (플레이어 쪽 모서리)
+	do
+		local sx, sz = -22, 19
+		for _, side in ipairs({ -1, 1 }) do
+			deco({ Name = "SignPost", Size = Vector3.new(0.6, 5.6, 0.6), Position = at(sx + side * 3.4, sz, 2.8), Color = WOOD_DARK, Material = Enum.Material.Wood }, yard)
+		end
+		local board = deco({ Name = "YardSign", Size = Vector3.new(8, 2.8, 0.4), Position = at(sx, sz, 5), Color = Color3.fromRGB(150, 108, 70), Material = Enum.Material.WoodPlanks }, yard)
+		local face = Instance.new("SurfaceGui")
+		face.Face = Enum.NormalId.Back -- (+Z 쪽: 플레이어가 오는 쪽)
+		face.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+		face.PixelsPerStud = 40
+		face.LightInfluence = 0
+		face.Parent = board
+		local text = Instance.new("TextLabel")
+		text.Size = UDim2.new(1, 0, 1, 0)
+		text.BackgroundTransparency = 1
+		text.Font = Enum.Font.GothamBlack
+		text.TextScaled = true
+		text.TextColor3 = Color3.fromRGB(255, 240, 200)
+		text.TextStrokeTransparency = 0.3
+		text.Text = "🎯 Training Yard"
+		text.Parent = face
+	end
+	yard.Parent = folder
+	yard:PivotTo(CFrame.new(start) * turn * CFrame.new(-start) * yard:GetPivot())
 
-	-- 허수아비 하나: 8번 모양(어깨 보호대 / 투구 / 뿔 / 가슴 갑옷 / 빛나는 눈)을 써서 크고 듬직하게. 이름은 Dummy1.
-	buildDummy(8, Config.Dummy.List[1], start, 1, 0.8) -- 너무 크면 화면을 가려서 작게 (약 1.5배)
-	-- 입문용 허수아비: 스폰 언덕 위, 눈앞에 하나 더 (첫 미션을 몇 초 안에 시작하게). 이름이 같아도(Dummy1) 따로 등록되어 똑같이 맞는다.
-	if starterPosition then buildDummy(8, Config.Dummy.List[1], starterPosition, 1, 0.7) end
+	-- 허수아비 5마리: 가운데 큰 기사, 양옆 마법사 / 괴수, 뒤쪽 양끝 기사 / 마법사 (호 모양)
+	local info = Config.Dummy.List[1]
+	local layout = {
+		{ 0, 0, 1.5, "Knight" },
+		{ -13, -3, 1.2, "Mage" },
+		{ 13, -3, 1.2, "Brute" },
+		{ -24, -9, 1.0, "Brute" },
+		{ 24, -9, 1.0, "Mage" },
+	}
+	for index, entry in ipairs(layout) do
+		local world = start + turn:VectorToWorldSpace(Vector3.new(entry[1], 0, entry[2]))
+		local model = buildDummy(info, world, entry[3], entry[4], index)
+		faceModel(model, world, yaw)
+	end
 end
 
 local restFire, restCenter = nil, Vector3.zero -- 휴식 구역 모닥불 (IdleHit 가 타오르게 한다)
@@ -259,7 +269,7 @@ function Dummy.IdleHit(player)
 		task.delay(0.25, function()
 			if restFire and restFire.Parent then restFire.Size = 8 end
 		end)
-		Effects.Burst(restCenter + Vector3.new(0, 3, 0), Color3.fromRGB(255, 200, 110), 6)
+		Effects.Burst(restCenter + Vector3.new(0, 3, 0), Color3.fromRGB(255, 222, 100), 12) -- 골드가 들어올 때마다 금빛이 튄다
 	end
 end
 
@@ -543,13 +553,15 @@ function Dummy.BuildRest(position)
 		ball("CampLeaves", 8.5, gy + corner + Vector3.new(0, 8, 0), Color3.fromRGB(92, 136, 84), Enum.Material.Grass, 7)
 	end
 
-	-- 작은 나무 팻말 (오는 길인 동쪽을 향한다)
+	-- 작은 나무 팻말 (오는 길인 남서쪽(마을 중앙 쪽)을 향한다)
 	do
-		local signPos = around(17.5, math.rad(-12))
+		local signPos = around(17.5, math.rad(139))
 		pole("CampSignPost", 3.4, 0.5, signPos, darkWood, Enum.Material.Wood)
-		local board = deco("CampSignBoard", Vector3.new(0.3, 2.4, 5.2), CFrame.new(signPos + Vector3.new(0, 3.6, 0)), Color3.fromRGB(150, 108, 70), Enum.Material.WoodPlanks)
+		local outward = Vector3.new(math.cos(math.rad(139)), 0, math.sin(math.rad(139)))
+		local boardPos = signPos + Vector3.new(0, 3.6, 0)
+		local board = deco("CampSignBoard", Vector3.new(5.2, 2.4, 0.3), CFrame.lookAt(boardPos, boardPos + outward), Color3.fromRGB(150, 108, 70), Enum.Material.WoodPlanks)
 		local face = Instance.new("SurfaceGui")
-		face.Face = Enum.NormalId.Right
+		face.Face = Enum.NormalId.Front
 		face.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
 		face.PixelsPerStud = 40
 		face.LightInfluence = 0
@@ -567,12 +579,18 @@ function Dummy.BuildRest(position)
 
 	-- 안내판
 	local signGui = Instance.new("BillboardGui")
-	signGui.Size = UDim2.new(0, 320, 0, 70)
-	signGui.StudsOffset = Vector3.new(0, 16, 0)
-	signGui.MaxDistance = 50
+	signGui.Size = UDim2.new(0, 340, 0, 92)
+	signGui.StudsOffset = Vector3.new(0, 20, 0)
+	signGui.MaxDistance = 140 -- 멀리서도 보인다 (예전엔 50: 가까이 가야 보여서 휴식 구역을 놓치기 쉬웠다)
 	signGui.Parent = ring
+	-- 멀리서 눈에 띄는 은은한 하늘색 빛기둥 (게이트 빛기둥과 같은 방식)
+	local beam = newPart({
+		Name = "RestBeam", Shape = Enum.PartType.Cylinder, Size = Vector3.new(70, 4, 4), CFrame = CFrame.new(position + Vector3.new(0, 35, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Color3.fromRGB(120, 215, 235), Material = Enum.Material.Neon, Transparency = 0.86, CanCollide = false, CanQuery = false, CanTouch = false, CastShadow = false,
+	}, folder)
+	beam.Name = "RestBeam"
 	local signLabel = Instance.new("TextLabel")
-	signLabel.Size = UDim2.new(1, 0, 1, 0)
+	signLabel.Size = UDim2.new(1, 0, 0.62, 0)
 	signLabel.BackgroundTransparency = 1
 	signLabel.Font = Enum.Font.GothamBlack
 	signLabel.TextScaled = true
@@ -580,6 +598,16 @@ function Dummy.BuildRest(position)
 	signLabel.TextStrokeTransparency = 0
 	signLabel.Text = "💤 Rest Zone"
 	signLabel.Parent = signGui
+	local signSub = Instance.new("TextLabel")
+	signSub.Size = UDim2.new(1, 0, 0.38, 0)
+	signSub.Position = UDim2.new(0, 0, 0.62, 0)
+	signSub.BackgroundTransparency = 1
+	signSub.Font = Enum.Font.GothamBold
+	signSub.TextScaled = true
+	signSub.TextColor3 = Color3.fromRGB(255, 226, 120)
+	signSub.TextStrokeTransparency = 0.2
+	signSub.Text = "Stand here to earn gold"
+	signSub.Parent = signGui
 end
 
 return Dummy

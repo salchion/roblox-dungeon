@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Sniper Rifle · Arcane Era +{number3}", "スナイパーライフル・神秘の時代 +{number3}" },
 		{ "ZONE {number1}  ·  Snowfield   ☠☠☠☠☠", "ゾーン {number1} ・雪原 ☠☠☠☠☠" },
 		{ "🎁 Boss chest · {number1} gear pieces", "🎁 ボス宝箱 · 装備{number1}個" },
 		{ "Succeed at upgrading {number1} times", "強化に{number1}回成功する" },

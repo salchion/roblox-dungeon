@@ -790,6 +790,8 @@ return {
 		["Pull the gacha or clear dungeons"] = "장비 뽑기나 던전 클리어로 채워 보세요",
 		["Menu → Pets: it loots and boosts you"] = "메뉴 → 애완동물: 줍기도 해 주고 강해져요",
 		["Train, upgrade gear, or enhance your weapon"] = "훈련·장비·무기 강화로 더 강해지세요",
+		["Stand here to earn gold"] = "여기 서 있으면 골드가 쌓여요",
+		["🎯 Training Yard"] = "🎯 훈련장",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1046,7 +1048,5 @@ return {
 		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 심연의 군주 (구역 {number1}) · 레코드 ⚡{number2}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 오늘 무료 입장권 {number1}장 · 🗝 키 {number2}개!" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 다음 무기 잠금 해제 산탄총 (+{number1})" },
-		{ "⚠ Reach level {number1} to break through.", "⚠ 돌파하려면 레벨 {number1}에 도달하세요." },
-		{ "\n(Idle Booster applied for {number1} min)", "\n(방치 부스터 {number1}분 적용 중)" },
 	},
 }

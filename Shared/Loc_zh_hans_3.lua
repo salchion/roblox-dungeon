@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👀 [{text1}] 5-second preview!", "👀 [{text1}] 5 秒预览!" },
 		{ "💤 Idle income  +{text1} G/sec", "💤 挂机收益  +{text1} 金币/秒" },
 		{ "{text1} is already in a party", "{text1}已经在队伍中了" },
 		{ "·  next weapon: {text1} at +{number2}", "·  下一把武器:{text1}(+{number2} 时解锁)" },

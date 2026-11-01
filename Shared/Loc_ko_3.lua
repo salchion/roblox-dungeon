@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⚠ Reach level {number1} to break through.", "⚠ 돌파하려면 레벨 {number1}에 도달하세요." },
+		{ "\n(Idle Booster applied for {number1} min)", "\n(방치 부스터 {number1}분 적용 중)" },
 		{ "💥 Weak Spot Hit! x3 damage for {number1}s", "💥 약점 명중! {number1}초간 피해 x3" },
 		{ "Not enough power! (You {number1} / Rec. {number2})", "전투력이 부족해요! (내 전투력 {number1} / 권장 {number2})" },
 		{ "Points left {number1}  /  earned {number2}  (max {number3})", "남은 포인트 {number1}  /  획득 {number2}  (최대 {number3})" },

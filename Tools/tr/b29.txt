@@ -267,3 +267,5 @@
 2308¦🔀 <b>{text1}</b>の道を選ぼう¦🔀 Wähle einen Pfad für <b>{text1}</b>¦🔀 Choisissez une voie pour <b>{text1}</b>¦🔀 Elige un camino para <b>{text1}</b>¦🔀 Escolha um caminho para <b>{text1}</b>¦🔀 为<b>{text1}</b>选择路线¦🔀 <b>{text1}</b>의 길을 고르세요
 2309¦💪 エリア{number1}の主：戦闘力 {number2} / {number3}¦💪 Herrscher Zone {number1}: Kraft {number2} / {number3}¦💪 Seigneur de la zone {number1} : puissance {number2} / {number3}¦💪 Señor de la zona {number1}: poder {number2} / {number3}¦💪 Senhor da zona {number1}: poder {number2} / {number3}¦💪 区域{number1}领主：战力 {number2} / {number3}¦💪 구역 {number1} 군주: 전투력 {number2} / {number3}
 2310¦訓練・装備強化・武器強化で強くなろう¦Trainiere, verbessere Ausrüstung oder deine Waffe¦Entraînez-vous, améliorez l'équipement ou l'arme¦Entrena, mejora el equipo o el arma¦Treine, melhore o equipamento ou a arma¦训练、强化装备或武器¦훈련·장비·무기 강화로 더 강해지세요
+2311¦ここに立つとゴールドが貯まります¦Steh hier, um Gold zu verdienen¦Restez ici pour gagner de l'or¦Quédate aquí para ganar oro¦Fique aqui para ganhar ouro¦站在这里即可赚取金币¦여기 서 있으면 골드가 쌓여요
+2312¦🎯 訓練場¦🎯 Trainingsplatz¦🎯 Terrain d'entraînement¦🎯 Campo de entrenamiento¦🎯 Campo de treino¦🎯 训练场¦🎯 훈련장

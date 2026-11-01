@@ -468,6 +468,8 @@ return {
 		["Pull the gacha or clear dungeons"] = "Ziehe am Gacha oder schließe Dungeons ab",
 		["Menu → Pets: it loots and boosts you"] = "Menü → Haustiere: sammelt Beute und stärkt dich",
 		["Train, upgrade gear, or enhance your weapon"] = "Trainiere, verbessere Ausrüstung oder deine Waffe",
+		["Stand here to earn gold"] = "Steh hier, um Gold zu verdienen",
+		["🎯 Training Yard"] = "🎯 Trainingsplatz",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -964,7 +966,5 @@ return {
 		{ "{number1} Dungeon Keys", "{number1} Dungeon-Schlüssel" },
 		{ "🥇 LeeGoAll  ⚡{number1}", "🥇 LeeGoAll ⚡{number1}" },
 		{ "Zone {number1} · Abyss", "Zone {number1} · Abgrund" },
-		{ "(Your Power {number1})", "(Deine Stärke {number1})" },
-		{ "(Current Lv.{number1})", "(Aktuell Lv.{number1})" },
 	},
 }

@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "▲ +{number1}% vs current", "▲ +{number1}% vs atual" },
+		{ "Switch path: {number1} G", "Trocar caminho: {number1} G" },
 		{ "Damage taken -{number1}%", "Dano recebido -{number1}%" },
 		{ "Zone {number1} · Forest", "Zona {number1} · Floresta" },
 		{ "{number1} more upgrades", "{number1} mais melhorias" },

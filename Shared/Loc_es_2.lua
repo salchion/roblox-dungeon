@@ -516,6 +516,8 @@ return {
 		["Pull the gacha or clear dungeons"] = "Tira del gacha o completa mazmorras",
 		["Menu → Pets: it loots and boosts you"] = "Menú → Mascotas: recoge botín y te refuerza",
 		["Train, upgrade gear, or enhance your weapon"] = "Entrena, mejora el equipo o el arma",
+		["Stand here to earn gold"] = "Quédate aquí para ganar oro",
+		["🎯 Training Yard"] = "🎯 Campo de entrenamiento",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -957,7 +959,5 @@ return {
 		{ "⚡ {number1} Kill Streak!!", "⚡ ¡{number1} racha de muertes!" },
 		{ "Survive {number1}s + Boss", "Sobrevive {number1} segundos + Jefe" },
 		{ "{number3} / {number4}   Reward: 🎫 {number5}", "{number3} / {number4} Recompensa: 🎫 {number5}" },
-		{ "Range +{number1}%  (max {number2})", "Rango +{number1}% (máximo {number2})" },
-		{ "Defeat {number1} monsters", "Derrota a {number1} monstruos" },
 	},
 }

@@ -643,6 +643,8 @@ return {
 		["Pull the gacha or clear dungeons"] = "ガチャを引くかダンジョンをクリアしよう",
 		["Menu → Pets: it loots and boosts you"] = "メニュー→ペット：拾い物とパワーアップを助けてくれます",
 		["Train, upgrade gear, or enhance your weapon"] = "訓練・装備強化・武器強化で強くなろう",
+		["Stand here to earn gold"] = "ここに立つとゴールドが貯まります",
+		["🎯 Training Yard"] = "🎯 訓練場",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -935,6 +937,5 @@ return {
 		{ "Sniper Rifle · Arcane Era +{number1}", "スナイパーライフル・神秘の時代 +{number1}" },
 		{ "Preparing the field...  {number1} / {number2}", "畑の準備中... {number1} / {number2}" },
 		{ "🌾 Adventure Begins · Rec. ⚡{number2}", "🌾 冒険の始まり · レコード ⚡{number2}" },
-		{ "Sniper Rifle · Arcane Era +{number3}", "スナイパーライフル・神秘の時代 +{number3}" },
 	},
 }

@@ -396,6 +396,8 @@ return {
 		["Pull the gacha or clear dungeons"] = "抽取装备或通关地下城",
 		["Menu → Pets: it loots and boosts you"] = "菜单→宠物：自动拾取并增强你",
 		["Train, upgrade gear, or enhance your weapon"] = "训练、强化装备或武器",
+		["Stand here to earn gold"] = "站在这里即可赚取金币",
+		["🎯 Training Yard"] = "🎯 训练场",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1051,6 +1053,5 @@ return {
 		{ "{text1} invited you to a party!", "{text1} 邀请你加入队伍!" },
 		{ "Recommended ⚡ {number1}   Danger {text2}", "推荐 ⚡ {number1}   危险 {text2}" },
 		{ "🗿 {text1} · World Boss (Zone {number2})", "🗿 {text1} · 世界首领(区域{number2})" },
-		{ "👀 [{text1}] 5-second preview!", "👀 [{text1}] 5 秒预览!" },
 	},
 }

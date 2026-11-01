@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "(Your Power {number1})", "(Deine Stärke {number1})" },
+		{ "(Current Lv.{number1})", "(Aktuell Lv.{number1})" },
 		{ "Restores {number1}% HP", "Stellt {number1} % LP wieder her" },
 		{ "🛡 Survive!  {number1}s", "🛡 Überlebe!  {number1} s" },
 		{ "Boss damage +{number1}", "Bossschaden +{number1}" },
