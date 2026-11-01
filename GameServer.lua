@@ -238,7 +238,7 @@ local function updatePower(player)
 		player:GetAttribute("SpeedPoints") or 0,
 		(player:GetAttribute("GearHealth") or 0) + (player:GetAttribute("TrainHealth") or 0),
 		(player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0),
-		player:GetAttribute("WeaponType") or "Pistol",
+		"Neutral", -- 기본 전투력: 무기 종류와 상관없이 (종류를 바꿔도 전투력이 흔들리지 않는다)
 		player:GetAttribute("Level") or 1,
 		(player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0)
 	))

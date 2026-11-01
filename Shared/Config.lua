@@ -1001,11 +1001,13 @@ end
 function Config.GetPower(weaponLevel, critPoints, speedPoints, gearHealth, gearCrit, typeKey, level, gearDamage)
 	local P = Config.Player
 	level = level or 1
-	local weaponType = Config.WeaponTypes[Config.ResolveWeaponType(weaponLevel, typeKey)]
+	-- typeKey == "Neutral": 무기 종류와 상관없는 "기본 전투력" (종류 계수 1, 종류 치명타 보너스 0). 무기 종류를 바꿔도 숫자가 흔들리지 않는다 (종류마다 범위 / 연쇄 / 관통 강점이 달라서 단일 대상 계수만으로 비교하면 불공정하다)
+	local neutral = typeKey == "Neutral"
+	local weaponType = Config.WeaponTypes[neutral and "Pistol" or Config.ResolveWeaponType(weaponLevel, typeKey)]
 	local pellets = weaponType.Pellets > 1 and weaponType.Pellets * 0.6 or 1
-	local typeFactor = weaponType.DamageMult * pellets / weaponType.Cooldown
+	local typeFactor = neutral and 1 or (weaponType.DamageMult * pellets / weaponType.Cooldown)
 	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel) * Config.GetLevelDamageMult(level) * (1 + (gearDamage or 0))
-	local rawCrit = (critPoints or 0) * P.CritPerPoint + (gearCrit or 0) + (weaponType.CritBonus or 0)
+	local rawCrit = (critPoints or 0) * P.CritPerPoint + (gearCrit or 0) + (neutral and 0 or (weaponType.CritBonus or 0))
 	local crit = math.min(0.9, rawCrit)
 	local critMult = P.CritMultiplier + math.max(0, rawCrit - 0.9) -- 넘친 치명타 -> 치명타 피해
 	local rate = 1 / (P.BaseCooldown / (1 + (speedPoints or 0) * P.SpeedPerPoint))

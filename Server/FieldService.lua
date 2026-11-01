@@ -2122,6 +2122,41 @@ local function pickBossPattern(data)
 end
 
 -- 최적화: 아무도 없는 구역의 몬스터는 (제자리에서 쉬고 있다면) 계산을 건너뛴다. 8개 구역 수백 마리가 사람이 없어도 매 프레임 계산되던 것을 막는다.
+-- 가만히 서 있기만 하면 어색해서: 맞기 전에는 제자리 근처(집에서 3~10)를 천천히 거닐다가 잠깐 멈춰 선다.
+-- 구역에 플레이어가 있고 체력이 가득 찬 일반 몬스터만 (플레이어가 없는 구역은 계산하지 않는다). 집(Home)은 그대로라서 끌려 나오거나 길을 막지 않는다.
+local function wander(part, data, dt, now)
+	local radius = data.Stats.Size / 2
+	if data.NextWander == nil then data.NextWander = now + math.random() * 6 end
+	if data.WanderTo then
+		local to = Vector3.new(data.WanderTo.X - part.Position.X, 0, data.WanderTo.Z - part.Position.Z)
+		if to.Magnitude < 0.8 or now > (data.WanderEnd or 0) then
+			data.WanderTo = nil
+			data.NextWander = now + 2 + math.random() * 5 -- 잠깐 멈춰 서 있는다
+			return
+		end
+		local step = to.Unit * math.min(to.Magnitude, data.Stats.Speed * 0.3 * dt)
+		local nx, nz = part.Position.X + step.X, part.Position.Z + step.Z
+		if walkableAt(nx, nz, radius) and not isSafe(Vector3.new(nx, part.Position.Y, nz)) then
+			local newPos = Vector3.new(nx, floorAt(nx) + data.Stats.Size / 2, nz)
+			part.CFrame = CFrame.lookAt(newPos, newPos + Vector3.new(to.X, 0, to.Z))
+		else
+			data.WanderTo = nil
+			data.NextWander = now + 1.5
+		end
+		return
+	end
+	if now >= data.NextWander then
+		local angle, dist = math.random() * math.pi * 2, 3 + math.random() * 7
+		local tx, tz = data.Home.X + math.cos(angle) * dist, data.Home.Z + math.sin(angle) * dist
+		if walkableAt(tx, tz, radius) and not isSafe(Vector3.new(tx, part.Position.Y, tz)) then
+			data.WanderTo = Vector3.new(tx, 0, tz)
+			data.WanderEnd = now + 12
+		else
+			data.NextWander = now + 1.5
+		end
+	end
+end
+
 local occupiedZones, occupiedAt = {}, 0
 local function refreshOccupied(now)
 	if now - occupiedAt < 0.25 then return end
@@ -2419,7 +2454,9 @@ local function stepMonsters(dt)
 			-- 목표가 없거나 멀어지면 제자리로 돌아가서 체력을 회복
 			data.Aggro = false
 			local toHome = Vector3.new(data.Home.X - part.Position.X, 0, data.Home.Z - part.Position.Z)
-			if toHome.Magnitude > 1 then
+			if occupiedZones[data.Zone] and data.Health >= data.MaxHealth and not data.BossLike and not data.Ambush and data.Kind ~= "Event" and toHome.Magnitude < 14 then
+				wander(part, data, dt, now) -- 맞기 전에는 제자리 근처를 천천히 거닌다
+			elseif toHome.Magnitude > 1 then
 				part.Position += toHome.Unit * data.Stats.Speed * 1.5 * dt
 				-- 돌아가는 길에도 층 높이를 따라간다 (경사를 오르내릴 때 땅에 파묻히거나 허공에 뜨지 않게)
 				part.Position = Vector3.new(part.Position.X, floorAt(part.Position.X) + data.Stats.Size / 2, part.Position.Z)
