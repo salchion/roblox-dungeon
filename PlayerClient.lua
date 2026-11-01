@@ -2394,14 +2394,13 @@ local function anyUpgradePending()
 end
 
 -- 시간 단축 게이지 (훈련 / 돌파 / 스킬 강화 / 펫이 함께 쓴다)
-local function buildSkipGaugeRow() -- 성장 탭 맨 위 한 줄: ⏱ 시간 건너뛰기 보유량 + 게이지 + 훈련 칸 수
+local function buildSkipGaugeRow() -- 성장 탭 맨 위: ⏱ 시간 건너뛰기 보유량 글자 + 그 아래 게이지 (훈련 칸 수는 훈련 나무 제목에 이미 있어서 뺐다)
 	local owned = player:GetAttribute("TimeSkip") or 0
-	local row = newRow(40, Color3.fromRGB(30, 28, 46))
-	makeLabel({ Size = UDim2.new(0.62, -12, 1, 0), Position = UDim2.new(0, 12, 0, 0), RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left,
-		Text = growthState and string.format("⏱ Time Skip <font color='#ffe16e'><b>%s</b></font> owned      🏋 Training slots <b>%d / %d</b> in use", Config.FormatDuration(owned), #growthState.Jobs, growthState.Slots)
-			or string.format("⏱ Time Skip <font color='#ffe16e'><b>%s</b></font> owned", Config.FormatDuration(owned)) }, row)
+	local row = newRow(54, Color3.fromRGB(30, 28, 46))
+	makeLabel({ Size = UDim2.new(1, -24, 0, 20), Position = UDim2.new(0, 12, 0, 6), RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left,
+		Text = string.format("⏱ Time Skip <font color='#ffe16e'><b>%s</b></font> owned", Config.FormatDuration(owned)) }, row)
 	local cap = math.max(player:GetAttribute("TimeSkipCap") or 0, owned, 1)
-	local gaugeBack = makePanel({ Size = UDim2.new(0.34, 0, 0, 14), Position = UDim2.new(0.64, 0, 0.5, -7), BackgroundColor3 = Color3.fromRGB(22, 24, 36) }, row)
+	local gaugeBack = makePanel({ Size = UDim2.new(1, -24, 0, 14), Position = UDim2.new(0, 12, 0, 30), BackgroundColor3 = Color3.fromRGB(22, 24, 36) }, row)
 	makePanel({ Size = UDim2.new(math.clamp(owned / cap, 0, 1), 0, 1, 0), BackgroundColor3 = Color3.fromRGB(215, 150, 60) }, gaugeBack)
 end
 
