@@ -133,15 +133,15 @@ local function pivotTo(player, cframe)
 	character:PivotTo(cframe)
 	if not heldHere then return end
 	task.spawn(function()
-		-- 도착지 주변 지형을 먼저 받는 동안만 잠깐 고정한다. 최대 1.2초 (예전 최대 4초: 던전에 들어가서 한참 못 움직였다)
+		-- 도착지 주변 지형을 먼저 받는 동안만 잠깐 고정한다. 최대 0.45초 (예전 최대 4초 -> 1.2초: 던전에 들어가서 한참 못 움직였다)
 		local streamed = false
 		task.spawn(function()
 			pcall(function() player:RequestStreamAroundAsync(cframe.Position, 2) end)
 			streamed = true
 		end)
+		-- 최대 0.45초만 기다린다 (예전 1.2초: 입장할 때마다 한참 못 움직인다는 의견). 도착지는 아레나라 가까운 땅만 있으면 충분하고, 풀린 뒤에도 계속 불러온다
 		local waitStart = os.clock()
-		while not streamed and os.clock() - waitStart < 1.2 do task.wait(0.05) end
-		task.wait(0.1)
+		while not streamed and os.clock() - waitStart < 0.45 do task.wait(0.03) end
 		if root.Parent then
 			root.AssemblyLinearVelocity = Vector3.zero
 			root.Anchored = false
