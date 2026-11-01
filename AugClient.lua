@@ -697,10 +697,20 @@ local function procWorldFx(info, position)
 end
 
 local lastProcPop = 0
+local lastWorldFx, worldFxWindow, worldFxBudget = {}, 0, 0
+local function worldFxAllowed(attr) -- 세트 효과 발동 연출(고리 + 떠오르는 아이콘)은 같은 효과 0.3초에 한 번, 전체 1초에 5번까지 (후반에는 초당 수십 번 터져서 부품 / 글자가 쌓여 화면이 끊겼다)
+	local now = os.clock()
+	if now - (lastWorldFx[attr] or 0) < 0.3 then return false end
+	if now - worldFxWindow >= 1 then worldFxWindow, worldFxBudget = now, 0 end
+	if worldFxBudget >= 5 then return false end
+	worldFxBudget += 1
+	lastWorldFx[attr] = now
+	return true
+end
 local function showProc(attr, position)
 	local info = Config.AugInfo[attr]
 	if not info then return end
-	procWorldFx(info, position)
+	if worldFxAllowed(attr) then procWorldFx(info, position) end
 	if os.clock() - lastProcPop < 1.4 then return end -- 화면 가운데 "충격파 샷!" 같은 글자는 1.4초에 한 번만 (세트 효과가 계속 터져서 글자가 쉴 새 없이 떴다. 효과 자체의 연출은 그대로)
 	lastProcPop = os.clock()
 	if player:GetAttribute("ModalOpen") then return end -- 메뉴 같은 큰 창이 열려 있으면 화면 가운데 글자를 띄우지 않는다 (창 위에 겹쳐 보였다)

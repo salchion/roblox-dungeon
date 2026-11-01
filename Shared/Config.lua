@@ -2241,7 +2241,7 @@ end
 function Config.GetEnhanceCost(level)
 	local E = Config.Economy
 	local minutes = E.StepMinutesEarly + (E.StepMinutesLate - E.StepMinutesEarly) * math.min(1, level / E.LateLevel)
-	return math.max(1, math.floor(E.IncomeBase * Config.GetDamageMultiplier(level) * minutes))
+	return math.max(1, math.floor(E.IncomeBase * Config.GetDamageMultiplier(level) * minutes * Config.PriceMult(level)))
 end
 
 -- level -> level+1 강화 성공 확률 (실패해도 단계는 내려가지 않고 골드만 소모)
@@ -2271,9 +2271,20 @@ end
 Config.SinkMinutes = 600 -- 한 성장을 끝까지 올리는 데 드는 시간 (분): 최소 10시간
 
 -- 그 성장에서 f(0~1) 만큼 진행했을 때의 기준 분당 수입
+-- 가격 보정: 실제 플레이 로그에서 수입이 기준표보다 높게 나온 구간을 가격으로 맞춘다 (보상은 그대로 두고 가격만 올린다).
+--   무기 단계(또는 그 성장의 진행도 x 최대 단계)가 60 이하 = x1 (초반은 빠르게) -> 200 = x5 -> 700 = x3 -> 끝(1089) = x1 (후반은 기존 곡선)
+function Config.PriceMult(level)
+	local maxLevel = Config.Weapon.MaxLevel
+	local function lerp(a, b, t) return a + (b - a) * math.clamp(t, 0, 1) end
+	if level <= 60 then return 1 end
+	if level <= 200 then return lerp(1, 5, (level - 60) / 140) end
+	if level <= 700 then return lerp(5, 3, (level - 200) / 500) end
+	return lerp(3, 1, (level - 700) / math.max(1, maxLevel - 700))
+end
+
 function Config.RefIncome(f)
 	local level = math.floor(math.clamp(f, 0, 1) * Config.Weapon.MaxLevel)
-	return Config.Economy.IncomeBase * Config.GetDamageMultiplier(level)
+	return Config.Economy.IncomeBase * Config.GetDamageMultiplier(level) * Config.PriceMult(level) -- (장비 / 스킬 / 펫 / 세트 / 훈련 가격표가 이 값을 쓴다)
 end
 
 local function progressive(f)

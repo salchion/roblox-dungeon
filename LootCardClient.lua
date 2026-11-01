@@ -47,6 +47,8 @@ local function line(card, y, text, size, color)
 end
 
 local function show(data)
+	local fast = #queue >= 1 -- 뒤에 기다리는 카드가 있으면 빠르게 지나간다 (처치가 빠를 때 카드 / 효과음이 쌓여 화면이 느려지던 것)
+	local pace = fast and 0.2 or 1
 	local color = Config.Gear.RarityColors[data.Rarity] or Color3.new(1, 1, 1)
 	local lines = 2 + #(data.Affixes or {}) + (data.Unique and 1 or 0) + (data.Set and 1 or 0) + 1
 	local height = 64 + lines * 22
@@ -79,18 +81,18 @@ local function show(data)
 		TextSize = 18, Font = Enum.Font.GothamBlack, TextColor3 = color, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd,
 	}, card)
 
-	task.wait(0.3)
+	task.wait(0.3 * pace)
 	local y = 60
 	line(card, y, Config.FormatGearStat(data.Slot, Config.GetGearStat(data.Slot, data.Rarity, data.Level or 0)), 14, Color3.fromRGB(235, 235, 245))
 	y += 22
 	for i, affix in ipairs(data.Affixes or {}) do -- 옵션 줄: 하나씩 "착"
-		task.wait(0.16)
+		task.wait(0.16 * pace)
 		line(card, y, "◆ " .. Config.FormatAffix(affix.Stat, affix.Value), 14, Color3.fromRGB(150, 215, 255))
 		sound("UI_Click", { Pitch = 1 + i * 0.12, Volume = 0.8 })
 		y += 22
 	end
 	if data.Unique and Config.Uniques[data.Unique] then
-		task.wait(0.25)
+		task.wait(0.25 * pace)
 		line(card, y, "✦ " .. Config.Uniques[data.Unique].Name, 15, Color3.fromRGB(255, 184, 77))
 		sound("Aug_Get", { Volume = 0.6 })
 		y += 22
@@ -109,7 +111,7 @@ local function show(data)
 		line(card, y, "Stored in your bag", 12, Color3.fromRGB(150, 156, 180))
 	end
 
-	task.wait(2.2 + data.Rarity * 0.3)
+	task.wait((2.2 + data.Rarity * 0.3) * (fast and 0.3 or 1))
 	TweenService:Create(card, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Position = UDim2.new(1, 340, 0.55, 0) }):Play()
 	task.wait(0.32)
 	card:Destroy()
@@ -131,7 +133,13 @@ end
 Remotes.Inventory.OnClientEvent:Connect(function(action, data)
 	if action ~= "Got" or typeof(data) ~= "table" then return end
 	if player:GetAttribute("TutorialActive") and (data.Rarity or 0) < 5 then return end -- 튜토리얼 중에는 신화만 (화면이 복잡하지 않게)
-	if #queue >= 4 then table.remove(queue, 1) end -- (한꺼번에 많이 얻으면 오래된 것부터 건너뛴다)
 	table.insert(queue, data)
+	if #queue > 3 then -- 많이 쌓이면 가장 낮은 등급(같으면 오래된 것)부터 건너뛴다: 좋은 장비 카드는 남긴다
+		local worst = 1
+		for index, entry in ipairs(queue) do
+			if (entry.Rarity or 0) < (queue[worst].Rarity or 0) then worst = index end
+		end
+		table.remove(queue, worst)
+	end
 	pump()
 end)

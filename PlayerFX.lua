@@ -480,9 +480,11 @@ lootFolder.Name = "LootBeams"
 lootFolder.Parent = workspace
 
 local lootDrops = {}   -- [id] = { Beam, Cube, Base, Time }
+local dropCount = 0       -- 지금 보이는 장비 드롭 수 (너무 많으면 낮은 등급은 그리지 않는다)
 
 Remotes.Loot.OnClientEvent:Connect(function(action, id, position, rarity, itemName)
 	if action == "Drop" then
+		if dropCount >= 28 and rarity <= 2 then return end -- 바닥에 드롭이 이미 많다: 일반 / 희귀는 빛줄기 없이 (서버에서는 그대로 얻는다)
 		local color = Config.Gear.RarityColors[rarity]
 		local width = 0.5 + rarity * 0.35
 		if rarity >= 3 then SoundBank.Play(game:GetService("SoundService"), "Rare_Drop", { Pitch = 0.9 + 0.05 * rarity }) end -- 희귀 이상 장비
@@ -511,6 +513,7 @@ Remotes.Loot.OnClientEvent:Connect(function(action, id, position, rarity, itemNa
 		end
 
 		lootDrops[id] = { Beam = beam, Cube = cube, Base = base, Time = 0, Rarity = rarity }
+		dropCount += 1
 	elseif action == "Gone" then
 		local drop = lootDrops[id]
 		if drop then
@@ -518,6 +521,7 @@ Remotes.Loot.OnClientEvent:Connect(function(action, id, position, rarity, itemNa
 			drop.Beam:Destroy()
 			drop.Cube:Destroy()
 			lootDrops[id] = nil
+			dropCount -= 1
 		end
 	end
 end)
