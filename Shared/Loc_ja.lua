@@ -24,7 +24,7 @@ return {
 		["🛡 Field Gatekeeper  Kai"] = "🛡 フィールドゲートキーパー・カイ",
 		["NEAR MISS!"] = "間一髪！",
 		["⚠ Spiral Barrage!"] = "⚠ スパイラル弾幕！",
-		["🌟 Set Effects"] = "🌟 エフェクトを設定する",
+		["🌟 Set Effects"] = "🌟 セット効果",
 		["Weapon"] = "武器",
 		["Phoenix"] = "フェニックス",
 		["Shot_Rocket  Rocket Launcher shot"] = "ショット・ロケット ロケットランチャー発射",
@@ -1479,6 +1479,7 @@ return {
 		["Finding target..."] = "ターゲットを探しています...",
 		["Fireball"] = "ファイアボール",
 		["Flies straight and hits one enemy"] = "まっすぐ飛んで敵1体に命中します",
+		["Follow the sky-blue light beam"] = "空色の光のビームを追いかけよう",
 	},
 	templates = {
 	},

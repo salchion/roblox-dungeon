@@ -24,7 +24,7 @@ return {
 		["🛡 Field Gatekeeper  Kai"] = "🛡 田地守卫者 凯",
 		["NEAR MISS!"] = "险些擦肩而过！",
 		["⚠ Spiral Barrage!"] = "⚠ 螺旋弹幕！",
-		["🌟 Set Effects"] = "🌟 设置效果",
+		["🌟 Set Effects"] = "🌟 套装效果",
 		["Weapon"] = "武器",
 		["Phoenix"] = "凤凰",
 		["Shot_Rocket  Rocket Launcher shot"] = "发射火箭",

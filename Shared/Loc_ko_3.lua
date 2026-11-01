@@ -4,7 +4,6 @@ return {
 	exact = {
 	},
 	templates = {
-		{ "🔒 Paragon unlocks at level {number1}.", "🔒 패러건은 {number1}레벨에 해금됩니다." },
 		{ "Survive {number1} dungeon bonus waves", "던전 보너스 웨이브 {number1}번 버티기" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "적의 HP +{number1}%\n골드 +{number2}%" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 다크 캐슬 게이트 · 추천 수 {number2}" },

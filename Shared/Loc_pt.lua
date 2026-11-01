@@ -24,7 +24,7 @@ return {
 		["🛡 Field Gatekeeper  Kai"] = "🛡 Guardião de Campo Kai",
 		["NEAR MISS!"] = "QUASE ACABOU!",
 		["⚠ Spiral Barrage!"] = "⚠ Tempestade Espiral!",
-		["🌟 Set Effects"] = "🌟 Definir Efeitos",
+		["🌟 Set Effects"] = "🌟 Efeitos de set",
 		["Weapon"] = "Arma",
 		["Phoenix"] = "Fênix",
 		["Shot_Rocket  Rocket Launcher shot"] = "Lançamento de Foguete",

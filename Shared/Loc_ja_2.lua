@@ -2,7 +2,6 @@
 -- 자동 생성 파일: Tools/build_loc.py 가 Tools/loc_table.csv (+ 우리 사전) 에서 만든다. 직접 고치지 않는다.
 return {
 	exact = {
-		["Follow the sky-blue light beam"] = "空色の光のビームを追いかけよう",
 		["Gacha Machine"] = "ガチャ機械",
 		["Gate"] = "ゲート",
 		["Haste"] = "ヘイスト",
@@ -926,5 +925,6 @@ return {
 		{ "Uses all Tickets (max {number1})", "すべてのチケットを使用（最大{number1}枚）" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 フィールド・ベストゾーン {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "ゾーン {number1}  · 砂漠 ☠☠☠☠" },
+		{ "🎒 Bag {number1} / {number2}    ✨ Essence {number3}", "🎒 バッグ {number1} / {number2} ✨ エッセンス {number3}" },
 	},
 }

@@ -24,7 +24,7 @@ return {
 		["🛡 Field Gatekeeper  Kai"] = "🛡 Feldwächter Kai",
 		["NEAR MISS!"] = "Beinahe Unfall!",
 		["⚠ Spiral Barrage!"] = "⚠ Spiral-Salve!",
-		["🌟 Set Effects"] = "🌟 Effekte einstellen",
+		["🌟 Set Effects"] = "🌟 Set-Effekte",
 		["Weapon"] = "Waffe",
 		["Phoenix"] = "Phönix",
 		["Shot_Rocket  Rocket Launcher shot"] = "Rakete abgefeuert Raketenwerfer-Schuss",

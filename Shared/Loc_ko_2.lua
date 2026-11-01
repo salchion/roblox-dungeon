@@ -750,7 +750,7 @@ return {
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
 		{ "Flame Temple\n\n🔥 Charges and explosions! Charging enemies are tough and fast, and the Flame Lord rains down meteors and shockwaves (advanced)\n\nSurvive {number1}s + Boss\nRecommended Power {number2}", "화염 사원\n\n🔥 충전과 폭발! 충전 중인 적들은 강력하고 빠르며, 화염 군주는 운석과 충격파를 내립니다 (고급)\n\n{number1}초 + 보스 생존\n추천 파워 {number2}" },
-		{ "💡 Set gear drops in field zones at a set rate. Wear {number1}-{number2} pieces of the same zone's set and effects you unlocked with gold get boosted to Lv.{number3}-{number4} Preview effects in the J key Codex", "💡 필드 구역에서 장비 드롭을 정해진 속도로 설정하세요. 같은 구역의 세트 아이템 {number1}-{number2}개를 착용하고 골드로 잠금 해제한 효과를 사용하면 J 키 코덱스에서 미리보기 효과가 레벨 {number3}-{number4}로 강화됩니다." },
+		{ "💡 Set gear drops in field zones at a set rate. Wear {number1}-{number2} pieces of the same zone's set and effects you unlocked with gold get boosted to Lv.{number3}-{number4} Preview effects in the J key Codex", "💡 세트 장비는 필드 구역에서 일정 확률로 떨어져요. 같은 구역 세트를 {number1}-{number2}부위 입으면 골드로 연 효과가 Lv.{number3}-{number4}로 강해져요. 효과 미리보기는 J 키 도감에서" },
 		{ ": if no Legendary or better drops in {number1} pulls, the {number2}th pull is a guaranteed Legendary. If no Mythic drops in {number3} pulls, the {number4}th pull is a guaranteed Mythic. The counts are saved.", ": {number1}번 안에 전설 이상이 한 번도 안 나오면 {number2}번째 뽑기는 전설 확정. {number3}번 안에 신화가 안 나오면 {number4}번째 뽑기는 신화 확정. 횟수는 저장됩니다." },
 		{ "💡 Every player faces the same bosses, so gear and level decide your score. Dash through shots for NEAR MISS, and aim at the yellow weak-spot orb (x{number1} damage).", "💡 모든 플레이어는 동일한 보스에 직면하므로 장비와 레벨이 점수를 결정합니다. 총알을 피하며 근접 공격을 시도하고 노란색 약점 구슬을 조준하세요(x{number1} 데미지)." },
 		{ "A new dungeon theme can now appear (Ice Fortress, Level {number1}+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", "새로운 던전 테마가 나타날 수 있습니다 (얼음 요새, 레벨 {number1}+). 깊이를 선택하세요: 더 깊을수록 더 좋은 드롭 확률과 더 강한 보스를 얻을 수 있습니다. 이제 마커가 게이트를 가리킵니다." },
@@ -1032,5 +1032,6 @@ return {
 		{ "🌀 Gate of the Abyss · Rec. ⚡{number2}", "🌀 심연의 문 · 기록 ⚡{number2}" },
 		{ "🧹 Cleaned up {number1}! Essence +{number2}, {number3} G", "🧹 {number1}개 정리 완료! 정수 +{number2}, {number3} G" },
 		{ "Damage x{number1} · {number2} targets (gauge {number3})", "피해 x{number1} · 대상 {number2}명 (게이지 {number3})" },
+		{ "🔒 Paragon unlocks at level {number1}.", "🔒 패러건은 {number1}레벨에 해금됩니다." },
 	},
 }
