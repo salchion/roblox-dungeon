@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Recommended Power {number2}", "Puissance recommandée {number2}" },
+		{ "💰 Buy Point {number1} G ({number2}/{number3})", "💰 Acheter point {number1} G ({number2}/{number3})" },
+		{ "Best {number1}  ·  Max hit {number2}", "Meilleur {number1} · Coup maximum {number2}" },
+		{ "🗿 Colossus · Zone {number1}", "🗿 Colosse · Zone {number1}" },
 		{ "⚔ DUNGEON  ·  Lv.{number1}+", "⚔ Donjon · Niv.{number1}+" },
 		{ "Zone {number1} · Trial Lv.3", "Zone {number1} · Épreuve Niv.3" },
 		{ "Upgrade success! +{number1}", "Amélioration réussie ! +{number1}" },

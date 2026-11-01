@@ -489,6 +489,10 @@ return {
 		["Train, upgrade gear, or enhance your weapon"] = "Treine, melhore o equipamento ou a arma",
 		["Stand here to earn gold"] = "Fique aqui para ganhar ouro",
 		["🎯 Training Yard"] = "🎯 Campo de treino",
+		["👑 THE FINAL LORD HAS FALLEN"] = "👑 O SENHOR FINAL CAIU",
+		["🎁 This week's Mythic reward!"] = "🎁 Recompensa mítica da semana!",
+		["👑 This week's Mythic reward was already claimed (resets Thursday)"] = "👑 A recompensa mítica desta semana já foi resgatada (reinicia na quinta)",
+		["🌀 The Boss Rush is open!"] = "🌀 O Boss Rush está aberto!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -955,10 +959,5 @@ return {
 		{ "(gold {number1} + gear {number2})", "(ouro {number1} + equipamento {number2})" },
 		{ "Crit damage +{number1}%p", "Dano crítico +{number1}%p" },
 		{ "vs. equipped ▼ {number1}", "vs equipado ▼ {number1}" },
-		{ "Monsters left: {number1}", "Monstros restantes: {number1}" },
-		{ "🎰 {number1}-Roll Results", "🎰 Resultados do sorteio x{number1}" },
-		{ "Lv {number1}  ✦ Paragon {number2}", "Nv {number1}  ✦ Paragon {number2}" },
-		{ "FEVER PORTAL  {number1}s", "PORTAL DE FEBRE  {number1}s" },
-		{ "🎰 Roll again  🎫{number1}", "🎰 Girar de novo  🎫{number1}" },
 	},
 }

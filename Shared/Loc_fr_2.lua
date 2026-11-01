@@ -529,6 +529,10 @@ return {
 		["Train, upgrade gear, or enhance your weapon"] = "Entraînez-vous, améliorez l'équipement ou l'arme",
 		["Stand here to earn gold"] = "Restez ici pour gagner de l'or",
 		["🎯 Training Yard"] = "🎯 Terrain d'entraînement",
+		["👑 THE FINAL LORD HAS FALLEN"] = "👑 LE SEIGNEUR FINAL EST TOMBÉ",
+		["🎁 This week's Mythic reward!"] = "🎁 Récompense mythique de la semaine !",
+		["👑 This week's Mythic reward was already claimed (resets Thursday)"] = "👑 La récompense mythique de la semaine est déjà récupérée (réinitialisation jeudi)",
+		["🌀 The Boss Rush is open!"] = "🌀 Le Boss Rush est ouvert !",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -925,9 +929,5 @@ return {
 		{ "{number1} Gear Roll Tickets", "{number1} tickets de roulement d'équipement" },
 		{ "👑 {number1} Kill Streak!!!!", "👑 Série de {number1} éliminations !!!!" },
 		{ "XP Booster ({number1} hour)", "Booster d'EXP ({number1} heure)" },
-		{ "Recommended Power {number2}", "Puissance recommandée {number2}" },
-		{ "💰 Buy Point {number1} G ({number2}/{number3})", "💰 Acheter point {number1} G ({number2}/{number3})" },
-		{ "Best {number1}  ·  Max hit {number2}", "Meilleur {number1} · Coup maximum {number2}" },
-		{ "🗿 Colossus · Zone {number1}", "🗿 Colosse · Zone {number1}" },
 	},
 }

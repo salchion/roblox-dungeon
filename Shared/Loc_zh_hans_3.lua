@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 新武器:{text1} - 按 {number2} 键!" },
+		{ "{text1} invited you to a party!", "{text1} 邀请你加入队伍!" },
+		{ "Recommended ⚡ {number1}   Danger {text2}", "推荐 ⚡ {number1}   危险 {text2}" },
+		{ "🗿 {text1} · World Boss (Zone {number2})", "🗿 {text1} · 世界首领(区域{number2})" },
 		{ "👀 [{text1}] 5-second preview!", "👀 [{text1}] 5 秒预览!" },
 		{ "💤 Idle income  +{text1} G/sec", "💤 挂机收益  +{text1} 金币/秒" },
 		{ "{text1} is already in a party", "{text1}已经在队伍中了" },

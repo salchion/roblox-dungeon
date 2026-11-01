@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Stufe {number1} {number2} / {number3} Erfahrungspunkte" },
+		{ "DAMAGE · {number1}s · {number2}", "Schaden · {number1}s · {number2}" },
+		{ "{number1} Dungeon Keys", "{number1} Dungeon-Schlüssel" },
+		{ "🥇 LeeGoAll  ⚡{number1}", "🥇 LeeGoAll ⚡{number1}" },
+		{ "Zone {number1} · Abyss", "Zone {number1} · Abgrund" },
 		{ "(Your Power {number1})", "(Deine Stärke {number1})" },
 		{ "(Current Lv.{number1})", "(Aktuell Lv.{number1})" },
 		{ "Restores {number1}% HP", "Stellt {number1} % LP wieder her" },

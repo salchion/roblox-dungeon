@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 ダークキャッスルゲート · 推奨レベル ⚡{number2}" },
+		{ "Sniper Rifle · Arcane Era +{number1}", "スナイパーライフル・神秘の時代 +{number1}" },
+		{ "Preparing the field...  {number1} / {number2}", "畑の準備中... {number1} / {number2}" },
+		{ "🌾 Adventure Begins · Rec. ⚡{number2}", "🌾 冒険の始まり · レコード ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number3}", "スナイパーライフル・神秘の時代 +{number3}" },
 		{ "ZONE {number1}  ·  Snowfield   ☠☠☠☠☠", "ゾーン {number1} ・雪原 ☠☠☠☠☠" },
 		{ "🎁 Boss chest · {number1} gear pieces", "🎁 ボス宝箱 · 装備{number1}個" },
@@ -301,6 +305,7 @@ return {
 		{ "{number1} key", "鍵{number1}個" },
 		{ "💰 {number1} G", "💰 {number1}G" },
 		{ "Lv {number1}", "レベル {number1}" },
+		{ "+{number1} G", "+{number1}G" },
 		{ "A new dungeon theme can now appear ({text1}, Level {number2}+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", "新しいダンジョンテーマが登場するようになりました({text1}、レベル{number2}以上)。深度を選びましょう: 深いほどドロップ確率が上がり、ボスも強くなります。ゲートにマーカーが表示されます。" },
 		{ "(one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "({number1}種類のうち1つ)はミシック装備に付きます: ダンジョン宝箱(下記参照)、フィールドドロップ({text2})、週間ボスラッシュ宝箱、週間ファイナルロード報酬。" },
 		{ "🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: {text1}", "🔫 武器は5種類 — 強化の節目(15ごと)に1つずつ解放されます。解放した武器から戦う武器を選べます · 現在: {text1}" },

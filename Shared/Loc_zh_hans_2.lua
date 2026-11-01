@@ -398,6 +398,10 @@ return {
 		["Train, upgrade gear, or enhance your weapon"] = "训练、强化装备或武器",
 		["Stand here to earn gold"] = "站在这里即可赚取金币",
 		["🎯 Training Yard"] = "🎯 训练场",
+		["👑 THE FINAL LORD HAS FALLEN"] = "👑 最终领主已倒下",
+		["🎁 This week's Mythic reward!"] = "🎁 本周神话奖励！",
+		["👑 This week's Mythic reward was already claimed (resets Thursday)"] = "👑 本周神话奖励已领取（周四重置）",
+		["🌀 The Boss Rush is open!"] = "🌀 首领连战已开启！",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1049,9 +1053,5 @@ return {
 		{ "You are already holding {text1}.", "你已经持有 {text1}。" },
 		{ "⛺ Moved to Zone {number1} · {text2} Camp!", "⛺ 已移动到区域{number1} · {text2}的营地!" },
 		{ "Loading the world...  ·  {text1}", "正在加载世界...  ·  {text1}" },
-		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 新武器:{text1} - 按 {number2} 键!" },
-		{ "{text1} invited you to a party!", "{text1} 邀请你加入队伍!" },
-		{ "Recommended ⚡ {number1}   Danger {text2}", "推荐 ⚡ {number1}   危险 {text2}" },
-		{ "🗿 {text1} · World Boss (Zone {number2})", "🗿 {text1} · 世界首领(区域{number2})" },
 	},
 }

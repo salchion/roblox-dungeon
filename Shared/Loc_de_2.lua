@@ -470,6 +470,10 @@ return {
 		["Train, upgrade gear, or enhance your weapon"] = "Trainiere, verbessere Ausrüstung oder deine Waffe",
 		["Stand here to earn gold"] = "Steh hier, um Gold zu verdienen",
 		["🎯 Training Yard"] = "🎯 Trainingsplatz",
+		["👑 THE FINAL LORD HAS FALLEN"] = "👑 DER LETZTE HERRSCHER IST GEFALLEN",
+		["🎁 This week's Mythic reward!"] = "🎁 Mythische Wochenbelohnung!",
+		["👑 This week's Mythic reward was already claimed (resets Thursday)"] = "👑 Die mythische Wochenbelohnung wurde schon abgeholt (Reset am Donnerstag)",
+		["🌀 The Boss Rush is open!"] = "🌀 Der Boss Rush ist geöffnet!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -961,10 +965,5 @@ return {
 		{ "Crit damage +{number1}%", "Kritischer Schaden +{number1}%" },
 		{ "◆ Move Speed +{number1}", "◆ Laufgeschw. +{number1}" },
 		{ "💰 Warp fee -{number1} G", "💰 Warp-Gebühr -{number1} G" },
-		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Stufe {number1} {number2} / {number3} Erfahrungspunkte" },
-		{ "DAMAGE · {number1}s · {number2}", "Schaden · {number1}s · {number2}" },
-		{ "{number1} Dungeon Keys", "{number1} Dungeon-Schlüssel" },
-		{ "🥇 LeeGoAll  ⚡{number1}", "🥇 LeeGoAll ⚡{number1}" },
-		{ "Zone {number1} · Abyss", "Zone {number1} · Abgrund" },
 	},
 }

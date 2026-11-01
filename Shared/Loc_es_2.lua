@@ -518,6 +518,10 @@ return {
 		["Train, upgrade gear, or enhance your weapon"] = "Entrena, mejora el equipo o el arma",
 		["Stand here to earn gold"] = "Quédate aquí para ganar oro",
 		["🎯 Training Yard"] = "🎯 Campo de entrenamiento",
+		["👑 THE FINAL LORD HAS FALLEN"] = "👑 EL SEÑOR FINAL HA CAÍDO",
+		["🎁 This week's Mythic reward!"] = "🎁 ¡Recompensa mítica de la semana!",
+		["👑 This week's Mythic reward was already claimed (resets Thursday)"] = "👑 La recompensa mítica de esta semana ya se reclamó (se reinicia el jueves)",
+		["🌀 The Boss Rush is open!"] = "🌀 ¡El Boss Rush está abierto!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -955,9 +959,5 @@ return {
 		{ "💥Explosive Shot {number1}", "💥Disparo Explosivo {number1}" },
 		{ "Defeat {number1} boss(es)", "Derrota a {number1} jefes" },
 		{ "{number1} / {number2}   Reward: 🎫 {number3}", "{number1} / {number2} Recompensa: 🎫 {number3}" },
-		{ "⬆ Level Up  💰 {number1} G", "⬆ Subir de nivel 💰 {number1} G" },
-		{ "⚡ {number1} Kill Streak!!", "⚡ ¡{number1} racha de muertes!" },
-		{ "Survive {number1}s + Boss", "Sobrevive {number1} segundos + Jefe" },
-		{ "{number3} / {number4}   Reward: 🎫 {number5}", "{number3} / {number4} Recompensa: 🎫 {number5}" },
 	},
 }

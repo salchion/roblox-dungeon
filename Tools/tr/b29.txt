@@ -269,3 +269,8 @@
 2310¦訓練・装備強化・武器強化で強くなろう¦Trainiere, verbessere Ausrüstung oder deine Waffe¦Entraînez-vous, améliorez l'équipement ou l'arme¦Entrena, mejora el equipo o el arma¦Treine, melhore o equipamento ou a arma¦训练、强化装备或武器¦훈련·장비·무기 강화로 더 강해지세요
 2311¦ここに立つとゴールドが貯まります¦Steh hier, um Gold zu verdienen¦Restez ici pour gagner de l'or¦Quédate aquí para ganar oro¦Fique aqui para ganhar ouro¦站在这里即可赚取金币¦여기 서 있으면 골드가 쌓여요
 2312¦🎯 訓練場¦🎯 Trainingsplatz¦🎯 Terrain d'entraînement¦🎯 Campo de entrenamiento¦🎯 Campo de treino¦🎯 训练场¦🎯 훈련장
+2313¦👑 最後の君主、陥落¦👑 DER LETZTE HERRSCHER IST GEFALLEN¦👑 LE SEIGNEUR FINAL EST TOMBÉ¦👑 EL SEÑOR FINAL HA CAÍDO¦👑 O SENHOR FINAL CAIU¦👑 最终领主已倒下¦👑 최후의 군주가 쓰러졌다
+2314¦+{number1}G¦+{number1} G¦+{number1} G¦+{number1} G¦+{number1} G¦+{number1}G¦+{number1}G
+2315¦🎁 今週の神話報酬！¦🎁 Mythische Wochenbelohnung!¦🎁 Récompense mythique de la semaine !¦🎁 ¡Recompensa mítica de la semana!¦🎁 Recompensa mítica da semana!¦🎁 本周神话奖励！¦🎁 이번 주 신화 보상!
+2316¦👑 今週の神話報酬は受け取り済みです（木曜にリセット）¦👑 Die mythische Wochenbelohnung wurde schon abgeholt (Reset am Donnerstag)¦👑 La récompense mythique de la semaine est déjà récupérée (réinitialisation jeudi)¦👑 La recompensa mítica de esta semana ya se reclamó (se reinicia el jueves)¦👑 A recompensa mítica desta semana já foi resgatada (reinicia na quinta)¦👑 本周神话奖励已领取（周四重置）¦👑 이번 주 신화 보상은 이미 받았어요 (목요일 초기화)
+2317¦🌀 ボスラッシュが開放された！¦🌀 Der Boss Rush ist geöffnet!¦🌀 Le Boss Rush est ouvert !¦🌀 ¡El Boss Rush está abierto!¦🌀 O Boss Rush está aberto!¦🌀 首领连战已开启！¦🌀 보스 러시가 열렸다!

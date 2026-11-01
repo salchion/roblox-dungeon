@@ -645,6 +645,10 @@ return {
 		["Train, upgrade gear, or enhance your weapon"] = "訓練・装備強化・武器強化で強くなろう",
 		["Stand here to earn gold"] = "ここに立つとゴールドが貯まります",
 		["🎯 Training Yard"] = "🎯 訓練場",
+		["👑 THE FINAL LORD HAS FALLEN"] = "👑 最後の君主、陥落",
+		["🎁 This week's Mythic reward!"] = "🎁 今週の神話報酬！",
+		["👑 This week's Mythic reward was already claimed (resets Thursday)"] = "👑 今週の神話報酬は受け取り済みです（木曜にリセット）",
+		["🌀 The Boss Rush is open!"] = "🌀 ボスラッシュが開放された！",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -933,9 +937,5 @@ return {
 		{ "🔒 Paragon unlocks at level {number1}.", "🔒 パラゴンはレベル{number1}で解放されます。" },
 		{ "Survive {number1} dungeon bonus waves", "ダンジョンのボーナスウェーブを{number1}回耐える" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "敵のHP +{number1}%\nゴールド +{number2}%" },
-		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 ダークキャッスルゲート · 推奨レベル ⚡{number2}" },
-		{ "Sniper Rifle · Arcane Era +{number1}", "スナイパーライフル・神秘の時代 +{number1}" },
-		{ "Preparing the field...  {number1} / {number2}", "畑の準備中... {number1} / {number2}" },
-		{ "🌾 Adventure Begins · Rec. ⚡{number2}", "🌾 冒険の始まり · レコード ⚡{number2}" },
 	},
 }

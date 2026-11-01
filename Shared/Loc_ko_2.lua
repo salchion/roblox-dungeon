@@ -792,6 +792,10 @@ return {
 		["Train, upgrade gear, or enhance your weapon"] = "훈련·장비·무기 강화로 더 강해지세요",
 		["Stand here to earn gold"] = "여기 서 있으면 골드가 쌓여요",
 		["🎯 Training Yard"] = "🎯 훈련장",
+		["👑 THE FINAL LORD HAS FALLEN"] = "👑 최후의 군주가 쓰러졌다",
+		["🎁 This week's Mythic reward!"] = "🎁 이번 주 신화 보상!",
+		["👑 This week's Mythic reward was already claimed (resets Thursday)"] = "👑 이번 주 신화 보상은 이미 받았어요 (목요일 초기화)",
+		["🌀 The Boss Rush is open!"] = "🌀 보스 러시가 열렸다!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1045,8 +1049,5 @@ return {
 		{ "Crit damage +{number1}%p per point  (max {number2})", "치명타 피해 +{number1}%p / 포인트당  (최대 {number2})" },
 		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 보상 {number1}개를 받았어요! (새 칭호 {number2}개)" },
 		{ "Keeps {number1} more stacks even if broken", "끊겨도 스택이 {number1}개 더 남아요" },
-		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 심연의 군주 (구역 {number1}) · 레코드 ⚡{number2}" },
-		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 오늘 무료 입장권 {number1}장 · 🗝 키 {number2}개!" },
-		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 다음 무기 잠금 해제 산탄총 (+{number1})" },
 	},
 }

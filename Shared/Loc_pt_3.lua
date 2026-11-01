@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Monsters left: {number1}", "Monstros restantes: {number1}" },
+		{ "🎰 {number1}-Roll Results", "🎰 Resultados do sorteio x{number1}" },
+		{ "Lv {number1}  ✦ Paragon {number2}", "Nv {number1}  ✦ Paragon {number2}" },
+		{ "FEVER PORTAL  {number1}s", "PORTAL DE FEBRE  {number1}s" },
+		{ "🎰 Roll again  🎫{number1}", "🎰 Girar de novo  🎫{number1}" },
 		{ "▲ +{number1}% vs current", "▲ +{number1}% vs atual" },
 		{ "Switch path: {number1} G", "Trocar caminho: {number1} G" },
 		{ "Damage taken -{number1}%", "Dano recebido -{number1}%" },

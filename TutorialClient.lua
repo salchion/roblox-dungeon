@@ -519,9 +519,125 @@ local function playReel(list)
 	reelActive = false
 end
 
+-- 최후의 군주를 진짜로 쓰러뜨렸을 때: 화면 번쩍 -> 큰 제목 -> 보상 카드(골드 / 티켓 / 이번 주 신화 장비) -> 보스 러시 개방 안내
+local function playFinalVictory(data)
+	local ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
+	local GOLD = Color3.fromRGB(255, 218, 110)
+	local root = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, ZIndex = 80 }, gui)
+	local function commaText(n)
+		local s = tostring(math.floor(n or 0))
+		return (s:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
+	end
+	local function sparkles(parent, color, amount, reach)
+		for _ = 1, amount do
+			local angle = math.random() * math.pi * 2
+			local dist = reach * (0.4 + math.random() * 0.6)
+			local star = label({ Size = UDim2.new(0, 24, 0, 24), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Text = "✦", TextSize = 14 + math.random(0, 14), TextColor3 = color, Font = Enum.Font.GothamBlack, ZIndex = 83 }, parent)
+			TweenService:Create(star, TweenInfo.new(0.8 + math.random() * 0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+				Position = UDim2.new(0.5, math.cos(angle) * dist, 0.5, math.sin(angle) * dist), TextTransparency = 1, Rotation = math.random(-120, 120),
+			}):Play()
+			game:GetService("Debris"):AddItem(star, 1.6)
+		end
+	end
+	pcall(SoundBank.Play, game:GetService("SoundService"), "Dungeon_Clear")
+	-- 1) 번쩍
+	local flash = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.1, BorderSizePixel = 0, ZIndex = 81 }, root)
+	TweenService:Create(flash, TweenInfo.new(0.9), { BackgroundTransparency = 1 }):Play()
+	-- 2) 큰 제목
+	local banner = label({ Size = UDim2.new(1, 0, 0, 70), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.26, 0), Text = "👑 THE FINAL LORD HAS FALLEN", TextSize = 38, Font = Enum.Font.GothamBlack,
+		TextColor3 = GOLD, TextStrokeTransparency = 0.2, TextStrokeColor3 = Color3.fromRGB(90, 40, 10), TextTransparency = 1, ZIndex = 84 }, root)
+	local bannerScale = create("UIScale", { Scale = 1.7 }, banner)
+	TweenService:Create(banner, TweenInfo.new(0.4), { TextTransparency = 0 }):Play()
+	TweenService:Create(bannerScale, TweenInfo.new(0.55, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	sparkles(banner, GOLD, 26, 380)
+	task.wait(1.2)
+	-- 3) 보상 카드 (한 장씩 튀어나온다)
+	local cards = {}
+	local function addCard(width, build)
+		local holder = create("Frame", { Size = UDim2.new(0, width, 0, 150), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.52, 0), BackgroundTransparency = 1, ZIndex = 82 }, root)
+		local frame = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(24, 20, 40), BorderSizePixel = 0, ZIndex = 83 }, holder)
+		rounded(frame, 16)
+		build(frame)
+		local scale = create("UIScale", { Scale = 0 }, holder)
+		table.insert(cards, { Holder = holder, Frame = frame, Scale = scale })
+		return cards[#cards]
+	end
+	addCard(190, function(frame)
+		create("UIStroke", { Color = GOLD, Thickness = 3 }, frame)
+		label({ Size = UDim2.new(1, 0, 0, 50), Position = UDim2.new(0, 0, 0, 16), Text = "💰", TextSize = 40, ZIndex = 84 }, frame)
+		label({ Size = UDim2.new(1, -10, 0, 40), Position = UDim2.new(0, 5, 0, 74), Text = string.format("+%s G", commaText(data.Gold)), TextSize = 21, Font = Enum.Font.GothamBlack, TextColor3 = GOLD, ZIndex = 84 }, frame)
+	end)
+	addCard(150, function(frame)
+		create("UIStroke", { Color = Color3.fromRGB(215, 160, 255), Thickness = 3 }, frame)
+		label({ Size = UDim2.new(1, 0, 0, 50), Position = UDim2.new(0, 0, 0, 16), Text = "🎫", TextSize = 40, ZIndex = 84 }, frame)
+		label({ Size = UDim2.new(1, -10, 0, 40), Position = UDim2.new(0, 5, 0, 74), Text = string.format("+%d", data.Tickets or 0), TextSize = 26, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(225, 180, 255), ZIndex = 84 }, frame)
+	end)
+	local item = data.Item
+	if item then
+		local slotDef = Config.GetGearSlot(item.Slot)
+		local color = Config.Gear.RarityColors[item.Rarity or 5] or Color3.fromRGB(255, 120, 255)
+		addCard(200, function(frame)
+			local stroke = create("UIStroke", { Color = color, Thickness = 4 }, frame)
+			local rainbow = create("UIGradient", { Color = ColorSequence.new({
+				ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 80, 80)), ColorSequenceKeypoint.new(0.25, Color3.fromRGB(255, 220, 80)),
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(90, 255, 120)), ColorSequenceKeypoint.new(0.75, Color3.fromRGB(80, 200, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 80)),
+			}) }, stroke)
+			TweenService:Create(rainbow, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1), { Rotation = 360 }):Play()
+			label({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 0, 8), Text = Config.Gear.RarityNames[item.Rarity or 5] or "", TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = color, ZIndex = 84 }, frame)
+			label({ Size = UDim2.new(1, 0, 0, 48), Position = UDim2.new(0, 0, 0, 28), Text = ICONS[item.Slot] or "🎁", TextSize = 38, ZIndex = 84 }, frame)
+			label({ Size = UDim2.new(1, -10, 0, 30), Position = UDim2.new(0, 5, 0, 78), Text = slotDef and slotDef.Names[item.Rarity or 5] or "", TextSize = 14, Font = Enum.Font.GothamBlack, TextWrapped = true, TextColor3 = Color3.fromRGB(245, 245, 255), ZIndex = 84 }, frame)
+			local setDef = item.Set and Config.Sets[item.Set]
+			local uniqueDef = item.Unique and Config.Uniques[item.Unique]
+			if setDef then label({ Size = UDim2.new(1, -10, 0, 16), Position = UDim2.new(0, 5, 0, 110), Text = (setDef.Icon or "✦") .. " " .. setDef.Name, TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = setDef.Color, ZIndex = 84 }, frame) end
+			if uniqueDef then label({ Size = UDim2.new(1, -10, 0, 16), Position = UDim2.new(0, 5, 0, 127), Text = "✦ " .. uniqueDef.Name, TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(255, 190, 90), ZIndex = 84 }, frame) end
+		end)
+	end
+	-- 가로로 펼친다
+	local totalWidth, gap = 0, 18
+	for _, card in ipairs(cards) do totalWidth += card.Holder.Size.X.Offset end
+	totalWidth += gap * (#cards - 1)
+	local cursor = -totalWidth / 2
+	for index, card in ipairs(cards) do
+		local width = card.Holder.Size.X.Offset
+		card.Holder.Position = UDim2.new(0.5, cursor + width / 2, 0.52, 0)
+		cursor += width + gap
+		task.delay((index - 1) * 0.45, function()
+			TweenService:Create(card.Scale, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+			sparkles(card.Holder, index == 3 and Color3.fromRGB(255, 160, 255) or GOLD, index == 3 and 22 or 10, 120)
+			pcall(SoundBank.Play, game:GetService("SoundService"), index == 3 and "Rare_Drop" or "Reel_Stop", { Pitch = 0.9 + 0.1 * index })
+		end)
+	end
+	task.wait(#cards * 0.45 + 0.8)
+	-- 4) 아래 줄: 이번 주 보상 안내 + 보스 러시 개방
+	local note = data.Item and "🎁 This week's Mythic reward!" or "👑 This week's Mythic reward was already claimed (resets Thursday)"
+	local noteLabel = label({ Size = UDim2.new(1, 0, 0, 24), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0.52, 100), Text = note, TextSize = 14, Font = Enum.Font.GothamBold,
+		TextColor3 = Color3.fromRGB(235, 230, 255), TextStrokeTransparency = 0.4, TextTransparency = 1, ZIndex = 84 }, root)
+	local rushLabel = label({ Size = UDim2.new(1, 0, 0, 30), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0.52, 132), Text = "🌀 The Boss Rush is open!", TextSize = 20, Font = Enum.Font.GothamBlack,
+		TextColor3 = Color3.fromRGB(220, 130, 255), TextStrokeTransparency = 0.3, TextTransparency = 1, ZIndex = 84 }, root)
+	TweenService:Create(noteLabel, TweenInfo.new(0.5), { TextTransparency = 0 }):Play()
+	task.wait(0.8)
+	TweenService:Create(rushLabel, TweenInfo.new(0.5), { TextTransparency = 0 }):Play()
+	task.wait(5)
+	for _, descendant in ipairs(root:GetDescendants()) do
+		if descendant:IsA("TextLabel") then
+			TweenService:Create(descendant, TweenInfo.new(0.6), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+		elseif descendant:IsA("Frame") and descendant.BackgroundTransparency < 1 then
+			TweenService:Create(descendant, TweenInfo.new(0.6), { BackgroundTransparency = 1 }):Play()
+		elseif descendant:IsA("UIStroke") then
+			TweenService:Create(descendant, TweenInfo.new(0.6), { Transparency = 1 }):Play()
+		end
+	end
+	task.wait(0.7)
+	root:Destroy()
+end
+
 Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 	if action == "Reel" then
 		task.spawn(playReel, data)
+		return
+	end
+	if action == "FinalVictory" then
+		task.spawn(playFinalVictory, data)
 		return
 	end
 	if action == "Prompt" then
