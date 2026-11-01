@@ -1281,7 +1281,7 @@ do
 		paint()
 	end)
 	function settings.UpdateDungeonGold(state)
-		local show = state ~= nil and state.Phase ~= "Ended" and state.EarnedGold ~= nil and player:GetAttribute("TutorialActive") ~= true
+		local show = state ~= nil and state.Fever == true and state.Phase ~= "Ended" and state.EarnedGold ~= nil and player:GetAttribute("TutorialActive") ~= true -- 피버 던전에서만 (일반 던전에서는 안 보인다)
 		chip.Visible = show
 		if not show then shown, target = 0, 0 return end
 		chip.Position = UDim2.new(0.5, 0, 0, (state.BonusLeft or state.MonsterLimit) and 86 or 44) -- (버티기 던전은 보너스 / 몬스터 막대 아래, 피버는 배너 바로 아래)
