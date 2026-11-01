@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 {number1} G   Upgrade", "💰 {number1} or   Améliorer" },
+		{ "🎁 Claim All ({number1})", "🎁 Tout récupérer ({number1})" },
 		{ "Crit damage +{number1}%", "Dégâts critiques +{number1}%" },
 		{ "◆ Move Speed +{number1}", "◆ Vitesse de déplacement +{number1}" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Niveau {number1} {number2} / {number3} EXP" },

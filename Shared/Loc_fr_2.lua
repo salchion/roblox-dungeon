@@ -481,6 +481,9 @@ return {
 		["More damage to bosses, lords and elites"] = "Plus de dégâts aux boss, seigneurs et élites",
 		["Take less damage from every hit"] = "Subissez moins de dégâts",
 		["Recover a % of max HP each time you defeat an enemy"] = "Récupérez un % de vos PV max à chaque ennemi vaincu",
+		["Target set (gacha only)"] = "Set visé (gacha uniquement)",
+		["Pick a set to target"] = "Choisissez un set à viser",
+		["No set"] = "Aucun set",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -938,7 +941,5 @@ return {
 		{ "·  Gold / XP x{number1}", "·  Or / XP x{number1}" },
 		{ "Crit chance +{number1}%", "Chance critique +{number1} %" },
 		{ "· Unlocks at +{number1}", "· Se débloque à +{number1}" },
-		{ "💰 {number1} G   Upgrade", "💰 {number1} or   Améliorer" },
-		{ "🎁 Claim All ({number1})", "🎁 Tout récupérer ({number1})" },
 	},
 }

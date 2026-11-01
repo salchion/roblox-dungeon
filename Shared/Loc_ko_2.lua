@@ -743,6 +743,9 @@ return {
 		["More damage to bosses, lords and elites"] = "보스 · 군주 · 엘리트에게 주는 피해 증가",
 		["Take less damage from every hit"] = "맞을 때마다 받는 피해가 줄어요",
 		["Recover a % of max HP each time you defeat an enemy"] = "적을 쓰러뜨릴 때마다 최대 체력의 %만큼 회복",
+		["Target set (gacha only)"] = "노릴 세트 (뽑기 전용)",
+		["Pick a set to target"] = "노릴 세트를 골라 보세요",
+		["No set"] = "세트 없음",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1029,7 +1032,5 @@ return {
 		{ "🌀 Gate of the Abyss · Rec. ⚡{number2}", "🌀 심연의 문 · 기록 ⚡{number2}" },
 		{ "🧹 Cleaned up {number1}! Essence +{number2}, {number3} G", "🧹 {number1}개 정리 완료! 정수 +{number2}, {number3} G" },
 		{ "Damage x{number1} · {number2} targets (gauge {number3})", "피해 x{number1} · 대상 {number2}명 (게이지 {number3})" },
-		{ "🔒 Paragon unlocks at level {number1}.", "🔒 패러건은 {number1}레벨에 해금됩니다." },
-		{ "Survive {number1} dungeon bonus waves", "던전 보너스 웨이브 {number1}번 버티기" },
 	},
 }

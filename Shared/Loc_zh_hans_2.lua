@@ -349,6 +349,9 @@ return {
 		["More damage to bosses, lords and elites"] = "对首领、君主和精英的伤害增加",
 		["Take less damage from every hit"] = "受到的每次伤害减少",
 		["Recover a % of max HP each time you defeat an enemy"] = "每击败一个敌人回复最大生命的百分比",
+		["Target set (gacha only)"] = "目标套装（扭蛋限定）",
+		["Pick a set to target"] = "选择目标套装",
+		["No set"] = "无套装",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1044,6 +1047,5 @@ return {
 		{ "📢 {text1}'s weapon evolved into [{text2}]!", "📢 {text1} 的武器进化为【{text2}】!" },
 		{ "✨ {number1}-piece set complete! {text2} {text3} Lv.{number4}", "✨ {number1} 件套装集齐!{text2} {text3} Lv.{number4}" },
 		{ "{text1} {text2} Tier · {number3} bosses defeated", "{text1} {text2} 阶 · 击败 {number3} 个首领" },
-		{ "⏱ {text1} survived  ×  💥 {text2} damage", "⏱ 存活 {text1}  ×  💥 伤害 {text2}" },
 	},
 }

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⏱ {text1} survived  ×  💥 {text2} damage", "⏱ 存活 {text1}  ×  💥 伤害 {text2}" },
 		{ "▲ {number1} unspent (T)  ·  {text2} / {text3} XP", "▲ {number1} 未分配 (T)  ·  {text2} / {text3} XP" },
 		{ "{text1} New set from here: {text2} Set", "{text1} 从这里开始的新套装:{text2} 套装" },
 		{ "(Recommended {text1} · Yours {text2})", "(推荐 {text1} · 你 {text2})" },

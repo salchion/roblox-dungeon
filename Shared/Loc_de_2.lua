@@ -423,6 +423,9 @@ return {
 		["More damage to bosses, lords and elites"] = "Mehr Schaden an Bossen, Fürsten und Elite",
 		["Take less damage from every hit"] = "Weniger Schaden durch jeden Treffer",
 		["Recover a % of max HP each time you defeat an enemy"] = "Heile % deiner max. LP pro besiegtem Gegner",
+		["Target set (gacha only)"] = "Ziel-Set (nur Gacha)",
+		["Pick a set to target"] = "Wähle ein Ziel-Set",
+		["No set"] = "Kein Set",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -971,6 +974,5 @@ return {
 		{ "{text1} has used up today's free entries and doesn't have {number2} key(s). Defeat a field zone lord to get keys", "{text1} hat die heutigen Gratis-Eintritte aufgebraucht und besitzt keine {number2} Schlüssel. Besiege einen Feldzonen-Lord, um Schlüssel zu bekommen" },
 		{ "🐃 Monster stampede! They're charging in a line from the {text1} — step aside and sweep them away!", "🐃 Monsterstampede! Sie stürmen in einer Linie von {text1} heran – tritt zur Seite und fege sie weg!" },
 		{ "🛡 Your {text1} slot(s) are empty! Get gear from dungeon boss chests or the gacha and equip it", "🛡 {text1} Ausrüstungsplatz/-plätze sind leer! Hol dir Ausrüstung aus Dungeon-Boss-Truhen oder per Gacha und rüste sie aus" },
-		{ "+{text1}% chance per point to fire a second shot right after the first (\"bang-bang\")  (max {number2})", "+{text1} % Chance pro Punkt, direkt nach dem ersten einen zweiten Schuss abzufeuern („Bumm-Bumm“) (max. {number2})" },
 	},
 }

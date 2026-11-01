@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "+{text1}% chance per point to fire a second shot right after the first (\"bang-bang\")  (max {number2})", "+{text1} % Chance pro Punkt, direkt nach dem ersten einen zweiten Schuss abzufeuern („Bumm-Bumm“) (max. {number2})" },
 		{ "🔒 {text1} unlocks at +{number2} ({number3} to go) - upgrade your weapon at the Forge or in the Menu (B)", "🔒 {text1} wird bei +{number2} freigeschaltet (noch {number3}) – verbessere deine Waffe in der Schmiede oder im Menü (B)" },
 		{ "🎒 Bag full: dismantled a weaker item to keep your new {text1} gear (Essence +{number2}, {number3} G)", "🎒 Rucksack voll: ein schwächerer Gegenstand wurde zerlegt, um deine neue {text1}-Ausrüstung zu behalten (Essenz +{number2}, {number3} G)" },
 		{ "📍 Zone {number1} {text2} · Drops in that zone · Dungeon chests (deeper = better odds)", "📍 Zone {number1} {text2} · Drops in dieser Zone · Dungeon-Truhen (tiefer = bessere Chancen)" },

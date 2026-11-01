@@ -469,6 +469,9 @@ return {
 		["More damage to bosses, lords and elites"] = "Más daño a jefes, señores y élites",
 		["Take less damage from every hit"] = "Recibes menos daño",
 		["Recover a % of max HP each time you defeat an enemy"] = "Recupera un % de PV máx. al derrotar enemigos",
+		["Target set (gacha only)"] = "Set objetivo (solo gacha)",
+		["Pick a set to target"] = "Elige un set objetivo",
+		["No set"] = "Sin set",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -978,7 +981,5 @@ return {
 		{ "x{number1}\nUpgrade", "x{number1}\nMejorar" },
 		{ "Damage +{number1}%", "Daño +{number1}%" },
 		{ "Admin (F{number1})", "Administrador (F{number1})" },
-		{ "Party ({number1}/{number2})", "Grupo ({number1}/{number2})" },
-		{ "Attack +{number1}%", "Ataque +{number1}%" },
 	},
 }

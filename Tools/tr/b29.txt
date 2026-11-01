@@ -173,3 +173,6 @@
 2214¦ボス・君主・エリートへのダメージ増加¦Mehr Schaden an Bossen, Fürsten und Elite¦Plus de dégâts aux boss, seigneurs et élites¦Más daño a jefes, señores y élites¦Mais dano a chefes, senhores e elites¦对首领、君主和精英的伤害增加¦보스 · 군주 · 엘리트에게 주는 피해 증가
 2215¦受けるダメージが減る¦Weniger Schaden durch jeden Treffer¦Subissez moins de dégâts¦Recibes menos daño¦Receba menos dano¦受到的每次伤害减少¦맞을 때마다 받는 피해가 줄어요
 2216¦敵を倒すたびに最大HPの%を回復¦Heile % deiner max. LP pro besiegtem Gegner¦Récupérez un % de vos PV max à chaque ennemi vaincu¦Recupera un % de PV máx. al derrotar enemigos¦Recupere % do PV máx. a cada inimigo derrotado¦每击败一个敌人回复最大生命的百分比¦적을 쓰러뜨릴 때마다 최대 체력의 %만큼 회복
+2217¦狙うセット(ガチャ限定)¦Ziel-Set (nur Gacha)¦Set visé (gacha uniquement)¦Set objetivo (solo gacha)¦Set alvo (só no gacha)¦目标套装（扭蛋限定）¦노릴 세트 (뽑기 전용)
+2218¦狙うセットを選ぼう¦Wähle ein Ziel-Set¦Choisissez un set à viser¦Elige un set objetivo¦Escolha um set alvo¦选择目标套装¦노릴 세트를 골라 보세요
+2219¦セットなし¦Kein Set¦Aucun set¦Sin set¦Sem set¦无套装¦세트 없음

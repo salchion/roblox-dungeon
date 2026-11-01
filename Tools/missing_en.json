@@ -2215,5 +2215,8 @@
 "Fire more shots per second",
 "More damage to bosses, lords and elites",
 "Take less damage from every hit",
-"Recover a % of max HP each time you defeat an enemy"
+"Recover a % of max HP each time you defeat an enemy",
+"Target set (gacha only)",
+"Pick a set to target",
+"No set"
 ]

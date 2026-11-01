@@ -597,6 +597,9 @@ return {
 		["More damage to bosses, lords and elites"] = "ボス・君主・エリートへのダメージ増加",
 		["Take less damage from every hit"] = "受けるダメージが減る",
 		["Recover a % of max HP each time you defeat an enemy"] = "敵を倒すたびに最大HPの%を回復",
+		["Target set (gacha only)"] = "狙うセット(ガチャ限定)",
+		["Pick a set to target"] = "狙うセットを選ぼう",
+		["No set"] = "セットなし",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -923,7 +926,5 @@ return {
 		{ "Uses all Tickets (max {number1})", "すべてのチケットを使用（最大{number1}枚）" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 フィールド・ベストゾーン {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "ゾーン {number1}  · 砂漠 ☠☠☠☠" },
-		{ "🎒 Bag {number1} / {number2}    ✨ Essence {number3}", "🎒 バッグ {number1} / {number2} ✨ エッセンス {number3}" },
-		{ "Returning to lobby in {number1}s", "{number1}秒後にロビーに戻ります" },
 	},
 }

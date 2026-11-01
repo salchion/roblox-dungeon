@@ -10,7 +10,7 @@ function M.Init(deps)
 	local Config, Remotes, TweenService, RunService = deps.Config, deps.Remotes, deps.TweenService, deps.RunService
 	local create, makeLabel, makeButton, makePanel, rounded = deps.create, deps.makeLabel, deps.makeButton, deps.makePanel, deps.rounded
 	local player, gui = deps.player, deps.gui
-	local W, H = 720, 560
+	local W, H = 720, 610
 	local PURPLE = Color3.fromRGB(165, 70, 245)
 
 	local panel = makePanel({
@@ -115,36 +115,59 @@ function M.Init(deps)
 
 	------------------------------------------------------------
 	-- 세트 고르기 (뽑기만의 장점): 고른 구역 세트 조각으로 나온다. 도달한 구역까지만
+	-- 큼직한 카드 9장 (세트 없음 + 8개 구역): 아이콘 / 구역 번호 / 세트 이름. 고른 카드는 크고 환하게 빛난다
 	------------------------------------------------------------
-	local setTitle = makeLabel({ Size = UDim2.new(0, 360, 0, 16), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, CX, 0, CY + 142), Text = "", RichText = true, TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(230, 210, 255), ZIndex = 4 }, panel)
-	local setRow = create("Frame", { Size = UDim2.new(0, 10 * 36, 0, 32), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, CX, 0, CY + 160), BackgroundTransparency = 1, ZIndex = 4 }, panel)
+	local setHead = makeLabel({ Size = UDim2.new(0, 400, 0, 14), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, CX, 0, CY + 142), Text = "Target set (gacha only)", TextSize = 10, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(180, 170, 210), ZIndex = 4 }, panel)
+	local setTitle = makeLabel({ Size = UDim2.new(0, 560, 0, 20), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, CX, 0, CY + 156), Text = "", TextSize = 15, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(230, 210, 255), ZIndex = 4 }, panel)
+	local CARD_W, CARD_H, CARD_GAP = 70, 72, 6
+	local count = Config.Field.ZoneCount + 1
+	local rowW = count * CARD_W + (count - 1) * CARD_GAP
+	local setRow = create("Frame", { Size = UDim2.new(0, rowW, 0, CARD_H + 8), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, CX, 0, CY + 180), BackgroundTransparency = 1, ZIndex = 4 }, panel)
 	local setButtons = {}
 	for zone = 0, Config.Field.ZoneCount do
 		local def = zone > 0 and Config.Sets[Config.Sets.ZoneKeys[zone]]
-		local b = makeButton({
-			Size = UDim2.new(0, 32, 0, 32), Position = UDim2.new(0, zone * 36, 0, 0), Text = def and (def.Icon or "✦") or "✖", TextSize = 15,
-			BackgroundColor3 = def and def.Color:Lerp(Color3.fromRGB(26, 22, 40), 0.55) or Color3.fromRGB(50, 46, 70), ZIndex = 5,
+		local card = makeButton({
+			Size = UDim2.new(0, CARD_W, 0, CARD_H), Position = UDim2.new(0, zone * (CARD_W + CARD_GAP), 0, 4), Text = "", ZIndex = 5,
+			BackgroundColor3 = def and def.Color:Lerp(Color3.fromRGB(24, 20, 38), 0.7) or Color3.fromRGB(44, 40, 62), AutoButtonColor = false,
 		}, setRow, function()
 			Remotes.Gear:FireServer("GachaSet", zone)
 		end)
-		rounded(b, 16)
-		setButtons[zone] = { Button = b, Stroke = create("UIStroke", { Color = def and def.Color or Color3.fromRGB(150, 150, 180), Thickness = 1.5 }, b), Def = def }
+		rounded(card, 12)
+		local stroke = create("UIStroke", { Color = def and def.Color or Color3.fromRGB(150, 150, 180), Thickness = 1.5 }, card)
+		local scale = create("UIScale", { Scale = 1 }, card)
+		local icon = makeLabel({ Size = UDim2.new(1, 0, 0, 32), Position = UDim2.new(0, 0, 0, 4), Text = def and (def.Icon or "✦") or "✖", TextSize = 24, ZIndex = 6 }, card)
+		local zoneTag = makeLabel({ Size = UDim2.new(1, 0, 0, 12), Position = UDim2.new(0, 0, 0, 36), Text = zone > 0 and ("Z" .. zone) or "", TextSize = 10, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 226, 140), ZIndex = 6 }, card)
+		local nameText = makeLabel({ Size = UDim2.new(1, -4, 0, 22), Position = UDim2.new(0, 2, 0, 48), Text = def and def.Name or "No set", TextSize = 8, Font = Enum.Font.GothamBold, TextWrapped = true, TextColor3 = Color3.fromRGB(215, 210, 235), ZIndex = 6 }, card)
+		local check = makeLabel({ Size = UDim2.new(0, 18, 0, 18), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -2, 0, 2), Text = "✔", TextSize = 12, Font = Enum.Font.GothamBlack, BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(60, 190, 110), ZIndex = 8, Visible = false }, card)
+		rounded(check, 9)
+		setButtons[zone] = { Card = card, Stroke = stroke, Scale = scale, Icon = icon, Tag = zoneTag, Name = nameText, Check = check, Def = def }
 	end
 	local function paintSets()
 		local chosen = player:GetAttribute("GachaSet") or 0
 		local reached = player:GetAttribute("MaxZone") or 1
 		for zone, entry in pairs(setButtons) do
 			local open = zone <= reached
-			entry.Button.Text = open and (entry.Def and (entry.Def.Icon or "✦") or "✖") or "🔒"
-			entry.Button.AutoButtonColor = open
-			entry.Button.Active = open
-			entry.Button.BackgroundTransparency = open and 0 or 0.6
-			entry.Stroke.Thickness = zone == chosen and 3.5 or 1.2
-			entry.Stroke.Color = zone == chosen and Color3.new(1, 1, 1) or (entry.Def and entry.Def.Color or Color3.fromRGB(150, 150, 180))
+			local picked = zone == chosen
+			entry.Card.Active = open
+			entry.Icon.Text = open and (entry.Def and (entry.Def.Icon or "✦") or "✖") or "🔒"
+			entry.Icon.TextTransparency = open and 0 or 0.35
+			entry.Name.TextTransparency = open and 0 or 0.5
+			entry.Tag.TextTransparency = open and 0 or 0.4
+			entry.Check.Visible = picked
+			entry.Stroke.Thickness = picked and 3.5 or 1.2
+			entry.Stroke.Color = picked and Color3.new(1, 1, 1) or (entry.Def and entry.Def.Color or Color3.fromRGB(150, 150, 180))
+			local base = entry.Def and entry.Def.Color or Color3.fromRGB(150, 150, 180)
+			entry.Card.BackgroundColor3 = picked and base:Lerp(Color3.fromRGB(24, 20, 38), 0.2) or (open and base:Lerp(Color3.fromRGB(24, 20, 38), 0.72) or Color3.fromRGB(30, 28, 42))
+			TweenService:Create(entry.Scale, TweenInfo.new(0.18, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = picked and 1.08 or 1 }):Play()
 		end
 		local def = chosen > 0 and Config.Sets[Config.Sets.ZoneKeys[chosen]]
-		setTitle.Text = def and string.format("🧩 Target set: <font color='#%s'><b>%s</b></font>  <font color='#c8bde0'>(every pull is a piece of it)</font>", def.Color:ToHex(), def.Name)
-			or "🧩 Pick a set to target <font color='#c8bde0'>(gacha only · every pull becomes that set's piece)</font>"
+		if def then
+			setTitle.Text = (def.Icon or "✦") .. " " .. def.Name
+			setTitle.TextColor3 = def.Color:Lerp(Color3.new(1, 1, 1), 0.35)
+		else
+			setTitle.Text = "Pick a set to target"
+			setTitle.TextColor3 = Color3.fromRGB(230, 210, 255)
+		end
 	end
 	player:GetAttributeChangedSignal("GachaSet"):Connect(paintSets)
 	player:GetAttributeChangedSignal("MaxZone"):Connect(paintSets)

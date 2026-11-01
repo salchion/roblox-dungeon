@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Party ({number1}/{number2})", "Grupo ({number1}/{number2})" },
+		{ "Attack +{number1}%", "Ataque +{number1}%" },
 		{ "🔑 {number1} Key(s)", "🔑 {number1} llave(s)" },
 		{ "Survive {number1}s", "Sobrevive {number1} s" },
 		{ "🎰 Roll x{number1}!", "🎰 ¡Tirar x{number1}!" },
