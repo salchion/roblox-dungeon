@@ -2329,5 +2329,8 @@
 "⚡ Sweep (locked)",
 "⚡ Sweep Complete!",
 "Clear a dungeon depth first to unlock Sweep.",
-"🔒 You can't sweep yet. Complete the tutorial missions first!"
+"🔒 You can't sweep yet. Complete the tutorial missions first!",
+"Clear depth {number1} once more to record its Sweep reward.",
+"Sweep needs {number1} key(s). Defeat a field zone lord to get keys",
+"Depth {number1} sweep: gold, tickets and boss chest received"
 ]

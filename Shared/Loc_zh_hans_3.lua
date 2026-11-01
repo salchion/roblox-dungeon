@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1}: vs bosses {number2}% · vs monsters {number3}%", "{text1}:对首领 {number2}% · 对怪物 {number3}%" },
+		{ "📅 {number1}-day login streak! Reward: {text2}", "📅 连续登录 {number1} 天!奖励:{text2}" },
+		{ "✅ Mission complete! Reward: {text1}", "✅ 任务完成!奖励:{text1}" },
+		{ "{text1}  ·  keys 1-5 switch weapons", "{text1}  ·  1-5键切换武器" },
+		{ "♻ {text1} (auto-salvage +{number2} Essence)", "♻ {text1}(自动分解 精华 +{number2})" },
 		{ "✨ {number1}-piece set complete! {text2} Lv.{number3}", "✨ {number1} 件套装集齐!{text2} Lv.{number3}" },
 		{ "📢 {text1} defeated the Final Lord!", "📢 {text1} 击败了最终领主!" },
 		{ "👑 Lord of {text1} (Zone {number2}) · Rec. ⚡{number3}", "👑 {text1}领主(区域{number2})· 推荐 ⚡{number3}" },

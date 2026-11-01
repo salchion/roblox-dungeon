@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Light Orb  Lv.{number1} / {number2}", "Orbe de luz Nivel {number1} / {number2}" },
+		{ "Zone {number1} · Wasteland", "Zona {number1} · Tierra baldía" },
+		{ "Zone {number1} · Snowfield", "Zona {number1} · Campo de nieve" },
+		{ "Field Entrance  {number1}m", "Entrada al campo {number1}m" },
+		{ "Zone {number1} · Execute  ", "Zona {number1} · Ejecutar" },
+		{ "{number1} Meadow · {number2} Forest", "{number1} Pradera · {number2} Bosque" },
 		{ "🚪 Open Zone {number1} Gate", "🚪 Abrir la puerta de la zona {number1}" },
 		{ "max · +{number1}% crit dmg", "máx. · daño crítico +{number1}%" },
 		{ "🔊 Music Volume: {number1}%", "🔊 Volumen de la música: {number1}%" },

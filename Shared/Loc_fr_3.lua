@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Luck Booster ({number1} hour)", "Booster de chance ({number1} heures)" },
+		{ "Idle Booster ({number1} hour)", "Booster d'inactivité ({number1} heures)" },
+		{ "Hit the dummy {number1} times", "Frappez le mannequin {number1} fois" },
+		{ "{number3} Wasteland · {number4} Desert", "{number3} Terres désolées · {number4} Désert" },
+		{ "Double Shot chance {number1}%", "Chance de tir double {number1} %" },
+		{ "Roll for gear {number1} times", "Tirez {number1} fois de l'équipement" },
 		{ "Gear drop rarity +{number1}%", "Rareté des objets de équipement +{number1}%" },
 		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 Combo x{number1}\nDégâts +{number2}%" },
 		{ "{number7} Darklands · {number8} Abyss", "{number7} Terres sombres · {number8} Abysse" },

@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "▲ +{number1}% vs current", "▲ +{number1}% ggü. aktuell" },
+		{ "Switch path: {number1} G", "Pfad wechseln: {number1} G" },
+		{ "Damage taken -{number1}%", "Erlittener Schaden -{number1} %" },
+		{ "Zone {number1} · Forest", "Zone {number1} · Wald" },
+		{ "{number1} more upgrades", "{number1} weitere Verbesserungen" },
+		{ "Zone {number1} · Desert", "Zone {number1} · Wüste" },
+		{ "👹 Monsters {number1} / {number2}", "👹 Monster {number1} / {number2}" },
 		{ "⏱ Skip gauge {number1}s", "⏱ Zeitanzeige überspringen {number1}s" },
 		{ "DAMAGE · {number1}s · {number2}K", "Schaden · {number1}s · {number2}K" },
 		{ "🥇 {player1}  ⚡{number1}", "🥇 {player1} ⚡{number1}" },

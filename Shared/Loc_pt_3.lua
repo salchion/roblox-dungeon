@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Range +{number1}%  (max {number2})", "Alcance +{number1}% (máximo {number2})" },
+		{ "Defeat {number1} monsters", "Derrote {number1} monstros" },
+		{ "⭐ Next level Lv.{number1}", "⭐ Próximo nível Nv.{number1}" },
+		{ "vs. equipped ▲ +{number1}", "vs equipado ▲ +{number1}" },
+		{ "Online: {number1} players", "Online: {number1} jogadores" },
+		{ "🏆 Hall of Fame #{number1}", "🏆 Hall da Fama #{number1}" },
 		{ "◆ Crit Chance +{number1}%", "◆ Chance de crítico +{number1}%" },
 		{ "◆ Crit Damage +{number1}%", "◆ Dano crítico +{number1}%" },
 		{ "◆ Boss Damage +{number1}%", "◆ Dano a chefes +{number1}%" },

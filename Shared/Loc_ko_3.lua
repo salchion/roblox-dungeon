@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Survive {number1} seconds in the Boss Rush", "보스 러쉬에서 {number1}초 동안 생존하세요" },
+		{ "👑 Lord of Meadow (Zone {number1}) · Rec. ⚡{number2}", "👑 초원의 군주 (구역 {number1}) · 레코 ⚡{number2}" },
+		{ "Railgun  ·  keys {number1}-{number2} switch weapons", "레일건 · 키 {number1}-{number2}로 무기 전환" },
+		{ "📋 Daily Quests {number1}/{number2}  ✅ tap to claim!", "📋 일일 퀘스트 {number1}/{number2} ✅ 탭하여 획득하세요!" },
 		{ "Weapon range +{number1}% per point  (max {number2})", "무기 범위 +{number1}% (최대 {number2})" },
 		{ "👑 Lord of Forest (Zone {number1}) · Rec. ⚡{number2}", "👑 숲의 군주 (구역 {number1}) · 레코 ⚡{number2}" },
 		{ "📍 Field Entrance  Right ahead!  {number1}m", "📍 들판 입구는 바로 앞입니다! {number1}m" },

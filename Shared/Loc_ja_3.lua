@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 {number1} G Slot Upgrade ({number2}% success)", "💰 {number1} G スロット強化(成功率 {number2}%)" },
+		{ "Reach level {number1} to break through", "レベル{number1}に到達すると突破できます" },
+		{ "{number1}% → up to {number2}% (deeper = higher)", "{number1}% → 最大{number2}% (深いほど高い)" },
+		{ "◆ Skill Cooldown Reduction +{number1}%", "◆ スキルCT短縮 +{number1}%" },
+		{ "{number1}  <font color='#{number2}c{number3}b{number4}'>{number5}%</font>", "{number1} <font color='#{number2}c{number3}b{number4}'>{number5}%</font>" },
 		{ "⚔ Sniper Rifle · Rusty Era +{number10}", "⚔ スナイパーライフル · 錆びた時代 +{number10}" },
 		{ "Not enough gold. ({number1} G needed)", "ゴールドが不足しています。（{number1}Gが必要です）" },
 		{ "e.g. Maintenance in {number1} minutes", "例：{number1}分後のメンテナンス" },
