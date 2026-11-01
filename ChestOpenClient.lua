@@ -19,7 +19,7 @@ local player = Players.LocalPlayer
 
 local gui = create("ScreenGui", { Name = "ChestGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 20, Enabled = false }, player:WaitForChild("PlayerGui"))
 local dim = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.4, Text = "", AutoButtonColor = false, ZIndex = 30 }, gui)
-local stage = create("Frame", { Size = UDim2.new(0, 560, 0, 300), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 31 }, gui)
+local stage = create("Frame", { Size = UDim2.new(0, 560, 0, 320), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 31 }, gui)
 local scale = create("UIScale", {}, stage)
 local hint = makeLabel({ Size = UDim2.new(1, 0, 0, 20), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, 0), Text = "Tap to skip", TextSize = 12, TextColor3 = Color3.fromRGB(190, 195, 220), ZIndex = 32 }, stage)
 
@@ -99,23 +99,66 @@ local function play(loot)
 	task.wait(0.35)
 	chest:Destroy()
 
-	-- 2) 장비가 한 장씩 펼쳐진다 (높은 등급일수록 크고 오래 머문다)
+	-- 2) 장비가 한 장씩 펼쳐진다: 부위 그림 + 이름 + 상태 배지가 있는 카드 (높은 등급일수록 크고 오래 머문다)
+	local ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Helmet = "⛑", Ring = "💍", Necklace = "📿", Weapon = "🔫" }
 	local count = math.max(1, #loot)
-	local cardWidth = math.clamp(math.floor(520 / count) - 12, 110, 170)
+	local cardWidth = math.clamp(math.floor(520 / count) - 12, 120, 170)
+	local cardHeight = 210
 	for index, entry in ipairs(loot) do
 		if not alive() then return end
 		local rarity = entry.Rarity or 1
 		local color = Config.Gear.RarityColors[rarity] or Color3.new(1, 1, 1)
 		local x = (index - (count + 1) / 2) * (cardWidth + 12)
+		local slotDef = entry.Slot and Config.GetGearSlot(entry.Slot)
 		local card = create("Frame", {
 			Size = UDim2.new(0, cardWidth, 0, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, x, 0.5, -10),
-			BackgroundColor3 = Color3.fromRGB(26, 28, 44), BorderSizePixel = 0, ZIndex = 33, ClipsDescendants = true,
+			BackgroundColor3 = Color3.fromRGB(22, 22, 36), BorderSizePixel = 0, ZIndex = 33, ClipsDescendants = true,
 		}, stage)
-		rounded(card, 10)
-		create("UIStroke", { Color = color, Thickness = rarity >= 4 and 4 or 2, Transparency = 0 }, card)
-		makeLabel({ Size = UDim2.new(1, -10, 0, 22), Position = UDim2.new(0, 5, 0, 12), Text = Config.Gear.RarityNames[rarity] or "", Font = Enum.Font.GothamBlack, TextSize = rarity >= 4 and 18 or 15, TextColor3 = color, ZIndex = 34 }, card)
-		makeLabel({ Size = UDim2.new(1, -12, 1, -48), Position = UDim2.new(0, 6, 0, 42), Text = entry.Text or "", TextSize = 12, TextWrapped = true, TextColor3 = Color3.fromRGB(235, 238, 250), TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 34 }, card)
-		tween(card, 0.3, { Size = UDim2.new(0, cardWidth, 0, 150) }, Enum.EasingStyle.Back)
+		rounded(card, 14)
+		create("UIGradient", { Rotation = 90, Color = ColorSequence.new(color:Lerp(Color3.fromRGB(22, 22, 36), 0.45), Color3.fromRGB(22, 22, 36)) }, card)
+		local stroke = create("UIStroke", { Color = color, Thickness = rarity >= 4 and 4 or 2.5, Transparency = 0 }, card)
+		if rarity >= 5 then -- 신화: 테두리 무지개
+			local rainbow = create("UIGradient", { Color = ColorSequence.new({
+				ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 80, 80)), ColorSequenceKeypoint.new(0.25, Color3.fromRGB(255, 220, 80)),
+				ColorSequenceKeypoint.new(0.5, Color3.fromRGB(90, 255, 120)), ColorSequenceKeypoint.new(0.75, Color3.fromRGB(80, 200, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 80)),
+			}) }, stroke)
+			TweenService:Create(rainbow, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1), { Rotation = 360 }):Play()
+		end
+		-- 등급 띠
+		local pill = makeLabel({ Size = UDim2.new(0, 84, 0, 20), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 10), Text = Config.Gear.RarityNames[rarity] or "", Font = Enum.Font.GothamBlack, TextSize = 12,
+			TextColor3 = Color3.fromRGB(20, 20, 30), BackgroundTransparency = 0, BackgroundColor3 = color, ZIndex = 35 }, card)
+		rounded(pill, 10)
+		-- 부위 그림 (등급 색 원 안)
+		local disc = create("Frame", { Size = UDim2.new(0, 70, 0, 70), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 38), BackgroundColor3 = color:Lerp(Color3.fromRGB(18, 18, 30), 0.65), BorderSizePixel = 0, ZIndex = 34 }, card)
+		rounded(disc, 35)
+		create("UIStroke", { Color = color, Thickness = 2, Transparency = 0.2 }, disc)
+		local iconLabel = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = ICONS[entry.Slot] or "🎁", TextSize = 38, ZIndex = 35 }, disc)
+		-- 이름 (등급 이름과 아이템 이름을 따로 두어 번역이 각각 된다)
+		local setDef = entry.Set and Config.Sets[entry.Set]
+		local itemName = slotDef and slotDef.Names[rarity] or ""
+		makeLabel({ Size = UDim2.new(1, -12, 0, 34), Position = UDim2.new(0, 6, 0, 114), Text = itemName, TextSize = 13, Font = Enum.Font.GothamBold, TextWrapped = true, TextColor3 = Color3.fromRGB(240, 242, 252), ZIndex = 35 }, card)
+		local tag = ""
+		local tagColor = Color3.fromRGB(190, 195, 220)
+		if entry.Unique and Config.Uniques[entry.Unique] then
+			tag, tagColor = "✦ " .. Config.Uniques[entry.Unique].Name, Color3.fromRGB(255, 190, 90)
+		elseif setDef then
+			tag, tagColor = (setDef.Icon or "✦") .. " " .. setDef.Name, setDef.Color
+		end
+		makeLabel({ Size = UDim2.new(1, -8, 0, 16), Position = UDim2.new(0, 4, 0, 150), Text = tag, TextSize = 10, Font = Enum.Font.GothamBold, TextColor3 = tagColor, ZIndex = 35 }, card)
+		-- 상태 배지: 장착 / 가방 / 분해
+		local badgeText, badgeColor
+		if entry.Status == "Equipped" then
+			badgeText, badgeColor = "⚔ Equipped", Color3.fromRGB(46, 150, 96)
+		elseif entry.Status == "Bag" then
+			badgeText, badgeColor = "🎒 In bag", Color3.fromRGB(60, 110, 200)
+		else
+			badgeText, badgeColor = string.format("♻ Essence +%d", entry.Essence or 0), Color3.fromRGB(88, 90, 112)
+		end
+		local badge = makeLabel({ Size = UDim2.new(1, -20, 0, 24), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -10), Text = badgeText, TextSize = 12, Font = Enum.Font.GothamBold,
+			TextColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0, BackgroundColor3 = badgeColor, ZIndex = 35 }, card)
+		rounded(badge, 12)
+		tween(card, 0.3, { Size = UDim2.new(0, cardWidth, 0, cardHeight) }, Enum.EasingStyle.Back)
+		tween(iconLabel, 0.35, { TextSize = 42 }, Enum.EasingStyle.Back)
 		if rarity >= 4 then
 			sparks(color, rarity >= 5 and 22 or 12)
 			pcall(SoundBank.Play, SoundService, "Rare_Drop")

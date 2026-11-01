@@ -195,7 +195,7 @@ function Loot.DungeonChest(player, typeKey, difficultyKey, count)
 		else
 			text = string.format("♻ %s (auto-salvage +%d Essence)", label, essence or 0)
 		end
-		table.insert(lines, { Text = text, Rarity = item.Rarity })
+		table.insert(lines, { Text = text, Rarity = item.Rarity, Slot = item.Slot, Set = item.Set, Unique = item.Unique, Status = status, Essence = essence }) -- (구조화된 값: 결과 카드가 그림 카드로 그린다)
 		if item.Rarity >= 4 and (status == "Equipped" or status == "Bag") then
 			announce(player, item)
 		end

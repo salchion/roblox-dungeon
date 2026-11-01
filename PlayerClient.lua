@@ -1363,8 +1363,20 @@ local resultPanel = makePanel({
 local resultTitle = makeLabel({
 	Size = UDim2.new(1, 0, 0, 56), Position = UDim2.new(0, 0, 0, 12), Font = Enum.Font.GothamBlack, TextSize = 31,
 }, resultPanel)
+-- 결과 칩: 번 골드 / 티켓을 큼직하게 (표처럼 줄글로 나열하지 않는다)
+local function resultChip(xScale, xOffset, color)
+	local chip = makeLabel({
+		Size = UDim2.new(0.5, -22, 0, 46), Position = UDim2.new(xScale, xOffset, 0, 74), RichText = true, TextSize = 21, Font = Enum.Font.GothamBlack,
+		BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(30, 28, 48), TextColor3 = color,
+	}, resultPanel)
+	create("UICorner", { CornerRadius = UDim.new(0, 12) }, chip)
+	create("UIStroke", { Color = color, Thickness = 1.5, Transparency = 0.35 }, chip)
+	return chip
+end
+local resultGold = resultChip(0, 14, Color3.fromRGB(255, 220, 110))
+local resultTickets = resultChip(0.5, 8, Color3.fromRGB(220, 170, 255))
 local resultInfo = makeLabel({
-	Size = UDim2.new(1, -20, 0, 200), Position = UDim2.new(0, 10, 0, 72), TextSize = 14, RichText = true, TextYAlignment = Enum.TextYAlignment.Top,
+	Size = UDim2.new(1, -20, 0, 130), Position = UDim2.new(0, 10, 0, 128), TextSize = 13, RichText = true, TextYAlignment = Enum.TextYAlignment.Top,
 }, resultPanel)
 makeButton({
 	Size = UDim2.new(0, 200, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
@@ -1381,6 +1393,11 @@ local function showResult(result)
 	resultPanel.Visible = true
 	resultTitle.Text = result.Victory and "🏆 Dungeon Cleared!" or "💀 Dungeon Failed"
 	resultTitle.TextColor3 = result.Victory and Color3.fromRGB(255, 220, 90) or Color3.fromRGB(255, 110, 110)
+	do -- 번 골드 / 티켓 칩 (세 자리마다 쉼표)
+		local goldText = tostring(math.floor(result.Gold or 0)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
+		resultGold.Text = "💰 +" .. goldText .. " G"
+		resultTickets.Text = "🎫 +" .. tostring(result.Tickets or 0)
+	end
 
 	task.spawn(function()
 		for remaining = result.ReturnDelay, 1, -1 do
@@ -1394,8 +1411,8 @@ local function showResult(result)
 				end
 			end
 			resultInfo.Text = string.format(
-				"%s\nGold earned  +%d G   🎫 Tickets +%d\n%s\nReturning to lobby in %ds",
-				(result.Victory and "Survived and defeated the boss!" or "You couldn't hold out"), result.Gold, result.Tickets or 0,
+				"%s\n%s\n<font size='11' color='#9a9ab8'>Returning to lobby in %ds</font>",
+				(result.Victory and "Survived and defeated the boss!" or "You couldn't hold out"),
 				#lootLines > 0 and ("<b>📦 Boss Chest</b>\n" .. table.concat(lootLines, "\n")) or "", remaining
 			)
 			task.wait(1)
