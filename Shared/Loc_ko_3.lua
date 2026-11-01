@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Crit damage +{number1}%p per point  (max {number2})", "치명타 피해 +{number1}%p / 포인트당  (최대 {number2})" },
 		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 보상 {number1}개를 받았어요! (새 칭호 {number2}개)" },
 		{ "Keeps {number1} more stacks even if broken", "끊겨도 스택이 {number1}개 더 남아요" },
 		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 심연의 군주 (구역 {number1}) · 레코드 ⚡{number2}" },

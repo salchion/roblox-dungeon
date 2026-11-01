@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Active {number1} / {number2} slots   (💰 {text3} G)", "已启用 {number1} / {number2} 栏位   (💰 {text3} G)" },
+		{ "You are already holding {text1}.", "你已经持有 {text1}。" },
 		{ "⛺ Moved to Zone {number1} · {text2} Camp!", "⛺ 已移动到区域{number1} · {text2}的营地!" },
 		{ "Loading the world...  ·  {text1}", "正在加载世界...  ·  {text1}" },
 		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 新武器:{text1} - 按 {number2} 键!" },

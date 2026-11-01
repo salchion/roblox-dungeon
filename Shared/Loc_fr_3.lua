@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎁 Claimed {number1} rewards!", "🎁 {number1} récompenses récupérées !" },
+		{ "⚠ Zone {number1} · Forest ⚠", "⚠ Zone {number1} · Forêt ⚠" },
 		{ "{number1} Gear Roll Tickets", "{number1} tickets de roulement d'équipement" },
 		{ "👑 {number1} Kill Streak!!!!", "👑 Série de {number1} éliminations !!!!" },
 		{ "XP Booster ({number1} hour)", "Booster d'EXP ({number1} heure)" },

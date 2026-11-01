@@ -653,6 +653,8 @@ return {
 		["⚡ Best gear"] = "⚡ 最強装備",
 		["Welcome, Hunter!"] = "ようこそ、ハンター！",
 		["Your gear rush starts now"] = "ギアラッシュの始まりです",
+		["🛡 Set gear"] = "🛡 セット装備",
+		["🛡 Set gear <font size='10'>(no set yet)</font>"] = "🛡 セット装備 <font size='10'>(セットなし)</font>",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -938,6 +940,5 @@ return {
 		{ "🌀 Gate of the Abyss · Rec. ⚡{number2}", "🌀 深淵の門 · レコード ⚡{number2}" },
 		{ "🧹 Cleaned up {number1}! Essence +{number2}, {number3} G", "🧹 {number1}個を整理しました！エッセンス+{number2}、{number3} G" },
 		{ "Damage x{number1} · {number2} targets (gauge {number3})", "ダメージ x{number1} · {number2}体 (ゲージ {number3})" },
-		{ "🔒 Paragon unlocks at level {number1}.", "🔒 パラゴンはレベル{number1}で解放されます。" },
 	},
 }

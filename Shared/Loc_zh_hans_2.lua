@@ -406,6 +406,8 @@ return {
 		["⚡ Best gear"] = "⚡ 最强装备",
 		["Welcome, Hunter!"] = "欢迎，猎人！",
 		["Your gear rush starts now"] = "你的装备狂潮现在开始",
+		["🛡 Set gear"] = "🛡 套装装备",
+		["🛡 Set gear <font size='10'>(no set yet)</font>"] = "🛡 套装装备 <font size='10'>(暂无套装)</font>",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1053,7 +1055,5 @@ return {
 		{ "🔀 Choose a path for <b>{text1}</b>", "🔀 为<b>{text1}</b>选择路线" },
 		{ "{number1} pulls done! Best rarity: {text2}", "已抽取 {number1} 次!最高稀有度:{text2}" },
 		{ "🛡 Empty gear slot: <b>{text1}</b>", "🛡 空装备栏：<b>{text1}</b>" },
-		{ "Active {number1} / {number2} slots   (💰 {text3} G)", "已启用 {number1} / {number2} 栏位   (💰 {text3} G)" },
-		{ "You are already holding {text1}.", "你已经持有 {text1}。" },
 	},
 }

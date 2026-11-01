@@ -165,26 +165,36 @@ local function buildInventoryTab(state)
 			ScrollBarThickness = 3, ScrollingDirection = Enum.ScrollingDirection.X, CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.X,
 		}, setRow)
 		create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Center }, strip)
-		local function modeChip(order, key, text, color)
-			local active = mode == key
+		local function modeChip(order, key, text, color, active, disabled)
 			local chip = makeButton({
 				Size = UDim2.new(0, 0, 0, 32), AutomaticSize = Enum.AutomaticSize.X, LayoutOrder = order, RichText = true, TextSize = 12,
 				Text = (active and "<font color='#78ff8c'>✔</font> " or "") .. text,
 				BackgroundColor3 = active and color:Lerp(Color3.fromRGB(26, 28, 42), 0.45) or Color3.fromRGB(34, 37, 54),
 			}, strip, function()
+				if disabled then return end
 				Remotes.Inventory:FireServer(key == "Best" and "AutoEquip" or "EquipSet", key)
 			end)
 			rounded(chip, 16)
 			create("UIPadding", { PaddingLeft = UDim.new(0, 14), PaddingRight = UDim.new(0, 14) }, chip)
 			create("UIStroke", { Color = active and Color3.fromRGB(255, 255, 255) or color, Thickness = active and 2 or 1, Transparency = active and 0.1 or 0.55, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, chip)
 		end
-		modeChip(0, "Best", "⚡ Best gear", Color3.fromRGB(80, 200, 130))
+		-- 두 갈래로 나눈다: [⚡ 최강 장비] [🛡 세트 장비]. 세트 장비를 고른 때만 오른쪽에 가진 세트 칩이 나타난다 (세트 효과가 최강 장비 옆에 섞여 보이지 않게)
+		local inSetMode = mode ~= "Best" and Config.Sets[mode] ~= nil
+		local bestSet, bestScore = nil, -1
 		for i, key in ipairs(Config.Sets.ZoneKeys) do
-			if owned[key] then
-				local def = Config.Sets[key]
-				local worn = setCounts[key] or 0
-				local effectOn = def.Zone and player:GetAttribute("AugOnZ_" .. def.Zone) == true
-				modeChip(i, key, string.format("%s %s  <font color='#ffe9a0'>%s</font>%s", def.Icon or "✦", def.Name, setPips(math.min(worn, 3)), effectOn and "  <font color='#78ff8c'>● ON</font>" or ""), def.Color)
+			if owned[key] and (owned[key] * 100 + i) > bestScore then bestSet, bestScore = key, owned[key] * 100 + i end
+		end
+		modeChip(0, "Best", "⚡ Best gear", Color3.fromRGB(80, 200, 130), not inSetMode)
+		modeChip(1, bestSet or "Best", bestSet and "🛡 Set gear" or "🛡 Set gear <font size='10'>(no set yet)</font>", Color3.fromRGB(120, 150, 255), inSetMode, not bestSet)
+		if inSetMode then
+			makeLabel({ Size = UDim2.new(0, 14, 0, 32), LayoutOrder = 2, Text = "›", TextSize = 20, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(150, 156, 190) }, strip)
+			for i, key in ipairs(Config.Sets.ZoneKeys) do
+				if owned[key] then
+					local def = Config.Sets[key]
+					local worn = setCounts[key] or 0
+					local effectOn = def.Zone and player:GetAttribute("AugOnZ_" .. def.Zone) == true
+					modeChip(2 + i, key, string.format("%s %s  <font color='#ffe9a0'>%s</font>%s", def.Icon or "✦", def.Name, setPips(math.min(worn, 3)), effectOn and "  <font color='#78ff8c'>● ON</font>" or ""), def.Color, mode == key)
+				end
 			end
 		end
 	end

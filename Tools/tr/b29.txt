@@ -278,3 +278,5 @@
 2319¦⚡ 最強装備¦⚡ Beste Ausrüstung¦⚡ Meilleur équipement¦⚡ Mejor equipo¦⚡ Melhor equipamento¦⚡ 最强装备¦⚡ 최강 장비
 2320¦ようこそ、ハンター！¦Willkommen, Jäger!¦Bienvenue, chasseur !¦¡Bienvenido, cazador!¦Bem-vindo, caçador!¦欢迎，猎人！¦환영합니다, 사냥꾼!
 2321¦ギアラッシュの始まりです¦Dein Gear Rush beginnt jetzt¦Votre Gear Rush commence maintenant¦Tu Gear Rush empieza ahora¦Seu Gear Rush começa agora¦你的装备狂潮现在开始¦지금부터 기어 러시가 시작돼요
+2322¦🛡 セット装備¦🛡 Set-Ausrüstung¦🛡 Équipement de set¦🛡 Equipo de set¦🛡 Equipamento de set¦🛡 套装装备¦🛡 세트 장비
+2323¦🛡 セット装備 <font size='10'>(セットなし)</font>¦🛡 Set-Ausrüstung <font size='10'>(noch kein Set)</font>¦🛡 Équipement de set <font size='10'>(aucun set)</font>¦🛡 Equipo de set <font size='10'>(sin set)</font>¦🛡 Equipamento de set <font size='10'>(sem set)</font>¦🛡 套装装备 <font size='10'>(暂无套装)</font>¦🛡 세트 장비 <font size='10'>(아직 세트 없음)</font>

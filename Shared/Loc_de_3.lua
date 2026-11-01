@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 {number1} G   Upgrade", "💰 {number1} G   Verbessern" },
+		{ "🎁 Claim All ({number1})", "🎁 Alle abholen ({number1})" },
 		{ "Crit damage +{number1}%", "Kritischer Schaden +{number1}%" },
 		{ "◆ Move Speed +{number1}", "◆ Laufgeschw. +{number1}" },
 		{ "💰 Warp fee -{number1} G", "💰 Warp-Gebühr -{number1} G" },

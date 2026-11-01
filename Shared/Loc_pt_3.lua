@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔥 {number1} Kill Streak!", "🔥 {number1} Sequência de Eliminações!" },
+		{ "Gold +{number1}% instead", "Ouro +{number1}% em vez disso" },
+		{ "Time Skip {number1} hour", "Pular Tempo {number1} horas" },
 		{ "(gold {number1} + gear {number2})", "(ouro {number1} + equipamento {number2})" },
 		{ "Crit damage +{number1}%p", "Dano crítico +{number1}%p" },
 		{ "vs. equipped ▼ {number1}", "vs equipado ▼ {number1}" },

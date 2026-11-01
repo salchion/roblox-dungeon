@@ -497,6 +497,8 @@ return {
 		["⚡ Best gear"] = "⚡ Melhor equipamento",
 		["Welcome, Hunter!"] = "Bem-vindo, caçador!",
 		["Your gear rush starts now"] = "Seu Gear Rush começa agora",
+		["🛡 Set gear"] = "🛡 Equipamento de set",
+		["🛡 Set gear <font size='10'>(no set yet)</font>"] = "🛡 Equipamento de set <font size='10'>(sem set)</font>",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -957,8 +959,5 @@ return {
 		{ "Enemy attack +{number1}%", "Ataque inimigo +{number1}%" },
 		{ "Zone {number1} · Volcano", "Zona {number1} · Vulcão" },
 		{ "NEXT UNLOCK · +{number1}", "Próximo Desbloqueio · +{number1}" },
-		{ "🔥 {number1} Kill Streak!", "🔥 {number1} Sequência de Eliminações!" },
-		{ "Gold +{number1}% instead", "Ouro +{number1}% em vez disso" },
-		{ "Time Skip {number1} hour", "Pular Tempo {number1} horas" },
 	},
 }

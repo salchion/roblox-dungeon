@@ -526,6 +526,8 @@ return {
 		["⚡ Best gear"] = "⚡ Mejor equipo",
 		["Welcome, Hunter!"] = "¡Bienvenido, cazador!",
 		["Your gear rush starts now"] = "Tu Gear Rush empieza ahora",
+		["🛡 Set gear"] = "🛡 Equipo de set",
+		["🛡 Set gear <font size='10'>(no set yet)</font>"] = "🛡 Equipo de set <font size='10'>(sin set)</font>",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -959,7 +961,5 @@ return {
 		{ "Training time -{number1}%", "Tiempo de entrenamiento -{number1}%" },
 		{ "🔑{number6} (Free today {number7}/{number8})", "🔑{number6} (Gratis hoy {number7}/{number8})" },
 		{ "{number2} / {number3}   Reward: {number4} G", "{number2} / {number3} Recompensa: {number4} G" },
-		{ "{number2} / {number3}   Reward: 🎫 {number4}", "{number2} / {number3} Recompensa: 🎫 {number4}" },
-		{ "💥Explosive Shot {number1}", "💥Disparo Explosivo {number1}" },
 	},
 }
