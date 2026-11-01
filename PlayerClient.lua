@@ -2591,17 +2591,35 @@ Remotes.Meta.OnClientEvent:Connect(function(action, data)
 	end
 end)
 
+-- 탭 모양: 켜진 탭은 밝고 선명한 파랑 + 윗면 빛 + 흰 테두리, 꺼진 탭은 어둡고 흐리게 (색 차이가 확 나게). 윗면 빛은 UIGradient, 테두리는 UIStroke 하나씩 한 번만 만든다.
+function MENU.StyleTab(button, active, radius)
+	-- (makeButton 이 이미 둥근 모서리 / 윗면 빛(UIGradient) / 먹색 테두리(UIStroke) 를 달아 놓는다: 그것들의 값만 바꾼다)
+	local corner = button:FindFirstChildOfClass("UICorner")
+	if corner then corner.CornerRadius = UDim.new(0, radius or 12) end
+	button.BackgroundColor3 = active and Color3.fromRGB(78, 128, 255) or Color3.fromRGB(18, 21, 36)
+	button.TextColor3 = active and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(122, 128, 156)
+	local shade = button:FindFirstChildOfClass("UIGradient")
+	if shade then
+		shade.Color = active and ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(150, 168, 228)) or ColorSequence.new(Color3.fromRGB(150, 153, 175), Color3.fromRGB(78, 81, 104))
+	end
+	local stroke = button:FindFirstChildOfClass("UIStroke")
+	if stroke then
+		stroke.Color = active and Color3.fromRGB(215, 230, 255) or Color3.fromRGB(46, 52, 80)
+		stroke.Thickness = active and 2 or 1.5
+	end
+	button.TextStrokeColor3 = active and Color3.fromRGB(20, 40, 110) or Color3.fromRGB(8, 10, 20)
+end
+
 function MENU.seg(options, current, onPick)
 	local row = newRow(44, Color3.fromRGB(26, 28, 42))
 	for index, option in ipairs(options) do
 		local active = option[1] == current
 		local button = makeButton({
 			Size = UDim2.new(0, 150, 0, 32), Position = UDim2.new(0, 10 + (index - 1) * 158, 0.5, -16), Text = option[2], TextSize = 13,
-			BackgroundColor3 = active and Color3.fromRGB(70, 104, 206) or Color3.fromRGB(44, 48, 72),
-			TextColor3 = active and Color3.fromRGB(255, 232, 160) or Color3.fromRGB(170, 176, 200),
 		}, row, function()
 			onPick(option[1])
 		end)
+		MENU.StyleTab(button, active, 14)
 		if MENU.HasClaim(option[1]) then -- 받을 보상이 있는 칸: 빨간 점
 			local dot = makeLabel({ Size = UDim2.new(0, 20, 0, 20), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -4, 0, 4), Text = "!", TextSize = 12, Font = Enum.Font.GothamBlack,
 				BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(235, 60, 60), ZIndex = 5 }, button)
@@ -2644,8 +2662,7 @@ function refreshMenu()
 	for _, tab in ipairs(TABS) do
 		local active = tab.Key == currentTab
 		local button = tabButtons[tab.Key]
-		button.BackgroundColor3 = active and Color3.fromRGB(70, 104, 206) or Color3.fromRGB(34, 38, 58)
-		button.TextColor3 = active and Color3.fromRGB(255, 232, 160) or Color3.fromRGB(170, 176, 200)
+		MENU.StyleTab(button, active, 14)
 		button.Font = active and Enum.Font.GothamBlack or Enum.Font.GothamBold
 		if tab.Key == "Growth" then
 			button.Text = (locked and "🔒 " or "") .. tab.Name
