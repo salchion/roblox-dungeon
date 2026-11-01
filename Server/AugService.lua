@@ -130,6 +130,13 @@ function Aug.NoteBoss(player, zone)
 	end
 end
 
+-- 업그레이드(골드를 쓰는 강화)는 모두 마을에서만 된다: 어떤 건 필드에서 되고 어떤 건 안 돼서 헷갈린다는 의견 (튜토리얼 중에는 필드에서도 가능)
+local function townOnly(player)
+	if player:GetAttribute("TutorialActive") == true or player:GetAttribute("Zone") == "Lobby" then return true end
+	notify(player, "🏘 Upgrades can only be done in town")
+	return false
+end
+
 Remotes.Aug.OnServerEvent:Connect(function(player, action, zone)
 	local rift = stateOf(player)
 	if not rift or typeof(zone) ~= "number" then return end
@@ -139,6 +146,7 @@ Remotes.Aug.OnServerEvent:Connect(function(player, action, zone)
 	local attr = Config.Sets.ZoneAug[zone]
 	local info = Config.AugInfo[attr]
 	if action == "Buy" then
+		if not townOnly(player) then return end
 		if not isOpen(player, rift, zone) then
 			notify(player, string.format("Defeat the Zone %d lord to unlock", zone))
 			return

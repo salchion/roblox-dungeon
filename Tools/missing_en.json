@@ -2225,5 +2225,9 @@
 "💰 Not enough Gold. ({number1} needed) Earn Gold from field hunting / dungeons / Boss Rush / idle income",
 "{number1} to go",
 "🌟 Fever Time!  {number1}s",
-"Defeat monsters fast: the combo multiplies your gold"
+"Defeat monsters fast: the combo multiplies your gold",
+"🏘 Upgrades can only be done in town",
+"🏘 Upgrade in town",
+"💰 Not enough gold to warp! ({number1} G needed)",
+"💰 Warp fee -{number1} G"
 ]

@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "MISSION {number1} / {number2}", "MISIÓN {number1} / {number2}" },
+		{ "🎯 Mission {number1}/{number2}", "🎯 Misión {number1}/{number2}" },
+		{ "… and {number1} more", "… y {number1} más" },
+		{ "(you have {number1})", "(tienes {number1})" },
+		{ "🎫 Tickets: {number1}", "🎫 Boletos: {number1}" },
+		{ "Next: Zone {number1}", "Siguiente: zona {number1}" },
 		{ "🏰 Dungeons {number1}", "🏰 Mazmorras {number1}" },
 		{ "◆ Attack +{number1}%", "◆ Ataque +{number1}%" },
 		{ "Zone {number1} Camp", "Campamento de la Zona {number1}" },

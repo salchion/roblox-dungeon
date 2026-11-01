@@ -153,6 +153,12 @@ Config.Tutorial = {
 -- 환생(프레스티지): 최고 레벨에서 레벨을 1로 되돌리고 영구 공격력 보너스를 얻는다
 ------------------------------------------------------------
 -- 환생: 최고 레벨에서 레벨을 1로 되돌리는 대신 영구 보너스. 골드를 더 벌려면 환생한다 (영구 공격력 + 골드 획득량).
+-- 캠프 워프 비용 (골드): 마을로 돌아오는 건 공짜, 캠프로 가는 건 구역이 깊을수록 비싸다 (튜토리얼 중에는 공짜)
+function Config.GetWarpCost(zone)
+	if not zone or zone < 1 then return 0 end
+	return 100 * zone * zone
+end
+
 function Config.GoldBonus(player)
 	return 1 + (player:GetAttribute("PetGold") or 0) + (player:GetAttribute("TrainGold") or 0) -- 펫(대각성) + 훈련(골드 감각)
 end

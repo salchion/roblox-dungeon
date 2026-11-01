@@ -183,3 +183,7 @@
 2224¦あと{number1}¦noch {number1}¦encore {number1}¦faltan {number1}¦faltam {number1}¦还差{number1}¦{number1} 남음
 2225¦🌟 フィーバータイム！ {number1}秒¦🌟 Fieberzeit!  {number1}s¦🌟 Heure de fièvre !  {number1}s¦🌟 ¡Tiempo de fiebre!  {number1}s¦🌟 Hora da febre!  {number1}s¦🌟 狂热时间！ {number1}秒¦🌟 피버 타임!  {number1}초
 2226¦モンスターを素早く倒そう：コンボでゴールドが増える¦Besiege Monster schnell: Der Combo-Bonus vervielfacht dein Gold¦Éliminez vite les monstres : le combo multiplie votre or¦Derrota monstruos rápido: el combo multiplica tu oro¦Derrote monstros rápido: o combo multiplica seu ouro¦快速击败怪物：连击会让金币翻倍¦몬스터를 빨리 잡으세요: 콤보가 쌓일수록 골드가 늘어요
+2227¦🏘 強化は街でのみできます¦🏘 Verbesserungen sind nur in der Stadt möglich¦🏘 Les améliorations se font uniquement en ville¦🏘 Las mejoras solo se hacen en el pueblo¦🏘 Só é possível melhorar na cidade¦🏘 只能在城镇中升级¦🏘 강화는 마을에서만 할 수 있어요
+2228¦🏘 街で強化¦🏘 In der Stadt verbessern¦🏘 Améliorer en ville¦🏘 Mejora en el pueblo¦🏘 Melhore na cidade¦🏘 请在城镇升级¦🏘 마을에서 강화
+2229¦💰 ワープのゴールドが足りません！({number1}G必要)¦💰 Nicht genug Gold für den Warp! ({number1} G nötig)¦💰 Pas assez d'or pour se téléporter ! ({number1} G requis)¦💰 ¡Oro insuficiente para el warp! (se necesitan {number1} G)¦💰 Ouro insuficiente para o warp! ({number1} G necessário)¦💰 传送金币不足！(需要{number1}G)¦💰 워프할 골드가 부족해요! ({number1}G 필요)
+2230¦💰 ワープ料金 -{number1}G¦💰 Warp-Gebühr -{number1} G¦💰 Frais de warp -{number1} G¦💰 Tarifa de warp -{number1} G¦💰 Taxa de warp -{number1} G¦💰 传送费 -{number1}G¦💰 워프 비용 -{number1}G

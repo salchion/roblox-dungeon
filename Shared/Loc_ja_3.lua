@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Idle Accrual Cap: {number1} Hours", "アイドル蓄積上限：{number1}時間" },
+		{ "🔫 Next era Steel Era (+{number1})", "🔫 次の時代、スチール時代（+{number1}）" },
+		{ "The party is full. (max {number1}", "パーティーが満員です。(最大 {number1}" },
 		{ "Fall in the field {number1} times", "フィールドで{number1}回倒れる" },
 		{ "Raise your pet to level {number1}", "ペットをレベル{number1}まで育てる" },
 		{ "Uses all Tickets (max {number1})", "すべてのチケットを使用（最大{number1}枚）" },
@@ -147,6 +150,7 @@ return {
 		{ "🎁 Claim All ({number1})", "🎁 すべて受け取る ({number1})" },
 		{ "Crit damage +{number1}%", "クリティカルダメージ +{number1}%" },
 		{ "◆ Move Speed +{number1}", "◆ 移動速度 +{number1}" },
+		{ "💰 Warp fee -{number1} G", "💰 ワープ料金 -{number1}G" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 レベル{number1} {number2} / {number3} XP" },
 		{ "DAMAGE · {number1}s · {number2}", "ダメージ · {number1}秒 · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} ダンジョンの鍵" },

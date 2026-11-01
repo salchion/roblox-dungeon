@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Crit +{number1}%", "Crítico +{number1}%" },
+		{ "Lasts {number1}s", "Dura {number1} s" },
+		{ "Kills: {number1}", "Abates: {number1}" },
+		{ "From {number1} G", "A partir de {number1} G" },
+		{ "Gold {number1} G", "Ouro {number1} G" },
+		{ "Gold +{number1}%", "Ouro +{number1}%" },
 		{ "{number1} / {number2} XP", "{number1} / {number2} EXP" },
 		{ "⚡ {number1} Lv.{number2}", "⚡ {number1} Nível {number2}" },
 		{ "≈ {number1} dmg", "≈ {number1} de dano" },

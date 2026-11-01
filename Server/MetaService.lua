@@ -497,6 +497,13 @@ Players.PlayerRemoving:Connect(function(player)
 	last[player] = nil
 end)
 
+-- 업그레이드(골드를 쓰는 강화)는 모두 마을에서만 된다: 어떤 건 필드에서 되고 어떤 건 안 돼서 헷갈린다는 의견 (튜토리얼 중에는 필드에서도 가능)
+local function townOnly(player)
+	if player:GetAttribute("TutorialActive") == true or player:GetAttribute("Zone") == "Lobby" then return true end
+	Remotes.Notify:FireClient(player, "🏘 Upgrades can only be done in town")
+	return false
+end
+
 Remotes.Meta.OnServerEvent:Connect(function(player, action, arg)
 	local now = os.clock()
 	if now - (last[player] or 0) < 0.25 then return end
@@ -513,11 +520,11 @@ Remotes.Meta.OnServerEvent:Connect(function(player, action, arg)
 		local okQ, Quest = pcall(function() return require(script.Parent:WaitForChild("QuestService")) end)
 		if okQ then Quest.Add(player, "PetPeek", 1) end
 	elseif action == "SkillUp" then
-		upgradeSkill(player, arg)
+		if townOnly(player) then upgradeSkill(player, arg) end
 	elseif action == "PetUnlock" then
-		unlockPet(player)
+		if townOnly(player) then unlockPet(player) end
 	elseif action == "PetLevel" then
-		levelUpPet(player)
+		if townOnly(player) then levelUpPet(player) end
 	elseif action == "PetLook" then
 		setPetLook(player, arg)
 	elseif action == "PetColor" then

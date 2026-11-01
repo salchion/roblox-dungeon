@@ -600,6 +600,8 @@ return {
 		["Pick a set to target"] = "狙うセットを選ぼう",
 		["No set"] = "セットなし",
 		["Defeat monsters fast: the combo multiplies your gold"] = "モンスターを素早く倒そう：コンボでゴールドが増える",
+		["🏘 Upgrades can only be done in town"] = "🏘 強化は街でのみできます",
+		["🏘 Upgrade in town"] = "🏘 街で強化",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -782,6 +784,7 @@ return {
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ 今は強化が無料です！(残り{number1}回)" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ ポータルはまだ回復中です({number1}秒)。" },
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1}個を自動分解 (エッセンス +{number2}、{number3} G)" },
+		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 ワープのゴールドが足りません！({number1}G必要)" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 マルチロール！\nすべてのチケットを使用（最大{number1}枚）" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 レベルアップ！ Lv.{number1}（最大HP +{number2} 攻撃 +{number3}%）" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 ミッション {number2}/{number3}</font>" },
@@ -920,8 +923,5 @@ return {
 		{ "Defeat {number1} Golden Goblin(s)", "{number1} ゴールデングオブジェクトを倒す" },
 		{ "🔒 Zone {number1} · Volcano Sealed", "🔒 ゾーン {number1} · 火山が封鎖されています" },
 		{ "Lord of Meadow  ·  Zone {number1}", "草原の支配者 · ゾーン {number1}" },
-		{ "Idle Accrual Cap: {number1} Hours", "アイドル蓄積上限：{number1}時間" },
-		{ "🔫 Next era Steel Era (+{number1})", "🔫 次の時代、スチール時代（+{number1}）" },
-		{ "The party is full. (max {number1}", "パーティーが満員です。(最大 {number1}" },
 	},
 }

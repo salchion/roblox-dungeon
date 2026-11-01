@@ -427,6 +427,8 @@ return {
 		["Pick a set to target"] = "Wähle ein Ziel-Set",
 		["No set"] = "Kein Set",
 		["Defeat monsters fast: the combo multiplies your gold"] = "Besiege Monster schnell: Der Combo-Bonus vervielfacht dein Gold",
+		["🏘 Upgrades can only be done in town"] = "🏘 Verbesserungen sind nur in der Stadt möglich",
+		["🏘 Upgrade in town"] = "🏘 In der Stadt verbessern",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -609,6 +611,7 @@ return {
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ Verbesserungen sind gerade gratis! ({number1} übrig)" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ Das Portal erholt sich noch ({number1} s)." },
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} Gegenstände automatisch zerlegt (Essenz +{number2}, {number3} G)" },
+		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 Nicht genug Gold für den Warp! ({number1} G nötig)" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Mehrfache Rolle!\nVerwendet alle Tickets (max. {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Stufe aufsteigen! Lv.{number1} (Maximale HP +{number2} Angriff +{number3}%)" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} Verbesserungen: {number2} Erfolg / {number3} Fehlschlag  (Gold -{number4})" },
@@ -890,6 +893,7 @@ return {
 		{ "🎁 Claim All ({number1})", "🎁 Alle abholen ({number1})" },
 		{ "Crit damage +{number1}%", "Kritischer Schaden +{number1}%" },
 		{ "◆ Move Speed +{number1}", "◆ Laufgeschw. +{number1}" },
+		{ "💰 Warp fee -{number1} G", "💰 Warp-Gebühr -{number1} G" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Stufe {number1} {number2} / {number3} Erfahrungspunkte" },
 		{ "DAMAGE · {number1}s · {number2}", "Schaden · {number1}s · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} Dungeon-Schlüssel" },
@@ -975,6 +979,5 @@ return {
 		{ "A new dungeon theme can now appear ({text1}, Level {number2}+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", "Ein neues Dungeon-Thema kann jetzt erscheinen ({text1}, Stufe {number2}+). Wähle eine Tiefe: tiefer bedeutet bessere Drop-Chancen und härtere Bosse. Eine Markierung zeigt jetzt zum Tor." },
 		{ "(one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "(einer von {number1}) kommen auf mythischer Ausrüstung vor: Dungeon-Truhen (siehe unten), Feld-Drops ({text2}), die wöchentliche Boss-Rush-Truhe und die wöchentliche Belohnung des Letzten Lords." },
 		{ "🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: {text1}", "🔫 5 Waffentypen – einer pro Verbesserungs-Meilenstein (alle 15). Wähle, mit welcher freigeschalteten Waffe du kämpfst · Jetzt: {text1}" },
-		{ "🎁 First breakthrough gift! Received {text1} Time Skip — press [Use Time Skip] in Growth to finish right away!", "🎁 Geschenk für den ersten Durchbruch! {text1} Zeitsprung erhalten – drücke [Zeitsprung nutzen] unter Wachstum, um sofort fertig zu werden!" },
 	},
 }

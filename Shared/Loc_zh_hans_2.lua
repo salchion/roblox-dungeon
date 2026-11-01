@@ -353,6 +353,8 @@ return {
 		["Pick a set to target"] = "选择目标套装",
 		["No set"] = "无套装",
 		["Defeat monsters fast: the combo multiplies your gold"] = "快速击败怪物：连击会让金币翻倍",
+		["🏘 Upgrades can only be done in town"] = "🏘 只能在城镇中升级",
+		["🏘 Upgrade in town"] = "🏘 请在城镇升级",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -535,6 +537,7 @@ return {
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ 现在强化免费!(剩余 {number1} 次)" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ 传送门仍在恢复中({number1} 秒)。" },
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ 自动分解了 {number1} 件(精华 +{number2},{number3} G)" },
+		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 传送金币不足！(需要{number1}G)" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 多次滚动！\n使用所有门票（最多{number1}张）" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 升级！等级{number1}（最大生命值+{number2} 攻击力+{number3}%）" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 任务 {number2}/{number3}</font>" },
@@ -818,6 +821,7 @@ return {
 		{ "🎁 Claim All ({number1})", "🎁 全部领取 ({number1})" },
 		{ "Crit damage +{number1}%", "暴击伤害 +{number1}%" },
 		{ "◆ Move Speed +{number1}", "◆ 移动速度 +{number1}" },
+		{ "💰 Warp fee -{number1} G", "💰 传送费 -{number1}G" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 等级 {number1} {number2} / {number3} 经验值" },
 		{ "DAMAGE · {number1}s · {number2}", "伤害 · {number1}秒 · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} 地下城钥匙" },
@@ -1044,7 +1048,5 @@ return {
 		{ "All-time best {text1} pts · most bosses {number2} · longest {text3}", "历史最高 {text1} 分 · 最多首领 {number2} · 最长 {text3}" },
 		{ "🎁 Weekly Boss Rush chest: Mythic {text1} with ✦ {text2}!", "🎁 每周首领连战宝箱:神话 {text1},附带 ✦ {text2}!" },
 		{ "🔓 {text1} unlocked! ({text2}) Pick it in the Weapons tab", "🔓 已解锁 {text1}!({text2})请在武器标签页中选择" },
-		{ "📢 {text1} took down {number2} bosses in the Boss Rush! ({text3})", "📢 {text1} 在首领连战中击败了 {number2} 个首领!({text3})" },
-		{ "🔫 Best with {text1}: set damage +40% and {text2}", "🔫 搭配 {text1} 最佳:套装伤害 +40%,并且 {text2}" },
 	},
 }

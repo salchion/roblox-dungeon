@@ -2715,6 +2715,16 @@ local function warp(player, zone)
 		return
 	end
 
+	local cost = player:GetAttribute("TutorialActive") == true and 0 or Config.GetWarpCost(zone)
+	if cost > 0 then
+		local gold = player:GetAttribute("Gold") or 0
+		if gold < cost then
+			notify(player, string.format("💰 Not enough gold to warp! (%d G needed)", cost))
+			return
+		end
+		player:SetAttribute("Gold", gold - cost)
+		notify(player, string.format("💰 Warp fee -%d G", cost))
+	end
 	lastWarp[player] = now
 	-- 이동 연출: 1초 동안 몸이 빛나고(무적) 화면이 밝아졌다가 이동한다 (바로 사라지면 어색하다)
 	Effects.Burst(root.Position + Vector3.new(0, 3, 0), Color3.fromRGB(150, 195, 255), 70)

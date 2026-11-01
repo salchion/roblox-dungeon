@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1}  <font color='#{number2}c{number3}b{number4}'>{number5}%</font>", "{number1} <font color='#{number2}c{number3}b{number4}'>{number5}%</font>" },
+		{ "⚔ Sniper Rifle · Rusty Era +{number10}", "⚔ 저격 소총 · 녹슨 시대 +{number10}" },
+		{ "Not enough gold. ({number1} G needed)", "골드가 부족합니다. ({number1} 골드 필요)" },
 		{ "e.g. Maintenance in {number1} minutes", "예: {number1}분 후 유지보수 예정" },
 		{ "🥇 LeeGoAll  ⚡{number1}\n🥈 {player1}  ⚡{number2}", "🥇 LeeGoAll ⚡{number1}\n🥈 {player1} ⚡{number2}" },
 		{ "🌀 Gate of the Abyss · Rec. ⚡{number2}", "🌀 심연의 문 · 기록 ⚡{number2}" },
@@ -207,6 +210,7 @@ return {
 		{ "🎁 Claim All ({number1})", "🎁 모두 받기 ({number1})" },
 		{ "Crit damage +{number1}%", "치명타 피해 +{number1}%" },
 		{ "◆ Move Speed +{number1}", "◆ 이동 속도 +{number1}" },
+		{ "💰 Warp fee -{number1} G", "💰 워프 비용 -{number1}G" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 레벨 {number1} {number2} / {number3} 경험치" },
 		{ "DAMAGE · {number1}s · {number2}", "피해량 · {number1}초 · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} 던전 키" },

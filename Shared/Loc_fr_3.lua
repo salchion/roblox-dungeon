@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Zone {number1} · Forest", "Zone {number1} · Forêt" },
+		{ "{number1} more upgrades", "{number1} améliorations supplémentaires" },
+		{ "Zone {number1} · Desert", "Zone {number1} · Désert" },
+		{ "👹 Monsters {number1} / {number2}", "👹 Monstres {number1} / {number2}" },
 		{ "⏱ Skip gauge {number1}s", "⏱ Sauter la jauge de {number1} s" },
 		{ "DAMAGE · {number1}s · {number2}K", "Dégâts · {number1}s · {number2}K" },
 		{ "🥇 {player1}  ⚡{number1}", "🥇 {player1} ⚡{number1}" },
@@ -18,6 +22,7 @@ return {
 		{ "🎁 Claim All ({number1})", "🎁 Tout récupérer ({number1})" },
 		{ "Crit damage +{number1}%", "Dégâts critiques +{number1}%" },
 		{ "◆ Move Speed +{number1}", "◆ Vitesse de déplacement +{number1}" },
+		{ "💰 Warp fee -{number1} G", "💰 Frais de warp -{number1} G" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Niveau {number1} {number2} / {number3} EXP" },
 		{ "DAMAGE · {number1}s · {number2}", "Dégâts · {number1} s · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} clés de donjon" },

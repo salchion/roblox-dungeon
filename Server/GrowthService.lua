@@ -431,6 +431,13 @@ end
 ------------------------------------------------------------
 local lastRequest = setmetatable({}, { __mode = "k" })
 
+-- 업그레이드(골드를 쓰는 강화)는 모두 마을에서만 된다: 어떤 건 필드에서 되고 어떤 건 안 돼서 헷갈린다는 의견 (튜토리얼 중에는 필드에서도 가능)
+local function townOnly(player)
+	if player:GetAttribute("TutorialActive") == true or player:GetAttribute("Zone") == "Lobby" then return true end
+	Remotes.Notify:FireClient(player, "🏘 Upgrades can only be done in town")
+	return false
+end
+
 Remotes.Growth.OnServerEvent:Connect(function(player, action, arg1, arg2)
 	if action == "Request" then
 		Growth.Push(player)
@@ -445,11 +452,11 @@ Remotes.Growth.OnServerEvent:Connect(function(player, action, arg1, arg2)
 	lastRequest[player] = now
 
 	if action == "Train" then
-		Growth.StartTrain(player, arg1)
+		if townOnly(player) then Growth.StartTrain(player, arg1) end
 	elseif action == "Gate" then
-		Growth.StartGate(player)
+		if townOnly(player) then Growth.StartGate(player) end
 	elseif action == "Skip" and typeof(arg1) == "string" then
-		Growth.Skip(player, arg1, arg2)
+		if townOnly(player) then Growth.Skip(player, arg1, arg2) end
 	end
 end)
 

@@ -747,6 +747,8 @@ return {
 		["Pick a set to target"] = "노릴 세트를 골라 보세요",
 		["No set"] = "세트 없음",
 		["Defeat monsters fast: the combo multiplies your gold"] = "몬스터를 빨리 잡으세요: 콤보가 쌓일수록 골드가 늘어요",
+		["🏘 Upgrades can only be done in town"] = "🏘 강화는 마을에서만 할 수 있어요",
+		["🏘 Upgrade in town"] = "🏘 마을에서 강화",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -944,6 +946,7 @@ return {
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ 지금은 강화가 무료예요! ({number1}회 남음)" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ 포탈이 아직 회복 중이에요 ({number1}초)." },
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ 장비 {number1}개 자동 분해 (정수 +{number2}, {number3} G)" },
+		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 워프할 골드가 부족해요! ({number1}G 필요)" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 멀티 롤!\n모든 티켓 사용 (최대 {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 레벨업! Lv.{number1} (최대 체력 +{number2} 공격 +{number3}%)" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 미션 {number2}/{number3}</font>" },
@@ -1027,8 +1030,5 @@ return {
 		{ "Reach level {number1} to break through", "돌파하려면 레벨 {number1}에 도달하세요" },
 		{ "{number1}% → up to {number2}% (deeper = higher)", "{number1}% → 최대 {number2}% (깊을수록 높음)" },
 		{ "◆ Skill Cooldown Reduction +{number1}%", "◆ 스킬 쿨타임 감소 +{number1}%" },
-		{ "{number1}  <font color='#{number2}c{number3}b{number4}'>{number5}%</font>", "{number1} <font color='#{number2}c{number3}b{number4}'>{number5}%</font>" },
-		{ "⚔ Sniper Rifle · Rusty Era +{number10}", "⚔ 저격 소총 · 녹슨 시대 +{number10}" },
-		{ "Not enough gold. ({number1} G needed)", "골드가 부족합니다. ({number1} 골드 필요)" },
 	},
 }

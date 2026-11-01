@@ -2631,7 +2631,7 @@ function refreshMenu()
 		local okTree, treeErr = pcall(function()
 			require(ReplicatedStorage:WaitForChild("TrainingTree", 5)).BuildAll({
 				Config = Config, Remotes = Remotes, Player = player, Meta = metaState, Growth = growthState, Remaining = growthRemaining,
-				UpgradeRemaining = upgradeRemaining, SkillDetail = skillDetail, TrainLocked = locked or nil,
+				UpgradeRemaining = upgradeRemaining, SkillDetail = skillDetail, TrainLocked = locked or nil, InTown = player:GetAttribute("Zone") == "Lobby" or player:GetAttribute("TutorialActive") == true,
 				NewRow = newRow, MakeLabel = makeLabel, MakeButton = makeButton, Create = create, GREEN = GREEN, GRAY = GRAY, Refresh = refreshMenu,
 			})
 		end)
@@ -2981,16 +2981,27 @@ local function refreshWarp()
 	clearChildren(warpList)
 	local reached = math.max(1, player:GetAttribute("MaxZone") or 0)
 
+	local gold = player:GetAttribute("Gold") or 0
+	local free = player:GetAttribute("TutorialActive") == true
 	local function addRow(order, text, unlocked, zone)
-		makeButton({
+		local cost = free and 0 or Config.GetWarpCost(zone)
+		local afford = gold >= cost
+		local row = makeButton({
 			Size = UDim2.new(1, 0, 0, 36), LayoutOrder = order, Text = text, TextSize = 13,
-			BackgroundColor3 = unlocked and Color3.fromRGB(60, 90, 160) or GRAY, TextXAlignment = Enum.TextXAlignment.Left,
+			BackgroundColor3 = unlocked and (afford and Color3.fromRGB(60, 90, 160) or Color3.fromRGB(86, 62, 76)) or GRAY, TextXAlignment = Enum.TextXAlignment.Left,
 		}, warpList, function()
 			if unlocked then
 				warpPanel.Visible = false
 				Remotes.Warp:FireServer("Go", zone)
 			end
 		end)
+		if unlocked and zone > 0 and cost > 0 then -- 오른쪽에 워프 비용 (골드가 모자라면 빨갛게)
+			makeLabel({ Size = UDim2.new(0, 110, 1, 0), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 0), Text = "💰 " .. tostring(cost) .. " G", TextSize = 13, Font = Enum.Font.GothamBlack,
+				TextColor3 = afford and Color3.fromRGB(255, 226, 120) or Color3.fromRGB(255, 120, 110), TextXAlignment = Enum.TextXAlignment.Right }, row)
+		elseif zone == 0 then
+			makeLabel({ Size = UDim2.new(0, 110, 1, 0), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 0), Text = "Free", TextSize = 12, Font = Enum.Font.GothamBold,
+				TextColor3 = Color3.fromRGB(150, 235, 170), TextXAlignment = Enum.TextXAlignment.Right }, row)
+		end
 	end
 
 	addRow(0, "  🏠 Town (Lobby)", true, 0)

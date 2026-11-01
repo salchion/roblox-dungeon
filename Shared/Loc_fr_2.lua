@@ -485,6 +485,8 @@ return {
 		["Pick a set to target"] = "Choisissez un set à viser",
 		["No set"] = "Aucun set",
 		["Defeat monsters fast: the combo multiplies your gold"] = "Éliminez vite les monstres : le combo multiplie votre or",
+		["🏘 Upgrades can only be done in town"] = "🏘 Les améliorations se font uniquement en ville",
+		["🏘 Upgrade in town"] = "🏘 Améliorer en ville",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -666,6 +668,7 @@ return {
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ Les améliorations sont gratuites pour l'instant ! ({number1} restantes)" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ Le portail récupère encore ({number1} s)." },
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} objets recyclés automatiquement (Essence +{number2}, {number3} G)" },
+		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 Pas assez d'or pour se téléporter ! ({number1} G requis)" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Lancer multiple !\nUtilise tous les tickets (maximum {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Niveau supérieur ! Lv.{number1} (PV max +{number2} Attaque +{number3}%)" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} améliorations : {number2} réussies / {number3} échouées  (Or -{number4})" },
@@ -931,9 +934,5 @@ return {
 		{ "FEVER PORTAL  {number1}s", "PORTAIL FIÈVRE  {number1}s" },
 		{ "🎰 Roll again  🎫{number1}", "🎰 Retirer  🎫{number1}" },
 		{ "▲ +{number1}% vs current", "▲ +{number1}% vs actuel" },
-		{ "Zone {number1} · Forest", "Zone {number1} · Forêt" },
-		{ "{number1} more upgrades", "{number1} améliorations supplémentaires" },
-		{ "Zone {number1} · Desert", "Zone {number1} · Désert" },
-		{ "👹 Monsters {number1} / {number2}", "👹 Monstres {number1} / {number2}" },
 	},
 }

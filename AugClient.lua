@@ -93,16 +93,29 @@ local slotLabel = label({ Size = UDim2.new(1, -32, 0, 20), Position = UDim2.new(
 label({ Size = UDim2.new(1, -32, 0, 28), Position = UDim2.new(0, 16, 0, 60), Text = "Tap a slot to toggle it. Defeat a lord to unlock its effect, then upgrade it with gold up to Lv.3. Wear that zone's set gear for Lv.4 at 1 piece · Lv.5 at 2 pieces · Lv.6 at 3 pieces! The real power shows up in field hunting.", TextSize = 10, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
 button({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), BackgroundColor3 = Color3.fromRGB(54, 58, 82), Text = "Close", TextSize = 12 }, panel, function() panel.Visible = false end)
 
--- 둘레의 은은한 고리 (원들을 잇는 길)
-for i = 0, 47 do
-	local angle = i / 48 * math.pi * 2
-	local size = (i % 3 == 0) and 6 or 3 -- 금빛 구슬 길 (큰 점 / 작은 점)
-	local dot = make("Frame", {
-		Size = UDim2.new(0, size, 0, size), AnchorPoint = Vector2.new(0.5, 0.5), BorderSizePixel = 0,
-		Position = UDim2.new(0, RING_CX + math.cos(angle) * RING_RX, 0, RING_CY + math.sin(angle) * RING_RY),
-		BackgroundColor3 = Color3.fromRGB(255, 210, 140), BackgroundTransparency = (i % 3 == 0) and 0.25 or 0.55,
-	}, panel)
-	make("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
+-- 원들을 잇는 길: 1 -> 2 -> ... -> 8 한 방향 (8 에서 1 로는 이어지지 않는다). 구간마다 화살표
+for k = 1, ZONES - 1 do
+	local a0 = -math.pi / 2 + (k - 1) / ZONES * math.pi * 2
+	local a1 = -math.pi / 2 + k / ZONES * math.pi * 2
+	for step = 1, 4 do
+		local t = 0.18 + (step - 1) * 0.2
+		local angle = a0 + (a1 - a0) * t
+		local px, py = RING_CX + math.cos(angle) * RING_RX, RING_CY + math.sin(angle) * RING_RY
+		if step == 3 then
+			local tx, ty = -RING_RX * math.sin(angle), RING_RY * math.cos(angle)
+			make("TextLabel", {
+				Size = UDim2.new(0, 16, 0, 16), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, px, 0, py), BackgroundTransparency = 1,
+				Text = "▶", TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(255, 210, 140), TextTransparency = 0.1,
+				Rotation = math.deg(math.atan2(ty, tx)),
+			}, panel)
+		else
+			local dot = make("Frame", {
+				Size = UDim2.new(0, 4, 0, 4), AnchorPoint = Vector2.new(0.5, 0.5), BorderSizePixel = 0, Position = UDim2.new(0, px, 0, py),
+				BackgroundColor3 = Color3.fromRGB(255, 210, 140), BackgroundTransparency = 0.4,
+			}, panel)
+			make("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
+		end
+	end
 end
 
 -- 가운데: 내 캐릭터 (천천히 돈다)
@@ -191,6 +204,11 @@ for zone = 1, ZONES do
 		BackgroundColor3 = Color3.fromRGB(60, 50, 80), Text = tostring(zone), TextSize = 11, Font = Enum.Font.GothamBlack, ZIndex = 5,
 	}, orb)
 	make("UICorner", { CornerRadius = UDim.new(1, 0) }, zoneTag)
+	local lockTag = label({
+		Size = UDim2.new(0, 22, 0, 22), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.86, 0, 0.14, 0), BackgroundTransparency = 0,
+		BackgroundColor3 = Color3.fromRGB(20, 18, 30), Text = "🔒", TextSize = 12, ZIndex = 6,
+	}, orb)
+	make("UICorner", { CornerRadius = UDim.new(1, 0) }, lockTag)
 	local levelTag = label({
 		Size = UDim2.new(0, 34, 0, 16), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 1, 0), BackgroundTransparency = 0,
 		BackgroundColor3 = Color3.fromRGB(30, 26, 44), Text = "", TextSize = 10, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 120), ZIndex = 5,
@@ -224,7 +242,7 @@ for zone = 1, ZONES do
 	}, orb)
 	make("UICorner", { CornerRadius = UDim.new(1, 0) }, matchTag)
 	make("UIStroke", { Color = Color3.fromRGB(180, 255, 200), Thickness = 1.5 }, matchTag)
-	rows[zone] = { Orb = orb, Icon = icon, Level = levelTag, Caption = caption, Stroke = rowStroke, Gradient = gradient, Sel = selRing, Match = matchTag }
+	rows[zone] = { Lock = lockTag, Orb = orb, Icon = icon, Level = levelTag, Caption = caption, Stroke = rowStroke, Gradient = gradient, Sel = selRing, Match = matchTag }
 end
 
 local function roleLine(attrKey)
@@ -253,8 +271,9 @@ function refresh()
 		if on then used += 1 end
 		local info = Config.AugInfo[Config.Sets.ZoneAug[zone]]
 		r.Orb.BackgroundColor3 = not open and Color3.fromRGB(28, 26, 38) or (on and info.Color:Lerp(Color3.fromRGB(20, 18, 30), 0.45) or Color3.fromRGB(44, 40, 62))
-		r.Icon.Text = open and info.Icon or "🔒"
-		r.Icon.TextTransparency = open and 0 or 0.3
+		r.Icon.Text = info.Icon
+		r.Icon.TextTransparency = open and 0 or 0.55
+		r.Lock.Visible = not open
 		r.Level.Text = level + gear > 0 and ("Lv." .. (level + gear)) or ""
 		r.Level.Visible = level + gear > 0
 		r.Caption.TextColor3 = on and Color3.fromRGB(150, 255, 190) or (open and Color3.fromRGB(255, 240, 200) or Color3.fromRGB(130, 134, 156))
@@ -325,6 +344,9 @@ function refresh()
 		if level >= 3 then
 			buyButton.Text = "Max level"
 			buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
+		elseif player:GetAttribute("Zone") ~= "Lobby" and player:GetAttribute("TutorialActive") ~= true then
+			buyButton.Text = "🏘 Upgrade in town"
+			buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
 		else
 			local cost = Config.Sets.AugCost(zone, level + 1)
 			buyButton.Text = string.format("%s %s G", level == 0 and "Activate" or "Upgrade", commas(cost))
@@ -336,7 +358,7 @@ function refresh()
 	badge.Visible = affordable > 0 and used < slots
 end
 
-for _, name in ipairs({ "Gold", "AugSlots", "TutorialActive", "WeaponType", "WeaponLevel" }) do
+for _, name in ipairs({ "Gold", "AugSlots", "TutorialActive", "WeaponType", "WeaponLevel", "Zone" }) do
 	player:GetAttributeChangedSignal(name):Connect(refresh)
 end
 for zone = 1, ZONES do

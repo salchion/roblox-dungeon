@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "📢 {text1} took down {number2} bosses in the Boss Rush! ({text3})", "📢 {text1} 在首领连战中击败了 {number2} 个首领!({text3})" },
+		{ "🔫 Best with {text1}: set damage +40% and {text2}", "🔫 搭配 {text1} 最佳:套装伤害 +40%,并且 {text2}" },
 		{ "(Recommended power {text1} · Your power {text2})", "(推荐战力 {text1} · 你的战力 {text2})" },
 		{ "{text1} · {text2} · Monsters left {number3} · Keep going!", "{text1} · {text2} · 剩余怪物 {number3} · 加油!" },
 		{ "🏅 Achievement unlocked! Reward: {text1}{text2}", "🏅 成就解锁!奖励:{text1}{text2}" },
