@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "(Recommended power {text1} · Your power {text2})", "(推荐战力 {text1} · 你的战力 {text2})" },
 		{ "{text1} · {text2} · Monsters left {number3} · Keep going!", "{text1} · {text2} · 剩余怪物 {number3} · 加油!" },
 		{ "🏅 Achievement unlocked! Reward: {text1}{text2}", "🏅 成就解锁!奖励:{text1}{text2}" },
 		{ "Upgrade cost {text1} G · You have {text2} G", "强化费用 {text1} 金币 · 你有 {text2} 金币" },

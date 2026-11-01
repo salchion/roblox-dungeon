@@ -1259,6 +1259,42 @@ local function refreshStats()
 	perkSummary.Text = #parts > 0 and ("" .. table.concat(parts, " · ")) or "None yet"
 end
 
+-- 이번 던전에서 번 골드 카운터: 배너 아래에 "💰 +12,345 G". 숫자가 오를 때마다 톡 튀고 부드럽게 올라간다
+do
+	local chip = makePanel({
+		Name = "DungeonGold", Size = UDim2.new(0, 230, 0, 36), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 44),
+		BackgroundColor3 = Color3.fromRGB(34, 28, 8), BackgroundTransparency = 0.12, Visible = false,
+	}, dungeonFrame)
+	rounded(chip, 18)
+	create("UIStroke", { Color = Color3.fromRGB(255, 205, 90), Thickness = 2 }, chip)
+	local chipScale = create("UIScale", { Scale = 1 }, chip)
+	local chipText = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "", RichText = true, TextSize = 19, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 226, 120), TextStrokeTransparency = 0.5 }, chip)
+	local shown, target = 0, 0
+	local function paint()
+		local value = math.floor(shown + 0.5)
+		chipText.Text = "💰 +" .. tostring(value):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "") .. " G"
+	end
+	RunService.RenderStepped:Connect(function(dt)
+		if not chip.Visible or shown == target then return end
+		shown += (target - shown) * math.min(1, dt * 7)
+		if math.abs(target - shown) < 1 then shown = target end
+		paint()
+	end)
+	function settings.UpdateDungeonGold(state)
+		local show = state ~= nil and state.Phase ~= "Ended" and state.EarnedGold ~= nil and player:GetAttribute("TutorialActive") ~= true
+		chip.Visible = show
+		if not show then shown, target = 0, 0 return end
+		chip.Position = UDim2.new(0.5, 0, 0, (state.BonusLeft or state.MonsterLimit) and 86 or 44) -- (버티기 던전은 보너스 / 몬스터 막대 아래, 피버는 배너 바로 아래)
+		if state.EarnedGold > target then
+			chipScale.Scale = 1.14
+			TweenService:Create(chipScale, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+		end
+		target = state.EarnedGold
+		if shown > target then shown = target end
+		paint()
+	end
+end
+
 local function refreshBanner()
 	local state = dungeonState
 	banner.Visible = state ~= nil and state.Phase ~= "Ended"
@@ -1283,6 +1319,7 @@ local function refreshBanner()
 			limitText.Text = string.format("👹 Monsters %d / %d%s", state.MonstersLeft, state.MonsterLimit, ratio >= 0.75 and "  — Danger!" or "")
 		end
 	end
+	settings.UpdateDungeonGold(state)
 	if not state then return end
 	bannerMutator.Text = state.MutatorText or ""
 	local mapLabel = string.format("%s · %s", state.TypeName or "Dungeon", state.DifficultyName or "")
@@ -1296,6 +1333,9 @@ local function refreshBanner()
 	if state.Phase == "Starting" then
 		bannerTitle.Text = string.format("Entering %s!", state.TypeName or "Dungeon")
 		bannerSub.Text = string.format("[%s] Starts in %ds! Survive the incoming monsters", state.DifficultyName or "", state.TimeLeft)
+	elseif state.Phase == "Wave" and state.SurviveLeft and state.Fever then
+		bannerTitle.Text = string.format("🌟 Fever Time!  %ds", state.SurviveLeft)
+		bannerSub.Text = "Defeat monsters fast: the combo multiplies your gold"
 	elseif state.Phase == "Wave" and state.SurviveLeft then
 		bannerTitle.Text = string.format("🛡 Survive!  %ds", state.SurviveLeft)
 		bannerSub.Text = string.format("%s · %s · Fail if monsters pile up! Survive to the end and the boss appears", state.TypeName or "", state.DifficultyName or "")

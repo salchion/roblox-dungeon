@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} has used up today's free entries and doesn't have {number2} key(s). Defeat a field zone lord to get keys", "{text1} hat die heutigen Gratis-Eintritte aufgebraucht und besitzt keine {number2} Schlüssel. Besiege einen Feldzonen-Lord, um Schlüssel zu bekommen" },
 		{ "🐃 Monster stampede! They're charging in a line from the {text1} — step aside and sweep them away!", "🐃 Monsterstampede! Sie stürmen in einer Linie von {text1} heran – tritt zur Seite und fege sie weg!" },
 		{ "🛡 Your {text1} slot(s) are empty! Get gear from dungeon boss chests or the gacha and equip it", "🛡 {text1} Ausrüstungsplatz/-plätze sind leer! Hol dir Ausrüstung aus Dungeon-Boss-Truhen oder per Gacha und rüste sie aus" },
 		{ "+{text1}% chance per point to fire a second shot right after the first (\"bang-bang\")  (max {number2})", "+{text1} % Chance pro Punkt, direkt nach dem ersten einen zweiten Schuss abzufeuern („Bumm-Bumm“) (max. {number2})" },

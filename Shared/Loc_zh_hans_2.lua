@@ -352,6 +352,7 @@ return {
 		["Target set (gacha only)"] = "目标套装（扭蛋限定）",
 		["Pick a set to target"] = "选择目标套装",
 		["No set"] = "无套装",
+		["Defeat monsters fast: the combo multiplies your gold"] = "快速击败怪物：连击会让金币翻倍",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -780,6 +781,7 @@ return {
 		{ "◆ Crit Chance +{number1}%", "◆ 暴击率 +{number1}%" },
 		{ "◆ Crit Damage +{number1}%", "◆ 暴击伤害 +{number1}%" },
 		{ "◆ Boss Damage +{number1}%", "◆ 首领伤害 +{number1}%" },
+		{ "🌟 Fever Time!  {number1}s", "🌟 狂热时间！ {number1}秒" },
 		{ "Gold +{number2}% instead", "黄金 +{number2}%" },
 		{ "Attack speed +{number1}%", "攻击速度+{number1}%" },
 		{ "Training slot +{number1}", "训练槽位 +{number1}" },
@@ -1044,6 +1046,5 @@ return {
 		{ "🔓 {text1} unlocked! ({text2}) Pick it in the Weapons tab", "🔓 已解锁 {text1}!({text2})请在武器标签页中选择" },
 		{ "📢 {text1} took down {number2} bosses in the Boss Rush! ({text3})", "📢 {text1} 在首领连战中击败了 {number2} 个首领!({text3})" },
 		{ "🔫 Best with {text1}: set damage +40% and {text2}", "🔫 搭配 {text1} 最佳:套装伤害 +40%,并且 {text2}" },
-		{ "(Recommended power {text1} · Your power {text2})", "(推荐战力 {text1} · 你的战力 {text2})" },
 	},
 }

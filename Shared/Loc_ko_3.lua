@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "e.g. Maintenance in {number1} minutes", "예: {number1}분 후 유지보수 예정" },
 		{ "🥇 LeeGoAll  ⚡{number1}\n🥈 {player1}  ⚡{number2}", "🥇 LeeGoAll ⚡{number1}\n🥈 {player1} ⚡{number2}" },
 		{ "🌀 Gate of the Abyss · Rec. ⚡{number2}", "🌀 심연의 문 · 기록 ⚡{number2}" },
 		{ "🧹 Cleaned up {number1}! Essence +{number2}, {number3} G", "🧹 {number1}개 정리 완료! 정수 +{number2}, {number3} G" },
@@ -169,6 +170,7 @@ return {
 		{ "◆ Crit Chance +{number1}%", "◆ 치명타 확률 +{number1}%" },
 		{ "◆ Crit Damage +{number1}%", "◆ 치명타 피해 +{number1}%" },
 		{ "◆ Boss Damage +{number1}%", "◆ 보스 피해 +{number1}%" },
+		{ "🌟 Fever Time!  {number1}s", "🌟 피버 타임!  {number1}초" },
 		{ "Gold +{number2}% instead", "골드 +{number2}%" },
 		{ "Attack speed +{number1}%", "공격 속도 +{number1}%" },
 		{ "Training slot +{number1}", "트레이닝 슬롯 +{number1}" },

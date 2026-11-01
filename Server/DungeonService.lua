@@ -2390,8 +2390,10 @@ local function broadcast(run)
 		MutatorText = run.Mutator and string.format("%s %s — %s", run.Mutator.Icon, run.Mutator.Name, run.Mutator.Desc) or nil,
 		BossName = run.Boss and (run.Boss.BossName or run.BossName) or nil,
 		BossRatio = run.Boss and math.max(run.Boss.Health, 0) / run.Boss.MaxHealth or nil,
+		Fever = run.Fever ~= nil or nil, -- 피버 던전이면 위쪽 배너가 "피버 타임!" 으로 바뀐다
 	}
 	for _, member in ipairs(run.Members) do
+		state.EarnedGold = run.Earned[member] or 0 -- 이번 던전에서 내가 번 골드 (화면 위쪽 카운터)
 		if run.RiftMode and run.Phase ~= "Ended" then
 			member:SetAttribute("RiftScore", rushScore(run, member))
 			member:SetAttribute("RiftDealt", math.floor(run.Dealt[member] or 0))

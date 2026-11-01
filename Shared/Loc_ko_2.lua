@@ -746,6 +746,7 @@ return {
 		["Target set (gacha only)"] = "노릴 세트 (뽑기 전용)",
 		["Pick a set to target"] = "노릴 세트를 골라 보세요",
 		["No set"] = "세트 없음",
+		["Defeat monsters fast: the combo multiplies your gold"] = "몬스터를 빨리 잡으세요: 콤보가 쌓일수록 골드가 늘어요",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1029,6 +1030,5 @@ return {
 		{ "{number1}  <font color='#{number2}c{number3}b{number4}'>{number5}%</font>", "{number1} <font color='#{number2}c{number3}b{number4}'>{number5}%</font>" },
 		{ "⚔ Sniper Rifle · Rusty Era +{number10}", "⚔ 저격 소총 · 녹슨 시대 +{number10}" },
 		{ "Not enough gold. ({number1} G needed)", "골드가 부족합니다. ({number1} 골드 필요)" },
-		{ "e.g. Maintenance in {number1} minutes", "예: {number1}분 후 유지보수 예정" },
 	},
 }

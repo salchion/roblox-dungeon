@@ -472,6 +472,7 @@ return {
 		["Target set (gacha only)"] = "Set objetivo (solo gacha)",
 		["Pick a set to target"] = "Elige un set objetivo",
 		["No set"] = "Sin set",
+		["Defeat monsters fast: the combo multiplies your gold"] = "Derrota monstruos rápido: el combo multiplica tu oro",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -897,6 +898,7 @@ return {
 		{ "◆ Crit Chance +{number1}%", "◆ Prob. de crítico +{number1}%" },
 		{ "◆ Crit Damage +{number1}%", "◆ Daño crítico +{number1}%" },
 		{ "◆ Boss Damage +{number1}%", "◆ Daño a jefes +{number1}%" },
+		{ "🌟 Fever Time!  {number1}s", "🌟 ¡Tiempo de fiebre!  {number1}s" },
 		{ "Gold +{number2}% instead", "Oro +{number2}% en su lugar" },
 		{ "Attack speed +{number1}%", "Velocidad de ataque +{number1}%" },
 		{ "Training slot +{number1}", "Espacio de entrenamiento +{number1}" },
@@ -971,8 +973,5 @@ return {
 		{ "(you have {number1})", "(tienes {number1})" },
 		{ "🎫 Tickets: {number1}", "🎫 Boletos: {number1}" },
 		{ "Next: Zone {number1}", "Siguiente: zona {number1}" },
-		{ "🏰 Dungeons {number1}", "🏰 Mazmorras {number1}" },
-		{ "◆ Attack +{number1}%", "◆ Ataque +{number1}%" },
-		{ "Zone {number1} Camp", "Campamento de la Zona {number1}" },
 	},
 }

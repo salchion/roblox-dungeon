@@ -599,6 +599,7 @@ return {
 		["Target set (gacha only)"] = "狙うセット(ガチャ限定)",
 		["Pick a set to target"] = "狙うセットを選ぼう",
 		["No set"] = "セットなし",
+		["Defeat monsters fast: the combo multiplies your gold"] = "モンスターを素早く倒そう：コンボでゴールドが増える",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -922,6 +923,5 @@ return {
 		{ "Idle Accrual Cap: {number1} Hours", "アイドル蓄積上限：{number1}時間" },
 		{ "🔫 Next era Steel Era (+{number1})", "🔫 次の時代、スチール時代（+{number1}）" },
 		{ "The party is full. (max {number1}", "パーティーが満員です。(最大 {number1}" },
-		{ "Fall in the field {number1} times", "フィールドで{number1}回倒れる" },
 	},
 }

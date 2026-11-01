@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⏱ Skip gauge {number1}s", "⏱ Sauter la jauge de {number1} s" },
+		{ "DAMAGE · {number1}s · {number2}K", "Dégâts · {number1}s · {number2}K" },
+		{ "🥇 {player1}  ⚡{number1}", "🥇 {player1} ⚡{number1}" },
 		{ "Time Skip {number1} min", "Saut de temps {number1} minutes" },
 		{ "Idle Income +{number1}%", "Revenu passif +{number1}%" },
 		{ "Zone {number1} · Meadow", "Zone {number1} · Prairie" },

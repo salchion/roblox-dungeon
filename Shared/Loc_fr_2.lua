@@ -484,6 +484,7 @@ return {
 		["Target set (gacha only)"] = "Set visé (gacha uniquement)",
 		["Pick a set to target"] = "Choisissez un set à viser",
 		["No set"] = "Aucun set",
+		["Defeat monsters fast: the combo multiplies your gold"] = "Éliminez vite les monstres : le combo multiplie votre or",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -910,6 +911,7 @@ return {
 		{ "◆ Crit Chance +{number1}%", "◆ Chance de critique +{number1}%" },
 		{ "◆ Crit Damage +{number1}%", "◆ Dégâts critiques +{number1}%" },
 		{ "◆ Boss Damage +{number1}%", "◆ Dégâts aux boss +{number1}%" },
+		{ "🌟 Fever Time!  {number1}s", "🌟 Heure de fièvre !  {number1}s" },
 		{ "Gold +{number2}% instead", "Or +{number2}% à la place" },
 		{ "Attack speed +{number1}%", "Vitesse d'attaque +{number1}%" },
 		{ "Training slot +{number1}", "Emplacement d'entraînement +{number1}" },
@@ -933,8 +935,5 @@ return {
 		{ "{number1} more upgrades", "{number1} améliorations supplémentaires" },
 		{ "Zone {number1} · Desert", "Zone {number1} · Désert" },
 		{ "👹 Monsters {number1} / {number2}", "👹 Monstres {number1} / {number2}" },
-		{ "⏱ Skip gauge {number1}s", "⏱ Sauter la jauge de {number1} s" },
-		{ "DAMAGE · {number1}s · {number2}K", "Dégâts · {number1}s · {number2}K" },
-		{ "🥇 {player1}  ⚡{number1}", "🥇 {player1} ⚡{number1}" },
 	},
 }

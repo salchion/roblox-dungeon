@@ -443,6 +443,7 @@ return {
 		["Target set (gacha only)"] = "Set alvo (só no gacha)",
 		["Pick a set to target"] = "Escolha um set alvo",
 		["No set"] = "Sem set",
+		["Defeat monsters fast: the combo multiplies your gold"] = "Derrote monstros rápido: o combo multiplica seu ouro",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -871,6 +872,7 @@ return {
 		{ "◆ Crit Chance +{number1}%", "◆ Chance de crítico +{number1}%" },
 		{ "◆ Crit Damage +{number1}%", "◆ Dano crítico +{number1}%" },
 		{ "◆ Boss Damage +{number1}%", "◆ Dano a chefes +{number1}%" },
+		{ "🌟 Fever Time!  {number1}s", "🌟 Hora da febre!  {number1}s" },
 		{ "Gold +{number2}% instead", "Ouro +{number2}% em vez disso" },
 		{ "Attack speed +{number1}%", "Velocidade de ataque +{number1}%" },
 		{ "Training slot +{number1}", "Espaço de treinamento +{number1}" },
@@ -979,9 +981,5 @@ return {
 		{ "From {number1} G", "A partir de {number1} G" },
 		{ "Gold {number1} G", "Ouro {number1} G" },
 		{ "Gold +{number1}%", "Ouro +{number1}%" },
-		{ "{number1} / {number2} XP", "{number1} / {number2} EXP" },
-		{ "⚡ {number1} Lv.{number2}", "⚡ {number1} Nível {number2}" },
-		{ "≈ {number1} dmg", "≈ {number1} de dano" },
-		{ "(max {number1})", "(máx. {number1})" },
 	},
 }

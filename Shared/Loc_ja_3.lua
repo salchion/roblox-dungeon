@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Fall in the field {number1} times", "フィールドで{number1}回倒れる" },
 		{ "Raise your pet to level {number1}", "ペットをレベル{number1}まで育てる" },
 		{ "Uses all Tickets (max {number1})", "すべてのチケットを使用（最大{number1}枚）" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 フィールド・ベストゾーン {number1}" },
@@ -108,6 +109,7 @@ return {
 		{ "◆ Crit Chance +{number1}%", "◆ クリティカル率 +{number1}%" },
 		{ "◆ Crit Damage +{number1}%", "◆ クリティカルダメージ +{number1}%" },
 		{ "◆ Boss Damage +{number1}%", "◆ ボスダメージ +{number1}%" },
+		{ "🌟 Fever Time!  {number1}s", "🌟 フィーバータイム！ {number1}秒" },
 		{ "Gold +{number2}% instead", "ゴールド +{number2}%" },
 		{ "Attack speed +{number1}%", "攻撃速度 +{number1}%" },
 		{ "Training slot +{number1}", "トレーニングスロット +{number1}" },

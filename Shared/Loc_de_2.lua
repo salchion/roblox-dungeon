@@ -426,6 +426,7 @@ return {
 		["Target set (gacha only)"] = "Ziel-Set (nur Gacha)",
 		["Pick a set to target"] = "Wähle ein Ziel-Set",
 		["No set"] = "Kein Set",
+		["Defeat monsters fast: the combo multiplies your gold"] = "Besiege Monster schnell: Der Combo-Bonus vervielfacht dein Gold",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -853,6 +854,7 @@ return {
 		{ "◆ Crit Chance +{number1}%", "◆ Krit-Chance +{number1}%" },
 		{ "◆ Crit Damage +{number1}%", "◆ Kritischer Schaden +{number1}%" },
 		{ "◆ Boss Damage +{number1}%", "◆ Bossschaden +{number1}%" },
+		{ "🌟 Fever Time!  {number1}s", "🌟 Fieberzeit!  {number1}s" },
 		{ "Gold +{number2}% instead", "Gold +{number2}% stattdessen" },
 		{ "Attack speed +{number1}%", "Angriffsgeschwindigkeit +{number1}%" },
 		{ "Training slot +{number1}", "Trainings-Slot +{number1}" },
@@ -974,6 +976,5 @@ return {
 		{ "(one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "(einer von {number1}) kommen auf mythischer Ausrüstung vor: Dungeon-Truhen (siehe unten), Feld-Drops ({text2}), die wöchentliche Boss-Rush-Truhe und die wöchentliche Belohnung des Letzten Lords." },
 		{ "🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: {text1}", "🔫 5 Waffentypen – einer pro Verbesserungs-Meilenstein (alle 15). Wähle, mit welcher freigeschalteten Waffe du kämpfst · Jetzt: {text1}" },
 		{ "🎁 First breakthrough gift! Received {text1} Time Skip — press [Use Time Skip] in Growth to finish right away!", "🎁 Geschenk für den ersten Durchbruch! {text1} Zeitsprung erhalten – drücke [Zeitsprung nutzen] unter Wachstum, um sofort fertig zu werden!" },
-		{ "{text1} has used up today's free entries and doesn't have {number2} key(s). Defeat a field zone lord to get keys", "{text1} hat die heutigen Gratis-Eintritte aufgebraucht und besitzt keine {number2} Schlüssel. Besiege einen Feldzonen-Lord, um Schlüssel zu bekommen" },
 	},
 }

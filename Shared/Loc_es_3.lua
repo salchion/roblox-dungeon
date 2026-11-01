@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🏰 Dungeons {number1}", "🏰 Mazmorras {number1}" },
+		{ "◆ Attack +{number1}%", "◆ Ataque +{number1}%" },
+		{ "Zone {number1} Camp", "Campamento de la Zona {number1}" },
 		{ "🐾 Pet Lv.{number1}!", "🐾 ¡Mascota Nv.{number1}!" },
 		{ "Upgrade {number1} G", "Mejorar {number1} G" },
 		{ "✦ Paragon {number1}", "✦ Paragón {number1}" },
