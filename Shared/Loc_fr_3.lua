@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number2} / {number3}   Reward: {number4} G", "{number2} / {number3} Récompense : {number4} G" },
+		{ "{number2} / {number3}   Reward: 🎫 {number4}", "{number2} / {number3} Récompense : 🎫 {number4}" },
 		{ "💥Explosive Shot {number1}", "💥Tir explosif {number1}" },
 		{ "Defeat {number1} boss(es)", "Vaincre {number1} boss" },
 		{ "{number1} / {number2}   Reward: 🎫 {number3}", "{number1} / {number2} Récompense : 🎫 {number3}" },
@@ -41,6 +43,7 @@ return {
 		{ "🎰 Roll again  🎫{number1}", "🎰 Retirer  🎫{number1}" },
 		{ "▲ +{number1}% vs current", "▲ +{number1}% vs actuel" },
 		{ "Switch path: {number1} G", "Changer de voie : {number1} G" },
+		{ "Damage taken -{number1}%", "Dégâts subis -{number1} %" },
 		{ "Zone {number1} · Forest", "Zone {number1} · Forêt" },
 		{ "{number1} more upgrades", "{number1} améliorations supplémentaires" },
 		{ "Zone {number1} · Desert", "Zone {number1} · Désert" },

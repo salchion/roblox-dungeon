@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Fires {number1} pellets in a spread", "{number1}発の散弾を扇状に発射" },
 		{ "You can afford it now ({number1} G)", "今すぐ強化できる ({number1} G)" },
 		{ "⭐ Legendary guaranteed in {number1}", "⭐ 伝説確定まで {number1}" },
 		{ "★★★  Step {number1}/{number2} · Higher step", "★★★ ステップ {number1}/{number2} · より高いステップ" },
@@ -31,6 +32,7 @@ return {
 		{ "Fall in the field {number1} times", "フィールドで{number1}回倒れる" },
 		{ "Raise your pet to level {number1}", "ペットをレベル{number1}まで育てる" },
 		{ "Range x{number1} · allies heal +{number2}%", "範囲x{number1}・仲間の回復+{number2}%" },
+		{ "Recovers {number1}% HP per second", "毎秒HPを{number1}%回復" },
 		{ "Uses all Tickets (max {number1})", "すべてのチケットを使用（最大{number1}枚）" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 フィールド・ベストゾーン {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "ゾーン {number1}  · 砂漠 ☠☠☠☠" },
@@ -159,6 +161,7 @@ return {
 		{ "🎰 Roll again  🎫{number1}", "🎰 もう一度引く  🎫{number1}" },
 		{ "▲ +{number1}% vs current", "▲ 今より +{number1}%" },
 		{ "Switch path: {number1} G", "道を変更：{number1}G" },
+		{ "Damage taken -{number1}%", "被ダメージ-{number1}%" },
 		{ "Zone {number1} · Forest", "ゾーン {number1} ・森" },
 		{ "{number1} more upgrades", "{number1} 個のアップグレード" },
 		{ "Zone {number1} · Desert", "ゾーン {number1} ・砂漠" },

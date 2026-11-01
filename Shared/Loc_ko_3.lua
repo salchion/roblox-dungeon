@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎯 Deadeye! Barrage on {number1} enemies", "🎯 데이드아이! {number1}명의 적에게 난사 공격" },
 		{ "⚠ Not enough gold. ({number1} G needed)", "⚠ 골드가 부족해요. ({number1} G 필요)" },
 		{ "\n(Idle income bonus +{number1}% active)", "\n(방치 수입 보너스 +{number1}% 적용 중)" },
 		{ "Gold earned  +{number1} G   🎫 Tickets +{number2}", "획득 골드  +{number1} G   🎫 티켓 +{number2}" },
@@ -88,6 +89,7 @@ return {
 		{ "Fall in the field {number1} times", "필드에서 {number1}번 쓰러지기" },
 		{ "Raise your pet to level {number1}", "펫을 {number1}레벨까지 키우기" },
 		{ "Range x{number1} · allies heal +{number2}%", "범위 x{number1} · 동료 회복 +{number2}%" },
+		{ "Recovers {number1}% HP per second", "초당 체력 {number1}% 회복" },
 		{ "Uses all Tickets (max {number1})", "모든 티켓 사용 (최대 {number1})" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 필드 · 베스트 존 {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "존 {number1} · 사막 ☠☠☠☠" },
@@ -218,6 +220,7 @@ return {
 		{ "🎰 Roll again  🎫{number1}", "🎰 다시 뽑기  🎫{number1}" },
 		{ "▲ +{number1}% vs current", "▲ 지금보다 +{number1}%" },
 		{ "Switch path: {number1} G", "길 바꾸기: {number1}G" },
+		{ "Damage taken -{number1}%", "받는 피해 -{number1}%" },
 		{ "Zone {number1} · Forest", "구역 {number1} · 숲" },
 		{ "{number1} more upgrades", "{number1} 더 많은 업그레이드" },
 		{ "Zone {number1} · Desert", "구역 {number1} · 사막" },

@@ -767,6 +767,8 @@ return {
 		["✔ Path chosen"] = "✔ 선택함",
 		["🔒 Reach the required skill level first"] = "🔒 먼저 필요한 스킬 레벨에 도달하세요",
 		["🌟 Path chosen!"] = "🌟 길을 골랐어요!",
+		["Tough Skin"] = "질긴 피부",
+		["Recovery"] = "회복력",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1039,6 +1041,5 @@ return {
 		{ "Level {number1} Breakthrough in progress", "{number1}레벨 돌파 진행 중" },
 		{ "Defeat the Zone {number1} lord to unlock", "{number1}구역 군주를 쓰러뜨리면 해금돼요" },
 		{ "Move speed +{number1} per point  (max {number2})", "이동 속도 +{number1} 포인트 (최대 {number2})" },
-		{ "🎯 Deadeye! Barrage on {number1} enemies", "🎯 데이드아이! {number1}명의 적에게 난사 공격" },
 	},
 }

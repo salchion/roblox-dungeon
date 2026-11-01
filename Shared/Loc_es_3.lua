@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🥇 {player1}  ⚡{number1}", "🥇 {player1} ⚡{number1}" },
+		{ "Time Skip {number1} min", "Salto de tiempo {number1} minutos" },
+		{ "Idle Income +{number1}%", "Ingresos de inactividad +{number1}%" },
 		{ "Zone {number1} · Meadow", "Zona {number1} · Pradera" },
 		{ "🥈 {player1}  ⚡{number2}", "🥈 {player1} ⚡{number2}" },
 		{ "·  Gold / XP x{number1}", "·  Oro / EXP x{number1}" },

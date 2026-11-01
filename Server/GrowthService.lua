@@ -74,6 +74,8 @@ local function recompute(player, state)
 	player:SetAttribute("TrainCritDmg", (state.Levels.CritDmg or 0) * R.Stats.CritDmg.Per)
 	player:SetAttribute("TrainGold", (state.Levels.Gold or 0) * R.Stats.Gold.Per)
 	player:SetAttribute("TrainAtkSpeed", (state.Levels.AtkSpeed or 0) * R.Stats.AtkSpeed.Per)
+	player:SetAttribute("TrainBulwark", (state.Levels.Armor or 0) * R.Stats.Armor.Per) -- 받는 피해 감소 (DamageGuard 가 읽는다)
+	player:SetAttribute("TrainRegen", (state.Levels.Regen or 0) * R.Stats.Regen.Per) -- 초당 최대 체력 회복 비율 (아래 반복문이 적용)
 end
 
 ------------------------------------------------------------
@@ -466,6 +468,14 @@ task.spawn(function()
 		for player, state in pairs(states) do
 			if player.Parent then
 				completeJobs(player, state)
+				local regen = player:GetAttribute("TrainRegen") or 0
+				local zone = player:GetAttribute("Zone")
+				if regen > 0 and (zone == "Field" or zone == "Dungeon") then -- 훈련 "회복력": 2초마다 최대 체력의 일부를 되찾는다
+					local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+					if humanoid and humanoid.Health > 0 and humanoid.Health < humanoid.MaxHealth then
+						humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * regen * 2)
+					end
+				end
 			end
 		end
 	end

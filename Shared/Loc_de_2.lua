@@ -446,6 +446,8 @@ return {
 		["✔ Path chosen"] = "✔ Pfad gewählt",
 		["🔒 Reach the required skill level first"] = "🔒 Erreiche zuerst die nötige Fertigkeitsstufe",
 		["🌟 Path chosen!"] = "🌟 Pfad gewählt!",
+		["Tough Skin"] = "Dicke Haut",
+		["Recovery"] = "Erholung",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -783,6 +785,7 @@ return {
 		{ "Fall in the field {number1} times", "Falle {number1}-mal im Feld" },
 		{ "Raise your pet to level {number1}", "Bringe dein Haustier auf Stufe {number1}" },
 		{ "Range x{number1} · allies heal +{number2}%", "Reichweite x{number1} · Verbündete werden um {number2} % mehr geheilt" },
+		{ "Recovers {number1}% HP per second", "Stellt pro Sekunde {number1} % LP wieder her" },
 		{ "Uses all Tickets (max {number1})", "Verwendet alle Tickets (max. {number1})" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 Feld · Beste Zone {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "Zone {number1} · Wüste ☠☠☠☠" },
@@ -909,6 +912,7 @@ return {
 		{ "🎰 Roll again  🎫{number1}", "🎰 Nochmal ziehen  🎫{number1}" },
 		{ "▲ +{number1}% vs current", "▲ +{number1}% ggü. aktuell" },
 		{ "Switch path: {number1} G", "Pfad wechseln: {number1} G" },
+		{ "Damage taken -{number1}%", "Erlittener Schaden -{number1} %" },
 		{ "Zone {number1} · Forest", "Zone {number1} · Wald" },
 		{ "{number1} more upgrades", "{number1} weitere Verbesserungen" },
 		{ "Zone {number1} · Desert", "Zone {number1} · Wüste" },
@@ -975,8 +979,5 @@ return {
 		{ "Admin (F{number1})", "Administrator (F{number1})" },
 		{ "Party ({number1}/{number2})", "Gruppe ({number1}/{number2})" },
 		{ "Attack +{number1}%", "Angriff +{number1}%" },
-		{ "🔑 {number1} Key(s)", "🔑 {number1} Schlüssel" },
-		{ "Survive {number1}s", "Überlebe {number1} s" },
-		{ "🎰 Roll x{number1}!", "🎰 {number1}x ziehen!" },
 	},
 }

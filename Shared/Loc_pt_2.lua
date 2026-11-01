@@ -464,6 +464,8 @@ return {
 		["✔ Path chosen"] = "✔ Caminho escolhido",
 		["🔒 Reach the required skill level first"] = "🔒 Alcance primeiro o nível de habilidade necessário",
 		["🌟 Path chosen!"] = "🌟 Caminho escolhido!",
+		["Tough Skin"] = "Pele resistente",
+		["Recovery"] = "Recuperação",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -802,6 +804,7 @@ return {
 		{ "Fall in the field {number1} times", "Caia {number1} vezes no campo" },
 		{ "Raise your pet to level {number1}", "Leve seu pet ao nível {number1}" },
 		{ "Range x{number1} · allies heal +{number2}%", "Alcance x{number1} · aliados curam +{number2}%" },
+		{ "Recovers {number1}% HP per second", "Recupera {number1}% de PV por segundo" },
 		{ "Uses all Tickets (max {number1})", "Usa todos os bilhetes (máximo {number1})" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 Campo · Melhor Zona {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "Zona {number1} · Deserto ☠☠☠☠" },
@@ -929,6 +932,7 @@ return {
 		{ "🎰 Roll again  🎫{number1}", "🎰 Girar de novo  🎫{number1}" },
 		{ "▲ +{number1}% vs current", "▲ +{number1}% vs atual" },
 		{ "Switch path: {number1} G", "Trocar caminho: {number1} G" },
+		{ "Damage taken -{number1}%", "Dano recebido -{number1}%" },
 		{ "Zone {number1} · Forest", "Zona {number1} · Floresta" },
 		{ "{number1} more upgrades", "{number1} mais melhorias" },
 		{ "Zone {number1} · Desert", "Zona {number1} · Deserto" },
@@ -964,8 +968,5 @@ return {
 		{ "Reach {number1} Power", "Alcance {number1} de Poder" },
 		{ "Next zone  {number1}m", "Próxima zona {number1}m" },
 		{ "▼ Dungeon  {number1}m", "▼ Masmorra {number1}m" },
-		{ "Move Speed +{number1}", "Velocidade de movimento +{number1}" },
-		{ "· Cooldown {number1}s", "· Recarga {number1} s" },
-		{ "+{number1} from level", "+{number1} pelo nível" },
 	},
 }

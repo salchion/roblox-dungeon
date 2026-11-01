@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Move Speed +{number1}", "Velocidade de movimento +{number1}" },
+		{ "· Cooldown {number1}s", "· Recarga {number1} s" },
+		{ "+{number1} from level", "+{number1} pelo nível" },
 		{ "Free today {number1}/{number2}", "Grátis hoje {number1}/{number2}" },
 		{ "NEXT ERA · +{number1}", "PRÓXIMA ERA · +{number1}" },
 		{ "Best combo: {number1}", "Melhor combo: {number1}" },

@@ -373,6 +373,8 @@ return {
 		["✔ Path chosen"] = "✔ 已选择",
 		["🔒 Reach the required skill level first"] = "🔒 请先达到所需的技能等级",
 		["🌟 Path chosen!"] = "🌟 已选择路线！",
+		["Tough Skin"] = "坚韧皮肤",
+		["Recovery"] = "恢复力",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -711,6 +713,7 @@ return {
 		{ "Fall in the field {number1} times", "在野外倒下{number1}次" },
 		{ "Raise your pet to level {number1}", "将宠物提升到{number1}级" },
 		{ "Range x{number1} · allies heal +{number2}%", "范围x{number1} · 队友治疗量+{number2}%" },
+		{ "Recovers {number1}% HP per second", "每秒恢复{number1}%生命" },
 		{ "Uses all Tickets (max {number1})", "使用所有门票（最多{number1}张）" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 田地 · 最佳区域 {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "区域 {number1} · 沙漠 ☠☠☠☠" },
@@ -838,6 +841,7 @@ return {
 		{ "🎰 Roll again  🎫{number1}", "🎰 再抽一次  🎫{number1}" },
 		{ "▲ +{number1}% vs current", "▲ 比当前 +{number1}%" },
 		{ "Switch path: {number1} G", "更换路线：{number1}G" },
+		{ "Damage taken -{number1}%", "受到伤害-{number1}%" },
 		{ "Zone {number1} · Forest", "区域 {number1} · 森林" },
 		{ "{number1} more upgrades", "{number1} 次更多升级" },
 		{ "Zone {number1} · Desert", "区域 {number1} · 沙漠" },
@@ -1050,8 +1054,5 @@ return {
 		{ "Next era → {text1}", "下一时代 → {text1}" },
 		{ "Activate {text1} G", "花费 {text1} 金币启用" },
 		{ "Shop item: {text1}", "商店商品：{text1}" },
-		{ "Skip gauge {text1}", "跳过槽 {text1}" },
-		{ "Time left {text1}", "剩余时间 {text1}" },
-		{ "Entering {text1}!", "正在进入 {text1}!" },
 	},
 }

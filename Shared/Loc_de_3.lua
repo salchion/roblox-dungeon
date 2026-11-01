@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔑 {number1} Key(s)", "🔑 {number1} Schlüssel" },
+		{ "Survive {number1}s", "Überlebe {number1} s" },
+		{ "🎰 Roll x{number1}!", "🎰 {number1}x ziehen!" },
 		{ "Slots {number1} / {number2}", "Plätze {number1} / {number2}" },
 		{ "⚡ Power {number9}", "⚡ Kraft {number9}" },
 		{ "⚡ Power {number1}", "⚡ Kraft {number1}" },

@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Skip gauge {text1}", "跳过槽 {text1}" },
+		{ "Time left {text1}", "剩余时间 {text1}" },
+		{ "Entering {text1}!", "正在进入 {text1}!" },
 		{ "Step {number1}/{number2} · {text3}", "第 {number1}/{number2} 步 · {text3}" },
 		{ "({text1} damage)", "(伤害 {text1})" },
 		{ "{text1} · Rec. ⚡{number2}", "{text1} · 推荐 ⚡{number2}" },

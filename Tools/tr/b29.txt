@@ -226,3 +226,7 @@
 2267¦🔒 まず必要なスキルレベルに到達しよう¦🔒 Erreiche zuerst die nötige Fertigkeitsstufe¦🔒 Atteignez d'abord le niveau de compétence requis¦🔒 Alcanza primero el nivel de habilidad necesario¦🔒 Alcance primeiro o nível de habilidade necessário¦🔒 请先达到所需的技能等级¦🔒 먼저 필요한 스킬 레벨에 도달하세요
 2268¦🔁 道を変更しました！(-{number1}G)¦🔁 Pfad gewechselt! (-{number1} G)¦🔁 Voie changée ! (-{number1} G)¦🔁 ¡Camino cambiado! (-{number1} G)¦🔁 Caminho trocado! (-{number1} G)¦🔁 已更换路线！(-{number1}G)¦🔁 길을 바꿨어요! (-{number1}G)
 2269¦🌟 道を選びました！¦🌟 Pfad gewählt!¦🌟 Voie choisie !¦🌟 ¡Camino elegido!¦🌟 Caminho escolhido!¦🌟 已选择路线！¦🌟 길을 골랐어요!
+2270¦頑丈な皮膚¦Dicke Haut¦Peau dure¦Piel dura¦Pele resistente¦坚韧皮肤¦질긴 피부
+2271¦回復力¦Erholung¦Récupération¦Recuperación¦Recuperação¦恢复力¦회복력
+2272¦被ダメージ-{number1}%¦Erlittener Schaden -{number1} %¦Dégâts subis -{number1} %¦Daño recibido -{number1} %¦Dano recebido -{number1}%¦受到伤害-{number1}%¦받는 피해 -{number1}%
+2273¦毎秒HPを{number1}%回復¦Stellt pro Sekunde {number1} % LP wieder her¦Récupère {number1} % de PV par seconde¦Recupera {number1} % de PV por segundo¦Recupera {number1}% de PV por segundo¦每秒恢复{number1}%生命¦초당 체력 {number1}% 회복

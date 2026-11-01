@@ -620,6 +620,8 @@ return {
 		["✔ Path chosen"] = "✔ 選択済み",
 		["🔒 Reach the required skill level first"] = "🔒 まず必要なスキルレベルに到達しよう",
 		["🌟 Path chosen!"] = "🌟 道を選びました！",
+		["Tough Skin"] = "頑丈な皮膚",
+		["Recovery"] = "回復力",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -930,6 +932,5 @@ return {
 		{ "ZONE {number1}  ·  Abyss   ☠☠☠☠☠☠☠☠", "ゾーン {number1}  · 深淵 ☠☠☠☠☠☠☠☠" },
 		{ "Dismantled {number1}! Essence +{number2}, {number3} G", "{number1}個を分解しました！エッセンス+{number2}、{number3} G" },
 		{ "Enter the Boss Rush {number1} times", "ボスラッシュに{number1}回挑戦する" },
-		{ "Fires {number1} pellets in a spread", "{number1}発の散弾を扇状に発射" },
 	},
 }

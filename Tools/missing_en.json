@@ -2268,5 +2268,9 @@
 "Switch path: {number1} G",
 "🔒 Reach the required skill level first",
 "🔁 Path changed! (-{number1} G)",
-"🌟 Path chosen!"
+"🌟 Path chosen!",
+"Tough Skin",
+"Recovery",
+"Damage taken -{number1}%",
+"Recovers {number1}% HP per second"
 ]

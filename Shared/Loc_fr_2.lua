@@ -504,6 +504,8 @@ return {
 		["✔ Path chosen"] = "✔ Voie choisie",
 		["🔒 Reach the required skill level first"] = "🔒 Atteignez d'abord le niveau de compétence requis",
 		["🌟 Path chosen!"] = "🌟 Voie choisie !",
+		["Tough Skin"] = "Peau dure",
+		["Recovery"] = "Récupération",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -840,6 +842,7 @@ return {
 		{ "Fall in the field {number1} times", "Tombez {number1} fois sur le terrain" },
 		{ "Raise your pet to level {number1}", "Montez votre familier au niveau {number1}" },
 		{ "Range x{number1} · allies heal +{number2}%", "Portée x{number1} · alliés soignés +{number2} %" },
+		{ "Recovers {number1}% HP per second", "Récupère {number1} % de PV par seconde" },
 		{ "Uses all Tickets (max {number1})", "Utilise tous les tickets (maximum {number1})" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 Champ · Meilleure zone {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "Zone {number1} · Désert ☠☠☠☠" },
@@ -929,7 +932,5 @@ return {
 		{ "◆ Heal on Kill +{number1}%", "◆ Soin à l'élimination +{number1}%" },
 		{ "Training time -{number1}%", "Temps d'entraînement -{number1}%" },
 		{ "🔑{number6} (Free today {number7}/{number8})", "🔑{number6} (Gratuit aujourd'hui {number7}/{number8})" },
-		{ "{number2} / {number3}   Reward: {number4} G", "{number2} / {number3} Récompense : {number4} G" },
-		{ "{number2} / {number3}   Reward: 🎫 {number4}", "{number2} / {number3} Récompense : 🎫 {number4}" },
 	},
 }
