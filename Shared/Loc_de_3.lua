@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Crit damage +{number1}%", "Kritischer Schaden +{number1}%" },
+		{ "◆ Move Speed +{number1}", "◆ Laufgeschw. +{number1}" },
 		{ "💰 Warp fee -{number1} G", "💰 Warp-Gebühr -{number1} G" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Stufe {number1} {number2} / {number3} Erfahrungspunkte" },
 		{ "DAMAGE · {number1}s · {number2}", "Schaden · {number1}s · {number2}" },

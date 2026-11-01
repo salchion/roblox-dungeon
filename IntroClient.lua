@@ -65,6 +65,105 @@ local function buildLord(parent, baseCF, S)
 	return eyes, core
 end
 
+-- 도착 연출: 착지가 끝나고 조작권이 돌아온 직후 약 3초. 발밑에 룬 고리가 돌며 퍼지고 빛기둥 / 불꽃이 솟고, "환영합니다" 글자가 쾅 뜨고 사라진다. (착지 장면은 그대로 두고, 그 뒤의 첫 화면만 채운다)
+local function arrivalBeat(position)
+	local camera = workspace.CurrentCamera
+	local fx = Instance.new("Folder")
+	fx.Name = "ArrivalFx"
+	fx.Parent = workspace
+	local base = position - Vector3.new(0, 2.8, 0)
+	local function newPart(props)
+		local part = Instance.new("Part")
+		part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch, part.CastShadow = true, false, false, false, false
+		part.Material = Enum.Material.Neon
+		for key, value in pairs(props) do part[key] = value end
+		part.Parent = fx
+		return part
+	end
+	-- 빛기둥 (서서히 사라진다) + 바닥에 깔리는 은은한 원
+	local column = newPart({ Shape = Enum.PartType.Cylinder, Size = Vector3.new(120, 6, 6), CFrame = CFrame.new(base + Vector3.new(0, 60, 0)) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(255, 226, 150), Transparency = 0.5 })
+	TweenService:Create(column, TweenInfo.new(2.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Transparency = 1, Size = Vector3.new(120, 2, 2) }):Play()
+	local disc = newPart({ Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.2, 3, 3), CFrame = CFrame.new(base + Vector3.new(0, 0.1, 0)) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.fromRGB(255, 214, 120), Transparency = 0.55 })
+	TweenService:Create(disc, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = Vector3.new(0.2, 17, 17) }):Play()
+	TweenService:Create(disc, TweenInfo.new(1.0), { Transparency = 0.8 }):Play()
+	task.delay(2.2, function() TweenService:Create(disc, TweenInfo.new(0.9), { Transparency = 1 }):Play() end)
+	-- 돌아가는 룬 조각 두 겹 (안쪽은 하늘색 / 바깥은 금색, 서로 반대로 돈다)
+	local runes = {}
+	for ringIndex, spec in ipairs({ { Count = 10, Radius = 5, Color = Color3.fromRGB(150, 215, 255), Speed = 1.7 }, { Count = 14, Radius = 8.5, Color = Color3.fromRGB(255, 220, 130), Speed = -1.1 } }) do
+		for index = 1, spec.Count do
+			local rune = newPart({ Size = Vector3.new(1.3, 0.15, 0.5), Color = spec.Color, Transparency = 1 })
+			table.insert(runes, { Part = rune, Angle = index / spec.Count * math.pi * 2, Radius = spec.Radius, Speed = spec.Speed })
+		end
+	end
+	-- 솟는 불꽃
+	for _ = 1, 26 do
+		local angle, dist = math.random() * math.pi * 2, math.random() * 7
+		local spark = newPart({ Shape = Enum.PartType.Ball, Size = Vector3.one * (0.3 + math.random() * 0.4), Color = math.random() < 0.5 and Color3.fromRGB(255, 226, 150) or Color3.fromRGB(190, 230, 255), Position = base + Vector3.new(math.cos(angle) * dist, 0.4, math.sin(angle) * dist) })
+		local life = 1.4 + math.random() * 1.4
+		TweenService:Create(spark, TweenInfo.new(life, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = spark.Position + Vector3.new((math.random() - 0.5) * 4, 10 + math.random() * 16, (math.random() - 0.5) * 4), Transparency = 1 }):Play()
+	end
+	sfx("Rare_Drop", 0.9, 1.0)
+	sfx("Reel_Stop", 0.7, 1.2)
+	-- 화면 글자: 쾅 하고 커졌다가 자리 잡고 사라진다 + 가운데에서 번지는 금빛
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "ArrivalGui"
+	gui.ResetOnSpawn = false
+	gui.IgnoreGuiInset = true
+	gui.DisplayOrder = 900
+	gui.Parent = playerGui
+	local glow = Instance.new("Frame")
+	glow.Size = UDim2.new(1, 0, 1, 0)
+	glow.BackgroundColor3 = Color3.fromRGB(255, 214, 130)
+	glow.BackgroundTransparency = 0.78
+	glow.BorderSizePixel = 0
+	glow.Parent = gui
+	TweenService:Create(glow, TweenInfo.new(1.2), { BackgroundTransparency = 1 }):Play()
+	local function bannerText(props)
+		local label = Instance.new("TextLabel")
+		label.BackgroundTransparency = 1
+		label.AnchorPoint = Vector2.new(0.5, 0.5)
+		label.Font = Enum.Font.GothamBlack
+		label.TextTransparency = 1
+		label.TextStrokeTransparency = 1
+		label.TextStrokeColor3 = Color3.fromRGB(60, 30, 10)
+		for key, value in pairs(props) do label[key] = value end
+		label.Parent = gui
+		return label
+	end
+	local headline = bannerText({ Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0.5, 0, 0.3, 0), Text = "Welcome, Hunter!", TextSize = 54, TextColor3 = Color3.fromRGB(255, 232, 160) })
+	local tagline = bannerText({ Size = UDim2.new(1, 0, 0, 28), Position = UDim2.new(0.5, 0, 0.3, 50), Text = "Your gear rush starts now", TextSize = 20, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(236, 232, 250) })
+	local scale = Instance.new("UIScale")
+	scale.Scale = 1.8
+	scale.Parent = headline
+	TweenService:Create(scale, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	TweenService:Create(headline, TweenInfo.new(0.3), { TextTransparency = 0, TextStrokeTransparency = 0.25 }):Play()
+	task.delay(0.35, function() TweenService:Create(tagline, TweenInfo.new(0.5), { TextTransparency = 0, TextStrokeTransparency = 0.5 }):Play() end)
+	task.delay(2.4, function()
+		TweenService:Create(headline, TweenInfo.new(0.7), { TextTransparency = 1, TextStrokeTransparency = 1, Position = UDim2.new(0.5, 0, 0.26, 0) }):Play()
+		TweenService:Create(tagline, TweenInfo.new(0.7), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+	end)
+	-- 룬 돌리기 (처음 0.5초 동안 안쪽에서 퍼져 나가며 나타나고, 마지막 0.8초에 사라진다)
+	local startAt = os.clock()
+	local total = 3.1
+	while os.clock() - startAt < total do
+		local t = os.clock() - startAt
+		local appear = math.clamp(t / 0.5, 0, 1)
+		local fade = t > total - 0.8 and math.clamp((total - t) / 0.8, 0, 1) or 1
+		local focus = camera and camera.CFrame.Position
+		for _, rune in ipairs(runes) do
+			local angle = rune.Angle + t * rune.Speed
+			local radius = rune.Radius * (0.4 + 0.6 * appear)
+			local pos = base + Vector3.new(math.cos(angle) * radius, 0.25, math.sin(angle) * radius)
+			rune.Part.CFrame = CFrame.lookAt(pos, base + Vector3.new(0, 0.25, 0)) * CFrame.Angles(0, math.rad(90), 0)
+			rune.Part.Transparency = 1 - 0.85 * appear * fade
+		end
+		if not focus then break end
+		RunService.RenderStepped:Wait()
+	end
+	fx:Destroy()
+	gui:Destroy()
+end
+
 local function play()
 	local camera = workspace.CurrentCamera
 	local character = player.Character or player.CharacterAdded:Wait()
@@ -846,6 +945,7 @@ local function play()
 	sfx("Reel_Stop", 0.8, 0.9)
 	task.wait(0.4)
 	finish()
+	task.spawn(arrivalBeat, spawnPos) -- 조작권이 돌아온 직후의 첫 화면을 채운다 (도착 연출)
 end
 
 task.spawn(function()

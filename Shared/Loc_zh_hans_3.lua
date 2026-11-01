@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⛺ Moved to Zone {number1} · {text2} Camp!", "⛺ 已移动到区域{number1} · {text2}的营地!" },
 		{ "Loading the world...  ·  {text1}", "正在加载世界...  ·  {text1}" },
 		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 新武器:{text1} - 按 {number2} 键!" },
 		{ "{text1} invited you to a party!", "{text1} 邀请你加入队伍!" },

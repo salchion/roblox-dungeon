@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 보상 {number1}개를 받았어요! (새 칭호 {number2}개)" },
+		{ "Keeps {number1} more stacks even if broken", "끊겨도 스택이 {number1}개 더 남아요" },
 		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 심연의 군주 (구역 {number1}) · 레코드 ⚡{number2}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 오늘 무료 입장권 {number1}장 · 🗝 키 {number2}개!" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 다음 무기 잠금 해제 산탄총 (+{number1})" },

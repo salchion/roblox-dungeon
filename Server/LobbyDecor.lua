@@ -9,7 +9,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 
 local LobbyDecor = {}
 
-local MAX_PARTS = 820 -- (전부 고정 / 충돌 없음 / 그림자 없음이라 부품 수가 늘어도 부담이 작다)
+local MAX_PARTS = 920 -- (전부 고정 / 충돌 없음 / 그림자 없음이라 부품 수가 늘어도 부담이 작다)
 local MAX_LIGHTS = 4
 local MAX_EMITTERS = 3
 
@@ -655,6 +655,36 @@ function LobbyDecor.Build(parent, ctx)
 		end
 		for i = 0, 6 do -- 다리 가운데 판석 (밟는 길이 다리 위에서도 이어진다)
 			box("BridgeSlab", Vector3.new(3, 0.06, 9), g(x0 + 1.5 + i * 3.2, 0, 0.03), i % 2 == 0 and STONE_LIGHT or STONE, M.Slate)
+		end
+	end
+
+	--------------------------------------------------------------------
+	-- 10) 중앙 광장 수호탑 4기: 광장 둘레에 석탑이 서고 꼭대기에서 수정이 푸르게 빛난다 (마을의 얼굴 / 한눈에 보이는 랜드마크)
+	--------------------------------------------------------------------
+	section("Landmarks")
+	do
+		local cx, cz = 0, 70
+		local CRYSTAL, GOLD_TRIM = rgb(120, 205, 245), rgb(232, 190, 90)
+		for i = 0, 3 do
+			local a = math.rad(45 + i * 90)
+			local x, z = cx + math.cos(a) * 26, cz + math.sin(a) * 26
+			local yaw = -(a + math.pi / 2)
+			-- 받침 단 + 몸통(위로 갈수록 가늘다) + 금 띠
+			disc("PylonPlinth", 6.4, 0.7, g(x, z, 0.7), STONE_DARK, M.Cobblestone)
+			box("PylonBase", Vector3.new(3.6, 1.2, 3.6), g(x, z, 1.3), STONE, M.Marble, yaw)
+			box("PylonShaftLow", Vector3.new(2.6, 6.5, 2.6), g(x, z, 5.1), STONE_LIGHT, M.Marble, yaw)
+			box("PylonBand", Vector3.new(2.9, 0.35, 2.9), g(x, z, 8.5), GOLD_TRIM, M.Metal, yaw)
+			box("PylonShaftHigh", Vector3.new(1.8, 4.5, 1.8), g(x, z, 10.9), STONE_LIGHT, M.Marble, yaw)
+			box("PylonBand", Vector3.new(2.2, 0.3, 2.2), g(x, z, 13.3), GOLD_TRIM, M.Metal, yaw)
+			-- 꼭대기 수정 (마름모처럼 두 번 돌려 놓은 육면체) + 받침 고리 + 은은한 푸른 빛
+			local cry = add("PylonCrystal", Vector3.new(2.4, 2.4, 2.4), CFrame.new(g(x, z, 15.6)) * CFrame.Angles(math.rad(45), yaw + math.rad(45), math.rad(35)), CRYSTAL, M.Neon, nil, 0.12)
+			add("PylonCrystalCore", Vector3.new(1.2, 1.2, 1.2), CFrame.new(g(x, z, 15.6)) * CFrame.Angles(math.rad(45), yaw + math.rad(45), math.rad(35)), rgb(235, 250, 255), M.Neon, nil, 0.05)
+			disc("PylonRing", 3.6, 0.2, g(x, z, 13.7), GOLD_TRIM, M.Metal)
+			if cry then
+				local light = Instance.new("PointLight")
+				light.Color, light.Range, light.Brightness, light.Shadows = CRYSTAL, 18, 0.7, false
+				light.Parent = cry
+			end
 		end
 	end
 

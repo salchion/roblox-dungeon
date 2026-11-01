@@ -251,15 +251,15 @@ function Lobby.Build()
 	do
 		local bloom = Lighting:FindFirstChild("LobbyBloom") or Instance.new("BloomEffect")
 		bloom.Name = "LobbyBloom"
-		bloom.Intensity = 0.04
-		bloom.Size = 16
-		bloom.Threshold = 3.2
+		bloom.Intensity = 0.2 -- (0.04 -> 0.2: 등불 / 수정 / 이름표 빛이 은은하게 번지게. 밋밋한 느낌을 줄인다)
+		bloom.Size = 24
+		bloom.Threshold = 2.1
 		bloom.Parent = Lighting
 		local grade = Lighting:FindFirstChild("LobbyGrade") or Instance.new("ColorCorrectionEffect")
 		grade.Name = "LobbyGrade"
-		grade.Saturation = -0.12
-		grade.Contrast = 0.03
-		grade.TintColor = Color3.fromRGB(235, 232, 255)
+		grade.Saturation = -0.03
+		grade.Contrast = 0.08
+		grade.TintColor = Color3.fromRGB(255, 240, 230) -- (해 질 녘 따뜻한 빛)
 		grade.Parent = Lighting
 	end
 	if not Lighting:FindFirstChildOfClass("Atmosphere") then

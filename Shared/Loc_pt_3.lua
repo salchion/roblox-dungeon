@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "(gold {number1} + gear {number2})", "(ouro {number1} + equipamento {number2})" },
 		{ "Crit damage +{number1}%p", "Dano crítico +{number1}%p" },
 		{ "vs. equipped ▼ {number1}", "vs equipado ▼ {number1}" },
 		{ "Monsters left: {number1}", "Monstros restantes: {number1}" },

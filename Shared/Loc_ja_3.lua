@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Survive {number1} dungeon bonus waves", "ダンジョンのボーナスウェーブを{number1}回耐える" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "敵のHP +{number1}%\nゴールド +{number2}%" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 ダークキャッスルゲート · 推奨レベル ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "スナイパーライフル・神秘の時代 +{number1}" },

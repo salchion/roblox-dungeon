@@ -798,6 +798,8 @@ return {
 		["🌀 The Boss Rush is open!"] = "🌀 보스 러시가 열렸다!",
 		["Equip mode"] = "장착 방식",
 		["⚡ Best gear"] = "⚡ 최강 장비",
+		["Welcome, Hunter!"] = "환영합니다, 사냥꾼!",
+		["Your gear rush starts now"] = "지금부터 기어 러시가 시작돼요",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1049,7 +1051,5 @@ return {
 		{ "Points left {number1}  /  total {number2}  (Level {number3})", "남은 포인트 {number1}  /  전체 {number2}  (레벨 {number3})" },
 		{ "🔥 Better gear dropped! ({number1} slot(s))", "🔥 더 좋은 장비가 떨어졌어요! ({number1}칸)" },
 		{ "Crit damage +{number1}%p per point  (max {number2})", "치명타 피해 +{number1}%p / 포인트당  (최대 {number2})" },
-		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 보상 {number1}개를 받았어요! (새 칭호 {number2}개)" },
-		{ "Keeps {number1} more stacks even if broken", "끊겨도 스택이 {number1}개 더 남아요" },
 	},
 }

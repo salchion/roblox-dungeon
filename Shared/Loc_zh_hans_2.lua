@@ -404,6 +404,8 @@ return {
 		["🌀 The Boss Rush is open!"] = "🌀 首领连战已开启！",
 		["Equip mode"] = "装备方式",
 		["⚡ Best gear"] = "⚡ 最强装备",
+		["Welcome, Hunter!"] = "欢迎，猎人！",
+		["Your gear rush starts now"] = "你的装备狂潮现在开始",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1053,6 +1055,5 @@ return {
 		{ "🛡 Empty gear slot: <b>{text1}</b>", "🛡 空装备栏：<b>{text1}</b>" },
 		{ "Active {number1} / {number2} slots   (💰 {text3} G)", "已启用 {number1} / {number2} 栏位   (💰 {text3} G)" },
 		{ "You are already holding {text1}.", "你已经持有 {text1}。" },
-		{ "⛺ Moved to Zone {number1} · {text2} Camp!", "⛺ 已移动到区域{number1} · {text2}的营地!" },
 	},
 }

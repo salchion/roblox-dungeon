@@ -276,3 +276,5 @@
 2317¦🌀 ボスラッシュが開放された！¦🌀 Der Boss Rush ist geöffnet!¦🌀 Le Boss Rush est ouvert !¦🌀 ¡El Boss Rush está abierto!¦🌀 O Boss Rush está aberto!¦🌀 首领连战已开启！¦🌀 보스 러시가 열렸다!
 2318¦装備モード¦Ausrüstungsmodus¦Mode d'équipement¦Modo de equipo¦Modo de equipamento¦装备方式¦장착 방식
 2319¦⚡ 最強装備¦⚡ Beste Ausrüstung¦⚡ Meilleur équipement¦⚡ Mejor equipo¦⚡ Melhor equipamento¦⚡ 最强装备¦⚡ 최강 장비
+2320¦ようこそ、ハンター！¦Willkommen, Jäger!¦Bienvenue, chasseur !¦¡Bienvenido, cazador!¦Bem-vindo, caçador!¦欢迎，猎人！¦환영합니다, 사냥꾼!
+2321¦ギアラッシュの始まりです¦Dein Gear Rush beginnt jetzt¦Votre Gear Rush commence maintenant¦Tu Gear Rush empieza ahora¦Seu Gear Rush começa agora¦你的装备狂潮现在开始¦지금부터 기어 러시가 시작돼요

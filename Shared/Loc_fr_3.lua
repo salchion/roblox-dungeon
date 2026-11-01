@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} Gear Roll Tickets", "{number1} tickets de roulement d'équipement" },
 		{ "👑 {number1} Kill Streak!!!!", "👑 Série de {number1} éliminations !!!!" },
 		{ "XP Booster ({number1} hour)", "Booster d'EXP ({number1} heure)" },
 		{ "Recommended Power {number2}", "Puissance recommandée {number2}" },
