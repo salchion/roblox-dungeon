@@ -1427,6 +1427,7 @@ local function showResult(result)
 	resultPanel.Visible = true
 	resultTitle.Text = result.Sweep and "⚡ Sweep Complete!" or (result.Victory and "🏆 Dungeon Cleared!" or "💀 Dungeon Failed")
 	resultBack.Text = result.Sweep and "OK" or "Back to Lobby"
+	resultPanel.Parent = result.Sweep and lobbyFrame or dungeonFrame -- (결과 창은 던전 화면 묶음 안에 있어서 마을에서는 통째로 숨겨져 있었다: 소탕 결과는 마을 화면 묶음으로 옮겨 띄운다)
 	resultPanel:SetAttribute("Keep", result.Sweep == true or nil) -- 소탕 결과는 마을에서 뜬다: 구역 갱신이 바로 닫지 않게 표시
 	resultTitle.TextColor3 = result.Victory and Color3.fromRGB(255, 220, 90) or Color3.fromRGB(255, 110, 110)
 	do -- 번 골드 / 티켓 칩 (세 자리마다 쉼표)
