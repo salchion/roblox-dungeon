@@ -729,6 +729,13 @@
       "overwrite": true
     },
     {
+      "path": "TownSkyClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "TownSkyClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "GearHideClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "GearHideClient",

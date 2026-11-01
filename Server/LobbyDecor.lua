@@ -9,7 +9,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 
 local LobbyDecor = {}
 
-local MAX_PARTS = 920 -- (전부 고정 / 충돌 없음 / 그림자 없음이라 부품 수가 늘어도 부담이 작다)
+local MAX_PARTS = 1200 -- (전부 고정 / 충돌 없음 / 그림자 없음이라 부품 수가 늘어도 부담이 작다)
 local MAX_LIGHTS = 4
 local MAX_EMITTERS = 3
 
@@ -685,6 +685,101 @@ function LobbyDecor.Build(parent, ctx)
 				light.Color, light.Range, light.Brightness, light.Shadows = CRYSTAL, 18, 0.7, false
 				light.Parent = cry
 			end
+		end
+	end
+
+	--------------------------------------------------------------------
+	-- 11) 하늘의 볼거리: 하늘 고리 / 떠 있는 섬 / 광장 위 거대 수정 (움직임은 TownSkyClient 가 맡는다. 입자 없음)
+	--------------------------------------------------------------------
+	section("Spectacle")
+	do
+		local CollectionService = game:GetService("CollectionService")
+		local skyFolder = current
+		local GOLD, CYAN = rgb(240, 196, 96), rgb(110, 214, 255)
+		local function skyModel(name, pos, spin, bob, phase)
+			local model = Instance.new("Model")
+			model.Name = name
+			model.ModelStreamingMode = Enum.ModelStreamingMode.Persistent
+			current = model
+			local pivot = add("Pivot", Vector3.new(1, 1, 1), CFrame.new(pos), STONE, M.SmoothPlastic, nil, 1)
+			return model, pivot, CFrame.new(pos), spin, bob, phase
+		end
+		local function finish(model, pivot, spin, bob, phase)
+			if pivot then model.PrimaryPart = pivot end
+			model:SetAttribute("Spin", spin)
+			model:SetAttribute("Bob", bob)
+			model:SetAttribute("Phase", phase)
+			model.Parent = skyFolder
+			CollectionService:AddTag(model, "TownSky")
+			current = skyFolder
+		end
+
+		-- (A) 마을 위를 두른 거대한 하늘 고리 두 겹 (금 / 청록) + 보석
+		do
+			local model, pivot, cf, spin, bob, phase = skyModel("SkyHalo", g(0, 0, 210), 0.035, 0, 0)
+			local SEG = 72
+			local function ring(R, tilt, color, thick)
+				local tcf = cf * CFrame.Angles(tilt, 0, 0)
+				for i = 0, SEG - 1 do
+					local a = i / SEG * math.pi * 2
+					local rcf = tcf * CFrame.new(math.cos(a) * R, 0, math.sin(a) * R) * CFrame.Angles(0, -(a + math.pi / 2), 0)
+					add("HaloSeg", Vector3.new(2 * math.pi * R / SEG * 1.03, thick, thick * 1.6), rcf, color, M.Neon, nil, 0.15)
+				end
+				for i = 0, 7 do
+					local a = i / 8 * math.pi * 2 + 0.2
+					add("HaloGem", Vector3.new(thick * 3.2, thick * 3.2, thick * 3.2), tcf * CFrame.new(math.cos(a) * R, 0, math.sin(a) * R) * CFrame.Angles(math.rad(45), a, math.rad(35)), rgb(255, 250, 235), M.Neon, nil, 0.05)
+				end
+			end
+			ring(250, math.rad(24), GOLD, 3)
+			ring(232, math.rad(24), CYAN, 2)
+			finish(model, pivot, spin, bob, phase)
+		end
+
+		-- (B) 떠 있는 섬
+		local function island(x, z, h, scale, spin, phase)
+			local model, pivot, cf, sp, bob, ph = skyModel("FloatIsland", g(x, z, h), spin, 2.5, phase)
+			local base = cf.Position
+			disc("IslandGrass", 34 * scale, 2.2, base, rgb(104, 164, 92), M.Grass)
+			disc("IslandRim", 35.5 * scale, 1.2, base - Vector3.new(0, 2.2, 0), rgb(122, 96, 70), M.Slate)
+			local y = 3.4
+			for i, d in ipairs({ 30, 22, 14, 7 }) do
+				disc("IslandRock", d * scale, 5, base - Vector3.new(0, y, 0), i % 2 == 0 and STONE_DARK or rgb(112, 100, 92), M.Slate)
+				y += 5
+			end
+			add("IslandGlow", Vector3.new(0.6, 10 * scale, 10 * scale), CFrame.new(base - Vector3.new(0, y + 0.5, 0)) * CFrame.Angles(0, 0, math.pi / 2), CYAN, M.Neon, Enum.PartType.Cylinder, 0.2)
+			for i = 1, 3 do
+				local a = i * 2.1 + phase
+				local p = base + Vector3.new(math.cos(a) * 8 * scale, 0, math.sin(a) * 8 * scale)
+				local hh = 3 + i
+				add("IslandCrystal", Vector3.new(hh * 0.5, hh, hh * 0.5), CFrame.new(p + Vector3.new(0, hh / 2, 0)) * CFrame.Angles(0.15, a, 0.2), i % 2 == 0 and CYAN or rgb(190, 150, 255), M.Neon, nil, 0.1)
+			end
+			vcyl("IslandTrunk", 6, 1.2, base - Vector3.new(4 * scale, 0, 0), rgb(98, 70, 46), M.Wood)
+			ball("IslandLeaves", 8, base + Vector3.new(-4 * scale, 8, 0), LEAF[1], M.Grass, 6)
+			finish(model, pivot, sp, bob, ph)
+		end
+		island(-165, 40, 105, 1.0, 0.04, 0)
+		island(165, -20, 130, 1.2, -0.03, 1.7)
+		island(-70, -170, 150, 1.4, 0.03, 3.1)
+		island(95, 165, 95, 0.9, -0.05, 4.4)
+		island(-120, 170, 125, 1.0, 0.04, 5.6)
+
+		-- (C) 광장 위에 떠서 천천히 도는 거대 수정 + 땅으로 내려오는 빛기둥
+		do
+			local model, pivot, cf, sp, bob, ph = skyModel("PlazaSkyCrystal", g(0, 70, 52), 0.5, 1.5, 0.8)
+			local base = cf.Position
+			local rot = CFrame.Angles(math.rad(45), math.rad(45), math.rad(35))
+			local cry = add("SkyCrystal", Vector3.new(9, 9, 9), CFrame.new(base) * rot, CYAN, M.Neon, nil, 0.1)
+			add("SkyCrystalCore", Vector3.new(4.5, 4.5, 4.5), CFrame.new(base) * rot, rgb(240, 252, 255), M.Neon, nil, 0.02)
+			add("SkyCrystalRing", Vector3.new(0.5, 17, 17), CFrame.new(base) * CFrame.Angles(0, 0, math.pi / 2 + 0.5), GOLD, M.Metal, Enum.PartType.Cylinder)
+			add("SkyCrystalRing", Vector3.new(0.4, 21, 21), CFrame.new(base) * CFrame.Angles(0, 0, math.pi / 2 - 0.6), GOLD, M.Metal, Enum.PartType.Cylinder)
+			add("SkyBeam", Vector3.new(2.4, 48, 2.4), CFrame.new(base - Vector3.new(0, 26, 0)), CYAN, M.Neon, nil, 0.82)
+			add("SkyBeamGround", Vector3.new(0.3, 18, 18), CFrame.new(base - Vector3.new(0, 51.9, 0)) * CFrame.Angles(0, 0, math.pi / 2), CYAN, M.Neon, Enum.PartType.Cylinder, 0.75)
+			if cry then
+				local light = Instance.new("PointLight")
+				light.Color, light.Range, light.Brightness, light.Shadows = CYAN, 40, 0.6, false
+				light.Parent = cry
+			end
+			finish(model, pivot, sp, bob, ph)
 		end
 	end
 
