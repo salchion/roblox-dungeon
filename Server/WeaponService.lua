@@ -707,7 +707,7 @@ function Weapon.Enhance(player)
 	end
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
-		return false, string.format("💰 Not enough gold. (%d needed) Earn gold at the dummy yard, field hunting, dungeons, or the Boss Rush", cost), true
+		return false, string.format("💰 Not enough gold. (%d needed) Earn gold from field hunting, dungeons, the Boss Rush, or idle income", cost), true
 	end
 
 	player:SetAttribute("Gold", gold - cost)

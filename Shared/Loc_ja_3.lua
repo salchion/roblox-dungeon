@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Raise your pet to level {number1}", "ペットをレベル{number1}まで育てる" },
+		{ "Uses all Tickets (max {number1})", "すべてのチケットを使用（最大{number1}枚）" },
+		{ "📍 Field · Best Zone {number1}   ", "📍 フィールド・ベストゾーン {number1}" },
+		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "ゾーン {number1}  · 砂漠 ☠☠☠☠" },
+		{ "🎒 Bag {number1} / {number2}    ✨ Essence {number3}", "🎒 バッグ {number1} / {number2} ✨ エッセンス {number3}" },
 		{ "Returning to lobby in {number1}s", "{number1}秒後にロビーに戻ります" },
 		{ "🔒 Zone {number1} · Desert Sealed", "🔒 ゾーン {number1} · 砂漠が封鎖されています" },
 		{ "⚔ Railgun · Rusty Era +{number1}", "⚔ レールガン・錆の時代 +{number1}" },
@@ -224,6 +229,7 @@ return {
 		{ "⏱ {number1} min", "⏱ {number1}分" },
 		{ "(max {number1})", "(最大 {number1})" },
 		{ "Free {number1}/{number2}", "無料 {number1}/{number2}" },
+		{ "{number1} to go", "あと{number1}" },
 		{ "ZONE {number1}", "ゾーン {number1}" },
 		{ "{number1} more", "あと{number1}" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },

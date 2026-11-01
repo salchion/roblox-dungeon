@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🥇 LeeGoAll  ⚡{number1}\n🥈 {player1}  ⚡{number2}", "🥇 LeeGoAll ⚡{number1}\n🥈 {player1} ⚡{number2}" },
+		{ "🌀 Gate of the Abyss · Rec. ⚡{number2}", "🌀 심연의 문 · 기록 ⚡{number2}" },
+		{ "🧹 Cleaned up {number1}! Essence +{number2}, {number3} G", "🧹 {number1}개 정리 완료! 정수 +{number2}, {number3} G" },
+		{ "Damage x{number1} · {number2} targets (gauge {number3})", "피해 x{number1} · 대상 {number2}명 (게이지 {number3})" },
+		{ "🔒 Paragon unlocks at level {number1}.", "🔒 패러건은 {number1}레벨에 해금됩니다." },
 		{ "Survive {number1} dungeon bonus waves", "던전 보너스 웨이브 {number1}번 버티기" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "적의 HP +{number1}%\n골드 +{number2}%" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 다크 캐슬 게이트 · 추천 수 {number2}" },
@@ -285,6 +290,7 @@ return {
 		{ "⏱ {number1} min", "⏱ {number1}분" },
 		{ "XP {number1} / {number2}", "경험치 {number1} / {number2}" },
 		{ "Free {number1}/{number2}", "무료 {number1}/{number2}" },
+		{ "{number1} to go", "{number1} 남음" },
 		{ "ZONE {number1}", "구역 {number1}" },
 		{ "{number1} more", "{number1}" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },

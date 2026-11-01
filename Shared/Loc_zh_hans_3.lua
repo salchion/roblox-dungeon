@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} · {text2} · Monsters left {number3} · Keep going!", "{text1} · {text2} · 剩余怪物 {number3} · 加油!" },
+		{ "🏅 Achievement unlocked! Reward: {text1}{text2}", "🏅 成就解锁!奖励:{text1}{text2}" },
+		{ "Upgrade cost {text1} G · You have {text2} G", "强化费用 {text1} 金币 · 你有 {text2} 金币" },
+		{ "📢 {text1}'s weapon evolved into [{text2}]!", "📢 {text1} 的武器进化为【{text2}】!" },
+		{ "✨ {number1}-piece set complete! {text2} {text3} Lv.{number4}", "✨ {number1} 件套装集齐!{text2} {text3} Lv.{number4}" },
 		{ "{text1} {text2} Tier · {number3} bosses defeated", "{text1} {text2} 阶 · 击败 {number3} 个首领" },
 		{ "⏱ {text1} survived  ×  💥 {text2} damage", "⏱ 存活 {text1}  ×  💥 伤害 {text2}" },
 		{ "▲ {number1} unspent (T)  ·  {text2} / {text3} XP", "▲ {number1} 未分配 (T)  ·  {text2} / {text3} XP" },

@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Time Skip {number1} min", "Saut de temps {number1} minutes" },
+		{ "Idle Income +{number1}%", "Revenu passif +{number1}%" },
+		{ "Zone {number1} · Meadow", "Zone {number1} · Prairie" },
+		{ "🥈 {player1}  ⚡{number2}", "🥈 {player1} ⚡{number2}" },
+		{ "·  Gold / XP x{number1}", "·  Or / XP x{number1}" },
+		{ "Crit chance +{number1}%", "Chance critique +{number1} %" },
+		{ "· Unlocks at +{number1}", "· Se débloque à +{number1}" },
 		{ "💰 {number1} G   Upgrade", "💰 {number1} or   Améliorer" },
 		{ "🎁 Claim All ({number1})", "🎁 Tout récupérer ({number1})" },
 		{ "Crit damage +{number1}%", "Dégâts critiques +{number1}%" },
@@ -85,6 +92,7 @@ return {
 		{ "⚡ {number1} Lv.{number2}", "⚡ {number1} Niveau {number2}" },
 		{ "≈ {number1} dmg", "≈ {number1} dégâts" },
 		{ "Free {number1}/{number2}", "Gratuit {number1}/{number2}" },
+		{ "{number1} to go", "encore {number1}" },
 		{ "ZONE {number1}", "Zone {number1}" },
 		{ "{number1} more", "encore {number1}" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },

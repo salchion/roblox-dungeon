@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Free {number1}/{number2}", "Grátis {number1}/{number2}" },
+		{ "{number1} to go", "faltam {number1}" },
+		{ "ZONE {number1}", "Zona {number1}" },
+		{ "{number1} more", "mais {number1}" },
+		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
+		{ "{number1} key", "{number1} chave" },
+		{ "Lv {number1}", "Nível {number1}" },
 		{ "A new dungeon theme can now appear ({text1}, Level {number2}+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", "Um novo tema de masmorra agora pode aparecer ({text1}, nível {number2}+). Escolha uma profundidade: mais fundo significa melhores chances de drop e chefes mais fortes. Um marcador agora aponta para o portão." },
 		{ "(one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "(um entre {number1}) aparecem em equipamentos míticos: baús de masmorra (veja abaixo), drops do campo ({text2}), o baú semanal do Boss Rush e a recompensa semanal do Senhor Final." },
 		{ "🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: {text1}", "🔫 5 tipos de arma — um é desbloqueado a cada marco de melhoria (a cada 15). Escolha com qual arma desbloqueada lutar · Agora: {text1}" },

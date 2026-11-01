@@ -4,6 +4,15 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🐾 Pet Lv.{number1}!", "🐾 ¡Mascota Nv.{number1}!" },
+		{ "Upgrade {number1} G", "Mejorar {number1} G" },
+		{ "✦ Paragon {number1}", "✦ Paragón {number1}" },
+		{ "◆ Max HP +{number1}", "◆ PV máx. +{number1}" },
+		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
+		{ "Damage +{number2}%", "Daño +{number2}%" },
+		{ "x{number1}\nUpgrade", "x{number1}\nMejorar" },
+		{ "Damage +{number1}%", "Daño +{number1}%" },
+		{ "Admin (F{number1})", "Administrador (F{number1})" },
 		{ "Party ({number1}/{number2})", "Grupo ({number1}/{number2})" },
 		{ "Attack +{number1}%", "Ataque +{number1}%" },
 		{ "🔑 {number1} Key(s)", "🔑 {number1} llave(s)" },
@@ -36,6 +45,7 @@ return {
 		{ "≈ {number1} dmg", "≈ {number1} de daño" },
 		{ "(max {number1})", "(máx. {number1})" },
 		{ "Free {number1}/{number2}", "Gratis {number1}/{number2}" },
+		{ "{number1} to go", "faltan {number1}" },
 		{ "ZONE {number1}", "Zona {number1}" },
 		{ "{number1} more", "{number1} más" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },

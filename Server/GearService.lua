@@ -889,7 +889,7 @@ function Gear.Enhance(player, slotKey)
 	local cost = Config.GetGearCost(slotKey, rarity, level)
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
-		return false, string.format("💰 Not enough Gold. (%d needed) Earn Gold at the Training Dummy / field hunting / dungeons / Boss Rush rewards", cost)
+		return false, string.format("💰 Not enough Gold. (%d needed) Earn Gold from field hunting / dungeons / Boss Rush / idle income", cost)
 	end
 	player:SetAttribute("Gold", gold - cost)
 

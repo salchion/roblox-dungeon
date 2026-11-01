@@ -232,8 +232,8 @@ local resetEnhanceView -- 블록 밖(왼쪽 무기 버튼 신호)에서도 쓰�
 do
 -- 무기 강화 창: 둥근 다이얼. 위에 무기 구슬(+N), 가운데 성공 확률 링, 아래 재료 칸(필요 골드 / 가진 골드), 맨 아래 강화 버튼.
 local E = {}
-local PW, PH = 440, 644
-local DX, DY = PW / 2, 300 -- 다이얼 중심
+local PW, PH = 440, 680
+local DX, DY = PW / 2, 336 -- 다이얼 중심
 enhancePanel = makePanel({
 	Name = "EnhancePanel", -- (EnhanceResultClient 가 이 창 위에 결과 카드를 그린다)
 	Size = UDim2.new(0, PW, 0, PH), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
@@ -298,15 +298,34 @@ makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 30), Te
 E.Chance = makeLabel({ Size = UDim2.new(1, 0, 0, 44), Position = UDim2.new(0, 0, 0, 48), Text = "", TextSize = 38, Font = Enum.Font.GothamBlack, ZIndex = 4 }, core)
 E.Damage = makeLabel({ Size = UDim2.new(1, -10, 0, 30), Position = UDim2.new(0, 5, 0, 94), Text = "", RichText = true, TextSize = 11, TextWrapped = true, Font = Enum.Font.GothamBold, ZIndex = 4 }, core)
 
--- 위: 무기 구슬 + 강화 수치
-local medal = circle(96, DX, 120, Color3.fromRGB(34, 30, 52), 5)
+-- 위: [지금 무기] ──진행 막대──▶ [다음 무기 / 다음 시대]. 강화할 때마다 막대가 차올라 100%가 되면 새 무기 / 새 시대가 열린다
+local ORB_Y, ORB_SIZE, ORB_DX = 128, 70, 92
+local medal = circle(ORB_SIZE, DX - ORB_DX, ORB_Y, Color3.fromRGB(34, 30, 52), 5) -- (왼쪽: 지금 무기)
 create("UIGradient", { Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(120, 115, 150)), Rotation = 90 }, medal)
-local medalStroke = create("UIStroke", { Color = Color3.fromRGB(255, 200, 90), Thickness = 5 }, medal)
-E.MedalIcon = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "🔫", TextSize = 50, ZIndex = 6 }, medal)
+local medalStroke = create("UIStroke", { Color = Color3.fromRGB(255, 200, 90), Thickness = 4 }, medal)
+E.MedalIcon = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "🔫", TextSize = 38, ZIndex = 6 }, medal)
+E.NextOrb = circle(ORB_SIZE, DX + ORB_DX, ORB_Y, Color3.fromRGB(34, 30, 52), 5) -- (오른쪽: 다음 무기 / 다음 시대)
+create("UIGradient", { Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(120, 115, 150)), Rotation = 90 }, E.NextOrb)
+E.NextStroke = create("UIStroke", { Color = Color3.fromRGB(150, 150, 170), Thickness = 3 }, E.NextOrb)
+E.NextIcon = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "❔", TextSize = 38, ZIndex = 6 }, E.NextOrb)
+E.NextBadge = makeLabel({ Size = UDim2.new(0, 24, 0, 24), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, 2, 1, 2), Text = "🔒", TextSize = 16, ZIndex = 8 }, E.NextOrb)
+E.CurCaption = makeLabel({ Size = UDim2.new(0, 120, 0, 14), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, DX - ORB_DX, 0, ORB_Y + ORB_SIZE / 2 + 4), Text = "Now", TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(215, 210, 235), ZIndex = 6 }, enhancePanel)
+E.NextCaption = makeLabel({ Size = UDim2.new(0, 130, 0, 14), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, DX + ORB_DX, 0, ORB_Y + ORB_SIZE / 2 + 4), Text = "", TextSize = 11, Font = Enum.Font.GothamBold, ZIndex = 6 }, enhancePanel)
+-- 진행 막대 (두 구슬 사이): 화살표 모양으로 차오른다
+local BAR_W = 2 * ORB_DX - ORB_SIZE - 14
+E.BarBack = create("Frame", { Size = UDim2.new(0, BAR_W, 0, 12), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, DX, 0, ORB_Y + 6), BackgroundColor3 = Color3.fromRGB(16, 14, 28), BorderSizePixel = 0, ZIndex = 5 }, enhancePanel)
+create("UICorner", { CornerRadius = UDim.new(1, 0) }, E.BarBack)
+create("UIStroke", { Color = Color3.fromRGB(110, 100, 150), Thickness = 1.5 }, E.BarBack)
+E.BarFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 200, 90), BorderSizePixel = 0, ZIndex = 6 }, E.BarBack)
+create("UICorner", { CornerRadius = UDim.new(1, 0) }, E.BarFill)
+makeLabel({ Size = UDim2.new(0, 20, 0, 20), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, DX + BAR_W / 2 + 2, 0, ORB_Y + 6), Text = "▶", TextSize = 14, TextColor3 = Color3.fromRGB(255, 220, 130), ZIndex = 7 }, enhancePanel)
+E.BarText = makeLabel({ Size = UDim2.new(0, BAR_W + 20, 0, 18), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0, DX, 0, ORB_Y - 2), Text = "", RichText = true, TextSize = 13, Font = Enum.Font.GothamBlack, ZIndex = 7 }, enhancePanel)
+E.BarLeft = makeLabel({ Size = UDim2.new(0, BAR_W + 30, 0, 14), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, DX, 0, ORB_Y + 16), Text = "", RichText = true, TextSize = 10, ZIndex = 7 }, enhancePanel)
+-- 강화 단계 (+114 → +115): 가운데 확률 원 위쪽 칸
 local enhanceStage = makeLabel({
-	Size = UDim2.new(0, 120, 0, 30), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, DX, 0, 172), Font = Enum.Font.GothamBlack, TextSize = 26,
-	TextStrokeTransparency = 0.3, ZIndex = 7, RichText = true,
-}, enhancePanel)
+	Size = UDim2.new(1, -10, 0, 20), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 17), Font = Enum.Font.GothamBlack, TextSize = 15,
+	TextStrokeTransparency = 0.4, ZIndex = 7, RichText = true,
+}, core)
 
 -- 아래: 재료 칸 (필요 골드 / 가진 골드)
 local function materialOrb(x, y, title)
@@ -320,10 +339,10 @@ end
 E.Cost = materialOrb(DX - 78, DY + 138, "Cost")
 E.Owned = materialOrb(DX + 78, DY + 138, "You have")
 
-local enhanceNext = makeLabel({ Size = UDim2.new(1, -30, 0, 18), Position = UDim2.new(0, 15, 0, 500), TextSize = 12, RichText = true, ZIndex = 6 }, enhancePanel)
-local enhanceResult = makeLabel({ Size = UDim2.new(1, -24, 0, 34), Position = UDim2.new(0, 12, 0, 520), Font = Enum.Font.GothamBold, TextSize = 11, TextWrapped = true, ZIndex = 6 }, enhancePanel)
+local enhanceNext = makeLabel({ Size = UDim2.new(1, -30, 0, 18), Position = UDim2.new(0, 15, 0, 536), TextSize = 12, RichText = true, ZIndex = 6 }, enhancePanel)
+local enhanceResult = makeLabel({ Size = UDim2.new(1, -24, 0, 34), Position = UDim2.new(0, 12, 0, 556), Font = Enum.Font.GothamBold, TextSize = 11, TextWrapped = true, ZIndex = 6 }, enhancePanel)
 local hammer = makeLabel({
-	Size = UDim2.new(0, 70, 0, 70), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 70, 0, 110),
+	Size = UDim2.new(0, 70, 0, 70), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, -ORB_DX + 56, 0, 112),
 	Text = "🔨", TextSize = 48, Visible = false, ZIndex = 9, Rotation = -50,
 }, enhancePanel)
 
@@ -388,16 +407,16 @@ local enhanceButton = pill(makeButton({
 	E.EnhanceBusy = true
 	hammer.Visible = true
 	hammer.Rotation = -50
-	hammer.Position = UDim2.new(0.5, 70, 0, 110)
-	local swing = TweenService:Create(hammer, TweenInfo.new(0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Rotation = 25, Position = UDim2.new(0.5, 20, 0, 150) })
+	hammer.Position = UDim2.new(0.5, -ORB_DX + 56, 0, 112)
+	local swing = TweenService:Create(hammer, TweenInfo.new(0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Rotation = 25, Position = UDim2.new(0.5, -ORB_DX + 10, 0, 150) })
 	swing:Play()
 	swing.Completed:Connect(function()
 		E.hammer()
 		for i = 1, 8 do
-			local spark = circle(8, DX, 120, i % 2 == 0 and Color3.fromRGB(255, 220, 110) or Color3.fromRGB(255, 140, 60), 8)
+			local spark = circle(8, DX - ORB_DX, ORB_Y, i % 2 == 0 and Color3.fromRGB(255, 220, 110) or Color3.fromRGB(255, 140, 60), 8)
 			local angle = (i / 8) * math.pi * 2
 			TweenService:Create(spark, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-				Position = UDim2.new(0, DX + math.cos(angle) * 110, 0, 120 + math.sin(angle) * 70), BackgroundTransparency = 1,
+				Position = UDim2.new(0, DX - ORB_DX + math.cos(angle) * 100, 0, ORB_Y + math.sin(angle) * 60), BackgroundTransparency = 1,
 			}):Play()
 			game:GetService("Debris"):AddItem(spark, 0.5)
 		end
@@ -502,6 +521,54 @@ function refreshEnhance()
 	E.EnhanceShownTier = tier.Index
 	E.Owned.Value.Text = E.comma(gold)
 
+	-- 위쪽: [지금 무기] ──막대──▶ [다음 무기 / 다음 시대]
+	do
+		local order = Config.WeaponTypes.Order
+		E.CurCaption.Text = Config.GetWeaponName(typeKey, level)
+		E.CurCaption.TextColor3 = color
+		if not milestone then -- 마지막 무기까지 끝냈다
+			E.NextIcon.Text = "👑"
+			E.NextOrb.BackgroundColor3 = Color3.fromRGB(70, 56, 20)
+			E.NextStroke.Color = Color3.fromRGB(255, 217, 102)
+			E.NextBadge.Visible = false
+			E.NextCaption.Text = "MAX"
+			E.NextCaption.TextColor3 = Color3.fromRGB(255, 217, 102)
+			E.BarFill.Size = UDim2.new(1, 0, 1, 0)
+			E.BarFill.BackgroundColor3 = Color3.fromRGB(255, 217, 102)
+			E.BarText.Text = "100%"
+			E.BarLeft.Text = ""
+		else
+			local isForm = milestone.Kind == "Form"
+			local base = Config.Weapon.Tiers[(tier.Era - 1) * #order + 1].MinLevel
+			if isForm then base = Config.Weapon.Tiers[Config.GetUnlockedCount(level)].MinLevel end
+			local span = math.max(1, milestone.Level - base)
+			local ratio = math.clamp((level - base) / span, 0, 1)
+			local nextColor
+			if isForm then -- 아직 안 열린 무기가 남았다: 다음 무기 (잠긴 모습)
+				local nextLook = Config.GetLookTier(level, milestone.Key)
+				nextColor = nextLook.Rainbow and Color3.fromRGB(255, 120, 255) or nextLook.Color
+				E.NextIcon.Text = WEAPON_ICONS[milestone.Key] or "❔"
+				E.NextBadge.Text = "🔒"
+				E.NextCaption.Text = milestone.Name
+			else -- 무기는 다 열렸다: 같은 무기의 다음 시대 모습 (색이 바뀐다)
+				nextColor = milestone.Tier and (milestone.Tier.Rainbow and Color3.fromRGB(255, 120, 255) or milestone.Tier.Color) or color
+				E.NextIcon.Text = WEAPON_ICONS[typeKey] or "🔫"
+				E.NextBadge.Text = "✨"
+				E.NextCaption.Text = milestone.Name
+			end
+			E.NextBadge.Visible = true
+			E.NextIcon.TextTransparency = ratio >= 1 and 0 or (0.45 - 0.4 * ratio) -- 차오를수록 또렷해진다
+			E.NextOrb.BackgroundColor3 = nextColor:Lerp(Color3.fromRGB(20, 18, 32), 0.72)
+			E.NextStroke.Color = nextColor
+			E.NextStroke.Thickness = 2 + 3 * ratio
+			E.NextCaption.TextColor3 = nextColor
+			E.BarFill.BackgroundColor3 = color:Lerp(nextColor, ratio):Lerp(Color3.fromRGB(255, 214, 110), 0.25 + 0.5 * ratio) -- 100% 에 가까울수록 금빛으로 달아오른다
+			TweenService:Create(E.BarFill, TweenInfo.new(0.4, Enum.EasingStyle.Quad), { Size = UDim2.new(ratio, 0, 1, 0) }):Play()
+			E.BarText.Text = string.format("<font color='%s'>%d%%</font>", ratio >= 0.8 and "#ffe27a" or "#ffffff", math.floor(ratio * 100 + 0.0001))
+			E.BarLeft.Text = string.format("<font color='#c8c3de'>%d to go</font>", math.max(0, milestone.Level - level))
+		end
+	end
+
 	if level >= Config.Weapon.MaxLevel then
 		enhanceStage.Text = string.format("<font color='#ffd966'>+%d MAX</font>", level)
 		enhanceNext.Text = "<font color='#ffd966'>You maxed out the final weapon!</font>"
@@ -528,8 +595,8 @@ function refreshEnhance()
 	enhanceStage.Text = string.format("+%d <font color='#6ec3ff'>→</font> <font color='#78ff8c'>+%d</font>", level, level + 1)
 	enhanceStage.TextColor3 = Color3.new(1, 1, 1)
 	if E.LastStage and E.LastStage ~= level then
-		enhanceStage.TextSize = 36
-		TweenService:Create(enhanceStage, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { TextSize = 26 }):Play()
+		enhanceStage.TextSize = 22
+		TweenService:Create(enhanceStage, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { TextSize = 15 }):Play()
 	end
 	E.LastStage = level
 	if milestone and milestone.Kind == "Form" then

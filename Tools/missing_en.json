@@ -2220,5 +2220,8 @@
 "Pick a set to target",
 "No set",
 "Recommended ⚡ {number1}   Danger {text2}",
-"{text1} New set: {text2}"
+"{text1} New set: {text2}",
+"💰 Not enough gold. ({number1} needed) Earn gold from field hunting, dungeons, the Boss Rush, or idle income",
+"💰 Not enough Gold. ({number1} needed) Earn Gold from field hunting / dungeons / Boss Rush / idle income",
+"{number1} to go"
 ]
