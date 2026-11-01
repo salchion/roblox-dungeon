@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Move speed +{number1} per point  (max {number2})", "이동 속도 +{number1} 포인트 (최대 {number2})" },
 		{ "🎯 Deadeye! Barrage on {number1} enemies", "🎯 데이드아이! {number1}명의 적에게 난사 공격" },
 		{ "⚠ Not enough gold. ({number1} G needed)", "⚠ 골드가 부족해요. ({number1} G 필요)" },
 		{ "\n(Idle income bonus +{number1}% active)", "\n(방치 수입 보너스 +{number1}% 적용 중)" },

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔑{number6} (Free today {number7}/{number8})", "🔑{number6} (Gratuit aujourd'hui {number7}/{number8})" },
 		{ "{number2} / {number3}   Reward: {number4} G", "{number2} / {number3} Récompense : {number4} G" },
 		{ "{number2} / {number3}   Reward: 🎫 {number4}", "{number2} / {number3} Récompense : 🎫 {number4}" },
 		{ "💥Explosive Shot {number1}", "💥Tir explosif {number1}" },

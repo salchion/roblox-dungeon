@@ -971,8 +971,10 @@ function Gear.Roll(player, forced)
 	local slot = G.Slots[math.random(#G.Slots)]
 	local item = Inventory.NewItem(slot.Key, rarity, 0, nil, 0) -- (뽑기 장비에는 유니크가 붙지 않는다: 유니크는 던전 쪽 보상)
 	-- 뽑기만의 장점: 고른 구역 세트 조각으로 나온다 (필드에서는 그 구역에서 운으로만 나온다). 튜토리얼 뽑기는 제외
+	local reached = math.clamp(math.floor(player:GetAttribute("MaxZone") or 1), 1, Config.Field.ZoneCount)
 	local setZone = not mode and (player:GetAttribute("GachaSet") or 0) or 0
-	if setZone >= 1 and setZone <= (player:GetAttribute("MaxZone") or 1) and Config.Sets.ZoneKeys[setZone] then
+	if not mode and setZone < 1 then setZone = math.random(reached) end -- 고르지 않으면 도달한 구역 중 하나의 세트가 무작위로 붙는다
+	if setZone >= 1 and setZone <= reached and Config.Sets.ZoneKeys[setZone] then
 		item.Set = Config.Sets.ZoneKeys[setZone]
 	end
 	item.NoCard = true -- (뽑기는 자기 연출(GachaReveal)이 있어서 획득 카드를 띄우지 않는다)

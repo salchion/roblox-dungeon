@@ -927,7 +927,7 @@ Remotes.Gear.OnServerEvent:Connect(function(player, action, arg, arg2)
 	if now - (lastGear[player] or 0) < 0.25 then return end
 	lastGear[player] = now
 
-	if action == "GachaSet" and typeof(arg) == "number" then -- 뽑기에서 노릴 구역 세트 (0 = 세트 없이). 도달한 구역까지만 고를 수 있다
+	if action == "GachaSet" and typeof(arg) == "number" then -- 뽑기에서 노릴 구역 세트 (0 = 도달한 구역 중 무작위 세트). 도달한 구역까지만 고를 수 있다
 		local zone = math.floor(arg)
 		if zone >= 0 and zone <= math.min(Config.Field.ZoneCount, player:GetAttribute("MaxZone") or 1) then
 			player:SetAttribute("GachaSet", zone)

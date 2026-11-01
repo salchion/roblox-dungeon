@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Dismantled {number1}! Essence +{number2}, {number3} G", "{number1}個を分解しました！エッセンス+{number2}、{number3} G" },
+		{ "Enter the Boss Rush {number1} times", "ボスラッシュに{number1}回挑戦する" },
 		{ "Fires {number1} pellets in a spread", "{number1}発の散弾を扇状に発射" },
 		{ "You can afford it now ({number1} G)", "今すぐ強化できる ({number1} G)" },
 		{ "⭐ Legendary guaranteed in {number1}", "⭐ 伝説確定まで {number1}" },

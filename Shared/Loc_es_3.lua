@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⏱ Skip gauge {number1}s", "⏱ Saltar medidor {number1} segundos" },
+		{ "DAMAGE · {number1}s · {number2}K", "Daño · {number1} segundos · {number2}K" },
 		{ "🥇 {player1}  ⚡{number1}", "🥇 {player1} ⚡{number1}" },
 		{ "Time Skip {number1} min", "Salto de tiempo {number1} minutos" },
 		{ "Idle Income +{number1}%", "Ingresos de inactividad +{number1}%" },

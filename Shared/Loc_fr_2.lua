@@ -506,6 +506,9 @@ return {
 		["🌟 Path chosen!"] = "🌟 Voie choisie !",
 		["Tough Skin"] = "Peau dure",
 		["Recovery"] = "Récupération",
+		["Random set"] = "Set aléatoire",
+		["Any"] = "Au hasard",
+		["🎲 A random set from your reached zones"] = "🎲 Un set aléatoire parmi les zones atteintes",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -931,6 +934,5 @@ return {
 		{ "◆ Attack Speed +{number1}%", "◆ Vitesse d'attaque +{number1}%" },
 		{ "◆ Heal on Kill +{number1}%", "◆ Soin à l'élimination +{number1}%" },
 		{ "Training time -{number1}%", "Temps d'entraînement -{number1}%" },
-		{ "🔑{number6} (Free today {number7}/{number8})", "🔑{number6} (Gratuit aujourd'hui {number7}/{number8})" },
 	},
 }

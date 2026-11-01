@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Admin (F{number1})", "Administrator (F{number1})" },
+		{ "Party ({number1}/{number2})", "Gruppe ({number1}/{number2})" },
+		{ "Attack +{number1}%", "Angriff +{number1}%" },
 		{ "🔑 {number1} Key(s)", "🔑 {number1} Schlüssel" },
 		{ "Survive {number1}s", "Überlebe {number1} s" },
 		{ "🎰 Roll x{number1}!", "🎰 {number1}x ziehen!" },

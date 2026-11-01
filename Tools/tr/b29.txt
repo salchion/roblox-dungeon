@@ -230,3 +230,6 @@
 2271¦回復力¦Erholung¦Récupération¦Recuperación¦Recuperação¦恢复力¦회복력
 2272¦被ダメージ-{number1}%¦Erlittener Schaden -{number1} %¦Dégâts subis -{number1} %¦Daño recibido -{number1} %¦Dano recebido -{number1}%¦受到伤害-{number1}%¦받는 피해 -{number1}%
 2273¦毎秒HPを{number1}%回復¦Stellt pro Sekunde {number1} % LP wieder her¦Récupère {number1} % de PV par seconde¦Recupera {number1} % de PV por segundo¦Recupera {number1}% de PV por segundo¦每秒恢复{number1}%生命¦초당 체력 {number1}% 회복
+2274¦ランダムセット¦Zufälliges Set¦Set aléatoire¦Set aleatorio¦Set aleatório¦随机套装¦랜덤 세트
+2275¦おまかせ¦Beliebig¦Au hasard¦Al azar¦Aleatório¦随机¦랜덤
+2276¦🎲 到達したエリアからランダムなセット¦🎲 Ein zufälliges Set aus erreichten Zonen¦🎲 Un set aléatoire parmi les zones atteintes¦🎲 Un set aleatorio de las zonas alcanzadas¦🎲 Um set aleatório das zonas alcançadas¦🎲 从已到达的区域中随机一套¦🎲 도달한 구역 중 무작위 세트

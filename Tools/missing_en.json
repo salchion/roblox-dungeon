@@ -2272,5 +2272,8 @@
 "Tough Skin",
 "Recovery",
 "Damage taken -{number1}%",
-"Recovers {number1}% HP per second"
+"Recovers {number1}% HP per second",
+"Random set",
+"Any",
+"🎲 A random set from your reached zones"
 ]

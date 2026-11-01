@@ -495,6 +495,9 @@ return {
 		["🌟 Path chosen!"] = "🌟 ¡Camino elegido!",
 		["Tough Skin"] = "Piel dura",
 		["Recovery"] = "Recuperación",
+		["Random set"] = "Set aleatorio",
+		["Any"] = "Al azar",
+		["🎲 A random set from your reached zones"] = "🎲 Un set aleatorio de las zonas alcanzadas",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -964,7 +967,5 @@ return {
 		{ "{number1} more upgrades", "{number1} más mejoras" },
 		{ "Zone {number1} · Desert", "Zona {number1} · Desierto" },
 		{ "👹 Monsters {number1} / {number2}", "👹 Monstruos {number1} / {number2}" },
-		{ "⏱ Skip gauge {number1}s", "⏱ Saltar medidor {number1} segundos" },
-		{ "DAMAGE · {number1}s · {number2}K", "Daño · {number1} segundos · {number2}K" },
 	},
 }

@@ -448,6 +448,9 @@ return {
 		["🌟 Path chosen!"] = "🌟 Pfad gewählt!",
 		["Tough Skin"] = "Dicke Haut",
 		["Recovery"] = "Erholung",
+		["Random set"] = "Zufälliges Set",
+		["Any"] = "Beliebig",
+		["🎲 A random set from your reached zones"] = "🎲 Ein zufälliges Set aus erreichten Zonen",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -976,8 +979,5 @@ return {
 		{ "Damage +{number2}%", "Schaden +{number2}%" },
 		{ "x{number1}\nUpgrade", "x {number1}\nVerbessern" },
 		{ "Damage +{number1}%", "Schaden +{number1}%" },
-		{ "Admin (F{number1})", "Administrator (F{number1})" },
-		{ "Party ({number1}/{number2})", "Gruppe ({number1}/{number2})" },
-		{ "Attack +{number1}%", "Angriff +{number1}%" },
 	},
 }

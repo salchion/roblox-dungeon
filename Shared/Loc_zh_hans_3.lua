@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Next era → {text1}", "下一时代 → {text1}" },
+		{ "Activate {text1} G", "花费 {text1} 金币启用" },
+		{ "Shop item: {text1}", "商店商品：{text1}" },
 		{ "Skip gauge {text1}", "跳过槽 {text1}" },
 		{ "Time left {text1}", "剩余时间 {text1}" },
 		{ "Entering {text1}!", "正在进入 {text1}!" },

@@ -769,6 +769,9 @@ return {
 		["🌟 Path chosen!"] = "🌟 길을 골랐어요!",
 		["Tough Skin"] = "질긴 피부",
 		["Recovery"] = "회복력",
+		["Random set"] = "랜덤 세트",
+		["Any"] = "랜덤",
+		["🎲 A random set from your reached zones"] = "🎲 도달한 구역 중 무작위 세트",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1040,6 +1043,5 @@ return {
 		{ "every {number1}s lightning hits {number2} enemies", "{number1}초마다 번개가 {number2}명에게 내려쳐요" },
 		{ "Level {number1} Breakthrough in progress", "{number1}레벨 돌파 진행 중" },
 		{ "Defeat the Zone {number1} lord to unlock", "{number1}구역 군주를 쓰러뜨리면 해금돼요" },
-		{ "Move speed +{number1} per point  (max {number2})", "이동 속도 +{number1} 포인트 (최대 {number2})" },
 	},
 }

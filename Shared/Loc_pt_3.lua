@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Reach {number1} Power", "Alcance {number1} de Poder" },
+		{ "Next zone  {number1}m", "Próxima zona {number1}m" },
+		{ "▼ Dungeon  {number1}m", "▼ Masmorra {number1}m" },
 		{ "Move Speed +{number1}", "Velocidade de movimento +{number1}" },
 		{ "· Cooldown {number1}s", "· Recarga {number1} s" },
 		{ "+{number1} from level", "+{number1} pelo nível" },
