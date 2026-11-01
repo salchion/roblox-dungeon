@@ -18,7 +18,7 @@ local create, rounded, makeLabel = Kit.create, Kit.rounded, Kit.makeLabel
 local player = Players.LocalPlayer
 
 local gui = create("ScreenGui", { Name = "ChestGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 20, Enabled = false }, player:WaitForChild("PlayerGui"))
-local dim = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.4, Text = "", AutoButtonColor = false, ZIndex = 30 }, gui)
+local dim = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.04, Text = "", AutoButtonColor = false, ZIndex = 30 }, gui) -- (카드가 나오는 동안은 아래 결과 창이 비치지 않게 거의 검게)
 local stage = create("Frame", { Size = UDim2.new(0, 560, 0, 320), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 31 }, gui)
 local scale = create("UIScale", {}, stage)
 local hint = makeLabel({ Size = UDim2.new(1, 0, 0, 20), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, 0), Text = "Tap to skip", TextSize = 12, TextColor3 = Color3.fromRGB(190, 195, 220), ZIndex = 32 }, stage)
@@ -174,7 +174,8 @@ local function play(loot)
 	hint.Visible = false
 	dim.Visible = false
 	player:SetAttribute("ChestOpening", nil)
-	tween(stage, 0.45, { Position = UDim2.new(0.5, 0, 0.17, 0) })
+	tween(stage, 0.45, { Position = UDim2.new(0.5, 0, 0.23, 0) })
+	tween(scale, 0.45, { Scale = scale.Scale * 0.78 }) -- 작게 올려서 위쪽에서 잘리지 않게
 end
 
 Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
