@@ -1434,10 +1434,8 @@ local function showResult(result)
 	task.spawn(function()
 		for remaining = result.ReturnDelay, 1, -1 do
 			if token ~= resultToken or not resultPanel.Visible then return end
-			local lootLines = {}
-			if player:GetAttribute("ChestOpening") then -- 상자 열기 연출(ChestOpenClient) 중에는 결과를 미리 보여 주지 않는다
-				if #(result.Loot or {}) > 0 then lootLines[1] = "<font color='#c9c0e0' size='13'>Opening the chest...</font>" end
-			else
+			local lootLines = {} -- 승리: 전리품은 상자 연출(ChestOpenClient)의 카드로 이미 보여 줬으니 결과 창에서는 되풀이하지 않는다
+			if not result.Victory then
 				for _, entry in ipairs(result.Loot or {}) do
 					table.insert(lootLines, string.format("<font color='#%s' size='13'>%s</font>", Config.Gear.RarityColors[entry.Rarity]:ToHex(), entry.Text))
 				end
