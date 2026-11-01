@@ -570,7 +570,28 @@ local function buildGateway(zone, x0)
 	-- 간판: 구역 이름 + 컨셉 + 몬스터 레벨
 	local signPart = part("GateSign", Vector3.new(1, 1, 1), Vector3.new(x0 + 2, H + 24, 0), accent, Enum.Material.Neon, { Transparency = 1, CanCollide = false, CanQuery = false })
 	local zoneSet = Config.Sets[Config.Sets.ZoneKeys[zone]]
-	makeSign(signPart, string.format("Zone %d · %s\n%s · Rec. ⚡%d\nDanger %s\n%s New set from here: %s Set", zone, F.ZoneNames[zone], theme.Tag, F.RecommendPower[zone] or 0, string.rep("☠", zone), zoneSet.Icon, zoneSet.Name), Color3.fromRGB(255, 240, 190), 0)
+	-- 간판: 큰 제목 한 줄 + 작은 줄 둘 (예전: 네 줄을 한 글자 상자에 몰아 넣어서 글자가 작고 서로 겹쳐 보였다). 가까이 갔을 때만 보인다.
+	local sign = Instance.new("BillboardGui")
+	sign.Name = "ZoneSignGui"
+	sign.Size = UDim2.new(0, 360, 0, 104)
+	sign.MaxDistance = zone == 1 and 40 or 80 -- (1구역 간판은 마을 문 바로 뒤라서 멀리서 보이면 문 위 큰 글씨와 겹친다: 가까이 와야 보인다)
+	sign.AlwaysOnTop = false
+	sign.Parent = signPart
+	local function signLine(y, h, text, size, color, font)
+		local line = Instance.new("TextLabel")
+		line.Size = UDim2.new(1, 0, 0, h)
+		line.Position = UDim2.new(0, 0, 0, y)
+		line.BackgroundTransparency = 1
+		line.Font = font or Enum.Font.GothamBold
+		line.TextSize = size
+		line.TextColor3 = color
+		line.TextStrokeTransparency = 0.25
+		line.Text = text
+		line.Parent = sign
+	end
+	signLine(0, 44, string.format("Zone %d · %s", zone, F.ZoneNames[zone]), 32, Color3.fromRGB(255, 240, 190), Enum.Font.GothamBlack)
+	signLine(46, 24, string.format("Recommended ⚡ %d   Danger %s", F.RecommendPower[zone] or 0, string.rep("☠", zone)), 16, Color3.fromRGB(255, 255, 255))
+	signLine(72, 22, string.format("%s New set: %s", zoneSet.Icon, zoneSet.Name), 15, Color3.fromRGB(190, 235, 255))
 end
 
 local function buildWorld()

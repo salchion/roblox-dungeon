@@ -2218,5 +2218,7 @@
 "Recover a % of max HP each time you defeat an enemy",
 "Target set (gacha only)",
 "Pick a set to target",
-"No set"
+"No set",
+"Recommended ⚡ {number1}   Danger {text2}",
+"{text1} New set: {text2}"
 ]

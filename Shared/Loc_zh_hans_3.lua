@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} {text2} Tier · {number3} bosses defeated", "{text1} {text2} 阶 · 击败 {number3} 个首领" },
 		{ "⏱ {text1} survived  ×  💥 {text2} damage", "⏱ 存活 {text1}  ×  💥 伤害 {text2}" },
 		{ "▲ {number1} unspent (T)  ·  {text2} / {text3} XP", "▲ {number1} 未分配 (T)  ·  {text2} / {text3} XP" },
 		{ "{text1} New set from here: {text2} Set", "{text1} 从这里开始的新套装:{text2} 套装" },
@@ -25,6 +26,7 @@ return {
 		{ "{text1} {text2} piece ({number3}/3)", "{text1} {text2} 件({number3}/3)" },
 		{ "{text1} (Lord of {text2})", "{text1}({text2}领主)" },
 		{ "🗿 {text1} · Zone {text2}", "🗿 {text1} · 区域{text2}" },
+		{ "{text1} New set: {text2}", "{text1} 新套装：{text2}" },
 		{ "{text1} · Score {number2}{text3}", "{text1} · 评分 {number2}{text3}" },
 		{ "⚡ Power {text1}{number2} {text3}", "⚡ 战力 {text1}{number2} {text3}" },
 		{ "+ {text1} piece {text2}", "+ {text1} 部件 {text2}" },

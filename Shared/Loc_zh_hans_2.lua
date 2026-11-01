@@ -966,6 +966,7 @@ return {
 		{ "Loading the world...  ·  {text1}", "正在加载世界...  ·  {text1}" },
 		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 新武器:{text1} - 按 {number2} 键!" },
 		{ "{text1} invited you to a party!", "{text1} 邀请你加入队伍!" },
+		{ "Recommended ⚡ {number1}   Danger {text2}", "推荐 ⚡ {number1}   危险 {text2}" },
 		{ "🗿 {text1} · World Boss (Zone {number2})", "🗿 {text1} · 世界首领(区域{number2})" },
 		{ "👀 [{text1}] 5-second preview!", "👀 [{text1}] 5 秒预览!" },
 		{ "💤 Idle income  +{text1} G/sec", "💤 挂机收益  +{text1} 金币/秒" },
@@ -1046,6 +1047,5 @@ return {
 		{ "Upgrade cost {text1} G · You have {text2} G", "强化费用 {text1} 金币 · 你有 {text2} 金币" },
 		{ "📢 {text1}'s weapon evolved into [{text2}]!", "📢 {text1} 的武器进化为【{text2}】!" },
 		{ "✨ {number1}-piece set complete! {text2} {text3} Lv.{number4}", "✨ {number1} 件套装集齐!{text2} {text3} Lv.{number4}" },
-		{ "{text1} {text2} Tier · {number3} bosses defeated", "{text1} {text2} 阶 · 击败 {number3} 个首领" },
 	},
 }

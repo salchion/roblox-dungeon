@@ -176,3 +176,5 @@
 2217¦狙うセット(ガチャ限定)¦Ziel-Set (nur Gacha)¦Set visé (gacha uniquement)¦Set objetivo (solo gacha)¦Set alvo (só no gacha)¦目标套装（扭蛋限定）¦노릴 세트 (뽑기 전용)
 2218¦狙うセットを選ぼう¦Wähle ein Ziel-Set¦Choisissez un set à viser¦Elige un set objetivo¦Escolha um set alvo¦选择目标套装¦노릴 세트를 골라 보세요
 2219¦セットなし¦Kein Set¦Aucun set¦Sin set¦Sem set¦无套装¦세트 없음
+2220¦推奨 ⚡ {number1}   危険度 {text2}¦Empfohlen ⚡ {number1}   Gefahr {text2}¦Recommandé ⚡ {number1}   Danger {text2}¦Recomendado ⚡ {number1}   Peligro {text2}¦Recomendado ⚡ {number1}   Perigo {text2}¦推荐 ⚡ {number1}   危险 {text2}¦권장 ⚡ {number1}   위험 {text2}
+2221¦{text1} 新セット: {text2}¦{text1} Neues Set: {text2}¦{text1} Nouveau set : {text2}¦{text1} Nuevo set: {text2}¦{text1} Novo set: {text2}¦{text1} 新套装：{text2}¦{text1} 새 세트: {text2}
