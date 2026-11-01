@@ -94,6 +94,7 @@ end
 
 -- x 범위 안에서 꺾임 벽 위가 아닌 곳을 무작위로 고른다
 local function freeX(minX, maxX)
+	if maxX < minX then return minX end -- (플레이어가 구역 맨 앞 캠프 근처에 있으면 범위가 비어서 math.random 이 오류를 냈다)
 	for _ = 1, 12 do
 		local x = math.random(minX, maxX)
 		local blocked = false
