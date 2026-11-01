@@ -150,7 +150,7 @@ end
 function SHOP.Card(parent, order, o)
 	o.Id = o.Id or o.Name
 	SHOP.Items[o.Id] = o
-	if not SHOP.Sel or not SHOP.Items[SHOP.Sel] then SHOP.Sel = o.Id end
+	SHOP.FirstId = SHOP.FirstId or o.Id -- (고른 상품이 없을 때 쓸 첫 상품. 예전엔 여기서 바로 고르는 바람에, 아직 만들지 않은 뒤쪽 상품을 누르면 항상 첫 상품으로 되돌아갔다)
 	local chosen = SHOP.Sel == o.Id
 	local acc, mute = o.Acc, o.Owned and not o.Prev
 	local tile = create("TextButton", { Size = UDim2.new(0, 100, 0, 112), LayoutOrder = order, BackgroundColor3 = chosen and Color3.fromRGB(44, 46, 74) or Color3.fromRGB(26, 28, 44), BorderSizePixel = 0, Text = "", AutoButtonColor = true }, parent)
@@ -291,7 +291,7 @@ end
 function SHOP.Build()
 	local C = SHOP.Content
 	clearChildren(C)
-	SHOP.Timers, SHOP.Items = {}, {}
+	SHOP.Timers, SHOP.Items, SHOP.FirstId = {}, {}, nil
 	local pass = Config.Shop.Passes.VIP
 	local vip = player:GetAttribute("Vip") == true
 	local LEFT, RIGHT = 150, 270
@@ -356,6 +356,15 @@ function SHOP.Build()
 		end
 	end
 
+	-- 고른 상품이 이 목록에 없으면(처음 열었거나 카테고리를 바꿨을 때) 첫 상품으로 한 번 다시 그린다
+	if not SHOP.Items[SHOP.Sel] and SHOP.FirstId and not SHOP.Rebuilding then
+		SHOP.Sel = SHOP.FirstId
+		SHOP.Rebuilding = true
+		local ok, err = pcall(SHOP.Build)
+		SHOP.Rebuilding = false
+		if not ok then error(err, 0) end
+		return
+	end
 	-- 오른쪽: 고른 상품
 	local right = create("Frame", { Size = UDim2.new(0, RIGHT, 1, -30), Position = UDim2.new(1, -RIGHT, 0, 0), BackgroundTransparency = 1 }, C)
 	local o = SHOP.Items[SHOP.Sel]
