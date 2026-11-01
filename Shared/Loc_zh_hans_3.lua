@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "✨ {number1}-piece set complete! {text2} Lv.{number3}", "✨ {number1} 件套装集齐!{text2} Lv.{number3}" },
+		{ "📢 {text1} defeated the Final Lord!", "📢 {text1} 击败了最终领主!" },
+		{ "👑 Lord of {text1} (Zone {number2}) · Rec. ⚡{number3}", "👑 {text1}领主(区域{number2})· 推荐 ⚡{number3}" },
+		{ "🔀 Choose a path for <b>{text1}</b>", "🔀 为<b>{text1}</b>选择路线" },
 		{ "{number1} pulls done! Best rarity: {text2}", "已抽取 {number1} 次!最高稀有度:{text2}" },
 		{ "🛡 Empty gear slot: <b>{text1}</b>", "🛡 空装备栏：<b>{text1}</b>" },
 		{ "Active {number1} / {number2} slots   (💰 {text3} G)", "已启用 {number1} / {number2} 栏位   (💰 {text3} G)" },

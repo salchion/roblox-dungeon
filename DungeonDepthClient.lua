@@ -67,6 +67,7 @@ rounded(uniqueChip, 10)
 local setChip = makeLabel({ Size = UDim2.new(0.5, -24, 0, 30), Position = UDim2.new(0.5, 6, 0, 310), Text = "", TextSize = 12, Font = Enum.Font.GothamBold, BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(32, 48, 40), TextColor3 = Color3.fromRGB(150, 235, 170), ZIndex = 11 }, panel)
 rounded(setChip, 10)
 
+local sweepButton -- (아래에서 만든다)
 local function refresh()
 	if not typeKey then return end
 	local frontier = bestOf(typeKey) + 1
@@ -100,6 +101,17 @@ local function refresh()
 			chip.Stroke.Color = e.Color
 		end
 	end
+	do -- 소탕 버튼: 깬 최고 깊이 기준 (열쇠 / 받을 골드)
+		local best = bestOf(typeKey)
+		local gold = player:GetAttribute("SweepDepth") == best and player:GetAttribute("SweepGold") or 0
+		if best >= 1 and gold and gold > 0 then
+			sweepButton.Text = string.format("⚡ Sweep D%d  🔑%d", best, Config.Dungeon.DepthKeyCost(best))
+			sweepButton.BackgroundColor3 = Color3.fromRGB(190, 140, 40)
+		else
+			sweepButton.Text = best >= 1 and "⚡ Sweep (clear once more)" or "⚡ Sweep (locked)"
+			sweepButton.BackgroundColor3 = Color3.fromRGB(70, 66, 80)
+		end
+	end
 	uniqueChip.Text = string.format("✦ Unique %.1f%%", Odds.ChestUnique(key))
 	local chance, zones = Odds.ChestSet(key, player:GetAttribute("ClearedZone") or 0)
 	setChip.Text = #zones == 0 and "🧩 Set: clear a zone lord" or string.format("🧩 Set %.0f%%", chance)
@@ -116,12 +128,18 @@ stepper("◀", -1, -106)
 stepper("▶", 1, 60)
 stepper("»", 10, 114)
 
-makeButton({ Size = UDim2.new(0, 210, 0, 44), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 18, 1, -16), Text = "Enter", TextSize = 17, BackgroundColor3 = Color3.fromRGB(58, 160, 90), ZIndex = 11 }, panel, function()
+makeButton({ Size = UDim2.new(0, 142, 0, 44), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 18, 1, -16), Text = "Enter", TextSize = 17, BackgroundColor3 = Color3.fromRGB(58, 160, 90), ZIndex = 11 }, panel, function()
 	if not typeKey then return end
 	panel.Visible = false
 	Remotes.Dungeon:FireServer("StartDepth", typeKey, depth)
 end)
-makeButton({ Size = UDim2.new(0, 210, 0, 44), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -18, 1, -16), Text = "📊 Full odds table", TextSize = 14, BackgroundColor3 = Color3.fromRGB(60, 72, 130), ZIndex = 11 }, panel, function()
+-- 소탕: 가장 높게 깬 깊이의 평소 보상을 열쇠만 내고 바로 받는다 (기록된 골드가 있을 때)
+sweepButton = makeButton({ Size = UDim2.new(0, 146, 0, 44), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 6, 1, -16), Text = "⚡ Sweep", TextSize = 14, BackgroundColor3 = Color3.fromRGB(150, 110, 40), ZIndex = 11 }, panel, function()
+	if not typeKey then return end
+	panel.Visible = false
+	Remotes.Dungeon:FireServer("Sweep")
+end)
+makeButton({ Size = UDim2.new(0, 142, 0, 44), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -18, 1, -16), Text = "📊 Odds", TextSize = 14, BackgroundColor3 = Color3.fromRGB(60, 72, 130), ZIndex = 11 }, panel, function()
 	player:SetAttribute("OddsKind", "Chest") -- OddsClient 가 확률 창을 연다
 	player:SetAttribute("OddsOpen", os.clock())
 end)
@@ -135,6 +153,9 @@ Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
 end)
 
 player:GetAttributeChangedSignal("DepthBest_All"):Connect(function()
+	if panel.Visible then refresh() end
+end)
+player:GetAttributeChangedSignal("SweepGold"):Connect(function()
 	if panel.Visible then refresh() end
 end)
 player:GetAttributeChangedSignal("Zone"):Connect(function()

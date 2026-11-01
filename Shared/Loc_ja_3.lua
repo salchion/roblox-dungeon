@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⚔ Sniper Rifle · Rusty Era +{number10}", "⚔ スナイパーライフル · 錆びた時代 +{number10}" },
+		{ "Not enough gold. ({number1} G needed)", "ゴールドが不足しています。（{number1}Gが必要です）" },
+		{ "e.g. Maintenance in {number1} minutes", "例：{number1}分後のメンテナンス" },
+		{ "🥇 LeeGoAll  ⚡{number1}\n🥈 {player1}  ⚡{number2}", "🥇 LeeGoAll ⚡{number1}\n🥈 {player1} ⚡{number2}" },
+		{ "🌀 Gate of the Abyss · Rec. ⚡{number2}", "🌀 深淵の門 · レコード ⚡{number2}" },
 		{ "🧹 Cleaned up {number1}! Essence +{number2}, {number3} G", "🧹 {number1}個を整理しました！エッセンス+{number2}、{number3} G" },
 		{ "Damage x{number1} · {number2} targets (gauge {number3})", "ダメージ x{number1} · {number2}体 (ゲージ {number3})" },
 		{ "🔒 Paragon unlocks at level {number1}.", "🔒 パラゴンはレベル{number1}で解放されます。" },

@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⏱ Skip gauge {number1}s", "⏱ Zeitanzeige überspringen {number1}s" },
+		{ "DAMAGE · {number1}s · {number2}K", "Schaden · {number1}s · {number2}K" },
+		{ "🥇 {player1}  ⚡{number1}", "🥇 {player1} ⚡{number1}" },
+		{ "Time Skip {number1} min", "Zeitüberspringung {number1} Minuten" },
+		{ "Idle Income +{number1}%", "Inaktives Einkommen +{number1}%" },
+		{ "Zone {number1} · Meadow", "Zone {number1} · Wiese" },
 		{ "🥈 {player1}  ⚡{number2}", "🥈 {player1} ⚡{number2}" },
 		{ "·  Gold / XP x{number1}", "·  Gold / EP x{number1}" },
 		{ "Crit chance +{number1}%", "Krit-Chance +{number1} %" },

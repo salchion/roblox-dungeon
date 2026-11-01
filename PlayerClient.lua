@@ -1410,11 +1410,12 @@ local resultTickets = resultChip(0.5, 8, Color3.fromRGB(220, 170, 255))
 local resultInfo = makeLabel({
 	Size = UDim2.new(1, -20, 0, 130), Position = UDim2.new(0, 10, 0, 128), TextSize = 13, RichText = true, TextYAlignment = Enum.TextYAlignment.Top,
 }, resultPanel)
-makeButton({
+local resultBack = makeButton({
 	Size = UDim2.new(0, 200, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14),
 	Text = "Back to Lobby", TextSize = 14,
 }, resultPanel, function()
 	Remotes.Dungeon:FireServer("Leave")
+	resultPanel.Visible = false -- (소탕 결과는 던전 안이 아니라서 서버가 돌려보내지 않는다: 창을 직접 닫는다)
 end)
 
 local resultToken = 0
@@ -1423,7 +1424,8 @@ local function showResult(result)
 	resultToken += 1
 	local token = resultToken
 	resultPanel.Visible = true
-	resultTitle.Text = result.Victory and "🏆 Dungeon Cleared!" or "💀 Dungeon Failed"
+	resultTitle.Text = result.Sweep and "⚡ Sweep Complete!" or (result.Victory and "🏆 Dungeon Cleared!" or "💀 Dungeon Failed")
+	resultBack.Text = result.Sweep and "OK" or "Back to Lobby"
 	resultTitle.TextColor3 = result.Victory and Color3.fromRGB(255, 220, 90) or Color3.fromRGB(255, 110, 110)
 	do -- 번 골드 / 티켓 칩 (세 자리마다 쉼표)
 		local goldText = tostring(math.floor(result.Gold or 0)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
@@ -1431,6 +1433,10 @@ local function showResult(result)
 		resultTickets.Text = "🎫 +" .. tostring(result.Tickets or 0)
 	end
 
+	if result.Sweep then -- 소탕: 카운트다운 없이 한 줄 요약 (전리품은 상자 카드로 이미 보여 준다)
+		resultInfo.Text = string.format("Depth %d sweep: gold, tickets and boss chest received", result.Depth or 0)
+		return
+	end
 	task.spawn(function()
 		for remaining = result.ReturnDelay, 1, -1 do
 			if token ~= resultToken or not resultPanel.Visible then return end

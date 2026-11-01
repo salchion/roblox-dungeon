@@ -2461,6 +2461,7 @@ local function finish(run, victory)
 				local okMeta, MetaD = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
 				if okMeta then
 					local isRecord = MetaD.DepthClear(member, "All", clearedDepth)
+					if not run.Tutorial and not run.RiftMode and not run.Fever then MetaD.SweepRecord(member, clearedDepth, run.Earned[member] or 0) end
 					if isRecord then
 						notify(member, string.format("⭐ New record! Depth %d cleared. Depth %d is unlocked.", clearedDepth, clearedDepth + 1))
 					end
@@ -3577,6 +3578,51 @@ function Dungeon.StartDepth(player, typeKey, depth)
 	Dungeon.Start(player, pickDungeonType(player), D.DepthKey(depth))
 end
 
+-- 소탕: 지금까지 깬 가장 높은 깊이의 "평소 보상"(마지막으로 깼을 때 번 골드 + 보스 티켓 + 보스 상자 장비 + 클리어 경험치)을 열쇠만 내고 바로 받는다.
+-- 오늘의 무료 입장은 쓰지 않는다. 마을에서만, 혼자서 (던전에 들어가지 않는다).
+local sweepBusy = setmetatable({}, { __mode = "k" })
+function Dungeon.Sweep(player)
+	if player:GetAttribute("Zone") ~= "Lobby" or sweepBusy[player] then return end
+	if player:GetAttribute("TutorialDungeonLocked") or player:GetAttribute("TutorialActive") then
+		notify(player, "🔒 You can't sweep yet. Complete the tutorial missions first!")
+		return
+	end
+	if (player:GetAttribute("Level") or 1) < D.List[1].MinLevel then
+		notify(player, string.format("Your level is too low. (This dungeon requires Lv.%d+)", D.List[1].MinLevel))
+		return
+	end
+	local best = Meta.DepthBest(player, "All")
+	if best < 1 then
+		notify(player, "Clear a dungeon depth first to unlock Sweep.")
+		return
+	end
+	local gold = Meta.SweepGold(player, best)
+	if not gold then
+		notify(player, string.format("Clear depth %d once more to record its Sweep reward.", best))
+		return
+	end
+	local diffKey = D.DepthKey(best)
+	local difficulty = D.GetDifficulty(diffKey)
+	local keyCost = difficulty.KeyCost or 1
+	if not Keys.HasTier(player, difficulty.KeyTier or 1, keyCost) then
+		notify(player, string.format("Sweep needs %d key(s). Defeat a field zone lord to get keys", keyCost))
+		return
+	end
+	sweepBusy[player] = true
+	Keys.SpendTier(player, difficulty.KeyTier or 1, keyCost)
+	player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
+	local tickets = difficulty.Tickets or 0
+	player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + tickets)
+	Level.AddXP(player, math.floor(Config.Xp.DungeonClear * D.GetXpMult(diffKey) + 0.5))
+	Quest.Add(player, "DungeonClears", 1)
+	local lines = Loot.DungeonChest(player, pickDungeonType(player), diffKey)
+	Remotes.Dungeon:FireClient(player, "Result", {
+		Victory = true, Sweep = true, Depth = best, Gold = gold, Tickets = tickets, Loot = lines, Wave = 0, TotalWaves = 0,
+		TypeName = "", DifficultyName = "Depth " .. best, ReturnDelay = 0,
+	})
+	task.delay(1, function() sweepBusy[player] = nil end)
+end
+
 function Dungeon.OpenSelect(player)
 	if player:GetAttribute("Zone") ~= "Lobby" then return end
 	local party = Party.GetParty(player)
@@ -3590,6 +3636,8 @@ end
 Remotes.Dungeon.OnServerEvent:Connect(function(player, action, typeKey, depth)
 	if action == "StartDepth" then -- 깊이 창에서 입장 (옛 "Start" 는 입장구 레벨 검사를 건너뛸 수 있어서 없앴다)
 		Dungeon.StartDepth(player, typeKey, depth)
+	elseif action == "Sweep" then
+		Dungeon.Sweep(player)
 	elseif action == "Leave" then
 		Dungeon.Leave(player)
 	end

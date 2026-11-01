@@ -409,6 +409,12 @@ return {
 		["🛡 Set gear"] = "🛡 套装装备",
 		["🛡 Set gear <font size='10'>(no set yet)</font>"] = "🛡 套装装备 <font size='10'>(暂无套装)</font>",
 		["💀 You face the Final Lord! Dodge the red warnings on the floor, and try your V ultimate too!"] = "💀 你面对最终领主了！躲开地面上的红色警告，也试试V大招吧！",
+		["⚡ Sweep"] = "⚡ 扫荡",
+		["⚡ Sweep (clear once more)"] = "⚡ 扫荡（再通关一次）",
+		["⚡ Sweep (locked)"] = "⚡ 扫荡（未解锁）",
+		["⚡ Sweep Complete!"] = "⚡ 扫荡完成！",
+		["Clear a dungeon depth first to unlock Sweep."] = "先通关一个地下城深度来解锁扫荡。",
+		["🔒 You can't sweep yet. Complete the tutorial missions first!"] = "🔒 还不能扫荡。请先完成教程任务！",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1050,9 +1056,5 @@ return {
 		{ "✅ Mission complete! Reward: {text1}", "✅ 任务完成!奖励:{text1}" },
 		{ "{text1}  ·  keys 1-5 switch weapons", "{text1}  ·  1-5键切换武器" },
 		{ "♻ {text1} (auto-salvage +{number2} Essence)", "♻ {text1}(自动分解 精华 +{number2})" },
-		{ "✨ {number1}-piece set complete! {text2} Lv.{number3}", "✨ {number1} 件套装集齐!{text2} Lv.{number3}" },
-		{ "📢 {text1} defeated the Final Lord!", "📢 {text1} 击败了最终领主!" },
-		{ "👑 Lord of {text1} (Zone {number2}) · Rec. ⚡{number3}", "👑 {text1}领主(区域{number2})· 推荐 ⚡{number3}" },
-		{ "🔀 Choose a path for <b>{text1}</b>", "🔀 为<b>{text1}</b>选择路线" },
 	},
 }

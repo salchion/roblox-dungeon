@@ -540,6 +540,12 @@ return {
 		["🛡 Set gear"] = "🛡 Équipement de set",
 		["🛡 Set gear <font size='10'>(no set yet)</font>"] = "🛡 Équipement de set <font size='10'>(aucun set)</font>",
 		["💀 You face the Final Lord! Dodge the red warnings on the floor, and try your V ultimate too!"] = "💀 Tu affrontes le Seigneur final ! Esquive les alertes rouges au sol et essaie aussi ton ultime V !",
+		["⚡ Sweep"] = "⚡ Balayage",
+		["⚡ Sweep (clear once more)"] = "⚡ Balayage (à refaire une fois)",
+		["⚡ Sweep (locked)"] = "⚡ Balayage (verrouillé)",
+		["⚡ Sweep Complete!"] = "⚡ Balayage terminé !",
+		["Clear a dungeon depth first to unlock Sweep."] = "Termine d'abord une profondeur de donjon pour débloquer le balayage.",
+		["🔒 You can't sweep yet. Complete the tutorial missions first!"] = "🔒 Tu ne peux pas encore balayer. Termine d'abord les missions du tutoriel !",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -923,10 +929,5 @@ return {
 		{ "{number3} Wasteland · {number4} Desert", "{number3} Terres désolées · {number4} Désert" },
 		{ "Double Shot chance {number1}%", "Chance de tir double {number1} %" },
 		{ "Roll for gear {number1} times", "Tirez {number1} fois de l'équipement" },
-		{ "Gear drop rarity +{number1}%", "Rareté des objets de équipement +{number1}%" },
-		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 Combo x{number1}\nDégâts +{number2}%" },
-		{ "{number7} Darklands · {number8} Abyss", "{number7} Terres sombres · {number8} Abysse" },
-		{ "Level {number1} Breakthrough", "Percée du niveau {number1}" },
-		{ "Field (best: Zone {number1})", "Terrain (meilleure : zone {number1})" },
 	},
 }

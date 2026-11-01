@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "◆ Crit Chance +{number1}%", "◆ Chance de crítico +{number1}%" },
+		{ "◆ Crit Damage +{number1}%", "◆ Dano crítico +{number1}%" },
+		{ "◆ Boss Damage +{number1}%", "◆ Dano a chefes +{number1}%" },
+		{ "🌟 Fever Time!  {number1}s", "🌟 Hora da febre!  {number1}s" },
+		{ "Gold +{number2}% instead", "Ouro +{number2}% em vez disso" },
+		{ "Attack speed +{number1}%", "Velocidade de ataque +{number1}%" },
+		{ "Training slot +{number1}", "Espaço de treinamento +{number1}" },
+		{ "Enemy attack +{number1}%", "Ataque inimigo +{number1}%" },
 		{ "Zone {number1} · Volcano", "Zona {number1} · Vulcão" },
 		{ "NEXT UNLOCK · +{number1}", "Próximo Desbloqueio · +{number1}" },
 		{ "🔥 {number1} Kill Streak!", "🔥 {number1} Sequência de Eliminações!" },

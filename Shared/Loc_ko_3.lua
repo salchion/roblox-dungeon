@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Weapon range +{number1}% per point  (max {number2})", "무기 범위 +{number1}% (최대 {number2})" },
+		{ "👑 Lord of Forest (Zone {number1}) · Rec. ⚡{number2}", "👑 숲의 군주 (구역 {number1}) · 레코 ⚡{number2}" },
+		{ "📍 Field Entrance  Right ahead!  {number1}m", "📍 들판 입구는 바로 앞입니다! {number1}m" },
 		{ "Points left {number1}  /  total {number2}  (Level {number3})", "남은 포인트 {number1}  /  전체 {number2}  (레벨 {number3})" },
 		{ "🔥 Better gear dropped! ({number1} slot(s))", "🔥 더 좋은 장비가 떨어졌어요! ({number1}칸)" },
 		{ "Crit damage +{number1}%p per point  (max {number2})", "치명타 피해 +{number1}%p / 포인트당  (최대 {number2})" },

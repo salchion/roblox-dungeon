@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🚪 Open Zone {number1} Gate", "🚪 Abrir la puerta de la zona {number1}" },
+		{ "max · +{number1}% crit dmg", "máx. · daño crítico +{number1}%" },
+		{ "🔊 Music Volume: {number1}%", "🔊 Volumen de la música: {number1}%" },
+		{ "Finish {number1} trainings", "Completa {number1} entrenamientos" },
+		{ "◆ Attack Speed +{number1}%", "◆ Velocidad de ataque +{number1}%" },
+		{ "◆ Heal on Kill +{number1}%", "◆ Curación al matar +{number1}%" },
+		{ "Training time -{number1}%", "Tiempo de entrenamiento -{number1}%" },
 		{ "🔑{number6} (Free today {number7}/{number8})", "🔑{number6} (Gratis hoy {number7}/{number8})" },
 		{ "{number2} / {number3}   Reward: {number4} G", "{number2} / {number3} Recompensa: {number4} G" },
 		{ "{number2} / {number3}   Reward: 🎫 {number4}", "{number2} / {number3} Recompensa: 🎫 {number4}" },

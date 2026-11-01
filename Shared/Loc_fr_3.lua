@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Gear drop rarity +{number1}%", "Rareté des objets de équipement +{number1}%" },
+		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 Combo x{number1}\nDégâts +{number2}%" },
+		{ "{number7} Darklands · {number8} Abyss", "{number7} Terres sombres · {number8} Abysse" },
+		{ "Level {number1} Breakthrough", "Percée du niveau {number1}" },
+		{ "Field (best: Zone {number1})", "Terrain (meilleure : zone {number1})" },
 		{ "🎲 Random bonus in {number1}s", "🎲 Bonus aléatoire dans {number1} s" },
 		{ "💀 The Final Lord  {number1}%", "💀 Le Seigneur final  {number1} %" },
 		{ "🔫 Gunshot Volume: {number1}%", "🔫 Volume des tirs : {number1}%" },

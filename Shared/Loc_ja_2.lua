@@ -656,6 +656,12 @@ return {
 		["🛡 Set gear"] = "🛡 セット装備",
 		["🛡 Set gear <font size='10'>(no set yet)</font>"] = "🛡 セット装備 <font size='10'>(セットなし)</font>",
 		["💀 You face the Final Lord! Dodge the red warnings on the floor, and try your V ultimate too!"] = "💀 最後の君主と対峙した！床の赤い警告を避けて、Vの必殺技も使ってみよう！",
+		["⚡ Sweep"] = "⚡ スイープ",
+		["⚡ Sweep (clear once more)"] = "⚡ スイープ（もう一度クリア）",
+		["⚡ Sweep (locked)"] = "⚡ スイープ（未解放）",
+		["⚡ Sweep Complete!"] = "⚡ スイープ完了！",
+		["Clear a dungeon depth first to unlock Sweep."] = "先にダンジョンの階層をクリアするとスイープが解放されます。",
+		["🔒 You can't sweep yet. Complete the tutorial missions first!"] = "🔒 まだスイープできません。先にチュートリアルミッションを完了してください！",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -934,10 +940,5 @@ return {
 		{ "{number1}% → up to {number2}% (deeper = higher)", "{number1}% → 最大{number2}% (深いほど高い)" },
 		{ "◆ Skill Cooldown Reduction +{number1}%", "◆ スキルCT短縮 +{number1}%" },
 		{ "{number1}  <font color='#{number2}c{number3}b{number4}'>{number5}%</font>", "{number1} <font color='#{number2}c{number3}b{number4}'>{number5}%</font>" },
-		{ "⚔ Sniper Rifle · Rusty Era +{number10}", "⚔ スナイパーライフル · 錆びた時代 +{number10}" },
-		{ "Not enough gold. ({number1} G needed)", "ゴールドが不足しています。（{number1}Gが必要です）" },
-		{ "e.g. Maintenance in {number1} minutes", "例：{number1}分後のメンテナンス" },
-		{ "🥇 LeeGoAll  ⚡{number1}\n🥈 {player1}  ⚡{number2}", "🥇 LeeGoAll ⚡{number1}\n🥈 {player1} ⚡{number2}" },
-		{ "🌀 Gate of the Abyss · Rec. ⚡{number2}", "🌀 深淵の門 · レコード ⚡{number2}" },
 	},
 }
