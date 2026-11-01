@@ -402,33 +402,54 @@ end)
 ------------------------------------------------------------
 -- 켜 둔 세트 효과 상태창: 필드 / 던전에서 오른쪽 위에 작게 (효과 이름 + 현재 몇 단계인지, 골드 단계 + 장비 단계)
 ------------------------------------------------------------
-local hudBox = make("TextLabel", {
-	Size = UDim2.new(0, 210, 0, 40), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0, 176),
-	BackgroundColor3 = Color3.fromRGB(22, 24, 38), BackgroundTransparency = 0.2, BorderSizePixel = 0, Font = Enum.Font.GothamMedium,
-	TextSize = 10, TextColor3 = Color3.new(1, 1, 1), RichText = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
-	Text = "", Visible = false, ZIndex = 3,
+-- 켜 둔 세트 효과 카드 (오른쪽 위): 효과마다 한 줄 = 색 아이콘 + 이름 + 단계 점(노랑 = 골드 단계, 하늘 = 장비 단계) + 큰 "Lv.N".
+-- 방금 발동한 효과는 줄이 환하게 켜진다 (예전: 작은 글자 한 덩어리라 잘 안 보였다)
+local hudBox = make("Frame", {
+	Size = UDim2.new(0, 244, 0, 40), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0, 176),
+	BackgroundColor3 = Color3.fromRGB(20, 22, 36), BackgroundTransparency = 0.1, BorderSizePixel = 0, Visible = false, ZIndex = 3,
 }, gui)
-make("UICorner", { CornerRadius = UDim.new(0, 8) }, hudBox)
-local hudStroke = make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 1.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Transparency = 0.4 }, hudBox)
-make("UIPadding", { PaddingLeft = UDim.new(0, 8), PaddingTop = UDim.new(0, 5), PaddingRight = UDim.new(0, 6) }, hudBox)
+make("UICorner", { CornerRadius = UDim.new(0, 12) }, hudBox)
+local hudStroke = make("UIStroke", { Color = Color3.fromRGB(255, 205, 120), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Transparency = 0.25 }, hudBox)
+label({ Size = UDim2.new(1, -16, 0, 22), Position = UDim2.new(0, 12, 0, 4), Text = "🌟 Set Effects", TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 218, 120), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4 }, hudBox)
+local hudRows = {}
 
 local procUntil = {} -- 효과 이름 -> 이 시각까지 "방금 발동" 표시
 local function refreshHud()
 	local zone = player:GetAttribute("Zone")
-	local lines = { "<font color='#ffd966'><b>🌟 Set Effects</b></font>" }
+	for _, row in ipairs(hudRows) do row:Destroy() end
+	hudRows = {}
+	local y, count = 28, 0
 	for z = 1, ZONES do
 		if player:GetAttribute("AugOnZ_" .. z) == true then
-			local info = Config.AugInfo[Config.Sets.ZoneAug[z]]
+			count += 1
+			local attr = Config.Sets.ZoneAug[z]
+			local info = Config.AugInfo[attr]
 			local gold = player:GetAttribute("AugLvZ_" .. z) or 0
 			local gear = player:GetAttribute("AugGearZ_" .. z) or 0
-			local fired = (procUntil[Config.Sets.ZoneAug[z]] or 0) > os.clock() -- 방금 발동한 효과는 노랗게 켜진다
-			table.insert(lines, string.format("%s%s %s  <font color='#8fe0ff'><b>Lv.%d</b></font>%s", fired and "<font color='#ffff70'><b>▶ </b></font>" or "", info.Icon, fired and ("<font color='#ffff70'><b>" .. info.Name .. "</b></font>") or info.Name, gold + gear,
-				gear > 0 and string.format(" <font color='#aab0c8'>(gold %d + gear %d)</font>", gold, gear) or ""))
+			local fired = (procUntil[attr] or 0) > os.clock() -- 방금 발동한 효과는 줄이 환하게 켜진다
+			local row = make("Frame", {
+				Size = UDim2.new(1, -12, 0, 36), Position = UDim2.new(0, 6, 0, y), BorderSizePixel = 0, ZIndex = 4,
+				BackgroundColor3 = info.Color:Lerp(Color3.fromRGB(20, 22, 36), fired and 0.35 or 0.74),
+			}, hudBox)
+			make("UICorner", { CornerRadius = UDim.new(0, 9) }, row)
+			make("UIStroke", { Color = fired and Color3.new(1, 1, 1) or info.Color, Thickness = fired and 2.5 or 1.4, Transparency = fired and 0 or 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, row)
+			label({ Size = UDim2.new(0, 34, 1, 0), Position = UDim2.new(0, 2, 0, 0), Text = info.Icon, TextSize = 21, ZIndex = 5 }, row)
+			label({ Size = UDim2.new(1, -100, 0, 18), Position = UDim2.new(0, 38, 0, 3), Text = info.Name, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd,
+				TextColor3 = fired and Color3.fromRGB(255, 255, 140) or Color3.new(1, 1, 1), ZIndex = 5 }, row)
+			local pips = {}
+			for i = 1, 6 do
+				local color = i <= gold and "#ffd966" or (i <= gold + gear and "#8fe0ff" or "#566080")
+				pips[i] = string.format("<font color='%s'>%s</font>", color, i <= gold + gear and "●" or "○")
+			end
+			label({ Size = UDim2.new(1, -100, 0, 14), Position = UDim2.new(0, 38, 0, 20), Text = table.concat(pips, " "), RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5 }, row)
+			label({ Size = UDim2.new(0, 56, 1, 0), Position = UDim2.new(1, -60, 0, 0), Text = "Lv." .. (gold + gear), TextSize = 18, Font = Enum.Font.GothamBlack,
+				TextColor3 = Color3.fromRGB(150, 230, 255), TextStrokeTransparency = 0.5, ZIndex = 5 }, row)
+			table.insert(hudRows, row)
+			y += 40
 		end
 	end
-	hudBox.Visible = #lines > 1 and (zone == "Field" or zone == "Dungeon") and not player:GetAttribute("TutorialActive")
-	hudBox.Text = table.concat(lines, "\n")
-	hudBox.Size = UDim2.new(0, 210, 0, 12 + #lines * 16)
+	hudBox.Visible = count > 0 and (zone == "Field" or zone == "Dungeon") and not player:GetAttribute("TutorialActive")
+	hudBox.Size = UDim2.new(0, 244, 0, y + 4)
 end
 for _, name in ipairs({ "Zone", "TutorialActive" }) do player:GetAttributeChangedSignal(name):Connect(refreshHud) end
 for z = 1, ZONES do
@@ -649,7 +670,7 @@ local function showProc(attr, position)
 	task.delay(0.55, refreshHud)
 	hudStroke.Thickness = 3
 	hudStroke.Transparency = 0
-	TweenService:Create(hudStroke, TweenInfo.new(0.5), { Thickness = 1.2, Transparency = 0.4 }):Play()
+	TweenService:Create(hudStroke, TweenInfo.new(0.5), { Thickness = 2, Transparency = 0.25 }):Play()
 	local slot = #procLabels
 	local pop = label({
 		Size = UDim2.new(0, 260, 0, 26), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.64, 26 * slot), Text = info.Icon .. "  " .. info.Name .. "!",
