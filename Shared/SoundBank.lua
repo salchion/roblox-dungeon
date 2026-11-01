@@ -91,6 +91,11 @@ SPECS.Gacha_Tick  = { Base = "Enh_Hammer", Pitch = 0.95, Volume = 0.35, Length =
 SPECS.UI_Click    = { Base = "Hit", Pitch = 0.75, Volume = 0.6, Length = 0.1, CustomLength = 0.2, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -14 } } } } -- 버튼 누를 때 작은 "톡" (예전 뽑기 틱 소리)
 SPECS.Gacha_Card  = { Base = "Dash", Pitch = 1.35, Volume = 0.5, Length = 0.3, Fx = { { "eq", { LowGain = -4, MidGain = 0, HighGain = -4 } } } } -- 카드 넘기는 "휙"
 SPECS.Dash   = { Base = "Shot", Pitch = 0.35, Volume = 5.5, Length = 0.4, CustomLength = 1.0, Fx = { { "eq", { HighGain = -12 } } } }  -- 대시 "슈웅"
+-- 스탯 창 (레벨 스탯 / 패러건): + 는 포인트를 넣을 때마다 음이 조금씩 올라가는 "팅", - 는 낮고 짧은 "톡", 최대 는 파워업
+SPECS.Stat_Up   = { Base = "Chime", Pitch = 1.25, Volume = 0.55, Length = 0.3, Fx = { { "eq", { LowGain = 1, MidGain = 0, HighGain = -9 } } } }
+SPECS.Stat_Down = { Base = "Chime", Pitch = 0.8, Volume = 0.4, Length = 0.18, Fx = { { "eq", { LowGain = 3, MidGain = 0, HighGain = -14 } } } }
+SPECS.Stat_Max  = { Base = "Aug_Get", Pitch = 1.0, Volume = 0.75, Length = 0.9, Fx = { { "reverb", { DecayTime = 0.9, WetLevel = -9 } } } }
+SPECS.Stat_Reset = { Base = "Dash", Pitch = 1.1, Volume = 0.6, Length = 0.35 }
 SPECS.Pickup = { Base = "Chime", Pitch = 1.5, Volume = 0.3, Length = 0.25, CustomLength = 1.0, Fx = { { "eq", { LowGain = 0, MidGain = 0, HighGain = -8 } } } }                        -- 전리품 줍기 "팅"
 -- 등급 공개: 일반 / 희귀 = 맑은 "띵", 영웅 = 파워업, 전설 / 신화 = 서사적 파워업 + 아래에 낮은 폭발 울림
 local POP_BASE = { "Reel_Stop", "Reel_Stop", "Aug_Get", "Aug_Synergy", "Aug_Synergy" }
@@ -165,7 +170,7 @@ end
 
 -- 사운드 테스트 창(Studio 에서 K 키)에 보이는 항목별 설명
 SoundBank.Descriptions = {
-	Dash = "Dash (Q)", Pickup = "Loot pickup",
+	Dash = "Dash (Q)", Pickup = "Loot pickup", Stat_Up = "Stat window: + point", Stat_Down = "Stat window: - point", Stat_Max = "Stat window: Max", Stat_Reset = "Stat window: reset",
 	Shot_Pistol = "Rifle shot", Shot_Smg = "SMG shot", Shot_Revolver = "Bomb throw", Shot_Rifle = "Bow shot", Shot_Shotgun = "Shotgun shot",
 	Shot_Flamer = "Spell Tome chain lightning", Shot_Cannon = "Mortar shot", Shot_Sniper = "Crossbow shot", Shot_Rocket = "Rocket Launcher shot", Shot_Rail = "Railgun shot",
 	Hit = "Enemy hit (short)", Crit = "Critical hit", Kill = "Enemy kill (pitch rises with kill streak)",
@@ -182,7 +187,7 @@ SoundBank.Descriptions = {
 SoundBank.Order = {
 	"Shot_Pistol", "Shot_Smg", "Shot_Revolver", "Shot_Rifle", "Shot_Shotgun", "Shot_Flamer", "Shot_Cannon", "Shot_Sniper", "Shot_Rocket", "Shot_Rail",
 	"Hit", "Crit", "Kill", "Skill_Heal", "Skill_LotusCast", "Skill_LotusThump", "Skill_LotusSlash", "Skill_LotusStab", "Skill_LotusClang", "Skill_Ult", "Ult_Lock", "Ult_Missile", "Ult_Hit", "Ult_Launch", "Ult_Finale", "UltShot", "Boom", "LevelUp",
-	"Dash", "Pickup", "Enh_Hammer", "Enh_Success", "Enh_Fail", "Enh_Evolve", "Gacha_Drop", "Gacha_Shake", "Thunder_Crack", "Gacha_Tick", "Gacha_Card",
+	"Dash", "Pickup", "Stat_Up", "Stat_Down", "Stat_Max", "Stat_Reset", "Enh_Hammer", "Enh_Success", "Enh_Fail", "Enh_Evolve", "Gacha_Drop", "Gacha_Shake", "Thunder_Crack", "Gacha_Tick", "Gacha_Card",
 	"Gacha_Pop1", "Gacha_Pop2", "Gacha_Pop3", "Gacha_Pop4", "Gacha_Pop5",
 	"Aug_Get", "Aug_Synergy", "Aug_Missile", "Aug_MissileHit", "Aug_Nova", "Aug_Blade", "Aug_Storm", "Aug_MeteorFall", "Aug_MeteorHit", "Aug_Flame", "Aug_Execute", "Aug_Skull", "Aug_Pulse",
 	"Buff_Get", "Penalty_Get", "Player_Hurt", "Low_Health", "Warn_Overrun", "Shield_Block",
@@ -240,7 +245,7 @@ end
 
 -- opts: Pitch(배율) / Volume(배율) / Name(소리 이름; 총소리는 "GunShot" 으로 두면 설정창 볼륨이 적용된다)
 -- 연속으로 터져도 "따따따따" 겹치지 않게: 이 시간(초) 안에 같은 소리가 또 울리면 건너뛴다
-local MIN_GAP = { Crit = 0.38, Hit = 0.09, Kill = 0.18, Pickup = 0.1, Rare_Drop = 0.15, NearMiss_Get = 0.2 } -- (연사할 때 적중 / 치명타 / 처치 소리가 촘촘히 겹쳐 총소리를 덮지 않게 간격을 넓혔다)
+local MIN_GAP = { Stat_Up = 0.04, Stat_Down = 0.04, Crit = 0.38, Hit = 0.09, Kill = 0.18, Pickup = 0.1, Rare_Drop = 0.15, NearMiss_Get = 0.2 } -- (연사할 때 적중 / 치명타 / 처치 소리가 촘촘히 겹쳐 총소리를 덮지 않게 간격을 넓혔다)
 local lastPlayed = {}
 -- 몬스터를 확확 잡을 때 적중 / 치명타 / 처치 / 줍기 소리가 한꺼번에 울려 총소리를 덮는다: 이 "반응 소리"들은 종류와 상관없이 0.06초에 하나만 낸다 (총소리가 먼저 들리게)
 local FEEDBACK = { Hit = true, Crit = true, Kill = true, Pickup = true }

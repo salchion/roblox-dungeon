@@ -8,8 +8,19 @@ local UserInputService = game:GetService("UserInputService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+local okSound, SoundBank = pcall(function() return require(ReplicatedStorage:WaitForChild("SoundBank", 10)) end)
 
 local player = Players.LocalPlayer
+local upStreak, lastUp = 0, 0
+local function sfx(key, opts) -- 스탯 창 소리: + 를 연달아 누르면 음이 조금씩 올라간다 (최대 6단계)
+	if not okSound then return end
+	if key == "Stat_Up" then
+		upStreak = (os.clock() - lastUp < 0.7) and math.min(6, upStreak + 1) or 0
+		lastUp = os.clock()
+		opts = { Pitch = 1 + upStreak * 0.07 }
+	end
+	pcall(SoundBank.Play, game:GetService("SoundService"), key, opts)
+end
 local LS = Config.LevelStats
 
 local gui = Instance.new("ScreenGui")
@@ -86,12 +97,15 @@ for index, key in ipairs(LS.Order) do
 	local valueLabel = label({ Size = UDim2.new(0, 216, 0, 18), Position = UDim2.new(0, 44, 0, 27), Text = "", TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(150, 235, 190), TextTruncate = Enum.TextTruncate.AtEnd }, row)
 	local countLabel = label({ Size = UDim2.new(0, 36, 1, 0), Position = UDim2.new(1, -168, 0, 0), Text = "0", TextSize = 15, TextColor3 = Color3.fromRGB(255, 225, 110) }, row)
 	button({ Size = UDim2.new(0, 30, 0, 32), Position = UDim2.new(1, -132, 0.5, -16), BackgroundColor3 = Color3.fromRGB(110, 60, 70), Text = "−" }, row, function()
+		sfx("Stat_Down")
 		Remotes.LevelStat:FireServer("Sub", key, 1)
 	end)
 	button({ Size = UDim2.new(0, 30, 0, 32), Position = UDim2.new(1, -98, 0.5, -16), BackgroundColor3 = Color3.fromRGB(60, 120, 80), Text = "+" }, row, function()
+		sfx("Stat_Up")
 		Remotes.LevelStat:FireServer("Add", key, 1)
 	end)
 	button({ Size = UDim2.new(0, 56, 0, 32), Position = UDim2.new(1, -64, 0.5, -16), BackgroundColor3 = Color3.fromRGB(70, 90, 170), Text = "Max", TextSize = 11 }, row, function()
+		sfx("Stat_Max")
 		Remotes.LevelStat:FireServer("Add", key, 99)
 	end)
 	rows[key] = { Value = valueLabel, Count = countLabel }
@@ -100,9 +114,11 @@ end
 label({ Size = UDim2.new(1, -32, 0, 30), Position = UDim2.new(0, 16, 0, 376), Text = LS.Double.Note or "", TextSize = 10, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
 -- 최대 레벨을 찍은 뒤: 골드로 포인트 구매 (살수록 비싸진다)
 local buyButton = button({ Size = UDim2.new(0, 250, 0, 32), Position = UDim2.new(0, 16, 1, -42), BackgroundColor3 = Color3.fromRGB(140, 104, 40), Text = "", TextSize = 11, Visible = false }, panel, function()
+	sfx("Stat_Up")
 	Remotes.LevelStat:FireServer("Buy")
 end)
 button({ Size = UDim2.new(0, 150, 0, 32), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 1, -42), BackgroundColor3 = Color3.fromRGB(120, 70, 70), Text = "Reset All (Free)", TextSize = 11 }, panel, function()
+	sfx("Stat_Reset")
 	Remotes.LevelStat:FireServer("Reset")
 end)
 
@@ -170,18 +186,22 @@ for index, key in ipairs(PG.Order) do
 	local valueLabel = label({ Size = UDim2.new(0, 216, 0, 18), Position = UDim2.new(0, 44, 0, 27), Text = "", TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 215, 140), TextTruncate = Enum.TextTruncate.AtEnd }, row)
 	local countLabel = label({ Size = UDim2.new(0, 36, 1, 0), Position = UDim2.new(1, -168, 0, 0), Text = "0", TextSize = 15, TextColor3 = Color3.fromRGB(255, 225, 110) }, row)
 	button({ Size = UDim2.new(0, 30, 0, 32), Position = UDim2.new(1, -132, 0.5, -16), BackgroundColor3 = Color3.fromRGB(110, 60, 70), Text = "−" }, row, function()
+		sfx("Stat_Down")
 		Remotes.LevelStat:FireServer("PSub", key, 1)
 	end)
 	button({ Size = UDim2.new(0, 30, 0, 32), Position = UDim2.new(1, -98, 0.5, -16), BackgroundColor3 = Color3.fromRGB(60, 120, 80), Text = "+" }, row, function()
+		sfx("Stat_Up")
 		Remotes.LevelStat:FireServer("PAdd", key, 1)
 	end)
 	button({ Size = UDim2.new(0, 56, 0, 32), Position = UDim2.new(1, -64, 0.5, -16), BackgroundColor3 = Color3.fromRGB(150, 110, 40), Text = "Max", TextSize = 11 }, row, function()
+		sfx("Stat_Max")
 		Remotes.LevelStat:FireServer("PAdd", key, 99)
 	end)
 	prows[key] = { Row = row, Value = valueLabel, Count = countLabel }
 end
 label({ Size = UDim2.new(1, -32, 0, 30), Position = UDim2.new(0, 16, 0, 322), Text = "After level 400, the XP you earn turns into Paragon points. Spend them here; you can respec for free anytime.", TextSize = 10, TextColor3 = Color3.fromRGB(190, 180, 210), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, ppanel)
 button({ Size = UDim2.new(0, 150, 0, 32), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 1, -42), BackgroundColor3 = Color3.fromRGB(120, 70, 70), Text = "Reset All (Free)", TextSize = 11 }, ppanel, function()
+	sfx("Stat_Reset")
 	Remotes.LevelStat:FireServer("PReset")
 end)
 paragonButton.Activated:Connect(function()
