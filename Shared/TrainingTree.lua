@@ -15,8 +15,8 @@ local DIM = Color3.fromRGB(70, 66, 96)
 local GOLD = Color3.fromRGB(225, 196, 118)
 local PET_COLOR = Color3.fromRGB(255, 200, 120)
 local NODE = 48
-local TIER_Y = { 84, 184, 284 } -- 세 칸이 같은 높이의 층을 쓴다
-local CANVAS_H = 352
+local TIER_Y = { 70, 160, 250 } -- 세 칸이 같은 높이의 층을 쓴다
+local CANVAS_H = 322
 local COLS = { Skill = { 0, 0.25 }, Train = { 0.25, 0.66 }, Pet = { 0.66, 1 } } -- 칸마다 가로 범위 (0~1)
 local selected = { Kind = "Skill", Key = nil } -- 마지막으로 고른 노드 (메뉴를 다시 그려도 유지)
 
@@ -107,7 +107,7 @@ end
 -- 고른 노드의 설명 + 버튼 한 줄 (나무 바로 아래)
 local function detailRow(env, color, text, button)
 	local create, label = env.Create, env.MakeLabel
-	local detail = env.NewRow(84, Color3.fromRGB(30, 28, 46))
+	local detail = env.NewRow(76, Color3.fromRGB(30, 28, 46))
 	create("UIStroke", { Color = color, Thickness = 1.5, Transparency = 0.3 }, detail)
 	label({ Size = UDim2.new(1, -210, 1, -12), Position = UDim2.new(0, 14, 0, 6), RichText = true, TextSize = 12, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center, Text = text }, detail)
 	if button then
