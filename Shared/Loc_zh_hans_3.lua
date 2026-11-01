@@ -4,6 +4,16 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 Zone {number1} · {text2} Sealed", "🔒 区域{number1} · {text2} 已封印" },
+		{ "Weekly best: {text1} pts", "每周最佳:{text1} 分" },
+		{ "⬆ Level Up  💰 {text1} G", "⬆ 升级  💰 {text1} 金币" },
+		{ "Invite sent to {text1}", "已向{text1}发送邀请" },
+		{ "{text1} unlocks at +{number2}.", "{text1} 将在 +{number2} 时解锁。" },
+		{ "👹 Monsters {number1} / {number2}{text3}", "👹 怪物 {number1} / {number2}{text3}" },
+		{ "Dungeon loot: {text1}", "地下城战利品：{text1}" },
+		{ "DAMAGE · {number1}s · {text2}", "伤害 · {number1}秒 · {text2}" },
+		{ "• Shot type: {text1}", "• 弹种:{text1}" },
+		{ "Achievement: {text1}", "成就：{text1}" },
 		{ "per piece ({text1})", "每件({text1})" },
 		{ "({number1} lvl · ~{text2} G)", "({number1} 级 · 约 {text2} 金币)" },
 		{ "⚠ Zone {number1} · {text2} ⚠", "⚠ 区域{number1} · {text2} ⚠" },

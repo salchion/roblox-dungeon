@@ -772,6 +772,13 @@ return {
 		["Random set"] = "랜덤 세트",
 		["Any"] = "랜덤",
 		["🎲 A random set from your reached zones"] = "🎲 도달한 구역 중 무작위 세트",
+		["Entry key"] = "입장 열쇠",
+		["Boss tickets"] = "보스 티켓",
+		["Gold / XP"] = "골드 / 경험치",
+		["Monster HP / Damage"] = "몬스터 체력 / 피해",
+		["🧩 Set: clear a zone lord"] = "🧩 세트: 구역 군주를 잡으세요",
+		["⚔ Equipped"] = "⚔ 장착함",
+		["🎒 In bag"] = "🎒 가방에 있음",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1039,8 +1046,5 @@ return {
 		{ "⚔ Rocket Launcher · Rusty Era +{number10}", "⚔ 로켓 발사기 · 녹슨 시대 +{number10}" },
 		{ "⚔ Rocket Launcher · Rusty Era +{number1}", "⚔ 로켓 발사기 · 녹슨 시대 +{number1}" },
 		{ "👹 Monster health x{number1}  ·  damage x{number2}", "👹 몬스터 체력 x{number1}  ·  피해 x{number2}" },
-		{ "(Idle Booster applied for {number1} min)", "(방치 부스터 {number1}분 적용 중)" },
-		{ " With the max {number1} points, about {number2}%.", " 최대 {number1}포인트일 때 약 {number2}%." },
-		{ "every {number1}s lightning hits {number2} enemies", "{number1}초마다 번개가 {number2}명에게 내려쳐요" },
 	},
 }

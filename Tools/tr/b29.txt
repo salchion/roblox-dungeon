@@ -235,3 +235,15 @@
 2276¦🎲 到達したエリアからランダムなセット¦🎲 Ein zufälliges Set aus erreichten Zonen¦🎲 Un set aléatoire parmi les zones atteintes¦🎲 Un set aleatorio de las zonas alcanzadas¦🎲 Um set aleatório das zonas alcançadas¦🎲 从已到达的区域中随机一套¦🎲 도달한 구역 중 무작위 세트
 2277¦💰 {number1}G¦💰 {number1} G¦💰 {number1} G¦💰 {number1} G¦💰 {number1} G¦💰 {number1}G¦💰 {number1}G
 2278¦💰 選んだセットで引くゴールドが足りません！({number1}G必要)¦💰 Nicht genug Gold für das gewählte Set! ({number1} G nötig)¦💰 Pas assez d'or pour tirer le set choisi ! ({number1} G requis)¦💰 ¡Oro insuficiente para el set elegido! (se necesitan {number1} G)¦💰 Ouro insuficiente para o set escolhido! ({number1} G necessário)¦💰 金币不足，无法抽取所选套装！(需要{number1}G)¦💰 고른 세트로 뽑을 골드가 부족해요! ({number1}G 필요)
+2279¦入場キー¦Eintrittsschlüssel¦Clé d'entrée¦Llave de entrada¦Chave de entrada¦入场钥匙¦입장 열쇠
+2280¦ボスチケット¦Boss-Tickets¦Tickets de boss¦Tickets de jefe¦Tickets de chefe¦首领票¦보스 티켓
+2281¦ゴールド / XP¦Gold / XP¦Or / XP¦Oro / XP¦Ouro / XP¦金币 / 经验¦골드 / 경험치
+2282¦モンスターHP / ダメージ¦Monster-LP / Schaden¦PV / dégâts des monstres¦PV / daño de monstruos¦PV / dano dos monstros¦怪物生命 / 伤害¦몬스터 체력 / 피해
+2283¦クリア済み：深さ{number1}　次：{number2}¦Bis Tiefe {number1} geschafft  ·  nächste: {number2}¦Terminé jusqu'à la profondeur {number1}  ·  prochaine : {number2}¦Superada hasta la profundidad {number1}  ·  siguiente: {number2}¦Concluído até a profundidade {number1}  ·  próxima: {number2}¦已通关至深度{number1}  ·  下一个：{number2}¦깊이 {number1}까지 클리어  ·  다음: {number2}
+2284¦<b>🎁 ボス宝箱・装備{number1}個</b>¦<b>🎁 Boss-Truhe · {number1} Ausrüstungsteile</b>¦<b>🎁 Coffre du boss · {number1} équipements</b>¦<b>🎁 Cofre del jefe · {number1} piezas de equipo</b>¦<b>🎁 Baú do chefe · {number1} equipamentos</b>¦<b>🎁 首领宝箱 · {number1}件装备</b>¦<b>🎁 보스 상자 · 장비 {number1}개</b>
+2285¦✦ ユニーク {number1}%¦✦ Einzigartig {number1} %¦✦ Unique {number1} %¦✦ Único {number1} %¦✦ Único {number1}%¦✦ 独特 {number1}%¦✦ 유니크 {number1}%
+2286¦🧩 セット：エリアの主を倒そう¦🧩 Set: Besiege einen Zonenherrscher¦🧩 Set : battez un seigneur de zone¦🧩 Set: derrota a un señor de zona¦🧩 Set: derrote um senhor de zona¦🧩 套装：击败区域领主¦🧩 세트: 구역 군주를 잡으세요
+2287¦🧩 セット {number1}%¦🧩 Set {number1} %¦🧩 Set {number1} %¦🧩 Set {number1} %¦🧩 Set {number1}%¦🧩 套装 {number1}%¦🧩 세트 {number1}%
+2288¦⚔ 装備中¦⚔ Ausgerüstet¦⚔ Équipé¦⚔ Equipado¦⚔ Equipado¦⚔ 已装备¦⚔ 장착함
+2289¦🎒 バッグ内¦🎒 In der Tasche¦🎒 Dans le sac¦🎒 En la bolsa¦🎒 Na bolsa¦🎒 在背包中¦🎒 가방에 있음
+2290¦♻ エッセンス +{number1}¦♻ Essenz +{number1}¦♻ Essence +{number1}¦♻ Esencia +{number1}¦♻ Essência +{number1}¦♻ 精华 +{number1}¦♻ 정수 +{number1}
