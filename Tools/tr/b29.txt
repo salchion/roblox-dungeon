@@ -187,3 +187,42 @@
 2228¦🏘 街で強化¦🏘 In der Stadt verbessern¦🏘 Améliorer en ville¦🏘 Mejora en el pueblo¦🏘 Melhore na cidade¦🏘 请在城镇升级¦🏘 마을에서 강화
 2229¦💰 ワープのゴールドが足りません！({number1}G必要)¦💰 Nicht genug Gold für den Warp! ({number1} G nötig)¦💰 Pas assez d'or pour se téléporter ! ({number1} G requis)¦💰 ¡Oro insuficiente para el warp! (se necesitan {number1} G)¦💰 Ouro insuficiente para o warp! ({number1} G necessário)¦💰 传送金币不足！(需要{number1}G)¦💰 워프할 골드가 부족해요! ({number1}G 필요)
 2230¦💰 ワープ料金 -{number1}G¦💰 Warp-Gebühr -{number1} G¦💰 Frais de warp -{number1} G¦💰 Tarifa de warp -{number1} G¦💰 Taxa de warp -{number1} G¦💰 传送费 -{number1}G¦💰 워프 비용 -{number1}G
+2231¦疾風¦Sturmwind¦Bourrasque¦Vendaval¦Rajada¦疾风¦질풍
+2232¦貫通の短剣¦Durchbohrende Dolche¦Dagues perforantes¦Dagas perforantes¦Adagas perfurantes¦贯穿匕首¦관통 단검
+2233¦花びらの爆発¦Blütenexplosion¦Explosion de pétales¦Explosión de pétalos¦Explosão de pétalas¦花瓣爆发¦꽃잎 폭발
+2234¦余韻の花¦Nachklingende Blüte¦Fleur persistante¦Flor persistente¦Flor persistente¦余韵之花¦여운의 꽃
+2235¦マルチロック¦Mehrfach-Erfassung¦Verrouillage multiple¦Fijado múltiple¦Trava múltipla¦多重锁定¦다중 락온
+2236¦狙撃¦Scharfschuss¦Tir de précision¦Disparo de francotirador¦Tiro de precisão¦狙击¦저격
+2237¦リロード¦Nachladen¦Rechargement¦Recarga¦Recarga¦装填¦재장전
+2238¦連鎖爆発¦Kettenexplosion¦Explosion en chaîne¦Explosión en cadena¦Explosão em cadeia¦连锁爆炸¦연쇄 폭발
+2239¦再生¦Regeneration¦Régénération¦Regeneración¦Regeneração¦再生¦재생
+2240¦緊急シールド¦Notschild¦Bouclier d'urgence¦Escudo de emergencia¦Escudo de emergência¦紧急护盾¦응급 방패
+2241¦パーティーヒーラー¦Gruppenheiler¦Soigneur de groupe¦Sanador de grupo¦Curandeiro do grupo¦队伍治疗师¦파티 치료사
+2242¦速攻治療¦Schnelle Hilfe¦Soins rapides¦Auxilio rápido¦Socorro rápido¦快速救治¦신속
+2243¦持久¦Ausdauer¦Endurance¦Aguante¦Resistência¦持久¦지구력
+2244¦安定¦Stabil¦Stabilité¦Estable¦Estável¦稳定¦안정
+2245¦暴走¦Raserei¦Frénésie¦Frenesí¦Frenesi¦狂暴¦폭주
+2246¦長期戦¦Langer Atem¦Longue haleine¦Larga duración¦Longa duração¦持久战¦장기전
+2247¦持続+{number1}秒・範囲+{number2}%：群れを一掃¦Dauer +{number1} s · Reichweite +{number2} %: fegt Schwärme weg¦Durée +{number1} s · portée +{number2} % : balaie les hordes¦Dura +{number1} s · alcance +{number2} %: barre enjambres¦Dura +{number1}s · alcance +{number2}%: varre enxames¦持续+{number1}秒 · 范围+{number2}%：横扫怪群¦지속 +{number1}초 · 범위 +{number2}%: 몰려든 잡몹을 쓸어요
+2248¦短剣が1本減る代わりに1本あたり+{number1}%：ボス向け¦Ein Dolch weniger, aber jeder trifft +{number1} % härter: für Bosse¦Une dague de moins, mais chacune frappe +{number1} % plus fort : pour les boss¦Una daga menos, pero cada una pega +{number1} % más: para jefes¦Uma adaga a menos, mas cada uma bate +{number1}% mais forte: para chefes¦少一把匕首，但每把伤害+{number1}%：适合首领¦단검이 한 자루 줄지만 한 자루당 +{number1}% 강해요: 보스용
+2249¦終了時に大爆発（攻撃力x{number1}）¦Beim Ende eine große Explosion (Angriff x{number1})¦Une grosse explosion à la fin (attaque x{number1})¦Una gran explosión al terminar (ataque x{number1})¦Uma grande explosão ao terminar (ataque x{number1})¦结束时大爆炸（攻击x{number1}）¦끝날 때 크게 한 번 터져요 (공격 x{number1})
+2250¦クールタイム-{number1}%・ダメージ+{number2}%¦Abklingzeit -{number1} % · Schaden +{number2} %¦Recharge -{number1} % · dégâts +{number2} %¦Enfriamiento -{number1} % · daño +{number2} %¦Recarga -{number1}% · dano +{number2}%¦冷却-{number1}% · 伤害+{number2}%¦쿨타임 -{number1}% · 피해 +{number2}%
+2251¦最大{number1}体をロック、総ダメージ-{number2}%：群れ向け¦Erfasst bis zu {number1} Gegner, Gesamtschaden -{number2} %: für Gruppen¦Verrouille jusqu'à {number1} ennemis, dégâts totaux -{number2} % : pour les groupes¦Fija hasta {number1} enemigos, daño total -{number2} %: para multitudes¦Trava até {number1} inimigos, dano total -{number2}%: para multidões¦最多锁定{number1}个敌人，总伤害-{number2}%：适合群怪¦최대 {number1}마리까지 락온, 총 피해 -{number2}%: 무리용
+2252¦単体へのダメージ+{number1}%：ボス向け¦Schaden +{number1} % auf ein einzelnes Ziel: für Bosse¦Dégâts +{number1} % sur une seule cible : pour les boss¦Daño +{number1} % a un solo objetivo: para jefes¦Dano +{number1}% em um único alvo: para chefes¦单体伤害+{number1}%：适合首领¦단일 대상 피해 +{number1}%: 보스용
+2253¦使用後にゲージ{number1}が戻る¦Gibt nach dem Einsatz {number1} Ladung zurück¦Rend {number1} de jauge après usage¦Devuelve {number1} de barra tras usarla¦Devolve {number1} de medidor após o uso¦使用后返还{number1}点能量¦쓰고 나면 게이지 {number1}이 돌아와요
+2254¦最後の爆発が全ての標的の周囲でも起きる（攻撃力x{number1}）¦Die Schlussexplosion detoniert auch um jedes Ziel (Angriff x{number1})¦L'explosion finale éclate aussi autour de chaque cible (attaque x{number1})¦La explosión final también estalla alrededor de cada objetivo (ataque x{number1})¦A explosão final também detona ao redor de cada alvo (ataque x{number1})¦最后的爆炸也会在每个目标周围引爆（攻击x{number1}）¦마지막 대폭발이 모든 대상 주변에서도 터져요 (공격 x{number1})
+2255¦一度ではなく{number1}秒かけて回復・合計+{number2}%¦Heilt über {number1} s statt sofort · gesamt +{number2} %¦Soigne sur {number1} s au lieu d'un coup · total +{number2} %¦Cura durante {number1} s en vez de al instante · total +{number2} %¦Cura ao longo de {number1}s em vez de uma vez · total +{number2}%¦在{number1}秒内逐步回复，而非瞬间回复 · 总量+{number2}%¦한 번에 대신 {number1}초에 걸쳐 회복 · 합계 +{number2}%
+2256¦{number1}秒間無敵、ただし回復量は半分¦{number1} s unverwundbar, aber die Heilung wird halbiert¦{number1} s d'invincibilité, mais les soins sont réduits de moitié¦{number1} s de invencibilidad, pero la curación se reduce a la mitad¦{number1}s de invencibilidade, mas a cura é reduzida pela metade¦无敌{number1}秒，但治疗量减半¦{number1}초 무적, 대신 회복량은 절반
+2257¦範囲x{number1}・仲間の回復+{number2}%¦Reichweite x{number1} · Verbündete werden um {number2} % mehr geheilt¦Portée x{number1} · alliés soignés +{number2} %¦Alcance x{number1} · aliados curan +{number2} %¦Alcance x{number1} · aliados curam +{number2}%¦范围x{number1} · 队友治疗量+{number2}%¦범위 x{number1} · 동료 회복 +{number2}%
+2258¦クールタイム-{number1}%¦Abklingzeit -{number1} %¦Recharge -{number1} %¦Enfriamiento -{number1} %¦Recarga -{number1}%¦冷却-{number1}%¦쿨타임 -{number1}%
+2259¦NEAR MISSの持続+{number1}秒¦NEAR MISS hält +{number1} s länger¦NEAR MISS dure +{number1} s de plus¦NEAR MISS dura +{number1} s más¦NEAR MISS dura +{number1}s a mais¦NEAR MISS持续时间+{number1}秒¦NEAR MISS 유지 시간 +{number1}초
+2260¦途切れても{number1}スタック多く残る¦Behält {number1} Stapel mehr, auch wenn die Serie abreißt¦Garde {number1} cumuls de plus même en cas de rupture¦Conserva {number1} acumulaciones más aunque se rompa¦Mantém {number1} acúmulos a mais mesmo se quebrar¦即使中断也多保留{number1}层¦끊겨도 스택이 {number1}개 더 남아요
+2261¦NEAR MISSのスタックごとに攻撃力がさらに+{number1}%¦Jeder NEAR-MISS-Stapel gibt +{number1} % mehr Angriff¦Chaque cumul NEAR MISS donne +{number1} % d'attaque en plus¦Cada acumulación NEAR MISS da +{number1} % más de ataque¦Cada acúmulo NEAR MISS dá +{number1}% a mais de ataque¦每层NEAR MISS额外提供+{number1}%攻击¦NEAR MISS 스택마다 공격력이 +{number1}% 더 붙어요
+2262¦NEAR MISSの持続がさらに+{number1}秒¦NEAR MISS hält weitere {number1} s¦NEAR MISS dure {number1} s de plus encore¦NEAR MISS dura {number1} s más¦NEAR MISS dura mais {number1}s¦NEAR MISS持续时间再+{number1}秒¦NEAR MISS 유지 시간 +{number1}초 추가
+2263¦道を選ぶ¦Wähle einen Pfad¦Choisissez une voie¦Elige un camino¦Escolha um caminho¦选择路线¦길을 고르세요
+2264¦✔ 選択済み¦✔ Pfad gewählt¦✔ Voie choisie¦✔ Camino elegido¦✔ Caminho escolhido¦✔ 已选择¦✔ 선택함
+2265¦🔒 ロック中¦🔒 Gesperrt¦🔒 Verrouillé¦🔒 Bloqueado¦🔒 Bloqueado¦🔒 未解锁¦🔒 잠김
+2266¦道を変更：{number1}G¦Pfad wechseln: {number1} G¦Changer de voie : {number1} G¦Cambiar camino: {number1} G¦Trocar caminho: {number1} G¦更换路线：{number1}G¦길 바꾸기: {number1}G
+2267¦🔒 まず必要なスキルレベルに到達しよう¦🔒 Erreiche zuerst die nötige Fertigkeitsstufe¦🔒 Atteignez d'abord le niveau de compétence requis¦🔒 Alcanza primero el nivel de habilidad necesario¦🔒 Alcance primeiro o nível de habilidade necessário¦🔒 请先达到所需的技能等级¦🔒 먼저 필요한 스킬 레벨에 도달하세요
+2268¦🔁 道を変更しました！(-{number1}G)¦🔁 Pfad gewechselt! (-{number1} G)¦🔁 Voie changée ! (-{number1} G)¦🔁 ¡Camino cambiado! (-{number1} G)¦🔁 Caminho trocado! (-{number1} G)¦🔁 已更换路线！(-{number1}G)¦🔁 길을 바꿨어요! (-{number1}G)
+2269¦🌟 道を選びました！¦🌟 Pfad gewählt!¦🌟 Voie choisie !¦🌟 ¡Camino elegido!¦🌟 Caminho escolhido!¦🌟 已选择路线！¦🌟 길을 골랐어요!

@@ -121,7 +121,7 @@ end
 -- 클라이언트로 상태 보내기
 ------------------------------------------------------------
 local function buildPayload(state)
-	return { Skills = state.Skills, Pet = state.Pet, Tower = state.Tower }
+	return { Skills = state.Skills, Branch = state.Branch, Pet = state.Pet, Tower = state.Tower }
 end
 
 function Meta.Push(player)
@@ -143,14 +143,26 @@ end
 local function syncSkillAttributes(player, state)
 	for _, key in ipairs(Config.Skills.UpgradeOrder) do
 		player:SetAttribute("SkillLv_" .. key, state.Skills[key])
+		for _, tier in ipairs(Config.SkillBranchTiers) do -- 고른 갈래 ("A" / "B", 안 골랐으면 비움)
+			local picked = state.Branch[key] and state.Branch[key][tostring(tier)]
+			player:SetAttribute("SkillBr" .. tier .. "_" .. key, (picked == "A" or picked == "B") and picked or nil)
+		end
 	end
 end
 
 function Meta.Load(player, saved)
-	local state = { Skills = {}, Pet = { Unlocked = false, Level = 1, Look = "Orb", Color = 1 }, Tower = 0, Codex = { Kills = {}, Boss = {}, Sets = {}, Items = {} }, Depth = { All = 0 }, Rift = { BestScore = 0, BestBoss = 0, BestTime = 0, Week = 0, WeekBest = 0, Day = 0, Used = 0, Hints = {}, LvStats = {}, Paragon = { Xp = 0, Earned = 0, Stats = {} } } }
+	local state = { Skills = {}, Branch = {}, Pet = { Unlocked = false, Level = 1, Look = "Orb", Color = 1 }, Tower = 0, Codex = { Kills = {}, Boss = {}, Sets = {}, Items = {} }, Depth = { All = 0 }, Rift = { BestScore = 0, BestBoss = 0, BestTime = 0, Week = 0, WeekBest = 0, Day = 0, Used = 0, Hints = {}, LvStats = {}, Paragon = { Xp = 0, Earned = 0, Stats = {} } } }
 	for _, key in ipairs(Config.Skills.UpgradeOrder) do
 		local level = typeof(saved) == "table" and typeof(saved.Skills) == "table" and tonumber(saved.Skills[key]) or 1
 		state.Skills[key] = math.clamp(math.floor(level), 1, Config.SkillUpgrade.MaxLevel)
+		local picks = {}
+		for _, tier in ipairs(Config.SkillBranchTiers) do -- 저장된 갈래: 그 단계 레벨에 닿았고 정의된 길만 인정한다
+			local savedPick = typeof(saved) == "table" and typeof(saved.Branch) == "table" and typeof(saved.Branch[key]) == "table" and saved.Branch[key][tostring(tier)]
+			if (savedPick == "A" or savedPick == "B") and Config.SkillBranch[key] and Config.SkillBranch[key][tier] and state.Skills[key] >= tier then
+				picks[tostring(tier)] = savedPick
+			end
+		end
+		state.Branch[key] = picks
 	end
 	if typeof(saved) == "table" then
 		if typeof(saved.Pet) == "table" then
@@ -225,7 +237,7 @@ end
 function Meta.Serialize(player)
 	local state = states[player]
 	if not state then return nil end
-	return { Skills = state.Skills, Pet = state.Pet, Tower = state.Tower, Rift = state.Rift, Codex = state.Codex, Depth = state.Depth }
+	return { Skills = state.Skills, Branch = state.Branch, Pet = state.Pet, Tower = state.Tower, Rift = state.Rift, Codex = state.Codex, Depth = state.Depth }
 end
 
 function Meta.Forget(player)
@@ -355,6 +367,37 @@ local function upgradeSkill(player, key)
 	end
 	player:SetAttribute("Gold", gold - cost)
 	local duration = Growth.StartUpgrade(player, "Skill", key, Config.GetSkillUpgradeTime(level))
+	Meta.Push(player)
+end
+
+-- 스킬 갈래 고르기: arg = "스킬|단계|A또는B". 처음 고르는 건 무료, 이미 고른 길을 바꾸면 골드가 든다
+local function chooseBranch(player, arg)
+	local state = states[player]
+	if not state or typeof(arg) ~= "string" then return end
+	local key, tierText, choice = string.match(arg, "^(%a+)|(%d+)|([AB])$")
+	local tier = tonumber(tierText)
+	local defs = key and Config.SkillBranch[key]
+	if not defs or not tier or not defs[tier] or not state.Skills[key] then return end
+	if state.Skills[key] < tier then
+		notify(player, "🔒 Reach the required skill level first")
+		return
+	end
+	local current = state.Branch[key][tostring(tier)]
+	if current == choice then return end
+	if current then
+		local cost = math.floor(Config.GetSkillUpgradeCost(tier) * Config.SkillBranchSwapRatio)
+		local gold = player:GetAttribute("Gold") or 0
+		if gold < cost then
+			notify(player, string.format("Not enough gold. (%d G needed)", cost))
+			return
+		end
+		player:SetAttribute("Gold", gold - cost)
+		notify(player, string.format("🔁 Path changed! (-%d G)", cost))
+	else
+		notify(player, "🌟 Path chosen!")
+	end
+	state.Branch[key][tostring(tier)] = choice
+	player:SetAttribute("SkillBr" .. tier .. "_" .. key, choice)
 	Meta.Push(player)
 end
 
@@ -521,6 +564,8 @@ Remotes.Meta.OnServerEvent:Connect(function(player, action, arg)
 		if okQ then Quest.Add(player, "PetPeek", 1) end
 	elseif action == "SkillUp" then
 		if townOnly(player) then upgradeSkill(player, arg) end
+	elseif action == "SkillBranch" then
+		if townOnly(player) then chooseBranch(player, arg) end
 	elseif action == "PetUnlock" then
 		if townOnly(player) then unlockPet(player) end
 	elseif action == "PetLevel" then

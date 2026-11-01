@@ -123,30 +123,34 @@ end
 -- 0.12초마다 주변(Range) 적 중 가까운 쪽에서 Daggers 마리를 골라 단검을 날린다 (같은 틱에 한 적에게 두 자루는 안 간다). 한 자루 = 일반 공격 x Mult. 이동 / 사격은 그대로 할 수 있다.
 handlers.Spirit = function(player, root, _, character)
 	local cfg = S.Spirit
-	local nearby = Dungeon.TargetsIn(player, root.Position, cfg.Range, 6) or Field.TargetsIn(player, root.Position, cfg.Range, 6)
+	local b5, b10 = Config.GetSkillBranch(player, "Spirit", 5), Config.GetSkillBranch(player, "Spirit", 10)
+	local duration = cfg.Duration + (b5 == "A" and 1.5 or 0) -- 5레벨 갈래: 광풍(지속 +1.5초 / 범위 +30%) · 관통 단검(한 자루 줄고 자루당 +80%)
+	local range = cfg.Range * (b5 == "A" and 1.3 or 1)
+	local daggers = cfg.Daggers - (b5 == "B" and 1 or 0)
+	local nearby = Dungeon.TargetsIn(player, root.Position, range, 6) or Field.TargetsIn(player, root.Position, range, 6)
 	if not nearby or #nearby == 0 then return false, "🌸 No enemy nearby" end
 	local token = {}
 	spiritToken[player] = token
-	local scale = cfg.Mult * (1 + U.BlastMult * (skillLevel(player, "Spirit") - 1))
+	local scale = cfg.Mult * (1 + U.BlastMult * (skillLevel(player, "Spirit") - 1)) * (b5 == "B" and 1.8 or 1) * (b10 == "B" and 1.15 or 1)
 	local userId = player.UserId
-	Effects.Raw(root.Position, { "Y", userId, cfg.Duration })
+	Effects.Raw(root.Position, { "Y", userId, duration })
 	pcall(function()
 		SoundBank.Play(root, "Skill_LotusCast") -- 시전: 날카로운 칼날 소리
 		-- (새로 고른 소리 3개만 쓴다: 시전 / 도는 소리 / 꽂힐 때. 예전에 섞어 본 금속 "챙" 은 뺐다)
 	end)
 	task.spawn(function()
-		local untilAt = os.clock() + cfg.Duration
+		local untilAt = os.clock() + duration
 		local tick = 0
 		while os.clock() < untilAt and spiritToken[player] == token and player.Parent do
 			local nowRoot = aliveParts(player)
 			local zone = player:GetAttribute("Zone")
 			if not nowRoot or (zone ~= "Field" and zone ~= "Dungeon") then break end
 			tick += 1
-			local targets = Dungeon.TargetsIn(player, nowRoot.Position, cfg.Range, 10) or Field.TargetsIn(player, nowRoot.Position, cfg.Range, 10) or {}
+			local targets = Dungeon.TargetsIn(player, nowRoot.Position, range, 10) or Field.TargetsIn(player, nowRoot.Position, range, 10) or {}
 			if #targets > 0 then
 				local from = nowRoot.Position + Vector3.new(0, 1.5, 0)
 				local offset = tick -- 가까운 적만 두들기지 않게 시작 위치를 틱마다 돌린다
-				for index = 1, math.min(cfg.Daggers, #targets) do
+				for index = 1, math.min(daggers, #targets) do
 					local part = targets[(offset + index - 2) % #targets + 1]
 					if part and part.Parent then
 						Effects.Raw(part.Position, { "J", from, part.Position })
@@ -168,8 +172,17 @@ handlers.Spirit = function(player, root, _, character)
 			end
 			task.wait(cfg.Interval)
 		end
-		if spiritToken[player] == token then spiritToken[player] = nil end
+		local finished = spiritToken[player] == token
+		if finished then spiritToken[player] = nil end
 		local endRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		if finished and b10 == "A" and endRoot and player.Parent then -- 10레벨 갈래 "꽃잎 폭발": 끝날 때 크게 한 번 터진다
+			local zoneNow = player:GetAttribute("Zone")
+			if zoneNow == "Field" or zoneNow == "Dungeon" then
+				ring(endRoot.Position, range * 0.6, Color3.fromRGB(255, 150, 190), 0.5)
+				Effects.Burst(endRoot.Position, Color3.fromRGB(255, 170, 200), 50)
+				damageAt(player, endRoot.Position, range * 0.6, 3, "Spirit")
+			end
+		end
 		Effects.Raw(endRoot and endRoot.Position or nil, { "Y", userId, 0 }) -- 끝: 단검 고리가 사라진다
 	end)
 	return true
@@ -223,20 +236,43 @@ end
 
 handlers.Heal = function(player, root)
 	local cfg = S.Heal
+	local b5, b10 = Config.GetSkillBranch(player, "Heal", 5), Config.GetSkillBranch(player, "Heal", 10)
+	local radius = cfg.Radius * (b10 == "A" and 2 or 1) -- 10레벨 갈래: 파티 치료사(범위 x2 · 동료 +30%) · 신속(쿨타임 -30%)
 	local partyId = player:GetAttribute("PartyId") or 0
+	local function healTick(target)
+		local tRoot, tHumanoid = aliveParts(target)
+		if not tRoot then return end
+		local amount = tHumanoid.MaxHealth * (cfg.Ratio + U.HealRatio * (skillLevel(player, "Heal") - 1))
+		if b5 == "A" then amount *= 1.25 / 5 elseif b5 == "B" then amount *= 0.5 end -- 5레벨 갈래: 재생(6초에 걸쳐 합계 +25%) · 응급 방패(회복 반 / 2초 무적)
+		if b10 == "A" and target ~= player then amount *= 1.3 end
+		tHumanoid.Health = math.min(tHumanoid.MaxHealth, tHumanoid.Health + amount)
+		Effects.Burst(tRoot.Position, Color3.fromRGB(110, 255, 150), 18)
+		Effects.FloatText(tRoot.Position + Vector3.new(0, 4, 0), string.format("💚 +%d", math.floor(amount)), Color3.fromRGB(130, 255, 160))
+		healVisual(tRoot.Position)
+	end
 	for _, other in ipairs(Players:GetPlayers()) do
-		local otherRoot, otherHumanoid = aliveParts(other)
+		local otherRoot = aliveParts(other)
 		local sameParty = other == player or (partyId ~= 0 and other:GetAttribute("PartyId") == partyId)
-		if otherRoot and sameParty and (otherRoot.Position - root.Position).Magnitude <= cfg.Radius then
-			local amount = otherHumanoid.MaxHealth * (cfg.Ratio + U.HealRatio * (skillLevel(player, "Heal") - 1))
-			otherHumanoid.Health = math.min(otherHumanoid.MaxHealth, otherHumanoid.Health + amount)
-			Effects.Burst(otherRoot.Position, Color3.fromRGB(110, 255, 150), 18)
-			Effects.FloatText(otherRoot.Position + Vector3.new(0, 4, 0), string.format("💚 +%d", math.floor(amount)), Color3.fromRGB(130, 255, 160))
-			healVisual(otherRoot.Position)
+		if otherRoot and sameParty and (otherRoot.Position - root.Position).Magnitude <= radius then
+			healTick(other)
+			if b5 == "A" then
+				task.spawn(function()
+					for _ = 1, 4 do
+						task.wait(1.5)
+						if not other.Parent then return end
+						healTick(other)
+					end
+				end)
+			elseif b5 == "B" and other.Character then
+				local shield = Instance.new("ForceField")
+				shield.Visible = true
+				shield.Parent = other.Character
+				Debris:AddItem(shield, 2)
+			end
 		end
 	end
-	ring(root.Position, cfg.Radius * 0.6, Color3.fromRGB(110, 255, 150), 0.7)
-	ring(root.Position, cfg.Radius * 0.35, Color3.fromRGB(220, 255, 230), 0.5)
+	ring(root.Position, radius * 0.6, Color3.fromRGB(110, 255, 150), 0.7)
+	ring(root.Position, radius * 0.35, Color3.fromRGB(220, 255, 230), 0.5)
 	return true
 end
 
@@ -277,22 +313,26 @@ handlers.Ult = function(player, root, _, character)
 	if (player:GetAttribute("UltCharge") or 0) < cfg.Cost then
 		return false, "Not enough Ultimate gauge! (It fills as you attack enemies)"
 	end
+	local b5, b10 = Config.GetSkillBranch(player, "Ult", 5), Config.GetSkillBranch(player, "Ult", 10)
 	local maxTargets = (cfg.MaxTargets or 6) + math.floor((U.UltTargets or 0) * (skillLevel(player, "Ult") - 1) + 0.001)
 	local targets = Dungeon.TargetsIn(player, root.Position, cfg.Radius, maxTargets) or Field.TargetsIn(player, root.Position, cfg.Radius, maxTargets)
 	if not targets or #targets == 0 then
 		return false, "No enemies in range! (Your gauge is unchanged)"
 	end
-	if #targets > 1 then -- 데드아이는 단일 대상: 범위 안에서 가장 덩치 큰 적(보스 / 엘리트 / 거신) 한 마리에 전탄을 집중한다. 광역은 죽음의 연꽃(F)이 맡는다
+	if b5 == "A" then -- 5레벨 갈래 "다중 락온": 가장 덩치 큰 적 3마리까지 (총 피해는 줄어든다)
+		table.sort(targets, function(a, b) return a.Size.Magnitude > b.Size.Magnitude end)
+		while #targets > 3 do table.remove(targets) end
+	elseif #targets > 1 then -- 데드아이는 단일 대상: 범위 안에서 가장 덩치 큰 적(보스 / 엘리트 / 거신) 한 마리에 전탄을 집중한다. 광역은 죽음의 연꽃(F)이 맡는다
 		local best = targets[1]
 		for _, candidate in ipairs(targets) do
 			if candidate.Size.Magnitude > best.Size.Magnitude + 0.5 then best = candidate end
 		end
 		targets = { best }
 	end
-	player:SetAttribute("UltCharge", 0)
+	player:SetAttribute("UltCharge", b10 == "A" and 30 or 0) -- 10레벨 갈래 "재장전": 쓰고 나면 게이지 30이 돌아온다
 
 	local origin = root.Position
-	local totalMult = (cfg.Mult or 8) * 0.75 * (1 + (U.UltMult or 0.15) * (skillLevel(player, "Ult") - 1))
+	local totalMult = (cfg.Mult or 8) * 0.75 * (1 + (U.UltMult or 0.15) * (skillLevel(player, "Ult") - 1)) * (b5 == "A" and 0.85 or (b5 == "B" and 1.3 or 1))
 	-- 범위 안의 모든 적을 "동시에" 집중 포격한다: 조준 표시 -> 충격파 -> 전원에게 동시에 빔이 쏟아지는 일제 사격 14회 -> 마지막 대폭발
 	local volleys, volleyGap = cfg.Volleys or 12, cfg.VolleyGap or 0.09
 	-- 데드아이는 "한 발 피해"가 아니라 무기의 초당 피해 계수(WeaponDpsFactor)에 맞춘다: 한 발 위력이 작은 연사 무기로 진화해도 데드아이가 약해지지 않게
@@ -435,6 +475,7 @@ handlers.Ult = function(player, root, _, character)
 			pcall(function()
 				for _, part in ipairs(targets) do
 					if part.Parent then
+						if b10 == "B" then damageAt(player, part.Position, 14, 2.5, "Ult") end -- 10레벨 갈래 "연쇄 폭발"
 						Effects.Burst(part.Position, Color3.fromRGB(140, 215, 255), 16)
 						flashBall(part.Position, Color3.fromRGB(170, 225, 255), math.clamp(part.Size.X * 2.2, 6, 14), 0.35)
 						groundRing(part.Position - Vector3.new(0, part.Size.Y / 2 - 0.2, 0), Color3.fromRGB(90, 200, 255), math.clamp(part.Size.X * 2.5, 8, 18), 0.45)
@@ -487,6 +528,7 @@ function Skill.Use(player, skillKey, aimPoint)
 	end
 	local haste = (player:GetAttribute("GearHaste") or 0) + (player:GetAttribute("PetHaste") or 0) + (player:GetAttribute("LvHaste") or 0) + U.CooldownPerLevel * (skillLevel(player, skillKey) - 1)
 	local cooldown = S[skillKey].Cooldown * (1 - math.min(0.6, haste))
+	if (skillKey == "Spirit" or skillKey == "Heal") and Config.GetSkillBranch(player, skillKey, 10) == "B" then cooldown *= 0.7 end -- 10레벨 갈래 (연꽃 "여운" / 응급 치료 "신속")
 	cooldowns[skillKey] = now + cooldown
 	if skillKey == "Spirit" then
 		-- (죽음의 연꽃 소리는 handlers.Spirit 가 낸다: 칼날 소리. 예전 번개 소리는 뺐다)

@@ -1504,7 +1504,7 @@ function Dungeon.ComputeDamage(player)
 	local chance = math.min(0.9, rawChance)
 	local overflow = math.max(0, rawChance - 0.9) -- 90% 를 넘친 치명타 확률은 1% 당 치명타 피해 +1% 로 바뀐다 (버려지는 스탯이 없게)
 	if os.clock() < (player:GetAttribute("NearMissUntil") or 0) then -- NEAR MISS 보상: 연속으로 피할수록 공격력이 누적해서 오른다
-		damage *= 1 + Config.NearMiss.DamagePerStack * math.min(player:GetAttribute("NearMissStreak") or 0, Config.NearMiss.MaxStacks)
+		damage *= 1 + Config.GetNearMissDamage(player) * math.min(player:GetAttribute("NearMissStreak") or 0, Config.NearMiss.MaxStacks)
 	end
 	local isCrit = math.random() < chance
 	if isCrit then

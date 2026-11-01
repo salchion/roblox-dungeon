@@ -38,15 +38,72 @@ Config.StatAttributes = {   -- Upgrade 리모트가 받는 이름 -> 플레이�
 -- NEAR MISS(대시로 아슬아슬하게 피하기): 연속으로 성공할수록 공격력이 누적해서 올라간다 (마지막 성공 후 Duration 초가 지나면 사라진다)
 Config.WeakExposeSeconds = 6.5 -- 보스 약점을 맞혔을 때 약점이 노출되어 피해 x3 가 유지되는 시간(초)
 Config.NearMiss = { DamagePerStack = 0.03, MaxStacks = 10, Duration = 8, DecayStep = 4 } -- 최대 +30% (자동 공격만 써도 기본 DPS 에서 손해 보지 않게 낮춤). Duration 뒤에는 DecayStep(4)초마다 1스택씩 줄어든다
-function Config.GetNearMissDuration(player) -- 기운 집중 스킬 레벨 반영
-	return Config.NearMiss.Duration + Config.SkillUpgrade.FocusDuration * math.max(0, (player:GetAttribute("SkillLv_Focus") or 1) - 1)
+function Config.GetNearMissDuration(player) -- 기운 집중 스킬 레벨 + 갈래(5A 지속 / 10B 장기전) 반영
+	local bonus = (Config.GetSkillBranch(player, "Focus", 5) == "A" and 3 or 0) + (Config.GetSkillBranch(player, "Focus", 10) == "B" and 6 or 0)
+	return Config.NearMiss.Duration + bonus + Config.SkillUpgrade.FocusDuration * math.max(0, (player:GetAttribute("SkillLv_Focus") or 1) - 1)
+end
+
+-- 스택 하나당 공격력 (기운 집중 10레벨 갈래 "폭주": +30%)
+function Config.GetNearMissDamage(player)
+	return Config.NearMiss.DamagePerStack * (Config.GetSkillBranch(player, "Focus", 10) == "A" and 1.3 or 1)
 end
 
 -- 기운 집중: 줄어들다 멈추는 바닥 스택 (레벨 1 = 0, 최대 레벨 = 최대 스택의 절반): 끊겨도 어느 정도는 남는다
 function Config.GetNearMissFloor(player)
 	local level = math.max(1, player:GetAttribute("SkillLv_Focus") or 1)
-	return math.floor(Config.NearMiss.MaxStacks * 0.5 * (level - 1) / math.max(1, Config.SkillUpgrade.MaxLevel - 1))
+	local extra = Config.GetSkillBranch(player, "Focus", 5) == "B" and 2 or 0 -- 5레벨 갈래 "안정": 바닥 스택 +2
+	return math.min(Config.NearMiss.MaxStacks - 1, extra + math.floor(Config.NearMiss.MaxStacks * 0.5 * (level - 1) / math.max(1, Config.SkillUpgrade.MaxLevel - 1)))
 end
+
+-- 스킬 갈래: 스킬 레벨 5 / 10 에서 두 길 중 하나를 고른다 (마을에서 고르고, 고른 길을 바꾸면 골드가 든다). 고른 길은 플레이어 Attribute SkillBr<단계>_<스킬> = "A" / "B"
+Config.SkillBranchTiers = { 5, 10 }
+Config.SkillBranchSwapRatio = 0.5 -- 바꿀 때 비용 = 그 단계 스킬 강화 비용 x 0.5
+function Config.GetSkillBranch(player, key, tier)
+	local value = player:GetAttribute("SkillBr" .. tier .. "_" .. key)
+	return (value == "A" or value == "B") and value or nil
+end
+Config.SkillBranch = {
+	Spirit = {
+		[5] = {
+			A = { Icon = "🌪", Name = "Gale", Desc = "Lasts +1.5s · range +30%: sweeps up swarms" },
+			B = { Icon = "🗡", Name = "Piercing Daggers", Desc = "One less dagger, but each hits +80% harder: for bosses" },
+		},
+		[10] = {
+			A = { Icon = "🌸", Name = "Petal Burst", Desc = "A big blast when it ends (attack x3)" },
+			B = { Icon = "⏩", Name = "Lingering Bloom", Desc = "Cooldown -30% · damage +15%" },
+		},
+	},
+	Ult = {
+		[5] = {
+			A = { Icon = "🎯", Name = "Multi-Lock", Desc = "Locks onto up to 3 enemies, total damage -15%: for crowds" },
+			B = { Icon = "🔭", Name = "Sniper Shot", Desc = "Damage +30% on a single target: for bosses" },
+		},
+		[10] = {
+			A = { Icon = "🔄", Name = "Reload", Desc = "Gives back 30 gauge after use" },
+			B = { Icon = "💥", Name = "Chain Blast", Desc = "The final blast also explodes around every target (attack x2.5)" },
+		},
+	},
+	Heal = {
+		[5] = {
+			A = { Icon = "🌿", Name = "Regeneration", Desc = "Heals over 6s instead of at once · total +25%" },
+			B = { Icon = "🛡", Name = "Emergency Shield", Desc = "2s invincible, but healing is halved" },
+		},
+		[10] = {
+			A = { Icon = "💞", Name = "Party Healer", Desc = "Range x2 · allies heal +30%" },
+			B = { Icon = "⏩", Name = "Quick Aid", Desc = "Cooldown -30%" },
+		},
+	},
+	Focus = {
+		[5] = {
+			A = { Icon = "⏳", Name = "Endurance", Desc = "NEAR MISS lasts +3s" },
+			B = { Icon = "🧱", Name = "Steady", Desc = "Keeps 2 more stacks even if broken" },
+		},
+		[10] = {
+			A = { Icon = "🔥", Name = "Frenzy", Desc = "Each NEAR MISS stack gives +30% more attack" },
+			B = { Icon = "🕰", Name = "Long Haul", Desc = "NEAR MISS lasts +6s more" },
+		},
+	},
+}
 
 Config.SkillUpgrade = {
 	MaxLevel = 10,

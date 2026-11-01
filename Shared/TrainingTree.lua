@@ -118,6 +118,41 @@ local function detailRow(env, color, text, button)
 	end
 end
 
+-- 스킬 갈래 (레벨 5 / 10): 두 길 중 하나를 고른다. 처음 고르는 건 무료, 바꾸면 골드가 든다 (서버도 확인한다)
+local function branchRows(env, key)
+	local Config = env.Config
+	local defs = Config.SkillBranch and Config.SkillBranch[key]
+	if not defs then return end
+	local level = env.Meta and env.Meta.Skills and env.Meta.Skills[key] or 1
+	for _, tier in ipairs(Config.SkillBranchTiers) do
+		local pair = defs[tier]
+		if pair then
+			local chosen = env.Player:GetAttribute("SkillBr" .. tier .. "_" .. key)
+			local unlocked = level >= tier
+			local row = env.NewRow(92, Color3.fromRGB(28, 26, 42))
+			local header = string.format("<font color='#ffd966'><b>Lv.%d</b></font>  %s", tier, unlocked and (chosen and "<font color='#78ff8c'>✔ Path chosen</font>" or "Choose a path") or "<font color='#9a9ab4'>🔒 Locked</font>")
+			env.MakeLabel({ Size = UDim2.new(0.6, -12, 0, 18), Position = UDim2.new(0, 12, 0, 4), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, Text = header }, row)
+			if unlocked and chosen then
+				local cost = math.floor(Config.GetSkillUpgradeCost(tier) * Config.SkillBranchSwapRatio)
+				env.MakeLabel({ Size = UDim2.new(0.4, -12, 0, 18), Position = UDim2.new(0.6, 0, 0, 4), TextSize = 11, TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = Color3.fromRGB(190, 190, 215),
+					Text = string.format("Switch path: %s G", comma(cost)) }, row)
+			end
+			for index, side in ipairs({ "A", "B" }) do
+				local def = pair[side]
+				local picked = chosen == side
+				env.MakeButton({
+					Size = UDim2.new(0.5, -14, 0, 62), Position = UDim2.new(index == 1 and 0 or 0.5, index == 1 and 8 or 6, 0, 26), TextSize = 11, TextWrapped = true,
+					Text = string.format("%s %s%s\n%s", picked and "✔" or def.Icon, def.Name, picked and "" or "", def.Desc),
+					BackgroundColor3 = picked and Color3.fromRGB(46, 112, 84) or (unlocked and Color3.fromRGB(58, 60, 92) or Color3.fromRGB(44, 44, 56)),
+					TextColor3 = unlocked and Color3.new(1, 1, 1) or Color3.fromRGB(140, 140, 160),
+				}, row, function()
+					if unlocked and not picked then env.Remotes.Meta:FireServer("SkillBranch", string.format("%s|%d|%s", key, tier, side)) end
+				end)
+			end
+		end
+	end
+end
+
 local function pick(env, kind, key)
 	return function()
 		selected.Kind, selected.Key = kind, key
@@ -327,6 +362,10 @@ function M.BuildAll(env)
 		warn("[TrainingTree] " .. tostring(color))
 	elseif color then
 		detailRow(env, color, text, button)
+	end
+	if selected.Kind == "Skill" then
+		local okB, errB = pcall(branchRows, env, selected.Key)
+		if not okB then warn("[TrainingTree] " .. tostring(errB)) end
 	end
 end
 
