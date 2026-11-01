@@ -2241,12 +2241,7 @@ end
 function Config.GetEnhanceCost(level)
 	local E = Config.Economy
 	local minutes = E.StepMinutesEarly + (E.StepMinutesLate - E.StepMinutesEarly) * math.min(1, level / E.LateLevel)
-	-- 무기 강화 값의 곡선 모양: 무기 자기 단계로만 정해진다 (다른 성장 값과 연결하지 않는다). 중반(약 100~700단계)은 실제 수입이 기준표보다 높게 나와서 그 구간 값이 더 가파르게 오른다.
-	local function lerp(a, b, t) return a + (b - a) * math.clamp(t, 0, 1) end
-	local curve = 1
-	if level > 200 then curve = level <= 700 and lerp(5, 3, (level - 200) / 500) or lerp(3, 1, (level - 700) / math.max(1, Config.Weapon.MaxLevel - 700))
-	elseif level > 60 then curve = lerp(1, 5, (level - 60) / 140) end
-	return math.max(1, math.floor(E.IncomeBase * Config.GetDamageMultiplier(level) * minutes * curve))
+	return math.max(1, math.floor(E.IncomeBase * Config.GetDamageMultiplier(level) * minutes))
 end
 
 -- level -> level+1 강화 성공 확률 (실패해도 단계는 내려가지 않고 골드만 소모)
