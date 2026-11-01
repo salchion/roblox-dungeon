@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Damage +{number2}%", "Schaden +{number2}%" },
+		{ "x{number1}\nUpgrade", "x {number1}\nVerbessern" },
+		{ "Damage +{number1}%", "Schaden +{number1}%" },
 		{ "Admin (F{number1})", "Administrator (F{number1})" },
 		{ "Party ({number1}/{number2})", "Gruppe ({number1}/{number2})" },
 		{ "Attack +{number1}%", "Angriff +{number1}%" },

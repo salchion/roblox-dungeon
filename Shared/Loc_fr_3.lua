@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "◆ Heal on Kill +{number1}%", "◆ Soin à l'élimination +{number1}%" },
+		{ "Training time -{number1}%", "Temps d'entraînement -{number1}%" },
 		{ "🔑{number6} (Free today {number7}/{number8})", "🔑{number6} (Gratuit aujourd'hui {number7}/{number8})" },
 		{ "{number2} / {number3}   Reward: {number4} G", "{number2} / {number3} Récompense : {number4} G" },
 		{ "{number2} / {number3}   Reward: 🎫 {number4}", "{number2} / {number3} Récompense : 🎫 {number4}" },

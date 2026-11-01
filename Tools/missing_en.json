@@ -2275,5 +2275,7 @@
 "Recovers {number1}% HP per second",
 "Random set",
 "Any",
-"🎲 A random set from your reached zones"
+"🎲 A random set from your reached zones",
+"💰 {number1} G",
+"💰 Not enough gold to roll for the chosen set! ({number1} G needed)"
 ]

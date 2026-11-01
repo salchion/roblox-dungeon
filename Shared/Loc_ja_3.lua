@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "ZONE {number1}  ·  Abyss   ☠☠☠☠☠☠☠☠", "ゾーン {number1}  · 深淵 ☠☠☠☠☠☠☠☠" },
 		{ "Dismantled {number1}! Essence +{number2}, {number3} G", "{number1}個を分解しました！エッセンス+{number2}、{number3} G" },
 		{ "Enter the Boss Rush {number1} times", "ボスラッシュに{number1}回挑戦する" },
 		{ "Fires {number1} pellets in a spread", "{number1}発の散弾を扇状に発射" },
@@ -272,6 +273,7 @@ return {
 		{ "{number1} more", "あと{number1}" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1} key", "鍵{number1}個" },
+		{ "💰 {number1} G", "💰 {number1}G" },
 		{ "Lv {number1}", "レベル {number1}" },
 		{ "A new dungeon theme can now appear ({text1}, Level {number2}+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", "新しいダンジョンテーマが登場するようになりました({text1}、レベル{number2}以上)。深度を選びましょう: 深いほどドロップ確率が上がり、ボスも強くなります。ゲートにマーカーが表示されます。" },
 		{ "(one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "({number1}種類のうち1つ)はミシック装備に付きます: ダンジョン宝箱(下記参照)、フィールドドロップ({text2})、週間ボスラッシュ宝箱、週間ファイナルロード報酬。" },

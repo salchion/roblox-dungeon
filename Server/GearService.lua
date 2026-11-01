@@ -918,6 +918,16 @@ function Gear.Roll(player, forced)
 	if tickets < 1 then
 		return false, "🎫 No tickets! Clear dungeons, defeat field lords/elites, or do daily quests to get more"
 	end
+	local targetZone = (not player:GetAttribute("TutorialRoll")) and math.floor(player:GetAttribute("GachaSet") or 0) or 0
+	if targetZone > (player:GetAttribute("MaxZone") or 1) then targetZone = 0 end
+	local setCost = Config.GetGachaSetCost(targetZone) -- 세트를 골랐으면 골드도 든다 (고르지 않으면 0)
+	if setCost > 0 then
+		local gold = player:GetAttribute("Gold") or 0
+		if gold < setCost then
+			return false, string.format("💰 Not enough gold to roll for the chosen set! (%d G needed)", setCost)
+		end
+		player:SetAttribute("Gold", gold - setCost)
+	end
 	player:SetAttribute("Tickets", tickets - 1)
 	Quest.Add(player, "Rolls", 1)
 

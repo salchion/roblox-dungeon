@@ -853,6 +853,13 @@ Config.Gacha = {
 	Pity = { Legendary = 50, Mythic = 150 },
 }
 
+-- 노린 세트(구역 1~8)로 뽑으면 티켓과 함께 골드도 든다 (세트를 고르지 않으면 골드는 안 든다). 그 구역의 수입에 맞춰 커진다: 대략 그 구역 활동 수입 7초어치
+function Config.GetGachaSetCost(zone)
+	if not zone or zone < 1 then return 0 end
+	local f = 0.9 * ((zone - 1) / math.max(1, Config.Field.ZoneCount - 1)) ^ 1.2
+	return math.max(100, math.floor(Config.RefIncome(f) * 0.12 / 10) * 10)
+end
+
 ------------------------------------------------------------
 -- 필드: 로비 동쪽으로 길게 이어진 직선 사냥터. 오른쪽(동쪽)으로 갈수록 몬스터가 강해짐.
 ------------------------------------------------------------

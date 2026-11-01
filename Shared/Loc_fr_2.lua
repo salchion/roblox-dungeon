@@ -610,6 +610,7 @@ return {
 		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "Avec le maximum de {number1} points, les critiques passent de 2x à environ {number2}x. Combinez" },
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "Obtenez instantanément {number1} minutes de vos revenus passifs · maximum {number2} par jour" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISS dure {number1} s · conserve au moins {number2} cumuls même si la série s'interrompt" },
+		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 Pas assez d'or pour tirer le set choisi ! ({number1} G requis)" },
 		{ "You can run {number1} effects at once. Turn another one off first", "Vous pouvez activer {number1} effets à la fois. Désactivez-en d'abord un autre" },
 		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "Résultat de Gacha_Pop{number1} <font color='#{number2}aa{number3}c{number4}'> : Épique</font>" },
 		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "Obtenez instantanément {number1} heures de revenus passifs · maximum {number2} par jour" },
@@ -932,7 +933,5 @@ return {
 		{ "🔊 Music Volume: {number1}%", "🔊 Volume de la musique : {number1}%" },
 		{ "Finish {number1} trainings", "Terminez {number1} entraînements" },
 		{ "◆ Attack Speed +{number1}%", "◆ Vitesse d'attaque +{number1}%" },
-		{ "◆ Heal on Kill +{number1}%", "◆ Soin à l'élimination +{number1}%" },
-		{ "Training time -{number1}%", "Temps d'entraînement -{number1}%" },
 	},
 }

@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "per piece ({text1})", "每件({text1})" },
+		{ "({number1} lvl · ~{text2} G)", "({number1} 级 · 约 {text2} 金币)" },
+		{ "⚠ Zone {number1} · {text2} ⚠", "⚠ 区域{number1} · {text2} ⚠" },
 		{ "Next era → {text1}", "下一时代 → {text1}" },
 		{ "Activate {text1} G", "花费 {text1} 金币启用" },
 		{ "Shop item: {text1}", "商店商品：{text1}" },

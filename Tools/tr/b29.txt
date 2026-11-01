@@ -233,3 +233,5 @@
 2274¦ランダムセット¦Zufälliges Set¦Set aléatoire¦Set aleatorio¦Set aleatório¦随机套装¦랜덤 세트
 2275¦おまかせ¦Beliebig¦Au hasard¦Al azar¦Aleatório¦随机¦랜덤
 2276¦🎲 到達したエリアからランダムなセット¦🎲 Ein zufälliges Set aus erreichten Zonen¦🎲 Un set aléatoire parmi les zones atteintes¦🎲 Un set aleatorio de las zonas alcanzadas¦🎲 Um set aleatório das zonas alcançadas¦🎲 从已到达的区域中随机一套¦🎲 도달한 구역 중 무작위 세트
+2277¦💰 {number1}G¦💰 {number1} G¦💰 {number1} G¦💰 {number1} G¦💰 {number1} G¦💰 {number1}G¦💰 {number1}G
+2278¦💰 選んだセットで引くゴールドが足りません！({number1}G必要)¦💰 Nicht genug Gold für das gewählte Set! ({number1} G nötig)¦💰 Pas assez d'or pour tirer le set choisi ! ({number1} G requis)¦💰 ¡Oro insuficiente para el set elegido! (se necesitan {number1} G)¦💰 Ouro insuficiente para o set escolhido! ({number1} G necessário)¦💰 金币不足，无法抽取所选套装！(需要{number1}G)¦💰 고른 세트로 뽑을 골드가 부족해요! ({number1}G 필요)

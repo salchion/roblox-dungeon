@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Free entries {number1}", "Entradas grátis {number1}" },
+		{ "⬆ Level Up {number1} G", "⬆ Subir de nível {number1} G" },
 		{ "Reach {number1} Power", "Alcance {number1} de Poder" },
 		{ "Next zone  {number1}m", "Próxima zona {number1}m" },
 		{ "▼ Dungeon  {number1}m", "▼ Masmorra {number1}m" },

@@ -552,6 +552,7 @@ return {
 		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "Mit den maximalen {number1} Punkten steigen Krits von 2x auf etwa {number2}x. Kombiniere" },
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "Erhalte sofort {number1} Minuten deines passiven Einkommens · maximal {number2} pro Tag" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISS hält {number1} s · behält mindestens {number2} Stapel, auch wenn die Serie reißt" },
+		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 Nicht genug Gold für das gewählte Set! ({number1} G nötig)" },
 		{ "You can run {number1} effects at once. Turn another one off first", "Du kannst {number1} Effekte gleichzeitig nutzen. Schalte zuerst einen anderen aus" },
 		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "Gacha_Pop{number1} <font color='#{number2}aa{number3}c{number4}'>Gacha-Ergebnis: Episch</font>" },
 		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "Erhalte sofort {number1} Stunden deines passiven Einkommens · maximal {number2} pro Tag" },
@@ -976,8 +977,5 @@ return {
 		{ "◆ Max HP +{number1}", "◆ Max. LP +{number1}" },
 		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
 		{ "🔥 Combo x{number1}", "🔥 Kombination x{number1}" },
-		{ "Damage +{number2}%", "Schaden +{number2}%" },
-		{ "x{number1}\nUpgrade", "x {number1}\nVerbessern" },
-		{ "Damage +{number1}%", "Schaden +{number1}%" },
 	},
 }

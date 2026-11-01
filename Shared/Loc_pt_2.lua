@@ -570,6 +570,7 @@ return {
 		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "Com o máximo de {number1} pontos, os críticos passam de 2x para cerca de {number2}x. Combine" },
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "Ganhe instantaneamente {number1} minutos de sua renda passiva · máximo de {number2} por dia" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISS dura {number1} s · mantém pelo menos {number2} acúmulos mesmo se quebrar" },
+		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 Ouro insuficiente para o set escolhido! ({number1} G necessário)" },
 		{ "You can run {number1} effects at once. Turn another one off first", "Você pode ativar {number1} efeitos ao mesmo tempo. Desligue outro primeiro" },
 		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "Gacha_Pop{number1} <font color='#{number2}aa{number3}c{number4}'>Resultado do Gacha: Épico</font>" },
 		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "Ganhe instantaneamente {number1} horas de renda passiva · máximo de {number2} por dia" },
@@ -966,7 +967,5 @@ return {
 		{ "🛡 Survive!  {number1}s", "🛡 Sobreviva!  {number1} s" },
 		{ "Boss damage +{number1}", "Dano em chefes +{number1}" },
 		{ "{number1} empty slot(s", "{number1} espaço(s) livre(s" },
-		{ "Free entries {number1}", "Entradas grátis {number1}" },
-		{ "⬆ Level Up {number1} G", "⬆ Subir de nível {number1} G" },
 	},
 }

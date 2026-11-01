@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Zone {number1} · Desert", "Zona {number1} · Desierto" },
+		{ "👹 Monsters {number1} / {number2}", "👹 Monstruos {number1} / {number2}" },
 		{ "⏱ Skip gauge {number1}s", "⏱ Saltar medidor {number1} segundos" },
 		{ "DAMAGE · {number1}s · {number2}K", "Daño · {number1} segundos · {number2}K" },
 		{ "🥇 {player1}  ⚡{number1}", "🥇 {player1} ⚡{number1}" },

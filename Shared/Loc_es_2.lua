@@ -599,6 +599,7 @@ return {
 		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "Con el máximo de {number1} puntos, los críticos pasan de 2x a aproximadamente {number2}x. Combina" },
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "Obtén instantáneamente {number1} minutos de tus ingresos pasivos · máximo {number2} por día" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISS dura {number1} s · mantiene al menos {number2} acumulaciones aunque se rompa" },
+		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 ¡Oro insuficiente para el set elegido! (se necesitan {number1} G)" },
 		{ "You can run {number1} effects at once. Turn another one off first", "Puedes tener {number1} efectos activos a la vez. Desactiva otro primero" },
 		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "Resultado de Gacha_Pop{number1} <font color='#{number2}aa{number3}c{number4}'>Gacha: Épico</font>" },
 		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "Obtén instantáneamente {number1} horas de tus ingresos pasivos · máximo {number2} por día" },
@@ -965,7 +966,5 @@ return {
 		{ "Damage taken -{number1}%", "Daño recibido -{number1} %" },
 		{ "Zone {number1} · Forest", "Zona {number1} · Bosque" },
 		{ "{number1} more upgrades", "{number1} más mejoras" },
-		{ "Zone {number1} · Desert", "Zona {number1} · Desierto" },
-		{ "👹 Monsters {number1} / {number2}", "👹 Monstruos {number1} / {number2}" },
 	},
 }

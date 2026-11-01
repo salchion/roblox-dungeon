@@ -196,6 +196,8 @@ function M.Init(deps)
 		Text = "", TextSize = 21, Font = Enum.Font.GothamBold, BackgroundColor3 = PURPLE,
 	}, bar, function()
 		local many = math.min(10, player:GetAttribute("Tickets") or 0)
+		local setCost = Config.GetGachaSetCost(math.min(player:GetAttribute("GachaSet") or 0, player:GetAttribute("MaxZone") or 1))
+		if setCost > 0 then many = math.min(many, math.floor((player:GetAttribute("Gold") or 0) / setCost)) end
 		if many >= 2 then Remotes.Gear:FireServer("Roll", many) end
 	end)
 	create("UIStroke", { Color = Color3.fromRGB(255, 225, 140), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 3 }, rollMany)
@@ -240,18 +242,23 @@ function M.Init(deps)
 		local tickets = player:GetAttribute("Tickets") or 0
 		ticketLabel.Text = string.format("🎫 Tickets: %d", tickets)
 		ticketLabel.TextColor3 = tickets > 0 and Color3.fromRGB(255, 235, 160) or Color3.fromRGB(170, 165, 190)
-		rollOne.BackgroundColor3 = tickets > 0 and Color3.fromRGB(120, 80, 210) or Color3.fromRGB(80, 70, 100)
+		local setCost = Config.GetGachaSetCost(math.min(player:GetAttribute("GachaSet") or 0, player:GetAttribute("MaxZone") or 1)) -- 세트를 골랐으면 한 번에 이만큼의 골드가 든다
+		local gold = player:GetAttribute("Gold") or 0
+		rollOne.Text = setCost > 0 and string.format("🎰 Roll x1\n1 Ticket\n💰 %s G", string.format("%d", setCost)) or "🎰 Roll x1\n1 Ticket"
+		rollOne.TextSize = setCost > 0 and 16 or 19
+		rollOne.BackgroundColor3 = (tickets > 0 and gold >= setCost) and Color3.fromRGB(120, 80, 210) or Color3.fromRGB(80, 70, 100)
 		local many = math.min(10, tickets)
+		if setCost > 0 then many = math.min(many, math.floor(gold / setCost)) end -- 골드가 모자라면 살 수 있는 만큼만
 		local canMany = many >= 2
 		rollMany.AutoButtonColor = canMany
 		rollMany.BackgroundColor3 = canMany and PURPLE or Color3.fromRGB(62, 58, 78)
 		rollMany.TextTransparency = canMany and 0 or 0.45
-		rollMany.Text = canMany and string.format("🎰 Roll x%d!\n%d Tickets", many, many) or "🎰 Multi Roll\nNeeds 2+ Tickets (max 10)"
+		rollMany.Text = canMany and (setCost > 0 and string.format("🎰 Roll x%d!\n%d Tickets\n💰 %d G", many, many, setCost * many) or string.format("🎰 Roll x%d!\n%d Tickets", many, many)) or "🎰 Multi Roll\nNeeds 2+ Tickets (max 10)"
 		local l, m = player:GetAttribute("GachaPityL"), player:GetAttribute("GachaPityM")
 		paintPity(pityL, l or Config.Gacha.Pity.Legendary, "⭐ Legendary guaranteed in %d")
 		paintPity(pityM, m or Config.Gacha.Pity.Mythic, "🌈 Mythic in %d")
 	end
-	for _, name in ipairs({ "Tickets", "GachaPityL", "GachaPityM" }) do
+	for _, name in ipairs({ "Tickets", "GachaPityL", "GachaPityM", "GachaSet", "Gold", "MaxZone" }) do
 		player:GetAttributeChangedSignal(name):Connect(function()
 			if panel.Visible then api.Refresh() end
 		end)

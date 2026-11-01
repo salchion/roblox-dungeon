@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Level {number1} Breakthrough in progress", "{number1}레벨 돌파 진행 중" },
+		{ "Defeat the Zone {number1} lord to unlock", "{number1}구역 군주를 쓰러뜨리면 해금돼요" },
 		{ "Move speed +{number1} per point  (max {number2})", "이동 속도 +{number1} 포인트 (최대 {number2})" },
 		{ "🎯 Deadeye! Barrage on {number1} enemies", "🎯 데이드아이! {number1}명의 적에게 난사 공격" },
 		{ "⚠ Not enough gold. ({number1} G needed)", "⚠ 골드가 부족해요. ({number1} G 필요)" },
@@ -332,6 +334,7 @@ return {
 		{ "{number1}x XP", "{number1}x 경험치" },
 		{ "+{number1} XP", "+{number1} 경험치" },
 		{ "{number1} key", "열쇠 {number1}개" },
+		{ "💰 {number1} G", "💰 {number1}G" },
 		{ "Lv {number1}", "레벨 {number1}" },
 		{ "{number1}d {number2}h", "{number1}일 {number2}시간" },
 		{ "⏱ Time Skip <font color='#ffe16e'><b>{text1}</b></font> owned      🏋 Training slots <b>{number2} / {number3}</b> in use\n<font size='11' color='#bbbbcc'>Training and breakthroughs finish on their own over time (even while offline). Time Skips shorten the wait, and you also earn them slowly from quests. You can reach everything without spending money.</font>", "⏱ 시간 건너뛰기 <font color='#ffe16e'><b>{text1}</b></font>개 보유      🏋 훈련 칸 <b>{number2} / {number3}</b> 사용 중\n<font size='11' color='#bbbbcc'>훈련과 돌파는 시간이 지나면 저절로 끝나요 (오프라인에서도). 시간 건너뛰기는 대기 시간을 줄여 주고, 퀘스트로도 천천히 얻을 수 있어요. 돈을 쓰지 않아도 모든 걸 얻을 수 있어요.</font>" },

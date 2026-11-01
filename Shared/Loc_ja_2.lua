@@ -726,6 +726,7 @@ return {
 		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "最大{number1}ポイントで、クリティカルは2倍から約{number2}倍になります。組み合わせて" },
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "{number1}分間のアイドル収入を即座に獲得（1日最大{number2}分）" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISSは{number1}秒持続 · 途切れても最低{number2}スタックは維持" },
+		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 選んだセットで引くゴールドが足りません！({number1}G必要)" },
 		{ "You can run {number1} effects at once. Turn another one off first", "同時に{number1}個の効果を発動できます。先に別の効果をオフにしてください" },
 		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "ガチャ_ポップ{number1} <font color='#{number2}aa{number3}c{number4}'>ガチャ結果：エピック</font>" },
 		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "{number1}時間のアイドル収入を即座に獲得（1日最大{number2}時間）" },
@@ -932,6 +933,5 @@ return {
 		{ "🔒 Zone {number1} · Snowfield Sealed", "🔒 ゾーン {number1} · 雪原が封鎖されています" },
 		{ "Sniper Rifle · Rusty Era +{number1}", "スナイパーライフル・錆びた時代 +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number2}", "❄ アイスパレスの門 · レコメンド ⚡{number2}" },
-		{ "ZONE {number1}  ·  Abyss   ☠☠☠☠☠☠☠☠", "ゾーン {number1}  · 深淵 ☠☠☠☠☠☠☠☠" },
 	},
 }
