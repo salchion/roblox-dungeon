@@ -838,7 +838,7 @@ local function evenX(zone, lo, hi)
 end
 
 -- kind: "Normal" / "Elite" / "Boss"
-local function spawnMonster(zone, kind, at, ambush)
+local function spawnMonster(zone, kind, at, ambush, filler)
 	local stats, text, color, barWidth
 	local level = F.GetZoneLevel(zone)
 	local typeKey, def, xpLevel
@@ -1040,8 +1040,9 @@ local function spawnMonster(zone, kind, at, ambush)
 		BaseColor = part.Color,
 		Aggro = false,
 		Ambush = ambush == true,
+		Filler = filler == true, -- 내 주변이 허전하지 않게 채워 넣은 몬스터 (처치해도 보상 / 진행도 없음, 다시 생기지 않음)
 		Contrib = (kind ~= "Boss") and {} or nil, -- 누가 얼마나 때렸나 (일반 / 엘리트 보상을 준 피해로 나눈다: FieldPartyShare)
-		LastHit = ambush and os.clock() or nil, -- 습격으로 나온 몬스터는 처음부터 플레이어를 노린다
+		LastHit = (ambush or filler) and os.clock() or nil, -- 습격으로 나온 몬스터는 처음부터 플레이어를 노린다
 	}
 	newData.WeakPart = weakOrb
 	monsters[part] = newData
@@ -1452,12 +1453,12 @@ local function killMonster(player, part, data)
 	Effects.MonsterDeath(part, data) -- 조각 / 영혼 연기 (클라이언트)
 	part:Destroy()
 	Combo.Kill(player)
-	reward(player, data, part)
+	if not data.Filler then reward(player, data, part) end
 	-- 처치 연출: 금화가 사방으로 튄다
 	Effects.Burst(part.Position + Vector3.new(0, 2, 0), Color3.fromRGB(255, 215, 90), data.Kind == "Boss" and 60 or 14)
 
 	local zone, kind = data.Zone, data.Kind
-	if data.Ambush then return end -- 습격 몬스터는 다시 생기지 않는다
+	if data.Ambush or data.Filler then return end -- 습격 / 채움 몬스터는 다시 생기지 않는다
 	if kind == "Goblin" then return end -- 다시 나타나지 않는다 (다음 출현은 타이머)
 	if kind == "Event" then
 		activeEvent = nil -- 이벤트 보스는 다시 나타나지 않는다
@@ -3766,6 +3767,33 @@ function Field.Init(lobbySpawnCFrame)
 								end
 							end
 						end
+					end
+				end
+			end
+		end
+	end)
+	-- 내 주변 밀도: 필드에서 내 주변 몬스터가 모자라면 멀리서 떼로 달려오는 "채움 몬스터"를 보충한다 (와아 하고 몰려오는 느낌).
+	-- 채움 몬스터는 처치해도 골드 / 경험치 / 전리품 / 구역 진행도가 없다: 감각만 키우고 경제는 그대로.
+	task.spawn(function()
+		local TARGET, NEAR, MAX_FILL = 18, 50, 14
+		while true do
+			task.wait(1.5)
+			for _, player in ipairs(Players:GetPlayers()) do
+				local root = getAliveParts(player)
+				if root and player:GetAttribute("Zone") == "Field" and not player:GetAttribute("TutorialActive") and not player:GetAttribute("TutorialDoom") and not player:GetAttribute("InDoomArena") and not isSafe(root.Position) then
+					local zone = zoneOfX(root.Position.X)
+					if zone then
+						local near, fillers = 0, 0
+					for part, data in pairs(monsters) do
+						if data.Kind == "Normal" and part.Parent and (part.Position - root.Position).Magnitude <= NEAR then
+							near += 1
+							if data.Filler then fillers += 1 end
+						end
+					end
+					local need = math.min(TARGET - near, MAX_FILL - fillers, 5)
+					for _ = 1, math.max(0, need) do
+						local at = ringSpot(root, zone, 38, 62)
+						if at then spawnMonster(zone, "Normal", at, false, true) end
 					end
 				end
 			end
