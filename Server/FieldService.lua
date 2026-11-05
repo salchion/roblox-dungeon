@@ -3740,6 +3740,37 @@ function Field.Init(lobbySpawnCFrame)
 			end
 		end
 	end)
+	-- 학살 구역 돌격: 내 전투력이 이 구역 권장 전투력 이상이면 (충분히 강한 곳에서 사냥 중이면) 몇십 초마다 먼 곳에서 몬스터 떼가 한꺼번에 돌격해 온다.
+	-- 강할수록(권장 대비 배율) 떼가 크고 간격이 짧다. 이벤트 몬스터 상한(ambushCap)을 지키고, 튜토리얼 / 군주전 / 마을에서는 나오지 않는다.
+	task.spawn(function()
+		local nextRush = setmetatable({}, { __mode = "k" })
+		while true do
+			task.wait(2)
+			for _, player in ipairs(Players:GetPlayers()) do
+				local root = getAliveParts(player)
+				if root and player:GetAttribute("Zone") == "Field" and not player:GetAttribute("TutorialActive") and not player:GetAttribute("TutorialDoom") and not player:GetAttribute("InDoomArena") then
+					local zone = zoneOfX(root.Position.X)
+					local recommended = zone and F.RecommendPower[zone]
+					if recommended and not isSafe(root.Position) and os.clock() >= (nextRush[player] or 0) then
+						local ratio = (player:GetAttribute("Power") or 0) / recommended
+						if ratio >= 1 then
+							local room = ambushCap(zone) - ambushCount(zone)
+							local count = math.min(math.floor(6 + math.min(ratio, 4) * 2), room)
+							nextRush[player] = os.clock() + math.clamp(22 - ratio * 3, 9, 20)
+							if count >= 4 then
+								player:SetAttribute("ShakeStrength", 0.2)
+								player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+								for _ = 1, count do
+									local at = ringSpot(root, zone, 50, 72)
+									if at then spawnMonster(zone, "Normal", at, true) end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end)
 	task.spawn(runAmbush)
 	task.spawn(runBushAmbush)
 	if RunService:IsStudio() then
