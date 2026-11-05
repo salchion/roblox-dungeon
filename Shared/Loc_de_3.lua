@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Monsters left: {number1}", "Verbleibende Monster: {number1}" },
+		{ "🎰 {number1}-Roll Results", "🎰 Ergebnisse der {number1}er-Ziehung" },
+		{ "FEVER PORTAL  {number1}s", "FIEBER-PORTAL  {number1}s" },
+		{ "🎰 Roll again  🎫{number1}", "🎰 Nochmal ziehen  🎫{number1}" },
 		{ "▲ +{number1}% vs current", "▲ +{number1}% ggü. aktuell" },
 		{ "Switch path: {number1} G", "Pfad wechseln: {number1} G" },
 		{ "Damage taken -{number1}%", "Erlittener Schaden -{number1} %" },

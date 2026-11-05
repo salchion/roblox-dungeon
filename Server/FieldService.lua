@@ -190,7 +190,13 @@ end
 -- 관문을 열지 않은 구역의 몬스터는 관문 너머에서 때릴 수 없다 (자동공격 / 스킬로 벽 너머를 잡는 것 방지)
 local function canHitZone(player, x)
 	local allowed = math.min(F.ZoneCount, (player:GetAttribute("ClearedZone") or 0) + 1)
-	return zoneOfX(x) <= allowed
+	local zone = zoneOfX(x)
+	if zone > allowed then return false end
+	-- 벽 너머는 못 때린다: 내가 서 있는 구역의 몬스터만 맞는다 (3구역 입구 안전지대에서 2구역 군주를 저격하는 것 방지)
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if root and player:GetAttribute("Zone") == "Field" and zoneOfX(root.Position.X) ~= zone then return false end
+	return true
 end
 
 -- 구역마다 넓은 계단으로 층을 올라갔다 내려온다 (구역 입구 / 캠프는 항상 0층). 계단은 맵 폭 전체라 좁은 길이 없다.
@@ -2418,6 +2424,35 @@ local function stepMonsters(dt)
 					end)
 				end
 
+				-- 원거리 저격 방지: 사정거리 밖에서 계속 때리면 보스가 2.2초 뒤 "심판"을 내린다. 그때까지 가까이 오지 않으면 피할 수 없다 (가까이 다가가면 취소).
+				if data.Kind == "Boss" and target and not data.Static then
+					local sniper = target.Parent and Players:GetPlayerFromCharacter(target.Parent)
+					local snipeRange = F.SnipeRange or 85
+					if sniper and distance > snipeRange and data.LastHit and now - data.LastHit < 3 and not sniper:GetAttribute("TutorialDoom") then
+						data.SnipeFor = (data.SnipeFor or 0) + dt
+						if data.SnipeFor > 2 and not data.SnipeWarnAt then
+							data.SnipeWarnAt = now
+							notify(sniper, "⚠ The Lord senses you from afar! A judgment strike is coming — get close or you can't dodge it!")
+							Effects.FloatText(target.Position + Vector3.new(0, 7, 0), "⚠ JUDGMENT", Color3.fromRGB(255, 70, 70), 220, 2)
+							Effects.Raw(target.Position, { "R", target.Position - Vector3.new(0, 2.5, 0), 20, Color3.fromRGB(255, 70, 70) })
+						end
+						if data.SnipeWarnAt and now - data.SnipeWarnAt >= 2.2 then
+							data.SnipeWarnAt = nil
+							data.SnipeFor = -5 -- 다음 심판까지 쉬는 시간
+							local sRoot, sHum = getAliveParts(sniper)
+							if sRoot and sHum and (sRoot.Position - part.Position).Magnitude > snipeRange then
+								Effects.Burst(sRoot.Position, Color3.fromRGB(255, 70, 70), 90)
+								Effects.Raw(sRoot.Position, { "R", sRoot.Position - Vector3.new(0, 2.5, 0), 24, Color3.fromRGB(255, 70, 70) })
+								sniper:SetAttribute("ShakeStrength", 0.8)
+								sniper:SetAttribute("ShakeTick", (sniper:GetAttribute("ShakeTick") or 0) + 1)
+								Guard.Take(sHum, sHum.MaxHealth * 0.5)
+							end
+						end
+					elseif data.SnipeFor and data.SnipeFor > 0 or data.SnipeWarnAt then
+						data.SnipeFor = 0
+						data.SnipeWarnAt = nil
+					end
+				end
 				-- 체력이 절반 아래면 격노
 				if not data.Enraged and data.Health / data.MaxHealth <= 0.5 then
 					data.Enraged = true

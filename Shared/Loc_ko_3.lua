@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👑 Lord of Desert (Zone {number1}) · Rec. ⚡{number2}", "👑 사막의 군주 (구역 {number1}) · 레코 ⚡{number2}" },
+		{ "🏜 Desert Temple Entrance · Rec. ⚡{number2}", "🏜 사막 신전 입구 · 레크레이션 ⚡{number2}" },
+		{ "<font color='#ffe{number1}e'>⚡ {number2}</font> Lv.{number3}", "<font color='#ffe{number1}e'>⚡ {number2}</font> 레벨.{number3}" },
 		{ "Survive {number1} seconds in the Boss Rush", "보스 러쉬에서 {number1}초 동안 생존하세요" },
 		{ "👑 Lord of Meadow (Zone {number1}) · Rec. ⚡{number2}", "👑 초원의 군주 (구역 {number1}) · 레코 ⚡{number2}" },
 		{ "Railgun  ·  keys {number1}-{number2} switch weapons", "레일건 · 키 {number1}-{number2}로 무기 전환" },

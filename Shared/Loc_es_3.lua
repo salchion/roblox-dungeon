@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💥 {number1} Kill Streak!!!", "💥 ¡{number1} racha de muertes!" },
+		{ "Use skills {number1} times", "Usa habilidades {number1} veces" },
+		{ "Clear {number1} dungeon(s)", "Completa {number1} mazmorras" },
 		{ "Light Orb  Lv.{number1} / {number2}", "Orbe de luz Nivel {number1} / {number2}" },
 		{ "Zone {number1} · Wasteland", "Zona {number1} · Tierra baldía" },
 		{ "Zone {number1} · Snowfield", "Zona {number1} · Campo de nieve" },

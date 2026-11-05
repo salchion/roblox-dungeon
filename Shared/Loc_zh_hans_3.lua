@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "首领 {number1} · 伤害 {text2} · 下个首领 {number3} 秒后" },
+		{ "Move speed +{text1} per point  (max {number2})", "每点移动速度 +{text1}(最多 {number2})" },
 		{ "{text1}: vs bosses {number2}% · vs monsters {number3}%", "{text1}:对首领 {number2}% · 对怪物 {number3}%" },
 		{ "📅 {number1}-day login streak! Reward: {text2}", "📅 连续登录 {number1} 天!奖励:{text2}" },
 		{ "✅ Mission complete! Reward: {text1}", "✅ 任务完成!奖励:{text1}" },

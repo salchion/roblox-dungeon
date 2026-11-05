@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Loading the land...  {number1}", "Chargement du terrain...  {number1}" },
+		{ "Double Shot chance +{number1}%", "Chance de double tir +{number1}%" },
+		{ "🔁 Path changed! (-{number1} G)", "🔁 Voie changée ! (-{number1} G)" },
+		{ "ZONE {number1}  ·  Meadow   ☠", "Zone {number1} · Prairie ☠" },
 		{ "Luck Booster ({number1} hour)", "Booster de chance ({number1} heures)" },
 		{ "Idle Booster ({number1} hour)", "Booster d'inactivité ({number1} heures)" },
 		{ "Hit the dummy {number1} times", "Frappez le mannequin {number1} fois" },

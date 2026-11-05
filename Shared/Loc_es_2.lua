@@ -535,6 +535,8 @@ return {
 		["⚡ Sweep Complete!"] = "⚡ ¡Barrido completado!",
 		["Clear a dungeon depth first to unlock Sweep."] = "Supera primero una profundidad de mazmorra para desbloquear el barrido.",
 		["🔒 You can't sweep yet. Complete the tutorial missions first!"] = "🔒 Aún no puedes barrer. ¡Completa primero las misiones del tutorial!",
+		["⚠ The Lord senses you from afar! A judgment strike is coming — get close or you can't dodge it!"] = "⚠ ¡El Señor te percibe desde lejos! Se acerca un juicio — acércate o no podrás esquivarlo.",
+		["⚠ JUDGMENT"] = "⚠ JUICIO",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -953,8 +955,5 @@ return {
 		{ "🌙 Idle reward +{number1} G", "🌙 Recompensa de inactividad +{number1} G" },
 		{ "🥈  {player1}   ⚡ {number1}", "🥈 {player1} ⚡ {number1}" },
 		{ "📍 Town   🎟 Free {number1}/{number2}", "📍 Ciudad 🎟 Gratis {number1}/{number2}" },
-		{ "💥 {number1} Kill Streak!!!", "💥 ¡{number1} racha de muertes!" },
-		{ "Use skills {number1} times", "Usa habilidades {number1} veces" },
-		{ "Clear {number1} dungeon(s)", "Completa {number1} mazmorras" },
 	},
 }

@@ -546,6 +546,8 @@ return {
 		["⚡ Sweep Complete!"] = "⚡ Balayage terminé !",
 		["Clear a dungeon depth first to unlock Sweep."] = "Termine d'abord une profondeur de donjon pour débloquer le balayage.",
 		["🔒 You can't sweep yet. Complete the tutorial missions first!"] = "🔒 Tu ne peux pas encore balayer. Termine d'abord les missions du tutoriel !",
+		["⚠ The Lord senses you from afar! A judgment strike is coming — get close or you can't dodge it!"] = "⚠ Le Seigneur te sent de loin ! Un jugement approche — rapproche-toi ou tu ne pourras pas l'esquiver !",
+		["⚠ JUDGMENT"] = "⚠ JUGEMENT",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -922,9 +924,5 @@ return {
 		{ "ZONE {number1}  ·  Forest   ☠☠", "Zone {number1} · Forêt ☠☠" },
 		{ "{number1} upgrades! {number2} succeeded", "{number1} améliorations ! {number2} réussies" },
 		{ "Free entries {number1} · Keys {number2}", "Entrées gratuites {number1} · Clés {number2}" },
-		{ "Loading the land...  {number1}", "Chargement du terrain...  {number1}" },
-		{ "Double Shot chance +{number1}%", "Chance de double tir +{number1}%" },
-		{ "🔁 Path changed! (-{number1} G)", "🔁 Voie changée ! (-{number1} G)" },
-		{ "ZONE {number1}  ·  Meadow   ☠", "Zone {number1} · Prairie ☠" },
 	},
 }

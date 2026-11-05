@@ -415,6 +415,8 @@ return {
 		["⚡ Sweep Complete!"] = "⚡ 扫荡完成！",
 		["Clear a dungeon depth first to unlock Sweep."] = "先通关一个地下城深度来解锁扫荡。",
 		["🔒 You can't sweep yet. Complete the tutorial missions first!"] = "🔒 还不能扫荡。请先完成教程任务！",
+		["⚠ The Lord senses you from afar! A judgment strike is coming — get close or you can't dodge it!"] = "⚠ 领主在远处察觉到了你！审判一击即将降临 — 靠近它，否则无法躲避！",
+		["⚠ JUDGMENT"] = "⚠ 审判",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1053,7 +1055,5 @@ return {
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} 已自动分解(精华 +{number2},{number3} 金币)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ 每日任务完成!奖励:{text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 区域{number1} 第 {number2} 段 — 这里有很多 {text3}" },
-		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "首领 {number1} · 伤害 {text2} · 下个首领 {number3} 秒后" },
-		{ "Move speed +{text1} per point  (max {number2})", "每点移动速度 +{text1}(最多 {number2})" },
 	},
 }

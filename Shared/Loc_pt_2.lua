@@ -506,6 +506,8 @@ return {
 		["⚡ Sweep Complete!"] = "⚡ Varredura concluída!",
 		["Clear a dungeon depth first to unlock Sweep."] = "Conclua primeiro uma profundidade de masmorra para liberar a varredura.",
 		["🔒 You can't sweep yet. Complete the tutorial missions first!"] = "🔒 Você ainda não pode varrer. Conclua primeiro as missões do tutorial!",
+		["⚠ The Lord senses you from afar! A judgment strike is coming — get close or you can't dodge it!"] = "⚠ O Lorde sente você de longe! Um julgamento está vindo — aproxime-se ou não poderá desviar!",
+		["⚠ JUDGMENT"] = "⚠ JULGAMENTO",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -950,8 +952,5 @@ return {
 		{ "Defeat {number1} boss(es)", "Derrote {number1} chefes" },
 		{ "{number1} / {number2}   Reward: 🎫 {number3}", "{number1} / {number2} Recompensa: 🎫 {number3}" },
 		{ "⬆ Level Up  💰 {number1} G", "⬆ Subir de Nível 💰 {number1} G" },
-		{ "⚡ {number1} Kill Streak!!", "⚡ {number1} Sequência de Eliminações!!" },
-		{ "Survive {number1}s + Boss", "Sobreviva {number1} segundos + Chefe" },
-		{ "{number3} / {number4}   Reward: 🎫 {number5}", "{number3} / {number4} Recompensa: 🎫 {number5}" },
 	},
 }

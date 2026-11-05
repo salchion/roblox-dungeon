@@ -10,8 +10,8 @@ Config.StartGold = 0 -- 처음 접속했을 때 지급되는 골드 (튜토리�
 ------------------------------------------------------------
 Config.Player = {
 	BaseHealth = 100,
-	WalkSpeed = 40,         -- 기본 이동 속도 (30 -> 34: 초반이 답답하다는 의견. 달리기 키는 없애서 항상 이 속도로 달린다)
-	RunSpeed = 42,          -- (대시 속도 계산에만 쓴다)
+	WalkSpeed = 48,         -- 기본 이동 속도 (40 -> 48: +20%, 더 하이퍼한 손맛) (30 -> 34: 초반이 답답하다는 의견. 달리기 키는 없애서 항상 이 속도로 달린다)
+	RunSpeed = 50,          -- (대시 속도 계산에만 쓴다)
 	DashSpeed = 135,        -- Q 대시 속도 (순간 폭발적으로 튀어 나감)
 	DashTime = 0.24,        -- 대시 지속 시간(초): 짧고 굵게
 	DashCooldown = 3.0,     -- 대시 1회 충전에 걸리는 시간(초) = 대시 쿨타임
@@ -536,7 +536,7 @@ function Config.Monster.GetStats(level)
 	return {
 		Size = math.min(3 + (level - 1) * 0.8, 40),
 		MaxHealth = math.floor(40 * 1.22 ^ (level - 1)),
-		Speed = 16,
+		Speed = 19.2, -- (16 -> 19.2: 플레이어 이동 속도 +20% 와 같이 몬스터도 +20%)
 		ShotDamage = 8 + level * 2,
 		ShotInterval = math.max(1.2, 2.6 - level * 0.05),
 		ShotSpeed = 45,
@@ -874,6 +874,7 @@ Config.Field = {
 	ElitesPerZone = 3,
 	CampSafe = 70,             -- 각 구역 입구 캠프 주변 안전지대 반경(몬스터가 노리지 않음)
 	RespawnTime = 5,
+	SnipeRange = 85,     -- 필드 군주를 이 거리 밖에서 계속 때리면 "심판"(피할 수 없는 강공)이 내려온다 (저격총으로 멀리서 안전하게 잡는 것 방지)
 	AggroRange = 80, -- (55 -> 80: 멀리 있는 몬스터도 일찍 알아채고 몰려온다)
 	LeashRange = 125,
 	EliteMultiplier = 3.5,     -- 엘리트 몬스터 체력 배율 (5였는데 3구역부터 너무 오래 걸려 낮춤)

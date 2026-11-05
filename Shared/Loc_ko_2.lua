@@ -809,6 +809,8 @@ return {
 		["⚡ Sweep Complete!"] = "⚡ 소탕 완료!",
 		["Clear a dungeon depth first to unlock Sweep."] = "던전 깊이를 먼저 클리어하면 소탕이 열려요.",
 		["🔒 You can't sweep yet. Complete the tutorial missions first!"] = "🔒 아직 소탕할 수 없어요. 튜토리얼 미션을 먼저 끝내세요!",
+		["⚠ The Lord senses you from afar! A judgment strike is coming — get close or you can't dodge it!"] = "⚠ 군주가 멀리서 당신을 느꼈어요! 심판의 일격이 내려옵니다 — 가까이 다가가지 않으면 피할 수 없어요!",
+		["⚠ JUDGMENT"] = "⚠ 심판",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1050,8 +1052,5 @@ return {
 		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 들판 입구는 바로 뒤에 있습니다! {number1}m" },
 		{ "Clear {number1} dungeon(s)  ✅ tap to claim!", "{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!" },
 		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 보스 상자 · 장비 {number1}개</b>" },
-		{ "👑 Lord of Desert (Zone {number1}) · Rec. ⚡{number2}", "👑 사막의 군주 (구역 {number1}) · 레코 ⚡{number2}" },
-		{ "🏜 Desert Temple Entrance · Rec. ⚡{number2}", "🏜 사막 신전 입구 · 레크레이션 ⚡{number2}" },
-		{ "<font color='#ffe{number1}e'>⚡ {number2}</font> Lv.{number3}", "<font color='#ffe{number1}e'>⚡ {number2}</font> 레벨.{number3}" },
 	},
 }

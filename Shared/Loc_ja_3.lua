@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Not enough tickets. ({number1} needed)", "チケットが足りません。({number1}必要)" },
+		{ "💰 Bought +1 stat point! ({number1} / {number2})", "💰 ステータスポイントを+1購入しました！({number1} / {number2})" },
 		{ "💰 {number1} G Slot Upgrade ({number2}% success)", "💰 {number1} G スロット強化(成功率 {number2}%)" },
 		{ "Reach level {number1} to break through", "レベル{number1}に到達すると突破できます" },
 		{ "{number1}% → up to {number2}% (deeper = higher)", "{number1}% → 最大{number2}% (深いほど高い)" },

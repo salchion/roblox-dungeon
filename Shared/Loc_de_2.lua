@@ -487,6 +487,8 @@ return {
 		["⚡ Sweep Complete!"] = "⚡ Blitz abgeschlossen!",
 		["Clear a dungeon depth first to unlock Sweep."] = "Schaffe zuerst eine Dungeon-Tiefe, um den Blitz freizuschalten.",
 		["🔒 You can't sweep yet. Complete the tutorial missions first!"] = "🔒 Du kannst noch nicht blitzen. Schließe zuerst die Tutorial-Missionen ab!",
+		["⚠ The Lord senses you from afar! A judgment strike is coming — get close or you can't dodge it!"] = "⚠ Der Lord spürt dich aus der Ferne! Ein Strafschlag naht — komm näher, sonst kannst du nicht ausweichen!",
+		["⚠ JUDGMENT"] = "⚠ STRAFE",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -955,9 +957,5 @@ return {
 		{ "(gold {number1} + gear {number2})", "(Gold {number1} + Ausrüstung {number2})" },
 		{ "Crit damage +{number1}%p", "Krit-Schaden +{number1} %p" },
 		{ "vs. equipped ▼ {number1}", "vs. ausgerüstet ▼ {number1}" },
-		{ "Monsters left: {number1}", "Verbleibende Monster: {number1}" },
-		{ "🎰 {number1}-Roll Results", "🎰 Ergebnisse der {number1}er-Ziehung" },
-		{ "FEVER PORTAL  {number1}s", "FIEBER-PORTAL  {number1}s" },
-		{ "🎰 Roll again  🎫{number1}", "🎰 Nochmal ziehen  🎫{number1}" },
 	},
 }

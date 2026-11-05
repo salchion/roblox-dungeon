@@ -662,6 +662,8 @@ return {
 		["⚡ Sweep Complete!"] = "⚡ スイープ完了！",
 		["Clear a dungeon depth first to unlock Sweep."] = "先にダンジョンの階層をクリアするとスイープが解放されます。",
 		["🔒 You can't sweep yet. Complete the tutorial missions first!"] = "🔒 まだスイープできません。先にチュートリアルミッションを完了してください！",
+		["⚠ The Lord senses you from afar! A judgment strike is coming — get close or you can't dodge it!"] = "⚠ 君主が遠くからあなたを察知した！裁きの一撃が来る — 近づかないと避けられない！",
+		["⚠ JUDGMENT"] = "⚠ 裁き",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -936,7 +938,5 @@ return {
 		{ "Zone {number1} set effect · Trial Lv.3", "ゾーン{number1}セット効果 · 試練 Lv.3" },
 		{ "(Idle income bonus +{number1}% active)", "(放置収入ボーナス +{number1}% 有効)" },
 		{ "Not enough Essence. ({number1} needed)", "エッセンスが足りません。({number1}必要)" },
-		{ "Not enough tickets. ({number1} needed)", "チケットが足りません。({number1}必要)" },
-		{ "💰 Bought +1 stat point! ({number1} / {number2})", "💰 ステータスポイントを+1購入しました！({number1} / {number2})" },
 	},
 }

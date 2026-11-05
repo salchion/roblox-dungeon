@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⚡ {number1} Kill Streak!!", "⚡ {number1} Sequência de Eliminações!!" },
+		{ "Survive {number1}s + Boss", "Sobreviva {number1} segundos + Chefe" },
+		{ "{number3} / {number4}   Reward: 🎫 {number5}", "{number3} / {number4} Recompensa: 🎫 {number5}" },
 		{ "Range +{number1}%  (max {number2})", "Alcance +{number1}% (máximo {number2})" },
 		{ "Defeat {number1} monsters", "Derrote {number1} monstros" },
 		{ "⭐ Next level Lv.{number1}", "⭐ Próximo nível Nv.{number1}" },
