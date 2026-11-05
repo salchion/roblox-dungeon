@@ -729,6 +729,13 @@
       "overwrite": true
     },
     {
+      "path": "ButtonFeelClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "ButtonFeelClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "TownSkyClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "TownSkyClient",
