@@ -70,4 +70,31 @@ function Kit.makeButton(props, parent, onClick)
 	return button
 end
 
+-- 메달형 아이콘: 이모지를 그냥 올리지 않고 "테두리 고리 + 안쪽 구슬 + 윗면 광택 + (높은 등급은) 바깥 빛"으로 감싼다.
+--   o = { Size(숫자, 지름), Position, AnchorPoint, Color(등급 / 강조 색), Icon(글자), TextSize, Tier(0~5), ZIndex, Muted }
+--   반환: 메달 틀(Frame), 아이콘 글자(TextLabel)
+function Kit.medal(parent, o)
+	local d, z, color = o.Size or 48, o.ZIndex or 1, o.Color or Color3.fromRGB(150, 160, 200)
+	local tier, muted = o.Tier or 0, o.Muted == true
+	local dark, white = Color3.fromRGB(14, 16, 28), Color3.new(1, 1, 1)
+	local root = Kit.create("Frame", { Size = UDim2.new(0, d, 0, d), Position = o.Position or UDim2.new(), AnchorPoint = o.AnchorPoint or Vector2.new(), BackgroundTransparency = 1, BorderSizePixel = 0, Active = false, ZIndex = z }, parent)
+	if tier >= 3 then -- 바깥에 번지는 은은한 빛 (등급이 높을수록 진하다)
+		local glow = Kit.create("Frame", { Size = UDim2.new(1.4, 0, 1.4, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundColor3 = color, BackgroundTransparency = tier >= 5 and 0.72 or (tier == 4 and 0.8 or 0.87), BorderSizePixel = 0, Active = false, ZIndex = z }, root)
+		Kit.create("UICorner", { CornerRadius = UDim.new(1, 0) }, glow)
+	end
+	local ring = Kit.create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = white, BackgroundTransparency = muted and 0.45 or 0, BorderSizePixel = 0, Active = false, ZIndex = z }, root)
+	Kit.create("UICorner", { CornerRadius = UDim.new(1, 0) }, ring)
+	Kit.create("UIGradient", { Rotation = 90, Color = ColorSequence.new(color:Lerp(white, 0.5), color:Lerp(dark, 0.45)) }, ring)
+	Kit.create("UIStroke", { Color = color:Lerp(white, 0.25), Thickness = 1.4 + tier * 0.35, Transparency = muted and 0.6 or 0.05, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, ring)
+	local inner = Kit.create("Frame", { Size = UDim2.new(0.78, 0, 0.78, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundColor3 = white, BackgroundTransparency = muted and 0.3 or 0, BorderSizePixel = 0, Active = false, ZIndex = z + 1 }, root)
+	Kit.create("UICorner", { CornerRadius = UDim.new(1, 0) }, inner)
+	Kit.create("UIGradient", { Rotation = 90, Color = ColorSequence.new(color:Lerp(dark, 0.55), color:Lerp(dark, 0.84)) }, inner)
+	Kit.create("UIStroke", { Color = color:Lerp(dark, 0.55), Thickness = 1.6, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, inner)
+	local gloss = Kit.create("Frame", { Size = UDim2.new(0.62, 0, 0.3, 0), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0.1, 0), BackgroundColor3 = white, BorderSizePixel = 0, Active = false, ZIndex = z + 2 }, inner)
+	Kit.create("UICorner", { CornerRadius = UDim.new(1, 0) }, gloss)
+	Kit.create("UIGradient", { Rotation = 90, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.72), NumberSequenceKeypoint.new(1, 1) }) }, gloss)
+	local icon = Kit.makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = o.Icon or "", TextSize = o.TextSize or math.floor(d * 0.46), TextWrapped = false, TextTransparency = muted and 0.4 or 0, ZIndex = z + 3, Active = false }, inner)
+	return root, icon
+end
+
 return Kit

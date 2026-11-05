@@ -151,11 +151,8 @@ local function play(loot, data)
 		local pill = makeLabel({ Size = UDim2.new(0, 84, 0, 20), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 10), Text = Config.Gear.RarityNames[rarity] or "", Font = Enum.Font.GothamBlack, TextSize = 12,
 			TextColor3 = Color3.fromRGB(20, 20, 30), BackgroundTransparency = 0, BackgroundColor3 = color, ZIndex = 35 }, card)
 		rounded(pill, 10)
-		-- 부위 그림 (등급 색 원 안)
-		local disc = create("Frame", { Size = UDim2.new(0, 70, 0, 70), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 38), BackgroundColor3 = color:Lerp(Color3.fromRGB(18, 18, 30), 0.65), BorderSizePixel = 0, ZIndex = 34 }, card)
-		rounded(disc, 35)
-		create("UIStroke", { Color = color, Thickness = 2, Transparency = 0.2 }, disc)
-		local iconLabel = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = ICONS[entry.Slot] or "🎁", TextSize = 38, ZIndex = 35 }, disc)
+		-- 부위 그림: 메달형 (등급이 높을수록 테두리가 굵고 바깥 빛이 짙다)
+		local _, iconLabel = Kit.medal(card, { Size = 76, Position = UDim2.new(0.5, -38, 0, 34), Color = color, Icon = ICONS[entry.Slot] or "🎁", TextSize = 38, Tier = rarity, ZIndex = 34 })
 		-- 이름 (등급 이름과 아이템 이름을 따로 두어 번역이 각각 된다)
 		local setDef = entry.Set and Config.Sets[entry.Set]
 		local itemName = slotDef and slotDef.Names[rarity] or ""

@@ -9,6 +9,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+local Kit = require(ReplicatedStorage:WaitForChild("ClientKit"))
 
 local InventoryTab = {}
 local upgradeAnchor -- 지금 화면의 장비 강화 블록 (결과 연출 위치)
@@ -297,11 +298,8 @@ local function buildInventoryTab(state)
 		end)
 		rounded(box, 16) -- (네모 → 둥글게: 칸마다 부드러운 윗면 빛과 가는 테두리, 아이콘은 등급 색 원 안에)
 		create("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(160, 160, 178)) }, box)
-		local function iconDisc(color, icon)
-			local disc = create("Frame", { Size = UDim2.new(0, 36, 0, 36), Position = UDim2.new(0.5, -18, 0, 16), BackgroundColor3 = color:Lerp(Color3.fromRGB(14, 16, 28), 0.6), BorderSizePixel = 0, Active = false, ZIndex = 10 }, box)
-			create("UICorner", { CornerRadius = UDim.new(1, 0) }, disc)
-			create("UIStroke", { Color = color, Thickness = 1.8, Transparency = 0.15 }, disc)
-			makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = icon, TextSize = 20, ZIndex = 11 }, disc)
+		local function iconDisc(color, icon, tier)
+			Kit.medal(box, { Size = 42, Position = UDim2.new(0.5, -21, 0, 11), Color = color, Icon = icon, TextSize = 20, Tier = tier or 0, ZIndex = 10 })
 		end
 		local function accentBar(color) -- 칸 아래 등급 색 막대
 			local bar = create("Frame", { Size = UDim2.new(0, 44, 0, 3), Position = UDim2.new(0.5, -22, 1, -7), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 10, Active = false }, box)
@@ -311,13 +309,13 @@ local function buildInventoryTab(state)
 			local weaponLevel = player:GetAttribute("WeaponLevel") or 0
 			local tier = Config.GetLookTier(weaponLevel, Config.ResolveWeaponType(weaponLevel, player:GetAttribute("WeaponType")))
 			rarityOutline(box, 4, 2).Color = tier.Color
-			iconDisc(tier.Color, "🔫")
+			iconDisc(tier.Color, "🔫", 2)
 			accentBar(tier.Color)
 			makeLabel({ Size = UDim2.new(1, -6, 0, 14), Position = UDim2.new(0, 3, 0, 52), Text = Config.WeaponTypes[tier.Class].Name, TextSize = 10, TextColor3 = tier.Color, Font = Enum.Font.GothamBold, ZIndex = 10 }, box)
 		elseif item then
 			rarityOutline(box, rarity, 1.8)
 			setDecor(box, item.Set, setCounts[item.Set], UDim2.new(0, 5, 0, 5), UDim2.new(0, 30, 0, 14), 16)
-			iconDisc(Config.Gear.RarityColors[rarity], SLOT_ICONS[slotKey])
+			iconDisc(Config.Gear.RarityColors[rarity], SLOT_ICONS[slotKey], rarity)
 			accentBar(Config.Gear.RarityColors[rarity])
 			makeLabel({ Size = UDim2.new(1, -6, 0, 13), Position = UDim2.new(0, 3, 0, 53), Text = Config.ItemDisplayName(item), TextSize = 9, TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd, TextColor3 = Color3.fromRGB(245, 246, 255), Font = Enum.Font.GothamBold, ZIndex = 10 }, box)
 			-- 강화 단계: 오른쪽 위 둥근 배지 (금색)
