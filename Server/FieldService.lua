@@ -3772,10 +3772,10 @@ function Field.Init(lobbySpawnCFrame)
 			end
 		end
 	end)
-	-- 내 주변 밀도: 필드에서 내 주변 몬스터가 모자라면 멀리서 떼로 달려오는 "채움 몬스터"를 보충한다 (와아 하고 몰려오는 느낌).
+	-- 뚫고 나가는 느낌: 내가 향하는 쪽 앞에 몬스터가 모자라면 앞쪽 멀리서 "채움 몬스터"가 떼로 달려와 길을 막는다 (앞으로 나아갈수록 계속 저항한다).
 	-- 채움 몬스터는 처치해도 골드 / 경험치 / 전리품 / 구역 진행도가 없다: 감각만 키우고 경제는 그대로.
 	task.spawn(function()
-		local TARGET, NEAR, MAX_FILL = 18, 50, 14
+		local TARGET, NEAR, MAX_FILL = 16, 58, 14
 		while true do
 			task.wait(1.5)
 			for _, player in ipairs(Players:GetPlayers()) do
@@ -3783,17 +3783,32 @@ function Field.Init(lobbySpawnCFrame)
 				if root and player:GetAttribute("Zone") == "Field" and not player:GetAttribute("TutorialActive") and not player:GetAttribute("TutorialDoom") and not player:GetAttribute("InDoomArena") and not isSafe(root.Position) then
 					local zone = zoneOfX(root.Position.X)
 					if zone then
-						local near, fillers = 0, 0
-					for part, data in pairs(monsters) do
-						if data.Kind == "Normal" and part.Parent and (part.Position - root.Position).Magnitude <= NEAR then
-							near += 1
-							if data.Filler then fillers += 1 end
+						-- 앞 방향: 움직이는 중이면 가는 방향, 서 있으면 바라보는 방향
+						local velocity = Vector3.new(root.AssemblyLinearVelocity.X, 0, root.AssemblyLinearVelocity.Z)
+						local look = root.CFrame.LookVector
+						local forward = velocity.Magnitude > 4 and velocity.Unit or Vector3.new(look.X, 0, look.Z)
+						if forward.Magnitude < 0.1 then forward = Vector3.new(1, 0, 0) end
+						forward = forward.Unit
+						local ahead, fillers = 0, 0
+						for part, data in pairs(monsters) do
+							if data.Kind == "Normal" and part.Parent then
+								local offset = part.Position - root.Position
+								if data.Filler then fillers += 1 end
+								if offset.Magnitude <= NEAR and offset.Magnitude > 0.1 and (Vector3.new(offset.X, 0, offset.Z)).Unit:Dot(forward) > 0.3 then ahead += 1 end
+							end
 						end
-					end
-					local need = math.min(TARGET - near, MAX_FILL - fillers, 5)
-					for _ = 1, math.max(0, need) do
-						local at = ringSpot(root, zone, 38, 62)
-						if at then spawnMonster(zone, "Normal", at, false, true) end
+						local need = math.min(TARGET - ahead, MAX_FILL - fillers, 5)
+						for _ = 1, math.max(0, need) do
+							for _ = 1, 4 do -- 걸을 수 있는 자리가 나올 때까지 몇 번 시도
+								local angle = (math.random() - 0.5) * math.rad(100)
+								local direction = CFrame.Angles(0, angle, 0):VectorToWorldSpace(forward)
+								local at = root.Position + direction * (40 + math.random() * 24)
+								if walkableAt(at.X, at.Z) and not isSafe(at) and zoneOfX(at.X) == zone then
+									spawnMonster(zone, "Normal", at, false, true)
+									break
+								end
+							end
+						end
 					end
 				end
 			end
