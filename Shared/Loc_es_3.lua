@@ -58,6 +58,7 @@ return {
 		{ "▲ +{number1}% vs current", "▲ +{number1}% vs actual" },
 		{ "Switch path: {number1} G", "Cambiar camino: {number1} G" },
 		{ "Damage taken -{number1}%", "Daño recibido -{number1} %" },
+		{ "⭐ LEVEL UP! Lv.{number1}", "⭐ ¡SUBIDA DE NIVEL! Nv.{number1}" },
 		{ "Zone {number1} · Forest", "Zona {number1} · Bosque" },
 		{ "{number1} more upgrades", "{number1} más mejoras" },
 		{ "Zone {number1} · Desert", "Zona {number1} · Desierto" },

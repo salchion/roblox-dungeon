@@ -206,6 +206,7 @@ return {
 		{ "▲ +{number1}% vs current", "▲ 今より +{number1}%" },
 		{ "Switch path: {number1} G", "道を変更：{number1}G" },
 		{ "Damage taken -{number1}%", "被ダメージ-{number1}%" },
+		{ "⭐ LEVEL UP! Lv.{number1}", "⭐ レベルアップ！ Lv.{number1}" },
 		{ "Zone {number1} · Forest", "ゾーン {number1} ・森" },
 		{ "{number1} more upgrades", "{number1} 個のアップグレード" },
 		{ "Zone {number1} · Desert", "ゾーン {number1} ・砂漠" },

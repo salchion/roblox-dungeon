@@ -86,6 +86,8 @@ function Level.AddXP(player, amount)
 		if root then
 			Effects.Burst(root.Position, Color3.fromRGB(255, 225, 110), 60)
 			SoundBank.Play(root, "LevelUp")
+			Effects.FloatText(root.Position + Vector3.new(0, 7.5, 0), string.format("⭐ LEVEL UP! Lv.%d", level), Color3.fromRGB(255, 226, 110), 260, 1.6) -- 큰 글자로 레벨업을 알린다
+			Effects.Raw(root.Position, { "R", root.Position - Vector3.new(0, 2.5, 0), 16, Color3.fromRGB(255, 225, 110) }) -- 발밑에서 퍼지는 고리
 		end
 	end
 end

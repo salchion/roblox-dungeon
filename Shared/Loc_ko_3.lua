@@ -258,6 +258,7 @@ return {
 		{ "▲ +{number1}% vs current", "▲ 지금보다 +{number1}%" },
 		{ "Switch path: {number1} G", "길 바꾸기: {number1}G" },
 		{ "Damage taken -{number1}%", "받는 피해 -{number1}%" },
+		{ "⭐ LEVEL UP! Lv.{number1}", "⭐ 레벨 업! Lv.{number1}" },
 		{ "Zone {number1} · Forest", "구역 {number1} · 숲" },
 		{ "{number1} more upgrades", "{number1} 더 많은 업그레이드" },
 		{ "Zone {number1} · Desert", "구역 {number1} · 사막" },

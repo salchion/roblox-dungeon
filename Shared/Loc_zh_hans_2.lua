@@ -892,6 +892,7 @@ return {
 		{ "▲ +{number1}% vs current", "▲ 比当前 +{number1}%" },
 		{ "Switch path: {number1} G", "更换路线：{number1}G" },
 		{ "Damage taken -{number1}%", "受到伤害-{number1}%" },
+		{ "⭐ LEVEL UP! Lv.{number1}", "⭐ 升级！Lv.{number1}" },
 		{ "Zone {number1} · Forest", "区域 {number1} · 森林" },
 		{ "{number1} more upgrades", "{number1} 次更多升级" },
 		{ "Zone {number1} · Desert", "区域 {number1} · 沙漠" },
