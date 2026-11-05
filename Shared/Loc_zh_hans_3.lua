@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} 已自动分解(精华 +{number2},{number3} 金币)" },
+		{ "✅ Daily quest complete! Reward: {text1}", "✅ 每日任务完成!奖励:{text1}" },
+		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 区域{number1} 第 {number2} 段 — 这里有很多 {text3}" },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "首领 {number1} · 伤害 {text2} · 下个首领 {number3} 秒后" },
 		{ "Move speed +{text1} per point  (max {number2})", "每点移动速度 +{text1}(最多 {number2})" },
 		{ "{text1}: vs bosses {number2}% · vs monsters {number3}%", "{text1}:对首领 {number2}% · 对怪物 {number3}%" },

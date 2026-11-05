@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 들판 입구는 바로 뒤에 있습니다! {number1}m" },
+		{ "Clear {number1} dungeon(s)  ✅ tap to claim!", "{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!" },
+		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 보스 상자 · 장비 {number1}개</b>" },
 		{ "👑 Lord of Desert (Zone {number1}) · Rec. ⚡{number2}", "👑 사막의 군주 (구역 {number1}) · 레코 ⚡{number2}" },
 		{ "🏜 Desert Temple Entrance · Rec. ⚡{number2}", "🏜 사막 신전 입구 · 레크레이션 ⚡{number2}" },
 		{ "<font color='#ffe{number1}e'>⚡ {number2}</font> Lv.{number3}", "<font color='#ffe{number1}e'>⚡ {number2}</font> 레벨.{number3}" },

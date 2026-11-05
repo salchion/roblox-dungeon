@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "ZONE {number1}  ·  Darklands   ☠☠☠☠☠☠☠", "ゾーン {number1} ・ダークランド ☠☠☠☠☠☠☠" },
+		{ "Zone {number1} set effect · Trial Lv.3", "ゾーン{number1}セット効果 · 試練 Lv.3" },
+		{ "(Idle income bonus +{number1}% active)", "(放置収入ボーナス +{number1}% 有効)" },
+		{ "Not enough Essence. ({number1} needed)", "エッセンスが足りません。({number1}必要)" },
 		{ "Not enough tickets. ({number1} needed)", "チケットが足りません。({number1}必要)" },
 		{ "💰 Bought +1 stat point! ({number1} / {number2})", "💰 ステータスポイントを+1購入しました！({number1} / {number2})" },
 		{ "💰 {number1} G Slot Upgrade ({number2}% success)", "💰 {number1} G スロット強化(成功率 {number2}%)" },

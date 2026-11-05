@@ -811,6 +811,10 @@ return {
 		["🔒 You can't sweep yet. Complete the tutorial missions first!"] = "🔒 아직 소탕할 수 없어요. 튜토리얼 미션을 먼저 끝내세요!",
 		["⚠ The Lord senses you from afar! A judgment strike is coming — get close or you can't dodge it!"] = "⚠ 군주가 멀리서 당신을 느꼈어요! 심판의 일격이 내려옵니다 — 가까이 다가가지 않으면 피할 수 없어요!",
 		["⚠ JUDGMENT"] = "⚠ 심판",
+		["🌙 Welcome back!"] = "🌙 돌아오셨군요!",
+		["Offline income is 60% of resting income, up to the cap"] = "오프라인 수익은 휴식 수익의 60%이고, 한도까지만 쌓여요",
+		["✨ Idle Booster applied"] = "✨ 방치 부스터 적용됨",
+		["<font color='#ff9a6e'>⚠ Cap reached — raise it in the Shop</font>"] = "<font color='#ff9a6e'>⚠ 한도에 도달했어요 — 상점에서 늘릴 수 있어요</font>",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1049,8 +1053,5 @@ return {
 		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 새로운 무기: 스펠 토메 - {number1}을 누르세요!" },
 		{ "Gacha_Pop{number1}  Gacha result: Legendary", "Gacha_Pop{number1} 가챠 결과: 전설" },
 		{ "{number1} hours of idle gold ({number2} G) piled up!", "{number1}시간 동안 쌓인 골드 ({number2}G)가 누적되었습니다!" },
-		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 들판 입구는 바로 뒤에 있습니다! {number1}m" },
-		{ "Clear {number1} dungeon(s)  ✅ tap to claim!", "{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!" },
-		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 보스 상자 · 장비 {number1}개</b>" },
 	},
 }

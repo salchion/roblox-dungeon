@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "NEAR MISS lasts +{number1}s", "NEAR MISS dura +{number1} s más" },
+		{ "Zone {number1} · Darklands", "Zona {number1} · Tierras oscuras" },
+		{ "Clear field zone {number1}", "Limpiar la zona de campo {number1}" },
+		{ "🌙 Idle reward +{number1} G", "🌙 Recompensa de inactividad +{number1} G" },
+		{ "🥈  {player1}   ⚡ {number1}", "🥈 {player1} ⚡ {number1}" },
+		{ "📍 Town   🎟 Free {number1}/{number2}", "📍 Ciudad 🎟 Gratis {number1}/{number2}" },
 		{ "💥 {number1} Kill Streak!!!", "💥 ¡{number1} racha de muertes!" },
 		{ "Use skills {number1} times", "Usa habilidades {number1} veces" },
 		{ "Clear {number1} dungeon(s)", "Completa {number1} mazmorras" },

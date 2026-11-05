@@ -2335,5 +2335,9 @@
 "Depth {number1} sweep: gold, tickets and boss chest received",
 "⭐ LEVEL UP! Lv.{number1}",
 "⚠ The Lord senses you from afar! A judgment strike is coming — get close or you can't dodge it!",
-"⚠ JUDGMENT"
+"⚠ JUDGMENT",
+"🌙 Welcome back!",
+"Offline income is 60% of resting income, up to the cap",
+"✨ Idle Booster applied",
+"<font color='#ff9a6e'>⚠ Cap reached — raise it in the Shop</font>"
 ]

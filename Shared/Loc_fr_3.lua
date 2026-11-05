@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number5} Snowfield · {number6} Volcano", "{number5} Champ de neige · {number6} Volcan" },
+		{ "ZONE {number1}  ·  Forest   ☠☠", "Zone {number1} · Forêt ☠☠" },
+		{ "{number1} upgrades! {number2} succeeded", "{number1} améliorations ! {number2} réussies" },
+		{ "Free entries {number1} · Keys {number2}", "Entrées gratuites {number1} · Clés {number2}" },
 		{ "Loading the land...  {number1}", "Chargement du terrain...  {number1}" },
 		{ "Double Shot chance +{number1}%", "Chance de double tir +{number1}%" },
 		{ "🔁 Path changed! (-{number1} G)", "🔁 Voie changée ! (-{number1} G)" },

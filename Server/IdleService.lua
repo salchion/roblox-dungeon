@@ -134,7 +134,12 @@ function Idle.OnJoin(player)
 		if capped then
 			text ..= string.format("\n⚠ The %d-hour cap was reached, so %.1f hours' worth couldn't be saved. You can raise the cap in the Shop", math.floor(capSeconds(player) / 3600), (away - capSeconds(player)) / 3600)
 		end
-		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🌙", Title = "While you were away…", Text = text, Duration = 8 })
+		-- 큰 "돌아오셨어요" 카드는 클라이언트(OfflineRewardClient)가 이 값들을 보고 띄운다 (골드 숫자가 올라가는 연출)
+		player:SetAttribute("OfflineRewardGold", gold)
+		player:SetAttribute("OfflineRewardSeconds", seconds)
+		player:SetAttribute("OfflineRewardCapped", capped)
+		player:SetAttribute("OfflineRewardBoost", boosted > 60)
+		player:SetAttribute("OfflineRewardTick", (player:GetAttribute("OfflineRewardTick") or 0) + 1)
 		Remotes.Notify:FireClient(player, string.format("🌙 Idle reward +%d G", gold))
 	end)
 end

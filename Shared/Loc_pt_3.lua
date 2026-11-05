@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number2} / {number3}   Reward: 🎫 {number4}", "{number2} / {number3} Recompensa: 🎫 {number4}" },
+		{ "💥Explosive Shot {number1}", "💥Tiro Explosivo {number1}" },
+		{ "Defeat {number1} boss(es)", "Derrote {number1} chefes" },
+		{ "{number1} / {number2}   Reward: 🎫 {number3}", "{number1} / {number2} Recompensa: 🎫 {number3}" },
+		{ "⬆ Level Up  💰 {number1} G", "⬆ Subir de Nível 💰 {number1} G" },
 		{ "⚡ {number1} Kill Streak!!", "⚡ {number1} Sequência de Eliminações!!" },
 		{ "Survive {number1}s + Boss", "Sobreviva {number1} segundos + Chefe" },
 		{ "{number3} / {number4}   Reward: 🎫 {number5}", "{number3} / {number4} Recompensa: 🎫 {number5}" },

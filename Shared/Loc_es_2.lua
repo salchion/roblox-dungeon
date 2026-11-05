@@ -537,6 +537,10 @@ return {
 		["🔒 You can't sweep yet. Complete the tutorial missions first!"] = "🔒 Aún no puedes barrer. ¡Completa primero las misiones del tutorial!",
 		["⚠ The Lord senses you from afar! A judgment strike is coming — get close or you can't dodge it!"] = "⚠ ¡El Señor te percibe desde lejos! Se acerca un juicio — acércate o no podrás esquivarlo.",
 		["⚠ JUDGMENT"] = "⚠ JUICIO",
+		["🌙 Welcome back!"] = "🌙 ¡Bienvenido de nuevo!",
+		["Offline income is 60% of resting income, up to the cap"] = "Los ingresos sin conexión son el 60 % de los de descanso, hasta el límite",
+		["✨ Idle Booster applied"] = "✨ Potenciador de reposo aplicado",
+		["<font color='#ff9a6e'>⚠ Cap reached — raise it in the Shop</font>"] = "<font color='#ff9a6e'>⚠ Límite alcanzado — súbelo en la tienda</font>",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -949,11 +953,5 @@ return {
 		{ "Power Ranking TOP {number1}", "Ranking de poder TOP {number1}" },
 		{ "Spend {number1} stat points", "Gasta {number1} puntos de estadística" },
 		{ "Training slots {number1} / {number2}", "Espacios de entrenamiento {number1} / {number2}" },
-		{ "NEAR MISS lasts +{number1}s", "NEAR MISS dura +{number1} s más" },
-		{ "Zone {number1} · Darklands", "Zona {number1} · Tierras oscuras" },
-		{ "Clear field zone {number1}", "Limpiar la zona de campo {number1}" },
-		{ "🌙 Idle reward +{number1} G", "🌙 Recompensa de inactividad +{number1} G" },
-		{ "🥈  {player1}   ⚡ {number1}", "🥈 {player1} ⚡ {number1}" },
-		{ "📍 Town   🎟 Free {number1}/{number2}", "📍 Ciudad 🎟 Gratis {number1}/{number2}" },
 	},
 }

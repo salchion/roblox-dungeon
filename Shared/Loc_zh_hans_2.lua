@@ -417,6 +417,10 @@ return {
 		["🔒 You can't sweep yet. Complete the tutorial missions first!"] = "🔒 还不能扫荡。请先完成教程任务！",
 		["⚠ The Lord senses you from afar! A judgment strike is coming — get close or you can't dodge it!"] = "⚠ 领主在远处察觉到了你！审判一击即将降临 — 靠近它，否则无法躲避！",
 		["⚠ JUDGMENT"] = "⚠ 审判",
+		["🌙 Welcome back!"] = "🌙 欢迎回来！",
+		["Offline income is 60% of resting income, up to the cap"] = "离线收益为休息收益的60%，不超过上限",
+		["✨ Idle Booster applied"] = "✨ 已应用挂机加速",
+		["<font color='#ff9a6e'>⚠ Cap reached — raise it in the Shop</font>"] = "<font color='#ff9a6e'>⚠ 已达上限 — 可在商店提高</font>",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1052,8 +1056,5 @@ return {
 		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 {number1} 级突破已开始!({text2})" },
 		{ "Weapon range +{text1}% per point  (max {number2})", "每点武器射程 +{text1}%(最多 {number2})" },
 		{ "{text1} Set equipped! ({number1} slot(s) changed)", "已装备{text1}套装！(更换{number1}个部位)" },
-		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} 已自动分解(精华 +{number2},{number3} 金币)" },
-		{ "✅ Daily quest complete! Reward: {text1}", "✅ 每日任务完成!奖励:{text1}" },
-		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 区域{number1} 第 {number2} 段 — 这里有很多 {text3}" },
 	},
 }

@@ -548,6 +548,10 @@ return {
 		["🔒 You can't sweep yet. Complete the tutorial missions first!"] = "🔒 Tu ne peux pas encore balayer. Termine d'abord les missions du tutoriel !",
 		["⚠ The Lord senses you from afar! A judgment strike is coming — get close or you can't dodge it!"] = "⚠ Le Seigneur te sent de loin ! Un jugement approche — rapproche-toi ou tu ne pourras pas l'esquiver !",
 		["⚠ JUDGMENT"] = "⚠ JUGEMENT",
+		["🌙 Welcome back!"] = "🌙 Bon retour !",
+		["Offline income is 60% of resting income, up to the cap"] = "Les gains hors ligne valent 60 % des gains au repos, jusqu'au plafond",
+		["✨ Idle Booster applied"] = "✨ Booster d'inactivité appliqué",
+		["<font color='#ff9a6e'>⚠ Cap reached — raise it in the Shop</font>"] = "<font color='#ff9a6e'>⚠ Plafond atteint — augmentez-le dans la boutique</font>",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -920,9 +924,5 @@ return {
 		{ "{number1} Snowfield · {number2} Volcano", "{number1} Champ de neige · {number2} Volcan" },
 		{ "Railgun · Rusty Era +{number1}", "Canon à rails · Ère rouillée +{number1}" },
 		{ "📍 Field (best: Zone {number11})", "📍 Champ (meilleur : Zone {number11})" },
-		{ "{number5} Snowfield · {number6} Volcano", "{number5} Champ de neige · {number6} Volcan" },
-		{ "ZONE {number1}  ·  Forest   ☠☠", "Zone {number1} · Forêt ☠☠" },
-		{ "{number1} upgrades! {number2} succeeded", "{number1} améliorations ! {number2} réussies" },
-		{ "Free entries {number1} · Keys {number2}", "Entrées gratuites {number1} · Clés {number2}" },
 	},
 }

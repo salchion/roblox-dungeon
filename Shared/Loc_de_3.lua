@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Gold +{number1}% instead", "Gold +{number1}% stattdessen" },
+		{ "Time Skip {number1} hour", "Zeitüberspringung {number1} Stunde" },
+		{ "(gold {number1} + gear {number2})", "(Gold {number1} + Ausrüstung {number2})" },
+		{ "Crit damage +{number1}%p", "Krit-Schaden +{number1} %p" },
+		{ "vs. equipped ▼ {number1}", "vs. ausgerüstet ▼ {number1}" },
 		{ "Monsters left: {number1}", "Verbleibende Monster: {number1}" },
 		{ "🎰 {number1}-Roll Results", "🎰 Ergebnisse der {number1}er-Ziehung" },
 		{ "FEVER PORTAL  {number1}s", "FIEBER-PORTAL  {number1}s" },
