@@ -585,7 +585,7 @@ local function playFinalVictory(data)
 			}) }, stroke)
 			TweenService:Create(rainbow, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1), { Rotation = 360 }):Play()
 			label({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 0, 8), Text = Config.Gear.RarityNames[item.Rarity or 5] or "", TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = color, ZIndex = 84 }, frame)
-			label({ Size = UDim2.new(1, 0, 0, 48), Position = UDim2.new(0, 0, 0, 28), Text = ICONS[item.Slot] or "🎁", TextSize = 38, ZIndex = 84 }, frame)
+			require(game:GetService("ReplicatedStorage"):WaitForChild("ClientKit")).medal(frame, { Size = 56, Position = UDim2.new(0.5, -28, 0, 28), Color = color, Icon = ICONS[item.Slot] or "🎁", TextSize = 28, Tier = item.Rarity or 5, ZIndex = 84 })
 			label({ Size = UDim2.new(1, -10, 0, 30), Position = UDim2.new(0, 5, 0, 78), Text = slotDef and slotDef.Names[item.Rarity or 5] or "", TextSize = 14, Font = Enum.Font.GothamBlack, TextWrapped = true, TextColor3 = Color3.fromRGB(245, 245, 255), ZIndex = 84 }, frame)
 			local setDef = item.Set and Config.Sets[item.Set]
 			local uniqueDef = item.Unique and Config.Uniques[item.Unique]
