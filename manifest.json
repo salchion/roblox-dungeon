@@ -729,6 +729,13 @@
       "overwrite": true
     },
     {
+      "path": "TownFlickerClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "TownFlickerClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "ButtonFeelClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "ButtonFeelClient",

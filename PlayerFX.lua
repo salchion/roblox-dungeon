@@ -191,6 +191,7 @@ do
 		if zone ~= "Field" then setGrade(BASE_GRADE, 0.8) end -- 마을 / 던전에서는 기본 색보정으로 되돌린다 (구역별 색은 필드에서만)
 		local grade = Lighting:FindFirstChild("LobbyGrade")
 		local bloom = Lighting:FindFirstChild("LobbyBloom")
+		local rays = Lighting:FindFirstChild("LobbySunRays")
 		if zone == "Lobby" then
 			if dusk then
 				TweenService:Create(Lighting, TweenInfo.new(0.8), dusk.Lighting):Play()
@@ -202,6 +203,7 @@ do
 			fieldIndex = 0
 			if grade then grade.Enabled = true end
 			if bloom then bloom.Enabled = true end
+			if rays then rays.Enabled = true end
 		elseif zone == "Field" or zone == "Dungeon" then
 			if not dusk then
 				local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
@@ -237,6 +239,7 @@ do
 			end
 			if grade then grade.Enabled = false end
 			if bloom then bloom.Enabled = false end
+			if rays then rays.Enabled = false end
 		end
 	end
 	player:GetAttributeChangedSignal("Zone"):Connect(apply)

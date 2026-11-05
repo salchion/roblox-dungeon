@@ -261,6 +261,11 @@ function Lobby.Build()
 		grade.Contrast = 0.08
 		grade.TintColor = Color3.fromRGB(255, 240, 230) -- (해 질 녘 따뜻한 빛)
 		grade.Parent = Lighting
+		local rays = Lighting:FindFirstChild("LobbySunRays") or Instance.new("SunRaysEffect") -- 해 질 녘 빛줄기 (아주 약하게: 눈부시지 않게)
+		rays.Name = "LobbySunRays"
+		rays.Intensity = 0.1
+		rays.Spread = 0.55
+		rays.Parent = Lighting
 	end
 	if not Lighting:FindFirstChildOfClass("Atmosphere") then
 		local atmosphere = Instance.new("Atmosphere")
@@ -1132,6 +1137,9 @@ function Lobby.Build()
 		if descendant:IsA("PointLight") then
 			descendant.Brightness *= 0.4
 			descendant.Range *= 0.8
+			if descendant.Color.R > descendant.Color.B + 0.1 then -- 불빛(따뜻한 색)은 은은하게 일렁이게 표시 (TownFlickerClient)
+				game:GetService("CollectionService"):AddTag(descendant, "TownFlicker")
+			end
 		elseif descendant:IsA("BasePart") and descendant.Material == Enum.Material.Neon and descendant.Transparency < 0.6 then
 			-- 전구 / 등불 / 장식 공은 눈이 아픈 네온 대신 은은한 불투명 재질 + 따뜻한 색으로 (빛은 PointLight 가 맡는다)
 			if descendant.Shape == Enum.PartType.Ball and (string.find(descendant.Name, "Lamp") or string.find(descendant.Name, "Bulb") or string.find(descendant.Name, "Lantern") or string.find(descendant.Name, "Flame")) then

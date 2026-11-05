@@ -92,6 +92,7 @@ function LobbyDecor.Build(parent, ctx)
 		light.Brightness = brightness
 		light.Shadows = false
 		light.Parent = part
+		if color.R > color.B + 0.1 then game:GetService("CollectionService"):AddTag(light, "TownFlicker") end
 	end
 	local function dust(part, color, rate, size, speed, lifetime)
 		if true then return end -- (떠다니는 입자는 네모 조각처럼 보여 지저분해서 껐다)
