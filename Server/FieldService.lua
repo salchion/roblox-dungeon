@@ -707,7 +707,7 @@ end
 ------------------------------------------------------------
 -- 몬스터
 ------------------------------------------------------------
-local function createHealthBar(part, text, width, color, quiet)
+local function createHealthBar(part, text, width, color, quiet, elite)
 	local gui = Instance.new("BillboardGui")
 	gui.Size = UDim2.new(0, width, 0, 28)
 	gui.StudsOffset = Vector3.new(0, part.Size.Y / 2 + 1.5, 0)
@@ -737,6 +737,22 @@ local function createHealthBar(part, text, width, color, quiet)
 	fill.BackgroundColor3 = Color3.fromRGB(230, 60, 60)
 	fill.BorderSizePixel = 0
 	fill.Parent = back
+	-- 막대를 둥글게 + 윗면이 밝은 그라데이션 (네모난 막대보다 고급스럽다). 엘리트는 금색 테두리로 한눈에 구분된다
+	local backCorner = Instance.new("UICorner")
+	backCorner.CornerRadius = UDim.new(1, 0)
+	backCorner.Parent = back
+	local fillCorner = Instance.new("UICorner")
+	fillCorner.CornerRadius = UDim.new(1, 0)
+	fillCorner.Parent = fill
+	local fillGradient = Instance.new("UIGradient")
+	fillGradient.Rotation = 90
+	fillGradient.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(170, 170, 170))
+	fillGradient.Parent = fill
+	local backStroke = Instance.new("UIStroke")
+	backStroke.Color = elite and Color3.fromRGB(255, 205, 80) or Color3.fromRGB(10, 10, 14)
+	backStroke.Thickness = elite and 2 or 1.2
+	backStroke.Transparency = elite and 0 or 0.4
+	backStroke.Parent = back
 
 	-- 평범한 몬스터: 이름 없이 얇은 체력바만, 그것도 처음 맞은 뒤에만 보인다 (화면에 이름 / 막대가 잔뜩 떠서 복잡하던 것을 줄인다. 엘리트 / 보스는 그대로)
 	if quiet then
@@ -1016,7 +1032,7 @@ local function spawnMonster(zone, kind, at, ambush)
 		Stats = stats,
 		Health = stats.MaxHealth,
 		MaxHealth = stats.MaxHealth,
-		HealthFill = createHealthBar(part, text, barWidth, color, kind == "Normal"),
+		HealthFill = createHealthBar(part, text, barWidth, color, kind == "Normal", kind == "Elite"),
 		Home = position,
 		NextAttack = os.clock() + stats.ShotInterval,
 		NextShot = os.clock() + stats.ShotInterval,
