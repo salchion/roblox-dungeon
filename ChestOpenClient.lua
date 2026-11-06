@@ -191,7 +191,7 @@ local function play(loot, data)
 	-- 끝: 카드 / 골드 아래에 버튼 (소탕은 확인으로 닫고, 던전은 로비로 돌아간다)
 	hint.Visible = false
 	summaryShown = true
-	local back = makeButton({ Size = UDim2.new(0, 200, 0, 42), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 188), Text = sweep and "OK" or "Back to Lobby",
+	local back = makeButton({ Size = UDim2.new(0, 200, 0, 42), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 188), Text = sweep and "Close" or "Back to Lobby",
 		TextSize = 15, BackgroundColor3 = Color3.fromRGB(58, 120, 210), ZIndex = 34 }, stage, function()
 		if not sweep then Remotes.Dungeon:FireServer("Leave") end
 		close()

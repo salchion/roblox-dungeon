@@ -25,7 +25,7 @@ makeLabel({ Size = UDim2.new(1, 0, 0, 28), Position = UDim2.new(0, 0, 0, 90), Te
 local awayLabel = makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 120), Text = "", TextSize = 13, TextColor3 = Color3.fromRGB(190, 196, 225), ZIndex = 3 }, panel)
 local goldLabel = makeLabel({ Size = UDim2.new(1, 0, 0, 56), Position = UDim2.new(0, 0, 0, 142), Text = "+0 G", TextSize = 40, Font = Enum.Font.GothamBlack, TextColor3 = GOLD, TextStrokeTransparency = 0.5, ZIndex = 3 }, panel)
 local noteLabel = makeLabel({ Size = UDim2.new(1, -40, 0, 34), Position = UDim2.new(0, 20, 0, 202), Text = "", TextSize = 12, RichText = true, TextColor3 = Color3.fromRGB(150, 160, 190), ZIndex = 3 }, panel)
-local closeButton = makeButton({ Size = UDim2.new(0, 180, 0, 38), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14), Text = "OK", TextSize = 15, BackgroundColor3 = Color3.fromRGB(58, 160, 90), ZIndex = 3 }, panel, nil)
+local closeButton = makeButton({ Size = UDim2.new(0, 180, 0, 38), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14), Text = "Close", TextSize = 15, BackgroundColor3 = Color3.fromRGB(58, 160, 90), ZIndex = 3 }, panel, nil)
 
 local token = 0
 local function close()
