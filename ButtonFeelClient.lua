@@ -25,7 +25,10 @@ local function handle(instance)
 	end
 end
 
-for _, descendant in ipairs(playerGui:GetDescendants()) do
-	handle(descendant)
+-- 화면(PlayerGui) + 월드(workspace): 몬스터 이름표 / 떠오르는 글자 BillboardGui 는 대부분 월드의 부품 아래에 있다
+for _, root in ipairs({ playerGui, workspace }) do
+	for _, descendant in ipairs(root:GetDescendants()) do
+		handle(descendant)
+	end
+	root.DescendantAdded:Connect(handle)
 end
-playerGui.DescendantAdded:Connect(handle)
