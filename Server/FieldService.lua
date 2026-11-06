@@ -1458,7 +1458,7 @@ local function killMonster(player, part, data)
 	Effects.Burst(part.Position, part.Color, data.Kind == "Boss" and 80 or 22)
 	Effects.MonsterDeath(part, data) -- 조각 / 영혼 연기 (클라이언트)
 	part:Destroy()
-	Combo.Kill(player)
+	Combo.Kill(player, data.Filler)
 	if not data.Filler then reward(player, data, part) end
 	-- 처치 연출: 금화가 사방으로 튄다
 	Effects.Burst(part.Position + Vector3.new(0, 2, 0), Color3.fromRGB(255, 215, 90), data.Kind == "Boss" and 60 or 14)

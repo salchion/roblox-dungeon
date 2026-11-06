@@ -12,12 +12,12 @@ local C = Config.Combo
 
 local Combo = {}
 
-function Combo.Kill(player)
+function Combo.Kill(player, noUlt) -- noUlt: 채움 몬스터(보상 없는 몬스터)는 콤보만 올리고 궁극기 게이지는 채우지 않는다
 	local now = os.clock()
 	local count = (player:GetAttribute("Combo") or 0) + 1
 	player:SetAttribute("Combo", count)
 	player:SetAttribute("ComboUntil", now + C.Window)
-	if player:GetAttribute("Zone") ~= "Lobby" then
+	if not noUlt and player:GetAttribute("Zone") ~= "Lobby" then
 		player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + C.UltPerKill))
 	end
 end
