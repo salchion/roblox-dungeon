@@ -527,7 +527,8 @@ function Skill.Use(player, skillKey, aimPoint)
 		return
 	end
 	local haste = (player:GetAttribute("GearHaste") or 0) + (player:GetAttribute("PetHaste") or 0) + (player:GetAttribute("LvHaste") or 0) + U.CooldownPerLevel * (skillLevel(player, skillKey) - 1)
-	local cooldown = S[skillKey].Cooldown * (1 - math.min(0.6, haste))
+	local hasteCap = skillKey == "Spirit" and (S.SpiritHasteCap or 0.6) or 0.6 -- 죽음의 연꽃은 쿨감 상한이 더 높다: 풀파밍하면 거의 쉬지 않고 계속 쓸 수 있다
+	local cooldown = S[skillKey].Cooldown * (1 - math.min(hasteCap, haste))
 	if (skillKey == "Spirit" or skillKey == "Heal") and Config.GetSkillBranch(player, skillKey, 10) == "B" then cooldown *= 0.7 end -- 10레벨 갈래 (연꽃 "여운" / 응급 치료 "신속")
 	cooldowns[skillKey] = now + cooldown
 	if skillKey == "Spirit" then

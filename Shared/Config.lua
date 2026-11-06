@@ -280,6 +280,7 @@ Config.Skills = {
 		 -- 미사일 총 발수(대상 수와 상관없이 고정, 대상들에게 번갈아 나눠 간다) / 총 피해 배율 (한 마리면 12발이 전부 그 적에게 꽂힌다)
 		Desc = "Single-target ultimate: use it when the gauge is full! Locks onto the biggest enemy in range (boss / elite first) and fires all 16 missiles at it" },
 	ChargePerShot = 7,
+	SpiritHasteCap = 0.85, -- 죽음의 연꽃(F) 쿨타임 감소 상한: 기본 10초 -> 최소 1.5초(여운 갈래 선택 시 약 1초). 지속 2.5초보다 짧아져 풀파밍이면 계속 쓸 수 있다
 	-- 패시브 스킬 (스킬 강화 창에서 골드로 레벨업, 스킬 바에는 안 나온다)
 	Focus = { Name = "Aura Focus", Icon = "⚡", Key = "Passive", Cooldown = 0, Passive = true,
 		Desc = "The attack bonus built up by NEAR MISS lasts longer. At higher levels, part of the bonus (half at max level) stays even if your streak breaks" },
