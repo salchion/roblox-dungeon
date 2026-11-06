@@ -2402,16 +2402,29 @@ do
 		return weaponTable[math.clamp(math.floor(level or 0), 0, Config.Weapon.MaxLevel)]
 	end
 	local rawGear = Config.GetGearCost
+	local gearTables = {} -- [부위] = { [단계] = 비용 } (처음 물어볼 때 한 번만 만든다: 화면이 자주 물어봐도 가볍게)
 	function Config.GetGearCost(slotKey, rarity, level)
-		local top = 0
-		for step = 0, math.clamp(math.floor(level or 0), 0, Config.Gear.MaxLevel - 1) do top = math.max(top, rawGear(slotKey, rarity, step)) end
-		return top
+		local key = tostring(slotKey)
+		local tbl = gearTables[key]
+		if not tbl then
+			tbl = {}
+			local top = 0
+			for step = 0, Config.Gear.MaxLevel - 1 do
+				top = math.max(top, rawGear(slotKey, rarity, step))
+				tbl[step] = top
+			end
+			gearTables[key] = tbl
+		end
+		return tbl[math.clamp(math.floor(level or 0), 0, Config.Gear.MaxLevel - 1)]
 	end
 	local rawPet = Config.GetPetLevelCost
+	local petTable, petTop = {}, 0
+	for step = 1, Config.Pet.MaxLevel do
+		petTop = math.max(petTop, rawPet(step))
+		petTable[step] = petTop
+	end
 	function Config.GetPetLevelCost(level)
-		local top = 0
-		for step = 1, math.max(1, math.floor(level or 1)) do top = math.max(top, rawPet(step)) end
-		return top
+		return petTable[math.clamp(math.floor(level or 1), 1, Config.Pet.MaxLevel)]
 	end
 end
 return Config
