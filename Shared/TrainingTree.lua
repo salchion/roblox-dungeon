@@ -295,7 +295,7 @@ local function trainDetail(env, stat)
 	elseif level >= max then
 		table.insert(lines, "<font color='#78ff8c'>Max level!</font>")
 	else
-		table.insert(lines, string.format("<font color='#bbbbcc'>Time needed %s · 💰 %s G</font>", Config.FormatDuration(Config.GetTrainTime(level)), comma(Config.GetTrainGold(level))))
+		table.insert(lines, string.format("<font color='#bbbbcc'>Time needed %s · 💰 %s G</font>", Config.FormatDuration(Config.GetTrainTime(level, stat)), comma(Config.GetTrainGold(level, stat))))
 		button = { Text = "Start Training", Color = env.GREEN, OnClick = function() env.Remotes.Growth:FireServer("Train", stat) end }
 	end
 	return TRAIN_COLORS[stat] or GOLD, table.concat(lines, "\n"), button

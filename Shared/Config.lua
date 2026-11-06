@@ -2131,8 +2131,15 @@ Config.Growth = {
 	GateGold = { 2000, 10000, 50000, 200000 },
 }
 
-function Config.GetTrainTime(level)
-	return math.floor(Config.Growth.TimeBase * Config.Growth.TimeGrowth ^ level)
+-- 훈련 칸마다 최대 단계가 다르다 (예: 공격 30단계 / 더블샷 5단계). 시간 / 골드 곡선은 "30단계 기준으로 몇 번째쯤인가"로 바꿔서 읽는다:
+-- 5단계짜리 칸의 마지막 단계 = 30단계짜리의 마지막 단계와 같은 무게 (단계가 적은 칸이 지나치게 싸고 빨리 끝나지 않게)
+function Config.TrainEquivalent(level, stat)
+	local max = stat and Config.TrainMax(stat) or Config.Growth.MaxLevel
+	if max <= 1 then return level end
+	return level * (Config.Growth.MaxLevel - 1) / (max - 1)
+end
+function Config.GetTrainTime(level, stat)
+	return math.floor(Config.Growth.TimeBase * Config.Growth.TimeGrowth ^ Config.TrainEquivalent(level, stat))
 end
 
 -- 스킬 강화 / 펫 레벨업에도 실제 시간이 든다 (훈련과 같은 시간 단축권을 쓴다)
@@ -2365,9 +2372,10 @@ do
 	local trainSum = 0
 	for level = 0, trainSteps - 1 do trainSum += progressive(level / (trainSteps - 1)) end
 	local trainK = T / (4 * trainSum) -- (기본 4종 기준: 아래 칸(더블샷 등)을 추가해도 기존 훈련 비용이 바뀌지 않게)
-	function Config.GetTrainGold(level)
-		local f = math.clamp(level, 0, trainSteps - 1) / (trainSteps - 1)
-		return math.max(1, math.floor(RI(f) * trainK * progressive(f) * ease(f)))
+	function Config.GetTrainGold(level, stat)
+		local f = math.clamp(Config.TrainEquivalent(level, stat), 0, trainSteps - 1) / (trainSteps - 1)
+		local weight = stat and trainSteps / math.max(1, Config.TrainMax(stat)) or 1 -- 단계가 적은 칸은 한 단계가 그만큼 비싸다 (칸 하나를 끝까지 올리는 총 비용이 비슷하게)
+		return math.max(1, math.floor(RI(f) * trainK * progressive(f) * ease(f) * weight))
 	end
 
 	-- 레벨 스탯 골드 포인트: 최대 레벨 이후 사는 포인트. 뒤쪽 진행(기준 40% ~ 100%)의 수입을 기준표로 쓴다

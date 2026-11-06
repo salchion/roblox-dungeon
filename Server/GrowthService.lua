@@ -184,7 +184,7 @@ function Growth.StartTrain(player, stat)
 		return
 	end
 
-	local cost = Config.GetTrainGold(level)
+	local cost = Config.GetTrainGold(level, stat)
 	local gold = player:GetAttribute("Gold") or 0
 	if gold < cost then
 		notify(player, string.format("⚠ Not enough gold. (%d G needed)", cost))
@@ -192,7 +192,7 @@ function Growth.StartTrain(player, stat)
 	end
 	player:SetAttribute("Gold", gold - cost)
 
-	local duration = math.floor(Config.GetTrainTime(level) * timeMultiplier(player))
+	local duration = math.floor(Config.GetTrainTime(level, stat) * timeMultiplier(player))
 	table.insert(state.Jobs, { Stat = stat, EndAt = os.time() + duration })
 	player:SetAttribute("TrainTick", (player:GetAttribute("TrainTick") or 0) + 1) -- 튜토리얼이 "훈련 시작"을 알아채는 신호
 	Growth.Push(player)
