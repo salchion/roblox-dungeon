@@ -1491,8 +1491,13 @@ do
 	LS.CritDmg.Note = LS.CritDmg.Note:gsub(" Combine", string.format(" With the max %d points, crits go from 2x to about %.1fx. Combine", LS.Cap.CritDmg, 2 + LS.Cap.CritDmg * LS.CritDmg.Per), 1)
 end
 -- 점점 한계에 다가가지만 절대 평평해지지 않는 곡선 (작은 값에서는 거의 그 값, 한계 cap 에 점근). 상한으로 스탯이 잘려 낭비되는 구간이 없다.
+-- 한계의 70% 까지는 그대로(손해 없음), 그 위로는 한계에 점점 다가간다 (70% 지점에서 기울기가 이어져 갑자기 꺾이지 않는다)
 function Config.SoftCap(x, cap)
-	return cap * (1 - math.exp(-math.max(0, x) / cap))
+	x = math.max(0, x or 0)
+	local knee = cap * 0.7
+	if x <= knee then return x end
+	local room = cap - knee
+	return knee + room * (1 - math.exp(-(x - knee) / room))
 end
 function Config.GetLevelStatPoints(level)
 	return math.max(0, math.floor((math.min(level or 1, Config.Level.StatCap) - 1) * Config.LevelStats.PointsPerLevel))
