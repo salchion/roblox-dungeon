@@ -1462,7 +1462,7 @@ local function killMonster(player, part, data)
 	Combo.Kill(player, data.Filler)
 	if not data.Filler then reward(player, data, part) end
 	-- 처치 연출: 금화가 사방으로 튄다
-	Effects.Burst(part.Position + Vector3.new(0, 2, 0), Color3.fromRGB(255, 215, 90), data.Kind == "Boss" and 60 or 14)
+	if not data.Filler then Effects.Burst(part.Position + Vector3.new(0, 2, 0), Color3.fromRGB(255, 215, 90), data.Kind == "Boss" and 60 or 14) end -- (보상 없는 채움 몬스터는 금화가 튀지 않는다)
 
 	local zone, kind = data.Zone, data.Kind
 	if data.Ambush or data.Filler then return end -- 습격 / 채움 몬스터는 다시 생기지 않는다
@@ -3780,43 +3780,26 @@ function Field.Init(lobbySpawnCFrame)
 			end
 		end
 	end)
-	-- 학살 구역 돌격: 내 전투력이 이 구역 권장 전투력 이상이면 (충분히 강한 곳에서 사냥 중이면) 몇십 초마다 먼 곳에서 몬스터 떼가 한꺼번에 돌격해 온다.
-	-- 강할수록(권장 대비 배율) 떼가 크고 간격이 짧다. 이벤트 몬스터 상한(ambushCap)을 지키고, 튜토리얼 / 군주전 / 마을에서는 나오지 않는다.
+	-- 뚫고 나가는 느낌: 내가 향하는 쪽 앞에 몬스터가 모자라면 앞쪽 멀리서 "채움 몬스터"가 떼로 달려와 길을 막는다 (앞으로 나아갈수록 계속 저항한다).
+	-- 채움 몬스터는 처치해도 골드 / 경험치 / 전리품 / 구역 진행도가 없다: 감각만 키우고 경제는 그대로.
+	-- 채움 몬스터는 불러온 사람(FillerOwner) 기준으로 센다. 그 사람에게서 멀어지거나(뒤에 남겨짐) 그 사람이 필드를 떠나면 바로 치운다 (뒤에 쌓여 상한을 막지 않게).
 	task.spawn(function()
-		local nextRush = setmetatable({}, { __mode = "k" })
+		local TARGET, NEAR, MAX_FILL, DROP_DIST = 16, 58, 14, 100
 		while true do
-			task.wait(2)
-			for _, player in ipairs(Players:GetPlayers()) do
-				local root = getAliveParts(player)
-				if root and player:GetAttribute("Zone") == "Field" and not player:GetAttribute("TutorialActive") and not player:GetAttribute("TutorialDoom") and not player:GetAttribute("InDoomArena") then
-					local zone = zoneOfX(root.Position.X)
-					local recommended = zone and F.RecommendPower[zone]
-					if recommended and not isSafe(root.Position) and os.clock() >= (nextRush[player] or 0) then
-						local ratio = (player:GetAttribute("Power") or 0) / recommended
-						if ratio >= 1 then
-							local room = ambushCap(zone) - ambushCount(zone)
-							local count = math.min(math.floor(6 + math.min(ratio, 4) * 2), room)
-							nextRush[player] = os.clock() + math.clamp(22 - ratio * 3, 9, 20)
-							if count >= 4 then
-								player:SetAttribute("ShakeStrength", 0.2)
-								player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
-								for _ = 1, count do
-									local at = ringSpot(root, zone, 50, 72)
-									if at then spawnMonster(zone, "Normal", at, true) end
-								end
-							end
-						end
+			task.wait(1.5)
+			local owned = {} -- [player] = 살아 있는 채움 몬스터 수
+			for part, data in pairs(monsters) do
+				if data.Filler then
+					local owner = data.FillerOwner
+					local ownerRoot = owner and owner.Parent and owner:GetAttribute("Zone") == "Field" and getAliveParts(owner)
+					if not part.Parent or not ownerRoot or (part.Position - ownerRoot.Position).Magnitude > DROP_DIST then
+						monsters[part] = nil
+						if part.Parent then part:Destroy() end
+					else
+						owned[owner] = (owned[owner] or 0) + 1
 					end
 				end
 			end
-		end
-	end)
-	-- 뚫고 나가는 느낌: 내가 향하는 쪽 앞에 몬스터가 모자라면 앞쪽 멀리서 "채움 몬스터"가 떼로 달려와 길을 막는다 (앞으로 나아갈수록 계속 저항한다).
-	-- 채움 몬스터는 처치해도 골드 / 경험치 / 전리품 / 구역 진행도가 없다: 감각만 키우고 경제는 그대로.
-	task.spawn(function()
-		local TARGET, NEAR, MAX_FILL = 16, 58, 14
-		while true do
-			task.wait(1.5)
 			for _, player in ipairs(Players:GetPlayers()) do
 				local root = getAliveParts(player)
 				if root and player:GetAttribute("Zone") == "Field" and not player:GetAttribute("TutorialActive") and not player:GetAttribute("TutorialDoom") and not player:GetAttribute("InDoomArena") and not isSafe(root.Position) then
@@ -3828,22 +3811,22 @@ function Field.Init(lobbySpawnCFrame)
 						local forward = velocity.Magnitude > 4 and velocity.Unit or Vector3.new(look.X, 0, look.Z)
 						if forward.Magnitude < 0.1 then forward = Vector3.new(1, 0, 0) end
 						forward = forward.Unit
-						local ahead, fillers = 0, 0
+						local ahead = 0
 						for part, data in pairs(monsters) do
 							if data.Kind == "Normal" and part.Parent then
-								local offset = part.Position - root.Position
-								if data.Filler then fillers += 1 end
-								if offset.Magnitude <= NEAR and offset.Magnitude > 0.1 and (Vector3.new(offset.X, 0, offset.Z)).Unit:Dot(forward) > 0.3 then ahead += 1 end
+								local offset = Vector3.new(part.Position.X - root.Position.X, 0, part.Position.Z - root.Position.Z)
+								if offset.Magnitude <= NEAR and offset.Magnitude > 0.1 and offset.Unit:Dot(forward) > 0.3 then ahead += 1 end
 							end
 						end
-						local need = math.min(TARGET - ahead, MAX_FILL - fillers, 5)
+						local need = math.min(TARGET - ahead, MAX_FILL - (owned[player] or 0), 5)
 						for _ = 1, math.max(0, need) do
 							for _ = 1, 4 do -- 걸을 수 있는 자리가 나올 때까지 몇 번 시도
 								local angle = (math.random() - 0.5) * math.rad(100)
 								local direction = CFrame.Angles(0, angle, 0):VectorToWorldSpace(forward)
 								local at = root.Position + direction * (40 + math.random() * 24)
 								if walkableAt(at.X, at.Z) and not isSafe(at) and zoneOfX(at.X) == zone then
-									spawnMonster(zone, "Normal", at, false, true)
+									local _, fillerData = spawnMonster(zone, "Normal", at, false, true)
+									if fillerData then fillerData.FillerOwner = player end
 									break
 								end
 							end
