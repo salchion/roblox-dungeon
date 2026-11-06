@@ -1373,7 +1373,7 @@ Config.Quests = {
 		{ Id = "skills",  Name = "Skill Practice",     Desc = "Use skills %d times",          Stat = "SkillUses",     Goal = 20,  Reward = { Gold = 400 } },
 		{ Id = "rift",    Name = "Boss Rush",     Desc = "Enter the Boss Rush %d times", Stat = "RiftRuns",      Goal = 2,   Reward = { Gold = 700, TimeSkip = 600 } },
 		-- 첫날 전용 (처음 접속한 날만 나온다): 스탯 / 펫이 있다는 걸 알려 주는 퀘스트
-		{ Id = "statpts", Name = "Allocate Stats",     Desc = "Spend %d stat points (T key / Stats button)", Stat = "StatPoints", Goal = 3, Reward = { Gold = 300 }, FirstDay = true },
+		{ Id = "statpts", Name = "Allocate Stats",     Desc = "Spend %d stat points (T key / Stats button)", Stat = "StatPoints", Goal = 2, Reward = { Gold = 300 }, FirstDay = true } -- (스탯 포인트가 4레벨마다 1개로 줄어서 3 -> 2),
 		{ Id = "petpeek", Name = "Meet Your Pet",       Desc = "Open the pet window (P key / Growth > Pet)",       Stat = "PetPeek",    Goal = 1, Reward = { Gold = 300, Tickets = 1 }, FirstDay = true },
 		{ Id = "kills",   Name = "Monster Cleanup",   Desc = "Defeat %d monsters (dungeons included)", Stat = "Kills",         Goal = 60,  Reward = { Gold = 500, TimeSkip = 300 } },
 	},
