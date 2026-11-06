@@ -14,7 +14,7 @@ local Guard = {}
 function Guard.Reduction(player)
 	local C = Config.Defense
 	local defense = (player:GetAttribute("Level") or 1) * C.LevelDef + (player:GetAttribute("GearHealth") or 0) * C.GearDef
-	return math.min(C.MaxReduction, defense / (defense + C.K))
+	return Config.SoftCap(defense / (defense + C.K), C.MaxReduction) -- (상한에서 잘리지 않고 점점 다가간다: 장비 체력을 더 모아도 방어가 계속 조금씩 오른다)
 end
 
 function Guard.Take(humanoid, amount)

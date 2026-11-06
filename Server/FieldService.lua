@@ -2449,7 +2449,7 @@ local function stepMonsters(dt)
 								Effects.Raw(sRoot.Position, { "R", sRoot.Position - Vector3.new(0, 2.5, 0), 24, Color3.fromRGB(255, 70, 70) })
 								sniper:SetAttribute("ShakeStrength", 0.8)
 								sniper:SetAttribute("ShakeTick", (sniper:GetAttribute("ShakeTick") or 0) + 1)
-								Guard.Take(sHum, sHum.MaxHealth * 0.5)
+								sHum:TakeDamage(sHum.MaxHealth * 0.4) -- (방어 / 한 방 상한을 무시한다: "피할 수 없는 강공". 가득 찬 체력에서는 죽지 않는다)
 							end
 						end
 					elseif data.SnipeFor and data.SnipeFor > 0 or data.SnipeWarnAt then

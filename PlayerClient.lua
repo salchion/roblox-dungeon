@@ -2210,7 +2210,7 @@ local function buildCharacterTab()
 	local critMult = Config.Player.CritMultiplier + (player:GetAttribute("LvCritDmg") or 0) + (player:GetAttribute("TrainCritDmg") or 0) + (player:GetAttribute("GearCritDmg") or 0) + (player:GetAttribute("ParCritDmg") or 0) + critOver / 100
 	local D = Config.Defense
 	local defense = menuLevel * D.LevelDef + (player:GetAttribute("GearHealth") or 0) * D.GearDef
-	local reduction = 1 - (1 - math.min(D.MaxReduction, defense / (defense + D.K))) * (1 - (player:GetAttribute("GearBulwark") or 0))
+	local reduction = 1 - (1 - Config.SoftCap(defense / (defense + D.K), D.MaxReduction)) * (1 - (player:GetAttribute("GearBulwark") or 0))
 	local moveSpeed = Config.Player.WalkSpeed + (player:GetAttribute("GearSpeed") or 0) + (player:GetAttribute("TrainSpeed") or 0) + (player:GetAttribute("PetSpeed") or 0) + (player:GetAttribute("LvMove") or 0)
 	local function pct(v, digits) return string.format(digits and "%.1f%%" or "%d%%", digits and v * 100 or math.floor(v * 100 + 0.5)) end
 	local groups = {
