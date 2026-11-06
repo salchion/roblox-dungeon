@@ -1886,7 +1886,7 @@ augOnKill = function(run, player, position)
 		local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 		if humanoid and humanoid.Health > 0 then humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * heal) end
 	end
-	if (player:GetAttribute("GearKillHaste") or 0) > 0 then player:SetAttribute("AdrenalineUntil", os.clock() + 3) end
+	if (player:GetAttribute("GearKillHaste") or 0) > 0 then player:SetAttribute("AdrenalineUntil", workspace:GetServerTimeNow() + 3) -- (서버 / 클라이언트가 같이 읽는 시계: 클라이언트 자동 사격도 빨라진다) end
 	local flame = augLv(run, player, "AugFlame")
 	if flame >= 4 and augDepth == 0 then -- 점화 4셋: 불타던 적이 쓰러지면 근처 적 3마리에게 불이 옮겨 붙는다
 		for _, entry in ipairs(nearestMonsters(run, position, 22, 3)) do

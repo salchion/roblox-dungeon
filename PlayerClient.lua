@@ -2052,7 +2052,7 @@ end
 
 local function attackCooldown()
 	local speedPoints = player:GetAttribute("SpeedPoints") or 0
-	return Config.Player.BaseCooldown * Config.GetPlayerWeapon(player).Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0) + (player:GetAttribute("TrainAtkSpeed") or 0) + (player:GetAttribute("GearAtkSpeed") or 0))) -- 펫 / 훈련 / 장비 가속 포함
+	return Config.Player.BaseCooldown * Config.GetPlayerWeapon(player).Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0) + (player:GetAttribute("TrainAtkSpeed") or 0) + (player:GetAttribute("GearAtkSpeed") or 0)) * (1 + (workspace:GetServerTimeNow() < (player:GetAttribute("AdrenalineUntil") or 0) and (player:GetAttribute("GearKillHaste") or 0) or 0))) -- (유니크 "아드레날린": 서버와 같은 공식) 펫 / 훈련 / 장비 가속 포함
 end
 
 local questState = nil
