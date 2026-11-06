@@ -2389,4 +2389,29 @@ do
 	end
 end
 
+
+-- 비용은 단계가 오를수록 절대 내려가지 않는다 (가격 곡선 보정 PriceMult 가 후반에 내려가면서 다음 단계가 이전보다 싸지던 구간을 막는다)
+do
+	local rawWeapon = Config.GetEnhanceCost
+	local weaponTable, best = {}, 0
+	for level = 0, Config.Weapon.MaxLevel do
+		best = math.max(best, rawWeapon(level))
+		weaponTable[level] = best
+	end
+	function Config.GetEnhanceCost(level)
+		return weaponTable[math.clamp(math.floor(level or 0), 0, Config.Weapon.MaxLevel)]
+	end
+	local rawGear = Config.GetGearCost
+	function Config.GetGearCost(slotKey, rarity, level)
+		local top = 0
+		for step = 0, math.clamp(math.floor(level or 0), 0, Config.Gear.MaxLevel - 1) do top = math.max(top, rawGear(slotKey, rarity, step)) end
+		return top
+	end
+	local rawPet = Config.GetPetLevelCost
+	function Config.GetPetLevelCost(level)
+		local top = 0
+		for step = 1, math.max(1, math.floor(level or 1)) do top = math.max(top, rawPet(step)) end
+		return top
+	end
+end
 return Config
