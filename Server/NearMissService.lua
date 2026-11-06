@@ -55,7 +55,7 @@ function NearMiss.Award(player, root, scoreFn)
 	pcall(function() require(script.Parent:WaitForChild("BalanceLog")).Count(player, "NearMiss", 1) end) -- (Studio 밸런스 로그)
 	st.NextDecay = now + Config.GetNearMissDuration(player)
 	apply(player, st)
-	player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 10 + math.min(st.Stacks, 4) * 3))
+	player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 5 + math.min(st.Stacks, 4) * 1.5)) -- (10 + 3x -> 5 + 1.5x: 아슬아슬 회피로 너무 빨리 차던 것을 절반으로)
 	if scoreFn then scoreFn(st.Stacks) end
 	local rift = Meta.GetRift(player) -- 처음 한 번만 NEAR MISS 설명 카드를 띄운다 (저장됨)
 	local firstTime = rift ~= nil and not rift.Tip

@@ -229,7 +229,7 @@ Config.Combo = {
 	Window = 4,           -- 다음 처치까지 허용 시간(초)
 	DamagePerStack = 0.01,
 	MaxStacks = 50,       -- 최대 +50% 공격력
-	UltPerKill = 4,       -- 처치마다 궁극기 게이지
+	UltPerKill = 1.5,     -- 처치마다 궁극기 게이지 (4 -> 1.5: 몬스터가 많아져 데드아이가 2초마다 차던 것을 늦춘다)
 }
 
 Config.Daily = {
