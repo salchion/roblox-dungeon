@@ -2230,7 +2230,12 @@ local function buildCharacterTab()
 		} },
 		{ "🧭 Utility", Color3.fromRGB(110, 220, 150), {
 			{ "💨", "Move Speed", string.format("%.1f", moveSpeed) },
-			{ "⏱", "Skill Cooldown", "-" .. pct((player:GetAttribute("GearHaste") or 0) + (player:GetAttribute("PetHaste") or 0) + (player:GetAttribute("LvHaste") or 0)) },
+			{ "⏱", "Skill Cooldown", "-" .. pct((function() -- (서버 SkillService.CooldownFor 와 같은 곱셈 곡선 / 바닥: 실제로 줄어드는 비율, 스킬 레벨 제외)
+				local function part(v) return 1 / (1 + 1.5 * math.max(0, v or 0)) end
+				local factor = part(player:GetAttribute("GearHaste")) * part(player:GetAttribute("PetHaste")) * part(player:GetAttribute("LvHaste"))
+				local floorRatio = Config.Skills.CooldownFloor or 0.3
+				return 1 - (floorRatio + (1 - floorRatio) * factor)
+			end)()) },
 			{ "🍀", "Luck", "+" .. pct(player:GetAttribute("GearLuck") or 0) },
 			{ "📘", "XP", "+" .. pct((player:GetAttribute("GearXp") or 0) + (player:GetAttribute("PetXp") or 0)) },
 			{ "💰", "Gold", "+" .. pct(Config.GoldBonus(player) - 1) },
