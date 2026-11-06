@@ -528,7 +528,7 @@ function Skill.Use(player, skillKey, aimPoint)
 	end
 	-- 쿨타임 감소: 장비 / 펫 / 레벨 스탯 / 스킬 레벨이 서로 "곱해서" 줄인다 (더하다가 상한에 걸려 스탯이 아무 효과 없어지는 구간이 없다).
 	-- 바닥(Floor)은 점근선: 모든 출처를 최대로 모아도 닿지 않고, 어떤 출처든 한 칸 더 올리면 반드시 더 짧아진다.
-	local function part(value) return 1 - math.min(0.9, math.max(0, value or 0)) end
+	local function part(value) return 1 / (1 + 1.5 * math.max(0, value or 0)) end -- 출처마다 상한 없이 점점 덜 줄어드는 곡선 (값이 늘수록 항상 더 짧아진다. 작은 값에서는 거의 그 값만큼 줄어든다)
 	local factor = part(player:GetAttribute("GearHaste")) * part(player:GetAttribute("PetHaste")) * part(player:GetAttribute("LvHaste")) * part(U.CooldownPerLevel * (skillLevel(player, skillKey) - 1))
 	local floorRatio = skillKey == "Spirit" and (S.SpiritCooldownFloor or 0.05) or (S.CooldownFloor or 0.3)
 	local cooldown = S[skillKey].Cooldown * (floorRatio + (1 - floorRatio) * factor)
