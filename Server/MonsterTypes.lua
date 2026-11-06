@@ -607,7 +607,11 @@ local function telegraph(ctx, part, data, color, delay, action)
 	part.Color = color
 	data.RearUntil = os.clock() + delay -- 공격 직전: 몸을 뒤로 젖힌다 (Update 의 기울임이 읽는다)
 	task.delay(delay, function()
-		if not ctx.Alive(part, data) then return end
+		if not ctx.Alive(part, data) then
+			-- 공격 준비 중에 죽었어도 마지막 한 발은 나간다 (몬스터가 너무 빨리 죽어서 투사체를 한 번도 못 쏘던 문제: 위협감)
+			if data and data.Health and data.Health <= 0 then pcall(action) end
+			return
+		end
 		part.Color = data.BaseColor
 		action()
 	end)
@@ -1134,7 +1138,7 @@ function M.Update(ctx, part, data, dt, now)
 		end
 		return
 	end
-	if distance > def.Range or now < data.NextAttack then return end
+	if distance > def.Range * (Config.Field.MonsterRangeMult or 1) or now < data.NextAttack then return end -- (사정거리 x1.4: 멀리서 죽어서 한 발도 못 쏘던 몬스터도 먼저 쏜다)
 	-- 벽 너머로는 공격하지 않는다
 	if ctx.LineOfSight and not sightClear(ctx, data, part.Position, target.Position, now) then return end
 	data.NextAttack = now + stats.ShotInterval

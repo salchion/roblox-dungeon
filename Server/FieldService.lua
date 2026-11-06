@@ -2328,6 +2328,7 @@ local function stepMonsters(dt)
 		local recentlyHit = data.LastHit ~= nil and now - data.LastHit < 8
 
 		if target and ((distance <= range and (not data.HitOnly or data.Aggro)) or recentlyHit) and fromHome <= F.LeashRange * 1.5 then
+			if not data.Aggro and not data.BossLike then data.NextAttack = math.min(data.NextAttack or now, now + 0.3 + math.random() * 0.6) end -- 알아챈 직후 곧바로 첫 공격 (공격 간격을 기다리다 죽지 않게)
 			data.Aggro = true
 
 			if not data.BossLike then

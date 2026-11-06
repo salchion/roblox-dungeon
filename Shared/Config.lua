@@ -874,6 +874,7 @@ Config.Field = {
 	ElitesPerZone = 3,
 	CampSafe = 70,             -- 각 구역 입구 캠프 주변 안전지대 반경(몬스터가 노리지 않음)
 	RespawnTime = 5,
+	MonsterRangeMult = 1.4, -- 일반 몬스터 공격 사정거리 배율 (몬스터가 가까이 오기 전에 죽어서 투사체를 못 쏘던 것을 줄인다)
 	SnipeRange = 85,     -- 필드 군주를 이 거리 밖에서 계속 때리면 "심판"(피할 수 없는 강공)이 내려온다 (저격총으로 멀리서 안전하게 잡는 것 방지)
 	AggroRange = 80, -- (55 -> 80: 멀리 있는 몬스터도 일찍 알아채고 몰려온다)
 	LeashRange = 125,
