@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Field · Best Zone {number1}", "Campo · mejor zona {number1}" },
+		{ "👥 Online: {number1} players", "👥 En línea: {number1} jugadores" },
+		{ "Recommended Power {number1}", "Poder recomendado {number1}" },
+		{ "Radius {number1} · Damage x{number2}", "Radio {number1} · Daño x{number2}" },
+		{ "Power Ranking TOP {number1}", "Ranking de poder TOP {number1}" },
+		{ "Spend {number1} stat points", "Gasta {number1} puntos de estadística" },
+		{ "Training slots {number1} / {number2}", "Espacios de entrenamiento {number1} / {number2}" },
 		{ "NEAR MISS lasts +{number1}s", "NEAR MISS dura +{number1} s más" },
 		{ "Zone {number1} · Darklands", "Zona {number1} · Tierras oscuras" },
 		{ "Clear field zone {number1}", "Limpiar la zona de campo {number1}" },

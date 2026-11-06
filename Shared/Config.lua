@@ -69,7 +69,7 @@ Config.SkillBranch = {
 			B = { Icon = "🗡", Name = "Piercing Daggers", Desc = "One less dagger, but each hits +80% harder: for bosses" },
 		},
 		[10] = {
-			A = { Icon = "🌸", Name = "Petal Burst", Desc = "A big blast when it ends (attack x3)" },
+			A = { Icon = "🌸", Name = "Petal Burst", Desc = "A big blast when it ends (attack x8)" },
 			B = { Icon = "⏩", Name = "Lingering Bloom", Desc = "Cooldown -30% · damage +15%" },
 		},
 	},
@@ -1470,15 +1470,15 @@ Config.Level = {
 -- 레벨 스탯: 레벨이 오를 때마다 포인트 1개 (레벨 1 = 0개). 공격력 / 체력이 아니라 "플레이 스타일"을 고르는 특수 스탯이고,
 -- 언제든 마음대로 빼서 다시 넣을 수 있다 (무료). 한 스탯에 몰빵해도 되고 골고루 나눠도 된다.
 Config.LevelStats = {
-	PointsPerLevel = 1,
+	PointsPerLevel = 0.25, -- (1 -> 0.25: 포인트 한 개의 효과를 4배로 키우고 개수를 1/4 로 줄였다: 한 점을 찍을 때마다 차이가 느껴진다. 총합은 그대로)
 	Order = { "Move", "Range", "Double", "Haste", "CritDmg" },
-	Move  = { Name = "Move Speed",   Icon = "👟", Per = 0.3,  Desc = "Move speed +0.3 per point" },
-	Range = { Name = "Range",    Icon = "🎯", Per = 0.04, Desc = "Weapon range +4% per point" },
-	Double = { Name = "Double Shot", Icon = "🔫", Per = 0.007, Desc = "+0.7% chance per point to fire a second shot right after the first (\"bang-bang\")", Note = "Double Shot: each time you shoot, there's a chance the same shot fires again 0.09s later (same power)." },
-	Haste = { Name = "Skill Cooldown", Icon = "⏱", Per = 0.01, Desc = "Skill cooldown -1% per point" },
-	CritDmg = { Name = "Crit Damage", Icon = "💥", Per = 0.015, Desc = "Crit damage +1.5%p per point (base 2x)", Note = "Crit Damage: crits hit even harder. Combine with crit chance gear / pet / Double Shot for a big-hit build." },
+	Move  = { Name = "Move Speed",   Icon = "👟", Per = 1.2,  Desc = "Move speed +1.2 per point" },
+	Range = { Name = "Range",    Icon = "🎯", Per = 0.16, Desc = "Weapon range +16% per point" },
+	Double = { Name = "Double Shot", Icon = "🔫", Per = 0.028, Desc = "+2.8% chance per point to fire a second shot right after the first (\"bang-bang\")", Note = "Double Shot: each time you shoot, there's a chance the same shot fires again 0.09s later (same power)." },
+	Haste = { Name = "Skill Cooldown", Icon = "⏱", Per = 0.04, Desc = "Skill cooldown -4% per point" },
+	CritDmg = { Name = "Crit Damage", Icon = "💥", Per = 0.06, Desc = "Crit damage +6%p per point (base 2x)", Note = "Crit Damage: crits hit even harder. Combine with crit chance gear / pet / Double Shot for a big-hit build." },
 	-- 스탯 하나에 넣을 수 있는 최대 포인트 (포인트가 199개로 늘어도 한 스탯이 한계를 넘지 않게: 더블샷 확률 100% 초과 같은 일 방지)
-	Cap = { Move = 40, Range = 50, Double = 60, Haste = 50, CritDmg = 60 },
+	Cap = { Move = 10, Range = 12, Double = 15, Haste = 12, CritDmg = 15 },
 	-- 최대 레벨(200)을 찍은 뒤에는 골드로 포인트를 더 살 수 있다 (골드 사용처). n 번째(0부터) 포인트 비용 = Base x Growth^n. 살 수 있는 총 개수는 아래 MaxGoldPoints.
 	GoldPoint = { Base = 200000, Growth = 1.07 },
 	GoldPointMinLevel = 100, -- 이 레벨부터 골드로 포인트를 살 수 있다 (예전에는 200 레벨이라 중반에 쓸 골드가 마땅치 않았다)
@@ -1490,8 +1490,12 @@ do
 	LS.Double.Note = LS.Double.Note .. string.format(" With the max %d points, about %d%%.", LS.Cap.Double, math.floor(LS.Cap.Double * LS.Double.Per * 100 + 0.5))
 	LS.CritDmg.Note = LS.CritDmg.Note:gsub(" Combine", string.format(" With the max %d points, crits go from 2x to about %.1fx. Combine", LS.Cap.CritDmg, 2 + LS.Cap.CritDmg * LS.CritDmg.Per), 1)
 end
+-- 점점 한계에 다가가지만 절대 평평해지지 않는 곡선 (작은 값에서는 거의 그 값, 한계 cap 에 점근). 상한으로 스탯이 잘려 낭비되는 구간이 없다.
+function Config.SoftCap(x, cap)
+	return cap * (1 - math.exp(-math.max(0, x) / cap))
+end
 function Config.GetLevelStatPoints(level)
-	return math.max(0, (math.min(level or 1, Config.Level.StatCap) - 1) * Config.LevelStats.PointsPerLevel)
+	return math.max(0, math.floor((math.min(level or 1, Config.Level.StatCap) - 1) * Config.LevelStats.PointsPerLevel))
 end
 -- 골드로 살 수 있는 포인트 수 = 모든 스탯 한계 합 - 레벨로 얻는 포인트 (모두 사면 전 스탯이 한계까지 찬다)
 do
@@ -2108,14 +2112,14 @@ Config.Growth = {
 		Order = { "Attack", "Health", "Crit", "Speed", "Double", "CritDmg", "Gold", "AtkSpeed", "Armor", "Regen" },
 		Attack = { Name = "Attack Training", Icon = "⚔", Per = 0.02, Tier = 1 },
 		Health = { Name = "HP Training", Icon = "❤", Per = 12, Tier = 1 },
-		Crit = { Name = "Crit Training", Icon = "🎯", Per = 0.004, Tier = 1 },
-		Speed = { Name = "Speed Training", Icon = "💨", Per = 0.12, Tier = 1 },
-		Double = { Name = "Double Shot", Icon = "🔫", Per = 0.004, Max = 20, Tier = 2, Req = { { Stat = "Attack", Level = 5 } } },
-		CritDmg = { Name = "Crit Damage", Icon = "💥", Per = 0.01, Max = 20, Tier = 2, Req = { { Stat = "Crit", Level = 5 } } },
-		Gold = { Name = "Gold Sense", Icon = "💰", Per = 0.01, Max = 20, Tier = 2, Req = { { Stat = "Speed", Level = 5 } } }, -- (유틸: 이동 속도 아래)
-		AtkSpeed = { Name = "Attack Speed", Icon = "⏩", Per = 0.005, Max = 20, Tier = 3, Req = { { Stat = "CritDmg", Level = 5 }, { Stat = "Double", Level = 5 } } },
-		Armor = { Name = "Tough Skin", Icon = "🛡", Per = 0.005, Max = 20, Tier = 2, Req = { { Stat = "Health", Level = 5 } } }, -- 받는 피해 감소 (최대 10%)
-		Regen = { Name = "Recovery", Icon = "💗", Per = 0.0005, Max = 20, Tier = 3, Req = { { Stat = "Armor", Level = 5 } } }, -- 필드 / 던전에서 초당 최대 체력의 일부를 되찾는다 (최대 1% / 초)
+		Crit = { Name = "Crit Training", Icon = "🎯", Per = 0.012, Max = 10, Tier = 1 },
+		Speed = { Name = "Speed Training", Icon = "💨", Per = 1.0, Max = 6, Tier = 1 },
+		Double = { Name = "Double Shot", Icon = "🔫", Per = 0.016, Max = 5, Tier = 2, Req = { { Stat = "Attack", Level = 5 } } },
+		CritDmg = { Name = "Crit Damage", Icon = "💥", Per = 0.04, Max = 5, Tier = 2, Req = { { Stat = "Crit", Level = 5 } } },
+		Gold = { Name = "Gold Sense", Icon = "💰", Per = 0.04, Max = 5, Tier = 2, Req = { { Stat = "Speed", Level = 5 } } }, -- (유틸: 이동 속도 아래)
+		AtkSpeed = { Name = "Attack Speed", Icon = "⏩", Per = 0.025, Max = 4, Tier = 3, Req = { { Stat = "CritDmg", Level = 5 }, { Stat = "Double", Level = 5 } } },
+		Armor = { Name = "Tough Skin", Icon = "🛡", Per = 0.02, Max = 5, Tier = 2, Req = { { Stat = "Health", Level = 5 } } }, -- 받는 피해 감소 (최대 10%)
+		Regen = { Name = "Recovery", Icon = "💗", Per = 0.002, Max = 5, Tier = 3, Req = { { Stat = "Armor", Level = 5 } } }, -- 필드 / 던전에서 초당 최대 체력의 일부를 되찾는다 (최대 1% / 초)
 	},
 	Gates = {},                            -- (예전: 레벨 10 / 20 / 30 / 40 에서 멈추고 시간 돌파 -> 기다리는 느낌이라 없앴다. 이제 막힘 없이 성장하고 골드는 환생으로 더 번다)
 	GateTime = { 1800, 7200, 21600, 43200 }, -- 돌파 시간(초): 30분 / 2시간 / 6시간 / 12시간

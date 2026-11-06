@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🏰 Forest Castle Gate · Rec. ⚡{number2}", "🏰 森の城の門 · 推奨レベル ⚡{number2}" },
+		{ "(Idle income bonus +{number3}% active)", "（アイドル収入ボーナス +{number3}% アクティブ）" },
+		{ "Upgrade cost {number2} G · You have {number3} G", "アップグレードコスト {number2} G · 現在所持G数 {number3}" },
+		{ "Rocket Launcher · Rusty Era +{number1}", "ロケットランチャー · 錆の時代 +{number1}" },
+		{ "🌋 Lava Fortress Gate · Rec. ⚡{number2}", "🌋 溶岩の要塞の門 · レコメンド ⚡{number2}" },
 		{ "ZONE {number1}  ·  Darklands   ☠☠☠☠☠☠☠", "ゾーン {number1} ・ダークランド ☠☠☠☠☠☠☠" },
 		{ "Zone {number1} set effect · Trial Lv.3", "ゾーン{number1}セット効果 · 試練 Lv.3" },
 		{ "(Idle income bonus +{number1}% active)", "(放置収入ボーナス +{number1}% 有効)" },

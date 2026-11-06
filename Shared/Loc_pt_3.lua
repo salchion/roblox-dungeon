@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔊 Music Volume: {number1}%", "🔊 Volume da música: {number1}%" },
+		{ "Finish {number1} trainings", "Conclua {number1} treinos" },
+		{ "◆ Attack Speed +{number1}%", "◆ Velocidade de ataque +{number1}%" },
+		{ "◆ Heal on Kill +{number1}%", "◆ Cura ao abater +{number1}%" },
+		{ "Training time -{number1}%", "Tempo de treinamento -{number1}%" },
+		{ "🔑{number6} (Free today {number7}/{number8})", "🔑{number6} (Grátis hoje {number7}/{number8})" },
+		{ "{number2} / {number3}   Reward: {number4} G", "{number2} / {number3} Recompensa: {number4} G" },
 		{ "{number2} / {number3}   Reward: 🎫 {number4}", "{number2} / {number3} Recompensa: 🎫 {number4}" },
 		{ "💥Explosive Shot {number1}", "💥Tiro Explosivo {number1}" },
 		{ "Defeat {number1} boss(es)", "Derrote {number1} chefes" },

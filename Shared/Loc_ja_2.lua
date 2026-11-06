@@ -668,6 +668,12 @@ return {
 		["Offline income is 60% of resting income, up to the cap"] = "オフライン収益は休憩所の収益の60%で、上限までです",
 		["✨ Idle Booster applied"] = "✨ 放置ブースター適用",
 		["<font color='#ff9a6e'>⚠ Cap reached — raise it in the Shop</font>"] = "<font color='#ff9a6e'>⚠ 上限に達しました — ショップで増やせます</font>",
+		["Move speed +1.2 per point"] = "ポイントごとに移動速度 +1.2",
+		["Weapon range +16% per point"] = "ポイントごとに武器の射程 +16%",
+		["+2.8% chance per point to fire a second shot right after the first (\"bang-bang\")"] = "ポイントごとに、1発目の直後にもう1発撃つ確率 +2.8%（「バンバン」）",
+		["Skill cooldown -4% per point"] = "ポイントごとにスキルのクールタイム -4%",
+		["Crit damage +6%p per point (base 2x)"] = "ポイントごとにクリティカルダメージ +6%p（基本2倍）",
+		["A big blast when it ends (attack x8)"] = "終わるときに大きな爆発（攻撃力 x8）",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -933,10 +939,5 @@ return {
 		{ "⚠ Not enough gold. ({number1} G needed)", "⚠ ゴールドが足りません。({number1} G必要)" },
 		{ "With the max {number1} points, about {number2}%.", "最大{number1}ポイントで約{number2}%。" },
 		{ "Gold earned  +{number1} G   🎫 Tickets +{number2}", "獲得ゴールド  +{number1} G   🎫 チケット +{number2}" },
-		{ "🏰 Forest Castle Gate · Rec. ⚡{number2}", "🏰 森の城の門 · 推奨レベル ⚡{number2}" },
-		{ "(Idle income bonus +{number3}% active)", "（アイドル収入ボーナス +{number3}% アクティブ）" },
-		{ "Upgrade cost {number2} G · You have {number3} G", "アップグレードコスト {number2} G · 現在所持G数 {number3}" },
-		{ "Rocket Launcher · Rusty Era +{number1}", "ロケットランチャー · 錆の時代 +{number1}" },
-		{ "🌋 Lava Fortress Gate · Rec. ⚡{number2}", "🌋 溶岩の要塞の門 · レコメンド ⚡{number2}" },
 	},
 }

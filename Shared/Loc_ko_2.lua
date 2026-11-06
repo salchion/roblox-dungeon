@@ -815,6 +815,12 @@ return {
 		["Offline income is 60% of resting income, up to the cap"] = "오프라인 수익은 휴식 수익의 60%이고, 한도까지만 쌓여요",
 		["✨ Idle Booster applied"] = "✨ 방치 부스터 적용됨",
 		["<font color='#ff9a6e'>⚠ Cap reached — raise it in the Shop</font>"] = "<font color='#ff9a6e'>⚠ 한도에 도달했어요 — 상점에서 늘릴 수 있어요</font>",
+		["Move speed +1.2 per point"] = "포인트당 이동 속도 +1.2",
+		["Weapon range +16% per point"] = "포인트당 무기 사거리 +16%",
+		["+2.8% chance per point to fire a second shot right after the first (\"bang-bang\")"] = "포인트당 첫 발 직후 한 발을 더 쏠 확률 +2.8% (\"탕탕\")",
+		["Skill cooldown -4% per point"] = "포인트당 스킬 쿨타임 -4%",
+		["Crit damage +6%p per point (base 2x)"] = "포인트당 치명 피해 +6%p (기본 2배)",
+		["A big blast when it ends (attack x8)"] = "끝날 때 크게 한 번 터진다 (공격력 x8)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1048,10 +1054,5 @@ return {
 		{ "Defeat {number1} bosses in one Boss Rush run", "보스 러시에서 {number1}명의 보스를 처치하세요" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "몬스터를 {number1} / {number2} 마리 만났습니다 (존 로드 포함)" },
 		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 무료 입장 사용! (오늘 {number1} / {number2} 남음)" },
-		{ "A big blast when it ends (attack x{number1})", "끝날 때 크게 한 번 터져요 (공격 x{number1})" },
-		{ "{number1}s invincible, but healing is halved", "{number1}초 무적, 대신 회복량은 절반" },
-		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 새로운 무기: 스펠 토메 - {number1}을 누르세요!" },
-		{ "Gacha_Pop{number1}  Gacha result: Legendary", "Gacha_Pop{number1} 가챠 결과: 전설" },
-		{ "{number1} hours of idle gold ({number2} G) piled up!", "{number1}시간 동안 쌓인 골드 ({number2}G)가 누적되었습니다!" },
 	},
 }

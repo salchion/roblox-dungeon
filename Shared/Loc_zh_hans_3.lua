@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Dungeon layout: {text1} (changes every run", "地下城布局：{text1} (每次都会变化" },
+		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}……已自动分解!精华 +{number2},{number3} 金币" },
+		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 {number1} 级突破已开始!({text2})" },
+		{ "Weapon range +{text1}% per point  (max {number2})", "每点武器射程 +{text1}%(最多 {number2})" },
+		{ "{text1} Set equipped! ({number1} slot(s) changed)", "已装备{text1}套装！(更换{number1}个部位)" },
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} 已自动分解(精华 +{number2},{number3} 金币)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ 每日任务完成!奖励:{text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 区域{number1} 第 {number2} 段 — 这里有很多 {text3}" },

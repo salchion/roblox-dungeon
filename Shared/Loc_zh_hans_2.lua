@@ -421,6 +421,12 @@ return {
 		["Offline income is 60% of resting income, up to the cap"] = "离线收益为休息收益的60%，不超过上限",
 		["✨ Idle Booster applied"] = "✨ 已应用挂机加速",
 		["<font color='#ff9a6e'>⚠ Cap reached — raise it in the Shop</font>"] = "<font color='#ff9a6e'>⚠ 已达上限 — 可在商店提高</font>",
+		["Move speed +1.2 per point"] = "每点移动速度 +1.2",
+		["Weapon range +16% per point"] = "每点武器射程 +16%",
+		["+2.8% chance per point to fire a second shot right after the first (\"bang-bang\")"] = "每点有 +2.8% 几率在第一发后立刻再射一发（“砰砰”）",
+		["Skill cooldown -4% per point"] = "每点技能冷却 -4%",
+		["Crit damage +6%p per point (base 2x)"] = "每点暴击伤害 +6%p（基础2倍）",
+		["A big blast when it ends (attack x8)"] = "结束时发生大爆炸（攻击力 x8）",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1051,10 +1057,5 @@ return {
 		{ "👑 Zone {number1} · The Lord of {text2} has reappeared!", "👑 区域{number1} · {text2}领主再次现身!" },
 		{ "Zone {number1} monsters {number2} / {number3} defeated · Lord {text4}", "区域{number1}怪物 已击败 {number2} / {number3} · 领主 {text4}" },
 		{ "Skill cooldown -{text1}% per point  (max {number2})", "每点技能冷却 -{text1}%(最多 {number2})" },
-		{ "Dungeon layout: {text1} (changes every run", "地下城布局：{text1} (每次都会变化" },
-		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}……已自动分解!精华 +{number2},{number3} 金币" },
-		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 {number1} 级突破已开始!({text2})" },
-		{ "Weapon range +{text1}% per point  (max {number2})", "每点武器射程 +{text1}%(最多 {number2})" },
-		{ "{text1} Set equipped! ({number1} slot(s) changed)", "已装备{text1}套装！(更换{number1}个部位)" },
 	},
 }

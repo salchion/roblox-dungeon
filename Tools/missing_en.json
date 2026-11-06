@@ -2339,5 +2339,11 @@
 "🌙 Welcome back!",
 "Offline income is 60% of resting income, up to the cap",
 "✨ Idle Booster applied",
-"<font color='#ff9a6e'>⚠ Cap reached — raise it in the Shop</font>"
+"<font color='#ff9a6e'>⚠ Cap reached — raise it in the Shop</font>",
+"Move speed +1.2 per point",
+"Weapon range +16% per point",
+"+2.8% chance per point to fire a second shot right after the first (\"bang-bang\")",
+"Skill cooldown -4% per point",
+"Crit damage +6%p per point (base 2x)",
+"A big blast when it ends (attack x8)"
 ]

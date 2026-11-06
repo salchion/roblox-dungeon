@@ -4,6 +4,15 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "◆ Boss Damage +{number1}%", "◆ Bossschaden +{number1}%" },
+		{ "🌟 Fever Time!  {number1}s", "🌟 Fieberzeit!  {number1}s" },
+		{ "Gold +{number2}% instead", "Gold +{number2}% stattdessen" },
+		{ "Attack speed +{number1}%", "Angriffsgeschwindigkeit +{number1}%" },
+		{ "Training slot +{number1}", "Trainings-Slot +{number1}" },
+		{ "Enemy attack +{number1}%", "Gegnerangriff +{number1}%" },
+		{ "Zone {number1} · Volcano", "Zone {number1} · Vulkan" },
+		{ "NEXT UNLOCK · +{number1}", "Nächste Freischaltung · +{number1}" },
+		{ "🔥 {number1} Kill Streak!", "🔥 {number1} Tötungsserie!" },
 		{ "Gold +{number1}% instead", "Gold +{number1}% stattdessen" },
 		{ "Time Skip {number1} hour", "Zeitüberspringung {number1} Stunde" },
 		{ "(gold {number1} + gear {number2})", "(Gold {number1} + Ausrüstung {number2})" },

@@ -145,7 +145,7 @@ handlers.Spirit = function(player, root, _, character)
 	spiritToken[player] = token
 	local scale = cfg.Mult * (1 + U.BlastMult * (skillLevel(player, "Spirit") - 1)) * (b5 == "B" and 1.8 or 1) * (b10 == "B" and 1.15 or 1)
 	-- 쿨타임이 지속시간보다 짧아지면 (연꽃이 항상 돌고 있는 상태) 더 줄어든 만큼은 단검 한 자루의 위력으로 바꾼다: 쿨감 스탯 / 여운 갈래가 풀파밍에서도 낭비되지 않는다
-	scale *= math.max(1, duration / Skill.CooldownFor(player, "Spirit"))
+	scale *= math.max(1, cfg.Duration / Skill.CooldownFor(player, "Spirit")) -- (갈래 지속시간이 아니라 기본 지속시간 기준: 광풍이 계속 도는 구간에서 부당하게 이득을 보지 않게)
 	local userId = player.UserId
 	Effects.Raw(root.Position, { "Y", userId, duration })
 	pcall(function()
@@ -194,7 +194,7 @@ handlers.Spirit = function(player, root, _, character)
 			if zoneNow == "Field" or zoneNow == "Dungeon" then
 				ring(endRoot.Position, range * 0.6, Color3.fromRGB(255, 150, 190), 0.5)
 				Effects.Burst(endRoot.Position, Color3.fromRGB(255, 170, 200), 50)
-				damageAt(player, endRoot.Position, range * 0.6, 3, "Spirit")
+				damageAt(player, endRoot.Position, range * 0.6, 8, "Spirit")
 			end
 		end
 		Effects.Raw(endRoot and endRoot.Position or nil, { "Y", userId, 0 }) -- 끝: 단검 고리가 사라진다

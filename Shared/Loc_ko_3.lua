@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "A big blast when it ends (attack x{number1})", "끝날 때 크게 한 번 터져요 (공격 x{number1})" },
+		{ "{number1}s invincible, but healing is halved", "{number1}초 무적, 대신 회복량은 절반" },
+		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 새로운 무기: 스펠 토메 - {number1}을 누르세요!" },
+		{ "Gacha_Pop{number1}  Gacha result: Legendary", "Gacha_Pop{number1} 가챠 결과: 전설" },
+		{ "{number1} hours of idle gold ({number2} G) piled up!", "{number1}시간 동안 쌓인 골드 ({number2}G)가 누적되었습니다!" },
 		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 들판 입구는 바로 뒤에 있습니다! {number1}m" },
 		{ "Clear {number1} dungeon(s)  ✅ tap to claim!", "{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!" },
 		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 보스 상자 · 장비 {number1}개</b>" },

@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Defeat {number1} field monsters", "Vainquez {number1} monstres du terrain" },
+		{ "Pierces up to {number1} enemies", "Transperce jusqu'à {number1} ennemis" },
+		{ "Defeat the Zone {number1} Lord", "Vaincre le seigneur de la zone {number1}" },
+		{ "{number2} / {number3}   Reward: {number4} G + 🎫 {number5}", "{number2} / {number3} Récompense : {number4} G + 🎫 {number5}" },
+		{ "{number1} Snowfield · {number2} Volcano", "{number1} Champ de neige · {number2} Volcan" },
+		{ "Railgun · Rusty Era +{number1}", "Canon à rails · Ère rouillée +{number1}" },
+		{ "📍 Field (best: Zone {number11})", "📍 Champ (meilleur : Zone {number11})" },
 		{ "{number5} Snowfield · {number6} Volcano", "{number5} Champ de neige · {number6} Volcan" },
 		{ "ZONE {number1}  ·  Forest   ☠☠", "Zone {number1} · Forêt ☠☠" },
 		{ "{number1} upgrades! {number2} succeeded", "{number1} améliorations ! {number2} réussies" },
