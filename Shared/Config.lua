@@ -1478,7 +1478,7 @@ Config.LevelStats = {
 	Haste = { Name = "Skill Cooldown", Icon = "⏱", Per = 0.04, Desc = "Skill cooldown -4% per point" },
 	CritDmg = { Name = "Crit Damage", Icon = "💥", Per = 0.06, Desc = "Crit damage +6%p per point (base 2x)", Note = "Crit Damage: crits hit even harder. Combine with crit chance gear / pet / Double Shot for a big-hit build." },
 	-- 스탯 하나에 넣을 수 있는 최대 포인트 (포인트가 199개로 늘어도 한 스탯이 한계를 넘지 않게: 더블샷 확률 100% 초과 같은 일 방지)
-	Cap = { Move = 10, Range = 12, Double = 15, Haste = 12, CritDmg = 15 },
+	Cap = { Move = 12, Range = 5, Double = 17, Haste = 14, CritDmg = 16 }, -- (사거리 12 -> 5: 저격 무기는 기본 사거리가 이미 길어 많이 찍으면 버려지는 포인트였다. 줄인 7점은 다른 스탯 한계로 옮겼다: 총합 64 그대로)
 	-- 최대 레벨(200)을 찍은 뒤에는 골드로 포인트를 더 살 수 있다 (골드 사용처). n 번째(0부터) 포인트 비용 = Base x Growth^n. 살 수 있는 총 개수는 아래 MaxGoldPoints.
 	GoldPoint = { Base = 200000, Growth = 1.07 },
 	GoldPointMinLevel = 100, -- 이 레벨부터 골드로 포인트를 살 수 있다 (예전에는 200 레벨이라 중반에 쓸 골드가 마땅치 않았다)
