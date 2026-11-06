@@ -1459,7 +1459,7 @@ local function killMonster(player, part, data)
 	Effects.Burst(part.Position, part.Color, data.Kind == "Boss" and 80 or 22)
 	Effects.MonsterDeath(part, data) -- 조각 / 영혼 연기 (클라이언트)
 	part:Destroy()
-	Combo.Kill(player, data.Filler)
+	if not data.Filler then Combo.Kill(player) end -- (채움 몬스터는 콤보 공격력 / 궁극기 게이지에 넣지 않는다: 감각만 키우고 성장 / 경제 수치는 그대로)
 	if not data.Filler then reward(player, data, part) end
 	-- 처치 연출: 금화가 사방으로 튄다
 	if not data.Filler then Effects.Burst(part.Position + Vector3.new(0, 2, 0), Color3.fromRGB(255, 215, 90), data.Kind == "Boss" and 60 or 14) end -- (보상 없는 채움 몬스터는 금화가 튀지 않는다)
@@ -3811,14 +3811,15 @@ function Field.Init(lobbySpawnCFrame)
 						local forward = velocity.Magnitude > 4 and velocity.Unit or Vector3.new(look.X, 0, look.Z)
 						if forward.Magnitude < 0.1 then forward = Vector3.new(1, 0, 0) end
 						forward = forward.Unit
-						local ahead = 0
+						local ahead, nearBoss = 0, false
 						for part, data in pairs(monsters) do
+							if data.BossLike and part.Parent and (part.Position - root.Position).Magnitude < 110 then nearBoss = true end
 							if data.Kind == "Normal" and part.Parent then
 								local offset = Vector3.new(part.Position.X - root.Position.X, 0, part.Position.Z - root.Position.Z)
 								if offset.Magnitude <= NEAR and offset.Magnitude > 0.1 and offset.Unit:Dot(forward) > 0.3 then ahead += 1 end
 							end
 						end
-						local need = math.min(TARGET - ahead, MAX_FILL - (owned[player] or 0), 5)
+						local need = nearBoss and 0 or math.min(TARGET - ahead, MAX_FILL - (owned[player] or 0), 5) -- (군주 / 이벤트 보스와 싸우는 중에는 채우지 않는다: 보스 패턴과 부하가 이미 있다)
 						for _ = 1, math.max(0, need) do
 							for _ = 1, 4 do -- 걸을 수 있는 자리가 나올 때까지 몇 번 시도
 								local angle = (math.random() - 0.5) * math.rad(100)
