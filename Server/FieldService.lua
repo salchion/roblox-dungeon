@@ -1684,10 +1684,11 @@ function Field.Shoot(player, origin, direction)
 			end
 		end
 		-- 타격감: 맞으면 살짝 뒤로 밀린다
-		if not data.BossLike and data.Kind ~= "Event" then
+		if not data.BossLike and data.Kind ~= "Event" and os.clock() - (data.LastPush or 0) >= 0.15 then -- (연사로 맞을 때마다 밀려서 다가오지 못하고 사정거리 밖에 머물던 문제: 0.15초에 한 번만, 거리도 짧게)
+			data.LastPush = os.clock()
 			local away = Vector3.new(result.Instance.Position.X - origin.X, 0, result.Instance.Position.Z - origin.Z)
 			if away.Magnitude > 0.1 then
-				local pushed = result.Instance.Position + away.Unit * 1.3
+				local pushed = result.Instance.Position + away.Unit * 0.6
 				if walkableAt(pushed.X, pushed.Z) then
 					result.Instance.Position = pushed
 				end
