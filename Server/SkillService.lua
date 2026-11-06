@@ -119,6 +119,18 @@ handlers.Blast = function(player, root, _, _, aimPoint)
 	return true
 end
 
+-- 쿨타임 계산 (Use 와 연꽃이 같이 쓴다).
+-- 쿨타임 감소: 장비 / 펫 / 레벨 스탯 / 스킬 레벨이 서로 "곱해서" 줄인다 (더하다가 상한에 걸려 스탯이 아무 효과 없어지는 구간이 없다).
+-- 바닥(Floor)은 점근선: 모든 출처를 최대로 모아도 닿지 않고, 어떤 출처든 한 칸 더 올리면 반드시 더 짧아진다.
+function Skill.CooldownFor(player, skillKey)
+	local function part(value) return 1 / (1 + 1.5 * math.max(0, value or 0)) end -- 출처마다 상한 없이 점점 덜 줄어드는 곡선 (값이 늘수록 항상 더 짧아진다. 작은 값에서는 거의 그 값만큼 줄어든다)
+	local factor = part(player:GetAttribute("GearHaste")) * part(player:GetAttribute("PetHaste")) * part(player:GetAttribute("LvHaste")) * part(U.CooldownPerLevel * (skillLevel(player, skillKey) - 1))
+	local floorRatio = skillKey == "Spirit" and (S.SpiritCooldownFloor or 0.05) or (S.CooldownFloor or 0.3)
+	local cooldown = S[skillKey].Cooldown * (floorRatio + (1 - floorRatio) * factor)
+	if (skillKey == "Spirit" or skillKey == "Heal") and Config.GetSkillBranch(player, skillKey, 10) == "B" then cooldown *= 0.7 end -- 10레벨 갈래 (연꽃 "여운" / 응급 치료 "신속")
+	return cooldown
+end
+
 -- 죽음의 연꽃(F, 저장 이름은 예전 그대로 "Spirit"): 롤의 카타리나 R 처럼 2.5초 동안 몸 주위로 단검이 휘돈다 (FxClient "Y" 가 단검 고리를 그린다).
 -- 0.12초마다 주변(Range) 적 중 가까운 쪽에서 Daggers 마리를 골라 단검을 날린다 (같은 틱에 한 적에게 두 자루는 안 간다). 한 자루 = 일반 공격 x Mult. 이동 / 사격은 그대로 할 수 있다.
 handlers.Spirit = function(player, root, _, character)
@@ -132,6 +144,8 @@ handlers.Spirit = function(player, root, _, character)
 	local token = {}
 	spiritToken[player] = token
 	local scale = cfg.Mult * (1 + U.BlastMult * (skillLevel(player, "Spirit") - 1)) * (b5 == "B" and 1.8 or 1) * (b10 == "B" and 1.15 or 1)
+	-- 쿨타임이 지속시간보다 짧아지면 (연꽃이 항상 돌고 있는 상태) 더 줄어든 만큼은 단검 한 자루의 위력으로 바꾼다: 쿨감 스탯 / 여운 갈래가 풀파밍에서도 낭비되지 않는다
+	scale *= math.max(1, duration / Skill.CooldownFor(player, "Spirit"))
 	local userId = player.UserId
 	Effects.Raw(root.Position, { "Y", userId, duration })
 	pcall(function()
@@ -526,13 +540,7 @@ function Skill.Use(player, skillKey, aimPoint)
 		end
 		return
 	end
-	-- 쿨타임 감소: 장비 / 펫 / 레벨 스탯 / 스킬 레벨이 서로 "곱해서" 줄인다 (더하다가 상한에 걸려 스탯이 아무 효과 없어지는 구간이 없다).
-	-- 바닥(Floor)은 점근선: 모든 출처를 최대로 모아도 닿지 않고, 어떤 출처든 한 칸 더 올리면 반드시 더 짧아진다.
-	local function part(value) return 1 / (1 + 1.5 * math.max(0, value or 0)) end -- 출처마다 상한 없이 점점 덜 줄어드는 곡선 (값이 늘수록 항상 더 짧아진다. 작은 값에서는 거의 그 값만큼 줄어든다)
-	local factor = part(player:GetAttribute("GearHaste")) * part(player:GetAttribute("PetHaste")) * part(player:GetAttribute("LvHaste")) * part(U.CooldownPerLevel * (skillLevel(player, skillKey) - 1))
-	local floorRatio = skillKey == "Spirit" and (S.SpiritCooldownFloor or 0.05) or (S.CooldownFloor or 0.3)
-	local cooldown = S[skillKey].Cooldown * (floorRatio + (1 - floorRatio) * factor)
-	if (skillKey == "Spirit" or skillKey == "Heal") and Config.GetSkillBranch(player, skillKey, 10) == "B" then cooldown *= 0.7 end -- 10레벨 갈래 (연꽃 "여운" / 응급 치료 "신속")
+	local cooldown = Skill.CooldownFor(player, skillKey)
 	cooldowns[skillKey] = now + cooldown
 	if skillKey == "Spirit" then
 		-- (죽음의 연꽃 소리는 handlers.Spirit 가 낸다: 칼날 소리. 예전 번개 소리는 뺐다)
