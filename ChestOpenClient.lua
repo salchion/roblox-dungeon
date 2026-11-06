@@ -83,6 +83,7 @@ local function play(loot, data)
 	player:SetAttribute("ChestOpening", true)
 	fit()
 	local function alive() return token == mine and gui.Enabled end
+	task.delay(30, function() if token == mine then close() end end) -- 안전장치: 연출 도중 오류가 나도 화면이 막힌 채 남지 않게
 
 	local best = 1
 	for _, entry in ipairs(loot) do best = math.max(best, entry.Rarity or 1) end
