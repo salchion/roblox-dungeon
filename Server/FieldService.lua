@@ -1025,6 +1025,7 @@ local function spawnMonster(zone, kind, at, ambush, filler)
 
 	part:SetAttribute("MobZone", zone) -- 클라이언트가 내 전투력과 비교해서 이름 색을 칠한다 (MonsterLabelClient)
 	part:SetAttribute("MobKind", kind)
+	if filler then stats.MaxHealth = math.floor(stats.MaxHealth * 2.5) end -- 채움 몬스터는 튼튼하다: 평타만으로는 쌓이고, 스킬을 쓰면 한 번에 쓸려 나간다 (Field.HitPart 의 스킬 보정과 짝)
 	local newData = {
 		BossLike = kind == "Boss",
 		Zone = zone,
@@ -1512,6 +1513,7 @@ function Field.HitPart(player, part, damage)
 	if not data or not part.Parent then return false end
 	if not canHitZone(player, part.Position.X) then return false end
 	if data.ExposedUntil and os.clock() < data.ExposedUntil then damage = math.floor(damage * 3) end -- 약점 노출 중 x3
+	if data.Filler then damage = math.floor(damage * 2.6) end -- 스킬 / 데드아이 / 관통은 채움 몬스터에게 크게 박힌다 (체력 x2.5 를 넘는 보정: 스킬이 터질 때 몰려 있던 몬스터가 확 쓸려 나간다)
 	if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then damage = damage * (player:GetAttribute("TutorialRetryBuff") and 10 or 5) end
 	local shooterRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if shooterRoot and data.Def and data.Def.Shield then -- 방패 기사: 정면 공격은 막힌다
