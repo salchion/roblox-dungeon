@@ -526,9 +526,12 @@ function Skill.Use(player, skillKey, aimPoint)
 		end
 		return
 	end
-	local haste = (player:GetAttribute("GearHaste") or 0) + (player:GetAttribute("PetHaste") or 0) + (player:GetAttribute("LvHaste") or 0) + U.CooldownPerLevel * (skillLevel(player, skillKey) - 1)
-	local hasteCap = skillKey == "Spirit" and (S.SpiritHasteCap or 0.6) or 0.6 -- 죽음의 연꽃은 쿨감 상한이 더 높다: 풀파밍하면 거의 쉬지 않고 계속 쓸 수 있다
-	local cooldown = S[skillKey].Cooldown * (1 - math.min(hasteCap, haste))
+	-- 쿨타임 감소: 장비 / 펫 / 레벨 스탯 / 스킬 레벨이 서로 "곱해서" 줄인다 (더하다가 상한에 걸려 스탯이 아무 효과 없어지는 구간이 없다).
+	-- 바닥(Floor)은 점근선: 모든 출처를 최대로 모아도 닿지 않고, 어떤 출처든 한 칸 더 올리면 반드시 더 짧아진다.
+	local function part(value) return 1 - math.min(0.9, math.max(0, value or 0)) end
+	local factor = part(player:GetAttribute("GearHaste")) * part(player:GetAttribute("PetHaste")) * part(player:GetAttribute("LvHaste")) * part(U.CooldownPerLevel * (skillLevel(player, skillKey) - 1))
+	local floorRatio = skillKey == "Spirit" and (S.SpiritCooldownFloor or 0.05) or (S.CooldownFloor or 0.3)
+	local cooldown = S[skillKey].Cooldown * (floorRatio + (1 - floorRatio) * factor)
 	if (skillKey == "Spirit" or skillKey == "Heal") and Config.GetSkillBranch(player, skillKey, 10) == "B" then cooldown *= 0.7 end -- 10레벨 갈래 (연꽃 "여운" / 응급 치료 "신속")
 	cooldowns[skillKey] = now + cooldown
 	if skillKey == "Spirit" then
