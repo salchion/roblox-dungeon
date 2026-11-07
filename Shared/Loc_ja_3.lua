@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "With the max {number1} points, about {number2}%.", "最大{number1}ポイントで約{number2}%。" },
+		{ "Gold earned  +{number1} G   🎫 Tickets +{number2}", "獲得ゴールド  +{number1} G   🎫 チケット +{number2}" },
 		{ "🏰 Forest Castle Gate · Rec. ⚡{number2}", "🏰 森の城の門 · 推奨レベル ⚡{number2}" },
 		{ "(Idle income bonus +{number3}% active)", "（アイドル収入ボーナス +{number3}% アクティブ）" },
 		{ "Upgrade cost {number2} G · You have {number3} G", "アップグレードコスト {number2} G · 現在所持G数 {number3}" },

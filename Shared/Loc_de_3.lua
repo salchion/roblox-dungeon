@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "◆ Crit Chance +{number1}%", "◆ Krit-Chance +{number1}%" },
+		{ "◆ Crit Damage +{number1}%", "◆ Kritischer Schaden +{number1}%" },
 		{ "◆ Boss Damage +{number1}%", "◆ Bossschaden +{number1}%" },
 		{ "🌟 Fever Time!  {number1}s", "🌟 Fieberzeit!  {number1}s" },
 		{ "Gold +{number2}% instead", "Gold +{number2}% stattdessen" },

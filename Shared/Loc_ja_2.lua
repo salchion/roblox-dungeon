@@ -674,6 +674,8 @@ return {
 		["Skill cooldown -4% per point"] = "ポイントごとにスキルのクールタイム -4%",
 		["Crit damage +6%p per point (base 2x)"] = "ポイントごとにクリティカルダメージ +6%p（基本2倍）",
 		["A big blast when it ends (attack x8)"] = "終わるときに大きな爆発（攻撃力 x8）",
+		["🏘 Back in Town"] = "🏘 町に帰還",
+		["Grow stronger and face the Lord again"] = "強くなって、もう一度君主に挑もう",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -937,7 +939,5 @@ return {
 		{ "Move speed +{number1} per point  (max {number2})", "移動速度が1ポイントにつき+{number1}（最大{number2}）" },
 		{ "🎯 Deadeye! Barrage on {number1} enemies", "🎯 デイリー！{number1}人の敵に弾幕を放つ" },
 		{ "⚠ Not enough gold. ({number1} G needed)", "⚠ ゴールドが足りません。({number1} G必要)" },
-		{ "With the max {number1} points, about {number2}%.", "最大{number1}ポイントで約{number2}%。" },
-		{ "Gold earned  +{number1} G   🎫 Tickets +{number2}", "獲得ゴールド  +{number1} G   🎫 チケット +{number2}" },
 	},
 }

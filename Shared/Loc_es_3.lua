@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⚔ DUNGEON  ·  Lv.{number1}+", "⚔ Mazmorra · Nivel {number1}+" },
+		{ "Zone {number1} · Trial Lv.3", "Zona {number1} · Prueba Nv.3" },
+		{ "Upgrade success! +{number1}", "¡Mejora exitosa! +{number1}" },
 		{ "Field · Best Zone {number1}", "Campo · mejor zona {number1}" },
 		{ "👥 Online: {number1} players", "👥 En línea: {number1} jugadores" },
 		{ "Recommended Power {number1}", "Poder recomendado {number1}" },

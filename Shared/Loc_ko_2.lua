@@ -821,6 +821,8 @@ return {
 		["Skill cooldown -4% per point"] = "포인트당 스킬 쿨타임 -4%",
 		["Crit damage +6%p per point (base 2x)"] = "포인트당 치명 피해 +6%p (기본 2배)",
 		["A big blast when it ends (attack x8)"] = "끝날 때 크게 한 번 터진다 (공격력 x8)",
+		["🏘 Back in Town"] = "🏘 마을로 돌아왔다",
+		["Grow stronger and face the Lord again"] = "더 강해져서 다시 군주에게 맞서자",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1053,6 +1055,5 @@ return {
 		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1}초 · 단검 {number2}자루씩 {number3}초마다 · 자루당 피해 x{number4}" },
 		{ "Defeat {number1} bosses in one Boss Rush run", "보스 러시에서 {number1}명의 보스를 처치하세요" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "몬스터를 {number1} / {number2} 마리 만났습니다 (존 로드 포함)" },
-		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 무료 입장 사용! (오늘 {number1} / {number2} 남음)" },
 	},
 }

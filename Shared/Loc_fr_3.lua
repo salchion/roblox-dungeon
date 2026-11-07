@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Defeat {number1} elite monsters", "Vainquez {number1} monstres d'élite" },
 		{ "Defeat {number1} field monsters", "Vainquez {number1} monstres du terrain" },
 		{ "Pierces up to {number1} enemies", "Transperce jusqu'à {number1} ennemis" },
 		{ "Defeat the Zone {number1} Lord", "Vaincre le seigneur de la zone {number1}" },

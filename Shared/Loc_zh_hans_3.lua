@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Skill cooldown -{text1}% per point  (max {number2})", "每点技能冷却 -{text1}%(最多 {number2})" },
 		{ "Dungeon layout: {text1} (changes every run", "地下城布局：{text1} (每次都会变化" },
 		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}……已自动分解!精华 +{number2},{number3} 金币" },
 		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 {number1} 级突破已开始!({text2})" },

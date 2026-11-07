@@ -315,7 +315,8 @@ local function startTutorialRift(player, at)
 			task.wait(0.05)
 		end
 		shakeScreen(player, 0.8)
-		-- 빨려 들어간다: 몸을 고정하고 문 쪽으로 점점 빠르게 끌려간다 (제자리에서 흔들리다가 휙)
+		-- 빨려 들어간다 (강렬하게): 영화 화면(위아래 검은 띠 + 색 바램) -> 문 앞에 소용돌이 고리 -> 주변의 빛줄기 / 돌조각이 문으로 빨려 든다
+		-- -> 몸이 떠오르며 버티다가(앞 35%) -> 빙글 돌며 문 속으로 휙 -> 하얀 섬광 -> 암전
 		root = getAliveParts(player)
 		if not root then return end
 		root.Anchored = true
@@ -323,25 +324,96 @@ local function startTutorialRift(player, at)
 		local shield = Instance.new("ForceField") -- 무적 (방패 모양은 숨긴다)
 		shield.Visible = false
 		shield.Parent = player.Character
+		Remotes.Tutorial:FireClient(player, "Cinema", "Start")
+		playSfx(player, "Lord_Charge")
+		local fx = Instance.new("Folder")
+		fx.Name = "RiftPullFx"
+		fx.Parent = workspace
+		game:GetService("Debris"):AddItem(fx, 10) -- (중간에 오류가 나도 남지 않게)
+		local function fxPart(size, cf, color, transparency, shape)
+			local p = Instance.new("Part")
+			p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false
+			p.Material = Enum.Material.Neon
+			p.Size, p.CFrame, p.Color, p.Transparency = size, cf, color, transparency or 0
+			if shape then p.Shape = shape end
+			p.Parent = fx
+			return p
+		end
 		local startCF = root.CFrame
+		local facing = CFrame.lookAt(gate.Center, Vector3.new(startCF.Position.X, gate.Center.Y, startCF.Position.Z)) * CFrame.Angles(0, math.rad(90), 0) -- 고리의 축(X)이 플레이어 쪽을 본다
+		local vortex = {}
+		for index, spec in ipairs({ { 30, Color3.fromRGB(255, 190, 90) }, { 22, Color3.fromRGB(180, 120, 255) }, { 14, Color3.fromRGB(255, 240, 200) } }) do
+			vortex[index] = fxPart(Vector3.new(0.6, spec[1], spec[1]), facing, spec[2], 0.35, Enum.PartType.Cylinder)
+		end
+		local core = fxPart(Vector3.new(6, 6, 6), CFrame.new(gate.Center), Color3.fromRGB(255, 250, 235), 0.1, Enum.PartType.Ball)
+		local coreLight = Instance.new("PointLight")
+		coreLight.Color, coreLight.Range, coreLight.Brightness, coreLight.Shadows = Color3.fromRGB(255, 200, 120), 50, 3, false
+		coreLight.Parent = core
+		local TweenService = game:GetService("TweenService")
+		local function streak() -- 주변에서 문 한가운데로 빨려 드는 빛줄기
+			local angle = math.random() * math.pi * 2
+			local from = root.Position + Vector3.new(math.cos(angle) * (10 + math.random() * 18), math.random(-2, 12), math.sin(angle) * (10 + math.random() * 18))
+			local line = fxPart(Vector3.new(0.35, 0.35, 7), CFrame.lookAt(from, gate.Center), math.random() < 0.5 and Color3.fromRGB(255, 210, 120) or Color3.fromRGB(190, 150, 255), 0.2)
+			TweenService:Create(line, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { CFrame = CFrame.lookAt(gate.Center, gate.Center + (gate.Center - from).Unit), Size = Vector3.new(0.1, 0.1, 2), Transparency = 0.8 }):Play()
+			game:GetService("Debris"):AddItem(line, 0.4)
+		end
+		for _ = 1, 10 do -- 바닥의 돌조각이 들려 문 속으로 끌려간다
+			local angle = math.random() * math.pi * 2
+			local at = startCF.Position + Vector3.new(math.cos(angle) * (6 + math.random() * 14), -2.5, math.sin(angle) * (6 + math.random() * 14))
+			local rock = fxPart(Vector3.new(1, 1, 1) * (0.8 + math.random() * 1.4), CFrame.new(at) * CFrame.Angles(math.random() * 3, math.random() * 3, 0), Color3.fromRGB(110, 98, 90), 0)
+			rock.Material = Enum.Material.Slate
+			TweenService:Create(rock, TweenInfo.new(2.2 + math.random() * 1.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { CFrame = CFrame.new(gate.Center) * CFrame.Angles(math.random() * 6, math.random() * 6, 0), Size = Vector3.new(0.2, 0.2, 0.2) }):Play()
+		end
 		local pullStart = os.clock()
-		local pullTime = 3.4
-		local blackSent = false
+		local pullTime = 3.6
+		local flashSent, blackSent, nextStreak = false, false, 0
 		while os.clock() - pullStart < pullTime do
-			local t = (os.clock() - pullStart) / pullTime
+			local elapsed = os.clock() - pullStart
+			local t = elapsed / pullTime
 			root = getAliveParts(player)
 			if not root then break end
-			local eased = t * t
-			local shakeOffset = Vector3.new(math.sin(os.clock() * 55), math.cos(os.clock() * 47), math.sin(os.clock() * 61)) * (1 - t) * 0.9
-			root.CFrame = CFrame.lookAt(startCF.Position:Lerp(gate.Center, eased) + shakeOffset, gate.Center)
+			-- 소용돌이: 고리가 서로 다른 속도로 돌고 숨 쉬듯 커졌다 작아진다
+			for index, ringPart in ipairs(vortex) do
+				local pulse = 1 + 0.12 * math.sin(elapsed * (6 + index * 2))
+				ringPart.CFrame = facing * CFrame.Angles(elapsed * (2 + index * 1.5) * (index % 2 == 0 and -1 or 1), 0, 0)
+				local d = ringPart:GetAttribute("BaseD") or ringPart.Size.Y
+				ringPart:SetAttribute("BaseD", d)
+				ringPart.Size = Vector3.new(0.6, d * pulse * (1 - 0.35 * t), d * pulse * (1 - 0.35 * t)) -- (끌려갈수록 고리가 조여든다)
+			end
+			core.Size = Vector3.one * (6 + 3 * t + math.sin(elapsed * 14))
+			if elapsed >= nextStreak then
+				nextStreak = elapsed + (0.09 - 0.05 * t) -- 끌려갈수록 빛줄기가 빽빽해진다
+				streak()
+			end
+			-- 몸: 앞 35% 는 떠오르며 버틴다(조금씩만 끌림 + 강한 떨림), 그 뒤는 빙글 돌며 문으로 휙
+			local pos
+			if t < 0.35 then
+				local k = t / 0.35
+				local drag = startCF.Position:Lerp(gate.Center, 0.08 * k)
+				pos = drag + Vector3.new(0, 4 * k, 0) + Vector3.new(math.sin(elapsed * 55), math.cos(elapsed * 47), math.sin(elapsed * 61)) * 0.7
+				root.CFrame = CFrame.lookAt(pos, gate.Center)
+			else
+				local k = (t - 0.35) / 0.65
+				local liftedStart = startCF.Position:Lerp(gate.Center, 0.08) + Vector3.new(0, 4, 0)
+				pos = liftedStart:Lerp(gate.Center, k * k * k)
+				root.CFrame = CFrame.lookAt(pos, gate.Center) * CFrame.Angles(0, 0, k * k * 18) -- 빙글빙글 돌며 빨려 든다
+			end
 			gate.Set(1, os.clock() - riseStart)
-			shakeScreen(player, 0.4 + t * 0.5)
-			if t > 0.92 and not blackSent then -- 화면은 마지막 순간에만 어두워진다 (그 전에는 문이 다가오는 것이 보이게)
+			shakeScreen(player, 0.4 + t * 0.6)
+			if t > 0.86 and not flashSent then
+				flashSent = true
+				playSfx(player, "Lord_Blast")
+				Effects.Burst(gate.Center, Color3.fromRGB(255, 220, 150), 80)
+				Remotes.Tutorial:FireClient(player, "Cinema", "Blast") -- 하얀 섬광
+			end
+			if t > 0.95 and not blackSent then -- 화면은 마지막 순간에만 어두워진다 (그 전에는 문이 다가오는 것이 보이게)
 				blackSent = true
 				Remotes.Tutorial:FireClient(player, "Cinema", "Black")
 			end
 			task.wait()
 		end
+		if not blackSent then Remotes.Tutorial:FireClient(player, "Cinema", "Black") end
+		fx:Destroy()
 		gate.Destroy()
 		gate = nil
 		root = getAliveParts(player)
@@ -1483,8 +1555,9 @@ local function doomWaveInner(player, zone, center, real)
 	task.delay(4.5, function()
 		player:SetAttribute("InDoomArena", nil)
 		arena:Destroy()
+		player:SetAttribute("DoomReturnTick", (player:GetAttribute("DoomReturnTick") or 0) + 1) -- 마을 도착 연출 (IntroClient: 하늘에서 빛기둥 + 카메라가 내려오며 몸이 나타난다)
 		Remotes.Tutorial:FireClient(player, "Cinema", "End")
-		task.wait(2)
+		task.wait(4) -- (마을 도착 연출이 끝난 뒤에 군주의 말이 뜬다)
 		if player.Parent then -- 쓰러진 직후: 지금 강해질 수 있는 방법을 한눈에 알려준다
 			Remotes.Tutorial:FireClient(player, "Prompt", { Key = "👁", Title = "\"I will wait at the end of the 8th land\"",
 				Text = "The Lord vanished after saying only that. You fell, but you kept the loot (4000 gold / 10 tickets)!\n🎰 10-pull gacha → 🔨 Upgrade (evolve) — that is how you get stronger. Head to the gacha machine first!", Duration = 10 })

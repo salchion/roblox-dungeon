@@ -66,7 +66,7 @@ local function buildLord(parent, baseCF, S)
 end
 
 -- 도착 연출: 착지가 끝나고 조작권이 돌아온 직후 약 3초. 발밑에 룬 고리가 돌며 퍼지고 빛기둥 / 불꽃이 솟고, "환영합니다" 글자가 쾅 뜨고 사라진다. (착지 장면은 그대로 두고, 그 뒤의 첫 화면만 채운다)
-local function arrivalBeat(position)
+local function arrivalBeat(position, headlineText, taglineText)
 	local camera = workspace.CurrentCamera
 	local fx = Instance.new("Folder")
 	fx.Name = "ArrivalFx"
@@ -130,8 +130,8 @@ local function arrivalBeat(position)
 		label.Parent = gui
 		return label
 	end
-	local headline = bannerText({ Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0.5, 0, 0.3, 0), Text = "Welcome, Hunter!", TextSize = 54, TextColor3 = Color3.fromRGB(255, 232, 160) })
-	local tagline = bannerText({ Size = UDim2.new(1, 0, 0, 28), Position = UDim2.new(0.5, 0, 0.3, 50), Text = "Your gear rush starts now", TextSize = 20, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(236, 232, 250) })
+	local headline = bannerText({ Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0.5, 0, 0.3, 0), Text = headlineText or "Welcome, Hunter!", TextSize = 54, TextColor3 = Color3.fromRGB(255, 232, 160) })
+	local tagline = bannerText({ Size = UDim2.new(1, 0, 0, 28), Position = UDim2.new(0.5, 0, 0.3, 50), Text = taglineText or "Your gear rush starts now", TextSize = 20, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(236, 232, 250) })
 	local scale = Instance.new("UIScale")
 	scale.Scale = 1.8
 	scale.Parent = headline
@@ -163,6 +163,66 @@ local function arrivalBeat(position)
 	fx:Destroy()
 	gui:Destroy()
 end
+
+-- 최후의 군주에게 날려간 뒤 마을로 돌아올 때: 하늘 높이에서 카메라가 시작 언덕으로 내려오고, 빛기둥이 떨어지며 몸이 서서히 나타난다
+local function townReturn()
+	local started = os.clock()
+	local character, root
+	repeat -- (쓰러진 뒤 다시 태어나 마을에 설 때까지 기다린다)
+		character = player.Character
+		root = character and character:FindFirstChild("HumanoidRootPart")
+		if root and player:GetAttribute("Zone") == "Lobby" then break end
+		task.wait(0.1)
+	until os.clock() - started > 12
+	if not root or player:GetAttribute("Zone") ~= "Lobby" then return end
+	task.wait(0.25)
+	local camera = workspace.CurrentCamera
+	if not camera then return end
+	-- 몸이 서서히 나타난다 (내 화면에서만: LocalTransparencyModifier)
+	local parts = {}
+	for _, item in ipairs(character:GetDescendants()) do
+		if item:IsA("BasePart") or item:IsA("Decal") then
+			item.LocalTransparencyModifier = 1
+			table.insert(parts, item)
+		end
+	end
+	-- 카메라: 마을 위 높은 곳 -> 캐릭터 뒤로 내려온다
+	local previousType = camera.CameraType
+	camera.CameraType = Enum.CameraType.Scriptable
+	local focus = root.Position
+	local look = root.CFrame.LookVector
+	local fromCF = CFrame.lookAt(focus + Vector3.new(0, 85, 0) - look * 40, focus)
+	local toCF = CFrame.lookAt(focus + Vector3.new(0, 9, 0) - look * 20, focus + Vector3.new(0, 2, 0))
+	camera.CFrame = fromCF
+	sfx("Rare_Drop", 0.8, 0.8)
+	task.spawn(arrivalBeat, root.Position, "🏘 Back in Town", "Grow stronger and face the Lord again")
+	local duration = 2.2
+	local t0 = os.clock()
+	while os.clock() - t0 < duration do
+		local t = (os.clock() - t0) / duration
+		local eased = 1 - (1 - t) ^ 3
+		camera.CFrame = fromCF:Lerp(toCF, eased)
+		local alpha = math.clamp((t - 0.35) / 0.5, 0, 1) -- 빛기둥이 떨어진 뒤 몸이 나타난다
+		for _, item in ipairs(parts) do
+			if item.Parent then item.LocalTransparencyModifier = 1 - alpha end
+		end
+		RunService.RenderStepped:Wait()
+	end
+	for _, item in ipairs(parts) do
+		if item.Parent then item.LocalTransparencyModifier = 0 end
+	end
+	camera.CameraType = previousType == Enum.CameraType.Scriptable and Enum.CameraType.Custom or previousType
+end
+player:GetAttributeChangedSignal("DoomReturnTick"):Connect(function()
+	task.spawn(function()
+		local ok, err = pcall(townReturn)
+		if not ok then
+			warn("[마을 귀환 연출] " .. tostring(err))
+			local camera = workspace.CurrentCamera
+			if camera then camera.CameraType = Enum.CameraType.Custom end
+		end
+	end)
+end)
 
 local function play()
 	local camera = workspace.CurrentCamera

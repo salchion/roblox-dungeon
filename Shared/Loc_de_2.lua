@@ -499,6 +499,8 @@ return {
 		["Skill cooldown -4% per point"] = "Pro Punkt Fähigkeiten-Abklingzeit -4 %",
 		["Crit damage +6%p per point (base 2x)"] = "Pro Punkt Krit-Schaden +6 %p (Basis 2x)",
 		["A big blast when it ends (attack x8)"] = "Beim Ende eine große Explosion (Angriff x8)",
+		["🏘 Back in Town"] = "🏘 Zurück in der Stadt",
+		["Grow stronger and face the Lord again"] = "Werde stärker und stelle dich erneut dem Lord",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -951,7 +953,5 @@ return {
 		{ "vs. equipped ▲ +{number1}", "vs. ausgerüstet ▲ +{number1}" },
 		{ "Online: {number1} players", "Online: {number1} Spieler" },
 		{ "🏆 Hall of Fame #{number1}", "🏆 Ruhmeshalle #{number1}" },
-		{ "◆ Crit Chance +{number1}%", "◆ Krit-Chance +{number1}%" },
-		{ "◆ Crit Damage +{number1}%", "◆ Kritischer Schaden +{number1}%" },
 	},
 }

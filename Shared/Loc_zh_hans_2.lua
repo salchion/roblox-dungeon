@@ -427,6 +427,8 @@ return {
 		["Skill cooldown -4% per point"] = "每点技能冷却 -4%",
 		["Crit damage +6%p per point (base 2x)"] = "每点暴击伤害 +6%p（基础2倍）",
 		["A big blast when it ends (attack x8)"] = "结束时发生大爆炸（攻击力 x8）",
+		["🏘 Back in Town"] = "🏘 回到城镇",
+		["Grow stronger and face the Lord again"] = "变得更强，再次挑战领主",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1056,6 +1058,5 @@ return {
 		{ "🎮 Welcome to the world of adventure, {text1}!", "🎮 欢迎来到冒险世界,{text1}!" },
 		{ "👑 Zone {number1} · The Lord of {text2} has reappeared!", "👑 区域{number1} · {text2}领主再次现身!" },
 		{ "Zone {number1} monsters {number2} / {number3} defeated · Lord {text4}", "区域{number1}怪物 已击败 {number2} / {number3} · 领主 {text4}" },
-		{ "Skill cooldown -{text1}% per point  (max {number2})", "每点技能冷却 -{text1}%(最多 {number2})" },
 	},
 }

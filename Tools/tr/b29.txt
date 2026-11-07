@@ -303,3 +303,5 @@
 2344¦ポイントごとにスキルのクールタイム -4%¦Pro Punkt Fähigkeiten-Abklingzeit -4 %¦Récupération des compétences -4 % par point¦Enfriamiento de habilidades -4 % por punto¦Recarga de habilidades -4% por ponto¦每点技能冷却 -4%¦포인트당 스킬 쿨타임 -4%
 2345¦ポイントごとにクリティカルダメージ +6%p（基本2倍）¦Pro Punkt Krit-Schaden +6 %p (Basis 2x)¦Dégâts critiques +6 %p par point (base 2x)¦Daño crítico +6 %p por punto (base 2x)¦Dano crítico +6%p por ponto (base 2x)¦每点暴击伤害 +6%p（基础2倍）¦포인트당 치명 피해 +6%p (기본 2배)
 2346¦終わるときに大きな爆発（攻撃力 x8）¦Beim Ende eine große Explosion (Angriff x8)¦Une grosse explosion à la fin (attaque x8)¦Una gran explosión al terminar (ataque x8)¦Uma grande explosão ao terminar (ataque x8)¦结束时发生大爆炸（攻击力 x8）¦끝날 때 크게 한 번 터진다 (공격력 x8)
+2347¦🏘 町に帰還¦🏘 Zurück in der Stadt¦🏘 De retour en ville¦🏘 De vuelta en el pueblo¦🏘 De volta à cidade¦🏘 回到城镇¦🏘 마을로 돌아왔다
+2348¦強くなって、もう一度君主に挑もう¦Werde stärker und stelle dich erneut dem Lord¦Deviens plus fort et affronte de nouveau le Seigneur¦Hazte más fuerte y enfréntate de nuevo al Señor¦Fique mais forte e enfrente o Lorde de novo¦变得更强，再次挑战领主¦더 강해져서 다시 군주에게 맞서자

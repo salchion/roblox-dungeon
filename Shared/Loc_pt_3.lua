@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🚪 Open Zone {number1} Gate", "🚪 Abrir o portão da zona {number1}" },
+		{ "max · +{number1}% crit dmg", "máx. · dano crítico +{number1}%" },
 		{ "🔊 Music Volume: {number1}%", "🔊 Volume da música: {number1}%" },
 		{ "Finish {number1} trainings", "Conclua {number1} treinos" },
 		{ "◆ Attack Speed +{number1}%", "◆ Velocidade de ataque +{number1}%" },

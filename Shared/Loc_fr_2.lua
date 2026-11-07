@@ -558,6 +558,8 @@ return {
 		["Skill cooldown -4% per point"] = "Récupération des compétences -4 % par point",
 		["Crit damage +6%p per point (base 2x)"] = "Dégâts critiques +6 %p par point (base 2x)",
 		["A big blast when it ends (attack x8)"] = "Une grosse explosion à la fin (attaque x8)",
+		["🏘 Back in Town"] = "🏘 De retour en ville",
+		["Grow stronger and face the Lord again"] = "Deviens plus fort et affronte de nouveau le Seigneur",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -922,6 +924,5 @@ return {
 		{ "🌋 {number1} Streak — Legendary!", "🌋 Série de {number1} - Légendaire !" },
 		{ "Reach character level {number1}", "Atteindre le niveau de personnage {number1}" },
 		{ "▼ 👑 First Zone Lord  {number1}m", "▼ 👑 Seigneur de la première zone {number1}m" },
-		{ "Defeat {number1} elite monsters", "Vainquez {number1} monstres d'élite" },
 	},
 }

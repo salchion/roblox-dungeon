@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 무료 입장 사용! (오늘 {number1} / {number2} 남음)" },
 		{ "A big blast when it ends (attack x{number1})", "끝날 때 크게 한 번 터져요 (공격 x{number1})" },
 		{ "{number1}s invincible, but healing is halved", "{number1}초 무적, 대신 회복량은 절반" },
 		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 새로운 무기: 스펠 토메 - {number1}을 누르세요!" },

@@ -547,6 +547,8 @@ return {
 		["Skill cooldown -4% per point"] = "Enfriamiento de habilidades -4 % por punto",
 		["Crit damage +6%p per point (base 2x)"] = "Daño crítico +6 %p por punto (base 2x)",
 		["A big blast when it ends (attack x8)"] = "Una gran explosión al terminar (ataque x8)",
+		["🏘 Back in Town"] = "🏘 De vuelta en el pueblo",
+		["Grow stronger and face the Lord again"] = "Hazte más fuerte y enfréntate de nuevo al Señor",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -949,8 +951,5 @@ return {
 		{ "💰 Buy Point {number1} G ({number2}/{number3})", "💰 Comprar punto {number1} G ({number2}/{number3})" },
 		{ "Best {number1}  ·  Max hit {number2}", "Los mejores {number1} · Golpe máximo {number2}" },
 		{ "🗿 Colossus · Zone {number1}", "🗿 Coloso · Zona {number1}" },
-		{ "⚔ DUNGEON  ·  Lv.{number1}+", "⚔ Mazmorra · Nivel {number1}+" },
-		{ "Zone {number1} · Trial Lv.3", "Zona {number1} · Prueba Nv.3" },
-		{ "Upgrade success! +{number1}", "¡Mejora exitosa! +{number1}" },
 	},
 }

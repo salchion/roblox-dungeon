@@ -518,6 +518,8 @@ return {
 		["Skill cooldown -4% per point"] = "Recarga de habilidades -4% por ponto",
 		["Crit damage +6%p per point (base 2x)"] = "Dano crítico +6%p por ponto (base 2x)",
 		["A big blast when it ends (attack x8)"] = "Uma grande explosão ao terminar (ataque x8)",
+		["🏘 Back in Town"] = "🏘 De volta à cidade",
+		["Grow stronger and face the Lord again"] = "Fique mais forte e enfrente o Lorde de novo",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -948,7 +950,5 @@ return {
 		{ "Field Entrance  {number1}m", "Entrada do Campo {number1}m" },
 		{ "Zone {number1} · Execute  ", "Zona {number1} · Executar" },
 		{ "{number1} Meadow · {number2} Forest", "{number1} Prado · {number2} Floresta" },
-		{ "🚪 Open Zone {number1} Gate", "🚪 Abrir o portão da zona {number1}" },
-		{ "max · +{number1}% crit dmg", "máx. · dano crítico +{number1}%" },
 	},
 }
