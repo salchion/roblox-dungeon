@@ -969,6 +969,49 @@ local function doomWaveInner(player, zone, center, real)
 		local r = select(1, getAliveParts(player))
 		return r and Vector3.new(r.Position.X, center.Y, r.Position.Z) or center
 	end
+	-- 공용 패턴 (튜토리얼 결투 / 진짜 결전 둘 다 쓴다). lethal: 진짜 결전이면 true (쓰러질 수 있다)
+	local function lordGround()
+		return body.Parent and Vector3.new(body.Position.X, center.Y, body.Position.Z) or center
+	end
+	-- 대검 휘두르기: 군주 앞쪽 부채꼴을 따라 폭격이 한쪽 끝에서 반대쪽 끝으로 차례로 내리꽂힌다 (한 칸은 비어 있다: 그 틈으로 피한다)
+	local function swordSweep(percent, lethal)
+		local origin = lordGround()
+		local toPlayer = playerAt() - origin
+		local baseAngle = math.atan2(toPlayer.Z, toPlayer.X)
+		local count, gap = 9, math.random(2, 8)
+		local dirSign = math.random() < 0.5 and -1 or 1
+		local radius = math.clamp(toPlayer.Magnitude, 22, 46)
+		lordSfx("Lord_Voice")
+		shake(0.5)
+		for k = 1, count do
+			if k ~= gap then
+				local angle = baseAngle + dirSign * (k - (count + 1) / 2) * math.rad(15)
+				strike(origin + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius), 11, 0.8 + k * 0.09, percent, lethal)
+			end
+		end
+		task.wait(0.8 + count * 0.09 + 0.6)
+	end
+	-- 추적 낙인: 내가 서 있는 곳에 연달아 5번 (계속 움직여야 한다)
+	local function huntingMarks(percent, lethal)
+		for _ = 1, 5 do
+			if not alive() then return end
+			strike(playerAt(), 10, 0.75, percent, lethal)
+			task.wait(0.42)
+		end
+		task.wait(0.9)
+	end
+	-- 나선 개화: 군주 발밑에서 바깥으로 소용돌이치며 폭격이 번진다 (나선 사이의 빈 곳으로 걸어 나간다)
+	local function spiralBloom(percent, lethal)
+		local origin = lordGround()
+		local turn = math.random() * math.pi * 2
+		lordSfx("Lord_Charge")
+		for k = 1, 16 do
+			local angle = turn + k * 0.62
+			local dist = 6 + k * 3.6
+			strike(origin + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist), 8, 0.7 + k * 0.06, percent, lethal)
+		end
+		task.wait(0.7 + 16 * 0.06 + 0.6)
+	end
 
 	-- ================= 진짜 결전 (8구역 이후 포탈): 체력이 실제로 줄고, 단계마다 패턴이 늘어난다 =================
 	if real then
@@ -1366,7 +1409,8 @@ local function doomWaveInner(player, zone, center, real)
 				dmgMult = 1.35
 				phaseBanner("💢 ENRAGED — The Lord grows impatient!", "Enough games.")
 			end
-			local pool = { tripleStrike, ringOfRuin, sweepBeam, shockwaves }
+			local pool = { tripleStrike, ringOfRuin, sweepBeam, shockwaves, function() swordSweep(0.16 * dmgMult, true) end, function() huntingMarks(0.12 * dmgMult, true) end }
+			if phaseNow >= 2 then table.insert(pool, function() spiralBloom(0.14 * dmgMult, true) end) end
 			if phaseNow >= 2 then table.insert(pool, meteorStorm) table.insert(pool, lanes) table.insert(pool, crossBeams) end
 			if phaseNow >= 3 then table.insert(pool, orbBarrage) table.insert(pool, judgement) end
 			order += 1
@@ -1493,6 +1537,16 @@ local function doomWaveInner(player, zone, center, real)
 			strike(around, 22, 1.0, 0.2)
 		end
 		task.wait(1.5)
+	end
+	-- 3) 대검 휘두르기 -> 4) 추적 낙인 -> 5) 나선 개화 (튜토리얼은 죽지 않는다: 체력 1 은 남는다)
+	if alive() then
+		swordSweep(0.12, false)
+	end
+	if alive() then
+		huntingMarks(0.08, false)
+	end
+	if alive() then
+		spiralBloom(0.1, false)
 	end
 	-- 마지막: 아레나 전체가 붉게 물든다 — 어디에도 안전한 곳이 없다
 	if alive() then
