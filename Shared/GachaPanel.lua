@@ -11,7 +11,7 @@ function M.Init(deps)
 	local create, makeLabel, makeButton, makePanel, rounded = deps.create, deps.makeLabel, deps.makeButton, deps.makePanel, deps.rounded
 	local player, gui = deps.player, deps.gui
 	local W, H = 720, 610
-	local PURPLE = Color3.fromRGB(165, 70, 245)
+	local PURPLE = Color3.fromRGB(214, 156, 52) -- (여러 번 뽑기 버튼: 보라 -> 금색. 가장 눈에 띄어야 할 버튼)
 
 	local panel = makePanel({
 		Size = UDim2.new(0, W, 0, H), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
@@ -61,29 +61,44 @@ function M.Init(deps)
 	}, orbStroke)
 	local orbScale = create("UIScale", { Scale = 1 }, orb)
 	makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "🎁", TextSize = 70, ZIndex = 4 }, orb)
-	local ticketLabel = makeLabel({
-		Size = UDim2.new(0, 240, 0, 34), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, CX, 0, CY + 84), Text = "", RichText = true,
-		Font = Enum.Font.GothamBlack, TextSize = 24, TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 0.5, ZIndex = 4,
+	local ticketLabel = makeLabel({ -- 티켓 수: 금테 알약 안에
+		Size = UDim2.new(0, 210, 0, 36), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, CX, 0, CY + 84), Text = "", RichText = true,
+		Font = Enum.Font.GothamBlack, TextSize = 21, TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 0.6, ZIndex = 4,
+		BackgroundTransparency = 0.1, BackgroundColor3 = Color3.fromRGB(30, 22, 48),
 	}, panel)
+	rounded(ticketLabel, 18)
+	create("UIStroke", { Color = Color3.fromRGB(255, 205, 110), Thickness = 1.5, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, ticketLabel)
 	local message = makeLabel({
-		Size = UDim2.new(1, -40, 0, 22), Position = UDim2.new(0, 20, 0, CY + 120), Text = "", RichText = true, TextSize = 13, Font = Enum.Font.GothamBold, ZIndex = 4,
+		Size = UDim2.new(1, -40, 0, 20), Position = UDim2.new(0, 20, 0, CY + 124), Text = "", RichText = true, TextSize = 13, Font = Enum.Font.GothamBold, ZIndex = 4,
 	}, panel)
 
 	------------------------------------------------------------
 	-- 왼쪽: 등급 확률 (등급 색 구슬 + %)
 	------------------------------------------------------------
-	makeLabel({ Size = UDim2.new(0, 170, 0, 20), Position = UDim2.new(0, 26, 0, 58), Text = "Rates", TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(230, 210, 255) }, panel)
+	-- 구역 제목: 왼쪽 정렬 + 아래 금빛 짧은 선 (게임 메뉴 느낌)
+	local function sectionHead(text, x, anchorRight)
+		local head = makeLabel({ Size = UDim2.new(0, 180, 0, 20), Position = UDim2.new(anchorRight and 1 or 0, x, 0, 58), Text = text, TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 226, 160), TextXAlignment = Enum.TextXAlignment.Left }, panel)
+		create("Frame", { Size = UDim2.new(0, 28, 0, 2), Position = UDim2.new(0, 0, 1, 1), BackgroundColor3 = Color3.fromRGB(255, 200, 110), BorderSizePixel = 0 }, head)
+		return head
+	end
+	sectionHead("Rates", 26)
+	-- 등급 확률: 굵은 알약 대신 얇은 줄 (왼쪽 등급색 막대 + 이름 + % + 아래 비율 막대)
+	local maxRate = 0
+	for _, rate in ipairs(Config.Gacha.Rates) do maxRate = math.max(maxRate, rate) end
 	for index, rate in ipairs(Config.Gacha.Rates) do
 		local color = Config.Gear.RarityColors[index]
-		local chip = create("Frame", { Size = UDim2.new(0, 170, 0, 34), Position = UDim2.new(0, 26, 0, 80 + (index - 1) * 40), BackgroundColor3 = Color3.fromRGB(30, 24, 50), BorderSizePixel = 0, ZIndex = 3 }, panel)
-		rounded(chip, 17)
-		create("UIStroke", { Color = color, Thickness = index >= 4 and 2.5 or 1.5, Transparency = 0.15 }, chip)
-		local dot = create("Frame", { Size = UDim2.new(0, 22, 0, 22), Position = UDim2.new(0, 7, 0.5, -11), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 4 }, chip)
-		rounded(dot, 11)
-		makeLabel({ Size = UDim2.new(1, -90, 1, 0), Position = UDim2.new(0, 36, 0, 0), Text = Config.Gear.RarityNames[index], TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = color, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4 }, chip)
-		makeLabel({ Size = UDim2.new(0, 52, 1, 0), Position = UDim2.new(1, -58, 0, 0), Text = rate .. "%", TextSize = 14, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 4 }, chip)
+		local row = create("Frame", { Size = UDim2.new(0, 180, 0, 34), Position = UDim2.new(0, 26, 0, 86 + (index - 1) * 38), BackgroundColor3 = Color3.fromRGB(26, 22, 42), BackgroundTransparency = 0.15, BorderSizePixel = 0, ZIndex = 3 }, panel)
+		rounded(row, 8)
+		local accent = create("Frame", { Size = UDim2.new(0, 4, 1, -10), Position = UDim2.new(0, 6, 0, 5), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 4 }, row)
+		rounded(accent, 2)
+		makeLabel({ Size = UDim2.new(1, -80, 0, 18), Position = UDim2.new(0, 16, 0, 3), Text = Config.Gear.RarityNames[index], TextSize = 12, Font = Enum.Font.GothamBlack, TextColor3 = color, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4 }, row)
+		makeLabel({ Size = UDim2.new(0, 52, 0, 18), Position = UDim2.new(1, -60, 0, 3), Text = rate .. "%", TextSize = 13, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 4 }, row)
+		local back = create("Frame", { Size = UDim2.new(1, -24, 0, 4), Position = UDim2.new(0, 16, 1, -9), BackgroundColor3 = Color3.fromRGB(46, 42, 66), BorderSizePixel = 0, ZIndex = 4 }, row)
+		rounded(back, 2)
+		local fillBar = create("Frame", { Size = UDim2.new(math.clamp(rate / maxRate, 0.03, 1), 0, 1, 0), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 5 }, back)
+		rounded(fillBar, 2)
 	end
-	makeButton({ Size = UDim2.new(0, 170, 0, 28), Position = UDim2.new(0, 26, 0, 284), Text = "📊 Odds", TextSize = 13, BackgroundColor3 = Color3.fromRGB(60, 72, 130) }, panel, function()
+	makeButton({ Size = UDim2.new(0, 180, 0, 28), Position = UDim2.new(0, 26, 0, 284), Text = "📊 Odds", TextSize = 13, BackgroundColor3 = Color3.fromRGB(60, 72, 130) }, panel, function()
 		player:SetAttribute("OddsKind", "Gacha") -- OddsClient 가 확률 창을 연다 (유료 랜덤 아이템 정책)
 		player:SetAttribute("OddsOpen", os.clock())
 	end)
@@ -91,17 +106,20 @@ function M.Init(deps)
 	------------------------------------------------------------
 	-- 오른쪽: 천장 게이지 (전설 / 신화 확정까지)
 	------------------------------------------------------------
-	makeLabel({ Size = UDim2.new(0, 180, 0, 20), Position = UDim2.new(1, -206, 0, 58), Text = "Pity", TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(230, 210, 255) }, panel)
+	sectionHead("Pity", -206, true)
 	local function pityGauge(y, color, total)
-		local card = create("Frame", { Size = UDim2.new(0, 180, 0, 92), Position = UDim2.new(1, -206, 0, y), BackgroundColor3 = Color3.fromRGB(30, 24, 50), BorderSizePixel = 0, ZIndex = 3 }, panel)
-		rounded(card, 12)
-		create("UIStroke", { Color = color, Thickness = 2, Transparency = 0.2 }, card)
-		local title = makeLabel({ Size = UDim2.new(1, -16, 0, 40), Position = UDim2.new(0, 8, 0, 6), Text = "", RichText = true, TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = color, TextWrapped = true, ZIndex = 4 }, card)
-		local back = create("Frame", { Size = UDim2.new(1, -20, 0, 14), Position = UDim2.new(0, 10, 0, 52), BackgroundColor3 = Color3.fromRGB(14, 12, 24), BorderSizePixel = 0, ZIndex = 4 }, card)
-		rounded(back, 7)
+		local card = create("Frame", { Size = UDim2.new(0, 180, 0, 86), Position = UDim2.new(1, -206, 0, y + 6), BackgroundColor3 = Color3.fromRGB(26, 22, 42), BackgroundTransparency = 0.15, BorderSizePixel = 0, ZIndex = 3 }, panel)
+		rounded(card, 10)
+		create("UIStroke", { Color = color, Thickness = 1, Transparency = 0.45 }, card)
+		local band = create("Frame", { Size = UDim2.new(1, 0, 0, 3), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 4 }, card) -- 위쪽 색 띠
+		create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.7), NumberSequenceKeypoint.new(0.5, 0), NumberSequenceKeypoint.new(1, 0.7) }) }, band)
+		local title = makeLabel({ Size = UDim2.new(1, -20, 0, 34), Position = UDim2.new(0, 10, 0, 8), Text = "", RichText = true, TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = color, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4 }, card)
+		local back = create("Frame", { Size = UDim2.new(1, -20, 0, 8), Position = UDim2.new(0, 10, 0, 50), BackgroundColor3 = Color3.fromRGB(14, 12, 24), BorderSizePixel = 0, ZIndex = 4 }, card)
+		rounded(back, 4)
 		local fill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 5 }, back)
-		rounded(fill, 7)
-		local count = makeLabel({ Size = UDim2.new(1, -20, 0, 16), Position = UDim2.new(0, 10, 0, 70), Text = "", TextSize = 10, TextColor3 = Color3.fromRGB(200, 196, 225), ZIndex = 4 }, card)
+		rounded(fill, 4)
+		create("UIGradient", { Color = ColorSequence.new(color:Lerp(Color3.new(1, 1, 1), 0.35), color) }, fill)
+		local count = makeLabel({ Size = UDim2.new(1, -20, 0, 14), Position = UDim2.new(0, 10, 0, 64), Text = "", TextSize = 10, TextColor3 = Color3.fromRGB(200, 196, 225), TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 4 }, card)
 		return { Title = title, Fill = fill, Count = count, Total = total }
 	end
 	local pityL = pityGauge(80, Color3.fromRGB(255, 217, 102), Config.Gacha.Pity.Legendary)
@@ -132,8 +150,8 @@ function M.Init(deps)
 		}, setRow, function()
 			Remotes.Gear:FireServer("GachaSet", zone)
 		end)
-		rounded(card, 12)
-		local stroke = create("UIStroke", { Color = def and def.Color or Color3.fromRGB(150, 150, 180), Thickness = 1.5 }, card)
+		rounded(card, 10)
+		local stroke = create("UIStroke", { Color = def and def.Color or Color3.fromRGB(150, 150, 180), Thickness = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
 		local scale = create("UIScale", { Scale = 1 }, card)
 		local icon = makeLabel({ Size = UDim2.new(1, 0, 0, 32), Position = UDim2.new(0, 0, 0, 4), Text = def and (def.Icon or "✦") or "🎲", TextSize = 24, ZIndex = 6 }, card)
 		local zoneTag = makeLabel({ Size = UDim2.new(1, 0, 0, 12), Position = UDim2.new(0, 0, 0, 36), Text = zone > 0 and ("Z" .. zone) or "Any", TextSize = 10, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 226, 140), ZIndex = 6 }, card)
@@ -154,7 +172,7 @@ function M.Init(deps)
 			entry.Name.TextTransparency = open and 0 or 0.5
 			entry.Tag.TextTransparency = open and 0 or 0.4
 			entry.Check.Visible = picked
-			entry.Stroke.Thickness = picked and 3.5 or 1.2
+			entry.Stroke.Thickness = picked and 2.5 or 1
 			entry.Stroke.Color = picked and Color3.new(1, 1, 1) or (entry.Def and entry.Def.Color or Color3.fromRGB(150, 150, 180))
 			local base = entry.Def and entry.Def.Color or Color3.fromRGB(150, 150, 180)
 			entry.Card.BackgroundColor3 = picked and base:Lerp(Color3.fromRGB(24, 20, 38), 0.2) or (open and base:Lerp(Color3.fromRGB(24, 20, 38), 0.72) or Color3.fromRGB(30, 28, 42))
@@ -178,19 +196,20 @@ function M.Init(deps)
 	------------------------------------------------------------
 	local bar = create("Frame", { Size = UDim2.new(1, -36, 0, 128), Position = UDim2.new(0, 18, 1, -142), BackgroundColor3 = Color3.fromRGB(58, 38, 92), BorderSizePixel = 0 }, panel)
 	rounded(bar, 14)
-	create("UIStroke", { Color = Color3.fromRGB(255, 210, 120), Thickness = 2 }, bar)
-	create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(110, 60, 170), Color3.fromRGB(48, 30, 80)), Rotation = 0 }, bar)
+	bar.BackgroundColor3 = Color3.fromRGB(24, 18, 40)
+	create("UIStroke", { Color = Color3.fromRGB(255, 210, 120), Thickness = 1, Transparency = 0.5 }, bar)
+	makeLabel({ Size = UDim2.new(0, 210, 0, 18), Position = UDim2.new(0, 18, 0, 18), Text = "ℹ How it works", TextSize = 12, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 226, 160), TextXAlignment = Enum.TextXAlignment.Left }, bar)
 	makeLabel({
-		Size = UDim2.new(0, 200, 1, -20), Position = UDim2.new(0, 16, 0, 10), TextSize = 11, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left,
-		TextColor3 = Color3.fromRGB(215, 205, 240), Text = "Same or lower rarity converts to Gold · Tickets drop from dungeons / field bosses",
+		Size = UDim2.new(0, 210, 1, -50), Position = UDim2.new(0, 18, 0, 40), TextSize = 11, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+		TextColor3 = Color3.fromRGB(200, 192, 226), Text = "Same or lower rarity converts to Gold · Tickets drop from dungeons / field bosses",
 	}, bar)
 	local rollOne = makeButton({
 		Size = UDim2.new(0, 200, 0, 92), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -244, 0.5, 0),
-		Text = "🎰 Roll x1\n1 Ticket", TextSize = 19, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(120, 80, 210),
+		Text = "🎰 Roll x1\n1 Ticket", TextSize = 19, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(84, 62, 140),
 	}, bar, function()
 		Remotes.Gear:FireServer("Roll", 1)
 	end)
-	create("UIStroke", { Color = Color3.fromRGB(190, 170, 255), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 2 }, rollOne)
+	create("UIStroke", { Color = Color3.fromRGB(170, 150, 240), ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Thickness = 1.5, Transparency = 0.2 }, rollOne)
 	local rollMany = makeButton({
 		Size = UDim2.new(0, 224, 0, 92), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -12, 0.5, 0),
 		Text = "", TextSize = 21, Font = Enum.Font.GothamBold, BackgroundColor3 = PURPLE,
@@ -246,7 +265,7 @@ function M.Init(deps)
 		local gold = player:GetAttribute("Gold") or 0
 		rollOne.Text = setCost > 0 and string.format("🎰 Roll x1\n1 Ticket\n💰 %s G", string.format("%d", setCost)) or "🎰 Roll x1\n1 Ticket"
 		rollOne.TextSize = setCost > 0 and 16 or 19
-		rollOne.BackgroundColor3 = (tickets > 0 and gold >= setCost) and Color3.fromRGB(120, 80, 210) or Color3.fromRGB(80, 70, 100)
+		rollOne.BackgroundColor3 = (tickets > 0 and gold >= setCost) and Color3.fromRGB(84, 62, 140) or Color3.fromRGB(60, 56, 76)
 		local many = math.min(10, tickets)
 		if setCost > 0 then many = math.min(many, math.floor(gold / setCost)) end -- 골드가 모자라면 살 수 있는 만큼만
 		local canMany = many >= 2
