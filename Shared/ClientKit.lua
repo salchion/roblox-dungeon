@@ -101,4 +101,17 @@ function Kit.medal(parent, o)
 	return root, icon
 end
 
+-- 리본 이름표: 짙은 색 띠 + 굵은 남색 테두리 + 둥근 게임 글꼴 (아이콘 아래 이름에 쓴다)
+--   o = { Size, Position, AnchorPoint, Color, Text, TextSize, ZIndex }  반환: 띠(Frame), 글자(TextLabel)
+function Kit.ribbon(parent, o)
+	local z = o.ZIndex or 2
+	local band = Kit.create("Frame", { Size = o.Size, Position = o.Position or UDim2.new(), AnchorPoint = o.AnchorPoint or Vector2.new(), BackgroundColor3 = (o.Color or Color3.fromRGB(90, 110, 200)):Lerp(Color3.fromRGB(20, 18, 40), 0.25), BorderSizePixel = 0, Active = false, ZIndex = z }, parent)
+	Kit.create("UICorner", { CornerRadius = UDim.new(0, 6) }, band)
+	Kit.create("UIStroke", { Color = Color3.fromRGB(20, 18, 40), Thickness = 2.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, band)
+	Kit.create("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(170, 170, 185)) }, band)
+	local text = Kit.makeLabel({ Size = UDim2.new(1, -6, 1, 0), Position = UDim2.new(0, 3, 0, 0), Text = o.Text or "", TextSize = o.TextSize or 12, Font = Enum.Font.FredokaOne, TextWrapped = true,
+		TextColor3 = Color3.new(1, 1, 1), TextStrokeColor3 = Color3.fromRGB(20, 18, 40), TextStrokeTransparency = 0.15, ZIndex = z + 1 }, band)
+	return band, text
+end
+
 return Kit

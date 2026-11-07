@@ -157,7 +157,7 @@ function SHOP.Card(parent, order, o)
 	rounded(tile, 14)
 	create("UIStroke", { Color = chosen and Color3.new(1, 1, 1) or acc, Thickness = chosen and 2.5 or 1.2, Transparency = chosen and 0.1 or (mute and 0.8 or 0.5) }, tile)
 	Kit.medal(tile, { Size = 66, Position = UDim2.new(0.5, -33, 0, 8), Color = acc, Icon = o.Icon, TextSize = 30, Tier = 0, Muted = mute, ZIndex = 2 })
-	makeLabel({ Size = UDim2.new(1, -10, 0, 28), Position = UDim2.new(0, 5, 0, 78), Text = o.Name, TextSize = 11, Font = Enum.Font.GothamBold, TextWrapped = true, TextColor3 = mute and Color3.fromRGB(150, 156, 180) or Color3.fromRGB(240, 242, 250) }, tile)
+	Kit.ribbon(tile, { Size = UDim2.new(1, -6, 0, 28), Position = UDim2.new(0, 3, 0, 78), Color = mute and Color3.fromRGB(90, 94, 120) or acc, Text = o.Name, TextSize = 11, ZIndex = 3 }) -- (게임 아이콘처럼 리본 이름표)
 	if o.Badge then
 		local badge = makeLabel({ Size = UDim2.new(0, 0, 0, 16), AutomaticSize = Enum.AutomaticSize.X, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -4, 0, 4), Text = o.Badge, TextSize = 9, Font = Enum.Font.GothamBold, TextWrapped = false, BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(196, 84, 72), ZIndex = 3 }, tile)
 		rounded(badge, 8)
