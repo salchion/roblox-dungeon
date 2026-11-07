@@ -173,7 +173,6 @@ end
 local function startTutorialRift(player, at)
 	if player:GetAttribute("TutorialRiftBusy") then return end
 	player:SetAttribute("TutorialRiftBusy", true)
-	player:SetAttribute("CombatLocked", true) -- 열쇠가 떨어진 순간부터 던전에 들어갈 때까지 공격하지 않는다 (자동 공격이 연출 중에 계속 쏘던 것)
 	local key, gate, hole
 	local ok, err = pcall(function()
 		local root = getAliveParts(player)
