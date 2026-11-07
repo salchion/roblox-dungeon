@@ -477,6 +477,7 @@ return {
 		{ "Reward: {text1}", "報酬: {text1}" },
 		{ "★ Elite {text1}", "★ エリート {text1}" },
 		{ "{number1} / {number2}     {text3}", "{number1} / {number2}    {text3}" },
+		{ "👑 Boss: {text1}", "👑 ボス: {text1}" },
 		{ "🔫 Next {text1}", "🔫 次の{text1}" },
 		{ "Zone {number1}: {text2}", "ゾーン{number1}: {text2}" },
 		{ "{text1} → Boss", "{text1} → ボス" },

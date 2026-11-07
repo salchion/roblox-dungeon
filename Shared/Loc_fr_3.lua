@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Lord of Meadow  ·  Zone {number1}", "Seigneur des prés · Zone {number1}" },
 		{ "Idle Accrual Cap: {number1} Hours", "Limite d'accumulation inactive : {number1} heures" },
 		{ "🔫 Next era Steel Era (+{number1})", "🔫 Prochaine ère : l'ère de l'acier (+{number1})" },
 		{ "The party is full. (max {number1}", "Le groupe est complet. (max {number1}" },
@@ -368,6 +369,7 @@ return {
 		{ "Reward: {text1}", "Récompense : {text1}" },
 		{ "★ Elite {text1}", "★ Élite {text1}" },
 		{ "{number1} / {number2}     {text3}", "{number1} / {number2}    {text3}" },
+		{ "👑 Boss: {text1}", "👑 Boss : {text1}" },
 		{ "🔫 Next {text1}", "🔫 Prochaine {text1}" },
 		{ "Zone {number1}: {text2}", "Zone {number1} : {text2}" },
 		{ "{text1} effect", "Effet de {text1}" },

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "NEAR MISS lasts +{number1}s", "NEAR MISS hält +{number1} s länger" },
 		{ "Zone {number1} · Darklands", "Zone {number1} · Dunkle Länder" },
 		{ "Clear field zone {number1}", "Feldzone {number1} löschen" },
 		{ "🌙 Idle reward +{number1} G", "🌙 Inaktive Belohnung +{number1} G" },

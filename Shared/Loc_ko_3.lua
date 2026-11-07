@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Reach level {number1} to buy points with gold.", "골드로 포인트를 사려면 레벨 {number1}에 도달하세요." },
 		{ "🎫 A {number1}x pull needs {number2} tickets (you have {number3})", "🎫 {number1}회 뽑기에는 티켓 {number2}장이 필요해요 (보유 {number3}장)" },
 		{ "🗿 Colossus defeated! Gear + 🎫 +1 + {number1} G", "🗿 거신 처치! 장비 + 🎫 +1 + {number1} G" },
 		{ "🔒 Unlocks at level {number1}  (you are level {number2})", "🔒 {number1}레벨에 해금 (현재 {number2}레벨)" },
@@ -553,6 +554,7 @@ return {
 		{ "Reward: {text1}", "보상: {text1}" },
 		{ "★ Elite {text1}", "★ 엘리트 {text1}" },
 		{ "{number1} / {number2}     {text3}", "{number1} / {number2}    {text3}" },
+		{ "👑 Boss: {text1}", "👑 보스: {text1}" },
 		{ "🔫 Next {text1}", "🔫 다음 {text1}" },
 		{ "Zone {number1}: {text2}", "{number1}구역: {text2}" },
 		{ "{text1} → Boss", "{text1} → 보스" },

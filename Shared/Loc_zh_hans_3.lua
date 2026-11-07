@@ -107,6 +107,7 @@ return {
 		{ "Reward: {text1}", "奖励:{text1}" },
 		{ "★ Elite {text1}", "★ 精英 {text1}" },
 		{ "{number1} / {number2}     {text3}", "{number1} / {number2}    {text3}" },
+		{ "👑 Boss: {text1}", "👑 首领：{text1}" },
 		{ "🔫 Next {text1}", "🔫 下一把 {text1}" },
 		{ "Zone {number1}: {text2}", "区域{number1}:{text2}" },
 		{ "{text1} → Boss", "{text1} → 首领" },

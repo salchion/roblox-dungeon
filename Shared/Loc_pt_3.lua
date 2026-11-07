@@ -306,6 +306,7 @@ return {
 		{ "Title 『{text1}』", "Título 『{text1}』" },
 		{ "Reward: {text1}", "Recompensa: {text1}" },
 		{ "{number1} / {number2}     {text3}", "{number1} / {number2}    {text3}" },
+		{ "👑 Boss: {text1}", "👑 Chefe: {text1}" },
 		{ "🔫 Next {text1}", "🔫 Próxima {text1}" },
 		{ "Zone {number1}: {text2}", "Zona {number1}: {text2}" },
 		{ "{text1} → Boss", "{text1} → Chefe" },

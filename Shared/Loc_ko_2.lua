@@ -851,6 +851,7 @@ return {
 		["Enter Fever Time"] = "피버 타임 입장",
 		["🌟 Fever Portal"] = "🌟 피버 포탈",
 		["🌟 FEVER TIME!"] = "🌟 피버 타임!",
+		["🎁 Rewards"] = "🎁 보상",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1067,6 +1068,5 @@ return {
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 미션 {number2}/{number3}</font>" },
 		{ "  <font color='#ffd966'>≈ {number1} dmg</font>", "  <font color='#ffd966'>≈ {number1} 피해</font>" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1}회 강화: 성공 {number2} / 실패 {number3}  (골드 -{number4})" },
-		{ "Reach level {number1} to buy points with gold.", "골드로 포인트를 사려면 레벨 {number1}에 도달하세요." },
 	},
 }

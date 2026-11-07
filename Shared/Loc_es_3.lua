@@ -338,6 +338,7 @@ return {
 		{ "Reward: {text1}", "Recompensa: {text1}" },
 		{ "★ Elite {text1}", "★ Élite {text1}" },
 		{ "{number1} / {number2}     {text3}", "{number1} / {number2}    {text3}" },
+		{ "👑 Boss: {text1}", "👑 Jefe: {text1}" },
 		{ "🔫 Next {text1}", "🔫 Siguiente {text1}" },
 		{ "Zone {number1}: {text2}", "Zona {number1}: {text2}" },
 		{ "{text1} → Boss", "{text1} → Jefe" },

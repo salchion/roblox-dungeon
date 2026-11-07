@@ -549,6 +549,7 @@ return {
 		["Enter Fever Time"] = "Entrar no Tempo Febre",
 		["🌟 Fever Portal"] = "🌟 Portal Febre",
 		["🌟 FEVER TIME!"] = "🌟 TEMPO FEBRE!",
+		["🎁 Rewards"] = "🎁 Recompensas",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
