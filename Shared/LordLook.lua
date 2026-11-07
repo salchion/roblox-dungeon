@@ -12,7 +12,7 @@ local BALL, CYL = Enum.PartType.Ball, Enum.PartType.Cylinder
 local METAL, NEON, PLASTIC, FABRIC = Enum.Material.Metal, Enum.Material.Neon, Enum.Material.SmoothPlastic, Enum.Material.Fabric
 
 function LordLook.Build(add)
-	local dark, plate, steel, red = rgb(26, 12, 22), rgb(42, 28, 50), rgb(66, 58, 78), rgb(255, 50, 60)
+	local dark, plate, steel, red = rgb(38, 22, 38), rgb(64, 44, 76), rgb(96, 88, 112), rgb(255, 50, 60) -- (조금 밝게: 밤하늘 앞에서 갑옷 모양이 검은 덩어리로 뭉개지지 않게)
 	local bone, gold, cloak, ember = rgb(232, 222, 206), rgb(160, 124, 64), rgb(70, 14, 26), rgb(255, 150, 60)
 
 	-- 두 점 사이를 잇는 원기둥 (팔다리 / 뿔 / 뼈)
@@ -50,7 +50,7 @@ function LordLook.Build(add)
 	for k = 0, 4 do ball(V(0, 10 - k * 4.4, 3.6), 2.2, 2.4, 2.4, steel, METAL) end -- 등뼈 마디
 	-- 가슴 코어 + 갈비 장갑 (코어를 둘러싼 휜 뼈 세 쌍)
 	local core = ball(V(0, 4.2, -4.6), 5.4, 5.4, 5.4, red, NEON)
-	ball(V(0, 4.2, -4.6), 8, 8, 8, red, NEON, 0.7)
+	ball(V(0, 4.2, -4.6), 6.8, 6.8, 6.8, red, NEON, 0.8)
 	for k = 0, 2 do
 		local y = 8.4 - k * 2.9
 		for _, side in ipairs({ -1, 1 }) do
@@ -110,8 +110,8 @@ function LordLook.Build(add)
 			local x = dir
 			local z = x:Cross(V(0, 0, 1)).Unit
 			local y = z:Cross(x)
-			add(V(len, 0.35, 5 - k * 0.5), CFrame.fromMatrix(mid + V(0, 0, -0.6), x, y, z), rgb(90, 20, 40), METAL)       -- 칼날 막
-			add(V(len * 0.96, 0.2, 0.7), CFrame.fromMatrix(mid + V(0, 0, -1), x, y, z), red, NEON, 0.15)                   -- 붉은 빛줄
+			add(V(len, 0.35, 5 - k * 0.5), CFrame.fromMatrix(mid + V(0, 0, -0.6), x, y, z), rgb(110, 26, 46), METAL)      -- 칼날 막 (조금 밝게: 날개 모양이 면으로 보이게)
+			add(V(len * 0.96, 0.15, 0.4), CFrame.fromMatrix(mid + V(0, 0, -1), x, y, z), red, NEON, 0.55)                  -- 붉은 빛줄 (가늘고 옅게: 예전엔 날개가 붉은 선만 보였다)
 		end
 		seg(root, V(side * 8, -9, 7.2), 0.5, bone, PLASTIC)                      -- 몸에 닿는 뼈
 	end
@@ -159,20 +159,23 @@ function LordLook.Build(add)
 		seg(hilt, guardAt, 0.75, dark, METAL)                                                                         -- 손잡이
 		ball(hilt - dir * 0.6, 2.4, 2.4, 2.4, red, NEON)                                                              -- 붉은 구슬 머리
 	end
-	-- 왕관 위로 떠 있는 붉은 보석 + 후광 뒤의 가시 고리 (실루엣을 크고 뾰족하게)
+	-- 왕관 위로 떠 있는 붉은 보석
 	ball(V(0, 26.5, 0), 2, 3, 2, red, NEON)
-	for k = 0, 15 do
-		local angle = k / 16 * math.pi * 2
-		local inner, outer = 15.2, 15.2 + ((k % 2 == 0) and 6.5 or 3.6)
-		local a1 = V(math.cos(angle) * inner, 15 + math.sin(angle) * inner, 8.6)
-		local a2 = V(math.cos(angle) * outer, 15 + math.sin(angle) * outer, 8.6)
-		seg(a1, a2, (k % 2 == 0) and 0.55 or 0.4, rgb(70, 50, 30), METAL)
-		if k % 2 == 0 then ball(a2, 1, 1, 1, ember, NEON) end
-	end
 
-	-- 머리 뒤 후광 (고리 두 겹)
-	add(V(0.7, 30, 30), CFrame.new(0, 15, 8) * CFrame.Angles(0, math.rad(90), 0), red, NEON, 0.25, CYL).Name = "Halo"
-	add(V(0.5, 38, 38), CFrame.new(0, 15, 9) * CFrame.Angles(0, math.rad(90), 0), ember, NEON, 0.5, CYL).Name = "HaloOuter"
+	-- 머리 뒤 후광: 가는 고리 두 겹 (예전엔 꽉 찬 빛 원반 두 장 + 가시 고리라, 머리 / 뿔이 붉은 해에 묻혀 무엇인지 알아보기 어려웠다)
+	local function ring(radius, thickness, z, color, transparency, name, count)
+		for k = 0, count - 1 do
+			local a1, a2 = k / count * math.pi * 2, (k + 1) / count * math.pi * 2
+			local part = seg(V(math.cos(a1) * radius, 15 + math.sin(a1) * radius, z), V(math.cos(a2) * radius, 15 + math.sin(a2) * radius, z), thickness, color, NEON, transparency)
+			if part then part.Name = name end
+		end
+	end
+	ring(13.5, 0.45, 8, red, 0.2, "Halo", 28)
+	ring(17.5, 0.3, 9, ember, 0.45, "HaloOuter", 32)
+	for k = 0, 7 do -- 바깥 고리의 짧은 가시 8개 (어두운 금속: 실루엣만 뾰족하게)
+		local angle = k / 8 * math.pi * 2 + math.pi / 8
+		seg(V(math.cos(angle) * 17.5, 15 + math.sin(angle) * 17.5, 9), V(math.cos(angle) * 21, 15 + math.sin(angle) * 21, 9), 0.45, rgb(70, 50, 30), METAL)
+	end
 
 	return { Body = body, Eyes = eyes, Core = core }
 end

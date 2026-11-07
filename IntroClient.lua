@@ -59,7 +59,7 @@ local function buildLord(parent, baseCF, S)
 	local look = require(ReplicatedStorage:WaitForChild("LordLook")).Build(add) -- 모양은 결투의 군주와 같은 모듈 (LordLook)
 	for k = 1, 4 do -- 몸 주변에 떠 있는 칼날 (연출에서는 가만히)
 		local angle = k * math.pi / 2
-		add(Vector3.new(1.2, 8, 2.4), CFrame.new(math.cos(angle) * 16, 4, math.sin(angle) * 8) * CFrame.Angles(0, -angle, math.rad(20)), red, Enum.Material.Neon, 0.1)
+		add(Vector3.new(1.2, 8, 2.4), CFrame.new(math.cos(angle) * 16, 4, math.sin(angle) * 8) * CFrame.Angles(0, -angle, math.rad(20)), red, Enum.Material.Neon, 0.4)
 	end
 	local eyes, core = look.Eyes, look.Core
 	return eyes, core
@@ -463,7 +463,7 @@ local function play()
 		light.Parent = holder
 	end
 	lightAt(Vector3.new(-120, 40, 0), Color3.fromRGB(190, 200, 235), 240, 2.4) -- 앞쪽 차가운 빛: 윤곽과 장식이 드러난다
-	lightAt(Vector3.new(-30, 10, 0), Color3.fromRGB(255, 120, 100), 160, 2.2) -- 가슴 앞 붉은 빛: 코어에서 번지는 느낌
+	lightAt(Vector3.new(-30, 10, 0), Color3.fromRGB(255, 120, 100), 120, 1.3) -- 가슴 앞 붉은 빛: 코어에서 번지는 느낌
 
 	-- 카메라 준비: 마을 동쪽 문 위에서 필드를 따라 동쪽을 본다
 	local FLY_HEIGHT = 260 -- 날아가는 높이: 낮으면 벽 / 절벽에 가려 바닥의 필드가 안 보인다. 높이 떠서 아래를 내려다본다
