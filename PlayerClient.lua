@@ -3458,9 +3458,15 @@ UserInputService.InputEnded:Connect(function(input)
 	end
 end)
 
+Remotes.Tutorial.OnClientEvent:Connect(function(action, data) -- 연출(던전으로 빨려 들어가기 / 군주에게 날려가기) 중에는 공격하지 않는다 (자동 공격이 허공에 쏘던 것)
+	if action ~= "Cinema" then return end
+	settings.CinemaUntil = data == "End" and 0 or os.clock() + 20 -- (End 를 못 받아도 20초 뒤에는 풀린다)
+end)
+
 RunService.Heartbeat:Connect(function()
 	local now = os.clock()
 	if now < nextAttack then return end
+	if now < (settings.CinemaUntil or 0) or player:GetAttribute("CombatLocked") then return end
 
 	if holding then
 		nextAttack = now + attackCooldown()

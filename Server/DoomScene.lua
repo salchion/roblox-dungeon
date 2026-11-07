@@ -173,6 +173,7 @@ end
 local function startTutorialRift(player, at)
 	if player:GetAttribute("TutorialRiftBusy") then return end
 	player:SetAttribute("TutorialRiftBusy", true)
+	player:SetAttribute("CombatLocked", true) -- 열쇠가 떨어진 순간부터 던전에 들어갈 때까지 공격하지 않는다 (자동 공격이 연출 중에 계속 쏘던 것)
 	local key, gate, hole
 	local ok, err = pcall(function()
 		local root = getAliveParts(player)
@@ -523,6 +524,7 @@ local function startTutorialRift(player, at)
 		Remotes.Tutorial:FireClient(player, "Cinema", "End")
 	end
 	player:SetAttribute("TutorialRiftBusy", nil)
+	player:SetAttribute("CombatLocked", nil)
 end
 
 local doomSlots = {} -- [칸 번호] = true : 동시에 여러 명이 끌려가도 결투장이 겹치지 않게 사람마다 옆으로 떨어뜨린다
