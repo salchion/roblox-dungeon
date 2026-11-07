@@ -1015,16 +1015,16 @@ local function doomWaveInner(player, zone, center, real)
 				strike(origin + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius), 11, 0.8 + k * 0.09, percent, lethal)
 			end
 		end
-		task.wait(0.45 + count * 0.05) -- (다음 공격이 바로 이어진다: 연타 느낌)
+		task.wait(0.3 + count * 0.04) -- (다음 공격이 바로 이어진다: 연타 느낌)
 	end
 	-- 추적 낙인: 내가 서 있는 곳에 연달아 5번 (계속 움직여야 한다)
 	local function huntingMarks(percent, lethal)
 		for _ = 1, 5 do
 			if not alive() then return end
 			strike(playerAt(), 10, 0.6, percent, lethal)
-			task.wait(0.26)
+			task.wait(0.21)
 		end
-		task.wait(0.3)
+		task.wait(0.15)
 	end
 	-- 나선 개화: 군주 발밑에서 바깥으로 소용돌이치며 폭격이 번진다 (나선 사이의 빈 곳으로 걸어 나간다)
 	local function spiralBloom(percent, lethal)
@@ -1036,7 +1036,7 @@ local function doomWaveInner(player, zone, center, real)
 			local dist = 6 + k * 3.6
 			strike(origin + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist), 8, 0.7 + k * 0.06, percent, lethal)
 		end
-		task.wait(0.5 + 16 * 0.03)
+		task.wait(0.3 + 16 * 0.02)
 	end
 
 	-- 연타 폭격 "파파밥바바": 내 주변 곳곳에 작은 경고 원이 0.08초 간격으로 쏟아지고 바로바로 터진다 (멈추면 여러 대 맞는다)
@@ -1049,9 +1049,9 @@ local function doomWaveInner(player, zone, center, real)
 			local at = playerAt() + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist)
 			strike(at, 7, 0.5, percent, lethal)
 			if k % 4 == 0 then shake(0.35) end
-			task.wait(0.08)
+			task.wait(0.07)
 		end
-		task.wait(0.35)
+		task.wait(0.15)
 	end
 
 	-- ================= 진짜 결전 (8구역 이후 포탈): 체력이 실제로 줄고, 단계마다 패턴이 늘어난다 =================
@@ -1098,9 +1098,9 @@ local function doomWaveInner(player, zone, center, real)
 			for k = 1, 3 do
 				if not alive() then return end
 				strike(playerAt() + Vector3.new((k - 2) * 20, 0, 0), 13, 1.1, 0.2, true)
-				task.wait(0.32)
+				task.wait(0.26)
 			end
-			task.wait(1.4)
+			task.wait(0.77)
 		end
 
 		-- 패턴 2) 플레이어를 둘러싼 고리 (한 군데는 비어 있다) + 한가운데 큰 일격
@@ -1113,11 +1113,11 @@ local function doomWaveInner(player, zone, center, real)
 					local angle = k / 7 * math.pi * 2
 					strike(around + Vector3.new(math.cos(angle) * 34, 0, math.sin(angle) * 34), 13, 1.1, 0.17, true)
 				end
-				task.wait(0.12)
+				task.wait(0.1)
 			end
-			task.wait(0.5)
+			task.wait(0.4)
 			if alive() then strike(around, 21, 1.0, 0.28, true) end
-			task.wait(1.6)
+			task.wait(0.88)
 		end
 
 		-- 패턴 3) 회전하는 두 갈래 광선 (바닥에 경고 -> 광선이 되어 반원을 훑는다)
@@ -1135,9 +1135,9 @@ local function doomWaveInner(player, zone, center, real)
 				end
 			end
 			place(base)
-			for _, arm in ipairs(arms) do TweenService:Create(arm, TweenInfo.new(1.3), { Transparency = 0.15 }):Play() end
+			for _, arm in ipairs(arms) do TweenService:Create(arm, TweenInfo.new(1.1), { Transparency = 0.15 }):Play() end
 			lordSfx("Lord_Charge")
-			task.wait(1.4)
+			task.wait(1.15)
 			for _, arm in ipairs(arms) do arm.Color, arm.Transparency = rgb(255, 170, 70), 0.05 end
 			lordSfx("Lord_Blast")
 			local started, duration, hitAt = os.clock(), 3.0, 0
@@ -1164,7 +1164,7 @@ local function doomWaveInner(player, zone, center, real)
 				TweenService:Create(arm, TweenInfo.new(0.35), { Transparency = 1 }):Play()
 				task.delay(0.4, function() arm:Destroy() end)
 			end
-			task.wait(0.8)
+			task.wait(0.44)
 		end
 
 		-- 패턴 4) 유성 폭풍 (아레나 곳곳에 경고 원이 줄줄이)
@@ -1176,9 +1176,9 @@ local function doomWaveInner(player, zone, center, real)
 				local at = center + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
 				if math.random() < 0.4 then at = playerAt() + Vector3.new(math.random(-8, 8), 0, math.random(-8, 8)) end -- 일부는 내 쪽으로
 				strike(at, 10, 1.35, 0.14, true)
-				task.wait(0.22)
+				task.wait(0.18)
 			end
-			task.wait(1.8)
+			task.wait(0.99)
 		end
 
 		-- 패턴 5) 가로 / 세로 띠 (다섯 줄 중 한 줄만 비어 있다)
@@ -1198,7 +1198,7 @@ local function doomWaveInner(player, zone, center, real)
 				end
 			end
 			lordSfx("Lord_Charge")
-			task.wait(1.7)
+			task.wait(1.4)
 			if not arena.Parent then return end
 			lordSfx("Lord_Blast")
 			shake(0.7)
@@ -1221,7 +1221,7 @@ local function doomWaveInner(player, zone, center, real)
 					end
 				end
 			end
-			task.wait(1.4)
+			task.wait(0.77)
 		end
 
 		-- 패턴 6) 쫓아오는 불덩이 (느리게 따라온다: 맞으면 사라진다)
@@ -1264,7 +1264,7 @@ local function doomWaveInner(player, zone, center, real)
 				Effects.Burst(orb.Position, rgb(255, 120, 70), 14)
 				orb:Destroy()
 			end
-			task.wait(0.8)
+			task.wait(0.44)
 		end
 
 		-- 패턴 7) 최후의 심판 (3단계): 아레나가 붉게 물든다. 초록 원 안에 들어가 있어야 산다
@@ -1317,7 +1317,7 @@ local function doomWaveInner(player, zone, center, real)
 			lordSfx("Lord_Charge")
 			shake(0.5)
 			local origin = Vector3.new(body.Position.X, floorY, body.Position.Z)
-			task.wait(1.0)
+			task.wait(0.8)
 			for wave = 1, 3 do
 				if not alive() or not bossAlive() then return end
 				lordSfx("Lord_Blast")
@@ -1348,9 +1348,9 @@ local function doomWaveInner(player, zone, center, real)
 				end
 				ringPart:Destroy()
 				inner:Destroy()
-				task.wait(0.35)
+				task.wait(0.28)
 			end
-			task.wait(1.0)
+			task.wait(0.55)
 		end
 
 		-- 패턴 9) 십자 광선 (2단계부터): 네 갈래 광선이 돌다가 한 번 방향을 바꾼다
@@ -1368,9 +1368,9 @@ local function doomWaveInner(player, zone, center, real)
 				end
 			end
 			place(base)
-			for _, arm in ipairs(arms) do TweenService:Create(arm, TweenInfo.new(1.2), { Transparency = 0.15 }):Play() end
+			for _, arm in ipairs(arms) do TweenService:Create(arm, TweenInfo.new(1.0), { Transparency = 0.15 }):Play() end
 			lordSfx("Lord_Charge")
-			task.wait(1.3)
+			task.wait(1.1)
 			for _, arm in ipairs(arms) do arm.Color, arm.Transparency = rgb(255, 170, 70), 0.05 end
 			lordSfx("Lord_Blast")
 			local started, duration, hitAt = os.clock(), 4.2, 0
@@ -1399,7 +1399,7 @@ local function doomWaveInner(player, zone, center, real)
 				TweenService:Create(arm, TweenInfo.new(0.35), { Transparency = 1 }):Play()
 				task.delay(0.4, function() arm:Destroy() end)
 			end
-			task.wait(0.8)
+			task.wait(0.44)
 		end
 
 		-- 단계별 외형 변화: 2단계 날개가 불타오르고, 3단계 후광이 검붉게 변하며 기운이 짙어진다
@@ -1472,7 +1472,7 @@ local function doomWaveInner(player, zone, center, real)
 			end
 			pick()
 			if not alive() or not bossAlive() then break end
-			local rest = phaseNow == 1 and 0.6 or (phaseNow == 2 and 0.45 or 0.3) -- (패턴 사이 쉬는 시간을 절반으로: 쉴 새 없이 몰아친다)
+			local rest = phaseNow == 1 and 0.35 or (phaseNow == 2 and 0.25 or 0.15) -- (더 타이트하게: 패턴이 끝나자마자 다음 패턴. 경고 시간은 거의 그대로라 피할 수는 있다)
 			task.wait(enraged and rest * 0.6 or rest)
 		end
 
@@ -1551,15 +1551,15 @@ local function doomWaveInner(player, zone, center, real)
 		return
 	end
 
-	task.wait(1.0)
+	task.wait(0.5)
 	-- 1) 좁은 간격의 3연 폭격 (플레이어 주변)
 	if alive() then
 		for k = 1, 3 do
 			local offset = Vector3.new((k - 2) * 20, 0, 0)
 			strike(playerAt() + offset, 13, 1.0, 0.15)
-			task.wait(0.22)
+			task.wait(0.18)
 		end
-		task.wait(0.5)
+		task.wait(0.2)
 	end
 	-- 2) 플레이어를 둘러싼 고리가 시계 방향으로 하나씩 내리꽂히고, 마지막에 한가운데로 큰 일격
 	if alive() then
@@ -1571,13 +1571,13 @@ local function doomWaveInner(player, zone, center, real)
 				local angle = k / 6 * math.pi * 2
 				strike(around + Vector3.new(math.cos(angle) * 34, 0, math.sin(angle) * 34), 14, 1.1, 0.12)
 			end
-			task.wait(0.14)
+			task.wait(0.1)
 		end
-		task.wait(0.25)
+		task.wait(0.15)
 		if alive() then
 			strike(around, 22, 0.9, 0.2)
 		end
-		task.wait(0.6)
+		task.wait(0.25)
 	end
 	-- 3) 대검 휘두르기 -> 4) 추적 낙인 -> 5) 나선 개화 (튜토리얼은 죽지 않는다: 체력 1 은 남는다)
 	if alive() then
