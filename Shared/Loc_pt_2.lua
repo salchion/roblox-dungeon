@@ -543,6 +543,9 @@ return {
 		["Stacks kept"] = "Acúmulos mantidos",
 		["Next level"] = "Próximo nível",
 		["HP restored"] = "PV restaurados",
+		["🔥 300 Streak — On Fire!"] = "🔥 Sequência de 300 — Pegando fogo!",
+		["💫 500 Streak — Unstoppable!"] = "💫 Sequência de 500 — Imparável!",
+		["🌌 1000 Streak — Mythic!"] = "🌌 Sequência de 1000 — Mítico!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -948,8 +951,5 @@ return {
 		{ "Cooldown -{number1}%  (max {number2})", "Recarga -{number1}%  (máx. {number2})" },
 		{ "⚠ Zone {number1} · Forest ⚠", "⚠ Zona {number1} · Floresta ⚠" },
 		{ "{number1} Gear Roll Tickets", "{number1} Bilhetes de Giro de Equipamento" },
-		{ "👑 {number1} Kill Streak!!!!", "👑 {number1} Sequência de Eliminações!!!!" },
-		{ "XP Booster ({number1} hour)", "Impulsionador de XP ({number1} horas)" },
-		{ "Recommended Power {number2}", "Poder Recomendado {number2}" },
 	},
 }

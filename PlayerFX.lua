@@ -539,7 +539,7 @@ end)
 
 -- 연속 처치 이정표: 10 / 25 / 50 / 100 / 200 연속 처치 때 큰 글자가 쾅! 하고 뜬다 (박진감)
 do
-	local milestones = { [10] = "🔥 10 Kill Streak!", [25] = "⚡ 25 Kill Streak!!", [50] = "💥 50 Kill Streak!!!", [100] = "👑 100 Kill Streak!!!!", [200] = "🌋 200 Streak — Legendary!" }
+	local milestones = { [10] = "🔥 10 Kill Streak!", [25] = "⚡ 25 Kill Streak!!", [50] = "💥 50 Kill Streak!!!", [100] = "👑 100 Kill Streak!!!!", [200] = "🌋 200 Streak — Legendary!", [300] = "🔥 300 Streak — On Fire!", [500] = "💫 500 Streak — Unstoppable!", [1000] = "🌌 1000 Streak — Mythic!" }
 	local lastCombo = 0
 	player:GetAttributeChangedSignal("Combo"):Connect(function()
 		local combo = player:GetAttribute("Combo") or 0

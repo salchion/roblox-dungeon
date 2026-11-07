@@ -583,6 +583,9 @@ return {
 		["Stacks kept"] = "Cumuls conservés",
 		["Next level"] = "Niveau suivant",
 		["HP restored"] = "PV rendus",
+		["🔥 300 Streak — On Fire!"] = "🔥 Série de 300 — En feu !",
+		["💫 500 Streak — Unstoppable!"] = "💫 Série de 500 — Inarrêtable !",
+		["🌌 1000 Streak — Mythic!"] = "🌌 Série de 1000 — Mythique !",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -928,7 +931,5 @@ return {
 		{ "The party is full. (max {number1}", "Le groupe est complet. (max {number1}" },
 		{ "Fall in the field {number1} times", "Tombez {number1} fois sur le terrain" },
 		{ "Raise your pet to level {number1}", "Montez votre familier au niveau {number1}" },
-		{ "Range x{number1} · allies heal +{number2}%", "Portée x{number1} · alliés soignés +{number2} %" },
-		{ "Recovers {number1}% HP per second", "Récupère {number1} % de PV par seconde" },
 	},
 }

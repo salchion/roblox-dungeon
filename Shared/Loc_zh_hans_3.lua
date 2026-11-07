@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ 宠物升级已开始!({text1})— 使用时间加速可提前完成" },
+		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "推荐 ⚡{text1}  ·  瞄准黄色光球可造成3倍伤害!" },
 		{ "You have no {text1} gear. Get one from the field or the gacha", "你没有{text1}装备。去野外或扭蛋获得吧" },
 		{ "{text1} hasn't unlocked depth {number2} yet. (Clear depth {number3} first)", "{text1} 尚未解锁深度 {number2}。(请先通关深度 {number3})" },
 		{ "{text1}'s level is too low. (This dungeon requires Lv.{number2}+)", "{text1} 的等级太低。(此地下城需要 Lv.{number2} 以上)" },

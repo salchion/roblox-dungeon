@@ -1200,10 +1200,15 @@ local function playMusic(name)
 	for trackName, sound in pairs(tracks) do
 		if trackName == name then
 			if not sound.IsPlaying then
-				if trackName == "Boss" and playlists.Boss then -- (보스전: 들어갈 때마다 2곡 중 무작위로 처음부터)
+				if trackName == "Boss" and playlists.Boss then -- (보스전: 들어갈 때마다 여러 곡 중 무작위로 처음부터. 지난번 곡은 피한다)
 					local list = playlists.Boss
-					sound.SoundId = "rbxassetid://" .. list[math.random(#list)]
+					local last = sound:GetAttribute("LastPick")
+					local pick
+					repeat pick = "rbxassetid://" .. list[math.random(#list)] until pick ~= last or #list < 2
+					sound:SetAttribute("LastPick", pick)
+					sound.SoundId = pick
 					sound.TimePosition = 0
+					if RunService:IsStudio() then print(string.format("[Music] Boss track: %s (%d tracks in pool)", pick, #list)) end
 				end
 				sound:Play()
 			end
@@ -2928,7 +2933,7 @@ local menuRefreshQueued = false
 local MENU_IGNORE = {
 	IdleSeconds = true, IdleEarned = true, IdleRate = true, IdleMultTotal = true, IdleCapHours = true, IdleFullGold = true, IdleActive = true,
 	DummyDps = true, DummyTick = true, UltCharge = true, Combo = true, ShakeTick = true, ShakeStrength = true, NearMissStacks = true,
-	NearMissEnd = true, NearMissLen = true, Power = true, Stamina = true, DungeonLabel = true,
+	NearMissEnd = true, NearMissLen = true, Power = true, Stamina = true, DungeonLabel = true, BossKillTick = true, SettingShake = true,
 }
 local MENU_SLOW = { Gold = true, XP = true, XPNeeded = true }
 local lastMenuRefresh = 0
@@ -3712,7 +3717,7 @@ end)
 settingSlider(380, "🔫 Gunshot Volume", function() return settings.ShotVolume end, function(value)
 	settings.ShotVolume = value
 end)
-settingButton(428, function() return "📳 Screen Shake: " .. (settings.Shake and "ON" or "OFF") end, function() settings.Shake = not settings.Shake end)
+settingButton(428, function() return "📳 Screen Shake: " .. (settings.Shake and "ON" or "OFF") end, function() settings.Shake = not settings.Shake player:SetAttribute("SettingShake", settings.Shake) end) -- (IntensityClient 의 히트스톱도 같이 끈다)
 settingButton(508, function() return "🖥 Low-spec mode (less lag): " .. (player:GetAttribute("LowSpec") and "ON" or "OFF") end, function() player:SetAttribute("LowSpec", not player:GetAttribute("LowSpec")) end)
 settingButton(548, function() return "👕 Hide gear look (weapon stays): " .. (player:GetAttribute("HideGear") and "ON" or "OFF") end, function() player:SetAttribute("HideGear", not player:GetAttribute("HideGear")) end)
 do

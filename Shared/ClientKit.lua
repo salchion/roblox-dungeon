@@ -109,8 +109,10 @@ function Kit.ribbon(parent, o)
 	Kit.create("UICorner", { CornerRadius = UDim.new(0, 6) }, band)
 	Kit.create("UIStroke", { Color = Color3.fromRGB(20, 18, 40), Thickness = 2.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, band)
 	Kit.create("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(170, 170, 185)) }, band)
-	local text = Kit.makeLabel({ Size = UDim2.new(1, -6, 1, 0), Position = UDim2.new(0, 3, 0, 0), Text = o.Text or "", TextSize = o.TextSize or 12, Font = Enum.Font.FredokaOne, TextWrapped = true,
-		TextColor3 = Color3.new(1, 1, 1), TextStrokeColor3 = Color3.fromRGB(20, 18, 40), TextStrokeTransparency = 0.15, ZIndex = z + 1 }, band)
+	local text = Kit.makeLabel({ Size = UDim2.new(1, -6, 1, 0), Position = UDim2.new(0, 3, 0, 0), Text = o.Text or "", TextSize = o.TextSize or 12, TextWrapped = true,
+		TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 1, ZIndex = z + 1 }, band)
+	text.FontFace = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.ExtraBold) -- (번역된 글자도 같은 굵기로)
+	Kit.create("UIStroke", { Color = Color3.fromRGB(20, 18, 40), Thickness = 1.4, ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual }, text)
 	return band, text
 end
 

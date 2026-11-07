@@ -1234,6 +1234,7 @@ local function reward(player, data, part)
 		Quest.Add(player, "EliteKills", 1)
 	elseif data.Kind == "Boss" then
 		Quest.Add(player, "BossKills", 1)
+		player:SetAttribute("BossKillTick", os.clock()) -- (IntensityClient: 군주를 쓰러뜨린 순간 화면이 크게 멈칫)
 		pcall(Stage.Victory, player, part, data, firstBoss) -- 승리 연출
 	else
 		Quest.Add(player, "FieldKills", 1)

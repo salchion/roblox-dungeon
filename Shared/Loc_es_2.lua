@@ -572,6 +572,9 @@ return {
 		["Stacks kept"] = "Cargas conservadas",
 		["Next level"] = "Siguiente nivel",
 		["HP restored"] = "PS restaurados",
+		["🔥 300 Streak — On Fire!"] = "🔥 Racha de 300 — ¡En llamas!",
+		["💫 500 Streak — Unstoppable!"] = "💫 Racha de 500 — ¡Imparable!",
+		["🌌 1000 Streak — Mythic!"] = "🌌 Racha de 1000 — ¡Mítico!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -951,8 +954,5 @@ return {
 		{ "{number1} upgrades! {number2} succeeded", "¡{number1} mejoras! {number2} con éxito" },
 		{ "Free entries {number1} · Keys {number2}", "Entradas gratis {number1} · Llaves {number2}" },
 		{ "Loading the land...  {number1}", "Cargando el terreno...  {number1}" },
-		{ "Double Shot chance +{number1}%", "Probabilidad de disparo doble +{number1}%" },
-		{ "🔁 Path changed! (-{number1} G)", "🔁 ¡Camino cambiado! (-{number1} G)" },
-		{ "ZONE {number1}  ·  Meadow   ☠", "Zona {number1} · Pradera ☠" },
 	},
 }

@@ -131,7 +131,7 @@ local CUSTOM_ONLY = {
 	Penalty_Get   = { Volume = 0.8, CustomLength = 1.4, CustomPitch = 0.55 }, -- 랜덤 패널티가 걸릴 때 (불길한 소리)
 	-- 위기 / 경고
 	Player_Hurt   = { Volume = 0.8, CustomLength = 0.6 }, -- 내가 맞았을 때
-	Low_Health    = { Volume = 0.8, CustomLength = 1.0 }, -- 체력이 25% 아래일 때 (심장 소리 / 삐-)
+	Low_Health    = { Base = "Boom", Pitch = 0.42, Volume = 0.55, Length = 0.22, CustomLength = 1.0, Fx = { { "eq", { LowGain = 6, MidGain = -6, HighGain = -20 } } } }, -- 체력이 30% 아래일 때 심장 소리 "쿵" (IntensityClient 가 두 번씩 "쿵-쿵")
 	Warn_Overrun  = { Volume = 1.0, CustomLength = 2.0 }, -- 던전에서 몬스터가 한도를 넘었을 때 경고
 	Shield_Block  = { Volume = 0.8, CustomLength = 0.6 }, -- 방패 기사에게 막혔을 때 (쨍!)
 	-- 이벤트 / 보스

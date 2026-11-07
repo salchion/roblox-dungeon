@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Range x{number1} · allies heal +{number2}%", "Portée x{number1} · alliés soignés +{number2} %" },
+		{ "Recovers {number1}% HP per second", "Récupère {number1} % de PV par seconde" },
 		{ "Uses all Tickets (max {number1})", "Utilise tous les tickets (maximum {number1})" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 Champ · Meilleure zone {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "Zone {number1} · Désert ☠☠☠☠" },

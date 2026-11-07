@@ -213,7 +213,7 @@ local function build(index, def)
 	-- 이름표는 리본 띠 위에 (칸보다 조금 넓게 튀어나온 짙은 띠 + 굵은 테두리)
 	local ribbon = Instance.new("Frame")
 	ribbon.Name = "Ribbon"
-	ribbon.BackgroundColor3 = def.Color:Lerp(Color3.fromRGB(20, 18, 40), 0.35)
+	ribbon.BackgroundColor3 = def.Color:Lerp(Color3.fromRGB(20, 18, 40), 0.5) -- (조금 더 짙게: 흰 글자가 또렷하게)
 	ribbon.BorderSizePixel = 0
 	ribbon.Size = UDim2.new(1, 10, 0.27, 0)
 	ribbon.Position = UDim2.new(0, -5, 0.69, 0)
@@ -229,7 +229,7 @@ local function build(index, def)
 	ribbonStroke.Parent = ribbon
 	local ribbonShine = Instance.new("UIGradient")
 	ribbonShine.Rotation = 90
-	ribbonShine.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(175, 175, 190))
+	ribbonShine.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(205, 205, 215)) -- (예전 175: 띠가 회색으로 바래 보였다)
 	ribbonShine.Parent = ribbon
 
 	local icon = Instance.new("TextLabel")
@@ -246,13 +246,19 @@ local function build(index, def)
 	label.Size = UDim2.new(1, 0, 0.27, 0)
 	label.Position = UDim2.new(0, 0, 0.69, 0)
 	label.Text = def.Text
-	label.TextSize = 13
-	label.Font = Enum.Font.FredokaOne -- (둥근 게임 글꼴)
+	label.TextSize = 14
+	-- 굵은 글꼴: FredokaOne 에는 한글/일본어/중국어 글자가 없어서 번역되면 가늘고 작은 기본 글꼴로 바뀌어 어색했다.
+	-- 굵기를 지정한 글꼴은 다른 나라 글자도 같은 굵기로 그려진다
+	label.FontFace = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.ExtraBold)
 	label.ZIndex = 3
 	label.TextColor3 = Color3.fromRGB(255, 255, 255)
-	label.TextStrokeColor3 = Color3.fromRGB(20, 22, 36)
-	label.TextStrokeTransparency = 0.1
+	label.TextStrokeTransparency = 1
 	label.Parent = button
+	local labelStroke = Instance.new("UIStroke") -- 글자 테두리: 기본 테두리보다 두껍고 부드럽게 (게임 버튼 글자 느낌)
+	labelStroke.Color = Color3.fromRGB(20, 18, 40)
+	labelStroke.Thickness = 1.6
+	labelStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+	labelStroke.Parent = label
 
 	local dot = Instance.new("Frame")
 	dot.Name = "Dot"

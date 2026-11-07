@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Double Shot chance +{number1}%", "Probabilidad de disparo doble +{number1}%" },
+		{ "🔁 Path changed! (-{number1} G)", "🔁 ¡Camino cambiado! (-{number1} G)" },
+		{ "ZONE {number1}  ·  Meadow   ☠", "Zona {number1} · Pradera ☠" },
 		{ "Luck Booster ({number1} hour)", "Potenciador de suerte ({number1} horas)" },
 		{ "Idle Booster ({number1} hour)", "Potenciador de inactividad ({number1} horas)" },
 		{ "Hit the dummy {number1} times", "Golpea al maniquí {number1} veces" },

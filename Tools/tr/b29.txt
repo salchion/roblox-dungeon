@@ -335,3 +335,6 @@
 2376¦次のレベル¦Nächstes Level¦Niveau suivant¦Siguiente nivel¦Próximo nível¦下一级¦다음 레벨
 2377¦HP回復量¦HP-Heilung¦PV rendus¦PS restaurados¦PV restaurados¦恢复生命¦체력 회복량
 2378¦{number1}秒 · {number3}秒ごとに短剣{number2}本¦{number1} s · {number2} Dolche alle {number3} s¦{number1} s · {number2} dagues toutes les {number3} s¦{number1} s · {number2} dagas cada {number3} s¦{number1} s · {number2} adagas a cada {number3} s¦{number1}秒 · 每{number3}秒{number2}把短剑¦{number1}초 · {number3}초마다 단검 {number2}자루
+2379¦🔥 300連続 — 絶好調！¦🔥 300er-Serie — Brennend heiß!¦🔥 Série de 300 — En feu !¦🔥 Racha de 300 — ¡En llamas!¦🔥 Sequência de 300 — Pegando fogo!¦🔥 300连杀 — 火力全开！¦🔥 300 연속 — 불타오른다!
+2380¦💫 500連続 — 止められない！¦💫 500er-Serie — Unaufhaltsam!¦💫 Série de 500 — Inarrêtable !¦💫 Racha de 500 — ¡Imparable!¦💫 Sequência de 500 — Imparável!¦💫 500连杀 — 势不可挡！¦💫 500 연속 — 아무도 못 막아!
+2381¦🌌 1000連続 — 神話級！¦🌌 1000er-Serie — Mythisch!¦🌌 Série de 1000 — Mythique !¦🌌 Racha de 1000 — ¡Mítico!¦🌌 Sequência de 1000 — Mítico!¦🌌 1000连杀 — 神话级！¦🌌 1000 연속 — 신화급!

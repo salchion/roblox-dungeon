@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Use skills {number1} times", "Verwende Fähigkeiten {number1} Mal" },
+		{ "Clear {number1} dungeon(s)", "{number1} Dungeons abschließen" },
+		{ "Light Orb  Lv.{number1} / {number2}", "Lichtkugel Lv.{number1} / {number2}" },
 		{ "Zone {number1} · Wasteland", "Zone {number1} · Ödland" },
 		{ "Zone {number1} · Snowfield", "Zone {number1} · Schneefeld" },
 		{ "Field Entrance  {number1}m", "Feld-Eingang {number1}m" },

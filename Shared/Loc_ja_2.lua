@@ -699,6 +699,9 @@ return {
 		["Stacks kept"] = "維持スタック",
 		["Next level"] = "次のレベル",
 		["HP restored"] = "HP回復量",
+		["🔥 300 Streak — On Fire!"] = "🔥 300連続 — 絶好調！",
+		["💫 500 Streak — Unstoppable!"] = "💫 500連続 — 止められない！",
+		["🌌 1000 Streak — Mythic!"] = "🌌 1000連続 — 神話級！",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -946,7 +949,5 @@ return {
 		{ "⚠ Reach level {number1} to break through.", "⚠ レベル{number1}に到達すると突破できます。" },
 		{ "💥 Weak Spot Hit! x3 damage for {number1}s", "💥 弱点ヒット！{number1}秒間ダメージ x3" },
 		{ "Not enough power! (You {number1} / Rec. {number2})", "戦闘力が足りません！(あなた {number1} / 推奨 {number2})" },
-		{ "Points left {number1}  /  earned {number2}  (max {number3})", "残りポイント {number1}  /  獲得 {number2}  (最大 {number3})" },
-		{ "Crit chance +{number1}% per point  (max {number2})", "クリティカル率 +{number1}% / 1ポイント  (最大 {number2})" },
 	},
 }

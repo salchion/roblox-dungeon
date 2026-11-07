@@ -748,7 +748,15 @@ Config.Audio = {
 	Music = {
 		Lobby = ids.Lobby or 0,      -- 로비 배경음악
 		Dungeon = ids.Dungeon or 0,  -- 던전(웨이브) 배경음악
-		Boss = { ids.Boss or 0, ids.BossAlt or 132046898251409 }, -- 보스전 배경음악: 2곡 중 하나가 무작위로 (두 번째 = 오프닝 음악)
+		Boss = (function() -- 보스전 배경음악: 여러 곡 중 하나가 무작위로 (방금 나온 곡은 다음에 피한다). AudioIds 의 Boss / BossAlt 에 숫자 하나 또는 목록 { 111, 222 } 을 적을 수 있다
+			local list = {}
+			for _, value in ipairs({ ids.Boss or 0, ids.BossAlt or 132046898251409 }) do
+				for _, id in ipairs(typeof(value) == "table" and value or { value }) do
+					if id ~= 0 and not table.find(list, id) then table.insert(list, id) end
+				end
+			end
+			return list
+		end)(),
 		Field = ids.Field or 0,      -- 필드 배경음악 (없으면 로비 음악)
 		Doom = ids.Doom or 0,        -- 최후의 군주와의 결투 음악 (0이면 보스전 음악을 더 빠르게 틀어 준다)
 	},

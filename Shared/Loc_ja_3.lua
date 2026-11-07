@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Points left {number1}  /  earned {number2}  (max {number3})", "残りポイント {number1}  /  獲得 {number2}  (最大 {number3})" },
+		{ "Crit chance +{number1}% per point  (max {number2})", "クリティカル率 +{number1}% / 1ポイント  (最大 {number2})" },
 		{ "🏚 Ruined Fortress Gate · Rec. ⚡{number1}", "🏚 廃墟の要塞の門 · レコメンド ⚡{number1}" },
 		{ "🏚 Ruined Fortress Gate · Rec. ⚡{number2}", "🏚 廃墟の要塞の門 · レコメンド ⚡{number2}" },
 		{ "📍 Field · Best Zone {number1}   🎟 Free {number2}/{number3}", "📍 フィールド・ベストゾーン {number1} 🎟 無料 {number2}/{number3}" },

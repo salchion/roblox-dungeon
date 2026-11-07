@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Pierces up to {number1} more enemies in a line", "일직선상의 적을 최대 {number1}명 더 관통합니다" },
+		{ "Lasts +{number1}s · range +{number2}%: sweeps up swarms", "지속 +{number1}초 · 범위 +{number2}%: 몰려든 잡몹을 쓸어요" },
 		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 눈밭의 군주 (구역 {number1}) · 레코드 ⚡{number2}" },
 		{ "💥Explosive Shot {number1} · ⚡Chain Lightning {number2}", "💥폭발적인 샷 {number1} · ⚡연쇄 번개 {number2}" },
 		{ "👑 Lord of Wasteland (Zone {number1}) · Rec. ⚡{number2}", "👑 황무지의 군주 (구역 {number1}) · 레코 ⚡{number2}" },

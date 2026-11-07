@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👑 {number1} Kill Streak!!!!", "👑 {number1} Sequência de Eliminações!!!!" },
+		{ "XP Booster ({number1} hour)", "Impulsionador de XP ({number1} horas)" },
+		{ "Recommended Power {number2}", "Poder Recomendado {number2}" },
 		{ "💰 Buy Point {number1} G ({number2}/{number3})", "💰 Comprar Ponto {number1} G ({number2}/{number3})" },
 		{ "Best {number1}  ·  Max hit {number2}", "Melhores {number1} · Golpe máximo {number2}" },
 		{ "🗿 Colossus · Zone {number1}", "🗿 Colosso · Zona {number1}" },
