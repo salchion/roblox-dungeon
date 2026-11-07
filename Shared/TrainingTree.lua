@@ -162,7 +162,11 @@ local function detailRow(env, color, text, button, skillKey)
 		button = { Text = "🏘 Upgrade in town", Color = env.GRAY, OnClick = function() end }
 	end
 	if withBranch then
-		label({ Size = UDim2.new(0.44, -16, 1, -50), Position = UDim2.new(0, 12, 0, 4), RichText = true, TextSize = 12, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = text }, detail)
+		-- 설명 + "지금 ▶ 다음 레벨" 비교가 길어 칸을 넘으면 잘리던 것: 이 부분만 살짝 스크롤된다 (마우스 휠 / 드래그)
+		local scroller = create("ScrollingFrame", { Size = UDim2.new(0.44, -16, 1, -52), Position = UDim2.new(0, 12, 0, 4), BackgroundTransparency = 1, BorderSizePixel = 0,
+			ScrollBarThickness = 4, ScrollBarImageColor3 = Color3.fromRGB(200, 190, 230), ScrollBarImageTransparency = 0.3, ScrollingDirection = Enum.ScrollingDirection.Y,
+			CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.Y, ElasticBehavior = Enum.ElasticBehavior.Never }, detail)
+		label({ Size = UDim2.new(1, -8, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, RichText = true, TextSize = 12, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = text }, scroller)
 		if button then
 			env.MakeButton({ Size = UDim2.new(0.44, -24, 0, 38), Position = UDim2.new(0, 12, 1, -44), Text = button.Text, TextSize = 12, BackgroundColor3 = button.Color }, detail, button.OnClick)
 		end
