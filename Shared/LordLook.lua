@@ -125,6 +125,51 @@ function LordLook.Build(add)
 		add(V(3.6, 6, 0.8), CFrame.new(k * 3.6, -14, -3.4) * CFrame.Angles(math.rad(-10), 0, math.rad(k * -6)), steel, METAL)
 	end
 
+	-- ===== 위엄을 더하는 장식 =====
+	-- 갑옷 틈으로 흐르는 붉은 빛줄기 (가슴 판 / 어깨 / 팔뚝을 따라)
+	for _, side in ipairs({ -1, 1 }) do
+		seg(V(side * 1.4, 9.4, -4.3), V(side * 5.8, 7, -4.5), 0.18, red, NEON)
+		seg(V(side * 5.8, 7, -4.5), V(side * 6.4, 2.4, -4), 0.18, red, NEON)
+		seg(V(side * 1.2, 1.6, -4.6), V(side * 5.2, 0.6, -3.8), 0.16, red, NEON)
+		seg(V(side * 8, 10.6, -3.6), V(side * 12, 10.2, -3.4), 0.2, red, NEON)
+		seg(V(side * 12.2, -2, -3.3), V(side * 12.8, -7, -4.1), 0.18, red, NEON)
+		-- 어깨 갑옷의 금테 + 눈 뒤 번짐
+		add(V(0.8, 9.4, 9.4), CFrame.new(side * 9.8, 7.4, 0) * CFrame.Angles(0, 0, math.rad(90)), gold, METAL, 0, CYL)
+		add(V(4.2, 1.6, 0.3), CFrame.new(side * 1.9, 14.6, -3.3) * CFrame.Angles(0, 0, math.rad(side * 18)), rgb(255, 200, 60), NEON, 0.55)
+	end
+	-- 망토 안감 (붉은 비단): 망토 뒤에서 살짝 비친다
+	for k = -1, 1 do
+		add(V(5, 24 - math.abs(k) * 4, 0.3), CFrame.new(k * 5, -3.6 - math.abs(k) * 2, 5.3) * CFrame.Angles(math.rad(12), 0, math.rad(k * 8)), rgb(150, 20, 40), FABRIC)
+	end
+	-- 등에 멘 대검: 오른쪽 어깨 위로 손잡이가 솟고, 붉게 달아오른 칼날이 왼쪽 엉덩이까지 비스듬히 내려온다
+	do
+		local hilt, tipPoint = V(10.5, 27, 6.4), V(-9, -20, 6.4)
+		local dir = (tipPoint - hilt).Unit
+		local guardAt = hilt + dir * 6
+		local x = dir
+		local z = V(0, 0, 1)
+		local y = z:Cross(x).Unit
+		local bladeLen = (tipPoint - guardAt).Magnitude
+		local bladeMid = (guardAt + tipPoint) * 0.5
+		add(V(bladeLen, 4.2, 0.7), CFrame.fromMatrix(bladeMid, x, y, x:Cross(y)), rgb(36, 30, 44), METAL)          -- 검신
+		add(V(bladeLen * 0.97, 0.5, 0.8), CFrame.fromMatrix(bladeMid + y * 1.9, x, y, x:Cross(y)), red, NEON)       -- 날 (한쪽)
+		add(V(bladeLen * 0.97, 0.5, 0.8), CFrame.fromMatrix(bladeMid - y * 1.9, x, y, x:Cross(y)), red, NEON)       -- 날 (반대쪽)
+		add(V(bladeLen * 0.8, 0.9, 0.9), CFrame.fromMatrix(bladeMid + x * 1, x, y, x:Cross(y)), ember, NEON, 0.2)  -- 가운데 홈의 불빛
+		add(V(1.4, 11, 1.6), CFrame.fromMatrix(guardAt, x, y, x:Cross(y)), gold, METAL)                              -- 코등이
+		seg(hilt, guardAt, 0.75, dark, METAL)                                                                         -- 손잡이
+		ball(hilt - dir * 0.6, 2.4, 2.4, 2.4, red, NEON)                                                              -- 붉은 구슬 머리
+	end
+	-- 왕관 위로 떠 있는 붉은 보석 + 후광 뒤의 가시 고리 (실루엣을 크고 뾰족하게)
+	ball(V(0, 26.5, 0), 2, 3, 2, red, NEON)
+	for k = 0, 15 do
+		local angle = k / 16 * math.pi * 2
+		local inner, outer = 15.2, 15.2 + ((k % 2 == 0) and 6.5 or 3.6)
+		local a1 = V(math.cos(angle) * inner, 15 + math.sin(angle) * inner, 8.6)
+		local a2 = V(math.cos(angle) * outer, 15 + math.sin(angle) * outer, 8.6)
+		seg(a1, a2, (k % 2 == 0) and 0.55 or 0.4, rgb(70, 50, 30), METAL)
+		if k % 2 == 0 then ball(a2, 1, 1, 1, ember, NEON) end
+	end
+
 	-- 머리 뒤 후광 (고리 두 겹)
 	add(V(0.7, 30, 30), CFrame.new(0, 15, 8) * CFrame.Angles(0, math.rad(90), 0), red, NEON, 0.25, CYL).Name = "Halo"
 	add(V(0.5, 38, 38), CFrame.new(0, 15, 9) * CFrame.Angles(0, math.rad(90), 0), ember, NEON, 0.5, CYL).Name = "HaloOuter"
