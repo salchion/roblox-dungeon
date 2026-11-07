@@ -173,7 +173,7 @@ end
 local function startTutorialRift(player, at)
 	if player:GetAttribute("TutorialRiftBusy") then return end
 	player:SetAttribute("TutorialRiftBusy", true)
-	local key, gate
+	local key, gate, hole
 	local ok, err = pcall(function()
 		local root = getAliveParts(player)
 		if not root then print("[튜토리얼 열쇠] 중단: 캐릭터 없음") return end
@@ -281,6 +281,55 @@ local function startTutorialRift(player, at)
 		notify(player, "🗝 You got the Lord's Key! The key begins to resonate...")
 		key:Destroy()
 		key = nil
+		-- 열쇠가 있던 자리에 작은 "블랙홀"이 남는다: 검은 핵 + 도는 보랏빛 원반 + 주변 빛이 빨려 든다 (심상치 않은 일이 시작된다는 신호). 던전으로 끌려갈 때까지 남는다
+		do
+			local TweenService = game:GetService("TweenService")
+			local holePos = Vector3.new(at.X, keyY, at.Z)
+			hole = Instance.new("Folder")
+			hole.Name = "KeyBlackHole"
+			hole.Parent = workspace
+			game:GetService("Debris"):AddItem(hole, 30)
+			local function holePart(size, cf, color, transparency, shape, material)
+				local p = Instance.new("Part")
+				p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false
+				p.Material = material or Enum.Material.Neon
+				p.Size, p.CFrame, p.Color, p.Transparency = size, cf, color, transparency or 0
+				if shape then p.Shape = shape end
+				p.Parent = hole
+				return p
+			end
+			local coreBall = holePart(Vector3.one * 0.5, CFrame.new(holePos), Color3.new(0, 0, 0), 0, Enum.PartType.Ball, Enum.Material.SmoothPlastic)
+			local halo = holePart(Vector3.one * 0.5, CFrame.new(holePos), Color3.fromRGB(120, 40, 200), 0.75, Enum.PartType.Ball)
+			local disc = holePart(Vector3.new(0.2, 1, 1), CFrame.new(holePos) * CFrame.Angles(0.35, 0, math.rad(90)), Color3.fromRGB(170, 80, 255), 0.35, Enum.PartType.Cylinder)
+			local rim = holePart(Vector3.new(0.15, 1, 1), CFrame.new(holePos) * CFrame.Angles(0.35, 0, math.rad(90)), Color3.fromRGB(255, 140, 60), 0.5, Enum.PartType.Cylinder)
+			local glow = Instance.new("PointLight")
+			glow.Color, glow.Range, glow.Brightness, glow.Shadows = Color3.fromRGB(150, 60, 255), 30, 2, false
+			glow.Parent = halo
+			TweenService:Create(coreBall, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = Vector3.one * 5 }):Play()
+			TweenService:Create(halo, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.one * 9 }):Play()
+			TweenService:Create(disc, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.2, 16, 16) }):Play()
+			TweenService:Create(rim, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.15, 19, 19) }):Play()
+			playSfx(player, "Lord_Voice")
+			shakeScreen(player, 0.35)
+			local holeFolder = hole
+			task.spawn(function() -- 돌면서 숨 쉬고, 주변의 빛줄기를 빨아들인다
+				local spinStart = os.clock()
+				while holeFolder.Parent do
+					local t = os.clock() - spinStart
+					disc.CFrame = CFrame.new(holePos) * CFrame.Angles(0.35, t * 2.4, math.rad(90))
+					rim.CFrame = CFrame.new(holePos) * CFrame.Angles(0.35, -t * 1.6, math.rad(90))
+					halo.Transparency = 0.7 + 0.12 * math.sin(t * 5)
+					if math.random() < 0.35 then
+						local angle, tilt = math.random() * math.pi * 2, (math.random() - 0.5) * 1.2
+						local from = holePos + Vector3.new(math.cos(angle) * 16, tilt * 10, math.sin(angle) * 16)
+						local line = holePart(Vector3.new(0.25, 0.25, 4), CFrame.lookAt(from, holePos), math.random() < 0.6 and Color3.fromRGB(190, 120, 255) or Color3.fromRGB(255, 170, 90), 0.3)
+						TweenService:Create(line, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { CFrame = CFrame.lookAt(holePos, holePos + (holePos - from).Unit), Size = Vector3.new(0.08, 0.08, 1), Transparency = 0.9 }):Play()
+						game:GetService("Debris"):AddItem(line, 0.5)
+					end
+					task.wait(0.05)
+				end
+			end)
+		end
 		Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🗝", Title = "The key glows", Text = "Reacting to the key, a dungeon gate is about to open somewhere...", Duration = 4, Top = true })
 		task.wait(0.8)
 		root = getAliveParts(player)
@@ -414,6 +463,7 @@ local function startTutorialRift(player, at)
 		end
 		if not blackSent then Remotes.Tutorial:FireClient(player, "Cinema", "Black") end
 		fx:Destroy()
+		if hole then hole:Destroy() hole = nil end
 		gate.Destroy()
 		gate = nil
 		root = getAliveParts(player)
@@ -435,6 +485,7 @@ local function startTutorialRift(player, at)
 		warn("[튜토리얼 열쇠] 오류: " .. tostring(err))
 		if key then key:Destroy() end
 		if gate then gate.Destroy() end
+		if hole then hole:Destroy() end
 		player:SetAttribute("CombatLocked", nil)
 		local root = getAliveParts(player)
 		if root then
@@ -1526,16 +1577,29 @@ local function doomWaveInner(player, zone, center, real)
 					local dir = away.Magnitude > 0.1 and away.Unit or Vector3.new(0, 0, 1)
 					local startPos = flyRoot.Position
 					flyRoot.Anchored = true
-					local flightTime, started, blackSent = 1.1, os.clock(), false
-					while true do
-						local t = (os.clock() - started) / flightTime
-						if t >= 1 or not flyRoot.Parent then break end
-						local pos = startPos + dir * (t * (2 - t) * 150) + Vector3.new(0, math.sin(t * math.pi) * 16 + t * 10, 0)
-						flyRoot.CFrame = CFrame.new(pos) * CFrame.Angles(t * 14, t * 6, t * 3)
-						if t > 0.5 and not blackSent then
-							blackSent = true
-							Remotes.Tutorial:FireClient(player, "Cinema", "Black")
+					-- 1) 튕겨 나간다 (0.9초): 군주 반대쪽 위로 크게 / 2) 떨어진다 (1.7초): 결투장 바닥 아래 허공으로 빙글빙글 추락 -> 떨어지는 모습을 보여 준 뒤 암전
+					local launchTime, fallTime, started, blackSent = 0.9, 1.7, os.clock(), false
+					local launchEnd = startPos + dir * 120 + Vector3.new(0, 26, 0)
+					while flyRoot.Parent do
+						local elapsed = os.clock() - started
+						local pos, spin
+						if elapsed < launchTime then
+							local t = elapsed / launchTime
+							local eased = t * (2 - t)
+							pos = startPos + dir * (eased * 120) + Vector3.new(0, 26 * math.sin(t * math.pi / 2), 0)
+							spin = CFrame.Angles(t * 9, t * 4, t * 2)
+						else
+							local t = (elapsed - launchTime) / fallTime
+							if t >= 1 then break end
+							pos = launchEnd + dir * (t * 22) - Vector3.new(0, 110 * t * t, 0) -- 점점 빨라지며 아래로
+							spin = CFrame.Angles(9 + t * 10, 4 + t * 6, 2 + t * 3)
+							if math.floor(elapsed * 10) % 3 == 0 then Effects.Burst(pos + Vector3.new(0, 3, 0), Color3.fromRGB(255, 120, 90), 4) end -- 떨어지는 몸에서 불티가 흩날린다
+							if t > 0.82 and not blackSent then
+								blackSent = true
+								Remotes.Tutorial:FireClient(player, "Cinema", "Black")
+							end
 						end
+						flyRoot.CFrame = CFrame.new(pos) * spin
 						task.wait()
 					end
 					if not blackSent then Remotes.Tutorial:FireClient(player, "Cinema", "Black") end
