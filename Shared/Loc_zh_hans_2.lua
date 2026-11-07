@@ -455,6 +455,9 @@ return {
 		["🔥 300 Streak — On Fire!"] = "🔥 300连杀 — 火力全开！",
 		["💫 500 Streak — Unstoppable!"] = "💫 500连杀 — 势不可挡！",
 		["🌌 1000 Streak — Mythic!"] = "🌌 1000连杀 — 神话级！",
+		["Enter Fever Time"] = "进入狂热时间",
+		["🌟 Fever Portal"] = "🌟 狂热传送门",
+		["🌟 FEVER TIME!"] = "🌟 狂热时间！",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -467,6 +470,7 @@ return {
 		{ "A boss arrives every {number1}~{number2}s, and they pile up if you don't take them down. Score = seconds survived x damage dealt. The run ends when you fall (max {number3} min).", "每{number1}~{number2}秒会有一名Boss出现，如果你没有击败他们，他们会不断堆积。得分 = 生存秒数 × 造成的伤害。当你倒下时游戏结束（最长{number3}分钟）。" },
 		{ "Good to know for the field: press Q to burst forward in your moving direction ({number1} in a row, recharges every {number2}s). Narrowly dodge enemy shots for a bonus!", "在实战中非常实用：按下Q键可向前冲刺（连续{number1}次，每{number2}秒充能一次）。成功躲避敌人攻击可获得额外奖励！" },
 		{ "Double Shot: each time you shoot, there's a chance the same shot fires again {number1}s later (same power). With the max {number2} points, about {number3}%.", "双重射击：每次射击都有机会在{number1}秒后再次发射相同的子弹（威力相同）。达到最高{number2}点时，概率约为{number3}%。" },
+		{ "🌟 A golden FEVER portal opened next to the fallen Colossus! Grab your loot, then press E at the portal within {number1} seconds!", "🌟 倒下的巨神旁开启了金色狂热传送门！捡完战利品后在{number1}秒内到传送门按E！" },
 		{ "🔒 Zone {number1} · Wasteland Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏚 Will of the Ruins set!", "🔒 区域 {number1} · 荒地已封锁\n区域 {number2} 的怪物 {number3} / {number4} 已被击败 · 领主 👑 未被击败\n开启以获取🏚废墟意志套装！" },
 		{ "Legendary Blacksmith   Title 『Legendary Blacksmith』\nUpgrade all the way to the last weapon (level {number1})\n{number2} / {number3}   Reward: 🎫 {number4}", "传奇铁匠称号『传奇铁匠』\n将所有武器升级至最高等级（{number1}级）\n{number2} / {number3} 奖励：🎫 {number4}" },
 		{ "🔒 Zone {number1} · Desert Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏜 Desert Sun set!", "🔒 区域 {number1} · 沙漠已封锁\n区域 {number2} 的怪物 {number3} / {number4} 已被击败 · 领主 👑 未被击败\n打开即可获得🏜沙漠日落套装！" },
@@ -1070,7 +1074,5 @@ return {
 		{ "📍 Zone {number1} {text2} · Drops in that zone · Dungeon chests (deeper = better odds)", "📍 区域{number1} {text2} · 该区域掉落 · 地下城宝箱(越深几率越高)" },
 		{ "💰 A Golden Goblin appeared in Zone {number1} · {text2}! Catch it for a jackpot! (75s)", "💰 区域{number1} · {text2} 出现了黄金哥布林!抓住它赢取大奖!(75 秒)" },
 		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "地下城 · 选择深度(越深掉落几率越高) · 随机主题 · {text1}" },
-		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "获得{text1}！已放入背包。(I → 从背包装备)  ▲ 比当前 +{number2}%" },
-		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 大门已关闭!击败区域{number1}怪物 {number2}/{number3} + 区域领主{text4}" },
 	},
 }

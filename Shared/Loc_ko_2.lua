@@ -848,6 +848,9 @@ return {
 		["🔥 300 Streak — On Fire!"] = "🔥 300 연속 — 불타오른다!",
 		["💫 500 Streak — Unstoppable!"] = "💫 500 연속 — 아무도 못 막아!",
 		["🌌 1000 Streak — Mythic!"] = "🌌 1000 연속 — 신화급!",
+		["Enter Fever Time"] = "피버 타임 입장",
+		["🌟 Fever Portal"] = "🌟 피버 포탈",
+		["🌟 FEVER TIME!"] = "🌟 피버 타임!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -861,6 +864,7 @@ return {
 		{ "A boss arrives every {number1}~{number2}s, and they pile up if you don't take them down. Score = seconds survived x damage dealt. The run ends when you fall (max {number3} min).", "{number1}~{number2}초마다 보스가 등장하며, 처치하지 않으면 계속 쌓입니다. 점수 = 생존한 시간 × 입힌 피해량입니다. 플레이어가 쓰러지면 라운드가 종료됩니다 (최대 {number3}분)." },
 		{ "Good to know for the field: press Q to burst forward in your moving direction ({number1} in a row, recharges every {number2}s). Narrowly dodge enemy shots for a bonus!", "필드에서 유용합니다: Q를 눌러 이동 방향으로 돌진하세요 ({number1}회 연속 사용 가능, {number2}초마다 재충전). 적의 공격을 간발의 차로 회피하면 보너스를 얻을 수 있습니다!" },
 		{ "Double Shot: each time you shoot, there's a chance the same shot fires again {number1}s later (same power). With the max {number2} points, about {number3}%.", "더블 샷: 발사할 때마다 {number1}초 후에 동일한 샷이 다시 발사될 확률이 있습니다(동일한 힘). 최대 {number2} 포인트 시 약 {number3}%입니다." },
+		{ "🌟 A golden FEVER portal opened next to the fallen Colossus! Grab your loot, then press E at the portal within {number1} seconds!", "🌟 쓰러진 거신 옆에 황금 피버 포탈이 열렸어요! 전리품을 줍고 {number1}초 안에 포탈에서 E를 누르세요!" },
 		{ "🔒 Zone {number1} · Wasteland Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏚 Will of the Ruins set!", "🔒 구역 {number1} · 황무지 봉쇄됨\n구역 {number2} 몬스터 {number3} / {number4} 처치 · 군주 👑 미처치\n오픈하여 🏚 폐허의 의지 세트를 획득하세요!" },
 		{ "Legendary Blacksmith   Title 『Legendary Blacksmith』\nUpgrade all the way to the last weapon (level {number1})\n{number2} / {number3}   Reward: 🎫 {number4}", "전설의 대장장이 타이틀 『전설의 대장장이』\n마지막 무기(레벨 {number1})까지 모두 업그레이드하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
 		{ "🔒 Zone {number1} · Desert Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏜 Desert Sun set!", "🔒 구역 {number1} · 사막 봉쇄됨\n구역 {number2} 몬스터 {number3} / {number4} 처치 · 군주 👑 미처치\n열고 사막 태양 세트를 획득하세요!" },
@@ -1064,8 +1068,5 @@ return {
 		{ "  <font color='#ffd966'>≈ {number1} dmg</font>", "  <font color='#ffd966'>≈ {number1} 피해</font>" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1}회 강화: 성공 {number2} / 실패 {number3}  (골드 -{number4})" },
 		{ "Reach level {number1} to buy points with gold.", "골드로 포인트를 사려면 레벨 {number1}에 도달하세요." },
-		{ "🎫 A {number1}x pull needs {number2} tickets (you have {number3})", "🎫 {number1}회 뽑기에는 티켓 {number2}장이 필요해요 (보유 {number3}장)" },
-		{ "🗿 Colossus defeated! Gear + 🎫 +1 + {number1} G", "🗿 거신 처치! 장비 + 🎫 +1 + {number1} G" },
-		{ "🔒 Unlocks at level {number1}  (you are level {number2})", "🔒 {number1}레벨에 해금 (현재 {number2}레벨)" },
 	},
 }

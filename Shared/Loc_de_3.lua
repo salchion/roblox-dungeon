@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Zone {number1} · Darklands", "Zone {number1} · Dunkle Länder" },
+		{ "Clear field zone {number1}", "Feldzone {number1} löschen" },
+		{ "🌙 Idle reward +{number1} G", "🌙 Inaktive Belohnung +{number1} G" },
+		{ "🥈  {player1}   ⚡ {number1}", "🥈 {player1} ⚡ {number1}" },
+		{ "📍 Town   🎟 Free {number1}/{number2}", "📍 Stadt 🎟 Kostenlos {number1}/{number2}" },
+		{ "💥 {number1} Kill Streak!!!", "💥 {number1} Tötungsserie!!!" },
 		{ "Use skills {number1} times", "Verwende Fähigkeiten {number1} Mal" },
 		{ "Clear {number1} dungeon(s)", "{number1} Dungeons abschließen" },
 		{ "Light Orb  Lv.{number1} / {number2}", "Lichtkugel Lv.{number1} / {number2}" },
@@ -205,6 +211,7 @@ return {
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} automatisch zerlegt (Essenz +{number2}, {number3} G)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ Tagesquest abgeschlossen! Belohnung: {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 Zone {number1} Abschnitt {number2} — hier gibt es viele {text3}" },
+		{ "🌟 This Fever portal belongs to {text1}.", "🌟 Dieses Fieberportal gehört {text1}." },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "Bosse {number1} · Schaden {text2} · Nächster Boss in {number3} s" },
 		{ "Move speed +{text1} per point  (max {number2})", "Lauftempo +{text1} pro Punkt (max. {number2})" },
 		{ "{text1}: vs bosses {number2}% · vs monsters {number3}%", "{text1}: gegen Bosse {number2}% · gegen Monster {number3}%" },

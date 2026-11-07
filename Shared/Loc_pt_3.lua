@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔫 Gunshot Volume: {number1}%", "🔫 Volume dos tiros: {number1}%" },
+		{ "🎁 Claimed {number1} rewards!", "🎁 {number1} recompensas resgatadas!" },
+		{ "Cooldown -{number1}%  (max {number2})", "Recarga -{number1}%  (máx. {number2})" },
+		{ "⚠ Zone {number1} · Forest ⚠", "⚠ Zona {number1} · Floresta ⚠" },
+		{ "{number1} Gear Roll Tickets", "{number1} Bilhetes de Giro de Equipamento" },
 		{ "👑 {number1} Kill Streak!!!!", "👑 {number1} Sequência de Eliminações!!!!" },
 		{ "XP Booster ({number1} hour)", "Impulsionador de XP ({number1} horas)" },
 		{ "Recommended Power {number2}", "Poder Recomendado {number2}" },
@@ -229,6 +234,7 @@ return {
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} desmontado automaticamente (essência +{number2}, {number3} G)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ Missão diária concluída! Recompensa: {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 Zona {number1} seção {number2} — há muitos {text3} aqui" },
+		{ "🌟 This Fever portal belongs to {text1}.", "🌟 Este portal Febre é de {text1}." },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "Chefes {number1} · Dano {text2} · Próximo chefe em {number3} s" },
 		{ "Move speed +{text1} per point  (max {number2})", "Velocidade de movimento +{text1} por ponto (máx. {number2})" },
 		{ "{text1}: vs bosses {number2}% · vs monsters {number3}%", "{text1}: contra chefes {number2}% · contra monstros {number3}%" },

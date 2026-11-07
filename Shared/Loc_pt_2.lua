@@ -546,6 +546,9 @@ return {
 		["🔥 300 Streak — On Fire!"] = "🔥 Sequência de 300 — Pegando fogo!",
 		["💫 500 Streak — Unstoppable!"] = "💫 Sequência de 500 — Imparável!",
 		["🌌 1000 Streak — Mythic!"] = "🌌 Sequência de 1000 — Mítico!",
+		["Enter Fever Time"] = "Entrar no Tempo Febre",
+		["🌟 Fever Portal"] = "🌟 Portal Febre",
+		["🌟 FEVER TIME!"] = "🌟 TEMPO FEBRE!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -558,6 +561,7 @@ return {
 		{ "A boss arrives every {number1}~{number2}s, and they pile up if you don't take them down. Score = seconds survived x damage dealt. The run ends when you fall (max {number3} min).", "Um chefe chega a cada {number1}~{number2} segundos, e eles se acumulam se você não os eliminar. Pontuação = segundos sobrevividos x dano causado. A partida termina quando você cai (máximo de {number3} minutos)." },
 		{ "Good to know for the field: press Q to burst forward in your moving direction ({number1} in a row, recharges every {number2}s). Narrowly dodge enemy shots for a bonus!", "Bom saber para o campo: pressione Q para avançar em sua direção de movimento ({number1} vezes seguidas, recarrega a cada {number2} segundos). Desvie de tiros inimigos para ganhar um bônus!" },
 		{ "Double Shot: each time you shoot, there's a chance the same shot fires again {number1}s later (same power). With the max {number2} points, about {number3}%.", "Tiro Duplo: cada vez que você atira, há uma chance de o mesmo tiro ser disparado novamente {number1} segundos depois (com o mesmo poder). Com o máximo de {number2} pontos, cerca de {number3}%." },
+		{ "🌟 A golden FEVER portal opened next to the fallen Colossus! Grab your loot, then press E at the portal within {number1} seconds!", "🌟 Um portal Febre dourado se abriu ao lado do Colosso caído! Pegue o saque e aperte E no portal em até {number1} segundos!" },
 		{ "🔒 Zone {number1} · Wasteland Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏚 Will of the Ruins set!", "🔒 Zona {number1} · Terras Desoladas Seladas\nZona {number2} monstros {number3} / {number4} derrotados · Lorde 👑 Não derrotado\nAbra para ganhar o conjunto da Vontade das Ruínas!" },
 		{ "Legendary Blacksmith   Title 『Legendary Blacksmith』\nUpgrade all the way to the last weapon (level {number1})\n{number2} / {number3}   Reward: 🎫 {number4}", "Título de Ferreiro Lendário\nMelhore até a última arma (nível {number1})\n{number2} / {number3} Recompensa: 🎫 {number4}" },
 		{ "🔒 Zone {number1} · Desert Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏜 Desert Sun set!", "🔒 Zona {number1} · Deserto Selado\nZona {number2} monstros {number3} / {number4} derrotados · Lorde 👑 Não derrotado\nAbra para ganhar o conjunto do Sol do Deserto!" },
@@ -946,10 +950,5 @@ return {
 		{ "Field (best: Zone {number1})", "Campo (melhor: zona {number1})" },
 		{ "🎲 Random bonus in {number1}s", "🎲 Bônus aleatório em {number1} s" },
 		{ "💀 The Final Lord  {number1}%", "💀 O Senhor Final  {number1}%" },
-		{ "🔫 Gunshot Volume: {number1}%", "🔫 Volume dos tiros: {number1}%" },
-		{ "🎁 Claimed {number1} rewards!", "🎁 {number1} recompensas resgatadas!" },
-		{ "Cooldown -{number1}%  (max {number2})", "Recarga -{number1}%  (máx. {number2})" },
-		{ "⚠ Zone {number1} · Forest ⚠", "⚠ Zona {number1} · Floresta ⚠" },
-		{ "{number1} Gear Roll Tickets", "{number1} Bilhetes de Giro de Equipamento" },
 	},
 }

@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "获得{text1}！已放入背包。(I → 从背包装备)  ▲ 比当前 +{number2}%" },
+		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 大门已关闭!击败区域{number1}怪物 {number2}/{number3} + 区域领主{text4}" },
 		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ 宠物升级已开始!({text1})— 使用时间加速可提前完成" },
 		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "推荐 ⚡{text1}  ·  瞄准黄色光球可造成3倍伤害!" },
 		{ "You have no {text1} gear. Get one from the field or the gacha", "你没有{text1}装备。去野外或扭蛋获得吧" },
@@ -31,6 +33,7 @@ return {
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} 已自动分解(精华 +{number2},{number3} 金币)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ 每日任务完成!奖励:{text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 区域{number1} 第 {number2} 段 — 这里有很多 {text3}" },
+		{ "🌟 This Fever portal belongs to {text1}.", "🌟 这个狂热传送门属于{text1}。" },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "首领 {number1} · 伤害 {text2} · 下个首领 {number3} 秒后" },
 		{ "Move speed +{text1} per point  (max {number2})", "每点移动速度 +{text1}(最多 {number2})" },
 		{ "{text1}: vs bosses {number2}% · vs monsters {number3}%", "{text1}:对首领 {number2}% · 对怪物 {number3}%" },

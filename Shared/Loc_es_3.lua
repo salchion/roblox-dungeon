@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number5} Snowfield · {number6} Volcano", "{number5} Campo de nieve · {number6} Volcán" },
+		{ "ZONE {number1}  ·  Forest   ☠☠", "Zona {number1} · Bosque ☠☠" },
+		{ "{number1} upgrades! {number2} succeeded", "¡{number1} mejoras! {number2} con éxito" },
+		{ "Free entries {number1} · Keys {number2}", "Entradas gratis {number1} · Llaves {number2}" },
+		{ "Loading the land...  {number1}", "Cargando el terreno...  {number1}" },
 		{ "Double Shot chance +{number1}%", "Probabilidad de disparo doble +{number1}%" },
 		{ "🔁 Path changed! (-{number1} G)", "🔁 ¡Camino cambiado! (-{number1} G)" },
 		{ "ZONE {number1}  ·  Meadow   ☠", "Zona {number1} · Pradera ☠" },
@@ -260,6 +265,7 @@ return {
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} desmantelado automáticamente (esencia +{number2}, {number3} G)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ ¡Misión diaria completada! Recompensa: {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 Zona {number1} sección {number2}: aquí hay muchos {text3}" },
+		{ "🌟 This Fever portal belongs to {text1}.", "🌟 Este portal Fiebre es de {text1}." },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "Jefes {number1} · Daño {text2} · Próximo jefe en {number3} s" },
 		{ "Move speed +{text1} per point  (max {number2})", "Velocidad de movimiento +{text1} por punto (máx. {number2})" },
 		{ "{text1}: vs bosses {number2}% · vs monsters {number3}%", "{text1}: contra jefes {number2}% · contra monstruos {number3}%" },

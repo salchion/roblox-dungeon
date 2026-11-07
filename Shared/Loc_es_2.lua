@@ -575,6 +575,9 @@ return {
 		["🔥 300 Streak — On Fire!"] = "🔥 Racha de 300 — ¡En llamas!",
 		["💫 500 Streak — Unstoppable!"] = "💫 Racha de 500 — ¡Imparable!",
 		["🌌 1000 Streak — Mythic!"] = "🌌 Racha de 1000 — ¡Mítico!",
+		["Enter Fever Time"] = "Entrar al Tiempo Fiebre",
+		["🌟 Fever Portal"] = "🌟 Portal Fiebre",
+		["🌟 FEVER TIME!"] = "🌟 ¡TIEMPO FIEBRE!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -587,6 +590,7 @@ return {
 		{ "A boss arrives every {number1}~{number2}s, and they pile up if you don't take them down. Score = seconds survived x damage dealt. The run ends when you fall (max {number3} min).", "Un jefe llega cada {number1}~{number2} segundos, y se acumulan si no los eliminas. Puntuación = segundos sobrevividos x daño infligido. La partida termina cuando caes (máximo {number3} minutos)." },
 		{ "Good to know for the field: press Q to burst forward in your moving direction ({number1} in a row, recharges every {number2}s). Narrowly dodge enemy shots for a bonus!", "Es bueno saberlo para el campo: presiona Q para impulsarte hacia adelante en tu dirección de movimiento ({number1} veces seguidas, se recarga cada {number2} segundos). ¡Esquiva con precisión los disparos enemigos para obtener una bonificación!" },
 		{ "Double Shot: each time you shoot, there's a chance the same shot fires again {number1}s later (same power). With the max {number2} points, about {number3}%.", "Disparo doble: cada vez que disparas, hay una probabilidad de que el mismo disparo se repita {number1} segundos después (con la misma potencia). Con el máximo de {number2} puntos, aproximadamente {number3}%." },
+		{ "🌟 A golden FEVER portal opened next to the fallen Colossus! Grab your loot, then press E at the portal within {number1} seconds!", "🌟 ¡Se abrió un portal Fiebre dorado junto al Coloso caído! Recoge tu botín y pulsa E en el portal en {number1} segundos." },
 		{ "🔒 Zone {number1} · Wasteland Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏚 Will of the Ruins set!", "🔒 Zona {number1} · Tierra baldía sellada\nZona {number2}: monstruos {number3} / {number4} derrotados · Señor 👑 No derrotado\n¡Abre para ganar el conjunto de la Voluntad de las Ruinas!" },
 		{ "Legendary Blacksmith   Title 『Legendary Blacksmith』\nUpgrade all the way to the last weapon (level {number1})\n{number2} / {number3}   Reward: 🎫 {number4}", "Título de herrero legendario\nMejora hasta la última arma (nivel {number1})\n{number2} / {number3} Recompensa: 🎫 {number4}" },
 		{ "🔒 Zone {number1} · Desert Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏜 Desert Sun set!", "🔒 Zona {number1} · Desierto sellado\nZona {number2}: monstruos {number3} / {number4} derrotados · Señor 👑 No derrotado\nAbre para ganar el conjunto de sol del desierto 🏜!" },
@@ -949,10 +953,5 @@ return {
 		{ "{number1} Snowfield · {number2} Volcano", "{number1} Campo de nieve · {number2} Volcán" },
 		{ "Railgun · Rusty Era +{number1}", "Arma de riel · Era oxidada +{number1}" },
 		{ "📍 Field (best: Zone {number11})", "📍 Campo (mejor: Zona {number11})" },
-		{ "{number5} Snowfield · {number6} Volcano", "{number5} Campo de nieve · {number6} Volcán" },
-		{ "ZONE {number1}  ·  Forest   ☠☠", "Zona {number1} · Bosque ☠☠" },
-		{ "{number1} upgrades! {number2} succeeded", "¡{number1} mejoras! {number2} con éxito" },
-		{ "Free entries {number1} · Keys {number2}", "Entradas gratis {number1} · Llaves {number2}" },
-		{ "Loading the land...  {number1}", "Cargando el terreno...  {number1}" },
 	},
 }

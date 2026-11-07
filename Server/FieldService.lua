@@ -1361,7 +1361,10 @@ local function maybeFeverPortal(player, bossAt, zone)
 	end
 	if (saved.FeverUsed or 0) >= Fv.DailyMax or os.clock() < st.Until or math.random() >= Fv.PortalChance then return end
 	st.Until = os.clock() + Fv.PortalSeconds + 1 -- (열려 있는 동안 다른 군주로 또 열리지 않게)
-	local ground = Vector3.new(bossAt.X, floorAt(bossAt.X), bossAt.Z)
+	-- 포탈은 거신이 쓰러진 자리(전리품이 떨어지는 곳)에서 앞쪽으로 비켜 연다: 아이템을 주우러 가다 포탈에 닿아 바로 던전으로 넘어가던 것
+	local portalX = bossAt.X + 34
+	if not walkableAt(portalX, bossAt.Z) then portalX = bossAt.X - 34 end
+	local ground = Vector3.new(portalX, floorAt(portalX), bossAt.Z)
 	local center = ground + Vector3.new(0, 7, 0)
 	local model = Instance.new("Model")
 	model.Name = "FeverPortal"
@@ -1399,26 +1402,45 @@ local function maybeFeverPortal(player, bossAt, zone)
 	text.TextColor3, text.TextStrokeTransparency = gold, 0.2
 	text.Parent = sign
 	model.Parent = worldFolder
-	notify(player, string.format("🌟 A golden FEVER portal opened where the Colossus fell! Step in within %d seconds!", Fv.PortalSeconds))
+	notify(player, string.format("🌟 A golden FEVER portal opened next to the fallen Colossus! Grab your loot, then press E at the portal within %d seconds!", Fv.PortalSeconds))
+	-- 들어가기: 걸어 들어가면 바로가 아니라 E(누르기)로 (전리품을 줍다가 실수로 빨려 들어가지 않게)
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.ActionText, prompt.ObjectText = "Enter Fever Time", "🌟 Fever Portal"
+	prompt.HoldDuration, prompt.MaxActivationDistance, prompt.RequiresLineOfSight = 0.3, 14, false
+	prompt.KeyboardKeyCode = Enum.KeyCode.E
+	prompt.Parent = veil
+	local entering = false
+	prompt.Triggered:Connect(function(who)
+		if who ~= player then
+			notify(who, string.format("🌟 This Fever portal belongs to %s.", player.DisplayName))
+			return
+		end
+		if entering or player:GetAttribute("Zone") ~= "Field" then return end
+		entering = true
+		saved.FeverUsed = (saved.FeverUsed or 0) + 1
+		st.Until = os.clock() + Fv.Cooldown
+		prompt.Enabled = false
+		Effects.Burst(center, gold, 90)
+		-- 화면이 툭 바뀌지 않게: 황금빛 번쩍임 -> 검은 화면 "FEVER TIME!" -> 던전에서 밝아진다 (TutorialClient 의 Cinema "Fever")
+		Remotes.Tutorial:FireClient(player, "Cinema", "Fever")
+		task.wait(0.7)
+		model:Destroy()
+		local okStart = player.Parent and Dungeon.StartFever(player, zone, CFrame.new(ground + Vector3.new(-14, 4, 0)))
+		if not okStart then
+			saved.FeverUsed = math.max(0, (saved.FeverUsed or 1) - 1)
+			st.Until = os.clock() + 20
+		end
+		task.wait(0.4)
+		if player.Parent then Remotes.Tutorial:FireClient(player, "Cinema", "End") end
+	end)
 	task.spawn(function()
 		local expires = os.clock() + Fv.PortalSeconds
 		while model.Parent and os.clock() < expires and player.Parent do
-			text.Text = string.format("🌟 FEVER PORTAL  %ds", math.ceil(expires - os.clock()))
+			if not entering then text.Text = string.format("🌟 FEVER PORTAL  %ds", math.ceil(expires - os.clock())) end
 			veil.CFrame = veil.CFrame * CFrame.Angles(0.15, 0, 0)
-			local root = getAliveParts(player)
-			if root and player:GetAttribute("Zone") == "Field" and (root.Position - center).Magnitude <= 9 then
-				saved.FeverUsed = (saved.FeverUsed or 0) + 1
-				st.Until = os.clock() + Fv.Cooldown
-				model:Destroy()
-				Effects.Burst(center, gold, 90)
-				if not Dungeon.StartFever(player, zone, CFrame.new(ground + Vector3.new(-14, 4, 0))) then
-					saved.FeverUsed = math.max(0, (saved.FeverUsed or 1) - 1)
-					st.Until = os.clock() + 20
-				end
-				return
-			end
 			task.wait(0.15)
 		end
+		if entering then return end
 		if model.Parent then model:Destroy() end
 		st.Until = math.min(st.Until, os.clock() + 5) -- 못 들어갔으면 다음 군주에서 다시 기회
 	end)

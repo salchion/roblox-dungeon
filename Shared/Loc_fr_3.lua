@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Idle Accrual Cap: {number1} Hours", "Limite d'accumulation inactive : {number1} heures" },
+		{ "🔫 Next era Steel Era (+{number1})", "🔫 Prochaine ère : l'ère de l'acier (+{number1})" },
+		{ "The party is full. (max {number1}", "Le groupe est complet. (max {number1}" },
+		{ "Fall in the field {number1} times", "Tombez {number1} fois sur le terrain" },
+		{ "Raise your pet to level {number1}", "Montez votre familier au niveau {number1}" },
 		{ "Range x{number1} · allies heal +{number2}%", "Portée x{number1} · alliés soignés +{number2} %" },
 		{ "Recovers {number1}% HP per second", "Récupère {number1} % de PV par seconde" },
 		{ "Uses all Tickets (max {number1})", "Utilise tous les tickets (maximum {number1})" },
@@ -292,6 +297,7 @@ return {
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} recyclé automatiquement (essence +{number2}, {number3} or)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ Quête quotidienne terminée ! Récompense : {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 Zone {number1} section {number2} — beaucoup de {text3} ici" },
+		{ "🌟 This Fever portal belongs to {text1}.", "🌟 Ce portail Fever appartient à {text1}." },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "Boss {number1} · Dégâts {text2} · Prochain boss dans {number3} s" },
 		{ "Move speed +{text1} per point  (max {number2})", "Vitesse de déplacement +{text1} par point (max {number2})" },
 		{ "{text1}: vs bosses {number2}% · vs monsters {number3}%", "{text1} : contre les boss {number2}% · contre les monstres {number3}%" },

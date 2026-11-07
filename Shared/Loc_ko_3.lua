@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎫 A {number1}x pull needs {number2} tickets (you have {number3})", "🎫 {number1}회 뽑기에는 티켓 {number2}장이 필요해요 (보유 {number3}장)" },
+		{ "🗿 Colossus defeated! Gear + 🎫 +1 + {number1} G", "🗿 거신 처치! 장비 + 🎫 +1 + {number1} G" },
+		{ "🔒 Unlocks at level {number1}  (you are level {number2})", "🔒 {number1}레벨에 해금 (현재 {number2}레벨)" },
 		{ "Pierces up to {number1} more enemies in a line", "일직선상의 적을 최대 {number1}명 더 관통합니다" },
 		{ "Lasts +{number1}s · range +{number2}%: sweeps up swarms", "지속 +{number1}초 · 범위 +{number2}%: 몰려든 잡몹을 쓸어요" },
 		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 눈밭의 군주 (구역 {number1}) · 레코드 ⚡{number2}" },
@@ -474,6 +477,7 @@ return {
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} 자동 분해 (정수 +{number2}, {number3} G)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ 일일 퀘스트 완료! 보상: {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 {number1}구역 {number2}구간 — 이곳에는 {text3}이(가) 많아요" },
+		{ "🌟 This Fever portal belongs to {text1}.", "🌟 이 피버 포탈은 {text1}님의 것이에요." },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "보스 {number1} · 피해 {text2} · 다음 보스 {number3}초" },
 		{ "   ✨ {number1}-piece set complete! {text2} Lv.{number3}", "   ✨ {number1}부위 세트 완성! {text2} Lv.{number3}" },
 		{ "Move speed +{text1} per point  (max {number2})", "이동 속도 포인트당 +{text1}  (최대 {number2})" },

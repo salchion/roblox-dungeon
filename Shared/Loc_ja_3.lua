@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 次の武器のロック解除：ショットガン（+{number1}）" },
+		{ "⚠ Reach level {number1} to break through.", "⚠ レベル{number1}に到達すると突破できます。" },
+		{ "💥 Weak Spot Hit! x3 damage for {number1}s", "💥 弱点ヒット！{number1}秒間ダメージ x3" },
+		{ "Not enough power! (You {number1} / Rec. {number2})", "戦闘力が足りません！(あなた {number1} / 推奨 {number2})" },
 		{ "Points left {number1}  /  earned {number2}  (max {number3})", "残りポイント {number1}  /  獲得 {number2}  (最大 {number3})" },
 		{ "Crit chance +{number1}% per point  (max {number2})", "クリティカル率 +{number1}% / 1ポイント  (最大 {number2})" },
 		{ "🏚 Ruined Fortress Gate · Rec. ⚡{number1}", "🏚 廃墟の要塞の門 · レコメンド ⚡{number1}" },
@@ -399,6 +403,7 @@ return {
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1}を自動分解しました(エッセンス+{number2}、{number3} G)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ デイリークエスト完了！報酬: {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 ゾーン{number1} セクション{number2} — ここには{text3}がたくさんいる" },
+		{ "🌟 This Fever portal belongs to {text1}.", "🌟 このフィーバーポータルは{text1}のものです。" },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "ボス {number1} · ダメージ {text2} · 次のボスまで {number3}秒" },
 		{ "Move speed +{text1} per point  (max {number2})", "1ポイントごとに移動速度+{text1}(最大{number2})" },
 		{ "{text1}: vs bosses {number2}% · vs monsters {number3}%", "{text1}: ボス戦 {number2}% · モンスター戦 {number3}%" },

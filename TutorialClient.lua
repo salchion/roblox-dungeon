@@ -247,6 +247,16 @@ local function cinemaPlay(phase)
 		TweenService:Create(cinema.Flash, TweenInfo.new(0.7), { BackgroundTransparency = 1 }):Play()
 		if camera then TweenService:Create(camera, TweenInfo.new(0.35), { FieldOfView = 32 }):Play() end
 		TweenService:Create(cinema.Color, TweenInfo.new(0.3), { Saturation = -1, Contrast = 0.6 }):Play()
+	elseif phase == "Fever" then -- 피버 포탈: 황금빛으로 번쩍 -> 검은 화면에 "FEVER TIME!" (던전에 도착하면 End 로 밝아진다)
+		cinema.Flash.BackgroundColor3 = Color3.fromRGB(255, 210, 90)
+		cinema.Flash.BackgroundTransparency = 0.15
+		TweenService:Create(cinema.Flash, TweenInfo.new(0.6), { BackgroundTransparency = 1 }):Play()
+		task.delay(0.65, function() cinema.Flash.BackgroundColor3 = Color3.new(1, 1, 1) end)
+		cinema.Text.Text = "🌟 FEVER TIME!"
+		cinema.Text.TextColor3 = Color3.fromRGB(255, 214, 90)
+		TweenService:Create(cinema.Black, TweenInfo.new(0.45), { BackgroundTransparency = 0 }):Play()
+		TweenService:Create(cinema.Text, TweenInfo.new(0.4), { TextTransparency = 0, TextStrokeTransparency = 0.4 }):Play()
+		if camera then TweenService:Create(camera, TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { FieldOfView = 95 }):Play() end -- 빨려 드는 느낌
 	elseif phase == "Black" then
 		TweenService:Create(cinema.Black, TweenInfo.new(0.5), { BackgroundTransparency = 0 }):Play()
 		TweenService:Create(cinema.Text, TweenInfo.new(0.6), { TextTransparency = 0, TextStrokeTransparency = 0.4 }):Play()
@@ -259,6 +269,10 @@ local function cinemaPlay(phase)
 		TweenService:Create(cinema.Color, TweenInfo.new(0.8), { Saturation = 0, Contrast = 0, Brightness = 0, TintColor = Color3.new(1, 1, 1) }):Play()
 		if camera then camera.FieldOfView = 70 end
 		task.delay(1, function() cinema.Color.Enabled = false end)
+		task.delay(0.6, function() -- (피버 글자를 원래 "…" 로 되돌린다)
+			cinema.Text.Text = "…………"
+			cinema.Text.TextColor3 = Color3.new(1, 1, 1)
+		end)
 	end
 end
 

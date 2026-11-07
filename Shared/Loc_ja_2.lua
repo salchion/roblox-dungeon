@@ -702,6 +702,9 @@ return {
 		["🔥 300 Streak — On Fire!"] = "🔥 300連続 — 絶好調！",
 		["💫 500 Streak — Unstoppable!"] = "💫 500連続 — 止められない！",
 		["🌌 1000 Streak — Mythic!"] = "🌌 1000連続 — 神話級！",
+		["Enter Fever Time"] = "フィーバータイムに入る",
+		["🌟 Fever Portal"] = "🌟 フィーバーポータル",
+		["🌟 FEVER TIME!"] = "🌟 フィーバータイム！",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -714,6 +717,7 @@ return {
 		{ "A boss arrives every {number1}~{number2}s, and they pile up if you don't take them down. Score = seconds survived x damage dealt. The run ends when you fall (max {number3} min).", "{number1}~{number2}秒ごとにボスが出現し、倒さないと積み重なります。スコアは「生存した秒数×与えたダメージ」です。落下するとランが終了します（最大{number3}分）。" },
 		{ "Good to know for the field: press Q to burst forward in your moving direction ({number1} in a row, recharges every {number2}s). Narrowly dodge enemy shots for a bonus!", "フィールドで役立つ情報：Qキーを押すと、移動方向に前方に突進します（{number1}回連続、{number2}秒ごとに再充電）。敵の弾をわずかに避けるとボーナスを獲得できます！" },
 		{ "Double Shot: each time you shoot, there's a chance the same shot fires again {number1}s later (same power). With the max {number2} points, about {number3}%.", "ダブルショット：発射するたびに、{number1}秒後に同じショットが再び発射される可能性があります（威力は同じです）。最大{number2}ポイントで、約{number3}%の確率です。" },
+		{ "🌟 A golden FEVER portal opened next to the fallen Colossus! Grab your loot, then press E at the portal within {number1} seconds!", "🌟 倒れた巨神の横に黄金のフィーバーポータルが開いた！戦利品を拾ってから{number1}秒以内にポータルでEを押そう！" },
 		{ "🔒 Zone {number1} · Wasteland Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏚 Will of the Ruins set!", "🔒 ゾーン {number1} · 荒地が封鎖されました\nゾーン{number2}のモンスター{number3}/{number4}を倒した · ロード👑は倒されていない\nオープンして、🏚 廃墟の意志セットを獲得しましょう！" },
 		{ "Legendary Blacksmith   Title 『Legendary Blacksmith』\nUpgrade all the way to the last weapon (level {number1})\n{number2} / {number3}   Reward: 🎫 {number4}", "伝説の鍛冶屋　タイトル『伝説の鍛冶屋』\n最後の武器（レベル{number1}）まですべてアップグレードする\n{number2} / {number3}　報酬：🎫 {number4}" },
 		{ "🔒 Zone {number1} · Desert Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏜 Desert Sun set!", "🔒 ゾーン {number1} · 砂漠が封鎖されています\nゾーン{number2}のモンスター{number3}/{number4}を倒した · ロード👑は倒されていない\n開けて🏜砂漠の太陽セットを獲得しよう！" },
@@ -945,9 +949,5 @@ return {
 		{ "Keeps {number1} more stacks even if broken", "途切れても{number1}スタック多く残る" },
 		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 深淵の支配者（ゾーン {number1}） · レコメンド ⚡{number2}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 今日は無料入場券{number1}枚 · 🗝 キー{number2}個！" },
-		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 次の武器のロック解除：ショットガン（+{number1}）" },
-		{ "⚠ Reach level {number1} to break through.", "⚠ レベル{number1}に到達すると突破できます。" },
-		{ "💥 Weak Spot Hit! x3 damage for {number1}s", "💥 弱点ヒット！{number1}秒間ダメージ x3" },
-		{ "Not enough power! (You {number1} / Rec. {number2})", "戦闘力が足りません！(あなた {number1} / 推奨 {number2})" },
 	},
 }

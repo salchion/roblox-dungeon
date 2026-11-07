@@ -586,6 +586,9 @@ return {
 		["🔥 300 Streak — On Fire!"] = "🔥 Série de 300 — En feu !",
 		["💫 500 Streak — Unstoppable!"] = "💫 Série de 500 — Inarrêtable !",
 		["🌌 1000 Streak — Mythic!"] = "🌌 Série de 1000 — Mythique !",
+		["Enter Fever Time"] = "Entrer dans le Fever Time",
+		["🌟 Fever Portal"] = "🌟 Portail Fever",
+		["🌟 FEVER TIME!"] = "🌟 FEVER TIME !",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -598,6 +601,7 @@ return {
 		{ "A boss arrives every {number1}~{number2}s, and they pile up if you don't take them down. Score = seconds survived x damage dealt. The run ends when you fall (max {number3} min).", "Un boss arrive toutes les {number1}~{number2} secondes, et ils s'accumulent si vous ne les éliminez pas. Le score est égal au nombre de secondes survécues multiplié par les dégâts infligés. La partie se termine lorsque vous tombez (maximum {number3} minutes)." },
 		{ "Good to know for the field: press Q to burst forward in your moving direction ({number1} in a row, recharges every {number2}s). Narrowly dodge enemy shots for a bonus!", "À savoir pour le terrain : appuyez sur Q pour vous propulser dans votre direction de déplacement ({number1} fois de suite, se recharge toutes les {number2} secondes). Esquivez étroitement les tirs ennemis pour un bonus !" },
 		{ "Double Shot: each time you shoot, there's a chance the same shot fires again {number1}s later (same power). With the max {number2} points, about {number3}%.", "Tir double : à chaque tir, il y a une chance que le même tir soit déclenché à nouveau {number1} secondes plus tard (même puissance). Avec un maximum de {number2} points, environ {number3}%." },
+		{ "🌟 A golden FEVER portal opened next to the fallen Colossus! Grab your loot, then press E at the portal within {number1} seconds!", "🌟 Un portail Fever doré s'est ouvert près du Colosse vaincu ! Ramasse ton butin puis appuie sur E au portail dans les {number1} secondes !" },
 		{ "🔒 Zone {number1} · Wasteland Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏚 Will of the Ruins set!", "🔒 Zone {number1} · Désert scellé\nZone {number2} : monstres {number3} / {number4} vaincus · Seigneur 👑 non vaincu\nOuvrez pour gagner le set de la volonté des ruines !" },
 		{ "Legendary Blacksmith   Title 『Legendary Blacksmith』\nUpgrade all the way to the last weapon (level {number1})\n{number2} / {number3}   Reward: 🎫 {number4}", "Titre de forgeron légendaire\nAméliorez jusqu'à la dernière arme (niveau {number1})\n{number2} / {number3} Récompense : 🎫 {number4}" },
 		{ "🔒 Zone {number1} · Desert Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏜 Desert Sun set!", "🔒 Zone {number1} · Désert scellé\nZone {number2} : monstres {number3} / {number4} vaincus · Seigneur 👑 non vaincu\nOuvrez pour gagner le set du soleil du désert !" },
@@ -926,10 +930,5 @@ return {
 		{ "Defeat {number1} Golden Goblin(s)", "Éliminer {number1} gobelins dorés" },
 		{ "🔒 Zone {number1} · Volcano Sealed", "🔒 Zone {number1} · Volcan scellé" },
 		{ "Lord of Meadow  ·  Zone {number1}", "Seigneur des prés · Zone {number1}" },
-		{ "Idle Accrual Cap: {number1} Hours", "Limite d'accumulation inactive : {number1} heures" },
-		{ "🔫 Next era Steel Era (+{number1})", "🔫 Prochaine ère : l'ère de l'acier (+{number1})" },
-		{ "The party is full. (max {number1}", "Le groupe est complet. (max {number1}" },
-		{ "Fall in the field {number1} times", "Tombez {number1} fois sur le terrain" },
-		{ "Raise your pet to level {number1}", "Montez votre familier au niveau {number1}" },
 	},
 }
