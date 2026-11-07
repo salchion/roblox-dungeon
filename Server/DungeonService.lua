@@ -1691,8 +1691,14 @@ local function augLv(run, player, attr)
 	bonus = bonus and bonus[attr] or 0
 	return bonus > gear and bonus or gear
 end
-local function synergy(player, key)
-	return player:GetAttribute("AugSyn_" .. key) == true
+local function synergy(player, key, run) -- 조합 효과: 골드로 켠 세트 + 이번 던전에서 받은 세트를 합쳐서 판정한다 (예: 미사일을 켜 두고 던전에서 처형을 받으면 "사신의 낫")
+	if player:GetAttribute("AugSyn_" .. key) == true then return true end
+	local syn = Config.AugSynergies[key]
+	if not syn or not run then return false end
+	for _, need in ipairs(syn.Need) do
+		if augLv(run, player, need) <= 0 then return false end
+	end
+	return true
 end
 
 -- 불길 지대: 한동안 남아서 안에 있는 적을 계속 태운다
@@ -1740,7 +1746,7 @@ local function dropMeteor(run, player, position, radius, damage, level)
 		for _, entry in ipairs(nearestMonsters(run, position + Vector3.new(0, 4, 0), radius + 4, 12)) do -- (바닥 위 몸통 중심까지 닿게 살짝 위에서 잰다)
 			hitMonster(run, player, entry, damage * (isBossData(entry.Data) and 1.5 or 1), nil, Color3.fromRGB(255, 190, 90), attr) -- 만능형: 보스에게는 한 방이 더 크다
 		end
-		if synergy(player, "StormEye") then -- 폭풍의 눈: 유성이 떨어질 때 번개가 추가로
+		if synergy(player, "StormEye", run) then -- 폭풍의 눈: 유성이 떨어질 때 번개가 추가로
 			for _, entry in ipairs(nearestMonsters(run, position, radius + 25, 3 + level)) do
 				strikeBolt(run, player, entry, augDamage(player) * 1.2, "AugMeteor")
 			end
@@ -1827,7 +1833,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 				if humanoid and humanoid.Health > 0 then humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * 0.04) end
 			end
 		end
-		if synergy(player, "Reaper") and augDepth == 0 then
+		if synergy(player, "Reaper", run) and augDepth == 0 then
 			local from = part.Position + Vector3.new(0, 3, 0)
 			for _, entry in ipairs(nearestMonsters(run, part.Position, 70, 2, part)) do
 				launchMissile(run, player, from, entry, augDamage(player) * 0.8, "rocket", Color3.fromRGB(210, 120, 255), 1.7, nil, "AugExecute")
@@ -1899,13 +1905,13 @@ augOnKill = function(run, player, position)
 	-- 4셋: 0.5초 뒤 한 번 더 터진다 / 5셋: 폭발이 25% 넓어지고 세 번째 폭발까지 / 6셋: 폭발 자리에 불길이 남는다 / 궁합 무기: 폭발 한 번 더
 	local function blast(radiusMult, damageMult)
 		augDepth += 1
-		local radius = (12 + 3 * level) * radiusMult * (synergy(player, "Inferno") and 1.3 or 1)
+		local radius = (12 + 3 * level) * radiusMult * (synergy(player, "Inferno", run) and 1.3 or 1)
 		Effects.Raw(position, { "N", position, radius, Color3.fromRGB(255, 110, 70) }) -- 충격 고리 + 파편 + 부드러운 빛구 (각자 화면에서)
 		sfxAt(run, position, "Aug_Nova", nil, 0.12)
 		local damage = augDamage(player) * (1.2 + 0.6 * level) * damageMult
 		for _, entry in ipairs(nearestMonsters(run, position, radius, 8)) do
 			hitMonster(run, player, entry, damage, nil, Color3.fromRGB(255, 110, 80), "AugNova")
-			if synergy(player, "Inferno") then addIgnite(run, player, entry.Part, entry.Data, 2) end -- 불바다: 폭발에 맞은 적에게 불 중첩
+			if synergy(player, "Inferno", run) then addIgnite(run, player, entry.Part, entry.Data, 2) end -- 불바다: 폭발에 맞은 적에게 불 중첩
 		end
 		augDepth -= 1
 	end
@@ -1997,7 +2003,7 @@ local function startAugLoop(run)
 									if run.Destroyed or run.Phase == "Ended" or not entry.Part.Parent then return end
 									launchMissile(run, member, start, entry, damage, "blade", Color3.fromRGB(110, 230, 255), 1.6, nil, "AugOrbit")
 									sfxAt(run, entry.Part.Position, "Aug_Blade", nil, 0.15)
-									if synergy(member, "BladeMissile") and math.random() < 0.3 then
+									if synergy(member, "BladeMissile", run) and math.random() < 0.3 then
 										for _, extra in ipairs(nearestMonsters(run, entry.Part.Position, 60, 1, entry.Part)) do
 											launchMissile(run, member, entry.Part.Position + Vector3.new(0, 3, 0), extra, damage * 0.8, "rocket", Color3.fromRGB(110, 230, 255), 1.5, nil, "AugOrbit")
 										end
@@ -2851,9 +2857,16 @@ local function surviveLoop(run)
 	-- 던전 체험: 시작할 때 세트 효과 하나를 3단계로 무작위로 받는다 (이번 던전에서만). 필드에서 골드로 직접 열면 평소에도 쓴다.
 	run.RunAug = run.RunAug or {}
 	for _, member in ipairs(run.Members) do
+		-- 이미 켜 둔 세트(Y)와 겹치지 않게: 아직 안 켠 세트 중에서 뽑는다 (겹치면 단계만 조금 오르고 새 효과가 없어 손해였다).
+		-- 8개를 모두 켰으면 3단계 미만인 것 중에서 (이번 던전 동안 3단계로)
 		local picks = {}
 		for _, attr in ipairs(Config.Sets.ZoneAug) do
-			if (member:GetAttribute(attr) or 0) < 3 then table.insert(picks, attr) end
+			if (member:GetAttribute(attr) or 0) <= 0 then table.insert(picks, attr) end
+		end
+		if #picks == 0 then
+			for _, attr in ipairs(Config.Sets.ZoneAug) do
+				if (member:GetAttribute(attr) or 0) < 3 then table.insert(picks, attr) end
+			end
 		end
 		if #picks > 0 then
 			local pick = picks[math.random(#picks)]
