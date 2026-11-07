@@ -141,7 +141,7 @@ local function pivotTo(player, cframe)
 		end)
 		-- 최대 0.45초만 기다린다 (예전 1.2초: 입장할 때마다 한참 못 움직인다는 의견). 도착지는 아레나라 가까운 땅만 있으면 충분하고, 풀린 뒤에도 계속 불러온다
 		local waitStart = os.clock()
-		while not streamed and os.clock() - waitStart < 0.45 do task.wait(0.03) end
+		while not streamed and os.clock() - waitStart < 0.25 do task.wait(0.03) end -- (던전은 입장 전에 미리 받아 둔다: 도착 후 고정은 아주 짧게)
 		if root.Parent then
 			root.AssemblyLinearVelocity = Vector3.zero
 			root.Anchored = false
@@ -3481,6 +3481,22 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField,
 		end,
 	}
 	buildArena(run)
+
+	-- 도착지(아레나)를 순간이동 "전에" 미리 내 화면으로 보내 둔다: 예전엔 도착한 뒤 땅을 받는 동안 몸이 고정되거나
+	-- (Streaming 이 주변을 다 받기 전까지 캐릭터 물리를 멈춰) 한동안 못 움직였다. 기다리는 동안은 아직 마을이라 자유롭게 움직인다 (최대 1.5초).
+	do
+		local pending = 0
+		local target = arenaSpawnCFrame(run).Position
+		for _, member in ipairs(members) do
+			pending += 1
+			task.spawn(function()
+				pcall(function() member:RequestStreamAroundAsync(target, 3) end)
+				pending -= 1
+			end)
+		end
+		local waitStart = os.clock()
+		while pending > 0 and os.clock() - waitStart < 1.5 do task.wait(0.05) end
+	end
 
 	for _, member in ipairs(members) do
 		playerRun[member] = run
