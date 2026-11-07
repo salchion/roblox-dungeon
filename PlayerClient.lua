@@ -2091,7 +2091,7 @@ end
 
 local menuPanel = makePanel({
 	Name = "MenuPanel",
-	Size = UDim2.new(0, 860, 0, 580),
+	Size = UDim2.new(0, 860, 0, 630), -- (580 -> 630: 성장 탭 아래 스킬 설명 칸이 잘려서 스크롤해야 보였다)
 	AnchorPoint = Vector2.new(0.5, 0.5),
 	Position = UDim2.new(0.5, 0, 0.55, 0),
 	BackgroundColor3 = Color3.fromRGB(16, 18, 30),

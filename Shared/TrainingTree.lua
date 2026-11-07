@@ -15,8 +15,8 @@ local DIM = Color3.fromRGB(70, 66, 96)
 local GOLD = Color3.fromRGB(225, 196, 118)
 local PET_COLOR = Color3.fromRGB(255, 200, 120)
 local NODE = 48
-local TIER_Y = { 70, 160, 250 } -- 세 칸이 같은 높이의 층을 쓴다
-local CANVAS_H = 322
+local TIER_Y = { 66, 152, 238 } -- 세 칸이 같은 높이의 층을 쓴다
+local CANVAS_H = 306
 local COLS = { Skill = { 0, 0.25 }, Train = { 0.25, 0.66 }, Pet = { 0.66, 1 } } -- 칸마다 가로 범위 (0~1)
 local selected = { Kind = "Skill", Key = nil } -- 마지막으로 고른 노드 (메뉴를 다시 그려도 유지)
 
@@ -156,7 +156,7 @@ end
 local function detailRow(env, color, text, button, skillKey)
 	local create, label = env.Create, env.MakeLabel
 	local withBranch = skillKey ~= nil and env.Config.SkillBranch ~= nil and env.Config.SkillBranch[skillKey] ~= nil
-	local detail = env.NewRow(withBranch and 150 or (skillKey and 124 or 76), Color3.fromRGB(30, 28, 46)) -- (스킬: 지금 ▶ 다음 레벨 비교 줄이 들어갈 자리)
+	local detail = env.NewRow(withBranch and 140 or (skillKey and 124 or 76), Color3.fromRGB(30, 28, 46)) -- (스킬: 지금 ▶ 다음 레벨 비교 줄이 들어갈 자리)
 	create("UIStroke", { Color = color, Thickness = 1.5, Transparency = 0.3 }, detail)
 	if button and env.InTown == false then -- 필드에서는 업그레이드 못 한다: 버튼이 "마을에서"로 바뀐다 (서버도 막는다)
 		button = { Text = "🏘 Upgrade in town", Color = env.GRAY, OnClick = function() end }

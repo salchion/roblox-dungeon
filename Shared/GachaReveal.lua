@@ -392,7 +392,7 @@ function M.Init(deps)
 				BackgroundColor3 = Color3.fromRGB(24, 22, 36), BorderSizePixel = 0, ZIndex = 62,
 			}, root)
 			rounded(card, 16)
-			local stroke = create("UIStroke", { Color = color, Thickness = 5 }, card)
+			local stroke = create("UIStroke", { Color = color, Thickness = rarity >= 4 and 3 or 2 }, card)
 			if rarity == 5 then
 				local gradient = create("UIGradient", {
 					Color = ColorSequence.new({
@@ -413,25 +413,29 @@ function M.Init(deps)
 			fade(card, { Size = UDim2.new(0, 340, 0, 220) }, 0.45, Enum.EasingStyle.Back)
 			pause(0.3)
 			if not root.Parent then return end
-			Kit.medal(card, { Size = 76, Position = UDim2.new(0.5, -38, 0, 10), Color = color, Icon = ICONS[roll.Slot] or "🎁", TextSize = 38, Tier = rarity, ZIndex = 63 })
+			-- 단일 뽑기 카드: 10연 카드와 같은 모양 (위쪽 등급색 띠 + 아이콘 뒤 은은한 원 + 이름 + 등급 알약 + 구분선 아래 상태)
+			card.ClipsDescendants = true
+			local band = create("Frame", { Size = UDim2.new(1, 0, 0, 6), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 63 }, card)
+			create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.6), NumberSequenceKeypoint.new(0.5, 0), NumberSequenceKeypoint.new(1, 0.6) }) }, band)
+			local aura = create("Frame", { Size = UDim2.new(0, 130, 0, 130), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 52), BackgroundColor3 = color, BackgroundTransparency = rarity >= 3 and 0.72 or 0.86, BorderSizePixel = 0, ZIndex = 62 }, card)
+			create("UICorner", { CornerRadius = UDim.new(1, 0) }, aura)
+			create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 1) }), Rotation = 90 }, aura)
+			Kit.medal(card, { Size = 72, Position = UDim2.new(0.5, -36, 0, 16), Color = color, Icon = ICONS[roll.Slot] or "🎁", TextSize = 36, Tier = rarity, ZIndex = 63 })
 			makeLabel({
-				Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 92), Text = string.format("★ %s ★", Config.Gear.RarityNames[rarity]),
-				TextSize = rarity >= 4 and 30 or 26, Font = Enum.Font.GothamBlack, TextColor3 = color, ZIndex = 63,
+				Size = UDim2.new(1, -24, 0, 28), Position = UDim2.new(0, 12, 0, 94), Text = roll.Name or "", TextSize = 19,
+				Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(242, 240, 252), ZIndex = 63,
 			}, card)
+			local pill = create("Frame", { Size = UDim2.new(0, 96, 0, 22), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 126), BackgroundColor3 = color, BackgroundTransparency = 0.78, BorderSizePixel = 0, ZIndex = 63 }, card)
+			create("UICorner", { CornerRadius = UDim.new(1, 0) }, pill)
+			create("UIStroke", { Color = color, Thickness = 1, Transparency = 0.35 }, pill)
+			makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = Config.Gear.RarityNames[rarity], TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = color:Lerp(Color3.new(1, 1, 1), 0.25), ZIndex = 64 }, pill)
+			create("Frame", { Size = UDim2.new(1, -40, 0, 1), Position = UDim2.new(0, 20, 1, -40), BackgroundColor3 = Color3.fromRGB(255, 255, 255), BackgroundTransparency = 0.88, BorderSizePixel = 0, ZIndex = 63 }, card)
 			makeLabel({
-				Size = UDim2.new(1, -20, 0, 30), Position = UDim2.new(0, 10, 0, 134), Text = roll.Name or "", TextSize = 17,
-				Font = Enum.Font.GothamBold, ZIndex = 63,
+				Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0, 0, 1, -34),
+				Text = roll.Better and string.format("▲ +%d%%", roll.Better) or (roll.Equipped and "Equipped!" or "Added to bag"), -- 지금 장비보다 좋으면 크게 "▲ +N%" (뽑기의 손맛)
+				TextSize = roll.Better and 18 or 12, Font = roll.Better and Enum.Font.GothamBlack or Enum.Font.GothamMedium,
+				TextColor3 = roll.Better and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(170, 170, 192), ZIndex = 63,
 			}, card)
-			makeLabel({
-				Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 1, -28), Text = roll.Equipped and "Equipped!" or "Added to bag",
-				TextSize = 11, TextColor3 = Color3.fromRGB(190, 190, 210), ZIndex = 63,
-			}, card)
-			if roll.Better then -- 지금 장비보다 좋으면 크게 "▲ +N%" (뽑기의 손맛)
-				makeLabel({
-					Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0, 0, 1, -54), Text = string.format("▲ +%d%%", roll.Better),
-					TextSize = 20, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(120, 255, 150), ZIndex = 63,
-				}, card)
-			end
 
 			skipped = false
 			pause(HOLD[rarity])
