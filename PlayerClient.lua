@@ -2887,7 +2887,18 @@ Remotes.Inventory.OnClientEvent:Connect(function(action, data)
 		end
 		player:SetAttribute("DotGear", better)
 		if menuPanel.Visible and currentTab == "Character" and MENU.Sub.Character == "Gear" then
-			refreshMenu()
+			-- 싸우는 중 장비를 주울 때마다 메뉴가 다시 그려져 버튼이 움직이는 것처럼 보였다: 메뉴를 직접 누른 게 아니면 8초에 한 번으로 모은다
+			local zoneNow = player:GetAttribute("Zone")
+			local busy = (zoneNow == "Field" or zoneNow == "Dungeon") and os.clock() - (settings.MenuClickAt or 0) > 1.5
+			if not busy then
+				refreshMenu()
+			elseif not settings.InvRefreshQueued then
+				settings.InvRefreshQueued = true
+				task.delay(8, function()
+					settings.InvRefreshQueued = false
+					if menuPanel.Visible and currentTab == "Character" and MENU.Sub.Character == "Gear" then refreshMenu() end
+				end)
+			end
 		end
 	end
 end)
@@ -2941,15 +2952,19 @@ local lastMenuClick = 0 -- 메뉴에서 마지막으로 누른 시각: 방금 �
 UserInputService.InputBegan:Connect(function(input)
 	if menuPanel.Visible and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
 		lastMenuClick = os.clock()
+		settings.MenuClickAt = lastMenuClick
 	end
 end)
 player.AttributeChanged:Connect(function(name)
 	if not menuPanel.Visible or menuRefreshQueued or MENU_IGNORE[name] then return end
-	menuRefreshQueued = true
-	-- (싸우는 중 메뉴를 열어 두면 처치할 때마다 바뀌는 값 때문에 메뉴 전체(3D 미리보기 포함)를 계속 다시 그려 렉이 걸렸다:
-	--  방금 메뉴를 누른 게 아니면 2.5초에 한 번만 다시 그린다)
 	local recentClick = os.clock() - lastMenuClick < 1.5
-	local wait = (recentClick and not MENU_SLOW[name]) and 0 or math.max(0, 2.5 - (os.clock() - lastMenuRefresh))
+	-- 자동 공격으로 싸우는 중 메뉴를 열어 두면 처치할 때마다 골드 / 경험치가 바뀌어 메뉴 전체가 2.5초마다 다시 그려졌다
+	-- (버튼이 다시 튀어나오며 움직이는 것처럼 보였다). 골드 / 경험치만 바뀐 것은 다시 그리지 않고, 싸우는 중의 다른 변화도 12초에 한 번만
+	if MENU_SLOW[name] and not recentClick then return end
+	menuRefreshQueued = true
+	local zoneNow = player:GetAttribute("Zone")
+	local gap = (zoneNow == "Field" or zoneNow == "Dungeon") and 12 or 2.5
+	local wait = (recentClick and not MENU_SLOW[name]) and 0 or math.max(0, gap - (os.clock() - lastMenuRefresh))
 	task.delay(wait, function()
 		menuRefreshQueued = false
 		if menuPanel.Visible then
