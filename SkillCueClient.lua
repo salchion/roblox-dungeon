@@ -11,7 +11,7 @@ local player = Players.LocalPlayer
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 
-local GOLD = Color3.fromRGB(255, 160, 210) -- (죽음의 연꽃: 분홍빛)
+local GOLD = Color3.fromRGB(255, 160, 210) -- (블레이드 블룸: 분홍빛)
 local current
 
 local function new(className, props, parent)
@@ -44,7 +44,7 @@ local function show()
 	new("UIStroke", { Color = GOLD, Thickness = 2 }, pill)
 	new("TextLabel", {
 		Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Font = Enum.Font.GothamBlack, TextSize = 19, TextColor3 = Color3.fromRGB(255, 200, 230),
-		Text = UserInputService.TouchEnabled and "TAP DEATH LOTUS!" or "PRESS  [ F ]",
+		Text = UserInputService.TouchEnabled and "TAP BLADE BLOOM!" or "PRESS  [ F ]",
 	}, pill)
 	task.spawn(function()
 		local began = os.clock()

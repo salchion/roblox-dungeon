@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Field (best: Zone {number1})", "Campo (melhor: zona {number1})" },
+		{ "🎲 Random bonus in {number1}s", "🎲 Bônus aleatório em {number1} s" },
+		{ "💀 The Final Lord  {number1}%", "💀 O Senhor Final  {number1}%" },
 		{ "🔫 Gunshot Volume: {number1}%", "🔫 Volume dos tiros: {number1}%" },
 		{ "🎁 Claimed {number1} rewards!", "🎁 {number1} recompensas resgatadas!" },
 		{ "Cooldown -{number1}%  (max {number2})", "Recarga -{number1}%  (máx. {number2})" },

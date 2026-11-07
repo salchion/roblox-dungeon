@@ -212,7 +212,7 @@ end
 -- (진단) 번역기가 실제로 번역을 돌려주는지 / 화면 글자를 몇 개나 번역했는지 8초 뒤에 한 번 찍는다 (실제 앱 포함)
 do
 	task.delay(8, function()
-		local tests = { "Gear", "Weapon", "Settings", "Dash", "First Aid", "Death Lotus", "Auto-Attack", "Power Ranking" }
+		local tests = { "Gear", "Weapon", "Settings", "Dash", "First Aid", "Blade Bloom", "Auto-Attack", "Power Ranking" }
 		for _, word in ipairs(tests) do
 			local okA, withContext = pcall(function() return translator:Translate(playerGui, word) end)
 			local okB, generic = pcall(function() return translator:Translate(game, word) end)

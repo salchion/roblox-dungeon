@@ -36,7 +36,9 @@ local THEME = { -- 던전마다 그림판 색 / 상징
 	Cave = { Top = Color3.fromRGB(70, 110, 50), Bottom = Color3.fromRGB(26, 22, 18), Icon = "👺", Accent = Color3.fromRGB(170, 230, 110) },
 	Ice = { Top = Color3.fromRGB(60, 120, 190), Bottom = Color3.fromRGB(14, 22, 40), Icon = "❄", Accent = Color3.fromRGB(150, 220, 255) },
 	Fire = { Top = Color3.fromRGB(190, 70, 30), Bottom = Color3.fromRGB(36, 14, 10), Icon = "🔥", Accent = Color3.fromRGB(255, 170, 90) },
+	All = { Top = Color3.fromRGB(92, 50, 150), Bottom = Color3.fromRGB(18, 12, 30), Icon = "👺", Accent = Color3.fromRGB(255, 200, 110) },
 }
+local CYCLE = { "👺", "❄", "🔥" } -- 깊이 던전: 세 던전의 상징이 번갈아 나온다
 
 -- ===== 왼쪽 그림판 =====
 local hero = create("Frame", { Size = UDim2.new(0, 470, 0, 340), Position = UDim2.new(0, 14, 0, 14), BackgroundColor3 = Color3.new(1, 1, 1), BorderSizePixel = 0, ZIndex = 11, ClipsDescendants = true }, panel)
@@ -138,16 +140,27 @@ local function refresh()
 	depth = math.clamp(depth, 1, Config.Dungeon.Depth.MaxDepth) -- 아무 깊이나 고를 수 있다
 	local key = Config.Dungeon.DepthKey(depth)
 	local difficulty = Config.Dungeon.GetDifficulty(key)
-	local typeInfo = Config.Dungeon.Types[typeKey] or {}
-	local theme = THEME[typeKey] or THEME.Cave
+	local typeInfo = Config.Dungeon.Types[typeKey]
+	local theme = THEME[typeKey] or THEME.All
 	heroGrad.Color = ColorSequence.new(theme.Top, theme.Bottom)
 	heroStroke.Color = theme.Accent
 	for _, ray in ipairs(rays) do ray.BackgroundColor3 = theme.Accent end
-	bossIcon.Text = theme.Icon
-	typeName.Text = typeInfo.Name or "Dungeon"
-	bossLine.Text = typeInfo.Boss and string.format("👑 Boss: %s", typeInfo.Boss.Name) or ""
+	if typeInfo then
+		bossIcon.Text = theme.Icon
+		typeName.Text = typeInfo.Name
+		bossLine.Text = string.format("👑 Boss: %s", typeInfo.Boss.Name)
+		descLine.Text = typeInfo.Desc or ""
+	else -- 깊이 던전: 매번 던전 / 보스가 무작위 (고블린 동굴 / 얼음 성채 / 화염 신전)
+		typeName.Text = "The Depths"
+		local names = {}
+		for _, key in ipairs(Config.Dungeon.Types.Order) do
+			local t = Config.Dungeon.Types[key]
+			if t and t.Boss then table.insert(names, t.Boss.Name) end
+		end
+		bossLine.Text = string.format("👑 Boss: %s", table.concat(names, " / "))
+		descLine.Text = "A random dungeon awaits each run: Goblin Cave, Ice Fortress or Flame Temple. Go deeper for stronger monsters and better chests!"
+	end
 	bossLine.TextColor3 = theme.Accent
-	descLine.Text = typeInfo.Desc or ""
 	title.Text = "🎁 Rewards"
 	depthLabel.Text = "Depth " .. depth
 	depthLabel.TextColor3 = difficulty.Color
@@ -212,6 +225,7 @@ task.spawn(function() -- 빛줄기가 천천히 돈다
 			t += 0.05
 			raysHolder.Rotation = t * 6
 			bossIcon.Position = UDim2.new(0.78, 0, 0.42, math.sin(t * 1.5) * 4)
+			if not Config.Dungeon.Types[typeKey or ""] then bossIcon.Text = CYCLE[math.floor(t / 1.6) % #CYCLE + 1] end
 		end
 		task.wait(0.05)
 	end

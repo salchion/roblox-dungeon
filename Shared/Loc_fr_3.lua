@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Spell Tome · Rusty Era +{number1}", "Livre de sorts · Ère rouillée +{number1}" },
+		{ "Defeat {number1} Golden Goblin(s)", "Éliminer {number1} gobelins dorés" },
+		{ "🔒 Zone {number1} · Volcano Sealed", "🔒 Zone {number1} · Volcan scellé" },
 		{ "Lord of Meadow  ·  Zone {number1}", "Seigneur des prés · Zone {number1}" },
 		{ "Idle Accrual Cap: {number1} Hours", "Limite d'accumulation inactive : {number1} heures" },
 		{ "🔫 Next era Steel Era (+{number1})", "🔫 Prochaine ère : l'ère de l'acier (+{number1})" },

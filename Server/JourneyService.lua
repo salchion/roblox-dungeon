@@ -150,7 +150,7 @@ local function combatBeat(player, now)
 		prompt(player, "Q", "Dash to dodge!", "Press Q to dash through bullets. Close shaves give a bonus!", 7)
 	end
 	if now - (lastBeat[player] or 0) < 12 then return end
-	-- 스킬 안내: V(데드아이)는 보스전에서, F(죽음의 연꽃)는 주변에 몬스터가 4마리 이상 몰렸을 때. 접속 중 각각 최대 3번, 2분 간격
+	-- 스킬 안내: V(데드아이)는 보스전에서, F(블레이드 블룸)는 주변에 몬스터가 4마리 이상 몰렸을 때. 접속 중 각각 최대 3번, 2분 간격
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if not root then return end
 	local tips = skillTips[player]
@@ -186,7 +186,7 @@ local function combatBeat(player, now)
 			end
 		end
 		if near >= 4 then
-			tip("F", "F", "Surrounded? Press F!", "Death Lotus hits everything around you for 2.5s.", 7)
+			tip("F", "F", "Surrounded? Press F!", "Blade Bloom hits everything around you for 2.5s.", 7)
 		end
 	end
 end

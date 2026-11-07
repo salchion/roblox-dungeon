@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Keeps {number1} more stacks even if broken", "途切れても{number1}スタック多く残る" },
+		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 深淵の支配者（ゾーン {number1}） · レコメンド ⚡{number2}" },
+		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 今日は無料入場券{number1}枚 · 🗝 キー{number2}個！" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 次の武器のロック解除：ショットガン（+{number1}）" },
 		{ "⚠ Reach level {number1} to break through.", "⚠ レベル{number1}に到達すると突破できます。" },
 		{ "💥 Weak Spot Hit! x3 damage for {number1}s", "💥 弱点ヒット！{number1}秒間ダメージ x3" },

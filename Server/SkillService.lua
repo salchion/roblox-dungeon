@@ -131,7 +131,7 @@ function Skill.CooldownFor(player, skillKey)
 	return cooldown
 end
 
--- 죽음의 연꽃(F, 저장 이름은 예전 그대로 "Spirit"): 롤의 카타리나 R 처럼 2.5초 동안 몸 주위로 단검이 휘돈다 (FxClient "Y" 가 단검 고리를 그린다).
+-- 블레이드 블룸(F, 저장 이름은 예전 그대로 "Spirit"): 롤의 카타리나 R 처럼 2.5초 동안 몸 주위로 단검이 휘돈다 (FxClient "Y" 가 단검 고리를 그린다).
 -- 0.12초마다 주변(Range) 적 중 가까운 쪽에서 Daggers 마리를 골라 단검을 날린다 (같은 틱에 한 적에게 두 자루는 안 간다). 한 자루 = 일반 공격 x Mult. 이동 / 사격은 그대로 할 수 있다.
 handlers.Spirit = function(player, root, _, character)
 	local cfg = S.Spirit
@@ -169,7 +169,7 @@ handlers.Spirit = function(player, root, _, character)
 					if part and part.Parent then
 						Effects.Raw(part.Position, { "J", from, part.Position })
 						BL.Ctx = "스킬"
-						Meter.Source = "Spirit" -- 대미지 미터기: 죽음의 연꽃(F)
+						Meter.Source = "Spirit" -- 대미지 미터기: 블레이드 블룸(F)
 						Effects.DamageTint = Color3.fromRGB(255, 120, 150)
 						local weaponType = Config.GetPlayerWeapon(player) -- 무기의 초당 피해 계수 기준 (예전엔 한 발 피해 기준이라 한 발이 큰 마법서가 권총의 4.5배였다)
 						local damage = math.max(1, math.floor(Dungeon.ComputeDamage(player) / weaponType.DamageMult * Config.WeaponDpsFactor(weaponType) * scale))
@@ -336,7 +336,7 @@ handlers.Ult = function(player, root, _, character)
 	if b5 == "A" then -- 5레벨 갈래 "다중 락온": 가장 덩치 큰 적 3마리까지 (총 피해는 줄어든다)
 		table.sort(targets, function(a, b) return a.Size.Magnitude > b.Size.Magnitude end)
 		while #targets > 3 do table.remove(targets) end
-	elseif #targets > 1 then -- 데드아이는 단일 대상: 범위 안에서 가장 덩치 큰 적(보스 / 엘리트 / 거신) 한 마리에 전탄을 집중한다. 광역은 죽음의 연꽃(F)이 맡는다
+	elseif #targets > 1 then -- 데드아이는 단일 대상: 범위 안에서 가장 덩치 큰 적(보스 / 엘리트 / 거신) 한 마리에 전탄을 집중한다. 광역은 블레이드 블룸(F)이 맡는다
 		local best = targets[1]
 		for _, candidate in ipairs(targets) do
 			if candidate.Size.Magnitude > best.Size.Magnitude + 0.5 then best = candidate end
@@ -543,7 +543,7 @@ function Skill.Use(player, skillKey, aimPoint)
 	local cooldown = Skill.CooldownFor(player, skillKey)
 	cooldowns[skillKey] = now + cooldown
 	if skillKey == "Spirit" then
-		-- (죽음의 연꽃 소리는 handlers.Spirit 가 낸다: 칼날 소리. 예전 번개 소리는 뺐다)
+		-- (블레이드 블룸 소리는 handlers.Spirit 가 낸다: 칼날 소리. 예전 번개 소리는 뺐다)
 	else
 		SoundBank.Play(root, skillKey == "Ult" and "Skill_Ult" or "Skill_Heal")
 	end

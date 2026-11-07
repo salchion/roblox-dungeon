@@ -3330,7 +3330,7 @@ function useSkill(skillKey)
 		settings.ShakeSkill(skillKey) -- 쿨타임 중: 칸만 흔들린다
 		return
 	end
-	-- 주변에 적이 없으면 (데드아이 / 죽음의 연꽃) 서버에 보내지 않고 칸만 흔들린다 (알림이 쌓이지 않게)
+	-- 주변에 적이 없으면 (데드아이 / 블레이드 블룸) 서버에 보내지 않고 칸만 흔들린다 (알림이 쌓이지 않게)
 	local function enemyWithin(range)
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if not root then return false end

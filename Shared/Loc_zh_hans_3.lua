@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 A Golden Goblin appeared in Zone {number1} · {text2}! Catch it for a jackpot! (75s)", "💰 区域{number1} · {text2} 出现了黄金哥布林!抓住它赢取大奖!(75 秒)" },
+		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "地下城 · 选择深度(越深掉落几率越高) · 随机主题 · {text1}" },
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "获得{text1}！已放入背包。(I → 从背包装备)  ▲ 比当前 +{number2}%" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 大门已关闭!击败区域{number1}怪物 {number2}/{number3} + 区域领主{text4}" },
 		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ 宠物升级已开始!({text1})— 使用时间加速可提前完成" },

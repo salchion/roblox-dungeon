@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} Snowfield · {number2} Volcano", "{number1} Campo de nieve · {number2} Volcán" },
+		{ "Railgun · Rusty Era +{number1}", "Arma de riel · Era oxidada +{number1}" },
+		{ "📍 Field (best: Zone {number11})", "📍 Campo (mejor: Zona {number11})" },
 		{ "{number5} Snowfield · {number6} Volcano", "{number5} Campo de nieve · {number6} Volcán" },
 		{ "ZONE {number1}  ·  Forest   ☠☠", "Zona {number1} · Bosque ☠☠" },
 		{ "{number1} upgrades! {number2} succeeded", "¡{number1} mejoras! {number2} con éxito" },

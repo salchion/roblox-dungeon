@@ -8300,8 +8300,8 @@
 "💨 신속 — 몬스터가 더 빠르게 움직이고 공격해요, 보상 x1.3"
 ],
 [
-"Death Lotus",
-"죽음의 연꽃"
+"Blade Bloom",
+"블레이드 블룸"
 ],
 [
 "Daggers whirl around you for 2.5s and fly at nearby enemies, three at a time. You can keep moving and shooting!",
@@ -8312,28 +8312,28 @@
 "%.1f초 · 단검 %d자루씩 %.2f초마다 · 자루당 피해 x%.2f"
 ],
 [
-"💡 Death Lotus (F) whirls daggers around you: keep moving and shooting while it spins",
-"💡 죽음의 연꽃(F)은 단검이 몸 주위를 휘돌아요. 도는 동안 계속 움직이며 쏘세요"
+"💡 Blade Bloom (F) whirls daggers around you: keep moving and shooting while it spins",
+"💡 블레이드 블룸(F)은 단검이 몸 주위를 휘돌아요. 도는 동안 계속 움직이며 쏘세요"
 ],
 [
 "🌸 No enemy nearby",
 "🌸 근처에 적이 없어요"
 ],
 [
-"Death Lotus cast",
-"죽음의 연꽃 시전"
+"Blade Bloom cast",
+"블레이드 블룸 시전"
 ],
 [
-"Death Lotus whirl",
-"죽음의 연꽃 회전"
+"Blade Bloom whirl",
+"블레이드 블룸 회전"
 ],
 [
-"Death Lotus stab",
-"죽음의 연꽃 꽂힘"
+"Blade Bloom stab",
+"블레이드 블룸 꽂힘"
 ],
 [
-"Death Lotus thump",
-"죽음의 연꽃 쿵"
+"Blade Bloom thump",
+"블레이드 블룸 쿵"
 ],
 [
 "Loading the world...  ·  %s",

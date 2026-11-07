@@ -267,8 +267,8 @@ Config.Skills = {
 	Order = { "Heal", "Spirit", "Ult" }, -- 방벽 / 충격파는 임팩트가 약해서 뺐다 (정의만 남겨둠)
 	Barrier = { Name = "Energy Barrier", Icon = "🛡", Key = "Z", KeyCode = "Z", Cooldown = 14, Duration = 3,
 		Desc = "A barrier that blocks all damage for 3s" },
-	-- F: 죽음의 연꽃(롤 카타리나 R 처럼): 2.5초 동안 몸 주위로 단검이 휘돌고, 0.12초마다 주변 적에게 단검이 최대 Daggers 자루씩 날아가 꽂힌다 (움직이며 쏠 수 있다). 한 자루 = 일반 공격 x Mult. 저장 / 슬롯 이름은 예전 그대로 Spirit.
-	Spirit = { Name = "Death Lotus", Icon = "🌸", Key = "F", KeyCode = "F", Cooldown = 10, Duration = 2.5, Interval = 0.12, Daggers = 4, Range = 44, Mult = 0.3, -- (Mult 는 무기의 초당 피해 계수 기준: 무기마다 한 발 위력이 달라도 연꽃 위력은 같다)
+	-- F: 블레이드 블룸(롤 카타리나 R 처럼): 2.5초 동안 몸 주위로 단검이 휘돌고, 0.12초마다 주변 적에게 단검이 최대 Daggers 자루씩 날아가 꽂힌다 (움직이며 쏠 수 있다). 한 자루 = 일반 공격 x Mult. 저장 / 슬롯 이름은 예전 그대로 Spirit.
+	Spirit = { Name = "Blade Bloom", Icon = "🌸", Key = "F", KeyCode = "F", Cooldown = 10, Duration = 2.5, Interval = 0.12, Daggers = 4, Range = 44, Mult = 0.3, -- (Mult 는 무기의 초당 피해 계수 기준: 무기마다 한 발 위력이 달라도 연꽃 위력은 같다)
 		Desc = "Area skill: daggers whirl around you for 2.5s and fly at many nearby enemies, four at a time. You can keep moving and shooting!" },
 	Blast = { Name = "Shockwave", Icon = "💥", Key = "F", KeyCode = "F", Cooldown = 8, Radius = 16, Range = 90, Mult = 3,
 		Desc = "Explodes where you aim (radius 16, attack x3)" },
@@ -281,7 +281,7 @@ Config.Skills = {
 		Desc = "Single-target ultimate: use it when the gauge is full! Locks onto the biggest enemy in range (boss / elite first) and fires all 16 missiles at it" },
 	ChargePerShot = 7,
 	CooldownFloor = 0.3,       -- 쿨타임 바닥 비율(점근선): 응급 치료 / 궁극기는 기본의 30% 아래로는 안 내려가지만, 출처가 곱해지는 구조라 어떤 스탯이든 올리면 늘 효과가 있다
-	SpiritCooldownFloor = 0.05, -- 죽음의 연꽃(F)은 5% (풀파밍하면 약 1.8초, 여운 갈래면 약 1.3초: 지속 2.5초보다 짧아 계속 쓸 수 있다)
+	SpiritCooldownFloor = 0.05, -- 블레이드 블룸(F)은 5% (풀파밍하면 약 1.8초, 여운 갈래면 약 1.3초: 지속 2.5초보다 짧아 계속 쓸 수 있다)
 	-- 패시브 스킬 (스킬 강화 창에서 골드로 레벨업, 스킬 바에는 안 나온다)
 	Focus = { Name = "Aura Focus", Icon = "⚡", Key = "Passive", Cooldown = 0, Passive = true,
 		Desc = "The attack bonus built up by NEAR MISS lasts longer. At higher levels, part of the bonus (half at max level) stays even if your streak breaks" },

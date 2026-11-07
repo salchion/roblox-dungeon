@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "  <font color='#ffd966'>≈ {number1} dmg</font>", "  <font color='#ffd966'>≈ {number1} 피해</font>" },
+		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1}회 강화: 성공 {number2} / 실패 {number3}  (골드 -{number4})" },
 		{ "Reach level {number1} to buy points with gold.", "골드로 포인트를 사려면 레벨 {number1}에 도달하세요." },
 		{ "🎫 A {number1}x pull needs {number2} tickets (you have {number3})", "🎫 {number1}회 뽑기에는 티켓 {number2}장이 필요해요 (보유 {number3}장)" },
 		{ "🗿 Colossus defeated! Gear + 🎫 +1 + {number1} G", "🗿 거신 처치! 장비 + 🎫 +1 + {number1} G" },

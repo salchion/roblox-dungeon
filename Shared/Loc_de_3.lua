@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Radius {number1} · Damage x{number2}", "Radius {number1} · Schaden x{number2}" },
+		{ "Power Ranking TOP {number1}", "Kraft-Rangliste TOP {number1}" },
+		{ "Spend {number1} stat points", "Verteile {number1} Statuspunkte" },
+		{ "Training slots {number1} / {number2}", "Trainingsplätze {number1} / {number2}" },
 		{ "NEAR MISS lasts +{number1}s", "NEAR MISS hält +{number1} s länger" },
 		{ "Zone {number1} · Darklands", "Zone {number1} · Dunkle Länder" },
 		{ "Clear field zone {number1}", "Feldzone {number1} löschen" },
