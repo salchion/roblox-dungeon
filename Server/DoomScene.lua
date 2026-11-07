@@ -1812,13 +1812,13 @@ function DoomScene.BuildPortal(deps)
 		local floorY = deps.FloorAt(endX - 30)
 		local fortress, stone, vein = rgb(30, 22, 38), rgb(48, 40, 58), rgb(255, 60, 70)
 		-- 1) 끝을 막는 성벽 (위가 들쭉날쭉한 성가퀴) + 붉은 균열 줄기
-		part(Vector3.new(16, 150, 360), Vector3.new(endX + 9, floorY + 70, 0), fortress, Enum.Material.Slate)
+		part(Vector3.new(16, 150, 360), Vector3.new(endX + 62, floorY + 70, 0), fortress, Enum.Material.Slate) -- (석상 뒤에 선다: 석상이 성벽에 박히지 않게)
 		for k = -8, 8 do
 			local h = 12 + (k % 3) * 9
-			part(Vector3.new(14, h, 16), Vector3.new(endX + 9, floorY + 145 + h / 2, k * 21), stone, Enum.Material.Slate)
+			part(Vector3.new(14, h, 16), Vector3.new(endX + 62, floorY + 145 + h / 2, k * 21), stone, Enum.Material.Slate)
 		end
 		for _, z in ipairs({ -120, -70, 70, 120 }) do
-			part(Vector3.new(1, 90, 1.2), Vector3.new(endX + 0.8, floorY + 60, z), vein, Enum.Material.Neon, 0.25)
+			part(Vector3.new(1, 90, 1.2), Vector3.new(endX + 53.6, floorY + 60, z), vein, Enum.Material.Neon, 0.25)
 		end
 		-- 2) 양옆을 감싸는 뾰족한 검은 첨탑들 (끝으로 갈수록 높다)
 		for _, side in ipairs({ -1, 1 }) do
@@ -1854,8 +1854,13 @@ function DoomScene.BuildPortal(deps)
 		-- 5) 성벽 앞에 선 군주의 석상 (오프닝 / 결투와 같은 모양, 돌로 굳어 있지만 눈과 핵은 붉게 빛난다)
 		local okLook, LordLook = pcall(function() return require(game:GetService("ReplicatedStorage"):WaitForChild("LordLook", 5)) end)
 		if okLook and LordLook then
-			local S = 3.2
-			local origin = CFrame.new(endX - 6, floorY + 110, 0) * CFrame.Angles(0, math.pi / 2, 0) -- 앞(-Z)이 플레이어가 오는 쪽(-X)을 본다. 포탈보다 높이 떠서 성벽 위로 내려다본다 (주먹 아래가 포탈 꼭대기보다 위)
+			-- 오프닝(IntroClient)의 군주와 같은 자리 / 크기: 오프닝 동안은 내 화면에서 석상을 숨기고 살아 있는 군주가 그 자리에 선다 (끝나면 다시 석상)
+			local S = 3.8
+			local bodyPos = Vector3.new(endX + 6, deps.FloorAt(endX - 1) + 21.5 * S + 2, 0)
+			local origin = CFrame.lookAt(bodyPos, bodyPos + Vector3.new(-1, 0, 0)) -- 앞(-Z)이 플레이어가 오는 쪽(-X)을 본다
+			local statue = Instance.new("Folder")
+			statue.Name = "LordStatue"
+			statue.Parent = folder
 			local function add(size, rel, color, material, transparency, shape)
 				local p = Instance.new("Part")
 				p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false
@@ -1867,7 +1872,7 @@ function DoomScene.BuildPortal(deps)
 				else
 					p.Color, p.Material, p.Transparency = color:Lerp(rgb(44, 38, 52), 0.75), Enum.Material.Slate, transparency or 0
 				end
-				p.Parent = folder
+				p.Parent = statue
 				return p
 			end
 			pcall(LordLook.Build, add)

@@ -414,6 +414,24 @@ local function play()
 		local fieldFolder = workspace:FindFirstChild("Field")
 		endWall = fieldFolder and fieldFolder:FindFirstChild("CanyonEnd", true)
 		if endWall then endWall.Transparency = 1 end
+		do -- 필드 끝의 군주 석상은 오프닝 동안 숨긴다 (살아 있는 군주가 바로 그 자리에 선다)
+			local portalFolder = workspace:FindFirstChild("FinalLordPortal")
+			local statue = portalFolder and portalFolder:FindFirstChild("LordStatue")
+			if statue then
+				local function hide(item)
+					if item:IsA("BasePart") and not finished then
+						item.LocalTransparencyModifier = 1
+						hiddenBaffles[item] = true -- (끝나면 같은 목록으로 되돌린다)
+					end
+				end
+				for _, item in ipairs(statue:GetDescendants()) do hide(item) end
+				local streamConn
+				streamConn = statue.DescendantAdded:Connect(function(item) -- (멀리 있어 늦게 불러와지는 조각도 숨긴다)
+					if finished then streamConn:Disconnect() return end
+					hide(item)
+				end)
+			end
+		end
 	end)
 
 	-- 보스 자리: 필드 맨 끝 (최후의 군주 포탈 뒤), 마을 쪽(서쪽)을 바라본다. 실제 보스와 같은 모습
