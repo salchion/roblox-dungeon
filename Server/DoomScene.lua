@@ -1015,16 +1015,16 @@ local function doomWaveInner(player, zone, center, real)
 				strike(origin + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius), 11, 0.8 + k * 0.09, percent, lethal)
 			end
 		end
-		task.wait(0.8 + count * 0.09 + 0.6)
+		task.wait(0.45 + count * 0.05) -- (다음 공격이 바로 이어진다: 연타 느낌)
 	end
 	-- 추적 낙인: 내가 서 있는 곳에 연달아 5번 (계속 움직여야 한다)
 	local function huntingMarks(percent, lethal)
 		for _ = 1, 5 do
 			if not alive() then return end
-			strike(playerAt(), 10, 0.75, percent, lethal)
-			task.wait(0.42)
+			strike(playerAt(), 10, 0.6, percent, lethal)
+			task.wait(0.26)
 		end
-		task.wait(0.9)
+		task.wait(0.3)
 	end
 	-- 나선 개화: 군주 발밑에서 바깥으로 소용돌이치며 폭격이 번진다 (나선 사이의 빈 곳으로 걸어 나간다)
 	local function spiralBloom(percent, lethal)
@@ -1036,7 +1036,22 @@ local function doomWaveInner(player, zone, center, real)
 			local dist = 6 + k * 3.6
 			strike(origin + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist), 8, 0.7 + k * 0.06, percent, lethal)
 		end
-		task.wait(0.7 + 16 * 0.06 + 0.6)
+		task.wait(0.5 + 16 * 0.03)
+	end
+
+	-- 연타 폭격 "파파밥바바": 내 주변 곳곳에 작은 경고 원이 0.08초 간격으로 쏟아지고 바로바로 터진다 (멈추면 여러 대 맞는다)
+	local function flurry(percent, lethal, count)
+		count = count or 16
+		lordSfx("Lord_Voice")
+		for k = 1, count do
+			if not alive() then return end
+			local angle, dist = math.random() * math.pi * 2, math.random() * 16
+			local at = playerAt() + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist)
+			strike(at, 7, 0.5, percent, lethal)
+			if k % 4 == 0 then shake(0.35) end
+			task.wait(0.08)
+		end
+		task.wait(0.35)
 	end
 
 	-- ================= 진짜 결전 (8구역 이후 포탈): 체력이 실제로 줄고, 단계마다 패턴이 늘어난다 =================
@@ -1435,7 +1450,7 @@ local function doomWaveInner(player, zone, center, real)
 				dmgMult = 1.35
 				phaseBanner("💢 ENRAGED — The Lord grows impatient!", "Enough games.")
 			end
-			local pool = { tripleStrike, ringOfRuin, sweepBeam, shockwaves, function() swordSweep(0.16 * dmgMult, true) end, function() huntingMarks(0.12 * dmgMult, true) end }
+			local pool = { tripleStrike, ringOfRuin, sweepBeam, shockwaves, function() swordSweep(0.16 * dmgMult, true) end, function() huntingMarks(0.12 * dmgMult, true) end, function() flurry(0.06 * dmgMult, true, 18) end }
 			if phaseNow >= 2 then table.insert(pool, function() spiralBloom(0.14 * dmgMult, true) end) end
 			if phaseNow >= 2 then table.insert(pool, meteorStorm) table.insert(pool, lanes) table.insert(pool, crossBeams) end
 			if phaseNow >= 3 then table.insert(pool, orbBarrage) table.insert(pool, judgement) end
@@ -1457,7 +1472,7 @@ local function doomWaveInner(player, zone, center, real)
 			end
 			pick()
 			if not alive() or not bossAlive() then break end
-			local rest = phaseNow == 1 and 1.2 or (phaseNow == 2 and 0.9 or 0.6)
+			local rest = phaseNow == 1 and 0.6 or (phaseNow == 2 and 0.45 or 0.3) -- (패턴 사이 쉬는 시간을 절반으로: 쉴 새 없이 몰아친다)
 			task.wait(enraged and rest * 0.6 or rest)
 		end
 
@@ -1541,10 +1556,10 @@ local function doomWaveInner(player, zone, center, real)
 	if alive() then
 		for k = 1, 3 do
 			local offset = Vector3.new((k - 2) * 20, 0, 0)
-			strike(playerAt() + offset, 13, 1.2, 0.15)
-			task.wait(0.35)
+			strike(playerAt() + offset, 13, 1.0, 0.15)
+			task.wait(0.22)
 		end
-		task.wait(1.4)
+		task.wait(0.5)
 	end
 	-- 2) 플레이어를 둘러싼 고리가 시계 방향으로 하나씩 내리꽂히고, 마지막에 한가운데로 큰 일격
 	if alive() then
@@ -1558,11 +1573,11 @@ local function doomWaveInner(player, zone, center, real)
 			end
 			task.wait(0.14)
 		end
-		task.wait(0.5)
+		task.wait(0.25)
 		if alive() then
-			strike(around, 22, 1.0, 0.2)
+			strike(around, 22, 0.9, 0.2)
 		end
-		task.wait(1.5)
+		task.wait(0.6)
 	end
 	-- 3) 대검 휘두르기 -> 4) 추적 낙인 -> 5) 나선 개화 (튜토리얼은 죽지 않는다: 체력 1 은 남는다)
 	if alive() then
@@ -1573,6 +1588,9 @@ local function doomWaveInner(player, zone, center, real)
 	end
 	if alive() then
 		spiralBloom(0.1, false)
+	end
+	if alive() then
+		flurry(0.05, false, 18)
 	end
 	-- 마지막: 아레나 전체가 붉게 물든다 — 어디에도 안전한 곳이 없다
 	if alive() then
@@ -1591,7 +1609,7 @@ local function doomWaveInner(player, zone, center, real)
 		flood.Color = rgb(255, 30, 30)
 		flood.Transparency = 0.9
 		flood.Parent = arena
-		TweenService:Create(flood, TweenInfo.new(2.4, Enum.EasingStyle.Quad), { Transparency = 0.86 }):Play() -- (바닥이 온통 붉어 내 총알이 안 보이던 문제: 덜 진하게)
+		TweenService:Create(flood, TweenInfo.new(1.5, Enum.EasingStyle.Quad), { Transparency = 0.86 }):Play() -- (바닥이 온통 붉어 내 총알이 안 보이던 문제: 덜 진하게)
 		lordSfx("Lord_Charge")
 		local charge = Instance.new("Part")
 		charge.Shape = Enum.PartType.Ball
@@ -1604,7 +1622,7 @@ local function doomWaveInner(player, zone, center, real)
 		charge.Size = Vector3.new(4, 4, 4)
 		charge.Position = body.Position + Vector3.new(0, 4, -10)
 		charge.Parent = arena
-		TweenService:Create(charge, TweenInfo.new(2.4, Enum.EasingStyle.Quad), { Size = Vector3.new(60, 60, 60), Transparency = 0.05 }):Play()
+		TweenService:Create(charge, TweenInfo.new(1.5, Enum.EasingStyle.Quad), { Size = Vector3.new(60, 60, 60), Transparency = 0.05 }):Play()
 		local halos = {} -- 충전구 둘레를 도는 세 개의 고리 (자이로스코프처럼 서로 다른 방향으로 돈다)
 		for index, diameter in ipairs({ 40, 56, 72 }) do
 			local halo = Instance.new("Part")
@@ -1622,7 +1640,8 @@ local function doomWaveInner(player, zone, center, real)
 			halos[index] = halo
 		end
 		local chargeStart, nextStream = os.clock(), 0
-		while os.clock() - chargeStart < 2.4 do
+		task.spawn(flurry, 0.04, false, 14) -- (기를 모으는 동안에도 연타 폭격이 쏟아진다)
+		while os.clock() - chargeStart < 1.5 do
 			local t = os.clock() - chargeStart
 			for index, halo in ipairs(halos) do
 				halo.CFrame = CFrame.new(charge.Position) * CFrame.Angles(t * (0.9 + index * 0.5), t * (1.4 - index * 0.3), t * 0.7 * index)
