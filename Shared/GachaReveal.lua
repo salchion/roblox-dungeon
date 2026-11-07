@@ -211,9 +211,7 @@ function M.Init(deps)
 				local function showFace(card)
 					local r, rc, holder = card.Roll, card.Color, card.Holder
 					card.Back:Destroy()
-					holder.BackgroundColor3 = Color3.fromRGB(22, 20, 34):Lerp(rc, 0.22)
 					card.Stroke.Color = rc
-					card.Stroke.Thickness = ({ 2, 3, 4, 5, 6 })[r.Rarity]
 					if r.Rarity == 5 then
 						local g = create("UIGradient", { Color = ColorSequence.new({
 							ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 80, 80)), ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 230, 80)),
@@ -224,19 +222,26 @@ function M.Init(deps)
 							while holder.Parent do rot += 8 g.Rotation = rot task.wait() end
 						end)
 					end
-					-- 위쪽에 등급색 빛 (아래로 갈수록 흐려진다)
-					local glow = create("Frame", { Size = UDim2.new(1, 0, 0.6, 0), BackgroundColor3 = rc, BorderSizePixel = 0, ZIndex = 64 }, holder)
-					-- 금테 안쪽 선 + 왼쪽 위 등급 글자 (카드 게임 느낌)
-					local inner = create("Frame", { Size = UDim2.new(1, -10, 1, -10), Position = UDim2.new(0, 5, 0, 5), BackgroundTransparency = 1, ZIndex = 66 }, holder)
-					rounded(inner, 9)
-					create("UIStroke", { Color = Color3.fromRGB(230, 190, 110), Thickness = 1.5, Transparency = 0.25 }, inner)
-					makeLabel({ Size = UDim2.new(0, 40, 0, 26), Position = UDim2.new(0, 8, 0, 6), Text = ({ "C", "R", "E", "L", "M" })[r.Rarity], TextSize = 24, Font = Enum.Font.Fantasy, TextColor3 = rc:Lerp(Color3.fromRGB(255, 230, 160), 0.35), TextStrokeTransparency = 0.3, TextXAlignment = Enum.TextXAlignment.Left, AutoLocalize = false, ZIndex = 67 }, holder)
-					create("UIGradient", { Rotation = 90, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, r.Rarity >= 3 and 0.45 or 0.75), NumberSequenceKeypoint.new(1, 1) }) }, glow)
-					Kit.medal(holder, { Size = 56, Position = UDim2.new(0.5, -28, 0, 12), Color = rc, Icon = ICONS[r.Slot] or "🎁", TextSize = 28, Tier = r.Rarity, ZIndex = 65 })
-					makeLabel({ Size = UDim2.new(1, -8, 0, 34), Position = UDim2.new(0, 4, 0, 72), Text = r.Name or "", TextSize = 12, Font = Enum.Font.FredokaOne, TextColor3 = Color3.new(1, 1, 1), ZIndex = 65 }, holder)
-					makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 108), Text = string.rep("★", r.Rarity), TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = rc, TextStrokeTransparency = 0.5, ZIndex = 65 }, holder)
-					makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 128), Text = Config.Gear.RarityNames[r.Rarity], TextSize = 11, Font = Enum.Font.GothamBlack, TextColor3 = rc, ZIndex = 65 }, holder)
-					makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 1, -24), Text = r.Better and string.format("▲ +%d%%", r.Better) or (STATUS[r.Status] or "Scrap"), TextSize = r.Better and 14 or 10, Font = r.Better and Enum.Font.GothamBlack or nil, TextColor3 = r.Better and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(170, 170, 190), ZIndex = 65 }, holder) -- 지금 장비보다 좋으면 초록 "▲ +N%"
+					-- 카드 앞면 (깔끔하게): 어두운 바탕 + 위쪽 등급색 띠 + 아이콘 뒤의 은은한 등급색 원 + 이름 + 등급 알약 + 아래 상태 줄
+					-- (예전 왼쪽 위 "C / R / E" 글자와 별 줄은 뺐다: 등급은 색 / 알약으로 이미 보인다)
+					holder.BackgroundColor3 = Color3.fromRGB(26, 24, 38)
+					local backTint = holder:FindFirstChildOfClass("UIGradient")
+					if backTint then backTint.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(196, 194, 214)) end
+					card.Stroke.Thickness = r.Rarity >= 4 and 3 or 2
+					local band = create("Frame", { Size = UDim2.new(1, 0, 0, 5), BackgroundColor3 = rc, BorderSizePixel = 0, ZIndex = 66 }, holder) -- 위쪽 등급색 띠
+					create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.6), NumberSequenceKeypoint.new(0.5, 0), NumberSequenceKeypoint.new(1, 0.6) }) }, band)
+					local aura = create("Frame", { Size = UDim2.new(0, 92, 0, 92), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 44), BackgroundColor3 = rc, BackgroundTransparency = r.Rarity >= 3 and 0.72 or 0.86, BorderSizePixel = 0, ZIndex = 64 }, holder)
+					create("UICorner", { CornerRadius = UDim.new(1, 0) }, aura)
+					create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 1) }), Rotation = 90 }, aura)
+					Kit.medal(holder, { Size = 54, Position = UDim2.new(0.5, -27, 0, 17), Color = rc, Icon = ICONS[r.Slot] or "🎁", TextSize = 27, Tier = r.Rarity, ZIndex = 65 })
+					local nameLabel = makeLabel({ Size = UDim2.new(1, -14, 0, 32), Position = UDim2.new(0, 7, 0, 78), Text = r.Name or "", TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(240, 238, 250), TextWrapped = true, ZIndex = 65 }, holder)
+					nameLabel.TextYAlignment = Enum.TextYAlignment.Center
+					local pill = create("Frame", { Size = UDim2.new(0, 74, 0, 18), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 114), BackgroundColor3 = rc, BackgroundTransparency = 0.78, BorderSizePixel = 0, ZIndex = 65 }, holder)
+					create("UICorner", { CornerRadius = UDim.new(1, 0) }, pill)
+					create("UIStroke", { Color = rc, Thickness = 1, Transparency = 0.35 }, pill)
+					makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = Config.Gear.RarityNames[r.Rarity], TextSize = 11, Font = Enum.Font.GothamBlack, TextColor3 = rc:Lerp(Color3.new(1, 1, 1), 0.25), ZIndex = 66 }, pill)
+					create("Frame", { Size = UDim2.new(1, -24, 0, 1), Position = UDim2.new(0, 12, 1, -30), BackgroundColor3 = Color3.fromRGB(255, 255, 255), BackgroundTransparency = 0.88, BorderSizePixel = 0, ZIndex = 65 }, holder) -- 구분선
+					makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 1, -25), Text = r.Better and string.format("▲ +%d%%", r.Better) or (STATUS[r.Status] or "Scrap"), TextSize = r.Better and 14 or 11, Font = r.Better and Enum.Font.GothamBlack or Enum.Font.GothamMedium, TextColor3 = r.Better and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(160, 160, 182), ZIndex = 65 }, holder) -- 지금 장비보다 좋으면 초록 "▲ +N%"
 					if r.Rarity >= 3 then -- 빛줄기가 카드를 한 번 쓸고 지나간다
 						local shine = create("Frame", { Size = UDim2.new(0, 34, 1.6, 0), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, -30, 0.5, 0), Rotation = 20, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.55, BorderSizePixel = 0, ZIndex = 66 }, holder)
 						fade(shine, { Position = UDim2.new(1, 30, 0.5, 0) }, 0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
