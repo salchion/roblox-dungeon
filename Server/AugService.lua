@@ -168,6 +168,14 @@ Remotes.Aug.OnServerEvent:Connect(function(player, action, zone)
 		notify(player, string.format("%s 『%s』 %s done! (Lv.%d)", info.Icon, info.Name, level == 0 and "Activation" or "Upgrade", level + 1))
 	elseif action == "Toggle" then
 		if (rift.AugLv[key] or 0) <= 0 then return end
+		-- 칸 수보다 많이 "켜짐"으로 저장돼 있던 것(화면에는 꺼짐으로 보임)을 먼저 정리한다:
+		-- 예전엔 하나를 끄면 숨어 있던 다른 효과가 저절로 켜졌고, 꺼짐으로 보이는 효과를 켜려고 누르면 오히려 꺼졌다
+		do
+			local shown = equipped(rift, slotCount(player, rift))
+			for z = 1, ZONES do
+				if rift.AugOn[tostring(z)] and not table.find(shown, z) then rift.AugOn[tostring(z)] = nil end
+			end
+		end
 		if rift.AugOn[key] then
 			rift.AugOn[key] = nil
 		else
