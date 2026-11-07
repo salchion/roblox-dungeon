@@ -736,6 +736,13 @@
       "overwrite": true
     },
     {
+      "path": "BootCoverClient.lua",
+      "parent": "ReplicatedFirst",
+      "name": "BootCoverClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "IntensityClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "IntensityClient",
