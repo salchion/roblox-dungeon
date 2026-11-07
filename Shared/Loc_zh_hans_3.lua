@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Crit damage +{text1}%p per point (base 2x)  (max {number2})", "每点暴击伤害 +{text1}%p(基础 2 倍)(最多 {number2})" },
+		{ "{text1}  ▲ Better than your current gear! (I → Bag", "{text1}  ▲ 比当前装备更强！(I → 背包" },
+		{ "🎮 Welcome to the world of adventure, {text1}!", "🎮 欢迎来到冒险世界,{text1}!" },
+		{ "👑 Zone {number1} · The Lord of {text2} has reappeared!", "👑 区域{number1} · {text2}领主再次现身!" },
+		{ "Zone {number1} monsters {number2} / {number3} defeated · Lord {text4}", "区域{number1}怪物 已击败 {number2} / {number3} · 领主 {text4}" },
 		{ "Skill cooldown -{text1}% per point  (max {number2})", "每点技能冷却 -{text1}%(最多 {number2})" },
 		{ "Dungeon layout: {text1} (changes every run", "地下城布局：{text1} (每次都会变化" },
 		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}……已自动分解!精华 +{number2},{number3} 金币" },

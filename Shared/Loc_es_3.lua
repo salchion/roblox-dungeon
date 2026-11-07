@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⚠ Zone {number1} · Forest ⚠", "⚠ Zona {number1} · Bosque ⚠" },
+		{ "{number1} Gear Roll Tickets", "{number1} Boletos de giro de equipamiento" },
+		{ "👑 {number1} Kill Streak!!!!", "👑 ¡¡¡¡Racha de {number1} muertes!!!!" },
+		{ "XP Booster ({number1} hour)", "Potenciador de XP ({number1} horas)" },
+		{ "Recommended Power {number2}", "Poder recomendado {number2}" },
+		{ "💰 Buy Point {number1} G ({number2}/{number3})", "💰 Comprar punto {number1} G ({number2}/{number3})" },
+		{ "Best {number1}  ·  Max hit {number2}", "Los mejores {number1} · Golpe máximo {number2}" },
+		{ "🗿 Colossus · Zone {number1}", "🗿 Coloso · Zona {number1}" },
 		{ "⚔ DUNGEON  ·  Lv.{number1}+", "⚔ Mazmorra · Nivel {number1}+" },
 		{ "Zone {number1} · Trial Lv.3", "Zona {number1} · Prueba Nv.3" },
 		{ "Upgrade success! +{number1}", "¡Mejora exitosa! +{number1}" },

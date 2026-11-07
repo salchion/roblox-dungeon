@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Crit damage +{number1}%p  (max {number2})", "Dégâts critiques +{number1} %p  (max {number2})" },
+		{ "★☆  Step {number1}/{number2} · Next step", "★☆ Étape {number1}/{number2} · Prochaine étape" },
+		{ "🌋 {number1} Streak — Legendary!", "🌋 Série de {number1} - Légendaire !" },
+		{ "Reach character level {number1}", "Atteindre le niveau de personnage {number1}" },
+		{ "▼ 👑 First Zone Lord  {number1}m", "▼ 👑 Seigneur de la première zone {number1}m" },
 		{ "Defeat {number1} elite monsters", "Vainquez {number1} monstres d'élite" },
 		{ "Defeat {number1} field monsters", "Vainquez {number1} monstres du terrain" },
 		{ "Pierces up to {number1} enemies", "Transperce jusqu'à {number1} ennemis" },
@@ -26,6 +31,7 @@ return {
 		{ "{number3} Wasteland · {number4} Desert", "{number3} Terres désolées · {number4} Désert" },
 		{ "Double Shot chance {number1}%", "Chance de tir double {number1} %" },
 		{ "Roll for gear {number1} times", "Tirez {number1} fois de l'équipement" },
+		{ "Move Speed +{number1}  (max {number2})", "Vitesse +{number1}  (max {number2})" },
 		{ "Gear drop rarity +{number1}%", "Rareté des objets de équipement +{number1}%" },
 		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 Combo x{number1}\nDégâts +{number2}%" },
 		{ "{number7} Darklands · {number8} Abyss", "{number7} Terres sombres · {number8} Abysse" },
@@ -35,6 +41,7 @@ return {
 		{ "💀 The Final Lord  {number1}%", "💀 Le Seigneur final  {number1} %" },
 		{ "🔫 Gunshot Volume: {number1}%", "🔫 Volume des tirs : {number1}%" },
 		{ "🎁 Claimed {number1} rewards!", "🎁 {number1} récompenses récupérées !" },
+		{ "Cooldown -{number1}%  (max {number2})", "Récupération -{number1} %  (max {number2})" },
 		{ "⚠ Zone {number1} · Forest ⚠", "⚠ Zone {number1} · Forêt ⚠" },
 		{ "{number1} Gear Roll Tickets", "{number1} tickets de roulement d'équipement" },
 		{ "👑 {number1} Kill Streak!!!!", "👑 Série de {number1} éliminations !!!!" },

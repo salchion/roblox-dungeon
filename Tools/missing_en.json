@@ -2347,5 +2347,11 @@
 "Crit damage +6%p per point (base 2x)",
 "A big blast when it ends (attack x8)",
 "🏘 Back in Town",
-"Grow stronger and face the Lord again"
+"Grow stronger and face the Lord again",
+"Points left {number1}  /  total {number2}  (Level {number3})  ·  +1 point every {number4} levels, next at Lv.{number5}",
+"Move Speed +{number1}  (max {number2})",
+"Range +{number1}%  (max {number2})",
+"Double Shot chance {number1}%  (max {number2})",
+"Cooldown -{number1}%  (max {number2})",
+"Crit damage +{number1}%p  (max {number2})"
 ]

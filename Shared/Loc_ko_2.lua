@@ -889,6 +889,7 @@ return {
 		{ "Mythic Master   Title 『Mythic Master』\nObtain Mythic gear\n{number1} / {number2}   Reward: 🎫 {number3}", "신화 마스터 타이틀 『신화 마스터』\n신화 장비 획득\n{number1} / {number2} 보상: 🎫 {number3}" },
 		{ "Dummy Slayer   Title 『Dummy Slayer』\nHit the dummy {number1} times\n{number2} / {number3}   Reward: {number4} G", "더미 슬레이어 타이틀 『더미 슬레이어』\n더미를 {number1}번 때리세요\n{number2} / {number3}   보상: {number4} G" },
 		{ "A golden FEVER portal opened where the Lord fell! Step in within {number1} seconds", "군주가 쓰러진 자리에 황금 피버 포탈이 열렸어요! {number1}초 안에 들어가세요" },
+		{ "Points left {number1}  /  total {number2}  (Level {number3})  ·  +1 point every {number4} levels, next at Lv.{number5}", "남은 포인트 {number1}  /  전체 {number2}  (레벨 {number3})  ·  {number4}레벨마다 +1, 다음은 Lv.{number5}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!\nChallenge the dungeon at the north gate", "🎟 오늘 무료 입장권 {number1}장 · 🗝 키 {number2}개!\n북문에서 던전에 도전하세요" },
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "발견한 유니크 효과 {number1} / {number2}  ·  신화 장비에 하나 붙을 수 있어요 (약 {number3}% 확률)" },
 		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "스킬 마스터 타이틀 『스킬 마스터』\n스킬을 {number1}번 사용하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
@@ -1053,7 +1054,5 @@ return {
 		{ "Bounces to {number1} nearby enemies (within {number2})", "근처 적 {number1}명({number2} 이내)에게 튕겨요" },
 		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 정령 {number1}마리가 {number2}초 동안 대신 싸워요!" },
 		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1}초 · 단검 {number2}자루씩 {number3}초마다 · 자루당 피해 x{number4}" },
-		{ "Defeat {number1} bosses in one Boss Rush run", "보스 러시에서 {number1}명의 보스를 처치하세요" },
-		{ "Monsters met {number1} / {number2} (incl. zone lords)", "몬스터를 {number1} / {number2} 마리 만났습니다 (존 로드 포함)" },
 	},
 }

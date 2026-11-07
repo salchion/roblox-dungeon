@@ -4,6 +4,15 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💥 {number1} Kill Streak!!!", "💥 {number1} Sequência de Eliminações!!!" },
+		{ "Use skills {number1} times", "Use habilidades {number1} vezes" },
+		{ "Clear {number1} dungeon(s)", "Limpe {number1} masmorras" },
+		{ "Light Orb  Lv.{number1} / {number2}", "Orbe de Luz Nv.{number1} / {number2}" },
+		{ "Zone {number1} · Wasteland", "Zona {number1} · Terra Desolada" },
+		{ "Zone {number1} · Snowfield", "Zona {number1} · Campo de Neve" },
+		{ "Field Entrance  {number1}m", "Entrada do Campo {number1}m" },
+		{ "Zone {number1} · Execute  ", "Zona {number1} · Executar" },
+		{ "{number1} Meadow · {number2} Forest", "{number1} Prado · {number2} Floresta" },
 		{ "🚪 Open Zone {number1} Gate", "🚪 Abrir o portão da zona {number1}" },
 		{ "max · +{number1}% crit dmg", "máx. · dano crítico +{number1}%" },
 		{ "🔊 Music Volume: {number1}%", "🔊 Volume da música: {number1}%" },

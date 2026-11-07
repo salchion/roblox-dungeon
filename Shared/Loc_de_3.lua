@@ -4,6 +4,15 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⚡ {number1} Kill Streak!!", "⚡ {number1} Tötungsserie!!" },
+		{ "Survive {number1}s + Boss", "Überlebe {number1} Sekunden + Boss" },
+		{ "{number3} / {number4}   Reward: 🎫 {number5}", "{number3} / {number4} Belohnung: 🎫 {number5}" },
+		{ "Range +{number1}%  (max {number2})", "Reichweite +{number1}% (max. {number2})" },
+		{ "Defeat {number1} monsters", "Besiege {number1} Monster" },
+		{ "⭐ Next level Lv.{number1}", "⭐ Nächste Stufe Lv.{number1}" },
+		{ "vs. equipped ▲ +{number1}", "vs. ausgerüstet ▲ +{number1}" },
+		{ "Online: {number1} players", "Online: {number1} Spieler" },
+		{ "🏆 Hall of Fame #{number1}", "🏆 Ruhmeshalle #{number1}" },
 		{ "◆ Crit Chance +{number1}%", "◆ Krit-Chance +{number1}%" },
 		{ "◆ Crit Damage +{number1}%", "◆ Kritischer Schaden +{number1}%" },
 		{ "◆ Boss Damage +{number1}%", "◆ Bossschaden +{number1}%" },

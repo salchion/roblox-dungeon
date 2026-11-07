@@ -126,7 +126,17 @@ local function refresh()
 	local left = player:GetAttribute("LvPointsLeft") or 0
 	local level = player:GetAttribute("Level") or 1
 	local total = player:GetAttribute("LvTotal") or Config.GetLevelStatPoints(level)
-	pointsLabel.Text = string.format("Points left %d  /  total %d  (Level %d)", left, total, level)
+	-- 몇 레벨마다 포인트가 생기는지 + 다음 포인트가 생기는 레벨 (최고 레벨이면 생략)
+	local every = math.max(1, math.floor(1 / math.max(0.01, LS.PointsPerLevel) + 0.5))
+	local nextLevel
+	for candidate = level + 1, Config.Level.StatCap do
+		if Config.GetLevelStatPoints(candidate) > Config.GetLevelStatPoints(level) then nextLevel = candidate break end
+	end
+	if nextLevel then
+		pointsLabel.Text = string.format("Points left %d  /  total %d  (Level %d)  ·  +1 point every %d levels, next at Lv.%d", left, total, level, every, nextLevel)
+	else
+		pointsLabel.Text = string.format("Points left %d  /  total %d  (Level %d)", left, total, level)
+	end
 	local bought, cost = player:GetAttribute("LvGoldBought") or 0, player:GetAttribute("LvGoldCost") or 0
 	buyButton.Visible = level >= Config.Level.Max
 	buyButton.Text = cost > 0 and string.format("💰 Buy Point %s G (%d/%d)", tostring(cost):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""), bought, LS.MaxGoldPoints) or "💰 All points bought"
