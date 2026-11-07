@@ -339,13 +339,39 @@ local function startTutorialRift(player, at)
 			shakeScreen(player, 0.15 + step * 0.12)
 			task.wait(0.3)
 		end
-		-- 임시 던전 문이 플레이어 앞에서 땅을 뚫고 솟아오른다
+		-- 던전 문은 블랙홀 자리에서 솟아오른다 (블랙홀이 문 한가운데의 소용돌이가 된다).
+		-- 가까이 서 있으면 먼저 블랙홀이 밀어내서 뒤로 튕겨 난다 (문이 솟을 자리를 비우고, 문 전체가 보이게)
 		root = getAliveParts(player)
 		if not root then return end
-		local look = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z)
-		if look.Magnitude < 0.1 then look = Vector3.new(1, 0, 0) end
-		local gatePos = Vector3.new(root.Position.X, root.Position.Y - 3, root.Position.Z) + look.Unit * 34
-		gate = buildTempGate(gatePos, root.Position)
+		local holeGround = Vector3.new(at.X, groundY, at.Z)
+		do
+			local away = Vector3.new(root.Position.X - at.X, 0, root.Position.Z - at.Z)
+			if away.Magnitude < 0.1 then away = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z) * -1 end
+			if away.Magnitude < 0.1 then away = Vector3.new(1, 0, 0) end
+			away = away.Unit
+			if (Vector3.new(root.Position.X, 0, root.Position.Z) - Vector3.new(at.X, 0, at.Z)).Magnitude < 30 then
+				Effects.Burst(Vector3.new(at.X, keyY, at.Z), Color3.fromRGB(170, 80, 255), 50)
+				shakeScreen(player, 0.6)
+				local from = root.Position
+				local to = Vector3.new(at.X, from.Y, at.Z) + away * 32
+				root.Anchored = true
+				local pushStart = os.clock()
+				while os.clock() - pushStart < 0.45 do
+					local t = (os.clock() - pushStart) / 0.45
+					root = getAliveParts(player)
+					if not root then break end
+					local eased = 1 - (1 - t) * (1 - t)
+					root.CFrame = CFrame.lookAt(from:Lerp(to, eased) + Vector3.new(0, math.sin(t * math.pi) * 4, 0), Vector3.new(at.X, from.Y, at.Z))
+					task.wait()
+				end
+				root = getAliveParts(player)
+				if root then root.Anchored = false end
+				task.wait(0.3)
+			end
+		end
+		root = getAliveParts(player)
+		if not root then return end
+		gate = buildTempGate(holeGround, root.Position)
 		notify(player, "⚠ A dungeon gate bursts up through the ground!")
 		local riseStart = os.clock()
 		while os.clock() - riseStart < 1.6 do

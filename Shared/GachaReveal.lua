@@ -8,6 +8,7 @@ function M.Init(deps)
 	local Config, Remotes, SoundBank, TweenService = deps.Config, deps.Remotes, deps.SoundBank, deps.TweenService
 	local create, gui, makeLabel, rounded, sfxParent = deps.create, deps.gui, deps.makeLabel, deps.rounded, deps.sfxParent
 	local ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
+	local Kit = require(script.Parent:WaitForChild("ClientKit")) -- (메달형 아이콘: 장비 칸 / 상점과 같은 모양)
 	local SHAKE = { 0.35, 0.5, 0.85, 1.25, 1.7 }  -- 등급별 흔들리는 시간
 	local HOLD = { 1.0, 1.1, 1.6, 2.2, 3.0 }       -- 카드 유지 시간
 	local MYTHIC_STARS = { Color3.fromRGB(255, 140, 140), Color3.fromRGB(255, 225, 120), Color3.fromRGB(130, 230, 160), Color3.fromRGB(130, 210, 255), Color3.fromRGB(205, 145, 255) }
@@ -231,8 +232,8 @@ function M.Init(deps)
 					create("UIStroke", { Color = Color3.fromRGB(230, 190, 110), Thickness = 1.5, Transparency = 0.25 }, inner)
 					makeLabel({ Size = UDim2.new(0, 40, 0, 26), Position = UDim2.new(0, 8, 0, 6), Text = ({ "C", "R", "E", "L", "M" })[r.Rarity], TextSize = 24, Font = Enum.Font.Fantasy, TextColor3 = rc:Lerp(Color3.fromRGB(255, 230, 160), 0.35), TextStrokeTransparency = 0.3, TextXAlignment = Enum.TextXAlignment.Left, AutoLocalize = false, ZIndex = 67 }, holder)
 					create("UIGradient", { Rotation = 90, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, r.Rarity >= 3 and 0.45 or 0.75), NumberSequenceKeypoint.new(1, 1) }) }, glow)
-					makeLabel({ Size = UDim2.new(1, 0, 0, 60), Position = UDim2.new(0, 0, 0, 12), Text = ICONS[r.Slot] or "🎁", TextSize = 40, ZIndex = 65 }, holder)
-					makeLabel({ Size = UDim2.new(1, -8, 0, 34), Position = UDim2.new(0, 4, 0, 72), Text = r.Name or "", TextSize = 12, Font = Enum.Font.GothamBold, TextColor3 = Color3.new(1, 1, 1), ZIndex = 65 }, holder)
+					Kit.medal(holder, { Size = 56, Position = UDim2.new(0.5, -28, 0, 12), Color = rc, Icon = ICONS[r.Slot] or "🎁", TextSize = 28, Tier = r.Rarity, ZIndex = 65 })
+					makeLabel({ Size = UDim2.new(1, -8, 0, 34), Position = UDim2.new(0, 4, 0, 72), Text = r.Name or "", TextSize = 12, Font = Enum.Font.FredokaOne, TextColor3 = Color3.new(1, 1, 1), ZIndex = 65 }, holder)
 					makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 108), Text = string.rep("★", r.Rarity), TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = rc, TextStrokeTransparency = 0.5, ZIndex = 65 }, holder)
 					makeLabel({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 128), Text = Config.Gear.RarityNames[r.Rarity], TextSize = 11, Font = Enum.Font.GothamBlack, TextColor3 = rc, ZIndex = 65 }, holder)
 					makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 1, -24), Text = r.Better and string.format("▲ +%d%%", r.Better) or (STATUS[r.Status] or "Scrap"), TextSize = r.Better and 14 or 10, Font = r.Better and Enum.Font.GothamBlack or nil, TextColor3 = r.Better and Color3.fromRGB(120, 255, 150) or Color3.fromRGB(170, 170, 190), ZIndex = 65 }, holder) -- 지금 장비보다 좋으면 초록 "▲ +N%"
@@ -365,7 +366,7 @@ function M.Init(deps)
 					fade(root, { BackgroundTransparency = 1 }, 0.2)
 					game:GetService("Debris"):AddItem(root, 0.25)
 				end
-				bottomButton("OK", -110, Color3.fromRGB(50, 80, 150), close)
+				bottomButton("Close", -110, Color3.fromRGB(50, 80, 150), close)
 				local me = game:GetService("Players").LocalPlayer
 				local tickets = me:GetAttribute("Tickets") or 0
 				local again = math.min(10, tickets)
@@ -407,7 +408,7 @@ function M.Init(deps)
 			fade(card, { Size = UDim2.new(0, 340, 0, 220) }, 0.45, Enum.EasingStyle.Back)
 			pause(0.3)
 			if not root.Parent then return end
-			makeLabel({ Size = UDim2.new(1, 0, 0, 70), Position = UDim2.new(0, 0, 0, 14), Text = ICONS[roll.Slot] or "🎁", TextSize = 48, ZIndex = 63 }, card)
+			Kit.medal(card, { Size = 76, Position = UDim2.new(0.5, -38, 0, 10), Color = color, Icon = ICONS[roll.Slot] or "🎁", TextSize = 38, Tier = rarity, ZIndex = 63 })
 			makeLabel({
 				Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 92), Text = string.format("★ %s ★", Config.Gear.RarityNames[rarity]),
 				TextSize = rarity >= 4 and 30 or 26, Font = Enum.Font.GothamBlack, TextColor3 = color, ZIndex = 63,
