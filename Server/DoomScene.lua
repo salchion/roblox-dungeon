@@ -62,7 +62,7 @@ local function buildDoomLord(parent)
 	-- 주변을 도는 칼날 4개
 	local orbit = {}
 	for k = 1, 4 do
-		local blade = add(Vector3.new(1.2, 8, 2.4), CFrame.new(), red, Enum.Material.Neon, 0.1)
+		local blade = add(Vector3.new(1.2, 8, 2.4), CFrame.new(), rgb(96, 88, 112), Enum.Material.Metal, 0) -- (어두운 강철: 붉은 빛 선을 줄였다)
 		table.insert(orbit, blade)
 	end
 

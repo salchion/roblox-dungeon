@@ -54,13 +54,7 @@ local function buildLord(parent, baseCF, S)
 		part.Parent = parent
 		return part
 	end
-	local function rgb(r, g, b) return Color3.fromRGB(r, g, b) end
-	local red = rgb(255, 50, 60)
 	local look = require(ReplicatedStorage:WaitForChild("LordLook")).Build(add) -- 모양은 결투의 군주와 같은 모듈 (LordLook)
-	for k = 1, 4 do -- 몸 주변에 떠 있는 칼날 (연출에서는 가만히)
-		local angle = k * math.pi / 2
-		add(Vector3.new(1.2, 8, 2.4), CFrame.new(math.cos(angle) * 16, 4, math.sin(angle) * 8) * CFrame.Angles(0, -angle, math.rad(20)), red, Enum.Material.Neon, 0.4)
-	end
 	local eyes, core = look.Eyes, look.Core
 	return eyes, core
 end

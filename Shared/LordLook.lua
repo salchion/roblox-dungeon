@@ -81,13 +81,13 @@ function LordLook.Build(add)
 	for _, side in ipairs({ -1, 1 }) do
 		ball(V(side * 9.8, 9, 0), 8.6, 6, 8.6, steel, METAL)                    -- 어깨 갑옷
 		for k = 0, 2 do                                                         -- 어깨 가시 (붉은 빛)
-			seg(V(side * (7.6 + k * 2.4), 11.2 + k * 0.7, 0), V(side * (9.6 + k * 3.7), 17 + k * 3.4, 0.4), 0.55, red, NEON)
+			seg(V(side * (7.6 + k * 2.4), 11.2 + k * 0.7, 0), V(side * (9.6 + k * 3.7), 17 + k * 3.4, 0.4), 0.55, steel, METAL) -- (예전 붉은 빛: 붉은 선이 너무 많아 조잡해 보였다)
 		end
 		seg(V(side * 11.6, 11.4, 0.3), V(side * 13.8, 21.5, 0.6), 0.8, bone, PLASTIC) -- 어깨 뼈 가시
 		-- 위쪽 팔: 윗팔 -> 팔꿈치 -> 아래팔 -> 손목 -> 주먹 + 손톱
 		chain({ V(side * 10.6, 7, 0), V(side * 13.4, -1.6, -1.2), V(side * 13, -8.6, -2.8) }, { 2.3, 2.1, 1.8 }, dark, METAL)
 		seg(V(side * 13.6, -1.2, -1.4), V(side * 15.6, 1.4, -1.4), 0.6, bone, PLASTIC)  -- 팔꿈치 가시
-		add(V(1, 5.4, 5.4), CFrame.new(side * 13, -9.2, -2.8) * CFrame.Angles(0, 0, math.rad(90)), red, NEON, 0, CYL)  -- 손목 불꽃 고리
+		add(V(1, 5.4, 5.4), CFrame.new(side * 13, -9.2, -2.8) * CFrame.Angles(0, 0, math.rad(90)), gold, METAL, 0, CYL)  -- 손목 금 고리
 		ball(V(side * 13, -13, -3.4), 8, 7.6, 8, steel, METAL)                  -- 거대한 주먹
 		for k = -1, 1 do seg(V(side * 13 + k * 2.4, -15.6, -6.4), V(side * 13 + k * 2.8, -19.6, -8.2), 0.5, gold, METAL) end -- 손톱
 		for k = 0, 3 do ball(V(side * 13 + (k - 1.5) * 1.9, -10.6, -6.6), 1.5, 1.5, 1.5, plate, METAL) end                  -- 주먹 마디
@@ -111,7 +111,6 @@ function LordLook.Build(add)
 			local z = x:Cross(V(0, 0, 1)).Unit
 			local y = z:Cross(x)
 			add(V(len, 0.35, 5 - k * 0.5), CFrame.fromMatrix(mid + V(0, 0, -0.6), x, y, z), rgb(110, 26, 46), METAL)      -- 칼날 막 (조금 밝게: 날개 모양이 면으로 보이게)
-			add(V(len * 0.96, 0.15, 0.4), CFrame.fromMatrix(mid + V(0, 0, -1), x, y, z), red, NEON, 0.55)                  -- 붉은 빛줄 (가늘고 옅게: 예전엔 날개가 붉은 선만 보였다)
 		end
 		seg(root, V(side * 8, -9, 7.2), 0.5, bone, PLASTIC)                      -- 몸에 닿는 뼈
 	end
@@ -126,13 +125,8 @@ function LordLook.Build(add)
 	end
 
 	-- ===== 위엄을 더하는 장식 =====
-	-- 갑옷 틈으로 흐르는 붉은 빛줄기 (가슴 판 / 어깨 / 팔뚝을 따라)
+	-- (갑옷 틈의 붉은 빛줄기는 뺐다: 붉은 선이 너무 많아 위협적이기보다 조잡해 보였다. 붉은 빛은 눈 / 가슴 코어 / 보석 / 후광에만)
 	for _, side in ipairs({ -1, 1 }) do
-		seg(V(side * 1.4, 9.4, -4.3), V(side * 5.8, 7, -4.5), 0.18, red, NEON)
-		seg(V(side * 5.8, 7, -4.5), V(side * 6.4, 2.4, -4), 0.18, red, NEON)
-		seg(V(side * 1.2, 1.6, -4.6), V(side * 5.2, 0.6, -3.8), 0.16, red, NEON)
-		seg(V(side * 8, 10.6, -3.6), V(side * 12, 10.2, -3.4), 0.2, red, NEON)
-		seg(V(side * 12.2, -2, -3.3), V(side * 12.8, -7, -4.1), 0.18, red, NEON)
 		-- 어깨 갑옷의 금테 + 눈 뒤 번짐
 		add(V(0.8, 9.4, 9.4), CFrame.new(side * 9.8, 7.4, 0) * CFrame.Angles(0, 0, math.rad(90)), gold, METAL, 0, CYL)
 		add(V(4.2, 1.6, 0.3), CFrame.new(side * 1.9, 14.6, -3.3) * CFrame.Angles(0, 0, math.rad(side * 18)), rgb(255, 200, 60), NEON, 0.55)
@@ -152,12 +146,12 @@ function LordLook.Build(add)
 		local bladeLen = (tipPoint - guardAt).Magnitude
 		local bladeMid = (guardAt + tipPoint) * 0.5
 		add(V(bladeLen, 4.2, 0.7), CFrame.fromMatrix(bladeMid, x, y, x:Cross(y)), rgb(36, 30, 44), METAL)          -- 검신
-		add(V(bladeLen * 0.97, 0.5, 0.8), CFrame.fromMatrix(bladeMid + y * 1.9, x, y, x:Cross(y)), red, NEON)       -- 날 (한쪽)
-		add(V(bladeLen * 0.97, 0.5, 0.8), CFrame.fromMatrix(bladeMid - y * 1.9, x, y, x:Cross(y)), red, NEON)       -- 날 (반대쪽)
-		add(V(bladeLen * 0.8, 0.9, 0.9), CFrame.fromMatrix(bladeMid + x * 1, x, y, x:Cross(y)), ember, NEON, 0.2)  -- 가운데 홈의 불빛
+		add(V(bladeLen * 0.97, 0.5, 0.8), CFrame.fromMatrix(bladeMid + y * 1.9, x, y, x:Cross(y)), steel, METAL)    -- 날 (한쪽)
+		add(V(bladeLen * 0.97, 0.5, 0.8), CFrame.fromMatrix(bladeMid - y * 1.9, x, y, x:Cross(y)), steel, METAL)    -- 날 (반대쪽)
+		add(V(bladeLen * 0.8, 0.9, 0.9), CFrame.fromMatrix(bladeMid + x * 1, x, y, x:Cross(y)), ember, NEON, 0.6)  -- 가운데 홈의 불빛 (은은하게)
 		add(V(1.4, 11, 1.6), CFrame.fromMatrix(guardAt, x, y, x:Cross(y)), gold, METAL)                              -- 코등이
 		seg(hilt, guardAt, 0.75, dark, METAL)                                                                         -- 손잡이
-		ball(hilt - dir * 0.6, 2.4, 2.4, 2.4, red, NEON)                                                              -- 붉은 구슬 머리
+		ball(hilt - dir * 0.6, 2.4, 2.4, 2.4, gold, METAL)                                                            -- 붉은 구슬 머리
 	end
 	-- 왕관 위로 떠 있는 붉은 보석
 	ball(V(0, 26.5, 0), 2, 3, 2, red, NEON)
@@ -171,10 +165,9 @@ function LordLook.Build(add)
 		end
 	end
 	ring(13.5, 0.45, 8, red, 0.2, "Halo", 28)
-	ring(17.5, 0.3, 9, ember, 0.45, "HaloOuter", 32)
 	for k = 0, 7 do -- 바깥 고리의 짧은 가시 8개 (어두운 금속: 실루엣만 뾰족하게)
 		local angle = k / 8 * math.pi * 2 + math.pi / 8
-		seg(V(math.cos(angle) * 17.5, 15 + math.sin(angle) * 17.5, 9), V(math.cos(angle) * 21, 15 + math.sin(angle) * 21, 9), 0.45, rgb(70, 50, 30), METAL)
+		seg(V(math.cos(angle) * 13.5, 15 + math.sin(angle) * 13.5, 8.4), V(math.cos(angle) * 18, 15 + math.sin(angle) * 18, 8.4), 0.5, rgb(70, 50, 30), METAL)
 	end
 
 	return { Body = body, Eyes = eyes, Core = core }
