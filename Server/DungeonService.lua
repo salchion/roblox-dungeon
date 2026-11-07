@@ -1413,7 +1413,7 @@ local function stepRun(run, dt)
 						end
 						data.Casting = false
 						if run.RiftMode then run.RushCasting = math.max(0, (run.RushCasting or 1) - 1) end
-						data.NextPattern = os.clock() + (data.Enraged and 1.6 or 2.6)
+						data.NextPattern = os.clock() + (data.Enraged and 1.25 or 2.0) -- (패턴 사이 2.6 -> 2.0초: 보스가 느리다는 의견. 경고 시간은 그대로)
 					end)
 				end
 			end

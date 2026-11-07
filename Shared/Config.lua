@@ -552,9 +552,9 @@ Config.Boss = {
 	MaxHealth = 2500,        -- 1인 기준 (파티 인원 배율 추가)
 	Speed = 6,
 	ShotDamage = 22,
-	ShotInterval = 2.2,      -- 조준 3연발 간격
+	ShotInterval = 1.9,      -- 조준 3연발 간격 (2.2 -> 1.9)
 	ShotSpeed = 55,
-	RingInterval = 6,        -- 전방위 탄막 간격
+	RingInterval = 5,        -- 전방위 탄막 간격 (6 -> 5)
 	RingCount = 16,
 	EnrageRatio = 0.5,       -- 체력이 이 비율 이하가 되면 광폭화 (발사 간격 x0.6, 쫄병 소환)
 	MinionCount = 3,
@@ -948,7 +948,7 @@ Config.Field = {
 		[7] = { slam = 0, charge = 2, spiral = 1 }, -- 돌진 + 순간이동 베기
 		[8] = { slam = 1, charge = 1, spiral = 2 }, -- 나선 + 심연 광선
 	},
-	BossTempo = 0.55, -- 군주 패턴 간격 배율 (1 = 예전 6.5초, 0.55 = 약 3.6초)
+	BossTempo = 0.45, -- 군주 패턴 간격 배율 (1 = 예전 6.5초, 0.45 = 약 2.9초. 0.55 에서 "느리다"는 의견으로 더 자주)
 	BossSignatureWeight = 7, -- 구역 고유 패턴이 뽑힐 비중
 	-- 구역 군주의 기본 공격 탄 모양 / 색 (Style: Crystal / Spear / Dart / Shard / Halo / Skull / Needle / Bomb / Seeker / Crescent ...). MissileStyle = false 이면 유도탄 없음
 	BossShot = {
@@ -978,7 +978,7 @@ Config.Field = {
 		MaxHealth = 6000,
 		Speed = 8,
 		ShotDamage = 28,
-		ShotInterval = 1.5,
+		ShotInterval = 1.3, -- (1.5 -> 1.3)
 		ShotSpeed = 55,
 		Gold = 600,
 	},
