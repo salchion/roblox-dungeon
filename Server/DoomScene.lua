@@ -1805,6 +1805,75 @@ function DoomScene.BuildPortal(deps)
 	TweenService:Create(outer, TweenInfo.new(1.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.5 }):Play()
 	TweenService:Create(swirl, TweenInfo.new(2.2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.6 }):Play()
 
+	-- ===== 최후의 군주의 영역 (필드 맨 끝) =====
+	-- 열려 있던 끝을 거대한 성벽으로 막고, 성벽 앞에 군주의 석상(오프닝의 그 모습)을 세운다. 포탈까지 붉은 길과 화로가 이어진다.
+	do
+		local endX = deps.ZoneEnd(zoneCount)
+		local floorY = deps.FloorAt(endX - 30)
+		local fortress, stone, vein = rgb(30, 22, 38), rgb(48, 40, 58), rgb(255, 60, 70)
+		-- 1) 끝을 막는 성벽 (위가 들쭉날쭉한 성가퀴) + 붉은 균열 줄기
+		part(Vector3.new(16, 150, 360), Vector3.new(endX + 9, floorY + 70, 0), fortress, Enum.Material.Slate)
+		for k = -8, 8 do
+			local h = 12 + (k % 3) * 9
+			part(Vector3.new(14, h, 16), Vector3.new(endX + 9, floorY + 145 + h / 2, k * 21), stone, Enum.Material.Slate)
+		end
+		for _, z in ipairs({ -120, -70, 70, 120 }) do
+			part(Vector3.new(1, 90, 1.2), Vector3.new(endX + 0.8, floorY + 60, z), vein, Enum.Material.Neon, 0.25)
+		end
+		-- 2) 양옆을 감싸는 뾰족한 검은 첨탑들 (끝으로 갈수록 높다)
+		for _, side in ipairs({ -1, 1 }) do
+			for k = 0, 5 do
+				local h = 60 + k * 16
+				local x = endX - 150 + k * 26
+				local z = side * (140 - k * 4)
+				part(Vector3.new(14, h, 14), Vector3.new(x, floorY + h / 2 - 4, z), fortress, Enum.Material.Slate)
+				part(Vector3.new(6, 18, 6), Vector3.new(x, floorY + h + 5, z), stone, Enum.Material.Slate)
+				part(Vector3.new(2, 2, 2) * 1.6, Vector3.new(x, floorY + h + 15, z), vein, Enum.Material.Neon, 0.1, Enum.PartType.Ball)
+			end
+		end
+		-- 3) 포탈까지 이어지는 붉은 길 + 양옆 화로 (화로 불꽃은 네온 공: 입자 없이)
+		for k = 0, 9 do
+			local x = base.X - 40 - k * 20
+			local y = deps.FloorAt(x)
+			part(Vector3.new(20.5, 0.3, 14), Vector3.new(x, y + 0.2, 0), rgb(110, 16, 30), Enum.Material.Fabric)
+			if k % 2 == 0 then
+				for _, side in ipairs({ -1, 1 }) do
+					part(Vector3.new(3, 7, 3), Vector3.new(x, y + 3.5, side * 13), stone, Enum.Material.Slate)
+					part(Vector3.new(4.5, 1.2, 4.5), Vector3.new(x, y + 7.4, side * 13), rgb(60, 50, 64), Enum.Material.Metal)
+					local flame = part(Vector3.new(2.6, 3.4, 2.6), Vector3.new(x, y + 9.4, side * 13), rgb(255, 90, 50), Enum.Material.Neon, 0.1, Enum.PartType.Ball)
+					TweenService:Create(flame, TweenInfo.new(0.6 + (k % 3) * 0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Size = Vector3.new(2.2, 4.2, 2.2), Transparency = 0.3 }):Play()
+				end
+			end
+		end
+		-- 4) 포탈 받침 제단 (두 단 + 붉은 룬 고리)
+		part(Vector3.new(1.4, 70, 70), base + Vector3.new(0, 0.7, 0), fortress, Enum.Material.Slate, 0, Enum.PartType.Cylinder).CFrame = CFrame.new(base + Vector3.new(0, 0.7, 0)) * CFrame.Angles(0, 0, math.rad(90))
+		part(Vector3.new(1.4, 54, 54), base + Vector3.new(0, 2.1, 0), stone, Enum.Material.Slate, 0, Enum.PartType.Cylinder).CFrame = CFrame.new(base + Vector3.new(0, 2.1, 0)) * CFrame.Angles(0, 0, math.rad(90))
+		local runeRing = part(Vector3.new(0.3, 60, 60), base + Vector3.new(0, 1.5, 0), vein, Enum.Material.Neon, 0.55, Enum.PartType.Cylinder)
+		runeRing.CFrame = CFrame.new(base + Vector3.new(0, 1.5, 0)) * CFrame.Angles(0, 0, math.rad(90))
+		TweenService:Create(runeRing, TweenInfo.new(1.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.85 }):Play()
+		-- 5) 성벽 앞에 선 군주의 석상 (오프닝 / 결투와 같은 모양, 돌로 굳어 있지만 눈과 핵은 붉게 빛난다)
+		local okLook, LordLook = pcall(function() return require(game:GetService("ReplicatedStorage"):WaitForChild("LordLook", 5)) end)
+		if okLook and LordLook then
+			local S = 3.2
+			local origin = CFrame.new(endX - 6, floorY + 110, 0) * CFrame.Angles(0, math.pi / 2, 0) -- 앞(-Z)이 플레이어가 오는 쪽(-X)을 본다. 포탈보다 높이 떠서 성벽 위로 내려다본다 (주먹 아래가 포탈 꼭대기보다 위)
+			local function add(size, rel, color, material, transparency, shape)
+				local p = Instance.new("Part")
+				p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false
+				p.Size = size * S
+				if shape then p.Shape = shape end
+				p.CFrame = origin * CFrame.new(rel.Position * S) * (rel - rel.Position)
+				if material == Enum.Material.Neon then
+					p.Color, p.Material, p.Transparency = color, material, transparency or 0
+				else
+					p.Color, p.Material, p.Transparency = color:Lerp(rgb(44, 38, 52), 0.75), Enum.Material.Slate, transparency or 0
+				end
+				p.Parent = folder
+				return p
+			end
+			pcall(LordLook.Build, add)
+		end
+	end
+
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.ActionText = "Enter the Final Lord's realm"
 	prompt.ObjectText = "Portal"
