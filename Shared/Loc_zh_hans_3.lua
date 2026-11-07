@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} has appeared! Dodge its attacks and take it down", "{text1}出现了！躲开它的攻击，把它击倒" },
+		{ "{text1} obtained! Added to your bag. (I → equip from Bag", "获得{text1}！已放入背包。(I → 从背包装备" },
+		{ "Defeat Zone {number1} monsters {number2} / {number3} · Reward {text4} G + Ticket", "击败区域{number1}怪物 {number2} / {number3} · 奖励 {text4} 金币 + 门票" },
+		{ "🎒 {text1}  ▲ Better than your current gear! (I → Bag)", "🎒 {text1}  ▲ 比你当前的装备更好!(I → 背包)" },
+		{ "{text1}  ▲ +{number2}% better than your current gear! (I → Bag", "{text1}  ▲ 比当前装备强 +{number2}%！(I → 背包" },
+		{ "[{text1}] Starts in {number2}s! Survive the incoming monsters", "[{text1}] {number2} 秒后开始!撑过来袭的怪物" },
+		{ "⏱ Skip gauge {text1}  (shared with training · pets)", "⏱ 加速量表 {text1}(与训练·宠物共用)" },
+		{ "{text1} can now appear (Lv {number2}+). Deeper = better loot", "{text1}现在会出现 (Lv {number2}+)。越深战利品越好" },
 		{ "Crit damage +{text1}%p per point (base 2x)  (max {number2})", "每点暴击伤害 +{text1}%p(基础 2 倍)(最多 {number2})" },
 		{ "{text1}  ▲ Better than your current gear! (I → Bag", "{text1}  ▲ 比当前装备更强！(I → 背包" },
 		{ "🎮 Welcome to the world of adventure, {text1}!", "🎮 欢迎来到冒险世界,{text1}!" },

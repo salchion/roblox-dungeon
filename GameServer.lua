@@ -88,6 +88,22 @@ Npc.Init(lobby.DummyStart.Y, { -- 시설마다 NPC 가 서서 말을 건다 (허
 	{ Name = "Mira", Title = "👹 Boss Rush Keeper", Position = promptPosition(lobby.RiftPrompt), Shirt = Color3.fromRGB(150, 60, 120), Pants = Color3.fromRGB(70, 36, 66), Hat = "hood", Accent = Color3.fromRGB(190, 70, 150), Prop = "staff",
 		Lines = { "Only those who conquer the field may enter the Boss Rush.", "Bosses keep coming. Survive longer, hit harder.", "Your score is seconds survived x damage dealt - the weekly ranking resets every week." } },
 })
+task.spawn(function() -- 마을을 돌아다니는 모험가 NPC (플레이어처럼 생겼지만 머리 위에 NPC 표시)
+	local y = lobby.DummyStart.Y
+	local function near(position, pull) -- 시설 앞: 마을 가운데 쪽으로 조금 당긴 자리
+		local flat = Vector3.new(position.X, 0, position.Z)
+		local toCenter = flat.Magnitude > 1 and -flat.Unit or Vector3.new(0, 0, 1)
+		return Vector3.new(position.X, y, position.Z) + toCenter * pull
+	end
+	local spots = {
+		Vector3.new(0, y, 62), Vector3.new(16, y, 46), Vector3.new(-16, y, 46), -- 광장
+		near(promptPosition(lobby.AnvilPrompt), 12), near(promptPosition(lobby.GachaPrompt), 12),
+		near(promptPosition(lobby.GatePrompt), 14), near(promptPosition(lobby.WarpPrompt), 16),
+		near(lobby.RestStart, 12), near(lobby.DummyStart, 14),
+	}
+	local ok, err = pcall(function() require(Modules:WaitForChild("TownAdventurers")).Init(y, spots) end)
+	if not ok then warn("[GameServer] 모험가 NPC 오류: " .. tostring(err)) end
+end)
 Rank.Init(lobby.RankBoardCFrame)
 Showcase.Init(lobby.RankBoardCFrame) -- 랭킹판 앞 명예의 전당 (전 서버 최강 3명) + 이번 주 챔피언
 Titles.Start()

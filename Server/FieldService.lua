@@ -663,7 +663,7 @@ local function buildWorld()
 			for _, wallSpec in ipairs(ZONE_LAYOUTS[zone].Baffles) do
 				local offset, gapSize = wallSpec.Offset, wallSpec.Gap
 				if zone == F.ZoneCount and x0 + offset > F.ZoneEnd(zone) - 110 then continue end -- 최후의 군주 포탈 주변은 벽 없이 탁 트이게
-				local height = 110
+				local height = 96 + ((zone * 37 + offset * 7) % 43) -- 벽마다 높이가 다르다 (96~138: 위에서 내려다볼 때 똑같은 판이 줄지어 선 느낌을 없앤다)
 				local color = F.ZoneColors[zone]:Lerp(Color3.fromRGB(70, 65, 72), 0.5)
 				-- 이 위치의 땅 높이만큼 벽을 올려 세운다 (언덕 위에 서 있는 벽)
 				local base = floorAt(x0 + offset) - TOP
@@ -674,7 +674,7 @@ local function buildWorld()
 						Color = color, Material = Enum.Material.Slate,
 					}, worldFolder)
 					table.insert(baffleXs, x0 + offset)
-					table.insert(baffleRects, { X0 = x0 + offset - 11, X1 = x0 + offset + 11, Z0 = -wallLength / 2, Z1 = wallLength / 2 })
+					table.insert(baffleRects, { X0 = x0 + offset - 11, X1 = x0 + offset + 11, Z0 = -wallLength / 2, Z1 = wallLength / 2, Top = base + height - 2 })
 				else
 					local side = wallSpec.Side or 1
 					local wallLength = F.Width - gapSize
@@ -684,7 +684,7 @@ local function buildWorld()
 						Color = color, Material = Enum.Material.Slate,
 					}, worldFolder)
 					table.insert(baffleXs, x0 + offset)
-					table.insert(baffleRects, { X0 = x0 + offset - 11, X1 = x0 + offset + 11, Z0 = zCenter - wallLength / 2, Z1 = zCenter + wallLength / 2 })
+					table.insert(baffleRects, { X0 = x0 + offset - 11, X1 = x0 + offset + 11, Z0 = zCenter - wallLength / 2, Z1 = zCenter + wallLength / 2, Top = base + height - 2 })
 				end
 			end
 		end

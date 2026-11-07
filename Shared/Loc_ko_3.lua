@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👑 Lord of Wasteland (Zone {number1}) · Rec. ⚡{number2}", "👑 황무지의 군주 (구역 {number1}) · 레코 ⚡{number2}" },
+		{ "Spell Tome  ·  keys {number1}-{number2} switch weapons", "스펠 토메 · 키 {number1}-{number2}로 무기 전환" },
+		{ "Defeat {number1} monsters (dungeons included)", "몬스터 {number1}마리 처치 (던전 포함)" },
+		{ "🎯 Ready to challenge the Zone {number1} Lord!", "🎯 {number1}구역 군주에게 도전할 준비 완료!" },
+		{ "Gold x{number1} · Tickets {number2} · Boss chest gear {number3}", "골드 x{number1} · 티켓 {number2} · 보스 상자 장비 {number3}" },
+		{ "Bounces to {number1} nearby enemies (within {number2})", "근처 적 {number1}명({number2} 이내)에게 튕겨요" },
+		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 정령 {number1}마리가 {number2}초 동안 대신 싸워요!" },
+		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1}초 · 단검 {number2}자루씩 {number3}초마다 · 자루당 피해 x{number4}" },
 		{ "Defeat {number1} bosses in one Boss Rush run", "보스 러시에서 {number1}명의 보스를 처치하세요" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "몬스터를 {number1} / {number2} 마리 만났습니다 (존 로드 포함)" },
 		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 무료 입장 사용! (오늘 {number1} / {number2} 남음)" },

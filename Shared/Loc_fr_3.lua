@@ -4,6 +4,18 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎒 Bag {number1} / {number2}    ✨ Essence {number3}", "🎒 Sac {number1} / {number2} ✨ Essence {number3}" },
+		{ "Returning to lobby in {number1}s", "Retour au lobby dans {number1} s" },
+		{ "🔒 Zone {number1} · Desert Sealed", "🔒 Zone {number1} · Désert scellé" },
+		{ "⚔ Railgun · Rusty Era +{number1}", "⚔ Canon ferroviaire · Ère rouillée +{number1}" },
+		{ "★☆☆  Step {number1}/{number2} · Next step", "★☆☆ Étape {number1}/{number2} · Prochaine étape" },
+		{ "🔒 Defeat the Zone {number1} lord", "🔒 Vainquez le seigneur de la zone {number1}" },
+		{ "🔒 Unlocks at +{number1} ({number2} to go)", "🔒 Se débloque à +{number1} (encore {number2})" },
+		{ "◆ Luck (Drop Rarity) +{number1}%", "◆ Chance (rareté) +{number1}%" },
+		{ "Cooldown -{number1}% · damage +{number2}%", "Recharge -{number1} % · dégâts +{number2} %" },
+		{ "NEAR MISS lasts +{number1}s more", "NEAR MISS dure {number1} s de plus encore" },
+		{ "🐾 Unlock your pet! ({number1} G)", "🐾 Débloquez votre familier ! ({number1} G)" },
+		{ "💪 Zone {number1} Lord: power {number2} / {number3}", "💪 Seigneur de la zone {number1} : puissance {number2} / {number3}" },
 		{ "Crit damage +{number1}%p  (max {number2})", "Dégâts critiques +{number1} %p  (max {number2})" },
 		{ "★☆  Step {number1}/{number2} · Next step", "★☆ Étape {number1}/{number2} · Prochaine étape" },
 		{ "🌋 {number1} Streak — Legendary!", "🌋 Série de {number1} - Légendaire !" },

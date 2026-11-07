@@ -421,6 +421,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/TownAdventurers.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "TownAdventurers",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "WelcomeClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "WelcomeClient",

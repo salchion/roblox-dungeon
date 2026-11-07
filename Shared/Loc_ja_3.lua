@@ -4,6 +4,17 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "📍 Field · Best Zone {number1}   🎟 Free {number2}/{number3}", "📍 フィールド・ベストゾーン {number1} 🎟 無料 {number2}/{number3}" },
+		{ "⚔ Rocket Launcher · Rusty Era +{number10}", "⚔ ロケットランチャー · 錆の時代 +{number10}" },
+		{ "⚔ Rocket Launcher · Rusty Era +{number1}", "⚔ ロケットランチャー · 錆びた時代 +{number1}" },
+		{ "👹 Monster health x{number1}  ·  damage x{number2}", "👹 モンスターのHP x{number1}  ·  ダメージ x{number2}" },
+		{ "(Idle Booster applied for {number1} min)", "(放置ブースターを{number1}分適用)" },
+		{ "every {number1}s lightning hits {number2} enemies", "{number1}秒ごとに雷が{number2}体に命中" },
+		{ "Level {number1} Breakthrough in progress", "レベル{number1}の突破中" },
+		{ "Defeat the Zone {number1} lord to unlock", "ゾーン{number1}のロードを倒すと解放されます" },
+		{ "Cleared up to depth {number1}  ·  next: {number2}", "クリア済み：深さ{number1}　次：{number2}" },
+		{ "⚔ A skill upgrade is ready ({number1} G)", "⚔ スキル強化ができます（{number1}G）" },
+		{ "Move speed +{number1} per point  (max {number2})", "移動速度が1ポイントにつき+{number1}（最大{number2}）" },
 		{ "🎯 Deadeye! Barrage on {number1} enemies", "🎯 デイリー！{number1}人の敵に弾幕を放つ" },
 		{ "⚠ Not enough gold. ({number1} G needed)", "⚠ ゴールドが足りません。({number1} G必要)" },
 		{ "With the max {number1} points, about {number2}%.", "最大{number1}ポイントで約{number2}%。" },

@@ -838,6 +838,59 @@ function FieldDecor.Build(parentFolder: Instance, helpers: any)
 				for band = 1, 2 do
 					plain("WallBand", Vector3.new(0.25, rng:NextNumber(1.2, 2.2), span - 2), CFrame.new(fx - face * 0.1, baseY + 9 + band * rng:NextNumber(8, 12), (rect.Z0 + rect.Z1) / 2), wallColor:Lerp(Color3.new(1, 1, 1), 0.12), Enum.Material.Slate)
 				end
+				-- 버팀 바위 기둥: 벽면에서 튀어나온 높이가 제각각인 바위 기둥 (벽면이 한 장의 판으로 보이지 않게)
+				local pillars = math.clamp(math.floor(span / 60), 1, 4)
+				for k = 1, pillars do
+					local zz = rect.Z0 + span * (k - 0.5) / pillars + rng:NextNumber(-10, 10)
+					local h = rng:NextNumber(30, 70)
+					local w = rng:NextNumber(7, 11)
+					plain("WallButtress", Vector3.new(w, h, w * 1.2), CFrame.new(fx - face * w * 0.2, baseY + h / 2 - 1, zz) * CFrame.Angles(0, rng:NextNumber(-0.25, 0.25), math.rad(face * rng:NextNumber(-4, -1))), wallColor:Lerp(Color3.new(0, 0, 0), rng:NextNumber(0.05, 0.2)), Enum.Material.Slate)
+				end
+			end
+			-- 벽 꼭대기: 들쭉날쭉한 바위 능선 + 구역 테마 (위에서 내려다보면 높낮이와 모양이 벽마다 다르게 보인다)
+			local top = rect.Top or (baseY + 106)
+			local span = rect.Z1 - rect.Z0
+			local crownMat = ({ Enum.Material.Slate, Enum.Material.Slate, Enum.Material.Rock, Enum.Material.Sandstone, Enum.Material.Glacier, Enum.Material.Basalt, Enum.Material.Slate, Enum.Material.Slate })[zone] or Enum.Material.Slate
+			local z = rect.Z0 + rng:NextNumber(4, 10)
+			local index = 0
+			while z < rect.Z1 - 4 do
+				index += 1
+				local depth = rng:NextNumber(12, 22)
+				local spire = rng:NextNumber() < 0.22 -- 가끔 뾰족하게 솟은 봉우리
+				local h = spire and rng:NextNumber(26, 46) or rng:NextNumber(5, 20)
+				local w = spire and rng:NextNumber(9, 14) or rng:NextNumber(18, 26)
+				local cz = math.min(z + depth / 2, rect.Z1 - 3)
+				local shade = wallColor:Lerp(Color3.new(0, 0, 0), rng:NextNumber(0, 0.18)):Lerp(Color3.new(1, 1, 1), rng:NextNumber(0, 0.08))
+				local cf = CFrame.new(wx + rng:NextNumber(-2, 2), top + h / 2 - 2, cz) * CFrame.Angles(rng:NextNumber(-0.12, 0.12), rng:NextNumber(-0.5, 0.5), rng:NextNumber(-0.12, 0.12))
+				plain("WallCrown", Vector3.new(w, h, spire and w or depth), cf, shade, crownMat)
+				if spire then -- 봉우리 끝을 좁게 한 번 더
+					plain("WallCrown", Vector3.new(w * 0.55, h * 0.4, w * 0.55), cf * CFrame.new(0, h * 0.62, 0) * CFrame.Angles(0, 0.7, 0), shade:Lerp(Color3.new(1, 1, 1), 0.05), crownMat)
+				end
+				-- 구역 테마 꼭대기: 1~2 이끼 / 5 눈 / 6 용암 틈 / 7~8 보랏빛 결정 (번갈아 몇 군데만)
+				if index % 2 == 1 then
+					local capY = cf * CFrame.new(0, (spire and h * 0.62 + h * 0.2 or h / 2), 0)
+					if zone <= 2 then
+						plain("WallMoss", Vector3.new(w * 0.8, 1.2, (spire and w or depth) * 0.8), capY, (TRAIL[zone].Edge):Lerp(Color3.new(0, 0, 0), 0.15), Enum.Material.Grass)
+					elseif zone == 5 then
+						plain("WallSnow", Vector3.new(w * 0.9, 1.6, (spire and w or depth) * 0.9), capY, Color3.fromRGB(236, 244, 252), Enum.Material.Snow)
+					elseif zone == 6 then
+						plain("WallEmber", Vector3.new(0.6, h * 0.7, 0.6), cf * CFrame.new(w / 2 + 0.1, 0, 0), Color3.fromRGB(200, 80, 40), Enum.Material.Neon)
+					elseif zone >= 7 then
+						local s = rng:NextNumber(2.5, 4.5)
+						plain("WallCrystal", Vector3.new(s, s * 2.4, s), capY * CFrame.new(0, s, 0) * CFrame.Angles(0, rng:NextNumber(0, 6.28), math.rad(rng:NextNumber(-15, 15))), zone == 7 and Color3.fromRGB(150, 110, 210) or Color3.fromRGB(190, 80, 140), Enum.Material.Glass)
+					end
+				end
+				z += depth + rng:NextNumber(-2, 4)
+			end
+			-- 벽 끝(틈 쪽)에 둥근 탑: 길이 꺾이는 곳이 한눈에 보이고, 벽마다 끝 모양이 생긴다
+			for _, endZ in ipairs({ rect.Z0, rect.Z1 }) do
+				if math.abs(endZ) < half - 6 then
+					local h = top - baseY + rng:NextNumber(10, 24)
+					local r = rng:NextNumber(24, 28)
+					local tz = endZ == rect.Z0 and endZ + r / 2 or endZ - r / 2 -- 탑이 틈(지나다니는 길) 쪽으로 튀어나오지 않게 벽 안쪽에 세운다
+					plain("WallTower", Vector3.new(h, r, r), CFrame.new(wx, baseY + h / 2 - 2, tz) * CFrame.Angles(0, 0, math.rad(90)), wallColor:Lerp(Color3.new(0, 0, 0), 0.08), Enum.Material.Slate, Enum.PartType.Cylinder)
+					plain("WallTowerCap", Vector3.new(r * 0.7, r + 3, r + 3), CFrame.new(wx, baseY + h - 2, tz) * CFrame.Angles(0, 0, math.rad(90)), wallColor:Lerp(Color3.new(1, 1, 1), 0.1), crownMat, Enum.PartType.Cylinder)
+				end
 			end
 		end
 	end

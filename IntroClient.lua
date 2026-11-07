@@ -708,6 +708,13 @@ local function play()
 						item.LocalTransparencyModifier = 1
 					end
 				end
+				local decor = fieldFolder and fieldFolder:FindFirstChild("FieldDecor") -- 벽에 붙은 장식(꼭대기 바위 / 탑 / 기둥)도 같이 숨긴다
+				for _, item in ipairs(decor and decor:GetChildren() or {}) do
+					if item:IsA("BasePart") and string.sub(item.Name, 1, 4) == "Wall" and item.Position.X > bossX - 700 and not hiddenBaffles[item] then
+						hiddenBaffles[item] = true
+						item.LocalTransparencyModifier = 1
+					end
+				end
 			end)
 			local probe = workspace:Raycast(camera.CFrame.Position, Vector3.new(0, -1500, 0))
 			print(string.format("[오프닝 진단] 카메라 x=%.0f y=%.0f · 아래 지면 %s", x, camera.CFrame.Position.Y, probe and string.format("있음(y=%.0f, %s)", probe.Position.Y, probe.Instance.Name) or "없음"))
