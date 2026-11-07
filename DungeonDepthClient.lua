@@ -38,7 +38,6 @@ local THEME = { -- 던전마다 그림판 색 / 상징
 	Fire = { Top = Color3.fromRGB(190, 70, 30), Bottom = Color3.fromRGB(36, 14, 10), Icon = "🔥", Accent = Color3.fromRGB(255, 170, 90) },
 	All = { Top = Color3.fromRGB(92, 50, 150), Bottom = Color3.fromRGB(18, 12, 30), Icon = "👺", Accent = Color3.fromRGB(255, 200, 110) },
 }
-local CYCLE = { "👺", "❄", "🔥" } -- 깊이 던전: 세 던전의 상징이 번갈아 나온다
 
 -- ===== 왼쪽 그림판 =====
 local hero = create("Frame", { Size = UDim2.new(0, 470, 0, 340), Position = UDim2.new(0, 14, 0, 14), BackgroundColor3 = Color3.new(1, 1, 1), BorderSizePixel = 0, ZIndex = 11, ClipsDescendants = true }, panel)
@@ -53,7 +52,33 @@ for k = 0, 11 do
 	create("UIGradient", { Rotation = 90, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(1, 0.2) }) }, ray)
 	rays[#rays + 1] = ray
 end
-local bossIcon = makeLabel({ Size = UDim2.new(0, 200, 0, 200), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.78, 0, 0.42, 0), Text = "", TextSize = 150, Font = Enum.Font.GothamBlack, TextTransparency = 0.05, ZIndex = 12 }, hero)
+-- 던전 입구(돌 아치 + 안에서 소용돌이치는 빛): 큰 이모지 얼굴이 어색해 보여서 그림으로 그린 문으로 바꿨다
+local gate = create("Frame", { Size = UDim2.new(0, 170, 0, 230), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.78, 0, 0.44, 0), BackgroundTransparency = 1, ZIndex = 12 }, hero)
+local function arch(parent, w, h, color, z)
+	local holder = create("Frame", { Size = UDim2.new(0, w, 0, h), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, 0), BackgroundTransparency = 1, ZIndex = z }, parent)
+	local top = create("Frame", { Size = UDim2.new(0, w, 0, w), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = z }, holder)
+	create("UICorner", { CornerRadius = UDim.new(1, 0) }, top)
+	local body = create("Frame", { Size = UDim2.new(0, w, 0, h - w / 2), Position = UDim2.new(0, 0, 0, w / 2), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = z }, holder)
+	return holder, top, body
+end
+arch(gate, 170, 230, Color3.fromRGB(62, 56, 70), 12) -- 바깥 돌
+for k = 0, 6 do -- 아치 둘레의 돌 조각 (윤곽)
+	local a = math.pi * (k / 6)
+	local stone = create("Frame", { Size = UDim2.new(0, 22, 0, 14), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, -math.cos(a) * 76, 0, 85 - math.sin(a) * 76), Rotation = math.deg(a) - 90, BackgroundColor3 = Color3.fromRGB(88, 80, 96), BorderSizePixel = 0, ZIndex = 13 }, gate)
+	create("UICorner", { CornerRadius = UDim.new(0, 3) }, stone)
+end
+local _, innerTop, innerBody = arch(gate, 128, 200, Color3.new(1, 1, 1), 13) -- 안쪽 빛 (테마색)
+local swirlA = create("UIGradient", { Rotation = 0 }, innerTop)
+local swirlB = create("UIGradient", { Rotation = 90 }, innerBody)
+local core = create("Frame", { Size = UDim2.new(0, 46, 0, 46), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 120), BackgroundColor3 = Color3.fromRGB(10, 6, 16), BackgroundTransparency = 0.2, BorderSizePixel = 0, ZIndex = 14 }, gate)
+create("UICorner", { CornerRadius = UDim.new(1, 0) }, core)
+local coreRing = create("UIStroke", { Thickness = 3, Transparency = 0.2 }, core)
+create("Frame", { Size = UDim2.new(0, 200, 0, 12), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 1, -4), BackgroundColor3 = Color3.fromRGB(40, 36, 46), BorderSizePixel = 0, ZIndex = 14 }, gate) -- 문턱
+local function paintGate(accent, deep)
+	local seq = ColorSequence.new({ ColorSequenceKeypoint.new(0, accent), ColorSequenceKeypoint.new(0.5, deep), ColorSequenceKeypoint.new(1, accent) })
+	swirlA.Color, swirlB.Color = seq, ColorSequence.new(deep, accent:Lerp(deep, 0.4))
+	coreRing.Color = accent
+end
 -- 아래쪽 어둡게 (글자가 잘 보이게)
 local shade = create("Frame", { Size = UDim2.new(1, 0, 0.62, 0), Position = UDim2.new(0, 0, 0.38, 0), BackgroundColor3 = Color3.new(0, 0, 0), BorderSizePixel = 0, ZIndex = 12 }, hero)
 create("UIGradient", { Rotation = 90, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(1, 0.25) }) }, shade)
@@ -146,11 +171,12 @@ local function refresh()
 	heroStroke.Color = theme.Accent
 	for _, ray in ipairs(rays) do ray.BackgroundColor3 = theme.Accent end
 	if typeInfo then
-		bossIcon.Text = theme.Icon
+		paintGate(theme.Accent, theme.Bottom:Lerp(theme.Top, 0.4))
 		typeName.Text = typeInfo.Name
 		bossLine.Text = string.format("👑 Boss: %s", typeInfo.Boss.Name)
 		descLine.Text = typeInfo.Desc or ""
 	else -- 깊이 던전: 매번 던전 / 보스가 무작위 (고블린 동굴 / 얼음 성채 / 화염 신전)
+		paintGate(Color3.fromRGB(200, 140, 255), Color3.fromRGB(60, 20, 110))
 		typeName.Text = "The Depths"
 		local names = {}
 		for _, key in ipairs(Config.Dungeon.Types.Order) do
@@ -224,8 +250,8 @@ task.spawn(function() -- 빛줄기가 천천히 돈다
 		if panel.Visible then
 			t += 0.05
 			raysHolder.Rotation = t * 6
-			bossIcon.Position = UDim2.new(0.78, 0, 0.42, math.sin(t * 1.5) * 4)
-			if not Config.Dungeon.Types[typeKey or ""] then bossIcon.Text = CYCLE[math.floor(t / 1.6) % #CYCLE + 1] end
+			swirlA.Rotation = (t * 120) % 360 -- 소용돌이
+			core.Size = UDim2.new(0, 46 + math.sin(t * 3) * 6, 0, 46 + math.sin(t * 3) * 6)
 		end
 		task.wait(0.05)
 	end
