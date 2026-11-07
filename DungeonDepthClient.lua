@@ -74,6 +74,46 @@ local core = create("Frame", { Size = UDim2.new(0, 46, 0, 46), AnchorPoint = Vec
 create("UICorner", { CornerRadius = UDim.new(1, 0) }, core)
 local coreRing = create("UIStroke", { Thickness = 3, Transparency = 0.2 }, core)
 create("Frame", { Size = UDim2.new(0, 200, 0, 12), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 1, -4), BackgroundColor3 = Color3.fromRGB(40, 36, 46), BorderSizePixel = 0, ZIndex = 14 }, gate) -- 문턱
+-- 깊이가 깊을수록 문이 무서워진다: 가시 -> 눈 -> 뿔 / 금 간 돌 -> 핏빛 물방울 (scary 단계 1~4)
+local spikes, cracks, drips, horns = {}, {}, {}, {}
+for k = 0, 8 do -- 아치 둘레에서 바깥으로 솟은 가시
+	local a = math.pi * (k / 8)
+	local spike = create("Frame", { Size = UDim2.new(0, 8, 0, 26), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, -math.cos(a) * 88, 0, 85 - math.sin(a) * 88), Rotation = math.deg(a) - 90, BackgroundColor3 = Color3.fromRGB(70, 60, 74), BorderSizePixel = 0, Visible = false, ZIndex = 12 }, gate)
+	create("UIGradient", { Rotation = 90, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 0) }) }, spike)
+	create("UICorner", { CornerRadius = UDim.new(1, 0) }, spike)
+	spikes[#spikes + 1] = spike
+end
+for _, side in ipairs({ -1, 1 }) do -- 아치 위 양쪽의 휜 뿔 (마디 세 개)
+	for j = 0, 2 do
+		local horn = create("Frame", { Size = UDim2.new(0, 14 - j * 4, 0, 26), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, side * (52 + j * 14), 0, 22 - j * 18), Rotation = side * (20 + j * 22), BackgroundColor3 = Color3.fromRGB(214, 200, 176), BorderSizePixel = 0, Visible = false, ZIndex = 12 }, gate)
+		create("UICorner", { CornerRadius = UDim.new(1, 0) }, horn)
+		horns[#horns + 1] = horn
+	end
+end
+for _, spec in ipairs({ { -60, 120, 40, 18 }, { 58, 150, 34, -22 }, { -48, 190, 26, 30 }, { 62, 70, 28, 12 } }) do -- 돌에 간 붉은 금
+	local crack = create("Frame", { Size = UDim2.new(0, 2, 0, spec[3]), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, spec[1], 0, spec[2]), Rotation = spec[4], BackgroundColor3 = Color3.fromRGB(255, 60, 40), BorderSizePixel = 0, Visible = false, ZIndex = 13 }, gate)
+	cracks[#cracks + 1] = crack
+end
+for k = 1, 5 do -- 안쪽 위에서 흘러내리는 핏빛 물방울
+	local drip = create("Frame", { Size = UDim2.new(0, 5, 0, 10 + k * 3), Position = UDim2.new(0.5, -50 + k * 18, 0, 36 + (k % 2) * 8), BackgroundColor3 = Color3.fromRGB(150, 10, 20), BorderSizePixel = 0, Visible = false, ZIndex = 14 }, gate)
+	create("UICorner", { CornerRadius = UDim.new(1, 0) }, drip)
+	drips[#drips + 1] = drip
+end
+local eyes = {}
+for _, side in ipairs({ -1, 1 }) do -- 구멍 속에서 노려보는 두 눈
+	local eye = create("Frame", { Size = UDim2.new(0, 10, 0, 4), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, side * 9, 0.5, -2), Rotation = side * -14, BackgroundColor3 = Color3.fromRGB(255, 60, 40), BorderSizePixel = 0, Visible = false, ZIndex = 15 }, core)
+	create("UICorner", { CornerRadius = UDim.new(1, 0) }, eye)
+	eyes[#eyes + 1] = eye
+end
+local scary = 1
+local function setScary(level)
+	scary = level
+	for _, x in ipairs(spikes) do x.Visible = level >= 2 x.BackgroundColor3 = level >= 3 and Color3.fromRGB(90, 30, 34) or Color3.fromRGB(70, 60, 74) end
+	for _, x in ipairs(eyes) do x.Visible = level >= 2 end
+	for _, x in ipairs(horns) do x.Visible = level >= 3 end
+	for _, x in ipairs(cracks) do x.Visible = level >= 3 end
+	for _, x in ipairs(drips) do x.Visible = level >= 4 end
+end
 local function paintGate(accent, deep)
 	local seq = ColorSequence.new({ ColorSequenceKeypoint.new(0, accent), ColorSequenceKeypoint.new(0.5, deep), ColorSequenceKeypoint.new(1, accent) })
 	swirlA.Color, swirlB.Color = seq, ColorSequence.new(deep, accent:Lerp(deep, 0.4))
@@ -176,7 +216,21 @@ local function refresh()
 		bossLine.Text = string.format("👑 Boss: %s", typeInfo.Boss.Name)
 		descLine.Text = typeInfo.Desc or ""
 	else -- 깊이 던전: 매번 던전 / 보스가 무작위 (고블린 동굴 / 얼음 성채 / 화염 신전)
-		paintGate(Color3.fromRGB(200, 140, 255), Color3.fromRGB(60, 20, 110))
+		-- 깊이가 깊어질수록: 보라 -> 자줏빛 붉음 -> 핏빛 -> 검붉은 심연 (그림판 색도 같이 어두워진다)
+		local level = depth >= 25 and 4 or (depth >= 13 and 3 or (depth >= 6 and 2 or 1))
+		local looks = {
+			{ Color3.fromRGB(200, 140, 255), Color3.fromRGB(60, 20, 110), Color3.fromRGB(92, 50, 150), Color3.fromRGB(255, 200, 110) },
+			{ Color3.fromRGB(235, 90, 170), Color3.fromRGB(70, 14, 60), Color3.fromRGB(110, 34, 90), Color3.fromRGB(255, 150, 190) },
+			{ Color3.fromRGB(255, 70, 60), Color3.fromRGB(70, 8, 18), Color3.fromRGB(110, 18, 26), Color3.fromRGB(255, 120, 100) },
+			{ Color3.fromRGB(200, 20, 30), Color3.fromRGB(14, 2, 6), Color3.fromRGB(44, 6, 10), Color3.fromRGB(255, 80, 70) },
+		}
+		local look = looks[level]
+		paintGate(look[1], look[2])
+		heroGrad.Color = ColorSequence.new(look[3], Color3.fromRGB(14, 8, 16))
+		heroStroke.Color = look[4]
+		for _, ray in ipairs(rays) do ray.BackgroundColor3 = look[1] end
+		bossLine.TextColor3 = look[4]
+		setScary(level)
 		typeName.Text = "The Depths"
 		local names = {}
 		for _, key in ipairs(Config.Dungeon.Types.Order) do
@@ -186,7 +240,7 @@ local function refresh()
 		bossLine.Text = string.format("👑 Boss: %s", table.concat(names, " / "))
 		descLine.Text = "A random dungeon awaits each run: Goblin Cave, Ice Fortress or Flame Temple. Go deeper for stronger monsters and better chests!"
 	end
-	bossLine.TextColor3 = theme.Accent
+	if typeInfo then bossLine.TextColor3 = theme.Accent end
 	title.Text = "🎁 Rewards"
 	depthLabel.Text = "Depth " .. depth
 	depthLabel.TextColor3 = difficulty.Color
@@ -250,7 +304,12 @@ task.spawn(function() -- 빛줄기가 천천히 돈다
 		if panel.Visible then
 			t += 0.05
 			raysHolder.Rotation = t * 6
-			swirlA.Rotation = (t * 120) % 360 -- 소용돌이
+			swirlA.Rotation = (t * (90 + scary * 50)) % 360 -- 소용돌이 (깊을수록 빨리)
+			if scary >= 2 then -- 눈이 가끔 깜빡인다
+				local open = math.sin(t * 0.9) > -0.9
+				for _, eye in ipairs(eyes) do eye.Size = UDim2.new(0, 10 + scary, 0, open and 4 or 1) end
+			end
+			if scary >= 4 then for k, drip in ipairs(drips) do drip.Size = UDim2.new(0, 5, 0, 10 + k * 3 + (math.sin(t * 1.3 + k) + 1) * 6) end end
 			core.Size = UDim2.new(0, 46 + math.sin(t * 3) * 6, 0, 46 + math.sin(t * 3) * 6)
 		end
 		task.wait(0.05)
