@@ -837,6 +837,14 @@ return {
 		["Good luck out there!"] = "힘내!",
 		["Nice gear!"] = "장비 멋진데!",
 		["Adventurer NPC"] = "모험가 NPC",
+		["Radius"] = "범위",
+		["Duration"] = "지속시간",
+		["Targets"] = "대상 수",
+		["Damage per dagger"] = "단검 1자루 피해",
+		["NEAR MISS duration"] = "NEAR MISS 유지 시간",
+		["Stacks kept"] = "유지 중첩",
+		["Next level"] = "다음 레벨",
+		["HP restored"] = "체력 회복량",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1058,7 +1066,5 @@ return {
 		{ "🔒 Unlocks at level {number1}  (you are level {number2})", "🔒 {number1}레벨에 해금 (현재 {number2}레벨)" },
 		{ "Pierces up to {number1} more enemies in a line", "일직선상의 적을 최대 {number1}명 더 관통합니다" },
 		{ "Lasts +{number1}s · range +{number2}%: sweeps up swarms", "지속 +{number1}초 · 범위 +{number2}%: 몰려든 잡몹을 쓸어요" },
-		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 눈밭의 군주 (구역 {number1}) · 레코드 ⚡{number2}" },
-		{ "💥Explosive Shot {number1} · ⚡Chain Lightning {number2}", "💥폭발적인 샷 {number1} · ⚡연쇄 번개 {number2}" },
 	},
 }

@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "You have no {text1} gear. Get one from the field or the gacha", "你没有{text1}装备。去野外或扭蛋获得吧" },
+		{ "{text1} hasn't unlocked depth {number2} yet. (Clear depth {number3} first)", "{text1} 尚未解锁深度 {number2}。(请先通关深度 {number3})" },
+		{ "{text1}'s level is too low. (This dungeon requires Lv.{number2}+)", "{text1} 的等级太低。(此地下城需要 Lv.{number2} 以上)" },
 		{ "{text1} has appeared! Dodge its attacks and take it down", "{text1}出现了！躲开它的攻击，把它击倒" },
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag", "获得{text1}！已放入背包。(I → 从背包装备" },
 		{ "Defeat Zone {number1} monsters {number2} / {number3} · Reward {text4} G + Ticket", "击败区域{number1}怪物 {number2} / {number3} · 奖励 {text4} 金币 + 门票" },

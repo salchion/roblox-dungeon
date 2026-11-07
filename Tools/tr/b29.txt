@@ -325,3 +325,13 @@
 2366¦がんばってね！¦Viel Glück da draußen!¦Bonne chance !¦¡Buena suerte!¦Boa sorte!¦祝你好运！¦힘내!
 2367¦いい装備だね！¦Coole Ausrüstung!¦Bel équipement !¦¡Buen equipo!¦Belo equipamento!¦装备不错嘛！¦장비 멋진데!
 2368¦冒険者NPC¦Abenteurer-NPC¦PNJ aventurier¦PNJ aventurero¦NPC aventureiro¦冒险者NPC¦모험가 NPC
+2369¦ダメージ¦Schaden¦Dégâts¦Daño¦Dano¦伤害¦피해
+2370¦範囲¦Radius¦Rayon¦Radio¦Raio¦范围¦범위
+2371¦持続時間¦Dauer¦Durée¦Duración¦Duração¦持续时间¦지속시간
+2372¦対象数¦Ziele¦Cibles¦Objetivos¦Alvos¦目标数¦대상 수
+2373¦短剣1本のダメージ¦Schaden pro Dolch¦Dégâts par dague¦Daño por daga¦Dano por adaga¦每把短剑伤害¦단검 1자루 피해
+2374¦NEAR MISS 持続¦NEAR MISS-Dauer¦Durée NEAR MISS¦Duración de NEAR MISS¦Duração do NEAR MISS¦NEAR MISS 持续时间¦NEAR MISS 유지 시간
+2375¦維持スタック¦Behaltene Stapel¦Cumuls conservés¦Cargas conservadas¦Acúmulos mantidos¦保留层数¦유지 중첩
+2376¦次のレベル¦Nächstes Level¦Niveau suivant¦Siguiente nivel¦Próximo nível¦下一级¦다음 레벨
+2377¦HP回復量¦HP-Heilung¦PV rendus¦PS restaurados¦PV restaurados¦恢复生命¦체력 회복량
+2378¦{number1}秒 · {number3}秒ごとに短剣{number2}本¦{number1} s · {number2} Dolche alle {number3} s¦{number1} s · {number2} dagues toutes les {number3} s¦{number1} s · {number2} dagas cada {number3} s¦{number1} s · {number2} adagas a cada {number3} s¦{number1}秒 · 每{number3}秒{number2}把短剑¦{number1}초 · {number3}초마다 단검 {number2}자루

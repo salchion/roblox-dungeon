@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 눈밭의 군주 (구역 {number1}) · 레코드 ⚡{number2}" },
+		{ "💥Explosive Shot {number1} · ⚡Chain Lightning {number2}", "💥폭발적인 샷 {number1} · ⚡연쇄 번개 {number2}" },
 		{ "👑 Lord of Wasteland (Zone {number1}) · Rec. ⚡{number2}", "👑 황무지의 군주 (구역 {number1}) · 레코 ⚡{number2}" },
 		{ "Spell Tome  ·  keys {number1}-{number2} switch weapons", "스펠 토메 · 키 {number1}-{number2}로 무기 전환" },
 		{ "Defeat {number1} monsters (dungeons included)", "몬스터 {number1}마리 처치 (던전 포함)" },
@@ -192,6 +194,7 @@ return {
 		{ "Double Shot chance {number1}%", "더블샷 확률 {number1}%" },
 		{ "Roll for gear {number1} times", "장비 {number1}회 뽑기" },
 		{ "Move Speed +{number1}  (max {number2})", "이동 속도 +{number1}  (최대 {number2})" },
+		{ "{number1}s · {number2} daggers every {number3}s", "{number1}초 · {number3}초마다 단검 {number2}자루" },
 		{ "Gear drop rarity +{number1}%", "장비 드롭 희귀도 +{number1}%" },
 		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 콤보 x{number1}\n피해량 +{number2}%" },
 		{ "{number7} Darklands · {number8} Abyss", "{number7} 다크랜드 · {number8} 심연" },

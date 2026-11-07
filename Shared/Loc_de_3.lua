@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Zone {number1} · Wasteland", "Zone {number1} · Ödland" },
+		{ "Zone {number1} · Snowfield", "Zone {number1} · Schneefeld" },
+		{ "Field Entrance  {number1}m", "Feld-Eingang {number1}m" },
+		{ "Zone {number1} · Execute  ", "Zone {number1} · Ausführen" },
+		{ "{number1} Meadow · {number2} Forest", "{number1} Wiese · {number2} Wald" },
 		{ "🚪 Open Zone {number1} Gate", "🚪 Öffne das Tor zu Zone {number1}" },
 		{ "max · +{number1}% crit dmg", "max. · Krit-Schaden +{number1} %" },
 		{ "🔊 Music Volume: {number1}%", "🔊 Musiklautstärke: {number1}%" },

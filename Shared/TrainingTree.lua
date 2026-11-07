@@ -156,13 +156,13 @@ end
 local function detailRow(env, color, text, button, skillKey)
 	local create, label = env.Create, env.MakeLabel
 	local withBranch = skillKey ~= nil and env.Config.SkillBranch ~= nil and env.Config.SkillBranch[skillKey] ~= nil
-	local detail = env.NewRow(withBranch and 116 or 76, Color3.fromRGB(30, 28, 46))
+	local detail = env.NewRow(withBranch and 150 or (skillKey and 124 or 76), Color3.fromRGB(30, 28, 46)) -- (스킬: 지금 ▶ 다음 레벨 비교 줄이 들어갈 자리)
 	create("UIStroke", { Color = color, Thickness = 1.5, Transparency = 0.3 }, detail)
 	if button and env.InTown == false then -- 필드에서는 업그레이드 못 한다: 버튼이 "마을에서"로 바뀐다 (서버도 막는다)
 		button = { Text = "🏘 Upgrade in town", Color = env.GRAY, OnClick = function() end }
 	end
 	if withBranch then
-		label({ Size = UDim2.new(0.44, -16, 1, -50), Position = UDim2.new(0, 12, 0, 4), RichText = true, TextSize = 11, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = text }, detail)
+		label({ Size = UDim2.new(0.44, -16, 1, -50), Position = UDim2.new(0, 12, 0, 4), RichText = true, TextSize = 12, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = text }, detail)
 		if button then
 			env.MakeButton({ Size = UDim2.new(0.44, -24, 0, 38), Position = UDim2.new(0, 12, 1, -44), Text = button.Text, TextSize = 12, BackgroundColor3 = button.Color }, detail, button.OnClick)
 		end
@@ -223,7 +223,7 @@ local function skillDetail(env, key)
 		button = { Text = string.format("Upgrade %s G\n⏱ %s", comma(Config.GetSkillUpgradeCost(level)), Config.FormatDuration(Config.GetSkillUpgradeTime(level))), Color = env.GREEN, OnClick = function() env.Remotes.Meta:FireServer("SkillUp", key) end }
 	end
 	return skillColor(key), string.format("<font size='14'><b>[%s] %s %s</b></font>  <font color='#ffd966'>Lv.%d / %d</font>%s\n<font color='#bbbbcc'>%s</font>",
-		cfg.Key or "", cfg.Icon, cfg.Name, level, U.MaxLevel, maxed and "  <font color='#78ff8c'>MAX</font>" or "", cfg.Desc or "") .. (env.SkillDetail and ("\n<font color='#9ad7ff'>" .. env.SkillDetail(key, level) .. "</font>") or ""), button
+		cfg.Key or "", cfg.Icon, cfg.Name, level, U.MaxLevel, maxed and "  <font color='#78ff8c'>MAX</font>" or "", cfg.Desc or "") .. (env.SkillDetail and ("\n" .. env.SkillDetail(key, level)) or ""), button
 end
 
 ------------------------------------------------------------

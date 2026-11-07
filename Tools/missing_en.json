@@ -2367,5 +2367,15 @@
 "Hey there!",
 "Good luck out there!",
 "Nice gear!",
-"Adventurer NPC"
+"Adventurer NPC",
+"Damage",
+"Radius",
+"Duration",
+"Targets",
+"Damage per dagger",
+"NEAR MISS duration",
+"Stacks kept",
+"Next level",
+"HP restored",
+"{number1}s · {number2} daggers every {number3}s"
 ]

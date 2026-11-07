@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Uses all Tickets (max {number1})", "Utilise tous les tickets (maximum {number1})" },
+		{ "📍 Field · Best Zone {number1}   ", "📍 Champ · Meilleure zone {number1}" },
+		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "Zone {number1} · Désert ☠☠☠☠" },
 		{ "🎒 Bag {number1} / {number2}    ✨ Essence {number3}", "🎒 Sac {number1} / {number2} ✨ Essence {number3}" },
 		{ "Returning to lobby in {number1}s", "Retour au lobby dans {number1} s" },
 		{ "🔒 Zone {number1} · Desert Sealed", "🔒 Zone {number1} · Désert scellé" },
@@ -44,6 +47,7 @@ return {
 		{ "Double Shot chance {number1}%", "Chance de tir double {number1} %" },
 		{ "Roll for gear {number1} times", "Tirez {number1} fois de l'équipement" },
 		{ "Move Speed +{number1}  (max {number2})", "Vitesse +{number1}  (max {number2})" },
+		{ "{number1}s · {number2} daggers every {number3}s", "{number1} s · {number2} dagues toutes les {number3} s" },
 		{ "Gear drop rarity +{number1}%", "Rareté des objets de équipement +{number1}%" },
 		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 Combo x{number1}\nDégâts +{number2}%" },
 		{ "{number7} Darklands · {number8} Abyss", "{number7} Terres sombres · {number8} Abysse" },

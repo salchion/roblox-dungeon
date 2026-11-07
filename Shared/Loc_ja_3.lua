@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🏚 Ruined Fortress Gate · Rec. ⚡{number1}", "🏚 廃墟の要塞の門 · レコメンド ⚡{number1}" },
+		{ "🏚 Ruined Fortress Gate · Rec. ⚡{number2}", "🏚 廃墟の要塞の門 · レコメンド ⚡{number2}" },
 		{ "📍 Field · Best Zone {number1}   🎟 Free {number2}/{number3}", "📍 フィールド・ベストゾーン {number1} 🎟 無料 {number2}/{number3}" },
 		{ "⚔ Rocket Launcher · Rusty Era +{number10}", "⚔ ロケットランチャー · 錆の時代 +{number10}" },
 		{ "⚔ Rocket Launcher · Rusty Era +{number1}", "⚔ ロケットランチャー · 錆びた時代 +{number1}" },
@@ -145,6 +147,7 @@ return {
 		{ "Double Shot chance {number1}%", "ダブルショット確率 {number1}%" },
 		{ "Roll for gear {number1} times", "装備ガチャを{number1}回引く" },
 		{ "Move Speed +{number1}  (max {number2})", "移動速度 +{number1}  (最大 {number2})" },
+		{ "{number1}s · {number2} daggers every {number3}s", "{number1}秒 · {number3}秒ごとに短剣{number2}本" },
 		{ "Gear drop rarity +{number1}%", "ギアドロップのレア度 +{number1}%" },
 		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 コンボ x{number1}\nダメージ +{number2}%" },
 		{ "{number7} Darklands · {number8} Abyss", "{number7} ダークランド · {number8} アビス" },

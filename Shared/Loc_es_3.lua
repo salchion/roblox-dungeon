@@ -4,9 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Luck Booster ({number1} hour)", "Potenciador de suerte ({number1} horas)" },
+		{ "Idle Booster ({number1} hour)", "Potenciador de inactividad ({number1} horas)" },
+		{ "Hit the dummy {number1} times", "Golpea al maniquí {number1} veces" },
+		{ "{number3} Wasteland · {number4} Desert", "{number3} Tierra baldía · {number4} Desierto" },
 		{ "Double Shot chance {number1}%", "Prob. de disparo doble {number1}%" },
 		{ "Roll for gear {number1} times", "Tira equipo {number1} veces" },
 		{ "Move Speed +{number1}  (max {number2})", "Velocidad +{number1}  (máx. {number2})" },
+		{ "{number1}s · {number2} daggers every {number3}s", "{number1} s · {number2} dagas cada {number3} s" },
 		{ "Gear drop rarity +{number1}%", "Rareza de caída de equipamiento +{number1}%" },
 		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 Combo x{number1}\nDaño +{number2}%" },
 		{ "{number7} Darklands · {number8} Abyss", "{number7} Tierras Oscuras · {number8} Abismo" },

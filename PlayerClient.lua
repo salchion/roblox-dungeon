@@ -2576,26 +2576,63 @@ local function buildSkipGaugeRow() -- 성장 탭 맨 위: ⏱ 시간 건너뛰�
 	makePanel({ Size = UDim2.new(math.clamp(owned / cap, 0, 1), 0, 1, 0), BackgroundColor3 = Color3.fromRGB(215, 150, 60) }, gaugeBack)
 end
 
--- 스킬 노드 상세 설명 한 줄 (TrainingTree 가 부른다)
-local function skillDetail(key, level)
+-- 스킬 노드 상세 설명 (TrainingTree 가 부른다): 레벨이 오르면 무엇이 얼마나 좋아지는지 "지금 ▶ 다음" 으로 보여 준다 (바뀌는 값은 초록색)
+local function skillStats(key, level) -- { { 이름, 값 글자, 숫자 } ... } (쿨타임은 서버 Skill.CooldownFor 와 같은 계산: 내 쿨감 스탯까지 반영한 실제 값)
 	local U = Config.SkillUpgrade
 	local cfg = Config.Skills[key]
 	local lv = level - 1
-	local detail
+	local list = {}
+	local function add(name, value, fmt) table.insert(list, { name, string.format(fmt, value), value }) end
 	if key == "Barrier" then
-		detail = string.format("Lasts %.1fs", cfg.Duration + U.BarrierDuration * lv)
+		add("Duration", cfg.Duration + U.BarrierDuration * lv, "%.1fs")
 	elseif key == "Blast" then
-		detail = string.format("Radius %.1f · Damage x%.2f", cfg.Radius + U.BlastRadius * lv, cfg.Mult * (1 + U.BlastMult * lv))
+		add("Damage", cfg.Mult * (1 + U.BlastMult * lv), "x%.2f")
+		add("Radius", cfg.Radius + U.BlastRadius * lv, "%.1f")
 	elseif key == "Focus" then
-		detail = string.format("NEAR MISS lasts %.1fs · keeps at least %d stacks even if broken", Config.NearMiss.Duration + U.FocusDuration * lv, math.floor(Config.NearMiss.MaxStacks * 0.5 * lv / math.max(1, U.MaxLevel - 1)))
+		add("NEAR MISS duration", Config.NearMiss.Duration + U.FocusDuration * lv, "%.1fs")
+		add("Stacks kept", math.floor(Config.NearMiss.MaxStacks * 0.5 * lv / math.max(1, U.MaxLevel - 1)), "%d")
 	elseif key == "Spirit" then
-		detail = string.format("%.1fs · %d daggers every %.2fs · Damage x%.2f each", cfg.Duration, cfg.Daggers, cfg.Interval, cfg.Mult * (1 + U.BlastMult * lv))
+		add("Damage per dagger", cfg.Mult * (1 + U.BlastMult * lv), "x%.2f")
 	elseif key == "Heal" then
-		detail = string.format("Restores %d%% HP", math.floor((cfg.Ratio + U.HealRatio * lv) * 100 + 0.5))
+		add("HP restored", math.floor((cfg.Ratio + U.HealRatio * lv) * 100 + 0.5), "%d%%")
 	else
-		detail = string.format("Damage x%.2f · %d targets (gauge %d)", cfg.Mult * (1 + U.UltMult * lv), cfg.MaxTargets + math.floor(U.UltTargets * lv + 0.001), cfg.Cost)
+		add("Damage", cfg.Mult * (1 + U.UltMult * lv), "x%.2f")
+		add("Targets", cfg.MaxTargets + math.floor(U.UltTargets * lv + 0.001), "%d")
 	end
-	return detail .. (cfg.Passive and "" or string.format(" · Cooldown %.1fs", cfg.Cooldown * (1 - U.CooldownPerLevel * lv)))
+	if not cfg.Passive then
+		local S = Config.Skills
+		local function part(value) return 1 / (1 + 1.5 * math.max(0, value or 0)) end
+		local factor = part(player:GetAttribute("GearHaste")) * part(player:GetAttribute("PetHaste")) * part(player:GetAttribute("LvHaste")) * part(U.CooldownPerLevel * lv)
+		local floorRatio = key == "Spirit" and (S.SpiritCooldownFloor or 0.05) or (S.CooldownFloor or 0.3)
+		local cooldown = cfg.Cooldown * (floorRatio + (1 - floorRatio) * factor)
+		if (key == "Spirit" or key == "Heal") and Config.GetSkillBranch(player, key, 10) == "B" then cooldown *= 0.7 end
+		add("Cooldown", cooldown, "%.1fs")
+	end
+	return list
+end
+
+local function skillDetail(key, level)
+	local U = Config.SkillUpgrade
+	local cfg = Config.Skills[key]
+	local now = skillStats(key, level)
+	local lines = {}
+	if key == "Spirit" then -- 고정 정보 (레벨로 안 바뀐다)
+		table.insert(lines, string.format("<font color='#9aa3b8'>%.1fs · %d daggers every %.2fs</font>", cfg.Duration, cfg.Daggers, cfg.Interval))
+	end
+	local maxed = level >= U.MaxLevel
+	local nextStats = not maxed and skillStats(key, level + 1) or nil
+	if nextStats then
+		table.insert(lines, string.format("<font color='#ffd966'><b>Next level</b></font><font color='#ffd966'> Lv.%d ▶ Lv.%d</font>", level, level + 1))
+	end
+	for index, stat in ipairs(now) do
+		local line = string.format("<font color='#cfd6e6'>%s</font><font color='#ffffff'>  %s</font>", stat[1], stat[2])
+		local after = nextStats and nextStats[index]
+		if after and after[2] ~= stat[2] then
+			line ..= string.format("<font color='#9aa3b8'>  ▶  </font><font color='#78ff8c'><b>%s</b></font>", after[2])
+		end
+		table.insert(lines, line)
+	end
+	return table.concat(lines, "\n")
 end
 
 Remotes.Meta.OnClientEvent:Connect(function(action, data)

@@ -690,6 +690,15 @@ return {
 		["Good luck out there!"] = "がんばってね！",
 		["Nice gear!"] = "いい装備だね！",
 		["Adventurer NPC"] = "冒険者NPC",
+		["Damage"] = "ダメージ",
+		["Radius"] = "範囲",
+		["Duration"] = "持続時間",
+		["Targets"] = "対象数",
+		["Damage per dagger"] = "短剣1本のダメージ",
+		["NEAR MISS duration"] = "NEAR MISS 持続",
+		["Stacks kept"] = "維持スタック",
+		["Next level"] = "次のレベル",
+		["HP restored"] = "HP回復量",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -939,7 +948,5 @@ return {
 		{ "Not enough power! (You {number1} / Rec. {number2})", "戦闘力が足りません！(あなた {number1} / 推奨 {number2})" },
 		{ "Points left {number1}  /  earned {number2}  (max {number3})", "残りポイント {number1}  /  獲得 {number2}  (最大 {number3})" },
 		{ "Crit chance +{number1}% per point  (max {number2})", "クリティカル率 +{number1}% / 1ポイント  (最大 {number2})" },
-		{ "🏚 Ruined Fortress Gate · Rec. ⚡{number1}", "🏚 廃墟の要塞の門 · レコメンド ⚡{number1}" },
-		{ "🏚 Ruined Fortress Gate · Rec. ⚡{number2}", "🏚 廃墟の要塞の門 · レコメンド ⚡{number2}" },
 	},
 }

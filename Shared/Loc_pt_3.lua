@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 Buy Point {number1} G ({number2}/{number3})", "💰 Comprar Ponto {number1} G ({number2}/{number3})" },
+		{ "Best {number1}  ·  Max hit {number2}", "Melhores {number1} · Golpe máximo {number2}" },
+		{ "🗿 Colossus · Zone {number1}", "🗿 Colosso · Zona {number1}" },
+		{ "⚔ DUNGEON  ·  Lv.{number1}+", "⚔ Masmorra · Lv.{number1}+" },
+		{ "Zone {number1} · Trial Lv.3", "Zona {number1} · Provação Nv.3" },
 		{ "Upgrade success! +{number1}", "Melhoria bem-sucedida! +{number1}" },
 		{ "Field · Best Zone {number1}", "Campo · melhor zona {number1}" },
 		{ "👥 Online: {number1} players", "👥 Online: {number1} jogadores" },
