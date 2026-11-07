@@ -98,15 +98,19 @@ local function applyMaxHealth(player, heal)
 	local character = player.Character
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 	if not humanoid then return end
+	local oldMax = humanoid.MaxHealth
 	humanoid.MaxHealth = Dungeon.GetMaxHealth(player)
+	if heal == "keep" then -- 필드 / 던전에서 장비 / 훈련으로 최대 체력이 바뀔 때: 완전 회복하지 않고 늘어난 만큼만 (전투 중 장비를 바꿔 체력을 채우던 것)
+		heal = math.max(0, humanoid.MaxHealth - oldMax)
+	end
 	if humanoid.Health > 0 then
 		humanoid.Health = math.min(humanoid.Health + (heal or 0), humanoid.MaxHealth)
 	end
 end
 
 -- 장비 변경 등으로 최대 체력이 달라졌을 때 (로비에서 호출)
-function Dungeon.RefreshMaxHealth(player)
-	applyMaxHealth(player, math.huge)
+function Dungeon.RefreshMaxHealth(player, full) -- full: 레벨업처럼 어디서든 완전 회복. 아니면 마을에서만 완전 회복
+	applyMaxHealth(player, (full or player:GetAttribute("Zone") == "Lobby") and math.huge or "keep")
 end
 
 local function resetStats(player)

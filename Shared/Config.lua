@@ -915,6 +915,8 @@ Config.Field = {
 		Speed = { 1, 1.05, 1.1, 1.18, 1.26, 1.35, 1.45, 1.55 },
 		Reward = { 1, 1.5, 2.2, 5.8, 9.2, 14.3, 21.6, 33.8 }, -- (4구역부터는 몬스터 체력을 올린 만큼 보상도 같은 비율로 올림)
 	},
+	MobDamageMult = 1.2,       -- 필드 일반 / 엘리트 몬스터 피해 +20% (체력이 잘 차서 긴장감이 없다는 의견. 군주는 그대로)
+	MobShotIntervalMult = 0.8, -- 필드 일반 / 엘리트 몬스터 공격 간격 x0.8 (= 25% 더 자주 쏜다)
 	-- 초반 일반 몬스터 / 엘리트만 체력을 더 낮춘다 (군주는 제외): 처음 사냥이 "잘 안 죽어서 답답하다"는 의견. 1구역 x0.45, 2구역 x0.8
 	EarlyMobHealth = { 0.45, 0.8 },
 	ZoneNames = { "Meadow", "Forest", "Wasteland", "Desert", "Snowfield", "Volcano", "Darklands", "Abyss" },

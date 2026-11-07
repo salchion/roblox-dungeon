@@ -88,6 +88,19 @@ Npc.Init(lobby.DummyStart.Y, { -- 시설마다 NPC 가 서서 말을 건다 (허
 	{ Name = "Mira", Title = "👹 Boss Rush Keeper", Position = promptPosition(lobby.RiftPrompt), Shirt = Color3.fromRGB(150, 60, 120), Pants = Color3.fromRGB(70, 36, 66), Hat = "hood", Accent = Color3.fromRGB(190, 70, 150), Prop = "staff",
 		Lines = { "Only those who conquer the field may enter the Boss Rush.", "Bosses keep coming. Survive longer, hit harder.", "Your score is seconds survived x damage dealt - the weekly ranking resets every week." } },
 })
+task.spawn(function() -- 마을에서만 체력이 빠르게 찬다 (초당 최대 체력 5%): 기본 자연 회복을 껐으므로 마을이 쉬는 곳
+	while true do
+		task.wait(1)
+		for _, member in ipairs(Players:GetPlayers()) do
+			if member:GetAttribute("Zone") == "Lobby" then
+				local hum = member.Character and member.Character:FindFirstChildOfClass("Humanoid")
+				if hum and hum.Health > 0 and hum.Health < hum.MaxHealth then
+					hum.Health = math.min(hum.MaxHealth, hum.Health + hum.MaxHealth * 0.05)
+				end
+			end
+		end
+	end
+end)
 task.spawn(function() -- 마을을 돌아다니는 모험가 NPC (플레이어처럼 생겼지만 머리 위에 NPC 표시)
 	local y = lobby.DummyStart.Y
 	local function near(position, pull) -- 시설 앞: 마을 가운데 쪽으로 조금 당긴 자리
@@ -151,6 +164,10 @@ end)
 ------------------------------------------------------------
 local function onCharacterAdded(player, character)
 	local humanoid = character:WaitForChild("Humanoid")
+	task.spawn(function() -- 로블록스 기본 자연 회복(매초 최대 체력 1%) 끄기: 필드 / 던전에서 체력이 저절로 차서 긴장감이 없었다. 마을 회복은 아래 반복문이 한다
+		local regen = character:WaitForChild("Health", 5)
+		if regen and regen:IsA("Script") then regen:Destroy() end
+	end)
 	Tutorial.EarlyFreeze(player, character) -- 튜토리얼 상태가 로드되기 전까지 움직이지 못하게 (처음 접속 시)
 	do -- 마을에서 시작할 때는 항상 시작 언덕(lobby.SpawnCFrame)에서: 로블록스가 스폰 패드가 만들어지기 전에 캐릭터를 월드 중앙(0,3,0)에 세워 버리는 경우가 있어서 직접 옮긴다 (다른 곳이 되돌리는 경우를 막으려고 1.5초 동안 몇 번 더 확인한다)
 		local isStudio = game:GetService("RunService"):IsStudio()
@@ -390,7 +407,7 @@ local function setupPlayer(player)
 	end
 	-- 레벨이 오르면 최대 체력(완전 회복) / 전투력 / 이름표 / 업적 갱신
 	player:GetAttributeChangedSignal("Level"):Connect(function()
-		Dungeon.RefreshMaxHealth(player)
+		Dungeon.RefreshMaxHealth(player, true)
 		updatePower(player)
 		Quest.Refresh(player)
 	end)

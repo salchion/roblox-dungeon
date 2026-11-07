@@ -897,7 +897,8 @@ local function spawnMonster(zone, kind, at, ambush, filler)
 		-- 구역 난이도 배율: 구역이 넘어가면 몬스터가 확 강해진다 (체력 / 공격력 / 속도) 대신 보상도 크게 오른다
 		local danger = F.ZoneDanger
 		stats.MaxHealth = math.max(1, math.floor(stats.MaxHealth * danger.Health[zone] * (F.EarlyMobHealth[zone] or 1)))
-		stats.ShotDamage = math.max(1, math.floor(stats.ShotDamage * danger.Damage[zone]))
+		stats.ShotDamage = math.max(1, math.floor(stats.ShotDamage * danger.Damage[zone] * (F.MobDamageMult or 1)))
+		stats.ShotInterval = (stats.ShotInterval or 2) * (F.MobShotIntervalMult or 1) -- 일반 / 엘리트 몬스터가 더 자주 쏜다 (필드 긴장감)
 		stats.Speed *= danger.Speed[zone]
 		stats.Gold = math.floor(stats.Gold * danger.Reward[zone] * Config.Economy.FieldGoldMult)
 	end
