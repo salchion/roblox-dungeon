@@ -99,9 +99,16 @@ local function watchButton(button)
 	local function release()
 		if scale then TweenService:Create(scale, TweenInfo.new(0.14, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play() end
 	end
-	button.MouseButton1Down:Connect(press)
-	button.MouseButton1Up:Connect(release)
-	button.MouseLeave:Connect(release)
+	-- 마우스를 올리면 살짝 커진다 (누를 수 있다는 신호). 누르면 작아졌다가 튀어 오른다
+	local down = false
+	button.MouseEnter:Connect(function()
+		if huge() or down or button.BackgroundTransparency >= 0.85 then return end
+		scale = scale or ownScale(button, "PressScale")
+		if scale then TweenService:Create(scale, TweenInfo.new(0.1, Enum.EasingStyle.Quad), { Scale = 1.04 }):Play() end
+	end)
+	button.MouseButton1Down:Connect(function() down = true press() end)
+	button.MouseButton1Up:Connect(function() down = false release() end)
+	button.MouseLeave:Connect(function() down = false release() end)
 	button.Activated:Connect(function()
 		if huge() then return end
 		local now = os.clock()
@@ -134,9 +141,11 @@ local function styleButton(button)
 	end
 	if hasChild(button, "UIStroke") or hasChild(button, "UIGradient") then return end
 	local gradient = Instance.new("UIGradient")
-	gradient.Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.new(0.76, 0.76, 0.86))
+	gradient.Color = (okTheme and Theme and Theme.BUTTON_SHADE) or ColorSequence.new(Color3.new(1, 1, 1), Color3.new(0.76, 0.76, 0.86))
 	gradient.Rotation = 90
 	gradient.Parent = button
+	if okTheme and Theme and Theme.gameFont and button:IsA("TextButton") then Theme.gameFont(button) end
+	if okTheme and Theme and Theme.shine and button.AbsoluteSize.Y >= 26 then Theme.shine(button) end
 	local stroke = Instance.new("UIStroke")
 	stroke.Color, stroke.Thickness, stroke.ApplyStrokeMode = INK, 2, Enum.ApplyStrokeMode.Border
 	stroke.Parent = button

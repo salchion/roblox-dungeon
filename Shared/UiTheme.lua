@@ -24,11 +24,33 @@ function Theme.panelLook(frame)
 end
 
 -- 버튼: 윗면이 밝은 광택 + 굵은 외곽선 + 글씨 외곽선 (색은 부르는 쪽이 정한 그대로)
+-- 게임 UI 자료 조사에서 가져온 것 (시뮬레이터 / 모바일 RPG 공통):
+--   * 두툼한 3D 버튼: 위는 밝고 아래 가장자리로 갈수록 확 어두워진다 (눌러야 할 것처럼 보인다)
+--   * 윗면 안쪽의 가는 흰 광택 줄
+--   * 굵은 게임 글꼴 (번역된 한글 / 일본어도 같은 굵기로)
+Theme.BUTTON_SHADE = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)), ColorSequenceKeypoint.new(0.55, Color3.new(0.9, 0.9, 0.95)),
+	ColorSequenceKeypoint.new(0.86, Color3.new(0.74, 0.74, 0.84)), ColorSequenceKeypoint.new(1, Color3.new(0.56, 0.56, 0.68)),
+})
+local BOLD = { [Enum.Font.GothamBold] = Enum.FontWeight.Bold, [Enum.Font.GothamBlack] = Enum.FontWeight.ExtraBold, [Enum.Font.GothamMedium] = Enum.FontWeight.SemiBold }
+function Theme.gameFont(label)
+	local weight = BOLD[label.Font]
+	if weight then label.FontFace = Font.new("rbxasset://fonts/families/BuilderSans.json", weight) end
+end
+function Theme.shine(button)
+	if button:FindFirstChild("TopShine") or button:FindFirstChildOfClass("UIListLayout") or button:FindFirstChildOfClass("UIGridLayout") then return end
+	local line = add("Frame", { Name = "TopShine", Size = UDim2.new(1, -16, 0, 2), Position = UDim2.new(0, 8, 0, 3), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.6, BorderSizePixel = 0, Active = false, ZIndex = button.ZIndex }, button)
+	add("UICorner", { CornerRadius = UDim.new(1, 0) }, line)
+end
 function Theme.glossy(button)
-	add("UIGradient", { Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.new(0.76, 0.76, 0.86)), Rotation = 90 }, button)
+	add("UIGradient", { Color = Theme.BUTTON_SHADE, Rotation = 90 }, button)
 	add("UIStroke", { Color = Theme.INK, Thickness = 2, Transparency = 0, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, button)
 	button.TextStrokeColor3 = Theme.INK
 	button.TextStrokeTransparency = 0.45
+	Theme.gameFont(button)
+	task.defer(function() -- (크기가 정해진 뒤: 낮은 버튼에는 광택 줄을 넣지 않는다)
+		if button.Parent and button.BackgroundTransparency < 0.5 and button.AbsoluteSize.Y >= 26 then Theme.shine(button) end
+	end)
 end
 
 return Theme
