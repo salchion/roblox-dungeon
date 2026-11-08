@@ -1146,6 +1146,7 @@ local PLASTIC, METAL = Enum.Material.SmoothPlastic, Enum.Material.Metal
 
 local liveTrails = 0
 
+local liveCores = 0 -- 하얀 심이 들어간 적 탄 수 (상한)
 local function spawnProjectile(event)
 	-- { "P", id, origin, direction, speed, size, color, style, life, path }
 	-- path: nil(직선) / { "sine", 진폭, 빈도 } / { "curve", 각속도 } / { "lob", 착지점, 높이 } / { "home" }
@@ -1326,6 +1327,14 @@ local function spawnProjectile(event)
 	if pieces then
 		local ok = pcall(pieces)
 		if not ok then part:Destroy() return end
+	end
+	-- 탄막 게임 원칙: 적 탄은 어떤 배경(눈밭 / 사막 / 용암)에서도 읽혀야 한다 -> 하얗게 빛나는 심 + 바깥은 살짝 비치는 색 껍질
+	-- (밝은 바닥에서 색 탄이 묻히던 것. 동시에 60발까지만, 저사양 모드는 생략)
+	if part.Shape == BALL and liveCores < 60 and not lowSpecOn() then
+		liveCores += 1
+		task.delay(life + 0.3, function() liveCores -= 1 end)
+		part.Transparency = 0.18
+		pcall(addPiece, part, BALL, part.Size * 0.48, CFrame.identity, Color3.fromRGB(255, 252, 240), Enum.Material.Neon, 0)
 	end
 
 	local entry = { Part = part, Pop = (style == "Missile" or style == "Seeker") }
