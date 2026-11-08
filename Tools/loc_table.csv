@@ -1125,7 +1125,7 @@ Perigo ☠☠☠
 ,,"Close (J)",,"PlayerGui.CodexGui.CodexPanel.TextButton","닫기 (J)","Automation","閉じる（J）","Automation","Schließen (J)","Automation","Fermer (J)","Automation","Cerrar (J)","Automation","Fechar (J)","Automation","关闭（J）","Automation",,,,,,,,,,,,,,,,
 ,,"📖
 Codex",,"PlayerGui.CodexGui.CodexButton","📖
-코덱스","Automation","📖
+도감","Automation","📖
 コーデックス","Automation","📖
 Kodex","Automation","📖
 Codex","Automation","📖
@@ -1484,7 +1484,7 @@ Limpar zona de campo {number1}
 ,,"Necklace",,"PlayerGui.TutorialHUD.Frame.Frame.TextLabel","목걸이","Automation","ネックレス","Automation","Halskette","Automation","Collier","Automation","Collar","Automation","Colar","Automation","项链","Automation",,,,,,,,,,,,,,,,
 ,,"Easy  🔑",,"PlayerGui.HUD.Frame.TextButton","쉬움 🔑","Automation","簡単 🔑","Automation","Einfach 🔑","Automation","Facile 🔑","Automation","Fácil 🔑","Automation","Fácil 🔑","Automation","简单 🔑","Automation",,,,,,,,,,,,,,,,
 ,,"ZONE {number1}  ·  Darklands   ☠☠☠☠☠☠☠",,"PlayerGui.IntroGui.TextLabel","존 {number1} · 다크랜드 ☠☠☠☠☠☠☠","Automation","ゾーン {number1} ・ダークランド ☠☠☠☠☠☠☠","Automation","Zone {number1} · Dunkle Länder ☠☠☠☠☠☠☠","Automation","Zone {number1} · Terres sombres ☠☠☠☠☠☠☠","Automation","Zona {number1} · Tierras oscuras ☠☠☠☠☠☠☠","Automation","Zona {number1} · Terras Sombrias ☠☠☠☠☠☠☠","Automation","区域 {number1} · 黑暗之地 ☠☠☠☠☠☠☠","Automation",,,,,,,,,,,,,,,,
-,,"Codex",,"PlayerGui.MenuDockGui.DockCodex.TextLabel","코덱스","Automation","コーデックス","Automation","Kodex","Automation","Codex","Automation","Códex","Automation","Códex","Automation","典籍","Automation",,,,,,,,,,,,,,,,
+,,"Codex",,"PlayerGui.MenuDockGui.DockCodex.TextLabel","도감","Automation","コーデックス","Automation","Kodex","Automation","Codex","Automation","Códex","Automation","Códex","Automation","典籍","Automation",,,,,,,,,,,,,,,,
 ,,"Danger ☠☠☠☠☠",,"Workspace.Field.GateSign.BillboardGui.TextLabel","위험 ☠☠☠☠☠","Automation","危険 ☠☠☠☠☠","Automation","Gefahr ☠☠☠☠☠","Automation","Danger ☠☠☠☠☠","Automation","Peligro ☠☠☠☠☠","Automation","Perigo ☠☠☠☠☠","Automation","危险 ☠☠☠☠☠","Automation",,,,,,,,,,,,,,,,
 ,,"🔫",,"PlayerGui.MenuDockGui.DockWeapon.TextLabel","🔫","Automation","🔫","Automation","🔫","Automation","🔫","Automation","🔫","Automation","🔫","Automation","🔫","Automation",,,,,,,,,,,,,,,,
 ,,"Auto-Dismantle: Smart (Recommended)",,"PlayerGui.HUD.MenuPanel.ScrollingFrame.Frame.TextButton","자동 해체: 스마트 (추천)","Automation","自動解体：スマート（推奨）","Automation","Automatisches Zerlegen: Intelligent (Empfohlen)","Automation","Démantèlement automatique : Intelligent (recommandé)","Automation","Desmantelamiento automático: Inteligente (recomendado)","Automation","Desmontagem Automática: Inteligente (Recomendado)","Automation","自动拆解：智能（推荐）","Automation",,,,,,,,,,,,,,,,
