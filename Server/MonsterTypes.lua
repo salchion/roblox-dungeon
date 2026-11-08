@@ -71,8 +71,8 @@ M.Defs = {
 	-- ===== 신규 몬스터 =====
 	Imp = {
 		Name = "Sniper Imp", Shape = "Ball", Color = Color3.fromRGB(200, 60, 90), Material = Enum.Material.SmoothPlastic,
-		SizeMult = 0.7, SpeedMult = 0.9, HealthMult = 0.6, DamageMult = 1.55, IntervalMult = 1.6, ShotSpeedMult = 2.2, GoldMult = 1.3,
-		Attack = "Split", Style = "Spear", Move = "Keep", Keep = 55, Range = 130, Horns = true,
+		SizeMult = 0.7, SpeedMult = 0.75, HealthMult = 0.6, DamageMult = 1.55, IntervalMult = 1.6, ShotSpeedMult = 2.2, GoldMult = 1.3,
+		Attack = "Split", Style = "Spear", Move = "Keep", Keep = 34, Range = 130, Horns = true, -- (Keep 55 -> 34, 속도 0.9 -> 0.75: 멀리 도망 다녀서 한 마리 잡는 데 5.8초 걸렸다)
 	},
 	Turret = {
 		Name = "Magic Turret", Shape = "Block", Color = Color3.fromRGB(90, 95, 110), Material = Enum.Material.Metal,

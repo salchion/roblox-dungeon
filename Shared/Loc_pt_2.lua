@@ -589,6 +589,10 @@ return {
 		["Auto-salvage"] = "Desmonte automático",
 		["⚗ Fusion Complete!"] = "⚗ Fusão concluída!",
 		["🎲 A random set from the zones you've cleared"] = "🎲 Um conjunto aleatório das zonas concluídas",
+		["💡 Stand in the rest area to earn gold (even while you're offline)"] = "💡 Fique na área de descanso para ganhar ouro (mesmo offline)",
+		["🚩 Frontier Bonus! Gold & XP x2 · Gear drops x1.5 until you defeat this zone's Lord"] = "🚩 Bônus de fronteira! Ouro e XP x2 · drops x1,5 até derrotar o lorde desta zona",
+		["Frontier Bonus"] = "Bônus de fronteira",
+		["Gold/XP x2 · Drops x1.5"] = "Ouro/XP x2 · Drops x1,5",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -950,10 +954,5 @@ return {
 		{ "Returning to lobby in {number1}s", "Retornando ao lobby em {number1} segundos" },
 		{ "🔒 Zone {number1} · Desert Sealed", "🔒 Zona {number1} · Deserto Selado" },
 		{ "⚔ Railgun · Rusty Era +{number1}", "⚔ Arma de trilhos · Era enferrujada +{number1}" },
-		{ "★☆☆  Step {number1}/{number2} · Next step", "★☆☆ Passo {number1}/{number2} · Próximo passo" },
-		{ "🔒 Defeat the Zone {number1} lord", "🔒 Derrote o senhor da zona {number1}" },
-		{ "🔒 Unlocks at +{number1} ({number2} to go)", "🔒 Desbloqueia em +{number1} (faltam {number2})" },
-		{ "◆ Luck (Drop Rarity) +{number1}%", "◆ Sorte (raridade) +{number1}%" },
-		{ "Cooldown -{number1}% · damage +{number2}%", "Recarga -{number1}% · dano +{number2}%" },
 	},
 }

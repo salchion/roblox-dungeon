@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Gold +{number1}%", "金币 +{number1}%" },
+		{ "🧩 Set {number1}%", "🧩 套装 {number1}%" },
+		{ "Era {number1} / {number2}", "时代 {number1} / {number2}" },
+		{ "{number1} / {number2} XP", "{number1} / {number2} 经验值" },
+		{ "⚡ {number1} Lv.{number2}", "⚡ {number1} 等级{number2}" },
+		{ "≈ {number1} dmg", "≈ {number1} 伤害" },
+		{ "⏱ {number1} min", "⏱ {number1} 分钟" },
 		{ "(max {number1})", "(最多 {number1})" },
 		{ "Free {number1}/{number2}", "免费 {number1}/{number2}" },
 		{ "{number1} to go", "还差{number1}" },

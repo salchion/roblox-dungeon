@@ -9,8 +9,8 @@ local Odds = {}
 
 -- 구역 줄(row)의 가중치: 영웅(3) 이상 가중치만 행운 / 종류 보너스를 받는다 (LootService.rollRarity 와 같은 규칙)
 -- row 는 소수도 된다: 인접한 두 줄을 섞는다 (던전 깊이마다 확률이 조금씩 오르게)
-function Odds.Weights(row, luck, kindMult)
-	local rows = Config.Loot.ZoneRarity
+function Odds.Weights(row, luck, kindMult, table_)
+	local rows = table_ or Config.Loot.ZoneRarity
 	row = math.clamp(row, 1, #rows)
 	local lo = math.floor(row)
 	local hi = math.min(#rows, lo + 1)
@@ -129,7 +129,7 @@ end
 function Odds.Field(zone, kind, luck)
 	local L = Config.Loot
 	local mult = kind == "Elite" and L.EliteBonus or ((kind == "Boss" or kind == "Event") and L.BossBonus or 1)
-	local pct = Odds.Percentages(Odds.Weights(math.clamp(zone, 1, #L.ZoneRarity), luck, mult))
+	local pct = Odds.Percentages(Odds.Weights(math.clamp(zone, 1, #L.ZoneRarity), luck, mult, L.FieldZoneRarity))
 	local out = {}
 	for index, p in ipairs(pct) do
 		out[index] = { Name = Config.Gear.RarityNames[index], Color = Config.Gear.RarityColors[index], Pct = p }

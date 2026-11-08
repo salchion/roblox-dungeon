@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Succeed at upgrading {number1} times", "Réussissez {number1} améliorations" },
+		{ "Attack +{number1}% per point  (max {number2})", "Attaque +{number1}% par point  (max {number2})" },
+		{ "Returning to the field in {number1}s", "Retour sur le terrain dans {number1} s" },
+		{ "Zone {number1} monsters {number2} / {number3} defeated", "Zone {number1} : {number2} / {number3} monstres vaincus" },
+		{ "◆ Damage Taken Reduction +{number1}%", "◆ Réduction des dégâts subis +{number1}%" },
 		{ "Gives back {number1} gauge after use", "Rend {number1} de jauge après usage" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Tome de sorts · Ère rouillée +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Porte du palais de glace · Rec. ⚡{number1}" },

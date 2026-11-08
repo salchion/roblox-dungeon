@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Enter Fever Time {number1} time(s)", "Entra {number1} vez/veces en el Tiempo de fiebre" },
+		{ "Upgrade a gear piece to +{number1}", "Mejora una pieza de equipo a +{number1}" },
+		{ "▲ Better than equipped  +{number1}", "▲ Mejor que lo equipado  +{number1}" },
+		{ "Lord of Forest  ·  Zone {number1}", "Señor del Bosque · Zona {number1}" },
+		{ "Zone {number1} · Shockwave Shot  ", "Zona {number1} · Disparo de onda de choque" },
 		{ "Spell Tome · Rusty Era +{number1}", "Tomo de hechizos · Era oxidada +{number1}" },
 		{ "Defeat {number1} Golden Goblin(s)", "Derrota a {number1} duendes dorados" },
 		{ "🔒 Zone {number1} · Volcano Sealed", "🔒 Zona {number1} · Volcán sellado" },

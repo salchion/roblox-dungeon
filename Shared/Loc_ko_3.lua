@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "📅 {number1}-day login streak · Get stronger today!", "📅 {number1}일 연속 로그인 · 오늘 더 강해지세요!" },
+		{ "Each NEAR MISS stack gives +{number1}% more attack", "NEAR MISS 스택마다 공격력이 +{number1}% 더 붙어요" },
+		{ "✦ Unique effect on Mythic gear: <b>{number1}%</b>", "✦ 신화 장비의 유니크 효과: <b>{number1}%</b>" },
+		{ "Auto-equipped the best gear in {number1} slot(s)!", "{number1}칸의 최고 장비를 자동 장착했어요!" },
 		{ "<font color='#d9bd78'>MISSION {number1} / {number2}</font>", "<font color='#d9bd78'>미션 {number1} / {number2}</font>" },
 		{ "<font color='#ffd966'>🎯 Mission {number1}/{number2}</font>", "<font color='#ffd966'>🎯 미션 {number1}/{number2}</font>" },
 		{ "<font color='#9aa0c0'>… and {number1} more</font>", "<font color='#9aa0c0'>… 외 {number1}명</font>" },

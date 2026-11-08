@@ -198,3 +198,37 @@ do
 		end
 	end)
 end
+
+------------------------------------------------------------
+-- 5) 개척 보너스 표시: 아직 군주를 못 잡은 다음 구역에서 사냥 중이면 화면 위쪽 가운데에 작은 깃발 알약
+------------------------------------------------------------
+do
+	local chip = Instance.new("TextLabel")
+	chip.Name = "FrontierChip"
+	chip.AnchorPoint = Vector2.new(0.5, 0)
+	chip.Position = UDim2.new(0.5, 0, 0, 14)
+	chip.Size = UDim2.new(0, 330, 0, 28)
+	chip.BackgroundColor3 = Color3.fromRGB(60, 40, 16)
+	chip.BackgroundTransparency = 0.15
+	chip.Font = Enum.Font.GothamBold
+	chip.TextSize = 13
+	chip.TextColor3 = Color3.fromRGB(255, 220, 130)
+	chip.RichText = true
+	chip.Text = "🚩 <b>Frontier Bonus</b> · Gold/XP x2 · Drops x1.5"
+	chip.Visible = false
+	chip.Parent = gui
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(1, 0)
+	corner.Parent = chip
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = Color3.fromRGB(255, 190, 80)
+	stroke.Thickness = 1.5
+	stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	stroke.Parent = chip
+	local function sync()
+		chip.Visible = player:GetAttribute("FrontierHere") == true and player:GetAttribute("Zone") == "Field"
+	end
+	player:GetAttributeChangedSignal("FrontierHere"):Connect(sync)
+	player:GetAttributeChangedSignal("Zone"):Connect(sync)
+	sync()
+end

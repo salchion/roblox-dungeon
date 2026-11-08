@@ -53,13 +53,13 @@ local function show(data)
 	local lines = 2 + #(data.Affixes or {}) + (data.Unique and 1 or 0) + (data.Set and 1 or 0) + 1
 	local height = 64 + lines * 22
 	local card = new("Frame", {
-		Size = UDim2.new(0, 300, 0, height), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, 340, 0.55, 0),
+		Size = UDim2.new(0, 300, 0, height), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, 340, 1, -118), -- (오른쪽 아래: 오른쪽 가운데의 대미지 미터기와 겹치던 것)
 		BackgroundColor3 = Color3.fromRGB(18, 18, 30), BackgroundTransparency = 0.05, BorderSizePixel = 0, ZIndex = 2,
 	}, gui)
 	new("UICorner", { CornerRadius = UDim.new(0, 14) }, card)
 	local stroke = new("UIStroke", { Color = color, Thickness = data.Rarity >= 5 and 3 or 2 }, card)
 	new("UIGradient", { Rotation = 90, Color = ColorSequence.new(color:Lerp(Color3.fromRGB(18, 18, 30), 0.55), Color3.fromRGB(18, 18, 30)) }, card)
-	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(1, -18, 0.55, 0) }):Play()
+	TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(1, -18, 1, -118) }):Play()
 	if data.Rarity >= 5 then -- 신화: 테두리 무지개
 		local rainbow = new("UIGradient", { Color = ColorSequence.new({
 			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 80, 80)), ColorSequenceKeypoint.new(0.25, Color3.fromRGB(255, 220, 80)),
@@ -112,7 +112,7 @@ local function show(data)
 	end
 
 	task.wait((2.2 + data.Rarity * 0.3) * (fast and 0.3 or 1))
-	TweenService:Create(card, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Position = UDim2.new(1, 340, 0.55, 0) }):Play()
+	TweenService:Create(card, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Position = UDim2.new(1, 340, 1, -118) }):Play()
 	task.wait(0.32)
 	card:Destroy()
 end

@@ -630,6 +630,10 @@ return {
 		["Auto-salvage"] = "Recyclage auto",
 		["⚗ Fusion Complete!"] = "⚗ Fusion réussie !",
 		["🎲 A random set from the zones you've cleared"] = "🎲 Un set aléatoire parmi les zones terminées",
+		["💡 Stand in the rest area to earn gold (even while you're offline)"] = "💡 Reste dans la zone de repos pour gagner de l'or (même hors ligne)",
+		["🚩 Frontier Bonus! Gold & XP x2 · Gear drops x1.5 until you defeat this zone's Lord"] = "🚩 Bonus de frontière ! Or et XP x2 · butin x1,5 jusqu'à la défaite du seigneur de la zone",
+		["Frontier Bonus"] = "Bonus de frontière",
+		["Gold/XP x2 · Drops x1.5"] = "Or/XP x2 · Butin x1,5",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -932,10 +936,5 @@ return {
 		{ "Sniper Rifle · Arcane Era +{number3}", "Fusil de sniper · Ère arcanique +{number3}" },
 		{ "ZONE {number1}  ·  Snowfield   ☠☠☠☠☠", "Zone {number1} · Champ de neige ☠☠☠☠☠" },
 		{ "🎁 Boss chest · {number1} gear pieces", "🎁 Coffre de boss · {number1} équipements" },
-		{ "Succeed at upgrading {number1} times", "Réussissez {number1} améliorations" },
-		{ "Attack +{number1}% per point  (max {number2})", "Attaque +{number1}% par point  (max {number2})" },
-		{ "Returning to the field in {number1}s", "Retour sur le terrain dans {number1} s" },
-		{ "Zone {number1} monsters {number2} / {number3} defeated", "Zone {number1} : {number2} / {number3} monstres vaincus" },
-		{ "◆ Damage Taken Reduction +{number1}%", "◆ Réduction des dégâts subis +{number1}%" },
 	},
 }

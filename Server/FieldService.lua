@@ -1203,6 +1203,8 @@ local function reward(player, data, part)
 	end
 
 	local gold = math.floor(data.Stats.Gold + 0.5)
+	local frontier = data.Zone >= 2 and data.Zone == (player:GetAttribute("ClearedZone") or 0) + 1 and Config.Loot.Frontier or nil -- 개척 보너스 (다음 구역)
+	if frontier then gold = math.floor(gold * frontier.Gold + 0.5) end
 	BL.Kill(player, data.Kind or "Normal")
 	if data.Kind == "Boss" then -- 군주: 막타를 친 사람의 골드 (그 외는 아래에서 준 피해로 나눈다)
 		player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + math.floor(gold * Config.GoldBonus(player) + 0.5))
@@ -1217,6 +1219,7 @@ local function reward(player, data, part)
 		xp = Config.Xp.FieldPerMonsterLevel * data.XpLevel * (data.Kind == "Elite" and Config.Xp.EliteMult or 1) * (data.Kind == "Normal" and Config.Horde.Reward or 1)
 	end
 	xp = xp * ((Config.Xp.ZoneMult and Config.Xp.ZoneMult[data.Zone]) or 1) -- 구역이 깊을수록 경험치 배율
+	if frontier then xp *= frontier.Xp end
 	local rewarded = nil -- 골드 / 경험치를 받은 사람들 (드랍을 각자 굴린다)
 	if data.Kind == "Boss" then Level.AddXP(player, xp) else rewarded = PartyShare.Distribute(player, data, part, gold, xp) end -- 군주는 근처 모두가 각자 받는다(아래). 그 외는 준 피해로 나눈다 (파티는 하나로)
 
@@ -2754,6 +2757,13 @@ local function updateZones()
 						end
 					end
 					-- 새 구역에 들어서면 큰 경고 배너 (난이도가 얼마나 뛰는지 숫자로 보여준다)
+					do -- 개척 구역에 있는지 (화면 위 "개척 보너스" 표시용)
+						local isFrontier = fieldZone >= 2 and fieldZone == (player:GetAttribute("ClearedZone") or 0) + 1
+						if (player:GetAttribute("FrontierHere") == true) ~= isFrontier then
+							player:SetAttribute("FrontierHere", isFrontier or nil)
+							if isFrontier then notify(player, "🚩 Frontier Bonus! Gold & XP x2 · Gear drops x1.5 until you defeat this zone's Lord") end
+						end
+					end
 					if fieldZone ~= lastZoneSeen[player] then
 						local previous = lastZoneSeen[player] or 0
 						lastZoneSeen[player] = fieldZone

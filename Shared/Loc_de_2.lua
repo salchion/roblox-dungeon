@@ -570,6 +570,10 @@ return {
 		["Auto-salvage"] = "Auto-Zerlegen",
 		["⚗ Fusion Complete!"] = "⚗ Fusion abgeschlossen!",
 		["🎲 A random set from the zones you've cleared"] = "🎲 Zufälliges Set aus deinen abgeschlossenen Zonen",
+		["💡 Stand in the rest area to earn gold (even while you're offline)"] = "💡 Stell dich in den Ruhebereich, um Gold zu verdienen (auch offline)",
+		["🚩 Frontier Bonus! Gold & XP x2 · Gear drops x1.5 until you defeat this zone's Lord"] = "🚩 Grenzbonus! Gold & EP x2 · Ausrüstungsdrops x1,5, bis du den Fürsten dieser Zone besiegst",
+		["Frontier Bonus"] = "Grenzbonus",
+		["Gold/XP x2 · Drops x1.5"] = "Gold/EP x2 · Drops x1,5",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -947,9 +951,5 @@ return {
 		{ "Defeat {number1} field monsters", "Besiege {number1} Feldmonster" },
 		{ "Pierces up to {number1} enemies", "Durchschlägt bis zu {number1} Gegner" },
 		{ "Loading the land...  {number1}%", "Land wird geladen...  {number1}%" },
-		{ "Defeat the Zone {number1} Lord", "Besiege den Herrscher der Zone {number1}" },
-		{ "{number2} / {number3}   Reward: {number4} G + 🎫 {number5}", "{number2} / {number3} Belohnung: {number4} G + 🎫 {number5}" },
-		{ "{number1} Snowfield · {number2} Volcano", "{number1} Schneefeld · {number2} Vulkan" },
-		{ "Railgun · Rusty Era +{number1}", "Schienenkanone · Rostige Ära +{number1}" },
 	},
 }

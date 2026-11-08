@@ -747,6 +747,10 @@ return {
 		["Auto-salvage"] = "自動分解",
 		["⚗ Fusion Complete!"] = "⚗ 合成完了！",
 		["🎲 A random set from the zones you've cleared"] = "🎲 クリアした区域からランダムなセット",
+		["💡 Stand in the rest area to earn gold (even while you're offline)"] = "💡 休憩エリアに立つとゴールドが貯まります（オフライン中も）",
+		["🚩 Frontier Bonus! Gold & XP x2 · Gear drops x1.5 until you defeat this zone's Lord"] = "🚩 開拓ボーナス！この区域の君主を倒すまでゴールドと経験値x2 · 装備ドロップx1.5",
+		["Frontier Bonus"] = "開拓ボーナス",
+		["Gold/XP x2 · Drops x1.5"] = "ゴールド/経験値x2 · ドロップx1.5",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -963,8 +967,5 @@ return {
 		{ "Defeat {number1} monsters (dungeons included)", "モンスターを{number1}体倒す(ダンジョン含む)" },
 		{ "🎯 Ready to challenge the Zone {number1} Lord!", "🎯 ゾーン{number1}のロードに挑む準備ができました！" },
 		{ "Gold x{number1} · Tickets {number2} · Boss chest gear {number3}", "ゴールド x{number1} · チケット {number2} · ボス宝箱の装備 {number3}" },
-		{ "Bounces to {number1} nearby enemies (within {number2})", "近くの敵{number1}体に跳ね返ります(範囲{number2}以内)" },
-		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 {number1}体の精霊が{number2}秒間あなたのために戦います！" },
-		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1}秒 · {number3}秒ごとに短剣{number2}本 · 各ダメージ x{number4}" },
 	},
 }

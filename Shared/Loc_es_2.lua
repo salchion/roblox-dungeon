@@ -618,6 +618,10 @@ return {
 		["Auto-salvage"] = "Desguace auto",
 		["⚗ Fusion Complete!"] = "⚗ ¡Fusión completada!",
 		["🎲 A random set from the zones you've cleared"] = "🎲 Un set aleatorio de las zonas que has superado",
+		["💡 Stand in the rest area to earn gold (even while you're offline)"] = "💡 Quédate en la zona de descanso para ganar oro (incluso sin conexión)",
+		["🚩 Frontier Bonus! Gold & XP x2 · Gear drops x1.5 until you defeat this zone's Lord"] = "🚩 ¡Bonificación de frontera! Oro y XP x2 · botín x1,5 hasta derrotar al señor de esta zona",
+		["Frontier Bonus"] = "Bonificación de frontera",
+		["Gold/XP x2 · Drops x1.5"] = "Oro/XP x2 · Botín x1,5",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -953,10 +957,5 @@ return {
 		{ "Explodes on hit (radius {number1})", "Explota al impactar (radio {number1})" },
 		{ "Not enough gold (need {number1} G)", "Oro insuficiente (se necesitan {number1} G)" },
 		{ "▲ {number1} unspent (T)  ·  {number2} / {number3} XP", "▲ {number1} sin gastar (T)  ·  {number2} / {number3} EXP" },
-		{ "Enter Fever Time {number1} time(s)", "Entra {number1} vez/veces en el Tiempo de fiebre" },
-		{ "Upgrade a gear piece to +{number1}", "Mejora una pieza de equipo a +{number1}" },
-		{ "▲ Better than equipped  +{number1}", "▲ Mejor que lo equipado  +{number1}" },
-		{ "Lord of Forest  ·  Zone {number1}", "Señor del Bosque · Zona {number1}" },
-		{ "Zone {number1} · Shockwave Shot  ", "Zona {number1} · Disparo de onda de choque" },
 	},
 }

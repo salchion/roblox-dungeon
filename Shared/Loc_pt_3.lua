@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "★☆☆  Step {number1}/{number2} · Next step", "★☆☆ Passo {number1}/{number2} · Próximo passo" },
+		{ "🔒 Defeat the Zone {number1} lord", "🔒 Derrote o senhor da zona {number1}" },
+		{ "🔒 Unlocks at +{number1} ({number2} to go)", "🔒 Desbloqueia em +{number1} (faltam {number2})" },
+		{ "◆ Luck (Drop Rarity) +{number1}%", "◆ Sorte (raridade) +{number1}%" },
+		{ "Cooldown -{number1}% · damage +{number2}%", "Recarga -{number1}% · dano +{number2}%" },
 		{ "NEAR MISS lasts +{number1}s more", "NEAR MISS dura mais {number1}s" },
 		{ "🐾 Unlock your pet! ({number1} G)", "🐾 Desbloqueie seu pet! ({number1} G)" },
 		{ "💪 Zone {number1} Lord: power {number2} / {number3}", "💪 Senhor da zona {number1}: poder {number2} / {number3}" },

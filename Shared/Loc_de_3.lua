@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Defeat the Zone {number1} Lord", "Besiege den Herrscher der Zone {number1}" },
+		{ "{number2} / {number3}   Reward: {number4} G + 🎫 {number5}", "{number2} / {number3} Belohnung: {number4} G + 🎫 {number5}" },
+		{ "{number1} Snowfield · {number2} Volcano", "{number1} Schneefeld · {number2} Vulkan" },
+		{ "Railgun · Rusty Era +{number1}", "Schienenkanone · Rostige Ära +{number1}" },
 		{ "📍 Field (best: Zone {number11})", "📍 Feld (am besten: Zone {number11})" },
 		{ "{number5} Snowfield · {number6} Volcano", "{number5} Schneefeld · {number6} Vulkan" },
 		{ "ZONE {number1}  ·  Forest   ☠☠", "Zone {number1} · Wald ☠☠" },

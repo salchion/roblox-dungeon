@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Bounces to {number1} nearby enemies (within {number2})", "近くの敵{number1}体に跳ね返ります(範囲{number2}以内)" },
+		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 {number1}体の精霊が{number2}秒間あなたのために戦います！" },
+		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1}秒 · {number3}秒ごとに短剣{number2}本 · 各ダメージ x{number4}" },
 		{ "Defeat {number1} bosses in one Boss Rush run", "1回のボスラッシュで{number1}人のボスを倒す" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "モンスターとの遭遇数 {number1} / {number2}（ゾーンの領主を含む）" },
 		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 無料入場を使用！(本日残り {number1} / {number2})" },

@@ -500,6 +500,10 @@ return {
 		["Auto-salvage"] = "自动分解",
 		["⚗ Fusion Complete!"] = "⚗ 合成完成！",
 		["🎲 A random set from the zones you've cleared"] = "🎲 从已通关区域中随机一个套装",
+		["💡 Stand in the rest area to earn gold (even while you're offline)"] = "💡 站在休息区即可获得金币（离线时也可以）",
+		["🚩 Frontier Bonus! Gold & XP x2 · Gear drops x1.5 until you defeat this zone's Lord"] = "🚩 开拓奖励！击败本区域领主前，金币和经验x2 · 装备掉落x1.5",
+		["Frontier Bonus"] = "开拓奖励",
+		["Gold/XP x2 · Drops x1.5"] = "金币/经验x2 · 掉落x1.5",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1093,12 +1097,5 @@ return {
 		{ "Kills: {number1}", "击败：{number1}" },
 		{ "From {number1} G", "{number1} G 起" },
 		{ "Gold {number1} G", "金币 {number1} G" },
-		{ "Gold +{number1}%", "金币 +{number1}%" },
-		{ "🧩 Set {number1}%", "🧩 套装 {number1}%" },
-		{ "Era {number1} / {number2}", "时代 {number1} / {number2}" },
-		{ "{number1} / {number2} XP", "{number1} / {number2} 经验值" },
-		{ "⚡ {number1} Lv.{number2}", "⚡ {number1} 等级{number2}" },
-		{ "≈ {number1} dmg", "≈ {number1} 伤害" },
-		{ "⏱ {number1} min", "⏱ {number1} 分钟" },
 	},
 }

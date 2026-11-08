@@ -33,8 +33,8 @@ local function luckOf(player)
 end
 
 -- 구역 줄(row)의 가중치로 등급을 뽑는다. 가중치 계산은 화면에 보여 주는 확률과 같은 모듈(Odds)을 쓴다.
-local function rollRarity(row, luck, kindMult)
-	local weights = Odds.Weights(row, luck, kindMult)
+local function rollRarity(row, luck, kindMult, table_)
+	local weights = Odds.Weights(row, luck, kindMult, table_)
 	local total = 0
 	for _, weight in ipairs(weights) do total += weight end
 	local roll = math.random() * total
@@ -60,7 +60,8 @@ end
 
 -- extraMult: 높은 등급 추가 배율(던전 깊이가 표의 끝을 넘었을 때) / uniqueChance: 신화 장비의 유니크 확률(던전 깊이)
 function Loot.RollItem(player, row, kind, zoneIndex, extraMult, uniqueChance)
-	local rarity = rollRarity(row, luckOf(player), kindMultiplier(kind) * (extraMult or 1))
+	local field = kind == "Normal" or kind == "Elite" or kind == "Boss" or kind == "Event" -- (필드 드롭은 필드 전용 등급 표: 뒤 구역일수록 확 좋아진다)
+	local rarity = rollRarity(row, luckOf(player), kindMultiplier(kind) * (extraMult or 1), field and L.FieldZoneRarity or nil)
 	local slot = G.Slots[math.random(#G.Slots)]
 	return Inventory.NewItem(slot.Key, rarity, 0, zoneIndex, uniqueChance)
 end
@@ -75,6 +76,9 @@ end
 -- kind: "Normal" | "Elite" | "Boss" | "Event". zoneIndex: 구역 번호(등급 표의 줄)
 function Loot.DropFor(player, position, kind, zoneIndex)
 	local chance = L.DropChance[kind] or 0
+	if zoneIndex >= 2 and zoneIndex == (player:GetAttribute("ClearedZone") or 0) + 1 then -- 개척 보너스: 드롭 확률 x1.5
+		chance = math.min(1, chance * (L.Frontier and L.Frontier.Drop or 1))
+	end
 	local count = L.Counts[kind] or 1
 	local row = math.clamp(zoneIndex, 1, #L.ZoneRarity)
 

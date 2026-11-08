@@ -888,6 +888,10 @@ return {
 		["Auto-salvage"] = "자동 분해",
 		["⚗ Fusion Complete!"] = "⚗ 합성 성공!",
 		["🎲 A random set from the zones you've cleared"] = "🎲 클리어한 구역 중 무작위 세트",
+		["💡 Stand in the rest area to earn gold (even while you're offline)"] = "💡 쉼터에 서 있으면 골드가 쌓여요 (오프라인에서도)",
+		["🚩 Frontier Bonus! Gold & XP x2 · Gear drops x1.5 until you defeat this zone's Lord"] = "🚩 개척 보너스! 이 구역 군주를 잡기 전까지 골드·경험치 x2 · 장비 드롭 x1.5",
+		["Frontier Bonus"] = "개척 보너스",
+		["Gold/XP x2 · Drops x1.5"] = "골드·경험치 x2 · 드롭 x1.5",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1081,9 +1085,5 @@ return {
 		{ "▶ Next feature: Lv.{number1} 💥 Power  ({number2} lvl · ~{number3} G)", "▶ 다음 기능: 레벨 {number1} 💥 파워 ({number2} 레벨 · ~{number3} G)" },
 		{ "✅ Mission complete! Reward: {number1} G + Tickets {number2}", "✅ 미션 완료! 보상: {number1} G + 티켓 {number2}" },
 		{ "Rocket Launcher  ·  keys {number1}-{number2} switch weapons", "로켓 발사기 · 키 {number1}-{number2}로 무기를 전환하세요" },
-		{ "📅 {number1}-day login streak · Get stronger today!", "📅 {number1}일 연속 로그인 · 오늘 더 강해지세요!" },
-		{ "Each NEAR MISS stack gives +{number1}% more attack", "NEAR MISS 스택마다 공격력이 +{number1}% 더 붙어요" },
-		{ "✦ Unique effect on Mythic gear: <b>{number1}%</b>", "✦ 신화 장비의 유니크 효과: <b>{number1}%</b>" },
-		{ "Auto-equipped the best gear in {number1} slot(s)!", "{number1}칸의 최고 장비를 자동 장착했어요!" },
 	},
 }
