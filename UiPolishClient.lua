@@ -103,8 +103,10 @@ local function watchButton(button)
 	local down = false
 	button.MouseEnter:Connect(function()
 		if huge() or down or button.BackgroundTransparency >= 0.85 then return end
+		-- 작은 버튼에만 (큰 카드 / 창 모양 버튼이 커지면 안의 닫기 버튼까지 같이 밀려서, 누르려던 자리가 확 움직였다)
+		if button.AbsoluteSize.X > 240 or button.AbsoluteSize.Y > 90 or button:FindFirstChildWhichIsA("GuiButton", true) then return end
 		scale = scale or ownScale(button, "PressScale")
-		if scale then TweenService:Create(scale, TweenInfo.new(0.1, Enum.EasingStyle.Quad), { Scale = 1.04 }):Play() end
+		if scale then TweenService:Create(scale, TweenInfo.new(0.1, Enum.EasingStyle.Quad), { Scale = 1.03 }):Play() end
 	end)
 	button.MouseButton1Down:Connect(function() down = true press() end)
 	button.MouseButton1Up:Connect(function() down = false release() end)
