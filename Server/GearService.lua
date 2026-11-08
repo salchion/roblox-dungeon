@@ -1014,7 +1014,7 @@ function Gear.Roll(player, forced)
 	else
 		message = string.format("%s... auto-dismantled! Essence +%d, %d G", name, essence or 0, gold or 0)
 	end
-	return true, message, { Slot = slot.Key, Rarity = rarity, Name = slot.Names[rarity], Equipped = status == "Equipped", Status = status, Gold = gold or 0, Better = better }
+	return true, message, { Slot = slot.Key, Rarity = rarity, Name = slot.Names[rarity], Equipped = status == "Equipped", Status = status, Gold = gold or 0, Better = better, Set = item.Set } -- (Set: 결과 카드에 세트 표시)
 end
 
 -- 접속하면 저장된 천장 횟수를 화면에 보여 줄 수 있게 Attribute 로 알려 준다

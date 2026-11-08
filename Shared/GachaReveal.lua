@@ -234,6 +234,12 @@ function M.Init(deps)
 					create("UICorner", { CornerRadius = UDim.new(1, 0) }, aura)
 					create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 1) }), Rotation = 90 }, aura)
 					Kit.medal(holder, { Size = 54, Position = UDim2.new(0.5, -27, 0, 17), Color = rc, Icon = ICONS[r.Slot] or "🎁", TextSize = 27, Tier = r.Rarity, ZIndex = 65 })
+					local setDef = r.Set and Config.Sets[r.Set]
+					if setDef then -- 세트 장비: 왼쪽 위에 세트색 꼬리표 (구역 번호)
+						local tag = create("Frame", { Size = UDim2.new(0, 34, 0, 16), Position = UDim2.new(0, 6, 0, 9), BackgroundColor3 = setDef.Color, BorderSizePixel = 0, ZIndex = 67 }, holder)
+						create("UICorner", { CornerRadius = UDim.new(1, 0) }, tag)
+						makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = (setDef.Icon or "✦") .. (setDef.Zone and ("Z" .. setDef.Zone) or ""), TextSize = 10, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(20, 18, 30), AutoLocalize = false, ZIndex = 68 }, tag)
+					end
 					local nameLabel = makeLabel({ Size = UDim2.new(1, -14, 0, 32), Position = UDim2.new(0, 7, 0, 78), Text = r.Name or "", TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(240, 238, 250), TextWrapped = true, ZIndex = 65 }, holder)
 					nameLabel.TextYAlignment = Enum.TextYAlignment.Center
 					local pill = create("Frame", { Size = UDim2.new(0, 74, 0, 18), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 114), BackgroundColor3 = rc, BackgroundTransparency = 0.78, BorderSizePixel = 0, ZIndex = 65 }, holder)
@@ -353,6 +359,9 @@ function M.Init(deps)
 						table.insert(parts, string.format("<font color='#%s'>%s %d</font>", Config.Gear.RarityColors[rarity]:ToHex(), Config.Gear.RarityNames[rarity], counts[rarity]))
 					end
 				end
+				local setCount = 0
+				for _, r in ipairs(rolls) do if r.Set then setCount += 1 end end
+				if setCount > 0 then table.insert(parts, string.format("<font color='#9fe6b0'>🧩 Set %d</font>", setCount)) end -- 세트가 붙은 장비 수
 				makeLabel({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 1, -80), RichText = true, Text = table.concat(parts, "   "), TextSize = 16, Font = Enum.Font.GothamBold, TextStrokeTransparency = 0.4, ZIndex = 63 }, grid)
 				-- 아래 버튼: 확인 / 다시 뽑기 (티켓)
 				local function bottomButton(text, x, color, onClick)
@@ -435,6 +444,10 @@ function M.Init(deps)
 			create("UICorner", { CornerRadius = UDim.new(1, 0) }, pill)
 			create("UIStroke", { Color = color, Thickness = 1, Transparency = 0.35 }, pill)
 			makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = Config.Gear.RarityNames[rarity], TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = color:Lerp(Color3.new(1, 1, 1), 0.25), ZIndex = 64 }, pill)
+			local setDef = roll.Set and Config.Sets[roll.Set]
+			if setDef then -- 세트 장비: 등급 알약 아래에 세트 이름
+				makeLabel({ Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 152), Text = string.format("%s %s Set", setDef.Icon or "✦", setDef.Name), TextSize = 12, Font = Enum.Font.GothamBold, TextColor3 = setDef.Color:Lerp(Color3.new(1, 1, 1), 0.3), ZIndex = 63 }, card)
+			end
 			create("Frame", { Size = UDim2.new(1, -40, 0, 1), Position = UDim2.new(0, 20, 1, -40), BackgroundColor3 = Color3.fromRGB(255, 255, 255), BackgroundTransparency = 0.88, BorderSizePixel = 0, ZIndex = 63 }, card)
 			makeLabel({
 				Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0, 0, 1, -34),

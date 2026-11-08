@@ -396,6 +396,7 @@ return {
 		{ "+ {text1} piece {text2}", "+ {text1}-Teil {text2}" },
 		{ "Depth {number1}: {text2}{text3}", "Tiefe {number1}: {text2}{text3}" },
 		{ "(gear {text1}{text2})", "(Ausrüstung {text1}{text2})" },
+		{ "{text1} {text2} Set", "{text1} {text2}-Set" },
 		{ "👑 Weekly Final Lord reward: Mythic {text1} · {text2} Set · ✦ {text3}!", "👑 Wöchentliche Belohnung des Letzten Lords: Mythisch {text1} · {text2}-Set · ✦ {text3}!" },
 		{ "{text1} Trial effect for this dungeon: [{text2}] (Lv.3) — {text3}", "{text1} Prüfungseffekt für diesen Dungeon: [{text2}] (Lv.3) — {text3}" },
 		{ "Depth {number1} (total {text2}, Unique {text3}, keys {number4}): {text5}", "Tiefe {number1} (gesamt {text2}, Unikat {text3}, Schlüssel {number4}): {text5}" },

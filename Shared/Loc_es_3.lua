@@ -450,6 +450,7 @@ return {
 		{ "Depth {number1}: {text2}{text3}", "Profundidad {number1}: {text2}{text3}" },
 		{ "(gear {text1}{text2})", "(equipo {text1}{text2})" },
 		{ "Zone {number1} {text2}{text3}", "Zona {number1} {text2}{text3}" },
+		{ "{text1} {text2} Set", "{text1} Set {text2}" },
 		{ "👑 Weekly Final Lord reward: Mythic {text1} · {text2} Set · ✦ {text3}!", "👑 Recompensa semanal del Señor Final: {text1} mítico · set {text2} · ✦ {text3}!" },
 		{ "{text1} Trial effect for this dungeon: [{text2}] (Lv.3) — {text3}", "{text1} Efecto de prueba de esta mazmorra: [{text2}] (Nv.3) — {text3}" },
 		{ "Depth {number1} (total {text2}, Unique {text3}, keys {number4}): {text5}", "Profundidad {number1} (total {text2}, único {text3}, llaves {number4}): {text5}" },
