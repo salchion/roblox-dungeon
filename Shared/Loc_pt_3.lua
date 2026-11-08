@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Uses all Tickets (max {number1})", "Usa todos os bilhetes (máximo {number1})" },
+		{ "📍 Field · Best Zone {number1}   ", "📍 Campo · Melhor Zona {number1}" },
+		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "Zona {number1} · Deserto ☠☠☠☠" },
+		{ "🎒 Bag {number1} / {number2}    ✨ Essence {number3}", "🎒 Bolsa {number1} / {number2} ✨ Essência {number3}" },
+		{ "Returning to lobby in {number1}s", "Retornando ao lobby em {number1} segundos" },
+		{ "🔒 Zone {number1} · Desert Sealed", "🔒 Zona {number1} · Deserto Selado" },
+		{ "⚔ Railgun · Rusty Era +{number1}", "⚔ Arma de trilhos · Era enferrujada +{number1}" },
 		{ "★☆☆  Step {number1}/{number2} · Next step", "★☆☆ Passo {number1}/{number2} · Próximo passo" },
 		{ "🔒 Defeat the Zone {number1} lord", "🔒 Derrote o senhor da zona {number1}" },
 		{ "🔒 Unlocks at +{number1} ({number2} to go)", "🔒 Desbloqueia em +{number1} (faltam {number2})" },

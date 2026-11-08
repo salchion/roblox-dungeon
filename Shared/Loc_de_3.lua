@@ -4,6 +4,15 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Crit damage +{number1}%p  (max {number2})", "Krit-Schaden +{number1} %p  (max. {number2})" },
+		{ "★☆  Step {number1}/{number2} · Next step", "★☆ Schritt {number1}/{number2} · Nächster Schritt" },
+		{ "🌋 {number1} Streak — Legendary!", "🌋 {number1} Serie - Legendär!" },
+		{ "Reach character level {number1}", "Erreiche Charakterstufe {number1}" },
+		{ "▼ 👑 First Zone Lord  {number1}m", "▼ 👑 Herr der ersten Zone {number1}m" },
+		{ "Defeat {number1} elite monsters", "Besiege {number1} Elite-Monster" },
+		{ "Defeat {number1} field monsters", "Besiege {number1} Feldmonster" },
+		{ "Pierces up to {number1} enemies", "Durchschlägt bis zu {number1} Gegner" },
+		{ "Loading the land...  {number1}%", "Land wird geladen...  {number1}%" },
 		{ "Defeat the Zone {number1} Lord", "Besiege den Herrscher der Zone {number1}" },
 		{ "{number2} / {number3}   Reward: {number4} G + 🎫 {number5}", "{number2} / {number3} Belohnung: {number4} G + 🎫 {number5}" },
 		{ "{number1} Snowfield · {number2} Volcano", "{number1} Schneefeld · {number2} Vulkan" },

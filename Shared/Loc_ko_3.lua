@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Heals over {number1}s instead of at once · total +{number2}%", "한 번에 대신 {number1}초에 걸쳐 회복 · 합계 +{number2}%" },
+		{ "Spend {number1} stat points (T key / Stats button)", "{number1} 스탯 포인트 사용 (T 키 / 스탯 버튼)" },
+		{ "▶ Next feature: Lv.{number1} 💥 Power  ({number2} lvl · ~{number3} G)", "▶ 다음 기능: 레벨 {number1} 💥 파워 ({number2} 레벨 · ~{number3} G)" },
+		{ "✅ Mission complete! Reward: {number1} G + Tickets {number2}", "✅ 미션 완료! 보상: {number1} G + 티켓 {number2}" },
+		{ "Rocket Launcher  ·  keys {number1}-{number2} switch weapons", "로켓 발사기 · 키 {number1}-{number2}로 무기를 전환하세요" },
 		{ "📅 {number1}-day login streak · Get stronger today!", "📅 {number1}일 연속 로그인 · 오늘 더 강해지세요!" },
 		{ "Each NEAR MISS stack gives +{number1}% more attack", "NEAR MISS 스택마다 공격력이 +{number1}% 더 붙어요" },
 		{ "✦ Unique effect on Mythic gear: <b>{number1}%</b>", "✦ 신화 장비의 유니크 효과: <b>{number1}%</b>" },

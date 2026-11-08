@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💥Explosive Shot {number1} · ⚡Chain Lightning {number2}", "💥爆発ショット {number1} · ⚡チェーンライトニング {number2}" },
+		{ "👑 Lord of Wasteland (Zone {number1}) · Rec. ⚡{number2}", "👑 荒地の支配者（ゾーン {number1}） · レコード ⚡{number2}" },
+		{ "Spell Tome  ·  keys {number1}-{number2} switch weapons", "スペル・トーム　・　キー{number1}-{number2}で武器を切り替える" },
+		{ "Defeat {number1} monsters (dungeons included)", "モンスターを{number1}体倒す(ダンジョン含む)" },
+		{ "🎯 Ready to challenge the Zone {number1} Lord!", "🎯 ゾーン{number1}のロードに挑む準備ができました！" },
+		{ "Gold x{number1} · Tickets {number2} · Boss chest gear {number3}", "ゴールド x{number1} · チケット {number2} · ボス宝箱の装備 {number3}" },
 		{ "Bounces to {number1} nearby enemies (within {number2})", "近くの敵{number1}体に跳ね返ります(範囲{number2}以内)" },
 		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 {number1}体の精霊が{number2}秒間あなたのために戦います！" },
 		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1}秒 · {number3}秒ごとに短剣{number2}本 · 各ダメージ x{number4}" },

@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "ZONE {number1}  ·  Wasteland   ☠☠☠", "Zona {number1} · Tierra Desolada ☠☠☠" },
+		{ "Active {number1} / {number2} slots   (💰 {number3} G)", "{number1} / {number2} espacios activos (💰 {number3} G)" },
+		{ "Dismantled! Essence +{number1}, {number2} G", "¡Desmantelado! Esencia +{number1}, {number2} G" },
+		{ "🎯 Goal: Defeat Zone {number1} Lord", "🎯 Meta: derrotar al señor de la zona {number1}" },
+		{ "Explodes on hit (radius {number1})", "Explota al impactar (radio {number1})" },
+		{ "Not enough gold (need {number1} G)", "Oro insuficiente (se necesitan {number1} G)" },
+		{ "▲ {number1} unspent (T)  ·  {number2} / {number3} XP", "▲ {number1} sin gastar (T)  ·  {number2} / {number3} EXP" },
 		{ "Enter Fever Time {number1} time(s)", "Entra {number1} vez/veces en el Tiempo de fiebre" },
 		{ "Upgrade a gear piece to +{number1}", "Mejora una pieza de equipo a +{number1}" },
 		{ "▲ Better than equipped  +{number1}", "▲ Mejor que lo equipado  +{number1}" },

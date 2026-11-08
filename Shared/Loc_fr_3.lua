@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 Porte du château sombre · Recommandé ⚡{number2}" },
+		{ "Sniper Rifle · Arcane Era +{number1}", "Fusil de sniper · Ère arcanique +{number1}" },
+		{ "Preparing the field...  {number1} / {number2}", "Préparation du champ... {number1} / {number2}" },
+		{ "🌾 Adventure Begins · Rec. ⚡{number2}", "🌾 L'aventure commence · Rec. ⚡{number2}" },
+		{ "Sniper Rifle · Arcane Era +{number3}", "Fusil de sniper · Ère arcanique +{number3}" },
+		{ "ZONE {number1}  ·  Snowfield   ☠☠☠☠☠", "Zone {number1} · Champ de neige ☠☠☠☠☠" },
+		{ "🎁 Boss chest · {number1} gear pieces", "🎁 Coffre de boss · {number1} équipements" },
 		{ "Succeed at upgrading {number1} times", "Réussissez {number1} améliorations" },
 		{ "Attack +{number1}% per point  (max {number2})", "Attaque +{number1}% par point  (max {number2})" },
 		{ "Returning to the field in {number1}s", "Retour sur le terrain dans {number1} s" },
