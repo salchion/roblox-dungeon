@@ -131,8 +131,18 @@ for i = 1, MAX_ROWS do
 end
 
 local function sourceName(source)
-	if source == "Gun" then return "🔫 Gun" end
-	local fixed = { Ult = "🎯 Deadeye", Blast = "💥 Shockwave", Spirit = "🧚 Spirits", Bounce = "🔁 Ricochet", Pierce = "➳ Piercing Beam", PerkBoom = "💥 Explosive Shot", PerkChain = "⚡ Chain Lightning", Other = "❔ Other" }
+	-- 이름은 다른 화면과 같은 출처(Config)에서 가져온다: 스킬 이름이 바뀌어도 미터기가 옛 이름(예: Spirits)으로 남지 않게
+	if source == "Gun" then -- 총 대신 지금 쓰는 무기 이름 (저격 소총 / 마법서 ...)
+		local ok, name = pcall(function()
+			local level = player:GetAttribute("WeaponLevel") or 0
+			local key = Config.ResolveWeaponType(level, player:GetAttribute("WeaponType"))
+			return Config.WeaponTypes[key].Name
+		end)
+		return "🔫 " .. ((ok and name) or "Weapon")
+	end
+	local skill = Config.Skills[source]
+	if typeof(skill) == "table" and skill.Name then return (skill.Icon or "✦") .. " " .. skill.Name end
+	local fixed = { Bounce = "🔁 Ricochet", Pierce = "➳ Piercing Beam", PerkBoom = "💥 Explosive Shot", PerkChain = "⚡ Chain Lightning", Other = "❔ Other" }
 	if fixed[source] then return fixed[source] end
 	if typeof(source) == "string" and string.sub(source, 1, 2) == "U_" then
 		local unique = Config.Uniques[string.sub(source, 3)]
