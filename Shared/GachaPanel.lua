@@ -183,7 +183,7 @@ function M.Init(deps)
 			setTitle.Text = (def.Icon or "✦") .. " " .. def.Name
 			setTitle.TextColor3 = def.Color:Lerp(Color3.new(1, 1, 1), 0.35)
 		else
-			setTitle.Text = "🎲 A random set from your reached zones"
+			setTitle.Text = "🎲 A random set from the zones you've cleared"
 			setTitle.TextColor3 = Color3.fromRGB(230, 210, 255)
 		end
 	end

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Defeat {number1} bosses in one Boss Rush run", "1回のボスラッシュで{number1}人のボスを倒す" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "モンスターとの遭遇数 {number1} / {number2}（ゾーンの領主を含む）" },
 		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 無料入場を使用！(本日残り {number1} / {number2})" },
 		{ "A big blast when it ends (attack x{number1})", "終了時に大爆発（攻撃力x{number1}）" },

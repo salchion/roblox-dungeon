@@ -887,6 +887,7 @@ return {
 		["Smart: weaker Common/Rare"] = "스마트: 약한 일반/레어만",
 		["Auto-salvage"] = "자동 분해",
 		["⚗ Fusion Complete!"] = "⚗ 합성 성공!",
+		["🎲 A random set from the zones you've cleared"] = "🎲 클리어한 구역 중 무작위 세트",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1084,6 +1085,5 @@ return {
 		{ "Each NEAR MISS stack gives +{number1}% more attack", "NEAR MISS 스택마다 공격력이 +{number1}% 더 붙어요" },
 		{ "✦ Unique effect on Mythic gear: <b>{number1}%</b>", "✦ 신화 장비의 유니크 효과: <b>{number1}%</b>" },
 		{ "Auto-equipped the best gear in {number1} slot(s)!", "{number1}칸의 최고 장비를 자동 장착했어요!" },
-		{ "<font color='#d9bd78'>MISSION {number1} / {number2}</font>", "<font color='#d9bd78'>미션 {number1} / {number2}</font>" },
 	},
 }

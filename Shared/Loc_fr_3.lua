@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Gives back {number1} gauge after use", "Rend {number1} de jauge après usage" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Tome de sorts · Ère rouillée +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Porte du palais de glace · Rec. ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zone {number1} · Désert scellé" },

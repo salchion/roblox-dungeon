@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<font color='#d9bd78'>MISSION {number1} / {number2}</font>", "<font color='#d9bd78'>미션 {number1} / {number2}</font>" },
 		{ "<font color='#ffd966'>🎯 Mission {number1}/{number2}</font>", "<font color='#ffd966'>🎯 미션 {number1}/{number2}</font>" },
 		{ "<font color='#9aa0c0'>… and {number1} more</font>", "<font color='#9aa0c0'>… 외 {number1}명</font>" },
 		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• 초당 약 {number1}발 · 화력 {number2} · 사거리 {number3}" },

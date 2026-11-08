@@ -989,7 +989,7 @@ function Gear.Roll(player, forced)
 	-- 뽑기만의 장점: 고른 구역 세트 조각으로 나온다 (필드에서는 그 구역에서 운으로만 나온다). 튜토리얼 뽑기는 제외
 	local reached = math.clamp(math.floor(player:GetAttribute("MaxZone") or 1), 1, Config.Field.ZoneCount)
 	local setZone = not mode and (player:GetAttribute("GachaSet") or 0) or 0
-	if not mode and setZone < 1 then setZone = math.random(reached) end -- 고르지 않으면 도달한 구역 중 하나의 세트가 무작위로 붙는다
+	if not mode and setZone < 1 then setZone = math.random(math.clamp(math.floor(player:GetAttribute("ClearedZone") or 0), 1, reached)) end -- 고르지 않으면 1 ~ 클리어한 가장 깊은 구역 중 하나의 세트 (필드 / 던전과 같은 규칙. 고르기 기능은 그대로)
 	if setZone >= 1 and setZone <= reached and Config.Sets.ZoneKeys[setZone] then
 		item.Set = Config.Sets.ZoneKeys[setZone]
 	end

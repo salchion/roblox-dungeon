@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "NEAR MISS lasts +{number1}s more", "NEAR MISS dura mais {number1}s" },
 		{ "🐾 Unlock your pet! ({number1} G)", "🐾 Desbloqueie seu pet! ({number1} G)" },
 		{ "💪 Zone {number1} Lord: power {number2} / {number3}", "💪 Senhor da zona {number1}: poder {number2} / {number3}" },
 		{ "Crit damage +{number1}%p  (max {number2})", "Dano crítico +{number1}%p  (máx. {number2})" },

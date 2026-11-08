@@ -85,7 +85,7 @@ function Loot.DropFor(player, position, kind, zoneIndex)
 			-- 세트 장비가 붙으면, 어느 구역 세트인지는 "1구역 ~ 내가 클리어한 가장 깊은 구역" 중에서 무작위 (등급은 지금 사냥하는 구역 기준: 깊을수록 신화가 잘 나온다)
 			-- -> 앞 구역 세트를 모으려고 앞 구역으로 돌아갈 필요가 없다. 가장 깊은 곳에서 사냥하는 게 언제나 이득
 			if item.Set then
-				local maxZone = math.clamp(math.max(zoneIndex, player:GetAttribute("ClearedZone") or 0), 1, Config.Field.ZoneCount)
+				local maxZone = math.clamp(player:GetAttribute("ClearedZone") or 0, 1, Config.Field.ZoneCount) -- (클리어한 가장 깊은 구역까지: 8까지 깼으면 1~8, 6까지면 1~6. 필드 / 던전 / 뽑기 같은 규칙)
 				local pick = Config.Sets.ZoneKeys[math.random(1, maxZone)]
 				if pick then item.Set = pick end
 			end

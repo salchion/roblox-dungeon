@@ -1703,9 +1703,10 @@ function Config.Sets.DungeonChance(depth)
 end
 function Config.Sets.DungeonZones(depth, clearedZone)
 	local D = Config.Sets.Dungeon
-	local top = math.min(1 + (math.max(1, depth or 1) - 1) // D.ZoneEvery, clearedZone or 0, Config.Field.ZoneCount)
+	-- 1 ~ 클리어한 가장 깊은 구역 중 무작위 (예전엔 깊이에 따라 최근 3구역만: 필드 / 뽑기와 규칙을 하나로 맞췄다)
+	local top = math.clamp(clearedZone or 0, 1, Config.Field.ZoneCount)
 	local zones = {}
-	for zone = math.max(1, top - D.Spread + 1), top do table.insert(zones, zone) end
+	for zone = 1, top do table.insert(zones, zone) end
 	return zones
 end
 -- 도감: 몬스터 / 구역 군주 / 세트 장비 설명 (몬스터 이름은 MonsterTypes.Defs 와 같다)

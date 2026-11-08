@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "(max {number1})", "(最多 {number1})" },
+		{ "Free {number1}/{number2}", "免费 {number1}/{number2}" },
 		{ "{number1} to go", "还差{number1}" },
 		{ "XP {number1} / {number2}", "经验 {number1} / {number2}" },
 		{ "ZONE {number1}", "区域 {number1}" },

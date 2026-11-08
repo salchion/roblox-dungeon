@@ -746,6 +746,7 @@ return {
 		["Smart: weaker Common/Rare"] = "スマート：弱い一般/レアのみ",
 		["Auto-salvage"] = "自動分解",
 		["⚗ Fusion Complete!"] = "⚗ 合成完了！",
+		["🎲 A random set from the zones you've cleared"] = "🎲 クリアした区域からランダムなセット",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -965,6 +966,5 @@ return {
 		{ "Bounces to {number1} nearby enemies (within {number2})", "近くの敵{number1}体に跳ね返ります(範囲{number2}以内)" },
 		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 {number1}体の精霊が{number2}秒間あなたのために戦います！" },
 		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1}秒 · {number3}秒ごとに短剣{number2}本 · 各ダメージ x{number4}" },
-		{ "Defeat {number1} bosses in one Boss Rush run", "1回のボスラッシュで{number1}人のボスを倒す" },
 	},
 }

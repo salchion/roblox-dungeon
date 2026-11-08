@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Spell Tome · Rusty Era +{number1}", "Tomo de hechizos · Era oxidada +{number1}" },
+		{ "Defeat {number1} Golden Goblin(s)", "Derrota a {number1} duendes dorados" },
 		{ "🔒 Zone {number1} · Volcano Sealed", "🔒 Zona {number1} · Volcán sellado" },
 		{ "Lord of Meadow  ·  Zone {number1}", "Señor del prado · Zona {number1}" },
 		{ "Idle Accrual Cap: {number1} Hours", "Límite de acumulación inactiva: {number1} horas" },
