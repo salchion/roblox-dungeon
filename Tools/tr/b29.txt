@@ -347,3 +347,27 @@
 2388¦🎁 報酬¦🎁 Belohnungen¦🎁 Récompenses¦🎁 Recompensas¦🎁 Recompensas¦🎁 奖励¦🎁 보상
 2389¦深淵ダンジョン¦Die Tiefen¦Les Profondeurs¦Las Profundidades¦As Profundezas¦深渊地牢¦심연 던전
 2390¦毎回ランダムなダンジョン：ゴブリンの洞窟・氷の要塞・炎の神殿。深く潜るほど敵は強く、宝箱は豪華に！¦Jeder Lauf führt in einen zufälligen Dungeon: Goblinhöhle, Eisfestung oder Flammentempel. Je tiefer, desto stärkere Monster und bessere Truhen!¦Un donjon aléatoire à chaque partie : Grotte gobeline, Forteresse de glace ou Temple de flammes. Plus profond = monstres plus forts et meilleurs coffres !¦Cada partida, una mazmorra al azar: Cueva Goblin, Fortaleza de Hielo o Templo de Llamas. ¡Más profundo, monstruos más fuertes y mejores cofres!¦Cada partida, uma masmorra aleatória: Caverna Goblin, Fortaleza de Gelo ou Templo das Chamas. Quanto mais fundo, monstros mais fortes e baús melhores!¦每次随机一座地牢：哥布林洞穴、冰之要塞或烈焰神殿。越深怪物越强，宝箱越好！¦매번 무작위 던전: 고블린 동굴 · 얼음 성채 · 화염 신전. 깊이 내려갈수록 몬스터는 강해지고 상자는 좋아져요!
+2391¦⚔ スキル強化ができます（{text1} G）¦⚔ Ein Skill-Upgrade ist bereit ({text1} G)¦⚔ Une amélioration de compétence est prête ({text1} G)¦⚔ Mejora de habilidad lista ({text1} G)¦⚔ Melhoria de habilidade pronta ({text1} G)¦⚔ 可以升级技能了（{text1} G）¦⚔ 스킬 강화를 할 수 있어요 ({text1} G)
+2392¦🛡 空の装備スロット：¦🛡 Leerer Ausrüstungsplatz:¦🛡 Emplacement d'équipement vide :¦🛡 Ranura de equipo vacía:¦🛡 Espaço de equipamento vazio:¦🛡 空装备栏：¦🛡 빈 장비 칸:
+2393¦🐾 ペットを解放しよう！（{text1} G）¦🐾 Schalte dein Haustier frei! ({text1} G)¦🐾 Débloque ton familier ! ({text1} G)¦🐾 ¡Desbloquea tu mascota! ({text1} G)¦🐾 Desbloqueie seu pet! ({text1} G)¦🐾 解锁你的宠物！（{text1} G）¦🐾 펫을 열어 보세요! ({text1} G)
+2394¦🔀 進む道を選ぼう：¦🔀 Wähle einen Pfad für¦🔀 Choisis une voie pour¦🔀 Elige un camino para¦🔀 Escolha um caminho para¦🔀 选择路线：¦🔀 갈래를 고르세요:
+2395¦大地を読み込み中...  {number1}%¦Land wird geladen...  {number1}%¦Chargement du monde...  {number1}%¦Cargando el mundo...  {number1}%¦Carregando o mundo...  {number1}%¦正在加载大地...  {number1}%¦땅을 불러오는 중...  {number1}%
+2396¦{text1} {number2}部位  {text3}¦{text1} {number2} Teile  {text3}¦{text1} {number2} pièces  {text3}¦{text1} {number2} piezas  {text3}¦{text1} {number2} peças  {text3}¦{text1} {number2}件  {text3}¦{text1} {number2}부위  {text3}
+2397¦成功率 {number1}%¦Erfolg {number1}%¦Réussite {number1}%¦Éxito {number1}%¦Sucesso {number1}%¦成功率 {number1}%¦성공 {number1}%
+2398¦🔨 今すぐ強化！¦🔨 Jetzt verbessern!¦🔨 Améliorer maintenant !¦🔨 ¡Mejorar ahora!¦🔨 Melhorar agora!¦🔨 立即强化！¦🔨 지금 강화!
+2399¦🔨 強化を開く¦🔨 Verbesserung öffnen¦🔨 Ouvrir l'amélioration¦🔨 Abrir mejora¦🔨 Abrir melhoria¦🔨 打开强化¦🔨 강화 열기
+2400¦町で強化¦Im Dorf verbessern¦Améliorer en ville¦Mejorar en el pueblo¦Melhorar na cidade¦在城镇强化¦마을에서 강화
+2401¦現在¦Jetzt¦Actuel¦Ahora¦Agora¦当前¦지금
+2402¦空きスロット {number1}個！¦{number1} leere(r) Platz/Plätze!¦{number1} emplacement(s) vide(s) !¦¡{number1} ranura(s) vacía(s)!¦{number1} espaço(s) vazio(s)!¦{number1}个空栏位！¦빈 칸 {number1}개!
+2403¦空きスロット {number1}個¦{number1} leere(r) Platz/Plätze¦{number1} emplacement(s) vide(s)¦{number1} ranura(s) vacía(s)¦{number1} espaço(s) vazio(s)¦{number1}个空栏位¦빈 칸 {number1}개
+2404¦滅びよ。¦Vergehe.¦Péris.¦Perece.¦Pereça.¦灭亡吧。¦사라져라.
+2405¦{number1}秒！報酬x{number2}、コンボで最大x{number3}！¦{number1} Sekunden! Belohnungen x{number2}, Combo bis zu x{number3}!¦{number1} secondes ! Récompenses x{number2}, combo jusqu'à x{number3} !¦¡{number1} segundos! Recompensas x{number2}, el combo suma hasta x{number3}!¦{number1} segundos! Recompensas x{number2}, o combo soma até x{number3}!¦{number1}秒！奖励x{number2}，连击最高x{number3}！¦{number1}초! 보상 x{number2}, 콤보로 최대 x{number3}!
+2406¦レベルが足りません。（このダンジョンはLv.{number1}以上）¦Dein Level ist zu niedrig. (Dieser Dungeon braucht Lv.{number1}+)¦Ton niveau est trop bas. (Ce donjon requiert Nv.{number1}+)¦Tu nivel es muy bajo. (Esta mazmorra requiere Nv.{number1}+)¦Seu nível é muito baixo. (Esta masmorra exige Nv.{number1}+)¦等级不足。（此地牢需要Lv.{number1}以上）¦레벨이 너무 낮아요. (이 던전은 Lv.{number1} 이상)
+2407¦ボスへのダメージ +{number1}%¦Bossschaden +{number1}%¦Dégâts aux boss +{number1}%¦Daño a jefes +{number1}%¦Dano a chefes +{number1}%¦首领伤害 +{number1}%¦보스 피해 +{number1}%
+2408¦ℹ 仕組み¦ℹ So funktioniert's¦ℹ Fonctionnement¦ℹ Cómo funciona¦ℹ Como funciona¦ℹ 说明¦ℹ 안내
+2409¦道を変更：{text1} G¦Pfad wechseln: {text1} G¦Changer de voie : {text1} G¦Cambiar camino: {text1} G¦Trocar caminho: {text1} G¦更换路线：{text1} G¦갈래 바꾸기: {text1} G
+2410¦強化 {text1} G¦Verbessern {text1} G¦Améliorer {text1} G¦Mejorar {text1} G¦Melhorar {text1} G¦强化 {text1} G¦강화 {text1} G
+2411¦必要時間 {text1} · 💰 {text2} G¦Benötigte Zeit {text1} · 💰 {text2} G¦Temps requis {text1} · 💰 {text2} G¦Tiempo necesario {text1} · 💰 {text2} G¦Tempo necessário {text1} · 💰 {text2} G¦所需时间 {text1} · 💰 {text2} G¦필요 시간 {text1} · 💰 {text2} G
+2412¦⬆ レベルアップ {text1} G¦⬆ Level-Up {text1} G¦⬆ Monter de niveau {text1} G¦⬆ Subir de nivel {text1} G¦⬆ Subir de nível {text1} G¦⬆ 升级 {text1} G¦⬆ 레벨 업 {text1} G
+2413¦経験値 {number1} / {number2}¦EP {number1} / {number2}¦XP {number1} / {number2}¦XP {number1} / {number2}¦XP {number1} / {number2}¦经验 {number1} / {number2}¦경험치 {number1} / {number2}
+2414¦{number1}日 {number2}時間¦{number1} T {number2} Std¦{number1} j {number2} h¦{number1} d {number2} h¦{number1} d {number2} h¦{number1}天 {number2}小时¦{number1}일 {number2}시간
