@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Tome de sorts · Ère rouillée +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Porte du palais de glace · Rec. ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zone {number1} · Désert scellé" },
 		{ "Auto-loot radius grows to {number1}", "Le rayon de butin automatique augmente à {number1}" },

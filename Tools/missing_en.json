@@ -2444,5 +2444,6 @@
 "Smart: weaker Common/Rare",
 "Auto-salvage",
 "⚙ Rule: {text1} (change in Menu → Gear)",
-"🎒 Bag full: dismantled {number1} gear that your other gear beats (Essence +{number2}, {number3} G)"
+"🎒 Bag full: dismantled {number1} gear that your other gear beats (Essence +{number2}, {number3} G)",
+"⚗ Fusion Complete!"
 ]

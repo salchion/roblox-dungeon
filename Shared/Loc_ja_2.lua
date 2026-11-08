@@ -745,6 +745,7 @@ return {
 		["Salvage Epic & below"] = "エピック以下を分解",
 		["Smart: weaker Common/Rare"] = "スマート：弱い一般/レアのみ",
 		["Auto-salvage"] = "自動分解",
+		["⚗ Fusion Complete!"] = "⚗ 合成完了！",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },

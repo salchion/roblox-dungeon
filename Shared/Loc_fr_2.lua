@@ -628,6 +628,7 @@ return {
 		["Salvage Epic & below"] = "Recycler Épique et moins",
 		["Smart: weaker Common/Rare"] = "Intelligent : Commun/Rare plus faibles",
 		["Auto-salvage"] = "Recyclage auto",
+		["⚗ Fusion Complete!"] = "⚗ Fusion réussie !",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -936,6 +937,5 @@ return {
 		{ "Zone {number1} monsters {number2} / {number3} defeated", "Zone {number1} : {number2} / {number3} monstres vaincus" },
 		{ "◆ Damage Taken Reduction +{number1}%", "◆ Réduction des dégâts subis +{number1}%" },
 		{ "Gives back {number1} gauge after use", "Rend {number1} de jauge après usage" },
-		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Tome de sorts · Ère rouillée +{number1}" },
 	},
 }

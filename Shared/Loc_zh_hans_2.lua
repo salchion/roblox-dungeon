@@ -498,6 +498,7 @@ return {
 		["Salvage Epic & below"] = "分解史诗及以下",
 		["Smart: weaker Common/Rare"] = "智能：较弱的普通/稀有",
 		["Auto-salvage"] = "自动分解",
+		["⚗ Fusion Complete!"] = "⚗ 合成完成！",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1100,6 +1101,5 @@ return {
 		{ "⏱ {number1} min", "⏱ {number1} 分钟" },
 		{ "(max {number1})", "(最多 {number1})" },
 		{ "Free {number1}/{number2}", "免费 {number1}/{number2}" },
-		{ "{number1} to go", "还差{number1}" },
 	},
 }

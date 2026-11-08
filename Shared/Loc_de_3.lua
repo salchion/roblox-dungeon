@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number5} Snowfield · {number6} Volcano", "{number5} Schneefeld · {number6} Vulkan" },
 		{ "ZONE {number1}  ·  Forest   ☠☠", "Zone {number1} · Wald ☠☠" },
 		{ "{number1} upgrades! {number2} succeeded", "{number1} Verbesserungen! {number2} erfolgreich" },
 		{ "Free entries {number1} · Keys {number2}", "Gratis-Eintritte {number1} · Schlüssel {number2}" },

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🐾 Unlock your pet! ({number1} G)", "🐾 Desbloqueie seu pet! ({number1} G)" },
 		{ "💪 Zone {number1} Lord: power {number2} / {number3}", "💪 Senhor da zona {number1}: poder {number2} / {number3}" },
 		{ "Crit damage +{number1}%p  (max {number2})", "Dano crítico +{number1}%p  (máx. {number2})" },
 		{ "★☆  Step {number1}/{number2} · Next step", "★☆ Passo {number1}/{number2} · Próximo passo" },

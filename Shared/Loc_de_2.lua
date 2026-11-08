@@ -568,6 +568,7 @@ return {
 		["Salvage Epic & below"] = "Episch & darunter zerlegen",
 		["Smart: weaker Common/Rare"] = "Smart: schwächere Gewöhnl./Selten",
 		["Auto-salvage"] = "Auto-Zerlegen",
+		["⚗ Fusion Complete!"] = "⚗ Fusion abgeschlossen!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -950,6 +951,5 @@ return {
 		{ "{number1} Snowfield · {number2} Volcano", "{number1} Schneefeld · {number2} Vulkan" },
 		{ "Railgun · Rusty Era +{number1}", "Schienenkanone · Rostige Ära +{number1}" },
 		{ "📍 Field (best: Zone {number11})", "📍 Feld (am besten: Zone {number11})" },
-		{ "{number5} Snowfield · {number6} Volcano", "{number5} Schneefeld · {number6} Vulkan" },
 	},
 }

@@ -566,8 +566,19 @@ function Inventory.Fuse(player, rarity)
 	state.Essence -= cost
 	local slotKey = sameSlot and slots[1] or slots[math.random(#slots)]
 	local newItem = Inventory.NewItem(slotKey, rarity + 1, 0, nil, I.FuseUniqueChance)
-	Inventory.Add(player, newItem)
+	newItem.NoCard = true -- (아래 뽑기 카드 연출로 보여 준다: 획득 카드가 겹쳐 뜨지 않게)
+	local before = state.Equipped[slotKey] and state.Items[state.Equipped[slotKey]]
+	newItem.Level = state.SlotLevels[slotKey] or 0
+	local better
+	if before and Config.GetItemScore(newItem) > Config.GetItemScore(before) then
+		better = math.max(1, math.floor((Config.GetItemScore(newItem) / math.max(1, Config.GetItemScore(before)) - 1) * 100 + 0.5))
+	end
+	local status = Inventory.Add(player, newItem)
 	Inventory.Push(player)
+	-- 결과는 장비 뽑기와 같은 카드 연출 (GachaReveal): 카드가 뒤집히며 등급색 빛 / 높은 등급일수록 화려하게
+	Remotes.Gear:FireClient(player, "Result", { Ok = true, Message = "", Fusion = true, Roll = {
+		Slot = slotKey, Rarity = newItem.Rarity, Name = Inventory.ItemName(newItem), Equipped = status == "Equipped", Status = status, Gold = 0, Better = better,
+	} })
 	return true, string.format("⚗ Fused %d %s → %s %s!", need, G.RarityNames[rarity], G.RarityNames[rarity + 1], Inventory.ItemName(newItem))
 end
 

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} to go", "还差{number1}" },
 		{ "XP {number1} / {number2}", "经验 {number1} / {number2}" },
 		{ "ZONE {number1}", "区域 {number1}" },
 		{ "{number1} more", "还差 {number1}" },
