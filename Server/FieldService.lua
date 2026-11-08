@@ -708,6 +708,8 @@ local function buildWorld()
 	-- 구역별 분위기 장식 (충돌 없는 장식 + 바닥 무늬, 실패해도 게임은 계속)
 	local okDecor, decorErr = pcall(function() require(script.Parent:WaitForChild("FieldDecor")).Build(worldFolder, { FloorAt = floorAt, ZoneBounds = zoneBounds, Width = F.Width, Blocked = propBlocked, Baffles = baffleRects }) end)
 	if not okDecor then warn("FieldDecor failed: " .. tostring(decorErr)) end
+	local okQ, qErr = pcall(function() require(script.Parent:WaitForChild("FieldQuality", 5)).Build(worldFolder, { FloorAt = floorAt, ZoneBounds = zoneBounds, Width = F.Width, Baffles = baffleRects }) end) -- 1~2구역 화질 올리기 (절벽 / 큰 나무 / 먼 산 / 공중 연출)
+	if not okQ then warn("FieldQuality failed: " .. tostring(qErr)) end
 end
 
 ------------------------------------------------------------
