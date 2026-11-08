@@ -2965,20 +2965,32 @@ local function spawnEvent(zone)
 		Beam = beam,
 	}
 	monsters[part] = data
-	-- 움직이지 않는 대신 바닥 전체를 압박하는 빡센 패턴 (FieldBossPatterns.ColossusAttack). 먼저 때려야 깨어나고, 10초 동안 안 맞으면 다시 잠든다
+	-- 바닥 전체를 압박하는 빡센 패턴 (FieldBossPatterns.ColossusAttack). 먼저 때려야 깨어나고, 10초 동안 안 맞으면 다시 잠든다. 깨어 있으면 천천히 걸어온다 (아래 반복문)
 	data.Rooted = true
 	-- 움직이지는 않아도 살아 있어 보이게: 깨어 있으면 가장 가까운 플레이어 쪽으로 천천히 몸을 돌리고,
 	-- 패턴을 쓰기 직전에는 몸을 들었다가 내리찍는다 (FieldBossPatterns 가 data.CastLift / data.CastLean 을 바꾼다)
 	task.spawn(function()
 		local yaw = 0
+		local origin = data.Home -- 태어난 자리: 이 둘레(반경 90) 안에서만 걸어 다닌다
+		local half = stats.Size / 2
 		while monsters[part] == data and part.Parent do
 			local target = data.Aggro and nearestFieldPlayer(part.Position)
 			if target then
 				local d = target.Position - data.Home
-				if Vector3.new(d.X, 0, d.Z).Magnitude > 1 then
+				local flatD = Vector3.new(d.X, 0, d.Z)
+				if flatD.Magnitude > 1 then
 					local want = math.atan2(-d.X, -d.Z)
 					local diff = (want - yaw + math.pi) % (2 * math.pi) - math.pi
 					yaw += diff * 0.12
+				end
+				-- 깨어 있으면 가장 가까운 플레이어 쪽으로 천천히 걸어온다 (제자리에 서 있기만 하던 것). 패턴 기 모으는 중에는 멈춘다
+				if flatD.Magnitude > half + 16 and (data.CastLift or 0) == 0 then
+					local step = flatD.Unit * (stats.Speed or 7) * 0.05
+					local nx, nz = data.Home.X + step.X, data.Home.Z + step.Z
+					local fromOrigin = Vector3.new(nx - origin.X, 0, nz - origin.Z).Magnitude
+					if fromOrigin <= 90 and zoneOfX(nx) == zone and walkableAt(nx, nz, half * 0.6) and not isSafe(Vector3.new(nx, 0, nz)) then
+						data.Home = Vector3.new(nx, floorAt(nx) + half, nz)
+					end
 				end
 			end
 			part.CFrame = CFrame.new(data.Home + Vector3.new(0, data.CastLift or 0, 0)) * CFrame.Angles(0, yaw, 0) * CFrame.Angles(data.CastLean or 0, 0, 0)
