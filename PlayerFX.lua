@@ -380,6 +380,7 @@ end
 -- NEAR MISS: 아슬아슬하게 피했을 때 시야가 순간 좁아지며(줌) 화면이 청록으로 번쩍이고 큰 글자가 튀어나온다
 -- (Roblox 는 게임 전체를 느리게 만들 수 없어서, 슬로모션 대신 줌 + 색 번쩍임으로 "시간이 멈칫"하는 느낌을 낸다)
 do
+	local NearMissBanner = {} -- 지금 떠 있는 NEAR MISS 글자 (새로 터지면 지운다)
 	local Lighting = game:GetService("Lighting")
 	local pulse = Lighting:FindFirstChild("NearMissPulse") or Instance.new("ColorCorrectionEffect")
 	pulse.Name = "NearMissPulse"
@@ -414,24 +415,31 @@ do
 				end
 			end)
 		end
+		-- 화면 위쪽 알림(가운데 위 160px 아래)과 겹치지 않게 조금 아래(화면 37%)에 띄우고, 연속으로 터지면 이전 글자는 바로 지운다 (여러 장이 겹쳐 보였다).
+		-- 설명 줄은 처음 몇 번만 (연속 x3 부터는 큰 글자 하나만, 크기도 조금 작게)
+		for _, old in ipairs(NearMissBanner) do if old.Parent then old:Destroy() end end
+		table.clear(NearMissBanner)
+		local big = streak <= 2
 		local text = makeLabel({
-			Size = UDim2.new(0, 520, 0, 70), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.3, 0),
-			Text = streak > 1 and string.format("⚡ NEAR MISS!  x%d", streak) or "⚡ NEAR MISS!", TextSize = 39, Font = Enum.Font.GothamBlack,
+			Size = UDim2.new(0, 520, 0, 60), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.37, 0),
+			Text = streak > 1 and string.format("⚡ NEAR MISS!  x%d", streak) or "⚡ NEAR MISS!", TextSize = big and 36 or 28, Font = Enum.Font.GothamBlack,
 			TextColor3 = Color3.fromRGB(120, 255, 255), TextStrokeTransparency = 0, ZIndex = 60,
 		}, gui)
 		local sub = makeLabel({
-			Size = UDim2.new(0, 520, 0, 28), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.3, 46),
-			Text = "Dead Eye gauge +  ·  Attack power keeps rising!", TextSize = 15, Font = Enum.Font.GothamBold,
+			Size = UDim2.new(0, 520, 0, 24), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.37, 38),
+			Text = big and "Dead Eye gauge +  ·  Attack power keeps rising!" or "", TextSize = 14, Font = Enum.Font.GothamBold,
 			TextColor3 = Color3.fromRGB(255, 240, 160), TextStrokeTransparency = 0, ZIndex = 60,
 		}, gui)
-		text.Size = UDim2.new(0, 340, 0, 46)
-		TweenService:Create(text, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.new(0, 520, 0, 70) }):Play()
+		NearMissBanner[1], NearMissBanner[2] = text, sub
+		text.Size = UDim2.new(0, 340, 0, 40)
+		TweenService:Create(text, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.new(0, 520, 0, 60) }):Play()
 		task.delay(0.9, function()
-			TweenService:Create(text, TweenInfo.new(0.35), { TextTransparency = 1, TextStrokeTransparency = 1, Position = UDim2.new(0.5, 0, 0.26, 0) }):Play()
+			if not text.Parent then return end
+			TweenService:Create(text, TweenInfo.new(0.35), { TextTransparency = 1, TextStrokeTransparency = 1, Position = UDim2.new(0.5, 0, 0.34, 0) }):Play()
 			TweenService:Create(sub, TweenInfo.new(0.35), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
 			task.wait(0.4)
-			text:Destroy()
-			sub:Destroy()
+			if text.Parent then text:Destroy() end
+			if sub.Parent then sub:Destroy() end
 		end)
 	end)
 end

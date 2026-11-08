@@ -60,7 +60,7 @@ function NearMiss.Award(player, root, scoreFn)
 	local rift = Meta.GetRift(player) -- 처음 한 번만 NEAR MISS 설명 카드를 띄운다 (저장됨)
 	local firstTime = rift ~= nil and not rift.Tip
 	if rift then rift.Tip = true end
-	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), st.Stacks > 1 and string.format("NEAR MISS! x%d", st.Stacks) or "NEAR MISS!", Color3.fromRGB(120, 255, 255))
+	-- (캐릭터 머리 위 "NEAR MISS! x10" 글자는 뺐다: 화면 가운데 큰 배너와 같은 말이 두 번 떠서 피해 숫자 / 알림과 겹쳤다)
 	Remotes.Banner:FireClient(player, "NearMiss", { Streak = st.Stacks, First = firstTime })
 end
 
