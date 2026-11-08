@@ -1620,6 +1620,10 @@ Config.Inventory = {
 	ScrapEssence = { 1, 3, 8, 20, 60 },          -- 등급별 분해 시 에센스
 	ScrapGold = { 20, 60, 200, 800, 3000 },      -- 등급별 분해 시 골드
 	RerollEssence = { 5, 12, 30, 80, 200 },      -- 등급별 옵션 재굴림 비용(에센스)
+	-- 합성: 같은 등급 장비 N개 -> 한 단계 위 등급 1개 (남는 장비의 소모처). 세트 / 유니크 / 착용 중인 장비는 재료로 쓰지 않는다
+	FuseNeed = { 3, 3, 3, 4 },                   -- 재료 개수 (일반 / 레어 / 에픽 / 전설 -> 다음 등급)
+	FuseEssence = { 5, 15, 40, 150 },            -- 합성 비용(에센스)
+	FuseUniqueChance = 0.08,                     -- 합성으로 신화가 나오면 유니크가 붙을 확률 (던전 상자보다 낮게)
 	AffixCount = { 0, 1, 2, 3, 4 },              -- 등급별 랜덤 옵션 개수
 	AffixRarityScale = { 1, 1.3, 1.7, 2.2, 3.0 },-- 등급별 옵션 수치 배율
 	AutoScrapNames = { [0] = "Off", "Common or lower", "Rare or lower", "Epic or lower", "Smart (Recommended)" },

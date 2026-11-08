@@ -877,6 +877,9 @@ return {
 		["Slaughter Wave"] = "학살의 파동",
 		["Lucky Star Chance"] = "행운의 별 확률",
 		["Sunder"] = "균열",
+		["⚗ Fuse"] = "⚗ 합성",
+		["same rarity"] = "같은 등급",
+		["That rarity can't be fused."] = "그 등급은 합성할 수 없어요.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1079,6 +1082,5 @@ return {
 		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• 초당 약 {number1}발 · 화력 {number2} · 사거리 {number3}" },
 		{ "Damage +{number1}% on a single target: for bosses", "단일 대상 피해 +{number1}%: 보스용" },
 		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}!", "{number1}초! 보상 x{number2}, 콤보로 최대 x{number3}!" },
-		{ "🔓 You can now run {number1} set effects at once!", "🔓 이제 세트 효과를 한 번에 {number1}개 쓸 수 있어요!" },
 	},
 }

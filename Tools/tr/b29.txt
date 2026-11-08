@@ -392,3 +392,11 @@
 2428¦ラッキースター確率¦Glücksstern-Chance¦Chance d'Étoile chanceuse¦Probabilidad de Estrella de la suerte¦Chance de Estrela da Sorte¦幸运星概率¦행운의 별 확률
 2429¦亀裂¦Zerschmettern¦Fracture¦Fractura¦Rachadura¦破甲¦균열
 1880¦シールド¦Schild¦Bouclier¦Escudo¦Escudo¦护盾¦보호막
+2430¦⚗ 合成¦⚗ Fusion¦⚗ Fusion¦⚗ Fusión¦⚗ Fusão¦⚗ 合成¦⚗ 합성
+2431¦同じ等級¦gleiche Seltenheit¦même rareté¦misma rareza¦mesma raridade¦同等级¦같은 등급
+2432¦所持 {number1} · ✨{number2}¦{number1} im Besitz · ✨{number2}¦{number1} possédé(s) · ✨{number2}¦{number1} en posesión · ✨{number2}¦{number1} em posse · ✨{number2}¦拥有 {number1} · ✨{number2}¦보유 {number1} · ✨{number2}
+2433¦{text1} x{number2} → {text3}¦{text1} x{number2} → {text3}¦{text1} x{number2} → {text3}¦{text1} x{number2} → {text3}¦{text1} x{number2} → {text3}¦{text1} x{number2} → {text3}¦{text1} x{number2} → {text3}
+2434¦⚗ {text2} {number1}個を合成 → {text3} {text4}！¦⚗ {number1} {text2} fusioniert → {text3} {text4}!¦⚗ {number1} {text2} fusionnés → {text3} {text4} !¦⚗ ¡{number1} {text2} fusionados → {text3} {text4}!¦⚗ {number1} {text2} fundidos → {text3} {text4}!¦⚗ 合成了{number1}个{text2} → {text3} {text4}！¦⚗ {text2} {number1}개 합성 → {text3} {text4}!
+2435¦合成には{text2}が{number1}個必要（所持 {number3}）¦Zum Fusionieren brauchst du {number1} {text2} (du hast {number3})¦Il faut {number1} objets {text2} pour fusionner (tu en as {number3})¦Necesitas {number1} objetos {text2} para fusionar (tienes {number3})¦Precisa de {number1} itens {text2} para fundir (você tem {number3})¦合成需要{number1}个{text2}（拥有{number3}）¦합성하려면 {text2} 장비 {number1}개가 필요해요 (보유 {number3})
+2436¦エッセンスが足りません（必要 {number1}）¦Nicht genug Essenz (benötigt {number1})¦Pas assez d'Essence (il faut {number1})¦No tienes suficiente Esencia (necesitas {number1})¦Essência insuficiente (precisa de {number1})¦精华不足（需要{number1}）¦에센스가 부족해요 (필요 {number1})
+2437¦その等級は合成できません。¦Diese Seltenheit kann nicht fusioniert werden.¦Cette rareté ne peut pas être fusionnée.¦Esa rareza no se puede fusionar.¦Essa raridade não pode ser fundida.¦该等级无法合成。¦그 등급은 합성할 수 없어요.

@@ -619,6 +619,9 @@ return {
 		["Slaughter Wave"] = "Onde de massacre",
 		["Lucky Star Chance"] = "Chance d'Étoile chanceuse",
 		["Sunder"] = "Fracture",
+		["⚗ Fuse"] = "⚗ Fusion",
+		["same rarity"] = "même rareté",
+		["That rarity can't be fused."] = "Cette rareté ne peut pas être fusionnée.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -932,7 +935,5 @@ return {
 		{ "Auto-loot radius grows to {number1}", "Le rayon de butin automatique augmente à {number1}" },
 		{ "ZONE {number1}  ·  Volcano   ☠☠☠☠☠☠", "Zone {number1} · Volcan ☠☠☠☠☠☠" },
 		{ "⚔ Spell Tome · Rusty Era +{number10}", "⚔ Tome de sorts · Ère rouillée +{number10}" },
-		{ "🔒 Zone {number1} · Darklands Sealed", "🔒 Zone {number1} · Terres sombres scellées" },
-		{ "Zone {number1} · Lightning Strike  ", "Zone {number1} · Coup de foudre" },
 	},
 }

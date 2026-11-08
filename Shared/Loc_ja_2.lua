@@ -736,6 +736,9 @@ return {
 		["Slaughter Wave"] = "殺戮の波動",
 		["Lucky Star Chance"] = "ラッキースター確率",
 		["Sunder"] = "亀裂",
+		["⚗ Fuse"] = "⚗ 合成",
+		["same rarity"] = "同じ等級",
+		["That rarity can't be fused."] = "その等級は合成できません。",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -960,6 +963,5 @@ return {
 		{ "A big blast when it ends (attack x{number1})", "終了時に大爆発（攻撃力x{number1}）" },
 		{ "{number1}s invincible, but healing is halved", "{number1}秒間無敵、ただし回復量は半分" },
 		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 新しい武器：スペル・トーム - {number1}を押してください！" },
-		{ "Gacha_Pop{number1}  Gacha result: Legendary", "Gacha_Pop{number1} ガチャ結果：レジェンダリー" },
 	},
 }

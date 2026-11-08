@@ -2428,5 +2428,13 @@
 "Cooldown per Kill",
 "Slaughter Wave",
 "Lucky Star Chance",
-"Sunder"
+"Sunder",
+"⚗ Fuse",
+"same rarity",
+"{number1} owned · ✨{number2}",
+"{text1} x{number2} → {text3}",
+"⚗ Fused {number1} {text2} → {text3} {text4}!",
+"Need {number1} {text2} items to fuse (you have {number3})",
+"Not enough Essence (need {number1})",
+"That rarity can't be fused."
 ]

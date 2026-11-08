@@ -559,6 +559,9 @@ return {
 		["Slaughter Wave"] = "Schlachtwelle",
 		["Lucky Star Chance"] = "Glücksstern-Chance",
 		["Sunder"] = "Zerschmettern",
+		["⚗ Fuse"] = "⚗ Fusion",
+		["same rarity"] = "gleiche Seltenheit",
+		["That rarity can't be fused."] = "Diese Seltenheit kann nicht fusioniert werden.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -884,6 +887,7 @@ return {
 		{ "Fires {number1} pellets in a spread", "Feuert {number1} Schrotkugeln im Fächer ab" },
 		{ "You can afford it now ({number1} G)", "Jetzt bezahlbar ({number1} G)" },
 		{ "⭐ Legendary guaranteed in {number1}", "⭐ Legendär garantiert in {number1}" },
+		{ "Not enough Essence (need {number1})", "Nicht genug Essenz (benötigt {number1})" },
 		{ "★★★  Step {number1}/{number2} · Higher step", "★★★ Schritt {number1}/{number2} · Höherer Schritt" },
 		{ "★★☆  Step {number1}/{number2} · Higher step", "★★☆ Schritt {number1}/{number2} · Höherer Schritt" },
 		{ "Spell Tome · Mythic Era +{number3}", "Zauberbuch · Mythische Ära +{number3}" },
@@ -946,9 +950,5 @@ return {
 		{ "Loading the land...  {number1}", "Lade das Land...  {number1}" },
 		{ "Double Shot chance +{number1}%", "Doppelschuss-Chance +{number1}%" },
 		{ "🔁 Path changed! (-{number1} G)", "🔁 Pfad gewechselt! (-{number1} G)" },
-		{ "ZONE {number1}  ·  Meadow   ☠", "Zone {number1} · Wiese ☠" },
-		{ "Luck Booster ({number1} hour)", "Glück-Booster ({number1} Stunde)" },
-		{ "Idle Booster ({number1} hour)", "Inaktiv-Booster ({number1} Stunde)" },
-		{ "Hit the dummy {number1} times", "Schlage den Dummy {number1} Mal" },
 	},
 }

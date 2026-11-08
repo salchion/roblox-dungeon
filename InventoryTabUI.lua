@@ -559,6 +559,28 @@ local function buildInventoryTab(state)
 	-- 가방 줄: 제목 (버튼 3개는 맨 위 버튼 줄로 옮겼다)
 	local bagHeader = newRow(34, Color3.fromRGB(26, 28, 42))
 	rowText(bagHeader, "<font color='#e1c476'><b>🎒 Bag — tap a slot to see details above</b></font>", 14)
+	-- 합성: 남는 같은 등급 장비 3개(전설은 4개) + 에센스 -> 한 단계 위 등급 1개 (세트 / 유니크 / 착용 중은 재료로 안 쓴다)
+	do
+		local I = Config.Inventory
+		local fuseRow = newRow(48, Color3.fromRGB(30, 26, 46))
+		makeLabel({ Size = UDim2.new(0, 92, 1, 0), Position = UDim2.new(0, 10, 0, 0), RichText = true, TextXAlignment = Enum.TextXAlignment.Left, TextSize = 12, Font = Enum.Font.GothamBlack,
+			Text = "<font color='#c9a6ff'>⚗ Fuse</font>\n<font size='10' color='#9a94b8'>same rarity</font>" }, fuseRow)
+		local have = state.Fusable or {}
+		for r = 1, 4 do
+			local need, cost = I.FuseNeed[r], I.FuseEssence[r]
+			local count = have[r] or 0
+			local ready = count >= need and (state.Essence or 0) >= cost
+			local fromC, toC = Config.Gear.RarityColors[r], Config.Gear.RarityColors[r + 1]
+			local button = makeButton({
+				Size = UDim2.new(0.25, -32, 0, 38), Position = UDim2.new((r - 1) * 0.25, 100 - (r - 1) * 24, 0.5, -19), RichText = true, TextSize = 11, Font = Enum.Font.GothamBold,
+				Text = string.format("<font color='#%s'>%s</font> x%d → <font color='#%s'><b>%s</b></font>\n<font size='10' color='#cfd6e6'>%d owned · ✨%d</font>", fromC:ToHex(), Config.Gear.RarityNames[r], need, toC:ToHex(), Config.Gear.RarityNames[r + 1], count, cost),
+				BackgroundColor3 = ready and Color3.fromRGB(96, 64, 160) or Color3.fromRGB(52, 48, 66), AutoButtonColor = ready,
+			}, fuseRow, function()
+				if ready then Remotes.Inventory:FireServer("Fuse", r) end
+			end)
+			button.TextTransparency = ready and 0 or 0.35
+		end
+	end
 	local columns = 10
 	local rowsNeeded = math.max(1, math.ceil(#bag / columns))
 	local gridRow = newRow(rowsNeeded * 76 + 14)

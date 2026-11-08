@@ -607,6 +607,9 @@ return {
 		["Slaughter Wave"] = "Onda de matanza",
 		["Lucky Star Chance"] = "Probabilidad de Estrella de la suerte",
 		["Sunder"] = "Fractura",
+		["⚗ Fuse"] = "⚗ Fusión",
+		["same rarity"] = "misma rareza",
+		["That rarity can't be fused."] = "Esa rareza no se puede fusionar.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -930,6 +933,7 @@ return {
 		{ "Fires {number1} pellets in a spread", "Dispara {number1} perdigones en abanico" },
 		{ "You can afford it now ({number1} G)", "Ya puedes pagarlo ({number1} G)" },
 		{ "⭐ Legendary guaranteed in {number1}", "⭐ Legendario garantizado en {number1}" },
+		{ "Not enough Essence (need {number1})", "No tienes suficiente Esencia (necesitas {number1})" },
 		{ "★★★  Step {number1}/{number2} · Higher step", "★★★ Paso {number1}/{number2} · Nivel superior" },
 		{ "★★☆  Step {number1}/{number2} · Higher step", "★★☆ Paso {number1}/{number2} · Nivel superior" },
 		{ "Spell Tome · Mythic Era +{number3}", "Tomo de Hechizos · Era Mítica +{number3}" },
@@ -953,8 +957,5 @@ return {
 		{ "🔫 Next era Steel Era (+{number1})", "🔫 Próxima era: Era del acero (+{number1})" },
 		{ "The party is full. (max {number1}", "El grupo está lleno. (máx. {number1}" },
 		{ "Fall in the field {number1} times", "Cae {number1} veces en el campo" },
-		{ "Raise your pet to level {number1}", "Sube tu mascota al nivel {number1}" },
-		{ "Range x{number1} · allies heal +{number2}%", "Alcance x{number1} · aliados curan +{number2} %" },
-		{ "Recovers {number1}% HP per second", "Recupera {number1} % de PV por segundo" },
 	},
 }

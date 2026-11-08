@@ -170,6 +170,7 @@ local function buildPayload(player, state)
 	return {
 		Items = items, Capacity = Inventory.Capacity(player), BagCount = bagCount(state),
 		Essence = state.Essence, AutoScrap = state.AutoScrap, Shards = state.Shards, EquipMode = state.EquipMode or "Best",
+		Fusable = { Inventory.FuseCount(state, 1), Inventory.FuseCount(state, 2), Inventory.FuseCount(state, 3), Inventory.FuseCount(state, 4) },
 	}
 end
 
@@ -525,6 +526,48 @@ function Inventory.ScrapBelow(player, rarity)
 	return true, string.format("Dismantled %d! Essence +%d, %d G", count, essenceTotal, goldTotal)
 end
 
+-- 합성: 같은 등급 장비(착용 / 세트 / 유니크 제외) N개 -> 한 단계 위 등급 1개. 재료가 모두 같은 부위면 그 부위로, 아니면 재료 중 하나의 부위로.
+-- 가장 약한 것부터 재료로 쓴다. 비용은 에센스.
+function Inventory.FuseCount(state, rarity)
+	local n = 0
+	for id, item in pairs(state.Items) do
+		if item.Rarity == rarity and not isEquipped(state, id) and not item.Set and not item.Unique then n += 1 end
+	end
+	return n
+end
+function Inventory.Fuse(player, rarity)
+	local state = states[player]
+	local I = Config.Inventory
+	if not state then return false, "" end
+	rarity = math.floor(rarity)
+	local need, cost = I.FuseNeed[rarity], I.FuseEssence[rarity]
+	if not need or rarity >= #G.RarityNames then return false, "That rarity can't be fused." end
+	local pool = {}
+	for id, item in pairs(state.Items) do
+		if item.Rarity == rarity and not isEquipped(state, id) and not item.Set and not item.Unique then table.insert(pool, { Id = id, Item = item }) end
+	end
+	if #pool < need then
+		return false, string.format("Need %d %s items to fuse (you have %d)", need, G.RarityNames[rarity], #pool)
+	end
+	if (state.Essence or 0) < cost then
+		return false, string.format("Not enough Essence (need %d)", cost)
+	end
+	table.sort(pool, function(a, b) return rawQuality(a.Item) < rawQuality(b.Item) end)
+	local slots, sameSlot = {}, true
+	for i = 1, need do
+		local entry = pool[i]
+		table.insert(slots, entry.Item.Slot)
+		if entry.Item.Slot ~= pool[1].Item.Slot then sameSlot = false end
+		state.Items[entry.Id] = nil
+	end
+	state.Essence -= cost
+	local slotKey = sameSlot and slots[1] or slots[math.random(#slots)]
+	local newItem = Inventory.NewItem(slotKey, rarity + 1, 0, nil, I.FuseUniqueChance)
+	Inventory.Add(player, newItem)
+	Inventory.Push(player)
+	return true, string.format("⚗ Fused %d %s → %s %s!", need, G.RarityNames[rarity], G.RarityNames[rarity + 1], Inventory.ItemName(newItem))
+end
+
 -- 옵션 재굴림: 옵션 종류는 그대로, 수치만 다시 뽑는다 (더 좋아질 수도 나빠질 수도 있어요)
 function Inventory.Reroll(player, id)
 	local state = states[player]
@@ -767,6 +810,8 @@ Remotes.Inventory.OnServerEvent:Connect(function(player, action, arg, arg2)
 		ok, message = Inventory.RerollUnique(player, arg)
 	elseif action == "SmartClean" then
 		ok, message = Inventory.SmartClean(player)
+	elseif action == "Fuse" and typeof(arg) == "number" then
+		ok, message = Inventory.Fuse(player, arg)
 	elseif action == "ScrapBelow" and typeof(arg) == "number" then
 		ok, message = Inventory.ScrapBelow(player, arg)
 	elseif action == "AutoEquip" then

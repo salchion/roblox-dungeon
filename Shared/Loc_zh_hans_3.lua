@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1}d {number2}h", "{number1}天 {number2}小时" },
 		{ "A new dungeon theme can now appear ({text1}, Level {number2}+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", "现在可能出现新的地下城主题({text1},{number2} 级以上)。选择深度:越深掉落几率越高,首领也越强。大门处现在有标记指引。" },
 		{ "(one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "(从 {number1} 种中随机一种)会出现在神话装备上:地下城宝箱(见下)、野外掉落({text2})、每周首领连战宝箱和每周最终领主奖励。" },
 		{ "🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: {text1}", "🔫 5 种武器 — 每个强化节点(每 15 级)解锁一种。可在已解锁的武器中选择出战武器 · 当前:{text1}" },
@@ -47,6 +48,7 @@ return {
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ 每日任务完成!奖励:{text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 区域{number1} 第 {number2} 段 — 这里有很多 {text3}" },
 		{ "🌟 This Fever portal belongs to {text1}.", "🌟 这个狂热传送门属于{text1}。" },
+		{ "Need {number1} {text2} items to fuse (you have {number3})", "合成需要{number1}个{text2}（拥有{number3}）" },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "首领 {number1} · 伤害 {text2} · 下个首领 {number3} 秒后" },
 		{ "⚔ A skill upgrade is ready ({text1} G)", "⚔ 可以升级技能了（{text1} G）" },
 		{ "Move speed +{text1} per point  (max {number2})", "每点移动速度 +{text1}(最多 {number2})" },
@@ -195,6 +197,7 @@ return {
 		{ "▶ Next feature: Lv.{number1} {text2} {text3}{text4}", "▶ 下一项功能:Lv.{number1} {text2} {text3}{text4}" },
 		{ "{text1} {text2} complete! Lv.{number3} ({text4})", "{text1} {text2} 完成!Lv.{number3}({text4})" },
 		{ "{text1} 『{text2}』 {text3} done! (Lv.{number4})", "{text1}『{text2}』{text3} 完成!(Lv.{number4})" },
+		{ "⚗ Fused {number1} {text2} → {text3} {text4}!", "⚗ 合成了{number1}个{text2} → {text3} {text4}！" },
 		{ "{text1}Zone {number2} · {text3}  {text4}", "{text1}区域{number2} · {text3}  {text4}" },
 		{ "{text1} {text2} got {text3}!", "{text1} {text2} 获得了 {text3}!" },
 		{ "🔓 Zone {number1} gate opened! Reward 💰{number2} G · 🎫{number3}  — {text4} · {text5}-only drops: {text6} {text7} Set", "🔓 区域{number1}的大门已开启!奖励 💰{number2} 金币 · 🎫{number3}  — {text4} · {text5} 专属掉落:{text6} {text7} 套装" },

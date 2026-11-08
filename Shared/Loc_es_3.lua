@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Raise your pet to level {number1}", "Sube tu mascota al nivel {number1}" },
+		{ "Range x{number1} · allies heal +{number2}%", "Alcance x{number1} · aliados curan +{number2} %" },
+		{ "Recovers {number1}% HP per second", "Recupera {number1} % de PV por segundo" },
 		{ "Uses all Tickets (max {number1})", "Usa todos los boletos (máximo {number1})" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 Campo · Mejor zona {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "Zona {number1} · Desierto ☠☠☠☠" },
@@ -209,6 +212,7 @@ return {
 		{ "✦ Paragon {number1}", "✦ Paragón {number1}" },
 		{ "◆ Max HP +{number1}", "◆ PV máx. +{number1}" },
 		{ "✦ Unique {number1}%", "✦ Único {number1} %" },
+		{ "{number1} owned · ✨{number2}", "{number1} en posesión · ✨{number2}" },
 		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
 		{ "Damage +{number2}%", "Daño +{number2}%" },
 		{ "x{number1}\nUpgrade", "x{number1}\nMejorar" },
@@ -300,6 +304,7 @@ return {
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ ¡Misión diaria completada! Recompensa: {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 Zona {number1} sección {number2}: aquí hay muchos {text3}" },
 		{ "🌟 This Fever portal belongs to {text1}.", "🌟 Este portal Fiebre es de {text1}." },
+		{ "Need {number1} {text2} items to fuse (you have {number3})", "Necesitas {number1} objetos {text2} para fusionar (tienes {number3})" },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "Jefes {number1} · Daño {text2} · Próximo jefe en {number3} s" },
 		{ "⚔ A skill upgrade is ready ({text1} G)", "⚔ Mejora de habilidad lista ({text1} G)" },
 		{ "Move speed +{text1} per point  (max {number2})", "Velocidad de movimiento +{text1} por punto (máx. {number2})" },
@@ -445,6 +450,7 @@ return {
 		{ "▶ Next feature: Lv.{number1} {text2} {text3}{text4}", "▶ Siguiente función: Nv.{number1} {text2} {text3}{text4}" },
 		{ "{text1} {text2} complete! Lv.{number3} ({text4})", "¡{text1} {text2} completado! Nv.{number3} ({text4})" },
 		{ "{text1} 『{text2}』 {text3} done! (Lv.{number4})", "¡{text1} 『{text2}』 {text3} completado! (Nv.{number4})" },
+		{ "⚗ Fused {number1} {text2} → {text3} {text4}!", "⚗ ¡{number1} {text2} fusionados → {text3} {text4}!" },
 		{ "{text1}Zone {number2} · {text3}  {text4}", "{text1}Zona {number2} · {text3}  {text4}" },
 		{ "{text1} {text2} got {text3}!", "¡{text1} {text2} consiguió {text3}!" },
 		{ "🔓 Zone {number1} gate opened! Reward 💰{number2} G · 🎫{number3}  — {text4} · {text5}-only drops: {text6} {text7} Set", "🔓 ¡La puerta de la zona {number1} se abrió! Recompensa 💰{number2} G · 🎫{number3}  — {text4} · botín exclusivo de {text5}: {text6} set {text7}" },

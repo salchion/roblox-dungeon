@@ -578,6 +578,9 @@ return {
 		["Slaughter Wave"] = "Onda de Massacre",
 		["Lucky Star Chance"] = "Chance de Estrela da Sorte",
 		["Sunder"] = "Rachadura",
+		["⚗ Fuse"] = "⚗ Fusão",
+		["same rarity"] = "mesma raridade",
+		["That rarity can't be fused."] = "Essa raridade não pode ser fundida.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -904,6 +907,7 @@ return {
 		{ "Fires {number1} pellets in a spread", "Dispara {number1} balins em leque" },
 		{ "You can afford it now ({number1} G)", "Você já pode pagar ({number1} G)" },
 		{ "⭐ Legendary guaranteed in {number1}", "⭐ Lendário garantido em {number1}" },
+		{ "Not enough Essence (need {number1})", "Essência insuficiente (precisa de {number1})" },
 		{ "★★★  Step {number1}/{number2} · Higher step", "★★★ Passo {number1}/{number2} · Passo mais alto" },
 		{ "★★☆  Step {number1}/{number2} · Higher step", "★★☆ Passo {number1}/{number2} · Passo mais alto" },
 		{ "Spell Tome · Mythic Era +{number3}", "Livro de Feitiços · Era Mítica +{number3}" },
@@ -949,8 +953,5 @@ return {
 		{ "★☆  Step {number1}/{number2} · Next step", "★☆ Passo {number1}/{number2} · Próximo passo" },
 		{ "🌋 {number1} Streak — Legendary!", "🌋 {number1} Sequência - Lendário!" },
 		{ "Reach character level {number1}", "Alcance o nível de personagem {number1}" },
-		{ "▼ 👑 First Zone Lord  {number1}m", "▼ 👑 Senhor da Primeira Zona {number1}m" },
-		{ "Defeat {number1} elite monsters", "Derrote {number1} monstros de elite" },
-		{ "Defeat {number1} field monsters", "Derrote {number1} monstros do campo" },
 	},
 }

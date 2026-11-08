@@ -489,6 +489,9 @@ return {
 		["Slaughter Wave"] = "屠戮波动",
 		["Lucky Star Chance"] = "幸运星概率",
 		["Sunder"] = "破甲",
+		["⚗ Fuse"] = "⚗ 合成",
+		["same rarity"] = "同等级",
+		["That rarity can't be fused."] = "该等级无法合成。",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -815,6 +818,7 @@ return {
 		{ "Fires {number1} pellets in a spread", "呈扇形发射 {number1} 颗弹丸" },
 		{ "You can afford it now ({number1} G)", "现在就能强化 ({number1} G)" },
 		{ "⭐ Legendary guaranteed in {number1}", "⭐ 传说保底剩余 {number1}" },
+		{ "Not enough Essence (need {number1})", "精华不足（需要{number1}）" },
 		{ "★★★  Step {number1}/{number2} · Higher step", "★★★ 步骤 {number1}/{number2} · 更高步骤" },
 		{ "★★☆  Step {number1}/{number2} · Higher step", "★★☆ 步骤 {number1}/{number2} · 更高步骤" },
 		{ "Spell Tome · Mythic Era +{number3}", "法术书 · 神话时代 +{number3}" },
@@ -1045,6 +1049,7 @@ return {
 		{ "✦ Paragon {number1}", "✦ 巅峰 {number1}" },
 		{ "◆ Max HP +{number1}", "◆ 最大生命 +{number1}" },
 		{ "✦ Unique {number1}%", "✦ 独特 {number1}%" },
+		{ "{number1} owned · ✨{number2}", "拥有 {number1} · ✨{number2}" },
 		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} 金币 🎫 {number5}" },
 		{ "🔥 Combo x{number1}", "🔥 连击 x{number1}" },
 		{ "Damage +{number2}%", "伤害+{number2}%" },
@@ -1100,6 +1105,5 @@ return {
 		{ "💰 {number1} G", "💰 {number1}G" },
 		{ "+{number1} G", "+{number1} 能量" },
 		{ "Lv {number1}", "等级 {number1}" },
-		{ "{number1}d {number2}h", "{number1}天 {number2}小时" },
 	},
 }
