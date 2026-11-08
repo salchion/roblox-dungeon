@@ -57,7 +57,17 @@ local function buildLord(parent, baseCF, S)
 	local look = require(ReplicatedStorage:WaitForChild("LordLook")).Build(add) -- 모양은 결투의 군주와 같은 모듈 (LordLook)
 	for _, glow in ipairs(look.EyeGlow or {}) do table.insert(look.Eyes, glow) glow:SetAttribute("LitAlpha", glow.Transparency) end -- (눈 뒤 번짐도 눈과 같이 꺼 두었다가 켠다)
 	local eyes, core = look.Eyes, look.Core
-	return eyes, core
+	-- 가슴 코어도 처음엔 꺼 둔다: 붉은 빛 구슬이 번져서 노란 "눈"처럼 보여, 도착할 때 눈이 켜지는 연출이 묻혔다
+	if core then
+		core:SetAttribute("LitColor", core.Color)
+		core.Material = Enum.Material.SmoothPlastic
+		core.Color = Color3.fromRGB(60, 12, 18)
+	end
+	if look.CoreGlow then
+		look.CoreGlow:SetAttribute("LitAlpha", look.CoreGlow.Transparency)
+		look.CoreGlow.Transparency = 1
+	end
+	return eyes, core, look.CoreGlow
 end
 
 -- 도착 연출: 착지가 끝나고 조작권이 돌아온 직후 약 3초. 발밑에 룬 고리가 돌며 퍼지고 빛기둥 / 불꽃이 솟고, "환영합니다" 글자가 쾅 뜨고 사라진다. (착지 장면은 그대로 두고, 그 뒤의 첫 화면만 채운다)
@@ -439,7 +449,7 @@ local function play()
 	end
 	local bodyPos = Vector3.new(bossX, groundY + 21.5 * S + 2, 0)
 	local bossCF = CFrame.lookAt(bodyPos, bodyPos + Vector3.new(-1, 0, 0)) -- 몸 앞쪽(-Z)이 서쪽(마을)을 본다
-	local eyes = buildLord(props, bossCF, S)
+	local eyes, lordCore, lordCoreGlow = buildLord(props, bossCF, S)
 	for _, eye in ipairs(eyes) do eye.Transparency = 1 end -- 눈은 감고 있다가 뜬다
 	local face = bodyPos + Vector3.new(0, 14 * S, 0)
 	-- 어두운 보스의 장식(왕관 / 뿔 / 어깨 가시 / 날개)이 보이도록 연출용 조명 두 개 (내 화면에만, 끝나면 같이 사라진다)
@@ -744,6 +754,13 @@ local function play()
 		TweenService:Create(eye, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = size, Transparency = lit }):Play()
 	end
 	sfx("Reel_Stop", 0.8, 0.6)
+	if lordCore and lordCore.Parent then -- 눈과 함께 가슴 코어에도 불이 들어온다
+		lordCore.Material = Enum.Material.Neon
+		lordCore.Color = lordCore:GetAttribute("LitColor") or Color3.fromRGB(255, 50, 60)
+	end
+	if lordCoreGlow and lordCoreGlow.Parent then
+		TweenService:Create(lordCoreGlow, TweenInfo.new(0.4), { Transparency = lordCoreGlow:GetAttribute("LitAlpha") or 0.8 }):Play()
+	end
 	task.wait(0.6)
 	if finished then return end
 	sfx("Lord_Charge", 1.0)

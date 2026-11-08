@@ -50,7 +50,7 @@ function LordLook.Build(add)
 	for k = 0, 4 do ball(V(0, 10 - k * 4.4, 3.6), 2.2, 2.4, 2.4, steel, METAL) end -- 등뼈 마디
 	-- 가슴 코어 + 갈비 장갑 (코어를 둘러싼 휜 뼈 세 쌍)
 	local core = ball(V(0, 4.2, -4.6), 5.4, 5.4, 5.4, red, NEON)
-	ball(V(0, 4.2, -4.6), 6.8, 6.8, 6.8, red, NEON, 0.8)
+	local coreGlow = ball(V(0, 4.2, -4.6), 6.8, 6.8, 6.8, red, NEON, 0.8)
 	for k = 0, 2 do
 		local y = 8.4 - k * 2.9
 		for _, side in ipairs({ -1, 1 }) do
@@ -171,7 +171,7 @@ function LordLook.Build(add)
 		seg(V(math.cos(angle) * 13.5, 15 + math.sin(angle) * 13.5, 8.4), V(math.cos(angle) * 18, 15 + math.sin(angle) * 18, 8.4), 0.5, rgb(70, 50, 30), METAL)
 	end
 
-	return { Body = body, Eyes = eyes, Core = core, EyeGlow = eyeGlow }
+	return { Body = body, Eyes = eyes, Core = core, CoreGlow = coreGlow, EyeGlow = eyeGlow }
 end
 
 return LordLook
