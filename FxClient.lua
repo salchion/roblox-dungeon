@@ -105,11 +105,15 @@ end
 
 local lootTicker
 local DEFAULT_STROKE = 0
-local function showText(position, text, color, size, lifetime, rise, transparency)
+local function showText(position, text, color, size, lifetime, rise, transparency, pop)
 	if activeTexts >= MAX_ACTIVE_TEXTS then return end
 	activeTexts += 1
 	local entry = getText()
 	entry.Gui.Size = size
+	if pop then -- 피해 숫자: 크게 튀어나왔다가 제 크기로 (스쿼시 & 스트레치: 가로로 넓게 -> 원래대로). 치명타는 더 크게
+		entry.Gui.Size = UDim2.new(size.X.Scale, size.X.Offset * pop * 1.15, size.Y.Scale, size.Y.Offset * pop * 0.85)
+		TweenService:Create(entry.Gui, TweenInfo.new(0.14, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = size }):Play()
+	end
 	entry.Label.Text = text
 	entry.Label.TextColor3 = color
 	entry.Label.TextTransparency = transparency or 0 -- (획득 글자는 흐리게)
@@ -2300,7 +2304,7 @@ local HANDLERS = {
 		if event[5] then
 			showText(event[2], tostring(event[3]), event[5]:Lerp(WHITE, 0.25), UDim2.new(0, 120, 0, 48), 0.75, 3)
 		else
-			showText(event[2], event[4] and (tostring(event[3]) .. "!") or tostring(event[3]), event[4] and Color3.fromRGB(255, 220, 60) or WHITE, DAMAGE_SIZE, 0.5, nil)
+			showText(event[2], event[4] and (tostring(event[3]) .. "!") or tostring(event[3]), event[4] and Color3.fromRGB(255, 220, 60) or WHITE, DAMAGE_SIZE, 0.5, nil, nil, event[4] and 1.7 or 1.35)
 		end
 	end,
 	H = function(event) flash(event[2]) end,
@@ -2389,6 +2393,12 @@ local function deathBurst(event) -- { "K", position, color, size, typeKey }
 	end
 	-- 영혼 연기 (풀링된 입자 재사용)
 	burst(position + Vector3.new(0, size * 0.3, 0), soul, math.clamp(math.floor(size * 3), 10, 40))
+	-- 처치 순간의 하얀 "팡" (0.12초만: 맞았다 -> 터졌다가 한눈에)
+	local pop = neonPart(Vector3.new(size * 0.5, size * 0.5, size * 0.5), Color3.fromRGB(255, 252, 240), 0.35, Enum.PartType.Ball)
+	pop.Position = position + Vector3.new(0, size * 0.2, 0)
+	pop.Parent = fxFolder
+	TweenService:Create(pop, TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(size * 1.4, size * 1.4, size * 1.4), Transparency = 1 }):Play()
+	Debris:AddItem(pop, 0.15)
 end
 
 game:GetService("RunService").RenderStepped:Connect(function(dt)

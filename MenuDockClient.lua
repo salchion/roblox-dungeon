@@ -427,6 +427,12 @@ local function layout(compact, hud)
 	else
 		size, gap, columns, x, y, iconSize, labelSize = SIZE, GAP, 2, 16, TOP_Y, 30, 13
 	end
+	-- 싸우는 중(필드 / 던전에서 콤보가 이어지거나 보스전)에는 메뉴 아이콘을 작게 접는다: 이름표를 숨기고 아이콘만 (화면을 덜 가리게.
+	-- 모바일 게임 UI 원칙: 전투 중에는 꼭 필요한 정보만). 싸움이 끝나면 다시 펼쳐진다
+	local zoneNow = player:GetAttribute("Zone")
+	local fighting = (zoneNow == "Field" or zoneNow == "Dungeon") and (player:GetAttribute("BossFight") or (player:GetAttribute("Combo") or 0) > 0 or player:GetAttribute("InDoomArena") ~= nil)
+	local slim = fighting and not compact
+	if slim then size, gap, iconSize = math.floor(SIZE * 0.66), 5, 22 end
 	toggle.Visible = compact
 	local anyDot = false
 	local slot = 0
@@ -440,6 +446,11 @@ local function layout(compact, hud)
 		entry.Button.Visible = unlocked and ((not compact) or menuOpen)
 		entry.Icon.TextSize = iconSize
 		entry.Label.TextSize = labelSize
+		entry.Label.Visible = not slim
+		local ribbon = entry.Button:FindFirstChild("Ribbon")
+		if ribbon then ribbon.Visible = not slim end
+		entry.Icon.Size = slim and UDim2.new(1, 0, 1, 0) or UDim2.new(1, 0, 0.6, 0)
+		entry.Icon.Position = slim and UDim2.new(0, 0, 0, 0) or UDim2.new(0, 0, 0.03, 0)
 		local dot = dots[BUTTONS[index]]
 		if dot and dot.Visible and unlocked then anyDot = true end
 	end
