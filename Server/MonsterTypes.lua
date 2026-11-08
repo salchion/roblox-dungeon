@@ -606,7 +606,28 @@ end
 local function telegraph(ctx, part, data, color, delay, action)
 	part.Color = color
 	data.RearUntil = os.clock() + delay -- 공격 직전: 몸을 뒤로 젖힌다 (Update 의 기울임이 읽는다)
+	-- 발사 예고가 눈에 보이게: 몸 앞에 공격 색 빛 구슬이 차오른다 (판정용 몸체는 투명이라 색만 바꾸면 아무것도 안 보였다)
+	local charge
+	if part.Parent and delay >= 0.25 then
+		local s = math.clamp(part.Size.X * 0.32, 0.8, 5)
+		charge = Instance.new("Part")
+		charge.Name = "ShotCharge"
+		charge.Shape = Enum.PartType.Ball
+		charge.Material = Enum.Material.Neon
+		charge.Color = color
+		charge.Transparency = 0.25
+		charge.Anchored, charge.CanCollide, charge.CanQuery, charge.CanTouch, charge.Massless, charge.CastShadow = false, false, false, false, true, false
+		charge.Size = Vector3.new(s * 0.3, s * 0.3, s * 0.3)
+		local weld = Instance.new("Weld")
+		weld.Part0, weld.Part1 = part, charge
+		weld.C0 = CFrame.new(0, part.Size.Y * 0.15, -part.Size.Z * 0.55)
+		weld.Parent = charge
+		charge.Parent = part
+		game:GetService("TweenService"):Create(charge, TweenInfo.new(delay, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Size = Vector3.new(s, s, s), Transparency = 0.05 }):Play()
+		game:GetService("Debris"):AddItem(charge, delay + 0.1)
+	end
 	task.delay(delay, function()
+		if charge and charge.Parent then charge:Destroy() end
 		if not ctx.Alive(part, data) then
 			-- 공격 준비 중에 죽었어도 마지막 한 발은 나간다 (몬스터가 너무 빨리 죽어서 투사체를 한 번도 못 쏘던 문제: 위협감)
 			if data and data.Health and data.Health <= 0 then pcall(action) end
