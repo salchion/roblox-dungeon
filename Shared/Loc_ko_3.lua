@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<font color='#ffd966'>🎯 Mission {number1}/{number2}</font>", "<font color='#ffd966'>🎯 미션 {number1}/{number2}</font>" },
+		{ "<font color='#9aa0c0'>… and {number1} more</font>", "<font color='#9aa0c0'>… 외 {number1}명</font>" },
+		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• 초당 약 {number1}발 · 화력 {number2} · 사거리 {number3}" },
+		{ "Damage +{number1}% on a single target: for bosses", "단일 대상 피해 +{number1}%: 보스용" },
+		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}!", "{number1}초! 보상 x{number2}, 콤보로 최대 x{number3}!" },
 		{ "🔓 You can now run {number1} set effects at once!", "🔓 이제 세트 효과를 한 번에 {number1}개 쓸 수 있어요!" },
 		{ "🛡 Knocked back! Power {number1} required (you: {number2})", "🛡 튕겨 났어요! 전투력 {number1} 필요 (내 전투력: {number2})" },
 		{ "💚 Emergency rescue! HP restored ({number1} left)", "💚 긴급 구조! 체력이 회복되었어요 ({number1}회 남음)" },
@@ -503,6 +508,7 @@ return {
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 {number1}구역 {number2}구간 — 이곳에는 {text3}이(가) 많아요" },
 		{ "🌟 This Fever portal belongs to {text1}.", "🌟 이 피버 포탈은 {text1}님의 것이에요." },
 		{ "Need {number1} {text2} items to fuse (you have {number3})", "합성하려면 {text2} 장비 {number1}개가 필요해요 (보유 {number3})" },
+		{ "⚙ Rule: {text1} (change in Menu → Gear)", "⚙ 규칙: {text1} (메뉴 → 장비에서 변경)" },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "보스 {number1} · 피해 {text2} · 다음 보스 {number3}초" },
 		{ "⚔ A skill upgrade is ready ({text1} G)", "⚔ 스킬 강화를 할 수 있어요 ({text1} G)" },
 		{ "   ✨ {number1}-piece set complete! {text2} Lv.{number3}", "   ✨ {number1}부위 세트 완성! {text2} Lv.{number3}" },

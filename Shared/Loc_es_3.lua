@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 Zone {number1} · Volcano Sealed", "🔒 Zona {number1} · Volcán sellado" },
+		{ "Lord of Meadow  ·  Zone {number1}", "Señor del prado · Zona {number1}" },
+		{ "Idle Accrual Cap: {number1} Hours", "Límite de acumulación inactiva: {number1} horas" },
+		{ "🔫 Next era Steel Era (+{number1})", "🔫 Próxima era: Era del acero (+{number1})" },
+		{ "The party is full. (max {number1}", "El grupo está lleno. (máx. {number1}" },
+		{ "Fall in the field {number1} times", "Cae {number1} veces en el campo" },
 		{ "Raise your pet to level {number1}", "Sube tu mascota al nivel {number1}" },
 		{ "Range x{number1} · allies heal +{number2}%", "Alcance x{number1} · aliados curan +{number2} %" },
 		{ "Recovers {number1}% HP per second", "Recupera {number1} % de PV por segundo" },
@@ -305,6 +311,7 @@ return {
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 Zona {number1} sección {number2}: aquí hay muchos {text3}" },
 		{ "🌟 This Fever portal belongs to {text1}.", "🌟 Este portal Fiebre es de {text1}." },
 		{ "Need {number1} {text2} items to fuse (you have {number3})", "Necesitas {number1} objetos {text2} para fusionar (tienes {number3})" },
+		{ "⚙ Rule: {text1} (change in Menu → Gear)", "⚙ Regla: {text1} (cámbiala en Menú → Equipo)" },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "Jefes {number1} · Daño {text2} · Próximo jefe en {number3} s" },
 		{ "⚔ A skill upgrade is ready ({text1} G)", "⚔ Mejora de habilidad lista ({text1} G)" },
 		{ "Move speed +{text1} per point  (max {number2})", "Velocidad de movimiento +{text1} por punto (máx. {number2})" },

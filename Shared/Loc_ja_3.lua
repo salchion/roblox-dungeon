@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Monsters met {number1} / {number2} (incl. zone lords)", "モンスターとの遭遇数 {number1} / {number2}（ゾーンの領主を含む）" },
+		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 無料入場を使用！(本日残り {number1} / {number2})" },
+		{ "A big blast when it ends (attack x{number1})", "終了時に大爆発（攻撃力x{number1}）" },
+		{ "{number1}s invincible, but healing is halved", "{number1}秒間無敵、ただし回復量は半分" },
+		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 新しい武器：スペル・トーム - {number1}を押してください！" },
 		{ "Gacha_Pop{number1}  Gacha result: Legendary", "Gacha_Pop{number1} ガチャ結果：レジェンダリー" },
 		{ "{number1} hours of idle gold ({number2} G) piled up!", "{number1}時間のアイドルゴールド（{number2}G）が積み上がりました！" },
 		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 フィールドの入り口はすぐ後ろです！ {number1}m" },
@@ -436,6 +441,7 @@ return {
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 ゾーン{number1} セクション{number2} — ここには{text3}がたくさんいる" },
 		{ "🌟 This Fever portal belongs to {text1}.", "🌟 このフィーバーポータルは{text1}のものです。" },
 		{ "Need {number1} {text2} items to fuse (you have {number3})", "合成には{text2}が{number1}個必要（所持 {number3}）" },
+		{ "⚙ Rule: {text1} (change in Menu → Gear)", "⚙ ルール：{text1}（メニュー → 装備で変更）" },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "ボス {number1} · ダメージ {text2} · 次のボスまで {number3}秒" },
 		{ "⚔ A skill upgrade is ready ({text1} G)", "⚔ スキル強化ができます（{text1} G）" },
 		{ "Move speed +{text1} per point  (max {number2})", "1ポイントごとに移動速度+{text1}(最大{number2})" },

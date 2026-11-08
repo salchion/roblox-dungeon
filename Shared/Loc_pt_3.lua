@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💪 Zone {number1} Lord: power {number2} / {number3}", "💪 Senhor da zona {number1}: poder {number2} / {number3}" },
+		{ "Crit damage +{number1}%p  (max {number2})", "Dano crítico +{number1}%p  (máx. {number2})" },
+		{ "★☆  Step {number1}/{number2} · Next step", "★☆ Passo {number1}/{number2} · Próximo passo" },
+		{ "🌋 {number1} Streak — Legendary!", "🌋 {number1} Sequência - Lendário!" },
+		{ "Reach character level {number1}", "Alcance o nível de personagem {number1}" },
 		{ "▼ 👑 First Zone Lord  {number1}m", "▼ 👑 Senhor da Primeira Zona {number1}m" },
 		{ "Defeat {number1} elite monsters", "Derrote {number1} monstros de elite" },
 		{ "Defeat {number1} field monsters", "Derrote {number1} monstros do campo" },
@@ -275,6 +280,7 @@ return {
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 Zona {number1} seção {number2} — há muitos {text3} aqui" },
 		{ "🌟 This Fever portal belongs to {text1}.", "🌟 Este portal Febre é de {text1}." },
 		{ "Need {number1} {text2} items to fuse (you have {number3})", "Precisa de {number1} itens {text2} para fundir (você tem {number3})" },
+		{ "⚙ Rule: {text1} (change in Menu → Gear)", "⚙ Regra: {text1} (mude em Menu → Equipamento)" },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "Chefes {number1} · Dano {text2} · Próximo chefe em {number3} s" },
 		{ "⚔ A skill upgrade is ready ({text1} G)", "⚔ Melhoria de habilidade pronta ({text1} G)" },
 		{ "Move speed +{text1} per point  (max {number2})", "Velocidade de movimento +{text1} por ponto (máx. {number2})" },

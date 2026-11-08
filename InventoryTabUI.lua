@@ -153,7 +153,7 @@ local function buildInventoryTab(state)
 		local setRow = newRow(44, Color3.fromRGB(24, 26, 40))
 		makeLabel({ Size = UDim2.new(0, 84, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = "Equip mode", TextSize = 12, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(225, 196, 118), TextXAlignment = Enum.TextXAlignment.Left }, setRow)
 		-- 오른쪽 끝: 자동 분해 / 정리 (한 줄로 합쳐서 장비 칸이 한 화면에 들어오게)
-		local scrapButton = makeButton({ Size = UDim2.new(0, 150, 0, 28), Position = UDim2.new(1, -268, 0.5, -14), Text = "♻ " .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 11, BackgroundColor3 = Color3.fromRGB(70, 110, 220) }, setRow, function()
+		local scrapButton = makeButton({ Size = UDim2.new(0, 196, 0, 30), Position = UDim2.new(1, -314, 0.5, -15), RichText = true, TextWrapped = true, Text = "♻ <font size='9' color='#cfe0ff'>Auto-salvage</font>\n" .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 10, BackgroundColor3 = Color3.fromRGB(70, 110, 220) }, setRow, function() -- (자동 분해 규칙이 버튼에 바로 보인다. 누르면 다음 규칙)
 			Remotes.Inventory:FireServer("AutoScrap", (state.AutoScrap + 1) % 5)
 		end)
 		rounded(scrapButton, 14)
@@ -162,7 +162,7 @@ local function buildInventoryTab(state)
 		end)
 		rounded(cleanButton, 14)
 		local strip = create("ScrollingFrame", {
-			Size = UDim2.new(1, -92 - 282, 1, -4), Position = UDim2.new(0, 92, 0, 2), BackgroundTransparency = 1, BorderSizePixel = 0,
+			Size = UDim2.new(1, -92 - 328, 1, -4), Position = UDim2.new(0, 92, 0, 2), BackgroundTransparency = 1, BorderSizePixel = 0,
 			ScrollBarThickness = 3, ScrollingDirection = Enum.ScrollingDirection.X, CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.X,
 		}, setRow)
 		create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Center }, strip)

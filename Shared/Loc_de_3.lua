@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "ZONE {number1}  ·  Forest   ☠☠", "Zone {number1} · Wald ☠☠" },
+		{ "{number1} upgrades! {number2} succeeded", "{number1} Verbesserungen! {number2} erfolgreich" },
+		{ "Free entries {number1} · Keys {number2}", "Gratis-Eintritte {number1} · Schlüssel {number2}" },
+		{ "Loading the land...  {number1}", "Lade das Land...  {number1}" },
+		{ "Double Shot chance +{number1}%", "Doppelschuss-Chance +{number1}%" },
+		{ "🔁 Path changed! (-{number1} G)", "🔁 Pfad gewechselt! (-{number1} G)" },
 		{ "ZONE {number1}  ·  Meadow   ☠", "Zone {number1} · Wiese ☠" },
 		{ "Luck Booster ({number1} hour)", "Glück-Booster ({number1} Stunde)" },
 		{ "Idle Booster ({number1} hour)", "Inaktiv-Booster ({number1} Stunde)" },
@@ -258,6 +264,7 @@ return {
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 Zone {number1} Abschnitt {number2} — hier gibt es viele {text3}" },
 		{ "🌟 This Fever portal belongs to {text1}.", "🌟 Dieses Fieberportal gehört {text1}." },
 		{ "Need {number1} {text2} items to fuse (you have {number3})", "Zum Fusionieren brauchst du {number1} {text2} (du hast {number3})" },
+		{ "⚙ Rule: {text1} (change in Menu → Gear)", "⚙ Regel: {text1} (änderbar unter Menü → Ausrüstung)" },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "Bosse {number1} · Schaden {text2} · Nächster Boss in {number3} s" },
 		{ "⚔ A skill upgrade is ready ({text1} G)", "⚔ Ein Skill-Upgrade ist bereit ({text1} G)" },
 		{ "Move speed +{text1} per point  (max {number2})", "Lauftempo +{text1} pro Punkt (max. {number2})" },

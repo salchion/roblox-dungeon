@@ -1626,7 +1626,7 @@ Config.Inventory = {
 	FuseUniqueChance = 0.08,                     -- 합성으로 신화가 나오면 유니크가 붙을 확률 (던전 상자보다 낮게)
 	AffixCount = { 0, 1, 2, 3, 4 },              -- 등급별 랜덤 옵션 개수
 	AffixRarityScale = { 1, 1.3, 1.7, 2.2, 3.0 },-- 등급별 옵션 수치 배율
-	AutoScrapNames = { [0] = "Off", "Common or lower", "Rare or lower", "Epic or lower", "Smart (Recommended)" },
+	AutoScrapNames = { [0] = "Off (keep all)", "Salvage Common", "Salvage Rare & below", "Salvage Epic & below", "Smart: weaker Common/Rare" }, -- (규칙이 이름에 바로 보이게)
 	AffixOrder = { "Health", "Crit", "Speed", "Damage", "Xp", "Luck", "CritDmg", "AtkSpeed", "BossDmg", "Haste", "Bulwark", "LifeOnKill" },
 	-- 옵션이 뽑힐 비중: 전투와 거리가 먼 옵션(경험치 / 행운 / 이동 속도)은 덜 나온다 ("신화인데 꽝" 줄이기)
 	AffixWeight = { Xp = 0.5, Luck = 0.5, Speed = 0.6 },

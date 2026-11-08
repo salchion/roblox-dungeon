@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Porte du palais de glace · Rec. ⚡{number1}" },
+		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zone {number1} · Désert scellé" },
+		{ "Auto-loot radius grows to {number1}", "Le rayon de butin automatique augmente à {number1}" },
+		{ "ZONE {number1}  ·  Volcano   ☠☠☠☠☠☠", "Zone {number1} · Volcan ☠☠☠☠☠☠" },
+		{ "⚔ Spell Tome · Rusty Era +{number10}", "⚔ Tome de sorts · Ère rouillée +{number10}" },
 		{ "🔒 Zone {number1} · Darklands Sealed", "🔒 Zone {number1} · Terres sombres scellées" },
 		{ "Zone {number1} · Lightning Strike  ", "Zone {number1} · Coup de foudre" },
 		{ "🔒 Zone {number1} · Snowfield Sealed", "🔒 Zone {number1} · Champ de neige scellé" },
@@ -337,6 +342,7 @@ return {
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 Zone {number1} section {number2} — beaucoup de {text3} ici" },
 		{ "🌟 This Fever portal belongs to {text1}.", "🌟 Ce portail Fever appartient à {text1}." },
 		{ "Need {number1} {text2} items to fuse (you have {number3})", "Il faut {number1} objets {text2} pour fusionner (tu en as {number3})" },
+		{ "⚙ Rule: {text1} (change in Menu → Gear)", "⚙ Règle : {text1} (modifiable dans Menu → Équipement)" },
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "Boss {number1} · Dégâts {text2} · Prochain boss dans {number3} s" },
 		{ "⚔ A skill upgrade is ready ({text1} G)", "⚔ Une amélioration de compétence est prête ({text1} G)" },
 		{ "Move speed +{text1} per point  (max {number2})", "Vitesse de déplacement +{text1} par point (max {number2})" },

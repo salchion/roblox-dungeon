@@ -127,6 +127,8 @@ local function noteSalvage(player, label, essence, gold)
 		else
 			text = string.format("♻ Auto-salvaged %d items (Essence +%d, %d G)", batch.Count, batch.Essence, batch.Gold)
 		end
+		local okRule, rule = pcall(function() return Inventory.AutoScrapRule(player) end)
+		if okRule and rule ~= "" then text ..= "\n⚙ Rule: " .. rule .. " (change in Menu → Gear)" end -- 왜 사라졌는지 + 어디서 바꾸는지
 		Remotes.Notify:FireClient(player, text)
 	end)
 end

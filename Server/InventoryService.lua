@@ -328,9 +328,21 @@ function Inventory.Add(player, item)
 	end
 
 	if state.AutoScrap == SMART then
-		-- 스마트: 먼저 가방에 넣어 보고(가득 차면 정리부터), 같은 부위에서 대신할 수 있는 장비를 정리한다
+		-- 스마트 (규칙을 한 줄로 설명할 수 있게 단순하게 바꿨다): "새로 얻은 일반 / 레어 장비가 지금 입은 것보다 약하면 바로 분해".
+		--   * 가방에 이미 있는 장비는 건드리지 않는다 (예전엔 더 좋은 게 들어올 때마다 가방 속 장비가 말없이 사라져서 헷갈렸다)
+		--   * 에픽 이상 / 세트 / 유니크는 약해도 가방에 남긴다 (합성 재료 / 에센스)
+		--   * 가방이 가득 찼을 때만 가방 정리를 한다 (알림으로 알려 준다)
+		local worn = state.Equipped[item.Slot] and state.Items[state.Equipped[item.Slot]]
+		if not item.Set and not item.Unique and item.Rarity <= 2 and worn and rawQuality(item) <= rawQuality(worn) then
+			local essence, gold = giveScrap(player, state, item)
+			Inventory.Push(player)
+			return "Scrapped", item, essence, gold
+		end
 		if bagCount(state) >= Inventory.Capacity(player) then
-			smartPrune(player, state, nil)
+			local count, essenceTotal, goldTotal = smartPrune(player, state, nil)
+			if count > 0 then
+				notify(player, string.format("🎒 Bag full: dismantled %d gear that your other gear beats (Essence +%d, %d G)", count, essenceTotal, goldTotal))
+			end
 		end
 		if bagCount(state) >= Inventory.Capacity(player) then makeRoomFor(player, state, item) end
 		if bagCount(state) >= Inventory.Capacity(player) then
@@ -339,16 +351,7 @@ function Inventory.Add(player, item)
 			return "Full", item, essence, gold
 		end
 		state.Items[item.Id] = item
-		local mine = isRedundant(state, item)
-		local count, essenceTotal, goldTotal = smartPrune(player, state, item.Slot)
 		Inventory.Push(player)
-		if mine then -- 방금 얻은 장비가 정리 대상이었다 (정리된 것 중 자기 몫만 알려 준다)
-			local essence, gold = scrapValue(item)
-			return "Scrapped", item, essence, gold
-		end
-		if count > 0 then
-			notify(player, string.format("🧹 Auto-cleaned %d weaker gear (Essence +%d, %d G)", count, essenceTotal, goldTotal))
-		end
 		return "Bag", item
 	end
 
@@ -659,6 +662,12 @@ end
 function Inventory.GetSlotLevel(player, slotKey)
 	local state = states[player]
 	return state and state.SlotLevels[slotKey] or 0
+end
+
+-- 지금 자동 분해 규칙 (알림에 붙여서 "왜 사라졌는지" 바로 알 수 있게)
+function Inventory.AutoScrapRule(player)
+	local state = states[player]
+	return state and I.AutoScrapNames[state.AutoScrap] or ""
 end
 
 function Inventory.SetAutoScrap(player, rarity)

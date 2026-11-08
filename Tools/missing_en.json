@@ -2436,5 +2436,13 @@
 "⚗ Fused {number1} {text2} → {text3} {text4}!",
 "Need {number1} {text2} items to fuse (you have {number3})",
 "Not enough Essence (need {number1})",
-"That rarity can't be fused."
+"That rarity can't be fused.",
+"Off (keep all)",
+"Salvage Common",
+"Salvage Rare & below",
+"Salvage Epic & below",
+"Smart: weaker Common/Rare",
+"Auto-salvage",
+"⚙ Rule: {text1} (change in Menu → Gear)",
+"🎒 Bag full: dismantled {number1} gear that your other gear beats (Essence +{number2}, {number3} G)"
 ]
