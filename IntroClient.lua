@@ -420,22 +420,25 @@ local function play()
 		endWall = fieldFolder and fieldFolder:FindFirstChild("CanyonEnd", true)
 		if endWall then endWall.Transparency = 1 end
 		do -- 필드 끝의 군주 석상은 오프닝 동안 숨긴다 (살아 있는 군주가 바로 그 자리에 선다)
+			-- (석상은 필드 맨 끝이라 오프닝이 시작될 때는 아직 안 불러와져 있을 때가 많다: 그러면 날아가는 동안 불러와진 석상이
+			--  숨겨지지 않고 보여서, 연출용 군주보다 먼저 석상의 노란 눈 / 붉은 코어가 켜져 있는 것처럼 보였다.
+			--  그래서 workspace 전체에서 나중에 들어오는 석상 조각까지 지켜본다)
+			local function hide(item)
+				if item:IsA("BasePart") and not finished then
+					item.LocalTransparencyModifier = 1
+					hiddenBaffles[item] = true -- (끝나면 같은 목록으로 되돌린다)
+				end
+			end
 			local portalFolder = workspace:FindFirstChild("FinalLordPortal")
 			local statue = portalFolder and portalFolder:FindFirstChild("LordStatue")
 			if statue then
-				local function hide(item)
-					if item:IsA("BasePart") and not finished then
-						item.LocalTransparencyModifier = 1
-						hiddenBaffles[item] = true -- (끝나면 같은 목록으로 되돌린다)
-					end
-				end
 				for _, item in ipairs(statue:GetDescendants()) do hide(item) end
-				local streamConn
-				streamConn = statue.DescendantAdded:Connect(function(item) -- (멀리 있어 늦게 불러와지는 조각도 숨긴다)
-					if finished then streamConn:Disconnect() return end
-					hide(item)
-				end)
 			end
+			local streamConn
+			streamConn = workspace.DescendantAdded:Connect(function(item) -- (멀리 있어 늦게 불러와지는 조각도 숨긴다)
+				if finished then streamConn:Disconnect() return end
+				if item:IsA("BasePart") and item:FindFirstAncestor("LordStatue") then hide(item) end
+			end)
 		end
 	end)
 
