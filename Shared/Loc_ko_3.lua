@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🛡 Knocked back! Power {number1} required (you: {number2})", "🛡 튕겨 났어요! 전투력 {number1} 필요 (내 전투력: {number2})" },
+		{ "💚 Emergency rescue! HP restored ({number1} left)", "💚 긴급 구조! 체력이 회복되었어요 ({number1}회 남음)" },
+		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}", "{number1}초! 보상 x{number2}, 콤보로 최대 x{number3}" },
+		{ "Sniper Rifle  ·  keys {number1}-{number2} switch weapons", "저격 소총 · 키 {number1}-{number2}로 무기 전환" },
+		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>", "<font color='#{number1}fffb{number2}'><b>자동 공격</b>" },
+		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 레벨 업! Lv.{number1}  (최대 체력 +{number2}, 공격력 +{number3}%)" },
+		{ "✨ Upgrades are free right now! ({number1} left)", "✨ 지금은 강화가 무료예요! ({number1}회 남음)" },
+		{ "⏳ The portal is still recovering ({number1} s).", "⏳ 포탈이 아직 회복 중이에요 ({number1}초)." },
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ 장비 {number1}개 자동 분해 (정수 +{number2}, {number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 워프할 골드가 부족해요! ({number1}G 필요)" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 멀티 롤!\n모든 티켓 사용 (최대 {number1})" },

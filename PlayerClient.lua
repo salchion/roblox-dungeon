@@ -3357,6 +3357,13 @@ function useSkill(skillKey)
 end
 
 Remotes.Skill.OnClientEvent:Connect(function(action, skillKey, cooldown)
+	if action == "Reduce" then -- 유니크 "Time Warp": 처치할 때마다 모든 스킬 쿨타임이 줄어든다
+		local now = os.clock()
+		for key, at in pairs(skillReadyAt) do
+			if at > now then skillReadyAt[key] = math.max(now, at - (cooldown or 0)) end
+		end
+		return
+	end
 	if action == "Cast" and Config.Skills[skillKey] then
 		skillCooldownTotal[skillKey] = cooldown or Config.Skills[skillKey].Cooldown
 		skillReadyAt[skillKey] = os.clock() + skillCooldownTotal[skillKey]

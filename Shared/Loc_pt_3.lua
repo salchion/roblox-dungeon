@@ -4,6 +4,18 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Pierces up to {number1} enemies", "Perfura até {number1} inimigos" },
+		{ "Loading the land...  {number1}%", "Carregando o mundo...  {number1}%" },
+		{ "Defeat the Zone {number1} Lord", "Derrote o Senhor da Zona {number1}" },
+		{ "{number2} / {number3}   Reward: {number4} G + 🎫 {number5}", "{number2} / {number3} Recompensa: {number4} G + 🎫 {number5}" },
+		{ "{number1} Snowfield · {number2} Volcano", "{number1} Campo de Neve · {number2} Vulcão" },
+		{ "Railgun · Rusty Era +{number1}", "Arma de trilhos · Era enferrujada +{number1}" },
+		{ "📍 Field (best: Zone {number11})", "📍 Campo (melhor: Zona {number11})" },
+		{ "{number5} Snowfield · {number6} Volcano", "{number5} Campo de Neve · {number6} Vulcão" },
+		{ "ZONE {number1}  ·  Forest   ☠☠", "Zona {number1} · Floresta ☠☠" },
+		{ "{number1} upgrades! {number2} succeeded", "{number1} melhorias! {number2} bem-sucedidas" },
+		{ "Free entries {number1} · Keys {number2}", "Entradas grátis {number1} · Chaves {number2}" },
+		{ "Loading the land...  {number1}", "Carregando o terreno...  {number1}" },
 		{ "Double Shot chance +{number1}%", "Chance de tiro duplo +{number1}%" },
 		{ "🔁 Path changed! (-{number1} G)", "🔁 Caminho trocado! (-{number1} G)" },
 		{ "ZONE {number1}  ·  Meadow   ☠", "Zona {number1} · Prado ☠" },

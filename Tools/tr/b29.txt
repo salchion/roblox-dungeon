@@ -376,3 +376,19 @@
 1728¦着弾点の周りで小さく爆発する大きな弾（半径7）¦Große Granaten, die beim Einschlag klein explodieren (Radius 7)¦Gros obus qui explosent autour de l'impact (rayon 7)¦Proyectiles grandes que estallan alrededor del impacto (radio 7)¦Projéteis grandes que explodem ao redor do impacto (raio 7)¦大型炮弹，在落点周围小范围爆炸（半径7）¦맞은 자리 주변에서 작게 터지는 큰 포탄 (반경 7)
 1729¦遅いが一発一発が強力¦Langsam, aber jeder Bolzen ist stark¦Lent mais chaque carreau est puissant¦Lento pero cada virote es potente¦Lento, mas cada virote é poderoso¦慢但每一发都很强¦느리지만 한 발 한 발이 강력해요
 259¦突進イノシシ¦Angriffseber¦Sanglier chargeur¦Jabalí embestidor¦Javali investidor¦冲锋野猪¦돌진 멧돼지
+2415¦倒すたびに全スキルのクールダウンが0.4秒短縮¦Jeder Kill verkürzt alle Skill-Abklingzeiten um 0,4 s¦Chaque élimination réduit tous les temps de recharge de 0,4 s¦Cada baja reduce todos los enfriamientos de habilidad en 0,4 s¦Cada abate reduz todas as recargas de habilidade em 0,4 s¦每次击杀，所有技能冷却缩短0.4秒¦처치할 때마다 모든 스킬 쿨타임 -0.4초
+2416¦10体倒すごとに周囲に殺戮の波動（300%ダメージ）¦Alle 10 Kills entfesselst du eine Schlachtwelle um dich (300 % Schaden)¦Toutes les 10 éliminations, une Onde de massacre autour de toi (300 % de dégâts)¦Cada 10 bajas desatas una Onda de matanza a tu alrededor (300 % de daño)¦A cada 10 abates, uma Onda de Massacre ao seu redor (300% de dano)¦每击杀10个，在周围释放屠戮波动（300%伤害）¦10킬마다 내 주변에 학살의 파동 (300% 피해)
+2417¦倒すと時々ラッキースター：5秒間 幸運+150% · 経験値+30%¦Kills lassen manchmal einen Glücksstern fallen: Glück +150 % für 5 s · EP +30 %¦Les éliminations font parfois tomber une Étoile chanceuse : Chance +150 % pendant 5 s · XP +30 %¦A veces las bajas sueltan una Estrella de la suerte: Suerte +150 % durante 5 s · XP +30 %¦Às vezes abates soltam uma Estrela da Sorte: Sorte +150% por 5 s · XP +30%¦击杀时有时掉落幸运星：5秒内幸运+150% · 经验+30%¦처치 시 가끔 행운의 별: 5초 동안 행운 +150% · 경험치 +30%
+2418¦ボス・エリートへの攻撃で亀裂が蓄積：1層ごとにダメージ+4%（最大10）¦Treffer auf Bosse und Elite stapeln Zerschmettern: +4 % Schaden pro Stapel (max. 10)¦Les coups sur les boss et élites cumulent Fracture : +4 % de dégâts par cumul (max 10)¦Los golpes a jefes y élites acumulan Fractura: +4 % de daño por carga (máx. 10)¦Golpes em chefes e elites acumulam Rachadura: +4% de dano por acúmulo (máx. 10)¦攻击首领和精英会叠加破甲：每层伤害+4%（最多10层）¦보스·엘리트를 때릴 때마다 균열 중첩: 한 겹당 피해 +4% (최대 10겹)
+2419¦8秒ごとに攻撃を1回完全に防ぐシールドが生まれる¦Alle 8 s bildet sich ein Schild, der einen Treffer vollständig blockt¦Toutes les 8 s, un bouclier se forme et bloque entièrement un coup¦Cada 8 s se forma un escudo que bloquea por completo un golpe¦A cada 8 s surge um escudo que bloqueia totalmente um golpe¦每8秒生成一个护盾，完全抵挡一次攻击¦8초마다 공격 한 번을 완전히 막는 보호막이 생겨요
+2420¦🩸 殺戮の波動！¦🩸 Schlachtwelle!¦🩸 Onde de massacre !¦🩸 ¡Onda de matanza!¦🩸 Onda de Massacre!¦🩸 屠戮波动！¦🩸 학살의 파동!
+2421¦⭐ ラッキースター！幸運+150%¦⭐ Glücksstern! Glück +150 %¦⭐ Étoile chanceuse ! Chance +150 %¦⭐ ¡Estrella de la suerte! Suerte +150 %¦⭐ Estrela da Sorte! Sorte +150%¦⭐ 幸运星！幸运+150%¦⭐ 행운의 별! 행운 +150%
+2422¦🪓 亀裂 x10！¦🪓 Zerschmettern x10!¦🪓 Fracture x10 !¦🪓 ¡Fractura x10!¦🪓 Rachadura x10!¦🪓 破甲 x10！¦🪓 균열 x10!
+2423¦🛡 防いだ！¦🛡 Geblockt!¦🛡 Bloqué !¦🛡 ¡Bloqueado!¦🛡 Bloqueado!¦🛡 已格挡！¦🛡 막았다!
+2424¦🎰 ジャックポット x5！¦🎰 JACKPOT x5!¦🎰 JACKPOT x5 !¦🎰 ¡JACKPOT x5!¦🎰 JACKPOT x5!¦🎰 大奖 x5！¦🎰 잭팟 x5!
+2425¦⚡ サンダー弾！¦⚡ Donnergeschosse!¦⚡ Balles foudre !¦⚡ ¡Balas de trueno!¦⚡ Balas de Trovão!¦⚡ 雷霆弹！¦⚡ 번개탄!
+2426¦撃破ごとのクールダウン短縮¦Abklingzeit pro Kill¦Recharge par élimination¦Enfriamiento por baja¦Recarga por abate¦每次击杀冷却缩短¦처치당 쿨타임 감소
+2427¦殺戮の波動¦Schlachtwelle¦Onde de massacre¦Onda de matanza¦Onda de Massacre¦屠戮波动¦학살의 파동
+2428¦ラッキースター確率¦Glücksstern-Chance¦Chance d'Étoile chanceuse¦Probabilidad de Estrella de la suerte¦Chance de Estrela da Sorte¦幸运星概率¦행운의 별 확률
+2429¦亀裂¦Zerschmettern¦Fracture¦Fractura¦Rachadura¦破甲¦균열
+1880¦シールド¦Schild¦Bouclier¦Escudo¦Escudo¦护盾¦보호막

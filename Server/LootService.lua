@@ -25,6 +25,7 @@ local nextDropId = 0
 
 local function luckOf(player)
 	local luck = player:GetAttribute("GearLuck") or 0
+	if (player:GetAttribute("StarUntil") or 0) > workspace:GetServerTimeNow() then luck += 1.5 end -- 유니크 "Lucky Star" (UniqueService.STAR_LUCK)
 	if (player:GetAttribute("LuckBoostUntil") or 0) > os.time() then
 		luck += Config.Shop.LuckBoostBonus
 	end

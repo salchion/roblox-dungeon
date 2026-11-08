@@ -4,6 +4,15 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} hours of idle gold ({number2} G) piled up!", "{number1}時間のアイドルゴールド（{number2}G）が積み上がりました！" },
+		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 フィールドの入り口はすぐ後ろです！ {number1}m" },
+		{ "Clear {number1} dungeon(s)  ✅ tap to claim!", "{number1}のダンジョンをクリア ✅ タップして獲得しよう！" },
+		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 ボス宝箱・装備{number1}個</b>" },
+		{ "👑 Lord of Desert (Zone {number1}) · Rec. ⚡{number2}", "👑 砂漠の支配者（ゾーン {number1}） · レコメンド ⚡{number2}" },
+		{ "🏜 Desert Temple Entrance · Rec. ⚡{number2}", "🏜 砂漠の神殿の入り口 · 推奨レベル ⚡{number2}" },
+		{ "<font color='#ffe{number1}e'>⚡ {number2}</font> Lv.{number3}", "<font color='#ffe{number1}e'>⚡ {number2}</font> レベル{number3}" },
+		{ "Survive {number1} seconds in the Boss Rush", "ボスラッシュで{number1}秒間生き残る" },
+		{ "👑 Lord of Meadow (Zone {number1}) · Rec. ⚡{number2}", "👑 草原の支配者（ゾーン {number1}） · レコメンド ⚡{number2}" },
 		{ "Railgun  ·  keys {number1}-{number2} switch weapons", "レールガン ・ キー {number1}-{number2} で武器を切り替える" },
 		{ "📋 Daily Quests {number1}/{number2}  ✅ tap to claim!", "📋 デイリークエスト {number1}/{number2} ✅ タップして受け取る！" },
 		{ "Weapon range +{number1}% per point  (max {number2})", "武器の射程距離がポイントあたり+{number1}%（最大{number2}）" },

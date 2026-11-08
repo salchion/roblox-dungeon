@@ -4,6 +4,18 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 Zone {number1} · Snowfield Sealed", "🔒 Zone {number1} · Champ de neige scellé" },
+		{ "Sniper Rifle · Rusty Era +{number1}", "Fusil de sniper · Ère rouillée +{number1}" },
+		{ "❄ Ice Palace Gate · Rec. ⚡{number2}", "❄ Porte du palais de glace · Recommandé ⚡{number2}" },
+		{ "ZONE {number1}  ·  Abyss   ☠☠☠☠☠☠☠☠", "Zone {number1} · Abysse ☠☠☠☠☠☠☠☠" },
+		{ "Dismantled {number1}! Essence +{number2}, {number3} G", "{number1} démantelé(s) ! Essence +{number2}, {number3} or" },
+		{ "Enter the Boss Rush {number1} times", "Entrez {number1} fois dans le Boss Rush" },
+		{ "Fires {number1} pellets in a spread", "Tire {number1} plombs en éventail" },
+		{ "You can afford it now ({number1} G)", "Abordable maintenant ({number1} G)" },
+		{ "⭐ Legendary guaranteed in {number1}", "⭐ Légendaire garanti dans {number1}" },
+		{ "★★★  Step {number1}/{number2} · Higher step", "★★★ Étape {number1}/{number2} · Étape supérieure" },
+		{ "★★☆  Step {number1}/{number2} · Higher step", "★★☆ Étape {number1}/{number2} · Étape supérieure" },
+		{ "Spell Tome · Mythic Era +{number3}", "Livre de sorts · Ère mythique +{number3}" },
 		{ "ZONE {number1}  ·  Wasteland   ☠☠☠", "Zone {number1} · Terre dévastée ☠☠☠" },
 		{ "Active {number1} / {number2} slots   (💰 {number3} G)", "{number1} / {number2} emplacements actifs (💰 {number3} G)" },
 		{ "Dismantled! Essence +{number1}, {number2} G", "Démantelé ! Essence +{number1}, {number2} or" },

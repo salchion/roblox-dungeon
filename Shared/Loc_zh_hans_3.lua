@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "A new dungeon theme can now appear ({text1}, Level {number2}+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", "现在可能出现新的地下城主题({text1},{number2} 级以上)。选择深度:越深掉落几率越高,首领也越强。大门处现在有标记指引。" },
+		{ "(one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "(从 {number1} 种中随机一种)会出现在神话装备上:地下城宝箱(见下)、野外掉落({text2})、每周首领连战宝箱和每周最终领主奖励。" },
+		{ "🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: {text1}", "🔫 5 种武器 — 每个强化节点(每 15 级)解锁一种。可在已解锁的武器中选择出战武器 · 当前:{text1}" },
+		{ "🎁 First breakthrough gift! Received {text1} Time Skip — press [Use Time Skip] in Growth to finish right away!", "🎁 首次突破礼物!获得 {text1} 个时间跳跃——在成长中点击[使用时间跳跃]即可立即完成!" },
 		{ "{text1} has used up today's free entries and doesn't have {number2} key(s). Defeat a field zone lord to get keys", "{text1} 已用完今日免费入场次数,也没有 {number2} 把钥匙。击败野外区域领主即可获得钥匙" },
 		{ "🐃 Monster stampede! They're charging in a line from the {text1} — step aside and sweep them away!", "🐃 怪物狂奔!它们从 {text1} 排成一列冲来——闪到一旁,一举扫平它们!" },
 		{ "🛡 Your {text1} slot(s) are empty! Get gear from dungeon boss chests or the gacha and equip it", "🛡 有 {text1} 个栏位是空的!从地下城首领宝箱或扭蛋获取装备并穿戴上" },

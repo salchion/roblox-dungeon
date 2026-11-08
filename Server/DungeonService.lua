@@ -1203,6 +1203,10 @@ function Dungeon.MarkMult(player, data)
 	local mult = (data.MarkedBy == player and os.clock() < (data.MarkedUntil or 0)) and Config.Pet.MarkBonus or 1
 	local bossDmg = (player:GetAttribute("GearBossDmg") or 0) + (player:GetAttribute("ParBoss") or 0)
 	if bossDmg > 0 and (data.IsBoss or data.BossLike or data.Kind == "Boss" or data.Elite) then mult *= 1 + bossDmg end
+	if (player:GetAttribute("GearSunder") or 0) > 0 then -- 유니크 "Giant Slayer": 보스 / 엘리트에 균열 중첩
+		local okU, Unique = pcall(function() return require(script.Parent:WaitForChild("UniqueService")) end)
+		if okU then mult *= Unique.SunderMult(player, data) end
+	end
 	return mult
 end
 local function damageMonster(run, player, part, data, amount, isCrit, hitPosition, quiet)
@@ -1533,6 +1537,8 @@ function Dungeon.ComputeDamage(player)
 	if math.random() < (player:GetAttribute("GearJackpot") or 0) then -- 유니크 "Jackpot": 가끔 5배 (큰 피해 숫자로 보인다)
 		damage *= 5
 		isCrit = true
+		local okU, Unique = pcall(function() return require(script.Parent:WaitForChild("UniqueService")) end)
+		if okU then Unique.Callout(player, "Jackpot", "🎰 JACKPOT x5!", Color3.fromRGB(255, 215, 80)) end
 	end
 	return math.max(1, math.floor(damage + 0.5)), isCrit
 end
@@ -1851,6 +1857,8 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 		if uniqueHits[player] >= math.max(3, 7 - thunder) then
 			uniqueHits[player] = 0
 			strikeBolt(run, player, { Part = part, Data = data }, augDamage(player) * 2.5, "U_Thunder")
+			local okU, Unique = pcall(function() return require(script.Parent:WaitForChild("UniqueService")) end)
+			if okU then Unique.Callout(player, "Thunder", "⚡ Thunder Rounds!", Color3.fromRGB(255, 240, 120)) end
 		end
 	end
 	-- 점화 (보스형): 직접 맞힐 때마다 중첩 (궁합 무기는 2중첩)

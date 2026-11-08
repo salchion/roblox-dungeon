@@ -659,6 +659,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/UniqueService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "UniqueService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "MonsterLabelClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "MonsterLabelClient",

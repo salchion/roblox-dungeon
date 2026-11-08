@@ -150,3 +150,51 @@ task.spawn(function()
 		end
 	end
 end)
+
+------------------------------------------------------------
+-- 4) 유니크 능력 표시: 방벽 보호막(몸을 감싼 옅은 푸른 막) / 행운의 별(몸 주위 별빛)
+------------------------------------------------------------
+do
+	local bubble, sparkle
+	RunService.RenderStepped:Connect(function()
+		local character = player.Character
+		local root = character and character:FindFirstChild("HumanoidRootPart")
+		local shieldOn = root ~= nil and player:GetAttribute("ShieldUp") == true
+		if shieldOn then
+			if not bubble or not bubble.Parent then
+				bubble = Instance.new("Part")
+				bubble.Name = "UniqueShieldBubble"
+				bubble.Shape = Enum.PartType.Ball
+				bubble.Size = Vector3.new(7.5, 7.5, 7.5)
+				bubble.Material = Enum.Material.ForceField
+				bubble.Color = Color3.fromRGB(130, 200, 255)
+				bubble.Transparency = 0.2
+				bubble.Anchored, bubble.CanCollide, bubble.CanQuery, bubble.CanTouch, bubble.CastShadow = true, false, false, false, false
+				bubble.Parent = workspace
+			end
+			bubble.CFrame = root.CFrame
+		elseif bubble then
+			local old = bubble
+			bubble = nil
+			if old.Parent then -- 깨질 때: 크게 부풀며 사라진다
+				game:GetService("TweenService"):Create(old, TweenInfo.new(0.25), { Size = Vector3.new(12, 12, 12), Transparency = 1 }):Play()
+				game:GetService("Debris"):AddItem(old, 0.3)
+			end
+		end
+		local starOn = root ~= nil and (player:GetAttribute("StarUntil") or 0) > workspace:GetServerTimeNow()
+		if starOn and (not sparkle or not sparkle.Parent or sparkle.Parent ~= root) then
+			if sparkle then sparkle:Destroy() end
+			sparkle = Instance.new("ParticleEmitter")
+			sparkle.Name = "LuckyStarAura"
+			sparkle.Rate, sparkle.Lifetime, sparkle.Speed = 18, NumberRange.new(0.8, 1.3), NumberRange.new(1, 3)
+			sparkle.SpreadAngle = Vector2.new(180, 180)
+			sparkle.Color = ColorSequence.new(Color3.fromRGB(255, 230, 120))
+			sparkle.LightEmission = 0.6
+			sparkle.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.35), NumberSequenceKeypoint.new(1, 0) })
+			sparkle.Parent = root
+		elseif not starOn and sparkle then
+			sparkle:Destroy()
+			sparkle = nil
+		end
+	end)
+end

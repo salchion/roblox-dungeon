@@ -20,6 +20,9 @@ function Combo.Kill(player, noUlt)
 	if not noUlt and player:GetAttribute("Zone") ~= "Lobby" then
 		player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + C.UltPerKill))
 	end
+	-- 유니크 능력 (처치 시: Time Warp / Slaughterer / Lucky Star)
+	local okU, Unique = pcall(function() return require(script.Parent:WaitForChild("UniqueService")) end)
+	if okU then pcall(Unique.OnKill, player) end
 end
 
 -- 공격력 배율 (ComputeDamage 에서 곱한다)

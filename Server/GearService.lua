@@ -48,6 +48,12 @@ local function recompute(player)
 	player:SetAttribute("GearThunder", math.min(3, math.floor(affix.Thunder + 0.5)))
 	player:SetAttribute("GearJackpot", Config.SoftCap(affix.Jackpot, 0.15))
 	player:SetAttribute("GearBulwark", Config.SoftCap(affix.Bulwark, 0.4))
+	-- 새 능력형 유니크 (UniqueService): 같은 유니크를 여러 개 껴도 한 번만 / 조금만 더 세진다
+	player:SetAttribute("GearKillCdr", math.min(0.8, affix.KillCdr))
+	player:SetAttribute("GearSlaughter", math.min(1, affix.Slaughter))
+	player:SetAttribute("GearStar", Config.SoftCap(affix.Star, 0.15))
+	player:SetAttribute("GearSunder", math.min(1, affix.Sunder))
+	player:SetAttribute("GearShield", math.min(1, affix.Shield))
 	player:SetAttribute("GearCritDmg", Config.SoftCap(affix.CritDmg, 2)) -- (장비 옵션: 치명타 피해 / 공격 속도)
 	player:SetAttribute("GearAtkSpeed", Config.SoftCap(affix.AtkSpeed, 0.5))
 

@@ -2413,5 +2413,20 @@
 "Time needed {text1} · 💰 {text2} G",
 "⬆ Level Up {text1} G",
 "XP {number1} / {number2}",
-"{number1}d {number2}h"
+"{number1}d {number2}h",
+"Every kill shortens all skill cooldowns by 0.4s",
+"Every 10 kills unleash a Slaughter Wave around you (300% damage)",
+"Kills sometimes drop a Lucky Star: Luck +150% for 5s · XP +30%",
+"Hits on bosses and elites stack Sunder: +4% damage per stack (max 10)",
+"Every 8s a shield forms that fully blocks one hit",
+"🩸 Slaughter Wave!",
+"⭐ Lucky Star! Luck +150%",
+"🪓 Sunder x10!",
+"🛡 Blocked!",
+"🎰 JACKPOT x5!",
+"⚡ Thunder Rounds!",
+"Cooldown per Kill",
+"Slaughter Wave",
+"Lucky Star Chance",
+"Sunder"
 ]

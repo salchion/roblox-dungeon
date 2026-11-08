@@ -21,6 +21,10 @@ function Guard.Take(humanoid, amount)
 	if not humanoid or humanoid.Health <= 0 then return end
 	local player = humanoid.Parent and Players:GetPlayerFromCharacter(humanoid.Parent)
 	if player then
+		if (player:GetAttribute("GearShield") or 0) > 0 then -- 유니크 "Bulwark": 보호막이 있으면 이번 공격을 완전히 막는다
+			local okU, Unique = pcall(function() return require(script.Parent:WaitForChild("UniqueService")) end)
+			if okU and Unique.TryShield(player) then return end
+		end
 		amount = amount * (1 - Guard.Reduction(player)) * (1 - (player:GetAttribute("GearBulwark") or 0)) * (1 - (player:GetAttribute("TrainBulwark") or 0)) -- (유니크 "Bulwark" / 훈련 "질긴 피부")
 		amount *= 1 - Config.Newbie.Defense * Config.NewbieStrength(player) -- 초보자 가호: 초반에는 받는 피해가 줄어든다
 		if (player:GetAttribute("RiftLeft") or 0) <= 0 then -- (보스러쉬 중에는 상한이 없다: 체력이 낮은 사람이 상한 덕에 유리해지면 순위가 불공정해진다)

@@ -55,6 +55,7 @@ end
 -- 행운: 장비 옵션(GearLuck) + 행운 부스터 (켜져 있을 때). withBooster = nil 이면 지금 상태 그대로
 function Odds.LuckOf(player, withBooster)
 	local luck = player:GetAttribute("GearLuck") or 0
+	if (player:GetAttribute("StarUntil") or 0) > workspace:GetServerTimeNow() then luck += 1.5 end -- 유니크 "Lucky Star" 가 켜져 있는 동안
 	local active = (player:GetAttribute("LuckBoostUntil") or 0) > os.time()
 	if withBooster == true or (withBooster == nil and active) then
 		luck += Config.Shop.LuckBoostBonus

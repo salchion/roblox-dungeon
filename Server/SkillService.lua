@@ -83,6 +83,27 @@ local function damageAt(player, center, radius, mult, source)
 	return hit
 end
 
+-- 유니크 "Time Warp": 모든 스킬의 남은 쿨타임을 seconds 만큼 줄인다 (클라이언트 쿨타임 표시도 같이)
+function Skill.ReduceCooldowns(player, seconds)
+	local cooldowns = readyAt[player]
+	if not cooldowns or seconds <= 0 then return end
+	local now = os.clock()
+	for key, at in pairs(cooldowns) do
+		if at > now then cooldowns[key] = math.max(now, at - seconds) end
+	end
+	Remotes.Skill:FireClient(player, "Reduce", nil, seconds)
+end
+
+-- 유니크 "Slaughterer": 내 주변 범위 피해 + 붉은 충격파
+function Skill.UniqueWave(player, center, radius, mult, source, color)
+	ring(center, radius, color, 0.5)
+	ring(center, radius * 0.6, Color3.fromRGB(255, 220, 200), 0.3)
+	Effects.Burst(center + Vector3.new(0, 2, 0), color, 50)
+	player:SetAttribute("ShakeStrength", 0.6)
+	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+	damageAt(player, center, radius, mult, source)
+end
+
 local U = Config.SkillUpgrade
 
 local function skillLevel(player, key)
