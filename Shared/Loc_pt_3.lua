@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Double Shot chance +{number1}%", "Chance de tiro duplo +{number1}%" },
+		{ "🔁 Path changed! (-{number1} G)", "🔁 Caminho trocado! (-{number1} G)" },
+		{ "ZONE {number1}  ·  Meadow   ☠", "Zona {number1} · Prado ☠" },
+		{ "Luck Booster ({number1} hour)", "Impulsionador de Sorte ({number1} horas)" },
+		{ "Idle Booster ({number1} hour)", "Impulsionador de Inatividade ({number1} horas)" },
+		{ "Hit the dummy {number1} times", "Acerte o manequim {number1} vezes" },
+		{ "{number3} Wasteland · {number4} Desert", "{number3} Terras Desoladas · {number4} Deserto" },
 		{ "Double Shot chance {number1}%", "Chance de tiro duplo {number1}%" },
 		{ "Roll for gear {number1} times", "Sorteie equipamento {number1} vezes" },
 		{ "Move Speed +{number1}  (max {number2})", "Velocidade +{number1}  (máx. {number2})" },

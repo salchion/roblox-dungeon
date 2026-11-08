@@ -371,3 +371,8 @@
 2412¦⬆ レベルアップ {text1} G¦⬆ Level-Up {text1} G¦⬆ Monter de niveau {text1} G¦⬆ Subir de nivel {text1} G¦⬆ Subir de nível {text1} G¦⬆ 升级 {text1} G¦⬆ 레벨 업 {text1} G
 2413¦経験値 {number1} / {number2}¦EP {number1} / {number2}¦XP {number1} / {number2}¦XP {number1} / {number2}¦XP {number1} / {number2}¦经验 {number1} / {number2}¦경험치 {number1} / {number2}
 2414¦{number1}日 {number2}時間¦{number1} T {number2} Std¦{number1} j {number2} h¦{number1} d {number2} h¦{number1} d {number2} h¦{number1}天 {number2}小时¦{number1}일 {number2}시간
+1724¦標的に投げ込む重い爆弾：遅いが強力¦Eine schwere Bombe auf das Ziel geworfen: langsam, aber hart¦Une lourde bombe lancée sur la cible : lente mais puissante¦Una bomba pesada lanzada al objetivo: lenta pero contundente¦Uma bomba pesada lançada no alvo: lenta, mas forte¦向目标抛出的重型炸弹：慢但威力大¦목표에 던지는 무거운 폭탄: 느리지만 강력해요
+1725¦矢は遠くまで正確に飛ぶ：遠距離から安定して射撃¦Pfeile fliegen weit und genau: stetige Schüsse aus der Ferne¦Les flèches volent loin et droit : tirs réguliers à distance¦Las flechas vuelan lejos y certeras: disparos firmes a distancia¦As flechas voam longe e certeiras: tiros firmes à distância¦箭矢飞得又远又准：远距离稳定射击¦화살이 멀리 정확하게 날아가요: 먼 거리에서 꾸준히 사격
+1728¦着弾点の周りで小さく爆発する大きな弾（半径7）¦Große Granaten, die beim Einschlag klein explodieren (Radius 7)¦Gros obus qui explosent autour de l'impact (rayon 7)¦Proyectiles grandes que estallan alrededor del impacto (radio 7)¦Projéteis grandes que explodem ao redor do impacto (raio 7)¦大型炮弹，在落点周围小范围爆炸（半径7）¦맞은 자리 주변에서 작게 터지는 큰 포탄 (반경 7)
+1729¦遅いが一発一発が強力¦Langsam, aber jeder Bolzen ist stark¦Lent mais chaque carreau est puissant¦Lento pero cada virote es potente¦Lento, mas cada virote é poderoso¦慢但每一发都很强¦느리지만 한 발 한 발이 강력해요
+259¦突進イノシシ¦Angriffseber¦Sanglier chargeur¦Jabalí embestidor¦Javali investidor¦冲锋野猪¦돌진 멧돼지

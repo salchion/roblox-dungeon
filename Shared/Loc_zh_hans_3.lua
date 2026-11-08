@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} has used up today's free entries and doesn't have {number2} key(s). Defeat a field zone lord to get keys", "{text1} 已用完今日免费入场次数,也没有 {number2} 把钥匙。击败野外区域领主即可获得钥匙" },
+		{ "🐃 Monster stampede! They're charging in a line from the {text1} — step aside and sweep them away!", "🐃 怪物狂奔!它们从 {text1} 排成一列冲来——闪到一旁,一举扫平它们!" },
 		{ "🛡 Your {text1} slot(s) are empty! Get gear from dungeon boss chests or the gacha and equip it", "🛡 有 {text1} 个栏位是空的!从地下城首领宝箱或扭蛋获取装备并穿戴上" },
 		{ "+{text1}% chance per point to fire a second shot right after the first (\"bang-bang\")  (max {number2})", "每点 +{text1}% 几率在第一发后立刻再射一发(“砰砰”)(最多 {number2})" },
 		{ "🔒 {text1} unlocks at +{number2} ({number3} to go) - upgrade your weapon at the Forge or in the Menu (B)", "🔒 {text1} 将在 +{number2} 时解锁(还差 {number3})- 在铁匠铺或菜单 (B) 强化武器" },

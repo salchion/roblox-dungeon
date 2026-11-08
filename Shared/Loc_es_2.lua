@@ -587,6 +587,11 @@ return {
 		["Now"] = "Ahora",
 		["Perish."] = "Perece.",
 		["ℹ How it works"] = "ℹ Cómo funciona",
+		["A heavy bomb lobbed at the target: slow but hits hard"] = "Una bomba pesada lanzada al objetivo: lenta pero contundente",
+		["Arrows fly far and true: steady shots from a distance"] = "Las flechas vuelan lejos y certeras: disparos firmes a distancia",
+		["Big shells that burst into a small explosion around the impact (radius 7)"] = "Proyectiles grandes que estallan alrededor del impacto (radio 7)",
+		["Slow but each bolt is powerful"] = "Lento pero cada virote es potente",
+		["Charging Boar"] = "Jabalí embestidor",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -949,10 +954,5 @@ return {
 		{ "◆ Luck (Drop Rarity) +{number1}%", "◆ Suerte (rareza) +{number1}%" },
 		{ "Cooldown -{number1}% · damage +{number2}%", "Enfriamiento -{number1} % · daño +{number2} %" },
 		{ "NEAR MISS lasts +{number1}s more", "NEAR MISS dura {number1} s más" },
-		{ "🐾 Unlock your pet! ({number1} G)", "🐾 ¡Desbloquea tu mascota! ({number1} G)" },
-		{ "💪 Zone {number1} Lord: power {number2} / {number3}", "💪 Señor de la zona {number1}: poder {number2} / {number3}" },
-		{ "Crit damage +{number1}%p  (max {number2})", "Daño crítico +{number1} %p  (máx. {number2})" },
-		{ "★☆  Step {number1}/{number2} · Next step", "★☆ Paso {number1}/{number2} · Siguiente paso" },
-		{ "🌋 {number1} Streak — Legendary!", "🌋 {number1} Racha - ¡Legendario!" },
 	},
 }

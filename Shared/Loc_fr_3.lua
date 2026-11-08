@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "ZONE {number1}  ·  Wasteland   ☠☠☠", "Zone {number1} · Terre dévastée ☠☠☠" },
+		{ "Active {number1} / {number2} slots   (💰 {number3} G)", "{number1} / {number2} emplacements actifs (💰 {number3} G)" },
+		{ "Dismantled! Essence +{number1}, {number2} G", "Démantelé ! Essence +{number1}, {number2} or" },
+		{ "🎯 Goal: Defeat Zone {number1} Lord", "🎯 Objectif : vaincre le seigneur de la zone {number1}" },
+		{ "Explodes on hit (radius {number1})", "Explose à l'impact (rayon {number1})" },
 		{ "Not enough gold (need {number1} G)", "Pas assez d'or ({number1} or requis)" },
 		{ "▲ {number1} unspent (T)  ·  {number2} / {number3} XP", "▲ {number1} non dépensés (T)  ·  {number2} / {number3} XP" },
 		{ "Enter Fever Time {number1} time(s)", "Entrez {number1} fois dans la Fièvre" },

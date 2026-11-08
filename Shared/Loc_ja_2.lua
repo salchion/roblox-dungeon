@@ -716,6 +716,11 @@ return {
 		["Now"] = "現在",
 		["Perish."] = "滅びよ。",
 		["ℹ How it works"] = "ℹ 仕組み",
+		["A heavy bomb lobbed at the target: slow but hits hard"] = "標的に投げ込む重い爆弾：遅いが強力",
+		["Arrows fly far and true: steady shots from a distance"] = "矢は遠くまで正確に飛ぶ：遠距離から安定して射撃",
+		["Big shells that burst into a small explosion around the impact (radius 7)"] = "着弾点の周りで小さく爆発する大きな弾（半径7）",
+		["Slow but each bolt is powerful"] = "遅いが一発一発が強力",
+		["Charging Boar"] = "突進イノシシ",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -950,9 +955,5 @@ return {
 		{ "<font color='#ffe{number1}e'>⚡ {number2}</font> Lv.{number3}", "<font color='#ffe{number1}e'>⚡ {number2}</font> レベル{number3}" },
 		{ "Survive {number1} seconds in the Boss Rush", "ボスラッシュで{number1}秒間生き残る" },
 		{ "👑 Lord of Meadow (Zone {number1}) · Rec. ⚡{number2}", "👑 草原の支配者（ゾーン {number1}） · レコメンド ⚡{number2}" },
-		{ "Railgun  ·  keys {number1}-{number2} switch weapons", "レールガン ・ キー {number1}-{number2} で武器を切り替える" },
-		{ "📋 Daily Quests {number1}/{number2}  ✅ tap to claim!", "📋 デイリークエスト {number1}/{number2} ✅ タップして受け取る！" },
-		{ "Weapon range +{number1}% per point  (max {number2})", "武器の射程距離がポイントあたり+{number1}%（最大{number2}）" },
-		{ "👑 Lord of Forest (Zone {number1}) · Rec. ⚡{number2}", "👑 森の支配者（ゾーン {number1}） · レコード ⚡{number2}" },
 	},
 }

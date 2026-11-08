@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🐾 Unlock your pet! ({number1} G)", "🐾 ¡Desbloquea tu mascota! ({number1} G)" },
+		{ "💪 Zone {number1} Lord: power {number2} / {number3}", "💪 Señor de la zona {number1}: poder {number2} / {number3}" },
+		{ "Crit damage +{number1}%p  (max {number2})", "Daño crítico +{number1} %p  (máx. {number2})" },
+		{ "★☆  Step {number1}/{number2} · Next step", "★☆ Paso {number1}/{number2} · Siguiente paso" },
+		{ "🌋 {number1} Streak — Legendary!", "🌋 {number1} Racha - ¡Legendario!" },
 		{ "Reach character level {number1}", "Alcanza el nivel de personaje {number1}" },
 		{ "▼ 👑 First Zone Lord  {number1}m", "▼ 👑 Señor de la Primera Zona {number1}m" },
 		{ "Defeat {number1} elite monsters", "Derrota a {number1} monstruos de élite" },

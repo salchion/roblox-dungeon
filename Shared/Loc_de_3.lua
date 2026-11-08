@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎁 Claimed {number1} rewards!", "🎁 {number1} Belohnungen abgeholt!" },
+		{ "Cooldown -{number1}%  (max {number2})", "Abklingzeit -{number1} %  (max. {number2})" },
+		{ "⚠ Zone {number1} · Forest ⚠", "⚠ Zone {number1} · Wald ⚠" },
+		{ "{number1} Gear Roll Tickets", "{number1} Ausrüstungswurf-Tickets" },
+		{ "👑 {number1} Kill Streak!!!!", "👑 {number1} Tötungsserie!!!!" },
+		{ "XP Booster ({number1} hour)", "XP-Booster ({number1} Stunde)" },
+		{ "Recommended Power {number2}", "Empfohlene Kraft {number2}" },
 		{ "💰 Buy Point {number1} G ({number2}/{number3})", "💰 Kaufe Punkt {number1} G ({number2}/{number3})" },
 		{ "Best {number1}  ·  Max hit {number2}", "Beste {number1} · Maximaler Treffer {number2}" },
 		{ "🗿 Colossus · Zone {number1}", "🗿 Koloss · Zone {number1}" },

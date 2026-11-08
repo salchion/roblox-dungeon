@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Railgun  ·  keys {number1}-{number2} switch weapons", "レールガン ・ キー {number1}-{number2} で武器を切り替える" },
+		{ "📋 Daily Quests {number1}/{number2}  ✅ tap to claim!", "📋 デイリークエスト {number1}/{number2} ✅ タップして受け取る！" },
+		{ "Weapon range +{number1}% per point  (max {number2})", "武器の射程距離がポイントあたり+{number1}%（最大{number2}）" },
+		{ "👑 Lord of Forest (Zone {number1}) · Rec. ⚡{number2}", "👑 森の支配者（ゾーン {number1}） · レコード ⚡{number2}" },
 		{ "📍 Field Entrance  Right ahead!  {number1}m", "📍 フィールドの入り口はすぐです！ {number1}m" },
 		{ "Points left {number1}  /  total {number2}  (Level {number3})", "残りポイント {number1}  /  合計 {number2}  (レベル {number3})" },
 		{ "🔥 Better gear dropped! ({number1} slot(s))", "🔥 より良い装備がドロップしました！({number1}スロット)" },

@@ -599,6 +599,11 @@ return {
 		["Now"] = "Actuel",
 		["Perish."] = "Péris.",
 		["ℹ How it works"] = "ℹ Fonctionnement",
+		["A heavy bomb lobbed at the target: slow but hits hard"] = "Une lourde bombe lancée sur la cible : lente mais puissante",
+		["Arrows fly far and true: steady shots from a distance"] = "Les flèches volent loin et droit : tirs réguliers à distance",
+		["Big shells that burst into a small explosion around the impact (radius 7)"] = "Gros obus qui explosent autour de l'impact (rayon 7)",
+		["Slow but each bolt is powerful"] = "Lent mais chaque carreau est puissant",
+		["Charging Boar"] = "Sanglier chargeur",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -926,10 +931,5 @@ return {
 		{ "★★★  Step {number1}/{number2} · Higher step", "★★★ Étape {number1}/{number2} · Étape supérieure" },
 		{ "★★☆  Step {number1}/{number2} · Higher step", "★★☆ Étape {number1}/{number2} · Étape supérieure" },
 		{ "Spell Tome · Mythic Era +{number3}", "Livre de sorts · Ère mythique +{number3}" },
-		{ "ZONE {number1}  ·  Wasteland   ☠☠☠", "Zone {number1} · Terre dévastée ☠☠☠" },
-		{ "Active {number1} / {number2} slots   (💰 {number3} G)", "{number1} / {number2} emplacements actifs (💰 {number3} G)" },
-		{ "Dismantled! Essence +{number1}, {number2} G", "Démantelé ! Essence +{number1}, {number2} or" },
-		{ "🎯 Goal: Defeat Zone {number1} Lord", "🎯 Objectif : vaincre le seigneur de la zone {number1}" },
-		{ "Explodes on hit (radius {number1})", "Explose à l'impact (rayon {number1})" },
 	},
 }

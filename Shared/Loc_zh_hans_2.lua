@@ -469,6 +469,11 @@ return {
 		["Now"] = "当前",
 		["Perish."] = "灭亡吧。",
 		["ℹ How it works"] = "ℹ 说明",
+		["A heavy bomb lobbed at the target: slow but hits hard"] = "向目标抛出的重型炸弹：慢但威力大",
+		["Arrows fly far and true: steady shots from a distance"] = "箭矢飞得又远又准：远距离稳定射击",
+		["Big shells that burst into a small explosion around the impact (radius 7)"] = "大型炮弹，在落点周围小范围爆炸（半径7）",
+		["Slow but each bolt is powerful"] = "慢但每一发都很强",
+		["Charging Boar"] = "冲锋野猪",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1085,7 +1090,5 @@ return {
 		{ "(one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "(从 {number1} 种中随机一种)会出现在神话装备上:地下城宝箱(见下)、野外掉落({text2})、每周首领连战宝箱和每周最终领主奖励。" },
 		{ "🔫 5 Weapon Types — one unlocks per upgrade milestone (every 15). Pick which unlocked weapon to fight with · Now: {text1}", "🔫 5 种武器 — 每个强化节点(每 15 级)解锁一种。可在已解锁的武器中选择出战武器 · 当前:{text1}" },
 		{ "🎁 First breakthrough gift! Received {text1} Time Skip — press [Use Time Skip] in Growth to finish right away!", "🎁 首次突破礼物!获得 {text1} 个时间跳跃——在成长中点击[使用时间跳跃]即可立即完成!" },
-		{ "{text1} has used up today's free entries and doesn't have {number2} key(s). Defeat a field zone lord to get keys", "{text1} 已用完今日免费入场次数,也没有 {number2} 把钥匙。击败野外区域领主即可获得钥匙" },
-		{ "🐃 Monster stampede! They're charging in a line from the {text1} — step aside and sweep them away!", "🐃 怪物狂奔!它们从 {text1} 排成一列冲来——闪到一旁,一举扫平它们!" },
 	},
 }
