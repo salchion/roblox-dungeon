@@ -296,10 +296,10 @@ local function buildInventoryTab(state)
 				refreshMenu()
 			end
 		end)
-		rounded(box, 16) -- (네모 → 둥글게: 칸마다 부드러운 윗면 빛과 가는 테두리, 아이콘은 등급 색 원 안에)
-		create("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(160, 160, 178)) }, box)
+		rounded(box, 14)
+		create("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(200, 200, 214)) }, box)
 		local function iconDisc(color, icon, tier)
-			Kit.medal(box, { Size = 42, Position = UDim2.new(0.5, -21, 0, 11), Color = color, Icon = icon, TextSize = 20, Tier = tier or 0, ZIndex = 10 })
+			Kit.medal(box, { Size = 44, Position = UDim2.new(0.5, -22, 0, 8), Color = color, Icon = icon, TextSize = 21, Tier = tier or 0, ZIndex = 10 })
 		end
 		local function accentBar(color) -- 칸 아래 등급 색 막대
 			local bar = create("Frame", { Size = UDim2.new(0, 44, 0, 3), Position = UDim2.new(0.5, -22, 1, -7), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 10, Active = false }, box)
@@ -310,28 +310,30 @@ local function buildInventoryTab(state)
 			local tier = Config.GetLookTier(weaponLevel, Config.ResolveWeaponType(weaponLevel, player:GetAttribute("WeaponType")))
 			rarityOutline(box, 4, 2).Color = tier.Color
 			iconDisc(tier.Color, "🔫", 2)
-			accentBar(tier.Color)
-			makeLabel({ Size = UDim2.new(1, -6, 0, 14), Position = UDim2.new(0, 3, 0, 52), Text = Config.WeaponTypes[tier.Class].Name, TextSize = 10, TextColor3 = tier.Color, Font = Enum.Font.GothamBold, ZIndex = 10 }, box)
+			makeLabel({ Size = UDim2.new(1, -8, 0, 16), Position = UDim2.new(0, 4, 1, -21), Text = Config.WeaponTypes[tier.Class].Name, TextSize = 10, TextTruncate = Enum.TextTruncate.AtEnd, TextColor3 = tier.Color, Font = Enum.Font.GothamBold, ZIndex = 10 }, box)
 		elseif item then
-			rarityOutline(box, rarity, 1.8)
-			setDecor(box, item.Set, setCounts[item.Set], UDim2.new(0, 5, 0, 5), UDim2.new(0, 30, 0, 14), 16)
+			-- 깔끔하게: 아이콘 하나 + 아래 한 줄(+강화 단계, 지금 강화 가능하면 초록 ▲). 이름은 오른쪽 상세 칸에서 본다
+			-- (예전엔 잘린 이름 / 구역 리본 / 단계 배지 / 깜빡이는 초록 원이 겹쳐서 지저분했다)
+			local stroke = create("UIStroke", { Color = Config.Gear.RarityColors[rarity], Thickness = rarity >= 4 and 2 or 1.5, Transparency = 0.15, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, box)
+			if rarity >= 5 then
+				local g = create("UIGradient", { Color = ColorSequence.new({
+					ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 80, 80)), ColorSequenceKeypoint.new(0.33, Color3.fromRGB(255, 220, 80)),
+					ColorSequenceKeypoint.new(0.66, Color3.fromRGB(80, 220, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 80)),
+				}) }, stroke)
+				TweenService:Create(g, TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1), { Rotation = 360 }):Play()
+			end
 			iconDisc(Config.Gear.RarityColors[rarity], SLOT_ICONS[slotKey], rarity)
-			accentBar(Config.Gear.RarityColors[rarity])
-			makeLabel({ Size = UDim2.new(1, -6, 0, 13), Position = UDim2.new(0, 3, 0, 53), Text = Config.ItemDisplayName(item), TextSize = 9, TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd, TextColor3 = Color3.fromRGB(245, 246, 255), Font = Enum.Font.GothamBold, ZIndex = 10 }, box)
-			-- 강화 단계: 오른쪽 위 둥근 배지 (금색)
-			local badge = create("Frame", { Size = UDim2.new(0, 30, 0, 16), Position = UDim2.new(1, -35, 0, 5), BackgroundColor3 = Color3.fromRGB(10, 12, 22), BackgroundTransparency = 0.2, BorderSizePixel = 0, ZIndex = 10, Active = false }, box)
-			create("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
-			makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = string.format("+%d", item.Level), TextSize = 10, TextColor3 = Color3.fromRGB(255, 220, 120), Font = Enum.Font.GothamBlack, ZIndex = 11 }, badge)
-			-- 지금 골드로 바로 강화할 수 있으면: 오른쪽 아래에 숨 쉬듯 깜빡이는 초록 ▲ 배지 (눌러서 오른쪽 강화 버튼으로)
-			if item.Level < Config.Gear.MaxLevel and (player:GetAttribute("Gold") or 0) >= Config.GetGearCost(item.Slot, item.Rarity, item.Level) then
-				local up = create("Frame", { Size = UDim2.new(0, 22, 0, 22), Position = UDim2.new(1, -27, 1, -29), BackgroundColor3 = Color3.fromRGB(70, 210, 110), BorderSizePixel = 0, ZIndex = 12, Active = false }, box)
-				create("UICorner", { CornerRadius = UDim.new(1, 0) }, up)
-				create("UIStroke", { Color = Color3.fromRGB(220, 255, 230), Thickness = 1.5 }, up)
-				makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "▲", TextSize = 13, TextColor3 = Color3.fromRGB(10, 40, 20), Font = Enum.Font.GothamBlack, ZIndex = 13 }, up)
-				TweenService:Create(up, TweenInfo.new(0.7, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Size = UDim2.new(0, 26, 0, 26), Position = UDim2.new(1, -29, 1, -31) }):Play()
+			local canUp = item.Level < Config.Gear.MaxLevel and (player:GetAttribute("Gold") or 0) >= Config.GetGearCost(item.Slot, item.Rarity, item.Level)
+			makeLabel({ Size = UDim2.new(1, -8, 0, 16), Position = UDim2.new(0, 4, 1, -21), RichText = true, TextSize = 12, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 220, 120), ZIndex = 10,
+				Text = canUp and string.format("+%d <font color='#78ff8c'>▲</font>", item.Level) or string.format("+%d", item.Level) }, box)
+			local def = item.Set and Config.Sets[item.Set]
+			if def then -- 세트: 왼쪽 위 작은 세트색 점 (2부위 이상이면 테두리가 생긴다)
+				local dot = create("Frame", { Size = UDim2.new(0, 9, 0, 9), Position = UDim2.new(0, 7, 0, 7), BackgroundColor3 = def.Color, BorderSizePixel = 0, ZIndex = 11, Active = false }, box)
+				create("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
+				if (setCounts[item.Set] or 0) >= 2 then create("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 1.2 }, dot) end
 			end
 			if item.Unique then
-				makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0, 5, 1, -20), Text = "✦", TextSize = 12, TextColor3 = Color3.fromRGB(255, 184, 77), ZIndex = 11 }, box)
+				makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(1, -18, 0, 4), Text = "✦", TextSize = 12, TextColor3 = Color3.fromRGB(255, 184, 77), ZIndex = 11 }, box)
 			end
 		else
 			create("UIStroke", { Color = Color3.fromRGB(70, 74, 96), Thickness = 1, Transparency = 0.3 }, box)
