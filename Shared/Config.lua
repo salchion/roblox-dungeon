@@ -780,7 +780,7 @@ end
 ------------------------------------------------------------
 Config.Gear = {
 	MaxLevel = 30, -- 15 -> 30 (비용은 아래 GetGearCost: 내 분당 수입 기준)
-	LevelBonus = 0.08,   -- 강화 1레벨당 효과 +8%
+	LevelBonus = 0.05,   -- 강화 1레벨당 효과 +5% (0.08 -> 0.05: 강화보다 등급 차이가 더 크게 느껴지게. +30 이면 x2.5)
 	RarityNames = { "Common", "Rare", "Epic", "Legendary", "Mythic" },
 	RarityColors = {
 		Color3.fromRGB(190, 190, 190),
@@ -796,7 +796,7 @@ Config.Gear = {
 		Enum.Material.Foil,
 		Enum.Material.Neon,
 	},
-	RarityMult = { 1, 1.6, 2.5, 4, 6 },
+	RarityMult = { 1, 1.8, 3.2, 5.4, 8.2 }, -- ({1,1.6,2.5,4,6} 에서 넓힘: 전설 +0 이 일반 +30 보다 2배 넘게 세다. 신화 +30 최대치는 예전과 같다: 6 x 3.4 = 20.4 / 8.2 x 2.5 = 20.5)
 	Slots = {
 		{ Key = "Armor", Name = "Armor", Stat = "Health", StatName = "Max HP", Base = 40, BaseCost = 120,
 			Names = { "Leather Armor", "Chainmail", "Steel Armor", "Mithril Armor", "Dragonscale Armor" } },
