@@ -62,6 +62,7 @@ function LordLook.Build(add)
 	ball(V(0, 14, 0), 7, 7.4, 7, rgb(20, 10, 18), METAL)
 	ball(V(0, 11.8, -1.4), 5.6, 3.4, 5, plate, METAL)                           -- 턱
 	local eyes = {}
+	local eyeGlow = {} -- 눈 뒤 번짐 (오프닝에서 눈과 같이 켜진다)
 	for _, side in ipairs({ -1, 1 }) do
 		eyes[#eyes + 1] = add(V(3, 0.9, 0.6), CFrame.new(side * 1.7, 14.6, -3.5) * CFrame.Angles(0, 0, math.rad(side * 18)), rgb(255, 230, 90), NEON)
 		for k = -1, 1 do ball(V(side * 0.9 + k * 0.7, 11.5, -3.6), 0.5, 1.4, 0.5, bone, PLASTIC) end -- 송곳니
@@ -129,7 +130,7 @@ function LordLook.Build(add)
 	for _, side in ipairs({ -1, 1 }) do
 		-- 어깨 갑옷의 금테 + 눈 뒤 번짐
 		add(V(0.8, 9.4, 9.4), CFrame.new(side * 9.8, 7.4, 0) * CFrame.Angles(0, 0, math.rad(90)), gold, METAL, 0, CYL)
-		add(V(4.2, 1.6, 0.3), CFrame.new(side * 1.9, 14.6, -3.3) * CFrame.Angles(0, 0, math.rad(side * 18)), rgb(255, 200, 60), NEON, 0.55)
+		eyeGlow[#eyeGlow + 1] = add(V(4.2, 1.6, 0.3), CFrame.new(side * 1.9, 14.6, -3.3) * CFrame.Angles(0, 0, math.rad(side * 18)), rgb(255, 200, 60), NEON, 0.55)
 	end
 	-- 망토 안감 (붉은 비단): 망토 뒤에서 살짝 비친다
 	for k = -1, 1 do
@@ -170,7 +171,7 @@ function LordLook.Build(add)
 		seg(V(math.cos(angle) * 13.5, 15 + math.sin(angle) * 13.5, 8.4), V(math.cos(angle) * 18, 15 + math.sin(angle) * 18, 8.4), 0.5, rgb(70, 50, 30), METAL)
 	end
 
-	return { Body = body, Eyes = eyes, Core = core }
+	return { Body = body, Eyes = eyes, Core = core, EyeGlow = eyeGlow }
 end
 
 return LordLook

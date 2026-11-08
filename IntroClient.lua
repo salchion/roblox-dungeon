@@ -55,6 +55,7 @@ local function buildLord(parent, baseCF, S)
 		return part
 	end
 	local look = require(ReplicatedStorage:WaitForChild("LordLook")).Build(add) -- 모양은 결투의 군주와 같은 모듈 (LordLook)
+	for _, glow in ipairs(look.EyeGlow or {}) do table.insert(look.Eyes, glow) glow:SetAttribute("LitAlpha", glow.Transparency) end -- (눈 뒤 번짐도 눈과 같이 꺼 두었다가 켠다)
 	local eyes, core = look.Eyes, look.Core
 	return eyes, core
 end
@@ -734,9 +735,15 @@ local function play()
 	-- 2) 보스가 눈을 뜬다 -> 에너지를 모은다 (구슬이 커지고 화면이 떨린다)
 	sfx("Lord_Voice", 0.9)
 	TweenService:Create(lordLabel, TweenInfo.new(0.6), { TextTransparency = 0, TextStrokeTransparency = 0.5 }):Play()
+	-- 카메라가 군주 앞에 도착한 바로 이 순간 눈에 불이 "번쩍" 들어온다 (그 전까지는 꺼져 있다)
 	for _, eye in ipairs(eyes) do
-		TweenService:Create(eye, TweenInfo.new(0.7), { Transparency = 0 }):Play()
+		local lit = eye:GetAttribute("LitAlpha") or 0
+		local size = eye.Size
+		eye.Transparency = 0
+		eye.Size = size * 1.8
+		TweenService:Create(eye, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = size, Transparency = lit }):Play()
 	end
+	sfx("Reel_Stop", 0.8, 0.6)
 	task.wait(0.6)
 	if finished then return end
 	sfx("Lord_Charge", 1.0)
