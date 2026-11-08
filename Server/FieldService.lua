@@ -1203,8 +1203,6 @@ local function reward(player, data, part)
 	end
 
 	local gold = math.floor(data.Stats.Gold + 0.5)
-	local frontier = data.Zone >= 2 and data.Zone == (player:GetAttribute("ClearedZone") or 0) + 1 and Config.Loot.Frontier or nil -- 개척 보너스 (다음 구역)
-	if frontier then gold = math.floor(gold * frontier.Gold + 0.5) end
 	BL.Kill(player, data.Kind or "Normal")
 	if data.Kind == "Boss" then -- 군주: 막타를 친 사람의 골드 (그 외는 아래에서 준 피해로 나눈다)
 		player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + math.floor(gold * Config.GoldBonus(player) + 0.5))
@@ -1219,7 +1217,6 @@ local function reward(player, data, part)
 		xp = Config.Xp.FieldPerMonsterLevel * data.XpLevel * (data.Kind == "Elite" and Config.Xp.EliteMult or 1) * (data.Kind == "Normal" and Config.Horde.Reward or 1)
 	end
 	xp = xp * ((Config.Xp.ZoneMult and Config.Xp.ZoneMult[data.Zone]) or 1) -- 구역이 깊을수록 경험치 배율
-	if frontier then xp *= frontier.Xp end
 	local rewarded = nil -- 골드 / 경험치를 받은 사람들 (드랍을 각자 굴린다)
 	if data.Kind == "Boss" then Level.AddXP(player, xp) else rewarded = PartyShare.Distribute(player, data, part, gold, xp) end -- 군주는 근처 모두가 각자 받는다(아래). 그 외는 준 피해로 나눈다 (파티는 하나로)
 
@@ -1286,6 +1283,40 @@ local function reward(player, data, part)
 					Level.AddXP(other, Config.Xp.FieldBoss)
 				end
 				notify(other, string.format("👑 Field Boss defeated! Tickets +%d, loot dropped", F.BossTickets))
+				-- 구역 군주 첫 처치 보상 (사람마다 구역마다 한 번): 골드 / 티켓 / 열쇠 / 확정 장비 (카드 연출)
+				local riftFC = Meta.GetRift(other)
+				if riftFC then
+					riftFC.FirstClear = riftFC.FirstClear or {}
+					local zkey = tostring(data.Zone)
+					if not riftFC.FirstClear[zkey] then
+						riftFC.FirstClear[zkey] = true
+						task.spawn(function()
+							local FC = Config.Loot.FirstClear
+							local z = data.Zone
+							local gold = math.floor((data.Stats.Gold or 0) * FC.GoldMult)
+							other:SetAttribute("Gold", (other:GetAttribute("Gold") or 0) + gold)
+							other:SetAttribute("Tickets", (other:GetAttribute("Tickets") or 0) + (FC.Tickets[z] or 5))
+							pcall(Keys.Add, other, FC.Keys[z] or 1)
+							local okInv, Inv = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
+							local roll
+							if okInv then
+								local slot = Config.Gear.Slots[math.random(#Config.Gear.Slots)]
+								local rarity = FC.GearRarity[z] or 4
+								local item = Inv.NewItem(slot.Key, rarity, 0, nil, rarity >= 5 and FC.UniqueChance or 0)
+								item.Set = Config.Sets.ZoneKeys[z] -- 그 구역 세트 조각
+								item.NoCard = true
+								local status = Inv.Add(other, item)
+								roll = { Slot = slot.Key, Rarity = rarity, Name = Inv.ItemName(item), Equipped = status == "Equipped", Status = status, Gold = 0, Set = item.Set }
+							end
+							task.wait(3.5) -- (승리 연출이 끝난 뒤에 보상 카드)
+							if not other.Parent then return end
+							notify(other, string.format("🏆 First clear of Zone %d! Gold +%d · Tickets +%d · Keys +%d", z, gold, FC.Tickets[z] or 5, FC.Keys[z] or 1))
+							if roll and not other:GetAttribute("TutorialRiftBusy") and not other:GetAttribute("CombatLocked") then -- (튜토리얼 열쇠 / 던전으로 끌려가는 연출 중에는 카드를 띄우지 않는다: 장비는 이미 가방에)
+								Remotes.Gear:FireClient(other, "Result", { Ok = true, Message = "", Header = string.format("🏆 Zone %d First Clear Reward!", z), Roll = roll })
+							end
+						end)
+					end
+				end
 			end
 		end
 	end
@@ -2757,13 +2788,6 @@ local function updateZones()
 						end
 					end
 					-- 새 구역에 들어서면 큰 경고 배너 (난이도가 얼마나 뛰는지 숫자로 보여준다)
-					do -- 개척 구역에 있는지 (화면 위 "개척 보너스" 표시용)
-						local isFrontier = fieldZone >= 2 and fieldZone == (player:GetAttribute("ClearedZone") or 0) + 1
-						if (player:GetAttribute("FrontierHere") == true) ~= isFrontier then
-							player:SetAttribute("FrontierHere", isFrontier or nil)
-							if isFrontier then notify(player, "🚩 Frontier Bonus! Gold & XP x2 · Gear drops x1.5 until you defeat this zone's Lord") end
-						end
-					end
 					if fieldZone ~= lastZoneSeen[player] then
 						local previous = lastZoneSeen[player] or 0
 						lastZoneSeen[player] = fieldZone

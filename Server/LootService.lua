@@ -76,9 +76,6 @@ end
 -- kind: "Normal" | "Elite" | "Boss" | "Event". zoneIndex: 구역 번호(등급 표의 줄)
 function Loot.DropFor(player, position, kind, zoneIndex)
 	local chance = L.DropChance[kind] or 0
-	if zoneIndex >= 2 and zoneIndex == (player:GetAttribute("ClearedZone") or 0) + 1 then -- 개척 보너스: 드롭 확률 x1.5
-		chance = math.min(1, chance * (L.Frontier and L.Frontier.Drop or 1))
-	end
 	local count = L.Counts[kind] or 1
 	local row = math.clamp(zoneIndex, 1, #L.ZoneRarity)
 

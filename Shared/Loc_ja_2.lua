@@ -894,6 +894,7 @@ return {
 		{ "🗿 Colossus defeated! Gear + 🎫 +{number1} + {number2} G (time bonus x{number3})", "🗿 コロッサスを倒した！装備 + 🎫 +{number1} + {number2} G(タイムボーナス x{number3})" },
 		{ "Depth {number1} sweep: gold, tickets and boss chest received", "深度{number1}のスイープ：ゴールド、チケット、ボス箱を獲得しました" },
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "レベルが足りません。（このダンジョンはLv.{number1}以上）" },
+		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 {number1}区域を初クリア！ゴールド+{number2} · チケット+{number3} · 鍵+{number4}" },
 		{ "Shot_Cannon  <font color='#{number1}aa{number2}c{number3}'>Mortar shot</font>", "ショットキャノン <font color='#{number1}aa{number2}c{number3}'>迫撃砲射撃</font>" },
 		{ "🗿 Dungeon mutation: Giant — Monster HP x{number1} rewards x{number2}", "🗿 ダンジョンの突然変異：巨大モンスターのHPが{number1}倍、報酬が{number2}倍" },
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 履き古した靴を自動回収（エッセンス +{number1} {number2} G）" },
@@ -967,6 +968,5 @@ return {
 		{ "🔒 Unlocks at level {number1}  (you are level {number2})", "🔒 レベル{number1}で解放(現在 レベル{number2})" },
 		{ "Pierces up to {number1} more enemies in a line", "一直線上の敵をさらに最大{number1}体貫通します" },
 		{ "Lasts +{number1}s · range +{number2}%: sweeps up swarms", "持続+{number1}秒・範囲+{number2}%：群れを一掃" },
-		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 雪原の支配者（ゾーン {number1}） · レコード ⚡{number2}" },
 	},
 }

@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "NEAR MISS lasts +{number1}s more", "NEAR MISS hält weitere {number1} s" },
+		{ "🐾 Unlock your pet! ({number1} G)", "🐾 Schalte dein Haustier frei! ({number1} G)" },
+		{ "💪 Zone {number1} Lord: power {number2} / {number3}", "💪 Herrscher Zone {number1}: Kraft {number2} / {number3}" },
 		{ "Crit damage +{number1}%p  (max {number2})", "Krit-Schaden +{number1} %p  (max. {number2})" },
 		{ "★☆  Step {number1}/{number2} · Next step", "★☆ Schritt {number1}/{number2} · Nächster Schritt" },
 		{ "🌋 {number1} Streak — Legendary!", "🌋 {number1} Serie - Legendär!" },

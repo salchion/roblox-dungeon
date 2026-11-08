@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "every {number1}s a meteor, radius {number2} (x1.5 on bosses)", "{number1}초마다 운석 (반경 {number2}, 보스에게 x1.5)" },
 		{ "Heals over {number1}s instead of at once · total +{number2}%", "한 번에 대신 {number1}초에 걸쳐 회복 · 합계 +{number2}%" },
 		{ "Spend {number1} stat points (T key / Stats button)", "{number1} 스탯 포인트 사용 (T 키 / 스탯 버튼)" },
 		{ "▶ Next feature: Lv.{number1} 💥 Power  ({number2} lvl · ~{number3} G)", "▶ 다음 기능: 레벨 {number1} 💥 파워 ({number2} 레벨 · ~{number3} G)" },
@@ -144,6 +145,7 @@ return {
 		{ "Zone {number1} monsters {number2} / {number3} defeated", "{number1}구역 몬스터 {number2} / {number3} 처치" },
 		{ "◆ Damage Taken Reduction +{number1}%", "◆ 받는 피해 감소 +{number1}%" },
 		{ "Gives back {number1} gauge after use", "쓰고 나면 게이지 {number1}이 돌아와요" },
+		{ "🏆 Zone {number1} First Clear Reward!", "🏆 {number1}구역 첫 클리어 보상!" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ 스펠 토메 · 녹슨 시대 +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ 얼음 궁전 문 · 레크레이션 ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 구역 {number1} · 황무지 봉쇄됨" },

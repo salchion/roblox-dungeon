@@ -777,6 +777,7 @@ return {
 		{ "🗿 Colossus defeated! Gear + 🎫 +{number1} + {number2} G (time bonus x{number3})", "🗿 Colosse vaincu ! Équipement + 🎫 +{number1} + {number2} or (bonus de temps x{number3})" },
 		{ "Depth {number1} sweep: gold, tickets and boss chest received", "Profondeur {number1} balayée : or, tickets et coffre du boss reçus" },
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "Ton niveau est trop bas. (Ce donjon requiert Nv.{number1}+)" },
+		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 Zone {number1} vaincue pour la première fois ! Or +{number2} · Tickets +{number3} · Clés +{number4}" },
 		{ "Shot_Cannon  <font color='#{number1}aa{number2}c{number3}'>Mortar shot</font>", "Canon de tir <font color='#{number1}aa{number2}c{number3}'> Tir de mortier </font>" },
 		{ "🗿 Dungeon mutation: Giant — Monster HP x{number1} rewards x{number2}", "🗿 Mutation du donjon : Géant - HP du monstre x{number1} récompenses x{number2}" },
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Commun] Chaussures usées récupérées automatiquement (Essence +{number1} {number2} G)" },
@@ -934,7 +935,5 @@ return {
 		{ "Damage x{number1} · {number2} targets (gauge {number3})", "Dégâts x{number1} · {number2} cibles (jauge {number3})" },
 		{ "🔒 Paragon unlocks at level {number1}.", "🔒 Le parangon se débloque au niveau {number1}." },
 		{ "Survive {number1} dungeon bonus waves", "Survivez à {number1} vagues bonus de donjon" },
-		{ "Double Shot chance {number1}%  (max {number2})", "Chance de tir double {number1} %  (max {number2})" },
-		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "PV de l'ennemi +{number1}%\nOr +{number2}% à la place" },
 	},
 }

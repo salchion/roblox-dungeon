@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 雪原の支配者（ゾーン {number1}） · レコード ⚡{number2}" },
 		{ "💥Explosive Shot {number1} · ⚡Chain Lightning {number2}", "💥爆発ショット {number1} · ⚡チェーンライトニング {number2}" },
 		{ "👑 Lord of Wasteland (Zone {number1}) · Rec. ⚡{number2}", "👑 荒地の支配者（ゾーン {number1}） · レコード ⚡{number2}" },
 		{ "Spell Tome  ·  keys {number1}-{number2} switch weapons", "スペル・トーム　・　キー{number1}-{number2}で武器を切り替える" },
@@ -104,6 +105,7 @@ return {
 		{ "Zone {number1} monsters {number2} / {number3} defeated", "{number1}エリアのモンスター {number2} / {number3} 撃破" },
 		{ "◆ Damage Taken Reduction +{number1}%", "◆ 被ダメージ軽減 +{number1}%" },
 		{ "Gives back {number1} gauge after use", "使用後にゲージ{number1}が戻る" },
+		{ "🏆 Zone {number1} First Clear Reward!", "🏆 {number1}区域 初クリア報酬！" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ スペル・トーム · 錆びた時代 +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ 氷の宮殿の門 · レコメンド ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 ゾーン {number1} · 荒地が封鎖されました" },

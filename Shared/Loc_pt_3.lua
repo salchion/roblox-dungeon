@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Fall in the field {number1} times", "Caia {number1} vezes no campo" },
+		{ "Raise your pet to level {number1}", "Leve seu pet ao nível {number1}" },
+		{ "Range x{number1} · allies heal +{number2}%", "Alcance x{number1} · aliados curam +{number2}%" },
+		{ "Recovers {number1}% HP per second", "Recupera {number1}% de PV por segundo" },
 		{ "Uses all Tickets (max {number1})", "Usa todos os bilhetes (máximo {number1})" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 Campo · Melhor Zona {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "Zona {number1} · Deserto ☠☠☠☠" },

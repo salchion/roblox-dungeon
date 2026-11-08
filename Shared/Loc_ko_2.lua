@@ -1043,6 +1043,7 @@ return {
 		{ "🗿 Colossus defeated! Gear + 🎫 +{number1} + {number2} G (time bonus x{number3})", "🗿 거신 처치! 장비 + 🎫 +{number1} + {number2} G (시간 보너스 x{number3})" },
 		{ "Depth {number1} sweep: gold, tickets and boss chest received", "깊이 {number1} 소탕 완료: 골드, 티켓, 보스 상자를 받았어요" },
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "레벨이 너무 낮아요. (이 던전은 Lv.{number1} 이상)" },
+		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 {number1}구역 첫 클리어! 골드 +{number2} · 티켓 +{number3} · 열쇠 +{number4}" },
 		{ "Shot_Cannon  <font color='#{number1}aa{number2}c{number3}'>Mortar shot</font>", "포격 <font color='#{number1}aa{number2}c{number3}'>박격포 발사</font>" },
 		{ "🗿 Dungeon mutation: Giant — Monster HP x{number1} rewards x{number2}", "🗿 던전 돌연변이: 거대 - 몬스터 HP x{number1} 보상 x{number2}" },
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [일반] 마모된 신발 자동 회수 (에센스 +{number1} {number2} G)" },
@@ -1086,6 +1087,5 @@ return {
 		{ "🐾 Pet Lv.{number1}! New ability 💥 Power — Attack +{number2}%", "🐾 펫 레벨 {number1}! 새로운 능력 💥 파워 - 공격 +{number2}%" },
 		{ "Sniper Rifle  ·  next weapon: Shotgun at +{number1}", "저격 소총 · 다음 무기: 산탄총 +{number1}" },
 		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2} {number3} G)", "🧹 약한 장비 {number1}개를 자동으로 청소했습니다 (에센스 +{number2} {number3}G)" },
-		{ "every {number1}s a meteor, radius {number2} (x1.5 on bosses)", "{number1}초마다 운석 (반경 {number2}, 보스에게 x1.5)" },
 	},
 }

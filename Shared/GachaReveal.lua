@@ -401,8 +401,8 @@ function M.Init(deps)
 				BackgroundColor3 = Color3.fromRGB(24, 22, 36), BorderSizePixel = 0, ZIndex = 62,
 			}, root)
 			rounded(card, 16)
-			if result.Fusion then -- 합성 결과: 카드 위에 "⚗ 합성 성공!" 제목
-				local head = makeLabel({ Size = UDim2.new(0, 400, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 0.5, -124), Text = "⚗ Fusion Complete!", TextSize = 26,
+			if result.Fusion or result.Header then -- 합성 결과 / 첫 처치 보상: 카드 위에 제목
+				local head = makeLabel({ Size = UDim2.new(0, 520, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 0.5, -124), Text = result.Header or "⚗ Fusion Complete!", TextSize = 26,
 					Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(205, 170, 255), TextStrokeTransparency = 0.3, ZIndex = 63 }, root)
 				head.TextTransparency = 1
 				fade(head, { TextTransparency = 0 }, 0.3)

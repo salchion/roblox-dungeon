@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Double Shot chance {number1}%  (max {number2})", "Chance de tir double {number1} %  (max {number2})" },
+		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "PV de l'ennemi +{number1}%\nOr +{number2}% à la place" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 Porte du château sombre · Recommandé ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "Fusil de sniper · Ère arcanique +{number1}" },
 		{ "Preparing the field...  {number1} / {number2}", "Préparation du champ... {number1} / {number2}" },
@@ -17,6 +19,7 @@ return {
 		{ "Zone {number1} monsters {number2} / {number3} defeated", "Zone {number1} : {number2} / {number3} monstres vaincus" },
 		{ "◆ Damage Taken Reduction +{number1}%", "◆ Réduction des dégâts subis +{number1}%" },
 		{ "Gives back {number1} gauge after use", "Rend {number1} de jauge après usage" },
+		{ "🏆 Zone {number1} First Clear Reward!", "🏆 Récompense de première victoire : zone {number1} !" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Tome de sorts · Ère rouillée +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Porte du palais de glace · Rec. ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zone {number1} · Désert scellé" },

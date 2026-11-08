@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "★★★  Step {number1}/{number2} · Higher step", "★★★ Paso {number1}/{number2} · Nivel superior" },
+		{ "★★☆  Step {number1}/{number2} · Higher step", "★★☆ Paso {number1}/{number2} · Nivel superior" },
+		{ "Spell Tome · Mythic Era +{number3}", "Tomo de Hechizos · Era Mítica +{number3}" },
 		{ "ZONE {number1}  ·  Wasteland   ☠☠☠", "Zona {number1} · Tierra Desolada ☠☠☠" },
 		{ "Active {number1} / {number2} slots   (💰 {number3} G)", "{number1} / {number2} espacios activos (💰 {number3} G)" },
 		{ "Dismantled! Essence +{number1}, {number2} G", "¡Desmantelado! Esencia +{number1}, {number2} G" },

@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Remove #{number1}", "移除#{number1}" },
+		{ "🎟 Free {number1}/{number2}", "🎟 免费 {number1}/{number2}" },
+		{ "⚡ {number1} Power", "⚡ {number1} 能量" },
+		{ "Max HP +{number1}", "最大生命 +{number1}" },
+		{ "Range +{number1}%", "射程 +{number1}%" },
 		{ "Reroll ✨{number1}", "重置 ✨{number1}" },
 		{ "Zone {number1} / {number2}", "区域 {number1} / {number2}" },
 		{ "{number1} Tickets", "{number1} 张门票" },

@@ -2459,5 +2459,7 @@
 "• Gear drop chance x1.5",
 "• Deeper zones drop far better gear (Legendary / Mythic)",
 "Beat this zone's Lord and the next zone becomes your new frontier.",
-"Gold/XP x2 · Drops x1.5  ❔"
+"Gold/XP x2 · Drops x1.5  ❔",
+"🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}",
+"🏆 Zone {number1} First Clear Reward!"
 ]
