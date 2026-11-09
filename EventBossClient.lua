@@ -76,8 +76,19 @@ local lastWholeSecond = -1
 task.spawn(function()
 	while true do
 		local endAt = workspace:GetAttribute("BossEventEnd")
+		local soonAt = workspace:GetAttribute("BossEventSoon")
 		local zone = player:GetAttribute("Zone")
-		if type(endAt) == "number" and (zone == "Field" or zone == "Lobby") and not player:GetAttribute("ModalOpen") and not player:GetAttribute("IntroPlaying") then
+		if type(soonAt) == "number" and type(endAt) ~= "number" and (zone == "Field" or zone == "Lobby") and not player:GetAttribute("ModalOpen") and not player:GetAttribute("IntroPlaying") then
+			-- 등장 예고: 작게 "곧 등장" + 남은 초 (체력 막대는 비운다)
+			gui.Enabled = true
+			local seconds = math.ceil(math.max(0, soonAt - workspace:GetServerTimeNow()))
+			timer.Text = string.format("0:%02d", seconds)
+			timer.TextColor3 = Color3.fromRGB(255, 200, 120)
+			title.Text = string.format("⚠ %s rising soon · Zone %s", Config.Events.Name, tostring(workspace:GetAttribute("BossEventZone") or "?"))
+			hpFill.Size = UDim2.new(0, 0, 1, 0)
+			hpText.Text = ""
+			stroke.Color = INK
+		elseif type(endAt) == "number" and (zone == "Field" or zone == "Lobby") and not player:GetAttribute("ModalOpen") and not player:GetAttribute("IntroPlaying") then
 			gui.Enabled = true
 			local left = math.max(0, endAt - workspace:GetServerTimeNow())
 			local hp = workspace:GetAttribute("BossEventHp") or 1

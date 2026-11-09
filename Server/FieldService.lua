@@ -1120,7 +1120,8 @@ local function rewardEvent(data, part)
 	local rewarded = 0
 	local leftFrac = data.ExpireAt and math.clamp((data.ExpireAt - os.clock()) / Config.Events.Lifetime, 0, 1) or 0
 	local bonus = 1 + Config.Events.TimeBonus * leftFrac -- 제한 시간이 많이 남을수록 보상이 커진다
-	local tickets = leftFrac > 0.5 and 2 or 1
+	local E = Config.Events
+	local tickets = ((E.TicketsByZone and E.TicketsByZone[data.Zone]) or 1) + (leftFrac > 0.5 and 1 or 0) -- 높은 구역일수록 티켓이 많다 (+빨리 잡으면 1장 더)
 	for player, damage in pairs(data.Contrib) do
 		if player.Parent and damage >= data.MaxHealth * Config.Events.ContribMin then
 			rewarded += 1
@@ -1129,8 +1130,9 @@ local function rewardEvent(data, part)
 			Level.AddXP(player, Config.Xp.FieldBoss * 1.5)
 			Quest.Add(player, "BossKills", 1)
 			Quest.Add(player, "Kills", 1)
-			Loot.DropFor(player, position, "Event", data.Zone)
-			Loot.DropFor(player, position, "Event", data.Zone) -- 월드 보스: 장비를 두 번 떨어뜨린다
+			for _ = 1, (E.DropsByZone and E.DropsByZone[data.Zone]) or 2 do -- 월드 보스: 장비 여러 개 (높은 구역일수록 많다)
+				Loot.DropFor(player, position, "Event", data.Zone)
+			end
 			notify(player, string.format("🗿 Colossus defeated! Gear + 🎫 +%d + %d G (time bonus x%.1f)", tickets, math.floor(data.Stats.Gold * bonus + 0.5), bonus))
 		end
 	end
@@ -2918,15 +2920,8 @@ end)
 ------------------------------------------------------------
 -- 공개 이벤트: 거신
 ------------------------------------------------------------
-local function spawnEvent(zone)
-	local level = F.GetZoneLevel(zone) + 3
-	local base = Config.Monster.GetStats(level)
-	local E = Config.Events
-	local stats = {
-		Size = E.Size or 20, MaxHealth = base.MaxHealth * (E.HealthMult or 80), Speed = 7, ShotDamage = math.floor(base.ShotDamage * (E.DamageMult or 1.3)),
-		ShotInterval = 1.4, ShotSpeed = 55, Gold = base.Gold * (E.GoldMult or 30),
-	}
-
+local function pickEventSpot(zone, size)
+	local stats = { Size = size }
 	local x0, x1 = zoneBounds(zone)
 	-- 자리 고르기: 그 구역 군주와 150 이상 떨어지고, 몸 둘레(크기의 1.2배)가 모두 평평한 바닥이어야 한다
 	--   (경사로 / 단 끝에 서면 거대한 몸이 비탈에 파묻혀 바닥이 안 보였다)
@@ -2950,7 +2945,21 @@ local function spawnEvent(zone)
 		end
 	end
 	eventX = eventX or fallbackX or freeX(math.floor(x0 + 200), math.floor(x1 - 80))
-	local position = Vector3.new(eventX, floorAt(eventX) + stats.Size / 2, math.random(-60, 60)) -- (가운데 쪽: 양옆 비탈 / 벽과 겹치지 않게)
+	return Vector3.new(eventX, floorAt(eventX) + stats.Size / 2, math.random(-60, 60)) -- (가운데 쪽: 양옆 비탈 / 벽과 겹치지 않게)
+end
+
+-- 거신: 높은 구역일수록 그 구역 몬스터만큼 세고(체력 / 공격력), 보상도 그만큼 크다 (2구역 기준 배율)
+local function spawnEvent(zone, position)
+	local level = F.GetZoneLevel(zone) + 3
+	local base = Config.Monster.GetStats(level)
+	local E = Config.Events
+	local D = F.ZoneDanger
+	local stats = {
+		Size = E.Size or 20, MaxHealth = base.MaxHealth * (E.HealthMult or 80) * D.Health[zone] / D.Health[2], Speed = 7,
+		ShotDamage = math.floor(base.ShotDamage * (E.DamageMult or 1.3) * D.Damage[zone] / D.Damage[2]),
+		ShotInterval = 1.4, ShotSpeed = 55, Gold = base.Gold * (E.GoldMult or 30) * D.Reward[zone] / D.Reward[2],
+	}
+	position = position or pickEventSpot(zone, stats.Size)
 
 	local part = Instance.new("Part")
 	part.Name = "EventBoss"
@@ -3071,7 +3080,35 @@ local function runEvents()
 		end
 		if anyone and maxZone >= 2 and not inTutorial then
 			local zone = math.random(2, math.min(maxZone, F.ZoneCount))
-			local part, data = spawnEvent(zone)
+			-- 예고: 나올 자리에 옅은 주황 원 + 가는 빛줄기, 화면 위에 "곧 등장" 카운트다운 (EventBossClient). 그 뒤에 솟아오른다
+			local spot = pickEventSpot(zone, Config.Events.Size or 20)
+			local lead = Config.Events.WarnSeconds or 25
+			local mark = Instance.new("Part")
+			mark.Shape = Enum.PartType.Cylinder
+			mark.Anchored, mark.CanCollide, mark.CanQuery, mark.CanTouch, mark.CastShadow = true, false, false, false, false
+			mark.Material = Enum.Material.Neon
+			mark.Color = Color3.fromRGB(255, 150, 70)
+			mark.Transparency = 0.75
+			mark.Size = Vector3.new(0.3, 30, 30)
+			mark.CFrame = CFrame.new(spot.X, floorAt(spot.X) + 0.3, spot.Z) * CFrame.Angles(0, 0, math.rad(90))
+			mark.Parent = worldFolder
+			local thread = mark:Clone()
+			thread.Shape = Enum.PartType.Block
+			thread.Size = Vector3.new(1.2, 260, 1.2)
+			thread.Transparency = 0.8
+			thread.CFrame = CFrame.new(spot.X, floorAt(spot.X) + 130, spot.Z)
+			thread.Parent = worldFolder
+			TweenService:Create(mark, TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.5 }):Play()
+			workspace:SetAttribute("BossEventZone", zone)
+			workspace:SetAttribute("BossEventSoon", workspace:GetServerTimeNow() + lead)
+			for _, player in ipairs(Players:GetPlayers()) do
+				notify(player, string.format("⚠ A World Boss is stirring in Zone %d · %s... it rises in %d seconds!", zone, F.ZoneNames[zone], lead))
+			end
+			task.wait(lead)
+			mark:Destroy()
+			thread:Destroy()
+			workspace:SetAttribute("BossEventSoon", nil)
+			local part, data = spawnEvent(zone, spot)
 			activeEvent = { Part = part, Data = data }
 			for _, player in ipairs(Players:GetPlayers()) do
 				playSfx(player, "Event_Boss")

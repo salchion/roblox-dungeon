@@ -2467,6 +2467,8 @@
 "① Defeat a zone's Lord → its effect unlocks   ② Press Y (Sets) to turn it on and upgrade it with gold   ③ It fires on its own in combat",
 "Zone {number1} set effect · Trial Lv.3 — for this dungeon only. Watch for it in combat!",
 "That was your set effect! It fires on its own.",
-"▶ {number1} more to the next era — new shots: {text1}",
-"▶ {number1} more to the next era"
+"▶ {number1} more to the next era — new shots: {text2}",
+"▶ {number1} more to the next era",
+"⚠ A World Boss is stirring in Zone {number1} · {text2}... it rises in {number3} seconds!",
+"⚠ {text1} rising soon · Zone {number2}"
 ]
