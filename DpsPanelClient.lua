@@ -35,7 +35,7 @@ if COMPACT then
 else
 	-- PC: 오른쪽 가운데 아래. 왼쪽은 미션 카드 + 오늘의 퀘스트가 길게 내려와서 겹쳤다
 	meter.AnchorPoint = Vector2.new(1, 0)
-	meter.Position = UDim2.new(1, -16, 0.5, 0)
+	meter.Position = UDim2.new(1, -16, 0.38, 0) -- (0.5 -> 0.38: 오른쪽 아래 전리품 카드와 겹치던 것)
 end
 meter.Size = UDim2.new(0, WIDTH, 0, HEAD_H)
 meter.BackgroundColor3 = Color3.fromRGB(18, 20, 32)

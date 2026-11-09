@@ -258,6 +258,9 @@ local chokeLast = {} -- [소리 이름] = 가장 최근에 울린 Sound (Choke �
 function SoundBank.RecentShot()
 	return os.clock() - lastShot < 0.2
 end
+-- 자주 반복되는 소리: 울릴 때마다 높낮이를 이 비율 안에서 살짝 흔든다 (총소리는 0.03)
+local JITTER = { Hit = 0.05, Crit = 0.04, Kill = 0.05, Boom = 0.05, Pickup = 0.04, Dash = 0.04, Player_Hurt = 0.05,
+	Aug_MissileHit = 0.05, Aug_MeteorHit = 0.04, Aug_Nova = 0.05, Aug_Blade = 0.04, Aug_Storm = 0.04, Ult_Hit = 0.05, UltShot = 0.04, Enh_Hammer = 0.03 }
 function SoundBank.Play(parent, key, opts)
 	local spec = SPECS[key]
 	if not spec or not parent then return end
@@ -282,8 +285,11 @@ function SoundBank.Play(parent, key, opts)
 	elseif not NO_DUCK[key] and os.clock() - lastShot < 0.2 then
 		volumeScale *= 0.55 -- 덕킹: 총을 쏘는 중에는 다른 소리(적중 / 처치 / 줍기 등)를 절반쯤으로 낮춰 총소리가 묻히지 않게 한다
 	end
+	local jitter = JITTER[key] or (string.sub(key, 1, 4) == "Shot" and 0.03) or nil
+	if jitter then volumeScale *= 0.92 + math.random() * 0.12 end -- (같은 소리가 매번 똑같이 울리면 기계 같다: 크기도 조금씩)
 	local baseVolume = 0.35 * volumeScale
 	local pitch = custom and (opts.Pitch or 1) * (spec.CustomPitch or 1) or spec.Pitch * (opts.Pitch or 1) -- CustomPitch: 같은 소리를 여러 항목에 재사용할 때 높낮이를 달리한다
+	if jitter then pitch *= 1 + (math.random() * 2 - 1) * jitter end -- 높낮이를 아주 조금씩 다르게 (연타해도 자연스럽게)
 	local length = spec.Length or 1
 	if custom then length = spec.CustomLength or 2 end
 	if opts.Length then length = opts.Length end -- (부르는 쪽이 길이를 정할 때: 뽑기 흔들림처럼 연출 시간에 맞춘다) -- 내가 넣은 소리는 자연스러운 꼬리를 살리고, 너무 길 때만 끊는다
