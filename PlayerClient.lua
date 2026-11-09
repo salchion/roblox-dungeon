@@ -3604,7 +3604,11 @@ RunService.RenderStepped:Connect(function(dt)
 		gap += 4 * (hitMarker / 0.18)
 	end
 
-	crosshair.Position = UDim2.fromOffset(position.X, position.Y)
+	-- HUD 화면 전체에 크기 배율(UIScale, 큰 모니터에서 1보다 크다)이 걸려 있어서 좌표도 같이 곱해졌다: 십자선이 진짜 마우스보다 오른쪽 아래에 그려지고,
+	-- 판 위로 가서 진짜 커서로 바뀌는 순간 "순간이동"한 것처럼 보였다 -> 배율로 나눠서 정확히 마우스 자리에 그린다
+	local uiScale = gui:FindFirstChildOfClass("UIScale")
+	local k = (uiScale and uiScale.Scale > 0) and uiScale.Scale or 1
+	crosshair.Position = UDim2.fromOffset(position.X / k, position.Y / k)
 	barUp.Position = UDim2.fromOffset(0, -gap - 5)
 	barDown.Position = UDim2.fromOffset(0, gap + 5)
 	barLeft.Position = UDim2.fromOffset(-gap - 5, 0)
