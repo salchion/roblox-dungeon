@@ -3550,9 +3550,14 @@ local function isMouseOverButton(position) -- (매 프레임 불린다: 마우�
 	overPos, overAt, overResult = position, now, false
 	-- 마우스 위치는 위쪽 바(약 36픽셀)를 포함한 값이라, 화면 안쪽 기준(IgnoreGuiInset 가 꺼진 화면)과 전체 기준 둘 다 확인한다 (한쪽만 보면 DPS 미터기 같은 곳 위에서 커서가 십자선으로 남는다)
 	local inset = GuiService:GetGuiInset()
+	local viewportX = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize.X or 1920
 	for _, point in ipairs({ position, position - inset }) do
 		for _, object in ipairs(playerGui:GetGuiObjectsAtPosition(point.X, point.Y)) do
-			if object.Visible and (object:IsA("GuiButton") or object.Active) then
+			-- 버튼만이 아니라 "창 판" 위에서도 진짜 커서를 쓴다: 십자선은 HUD(아래 층)에 그려져서, 더 위 층의 팝업(오프라인 보상 / 뽑기 결과 ...) 판 위로 가면
+			-- 판에 가려 커서가 아예 안 보였다 -> 버튼까지 커서를 옮기기가 매우 어려웠다
+			local size = object.AbsoluteSize
+			local panel = object:IsA("Frame") and object.BackgroundTransparency < 0.6 and size.X >= 100 and size.Y >= 60 and size.X < viewportX * 0.9
+			if object.Visible and (object:IsA("GuiButton") or object.Active or panel) then
 				overResult = true
 				break
 			end
