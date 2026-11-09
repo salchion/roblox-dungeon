@@ -1261,9 +1261,10 @@ local function doomWaveInner(player, zone, center, real)
 				end
 				task.wait()
 			end
-			for _, orb in ipairs(orbs) do
-				Effects.Burst(orb.Position, rgb(255, 120, 70), 14)
-				orb:Destroy()
+			for _, orb in ipairs(orbs) do -- 시간이 다 된 불덩이: 피해가 없으니 터지지 않고 작아지며 꺼진다 (내 주변에서 터져서 맞은 줄 알았다)
+				orb.Material = Enum.Material.SmoothPlastic
+				TweenService:Create(orb, TweenInfo.new(0.35), { Size = Vector3.new(0.4, 0.4, 0.4), Transparency = 1 }):Play()
+				task.delay(0.4, function() orb:Destroy() end)
 			end
 			task.wait(0.44)
 		end

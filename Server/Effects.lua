@@ -181,8 +181,8 @@ function Effects.StepShot(p, dt, now, targets, queue)
 		proxy.Position = Vector3.new(p.Origin.X + (fx * s + fz * c) * k, p.Origin.Y + d.Y * p.Speed * t, p.Origin.Z + (fz * s - fx * c) * k)
 	elseif kind == "homing" then
 		local pos = proxy.Position
-		if now > p.Expire then -- 수명이 끝나면 그 자리에서 터진다
-			Effects.Burst(pos, Color3.fromRGB(255, 170, 90), 14)
+		if now > p.Expire then -- 수명이 끝나면 그 자리에서 꺼진다 (피해가 없으니 폭발처럼 보이지 않게: 작은 회색 연기만)
+			Effects.Burst(pos, Color3.fromRGB(150, 145, 140), 5)
 			return true, true
 		end
 		if now >= p.NextPick then -- 가장 가까운 플레이어를 0.4초마다 다시 고른다 (전체 검색 없이 이미 만든 목록만 훑는다)

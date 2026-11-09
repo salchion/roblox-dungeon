@@ -26,19 +26,20 @@ local function shake(player, strength)
 	player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
 end
 
--- 땅에서 퍼지는 충격파 고리 (부품 하나, 0.9초 뒤 사라진다)
+-- 퍼지는 기운 고리 (부품 하나, 0.9초 뒤 사라진다). 피해가 없는 연출이라 바닥이 아니라 군주 몸 높이의 공중에 옅게 띄운다
+-- (바닥에 깔리는 붉은 고리는 "맞으면 아픈 충격파"(던전 대지 강타)와 똑같아 보여서, 안 아픈데 아픈 줄 알고 피하게 만들었다)
 local function shockwave(position, size, color)
 	local folder = ctx and ctx.GetWorldFolder and ctx.GetWorldFolder()
 	if not folder then return end
-	local y = ctx.FloorAt(position.X) + 0.5
+	local y = position.Y
 	local ring = Instance.new("Part")
 	ring.Shape = Enum.PartType.Cylinder
 	ring.Size = Vector3.new(0.5, size, size)
 	ring.CFrame = CFrame.new(position.X, y, position.Z) * CFrame.Angles(0, 0, math.rad(90))
 	ring.Anchored, ring.CanCollide, ring.CanQuery, ring.CanTouch = true, false, false, false
 	ring.Material = Enum.Material.Neon
-	ring.Color = color
-	ring.Transparency = 0.25
+	ring.Color = color:Lerp(Color3.new(1, 1, 1), 0.25)
+	ring.Transparency = 0.6
 	ring.Parent = folder
 	TweenService:Create(ring, TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
 		Size = Vector3.new(0.5, size * 6, size * 6), Transparency = 1,
