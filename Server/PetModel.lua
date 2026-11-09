@@ -35,7 +35,8 @@ function PetModel.Build(look, color)
 	elseif look == "Spirit" then
 		body = newPart(model, Ball, Vector3.new(1.5, 1.5, 1.5), bright, Neon, 0.15)
 	else
-		body = newPart(model, Ball, Vector3.new(1.8, 1.8, 1.8), color, look == "Orb" and Neon or Plastic)
+		-- 빛 구슬: 통째로 빛나면 화면에서 제일 눈부셔서 캐릭터보다 눈에 띄었다 -> 반투명 유리 구슬 + 속의 작은 빛
+		body = newPart(model, Ball, Vector3.new(1.8, 1.8, 1.8), look == "Orb" and color:Lerp(Color3.new(1, 1, 1), 0.15) or color, look == "Orb" and Enum.Material.Glass or Plastic, look == "Orb" and 0.35 or 0)
 	end
 	body.Name = "Body"
 	body.CFrame = CFrame.new(0, 100, 0) -- MetaService 가 위치를 다시 맞춘다
@@ -57,6 +58,7 @@ function PetModel.Build(look, color)
 	end
 
 	if look == "Orb" then
+		attach(newPart(model, Ball, Vector3.new(0.75, 0.75, 0.75), color, Neon, 0.25), Vector3.new(0, 0, 0)) -- 속의 작은 빛
 		eyes(0.2, -0.78, 0.34)
 	elseif look == "Slime" then
 		eyes(0.15, -0.95, 0.36)
@@ -110,7 +112,7 @@ function PetModel.Build(look, color)
 
 	local light = Instance.new("PointLight")
 	light.Range = 10
-	light.Brightness = 1.2
+	light.Brightness = look == "Orb" and 0.5 or 1.2 -- (빛 구슬은 은은하게)
 	light.Color = color
 	light.Parent = body
 	local sparkle = Instance.new("ParticleEmitter")
@@ -118,7 +120,7 @@ function PetModel.Build(look, color)
 	sparkle.Lifetime = NumberRange.new(0.5, 1)
 	sparkle.Speed = NumberRange.new(0.5, 1.5)
 	sparkle.SpreadAngle = Vector2.new(180, 180)
-	sparkle.LightEmission = 1
+	sparkle.LightEmission = 0.5 -- (1 -> 0.5: 반짝이가 하얗게 타오르지 않게)
 	sparkle.Color = ColorSequence.new(color)
 	sparkle.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.35), NumberSequenceKeypoint.new(1, 0) })
 	sparkle.Parent = body
