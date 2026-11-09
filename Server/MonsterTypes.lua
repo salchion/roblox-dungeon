@@ -497,14 +497,6 @@ function M.MarkElite(body, size)
 	band.Color = gold:Lerp(Color3.fromRGB(120, 80, 20), 0.3)
 	band.Material = Enum.Material.Metal
 	weld(band, CFrame.new(0, top - size * 0.02, 0) * CFrame.Angles(0, 0, math.rad(90)))
-	local ring = Instance.new("Part") -- 발밑 고리 (은은하게: 눈부시지 않게)
-	ring.Name = "EliteRing"
-	ring.Shape = Enum.PartType.Cylinder
-	ring.Size = Vector3.new(0.15, size * 1.6, size * 1.6)
-	ring.Color = gold
-	ring.Material = Enum.Material.Neon
-	ring.Transparency = 0.7
-	weld(ring, CFrame.new(0, -body.Size.Y / 2 + 0.1, 0) * CFrame.Angles(0, 0, math.rad(90)))
 end
 
 ------------------------------------------------------------
