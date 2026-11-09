@@ -162,15 +162,14 @@ local function decoratePlaza(parent, center, avoid)
 	sparkle.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.15, 0.1), NumberSequenceKeypoint.new(1, 1) })
 	sparkle.Parent = sky
 
-	-- 스폰 자리: 빛나는 환영 패드
-	local pad = makeDisc(Vector3.new(HILL_NX, TOP + HILL_H + 0.35, HILL_NZ), 16, 0.12, Color3.fromRGB(110, 230, 255), Enum.Material.Neon, parent)
+	-- 스폰 자리: 돌 원판 + 테두리만 은은하게 빛나는 고리 (예전: 하늘색 / 흰색 원판 전체가 빛나서 화면에서 가장 밝은 물체였다)
+	local pad = makeDisc(Vector3.new(HILL_NX, TOP + HILL_H + 0.35, HILL_NZ), 16, 0.12, Color3.fromRGB(120, 200, 230), Enum.Material.Neon, parent)
 	pad.CanCollide = false
 	pad.CanQuery = false
-	pad.Transparency = 0.35
-	local padInner = makeDisc(Vector3.new(HILL_NX, TOP + HILL_H + 0.4, HILL_NZ), 9, 0.12, Color3.fromRGB(255, 255, 255), Enum.Material.Neon, parent)
-	padInner.CanCollide = false
-	padInner.CanQuery = false
-	padInner.Transparency = 0.6
+	pad.Transparency = 0.65
+	local padStone = makeDisc(Vector3.new(HILL_NX, TOP + HILL_H + 0.4, HILL_NZ), 15, 0.12, Color3.fromRGB(104, 100, 110), Enum.Material.Slate, parent)
+	padStone.CanCollide = false
+	padStone.CanQuery = false
 end
 
 -- 마을을 둘러싸는 성벽 + 바깥의 거대한 절벽: 마을 밖(필드 절벽, 허공)이 전혀 보이지 않게 한다.
@@ -1133,7 +1132,12 @@ function Lobby.Build()
 	end
 
 	-- 쨍한 느낌 줄이기: 네온 부품은 색을 살짝 가라앉히고, 조명은 약하게 (은은하게 빛나는 정도)
+	local toned = {}
 	for _, descendant in ipairs(folder:GetDescendants()) do
+		toned[descendant] = true
+		if descendant:IsA("BasePart") and (string.find(descendant.Name, "Beacon") or string.find(descendant.Name, "Beam")) then
+			descendant.Transparency = math.max(descendant.Transparency, 0.93) -- 하늘로 솟는 빛기둥은 아주 옅게
+		end
 		if descendant:IsA("PointLight") then
 			descendant.Brightness *= 0.4
 			descendant.Range *= 0.8
@@ -1158,6 +1162,28 @@ function Lobby.Build()
 		require(script.Parent:WaitForChild("LobbyDecor")).Build(folder, { Top = TOP, Half = HALF, HillZ = HILL_Z, HillH = HILL_H, HillR = HILL_R, HillNewX = HILL_NX, HillNewZ = HILL_NZ, GateCount = listCount, GateSpacing = spacing })
 	end)
 	if not okDecor then warn("LobbyDecor 실패: " .. tostring(decorErr)) end
+	-- 마을 장식에도 같은 "은은하게" 처리 (예전에는 장식이 이 처리 뒤에 만들어져서 하늘 수정 / 빛기둥 / 등불이 쨍하게 남았다). 불씨 / 숯 같은 작은 불빛은 그대로
+	for _, descendant in ipairs(folder:GetDescendants()) do
+		if not toned[descendant] then
+			if descendant:IsA("PointLight") or descendant:IsA("SpotLight") then
+				descendant.Brightness *= 0.6
+			elseif descendant:IsA("BasePart") and descendant.Material == Enum.Material.Neon then
+				local name = descendant.Name
+				if string.find(name, "Beam") or string.find(name, "Beacon") then
+					descendant.Transparency = math.max(descendant.Transparency, 0.9)
+				elseif descendant.Transparency < 0.6 and not (string.find(name, "Coal") or string.find(name, "Ember") or string.find(name, "Fire")) then
+					if descendant.Shape == Enum.PartType.Ball and (string.find(name, "Lamp") or string.find(name, "Bulb") or string.find(name, "Lantern")) then
+						descendant.Material = Enum.Material.SmoothPlastic
+						descendant.Color = descendant.Color:Lerp(Color3.fromRGB(235, 190, 120), 0.4):Lerp(Color3.fromRGB(70, 66, 76), 0.25)
+					else
+						descendant.Color = descendant.Color:Lerp(Color3.fromRGB(90, 90, 110), 0.35)
+					end
+				end
+			elseif descendant:IsA("ParticleEmitter") then
+				descendant.LightEmission = math.min(descendant.LightEmission, 0.55)
+			end
+		end
+	end
 
 	return {
 		SpawnCFrame = customCF and (customCF + Vector3.new(0, 5, 0)) or CFrame.lookAt(Vector3.new(HILL_NX, TOP + HILL_H + 5, HILL_NZ), Vector3.new(HILL_NX + 1, TOP + HILL_H + 5, HILL_NZ)), -- 마을 서쪽 끝(9시) 높은 언덕 위에서 동쪽(필드 문)을 본다

@@ -219,12 +219,12 @@ function Showcase.Init(_boardCFrame)
 
 		slots[rank] = {
 			Platform = platform, Top = spot, Scale = 2.8, Look = look, Key = nil, Model = nil, Weapon = nil,
-			Label = makeLabel(platform, 27, 150, 230, 100), -- 이름이 멀리서도 보이게 (75 -> 150 스터드, 라벨 약간 크게). 세 라벨이 멀리서 서로 겹치지 않을 정도로만 키웠다
+			Label = makeLabel(platform, 27, 95, 230, 100), -- (150 -> 95 스터드: 시작 언덕에서도 보여서 화면 맨 위 귀퉁이에 큰 글자가 잘려 걸렸다)
 		}
 		slots[rank].Label.Text = MEDAL[rank] .. " Who will take this spot?\n<font size='14'>Raise your power to claim it!</font>"
 	end
 
-	local header = makeLabel(slots[1].Platform, 34, 300, 320, 96) -- 1등 뒷판 위의 큰 머리글
+	local header = makeLabel(slots[1].Platform, 34, 120, 320, 96) -- 1등 뒷판 위의 큰 머리글
 	header.Text = "🏆 Hall of Fame 🏆"
 	header.TextColor3 = Color3.fromRGB(255, 226, 120)
 
