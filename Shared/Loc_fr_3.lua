@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Not enough gold. ({number1} G needed)", "Pas assez d'or. ({number1} G nécessaire)" },
+		{ "e.g. Maintenance in {number1} minutes", "par exemple, maintenance dans {number1} minutes" },
+		{ "🥇 LeeGoAll  ⚡{number1}\n🥈 {player1}  ⚡{number2}", "🥇 LeeGoAll ⚡{number1}\n🥈 {player1} ⚡{number2}" },
+		{ "🌀 Gate of the Abyss · Rec. ⚡{number2}", "🌀 Porte de l'abysse · Rec. ⚡{number2}" },
+		{ "🧹 Cleaned up {number1}! Essence +{number2}, {number3} G", "🧹 {number1} nettoyé(s) ! Essence +{number2}, {number3} or" },
+		{ "Damage x{number1} · {number2} targets (gauge {number3})", "Dégâts x{number1} · {number2} cibles (jauge {number3})" },
+		{ "🔒 Paragon unlocks at level {number1}.", "🔒 Le parangon se débloque au niveau {number1}." },
+		{ "Survive {number1} dungeon bonus waves", "Survivez à {number1} vagues bonus de donjon" },
 		{ "Double Shot chance {number1}%  (max {number2})", "Chance de tir double {number1} %  (max {number2})" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "PV de l'ennemi +{number1}%\nOr +{number2}% à la place" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 Porte du château sombre · Recommandé ⚡{number2}" },

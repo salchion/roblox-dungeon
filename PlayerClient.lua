@@ -2013,7 +2013,7 @@ do
 	}, autoButton)
 
 	local hint = create("Frame", {
-		Size = UDim2.new(0, 400, 0, 120), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.6, 0),
+		Size = UDim2.new(0, 400, 0, 120), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0.5, 150, 1, -84), -- (화면 가운데 -> 자동 공격 버튼 바로 위: 캐릭터와 체력바를 가리던 것)
 		BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.15, BorderSizePixel = 0, Visible = false, ZIndex = 30,
 	}, gui)
 	rounded(hint, 16)
@@ -2049,8 +2049,14 @@ do
 		autoText.Text = autoMode and "<font color='#8fffb0'><b>Auto-Attack</b>\nON</font>" or "<b>Auto-Attack</b>\n<font color='#9aa0c8'>OFF</font>"
 		local zone = currentZone()
 		autoButton.Visible = (zone == "Lobby" or zone == "Field" or zone == "Dungeon") and not (player:GetAttribute("ModalOpen") == true and gui.Parent:GetAttribute("UiCompact") ~= true) -- (큰 화면: 큰 창이 열려 있는 동안은 창 위에 겹쳐 보이지 않게 숨긴다)
-		local showHint = not used and player:GetAttribute("TutorialActive") == true and os.clock() > shownAt and os.clock() < shownAt + 40 and zone ~= "Dungeon" and not (settings.MenuPanel and settings.MenuPanel.Visible)
-		showHint = showHint or (not autoMode and os.clock() < fieldHintUntil and not (settings.MenuPanel and settings.MenuPanel.Visible))
+		-- 첫 화면이 한꺼번에 겹치지 않게: 오프닝 / "환영합니다" 글자 / 첫 장비 카드가 끝난 뒤에 R 안내가 뜬다 (그동안 안내 시간은 미뤄 둔다)
+		local busy = player:GetAttribute("IntroPlaying") or gui.Parent:FindFirstChild("ArrivalGui") ~= nil or gui.Parent:GetAttribute("ReelPlaying") == true
+		if busy then
+			if fieldHintUntil > os.clock() then fieldHintUntil = os.clock() + 6 end
+			if os.clock() > shownAt - 3 then shownAt = os.clock() + 3 end
+		end
+		local showHint = not busy and not used and player:GetAttribute("TutorialActive") == true and os.clock() > shownAt and os.clock() < shownAt + 40 and zone ~= "Dungeon" and not (settings.MenuPanel and settings.MenuPanel.Visible)
+		showHint = showHint or (not busy and not autoMode and os.clock() < fieldHintUntil and not (settings.MenuPanel and settings.MenuPanel.Visible))
 		hint.Visible = showHint
 	end)
 end

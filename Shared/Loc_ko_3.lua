@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Enemies swarm in more often\nGold +{number1}% instead", "적들이 더 자주 몰려옵니다\n골드 +{number1}%" },
+		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 더 약한 장비 {number1}개를 자동 정리했어요 (정수 +{number2}, {number3} G)" },
+		{ "🎫 {number1} tickets!\nPull gear at the gacha machine", "🎫 {number1} 티켓!\n가챠 머신에서 장비를 뽑으세요" },
+		{ "🐾 Pet Lv.{number1}! New ability 💥 Power — Attack +{number2}%", "🐾 펫 레벨 {number1}! 새로운 능력 💥 파워 - 공격 +{number2}%" },
+		{ "Sniper Rifle  ·  next weapon: Shotgun at +{number1}", "저격 소총 · 다음 무기: 산탄총 +{number1}" },
+		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2} {number3} G)", "🧹 약한 장비 {number1}개를 자동으로 청소했습니다 (에센스 +{number2} {number3}G)" },
 		{ "every {number1}s a meteor, radius {number2} (x1.5 on bosses)", "{number1}초마다 운석 (반경 {number2}, 보스에게 x1.5)" },
 		{ "Heals over {number1}s instead of at once · total +{number2}%", "한 번에 대신 {number1}초에 걸쳐 회복 · 합계 +{number2}%" },
 		{ "Spend {number1} stat points (T key / Stats button)", "{number1} 스탯 포인트 사용 (T 키 / 스탯 버튼)" },

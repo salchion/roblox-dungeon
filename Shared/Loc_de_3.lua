@@ -4,6 +4,15 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎒 Bag {number1} / {number2}    ✨ Essence {number3}", "🎒 Tasche {number1} / {number2} ✨ Essenz {number3}" },
+		{ "Returning to lobby in {number1}s", "Zur Lobby zurückkehren in {number1} Sekunden" },
+		{ "🔒 Zone {number1} · Desert Sealed", "🔒 Zone {number1} · Wüste versiegelt" },
+		{ "⚔ Railgun · Rusty Era +{number1}", "⚔ Schienenwaffe · Rostige Ära +{number1}" },
+		{ "★☆☆  Step {number1}/{number2} · Next step", "★☆☆ Schritt {number1}/{number2} · Nächster Schritt" },
+		{ "🔒 Defeat the Zone {number1} lord", "🔒 Besiege den Lord von Zone {number1}" },
+		{ "🔒 Unlocks at +{number1} ({number2} to go)", "🔒 Wird bei +{number1} freigeschaltet (noch {number2})" },
+		{ "◆ Luck (Drop Rarity) +{number1}%", "◆ Glück (Seltenheit) +{number1}%" },
+		{ "Cooldown -{number1}% · damage +{number2}%", "Abklingzeit -{number1} % · Schaden +{number2} %" },
 		{ "NEAR MISS lasts +{number1}s more", "NEAR MISS hält weitere {number1} s" },
 		{ "🐾 Unlock your pet! ({number1} G)", "🐾 Schalte dein Haustier frei! ({number1} G)" },
 		{ "💪 Zone {number1} Lord: power {number2} / {number3}", "💪 Herrscher Zone {number1}: Kraft {number2} / {number3}" },

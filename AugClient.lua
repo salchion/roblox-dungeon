@@ -580,7 +580,7 @@ local function playRollFull(pick)
 	make("UICorner", { CornerRadius = UDim.new(0, 14) }, box)
 	local stroke = make("UIStroke", { Color = Color3.fromRGB(190, 168, 110), Thickness = 2 }, box)
 	label({ Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0, 0, 0, 10), Text = "✨ SET EFFECTS", TextSize = 18, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(235, 215, 160), ZIndex = 61 }, box)
-	label({ Size = UDim2.new(1, -24, 0, 34), Position = UDim2.new(0, 12, 0, 36), Text = "8 effects, one for every zone. Defeat a zone's Lord and collect its gear to make that effect stronger. Here is one to try!", TextSize = 11, TextWrapped = true, TextColor3 = Color3.fromRGB(190, 196, 220), Font = Enum.Font.GothamMedium, ZIndex = 61 }, box)
+	label({ Size = UDim2.new(1, -24, 0, 34), Position = UDim2.new(0, 12, 0, 36), Text = "Every zone has its own effect (8 in all). It fires by itself while you fight. Here is one to try!", TextSize = 11, TextWrapped = true, TextColor3 = Color3.fromRGB(190, 196, 220), Font = Enum.Font.GothamMedium, ZIndex = 61 }, box)
 	local cards = {}
 	for index = 1, 8 do
 		local info = Config.AugInfo[Config.Sets.ZoneAug[index]]
@@ -611,6 +611,10 @@ local function playRollFull(pick)
 	local nameLine = label({ Size = UDim2.new(1, -20, 0, 24), Position = UDim2.new(0, 10, 0, panelH - 92), Text = "", TextSize = 16, Font = Enum.Font.GothamBlack, ZIndex = 61, RichText = true }, box)
 	local descLine = label({ Size = UDim2.new(1, -28, 0, 38), Position = UDim2.new(0, 14, 0, panelH - 66), Text = "", TextSize = 11, TextWrapped = true, TextColor3 = Color3.fromRGB(200, 208, 232), Font = Enum.Font.GothamMedium, ZIndex = 61 }, box)
 	local hintLine = label({ Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 1, -26), Text = "", TextSize = 10, TextColor3 = Color3.fromRGB(255, 217, 102), ZIndex = 61 }, box)
+	-- 돌아가는 동안 아래 빈칸에 "어떻게 얻나" 3단계를 보여 준다 (예전엔 멈출 때까지 아래 절반이 텅 비어 있었다)
+	nameLine.Text = "<font color='#ffd966'>How to get them</font>"
+	nameLine.TextColor3 = Color3.fromRGB(235, 215, 160)
+	descLine.Text = "① Defeat a zone's Lord → its effect unlocks   ② Press Y (Sets) to turn it on and upgrade it with gold   ③ It fires on its own in combat"
 	TweenService:Create(box, TweenInfo.new(0.35), { GroupTransparency = 0 }):Play()
 	task.wait(0.9) -- 8개를 먼저 훑어볼 시간
 
@@ -631,9 +635,9 @@ local function playRollFull(pick)
 	nameLine.Text = string.format("%s  %s", winner.Icon, winner.Name)
 	nameLine.TextColor3 = winner.Color
 	descLine.Text = winner.Desc
-	hintLine.Text = string.format("Zone %d set effect · Trial Lv.3 — for this dungeon only", winIndex)
+	hintLine.Text = string.format("Zone %d set effect · Trial Lv.3 — for this dungeon only. Watch for it in combat!", winIndex)
 	tick("Rare_Drop", 0.8)
-	task.wait(3.6)
+	task.wait(4.6)
 	TweenService:Create(box, TweenInfo.new(0.4), { GroupTransparency = 1 }):Play()
 	task.wait(0.45)
 	box:Destroy()
@@ -697,6 +701,7 @@ local function procWorldFx(info, position)
 end
 
 local lastProcPop = 0
+local firstProcTaught = false
 local lastWorldFx, worldFxWindow, worldFxBudget = {}, 0, 0
 local function worldFxAllowed(attr) -- 세트 효과 발동 연출(고리 + 떠오르는 아이콘)은 같은 효과 0.3초에 한 번, 전체 1초에 5번까지 (후반에는 초당 수십 번 터져서 부품 / 글자가 쌓여 화면이 끊겼다)
 	local now = os.clock()
@@ -720,6 +725,19 @@ local function showProc(attr, position)
 	hudStroke.Thickness = 3
 	hudStroke.Transparency = 0
 	TweenService:Create(hudStroke, TweenInfo.new(0.5), { Thickness = 2, Transparency = 0.25 }):Play()
+	if not firstProcTaught and player:GetAttribute("TutorialDungeonRun") == true and attr == player:GetAttribute("AugDemo") then
+		-- 처음 체험한 세트 효과가 처음 터진 순간: "방금 그게 세트 효과" 라고 한 번만 짚어 준다 (보고 배운다)
+		firstProcTaught = true
+		local teach = label({
+			Size = UDim2.new(0, 420, 0, 22), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.64, 30),
+			Text = "↑ That was your set effect! It fires on its own.", TextSize = 14, TextColor3 = Color3.fromRGB(255, 226, 140),
+			TextStrokeTransparency = 0.35, TextStrokeColor3 = Color3.fromRGB(10, 10, 20), ZIndex = 40,
+		}, gui)
+		task.delay(2.6, function()
+			TweenService:Create(teach, TweenInfo.new(0.5), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+			task.delay(0.55, function() teach:Destroy() end)
+		end)
+	end
 	local slot = #procLabels
 	local pop = label({
 		Size = UDim2.new(0, 260, 0, 26), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.64, 26 * slot), Text = info.Icon .. "  " .. info.Name .. "!",

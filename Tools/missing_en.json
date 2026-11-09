@@ -2461,5 +2461,10 @@
 "Beat this zone's Lord and the next zone becomes your new frontier.",
 "Gold/XP x2 · Drops x1.5  ❔",
 "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}",
-"🏆 Zone {number1} First Clear Reward!"
+"🏆 Zone {number1} First Clear Reward!",
+"Every zone has its own effect (8 in all). It fires by itself while you fight. Here is one to try!",
+"How to get them",
+"① Defeat a zone's Lord → its effect unlocks   ② Press Y (Sets) to turn it on and upgrade it with gold   ③ It fires on its own in combat",
+"Zone {number1} set effect · Trial Lv.3 — for this dungeon only. Watch for it in combat!",
+"That was your set effect! It fires on its own."
 ]

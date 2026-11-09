@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "❄ Ice Palace Gate · Rec. ⚡{number2}", "❄ Puerta del Palacio de Hielo · Rec. ⚡{number2}" },
+		{ "ZONE {number1}  ·  Abyss   ☠☠☠☠☠☠☠☠", "Zona {number1} · Abismo ☠☠☠☠☠☠☠☠" },
+		{ "Dismantled {number1}! Essence +{number2}, {number3} G", "¡{number1} desmantelado(s)! Esencia +{number2}, {number3} G" },
+		{ "Enter the Boss Rush {number1} times", "Entra al Boss Rush {number1} veces" },
+		{ "Fires {number1} pellets in a spread", "Dispara {number1} perdigones en abanico" },
+		{ "You can afford it now ({number1} G)", "Ya puedes pagarlo ({number1} G)" },
+		{ "⭐ Legendary guaranteed in {number1}", "⭐ Legendario garantizado en {number1}" },
+		{ "Not enough Essence (need {number1})", "No tienes suficiente Esencia (necesitas {number1})" },
 		{ "★★★  Step {number1}/{number2} · Higher step", "★★★ Paso {number1}/{number2} · Nivel superior" },
 		{ "★★☆  Step {number1}/{number2} · Higher step", "★★☆ Paso {number1}/{number2} · Nivel superior" },
 		{ "Spell Tome · Mythic Era +{number3}", "Tomo de Hechizos · Era Mítica +{number3}" },

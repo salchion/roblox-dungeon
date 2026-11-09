@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Reach level {number1} to buy points with gold.", "レベル{number1}に到達すると、ゴールドでポイントを購入できます。" },
+		{ "🎫 A {number1}x pull needs {number2} tickets (you have {number3})", "🎫 {number1}連抽には{number2}枚のチケットが必要です(所持: {number3}枚)" },
+		{ "🗿 Colossus defeated! Gear + 🎫 +1 + {number1} G", "🗿 コロッサスを倒した！装備 + 🎫 +1 + {number1} G" },
+		{ "🔒 Unlocks at level {number1}  (you are level {number2})", "🔒 レベル{number1}で解放(現在 レベル{number2})" },
+		{ "Pierces up to {number1} more enemies in a line", "一直線上の敵をさらに最大{number1}体貫通します" },
+		{ "Lasts +{number1}s · range +{number2}%: sweeps up swarms", "持続+{number1}秒・範囲+{number2}%：群れを一掃" },
 		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 雪原の支配者（ゾーン {number1}） · レコード ⚡{number2}" },
 		{ "💥Explosive Shot {number1} · ⚡Chain Lightning {number2}", "💥爆発ショット {number1} · ⚡チェーンライトニング {number2}" },
 		{ "👑 Lord of Wasteland (Zone {number1}) · Rec. ⚡{number2}", "👑 荒地の支配者（ゾーン {number1}） · レコード ⚡{number2}" },

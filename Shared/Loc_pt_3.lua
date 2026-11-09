@@ -4,6 +4,16 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "▲ Better than equipped  +{number1}", "▲ Melhor que o equipado  +{number1}" },
+		{ "Lord of Forest  ·  Zone {number1}", "Senhor da Floresta · Zona {number1}" },
+		{ "Zone {number1} · Shockwave Shot  ", "Zona {number1} · Tiro de Onda de Choque" },
+		{ "Spell Tome · Rusty Era +{number1}", "Livro de Feitiços · Era Enferrujada +{number1}" },
+		{ "Defeat {number1} Golden Goblin(s)", "Derrote {number1} Goblins Dourados" },
+		{ "🔒 Zone {number1} · Volcano Sealed", "🔒 Zona {number1} · Vulcão Selado" },
+		{ "Lord of Meadow  ·  Zone {number1}", "Senhor do Prado · Zona {number1}" },
+		{ "Idle Accrual Cap: {number1} Hours", "Limite de Acúmulo Inativo: {number1} Horas" },
+		{ "🔫 Next era Steel Era (+{number1})", "🔫 Próxima era: Era do Aço (+{number1})" },
+		{ "The party is full. (max {number1}", "O grupo está cheio. (máx. {number1}" },
 		{ "Fall in the field {number1} times", "Caia {number1} vezes no campo" },
 		{ "Raise your pet to level {number1}", "Leve seu pet ao nível {number1}" },
 		{ "Range x{number1} · allies heal +{number2}%", "Alcance x{number1} · aliados curam +{number2}%" },

@@ -414,6 +414,10 @@ local reelActive = false
 local function playReel(list)
 	if reelActive or typeof(list) ~= "table" or #list == 0 then return end
 	reelActive = true
+	local pg = player:FindFirstChildOfClass("PlayerGui")
+	if pg then pg:SetAttribute("ReelPlaying", true) end -- (R 자동 공격 안내는 카드가 끝난 뒤에: PlayerClient)
+	local waitStart = os.clock() -- "환영합니다, 사냥꾼!" 글자가 사라진 뒤에 카드가 나온다 (둘이 겹쳐 보였다)
+	while pg and pg:FindFirstChild("ArrivalGui") and os.clock() - waitStart < 6 do task.wait(0.1) end
 	local G = Config.Gear
 	local ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
 	local ORDER = { "Armor", "Gloves", "Boots", "Helmet", "Ring", "Necklace" }
@@ -532,6 +536,7 @@ local function playReel(list)
 	task.wait(0.4)
 	panel:Destroy()
 	reelActive = false
+	if pg then pg:SetAttribute("ReelPlaying", nil) end
 end
 
 -- 최후의 군주를 진짜로 쓰러뜨렸을 때: 화면 번쩍 -> 큰 제목 -> 보상 카드(골드 / 티켓 / 이번 주 신화 장비) -> 보스 러시 개방 안내
