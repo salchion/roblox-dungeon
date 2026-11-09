@@ -457,6 +457,56 @@ function M.Build(typeKey, size, color, position, parent)
 	return body
 end
 
+-- 엘리트 표시 (몬스터 디자인 원칙: "위협은 실루엣과 밝기로 한눈에" · 삼각형 / 가시 = 위험):
+--   금빛 외곽선(Highlight) + 머리 위 가시 왕관 + 발밑 금빛 고리. 예전엔 1.5배 크기와 이름의 ★ 뿐이라 일반 몬스터와 섞이면 안 보였다
+function M.MarkElite(body, size)
+	if not body or not body.Parent then return end
+	local gold = Color3.fromRGB(255, 200, 70)
+	local outline = Instance.new("Highlight")
+	outline.Name = "EliteOutline"
+	outline.FillTransparency = 1
+	outline.OutlineColor = gold
+	outline.OutlineTransparency = 0.15
+	outline.DepthMode = Enum.HighlightDepthMode.Occluded
+	outline.Parent = body
+	local function weld(part, offset)
+		part.Anchored, part.CanCollide, part.CanQuery, part.CanTouch, part.Massless, part.CastShadow = false, false, false, false, true, false
+		part.CFrame = body.CFrame * offset
+		local w = Instance.new("Weld")
+		w.Part0, w.Part1 = body, part
+		w.C0 = offset
+		w.Parent = part
+		part.Parent = body
+	end
+	local top = body.Size.Y / 2
+	local r = math.max(0.6, size * 0.22)
+	for k = 0, 4 do -- 가시 왕관: 다섯 개의 금빛 가시 (가운데가 가장 높다)
+		local a = k / 5 * math.pi * 2
+		local h = size * (k == 0 and 0.42 or 0.3)
+		local spike = Instance.new("WedgePart")
+		spike.Name = "EliteSpike"
+		spike.Size = Vector3.new(size * 0.09, h, size * 0.12)
+		spike.Color = gold
+		spike.Material = Enum.Material.Metal
+		weld(spike, CFrame.new(math.cos(a) * r, top + h / 2 - size * 0.04, math.sin(a) * r) * CFrame.Angles(0, -a + math.pi / 2, 0))
+	end
+	local band = Instance.new("Part")
+	band.Name = "EliteBand"
+	band.Shape = Enum.PartType.Cylinder
+	band.Size = Vector3.new(size * 0.06, r * 2.3, r * 2.3)
+	band.Color = gold:Lerp(Color3.fromRGB(120, 80, 20), 0.3)
+	band.Material = Enum.Material.Metal
+	weld(band, CFrame.new(0, top - size * 0.02, 0) * CFrame.Angles(0, 0, math.rad(90)))
+	local ring = Instance.new("Part") -- 발밑 고리 (은은하게: 눈부시지 않게)
+	ring.Name = "EliteRing"
+	ring.Shape = Enum.PartType.Cylinder
+	ring.Size = Vector3.new(0.15, size * 1.6, size * 1.6)
+	ring.Color = gold
+	ring.Material = Enum.Material.Neon
+	ring.Transparency = 0.7
+	weld(ring, CFrame.new(0, -body.Size.Y / 2 + 0.1, 0) * CFrame.Angles(0, 0, math.rad(90)))
+end
+
 ------------------------------------------------------------
 -- 움직임 + 공격 (매 프레임)
 ------------------------------------------------------------

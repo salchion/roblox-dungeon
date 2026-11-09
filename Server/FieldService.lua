@@ -1023,6 +1023,7 @@ local function spawnMonster(zone, kind, at, ambush, filler)
 		part.Name = "FieldMonster"
 		if kind == "Elite" then
 			CollectionService:AddTag(part, "RadarElite")
+			pcall(MonsterTypes.MarkElite, part, stats.Size) -- 금빛 외곽선 + 가시 왕관 + 발밑 고리
 		end
 	end
 
