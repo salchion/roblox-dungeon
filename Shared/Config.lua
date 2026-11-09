@@ -915,6 +915,9 @@ Config.Field = {
 		Speed = { 1, 1.05, 1.1, 1.18, 1.26, 1.35, 1.45, 1.55 },
 		Reward = { 1, 1.5, 2.2, 5.8, 9.2, 14.3, 21.6, 33.8 }, -- (4구역부터는 몬스터 체력을 올린 만큼 보상도 같은 비율로 올림)
 	},
+	-- 구역별 저격형 몬스터(마법 포탑 / 저격 임프) 피해 배율: 3구역은 "2구역처럼 밀다가 방심하면 죽는" 구역 (4구역 기본 배율 4.7 보다는 낮게: 4구역이 여전히 벽)
+	SniperDamage = { [3] = 1.8 },
+	SniperTypes = { Turret = true, Imp = true },
 	MobDamageMult = 1.2,       -- 필드 일반 / 엘리트 몬스터 피해 +20% (체력이 잘 차서 긴장감이 없다는 의견. 군주는 그대로)
 	MobShotIntervalMult = 0.8, -- 필드 일반 / 엘리트 몬스터 공격 간격 x0.8 (= 25% 더 자주 쏜다)
 	-- 초반 일반 몬스터 / 엘리트만 체력을 더 낮춘다 (군주는 제외): 처음 사냥이 "잘 안 죽어서 답답하다"는 의견. 1구역 x0.45, 2구역 x0.8
@@ -924,7 +927,7 @@ Config.Field = {
 	ZonePools = {
 		{ Slime = 5, Bat = 2, Spider = 1 },
 		{ Slime = 3, Spitter = 3, Bat = 2, Spider = 2, Wisp = 1 },
-		{ Spitter = 3, Charger = 3, Golem = 1, Imp = 2, Turret = 1, Healer = 1 },
+		{ Spitter = 2, Charger = 2, Golem = 1, Imp = 3, Turret = 3, Healer = 1 }, -- (3구역: 저격형(포탑 / 임프)을 절반으로. 방심하면 멀리서 꽂혀 죽을 수 있는 압박)
 		{ Charger = 3, Bomber = 3, Spitter = 2, Spider = 2, Imp = 2, Healer = 1 },
 		{ Mage = 3, Golem = 2, Bat = 3, Wisp = 2 },
 		{ Bomber = 3, Charger = 3, Mage = 2, Turret = 2, Totem = 1 },
