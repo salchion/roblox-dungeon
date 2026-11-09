@@ -9,7 +9,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 
 local LobbyDecor = {}
 
-local MAX_PARTS = 1200 -- (전부 고정 / 충돌 없음 / 그림자 없음이라 부품 수가 늘어도 부담이 작다)
+local MAX_PARTS = 1400 -- (1200 -> 1400: 나무 / 덤불을 여러 덩어리로 바꾸면서 늘었다) -- (전부 고정 / 충돌 없음 / 그림자 없음이라 부품 수가 늘어도 부담이 작다)
 local MAX_LIGHTS = 4
 local MAX_EMITTERS = 3
 
@@ -151,11 +151,18 @@ function LobbyDecor.Build(parent, ctx)
 	local function tree(x, z, h, y)
 		local base = g(x, z, y)
 		vcyl("TreeTrunk", h, 1.4, base, rgb(98, 70, 46), M.Wood)
-		ball("TreeLeaves", 7 + h * 0.15, base + Vector3.new(0, h + 1.6, 0), LEAF[(flowerCounter + count) % 3 + 1], M.Grass, 5.6 + h * 0.1)
-		ball("TreeLeaves", 4.6, base + Vector3.new(1.8, h + 0.4, 0.9), LEAF[(count + 1) % 3 + 1], M.Grass, 3.8)
+		local d = 7 + h * 0.15
+		local top = base + Vector3.new(0, h + 1.6, 0)
+		ball("TreeLeaves", d, top, LEAF[(flowerCounter + count) % 3 + 1], M.Grass, 5.6 + h * 0.1)
+		for k = 0, 2 do -- 여러 덩어리 잎 (공 하나 -> 크기 / 밝기가 다른 덩어리 넷)
+			local a = k * 2.1 + x * 0.3
+			ball("TreeLeaves", d * 0.62, top + Vector3.new(math.cos(a) * d * 0.36, (k - 1) * 0.6, math.sin(a) * d * 0.36), LEAF[(count + k) % 3 + 1]:Lerp(k == 1 and rgb(160, 186, 110) or rgb(40, 70, 46), 0.15), M.Grass, d * 0.5)
+		end
 	end
-	local function bush(x, z, d, y)
-		ball("Bush", d, g(x, z, (y or 0) + d * 0.3), LEAF[count % 3 + 1], M.Grass, d * 0.75)
+	local function bush(x, z, d, y) -- 낮고 넓은 덩어리 둘 (매끈한 공 하나는 단순해 보였다)
+		local c = LEAF[count % 3 + 1]
+		ball("Bush", d * 0.8, g(x - d * 0.18, z, (y or 0) + d * 0.25), c, M.Grass, d * 0.6)
+		ball("Bush", d * 0.62, g(x + d * 0.24, z + d * 0.12, (y or 0) + d * 0.22), c:Lerp(rgb(150, 176, 104), 0.15), M.Grass, d * 0.5)
 	end
 	local function bench(x, z, targetX, targetZ, y)
 		local base = CFrame.lookAt(g(x, z, y), g(targetX, targetZ, y))

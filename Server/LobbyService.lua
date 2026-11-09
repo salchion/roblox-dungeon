@@ -74,19 +74,24 @@ local function makeLamp(position, parent)
 	addLight(bulb, 30, 1.2, Color3.fromRGB(255, 225, 160))
 end
 
+-- 나무: 굵은 밑동 -> 가는 윗줄기 + 잎 덩어리 여러 개(크기 / 색이 조금씩 다르다). 예전의 "공 하나" 잎은 기본 도형처럼 보였다
 local function makeTree(position, rng, parent)
 	local height = rng:NextNumber(7, 12)
-	makePart({
-		Name = "Trunk", Size = Vector3.new(2, height, 2), Position = position + Vector3.new(0, height / 2, 0),
-		Color = Color3.fromRGB(95, 65, 40), Material = Enum.Material.Wood,
-	}, parent)
-	local leaf = rng:NextNumber(9, 14)
-	makePart({
-		Name = "Leaves", Shape = Enum.PartType.Ball, Size = Vector3.new(leaf, leaf, leaf),
-		Position = position + Vector3.new(0, height + leaf / 3, 0),
-		Color = Color3.fromRGB(rng:NextInteger(50, 80), rng:NextInteger(125, 170), rng:NextInteger(55, 85)),
-		Material = Enum.Material.Grass, CanCollide = false,
-	}, parent)
+	local bark = Color3.fromRGB(rng:NextInteger(84, 100), rng:NextInteger(58, 68), rng:NextInteger(38, 44))
+	makePart({ Name = "Trunk", Size = Vector3.new(2.2, height * 0.55, 2.2), Position = position + Vector3.new(0, height * 0.275, 0), Color = bark, Material = Enum.Material.Wood }, parent)
+	makePart({ Name = "Trunk", Size = Vector3.new(1.5, height * 0.5, 1.5), Position = position + Vector3.new(0, height * 0.75, 0), Color = bark, Material = Enum.Material.Wood, CanCollide = false }, parent)
+	local leaf = rng:NextNumber(8, 12)
+	local baseGreen = Color3.fromRGB(rng:NextInteger(58, 84), rng:NextInteger(118, 150), rng:NextInteger(60, 84))
+	local top = position + Vector3.new(0, height + leaf * 0.2, 0)
+	makePart({ Name = "Leaves", Shape = Enum.PartType.Ball, Size = Vector3.new(leaf, leaf * 0.82, leaf), Position = top, Color = baseGreen, Material = Enum.Material.Grass, CanCollide = false }, parent)
+	local turn = rng:NextNumber(0, math.pi * 2)
+	for k = 1, 3 do -- 옆으로 붙은 작은 잎 덩어리 (밝기를 조금씩 다르게: 덩어리 사이에 그늘이 생겨 입체감이 난다)
+		local a = turn + k * 2.1
+		local d = leaf * rng:NextNumber(0.5, 0.66)
+		local offset = Vector3.new(math.cos(a) * leaf * 0.36, rng:NextNumber(-0.25, 0.2) * leaf, math.sin(a) * leaf * 0.36)
+		makePart({ Name = "Leaves", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d * 0.85, d), Position = top + offset,
+			Color = baseGreen:Lerp(k == 2 and Color3.fromRGB(150, 180, 100) or Color3.fromRGB(30, 60, 40), 0.18), Material = Enum.Material.Grass, CanCollide = false }, parent)
+	end
 end
 
 local function makeFountain(position, parent)
@@ -286,12 +291,24 @@ function Lobby.Build()
 		for ix = 0, count - 1 do
 			for iz = 0, count - 1 do
 				-- 체스판처럼 두 색을 번갈아 깔면 Studio 기본 바닥처럼 보여서: 따뜻한 돌색에 판마다 살짝 다른 색 / 재질 (부품 수는 같다)
+				-- 가장자리 한 줄은 풀밭(성벽 밑 숲과 이어진다), 안쪽은 돌판 색을 세 갈래(따뜻한 / 차가운 / 이끼 낀)로 섞는다: 밤에 한 가지 어두운 색으로 뭉개지지 않게
 				local shade = (ix * 7 + iz * 13) % 5
-				local warm = Color3.fromRGB(104 + shade * 5, 98 + shade * 4, 94 + shade * 3)
+				local edge = ix == 0 or iz == 0 or ix == count - 1 or iz == count - 1
+				local kind = (ix * 5 + iz * 3) % 7
+				local color, material
+				if edge then
+					color, material = Color3.fromRGB(70 + shade * 3, 108 + shade * 4, 68 + shade * 2), Enum.Material.Grass
+				elseif kind == 0 then
+					color, material = Color3.fromRGB(104 + shade * 3, 114 + shade * 3, 96 + shade * 2), Enum.Material.Slate -- 이끼 낀 돌
+				elseif kind == 3 then
+					color, material = Color3.fromRGB(110 + shade * 4, 112 + shade * 4, 122 + shade * 4), Enum.Material.Slate -- 차가운 회색 돌
+				else
+					color, material = Color3.fromRGB(122 + shade * 5, 112 + shade * 4, 100 + shade * 3), (ix + iz) % 3 == 0 and Enum.Material.Pavement or Enum.Material.Slate -- 따뜻한 돌 (조금 밝게)
+				end
 				makePart({
 					Name = "FloorTile", Size = Vector3.new(tile - 0.5, 0.1, tile - 0.5),
 					Position = Vector3.new(-HALF + tile * (ix + 0.5), TOP + 0.04, -HALF + tile * (iz + 0.5)),
-					Color = warm, Material = (ix + iz) % 3 == 0 and Enum.Material.Pavement or Enum.Material.Slate, CanCollide = false, CanQuery = false,
+					Color = color, Material = material, CanCollide = false, CanQuery = false,
 				}, folder)
 			end
 		end
@@ -711,6 +728,18 @@ function Lobby.Build()
 			part("StallSide", Vector3.new(0.8, 11, 15), Vector3.new(side * 9.8, 6, 0), Color3.fromRGB(150, 120, 90), Enum.Material.Brick)
 		end
 		part("StallBeam", Vector3.new(21, 0.9, 1), Vector3.new(0, 11.8, -7.4), darkWood)
+		-- 차양 뒤로 솟는 박공지붕 (기와 + 용마루): 위에서 봐도 "상자 위 천막"이 아니라 집 모양 실루엣이 된다
+		do
+			local roofColor = Color3.fromRGB(96, 66, 58)
+			local ridgeZ, ridgeY, slope, half = 3.4, 16.3, math.rad(28), 2.8
+			part("StallGable", Vector3.new(20, 2.6, 0.8), Vector3.new(0, 12.8, 7.6), Color3.fromRGB(150, 120, 90), Enum.Material.Brick, { CanCollide = false })
+			for _, side in ipairs({ -1, 1 }) do
+				part("StallRoof", Vector3.new(21.6, 0.5, half * 2), Vector3.zero, roofColor, Enum.Material.Slate,
+					{ CanCollide = false, CFrame = base * CFrame.new(0, ridgeY - half * math.sin(slope), ridgeZ + side * half * math.cos(slope)) * CFrame.Angles(side * slope, 0, 0) })
+				part("StallGableSide", Vector3.new(0.8, 2.1, 7.6), Vector3.new(side * 9.8, 12.55, 3.8), Color3.fromRGB(150, 120, 90), Enum.Material.Brick, { CanCollide = false })
+			end
+			part("StallRidge", Vector3.new(22, 0.6, 0.9), Vector3.new(0, ridgeY + 0.15, ridgeZ), Color3.fromRGB(70, 48, 42), Enum.Material.Slate, { CanCollide = false })
+		end
 		-- 줄무늬 차양 (두 색이 번갈아): 앞쪽이 낮게 기울어져 처마처럼 내려온다
 		for i = 0, 9 do
 			local stripe = part("Awning", Vector3.new(2.1, 0.5, 18), Vector3.new(-9.45 + i * 2.1, 12.4, 0), i % 2 == 0 and roofA or roofB, Enum.Material.Fabric,
