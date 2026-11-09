@@ -634,7 +634,11 @@ function refreshEnhance()
 	if milestone and milestone.Kind == "Form" then
 		enhanceNext.Text = string.format("▶ <b>%d more</b> to unlock <font color='#9ad7ff'><b>%s</b></font>!", milestone.Level - level, milestone.Name)
 	elseif milestone then
-		enhanceNext.Text = string.format("▶ <b>%d more</b> to evolve into <font color='#9ad7ff'><b>%s</b></font>!", milestone.Level - level, milestone.Name)
+		-- 무기 5개가 다 열린 뒤: 다음 시대에 "무엇이 바뀌는지"(새 탄환 모양)를 같이 보여 준다. 태그 없이 한 문장이라 번역이 문장째로 된다
+		-- (예전: "▶ 100 남음 — Arcane 시대(으)로 진화!" 처럼 영어 이름과 조사가 섞여 어색했다)
+		local perk = milestone.Tier and milestone.Tier.Perk
+		enhanceNext.Text = perk and string.format("▶ %d more to the next era — new shots: %s %s", milestone.Level - level, perk.Icon, perk.Name)
+			or string.format("▶ %d more to the next era", milestone.Level - level)
 	else
 		enhanceNext.Text = ""
 	end

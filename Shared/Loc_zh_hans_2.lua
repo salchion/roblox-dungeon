@@ -888,6 +888,7 @@ return {
 		{ "🐾 Unlock your pet! ({number1} G)", "🐾 解锁你的宠物！（{number1}G）" },
 		{ "💪 Zone {number1} Lord: power {number2} / {number3}", "💪 区域{number1}领主：战力 {number2} / {number3}" },
 		{ "Crit damage +{number1}%p  (max {number2})", "暴击伤害 +{number1}%p  (最多 {number2})" },
+		{ "▶ {number1} more to the next era", "▶ 距离下个时代还差{number1}" },
 		{ "★☆  Step {number1}/{number2} · Next step", "★☆ 步骤 {number1}/{number2} · 下一步" },
 		{ "🌋 {number1} Streak — Legendary!", "🌋 {number1}连胜 - 传奇级！" },
 		{ "Reach character level {number1}", "达到角色等级 {number1}" },
@@ -1076,6 +1077,5 @@ return {
 		{ "✦ Paragon {number1}", "✦ 巅峰 {number1}" },
 		{ "◆ Max HP +{number1}", "◆ 最大生命 +{number1}" },
 		{ "✦ Unique {number1}%", "✦ 独特 {number1}%" },
-		{ "{number1} owned · ✨{number2}", "拥有 {number1} · ✨{number2}" },
 	},
 }

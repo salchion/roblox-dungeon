@@ -128,11 +128,12 @@ end
 
 local memo, memoCount = {}, 0
 local function translatePiece(obj, piece)
-	if piece == "" or not string.find(piece, "%a%a%a") then return nil end -- (영어 단어가 없는 글자는 번역할 게 없다)
+	if piece == "" or not string.find(piece, "%a%a") then return nil end -- (영어 단어가 없는 글자는 번역할 게 없다)
+	local shortWords = not string.find(piece, "%a%a%a") -- "100 to go" 처럼 두 글자 단어뿐인 조각: 번역표에서만 찾는다 (예전엔 아예 건너뛰어서 영어로 남았다)
 	local cached = memo[piece]
 	if cached ~= nil then return cached or nil end
 	local result = lookupDict(piece)
-	if not result then
+	if not result and not shortWords then
 		local okT, translated = pcall(function() return translator:Translate(obj, piece) end)
 		if okT and translated and translated ~= piece then result = translated end
 	end
