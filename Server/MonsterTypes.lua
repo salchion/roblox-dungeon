@@ -374,7 +374,13 @@ local function addWispGlow(body, S, c)
 	glow.Parent = body
 end
 
-function M.Build(typeKey, size, color, position, parent)
+-- 구역 -> 겉모양 변종 단계 (1~3구역 기본 / 4~6구역 역전의 개체 / 7~8구역 타락한 개체)
+function M.VariantTier(zone)
+	zone = zone or 1
+	return zone >= 7 and 3 or (zone >= 4 and 2 or 1)
+end
+
+function M.Build(typeKey, size, color, position, parent, tier)
 	local def = M.Defs[typeKey]
 
 	-- 판정용 몸체: 눈에 안 보이는 상자 (총알 / 레이더 / 체력바는 이걸 기준으로 한다)
@@ -428,7 +434,7 @@ function M.Build(typeKey, size, color, position, parent)
 	-- 새 둥근 모양(MonsterLooks)을 먼저 시도하고, 없거나 오류가 나면 예전 모양(Looks)으로 돌아간다
 	local builtNew = false
 	if NewLooks and NewLooks.Has(typeKey) then
-		local ok, err = pcall(NewLooks.Build, typeKey, size, color, d)
+		local ok, err = pcall(NewLooks.Build, typeKey, size, color, d, tier)
 		if ok then
 			builtNew = true
 			if typeKey == "Wisp" then addWispGlow(body, size, color) end

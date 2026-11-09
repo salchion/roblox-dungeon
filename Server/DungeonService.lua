@@ -469,7 +469,8 @@ local function spawnMonster(run, level, position)
 	end
 
 	local color = def.Color:Lerp(run.Type.MonsterColor, 0.25)
-	local part = MonsterTypes.Build(typeKey, stats.Size, color, position or ringPosition(run, stats.Size), run.MonstersFolder)
+	local variantZone = run.Tutorial and 1 or (run.RiftMode and Config.Rift.GimmickZone) or D.GimmickZone(run.DiffKey) -- 던전 난이도를 필드 구역으로 환산해서 겉모양 변종을 고른다
+	local part = MonsterTypes.Build(typeKey, stats.Size, color, position or ringPosition(run, stats.Size), run.MonstersFolder, MonsterTypes.VariantTier(variantZone))
 	-- 던전 분위기: 몬스터마다 던전 색의 은은한 빛을 두른다 (어두운 동굴에서도 실루엣이 보이게)
 	local glow = Instance.new("PointLight")
 	glow.Range = 10 + stats.Size

@@ -424,15 +424,76 @@ Looks.Totem = function(S, c, T)
 	end
 end
 
+------------------------------------------------------------
+-- 구역 변종 (같은 몬스터라도 뒤 구역일수록 겉모양이 사나워진다: 색만 바뀌던 것 -> 실루엣이 바뀐다)
+--   tier 2 (4~6구역) "역전의 개체": 뼈 뿔 + 등뼈 가시
+--   tier 3 (7~8구역) "타락한 개체": 흑요석 뿔 + 등에 돋은 보랏빛 수정 (빛나지 않는 유리: 눈부시지 않게)
+-- head = 뿔이 날 정수리, hw = 뿔 사이 반 너비, hs = 뿔 크기, back = 등 가시 줄 {시작, 끝}, orbit = 떠 있는 종류는 몸 둘레 수정 반지름
+------------------------------------------------------------
+local VARIANT = {
+	Slime = { head = V(0, 0.4, 0.02), hw = 0.14, hs = 0.8, back = { V(0, 0.34, 0.12), V(0, 0.12, 0.42) } },
+	Bat = { head = V(0, 0.4, -0.32), hw = 0.08, hs = 0.6, back = { V(0, 0.3, -0.02), V(0, 0.24, 0.3) } },
+	Spider = { head = V(0, 0.22, -0.28), hw = 0.12, hs = 0.7, back = { V(0, 0.44, 0.2), V(0, 0.38, 0.72) } },
+	Charger = { head = V(0, 0.4, -0.56), hw = 0.2, hs = 1.0 },
+	Imp = { back = { V(0, 0.14, 0.18), V(0, -0.14, 0.26) } },
+	Golem = { head = V(0, 0.54, -0.2), hw = 0.14, hs = 0.9, back = { V(0, 0.5, 0.0), V(0, 0.4, 0.36) } },
+	Spitter = { head = V(0, 0.24, -0.5), hw = 0.14, hs = 0.8 },
+	Wisp = { orbit = 0.62 },
+	Mage = { orbit = 0.72 },
+	Bomber = { back = { V(0, 0.46, 0.0), V(0, 0.2, 0.44) } },
+	Turret = { back = { V(0, 0.46, 0.2), V(0, 0.3, 0.4) } },
+	Healer = { orbit = 0.7 },
+	Totem = { back = { V(0, 0.3, 0.3), V(0, -0.2, 0.36) } },
+}
+local BONE, OBSIDIAN, CRYSTAL = Color3.fromRGB(226, 214, 186), Color3.fromRGB(46, 34, 58), Color3.fromRGB(150, 96, 215)
+
+local function addVariant(typeKey, T, tier)
+	local v = VARIANT[typeKey]
+	if not v or tier < 2 then return end
+	local hornCol = tier >= 3 and OBSIDIAN or BONE
+	if v.head then -- 정수리의 휜 뿔 한 쌍 (3단계는 더 길고 검다)
+		local s = v.hs * (tier >= 3 and 1.35 or 1)
+		for _, side in ipairs({ -1, 1 }) do
+			local a = v.head + V(side * v.hw, 0, 0)
+			T.horn(a, a + V(side * 0.16 * s, 0.34 * s, 0.12 * s), 0.06 * v.hs, hornCol, Plastic, V(side * 0.1 * s, 0.02, 0.06 * s))
+		end
+	end
+	if v.back then -- 등줄기 가시 (2단계 = 뼈 3개, 3단계 = 수정 4개: 앞이 제일 크다)
+		local n = tier >= 3 and 4 or 3
+		for i = 0, n - 1 do
+			local t = i / math.max(1, n - 1)
+			local p = v.back[1]:Lerp(v.back[2], t)
+			local len = (tier >= 3 and 0.36 or 0.24) * (1 - t * 0.45)
+			if tier >= 3 then
+				T.rod(p, p + V((i % 2 == 0 and 0.05 or -0.05), len, 0.1), 0.07, 0.012, CRYSTAL, Glass, { T = 0.12 }, false)
+			else
+				T.rod(p, p + V(0, len, 0.1), 0.055, 0.012, hornCol, Plastic, nil, false)
+			end
+		end
+	end
+	if v.orbit and tier >= 3 then -- 떠 있는 종류: 몸 둘레에 수정 조각 3개 (끝이 뾰족한 막대: 네모 조각이 아니다)
+		for i = 0, 2 do
+			local ang = i / 3 * math.pi * 2 + 0.5
+			local p = V(math.cos(ang) * v.orbit, 0.1 + i * 0.12, math.sin(ang) * v.orbit)
+			T.rod(p - V(0, 0.14, 0), p + V(0, 0.16, 0), 0.06, 0.01, CRYSTAL, Glass, { T = 0.12 }, false)
+		end
+	elseif v.orbit then -- 2단계: 뼈 고리 장식 하나
+		T.seg(V(-0.34, 0.5, 0.12), V(0.34, 0.5, 0.12), 0.025, BONE, Plastic)
+	end
+end
+
 function M.Has(typeKey)
 	return Looks[typeKey] ~= nil
 end
 
 -- d: MonsterTypes.Build 가 넘겨 주는 부품 만들기 함수, S: 몬스터 크기, c: 몸 색
-function M.Build(typeKey, S, c, d)
+-- tier: 구역 변종 단계 (1 = 기본, 2 = 4~6구역, 3 = 7~8구역)
+function M.Build(typeKey, S, c, d, tier)
 	local look = Looks[typeKey]
 	if not look then return false end
-	look(S, c, toolkit(d, S))
+	local T = toolkit(d, S)
+	look(S, c, T)
+	pcall(addVariant, typeKey, T, tier or 1) -- (변종 장식이 실패해도 몸은 그대로)
 	return true
 end
 

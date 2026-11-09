@@ -1019,7 +1019,7 @@ local function spawnMonster(zone, kind, at, ambush, filler)
 		if kind == "Elite" then
 			baseColor = def.Color:Lerp(Color3.fromRGB(240, 190, 50), 0.45)
 		end
-		part = MonsterTypes.Build(typeKey, stats.Size, baseColor, position, monstersFolder)
+		part = MonsterTypes.Build(typeKey, stats.Size, baseColor, position, monstersFolder, MonsterTypes.VariantTier(zone))
 		part.Name = "FieldMonster"
 		if kind == "Elite" then
 			CollectionService:AddTag(part, "RadarElite")
