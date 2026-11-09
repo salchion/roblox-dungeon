@@ -265,6 +265,7 @@ function Tutorial.PlaceInField(player)
 	local okF, Field = pcall(function() return require(script.Parent:WaitForChild("FieldService")) end)
 	if not okF or not Field.RespawnAtCamp then return false end
 	Field.RespawnAtCamp(player, character, 1)
+	pcall(function() character:PivotTo(character:GetPivot() * CFrame.new(0, 0, -30)) end) -- (캠프에서 30걸음 앞: 착지 카메라가 등 뒤 마을 벽을 비추지 않고 앞쪽 필드가 넓게 보이게)
 	state.FieldPlaced = true
 	return true
 end
@@ -278,7 +279,10 @@ function Tutorial.StartInField(player)
 	if not okF or not Field.RespawnAtCamp then return end
 	state.FieldStarted = true
 	state.ReelDone = true -- 이 자리에서 바로 주므로 "필드에 처음 나갈 때" 지급은 다시 하지 않는다
-	if not state.FieldPlaced then Field.RespawnAtCamp(player, character, 1) end -- (오프닝 중에 이미 옮겨 두었으면 그대로: 착지 장면이 캠프에서 나왔다)
+	if not state.FieldPlaced then
+		Field.RespawnAtCamp(player, character, 1)
+		pcall(function() character:PivotTo(character:GetPivot() * CFrame.new(0, 0, -30)) end) -- (PlaceInField 와 같은 자리)
+	end -- (오프닝 중에 이미 옮겨 두었으면 그대로: 착지 장면이 캠프에서 나왔다)
 	task.delay(1.5, function() if player.Parent then giveReelGear(player) end end)
 	-- (R 자동 공격 안내는 화면 가운데의 큰 R 카드(PlayerClient)가 한다: 왼쪽 아래 카드 / 미션 카드까지 세 군데에 같은 말이 겹쳐 떴다)
 end
