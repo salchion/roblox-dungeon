@@ -869,6 +869,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/FieldEvents.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "FieldEvents",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/BossStage.lua",
       "parent": "ServerScriptService/Modules",
       "name": "BossStage",
