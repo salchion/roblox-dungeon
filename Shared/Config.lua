@@ -919,6 +919,9 @@ Config.Field = {
 	-- 구역별 저격형 몬스터(마법 포탑 / 저격 임프) 피해 배율: 3구역은 "2구역처럼 밀다가 방심하면 죽는" 구역 (4구역 기본 배율 4.7 보다는 낮게: 4구역이 여전히 벽)
 	SniperDamage = { [3] = 1.8 },
 	SniperTypes = { Turret = true, Imp = true },
+	-- 현상금(엘리트 무리): 큰길에서 벗어난 곳에 나타나고 제한 시간 안에 모두 잡으면 근처 모두 보상
+	Bounty = { FirstDelay = 60, MinGap = 120, MaxGap = 180, Seconds = 120, PackSize = 3, GoldMult = 3, RewardRadius = 140,
+		TicketsByZone = { 1, 1, 1, 2, 2, 2, 3, 3 } },
 	MobDamageMult = 1.2,       -- 필드 일반 / 엘리트 몬스터 피해 +20% (체력이 잘 차서 긴장감이 없다는 의견. 군주는 그대로)
 	MobShotIntervalMult = 0.8, -- 필드 일반 / 엘리트 몬스터 공격 간격 x0.8 (= 25% 더 자주 쏜다)
 	-- 초반 일반 몬스터 / 엘리트만 체력을 더 낮춘다 (군주는 제외): 처음 사냥이 "잘 안 죽어서 답답하다"는 의견. 1구역 x0.45, 2구역 x0.8

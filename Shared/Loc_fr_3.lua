@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1}% → up to {number2}% (deeper = higher)", "{number1}% → jusqu'à {number2}% (plus profond = plus élevé)" },
+		{ "◆ Skill Cooldown Reduction +{number1}%", "◆ Réduction de recharge +{number1}%" },
+		{ "{number1}  <font color='#{number2}c{number3}b{number4}'>{number5}%</font>", "{number1} <font color='#{number2}c{number3}b{number4}'>{number5}%</font>" },
+		{ "⚔ Sniper Rifle · Rusty Era +{number10}", "⚔ Fusil de sniper · Ère rouillée +{number10}" },
 		{ "Not enough gold. ({number1} G needed)", "Pas assez d'or. ({number1} G nécessaire)" },
 		{ "e.g. Maintenance in {number1} minutes", "par exemple, maintenance dans {number1} minutes" },
 		{ "🥇 LeeGoAll  ⚡{number1}\n🥈 {player1}  ⚡{number2}", "🥇 LeeGoAll ⚡{number1}\n🥈 {player1} ⚡{number2}" },
@@ -410,6 +414,7 @@ return {
 		{ "Purchase complete: {text1}", "Achat terminé : {text1}" },
 		{ "{text1} obtained! Equipped", "{text1} obtenu ! Équipé" },
 		{ "New gear equipped! {text1}", "Nouvel équipement équipé ! {text1}" },
+		{ "🎯 Bounty · {number1} left · {text2}", "🎯 Prime · {number1} restants · {text2}" },
 		{ "Lord of {text1}  ·  Zone {number2}", "Seigneur de {text1}  ·  Zone {number2}" },
 		{ "⏱ Used {text1} Time Skip!", "⏱ {text1} saut(s) temporel(s) utilisé(s) !" },
 		{ "✅ {text1} — tap to claim!", "✅ {text1} — touchez pour récupérer !" },

@@ -4,9 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "every {number1} shots a blade bounces across {number2} enemies", "{number1}발마다 칼날이 적 {number2}명 사이를 튕겨요" },
+		{ "<font color='#ff8c8c'>vs. equipped ▼ {number1}</font>", "<font color='#ff8c8c'>장착 중보다 ▼ {number1}</font>" },
 		{ "💰 Golden Goblin defeated! +{number1} G, 3 loot drops!", "💰 황금 고블린 처치! +{number1} G, 전리품 3개!" },
 		{ "Enemies swarm in more often\nGold +{number1}% instead", "적들이 더 자주 몰려옵니다\n골드 +{number1}%" },
 		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 더 약한 장비 {number1}개를 자동 정리했어요 (정수 +{number2}, {number3} G)" },
+		{ "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped", "🎯 현상금 완료! +{number1} G · 🎫 +{number2} · 장비 획득" },
 		{ "🎫 {number1} tickets!\nPull gear at the gacha machine", "🎫 {number1} 티켓!\n가챠 머신에서 장비를 뽑으세요" },
 		{ "🐾 Pet Lv.{number1}! New ability 💥 Power — Attack +{number2}%", "🐾 펫 레벨 {number1}! 새로운 능력 💥 파워 - 공격 +{number2}%" },
 		{ "Sniper Rifle  ·  next weapon: Shotgun at +{number1}", "저격 소총 · 다음 무기: 산탄총 +{number1}" },
@@ -571,6 +574,7 @@ return {
 		{ "Purchase complete: {text1}", "구매 완료: {text1}" },
 		{ "{text1} obtained! Equipped", "{text1} 획득! 장착했어요" },
 		{ "New gear equipped! {text1}", "새 장비 장착! {text1}" },
+		{ "🎯 Bounty · {number1} left · {text2}", "🎯 현상금 · {number1}마리 남음 · {text2}" },
 		{ "Lord of {text1}  ·  Zone {number2}", "{text1}의 군주  ·  {number2}구역" },
 		{ "⏱ Used {text1} Time Skip!", "⏱ 시간 건너뛰기 {text1} 사용!" },
 		{ "✅ {text1} — tap to claim!", "✅ {text1} — 눌러서 받기!" },

@@ -610,6 +610,13 @@
       "overwrite": true
     },
     {
+      "path": "BountyClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "BountyClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "UiOverlapAudit.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "UiOverlapAudit",

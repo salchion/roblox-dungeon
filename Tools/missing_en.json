@@ -2471,5 +2471,8 @@
 "▶ {number1} more to the next era",
 "⚠ A World Boss is stirring in Zone {number1} · {text2}... it rises in {number3} seconds!",
 "⚠ {text1} rising soon · Zone {number2}",
-"✂ Interrupted!"
+"✂ Interrupted!",
+"🎯 Bounty! An elite pack appeared off the main road in Zone {number1}. Defeat all {number2} within {number3} seconds for a reward!",
+"🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped",
+"🎯 Bounty · {number1} left · {text2}"
 ]

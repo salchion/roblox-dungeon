@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 マルチロール！\nすべてのチケットを使用（最大{number1}枚）" },
+		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 レベルアップ！ Lv.{number1}（最大HP +{number2} 攻撃 +{number3}%）" },
+		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 ミッション {number2}/{number3}</font>" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "強化{number1}回: 成功{number2} / 失敗{number3}  (ゴールド -{number4})" },
 		{ "Reach level {number1} to buy points with gold.", "レベル{number1}に到達すると、ゴールドでポイントを購入できます。" },
 		{ "🎫 A {number1}x pull needs {number2} tickets (you have {number3})", "🎫 {number1}連抽には{number2}枚のチケットが必要です(所持: {number3}枚)" },
@@ -504,6 +507,7 @@ return {
 		{ "Purchase complete: {text1}", "購入完了：{text1}" },
 		{ "{text1} obtained! Equipped", "{text1}を入手！装備しました" },
 		{ "New gear equipped! {text1}", "新しい装備を装着！{text1}" },
+		{ "🎯 Bounty · {number1} left · {text2}", "🎯 賞金首 · 残り{number1} · {text2}" },
 		{ "Lord of {text1}  ·  Zone {number2}", "{text1}のロード  ·  ゾーン{number2}" },
 		{ "⏱ Used {text1} Time Skip!", "⏱ タイムスキップを{text1}個使用しました！" },
 		{ "✅ {text1} — tap to claim!", "✅ {text1} — タップして受け取る！" },

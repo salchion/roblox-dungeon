@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "◆ Attack +{number1}%", "◆ 攻击力 +{number1}%" },
+		{ "♻ Essence +{number1}", "♻ 精华 +{number1}" },
+		{ "Zone {number1} Camp", "区域 {number1} 营地" },
+		{ "🐾 Pet Lv.{number1}!", "🐾 宠物 Lv.{number1}!" },
+		{ "Upgrade {number1} G", "强化 {number1} 金币" },
+		{ "✦ Paragon {number1}", "✦ 巅峰 {number1}" },
+		{ "◆ Max HP +{number1}", "◆ 最大生命 +{number1}" },
+		{ "✦ Unique {number1}%", "✦ 独特 {number1}%" },
 		{ "{number1} owned · ✨{number2}", "拥有 {number1} · ✨{number2}" },
 		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} 金币 🎫 {number5}" },
 		{ "🔥 Combo x{number1}", "🔥 连击 x{number1}" },
@@ -148,6 +156,7 @@ return {
 		{ "Purchase complete: {text1}", "购买完成：{text1}" },
 		{ "{text1} obtained! Equipped", "获得{text1}！已装备" },
 		{ "New gear equipped! {text1}", "已装备新装备！{text1}" },
+		{ "🎯 Bounty · {number1} left · {text2}", "🎯 悬赏 · 剩余{number1} · {text2}" },
 		{ "Lord of {text1}  ·  Zone {number2}", "{text1}领主  ·  区域{number2}" },
 		{ "⏱ Used {text1} Time Skip!", "⏱ 已使用 {text1} 个时间跳跃!" },
 		{ "✅ {text1} — tap to claim!", "✅ {text1} — 点击领取!" },

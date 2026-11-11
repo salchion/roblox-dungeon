@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Explodes on hit (radius {number1})", "Explode ao acertar (raio {number1})" },
+		{ "Not enough gold (need {number1} G)", "Ouro insuficiente ({number1} G necessário)" },
+		{ "▲ {number1} unspent (T)  ·  {number2} / {number3} XP", "▲ {number1} não gastos (T)  ·  {number2} / {number3} XP" },
+		{ "Enter Fever Time {number1} time(s)", "Entre {number1} vez(es) na Hora da febre" },
+		{ "Upgrade a gear piece to +{number1}", "Melhore uma peça de equipamento até +{number1}" },
 		{ "▲ Better than equipped  +{number1}", "▲ Melhor que o equipado  +{number1}" },
 		{ "Lord of Forest  ·  Zone {number1}", "Senhor da Floresta · Zona {number1}" },
 		{ "Zone {number1} · Shockwave Shot  ", "Zona {number1} · Tiro de Onda de Choque" },
@@ -352,6 +357,7 @@ return {
 		{ "Purchase complete: {text1}", "Compra concluída: {text1}" },
 		{ "{text1} obtained! Equipped", "{text1} obtido! Equipado" },
 		{ "New gear equipped! {text1}", "Novo equipamento equipado! {text1}" },
+		{ "🎯 Bounty · {number1} left · {text2}", "🎯 Recompensa · faltam {number1} · {text2}" },
 		{ "Lord of {text1}  ·  Zone {number2}", "Senhor de {text1}  ·  Zona {number2}" },
 		{ "⏱ Used {text1} Time Skip!", "⏱ {text1} salto(s) de tempo usado(s)!" },
 		{ "✅ {text1} — tap to claim!", "✅ {text1} — toque para resgatar!" },

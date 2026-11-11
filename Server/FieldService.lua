@@ -2330,7 +2330,7 @@ local function stepMonsters(dt)
 				else
 					data.HiddenFor = (data.HiddenFor or 0) + 1
 				end
-				if data.HiddenFor >= 20 or (data.FirstHit and now - data.FirstHit > 60) then -- (시야가 막혔거나 / 맞은 지 60초가 넘도록 못 잡은 몬스터)
+				if not data.Bounty and (data.HiddenFor >= 20 or (data.FirstHit and now - data.FirstHit > 60)) then -- (시야가 막혔거나 / 맞은 지 60초가 넘도록 못 잡은 몬스터)
 					data.HiddenFor = 0
 					data.FirstHit = nil
 					local r = data.Stats.Size / 2
@@ -3154,6 +3154,113 @@ local function runEvents()
 end
 
 -- 황금 고블린 출현 타이머: 필드에 누군가 있으면 몇 분마다 한 마리
+-- 현상금: 사람이 있는 구역마다 가끔 "엘리트 무리"가 큰길에서 벗어난 곳(구역 옆쪽)에 나타난다. 제한 시간 안에 모두 잡으면
+-- 근처에서 싸운 사람 모두 골드 + 티켓 + 장비. 직선으로 밀기만 하던 사냥에 "옆으로 돌아갈 이유"를 준다 (화면 위 작은 표시: BountyClient)
+local bountyByZone = {}
+local function startBounty(zone)
+	local B = F.Bounty
+	local x0, x1 = zoneBounds(zone)
+	local spot
+	for _ = 1, 30 do
+		local x = math.random(math.floor(x0 + F.CampSafe + 120), math.floor(x1 - 120))
+		local z = (math.random() < 0.5 and -1 or 1) * math.random(math.floor(F.Width * 0.22), math.floor(F.Width * 0.4))
+		if walkableAt(x, z, 10) and not isSafe(Vector3.new(x, 0, z)) then spot = Vector3.new(x, floorAt(x), z) break end
+	end
+	if not spot then return end
+	local pack = {}
+	for i = 1, B.PackSize do
+		local a = i / B.PackSize * math.pi * 2
+		local at = spot + Vector3.new(math.cos(a) * 9, 0, math.sin(a) * 9)
+		local ok, part, data = pcall(spawnMonster, zone, "Elite", at)
+		if ok and part and data then
+			data.Bounty = true
+			data.Aggro = false
+			table.insert(pack, { Part = part, Data = data })
+		end
+	end
+	if #pack == 0 then return end
+	local beacon = Instance.new("Part") -- 멀리서도 보이는 가는 금빛 줄기 (옅게)
+	beacon.Anchored, beacon.CanCollide, beacon.CanQuery, beacon.CanTouch, beacon.CastShadow = true, false, false, false, false
+	beacon.Material = Enum.Material.Neon
+	beacon.Color = Color3.fromRGB(255, 205, 90)
+	beacon.Transparency = 0.82
+	beacon.Size = Vector3.new(1.6, 220, 1.6)
+	beacon.CFrame = CFrame.new(spot + Vector3.new(0, 110, 0))
+	beacon.Parent = worldFolder
+	local endsAt = workspace:GetServerTimeNow() + B.Seconds
+	local bounty = { Zone = zone, Spot = spot, Pack = pack, EndsAt = endsAt }
+	bountyByZone[zone] = bounty
+	local function sync(left)
+		for _, player in ipairs(Players:GetPlayers()) do
+			local root = getAliveParts(player)
+			local here = root and player:GetAttribute("Zone") == "Field" and zoneOfX(root.Position.X) == zone
+			player:SetAttribute("BountyEnd", here and left > 0 and endsAt or nil)
+			player:SetAttribute("BountyLeft", here and left > 0 and left or nil)
+			player:SetAttribute("BountyPos", here and left > 0 and spot or nil)
+		end
+	end
+	for _, player in ipairs(Players:GetPlayers()) do
+		local root = getAliveParts(player)
+		if root and player:GetAttribute("Zone") == "Field" and zoneOfX(root.Position.X) == zone then
+			notify(player, string.format("🎯 Bounty! An elite pack appeared off the main road in Zone %d. Defeat all %d within %d seconds for a reward!", zone, #pack, B.Seconds))
+		end
+	end
+	task.spawn(function()
+		local left = #pack
+		while workspace:GetServerTimeNow() < endsAt do
+			left = 0
+			for _, entry in ipairs(pack) do
+				if monsters[entry.Part] == entry.Data then left += 1 end
+			end
+			sync(left)
+			if left == 0 then break end
+			task.wait(1)
+		end
+		beacon:Destroy()
+		bountyByZone[zone] = nil
+		sync(0)
+		if left == 0 then -- 모두 잡았다: 근처에서 싸운 사람 모두에게 보상 (높은 구역일수록 크다)
+			local gold = 0
+			for _, entry in ipairs(pack) do gold += entry.Data.Stats.Gold or 0 end
+			gold = math.floor(gold * B.GoldMult)
+			local tickets = (B.TicketsByZone and B.TicketsByZone[zone]) or 1
+			for _, entry in ipairs(playersNear(spot, B.RewardRadius)) do
+				local player = Players:GetPlayerFromCharacter(entry.Root.Parent)
+				if player then
+					player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + math.floor(gold * Config.GoldBonus(player) + 0.5))
+					player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + tickets)
+					Loot.DropFor(player, entry.Root.Position, "Event", zone)
+					playSfx(player, "Quest_Claim")
+					notify(player, string.format("🎯 Bounty complete! +%d G · 🎫 +%d · gear dropped", gold, tickets))
+				end
+			end
+		else
+			for _, entry in ipairs(pack) do -- 시간 초과: 남은 무리는 물러난다 (보상 없음)
+				if monsters[entry.Part] == entry.Data then
+					monsters[entry.Part] = nil
+					entry.Part:Destroy()
+				end
+			end
+		end
+	end)
+end
+
+local function runBounties()
+	task.wait(F.Bounty.FirstDelay)
+	while true do
+		local zones = {}
+		for _, player in ipairs(Players:GetPlayers()) do
+			local root = getAliveParts(player)
+			if root and player:GetAttribute("Zone") == "Field" and not player:GetAttribute("TutorialDoom") and not player:GetAttribute("TutorialActive") then
+				local zone = zoneOfX(root.Position.X)
+				if zone >= 1 and not bountyByZone[zone] then zones[zone] = true end
+			end
+		end
+		for zone in pairs(zones) do pcall(startBounty, zone) end
+		task.wait(math.random(F.Bounty.MinGap, F.Bounty.MaxGap))
+	end
+end
+
 local function runGoblins()
 	task.wait(90)
 	while true do
@@ -3882,6 +3989,7 @@ function Field.Init(lobbySpawnCFrame)
 
 	task.spawn(runEvents)
 	task.spawn(runGoblins)
+	task.spawn(runBounties)
 	task.spawn(function() -- 구간이 바뀌면 "이 구간엔 이런 몬스터가 많아요" 알림 (같은 구역도 구간마다 구성이 달라진다)
 		local lastKey = setmetatable({}, { __mode = "k" })
 		while true do

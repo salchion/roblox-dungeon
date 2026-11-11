@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "ZONE {number1}  ·  Volcano   ☠☠☠☠☠☠", "Zona {number1} · Volcán ☠☠☠☠☠☠" },
+		{ "⚔ Spell Tome · Rusty Era +{number10}", "⚔ Tomo de Hechizos · Era Oxidada +{number10}" },
+		{ "🔒 Zone {number1} · Darklands Sealed", "🔒 Zona {number1} · Tierras Oscuras selladas" },
+		{ "Zone {number1} · Lightning Strike  ", "Zona {number1} · Rayo" },
+		{ "🔒 Zone {number1} · Snowfield Sealed", "🔒 Zona {number1} · Campo de nieve sellado" },
 		{ "Sniper Rifle · Rusty Era +{number1}", "Rifle de francotirador · Era oxidada +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number2}", "❄ Puerta del Palacio de Hielo · Rec. ⚡{number2}" },
 		{ "ZONE {number1}  ·  Abyss   ☠☠☠☠☠☠☠☠", "Zona {number1} · Abismo ☠☠☠☠☠☠☠☠" },
@@ -380,6 +385,7 @@ return {
 		{ "Purchase complete: {text1}", "Compra completada: {text1}" },
 		{ "{text1} obtained! Equipped", "¡{text1} obtenido! Equipado" },
 		{ "New gear equipped! {text1}", "¡Equipo nuevo equipado! {text1}" },
+		{ "🎯 Bounty · {number1} left · {text2}", "🎯 Recompensa · quedan {number1} · {text2}" },
 		{ "Lord of {text1}  ·  Zone {number2}", "Señor de {text1}  ·  Zona {number2}" },
 		{ "⏱ Used {text1} Time Skip!", "⏱ ¡Usaste {text1} salto(s) de tiempo!" },
 		{ "✅ {text1} — tap to claim!", "✅ {text1} — ¡toca para reclamar!" },

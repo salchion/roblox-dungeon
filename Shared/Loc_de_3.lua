@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Range x{number1} · allies heal +{number2}%", "Reichweite x{number1} · Verbündete werden um {number2} % mehr geheilt" },
+		{ "Recovers {number1}% HP per second", "Stellt pro Sekunde {number1} % LP wieder her" },
+		{ "Uses all Tickets (max {number1})", "Verwendet alle Tickets (max. {number1})" },
+		{ "📍 Field · Best Zone {number1}   ", "📍 Feld · Beste Zone {number1}" },
+		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "Zone {number1} · Wüste ☠☠☠☠" },
 		{ "🎒 Bag {number1} / {number2}    ✨ Essence {number3}", "🎒 Tasche {number1} / {number2} ✨ Essenz {number3}" },
 		{ "Returning to lobby in {number1}s", "Zur Lobby zurückkehren in {number1} Sekunden" },
 		{ "🔒 Zone {number1} · Desert Sealed", "🔒 Zone {number1} · Wüste versiegelt" },
@@ -334,6 +339,7 @@ return {
 		{ "Purchase complete: {text1}", "Kauf abgeschlossen: {text1}" },
 		{ "{text1} obtained! Equipped", "{text1} erhalten! Ausgerüstet" },
 		{ "New gear equipped! {text1}", "Neue Ausrüstung angelegt! {text1}" },
+		{ "🎯 Bounty · {number1} left · {text2}", "🎯 Kopfgeld · noch {number1} · {text2}" },
 		{ "Lord of {text1}  ·  Zone {number2}", "Lord von {text1}  ·  Zone {number2}" },
 		{ "⏱ Used {text1} Time Skip!", "⏱ {text1} Zeitsprung(e) benutzt!" },
 		{ "✅ {text1} — tap to claim!", "✅ {text1} — Tippen zum Abholen!" },
