@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Tomo de Hechizos · Era Oxidada +{number1}" },
+		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Puerta del Palacio de Hielo · Rec. ⚡{number1}" },
+		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zona {number1} · Tierra baldía sellada" },
+		{ "Auto-loot radius grows to {number1}", "El radio de botín automático aumenta a {number1}" },
 		{ "ZONE {number1}  ·  Volcano   ☠☠☠☠☠☠", "Zona {number1} · Volcán ☠☠☠☠☠☠" },
 		{ "⚔ Spell Tome · Rusty Era +{number10}", "⚔ Tomo de Hechizos · Era Oxidada +{number10}" },
 		{ "🔒 Zone {number1} · Darklands Sealed", "🔒 Zona {number1} · Tierras Oscuras selladas" },

@@ -184,7 +184,9 @@ label({ Size = UDim2.new(0, 84, 0, 12), Position = UDim2.new(0, 14 + 3 * 28 + 14
 local boxBody = label({
 	Size = UDim2.new(1, -20, 1, -232), Position = UDim2.new(0, 10, 0, 174), Text = "", TextSize = 11, RichText = true, TextWrapped = true,
 	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(205, 210, 235), ZIndex = 3,
+	TextScaled = true, -- (조합 효과 줄이 붙으면 칸을 넘친다: 넘칠 때만 글자를 줄인다. 평소에는 11)
 }, box)
+make("UITextSizeConstraint", { MaxTextSize = 11, MinTextSize = 8 }, boxBody)
 local selectedZone = 1
 local toggleButton = button({ Size = UDim2.new(0.5, -12, 0, 38), Position = UDim2.new(0, 8, 1, -46), BackgroundColor3 = Color3.fromRGB(62, 64, 84), Text = "", TextSize = 12 }, box, function()
 	Remotes.Aug:FireServer("Toggle", selectedZone)
@@ -307,6 +309,34 @@ function refresh()
 	boxTitle.Text = string.format("%sZone %d · %s  %s", on and "<font color='#78ffb4'>●</font> " or "", zone, info.Name,
 		level > 0 and (gear > 0 and string.format("[Lv.%d + gear %d = %d]", level, gear, level + gear) or ("[Lv." .. level .. "]")) or "")
 	local lines = { "<font color='#aaf0c8'>" .. info.Desc .. "</font>" }
+	-- 조합 효과: 이 효과와 함께 켜면(또는 유니크를 끼면) 숨은 효과가 켜진다. 켜진 것은 초록, 아직이면 무엇이 필요한지 (장비를 고르는 재미)
+	do
+		local function needName(need)
+			if string.sub(need, 1, 4) == "Gear" then
+				local stat = string.sub(need, 5)
+				for _, u in pairs(Config.Uniques or {}) do
+					if type(u) == "table" and u.Effects and u.Effects[1] and u.Effects[1].Stat == stat then return "✦ " .. u.Name, (player:GetAttribute(need) or 0) > 0 end
+				end
+				return need, false
+			end
+			local other = Config.AugInfo[need]
+			return other and (other.Icon .. " " .. other.Name) or need, (player:GetAttribute(need) or 0) > 0
+		end
+		for _, key in ipairs(Config.AugSynergies.Order) do
+			local syn = Config.AugSynergies[key]
+			if table.find(syn.Need, attr) then
+				local partners = {}
+				for _, need in ipairs(syn.Need) do
+					if need ~= attr then
+						local name, have = needName(need)
+						table.insert(partners, string.format("<font color='%s'>%s</font>", have and "#78ff8c" or "#ffcf8a", name))
+					end
+				end
+				local active = player:GetAttribute("AugSyn_" .. key) == true
+				table.insert(lines, string.format("%s <b>%s %s</b> + %s\n<font color='#c8cce0'>%s</font>", active and "<font color='#78ff8c'>✔</font>" or "🔗", syn.Icon, syn.Name, table.concat(partners, " + "), syn.Desc))
+			end
+		end
+	end
 	local roleInfo = Config.AugRoles and Config.AugRoles[attr]
 	if roleInfo then
 		table.insert(lines, 1, "<b>" .. Config.AugRoleLabel[roleInfo.Role] .. "</b>")

@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "ZONE {number1}  ·  Wasteland   ☠☠☠", "Zona {number1} · Terra Desolada ☠☠☠" },
+		{ "Active {number1} / {number2} slots   (💰 {number3} G)", "{number1} / {number2} espaços ativos (💰 {number3} G)" },
+		{ "Dismantled! Essence +{number1}, {number2} G", "Desmontado! Essência +{number1}, {number2} G" },
+		{ "🎯 Goal: Defeat Zone {number1} Lord", "🎯 Meta: derrotar o senhor da zona {number1}" },
 		{ "Explodes on hit (radius {number1})", "Explode ao acertar (raio {number1})" },
 		{ "Not enough gold (need {number1} G)", "Ouro insuficiente ({number1} G necessário)" },
 		{ "▲ {number1} unspent (T)  ·  {number2} / {number3} XP", "▲ {number1} não gastos (T)  ·  {number2} / {number3} XP" },

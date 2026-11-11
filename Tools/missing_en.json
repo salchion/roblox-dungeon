@@ -2474,5 +2474,9 @@
 "✂ Interrupted!",
 "🎯 Bounty! An elite pack appeared off the main road in Zone {number1}. Defeat all {number2} within {number3} seconds for a reward!",
 "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped",
-"🎯 Bounty · {number1} left · {text2}"
+"🎯 Bounty · {number1} left · {text2}",
+"Reaper's Rhythm",
+"Bursting Rampart",
+"Every execute cuts all skill cooldowns by 1s more: keep Blade Bloom spinning",
+"When your Bulwark shield blocks a hit, it bursts and blasts enemies around you (400%)"
 ]

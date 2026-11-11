@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎯 Mission {number1}/{number2}", "🎯 任务 {number1}/{number2}" },
+		{ "… and {number1} more", "……另有 {number1} 项" },
+		{ "(you have {number1})", "(你有 {number1})" },
+		{ "🎫 Tickets: {number1}", "🎫 门票:{number1}" },
+		{ "Next: Zone {number1}", "下一个:区域{number1}" },
+		{ "🏰 Dungeons {number1}", "🏰 地下城 {number1}" },
 		{ "◆ Attack +{number1}%", "◆ 攻击力 +{number1}%" },
 		{ "♻ Essence +{number1}", "♻ 精华 +{number1}" },
 		{ "Zone {number1} Camp", "区域 {number1} 营地" },

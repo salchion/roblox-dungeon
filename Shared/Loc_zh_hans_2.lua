@@ -516,6 +516,10 @@ return {
 		["① Defeat a zone's Lord → its effect unlocks   ② Press Y (Sets) to turn it on and upgrade it with gold   ③ It fires on its own in combat"] = "① 击败区域君主 → 解锁该效果   ② 按Y（套装）开启并用金币强化   ③ 战斗中自动触发",
 		["That was your set effect! It fires on its own."] = "刚才那就是套装效果！会自动触发。",
 		["✂ Interrupted!"] = "✂ 打断！",
+		["Reaper's Rhythm"] = "处决节奏",
+		["Bursting Rampart"] = "爆裂壁垒",
+		["Every execute cuts all skill cooldowns by 1s more: keep Blade Bloom spinning"] = "每次处决让所有技能冷却再减少1秒：让刀刃绽放转个不停",
+		["When your Bulwark shield blocks a hit, it bursts and blasts enemies around you (400%)"] = "壁垒护盾挡住攻击时会爆裂，冲击周围敌人（400%）",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1066,11 +1070,5 @@ return {
 		{ "🎫 {number1} tickets!", "🎫 {number1} 张票券！" },
 		{ "Cooldown -{number1}%", "冷却 -{number1}%" },
 		{ "MISSION {number1} / {number2}", "任务 {number1} / {number2}" },
-		{ "🎯 Mission {number1}/{number2}", "🎯 任务 {number1}/{number2}" },
-		{ "… and {number1} more", "……另有 {number1} 项" },
-		{ "(you have {number1})", "(你有 {number1})" },
-		{ "🎫 Tickets: {number1}", "🎫 门票:{number1}" },
-		{ "Next: Zone {number1}", "下一个:区域{number1}" },
-		{ "🏰 Dungeons {number1}", "🏰 地下城 {number1}" },
 	},
 }

@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Not enough Essence. ({number1} needed)", "Pas assez d'essence. ({number1} requis)" },
+		{ "Not enough tickets. ({number1} needed)", "Pas assez de tickets. ({number1} requis)" },
+		{ "💰 Bought +1 stat point! ({number1} / {number2})", "💰 +1 point de stats acheté ! ({number1} / {number2})" },
+		{ "💰 {number1} G Slot Upgrade ({number2}% success)", "💰 Amélioration d'emplacement {number1} or ({number2} % de réussite)" },
+		{ "Reach level {number1} to break through", "Atteignez le niveau {number1} pour percer" },
 		{ "{number1}% → up to {number2}% (deeper = higher)", "{number1}% → jusqu'à {number2}% (plus profond = plus élevé)" },
 		{ "◆ Skill Cooldown Reduction +{number1}%", "◆ Réduction de recharge +{number1}%" },
 		{ "{number1}  <font color='#{number2}c{number3}b{number4}'>{number5}%</font>", "{number1} <font color='#{number2}c{number3}b{number4}'>{number5}%</font>" },

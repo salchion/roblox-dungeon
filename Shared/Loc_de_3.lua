@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Idle Accrual Cap: {number1} Hours", "Inaktive Akkumulationsgrenze: {number1} Stunden" },
+		{ "🔫 Next era Steel Era (+{number1})", "🔫 Nächste Ära Stahl-Ära (+{number1})" },
+		{ "The party is full. (max {number1}", "Die Gruppe ist voll. (max. {number1}" },
+		{ "Fall in the field {number1} times", "Falle {number1}-mal im Feld" },
+		{ "Raise your pet to level {number1}", "Bringe dein Haustier auf Stufe {number1}" },
 		{ "Range x{number1} · allies heal +{number2}%", "Reichweite x{number1} · Verbündete werden um {number2} % mehr geheilt" },
 		{ "Recovers {number1}% HP per second", "Stellt pro Sekunde {number1} % LP wieder her" },
 		{ "Uses all Tickets (max {number1})", "Verwendet alle Tickets (max. {number1})" },

@@ -1707,7 +1707,9 @@ local function synergy(player, key, run) -- 조합 효과: 골드로 켠 세트 
 	local syn = Config.AugSynergies[key]
 	if not syn or not run then return false end
 	for _, need in ipairs(syn.Need) do
-		if augLv(run, player, need) <= 0 then return false end
+		if string.sub(need, 1, 4) == "Gear" then
+			if (player:GetAttribute(need) or 0) <= 0 then return false end
+		elseif augLv(run, player, need) <= 0 then return false end
 	end
 	return true
 end
@@ -1843,6 +1845,10 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 				local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 				if humanoid and humanoid.Health > 0 then humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * 0.04) end
 			end
+		end
+		if synergy(player, "Rhythm", run) then -- 처형의 박자: 처형할 때마다 모든 스킬 쿨타임 -1초 (시간 왜곡 유니크와 따로 더해진다)
+			local okSkill, Skill = pcall(function() return require(script.Parent:WaitForChild("SkillService")) end)
+			if okSkill and Skill.ReduceCooldowns then Skill.ReduceCooldowns(player, 1) end
 		end
 		if synergy(player, "Reaper", run) and augDepth == 0 then
 			local from = part.Position + Vector3.new(0, 3, 0)

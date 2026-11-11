@@ -605,6 +605,10 @@ return {
 		["① Defeat a zone's Lord → its effect unlocks   ② Press Y (Sets) to turn it on and upgrade it with gold   ③ It fires on its own in combat"] = "① Derrote o senhor de uma zona → o efeito é liberado   ② Aperte Y (Sets) para ativar e melhorar com ouro   ③ Dispara sozinho no combate",
 		["That was your set effect! It fires on its own."] = "Esse foi seu efeito de conjunto! Ele dispara sozinho.",
 		["✂ Interrupted!"] = "✂ Interrompido!",
+		["Reaper's Rhythm"] = "Ritmo do ceifador",
+		["Bursting Rampart"] = "Baluarte explosivo",
+		["Every execute cuts all skill cooldowns by 1s more: keep Blade Bloom spinning"] = "Cada execução reduz mais 1 s de todas as recargas: mantenha Blade Bloom girando",
+		["When your Bulwark shield blocks a hit, it bursts and blasts enemies around you (400%)"] = "Quando seu escudo Baluarte bloqueia um golpe, ele explode e atinge inimigos ao redor (400%)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -941,9 +945,5 @@ return {
 		{ "★★★  Step {number1}/{number2} · Higher step", "★★★ Passo {number1}/{number2} · Passo mais alto" },
 		{ "★★☆  Step {number1}/{number2} · Higher step", "★★☆ Passo {number1}/{number2} · Passo mais alto" },
 		{ "Spell Tome · Mythic Era +{number3}", "Livro de Feitiços · Era Mítica +{number3}" },
-		{ "ZONE {number1}  ·  Wasteland   ☠☠☠", "Zona {number1} · Terra Desolada ☠☠☠" },
-		{ "Active {number1} / {number2} slots   (💰 {number3} G)", "{number1} / {number2} espaços ativos (💰 {number3} G)" },
-		{ "Dismantled! Essence +{number1}, {number2} G", "Desmontado! Essência +{number1}, {number2} G" },
-		{ "🎯 Goal: Defeat Zone {number1} Lord", "🎯 Meta: derrotar o senhor da zona {number1}" },
 	},
 }

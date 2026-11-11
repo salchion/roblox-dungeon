@@ -105,6 +105,21 @@ function U.TryShield(player)
 	player:SetAttribute("ShieldUp", false)
 	player:SetAttribute("ShieldReadyAt", workspace:GetServerTimeNow() + U.SHIELD_EVERY)
 	U.Callout(player, "Bulwark", "🛡 Blocked!", Color3.fromRGB(150, 210, 255))
+	if player:GetAttribute("AugSyn_Rampart") == true then -- 조합 "터지는 방벽": 막는 순간 보호막이 터져 주변 적을 때린다 (400%)
+		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		if root then
+			task.spawn(function()
+				local okD, Dungeon = pcall(function() return require(script.Parent:WaitForChild("DungeonService")) end)
+				local okF, Field = pcall(function() return require(script.Parent:WaitForChild("FieldService")) end)
+				if not okD then return end
+				local damage = math.max(1, math.floor(Dungeon.ComputeDamage(player) * 4))
+				local E = fx()
+				if E then pcall(E.Burst, root.Position, Color3.fromRGB(150, 210, 255), 50) end
+				local hit = Dungeon.AreaDamage(player, root.Position, 18, damage)
+				if not hit and okF and Field.AreaDamage then Field.AreaDamage(player, root.Position, 18, damage) end
+			end)
+		end
+	end
 	return true
 end
 

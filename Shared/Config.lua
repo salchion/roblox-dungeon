@@ -458,7 +458,10 @@ end
 
 -- 세트 효과 시너지: 두 어그먼트를 모두 가지면 숨은 추가 효과가 켜진다 (획득하는 순간 알림 + 오라 폭발)
 Config.AugSynergies = {
-	Order = { "Inferno", "StormEye", "BladeMissile", "Reaper" },
+	Order = { "Inferno", "StormEye", "BladeMissile", "Reaper", "Rhythm", "Rampart" },
+	-- 세트 효과 + 유니크 조합 (Need 에 "Gear..." 가 있으면 그 유니크 능력을 장착하고 있어야 한다): 플레이 방식이 바뀌는 조합
+	Rhythm       = { Need = { "AugExecute", "GearKillCdr" }, Icon = "⏳", Name = "Reaper's Rhythm", Desc = "Every execute cuts all skill cooldowns by 1s more: keep Blade Bloom spinning" },
+	Rampart      = { Need = { "AugNova", "GearShield" },     Icon = "🛡", Name = "Bursting Rampart", Desc = "When your Bulwark shield blocks a hit, it bursts and blasts enemies around you (400%)" },
 	Inferno      = { Need = { "AugNova", "AugFlame" },      Icon = "🌋", Name = "Sea of Flames",    Desc = "Kill Burst is 30% wider and sets every enemy it hits on fire (2 Ignite stacks)" },
 	StormEye     = { Need = { "AugStorm", "AugMeteor" },    Icon = "🌩", Name = "Eye of the Storm", Desc = "Each time a meteor lands, extra lightning strikes nearby enemies" },
 	BladeMissile = { Need = { "AugOrbit", "AugMissile" },   Icon = "🗡", Name = "Homing Blades", Desc = "Blades occasionally launch a missile when they slash" },

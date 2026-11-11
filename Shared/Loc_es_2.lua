@@ -634,6 +634,10 @@ return {
 		["① Defeat a zone's Lord → its effect unlocks   ② Press Y (Sets) to turn it on and upgrade it with gold   ③ It fires on its own in combat"] = "① Derrota al señor de una zona → se desbloquea su efecto   ② Pulsa Y (Sets) para activarlo y mejorarlo con oro   ③ Se activa solo en combate",
 		["That was your set effect! It fires on its own."] = "¡Ese fue tu efecto de set! Se activa solo.",
 		["✂ Interrupted!"] = "✂ ¡Interrumpido!",
+		["Reaper's Rhythm"] = "Ritmo del segador",
+		["Bursting Rampart"] = "Baluarte explosivo",
+		["Every execute cuts all skill cooldowns by 1s more: keep Blade Bloom spinning"] = "Cada ejecución reduce 1 s más todos los enfriamientos: mantén Blade Bloom girando",
+		["When your Bulwark shield blocks a hit, it bursts and blasts enemies around you (400%)"] = "Cuando tu escudo Baluarte bloquea un golpe, estalla y golpea a los enemigos cercanos (400%)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -946,9 +950,5 @@ return {
 		{ "◆ Damage Taken Reduction +{number1}%", "◆ Reducción de daño recibido +{number1}%" },
 		{ "Gives back {number1} gauge after use", "Devuelve {number1} de barra tras usarla" },
 		{ "🏆 Zone {number1} First Clear Reward!", "🏆 ¡Recompensa de primera victoria: zona {number1}!" },
-		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Tomo de Hechizos · Era Oxidada +{number1}" },
-		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Puerta del Palacio de Hielo · Rec. ⚡{number1}" },
-		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zona {number1} · Tierra baldía sellada" },
-		{ "Auto-loot radius grows to {number1}", "El radio de botín automático aumenta a {number1}" },
 	},
 }

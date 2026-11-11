@@ -646,6 +646,10 @@ return {
 		["① Defeat a zone's Lord → its effect unlocks   ② Press Y (Sets) to turn it on and upgrade it with gold   ③ It fires on its own in combat"] = "① Bats le seigneur d'une zone → l'effet se débloque   ② Appuie sur Y (Sets) pour l'activer et l'améliorer avec de l'or   ③ Il se déclenche tout seul en combat",
 		["That was your set effect! It fires on its own."] = "C'était ton effet de set ! Il se déclenche tout seul.",
 		["✂ Interrupted!"] = "✂ Interrompu !",
+		["Reaper's Rhythm"] = "Rythme du faucheur",
+		["Bursting Rampart"] = "Rempart éclatant",
+		["Every execute cuts all skill cooldowns by 1s more: keep Blade Bloom spinning"] = "Chaque exécution réduit tous les temps de recharge d'1 s de plus : garde Blade Bloom en marche",
+		["When your Bulwark shield blocks a hit, it bursts and blasts enemies around you (400%)"] = "Quand ton bouclier Rempart bloque un coup, il éclate et frappe les ennemis autour (400 %)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -926,10 +930,5 @@ return {
 		{ "ZONE {number1}  ·  Darklands   ☠☠☠☠☠☠☠", "Zone {number1} · Terres sombres ☠☠☠☠☠☠☠" },
 		{ "Zone {number1} set effect · Trial Lv.3", "Effet de set de la zone {number1} · Épreuve Niv.3" },
 		{ "(Idle income bonus +{number1}% active)", "(Bonus de revenu d'inactivité +{number1} % actif)" },
-		{ "Not enough Essence. ({number1} needed)", "Pas assez d'essence. ({number1} requis)" },
-		{ "Not enough tickets. ({number1} needed)", "Pas assez de tickets. ({number1} requis)" },
-		{ "💰 Bought +1 stat point! ({number1} / {number2})", "💰 +1 point de stats acheté ! ({number1} / {number2})" },
-		{ "💰 {number1} G Slot Upgrade ({number2}% success)", "💰 Amélioration d'emplacement {number1} or ({number2} % de réussite)" },
-		{ "Reach level {number1} to break through", "Atteignez le niveau {number1} pour percer" },
 	},
 }

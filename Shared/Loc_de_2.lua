@@ -586,6 +586,10 @@ return {
 		["① Defeat a zone's Lord → its effect unlocks   ② Press Y (Sets) to turn it on and upgrade it with gold   ③ It fires on its own in combat"] = "① Besiege den Herrscher einer Zone → Effekt freigeschaltet   ② Mit Y (Sets) aktivieren und mit Gold verbessern   ③ Löst im Kampf von selbst aus",
 		["That was your set effect! It fires on its own."] = "Das war dein Set-Effekt! Er löst von selbst aus.",
 		["✂ Interrupted!"] = "✂ Unterbrochen!",
+		["Reaper's Rhythm"] = "Rhythmus des Henkers",
+		["Bursting Rampart"] = "Berstender Wall",
+		["Every execute cuts all skill cooldowns by 1s more: keep Blade Bloom spinning"] = "Jede Hinrichtung verkürzt alle Abklingzeiten um 1 s mehr: halte Blade Bloom am Laufen",
+		["When your Bulwark shield blocks a hit, it bursts and blasts enemies around you (400%)"] = "Blockt dein Bollwerk-Schild einen Treffer, zerbirst er und trifft Gegner um dich (400 %)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -937,10 +941,5 @@ return {
 		{ "Defeat {number1} Golden Goblin(s)", "Besiege {number1} goldene Goblins" },
 		{ "🔒 Zone {number1} · Volcano Sealed", "🔒 Zone {number1} · Vulkan versiegelt" },
 		{ "Lord of Meadow  ·  Zone {number1}", "Herr der Wiese · Zone {number1}" },
-		{ "Idle Accrual Cap: {number1} Hours", "Inaktive Akkumulationsgrenze: {number1} Stunden" },
-		{ "🔫 Next era Steel Era (+{number1})", "🔫 Nächste Ära Stahl-Ära (+{number1})" },
-		{ "The party is full. (max {number1}", "Die Gruppe ist voll. (max. {number1}" },
-		{ "Fall in the field {number1} times", "Falle {number1}-mal im Feld" },
-		{ "Raise your pet to level {number1}", "Bringe dein Haustier auf Stufe {number1}" },
 	},
 }

@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Monster HP x{number1} · ATK x{number2}   |   Reward x{number3}   (Lv.{number4}~)", "몬스터 HP x{number1} · 공격력 x{number2}   |   보상 x{number3}   (Lv.{number4}~)" },
+		{ "🥇 {player1}\n⚡ {number1} Lv.{number2}\nSpell Tome · Mythic Era +{number3}", "🥇 {player1}\n⚡ {number1} 레벨.{number2}\n스펠 토메 · 신화 시대 +{number3}" },
+		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!" },
 		{ "every {number1} shots a blade bounces across {number2} enemies", "{number1}발마다 칼날이 적 {number2}명 사이를 튕겨요" },
 		{ "<font color='#ff8c8c'>vs. equipped ▼ {number1}</font>", "<font color='#ff8c8c'>장착 중보다 ▼ {number1}</font>" },
 		{ "💰 Golden Goblin defeated! +{number1} G, 3 loot drops!", "💰 황금 고블린 처치! +{number1} G, 전리품 3개!" },

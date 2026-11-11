@@ -904,6 +904,10 @@ return {
 		["① Defeat a zone's Lord → its effect unlocks   ② Press Y (Sets) to turn it on and upgrade it with gold   ③ It fires on its own in combat"] = "① 구역 군주를 쓰러뜨리면 → 그 효과가 열려요   ② Y(세트)에서 켜고 골드로 강화해요   ③ 싸우는 동안 저절로 발동해요",
 		["That was your set effect! It fires on its own."] = "방금 그게 세트 효과예요! 저절로 발동해요.",
 		["✂ Interrupted!"] = "✂ 끊었다!",
+		["Reaper's Rhythm"] = "처형의 박자",
+		["Bursting Rampart"] = "터지는 방벽",
+		["Every execute cuts all skill cooldowns by 1s more: keep Blade Bloom spinning"] = "처형할 때마다 모든 스킬 쿨타임이 1초 더 줄어요: 블레이드 블룸을 계속 돌리세요",
+		["When your Bulwark shield blocks a hit, it bursts and blasts enemies around you (400%)"] = "방벽 보호막이 공격을 막으면 터지면서 주변 적을 날려요 (400%)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1082,8 +1086,5 @@ return {
 		{ "<font color='#78ff8c'>vs. equipped ▲ +{number1}</font>", "<font color='#78ff8c'>장착 중보다 ▲ +{number1}</font>" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3}", "🔒 문이 닫혀 있어요! {number1}구역 몬스터 {number2}/{number3} 처치 필요" },
 		{ "▲ +{number1}% better than your current gear! (I → Bag)", "▲ 지금 장비보다 +{number1}% 좋아요! (I → 가방)" },
-		{ "Monster HP x{number1} · ATK x{number2}   |   Reward x{number3}   (Lv.{number4}~)", "몬스터 HP x{number1} · 공격력 x{number2}   |   보상 x{number3}   (Lv.{number4}~)" },
-		{ "🥇 {player1}\n⚡ {number1} Lv.{number2}\nSpell Tome · Mythic Era +{number3}", "🥇 {player1}\n⚡ {number1} 레벨.{number2}\n스펠 토메 · 신화 시대 +{number3}" },
-		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!" },
 	},
 }

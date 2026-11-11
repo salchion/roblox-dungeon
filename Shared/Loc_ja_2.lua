@@ -763,6 +763,10 @@ return {
 		["① Defeat a zone's Lord → its effect unlocks   ② Press Y (Sets) to turn it on and upgrade it with gold   ③ It fires on its own in combat"] = "① 区域の君主を倒す → 効果が解放   ② Y（セット）で有効化し、ゴールドで強化   ③ 戦闘中に自動で発動",
 		["That was your set effect! It fires on its own."] = "今のがセット効果です！自動で発動します。",
 		["✂ Interrupted!"] = "✂ 阻止！",
+		["Reaper's Rhythm"] = "処刑のリズム",
+		["Bursting Rampart"] = "弾ける防壁",
+		["Every execute cuts all skill cooldowns by 1s more: keep Blade Bloom spinning"] = "処刑するたびに全スキルのクールタイムがさらに1秒短縮：ブレードブルームを回し続けよう",
+		["When your Bulwark shield blocks a hit, it bursts and blasts enemies around you (400%)"] = "防壁のシールドが攻撃を防ぐと弾けて周囲の敵を吹き飛ばす（400%）",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -963,8 +967,5 @@ return {
 		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>", "<font color='#{number1}fffb{number2}'><b>自動攻撃</b>" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 レベルアップ！Lv.{number1}  (最大HP +{number2}、攻撃力 +{number3}%)" },
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ 今は強化が無料です！(残り{number1}回)" },
-		{ "⏳ The portal is still recovering ({number1} s).", "⏳ ポータルはまだ回復中です({number1}秒)。" },
-		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1}個を自動分解 (エッセンス +{number2}、{number3} G)" },
-		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 ワープのゴールドが足りません！({number1}G必要)" },
 	},
 }
