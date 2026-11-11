@@ -2824,10 +2824,22 @@ function Field.ZoneOf(player)
 end
 
 -- 필드에서 죽으면 가장 가까웠던 구역의 캠프에서 부활 (로비로 돌아가 다시 걸어오지 않아도 됨)
+-- 순간이동 전에 도착지 둘레를 미리 받아 둔다: 안 받은 곳으로 옮기면 Roblox 가 "일시 중지(불러오는 중)" 화면을 띄운다. 최대 wait 초만 기다린다
+local function prestream(player, position, wait)
+	local done = false
+	task.spawn(function()
+		pcall(function() player:RequestStreamAroundAsync(position, 3) end)
+		done = true
+	end)
+	local started = os.clock()
+	while wait and not done and os.clock() - started < wait do task.wait(0.05) end
+end
+
 function Field.RespawnAtCamp(player, character, zone)
 	local camp = campCFrames[zone]
 	if not camp then return end
 	local root = character:WaitForChild("HumanoidRootPart", 5)
+	prestream(player, camp.Position, 0.8)
 	if root then
 		character:PivotTo(camp)
 		player:SetAttribute("Zone", "Field")
@@ -2887,6 +2899,7 @@ local function warp(player, zone)
 	-- 이동 연출: 1초 동안 몸이 빛나고(무적) 화면이 밝아졌다가 이동한다 (바로 사라지면 어색하다)
 	Effects.Burst(root.Position + Vector3.new(0, 3, 0), Color3.fromRGB(150, 195, 255), 70)
 	Remotes.Warp:FireClient(player, "Cast", 1)
+	prestream(player, zone == 0 and lobbySpawn.Position or campCFrames[zone].Position) -- (몸이 빛나는 1초 동안 도착지를 미리 받는다)
 	local shield = Instance.new("ForceField")
 	shield.Visible = false
 	shield.Parent = player.Character

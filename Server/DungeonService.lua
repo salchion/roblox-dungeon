@@ -2451,6 +2451,15 @@ local function returnToLobby(player)
 	player:SetAttribute("RiftBosses", 0)
 	player:SetAttribute("Zone", "Lobby")
 	resetStats(player)
+	do -- 마을을 미리 받아 둔 뒤 옮긴다 (최대 0.8초): 바로 옮기면 Roblox 의 "일시 중지(불러오는 중)" 화면이 떴다
+		local done = false
+		task.spawn(function()
+			pcall(function() player:RequestStreamAroundAsync(lobbySpawn.Position, 3) end)
+			done = true
+		end)
+		local started = os.clock()
+		while not done and os.clock() - started < 0.8 do task.wait(0.05) end
+	end
 	pivotTo(player, lobbySpawn)
 end
 
@@ -2459,7 +2468,11 @@ local function destroyRun(run)
 	run.Destroyed = true
 	runs[run.Id] = nil
 	usedSlots[run.Slot] = nil
-	for _, member in ipairs(table.clone(run.Members)) do
+	local members = table.clone(run.Members)
+	for _, member in ipairs(members) do -- (모두 한꺼번에 마을을 미리 받기 시작: 한 명씩 기다리면 뒤 사람일수록 늦게 나온다)
+		task.spawn(function() pcall(function() member:RequestStreamAroundAsync(lobbySpawn.Position, 3) end) end)
+	end
+	for _, member in ipairs(members) do
 		returnToLobby(member)
 	end
 	run.Members = {}
