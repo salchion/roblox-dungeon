@@ -673,11 +673,16 @@ local function play()
 			"Mythic gear can carry a Unique effect. Dungeons are the best place to find them.",
 		}
 		task.spawn(function()
+			-- "Loading the world..." 는 처음 한 번만 (예전: 팁이 바뀔 때마다 3.5초마다 다시 붙어서 로딩 중이라는 글이 계속 떴다). 그 뒤로는 팁만 천천히 바꾼다
+			caption.Text = "Loading the world..."
+			task.wait(2.5)
 			local index = math.random(#captionTips)
 			while not finished and caption.Parent do
-				caption.Text = "Loading the world...  ·  " .. captionTips[index]
+				caption.TextTransparency = 1
+				caption.Text = captionTips[index]
+				TweenService:Create(caption, TweenInfo.new(0.5), { TextTransparency = 0 }):Play()
 				index = index % #captionTips + 1
-				task.wait(3.5)
+				task.wait(6)
 			end
 		end)
 	end
