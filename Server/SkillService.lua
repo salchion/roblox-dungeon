@@ -194,6 +194,18 @@ handlers.Spirit = function(player, root, _, character)
 						Effects.DamageTint = Color3.fromRGB(255, 120, 150)
 						local weaponType = Config.GetPlayerWeapon(player) -- 무기의 초당 피해 계수 기준 (예전엔 한 발 피해 기준이라 한 발이 큰 마법서가 권총의 4.5배였다)
 						local damage = math.max(1, math.floor(Dungeon.ComputeDamage(player) / weaponType.DamageMult * Config.WeaponDpsFactor(weaponType) * scale))
+						-- 기 모으는 적을 베면 공격을 끊는다: 그 공격은 나가지 않고, 이번 한 칼은 2배 (엘리트 / 보스면 머리 위에 "끊었다!")
+						local chargingUntil = part:GetAttribute("ChargingUntil")
+						if chargingUntil and os.clock() < chargingUntil and (part:GetAttribute("InterruptedAt") or 0) < chargingUntil - 5 then
+							part:SetAttribute("InterruptedAt", os.clock())
+							damage *= 2
+							local charge = part:FindFirstChild("ShotCharge")
+							if charge then charge:Destroy() end
+							Effects.Burst(part.Position, Color3.fromRGB(255, 170, 210), 24)
+							if part:GetAttribute("Elite") or part:FindFirstChild("EliteOutline") or part.Size.X > 9 then
+								Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 3, 0), "✂ Interrupted!", Color3.fromRGB(255, 170, 210))
+							end
+						end
 						local _ = Dungeon.HitPart(player, part, damage) or Field.HitPart(player, part, damage)
 						Effects.DamageTint = nil
 						Meter.Source = nil

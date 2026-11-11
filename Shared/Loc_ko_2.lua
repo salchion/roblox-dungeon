@@ -903,6 +903,7 @@ return {
 		["How to get them"] = "얻는 방법",
 		["① Defeat a zone's Lord → its effect unlocks   ② Press Y (Sets) to turn it on and upgrade it with gold   ③ It fires on its own in combat"] = "① 구역 군주를 쓰러뜨리면 → 그 효과가 열려요   ② Y(세트)에서 켜고 골드로 강화해요   ③ 싸우는 동안 저절로 발동해요",
 		["That was your set effect! It fires on its own."] = "방금 그게 세트 효과예요! 저절로 발동해요.",
+		["✂ Interrupted!"] = "✂ 끊었다!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1085,6 +1086,5 @@ return {
 		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!" },
 		{ "every {number1} shots a blade bounces across {number2} enemies", "{number1}발마다 칼날이 적 {number2}명 사이를 튕겨요" },
 		{ "<font color='#ff8c8c'>vs. equipped ▼ {number1}</font>", "<font color='#ff8c8c'>장착 중보다 ▼ {number1}</font>" },
-		{ "💰 Golden Goblin defeated! +{number1} G, 3 loot drops!", "💰 황금 고블린 처치! +{number1} G, 전리품 3개!" },
 	},
 }

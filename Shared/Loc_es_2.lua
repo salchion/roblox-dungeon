@@ -633,6 +633,7 @@ return {
 		["How to get them"] = "Cómo conseguirlos",
 		["① Defeat a zone's Lord → its effect unlocks   ② Press Y (Sets) to turn it on and upgrade it with gold   ③ It fires on its own in combat"] = "① Derrota al señor de una zona → se desbloquea su efecto   ② Pulsa Y (Sets) para activarlo y mejorarlo con oro   ③ Se activa solo en combate",
 		["That was your set effect! It fires on its own."] = "¡Ese fue tu efecto de set! Se activa solo.",
+		["✂ Interrupted!"] = "✂ ¡Interrumpido!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -952,6 +953,5 @@ return {
 		{ "🔒 Zone {number1} · Darklands Sealed", "🔒 Zona {number1} · Tierras Oscuras selladas" },
 		{ "Zone {number1} · Lightning Strike  ", "Zona {number1} · Rayo" },
 		{ "🔒 Zone {number1} · Snowfield Sealed", "🔒 Zona {number1} · Campo de nieve sellado" },
-		{ "Sniper Rifle · Rusty Era +{number1}", "Rifle de francotirador · Era oxidada +{number1}" },
 	},
 }

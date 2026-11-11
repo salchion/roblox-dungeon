@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 Golden Goblin defeated! +{number1} G, 3 loot drops!", "💰 황금 고블린 처치! +{number1} G, 전리품 3개!" },
 		{ "Enemies swarm in more often\nGold +{number1}% instead", "적들이 더 자주 몰려옵니다\n골드 +{number1}%" },
 		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 더 약한 장비 {number1}개를 자동 정리했어요 (정수 +{number2}, {number3} G)" },
 		{ "🎫 {number1} tickets!\nPull gear at the gacha machine", "🎫 {number1} 티켓!\n가챠 머신에서 장비를 뽑으세요" },

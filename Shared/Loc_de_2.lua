@@ -585,6 +585,7 @@ return {
 		["How to get them"] = "So bekommst du sie",
 		["① Defeat a zone's Lord → its effect unlocks   ② Press Y (Sets) to turn it on and upgrade it with gold   ③ It fires on its own in combat"] = "① Besiege den Herrscher einer Zone → Effekt freigeschaltet   ② Mit Y (Sets) aktivieren und mit Gold verbessern   ③ Löst im Kampf von selbst aus",
 		["That was your set effect! It fires on its own."] = "Das war dein Set-Effekt! Er löst von selbst aus.",
+		["✂ Interrupted!"] = "✂ Unterbrochen!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },

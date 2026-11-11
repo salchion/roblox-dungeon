@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Sniper Rifle · Rusty Era +{number1}", "Rifle de francotirador · Era oxidada +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number2}", "❄ Puerta del Palacio de Hielo · Rec. ⚡{number2}" },
 		{ "ZONE {number1}  ·  Abyss   ☠☠☠☠☠☠☠☠", "Zona {number1} · Abismo ☠☠☠☠☠☠☠☠" },
 		{ "Dismantled {number1}! Essence +{number2}, {number3} G", "¡{number1} desmantelado(s)! Esencia +{number2}, {number3} G" },

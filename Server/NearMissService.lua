@@ -46,6 +46,7 @@ end
 -- 피한 것으로 인정: root 의 주인에게 스택 +1. scoreFn(스택) 은 심연 점수 같은 추가 보상용 (선택)
 function NearMiss.Award(player, root, scoreFn)
 	if not player or not player.Parent or not root then return end
+	if not NearMiss.IsDashing(player, root) then return end -- 대시(Q)로 피했을 때만 (예전: 탄이 옆을 스치기만 해도 쌓여서 "내가 잘 피한 보상"이 아니라 저절로 붙는 버프였다)
 	local now = os.clock()
 	local st = states[player]
 	if not st then st = { Stacks = 0, LastAt = 0, NextDecay = 0 } states[player] = st end

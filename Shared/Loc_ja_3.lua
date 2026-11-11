@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "強化{number1}回: 成功{number2} / 失敗{number3}  (ゴールド -{number4})" },
 		{ "Reach level {number1} to buy points with gold.", "レベル{number1}に到達すると、ゴールドでポイントを購入できます。" },
 		{ "🎫 A {number1}x pull needs {number2} tickets (you have {number3})", "🎫 {number1}連抽には{number2}枚のチケットが必要です(所持: {number3}枚)" },
 		{ "🗿 Colossus defeated! Gear + 🎫 +1 + {number1} G", "🗿 コロッサスを倒した！装備 + 🎫 +1 + {number1} G" },

@@ -2470,5 +2470,6 @@
 "▶ {number1} more to the next era — new shots: {text2}",
 "▶ {number1} more to the next era",
 "⚠ A World Boss is stirring in Zone {number1} · {text2}... it rises in {number3} seconds!",
-"⚠ {text1} rising soon · Zone {number2}"
+"⚠ {text1} rising soon · Zone {number2}",
+"✂ Interrupted!"
 ]

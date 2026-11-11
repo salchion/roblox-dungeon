@@ -653,6 +653,8 @@ end
 
 local function telegraph(ctx, part, data, color, delay, action)
 	part.Color = color
+	local startedAt = os.clock()
+	if delay >= 0.25 then part:SetAttribute("ChargingUntil", startedAt + delay) end -- 기 모으는 중: 블레이드 블룸(F)으로 끊을 수 있다 (SkillService)
 	data.RearUntil = os.clock() + delay -- 공격 직전: 몸을 뒤로 젖힌다 (Update 의 기울임이 읽는다)
 	-- 발사 예고가 눈에 보이게: 몸 앞에 공격 색 빛 구슬이 차오른다 (판정용 몸체는 투명이라 색만 바꾸면 아무것도 안 보였다)
 	local charge
@@ -676,6 +678,10 @@ local function telegraph(ctx, part, data, color, delay, action)
 	end
 	task.delay(delay, function()
 		if charge and charge.Parent then charge:Destroy() end
+		if (part:GetAttribute("InterruptedAt") or 0) >= startedAt then -- 끊겼다: 이번 공격은 나가지 않는다
+			if ctx.Alive(part, data) then part.Color = data.BaseColor end
+			return
+		end
 		if not ctx.Alive(part, data) then
 			-- 공격 준비 중에 죽었어도 마지막 한 발은 나간다 (몬스터가 너무 빨리 죽어서 투사체를 한 번도 못 쏘던 문제: 위협감)
 			if data and data.Health and data.Health <= 0 then pcall(action) end

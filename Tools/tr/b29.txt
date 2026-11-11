@@ -436,3 +436,5 @@
 2469¦▶ 次の時代まであと{number1}¦▶ Noch {number1} bis zur nächsten Ära¦▶ Encore {number1} avant la prochaine ère¦▶ {number1} más para la siguiente era¦▶ Mais {number1} até a próxima era¦▶ 距离下个时代还差{number1}¦▶ 다음 시대까지 {number1} 남음
 2470¦⚠ {number1}区域 · {text2}でワールドボスが目覚めようとしている…{number3}秒後に出現！¦⚠ In Zone {number1} · {text2} regt sich ein Weltboss... er erscheint in {number3} Sekunden!¦⚠ Un boss mondial s'éveille dans la zone {number1} · {text2}... il surgit dans {number3} secondes !¦⚠ Un jefe mundial despierta en la zona {number1} · {text2}... ¡aparece en {number3} segundos!¦⚠ Um chefe mundial está despertando na Zona {number1} · {text2}... surge em {number3} segundos!¦⚠ {number1}区域 · {text2} 的世界首领正在苏醒……{number3}秒后出现！¦⚠ {number1}구역 · {text2}에서 월드 보스가 깨어나고 있어요... {number3}초 뒤 등장!
 2471¦⚠ {text1} まもなく出現 · {number2}区域¦⚠ {text1} erscheint bald · Zone {number2}¦⚠ {text1} arrive bientôt · Zone {number2}¦⚠ {text1} aparece pronto · Zona {number2}¦⚠ {text1} surge em breve · Zona {number2}¦⚠ {text1} 即将出现 · {number2}区域¦⚠ {text1} 곧 등장 · 구역 {number2}
+
+2472¦✂ 阻止！¦✂ Unterbrochen!¦✂ Interrompu !¦✂ ¡Interrumpido!¦✂ Interrompido!¦✂ 打断！¦✂ 끊었다!

@@ -604,6 +604,7 @@ return {
 		["How to get them"] = "Como obter",
 		["① Defeat a zone's Lord → its effect unlocks   ② Press Y (Sets) to turn it on and upgrade it with gold   ③ It fires on its own in combat"] = "① Derrote o senhor de uma zona → o efeito é liberado   ② Aperte Y (Sets) para ativar e melhorar com ouro   ③ Dispara sozinho no combate",
 		["That was your set effect! It fires on its own."] = "Esse foi seu efeito de conjunto! Ele dispara sozinho.",
+		["✂ Interrupted!"] = "✂ Interrompido!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },

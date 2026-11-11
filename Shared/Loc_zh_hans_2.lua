@@ -515,6 +515,7 @@ return {
 		["How to get them"] = "获取方法",
 		["① Defeat a zone's Lord → its effect unlocks   ② Press Y (Sets) to turn it on and upgrade it with gold   ③ It fires on its own in combat"] = "① 击败区域君主 → 解锁该效果   ② 按Y（套装）开启并用金币强化   ③ 战斗中自动触发",
 		["That was your set effect! It fires on its own."] = "刚才那就是套装效果！会自动触发。",
+		["✂ Interrupted!"] = "✂ 打断！",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
