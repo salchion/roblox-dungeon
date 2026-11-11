@@ -434,10 +434,13 @@ local function play()
 			if statue then
 				for _, item in ipairs(statue:GetDescendants()) do hide(item) end
 			end
+			local lordX = F.ZoneEnd(F.ZoneCount) + 6
 			local streamConn
 			streamConn = workspace.DescendantAdded:Connect(function(item) -- (멀리 있어 늦게 불러와지는 조각도 숨긴다)
 				if finished then streamConn:Disconnect() return end
 				if item:IsA("BasePart") and item:FindFirstAncestor("LordStatue") then hide(item) end
+				-- 군주 앞의 꺾임 벽 / 벽 장식도 늦게 불러와지면 여기서 숨긴다 (예전에는 1.5초마다 한 번만 찾아서, 내려가는 마지막 순간에 불러와진 벽이 군주를 가렸다)
+				if item:IsA("BasePart") and (item.Name == "Baffle" or string.sub(item.Name, 1, 4) == "Wall") and item.Position.X > lordX - 700 and item:FindFirstAncestor("Field") then hide(item) end
 			end)
 		end
 	end)
