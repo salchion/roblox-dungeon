@@ -15,8 +15,8 @@ local DIM = Color3.fromRGB(70, 66, 96)
 local GOLD = Color3.fromRGB(225, 196, 118)
 local PET_COLOR = Color3.fromRGB(255, 200, 120)
 local TIER_Y = { 66, 152, 238 } -- 세 칸이 같은 높이의 층을 쓴다
-local CARD_H = 38 -- 노드 카드 높이
-local CANVAS_H = 306
+local CARD_H = 36 -- 노드 카드 높이
+local CANVAS_H = 272 -- (306 -> 272: 성장 탭이 스크롤 없이 한 화면에 들어가게)
 -- 칸마다 가로 범위 (0~1): 스킬(액티브 3, 세로 한 줄) | 훈련 | 패시브(훈련 바로 옆: 둘 다 상시 효과) | 펫
 local COLS = { Skill = { 0, 0.17 }, Train = { 0.17, 0.47 }, Passive = { 0.47, 0.75 }, Pet = { 0.75, 1 } } -- (Passive = 특성 트리)
 local selected = { Kind = "Skill", Key = nil } -- 마지막으로 고른 노드 (메뉴를 다시 그려도 유지)
@@ -55,9 +55,17 @@ local function canvas(env)
 	row.ClipsDescendants = true
 	create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(150, 140, 190)), Rotation = 90 }, row)
 	local C = { Row = row }
+	-- 칸 제목: 금테 리본 (가운데 정렬, 양끝이 어두워지는 그라데이션)
 	function C.title(col, text)
 		local range = COLS[col]
-		label({ Size = UDim2.new(range[2] - range[1], -8, 0, 22), Position = UDim2.new(range[1], 4, 0, 8), Text = text, RichText = true, TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = GOLD, ZIndex = 5 }, row)
+		local ribbon = create("Frame", { Size = UDim2.new(range[2] - range[1], -14, 0, 24), Position = UDim2.new(range[1], 7, 0, 7), BackgroundColor3 = Color3.fromRGB(58, 44, 30), BorderSizePixel = 0, ZIndex = 4 }, row)
+		create("UICorner", { CornerRadius = UDim.new(0, 6) }, ribbon)
+		create("UIGradient", { Color = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(70, 60, 90)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(70, 60, 90)) }),
+			Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.6), NumberSequenceKeypoint.new(0.5, 0), NumberSequenceKeypoint.new(1, 0.6) }) }, ribbon)
+		local edge = create("UIStroke", { Color = GOLD, Thickness = 1.2, Transparency = 0.25, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, ribbon)
+		create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.9), NumberSequenceKeypoint.new(0.5, 0), NumberSequenceKeypoint.new(1, 0.9) }) }, edge)
+		label({ Size = UDim2.new(1, -8, 1, 0), Position = UDim2.new(0, 4, 0, 0), Text = text, RichText = true, TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 226, 150),
+			TextStrokeTransparency = 0.3, TextStrokeColor3 = Color3.fromRGB(40, 24, 10), ZIndex = 5 }, ribbon)
 	end
 	function C.divider(x)
 		create("Frame", { Size = UDim2.new(0, 2, 1, -24), Position = UDim2.new(x, -1, 0, 12), BackgroundColor3 = Color3.fromRGB(60, 56, 88), BackgroundTransparency = 0.3, BorderSizePixel = 0, ZIndex = 2 }, row)
@@ -83,26 +91,36 @@ local function canvas(env)
 	--   [아이콘] 이름 / Lv (또는 남은 시간) + 아래 진행 막대. state = "done" / "active"(찍는 중) / "open" / "locked"
 	--   width: 카드 너비 (나무 전체 너비 대비 비율, 0~1)
 	function C.node(x, y, icon, color, state, ratio, caption, sub, chosen, width, onClick)
-		local fill = state == "locked" and Color3.fromRGB(30, 28, 44) or color:Lerp(DARK, state == "done" and 0.55 or (state == "active" and 0.6 or 0.78))
-		local n = create("Frame", { Size = UDim2.new(width, -6, 0, CARD_H), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y), BackgroundColor3 = fill, BorderSizePixel = 0, ZIndex = 4 }, row)
-		create("UICorner", { CornerRadius = UDim.new(0, 8) }, n)
-		local stroke = create("UIStroke", { Color = chosen and Color3.new(1, 1, 1) or (state == "locked" and DIM or color), Thickness = chosen and 3 or (state == "done" and 2 or 1.5), ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, n)
-		local iconBack = create("Frame", { Size = UDim2.new(0, 24, 0, 24), Position = UDim2.new(0, 4, 0.5, -13), BackgroundColor3 = state == "locked" and Color3.fromRGB(40, 38, 56) or color:Lerp(DARK, 0.45), BorderSizePixel = 0, ZIndex = 5 }, n)
-		create("UICorner", { CornerRadius = UDim.new(0, 7) }, iconBack)
-		label({ Size = UDim2.new(1, 0, 1, 0), Text = state == "locked" and "🔒" or icon, TextSize = state == "locked" and 12 or 15, ZIndex = 6, TextTransparency = state == "locked" and 0.2 or 0 }, iconBack)
-		label({ Size = UDim2.new(1, -34, 0, 15), Position = UDim2.new(0, 32, 0, 4), Text = caption, RichText = true, TextSize = 11, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBold, ZIndex = 5,
-			TextColor3 = state == "locked" and Color3.fromRGB(140, 136, 165) or Color3.new(1, 1, 1) }, n)
+		-- 게임 UI 느낌: 위가 밝고 아래가 어두운 판 + 왼쪽에 금속 테두리 원형 소켓(아이콘) + 광택 진행 막대
+		local locked = state == "locked"
+		local base = locked and Color3.fromRGB(34, 32, 48) or color:Lerp(DARK, state == "done" and 0.5 or (state == "active" and 0.55 or 0.72))
+		local n = create("Frame", { Size = UDim2.new(width, -6, 0, CARD_H), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y), BackgroundColor3 = base, BorderSizePixel = 0, ZIndex = 4 }, row)
+		create("UICorner", { CornerRadius = UDim.new(0, 10) }, n)
+		create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(120, 110, 150)), Rotation = 90 }, n)
+		local rim = (chosen and Color3.new(1, 1, 1)) or (locked and DIM) or (state == "done" and Color3.fromRGB(255, 214, 110)) or color
+		local stroke = create("UIStroke", { Color = rim, Thickness = chosen and 2.6 or 1.6, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, n)
+		create("UIGradient", { Rotation = 90, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 0.55) }) }, stroke)
+		-- 원형 소켓: 바깥 어두운 금속 고리 + 안쪽 색 고리
+		local socket = create("Frame", { Size = UDim2.new(0, 30, 0, 30), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, -4, 0.5, 0), BackgroundColor3 = locked and Color3.fromRGB(36, 34, 50) or color:Lerp(DARK, 0.35), BorderSizePixel = 0, ZIndex = 6 }, n)
+		create("UICorner", { CornerRadius = UDim.new(1, 0) }, socket)
+		create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(110, 100, 130)), Rotation = 45 }, socket)
+		local ring = create("UIStroke", { Color = locked and Color3.fromRGB(90, 86, 110) or Color3.fromRGB(230, 200, 130), Thickness = 2.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, socket)
+		create("UIGradient", { Color = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 245, 210)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(150, 110, 50)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 230, 160)) }), Rotation = 45 }, ring)
+		label({ Size = UDim2.new(1, 0, 1, 0), Text = locked and "🔒" or icon, TextSize = locked and 12 or 16, ZIndex = 7 }, socket)
+		label({ Size = UDim2.new(1, -36, 0, 15), Position = UDim2.new(0, 31, 0, 4), Text = caption, RichText = true, TextSize = 11, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBlack, ZIndex = 5,
+			TextColor3 = locked and Color3.fromRGB(140, 136, 165) or Color3.new(1, 1, 1), TextStrokeTransparency = 0.5, TextStrokeColor3 = Color3.fromRGB(10, 8, 20) }, n)
 		if sub and sub ~= "" then
-			label({ Size = UDim2.new(1, -34, 0, 12), Position = UDim2.new(0, 32, 0, 19), Text = sub, RichText = true, TextSize = 9, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5,
-				TextColor3 = state == "active" and Color3.fromRGB(255, 225, 120) or Color3.fromRGB(175, 171, 200) }, n)
+			label({ Size = UDim2.new(1, -36, 0, 12), Position = UDim2.new(0, 31, 0, 18), Text = sub, RichText = true, TextSize = 9, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5,
+				TextColor3 = state == "active" and Color3.fromRGB(255, 225, 120) or Color3.fromRGB(190, 186, 214) }, n)
 		end
-		local bar = create("Frame", { Size = UDim2.new(1, -38, 0, 3), Position = UDim2.new(0, 32, 1, -6), BackgroundColor3 = Color3.fromRGB(14, 12, 24), BorderSizePixel = 0, ZIndex = 5 }, n)
+		local bar = create("Frame", { Size = UDim2.new(1, -40, 0, 4), Position = UDim2.new(0, 31, 1, -7), BackgroundColor3 = Color3.fromRGB(10, 8, 18), BorderSizePixel = 0, ZIndex = 5 }, n)
 		create("UICorner", { CornerRadius = UDim.new(1, 0) }, bar)
-		local barFill = create("Frame", { Size = UDim2.new(math.clamp(ratio or 0, 0, 1), 0, 1, 0), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 6 }, bar)
+		local barFill = create("Frame", { Size = UDim2.new(math.clamp(ratio or 0, 0, 1), 0, 1, 0), BackgroundColor3 = state == "done" and Color3.fromRGB(255, 214, 110) or color, BorderSizePixel = 0, ZIndex = 6 }, bar)
 		create("UICorner", { CornerRadius = UDim.new(1, 0) }, barFill)
+		create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(150, 150, 150)), Rotation = 90 }, barFill) -- 막대 광택
 		if state == "active" then -- 찍는 중: 테두리가 금빛으로 숨 쉰다
 			stroke.Color = Color3.fromRGB(255, 225, 120)
-			game:GetService("TweenService"):Create(stroke, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 3.5 }):Play()
+			game:GetService("TweenService"):Create(stroke, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 3.2 }):Play()
 		end
 		local hit = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, n)
 		hit.Activated:Connect(onClick)
@@ -119,13 +137,20 @@ local function branchCards(env, key, parent)
 	local defs = Config.SkillBranch and Config.SkillBranch[key]
 	if not defs then return end
 	local level = env.Meta and env.Meta.Skills and env.Meta.Skills[key] or 1
+	do -- 나무 줄기: Lv 표시를 세로로 잇는 선 (갈래가 단계마다 갈라지는 모양)
+		local rows = #Config.SkillBranchTiers
+		local trunk = env.Create("Frame", { Size = UDim2.new(0, 2, 0, 38 * (rows - 1)), Position = UDim2.new(0.44, 22, 0, 23), BackgroundColor3 = Color3.fromRGB(150, 120, 70), BorderSizePixel = 0, ZIndex = 2 }, parent)
+		trunk.BackgroundTransparency = 0.3
+	end
 	for rowIndex, tier in ipairs(Config.SkillBranchTiers) do
 		local pair = defs[tier]
 		if pair then
+			local orLabel = env.MakeLabel({ Size = UDim2.new(0, 18, 0, 14), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.44 + 0.07 + (0.56 - 0.07) / 2, 1, 0, 6 + (rowIndex - 1) * 38 + 17), Text = "or", TextSize = 9, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(220, 200, 150) }, parent)
+			orLabel.ZIndex = 6
 			local chosen = env.Player:GetAttribute("SkillBr" .. tier .. "_" .. key)
 			local unlocked = level >= tier
-			local y = 6 + (rowIndex - 1) * 44 -- (갈래가 네 단계로 늘어 한 줄을 낮췄다: 아래가 잘렸다)
-			local tag = env.MakeLabel({ Size = UDim2.new(0, 46, 0, 40), Position = UDim2.new(0.44, 0, 0, y), RichText = true, TextSize = 12, TextWrapped = true,
+			local y = 6 + (rowIndex - 1) * 38 -- (갈래가 네 단계로 늘어 한 줄을 낮췄다: 아래가 잘렸다)
+			local tag = env.MakeLabel({ Size = UDim2.new(0, 46, 0, 34), Position = UDim2.new(0.44, 0, 0, y), RichText = true, TextSize = 12, TextWrapped = true,
 				Text = string.format("<font color='#ffd966'><b>Lv.%d</b></font>\n%s", tier, unlocked and (chosen and "<font color='#78ff8c' size='10'>✔</font>" or "") or "🔒") }, parent)
 			tag.ZIndex = 3
 			for index, side in ipairs({ "A", "B" }) do
@@ -135,14 +160,14 @@ local function branchCards(env, key, parent)
 				local text = string.format("%s %s\n%s", picked and "✔" or def.Icon, def.Name, def.Desc)
 				if cost then text = text .. string.format("\nSwitch path: %s G", comma(cost)) end
 				local button = env.MakeButton({
-					Size = UDim2.new(0.56, -52, 0, 40), Position = UDim2.new(0.44, 46 + (index - 1) * 0, 0, y), TextSize = 9, TextWrapped = true, Text = text,
+					Size = UDim2.new(0.56, -52, 0, 34), Position = UDim2.new(0.44, 46 + (index - 1) * 0, 0, y), TextSize = 9, TextWrapped = true, Text = text,
 					BackgroundColor3 = picked and Color3.fromRGB(46, 112, 84) or (unlocked and Color3.fromRGB(58, 60, 92) or Color3.fromRGB(44, 44, 56)),
 					TextColor3 = unlocked and Color3.new(1, 1, 1) or Color3.fromRGB(150, 150, 170),
 				}, parent, function()
 					if unlocked and not picked then env.Remotes.Meta:FireServer("SkillBranch", string.format("%s|%d|%s", key, tier, side)) end
 				end)
 				button.AnchorPoint = Vector2.new(0, 0)
-				button.Size = UDim2.new((0.56 - 0.07) / 2, -4, 0, 40)
+				button.Size = UDim2.new((0.56 - 0.07) / 2, -4, 0, 34)
 				button.Position = UDim2.new(0.44 + 0.07 + (index - 1) * ((0.56 - 0.07) / 2), 2, 0, y)
 			end
 		end
@@ -152,7 +177,7 @@ end
 local function detailRow(env, color, text, button, skillKey, tall)
 	local create, label = env.Create, env.MakeLabel
 	local withBranch = skillKey ~= nil and env.Config.SkillBranch ~= nil and env.Config.SkillBranch[skillKey] ~= nil
-	local detail = env.NewRow(withBranch and (14 + 44 * #env.Config.SkillBranchTiers) or ((skillKey or tall) and 124 or 76), Color3.fromRGB(30, 28, 46)) -- (갈래 단계 수만큼: Lv.3 / 5 / 7 / 10 = 네 줄) -- (스킬: 지금 ▶ 다음 레벨 비교 줄이 들어갈 자리)
+	local detail = env.NewRow(withBranch and (12 + 38 * #env.Config.SkillBranchTiers) or ((skillKey or tall) and 124 or 76), Color3.fromRGB(30, 28, 46)) -- (갈래 단계 수만큼: Lv.3 / 5 / 7 / 10 = 네 줄) -- (스킬: 지금 ▶ 다음 레벨 비교 줄이 들어갈 자리)
 	create("UIStroke", { Color = color, Thickness = 1.5, Transparency = 0.3 }, detail)
 	if button and env.InTown == false then -- 필드에서는 업그레이드 못 한다: 버튼이 "마을에서"로 바뀐다 (서버도 막는다)
 		button = { Text = "🏘 Upgrade in town", Color = env.GRAY, OnClick = function() end }
@@ -199,7 +224,7 @@ local function drawSkills(env, C)
 		local level = meta and meta.Skills and meta.Skills[key] or 1
 		local remaining = env.UpgradeRemaining(key)
 		local state = level >= U.MaxLevel and "done" or (remaining and "active" or "open")
-		C.node(colX("Skill", 0.5), 54 + (index - 1) * 48, cfg.Icon, skillColor(key), state, level / U.MaxLevel, string.format("<b>%s</b>", cfg.Name),
+		C.node(colX("Skill", 0.5), 52 + (index - 1) * 46, cfg.Icon, skillColor(key), state, level / U.MaxLevel, string.format("<b>%s</b>", cfg.Name),
 			remaining and ("⏳ " .. Config.FormatDuration(remaining)) or string.format("%sLv.%d / %d", (not cfg.Passive and cfg.Key) and ("[" .. cfg.Key .. "] ") or "", level, U.MaxLevel), isSel("Skill", key), COLS.Skill[2] - COLS.Skill[1], pick(env, "Skill", key))
 	end
 end
@@ -270,7 +295,7 @@ local function drawTraining(env, C)
 				end
 			end
 			local x = colX("Train", (index % 2 == 1) and 0.25 or 0.75)
-			local y = 54 + math.floor((index - 1) / 2) * 48
+			local y = 52 + math.floor((index - 1) / 2) * 44
 			C.node(x, y, def.Icon, TRAIN_COLORS[stat] or GOLD, nodeState, level / max, def.Name, sub, isSel("Train", stat), (COLS.Train[2] - COLS.Train[1]) / 2, pick(env, "Train", stat))
 		end
 	end
@@ -317,7 +342,7 @@ local function petPos(i)
 	local r = (i - 1) // PET_PER_ROW
 	local c = (i - 1) % PET_PER_ROW
 	if r % 2 == 1 then c = PET_PER_ROW - 1 - c end
-	return colX("Pet", (c + 0.5) / PET_PER_ROW), 54 + r * 48
+	return colX("Pet", (c + 0.5) / PET_PER_ROW), 52 + r * 44
 end
 
 local function petLevel(env)
@@ -411,29 +436,69 @@ local function drawTalents(env, C)
 		table.insert(perRow[node.Row], key)
 	end
 	local create, label = env.Create, env.MakeLabel
+	local GOLDLINE = Color3.fromRGB(255, 205, 110)
+	local function rowY(row) return 54 + (row - 1) * 45 end
+	local function colOf(i, count) -- 한 줄의 칸 위치 (하나뿐인 줄은 가운데: 최종 특성)
+		if count == 1 then return colX("Passive", 0.6) end
+		return colX("Passive", 0.2 + (i - 0.5) * (0.8 / math.max(3, count)))
+	end
+	-- 원형 소켓 (금속 테두리) + 아래 랭크 점
+	local function socket(x, y, size, icon, rank, max, open, lit, chosen, round, onClick)
+		local back = create("Frame", { Size = UDim2.new(0, size, 0, size), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y),
+			BackgroundColor3 = not open and Color3.fromRGB(30, 28, 44) or (lit and TALENT_COLOR:Lerp(DARK, 0.45) or Color3.fromRGB(40, 42, 66)), BorderSizePixel = 0, ZIndex = 5 }, C.Row)
+		create("UICorner", { CornerRadius = UDim.new(round and 1 or 0.28, 0) }, back)
+		create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(100, 92, 130)), Rotation = 45 }, back)
+		local ring = create("UIStroke", { Thickness = chosen and 3 or 2.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+			Color = chosen and Color3.new(1, 1, 1) or (not open and DIM or (rank >= max and Color3.fromRGB(255, 214, 110) or (lit and TALENT_COLOR or Color3.fromRGB(120, 116, 150)))) }, back)
+		if open and lit then create("UIGradient", { Color = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 250, 225)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(170, 130, 60)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 235, 170)) }), Rotation = 45 }, ring) end
+		label({ Size = UDim2.new(1, 0, 1, 0), Text = open and icon or "🔒", TextSize = open and math.floor(size * 0.5) or 12, ZIndex = 6, TextTransparency = (open and not lit) and 0.4 or 0 }, back)
+		if max > 1 then -- 랭크 점: 찍은 만큼 금빛
+			for k = 1, max do
+				local dot = create("Frame", { Size = UDim2.new(0, 5, 0, 5), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, (k - (max + 1) / 2) * 7, 0, y + size / 2 + 6),
+					BackgroundColor3 = k <= rank and Color3.fromRGB(255, 214, 110) or Color3.fromRGB(50, 48, 70), BorderSizePixel = 0, ZIndex = 6 }, C.Row)
+				create("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
+			end
+		end
+		local hit = create("TextButton", { Size = UDim2.new(1, 8, 1, 8), Position = UDim2.new(0, -4, 0, -4), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, back)
+		hit.Activated:Connect(onClick)
+	end
+	-- 줄기: 각 열이 다음 줄의 같은 열로 이어진다 (그 줄이 열렸으면 금빛)
+	for row = 1, #T.RowNeed - 1 do
+		local here, below = perRow[row] or {}, perRow[row + 1] or {}
+		local lit = rowOpen(row + 1)
+		for i = 1, #here do
+			local j = #below == 1 and 1 or math.min(i, #below)
+			local x0, x1 = colOf(i, #here), colOf(j, #below)
+			local y0, y1 = rowY(row) + 23, rowY(row + 1) - 20
+			C.elbow(x0, y0, x1, y1, lit and GOLDLINE or Color3.fromRGB(56, 52, 78), lit and 2 or 1)
+		end
+	end
 	for row = 1, #T.RowNeed do
 		local keys = perRow[row] or {}
-		local y = 56 + (row - 1) * 50
+		local y = rowY(row)
 		local open = rowOpen(row)
-		label({ Size = UDim2.new(0, 22, 0, 16), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(COLS.Passive[1], 4, 0, y), Text = open and "" or ("🔒" .. T.RowNeed[row]), TextSize = 9, ZIndex = 5, TextColor3 = Color3.fromRGB(160, 156, 190) }, C.Row)
+		if not open then
+			label({ Size = UDim2.new(0, 26, 0, 14), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(COLS.Passive[1], 4, 0, y), Text = "🔒" .. T.RowNeed[row], TextSize = 9, ZIndex = 5, TextColor3 = Color3.fromRGB(160, 156, 190) }, C.Row)
+		end
 		for i, key in ipairs(keys) do
 			local node = T[key]
 			local rank = talents[key] or 0
-			local side = talents[key .. "_S"]
-			local icon = (node.Choice and side and node.Choice[side].Icon) or node.Icon
-			local x = colX("Passive", 0.18 + (i - 0.5) * (0.82 / math.max(3, #keys)))
-			local state = not open and "locked" or (rank >= node.Max and "done" or (rank > 0 and "active" or "open"))
-			local chosen = isSel("Talent", key)
-			local tile = create("Frame", { Size = UDim2.new(0, 38, 0, 38), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y),
-				BackgroundColor3 = state == "locked" and Color3.fromRGB(30, 28, 44) or (rank > 0 and TALENT_COLOR:Lerp(DARK, 0.55) or Color3.fromRGB(38, 40, 62)), BorderSizePixel = 0, ZIndex = 4 }, C.Row)
-			create("UICorner", { CornerRadius = UDim.new(0, node.Choice and 19 or 8) }, tile) -- (선택 칸은 동그랗게: 와우처럼 둘 중 하나)
-			create("UIStroke", { Color = chosen and Color3.new(1, 1, 1) or (rank >= node.Max and Color3.fromRGB(255, 215, 100) or (rank > 0 and TALENT_COLOR or DIM)), Thickness = chosen and 3 or 2 }, tile)
-			label({ Size = UDim2.new(1, 0, 1, 0), Text = state == "locked" and "🔒" or icon, TextSize = state == "locked" and 13 or 19, ZIndex = 5, TextTransparency = (state == "open" and rank == 0) and 0.35 or 0 }, tile)
-			local badge = label({ Size = UDim2.new(0, 26, 0, 13), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, 6, 1, 5), Text = string.format("%d/%d", rank, node.Max), TextSize = 9, ZIndex = 7,
-				BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(14, 12, 24), TextColor3 = rank >= node.Max and Color3.fromRGB(255, 215, 100) or (rank > 0 and Color3.fromRGB(150, 255, 170) or Color3.fromRGB(190, 190, 210)) }, tile)
-			create("UICorner", { CornerRadius = UDim.new(0, 4) }, badge)
-			local hit = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, tile)
-			hit.Activated:Connect(pick(env, "Talent", key))
+			local x = colOf(i, #keys)
+			local onClick = pick(env, "Talent", key)
+			if node.Choice then -- 선택 칸: 한 줄기가 Y 자로 둘로 갈라진다 (둘 중 하나)
+				local side = talents[key .. "_S"]
+				local gap = 0.022 -- (칸 하나 너비 안에서 갈라진다: 넓으면 옆 칸과 겹쳤다)
+				C.line(x - gap, y - 12, x + gap, y - 12, open and GOLDLINE or Color3.fromRGB(56, 52, 78), 2)
+				label({ Size = UDim2.new(0, 22, 0, 12), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y + 6), Text = "or", TextSize = 9, Font = Enum.Font.GothamBold, ZIndex = 6, TextColor3 = Color3.fromRGB(200, 190, 230) }, C.Row)
+				for k, which in ipairs({ "A", "B" }) do
+					local c = node.Choice[which]
+					local cx = x + (k == 1 and -gap or gap)
+					C.line(cx, y - 12, cx, y - 6, open and GOLDLINE or Color3.fromRGB(56, 52, 78), 2)
+					socket(cx, y + 6, 26, c.Icon, side == which and 1 or 0, 1, open, side == which, isSel("Talent", key) and (side == nil or side == which), true, onClick)
+				end
+			else
+				socket(x, y, 32, node.Icon, rank, node.Max, open, rank > 0, isSel("Talent", key), false, onClick)
+			end
 		end
 	end
 end
