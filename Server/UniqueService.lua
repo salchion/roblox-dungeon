@@ -63,6 +63,25 @@ function U.OnKill(player)
 			if okSkill and Skill.UniqueWave then
 				task.spawn(Skill.UniqueWave, player, root.Position, 24, 3.0, "U_Slayer", Color3.fromRGB(255, 70, 60))
 				U.Callout(player, "Slayer", "🩸 Slaughter Wave!", Color3.fromRGB(255, 90, 80))
+				if player:GetAttribute("AugSyn_Doomfall") == true then -- 조합 "파멸의 낙하": 학살의 파동과 함께 주변에 유성 3개 (300%)
+					local center = root.Position
+					task.spawn(function()
+						local okD, Dungeon = pcall(function() return require(script.Parent:WaitForChild("DungeonService")) end)
+						local okF, Field = pcall(function() return require(script.Parent:WaitForChild("FieldService")) end)
+						local E = fx()
+						if not okD then return end
+						local damage = math.max(1, math.floor(Dungeon.ComputeDamage(player) * 3))
+						for k = 1, 3 do
+							local a = k / 3 * math.pi * 2 + math.random()
+							local spot = center + Vector3.new(math.cos(a) * 14, -2.5, math.sin(a) * 14)
+							if E then pcall(E.Raw, spot, { "E", spot, 10, 0.9 }) end
+							task.delay(0.9, function()
+								local hit = Dungeon.AreaDamage(player, spot, 10, damage)
+								if not hit and okF and Field.AreaDamage then Field.AreaDamage(player, spot, 10, damage) end
+							end)
+						end
+					end)
+				end
 			end
 		end
 	end

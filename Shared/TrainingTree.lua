@@ -156,7 +156,7 @@ end
 local function detailRow(env, color, text, button, skillKey)
 	local create, label = env.Create, env.MakeLabel
 	local withBranch = skillKey ~= nil and env.Config.SkillBranch ~= nil and env.Config.SkillBranch[skillKey] ~= nil
-	local detail = env.NewRow(withBranch and 140 or (skillKey and 124 or 76), Color3.fromRGB(30, 28, 46)) -- (스킬: 지금 ▶ 다음 레벨 비교 줄이 들어갈 자리)
+	local detail = env.NewRow(withBranch and (14 + 52 * #env.Config.SkillBranchTiers) or (skillKey and 124 or 76), Color3.fromRGB(30, 28, 46)) -- (갈래 단계 수만큼: Lv.3 / 5 / 7 / 10 = 네 줄) -- (스킬: 지금 ▶ 다음 레벨 비교 줄이 들어갈 자리)
 	create("UIStroke", { Color = color, Thickness = 1.5, Transparency = 0.3 }, detail)
 	if button and env.InTown == false then -- 필드에서는 업그레이드 못 한다: 버튼이 "마을에서"로 바뀐다 (서버도 막는다)
 		button = { Text = "🏘 Upgrade in town", Color = env.GRAY, OnClick = function() end }
@@ -209,6 +209,17 @@ local function drawSkills(env, C)
 	end
 end
 
+-- 스킬 시너지 한 줄: "🔗 Blade Bloom damage +4% per Focus level" + 지금 얼마나 받고 있는지
+local function synergyLine(env, key)
+	local Config = env.Config
+	local syn = Config.SkillSynergy and Config.SkillSynergy[key]
+	if not syn then return "" end
+	local fromLevel = env.Meta and env.Meta.Skills and env.Meta.Skills[syn.From] or 1
+	local now = syn.Per * math.max(0, fromLevel - 1)
+	local shown = syn.Stat == "NearMissTime" and string.format("+%.2fs", now) or string.format("%+d%%", math.floor(now * 100 + (now >= 0 and 0.5 or -0.5)))
+	return string.format("\n<font color='#9ad7ff'>🔗 %s</font> <font color='#78ff8c'>(%s)</font>", syn.Text, shown)
+end
+
 local function skillDetail(env, key)
 	local Config, meta = env.Config, env.Meta
 	local U = Config.SkillUpgrade
@@ -227,7 +238,7 @@ local function skillDetail(env, key)
 		button = { Text = string.format("Upgrade %s G\n⏱ %s", comma(Config.GetSkillUpgradeCost(level)), Config.FormatDuration(Config.GetSkillUpgradeTime(level))), Color = env.GREEN, OnClick = function() env.Remotes.Meta:FireServer("SkillUp", key) end }
 	end
 	return skillColor(key), string.format("<font size='14'><b>[%s] %s %s</b></font>  <font color='#ffd966'>Lv.%d / %d</font>%s\n<font color='#bbbbcc'>%s</font>",
-		cfg.Key or "", cfg.Icon, cfg.Name, level, U.MaxLevel, maxed and "  <font color='#78ff8c'>MAX</font>" or "", cfg.Desc or "") .. (env.SkillDetail and ("\n" .. env.SkillDetail(key, level)) or ""), button
+		cfg.Key or "", cfg.Icon, cfg.Name, level, U.MaxLevel, maxed and "  <font color='#78ff8c'>MAX</font>" or "", cfg.Desc or "") .. (env.SkillDetail and ("\n" .. env.SkillDetail(key, level)) or "") .. synergyLine(env, key), button
 end
 
 ------------------------------------------------------------

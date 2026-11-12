@@ -1870,7 +1870,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 	end
 	-- 점화 (보스형): 직접 맞힐 때마다 중첩 (궁합 무기는 2중첩)
 	if augDepth == 0 and not inSetHit and data.Health > 0 and augLv(run, player, "AugFlame") > 0 then -- (점화 틱 / 폭발 같은 세트 피해로는 중첩이 쌓이지 않는다: 예전엔 불 틱이 스스로 중첩을 올려 한 번 붙으면 꺼지지 않았다)
-		addIgnite(run, player, part, data, Config.AugWeaponMatch(player, "AugFlame") and 2 or 1)
+		addIgnite(run, player, part, data, (Config.AugWeaponMatch(player, "AugFlame") and 2 or 1) + ((isBossData(data) or data.Elite or data.Kind == "Elite") and synergy(player, "Searing", run) and 1 or 0)) -- (조합 "불타는 균열": 보스 / 엘리트에 1겹 더)
 	end
 	local level = augLv(run, player, "AugMissile")
 	if level <= 0 or not isCrit or augDepth > 0 then return end
@@ -1879,6 +1879,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 	local shooterRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	local from = shooterRoot and (shooterRoot.Position + Vector3.new(0, 4, 0)) or (part.Position + Vector3.new(0, 12, 0))
 	local count = 1 + level + (Config.AugWeaponMatch(player, "AugMissile") and 1 or 0)
+	if (player:GetAttribute("StarUntil") or 0) > workspace:GetServerTimeNow() and synergy(player, "LuckySalvo", run) then count += 2 end -- 조합 "행운의 일제 사격"
 	if not allowMissiles(player, count) then return end
 	procAug(player, "AugMissile", part.Position)
 	-- 4셋: 미사일이 터지며 주변 적도 맞는다 / 5셋: 0.45초 뒤 두 번째 일제 사격 / 6셋: 대형 미사일까지

@@ -149,6 +149,7 @@ function Skill.CooldownFor(player, skillKey)
 	local floorRatio = skillKey == "Spirit" and (S.SpiritCooldownFloor or 0.05) or (S.CooldownFloor or 0.3)
 	local cooldown = S[skillKey].Cooldown * (floorRatio + (1 - floorRatio) * factor)
 	if (skillKey == "Spirit" or skillKey == "Heal") and Config.GetSkillBranch(player, skillKey, 10) == "B" then cooldown *= 0.7 end -- 10레벨 갈래 (연꽃 "여운" / 응급 치료 "신속")
+	cooldown *= math.max(0.5, 1 + Config.SkillMod(player, skillKey, "Cooldown")) -- Lv.3 / 7 갈래 + 스킬 시너지
 	return cooldown
 end
 
@@ -157,14 +158,14 @@ end
 handlers.Spirit = function(player, root, _, character)
 	local cfg = S.Spirit
 	local b5, b10 = Config.GetSkillBranch(player, "Spirit", 5), Config.GetSkillBranch(player, "Spirit", 10)
-	local duration = cfg.Duration + (b5 == "A" and 1.5 or 0) -- 5레벨 갈래: 광풍(지속 +1.5초 / 범위 +30%) · 관통 단검(한 자루 줄고 자루당 +80%)
-	local range = cfg.Range * (b5 == "A" and 1.3 or 1)
+	local duration = cfg.Duration + (b5 == "A" and 1.5 or 0) + Config.SkillMod(player, "Spirit", "Duration") -- 5레벨 갈래: 광풍(지속 +1.5초 / 범위 +30%) · 관통 단검(한 자루 줄고 자루당 +80%)
+	local range = cfg.Range * (b5 == "A" and 1.3 or 1) * (1 + Config.SkillMod(player, "Spirit", "Range"))
 	local daggers = cfg.Daggers - (b5 == "B" and 1 or 0)
 	local nearby = Dungeon.TargetsIn(player, root.Position, range, 6) or Field.TargetsIn(player, root.Position, range, 6)
 	if not nearby or #nearby == 0 then return false, "🌸 No enemy nearby" end
 	local token = {}
 	spiritToken[player] = token
-	local scale = cfg.Mult * (1 + U.BlastMult * (skillLevel(player, "Spirit") - 1)) * (b5 == "B" and 1.8 or 1) * (b10 == "B" and 1.15 or 1)
+	local scale = cfg.Mult * (1 + U.BlastMult * (skillLevel(player, "Spirit") - 1)) * (b5 == "B" and 1.8 or 1) * (b10 == "B" and 1.15 or 1) * (1 + Config.SkillMod(player, "Spirit", "Damage"))
 	-- 쿨타임이 지속시간보다 짧아지면 (연꽃이 항상 돌고 있는 상태) 더 줄어든 만큼은 단검 한 자루의 위력으로 바꾼다: 쿨감 스탯 / 여운 갈래가 풀파밍에서도 낭비되지 않는다
 	scale *= math.max(1, cfg.Duration / Skill.CooldownFor(player, "Spirit")) -- (갈래 지속시간이 아니라 기본 지속시간 기준: 광풍이 계속 도는 구간에서 부당하게 이득을 보지 않게)
 	local userId = player.UserId
@@ -292,6 +293,7 @@ handlers.Heal = function(player, root)
 		local amount = tHumanoid.MaxHealth * (cfg.Ratio + U.HealRatio * (skillLevel(player, "Heal") - 1))
 		if b5 == "A" then amount *= 1.25 / 5 elseif b5 == "B" then amount *= 0.5 end -- 5레벨 갈래: 재생(6초에 걸쳐 합계 +25%) · 응급 방패(회복 반 / 2초 무적)
 		if b10 == "A" and target ~= player then amount *= 1.3 end
+		amount *= 1 + Config.SkillMod(player, "Heal", "Heal") -- Lv.3 / 7 갈래
 		tHumanoid.Health = math.min(tHumanoid.MaxHealth, tHumanoid.Health + amount)
 		Effects.Burst(tRoot.Position, Color3.fromRGB(110, 255, 150), 18)
 		Effects.FloatText(tRoot.Position + Vector3.new(0, 4, 0), string.format("💚 +%d", math.floor(amount)), Color3.fromRGB(130, 255, 160))
@@ -376,10 +378,10 @@ handlers.Ult = function(player, root, _, character)
 		end
 		targets = { best }
 	end
-	player:SetAttribute("UltCharge", b10 == "A" and 30 or 0) -- 10레벨 갈래 "재장전": 쓰고 나면 게이지 30이 돌아온다
+	player:SetAttribute("UltCharge", math.min(cfg.Cost, (b10 == "A" and 30 or 0) + Config.SkillMod(player, "Ult", "Refund"))) -- 10레벨 갈래 "재장전": 쓰고 나면 게이지 30이 돌아온다
 
 	local origin = root.Position
-	local totalMult = (cfg.Mult or 8) * 0.75 * (1 + (U.UltMult or 0.15) * (skillLevel(player, "Ult") - 1)) * (b5 == "A" and 0.85 or (b5 == "B" and 1.3 or 1))
+	local totalMult = (cfg.Mult or 8) * 0.75 * (1 + (U.UltMult or 0.15) * (skillLevel(player, "Ult") - 1)) * (b5 == "A" and 0.85 or (b5 == "B" and 1.3 or 1)) * (1 + Config.SkillMod(player, "Ult", "Damage"))
 	-- 범위 안의 모든 적을 "동시에" 집중 포격한다: 조준 표시 -> 충격파 -> 전원에게 동시에 빔이 쏟아지는 일제 사격 14회 -> 마지막 대폭발
 	local volleys, volleyGap = cfg.Volleys or 12, cfg.VolleyGap or 0.09
 	-- 데드아이는 "한 발 피해"가 아니라 무기의 초당 피해 계수(WeaponDpsFactor)에 맞춘다: 한 발 위력이 작은 연사 무기로 진화해도 데드아이가 약해지지 않게

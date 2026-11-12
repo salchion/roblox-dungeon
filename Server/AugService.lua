@@ -108,7 +108,7 @@ function Aug.Refresh(player)
 	if not watching[player] then
 		watching[player] = true
 		player:GetAttributeChangedSignal("AugSlotBonus"):Connect(function() Aug.Apply(player) end) -- 칸 상품을 샀을 때
-		for _, attr in ipairs({ "GearKillCdr", "GearShield" }) do -- 유니크를 끼고 벗으면 조합 효과도 다시 계산
+		for _, attr in ipairs({ "GearKillCdr", "GearShield", "GearSlaughter", "GearStar", "GearSunder" }) do -- 유니크를 끼고 벗으면 조합 효과도 다시 계산
 			player:GetAttributeChangedSignal(attr):Connect(function() Aug.Apply(player) end)
 		end
 	end

@@ -41,18 +41,18 @@ Config.WeakExposeSeconds = 6.5 -- 보스 약점을 맞혔을 때 약점이 노�
 Config.NearMiss = { DamagePerStack = 0.05, MaxStacks = 10, Duration = 8, DecayStep = 4 } -- 최대 +30% (자동 공격만 써도 기본 DPS 에서 손해 보지 않게 낮춤). Duration 뒤에는 DecayStep(4)초마다 1스택씩 줄어든다
 function Config.GetNearMissDuration(player) -- 기운 집중 스킬 레벨 + 갈래(5A 지속 / 10B 장기전) 반영
 	local bonus = (Config.GetSkillBranch(player, "Focus", 5) == "A" and 3 or 0) + (Config.GetSkillBranch(player, "Focus", 10) == "B" and 6 or 0)
-	return Config.NearMiss.Duration + bonus + Config.SkillUpgrade.FocusDuration * math.max(0, (player:GetAttribute("SkillLv_Focus") or 1) - 1)
+	return Config.NearMiss.Duration + bonus + Config.SkillUpgrade.FocusDuration * math.max(0, (player:GetAttribute("SkillLv_Focus") or 1) - 1) + Config.SkillMod(player, "Focus", "NearMissTime")
 end
 
 -- 스택 하나당 공격력 (기운 집중 10레벨 갈래 "폭주": +30%)
 function Config.GetNearMissDamage(player)
-	return Config.NearMiss.DamagePerStack * (Config.GetSkillBranch(player, "Focus", 10) == "A" and 1.3 or 1)
+	return Config.NearMiss.DamagePerStack * (Config.GetSkillBranch(player, "Focus", 10) == "A" and 1.3 or 1) * (1 + Config.SkillMod(player, "Focus", "NearMissDmg"))
 end
 
 -- 기운 집중: 줄어들다 멈추는 바닥 스택 (레벨 1 = 0, 최대 레벨 = 최대 스택의 절반): 끊겨도 어느 정도는 남는다
 function Config.GetNearMissFloor(player)
 	local level = math.max(1, player:GetAttribute("SkillLv_Focus") or 1)
-	local extra = Config.GetSkillBranch(player, "Focus", 5) == "B" and 2 or 0 -- 5레벨 갈래 "안정": 바닥 스택 +2
+	local extra = (Config.GetSkillBranch(player, "Focus", 5) == "B" and 2 or 0) + Config.SkillMod(player, "Focus", "Floor") -- 5레벨 갈래 "안정": 바닥 스택 +2
 	return math.min(Config.NearMiss.MaxStacks - 1, extra + math.floor(Config.NearMiss.MaxStacks * 0.5 * (level - 1) / math.max(1, Config.SkillUpgrade.MaxLevel - 1)))
 end
 
@@ -476,7 +476,10 @@ end
 
 -- 세트 효과 시너지: 두 어그먼트를 모두 가지면 숨은 추가 효과가 켜진다 (획득하는 순간 알림 + 오라 폭발)
 Config.AugSynergies = {
-	Order = { "Inferno", "StormEye", "BladeMissile", "Reaper", "Rhythm", "Rampart" },
+	Order = { "Inferno", "StormEye", "BladeMissile", "Reaper", "Rhythm", "Rampart", "Doomfall", "LuckySalvo", "Searing" },
+	Doomfall     = { Need = { "AugMeteor", "GearSlaughter" }, Icon = "☄", Name = "Doomfall", Desc = "Each Slaughter Wave also drops 3 meteors around you (300%)" },
+	LuckySalvo   = { Need = { "AugMissile", "GearStar" },     Icon = "🍀", Name = "Lucky Salvo", Desc = "While Lucky Star is active, crit missiles fire +2 more" },
+	Searing      = { Need = { "AugFlame", "GearSunder" },     Icon = "🪓", Name = "Searing Sunder", Desc = "Hitting a boss or elite adds 1 more Ignite stack" },
 	-- 세트 효과 + 유니크 조합 (Need 에 "Gear..." 가 있으면 그 유니크 능력을 장착하고 있어야 한다): 플레이 방식이 바뀌는 조합
 	Rhythm       = { Need = { "AugExecute", "GearKillCdr" }, Icon = "⏳", Name = "Reaper's Rhythm", Desc = "Every execute cuts all skill cooldowns by 1s more: keep Blade Bloom spinning" },
 	Rampart      = { Need = { "AugNova", "GearShield" },     Icon = "🛡", Name = "Bursting Rampart", Desc = "When your Bulwark shield blocks a hit, it bursts and blasts enemies around you (400%)" },
@@ -2495,5 +2498,11 @@ do
 	function Config.GetPetLevelCost(level)
 		return petTable[math.clamp(math.floor(level or 1), 1, Config.Pet.MaxLevel)]
 	end
+end
+-- 스킬 나무 확장 (Lv.3 / 7 갈래 + 스킬 시너지): Config 가 Studio 한도에 가까워 SkillTreeData 로 뺐다
+do
+	local okTree, apply = pcall(function() return require(script.Parent:WaitForChild("SkillTreeData", 10)) end)
+	if okTree and type(apply) == "function" then pcall(apply, Config) end
+	Config.SkillMod = Config.SkillMod or function() return 0 end
 end
 return Config

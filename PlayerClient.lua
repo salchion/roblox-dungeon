@@ -2621,6 +2621,7 @@ local function skillStats(key, level) -- { { 이름, 값 글자, 숫자 } ... } 
 		local floorRatio = key == "Spirit" and (S.SpiritCooldownFloor or 0.05) or (S.CooldownFloor or 0.3)
 		local cooldown = cfg.Cooldown * (floorRatio + (1 - floorRatio) * factor)
 		if (key == "Spirit" or key == "Heal") and Config.GetSkillBranch(player, key, 10) == "B" then cooldown *= 0.7 end
+		cooldown *= math.max(0.5, 1 + Config.SkillMod(player, key, "Cooldown"))
 		add("Cooldown", cooldown, "%.1fs")
 	end
 	return list

@@ -470,3 +470,41 @@
 2502¦周りのすべての敵に雷が落ちる¦Blitze treffen alle Gegner um dich¦La foudre frappe tous les ennemis autour¦Los rayos golpean a todos los enemigos cercanos¦Raios atingem todos os inimigos ao redor¦闪电劈向你周围的所有敌人¦주변의 모든 적에게 번개가 꽂혀요
 2503¦刃の輪が周りのすべての敵を斬る¦Ein Klingenring schneidet alle Gegner um dich¦Un cercle de lames tranche tous les ennemis autour¦Un anillo de cuchillas corta a todos los enemigos cercanos¦Um anel de lâminas corta todos os inimigos ao redor¦刀刃之环斩向你周围的所有敌人¦칼날 고리가 주변의 모든 적을 베어요
 2504¦過充電！より速く、より大きく¦Überladen! Schneller und größer¦Surchargé ! Plus rapide et plus grand¦¡Sobrecargado! Más rápido y más grande¦Sobrecarregado! Mais rápido e maior¦过载！更快、更强¦과충전! 더 빠르고 더 크게
+2505¦広がる弧¦Weiter Bogen¦Arc large¦Arco amplio¦Arco amplo¦广弧¦넓은 궤적
+2506¦鋭い刃¦Scharfe Klinge¦Lame affûtée¦Filo agudo¦Lâmina afiada¦锋利刀刃¦날카로운 칼날
+2507¦旋風¦Wirbelwind¦Tourbillon¦Torbellino¦Redemoinho¦旋风¦회오리
+2508¦早抜き¦Schnellzug¦Dégainage rapide¦Desenfunde rápido¦Saque rápido¦快拔¦빠른 뽑기
+2509¦オーバーチャージ¦Überladung¦Surcharge¦Sobrecarga¦Sobrecarga¦超载¦과충전
+2510¦クイックゲージ¦Schnelle Leiste¦Jauge rapide¦Medidor rápido¦Medidor rápido¦快速充能¦빠른 게이지
+2511¦処刑人¦Henker¦Bourreau¦Verdugo¦Carrasco¦处刑者¦처형자
+2512¦セカンドウィンド¦Zweiter Atem¦Second souffle¦Segundo aliento¦Segundo fôlego¦第二口气¦재충전
+2513¦強い軟膏¦Starke Salbe¦Baume puissant¦Ungüento fuerte¦Pomada forte¦强效药膏¦강한 연고
+2514¦素早い手当て¦Flinke Hände¦Mains rapides¦Manos rápidas¦Mãos rápidas¦快手¦빠른 손
+2515¦深い治癒¦Tiefe Heilung¦Soin profond¦Curación profunda¦Cura profunda¦深度治疗¦깊은 치유
+2516¦迅速な手当て¦Schnelle Hilfe¦Secours rapide¦Ayuda rápida¦Socorro rápido¦迅速救助¦신속 치료
+2517¦持続¦Nachhall¦Persistance¦Persistencia¦Persistência¦余韵¦여운
+2518¦研ぎ澄まし¦Geschärft¦Aiguisé¦Afilado¦Afiado¦磨砺¦벼림
+2519¦戦闘トランス¦Kampftrance¦Transe de combat¦Trance de batalla¦Transe de batalha¦战斗恍惚¦전투 몰입
+2520¦範囲 +20%¦Reichweite +20%¦Portée +20%¦Alcance +20%¦Alcance +20%¦范围 +20%¦범위 +20%
+2521¦ダメージ +20%¦Schaden +20%¦Dégâts +20%¦Daño +20%¦Dano +20%¦伤害 +20%¦피해 +20%
+2522¦ダメージ +35%¦Schaden +35%¦Dégâts +35%¦Daño +35%¦Dano +35%¦伤害 +35%¦피해 +35%
+2523¦1秒長く回る¦Dreht sich 1 s länger¦Tourne 1 s de plus¦Gira 1 s más¦Gira 1 s a mais¦多旋转1秒¦1초 더 돌아요
+2524¦クールタイム -15%¦Abklingzeit -15%¦Recharge -15%¦Enfriamiento -15%¦Recarga -15%¦冷却 -15%¦쿨타임 -15%
+2525¦クールタイム -20%¦Abklingzeit -20%¦Recharge -20%¦Enfriamiento -20%¦Recarga -20%¦冷却 -20%¦쿨타임 -20%
+2526¦使用後ゲージ15を返す¦Gibt nach Einsatz 15 Leiste zurück¦Rend 15 de jauge après usage¦Devuelve 15 de medidor tras usarla¦Devolve 15 de medidor após o uso¦使用后返还15能量¦쓰고 나면 게이지 15를 돌려받아요
+2527¦使用後ゲージ25を返す¦Gibt nach Einsatz 25 Leiste zurück¦Rend 25 de jauge après usage¦Devuelve 25 de medidor tras usarla¦Devolve 25 de medidor após o uso¦使用后返还25能量¦쓰고 나면 게이지 25를 돌려받아요
+2528¦回復量 +25%¦Heilung +25%¦Soin +25%¦Curación +25%¦Cura +25%¦治疗 +25%¦회복량 +25%
+2529¦回復量 +40%¦Heilung +40%¦Soin +40%¦Curación +40%¦Cura +40%¦治疗 +40%¦회복량 +40%
+2530¦NEAR MISS 持続 +2秒¦NEAR MISS hält +2 s¦NEAR MISS dure +2 s¦NEAR MISS dura +2 s¦NEAR MISS dura +2 s¦NEAR MISS 持续 +2秒¦NEAR MISS 유지 +2초
+2531¦NEAR MISS スタックごとの攻撃力 +15%¦Jeder NEAR-MISS-Stapel gibt +15 % mehr Angriff¦Chaque cumul NEAR MISS donne +15 % d'attaque¦Cada acumulación de NEAR MISS da +15% de ataque¦Cada acúmulo de NEAR MISS dá +15% de ataque¦每层 NEAR MISS 攻击力再 +15%¦NEAR MISS 스택당 공격력 +15% 더
+2532¦NEAR MISS スタックごとの攻撃力 +25%¦Jeder NEAR-MISS-Stapel gibt +25 % mehr Angriff¦Chaque cumul NEAR MISS donne +25 % d'attaque¦Cada acumulación de NEAR MISS da +25% de ataque¦Cada acúmulo de NEAR MISS dá +25% de ataque¦每层 NEAR MISS 攻击力再 +25%¦NEAR MISS 스택당 공격력 +25% 더
+2533¦集中レベルごとにブレードブルームのダメージ +4%¦Blade-Bloom-Schaden +4 % pro Fokus-Stufe¦Dégâts de Blade Bloom +4 % par niveau de Concentration¦Daño de Blade Bloom +4% por nivel de Concentración¦Dano do Blade Bloom +4% por nível de Foco¦每级专注使刀刃绽放伤害 +4%¦기운 집중 레벨당 블레이드 블룸 피해 +4%
+2534¦ブレードブルームのレベルごとにデッドアイのダメージ +3%¦Dead-Eye-Schaden +3 % pro Blade-Bloom-Stufe¦Dégâts de Dead Eye +3 % par niveau de Blade Bloom¦Daño de Dead Eye +3% por nivel de Blade Bloom¦Dano do Dead Eye +3% por nível de Blade Bloom¦每级刀刃绽放使死神之眼伤害 +3%¦블레이드 블룸 레벨당 데드아이 피해 +3%
+2535¦デッドアイのレベルごとに応急手当のクールタイム -2%¦Erste-Hilfe-Abklingzeit -2 % pro Dead-Eye-Stufe¦Recharge de Premiers soins -2 % par niveau de Dead Eye¦Enfriamiento de Primeros auxilios -2% por nivel de Dead Eye¦Recarga de Primeiros socorros -2% por nível de Dead Eye¦每级死神之眼使急救冷却 -2%¦데드아이 레벨당 응급치료 쿨타임 -2%
+2536¦応急手当のレベルごとに NEAR MISS 持続 +0.15秒¦NEAR MISS hält +0,15 s pro Erste-Hilfe-Stufe¦NEAR MISS dure +0,15 s par niveau de Premiers soins¦NEAR MISS dura +0,15 s por nivel de Primeros auxilios¦NEAR MISS dura +0,15 s por nível de Primeiros socorros¦每级急救使 NEAR MISS 持续 +0.15秒¦응급치료 레벨당 NEAR MISS 유지 +0.15초
+2537¦破滅の落下¦Untergangsfall¦Chute fatale¦Caída fatal¦Queda fatal¦毁灭坠落¦파멸의 낙하
+2538¦幸運の一斉射撃¦Glückssalve¦Salve chanceuse¦Salva afortunada¦Salva da sorte¦幸运齐射¦행운의 일제 사격
+2539¦灼熱の亀裂¦Sengender Riss¦Fissure ardente¦Grieta abrasadora¦Fenda ardente¦灼热裂击¦불타는 균열
+2540¦虐殺の波動のたびに周りへ隕石3つ（300%）¦Jede Gemetzelwelle lässt auch 3 Meteore um dich fallen (300 %)¦Chaque Vague de massacre fait aussi tomber 3 météores autour de toi (300 %)¦Cada Ola de matanza también hace caer 3 meteoros a tu alrededor (300%)¦Cada Onda do massacre também derruba 3 meteoros ao seu redor (300%)¦每次屠杀波动还会在你周围落下3颗陨石（300%）¦학살의 파동마다 주변에 유성 3개도 떨어져요 (300%)
+2541¦幸運の星の間、クリティカルミサイル +2発¦Solange Glücksstern aktiv ist, feuern Krit-Raketen +2 mehr¦Tant que l'Étoile chanceuse est active, +2 missiles critiques¦Mientras la Estrella de la suerte está activa, +2 misiles críticos¦Enquanto a Estrela da sorte está ativa, +2 mísseis críticos¦幸运之星期间，暴击导弹多发射2枚¦행운의 별이 켜져 있는 동안 치명타 미사일 +2발
+2542¦ボスやエリートに当てると点火スタック +1¦Treffer auf Bosse oder Elite geben 1 Entzündungsstapel mehr¦Toucher un boss ou une élite ajoute 1 cumul d'Embrasement¦Golpear a un jefe o élite añade 1 acumulación más de Ignición¦Acertar um chefe ou elite adiciona 1 acúmulo a mais de Ignição¦命中首领或精英时额外 +1 层点燃¦보스나 엘리트를 맞히면 점화 중첩이 1겹 더 쌓여요

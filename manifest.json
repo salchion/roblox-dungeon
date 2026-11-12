@@ -8,6 +8,13 @@
       "overwrite": true
     },
     {
+      "path": "Shared/SkillTreeData.lua",
+      "parent": "ReplicatedStorage",
+      "name": "SkillTreeData",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Shared/Remotes.lua",
       "parent": "ReplicatedStorage",
       "name": "Remotes",
