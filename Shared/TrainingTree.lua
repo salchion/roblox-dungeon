@@ -27,7 +27,11 @@ local TRAIN_COLORS = {
 }
 -- 훈련 노드 자리: { 칸 안의 x(0~1), 층 }
 -- 유형별 줄: 왼쪽 두 줄 = 공격(공격 -> 더블샷, 치명타 -> 치명타 피해, 둘 다 -> 공격 속도) / 체력 = 방어 / 오른쪽 = 유틸(속도 -> 골드 감각)
-local TRAIN_ORDER = { "Attack", "Crit", "Double", "CritDmg", "AtkSpeed", "Health", "Speed", "Armor", "Gold", "Regen" } -- 왼쪽 / 오른쪽 번갈아: 먼저 찍을 칸이 바로 위에 오게 (가지가 다른 칸을 가로지르지 않는다)
+local TRAIN_ORDER = { "Attack", "Crit", "Double", "CritDmg", "AtkSpeed", "Health", "Speed", "Armor", "Gold", "Regen" }
+local TRAIN_SPOT = { -- { 칸 안의 x(0~1), y } : 공격 묶음 (위) / 생존·유틸 묶음 (아래, 조금 띄움)
+	Attack = { 0.25, 50 }, Crit = { 0.75, 50 }, Double = { 0.25, 88 }, CritDmg = { 0.75, 88 }, AtkSpeed = { 0.5, 126 },
+	Health = { 0.25, 172 }, Speed = { 0.75, 172 }, Armor = { 0.25, 210 }, Gold = { 0.75, 210 }, Regen = { 0.25, 248 },
+}
 local TRAIN_POS = {
 	Attack = { 0.125, 1 }, Crit = { 0.375, 1 }, Health = { 0.625, 1 }, Speed = { 0.875, 1 },
 	Double = { 0.125, 2 }, CritDmg = { 0.375, 2 }, Armor = { 0.625, 2 }, Gold = { 0.875, 2 }, AtkSpeed = { 0.25, 3 }, Regen = { 0.625, 3 },
@@ -279,12 +283,11 @@ local function drawTraining(env, C)
 	C.title("Train", string.format("🏋 Training<font size='11' color='#cfc8e8'>   Slots %d / %d</font>", #state.Jobs, state.Slots))
 	-- 두 줄씩 놓고, 먼저 찍어야 하는 칸에서 가지가 이어진다 (열렸으면 그 색, 아니면 어두운 선)
 	local slotW = (COLS.Train[2] - COLS.Train[1]) / 2
-	local spots, index = {}, 0
-	for _, stat in ipairs(TRAIN_ORDER) do
-		if G.Stats[stat] then
-			index += 1
-			spots[stat] = { X = colX("Train", (index % 2 == 1) and 0.25 or 0.75), Y = 52 + math.floor((index - 1) / 2) * 44 }
-		end
+	-- 두 묶음: 위 = 공격(공격 / 치명타 -> 더블 샷 / 치명타 피해 -> 둘이 모여 공격 속도), 아래 = 생존 / 유틸(체력 -> 질긴 피부 -> 회복력, 속도 -> 골드 감각)
+	-- 시작 칸은 항상 묶음의 맨 위에 있어서, 가지가 엉뚱한 칸에서 이어지는 것처럼 보이지 않는다
+	local spots = {}
+	for stat, at in pairs(TRAIN_SPOT) do
+		if G.Stats[stat] then spots[stat] = { X = colX("Train", at[1]), Y = at[2] } end
 	end
 	for stat, spot in pairs(spots) do
 		for _, req in ipairs(G.Stats[stat].Req or {}) do
@@ -370,14 +373,7 @@ local function drawPet(env, C)
 	for _, fn in ipairs(fns) do
 		if fn.Level > level then nextFn = fn break end
 	end
-	for i = PET_PER_ROW + 1, #fns do -- 세로 가지만 (가로 선이 이름 글자를 가로지르지 않게)
-		local x0, y0 = petPos(i - PET_PER_ROW)
-		local x1, y1 = petPos(i)
-		local lit = level >= fns[i].Level
-		local w = (COLS.Pet[2] - COLS.Pet[1]) / PET_PER_ROW
-		local a0, a1 = C.cx(x0, w), C.cx(x1, w)
-		C.line(a0, y0 + 15, a1, y1 - 15, lit and PET_COLOR or Color3.fromRGB(56, 52, 78), lit and 2 or 1)
-	end
+	-- (펫 기능은 1 -> 2 -> 3 -> 5 ... 순서로 열려서 세로 선이 틀린 순서를 보여 줬다: 선 없이 줄마다 왼쪽 -> 오른쪽으로 읽는다)
 	local upEnd = env.Player:GetAttribute("UpPet")
 	for i, fn in ipairs(fns) do
 		local x, y = petPos(i)
@@ -450,7 +446,7 @@ local function drawTalents(env, C)
 	end
 	local create, label = env.Create, env.MakeLabel
 	local GOLDLINE = Color3.fromRGB(255, 205, 110)
-	local function rowY(row) return 54 + (row - 1) * 45 end
+	local function rowY(row) return 52 + (row - 1) * 48 end
 	local function colOf(i, count) -- 한 줄의 칸 위치 (하나뿐인 줄은 가운데: 최종 특성)
 		if count == 1 then return colX("Passive", 0.6) end
 		return colX("Passive", 0.2 + (i - 0.5) * (0.8 / math.max(3, count)))
@@ -465,12 +461,10 @@ local function drawTalents(env, C)
 			Color = chosen and Color3.new(1, 1, 1) or (not open and DIM or (rank >= max and Color3.fromRGB(255, 214, 110) or (lit and TALENT_COLOR or Color3.fromRGB(120, 116, 150)))) }, back)
 		if open and lit then create("UIGradient", { Color = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 250, 225)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(170, 130, 60)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 235, 170)) }), Rotation = 45 }, ring) end
 		label({ Size = UDim2.new(1, 0, 1, 0), Text = open and icon or "🔒", TextSize = open and math.floor(size * 0.4) or 10, ZIndex = 6, TextTransparency = (open and not lit) and 0.4 or 0 }, back)
-		if max > 1 then -- 랭크 점: 찍은 만큼 금빛
-			for k = 1, max do
-				local dot = create("Frame", { Size = UDim2.new(0, 5, 0, 5), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, (k - (max + 1) / 2) * 7, 0, y + size / 2 + 6),
-					BackgroundColor3 = k <= rank and Color3.fromRGB(255, 214, 110) or Color3.fromRGB(50, 48, 70), BorderSizePixel = 0, ZIndex = 6 }, C.Row)
-				create("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
-			end
+		if max > 1 then -- 랭크 배지 (와우처럼 오른쪽 아래 "3/5"): 점을 아래에 늘어놓으면 가지 선이 들어갈 자리가 없었다
+			local badge = label({ Size = UDim2.new(0, 22, 0, 12), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, 1, 1, -1), Text = string.format("%d/%d", rank, max), TextSize = 8, Font = Enum.Font.GothamBold, ZIndex = 9,
+				BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(14, 12, 24), TextColor3 = rank >= max and Color3.fromRGB(255, 214, 110) or (rank > 0 and Color3.fromRGB(150, 255, 170) or Color3.fromRGB(170, 166, 195)) }, back)
+			create("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
 		end
 		local hit = create("TextButton", { Size = UDim2.new(1, 8, 1, 8), Position = UDim2.new(0, -4, 0, -4), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, back)
 		hit.Activated:Connect(onClick)
@@ -482,7 +476,7 @@ local function drawTalents(env, C)
 		for i = 1, #here do
 			local j = #below == 1 and 1 or math.min(i, #below)
 			local x0, x1 = colOf(i, #here), colOf(j, #below)
-			local y0, y1 = rowY(row) + 23, rowY(row + 1) - 20
+			local y0, y1 = rowY(row) + 17, rowY(row + 1) - 18
 			C.elbow(x0, y0, x1, y1, lit and GOLDLINE or Color3.fromRGB(56, 52, 78), lit and 2 or 1)
 		end
 	end
