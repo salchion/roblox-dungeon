@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Bounces to {number1} nearby enemies (within {number2})", "Rebondit sur {number1} ennemis proches (à moins de {number2})" },
+		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 {number1} esprits combattront pour vous pendant {number2} s !" },
+		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1} s · {number2} dagues toutes les {number3} s · dégâts x{number4} chacune" },
+		{ "Defeat {number1} bosses in one Boss Rush run", "Vainquez {number1} boss lors d'une course de boss" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "Monstres rencontrés : {number1} / {number2} (incluant les seigneurs de zone)" },
 		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 Entrée gratuite utilisée ! ({number1} / {number2} restantes aujourd'hui)" },
 		{ "A big blast when it ends (attack x{number1})", "Une grosse explosion à la fin (attaque x{number1})" },
@@ -140,6 +144,7 @@ return {
 		{ "Raise your pet to level {number1}", "Montez votre familier au niveau {number1}" },
 		{ "Range x{number1} · allies heal +{number2}%", "Portée x{number1} · alliés soignés +{number2} %" },
 		{ "Recovers {number1}% HP per second", "Récupère {number1} % de PV par seconde" },
+		{ "· {number1} point(s) in this path", "· {number1} point(s) dans cette voie" },
 		{ "Uses all Tickets (max {number1})", "Utilise tous les tickets (maximum {number1})" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 Champ · Meilleure zone {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "Zone {number1} · Désert ☠☠☠☠" },

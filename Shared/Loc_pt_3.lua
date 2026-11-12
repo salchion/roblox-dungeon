@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "every {number1}s lightning hits {number2} enemies", "a cada {number1} s um raio atinge {number2} inimigos" },
+		{ "Level {number1} Breakthrough in progress", "Avanço do nível {number1} em andamento" },
+		{ "Defeat the Zone {number1} lord to unlock", "Derrote o senhor da zona {number1} para desbloquear" },
+		{ "Cleared up to depth {number1}  ·  next: {number2}", "Concluído até a profundidade {number1}  ·  próxima: {number2}" },
+		{ "⚔ A skill upgrade is ready ({number1} G)", "⚔ Uma melhoria de habilidade está pronta ({number1} G)" },
 		{ "Move speed +{number1} per point  (max {number2})", "Velocidade de movimento +{number1} por ponto (máximo {number2})" },
 		{ "🎯 Deadeye! Barrage on {number1} enemies", "🎯 Olho de Águia! Tempestade de tiros contra {number1} inimigos" },
 		{ "⚠ Not enough gold. ({number1} G needed)", "⚠ Ouro insuficiente. ({number1} G necessário)" },
@@ -94,6 +99,7 @@ return {
 		{ "Raise your pet to level {number1}", "Leve seu pet ao nível {number1}" },
 		{ "Range x{number1} · allies heal +{number2}%", "Alcance x{number1} · aliados curam +{number2}%" },
 		{ "Recovers {number1}% HP per second", "Recupera {number1}% de PV por segundo" },
+		{ "· {number1} point(s) in this path", "· {number1} ponto(s) neste caminho" },
 		{ "Uses all Tickets (max {number1})", "Usa todos os bilhetes (máximo {number1})" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 Campo · Melhor Zona {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "Zona {number1} · Deserto ☠☠☠☠" },

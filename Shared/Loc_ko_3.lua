@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "<font color='#{number4}ad{number5}ff'>스펠 토메 · 신화 시대 +{number6}</font>" },
+		{ "Shot_Shotgun  <font color='#{number1}aa{number2}c{number3}'>Shotgun shot</font>", "샷_샷건 <font color='#{number1}aa{number2}c{number3}'>샷건 샷</font>" },
 		{ "🔒 Zone {number1} · Desert Sealed\nOpen the previous gate first", "🔒 구역 {number1} · 사막 봉쇄됨\n먼저 이전 게이트를 여세요" },
 		{ "<font color='#ff9a6e'>🔒 Unlocks at +{number1} ({number2} to go)</font>", "<font color='#ff9a6e'>🔒 +{number1}에서 해금 ({number2} 남음)</font>" },
 		{ "One less dagger, but each hits +{number1}% harder: for bosses", "단검이 한 자루 줄지만 한 자루당 +{number1}% 강해요: 보스용" },
@@ -69,6 +71,7 @@ return {
 		{ "Rocket Launcher  ·  keys {number1}-{number2} switch weapons", "로켓 발사기 · 키 {number1}-{number2}로 무기를 전환하세요" },
 		{ "📅 {number1}-day login streak · Get stronger today!", "📅 {number1}일 연속 로그인 · 오늘 더 강해지세요!" },
 		{ "Each NEAR MISS stack gives +{number1}% more attack", "NEAR MISS 스택마다 공격력이 +{number1}% 더 붙어요" },
+		{ "🔒 Spend {number1} points higher up this path first", "🔒 이 길 위쪽에 먼저 {number1}점을 써야 해요" },
 		{ "✦ Unique effect on Mythic gear: <b>{number1}%</b>", "✦ 신화 장비의 유니크 효과: <b>{number1}%</b>" },
 		{ "Auto-equipped the best gear in {number1} slot(s)!", "{number1}칸의 최고 장비를 자동 장착했어요!" },
 		{ "<font color='#d9bd78'>MISSION {number1} / {number2}</font>", "<font color='#d9bd78'>미션 {number1} / {number2}</font>" },
@@ -249,6 +252,7 @@ return {
 		{ "Raise your pet to level {number1}", "펫을 {number1}레벨까지 키우기" },
 		{ "Range x{number1} · allies heal +{number2}%", "범위 x{number1} · 동료 회복 +{number2}%" },
 		{ "Recovers {number1}% HP per second", "초당 체력 {number1}% 회복" },
+		{ "· {number1} point(s) in this path", "· 이 길에 {number1}점" },
 		{ "Uses all Tickets (max {number1})", "모든 티켓 사용 (최대 {number1})" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 필드 · 베스트 존 {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "존 {number1} · 사막 ☠☠☠☠" },

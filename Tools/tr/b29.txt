@@ -555,3 +555,12 @@
 2587¦町でリセット¦Im Dorf zurücksetzen¦Réinitialiser en ville¦Reiniciar en el pueblo¦Redefinir na cidade¦在城镇重置¦마을에서 초기화
 2588¦特性ポイントがない（5レベルごとに1）¦Keine Talentpunkte mehr (1 alle 5 Stufen)¦Plus de points de talent (1 tous les 5 niveaux)¦No quedan puntos de talento (1 cada 5 niveles)¦Sem pontos de talento (1 a cada 5 níveis)¦没有天赋点了（每5级1点）¦특성 점수가 없어요 (5레벨마다 1점)
 2589¦特性リセット！ポイントが全部戻った¦Talente zurückgesetzt! Alle Punkte sind zurück¦Talents réinitialisés ! Tous les points sont rendus¦¡Talentos reiniciados! Recuperas todos los puntos¦Talentos redefinidos! Todos os pontos voltaram¦天赋已重置！点数全部返还¦특성 초기화! 점수가 모두 돌아왔어요
+2590¦キラーの選択¦Wahl des Killers¦Choix du tueur¦Elección del asesino¦Escolha do matador¦杀手之选¦처형자의 선택
+2591¦巨人狩り¦Riesenjäger¦Chasseur de géants¦Cazagigantes¦Caçador de gigantes¦巨人猎手¦거인 사냥꾼
+2592¦フットワーク¦Beinarbeit¦Jeu de jambes¦Juego de pies¦Gingado¦步法¦발놀림
+2593¦幸運の加護¦Glücksgunst¦Faveur de la fortune¦Favor de la fortuna¦Favor da sorte¦幸运眷顾¦행운의 가호
+2594¦ボスとエリートへのダメージ+10%¦+10% mehr Schaden gegen Bosse und Elite¦+10 % de dégâts aux boss et élites¦+10% más daño a jefes y élites¦+10% mais dano a chefes e elites¦对首领和精英伤害+10%¦보스와 엘리트에게 피해 +10%
+2595¦ゴールド+15%¦+15% Gold¦+15 % d'or¦+15% de oro¦+15% de ouro¦金币+15%¦골드 +15%
+2596¦ダッシュ後2秒間クリ率+20%、装備ドロップ運+30%¦+20% Krit-Chance für 2 s nach einem Sprint und +30% Ausrüstungs-Glück¦+20 % de chance de critique pendant 2 s après une ruée, et +30 % de chance d'équipement¦+20% de prob. crítica 2 s tras un impulso y +30% de suerte de equipo¦+20% de chance crítica por 2s após um avanço e +30% de sorte de equipamento¦冲刺后2秒暴击率+20%，装备掉落幸运+30%¦대시 뒤 2초 동안 치명타 확률 +20%, 장비 드롭 행운 +30%
+2597¦🔒 この道の上に{number1}ポイント使うと開く¦🔒 Gib zuerst {number1} Punkte weiter oben auf diesem Pfad aus¦🔒 Dépense d'abord {number1} points plus haut sur cette voie¦🔒 Gasta primero {number1} puntos más arriba en esta rama¦🔒 Gaste antes {number1} pontos mais acima neste caminho¦🔒 先在这条路线上方投入{number1}点¦🔒 이 길 위쪽에 먼저 {number1}점을 써야 해요
+2598¦· この道に{number1}ポイント¦· {number1} Punkt(e) in diesem Pfad¦· {number1} point(s) dans cette voie¦· {number1} punto(s) en esta rama¦· {number1} ponto(s) neste caminho¦· 此路线已投入{number1}点¦· 이 길에 {number1}점

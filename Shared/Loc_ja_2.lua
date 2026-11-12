@@ -874,6 +874,13 @@ return {
 		["Reset in town"] = "町でリセット",
 		["No talent points left (you get 1 every 5 levels)"] = "特性ポイントがない（5レベルごとに1）",
 		["Talents reset! All points are back"] = "特性リセット！ポイントが全部戻った",
+		["Killer's Choice"] = "キラーの選択",
+		["Giant Hunter"] = "巨人狩り",
+		["Footwork"] = "フットワーク",
+		["Fortune's Favor"] = "幸運の加護",
+		["+10% more damage to bosses and elites"] = "ボスとエリートへのダメージ+10%",
+		["+15% gold"] = "ゴールド+15%",
+		["+20% crit chance for 2s after a dash, and +30% gear drop luck"] = "ダッシュ後2秒間クリ率+20%、装備ドロップ運+30%",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1026,8 +1033,5 @@ return {
 		{ "🏆 You defeated the Final Lord!  +{number1} gold  +{number2} tickets", "🏆 ファイナルロードを倒した！  +{number1}ゴールド  +{number2}チケット" },
 		{ "⭐ New record! Depth {number1} cleared. Depth {number2} is unlocked.", "⭐ 新記録！深度{number1}クリア。深度{number2}が解放されました。" },
 		{ "💢 Boss #{number1} is AWAKENED — it attacks twice in a row!", "💢 ボス#{number1}が覚醒した — 2回連続で攻撃してくる！" },
-		{ "🌪 Mob hunter  ·  ✔ 🔫 Railgun / Sniper Rifle (+{number1}%)", "🌪 モブハンター  ·  ✔ 🔫 レールガン/スナイパーライフル (+{number1}%)" },
-		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>\nON</font>", "<font color='#{number1}fffb{number2}'><b>自動攻撃</b>\nオン</font>" },
-		{ "🥈 LeeGoAll_TV\n⚡ {number1} Lv.{number2}\nSniper Rifle · Arcane Era +{number3}", "🥈 LeeGoAll_TV\n⚡ {number1} レベル{number2}\nスナイパーライフル・神秘の時代 +{number3}" },
 	},
 }

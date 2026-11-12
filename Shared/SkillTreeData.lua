@@ -53,27 +53,43 @@ return function(Config)
 	-- 칸마다 최대 몇 번 찍을 수 있고(Max), "선택" 칸은 두 길 중 하나만 고른다. 마을에서 골드로 초기화할 수 있다.
 	-- 값: Per (특성 칸 하나당 PassiveValue 값) / Mods (특성 한 점당 스탯: Config.TalentMod 가 합친다)
 	Config.Talents = {
-		PointsPerLevels = 5, MaxPoints = 30,
-		RowNeed = { 0, 5, 10, 15, 20 }, -- 이 줄을 찍으려면 위쪽 줄에 이만큼 써야 한다
-		Order = { "Bloodthirst", "Finisher", "Fortune", "Rush", "Hide", "Golden", "SurviveChoice", "Threshold", "RushGuard", "BossBreaker", "RushCrit", "Treasure2", "Capstone" },
-		Bloodthirst = { Row = 1, Icon = "🩸", Name = "Bloodthirst", Max = 5, Per = 0.004, Desc = "Every kill restores 0.4% max HP per point" },
-		Finisher = { Row = 1, Icon = "🎯", Name = "Finisher", Max = 5, Per = 0.06, Desc = "+6% damage per point to enemies under 30% HP" },
-		Fortune = { Row = 1, Icon = "💎", Name = "Treasure Sense", Max = 5, Per = 0.08, Desc = "+8% gear drop luck per point" },
-		Rush = { Row = 2, Icon = "💨", Name = "Rush", Max = 5, Per = 0.06, Desc = "+6% attack per point for 2s after a dash (Q)" },
-		Hide = { Row = 2, Icon = "🛡", Name = "Iron Stomach", Max = 3, Mods = { DmgReduce = 0.04 }, Desc = "Take 4% less damage per point" },
-		Golden = { Row = 2, Icon = "💰", Name = "Golden Touch", Max = 3, Mods = { Gold = 0.05 }, Desc = "+5% gold per point" },
-		SurviveChoice = { Row = 3, Icon = "❤", Name = "Survival Instinct", Max = 1, Choice = {
+		PointsPerLevels = 5, MaxPoints = 20, -- (30 -> 20: 세 길 중 두 길만 끝까지 갈 수 있다 = 무엇을 포기할지 고른다)
+		-- 세 갈래 길 (와우 전문화처럼): 아래 줄은 "그 길에" 점수를 일정 이상 써야 열린다. 길마다 맨 아래에 최종 특성
+		Paths = {
+			{ Key = "Blood", Icon = "🩸", Name = "Blood", Color = Color3.fromRGB(255, 110, 120) },
+			{ Key = "Exec", Icon = "🪓", Name = "Execute", Color = Color3.fromRGB(255, 190, 90) },
+			{ Key = "Swift", Icon = "💨", Name = "Swift", Color = Color3.fromRGB(120, 210, 255) },
+		},
+		RowNeed = { 0, 3, 6, 8 }, -- 이 줄을 찍으려면 같은 길 위쪽에 이만큼
+		Order = { "Bloodthirst", "Finisher", "Rush", "Hide", "BossBreaker", "Fortune", "SurviveChoice", "ExecChoice", "SwiftChoice", "BloodCap", "ExecCap", "SwiftCap" },
+		Bloodthirst = { Path = 1, Row = 1, Icon = "🩸", Name = "Bloodthirst", Max = 5, Per = 0.004, Desc = "Every kill restores 0.4% max HP per point" },
+		Finisher = { Path = 2, Row = 1, Icon = "🎯", Name = "Finisher", Max = 5, Per = 0.06, Desc = "+6% damage per point to enemies under 30% HP" },
+		Rush = { Path = 3, Row = 1, Icon = "💨", Name = "Rush", Max = 5, Per = 0.06, Desc = "+6% attack per point for 2s after a dash (Q)" },
+		Hide = { Path = 1, Row = 2, Icon = "🛡", Name = "Iron Stomach", Max = 3, Mods = { DmgReduce = 0.04 }, Desc = "Take 4% less damage per point" },
+		BossBreaker = { Path = 2, Row = 2, Icon = "👑", Name = "Boss Breaker", Max = 3, Mods = { BossAny = 0.05 }, Desc = "+5% damage per point to bosses and elites at any HP" },
+		Fortune = { Path = 3, Row = 2, Icon = "💎", Name = "Treasure Sense", Max = 3, Per = 0.1, Desc = "+10% gear drop luck per point" },
+		SurviveChoice = { Path = 1, Row = 3, Icon = "❤", Name = "Survival Instinct", Max = 1, Choice = {
 			A = { Icon = "💗", Name = "Lifeline", Desc = "Bloodthirst heals twice as much while under 30% HP", Mods = { LowHeal = 1 } },
 			B = { Icon = "⏳", Name = "Bloodrush", Desc = "Every kill cuts all skill cooldowns by 0.2s", Mods = { KillCdr = 0.2 } } } },
-		Threshold = { Row = 3, Icon = "🪓", Name = "Early Finish", Max = 1, Mods = { Threshold = 0.15 }, Desc = "Finisher works under 45% HP instead of 30%" },
-		RushGuard = { Row = 3, Icon = "🌀", Name = "Rush Guard", Max = 1, Mods = { RushGuard = 0.3 }, Desc = "Take 30% less damage for 2s after a dash" },
-		BossBreaker = { Row = 4, Icon = "👑", Name = "Boss Breaker", Max = 3, Mods = { BossAny = 0.05 }, Desc = "+5% damage per point to bosses and elites at any HP" },
-		RushCrit = { Row = 4, Icon = "⚡", Name = "Rush Crit", Max = 3, Mods = { RushCrit = 0.07 }, Desc = "+7% crit chance per point for 2s after a dash" },
-		Treasure2 = { Row = 4, Icon = "🗝", Name = "Deep Pockets", Max = 3, Mods = { Luck = 0.1 }, Desc = "+10% gear drop luck per point" },
-		Capstone = { Row = 5, Icon = "🌟", Name = "Mastery", Max = 1, Choice = {
-			A = { Icon = "☠", Name = "Mercy Kill", Desc = "Non-boss enemies under 10% HP die instantly", Mods = { Execute = 0.1 } },
-			B = { Icon = "🔥", Name = "Blood Frenzy", Desc = "Each kill gives +2% attack for 5s (stacks up to 10)", Mods = { Frenzy = 1 } } } },
+		ExecChoice = { Path = 2, Row = 3, Icon = "🪓", Name = "Killer's Choice", Max = 1, Choice = {
+			A = { Icon = "🪓", Name = "Early Finish", Desc = "Finisher works under 45% HP instead of 30%", Mods = { Threshold = 0.15 } },
+			B = { Icon = "🗡", Name = "Giant Hunter", Desc = "+10% more damage to bosses and elites", Mods = { BossAny = 0.1 } } } },
+		SwiftChoice = { Path = 3, Row = 3, Icon = "🌀", Name = "Footwork", Max = 1, Choice = {
+			A = { Icon = "🌀", Name = "Rush Guard", Desc = "Take 30% less damage for 2s after a dash", Mods = { RushGuard = 0.3 } },
+			B = { Icon = "💰", Name = "Golden Touch", Desc = "+15% gold", Mods = { Gold = 0.15 } } } },
+		BloodCap = { Path = 1, Row = 4, Icon = "🔥", Name = "Blood Frenzy", Max = 1, Mods = { Frenzy = 1 }, Desc = "Each kill gives +2% attack for 5s (stacks up to 10)" },
+		ExecCap = { Path = 2, Row = 4, Icon = "☠", Name = "Mercy Kill", Max = 1, Mods = { Execute = 0.1 }, Desc = "Non-boss enemies under 10% HP die instantly" },
+		SwiftCap = { Path = 3, Row = 4, Icon = "⚡", Name = "Fortune's Favor", Max = 1, Mods = { RushCrit = 0.2, Luck = 0.3 }, Desc = "+20% crit chance for 2s after a dash, and +30% gear drop luck" },
 	}
+	-- 그 길(path) 위쪽 줄에 쓴 점수
+	function Config.TalentPathSpent(talents, path, belowRow)
+		local total = 0
+		for _, key in ipairs(Config.Talents.Order) do
+			local node = Config.Talents[key]
+			if node.Path == path and node.Row < belowRow then total += talents[key] or 0 end
+		end
+		return total
+	end
 	function Config.TalentPoints(level)
 		local T = Config.Talents
 		return math.min(T.MaxPoints, math.floor((level or 1) / T.PointsPerLevels))

@@ -2588,5 +2588,14 @@
 "Reset all",
 "Reset in town",
 "No talent points left (you get 1 every 5 levels)",
-"Talents reset! All points are back"
+"Talents reset! All points are back",
+"Killer's Choice",
+"Giant Hunter",
+"Footwork",
+"Fortune's Favor",
+"+10% more damage to bosses and elites",
+"+15% gold",
+"+20% crit chance for 2s after a dash, and +30% gear drop luck",
+"🔒 Spend {number1} points higher up this path first",
+"· {number1} point(s) in this path"
 ]

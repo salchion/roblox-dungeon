@@ -417,51 +417,38 @@ local TALENT_COLOR = Color3.fromRGB(150, 200, 255)
 local function talentState(env)
 	local T = env.Config.Talents
 	local talents = (env.Meta and env.Meta.Talents) or {}
-	local spent, byRow = 0, {}
-	for _, key in ipairs(T.Order) do
-		local rank = talents[key] or 0
-		spent += rank
-		byRow[T[key].Row] = (byRow[T[key].Row] or 0) + rank
-	end
-	local function rowOpen(row)
-		local above = 0
-		for r = 1, row - 1 do above += byRow[r] or 0 end
-		return above >= (T.RowNeed[row] or 0)
+	local spent = 0
+	for _, key in ipairs(T.Order) do spent += talents[key] or 0 end
+	local function nodeOpen(node) -- 같은 길 위쪽 줄에 점수를 충분히 썼나
+		return env.Config.TalentPathSpent(talents, node.Path, node.Row) >= (T.RowNeed[node.Row] or 0)
 	end
 	local total = env.Config.TalentPoints(env.Player:GetAttribute("Level") or 1)
-	return talents, spent, total, rowOpen
+	return talents, spent, total, nodeOpen
 end
 
+-- 세 갈래 길: 길마다 세로 한 줄기 (위 -> 아래), 맨 아래가 그 길의 최종 특성
 local function drawTalents(env, C)
 	local Config = env.Config
 	local T = Config.Talents
 	if not T then return end
-	local talents, spent, total, rowOpen = talentState(env)
+	local talents, spent, total, nodeOpen = talentState(env)
 	C.title("Passive", string.format("✨ Talents<font size='11' color='#cfc8e8'>   %d point(s) left</font>", math.max(0, total - spent)))
-	local perRow = {}
-	for _, key in ipairs(T.Order) do
-		local node = T[key]
-		perRow[node.Row] = perRow[node.Row] or {}
-		table.insert(perRow[node.Row], key)
-	end
 	local create, label = env.Create, env.MakeLabel
 	local GOLDLINE = Color3.fromRGB(255, 205, 110)
-	local function rowY(row) return 52 + (row - 1) * 48 end
-	local function colOf(i, count) -- 한 줄의 칸 위치 (하나뿐인 줄은 가운데: 최종 특성)
-		if count == 1 then return colX("Passive", 0.6) end
-		return colX("Passive", 0.2 + (i - 0.5) * (0.8 / math.max(3, count)))
-	end
-	-- 원형 소켓 (금속 테두리) + 아래 랭크 점
-	local function socket(x, y, size, icon, rank, max, open, lit, chosen, round, onClick)
+	local OFF = Color3.fromRGB(56, 52, 78)
+	local function rowY(row) return 66 + (row - 1) * 52 end
+	local function pathX(path) return colX("Passive", 0.18 + (path - 1) * 0.32) end
+	-- 원형 소켓 (금속 테두리) + 랭크 배지
+	local function socket(x, y, size, icon, rank, max, open, lit, chosen, tint, onClick)
 		local back = create("Frame", { Size = UDim2.new(0, size, 0, size), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y),
-			BackgroundColor3 = not open and Color3.fromRGB(30, 28, 44) or (lit and TALENT_COLOR:Lerp(DARK, 0.45) or Color3.fromRGB(40, 42, 66)), BorderSizePixel = 0, ZIndex = 5 }, C.Row)
-		create("UICorner", { CornerRadius = UDim.new(round and 1 or 0.28, 0) }, back)
+			BackgroundColor3 = not open and Color3.fromRGB(30, 28, 44) or (lit and tint:Lerp(DARK, 0.45) or Color3.fromRGB(40, 42, 66)), BorderSizePixel = 0, ZIndex = 5 }, C.Row)
+		create("UICorner", { CornerRadius = UDim.new(1, 0) }, back)
 		create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(100, 92, 130)), Rotation = 45 }, back)
 		local ring = create("UIStroke", { Thickness = chosen and 2.6 or 1.6, ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-			Color = chosen and Color3.new(1, 1, 1) or (not open and DIM or (rank >= max and Color3.fromRGB(255, 214, 110) or (lit and TALENT_COLOR or Color3.fromRGB(120, 116, 150)))) }, back)
+			Color = chosen and Color3.new(1, 1, 1) or (not open and DIM or (rank >= max and Color3.fromRGB(255, 214, 110) or (lit and tint or Color3.fromRGB(120, 116, 150)))) }, back)
 		if open and lit then create("UIGradient", { Color = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 250, 225)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(170, 130, 60)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 235, 170)) }), Rotation = 45 }, ring) end
 		label({ Size = UDim2.new(1, 0, 1, 0), Text = open and icon or "🔒", TextSize = open and math.floor(size * 0.4) or 10, ZIndex = 6, TextTransparency = (open and not lit) and 0.4 or 0 }, back)
-		if max > 1 then -- 랭크 배지 (와우처럼 오른쪽 아래 "3/5"): 점을 아래에 늘어놓으면 가지 선이 들어갈 자리가 없었다
+		if max > 1 then -- 랭크 배지 (와우처럼 오른쪽 아래 "3/5")
 			local badge = label({ Size = UDim2.new(0, 22, 0, 12), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, 1, 1, -1), Text = string.format("%d/%d", rank, max), TextSize = 8, Font = Enum.Font.GothamBold, ZIndex = 9,
 				BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(14, 12, 24), TextColor3 = rank >= max and Color3.fromRGB(255, 214, 110) or (rank > 0 and Color3.fromRGB(150, 255, 170) or Color3.fromRGB(170, 166, 195)) }, back)
 			create("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
@@ -469,43 +456,36 @@ local function drawTalents(env, C)
 		local hit = create("TextButton", { Size = UDim2.new(1, 8, 1, 8), Position = UDim2.new(0, -4, 0, -4), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, back)
 		hit.Activated:Connect(onClick)
 	end
-	-- 줄기: 각 열이 다음 줄의 같은 열로 이어진다 (그 줄이 열렸으면 금빛)
-	for row = 1, #T.RowNeed - 1 do
-		local here, below = perRow[row] or {}, perRow[row + 1] or {}
-		local lit = rowOpen(row + 1)
-		for i = 1, #here do
-			local j = #below == 1 and 1 or math.min(i, #below)
-			local x0, x1 = colOf(i, #here), colOf(j, #below)
-			local y0, y1 = rowY(row) + 17, rowY(row + 1) - 18
-			C.elbow(x0, y0, x1, y1, lit and GOLDLINE or Color3.fromRGB(56, 52, 78), lit and 2 or 1)
-		end
+	-- 길 머리: 아이콘 + 이름 + 그 길에 쓴 점수
+	for path, info in ipairs(T.Paths) do
+		local used = Config.TalentPathSpent(talents, path, 99)
+		label({ Size = UDim2.new(0, 80, 0, 14), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(pathX(path), 0, 0, 38),
+			Text = string.format("%s %s <font color='#ffffff'>%d</font>", info.Icon, info.Name, used), RichText = true, TextSize = 10, Font = Enum.Font.GothamBold, ZIndex = 6,
+			TextColor3 = used > 0 and info.Color or Color3.fromRGB(150, 146, 175) }, C.Row)
 	end
-	for row = 1, #T.RowNeed do
-		local keys = perRow[row] or {}
-		local y = rowY(row)
-		local open = rowOpen(row)
-		if not open then
-			label({ Size = UDim2.new(0, 26, 0, 14), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(COLS.Passive[1], 4, 0, y), Text = "🔒" .. T.RowNeed[row], TextSize = 9, ZIndex = 5, TextColor3 = Color3.fromRGB(160, 156, 190) }, C.Row)
+	for _, key in ipairs(T.Order) do
+		local node = T[key]
+		local info = T.Paths[node.Path]
+		local x, y = pathX(node.Path), rowY(node.Row)
+		local open = nodeOpen(node)
+		local rank = talents[key] or 0
+		local onClick = pick(env, "Talent", key)
+		if node.Row > 1 then -- 위 칸에서 내려오는 줄기 (열렸으면 금빛)
+			C.line(x, rowY(node.Row - 1) + 17, x, y - (node.Choice and 12 or 17), open and GOLDLINE or OFF, open and 2 or 1)
 		end
-		for i, key in ipairs(keys) do
-			local node = T[key]
-			local rank = talents[key] or 0
-			local x = colOf(i, #keys)
-			local onClick = pick(env, "Talent", key)
-			if node.Choice then -- 선택 칸: 한 줄기가 Y 자로 둘로 갈라진다 (둘 중 하나)
-				local side = talents[key .. "_S"]
-				local gap = 0.022 -- (칸 하나 너비 안에서 갈라진다: 넓으면 옆 칸과 겹쳤다)
-				C.line(x - gap, y - 12, x + gap, y - 12, open and GOLDLINE or Color3.fromRGB(56, 52, 78), 2)
-				label({ Size = UDim2.new(0, 22, 0, 12), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y + 6), Text = "or", TextSize = 9, Font = Enum.Font.GothamBold, ZIndex = 6, TextColor3 = Color3.fromRGB(200, 190, 230) }, C.Row)
-				for k, which in ipairs({ "A", "B" }) do
-					local c = node.Choice[which]
-					local cx = x + (k == 1 and -gap or gap)
-					C.line(cx, y - 12, cx, y - 6, open and GOLDLINE or Color3.fromRGB(56, 52, 78), 2)
-					socket(cx, y + 6, 26, c.Icon, side == which and 1 or 0, 1, open, side == which, isSel("Talent", key) and (side == nil or side == which), true, onClick)
-				end
-			else
-				socket(x, y, 32, node.Icon, rank, node.Max, open, rank > 0, isSel("Talent", key), true, onClick) -- (모두 원형: 네모 칸을 없앴다)
+		if node.Choice then -- 선택 칸: 줄기가 Y 자로 둘로 갈라진다 (둘 중 하나)
+			local side = talents[key .. "_S"]
+			local gap = 0.024
+			C.line(x - gap, y - 12, x + gap, y - 12, open and GOLDLINE or OFF, 2)
+			label({ Size = UDim2.new(0, 22, 0, 12), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y + 6), Text = "or", TextSize = 9, Font = Enum.Font.GothamBold, ZIndex = 6, TextColor3 = Color3.fromRGB(200, 190, 230) }, C.Row)
+			for k, which in ipairs({ "A", "B" }) do
+				local c = node.Choice[which]
+				local cx = x + (k == 1 and -gap or gap)
+				C.line(cx, y - 12, cx, y - 6, open and GOLDLINE or OFF, 2)
+				socket(cx, y + 6, 26, c.Icon, side == which and 1 or 0, 1, open, side == which, isSel("Talent", key) and (side == nil or side == which), info.Color, onClick)
 			end
+		else
+			socket(x, y, node.Row == #T.RowNeed and 36 or 32, node.Icon, rank, node.Max, open, rank > 0, isSel("Talent", key), info.Color, onClick)
 		end
 	end
 end
@@ -515,8 +495,9 @@ local function talentDetail(env, key)
 	local T = Config.Talents
 	local node = T and T[key]
 	if not node then return nil end
-	local talents, spent, total, rowOpen = talentState(env)
+	local talents, spent, total, nodeOpen = talentState(env)
 	local rank = talents[key] or 0
+	local info = T.Paths[node.Path]
 	local left = math.max(0, total - spent)
 	local lines = { string.format("<font size='14'><b>%s %s</b></font>  <font color='#ffd966'>%d / %d</font>  <font color='#9ad7ff'>· %d point(s) left (1 every %d levels)</font>", node.Icon, node.Name, rank, node.Max, left, T.PointsPerLevels) }
 	if node.Choice then
@@ -529,8 +510,9 @@ local function talentDetail(env, key)
 	else
 		table.insert(lines, "<font color='#c8cce0'>" .. node.Desc .. "</font>")
 	end
-	if not rowOpen(node.Row) then table.insert(lines, string.format("<font color='#ff9a8a'>🔒 Spend %d points in the rows above first</font>", T.RowNeed[node.Row])) end
-	local can = rowOpen(node.Row) and left > 0 and rank < node.Max
+	table.insert(lines, string.format("<font color='#9aa0b8'>%s %s</font> <font color='#9aa0b8'>· %d point(s) in this path</font>", info.Icon, info.Name, Config.TalentPathSpent(talents, node.Path, 99)))
+	if not nodeOpen(node) then table.insert(lines, string.format("<font color='#ff9a8a'>🔒 Spend %d points higher up this path first</font>", T.RowNeed[node.Row])) end
+	local can = nodeOpen(node) and left > 0 and rank < node.Max
 	local buttons = {}
 	local function spendButton(text, arg)
 		table.insert(buttons, { Text = text, Color = can and env.GREEN or env.GRAY, OnClick = function() if can then env.Remotes.Meta:FireServer("Talent", arg) end end })

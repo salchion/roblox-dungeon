@@ -175,6 +175,14 @@ local function sanitizeTalents(saved)
 			end
 		end
 	end
+	-- 트리 모양이 바뀌어 예전에 찍은 점수가 지금 규칙에 안 맞으면 전부 돌려준다 (무료 초기화)
+	local total = 0
+	for _, key in ipairs(Config.Talents.Order) do
+		local node = Config.Talents[key]
+		total += out[key] or 0
+		if (out[key] or 0) > 0 and Config.TalentPathSpent(out, node.Path, node.Row) < (Config.Talents.RowNeed[node.Row] or 0) then return {} end
+	end
+	if total > Config.Talents.MaxPoints then return {} end
 	return out
 end
 -- 한 점 찍기: arg = "칸" 또는 "칸|A" (선택 칸)
@@ -185,15 +193,14 @@ local function spendTalent(player, arg)
 	local node = key and Config.Talents[key]
 	if not node or type(node) ~= "table" or not node.Row then return end
 	local talents = state.Talents
-	local spent, byRow = talentSpent(talents)
+	local spent = talentSpent(talents)
 	if spent >= Config.TalentPoints(player:GetAttribute("Level") or 1) then
 		notify(player, "No talent points left (you get 1 every 5 levels)")
 		return
 	end
-	local above = 0
-	for row = 1, node.Row - 1 do above += byRow[row] or 0 end
+	local above = Config.TalentPathSpent(talents, node.Path, node.Row) -- 같은 길 위쪽 줄에 쓴 점수
 	if above < (Config.Talents.RowNeed[node.Row] or 0) then
-		notify(player, string.format("🔒 Spend %d points in the rows above first", Config.Talents.RowNeed[node.Row]))
+		notify(player, string.format("🔒 Spend %d points higher up this path first", Config.Talents.RowNeed[node.Row]))
 		return
 	end
 	if (talents[key] or 0) >= node.Max then return end

@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Rocket Launcher · Rusty Era +{number1}", "Raketenwerfer · Rostige Ära +{number1}" },
+		{ "🌋 Lava Fortress Gate · Rec. ⚡{number2}", "🌋 Lava-Festungstor · Rec. ⚡{number2}" },
+		{ "ZONE {number1}  ·  Darklands   ☠☠☠☠☠☠☠", "Zone {number1} · Dunkle Länder ☠☠☠☠☠☠☠" },
+		{ "Zone {number1} set effect · Trial Lv.3", "Zone-{number1}-Setbonus · Prüfung Lv.3" },
+		{ "(Idle income bonus +{number1}% active)", "(Leerlauf-Einkommensbonus +{number1}% aktiv)" },
 		{ "Not enough Essence. ({number1} needed)", "Nicht genug Essenz. ({number1} nötig)" },
 		{ "Not enough tickets. ({number1} needed)", "Nicht genug Tickets. ({number1} nötig)" },
 		{ "💰 Bought +1 stat point! ({number1} / {number2})", "💰 +1 Statuspunkt gekauft! ({number1} / {number2})" },
@@ -81,6 +86,7 @@ return {
 		{ "Raise your pet to level {number1}", "Bringe dein Haustier auf Stufe {number1}" },
 		{ "Range x{number1} · allies heal +{number2}%", "Reichweite x{number1} · Verbündete werden um {number2} % mehr geheilt" },
 		{ "Recovers {number1}% HP per second", "Stellt pro Sekunde {number1} % LP wieder her" },
+		{ "· {number1} point(s) in this path", "· {number1} Punkt(e) in diesem Pfad" },
 		{ "Uses all Tickets (max {number1})", "Verwendet alle Tickets (max. {number1})" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 Feld · Beste Zone {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "Zone {number1} · Wüste ☠☠☠☠" },

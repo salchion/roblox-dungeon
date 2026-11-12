@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🌪 Mob hunter  ·  ✔ 🔫 Railgun / Sniper Rifle (+{number1}%)", "🌪 モブハンター  ·  ✔ 🔫 レールガン/スナイパーライフル (+{number1}%)" },
+		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>\nON</font>", "<font color='#{number1}fffb{number2}'><b>自動攻撃</b>\nオン</font>" },
+		{ "🥈 LeeGoAll_TV\n⚡ {number1} Lv.{number2}\nSniper Rifle · Arcane Era +{number3}", "🥈 LeeGoAll_TV\n⚡ {number1} レベル{number2}\nスナイパーライフル・神秘の時代 +{number3}" },
 		{ "Upgrade all the way to the last weapon (level {number1})", "最後の武器（レベル{number1}）まですべてアップグレードする" },
 		{ "♻ [Rare] Chainmail auto-salvaged (Essence +{number1} {number2} G)", "♻ [レア] チェインメイルを自動回収（エッセンス +{number1} {number2} G）" },
 		{ "📍 Dungeon   <font color='#{number1}fd{number2}ff'>🎟 Free {number3}/{number4}</font>", "📍 ダンジョン <font color='#{number1}fd{number2}ff'>🎟 無料 {number3}/{number4}</font>" },
@@ -36,6 +39,7 @@ return {
 		{ "Rocket Launcher  ·  keys {number1}-{number2} switch weapons", "ロケットランチャー · キー {number1}-{number2} で武器を切り替える" },
 		{ "📅 {number1}-day login streak · Get stronger today!", "📅 {number1}日連続ログイン · 今日もっと強くなろう！" },
 		{ "Each NEAR MISS stack gives +{number1}% more attack", "NEAR MISSのスタックごとに攻撃力がさらに+{number1}%" },
+		{ "🔒 Spend {number1} points higher up this path first", "🔒 この道の上に{number1}ポイント使うと開く" },
 		{ "Auto-equipped the best gear in {number1} slot(s)!", "{number1}スロットの最良装備を自動装備しました！" },
 		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• 毎秒約{number1}発 · 火力 {number2} · 射程 {number3}" },
 		{ "Damage +{number1}% on a single target: for bosses", "単体へのダメージ+{number1}%：ボス向け" },
@@ -210,6 +214,7 @@ return {
 		{ "Raise your pet to level {number1}", "ペットをレベル{number1}まで育てる" },
 		{ "Range x{number1} · allies heal +{number2}%", "範囲x{number1}・仲間の回復+{number2}%" },
 		{ "Recovers {number1}% HP per second", "毎秒HPを{number1}%回復" },
+		{ "· {number1} point(s) in this path", "· この道に{number1}ポイント" },
 		{ "Uses all Tickets (max {number1})", "すべてのチケットを使用（最大{number1}枚）" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 フィールド・ベストゾーン {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "ゾーン {number1}  · 砂漠 ☠☠☠☠" },

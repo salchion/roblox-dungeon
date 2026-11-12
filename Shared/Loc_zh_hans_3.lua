@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} Meadow · {number2} Forest", "{number1} 草地 · {number2} 森林" },
+		{ "🚪 Open Zone {number1} Gate", "🚪 开启区域{number1}的大门" },
+		{ "max · +{number1}% crit dmg", "已满 · 暴击伤害 +{number1}%" },
+		{ "🔊 Music Volume: {number1}%", "🔊 音乐音量:{number1}%" },
+		{ "Finish {number1} trainings", "完成{number1}次训练" },
+		{ "◆ Attack Speed +{number1}%", "◆ 攻击速度 +{number1}%" },
+		{ "◆ Heal on Kill +{number1}%", "◆ 击杀回复 +{number1}%" },
 		{ "Training time -{number1}%", "训练时间减少{number1}%" },
 		{ "🔑{number6} (Free today {number7}/{number8})", "🔑{number6}（今天免费{number7}/{number8}）" },
 		{ "{number2} / {number3}   Reward: {number4} G", "{number2} / {number3} 奖励：{number4} 金币" },

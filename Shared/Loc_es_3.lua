@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Crit damage +{number1}%p per point  (max {number2})", "Daño crítico +{number1}%p por punto  (máx. {number2})" },
+		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 ¡{number1} recompensas reclamadas! ({number2} títulos nuevos)" },
+		{ "Keeps {number1} more stacks even if broken", "Conserva {number1} acumulaciones más aunque se rompa" },
+		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 Señor del Abismo (Zona {number1}) · Rec. ⚡{number2}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 {number1} entradas gratuitas hoy · 🗝 {number2} llaves!" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 Próxima arma para desbloquear: Escopeta (+{number1})" },
 		{ "⚠ Reach level {number1} to break through.", "⚠ Alcanza el nivel {number1} para superar el límite." },
@@ -113,6 +117,7 @@ return {
 		{ "Raise your pet to level {number1}", "Sube tu mascota al nivel {number1}" },
 		{ "Range x{number1} · allies heal +{number2}%", "Alcance x{number1} · aliados curan +{number2} %" },
 		{ "Recovers {number1}% HP per second", "Recupera {number1} % de PV por segundo" },
+		{ "· {number1} point(s) in this path", "· {number1} punto(s) en esta rama" },
 		{ "Uses all Tickets (max {number1})", "Usa todos los boletos (máximo {number1})" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 Campo · Mejor zona {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "Zona {number1} · Desierto ☠☠☠☠" },

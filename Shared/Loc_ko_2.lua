@@ -1015,6 +1015,13 @@ return {
 		["Reset in town"] = "마을에서 초기화",
 		["No talent points left (you get 1 every 5 levels)"] = "특성 점수가 없어요 (5레벨마다 1점)",
 		["Talents reset! All points are back"] = "특성 초기화! 점수가 모두 돌아왔어요",
+		["Killer's Choice"] = "처형자의 선택",
+		["Giant Hunter"] = "거인 사냥꾼",
+		["Footwork"] = "발놀림",
+		["Fortune's Favor"] = "행운의 가호",
+		["+10% more damage to bosses and elites"] = "보스와 엘리트에게 피해 +10%",
+		["+15% gold"] = "골드 +15%",
+		["+20% crit chance for 2s after a dash, and +30% gear drop luck"] = "대시 뒤 2초 동안 치명타 확률 +20%, 장비 드롭 행운 +30%",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1147,7 +1154,5 @@ return {
 		{ "🔒 Zone {number1} · Volcano Sealed\nOpen the previous gate first", "🔒 구역 {number1} · 화산 봉쇄됨\n먼저 이전 게이트를 여세요" },
 		{ "♻ [Common] Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [일반] 가죽 방어구 자동 회수 (에센스 +{number1} {number2}G)" },
 		{ "Zone {number1} set effect · Trial Lv.3 — for this dungeon only", "{number1}구역 세트 효과 · 체험 Lv.3 — 이번 던전에서만" },
-		{ "<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "<font color='#{number4}ad{number5}ff'>스펠 토메 · 신화 시대 +{number6}</font>" },
-		{ "Shot_Shotgun  <font color='#{number1}aa{number2}c{number3}'>Shotgun shot</font>", "샷_샷건 <font color='#{number1}aa{number2}c{number3}'>샷건 샷</font>" },
 	},
 }
