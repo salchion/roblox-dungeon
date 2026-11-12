@@ -28,9 +28,10 @@ local TRAIN_COLORS = {
 -- 훈련 노드 자리: { 칸 안의 x(0~1), 층 }
 -- 유형별 줄: 왼쪽 두 줄 = 공격(공격 -> 더블샷, 치명타 -> 치명타 피해, 둘 다 -> 공격 속도) / 체력 = 방어 / 오른쪽 = 유틸(속도 -> 골드 감각)
 local TRAIN_ORDER = { "Attack", "Crit", "Double", "CritDmg", "AtkSpeed", "Health", "Speed", "Armor", "Gold", "Regen" }
-local TRAIN_SPOT = { -- { 칸 안의 x(0~1), y } : 공격 묶음 (위) / 생존·유틸 묶음 (아래, 조금 띄움)
-	Attack = { 0.25, 50 }, Crit = { 0.75, 50 }, Double = { 0.25, 88 }, CritDmg = { 0.75, 88 }, AtkSpeed = { 0.5, 126, true },
-	Health = { 0.25, 172 }, Speed = { 0.75, 172 }, Armor = { 0.25, 210 }, Gold = { 0.75, 210 }, Regen = { 0.25, 248 },
+local TRAIN_SPOT = { -- { 칸 안의 x(0~1), y } : 글자 없는 동그라미만 (이름은 눌러서 아래 설명 줄에서 본다)
+	-- 왼쪽 = 공격 묶음 (공격 / 치명타 -> 더블 샷 / 치명타 피해 -> 둘이 모여 공격 속도), 오른쪽 = 생존 묶음 (체력 -> 질긴 피부 -> 회복력, 속도 -> 골드 감각)
+	Attack = { 0.12, 66 }, Crit = { 0.38, 66 }, Double = { 0.12, 122 }, CritDmg = { 0.38, 122 }, AtkSpeed = { 0.25, 178 },
+	Health = { 0.62, 66 }, Speed = { 0.88, 66 }, Armor = { 0.62, 122 }, Gold = { 0.88, 122 }, Regen = { 0.62, 178 },
 }
 local TRAIN_POS = {
 	Attack = { 0.125, 1 }, Crit = { 0.375, 1 }, Health = { 0.625, 1 }, Speed = { 0.875, 1 },
@@ -126,6 +127,32 @@ local function canvas(env)
 			game:GetService("TweenService"):Create(ring, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 3.2 }):Play()
 		end
 		local hit = create("TextButton", { Size = UDim2.new(width, -6, 0, CARD_H), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, row)
+		hit.Activated:Connect(onClick)
+		return socket
+	end
+	-- 글자 없는 동그라미 노드 (훈련): 아이콘 + 오른쪽 아래 "6/30" 배지, 찍는 중이면 아래에 남은 시간
+	function C.icon(x, y, icon, color, state, level, max, chosen, below, onClick)
+		local locked = state == "locked"
+		local size = 34
+		local socket = create("Frame", { Size = UDim2.new(0, size, 0, size), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y), BackgroundColor3 = locked and Color3.fromRGB(32, 30, 46) or color:Lerp(DARK, state == "done" and 0.25 or 0.5), BorderSizePixel = 0, ZIndex = 6 }, row)
+		create("UICorner", { CornerRadius = UDim.new(1, 0) }, socket)
+		create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(100, 92, 130)), Rotation = 45 }, socket)
+		local ring = create("UIStroke", { Thickness = chosen and 2.6 or 1.8, ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+			Color = chosen and Color3.new(1, 1, 1) or (locked and Color3.fromRGB(80, 76, 100) or (state == "done" and Color3.fromRGB(255, 214, 110) or Color3.fromRGB(225, 196, 130))) }, socket)
+		if not locked and not chosen then create("UIGradient", { Color = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 248, 220)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(150, 112, 52)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 232, 165)) }), Rotation = 45 }, ring) end
+		label({ Size = UDim2.new(1, 0, 1, 0), Text = locked and "🔒" or icon, TextSize = locked and 10 or 14, ZIndex = 7 }, socket)
+		if not locked then
+			local badge = label({ Size = UDim2.new(0, 28, 0, 12), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, 2, 1, -1), Text = string.format("%d/%d", level, max), TextSize = 8, Font = Enum.Font.GothamBold, ZIndex = 9,
+				BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(14, 12, 24), TextColor3 = state == "done" and Color3.fromRGB(255, 214, 110) or (level > 0 and Color3.fromRGB(150, 255, 170) or Color3.fromRGB(170, 166, 195)) }, socket)
+			create("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
+		end
+		if below then
+			label({ Size = UDim2.new(0, 70, 0, 11), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(x, 0, 0, y + size / 2 + 3), Text = below, TextSize = 9, Font = Enum.Font.GothamBold, ZIndex = 7, TextColor3 = Color3.fromRGB(255, 225, 120) }, row)
+		end
+		if state == "active" then
+			game:GetService("TweenService"):Create(ring, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 3.2 }):Play()
+		end
+		local hit = create("TextButton", { Size = UDim2.new(1, 10, 1, 10), Position = UDim2.new(0, -5, 0, -5), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, socket)
 		hit.Activated:Connect(onClick)
 		return socket
 	end
@@ -282,23 +309,21 @@ local function drawTraining(env, C)
 	for _, job in ipairs(state.Jobs) do jobs[job.Stat] = job end
 	C.title("Train", string.format("🏋 Training<font size='11' color='#cfc8e8'>   Slots %d / %d</font>", #state.Jobs, state.Slots))
 	-- 두 줄씩 놓고, 먼저 찍어야 하는 칸에서 가지가 이어진다 (열렸으면 그 색, 아니면 어두운 선)
-	local slotW = (COLS.Train[2] - COLS.Train[1]) / 2
+	for _, group in ipairs({ { 0.25, "⚔ Offense", Color3.fromRGB(255, 150, 110) }, { 0.75, "❤ Survival", Color3.fromRGB(130, 220, 160) } }) do -- 묶음 머리
+		env.MakeLabel({ Size = UDim2.new(0, 90, 0, 14), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(colX("Train", group[1]), 0, 0, 38), Text = group[2], TextSize = 10, Font = Enum.Font.GothamBold, ZIndex = 6, TextColor3 = group[3] }, C.Row)
+	end
 	-- 두 묶음: 위 = 공격(공격 / 치명타 -> 더블 샷 / 치명타 피해 -> 둘이 모여 공격 속도), 아래 = 생존 / 유틸(체력 -> 질긴 피부 -> 회복력, 속도 -> 골드 감각)
 	-- 시작 칸은 항상 묶음의 맨 위에 있어서, 가지가 엉뚱한 칸에서 이어지는 것처럼 보이지 않는다
 	local spots = {}
 	for stat, at in pairs(TRAIN_SPOT) do
-		if G.Stats[stat] then
-			local x = colX("Train", at[1])
-			if at[3] then x += slotW / 2 - 0.024 end -- 가운데 칸: 동그라미가 칸 한가운데 오게 (카드는 동그라미 왼쪽 정렬이라 그냥 두면 왼쪽으로 쏠려 보였다)
-			spots[stat] = { X = x, Y = at[2] }
-		end
+		if G.Stats[stat] then spots[stat] = { X = colX("Train", at[1]), Y = at[2] } end
 	end
 	for stat, spot in pairs(spots) do
 		for _, req in ipairs(G.Stats[stat].Req or {}) do
 			local from = spots[req.Stat]
 			if from then
 				local met = (levels[req.Stat] or 0) >= req.Level
-				C.elbow(C.cx(from.X, slotW), from.Y + 15, C.cx(spot.X, slotW), spot.Y - 15, met and (TRAIN_COLORS[stat] or GOLD) or Color3.fromRGB(56, 52, 78), met and 2 or 1)
+				C.elbow(from.X, from.Y + 18, spot.X, spot.Y - 18, met and (TRAIN_COLORS[stat] or GOLD) or Color3.fromRGB(56, 52, 78), met and 2 or 1)
 			end
 		end
 	end
@@ -309,13 +334,7 @@ local function drawTraining(env, C)
 			local max = Config.TrainMax(stat)
 			local unlocked = Config.TrainUnlocked(stat, levels)
 			local nodeState = not unlocked and "locked" or (jobs[stat] and "active" or (level >= max and "done" or "open"))
-			local sub = jobs[stat] and ("⏳ " .. Config.FormatDuration(env.Remaining(jobs[stat].EndAt))) or string.format("Lv.%d / %d", level, max)
-			if not unlocked then
-				for _, req in ipairs(def.Req or {}) do
-					if (levels[req.Stat] or 0) < req.Level and G.Stats[req.Stat] then sub = string.format("🔒 %s Lv.%d", G.Stats[req.Stat].Name, req.Level) break end
-				end
-			end
-			C.node(spot.X, spot.Y, def.Icon, TRAIN_COLORS[stat] or GOLD, nodeState, level / max, def.Name, sub, isSel("Train", stat), slotW, pick(env, "Train", stat))
+			C.icon(spot.X, spot.Y, def.Icon, TRAIN_COLORS[stat] or GOLD, nodeState, level, max, isSel("Train", stat), jobs[stat] and ("⏳ " .. Config.FormatDuration(env.Remaining(jobs[stat].EndAt))) or nil, pick(env, "Train", stat))
 		end
 	end
 end

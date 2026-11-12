@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Upgrade cost {number2} G · You have {number3} G", "Upgrade-Kosten: {number2} G · Du hast {number3} G" },
 		{ "Rocket Launcher · Rusty Era +{number1}", "Raketenwerfer · Rostige Ära +{number1}" },
 		{ "🌋 Lava Fortress Gate · Rec. ⚡{number2}", "🌋 Lava-Festungstor · Rec. ⚡{number2}" },
 		{ "ZONE {number1}  ·  Darklands   ☠☠☠☠☠☠☠", "Zone {number1} · Dunkle Länder ☠☠☠☠☠☠☠" },

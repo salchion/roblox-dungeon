@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "(Idle Booster applied for {number1} min)", "(Impulsionador ocioso aplicado por {number1} min)" },
 		{ "every {number1}s lightning hits {number2} enemies", "a cada {number1} s um raio atinge {number2} inimigos" },
 		{ "Level {number1} Breakthrough in progress", "Avanço do nível {number1} em andamento" },
 		{ "Defeat the Zone {number1} lord to unlock", "Derrote o senhor da zona {number1} para desbloquear" },

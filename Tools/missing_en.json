@@ -2597,5 +2597,7 @@
 "+15% gold",
 "+20% crit chance for 2s after a dash, and +30% gear drop luck",
 "🔒 Spend {number1} points higher up this path first",
-"· {number1} point(s) in this path"
+"· {number1} point(s) in this path",
+"Offense",
+"Survival"
 ]

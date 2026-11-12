@@ -704,6 +704,8 @@ return {
 		["+10% more damage to bosses and elites"] = "+10% mehr Schaden gegen Bosse und Elite",
 		["+15% gold"] = "+15% Gold",
 		["+20% crit chance for 2s after a dash, and +30% gear drop luck"] = "+20% Krit-Chance für 2 s nach einem Sprint und +30% Ausrüstungs-Glück",
+		["Offense"] = "Angriff",
+		["Survival"] = "Überleben",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -982,6 +984,5 @@ return {
 		{ "Gold earned  +{number1} G   🎫 Tickets +{number2}", "Verdientes Gold  +{number1} G   🎫 Tickets +{number2}" },
 		{ "🏰 Forest Castle Gate · Rec. ⚡{number2}", "🏰 Waldschloss-Tor · Empfohlen ⚡{number2}" },
 		{ "(Idle income bonus +{number3}% active)", "(Inaktiver Einkommensbonus +{number3}% aktiv)" },
-		{ "Upgrade cost {number2} G · You have {number3} G", "Upgrade-Kosten: {number2} G · Du hast {number3} G" },
 	},
 }

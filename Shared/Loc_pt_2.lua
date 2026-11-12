@@ -723,6 +723,8 @@ return {
 		["+10% more damage to bosses and elites"] = "+10% mais dano a chefes e elites",
 		["+15% gold"] = "+15% de ouro",
 		["+20% crit chance for 2s after a dash, and +30% gear drop luck"] = "+20% de chance crítica por 2s após um avanço e +30% de sorte de equipamento",
+		["Offense"] = "Ataque",
+		["Survival"] = "Sobrevivência",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -989,6 +991,5 @@ return {
 		{ "⚔ Rocket Launcher · Rusty Era +{number10}", "⚔ Lançador de Foguetes · Era Enferrujada +{number10}" },
 		{ "⚔ Rocket Launcher · Rusty Era +{number1}", "⚔ Lançador de Foguetes · Era Enferrujada +{number1}" },
 		{ "👹 Monster health x{number1}  ·  damage x{number2}", "👹 Vida dos monstros x{number1}  ·  dano x{number2}" },
-		{ "(Idle Booster applied for {number1} min)", "(Impulsionador ocioso aplicado por {number1} min)" },
 	},
 }

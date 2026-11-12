@@ -634,6 +634,8 @@ return {
 		["+10% more damage to bosses and elites"] = "对首领和精英伤害+10%",
 		["+15% gold"] = "金币+15%",
 		["+20% crit chance for 2s after a dash, and +30% gear drop luck"] = "冲刺后2秒暴击率+20%，装备掉落幸运+30%",
+		["Offense"] = "进攻",
+		["Survival"] = "生存",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1084,6 +1086,5 @@ return {
 		{ "Zone {number1} · Wasteland", "区域 {number1} · 荒地" },
 		{ "Zone {number1} · Snowfield", "区域 {number1} · 雪原" },
 		{ "Field Entrance  {number1}m", "田地入口 {number1}米" },
-		{ "Zone {number1} · Execute  ", "区域 {number1} · 执行" },
 	},
 }

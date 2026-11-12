@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Zone {number1} · Execute  ", "区域 {number1} · 执行" },
 		{ "{number1} Meadow · {number2} Forest", "{number1} 草地 · {number2} 森林" },
 		{ "🚪 Open Zone {number1} Gate", "🚪 开启区域{number1}的大门" },
 		{ "max · +{number1}% crit dmg", "已满 · 暴击伤害 +{number1}%" },

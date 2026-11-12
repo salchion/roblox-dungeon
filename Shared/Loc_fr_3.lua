@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Gold x{number1} · Tickets {number2} · Boss chest gear {number3}", "Or x{number1} · Tickets {number2} · Équipement du coffre de boss {number3}" },
 		{ "Bounces to {number1} nearby enemies (within {number2})", "Rebondit sur {number1} ennemis proches (à moins de {number2})" },
 		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 {number1} esprits combattront pour vous pendant {number2} s !" },
 		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1} s · {number2} dagues toutes les {number3} s · dégâts x{number4} chacune" },

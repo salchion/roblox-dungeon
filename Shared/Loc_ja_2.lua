@@ -881,6 +881,8 @@ return {
 		["+10% more damage to bosses and elites"] = "ボスとエリートへのダメージ+10%",
 		["+15% gold"] = "ゴールド+15%",
 		["+20% crit chance for 2s after a dash, and +30% gear drop luck"] = "ダッシュ後2秒間クリ率+20%、装備ドロップ運+30%",
+		["Offense"] = "攻撃",
+		["Survival"] = "生存",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },

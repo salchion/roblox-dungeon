@@ -564,3 +564,5 @@
 2596¦ダッシュ後2秒間クリ率+20%、装備ドロップ運+30%¦+20% Krit-Chance für 2 s nach einem Sprint und +30% Ausrüstungs-Glück¦+20 % de chance de critique pendant 2 s après une ruée, et +30 % de chance d'équipement¦+20% de prob. crítica 2 s tras un impulso y +30% de suerte de equipo¦+20% de chance crítica por 2s após um avanço e +30% de sorte de equipamento¦冲刺后2秒暴击率+20%，装备掉落幸运+30%¦대시 뒤 2초 동안 치명타 확률 +20%, 장비 드롭 행운 +30%
 2597¦🔒 この道の上に{number1}ポイント使うと開く¦🔒 Gib zuerst {number1} Punkte weiter oben auf diesem Pfad aus¦🔒 Dépense d'abord {number1} points plus haut sur cette voie¦🔒 Gasta primero {number1} puntos más arriba en esta rama¦🔒 Gaste antes {number1} pontos mais acima neste caminho¦🔒 先在这条路线上方投入{number1}点¦🔒 이 길 위쪽에 먼저 {number1}점을 써야 해요
 2598¦· この道に{number1}ポイント¦· {number1} Punkt(e) in diesem Pfad¦· {number1} point(s) dans cette voie¦· {number1} punto(s) en esta rama¦· {number1} ponto(s) neste caminho¦· 此路线已投入{number1}点¦· 이 길에 {number1}점
+2599¦攻撃¦Angriff¦Attaque¦Ataque¦Ataque¦进攻¦공격
+2600¦生存¦Überleben¦Survie¦Supervivencia¦Sobrevivência¦生存¦생존

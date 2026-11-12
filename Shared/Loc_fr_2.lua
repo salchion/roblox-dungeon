@@ -762,6 +762,8 @@ return {
 		["+10% more damage to bosses and elites"] = "+10 % de dégâts aux boss et élites",
 		["+15% gold"] = "+15 % d'or",
 		["+20% crit chance for 2s after a dash, and +30% gear drop luck"] = "+20 % de chance de critique pendant 2 s après une ruée, et +30 % de chance d'équipement",
+		["Offense"] = "Attaque",
+		["Survival"] = "Survie",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -981,6 +983,5 @@ return {
 		{ "Spell Tome  ·  keys {number1}-{number2} switch weapons", "Livre de sorts · les touches {number1}-{number2} permettent de changer d'arme" },
 		{ "Defeat {number1} monsters (dungeons included)", "Vainquez {number1} monstres (donjons inclus)" },
 		{ "🎯 Ready to challenge the Zone {number1} Lord!", "🎯 Prêt à défier le seigneur de la zone {number1} !" },
-		{ "Gold x{number1} · Tickets {number2} · Boss chest gear {number3}", "Or x{number1} · Tickets {number2} · Équipement du coffre de boss {number3}" },
 	},
 }
