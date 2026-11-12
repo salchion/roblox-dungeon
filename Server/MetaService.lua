@@ -121,7 +121,7 @@ end
 -- 클라이언트로 상태 보내기
 ------------------------------------------------------------
 local function buildPayload(state)
-	return { Skills = state.Skills, Branch = state.Branch, Pet = state.Pet, Tower = state.Tower }
+	return { Skills = state.Skills, Branch = state.Branch, Pet = state.Pet, Tower = state.Tower, Talents = state.Talents }
 end
 
 function Meta.Push(player)
@@ -140,6 +140,87 @@ end
 ------------------------------------------------------------
 -- 불러오기 / 저장
 ------------------------------------------------------------
+-- 특성 트리 (와우 방식): state.Talents = { [칸] = 점수, ["<칸>_S"] = "A"/"B" (선택 칸) }
+local function talentSpent(talents)
+	local spent, byRow = 0, {}
+	for _, key in ipairs(Config.Talents.Order) do
+		local node = Config.Talents[key]
+		local rank = talents[key] or 0
+		spent += rank
+		byRow[node.Row] = (byRow[node.Row] or 0) + rank
+	end
+	return spent, byRow
+end
+local function syncTalents(player, state)
+	local talents = state.Talents or {}
+	for _, key in ipairs(Config.Talents.Order) do
+		player:SetAttribute("Tal_" .. key, (talents[key] or 0) > 0 and talents[key] or nil)
+		player:SetAttribute("TalS_" .. key, talents[key .. "_S"])
+	end
+	local spent = talentSpent(talents)
+	player:SetAttribute("TalentLeft", math.max(0, Config.TalentPoints(player:GetAttribute("Level") or 1) - spent))
+end
+local function sanitizeTalents(saved)
+	local out = {}
+	if typeof(saved) ~= "table" then return out end
+	for _, key in ipairs(Config.Talents.Order) do
+		local node = Config.Talents[key]
+		local rank = math.clamp(math.floor(tonumber(saved[key]) or 0), 0, node.Max)
+		if rank > 0 then
+			if node.Choice then
+				local side = saved[key .. "_S"]
+				if side == "A" or side == "B" then out[key], out[key .. "_S"] = 1, side end
+			else
+				out[key] = rank
+			end
+		end
+	end
+	return out
+end
+-- 한 점 찍기: arg = "칸" 또는 "칸|A" (선택 칸)
+local function spendTalent(player, arg)
+	local state = states[player]
+	if not state or typeof(arg) ~= "string" then return end
+	local key, side = string.match(arg, "^(%w+)|?([AB]?)$")
+	local node = key and Config.Talents[key]
+	if not node or type(node) ~= "table" or not node.Row then return end
+	local talents = state.Talents
+	local spent, byRow = talentSpent(talents)
+	if spent >= Config.TalentPoints(player:GetAttribute("Level") or 1) then
+		notify(player, "No talent points left (you get 1 every 5 levels)")
+		return
+	end
+	local above = 0
+	for row = 1, node.Row - 1 do above += byRow[row] or 0 end
+	if above < (Config.Talents.RowNeed[node.Row] or 0) then
+		notify(player, string.format("🔒 Spend %d points in the rows above first", Config.Talents.RowNeed[node.Row]))
+		return
+	end
+	if (talents[key] or 0) >= node.Max then return end
+	if node.Choice then
+		if side ~= "A" and side ~= "B" then return end
+		talents[key .. "_S"] = side
+	end
+	talents[key] = (talents[key] or 0) + 1
+	syncTalents(player, state)
+	Meta.Push(player)
+end
+local function resetTalents(player)
+	local state = states[player]
+	if not state or next(state.Talents) == nil then return end
+	local cost = Config.TalentResetCost(player:GetAttribute("Level") or 1)
+	local gold = player:GetAttribute("Gold") or 0
+	if gold < cost then
+		notify(player, string.format("Not enough gold. (%d G needed)", cost))
+		return
+	end
+	player:SetAttribute("Gold", gold - cost)
+	state.Talents = {}
+	syncTalents(player, state)
+	notify(player, "🔁 Talents reset! All points are back")
+	Meta.Push(player)
+end
+
 local function syncSkillAttributes(player, state)
 	for _, key in ipairs(Config.Skills.UpgradeOrder) do
 		player:SetAttribute("SkillLv_" .. key, state.Skills[key])
@@ -164,6 +245,7 @@ function Meta.Load(player, saved)
 		end
 		state.Branch[key] = picks
 	end
+	state.Talents = sanitizeTalents(typeof(saved) == "table" and saved.Talents)
 	if typeof(saved) == "table" then
 		if typeof(saved.Pet) == "table" then
 			local p = saved.Pet
@@ -214,6 +296,14 @@ function Meta.Load(player, saved)
 	player:SetAttribute("SweepGold", state.Sweep.Gold)
 	for typeKey, best in pairs(state.Depth) do player:SetAttribute("DepthBest_" .. typeKey, best) end
 	syncSkillAttributes(player, state)
+	syncTalents(player, state)
+	if not player:GetAttribute("TalentWatch") then -- 레벨이 오르면 남은 특성 점수도 다시 센다
+		player:SetAttribute("TalentWatch", true)
+		player:GetAttributeChangedSignal("Level"):Connect(function()
+			local current = states[player]
+			if current then syncTalents(player, current) end
+		end)
+	end
 	applyPetStats(player, state)
 	player:SetAttribute("RiftBest", state.Rift.BestScore)
 	player:SetAttribute("RiftBossBest", state.Rift.BestBoss)
@@ -247,7 +337,7 @@ end
 function Meta.Serialize(player)
 	local state = states[player]
 	if not state then return nil end
-	return { Skills = state.Skills, Branch = state.Branch, Pet = state.Pet, Tower = state.Tower, Rift = state.Rift, Codex = state.Codex, Depth = state.Depth, Sweep = state.Sweep }
+	return { Skills = state.Skills, Branch = state.Branch, Pet = state.Pet, Tower = state.Tower, Rift = state.Rift, Codex = state.Codex, Depth = state.Depth, Sweep = state.Sweep, Talents = state.Talents }
 end
 
 function Meta.Forget(player)
@@ -593,6 +683,10 @@ Remotes.Meta.OnServerEvent:Connect(function(player, action, arg)
 		if townOnly(player) then upgradeSkill(player, arg) end
 	elseif action == "SkillBranch" then
 		if townOnly(player) then chooseBranch(player, arg) end
+	elseif action == "Talent" then -- 특성 찍기는 어디서나 (와우처럼 바로바로)
+		spendTalent(player, arg)
+	elseif action == "TalentReset" then
+		if townOnly(player) then resetTalents(player) end
 	elseif action == "PetUnlock" then
 		if townOnly(player) then unlockPet(player) end
 	elseif action == "PetLevel" then

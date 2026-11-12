@@ -49,22 +49,64 @@ return function(Config)
 		Focus = { From = "Heal", Stat = "NearMissTime", Per = 0.15, Text = "NEAR MISS lasts +0.15s per First Aid level" },
 	}
 
-	-- 패시브 스킬 4종 (스킬 바에는 안 나온다, 골드로 1~10레벨). 값 = PerLevel x 레벨. 훈련(피해 감소 / 골드)과 겹치지 않는 새 메커니즘만
-	local S = Config.Skills
-	S.Bloodthirst = { Name = "Bloodthirst", Icon = "🩸", Key = "Passive", Cooldown = 0, Passive = true, PerLevel = 0.002, StatName = "HP per kill", Fmt = "%.1f%%", Scale = 100,
-		Desc = "Every kill restores a little HP (keep killing to stay alive)" }
-	S.Finisher = { Name = "Finisher", Icon = "🎯", Key = "Passive", Cooldown = 0, Passive = true, PerLevel = 0.03, StatName = "Damage to enemies under 30% HP", Fmt = "+%.0f%%", Scale = 100,
-		Desc = "Deal more damage to enemies under 30% HP" }
-	S.Rush = { Name = "Rush", Icon = "💨", Key = "Passive", Cooldown = 0, Passive = true, PerLevel = 0.03, StatName = "Attack for 2s after a dash", Fmt = "+%.0f%%", Scale = 100,
-		Desc = "For 2s after a dash (Q), your attack is higher" }
-	S.Fortune = { Name = "Treasure Sense", Icon = "💎", Key = "Passive", Cooldown = 0, Passive = true, PerLevel = 0.04, StatName = "Gear drop luck", Fmt = "+%.0f%%", Scale = 100,
-		Desc = "Better luck on gear drops (higher rarities come more often)" }
-	for _, key in ipairs({ "Bloodthirst", "Finisher", "Rush", "Fortune" }) do
-		if not table.find(S.UpgradeOrder, key) then table.insert(S.UpgradeOrder, key) end
+	-- 특성 트리 (와우 방식): 레벨 5마다 특성 점수 1 (최대 30). 다섯 줄이고, 위쪽 줄에 점수를 일정 이상 써야 아래 줄이 열린다.
+	-- 칸마다 최대 몇 번 찍을 수 있고(Max), "선택" 칸은 두 길 중 하나만 고른다. 마을에서 골드로 초기화할 수 있다.
+	-- 값: Per (특성 칸 하나당 PassiveValue 값) / Mods (특성 한 점당 스탯: Config.TalentMod 가 합친다)
+	Config.Talents = {
+		PointsPerLevels = 5, MaxPoints = 30,
+		RowNeed = { 0, 5, 10, 15, 20 }, -- 이 줄을 찍으려면 위쪽 줄에 이만큼 써야 한다
+		Order = { "Bloodthirst", "Finisher", "Fortune", "Rush", "Hide", "Golden", "SurviveChoice", "Threshold", "RushGuard", "BossBreaker", "RushCrit", "Treasure2", "Capstone" },
+		Bloodthirst = { Row = 1, Icon = "🩸", Name = "Bloodthirst", Max = 5, Per = 0.004, Desc = "Every kill restores 0.4% max HP per point" },
+		Finisher = { Row = 1, Icon = "🎯", Name = "Finisher", Max = 5, Per = 0.06, Desc = "+6% damage per point to enemies under 30% HP" },
+		Fortune = { Row = 1, Icon = "💎", Name = "Treasure Sense", Max = 5, Per = 0.08, Desc = "+8% gear drop luck per point" },
+		Rush = { Row = 2, Icon = "💨", Name = "Rush", Max = 5, Per = 0.06, Desc = "+6% attack per point for 2s after a dash (Q)" },
+		Hide = { Row = 2, Icon = "🛡", Name = "Iron Stomach", Max = 3, Mods = { DmgReduce = 0.04 }, Desc = "Take 4% less damage per point" },
+		Golden = { Row = 2, Icon = "💰", Name = "Golden Touch", Max = 3, Mods = { Gold = 0.05 }, Desc = "+5% gold per point" },
+		SurviveChoice = { Row = 3, Icon = "❤", Name = "Survival Instinct", Max = 1, Choice = {
+			A = { Icon = "💗", Name = "Lifeline", Desc = "Bloodthirst heals twice as much while under 30% HP", Mods = { LowHeal = 1 } },
+			B = { Icon = "⏳", Name = "Bloodrush", Desc = "Every kill cuts all skill cooldowns by 0.2s", Mods = { KillCdr = 0.2 } } } },
+		Threshold = { Row = 3, Icon = "🪓", Name = "Early Finish", Max = 1, Mods = { Threshold = 0.15 }, Desc = "Finisher works under 45% HP instead of 30%" },
+		RushGuard = { Row = 3, Icon = "🌀", Name = "Rush Guard", Max = 1, Mods = { RushGuard = 0.3 }, Desc = "Take 30% less damage for 2s after a dash" },
+		BossBreaker = { Row = 4, Icon = "👑", Name = "Boss Breaker", Max = 3, Mods = { BossAny = 0.05 }, Desc = "+5% damage per point to bosses and elites at any HP" },
+		RushCrit = { Row = 4, Icon = "⚡", Name = "Rush Crit", Max = 3, Mods = { RushCrit = 0.07 }, Desc = "+7% crit chance per point for 2s after a dash" },
+		Treasure2 = { Row = 4, Icon = "🗝", Name = "Deep Pockets", Max = 3, Mods = { Luck = 0.1 }, Desc = "+10% gear drop luck per point" },
+		Capstone = { Row = 5, Icon = "🌟", Name = "Mastery", Max = 1, Choice = {
+			A = { Icon = "☠", Name = "Mercy Kill", Desc = "Non-boss enemies under 10% HP die instantly", Mods = { Execute = 0.1 } },
+			B = { Icon = "🔥", Name = "Blood Frenzy", Desc = "Each kill gives +2% attack for 5s (stacks up to 10)", Mods = { Frenzy = 1 } } } },
+	}
+	function Config.TalentPoints(level)
+		local T = Config.Talents
+		return math.min(T.MaxPoints, math.floor((level or 1) / T.PointsPerLevels))
+	end
+	function Config.TalentResetCost(level)
+		return 2000 * math.max(1, level or 1)
+	end
+	-- 특성 칸에 찍은 점수 (선택 칸은 0 / 1) 와 고른 길 (선택 칸만 "A" / "B")
+	function Config.TalentRank(player, key)
+		return player:GetAttribute("Tal_" .. key) or 0
+	end
+	-- 특성 한 점당 Mods 를 모두 합친 값 (선택 칸은 고른 길의 Mods)
+	function Config.TalentMod(player, stat)
+		local total = 0
+		for _, key in ipairs(Config.Talents.Order) do
+			local node = Config.Talents[key]
+			local rank = Config.TalentRank(player, key)
+			if rank > 0 then
+				local mods = node.Mods
+				if node.Choice then
+					local side = player:GetAttribute("TalS_" .. key)
+					mods = side and node.Choice[side] and node.Choice[side].Mods
+				end
+				if mods and mods[stat] then total += mods[stat] * rank end
+			end
+		end
+		return total
 	end
 	function Config.PassiveValue(player, key)
-		local cfg = S[key]
-		return cfg and cfg.PerLevel and cfg.PerLevel * (player:GetAttribute("SkillLv_" .. key) or 1) or 0
+		local node = Config.Talents[key]
+		local value = node and node.Per and node.Per * Config.TalentRank(player, key) or 0
+		if key == "Fortune" then value += Config.TalentMod(player, "Luck") end
+		return value
 	end
 
 	-- 갈래(Lv.3 / 7 의 Mods) + 시너지를 합친 값

@@ -218,7 +218,7 @@ function Config.GetWarpCost(zone)
 end
 
 function Config.GoldBonus(player)
-	return 1 + (player:GetAttribute("PetGold") or 0) + (player:GetAttribute("TrainGold") or 0) -- 펫(대각성) + 훈련(골드 감각)
+	return 1 + (player:GetAttribute("PetGold") or 0) + (player:GetAttribute("TrainGold") or 0) + Config.TalentMod(player, "Gold") -- 펫(대각성) + 훈련(골드 감각) + 특성(황금 손길)
 end
 
 Config.Dungeon = {} -- 아래에서 여러 블록이 채우고, "던전" 절에서 기본 값이 합쳐진다
@@ -2505,5 +2505,6 @@ do
 	if okTree and type(apply) == "function" then pcall(apply, Config) end
 	Config.SkillMod = Config.SkillMod or function() return 0 end
 	Config.PassiveValue = Config.PassiveValue or function() return 0 end
+	Config.TalentMod = Config.TalentMod or function() return 0 end
 end
 return Config

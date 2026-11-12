@@ -48,10 +48,24 @@ end
 local killCount = setmetatable({}, { __mode = "k" })
 function U.OnKill(player)
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-	local heal = Config.PassiveValue(player, "Bloodthirst") -- 패시브 "피의 갈증": 처치마다 최대 체력의 일부 회복
-	if heal > 0 then
+	local heal = Config.PassiveValue(player, "Bloodthirst") -- 특성 "피에 굶주림": 처치마다 최대 체력의 일부 회복
+	if heal > 0 and player.Character then
 		local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
-		if humanoid and humanoid.Health > 0 then humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * heal) end
+		if humanoid and humanoid.Health > 0 then
+			if humanoid.Health / humanoid.MaxHealth < 0.3 then heal *= 1 + Config.TalentMod(player, "LowHeal") end -- "생명줄": 위험할 때 2배
+			humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * heal)
+		end
+	end
+	local killCdr = Config.TalentMod(player, "KillCdr") -- 특성 "피의 질주": 처치마다 스킬 쿨타임 감소
+	if killCdr > 0 then
+		local okSkill, Skill = pcall(function() return require(script.Parent:WaitForChild("SkillService")) end)
+		if okSkill and Skill.ReduceCooldowns then Skill.ReduceCooldowns(player, killCdr) end
+	end
+	if Config.TalentMod(player, "Frenzy") > 0 then -- 특성 "피의 광란": 처치마다 5초 동안 공격력 +2% (최대 10겹)
+		local now = workspace:GetServerTimeNow()
+		local stacks = (player:GetAttribute("FrenzyUntil") or 0) > now and (player:GetAttribute("FrenzyStacks") or 0) or 0
+		player:SetAttribute("FrenzyStacks", math.min(10, stacks + 1))
+		player:SetAttribute("FrenzyUntil", now + 5)
 	end
 	-- 시간 왜곡
 	local cdr = player:GetAttribute("GearKillCdr") or 0

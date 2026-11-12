@@ -518,3 +518,40 @@
 2550¦HP30%以下の敵へのダメージ¦Schaden an Gegnern unter 30 % LP¦Dégâts aux ennemis sous 30 % PV¦Daño a enemigos bajo 30% PV¦Dano a inimigos abaixo de 30% PV¦对30%以下生命敌人的伤害¦체력 30% 아래 적 피해
 2551¦ダッシュ後2秒間の攻撃力¦Angriff 2 s nach einem Sprint¦Attaque 2 s après une ruée¦Ataque 2 s tras un esprint¦Ataque por 2 s após avanço¦冲刺后2秒攻击力¦대시 후 2초 공격력
 2552¦装備ドロップ運¦Ausrüstungs-Dropglück¦Chance de butin¦Suerte de botín¦Sorte de drop¦装备掉落运气¦장비 드랍 행운
+2553¦鉄の胃袋¦Eisenmagen¦Estomac de fer¦Estómago de hierro¦Estômago de ferro¦铁胃¦강철 위장
+2554¦生存本能¦Überlebensinstinkt¦Instinct de survie¦Instinto de supervivencia¦Instinto de sobrevivência¦求生本能¦생존 본능
+2555¦命綱¦Rettungsleine¦Bouée¦Salvavidas¦Tábua de salvação¦生命线¦생명줄
+2556¦血の疾走¦Blutrausch¦Ruée sanglante¦Ímpetu sangriento¦Ímpeto sangrento¦血之疾驰¦피의 질주
+2557¦早めの仕上げ¦Früher Abschluss¦Achèvement précoce¦Remate temprano¦Finalização antecipada¦提前终结¦이른 마무리
+2558¦突進ガード¦Ansturmschutz¦Garde de ruée¦Guardia de embestida¦Guarda de investida¦冲锋守护¦돌격 방어
+2559¦ボスブレイカー¦Bossbrecher¦Briseur de boss¦Rompejefes¦Quebra-chefes¦首领破坏者¦보스 파괴자
+2560¦突進クリティカル¦Ansturm-Krit¦Critique de ruée¦Crítico de embestida¦Crítico de investida¦冲锋暴击¦돌격 치명
+2561¦深いポケット¦Tiefe Taschen¦Poches profondes¦Bolsillos profundos¦Bolsos fundos¦深口袋¦깊은 주머니
+2562¦極意¦Meisterschaft¦Maîtrise¦Maestría¦Maestria¦精通¦극의
+2563¦慈悲の一撃¦Gnadenstoß¦Coup de grâce¦Golpe de gracia¦Golpe de misericórdia¦慈悲一击¦자비의 일격
+2564¦血の狂乱¦Blutraserei¦Frénésie sanglante¦Frenesí sangriento¦Frenesi sangrento¦血之狂乱¦피의 광란
+2565¦1ポイントごとに撃破時に最大HPの0.4%回復¦Jeder Kill stellt pro Punkt 0,4 % max. LP her¦Chaque élimination rend 0,4 % des PV max par point¦Cada baja restaura 0,4% de PV máx. por punto¦Cada abate restaura 0,4% do PV máx. por ponto¦每点使每次击杀回复0.4%最大生命¦점수당 처치마다 최대 체력 0.4% 회복
+2566¦1ポイントごとにHP30%以下の敵へのダメージ +6%¦+6 % Schaden pro Punkt an Gegnern unter 30 % LP¦+6 % de dégâts par point aux ennemis sous 30 % PV¦+6% de daño por punto a enemigos bajo 30% PV¦+6% de dano por ponto a inimigos abaixo de 30% PV¦每点对生命低于30%的敌人伤害 +6%¦점수당 체력 30% 아래 적에게 피해 +6%
+2567¦1ポイントごとに装備ドロップ運 +8%¦+8 % Dropglück pro Punkt¦+8 % de chance de butin par point¦+8% de suerte de botín por punto¦+8% de sorte de drop por ponto¦每点装备掉落运气 +8%¦점수당 장비 드랍 행운 +8%
+2568¦1ポイントごとにダッシュ(Q)後2秒間攻撃力 +6%¦+6 % Angriff pro Punkt für 2 s nach einem Sprint (Q)¦+6 % d'attaque par point pendant 2 s après une ruée (Q)¦+6% de ataque por punto durante 2 s tras un esprint (Q)¦+6% de ataque por ponto por 2 s após avanço (Q)¦每点冲刺(Q)后2秒攻击力 +6%¦점수당 대시(Q) 뒤 2초 동안 공격력 +6%
+2569¦1ポイントごとに受けるダメージ -4%¦4 % weniger Schaden pro Punkt¦4 % de dégâts subis en moins par point¦Recibes 4% menos de daño por punto¦Recebe 4% menos dano por ponto¦每点受到伤害 -4%¦점수당 받는 피해 -4%
+2570¦1ポイントごとにゴールド +5%¦+5 % Gold pro Punkt¦+5 % d'or par point¦+5% de oro por punto¦+5% de ouro por ponto¦每点金币 +5%¦점수당 골드 +5%
+2571¦HP30%以下の時、血の渇きの回復量が2倍¦Blutdurst heilt unter 30 % LP doppelt so viel¦Soif de sang soigne deux fois plus sous 30 % PV¦Sed de sangre cura el doble bajo 30% PV¦Sede de sangue cura o dobro abaixo de 30% PV¦生命低于30%时嗜血治疗量翻倍¦체력 30% 아래에서 피에 굶주림 회복량 2배
+2572¦撃破ごとに全スキルのクールタイム -0.2秒¦Jeder Kill senkt alle Abklingzeiten um 0,2 s¦Chaque élimination réduit les recharges de 0,2 s¦Cada baja reduce todos los enfriamientos 0,2 s¦Cada abate reduz todas as recargas em 0,2 s¦每次击杀所有技能冷却 -0.2秒¦처치마다 모든 스킬 쿨타임 -0.2초
+2573¦フィニッシャーがHP30%ではなく45%以下で発動¦Vollstrecker wirkt unter 45 % statt 30 % LP¦Achèvement fonctionne sous 45 % PV au lieu de 30 %¦Remate funciona bajo 45% PV en vez de 30%¦Finalizador funciona abaixo de 45% PV em vez de 30%¦终结者在生命低于45%（原30%）时生效¦마무리가 체력 30% 대신 45% 아래에서 발동
+2574¦ダッシュ後2秒間、受けるダメージ -30%¦2 s nach einem Sprint 30 % weniger Schaden¦30 % de dégâts subis en moins pendant 2 s après une ruée¦Recibes 30% menos de daño 2 s tras un esprint¦Recebe 30% menos dano por 2 s após avanço¦冲刺后2秒受到伤害 -30%¦대시 뒤 2초 동안 받는 피해 -30%
+2575¦1ポイントごとにボスとエリートへのダメージ +5%¦+5 % Schaden pro Punkt an Bossen und Elite¦+5 % de dégâts par point aux boss et élites¦+5% de daño por punto a jefes y élites¦+5% de dano por ponto a chefes e elites¦每点对首领和精英伤害 +5%¦점수당 보스·엘리트에게 피해 +5%
+2576¦1ポイントごとにダッシュ後2秒間クリティカル率 +7%¦+7 % Krit-Chance pro Punkt für 2 s nach einem Sprint¦+7 % de chance critique par point pendant 2 s après une ruée¦+7% de prob. de crítico por punto 2 s tras un esprint¦+7% de chance crítica por ponto por 2 s após avanço¦每点冲刺后2秒暴击率 +7%¦점수당 대시 뒤 2초 동안 치명타 확률 +7%
+2577¦1ポイントごとに装備ドロップ運 +10%¦+10 % Dropglück pro Punkt¦+10 % de chance de butin par point¦+10% de suerte de botín por punto¦+10% de sorte de drop por ponto¦每点装备掉落运气 +10%¦점수당 장비 드랍 행운 +10%
+2578¦ボス以外の敵はHP10%以下で即死¦Nicht-Boss-Gegner unter 10 % LP sterben sofort¦Les ennemis non-boss sous 10 % PV meurent instantanément¦Los enemigos que no son jefes mueren al instante bajo 10% PV¦Inimigos que não são chefes morrem na hora abaixo de 10% PV¦非首领敌人生命低于10%时立即死亡¦보스가 아닌 적은 체력 10% 아래면 즉사
+2579¦撃破ごとに5秒間攻撃力 +2%（最大10重）¦Jeder Kill gibt 5 s +2 % Angriff (bis zu 10-fach)¦Chaque élimination donne +2 % d'attaque pendant 5 s (cumul max 10)¦Cada baja da +2% de ataque durante 5 s (hasta 10)¦Cada abate dá +2% de ataque por 5 s (até 10)¦每次击杀5秒内攻击力 +2%（最多10层）¦처치마다 5초 동안 공격력 +2% (최대 10겹)
+2580¦特性¦Talente¦Talents¦Talentos¦Talentos¦天赋¦특성
+2581¦残り{number1}ポイント¦Noch {number1} Punkt(e)¦{number1} point(s) restant(s)¦Quedan {number1} punto(s)¦Restam {number1} ponto(s)¦剩余{number1}点¦남은 점수 {number1}
+2582¦· 残り{number1}ポイント（{number2}レベルごとに1）¦· Noch {number1} Punkt(e) (1 alle {number2} Stufen)¦· {number1} point(s) restant(s) (1 tous les {number2} niveaux)¦· Quedan {number1} punto(s) (1 cada {number2} niveles)¦· Restam {number1} ponto(s) (1 a cada {number2} níveis)¦· 剩余{number1}点（每{number2}级1点）¦· 남은 점수 {number1} ({number2}레벨마다 1점)
+2583¦2つのうち1つを選ぶ¦Wähle eines der beiden¦Choisis l'un des deux¦Elige uno de los dos¦Escolha um dos dois¦二选一¦둘 중 하나를 고르세요
+2584¦🔒 先に上の列で{number1}ポイント使おう¦🔒 Gib zuerst {number1} Punkte in den Reihen darüber aus¦🔒 Dépense d'abord {number1} points dans les rangées au-dessus¦🔒 Gasta primero {number1} puntos en las filas de arriba¦🔒 Gaste primeiro {number1} pontos nas fileiras acima¦🔒 先在上面几行投入{number1}点¦🔒 위쪽 줄에 먼저 {number1}점을 써야 해요
+2585¦1ポイント使う¦1 Punkt ausgeben¦Dépenser 1 point¦Gastar 1 punto¦Gastar 1 ponto¦投入1点¦1점 찍기
+2586¦すべてリセット¦Alles zurücksetzen¦Tout réinitialiser¦Reiniciar todo¦Redefinir tudo¦全部重置¦전부 초기화
+2587¦町でリセット¦Im Dorf zurücksetzen¦Réinitialiser en ville¦Reiniciar en el pueblo¦Redefinir na cidade¦在城镇重置¦마을에서 초기화
+2588¦特性ポイントがない（5レベルごとに1）¦Keine Talentpunkte mehr (1 alle 5 Stufen)¦Plus de points de talent (1 tous les 5 niveaux)¦No quedan puntos de talento (1 cada 5 niveles)¦Sem pontos de talento (1 a cada 5 níveis)¦没有天赋点了（每5级1点）¦특성 점수가 없어요 (5레벨마다 1점)
+2589¦特性リセット！ポイントが全部戻った¦Talente zurückgesetzt! Alle Punkte sind zurück¦Talents réinitialisés ! Tous les points sont rendus¦¡Talentos reiniciados! Recuperas todos los puntos¦Talentos redefinidos! Todos os pontos voltaram¦天赋已重置！点数全部返还¦특성 초기화! 점수가 모두 돌아왔어요

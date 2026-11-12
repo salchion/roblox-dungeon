@@ -18,7 +18,7 @@ local TIER_Y = { 66, 152, 238 } -- 세 칸이 같은 높이의 층을 쓴다
 local CARD_H = 38 -- 노드 카드 높이
 local CANVAS_H = 306
 -- 칸마다 가로 범위 (0~1): 스킬(액티브 3, 세로 한 줄) | 훈련 | 패시브(훈련 바로 옆: 둘 다 상시 효과) | 펫
-local COLS = { Skill = { 0, 0.17 }, Train = { 0.17, 0.55 }, Passive = { 0.55, 0.75 }, Pet = { 0.75, 1 } }
+local COLS = { Skill = { 0, 0.17 }, Train = { 0.17, 0.47 }, Passive = { 0.47, 0.75 }, Pet = { 0.75, 1 } } -- (Passive = 특성 트리)
 local selected = { Kind = "Skill", Key = nil } -- 마지막으로 고른 노드 (메뉴를 다시 그려도 유지)
 
 local TRAIN_COLORS = {
@@ -149,10 +149,10 @@ local function branchCards(env, key, parent)
 	end
 end
 
-local function detailRow(env, color, text, button, skillKey)
+local function detailRow(env, color, text, button, skillKey, tall)
 	local create, label = env.Create, env.MakeLabel
 	local withBranch = skillKey ~= nil and env.Config.SkillBranch ~= nil and env.Config.SkillBranch[skillKey] ~= nil
-	local detail = env.NewRow(withBranch and (14 + 44 * #env.Config.SkillBranchTiers) or (skillKey and 124 or 76), Color3.fromRGB(30, 28, 46)) -- (갈래 단계 수만큼: Lv.3 / 5 / 7 / 10 = 네 줄) -- (스킬: 지금 ▶ 다음 레벨 비교 줄이 들어갈 자리)
+	local detail = env.NewRow(withBranch and (14 + 44 * #env.Config.SkillBranchTiers) or ((skillKey or tall) and 124 or 76), Color3.fromRGB(30, 28, 46)) -- (갈래 단계 수만큼: Lv.3 / 5 / 7 / 10 = 네 줄) -- (스킬: 지금 ▶ 다음 레벨 비교 줄이 들어갈 자리)
 	create("UIStroke", { Color = color, Thickness = 1.5, Transparency = 0.3 }, detail)
 	if button and env.InTown == false then -- 필드에서는 업그레이드 못 한다: 버튼이 "마을에서"로 바뀐다 (서버도 막는다)
 		button = { Text = "🏘 Upgrade in town", Color = env.GRAY, OnClick = function() end }
@@ -169,9 +169,10 @@ local function detailRow(env, color, text, button, skillKey)
 		branchCards(env, skillKey, detail)
 		return
 	end
-	label({ Size = UDim2.new(1, -210, 1, -12), Position = UDim2.new(0, 14, 0, 6), RichText = true, TextSize = 12, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center, Text = text }, detail)
-	if button then
-		env.MakeButton({ Size = UDim2.new(0, 180, 0, 44), Position = UDim2.new(1, -192, 0.5, -22), Text = button.Text, TextSize = 12, BackgroundColor3 = button.Color }, detail, button.OnClick)
+	local buttons = (button and button[1]) and button or (button and { button } or {}) -- (버튼 여러 개: 특성 선택 칸 / 초기화)
+	label({ Size = UDim2.new(1, -24 - 188 * math.max(1, #buttons), 1, -12), Position = UDim2.new(0, 14, 0, 6), RichText = true, TextSize = 12, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center, Text = text }, detail)
+	for index, b in ipairs(buttons) do
+		env.MakeButton({ Size = UDim2.new(0, 180, 0, 44), Position = UDim2.new(1, -192 - (#buttons - index) * 188, 0.5, -22), Text = b.Text, TextSize = 12, BackgroundColor3 = b.Color }, detail, b.OnClick)
 	end
 end
 
@@ -193,27 +194,13 @@ local function drawSkills(env, C)
 	local Config, meta = env.Config, env.Meta
 	local U = Config.SkillUpgrade
 	C.title("Skill", "⚔ Skills")
-	C.title("Passive", "✨ Passives")
-	local activeIndex, passiveIndex = 0, 0
-	for _, key in ipairs(Config.Skills.UpgradeOrder) do
+	for index, key in ipairs(Config.Skills.UpgradeOrder) do -- 스킬 칸에 세로 한 줄 (액티브 3 + 기운 집중)
 		local cfg = Config.Skills[key]
 		local level = meta and meta.Skills and meta.Skills[key] or 1
 		local remaining = env.UpgradeRemaining(key)
 		local state = level >= U.MaxLevel and "done" or (remaining and "active" or "open")
-		local x, y, caption
-		if cfg.Passive then -- 패시브: 훈련 옆 칸에 두 줄로
-			passiveIndex += 1
-			x = colX("Passive", 0.5)
-			y = 54 + (passiveIndex - 1) * 48 -- (카드라서 한 줄에 하나씩 다섯 줄이 들어간다)
-			caption = string.format("<b>%s</b>", cfg.Name)
-		else -- 액티브: 스킬 칸에 세로 한 줄
-			activeIndex += 1
-			x = colX("Skill", 0.5)
-			y = 54 + (activeIndex - 1) * 48
-			caption = string.format("<b>%s</b>", cfg.Name)
-		end
-		C.node(x, y, cfg.Icon, skillColor(key), state, level / U.MaxLevel, caption,
-			remaining and ("⏳ " .. Config.FormatDuration(remaining)) or string.format("%sLv.%d / %d", (not cfg.Passive and cfg.Key) and ("[" .. cfg.Key .. "] ") or "", level, U.MaxLevel), isSel("Skill", key), cfg.Passive and (COLS.Passive[2] - COLS.Passive[1]) or (COLS.Skill[2] - COLS.Skill[1]), pick(env, "Skill", key))
+		C.node(colX("Skill", 0.5), 54 + (index - 1) * 48, cfg.Icon, skillColor(key), state, level / U.MaxLevel, string.format("<b>%s</b>", cfg.Name),
+			remaining and ("⏳ " .. Config.FormatDuration(remaining)) or string.format("%sLv.%d / %d", (not cfg.Passive and cfg.Key) and ("[" .. cfg.Key .. "] ") or "", level, U.MaxLevel), isSel("Skill", key), COLS.Skill[2] - COLS.Skill[1], pick(env, "Skill", key))
 	end
 end
 
@@ -389,6 +376,109 @@ local function petDetail(env, fnLevel)
 end
 
 -- env: { Config, Remotes, Player, Meta, Growth, Remaining(endAt), UpgradeRemaining(key), SkillDetail(key, level), TrainLocked, NewRow, MakeLabel, MakeButton, Create, GREEN, GRAY, Refresh }
+------------------------------------------------------------
+-- 특성 트리 (와우 방식): 다섯 줄, 줄마다 아이콘 타일. 위쪽 줄에 점수를 일정 이상 써야 아래 줄이 열린다
+------------------------------------------------------------
+local TALENT_COLOR = Color3.fromRGB(150, 200, 255)
+local function talentState(env)
+	local T = env.Config.Talents
+	local talents = (env.Meta and env.Meta.Talents) or {}
+	local spent, byRow = 0, {}
+	for _, key in ipairs(T.Order) do
+		local rank = talents[key] or 0
+		spent += rank
+		byRow[T[key].Row] = (byRow[T[key].Row] or 0) + rank
+	end
+	local function rowOpen(row)
+		local above = 0
+		for r = 1, row - 1 do above += byRow[r] or 0 end
+		return above >= (T.RowNeed[row] or 0)
+	end
+	local total = env.Config.TalentPoints(env.Player:GetAttribute("Level") or 1)
+	return talents, spent, total, rowOpen
+end
+
+local function drawTalents(env, C)
+	local Config = env.Config
+	local T = Config.Talents
+	if not T then return end
+	local talents, spent, total, rowOpen = talentState(env)
+	C.title("Passive", string.format("✨ Talents<font size='11' color='#cfc8e8'>   %d point(s) left</font>", math.max(0, total - spent)))
+	local perRow = {}
+	for _, key in ipairs(T.Order) do
+		local node = T[key]
+		perRow[node.Row] = perRow[node.Row] or {}
+		table.insert(perRow[node.Row], key)
+	end
+	local create, label = env.Create, env.MakeLabel
+	for row = 1, #T.RowNeed do
+		local keys = perRow[row] or {}
+		local y = 56 + (row - 1) * 50
+		local open = rowOpen(row)
+		label({ Size = UDim2.new(0, 22, 0, 16), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(COLS.Passive[1], 4, 0, y), Text = open and "" or ("🔒" .. T.RowNeed[row]), TextSize = 9, ZIndex = 5, TextColor3 = Color3.fromRGB(160, 156, 190) }, C.Row)
+		for i, key in ipairs(keys) do
+			local node = T[key]
+			local rank = talents[key] or 0
+			local side = talents[key .. "_S"]
+			local icon = (node.Choice and side and node.Choice[side].Icon) or node.Icon
+			local x = colX("Passive", 0.18 + (i - 0.5) * (0.82 / math.max(3, #keys)))
+			local state = not open and "locked" or (rank >= node.Max and "done" or (rank > 0 and "active" or "open"))
+			local chosen = isSel("Talent", key)
+			local tile = create("Frame", { Size = UDim2.new(0, 38, 0, 38), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y),
+				BackgroundColor3 = state == "locked" and Color3.fromRGB(30, 28, 44) or (rank > 0 and TALENT_COLOR:Lerp(DARK, 0.55) or Color3.fromRGB(38, 40, 62)), BorderSizePixel = 0, ZIndex = 4 }, C.Row)
+			create("UICorner", { CornerRadius = UDim.new(0, node.Choice and 19 or 8) }, tile) -- (선택 칸은 동그랗게: 와우처럼 둘 중 하나)
+			create("UIStroke", { Color = chosen and Color3.new(1, 1, 1) or (rank >= node.Max and Color3.fromRGB(255, 215, 100) or (rank > 0 and TALENT_COLOR or DIM)), Thickness = chosen and 3 or 2 }, tile)
+			label({ Size = UDim2.new(1, 0, 1, 0), Text = state == "locked" and "🔒" or icon, TextSize = state == "locked" and 13 or 19, ZIndex = 5, TextTransparency = (state == "open" and rank == 0) and 0.35 or 0 }, tile)
+			local badge = label({ Size = UDim2.new(0, 26, 0, 13), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, 6, 1, 5), Text = string.format("%d/%d", rank, node.Max), TextSize = 9, ZIndex = 7,
+				BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(14, 12, 24), TextColor3 = rank >= node.Max and Color3.fromRGB(255, 215, 100) or (rank > 0 and Color3.fromRGB(150, 255, 170) or Color3.fromRGB(190, 190, 210)) }, tile)
+			create("UICorner", { CornerRadius = UDim.new(0, 4) }, badge)
+			local hit = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, tile)
+			hit.Activated:Connect(pick(env, "Talent", key))
+		end
+	end
+end
+
+local function talentDetail(env, key)
+	local Config = env.Config
+	local T = Config.Talents
+	local node = T and T[key]
+	if not node then return nil end
+	local talents, spent, total, rowOpen = talentState(env)
+	local rank = talents[key] or 0
+	local left = math.max(0, total - spent)
+	local lines = { string.format("<font size='14'><b>%s %s</b></font>  <font color='#ffd966'>%d / %d</font>  <font color='#9ad7ff'>· %d point(s) left (1 every %d levels)</font>", node.Icon, node.Name, rank, node.Max, left, T.PointsPerLevels) }
+	if node.Choice then
+		for _, side in ipairs({ "A", "B" }) do
+			local c = node.Choice[side]
+			local mine = talents[key .. "_S"] == side
+			table.insert(lines, string.format("%s %s <b>%s</b> — <font color='#c8cce0'>%s</font>", mine and "<font color='#78ff8c'>✔</font>" or "◇", c.Icon, c.Name, c.Desc))
+		end
+		table.insert(lines, "<font color='#9aa0b8'>Pick one of the two</font>")
+	else
+		table.insert(lines, "<font color='#c8cce0'>" .. node.Desc .. "</font>")
+	end
+	if not rowOpen(node.Row) then table.insert(lines, string.format("<font color='#ff9a8a'>🔒 Spend %d points in the rows above first</font>", T.RowNeed[node.Row])) end
+	local can = rowOpen(node.Row) and left > 0 and rank < node.Max
+	local buttons = {}
+	local function spendButton(text, arg)
+		table.insert(buttons, { Text = text, Color = can and env.GREEN or env.GRAY, OnClick = function() if can then env.Remotes.Meta:FireServer("Talent", arg) end end })
+	end
+	if node.Choice then
+		if rank == 0 then
+			spendButton(node.Choice.A.Icon .. " " .. node.Choice.A.Name, key .. "|A")
+			spendButton(node.Choice.B.Icon .. " " .. node.Choice.B.Name, key .. "|B")
+		end
+	elseif rank < node.Max then
+		spendButton("⬆ Spend 1 point", key)
+	end
+	if spent > 0 then
+		local cost = Config.TalentResetCost(env.Player:GetAttribute("Level") or 1)
+		table.insert(buttons, { Text = env.InTown == false and "🏘 Reset in town" or string.format("🔁 Reset all\n%s G", comma(cost)), Color = Color3.fromRGB(120, 80, 60),
+			OnClick = function() if env.InTown ~= false then env.Remotes.Meta:FireServer("TalentReset") end end })
+	end
+	return TALENT_COLOR, table.concat(lines, "\n"), buttons
+end
+
 function M.BuildAll(env)
 	if not selected.Key then selected.Kind, selected.Key = "Skill", env.Config.Skills.UpgradeOrder[1] end
 	local okC, C = pcall(canvas, env)
@@ -396,16 +486,16 @@ function M.BuildAll(env)
 	C.divider(COLS.Skill[2])
 	C.divider(COLS.Train[2])
 	C.divider(COLS.Passive[2])
-	for _, part in ipairs({ drawSkills, drawTraining, drawPet }) do
+	for _, part in ipairs({ drawSkills, drawTraining, drawTalents, drawPet }) do
 		local ok, err = pcall(part, env, C)
 		if not ok then warn("[TrainingTree] " .. tostring(err)) end
 	end
-	local detailFn = selected.Kind == "Train" and trainDetail or (selected.Kind == "Pet" and petDetail or skillDetail)
+	local detailFn = selected.Kind == "Train" and trainDetail or (selected.Kind == "Pet" and petDetail or (selected.Kind == "Talent" and talentDetail or skillDetail))
 	local ok, color, text, button = pcall(detailFn, env, selected.Key)
 	if not ok then
 		warn("[TrainingTree] " .. tostring(color))
 	elseif color then
-		detailRow(env, color, text, button, selected.Kind == "Skill" and selected.Key or nil)
+		detailRow(env, color, text, button, selected.Kind == "Skill" and selected.Key or nil, selected.Kind == "Talent")
 	end
 end
 

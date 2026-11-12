@@ -1204,8 +1204,14 @@ function Dungeon.MarkMult(player, data)
 	local mult = (data.MarkedBy == player and os.clock() < (data.MarkedUntil or 0)) and Config.Pet.MarkBonus or 1
 	local bossDmg = (player:GetAttribute("GearBossDmg") or 0) + (player:GetAttribute("ParBoss") or 0)
 	if bossDmg > 0 and (data.IsBoss or data.BossLike or data.Kind == "Boss" or data.Elite) then mult *= 1 + bossDmg end
-	local finisher = Config.PassiveValue(player, "Finisher") -- 패시브 "마무리": 체력 30% 아래 적에게 더 아프게
-	if finisher > 0 and data.Health and data.MaxHealth and data.MaxHealth > 0 and data.Health / data.MaxHealth <= 0.3 then mult *= 1 + finisher end
+	local finisher = Config.PassiveValue(player, "Finisher") -- 특성 "마무리": 체력 30%(+"이른 마무리") 아래 적에게 더 아프게
+	local ratio = (data.Health and data.MaxHealth and data.MaxHealth > 0) and data.Health / data.MaxHealth or 1
+	if finisher > 0 and ratio <= 0.3 + Config.TalentMod(player, "Threshold") then mult *= 1 + finisher end
+	local bossLike = data.IsBoss or data.BossLike or data.Kind == "Boss" or data.Elite or data.Kind == "Elite"
+	local bossAny = Config.TalentMod(player, "BossAny") -- 특성 "보스 파괴자"
+	if bossAny > 0 and bossLike then mult *= 1 + bossAny end
+	local execute = Config.TalentMod(player, "Execute") -- 특성 "자비의 일격": 보스가 아닌 적은 체력 10% 아래면 즉사
+	if execute > 0 and ratio <= execute and not (data.IsBoss or data.BossLike or data.Kind == "Boss" or data.Kind == "Event") then mult *= 1000 end
 	if (player:GetAttribute("GearSunder") or 0) > 0 then -- 유니크 "Giant Slayer": 보스 / 엘리트에 균열 중첩
 		local okU, Unique = pcall(function() return require(script.Parent:WaitForChild("UniqueService")) end)
 		if okU then mult *= Unique.SunderMult(player, data) end
@@ -1533,8 +1539,15 @@ function Dungeon.ComputeDamage(player)
 	if os.clock() < (player:GetAttribute("NearMissUntil") or 0) then -- NEAR MISS 보상: 연속으로 피할수록 공격력이 누적해서 오른다
 		damage *= 1 + Config.GetNearMissDamage(player) * math.min(player:GetAttribute("NearMissStreak") or 0, Config.NearMiss.MaxStacks)
 	end
-	local rush = Config.PassiveValue(player, "Rush") -- 패시브 "돌진": 대시(Q) 뒤 2초 동안 공격력 증가
-	if rush > 0 and NearMiss.SinceDash(player) < 2 then damage *= 1 + rush end
+	local sinceDash = NearMiss.SinceDash(player)
+	local rush = Config.PassiveValue(player, "Rush") -- 특성 "돌격": 대시(Q) 뒤 2초 동안 공격력 증가 (+"돌격 치명": 치명타 확률)
+	if sinceDash < 2 then
+		if rush > 0 then damage *= 1 + rush end
+		chance += Config.TalentMod(player, "RushCrit")
+	end
+	if (player:GetAttribute("FrenzyUntil") or 0) > workspace:GetServerTimeNow() then -- 특성 "피의 광란"
+		damage *= 1 + 0.02 * (player:GetAttribute("FrenzyStacks") or 0)
+	end
 	local isCrit = math.random() < chance
 	if isCrit then
 		damage *= P.CritMultiplier + (player:GetAttribute("LvCritDmg") or 0) + (player:GetAttribute("TrainCritDmg") or 0) + (player:GetAttribute("GearCritDmg") or 0) + (player:GetAttribute("ParCritDmg") or 0) + overflow

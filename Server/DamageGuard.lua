@@ -27,6 +27,12 @@ function Guard.Take(humanoid, amount)
 		end
 		amount = amount * (1 - Guard.Reduction(player)) * (1 - (player:GetAttribute("GearBulwark") or 0)) * (1 - (player:GetAttribute("TrainBulwark") or 0)) -- (유니크 "Bulwark" / 훈련 "질긴 피부")
 		amount *= 1 - Config.Newbie.Defense * Config.NewbieStrength(player) -- 초보자 가호: 초반에는 받는 피해가 줄어든다
+		amount *= 1 - math.min(0.5, Config.TalentMod(player, "DmgReduce")) -- 특성 "강철 위장"
+		local rushGuard = Config.TalentMod(player, "RushGuard")
+		if rushGuard > 0 then -- 특성 "돌격 방어": 대시 뒤 2초 동안 받는 피해 감소
+			local okN, NearMiss = pcall(function() return require(script.Parent:WaitForChild("NearMissService")) end)
+			if okN and NearMiss.SinceDash and NearMiss.SinceDash(player) < 2 then amount *= 1 - rushGuard end
+		end
 		if (player:GetAttribute("RiftLeft") or 0) <= 0 then -- (보스러쉬 중에는 상한이 없다: 체력이 낮은 사람이 상한 덕에 유리해지면 순위가 불공정해진다)
 			amount = math.min(amount, humanoid.MaxHealth * Config.Defense.HitCap)
 		end
