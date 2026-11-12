@@ -772,6 +772,8 @@ return {
 		["⚠ Shockwave lines! Stand between them, then move"] = "⚠ ¡Líneas de choque! Ponte entre ellas y luego muévete",
 		["⚠ Rocks falling on you! Keep moving"] = "⚠ ¡Caen rocas sobre ti! Sigue moviéndote",
 		["⚠ Sweep! Find the gaps between the waves"] = "⚠ ¡Barrido! Busca los huecos entre las olas",
+		["Every kill shortens all skill cooldowns by 0.3s (up to 0.5s per second)"] = "Cada baja reduce todos los enfriamientos 0,3 s (máx. 0,5 s por segundo)",
+		["Every execute cuts all skill cooldowns by 1s more, and kills can cut up to 1s per second"] = "Cada ejecución reduce todos los enfriamientos 1 s más, y las bajas pueden reducir hasta 1 s por segundo",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1002,8 +1004,5 @@ return {
 		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 Nueva arma: Tomo de hechizos - ¡presiona {number1}!" },
 		{ "Gacha_Pop{number1}  Gacha result: Legendary", "Gacha_Pop{number1} Resultado de Gacha: Legendario" },
 		{ "{number1} hours of idle gold ({number2} G) piled up!", "¡{number1} horas de oro inactivo ({number2} G) acumulado!" },
-		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 Entrada del campo Justo detrás! {number1}m" },
-		{ "Clear {number1} dungeon(s)  ✅ tap to claim!", "Completa {number1} mazmorras ✅ ¡toca para reclamar!" },
-		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 Cofre del jefe · {number1} piezas de equipo</b>" },
 	},
 }

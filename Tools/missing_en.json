@@ -2617,5 +2617,7 @@
 "⚠ Checkerboard! Move onto the tiles that just exploded",
 "⚠ Shockwave lines! Stand between them, then move",
 "⚠ Rocks falling on you! Keep moving",
-"⚠ Sweep! Find the gaps between the waves"
+"⚠ Sweep! Find the gaps between the waves",
+"Every kill shortens all skill cooldowns by 0.3s (up to 0.5s per second)",
+"Every execute cuts all skill cooldowns by 1s more, and kills can cut up to 1s per second"
 ]

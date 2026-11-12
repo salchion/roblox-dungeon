@@ -94,6 +94,23 @@ function Skill.ReduceCooldowns(player, seconds)
 	Remotes.Skill:FireClient(player, "Reduce", nil, seconds)
 end
 
+-- 처치로 줄이는 쿨타임 (시간 왜곡 유니크 / 피의 질주 특성 / 처형의 박자 조합): 몰이 사냥에서 쿨타임이 사라지지 않게 "예산"을 둔다
+--   예산은 1초마다 0.5초씩 차고(처형의 박자가 켜져 있으면 1초씩) 최대 2초까지 쌓인다. 띄엄띄엄 잡으면 전부 받고, 한꺼번에 잡으면 예산만큼만
+local killCdrBudget = setmetatable({}, { __mode = "k" })
+function Skill.ReduceCooldownsFromKill(player, seconds)
+	if seconds <= 0 then return end
+	local now = os.clock()
+	local b = killCdrBudget[player]
+	local rate = player:GetAttribute("AugSyn_Rhythm") == true and 1 or 0.5
+	if not b then b = { Amount = 2, At = now } killCdrBudget[player] = b end
+	b.Amount = math.min(2, b.Amount + (now - b.At) * rate)
+	b.At = now
+	local give = math.min(seconds, b.Amount)
+	if give <= 0.01 then return end
+	b.Amount -= give
+	Skill.ReduceCooldowns(player, give)
+end
+
 -- 유니크 "Slaughterer": 내 주변 범위 피해 + 붉은 충격파
 function Skill.UniqueWave(player, center, radius, mult, source, color)
 	ring(center, radius, color, 0.5)

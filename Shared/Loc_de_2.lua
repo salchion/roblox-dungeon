@@ -724,6 +724,8 @@ return {
 		["⚠ Shockwave lines! Stand between them, then move"] = "⚠ Schockwellen! Stell dich dazwischen, dann weiter",
 		["⚠ Rocks falling on you! Keep moving"] = "⚠ Steine fallen auf dich! Bleib in Bewegung",
 		["⚠ Sweep! Find the gaps between the waves"] = "⚠ Fegen! Such die Lücken zwischen den Wellen",
+		["Every kill shortens all skill cooldowns by 0.3s (up to 0.5s per second)"] = "Jeder Kill verkürzt alle Abklingzeiten um 0,3 s (max. 0,5 s pro Sekunde)",
+		["Every execute cuts all skill cooldowns by 1s more, and kills can cut up to 1s per second"] = "Jede Hinrichtung verkürzt alle Abklingzeiten um 1 s mehr, und Kills können bis zu 1 s pro Sekunde verkürzen",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -985,8 +987,5 @@ return {
 		{ "Crit chance +{number1}% per point  (max {number2})", "Krit-Chance +{number1}% pro Punkt  (max. {number2})" },
 		{ "🏚 Ruined Fortress Gate · Rec. ⚡{number1}", "🏚 Ruiniertes Festungstor · Rec. ⚡{number1}" },
 		{ "🏚 Ruined Fortress Gate · Rec. ⚡{number2}", "🏚 Ruiniertes Festungstor · Rec. ⚡{number2}" },
-		{ "📍 Field · Best Zone {number1}   🎟 Free {number2}/{number3}", "📍 Feld · Beste Zone {number1} 🎟 Kostenlos {number2}/{number3}" },
-		{ "⚔ Rocket Launcher · Rusty Era +{number10}", "⚔ Raketenwerfer · Rostige Ära +{number10}" },
-		{ "⚔ Rocket Launcher · Rusty Era +{number1}", "⚔ Raketenwerfer · Rostige Ära +{number1}" },
 	},
 }

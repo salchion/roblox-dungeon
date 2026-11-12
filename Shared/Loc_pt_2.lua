@@ -743,6 +743,8 @@ return {
 		["⚠ Shockwave lines! Stand between them, then move"] = "⚠ Linhas de choque! Fique entre elas e depois mova-se",
 		["⚠ Rocks falling on you! Keep moving"] = "⚠ Pedras caindo em você! Continue se movendo",
 		["⚠ Sweep! Find the gaps between the waves"] = "⚠ Varredura! Ache as brechas entre as ondas",
+		["Every kill shortens all skill cooldowns by 0.3s (up to 0.5s per second)"] = "Cada abate reduz todas as recargas em 0,3s (máx. 0,5s por segundo)",
+		["Every execute cuts all skill cooldowns by 1s more, and kills can cut up to 1s per second"] = "Cada execução reduz todas as recargas em mais 1s, e abates podem reduzir até 1s por segundo",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -993,8 +995,5 @@ return {
 		{ "Points left {number1}  /  total {number2}  (Level {number3})", "Pontos restantes {number1}  /  total {number2}  (nível {number3})" },
 		{ "🔥 Better gear dropped! ({number1} slot(s))", "🔥 Caiu equipamento melhor! ({number1} espaço(s))" },
 		{ "Crit damage +{number1}%p per point  (max {number2})", "Dano crítico +{number1}%p por ponto  (máx. {number2})" },
-		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 {number1} recompensas resgatadas! ({number2} novos títulos)" },
-		{ "Keeps {number1} more stacks even if broken", "Mantém {number1} acúmulos a mais mesmo se quebrar" },
-		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 Senhor do Abismo (Zona {number1}) · Rec. ⚡{number2}" },
 	},
 }

@@ -49,7 +49,7 @@ local function recompute(player)
 	player:SetAttribute("GearJackpot", Config.SoftCap(affix.Jackpot, 0.15))
 	player:SetAttribute("GearBulwark", Config.SoftCap(affix.Bulwark, 0.4))
 	-- 새 능력형 유니크 (UniqueService): 같은 유니크를 여러 개 껴도 한 번만 / 조금만 더 세진다
-	player:SetAttribute("GearKillCdr", math.min(0.8, affix.KillCdr))
+	player:SetAttribute("GearKillCdr", math.min(0.5, affix.KillCdr))
 	player:SetAttribute("GearSlaughter", math.min(1, affix.Slaughter))
 	player:SetAttribute("GearStar", Config.SoftCap(affix.Star, 0.15))
 	player:SetAttribute("GearSunder", math.min(1, affix.Sunder))

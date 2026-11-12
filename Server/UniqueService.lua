@@ -59,7 +59,7 @@ function U.OnKill(player)
 	local killCdr = Config.TalentMod(player, "KillCdr") -- 특성 "피의 질주": 처치마다 스킬 쿨타임 감소
 	if killCdr > 0 then
 		local okSkill, Skill = pcall(function() return require(script.Parent:WaitForChild("SkillService")) end)
-		if okSkill and Skill.ReduceCooldowns then Skill.ReduceCooldowns(player, killCdr) end
+		if okSkill and Skill.ReduceCooldownsFromKill then Skill.ReduceCooldownsFromKill(player, killCdr) end
 	end
 	if Config.TalentMod(player, "Frenzy") > 0 then -- 특성 "피의 광란": 처치마다 5초 동안 공격력 +2% (최대 10겹)
 		local now = workspace:GetServerTimeNow()
@@ -71,7 +71,7 @@ function U.OnKill(player)
 	local cdr = player:GetAttribute("GearKillCdr") or 0
 	if cdr > 0 then
 		local okSkill, Skill = pcall(function() return require(script.Parent:WaitForChild("SkillService")) end)
-		if okSkill and Skill.ReduceCooldowns then Skill.ReduceCooldowns(player, cdr) end
+		if okSkill and Skill.ReduceCooldownsFromKill then Skill.ReduceCooldownsFromKill(player, cdr) end
 	end
 	-- 학살자
 	if (player:GetAttribute("GearSlaughter") or 0) > 0 and root then

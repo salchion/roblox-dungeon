@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 履き古した靴を自動回収（エッセンス +{number1} {number2} G）" },
+		{ "Reduces training / breakthrough wait time by {number1} hour", "トレーニング/ブレークスルーの待機時間を{number1}時間短縮する" },
 		{ "Clear depth {number1} once more to record its Sweep reward.", "スイープ報酬を記録するため、深度{number1}をもう一度クリアしてください。" },
 		{ "🎯 Boss hunter  ·  ✔ 🔫 Sniper Rifle / Railgun (+{number1}%)", "🎯 ボスハンター  ·  ✔ 🔫 スナイパーライフル/レールガン (+{number1}%)" },
 		{ "Zone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated", "ゾーン{number2}のモンスター{number3}/{number4}を倒した · ロード👑は倒されていない" },

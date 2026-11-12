@@ -1865,7 +1865,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 		end
 		if synergy(player, "Rhythm", run) then -- 처형의 박자: 처형할 때마다 모든 스킬 쿨타임 -1초 (시간 왜곡 유니크와 따로 더해진다)
 			local okSkill, Skill = pcall(function() return require(script.Parent:WaitForChild("SkillService")) end)
-			if okSkill and Skill.ReduceCooldowns then Skill.ReduceCooldowns(player, 1) end
+			if okSkill and Skill.ReduceCooldownsFromKill then Skill.ReduceCooldownsFromKill(player, 1) end
 		end
 		if synergy(player, "Reaper", run) and augDepth == 0 then
 			local from = part.Position + Vector3.new(0, 3, 0)

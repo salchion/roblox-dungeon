@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 {number1} recompensas resgatadas! ({number2} novos títulos)" },
+		{ "Keeps {number1} more stacks even if broken", "Mantém {number1} acúmulos a mais mesmo se quebrar" },
+		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 Senhor do Abismo (Zona {number1}) · Rec. ⚡{number2}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 {number1} entradas grátis hoje · 🗝 {number2} chaves!" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 Próxima arma a ser desbloqueada: Espingarda (+{number1})" },
 		{ "⚠ Reach level {number1} to break through.", "⚠ Alcance o nível {number1} para avançar." },

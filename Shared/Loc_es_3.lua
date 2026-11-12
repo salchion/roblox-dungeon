@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 Entrada del campo Justo detrás! {number1}m" },
+		{ "Clear {number1} dungeon(s)  ✅ tap to claim!", "Completa {number1} mazmorras ✅ ¡toca para reclamar!" },
+		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 Cofre del jefe · {number1} piezas de equipo</b>" },
 		{ "· {number1} point(s) left (1 every {number2} levels)", "· Quedan {number1} punto(s) (1 cada {number2} niveles)" },
 		{ "👑 Lord of Desert (Zone {number1}) · Rec. ⚡{number2}", "👑 Señor del Desierto (Zona {number1}) · Rec. ⚡{number2}" },
 		{ "🏜 Desert Temple Entrance · Rec. ⚡{number2}", "🏜 Entrada del templo del desierto · Rec. ⚡{number2}" },

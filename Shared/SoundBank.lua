@@ -91,7 +91,7 @@ SPECS.Gacha_Tick  = { Base = "Enh_Hammer", Pitch = 0.95, Volume = 0.35, Length =
 SPECS.UI_Click    = { Base = "Hit", Pitch = 0.75, Volume = 0.6, Length = 0.1, CustomLength = 0.2, Fx = { { "eq", { LowGain = 2, MidGain = 0, HighGain = -14 } } } } -- 버튼 누를 때 작은 "톡" (예전 뽑기 틱 소리)
 SPECS.Gacha_Card  = { Base = "Dash", Pitch = 1.35, Volume = 0.5, Length = 0.3, Fx = { { "eq", { LowGain = -4, MidGain = 0, HighGain = -4 } } } } -- 카드 넘기는 "휙"
 SPECS.Dash   = { Base = "Shot", Pitch = 0.35, Volume = 5.5, Length = 0.4, CustomLength = 1.0, Fx = { { "eq", { HighGain = -12 } } } }  -- 대시 "슈웅"
--- 스탯 창 (레벨 스탯 / 패러건): + 는 포인트를 넣을 때마다 음이 조금씩 올라가는 "팅", - 는 낮고 짧은 "톡", 최대 는 파워업
+-- 스탯 창 (레벨 스탯 / 초월): + 는 포인트를 넣을 때마다 음이 조금씩 올라가는 "팅", - 는 낮고 짧은 "톡", 최대 는 파워업
 SPECS.Stat_Up   = { Base = "Chime", Pitch = 1.25, Volume = 0.55, Length = 0.3, Fx = { { "eq", { LowGain = 1, MidGain = 0, HighGain = -9 } } } }
 SPECS.Stat_Down = { Base = "Chime", Pitch = 0.8, Volume = 0.4, Length = 0.18, Fx = { { "eq", { LowGain = 3, MidGain = 0, HighGain = -14 } } } }
 SPECS.Stat_Max  = { Base = "Aug_Get", Pitch = 1.0, Volume = 0.75, Length = 0.9, Fx = { { "reverb", { DecayTime = 0.9, WetLevel = -9 } } } }

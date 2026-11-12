@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "📍 Field · Best Zone {number1}   🎟 Free {number2}/{number3}", "📍 Feld · Beste Zone {number1} 🎟 Kostenlos {number2}/{number3}" },
+		{ "⚔ Rocket Launcher · Rusty Era +{number10}", "⚔ Raketenwerfer · Rostige Ära +{number10}" },
+		{ "⚔ Rocket Launcher · Rusty Era +{number1}", "⚔ Raketenwerfer · Rostige Ära +{number1}" },
 		{ "👹 Monster health x{number1}  ·  damage x{number2}", "👹 Monster-Leben x{number1}  ·  Schaden x{number2}" },
 		{ "(Idle Booster applied for {number1} min)", "(Leerlauf-Booster für {number1} Min. angewendet)" },
 		{ "every {number1}s lightning hits {number2} enemies", "alle {number1} s trifft ein Blitz {number2} Gegner" },

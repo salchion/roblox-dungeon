@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Best {number1}  ·  Max hit {number2}", "最佳 {number1} · 最大击中数 {number2}" },
+		{ "🗿 Colossus · Zone {number1}", "🗿 巨像 · 区域 {number1}" },
+		{ "⚔ DUNGEON  ·  Lv.{number1}+", "⚔ 地牢 · 等级{number1}+" },
+		{ "Zone {number1} · Trial Lv.3", "区域{number1} · 试炼 Lv.3" },
+		{ "Upgrade success! +{number1}", "强化成功!+{number1}" },
 		{ "Field · Best Zone {number1}", "野外 · 最高区域{number1}" },
 		{ "👥 Online: {number1} players", "👥 在线:{number1} 人" },
 		{ "Recommended Power {number1}", "推荐战力 {number1}" },

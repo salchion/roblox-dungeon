@@ -481,7 +481,7 @@ Config.AugSynergies = {
 	LuckySalvo   = { Need = { "AugMissile", "GearStar" },     Icon = "🍀", Name = "Lucky Salvo", Desc = "While Lucky Star is active, crit missiles fire +2 more" },
 	Searing      = { Need = { "AugFlame", "GearSunder" },     Icon = "🪓", Name = "Searing Sunder", Desc = "Hitting a boss or elite adds 1 more Ignite stack" },
 	-- 세트 효과 + 유니크 조합 (Need 에 "Gear..." 가 있으면 그 유니크 능력을 장착하고 있어야 한다): 플레이 방식이 바뀌는 조합
-	Rhythm       = { Need = { "AugExecute", "GearKillCdr" }, Icon = "⏳", Name = "Reaper's Rhythm", Desc = "Every execute cuts all skill cooldowns by 1s more: keep Blade Bloom spinning" },
+	Rhythm       = { Need = { "AugExecute", "GearKillCdr" }, Icon = "⏳", Name = "Reaper's Rhythm", Desc = "Every execute cuts all skill cooldowns by 1s more, and kills can cut up to 1s per second" },
 	Rampart      = { Need = { "AugNova", "GearShield" },     Icon = "🛡", Name = "Bursting Rampart", Desc = "When your Bulwark shield blocks a hit, it bursts and blasts enemies around you (400%)" },
 	Inferno      = { Need = { "AugNova", "AugFlame" },      Icon = "🌋", Name = "Sea of Flames",    Desc = "Kill Burst is 30% wider and sets every enemy it hits on fire (2 Ignite stacks)" },
 	StormEye     = { Need = { "AugStorm", "AugMeteor" },    Icon = "🌩", Name = "Eye of the Storm", Desc = "Each time a meteor lands, extra lightning strikes nearby enemies" },
@@ -1598,7 +1598,7 @@ function Config.GetLevelDamageMult(level)
 	return 1 + Config.Level.DamagePerLevel * early + Config.Level.LateDamagePerLevel * late
 end
 
--- 패러건 (최대 레벨 이후 성장): 400 레벨을 찍은 뒤에만 열린다. 그때부터 쌓이는 경험치가 더 이상 버려지지 않고 "패러건 포인트"가 되어,
+-- 초월 (최대 레벨 이후 성장): 400 레벨을 찍은 뒤에만 열린다. 그때부터 쌓이는 경험치가 더 이상 버려지지 않고 "초월 포인트"가 되어,
 -- 아래 스탯에 찍을 수 있다 (400 레벨 전에는 포인트도 없고 찍을 수도 없다). 언제든 무료로 빼고 다시 넣을 수 있다.
 Config.Paragon = {
 	Order = { "Attack", "Crit", "CritDmg", "Boss" },
@@ -1802,7 +1802,7 @@ Config.Uniques = {
 	Chance = 0.30,
 	Split = { Name = "Splitting Bullets", Desc = "Fires 1 more shot right after (same direction)", Effects = { { Stat = "Shot", Value = 1 } } },
 	-- (숫자만 오르던 유니크 5종을 "새 능력"으로 바꿨다: UniqueService 가 처리한다. 평균 위력은 예전과 비슷하게)
-	Chrono = { Name = "Time Warp", Desc = "Every kill shortens all skill cooldowns by 0.4s", Effects = { { Stat = "KillCdr", Value = 0.4 } } },
+	Chrono = { Name = "Time Warp", Desc = "Every kill shortens all skill cooldowns by 0.3s (up to 0.5s per second)", Effects = { { Stat = "KillCdr", Value = 0.3 } } }, -- (0.4 -> 0.3 + 초당 상한: 몰이 사냥에서 쿨타임이 사라져 너무 셌다)
 	Slayer = { Name = "Slaughterer", Desc = "Every 10 kills unleash a Slaughter Wave around you (300% damage)", Effects = { { Stat = "Slaughter", Value = 1 } } },
 	Fortune = { Name = "Lucky Star", Desc = "Kills sometimes drop a Lucky Star: Luck +150% for 5s · XP +30%", Effects = { { Stat = "Star", Value = 0.06 }, { Stat = "Xp", Value = 0.3 } } },
 	-- 플레이 방식이 바뀌는 유니크 (신화 장비에만 붙는다: 파밍할 이유)

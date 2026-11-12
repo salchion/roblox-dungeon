@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Niveau supérieur ! Lv.{number1} (PV max +{number2} Attaque +{number3}%)" },
+		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} améliorations : {number2} réussies / {number3} échouées  (Or -{number4})" },
+		{ "Reach level {number1} to buy points with gold.", "Atteignez le niveau {number1} pour acheter des points avec de l'or." },
 		{ "🎫 A {number1}x pull needs {number2} tickets (you have {number3})", "🎫 Un tirage x{number1} coûte {number2} tickets (vous en avez {number3})" },
 		{ "🗿 Colossus defeated! Gear + 🎫 +1 + {number1} G", "🗿 Colosse vaincu ! Équipement + 🎫 +1 + {number1} or" },
 		{ "🔒 Unlocks at level {number1}  (you are level {number2})", "🔒 Se débloque au niveau {number1}  (vous êtes niveau {number2})" },

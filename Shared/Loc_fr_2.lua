@@ -782,6 +782,8 @@ return {
 		["⚠ Shockwave lines! Stand between them, then move"] = "⚠ Lignes de choc ! Place-toi entre elles, puis bouge",
 		["⚠ Rocks falling on you! Keep moving"] = "⚠ Des rochers tombent sur toi ! Bouge",
 		["⚠ Sweep! Find the gaps between the waves"] = "⚠ Balayage ! Trouve les trous entre les vagues",
+		["Every kill shortens all skill cooldowns by 0.3s (up to 0.5s per second)"] = "Chaque élimination réduit tous les temps de recharge de 0,3 s (max 0,5 s par seconde)",
+		["Every execute cuts all skill cooldowns by 1s more, and kills can cut up to 1s per second"] = "Chaque exécution réduit tous les temps de recharge d'1 s de plus, et les éliminations peuvent réduire jusqu'à 1 s par seconde",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -987,8 +989,5 @@ return {
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} objets recyclés automatiquement (Essence +{number2}, {number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 Pas assez d'or pour se téléporter ! ({number1} G requis)" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Lancer multiple !\nUtilise tous les tickets (maximum {number1})" },
-		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Niveau supérieur ! Lv.{number1} (PV max +{number2} Attaque +{number3}%)" },
-		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} améliorations : {number2} réussies / {number3} échouées  (Or -{number4})" },
-		{ "Reach level {number1} to buy points with gold.", "Atteignez le niveau {number1} pour acheter des points avec de l'or." },
 	},
 }
