@@ -4,6 +4,16 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Dungeon_Fail  <font color='#{number1}aa{number2}c{number3}'>Dungeon failed</font>", "던전 실패 <font color='#{number1}aa{number2}c{number3}'>던전 실패</font>" },
+		{ "🔫 Next era Steel Era (+{number1})\nUpgrade cost {number2} G · You have {number3} G", "🔫 다음 시대 강철 시대 (+{number1})\n업그레이드 비용 {number2} G · 보유 중인 G: {number3}" },
+		{ "🔑 Entry: <b>{number1} key</b> (or 1 of your daily free entries)", "🔑 입장: <b>열쇠 {number1}개</b> (또는 매일 무료 입장 1회)" },
+		{ "Damage to bosses / lords / elites +{number1}% per point  (max {number2})", "보스 / 군주 / 정예 대상 피해 +{number1}% / 포인트당  (최대 {number2})" },
+		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one", "발견한 유니크 효과 {number1} / {number2}  ·  신화 장비에 붙을 수 있어요" },
+		{ "Locks onto up to {number1} enemies, total damage -{number2}%: for crowds", "최대 {number1}마리까지 락온, 총 피해 -{number2}%: 무리용" },
+		{ "⚖ All-round  ·  ✔ 🔫 Spell Tome / Rocket Launcher (+{number1}%)", "⚖ 올라운드 · ✔ 🔫 스펠 토메 / 로켓 런처 (+{number1}%)" },
+		{ "🔒 Zone {number1} · Volcano Sealed\nOpen the previous gate first", "🔒 구역 {number1} · 화산 봉쇄됨\n먼저 이전 게이트를 여세요" },
+		{ "♻ [Common] Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [일반] 가죽 방어구 자동 회수 (에센스 +{number1} {number2}G)" },
+		{ "Zone {number1} set effect · Trial Lv.3 — for this dungeon only", "{number1}구역 세트 효과 · 체험 Lv.3 — 이번 던전에서만" },
 		{ "<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "<font color='#{number4}ad{number5}ff'>스펠 토메 · 신화 시대 +{number6}</font>" },
 		{ "Shot_Shotgun  <font color='#{number1}aa{number2}c{number3}'>Shotgun shot</font>", "샷_샷건 <font color='#{number1}aa{number2}c{number3}'>샷건 샷</font>" },
 		{ "🔒 Zone {number1} · Desert Sealed\nOpen the previous gate first", "🔒 구역 {number1} · 사막 봉쇄됨\n먼저 이전 게이트를 여세요" },

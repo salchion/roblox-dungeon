@@ -4,6 +4,15 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Clear depth {number1} once more to record its Sweep reward.", "スイープ報酬を記録するため、深度{number1}をもう一度クリアしてください。" },
+		{ "🎯 Boss hunter  ·  ✔ 🔫 Sniper Rifle / Railgun (+{number1}%)", "🎯 ボスハンター  ·  ✔ 🔫 スナイパーライフル/レールガン (+{number1}%)" },
+		{ "Zone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated", "ゾーン{number2}のモンスター{number3}/{number4}を倒した · ロード👑は倒されていない" },
+		{ "Shot_Pistol  <font color='#{number1}aa{number2}c{number3}'>Rifle shot</font>", "ショットピストル <font color='#{number1}aa{number2}c{number3}'>ライフルショット</font>" },
+		{ "Reach weapon upgrade level {number1} (about the {number2}th weapon)", "武器のアップグレードレベル{number1}（{number2}番目の武器）に到達する" },
+		{ "⚠ Monster overrun! Thin them out within {number1}s!  ({number2} / {number3})", "⚠ モンスターが溢れています！{number1}秒以内に減らそう！({number2} / {number3})" },
+		{ "🏆 You defeated the Final Lord!  +{number1} gold  +{number2} tickets", "🏆 ファイナルロードを倒した！  +{number1}ゴールド  +{number2}チケット" },
+		{ "⭐ New record! Depth {number1} cleared. Depth {number2} is unlocked.", "⭐ 新記録！深度{number1}クリア。深度{number2}が解放されました。" },
+		{ "💢 Boss #{number1} is AWAKENED — it attacks twice in a row!", "💢 ボス#{number1}が覚醒した — 2回連続で攻撃してくる！" },
 		{ "🌪 Mob hunter  ·  ✔ 🔫 Railgun / Sniper Rifle (+{number1}%)", "🌪 モブハンター  ·  ✔ 🔫 レールガン/スナイパーライフル (+{number1}%)" },
 		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>\nON</font>", "<font color='#{number1}fffb{number2}'><b>自動攻撃</b>\nオン</font>" },
 		{ "🥈 LeeGoAll_TV\n⚡ {number1} Lv.{number2}\nSniper Rifle · Arcane Era +{number3}", "🥈 LeeGoAll_TV\n⚡ {number1} レベル{number2}\nスナイパーライフル・神秘の時代 +{number3}" },

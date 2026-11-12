@@ -4,6 +4,17 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎫 A {number1}x pull needs {number2} tickets (you have {number3})", "🎫 Un tirage x{number1} coûte {number2} tickets (vous en avez {number3})" },
+		{ "🗿 Colossus defeated! Gear + 🎫 +1 + {number1} G", "🗿 Colosse vaincu ! Équipement + 🎫 +1 + {number1} or" },
+		{ "🔒 Unlocks at level {number1}  (you are level {number2})", "🔒 Se débloque au niveau {number1}  (vous êtes niveau {number2})" },
+		{ "Pierces up to {number1} more enemies in a line", "Transperce jusqu'à {number1} ennemis de plus en ligne" },
+		{ "Lasts +{number1}s · range +{number2}%: sweeps up swarms", "Durée +{number1} s · portée +{number2} % : balaie les hordes" },
+		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 Seigneur du champ de neige (zone {number1}) · Rec. ⚡{number2}" },
+		{ "💥Explosive Shot {number1} · ⚡Chain Lightning {number2}", "💥Tir explosif {number1} · ⚡Foudre en chaîne {number2}" },
+		{ "👑 Lord of Wasteland (Zone {number1}) · Rec. ⚡{number2}", "👑 Seigneur des terres désolées (Zone {number1}) · Rec. ⚡{number2}" },
+		{ "Spell Tome  ·  keys {number1}-{number2} switch weapons", "Livre de sorts · les touches {number1}-{number2} permettent de changer d'arme" },
+		{ "Defeat {number1} monsters (dungeons included)", "Vainquez {number1} monstres (donjons inclus)" },
+		{ "🎯 Ready to challenge the Zone {number1} Lord!", "🎯 Prêt à défier le seigneur de la zone {number1} !" },
 		{ "Gold x{number1} · Tickets {number2} · Boss chest gear {number3}", "Or x{number1} · Tickets {number2} · Équipement du coffre de boss {number3}" },
 		{ "Bounces to {number1} nearby enemies (within {number2})", "Rebondit sur {number1} ennemis proches (à moins de {number2})" },
 		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 {number1} esprits combattront pour vous pendant {number2} s !" },

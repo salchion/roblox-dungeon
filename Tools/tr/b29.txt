@@ -566,3 +566,21 @@
 2598¦· この道に{number1}ポイント¦· {number1} Punkt(e) in diesem Pfad¦· {number1} point(s) dans cette voie¦· {number1} punto(s) en esta rama¦· {number1} ponto(s) neste caminho¦· 此路线已投入{number1}点¦· 이 길에 {number1}점
 2599¦攻撃¦Angriff¦Attaque¦Ataque¦Ataque¦进攻¦공격
 2600¦生存¦Überleben¦Survie¦Supervivencia¦Sobrevivência¦生存¦생존
+2601¦🛡 防壁が攻撃を防いだ！¦🛡 Bollwerk hat einen Treffer geblockt!¦🛡 Le rempart a bloqué un coup !¦🛡 ¡El baluarte bloqueó un golpe!¦🛡 O baluarte bloqueou um golpe!¦🛡 壁垒挡住了一次攻击！¦🛡 방벽 장비가 공격 한 번을 막았어요!
+2602¦✂ 攻撃キャンセル！ダメージ2倍¦✂ Angriff abgebrochen! x2 Schaden¦✂ Attaque annulée ! Dégâts x2¦✂ ¡Ataque cancelado! Daño x2¦✂ Ataque cancelado! Dano x2¦✂ 攻击被打断！伤害x2¦✂ 적 공격 취소! 피해 x2
+2603¦🩸 殺戮の波動！周りの敵すべてに攻撃¦🩸 Gemetzelwelle! Trifft alles in der Nähe¦🩸 Vague de carnage ! Frappe tout autour¦🩸 ¡Ola de matanza! Golpea todo alrededor¦🩸 Onda do massacre! Atinge tudo por perto¦🩸 屠戮波动！攻击周围所有敌人¦🩸 학살의 파동! 주변 적 모두 공격
+2604¦⭐ 幸運の星！装備ドロップ運+150%¦⭐ Glücksstern! Ausrüstungs-Glück +150%¦⭐ Étoile chanceuse ! Chance d'équipement +150 %¦⭐ ¡Estrella de la suerte! Suerte de equipo +150%¦⭐ Estrela da sorte! Sorte de equipamento +150%¦⭐ 幸运之星！装备掉落幸运+150%¦⭐ 행운의 별! 장비 드롭 행운 +150%
+2605¦🪓 装甲破壊！このボスへのダメージ+40%¦🪓 Rüstung zerbrochen! +40% Schaden gegen diesen Boss¦🪓 Armure brisée ! +40 % de dégâts sur ce boss¦🪓 ¡Armadura rota! +40% de daño a este jefe¦🪓 Armadura quebrada! +40% de dano neste chefe¦🪓 护甲破碎！对此首领伤害+40%¦🪓 갑옷 부수기 최대! 이 보스에게 피해 +40%
+2606¦🎰 ジャックポット！ダメージ5倍¦🎰 Jackpot! x5 Schaden¦🎰 Jackpot ! Dégâts x5¦🎰 ¡Premio gordo! Daño x5¦🎰 Jackpot! Dano x5¦🎰 大奖！伤害x5¦🎰 잭팟! 피해 x5
+2607¦⚡ 雷弾！落雷¦⚡ Donnergeschosse! Blitzschlag¦⚡ Balles de foudre ! Coup de foudre¦⚡ ¡Balas de trueno! Rayo¦⚡ Balas de trovão! Raio¦⚡ 雷霆弹！落雷¦⚡ 번개탄! 번개가 내리쳐요
+2608¦🛡 バリア！しばらくダメージなし¦🛡 Barriere! Kurz kein Schaden¦🛡 Barrière ! Aucun dégât pendant un moment¦🛡 ¡Barrera! Sin daño por un momento¦🛡 Barreira! Sem dano por um momento¦🛡 屏障！短时间内免疫伤害¦🛡 보호막! 잠시 피해를 안 받아요
+2609¦🛡 正面は盾で防がれる！後ろから攻撃¦🛡 Der Schild blockt vorne! Triff ihn von hinten¦🛡 Le bouclier bloque l'avant ! Frappe par derrière¦🛡 ¡El escudo bloquea el frente! Golpea por detrás¦🛡 O escudo bloqueia a frente! Ataque por trás¦🛡 正面被盾牌挡住！从背后攻击¦🛡 정면은 방패에 막혀요! 뒤에서 공격하세요
+2610¦⚠ 審判 — 近づけ！¦⚠ GERICHT — komm näher!¦⚠ JUGEMENT — approche-toi !¦⚠ JUICIO — ¡acércate!¦⚠ JULGAMENTO — chegue perto!¦⚠ 审判 — 快靠近！¦⚠ 심판 — 가까이 가세요!
+2611¦😡 激怒！攻撃が増える¦😡 Wütend! Jetzt mehr Angriffe¦😡 Enragé ! Plus d'attaques¦😡 ¡Enfurecido! Ahora ataca más¦😡 Enfurecido! Agora ataca mais¦😡 狂怒！攻击变多了¦😡 분노! 이제 공격이 더 많아져요
+2612¦💥 被弾！¦💥 Getroffen!¦💥 Touché !¦💥 ¡Te golpearon!¦💥 Você foi atingido!¦💥 你被击中了！¦💥 맞았어요!
+2613¦🎯 デッドアイ！¦🎯 Totauge!¦🎯 Œil de lynx !¦🎯 ¡Ojo certero!¦🎯 Olho mortal!¦🎯 死亡之眼！¦🎯 데드아이!
+2614¦⚠ 大地震！緑の円に入れ！¦⚠ BEBEN! Geh in einen grünen Kreis!¦⚠ SÉISME ! Entre dans un cercle vert !¦⚠ ¡TERREMOTO! ¡Entra en un círculo verde!¦⚠ TERREMOTO! Entre num círculo verde!¦⚠ 地震！进入绿色圆圈！¦⚠ 대지진! 초록 원 안으로!
+2615¦⚠ チェッカー！爆発した床へ移動¦⚠ Schachbrett! Geh auf die Felder, die gerade explodiert sind¦⚠ Damier ! Va sur les cases qui viennent d'exploser¦⚠ ¡Tablero! Muévete a las casillas que acaban de explotar¦⚠ Tabuleiro! Vá para os quadrados que acabaram de explodir¦⚠ 棋盘！移到刚爆炸的格子上¦⚠ 바둑판! 방금 터진 칸으로 옮기세요
+2616¦⚠ 衝撃波の線！線の間に立ってから移動¦⚠ Schockwellen! Stell dich dazwischen, dann weiter¦⚠ Lignes de choc ! Place-toi entre elles, puis bouge¦⚠ ¡Líneas de choque! Ponte entre ellas y luego muévete¦⚠ Linhas de choque! Fique entre elas e depois mova-se¦⚠ 冲击波线！站在线之间，然后移动¦⚠ 충격파 줄! 줄 사이에 섰다가 옮기세요
+2617¦⚠ 足元に落石！動き続けろ¦⚠ Steine fallen auf dich! Bleib in Bewegung¦⚠ Des rochers tombent sur toi ! Bouge¦⚠ ¡Caen rocas sobre ti! Sigue moviéndote¦⚠ Pedras caindo em você! Continue se movendo¦⚠ 落石砸向你！保持移动¦⚠ 발밑에 바위가 떨어져요! 계속 움직이세요
+2618¦⚠ なぎ払い！波の隙間へ¦⚠ Fegen! Such die Lücken zwischen den Wellen¦⚠ Balayage ! Trouve les trous entre les vagues¦⚠ ¡Barrido! Busca los huecos entre las olas¦⚠ Varredura! Ache as brechas entre as ondas¦⚠ 横扫！找到波浪之间的空隙¦⚠ 휩쓸기! 파도 사이 틈으로 피하세요

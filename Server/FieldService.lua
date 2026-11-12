@@ -1764,7 +1764,7 @@ function Field.Shoot(player, origin, direction)
 			local factor = MonsterTypes.ShieldFactor(result.Instance, data, origin)
 			if factor < 1 then
 				damage = math.max(1, math.floor(damage * factor))
-				Effects.FloatText(result.Position + Vector3.new(0, 3, 0), "🛡 Blocked! Go around", Color3.fromRGB(200, 215, 240))
+				Effects.FloatText(result.Position + Vector3.new(0, 3, 0), "🛡 Shield blocks the front! Hit it from behind", Color3.fromRGB(200, 215, 240))
 				if SoundBank.Has("Shield_Block") then SoundBank.Play(result.Instance, "Shield_Block") end
 			end
 		end
@@ -2502,7 +2502,7 @@ local function stepMonsters(dt)
 						if data.SnipeFor > 2 and not data.SnipeWarnAt then
 							data.SnipeWarnAt = now
 							notify(sniper, "⚠ The Lord senses you from afar! A judgment strike is coming — get close or you can't dodge it!")
-							Effects.FloatText(target.Position + Vector3.new(0, 7, 0), "⚠ JUDGMENT", Color3.fromRGB(255, 70, 70), 220, 2)
+							Effects.FloatText(target.Position + Vector3.new(0, 7, 0), "⚠ JUDGMENT — get close!", Color3.fromRGB(255, 70, 70), 220, 2)
 							Effects.Raw(target.Position, { "R", target.Position - Vector3.new(0, 2.5, 0), 20, Color3.fromRGB(255, 70, 70) })
 						end
 						if data.SnipeWarnAt and now - data.SnipeWarnAt >= 2.2 then
@@ -2525,7 +2525,7 @@ local function stepMonsters(dt)
 				-- 체력이 절반 아래면 격노
 				if not data.Enraged and data.Health / data.MaxHealth <= 0.5 then
 					data.Enraged = true
-					Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 6, 0), "😡 Enraged!", Color3.fromRGB(255, 70, 70))
+					Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 6, 0), "😡 Enraged! More attacks now", Color3.fromRGB(255, 70, 70))
 					Effects.Burst(part.Position, Color3.fromRGB(255, 70, 70), 80)
 					if data.Kind == "Boss" then pcall(Stage.Enrage, part, data) end -- 격노 연출 (몸이 붉어지고 충격파 / 배너)
 				end

@@ -1225,7 +1225,7 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 		local factor = MonsterTypes.ShieldFactor(part, data, shooterRoot.Position)
 		if factor < 1 then
 			amount = math.max(1, math.floor(amount * factor))
-			Effects.FloatText(hitPosition + Vector3.new(0, 3, 0), "🛡 Blocked! Turn around", Color3.fromRGB(200, 215, 240))
+			Effects.FloatText(hitPosition + Vector3.new(0, 3, 0), "🛡 Shield blocks the front! Hit it from behind", Color3.fromRGB(200, 215, 240))
 			sfxAt(run, part.Position, "Shield_Block", nil, 0.15)
 		end
 	end
@@ -1556,7 +1556,7 @@ function Dungeon.ComputeDamage(player)
 		damage *= 5
 		isCrit = true
 		local okU, Unique = pcall(function() return require(script.Parent:WaitForChild("UniqueService")) end)
-		if okU then Unique.Callout(player, "Jackpot", "🎰 JACKPOT x5!", Color3.fromRGB(255, 215, 80)) end
+		if okU then Unique.Callout(player, "Jackpot", "🎰 Jackpot! x5 damage", Color3.fromRGB(255, 215, 80)) end
 	end
 	return math.max(1, math.floor(damage + 0.5)), isCrit
 end
@@ -1882,7 +1882,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 			uniqueHits[player] = 0
 			strikeBolt(run, player, { Part = part, Data = data }, augDamage(player) * 2.5, "U_Thunder")
 			local okU, Unique = pcall(function() return require(script.Parent:WaitForChild("UniqueService")) end)
-			if okU then Unique.Callout(player, "Thunder", "⚡ Thunder Rounds!", Color3.fromRGB(255, 240, 120)) end
+			if okU then Unique.Callout(player, "Thunder", "⚡ Thunder Rounds! Lightning strike", Color3.fromRGB(255, 240, 120)) end
 		end
 	end
 	-- 점화 (보스형): 직접 맞힐 때마다 중첩 (궁합 무기는 2중첩)

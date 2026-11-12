@@ -15,7 +15,7 @@ local function alive(part, data) return ctx.Monsters[part] == data end
 
 -- 맞았다는 걸 분명히: 머리 위에 💥 글자 + 화면 흔들림 (피해가 들어오는지 모르겠다는 의견)
 local function hitFeedback(entry, damage)
-	ctx.Effects.FloatText(entry.Root.Position + Vector3.new(0, 4.5, 0), "💥 Hit!", Color3.fromRGB(255, 110, 100))
+	ctx.Effects.FloatText(entry.Root.Position + Vector3.new(0, 4.5, 0), "💥 You got hit!", Color3.fromRGB(255, 110, 100))
 	local owner = game:GetService("Players"):GetPlayerFromCharacter(entry.Root.Parent)
 	if owner then
 		owner:SetAttribute("ShakeStrength", 0.45)
@@ -310,7 +310,7 @@ end
 COLOSSUS.checker = function(part, data, damage)
 	local target = ctx.NearestFieldPlayer(part.Position)
 	if not target then return end
-	cue(part, "⚠ Checkerboard!", Color3.fromRGB(255, 200, 80))
+	cue(part, "⚠ Checkerboard! Move onto the tiles that just exploded", Color3.fromRGB(255, 200, 80))
 	local origin = target.Position
 	local cell = 11
 	for wave = 0, 1 do
@@ -326,7 +326,7 @@ COLOSSUS.checker = function(part, data, damage)
 end
 -- 3) 바퀴살: 거신에서 사방으로 뻗는 띠 8줄 -> 엇갈린 각도로 8줄 더 (띠 사이에 서 있다가 옮겨야 한다)
 COLOSSUS.spokes = function(part, data, damage)
-	cue(part, "⚠ Shockwave lines!", Color3.fromRGB(255, 120, 200))
+	cue(part, "⚠ Shockwave lines! Stand between them, then move", Color3.fromRGB(255, 120, 200))
 	local origin = part.Position
 	local base = math.random() * math.pi * 2
 	for wave = 0, 1 do
@@ -338,7 +338,7 @@ COLOSSUS.spokes = function(part, data, damage)
 end
 -- 4) 추적 낙석: 각 플레이어 발밑에 연달아 6번 떨어진다 (계속 움직이면 피한다)
 COLOSSUS.barrage = function(part, data, damage)
-	cue(part, "⚠ Keep moving!", Color3.fromRGB(255, 220, 120))
+	cue(part, "⚠ Rocks falling on you! Keep moving", Color3.fromRGB(255, 220, 120))
 	for _, entry in ipairs(players(part)) do
 		task.spawn(function()
 			for _ = 1, 6 do
@@ -355,7 +355,7 @@ COLOSSUS.sweep = function(part, data, damage)
 	if not target then return end
 	local dir = flatDir(part.Position, target.Position) or Vector3.new(1, 0, 0)
 	local side = Vector3.new(-dir.Z, 0, dir.X)
-	cue(part, "⚠ Sweep!", Color3.fromRGB(120, 200, 255))
+	cue(part, "⚠ Sweep! Find the gaps between the waves", Color3.fromRGB(120, 200, 255))
 	for wave = 0, 2 do
 		local offset = (wave % 2 == 0) and 0 or 9
 		for k = -3, 3 do

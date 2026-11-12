@@ -121,7 +121,7 @@ handlers.Barrier = function(player, root, humanoid, character)
 	Debris:AddItem(field, S.Barrier.Duration + U.BarrierDuration * (skillLevel(player, "Barrier") - 1))
 	Effects.Burst(root.Position, Color3.fromRGB(120, 200, 255), 25)
 	ring(root.Position, 7, Color3.fromRGB(120, 200, 255), 0.5)
-	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), "🛡 Barrier!", Color3.fromRGB(150, 220, 255))
+	Effects.FloatText(root.Position + Vector3.new(0, 4, 0), "🛡 Barrier! No damage for a moment", Color3.fromRGB(150, 220, 255))
 	return true
 end
 
@@ -204,7 +204,7 @@ handlers.Spirit = function(player, root, _, character)
 							if charge then charge:Destroy() end
 							Effects.Burst(part.Position, Color3.fromRGB(255, 170, 210), 24)
 							if part:GetAttribute("Elite") or part:FindFirstChild("EliteOutline") or part.Size.X > 9 then
-								Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 3, 0), "✂ Interrupted!", Color3.fromRGB(255, 170, 210))
+								Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 3, 0), "✂ Attack canceled! x2 damage", Color3.fromRGB(255, 170, 210))
 							end
 						end
 						local _ = Dungeon.HitPart(player, part, damage) or Field.HitPart(player, part, damage)
@@ -395,7 +395,7 @@ handlers.Ult = function(player, root, _, character)
 	Debris:AddItem(field, 0.5 + 12 * 0.07 + 1.3 + 1.2) -- 먼저 수명을 정해 둔다 (오류가 나도 영구 무적이 되지 않게)
 	field.Parent = character
 	player:SetAttribute("DeadeyeActive", true)
-	Effects.FloatText(origin + Vector3.new(0, 6, 0), "🎯 Deadeye!", Color3.fromRGB(255, 90, 90))
+	Effects.FloatText(origin + Vector3.new(0, 6, 0), "🎯 Dead Eye!", Color3.fromRGB(255, 90, 90))
 
 	task.spawn(function()
 		local bodyOk, bodyErr = pcall(function()

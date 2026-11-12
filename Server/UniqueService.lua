@@ -81,7 +81,7 @@ function U.OnKill(player)
 			local okSkill, Skill = pcall(function() return require(script.Parent:WaitForChild("SkillService")) end)
 			if okSkill and Skill.UniqueWave then
 				task.spawn(Skill.UniqueWave, player, root.Position, 24, 3.0, "U_Slayer", Color3.fromRGB(255, 70, 60))
-				U.Callout(player, "Slayer", "🩸 Slaughter Wave!", Color3.fromRGB(255, 90, 80))
+				U.Callout(player, "Slayer", "🩸 Slaughter Wave! Hits everything nearby", Color3.fromRGB(255, 90, 80))
 				if player:GetAttribute("AugSyn_Doomfall") == true then -- 조합 "파멸의 낙하": 학살의 파동과 함께 주변에 유성 3개 (300%)
 					local center = root.Position
 					task.spawn(function()
@@ -110,7 +110,7 @@ function U.OnKill(player)
 		player:SetAttribute("StarUntil", workspace:GetServerTimeNow() + U.STAR_SECONDS)
 		local E = fx()
 		if E then pcall(E.Burst, root.Position + Vector3.new(0, 3, 0), Color3.fromRGB(255, 230, 120), 40) end
-		U.Callout(player, "Fortune", "⭐ Lucky Star! Luck +150%", Color3.fromRGB(255, 226, 110))
+		U.Callout(player, "Fortune", "⭐ Lucky Star! Gear drop luck +150%", Color3.fromRGB(255, 226, 110))
 	end
 end
 
@@ -130,7 +130,7 @@ function U.SunderMult(player, data)
 	local mult = 1 + st.Stacks * U.SUNDER_PER
 	if st.Stacks < U.SUNDER_MAX then
 		st.Stacks += 1
-		if st.Stacks == U.SUNDER_MAX then U.Callout(player, "Giant", "🪓 Sunder x10!", Color3.fromRGB(255, 170, 90)) end
+		if st.Stacks == U.SUNDER_MAX then U.Callout(player, "Giant", "🪓 Armor broken! +40% damage to this boss", Color3.fromRGB(255, 170, 90)) end
 	end
 	st.Until = now + 6
 	return mult
@@ -142,7 +142,7 @@ function U.TryShield(player)
 	if player:GetAttribute("ShieldUp") ~= true then return false end
 	player:SetAttribute("ShieldUp", false)
 	player:SetAttribute("ShieldReadyAt", workspace:GetServerTimeNow() + U.SHIELD_EVERY)
-	U.Callout(player, "Bulwark", "🛡 Blocked!", Color3.fromRGB(150, 210, 255))
+	U.Callout(player, "Bulwark", "🛡 Bulwark blocked a hit!", Color3.fromRGB(150, 210, 255))
 	if player:GetAttribute("AugSyn_Rampart") == true then -- 조합 "터지는 방벽": 막는 순간 보호막이 터져 주변 적을 때린다 (400%)
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		if root then
