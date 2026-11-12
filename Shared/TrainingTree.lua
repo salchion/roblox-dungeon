@@ -14,11 +14,11 @@ local DARK = Color3.fromRGB(20, 18, 34)
 local DIM = Color3.fromRGB(70, 66, 96)
 local GOLD = Color3.fromRGB(225, 196, 118)
 local PET_COLOR = Color3.fromRGB(255, 200, 120)
-local NODE = 48
 local TIER_Y = { 66, 152, 238 } -- 세 칸이 같은 높이의 층을 쓴다
+local CARD_H = 38 -- 노드 카드 높이
 local CANVAS_H = 306
 -- 칸마다 가로 범위 (0~1): 스킬(액티브 3, 세로 한 줄) | 훈련 | 패시브(훈련 바로 옆: 둘 다 상시 효과) | 펫
-local COLS = { Skill = { 0, 0.15 }, Train = { 0.15, 0.51 }, Passive = { 0.51, 0.71 }, Pet = { 0.71, 1 } }
+local COLS = { Skill = { 0, 0.15 }, Train = { 0.15, 0.55 }, Passive = { 0.55, 0.75 }, Pet = { 0.75, 1 } }
 local selected = { Kind = "Skill", Key = nil } -- 마지막으로 고른 노드 (메뉴를 다시 그려도 유지)
 
 local TRAIN_COLORS = {
@@ -78,38 +78,32 @@ local function canvas(env)
 		if x0 ~= x1 then C.line(x0, mid, x1, mid, color, thick) end
 		C.line(x1, mid, x1, y1, color, thick)
 	end
-	-- 노드: state = "done" (다 찍음) / "active" (찍는 중) / "open" (찍을 수 있음) / "locked"
-	function C.node(x, y, icon, color, state, ratio, caption, sub, chosen, captionWidth, onClick)
-		local fill = state == "locked" and Color3.fromRGB(32, 30, 48) or color:Lerp(DARK, state == "done" and 0.25 or (state == "active" and 0.4 or 0.65))
-		local n = create("Frame", { Size = UDim2.new(0, NODE, 0, NODE), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y), BackgroundColor3 = fill, BorderSizePixel = 0, ZIndex = 4 }, row)
-		create("UICorner", { CornerRadius = UDim.new(1, 0) }, n)
-		create("UIStroke", { Color = chosen and Color3.new(1, 1, 1) or (state == "locked" and DIM or color), Thickness = chosen and 4 or (state == "done" and 3 or 2) }, n)
-		label({ Size = UDim2.new(1, 0, 1, 0), Text = state == "locked" and "🔒" or icon, TextSize = state == "locked" and 18 or 23, ZIndex = 5, TextTransparency = state == "locked" and 0.2 or 0 }, n)
-		local bar = create("Frame", { Size = UDim2.new(0, NODE + 8, 0, 4), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(x, 0, 0, y + NODE / 2 + 3), BackgroundColor3 = Color3.fromRGB(14, 12, 24), BorderSizePixel = 0, ZIndex = 4 }, row)
-		create("UICorner", { CornerRadius = UDim.new(1, 0) }, bar)
-		local barFill = create("Frame", { Size = UDim2.new(math.clamp(ratio or 0, 0, 1), 0, 1, 0), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 5 }, bar)
-		create("UICorner", { CornerRadius = UDim.new(1, 0) }, barFill)
-		label({ Size = UDim2.new(0, captionWidth, 0, 14), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(x, 0, 0, y + NODE / 2 + 9), Text = caption, RichText = true, TextSize = 10, TextScaled = false, TextTruncate = Enum.TextTruncate.AtEnd, Font = Enum.Font.GothamBold, ZIndex = 5, TextColor3 = state == "locked" and Color3.fromRGB(140, 136, 165) or Color3.new(1, 1, 1) }, row)
+	-- 노드 = 납작한 카드 (예전: 동그라미 + 아래 글자 두 줄이라 세로 공간을 많이 먹어 칸이 모자랐다)
+	--   [아이콘] 이름 / Lv (또는 남은 시간) + 아래 진행 막대. state = "done" / "active"(찍는 중) / "open" / "locked"
+	--   width: 카드 너비 (나무 전체 너비 대비 비율, 0~1)
+	function C.node(x, y, icon, color, state, ratio, caption, sub, chosen, width, onClick)
+		local fill = state == "locked" and Color3.fromRGB(30, 28, 44) or color:Lerp(DARK, state == "done" and 0.55 or (state == "active" and 0.6 or 0.78))
+		local n = create("Frame", { Size = UDim2.new(width, -6, 0, CARD_H), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y), BackgroundColor3 = fill, BorderSizePixel = 0, ZIndex = 4 }, row)
+		create("UICorner", { CornerRadius = UDim.new(0, 8) }, n)
+		local stroke = create("UIStroke", { Color = chosen and Color3.new(1, 1, 1) or (state == "locked" and DIM or color), Thickness = chosen and 3 or (state == "done" and 2 or 1.5), ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, n)
+		local iconBack = create("Frame", { Size = UDim2.new(0, 24, 0, 24), Position = UDim2.new(0, 4, 0.5, -13), BackgroundColor3 = state == "locked" and Color3.fromRGB(40, 38, 56) or color:Lerp(DARK, 0.45), BorderSizePixel = 0, ZIndex = 5 }, n)
+		create("UICorner", { CornerRadius = UDim.new(0, 7) }, iconBack)
+		label({ Size = UDim2.new(1, 0, 1, 0), Text = state == "locked" and "🔒" or icon, TextSize = state == "locked" and 12 or 15, ZIndex = 6, TextTransparency = state == "locked" and 0.2 or 0 }, iconBack)
+		label({ Size = UDim2.new(1, -34, 0, 15), Position = UDim2.new(0, 32, 0, 4), Text = caption, RichText = true, TextSize = 11, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBold, ZIndex = 5,
+			TextColor3 = state == "locked" and Color3.fromRGB(140, 136, 165) or Color3.new(1, 1, 1) }, n)
 		if sub and sub ~= "" then
-			label({ Size = UDim2.new(0, captionWidth, 0, 12), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(x, 0, 0, y + NODE / 2 + 23), Text = sub, RichText = true, TextSize = 9, ZIndex = 5, TextColor3 = state == "active" and Color3.fromRGB(255, 225, 120) or Color3.fromRGB(170, 166, 195) }, row)
+			label({ Size = UDim2.new(1, -34, 0, 12), Position = UDim2.new(0, 32, 0, 19), Text = sub, RichText = true, TextSize = 9, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5,
+				TextColor3 = state == "active" and Color3.fromRGB(255, 225, 120) or Color3.fromRGB(175, 171, 200) }, n)
 		end
-		if state == "active" then -- 찍는 중: 바깥으로 숨 쉬는 금빛 후광 + 빙글빙글 도는 금색 호 + 모래시계 배지 (멀리서도 한눈에 보이게)
-			local TweenService = game:GetService("TweenService")
-			local goldColor = Color3.fromRGB(255, 225, 120)
-			local glow = create("Frame", { Size = UDim2.new(0, NODE + 22, 0, NODE + 22), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y), BackgroundColor3 = goldColor, BackgroundTransparency = 0.8, BorderSizePixel = 0, ZIndex = 3 }, row)
-			create("UICorner", { CornerRadius = UDim.new(1, 0) }, glow)
-			TweenService:Create(glow, TweenInfo.new(0.9, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { BackgroundTransparency = 0.55, Size = UDim2.new(0, NODE + 30, 0, NODE + 30) }):Play()
-			local spinner = create("Frame", { Size = UDim2.new(0, NODE + 12, 0, NODE + 12), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y), BackgroundTransparency = 1, ZIndex = 6 }, row)
-			create("UICorner", { CornerRadius = UDim.new(1, 0) }, spinner)
-			local spinStroke = create("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, spinner)
-			local spin = create("UIGradient", { Color = ColorSequence.new(goldColor), Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(0.4, 0.1), NumberSequenceKeypoint.new(0.55, 1), NumberSequenceKeypoint.new(1, 1) }) }, spinStroke)
-			TweenService:Create(spin, TweenInfo.new(1.4, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1), { Rotation = 360 }):Play()
-			local badge = create("Frame", { Size = UDim2.new(0, 22, 0, 22), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, NODE / 2 - 2, 0, y - NODE / 2 + 2), BackgroundColor3 = Color3.fromRGB(40, 32, 12), BorderSizePixel = 0, ZIndex = 8 }, row)
-			create("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
-			create("UIStroke", { Color = goldColor, Thickness = 1.5 }, badge)
-			label({ Size = UDim2.new(1, 0, 1, 0), Text = "⏳", TextSize = 13, ZIndex = 9 }, badge)
+		local bar = create("Frame", { Size = UDim2.new(1, -38, 0, 3), Position = UDim2.new(0, 32, 1, -6), BackgroundColor3 = Color3.fromRGB(14, 12, 24), BorderSizePixel = 0, ZIndex = 5 }, n)
+		create("UICorner", { CornerRadius = UDim.new(1, 0) }, bar)
+		local barFill = create("Frame", { Size = UDim2.new(math.clamp(ratio or 0, 0, 1), 0, 1, 0), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 6 }, bar)
+		create("UICorner", { CornerRadius = UDim.new(1, 0) }, barFill)
+		if state == "active" then -- 찍는 중: 테두리가 금빛으로 숨 쉰다
+			stroke.Color = Color3.fromRGB(255, 225, 120)
+			game:GetService("TweenService"):Create(stroke, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 3.5 }):Play()
 		end
-		local hit = create("TextButton", { Size = UDim2.new(0, math.max(NODE + 16, captionWidth), 0, NODE + 40), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(x, 0, 0, y - NODE / 2 - 4), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, row)
+		local hit = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, n)
 		hit.Activated:Connect(onClick)
 		return n
 	end
@@ -208,17 +202,17 @@ local function drawSkills(env, C)
 		local x, y, caption
 		if cfg.Passive then -- 패시브: 훈련 옆 칸에 두 줄로
 			passiveIndex += 1
-			x = colX("Passive", ((passiveIndex - 1) % 2 == 0) and 0.27 or 0.73)
-			y = TIER_Y[math.min(#TIER_Y, math.floor((passiveIndex - 1) / 2) + 1)]
+			x = colX("Passive", 0.5)
+			y = 54 + (passiveIndex - 1) * 48 -- (카드라서 한 줄에 하나씩 다섯 줄이 들어간다)
 			caption = string.format("<b>%s</b>", cfg.Name)
 		else -- 액티브: 스킬 칸에 세로 한 줄
 			activeIndex += 1
 			x = colX("Skill", 0.5)
-			y = TIER_Y[math.min(#TIER_Y, activeIndex)]
+			y = 54 + (activeIndex - 1) * 48
 			caption = string.format("[%s] <b>%s</b>", cfg.Key or "", cfg.Name)
 		end
 		C.node(x, y, cfg.Icon, skillColor(key), state, level / U.MaxLevel, caption,
-			remaining and ("⏳ " .. Config.FormatDuration(remaining)) or string.format("Lv.%d / %d", level, U.MaxLevel), isSel("Skill", key), 88, pick(env, "Skill", key))
+			remaining and ("⏳ " .. Config.FormatDuration(remaining)) or string.format("Lv.%d / %d", level, U.MaxLevel), isSel("Skill", key), cfg.Passive and (COLS.Passive[2] - COLS.Passive[1]) or (COLS.Skill[2] - COLS.Skill[1]), pick(env, "Skill", key))
 	end
 end
 
@@ -278,7 +272,7 @@ local function drawTraining(env, C)
 				local from = TRAIN_POS[req.Stat]
 				if from then
 					local met = (levels[req.Stat] or 0) >= req.Level
-					C.elbow(colX("Train", from[1]), TIER_Y[from[2]] + NODE / 2 + 36, colX("Train", pos[1]), TIER_Y[pos[2]] - NODE / 2, met and (TRAIN_COLORS[stat] or GOLD) or DIM, met and 3 or 2)
+					C.elbow(colX("Train", from[1]), TIER_Y[from[2]] + CARD_H / 2, colX("Train", pos[1]), TIER_Y[pos[2]] - CARD_H / 2, met and (TRAIN_COLORS[stat] or GOLD) or DIM, met and 3 or 2)
 				end
 			end
 		end
@@ -291,7 +285,7 @@ local function drawTraining(env, C)
 			local unlocked = Config.TrainUnlocked(stat, levels)
 			local nodeState = not unlocked and "locked" or (jobs[stat] and "active" or (level >= max and "done" or "open"))
 			local sub = jobs[stat] and ("⏳ " .. Config.FormatDuration(env.Remaining(jobs[stat].EndAt))) or string.format("Lv.%d / %d", level, max)
-			C.node(colX("Train", pos[1]), TIER_Y[pos[2]], def.Icon, TRAIN_COLORS[stat] or GOLD, nodeState, level / max, def.Name, sub, isSel("Train", stat), 92, pick(env, "Train", stat))
+			C.node(colX("Train", pos[1]), TIER_Y[pos[2]], def.Icon, TRAIN_COLORS[stat] or GOLD, nodeState, level / max, def.Name, sub, isSel("Train", stat), (COLS.Train[2] - COLS.Train[1]) / 4, pick(env, "Train", stat))
 		end
 	end
 end
@@ -332,12 +326,12 @@ end
 ------------------------------------------------------------
 -- 3) 펫 사슬 (오른쪽 칸, 한 줄에 4개씩 뱀처럼)
 ------------------------------------------------------------
-local PET_PER_ROW = 4
+local PET_PER_ROW = 3 -- (카드 모양이라 한 줄 셋, 줄은 네다섯 줄)
 local function petPos(i)
 	local r = (i - 1) // PET_PER_ROW
 	local c = (i - 1) % PET_PER_ROW
 	if r % 2 == 1 then c = PET_PER_ROW - 1 - c end
-	return colX("Pet", (c + 0.5) / PET_PER_ROW), TIER_Y[math.min(r + 1, #TIER_Y)]
+	return colX("Pet", (c + 0.5) / PET_PER_ROW), 54 + r * 56
 end
 
 local function petLevel(env)
@@ -365,7 +359,7 @@ local function drawPet(env, C)
 		local x, y = petPos(i)
 		local open = level >= fn.Level
 		local nodeState = open and "done" or (nextFn == fn and (upEnd and "active" or "open") or "locked")
-		C.node(x, y, fn.Icon, PET_COLOR, nodeState, open and 1 or 0, string.format("Lv.%d", fn.Level), fn.Name, isSel("Pet", fn.Level), 74, pick(env, "Pet", fn.Level))
+		C.node(x, y, fn.Icon, PET_COLOR, nodeState, open and 1 or 0, string.format("Lv.%d", fn.Level), fn.Name, isSel("Pet", fn.Level), (COLS.Pet[2] - COLS.Pet[1]) / PET_PER_ROW, pick(env, "Pet", fn.Level))
 	end
 end
 
