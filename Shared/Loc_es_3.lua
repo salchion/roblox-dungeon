@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "With the max {number1} points, about {number2}%.", "Con el máximo de {number1} puntos, aproximadamente {number2}%." },
+		{ "Gold earned  +{number1} G   🎫 Tickets +{number2}", "Oro ganado  +{number1} G   🎫 Boletos +{number2}" },
+		{ "🏰 Forest Castle Gate · Rec. ⚡{number2}", "🏰 Puerta del castillo del bosque · Recomendado ⚡{number2}" },
+		{ "(Idle income bonus +{number3}% active)", "(Bonificación de ingresos inactivos +{number3}% activa)" },
+		{ "Upgrade cost {number2} G · You have {number3} G", "Costo de mejora: {number2} G · Tienes {number3} G" },
+		{ "Rocket Launcher · Rusty Era +{number1}", "Lanzacohetes · Era oxidada +{number1}" },
+		{ "🌋 Lava Fortress Gate · Rec. ⚡{number2}", "🌋 Puerta de la fortaleza de lava · Rec. ⚡{number2}" },
 		{ "ZONE {number1}  ·  Darklands   ☠☠☠☠☠☠☠", "Zona {number1} · Tierras oscuras ☠☠☠☠☠☠☠" },
 		{ "Zone {number1} set effect · Trial Lv.3", "Efecto de set de la zona {number1} · Prueba Nv.3" },
 		{ "(Idle income bonus +{number1}% active)", "(Bono de ingresos inactivos +{number1}% activo)" },

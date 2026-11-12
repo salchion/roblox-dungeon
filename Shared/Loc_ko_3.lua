@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [일반] 마모된 신발 자동 회수 (에센스 +{number1} {number2} G)" },
+		{ "Reduces training / breakthrough wait time by {number1} hour", "훈련/돌파 대기 시간을 {number1}시간 단축합니다." },
+		{ "Clear depth {number1} once more to record its Sweep reward.", "소탕 보상을 기록하려면 깊이 {number1}을(를) 한 번 더 클리어하세요." },
+		{ "🎯 Boss hunter  ·  ✔ 🔫 Sniper Rifle / Railgun (+{number1}%)", "🎯 보스 헌터 · ✔ 🔫 저격 소총 / 레일건 (+{number1}%)" },
+		{ "Zone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated", "구역 {number2} 몬스터 {number3} / {number4} 처치 · 군주 👑 미처치" },
 		{ "Shot_Pistol  <font color='#{number1}aa{number2}c{number3}'>Rifle shot</font>", "샷_피스톨 <font color='#{number1}aa{number2}c{number3}'>라이플 샷</font>" },
 		{ "Reach weapon upgrade level {number1} (about the {number2}th weapon)", "무기 업그레이드 레벨 {number1} 달성 ({number2}번째 무기)" },
 		{ "⚠ Monster overrun! Thin them out within {number1}s!  ({number2} / {number3})", "⚠ 몬스터 과밀! {number1}초 안에 줄이세요!  ({number2} / {number3})" },

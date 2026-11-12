@@ -17,7 +17,7 @@ local PET_COLOR = Color3.fromRGB(255, 200, 120)
 local NODE = 48
 local TIER_Y = { 66, 152, 238 } -- 세 칸이 같은 높이의 층을 쓴다
 local CANVAS_H = 306
-local COLS = { Skill = { 0, 0.25 }, Train = { 0.25, 0.66 }, Pet = { 0.66, 1 } } -- 칸마다 가로 범위 (0~1)
+local COLS = { Skill = { 0, 0.34 }, Train = { 0.34, 0.69 }, Pet = { 0.69, 1 } } -- (스킬 칸을 넓혔다: 액티브 + 패시브 8개를 한 줄에 셋씩) -- 칸마다 가로 범위 (0~1)
 local selected = { Kind = "Skill", Key = nil } -- 마지막으로 고른 노드 (메뉴를 다시 그려도 유지)
 
 local TRAIN_COLORS = {
@@ -202,10 +202,12 @@ local function drawSkills(env, C)
 		local level = meta and meta.Skills and meta.Skills[key] or 1
 		local remaining = env.UpgradeRemaining(key)
 		local state = level >= U.MaxLevel and "done" or (remaining and "active" or "open")
-		local x = colX("Skill", ((i - 1) % 2 == 0) and 0.28 or 0.72)
-		local y = TIER_Y[math.floor((i - 1) / 2) + 1]
-		C.node(x, y, cfg.Icon, skillColor(key), state, level / U.MaxLevel, string.format("[%s] <b>%s</b>", cfg.Key or "", cfg.Name),
-			remaining and ("⏳ " .. Config.FormatDuration(remaining)) or string.format("Lv.%d / %d", level, U.MaxLevel), isSel("Skill", key), 104, pick(env, "Skill", key))
+		local perRow = #Config.Skills.UpgradeOrder > 6 and 3 or 2 -- (패시브가 늘어 8개: 한 줄에 셋)
+		local col = (i - 1) % perRow
+		local x = colX("Skill", perRow == 3 and (0.18 + col * 0.32) or (col == 0 and 0.28 or 0.72))
+		local y = TIER_Y[math.min(#TIER_Y, math.floor((i - 1) / perRow) + 1)]
+		C.node(x, y, cfg.Icon, skillColor(key), state, level / U.MaxLevel, perRow == 3 and string.format("<b>%s</b>", cfg.Name) or string.format("[%s] <b>%s</b>", cfg.Key or "", cfg.Name),
+			remaining and ("⏳ " .. Config.FormatDuration(remaining)) or string.format("Lv.%d / %d", level, U.MaxLevel), isSel("Skill", key), perRow == 3 and 84 or 104, pick(env, "Skill", key))
 	end
 end
 

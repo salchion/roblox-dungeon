@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Sniper Rifle · Arcane Era +{number3}", "Scharfschützengewehr · Arkanische Ära +{number3}" },
+		{ "ZONE {number1}  ·  Snowfield   ☠☠☠☠☠", "Zone {number1} · Schneefeld ☠☠☠☠☠" },
+		{ "🎁 Boss chest · {number1} gear pieces", "🎁 Boss-Truhe · {number1} Ausrüstungsteile" },
+		{ "Succeed at upgrading {number1} times", "Verbessere erfolgreich {number1} Mal" },
+		{ "Attack +{number1}% per point  (max {number2})", "Angriff +{number1}% pro Punkt  (max. {number2})" },
+		{ "Returning to the field in {number1}s", "Rückkehr ins Feld in {number1} s" },
+		{ "Zone {number1} monsters {number2} / {number3} defeated", "Zone {number1}: {number2} / {number3} Monster besiegt" },
+		{ "◆ Damage Taken Reduction +{number1}%", "◆ Schadensreduktion +{number1}%" },
 		{ "Gives back {number1} gauge after use", "Gibt nach dem Einsatz {number1} Ladung zurück" },
 		{ "🏆 Zone {number1} First Clear Reward!", "🏆 Belohnung: Zone {number1} zum ersten Mal!" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Zauberbuch · Rostige Ära +{number1}" },

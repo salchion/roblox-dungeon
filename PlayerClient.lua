@@ -2610,6 +2610,8 @@ local function skillStats(key, level) -- { { 이름, 값 글자, 숫자 } ... } 
 		add("Damage per dagger", cfg.Mult * (1 + U.BlastMult * lv), "x%.2f")
 	elseif key == "Heal" then
 		add("HP restored", math.floor((cfg.Ratio + U.HealRatio * lv) * 100 + 0.5), "%d%%")
+	elseif cfg.PerLevel then -- 새 패시브 (피의 갈증 / 마무리 / 돌진 / 보물 감각)
+		add(cfg.StatName, cfg.PerLevel * level * (cfg.Scale or 1), cfg.Fmt or "%.2f")
 	else
 		add("Damage", cfg.Mult * (1 + U.UltMult * lv), "x%.2f")
 		add("Targets", cfg.MaxTargets + math.floor(U.UltTargets * lv + 0.001), "%d")

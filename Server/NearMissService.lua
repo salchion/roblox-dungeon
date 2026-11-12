@@ -27,6 +27,11 @@ local function sampleDash(player, root)
 	end
 end
 
+-- 마지막으로 대시한 뒤 지난 초 (패시브 "돌진"이 읽는다)
+function NearMiss.SinceDash(player)
+	return os.clock() - (dashSeenAt[player] or -100)
+end
+
 function NearMiss.IsDashing(player, root)
 	if root then sampleDash(player, root) end
 	return os.clock() - (dashSeenAt[player] or -10) < 0.6

@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "{number2}回のアップグレードに成功 ✅ タップして受け取る！" },
+		{ "every {number1} shots a blade bounces across {number2} enemies", "{number1}発ごとに刃が{number2}体の間を跳ね返ります" },
+		{ "💰 Golden Goblin defeated! +{number1} G, 3 loot drops!", "💰 ゴールデンゴブリンを倒した！+{number1} G、戦利品3個ドロップ！" },
+		{ "Enemies swarm in more often\nGold +{number1}% instead", "敵の群れがより頻繁に現れる\nゴールド+{number1}%" },
+		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 弱い装備{number1}個を自動整理しました(エッセンス+{number2}、{number3} G)" },
 		{ "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped", "🎯 賞金首達成！+{number1} G · 🎫 +{number2} · 装備ドロップ" },
 		{ "🎫 {number1} tickets!\nPull gear at the gacha machine", "🎫 {number1} チケット！\nガチャマシンでギアを引く" },
 		{ "🐾 Pet Lv.{number1}! New ability 💥 Power — Attack +{number2}%", "🐾 ペットレベル{number1}！新しい能力 💥 パワー - 攻撃 +{number2}%" },

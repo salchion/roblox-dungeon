@@ -49,6 +49,24 @@ return function(Config)
 		Focus = { From = "Heal", Stat = "NearMissTime", Per = 0.15, Text = "NEAR MISS lasts +0.15s per First Aid level" },
 	}
 
+	-- 패시브 스킬 4종 (스킬 바에는 안 나온다, 골드로 1~10레벨). 값 = PerLevel x 레벨. 훈련(피해 감소 / 골드)과 겹치지 않는 새 메커니즘만
+	local S = Config.Skills
+	S.Bloodthirst = { Name = "Bloodthirst", Icon = "🩸", Key = "Passive", Cooldown = 0, Passive = true, PerLevel = 0.002, StatName = "HP per kill", Fmt = "%.1f%%", Scale = 100,
+		Desc = "Every kill restores a little HP (keep killing to stay alive)" }
+	S.Finisher = { Name = "Finisher", Icon = "🎯", Key = "Passive", Cooldown = 0, Passive = true, PerLevel = 0.03, StatName = "Damage to enemies under 30% HP", Fmt = "+%.0f%%", Scale = 100,
+		Desc = "Deal more damage to enemies under 30% HP" }
+	S.Rush = { Name = "Rush", Icon = "💨", Key = "Passive", Cooldown = 0, Passive = true, PerLevel = 0.03, StatName = "Attack for 2s after a dash", Fmt = "+%.0f%%", Scale = 100,
+		Desc = "For 2s after a dash (Q), your attack is higher" }
+	S.Fortune = { Name = "Treasure Sense", Icon = "💎", Key = "Passive", Cooldown = 0, Passive = true, PerLevel = 0.04, StatName = "Gear drop luck", Fmt = "+%.0f%%", Scale = 100,
+		Desc = "Better luck on gear drops (higher rarities come more often)" }
+	for _, key in ipairs({ "Bloodthirst", "Finisher", "Rush", "Fortune" }) do
+		if not table.find(S.UpgradeOrder, key) then table.insert(S.UpgradeOrder, key) end
+	end
+	function Config.PassiveValue(player, key)
+		local cfg = S[key]
+		return cfg and cfg.PerLevel and cfg.PerLevel * (player:GetAttribute("SkillLv_" .. key) or 1) or 0
+	end
+
 	-- 갈래(Lv.3 / 7 의 Mods) + 시너지를 합친 값
 	function Config.SkillMod(player, key, stat)
 		local total = 0

@@ -24,7 +24,7 @@ local drops = {}      -- [player] = { [dropId] = { Item, Position, Expire } }
 local nextDropId = 0
 
 local function luckOf(player)
-	local luck = player:GetAttribute("GearLuck") or 0
+	local luck = (player:GetAttribute("GearLuck") or 0) + Config.PassiveValue(player, "Fortune") -- (패시브 "보물 감각")
 	if (player:GetAttribute("StarUntil") or 0) > workspace:GetServerTimeNow() then luck += 1.5 end -- 유니크 "Lucky Star" (UniqueService.STAR_LUCK)
 	if (player:GetAttribute("LuckBoostUntil") or 0) > os.time() then
 		luck += Config.Shop.LuckBoostBonus

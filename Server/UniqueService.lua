@@ -48,6 +48,11 @@ end
 local killCount = setmetatable({}, { __mode = "k" })
 function U.OnKill(player)
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	local heal = Config.PassiveValue(player, "Bloodthirst") -- 패시브 "피의 갈증": 처치마다 최대 체력의 일부 회복
+	if heal > 0 then
+		local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+		if humanoid and humanoid.Health > 0 then humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * heal) end
+	end
 	-- 시간 왜곡
 	local cdr = player:GetAttribute("GearKillCdr") or 0
 	if cdr > 0 then

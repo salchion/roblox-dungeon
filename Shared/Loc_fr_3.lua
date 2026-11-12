@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Points left {number1}  /  total {number2}  (Level {number3})", "Points restants {number1}  /  total {number2}  (niveau {number3})" },
+		{ "🔥 Better gear dropped! ({number1} slot(s))", "🔥 Un meilleur équipement est tombé ! ({number1} emplacement(s))" },
+		{ "Crit damage +{number1}%p per point  (max {number2})", "Dégâts critiques +{number1}%p par point  (max {number2})" },
+		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 {number1} récompenses récupérées ! ({number2} nouveaux titres)" },
+		{ "Keeps {number1} more stacks even if broken", "Garde {number1} cumuls de plus même en cas de rupture" },
+		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 Seigneur des abysses (Zone {number1}) · Rec. ⚡{number2}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 {number1} entrées gratuites aujourd'hui · 🗝 {number2} clés !" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 Prochaine arme à débloquer : Fusil à pompe (+{number1})" },
 		{ "⚠ Reach level {number1} to break through.", "⚠ Atteignez le niveau {number1} pour la percée." },

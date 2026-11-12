@@ -2504,5 +2504,6 @@ do
 	local okTree, apply = pcall(function() return require(script.Parent:WaitForChild("SkillTreeData", 10)) end)
 	if okTree and type(apply) == "function" then pcall(apply, Config) end
 	Config.SkillMod = Config.SkillMod or function() return 0 end
+	Config.PassiveValue = Config.PassiveValue or function() return 0 end
 end
 return Config

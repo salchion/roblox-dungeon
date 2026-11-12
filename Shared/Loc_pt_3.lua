@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "e.g. Maintenance in {number1} minutes", "por exemplo, manutenção em {number1} minutos" },
+		{ "🥇 LeeGoAll  ⚡{number1}\n🥈 {player1}  ⚡{number2}", "🥇 LeeGoAll ⚡{number1}\n🥈 {player1} ⚡{number2}" },
+		{ "🌀 Gate of the Abyss · Rec. ⚡{number2}", "🌀 Portal do Abismo · Rec. ⚡{number2}" },
+		{ "🧹 Cleaned up {number1}! Essence +{number2}, {number3} G", "🧹 {number1} limpo(s)! Essência +{number2}, {number3} G" },
+		{ "Damage x{number1} · {number2} targets (gauge {number3})", "Dano x{number1} · {number2} alvos (medidor {number3})" },
+		{ "🔒 Paragon unlocks at level {number1}.", "🔒 Paragon desbloqueia no nível {number1}." },
+		{ "Survive {number1} dungeon bonus waves", "Sobreviva a {number1} ondas bônus de masmorra" },
 		{ "Double Shot chance {number1}%  (max {number2})", "Chance de tiro duplo {number1}%  (máx. {number2})" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "HP do inimigo +{number1}%\nOuro +{number2}% em vez disso" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 Portão do Castelo Sombrio · Rec. ⚡{number2}" },
