@@ -4,6 +4,16 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}!", "{number1}秒！報酬x{number2}、コンボで最大x{number3}！" },
+		{ "🔓 You can now run {number1} set effects at once!", "🔓 同時に{number1}個のセット効果を発動できるようになりました！" },
+		{ "🛡 Knocked back! Power {number1} required (you: {number2})", "🛡 弾き返された！戦闘力{number1}が必要(あなた: {number2})" },
+		{ "💚 Emergency rescue! HP restored ({number1} left)", "💚 緊急救助！HP回復(残り{number1}回)" },
+		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}", "{number1}秒！報酬 x{number2}、コンボで最大 x{number3}" },
+		{ "Sniper Rifle  ·  keys {number1}-{number2} switch weapons", "スナイパーライフル · キー {number1}-{number2} で武器を切り替える" },
+		{ "🥉 {number1}+   🥈 {number2}M+   🥇 {number3}M+   💠 {number4}M+   💎 {number5}M+   👑 {number6}M+", "🥉 {number1}+ 🥈 {number2}M+ 🥇 {number3}M+ 💠 {number4}M+ 💎 {number5}M+ 👑 {number6}M+" },
+		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>", "<font color='#{number1}fffb{number2}'><b>自動攻撃</b>" },
+		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 レベルアップ！Lv.{number1}  (最大HP +{number2}、攻撃力 +{number3}%)" },
+		{ "✨ Upgrades are free right now! ({number1} left)", "✨ 今は強化が無料です！(残り{number1}回)" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ ポータルはまだ回復中です({number1}秒)。" },
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1}個を自動分解 (エッセンス +{number2}、{number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 ワープのゴールドが足りません！({number1}G必要)" },

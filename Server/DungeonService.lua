@@ -1981,6 +1981,7 @@ local function startAugLoop(run)
 	task.spawn(function()
 		local orbitCount, nextOrbitSend, nextTick, nextStorm, nextMeteor, nextPulse, nextPet = {}, {}, {}, {}, {}, {}, {}
 		local nextAura = 0
+		local capNext = {} -- 던전 갈래 최종 기술의 다음 발동 시각 [member] = { Boom, Chain, Barrage }
 		while not run.Destroyed and run.Phase ~= "Ended" do
 			local now = os.clock()
 			local members = run.MembersFn and run.MembersFn() or run.Members
@@ -1992,6 +1993,35 @@ local function startAugLoop(run)
 				-- 한 사람의 효과에서 오류가 나도 반복 전체(모든 사람의 세트 효과)가 멈추지 않게 보호한다
 				local okMember, errMember = pcall(function()
 					local root = getAliveParts(member)
+					-- 던전 갈래 최종 기술 (★ 과충전일수록 더 자주 / 더 크게): 종말(유성) / 뇌신(번개) / 탄막지옥(칼날 고리)
+					local caps = run.Capstone and run.Capstone[member]
+					if root and caps then
+						capNext[member] = capNext[member] or {}
+						local cn = capNext[member]
+						local boomLv, chainLv, bladeLv = caps.Boom or 0, caps.Chain or 0, caps.Barrage or 0
+						if boomLv > 0 and now >= (cn.Boom or 0) then
+							cn.Boom = now + ({ 1.1, 0.8, 0.55 })[boomLv]
+							local around = nearestMonsters(run, root.Position, 75, 3)
+							if #around > 0 then
+								local target = around[math.random(#around)]
+								dropMeteor(run, member, target.Part.Position - Vector3.new(0, target.Part.Size.Y / 2, 0), 10 + 3 * boomLv, augDamage(member) * (2.5 + 0.6 * boomLv), 3)
+							end
+						end
+						if chainLv > 0 and now >= (cn.Chain or 0) then
+							cn.Chain = now + ({ 1.5, 1.1, 0.8 })[chainLv]
+							for _, entry in ipairs(nearestMonsters(run, root.Position, 80, 4 + 4 * chainLv)) do
+								strikeBolt(run, member, entry, augDamage(member) * (1.4 + 0.3 * chainLv), "PerkChain")
+							end
+						end
+						if bladeLv > 0 and now >= (cn.Barrage or 0) then
+							cn.Barrage = now + ({ 1.0, 0.7, 0.5 })[bladeLv]
+							local from = root.Position + Vector3.new(0, 1.5, 0)
+							for _, entry in ipairs(nearestMonsters(run, root.Position, 45 + 8 * bladeLv, 8 + 4 * bladeLv)) do
+								Effects.Raw(entry.Part.Position, { "J", from, entry.Part.Position })
+								hitMonster(run, member, entry, augDamage(member) * (1.0 + 0.25 * bladeLv), nil, Color3.fromRGB(150, 220, 255), "PerkPierce")
+							end
+						end
+					end
 					-- 회전 칼날 -> 표창: 가까운 적에게 던진 칼날이 튕기며 다른 적들을 연달아 벤다 (몸 주위가 아니라 날아가는 칼날에 효과가 붙는다)
 					local orbit = augLv(run, member, "AugOrbit")
 					local bladeShots = orbit > 0 and (BLADE_SHOTS[math.min(orbit, 6)] - (Config.AugWeaponMatch(member, "AugOrbit") and 1 or 0)) or math.huge -- 궁합 무기: 한 발 일찍 (칼날이 없으면 계산하지 않는다: 예전에 nil 계산 오류로 이 반복 전체가 멈췄다)
@@ -2686,6 +2716,27 @@ local function applyBuff(run, member, buff)
 		local buffRoot = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
 		if buffRoot then sfxAt(run, buffRoot.Position, buff.Effect == "Aug" and "Aug_Get" or "Buff_Get", nil, 0.3) end
 	end
+	if buff.Tree then -- 세 갈래 나무: 단계 올리기 / 최종 기술 / 과충전. 화면에 보여 줄 이름을 돌려준다
+		local tree = Config.RunTrees[buff.Tree]
+		if not perkMaxed(member, buff.Perk) then
+			applyPerk(member, buff.Perk)
+			local tier = tree.Tiers[math.clamp(perkStacks(member, buff.Perk), 1, 3)]
+			return { Icon = tier[1], Name = tier[2], Desc = tier[3], Special = true }
+		end
+		run.Capstone = run.Capstone or {}
+		run.Capstone[member] = run.Capstone[member] or {}
+		local caps = run.Capstone[member]
+		caps[buff.Tree] = math.min(Config.RunTrees.CapMax, (caps[buff.Tree] or 0) + 1)
+		member:SetAttribute("BossKillTick", os.clock()) -- (IntensityClient: 화면이 크게 멈칫)
+		local root = getAliveParts(member)
+		if root then
+			Effects.Burst(root.Position, tree.Color, 120)
+			shockRing(run, root.Position - Vector3.new(0, 2.5, 0), 26, tree.Color)
+		end
+		local cap = tree.Cap
+		if caps[buff.Tree] == 1 then return { Icon = cap[1], Name = cap[2], Desc = cap[3], Special = true } end
+		return { Icon = cap[1], Name = cap[2] .. " " .. string.rep("★", caps[buff.Tree] - 1), Desc = Config.RunTrees.Overcharge, Special = true }
+	end
 	if buff.Perk then
 		for _ = 1, buff.Stacks or 1 do
 			if not perkMaxed(member, buff.Perk) then applyPerk(member, buff.Perk) end
@@ -2732,6 +2783,7 @@ local SET_PITY_CHANCE = 0.35 -- 이미 1~2조각 가진 세트를 골라 줄 확
 
 local function buffWeight(member, entry)
 	local w = entry.Weight or 1
+	if entry.Tree and entry.Perk and perkStacks(member, entry.Perk) > 0 then w *= Config.RunTrees.BiasOwned end -- 이미 들어간 갈래가 더 잘 나온다
 	local perk = entry.Perk and Config.Perks[entry.Perk]
 	if perk and perk.Max and perk.Max > 0 and not entry.Special then
 		w *= math.max(0.35, 1 - 0.6 * perkStacks(member, entry.Perk) / perk.Max) -- 완만한 수확 체감
@@ -2804,6 +2856,10 @@ local function rollBonus(run, penaltyChance, forceSpecial)
 		local setInfo, note = nil, nil -- 세트 조각은 주사위에서 주지 않는다 (세트 효과는 던전 시작 체험 / 골드 활성화로만)
 		local function allowed(entry)
 			if forceSpecial and not entry.Special then return false end
+			if entry.Tree then -- 갈래는 최종 기술 과충전 끝까지 나온다
+				local caps = run.Capstone and run.Capstone[member]
+				return not perkMaxed(member, entry.Perk) or ((caps and caps[entry.Tree]) or 0) < Config.RunTrees.CapMax
+			end
 			if entry.Perk then return not perkMaxed(member, entry.Perk) end
 			if entry.Attr then return (member:GetAttribute(entry.Attr) or 0) < (entry.Max or 3) end
 			return true
@@ -2813,7 +2869,8 @@ local function rollBonus(run, penaltyChance, forceSpecial)
 		if not buff and forceSpecial then
 			buff = pickWeighted(Config.RunBuffs, function(entry) return entry.Perk == nil or not perkMaxed(member, entry.Perk) end, weigh)
 		end
-		if buff then applyBuff(run, member, buff) end
+		local shown = buff and applyBuff(run, member, buff) -- (갈래 강화는 단계 / 최종 기술 이름을 돌려준다)
+		if shown then buff = shown end
 		local root = getAliveParts(member)
 		if root then
 			if setInfo then

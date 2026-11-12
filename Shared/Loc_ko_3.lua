@@ -4,6 +4,17 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎫 Tickets for the boss: <b>{number1}</b>  ·  Gold / XP x{number2}", "🎫 보스 티켓: <b>{number1}</b>  ·  골드 / 경험치 x{number2}" },
+		{ "kill → explosion, radius {number1}, hits up to 8 enemies", "처치 → 폭발, 반경 {number1}, 최대 8명 타격" },
+		{ "🌟 Paragon point +{number1}! {number2} unspent (press T → Paragon)", "🌟 패러건 포인트 +{number1}! 미사용 {number2} (T → 패러건)" },
+		{ "💰 +{number1} G ({number2} min of your idle income) · {number3} left today", "💰 +{number1} G (방치 수입 {number2}분 분량) · 오늘 {number3}회 남음" },
+		{ "every {number1}s shock shots at {number2} enemies, burst radius {number3}", "{number1}초마다 충격탄이 {number2}명에게 날아가 반경 {number3}로 터져요" },
+		{ "👑 Field Boss defeated! Tickets +{number1}, loot dropped", "👑 필드 보스 처치! 티켓 +{number1}, 전리품 드랍" },
+		{ "👑 Field Boss defeated! Tickets +{number1} loot dropped", "👑 필드 보스 처치 완료! 티켓 +{number1} 아이템 획득" },
+		{ " <font color='#aab0c8'>(gold {number1} + gear {number2})</font>", " <font color='#aab0c8'>(골드 {number1} + 장비 {number2})</font>" },
+		{ "<font color='#78ff8c'>vs. equipped ▲ +{number1}</font>", "<font color='#78ff8c'>장착 중보다 ▲ +{number1}</font>" },
+		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3}", "🔒 문이 닫혀 있어요! {number1}구역 몬스터 {number2}/{number3} 처치 필요" },
+		{ "▲ +{number1}% better than your current gear! (I → Bag)", "▲ 지금 장비보다 +{number1}% 좋아요! (I → 가방)" },
 		{ "Monster HP x{number1} · ATK x{number2}   |   Reward x{number3}   (Lv.{number4}~)", "몬스터 HP x{number1} · 공격력 x{number2}   |   보상 x{number3}   (Lv.{number4}~)" },
 		{ "🥇 {player1}\n⚡ {number1} Lv.{number2}\nSpell Tome · Mythic Era +{number3}", "🥇 {player1}\n⚡ {number1} 레벨.{number2}\n스펠 토메 · 신화 시대 +{number3}" },
 		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!" },

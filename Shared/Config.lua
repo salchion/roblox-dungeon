@@ -382,11 +382,29 @@ Config.Dungeon.MonsterLimit = 40     -- 버티기 중 동시에 살아 있는 �
 Config.Dungeon.OverrunSeconds = 6
 Config.Dungeon.BonusInterval = 6     -- 이 간격(초)마다 랜덤 강화 / 랜덤 패널티가 터진다 (선택 없이 자동 적용)
 
+-- 던전 세 갈래 나무 (룰렛 그대로): 같은 갈래가 또 나오면 겹치지 않고 다음 단계로 올라간다. 1~3단계 = 기존 특성(폭발 / 연쇄 / 관통),
+-- 3단계 뒤에 또 나오면 "최종 기술"이 열리고, 그 뒤로는 과충전(★, 최대 3) = 더 자주 / 더 크게. 이미 들어간 갈래는 더 잘 나온다 (한 판 안에 빌드가 완성되게)
+Config.RunTrees = {
+	Order = { "Boom", "Chain", "Barrage" },
+	BiasOwned = 2.2,   -- 이미 1단계 이상인 갈래가 나올 가중치 배수
+	Boom = { Perk = "Boom", Color = Color3.fromRGB(255, 140, 70),
+		Tiers = { { "💥", "Explosive Shot I", "Shots explode around the enemy hit" }, { "💥", "Explosive Shot II", "Bigger explosions" }, { "💥", "Explosive Shot III", "Huge explosions · one more: APOCALYPSE" } },
+		Cap = { "☄", "APOCALYPSE", "Meteors rain on the enemies around you, nonstop" } },
+	Chain = { Perk = "Chain", Color = Color3.fromRGB(255, 235, 110),
+		Tiers = { { "⚡", "Chain Lightning I", "Lightning jumps to 1 more enemy" }, { "⚡", "Chain Lightning II", "Jumps to 2 more enemies" }, { "⚡", "Chain Lightning III", "Jumps to 3 more · one more: THUNDER GOD" } },
+		Cap = { "🌩", "THUNDER GOD", "Lightning strikes every enemy around you" } },
+	Barrage = { Perk = "Pierce", Color = Color3.fromRGB(150, 220, 255),
+		Tiers = { { "➳", "Piercing Shot I", "Shots pierce +1 enemy" }, { "➳", "Piercing Shot II", "Shots pierce +2 enemies" }, { "➳", "Piercing Shot III", "Shots pierce +3 · one more: BULLET HELL" } },
+		Cap = { "🗡", "BULLET HELL", "A ring of blades slashes every enemy around you" } },
+	CapMax = 3,
+	Overcharge = "Overcharged! Faster and bigger",
+}
+
 -- 랜덤 강화 (고르지 않고 무작위로 하나 걸린다. Perk = 기존 특성을 Stacks 단계만큼 올림 / Weight = 나올 확률 가중치)
 Config.RunBuffs = {
-	{ Icon = "➳",  Name = "Piercing Shot",       Desc = "Shots pierce +1 more enemy",           Perk = "Pierce", Special = true },
-	{ Icon = "💥", Name = "Explosive Shot",       Desc = "Explodes around the enemy hit",                Perk = "Boom",   Special = true },
-	{ Icon = "⚡", Name = "Chain Lightning",    Desc = "Lightning jumps from the enemy hit",          Perk = "Chain",  Special = true },
+	{ Icon = "➳",  Name = "Piercing Shot",       Desc = "Shots pierce +1 more enemy",           Perk = "Pierce", Special = true, Tree = "Barrage" },
+	{ Icon = "💥", Name = "Explosive Shot",       Desc = "Explodes around the enemy hit",                Perk = "Boom",   Special = true, Tree = "Boom" },
+	{ Icon = "⚡", Name = "Chain Lightning",    Desc = "Lightning jumps from the enemy hit",          Perk = "Chain",  Special = true, Tree = "Chain" },
 	{ Icon = "🩸", Name = "Lifesteal",         Desc = "Restore HP on every hit",              Perk = "Vamp",   Special = true },
 	{ Icon = "🔥", Name = "Heavy Hit",         Desc = "Attack +18%",                        Perk = "Power" },
 	{ Icon = "⏩", Name = "Rapid Fire",         Desc = "Attack speed +8%",                      Perk = "Rapid" },

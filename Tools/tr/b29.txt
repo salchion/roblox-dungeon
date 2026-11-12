@@ -445,3 +445,28 @@
 2477¦弾ける防壁¦Berstender Wall¦Rempart éclatant¦Baluarte explosivo¦Baluarte explosivo¦爆裂壁垒¦터지는 방벽
 2478¦処刑するたびに全スキルのクールタイムがさらに1秒短縮：ブレードブルームを回し続けよう¦Jede Hinrichtung verkürzt alle Abklingzeiten um 1 s mehr: halte Blade Bloom am Laufen¦Chaque exécution réduit tous les temps de recharge d'1 s de plus : garde Blade Bloom en marche¦Cada ejecución reduce 1 s más todos los enfriamientos: mantén Blade Bloom girando¦Cada execução reduz mais 1 s de todas as recargas: mantenha Blade Bloom girando¦每次处决让所有技能冷却再减少1秒：让刀刃绽放转个不停¦처형할 때마다 모든 스킬 쿨타임이 1초 더 줄어요: 블레이드 블룸을 계속 돌리세요
 2479¦防壁のシールドが攻撃を防ぐと弾けて周囲の敵を吹き飛ばす（400%）¦Blockt dein Bollwerk-Schild einen Treffer, zerbirst er und trifft Gegner um dich (400 %)¦Quand ton bouclier Rempart bloque un coup, il éclate et frappe les ennemis autour (400 %)¦Cuando tu escudo Baluarte bloquea un golpe, estalla y golpea a los enemigos cercanos (400%)¦Quando seu escudo Baluarte bloqueia um golpe, ele explode e atinge inimigos ao redor (400%)¦壁垒护盾挡住攻击时会爆裂，冲击周围敌人（400%）¦방벽 보호막이 공격을 막으면 터지면서 주변 적을 날려요 (400%)
+2480¦爆裂弾 I¦Explosivschuss I¦Tir explosif I¦Disparo explosivo I¦Tiro explosivo I¦爆裂弹 I¦폭발탄 I
+2481¦爆裂弾 II¦Explosivschuss II¦Tir explosif II¦Disparo explosivo II¦Tiro explosivo II¦爆裂弹 II¦폭발탄 II
+2482¦爆裂弾 III¦Explosivschuss III¦Tir explosif III¦Disparo explosivo III¦Tiro explosivo III¦爆裂弹 III¦폭발탄 III
+2483¦連鎖雷 I¦Kettenblitz I¦Éclair en chaîne I¦Rayo en cadena I¦Raio em cadeia I¦连锁闪电 I¦연쇄 번개 I
+2484¦連鎖雷 II¦Kettenblitz II¦Éclair en chaîne II¦Rayo en cadena II¦Raio em cadeia II¦连锁闪电 II¦연쇄 번개 II
+2485¦連鎖雷 III¦Kettenblitz III¦Éclair en chaîne III¦Rayo en cadena III¦Raio em cadeia III¦连锁闪电 III¦연쇄 번개 III
+2486¦貫通弾 I¦Durchschuss I¦Tir perçant I¦Disparo perforante I¦Tiro perfurante I¦穿透弹 I¦관통탄 I
+2487¦貫通弾 II¦Durchschuss II¦Tir perçant II¦Disparo perforante II¦Tiro perfurante II¦穿透弹 II¦관통탄 II
+2488¦貫通弾 III¦Durchschuss III¦Tir perçant III¦Disparo perforante III¦Tiro perfurante III¦穿透弹 III¦관통탄 III
+2489¦命中した敵の周りで弾が爆発¦Schüsse explodieren um den getroffenen Gegner¦Les tirs explosent autour de l'ennemi touché¦Los disparos explotan alrededor del enemigo¦Os tiros explodem ao redor do inimigo atingido¦子弹在命中的敌人周围爆炸¦맞힌 적 주변에서 탄이 폭발해요
+2490¦爆発が大きくなる¦Größere Explosionen¦Explosions plus grandes¦Explosiones más grandes¦Explosões maiores¦爆炸更大¦폭발이 커져요
+2491¦巨大な爆発 · あと1回で：終末¦Riesige Explosionen · noch einmal: APOKALYPSE¦Explosions énormes · encore une : APOCALYPSE¦Explosiones enormes · una más: APOCALIPSIS¦Explosões enormes · mais uma: APOCALIPSE¦巨大爆炸 · 再来一次：末日¦거대한 폭발 · 한 번 더: 종말
+2492¦雷が敵1体に連鎖¦Blitz springt auf 1 weiteren Gegner¦L'éclair saute sur 1 ennemi de plus¦El rayo salta a 1 enemigo más¦O raio salta para mais 1 inimigo¦闪电跳向另1个敌人¦번개가 적 1마리에게 더 튀어요
+2493¦さらに2体に連鎖¦Springt auf 2 weitere Gegner¦Saute sur 2 ennemis de plus¦Salta a 2 enemigos más¦Salta para mais 2 inimigos¦跳向另2个敌人¦적 2마리에게 더 튀어요
+2494¦さらに3体に連鎖 · あと1回で：雷神¦Springt auf 3 weitere · noch einmal: DONNERGOTT¦Saute sur 3 de plus · encore une : DIEU DU TONNERRE¦Salta a 3 más · una más: DIOS DEL TRUENO¦Salta para mais 3 · mais uma: DEUS DO TROVÃO¦跳向另3个 · 再来一次：雷神¦적 3마리에게 더 튀어요 · 한 번 더: 뇌신
+2495¦弾が敵を+1体貫通¦Schüsse durchdringen +1 Gegner¦Les tirs percent +1 ennemi¦Los disparos atraviesan +1 enemigo¦Os tiros perfuram +1 inimigo¦子弹多穿透1个敌人¦탄이 적을 1마리 더 관통해요
+2496¦弾が敵を+2体貫通¦Schüsse durchdringen +2 Gegner¦Les tirs percent +2 ennemis¦Los disparos atraviesan +2 enemigos¦Os tiros perfuram +2 inimigos¦子弹多穿透2个敌人¦탄이 적을 2마리 더 관통해요
+2497¦弾が+3体貫通 · あと1回で：弾幕地獄¦Durchdringen +3 · noch einmal: KUGELHÖLLE¦Percent +3 · encore une : ENFER DE BALLES¦Atraviesan +3 · una más: INFIERNO DE BALAS¦Perfuram +3 · mais uma: INFERNO DE BALAS¦多穿透3个 · 再来一次：弹幕地狱¦탄이 3마리 더 관통 · 한 번 더: 탄막지옥
+2498¦終末¦APOKALYPSE¦APOCALYPSE¦APOCALIPSIS¦APOCALIPSE¦末日¦종말
+2499¦雷神¦DONNERGOTT¦DIEU DU TONNERRE¦DIOS DEL TRUENO¦DEUS DO TROVÃO¦雷神¦뇌신
+2500¦弾幕地獄¦KUGELHÖLLE¦ENFER DE BALLES¦INFIERNO DE BALAS¦INFERNO DE BALAS¦弹幕地狱¦탄막지옥
+2501¦周りの敵に隕石が絶え間なく降り注ぐ¦Meteore regnen pausenlos auf Gegner um dich¦Des météores pleuvent sans arrêt sur les ennemis autour¦Llueven meteoros sin parar sobre los enemigos cercanos¦Meteoros caem sem parar sobre os inimigos ao redor¦陨石不停砸向你周围的敌人¦주변 적에게 유성이 쉴 새 없이 떨어져요
+2502¦周りのすべての敵に雷が落ちる¦Blitze treffen alle Gegner um dich¦La foudre frappe tous les ennemis autour¦Los rayos golpean a todos los enemigos cercanos¦Raios atingem todos os inimigos ao redor¦闪电劈向你周围的所有敌人¦주변의 모든 적에게 번개가 꽂혀요
+2503¦刃の輪が周りのすべての敵を斬る¦Ein Klingenring schneidet alle Gegner um dich¦Un cercle de lames tranche tous les ennemis autour¦Un anillo de cuchillas corta a todos los enemigos cercanos¦Um anel de lâminas corta todos os inimigos ao redor¦刀刃之环斩向你周围的所有敌人¦칼날 고리가 주변의 모든 적을 베어요
+2504¦過充電！より速く、より大きく¦Überladen! Schneller und größer¦Surchargé ! Plus rapide et plus grand¦¡Sobrecargado! Más rápido y más grande¦Sobrecarregado! Mais rápido e maior¦过载！更快、更强¦과충전! 더 빠르고 더 크게
