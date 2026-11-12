@@ -29,7 +29,7 @@ local TRAIN_COLORS = {
 -- 유형별 줄: 왼쪽 두 줄 = 공격(공격 -> 더블샷, 치명타 -> 치명타 피해, 둘 다 -> 공격 속도) / 체력 = 방어 / 오른쪽 = 유틸(속도 -> 골드 감각)
 local TRAIN_ORDER = { "Attack", "Crit", "Double", "CritDmg", "AtkSpeed", "Health", "Speed", "Armor", "Gold", "Regen" }
 local TRAIN_SPOT = { -- { 칸 안의 x(0~1), y } : 공격 묶음 (위) / 생존·유틸 묶음 (아래, 조금 띄움)
-	Attack = { 0.25, 50 }, Crit = { 0.75, 50 }, Double = { 0.25, 88 }, CritDmg = { 0.75, 88 }, AtkSpeed = { 0.5, 126 },
+	Attack = { 0.25, 50 }, Crit = { 0.75, 50 }, Double = { 0.25, 88 }, CritDmg = { 0.75, 88 }, AtkSpeed = { 0.5, 126, true },
 	Health = { 0.25, 172 }, Speed = { 0.75, 172 }, Armor = { 0.25, 210 }, Gold = { 0.75, 210 }, Regen = { 0.25, 248 },
 }
 local TRAIN_POS = {
@@ -287,7 +287,11 @@ local function drawTraining(env, C)
 	-- 시작 칸은 항상 묶음의 맨 위에 있어서, 가지가 엉뚱한 칸에서 이어지는 것처럼 보이지 않는다
 	local spots = {}
 	for stat, at in pairs(TRAIN_SPOT) do
-		if G.Stats[stat] then spots[stat] = { X = colX("Train", at[1]), Y = at[2] } end
+		if G.Stats[stat] then
+			local x = colX("Train", at[1])
+			if at[3] then x += slotW / 2 - 0.024 end -- 가운데 칸: 동그라미가 칸 한가운데 오게 (카드는 동그라미 왼쪽 정렬이라 그냥 두면 왼쪽으로 쏠려 보였다)
+			spots[stat] = { X = x, Y = at[2] }
+		end
 	end
 	for stat, spot in pairs(spots) do
 		for _, req in ipairs(G.Stats[stat].Req or {}) do
