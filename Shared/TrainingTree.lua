@@ -27,7 +27,7 @@ local TRAIN_COLORS = {
 }
 -- 훈련 노드 자리: { 칸 안의 x(0~1), 층 }
 -- 유형별 줄: 왼쪽 두 줄 = 공격(공격 -> 더블샷, 치명타 -> 치명타 피해, 둘 다 -> 공격 속도) / 체력 = 방어 / 오른쪽 = 유틸(속도 -> 골드 감각)
-local TRAIN_ORDER = { "Attack", "Crit", "Health", "Speed", "Double", "CritDmg", "Armor", "Gold", "AtkSpeed", "Regen" } -- 카드 순서 (위 줄이 먼저 열린다)
+local TRAIN_ORDER = { "Attack", "Crit", "Double", "CritDmg", "AtkSpeed", "Health", "Speed", "Armor", "Gold", "Regen" } -- 왼쪽 / 오른쪽 번갈아: 먼저 찍을 칸이 바로 위에 오게 (가지가 다른 칸을 가로지르지 않는다)
 local TRAIN_POS = {
 	Attack = { 0.125, 1 }, Crit = { 0.375, 1 }, Health = { 0.625, 1 }, Speed = { 0.875, 1 },
 	Double = { 0.125, 2 }, CritDmg = { 0.375, 2 }, Armor = { 0.625, 2 }, Gold = { 0.875, 2 }, AtkSpeed = { 0.25, 3 }, Regen = { 0.625, 3 },
@@ -90,41 +90,40 @@ local function canvas(env)
 	-- 노드 = 납작한 카드 (예전: 동그라미 + 아래 글자 두 줄이라 세로 공간을 많이 먹어 칸이 모자랐다)
 	--   [아이콘] 이름 / Lv (또는 남은 시간) + 아래 진행 막대. state = "done" / "active"(찍는 중) / "open" / "locked"
 	--   width: 카드 너비 (나무 전체 너비 대비 비율, 0~1)
+	-- 소켓 중심 (나무 선을 이을 때 쓴다): 칸 왼쪽에서 조금 안쪽
+	function C.cx(x, width) return x - width / 2 + 0.024 end
+	-- 노드 = 네모 판 없이 "금속 테두리 원형 소켓 + 오른쪽 이름 / 레벨 + 가는 막대". 고르거나 찍는 중일 때만 옅은 빛이 깔린다
 	function C.node(x, y, icon, color, state, ratio, caption, sub, chosen, width, onClick)
-		-- 게임 UI 느낌: 위가 밝고 아래가 어두운 판 + 왼쪽에 금속 테두리 원형 소켓(아이콘) + 광택 진행 막대
 		local locked = state == "locked"
-		local base = locked and Color3.fromRGB(34, 32, 48) or color:Lerp(DARK, state == "done" and 0.5 or (state == "active" and 0.55 or 0.72))
-		local n = create("Frame", { Size = UDim2.new(width, -6, 0, CARD_H), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y), BackgroundColor3 = base, BorderSizePixel = 0, ZIndex = 4 }, row)
-		create("UICorner", { CornerRadius = UDim.new(0, 10) }, n)
-		create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(120, 110, 150)), Rotation = 90 }, n)
-		local rim = (chosen and Color3.new(1, 1, 1)) or (locked and DIM) or (state == "done" and Color3.fromRGB(255, 214, 110)) or color
-		local stroke = create("UIStroke", { Color = rim, Thickness = chosen and 2.6 or 1.6, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, n)
-		create("UIGradient", { Rotation = 90, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 0.55) }) }, stroke)
-		-- 원형 소켓: 바깥 어두운 금속 고리 + 안쪽 색 고리
-		local socket = create("Frame", { Size = UDim2.new(0, 30, 0, 30), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, -4, 0.5, 0), BackgroundColor3 = locked and Color3.fromRGB(36, 34, 50) or color:Lerp(DARK, 0.35), BorderSizePixel = 0, ZIndex = 6 }, n)
+		local cx = C.cx(x, width)
+		if chosen or state == "active" then -- 옅은 빛 띠 (네모 판이 아니라 양끝이 사라지는 빛)
+			local glowBand = create("Frame", { Size = UDim2.new(width, -10, 0, 30), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y), BackgroundColor3 = chosen and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(255, 220, 120), BorderSizePixel = 0, ZIndex = 3 }, row)
+			create("UICorner", { CornerRadius = UDim.new(1, 0) }, glowBand)
+			create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.82), NumberSequenceKeypoint.new(0.6, 0.9), NumberSequenceKeypoint.new(1, 1) }) }, glowBand)
+		end
+		local socket = create("Frame", { Size = UDim2.new(0, 28, 0, 28), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(cx, 0, 0, y), BackgroundColor3 = locked and Color3.fromRGB(32, 30, 46) or color:Lerp(DARK, state == "done" and 0.25 or 0.5), BorderSizePixel = 0, ZIndex = 6 }, row)
 		create("UICorner", { CornerRadius = UDim.new(1, 0) }, socket)
-		create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(110, 100, 130)), Rotation = 45 }, socket)
-		local ring = create("UIStroke", { Color = locked and Color3.fromRGB(90, 86, 110) or Color3.fromRGB(230, 200, 130), Thickness = 2.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, socket)
-		create("UIGradient", { Color = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 245, 210)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(150, 110, 50)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 230, 160)) }), Rotation = 45 }, ring)
-		label({ Size = UDim2.new(1, 0, 1, 0), Text = locked and "🔒" or icon, TextSize = locked and 12 or 16, ZIndex = 7 }, socket)
-		label({ Size = UDim2.new(1, -36, 0, 15), Position = UDim2.new(0, 31, 0, 4), Text = caption, RichText = true, TextSize = 11, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBlack, ZIndex = 5,
-			TextColor3 = locked and Color3.fromRGB(140, 136, 165) or Color3.new(1, 1, 1), TextStrokeTransparency = 0.5, TextStrokeColor3 = Color3.fromRGB(10, 8, 20) }, n)
+		create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(100, 92, 130)), Rotation = 45 }, socket)
+		local ring = create("UIStroke", { Thickness = chosen and 2.6 or 1.8, ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+			Color = chosen and Color3.new(1, 1, 1) or (locked and Color3.fromRGB(80, 76, 100) or (state == "done" and Color3.fromRGB(255, 214, 110) or Color3.fromRGB(225, 196, 130))) }, socket)
+		if not locked and not chosen then create("UIGradient", { Color = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 248, 220)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(150, 112, 52)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 232, 165)) }), Rotation = 45 }, ring) end
+		label({ Size = UDim2.new(1, 0, 1, 0), Text = locked and "🔒" or icon, TextSize = locked and 10 or 13, ZIndex = 7 }, socket)
+		label({ Size = UDim2.new(width, -46, 0, 14), Position = UDim2.new(cx, 20, 0, y - 13), Text = caption, RichText = true, TextSize = 11, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBlack, ZIndex = 5,
+			TextColor3 = locked and Color3.fromRGB(135, 131, 160) or Color3.new(1, 1, 1), TextStrokeTransparency = 0.45, TextStrokeColor3 = Color3.fromRGB(10, 8, 20) }, row)
 		if sub and sub ~= "" then
-			label({ Size = UDim2.new(1, -36, 0, 12), Position = UDim2.new(0, 31, 0, 18), Text = sub, RichText = true, TextSize = 9, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5,
-				TextColor3 = state == "active" and Color3.fromRGB(255, 225, 120) or Color3.fromRGB(190, 186, 214) }, n)
+			label({ Size = UDim2.new(width, -46, 0, 11), Position = UDim2.new(cx, 20, 0, y + 1), Text = sub, RichText = true, TextSize = 9, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5,
+				TextColor3 = state == "active" and Color3.fromRGB(255, 225, 120) or Color3.fromRGB(180, 176, 205) }, row)
 		end
-		local bar = create("Frame", { Size = UDim2.new(1, -40, 0, 4), Position = UDim2.new(0, 31, 1, -7), BackgroundColor3 = Color3.fromRGB(10, 8, 18), BorderSizePixel = 0, ZIndex = 5 }, n)
-		create("UICorner", { CornerRadius = UDim.new(1, 0) }, bar)
-		local barFill = create("Frame", { Size = UDim2.new(math.clamp(ratio or 0, 0, 1), 0, 1, 0), BackgroundColor3 = state == "done" and Color3.fromRGB(255, 214, 110) or color, BorderSizePixel = 0, ZIndex = 6 }, bar)
-		create("UICorner", { CornerRadius = UDim.new(1, 0) }, barFill)
-		create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(150, 150, 150)), Rotation = 90 }, barFill) -- 막대 광택
-		if state == "active" then -- 찍는 중: 테두리가 금빛으로 숨 쉰다
-			stroke.Color = Color3.fromRGB(255, 225, 120)
-			game:GetService("TweenService"):Create(stroke, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 3.2 }):Play()
+		if not locked then -- 아주 가는 진행 막대 (글자 아래)
+			local bar = create("Frame", { Size = UDim2.new(width * 0.5, 0, 0, 2), Position = UDim2.new(cx, 20, 0, y + 13), BackgroundColor3 = Color3.fromRGB(20, 18, 32), BorderSizePixel = 0, ZIndex = 5 }, row)
+			create("Frame", { Size = UDim2.new(math.clamp(ratio or 0, 0, 1), 0, 1, 0), BackgroundColor3 = state == "done" and Color3.fromRGB(255, 214, 110) or color, BorderSizePixel = 0, ZIndex = 6 }, bar)
 		end
-		local hit = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, n)
+		if state == "active" then
+			game:GetService("TweenService"):Create(ring, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 3.2 }):Play()
+		end
+		local hit = create("TextButton", { Size = UDim2.new(width, -6, 0, CARD_H), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, 0, 0, y), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, row)
 		hit.Activated:Connect(onClick)
-		return n
+		return socket
 	end
 	return C
 end
@@ -278,12 +277,27 @@ local function drawTraining(env, C)
 	local jobs = {}
 	for _, job in ipairs(state.Jobs) do jobs[job.Stat] = job end
 	C.title("Train", string.format("🏋 Training<font size='11' color='#cfc8e8'>   Slots %d / %d</font>", #state.Jobs, state.Slots))
-	-- 카드 두 줄씩 (한 줄에 넷이면 이름이 "공격…" 처럼 잘렸다). 연결선 대신 잠긴 카드에 "무엇을 몇 레벨 찍어야 열리는지"를 적는다
-	local index = 0
+	-- 두 줄씩 놓고, 먼저 찍어야 하는 칸에서 가지가 이어진다 (열렸으면 그 색, 아니면 어두운 선)
+	local slotW = (COLS.Train[2] - COLS.Train[1]) / 2
+	local spots, index = {}, 0
 	for _, stat in ipairs(TRAIN_ORDER) do
-		local def = G.Stats[stat]
-		if def then
+		if G.Stats[stat] then
 			index += 1
+			spots[stat] = { X = colX("Train", (index % 2 == 1) and 0.25 or 0.75), Y = 52 + math.floor((index - 1) / 2) * 44 }
+		end
+	end
+	for stat, spot in pairs(spots) do
+		for _, req in ipairs(G.Stats[stat].Req or {}) do
+			local from = spots[req.Stat]
+			if from then
+				local met = (levels[req.Stat] or 0) >= req.Level
+				C.elbow(C.cx(from.X, slotW), from.Y + 15, C.cx(spot.X, slotW), spot.Y - 15, met and (TRAIN_COLORS[stat] or GOLD) or Color3.fromRGB(56, 52, 78), met and 2 or 1)
+			end
+		end
+	end
+	for _, stat in ipairs(TRAIN_ORDER) do
+		local def, spot = G.Stats[stat], spots[stat]
+		if def and spot then
 			local level = levels[stat] or 0
 			local max = Config.TrainMax(stat)
 			local unlocked = Config.TrainUnlocked(stat, levels)
@@ -294,9 +308,7 @@ local function drawTraining(env, C)
 					if (levels[req.Stat] or 0) < req.Level and G.Stats[req.Stat] then sub = string.format("🔒 %s Lv.%d", G.Stats[req.Stat].Name, req.Level) break end
 				end
 			end
-			local x = colX("Train", (index % 2 == 1) and 0.25 or 0.75)
-			local y = 52 + math.floor((index - 1) / 2) * 44
-			C.node(x, y, def.Icon, TRAIN_COLORS[stat] or GOLD, nodeState, level / max, def.Name, sub, isSel("Train", stat), (COLS.Train[2] - COLS.Train[1]) / 2, pick(env, "Train", stat))
+			C.node(spot.X, spot.Y, def.Icon, TRAIN_COLORS[stat] or GOLD, nodeState, level / max, def.Name, sub, isSel("Train", stat), slotW, pick(env, "Train", stat))
 		end
 	end
 end
@@ -341,7 +353,6 @@ local PET_PER_ROW = 2 -- (카드 한 줄에 둘, 다섯 줄: 셋이면 이름이
 local function petPos(i)
 	local r = (i - 1) // PET_PER_ROW
 	local c = (i - 1) % PET_PER_ROW
-	if r % 2 == 1 then c = PET_PER_ROW - 1 - c end
 	return colX("Pet", (c + 0.5) / PET_PER_ROW), 52 + r * 44
 end
 
@@ -359,11 +370,13 @@ local function drawPet(env, C)
 	for _, fn in ipairs(fns) do
 		if fn.Level > level then nextFn = fn break end
 	end
-	for i = 2, #fns do
-		local x0, y0 = petPos(i - 1)
+	for i = PET_PER_ROW + 1, #fns do -- 세로 가지만 (가로 선이 이름 글자를 가로지르지 않게)
+		local x0, y0 = petPos(i - PET_PER_ROW)
 		local x1, y1 = petPos(i)
 		local lit = level >= fns[i].Level
-		C.line(x0, y0, y0 == y1 and x1 or x0, y1, lit and PET_COLOR or DIM, lit and 3 or 2)
+		local w = (COLS.Pet[2] - COLS.Pet[1]) / PET_PER_ROW
+		local a0, a1 = C.cx(x0, w), C.cx(x1, w)
+		C.line(a0, y0 + 15, a1, y1 - 15, lit and PET_COLOR or Color3.fromRGB(56, 52, 78), lit and 2 or 1)
 	end
 	local upEnd = env.Player:GetAttribute("UpPet")
 	for i, fn in ipairs(fns) do
@@ -448,10 +461,10 @@ local function drawTalents(env, C)
 			BackgroundColor3 = not open and Color3.fromRGB(30, 28, 44) or (lit and TALENT_COLOR:Lerp(DARK, 0.45) or Color3.fromRGB(40, 42, 66)), BorderSizePixel = 0, ZIndex = 5 }, C.Row)
 		create("UICorner", { CornerRadius = UDim.new(round and 1 or 0.28, 0) }, back)
 		create("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(100, 92, 130)), Rotation = 45 }, back)
-		local ring = create("UIStroke", { Thickness = chosen and 3 or 2.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+		local ring = create("UIStroke", { Thickness = chosen and 2.6 or 1.6, ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 			Color = chosen and Color3.new(1, 1, 1) or (not open and DIM or (rank >= max and Color3.fromRGB(255, 214, 110) or (lit and TALENT_COLOR or Color3.fromRGB(120, 116, 150)))) }, back)
 		if open and lit then create("UIGradient", { Color = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 250, 225)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(170, 130, 60)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 235, 170)) }), Rotation = 45 }, ring) end
-		label({ Size = UDim2.new(1, 0, 1, 0), Text = open and icon or "🔒", TextSize = open and math.floor(size * 0.5) or 12, ZIndex = 6, TextTransparency = (open and not lit) and 0.4 or 0 }, back)
+		label({ Size = UDim2.new(1, 0, 1, 0), Text = open and icon or "🔒", TextSize = open and math.floor(size * 0.4) or 10, ZIndex = 6, TextTransparency = (open and not lit) and 0.4 or 0 }, back)
 		if max > 1 then -- 랭크 점: 찍은 만큼 금빛
 			for k = 1, max do
 				local dot = create("Frame", { Size = UDim2.new(0, 5, 0, 5), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(x, (k - (max + 1) / 2) * 7, 0, y + size / 2 + 6),
@@ -497,7 +510,7 @@ local function drawTalents(env, C)
 					socket(cx, y + 6, 26, c.Icon, side == which and 1 or 0, 1, open, side == which, isSel("Talent", key) and (side == nil or side == which), true, onClick)
 				end
 			else
-				socket(x, y, 32, node.Icon, rank, node.Max, open, rank > 0, isSel("Talent", key), false, onClick)
+				socket(x, y, 32, node.Icon, rank, node.Max, open, rank > 0, isSel("Talent", key), true, onClick) -- (모두 원형: 네모 칸을 없앴다)
 			end
 		end
 	end
