@@ -18,7 +18,7 @@ local TIER_Y = { 66, 152, 238 } -- 세 칸이 같은 높이의 층을 쓴다
 local CARD_H = 38 -- 노드 카드 높이
 local CANVAS_H = 306
 -- 칸마다 가로 범위 (0~1): 스킬(액티브 3, 세로 한 줄) | 훈련 | 패시브(훈련 바로 옆: 둘 다 상시 효과) | 펫
-local COLS = { Skill = { 0, 0.15 }, Train = { 0.15, 0.55 }, Passive = { 0.55, 0.75 }, Pet = { 0.75, 1 } }
+local COLS = { Skill = { 0, 0.17 }, Train = { 0.17, 0.55 }, Passive = { 0.55, 0.75 }, Pet = { 0.75, 1 } }
 local selected = { Kind = "Skill", Key = nil } -- 마지막으로 고른 노드 (메뉴를 다시 그려도 유지)
 
 local TRAIN_COLORS = {
@@ -27,6 +27,7 @@ local TRAIN_COLORS = {
 }
 -- 훈련 노드 자리: { 칸 안의 x(0~1), 층 }
 -- 유형별 줄: 왼쪽 두 줄 = 공격(공격 -> 더블샷, 치명타 -> 치명타 피해, 둘 다 -> 공격 속도) / 체력 = 방어 / 오른쪽 = 유틸(속도 -> 골드 감각)
+local TRAIN_ORDER = { "Attack", "Crit", "Health", "Speed", "Double", "CritDmg", "Armor", "Gold", "AtkSpeed", "Regen" } -- 카드 순서 (위 줄이 먼저 열린다)
 local TRAIN_POS = {
 	Attack = { 0.125, 1 }, Crit = { 0.375, 1 }, Health = { 0.625, 1 }, Speed = { 0.875, 1 },
 	Double = { 0.125, 2 }, CritDmg = { 0.375, 2 }, Armor = { 0.625, 2 }, Gold = { 0.875, 2 }, AtkSpeed = { 0.25, 3 }, Regen = { 0.625, 3 },
@@ -209,10 +210,10 @@ local function drawSkills(env, C)
 			activeIndex += 1
 			x = colX("Skill", 0.5)
 			y = 54 + (activeIndex - 1) * 48
-			caption = string.format("[%s] <b>%s</b>", cfg.Key or "", cfg.Name)
+			caption = string.format("<b>%s</b>", cfg.Name)
 		end
 		C.node(x, y, cfg.Icon, skillColor(key), state, level / U.MaxLevel, caption,
-			remaining and ("⏳ " .. Config.FormatDuration(remaining)) or string.format("Lv.%d / %d", level, U.MaxLevel), isSel("Skill", key), cfg.Passive and (COLS.Passive[2] - COLS.Passive[1]) or (COLS.Skill[2] - COLS.Skill[1]), pick(env, "Skill", key))
+			remaining and ("⏳ " .. Config.FormatDuration(remaining)) or string.format("%sLv.%d / %d", (not cfg.Passive and cfg.Key) and ("[" .. cfg.Key .. "] ") or "", level, U.MaxLevel), isSel("Skill", key), cfg.Passive and (COLS.Passive[2] - COLS.Passive[1]) or (COLS.Skill[2] - COLS.Skill[1]), pick(env, "Skill", key))
 	end
 end
 
@@ -265,27 +266,25 @@ local function drawTraining(env, C)
 	local jobs = {}
 	for _, job in ipairs(state.Jobs) do jobs[job.Stat] = job end
 	C.title("Train", string.format("🏋 Training<font size='11' color='#cfc8e8'>   Slots %d / %d</font>", #state.Jobs, state.Slots))
-	for _, stat in ipairs(G.Stats.Order) do -- 선 먼저 (노드 아래에 깔리게)
-		local def, pos = G.Stats[stat], TRAIN_POS[stat]
-		if pos then
-			for _, req in ipairs(def.Req or {}) do
-				local from = TRAIN_POS[req.Stat]
-				if from then
-					local met = (levels[req.Stat] or 0) >= req.Level
-					C.elbow(colX("Train", from[1]), TIER_Y[from[2]] + CARD_H / 2, colX("Train", pos[1]), TIER_Y[pos[2]] - CARD_H / 2, met and (TRAIN_COLORS[stat] or GOLD) or DIM, met and 3 or 2)
-				end
-			end
-		end
-	end
-	for _, stat in ipairs(G.Stats.Order) do
-		local def, pos = G.Stats[stat], TRAIN_POS[stat]
-		if pos then
+	-- 카드 두 줄씩 (한 줄에 넷이면 이름이 "공격…" 처럼 잘렸다). 연결선 대신 잠긴 카드에 "무엇을 몇 레벨 찍어야 열리는지"를 적는다
+	local index = 0
+	for _, stat in ipairs(TRAIN_ORDER) do
+		local def = G.Stats[stat]
+		if def then
+			index += 1
 			local level = levels[stat] or 0
 			local max = Config.TrainMax(stat)
 			local unlocked = Config.TrainUnlocked(stat, levels)
 			local nodeState = not unlocked and "locked" or (jobs[stat] and "active" or (level >= max and "done" or "open"))
 			local sub = jobs[stat] and ("⏳ " .. Config.FormatDuration(env.Remaining(jobs[stat].EndAt))) or string.format("Lv.%d / %d", level, max)
-			C.node(colX("Train", pos[1]), TIER_Y[pos[2]], def.Icon, TRAIN_COLORS[stat] or GOLD, nodeState, level / max, def.Name, sub, isSel("Train", stat), (COLS.Train[2] - COLS.Train[1]) / 4, pick(env, "Train", stat))
+			if not unlocked then
+				for _, req in ipairs(def.Req or {}) do
+					if (levels[req.Stat] or 0) < req.Level and G.Stats[req.Stat] then sub = string.format("🔒 %s Lv.%d", G.Stats[req.Stat].Name, req.Level) break end
+				end
+			end
+			local x = colX("Train", (index % 2 == 1) and 0.25 or 0.75)
+			local y = 54 + math.floor((index - 1) / 2) * 48
+			C.node(x, y, def.Icon, TRAIN_COLORS[stat] or GOLD, nodeState, level / max, def.Name, sub, isSel("Train", stat), (COLS.Train[2] - COLS.Train[1]) / 2, pick(env, "Train", stat))
 		end
 	end
 end
@@ -326,12 +325,12 @@ end
 ------------------------------------------------------------
 -- 3) 펫 사슬 (오른쪽 칸, 한 줄에 4개씩 뱀처럼)
 ------------------------------------------------------------
-local PET_PER_ROW = 3 -- (카드 모양이라 한 줄 셋, 줄은 네다섯 줄)
+local PET_PER_ROW = 2 -- (카드 한 줄에 둘, 다섯 줄: 셋이면 이름이 잘렸다)
 local function petPos(i)
 	local r = (i - 1) // PET_PER_ROW
 	local c = (i - 1) % PET_PER_ROW
 	if r % 2 == 1 then c = PET_PER_ROW - 1 - c end
-	return colX("Pet", (c + 0.5) / PET_PER_ROW), 54 + r * 56
+	return colX("Pet", (c + 0.5) / PET_PER_ROW), 54 + r * 48
 end
 
 local function petLevel(env)
