@@ -17,7 +17,8 @@ local PET_COLOR = Color3.fromRGB(255, 200, 120)
 local NODE = 48
 local TIER_Y = { 66, 152, 238 } -- 세 칸이 같은 높이의 층을 쓴다
 local CANVAS_H = 306
-local COLS = { Skill = { 0, 0.34 }, Train = { 0.34, 0.69 }, Pet = { 0.69, 1 } } -- (스킬 칸을 넓혔다: 액티브 + 패시브 8개를 한 줄에 셋씩) -- 칸마다 가로 범위 (0~1)
+-- 칸마다 가로 범위 (0~1): 스킬(액티브 3, 세로 한 줄) | 훈련 | 패시브(훈련 바로 옆: 둘 다 상시 효과) | 펫
+local COLS = { Skill = { 0, 0.15 }, Train = { 0.15, 0.51 }, Passive = { 0.51, 0.71 }, Pet = { 0.71, 1 } }
 local selected = { Kind = "Skill", Key = nil } -- 마지막으로 고른 노드 (메뉴를 다시 그려도 유지)
 
 local TRAIN_COLORS = {
@@ -128,8 +129,8 @@ local function branchCards(env, key, parent)
 		if pair then
 			local chosen = env.Player:GetAttribute("SkillBr" .. tier .. "_" .. key)
 			local unlocked = level >= tier
-			local y = 6 + (rowIndex - 1) * 52
-			local tag = env.MakeLabel({ Size = UDim2.new(0, 46, 0, 48), Position = UDim2.new(0.44, 0, 0, y), RichText = true, TextSize = 12, TextWrapped = true,
+			local y = 6 + (rowIndex - 1) * 44 -- (갈래가 네 단계로 늘어 한 줄을 낮췄다: 아래가 잘렸다)
+			local tag = env.MakeLabel({ Size = UDim2.new(0, 46, 0, 40), Position = UDim2.new(0.44, 0, 0, y), RichText = true, TextSize = 12, TextWrapped = true,
 				Text = string.format("<font color='#ffd966'><b>Lv.%d</b></font>\n%s", tier, unlocked and (chosen and "<font color='#78ff8c' size='10'>✔</font>" or "") or "🔒") }, parent)
 			tag.ZIndex = 3
 			for index, side in ipairs({ "A", "B" }) do
@@ -139,14 +140,14 @@ local function branchCards(env, key, parent)
 				local text = string.format("%s %s\n%s", picked and "✔" or def.Icon, def.Name, def.Desc)
 				if cost then text = text .. string.format("\nSwitch path: %s G", comma(cost)) end
 				local button = env.MakeButton({
-					Size = UDim2.new(0.56, -52, 0, 48), Position = UDim2.new(0.44, 46 + (index - 1) * 0, 0, y), TextSize = 10, TextWrapped = true, Text = text,
+					Size = UDim2.new(0.56, -52, 0, 40), Position = UDim2.new(0.44, 46 + (index - 1) * 0, 0, y), TextSize = 9, TextWrapped = true, Text = text,
 					BackgroundColor3 = picked and Color3.fromRGB(46, 112, 84) or (unlocked and Color3.fromRGB(58, 60, 92) or Color3.fromRGB(44, 44, 56)),
 					TextColor3 = unlocked and Color3.new(1, 1, 1) or Color3.fromRGB(150, 150, 170),
 				}, parent, function()
 					if unlocked and not picked then env.Remotes.Meta:FireServer("SkillBranch", string.format("%s|%d|%s", key, tier, side)) end
 				end)
 				button.AnchorPoint = Vector2.new(0, 0)
-				button.Size = UDim2.new((0.56 - 0.07) / 2, -4, 0, 48)
+				button.Size = UDim2.new((0.56 - 0.07) / 2, -4, 0, 40)
 				button.Position = UDim2.new(0.44 + 0.07 + (index - 1) * ((0.56 - 0.07) / 2), 2, 0, y)
 			end
 		end
@@ -156,7 +157,7 @@ end
 local function detailRow(env, color, text, button, skillKey)
 	local create, label = env.Create, env.MakeLabel
 	local withBranch = skillKey ~= nil and env.Config.SkillBranch ~= nil and env.Config.SkillBranch[skillKey] ~= nil
-	local detail = env.NewRow(withBranch and (14 + 52 * #env.Config.SkillBranchTiers) or (skillKey and 124 or 76), Color3.fromRGB(30, 28, 46)) -- (갈래 단계 수만큼: Lv.3 / 5 / 7 / 10 = 네 줄) -- (스킬: 지금 ▶ 다음 레벨 비교 줄이 들어갈 자리)
+	local detail = env.NewRow(withBranch and (14 + 44 * #env.Config.SkillBranchTiers) or (skillKey and 124 or 76), Color3.fromRGB(30, 28, 46)) -- (갈래 단계 수만큼: Lv.3 / 5 / 7 / 10 = 네 줄) -- (스킬: 지금 ▶ 다음 레벨 비교 줄이 들어갈 자리)
 	create("UIStroke", { Color = color, Thickness = 1.5, Transparency = 0.3 }, detail)
 	if button and env.InTown == false then -- 필드에서는 업그레이드 못 한다: 버튼이 "마을에서"로 바뀐다 (서버도 막는다)
 		button = { Text = "🏘 Upgrade in town", Color = env.GRAY, OnClick = function() end }
@@ -197,17 +198,27 @@ local function drawSkills(env, C)
 	local Config, meta = env.Config, env.Meta
 	local U = Config.SkillUpgrade
 	C.title("Skill", "⚔ Skills")
-	for i, key in ipairs(Config.Skills.UpgradeOrder) do
+	C.title("Passive", "✨ Passives")
+	local activeIndex, passiveIndex = 0, 0
+	for _, key in ipairs(Config.Skills.UpgradeOrder) do
 		local cfg = Config.Skills[key]
 		local level = meta and meta.Skills and meta.Skills[key] or 1
 		local remaining = env.UpgradeRemaining(key)
 		local state = level >= U.MaxLevel and "done" or (remaining and "active" or "open")
-		local perRow = #Config.Skills.UpgradeOrder > 6 and 3 or 2 -- (패시브가 늘어 8개: 한 줄에 셋)
-		local col = (i - 1) % perRow
-		local x = colX("Skill", perRow == 3 and (0.18 + col * 0.32) or (col == 0 and 0.28 or 0.72))
-		local y = TIER_Y[math.min(#TIER_Y, math.floor((i - 1) / perRow) + 1)]
-		C.node(x, y, cfg.Icon, skillColor(key), state, level / U.MaxLevel, perRow == 3 and string.format("<b>%s</b>", cfg.Name) or string.format("[%s] <b>%s</b>", cfg.Key or "", cfg.Name),
-			remaining and ("⏳ " .. Config.FormatDuration(remaining)) or string.format("Lv.%d / %d", level, U.MaxLevel), isSel("Skill", key), perRow == 3 and 84 or 104, pick(env, "Skill", key))
+		local x, y, caption
+		if cfg.Passive then -- 패시브: 훈련 옆 칸에 두 줄로
+			passiveIndex += 1
+			x = colX("Passive", ((passiveIndex - 1) % 2 == 0) and 0.27 or 0.73)
+			y = TIER_Y[math.min(#TIER_Y, math.floor((passiveIndex - 1) / 2) + 1)]
+			caption = string.format("<b>%s</b>", cfg.Name)
+		else -- 액티브: 스킬 칸에 세로 한 줄
+			activeIndex += 1
+			x = colX("Skill", 0.5)
+			y = TIER_Y[math.min(#TIER_Y, activeIndex)]
+			caption = string.format("[%s] <b>%s</b>", cfg.Key or "", cfg.Name)
+		end
+		C.node(x, y, cfg.Icon, skillColor(key), state, level / U.MaxLevel, caption,
+			remaining and ("⏳ " .. Config.FormatDuration(remaining)) or string.format("Lv.%d / %d", level, U.MaxLevel), isSel("Skill", key), 88, pick(env, "Skill", key))
 	end
 end
 
@@ -391,6 +402,7 @@ function M.BuildAll(env)
 	if not okC then warn("[TrainingTree] " .. tostring(C)) return end
 	C.divider(COLS.Skill[2])
 	C.divider(COLS.Train[2])
+	C.divider(COLS.Passive[2])
 	for _, part in ipairs({ drawSkills, drawTraining, drawPet }) do
 		local ok, err = pcall(part, env, C)
 		if not ok then warn("[TrainingTree] " .. tostring(err)) end
