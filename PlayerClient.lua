@@ -2586,6 +2586,16 @@ local function buildSkipGaugeRow() -- 성장 탭 맨 위: ⏱ 시간 건너뛰�
 	local row = newRow(38, Color3.fromRGB(30, 28, 46))
 	makeLabel({ Size = UDim2.new(1, -24, 0, 18), Position = UDim2.new(0, 12, 0, 2), RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left,
 		Text = string.format("⏱ Time Skip <font color='#ffe16e'><b>%s</b></font> owned", Config.FormatDuration(owned)) }, row)
+	-- 오른쪽: 지금 가진 골드 (성장 칸에서 골드를 쓰는데 골드가 안 보였다). 골드가 바뀌면 바로 따라간다
+	local goldLabel = makeLabel({ Size = UDim2.new(0, 220, 0, 18), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -12, 0, 2), RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Right,
+		Text = "" }, row)
+	local function showGold()
+		local digits = tostring(math.floor(player:GetAttribute("Gold") or 0)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "") -- 1,234,567
+		goldLabel.Text = string.format("💰 <font color='#ffd966'><b>%s</b></font>", digits)
+	end
+	showGold()
+	local goldConn = player:GetAttributeChangedSignal("Gold"):Connect(showGold)
+	goldLabel.Destroying:Connect(function() goldConn:Disconnect() end)
 	local cap = math.max(player:GetAttribute("TimeSkipCap") or 0, owned, 1)
 	local gaugeBack = makePanel({ Size = UDim2.new(1, -24, 0, 10), Position = UDim2.new(0, 12, 0, 24), BackgroundColor3 = Color3.fromRGB(22, 24, 36) }, row)
 	makePanel({ Size = UDim2.new(math.clamp(owned / cap, 0, 1), 0, 1, 0), BackgroundColor3 = Color3.fromRGB(215, 150, 60) }, gaugeBack)
