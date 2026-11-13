@@ -79,7 +79,12 @@ if dict and dict.templates then
 			position = b + 1
 		end
 		local literal = string.gsub(source, "{%a+%d+}", "")
-		table.insert(compiled, { Pattern = "^" .. table.concat(pattern) .. "$", Names = names, To = translation, Literal = #literal })
+		-- 미리 거르기: 틀의 글자 조각 중 가장 긴 것이 문장 안에 없으면 패턴 비교를 아예 하지 않는다 (결과는 같고, 비교가 훨씬 가볍다)
+		local need = ""
+		for chunk in string.gmatch(source .. "{text0}", "(.-){%a+%d+}") do
+			if #chunk > #need then need = chunk end
+		end
+		table.insert(compiled, { Pattern = "^" .. table.concat(pattern) .. "$", Names = names, To = translation, Literal = #literal, Need = need })
 	end
 	-- 글자가 많은(더 구체적인) 틀부터 맞춰 본다: "🔫 Next {text1}" 같은 짧은 틀이 긴 문장의 전용 틀보다 먼저 걸리지 않게
 	table.sort(compiled, function(a, b) return a.Literal > b.Literal end)
@@ -103,7 +108,7 @@ function lookupCore(piece, nested)
 	if hit then return hit end
 	for i = 1, #compiled do
 		local entry = compiled[i]
-		local captures = { string.match(piece, entry.Pattern) }
+		local captures = (entry.Need == "" or string.find(piece, entry.Need, 1, true)) and { string.match(piece, entry.Pattern) } or {}
 		if #captures > 0 then
 			local byName = {}
 			for k, name in ipairs(entry.Names) do
@@ -144,11 +149,18 @@ local function reportMiss(obj, piece)
 end
 
 local memo, memoCount = {}, 0
+local missShape = {} -- 숫자만 다른 같은 모양의 글자가 이미 번역에 실패했으면 다시 찾지 않는다 ("DAMAGE · 12s" 처럼 매초 바뀌는 글자가 매번 번역표 전체를 훑지 않게)
 local function translatePiece(obj, piece)
 	if piece == "" or not string.find(piece, "%a%a") then return nil end -- (영어 단어가 없는 글자는 번역할 게 없다)
 	local shortWords = not string.find(piece, "%a%a%a") -- "100 to go" 처럼 두 글자 단어뿐인 조각: 번역표에서만 찾는다 (예전엔 아예 건너뛰어서 영어로 남았다)
 	local cached = memo[piece]
 	if cached ~= nil then return cached or nil end
+	local shape = string.find(piece, "%d") and (string.gsub(piece, "%d+", "#")) or nil
+	if shape and missShape[shape] then -- (숫자가 박힌 정확한 문장이 번역표에 따로 있으면 그건 찾는다: "Zone 1" 만 있고 "Zone 2" 는 없는 경우)
+		local exact = dict and dict.exact
+		local _, core = string.match(piece, "^([^%w]*)(.-)([^%w]*)$")
+		if not (exact and (exact[piece] or (core and exact[core]))) then return nil end
+	end
 	local result = lookupDict(piece)
 	if not result and not shortWords then
 		local okT, translated = pcall(function() return translator:Translate(obj, piece) end)
@@ -159,6 +171,7 @@ local function translatePiece(obj, piece)
 		if memoCount > 4000 then memo, memoCount = {}, 0 end -- (숫자가 계속 바뀌는 글자가 캐시를 키우지 않게)
 		memo[piece] = result or false
 	end
+	if shape and not result then missShape[shape] = true end
 	return result
 end
 
