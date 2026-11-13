@@ -22,7 +22,10 @@ local dashSeenAt = setmetatable({}, { __mode = "k" })
 -- 대시 중이거나 방금(0.6초 안에) 대시했으면 인정한다 (후한 판정). 속도는 0.1초마다 따로 훑어서 기록한다.
 local function sampleDash(player, root)
 	local v = root.AssemblyLinearVelocity
-	if Vector3.new(v.X, 0, v.Z).Magnitude > 50 then
+	-- 대시 판정: 내 걷기 속도보다 확실히 빨라야 한다 (예전 고정 50: 기본 걷기 48 + 신발 / 훈련 이동 속도가 붙으면 그냥 걸어도 "대시"로 인정됐다)
+	local humanoid = root.Parent and root.Parent:FindFirstChildOfClass("Humanoid")
+	local walk = humanoid and humanoid.WalkSpeed or Config.Player.WalkSpeed
+	if Vector3.new(v.X, 0, v.Z).Magnitude > math.max(60, walk + 25) then
 		dashSeenAt[player] = os.clock()
 	end
 end

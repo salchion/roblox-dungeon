@@ -63,6 +63,17 @@ Remotes.Gear.OnClientEvent:Connect(function(action, result)
 	game:GetService("Debris"):AddItem(label, 1.1)
 end)
 
+-- 위쪽 정보 줄: 가방 / 정수 / 골드 (장비 강화에 골드를 쓰는데 골드가 안 보였다). 골드가 바뀌면 장비 탭이 열려 있는 동안 바로 따라간다
+local infoState
+local function infoText(state)
+	local goldDigits = tostring(math.floor(player:GetAttribute("Gold") or 0)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
+	return string.format("🎒 Bag <b>%d / %d</b>    ✨ Essence <font color='#9ad7ff'><b>%d</b></font>    💰 <font color='#ffd966'><b>%s</b></font>", state.BagCount, state.Capacity, state.Essence, goldDigits)
+end
+player:GetAttributeChangedSignal("Gold"):Connect(function()
+	local info = settings.MenuInfo
+	if info and info.Text ~= "" and infoState then info.Text = infoText(infoState) end -- (다른 탭에서는 비어 있으니 건드리지 않는다)
+end)
+
 local function buildInventoryTab(state)
 	if not state then
 		local row = newRow(36)
@@ -70,9 +81,8 @@ local function buildInventoryTab(state)
 		return
 	end
 
-	if settings.MenuInfo then
-		settings.MenuInfo.Text = string.format("🎒 Bag <b>%d / %d</b>    ✨ Essence <font color='#9ad7ff'><b>%d</b></font>", state.BagCount, state.Capacity, state.Essence)
-	end
+	infoState = state
+	if settings.MenuInfo then settings.MenuInfo.Text = infoText(state) end
 
 	local equipped, bag, setCounts, byId = {}, {}, {}, {}
 	for _, item in ipairs(state.Items) do
