@@ -860,7 +860,7 @@ local function spawnMonster(zone, kind, at, ambush, filler)
 		local danger = F.ZoneDanger
 		stats = {
 			Size = (16 + zone * 2) * ((F.BossSizeMult and F.BossSizeMult[zone]) or 1),
-			MaxHealth = math.floor(base.MaxHealth * 60 * danger.Health[zone]),
+			MaxHealth = math.floor(base.MaxHealth * 60 * ((danger.LordHealth and danger.LordHealth[zone]) or danger.Health[zone])), -- (LordHealth: 일반 몹만 단단하게 바꾼 구역의 군주는 예전 그대로)
 			Speed = boss.Speed * danger.Speed[zone],
 			ShotDamage = math.max(10, math.floor(base.ShotDamage * (zone >= 7 and 1.3 or 1.5) * danger.Damage[zone])), -- (후반 군주는 한 방에 체력이 크게 깎이지 않게 살짝 낮춤)
 			ShotInterval = math.max(0.9, boss.ShotInterval - zone * 0.05),
