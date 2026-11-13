@@ -3331,6 +3331,7 @@ local function feverLoop(run)
 		member:SetAttribute("DungeonTypeKey", "Fever")
 		Remotes.Tutorial:FireClient(member, "Prompt", { Key = "🌟", Title = "FEVER TIME!", Text = string.format("%d seconds! Rewards x%d, combo adds up to x%d!", F.Duration, F.GoldMult, F.ComboMax), Duration = 5, Top = true })
 	end
+	startAugLoop(run) -- 세트 효과 / 펫 공격 (예전엔 피버에서만 빠져 있어서 세트 효과가 안 나갔다)
 	run.PhaseEnd = os.clock() + 3
 	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
 	run.PhaseEnd = nil
