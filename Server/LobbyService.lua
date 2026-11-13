@@ -175,6 +175,31 @@ local function decoratePlaza(parent, center, avoid)
 	local padStone = makeDisc(Vector3.new(HILL_NX, TOP + HILL_H + 0.4, HILL_NZ), 15, 0.12, Color3.fromRGB(104, 100, 110), Enum.Material.Slate, parent)
 	padStone.CanCollide = false
 	padStone.CanQuery = false
+	-- 스폰 원판 문양 (밋밋한 회색 원판이 "만들다 만 것"처럼 보였다): 밝은 안쪽 원 + 돌 이음매 8줄 + 가운데 금빛 나침반 별. 빛나지 않는 재질만
+	do
+		local padTop = TOP + HILL_H + 0.47
+		local mid = Vector3.new(HILL_NX, padTop, HILL_NZ)
+		local function flat(d, dy, color, material)
+			local disc = makeDisc(mid + Vector3.new(0, dy, 0), d, 0.06, color, material, parent)
+			disc.CanCollide, disc.CanQuery, disc.CastShadow = false, false, false
+		end
+		flat(10, 0, Color3.fromRGB(132, 126, 136), Enum.Material.Slate)
+		flat(5.2, 0.02, Color3.fromRGB(186, 150, 84), Enum.Material.Metal)
+		flat(4.4, 0.04, Color3.fromRGB(110, 104, 116), Enum.Material.Slate)
+		for i = 0, 7 do -- 바깥 고리의 돌 이음매
+			local a = i / 8 * math.pi * 2 + math.pi / 8
+			local seam = makePart({ Name = "PadSeam", Size = Vector3.new(2.4, 0.07, 0.14), CFrame = CFrame.new(mid + Vector3.new(math.cos(a) * 6.3, 0.01, math.sin(a) * 6.3)) * CFrame.Angles(0, -a, 0),
+				Color = Color3.fromRGB(78, 74, 84), Material = Enum.Material.Slate, CanCollide = false, CanQuery = false }, parent)
+			seam.CastShadow = false
+		end
+		for i = 0, 3 do -- 나침반 별: 긴 막대 2개(동서 / 남북) + 짧은 막대 2개(대각선)
+			local long = i % 2 == 0
+			local star = makePart({ Name = "PadStar", Size = Vector3.new(long and 9 or 5.6, 0.07, 0.7),
+				CFrame = CFrame.new(mid + Vector3.new(0, 0.06, 0)) * CFrame.Angles(0, i * math.pi / 4, 0),
+				Color = long and Color3.fromRGB(214, 176, 96) or Color3.fromRGB(170, 140, 82), Material = Enum.Material.Metal, CanCollide = false, CanQuery = false }, parent)
+			star.CastShadow = false
+		end
+	end
 end
 
 -- 마을을 둘러싸는 성벽 + 바깥의 거대한 절벽: 마을 밖(필드 절벽, 허공)이 전혀 보이지 않게 한다.
@@ -246,10 +271,10 @@ function Lobby.Build()
 	-- 하늘 / 분위기
 	-- 해 질 녘 분위기: 앞은 또렷하게 보이되 전체적으로 차분하고 어둑한 톤 (등불 / 네온이 은은하게 돋보인다)
 	Lighting.ClockTime = 18.2
-	Lighting.Brightness = 1.2
-	Lighting.Ambient = Color3.fromRGB(95, 98, 128)
-	Lighting.OutdoorAmbient = Color3.fromRGB(125, 128, 165)
-	Lighting.ExposureCompensation = -0.15
+	Lighting.Brightness = 1.4 -- (1.2 -> 1.4 / 주변광도 조금 밝게: 건물 형체가 어둠에 묻혀 안 보였다)
+	Lighting.Ambient = Color3.fromRGB(110, 112, 140)
+	Lighting.OutdoorAmbient = Color3.fromRGB(140, 142, 176)
+	Lighting.ExposureCompensation = -0.05
 	Lighting.EnvironmentDiffuseScale = 0.6
 	Lighting.EnvironmentSpecularScale = 0.5
 	do
@@ -405,9 +430,9 @@ function Lobby.Build()
 		end
 		makePart({ Name = "RiftVeil", Shape = Enum.PartType.Cylinder, Size = Vector3.new(0.6, 17, 17), Position = rift + Vector3.new(0, 10, 0),
 			Color = Color3.fromRGB(190, 60, 255), Material = Enum.Material.Neon, Transparency = 0.55, CanCollide = false, CanQuery = false }, folder)
-		local beam = makePart({ Name = "RiftBeacon", Size = Vector3.new(6, 220, 6), Position = rift + Vector3.new(0, 110, 0), Color = pink, Material = Enum.Material.Neon,
-			Transparency = 0.88, CanCollide = false, CanQuery = false }, folder)
-		addLight(beam, 60, 1.2, pink)
+		local beam = makePart({ Name = "RiftBeacon", Size = Vector3.new(4, 220, 4), Position = rift + Vector3.new(0, 110, 0), Color = pink, Material = Enum.Material.Neon,
+			Transparency = 0.94, CanCollide = false, CanQuery = false }, folder) -- (굵기 6 -> 4, 투명 0.88 -> 0.94: 첫 화면에서 분홍 기둥이 너무 강했다)
+		addLight(beam, 60, 0.6, pink)
 		local pedestal = makePart({ Name = "RiftPedestal", Size = Vector3.new(4, 3, 4), Position = rift + Vector3.new(-9, 1.5, 0), Color = Color3.fromRGB(60, 40, 90), Material = Enum.Material.Slate }, folder)
 		makeLabel(pedestal, "👹 Boss Rush", Color3.fromRGB(255, 180, 230), 6, 300, 56, 50)
 		riftPrompt = Instance.new("ProximityPrompt")
@@ -1060,8 +1085,8 @@ function Lobby.Build()
 	-- 2) (필드로 이어지는 길가의 등불 / 깃발은 너무 많아서 없앴다: 빛기둥과 문만으로 충분하다)
 
 	-- 3) 문 위로 솟는 빛기둥: 마을 어디서든 "저쪽이 필드"라는 게 보인다
-	local pillar = makePart({ Name = "FieldBeacon", Size = Vector3.new(14, 320, 14), Position = fieldGate + Vector3.new(0, 160, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.94, CanCollide = false, CanQuery = false }, folder)
-	addLight(pillar, 60, 0.8, green)
+	local pillar = makePart({ Name = "FieldBeacon", Size = Vector3.new(8, 320, 8), Position = fieldGate + Vector3.new(0, 160, 0), Color = green, Material = Enum.Material.Neon, Transparency = 0.95, CanCollide = false, CanQuery = false }, folder) -- (굵기 14 -> 8: 화면 한가운데를 가르는 초록 기둥이 너무 강했다)
+	addLight(pillar, 60, 0.5, green)
 
 	-- 4) 문 앞의 빛 고리 + 바닥 룬 원: 예전에는 작은 네온 조각 60개가 점점이 떠 있어서 색종이처럼 지저분해 보였다.
 	--    이제는 이어진 두 겹 고리(바깥은 두껍고 은은하게, 안쪽은 가늘고 또렷하게) + 길 위의 룬 원으로 "여기가 문"이라는 느낌만 남긴다.

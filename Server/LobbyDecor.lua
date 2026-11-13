@@ -730,11 +730,11 @@ function LobbyDecor.Build(parent, ctx)
 				for i = 0, SEG - 1 do
 					local a = i / SEG * math.pi * 2
 					local rcf = tcf * CFrame.new(math.cos(a) * R, 0, math.sin(a) * R) * CFrame.Angles(0, -(a + math.pi / 2), 0)
-					add("HaloSeg", Vector3.new(2 * math.pi * R / SEG * 1.03, thick, thick * 1.6), rcf, color, M.Neon, nil, 0.15)
+					add("HaloSeg", Vector3.new(2 * math.pi * R / SEG * 1.03, thick, thick * 1.6), rcf, color, M.Neon, nil, 0.45) -- (0.15 -> 0.45: 하늘 고리가 눈부시지 않게)
 				end
 				for i = 0, 7 do
 					local a = i / 8 * math.pi * 2 + 0.2
-					add("HaloGem", Vector3.new(thick * 3.2, thick * 3.2, thick * 3.2), tcf * CFrame.new(math.cos(a) * R, 0, math.sin(a) * R) * CFrame.Angles(math.rad(45), a, math.rad(35)), rgb(255, 250, 235), M.Neon, nil, 0.05)
+					add("HaloGem", Vector3.new(thick * 3.2, thick * 3.2, thick * 3.2), tcf * CFrame.new(math.cos(a) * R, 0, math.sin(a) * R) * CFrame.Angles(math.rad(45), a, math.rad(35)), rgb(255, 250, 235), M.Neon, nil, 0.3)
 				end
 			end
 			ring(250, math.rad(24), GOLD, 3)
@@ -753,12 +753,12 @@ function LobbyDecor.Build(parent, ctx)
 				disc("IslandRock", d * scale, 5, base - Vector3.new(0, y, 0), i % 2 == 0 and STONE_DARK or rgb(112, 100, 92), M.Slate)
 				y += 5
 			end
-			add("IslandGlow", Vector3.new(0.6, 10 * scale, 10 * scale), CFrame.new(base - Vector3.new(0, y + 0.5, 0)) * CFrame.Angles(0, 0, math.pi / 2), CYAN, M.Neon, Enum.PartType.Cylinder, 0.2)
+			add("IslandGlow", Vector3.new(0.6, 10 * scale, 10 * scale), CFrame.new(base - Vector3.new(0, y + 0.5, 0)) * CFrame.Angles(0, 0, math.pi / 2), CYAN, M.Neon, Enum.PartType.Cylinder, 0.55) -- (0.2 -> 0.55: 섬 밑 빛이 번쩍이지 않게)
 			for i = 1, 3 do
 				local a = i * 2.1 + phase
 				local p = base + Vector3.new(math.cos(a) * 8 * scale, 0, math.sin(a) * 8 * scale)
 				local hh = 3 + i
-				add("IslandCrystal", Vector3.new(hh * 0.5, hh, hh * 0.5), CFrame.new(p + Vector3.new(0, hh / 2, 0)) * CFrame.Angles(0.15, a, 0.2), i % 2 == 0 and CYAN or rgb(190, 150, 255), M.Neon, nil, 0.1)
+				add("IslandCrystal", Vector3.new(hh * 0.5, hh, hh * 0.5), CFrame.new(p + Vector3.new(0, hh / 2, 0)) * CFrame.Angles(0.15, a, 0.2), i % 2 == 0 and CYAN or rgb(190, 150, 255), M.Neon, nil, 0.3)
 			end
 			vcyl("IslandTrunk", 6, 1.2, base - Vector3.new(4 * scale, 0, 0), rgb(98, 70, 46), M.Wood)
 			ball("IslandLeaves", 8, base + Vector3.new(-4 * scale, 8, 0), LEAF[1], M.Grass, 6)
@@ -775,15 +775,15 @@ function LobbyDecor.Build(parent, ctx)
 			local model, pivot, cf, sp, bob, ph = skyModel("PlazaSkyCrystal", g(0, 70, 52), 0.5, 1.5, 0.8)
 			local base = cf.Position
 			local rot = CFrame.Angles(math.rad(45), math.rad(45), math.rad(35))
-			local cry = add("SkyCrystal", Vector3.new(9, 9, 9), CFrame.new(base) * rot, CYAN, M.Neon, nil, 0.1)
-			add("SkyCrystalCore", Vector3.new(4.5, 4.5, 4.5), CFrame.new(base) * rot, rgb(240, 252, 255), M.Neon, nil, 0.02)
+			local cry = add("SkyCrystal", Vector3.new(9, 9, 9), CFrame.new(base) * rot, CYAN, M.Neon, nil, 0.35) -- (0.1 -> 0.35: 첫 화면에서 가장 번쩍이던 물체)
+			add("SkyCrystalCore", Vector3.new(4.5, 4.5, 4.5), CFrame.new(base) * rot, rgb(240, 252, 255), M.Neon, nil, 0.3)
 			add("SkyCrystalRing", Vector3.new(0.5, 17, 17), CFrame.new(base) * CFrame.Angles(0, 0, math.pi / 2 + 0.5), GOLD, M.Metal, Enum.PartType.Cylinder)
 			add("SkyCrystalRing", Vector3.new(0.4, 21, 21), CFrame.new(base) * CFrame.Angles(0, 0, math.pi / 2 - 0.6), GOLD, M.Metal, Enum.PartType.Cylinder)
-			add("SkyBeam", Vector3.new(2.4, 48, 2.4), CFrame.new(base - Vector3.new(0, 26, 0)), CYAN, M.Neon, nil, 0.82)
-			add("SkyBeamGround", Vector3.new(0.3, 18, 18), CFrame.new(base - Vector3.new(0, 51.9, 0)) * CFrame.Angles(0, 0, math.pi / 2), CYAN, M.Neon, Enum.PartType.Cylinder, 0.75)
+			add("SkyBeam", Vector3.new(2.4, 48, 2.4), CFrame.new(base - Vector3.new(0, 26, 0)), CYAN, M.Neon, nil, 0.9)
+			add("SkyBeamGround", Vector3.new(0.3, 18, 18), CFrame.new(base - Vector3.new(0, 51.9, 0)) * CFrame.Angles(0, 0, math.pi / 2), CYAN, M.Neon, Enum.PartType.Cylinder, 0.85)
 			if cry then
 				local light = Instance.new("PointLight")
-				light.Color, light.Range, light.Brightness, light.Shadows = CYAN, 40, 0.6, false
+				light.Color, light.Range, light.Brightness, light.Shadows = CYAN, 40, 0.4, false
 				light.Parent = cry
 			end
 			finish(model, pivot, sp, bob, ph)
