@@ -606,7 +606,7 @@ function refreshEnhance()
 		enhanceNext.Text = "<font color='#ffd966'>You maxed out the final weapon!</font>"
 		E.Chance.Text = "MAX"
 		E.Chance.TextColor3 = Color3.fromRGB(255, 217, 102)
-		E.Damage.Text = string.format("⚔ x%.2f", Config.GetDamageMultiplier(level))
+		E.Damage.Text = string.format("⚔ x%.2f", Config.GetWeaponPower(level))
 		paintRing(1, Color3.fromRGB(255, 217, 102))
 		E.Cost.Value.Text = "—"
 		enhanceButton.Text = "MAX"
@@ -646,7 +646,7 @@ function refreshEnhance()
 	E.Chance.Text = chance .. "%"
 	E.Chance.TextColor3 = chanceColor
 	paintRing(chance / 100, chanceColor)
-	E.Damage.Text = string.format("⚔ x%.2f <font color='#78ff8c'>→ x%.2f</font>", Config.GetDamageMultiplier(level), Config.GetDamageMultiplier(level + 1))
+	E.Damage.Text = string.format("⚔ x%.2f <font color='#78ff8c'>→ x%.2f</font>", Config.GetWeaponPower(level), Config.GetWeaponPower(level + 1))
 	local affordable = gold >= cost
 	E.Cost.Value.Text = freeNow and "Free!" or E.comma(cost)
 	E.Cost.Value.TextColor3 = affordable and Color3.fromRGB(255, 235, 160) or Color3.fromRGB(255, 120, 110)

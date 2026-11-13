@@ -450,9 +450,9 @@ local AUG_LEVEL = {
 function Config.BaseAttackEstimate(player)
 	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
 	local weaponType = Config.GetPlayerWeapon(player)
-	return Config.Player.BaseDamage * Config.GetDamageMultiplier(weaponLevel) * weaponType.DamageMult
+	return Config.Player.BaseDamage * Config.GetWeaponPower(weaponLevel) * weaponType.DamageMult
 		* Config.GetLevelDamageMult(player:GetAttribute("Level") or 1)
-		* (1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0) + (player:GetAttribute("PetDamage") or 0))
+		* Config.BonusDamageMult(player)
 end
 -- 4셋 / 5셋 / 6셋에서 새로 생기는 효과 (수치만 오르는 게 아니라 투사체 / 지속 효과가 늘어난다. 서버 DungeonService 와 같이 바꾼다)
 local AUG_EXTRA = {
@@ -1051,7 +1051,7 @@ function Config.GetPower(weaponLevel, critPoints, speedPoints, gearHealth, gearC
 	local weaponType = Config.WeaponTypes[neutral and "Pistol" or Config.ResolveWeaponType(weaponLevel, typeKey)]
 	local pellets = weaponType.Pellets > 1 and weaponType.Pellets * 0.6 or 1
 	local typeFactor = neutral and 1 or (weaponType.DamageMult * pellets / weaponType.Cooldown)
-	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel) * Config.GetLevelDamageMult(level) * (1 + (gearDamage or 0))
+	local damage = P.BaseDamage * Config.GetWeaponPower(weaponLevel) * Config.GetLevelDamageMult(level) * (1 + (gearDamage or 0))
 	local rawCrit = (critPoints or 0) * P.CritPerPoint + (gearCrit or 0) + (neutral and 0 or (weaponType.CritBonus or 0))
 	local crit = math.min(0.9, rawCrit)
 	local critMult = P.CritMultiplier + math.max(0, rawCrit - 0.9) -- 넘친 치명타 -> 치명타 피해
@@ -1499,7 +1499,7 @@ Config.Achievements = {
 Config.Level = {
 	Max = 400,              -- (200 -> 400: 200 이후 레벨은 공격력 / 체력만 올려 준다 (스탯 포인트는 200 레벨까지만). 이전: 50 -> 200: 찍고 싶은 스탯이 부족하다는 의견. 50 이후는 필요 경험치 곡선이 완만하고 레벨당 공격력도 작다)
 	LateStart = 50,         -- 이 레벨 이후는 "후반" 곡선
-	LateDamagePerLevel = 0.004, -- 50 레벨 이후 레벨당 공격력 +0.4% (200레벨에서 총 +60%; 경제 기준 공격력 배율이 부풀지 않게)
+	LateDamagePerLevel = 0.007, -- 50 레벨 이후 레벨당 공격력 +0.7% (예전 0.4%: 무기 비중을 줄이고 레벨 비중을 키웠다. 400레벨에서 총 x4.9)
 	EarlyBoostUntil = 6,    -- 이 레벨까지는 경험치 x3 (처음 몇 분 안에 레벨업이 연달아 터지게)
 	EarlyBoost = 3,
 	HealthPerLevel = 8,     -- 레벨당 최대 체력 +8 (StatCap 레벨까지)
@@ -2187,7 +2187,7 @@ Config.Growth = {
 	-- 동시에 여러 칸을 훈련할 수 있다 (훈련 칸 수만큼). 효과는 Attribute "Train<키>" 로 전투 계산에 더해진다
 	Stats = {
 		Order = { "Attack", "Health", "Crit", "Speed", "Double", "CritDmg", "Gold", "AtkSpeed", "Armor", "Regen" },
-		Attack = { Name = "Attack Training", Icon = "⚔", Per = 0.02, Tier = 1 },
+		Attack = { Name = "Attack Training", Icon = "⚔", Per = 0.035, Tier = 1 }, -- (0.02 -> 0.035: 무기 비중을 줄인 만큼 훈련 비중을 키웠다. 30단계 +105%)
 		Health = { Name = "HP Training", Icon = "❤", Per = 12, Tier = 1 },
 		Crit = { Name = "Crit Training", Icon = "🎯", Per = 0.012, Max = 10, Tier = 1 },
 		Speed = { Name = "Speed Training", Icon = "💨", Per = 1.0, Max = 6, Tier = 1 },
@@ -2346,6 +2346,18 @@ function Config.GetDamageMultiplier(level)
 	local era = Config.GetWeaponTier(level).Era
 	local effective = level * Config.Weapon.LevelScale -- 단계가 820까지 늘어도 최종 위력은 예전(326단계)과 같다
 	return (1 + 0.04 * effective + 0.00012 * effective * effective) * 1.4 ^ (era - 1)
+end
+-- 전투에 쓰는 무기 위력: 위와 같지만 6번째 시대부터는 시대마다 x1.4 가 아니라 x1.25 (최대 무기 x552 -> 약 x312)
+--   무기만 올리면 끝나는 게임이 되지 않게, 줄인 몫은 레벨 / 훈련 / 장비 / 펫 쪽으로 옮겼다 (아래 ComputeDamage: 서로 곱해진다)
+--   경제(가격 / 수입 / 방치)는 그대로 GetDamageMultiplier 를 쓴다: 골드 흐름은 바뀌지 않는다
+function Config.GetWeaponPower(level)
+	local era = Config.GetWeaponTier(level).Era
+	local effective = level * Config.Weapon.LevelScale
+	return (1 + 0.04 * effective + 0.00012 * effective * effective) * 1.4 ^ math.min(era - 1, 4) * 1.25 ^ math.max(0, era - 5)
+end
+-- 공격력 % 묶음: 장비 / 훈련 / 펫 은 각자 따로 곱한다 (예전엔 한데 더해서, 하나를 올리면 다른 것의 가치가 떨어졌다)
+function Config.BonusDamageMult(player)
+	return (1 + (player:GetAttribute("GearDamage") or 0)) * (1 + (player:GetAttribute("TrainDamage") or 0)) * (1 + (player:GetAttribute("PetDamage") or 0))
 end
 
 -- 무기 모형 크기 배율 (너무 커지지 않게 완만하게)

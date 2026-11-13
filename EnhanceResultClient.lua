@@ -129,7 +129,7 @@ local function show(ok, summary)
 		tween(arrow, 0.3, { Position = UDim2.new(0.38, 0, 0, rowY) }, Enum.EasingStyle.Back)
 	end
 	-- 공격력 배율 변화
-	local now, prev = Config.GetDamageMultiplier(level), Config.GetDamageMultiplier(before)
+	local now, prev = Config.GetWeaponPower(level), Config.GetWeaponPower(before)
 	fadeBar({ Size = UDim2.new(0.8, 0, 0, 1), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, rowY + 40), BackgroundColor3 = Color3.fromRGB(150, 170, 200), ZIndex = 21 }, card, 0.3)
 	local statText
 	if success then

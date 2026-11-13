@@ -1523,10 +1523,10 @@ end)
 function Dungeon.ComputeDamage(player)
 	local weaponType = Config.GetPlayerWeapon(player)
 	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
-	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel) * weaponType.DamageMult
+	local damage = P.BaseDamage * Config.GetWeaponPower(weaponLevel) * weaponType.DamageMult
 		* Config.GetLevelDamageMult(player:GetAttribute("Level") or 1)
 		* (1 + Config.Newbie.Damage * Config.NewbieStrength(player)) -- 초보자 가호
-		* (1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0) + (player:GetAttribute("PetDamage") or 0))
+		* Config.BonusDamageMult(player) -- (장비 / 훈련 / 펫 은 서로 곱한다)
 		* (1 + (player:GetAttribute("PerkPower") or 0) * Config.Perks.PowerPerStack)
 		* (1 + (player:GetAttribute("ParAttack") or 0)) -- 패러건 (400 레벨 이후)
 		* Combo.GetDamageMult(player)
@@ -1534,17 +1534,15 @@ function Dungeon.ComputeDamage(player)
 		* (player:GetAttribute("ShotDmgScale") or 1) -- 레벨 스탯 추가 탄: 발당 피해 감소 (사격 중에만 적용)
 	local rawChance = (player:GetAttribute("CritPoints") or 0) * P.CritPerPoint
 		+ (player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0) + (player:GetAttribute("PetCrit") or 0) + (weaponType.CritBonus or 0) + (player:GetAttribute("ParCrit") or 0)
+	local sinceDash = NearMiss.SinceDash(player)
+	if sinceDash < 2 then rawChance += Config.TalentMod(player, "RushCrit") end -- 특성 "행운의 가호": 대시 뒤 치명타 (90% 상한 안에서 더한다)
 	local chance = math.min(0.9, rawChance)
 	local overflow = math.max(0, rawChance - 0.9) -- 90% 를 넘친 치명타 확률은 1% 당 치명타 피해 +1% 로 바뀐다 (버려지는 스탯이 없게)
 	if os.clock() < (player:GetAttribute("NearMissUntil") or 0) then -- NEAR MISS 보상: 연속으로 피할수록 공격력이 누적해서 오른다
 		damage *= 1 + Config.GetNearMissDamage(player) * math.min(player:GetAttribute("NearMissStreak") or 0, Config.NearMiss.MaxStacks)
 	end
-	local sinceDash = NearMiss.SinceDash(player)
-	local rush = Config.PassiveValue(player, "Rush") -- 특성 "돌격": 대시(Q) 뒤 2초 동안 공격력 증가 (+"돌격 치명": 치명타 확률)
-	if sinceDash < 2 then
-		if rush > 0 then damage *= 1 + rush end
-		chance += Config.TalentMod(player, "RushCrit")
-	end
+	local rush = Config.PassiveValue(player, "Rush") -- 특성 "돌격": 대시(Q) 뒤 2초 동안 공격력 증가
+	if sinceDash < 2 and rush > 0 then damage *= 1 + rush end
 	if (player:GetAttribute("FrenzyUntil") or 0) > workspace:GetServerTimeNow() then -- 특성 "피의 광란"
 		damage *= 1 + 0.02 * (player:GetAttribute("FrenzyStacks") or 0)
 	end
@@ -1566,10 +1564,10 @@ end
 function Dungeon.ComputeSetBase(player)
 	local weaponType = Config.GetPlayerWeapon(player)
 	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
-	local damage = P.BaseDamage * Config.GetDamageMultiplier(weaponLevel)
+	local damage = P.BaseDamage * Config.GetWeaponPower(weaponLevel)
 		* Config.GetLevelDamageMult(player:GetAttribute("Level") or 1)
 		* (1 + Config.Newbie.Damage * Config.NewbieStrength(player))
-		* (1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0) + (player:GetAttribute("PetDamage") or 0))
+		* Config.BonusDamageMult(player) -- (장비 / 훈련 / 펫 은 서로 곱한다)
 		* (1 + (player:GetAttribute("PerkPower") or 0) * Config.Perks.PowerPerStack)
 		* (1 + (player:GetAttribute("ParAttack") or 0))
 		* Dungeon.PartyBonus(player)
