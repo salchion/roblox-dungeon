@@ -175,6 +175,9 @@ if RunService:IsStudio() then
 					print(string.format("[Gold ledger] %s · last 1 min income %d G / spent %d G · theoretical idle %d G/min (mult x%.2f) · attack mult x%.2f · next upgrade cost %d G",
 						player.Name, entry.In, entry.Out, math.floor(Idle.Rate(player) * 60), Idle.Multiplier(player),
 						Config.GetDamageMultiplier(player:GetAttribute("WeaponLevel") or 0), Config.GetEnhanceCost(player:GetAttribute("WeaponLevel") or 0)))
+					print(string.format("[Damage parts] %s · weapon x%.1f · level x%.2f · gear x%.2f · training x%.2f · pet x%.2f (all multiplied)", player.Name, -- 무기 비중 점검용
+						Config.GetWeaponPower(player:GetAttribute("WeaponLevel") or 0), Config.GetLevelDamageMult(player:GetAttribute("Level") or 1),
+						1 + (player:GetAttribute("GearDamage") or 0), 1 + (player:GetAttribute("TrainDamage") or 0), 1 + (player:GetAttribute("PetDamage") or 0)))
 					entry.In, entry.Out = 0, 0
 				end
 			end
