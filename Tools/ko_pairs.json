@@ -380,8 +380,8 @@
 "확률"
 ],
 [
-"✦ Unique effect on Mythic gear: <b>%.1f%%</b>",
-"✦ 신화 장비의 유니크 효과: <b>%.1f%%</b>"
+"★ Unique effect on Mythic gear: <b>%.1f%%</b>",
+"★ 신화 장비의 유니크 효과: <b>%.1f%%</b>"
 ],
 [
 "🎫 Tickets for the boss: <b>%d</b>  ·  Gold / XP x%.1f",
@@ -844,8 +844,8 @@
 "이미 모든 칸에 최고 장비를 착용하고 있어요."
 ],
 [
-"✦ New unique: %s — %s",
-"✦ 새 유니크: %s — %s"
+"★ New unique: %s — %s",
+"★ 새 유니크: %s — %s"
 ],
 [
 "🎒 Bag full: dismantled a weaker item to keep your new %s gear (Essence +%d, %d G)",
@@ -1448,8 +1448,8 @@
 "오늘 도전을 모두 사용했어요. 내일 다시 오세요!"
 ],
 [
-"🎁 Weekly Boss Rush chest: Mythic %s with ✦ %s!",
-"🎁 주간 보스 러시 상자: 신화 %s, ✦ %s 포함!"
+"🎁 Weekly Boss Rush chest: Mythic %s with ★ %s!",
+"🎁 주간 보스 러시 상자: 신화 %s, ★ %s 포함!"
 ],
 [
 "📢 %s took down %d bosses in the Boss Rush! (%s)",
@@ -4896,8 +4896,8 @@
 "<font size='11' color='#ddddee'>기본  "
 ],
 [
-"<font size='11' color='#ffb84d'>✦ Unique: ",
-"<font size='11' color='#ffb84d'>✦ 유니크: "
+"<font size='11' color='#ffb84d'>★ Unique: ",
+"<font size='11' color='#ffb84d'>★ 유니크: "
 ],
 [
 "<font size='14'><b>🔫 Weapons</b></font>  <font color='#aab0cc'>%s · +%d</font>\n<font size='10' color='#9aa4cc'>A new weapon unlocks every 15 levels. Tap one to use it.</font>",
@@ -6276,8 +6276,8 @@
 "⛺ 이동"
 ],
 [
-"✦ MYTHIC ✦",
-"✦ 신화 ✦"
+"★ MYTHIC ★",
+"★ 신화 ★"
 ],
 [
 "✨ Free!\nUpgrade",
@@ -7024,8 +7024,8 @@
 "👑 이번 주 최후의 군주 보상은 이미 받았어요 (목요일에 초기화)."
 ],
 [
-"👑 Weekly Final Lord reward: Mythic %s · %s Set · ✦ %s!",
-"👑 주간 최후의 군주 보상: 신화 %s · %s 세트 · ✦ %s!"
+"👑 Weekly Final Lord reward: Mythic %s · %s Set · ★ %s!",
+"👑 주간 최후의 군주 보상: 신화 %s · %s 세트 · ★ %s!"
 ],
 [
 "💀 JUDGEMENT! Stand inside a green circle!",

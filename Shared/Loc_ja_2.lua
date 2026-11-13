@@ -84,7 +84,7 @@ return {
 		["★ Rare"] = "★ レア",
 		["⚔ Active Skills — press the key in the field / dungeons (C Heal · V Ultimate). Level up with Gold to get stronger and cut cooldowns"] = "⚔ アクティブスキル — フィールド/ダンジョンでキーを押して使用(C 回復 · V 必殺技)。ゴールドでレベルアップすると強くなりクールダウンが短くなります",
 		["⚙ Settings(H)"] = "⚙ 設定(H)",
-		["✦ MYTHIC ✦"] = "✦ ミシック ✦",
+		["★ MYTHIC ★"] = "★ ミシック ★",
 		["✨ Free!"] = "✨ 無料！",
 		["✨ Unlock · Evolve! ✨"] = "✨ 解放 · 進化！ ✨",
 		["⬆ Auto-equip stronger gear"] = "⬆ より強い装備を自動装備",

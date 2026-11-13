@@ -43,7 +43,7 @@ local DICT = {
 	["🎯 Dummy DPS"] = "🎯 허수아비 DPS", ["Perks (this dungeon only)"] = "특성 (이번 던전 한정)", ["A special room!"] = "특별한 방!",
 	["A random buff was applied"] = "무작위 강화가 적용되었습니다", ["Got it, let's get stronger!"] = "알겠어요, 강해지러 가요!",
 	["Follow the sky-blue light beam"] = "하늘색 빛줄기를 따라가세요", ["🏆 NEW WEEKLY BEST! Ranking updated"] = "🏆 주간 신기록! 랭킹이 갱신되었습니다",
-	["✦ MYTHIC ✦"] = "✦ 신화 ✦", ["◎ DEADEYE ◎"] = "◎ 데드아이 ◎", ["🎁 Bonus triggered!"] = "🎁 보너스 발동!",
+	["★ MYTHIC ★"] = "★ 신화 ★", ["◎ DEADEYE ◎"] = "◎ 데드아이 ◎", ["🎁 Bonus triggered!"] = "🎁 보너스 발동!",
 	["⏱ Use Time Skip"] = "⏱ 시간 건너뛰기 사용", ["⚙ Features (more unlock as you level up)"] = "⚙ 기능 (레벨이 오르면 더 열려요)",
 	["🎨 Looks (cosmetic only)"] = "🎨 외형 (꾸미기 전용)", ["🖌 Color"] = "🖌 색상",
 	-- 스킬 / 전투

@@ -204,7 +204,7 @@ local function buildInventoryTab(state)
 					local def = Config.Sets[key]
 					local worn = setCounts[key] or 0
 					local effectOn = def.Zone and player:GetAttribute("AugOnZ_" .. def.Zone) == true
-					modeChip(2 + i, key, string.format("%s %s  <font color='#ffe9a0'>%s</font>%s", def.Icon or "✦", def.Name, setPips(math.min(worn, 3)), effectOn and "  <font color='#78ff8c'>● ON</font>" or ""), def.Color, mode == key)
+					modeChip(2 + i, key, string.format("%s %s  <font color='#ffe9a0'>%s</font>%s", def.Icon or "★", def.Name, setPips(math.min(worn, 3)), effectOn and "  <font color='#78ff8c'>● ON</font>" or ""), def.Color, mode == key)
 				end
 			end
 		end
@@ -281,7 +281,7 @@ local function buildInventoryTab(state)
 				TweenService:Create(glow, TweenInfo.new(0.9, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.6 }):Play()
 				makeLabel({
 					Size = UDim2.new(1, -10, 1, 0), Position = UDim2.new(0, 5, 0, 0), RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left,
-					Text = string.format("%s <b>%s</b>  <font color='#%s'>%s</font> %d/3", def.Icon or "✦", def.Name, hex(def.Color), setPips(count), count),
+					Text = string.format("%s <b>%s</b>  <font color='#%s'>%s</font> %d/3", def.Icon or "★", def.Name, hex(def.Color), setPips(count), count),
 				}, bar)
 				rowsShown += 1
 			end
@@ -343,7 +343,7 @@ local function buildInventoryTab(state)
 				if (setCounts[item.Set] or 0) >= 2 then create("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 1.2 }, dot) end
 			end
 			if item.Unique then
-				makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(1, -18, 0, 4), Text = "✦", TextSize = 12, TextColor3 = Color3.fromRGB(255, 184, 77), ZIndex = 11 }, box)
+				makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(1, -18, 0, 4), Text = "★", TextSize = 12, TextColor3 = Color3.fromRGB(255, 184, 77), ZIndex = 11 }, box)
 			end
 		else
 			create("UIStroke", { Color = Color3.fromRGB(70, 74, 96), Thickness = 1, Transparency = 0.3 }, box)
@@ -444,7 +444,7 @@ local function buildInventoryTab(state)
 			table.insert(lines, string.format("<font size='12' color='#9ad7ff'>◆ %s</font> <font size='10' color='%s'><b>%d%%</b></font>", Config.FormatAffix(affix.Stat, affix.Value), posColor, math.floor(pos * 100 + 0.5)))
 		end
 		if selected.Unique and Config.Uniques[selected.Unique] then
-			table.insert(lines, "<font size='12' color='#ffb84d'>✦ " .. Config.Uniques[selected.Unique].Name .. "</font> <font size='10' color='#d9b878'>" .. Config.Uniques[selected.Unique].Desc .. "</font>")
+			table.insert(lines, "<font size='12' color='#ffb84d'>★ " .. Config.Uniques[selected.Unique].Name .. "</font> <font size='10' color='#d9b878'>" .. Config.Uniques[selected.Unique].Desc .. "</font>")
 		end
 		if selected.Set and Config.Sets[selected.Set] then
 			local setDef = Config.Sets[selected.Set]
@@ -472,7 +472,7 @@ local function buildInventoryTab(state)
 			create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 0.85) }) }, band)
 			makeLabel({
 				Size = UDim2.new(1, -16, 1, 0), Position = UDim2.new(0, 10, 0, 0), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left,
-				Text = string.format("%s <b>%s Set</b>   %s %d/3 <font size='9'>worn</font>", setDef.Icon or "✦", setDef.Name, setPips(have), have),
+				Text = string.format("%s <b>%s Set</b>   %s %d/3 <font size='9'>worn</font>", setDef.Icon or "★", setDef.Name, setPips(have), have),
 			}, band)
 		end
 		local hasBlock = selected.Equipped and selected.Level < Config.Gear.MaxLevel
@@ -549,7 +549,7 @@ local function buildInventoryTab(state)
 		if selected.Unique then -- 유니크 재굴림 (티켓)
 			makeButton({
 				Size = UDim2.new(0, 84, 0, 30), Position = UDim2.new(1, -220, 0, btnY),
-				Text = string.format("✦ 🎫%d", Config.Uniques.RerollTickets or 30), TextSize = 11, BackgroundColor3 = Color3.fromRGB(150, 90, 200),
+				Text = string.format("★ 🎫%d", Config.Uniques.RerollTickets or 30), TextSize = 11, BackgroundColor3 = Color3.fromRGB(150, 90, 200),
 			}, detail, function()
 				Remotes.Inventory:FireServer("RerollUnique", selected.Id)
 			end)
@@ -613,8 +613,8 @@ local function buildInventoryTab(state)
 		makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = SLOT_ICONS[item.Slot], TextSize = 22 }, tile)
 		makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 36), Text = string.format("+%d", item.Level), TextSize = 10, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, tile)
 		local affixCount = #(item.Affixes or {})
-		if affixCount > 0 or item.Unique then -- 옵션 개수 점: 높은 등급일수록 꽉 찬다 (✦ = 유니크)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 10), Position = UDim2.new(0, 0, 0, item.Set and 42 or 52), Text = string.rep("◆", affixCount) .. (item.Unique and "✦" or ""), TextSize = 8, TextColor3 = item.Unique and Color3.fromRGB(255, 200, 110) or Color3.fromRGB(140, 210, 255), Font = Enum.Font.GothamBlack }, tile)
+		if affixCount > 0 or item.Unique then -- 옵션 개수 점: 높은 등급일수록 꽉 찬다 (★ = 유니크)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 10), Position = UDim2.new(0, 0, 0, item.Set and 42 or 52), Text = string.rep("◆", affixCount) .. (item.Unique and "★" or ""), TextSize = 8, TextColor3 = item.Unique and Color3.fromRGB(255, 200, 110) or Color3.fromRGB(140, 210, 255), Font = Enum.Font.GothamBlack }, tile)
 		end
 		local equippedItem = equipped[item.Slot]
 		local compare = ""
@@ -627,7 +627,7 @@ local function buildInventoryTab(state)
 			makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(1, -16, 0, 3), Text = compare, TextSize = 10, TextColor3 = compare == "▲" and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 120, 120), Font = Enum.Font.GothamBlack }, tile)
 		end
 		if item.Unique then
-			makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0, 2, 0, 3), Text = "✦", TextSize = 10, TextColor3 = Color3.fromRGB(255, 184, 77) }, tile)
+			makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0, 2, 0, 3), Text = "★", TextSize = 10, TextColor3 = Color3.fromRGB(255, 184, 77) }, tile)
 		end
 		if item.Set then
 			setDecor(tile, item.Set, setCounts[item.Set], UDim2.new(0, 5, 1, -17), UDim2.new(1, -10, 0, 14), 8)

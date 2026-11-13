@@ -233,7 +233,7 @@ local function onFinished(player, result)
 		if okInv then
 			local item = Inventory.GrantMythic(player, { Unique = true })
 			local def = item.Unique and Config.Uniques[item.Unique]
-			boxLine = string.format("🎁 Weekly Boss Rush chest: Mythic %s with ✦ %s!", item.Slot, def and def.Name or "?")
+			boxLine = string.format("🎁 Weekly Boss Rush chest: Mythic %s with ★ %s!", item.Slot, def and def.Name or "?")
 			notify(player, boxLine)
 		end
 	end

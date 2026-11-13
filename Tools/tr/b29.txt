@@ -241,7 +241,7 @@
 2282¦モンスターHP / ダメージ¦Monster-LP / Schaden¦PV / dégâts des monstres¦PV / daño de monstruos¦PV / dano dos monstros¦怪物生命 / 伤害¦몬스터 체력 / 피해
 2283¦クリア済み：深さ{number1}　次：{number2}¦Bis Tiefe {number1} geschafft  ·  nächste: {number2}¦Terminé jusqu'à la profondeur {number1}  ·  prochaine : {number2}¦Superada hasta la profundidad {number1}  ·  siguiente: {number2}¦Concluído até a profundidade {number1}  ·  próxima: {number2}¦已通关至深度{number1}  ·  下一个：{number2}¦깊이 {number1}까지 클리어  ·  다음: {number2}
 2284¦<b>🎁 ボス宝箱・装備{number1}個</b>¦<b>🎁 Boss-Truhe · {number1} Ausrüstungsteile</b>¦<b>🎁 Coffre du boss · {number1} équipements</b>¦<b>🎁 Cofre del jefe · {number1} piezas de equipo</b>¦<b>🎁 Baú do chefe · {number1} equipamentos</b>¦<b>🎁 首领宝箱 · {number1}件装备</b>¦<b>🎁 보스 상자 · 장비 {number1}개</b>
-2285¦✦ ユニーク {number1}%¦✦ Einzigartig {number1} %¦✦ Unique {number1} %¦✦ Único {number1} %¦✦ Único {number1}%¦✦ 独特 {number1}%¦✦ 유니크 {number1}%
+2285¦★ ユニーク {number1}%¦★ Einzigartig {number1} %¦★ Unique {number1} %¦★ Único {number1} %¦★ Único {number1}%¦★ 独特 {number1}%¦★ 유니크 {number1}%
 2286¦🧩 セット：エリアの主を倒そう¦🧩 Set: Besiege einen Zonenherrscher¦🧩 Set : battez un seigneur de zone¦🧩 Set: derrota a un señor de zona¦🧩 Set: derrote um senhor de zona¦🧩 套装：击败区域领主¦🧩 세트: 구역 군주를 잡으세요
 2287¦🧩 セット {number1}%¦🧩 Set {number1} %¦🧩 Set {number1} %¦🧩 Set {number1} %¦🧩 Set {number1}%¦🧩 套装 {number1}%¦🧩 세트 {number1}%
 2288¦⚔ 装備中¦⚔ Ausgerüstet¦⚔ Équipé¦⚔ Equipado¦⚔ Equipado¦⚔ 已装备¦⚔ 장착함

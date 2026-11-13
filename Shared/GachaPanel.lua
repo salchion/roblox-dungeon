@@ -153,7 +153,7 @@ function M.Init(deps)
 		rounded(card, 10)
 		local stroke = create("UIStroke", { Color = def and def.Color or Color3.fromRGB(150, 150, 180), Thickness = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
 		local scale = create("UIScale", { Scale = 1 }, card)
-		local icon = makeLabel({ Size = UDim2.new(1, 0, 0, 32), Position = UDim2.new(0, 0, 0, 4), Text = def and (def.Icon or "✦") or "🎲", TextSize = 24, ZIndex = 6 }, card)
+		local icon = makeLabel({ Size = UDim2.new(1, 0, 0, 32), Position = UDim2.new(0, 0, 0, 4), Text = def and (def.Icon or "★") or "🎲", TextSize = 24, ZIndex = 6 }, card)
 		local zoneTag = makeLabel({ Size = UDim2.new(1, 0, 0, 12), Position = UDim2.new(0, 0, 0, 36), Text = zone > 0 and ("Z" .. zone) or "Any", TextSize = 10, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 226, 140), ZIndex = 6 }, card)
 		local nameText = makeLabel({ Size = UDim2.new(1, -4, 0, 22), Position = UDim2.new(0, 2, 0, 48), Text = def and def.Name or "Random set", TextSize = 8, Font = Enum.Font.GothamBold, TextWrapped = true, TextColor3 = Color3.fromRGB(215, 210, 235), ZIndex = 6 }, card)
 		local check = makeLabel({ Size = UDim2.new(0, 18, 0, 18), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -2, 0, 2), Text = "✔", TextSize = 12, Font = Enum.Font.GothamBlack, BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(60, 190, 110), ZIndex = 8, Visible = false }, card)
@@ -167,7 +167,7 @@ function M.Init(deps)
 			local open = zone <= reached
 			local picked = zone == chosen
 			entry.Card.Active = open
-			entry.Icon.Text = open and (entry.Def and (entry.Def.Icon or "✦") or "🎲") or "🔒"
+			entry.Icon.Text = open and (entry.Def and (entry.Def.Icon or "★") or "🎲") or "🔒"
 			entry.Icon.TextTransparency = open and 0 or 0.35
 			entry.Name.TextTransparency = open and 0 or 0.5
 			entry.Tag.TextTransparency = open and 0 or 0.4
@@ -180,7 +180,7 @@ function M.Init(deps)
 		end
 		local def = chosen > 0 and Config.Sets[Config.Sets.ZoneKeys[chosen]]
 		if def then
-			setTitle.Text = (def.Icon or "✦") .. " " .. def.Name
+			setTitle.Text = (def.Icon or "★") .. " " .. def.Name
 			setTitle.TextColor3 = def.Color:Lerp(Color3.new(1, 1, 1), 0.35)
 		else
 			setTitle.Text = "🎲 A random set from the zones you've cleared"

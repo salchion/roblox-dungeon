@@ -141,7 +141,7 @@ return {
 		["★ Rare "] = "★ 레어 ",
 		["⚔ Active Skills — press the key in the field / dungeons (C Heal · V Ultimate). Level up with Gold to get stronger and cut cooldowns"] = "⚔ 액티브 스킬 — 필드 / 던전에서 키를 눌러 사용 (C 치료 · V 궁극기). 골드로 레벨을 올리면 더 강해지고 쿨타임이 줄어요",
 		["⚙ Settings(H)"] = "⚙ 설정(H)",
-		["✦ MYTHIC ✦"] = "✦ 신화 ✦",
+		["★ MYTHIC ★"] = "★ 신화 ★",
 		["✨ Free!\nUpgrade"] = "✨ 무료!\n강화",
 		["✨ Free!"] = "✨ 무료!",
 		["✨ Unlock · Evolve! ✨"] = "✨ 해금 · 진화! ✨",

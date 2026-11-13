@@ -315,7 +315,7 @@ function refresh()
 			if string.sub(need, 1, 4) == "Gear" then
 				local stat = string.sub(need, 5)
 				for _, u in pairs(Config.Uniques or {}) do
-					if type(u) == "table" and u.Effects and u.Effects[1] and u.Effects[1].Stat == stat then return "✦ " .. u.Name, (player:GetAttribute(need) or 0) > 0 end
+					if type(u) == "table" and u.Effects and u.Effects[1] and u.Effects[1].Stat == stat then return "★ " .. u.Name, (player:GetAttribute(need) or 0) > 0 end
 				end
 				return need, false
 			end

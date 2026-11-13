@@ -61,7 +61,7 @@
 60¦深度{number1}までクリア済み  ·  深度{number2}まで入場できます¦Bis Tiefe {number1} abgeschlossen  ·  Du kannst bis Tiefe {number2} eintreten¦Terminé jusqu'à la profondeur {number1}  ·  Vous pouvez entrer jusqu'à la profondeur {number2}¦Completado hasta la profundidad {number1}  ·  Puedes entrar hasta la profundidad {number2}¦Concluído até a profundidade {number1}  ·  Você pode entrar até a profundidade {number2}¦已通关至深度{number1}  ·  最高可进入深度{number2}
 61¦深度¦Tiefe¦Profondeur¦Profundidad¦Profundidade¦深度
 62¦確率¦Chancen¦Probabilités¦Probabilidades¦Probabilidades¦几率
-63¦✦ ミシック装備のユニーク効果:¦✦ Einzigartiger Effekt auf mythischer Ausrüstung:¦✦ Effet unique de l'équipement mythique :¦✦ Efecto único del equipo mítico:¦✦ Efeito único em equipamento mítico:¦✦ 神话装备的独特效果:
+63¦★ ミシック装備のユニーク効果:¦★ Einzigartiger Effekt auf mythischer Ausrüstung:¦★ Effet unique de l'équipement mythique :¦★ Efecto único del equipo mítico:¦★ Efeito único em equipamento mítico:¦★ 神话装备的独特效果:
 64¦🎫 ボスのチケット:¦🎫 Tickets für den Boss:¦🎫 Tickets pour le boss :¦🎫 Boletos del jefe:¦🎫 Tickets do chefe:¦🎫 首领门票:
 65¦·  ゴールド/経験値 x{number1}¦·  Gold / EP x{number1}¦·  Or / XP x{number1}¦·  Oro / EXP x{number1}¦·  Ouro / XP x{number1}¦·  金币 / 经验 x{number1}
 66¦🏰 ダンジョン¦🏰 Dungeon¦🏰 Donjon¦🏰 Mazmorra¦🏰 Masmorra¦🏰 地下城

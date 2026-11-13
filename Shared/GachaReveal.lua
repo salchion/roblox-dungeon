@@ -12,14 +12,14 @@ function M.Init(deps)
 	local SHAKE = { 0.35, 0.5, 0.85, 1.25, 1.7 }  -- 등급별 흔들리는 시간
 	local HOLD = { 1.0, 1.1, 1.6, 2.2, 3.0 }       -- 카드 유지 시간
 	local MYTHIC_STARS = { Color3.fromRGB(255, 140, 140), Color3.fromRGB(255, 225, 120), Color3.fromRGB(130, 230, 160), Color3.fromRGB(130, 210, 255), Color3.fromRGB(205, 145, 255) }
-	-- 최고 등급(신화)만 보는 연출: 별이 사방으로 흩어지는 ✦ 와 "MYTHIC" 글자 (눈이 아프지 않게 부드러운 색 / 천천히 사라진다)
+	-- 최고 등급(신화)만 보는 연출: 별이 사방으로 흩어지는 ★ 와 "MYTHIC" 글자 (눈이 아프지 않게 부드러운 색 / 천천히 사라진다)
 	local function mythicBurst(parent, position, count, spread)
 		for _ = 1, count do
 			local angle = math.random() * math.pi * 2
 			local dist = spread * (0.5 + math.random() * 0.7)
 			local star = create("TextLabel", {
 				Size = UDim2.new(0, 24, 0, 24), AnchorPoint = Vector2.new(0.5, 0.5), Position = position, BackgroundTransparency = 1,
-				Text = "✦", TextSize = 14 + math.random(0, 14), TextColor3 = MYTHIC_STARS[math.random(#MYTHIC_STARS)], Font = Enum.Font.GothamBlack, ZIndex = 71,
+				Text = "★", TextSize = 14 + math.random(0, 14), TextColor3 = MYTHIC_STARS[math.random(#MYTHIC_STARS)], Font = Enum.Font.GothamBlack, ZIndex = 71,
 			}, parent)
 			TweenService:Create(star, TweenInfo.new(0.9 + math.random() * 0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
 				Position = position + UDim2.new(0, math.cos(angle) * dist, 0, math.sin(angle) * dist), TextTransparency = 1, Rotation = math.random(-90, 90),
@@ -29,7 +29,7 @@ function M.Init(deps)
 	end
 	local function mythicBanner(parent, position)
 		local label = makeLabel({
-			Size = UDim2.new(0, 360, 0, 50), AnchorPoint = Vector2.new(0.5, 0.5), Position = position, Text = "✦ MYTHIC ✦", TextSize = 20,
+			Size = UDim2.new(0, 360, 0, 50), AnchorPoint = Vector2.new(0.5, 0.5), Position = position, Text = "★ MYTHIC ★", TextSize = 20,
 			Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 226, 140), TextStrokeTransparency = 0.4, ZIndex = 72,
 		}, parent)
 		TweenService:Create(label, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { TextSize = 40 }):Play()
@@ -238,7 +238,7 @@ function M.Init(deps)
 					if setDef then -- 세트 장비: 왼쪽 위에 세트색 꼬리표 (구역 번호)
 						local tag = create("Frame", { Size = UDim2.new(0, 34, 0, 16), Position = UDim2.new(0, 6, 0, 9), BackgroundColor3 = setDef.Color, BorderSizePixel = 0, ZIndex = 67 }, holder)
 						create("UICorner", { CornerRadius = UDim.new(1, 0) }, tag)
-						makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = (setDef.Icon or "✦") .. (setDef.Zone and ("Z" .. setDef.Zone) or ""), TextSize = 10, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(20, 18, 30), AutoLocalize = false, ZIndex = 68 }, tag)
+						makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = (setDef.Icon or "★") .. (setDef.Zone and ("Z" .. setDef.Zone) or ""), TextSize = 10, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(20, 18, 30), AutoLocalize = false, ZIndex = 68 }, tag)
 					end
 					local nameLabel = makeLabel({ Size = UDim2.new(1, -14, 0, 32), Position = UDim2.new(0, 7, 0, 78), Text = r.Name or "", TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(240, 238, 250), TextWrapped = true, ZIndex = 65 }, holder)
 					nameLabel.TextYAlignment = Enum.TextYAlignment.Center
@@ -446,7 +446,7 @@ function M.Init(deps)
 			makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = Config.Gear.RarityNames[rarity], TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = color:Lerp(Color3.new(1, 1, 1), 0.25), ZIndex = 64 }, pill)
 			local setDef = roll.Set and Config.Sets[roll.Set]
 			if setDef then -- 세트 장비: 등급 알약 아래에 세트 이름
-				makeLabel({ Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 152), Text = string.format("%s %s Set", setDef.Icon or "✦", setDef.Name), TextSize = 12, Font = Enum.Font.GothamBold, TextColor3 = setDef.Color:Lerp(Color3.new(1, 1, 1), 0.3), ZIndex = 63 }, card)
+				makeLabel({ Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 152), Text = string.format("%s %s Set", setDef.Icon or "★", setDef.Name), TextSize = 12, Font = Enum.Font.GothamBold, TextColor3 = setDef.Color:Lerp(Color3.new(1, 1, 1), 0.3), ZIndex = 63 }, card)
 			end
 			create("Frame", { Size = UDim2.new(1, -40, 0, 1), Position = UDim2.new(0, 20, 1, -40), BackgroundColor3 = Color3.fromRGB(255, 255, 255), BackgroundTransparency = 0.88, BorderSizePixel = 0, ZIndex = 63 }, card)
 			makeLabel({

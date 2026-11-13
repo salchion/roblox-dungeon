@@ -93,14 +93,14 @@ local function show(data)
 	end
 	if data.Unique and Config.Uniques[data.Unique] then
 		task.wait(0.25 * pace)
-		line(card, y, "✦ " .. Config.Uniques[data.Unique].Name, 15, Color3.fromRGB(255, 184, 77))
+		line(card, y, "★ " .. Config.Uniques[data.Unique].Name, 15, Color3.fromRGB(255, 184, 77))
 		sound("Aug_Get", { Volume = 0.6 })
 		y += 22
 	end
 	if data.Set and Config.Sets[data.Set] then
 		task.wait(0.12)
 		local def = Config.Sets[data.Set]
-		line(card, y, (def.Icon or "✦") .. " " .. def.Name, 13, def.Color)
+		line(card, y, (def.Icon or "★") .. " " .. def.Name, 13, def.Color)
 		y += 22
 	end
 	task.wait(0.15)

@@ -466,7 +466,7 @@ local function playReel(list)
 		for _ = 1, amount do
 			local angle = math.random() * math.pi * 2
 			local dist = 50 + math.random() * 70
-			local star = label({ Size = UDim2.new(0, 22, 0, 22), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Text = "✦",
+			local star = label({ Size = UDim2.new(0, 22, 0, 22), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Text = "★",
 				TextSize = 12 + math.random(0, 12), TextColor3 = color, Font = Enum.Font.GothamBlack, ZIndex = 74 }, card.Holder)
 			TweenService:Create(star, TweenInfo.new(0.6 + math.random() * 0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
 				Position = UDim2.new(0.5, math.cos(angle) * dist, 0.5, math.sin(angle) * dist), TextTransparency = 1, Rotation = math.random(-90, 90),
@@ -552,7 +552,7 @@ local function playFinalVictory(data)
 		for _ = 1, amount do
 			local angle = math.random() * math.pi * 2
 			local dist = reach * (0.4 + math.random() * 0.6)
-			local star = label({ Size = UDim2.new(0, 24, 0, 24), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Text = "✦", TextSize = 14 + math.random(0, 14), TextColor3 = color, Font = Enum.Font.GothamBlack, ZIndex = 83 }, parent)
+			local star = label({ Size = UDim2.new(0, 24, 0, 24), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Text = "★", TextSize = 14 + math.random(0, 14), TextColor3 = color, Font = Enum.Font.GothamBlack, ZIndex = 83 }, parent)
 			TweenService:Create(star, TweenInfo.new(0.8 + math.random() * 0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
 				Position = UDim2.new(0.5, math.cos(angle) * dist, 0.5, math.sin(angle) * dist), TextTransparency = 1, Rotation = math.random(-120, 120),
 			}):Play()
@@ -608,8 +608,8 @@ local function playFinalVictory(data)
 			label({ Size = UDim2.new(1, -10, 0, 30), Position = UDim2.new(0, 5, 0, 78), Text = slotDef and slotDef.Names[item.Rarity or 5] or "", TextSize = 14, Font = Enum.Font.GothamBlack, TextWrapped = true, TextColor3 = Color3.fromRGB(245, 245, 255), ZIndex = 84 }, frame)
 			local setDef = item.Set and Config.Sets[item.Set]
 			local uniqueDef = item.Unique and Config.Uniques[item.Unique]
-			if setDef then label({ Size = UDim2.new(1, -10, 0, 16), Position = UDim2.new(0, 5, 0, 110), Text = (setDef.Icon or "✦") .. " " .. setDef.Name, TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = setDef.Color, ZIndex = 84 }, frame) end
-			if uniqueDef then label({ Size = UDim2.new(1, -10, 0, 16), Position = UDim2.new(0, 5, 0, 127), Text = "✦ " .. uniqueDef.Name, TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(255, 190, 90), ZIndex = 84 }, frame) end
+			if setDef then label({ Size = UDim2.new(1, -10, 0, 16), Position = UDim2.new(0, 5, 0, 110), Text = (setDef.Icon or "★") .. " " .. setDef.Name, TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = setDef.Color, ZIndex = 84 }, frame) end
+			if uniqueDef then label({ Size = UDim2.new(1, -10, 0, 16), Position = UDim2.new(0, 5, 0, 127), Text = "★ " .. uniqueDef.Name, TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(255, 190, 90), ZIndex = 84 }, frame) end
 		end)
 	end
 	-- 가로로 펼친다

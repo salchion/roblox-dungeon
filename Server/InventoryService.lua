@@ -623,7 +623,7 @@ function Inventory.RerollUnique(player, id)
 	if isEquipped(state, id) then applyEquipAttributes(player, state) end
 	Inventory.Push(player)
 	local def = Config.Uniques[item.Unique]
-	return true, string.format("✦ New unique: %s — %s", def.Name, def.Desc)
+	return true, string.format("★ New unique: %s — %s", def.Name, def.Desc)
 end
 
 -- 확정 보상: 신화 장비 한 개를 바로 가방에 (보스러쉬 주간 상자 / 최후의 군주 주간 보상)

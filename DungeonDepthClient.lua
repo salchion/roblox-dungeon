@@ -282,7 +282,7 @@ local function refresh()
 			sweepButton.BackgroundColor3 = Color3.fromRGB(70, 66, 80)
 		end
 	end
-	uniqueChip.Text = string.format("✦ Unique %.1f%%", Odds.ChestUnique(key))
+	uniqueChip.Text = string.format("★ Unique %.1f%%", Odds.ChestUnique(key))
 	local chance, zones = Odds.ChestSet(key, player:GetAttribute("ClearedZone") or 0)
 	setChip.Text = #zones == 0 and "🧩 Set: clear a zone lord" or string.format("🧩 Set %.0f%%", chance)
 end

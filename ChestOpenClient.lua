@@ -161,9 +161,9 @@ local function play(loot, data)
 		local tag = ""
 		local tagColor = Color3.fromRGB(190, 195, 220)
 		if entry.Unique and Config.Uniques[entry.Unique] then
-			tag, tagColor = "✦ " .. Config.Uniques[entry.Unique].Name, Color3.fromRGB(255, 190, 90)
+			tag, tagColor = "★ " .. Config.Uniques[entry.Unique].Name, Color3.fromRGB(255, 190, 90)
 		elseif setDef then
-			tag, tagColor = (setDef.Icon or "✦") .. " " .. setDef.Name, setDef.Color
+			tag, tagColor = (setDef.Icon or "★") .. " " .. setDef.Name, setDef.Color
 		end
 		makeLabel({ Size = UDim2.new(1, -8, 0, 16), Position = UDim2.new(0, 4, 0, 150), Text = tag, TextSize = 10, Font = Enum.Font.GothamBold, TextColor3 = tagColor, ZIndex = 35 }, card)
 		-- 상태 배지: 장착 / 가방 / 분해
