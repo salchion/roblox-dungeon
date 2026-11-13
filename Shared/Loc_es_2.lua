@@ -776,6 +776,9 @@ return {
 		["Every execute cuts all skill cooldowns by 1s more, and kills can cut up to 1s per second"] = "Cada ejecución reduce todos los enfriamientos 1 s más, y las bajas pueden reducir hasta 1 s por segundo",
 		["Guaranteed Rare!"] = "¡Raro garantizado!",
 		["piece"] = "pieza",
+		["With my ID"] = "Con mi ID",
+		["Loading the world"] = "Cargando el mundo",
+		["That was your set effect! It fires on its own"] = "¡Ese fue tu efecto de conjunto! Se activa solo",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1004,6 +1007,5 @@ return {
 		{ "A big blast when it ends (attack x{number1})", "Una gran explosión al terminar (ataque x{number1})" },
 		{ "{number1}s invincible, but healing is halved", "{number1} s de invencibilidad, pero la curación se reduce a la mitad" },
 		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 Nueva arma: Tomo de hechizos - ¡presiona {number1}!" },
-		{ "Gacha_Pop{number1}  Gacha result: Legendary", "Gacha_Pop{number1} Resultado de Gacha: Legendario" },
 	},
 }

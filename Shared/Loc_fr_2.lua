@@ -786,6 +786,9 @@ return {
 		["Every execute cuts all skill cooldowns by 1s more, and kills can cut up to 1s per second"] = "Chaque exécution réduit tous les temps de recharge d'1 s de plus, et les éliminations peuvent réduire jusqu'à 1 s par seconde",
 		["Guaranteed Rare!"] = "Rare garanti !",
 		["piece"] = "pièce",
+		["With my ID"] = "Avec mon ID",
+		["Loading the world"] = "Chargement du monde",
+		["That was your set effect! It fires on its own"] = "C'était ton effet d'ensemble ! Il se déclenche tout seul",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -989,7 +992,5 @@ return {
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ Les améliorations sont gratuites pour l'instant ! ({number1} restantes)" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ Le portail récupère encore ({number1} s)." },
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} objets recyclés automatiquement (Essence +{number2}, {number3} G)" },
-		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 Pas assez d'or pour se téléporter ! ({number1} G requis)" },
-		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Lancer multiple !\nUtilise tous les tickets (maximum {number1})" },
 	},
 }

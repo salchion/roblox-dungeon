@@ -126,6 +126,23 @@ function lookupCore(piece, nested)
 	return nil
 end
 
+-- (Studio 전용 진단) 번역 못 한 영어 조각을 처음 볼 때마다 한 줄씩 찍는다: 돌아다니며 놀기만 하면 빠진 번역이 모두 모인다
+local missLogged, missCount = {}, 0
+local IS_STUDIO = game:GetService("RunService"):IsStudio()
+local function reportMiss(obj, piece)
+	if not IS_STUDIO or not dict or missLogged[piece] or missCount > 400 then return end -- (영어로 노는 중이면 번역할 게 없다)
+	if not string.find(piece, "%a%a%a") then return end
+	local gui = obj:FindFirstAncestorWhichIsA("LayerCollector")
+	local guiName = gui and gui.Name or "?"
+	if guiName == "AdminGui" or string.find(guiName, "Sound") then return end -- (개발자 전용 창)
+	for _, other in ipairs(game:GetService("Players"):GetPlayers()) do
+		if string.find(piece, other.Name, 1, true) or string.find(piece, other.DisplayName, 1, true) then return end -- (이름)
+	end
+	missLogged[piece] = true
+	missCount += 1
+	print(string.format("[번역 누락] %s  (%s)", (string.gsub(string.sub(piece, 1, 90), "[\r\n]+", " / ")), guiName))
+end
+
 local memo, memoCount = {}, 0
 local function translatePiece(obj, piece)
 	if piece == "" or not string.find(piece, "%a%a") then return nil end -- (영어 단어가 없는 글자는 번역할 게 없다)
@@ -162,7 +179,7 @@ local function translateText(obj, text)
 		local piece = string.sub(text, position, (cutStart or #text + 1) - 1)
 		if piece ~= "" then
 			local ko = translatePiece(obj, piece)
-			if ko then changed = true end
+			if ko then changed = true elseif not string.find(piece, "^%s*$") then reportMiss(obj, piece) end
 			table.insert(out, ko or piece)
 		end
 		if not cutStart then break end

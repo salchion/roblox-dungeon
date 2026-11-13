@@ -658,6 +658,9 @@ return {
 		["Every execute cuts all skill cooldowns by 1s more, and kills can cut up to 1s per second"] = "每次处决所有技能冷却再-1秒，击杀减冷却上限提高到每秒1秒",
 		["Guaranteed Rare!"] = "必定稀有！",
 		["piece"] = "件",
+		["With my ID"] = "用我的ID",
+		["Loading the world"] = "正在加载世界",
+		["That was your set effect! It fires on its own"] = "这就是你的套装效果！它会自动触发",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1080,7 +1083,5 @@ return {
 		{ "⚠ Zone {number1} · Forest ⚠", "⚠ 区域 {number1} · 森林 ⚠" },
 		{ "{number1} Gear Roll Tickets", "{number1} 装备抽取券" },
 		{ "👑 {number1} Kill Streak!!!!", "👑 {number1} 连续击杀!!!!" },
-		{ "XP Booster ({number1} hour)", "经验值提升器（{number1}小时）" },
-		{ "Recommended Power {number2}", "推荐力量 {number2}" },
 	},
 }

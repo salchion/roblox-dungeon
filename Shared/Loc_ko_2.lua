@@ -2,7 +2,6 @@
 -- 자동 생성 파일: Tools/build_loc.py 가 Tools/loc_table.csv (+ 우리 사전) 에서 만든다. 직접 고치지 않는다.
 return {
 	exact = {
-		["<font color='#c9c0e0' size='13'>Opening the chest...</font>"] = "<font color='#c9c0e0' size='13'>상자를 여는 중...</font>",
 		["Opening the chest..."] = "상자를 여는 중...",
 		["<font color='#ffd966'>You maxed out the final weapon!</font>"] = "<font color='#ffd966'>마지막 무기까지 강화했어요!</font>",
 		["<font color='#ffd966'>✔ Unlocked</font>"] = "<font color='#ffd966'>✔ 해금됨</font>",
@@ -515,9 +514,9 @@ return {
 		["Press Q to dash. Narrowly dodging enemy shots gives a bonus."] = "Q로 대시해요. 적의 공격을 아슬아슬하게 피하면 보너스가 있어요.",
 		["Set effects stack: mix gear from different zones to build your style."] = "세트 효과는 쌓여요. 다른 구역의 장비를 섞어 나만의 스타일을 만드세요.",
 		["Mythic gear can carry a Unique effect. Dungeons are the best place to find them."] = "신화 장비에는 유니크 효과가 붙을 수 있어요. 던전이 찾기 가장 좋아요.",
-		["Chain Lightning · Jumps between enemies"] = "체인 라이트닝 · 적 사이로 튕김",
+		["Chain Lightning · Jumps between enemies"] = "연쇄 번개 · 적 사이로 튕김",
 		["Lightning strikes the enemy you aim at, then jumps to nearby enemies one after another (4+ jumps, each hit a little weaker)"] = "조준한 적에게 번개가 내리치고 주변 적에게 차례로 튀어요 (4번 이상, 튈수록 조금씩 약해져요)",
-		["Spell Tome chain lightning"] = "마법책 체인 라이트닝",
+		["Spell Tome chain lightning"] = "마법책 연쇄 번개",
 		["Gear"] = "장비",
 		["Power Ranking"] = "전투력 랭킹",
 		["Party"] = "파티",
@@ -528,7 +527,7 @@ return {
 		["FAIL"] = "실패",
 		["Auto-Dismantle:"] = "자동 분해:",
 		["Shield"] = "방패",
-		["Chain Lightning"] = "체인 라이트닝",
+		["Chain Lightning"] = "연쇄 번개",
 		["Field Lord"] = "필드 군주",
 		["Training"] = "훈련",
 		["Upgrade · Evolve"] = "강화 · 진화",
@@ -788,7 +787,7 @@ return {
 		["🌟 Turn on a Set Effect!"] = "🌟 세트 효과를 켜 보세요!",
 		["Menu → Sets: a free power boost"] = "메뉴 → 세트: 공짜로 강해져요",
 		["Pull the gacha or clear dungeons"] = "장비 뽑기나 던전 클리어로 채워 보세요",
-		["Menu → Pets: it loots and boosts you"] = "메뉴 → 애완동물: 줍기도 해 주고 강해져요",
+		["Menu → Pets: it loots and boosts you"] = "메뉴 → 펫: 줍기도 해 주고 강해져요",
 		["Train, upgrade gear, or enhance your weapon"] = "훈련·장비·무기 강화로 더 강해지세요",
 		["Stand here to earn gold"] = "여기 서 있으면 골드가 쌓여요",
 		["🎯 Training Yard"] = "🎯 훈련장",
@@ -1046,6 +1045,9 @@ return {
 		["Every execute cuts all skill cooldowns by 1s more, and kills can cut up to 1s per second"] = "처형마다 모든 스킬 쿨타임 1초 더 감소, 처치로 줄이는 상한도 1초에 1초까지",
 		["Guaranteed Rare!"] = "확정 레어!",
 		["piece"] = "조각",
+		["With my ID"] = "내 ID로",
+		["Loading the world"] = "월드를 불러오는 중",
+		["That was your set effect! It fires on its own"] = "방금 그게 세트 효과예요! 저절로 발동해요",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },

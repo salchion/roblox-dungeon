@@ -78,7 +78,7 @@ local function refresh()
 		local pxp, pneed = player:GetAttribute("ParagonXp") or 0, math.max(1, player:GetAttribute("ParagonXpNeeded") or 1)
 		local earned, left = player:GetAttribute("ParagonEarned") or 0, player:GetAttribute("ParagonLeft") or 0
 		local full = earned >= Config.ParagonMaxPoints
-		levelText.Text = string.format("Lv %d  ✦ Paragon %d", level, earned)
+		levelText.Text = string.format("Lv %d  ★ Paragon %d", level, earned)
 		barFill.Size = UDim2.new(full and 1 or math.clamp(pxp / pneed, 0, 1), 0, 1, 0)
 		fillGradient.Color = ColorSequence.new(Color3.fromRGB(150, 235, 255), Color3.fromRGB(70, 130, 255))
 		barBack.BackgroundColor3 = Color3.fromRGB(26, 34, 58)

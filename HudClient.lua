@@ -107,7 +107,7 @@ local function refresh()
 		local earned = player:GetAttribute("ParagonEarned") or 0
 		xpFill.Size = UDim2.new(earned >= Config.ParagonMaxPoints and 1 or math.clamp(pxp / pneed, 0, 1), 0, 1, 0)
 		xpFill.BackgroundColor3 = Color3.fromRGB(120, 190, 255)
-		xpText.Text = string.format("✦ Paragon %d", earned)
+		xpText.Text = string.format("★ Paragon %d", earned)
 	else
 		xpFill.Size = UDim2.new(blocked and 1 or math.clamp(xp / needed, 0, 1), 0, 1, 0)
 		xpFill.BackgroundColor3 = blocked and Color3.fromRGB(255, 170, 60) or Color3.fromRGB(110, 200, 255)

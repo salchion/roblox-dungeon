@@ -2623,5 +2623,18 @@
 "Guaranteed Rare!",
 "piece",
 "Gold +{number1}% instead",
-"{number1}-piece set complete! {text2} Lv.{number3}"
+"{number1}-piece set complete! {text2} Lv.{number3}",
+"{number1}h {number2}m",
+"{number1}m {number2}s",
+"{number1}s",
+"Depth {number1}",
+"Got {number1}",
+"{text1} applied",
+"NEAR MISS!  x{number1}",
+"With my ID",
+"Loading the world",
+"That was your set effect! It fires on its own",
+"Sweep D{number1}  🔑{number2}",
+"Lv {number1}  ★ Paragon {number2}",
+"Paragon {number1}"
 ]

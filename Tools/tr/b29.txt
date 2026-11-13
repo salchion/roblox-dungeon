@@ -263,7 +263,7 @@
 2304¦🛡 空きの装備枠：<b>{text1}</b>¦🛡 Leerer Ausrüstungsplatz: <b>{text1}</b>¦🛡 Emplacement d'équipement vide : <b>{text1}</b>¦🛡 Ranura de equipo vacía: <b>{text1}</b>¦🛡 Espaço de equipamento vazio: <b>{text1}</b>¦🛡 空装备栏：<b>{text1}</b>¦🛡 비어 있는 장비칸: <b>{text1}</b>
 2305¦ガチャを引くかダンジョンをクリアしよう¦Ziehe am Gacha oder schließe Dungeons ab¦Tirez au gacha ou terminez des donjons¦Tira del gacha o completa mazmorras¦Use o gacha ou conclua masmorras¦抽取装备或通关地下城¦장비 뽑기나 던전 클리어로 채워 보세요
 2306¦🐾 ペットを解放しよう！（{number1}G）¦🐾 Schalte dein Haustier frei! ({number1} G)¦🐾 Débloquez votre familier ! ({number1} G)¦🐾 ¡Desbloquea tu mascota! ({number1} G)¦🐾 Desbloqueie seu pet! ({number1} G)¦🐾 解锁你的宠物！（{number1}G）¦🐾 펫을 열어 보세요! ({number1}G)
-2307¦メニュー→ペット：拾い物とパワーアップを助けてくれます¦Menü → Haustiere: sammelt Beute und stärkt dich¦Menu → Familiers : il ramasse le butin et vous renforce¦Menú → Mascotas: recoge botín y te refuerza¦Menu → Pets: coleta itens e fortalece você¦菜单→宠物：自动拾取并增强你¦메뉴 → 애완동물: 줍기도 해 주고 강해져요
+2307¦メニュー→ペット：拾い物とパワーアップを助けてくれます¦Menü → Haustiere: sammelt Beute und stärkt dich¦Menu → Familiers : il ramasse le butin et vous renforce¦Menú → Mascotas: recoge botín y te refuerza¦Menu → Pets: coleta itens e fortalece você¦菜单→宠物：自动拾取并增强你¦메뉴 → 펫: 줍기도 해 주고 강해져요
 2308¦🔀 <b>{text1}</b>の道を選ぼう¦🔀 Wähle einen Pfad für <b>{text1}</b>¦🔀 Choisissez une voie pour <b>{text1}</b>¦🔀 Elige un camino para <b>{text1}</b>¦🔀 Escolha um caminho para <b>{text1}</b>¦🔀 为<b>{text1}</b>选择路线¦🔀 <b>{text1}</b>의 길을 고르세요
 2309¦💪 エリア{number1}の主：戦闘力 {number2} / {number3}¦💪 Herrscher Zone {number1}: Kraft {number2} / {number3}¦💪 Seigneur de la zone {number1} : puissance {number2} / {number3}¦💪 Señor de la zona {number1}: poder {number2} / {number3}¦💪 Senhor da zona {number1}: poder {number2} / {number3}¦💪 区域{number1}领主：战力 {number2} / {number3}¦💪 구역 {number1} 군주: 전투력 {number2} / {number3}
 2310¦訓練・装備強化・武器強化で強くなろう¦Trainiere, verbessere Ausrüstung oder deine Waffe¦Entraînez-vous, améliorez l'équipement ou l'arme¦Entrena, mejora el equipo o el arma¦Treine, melhore o equipamento ou a arma¦训练、强化装备或武器¦훈련·장비·무기 강화로 더 강해지세요
@@ -590,3 +590,16 @@
 2622¦ピース¦Teil¦pièce¦pieza¦peça¦件¦조각
 2623¦代わりにゴールド+{number1}%¦Dafür Gold +{number1}%¦À la place, or +{number1} %¦A cambio, oro +{number1}%¦Em troca, ouro +{number1}%¦作为补偿 金币+{number1}%¦대신 골드 +{number1}%
 2624¦{number1}セット完成！{text2} Lv.{number3}¦{number1}er-Set komplett! {text2} Lv.{number3}¦Ensemble {number1} pièces complet ! {text2} Nv.{number3}¦¡Conjunto de {number1} piezas completo! {text2} Nv.{number3}¦Conjunto de {number1} peças completo! {text2} Nv.{number3}¦{number1}件套装完成！{text2} Lv.{number3}¦{number1}세트 완성! {text2} Lv.{number3}
+2625¦{number1}時間{number2}分¦{number1} Std. {number2} Min.¦{number1} h {number2} min¦{number1} h {number2} min¦{number1} h {number2} min¦{number1}小时{number2}分¦{number1}시간 {number2}분
+2626¦{number1}分{number2}秒¦{number1} Min. {number2} Sek.¦{number1} min {number2} s¦{number1} min {number2} s¦{number1} min {number2} s¦{number1}分{number2}秒¦{number1}분 {number2}초
+2627¦{number1}秒¦{number1} Sek.¦{number1} s¦{number1} s¦{number1} s¦{number1}秒¦{number1}초
+2628¦深度{number1}¦Tiefe {number1}¦Profondeur {number1}¦Profundidad {number1}¦Profundidade {number1}¦深度{number1}¦깊이 {number1}
+2629¦{number1}個入手¦{number1} erhalten¦{number1} obtenu(s)¦{number1} obtenido(s)¦{number1} obtido(s)¦已获得{number1}¦{number1}개 획득
+2630¦{text1} 適用！¦{text1} aktiviert¦{text1} appliqué¦{text1} aplicado¦{text1} aplicado¦{text1} 已生效¦{text1} 적용!
+2631¦ニアミス！ x{number1}¦Knapp vorbei! x{number1}¦Évité de justesse ! x{number1}¦¡Por los pelos! x{number1}¦Por um triz! x{number1}¦险险避开！ x{number1}¦아슬아슬! x{number1}
+2632¦自分のIDで¦Mit meiner ID¦Avec mon ID¦Con mi ID¦Com meu ID¦用我的ID¦내 ID로
+2633¦ワールドを読み込み中¦Welt wird geladen¦Chargement du monde¦Cargando el mundo¦Carregando o mundo¦正在加载世界¦월드를 불러오는 중
+2634¦今のがセット効果！自動で発動するよ¦Das war dein Set-Effekt! Er löst von selbst aus¦C'était ton effet d'ensemble ! Il se déclenche tout seul¦¡Ese fue tu efecto de conjunto! Se activa solo¦Esse foi seu efeito de conjunto! Ele dispara sozinho¦这就是你的套装效果！它会自动触发¦방금 그게 세트 효과예요! 저절로 발동해요
+2635¦掃討 D{number1}  🔑{number2}¦Durchlauf T{number1}  🔑{number2}¦Balayage P{number1}  🔑{number2}¦Barrido P{number1}  🔑{number2}¦Varredura P{number1}  🔑{number2}¦扫荡 D{number1}  🔑{number2}¦소탕 깊이{number1}  🔑{number2}
+2636¦Lv {number1}  ★ 超越 {number2}¦Lv {number1}  ★ Paragon {number2}¦Nv {number1}  ★ Parangon {number2}¦Nv {number1}  ★ Paragón {number2}¦Nv {number1}  ★ Paragon {number2}¦Lv {number1}  ★ 超越 {number2}¦Lv {number1}  ★ 초월 {number2}
+2637¦超越 {number1}¦Paragon {number1}¦Parangon {number1}¦Paragón {number1}¦Paragon {number1}¦超越 {number1}¦초월 {number1}

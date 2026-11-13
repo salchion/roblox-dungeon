@@ -905,6 +905,9 @@ return {
 		["Every execute cuts all skill cooldowns by 1s more, and kills can cut up to 1s per second"] = "処刑ごとに全スキルのクールタイムがさらに-1秒。撃破による短縮の上限も1秒あたり1秒に",
 		["Guaranteed Rare!"] = "確定レア！",
 		["piece"] = "ピース",
+		["With my ID"] = "自分のIDで",
+		["Loading the world"] = "ワールドを読み込み中",
+		["That was your set effect! It fires on its own"] = "今のがセット効果！自動で発動するよ",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1044,6 +1047,5 @@ return {
 		{ "Depth {number1} sweep: gold, tickets and boss chest received", "深度{number1}のスイープ：ゴールド、チケット、ボス箱を獲得しました" },
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "レベルが足りません。（このダンジョンはLv.{number1}以上）" },
 		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 {number1}区域を初クリア！ゴールド+{number2} · チケット+{number3} · 鍵+{number4}" },
-		{ "Shot_Cannon  <font color='#{number1}aa{number2}c{number3}'>Mortar shot</font>", "ショットキャノン <font color='#{number1}aa{number2}c{number3}'>迫撃砲射撃</font>" },
 	},
 }

@@ -12,7 +12,7 @@
 1878¦失敗¦FEHLSCHLAG¦ÉCHEC¦FALLO¦FALHA¦失败¦실패
 1879¦自動分解:¦Auto-Zerlegen:¦Démantèlement auto :¦Desmantelado automático:¦Desmontagem automática:¦自动分解:¦자동 분해:
 1880¦シールド¦Schild¦Bouclier¦Escudo¦Escudo¦护盾¦방패
-1881¦チェインライトニング¦Kettenblitz¦Chaîne d'éclairs¦Rayo en cadena¦Raio em cadeia¦连锁闪电¦체인 라이트닝
+1881¦チェインライトニング¦Kettenblitz¦Chaîne d'éclairs¦Rayo en cadena¦Raio em cadeia¦连锁闪电¦연쇄 번개
 1882¦フィールドのロード¦Feld-Lord¦Seigneur du terrain¦Señor del campo¦Senhor do campo¦野外领主¦필드 군주
 1883¦訓練¦Training¦Entraînement¦Entrenamiento¦Treino¦训练¦훈련
 1884¦強化 · 進化¦Verbessern · Weiterentwickeln¦Améliorer · Évoluer¦Mejorar · Evolucionar¦Melhorar · Evoluir¦强化 · 进化¦강화 · 진화
