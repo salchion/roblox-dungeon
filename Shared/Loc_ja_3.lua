@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🗿 Dungeon mutation: Giant — Monster HP x{number1} rewards x{number2}", "🗿 ダンジョンの突然変異：巨大モンスターのHPが{number1}倍、報酬が{number2}倍" },
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 履き古した靴を自動回収（エッセンス +{number1} {number2} G）" },
 		{ "Reduces training / breakthrough wait time by {number1} hour", "トレーニング/ブレークスルーの待機時間を{number1}時間短縮する" },
 		{ "Clear depth {number1} once more to record its Sweep reward.", "スイープ報酬を記録するため、深度{number1}をもう一度クリアしてください。" },
@@ -553,6 +554,7 @@ return {
 		{ "You are already holding {text1}.", "すでに{text1}を持っています。" },
 		{ "⛺ Moved to Zone {number1} · {text2} Camp!", "⛺ ゾーン{number1} · {text2}のキャンプに移動しました！" },
 		{ "Loading the world...  ·  {text1}", "世界を読み込み中...  ·  {text1}" },
+		{ "{number1}-piece set complete! {text2} Lv.{number3}", "{number1}セット完成！{text2} Lv.{number3}" },
 		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 新しい武器: {text1} - {number2}キーを押そう！" },
 		{ "{text1} invited you to a party!", "{text1}がパーティーに招待しました！" },
 		{ "Recommended ⚡ {number1}   Danger {text2}", "推奨 ⚡ {number1}   危険度 {text2}" },

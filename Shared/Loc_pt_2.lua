@@ -745,6 +745,8 @@ return {
 		["⚠ Sweep! Find the gaps between the waves"] = "⚠ Varredura! Ache as brechas entre as ondas",
 		["Every kill shortens all skill cooldowns by 0.3s (up to 0.5s per second)"] = "Cada abate reduz todas as recargas em 0,3s (máx. 0,5s por segundo)",
 		["Every execute cuts all skill cooldowns by 1s more, and kills can cut up to 1s per second"] = "Cada execução reduz todas as recargas em mais 1s, e abates podem reduzir até 1s por segundo",
+		["Guaranteed Rare!"] = "Raro garantido!",
+		["piece"] = "peça",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },

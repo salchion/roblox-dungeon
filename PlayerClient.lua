@@ -765,11 +765,11 @@ do
 		local stroke = create("UIStroke", { Color = color, Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame)
 		local icon = makeLabel({ Size = UDim2.new(0, 44, 0, 44), Position = UDim2.new(0, 2, 0, 12), TextSize = 26, ZIndex = 77 }, frame)
 		local title = makeLabel({
-			Size = UDim2.new(1, -52, 0, 32), Position = UDim2.new(0, 48, 0, 3), Font = Enum.Font.GothamBlack, TextSize = 11, TextWrapped = true,
+			Size = UDim2.new(1, -52, 0, 32), Position = UDim2.new(0, 48, 0, 3), Font = Enum.Font.GothamBlack, TextSize = 11, TextWrapped = true, RichText = true,
 			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 77,
 		}, frame)
 		local desc = makeLabel({
-			Size = UDim2.new(1, -52, 0, 32), Position = UDim2.new(0, 48, 0, 36), TextSize = 10, TextWrapped = true,
+			Size = UDim2.new(1, -52, 0, 32), Position = UDim2.new(0, 48, 0, 36), TextSize = 10, TextWrapped = true, RichText = true,
 			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(215, 215, 230), ZIndex = 77,
 		}, frame)
 		return { Frame = frame, Stroke = stroke, Icon = icon, Title = title, Desc = desc }
@@ -815,8 +815,9 @@ do
 			if setInfo then
 				local pips = {}
 				for i = 1, setInfo.Max or 3 do table.insert(pips, i <= setInfo.Count and "●" or "○") end
-				setLine = "+ " .. (data.Jackpot and "🌟 " or "") .. setInfo.Name .. " piece " .. table.concat(pips, " ")
-				if setInfo.Completed then setLine = setLine .. string.format("   ✨ %d-piece set complete! %s Lv.%d", setInfo.Count, setInfo.EffectName or "", setInfo.Level or 1) end
+				-- (조각마다 <font> 로 나눠야 번역기가 하나씩 찾는다: 이어 붙인 한 줄은 번역표에 없어서 영어로 남았다)
+				setLine = "+ " .. (data.Jackpot and "🌟 " or "") .. "<b>" .. setInfo.Name .. "</b> <font>piece</font> " .. table.concat(pips, " ")
+				if setInfo.Completed then setLine = setLine .. "\n" .. string.format("✨ %d-piece set complete! %s Lv.%d", setInfo.Count, setInfo.EffectName or "", setInfo.Level or 1) end
 			elseif data.Note then
 				setLine = "+ 🏆 " .. data.Note
 			else
@@ -824,7 +825,8 @@ do
 			end
 			local color = (buff and buff.Special) and Color3.fromRGB(255, 195, 70) or (setInfo and setInfo.Color) or Color3.fromRGB(110, 210, 255)
 			if buff then
-				paint(card, buff.Icon, (buff.Special and (data.Jackpot and "🌟 Guaranteed Rare! " or "★ Rare ") or "✨ ") .. buff.Name .. " " .. (buff.Desc or ""), setLine, color)
+				local tag = buff.Special and (data.Jackpot and "<font color='#ffe16e'>🌟 Guaranteed Rare!</font> " or "<font color='#ffe16e'>★ Rare</font> ") or ""
+				paint(card, buff.Icon, tag .. "<font>" .. buff.Name .. "</font>", (buff.Desc or "") .. (setLine ~= "" and ("\n" .. setLine) or ""), color)
 			else
 				paint(card, "💤", "No buff (already maxed)", setLine, color)
 			end

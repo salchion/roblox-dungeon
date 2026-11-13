@@ -903,6 +903,8 @@ return {
 		["⚠ Sweep! Find the gaps between the waves"] = "⚠ なぎ払い！波の隙間へ",
 		["Every kill shortens all skill cooldowns by 0.3s (up to 0.5s per second)"] = "撃破ごとに全スキルのクールタイム-0.3秒（1秒あたり最大0.5秒）",
 		["Every execute cuts all skill cooldowns by 1s more, and kills can cut up to 1s per second"] = "処刑ごとに全スキルのクールタイムがさらに-1秒。撃破による短縮の上限も1秒あたり1秒に",
+		["Guaranteed Rare!"] = "確定レア！",
+		["piece"] = "ピース",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1043,6 +1045,5 @@ return {
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "レベルが足りません。（このダンジョンはLv.{number1}以上）" },
 		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 {number1}区域を初クリア！ゴールド+{number2} · チケット+{number3} · 鍵+{number4}" },
 		{ "Shot_Cannon  <font color='#{number1}aa{number2}c{number3}'>Mortar shot</font>", "ショットキャノン <font color='#{number1}aa{number2}c{number3}'>迫撃砲射撃</font>" },
-		{ "🗿 Dungeon mutation: Giant — Monster HP x{number1} rewards x{number2}", "🗿 ダンジョンの突然変異：巨大モンスターのHPが{number1}倍、報酬が{number2}倍" },
 	},
 }

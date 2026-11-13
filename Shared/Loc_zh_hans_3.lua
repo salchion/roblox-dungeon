@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 Buy Point {number1} G ({number2}/{number3})", "💰 购买点数 {number1} G（{number2}/{number3}）" },
 		{ "Best {number1}  ·  Max hit {number2}", "最佳 {number1} · 最大击中数 {number2}" },
 		{ "🗿 Colossus · Zone {number1}", "🗿 巨像 · 区域 {number1}" },
 		{ "⚔ DUNGEON  ·  Lv.{number1}+", "⚔ 地牢 · 等级{number1}+" },
@@ -271,6 +272,7 @@ return {
 		{ "You are already holding {text1}.", "你已经持有 {text1}。" },
 		{ "⛺ Moved to Zone {number1} · {text2} Camp!", "⛺ 已移动到区域{number1} · {text2}的营地!" },
 		{ "Loading the world...  ·  {text1}", "正在加载世界...  ·  {text1}" },
+		{ "{number1}-piece set complete! {text2} Lv.{number3}", "{number1}件套装完成！{text2} Lv.{number3}" },
 		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 新武器:{text1} - 按 {number2} 键!" },
 		{ "{text1} invited you to a party!", "{text1} 邀请你加入队伍!" },
 		{ "Recommended ⚡ {number1}   Danger {text2}", "推荐 ⚡ {number1}   危险 {text2}" },

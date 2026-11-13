@@ -784,6 +784,8 @@ return {
 		["⚠ Sweep! Find the gaps between the waves"] = "⚠ Balayage ! Trouve les trous entre les vagues",
 		["Every kill shortens all skill cooldowns by 0.3s (up to 0.5s per second)"] = "Chaque élimination réduit tous les temps de recharge de 0,3 s (max 0,5 s par seconde)",
 		["Every execute cuts all skill cooldowns by 1s more, and kills can cut up to 1s per second"] = "Chaque exécution réduit tous les temps de recharge d'1 s de plus, et les éliminations peuvent réduire jusqu'à 1 s par seconde",
+		["Guaranteed Rare!"] = "Rare garanti !",
+		["piece"] = "pièce",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },

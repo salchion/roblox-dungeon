@@ -478,6 +478,7 @@ return {
 		{ "You are already holding {text1}.", "Vous tenez déjà {text1}." },
 		{ "⛺ Moved to Zone {number1} · {text2} Camp!", "⛺ Déplacé au camp de la zone {number1} · {text2} !" },
 		{ "Loading the world...  ·  {text1}", "Chargement du monde...  ·  {text1}" },
+		{ "{number1}-piece set complete! {text2} Lv.{number3}", "Ensemble {number1} pièces complet ! {text2} Nv.{number3}" },
 		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 Nouvelle arme : {text1} - appuyez sur {number2} !" },
 		{ "{text1} invited you to a party!", "{text1} vous a invité dans un groupe !" },
 		{ "Recommended ⚡ {number1}   Danger {text2}", "Recommandé ⚡ {number1}   Danger {text2}" },

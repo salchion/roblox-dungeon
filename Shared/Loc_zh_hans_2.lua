@@ -656,6 +656,8 @@ return {
 		["⚠ Sweep! Find the gaps between the waves"] = "⚠ 横扫！找到波浪之间的空隙",
 		["Every kill shortens all skill cooldowns by 0.3s (up to 0.5s per second)"] = "每次击杀所有技能冷却-0.3秒（每秒最多0.5秒）",
 		["Every execute cuts all skill cooldowns by 1s more, and kills can cut up to 1s per second"] = "每次处决所有技能冷却再-1秒，击杀减冷却上限提高到每秒1秒",
+		["Guaranteed Rare!"] = "必定稀有！",
+		["piece"] = "件",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1080,6 +1082,5 @@ return {
 		{ "👑 {number1} Kill Streak!!!!", "👑 {number1} 连续击杀!!!!" },
 		{ "XP Booster ({number1} hour)", "经验值提升器（{number1}小时）" },
 		{ "Recommended Power {number2}", "推荐力量 {number2}" },
-		{ "💰 Buy Point {number1} G ({number2}/{number3})", "💰 购买点数 {number1} G（{number2}/{number3}）" },
 	},
 }

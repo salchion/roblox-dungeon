@@ -1044,6 +1044,8 @@ return {
 		["⚠ Sweep! Find the gaps between the waves"] = "⚠ 휩쓸기! 파도 사이 틈으로 피하세요",
 		["Every kill shortens all skill cooldowns by 0.3s (up to 0.5s per second)"] = "처치마다 모든 스킬 쿨타임 -0.3초 (1초에 최대 0.5초까지)",
 		["Every execute cuts all skill cooldowns by 1s more, and kills can cut up to 1s per second"] = "처형마다 모든 스킬 쿨타임 1초 더 감소, 처치로 줄이는 상한도 1초에 1초까지",
+		["Guaranteed Rare!"] = "확정 레어!",
+		["piece"] = "조각",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1163,6 +1165,5 @@ return {
 		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "가챠_팝{number1} <font color='#{number2}aa{number3}c{number4}'>가챠 결과: 에픽</font>" },
 		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "{number1}시간의 유휴 수입을 즉시 획득하세요 · 하루 최대 {number2}" },
 		{ "🔒 Zone {number1} · Darklands Sealed\nOpen the previous gate first", "🔒 구역 {number1} · 다크랜드 봉쇄됨\n먼저 이전 게이트를 여세요" },
-		{ "🔒 Zone {number1} · Snowfield Sealed\nOpen the previous gate first", "🔒 구역 {number1} · 설원 봉쇄됨\n먼저 이전 게이트를 여세요" },
 	},
 }

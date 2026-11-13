@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🏚 Ruined Fortress Gate · Rec. ⚡{number2}", "🏚 Ruiniertes Festungstor · Rec. ⚡{number2}" },
 		{ "📍 Field · Best Zone {number1}   🎟 Free {number2}/{number3}", "📍 Feld · Beste Zone {number1} 🎟 Kostenlos {number2}/{number3}" },
 		{ "⚔ Rocket Launcher · Rusty Era +{number10}", "⚔ Raketenwerfer · Rostige Ära +{number10}" },
 		{ "⚔ Rocket Launcher · Rusty Era +{number1}", "⚔ Raketenwerfer · Rostige Ära +{number1}" },
@@ -418,6 +419,7 @@ return {
 		{ "You are already holding {text1}.", "Du hältst bereits {text1}." },
 		{ "⛺ Moved to Zone {number1} · {text2} Camp!", "⛺ Zu Zone {number1} · {text2} Lager gewechselt!" },
 		{ "Loading the world...  ·  {text1}", "Welt wird geladen ...  ·  {text1}" },
+		{ "{number1}-piece set complete! {text2} Lv.{number3}", "{number1}er-Set komplett! {text2} Lv.{number3}" },
 		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 Neue Waffe: {text1} – drücke {number2}!" },
 		{ "{text1} invited you to a party!", "{text1} hat dich in eine Gruppe eingeladen!" },
 		{ "Recommended ⚡ {number1}   Danger {text2}", "Empfohlen ⚡ {number1}   Gefahr {text2}" },

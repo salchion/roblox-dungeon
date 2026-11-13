@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} hours of idle gold ({number2} G) piled up!", "¡{number1} horas de oro inactivo ({number2} G) acumulado!" },
 		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 Entrada del campo Justo detrás! {number1}m" },
 		{ "Clear {number1} dungeon(s)  ✅ tap to claim!", "Completa {number1} mazmorras ✅ ¡toca para reclamar!" },
 		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 Cofre del jefe · {number1} piezas de equipo</b>" },
@@ -455,6 +456,7 @@ return {
 		{ "You are already holding {text1}.", "Ya tienes {text1} en la mano." },
 		{ "⛺ Moved to Zone {number1} · {text2} Camp!", "⛺ ¡Te moviste al campamento de la zona {number1} · {text2}!" },
 		{ "Loading the world...  ·  {text1}", "Cargando el mundo...  ·  {text1}" },
+		{ "{number1}-piece set complete! {text2} Lv.{number3}", "¡Conjunto de {number1} piezas completo! {text2} Nv.{number3}" },
 		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 Arma nueva: {text1} - ¡pulsa {number2}!" },
 		{ "{text1} invited you to a party!", "¡{text1} te invitó a un grupo!" },
 		{ "Recommended ⚡ {number1}   Danger {text2}", "Recomendado ⚡ {number1}   Peligro {text2}" },

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 Zone {number1} · Snowfield Sealed\nOpen the previous gate first", "🔒 구역 {number1} · 설원 봉쇄됨\n먼저 이전 게이트를 여세요" },
 		{ "Accrues up to {number1} hours while you're away (default {number2} hours)", "부재 중 최대 {number1}시간 누적 (기본 {number2}시간)" },
 		{ "🌪 Mob hunter  ·  ✔ 🔫 Rocket Launcher / Spell Tome (+{number1}%)", "🌪 몬스터 사냥꾼 · ✔ 🔫 로켓 발사기 / 스펠 토메 (+{number1}%)" },
 		{ "Dungeon_Fail  <font color='#{number1}aa{number2}c{number3}'>Dungeon failed</font>", "던전 실패 <font color='#{number1}aa{number2}c{number3}'>던전 실패</font>" },
@@ -619,6 +620,7 @@ return {
 		{ "You are already holding {text1}.", "이미 {text1}을(를) 들고 있어요." },
 		{ "⛺ Moved to Zone {number1} · {text2} Camp!", "⛺ {number1}구역 · {text2} 캠프로 이동했어요!" },
 		{ "Loading the world...  ·  {text1}", "세계를 불러오는 중...  ·  {text1}" },
+		{ "{number1}-piece set complete! {text2} Lv.{number3}", "{number1}세트 완성! {text2} Lv.{number3}" },
 		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 새 무기: {text1} - {number2}를 누르세요!" },
 		{ "{text1} invited you to a party!", "{text1}님이 파티에 초대했어요!" },
 		{ "Recommended ⚡ {number1}   Danger {text2}", "권장 ⚡ {number1}   위험 {text2}" },
