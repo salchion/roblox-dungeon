@@ -914,10 +914,18 @@ Remotes.Intro.OnServerEvent:Connect(function(player, action, x)
 		table.insert(points, last)
 		local total = #points
 		local pending = total
+		-- 한꺼번에 25곳을 요청하면 내 캐릭터 주변이 늦게 와서 "Gameplay Paused" 가 떴다: 내 주변을 먼저, 그 다음 3곳씩 나눠서 받는다
+		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+		if root then pcall(function() player:RequestStreamAroundAsync(root.Position, 5) end) end
+		local running, streamStart = 0, os.clock()
 		for _, px in ipairs(points) do
+			while running >= 3 and player.Parent and os.clock() - streamStart < 15 do task.wait(0.05) end -- (너무 오래 걸리면 기다리지 않고 나머지를 한꺼번에)
+			if not player.Parent then break end
+			running += 1
 			task.spawn(function()
 				local okStream, errStream = pcall(function() player:RequestStreamAroundAsync(Vector3.new(px, 60, 0), 10) end)
 				if not okStream then warn("[오프닝] 필드 미리 불러오기 실패 (x=" .. tostring(px) .. "): " .. tostring(errStream)) end
+				running -= 1
 				pending -= 1
 				if player.Parent then Remotes.Intro:FireClient(player, "Progress", total - pending, total) end -- 로딩 화면의 막대가 차오른다
 			end)

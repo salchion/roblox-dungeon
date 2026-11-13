@@ -115,3 +115,18 @@ RunService.Heartbeat:Connect(function(dt)
 		worstSecFps = math.huge
 	end
 end)
+
+-- "Gameplay Paused" (내 주변 땅 / 건물이 아직 안 와서 Roblox 가 게임을 멈춤) 이 언제 / 어디서 / 얼마나 나오는지 기록
+local pausedAt
+local function onPausedChanged()
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	local pos = root and string.format("(%d,%d,%d)", root.Position.X, root.Position.Y, root.Position.Z) or "(?)"
+	if player.GameplayPaused then
+		pausedAt = os.clock()
+		warn(string.format("[일시정지] 시작 · 위치 %s · %s · 메모리 %dMB", pos, context(), memoryMb()))
+	elseif pausedAt then
+		warn(string.format("[일시정지] 끝 · %.1f초 동안 멈춤 · 위치 %s", os.clock() - pausedAt, pos))
+		pausedAt = nil
+	end
+end
+pcall(function() player:GetPropertyChangedSignal("GameplayPaused"):Connect(onPausedChanged) end)
