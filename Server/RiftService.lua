@@ -222,12 +222,12 @@ local function onFinished(player, result)
 	if newWeekBest then
 		submitScore(player, result.Score)
 	end
-	if result.Dealt >= R.Tiers[4].Min and newWeekBest then
+	if result.Dealt >= R.Tiers[5].Min and newWeekBest then -- (공지: Diamond 이상. 보스 체력 곡선을 바꾸며 Platinum 은 흔해졌다)
 		Event.Announce(string.format("📢 %s took down %d bosses in the Boss Rush! (%s)", player.DisplayName, result.Bosses, tier.Name))
 	end
-	-- 주간 상자: 이번 주 처음으로 Diamond 등급 이상이면 "유니크 확정 신화" 1개
+	-- 주간 상자: 이번 주 처음으로 Master 등급 이상이면 "유니크 확정 신화" 1개 (예전 Diamond: 첫 보스가 약해져서 한 칸 올렸다)
 	local boxLine = nil
-	if state and result.Dealt >= R.Tiers[5].Min and (state.BoxWeek or 0) ~= thisWeek() then
+	if state and result.Dealt >= R.Tiers[6].Min and (state.BoxWeek or 0) ~= thisWeek() then
 		state.BoxWeek = thisWeek()
 		local okInv, Inventory = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
 		if okInv then

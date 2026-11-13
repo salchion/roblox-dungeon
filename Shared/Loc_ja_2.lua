@@ -908,6 +908,9 @@ return {
 		["With my ID"] = "自分のIDで",
 		["Loading the world"] = "ワールドを読み込み中",
 		["That was your set effect! It fires on its own"] = "今のがセット効果！自動で発動するよ",
+		["Grandmaster"] = "グランドマスター",
+		["Champion"] = "チャンピオン",
+		["Legend"] = "レジェンド",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },

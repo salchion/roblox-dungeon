@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 Nueva arma: Tomo de hechizos - ¡presiona {number1}!" },
 		{ "Gacha_Pop{number1}  Gacha result: Legendary", "Gacha_Pop{number1} Resultado de Gacha: Legendario" },
 		{ "{number1} hours of idle gold ({number2} G) piled up!", "¡{number1} horas de oro inactivo ({number2} G) acumulado!" },
 		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 Entrada del campo Justo detrás! {number1}m" },

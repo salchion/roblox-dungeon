@@ -1360,8 +1360,11 @@ Config.Rift = {
 	IntervalMin = 8,      -- 점점 짧아져서 이 값에서 멈춘다
 	IntervalStep = 0.7,   -- 보스가 하나 나올 때마다 줄어드는 간격(초)
 	MaxAlive = 10,        -- 동시에 쌓일 수 있는 보스 수 (서버 부담 + 끝이 나게 하는 장치)
-	BossHp = 7000000,     -- 첫 보스 체력 (모두 같다: 풀파밍 캐릭터 DPS 약 34만 기준 약 20초). 장비가 강한 사람이 더 빨리 잡고 더 많이 쌓아서 점수가 높다
-	HpGrowth = 1.12,      -- 보스가 하나 나올 때마다 체력 x1.12
+	-- 보스 체력 (모두 같다: 공정한 순위). 예전 기준(풀파밍 DPS 34만)이 지금 최대 스펙(초당 4억~14억)과 1000배 넘게 벌어져서 다시 맞췄다:
+	--   첫 보스는 낮게(중간 스펙도 시작은 잡는다), 대신 빨리 불어나서(x1.18) 10분 동안 약 70마리 중 뒤쪽은 최대 스펙도 쌓이기 시작한다
+	--   (초당 피해 10만 = 5마리 남짓 / 100만 = 18마리 / 최대 스펙 = 55마리 전후에서 막힌다)
+	BossHp = 1500000,     -- 첫 보스 체력 (700만 -> 150만)
+	HpGrowth = 1.18,      -- 보스가 하나 나올 때마다 체력 x1.18 (1.12 -> 1.18)
 	DamageBase = 420,     -- 첫 보스 탄 한 발 피해 (모두 같은 고정값: 체력 / 방어력이 높을수록 덜 위험하다). 풀파밍(체력 약 2,700, 감소 약 49%) 기준 한 발에 체력의 약 8%
 	DamageGrow = 1.06,    -- 보스가 하나 나올 때마다 x1.06
 	DamageGrowCap = 8,    -- 최대 8배까지
@@ -1375,6 +1378,11 @@ Config.Rift = {
 		{ Min = 50000000,  Name = "Platinum", Icon = "💠", Gold = 3500,  Tickets = 2, TimeSkip = 900 },
 		{ Min = 150000000, Name = "Diamond",  Icon = "💎", Gold = 8000,  Tickets = 4, TimeSkip = 1800 },
 		{ Min = 400000000, Name = "Master",   Icon = "👑", Gold = 15000, Tickets = 6, TimeSkip = 3600 },
+		-- (최대 스펙용 등급: 예전엔 최대 스펙이 1초 만에 마스터를 찍었다)
+		{ Min = 2000000000,   Name = "Grandmaster", Icon = "🔱", Gold = 25000, Tickets = 8,  TimeSkip = 5400 },
+		{ Min = 10000000000,  Name = "Champion",    Icon = "🏆", Gold = 40000, Tickets = 10, TimeSkip = 7200 },
+		{ Min = 50000000000,  Name = "Legend",      Icon = "🌟", Gold = 60000, Tickets = 12, TimeSkip = 10800 },
+		{ Min = 200000000000, Name = "Mythic",      Icon = "🐉", Gold = 90000, Tickets = 15, TimeSkip = 14400 },
 	},
 }
 

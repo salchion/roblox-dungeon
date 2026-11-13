@@ -92,7 +92,7 @@ local tierText = {}
 for _, tier in ipairs(R.Tiers) do
 	table.insert(tierText, string.format("%s %s+", tier.Icon, short(tier.Min)))
 end
-makeLabel({ Size = UDim2.new(1, -36, 0, 36), Position = UDim2.new(0, 18, 0, 384), TextSize = 12, RichText = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 11,
+makeLabel({ Size = UDim2.new(1, -36, 0, 40), Position = UDim2.new(0, 18, 0, 382), TextSize = 11, TextWrapped = true, RichText = true, -- (등급이 10개로 늘어 두 줄로 감싼다) TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, ZIndex = 11,
 	Text = "Tier rewards by total damage dealt (gold · tickets · time skip):\n" .. table.concat(tierText, "   ") }, panel)
 local tierRewardLabel = makeLabel({ Size = UDim2.new(1, -36, 0, 22), Position = UDim2.new(0, 18, 0, 424), TextSize = 12, RichText = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 11, Text = "" }, panel)
 

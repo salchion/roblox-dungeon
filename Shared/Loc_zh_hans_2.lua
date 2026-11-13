@@ -661,6 +661,9 @@ return {
 		["With my ID"] = "用我的ID",
 		["Loading the world"] = "正在加载世界",
 		["That was your set effect! It fires on its own"] = "这就是你的套装效果！它会自动触发",
+		["Grandmaster"] = "宗师",
+		["Champion"] = "冠军",
+		["Legend"] = "传奇",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1082,6 +1085,5 @@ return {
 		{ "Cooldown -{number1}%  (max {number2})", "冷却 -{number1}%  (最多 {number2})" },
 		{ "⚠ Zone {number1} · Forest ⚠", "⚠ 区域 {number1} · 森林 ⚠" },
 		{ "{number1} Gear Roll Tickets", "{number1} 装备抽取券" },
-		{ "👑 {number1} Kill Streak!!!!", "👑 {number1} 连续击杀!!!!" },
 	},
 }

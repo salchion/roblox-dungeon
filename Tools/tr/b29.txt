@@ -603,3 +603,6 @@
 2635¦掃討 D{number1}  🔑{number2}¦Durchlauf T{number1}  🔑{number2}¦Balayage P{number1}  🔑{number2}¦Barrido P{number1}  🔑{number2}¦Varredura P{number1}  🔑{number2}¦扫荡 D{number1}  🔑{number2}¦소탕 깊이{number1}  🔑{number2}
 2636¦Lv {number1}  ★ 超越 {number2}¦Lv {number1}  ★ Paragon {number2}¦Nv {number1}  ★ Parangon {number2}¦Nv {number1}  ★ Paragón {number2}¦Nv {number1}  ★ Paragon {number2}¦Lv {number1}  ★ 超越 {number2}¦Lv {number1}  ★ 초월 {number2}
 2637¦超越 {number1}¦Paragon {number1}¦Parangon {number1}¦Paragón {number1}¦Paragon {number1}¦超越 {number1}¦초월 {number1}
+2638¦グランドマスター¦Großmeister¦Grand maître¦Gran maestro¦Grão-mestre¦宗师¦그랜드마스터
+2639¦チャンピオン¦Champion¦Champion¦Campeón¦Campeão¦冠军¦챔피언
+2640¦レジェンド¦Legende¦Légende¦Leyenda¦Lenda¦传奇¦레전드

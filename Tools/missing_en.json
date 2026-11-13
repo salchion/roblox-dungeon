@@ -2636,5 +2636,8 @@
 "That was your set effect! It fires on its own",
 "Sweep D{number1}  🔑{number2}",
 "Lv {number1}  ★ Paragon {number2}",
-"Paragon {number1}"
+"Paragon {number1}",
+"Grandmaster",
+"Champion",
+"Legend"
 ]

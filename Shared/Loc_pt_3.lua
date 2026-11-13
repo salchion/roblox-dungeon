@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Points left {number1}  /  total {number2}  (Level {number3})", "Pontos restantes {number1}  /  total {number2}  (nível {number3})" },
 		{ "🔥 Better gear dropped! ({number1} slot(s))", "🔥 Caiu equipamento melhor! ({number1} espaço(s))" },
 		{ "Crit damage +{number1}%p per point  (max {number2})", "Dano crítico +{number1}%p por ponto  (máx. {number2})" },
 		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 {number1} recompensas resgatadas! ({number2} novos títulos)" },

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👑 {number1} Kill Streak!!!!", "👑 {number1} 连续击杀!!!!" },
 		{ "XP Booster ({number1} hour)", "经验值提升器（{number1}小时）" },
 		{ "Recommended Power {number2}", "推荐力量 {number2}" },
 		{ "💰 Buy Point {number1} G ({number2}/{number3})", "💰 购买点数 {number1} G（{number2}/{number3}）" },
