@@ -865,9 +865,9 @@ end
 Players.PlayerRemoving:Connect(endIntroFocus)
 Remotes.Intro.OnServerEvent:Connect(function(player, action, x)
 	if action == "Focus" then
-		-- (꺼 둠) 예전: 날아가는 카메라 쪽으로 "불러오기 기준점"(ReplicationFocus)을 옮겼다. 그러면 캐릭터가 서 있는 마을 주변이 덜 불러와져서
-		--   Roblox 가 "Gameplay Paused" 로 1~3초씩 멈췄다 (로그: 오프닝 중 4번). 필드는 로딩 화면에서 이미 미리 받아 두므로 기준점은 그대로 둔다
-		if true then return end
+		-- 날아가는 카메라 쪽으로 "불러오기 기준점"(ReplicationFocus)을 옮겨서, 지나가는 곳의 몬스터 / 벽 / 장식이 보이게 한다.
+		--   (한때 꺼 뒀더니 오프닝에 바닥만 보이고 몬스터가 하나도 안 보였다. 예전 "Gameplay Paused" 는 필드 25곳을 한꺼번에 요청해
+		--    내 캐릭터 주변이 늦게 온 탓이라, 지금은 내 주변을 먼저 받고 3곳씩 나눠 받는다. 바닥은 항상 불러오는 모델이다)
 		if not introStreamed[player] or typeof(x) ~= "number" or x ~= x then return end
 		x = math.clamp(x, -300, Config.Field.ZoneEnd(Config.Field.ZoneCount) + 400)
 		local part = introFocus[player]
@@ -887,6 +887,8 @@ Remotes.Intro.OnServerEvent:Connect(function(player, action, x)
 		return
 	elseif action == "End" then
 		endIntroFocus(player)
+		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart") -- 착지 전에 내 캐릭터 주변을 먼저 다시 받아 둔다 (멈춤 방지)
+		if root then task.spawn(function() pcall(function() player:RequestStreamAroundAsync(root.Position, 5) end) end) end
 		return
 	elseif action == "Place" then -- 새 유저: 오프닝 착지 장면이 1구역 캠프에서 나오도록 미리 옮긴다 (해당 없으면 아무것도 안 함)
 		local placed = false
