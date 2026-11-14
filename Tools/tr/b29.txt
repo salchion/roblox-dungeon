@@ -739,3 +739,8 @@
 2771¦確率は現在の運を反映¦Chancen enthalten dein aktuelles Glück¦Les chances incluent ta chance actuelle¦Las probabilidades incluyen tu suerte actual¦As chances incluem sua sorte atual¦概率已包含你当前的幸运¦확률은 지금 내 행운이 반영된 값
 2772¦神話: ユニーク{number1}% (ダンジョン宝箱{number2}%以上)¦Mythisch: Einzigartig {number1}% (Dungeontruhen {number2}%+)¦Mythique : unique {number1} % (coffres de donjon {number2} %+)¦Mítico: único {number1}% (cofres de mazmorra {number2}%+)¦Mítico: único {number1}% (baús de masmorra {number2}%+)¦神话: 独特{number1}% (地牢宝箱{number2}%以上)¦신화: 유니크 {number1}% (던전 상자는 {number2}% 이상)
 2773¦セット効果+1オプション: 伝説{number1}% / 神話{number2}%¦+1-Set-Effekt-Option: Legendär {number1}% / Mythisch {number2}%¦Option effet d'ensemble +1 : Légendaire {number1} % / Mythique {number2} %¦Opción efecto de conjunto +1: Legendario {number1}% / Mítico {number2}%¦Opção efeito de conjunto +1: Lendário {number1}% / Mítico {number2}%¦套装效果+1选项: 传说{number1}% / 神话{number2}%¦세트 효과 +1 옵션: 전설 {number1}% / 신화 {number2}%
+2774¦放置収入  +{text1} G/秒¦Leerlauf-Einkommen  +{text1} G/s¦Revenu passif  +{text1} G/s¦Ingreso pasivo  +{text1} G/s¦Renda passiva  +{text1} G/s¦挂机收入  +{text1} G/秒¦방치 수입  +{text1} G/초
+2775¦獲得¦Verdient¦Gagné¦Ganado¦Ganho¦已获得¦모은 골드
+2776¦空いている装備枠:¦Leerer Ausrüstungsplatz:¦Emplacement vide :¦Ranura vacía:¦Espaço vazio:¦空的装备栏:¦빈 장비 칸:
+2777¦道を選ぼう:¦Wähle einen Pfad für¦Choisis une voie pour¦Elige una rama para¦Escolha um caminho para¦为其选择路线:¦갈래를 고르세요:
+2778¦+{number1} 最大¦+{number1} MAX¦+{number1} MAX¦+{number1} MÁX¦+{number1} MÁX¦+{number1} 满级¦+{number1} 최대

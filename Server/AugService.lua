@@ -77,7 +77,7 @@ function Aug.Apply(player)
 	local function boostOf(attr) return math.min(Config.Inventory.AugBoostCap or 3, boosts[attr] or 0) end
 	for _, z in ipairs(list) do
 		local attr = Config.Sets.ZoneAug[z]
-		local level = rift.AugLv[tostring(z)] + gearBonus(player, z) + boostOf(attr)
+		local level = math.min(Config.Inventory.AugMaxLevel or 6, rift.AugLv[tostring(z)] + gearBonus(player, z) + boostOf(attr)) -- (합쳐서 최대 6)
 		levels[attr] = level
 		if level > bestLevel then bestLevel, auraColor = level, Config.AugInfo[attr].Color end
 	end

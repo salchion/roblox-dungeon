@@ -1078,6 +1078,9 @@ return {
 		["not reached yet"] = "아직 못 감",
 		["Gear drop"] = "장비 드롭",
 		["Odds include your current Luck"] = "확률은 지금 내 행운이 반영된 값",
+		["Earned"] = "모은 골드",
+		["Empty gear slot:"] = "빈 장비 칸:",
+		["Choose a path for"] = "갈래를 고르세요:",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1186,6 +1189,5 @@ return {
 		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 {number1}레벨 돌파 완료! 이제 더 성장할 수 있어요." },
 		{ " With the max {number1} points, crits go from 2x to about {number2}x. Combine", " 최대 {number1}포인트일 때 치명타가 2배에서 약 {number2}배로. 조합" },
 		{ "🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})", "🏰 던전 보스 상자 — 장비 {number1}개, 깊이 {number2}마다 +1 (최대 {number3})" },
-		{ "Event_Elite  <font color='#{number1}aa{number2}c{number3}'>Elite squad appears</font>", "이벤트_엘리트 <font color='#{number1}aa{number2}c{number3}'>엘리트 스쿼드 등장</font>" },
 	},
 }

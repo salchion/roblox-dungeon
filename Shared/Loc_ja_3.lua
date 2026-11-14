@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "One less dagger, but each hits +{number1}% harder: for bosses", "短剣が1本減る代わりに1本あたり+{number1}%：ボス向け" },
 		{ "Reduces training / breakthrough wait time by {number1} hours", "トレーニング/ブレークスルーの待機時間を{number1}時間短縮する" },
 		{ "♻ [Common] Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] レザーキャップを自動回収（エッセンス +{number1} {number2} G）" },
 		{ "Cleared up to depth {number1}  ·  You can enter up to depth {number2}", "深度{number1}までクリア済み  ·  深度{number2}まで入場できます" },
@@ -566,6 +567,7 @@ return {
 		{ "Lord {number1}%", "領主 {number1}%" },
 		{ "ZONE {number1}", "ゾーン {number1}" },
 		{ "{number1} more", "あと{number1}" },
+		{ "+{number1} MAX", "+{number1} 最大" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1} key", "鍵{number1}個" },
 		{ "💰 {number1} G", "💰 {number1}G" },
@@ -657,6 +659,7 @@ return {
 		{ "⚔ New gear equipped! {text1}", "⚔ 新しい装備を装備しました！{text1}" },
 		{ "{text1} declined your invite", "{text1}が招待を断りました" },
 		{ "👹 Boss #{number1}: {text2} appeared!", "👹 ボス #{number1}: {text2}が登場！" },
+		{ "Idle income  +{text1} G/sec", "放置収入  +{text1} G/秒" },
 		{ "Time needed {text1} · 💰 {number2} G", "必要時間 {text1} · 💰 {number2} G" },
 		{ "🏔 Zone {number1} · {text2} cleared!", "🏔 ゾーン{number1} · {text2}クリア！" },
 		{ "{text1} upgrade success! +{number2}", "{text1}の強化成功！+{number2}" },

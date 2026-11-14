@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<font color='#ffe{number1}e'>⚡ {number2}</font> Lv.{number3}", "<font color='#ffe{number1}e'>⚡ {number2}</font> Stufe {number3}" },
+		{ "Survive {number1} seconds in the Boss Rush", "Überlebe {number1} Sekunden im Boss-Angriff" },
 		{ "👑 Lord of Meadow (Zone {number1}) · Rec. ⚡{number2}", "👑 Herr der Wiese (Zone {number1}) · Empfehlung ⚡{number2}" },
 		{ "Railgun  ·  keys {number1}-{number2} switch weapons", "Schienenwaffe · Tasten {number1}-{number2} wechseln Waffen" },
 		{ "📋 Daily Quests {number1}/{number2}  ✅ tap to claim!", "📋 Tägliche Missionen {number1}/{number2} ✅ Tippe, um sie zu beanspruchen!" },
@@ -447,6 +449,7 @@ return {
 		{ "Lord {number1}%", "Fürst {number1}%" },
 		{ "ZONE {number1}", "Zone {number1}" },
 		{ "{number1} more", "noch {number1}" },
+		{ "+{number1} MAX", "+{number1} MAX" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "+{number1} XP", "+{number1} Erfahrungspunkte" },
 		{ "{number1} key", "{number1} Schlüssel" },
@@ -540,6 +543,7 @@ return {
 		{ "⚔ New gear equipped! {text1}", "⚔ Neue Ausrüstung angelegt! {text1}" },
 		{ "{text1} declined your invite", "{text1} hat deine Einladung abgelehnt" },
 		{ "👹 Boss #{number1}: {text2} appeared!", "👹 Boss #{number1}: {text2} ist erschienen!" },
+		{ "Idle income  +{text1} G/sec", "Leerlauf-Einkommen  +{text1} G/s" },
 		{ "Time needed {text1} · 💰 {number2} G", "Benötigte Zeit {text1} · 💰 {number2} G" },
 		{ "🏔 Zone {number1} · {text2} cleared!", "🏔 Zone {number1} · {text2} abgeschlossen!" },
 		{ "{text1} upgrade success! +{number2}", "{text1}-Verbesserung erfolgreich! +{number2}" },

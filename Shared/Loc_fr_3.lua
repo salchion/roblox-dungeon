@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• Environ {number1} tirs/s · Puissance de feu {number2} · Portée {number3}" },
 		{ "Damage +{number1}% on a single target: for bosses", "Dégâts +{number1} % sur une seule cible : pour les boss" },
 		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}!", "{number1} secondes ! Récompenses x{number2}, combo jusqu'à x{number3} !" },
 		{ "🔓 You can now run {number1} set effects at once!", "🔓 Vous pouvez maintenant activer {number1} effets de set à la fois !" },
@@ -501,6 +502,7 @@ return {
 		{ "Lord {number1}%", "Seigneur {number1} %" },
 		{ "ZONE {number1}", "Zone {number1}" },
 		{ "{number1} more", "encore {number1}" },
+		{ "+{number1} MAX", "+{number1} MAX" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1}x XP", "{number1}x d'EXP" },
 		{ "+{number1} XP", "+{number1} d'EXP" },
@@ -595,6 +597,7 @@ return {
 		{ "⚔ New gear equipped! {text1}", "⚔ Nouvel équipement équipé ! {text1}" },
 		{ "{text1} declined your invite", "{text1} a refusé votre invitation" },
 		{ "👹 Boss #{number1}: {text2} appeared!", "👹 Boss n°{number1} : {text2} est apparu !" },
+		{ "Idle income  +{text1} G/sec", "Revenu passif  +{text1} G/s" },
 		{ "Time needed {text1} · 💰 {number2} G", "Temps requis {text1} · 💰 {number2} or" },
 		{ "🏔 Zone {number1} · {text2} cleared!", "🏔 Zone {number1} · {text2} terminée !" },
 		{ "{text1} upgrade success! +{number2}", "Amélioration de {text1} réussie ! +{number2}" },

@@ -481,8 +481,10 @@ local function buildInventoryTab(state)
 				if zone and player:GetAttribute("AugOnZ_" .. zone) == true and def.Aug and Config.AugInfo[def.Aug] then -- 켜 둔 세트 효과면 단계도 오른다 / 내려간다 (장비로 +3까지)
 					local gearBefore, gearAfter = math.clamp(before, 0, 3), math.clamp(after, 0, 3)
 					if gearBefore ~= gearAfter then
-						local base = player:GetAttribute("AugLvZ_" .. zone) or 0
-						text ..= string.format(" · %s Lv.%d→%d", Config.AugInfo[def.Aug].Name, base + gearBefore, base + gearAfter)
+						local cap = Config.Inventory.AugMaxLevel or 6
+						local raw = (player:GetAttribute("AugLvZ_" .. zone) or 0) + (player:GetAttribute("AugGearZ_" .. zone) or 0) -- (세트 부위 + "+1" 옵션, 합쳐 최대 6)
+						local before, after = math.min(cap, raw), math.clamp(raw + gearAfter - gearBefore, 0, cap)
+						if before ~= after then text ..= string.format(" · %s Lv.%d→%d", Config.AugInfo[def.Aug].Name, before, after) end
 					end
 				end
 				table.insert(changes, text)
@@ -500,7 +502,9 @@ local function buildInventoryTab(state)
 					local zone = attr and table.find(Config.Sets.ZoneAug, attr)
 					if info and zone and player:GetAttribute("AugOnZ_" .. zone) == true then
 						local now = player:GetAttribute(attr) or 0
-						table.insert(changes, string.format("%s %s Lv.%d→%d", info.Icon, info.Name, now, math.max(0, now + delta)))
+						local cap = Config.Inventory.AugMaxLevel or 6
+						local raw = (player:GetAttribute("AugLvZ_" .. zone) or 0) + (player:GetAttribute("AugGearZ_" .. zone) or 0) -- (6 을 넘는 몫은 쓰이지 않는다)
+						table.insert(changes, string.format("%s %s Lv.%d→%d", info.Icon, info.Name, now, math.clamp(raw + delta, 0, cap)))
 					end
 				end
 			end

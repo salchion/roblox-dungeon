@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "A big blast when it ends (attack x{number1})", "Uma grande explosão ao terminar (ataque x{number1})" },
 		{ "{number1}s invincible, but healing is halved", "{number1}s de invencibilidade, mas a cura é reduzida pela metade" },
 		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 Nova arma: Livro de Feitiços - pressione {number1}!" },
 		{ "Gacha_Pop{number1}  Gacha result: Legendary", "Gacha_Pop{number1} Resultado do Gacha: Lendário" },
@@ -461,6 +462,7 @@ return {
 		{ "Lord {number1}%", "Lorde {number1}%" },
 		{ "ZONE {number1}", "Zona {number1}" },
 		{ "{number1} more", "mais {number1}" },
+		{ "+{number1} MAX", "+{number1} MÁX" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1} key", "{number1} chave" },
 		{ "💰 {number1} G", "💰 {number1} G" },
@@ -552,6 +554,7 @@ return {
 		{ "⚔ New gear equipped! {text1}", "⚔ Novo equipamento equipado! {text1}" },
 		{ "{text1} declined your invite", "{text1} recusou seu convite" },
 		{ "👹 Boss #{number1}: {text2} appeared!", "👹 Chefe #{number1}: {text2} apareceu!" },
+		{ "Idle income  +{text1} G/sec", "Renda passiva  +{text1} G/s" },
 		{ "Time needed {text1} · 💰 {number2} G", "Tempo necessário {text1} · 💰 {number2} G" },
 		{ "🏔 Zone {number1} · {text2} cleared!", "🏔 Zona {number1} · {text2} concluída!" },
 		{ "{text1} upgrade success! +{number2}", "Melhoria de {text1} bem-sucedida! +{number2}" },

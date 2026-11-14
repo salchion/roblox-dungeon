@@ -1676,7 +1676,7 @@ Config.Inventory = {
 	-- 옵션이 뽑힐 비중: 전투와 거리가 먼 옵션(경험치 / 행운 / 이동 속도)은 덜 나온다 ("신화인데 꽝" 줄이기)
 	AffixWeight = { Xp = 0.5, Luck = 0.5, Speed = 0.6 },
 	-- 세트 효과 +1 옵션 (D2 의 "+스킬" 처럼): 전설 / 신화에 가끔 "🚀 미사일 +1 단계" 가 붙는다. 그 세트 효과를 켜 두면 단계가 오른다 (장비로 더하는 단계는 효과마다 최대 +3)
-	AugBoostChance = { [4] = 0.25, [5] = 0.5 }, AugBoostCap = 3,
+	AugBoostChance = { [4] = 0.25, [5] = 0.5 }, AugBoostCap = 3, AugMaxLevel = 6, -- (세트 효과 단계는 모두 합쳐 최대 6: "+1" 옵션은 세트 3부위 대신 채우는 수단 -> 남는 칸에 다른 세트를 낄 수 있다. 9단계까지 열면 처형 40% / 보스 +135% 처럼 너무 셌다)
 	Affixes = {
 		Health = { Name = "Max HP", Base = 30 },
 		Crit = { Name = "Crit Chance", Base = 0.012, Percent = true },

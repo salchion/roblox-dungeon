@@ -2772,5 +2772,10 @@
 "set effect (unlocked by this Lord): {text1}",
 "Odds include your current Luck",
 "Mythic: unique {number1}% (dungeon chests {number2}%+)",
-"+1 set-effect option: Legendary {number1}% / Mythic {number2}%"
+"+1 set-effect option: Legendary {number1}% / Mythic {number2}%",
+"Idle income  +{text1} G/sec",
+"Earned",
+"Empty gear slot:",
+"Choose a path for",
+"+{number1} MAX"
 ]

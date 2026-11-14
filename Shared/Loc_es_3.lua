@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Pierces up to {number1} more enemies in a line", "Atraviesa hasta {number1} enemigos más en línea" },
 		{ "Lasts +{number1}s · range +{number2}%: sweeps up swarms", "Dura +{number1} s · alcance +{number2} %: barre enjambres" },
 		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 Señor del Campo de Nieve (Zona {number1}) · Rec. ⚡{number2}" },
 		{ "💥Explosive Shot {number1} · ⚡Chain Lightning {number2}", "💥Disparo explosivo {number1} · ⚡Relámpago en cadena {number2}" },
@@ -477,6 +478,7 @@ return {
 		{ "Lord {number1}%", "Señor {number1}%" },
 		{ "ZONE {number1}", "Zona {number1}" },
 		{ "{number1} more", "{number1} más" },
+		{ "+{number1} MAX", "+{number1} MÁX" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1}x XP", "{number1}x EXP" },
 		{ "+{number1} XP", "+{number1} EXP" },
@@ -570,6 +572,7 @@ return {
 		{ "⚔ New gear equipped! {text1}", "⚔ ¡Nuevo equipo equipado! {text1}" },
 		{ "{text1} declined your invite", "{text1} rechazó tu invitación" },
 		{ "👹 Boss #{number1}: {text2} appeared!", "👹 ¡Jefe #{number1}: {text2} ha aparecido!" },
+		{ "Idle income  +{text1} G/sec", "Ingreso pasivo  +{text1} G/s" },
 		{ "Time needed {text1} · 💰 {number2} G", "Tiempo necesario {text1} · 💰 {number2} G" },
 		{ "🏔 Zone {number1} · {text2} cleared!", "🏔 ¡Zona {number1} · {text2} completada!" },
 		{ "{text1} upgrade success! +{number2}", "¡Mejora de {text1} exitosa! +{number2}" },

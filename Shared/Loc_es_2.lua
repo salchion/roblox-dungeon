@@ -809,6 +809,9 @@ return {
 		["not reached yet"] = "aún no alcanzado",
 		["Gear drop"] = "Botín de equipo",
 		["Odds include your current Luck"] = "Las probabilidades incluyen tu suerte actual",
+		["Earned"] = "Ganado",
+		["Empty gear slot:"] = "Ranura vacía:",
+		["Choose a path for"] = "Elige una rama para",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1022,6 +1025,5 @@ return {
 		{ "🎫 A {number1}x pull needs {number2} tickets (you have {number3})", "🎫 Una tirada x{number1} necesita {number2} boletos (tienes {number3})" },
 		{ "🗿 Colossus defeated! Gear + 🎫 +1 + {number1} G", "🗿 ¡Coloso derrotado! Equipo + 🎫 +1 + {number1} G" },
 		{ "🔒 Unlocks at level {number1}  (you are level {number2})", "🔒 Se desbloquea en el nivel {number1}  (eres nivel {number2})" },
-		{ "Pierces up to {number1} more enemies in a line", "Atraviesa hasta {number1} enemigos más en línea" },
 	},
 }

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Event_Elite  <font color='#{number1}aa{number2}c{number3}'>Elite squad appears</font>", "이벤트_엘리트 <font color='#{number1}aa{number2}c{number3}'>엘리트 스쿼드 등장</font>" },
 		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [희귀] 🌲 숲의 은 반지 자동 회수 (에센스 +{number1} {number2} G)" },
 		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!" },
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "{number1}분 동안의 유휴 수입을 즉시 획득하세요 · 하루 최대 {number2}분" },
@@ -612,6 +613,7 @@ return {
 		{ "Lord {number1}%", "군주 {number1}%" },
 		{ "ZONE {number1}", "구역 {number1}" },
 		{ "{number1} more", "{number1}" },
+		{ "+{number1} MAX", "+{number1} 최대" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1}x XP", "{number1}x 경험치" },
 		{ "+{number1} XP", "+{number1} 경험치" },
@@ -747,6 +749,7 @@ return {
 		{ "⚔ New gear equipped! {text1}", "⚔ 새 장비를 장착했어요! {text1}" },
 		{ "{text1} declined your invite", "{text1} 님이 초대를 거절했어요" },
 		{ "👹 Boss #{number1}: {text2} appeared!", "👹 보스 #{number1}: {text2} 등장!" },
+		{ "Idle income  +{text1} G/sec", "방치 수입  +{text1} G/초" },
 		{ "Time needed {text1} · 💰 {number2} G", "필요 시간 {text1} · 💰 {number2} G" },
 		{ "🏔 Zone {number1} · {text2} cleared!", "🏔 {number1}구역 · {text2} 클리어!" },
 		{ "{text1} upgrade success! +{number2}", "{text1} 강화 성공! +{number2}" },

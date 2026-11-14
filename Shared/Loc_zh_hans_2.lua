@@ -691,6 +691,9 @@ return {
 		["not reached yet"] = "尚未到达",
 		["Gear drop"] = "装备掉落",
 		["Odds include your current Luck"] = "概率已包含你当前的幸运",
+		["Earned"] = "已获得",
+		["Empty gear slot:"] = "空的装备栏:",
+		["Choose a path for"] = "为其选择路线:",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1090,7 +1093,5 @@ return {
 		{ "Defeat {number1} elite monsters", "击败 {number1} 只精英怪物" },
 		{ "Defeat {number1} field monsters", "击败 {number1} 只野外怪物" },
 		{ "Pierces up to {number1} enemies", "最多穿透 {number1} 个敌人" },
-		{ "Loading the land...  {number1}%", "正在加载大地...  {number1}%" },
-		{ "Defeat the Zone {number1} Lord", "击败区域{number1}之王" },
 	},
 }

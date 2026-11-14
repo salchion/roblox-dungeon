@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Loading the land...  {number1}%", "正在加载大地...  {number1}%" },
+		{ "Defeat the Zone {number1} Lord", "击败区域{number1}之王" },
 		{ "{number2} / {number3}   Reward: {number4} G + 🎫 {number5}", "{number2} / {number3} 奖励：{number4} 金币 + 🎫 {number5}" },
 		{ "{number1} Snowfield · {number2} Volcano", "{number1} 雪原 · {number2} 火山" },
 		{ "Railgun · Rusty Era +{number1}", "电磁炮 · 锈蚀时代 +{number1}" },
@@ -295,6 +297,7 @@ return {
 		{ "Lord {number1}%", "领主 {number1}%" },
 		{ "ZONE {number1}", "区域 {number1}" },
 		{ "{number1} more", "还差 {number1}" },
+		{ "+{number1} MAX", "+{number1} 满级" },
 		{ "{number1}K  {number2}%", "{number1}千 {number2}%" },
 		{ "{number1} DPS", "{number1} 每秒伤害量" },
 		{ "{number1}x XP", "{number1}倍经验值" },
@@ -389,6 +392,7 @@ return {
 		{ "⚔ New gear equipped! {text1}", "⚔ 已装备新装备!{text1}" },
 		{ "{text1} declined your invite", "{text1}拒绝了你的邀请" },
 		{ "👹 Boss #{number1}: {text2} appeared!", "👹 首领 #{number1}:{text2} 出现了!" },
+		{ "Idle income  +{text1} G/sec", "挂机收入  +{text1} G/秒" },
 		{ "Time needed {text1} · 💰 {number2} G", "所需时间 {text1} · 💰 {number2} 金币" },
 		{ "🏔 Zone {number1} · {text2} cleared!", "🏔 区域{number1} · {text2} 已通关!" },
 		{ "{text1} upgrade success! +{number2}", "{text1} 强化成功!+{number2}" },
