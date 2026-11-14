@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ [Common] Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] レザーアーマーを自動回収（エッセンス +{number1} {number2} G）" },
 		{ "Zone {number1} set effect · Trial Lv.3 — for this dungeon only", "ゾーン{number1}セット効果 · 試練 Lv.3 — このダンジョン限定" },
 		{ "<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "<font color='#{number4}ad{number5}ff'>スペル・トーム · 神話時代 +{number6}</font>" },
 		{ "Shot_Shotgun  <font color='#{number1}aa{number2}c{number3}'>Shotgun shot</font>", "ショットガン<font color='#{number1}aa{number2}c{number3}'>ショットガンショット</font>" },

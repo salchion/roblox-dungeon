@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} hours of idle gold ({number2} G) piled up!", "{number1} Stunden ungenutztes Gold ({number2} G) gesammelt!" },
+		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 Feld-Eingang Direkt dahinter! {number1}m" },
 		{ "Clear {number1} dungeon(s)  ✅ tap to claim!", "{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!" },
 		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 Boss-Truhe · {number1} Ausrüstungsteile</b>" },
 		{ "· {number1} point(s) left (1 every {number2} levels)", "· Noch {number1} Punkt(e) (1 alle {number2} Stufen)" },

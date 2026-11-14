@@ -760,3 +760,5 @@
 2791¦回倒すごとに1個¦Lord-Kills pro Item¦victoires sur le seigneur par objet¦derrotas del señor por objeto¦vitórias sobre o lorde por item¦次击败掉落1件¦번 잡을 때마다 1개
 2792¦1体あたりの確率¦Chance pro Kill¦chance par élimination¦probabilidad por baja¦chance por abate¦每次击杀概率¦처치당 확률
 2793¦組み合わせ効果¦Kombo-Effekte¦Effets combinés¦Efectos combinados¦Efeitos combinados¦组合效果¦함께 켜면 숨은 효과
+2794¦✨ 頭上にセット効果名: オン¦✨ Set-Effektname über dem Kopf: AN¦✨ Nom de l'effet de set au-dessus de la tête : OUI¦✨ Nombre del efecto de set sobre la cabeza: SÍ¦✨ Nome do efeito de set acima da cabeça: LIGADO¦✨ 头顶显示套装效果名: 开¦✨ 머리 위 세트 효과 이름: 켜짐
+2795¦✨ 頭上にセット効果名: オフ¦✨ Set-Effektname über dem Kopf: AUS¦✨ Nom de l'effet de set au-dessus de la tête : NON¦✨ Nombre del efecto de set sobre la cabeza: NO¦✨ Nome do efeito de set acima da cabeça: DESLIGADO¦✨ 头顶显示套装效果名: 关¦✨ 머리 위 세트 효과 이름: 꺼짐

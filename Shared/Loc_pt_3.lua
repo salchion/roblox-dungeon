@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 {number1} espíritos lutarão por você por {number2} s!" },
 		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1} s · {number2} adagas a cada {number3} s · dano x{number4} cada" },
 		{ "defeat {number1} monsters here, then the Lord", "derrote {number1} monstros aqui e depois o lorde" },
 		{ "Mythic: unique {number1}% (dungeon chests {number2}%+)", "Mítico: único {number1}% (baús de masmorra {number2}%+)" },

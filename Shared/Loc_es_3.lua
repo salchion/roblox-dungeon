@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 ¡Subiste de nivel! Nivel {number1} (HP máximo +{number2} Ataque +{number3}%)" },
+		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 Misión {number2}/{number3}</font>" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} mejoras: {number2} éxitos / {number3} fallos  (Oro -{number4})" },
 		{ "Reach level {number1} to buy points with gold.", "Alcanza el nivel {number1} para comprar puntos con oro." },
 		{ "🎫 A {number1}x pull needs {number2} tickets (you have {number3})", "🎫 Una tirada x{number1} necesita {number2} boletos (tienes {number3})" },

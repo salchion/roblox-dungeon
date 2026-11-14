@@ -594,22 +594,12 @@ end
 local function popHead(attr, info)
 	local entry = headMedals[attr]
 	if not entry or not headBoard.Enabled then return end
-	-- 발동한 효과의 메달만 잠깐 나타났다 사라진다 (여러 개가 함께 터지면 한 줄로 나란히: 겹치지 않는다)
-	entry.Holder.Visible = true
-	local token = {}
-	entry.Token = token
-	task.delay(0.9, function()
-		if entry.Token == token and entry.Holder.Parent then entry.Holder.Visible = false end
-	end)
-	entry.Scale.Scale = 1.5
-	TweenService:Create(entry.Scale, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
-	local halo = make("Frame", { Size = UDim2.new(1, 12, 1, 12), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundColor3 = info.Color, BackgroundTransparency = 0.45, ZIndex = 0 }, entry.Holder)
-	make("UICorner", { CornerRadius = UDim.new(1, 0) }, halo)
-	TweenService:Create(halo, TweenInfo.new(0.5), { Size = UDim2.new(1, 26, 1, 26), BackgroundTransparency = 1 }):Play()
-	task.delay(0.55, function() halo:Destroy() end)
+	-- (메달은 보이지 않는다: 지저분해서 뺐다. 머리 위에는 얇은 이름 띠만 잠깐 뜬다)
 	-- 이름 리본 (같은 때 하나만: 새로 터지면 바꿔 단다)
 	if headRibbon then headRibbon:Destroy() end
-	local ribbon = Kit.ribbon(headBoard, { Size = UDim2.new(0, 116, 0, 16), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 12), Color = info.Color, Text = info.Icon .. " " .. info.Name .. "!", TextSize = 11, ZIndex = 8 }) -- (얇은 띠)
+	local ribbon = Kit.ribbon(headBoard, { Size = UDim2.new(0, 116, 0, 16), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 1, -22), Color = info.Color, Text = info.Icon .. " " .. info.Name .. "!", TextSize = 11, ZIndex = 8 }) -- (얇은 띠)
+	local ribbonScale = make("UIScale", { Scale = 0.7 }, ribbon)
+	TweenService:Create(ribbonScale, TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
 	headRibbon = ribbon
 	task.delay(0.9, function()
 		if headRibbon == ribbon then headRibbon = nil end
@@ -850,6 +840,7 @@ end
 local function showProc(attr, position)
 	local info = Config.AugInfo[attr]
 	if not info then return end
+	if player:GetAttribute("SetPopHide") then return end -- 설정에서 "세트 효과 이름 표시" 를 끄면 아무 표시도 하지 않는다 (효과 자체는 그대로)
 	if worldFxAllowed(attr) then
 		if headBoard.Enabled and headMedals[attr] then
 			popHead(attr, info) -- 머리 위 메달이 보이면 그걸로 알려 준다 (맞은 자리 아이콘 / 화면 가운데 글자는 띄우지 않는다)

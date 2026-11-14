@@ -822,6 +822,8 @@ return {
 		["Lord kills per item"] = "derrotas del señor por objeto",
 		["chance per kill"] = "probabilidad por baja",
 		["Combo effects"] = "Efectos combinados",
+		["✨ Set effect name above head: ON"] = "✨ Nombre del efecto de set sobre la cabeza: SÍ",
+		["✨ Set effect name above head: OFF"] = "✨ Nombre del efecto de set sobre la cabeza: NO",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1029,7 +1031,5 @@ return {
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 ¡Oro insuficiente para el warp! (se necesitan {number1} G)" },
 		{ "{number1} in bag · tap one to compare and equip", "{number1} en la bolsa · toca para comparar y equipar" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 ¡Lanzamiento múltiple!\nUsa todos los boletos (máximo {number1})" },
-		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 ¡Subiste de nivel! Nivel {number1} (HP máximo +{number2} Ataque +{number3}%)" },
-		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 Misión {number2}/{number3}</font>" },
 	},
 }

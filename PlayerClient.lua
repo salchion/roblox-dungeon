@@ -3719,6 +3719,7 @@ settingSlider(380, "🔫 Gunshot Volume", function() return settings.ShotVolume 
 	settings.ShotVolume = value
 end)
 settingButton(428, function() return "📳 Screen Shake: " .. (settings.Shake and "ON" or "OFF") end, function() settings.Shake = not settings.Shake player:SetAttribute("SettingShake", settings.Shake) end) -- (IntensityClient 의 히트스톱도 같이 끈다)
+settingButton(468, function() return "✨ Set effect name above head: " .. (player:GetAttribute("SetPopHide") and "OFF" or "ON") end, function() player:SetAttribute("SetPopHide", not player:GetAttribute("SetPopHide")) end)
 settingButton(508, function() return "🖥 Low-spec mode (less lag): " .. (player:GetAttribute("LowSpec") and "ON" or "OFF") end, function() player:SetAttribute("LowSpec", not player:GetAttribute("LowSpec")) end)
 settingButton(548, function() return "👕 Hide gear look (weapon stays): " .. (player:GetAttribute("HideGear") and "ON" or "OFF") end, function() player:SetAttribute("HideGear", not player:GetAttribute("HideGear")) end)
 do
