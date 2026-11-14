@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Spell Tome  ·  keys {number1}-{number2} switch weapons", "Tomo de hechizos · las teclas {number1}-{number2} cambian de arma" },
+		{ "Defeat {number1} monsters (dungeons included)", "Derrota a {number1} monstruos (incluye mazmorras)" },
+		{ "🎯 Ready to challenge the Zone {number1} Lord!", "🎯 ¡Listo para desafiar al señor de la zona {number1}!" },
+		{ "Gold x{number1} · Tickets {number2} · Boss chest gear {number3}", "Oro x{number1} · Boletos {number2} · Equipo del cofre del jefe {number3}" },
+		{ "Bounces to {number1} nearby enemies (within {number2})", "Rebota en {number1} enemigos cercanos (a menos de {number2})" },
+		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 ¡{number1} espíritus lucharán por ti durante {number2} s!" },
 		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1} s · {number2} dagas cada {number3} s · daño x{number4} cada una" },
 		{ "Defeat {number1} bosses in one Boss Rush run", "Derrota a {number1} jefes en una partida de carrera de jefes" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "Monstruos encontrados: {number1} / {number2} (incluye señores de zona)" },

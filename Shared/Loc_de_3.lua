@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "📍 Field Entrance  Right ahead!  {number1}m", "📍 Feld-Eingang direkt vor Ihnen! {number1}m" },
+		{ "Points left {number1}  /  total {number2}  (Level {number3})", "Verbleibende Punkte {number1}  /  gesamt {number2}  (Stufe {number3})" },
+		{ "🔥 Better gear dropped! ({number1} slot(s))", "🔥 Bessere Ausrüstung gedroppt! ({number1} Platz/Plätze)" },
+		{ "Crit damage +{number1}%p per point  (max {number2})", "Krit-Schaden +{number1}%p pro Punkt  (max. {number2})" },
+		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 {number1} Belohnungen abgeholt! ({number2} neue Titel)" },
+		{ "Keeps {number1} more stacks even if broken", "Behält {number1} Stapel mehr, auch wenn die Serie abreißt" },
+		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 Herr des Abgrunds (Zone {number1}) · Empfehlung ⚡{number2}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 {number1} kostenlose Einträge heute · 🗝 {number2} Schlüssel!" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 Nächste Waffe freischalten: Schrotflinte (+{number1})" },
 		{ "⚠ Reach level {number1} to break through.", "⚠ Erreiche Stufe {number1}, um durchzubrechen." },

@@ -4,6 +4,15 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Free entries {number1} · Keys {number2}", "免费进入 {number1} · 钥匙 {number2}" },
+		{ "Loading the land...  {number1}", "正在加载地形...  {number1}" },
+		{ "Double Shot chance +{number1}%", "双发几率 +{number1}%" },
+		{ "🔁 Path changed! (-{number1} G)", "🔁 已更换路线！(-{number1}G)" },
+		{ "Double Shot chance -{number1}%", "双发概率 -{number1}%" },
+		{ "Luck (Drop Rarity) +{number1}%", "幸运(掉落稀有度) +{number1}%" },
+		{ "Luck (Drop Rarity) -{number1}%", "幸运(掉落稀有度) -{number1}%" },
+		{ "ZONE {number1}  ·  Meadow   ☠", "区域 {number1} · 草地 ☠" },
+		{ "Luck Booster ({number1} hour)", "好运加成（{number1}小时）" },
 		{ "Idle Booster ({number1} hour)", "空闲强化器（{number1}小时）" },
 		{ "Hit the dummy {number1} times", "击中假人{number1}次" },
 		{ "{number3} Wasteland · {number4} Desert", "{number3} 荒地 · {number4} 沙漠" },

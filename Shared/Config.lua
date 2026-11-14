@@ -476,7 +476,12 @@ end
 
 -- 세트 효과 시너지: 두 어그먼트를 모두 가지면 숨은 추가 효과가 켜진다 (획득하는 순간 알림 + 오라 폭발)
 Config.AugSynergies = {
-	Order = { "Inferno", "StormEye", "BladeMissile", "Reaper", "Rhythm", "Rampart", "Doomfall", "LuckySalvo", "Searing" },
+	Order = { "Inferno", "StormEye", "BladeMissile", "Reaper", "ThunderShells", "ChargedBlades", "ScorchShells", "Rhythm", "Rampart", "Doomfall", "LuckySalvo", "Searing", "Slipstream" },
+	-- (조합이 적던 효과를 채웠다: 충격탄 0개 / 칼날 1개 / 번개 1개 -> 모두 2개 이상. Slipstream 은 특성 "돌격"(대시) 과 묶여 무빙과 셋팅이 이어진다)
+	ThunderShells = { Need = { "AugPulse", "AugStorm" },  Icon = "⚡", Name = "Thunder Shells", Desc = "Every shock shot also calls down a lightning bolt on its target (50%)" },
+	ChargedBlades = { Need = { "AugOrbit", "AugStorm" },  Icon = "🔌", Name = "Charged Blades", Desc = "Blades often arc lightning to a nearby enemy when they slash (60%)" },
+	ScorchShells  = { Need = { "AugPulse", "AugFlame" },  Icon = "🔥", Name = "Scorch Shells", Desc = "Shock shots set their target on fire (2 Ignite stacks)" },
+	Slipstream    = { Need = { "AugPulse", "Tal_Rush" },  Icon = "💨", Name = "Slipstream", Desc = "Dashing (Q) instantly fires a shock shot volley (once every 1.5s). Needs the Rush talent" },
 	Doomfall     = { Need = { "AugMeteor", "GearSlaughter" }, Icon = "☄", Name = "Doomfall", Desc = "Each Slaughter Wave also drops 3 meteors around you (300%)" },
 	LuckySalvo   = { Need = { "AugMissile", "GearStar" },     Icon = "🍀", Name = "Lucky Salvo", Desc = "While Lucky Star is active, crit missiles fire +2 more" },
 	Searing      = { Need = { "AugFlame", "GearSunder" },     Icon = "🪓", Name = "Searing Sunder", Desc = "Hitting a boss or elite adds 1 more Ignite stack" },

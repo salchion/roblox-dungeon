@@ -1606,6 +1606,7 @@ local function hitMonster(run, player, entry, amount, quiet, tint, attr)
 	if attr then
 		amount *= Config.AugHitMult(player, attr, isBossData(entry.Data))
 		Meter.Add(player, attr, amount)
+		BL.Effect(player, attr, amount) -- (밸런스 로그: 효과별 피해)
 	end
 	Effects.DamageTint = tint -- 세트 효과 피해: 그 효과 색으로 피해 숫자를 띄운다 (아래 호출이 끝나면 지운다)
 	local previousSetHit = inSetHit
@@ -1722,7 +1723,7 @@ local function synergy(player, key, run) -- 조합 효과: 골드로 켠 세트 
 	local syn = Config.AugSynergies[key]
 	if not syn or not run then return false end
 	for _, need in ipairs(syn.Need) do
-		if string.sub(need, 1, 4) == "Gear" then
+		if string.sub(need, 1, 4) == "Gear" or string.sub(need, 1, 4) == "Tal_" then -- (유니크 능력 / 특성: 플레이어 속성으로 판정)
 			if (player:GetAttribute(need) or 0) <= 0 then return false end
 		elseif augLv(run, player, need) <= 0 then return false end
 	end
@@ -1997,6 +1998,7 @@ local function startAugLoop(run)
 	task.spawn(function()
 		local orbitCount, nextOrbitSend, nextTick, nextStorm, nextMeteor, nextPulse, nextPet = {}, {}, {}, {}, {}, {}, {}
 		local nextAura = 0
+		local nextSlip = {} -- 조합 "슬립스트림": 대시로 쏘는 충격탄의 다음 가능 시각
 		local capNext = {} -- 던전 갈래 최종 기술의 다음 발동 시각 [member] = { Boom, Chain, Barrage }
 		while not run.Destroyed and run.Phase ~= "Ended" do
 			local now = os.clock()
@@ -2068,6 +2070,11 @@ local function startAugLoop(run)
 									if run.Destroyed or run.Phase == "Ended" or not entry.Part.Parent then return end
 									launchMissile(run, member, start, entry, damage, "blade", Color3.fromRGB(110, 230, 255), 1.6, nil, "AugOrbit")
 									sfxAt(run, entry.Part.Position, "Aug_Blade", nil, 0.15)
+									if synergy(member, "ChargedBlades", run) and math.random() < 0.5 then -- 조합 "전류 칼날": 벤 자리에서 가까운 적에게 번개가 튄다
+										for _, neighbor in ipairs(nearestMonsters(run, entry.Part.Position, 30, 1, entry.Part)) do
+											strikeBolt(run, member, neighbor, damage * 0.6, "AugStorm")
+										end
+									end
 									if synergy(member, "BladeMissile", run) and math.random() < 0.3 then
 										for _, extra in ipairs(nearestMonsters(run, entry.Part.Position, 60, 1, entry.Part)) do
 											launchMissile(run, member, entry.Part.Position + Vector3.new(0, 3, 0), extra, damage * 0.8, "rocket", Color3.fromRGB(110, 230, 255), 1.5, nil, "AugOrbit")
@@ -2171,8 +2178,9 @@ local function startAugLoop(run)
 					end
 					-- 충격파 -> 충격파탄: 가까운 적들에게 폭발 투사체를 동시에 쏜다 (몸에서 터지는 게 아니라 날아가 맞은 자리에서 터진다)
 					local pulse = augLv(run, member, "AugPulse")
-					if root and pulse > 0 and now >= (nextPulse[member] or 0) then
-						nextPulse[member] = now + math.max(2.2, 4.8 - 0.8 * pulse)
+					local slip = root and pulse > 0 and now >= (nextSlip[member] or 0) and NearMiss.SinceDash(member) < 0.35 and synergy(member, "Slipstream", run) -- 조합 "슬립스트림": 대시하면 바로 한 번 더
+					if root and pulse > 0 and (slip or now >= (nextPulse[member] or 0)) then
+						if slip then nextSlip[member] = now + 1.5 else nextPulse[member] = now + math.max(2.2, 4.8 - 0.8 * pulse) end
 						local origin = root.Position + Vector3.new(0, 3, 0)
 						local blastDamage = augDamage(member) * (0.9 + 0.4 * pulse)
 						procAug(member, "AugPulse")
@@ -2189,6 +2197,8 @@ local function startAugLoop(run)
 								local volleyHits = {}
 								for _, entry in ipairs(nearestMonsters(run, liveRoot.Position, 75, targetCount)) do
 									launchBlast(run, member, liveOrigin, entry, blastDamage, blastRadius, Color3.fromRGB(110, 255, 190), "AugPulse", volleyHits)
+									if synergy(member, "ThunderShells", run) then strikeBolt(run, member, entry, blastDamage * 0.5, "AugStorm") end -- 조합 "천둥 포탄"
+									if synergy(member, "ScorchShells", run) then addIgnite(run, member, entry.Part, entry.Data, 2) end -- 조합 "불씨 포탄"
 								end
 							end)
 						end

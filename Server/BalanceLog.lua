@@ -19,7 +19,7 @@ local function fresh()
 	return {
 		Since = os.clock(), Dmg = {}, Hits = {}, Total = 0, CritDmg = 0, CritHits = 0, BasicHits = 0,
 		Kills = {}, GoldIn = 0, GoldOut = 0, Gold = {}, Xp = 0, Taken = 0, TakenHits = 0, Deaths = 0, Counts = {},
-		Seconds = { Field = 0, Dungeon = 0, Lobby = 0 }, HpSum = 0, StackSum = 0, UltSum = 0, Samples = 0,
+		Seconds = { Field = 0, Dungeon = 0, Lobby = 0 }, Effects = {}, HpSum = 0, StackSum = 0, UltSum = 0, Samples = 0,
 	}
 end
 
@@ -51,6 +51,13 @@ end
 
 function BL.DmgAs(player, source, amount)
 	addDmg(player, source, amount, false)
+end
+
+-- 세트 효과 / 유니크 / 펫 하나하나가 준 피해 (어떤 효과가 너무 세거나 약한지 보려고: "Effects" 줄)
+function BL.Effect(player, key, amount)
+	if not STUDIO or not player or not key or amount <= 0 then return end
+	local b = bucket(player)
+	b.Effects[key] = (b.Effects[key] or 0) + amount
 end
 
 function BL.Kill(player, kind)
@@ -153,6 +160,19 @@ local function report(player, b)
 			math.floor(b.Taken), b.TakenHits, b.Deaths, math.floor(b.HpSum / samples * 100), b.Counts.NearMiss or 0, b.StackSum / samples,
 			math.floor(b.UltSum / samples * 100), b.Counts.Ult or 0, (b.Counts.Heal or 0) + (b.Counts.Dash or 0)),
 	}
+	local effects = {}
+	for key, value in pairs(b.Effects) do table.insert(effects, { key, value }) end
+	table.sort(effects, function(x, y) return x[2] > y[2] end)
+	if #effects > 0 then
+		local list = {}
+		for i = 1, math.min(#effects, 10) do
+			local key, value = effects[i][1], effects[i][2]
+			local info = Config.AugInfo[key]
+			local name = info and info.Name or (string.sub(key, 1, 2) == "U_" and ("★" .. string.sub(key, 3)) or key)
+			table.insert(list, string.format("%s %d%% (lv%d)", name, pct(value, b.Total), info and (player:GetAttribute(key) or 0) or 0))
+		end
+		table.insert(lines, "  Effects | " .. table.concat(list, " · "))
+	end
 	print(table.concat(lines, "\n"))
 end
 

@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🛡 Knocked back! Power {number1} required (you: {number2})", "🛡 Repoussé ! Puissance {number1} requise (vous : {number2})" },
+		{ "💚 Emergency rescue! HP restored ({number1} left)", "💚 Sauvetage d'urgence ! PV restaurés ({number1} restant(s))" },
+		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}", "{number1} secondes ! Récompenses x{number2}, combo jusqu'à x{number3}" },
+		{ "🔒 Spend {number1} points in the rows above first", "🔒 Dépense d'abord {number1} points dans les rangées au-dessus" },
+		{ "Auto-equipped the best gear in {number1} slot(s)", "Meilleur équipement auto-équipé sur {number1} emplacement(s)" },
+		{ "Sniper Rifle  ·  keys {number1}-{number2} switch weapons", "Fusil de sniper · touches {number1}-{number2} pour changer d'arme" },
 		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>", "<font color='#{number1}fffb{number2}'><b>Attaque automatique</b>" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 Niveau supérieur ! Niv.{number1}  (PV max +{number2}, attaque +{number3} %)" },
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ Les améliorations sont gratuites pour l'instant ! ({number1} restantes)" },

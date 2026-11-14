@@ -312,6 +312,10 @@ function refresh()
 	-- 조합 효과: 이 효과와 함께 켜면(또는 유니크를 끼면) 숨은 효과가 켜진다. 켜진 것은 초록, 아직이면 무엇이 필요한지 (장비를 고르는 재미)
 	do
 		local function needName(need)
+			if string.sub(need, 1, 4) == "Tal_" then -- 특성 (예: "돌격"): 특성 칸 이름으로
+				local node = Config.Talents and Config.Talents[string.sub(need, 5)]
+				return "✨ " .. (node and node.Name or string.sub(need, 5)), (player:GetAttribute(need) or 0) > 0
+			end
 			if string.sub(need, 1, 4) == "Gear" then
 				local stat = string.sub(need, 5)
 				for _, u in pairs(Config.Uniques or {}) do

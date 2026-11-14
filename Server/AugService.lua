@@ -82,7 +82,7 @@ function Aug.Apply(player)
 		local syn = Config.AugSynergies[synKey]
 		local active = true
 		for _, need in ipairs(syn.Need) do
-			local value = levels[need] or (string.sub(need, 1, 4) == "Gear" and player:GetAttribute(need)) or 0 -- (유니크 능력은 장비가 정하는 속성)
+			local value = levels[need] or ((string.sub(need, 1, 4) == "Gear" or string.sub(need, 1, 4) == "Tal_") and player:GetAttribute(need)) or 0 -- (유니크 능력 / 특성은 플레이어 속성)
 			if (tonumber(value) or 0) <= 0 then active = false end
 		end
 		local before = player:GetAttribute("AugSyn_" .. synKey)
@@ -108,7 +108,7 @@ function Aug.Refresh(player)
 	if not watching[player] then
 		watching[player] = true
 		player:GetAttributeChangedSignal("AugSlotBonus"):Connect(function() Aug.Apply(player) end) -- 칸 상품을 샀을 때
-		for _, attr in ipairs({ "GearKillCdr", "GearShield", "GearSlaughter", "GearStar", "GearSunder" }) do -- 유니크를 끼고 벗으면 조합 효과도 다시 계산
+		for _, attr in ipairs({ "GearKillCdr", "GearShield", "GearSlaughter", "GearStar", "GearSunder", "Tal_Rush" }) do -- 유니크 / 특성을 바꾸면 조합 효과도 다시 계산
 			player:GetAttributeChangedSignal(attr):Connect(function() Aug.Apply(player) end)
 		end
 	end

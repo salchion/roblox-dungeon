@@ -710,3 +710,11 @@
 2742¦幸運 +{number1}%¦Glück +{number1}%¦Chance +{number1}%¦Suerte +{number1}%¦Sorte +{number1}%¦幸运 +{number1}%¦행운 +{number1}%
 2743¦幸運 -{number1}%¦Glück -{number1}%¦Chance -{number1}%¦Suerte -{number1}%¦Sorte -{number1}%¦幸运 -{number1}%¦행운 -{number1}%
 2744¦幸運 +{number1}¦Glück +{number1}¦Chance +{number1}¦Suerte +{number1}¦Sorte +{number1}¦幸运 +{number1}¦행운 +{number1}
+2745¦雷撃弾¦Donnergranaten¦Obus foudroyants¦Proyectiles de trueno¦Granadas trovejantes¦雷霆炮弹¦천둥 포탄
+2746¦衝撃弾の標的に雷も落ちる (50%)¦Jeder Schockschuss ruft auch einen Blitz auf sein Ziel herab (50%)¦Chaque tir de choc fait aussi tomber la foudre sur sa cible (50 %)¦Cada disparo de choque también hace caer un rayo sobre su objetivo (50%)¦Cada tiro de choque também chama um raio sobre o alvo (50%)¦每发冲击弹还会对目标降下雷电 (50%)¦충격탄이 맞힌 적에게 번개도 떨어져요 (50%)
+2747¦帯電ブレード¦Geladene Klingen¦Lames chargées¦Hojas cargadas¦Lâminas carregadas¦带电刀刃¦전류 칼날
+2748¦刃が斬るたび、近くの敵へ雷がよく飛ぶ (60%)¦Klingen springen beim Schlitzen oft mit einem Blitz auf einen nahen Gegner über (60%)¦Les lames envoient souvent un arc électrique vers un ennemi proche (60 %)¦Las hojas a menudo lanzan un arco eléctrico a un enemigo cercano (60%)¦As lâminas costumam lançar um arco elétrico num inimigo próximo (60%)¦刀刃斩击时常会把闪电弹向附近敌人 (60%)¦칼날이 벨 때 근처 적에게 번개가 자주 튀어요 (60%)
+2749¦焦熱弾¦Glutgranaten¦Obus ardents¦Proyectiles abrasadores¦Granadas abrasadoras¦灼烧炮弹¦불씨 포탄
+2750¦衝撃弾が標的を燃やす (点火2重)¦Schockschüsse setzen ihr Ziel in Brand (2 Entzündungs-Stapel)¦Les tirs de choc enflamment leur cible (2 charges de brûlure)¦Los disparos de choque prenden fuego al objetivo (2 cargas de ignición)¦Tiros de choque incendeiam o alvo (2 cargas de queima)¦冲击弹会点燃目标 (2层点燃)¦충격탄이 맞힌 적에게 불이 붙어요 (점화 2겹)
+2751¦スリップストリーム¦Windschatten¦Sillage¦Estela¦Vácuo¦尾流¦슬립스트림
+2752¦ダッシュ(Q)で衝撃弾を即発射 (1.5秒に1回)。特性「突撃」が必要¦Ein Sprint (Q) feuert sofort eine Schockschuss-Salve ab (alle 1,5 s). Braucht das Talent Ansturm¦Une ruée (Q) tire aussitôt une salve de tirs de choc (toutes les 1,5 s). Nécessite le talent Ruée¦Impulsarte (Q) dispara al instante una ráfaga de choque (cada 1,5 s). Requiere el talento Embestida¦Avançar (Q) dispara na hora uma rajada de choque (a cada 1,5s). Exige o talento Investida¦冲刺(Q)会立刻发射一轮冲击弹 (每1.5秒一次)。需要天赋「突进」¦대시(Q)하면 바로 충격탄을 한 번 더 쏴요 (1.5초에 한 번). 특성 "돌격"이 필요해요

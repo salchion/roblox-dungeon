@@ -2743,5 +2743,13 @@
 "Gold +{number1}",
 "Luck +{number1}%",
 "Luck -{number1}%",
-"Luck +{number1}"
+"Luck +{number1}",
+"Thunder Shells",
+"Every shock shot also calls down a lightning bolt on its target (50%)",
+"Charged Blades",
+"Blades often arc lightning to a nearby enemy when they slash (60%)",
+"Scorch Shells",
+"Shock shots set their target on fire (2 Ignite stacks)",
+"Slipstream",
+"Dashing (Q) instantly fires a shock shot volley (once every 1.5s). Needs the Rush talent"
 ]

@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "· {number1} point(s) left (1 every {number2} levels)", "· Restam {number1} ponto(s) (1 a cada {number2} níveis)" },
+		{ "👑 Lord of Desert (Zone {number1}) · Rec. ⚡{number2}", "👑 Senhor do Deserto (Zona {number1}) · Rec. ⚡{number2}" },
+		{ "🏜 Desert Temple Entrance · Rec. ⚡{number2}", "🏜 Entrada do Templo do Deserto · Rec. ⚡{number2}" },
+		{ "<font color='#ffe{number1}e'>⚡ {number2}</font> Lv.{number3}", "<font color='#ffe{number1}e'>⚡ {number2}</font> Nível {number3}" },
+		{ "Survive {number1} seconds in the Boss Rush", "Sobreviva por {number1} segundos no Ataque do Chefe" },
+		{ "👑 Lord of Meadow (Zone {number1}) · Rec. ⚡{number2}", "👑 Senhor dos Bosques (Zona {number1}) · Rec. ⚡{number2}" },
 		{ "Railgun  ·  keys {number1}-{number2} switch weapons", "Arma de trilhos · teclas {number1}-{number2} para trocar de arma" },
 		{ "📋 Daily Quests {number1}/{number2}  ✅ tap to claim!", "📋 Missões Diárias {number1}/{number2} ✅ toque para reivindicar!" },
 		{ "Weapon range +{number1}% per point  (max {number2})", "Alcance de arma +{number1}% por ponto (máximo {number2})" },

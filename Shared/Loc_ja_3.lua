@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Cleared up to depth {number1}  ·  You can enter up to depth {number2}", "深度{number1}までクリア済み  ·  深度{number2}まで入場できます" },
+		{ "Reach weapon upgrade level {number1} (about the 10th weapon)", "武器強化レベル{number1}に到達(約10番目の武器)" },
+		{ "Reach weapon upgrade level {number1} (about the 50th weapon)", "武器強化レベル{number1}に到達(約50番目の武器)" },
+		{ "Era {number1}  ·  Your weapon look and bullet color changed!", "時代 {number1}  ·  武器の見た目と弾の色が変わりました！" },
+		{ "🗿 Colossus defeated! Gear + 🎫 +{number1} + {number2} G (time bonus x{number3})", "🗿 コロッサスを倒した！装備 + 🎫 +{number1} + {number2} G(タイムボーナス x{number3})" },
 		{ "Depth {number1} sweep: gold, tickets and boss chest received", "深度{number1}のスイープ：ゴールド、チケット、ボス箱を獲得しました" },
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "レベルが足りません。（このダンジョンはLv.{number1}以上）" },
 		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 {number1}区域を初クリア！ゴールド+{number2} · チケット+{number3} · 鍵+{number4}" },

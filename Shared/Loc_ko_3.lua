@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "{number1}분 동안의 유휴 수입을 즉시 획득하세요 · 하루 최대 {number2}분" },
+		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISS {number1}초 지속 · 끊겨도 최소 {number2}단계 유지" },
+		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 고른 세트로 뽑을 골드가 부족해요! ({number1}G 필요)" },
+		{ "Sweep needs {number1} key(s). Defeat a field zone lord to get keys", "소탕에는 열쇠가 {number1}개 필요해요. 필드 구역 군주를 쓰러뜨려 열쇠를 얻으세요" },
+		{ "You can run {number1} effects at once. Turn another one off first", "효과는 한 번에 {number1}개까지 쓸 수 있어요. 먼저 다른 하나를 끄세요" },
 		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "가챠_팝{number1} <font color='#{number2}aa{number3}c{number4}'>가챠 결과: 에픽</font>" },
 		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "{number1}시간의 유휴 수입을 즉시 획득하세요 · 하루 최대 {number2}" },
 		{ "🔒 Zone {number1} · Darklands Sealed\nOpen the previous gate first", "🔒 구역 {number1} · 다크랜드 봉쇄됨\n먼저 이전 게이트를 여세요" },
