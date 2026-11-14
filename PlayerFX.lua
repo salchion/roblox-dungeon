@@ -500,18 +500,49 @@ Remotes.Loot.OnClientEvent:Connect(function(action, id, position, rarity, itemNa
 		local width = 0.5 + rarity * 0.35
 		if rarity >= 3 then SoundBank.Play(game:GetService("SoundService"), "Rare_Drop", { Pitch = 0.9 + 0.05 * rarity }) end -- 희귀 이상 장비
 
+		-- 빛기둥: 네모 기둥 대신 위로 갈수록 옅어지는 빛줄기(Beam) 두 겹 (넓은 색 빛 + 가는 흰 심) + 바닥 빛 웅덩이 + (에픽 이상) 위로 오르는 빛 알갱이
+		local height = rarity <= 1 and 14 or (rarity <= 3 and 34 or 50)
 		local beam = create("Part", {
-			Anchored = true, CanCollide = false, CanQuery = false, CanTouch = false,
-			Material = Enum.Material.Neon, Color = color, Transparency = rarity <= 1 and 0.7 or 0.4,
-			Size = Vector3.new(width, rarity <= 1 and 24 or 60, width), Position = position + Vector3.new(0, rarity <= 1 and 12 or 30, 0), -- 일반 등급은 짧고 옅은 빛줄기 (화면에 빛기둥이 쉴 새 없이 서지 않게)
+			Anchored = true, CanCollide = false, CanQuery = false, CanTouch = false, Transparency = 1,
+			Size = Vector3.new(1.6 + rarity * 0.3, 0.2, 1.6 + rarity * 0.3), Position = position + Vector3.new(0, 0.15, 0),
 		}, lootFolder)
+		local bottom = create("Attachment", { Position = Vector3.new(0, 0, 0) }, beam)
+		local top = create("Attachment", { Position = Vector3.new(0, height, 0) }, beam)
+		local glowWidth = 1.2 + rarity * 0.45
+		create("Beam", { Attachment0 = bottom, Attachment1 = top, Width0 = glowWidth, Width1 = glowWidth * 0.55, FaceCamera = true, LightEmission = 0.5, LightInfluence = 0,
+			Color = ColorSequence.new(color), Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, rarity <= 1 and 0.7 or 0.45), NumberSequenceKeypoint.new(1, 1) }) }, beam)
+		if rarity >= 2 then
+			local coreWidth = 0.25 + rarity * 0.07
+			create("Beam", { Attachment0 = bottom, Attachment1 = top, Width0 = coreWidth, Width1 = coreWidth * 0.4, FaceCamera = true, LightEmission = 0.7, LightInfluence = 0,
+				Color = ColorSequence.new(color:Lerp(Color3.new(1, 1, 1), 0.6)), Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.15), NumberSequenceKeypoint.new(0.8, 1), NumberSequenceKeypoint.new(1, 1) }) }, beam)
+			local pool = create("Part", { -- 바닥 빛 웅덩이 (옅은 원판)
+				Anchored = true, CanCollide = false, CanQuery = false, CanTouch = false, Shape = Enum.PartType.Cylinder, Material = Enum.Material.Neon, Color = color, Transparency = 0.7,
+				Size = Vector3.new(0.08, 2.6 + rarity * 0.5, 2.6 + rarity * 0.5), CFrame = CFrame.new(position + Vector3.new(0, 0.12, 0)) * CFrame.Angles(0, 0, math.rad(90)),
+			}, beam)
+			pool.Name = "Pool"
+		end
+		if rarity >= 3 then
+			create("ParticleEmitter", { -- 위로 천천히 오르는 둥근 빛 알갱이
+				Texture = "rbxasset://textures/particles/sparkles_main.dds", Color = ColorSequence.new(color:Lerp(Color3.new(1, 1, 1), 0.35)), LightEmission = 0.6,
+				Rate = 3 + rarity * 2, Lifetime = NumberRange.new(1.4, 2.4), Speed = NumberRange.new(3, 6), EmissionDirection = Enum.NormalId.Top, SpreadAngle = Vector2.new(8, 8),
+				Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5), NumberSequenceKeypoint.new(1, 0) }), Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) }),
+			}, beam)
+		end
 
+		-- 떠 있는 보석: 빛나는 구 + 유리 껍질 (예전: 빙글 도는 네모 상자)
 		local base = position + Vector3.new(0, 3, 0)
+		local gemSize = 1.0 + rarity * 0.15
 		local cube = create("Part", {
-			Anchored = true, CanCollide = false, CanQuery = false, CanTouch = false,
-			Material = Enum.Material.Neon, Color = color,
-			Size = Vector3.new(1.4 + rarity * 0.2, 1.4 + rarity * 0.2, 1.4 + rarity * 0.2), Position = base,
+			Anchored = true, CanCollide = false, CanQuery = false, CanTouch = false, Shape = Enum.PartType.Ball,
+			Material = Enum.Material.Neon, Color = color:Lerp(Color3.new(1, 1, 1), 0.25),
+			Size = Vector3.new(gemSize, gemSize, gemSize), Position = base,
 		}, lootFolder)
+		local shell = create("Part", {
+			Anchored = false, Massless = true, CanCollide = false, CanQuery = false, CanTouch = false, Shape = Enum.PartType.Ball,
+			Material = Enum.Material.Glass, Color = color, Transparency = 0.55,
+			Size = Vector3.new(gemSize * 1.7, gemSize * 1.7, gemSize * 1.7), CFrame = cube.CFrame,
+		}, cube)
+		create("WeldConstraint", { Part0 = cube, Part1 = shell }, shell)
 
 		-- 이름표: 일반 등급은 이름표를 달지 않는다 (몹을 잡을 때마다 글자가 쉴 새 없이 뜨던 것). 희귀 이상만 보이고, 폰에서는 더 작고 가까이서만 보인다
 		if rarity >= 2 then
@@ -540,7 +571,7 @@ end)
 RunService.RenderStepped:Connect(function(dt)
 	for _, drop in pairs(lootDrops) do
 		drop.Time += dt
-		drop.Cube.CFrame = CFrame.new(drop.Base + Vector3.new(0, math.sin(drop.Time * 3) * 0.5, 0)) * CFrame.Angles(drop.Time * 2, drop.Time * 3, 0)
+		drop.Cube.CFrame = CFrame.new(drop.Base + Vector3.new(0, math.sin(drop.Time * 3) * 0.5, 0)) -- (구라서 돌릴 필요 없이 위아래로만 둥실)
 	end
 end)
 

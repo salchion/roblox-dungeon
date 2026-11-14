@@ -853,7 +853,8 @@ end)
 -- 오프닝 연출: StreamingEnabled 가 켜져 있어서 캐릭터에서 먼 곳(필드 대부분)은 클라이언트에 없다.
 -- 첫 접속 때 한 번만 필드 곳곳을 미리 불러 달라는 요청을 받아 RequestStreamAroundAsync 로 불러 주고, 끝나면 Ready 를 보낸다.
 local introStreamed = setmetatable({}, { __mode = "k" })
-local introFocus = setmetatable({}, { __mode = "k" }) -- [player] = 오프닝 카메라를 따라다니는 투명한 점 (Player.ReplicationFocus)
+local introFocus = setmetatable({}, { __mode = "k" })
+local introKeep = setmetatable({}, { __mode = "k" }) -- [player] = 마을 주변을 마지막으로 다시 요청한 시각 -- [player] = 오프닝 카메라를 따라다니는 투명한 점 (Player.ReplicationFocus)
 local function endIntroFocus(player)
 	local part = introFocus[player]
 	introFocus[player] = nil
@@ -884,6 +885,14 @@ Remotes.Intro.OnServerEvent:Connect(function(player, action, x)
 			task.delay(45, function() if introFocus[player] == part then endIntroFocus(player) end end) -- 안전장치: 오래 남지 않는다
 		end
 		part.Position = Vector3.new(x, 60, 0)
+		-- 기준점이 카메라를 따라가는 동안 내 캐릭터(마을) 주변도 1초마다 다시 붙잡아 둔다
+		--   (로그: 오프닝 끝 무렵 마을 주변이 빠져나가 "Gameplay Paused" 2.2초. 이미 받아 둔 곳이면 요청은 가볍다)
+		local now = os.clock()
+		if now - (introKeep[player] or 0) >= 1 then
+			introKeep[player] = now
+			local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+			if root then task.spawn(function() pcall(function() player:RequestStreamAroundAsync(root.Position, 2) end) end) end
+		end
 		return
 	elseif action == "End" then
 		endIntroFocus(player)
