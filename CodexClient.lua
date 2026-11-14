@@ -1,5 +1,5 @@
 -- CodexClient (StarterPlayer > StarterPlayerScripts 안의 LocalScript, 이름: CodexClient)
--- 📖 도감: 오른쪽 가운데 버튼 / J 키로 연다. 탭 둘: 몬스터(구역별, 처음 잡기 전엔 ???) / 세트 장비(효과를 미리 볼 수 있다)
+-- 📖 도감: 오른쪽 가운데 버튼 / J 키로 연다. 첫 탭 = 구역 안내(몬스터 / 군주 / 드롭 확률 / 세트), 그다음 몬스터(처음 잡기 전엔 ???) / 세트 / 무기 / 유니크 / 장비
 -- 서버 기록은 MetaService (Remotes.Meta "Codex") 에서 받는다.
 
 local Players = game:GetService("Players")
@@ -11,6 +11,7 @@ local playerGui = player:WaitForChild("PlayerGui")
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Kit = require(ReplicatedStorage:WaitForChild("ClientKit"))
+local Odds = require(ReplicatedStorage:WaitForChild("Odds"))
 local create, rounded, makeLabel, makeButton = Kit.create, Kit.rounded, Kit.makeLabel, Kit.makeButton
 
 local gui = create("ScreenGui", { Name = "CodexGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 6 }, playerGui)
@@ -47,7 +48,7 @@ local list = create("ScrollingFrame", {
 create("UIListLayout", { Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder }, list)
 
 local data = { Kills = {}, Boss = {}, Sets = {}, Items = {} }
-local tab = "Monster"
+local tab = "Guide"
 local tabButtons = {}
 local order = 0
 local function nextOrder() order += 1 return order end
@@ -71,7 +72,57 @@ local function rebuild()
 		button.BackgroundColor3 = key == tab and Color3.fromRGB(62, 96, 196) or Color3.fromRGB(40, 44, 68)
 	end
 	local F = Config.Field
-	if tab == "Monster" then
+	if tab == "Guide" then
+		-- 구역 안내: 모를 때 펴 보는 가이드. 구역마다 나오는 몬스터 / 군주 / 관문 / 장비 드롭 확률(지금 내 행운 반영) / 그 구역 세트와 세트 효과
+		local luck = Odds.LuckOf(player)
+		local myZone = player:GetAttribute("MaxZone") or 1
+		local zone = 1 -- (아래 반복에서 구역마다 바꾼다: pctLine 이 읽는다)
+		local function pctLine(kind)
+			local parts = {}
+			for _, entry in ipairs(Odds.Field(zone, kind, luck)) do
+				if entry.Pct > 0 then table.insert(parts, string.format("<font color='#%s'>%s %s</font>", hex(entry.Color), entry.Name, Odds.Format(entry.Pct))) end
+			end
+			return table.concat(parts, " · ")
+		end
+		for z = 1, F.ZoneCount do
+			zone = z
+			local locked = z > myZone
+			local lines = {}
+			table.insert(lines, string.format("<font size='13'><b>Zone %d · %s</b></font>   <font color='#ffd966'>⚡ Recommended %s</font>   <font color='#ff8a8a'>%s</font>%s",
+				z, F.ZoneNames[z], tostring(F.RecommendPower[z] or 0), string.rep("☠", z), locked and "   <font color='#9aa0b8'>🔒 not reached yet</font>" or ""))
+			local names = {}
+			local keys = {}
+			for key in pairs(F.ZonePools[z] or {}) do table.insert(keys, key) end
+			table.sort(keys)
+			for _, key in ipairs(keys) do
+				local info = Config.Codex.Monsters[key]
+				if info then table.insert(names, info.Icon .. " " .. info.Name) end
+			end
+			table.insert(lines, "<b>👾 Monsters</b>  " .. table.concat(names, " · "))
+			table.insert(lines, string.format("<b>👑 Lord</b>  %s", Config.Codex.Bosses[z] or "Lord"))
+			local need = F.Gate and F.Gate.KillsNeeded and F.Gate.KillsNeeded[z]
+			if need then table.insert(lines, string.format("<b>🚪 Next zone</b>  defeat %d monsters here, then the Lord", need)) end
+			local L = Config.Loot
+			table.insert(lines, string.format("<b>🎁 Gear drop</b>  monster %d%% · elite %d%% · Lord %d%%", math.floor(L.DropChance.Normal * 100 + 0.5), math.floor(L.DropChance.Elite * 100 + 0.5), math.floor(L.DropChance.Boss * 100 + 0.5)))
+			table.insert(lines, "   Monster  " .. pctLine("Normal"))
+			table.insert(lines, "   Lord  " .. pctLine("Boss"))
+			local setKey = Config.Sets.ZoneKeys and Config.Sets.ZoneKeys[z]
+			local setDef = setKey and Config.Sets[setKey]
+			if setDef then
+				local parts = {}
+				for _, b in ipairs(setDef.Bonuses[3] or {}) do table.insert(parts, Config.FormatBonus(b.Stat, b.Value)) end
+				table.insert(lines, string.format("<b><font color='#%s'>%s %s Set</font></b>  %d%% of gear here · 3 pc: %s", hex(setDef.Color), setDef.Icon or "★", setDef.Name, math.floor((Config.Sets.ZoneSetChance or 0) * 100 + 0.5), table.concat(parts, " · ")))
+				local aug = setDef.Aug and Config.AugInfo[setDef.Aug]
+				if aug then table.insert(lines, string.format("<b><font color='#%s'>%s %s</font></b>  set effect (unlocked by this Lord): %s", hex(aug.Color), aug.Icon, aug.Name, aug.Desc)) end
+			end
+			local r = row(18 + #lines * 17, locked and Color3.fromRGB(26, 28, 42) or Color3.fromRGB(30, 34, 54))
+			makeLabel({ Size = UDim2.new(1, -20, 1, -8), Position = UDim2.new(0, 10, 0, 4), Text = table.concat(lines, "\n"), RichText = true, TextSize = 10, TextWrapped = true,
+				TextColor3 = Color3.fromRGB(210, 214, 236), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top }, r)
+		end
+		local AB = Config.Inventory.AugBoostChance or {}
+		summary.Text = string.format("Odds include your current Luck · Mythic: unique %d%% (dungeon chests 30%%+) · +1 set-effect option: Legendary %d%% / Mythic %d%%",
+			math.floor((Config.Uniques.FieldChance or 0) * 100 + 0.5), math.floor((AB[4] or 0) * 100 + 0.5), math.floor((AB[5] or 0) * 100 + 0.5))
+	elseif tab == "Monster" then
 		local total, found = 0, 0
 		local seen = {}
 		for zone = 1, F.ZoneCount do
@@ -198,9 +249,9 @@ local function rebuild()
 	end
 end
 
-for index, def in ipairs({ { "Monster", "👾 Monsters" }, { "Set", "🛡 Sets" }, { "Weapon", "🔫 Weapons" }, { "Unique", "✨ Uniques" }, { "Gear", "🎽 Gear" } }) do
-	local button = makeButton({
-		Size = UDim2.new(0, 90, 0, 30), Position = UDim2.new(0, 16 + (index - 1) * 96, 0, 64), Text = def[2], TextSize = 11,
+for index, def in ipairs({ { "Guide", "🗺 Guide" }, { "Monster", "👾 Monsters" }, { "Set", "🛡 Sets" }, { "Weapon", "🔫 Weapons" }, { "Unique", "✨ Uniques" }, { "Gear", "🎽 Gear" } }) do
+	local button = makeButton({ -- (탭 6개: 폭을 줄였다)
+		Size = UDim2.new(0, 74, 0, 30), Position = UDim2.new(0, 14 + (index - 1) * 79, 0, 64), Text = def[2], TextSize = 10,
 	}, panel, function() tab = def[1] rebuild() end)
 	rounded(button, 8)
 	tabButtons[def[1]] = button

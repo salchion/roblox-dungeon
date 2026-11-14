@@ -934,6 +934,10 @@ return {
 		["(bonus ON)"] = "(ボーナス発動)",
 		["(bonus OFF)"] = "(ボーナス解除)",
 		["(when that set effect is on)"] = "(そのセット効果がオンの時)",
+		["Guide"] = "ガイド",
+		["not reached yet"] = "未到達",
+		["Gear drop"] = "装備ドロップ",
+		["Odds include your current Luck"] = "確率は現在の運を反映",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1063,6 +1067,5 @@ return {
 		{ "Shot_Shotgun  <font color='#{number1}aa{number2}c{number3}'>Shotgun shot</font>", "ショットガン<font color='#{number1}aa{number2}c{number3}'>ショットガンショット</font>" },
 		{ "🔒 Zone {number1} · Desert Sealed\nOpen the previous gate first", "🔒 ゾーン {number1} · 砂漠が封鎖されています\nまず前のゲートを開けてください" },
 		{ "One less dagger, but each hits +{number1}% harder: for bosses", "短剣が1本減る代わりに1本あたり+{number1}%：ボス向け" },
-		{ "Reduces training / breakthrough wait time by {number1} hours", "トレーニング/ブレークスルーの待機時間を{number1}時間短縮する" },
 	},
 }

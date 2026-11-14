@@ -2757,5 +2757,20 @@
 "(bonus OFF)",
 "{text1} Lv.{number2}→{number3}",
 "{text1} +1 Lv",
-"(when that set effect is on)"
+"(when that set effect is on)",
+"Guide",
+"Recommended {number1}",
+"not reached yet",
+"defeat {number1} monsters here, then the Lord",
+"Gear drop",
+"monster {number1}%",
+"elite {number1}%",
+"Lord {number1}%",
+"{text1} {number2}%",
+"{number1}% of gear here",
+"{number1} pc: {text2}",
+"set effect (unlocked by this Lord): {text1}",
+"Odds include your current Luck",
+"Mythic: unique {number1}% (dungeon chests {number2}%+)",
+"+1 set-effect option: Legendary {number1}% / Mythic {number2}%"
 ]

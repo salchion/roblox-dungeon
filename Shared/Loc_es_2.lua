@@ -805,6 +805,10 @@ return {
 		["(bonus ON)"] = "(bono ACTIVO)",
 		["(bonus OFF)"] = "(bono INACTIVO)",
 		["(when that set effect is on)"] = "(cuando ese efecto de conjunto está activo)",
+		["Guide"] = "Guía",
+		["not reached yet"] = "aún no alcanzado",
+		["Gear drop"] = "Botín de equipo",
+		["Odds include your current Luck"] = "Las probabilidades incluyen tu suerte actual",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -975,6 +979,7 @@ return {
 		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!" },
 		{ "every {number1} shots a blade bounces across {number2} enemies", "cada {number1} disparos una cuchilla rebota entre {number2} enemigos" },
 		{ "💰 Golden Goblin defeated! +{number1} G, 3 loot drops!", "💰 ¡Goblin dorado derrotado! +{number1} G, ¡3 botines soltados!" },
+		{ "+1 set-effect option: Legendary {number1}% / Mythic {number2}%", "Opción efecto de conjunto +1: Legendario {number1}% / Mítico {number2}%" },
 		{ "Enemies swarm in more often\nGold +{number1}% instead", "Los enemigos atacan con más frecuencia\nOro +{number1}% en su lugar" },
 		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 Se limpió automáticamente {number1} equipo más débil (Esencia +{number2}, {number3} G)" },
 		{ "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped", "🎯 ¡Recompensa cumplida! +{number1} G · 🎫 +{number2} · equipo soltado" },
@@ -1018,8 +1023,5 @@ return {
 		{ "🗿 Colossus defeated! Gear + 🎫 +1 + {number1} G", "🗿 ¡Coloso derrotado! Equipo + 🎫 +1 + {number1} G" },
 		{ "🔒 Unlocks at level {number1}  (you are level {number2})", "🔒 Se desbloquea en el nivel {number1}  (eres nivel {number2})" },
 		{ "Pierces up to {number1} more enemies in a line", "Atraviesa hasta {number1} enemigos más en línea" },
-		{ "Lasts +{number1}s · range +{number2}%: sweeps up swarms", "Dura +{number1} s · alcance +{number2} %: barre enjambres" },
-		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 Señor del Campo de Nieve (Zona {number1}) · Rec. ⚡{number2}" },
-		{ "💥Explosive Shot {number1} · ⚡Chain Lightning {number2}", "💥Disparo explosivo {number1} · ⚡Relámpago en cadena {number2}" },
 	},
 }

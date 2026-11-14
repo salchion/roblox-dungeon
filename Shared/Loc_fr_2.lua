@@ -813,6 +813,9 @@ return {
 		["(bonus ON)"] = "(bonus ACTIF)",
 		["(bonus OFF)"] = "(bonus INACTIF)",
 		["(when that set effect is on)"] = "(quand cet effet d'ensemble est actif)",
+		["not reached yet"] = "pas encore atteint",
+		["Gear drop"] = "Butin d'équipement",
+		["Odds include your current Luck"] = "Les chances incluent ta chance actuelle",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -985,6 +988,7 @@ return {
 		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "Réussissez {number2} améliorations ✅, appuyez pour réclamer !" },
 		{ "every {number1} shots a blade bounces across {number2} enemies", "tous les {number1} tirs, une lame rebondit sur {number2} ennemis" },
 		{ "💰 Golden Goblin defeated! +{number1} G, 3 loot drops!", "💰 Gobelin doré vaincu ! +{number1} or, 3 butins lâchés !" },
+		{ "+1 set-effect option: Legendary {number1}% / Mythic {number2}%", "Option effet d'ensemble +1 : Légendaire {number1} % / Mythique {number2} %" },
 		{ "Enemies swarm in more often\nGold +{number1}% instead", "Les ennemis apparaissent plus fréquemment\nOr +{number1}% à la place" },
 		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 {number1} équipement(s) plus faible(s) nettoyé(s) automatiquement (Essence +{number2}, {number3} or)" },
 		{ "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped", "🎯 Prime remportée ! +{number1} G · 🎫 +{number2} · équipement lâché" },
@@ -1003,7 +1007,5 @@ return {
 		{ "🔒 Spend {number1} points higher up this path first", "🔒 Dépense d'abord {number1} points plus haut sur cette voie" },
 		{ "Auto-equipped the best gear in {number1} slot(s)!", "Meilleur équipement équipé automatiquement dans {number1} emplacement(s) !" },
 		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• Environ {number1} tirs/s · Puissance de feu {number2} · Portée {number3}" },
-		{ "Damage +{number1}% on a single target: for bosses", "Dégâts +{number1} % sur une seule cible : pour les boss" },
-		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}!", "{number1} secondes ! Récompenses x{number2}, combo jusqu'à x{number3} !" },
 	},
 }

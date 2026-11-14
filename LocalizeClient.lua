@@ -98,14 +98,12 @@ local function lookupDict(piece)
 	-- 앞 / 뒤의 이모지 / 공백 / 기호는 그대로 두고 가운데 글자만 찾는다: "⚡ Lightning Strike" -> "⚡ " + 번역
 	local head, core, tail = string.match(piece, "^([^%w]*)(.-)([^%w]*)$")
 	if core and core ~= piece and string.find(core, "%a%a%a") then
-		local inner = lookupCore(core)
+		-- 끝의 기호까지 번역표 문장에 들어 있는 경우를 먼저: "🌟 Guaranteed Rare!" / "... (more often)" -> 기호를 붙인 채로 찾는다
+		local punct = string.match(tail, "^[!%?%.:%)%%]+")
+		local inner = punct and lookupCore(core .. punct)
+		if inner then return head .. inner .. string.sub(tail, #punct + 1) end
+		inner = lookupCore(core)
 		if inner then return head .. inner .. tail end
-		-- 끝의 느낌표 / 물음표 / 마침표까지 번역표 문장에 들어 있는 경우: "🌟 Guaranteed Rare!" -> "Guaranteed Rare!"
-		local punct = string.match(tail, "^[!%?%.:]")
-		if punct then
-			inner = lookupCore(core .. punct)
-			if inner then return head .. inner .. string.sub(tail, 2) end
-		end
 		-- 앞의 기호 묶음에 "[" 가 끼어 있으면 그 "[" 부터 다시: "🎒 [Epic] 🌾 Meadow Steel Armor" -> "[Epic] ..." 틀로 찾는다
 		local cut = string.find(head, "%[[^%[]*$")
 		if cut then

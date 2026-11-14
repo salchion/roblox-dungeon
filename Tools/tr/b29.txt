@@ -724,3 +724,18 @@
 2756¦{text1} Lv.{number2}→{number3}¦{text1} Lv.{number2}→{number3}¦{text1} Nv.{number2}→{number3}¦{text1} Nv.{number2}→{number3}¦{text1} Nv.{number2}→{number3}¦{text1} Lv.{number2}→{number3}¦{text1} Lv.{number2}→{number3}
 2757¦{text1} +1 Lv¦{text1} +1 St.¦{text1} +1 Nv¦{text1} +1 Nv¦{text1} +1 Nv¦{text1} +1 级¦{text1} +1 단계
 2758¦(そのセット効果がオンの時)¦(wenn dieser Set-Effekt aktiv ist)¦(quand cet effet d'ensemble est actif)¦(cuando ese efecto de conjunto está activo)¦(quando esse efeito de conjunto está ativo)¦(该套装效果开启时)¦(그 세트 효과를 켜 두었을 때)
+2759¦ガイド¦Leitfaden¦Guide¦Guía¦Guia¦指南¦안내
+2760¦推奨 {number1}¦Empfohlen {number1}¦Recommandé {number1}¦Recomendado {number1}¦Recomendado {number1}¦推荐 {number1}¦권장 {number1}
+2761¦未到達¦noch nicht erreicht¦pas encore atteint¦aún no alcanzado¦ainda não alcançado¦尚未到达¦아직 못 감
+2762¦ここで{number1}体倒してから領主へ¦hier {number1} Monster besiegen, dann den Fürsten¦vaincs {number1} monstres ici, puis le seigneur¦derrota {number1} monstruos aquí y luego al señor¦derrote {number1} monstros aqui e depois o lorde¦在这里击败{number1}只怪物，然后挑战领主¦여기서 몬스터 {number1}마리를 잡고 군주를 쓰러뜨리기
+2763¦装備ドロップ¦Ausrüstungsdrop¦Butin d'équipement¦Botín de equipo¦Drop de equipamento¦装备掉落¦장비 드롭
+2764¦モンスター {number1}%¦Monster {number1}%¦monstre {number1} %¦monstruo {number1}%¦monstro {number1}%¦怪物 {number1}%¦몬스터 {number1}%
+2765¦エリート {number1}%¦Elite {number1}%¦élite {number1} %¦élite {number1}%¦elite {number1}%¦精英 {number1}%¦엘리트 {number1}%
+2766¦領主 {number1}%¦Fürst {number1}%¦Seigneur {number1} %¦Señor {number1}%¦Lorde {number1}%¦领主 {number1}%¦군주 {number1}%
+2767¦{text1} {number2}%¦{text1} {number2}%¦{text1} {number2} %¦{text1} {number2}%¦{text1} {number2}%¦{text1} {number2}%¦{text1} {number2}%
+2768¦ここの装備の{number1}%¦{number1}% der Ausrüstung hier¦{number1} % de l'équipement ici¦{number1}% del equipo aquí¦{number1}% do equipamento aqui¦此处装备的{number1}%¦여기 장비의 {number1}%
+2769¦{number1}部位: {text2}¦{number1} Teile: {text2}¦{number1} pièces : {text2}¦{number1} piezas: {text2}¦{number1} peças: {text2}¦{number1}件: {text2}¦{number1}부위: {text2}
+2770¦セット効果 (この領主で解放): {text1}¦Set-Effekt (durch diesen Fürsten freigeschaltet): {text1}¦effet d'ensemble (débloqué par ce seigneur) : {text1}¦efecto de conjunto (lo desbloquea este señor): {text1}¦efeito de conjunto (liberado por este lorde): {text1}¦套装效果（击败此领主解锁）: {text1}¦세트 효과 (이 군주를 잡으면 열림): {text1}
+2771¦確率は現在の運を反映¦Chancen enthalten dein aktuelles Glück¦Les chances incluent ta chance actuelle¦Las probabilidades incluyen tu suerte actual¦As chances incluem sua sorte atual¦概率已包含你当前的幸运¦확률은 지금 내 행운이 반영된 값
+2772¦神話: ユニーク{number1}% (ダンジョン宝箱{number2}%以上)¦Mythisch: Einzigartig {number1}% (Dungeontruhen {number2}%+)¦Mythique : unique {number1} % (coffres de donjon {number2} %+)¦Mítico: único {number1}% (cofres de mazmorra {number2}%+)¦Mítico: único {number1}% (baús de masmorra {number2}%+)¦神话: 独特{number1}% (地牢宝箱{number2}%以上)¦신화: 유니크 {number1}% (던전 상자는 {number2}% 이상)
+2773¦セット効果+1オプション: 伝説{number1}% / 神話{number2}%¦+1-Set-Effekt-Option: Legendär {number1}% / Mythisch {number2}%¦Option effet d'ensemble +1 : Légendaire {number1} % / Mythique {number2} %¦Opción efecto de conjunto +1: Legendario {number1}% / Mítico {number2}%¦Opção efeito de conjunto +1: Lendário {number1}% / Mítico {number2}%¦套装效果+1选项: 传说{number1}% / 神话{number2}%¦세트 효과 +1 옵션: 전설 {number1}% / 신화 {number2}%
