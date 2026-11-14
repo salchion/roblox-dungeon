@@ -820,6 +820,7 @@ return {
 		["Not enough"] = "Insuficiente",
 		["Fuse"] = "Fundir",
 		["⚡ Strongest (sets counted)"] = "⚡ Mais forte (com sets)",
+		["Strongest (sets counted)"] = "Mais forte (com sets)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1030,6 +1031,5 @@ return {
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} itens desmontados automaticamente (Essência +{number2}, {number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 Ouro insuficiente para o warp! ({number1} G necessário)" },
 		{ "{number1} in bag · tap one to compare and equip", "{number1} na bolsa · toque para comparar e equipar" },
-		{ "Unlocks when you defeat the Zone {number1} lord", "Desbloqueia ao derrotar o lorde da zona {number1}" },
 	},
 }

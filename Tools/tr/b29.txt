@@ -801,3 +801,4 @@
 2832¦不足¦Zu wenig¦Pas assez¦Insuficiente¦Insuficiente¦不足¦부족
 2833¦合成¦Verschmelzen¦Fusionner¦Fusionar¦Fundir¦合成¦합성
 2834¦⚡ 最強 (セット込み)¦⚡ Am stärksten (inkl. Sets)¦⚡ Le plus fort (sets compris)¦⚡ Más fuerte (con sets)¦⚡ Mais forte (com sets)¦⚡ 最强（含套装）¦⚡ 최강 (세트 포함)
+2835¦最強 (セット込み)¦Am stärksten (inkl. Sets)¦Le plus fort (sets compris)¦Más fuerte (con sets)¦Mais forte (com sets)¦最强（含套装）¦최강 (세트 포함)

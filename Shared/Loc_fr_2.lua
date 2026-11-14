@@ -856,6 +856,7 @@ return {
 		["Not enough"] = "Pas assez",
 		["Fuse"] = "Fusionner",
 		["⚡ Strongest (sets counted)"] = "⚡ Le plus fort (sets compris)",
+		["Strongest (sets counted)"] = "Le plus fort (sets compris)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1025,6 +1026,5 @@ return {
 		{ "👑 Field Boss defeated! Tickets +{number1} loot dropped", "👑 Boss de champ vaincu ! +{number1} tickets de butin récupérés" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3}", "🔒 La porte est fermée ! Battez les monstres de la zone {number1} : {number2}/{number3}" },
 		{ "▲ +{number1}% better than your current gear! (I → Bag)", "▲ +{number1}% mieux que votre équipement ! (I → Sac)" },
-		{ "Monster HP x{number1} · ATK x{number2}   |   Reward x{number3}   (Lv.{number4}~)", "PV du monstre x{number1} · ATQ x{number2}   |   Récompense x{number3}   (Niv.{number4}~)" },
 	},
 }

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👑 Kill goal reached! Defeat the Lord of Zone {number1} to open the gate!", "👑 처치 목표 달성! {number1}구역 군주를 쓰러뜨려 문을 여세요!" },
 		{ "🏰 {number1} free dungeon entries left! Earn gear and tickets in dungeons", "🏰 무료 던전 입장이 {number1}회 남았어요! 던전에서 장비와 티켓을 얻으세요" },
 		{ "🎫 You have {number1} gear ticket(s) left! Draw gear at the gacha machine", "🎫 장비 티켓이 {number1}장 남았어요! 뽑기 기계에서 장비를 뽑아 보세요" },
 		{ "♻ [Rare] 🌾 Meadow Silver Necklace auto-salvaged (Essence +{number1} {number2} G)", "♻ [희귀] 🌾 초원 실버 목걸이 자동 회수 (에센스 +{number1} {number2} G)" },

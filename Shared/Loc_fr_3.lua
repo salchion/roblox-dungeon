@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Monster HP x{number1} · ATK x{number2}   |   Reward x{number3}   (Lv.{number4}~)", "PV du monstre x{number1} · ATQ x{number2}   |   Récompense x{number3}   (Niv.{number4}~)" },
 		{ "🥇 {player1}\n⚡ {number1} Lv.{number2}\nSpell Tome · Mythic Era +{number3}", "🥇 {player1}\n⚡ {number1} Niveau {number2}\nLivre de sorts · Ère mythique +{number3}" },
 		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "Réussissez {number2} améliorations ✅, appuyez pour réclamer !" },
 		{ "every {number1} shots a blade bounces across {number2} enemies", "tous les {number1} tirs, une lame rebondit sur {number2} ennemis" },

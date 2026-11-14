@@ -544,7 +544,7 @@ local function buildInventoryTab(state)
 				refreshMenu()
 			end)
 			rounded(tile, 10)
-			rarityOutline(tile, item.Rarity, isSel and 4 or nil)
+			create("UIStroke", { Color = Config.Gear.RarityColors[item.Rarity], Thickness = isSel and 3 or 1.5, Transparency = isSel and 0 or 0.15, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, tile) -- (가방은 깜빡이지 않는 얇은 등급 테두리: 칸이 많아 번쩍임이 지저분했다)
 			makeLabel({ Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0, 0, 0, 3), Text = SLOT_ICONS[item.Slot], TextSize = 18 }, tile)
 			makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 1, -17), Text = string.format("+%d", item.Level), TextSize = 10, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, tile)
 			if entry.Diff ~= 0 then
@@ -557,9 +557,10 @@ local function buildInventoryTab(state)
 			if item.AugBoost and Config.AugInfo[item.AugBoost] then
 				makeLabel({ Size = UDim2.new(0, 16, 0, 14), Position = UDim2.new(0, 2, 1, -16), Text = Config.AugInfo[item.AugBoost].Icon, TextSize = 10, ZIndex = 4 }, tile)
 			end
-			if item.Set then
-				setDecor(tile, item.Set, setCounts[item.Set])
-				if entry.SetGain >= 2 then
+			if item.Set and Config.Sets[item.Set] then
+				local dot = create("Frame", { Size = UDim2.new(0, 10, 0, 10), Position = UDim2.new(1, -13, 0, 3), BackgroundColor3 = Config.Sets[item.Set].Color, BorderSizePixel = 0, ZIndex = 5, Active = false }, tile) -- 세트: 칸 안쪽 오른쪽 위 작은 세트색 점 (큰 아이콘 동그라미가 칸마다 튀어나와 지저분했다)
+				create("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
+				if entry.SetGain >= 2 and filterSlot then -- (끼면 세트가 이어지는 표시는 부위를 골라 비교할 때만)
 					local tag = makeLabel({ Size = UDim2.new(0, 34, 0, 14), Position = UDim2.new(0, -4, 0, 30), Text = string.format("▲%d/3", math.min(3, entry.SetGain)), TextSize = 10, Font = Enum.Font.GothamBlack,
 						TextWrapped = false, TextColor3 = Color3.fromRGB(20, 30, 20), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(120, 255, 140), ZIndex = 7 }, tile)
 					rounded(tag, 6)

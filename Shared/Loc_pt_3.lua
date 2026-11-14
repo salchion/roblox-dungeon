@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Unlocks when you defeat the Zone {number1} lord", "Desbloqueia ao derrotar o lorde da zona {number1}" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Giro Múltiplo!\nUsa todos os bilhetes (máximo {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Subiu de nível! Lv.{number1} (HP Máximo +{number2} Ataque +{number3}%)" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 Missão {number2}/{number3}</font>" },

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Pierces up to {number1} more enemies in a line", "Durchschlägt bis zu {number1} weitere Gegner in einer Linie" },
 		{ "Lasts +{number1}s · range +{number2}%: sweeps up swarms", "Dauer +{number1} s · Reichweite +{number2} %: fegt Schwärme weg" },
 		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 Herr des Schneefelds (Zone {number1}) · Rekord ⚡{number2}" },
 		{ "💥Explosive Shot {number1} · ⚡Chain Lightning {number2}", "💥Explosiver Schuss {number1} · ⚡Kettenblitz {number2}" },

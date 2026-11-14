@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Damage +{number1}% on a single target: for bosses", "Daño +{number1} % a un solo objetivo: para jefes" },
 		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}!", "¡{number1} segundos! Recompensas x{number2}, el combo suma hasta x{number3}!" },
 		{ "🔓 You can now run {number1} set effects at once!", "🔓 ¡Ahora puedes tener {number1} efectos de set activos a la vez!" },
 		{ "🛡 Knocked back! Power {number1} required (you: {number2})", "🛡 ¡Repelido! Se necesita poder {number1} (tú: {number2})" },
