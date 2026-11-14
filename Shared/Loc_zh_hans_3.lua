@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "NEAR MISS lasts +{number1}s more", "NEAR MISS持续时间再+{number1}秒" },
+		{ "🐾 Unlock your pet! ({number1} G)", "🐾 解锁你的宠物！（{number1}G）" },
 		{ "💪 Zone {number1} Lord: power {number2} / {number3}", "💪 区域{number1}领主：战力 {number2} / {number3}" },
 		{ "Crit damage +{number1}%p  (max {number2})", "暴击伤害 +{number1}%p  (最多 {number2})" },
 		{ "▶ {number1} more to the next era", "▶ 距离下个时代还差{number1}" },

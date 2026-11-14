@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Gold x{number1} · Tickets {number2} · Boss chest gear {number3}", "Ouro x{number1} · Tickets {number2} · Equipamento do baú do chefe {number3}" },
+		{ "Bounces to {number1} nearby enemies (within {number2})", "Ricocheteia em {number1} inimigos próximos (em até {number2})" },
 		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 {number1} espíritos lutarão por você por {number2} s!" },
 		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1} s · {number2} adagas a cada {number3} s · dano x{number4} cada" },
 		{ "defeat {number1} monsters here, then the Lord", "derrote {number1} monstros aqui e depois o lorde" },

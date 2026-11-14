@@ -953,6 +953,7 @@ return {
 		["Combo effects"] = "組み合わせ効果",
 		["✨ Set effect name above head: ON"] = "✨ 頭上にセット効果名: オン",
 		["✨ Set effect name above head: OFF"] = "✨ 頭上にセット効果名: オフ",
+		["↑ That was your set effect! It fires on its own (see the DPS meter)."] = "↑ 今のがセット効果! 自動で発動します (DPSメーターで確認)。",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1076,6 +1077,5 @@ return {
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one", "発見したユニーク効果 {number1} / {number2}  ·  神話装備に付くことがあります" },
 		{ "Locks onto up to {number1} enemies, total damage -{number2}%: for crowds", "最大{number1}体をロック、総ダメージ-{number2}%：群れ向け" },
 		{ "⚖ All-round  ·  ✔ 🔫 Spell Tome / Rocket Launcher (+{number1}%)", "⚖ オールラウンド  ·  ✔ 🔫 スペルブック/ロケットランチャー (+{number1}%)" },
-		{ "🔒 Zone {number1} · Volcano Sealed\nOpen the previous gate first", "🔒 ゾーン {number1} · 火山が封鎖されています\nまず前のゲートを開けてください" },
 	},
 }

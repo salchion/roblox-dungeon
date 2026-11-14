@@ -837,10 +837,32 @@ local function worldFxAllowed(attr) -- 세트 효과 발동 연출(고리 + 떠�
 	lastWorldFx[attr] = now
 	return true
 end
+local taughtProc, teachLineShown = {}, false -- (이번 접속에서 이름을 한 번 알려 준 효과)
 local function showProc(attr, position)
 	local info = Config.AugInfo[attr]
 	if not info then return end
-	if player:GetAttribute("SetPopHide") then return end -- 설정에서 "세트 효과 이름 표시" 를 끄면 아무 표시도 하지 않는다 (효과 자체는 그대로)
+	-- 머리 위 이름 표시는 기본 꺼짐 (세트 효과가 얼마나 일하는지는 오른쪽 DPS 미터기로 본다).
+	-- 대신 각 효과가 이번 접속에서 처음 터질 때 딱 한 번 이름을 띄워 "이게 세트 효과" 라고 알려 준다. 설정에서 켜면 매번 띄운다
+	if not player:GetAttribute("SetPopShow") then
+		if taughtProc[attr] then return end
+		taughtProc[attr] = true
+		if headBoard.Enabled and headMedals[attr] then
+			popHead(attr, info)
+			if not teachLineShown then
+				teachLineShown = true
+				local teach = label({
+					Size = UDim2.new(0, 460, 0, 22), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.64, 30),
+					Text = "↑ That was your set effect! It fires on its own (see the DPS meter).", TextSize = 14, TextColor3 = Color3.fromRGB(255, 226, 140),
+					TextStrokeTransparency = 0.35, TextStrokeColor3 = Color3.fromRGB(10, 10, 20), ZIndex = 40,
+				}, gui)
+				task.delay(3, function()
+					TweenService:Create(teach, TweenInfo.new(0.5), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+					task.delay(0.55, function() teach:Destroy() end)
+				end)
+			end
+		end
+		return
+	end
 	if worldFxAllowed(attr) then
 		if headBoard.Enabled and headMedals[attr] then
 			popHead(attr, info) -- 머리 위 메달이 보이면 그걸로 알려 준다 (맞은 자리 아이콘 / 화면 가운데 글자는 띄우지 않는다)

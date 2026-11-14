@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 Zone {number1} · Volcano Sealed\nOpen the previous gate first", "🔒 ゾーン {number1} · 火山が封鎖されています\nまず前のゲートを開けてください" },
 		{ "♻ [Common] Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] レザーアーマーを自動回収（エッセンス +{number1} {number2} G）" },
 		{ "Zone {number1} set effect · Trial Lv.3 — for this dungeon only", "ゾーン{number1}セット効果 · 試練 Lv.3 — このダンジョン限定" },
 		{ "<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "<font color='#{number4}ad{number5}ff'>スペル・トーム · 神話時代 +{number6}</font>" },

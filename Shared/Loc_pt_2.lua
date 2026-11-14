@@ -795,6 +795,7 @@ return {
 		["Combo effects"] = "Efeitos combinados",
 		["✨ Set effect name above head: ON"] = "✨ Nome do efeito de set acima da cabeça: LIGADO",
 		["✨ Set effect name above head: OFF"] = "✨ Nome do efeito de set acima da cabeça: DESLIGADO",
+		["↑ That was your set effect! It fires on its own (see the DPS meter)."] = "↑ Esse foi seu efeito de set! Ele dispara sozinho (veja o medidor de DPS).",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1020,7 +1021,5 @@ return {
 		{ "Spell Tome  ·  keys {number1}-{number2} switch weapons", "Livro de Feitiços · teclas {number1}-{number2} trocam de arma" },
 		{ "Defeat {number1} monsters (dungeons included)", "Derrote {number1} monstros (masmorras incluídas)" },
 		{ "🎯 Ready to challenge the Zone {number1} Lord!", "🎯 Pronto para desafiar o senhor da zona {number1}!" },
-		{ "Gold x{number1} · Tickets {number2} · Boss chest gear {number3}", "Ouro x{number1} · Tickets {number2} · Equipamento do baú do chefe {number3}" },
-		{ "Bounces to {number1} nearby enemies (within {number2})", "Ricocheteia em {number1} inimigos próximos (em até {number2})" },
 	},
 }

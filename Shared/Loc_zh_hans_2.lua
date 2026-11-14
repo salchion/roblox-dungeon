@@ -706,6 +706,7 @@ return {
 		["Combo effects"] = "组合效果",
 		["✨ Set effect name above head: ON"] = "✨ 头顶显示套装效果名: 开",
 		["✨ Set effect name above head: OFF"] = "✨ 头顶显示套装效果名: 关",
+		["↑ That was your set effect! It fires on its own (see the DPS meter)."] = "↑ 这就是你的套装效果！会自动触发（看DPS统计）。",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1095,7 +1096,5 @@ return {
 		{ "🔒 Unlocks at +{number1} ({number2} to go)", "🔒 +{number1} 时解锁(还差 {number2})" },
 		{ "◆ Luck (Drop Rarity) +{number1}%", "◆ 幸运(掉落品质) +{number1}%" },
 		{ "Cooldown -{number1}% · damage +{number2}%", "冷却-{number1}% · 伤害+{number2}%" },
-		{ "NEAR MISS lasts +{number1}s more", "NEAR MISS持续时间再+{number1}秒" },
-		{ "🐾 Unlock your pet! ({number1} G)", "🐾 解锁你的宠物！（{number1}G）" },
 	},
 }

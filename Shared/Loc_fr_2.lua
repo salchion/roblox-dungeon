@@ -831,6 +831,7 @@ return {
 		["Combo effects"] = "Effets combinés",
 		["✨ Set effect name above head: ON"] = "✨ Nom de l'effet de set au-dessus de la tête : OUI",
 		["✨ Set effect name above head: OFF"] = "✨ Nom de l'effet de set au-dessus de la tête : NON",
+		["↑ That was your set effect! It fires on its own (see the DPS meter)."] = "↑ C'était ton effet de set ! Il se déclenche tout seul (voir le compteur DPS).",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1014,6 +1015,5 @@ return {
 		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2} {number3} G)", "🧹 Nettoyage automatique de {number1} équipements plus faibles (Essence +{number2} {number3} G)" },
 		{ "every {number1}s a meteor, radius {number2} (x1.5 on bosses)", "toutes les {number1} s un météore, rayon {number2} (x1,5 sur les boss)" },
 		{ "Heals over {number1}s instead of at once · total +{number2}%", "Soigne sur {number1} s au lieu d'un coup · total +{number2} %" },
-		{ "Spend {number1} stat points (T key / Stats button)", "Utiliser {number1} points de statistiques (touche T / bouton Statistiques)" },
 	},
 }

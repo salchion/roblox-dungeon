@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Gacha_Pop{number1}  Gacha result: Legendary", "Gacha_Pop{number1} Gacha-Ergebnis: Legendär" },
 		{ "{number1} hours of idle gold ({number2} G) piled up!", "{number1} Stunden ungenutztes Gold ({number2} G) gesammelt!" },
 		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 Feld-Eingang Direkt dahinter! {number1}m" },
 		{ "Clear {number1} dungeon(s)  ✅ tap to claim!", "{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!" },

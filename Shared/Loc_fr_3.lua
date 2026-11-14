@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Spend {number1} stat points (T key / Stats button)", "Utiliser {number1} points de statistiques (touche T / bouton Statistiques)" },
 		{ "▶ Next feature: Lv.{number1} 💥 Power  ({number2} lvl · ~{number3} G)", "▶ Prochaine fonctionnalité : Niveau {number1} 💥 Puissance ({number2} niveau · ~{number3} G)" },
 		{ "✅ Mission complete! Reward: {number1} G + Tickets {number2}", "✅ Mission terminée ! Récompense : {number1} G + Tickets {number2}" },
 		{ "Rocket Launcher  ·  keys {number1}-{number2} switch weapons", "Lance-roquettes · les touches {number1}-{number2} permettent de changer d'arme" },

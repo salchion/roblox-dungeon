@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "The final blast also explodes around every target (attack x{number1})", "마지막 대폭발이 모든 대상 주변에서도 터져요 (공격 x{number1})" },
 		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [일반] 🌾 초원에서 닳은 신발 자동 회수 (에센스 +{number1} {number2} G)" },
 		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 {number1}레벨 돌파 완료! 이제 더 성장할 수 있어요." },
 		{ " With the max {number1} points, crits go from 2x to about {number2}x. Combine", " 최대 {number1}포인트일 때 치명타가 2배에서 약 {number2}배로. 조합" },

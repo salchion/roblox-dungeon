@@ -775,6 +775,7 @@ return {
 		["Combo effects"] = "Kombo-Effekte",
 		["✨ Set effect name above head: ON"] = "✨ Set-Effektname über dem Kopf: AN",
 		["✨ Set effect name above head: OFF"] = "✨ Set-Effektname über dem Kopf: AUS",
+		["↑ That was your set effect! It fires on its own (see the DPS meter)."] = "↑ Das war dein Set-Effekt! Er löst von selbst aus (siehe DPS-Anzeige).",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1011,6 +1012,5 @@ return {
 		{ "A big blast when it ends (attack x{number1})", "Beim Ende eine große Explosion (Angriff x{number1})" },
 		{ "{number1}s invincible, but healing is halved", "{number1} s unverwundbar, aber die Heilung wird halbiert" },
 		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 Neue Waffe: Zauberbuch – drücke {number1}!" },
-		{ "Gacha_Pop{number1}  Gacha result: Legendary", "Gacha_Pop{number1} Gacha-Ergebnis: Legendär" },
 	},
 }
