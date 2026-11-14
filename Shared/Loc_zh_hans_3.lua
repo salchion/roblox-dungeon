@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Crit damage +{number1}%p  (max {number2})", "暴击伤害 +{number1}%p  (最多 {number2})" },
 		{ "▶ {number1} more to the next era", "▶ 距离下个时代还差{number1}" },
 		{ "★☆  Step {number1}/{number2} · Next step", "★☆ 步骤 {number1}/{number2} · 下一步" },
 		{ "🌋 {number1} Streak — Legendary!", "🌋 {number1}连胜 - 传奇级！" },

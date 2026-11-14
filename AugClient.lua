@@ -163,10 +163,12 @@ local box = make("Frame", {
 make("UICorner", { CornerRadius = UDim.new(0, 10) }, box)
 local boxStroke = make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 2, Transparency = 0.2 }, box)
 local boxIconBack = make("Frame", { Size = UDim2.new(0, 56, 0, 56), Position = UDim2.new(0, 10, 0, 10), BackgroundColor3 = Color3.fromRGB(50, 44, 70), BorderSizePixel = 0, ZIndex = 3 }, box)
-make("UICorner", { CornerRadius = UDim.new(0, 10) }, boxIconBack)
+make("UICorner", { CornerRadius = UDim.new(1, 0) }, boxIconBack) -- (메달처럼 둥글게)
 local boxIconStroke = make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 2 }, boxIconBack)
 local boxIcon = label({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 30, ZIndex = 4 }, boxIconBack)
-local boxTitle = label({ Size = UDim2.new(1, -84, 0, 56), Position = UDim2.new(0, 74, 0, 10), Text = "", TextSize = 13, RichText = true, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3 }, box)
+local boxTitle = label({ Size = UDim2.new(1, -140, 0, 56), Position = UDim2.new(0, 74, 0, 10), Text = "", TextSize = 13, RichText = true, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3 }, box)
+local boxLevel = label({ Size = UDim2.new(0, 60, 0, 30), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 12), Text = "", TextSize = 22, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Right,
+	TextColor3 = Color3.fromRGB(150, 230, 255), TextStrokeTransparency = 0.5, ZIndex = 3 }, box) -- 큰 "Lv.5" (예전: 제목 안의 "[Lv.3 + gear 2 = 5]")
 -- 무기 궁합 띠: 지금 무기가 이 효과와 잘 맞으면 초록 "✔ 찰떡", 아니면 주황으로 "이 무기로 바꾸면 +40%"
 local matchBar = make("Frame", { Size = UDim2.new(1, -20, 0, 50), Position = UDim2.new(0, 10, 0, 74), BackgroundColor3 = Color3.fromRGB(40, 110, 70), BorderSizePixel = 0, ZIndex = 3 }, box)
 make("UICorner", { CornerRadius = UDim.new(0, 10) }, matchBar)
@@ -180,23 +182,32 @@ for step = 1, 6 do
 	label({ Size = UDim2.new(1, 0, 1, 0), Text = tostring(step), TextSize = 11, Font = Enum.Font.GothamBlack, ZIndex = 4 }, pip)
 	pips[step] = pip
 end
-label({ Size = UDim2.new(0, 84, 0, 12), Position = UDim2.new(0, 14, 0, 156), Text = "Gold", TextSize = 9, TextColor3 = Color3.fromRGB(255, 215, 120), ZIndex = 3 }, box)
-label({ Size = UDim2.new(0, 84, 0, 12), Position = UDim2.new(0, 14 + 3 * 28 + 14, 0, 156), Text = "Set gear", TextSize = 9, TextColor3 = Color3.fromRGB(150, 235, 170), ZIndex = 3 }, box)
+local legendGold = label({ Size = UDim2.new(0, 84, 0, 12), Position = UDim2.new(0, 14, 0, 156), Text = "Gold", TextSize = 9, TextColor3 = Color3.fromRGB(255, 215, 120), ZIndex = 3 }, box)
+local legendGear = label({ Size = UDim2.new(0, 84, 0, 12), Position = UDim2.new(0, 14 + 3 * 28 + 14, 0, 156), Text = "Set gear", TextSize = 9, TextColor3 = Color3.fromRGB(143, 224, 255), ZIndex = 3 }, box)
+-- 본문: 설명 + 지금 / 다음 단계 카드, 그 아래 조합 효과 카드 목록 (예전: 한 덩어리 글자 벽)
+local levelCard = make("Frame", { Size = UDim2.new(1, -20, 0, 74), Position = UDim2.new(0, 10, 0, 172), BackgroundColor3 = Color3.fromRGB(30, 42, 42), BorderSizePixel = 0, ZIndex = 3 }, box)
+make("UICorner", { CornerRadius = UDim.new(0, 10) }, levelCard)
 local boxBody = label({
-	Size = UDim2.new(1, -20, 1, -232), Position = UDim2.new(0, 10, 0, 174), Text = "", TextSize = 11, RichText = true, TextWrapped = true,
-	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(205, 210, 235), ZIndex = 3,
-	TextScaled = true, -- (조합 효과 줄이 붙으면 칸을 넘친다: 넘칠 때만 글자를 줄인다. 평소에는 11)
-}, box)
+	Size = UDim2.new(1, -14, 1, -8), Position = UDim2.new(0, 7, 0, 4), Text = "", TextSize = 11, RichText = true, TextWrapped = true,
+	TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center, TextColor3 = Color3.fromRGB(205, 210, 235), ZIndex = 4,
+	TextScaled = true,
+}, levelCard)
 make("UITextSizeConstraint", { MaxTextSize = 11, MinTextSize = 8 }, boxBody)
+local synHeader = label({ Size = UDim2.new(1, -20, 0, 16), Position = UDim2.new(0, 10, 0, 252), Text = "🔗 Combo effects", TextSize = 11, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 217, 102), ZIndex = 3 }, box)
+local synList = make("ScrollingFrame", { Size = UDim2.new(1, -16, 1, -326), Position = UDim2.new(0, 8, 0, 270), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 3,
+	CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y, ZIndex = 3 }, box)
+make("UIListLayout", { Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder }, synList)
 local selectedZone = 1
 local toggleButton = button({ Size = UDim2.new(0.5, -12, 0, 38), Position = UDim2.new(0, 8, 1, -46), BackgroundColor3 = Color3.fromRGB(62, 64, 84), Text = "", TextSize = 12 }, box, function()
 	Remotes.Aug:FireServer("Toggle", selectedZone)
 end)
 toggleButton.ZIndex = 3
+for _, c in ipairs(toggleButton:GetChildren()) do if c:IsA("UICorner") then c.CornerRadius = UDim.new(1, 0) end end
 local buyButton = button({ Size = UDim2.new(0.5, -8, 0, 38), Position = UDim2.new(0.5, 0, 1, -46), BackgroundColor3 = Color3.fromRGB(140, 104, 40), Text = "", TextSize = 10 }, box, function()
 	Remotes.Aug:FireServer("Buy", selectedZone)
 end)
 buyButton.ZIndex = 3
+for _, c in ipairs(buyButton:GetChildren()) do if c:IsA("UICorner") then c.CornerRadius = UDim.new(1, 0) end end
 buyButton.TextWrapped = true
 
 local refresh -- (아래에서 정의)
@@ -307,9 +318,13 @@ function refresh()
 	boxIcon.Text = info.Icon
 	boxIconStroke.Color = info.Color
 	boxStroke.Color = on and info.Color or Color3.fromRGB(255, 190, 110)
-	boxTitle.Text = string.format("%sZone %d · %s  %s", on and "<font color='#78ffb4'>●</font> " or "", zone, info.Name,
-		level > 0 and (gear > 0 and string.format("[Lv.%d + gear %d = %d]", level, gear, level + gear) or ("[Lv." .. level .. "]")) or "")
+	boxTitle.Text = string.format("<font size='16'><b>%s</b></font>\n%s<font size='11'>Zone %d</font>", info.Name, on and "<font color='#78ffb4' size='11'>● ON · </font>" or "", zone)
+	boxLevel.Text = level + gear > 0 and ("Lv." .. (level + gear)) or ""
+	legendGold.Text = string.format("● Gold %d", level)
+	legendGear.Text = gear > 0 and string.format("● Set gear +%d", gear) or "Set gear"
 	local lines = { "<font color='#aaf0c8'>" .. info.Desc .. "</font>" }
+	for _, child in ipairs(synList:GetChildren()) do if child:IsA("Frame") then child:Destroy() end end
+	local synCount = 0
 	-- 조합 효과: 이 효과와 함께 켜면(또는 유니크를 끼면) 숨은 효과가 켜진다. 켜진 것은 초록, 아직이면 무엇이 필요한지 (장비를 고르는 재미)
 	do
 		local function needName(need)
@@ -338,7 +353,13 @@ function refresh()
 					end
 				end
 				local active = player:GetAttribute("AugSyn_" .. key) == true
-				table.insert(lines, string.format("%s <b>%s %s</b> + %s\n<font color='#c8cce0'>%s</font>", active and "<font color='#78ff8c'>✔</font>" or "🔗", syn.Icon, syn.Name, table.concat(partners, " + "), syn.Desc))
+				-- 조합 효과 카드: 켜진 것은 초록 바탕
+				synCount += 1
+				local card = make("Frame", { Size = UDim2.new(1, -4, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = active and Color3.fromRGB(30, 58, 40) or Color3.fromRGB(34, 36, 58), BorderSizePixel = 0, LayoutOrder = synCount, ZIndex = 4 }, synList)
+				make("UICorner", { CornerRadius = UDim.new(0, 9) }, card)
+				make("UIPadding", { PaddingLeft = UDim.new(0, 7), PaddingRight = UDim.new(0, 7), PaddingTop = UDim.new(0, 4), PaddingBottom = UDim.new(0, 4) }, card)
+				label({ Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, RichText = true, TextWrapped = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5,
+					Text = string.format("%s<b>%s %s</b>  + %s\n<font color='#b8bcd4'>%s</font>", active and "<font color='#78ff8c'>✔ </font>" or "", syn.Icon, syn.Name, table.concat(partners, " + "), syn.Desc) }, card)
 			end
 		end
 	end
@@ -365,9 +386,8 @@ function refresh()
 	-- 단계 수치 1~6 (지금 단계는 초록으로)
 	local atk = Config.BaseAttackEstimate and Config.BaseAttackEstimate(player) or 0
 	local now = level + gear
-	table.insert(lines, "")
 	for step = 1, 6 do -- 단계 점: 지금 단계까지 효과 색으로 찬다
-		pips[step].BackgroundColor3 = step <= now and info.Color or Color3.fromRGB(44, 40, 62)
+		pips[step].BackgroundColor3 = step <= level and Color3.fromRGB(255, 217, 102) or (step <= now and Color3.fromRGB(143, 224, 255) or Color3.fromRGB(44, 40, 62)) -- 금색 = 골드로 올린 단계, 하늘색 = 세트 장비로 오른 단계
 	end
 	local function levelText(l)
 		local text, mult = Config.AugLevelLine(attr, l)
@@ -381,6 +401,8 @@ function refresh()
 		table.insert(lines, string.format("<font color='#9a9ab8'>Next Lv.%d  %s</font>", now + 1, levelText(now + 1)))
 	end
 	boxBody.Text = table.concat(lines, "\n")
+	synHeader.Visible = synCount > 0
+	synList.Visible = synCount > 0
 	toggleButton.Text = on and "● ON" or "○ OFF"
 	toggleButton.BackgroundColor3 = on and Color3.fromRGB(46, 112, 84) or Color3.fromRGB(62, 64, 84)
 	toggleButton.TextColor3 = on and Color3.fromRGB(190, 255, 215) or Color3.fromRGB(170, 174, 200)

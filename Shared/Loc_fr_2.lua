@@ -828,6 +828,7 @@ return {
 		["kills per item"] = "éliminations par objet",
 		["Lord kills per item"] = "victoires sur le seigneur par objet",
 		["chance per kill"] = "chance par élimination",
+		["Combo effects"] = "Effets combinés",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1013,6 +1014,5 @@ return {
 		{ "Heals over {number1}s instead of at once · total +{number2}%", "Soigne sur {number1} s au lieu d'un coup · total +{number2} %" },
 		{ "Spend {number1} stat points (T key / Stats button)", "Utiliser {number1} points de statistiques (touche T / bouton Statistiques)" },
 		{ "▶ Next feature: Lv.{number1} 💥 Power  ({number2} lvl · ~{number3} G)", "▶ Prochaine fonctionnalité : Niveau {number1} 💥 Puissance ({number2} niveau · ~{number3} G)" },
-		{ "✅ Mission complete! Reward: {number1} G + Tickets {number2}", "✅ Mission terminée ! Récompense : {number1} G + Tickets {number2}" },
 	},
 }

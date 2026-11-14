@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "✅ Mission complete! Reward: {number1} G + Tickets {number2}", "✅ Mission terminée ! Récompense : {number1} G + Tickets {number2}" },
 		{ "Rocket Launcher  ·  keys {number1}-{number2} switch weapons", "Lance-roquettes · les touches {number1}-{number2} permettent de changer d'arme" },
 		{ "📅 {number1}-day login streak · Get stronger today!", "📅 Série de connexion de {number1} jours · Devenez plus fort aujourd'hui !" },
 		{ "Each NEAR MISS stack gives +{number1}% more attack", "Chaque cumul NEAR MISS donne +{number1} % d'attaque en plus" },

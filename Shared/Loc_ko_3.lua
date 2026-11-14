@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 {number1}레벨 돌파 완료! 이제 더 성장할 수 있어요." },
 		{ " With the max {number1} points, crits go from 2x to about {number2}x. Combine", " 최대 {number1}포인트일 때 치명타가 2배에서 약 {number2}배로. 조합" },
 		{ "🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})", "🏰 던전 보스 상자 — 장비 {number1}개, 깊이 {number2}마다 +1 (최대 {number3})" },
 		{ "Event_Elite  <font color='#{number1}aa{number2}c{number3}'>Elite squad appears</font>", "이벤트_엘리트 <font color='#{number1}aa{number2}c{number3}'>엘리트 스쿼드 등장</font>" },
