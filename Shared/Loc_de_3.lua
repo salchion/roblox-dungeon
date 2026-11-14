@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Stufe aufsteigen! Lv.{number1} (Maximale HP +{number2} Angriff +{number3}%)" },
+		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} Verbesserungen: {number2} Erfolg / {number3} Fehlschlag  (Gold -{number4})" },
+		{ "Reach level {number1} to buy points with gold.", "Erreiche Stufe {number1}, um Punkte mit Gold zu kaufen." },
+		{ "🎫 A {number1}x pull needs {number2} tickets (you have {number3})", "🎫 Eine {number1}er-Ziehung kostet {number2} Tickets (du hast {number3})" },
+		{ "🗿 Colossus defeated! Gear + 🎫 +1 + {number1} G", "🗿 Koloss besiegt! Ausrüstung + 🎫 +1 + {number1} G" },
+		{ "🔒 Unlocks at level {number1}  (you are level {number2})", "🔒 Wird bei Stufe {number1} freigeschaltet  (du bist Stufe {number2})" },
 		{ "Pierces up to {number1} more enemies in a line", "Durchschlägt bis zu {number1} weitere Gegner in einer Linie" },
 		{ "Lasts +{number1}s · range +{number2}%: sweeps up swarms", "Dauer +{number1} s · Reichweite +{number2} %: fegt Schwärme weg" },
 		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 Herr des Schneefelds (Zone {number1}) · Rekord ⚡{number2}" },

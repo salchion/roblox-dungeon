@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Rocket Launcher  ·  keys {number1}-{number2} switch weapons", "Lanzacohetes · las teclas {number1}-{number2} cambian de arma" },
+		{ "📅 {number1}-day login streak · Get stronger today!", "📅 Racha de inicio de sesión de {number1} días · ¡Hazte más fuerte hoy!" },
+		{ "Each NEAR MISS stack gives +{number1}% more attack", "Cada acumulación NEAR MISS da +{number1} % más de ataque" },
+		{ "🔒 Spend {number1} points higher up this path first", "🔒 Gasta primero {number1} puntos más arriba en esta rama" },
+		{ "Auto-equipped the best gear in {number1} slot(s)!", "¡Se equipó automáticamente el mejor equipo en {number1} ranura(s)!" },
+		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• Unos {number1} disparos/s · Potencia de fuego {number2} · Alcance {number3}" },
 		{ "Damage +{number1}% on a single target: for bosses", "Daño +{number1} % a un solo objetivo: para jefes" },
 		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}!", "¡{number1} segundos! Recompensas x{number2}, el combo suma hasta x{number3}!" },
 		{ "🔓 You can now run {number1} set effects at once!", "🔓 ¡Ahora puedes tener {number1} efectos de set activos a la vez!" },

@@ -74,6 +74,29 @@ player:GetAttributeChangedSignal("Gold"):Connect(function()
 	if info and info.Text ~= "" and infoState then info.Text = infoText(infoState) end -- (다른 탭에서는 비어 있으니 건드리지 않는다)
 end)
 
+-- 장비 묶음 가치 (서버 "최강 장비"와 같은 계산: 점수 + 세트 2부위 150 + 3부위 220 + 세트 효과 부위마다 60)
+local function loadoutValue(map)
+	local total, counts = 0, {}
+	for _, item in pairs(map) do
+		total += item.Score or 0
+		if item.Set then counts[item.Set] = (counts[item.Set] or 0) + 1 end
+	end
+	for _, n in pairs(counts) do
+		if n >= 2 then total += 150 end
+		if n >= 3 then total += 220 end
+		total += 60 * math.min(3, n)
+	end
+	return total, counts
+end
+-- 빌드 이름: 가장 많이 낀 세트 = 이름(직업), 두 번째 세트 = 꾸밈말
+local BUILD_ADJ = { "Galeborn", "Wildwood", "Ancient", "Scorching", "Frostbound", "Molten", "Shadowed", "Abyssal" }
+local BUILD_NOUN = { "Guardian", "Hunter", "Warrior", "Marksman", "Mage", "Destroyer", "Rogue", "Lord" }
+local function itemStatText(item)
+	local parts = { Config.FormatGearStat(item.Slot, Config.GetGearStat(item.Slot, item.Rarity, item.Level)) }
+	for _, affix in ipairs(item.Affixes or {}) do table.insert(parts, Config.FormatAffix(affix.Stat, affix.Value)) end
+	return parts
+end
+
 local function buildInventoryTab(state)
 	if not state then
 		local row = newRow(36)
@@ -243,16 +266,39 @@ local function buildInventoryTab(state)
 			tip = string.format("▲ A better <b>%s</b> is in your bag (Score +%d)", Config.GetGearSlot(bestUp.Slot) and Config.GetGearSlot(bestUp.Slot).Name or bestUp.Slot, bestDiff)
 			tipItem = bestUp
 		end
-		local guide = newRow(36, tipItem and Color3.fromRGB(40, 60, 46) or Color3.fromRGB(30, 32, 48))
-		makeLabel({ Size = UDim2.new(1, -150, 1, 0), Position = UDim2.new(0, 12, 0, 0), RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left,
-			Text = tip or "✔ You're wearing your best gear. Tap a slot to compare, or collect set gear in the field" }, guide)
+		-- 지금 빌드 띠: 세트 조합 이름 + 켜진 세트 + 전투력 + 추천 한 가지 (버튼 하나)
+		local ranked = {}
+		for key, n in pairs(setCounts) do if Config.Sets[key] and n >= 1 then table.insert(ranked, { key, n }) end end
+		table.sort(ranked, function(a, b)
+			if a[2] ~= b[2] then return a[2] > b[2] end
+			return (Config.Sets[a[1]].Zone or 0) > (Config.Sets[b[1]].Zone or 0)
+		end)
+		local first, second = ranked[1] and Config.Sets[ranked[1][1]], ranked[2] and Config.Sets[ranked[2][1]]
+		local buildName, buildIcon, buildColor = "<font>Wanderer</font>", "🧭", Color3.fromRGB(150, 156, 190)
+		if first and first.Zone then
+			local adj = BUILD_ADJ[(second and second.Zone) or first.Zone]
+			buildName = string.format("<font>%s</font> <font>%s</font>", adj, BUILD_NOUN[first.Zone])
+			buildIcon, buildColor = first.Icon or "★", first.Color
+		end
+		local setsLine = {}
+		for _, r in ipairs(ranked) do
+			local def = Config.Sets[r[1]]
+			table.insert(setsLine, string.format("%s <font color='#%s'><b>%d/3</b></font>", def.Icon or "★", r[2] >= 2 and "78ff8c" or "aab0cc", math.min(3, r[2])))
+		end
+		local guide = newRow(50, Color3.fromRGB(30, 32, 48))
+		create("UIGradient", { Color = ColorSequence.new(buildColor:Lerp(Color3.new(1, 1, 1), 0.1), Color3.fromRGB(255, 255, 255)), Transparency = NumberSequence.new(0.55, 0.95) }, guide)
+		create("UIStroke", { Color = buildColor, Thickness = 1.6, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, guide)
+		makeLabel({ Size = UDim2.new(0, 36, 1, 0), Position = UDim2.new(0, 8, 0, 0), Text = buildIcon, TextSize = 24 }, guide)
+		makeLabel({ Size = UDim2.new(0, 230, 0, 14), Position = UDim2.new(0, 48, 0, 6), Text = "Current build", TextSize = 10, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 233, 168) }, guide)
+		makeLabel({ Size = UDim2.new(0, 230, 0, 24), Position = UDim2.new(0, 48, 0, 20), RichText = true, Text = buildName, TextSize = 18, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left }, guide)
+		makeLabel({ Size = UDim2.new(1, -440, 1, -6), Position = UDim2.new(0, 284, 0, 3), RichText = true, TextWrapped = true, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(205, 225, 240),
+			Text = (#setsLine > 0 and (table.concat(setsLine, " · ") .. "\n") or "") .. (tip or "✔ Best gear on. Tap a slot to swap") }, guide)
+		makeLabel({ Size = UDim2.new(0, 120, 0, 18), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, tipItem and 2 or 16), Text = string.format("⚡ %d", player:GetAttribute("Power") or 0), TextSize = 14, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = Color3.fromRGB(255, 217, 102) }, guide)
 		if tipItem then
-			local go = makeButton({ Size = UDim2.new(0, 120, 0, 28), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -8, 0.5, 0), Text = "Equip it", TextSize = 13, Font = Enum.Font.GothamBlack, BackgroundColor3 = GREEN }, guide, function()
+			local go = makeButton({ Size = UDim2.new(0, 110, 0, 24), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -8, 1, -4), Text = "Equip it", TextSize = 12, Font = Enum.Font.GothamBlack, BackgroundColor3 = GREEN }, guide, function()
 				Remotes.Inventory:FireServer("Equip", tipItem.Id)
 			end)
-			rounded(go, 14)
-			local show = makeButton({ Size = UDim2.new(0, 0, 0, 0), Text = "", BackgroundTransparency = 1 }, guide) -- (자리 맞춤)
-			show:Destroy()
+			rounded(go, 12)
 		end
 	end
 	local main = newRow(MAIN_H, Color3.fromRGB(20, 22, 34))
@@ -464,6 +510,10 @@ local function buildInventoryTab(state)
 				end
 			end
 			if not any then missing:Destroy() end
+			if worn < 3 and def.Zone then -- 빠진 부위가 어디서 나오는지
+				makeLabel({ Size = UDim2.new(1, 0, 0, 14), RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left, LayoutOrder = 7, TextColor3 = Color3.fromRGB(154, 215, 255),
+					Text = string.format("📍 <font>Zone %d</font> · <font>drops from field monsters and bosses</font>", def.Zone) }, card)
+			end
 		end
 	end
 
@@ -521,21 +571,91 @@ local function buildInventoryTab(state)
 			menuContent:SetAttribute("BagSort", NEXT_SORT[sortMode])
 			refreshMenu()
 		end)
-		if filterSlot or filterSet then
+		if (filterSlot or filterSet) and not (filterSlot and not filterSet and menuContent:GetAttribute("FuseOpen") ~= true) then
 			local caption = {}
 			if filterSlot then table.insert(caption, (SLOT_ICONS[filterSlot] or "") .. " " .. (Config.GetGearSlot(filterSlot) and Config.GetGearSlot(filterSlot).Name or filterSlot)) end
 			if filterSet and Config.Sets[filterSet] then table.insert(caption, (Config.Sets[filterSet].Icon or "") .. " " .. Config.Sets[filterSet].Name) end
 			makeLabel({ Size = UDim2.new(1, -16, 0, 16), Position = UDim2.new(0, 10, 0, 84), RichText = true, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(154, 215, 255),
 				Text = string.format("%s · %d", table.concat(caption, " · "), #filtered) }, middle)
 		end
+		-- 칸을 고르면: 가방 자리에 "그 칸 바꿔 끼기" 목록 (전투력 변화 큰 순 · 추천 · 세트 변화 · 끼기 버튼 · 마우스 올리면 비교)
+		local swapMode = filterSlot ~= nil and not filterSet and menuContent:GetAttribute("FuseOpen") ~= true
+		if swapMode then
+			local current = equipped[filterSlot]
+			local baseValue = loadoutValue(equipped)
+			local power = player:GetAttribute("Power") or 0
+			local rows = {}
+			for _, entry in ipairs(filtered) do
+				local trial = table.clone(equipped)
+				trial[filterSlot] = entry.Item
+				local v, counts = loadoutValue(trial)
+				table.insert(rows, { Item = entry.Item, Gain = baseValue > 0 and (v - baseValue) / baseValue or 1, After = counts[entry.Item.Set] })
+			end
+			table.sort(rows, function(a, b) return a.Gain > b.Gain end)
+			local head = makeLabel({ Size = UDim2.new(1, -16, 0, 16), Position = UDim2.new(0, 10, 0, 84), RichText = true, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(154, 215, 255),
+				Text = "Hover to compare · ⚡ = power change (set bonus + set effect counted)" }, middle)
+			local list = create("ScrollingFrame", { Size = UDim2.new(1, -8, 1, -156), Position = UDim2.new(0, 4, 0, 102), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 4,
+				CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y }, middle)
+			create("UIListLayout", { Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder }, list)
+			create("UIPadding", { PaddingTop = UDim.new(0, 4), PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 8) }, list)
+			if #rows == 0 then
+				makeLabel({ Size = UDim2.new(1, 0, 0, 40), Text = "No other gear for this slot yet", TextSize = 12, TextColor3 = Color3.fromRGB(130, 130, 150) }, list)
+			end
+			local nowText = current and table.concat(itemStatText(current), " · ") or "—"
+			for order, r in ipairs(rows) do
+				local item, best = r.Item, order == 1 and r.Gain > 0
+				local pct = math.floor(r.Gain * 100 + 0.5)
+				local good = r.Gain >= 0
+				local row = create("Frame", { Size = UDim2.new(1, 0, 0, 62), LayoutOrder = order, BackgroundColor3 = best and Color3.fromRGB(30, 58, 38) or Color3.fromRGB(34, 36, 56), BorderSizePixel = 0, Active = true }, list)
+				rounded(row, 12)
+				local stroke = create("UIStroke", { Color = best and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(58, 60, 86), Thickness = best and 1.6 or 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, row)
+				local tile = create("Frame", { Size = UDim2.new(0, 50, 0, 50), Position = UDim2.new(0, 6, 0, 6), BackgroundColor3 = Config.Gear.RarityColors[item.Rarity]:Lerp(Color3.fromRGB(20, 22, 36), 0.78), BorderSizePixel = 0 }, row)
+				rounded(tile, 10)
+				create("UIStroke", { Color = Config.Gear.RarityColors[item.Rarity], Thickness = 1.5 }, tile)
+				makeLabel({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 2), Text = SLOT_ICONS[item.Slot] or "?", TextSize = 18 }, tile)
+				makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 1, -16), Text = string.format("+%d", item.Level), TextSize = 10, Font = Enum.Font.GothamBlack }, tile)
+				if item.Set and Config.Sets[item.Set] then
+					local dot = create("Frame", { Size = UDim2.new(0, 9, 0, 9), Position = UDim2.new(1, -12, 0, 3), BackgroundColor3 = Config.Sets[item.Set].Color, BorderSizePixel = 0 }, tile)
+					create("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
+				end
+				local lines = { string.format("<font size='15' color='#%s'><b>⚡ %s%d%%</b></font>%s", good and "78ff8c" or "ff8c8c", pct >= 0 and "+" or "", pct, best and "  <font size='10' color='#78ff8c'><b>★ Best pick</b></font>" or "") }
+				if item.Set and Config.Sets[item.Set] and not (current and current.Set == item.Set) then
+					local def, after = Config.Sets[item.Set], math.min(3, r.After or 1)
+					table.insert(lines, string.format("<font color='#cfeeff'>%s %d→%d/3</font>%s", def.Icon or "★", after - 1, after, after >= 2 and " <font color='#78ff8c'>· Set ON!</font>" or ""))
+				elseif current and current.Set and current.Set ~= item.Set and Config.Sets[current.Set] then
+					local def, n = Config.Sets[current.Set], math.min(3, setCounts[current.Set] or 1)
+					table.insert(lines, string.format("<font color='#ff9a8a'>%s %d→%d/3</font>", def.Icon or "★", n, n - 1))
+				end
+				local statText = table.concat(itemStatText(item), " · ")
+				table.insert(lines, "<font color='#aab0cc' size='10'>" .. statText .. "</font>")
+				makeLabel({ Size = UDim2.new(1, -150, 1, -4), Position = UDim2.new(0, 64, 0, 2), RichText = true, TextWrapped = true, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center,
+					Text = table.concat(lines, "\n") }, row)
+				local equipBtn = makeButton({ Size = UDim2.new(0, 70, 0, 34), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -8, 0.5, 0), Text = "Equip", TextSize = 13, Font = Enum.Font.GothamBlack,
+					BackgroundColor3 = good and GREEN or Color3.fromRGB(58, 60, 82) }, row, function()
+					Remotes.Inventory:FireServer("Equip", item.Id)
+				end)
+				rounded(equipBtn, 17)
+				local function hover(on)
+					stroke.Color = on and Color3.new(1, 1, 1) or (best and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(58, 60, 86))
+					if on then
+						head.Text = string.format("⚡ %d → <font color='#%s'><b>%d</b></font>  ·  Now: <font color='#cfd6f0'>%s</font>", power, good and "78ff8c" or "ff8c8c", math.floor(power * (1 + r.Gain) + 0.5), nowText)
+					end
+				end
+				row.MouseEnter:Connect(function() hover(true) end)
+				row.MouseLeave:Connect(function() hover(false) end)
+				row.InputBegan:Connect(function(input)
+					if input.UserInputType == Enum.UserInputType.Touch then hover(true) end
+				end)
+			end
+		end
 		local grid = create("ScrollingFrame", { Size = UDim2.new(1, -8, 1, -156), Position = UDim2.new(0, 4, 0, 102), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 4,
 			CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y }, middle)
 		create("UIGridLayout", { CellSize = UDim2.new(0, 54, 0, 54), CellPadding = UDim2.new(0, 8, 0, 10), SortOrder = Enum.SortOrder.LayoutOrder }, grid)
 		create("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8) }, grid)
-		if #filtered == 0 then
+		if #filtered == 0 and not swapMode then
 			makeLabel({ Size = UDim2.new(1, -20, 0, 40), Position = UDim2.new(0, 10, 0, 110), Text = #bag == 0 and "Your bag is empty" or "Nothing matches this filter", TextSize = 12, TextColor3 = Color3.fromRGB(130, 130, 150) }, middle)
 		end
-		for order, entry in ipairs(filtered) do
+		for order, entry in ipairs(swapMode and {} or filtered) do
 			local item = entry.Item
 			local isSel = selected and selected.Id == item.Id
 			local tile = makeButton({ Text = "", LayoutOrder = order, BackgroundColor3 = isSel and Color3.fromRGB(70, 74, 104) or Color3.fromRGB(34, 36, 54), AutoButtonColor = true }, grid, function()

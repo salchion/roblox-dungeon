@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Aug_Synergy  <font color='#{number1}aa{number2}c{number3}'>Augment synergy triggered</font>", "8월 시너지 <font color='#{number1}aa{number2}c{number3}'> 시너지 발동됨</font>" },
+		{ "✅ Railgun equipped! (Bounces to {number1} nearby enemies · Longest range)", "✅ 레일건을 장착했습니다! (주변의 {number1}명의 적에게 반사 효과를 적용합니다 · 가장 긴 사거리)" },
+		{ "{number1} hours of idle gold ({number2} G) piled up!\n(Idle income bonus +{number3}% active)", "{number1}시간 동안 쌓인 골드 ({number2}G)가 누적되었습니다!\n(유휴 수입 보너스 +{number3}% 활성화됨)" },
+		{ "Weapons reached {number1} / {number2}  ·  Enhance your weapon to meet the next one", "도달한 무기 {number1} / {number2}  ·  무기를 강화하면 다음 무기를 만나요" },
 		{ "👑 Kill goal reached! Defeat the Lord of Zone {number1} to open the gate!", "👑 처치 목표 달성! {number1}구역 군주를 쓰러뜨려 문을 여세요!" },
 		{ "🏰 {number1} free dungeon entries left! Earn gear and tickets in dungeons", "🏰 무료 던전 입장이 {number1}회 남았어요! 던전에서 장비와 티켓을 얻으세요" },
 		{ "🎫 You have {number1} gear ticket(s) left! Draw gear at the gacha machine", "🎫 장비 티켓이 {number1}장 남았어요! 뽑기 기계에서 장비를 뽑아 보세요" },

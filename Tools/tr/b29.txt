@@ -802,3 +802,23 @@
 2833¦合成¦Verschmelzen¦Fusionner¦Fusionar¦Fundir¦合成¦합성
 2834¦⚡ 最強 (セット込み)¦⚡ Am stärksten (inkl. Sets)¦⚡ Le plus fort (sets compris)¦⚡ Más fuerte (con sets)¦⚡ Mais forte (com sets)¦⚡ 最强（含套装）¦⚡ 최강 (세트 포함)
 2835¦最強 (セット込み)¦Am stärksten (inkl. Sets)¦Le plus fort (sets compris)¦Más fuerte (con sets)¦Mais forte (com sets)¦最强（含套装）¦최강 (세트 포함)
+2836¦現在のビルド¦Aktueller Build¦Build actuel¦Build actual¦Build atual¦当前流派¦지금 빌드
+2837¦疾風の¦Sturmgeborener¦Né du vent¦Del vendaval¦Do vendaval¦疾风¦질풍의
+2838¦森の¦Waldläufer-¦Sylvestre¦Silvestre¦Silvestre¦密林¦숲의
+2839¦古代の¦Uralter¦Ancien¦Ancestral¦Ancestral¦远古¦고대의
+2840¦灼熱の¦Glühender¦Ardent¦Abrasador¦Escaldante¦灼热¦작열하는
+2841¦氷結の¦Frostgebundener¦Givré¦Gélido¦Gélido¦寒霜¦서리의
+2842¦溶岩の¦Glutflüssiger¦En fusion¦Fundido¦Fundido¦熔岩¦화염의
+2843¦影の¦Schattenhafter¦Ombreux¦Sombrío¦Sombrio¦暗影¦그림자
+2844¦深淵の¦Abgründiger¦Abyssal¦Abisal¦Abissal¦深渊¦심연의
+2845¦戦士¦Krieger¦Guerrier¦Guerrero¦Guerreiro¦战士¦전사
+2846¦狙撃手¦Scharfschütze¦Tireur d'élite¦Tirador¦Atirador¦神射手¦저격수
+2847¦魔術師¦Magier¦Mage¦Mago¦Mago¦法师¦마법사
+2848¦破壊者¦Zerstörer¦Destructeur¦Destructor¦Destruidor¦毁灭者¦파괴자
+2849¦盗賊¦Schurke¦Voleur¦Pícaro¦Ladino¦盗贼¦도적
+2850¦おすすめ¦Empfohlen¦Recommandé¦Recomendado¦Recomendado¦推荐¦추천
+2851¦セット発動!¦Set aktiv!¦Set activé !¦¡Set activo!¦Set ativo!¦套装生效!¦세트 켜짐!
+2852¦カーソルで比較 · ⚡ = 戦闘力の変化 (セットボーナス + セット効果込み)¦Zum Vergleichen darüberfahren · ⚡ = Kraftänderung (inkl. Set-Bonus + Set-Effekt)¦Survolez pour comparer · ⚡ = variation de puissance (bonus + effet de set inclus)¦Pasa el cursor para comparar · ⚡ = cambio de poder (con bonus y efecto de set)¦Passe o cursor para comparar · ⚡ = mudança de poder (com bônus e efeito de set)¦悬停比较 · ⚡ = 战力变化（含套装加成与套装效果）¦마우스를 올리면 비교 · ⚡ = 전투력 변화 (세트 보너스 + 세트 효과 포함)
+2853¦この部位の装備はまだありません¦Noch keine andere Ausrüstung für diesen Platz¦Aucun autre équipement pour cet emplacement¦Aún no hay otro equipo para esta ranura¦Ainda não há outro equipamento para este espaço¦该部位暂无其他装备¦이 칸에 낄 다른 장비가 아직 없어요
+2854¦✔ 最強装備中。部位を押して交換¦✔ Beste Ausrüstung an. Platz antippen zum Tauschen¦✔ Meilleur équipement porté. Touchez un emplacement pour changer¦✔ Mejor equipo puesto. Toca una ranura para cambiar¦✔ Melhor equipamento. Toque num espaço para trocar¦✔ 已穿最强装备。点部位来更换¦✔ 최강 장비 착용 중. 칸을 눌러 바꿔 끼기
+2855¦フィールドのモンスターとボスから出る¦droppt von Feldmonstern & Bossen¦tombe des monstres et boss du terrain¦cae de monstruos y jefes del campo¦cai de monstros e chefes do campo¦野外怪物与首领掉落¦필드 몬스터·보스에게서 나와요

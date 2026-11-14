@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "every {number1}s shock shots at {number2} enemies, burst radius {number3}", "toutes les {number1} s des tirs de choc sur {number2} ennemis, rayon d'explosion {number3}" },
+		{ "👑 Field Boss defeated! Tickets +{number1}, loot dropped", "👑 Boss du terrain vaincu ! Tickets +{number1}, butin lâché" },
+		{ "👑 Field Boss defeated! Tickets +{number1} loot dropped", "👑 Boss de champ vaincu ! +{number1} tickets de butin récupérés" },
+		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3}", "🔒 La porte est fermée ! Battez les monstres de la zone {number1} : {number2}/{number3}" },
+		{ "▲ +{number1}% better than your current gear! (I → Bag)", "▲ +{number1}% mieux que votre équipement ! (I → Sac)" },
 		{ "Monster HP x{number1} · ATK x{number2}   |   Reward x{number3}   (Lv.{number4}~)", "PV du monstre x{number1} · ATQ x{number2}   |   Récompense x{number3}   (Niv.{number4}~)" },
 		{ "🥇 {player1}\n⚡ {number1} Lv.{number2}\nSpell Tome · Mythic Era +{number3}", "🥇 {player1}\n⚡ {number1} Niveau {number2}\nLivre de sorts · Ère mythique +{number3}" },
 		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "Réussissez {number2} améliorations ✅, appuyez pour réclamer !" },

@@ -4,6 +4,15 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎯 Goal: Defeat Zone {number1} Lord", "🎯 目标:击败区域{number1}的领主" },
+		{ "Explodes on hit (radius {number1})", "命中时爆炸(范围 {number1})" },
+		{ "Not enough gold (need {number1} G)", "金币不足(需要 {number1} 金币)" },
+		{ "▲ {number1} unspent (T)  ·  {number2} / {number3} XP", "▲ 未使用 {number1} 点 (T)  ·  {number2} / {number3} 经验" },
+		{ "Enter Fever Time {number1} time(s)", "进入狂热时间{number1}次" },
+		{ "Upgrade a gear piece to +{number1}", "将一件装备强化到+{number1}" },
+		{ "▲ Better than equipped  +{number1}", "▲ 比当前装备更好  +{number1}" },
+		{ "Damage Taken Reduction +{number1}%", "受到伤害减免 +{number1}%" },
+		{ "Damage Taken Reduction -{number1}%", "受到伤害减免 -{number1}%" },
 		{ "Zone {number1} · Gold {number2} + Set gear {number3}", "区域{number1} · 金币 {number2} + 套装 {number3}" },
 		{ "Lord of Forest  ·  Zone {number1}", "森林之王 · 区域 {number1}" },
 		{ "Zone {number1} · Shockwave Shot  ", "区域 {number1} · 冲击波射击" },
