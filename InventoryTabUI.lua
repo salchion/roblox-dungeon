@@ -212,7 +212,49 @@ local function buildInventoryTab(state)
 	--   가운데: 가방 (부위 / 세트 칩으로 거르기 + 정렬, 안에서만 스크롤) + 합성
 	--   오른쪽: 고른 장비의 상세 / 비교 / 강화 / 장착
 	-- (예전: 장비 칸 -> 바꿔 끼기 줄 -> 가방이 위아래로 길게 이어져서 계속 스크롤해야 했다)
-	local MAIN_H, LEFT_W, RIGHT_W = 520, 248, 286 -- (왼쪽 / 오른쪽을 줄이고 가방을 넓혔다: 한 줄에 타일 5개)
+	local MAIN_H, LEFT_W, RIGHT_W = 478, 248, 286 -- (왼쪽 / 오른쪽을 줄이고 가방을 넓혔다: 한 줄에 타일 5개)
+	-- 다음에 할 일 한 줄: 무엇을 하면 좋은지 바로 알려 주고 버튼 하나로 한다 (화면이 복잡해서 뭘 해야 할지 몰랐다)
+	do
+		local tip, tipItem
+		local bestUp, bestDiff = nil, 0
+		local setPick, setTier = nil, 0
+		for _, item in ipairs(bag) do
+			local current = equipped[item.Slot]
+			if not current then
+				if not tip then
+					tip = string.format("🛡 Your <b>%s</b> slot is empty — equip one", Config.GetGearSlot(item.Slot) and Config.GetGearSlot(item.Slot).Name or item.Slot)
+					tipItem = item
+				end
+			else
+				local diff = item.Score - current.Score
+				if item.Set and Config.Sets[item.Set] and current.Set ~= item.Set then
+					local after = (setCounts[item.Set] or 0) + 1
+					local tierNow = (after >= 3 and 3) or (after >= 2 and 2) or 0
+					if tierNow > 0 and tierNow > setTier and diff > -current.Score * 0.25 then setPick, setTier = item, tierNow end
+				end
+				if diff > bestDiff then bestUp, bestDiff = item, diff end
+			end
+		end
+		if not tip and setPick then
+			local def = Config.Sets[setPick.Set]
+			tip = string.format("🧩 Equip this %s → <b>%s %d/3</b>: set bonus ON (and its set effect)", Config.GetGearSlot(setPick.Slot) and Config.GetGearSlot(setPick.Slot).Name or setPick.Slot, def.Name, setTier)
+			tipItem = setPick
+		elseif not tip and bestUp then
+			tip = string.format("▲ A better <b>%s</b> is in your bag (Score +%d)", Config.GetGearSlot(bestUp.Slot) and Config.GetGearSlot(bestUp.Slot).Name or bestUp.Slot, bestDiff)
+			tipItem = bestUp
+		end
+		local guide = newRow(36, tipItem and Color3.fromRGB(40, 60, 46) or Color3.fromRGB(30, 32, 48))
+		makeLabel({ Size = UDim2.new(1, -150, 1, 0), Position = UDim2.new(0, 12, 0, 0), RichText = true, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left,
+			Text = tip or "✔ You're wearing your best gear. Tap a slot to compare, or collect set gear in the field" }, guide)
+		if tipItem then
+			local go = makeButton({ Size = UDim2.new(0, 120, 0, 28), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -8, 0.5, 0), Text = "Equip it", TextSize = 13, Font = Enum.Font.GothamBlack, BackgroundColor3 = GREEN }, guide, function()
+				Remotes.Inventory:FireServer("Equip", tipItem.Id)
+			end)
+			rounded(go, 14)
+			local show = makeButton({ Size = UDim2.new(0, 0, 0, 0), Text = "", BackgroundTransparency = 1 }, guide) -- (자리 맞춤)
+			show:Destroy()
+		end
+	end
 	local main = newRow(MAIN_H, Color3.fromRGB(20, 22, 34))
 	main.BackgroundTransparency = 1
 	local function panel(x, width, widthScale)
@@ -486,7 +528,7 @@ local function buildInventoryTab(state)
 			makeLabel({ Size = UDim2.new(1, -16, 0, 16), Position = UDim2.new(0, 10, 0, 84), RichText = true, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(154, 215, 255),
 				Text = string.format("%s · %d", table.concat(caption, " · "), #filtered) }, middle)
 		end
-		local grid = create("ScrollingFrame", { Size = UDim2.new(1, -8, 1, -160), Position = UDim2.new(0, 4, 0, 102), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 4,
+		local grid = create("ScrollingFrame", { Size = UDim2.new(1, -8, 1, -156), Position = UDim2.new(0, 4, 0, 102), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 4,
 			CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y }, middle)
 		create("UIGridLayout", { CellSize = UDim2.new(0, 54, 0, 54), CellPadding = UDim2.new(0, 8, 0, 10), SortOrder = Enum.SortOrder.LayoutOrder }, grid)
 		create("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8) }, grid)
@@ -524,25 +566,42 @@ local function buildInventoryTab(state)
 				end
 			end
 		end
-		-- 합성 (맨 아래 한 줄)
+		-- 합성: 가방 아래 버튼 하나 -> 누르면 가방 자리에 합성 화면이 크게 열린다 (예전: 좁은 칸에 버튼 4개가 쪼그라들어 무엇인지 몰랐다)
 		local I = Config.Inventory
-		local fuse = create("Frame", { Size = UDim2.new(1, -12, 0, 48), Position = UDim2.new(0, 6, 1, -54), BackgroundColor3 = Color3.fromRGB(34, 28, 50), BorderSizePixel = 0 }, middle)
-		rounded(fuse, 10)
-		makeLabel({ Size = UDim2.new(0, 46, 1, 0), Position = UDim2.new(0, 6, 0, 0), RichText = true, TextSize = 11, Font = Enum.Font.GothamBlack, Text = "<font color='#c9a6ff'>⚗ Fuse</font>" }, fuse)
 		local have = state.Fusable or {}
+		local anyReady = false
 		for r = 1, 4 do
-			local need, cost = I.FuseNeed[r], I.FuseEssence[r]
-			local count = have[r] or 0
-			local ready = count >= need and (state.Essence or 0) >= cost
-			local toC = Config.Gear.RarityColors[r + 1]
-			local button = makeButton({
-				Size = UDim2.new(0.25, -16, 0, 38), Position = UDim2.new((r - 1) * 0.25, 54 - (r - 1) * 13, 0.5, -19), RichText = true, TextSize = 10, Font = Enum.Font.GothamBold,
-				Text = string.format("→ <font color='#%s'><b>%s</b></font>\n<font size='9' color='#cfd6e6'>%d/%d · ✨%d</font>", toC:ToHex(), Config.Gear.RarityNames[r + 1], count, need, cost),
-				BackgroundColor3 = ready and Color3.fromRGB(96, 64, 160) or Color3.fromRGB(52, 48, 66), AutoButtonColor = ready,
-			}, fuse, function()
-				if ready then Remotes.Inventory:FireServer("Fuse", r) end
-			end)
-			button.TextTransparency = ready and 0 or 0.35
+			if (have[r] or 0) >= I.FuseNeed[r] and (state.Essence or 0) >= I.FuseEssence[r] then anyReady = true end
+		end
+		local fuseOpen = menuContent:GetAttribute("FuseOpen") == true
+		local fuseToggle = makeButton({ Size = UDim2.new(1, -12, 0, 40), Position = UDim2.new(0, 6, 1, -46), RichText = true, TextSize = 13, Font = Enum.Font.GothamBlack,
+			Text = fuseOpen and "◀ Back to bag" or ("⚗ Fuse spare gear into a higher rarity" .. (anyReady and "  <font color='#78ff8c'>● ready</font>" or "")),
+			BackgroundColor3 = anyReady and Color3.fromRGB(96, 64, 160) or Color3.fromRGB(52, 48, 72) }, middle, function()
+			menuContent:SetAttribute("FuseOpen", not fuseOpen)
+			refreshMenu()
+		end)
+		rounded(fuseToggle, 20)
+		if fuseOpen then
+			local sheet = create("Frame", { Size = UDim2.new(1, -8, 1, -54), Position = UDim2.new(0, 4, 0, 4), BackgroundColor3 = Color3.fromRGB(30, 26, 46), BorderSizePixel = 0, ZIndex = 20 }, middle)
+			rounded(sheet, 12)
+			makeLabel({ Size = UDim2.new(1, -20, 0, 54), Position = UDim2.new(0, 10, 0, 6), RichText = true, TextWrapped = true, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 21,
+				Text = "<font size='14' color='#c9a6ff'><b>⚗ Fuse</b></font>\nSpare gear of the same rarity + ✨ Essence → 1 piece of the next rarity. Set, unique and equipped gear are never used." }, sheet)
+			for r = 1, 4 do
+				local need, cost = I.FuseNeed[r], I.FuseEssence[r]
+				local count = have[r] or 0
+				local ready = count >= need and (state.Essence or 0) >= cost
+				local fromC, toC = Config.Gear.RarityColors[r], Config.Gear.RarityColors[r + 1]
+				local rowF = create("Frame", { Size = UDim2.new(1, -16, 0, 58), Position = UDim2.new(0, 8, 0, 64 + (r - 1) * 64), BackgroundColor3 = Color3.fromRGB(40, 36, 60), BorderSizePixel = 0, ZIndex = 21 }, sheet)
+				rounded(rowF, 10)
+				create("UIStroke", { Color = ready and toC or Color3.fromRGB(70, 66, 96), Thickness = ready and 1.8 or 1 }, rowF)
+				makeLabel({ Size = UDim2.new(1, -110, 1, 0), Position = UDim2.new(0, 10, 0, 0), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 22,
+					Text = string.format("<font color='#%s'><b>%s</b></font> x%d  →  <font color='#%s'><b>%s</b></font> x1\n<font size='11' color='%s'>You have %d · ✨%d</font>", fromC:ToHex(), Config.Gear.RarityNames[r], need, toC:ToHex(), Config.Gear.RarityNames[r + 1], count >= need and "#78ff8c" or "#aab0cc", count, cost) }, rowF)
+				local b = makeButton({ Size = UDim2.new(0, 90, 0, 36), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Text = ready and "Fuse" or "Not enough", TextSize = ready and 14 or 10, Font = Enum.Font.GothamBlack,
+					BackgroundColor3 = ready and Color3.fromRGB(110, 70, 190) or Color3.fromRGB(56, 52, 70), AutoButtonColor = ready, ZIndex = 22 }, rowF, function()
+					if ready then Remotes.Inventory:FireServer("Fuse", r) end
+				end)
+				rounded(b, 18)
+			end
 		end
 	end
 

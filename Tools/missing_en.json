@@ -2820,5 +2820,17 @@
 "Unlocks when you defeat the Zone {number1} lord",
 "Gold max · gear adds +3",
 "⏸ {number1} waiting · 📌 Pin one to swap it in",
-"{text1} {text2} set gear → open Gear"
+"{text1} {text2} set gear → open Gear",
+"🛡 Your <b>{text1}</b> slot is empty — equip one",
+"🧩 Equip this {text1} → <b>{text2} {number3}/3</b>: set bonus ON (and its set effect)",
+"▲ A better <b>{text1}</b> is in your bag (Score +{number2})",
+"✔ You're wearing your best gear. Tap a slot to compare, or collect set gear in the field",
+"Equip it",
+"◀ Back to bag",
+"⚗ Fuse spare gear into a higher rarity",
+"● ready",
+"Spare gear of the same rarity + ✨ Essence → 1 piece of the next rarity. Set, unique and equipped gear are never used.",
+"You have {number1} · ✨{number2}",
+"Not enough",
+"Fuse"
 ]
