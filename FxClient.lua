@@ -1235,6 +1235,7 @@ local PLASTIC, METAL = Enum.Material.SmoothPlastic, Enum.Material.Metal
 local liveTrails = 0
 
 local liveCores = 0 -- 하얀 심이 들어간 적 탄 수 (상한)
+local liveLights = 0 -- 점 조명이 붙은 적 탄 수 (상한)
 local function spawnProjectile(event)
 	-- { "P", id, origin, direction, speed, size, color, style, life, path }
 	-- path: nil(직선) / { "sine", 진폭, 빈도 } / { "curve", 각속도 } / { "lob", 착지점, 높이 } / { "home" }
@@ -1247,13 +1248,22 @@ local function spawnProjectile(event)
 	local look = CFrame.lookAt(origin, origin + direction)
 	local baseColor = part.Color
 	local pieces -- 메인 부품이 자리 잡고 workspace 에 들어간 뒤에 붙일 덧붙임 부품들
+	-- (창 / 다트 / 바늘 / 번개: 네모 막대 -> 둥근 원통 + 앞에 뾰족한 촉. 원통은 길이가 X 라서 비행 방향으로 눕힌다: 이 부품 안에서 +X = 앞)
+	local ALONG = CFrame.Angles(0, math.rad(90), 0)
 	if style == "Spear" then
-		part.Size = Vector3.new(size * 0.45, size * 0.45, size * 3.6)
-		part.CFrame = look
-		part.Color = part.Color:Lerp(WHITE, 0.35)
+		part.Shape = CYLINDER
+		part.Size = Vector3.new(size * 3.2, size * 0.34, size * 0.34)
+		part.CFrame = look * ALONG
+		pieces = function()
+			addPiece(part, BALL, Vector3.new(size * 0.6, size * 0.6, size * 0.6), CFrame.new(size * 1.6, 0, 0), baseColor:Lerp(WHITE, 0.5))
+		end
 	elseif style == "Dart" then
-		part.Size = Vector3.new(size * 0.3, size * 0.3, size * 2.4)
-		part.CFrame = look
+		part.Shape = CYLINDER
+		part.Size = Vector3.new(size * 2.2, size * 0.24, size * 0.24)
+		part.CFrame = look * ALONG
+		pieces = function()
+			addPiece(part, BALL, Vector3.new(size * 0.45, size * 0.45, size * 0.45), CFrame.new(size * 1.1, 0, 0), baseColor:Lerp(WHITE, 0.5))
+		end
 	elseif style == "Shard" then
 		part.Size = Vector3.new(size * 0.9, size * 0.9, size * 1.9)
 		part.CFrame = look * CFrame.Angles(0, 0, math.rad(45))
@@ -1262,8 +1272,9 @@ local function spawnProjectile(event)
 		part.Size = Vector3.new(k * 0.4, k * 0.2, k * 0.55)
 		part.CFrame = look
 		pieces = function()
-			for _, side in ipairs({ -1, 1 }) do
-				addPiece(part, BLOCK, Vector3.new(k * 0.26, k * 0.18, k * 1.6), CFrame.new(side * k * 0.6, 0, k * 0.5) * CFrame.Angles(0, math.rad(side * 50), 0), baseColor:Lerp(WHITE, 0.2))
+			for _, side in ipairs({ -1, 1 }) do -- 날개: 둥근 원통 + 끝에 구슬 (네모 막대 대신)
+				addPiece(part, CYLINDER, Vector3.new(k * 1.6, k * 0.22, k * 0.22), CFrame.new(side * k * 0.6, 0, k * 0.5) * CFrame.Angles(0, math.rad(side * 50), 0) * ALONG, baseColor:Lerp(WHITE, 0.2))
+				addPiece(part, BALL, Vector3.new(k * 0.3, k * 0.3, k * 0.3), CFrame.new(side * k * 1.2, 0, k * 1.0), baseColor:Lerp(WHITE, 0.4))
 			end
 		end
 	elseif style == "Halo" then -- 후광 고리: 빛나는 원판 + 어두운 속 + 밝은 핵
@@ -1294,12 +1305,14 @@ local function spawnProjectile(event)
 		end
 	elseif style == "Needle" then -- 가시 묶음: 가는 바늘 세 개
 		local k = size
-		part.Size = Vector3.new(k * 0.2, k * 0.2, k * 2.8)
-		part.CFrame = look
+		part.Shape = CYLINDER
+		part.Size = Vector3.new(k * 2.8, k * 0.2, k * 0.2)
+		part.CFrame = look * ALONG
 		pieces = function()
-			for _, side in ipairs({ -1, 1 }) do
-				addPiece(part, BLOCK, Vector3.new(k * 0.15, k * 0.15, k * 2.0), CFrame.new(side * k * 0.3, 0, k * 0.4) * CFrame.Angles(0, math.rad(side * 7), 0), baseColor:Lerp(WHITE, 0.25))
+			for _, side in ipairs({ -1, 1 }) do -- (이 부품 안에서 +X = 앞, +Z = 옆)
+				addPiece(part, CYLINDER, Vector3.new(k * 2.0, k * 0.16, k * 0.16), CFrame.new(-k * 0.4, 0, side * k * 0.3) * CFrame.Angles(0, math.rad(side * 7), 0), baseColor:Lerp(WHITE, 0.25))
 			end
+			addPiece(part, BALL, Vector3.new(k * 0.32, k * 0.32, k * 0.32), CFrame.new(k * 1.4, 0, 0), baseColor:Lerp(WHITE, 0.5))
 		end
 	elseif style == "Bomb" then -- 폭탄: 어두운 쇠공 + 심지 + 타는 불꽃
 		part.Shape = BALL
@@ -1359,12 +1372,13 @@ local function spawnProjectile(event)
 		end
 	elseif style == "Bolt" then -- 전기 볼트: 밝은 심 + 앞뒤로 꺾인 번개 조각
 		local k = size
-		part.Size = Vector3.new(k * 0.25, k * 0.25, k * 2.2)
-		part.CFrame = look
+		part.Shape = CYLINDER
+		part.Size = Vector3.new(k * 2.2, k * 0.26, k * 0.26)
+		part.CFrame = look * ALONG
 		part.Color = baseColor:Lerp(WHITE, 0.5)
-		pieces = function()
-			addPiece(part, BLOCK, Vector3.new(k * 0.18, k * 0.18, k * 1.1), CFrame.new(k * 0.25, 0, -k * 0.5) * CFrame.Angles(0, math.rad(35), 0), baseColor)
-			addPiece(part, BLOCK, Vector3.new(k * 0.18, k * 0.18, k * 1.1), CFrame.new(-k * 0.25, 0, k * 0.5) * CFrame.Angles(0, math.rad(35), 0), baseColor)
+		pieces = function() -- 앞뒤로 꺾인 번개 마디 (둥근 원통)
+			addPiece(part, CYLINDER, Vector3.new(k * 1.1, k * 0.2, k * 0.2), CFrame.new(k * 0.5, 0, k * 0.25) * CFrame.Angles(0, math.rad(35), 0), baseColor)
+			addPiece(part, CYLINDER, Vector3.new(k * 1.1, k * 0.2, k * 0.2), CFrame.new(-k * 0.5, 0, -k * 0.25) * CFrame.Angles(0, math.rad(35), 0), baseColor)
 		end
 	elseif style == "Star" then -- 별 표창: 납작한 네 갈래 별 + 밝은 가운데
 		local k = size * 1.3
@@ -1388,9 +1402,9 @@ local function spawnProjectile(event)
 		part.Size = Vector3.new(size, size, size)
 		part.Position = origin
 	end
-	part.Color = part.Color:Lerp(Color3.fromRGB(128, 128, 140), 0.3) -- 너무 쨍하지 않게 살짝 가라앉힌다 (특히 보스 탄)
+	part.Color = part.Color:Lerp(Color3.fromRGB(128, 128, 140), 0.08) -- (예전 0.3: 회색으로 가라앉혀서 설원 같은 밝은 바닥에서 탄이 거의 안 보였다. 진한 색 그대로 + 아래 어두운 테두리)
 	-- 꼬리 궤적: 탄이 지나간 자리가 잠깐 남아서 어디서 날아오는지 / 어느 방향인지 더 잘 읽힌다 (동시에 40줄까지만, 저사양 모드는 생략: 탄이 많을 때 렉 방지)
-	if liveTrails < 40 and not lowSpecOn() and size >= 1.1 then
+	if liveTrails < 40 and not lowSpecOn() and size >= 0.8 then
 		liveTrails += 1
 		task.delay(life + 0.3, function() liveTrails -= 1 end)
 		local width = math.clamp(size * 0.55, 0.5, 2.4)
@@ -1401,15 +1415,21 @@ local function spawnProjectile(event)
 		trail.Attachment0, trail.Attachment1 = a0, a1
 		trail.Lifetime = (style == "Spear" or style == "Dart" or style == "Needle") and 0.22 or 0.32
 		trail.Color = ColorSequence.new(part.Color)
-		trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.25), NumberSequenceKeypoint.new(1, 1) })
-		trail.LightEmission = 0.6
+		trail.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) })
+		trail.WidthScale = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(1, 0) }) -- 끝으로 가늘어지는 꼬리
+		trail.LightEmission = 0.4
 		trail.FaceCamera = true
 		trail.Parent = part
 	end
-	local light = Instance.new("PointLight")
-	light.Range, light.Brightness, light.Color = 6, 0.5, part.Color
-	light.Shadows = false
-	light.Parent = part
+	-- 점 조명은 큰 탄(보스)만, 동시에 12개까지 (예전: 모든 탄에 하나씩 -> 탄막이 많으면 무거웠다)
+	if size >= 2 and liveLights < 12 then
+		liveLights += 1
+		task.delay(life + 0.3, function() liveLights -= 1 end)
+		local light = Instance.new("PointLight")
+		light.Range, light.Brightness, light.Color = 6, 0.5, part.Color
+		light.Shadows = false
+		light.Parent = part
+	end
 	part.Parent = fxFolder
 	Debris:AddItem(part, (life or 5) + 0.6) -- 가장 먼저 수명을 걸어 둔다: 아래에서 오류가 나도 탄이 남아 있지 않게
 	if pieces then
@@ -1423,6 +1443,23 @@ local function spawnProjectile(event)
 		task.delay(life + 0.3, function() liveCores -= 1 end)
 		part.Transparency = 0.18
 		pcall(addPiece, part, BALL, part.Size * 0.48, CFrame.identity, Color3.fromRGB(255, 252, 240), Enum.Material.Neon, 0)
+		-- 어두운 테두리 고리: 밝은 바닥(설원 / 사막)에서도 탄의 윤곽이 또렷하다 (화면을 향하는 얇은 고리 하나)
+		local ring = Instance.new("BillboardGui")
+		ring.Size = UDim2.new(part.Size.X * 1.12, 0, part.Size.X * 1.12, 0)
+		ring.LightInfluence = 0
+		ring.Parent = part
+		local circle = Instance.new("Frame")
+		circle.Size = UDim2.new(1, 0, 1, 0)
+		circle.BackgroundTransparency = 1
+		circle.Parent = ring
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(1, 0)
+		corner.Parent = circle
+		local stroke = Instance.new("UIStroke")
+		stroke.Color = Color3.fromRGB(42, 14, 58)
+		stroke.Thickness = 2.5
+		stroke.Transparency = 0.25
+		stroke.Parent = circle
 	end
 
 	local entry = { Part = part, Pop = (style == "Missile" or style == "Seeker") }
