@@ -125,22 +125,19 @@ local function buildInventoryTab(state)
 		return string.rep("●", math.min(count, 3)) .. string.rep("○", math.max(0, 3 - count))
 	end
 	-- 세트 장비 표시: 세트색 배경 틴트 + 안쪽 테두리 + 구역 리본 (2부위 이상 맞추면 더 밝고 숨 쉬듯 빛남)
-	local function setDecor(tile, setKey, pieces, ribbonPos, ribbonSize, radius)
+	-- 세트 표시: 칸 오른쪽 위에 그 구역 아이콘이 든 세트색 동그라미 하나 (예전: 세트색 바탕 물들이기 + 아래 "Z3" 글자 띠 -> 지저분했다)
+	--   세트 효과가 켜진 세트(2부위 이상)는 동그라미 테두리가 하얗게 빛난다. (ribbonPos / ribbonSize / radius 는 예전 호출과 맞추려고 남긴 인자)
+	local function setDecor(tile, setKey, pieces, _ribbonPos, _ribbonSize, _radius)
 		local def = setKey and Config.Sets[setKey]
 		if not def then return end
 		local active = (pieces or 0) >= 2
-		local tint = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = def.Color, BorderSizePixel = 0, ZIndex = 0, Active = false }, tile)
-		rounded(tint, radius or 8)
-		create("UIGradient", { Rotation = 90, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, active and 0.4 or 0.62), NumberSequenceKeypoint.new(1, active and 0.8 or 0.92) }) }, tint)
-		local inner = create("Frame", { Size = UDim2.new(1, -6, 1, -6), Position = UDim2.new(0, 3, 0, 3), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 2, Active = false }, tile)
-		rounded(inner, (radius or 8) - 2)
-		local stroke = create("UIStroke", { Color = def.Color, Thickness = active and 2 or 1.5, Transparency = active and 0 or 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, inner)
+		local badge = create("Frame", { Size = UDim2.new(0, 20, 0, 20), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -3, 0, 3), BackgroundColor3 = def.Color, BorderSizePixel = 0, ZIndex = 6, Active = false }, tile)
+		create("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
+		local stroke = create("UIStroke", { Color = active and Color3.new(1, 1, 1) or Color3.fromRGB(22, 18, 44), Thickness = active and 2 or 1.8, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, badge)
 		if active then
-			TweenService:Create(stroke, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.6 }):Play()
+			TweenService:Create(stroke, TweenInfo.new(0.9, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.5 }):Play()
 		end
-		local pill = create("Frame", { Size = ribbonSize, Position = ribbonPos, BackgroundColor3 = def.Color, BorderSizePixel = 0, ZIndex = 3, Active = false }, tile)
-		rounded(pill, 6)
-		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = def.Zone and ("Z" .. def.Zone) or "Set", TextSize = 10, TextColor3 = Color3.fromRGB(20, 20, 30), Font = Enum.Font.GothamBlack, TextWrapped = false, ZIndex = 4 }, pill)
+		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = def.Icon or "★", TextSize = 12, TextWrapped = false, AutoLocalize = false, ZIndex = 7 }, badge)
 	end
 
 	local SLOT_ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Weapon = "🔫", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
@@ -655,9 +652,10 @@ local function buildInventoryTab(state)
 				and string.format("<font color='#9ad7ff'><b>🔁 %s %s</b></font>  <font color='#aab0cc'>%d in bag · tap one to compare and equip</font>", SLOT_ICONS[swapSlot] or "", slotDef and slotDef.Name or swapSlot, #candidates)
 				or string.format("<font color='#9ad7ff'><b>🔁 %s %s</b></font>  <font color='#8f94b0'>No other gear for this slot in your bag</font>", SLOT_ICONS[swapSlot] or "", slotDef and slotDef.Name or swapSlot) }, swapRow)
 		if #candidates > 0 then
-			local strip = create("ScrollingFrame", { Size = UDim2.new(1, -20, 0, 80), Position = UDim2.new(0, 10, 0, 28), BackgroundTransparency = 1, BorderSizePixel = 0,
+			local strip = create("ScrollingFrame", { Size = UDim2.new(1, -20, 0, 82), Position = UDim2.new(0, 10, 0, 26), BackgroundTransparency = 1, BorderSizePixel = 0,
 				ScrollBarThickness = 4, ScrollingDirection = Enum.ScrollingDirection.X, CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.X }, swapRow)
 			create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }, strip)
+			create("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingLeft = UDim.new(0, 6) }, strip) -- (오른쪽 위 세트 동그라미가 잘리지 않게)
 			for order, entry in ipairs(candidates) do
 				local item = entry.Item
 				local tile = makeButton({ Size = UDim2.new(0, 68, 0, 70), Text = "", LayoutOrder = order,
@@ -686,9 +684,8 @@ local function buildInventoryTab(state)
 					setDecor(tile, item.Set, setCounts[item.Set], UDim2.new(0, 4, 1, -15), UDim2.new(1, -8, 0, 12), 8)
 					if entry.SetGain >= 2 then -- 끼면 세트가 2 / 3부위가 된다: 초록 표시
 						-- 몇 구역 세트가 몇 부위가 되는지 같이 (예전: "3/3" 만 있어서 어느 세트인지 몰랐다)
-						local setZone = Config.Sets[item.Set].Zone
-						local tag = makeLabel({ Size = UDim2.new(1, -4, 0, 14), Position = UDim2.new(0, 2, 0, 2), Text = string.format("%s ▲%d/3", setZone and ("Z" .. setZone) or "Set", math.min(3, entry.SetGain)), TextSize = 10, Font = Enum.Font.GothamBlack,
-							TextWrapped = false, TextColor3 = Color3.fromRGB(20, 30, 20), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(120, 255, 140), ZIndex = 5 }, tile)
+						local tag = makeLabel({ Size = UDim2.new(0, 34, 0, 14), Position = UDim2.new(0, -3, 1, -30), Text = string.format("▲%d/3", math.min(3, entry.SetGain)), TextSize = 10, Font = Enum.Font.GothamBlack,
+							TextWrapped = false, TextColor3 = Color3.fromRGB(20, 30, 20), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(120, 255, 140), ZIndex = 7 }, tile) -- (어느 세트인지는 오른쪽 위 아이콘 동그라미가 보여 준다)
 						rounded(tag, 6)
 					end
 				end
@@ -754,7 +751,7 @@ local function buildInventoryTab(state)
 			compare = "▲"
 		end
 		if compare ~= "" then
-			makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(1, -16, 0, 3), Text = compare, TextSize = 10, TextColor3 = compare == "▲" and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 120, 120), Font = Enum.Font.GothamBlack }, tile)
+			makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(1, -16, 1, -17), Text = compare, TextSize = 10, TextColor3 = compare == "▲" and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 120, 120), Font = Enum.Font.GothamBlack }, tile)
 		end
 		if item.Unique then
 			makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0, 2, 0, 3), Text = "★", TextSize = 10, TextColor3 = Color3.fromRGB(255, 184, 77) }, tile)
