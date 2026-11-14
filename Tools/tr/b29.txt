@@ -800,3 +800,4 @@
 2831¦所持 {number1} · ✨{number2}¦Du hast {number1} · ✨{number2}¦Tu as {number1} · ✨{number2}¦Tienes {number1} · ✨{number2}¦Você tem {number1} · ✨{number2}¦拥有 {number1} · ✨{number2}¦가진 것 {number1}개 · ✨{number2}
 2832¦不足¦Zu wenig¦Pas assez¦Insuficiente¦Insuficiente¦不足¦부족
 2833¦合成¦Verschmelzen¦Fusionner¦Fusionar¦Fundir¦合成¦합성
+2834¦⚡ 最強 (セット込み)¦⚡ Am stärksten (inkl. Sets)¦⚡ Le plus fort (sets compris)¦⚡ Más fuerte (con sets)¦⚡ Mais forte (com sets)¦⚡ 最强（含套装）¦⚡ 최강 (세트 포함)

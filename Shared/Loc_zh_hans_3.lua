@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Zone {number1} · Gold {number2} + Set gear {number3}", "区域{number1} · 金币 {number2} + 套装 {number3}" },
 		{ "Lord of Forest  ·  Zone {number1}", "森林之王 · 区域 {number1}" },
 		{ "Zone {number1} · Shockwave Shot  ", "区域 {number1} · 冲击波射击" },
 		{ "Spell Tome · Rusty Era +{number1}", "法术书 · 锈蚀时代 +{number1}" },

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "ガチャ_ポップ{number1} <font color='#{number2}aa{number3}c{number4}'>ガチャ結果：エピック</font>" },
 		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "{number1}時間のアイドル収入を即座に獲得（1日最大{number2}時間）" },
 		{ "🔒 Zone {number1} · Darklands Sealed\nOpen the previous gate first", "🔒 ゾーン {number1} · ダークランドが封鎖されました\nまず前のゲートを開けてください" },
 		{ "🔒 Zone {number1} · Snowfield Sealed\nOpen the previous gate first", "🔒 ゾーン {number1} · 雪原が封鎖されています\nまず前のゲートを開けてください" },

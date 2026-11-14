@@ -192,7 +192,7 @@ local function buildInventoryTab(state)
 		for i, key in ipairs(Config.Sets.ZoneKeys) do
 			if owned[key] and (owned[key] * 100 + i) > bestScore then bestSet, bestScore = key, owned[key] * 100 + i end
 		end
-		modeChip(0, "Best", "⚡ Best gear", Color3.fromRGB(80, 200, 130), not inSetMode)
+		modeChip(0, "Best", "⚡ Strongest (sets counted)", Color3.fromRGB(80, 200, 130), not inSetMode)
 		modeChip(1, bestSet or "Best", bestSet and "🛡 Set gear" or "🛡 Set gear <font size='10'>(no set yet)</font>", Color3.fromRGB(120, 150, 255), inSetMode, not bestSet)
 		if inSetMode then
 			makeLabel({ Size = UDim2.new(0, 14, 0, 32), LayoutOrder = 2, Text = "›", TextSize = 20, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(150, 156, 190) }, strip)

@@ -855,6 +855,7 @@ return {
 		["Spare gear of the same rarity + ✨ Essence → 1 piece of the next rarity. Set, unique and equipped gear are never used."] = "Équipement en trop de même rareté + ✨ Essence → 1 pièce de la rareté suivante. Les sets, uniques et équipés ne sont jamais utilisés.",
 		["Not enough"] = "Pas assez",
 		["Fuse"] = "Fusionner",
+		["⚡ Strongest (sets counted)"] = "⚡ Le plus fort (sets compris)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },

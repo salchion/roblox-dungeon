@@ -977,6 +977,7 @@ return {
 		["Spare gear of the same rarity + ✨ Essence → 1 piece of the next rarity. Set, unique and equipped gear are never used."] = "同じランクの余った装備 + ✨エッセンス → 一つ上のランク1個。セット・ユニーク・装備中は使いません。",
 		["Not enough"] = "不足",
 		["Fuse"] = "合成",
+		["⚡ Strongest (sets counted)"] = "⚡ 最強 (セット込み)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1088,6 +1089,5 @@ return {
 		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 選んだセットで引くゴールドが足りません！({number1}G必要)" },
 		{ "Sweep needs {number1} key(s). Defeat a field zone lord to get keys", "スイープには鍵が{number1}個必要です。フィールドの区域の君主を倒して鍵を手に入れましょう" },
 		{ "You can run {number1} effects at once. Turn another one off first", "同時に{number1}個の効果を発動できます。先に別の効果をオフにしてください" },
-		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "ガチャ_ポップ{number1} <font color='#{number2}aa{number3}c{number4}'>ガチャ結果：エピック</font>" },
 	},
 }

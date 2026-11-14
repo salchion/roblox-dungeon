@@ -730,6 +730,7 @@ return {
 		["Spare gear of the same rarity + ✨ Essence → 1 piece of the next rarity. Set, unique and equipped gear are never used."] = "同稀有度的多余装备 + ✨精华 → 1件更高稀有度装备。不会使用套装、独特和已穿戴装备。",
 		["Not enough"] = "不足",
 		["Fuse"] = "合成",
+		["⚡ Strongest (sets counted)"] = "⚡ 最强（含套装）",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1095,6 +1096,5 @@ return {
 		{ "▲ Better than equipped  +{number1}", "▲ 比当前装备更好  +{number1}" },
 		{ "Damage Taken Reduction +{number1}%", "受到伤害减免 +{number1}%" },
 		{ "Damage Taken Reduction -{number1}%", "受到伤害减免 -{number1}%" },
-		{ "Zone {number1} · Gold {number2} + Set gear {number3}", "区域{number1} · 金币 {number2} + 套装 {number3}" },
 	},
 }

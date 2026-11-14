@@ -416,15 +416,75 @@ function Inventory.AutoEquipBest(player, emptyOnly)
 	if player:GetAttribute("Zone") == "Dungeon" then
 		return 0, "You can't change gear in the dungeon."
 	end
-	if not emptyOnly then state.EquipMode = "Best" end -- 장착 방식: "최강 장비" (세트는 따지지 않고 부위마다 점수가 가장 높은 것)
-	local best = {}      -- [slotKey] = { Id, Score }
+	if not emptyOnly then state.EquipMode = "Best" end -- 장착 방식: "최강 장비" (세트 보너스 / 세트 효과까지 따져서 가장 센 조합)
+	-- 조합 비교: 부위마다 점수 최고(세트 무시) / 세트 하나 3부위 + 나머지 최고 / 세트 둘(3+3) 을 모두 계산해 "점수 + 세트 가치" 가 가장 높은 것.
+	--   (예전: 부위마다 점수만 봐서, 세트 장비로 맞추는 쪽이 실제 전투력이 더 높은데도 세트를 깨 버렸다)
+	--   세트 가치(점수 단위): 2부위 보너스 SET2, 3부위 보너스 SET3 추가, 세트 효과 단계는 부위마다 AUG (최대 3)
+	local SET2, SET3, AUG = 150, 220, 60
+	local function scoreOf(item) return Config.GetItemScore(item) end
+	local bySlot = {} -- [slot] = { {Id, Score, Set}... } 점수 높은 순
 	for id, item in pairs(state.Items) do
-		local score = Config.GetItemScore(item)
-		local current = best[item.Slot]
-		if not current or score > current.Score then
-			best[item.Slot] = { Id = id, Score = score }
+		bySlot[item.Slot] = bySlot[item.Slot] or {}
+		table.insert(bySlot[item.Slot], { Id = id, Score = scoreOf(item), Set = item.Set })
+	end
+	for _, list in pairs(bySlot) do table.sort(list, function(a, b) return a.Score > b.Score end) end
+	local function bestOfSet(slotKey, setKey)
+		for _, c in ipairs(bySlot[slotKey] or {}) do if c.Set == setKey then return c end end
+		return nil
+	end
+	local function value(pick)
+		local total, counts = 0, {}
+		for _, c in pairs(pick) do
+			total += c.Score
+			if c.Set then counts[c.Set] = (counts[c.Set] or 0) + 1 end
+		end
+		for _, n in pairs(counts) do
+			if n >= 2 then total += SET2 end
+			if n >= 3 then total += SET3 end
+			total += AUG * math.min(3, n)
+		end
+		return total
+	end
+	local function build(setList) -- 세트들을 차례로 (세트마다 점수 높은 3부위까지) 넣고 나머지 부위는 점수 최고
+		local pick, used = {}, {}
+		for _, setKey in ipairs(setList) do
+			local cands = {}
+			for slotKey in pairs(bySlot) do
+				if not used[slotKey] then
+					local c = bestOfSet(slotKey, setKey)
+					if c then table.insert(cands, c) end
+				end
+			end
+			table.sort(cands, function(a, b) return a.Score > b.Score end)
+			for i = 1, math.min(3, #cands) do
+				local c = cands[i]
+				for slotKey, list in pairs(bySlot) do
+					if table.find(list, c) then pick[slotKey] = c used[slotKey] = true end
+				end
+			end
+		end
+		for slotKey, list in pairs(bySlot) do
+			if not used[slotKey] then pick[slotKey] = list[1] end
+		end
+		return pick
+	end
+	local sets = {}
+	for _, list in pairs(bySlot) do for _, c in ipairs(list) do if c.Set and not table.find(sets, c.Set) then table.insert(sets, c.Set) end end end
+	local bestPick, bestValue = build({}), nil
+	bestValue = value(bestPick)
+	local function try(setList)
+		local pick = build(setList)
+		local v = value(pick)
+		if v > bestValue then bestPick, bestValue = pick, v end
+	end
+	for i, a in ipairs(sets) do
+		try({ a })
+		for j, b in ipairs(sets) do
+			if j ~= i then try({ a, b }) end
 		end
 	end
+	local best = {} -- [slotKey] = { Id, Score }
+	for slotKey, c in pairs(bestPick) do best[slotKey] = { Id = c.Id, Score = c.Score } end
 	local changed = 0
 	for slotKey, pick in pairs(best) do
 		if state.Equipped[slotKey] ~= pick.Id and (not emptyOnly or not state.Equipped[slotKey]) then
