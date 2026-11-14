@@ -801,6 +801,9 @@ return {
 		["Shock shots set their target on fire (2 Ignite stacks)"] = "Los disparos de choque prenden fuego al objetivo (2 cargas de ignición)",
 		["Slipstream"] = "Estela",
 		["Dashing (Q) instantly fires a shock shot volley (once every 1.5s). Needs the Rush talent"] = "Impulsarte (Q) dispara al instante una ráfaga de choque (cada 1,5 s). Requiere el talento Embestida",
+		["If equipped:"] = "Si lo equipas:",
+		["(bonus ON)"] = "(bono ACTIVO)",
+		["(bonus OFF)"] = "(bono INACTIVO)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1017,6 +1020,5 @@ return {
 		{ "Lasts +{number1}s · range +{number2}%: sweeps up swarms", "Dura +{number1} s · alcance +{number2} %: barre enjambres" },
 		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 Señor del Campo de Nieve (Zona {number1}) · Rec. ⚡{number2}" },
 		{ "💥Explosive Shot {number1} · ⚡Chain Lightning {number2}", "💥Disparo explosivo {number1} · ⚡Relámpago en cadena {number2}" },
-		{ "👑 Lord of Wasteland (Zone {number1}) · Rec. ⚡{number2}", "👑 Señor de las Tierras Desoladas (Zona {number1}) · Rec. ⚡{number2}" },
 	},
 }

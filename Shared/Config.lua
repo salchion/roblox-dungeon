@@ -1776,23 +1776,25 @@ Config.Codex = {
 
 Config.Sets.ZoneKeys = {}
 do
+	-- (세트 보너스 다시 짬: 예전엔 뒤 구역일수록 공격력이 무조건 커서 결국 용암 + 심연만 꼈다.
+	--  이제 3부위는 모두 "공격력 약 +10% + 그 세트만의 방향"으로 힘의 총량을 비슷하게 맞추고, 2부위는 방향만 준다 -> 어느 구역 장비든 빌드에 따라 정답이 된다)
 	local zoneSets = {
-		{ Name = "Meadow's Guard", Prefix = "Meadow", Color = Color3.fromRGB(130, 220, 110), Icon = "🌾",
-			B2 = { { Stat = "Health", Value = 80 } }, B3 = { { Stat = "Health", Value = 150 }, { Stat = "Speed", Value = 1.5 } } },
-		{ Name = "Forest's Blessing", Prefix = "Forest", Color = Color3.fromRGB(80, 200, 120), Icon = "🌲",
-			B2 = { { Stat = "Xp", Value = 0.10 } }, B3 = { { Stat = "Xp", Value = 0.18 }, { Stat = "Luck", Value = 0.15 } } },
-		{ Name = "Will of the Ruins", Prefix = "Ruins", Color = Color3.fromRGB(200, 170, 120), Icon = "🏚",
-			B2 = { { Stat = "Damage", Value = 0.06 } }, B3 = { { Stat = "Damage", Value = 0.10 }, { Stat = "Health", Value = 150 } } },
-		{ Name = "Desert Sun", Prefix = "Desert", Color = Color3.fromRGB(255, 210, 90), Icon = "🏜",
-			B2 = { { Stat = "Crit", Value = 0.06 } }, B3 = { { Stat = "Crit", Value = 0.10 }, { Stat = "Damage", Value = 0.06 } } },
-		{ Name = "Frost's Breath", Prefix = "Frost", Color = Color3.fromRGB(150, 225, 255), Icon = "❄",
-			B2 = { { Stat = "Haste", Value = 0.08 } }, B3 = { { Stat = "Haste", Value = 0.12 }, { Stat = "Health", Value = 200 } } },
-		{ Name = "Lava Heart", Prefix = "Lava", Color = Color3.fromRGB(255, 110, 50), Icon = "🌋",
-			B2 = { { Stat = "Damage", Value = 0.10 } }, B3 = { { Stat = "Damage", Value = 0.15 }, { Stat = "Crit", Value = 0.08 } } },
-		{ Name = "Dark Pact", Prefix = "Dark", Color = Color3.fromRGB(180, 110, 255), Icon = "🦇",
-			B2 = { { Stat = "Luck", Value = 0.20 } }, B3 = { { Stat = "Luck", Value = 0.30 }, { Stat = "Damage", Value = 0.10 } } },
-		{ Name = "Abyss Dominion", Prefix = "Abyss", Color = Color3.fromRGB(255, 80, 140), Icon = "🌀",
-			B2 = { { Stat = "Damage", Value = 0.15 } }, B3 = { { Stat = "Damage", Value = 0.22 }, { Stat = "Haste", Value = 0.15 }, { Stat = "Shot", Value = 1 } } },
+		{ Name = "Meadow's Guard", Prefix = "Meadow", Color = Color3.fromRGB(130, 220, 110), Icon = "🌾", -- 생존 / 이동 (무빙 빌드)
+			B2 = { { Stat = "Health", Value = 150 }, { Stat = "Speed", Value = 1.5 } }, B3 = { { Stat = "Damage", Value = 0.10 }, { Stat = "Health", Value = 300 }, { Stat = "Speed", Value = 2.5 }, { Stat = "Bulwark", Value = 0.06 } } },
+		{ Name = "Forest's Blessing", Prefix = "Forest", Color = Color3.fromRGB(80, 200, 120), Icon = "🌲", -- 성장 / 파밍
+			B2 = { { Stat = "Xp", Value = 0.12 }, { Stat = "Luck", Value = 0.10 } }, B3 = { { Stat = "Damage", Value = 0.10 }, { Stat = "Xp", Value = 0.20 }, { Stat = "Luck", Value = 0.25 } } },
+		{ Name = "Will of the Ruins", Prefix = "Ruins", Color = Color3.fromRGB(200, 170, 120), Icon = "🏚", -- 균형 (공격 + 체력)
+			B2 = { { Stat = "Damage", Value = 0.08 }, { Stat = "Health", Value = 100 } }, B3 = { { Stat = "Damage", Value = 0.16 }, { Stat = "Health", Value = 250 } } },
+		{ Name = "Desert Sun", Prefix = "Desert", Color = Color3.fromRGB(255, 210, 90), Icon = "🏜", -- 치명타
+			B2 = { { Stat = "Crit", Value = 0.06 } }, B3 = { { Stat = "Damage", Value = 0.10 }, { Stat = "Crit", Value = 0.10 }, { Stat = "CritDmg", Value = 0.25 } } },
+		{ Name = "Frost's Breath", Prefix = "Frost", Color = Color3.fromRGB(150, 225, 255), Icon = "❄", -- 스킬 쿨타임
+			B2 = { { Stat = "Haste", Value = 0.08 } }, B3 = { { Stat = "Damage", Value = 0.10 }, { Stat = "Haste", Value = 0.15 }, { Stat = "Health", Value = 200 } } },
+		{ Name = "Lava Heart", Prefix = "Lava", Color = Color3.fromRGB(255, 110, 50), Icon = "🌋", -- 순수 공격
+			B2 = { { Stat = "Damage", Value = 0.10 } }, B3 = { { Stat = "Damage", Value = 0.18 }, { Stat = "Crit", Value = 0.05 } } },
+		{ Name = "Dark Pact", Prefix = "Dark", Color = Color3.fromRGB(180, 110, 255), Icon = "🦇", -- 행운 / 흡혈
+			B2 = { { Stat = "Luck", Value = 0.20 } }, B3 = { { Stat = "Damage", Value = 0.10 }, { Stat = "Luck", Value = 0.35 }, { Stat = "LifeOnKill", Value = 0.01 } } },
+		{ Name = "Abyss Dominion", Prefix = "Abyss", Color = Color3.fromRGB(255, 80, 140), Icon = "🌀", -- 탄 수 (예전 공격 +22% / 쿨감 +15% 는 너무 셌다)
+			B2 = { { Stat = "Damage", Value = 0.10 } }, B3 = { { Stat = "Damage", Value = 0.14 }, { Stat = "Haste", Value = 0.08 }, { Stat = "Shot", Value = 1 } } },
 	}
 	for zone, def in ipairs(zoneSets) do
 		local key = "Zone" .. zone
@@ -1838,7 +1840,7 @@ function Config.Uniques.ChanceAtDepth(depth)
 	return math.min(Config.Uniques.MaxChance, Config.Uniques.Chance + Config.Uniques.DepthBonus * math.max(0, (depth or 1) - 1))
 end
 
-Config.BonusNames = { Health = "Max HP", Crit = "Crit Chance", Speed = "Move Speed", Damage = "Attack", Xp = "XP", Luck = "Luck", Haste = "Skill Cooldown Reduction", Shot = "Shot Count",
+Config.BonusNames = { Health = "Max HP", Crit = "Crit Chance", CritDmg = "Crit Damage", Speed = "Move Speed", Damage = "Attack", Xp = "XP", Luck = "Luck", Haste = "Skill Cooldown Reduction", Shot = "Shot Count",
 	Bounce = "Bounce", LifeOnKill = "Heal on Kill", BossDmg = "Boss Damage", KillHaste = "Attack Speed after Kill", Thunder = "Thunder Rounds", Jackpot = "Jackpot Chance", Bulwark = "Damage Taken Reduction",
 	KillCdr = "Cooldown per Kill", Slaughter = "Slaughter Wave", Star = "Lucky Star Chance", Sunder = "Sunder", Shield = "Shield" }
 function Config.FormatBonus(stat, value)

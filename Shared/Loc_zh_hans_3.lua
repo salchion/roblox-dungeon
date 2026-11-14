@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} upgrades! {number2} succeeded", "强化 {number1} 次!成功 {number2} 次" },
 		{ "Free entries {number1} · Keys {number2}", "免费进入 {number1} · 钥匙 {number2}" },
 		{ "Loading the land...  {number1}", "正在加载地形...  {number1}" },
 		{ "Double Shot chance +{number1}%", "双发几率 +{number1}%" },
@@ -458,6 +459,7 @@ return {
 		{ "{text1} left", "剩余 {text1}" },
 		{ "Dark {text1}", "暗黑 {text1}" },
 		{ "Lv.{number1}  {text2}", "Lv.{number1}  {text2}" },
+		{ "{text1} Lv.{number2}→{number3}", "{text1} Lv.{number2}→{number3}" },
 		{ "{text1} Set", "{text1} 套装" },
 		{ "{text1} pts", "{text1} 分" },
 		{ "{text1} Era", "{text1} 时代" },

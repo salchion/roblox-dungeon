@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👑 Lord of Wasteland (Zone {number1}) · Rec. ⚡{number2}", "👑 Señor de las Tierras Desoladas (Zona {number1}) · Rec. ⚡{number2}" },
 		{ "Spell Tome  ·  keys {number1}-{number2} switch weapons", "Tomo de hechizos · las teclas {number1}-{number2} cambian de arma" },
 		{ "Defeat {number1} monsters (dungeons included)", "Derrota a {number1} monstruos (incluye mazmorras)" },
 		{ "🎯 Ready to challenge the Zone {number1} Lord!", "🎯 ¡Listo para desafiar al señor de la zona {number1}!" },
@@ -640,6 +641,7 @@ return {
 		{ "{text1} left", "faltan {text1}" },
 		{ "Dark {text1}", "Oscuro {text1}" },
 		{ "Lv.{number1}  {text2}", "Lv.{number1}  {text2}" },
+		{ "{text1} Lv.{number2}→{number3}", "{text1} Nv.{number2}→{number3}" },
 		{ "{text1} Set", "Set de {text1}" },
 		{ "{text1} pts", "{text1} pts" },
 		{ "{text1} Era", "Era {text1}" },

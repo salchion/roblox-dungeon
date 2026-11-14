@@ -772,6 +772,9 @@ return {
 		["Shock shots set their target on fire (2 Ignite stacks)"] = "Tiros de choque incendeiam o alvo (2 cargas de queima)",
 		["Slipstream"] = "Vácuo",
 		["Dashing (Q) instantly fires a shock shot volley (once every 1.5s). Needs the Rush talent"] = "Avançar (Q) dispara na hora uma rajada de choque (a cada 1,5s). Exige o talento Investida",
+		["If equipped:"] = "Se equipar:",
+		["(bonus ON)"] = "(bônus ATIVO)",
+		["(bonus OFF)"] = "(bônus DESATIVADO)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1009,6 +1012,5 @@ return {
 		{ "{number1} hours of idle gold ({number2} G) piled up!", "{number1} horas de ouro parado ({number2} G) acumulado!" },
 		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 Entrada do Campo logo atrás! {number1}m" },
 		{ "Clear {number1} dungeon(s)  ✅ tap to claim!", "Limpe {number1} masmorras ✅ toque para reivindicar!" },
-		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 Baú do chefe · {number1} equipamentos</b>" },
 	},
 }

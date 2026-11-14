@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔓 You can now run {number1} set effects at once!", "🔓 Vous pouvez maintenant activer {number1} effets de set à la fois !" },
 		{ "🛡 Knocked back! Power {number1} required (you: {number2})", "🛡 Repoussé ! Puissance {number1} requise (vous : {number2})" },
 		{ "💚 Emergency rescue! HP restored ({number1} left)", "💚 Sauvetage d'urgence ! PV restaurés ({number1} restant(s))" },
 		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}", "{number1} secondes ! Récompenses x{number2}, combo jusqu'à x{number3}" },
@@ -664,6 +665,7 @@ return {
 		{ "{text1} left", "{text1} restant" },
 		{ "Dark {text1}", "Ténèbres {text1}" },
 		{ "Lv.{number1}  {text2}", "Lv.{number1}  {text2}" },
+		{ "{text1} Lv.{number2}→{number3}", "{text1} Nv.{number2}→{number3}" },
 		{ "{text1} Set", "Set {text1}" },
 		{ "{text1} pts", "{text1} pts" },
 		{ "{text1} Era", "Ère {text1}" },

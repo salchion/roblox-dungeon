@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!" },
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "{number1}분 동안의 유휴 수입을 즉시 획득하세요 · 하루 최대 {number2}분" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISS {number1}초 지속 · 끊겨도 최소 {number2}단계 유지" },
 		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 고른 세트로 뽑을 골드가 부족해요! ({number1}G 필요)" },
@@ -821,6 +822,7 @@ return {
 		{ "{text1} left", "{text1} 남음" },
 		{ "Dark {text1}", "어둠 {text1}" },
 		{ "Lv.{number1}  {text2}", "Lv.{number1}  {text2}" },
+		{ "{text1} Lv.{number2}→{number3}", "{text1} Lv.{number2}→{number3}" },
 		{ "{text1} Set", "{text1} 세트" },
 		{ "{text1} · +{number2}", "{text1} · +{number2}" },
 		{ "💰 {text1} G", "💰 {text1} G" },

@@ -462,6 +462,33 @@ local function buildInventoryTab(state)
 			local diff = selected.Score - current.Score
 			table.insert(lines, diff >= 0 and string.format("<font color='#78ff8c'>vs. equipped ▲ +%d</font>", diff) or string.format("<font color='#ff8c8c'>vs. equipped ▼ %d</font>", diff))
 		end
+		-- 이걸 끼면 바뀌는 것 (셋팅 미리보기): 세트 부위 수와, 그 구역 세트 효과가 켜져 있으면 효과 단계 변화
+		if not selected.Equipped and (selected.Set or (current and current.Set)) then
+			local changes = {}
+			local function setChange(setKey, delta)
+				local def = setKey and Config.Sets[setKey]
+				if not def then return end
+				local before = setCounts[setKey] or 0
+				local after = math.max(0, before + delta)
+				local text = string.format("%s %s %d→%d/3", def.Icon or "★", def.Prefix or def.Name, before, math.min(3, after))
+				if (before < 2 and after >= 2) or (before < 3 and after >= 3) then text ..= " <font color='#78ff8c'>(bonus ON)</font>" end
+				if (before >= 2 and after < 2) or (before >= 3 and after < 3) then text ..= " <font color='#ff8c8c'>(bonus OFF)</font>" end
+				local zone = def.Zone
+				if zone and player:GetAttribute("AugOnZ_" .. zone) == true and def.Aug and Config.AugInfo[def.Aug] then -- 켜 둔 세트 효과면 단계도 오른다 / 내려간다 (장비로 +3까지)
+					local gearBefore, gearAfter = math.clamp(before, 0, 3), math.clamp(after, 0, 3)
+					if gearBefore ~= gearAfter then
+						local base = player:GetAttribute("AugLvZ_" .. zone) or 0
+						text ..= string.format(" · %s Lv.%d→%d", Config.AugInfo[def.Aug].Name, base + gearBefore, base + gearAfter)
+					end
+				end
+				table.insert(changes, text)
+			end
+			if not (current and current.Set == selected.Set) then
+				setChange(selected.Set, 1)
+				if current and current.Set then setChange(current.Set, -1) end
+			end
+			if #changes > 0 then table.insert(lines, "<font color='#9ad7ff'><b>If equipped:</b></font> " .. table.concat(changes, "  ·  ")) end
+		end
 		local bandH = 0
 		if selected.Set and Config.Sets[selected.Set] then
 			local setDef = Config.Sets[selected.Set]

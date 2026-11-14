@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 Baú do chefe · {number1} equipamentos</b>" },
 		{ "· {number1} point(s) left (1 every {number2} levels)", "· Restam {number1} ponto(s) (1 a cada {number2} níveis)" },
 		{ "👑 Lord of Desert (Zone {number1}) · Rec. ⚡{number2}", "👑 Senhor do Deserto (Zona {number1}) · Rec. ⚡{number2}" },
 		{ "🏜 Desert Temple Entrance · Rec. ⚡{number2}", "🏜 Entrada do Templo do Deserto · Rec. ⚡{number2}" },
@@ -621,6 +622,7 @@ return {
 		{ "{text1} left", "faltam {text1}" },
 		{ "Dark {text1}", "Sombrio {text1}" },
 		{ "Lv.{number1}  {text2}", "Lv.{number1}  {text2}" },
+		{ "{text1} Lv.{number2}→{number3}", "{text1} Nv.{number2}→{number3}" },
 		{ "{text1} Set", "Conjunto {text1}" },
 		{ "{text1} pts", "{text1} pts" },
 		{ "{text1} Era", "Era {text1}" },

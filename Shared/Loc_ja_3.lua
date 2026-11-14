@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ [Common] Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] レザーキャップを自動回収（エッセンス +{number1} {number2} G）" },
 		{ "Cleared up to depth {number1}  ·  You can enter up to depth {number2}", "深度{number1}までクリア済み  ·  深度{number2}まで入場できます" },
 		{ "Reach weapon upgrade level {number1} (about the 10th weapon)", "武器強化レベル{number1}に到達(約10番目の武器)" },
 		{ "Reach weapon upgrade level {number1} (about the 50th weapon)", "武器強化レベル{number1}に到達(約50番目の武器)" },
@@ -728,6 +729,7 @@ return {
 		{ "{text1} left", "残り{text1}" },
 		{ "Dark {text1}", "ダーク {text1}" },
 		{ "Lv.{number1}  {text2}", "Lv.{number1}  {text2}" },
+		{ "{text1} Lv.{number2}→{number3}", "{text1} Lv.{number2}→{number3}" },
 		{ "{text1} Set", "{text1}セット" },
 		{ "{text1} pts", "{text1}点" },
 		{ "{text1} Era", "{text1}時代" },

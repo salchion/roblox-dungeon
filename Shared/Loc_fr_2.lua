@@ -809,6 +809,9 @@ return {
 		["Shock shots set their target on fire (2 Ignite stacks)"] = "Les tirs de choc enflamment leur cible (2 charges de brûlure)",
 		["Slipstream"] = "Sillage",
 		["Dashing (Q) instantly fires a shock shot volley (once every 1.5s). Needs the Rush talent"] = "Une ruée (Q) tire aussitôt une salve de tirs de choc (toutes les 1,5 s). Nécessite le talent Ruée",
+		["If equipped:"] = "Si équipé :",
+		["(bonus ON)"] = "(bonus ACTIF)",
+		["(bonus OFF)"] = "(bonus INACTIF)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1001,6 +1004,5 @@ return {
 		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• Environ {number1} tirs/s · Puissance de feu {number2} · Portée {number3}" },
 		{ "Damage +{number1}% on a single target: for bosses", "Dégâts +{number1} % sur une seule cible : pour les boss" },
 		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}!", "{number1} secondes ! Récompenses x{number2}, combo jusqu'à x{number3} !" },
-		{ "🔓 You can now run {number1} set effects at once!", "🔓 Vous pouvez maintenant activer {number1} effets de set à la fois !" },
 	},
 }

@@ -610,6 +610,7 @@ return {
 		{ "{text1} left", "noch {text1}" },
 		{ "Dark {text1}", "Dunkel {text1}" },
 		{ "Lv.{number1}  {text2}", "Lv.{number1}  {text2}" },
+		{ "{text1} Lv.{number2}→{number3}", "{text1} Lv.{number2}→{number3}" },
 		{ "{text1} Set", "{text1}-Set" },
 		{ "{text1} pts", "{text1} Pkt." },
 		{ "{text1} Era", "{text1}-Ära" },

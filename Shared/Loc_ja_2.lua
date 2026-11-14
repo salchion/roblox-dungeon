@@ -930,6 +930,9 @@ return {
 		["Shock shots set their target on fire (2 Ignite stacks)"] = "衝撃弾が標的を燃やす (点火2重)",
 		["Slipstream"] = "スリップストリーム",
 		["Dashing (Q) instantly fires a shock shot volley (once every 1.5s). Needs the Rush talent"] = "ダッシュ(Q)で衝撃弾を即発射 (1.5秒に1回)。特性「突撃」が必要",
+		["If equipped:"] = "装備すると:",
+		["(bonus ON)"] = "(ボーナス発動)",
+		["(bonus OFF)"] = "(ボーナス解除)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1060,6 +1063,5 @@ return {
 		{ "🔒 Zone {number1} · Desert Sealed\nOpen the previous gate first", "🔒 ゾーン {number1} · 砂漠が封鎖されています\nまず前のゲートを開けてください" },
 		{ "One less dagger, but each hits +{number1}% harder: for bosses", "短剣が1本減る代わりに1本あたり+{number1}%：ボス向け" },
 		{ "Reduces training / breakthrough wait time by {number1} hours", "トレーニング/ブレークスルーの待機時間を{number1}時間短縮する" },
-		{ "♻ [Common] Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] レザーキャップを自動回収（エッセンス +{number1} {number2} G）" },
 	},
 }

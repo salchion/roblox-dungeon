@@ -683,6 +683,9 @@ return {
 		["Shock shots set their target on fire (2 Ignite stacks)"] = "冲击弹会点燃目标 (2层点燃)",
 		["Slipstream"] = "尾流",
 		["Dashing (Q) instantly fires a shock shot volley (once every 1.5s). Needs the Rush talent"] = "冲刺(Q)会立刻发射一轮冲击弹 (每1.5秒一次)。需要天赋「突进」",
+		["If equipped:"] = "装备后:",
+		["(bonus ON)"] = "(加成开启)",
+		["(bonus OFF)"] = "(加成关闭)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1087,6 +1090,5 @@ return {
 		{ "📍 Field (best: Zone {number11})", "📍 田地（最佳区域：{number11}）" },
 		{ "{number5} Snowfield · {number6} Volcano", "{number5} 雪原 · {number6} 火山" },
 		{ "ZONE {number1}  ·  Forest   ☠☠", "区域 {number1} · 森林 ☠☠" },
-		{ "{number1} upgrades! {number2} succeeded", "强化 {number1} 次!成功 {number2} 次" },
 	},
 }
