@@ -96,6 +96,9 @@ function M.Init(deps)
 			Text = "", AutoButtonColor = false, ZIndex = 60,
 		}, layer)
 		local skipped = false
+		if result.Header then -- 첫 처치 보상 / 합성: 싸우다 쏘는 클릭에 바로 넘어가 버려서 못 보고 지나갔다 -> 처음 2초는 눌러도 넘어가지 않는다
+			lockedUntil = math.max(lockedUntil, os.clock() + 2)
+		end
 		root.Activated:Connect(function() if os.clock() >= lockedUntil then skipped = true end end) -- (신화 강제 감상 시간에는 탭을 무시한다)
 		local function fade(object, goal, time, style, direction)
 			TweenService:Create(object, TweenInfo.new(time, style or Enum.EasingStyle.Quad, direction or Enum.EasingDirection.Out), goal):Play()
@@ -470,7 +473,7 @@ function M.Init(deps)
 			}, card)
 
 			skipped = false
-			pause(HOLD[rarity])
+			pause(result.Header and math.max(4, HOLD[rarity]) or HOLD[rarity]) -- (첫 처치 보상은 4초 이상 보여 준다)
 			if not root.Parent then return end
 			fade(root, { BackgroundTransparency = 1 }, 0.25)
 			fade(card, { Size = UDim2.new(0, 60, 0, 40) }, 0.25)
