@@ -156,3 +156,86 @@ end
 Remotes.Enhance.OnClientEvent:Connect(function(ok, _message, summary)
 	task.defer(show, ok, summary) -- (무기 레벨 Attribute 가 먼저 바뀐 다음에 읽게)
 end)
+
+------------------------------------------------------------
+-- 강화 창의 두 구슬(지금 무기 / 다음 무기·시대) 안에 실제 3D 무기 모형을 띄운다 (예전: 🔫 같은 이모지)
+--   모형은 서버가 만들어 둔 ReplicatedStorage.WeaponPreviews.W<번호> 를 복제한다. 창이 열려 있을 때만 천천히 돈다.
+------------------------------------------------------------
+do
+	local RunService = game:GetService("RunService")
+	local views = {} -- [구슬 이름] = { Frame, Camera, Model, Index, Radius, Center }
+	local function nextIndex(level, typeKey)
+		local milestone = Config.GetNextMilestone(level)
+		if not milestone then return nil, false end
+		if milestone.Kind == "Form" then
+			return Config.GetLookTier(level, milestone.Key).Index, true
+		end
+		local order = Config.WeaponTypes.Order
+		local typeIdx = table.find(order, typeKey) or 1
+		local tier = Config.Weapon.Tiers[(milestone.Era - 1) * #order + typeIdx]
+		return tier and tier.Index, false
+	end
+	local function setModel(orb, index, locked)
+		local view = views[orb.Name]
+		if not view then
+			local frame = new("ViewportFrame", { Name = "Weapon3D", Size = UDim2.new(1, -6, 1, -6), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+				BackgroundColor3 = orb.BackgroundColor3, BackgroundTransparency = 0, BorderSizePixel = 0, ZIndex = 7,
+				Ambient = Color3.fromRGB(190, 185, 205), LightColor = Color3.new(1, 1, 1), LightDirection = Vector3.new(-0.4, -1, -0.6) }, orb)
+			new("UICorner", { CornerRadius = UDim.new(1, 0) }, frame)
+			local camera = new("Camera", { FieldOfView = 30 }, frame)
+			frame.CurrentCamera = camera
+			orb:GetPropertyChangedSignal("BackgroundColor3"):Connect(function() frame.BackgroundColor3 = orb.BackgroundColor3 end)
+			view = { Frame = frame, Camera = camera }
+			views[orb.Name] = view
+		end
+		view.Frame.ImageColor3 = locked and Color3.fromRGB(120, 120, 135) or Color3.new(1, 1, 1) -- 아직 잠긴 무기는 어둡게
+		if view.Index == index then return end
+		view.Index = index
+		if view.Model then view.Model:Destroy() view.Model = nil end
+		local previews = ReplicatedStorage:FindFirstChild("WeaponPreviews")
+		local source = index and previews and previews:FindFirstChild("W" .. index)
+		view.Frame.Visible = source ~= nil
+		if not source then return end
+		local model = source:Clone()
+		local cf, size = model:GetBoundingBox()
+		model:PivotTo(cf:Inverse() * model:GetPivot()) -- 모형 가운데를 원점으로 (방향은 그대로)
+		model.Parent = view.Frame
+		view.Model = model
+		view.Base = model:GetPivot()
+		view.Radius = math.max(size.X, size.Y, size.Z) * 0.5
+	end
+	local function refresh()
+		local hud = player.PlayerGui:FindFirstChild("HUD")
+		local panel = hud and hud:FindFirstChild("EnhancePanel")
+		if not panel then return end
+		local cur, nxt = panel:FindFirstChild("CurOrb", true), panel:FindFirstChild("NextOrb", true)
+		if not cur or not nxt then return end
+		local level = player:GetAttribute("WeaponLevel") or 0
+		local typeKey = Config.ResolveWeaponType(level, player:GetAttribute("WeaponType"))
+		setModel(cur, Config.GetLookTier(level, typeKey).Index, false)
+		local index, locked = nextIndex(level, typeKey)
+		setModel(nxt, index, locked)
+	end
+	player:GetAttributeChangedSignal("WeaponLevel"):Connect(refresh)
+	player:GetAttributeChangedSignal("WeaponType"):Connect(refresh)
+	ReplicatedStorage.ChildAdded:Connect(function(child) if child.Name == "WeaponPreviews" then task.wait(0.5) refresh() end end)
+	task.spawn(function()
+		local hud = player:WaitForChild("PlayerGui"):WaitForChild("HUD", 60)
+		local panel = hud and hud:WaitForChild("EnhancePanel", 60)
+		if not panel then return end
+		refresh()
+		panel:GetPropertyChangedSignal("Visible"):Connect(function() if panel.Visible then refresh() end end)
+		RunService.RenderStepped:Connect(function()
+			if not panel.Visible then return end
+			local t = os.clock()
+			for _, view in pairs(views) do
+				if view.Model and view.Radius then
+					-- 비스듬히 위에서 본 옆모습으로 천천히 돈다
+					local angle = t * 0.6
+					view.Model:PivotTo(CFrame.Angles(0, angle, 0) * CFrame.Angles(0, 0, math.rad(-8)) * view.Base)
+					view.Camera.CFrame = CFrame.lookAt(Vector3.new(0, view.Radius * 0.9, view.Radius * 3.6), Vector3.zero)
+				end
+			end
+		end)
+	end)
+end

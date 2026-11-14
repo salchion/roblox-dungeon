@@ -319,12 +319,14 @@ E.Chance = makeLabel({ Size = UDim2.new(1, 0, 0, 44), Position = UDim2.new(0, 0,
 E.Damage = makeLabel({ Size = UDim2.new(1, -10, 0, 30), Position = UDim2.new(0, 5, 0, 94), Text = "", RichText = true, TextSize = 11, TextWrapped = true, Font = Enum.Font.GothamBold, ZIndex = 4 }, core)
 
 -- 위: [지금 무기] ──진행 막대──▶ [다음 무기 / 다음 시대]. 강화할 때마다 막대가 차올라 100%가 되면 새 무기 / 새 시대가 열린다
-local ORB_Y, ORB_SIZE, ORB_DX = 128, 70, 92
-local medal = circle(ORB_SIZE, DX - ORB_DX, ORB_Y, Color3.fromRGB(34, 30, 52), 5) -- (왼쪽: 지금 무기)
+local ORB_Y, ORB_SIZE, ORB_DX = 132, 84, 96
+local medal = circle(ORB_SIZE, DX - ORB_DX, ORB_Y, Color3.fromRGB(34, 30, 52), 5) -- (왼쪽: 지금 무기. EnhanceResultClient 가 안에 3D 무기를 띄운다)
+medal.Name = "CurOrb"
 create("UIGradient", { Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(120, 115, 150)), Rotation = 90 }, medal)
 local medalStroke = create("UIStroke", { Color = Color3.fromRGB(255, 200, 90), Thickness = 4 }, medal)
 E.MedalIcon = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "🔫", TextSize = 38, ZIndex = 6 }, medal)
 E.NextOrb = circle(ORB_SIZE, DX + ORB_DX, ORB_Y, Color3.fromRGB(34, 30, 52), 5) -- (오른쪽: 다음 무기 / 다음 시대)
+E.NextOrb.Name = "NextOrb"
 create("UIGradient", { Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(120, 115, 150)), Rotation = 90 }, E.NextOrb)
 E.NextStroke = create("UIStroke", { Color = Color3.fromRGB(150, 150, 170), Thickness = 3 }, E.NextOrb)
 E.NextIcon = makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = "❔", TextSize = 38, ZIndex = 6 }, E.NextOrb)
