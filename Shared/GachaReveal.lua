@@ -172,11 +172,11 @@ function M.Init(deps)
 				local best = 1
 				for _, r in ipairs(rolls) do best = math.max(best, r.Rarity) end
 				lightRays(root, Config.Gear.RarityColors[best], best)
-				local grid = create("Frame", { Size = UDim2.new(0, gridW, 0, gridH + 150), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 62 }, root)
+				local grid = create("Frame", { Size = UDim2.new(0, gridW, 0, gridH + 190), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 62 }, root)
 				local fit = create("UIScale", {}, grid) -- (작은 화면: 카드 판 전체를 화면에 맞게 줄인다)
 				local function refit()
 					local size = root.AbsoluteSize
-					fit.Scale = math.min(1, (size.X - 24) / gridW, (size.Y - 24) / (gridH + 150))
+					fit.Scale = math.min(1, (size.X - 24) / gridW, (size.Y - 24) / (gridH + 190))
 				end
 				refit()
 				root:GetPropertyChangedSignal("AbsoluteSize"):Connect(refit)
@@ -323,55 +323,68 @@ function M.Init(deps)
 				while root.Parent and os.clock() < dealDone do task.wait() end
 				task.wait(0.3) -- (마지막으로 뒤집힌 카드의 크기 움직임이 끝날 때까지)
 				if not root.Parent then return end
-				-- 3) 마지막 배치: 가장 좋은 장비를 가운데 크게, 나머지는 양옆에 작게 (좋은 것일수록 가운데 가까이)
+				-- 3) 마지막 배치: 5장 이하면 한 줄 (가장 좋은 것이 가운데 조금 크게, 좋은 것일수록 가운데 가까이). 카드끼리 / 제목 / 요약 줄과 겹치지 않는다
+				--    (예전: 가운데 카드를 x1.45 로 키워서 제목과 아래 요약 글자를 덮었다). 10연은 깔린 자리 그대로 두고 가장 좋은 카드에 빛만
 				local order = table.clone(cards)
 				table.sort(order, function(a, b) return a.Roll.Rarity > b.Roll.Rarity end)
-				local cx, cy = gridW / 2, 48 + gridH / 2 + 10
-				local slots = {}
-				for _, dy in ipairs({ -136, 0, 136 }) do
-					for _, dx in ipairs({ -164, 164, -268, 268 }) do table.insert(slots, { cx + dx, cy + dy }) end
-				end
-				table.sort(slots, function(a, b) -- (가운데에 가까운 칸부터)
-					local da, db = math.abs(a[1] - cx) + math.abs(a[2] - cy) * 0.6, math.abs(b[1] - cx) + math.abs(b[2] - cy) * 0.6
-					return da < db
-				end)
-				for i, card in ipairs(order) do
-					local holder = card.Holder
-					if holder.Parent then
-						local sc = create("UIScale", { Scale = 1 }, holder)
-						if i == 1 then
-							fade(holder, { Position = UDim2.new(0, cx, 0, cy) }, 0.45, Enum.EasingStyle.Back)
-							fade(sc, { Scale = 1.45 }, 0.45, Enum.EasingStyle.Back)
-							local halo = create("Frame", { Size = UDim2.new(0, 60, 0, 60), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy), BackgroundColor3 = card.Color, BackgroundTransparency = 0.6, BorderSizePixel = 0, ZIndex = 62 }, grid)
-							create("UICorner", { CornerRadius = UDim.new(1, 0) }, halo)
-							fade(halo, { Size = UDim2.new(0, 330, 0, 330), BackgroundTransparency = 0.82 }, 0.6)
-						elseif slots[i - 1] then
-							fade(holder, { Position = UDim2.new(0, slots[i - 1][1], 0, slots[i - 1][2]) }, 0.4, Enum.EasingStyle.Quad)
-							fade(sc, { Scale = 0.72 }, 0.4, Enum.EasingStyle.Quad)
+				if #order <= 5 then
+					local cx, cy = gridW / 2, 48 + CH / 2 + 14
+					local BIG, SMALL = 1.12, 0.86
+					local step = CW * SMALL + 12
+					for i, card in ipairs(order) do
+						local holder = card.Holder
+						if holder.Parent then
+							local sc = create("UIScale", { Scale = 1 }, holder)
+							local x = cx
+							if i > 1 then
+								local k = i - 1 -- 1,2 -> 첫 칸 양옆 / 3,4 -> 바깥
+								local side = (k % 2 == 1) and -1 or 1
+								x = cx + side * (CW * BIG / 2 + 12 + CW * SMALL / 2 + (math.ceil(k / 2) - 1) * step)
+							end
+							fade(holder, { Position = UDim2.new(0, x, 0, cy + (i > 1 and 12 or 0)) }, 0.4, Enum.EasingStyle.Back)
+							fade(sc, { Scale = i == 1 and BIG or SMALL }, 0.4, Enum.EasingStyle.Back)
+							if i == 1 then
+								local halo = create("Frame", { Size = UDim2.new(0, 60, 0, 60), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy), BackgroundColor3 = card.Color, BackgroundTransparency = 0.6, BorderSizePixel = 0, ZIndex = 62 }, grid)
+								create("UICorner", { CornerRadius = UDim.new(1, 0) }, halo)
+								fade(halo, { Size = UDim2.new(0, 250, 0, 250), BackgroundTransparency = 0.84 }, 0.6)
+							end
 						end
+					end
+				else
+					local first = order[1]
+					if first and first.Holder.Parent then
+						local halo = create("Frame", { Size = UDim2.new(0, 60, 0, 60), AnchorPoint = Vector2.new(0.5, 0.5), Position = first.Pos, BackgroundColor3 = first.Color, BackgroundTransparency = 0.6, BorderSizePixel = 0, ZIndex = 62 }, grid)
+						create("UICorner", { CornerRadius = UDim.new(1, 0) }, halo)
+						fade(halo, { Size = UDim2.new(0, 220, 0, 220), BackgroundTransparency = 0.85 }, 0.6)
 					end
 				end
 				SoundBank.Play(sfxParent, "Gacha_Pop" .. math.min(5, best), { Volume = 0.5 })
 
-				local parts = {}
+				-- 요약: 등급색 칩 줄 (에픽 1 · 레어 1 · 일반 1 · 세트 3)
+				local chipRow = create("Frame", { Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 48 + gridH + 34), BackgroundTransparency = 1, ZIndex = 63 }, grid)
+				create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Center, VerticalAlignment = Enum.VerticalAlignment.Center, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }, chipRow)
+				local function chip(text, color, order)
+					local f = create("Frame", { Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, BackgroundColor3 = color, BackgroundTransparency = 0.82, BorderSizePixel = 0, LayoutOrder = order, ZIndex = 63 }, chipRow)
+					create("UICorner", { CornerRadius = UDim.new(1, 0) }, f)
+					create("UIStroke", { Color = color, Thickness = 1.5, Transparency = 0.15 }, f)
+					create("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 12) }, f)
+					makeLabel({ Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = text, TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = color:Lerp(Color3.new(1, 1, 1), 0.3), ZIndex = 64 }, f)
+				end
 				for rarity = 5, 1, -1 do
-					if counts[rarity] then
-						table.insert(parts, string.format("<font color='#%s'>%s %d</font>", Config.Gear.RarityColors[rarity]:ToHex(), Config.Gear.RarityNames[rarity], counts[rarity]))
-					end
+					if counts[rarity] then chip(string.format("%s %d", Config.Gear.RarityNames[rarity], counts[rarity]), Config.Gear.RarityColors[rarity], 6 - rarity) end
 				end
 				local setCount = 0
 				for _, r in ipairs(rolls) do if r.Set then setCount += 1 end end
-				if setCount > 0 then table.insert(parts, string.format("<font color='#9fe6b0'>🧩 Set %d</font>", setCount)) end -- 세트가 붙은 장비 수
-				makeLabel({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 1, -80), RichText = true, Text = table.concat(parts, "   "), TextSize = 16, Font = Enum.Font.GothamBold, TextStrokeTransparency = 0.4, ZIndex = 63 }, grid)
+				if setCount > 0 then chip(string.format("🧩 Set %d", setCount), Color3.fromRGB(120, 220, 150), 9) end -- 세트가 붙은 장비 수
 				-- 아래 버튼: 확인 / 다시 뽑기 (티켓)
 				local function bottomButton(text, x, color, onClick)
 					local b = create("TextButton", {
 						Size = UDim2.new(0, 200, 0, 46), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, x, 1, -4), Text = text, TextSize = 15,
 						Font = Enum.Font.GothamBlack, TextColor3 = Color3.new(1, 1, 1), BackgroundColor3 = color, AutoButtonColor = true, ZIndex = 69,
 					}, grid)
-					rounded(b, 10)
-					create("UIStroke", { Color = Color3.fromRGB(230, 190, 110), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, b)
-					create("UIGradient", { Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(170, 170, 190)), Rotation = 90 }, b)
+					create("UICorner", { CornerRadius = UDim.new(1, 0) }, b) -- 둥근 알약 버튼 (퀘스트 / 강화 창과 같은 모양)
+					create("UIStroke", { Color = Color3.fromRGB(22, 18, 44), Thickness = 2.4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, b)
+					create("UIGradient", { Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(150, 150, 170)), Rotation = 90 }, b)
 					b.Activated:Connect(onClick)
 					return b
 				end
