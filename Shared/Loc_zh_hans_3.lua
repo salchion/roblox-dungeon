@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⚔ Railgun · Rusty Era +{number1}", "⚔ 电磁炮 · 锈蚀时代 +{number1}" },
+		{ "★☆☆  Step {number1}/{number2} · Next step", "★☆☆ 步骤 {number1}/{number2} · 下一步" },
+		{ "🔒 Defeat the Zone {number1} lord", "🔒 击败区域{number1}的领主" },
+		{ "🔒 Unlocks at +{number1} ({number2} to go)", "🔒 +{number1} 时解锁(还差 {number2})" },
+		{ "◆ Luck (Drop Rarity) +{number1}%", "◆ 幸运(掉落品质) +{number1}%" },
+		{ "Cooldown -{number1}% · damage +{number2}%", "冷却-{number1}% · 伤害+{number2}%" },
 		{ "NEAR MISS lasts +{number1}s more", "NEAR MISS持续时间再+{number1}秒" },
 		{ "🐾 Unlock your pet! ({number1} G)", "🐾 解锁你的宠物！（{number1}G）" },
 		{ "💪 Zone {number1} Lord: power {number2} / {number3}", "💪 区域{number1}领主：战力 {number2} / {number3}" },
@@ -503,6 +509,7 @@ return {
 		{ "{text1} {number2}%", "{text1} {number2}%" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [世界首领] 区域{number1} · {text2}:{text3} 出现了!跟随橙色光柱,一起击败它来获得装备和门票!" },
+		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} 套装效果『{text2}』已解锁！穿上该套装即可自动开启，也可用金币强化（Y键）" },
 		{ "{text1} · {text2} · Fail if monsters pile up! Survive to the end and the boss appears", "{text1} · {text2} · 怪物堆积就会失败!坚持到最后首领就会出现" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Activate it with gold (Y key / ✨ Set button)", "{text1} 套装效果『{text2}』已解锁!用金币启用(Y 键 / ✨ 套装按钮)" },
 		{ "🎉 Evolved to {text1}! Your weapon look and bullet color changed{text2}", "🎉 进化为 {text1}!武器外观和子弹颜色已改变{text2}" },
@@ -525,6 +532,7 @@ return {
 		{ "(Recommended {text1} · Yours {text2})", "(推荐 {text1} · 你 {text2})" },
 		{ "Open to earn the {text1} {text2} set!", "开启后即可获得 {text1} {text2} 套装!" },
 		{ "{text1}  ·  next weapon: {text2} at +{number3}", "{text1}  ·  下一把武器：{text2} (+{number3})" },
+		{ "{text1} Set effect ON: 『{text2}』 Lv.{number3}", "{text1} 套装效果开启：『{text2}』 Lv.{number3}" },
 		{ "{text1} training started! ({text2})", "{text1}训练已开始!({text2})" },
 		{ "⬆ Level Up  💰 {text1} G · ⏱ {text2}", "⬆ 升级  💰 {text1} G · ⏱ {text2}" },
 		{ "👹 Boss this run: {text1} — {text2}", "👹 本局首领:{text1} — {text2}" },

@@ -91,7 +91,7 @@ if workspace.CurrentCamera then workspace.CurrentCamera:GetPropertyChangedSignal
 
 label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "🌟 Set Effects", TextSize = 20, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left }, panel)
 local slotLabel = label({ Size = UDim2.new(1, -32, 0, 20), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, panel)
-label({ Size = UDim2.new(1, -32, 0, 28), Position = UDim2.new(0, 16, 0, 60), Text = "Tap a slot to choose · Defeat the lord to unlock · Gold: Lv.1–3 · Set gear: Lv.4–6", TextSize = 11, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
+label({ Size = UDim2.new(1, -32, 0, 28), Position = UDim2.new(0, 16, 0, 60), Text = "Equip a zone's set gear and its effect turns on by itself (highest level first, up to your slots) · Gold: +Lv.1–3 · Set gear: +Lv.1–3 · 📌 Pin to keep one on", TextSize = 11, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
 button({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), BackgroundColor3 = Color3.fromRGB(54, 58, 82), Text = "Close", TextSize = 12 }, panel, function() panel.Visible = false end)
 
 -- 원들을 잇는 길: 1 -> 2 -> ... -> 8 한 방향 (8 에서 1 로는 이어지지 않는다). 구간마다 화살표
@@ -403,15 +403,22 @@ function refresh()
 	boxBody.Text = table.concat(lines, "\n")
 	synHeader.Visible = synCount > 0
 	synList.Visible = synCount > 0
-	toggleButton.Text = on and "● ON" or "○ OFF"
-	toggleButton.BackgroundColor3 = on and Color3.fromRGB(46, 112, 84) or Color3.fromRGB(62, 64, 84)
-	toggleButton.TextColor3 = on and Color3.fromRGB(190, 255, 215) or Color3.fromRGB(170, 174, 200)
-	toggleButton.Visible = open
+	-- (켜짐 / 꺼짐은 이제 저절로 정해진다: 이 버튼은 "📌 고정". 고정한 효과는 단계가 낮아도 먼저 켜진다)
+	local pinned = player:GetAttribute("AugPinZ_" .. zone) == true
+	toggleButton.Text = pinned and "📌 Pinned" or "📌 Pin"
+	toggleButton.BackgroundColor3 = pinned and Color3.fromRGB(150, 110, 40) or Color3.fromRGB(62, 64, 84)
+	toggleButton.TextColor3 = pinned and Color3.fromRGB(255, 236, 190) or Color3.fromRGB(170, 174, 200)
+	toggleButton.Visible = open or (level + gear) > 0
 	if not open then
 		buyButton.Text = string.format("🔒 Defeat the Zone %d lord", zone)
 		buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
-		buyButton.Size = UDim2.new(1, -16, 0, 38)
-		buyButton.Position = UDim2.new(0, 8, 1, -46)
+		if (level + gear) > 0 then -- (세트 장비로 이미 켜질 수 있는 효과: 왼쪽에 📌 버튼이 있으니 반만)
+			buyButton.Size = UDim2.new(0.5, -8, 0, 38)
+			buyButton.Position = UDim2.new(0.5, 0, 1, -46)
+		else
+			buyButton.Size = UDim2.new(1, -16, 0, 38)
+			buyButton.Position = UDim2.new(0, 8, 1, -46)
+		end
 	else
 		buyButton.Size = UDim2.new(0.5, -8, 0, 38)
 		buyButton.Position = UDim2.new(0.5, 0, 1, -46)
@@ -423,7 +430,7 @@ function refresh()
 			buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
 		else
 			local cost = Config.Sets.AugCost(zone, level + 1)
-			buyButton.Text = string.format("%s %s G", level == 0 and "Activate" or "Upgrade", commas(cost))
+			buyButton.Text = string.format("Upgrade %s G", commas(cost))
 			buyButton.BackgroundColor3 = gold >= cost and Color3.fromRGB(150, 110, 40) or Color3.fromRGB(80, 74, 66)
 		end
 	end
@@ -436,7 +443,7 @@ for _, name in ipairs({ "Gold", "AugSlots", "TutorialActive", "WeaponType", "Wea
 	player:GetAttributeChangedSignal(name):Connect(refresh)
 end
 for zone = 1, ZONES do
-	for _, prefix in ipairs({ "AugOpenZ_", "AugLvZ_", "AugOnZ_", "AugGearZ_" }) do
+	for _, prefix in ipairs({ "AugOpenZ_", "AugLvZ_", "AugOnZ_", "AugGearZ_", "AugPinZ_" }) do
 		player:GetAttributeChangedSignal(prefix .. zone):Connect(refresh)
 	end
 end

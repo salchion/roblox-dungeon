@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one", "発見したユニーク効果 {number1} / {number2}  ·  神話装備に付くことがあります" },
+		{ "Locks onto up to {number1} enemies, total damage -{number2}%: for crowds", "最大{number1}体をロック、総ダメージ-{number2}%：群れ向け" },
+		{ "⚖ All-round  ·  ✔ 🔫 Spell Tome / Rocket Launcher (+{number1}%)", "⚖ オールラウンド  ·  ✔ 🔫 スペルブック/ロケットランチャー (+{number1}%)" },
 		{ "🔒 Zone {number1} · Volcano Sealed\nOpen the previous gate first", "🔒 ゾーン {number1} · 火山が封鎖されています\nまず前のゲートを開けてください" },
 		{ "♻ [Common] Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] レザーアーマーを自動回収（エッセンス +{number1} {number2} G）" },
 		{ "Zone {number1} set effect · Trial Lv.3 — for this dungeon only", "ゾーン{number1}セット効果 · 試練 Lv.3 — このダンジョン限定" },
@@ -21,6 +24,7 @@ return {
 		{ "Depth {number1} sweep: gold, tickets and boss chest received", "深度{number1}のスイープ：ゴールド、チケット、ボス箱を獲得しました" },
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "レベルが足りません。（このダンジョンはLv.{number1}以上）" },
 		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 {number1}区域を初クリア！ゴールド+{number2} · チケット+{number3} · 鍵+{number4}" },
+		{ "You can pin up to {number1} effects. Unpin another one first", "最大{number1}個まで固定できます。先に別の固定を外してください" },
 		{ "Shot_Cannon  <font color='#{number1}aa{number2}c{number3}'>Mortar shot</font>", "ショットキャノン <font color='#{number1}aa{number2}c{number3}'>迫撃砲射撃</font>" },
 		{ "🗿 Dungeon mutation: Giant — Monster HP x{number1} rewards x{number2}", "🗿 ダンジョンの突然変異：巨大モンスターのHPが{number1}倍、報酬が{number2}倍" },
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 履き古した靴を自動回収（エッセンス +{number1} {number2} G）" },
@@ -765,6 +769,7 @@ return {
 		{ "{text1} {number2}%", "{text1} {number2}%" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [ワールドボス] ゾーン{number1} · {text2}: {text3}が出現！オレンジの光の柱を追って、みんなで倒して装備とチケットを手に入れよう！" },
+		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} セット効果『{text2}』解放! セット装備を着ければ自動でオン、ゴールドで強化もできます (Yキー)" },
 		{ "{text1} · {text2} · Fail if monsters pile up! Survive to the end and the boss appears", "{text1} · {text2} · モンスターが溜まると失敗！最後まで生き残るとボスが登場します" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Activate it with gold (Y key / ✨ Set button)", "{text1} セット効果『{text2}』を解放しました！ゴールドで有効化しよう(Yキー / ✨セットボタン)" },
 		{ "🎉 Evolved to {text1}! Your weapon look and bullet color changed{text2}", "🎉 {text1}に進化しました！武器の見た目と弾の色が変わりました{text2}" },
@@ -787,6 +792,7 @@ return {
 		{ "(Recommended {text1} · Yours {text2})", "(推奨 {text1} · あなた {text2})" },
 		{ "Open to earn the {text1} {text2} set!", "開放して{text1} {text2}セットを手に入れよう！" },
 		{ "{text1}  ·  next weapon: {text2} at +{number3}", "{text1}  ·  次の武器: {text2} (+{number3})" },
+		{ "{text1} Set effect ON: 『{text2}』 Lv.{number3}", "{text1} セット効果オン: 『{text2}』 Lv.{number3}" },
 		{ "{text1} training started! ({text2})", "{text1}の訓練を開始しました！({text2})" },
 		{ "⬆ Level Up  💰 {text1} G · ⏱ {text2}", "⬆ レベルアップ  💰 {text1} G · ⏱ {text2}" },
 		{ "👹 Boss this run: {text1} — {text2}", "👹 今回のボス: {text1} — {text2}" },

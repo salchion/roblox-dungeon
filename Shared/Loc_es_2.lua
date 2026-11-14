@@ -825,6 +825,9 @@ return {
 		["✨ Set effect name above head: ON"] = "✨ Nombre del efecto de set sobre la cabeza: SÍ",
 		["✨ Set effect name above head: OFF"] = "✨ Nombre del efecto de set sobre la cabeza: NO",
 		["↑ That was your set effect! It fires on its own (see the DPS meter)."] = "↑ ¡Ese fue tu efecto de set! Se activa solo (mira el medidor de DPS).",
+		["📌 Pin"] = "📌 Fijar",
+		["📌 Pinned"] = "📌 Fijado",
+		["Equip a zone's set gear and its effect turns on by itself (highest level first, up to your slots) · Gold: +Lv.1–3 · Set gear: +Lv.1–3 · 📌 Pin to keep one on"] = "Equipa el set de una zona y su efecto se activa solo (primero el de mayor nivel, según tus ranuras) · Oro: +Nv.1–3 · Set: +Nv.1–3 · 📌 Fijar para mantenerlo",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -965,6 +968,7 @@ return {
 		{ "Depth {number1} sweep: gold, tickets and boss chest received", "Profundidad {number1} barrida: oro, boletos y cofre del jefe recibidos" },
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "Tu nivel es muy bajo. (Esta mazmorra requiere Nv.{number1}+)" },
 		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 ¡Primera victoria en la zona {number1}! Oro +{number2} · Tickets +{number3} · Llaves +{number4}" },
+		{ "You can pin up to {number1} effects. Unpin another one first", "Puedes fijar hasta {number1} efectos. Quita otro primero" },
 		{ "Shot_Cannon  <font color='#{number1}aa{number2}c{number3}'>Mortar shot</font>", "Cañón de disparo <font color='#{number1}aa{number2}c{number3}'>Disparo de mortero </font>" },
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Común] Zapatos desgastados recuperados automáticamente (Esencia +{number1} {number2} G)" },
 		{ "Reduces training / breakthrough wait time by {number1} hour", "Reduce el tiempo de espera de entrenamiento/avance en {number1} horas" },
@@ -1027,9 +1031,5 @@ return {
 		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>", "<font color='#{number1}fffb{number2}'><b>Ataque automático</b>" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 ¡Subida de nivel! Nv.{number1}  (Vida máx. +{number2}, ataque +{number3}%)" },
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ ¡Las mejoras son gratis por ahora! (quedan {number1})" },
-		{ "⏳ The portal is still recovering ({number1} s).", "⏳ El portal aún se está recuperando ({number1} s)." },
-		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} objetos desguazados automáticamente (Esencia +{number2}, {number3} G)" },
-		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 ¡Oro insuficiente para el warp! (se necesitan {number1} G)" },
-		{ "{number1} in bag · tap one to compare and equip", "{number1} en la bolsa · toca para comparar y equipar" },
 	},
 }

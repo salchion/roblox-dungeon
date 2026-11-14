@@ -1094,6 +1094,9 @@ return {
 		["✨ Set effect name above head: ON"] = "✨ 머리 위 세트 효과 이름: 켜짐",
 		["✨ Set effect name above head: OFF"] = "✨ 머리 위 세트 효과 이름: 꺼짐",
 		["↑ That was your set effect! It fires on its own (see the DPS meter)."] = "↑ 방금 그게 세트 효과예요! 저절로 터져요 (DPS 미터기에서 확인)",
+		["📌 Pin"] = "📌 고정",
+		["📌 Pinned"] = "📌 고정됨",
+		["Equip a zone's set gear and its effect turns on by itself (highest level first, up to your slots) · Gold: +Lv.1–3 · Set gear: +Lv.1–3 · 📌 Pin to keep one on"] = "구역 세트 장비를 끼면 그 효과가 저절로 켜져요 (단계 높은 것부터, 칸 수만큼) · 골드: +Lv.1–3 · 세트 장비: +Lv.1–3 · 📌 고정하면 항상 켜짐",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1195,7 +1198,5 @@ return {
 		{ "🔫 Next weapon unlock Shotgun (+{number1})\nUpgrade cost {number2} G · You have {number3} G", "🔫 다음 무기 잠금 해제 산탄총 (+{number1})\n업그레이드 비용 {number2} G · 보유 중인 G: {number3}" },
 		{ "♻ [Rare] 🌾 Meadow Leather Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [희귀] 🌾 초원 가죽 장갑 자동 회수 (에센스 +{number1} {number2} G)" },
 		{ "♻ [Common] 🌾 Meadow Cloth Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [일반] 🌾 초원 천 장갑 자동 수집 (에센스 +{number1} {number2} G)" },
-		{ "Powerhouse   Title 『Powerhouse』\nReach {number1} Power\n{number2} / {number3}   Reward: {number4} G", "파워하우스 타이틀 『파워하우스』\n{number1} 파워 달성\n{number2} / {number3}   보상: {number4} G" },
-		{ "♻ [Common] 🌲 Forest Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [일반] 🌲 숲 가죽 모자 자동 수집 (에센스 +{number1} {number2} G)" },
 	},
 }

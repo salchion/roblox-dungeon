@@ -796,6 +796,9 @@ return {
 		["✨ Set effect name above head: ON"] = "✨ Nome do efeito de set acima da cabeça: LIGADO",
 		["✨ Set effect name above head: OFF"] = "✨ Nome do efeito de set acima da cabeça: DESLIGADO",
 		["↑ That was your set effect! It fires on its own (see the DPS meter)."] = "↑ Esse foi seu efeito de set! Ele dispara sozinho (veja o medidor de DPS).",
+		["📌 Pin"] = "📌 Fixar",
+		["📌 Pinned"] = "📌 Fixado",
+		["Equip a zone's set gear and its effect turns on by itself (highest level first, up to your slots) · Gold: +Lv.1–3 · Set gear: +Lv.1–3 · 📌 Pin to keep one on"] = "Equipe o set de uma zona e o efeito liga sozinho (maior nível primeiro, até seus espaços) · Ouro: +Nv.1–3 · Set: +Nv.1–3 · 📌 Fixar para manter",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -936,6 +939,7 @@ return {
 		{ "Depth {number1} sweep: gold, tickets and boss chest received", "Profundidade {number1} varrida: ouro, tíquetes e baú do chefe recebidos" },
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "Seu nível é muito baixo. (Esta masmorra exige Nv.{number1}+)" },
 		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 Primeira vitória na Zona {number1}! Ouro +{number2} · Tickets +{number3} · Chaves +{number4}" },
+		{ "You can pin up to {number1} effects. Unpin another one first", "Você pode fixar até {number1} efeitos. Desfixe outro primeiro" },
 		{ "Shot_Cannon  <font color='#{number1}aa{number2}c{number3}'>Mortar shot</font>", "Canhão de Disparos <font color='#{number1}aa{number2}c{number3}'> Tiro de Mortar </font>" },
 		{ "🗿 Dungeon mutation: Giant — Monster HP x{number1} rewards x{number2}", "🗿 Mutação de masmorra: Gigante - HP do monstro x{number1} recompensas x{number2}" },
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] Sapatos desgastados salvos automaticamente (Essência +{number1} {number2} G)" },
@@ -1017,9 +1021,5 @@ return {
 		{ "Lasts +{number1}s · range +{number2}%: sweeps up swarms", "Dura +{number1}s · alcance +{number2}%: varre enxames" },
 		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 Senhor do Campo de Neve (Zona {number1}) · Rec. ⚡{number2}" },
 		{ "💥Explosive Shot {number1} · ⚡Chain Lightning {number2}", "💥Tiro Explosivo {number1} · ⚡Relâmpago em Cadeia {number2}" },
-		{ "👑 Lord of Wasteland (Zone {number1}) · Rec. ⚡{number2}", "👑 Senhor do Deserto (Zona {number1}) · Rec. ⚡{number2}" },
-		{ "Spell Tome  ·  keys {number1}-{number2} switch weapons", "Livro de Feitiços · teclas {number1}-{number2} trocam de arma" },
-		{ "Defeat {number1} monsters (dungeons included)", "Derrote {number1} monstros (masmorras incluídas)" },
-		{ "🎯 Ready to challenge the Zone {number1} Lord!", "🎯 Pronto para desafiar o senhor da zona {number1}!" },
 	},
 }

@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👑 Lord of Wasteland (Zone {number1}) · Rec. ⚡{number2}", "👑 Senhor do Deserto (Zona {number1}) · Rec. ⚡{number2}" },
+		{ "Spell Tome  ·  keys {number1}-{number2} switch weapons", "Livro de Feitiços · teclas {number1}-{number2} trocam de arma" },
+		{ "Defeat {number1} monsters (dungeons included)", "Derrote {number1} monstros (masmorras incluídas)" },
+		{ "🎯 Ready to challenge the Zone {number1} Lord!", "🎯 Pronto para desafiar o senhor da zona {number1}!" },
 		{ "Gold x{number1} · Tickets {number2} · Boss chest gear {number3}", "Ouro x{number1} · Tickets {number2} · Equipamento do baú do chefe {number3}" },
 		{ "Bounces to {number1} nearby enemies (within {number2})", "Ricocheteia em {number1} inimigos próximos (em até {number2})" },
 		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 {number1} espíritos lutarão por você por {number2} s!" },
@@ -663,6 +667,7 @@ return {
 		{ "{text1} {number2}%", "{text1} {number2}%" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [Chefe mundial] Zona {number1} · {text2}: {text3} apareceu! Siga o pilar de luz laranja e derrotem juntos para ganhar equipamento + tickets!" },
+		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} Efeito de set 『{text2}』 desbloqueado! Equipe o set para ativá-lo ou melhore com ouro (tecla Y)" },
 		{ "{text1} · {text2} · Fail if monsters pile up! Survive to the end and the boss appears", "{text1} · {text2} · Falha se os monstros se acumularem! Sobreviva até o fim e o chefe aparece" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Activate it with gold (Y key / ✨ Set button)", "Efeito de conjunto {text1} 『{text2}』 desbloqueado! Ative-o com ouro (tecla Y / botão ✨ Conjuntos)" },
 		{ "🎉 Evolved to {text1}! Your weapon look and bullet color changed{text2}", "🎉 Evoluiu para {text1}! O visual da sua arma e a cor das balas mudaram{text2}" },
@@ -685,6 +690,7 @@ return {
 		{ "(Recommended {text1} · Yours {text2})", "(Recomendado {text1} · Você {text2})" },
 		{ "Open to earn the {text1} {text2} set!", "Abra para conseguir o conjunto {text1} {text2}!" },
 		{ "{text1}  ·  next weapon: {text2} at +{number3}", "{text1}  ·  próxima arma: {text2} em +{number3}" },
+		{ "{text1} Set effect ON: 『{text2}』 Lv.{number3}", "{text1} Efeito de set ativado: 『{text2}』 Nv.{number3}" },
 		{ "{text1} training started! ({text2})", "Treino de {text1} iniciado! ({text2})" },
 		{ "⬆ Level Up  💰 {text1} G · ⏱ {text2}", "⬆ Subir de nível  💰 {text1} G · ⏱ {text2}" },
 		{ "👹 Boss this run: {text1} — {text2}", "👹 Chefe desta partida: {text1} — {text2}" },

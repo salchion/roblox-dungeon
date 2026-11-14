@@ -832,6 +832,9 @@ return {
 		["✨ Set effect name above head: ON"] = "✨ Nom de l'effet de set au-dessus de la tête : OUI",
 		["✨ Set effect name above head: OFF"] = "✨ Nom de l'effet de set au-dessus de la tête : NON",
 		["↑ That was your set effect! It fires on its own (see the DPS meter)."] = "↑ C'était ton effet de set ! Il se déclenche tout seul (voir le compteur DPS).",
+		["📌 Pin"] = "📌 Épingler",
+		["📌 Pinned"] = "📌 Épinglé",
+		["Equip a zone's set gear and its effect turns on by itself (highest level first, up to your slots) · Gold: +Lv.1–3 · Set gear: +Lv.1–3 · 📌 Pin to keep one on"] = "Équipe le set d'une zone et son effet s'active tout seul (niveau le plus haut d'abord, selon tes emplacements) · Or : +Niv.1–3 · Set : +Niv.1–3 · 📌 Épingler pour le garder",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -972,6 +975,7 @@ return {
 		{ "Depth {number1} sweep: gold, tickets and boss chest received", "Profondeur {number1} balayée : or, tickets et coffre du boss reçus" },
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "Ton niveau est trop bas. (Ce donjon requiert Nv.{number1}+)" },
 		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 Zone {number1} vaincue pour la première fois ! Or +{number2} · Tickets +{number3} · Clés +{number4}" },
+		{ "You can pin up to {number1} effects. Unpin another one first", "Tu peux épingler jusqu'à {number1} effets. Désépingle-en un d'abord" },
 		{ "Shot_Cannon  <font color='#{number1}aa{number2}c{number3}'>Mortar shot</font>", "Canon de tir <font color='#{number1}aa{number2}c{number3}'> Tir de mortier </font>" },
 		{ "🗿 Dungeon mutation: Giant — Monster HP x{number1} rewards x{number2}", "🗿 Mutation du donjon : Géant - HP du monstre x{number1} récompenses x{number2}" },
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Commun] Chaussures usées récupérées automatiquement (Essence +{number1} {number2} G)" },
@@ -1011,9 +1015,5 @@ return {
 		{ "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped", "🎯 Prime remportée ! +{number1} G · 🎫 +{number2} · équipement lâché" },
 		{ "🎫 {number1} tickets!\nPull gear at the gacha machine", "🎫 {number1} billets !\nTirez sur l'équipement à la machine de gacha" },
 		{ "🐾 Pet Lv.{number1}! New ability 💥 Power — Attack +{number2}%", "🐾 Animal de compagnie niveau {number1} ! Nouvelle capacité 💥 Puissance - Attaque +{number2}%" },
-		{ "Sniper Rifle  ·  next weapon: Shotgun at +{number1}", "Fusil de sniper · prochaine arme : Fusil à pompe à +{number1}" },
-		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2} {number3} G)", "🧹 Nettoyage automatique de {number1} équipements plus faibles (Essence +{number2} {number3} G)" },
-		{ "every {number1}s a meteor, radius {number2} (x1.5 on bosses)", "toutes les {number1} s un météore, rayon {number2} (x1,5 sur les boss)" },
-		{ "Heals over {number1}s instead of at once · total +{number2}%", "Soigne sur {number1} s au lieu d'un coup · total +{number2} %" },
 	},
 }

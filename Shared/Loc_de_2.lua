@@ -776,6 +776,9 @@ return {
 		["✨ Set effect name above head: ON"] = "✨ Set-Effektname über dem Kopf: AN",
 		["✨ Set effect name above head: OFF"] = "✨ Set-Effektname über dem Kopf: AUS",
 		["↑ That was your set effect! It fires on its own (see the DPS meter)."] = "↑ Das war dein Set-Effekt! Er löst von selbst aus (siehe DPS-Anzeige).",
+		["📌 Pin"] = "📌 Anheften",
+		["📌 Pinned"] = "📌 Angeheftet",
+		["Equip a zone's set gear and its effect turns on by itself (highest level first, up to your slots) · Gold: +Lv.1–3 · Set gear: +Lv.1–3 · 📌 Pin to keep one on"] = "Rüste das Set einer Zone aus und sein Effekt schaltet sich selbst ein (höchste Stufe zuerst, bis zu deinen Plätzen) · Gold: +Lv.1–3 · Set-Ausrüstung: +Lv.1–3 · 📌 Anheften hält einen an",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -916,6 +919,7 @@ return {
 		{ "Depth {number1} sweep: gold, tickets and boss chest received", "Tiefe {number1} geblitzt: Gold, Tickets und Boss-Truhe erhalten" },
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "Dein Level ist zu niedrig. (Dieser Dungeon braucht Lv.{number1}+)" },
 		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 Zone {number1} zum ersten Mal geschafft! Gold +{number2} · Tickets +{number3} · Schlüssel +{number4}" },
+		{ "You can pin up to {number1} effects. Unpin another one first", "Du kannst bis zu {number1} Effekte anheften. Löse zuerst einen anderen" },
 		{ "Shot_Cannon  <font color='#{number1}aa{number2}c{number3}'>Mortar shot</font>", "Schusskanone <font color='#{number1}aa{number2}c{number3}'>Mörser-Schuss </font>" },
 		{ "🗿 Dungeon mutation: Giant — Monster HP x{number1} rewards x{number2}", "🗿 Dungeon-Mutation: Riesen-Monster-HP x{number1} Belohnungen x{number2}" },
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Gewöhnlich] Abgenutzte Schuhe werden automatisch gesammelt (Essenz +{number1} {number2} G)" },
@@ -1007,10 +1011,5 @@ return {
 		{ "defeat {number1} monsters here, then the Lord", "hier {number1} Monster besiegen, dann den Fürsten" },
 		{ "Mythic: unique {number1}% (dungeon chests {number2}%+)", "Mythisch: Einzigartig {number1}% (Dungeontruhen {number2}%+)" },
 		{ "Defeat {number1} bosses in one Boss Rush run", "Besiege {number1} Bosse in einem Boss-Rush-Lauf" },
-		{ "Monsters met {number1} / {number2} (incl. zone lords)", "Monster getroffen {number1} / {number2} (einschließlich Zonenherren)" },
-		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 Gratis-Eintritt genutzt! (heute noch {number1} / {number2})" },
-		{ "A big blast when it ends (attack x{number1})", "Beim Ende eine große Explosion (Angriff x{number1})" },
-		{ "{number1}s invincible, but healing is halved", "{number1} s unverwundbar, aber die Heilung wird halbiert" },
-		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 Neue Waffe: Zauberbuch – drücke {number1}!" },
 	},
 }

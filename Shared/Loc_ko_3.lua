@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Powerhouse   Title 『Powerhouse』\nReach {number1} Power\n{number2} / {number3}   Reward: {number4} G", "파워하우스 타이틀 『파워하우스』\n{number1} 파워 달성\n{number2} / {number3}   보상: {number4} G" },
+		{ "♻ [Common] 🌲 Forest Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [일반] 🌲 숲 가죽 모자 자동 수집 (에센스 +{number1} {number2} G)" },
 		{ "The final blast also explodes around every target (attack x{number1})", "마지막 대폭발이 모든 대상 주변에서도 터져요 (공격 x{number1})" },
 		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [일반] 🌾 초원에서 닳은 신발 자동 회수 (에센스 +{number1} {number2} G)" },
 		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 {number1}레벨 돌파 완료! 이제 더 성장할 수 있어요." },
@@ -49,6 +51,7 @@ return {
 		{ "Depth {number1} sweep: gold, tickets and boss chest received", "깊이 {number1} 소탕 완료: 골드, 티켓, 보스 상자를 받았어요" },
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "레벨이 너무 낮아요. (이 던전은 Lv.{number1} 이상)" },
 		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 {number1}구역 첫 클리어! 골드 +{number2} · 티켓 +{number3} · 열쇠 +{number4}" },
+		{ "You can pin up to {number1} effects. Unpin another one first", "최대 {number1}개까지 고정할 수 있어요. 다른 고정을 먼저 풀어 주세요" },
 		{ "Shot_Cannon  <font color='#{number1}aa{number2}c{number3}'>Mortar shot</font>", "포격 <font color='#{number1}aa{number2}c{number3}'>박격포 발사</font>" },
 		{ "🗿 Dungeon mutation: Giant — Monster HP x{number1} rewards x{number2}", "🗿 던전 돌연변이: 거대 - 몬스터 HP x{number1} 보상 x{number2}" },
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [일반] 마모된 신발 자동 회수 (에센스 +{number1} {number2} G)" },
@@ -877,6 +880,7 @@ return {
 		{ "<font color='#9ad7ff'>🎯 Goal: Defeat Zone {number1} Lord</font>  <font size='10' color='#c9c0e0'>(Recommended power {text2} · Your power {text3})</font>", "<font color='#9ad7ff'>🎯 목표: {number1}구역 군주 처치</font>  <font size='10' color='#c9c0e0'>(권장 전투력 {text2} · 내 전투력 {text3})</font>" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [월드 보스] {number1}구역 · {text2}: {text3} 등장! 주황색 빛기둥을 따라가 함께 쓰러뜨리면 장비 + 티켓!" },
 		{ "<font size='10' color='{text1}'>📍 Zone {number2} {text3} · Drops in that zone · Dungeon chests (deeper = better odds)</font>", "<font size='10' color='{text1}'>📍 {number2}구역 {text3} · 그 구역에서 드랍 · 던전 상자 (깊을수록 확률 높음)</font>" },
+		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} 세트 효과 『{text2}』 해금! 그 세트 장비를 끼면 저절로 켜지고, 골드로 강화할 수도 있어요 (Y 키)" },
 		{ " <font size='9' color='#8a8aa8'>Range {text1}</font> <font size='9' color='{text2}'><b>({number3}%)</b></font>", " <font size='9' color='#8a8aa8'>범위 {text1}</font> <font size='9' color='{text2}'><b>({number3}%)</b></font>" },
 		{ "<font color='#9affc0'>Next weapon → <b>{text1}</b></font> <font color='#aeb4cc'>{text2}</font>", "<font color='#9affc0'>다음 무기 → <b>{text1}</b></font> <font color='#aeb4cc'>{text2}</font>" },
 		{ "🔫 Next {text1} <font color='#ffd966'>{text2}</font>\n✨ Upgrades are free right now! ({number3} left)", "🔫 다음 {text1} <font color='#ffd966'>{text2}</font>\n✨ 지금은 강화가 무료예요! ({number3}회 남음)" },
@@ -912,6 +916,7 @@ return {
 		{ "(Recommended {text1} · Yours {text2})", "(권장 {text1} · 내 전투력 {text2})" },
 		{ "Open to earn the {text1} {text2} set!", "열면 {text1} {text2} 세트를 얻어요!" },
 		{ "{text1}  ·  next weapon: {text2} at +{number3}", "{text1}  ·  다음 무기: {text2} (+{number3})" },
+		{ "{text1} Set effect ON: 『{text2}』 Lv.{number3}", "{text1} 세트 효과 켜짐: 『{text2}』 Lv.{number3}" },
 		{ "{text1} training started! ({text2})", "{text1} 훈련 시작! ({text2})" },
 		{ "⬆ Level Up  💰 {text1} G · ⏱ {text2}", "⬆ 레벨업  💰 {text1} G · ⏱ {text2}" },
 		{ "👹 Boss this run: {text1} — {text2}", "👹 이번 보스: {text1} — {text2}" },

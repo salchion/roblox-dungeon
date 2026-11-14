@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Sniper Rifle  ·  next weapon: Shotgun at +{number1}", "Fusil de sniper · prochaine arme : Fusil à pompe à +{number1}" },
+		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2} {number3} G)", "🧹 Nettoyage automatique de {number1} équipements plus faibles (Essence +{number2} {number3} G)" },
+		{ "every {number1}s a meteor, radius {number2} (x1.5 on bosses)", "toutes les {number1} s un météore, rayon {number2} (x1,5 sur les boss)" },
+		{ "Heals over {number1}s instead of at once · total +{number2}%", "Soigne sur {number1} s au lieu d'un coup · total +{number2} %" },
 		{ "Spend {number1} stat points (T key / Stats button)", "Utiliser {number1} points de statistiques (touche T / bouton Statistiques)" },
 		{ "▶ Next feature: Lv.{number1} 💥 Power  ({number2} lvl · ~{number3} G)", "▶ Prochaine fonctionnalité : Niveau {number1} 💥 Puissance ({number2} niveau · ~{number3} G)" },
 		{ "✅ Mission complete! Reward: {number1} G + Tickets {number2}", "✅ Mission terminée ! Récompense : {number1} G + Tickets {number2}" },
@@ -703,6 +707,7 @@ return {
 		{ "{text1} {number2}%", "{text1} {number2} %" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [Boss mondial] Zone {number1} · {text2} : {text3} est apparu ! Suivez le pilier de lumière orange et vainquez-le ensemble pour de l'équipement + des tickets !" },
+		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} Effet de set 『{text2}』 débloqué ! Équipe son set pour l'activer, ou améliore-le avec de l'or (touche Y)" },
 		{ "{text1} · {text2} · Fail if monsters pile up! Survive to the end and the boss appears", "{text1} · {text2} · Échec si les monstres s'accumulent ! Survivez jusqu'au bout et le boss apparaît" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Activate it with gold (Y key / ✨ Set button)", "Effet de set {text1} 『{text2}』 débloqué ! Activez-le avec de l'or (touche Y / bouton ✨ Sets)" },
 		{ "🎉 Evolved to {text1}! Your weapon look and bullet color changed{text2}", "🎉 Évolution en {text1} ! L'apparence de votre arme et la couleur des balles ont changé{text2}" },
@@ -725,6 +730,7 @@ return {
 		{ "(Recommended {text1} · Yours {text2})", "(Recommandé {text1} · Vous {text2})" },
 		{ "Open to earn the {text1} {text2} set!", "Ouvrez pour obtenir le set {text1} {text2} !" },
 		{ "{text1}  ·  next weapon: {text2} at +{number3}", "{text1}  ·  arme suivante : {text2} à +{number3}" },
+		{ "{text1} Set effect ON: 『{text2}』 Lv.{number3}", "{text1} Effet de set activé : 『{text2}』 Niv.{number3}" },
 		{ "{text1} training started! ({text2})", "Entraînement {text1} commencé ! ({text2})" },
 		{ "⬆ Level Up  💰 {text1} G · ⏱ {text2}", "⬆ Niveau sup.  💰 {text1} G · ⏱ {text2}" },
 		{ "👹 Boss this run: {text1} — {text2}", "👹 Boss de cette partie : {text1} — {text2}" },

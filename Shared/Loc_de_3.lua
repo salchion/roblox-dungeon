@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Monsters met {number1} / {number2} (incl. zone lords)", "Monster getroffen {number1} / {number2} (einschließlich Zonenherren)" },
+		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 Gratis-Eintritt genutzt! (heute noch {number1} / {number2})" },
+		{ "A big blast when it ends (attack x{number1})", "Beim Ende eine große Explosion (Angriff x{number1})" },
+		{ "{number1}s invincible, but healing is halved", "{number1} s unverwundbar, aber die Heilung wird halbiert" },
+		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 Neue Waffe: Zauberbuch – drücke {number1}!" },
 		{ "Gacha_Pop{number1}  Gacha result: Legendary", "Gacha_Pop{number1} Gacha-Ergebnis: Legendär" },
 		{ "{number1} hours of idle gold ({number2} G) piled up!", "{number1} Stunden ungenutztes Gold ({number2} G) gesammelt!" },
 		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 Feld-Eingang Direkt dahinter! {number1}m" },
@@ -650,6 +655,7 @@ return {
 		{ "{text1} {number2}%", "{text1} {number2}%" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [Weltboss] Zone {number1} · {text2}: {text3} ist erschienen! Folge der orangefarbenen Lichtsäule und besiegt ihn gemeinsam für Ausrüstung + Tickets!" },
+		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} Set-Effekt 『{text2}』 freigeschaltet! Rüste sein Set aus, um ihn zu aktivieren, oder verbessere ihn mit Gold (Taste Y)" },
 		{ "{text1} · {text2} · Fail if monsters pile up! Survive to the end and the boss appears", "{text1} · {text2} · Scheitern, wenn sich Monster stapeln! Überlebe bis zum Ende, und der Boss erscheint" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Activate it with gold (Y key / ✨ Set button)", "{text1} Set-Bonus 『{text2}』 freigeschaltet! Aktiviere ihn mit Gold (Taste Y / ✨-Set-Knopf)" },
 		{ "🎉 Evolved to {text1}! Your weapon look and bullet color changed{text2}", "🎉 Zu {text1} weiterentwickelt! Aussehen und Kugelfarbe deiner Waffe haben sich geändert{text2}" },
@@ -672,6 +678,7 @@ return {
 		{ "(Recommended {text1} · Yours {text2})", "(Empfohlen {text1} · Du {text2})" },
 		{ "Open to earn the {text1} {text2} set!", "Öffne es, um das Set {text1} {text2} zu erhalten!" },
 		{ "{text1}  ·  next weapon: {text2} at +{number3}", "{text1}  ·  nächste Waffe: {text2} bei +{number3}" },
+		{ "{text1} Set effect ON: 『{text2}』 Lv.{number3}", "{text1} Set-Effekt AN: 『{text2}』 Lv.{number3}" },
 		{ "{text1} training started! ({text2})", "{text1}-Training gestartet! ({text2})" },
 		{ "⬆ Level Up  💰 {text1} G · ⏱ {text2}", "⬆ Aufstieg  💰 {text1} G · ⏱ {text2}" },
 		{ "👹 Boss this run: {text1} — {text2}", "👹 Boss dieses Laufs: {text1} — {text2}" },

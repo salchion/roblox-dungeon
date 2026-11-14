@@ -954,6 +954,9 @@ return {
 		["✨ Set effect name above head: ON"] = "✨ 頭上にセット効果名: オン",
 		["✨ Set effect name above head: OFF"] = "✨ 頭上にセット効果名: オフ",
 		["↑ That was your set effect! It fires on its own (see the DPS meter)."] = "↑ 今のがセット効果! 自動で発動します (DPSメーターで確認)。",
+		["📌 Pin"] = "📌 固定",
+		["📌 Pinned"] = "📌 固定中",
+		["Equip a zone's set gear and its effect turns on by itself (highest level first, up to your slots) · Gold: +Lv.1–3 · Set gear: +Lv.1–3 · 📌 Pin to keep one on"] = "ゾーンのセット装備を着けるとその効果が自動でオン (レベルが高い順・枠の数まで) · ゴールド: +Lv.1–3 · セット装備: +Lv.1–3 · 📌 固定でいつもオン",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1074,8 +1077,5 @@ return {
 		{ "Dungeon_Fail  <font color='#{number1}aa{number2}c{number3}'>Dungeon failed</font>", "ダンジョン失敗 <font color='#{number1}aa{number2}c{number3}'>ダンジョンが失敗しました</font>" },
 		{ "🔫 Next era Steel Era (+{number1})\nUpgrade cost {number2} G · You have {number3} G", "🔫 次の時代、スチール時代（+{number1}）\nアップグレードコスト {number2} G · 現在所持G数 {number3}" },
 		{ "Damage to bosses / lords / elites +{number1}% per point  (max {number2})", "ボス / ロード / エリートへのダメージ +{number1}% / 1ポイント  (最大 {number2})" },
-		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one", "発見したユニーク効果 {number1} / {number2}  ·  神話装備に付くことがあります" },
-		{ "Locks onto up to {number1} enemies, total damage -{number2}%: for crowds", "最大{number1}体をロック、総ダメージ-{number2}%：群れ向け" },
-		{ "⚖ All-round  ·  ✔ 🔫 Spell Tome / Rocket Launcher (+{number1}%)", "⚖ オールラウンド  ·  ✔ 🔫 スペルブック/ロケットランチャー (+{number1}%)" },
 	},
 }

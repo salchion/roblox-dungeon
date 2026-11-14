@@ -44,17 +44,7 @@ local function slotCount(player, rift)
 	return math.max(1, slots) + (player:GetAttribute("AugSlotBonus") or 0) -- 상품 / VIP 로 얻은 칸
 end
 
-local function equipped(rift, slots)
-	local list = {}
-	for z = 1, ZONES do
-		if rift.AugOn[tostring(z)] and (rift.AugLv[tostring(z)] or 0) > 0 and #list < slots then
-			table.insert(list, z)
-		end
-	end
-	return list
-end
-
--- 같은 구역 세트 장비를 끼면 단계가 오른다: 골드 단계(최대 3) + 장착 부위 수(최대 3) = 최대 6단계 (1부위 4단계 / 2부위 5단계 / 3부위 6단계)
+-- 같은 구역 세트 장비를 끼면 단계가 오른다: 골드 단계(최대 3) + 장착 부위 수(최대 3) = 최대 6단계
 local function gearBonus(player, zone)
 	local okInv, Inventory = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
 	if not okInv then return 0 end
@@ -62,12 +52,47 @@ local function gearBonus(player, zone)
 	return math.clamp(counts["Zone" .. zone] or 0, 0, 3)
 end
 
+-- 켜지는 세트 효과 고르기 (자동): 단계(골드 단계 + 낀 세트 부위 + "+1" 옵션)가 1 이상인 효과 중에서
+--   📌 고정한 것 먼저, 그다음 단계가 높은 것부터 칸(1~3) 수만큼 켠다.
+--   (예전: 골드로 1단계 이상 올리고 Y 창에서 직접 ON 을 눌러야 켜졌다 -> 세트 장비를 다 맞춰도 효과가 안 켜져서 헷갈렸다.
+--    이제는 그 구역 세트 장비를 1부위만 껴도 효과가 저절로 켜진다. rift.AugOn 은 이제 "📌 고정" 표시로 쓴다)
+local function levelsOf(player, rift, boosts)
+	local list = {}
+	for z = 1, ZONES do
+		local attr = Config.Sets.ZoneAug[z]
+		local level = (rift.AugLv[tostring(z)] or 0) + gearBonus(player, z) + math.min(Config.Inventory.AugBoostCap or 3, boosts[attr] or 0)
+		list[z] = math.min(Config.Inventory.AugMaxLevel or 6, level)
+	end
+	return list
+end
+local function equipped(player, rift, slots, levels)
+	local pinned, others = {}, {}
+	for z = 1, ZONES do
+		if (levels[z] or 0) > 0 then
+			table.insert(rift.AugOn[tostring(z)] and pinned or others, z)
+		end
+	end
+	local function byLevel(a, b)
+		if levels[a] ~= levels[b] then return levels[a] > levels[b] end
+		return a > b -- (같으면 뒤 구역 = 더 강한 효과 먼저)
+	end
+	table.sort(pinned, byLevel)
+	table.sort(others, byLevel)
+	local list = {}
+	for _, group in ipairs({ pinned, others }) do
+		for _, z in ipairs(group) do
+			if #list < slots then table.insert(list, z) end
+		end
+	end
+	return list
+end
+local lastActive = setmetatable({}, { __mode = "k" }) -- [player] = { [구역] = true } (새로 켜진 효과 알림용)
+
 -- Attribute 채우기 (효과 코드가 읽는 값 + 화면용 값)
 function Aug.Apply(player)
 	local rift = stateOf(player)
 	if not rift then return end
 	local slots = slotCount(player, rift)
-	local list = equipped(rift, slots)
 	local levels, bestLevel, auraColor = {}, 0, nil
 	local boosts = {} -- 장비 옵션 "세트 효과 +1" (효과마다 최대 AugBoostCap)
 	do
@@ -75,12 +100,21 @@ function Aug.Apply(player)
 		if okInv then boosts = Inventory.GetTotals(player).AugBoost or {} end
 	end
 	local function boostOf(attr) return math.min(Config.Inventory.AugBoostCap or 3, boosts[attr] or 0) end
+	local zoneLevels = levelsOf(player, rift, boosts)
+	local list = equipped(player, rift, slots, zoneLevels)
+	local nowActive = {}
 	for _, z in ipairs(list) do
 		local attr = Config.Sets.ZoneAug[z]
-		local level = math.min(Config.Inventory.AugMaxLevel or 6, rift.AugLv[tostring(z)] + gearBonus(player, z) + boostOf(attr)) -- (합쳐서 최대 6)
+		local level = zoneLevels[z] -- (골드 + 세트 부위 + 옵션, 합쳐서 최대 6)
 		levels[attr] = level
+		nowActive[z] = true
 		if level > bestLevel then bestLevel, auraColor = level, Config.AugInfo[attr].Color end
+		if lastActive[player] and not lastActive[player][z] then -- 장비를 끼거나 단계를 올려서 새로 켜졌다
+			local info = Config.AugInfo[attr]
+			notify(player, string.format("%s Set effect ON: 『%s』 Lv.%d", info.Icon, info.Name, level))
+		end
 	end
+	lastActive[player] = nowActive
 	for attr in pairs(Config.AugInfo) do
 		player:SetAttribute(attr, levels[attr] or 0)
 	end
@@ -101,8 +135,9 @@ function Aug.Apply(player)
 	player:SetAttribute("AugSlots", slots)
 	for z = 1, ZONES do
 		player:SetAttribute("AugLvZ_" .. z, rift.AugLv[tostring(z)] or 0)
-		player:SetAttribute("AugGearZ_" .. z, (rift.AugLv[tostring(z)] or 0) > 0 and (gearBonus(player, z) + boostOf(Config.Sets.ZoneAug[z])) or 0) -- 장비로 더해진 단계 (세트 부위 + "+1" 옵션)
+		player:SetAttribute("AugGearZ_" .. z, gearBonus(player, z) + boostOf(Config.Sets.ZoneAug[z])) -- 장비로 더해진 단계 (세트 부위 + "+1" 옵션: 골드 단계가 0 이어도 센다)
 		player:SetAttribute("AugOnZ_" .. z, table.find(list, z) ~= nil)
+		player:SetAttribute("AugPinZ_" .. z, rift.AugOn[tostring(z)] == true) -- 📌 고정
 		player:SetAttribute("AugOpenZ_" .. z, isOpen(player, rift, z))
 	end
 end
@@ -132,7 +167,7 @@ function Aug.NoteBoss(player, zone)
 	if not wasOpen then
 		local attr = Config.Sets.ZoneAug[zone]
 		local info = Config.AugInfo[attr]
-		notify(player, string.format("%s Set effect 『%s』 unlocked! Activate it with gold (Y key / ✨ Set button)", info.Icon, info.Name))
+		notify(player, string.format("%s Set effect 『%s』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", info.Icon, info.Name))
 	end
 	local after = slotCount(player, rift)
 	if after > before then
@@ -171,27 +206,16 @@ Remotes.Aug.OnServerEvent:Connect(function(player, action, zone)
 		end
 		player:SetAttribute("Gold", gold - cost)
 		rift.AugLv[key] = level + 1
-		local slots = slotCount(player, rift)
-		if level == 0 and #equipped(rift, slots) < slots then
-			rift.AugOn[key] = true -- 첫 활성화는 빈 칸이 있으면 바로 켠다
-		end
 		notify(player, string.format("%s 『%s』 %s done! (Lv.%d)", info.Icon, info.Name, level == 0 and "Activation" or "Upgrade", level + 1))
-	elseif action == "Toggle" then
-		if (rift.AugLv[key] or 0) <= 0 then return end
-		-- 칸 수보다 많이 "켜짐"으로 저장돼 있던 것(화면에는 꺼짐으로 보임)을 먼저 정리한다:
-		-- 예전엔 하나를 끄면 숨어 있던 다른 효과가 저절로 켜졌고, 꺼짐으로 보이는 효과를 켜려고 누르면 오히려 꺼졌다
-		do
-			local shown = equipped(rift, slotCount(player, rift))
-			for z = 1, ZONES do
-				if rift.AugOn[tostring(z)] and not table.find(shown, z) then rift.AugOn[tostring(z)] = nil end
-			end
-		end
+	elseif action == "Toggle" then -- 📌 고정 / 해제: 고정한 효과는 단계가 낮아도 먼저 켜진다 (칸 수까지)
 		if rift.AugOn[key] then
 			rift.AugOn[key] = nil
 		else
 			local slots = slotCount(player, rift)
-			if #equipped(rift, slots) >= slots then
-				notify(player, string.format("You can run %d effects at once. Turn another one off first", slots))
+			local pinned = 0
+			for z = 1, ZONES do if rift.AugOn[tostring(z)] then pinned += 1 end end
+			if pinned >= slots then
+				notify(player, string.format("You can pin up to %d effects. Unpin another one first", slots))
 				return
 			end
 			rift.AugOn[key] = true
