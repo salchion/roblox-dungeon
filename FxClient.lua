@@ -1885,9 +1885,9 @@ end
 local function flame(event) -- { "L", 위치, 반지름, 초 }: 큰 불길 지대 + 안쪽 밝은 불씨 판 + 튀는 불똥
 	local position, radius, seconds = event[2], event[3], event[4]
 	local flat = CFrame.new(position + Vector3.new(0, 0.3, 0)) * CFrame.Angles(0, 0, math.rad(90))
-	local pad = neonPart(Vector3.new(0.4, radius * 2, radius * 2), Color3.fromRGB(255, 95, 30), 0.5, CYL)
+	local pad = neonPart(Vector3.new(0.2, radius * 2, radius * 2), Color3.fromRGB(255, 95, 30), 0.72, CYL) -- (예전 0.5: 바닥에 주황 원판이 꽉 차 보였다)
 	pad.CFrame = flat
-	local inner = neonPart(Vector3.new(0.5, radius * 1.2, radius * 1.2), Color3.fromRGB(255, 190, 70), 0.4, CYL)
+	local inner = neonPart(Vector3.new(0.25, radius * 1.2, radius * 1.2), Color3.fromRGB(255, 190, 70), 0.68, CYL)
 	inner.CFrame = flat
 	local fire = Instance.new("Fire")
 	fire.Size = math.clamp(radius * 1.8, 12, 42)
@@ -1906,11 +1906,17 @@ local function flame(event) -- { "L", 위치, 반지름, 초 }: 큰 불길 지�
 	embers.Parent = inner
 	pad.Parent, inner.Parent = fxFolder, fxFolder
 	scorch(position, radius * 0.9, seconds + 1)
+	local edge -- 불길 지대의 가장자리: 둥근 불 고리 (지대가 어디까지인지 보인다)
+	if not lowSpecOn() then
+		edge = makeDashes(math.clamp(math.floor(radius * 1.2), 12, 24), Color3.fromRGB(255, 140, 50), 0.9, 2 * math.pi * radius / math.clamp(math.floor(radius * 1.2), 12, 24) * 0.55, 0.25)
+		placeDashes(edge, position + Vector3.new(0, 0.5, 0), radius, 0)
+	end
 	task.delay(seconds, function()
 		TweenService:Create(pad, TweenInfo.new(0.5), { Transparency = 1 }):Play()
 		TweenService:Create(inner, TweenInfo.new(0.5), { Transparency = 1 }):Play()
 		fire.Enabled = false
 		embers.Enabled = false
+		if edge then releaseDashes(edge) end
 		Debris:AddItem(pad, 1.6)
 		Debris:AddItem(inner, 1.6)
 	end)
@@ -2638,19 +2644,32 @@ local function skull(event)
 		if #textPool < 60 then table.insert(textPool, entry) else entry.Part:Destroy() end
 	end)
 	local purple = Color3.fromRGB(165, 70, 235)
-	burst(position, purple, 45)
-	burst(center, Color3.fromRGB(45, 12, 70), 22)
+	burst(position, purple, 40)
 	ring({ "R", center, 8, purple })
 	local camera = workspace.CurrentCamera
-	if camera then -- 보라 베기 두 줄 (X 자)
+	if camera then -- 보라 베기 두 줄 (X 자): 흰 심 + 보라 빛무리 원통 (예전: 네모 막대)
 		for i, tilt in ipairs({ 35, -35 }) do
 			task.delay((i - 1) * 0.06, function()
-				local slash = neonPart(Vector3.new(10, 0.35, 0.35), Color3.fromRGB(210, 120, 255), 0)
-				slash.CFrame = CFrame.lookAt(center, camera.CFrame.Position) * CFrame.Angles(0, 0, math.rad(tilt))
-				slash.Parent = fxFolder
-				TweenService:Create(slash, TweenInfo.new(0.22, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(16, 0.1, 0.1), Transparency = 1 }):Play()
-				Debris:AddItem(slash, 0.25)
+				local cf = CFrame.lookAt(center, camera.CFrame.Position) * CFrame.Angles(0, 0, math.rad(tilt))
+				local core = neonPart(Vector3.new(10, 0.3, 0.3), Color3.fromRGB(255, 240, 255), 0, CYL)
+				local glow = neonPart(Vector3.new(11, 1.1, 1.1), Color3.fromRGB(200, 110, 255), 0.5, CYL)
+				core.CFrame, glow.CFrame = cf, cf
+				core.Parent, glow.Parent = fxFolder, fxFolder
+				TweenService:Create(core, TweenInfo.new(0.22, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(17, 0.05, 0.05), Transparency = 1 }):Play()
+				TweenService:Create(glow, TweenInfo.new(0.28, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(18, 0.2, 0.2), Transparency = 1 }):Play()
+				Debris:AddItem(core, 0.25)
+				Debris:AddItem(glow, 0.3)
 			end)
+		end
+	end
+	if not lowSpecOn() then -- 빠져나가는 영혼: 보라 빛 구슬 두 개가 흔들리며 위로 오르다 사라진다
+		for i = 1, 2 do
+			local wisp = neonPart(Vector3.new(1.1, 1.1, 1.1), Color3.fromRGB(215, 150, 255), 0.15, Enum.PartType.Ball)
+			wisp.CastShadow = false
+			wisp.Position = center + Vector3.new((i - 1.5) * 2, 1, 0)
+			wisp.Parent = fxFolder
+			TweenService:Create(wisp, TweenInfo.new(0.9, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { Position = center + Vector3.new((i - 1.5) * 4, 10, 0), Size = Vector3.new(0.3, 0.3, 0.3), Transparency = 1 }):Play()
+			Debris:AddItem(wisp, 0.95)
 		end
 	end
 end
@@ -2661,15 +2680,15 @@ local function novaFx(event)
 	ringWave(position, radius, color, 0.5, 26, 2.4)
 	ring({ "R", position, radius * 0.9, color })
 	ring({ "R", position, radius * 0.5, WHITE })
-	local glow = neonPart(Vector3.new(2, 2, 2), color:Lerp(WHITE, 0.4), 0.3, Enum.PartType.Ball) -- 빛구 (화면 번쩍임 없음)
+	local glow = neonPart(Vector3.new(2, 2, 2), color:Lerp(WHITE, 0.4), 0.55, Enum.PartType.Ball) -- 옅은 빛구 (예전: 진한 공이 크게 부풀었다)
 	glow.CastShadow = false
 	glow.Position = center
 	glow.Parent = fxFolder
-	TweenService:Create(glow, TweenInfo.new(0.28, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.one * radius * 1.7, Transparency = 1 }):Play()
-	Debris:AddItem(glow, 0.32)
-	burst(center, color, 85)
-	burst(center, color:Lerp(WHITE, 0.7), 34)
-	deathBurst({ "K", center, color:Lerp(Color3.fromRGB(70, 50, 40), 0.5), 5 })
+	TweenService:Create(glow, TweenInfo.new(0.24, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.one * radius * 1.2, Transparency = 1 }):Play()
+	Debris:AddItem(glow, 0.28)
+	impactStar(center, color, 1.6) -- 가운데 별 섬광
+	burst(center, color, 70)
+	burst(center, color:Lerp(WHITE, 0.7), 28) -- (네모 파편 조각은 뺐다)
 end
 
 HANDLERS.U = skull

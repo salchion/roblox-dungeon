@@ -1795,12 +1795,31 @@ local function addIgnite(run, player, part, data, stacks)
 	if not entry or entry.Data ~= data then
 		entry = { Data = data, Stacks = 0, Owner = player, NextAdd = 0, NextBurst = now + 3 }
 		run.Ignite[part] = entry
+		-- 불붙은 몬스터: 몸에서 불씨가 피어오른다 (예전: 피해 숫자 말고는 불붙은 표시가 없었다). 중첩이 쌓일수록 진해진다
+		local old = part:FindFirstChild("IgniteFx")
+		if old then old:Destroy() end
+		local fx = Instance.new("ParticleEmitter")
+		fx.Name = "IgniteFx"
+		fx.Texture = "rbxasset://textures/particles/fire_main.dds"
+		fx.Color = ColorSequence.new(Color3.fromRGB(255, 210, 110), Color3.fromRGB(255, 80, 30))
+		fx.LightEmission = 0.6
+		fx.Rate = 6
+		fx.Lifetime = NumberRange.new(0.4, 0.7)
+		fx.Speed = NumberRange.new(2, 4)
+		fx.SpreadAngle = Vector2.new(20, 20)
+		fx.EmissionDirection = Enum.NormalId.Top
+		fx.Acceleration = Vector3.new(0, 6, 0)
+		fx.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, math.clamp(part.Size.X * 0.25, 0.8, 3)), NumberSequenceKeypoint.new(1, 0) })
+		fx.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) })
+		fx.Parent = part
+		entry.Fx = fx
 	end
 	if now < entry.NextAdd then return end -- (연사 / 산탄이 한 번에 중첩을 몰아 쌓지 않게: 0.12초에 한 번)
 	entry.NextAdd = now + 0.12
 	entry.Owner = player
 	entry.Stacks = math.min(igniteMax(level), entry.Stacks + stacks)
 	entry.Expire = now + IGNITE_LIFE
+	if entry.Fx then entry.Fx.Rate = math.min(22, 4 + entry.Stacks * 3) end
 	if run.IgniteLoop then return end
 	run.IgniteLoop = true
 	task.spawn(function()
@@ -1810,6 +1829,7 @@ local function addIgnite(run, player, part, data, stacks)
 			for burnPart, burn in pairs(run.Ignite) do
 				if tickNow > burn.Expire or not burnPart.Parent or burn.Data.Health <= 0 or not burn.Owner.Parent then
 					run.Ignite[burnPart] = nil
+					if burn.Fx then burn.Fx:Destroy() end
 				else
 					local lv = augLv(run, burn.Owner, "AugFlame")
 					local tick = augDamage(burn.Owner) * (0.05 + 0.025 * lv) * burn.Stacks
