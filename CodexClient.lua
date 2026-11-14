@@ -158,7 +158,7 @@ local function rebuild()
 		summary.Text = "Odds include your current Luck" -- (길면 잘려서: 나머지는 맨 아래 쪽지로)
 		local note = row(40, Color3.fromRGB(30, 28, 46))
 		makeLabel({ Size = UDim2.new(1, -20, 1, 0), Position = UDim2.new(0, 10, 0, 0), RichText = true, TextSize = 10, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(200, 204, 228),
-			Text = string.format("★ Mythic: unique %d%% (dungeon chests 30%%+) · +1 set-effect option: Legendary %d%% / Mythic %d%%",
+			Text = string.format("Mythic: unique %d%% (dungeon chests 30%%+) · +1 set-effect option: Legendary %d%% / Mythic %d%%",
 				math.floor((Config.Uniques.FieldChance or 0) * 100 + 0.5), math.floor((AB[4] or 0) * 100 + 0.5), math.floor((AB[5] or 0) * 100 + 0.5)) }, note)
 	elseif tab == "Monster" then
 		local total, found = 0, 0
