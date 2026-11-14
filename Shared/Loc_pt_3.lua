@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Monsters met {number1} / {number2} (incl. zone lords)", "Monstros encontrados: {number1} / {number2} (incluindo senhores de zona)" },
+		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 Entrada grátis usada! (restam {number1} / {number2} hoje)" },
 		{ "A big blast when it ends (attack x{number1})", "Uma grande explosão ao terminar (ataque x{number1})" },
 		{ "{number1}s invincible, but healing is halved", "{number1}s de invencibilidade, mas a cura é reduzida pela metade" },
 		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 Nova arma: Livro de Feitiços - pressione {number1}!" },
@@ -79,6 +81,7 @@ return {
 		{ "🔒 Paragon unlocks at level {number1}.", "🔒 Paragon desbloqueia no nível {number1}." },
 		{ "Survive {number1} dungeon bonus waves", "Sobreviva a {number1} ondas bônus de masmorra" },
 		{ "Double Shot chance {number1}%  (max {number2})", "Chance de tiro duplo {number1}%  (máx. {number2})" },
+		{ "Points left · next +1 at Lv.{number1}", "Pontos restantes · próximo +1 no Nv.{number1}" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "HP do inimigo +{number1}%\nOuro +{number2}% em vez disso" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 Portão do Castelo Sombrio · Rec. ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "Fuzil de Precisão · Era Arcana +{number1}" },
@@ -197,6 +200,7 @@ return {
 		{ "{number1}s · {number2} daggers every {number3}s", "{number1} s · {number2} adagas a cada {number3} s" },
 		{ "Double Shot chance +{number1}", "Chance de tiro duplo +{number1}" },
 		{ "Luck (Drop Rarity) +{number1}", "Sorte (raridade dos drops) +{number1}" },
+		{ "Points left · total {number1}", "Pontos restantes · total {number1}" },
 		{ "Gear drop rarity +{number1}%", "Raridade de queda de equipamento +{number1}%" },
 		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 Combo x{number1}\nDano +{number2}%" },
 		{ "{number7} Darklands · {number8} Abyss", "{number7} Terras Sombrias · {number8} Abismo" },

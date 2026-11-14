@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 Zone {number1} · Desert Sealed\nOpen the previous gate first", "🔒 ゾーン {number1} · 砂漠が封鎖されています\nまず前のゲートを開けてください" },
 		{ "One less dagger, but each hits +{number1}% harder: for bosses", "短剣が1本減る代わりに1本あたり+{number1}%：ボス向け" },
 		{ "Reduces training / breakthrough wait time by {number1} hours", "トレーニング/ブレークスルーの待機時間を{number1}時間短縮する" },
 		{ "♻ [Common] Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] レザーキャップを自動回収（エッセンス +{number1} {number2} G）" },
@@ -184,6 +185,7 @@ return {
 		{ "🔒 Paragon unlocks at level {number1}.", "🔒 パラゴンはレベル{number1}で解放されます。" },
 		{ "Survive {number1} dungeon bonus waves", "ダンジョンのボーナスウェーブを{number1}回耐える" },
 		{ "Double Shot chance {number1}%  (max {number2})", "ダブルショット確率 {number1}%  (最大 {number2})" },
+		{ "Points left · next +1 at Lv.{number1}", "残りポイント · 次の+1はLv.{number1}" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "敵のHP +{number1}%\nゴールド +{number2}%" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 ダークキャッスルゲート · 推奨レベル ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "スナイパーライフル・神秘の時代 +{number1}" },
@@ -302,6 +304,7 @@ return {
 		{ "{number1}s · {number2} daggers every {number3}s", "{number1}秒 · {number3}秒ごとに短剣{number2}本" },
 		{ "Double Shot chance +{number1}", "ダブルショット確率 +{number1}" },
 		{ "Luck (Drop Rarity) +{number1}", "幸運(ドロップレア度) +{number1}" },
+		{ "Points left · total {number1}", "残りポイント · 合計{number1}" },
 		{ "Gear drop rarity +{number1}%", "ギアドロップのレア度 +{number1}%" },
 		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 コンボ x{number1}\nダメージ +{number2}%" },
 		{ "{number7} Darklands · {number8} Abyss", "{number7} ダークランド · {number8} アビス" },

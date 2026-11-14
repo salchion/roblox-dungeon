@@ -819,6 +819,8 @@ return {
 		["Earned"] = "Gagné",
 		["Empty gear slot:"] = "Emplacement vide :",
 		["Choose a path for"] = "Choisis une voie pour",
+		["These stats shape your play style. Respec for free anytime."] = "Ces stats façonnent ton style de jeu. Réinitialise gratuitement à tout moment.",
+		["Reset (Free)"] = "Réinitialiser (gratuit)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1007,7 +1009,5 @@ return {
 		{ "Rocket Launcher  ·  keys {number1}-{number2} switch weapons", "Lance-roquettes · les touches {number1}-{number2} permettent de changer d'arme" },
 		{ "📅 {number1}-day login streak · Get stronger today!", "📅 Série de connexion de {number1} jours · Devenez plus fort aujourd'hui !" },
 		{ "Each NEAR MISS stack gives +{number1}% more attack", "Chaque cumul NEAR MISS donne +{number1} % d'attaque en plus" },
-		{ "🔒 Spend {number1} points higher up this path first", "🔒 Dépense d'abord {number1} points plus haut sur cette voie" },
-		{ "Auto-equipped the best gear in {number1} slot(s)!", "Meilleur équipement équipé automatiquement dans {number1} emplacement(s) !" },
 	},
 }

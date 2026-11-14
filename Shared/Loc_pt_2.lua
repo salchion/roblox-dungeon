@@ -783,6 +783,8 @@ return {
 		["Earned"] = "Ganho",
 		["Empty gear slot:"] = "Espaço vazio:",
 		["Choose a path for"] = "Escolha um caminho para",
+		["These stats shape your play style. Respec for free anytime."] = "Esses atributos moldam seu estilo de jogo. Redistribua grátis a qualquer momento.",
+		["Reset (Free)"] = "Redefinir (grátis)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1014,7 +1016,5 @@ return {
 		{ "defeat {number1} monsters here, then the Lord", "derrote {number1} monstros aqui e depois o lorde" },
 		{ "Mythic: unique {number1}% (dungeon chests {number2}%+)", "Mítico: único {number1}% (baús de masmorra {number2}%+)" },
 		{ "Defeat {number1} bosses in one Boss Rush run", "Derrote {number1} chefes em uma partida de Corrida de Chefes" },
-		{ "Monsters met {number1} / {number2} (incl. zone lords)", "Monstros encontrados: {number1} / {number2} (incluindo senhores de zona)" },
-		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 Entrada grátis usada! (restam {number1} / {number2} hoje)" },
 	},
 }

@@ -941,6 +941,8 @@ return {
 		["Earned"] = "獲得",
 		["Empty gear slot:"] = "空いている装備枠:",
 		["Choose a path for"] = "道を選ぼう:",
+		["These stats shape your play style. Respec for free anytime."] = "プレイスタイルを変えるステータス。いつでも無料で振り直せます。",
+		["Reset (Free)"] = "リセット (無料)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1068,6 +1070,5 @@ return {
 		{ "Zone {number1} set effect · Trial Lv.3 — for this dungeon only", "ゾーン{number1}セット効果 · 試練 Lv.3 — このダンジョン限定" },
 		{ "<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "<font color='#{number4}ad{number5}ff'>スペル・トーム · 神話時代 +{number6}</font>" },
 		{ "Shot_Shotgun  <font color='#{number1}aa{number2}c{number3}'>Shotgun shot</font>", "ショットガン<font color='#{number1}aa{number2}c{number3}'>ショットガンショット</font>" },
-		{ "🔒 Zone {number1} · Desert Sealed\nOpen the previous gate first", "🔒 ゾーン {number1} · 砂漠が封鎖されています\nまず前のゲートを開けてください" },
 	},
 }

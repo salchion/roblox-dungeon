@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Defeat {number1} elite monsters", "击败 {number1} 只精英怪物" },
+		{ "Defeat {number1} field monsters", "击败 {number1} 只野外怪物" },
+		{ "Pierces up to {number1} enemies", "最多穿透 {number1} 个敌人" },
 		{ "Loading the land...  {number1}%", "正在加载大地...  {number1}%" },
 		{ "Defeat the Zone {number1} Lord", "击败区域{number1}之王" },
 		{ "{number2} / {number3}   Reward: {number4} G + 🎫 {number5}", "{number2} / {number3} 奖励：{number4} 金币 + 🎫 {number5}" },
@@ -31,6 +34,7 @@ return {
 		{ "{number1}s · {number2} daggers every {number3}s", "{number1}秒 · 每{number3}秒{number2}把短剑" },
 		{ "Double Shot chance +{number1}", "双发概率 +{number1}" },
 		{ "Luck (Drop Rarity) +{number1}", "幸运(掉落稀有度) +{number1}" },
+		{ "Points left · total {number1}", "剩余点数 · 共{number1}" },
 		{ "Gear drop rarity +{number1}%", "装备掉落稀有度 +{number1}%" },
 		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 连击 x{number1}\n伤害+{number2}%" },
 		{ "{number7} Darklands · {number8} Abyss", "{number7} 黑暗之地 · {number8} 深渊" },

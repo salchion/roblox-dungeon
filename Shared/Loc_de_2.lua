@@ -763,6 +763,8 @@ return {
 		["Earned"] = "Verdient",
 		["Empty gear slot:"] = "Leerer Ausrüstungsplatz:",
 		["Choose a path for"] = "Wähle einen Pfad für",
+		["These stats shape your play style. Respec for free anytime."] = "Diese Werte prägen deinen Spielstil. Jederzeit kostenlos neu verteilen.",
+		["Reset (Free)"] = "Zurücksetzen (gratis)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1005,6 +1007,5 @@ return {
 		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 Boss-Truhe · {number1} Ausrüstungsteile</b>" },
 		{ "· {number1} point(s) left (1 every {number2} levels)", "· Noch {number1} Punkt(e) (1 alle {number2} Stufen)" },
 		{ "👑 Lord of Desert (Zone {number1}) · Rec. ⚡{number2}", "👑 Herr der Wüste (Zone {number1}) · Rekord ⚡{number2}" },
-		{ "🏜 Desert Temple Entrance · Rec. ⚡{number2}", "🏜 Eingang des Wühentempels · Empfohlen ⚡{number2}" },
 	},
 }

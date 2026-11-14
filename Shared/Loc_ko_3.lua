@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})", "🏰 던전 보스 상자 — 장비 {number1}개, 깊이 {number2}마다 +1 (최대 {number3})" },
 		{ "Event_Elite  <font color='#{number1}aa{number2}c{number3}'>Elite squad appears</font>", "이벤트_엘리트 <font color='#{number1}aa{number2}c{number3}'>엘리트 스쿼드 등장</font>" },
 		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [희귀] 🌲 숲의 은 반지 자동 회수 (에센스 +{number1} {number2} G)" },
 		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!" },
@@ -223,6 +224,7 @@ return {
 		{ "🔒 Paragon unlocks at level {number1}.", "🔒 초월은 {number1}레벨에 해금됩니다." },
 		{ "Survive {number1} dungeon bonus waves", "던전 보너스 웨이브 {number1}번 버티기" },
 		{ "Double Shot chance {number1}%  (max {number2})", "더블샷 확률 {number1}%  (최대 {number2})" },
+		{ "Points left · next +1 at Lv.{number1}", "남은 포인트 · 다음 +1은 Lv.{number1}" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "적의 HP +{number1}%\n골드 +{number2}%" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 다크 캐슬 게이트 · 추천 수 {number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "저격 소총 · 신비로운 시대 +{number1}" },
@@ -342,6 +344,7 @@ return {
 		{ "{number1}s · {number2} daggers every {number3}s", "{number1}초 · {number3}초마다 단검 {number2}자루" },
 		{ "Double Shot chance +{number1}", "더블 샷 확률 +{number1}" },
 		{ "Luck (Drop Rarity) +{number1}", "행운 (드랍 등급) +{number1}" },
+		{ "Points left · total {number1}", "남은 포인트 · 전체 {number1}" },
 		{ "Gear drop rarity +{number1}%", "장비 드롭 희귀도 +{number1}%" },
 		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 콤보 x{number1}\n피해량 +{number2}%" },
 		{ "{number7} Darklands · {number8} Abyss", "{number7} 다크랜드 · {number8} 심연" },

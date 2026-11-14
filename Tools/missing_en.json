@@ -2778,5 +2778,9 @@
 "Empty gear slot:",
 "Choose a path for",
 "+{number1} MAX",
-"{number1} kills → Lord"
+"{number1} kills → Lord",
+"Points left · next +1 at Lv.{number1}",
+"Points left · total {number1}",
+"These stats shape your play style. Respec for free anytime.",
+"Reset (Free)"
 ]

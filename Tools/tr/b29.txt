@@ -745,3 +745,7 @@
 2777¦道を選ぼう:¦Wähle einen Pfad für¦Choisis une voie pour¦Elige una rama para¦Escolha um caminho para¦为其选择路线:¦갈래를 고르세요:
 2778¦+{number1} 最大¦+{number1} MAX¦+{number1} MAX¦+{number1} MÁX¦+{number1} MÁX¦+{number1} 满级¦+{number1} 최대
 2779¦{number1}体撃破 → 領主¦{number1} Kills → Fürst¦{number1} éliminations → seigneur¦{number1} bajas → señor¦{number1} abates → lorde¦击杀{number1}只 → 领主¦{number1}마리 처치 → 군주
+2780¦残りポイント · 次の+1はLv.{number1}¦Übrige Punkte · nächster +1 bei St. {number1}¦Points restants · prochain +1 au Nv.{number1}¦Puntos restantes · próximo +1 en Nv.{number1}¦Pontos restantes · próximo +1 no Nv.{number1}¦剩余点数 · 下一点在Lv.{number1}¦남은 포인트 · 다음 +1은 Lv.{number1}
+2781¦残りポイント · 合計{number1}¦Übrige Punkte · gesamt {number1}¦Points restants · total {number1}¦Puntos restantes · total {number1}¦Pontos restantes · total {number1}¦剩余点数 · 共{number1}¦남은 포인트 · 전체 {number1}
+2782¦プレイスタイルを変えるステータス。いつでも無料で振り直せます。¦Diese Werte prägen deinen Spielstil. Jederzeit kostenlos neu verteilen.¦Ces stats façonnent ton style de jeu. Réinitialise gratuitement à tout moment.¦Estas estadísticas cambian tu estilo de juego. Reasigna gratis cuando quieras.¦Esses atributos moldam seu estilo de jogo. Redistribua grátis a qualquer momento.¦这些属性决定你的玩法，随时可免费重置。¦플레이 방식을 바꾸는 스탯이에요. 언제든 무료로 다시 찍을 수 있어요.
+2783¦リセット (無料)¦Zurücksetzen (gratis)¦Réinitialiser (gratuit)¦Reiniciar (gratis)¦Redefinir (grátis)¦重置 (免费)¦초기화 (무료)

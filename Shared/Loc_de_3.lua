@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🏜 Desert Temple Entrance · Rec. ⚡{number2}", "🏜 Eingang des Wühentempels · Empfohlen ⚡{number2}" },
 		{ "<font color='#ffe{number1}e'>⚡ {number2}</font> Lv.{number3}", "<font color='#ffe{number1}e'>⚡ {number2}</font> Stufe {number3}" },
 		{ "Survive {number1} seconds in the Boss Rush", "Überlebe {number1} Sekunden im Boss-Angriff" },
 		{ "👑 Lord of Meadow (Zone {number1}) · Rec. ⚡{number2}", "👑 Herr der Wiese (Zone {number1}) · Empfehlung ⚡{number2}" },
@@ -68,6 +69,7 @@ return {
 		{ "🔒 Paragon unlocks at level {number1}.", "🔒 Paragon wird bei Stufe {number1} freigeschaltet." },
 		{ "Survive {number1} dungeon bonus waves", "Überstehe {number1} Dungeon-Bonuswellen" },
 		{ "Double Shot chance {number1}%  (max {number2})", "Doppelschuss-Chance {number1} %  (max. {number2})" },
+		{ "Points left · next +1 at Lv.{number1}", "Übrige Punkte · nächster +1 bei St. {number1}" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "Gegner-HP +{number1}%\nGold +{number2}% stattdessen" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 Dunkles Schloss-Tor · Empfohlen ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "Scharfschützengewehr · Arkanische Ära +{number1}" },
@@ -186,6 +188,7 @@ return {
 		{ "{number1}s · {number2} daggers every {number3}s", "{number1} s · {number2} Dolche alle {number3} s" },
 		{ "Double Shot chance +{number1}", "Doppelschuss-Chance +{number1}" },
 		{ "Luck (Drop Rarity) +{number1}", "Glück (Drop-Seltenheit) +{number1}" },
+		{ "Points left · total {number1}", "Übrige Punkte · gesamt {number1}" },
 		{ "Gear drop rarity +{number1}%", "Seltenheit der Ausrüstung +{number1}%" },
 		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 Kombination x{number1}\nSchaden +{number2}%" },
 		{ "{number7} Darklands · {number8} Abyss", "{number7} Dunkle Länder · {number8} Abgrund" },

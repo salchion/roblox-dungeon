@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 Unlocks at level {number1}  (you are level {number2})", "🔒 Se desbloquea en el nivel {number1}  (eres nivel {number2})" },
 		{ "Pierces up to {number1} more enemies in a line", "Atraviesa hasta {number1} enemigos más en línea" },
 		{ "Lasts +{number1}s · range +{number2}%: sweeps up swarms", "Dura +{number1} s · alcance +{number2} %: barre enjambres" },
 		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 Señor del Campo de Nieve (Zona {number1}) · Rec. ⚡{number2}" },
@@ -96,6 +97,7 @@ return {
 		{ "🔒 Paragon unlocks at level {number1}.", "🔒 Paragón se desbloquea en el nivel {number1}." },
 		{ "Survive {number1} dungeon bonus waves", "Sobrevive {number1} oleadas extra de mazmorra" },
 		{ "Double Shot chance {number1}%  (max {number2})", "Probabilidad de doble disparo {number1} %  (máx. {number2})" },
+		{ "Points left · next +1 at Lv.{number1}", "Puntos restantes · próximo +1 en Nv.{number1}" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "Enemy HP +{number1}%\nOro +{number2}% en su lugar" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 Puerta del castillo oscuro · Recomendado ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "Rifle de francotirador · Era Arcana +{number1}" },
@@ -214,6 +216,7 @@ return {
 		{ "{number1}s · {number2} daggers every {number3}s", "{number1} s · {number2} dagas cada {number3} s" },
 		{ "Double Shot chance +{number1}", "Prob. de doble disparo +{number1}" },
 		{ "Luck (Drop Rarity) +{number1}", "Suerte (rareza del botín) +{number1}" },
+		{ "Points left · total {number1}", "Puntos restantes · total {number1}" },
 		{ "Gear drop rarity +{number1}%", "Rareza de caída de equipamiento +{number1}%" },
 		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 Combo x{number1}\nDaño +{number2}%" },
 		{ "{number7} Darklands · {number8} Abyss", "{number7} Tierras Oscuras · {number8} Abismo" },

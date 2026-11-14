@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 Spend {number1} points higher up this path first", "🔒 Dépense d'abord {number1} points plus haut sur cette voie" },
+		{ "Auto-equipped the best gear in {number1} slot(s)!", "Meilleur équipement équipé automatiquement dans {number1} emplacement(s) !" },
 		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• Environ {number1} tirs/s · Puissance de feu {number2} · Portée {number3}" },
 		{ "Damage +{number1}% on a single target: for bosses", "Dégâts +{number1} % sur une seule cible : pour les boss" },
 		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}!", "{number1} secondes ! Récompenses x{number2}, combo jusqu'à x{number3} !" },
@@ -120,6 +122,7 @@ return {
 		{ "🔒 Paragon unlocks at level {number1}.", "🔒 Le parangon se débloque au niveau {number1}." },
 		{ "Survive {number1} dungeon bonus waves", "Survivez à {number1} vagues bonus de donjon" },
 		{ "Double Shot chance {number1}%  (max {number2})", "Chance de tir double {number1} %  (max {number2})" },
+		{ "Points left · next +1 at Lv.{number1}", "Points restants · prochain +1 au Nv.{number1}" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "PV de l'ennemi +{number1}%\nOr +{number2}% à la place" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 Porte du château sombre · Recommandé ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "Fusil de sniper · Ère arcanique +{number1}" },
@@ -238,6 +241,7 @@ return {
 		{ "{number1}s · {number2} daggers every {number3}s", "{number1} s · {number2} dagues toutes les {number3} s" },
 		{ "Double Shot chance +{number1}", "Chance de double tir +{number1}" },
 		{ "Luck (Drop Rarity) +{number1}", "Chance (rareté du butin) +{number1}" },
+		{ "Points left · total {number1}", "Points restants · total {number1}" },
 		{ "Gear drop rarity +{number1}%", "Rareté des objets de équipement +{number1}%" },
 		{ "🔥 Combo x{number1}\nDamage +{number2}%", "🔥 Combo x{number1}\nDégâts +{number2}%" },
 		{ "{number7} Darklands · {number8} Abyss", "{number7} Terres sombres · {number8} Abysse" },

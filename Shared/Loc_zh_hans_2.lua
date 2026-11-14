@@ -694,6 +694,8 @@ return {
 		["Earned"] = "已获得",
 		["Empty gear slot:"] = "空的装备栏:",
 		["Choose a path for"] = "为其选择路线:",
+		["These stats shape your play style. Respec for free anytime."] = "这些属性决定你的玩法，随时可免费重置。",
+		["Reset (Free)"] = "重置 (免费)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1002,6 +1004,7 @@ return {
 		{ "🔒 Paragon unlocks at level {number1}.", "🔒 巅峰系统在 {number1} 级解锁。" },
 		{ "Survive {number1} dungeon bonus waves", "撑过{number1}次地下城奖励波次" },
 		{ "Double Shot chance {number1}%  (max {number2})", "双发几率 {number1}%  (最多 {number2})" },
+		{ "Points left · next +1 at Lv.{number1}", "剩余点数 · 下一点在Lv.{number1}" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "敌人生命值+{number1}%\n黄金 +{number2}%" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 黑暗城堡之门 · 推荐 ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "狙击步枪 · 秘法时代 +{number1}" },
@@ -1090,8 +1093,5 @@ return {
 		{ "🌋 {number1} Streak — Legendary!", "🌋 {number1}连胜 - 传奇级！" },
 		{ "Reach character level {number1}", "达到角色等级 {number1}" },
 		{ "▼ 👑 First Zone Lord  {number1}m", "▼ 👑 第一个区域领主 {number1}m" },
-		{ "Defeat {number1} elite monsters", "击败 {number1} 只精英怪物" },
-		{ "Defeat {number1} field monsters", "击败 {number1} 只野外怪物" },
-		{ "Pierces up to {number1} enemies", "最多穿透 {number1} 个敌人" },
 	},
 }
