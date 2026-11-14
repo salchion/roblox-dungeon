@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔫 Next weapon unlock Shotgun (+{number1})\nUpgrade cost {number2} G · You have {number3} G", "🔫 다음 무기 잠금 해제 산탄총 (+{number1})\n업그레이드 비용 {number2} G · 보유 중인 G: {number3}" },
+		{ "♻ [Rare] 🌾 Meadow Leather Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [희귀] 🌾 초원 가죽 장갑 자동 회수 (에센스 +{number1} {number2} G)" },
+		{ "♻ [Common] 🌾 Meadow Cloth Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [일반] 🌾 초원 천 장갑 자동 수집 (에센스 +{number1} {number2} G)" },
 		{ "Powerhouse   Title 『Powerhouse』\nReach {number1} Power\n{number2} / {number3}   Reward: {number4} G", "파워하우스 타이틀 『파워하우스』\n{number1} 파워 달성\n{number2} / {number3}   보상: {number4} G" },
 		{ "♻ [Common] 🌲 Forest Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [일반] 🌲 숲 가죽 모자 자동 수집 (에센스 +{number1} {number2} G)" },
 		{ "The final blast also explodes around every target (attack x{number1})", "마지막 대폭발이 모든 대상 주변에서도 터져요 (공격 x{number1})" },
@@ -623,6 +626,7 @@ return {
 		{ "Gold +{number1}", "골드 +{number1}" },
 		{ "Luck +{number1}", "행운 +{number1}" },
 		{ "Lord {number1}%", "군주 {number1}%" },
+		{ "ON Lv.{number1}", "켜짐 Lv.{number1}" },
 		{ "ZONE {number1}", "구역 {number1}" },
 		{ "{number1} more", "{number1}" },
 		{ "+{number1} MAX", "+{number1} 최대" },
@@ -872,6 +876,7 @@ return {
 		{ "{number1}. {text2}", "{number1}. {text2}" },
 		{ "{text1} +{number2}", "{text1} +{number2}" },
 		{ "{text1} {number2}%", "{text1} {number2}%" },
+		{ "+ {text1}", "+ {text1}" },
 		{ "{number1}/{number2}{text3}", "{number1}/{number2}{text3}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "<font size='15'><b>{text1}</b></font>\n<font color='#9a9ab5'>Empty</font>\n\n{text2} effect\n<font color='#c9c0e0'>Get gear with the gacha below, or equip gear dropped in the field from your Bag (B).</font>", "<font size='15'><b>{text1}</b></font>\n<font color='#9a9ab5'>비어 있음</font>\n\n{text2} 효과\n<font color='#c9c0e0'>아래 뽑기로 장비를 얻거나, 필드에서 얻은 장비를 가방 (B)에서 장착하세요.</font>" },

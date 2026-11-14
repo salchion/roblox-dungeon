@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped", "🎯 Prime remportée ! +{number1} G · 🎫 +{number2} · équipement lâché" },
+		{ "🎫 {number1} tickets!\nPull gear at the gacha machine", "🎫 {number1} billets !\nTirez sur l'équipement à la machine de gacha" },
+		{ "🐾 Pet Lv.{number1}! New ability 💥 Power — Attack +{number2}%", "🐾 Animal de compagnie niveau {number1} ! Nouvelle capacité 💥 Puissance - Attaque +{number2}%" },
 		{ "Sniper Rifle  ·  next weapon: Shotgun at +{number1}", "Fusil de sniper · prochaine arme : Fusil à pompe à +{number1}" },
 		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2} {number3} G)", "🧹 Nettoyage automatique de {number1} équipements plus faibles (Essence +{number2} {number3} G)" },
 		{ "every {number1}s a meteor, radius {number2} (x1.5 on bosses)", "toutes les {number1} s un météore, rayon {number2} (x1,5 sur les boss)" },
@@ -515,6 +518,7 @@ return {
 		{ "Gold +{number1}", "Or +{number1}" },
 		{ "Luck +{number1}", "Chance +{number1}" },
 		{ "Lord {number1}%", "Seigneur {number1} %" },
+		{ "ON Lv.{number1}", "ACTIVÉ Niv.{number1}" },
 		{ "ZONE {number1}", "Zone {number1}" },
 		{ "{number1} more", "encore {number1}" },
 		{ "+{number1} MAX", "+{number1} MAX" },
@@ -705,6 +709,7 @@ return {
 		{ "{text1} -{number2}%", "{text1} -{number2}%" },
 		{ "{text1} +{number2}", "{text1} +{number2}" },
 		{ "{text1} {number2}%", "{text1} {number2} %" },
+		{ "+ {text1}", "+ {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [Boss mondial] Zone {number1} · {text2} : {text3} est apparu ! Suivez le pilier de lumière orange et vainquez-le ensemble pour de l'équipement + des tickets !" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} Effet de set 『{text2}』 débloqué ! Équipe son set pour l'activer, ou améliore-le avec de l'or (touche Y)" },

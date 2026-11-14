@@ -835,6 +835,14 @@ return {
 		["📌 Pin"] = "📌 Épingler",
 		["📌 Pinned"] = "📌 Épinglé",
 		["Equip a zone's set gear and its effect turns on by itself (highest level first, up to your slots) · Gold: +Lv.1–3 · Set gear: +Lv.1–3 · 📌 Pin to keep one on"] = "Équipe le set d'une zone et son effet s'active tout seul (niveau le plus haut d'abord, selon tes emplacements) · Or : +Niv.1–3 · Set : +Niv.1–3 · 📌 Épingler pour le garder",
+		["My sets"] = "Mes sets",
+		["Set gear drops in the field (each zone has its own set). Wear 2–3 pieces of one set for bonuses — and its set effect turns on."] = "L'équipement de set tombe sur le terrain (chaque zone a son set). Porte 2–3 pièces d'un set pour les bonus — et son effet de set s'active.",
+		["All sets"] = "Tous les sets",
+		["Sort: Score"] = "Tri : score",
+		["Sort: Rarity"] = "Tri : rareté",
+		["Sort: Set first"] = "Tri : sets d'abord",
+		["Nothing matches this filter"] = "Rien ne correspond à ce filtre",
+		["✔ Max upgrade"] = "✔ Amélioration max",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1012,8 +1020,5 @@ return {
 		{ "+1 set-effect option: Legendary {number1}% / Mythic {number2}%", "Option effet d'ensemble +1 : Légendaire {number1} % / Mythique {number2} %" },
 		{ "Enemies swarm in more often\nGold +{number1}% instead", "Les ennemis apparaissent plus fréquemment\nOr +{number1}% à la place" },
 		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 {number1} équipement(s) plus faible(s) nettoyé(s) automatiquement (Essence +{number2}, {number3} or)" },
-		{ "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped", "🎯 Prime remportée ! +{number1} G · 🎫 +{number2} · équipement lâché" },
-		{ "🎫 {number1} tickets!\nPull gear at the gacha machine", "🎫 {number1} billets !\nTirez sur l'équipement à la machine de gacha" },
-		{ "🐾 Pet Lv.{number1}! New ability 💥 Power — Attack +{number2}%", "🐾 Animal de compagnie niveau {number1} ! Nouvelle capacité 💥 Puissance - Attaque +{number2}%" },
 	},
 }

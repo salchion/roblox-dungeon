@@ -957,6 +957,14 @@ return {
 		["📌 Pin"] = "📌 固定",
 		["📌 Pinned"] = "📌 固定中",
 		["Equip a zone's set gear and its effect turns on by itself (highest level first, up to your slots) · Gold: +Lv.1–3 · Set gear: +Lv.1–3 · 📌 Pin to keep one on"] = "ゾーンのセット装備を着けるとその効果が自動でオン (レベルが高い順・枠の数まで) · ゴールド: +Lv.1–3 · セット装備: +Lv.1–3 · 📌 固定でいつもオン",
+		["My sets"] = "マイセット",
+		["Set gear drops in the field (each zone has its own set). Wear 2–3 pieces of one set for bonuses — and its set effect turns on."] = "セット装備はフィールドで手に入ります (ゾーンごとに別のセット)。同じセットを2〜3部位着けるとボーナス、さらにセット効果もオンになります。",
+		["All sets"] = "全セット",
+		["Sort: Score"] = "並び: スコア",
+		["Sort: Rarity"] = "並び: レア度",
+		["Sort: Set first"] = "並び: セット優先",
+		["Nothing matches this filter"] = "この条件の装備はありません",
+		["✔ Max upgrade"] = "✔ 最大強化",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1074,8 +1082,5 @@ return {
 		{ "🔒 Zone {number1} · Snowfield Sealed\nOpen the previous gate first", "🔒 ゾーン {number1} · 雪原が封鎖されています\nまず前のゲートを開けてください" },
 		{ "Accrues up to {number1} hours while you're away (default {number2} hours)", "不在中に最大{number1}時間蓄積（デフォルトは{number2}時間）" },
 		{ "🌪 Mob hunter  ·  ✔ 🔫 Rocket Launcher / Spell Tome (+{number1}%)", "🌪 モブハンター  ·  ✔ 🔫 ロケットランチャー/スペルブック (+{number1}%)" },
-		{ "Dungeon_Fail  <font color='#{number1}aa{number2}c{number3}'>Dungeon failed</font>", "ダンジョン失敗 <font color='#{number1}aa{number2}c{number3}'>ダンジョンが失敗しました</font>" },
-		{ "🔫 Next era Steel Era (+{number1})\nUpgrade cost {number2} G · You have {number3} G", "🔫 次の時代、スチール時代（+{number1}）\nアップグレードコスト {number2} G · 現在所持G数 {number3}" },
-		{ "Damage to bosses / lords / elites +{number1}% per point  (max {number2})", "ボス / ロード / エリートへのダメージ +{number1}% / 1ポイント  (最大 {number2})" },
 	},
 }

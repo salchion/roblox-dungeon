@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Dungeon_Fail  <font color='#{number1}aa{number2}c{number3}'>Dungeon failed</font>", "ダンジョン失敗 <font color='#{number1}aa{number2}c{number3}'>ダンジョンが失敗しました</font>" },
+		{ "🔫 Next era Steel Era (+{number1})\nUpgrade cost {number2} G · You have {number3} G", "🔫 次の時代、スチール時代（+{number1}）\nアップグレードコスト {number2} G · 現在所持G数 {number3}" },
+		{ "Damage to bosses / lords / elites +{number1}% per point  (max {number2})", "ボス / ロード / エリートへのダメージ +{number1}% / 1ポイント  (最大 {number2})" },
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one", "発見したユニーク効果 {number1} / {number2}  ·  神話装備に付くことがあります" },
 		{ "Locks onto up to {number1} enemies, total damage -{number2}%: for crowds", "最大{number1}体をロック、総ダメージ-{number2}%：群れ向け" },
 		{ "⚖ All-round  ·  ✔ 🔫 Spell Tome / Rocket Launcher (+{number1}%)", "⚖ オールラウンド  ·  ✔ 🔫 スペルブック/ロケットランチャー (+{number1}%)" },
@@ -578,6 +581,7 @@ return {
 		{ "Gold +{number1}", "ゴールド +{number1}" },
 		{ "Luck +{number1}", "幸運 +{number1}" },
 		{ "Lord {number1}%", "領主 {number1}%" },
+		{ "ON Lv.{number1}", "オン Lv.{number1}" },
 		{ "ZONE {number1}", "ゾーン {number1}" },
 		{ "{number1} more", "あと{number1}" },
 		{ "+{number1} MAX", "+{number1} 最大" },
@@ -767,6 +771,7 @@ return {
 		{ "{text1} -{number2}%", "{text1} -{number2}%" },
 		{ "{text1} +{number2}", "{text1} +{number2}" },
 		{ "{text1} {number2}%", "{text1} {number2}%" },
+		{ "+ {text1}", "+ {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [ワールドボス] ゾーン{number1} · {text2}: {text3}が出現！オレンジの光の柱を追って、みんなで倒して装備とチケットを手に入れよう！" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} セット効果『{text2}』解放! セット装備を着ければ自動でオン、ゴールドで強化もできます (Yキー)" },

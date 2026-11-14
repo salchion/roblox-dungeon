@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 {number1} Geister kämpfen {number2} s lang für dich!" },
+		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1} s · {number2} Dolche alle {number3} s · je Schaden x{number4}" },
+		{ "defeat {number1} monsters here, then the Lord", "hier {number1} Monster besiegen, dann den Fürsten" },
+		{ "Mythic: unique {number1}% (dungeon chests {number2}%+)", "Mythisch: Einzigartig {number1}% (Dungeontruhen {number2}%+)" },
+		{ "Defeat {number1} bosses in one Boss Rush run", "Besiege {number1} Bosse in einem Boss-Rush-Lauf" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "Monster getroffen {number1} / {number2} (einschließlich Zonenherren)" },
 		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 Gratis-Eintritt genutzt! (heute noch {number1} / {number2})" },
 		{ "A big blast when it ends (attack x{number1})", "Beim Ende eine große Explosion (Angriff x{number1})" },
@@ -463,6 +468,7 @@ return {
 		{ "Depth {number1}", "Tiefe {number1}" },
 		{ "Luck +{number1}", "Glück +{number1}" },
 		{ "Lord {number1}%", "Fürst {number1}%" },
+		{ "ON Lv.{number1}", "AN Lv.{number1}" },
 		{ "ZONE {number1}", "Zone {number1}" },
 		{ "{number1} more", "noch {number1}" },
 		{ "+{number1} MAX", "+{number1} MAX" },
@@ -653,6 +659,7 @@ return {
 		{ "{text1} -{number2}%", "{text1} -{number2}%" },
 		{ "{text1} +{number2}", "{text1} +{number2}" },
 		{ "{text1} {number2}%", "{text1} {number2}%" },
+		{ "+ {text1}", "+ {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [Weltboss] Zone {number1} · {text2}: {text3} ist erschienen! Folge der orangefarbenen Lichtsäule und besiegt ihn gemeinsam für Ausrüstung + Tickets!" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} Set-Effekt 『{text2}』 freigeschaltet! Rüste sein Set aus, um ihn zu aktivieren, oder verbessere ihn mit Gold (Taste Y)" },

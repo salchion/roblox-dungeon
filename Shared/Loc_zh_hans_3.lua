@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Uses all Tickets (max {number1})", "使用所有门票（最多{number1}张）" },
+		{ "📍 Field · Best Zone {number1}   ", "📍 田地 · 最佳区域 {number1}" },
+		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "区域 {number1} · 沙漠 ☠☠☠☠" },
+		{ "🎒 Bag {number1} / {number2}    ✨ Essence {number3}", "🎒 背包 {number1} / {number2} ✨ 精华 {number3}" },
+		{ "Returning to lobby in {number1}s", "将在{number1}秒后返回大厅" },
+		{ "🔒 Zone {number1} · Desert Sealed", "🔒 区域 {number1} · 沙漠已封锁" },
 		{ "⚔ Railgun · Rusty Era +{number1}", "⚔ 电磁炮 · 锈蚀时代 +{number1}" },
 		{ "★☆☆  Step {number1}/{number2} · Next step", "★☆☆ 步骤 {number1}/{number2} · 下一步" },
 		{ "🔒 Defeat the Zone {number1} lord", "🔒 击败区域{number1}的领主" },
@@ -315,6 +321,7 @@ return {
 		{ "Gold +{number1}", "金币 +{number1}" },
 		{ "Luck +{number1}", "幸运 +{number1}" },
 		{ "Lord {number1}%", "领主 {number1}%" },
+		{ "ON Lv.{number1}", "开启 Lv.{number1}" },
 		{ "ZONE {number1}", "区域 {number1}" },
 		{ "{number1} more", "还差 {number1}" },
 		{ "+{number1} MAX", "+{number1} 满级" },
@@ -507,6 +514,7 @@ return {
 		{ "{text1} -{number2}%", "{text1} -{number2}%" },
 		{ "{text1} +{number2}", "{text1} +{number2}" },
 		{ "{text1} {number2}%", "{text1} {number2}%" },
+		{ "+ {text1}", "+ {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [世界首领] 区域{number1} · {text2}:{text3} 出现了!跟随橙色光柱,一起击败它来获得装备和门票!" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} 套装效果『{text2}』已解锁！穿上该套装即可自动开启，也可用金币强化（Y键）" },

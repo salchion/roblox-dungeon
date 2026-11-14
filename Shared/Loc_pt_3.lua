@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Pierces up to {number1} more enemies in a line", "Perfura até {number1} inimigos a mais em linha" },
+		{ "Lasts +{number1}s · range +{number2}%: sweeps up swarms", "Dura +{number1}s · alcance +{number2}%: varre enxames" },
+		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 Senhor do Campo de Neve (Zona {number1}) · Rec. ⚡{number2}" },
+		{ "💥Explosive Shot {number1} · ⚡Chain Lightning {number2}", "💥Tiro Explosivo {number1} · ⚡Relâmpago em Cadeia {number2}" },
 		{ "👑 Lord of Wasteland (Zone {number1}) · Rec. ⚡{number2}", "👑 Senhor do Deserto (Zona {number1}) · Rec. ⚡{number2}" },
 		{ "Spell Tome  ·  keys {number1}-{number2} switch weapons", "Livro de Feitiços · teclas {number1}-{number2} trocam de arma" },
 		{ "Defeat {number1} monsters (dungeons included)", "Derrote {number1} monstros (masmorras incluídas)" },
@@ -476,6 +480,7 @@ return {
 		{ "Gold +{number1}", "Ouro +{number1}" },
 		{ "Luck +{number1}", "Sorte +{number1}" },
 		{ "Lord {number1}%", "Lorde {number1}%" },
+		{ "ON Lv.{number1}", "LIGADO Nv.{number1}" },
 		{ "ZONE {number1}", "Zona {number1}" },
 		{ "{number1} more", "mais {number1}" },
 		{ "+{number1} MAX", "+{number1} MÁX" },
@@ -665,6 +670,7 @@ return {
 		{ "{text1} -{number2}%", "{text1} -{number2}%" },
 		{ "{text1} +{number2}", "{text1} +{number2}" },
 		{ "{text1} {number2}%", "{text1} {number2}%" },
+		{ "+ {text1}", "+ {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [Chefe mundial] Zona {number1} · {text2}: {text3} apareceu! Siga o pilar de luz laranja e derrotem juntos para ganhar equipamento + tickets!" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} Efeito de set 『{text2}』 desbloqueado! Equipe o set para ativá-lo ou melhore com ouro (tecla Y)" },

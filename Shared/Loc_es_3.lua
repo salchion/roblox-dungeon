@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Sniper Rifle  ·  keys {number1}-{number2} switch weapons", "Rifle de francotirador · teclas {number1}-{number2} para cambiar de arma" },
+		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>", "<font color='#{number1}fffb{number2}'><b>Ataque automático</b>" },
+		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 ¡Subida de nivel! Nv.{number1}  (Vida máx. +{number2}, ataque +{number3}%)" },
+		{ "✨ Upgrades are free right now! ({number1} left)", "✨ ¡Las mejoras son gratis por ahora! (quedan {number1})" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ El portal aún se está recuperando ({number1} s)." },
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} objetos desguazados automáticamente (Esencia +{number2}, {number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 ¡Oro insuficiente para el warp! (se necesitan {number1} G)" },
@@ -491,6 +495,7 @@ return {
 		{ "Gold +{number1}", "Oro +{number1}" },
 		{ "Luck +{number1}", "Suerte +{number1}" },
 		{ "Lord {number1}%", "Señor {number1}%" },
+		{ "ON Lv.{number1}", "ACTIVO Nv.{number1}" },
 		{ "ZONE {number1}", "Zona {number1}" },
 		{ "{number1} more", "{number1} más" },
 		{ "+{number1} MAX", "+{number1} MÁX" },
@@ -682,6 +687,7 @@ return {
 		{ "{text1} -{number2}%", "{text1} -{number2}%" },
 		{ "{text1} +{number2}", "{text1} +{number2}" },
 		{ "{text1} {number2}%", "{text1} {number2}%" },
+		{ "+ {text1}", "+ {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [Jefe mundial] Zona {number1} · {text2}: ¡{text3} ha aparecido! Sigue el pilar de luz naranja y derrótenlo juntos para conseguir equipo + boletos." },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} ¡Efecto de set 『{text2}』 desbloqueado! Equipa su set para activarlo o mejóralo con oro (tecla Y)" },
