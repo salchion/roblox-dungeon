@@ -544,7 +544,7 @@ local function refreshHud()
 			y += 40
 		end
 	end
-	hudBox.Visible = count > 0 and (zone == "Field" or zone == "Dungeon") and not player:GetAttribute("TutorialActive")
+	hudBox.Visible = false -- (오른쪽 위 "세트 효과" 목록은 뺐다: 머리 위 메달이 발동을 보여 준다. 자세한 건 세트 창에서)
 	hudBox.Size = UDim2.new(0, 244, 0, y + 4)
 end
 -- 머리 위 세트 효과 메달: 장착한 세트 효과가 내 머리 위에 작은 메달로 늘 보이고, 터지는 순간 그 메달만 커지며 빛나고 이름 리본이 잠깐 뜬다
@@ -577,7 +577,7 @@ local function refreshHead()
 			local info = Config.AugInfo[attr]
 			if info then
 				count += 1
-				local holder = make("Frame", { Size = UDim2.new(0, 30, 0, 30), BackgroundTransparency = 1, LayoutOrder = z }, headRow)
+				local holder = make("Frame", { Size = UDim2.new(0, 30, 0, 30), BackgroundTransparency = 1, LayoutOrder = z, Visible = false }, headRow) -- (평소에는 숨기고 발동할 때만 잠깐 보인다)
 				local scale = make("UIScale", { Scale = 1 }, holder)
 				local medal = Kit.medal(holder, { Size = 30, Color = info.Color, Icon = info.Icon, TextSize = 15, Tier = 2 })
 				medal.Name = "Medal"
@@ -594,6 +594,13 @@ end
 local function popHead(attr, info)
 	local entry = headMedals[attr]
 	if not entry or not headBoard.Enabled then return end
+	-- 발동한 효과의 메달만 잠깐 나타났다 사라진다 (여러 개가 함께 터지면 한 줄로 나란히: 겹치지 않는다)
+	entry.Holder.Visible = true
+	local token = {}
+	entry.Token = token
+	task.delay(0.9, function()
+		if entry.Token == token and entry.Holder.Parent then entry.Holder.Visible = false end
+	end)
 	entry.Scale.Scale = 1.5
 	TweenService:Create(entry.Scale, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
 	local halo = make("Frame", { Size = UDim2.new(1, 12, 1, 12), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundColor3 = info.Color, BackgroundTransparency = 0.45, ZIndex = 0 }, entry.Holder)
@@ -602,9 +609,9 @@ local function popHead(attr, info)
 	task.delay(0.55, function() halo:Destroy() end)
 	-- 이름 리본 (같은 때 하나만: 새로 터지면 바꿔 단다)
 	if headRibbon then headRibbon:Destroy() end
-	local ribbon = Kit.ribbon(headBoard, { Size = UDim2.new(0, 140, 0, 22), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 0), Color = info.Color, Text = info.Icon .. " " .. info.Name .. "!", TextSize = 13, ZIndex = 8 })
+	local ribbon = Kit.ribbon(headBoard, { Size = UDim2.new(0, 116, 0, 16), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 12), Color = info.Color, Text = info.Icon .. " " .. info.Name .. "!", TextSize = 11, ZIndex = 8 }) -- (얇은 띠)
 	headRibbon = ribbon
-	task.delay(0.65, function()
+	task.delay(0.9, function()
 		if headRibbon == ribbon then headRibbon = nil end
 		ribbon:Destroy()
 	end)
