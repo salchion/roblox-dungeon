@@ -212,7 +212,7 @@ local function buildInventoryTab(state)
 	--   가운데: 가방 (부위 / 세트 칩으로 거르기 + 정렬, 안에서만 스크롤) + 합성
 	--   오른쪽: 고른 장비의 상세 / 비교 / 강화 / 장착
 	-- (예전: 장비 칸 -> 바꿔 끼기 줄 -> 가방이 위아래로 길게 이어져서 계속 스크롤해야 했다)
-	local MAIN_H, LEFT_W, RIGHT_W = 520, 300, 304
+	local MAIN_H, LEFT_W, RIGHT_W = 520, 248, 286 -- (왼쪽 / 오른쪽을 줄이고 가방을 넓혔다: 한 줄에 타일 5개)
 	local main = newRow(MAIN_H, Color3.fromRGB(20, 22, 34))
 	main.BackgroundTransparency = 1
 	local function panel(x, width, widthScale)
@@ -243,12 +243,12 @@ local function buildInventoryTab(state)
 		local best = 0
 		for _, item in pairs(equipped) do best = math.max(best, item.Rarity or 0) end
 		local glow = best > 0 and Config.Gear.RarityColors[best] or Color3.fromRGB(255, 205, 110)
-		for index, spec in ipairs({ { 200, 0.88 }, { 130, 0.78 } }) do
-			local halo = create("Frame", { Size = UDim2.new(0, spec[1], 0, spec[1]), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, LEFT_W / 2, 0, 128), BackgroundColor3 = glow, BackgroundTransparency = spec[2], BorderSizePixel = 0, ZIndex = 1 + index }, left)
+		for index, spec in ipairs({ { 150, 0.88 }, { 100, 0.78 } }) do
+			local halo = create("Frame", { Size = UDim2.new(0, spec[1], 0, spec[1]), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, LEFT_W / 2, 0, 112), BackgroundColor3 = glow, BackgroundTransparency = spec[2], BorderSizePixel = 0, ZIndex = 1 + index }, left)
 			create("UICorner", { CornerRadius = UDim.new(1, 0) }, halo)
 		end
 		local viewport = create("ViewportFrame", {
-			Size = UDim2.new(0, 130, 0, 210), Position = UDim2.new(0, LEFT_W / 2 - 65, 0, 24), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 4,
+			Size = UDim2.new(0, 104, 0, 176), Position = UDim2.new(0, LEFT_W / 2 - 52, 0, 26), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 4,
 			Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1),
 		}, left)
 		local cam = create("Camera", { FieldOfView = 38 }, viewport)
@@ -285,7 +285,7 @@ local function buildInventoryTab(state)
 		local item = equipped[slotKey]
 		local rarity = item and item.Rarity or 0
 		local box = makeButton({
-			Size = UDim2.new(0, 70, 0, 64), Position = UDim2.new(0, x, 0, y), Text = "",
+			Size = UDim2.new(0, 58, 0, 54), Position = UDim2.new(0, x, 0, y), Text = "",
 			BackgroundColor3 = item and Config.Gear.RarityColors[rarity]:Lerp(Color3.fromRGB(20, 22, 36), 0.78) or Color3.fromRGB(26, 27, 42), AutoButtonColor = true, ZIndex = 9,
 		}, left, function()
 			if slotKey == "Weapon" then
@@ -301,7 +301,7 @@ local function buildInventoryTab(state)
 		create("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(200, 200, 214)) }, box)
 		if filterSlot == slotKey then create("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 2.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, box) end
 		local function iconDisc(color, icon, tier)
-			Kit.medal(box, { Size = 36, Position = UDim2.new(0.5, -18, 0, 6), Color = color, Icon = icon, TextSize = 17, Tier = tier or 0, ZIndex = 10 })
+			Kit.medal(box, { Size = 30, Position = UDim2.new(0.5, -15, 0, 4), Color = color, Icon = icon, TextSize = 17, Tier = tier or 0, ZIndex = 10 })
 		end
 		if slotKey == "Weapon" then
 			local weaponLevel = player:GetAttribute("WeaponLevel") or 0
@@ -327,29 +327,29 @@ local function buildInventoryTab(state)
 		return box
 	end
 	slotBox("Helmet", 8, 28)
-	slotBox("Armor", 8, 98)
-	slotBox("Gloves", 8, 168)
-	slotBox("Necklace", LEFT_W - 78, 28)
-	slotBox("Ring", LEFT_W - 78, 98)
-	slotBox("Boots", LEFT_W - 78, 168)
-	slotBox("Weapon", LEFT_W - 78, 238)
+	slotBox("Armor", 8, 86)
+	slotBox("Gloves", 8, 144)
+	slotBox("Necklace", LEFT_W - 66, 28)
+	slotBox("Ring", LEFT_W - 66, 86)
+	slotBox("Boots", LEFT_W - 66, 144)
+	slotBox("Weapon", LEFT_W - 66, 202)
 	do -- 펫 칸 (왼쪽 아래)
 		local petLevel = player:GetAttribute("PetLevel") or 0
 		local look = Config.Pet.Looks[player:GetAttribute("PetLook") or "Orb"] or Config.Pet.Looks.Orb
-		local box = makeButton({ Size = UDim2.new(0, 70, 0, 64), Position = UDim2.new(0, 8, 0, 238), Text = "", BackgroundColor3 = petLevel > 0 and Color3.fromRGB(46, 48, 68) or Color3.fromRGB(34, 34, 48), AutoButtonColor = true, ZIndex = 9 }, left, function()
+		local box = makeButton({ Size = UDim2.new(0, 58, 0, 54), Position = UDim2.new(0, 8, 0, 202), Text = "", BackgroundColor3 = petLevel > 0 and Color3.fromRGB(46, 48, 68) or Color3.fromRGB(34, 34, 48), AutoButtonColor = true, ZIndex = 9 }, left, function()
 			player:SetAttribute("OpenPet", os.clock())
 		end)
 		rounded(box, 12)
 		create("UIStroke", { Color = petLevel > 0 and Color3.fromRGB(255, 200, 90) or Color3.fromRGB(70, 70, 90), Thickness = petLevel > 0 and 2 or 1.5 }, box)
-		makeLabel({ Size = UDim2.new(1, 0, 0, 30), Position = UDim2.new(0, 0, 0, 4), Text = petLevel > 0 and look.Icon or "🐾", TextSize = 22, TextTransparency = petLevel > 0 and 0 or 0.6, ZIndex = 10 }, box)
-		makeLabel({ Size = UDim2.new(1, -4, 0, 24), Position = UDim2.new(0, 2, 0, 36), Text = petLevel > 0 and string.format("Lv.%d", petLevel) or "Unlock\nPet (P)", TextSize = petLevel > 0 and 11 or 9, TextWrapped = true, Font = Enum.Font.GothamBlack,
+		makeLabel({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 2), Text = petLevel > 0 and look.Icon or "🐾", TextSize = 18, TextTransparency = petLevel > 0 and 0 or 0.6, ZIndex = 10 }, box)
+		makeLabel({ Size = UDim2.new(1, -4, 0, 22), Position = UDim2.new(0, 2, 0, 30), Text = petLevel > 0 and string.format("Lv.%d", petLevel) or "Unlock\nPet (P)", TextSize = petLevel > 0 and 11 or 9, TextWrapped = true, Font = Enum.Font.GothamBlack,
 			TextColor3 = petLevel > 0 and Color3.fromRGB(255, 225, 110) or Color3.fromRGB(150, 150, 175), ZIndex = 10 }, box)
 	end
 
 	-- ---------- 왼쪽 아래: 내 세트 (모으는 중) ----------
 	do
-		makeLabel({ Size = UDim2.new(1, -16, 0, 18), Position = UDim2.new(0, 10, 0, 310), Text = "🧩 My sets", TextSize = 13, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 217, 102) }, left)
-		local list = create("ScrollingFrame", { Size = UDim2.new(1, -12, 1, -336), Position = UDim2.new(0, 6, 0, 330), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 3,
+		makeLabel({ Size = UDim2.new(1, -16, 0, 18), Position = UDim2.new(0, 10, 0, 262), Text = "🧩 My sets", TextSize = 13, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 217, 102) }, left)
+		local list = create("ScrollingFrame", { Size = UDim2.new(1, -12, 1, -288), Position = UDim2.new(0, 6, 0, 282), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 3,
 			CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y }, left)
 		create("UIListLayout", { Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder }, list)
 		-- 가진 세트 (착용 + 가방): 어느 부위를 가졌는지
@@ -488,7 +488,7 @@ local function buildInventoryTab(state)
 		end
 		local grid = create("ScrollingFrame", { Size = UDim2.new(1, -8, 1, -160), Position = UDim2.new(0, 4, 0, 102), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 4,
 			CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y }, middle)
-		create("UIGridLayout", { CellSize = UDim2.new(0, 60, 0, 60), CellPadding = UDim2.new(0, 8, 0, 10), SortOrder = Enum.SortOrder.LayoutOrder }, grid)
+		create("UIGridLayout", { CellSize = UDim2.new(0, 54, 0, 54), CellPadding = UDim2.new(0, 8, 0, 10), SortOrder = Enum.SortOrder.LayoutOrder }, grid)
 		create("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8) }, grid)
 		if #filtered == 0 then
 			makeLabel({ Size = UDim2.new(1, -20, 0, 40), Position = UDim2.new(0, 10, 0, 110), Text = #bag == 0 and "Your bag is empty" or "Nothing matches this filter", TextSize = 12, TextColor3 = Color3.fromRGB(130, 130, 150) }, middle)
@@ -503,7 +503,7 @@ local function buildInventoryTab(state)
 			end)
 			rounded(tile, 10)
 			rarityOutline(tile, item.Rarity, isSel and 4 or nil)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 28), Position = UDim2.new(0, 0, 0, 4), Text = SLOT_ICONS[item.Slot], TextSize = 21 }, tile)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0, 0, 0, 3), Text = SLOT_ICONS[item.Slot], TextSize = 18 }, tile)
 			makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 1, -17), Text = string.format("+%d", item.Level), TextSize = 10, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, tile)
 			if entry.Diff ~= 0 then
 				makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(1, -15, 1, -16), Text = entry.Diff > 0 and "▲" or "▼", TextSize = 10, Font = Enum.Font.GothamBlack,
