@@ -394,6 +394,7 @@ return {
 		{ "Move Speed -{number1}%", "Vitesse de déplacement -{number1}%" },
 		{ "Crit Damage +{number1}", "Dégâts critiques +{number1}" },
 		{ "Boss Damage +{number1}", "Dégâts aux boss +{number1}" },
+		{ "{number1} kills → Lord", "{number1} éliminations → seigneur" },
 		{ "Reach {number1} Power", "Atteindre {number1} puissance" },
 		{ "Next zone  {number1}m", "Prochaine zone {number1}m" },
 		{ "▼ Dungeon  {number1}m", "▼ Donjon {number1}m" },

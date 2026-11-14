@@ -458,6 +458,7 @@ return {
 		{ "Move Speed -{number1}%", "移動速度 -{number1}%" },
 		{ "Crit Damage +{number1}", "クリティカルダメージ +{number1}" },
 		{ "Boss Damage +{number1}", "ボスダメージ +{number1}" },
+		{ "{number1} kills → Lord", "{number1}体撃破 → 領主" },
 		{ "Reach {number1} Power", "{number1}パワーに到達する" },
 		{ "Next zone  {number1}m", "次のゾーン {number1}m" },
 		{ "▼ Dungeon  {number1}m", "▼ ダンジョン {number1}m" },

@@ -370,6 +370,7 @@ return {
 		{ "Move Speed -{number1}%", "Velocidad de movimiento -{number1}%" },
 		{ "Crit Damage +{number1}", "Daño crítico +{number1}" },
 		{ "Boss Damage +{number1}", "Daño a jefes +{number1}" },
+		{ "{number1} kills → Lord", "{number1} bajas → señor" },
 		{ "Reach {number1} Power", "Alcanza el poder {number1}" },
 		{ "Next zone  {number1}m", "Próxima zona {number1}m" },
 		{ "▼ Dungeon  {number1}m", "▼ Mazmorra {number1}m" },

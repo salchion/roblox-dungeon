@@ -744,3 +744,4 @@
 2776¦空いている装備枠:¦Leerer Ausrüstungsplatz:¦Emplacement vide :¦Ranura vacía:¦Espaço vazio:¦空的装备栏:¦빈 장비 칸:
 2777¦道を選ぼう:¦Wähle einen Pfad für¦Choisis une voie pour¦Elige una rama para¦Escolha um caminho para¦为其选择路线:¦갈래를 고르세요:
 2778¦+{number1} 最大¦+{number1} MAX¦+{number1} MAX¦+{number1} MÁX¦+{number1} MÁX¦+{number1} 满级¦+{number1} 최대
+2779¦{number1}体撃破 → 領主¦{number1} Kills → Fürst¦{number1} éliminations → seigneur¦{number1} bajas → señor¦{number1} abates → lorde¦击杀{number1}只 → 领主¦{number1}마리 처치 → 군주

@@ -73,55 +73,93 @@ local function rebuild()
 	end
 	local F = Config.Field
 	if tab == "Guide" then
-		-- 구역 안내: 모를 때 펴 보는 가이드. 구역마다 나오는 몬스터 / 군주 / 관문 / 장비 드롭 확률(지금 내 행운 반영) / 그 구역 세트와 세트 효과
+		-- 구역 안내 (표가 아니라 카드): 구역 색 띠 머리 / 몬스터 메달 줄 / 드롭 등급 막대(색 비율) / 세트 문장과 세트 효과 메달 / 관문 알약
 		local luck = Odds.LuckOf(player)
 		local myZone = player:GetAttribute("MaxZone") or 1
-		local zone = 1 -- (아래 반복에서 구역마다 바꾼다: pctLine 이 읽는다)
-		local function pctLine(kind)
-			local parts = {}
+		local L = Config.Loot
+		local function pill(parent, x, y, text, color)
+			local f = create("Frame", { Size = UDim2.new(0, 0, 0, 20), AutomaticSize = Enum.AutomaticSize.X, Position = UDim2.new(0, x, 0, y), BackgroundColor3 = color, BackgroundTransparency = 0.55, BorderSizePixel = 0 }, parent)
+			rounded(f, 10)
+			create("UIPadding", { PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8) }, f)
+			makeLabel({ Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = text, TextSize = 10, Font = Enum.Font.GothamBold }, f)
+			return f
+		end
+		local function rarityBar(parent, x, y, w, zone, kind, title)
+			makeLabel({ Size = UDim2.new(0, 56, 0, 14), Position = UDim2.new(0, x, 0, y - 1), Text = title, TextSize = 10, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(200, 205, 230) }, parent)
+			local back = create("Frame", { Size = UDim2.new(0, w, 0, 12), Position = UDim2.new(0, x + 58, 0, y), BackgroundColor3 = Color3.fromRGB(14, 16, 26), BorderSizePixel = 0, ClipsDescendants = true }, parent)
+			rounded(back, 6)
+			local cursor, best = 0, nil
 			for _, entry in ipairs(Odds.Field(zone, kind, luck)) do
-				if entry.Pct > 0 then table.insert(parts, string.format("<font color='#%s'>%s %s</font>", hex(entry.Color), entry.Name, Odds.Format(entry.Pct))) end
+				if entry.Pct > 0 then
+					local seg = create("Frame", { Size = UDim2.new(entry.Pct / 100, 0, 1, 0), Position = UDim2.new(cursor / 100, 0, 0, 0), BackgroundColor3 = entry.Color, BorderSizePixel = 0 }, back)
+					create("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(170, 170, 185)) }, seg)
+					cursor += entry.Pct
+					best = entry
+				end
 			end
-			return table.concat(parts, " · ")
+			if best then -- 막대 끝: 가장 높은 등급과 그 확률 (나머지는 색 비율로 본다)
+				makeLabel({ Size = UDim2.new(0, 120, 0, 14), Position = UDim2.new(0, x + 64 + w, 0, y - 1), RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left,
+					Text = string.format("<font color='#%s'><b>%s</b></font> %s", hex(best.Color), best.Name, Odds.Format(best.Pct)) }, parent)
+			end
 		end
 		for z = 1, F.ZoneCount do
-			zone = z
 			local locked = z > myZone
-			local lines = {}
-			table.insert(lines, string.format("<font size='13'><b>Zone %d · %s</b></font>   <font color='#ffd966'>⚡ Recommended %s</font>   <font color='#ff8a8a'>%s</font>%s",
-				z, F.ZoneNames[z], tostring(F.RecommendPower[z] or 0), string.rep("☠", z), locked and "   <font color='#9aa0b8'>🔒 not reached yet</font>" or ""))
-			local names = {}
+			local setKey = Config.Sets.ZoneKeys and Config.Sets.ZoneKeys[z]
+			local setDef = setKey and Config.Sets[setKey]
+			local tint = setDef and setDef.Color or Color3.fromRGB(120, 140, 220)
+			local card = row(224, Color3.fromRGB(22, 24, 40))
+			card:FindFirstChildOfClass("UICorner").CornerRadius = UDim.new(0, 14)
+			create("UIStroke", { Color = tint, Thickness = 1.5, Transparency = locked and 0.7 or 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
+			-- 머리 띠: 구역 색 그라데이션 + 큰 이름 + 권장 전투력 알약
+			local band = create("Frame", { Size = UDim2.new(1, 0, 0, 34), BackgroundColor3 = tint, BorderSizePixel = 0 }, card)
+			rounded(band, 14)
+			create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, locked and 0.6 or 0.15), NumberSequenceKeypoint.new(1, 0.95) }) }, band)
+			makeLabel({ Size = UDim2.new(0.6, 0, 1, 0), Position = UDim2.new(0, 12, 0, 0), RichText = true, TextSize = 15, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left,
+				TextStrokeTransparency = 0.4, Text = string.format("%s ZONE %d  <font size='12'>%s</font>", setDef and setDef.Icon or "📍", z, F.ZoneNames[z]) }, band)
+			makeLabel({ Size = UDim2.new(0, 150, 1, 0), Position = UDim2.new(1, -160, 0, 0), RichText = true, TextSize = 11, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Right,
+				Text = locked and "<font color='#b8bcd4'>🔒 not reached yet</font>" or string.format("<font color='#ffe16e'>⚡ Recommended %s</font>  <font color='#ff8a8a'>%s</font>", tostring(F.RecommendPower[z] or 0), string.rep("☠", math.min(z, 5))) }, band)
+			-- 몬스터 메달 줄 + 군주(왕관)
 			local keys = {}
 			for key in pairs(F.ZonePools[z] or {}) do table.insert(keys, key) end
 			table.sort(keys)
+			local x = 10
 			for _, key in ipairs(keys) do
 				local info = Config.Codex.Monsters[key]
-				if info then table.insert(names, info.Icon .. " " .. info.Name) end
+				if info and x < 380 then
+					Kit.medal(card, { Size = 38, Position = UDim2.new(0, x + 6, 0, 42), Color = tint, Icon = info.Icon, TextSize = 18, Muted = locked })
+					makeLabel({ Size = UDim2.new(0, 52, 0, 22), Position = UDim2.new(0, x, 0, 82), Text = info.Name, TextSize = 9, TextWrapped = true, TextColor3 = Color3.fromRGB(200, 205, 228) }, card)
+					x += 54
+				end
 			end
-			table.insert(lines, "<b>👾 Monsters</b>  " .. table.concat(names, " · "))
-			table.insert(lines, string.format("<b>👑 Lord</b>  %s", Config.Codex.Bosses[z] or "Lord"))
+			Kit.medal(card, { Size = 44, Position = UDim2.new(1, -62, 0, 39), Color = Color3.fromRGB(255, 196, 80), Icon = "👑", TextSize = 20, Tier = 4, Muted = locked })
+			makeLabel({ Size = UDim2.new(0, 74, 0, 22), Position = UDim2.new(1, -77, 0, 84), Text = Config.Codex.Bosses[z] or "Lord", TextSize = 9, TextWrapped = true, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(255, 220, 140) }, card)
+			-- 드롭: 확률 알약 + 등급 막대 (색 비율)
+			pill(card, 10, 112, string.format("🎁 monster %d%% · elite %d%% · Lord %d%%", math.floor(L.DropChance.Normal * 100 + 0.5), math.floor(L.DropChance.Elite * 100 + 0.5), math.floor(L.DropChance.Boss * 100 + 0.5)), Color3.fromRGB(70, 80, 130))
 			local need = F.Gate and F.Gate.KillsNeeded and F.Gate.KillsNeeded[z]
-			if need then table.insert(lines, string.format("<b>🚪 Next zone</b>  defeat %d monsters here, then the Lord", need)) end
-			local L = Config.Loot
-			table.insert(lines, string.format("<b>🎁 Gear drop</b>  monster %d%% · elite %d%% · Lord %d%%", math.floor(L.DropChance.Normal * 100 + 0.5), math.floor(L.DropChance.Elite * 100 + 0.5), math.floor(L.DropChance.Boss * 100 + 0.5)))
-			table.insert(lines, "   Monster  " .. pctLine("Normal"))
-			table.insert(lines, "   Lord  " .. pctLine("Boss"))
-			local setKey = Config.Sets.ZoneKeys and Config.Sets.ZoneKeys[z]
-			local setDef = setKey and Config.Sets[setKey]
+			if need then pill(card, 300, 112, string.format("🚪 %d kills → Lord", need), Color3.fromRGB(90, 70, 50)) end
+			rarityBar(card, 10, 140, 230, z, "Normal", "Monster")
+			rarityBar(card, 10, 158, 230, z, "Boss", "Lord")
+			-- 세트 문장 + 세트 효과 메달
 			if setDef then
+				Kit.medal(card, { Size = 30, Position = UDim2.new(0, 10, 0, 178), Color = setDef.Color, Icon = setDef.Icon or "★", TextSize = 14, Muted = locked })
 				local parts = {}
-				for _, b in ipairs(setDef.Bonuses[3] or {}) do table.insert(parts, Config.FormatBonus(b.Stat, b.Value)) end
-				table.insert(lines, string.format("<b><font color='#%s'>%s %s Set</font></b>  %d%% of gear here · 3 pc: %s", hex(setDef.Color), setDef.Icon or "★", setDef.Name, math.floor((Config.Sets.ZoneSetChance or 0) * 100 + 0.5), table.concat(parts, " · ")))
+				for _, bonus in ipairs(setDef.Bonuses[3] or {}) do table.insert(parts, Config.FormatBonus(bonus.Stat, bonus.Value)) end
+				makeLabel({ Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 46, 0, 178), RichText = true, TextSize = 9, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+					Text = string.format("<font color='#%s' size='11'><b>%s Set</b></font>\n<font color='#c8cce0'>%s</font>", hex(setDef.Color), setDef.Name, table.concat(parts, " · ")) }, card)
 				local aug = setDef.Aug and Config.AugInfo[setDef.Aug]
-				if aug then table.insert(lines, string.format("<b><font color='#%s'>%s %s</font></b>  set effect (unlocked by this Lord): %s", hex(aug.Color), aug.Icon, aug.Name, aug.Desc)) end
+				if aug then
+					Kit.medal(card, { Size = 30, Position = UDim2.new(0, 244, 0, 178), Color = aug.Color, Icon = aug.Icon, TextSize = 14, Tier = 3, Muted = locked })
+					makeLabel({ Size = UDim2.new(1, -290, 0, 30), Position = UDim2.new(0, 280, 0, 178), RichText = true, TextSize = 9, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+						Text = string.format("<font color='#%s' size='11'><b>%s</b></font>\n<font color='#c8cce0'>%s</font>", hex(aug.Color), aug.Name, aug.Desc) }, card)
+				end
 			end
-			local r = row(18 + #lines * 17, locked and Color3.fromRGB(26, 28, 42) or Color3.fromRGB(30, 34, 54))
-			makeLabel({ Size = UDim2.new(1, -20, 1, -8), Position = UDim2.new(0, 10, 0, 4), Text = table.concat(lines, "\n"), RichText = true, TextSize = 10, TextWrapped = true,
-				TextColor3 = Color3.fromRGB(210, 214, 236), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top }, r)
 		end
 		local AB = Config.Inventory.AugBoostChance or {}
-		summary.Text = string.format("Odds include your current Luck · Mythic: unique %d%% (dungeon chests 30%%+) · +1 set-effect option: Legendary %d%% / Mythic %d%%",
-			math.floor((Config.Uniques.FieldChance or 0) * 100 + 0.5), math.floor((AB[4] or 0) * 100 + 0.5), math.floor((AB[5] or 0) * 100 + 0.5))
+		summary.Text = "Odds include your current Luck" -- (길면 잘려서: 나머지는 맨 아래 쪽지로)
+		local note = row(40, Color3.fromRGB(30, 28, 46))
+		makeLabel({ Size = UDim2.new(1, -20, 1, 0), Position = UDim2.new(0, 10, 0, 0), RichText = true, TextSize = 10, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(200, 204, 228),
+			Text = string.format("★ Mythic: unique %d%% (dungeon chests 30%%+) · +1 set-effect option: Legendary %d%% / Mythic %d%%",
+				math.floor((Config.Uniques.FieldChance or 0) * 100 + 0.5), math.floor((AB[4] or 0) * 100 + 0.5), math.floor((AB[5] or 0) * 100 + 0.5)) }, note)
 	elseif tab == "Monster" then
 		local total, found = 0, 0
 		local seen = {}

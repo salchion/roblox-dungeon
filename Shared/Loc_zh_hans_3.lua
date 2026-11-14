@@ -187,6 +187,7 @@ return {
 		{ "Move Speed -{number1}%", "移动速度 -{number1}%" },
 		{ "Crit Damage +{number1}", "暴击伤害 +{number1}" },
 		{ "Boss Damage +{number1}", "首领伤害 +{number1}" },
+		{ "{number1} kills → Lord", "击杀{number1}只 → 领主" },
 		{ "Reach {number1} Power", "达到{number1}力量" },
 		{ "Next zone  {number1}m", "下一个区域 {number1}米" },
 		{ "▼ Dungeon  {number1}m", "▼ 地牢 {number1}m" },

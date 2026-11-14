@@ -342,6 +342,7 @@ return {
 		{ "Move Speed -{number1}%", "Lauftempo -{number1}%" },
 		{ "Crit Damage +{number1}", "Krit-Schaden +{number1}" },
 		{ "Boss Damage +{number1}", "Boss-Schaden +{number1}" },
+		{ "{number1} kills → Lord", "{number1} Kills → Fürst" },
 		{ "Reach {number1} Power", "Erreiche {number1} Kraft" },
 		{ "Next zone  {number1}m", "Nächste Zone {number1}m" },
 		{ "▼ Dungeon  {number1}m", "▼ Dungeon {number1}m" },

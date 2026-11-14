@@ -500,6 +500,7 @@ return {
 		{ "Move Speed -{number1}%", "이동 속도 -{number1}%" },
 		{ "Crit Damage +{number1}", "치명타 피해 +{number1}" },
 		{ "Boss Damage +{number1}", "보스 피해 +{number1}" },
+		{ "{number1} kills → Lord", "{number1}마리 처치 → 군주" },
 		{ "Reach {number1} Power", "{number1} 파워 달성" },
 		{ "Next zone  {number1}m", "다음 구역 {number1}m" },
 		{ "▼ Dungeon  {number1}m", "▼ 던전 {number1}m" },
