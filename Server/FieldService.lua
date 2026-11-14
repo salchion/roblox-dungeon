@@ -601,6 +601,18 @@ local function buildGateway(zone, x0)
 	signLine(72, 22, string.format("%s New set: %s", zoneSet.Icon, zoneSet.Name), 15, Color3.fromRGB(190, 235, 255))
 end
 
+-- 바닥(평지 / 경사로 / 받침)은 "항상 불러오는" 모델에 담는다 (StreamingEnabled 여도 멀리 있는 바닥이 비지 않는다).
+--   오프닝 비행 때 카메라 아래 땅이 비어 보였다 (로그: x=2119 부터 '아래 지면 없음'). 바닥 조각은 수십 개라 항상 받아도 가볍다.
+--   모델 이름 = 바닥 이름 그대로 (오프닝 로딩이 "Ground" 로 시작하는 이름을 센다)
+local function makeFloorPart(props, parent)
+	local holder = Instance.new("Model")
+	holder.Name = props.Name
+	holder.ModelStreamingMode = Enum.ModelStreamingMode.Persistent
+	local part = makePart(props, holder)
+	holder.Parent = parent
+	return part
+end
+
 local function buildWorld()
 	worldFolder = Instance.new("Folder")
 	worldFolder.Name = "Field"
@@ -621,7 +633,7 @@ local function buildWorld()
 			local top = TOP + segment.H
 			local tint = F.ZoneColors[zone]:Lerp(Color3.new(1, 1, 1), 0.08 * segment.H / 24)
 			if segment.Kind == "Floor" then
-				makePart({
+				makeFloorPart({
 					Name = "Ground" .. zone, Size = Vector3.new(segment.B - segment.A, top + 1.95, F.Width),
 					Position = Vector3.new(x0 + (segment.A + segment.B) / 2, (top - 1.95) / 2, 0), Color = tint, Material = F.ZoneMaterials[zone],
 				}, worldFolder)
@@ -635,13 +647,13 @@ local function buildWorld()
 				local midX, midY = x0 + stair.At + stair.Run / 2, (startY + endY) / 2
 				-- 표면에서 두께의 절반만큼 아래(법선 반대 방향)로 중심을 내린다
 				local center = Vector3.new(midX + math.sin(angle) * thickness / 2, midY - math.cos(angle) * thickness / 2, 0)
-				makePart({
+				makeFloorPart({
 					Name = "Ramp" .. zone, Size = Vector3.new(length, thickness, F.Width),
 					CFrame = CFrame.new(center) * CFrame.Angles(0, 0, angle),
 					Color = Color3.fromRGB(205, 195, 180):Lerp(F.ZoneColors[zone], 0.3), Material = Enum.Material.Cobblestone,
 				}, worldFolder)
 				local lowY = math.min(startY, endY)
-				makePart({
+				makeFloorPart({
 					Name = "RampBase" .. zone, Size = Vector3.new(stair.Run, math.max(0.5, lowY - thickness + 1.95), F.Width),
 					Position = Vector3.new(midX, (lowY - thickness - 1.95) / 2, 0), Color = F.ZoneColors[zone], Material = F.ZoneMaterials[zone],
 				}, worldFolder)
