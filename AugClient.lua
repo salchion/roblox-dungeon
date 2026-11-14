@@ -13,6 +13,7 @@ local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 
 local player = Players.LocalPlayer
 local ZONES = Config.Field.ZoneCount
+local TweenService = game:GetService("TweenService")
 
 local gui = Instance.new("ScreenGui")
 gui.Name = "AugGui"
@@ -524,6 +525,78 @@ local function refreshHud()
 	hudBox.Visible = count > 0 and (zone == "Field" or zone == "Dungeon") and not player:GetAttribute("TutorialActive")
 	hudBox.Size = UDim2.new(0, 244, 0, y + 4)
 end
+-- 머리 위 세트 효과 메달: 장착한 세트 효과가 내 머리 위에 작은 메달로 늘 보이고, 터지는 순간 그 메달만 커지며 빛나고 이름 리본이 잠깐 뜬다
+--   (예전: 맞은 자리 아이콘 / 화면 가운데 글자 / 오른쪽 위 목록이 따로 깜빡여서 무엇이 터졌는지 눈에 안 들어왔다). 내 화면에만 보인다
+local Kit = require(ReplicatedStorage:WaitForChild("ClientKit"))
+local headBoard = Instance.new("BillboardGui")
+headBoard.Name = "AugHeadMedals"
+headBoard.Size = UDim2.new(0, 150, 0, 74)
+headBoard.StudsOffset = Vector3.new(0, 3.6, 0)
+headBoard.AlwaysOnTop = true
+headBoard.LightInfluence = 0
+headBoard.MaxDistance = 200
+headBoard.ResetOnSpawn = false
+headBoard.Enabled = false
+headBoard.Parent = player:WaitForChild("PlayerGui")
+local headRow = make("Frame", { Size = UDim2.new(1, 0, 0, 40), Position = UDim2.new(0, 0, 1, -42), BackgroundTransparency = 1 }, headBoard)
+make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Center, VerticalAlignment = Enum.VerticalAlignment.Center, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }, headRow)
+local headMedals = {} -- [효과 이름] = { Scale = UIScale, Holder = Frame }
+local headRibbon
+local function refreshHead()
+	local zone = player:GetAttribute("Zone")
+	local character = player.Character
+	headBoard.Adornee = character and character:FindFirstChild("Head")
+	for _, entry in pairs(headMedals) do entry.Holder:Destroy() end
+	headMedals = {}
+	local count = 0
+	for z = 1, ZONES do
+		if player:GetAttribute("AugOnZ_" .. z) == true then
+			local attr = Config.Sets.ZoneAug[z]
+			local info = Config.AugInfo[attr]
+			if info then
+				count += 1
+				local holder = make("Frame", { Size = UDim2.new(0, 30, 0, 30), BackgroundTransparency = 1, LayoutOrder = z }, headRow)
+				local scale = make("UIScale", { Scale = 1 }, holder)
+				local medal = Kit.medal(holder, { Size = 30, Color = info.Color, Icon = info.Icon, TextSize = 15, Tier = 2 })
+				medal.Name = "Medal"
+				local level = (player:GetAttribute("AugLvZ_" .. z) or 0) + (player:GetAttribute("AugGearZ_" .. z) or 0)
+				local lv = label({ Size = UDim2.new(0, 18, 0, 12), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 1, -6), Text = tostring(level), TextSize = 12, Font = Enum.Font.GothamBlack,
+					TextColor3 = Color3.fromRGB(255, 233, 168), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(22, 18, 44), ZIndex = 6 }, holder)
+				make("UICorner", { CornerRadius = UDim.new(0, 6) }, lv)
+				headMedals[attr] = { Scale = scale, Holder = holder, Info = info }
+			end
+		end
+	end
+	headBoard.Enabled = count > 0 and headBoard.Adornee ~= nil and (zone == "Field" or zone == "Dungeon") and not player:GetAttribute("TutorialActive") and not player:GetAttribute("LowSpec")
+end
+local function popHead(attr, info)
+	local entry = headMedals[attr]
+	if not entry or not headBoard.Enabled then return end
+	entry.Scale.Scale = 1.5
+	TweenService:Create(entry.Scale, TweenInfo.new(0.45, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	local halo = make("Frame", { Size = UDim2.new(1, 12, 1, 12), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundColor3 = info.Color, BackgroundTransparency = 0.45, ZIndex = 0 }, entry.Holder)
+	make("UICorner", { CornerRadius = UDim.new(1, 0) }, halo)
+	TweenService:Create(halo, TweenInfo.new(0.5), { Size = UDim2.new(1, 26, 1, 26), BackgroundTransparency = 1 }):Play()
+	task.delay(0.55, function() halo:Destroy() end)
+	-- 이름 리본 (같은 때 하나만: 새로 터지면 바꿔 단다)
+	if headRibbon then headRibbon:Destroy() end
+	local ribbon = Kit.ribbon(headBoard, { Size = UDim2.new(0, 140, 0, 22), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 0), Color = info.Color, Text = info.Icon .. " " .. info.Name .. "!", TextSize = 13, ZIndex = 8 })
+	headRibbon = ribbon
+	task.delay(0.65, function()
+		if headRibbon == ribbon then headRibbon = nil end
+		ribbon:Destroy()
+	end)
+end
+for _, name in ipairs({ "Zone", "TutorialActive", "LowSpec" }) do player:GetAttributeChangedSignal(name):Connect(refreshHead) end
+for z = 1, ZONES do
+	for _, prefix in ipairs({ "AugOnZ_", "AugLvZ_", "AugGearZ_" }) do player:GetAttributeChangedSignal(prefix .. z):Connect(refreshHead) end
+end
+player.CharacterAdded:Connect(function(character)
+	character:WaitForChild("Head", 10)
+	refreshHead()
+end)
+refreshHead()
+
 for _, name in ipairs({ "Zone", "TutorialActive" }) do player:GetAttributeChangedSignal(name):Connect(refreshHud) end
 for z = 1, ZONES do
 	for _, prefix in ipairs({ "AugOnZ_", "AugLvZ_", "AugGearZ_" }) do player:GetAttributeChangedSignal(prefix .. z):Connect(refreshHud) end
@@ -533,7 +606,6 @@ refreshHud()
 ------------------------------------------------------------
 -- 던전 시작 체험 효과: 8개 중 하나를 뽑는 연출(약 2.5초) -> 화면 오른쪽 위 구석에 작은 표시
 ------------------------------------------------------------
-local TweenService = game:GetService("TweenService")
 local corner = make("TextLabel", {
 	Size = UDim2.new(0, 240, 0, 46), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 96), RichText = true, TextWrapped = true,
 	BackgroundColor3 = Color3.fromRGB(26, 28, 42), BackgroundTransparency = 0.25, Font = Enum.Font.GothamBold, TextSize = 11,
@@ -749,7 +821,19 @@ end
 local function showProc(attr, position)
 	local info = Config.AugInfo[attr]
 	if not info then return end
-	if worldFxAllowed(attr) then procWorldFx(info, position) end
+	if worldFxAllowed(attr) then
+		if headBoard.Enabled and headMedals[attr] then
+			popHead(attr, info) -- 머리 위 메달이 보이면 그걸로 알려 준다 (맞은 자리 아이콘 / 화면 가운데 글자는 띄우지 않는다)
+		else
+			procWorldFx(info, position)
+		end
+	end
+	if headBoard.Enabled and headMedals[attr] then -- 오른쪽 위 목록만 잠깐 켠다
+		procUntil[attr] = os.clock() + 0.5
+		refreshHud()
+		task.delay(0.55, refreshHud)
+		return
+	end
 	if os.clock() - lastProcPop < 1.4 then return end -- 화면 가운데 "충격파 샷!" 같은 글자는 1.4초에 한 번만 (세트 효과가 계속 터져서 글자가 쉴 새 없이 떴다. 효과 자체의 연출은 그대로)
 	lastProcPop = os.clock()
 	if player:GetAttribute("ModalOpen") then return end -- 메뉴 같은 큰 창이 열려 있으면 화면 가운데 글자를 띄우지 않는다 (창 위에 겹쳐 보였다)
