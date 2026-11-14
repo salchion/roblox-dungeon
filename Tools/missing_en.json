@@ -2788,5 +2788,7 @@
 "Gear drop per kill",
 "1 in {number1}",
 "always",
-"Highest grade"
+"Highest grade",
+"kills per item",
+"Lord kills per item"
 ]

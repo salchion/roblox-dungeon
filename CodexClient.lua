@@ -84,30 +84,12 @@ local function rebuild()
 			makeLabel({ Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = text, TextSize = 10, Font = Enum.Font.GothamBold }, f)
 			return f
 		end
-		local function rarityBar(parent, x, y, w, zone, kind, title)
-			makeLabel({ Size = UDim2.new(0, 56, 0, 14), Position = UDim2.new(0, x, 0, y - 1), Text = title, TextSize = 10, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(200, 205, 230) }, parent)
-			local back = create("Frame", { Size = UDim2.new(0, w, 0, 12), Position = UDim2.new(0, x + 58, 0, y), BackgroundColor3 = Color3.fromRGB(14, 16, 26), BorderSizePixel = 0, ClipsDescendants = true }, parent)
-			rounded(back, 6)
-			local cursor, best = 0, nil
-			for _, entry in ipairs(Odds.Field(zone, kind, luck)) do
-				if entry.Pct > 0 then
-					local seg = create("Frame", { Size = UDim2.new(entry.Pct / 100, 0, 1, 0), Position = UDim2.new(cursor / 100, 0, 0, 0), BackgroundColor3 = entry.Color, BorderSizePixel = 0 }, back)
-					create("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(170, 170, 185)) }, seg)
-					cursor += entry.Pct
-					best = entry
-				end
-			end
-			if best then -- 막대 끝: 가장 높은 등급과 그 확률 (나머지는 색 비율로 본다)
-				makeLabel({ Size = UDim2.new(0, 200, 0, 14), Position = UDim2.new(0, x + 64 + w, 0, y - 1), RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left,
-					Text = string.format("<font color='#9aa0c0'>Highest grade</font> <font color='#%s'><b>%s</b></font> %s", hex(best.Color), best.Name, Odds.Format(best.Pct)) }, parent)
-			end
-		end
 		for z = 1, F.ZoneCount do
 			local locked = z > myZone
 			local setKey = Config.Sets.ZoneKeys and Config.Sets.ZoneKeys[z]
 			local setDef = setKey and Config.Sets[setKey]
 			local tint = setDef and setDef.Color or Color3.fromRGB(120, 140, 220)
-			local card = row(224, Color3.fromRGB(22, 24, 40))
+			local card = row(244, Color3.fromRGB(22, 24, 40))
 			card:FindFirstChildOfClass("UICorner").CornerRadius = UDim.new(0, 14)
 			create("UIStroke", { Color = tint, Thickness = 1.5, Transparency = locked and 0.7 or 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
 			-- 머리 띠: 구역 색 그라데이션 + 큰 이름 + 권장 전투력 알약
@@ -134,46 +116,50 @@ local function rebuild()
 			Kit.medal(card, { Size = 44, Position = UDim2.new(1, -62, 0, 39), Color = Color3.fromRGB(255, 196, 80), Icon = "👑", TextSize = 20, Tier = 4, Muted = locked })
 			makeLabel({ Size = UDim2.new(0, 74, 0, 22), Position = UDim2.new(1, -77, 0, 84), Text = Config.Codex.Bosses[z] or "Lord", TextSize = 9, TextWrapped = true, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(255, 220, 140) }, card)
 			-- 드롭: 확률 알약 + 등급 막대 (색 비율)
-			-- 장비가 떨어지는 빈도: "9%" 대신 "11번에 1번" 처럼 (몇 마리 잡으면 하나 나오는지 바로 알 수 있게)
+			-- 장비 드랍: "몇 마리 잡으면 그 등급이 1개 나오나" 로 바로 보여 준다
+			--   (예전: "몬스터 9%" + 그 안의 등급 비율 막대 -> 두 번 곱해야 해서 알아보기 어려웠다). 숫자 = 1 / (드랍 확률 x 그 등급 비율), 지금 내 행운 반영
 			do
-				local strip = create("Frame", { Size = UDim2.new(1, -20, 0, 20), Position = UDim2.new(0, 10, 0, 112), BackgroundTransparency = 1 }, card)
-				create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }, strip)
-				makeLabel({ Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = "🎁 Gear drop per kill", TextSize = 10, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(200, 205, 230), LayoutOrder = 0 }, strip)
-				local function oneIn(chance)
-					if chance >= 1 then return "<b>always</b>" end
-					return string.format("<b>1 in %d</b>", math.max(1, math.floor(1 / math.max(chance, 0.0001) + 0.5)))
-				end
-				local chips = {
-					{ "👾 Monster", L.DropChance.Normal, Color3.fromRGB(70, 80, 130) },
-					{ "⭐ Elite", L.DropChance.Elite, Color3.fromRGB(90, 80, 150) },
-					{ "👑 Lord", L.DropChance.Boss, Color3.fromRGB(130, 100, 40) },
+				local rowsDef = {
+					{ "👾 Monster", "Normal", "kills per item" },
+					{ "⭐ Elite", "Elite", "kills per item" },
+					{ "👑 Lord", "Boss", "Lord kills per item" },
 				}
-				for i, chip in ipairs(chips) do
-					local f = pill(strip, 0, 0, "", chip[3])
-					f.LayoutOrder = i
-					local label = f:FindFirstChildOfClass("TextLabel")
-					label.RichText = true
-					label.Text = string.format("%s <font color='#ffe16e'>%s</font>", chip[1], oneIn(chip[2]))
+				for i, def in ipairs(rowsDef) do
+					local y = 110 + (i - 1) * 22
+					makeLabel({ Size = UDim2.new(0, 80, 0, 20), Position = UDim2.new(0, 10, 0, y), Text = def[1], TextSize = 11, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(223, 227, 245) }, card)
+					local strip = create("Frame", { Size = UDim2.new(1, -100, 0, 20), Position = UDim2.new(0, 92, 0, y), BackgroundTransparency = 1 }, card)
+					create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 5), VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }, strip)
+					local chance = (L.DropChance[def[2]] or 0) * ((L.Counts and L.Counts[def[2]]) or 1)
+					for order, entry in ipairs(Odds.Field(z, def[2], luck)) do
+						local per = chance * entry.Pct / 100
+						if per > 0 then
+							local kills = 1 / per
+							local chip = create("Frame", { Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, BackgroundColor3 = entry.Color, BackgroundTransparency = 0.85, BorderSizePixel = 0, LayoutOrder = order }, strip)
+							rounded(chip, 10)
+							create("UIStroke", { Color = entry.Color, Thickness = 1.3, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, chip)
+							create("UIPadding", { PaddingLeft = UDim.new(0, 7), PaddingRight = UDim.new(0, 7) }, chip)
+							makeLabel({ Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, RichText = true, TextSize = 10, Font = Enum.Font.GothamBold, TextColor3 = entry.Color:Lerp(Color3.new(1, 1, 1), 0.35),
+								Text = string.format("%s <font size='12'><b>%s</b></font>", entry.Name, kills < 10 and string.format("%.1f", kills) or tostring(math.floor(kills + 0.5))) }, chip)
+						end
+					end
+					makeLabel({ Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = def[3], TextSize = 10, TextColor3 = Color3.fromRGB(170, 176, 200), LayoutOrder = 99 }, strip)
 				end
 				local need = F.Gate and F.Gate.KillsNeeded and F.Gate.KillsNeeded[z]
 				if need then
-					local f = pill(strip, 0, 0, string.format("🚪 %d kills → Lord", need), Color3.fromRGB(90, 70, 50))
-					f.LayoutOrder = 9
+					pill(card, 92, 177, string.format("🚪 %d kills → Lord", need), Color3.fromRGB(90, 70, 50))
 				end
 			end
-			rarityBar(card, 10, 140, 230, z, "Normal", "Monster")
-			rarityBar(card, 10, 158, 230, z, "Boss", "Lord")
 			-- 세트 문장 + 세트 효과 메달
 			if setDef then
-				Kit.medal(card, { Size = 30, Position = UDim2.new(0, 10, 0, 178), Color = setDef.Color, Icon = setDef.Icon or "★", TextSize = 14, Muted = locked })
+				Kit.medal(card, { Size = 30, Position = UDim2.new(0, 10, 0, 202), Color = setDef.Color, Icon = setDef.Icon or "★", TextSize = 14, Muted = locked })
 				local parts = {}
 				for _, bonus in ipairs(setDef.Bonuses[3] or {}) do table.insert(parts, "<font color='#c8cce0'>" .. Config.FormatBonus(bonus.Stat, bonus.Value) .. "</font>") end -- (조각마다 태그로 감싸야 한 조각씩 번역된다)
-				makeLabel({ Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 46, 0, 178), RichText = true, TextSize = 9, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+				makeLabel({ Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 46, 0, 202), RichText = true, TextSize = 9, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 					Text = string.format("<font color='#%s' size='11'><b>%s</b> <b>Set</b></font>\n%s", hex(setDef.Color), setDef.Name, table.concat(parts, " · ")) }, card)
 				local aug = setDef.Aug and Config.AugInfo[setDef.Aug]
 				if aug then
-					Kit.medal(card, { Size = 30, Position = UDim2.new(0, 244, 0, 178), Color = aug.Color, Icon = aug.Icon, TextSize = 14, Tier = 3, Muted = locked })
-					makeLabel({ Size = UDim2.new(1, -290, 0, 30), Position = UDim2.new(0, 280, 0, 178), RichText = true, TextSize = 9, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
+					Kit.medal(card, { Size = 30, Position = UDim2.new(0, 244, 0, 202), Color = aug.Color, Icon = aug.Icon, TextSize = 14, Tier = 3, Muted = locked })
+					makeLabel({ Size = UDim2.new(1, -290, 0, 30), Position = UDim2.new(0, 280, 0, 202), RichText = true, TextSize = 9, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 						Text = string.format("<font color='#%s' size='11'><b>%s</b></font>\n<font color='#c8cce0'>%s</font>", hex(aug.Color), aug.Name, aug.Desc) }, card)
 				end
 			end

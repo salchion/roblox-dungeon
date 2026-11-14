@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Clear {number1} dungeon(s)  ✅ tap to claim!", "{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!" },
 		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 Boss-Truhe · {number1} Ausrüstungsteile</b>" },
 		{ "· {number1} point(s) left (1 every {number2} levels)", "· Noch {number1} Punkt(e) (1 alle {number2} Stufen)" },
 		{ "👑 Lord of Desert (Zone {number1}) · Rec. ⚡{number2}", "👑 Herr der Wüste (Zone {number1}) · Rekord ⚡{number2}" },

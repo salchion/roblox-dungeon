@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Rocket Launcher  ·  keys {number1}-{number2} switch weapons", "Lance-roquettes · les touches {number1}-{number2} permettent de changer d'arme" },
 		{ "📅 {number1}-day login streak · Get stronger today!", "📅 Série de connexion de {number1} jours · Devenez plus fort aujourd'hui !" },
 		{ "Each NEAR MISS stack gives +{number1}% more attack", "Chaque cumul NEAR MISS donne +{number1} % d'attaque en plus" },
 		{ "🔒 Spend {number1} points higher up this path first", "🔒 Dépense d'abord {number1} points plus haut sur cette voie" },

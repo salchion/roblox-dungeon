@@ -947,6 +947,8 @@ return {
 		["Gear drop per kill"] = "1体あたりの装備ドロップ",
 		["always"] = "確定",
 		["Highest grade"] = "最高ランク",
+		["kills per item"] = "体倒すごとに1個",
+		["Lord kills per item"] = "回倒すごとに1個",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1072,6 +1074,5 @@ return {
 		{ "⚖ All-round  ·  ✔ 🔫 Spell Tome / Rocket Launcher (+{number1}%)", "⚖ オールラウンド  ·  ✔ 🔫 スペルブック/ロケットランチャー (+{number1}%)" },
 		{ "🔒 Zone {number1} · Volcano Sealed\nOpen the previous gate first", "🔒 ゾーン {number1} · 火山が封鎖されています\nまず前のゲートを開けてください" },
 		{ "♻ [Common] Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] レザーアーマーを自動回収（エッセンス +{number1} {number2} G）" },
-		{ "Zone {number1} set effect · Trial Lv.3 — for this dungeon only", "ゾーン{number1}セット効果 · 試練 Lv.3 — このダンジョン限定" },
 	},
 }

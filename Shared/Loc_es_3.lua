@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} mejoras: {number2} éxitos / {number3} fallos  (Oro -{number4})" },
 		{ "Reach level {number1} to buy points with gold.", "Alcanza el nivel {number1} para comprar puntos con oro." },
 		{ "🎫 A {number1}x pull needs {number2} tickets (you have {number3})", "🎫 Una tirada x{number1} necesita {number2} boletos (tienes {number3})" },
 		{ "🗿 Colossus defeated! Gear + 🎫 +1 + {number1} G", "🗿 ¡Coloso derrotado! Equipo + 🎫 +1 + {number1} G" },

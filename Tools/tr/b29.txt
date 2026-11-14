@@ -756,3 +756,5 @@
 2787¦{number1}回に1回¦1 von {number1}¦1 sur {number1}¦1 de cada {number1}¦1 a cada {number1}¦每{number1}次1次¦{number1}번에 1번
 2788¦確定¦immer¦toujours¦siempre¦sempre¦必定¦확정
 2789¦最高ランク¦Höchste Stufe¦Rang max¦Grado máximo¦Grau máximo¦最高品质¦최고 등급
+2790¦体倒すごとに1個¦Kills pro Item¦éliminations par objet¦bajas por objeto¦abates por item¦只击杀掉落1件¦마리당 1개
+2791¦回倒すごとに1個¦Lord-Kills pro Item¦victoires sur le seigneur par objet¦derrotas del señor por objeto¦vitórias sobre o lorde por item¦次击败掉落1件¦번 잡을 때마다 1개

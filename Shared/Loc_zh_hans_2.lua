@@ -700,6 +700,8 @@ return {
 		["Gear drop per kill"] = "每次击杀掉落装备",
 		["always"] = "必定",
 		["Highest grade"] = "最高品质",
+		["kills per item"] = "只击杀掉落1件",
+		["Lord kills per item"] = "次击败掉落1件",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1093,6 +1095,5 @@ return {
 		{ "🐾 Unlock your pet! ({number1} G)", "🐾 解锁你的宠物！（{number1}G）" },
 		{ "💪 Zone {number1} Lord: power {number2} / {number3}", "💪 区域{number1}领主：战力 {number2} / {number3}" },
 		{ "Crit damage +{number1}%p  (max {number2})", "暴击伤害 +{number1}%p  (最多 {number2})" },
-		{ "▶ {number1} more to the next era", "▶ 距离下个时代还差{number1}" },
 	},
 }

@@ -769,6 +769,8 @@ return {
 		["Gear drop per kill"] = "Ausrüstungsdrop pro Kill",
 		["always"] = "immer",
 		["Highest grade"] = "Höchste Stufe",
+		["kills per item"] = "Kills pro Item",
+		["Lord kills per item"] = "Lord-Kills pro Item",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1008,6 +1010,5 @@ return {
 		{ "Gacha_Pop{number1}  Gacha result: Legendary", "Gacha_Pop{number1} Gacha-Ergebnis: Legendär" },
 		{ "{number1} hours of idle gold ({number2} G) piled up!", "{number1} Stunden ungenutztes Gold ({number2} G) gesammelt!" },
 		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 Feld-Eingang Direkt dahinter! {number1}m" },
-		{ "Clear {number1} dungeon(s)  ✅ tap to claim!", "{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!" },
 	},
 }
