@@ -865,7 +865,9 @@ end
 Players.PlayerRemoving:Connect(endIntroFocus)
 Remotes.Intro.OnServerEvent:Connect(function(player, action, x)
 	if action == "Focus" then
-		-- 날아가는 카메라 위치(x)를 알려 주면, 서버가 그 둘레의 지형을 불러 주도록 "불러오기 기준점"을 그쪽으로 옮긴다
+		-- (꺼 둠) 예전: 날아가는 카메라 쪽으로 "불러오기 기준점"(ReplicationFocus)을 옮겼다. 그러면 캐릭터가 서 있는 마을 주변이 덜 불러와져서
+		--   Roblox 가 "Gameplay Paused" 로 1~3초씩 멈췄다 (로그: 오프닝 중 4번). 필드는 로딩 화면에서 이미 미리 받아 두므로 기준점은 그대로 둔다
+		if true then return end
 		if not introStreamed[player] or typeof(x) ~= "number" or x ~= x then return end
 		x = math.clamp(x, -300, Config.Field.ZoneEnd(Config.Field.ZoneCount) + 400)
 		local part = introFocus[player]

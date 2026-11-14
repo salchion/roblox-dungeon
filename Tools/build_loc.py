@@ -84,7 +84,11 @@ for lang in LANGS:
                     seen.add(a)
                     (tmpl if re.search(r"\{(?:number|text)\d+\}", a) else exact).append((a, b))
     for src, tr in own_pairs(lang) + tr_pairs(lang): # 번역표(CSV)에 없는 글자만 우리 사전으로 채운다
-        if src in seen or not re.search(r"[A-Za-z]{3,}", src) or src == tr: continue
+        is_tmpl = re.search(r"\{(?:number|text)\d+\}", src) is not None
+        # (틀은 영어와 번역이 같아도 넣는다: "[{text1}] {text2}" 처럼 구조만 맞추고 안쪽 이름을 번역하는 틀)
+        if src in seen or (not is_tmpl and (not re.search(r"[A-Za-z]{3,}", src) or src == tr)): continue
+        if is_tmpl and src == tr and "{number" not in src and not re.sub(r"\{(?:number|text)\d+\}|\s", "", src):
+            continue # ("{text1} {text2}" 처럼 고정 글자가 없는 구조 틀은 아무 문장에나 걸려서 뺀다)
         seen.add(src)
         (tmpl if re.search(r"\{(?:number|text)\d+\}", src) else exact).append((src, tr))
     # 덜 막연한 패턴이 먼저: {text} 자리가 적고 고정 글자가 긴 것부터 (아무 글자나 받는 패턴이 먼저 잡아채지 않게)

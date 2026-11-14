@@ -100,6 +100,28 @@ local function lookupDict(piece)
 	if core and core ~= piece and string.find(core, "%a%a%a") then
 		local inner = lookupCore(core)
 		if inner then return head .. inner .. tail end
+		-- 끝의 느낌표 / 물음표 / 마침표까지 번역표 문장에 들어 있는 경우: "🌟 Guaranteed Rare!" -> "Guaranteed Rare!"
+		local punct = string.match(tail, "^[!%?%.:]")
+		if punct then
+			inner = lookupCore(core .. punct)
+			if inner then return head .. inner .. string.sub(tail, 2) end
+		end
+		-- 앞의 기호 묶음에 "[" 가 끼어 있으면 그 "[" 부터 다시: "🎒 [Epic] 🌾 Meadow Steel Armor" -> "[Epic] ..." 틀로 찾는다
+		local cut = string.find(head, "%[[^%[]*$")
+		if cut then
+			inner = lookupCore(string.sub(head, cut) .. core)
+			if inner then return string.sub(head, 1, cut - 1) .. inner .. tail end
+		end
+	end
+	-- " · " 로 이어 붙인 줄: 조각마다 따로 찾아 다시 잇는다 ("🔥Heavy Hit 2 · ❤Toughness 3", "Sniper Rifle · Steel Era +141")
+	if string.find(piece, " · ", 1, true) then
+		local parts, changed = {}, false
+		for part in string.gmatch(piece .. " · ", "(.-) · ") do
+			local hit = part ~= "" and string.find(part, "%a%a") and lookupDict(part) or nil
+			if hit then changed = true end
+			table.insert(parts, hit or part)
+		end
+		if changed then return table.concat(parts, " · ") end
 	end
 	return nil
 end
@@ -108,24 +130,27 @@ function lookupCore(piece, nested)
 	if hit then return hit end
 	for i = 1, #compiled do
 		local entry = compiled[i]
-		local captures = (entry.Need == "" or string.find(piece, entry.Need, 1, true)) and { string.match(piece, entry.Pattern) } or {}
+		local generic = entry.Literal <= 4 and string.find(piece, "[<\n]") -- (고정 글자가 거의 없는 틀은 태그 / 여러 줄 문장 통째에는 쓰지 않는다: 조각별 번역을 가로막지 않게)
+		local captures = (not generic and (entry.Need == "" or string.find(piece, entry.Need, 1, true))) and { string.match(piece, entry.Pattern) } or {}
 		if #captures > 0 then
 			local byName = {}
 			for k, name in ipairs(entry.Names) do
 				local captured = captures[k]
 				-- 틀 안에 끼워 넣은 이름(무기 / 던전 / 장소 ...)도 번역표에 있으면 바꾼다: "📍 Town" -> "📍 마을"
-				if captured and not nested and string.find(captured, "%a%a") then
-					local hit = lookupCore(captured, true) -- (한 단계만: 안쪽 틀의 이름은 다시 바꾸지 않는다)
+				local depth = nested or 0
+				if captured and depth < 3 and string.find(captured, "%a%a") then
+					local hit = lookupCore(captured, depth + 1) -- (세 단계까지: "[Mythic] 🏜 Desert Dragonhorn Crown" -> 등급 / 세트 이름 / 장비 이름)
 					if not hit then
 						local head, core, tail = string.match(captured, "^([^%w]*)(.-)([^%w]*)$")
-						local inner = core and core ~= "" and lookupCore(core, true)
+						local inner = core and core ~= "" and lookupCore(core, depth + 1)
 						if inner then hit = head .. inner .. tail end
 					end
 					captured = hit or captured
 				end
 				byName[name] = captured
 			end
-			return (string.gsub(entry.To, "{%a+(%d+)}", function(name) return byName[name] end))
+			local out = string.gsub(entry.To, "{%a+(%d+)}", function(name) return byName[name] end)
+			if out ~= piece then return out end -- (아무것도 바뀌지 않았으면 다른 틀을 더 찾아본다: 구조만 맞추는 틀이 번역을 가로막지 않게)
 		end
 	end
 	return nil
@@ -139,7 +164,8 @@ local function reportMiss(obj, piece)
 	if not string.find(piece, "%a%a%a") then return end
 	local gui = obj:FindFirstAncestorWhichIsA("LayerCollector")
 	local guiName = gui and gui.Name or "?"
-	if guiName == "AdminGui" or string.find(guiName, "Sound") then return end -- (개발자 전용 창)
+	if guiName == "AdminGui" or string.find(guiName, "Sound") or obj:FindFirstAncestor("SoundTestPanel") then return end -- (개발자 전용 창)
+	if guiName == "AdventurerTag" or piece == "Label" or piece == "DPS" then return end -- (마을 모험가 이름 / 아직 글자가 안 들어간 칸 / 단위)
 	for _, other in ipairs(game:GetService("Players"):GetPlayers()) do
 		if string.find(piece, other.Name, 1, true) or string.find(piece, other.DisplayName, 1, true) then return end -- (이름)
 	end

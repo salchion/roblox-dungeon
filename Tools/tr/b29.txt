@@ -608,3 +608,105 @@
 2640¦レジェンド¦Legende¦Légende¦Leyenda¦Lenda¦传奇¦레전드
 2641¦バッグに{number1}個 · タップして比較・装備¦{number1} in der Tasche · antippen zum Vergleichen und Anlegen¦{number1} dans le sac · touche pour comparer et équiper¦{number1} en la bolsa · toca para comparar y equipar¦{number1} na bolsa · toque para comparar e equipar¦背包中{number1}件 · 点击比较并装备¦가방에 {number1}개 · 눌러서 비교하고 착용
 2642¦この部位の装備はバッグにありません¦Keine andere Ausrüstung für diesen Platz in der Tasche¦Aucun autre équipement pour cet emplacement dans le sac¦No hay otro equipo para esta ranura en la bolsa¦Nenhum outro equipamento para este espaço na bolsa¦背包里没有这个部位的其他装备¦가방에 이 부위 장비가 없어요
+2643¦深淵 {text1}¦Abgrund {text1}¦Abysse {text1}¦Abismo {text1}¦Abismo {text1}¦深渊 {text1}¦심연 {text1}
+2644¦アルカナ {text1}¦Arkan {text1}¦¦Arcano {text1}¦Arcano {text1}¦奥术 {text1}¦비전 {text1}
+2645¦バーサーク {text1}¦Berserker {text1}¦Berserker {text1}¦Berserker {text1}¦Berserker {text1}¦狂战 {text1}¦광폭 {text1}
+2646¦司令官 {text1}¦Kommandant {text1}¦Commandant {text1}¦Comandante {text1}¦Comandante {text1}¦指挥官 {text1}¦지휘관 {text1}
+2647¦ダーク {text1}¦Dunkel {text1}¦Ténèbres {text1}¦Oscuro {text1}¦Sombrio {text1}¦暗黑 {text1}¦어둠 {text1}
+2648¦砂漠 {text1}¦Wüste {text1}¦Désert {text1}¦Desierto {text1}¦Deserto {text1}¦沙漠 {text1}¦사막 {text1}
+2649¦¦¦¦¦¦¦용 {text1}
+2650¦森 {text1}¦Wald {text1}¦Forêt {text1}¦Bosque {text1}¦Floresta {text1}¦森林 {text1}¦숲 {text1}
+2651¦凍結 {text1}¦Gefroren {text1}¦Gelé {text1}¦Congelado {text1}¦Congelado {text1}¦冻结 {text1}¦빙결 {text1}
+2652¦巨大 {text1}¦Riese {text1}¦Géant {text1}¦Gigante {text1}¦Gigante {text1}¦巨型 {text1}¦거인 {text1}
+2653¦黄金 {text1}¦¦Doré {text1}¦Dorado {text1}¦Dourado {text1}¦黄金 {text1}¦황금 {text1}
+2654¦雷 {text1}¦Blitz {text1}¦Foudre {text1}¦Rayo {text1}¦Raio {text1}¦闪电 {text1}¦번개 {text1}
+2655¦草原 {text1}¦Wiese {text1}¦Prairie {text1}¦Prado {text1}¦Campo {text1}¦草原 {text1}¦초원 {text1}
+2656¦ミシック {text1}¦Mythisch {text1}¦Mythique {text1}¦Mítico {text1}¦Mítico {text1}¦神话 {text1}¦신화 {text1}
+2657¦遺跡 {text1}¦Ruinen {text1}¦Ruines {text1}¦Ruinas {text1}¦Ruínas {text1}¦遗迹 {text1}¦폐허 {text1}
+2658¦錆びた {text1}¦Rostig {text1}¦Rouillé {text1}¦Oxidado {text1}¦Enferrujado {text1}¦生锈的 {text1}¦녹슨 {text1}
+2659¦鋼鉄 {text1}¦Stahl {text1}¦Acier {text1}¦Acero {text1}¦Aço {text1}¦钢铁 {text1}¦강철 {text1}
+2660¦タイムスキップ¦Zeitsprung¦Saut temporel¦Salto de tiempo¦Pular tempo¦时间跳跃¦시간 건너뛰기
+2661¦所持¦im Besitz¦possédé¦en posesión¦possuído¦拥有¦보유
+2662¦エッセンス¦Essenz¦Essence¦Esencia¦Essência¦精华¦정수
+2663¦最強装備¦Beste Ausrüstung¦Meilleur équipement¦Mejor equipo¦Melhor equipamento¦最强装备¦최강 장비
+2664¦クリ率¦Krit-Chance¦Chance de critique¦Prob. crítica¦Chance crítica¦暴击率¦치명타 확률
+2665¦クリダメージ¦Krit-Schaden¦Dégâts critiques¦Daño crítico¦Dano crítico¦暴击伤害¦치명타 피해
+2666¦ダブルショット確率¦Doppelschuss-Chance¦Chance de double tir¦Prob. de doble disparo¦Chance de tiro duplo¦双发概率¦더블 샷 확률
+2667¦攻撃速度¦Angriffstempo¦Vitesse d'attaque¦Velocidad de ataque¦Velocidade de ataque¦攻击速度¦공격 속도
+2668¦被ダメージ¦Erlittener Schaden¦Dégâts subis¦Daño recibido¦Dano recebido¦受到伤害¦받는 피해
+2669¦入場 (Lv.{number1})¦Betreten (Lv.{number1})¦Entrer (Nv.{number1})¦Entrar (Nv.{number1})¦Entrar (Nv.{number1})¦进入 (Lv.{number1})¦입장 (Lv.{number1})
+2670¦{number1}個整理！エッセンス+{number2}、{number3} G¦{number1} aufgeräumt! Essenz +{number2}, {number3} G¦{number1} nettoyés ! Essence +{number2}, {number3} G¦¡{number1} limpiados! Esencia +{number2}, {number3} G¦{number1} limpos! Essência +{number2}, {number3} G¦已清理{number1}件！精华+{number2}，{number3} G¦{number1}개 정리! 정수 +{number2}, {number3} G
+2671¦{number1}か所に最強装備を自動装備¦Beste Ausrüstung in {number1} Platz/Plätzen angelegt¦Meilleur équipement auto-équipé sur {number1} emplacement(s)¦Mejor equipo equipado en {number1} ranura(s)¦Melhor equipamento equipado em {number1} espaço(s)¦已为{number1}个部位自动装备最强装备¦{number1}칸에 최강 장비를 자동 착용했어요
+2672¦上限に到達 — ショップで上げられます¦Limit erreicht — im Shop erhöhen¦Plafond atteint — augmente-le dans la boutique¦Límite alcanzado — súbelo en la tienda¦Limite atingido — aumente na loja¦已达上限 — 可在商店提高¦한도에 도달했어요 — 상점에서 늘릴 수 있어요
+2673¦[{text1}] {text2}¦[{text1}] {text2}¦[{text1}] {text2}¦[{text1}] {text2}¦[{text1}] {text2}¦[{text1}] {text2}¦[{text1}] {text2}
+2674¦{text1} +{number2}%¦{text1} +{number2}%¦{text1} +{number2}%¦{text1} +{number2}%¦{text1} +{number2}%¦{text1} +{number2}%¦{text1} +{number2}%
+2675¦{text1} -{number2}%¦{text1} -{number2}%¦{text1} -{number2}%¦{text1} -{number2}%¦{text1} -{number2}%¦{text1} -{number2}%¦{text1} -{number2}%
+2676¦{text1} +{number2}¦{text1} +{number2}¦{text1} +{number2}¦{text1} +{number2}¦{text1} +{number2}¦{text1} +{number2}¦{text1} +{number2}
+2677¦Lv.{number1} {text2}¦Lv.{number1} {text2}¦Lv.{number1} {text2}¦Lv.{number1} {text2}¦Lv.{number1} {text2}¦Lv.{number1} {text2}¦Lv.{number1} {text2}
+2678¦Lv.{number1}  {text2}¦Lv.{number1}  {text2}¦Lv.{number1}  {text2}¦Lv.{number1}  {text2}¦Lv.{number1}  {text2}¦Lv.{number1}  {text2}¦Lv.{number1}  {text2}
+2679¦{text1} {number2}¦{text1} {number2}¦{text1} {number2}¦{text1} {number2}¦{text1} {number2}¦{text1} {number2}¦{text1} {number2}
+2680¦{text1} — {text2}¦{text1} — {text2}¦{text1} — {text2}¦{text1} — {text2}¦{text1} — {text2}¦{text1} — {text2}¦{text1} — {text2}
+2681¦錆びた時代 +{number1}¦Rostig-Ära +{number1}¦Ère Rouillé +{number1}¦Era Oxidado +{number1}¦Era Enferrujado +{number1}¦生锈的 时代 +{number1}¦녹슨 시대 +{number1}
+2682¦鋼鉄時代 +{number1}¦Stahl-Ära +{number1}¦Ère Acier +{number1}¦Era Acero +{number1}¦Era Aço +{number1}¦钢铁 时代 +{number1}¦강철 시대 +{number1}
+2683¦アルカナ時代 +{number1}¦Arkan-Ära +{number1}¦¦Era Arcano +{number1}¦Era Arcano +{number1}¦奥术 时代 +{number1}¦비전 시대 +{number1}
+2684¦黄金時代 +{number1}¦¦Ère Doré +{number1}¦Era Dorado +{number1}¦Era Dourado +{number1}¦黄金 时代 +{number1}¦황금 시대 +{number1}
+2685¦凍結時代 +{number1}¦Gefroren-Ära +{number1}¦Ère Gelé +{number1}¦Era Congelado +{number1}¦Era Congelado +{number1}¦冻结 时代 +{number1}¦빙결 시대 +{number1}
+2686¦雷時代 +{number1}¦Blitz-Ära +{number1}¦Ère Foudre +{number1}¦Era Rayo +{number1}¦Era Raio +{number1}¦闪电 时代 +{number1}¦번개 시대 +{number1}
+2687¦ダーク時代 +{number1}¦Dunkel-Ära +{number1}¦Ère Ténèbres +{number1}¦Era Oscuro +{number1}¦Era Sombrio +{number1}¦暗黑 时代 +{number1}¦어둠 시대 +{number1}
+2688¦¦¦¦¦¦¦용 시대 +{number1}
+2689¦ミシック時代 +{number1}¦Mythisch-Ära +{number1}¦Ère Mythique +{number1}¦Era Mítico +{number1}¦Era Mítico +{number1}¦神话 时代 +{number1}¦신화 시대 +{number1}
+2690¦[コモン] {text1}¦[Gewöhnlich] {text1}¦[Commun] {text1}¦[Común] {text1}¦[Comum] {text1}¦[普通] {text1}¦[일반] {text1}
+2691¦[レア] {text1}¦[Selten] {text1}¦¦[Raro] {text1}¦[Raro] {text1}¦[稀有] {text1}¦[레어] {text1}
+2692¦[エピック] {text1}¦[Episch] {text1}¦[Épique] {text1}¦[Épico] {text1}¦[Épico] {text1}¦[史诗] {text1}¦[에픽] {text1}
+2693¦[レジェンダリー] {text1}¦[Legendär] {text1}¦[Légendaire] {text1}¦[Legendario] {text1}¦[Lendário] {text1}¦[传说] {text1}¦[전설] {text1}
+2694¦[ミシック] {text1}¦[Mythisch] {text1}¦[Mythique] {text1}¦[Mítico] {text1}¦[Mítico] {text1}¦[神话] {text1}¦[신화] {text1}
+2695¦クリ率 -{number1}%¦Krit-Chance -{number1}%¦Chance de critique -{number1}%¦Prob. crítica -{number1}%¦Chance crítica -{number1}%¦暴击率 -{number1}%¦치명타 확률 -{number1}%
+2696¦クリ率 +{number1}¦Krit-Chance +{number1}¦Chance de critique +{number1}¦Prob. crítica +{number1}¦Chance crítica +{number1}¦暴击率 +{number1}¦치명타 확률 +{number1}
+2697¦クリダメージ -{number1}%¦Krit-Schaden -{number1}%¦Dégâts critiques -{number1}%¦Daño crítico -{number1}%¦Dano crítico -{number1}%¦暴击伤害 -{number1}%¦치명타 피해 -{number1}%
+2698¦クリダメージ +{number1}¦Krit-Schaden +{number1}¦Dégâts critiques +{number1}¦Daño crítico +{number1}¦Dano crítico +{number1}¦暴击伤害 +{number1}¦치명타 피해 +{number1}
+2699¦ダブルショット確率 -{number1}%¦Doppelschuss-Chance -{number1}%¦Chance de double tir -{number1}%¦Prob. de doble disparo -{number1}%¦Chance de tiro duplo -{number1}%¦双发概率 -{number1}%¦더블 샷 확률 -{number1}%
+2700¦ダブルショット確率 +{number1}¦Doppelschuss-Chance +{number1}¦Chance de double tir +{number1}¦Prob. de doble disparo +{number1}¦Chance de tiro duplo +{number1}¦双发概率 +{number1}¦더블 샷 확률 +{number1}
+2701¦攻撃速度 +{number1}%¦Angriffstempo +{number1}%¦Vitesse d'attaque +{number1}%¦Velocidad de ataque +{number1}%¦Velocidade de ataque +{number1}%¦攻击速度 +{number1}%¦공격 속도 +{number1}%
+2702¦攻撃速度 -{number1}%¦Angriffstempo -{number1}%¦Vitesse d'attaque -{number1}%¦Velocidad de ataque -{number1}%¦Velocidade de ataque -{number1}%¦攻击速度 -{number1}%¦공격 속도 -{number1}%
+2703¦攻撃速度 +{number1}¦Angriffstempo +{number1}¦Vitesse d'attaque +{number1}¦Velocidad de ataque +{number1}¦Velocidade de ataque +{number1}¦攻击速度 +{number1}¦공격 속도 +{number1}
+2704¦被ダメージ +{number1}%¦Erlittener Schaden +{number1}%¦Dégâts subis +{number1}%¦Daño recibido +{number1}%¦Dano recebido +{number1}%¦受到伤害 +{number1}%¦받는 피해 +{number1}%
+2705¦被ダメージ +{number1}¦Erlittener Schaden +{number1}¦Dégâts subis +{number1}¦Daño recibido +{number1}¦Dano recebido +{number1}¦受到伤害 +{number1}¦받는 피해 +{number1}
+2706¦最大HP +{number1}%¦Max. LP +{number1}%¦PV max +{number1}%¦Vida máx. +{number1}%¦Vida máx. +{number1}%¦最大生命 +{number1}%¦최대 체력 +{number1}%
+2707¦最大HP -{number1}%¦Max. LP -{number1}%¦PV max -{number1}%¦Vida máx. -{number1}%¦Vida máx. -{number1}%¦最大生命 -{number1}%¦최대 체력 -{number1}%
+2708¦クリティカル率 +{number1}%¦Krit-Chance +{number1}%¦Chance critique +{number1}%¦Prob. crítica +{number1}%¦Chance de crítico +{number1}%¦暴击率 +{number1}%¦치명타 확률 +{number1}%
+2709¦クリティカル率 -{number1}%¦Krit-Chance -{number1}%¦Chance critique -{number1}%¦Prob. crítica -{number1}%¦Chance de crítico -{number1}%¦暴击率 -{number1}%¦치명타 확률 -{number1}%
+2710¦クリティカル率 +{number1}¦Krit-Chance +{number1}¦Chance critique +{number1}¦Prob. crítica +{number1}¦Chance de crítico +{number1}¦暴击率 +{number1}¦치명타 확률 +{number1}
+2711¦移動速度 +{number1}%¦Lauftempo +{number1}%¦Vitesse de déplacement +{number1}%¦Velocidad de movimiento +{number1}%¦Velocidade de movimento +{number1}%¦移动速度 +{number1}%¦이동 속도 +{number1}%
+2712¦移動速度 -{number1}%¦Lauftempo -{number1}%¦Vitesse de déplacement -{number1}%¦Velocidad de movimiento -{number1}%¦Velocidade de movimento -{number1}%¦移动速度 -{number1}%¦이동 속도 -{number1}%
+2713¦攻撃力 +{number1}%¦Angriff +{number1}%¦Attaque +{number1}%¦Ataque +{number1}%¦Ataque +{number1}%¦攻击 +{number1}%¦공격 +{number1}%
+2714¦攻撃力 -{number1}%¦Angriff -{number1}%¦Attaque -{number1}%¦Ataque -{number1}%¦Ataque -{number1}%¦攻击 -{number1}%¦공격 -{number1}%
+2715¦攻撃力 +{number1}¦Angriff +{number1}¦Attaque +{number1}¦Ataque +{number1}¦Ataque +{number1}¦攻击 +{number1}¦공격 +{number1}
+2716¦経験値獲得 +{number1}%¦EP-Gewinn +{number1}%¦Gain d'XP +{number1}%¦Ganancia de EXP +{number1}%¦Ganho de XP +{number1}%¦经验获取 +{number1}%¦경험치 획득 +{number1}%
+2717¦経験値獲得 -{number1}%¦EP-Gewinn -{number1}%¦Gain d'XP -{number1}%¦Ganancia de EXP -{number1}%¦Ganho de XP -{number1}%¦经验获取 -{number1}%¦경험치 획득 -{number1}%
+2718¦経験値獲得 +{number1}¦EP-Gewinn +{number1}¦Gain d'XP +{number1}¦Ganancia de EXP +{number1}¦Ganho de XP +{number1}¦经验获取 +{number1}¦경험치 획득 +{number1}
+2719¦幸運(ドロップレア度) +{number1}%¦Glück (Drop-Seltenheit) +{number1}%¦Chance (rareté du butin) +{number1}%¦Suerte (rareza del botín) +{number1}%¦Sorte (raridade dos drops) +{number1}%¦幸运(掉落稀有度) +{number1}%¦행운 (드랍 등급) +{number1}%
+2720¦幸運(ドロップレア度) -{number1}%¦Glück (Drop-Seltenheit) -{number1}%¦Chance (rareté du butin) -{number1}%¦Suerte (rareza del botín) -{number1}%¦Sorte (raridade dos drops) -{number1}%¦幸运(掉落稀有度) -{number1}%¦행운 (드랍 등급) -{number1}%
+2721¦幸運(ドロップレア度) +{number1}¦Glück (Drop-Seltenheit) +{number1}¦Chance (rareté du butin) +{number1}¦Suerte (rareza del botín) +{number1}¦Sorte (raridade dos drops) +{number1}¦幸运(掉落稀有度) +{number1}¦행운 (드랍 등급) +{number1}
+2722¦クリティカルダメージ +{number1}%¦Krit-Schaden +{number1}%¦Dégâts critiques +{number1}%¦Daño crítico +{number1}%¦Dano crítico +{number1}%¦暴击伤害 +{number1}%¦치명타 피해 +{number1}%
+2723¦クリティカルダメージ -{number1}%¦Krit-Schaden -{number1}%¦Dégâts critiques -{number1}%¦Daño crítico -{number1}%¦Dano crítico -{number1}%¦暴击伤害 -{number1}%¦치명타 피해 -{number1}%
+2724¦クリティカルダメージ +{number1}¦Krit-Schaden +{number1}¦Dégâts critiques +{number1}¦Daño crítico +{number1}¦Dano crítico +{number1}¦暴击伤害 +{number1}¦치명타 피해 +{number1}
+2725¦攻撃速度 +{number1}%¦Angriffstempo +{number1}%¦Vitesse d'attaque +{number1}%¦Velocidad de ataque +{number1}%¦Velocidade de ataque +{number1}%¦攻击速度 +{number1}%¦공격 속도 +{number1}%
+2726¦攻撃速度 -{number1}%¦Angriffstempo -{number1}%¦Vitesse d'attaque -{number1}%¦Velocidad de ataque -{number1}%¦Velocidade de ataque -{number1}%¦攻击速度 -{number1}%¦공격 속도 -{number1}%
+2727¦攻撃速度 +{number1}¦Angriffstempo +{number1}¦Vitesse d'attaque +{number1}¦Velocidad de ataque +{number1}¦Velocidade de ataque +{number1}¦攻击速度 +{number1}¦공격 속도 +{number1}
+2728¦ボスダメージ +{number1}%¦Boss-Schaden +{number1}%¦Dégâts aux boss +{number1}%¦Daño a jefes +{number1}%¦Dano a chefes +{number1}%¦首领伤害 +{number1}%¦보스 피해 +{number1}%
+2729¦ボスダメージ -{number1}%¦Boss-Schaden -{number1}%¦Dégâts aux boss -{number1}%¦Daño a jefes -{number1}%¦Dano a chefes -{number1}%¦首领伤害 -{number1}%¦보스 피해 -{number1}%
+2730¦ボスダメージ +{number1}¦Boss-Schaden +{number1}¦Dégâts aux boss +{number1}¦Daño a jefes +{number1}¦Dano a chefes +{number1}¦首领伤害 +{number1}¦보스 피해 +{number1}
+2731¦スキルクールダウン短縮 +{number1}%¦Abklingzeit-Reduktion für Fähigkeiten +{number1}%¦Réduction de récupération des compétences +{number1}%¦Reducción de enfriamiento de habilidades +{number1}%¦Redução de recarga de habilidades +{number1}%¦技能冷却缩减 +{number1}%¦스킬 쿨타임 감소 +{number1}%
+2732¦スキルクールダウン短縮 -{number1}%¦Abklingzeit-Reduktion für Fähigkeiten -{number1}%¦Réduction de récupération des compétences -{number1}%¦Reducción de enfriamiento de habilidades -{number1}%¦Redução de recarga de habilidades -{number1}%¦技能冷却缩减 -{number1}%¦스킬 쿨타임 감소 -{number1}%
+2733¦スキルクールダウン短縮 +{number1}¦Abklingzeit-Reduktion für Fähigkeiten +{number1}¦Réduction de récupération des compétences +{number1}¦Reducción de enfriamiento de habilidades +{number1}¦Redução de recarga de habilidades +{number1}¦技能冷却缩减 +{number1}¦스킬 쿨타임 감소 +{number1}
+2734¦被ダメージ軽減 +{number1}%¦Schadensreduktion +{number1}%¦Réduction des dégâts subis +{number1}%¦Reducción de daño recibido +{number1}%¦Redução de dano recebido +{number1}%¦受到伤害减免 +{number1}%¦받는 피해 감소 +{number1}%
+2735¦被ダメージ軽減 -{number1}%¦Schadensreduktion -{number1}%¦Réduction des dégâts subis -{number1}%¦Reducción de daño recibido -{number1}%¦Redução de dano recebido -{number1}%¦受到伤害减免 -{number1}%¦받는 피해 감소 -{number1}%
+2736¦被ダメージ軽減 +{number1}¦Schadensreduktion +{number1}¦Réduction des dégâts subis +{number1}¦Reducción de daño recibido +{number1}¦Redução de dano recebido +{number1}¦受到伤害减免 +{number1}¦받는 피해 감소 +{number1}
+2737¦撃破時回復 +{number1}%¦Heilung bei Kill +{number1}%¦Soin à l'élimination +{number1}%¦Curación al matar +{number1}%¦Cura ao abater +{number1}%¦击杀回复 +{number1}%¦처치 시 회복 +{number1}%
+2738¦撃破時回復 -{number1}%¦Heilung bei Kill -{number1}%¦Soin à l'élimination -{number1}%¦Curación al matar -{number1}%¦Cura ao abater -{number1}%¦击杀回复 -{number1}%¦처치 시 회복 -{number1}%
+2739¦撃破時回復 +{number1}¦Heilung bei Kill +{number1}¦Soin à l'élimination +{number1}¦Curación al matar +{number1}¦Cura ao abater +{number1}¦击杀回复 +{number1}¦처치 시 회복 +{number1}
+2740¦ゴールド -{number1}%¦¦Or -{number1}%¦Oro -{number1}%¦Ouro -{number1}%¦金币 -{number1}%¦골드 -{number1}%
+2741¦ゴールド +{number1}¦¦Or +{number1}¦Oro +{number1}¦Ouro +{number1}¦金币 +{number1}¦골드 +{number1}
+2742¦幸運 +{number1}%¦Glück +{number1}%¦Chance +{number1}%¦Suerte +{number1}%¦Sorte +{number1}%¦幸运 +{number1}%¦행운 +{number1}%
+2743¦幸運 -{number1}%¦Glück -{number1}%¦Chance -{number1}%¦Suerte -{number1}%¦Sorte -{number1}%¦幸运 -{number1}%¦행운 -{number1}%
+2744¦幸運 +{number1}¦Glück +{number1}¦Chance +{number1}¦Suerte +{number1}¦Sorte +{number1}¦幸运 +{number1}¦행운 +{number1}

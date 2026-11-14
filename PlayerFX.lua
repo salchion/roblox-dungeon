@@ -571,6 +571,7 @@ end
 -- 마음에 드는 조합은 [출력으로 내보내기] 로 AudioIds 에 붙여 넣을 줄을 만든다.
 if game:GetService("RunService"):IsStudio() then
 	local panel = makePanel({ Size = UDim2.new(0, 560, 0, 520), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false, ZIndex = 80, BackgroundTransparency = 0.05 }, gui)
+	panel.Name = "SoundTestPanel" -- (번역 누락 기록에서 이 개발용 창은 뺀다)
 	makeLabel({ Size = UDim2.new(1, -20, 0, 30), Position = UDim2.new(0, 10, 0, 8), Text = "🔊 Sound Test (Studio only · press K to open/close)", Font = Enum.Font.GothamBlack, TextSize = 15, ZIndex = 81, TextXAlignment = Enum.TextXAlignment.Left }, panel)
 	local idBox = create("TextBox", { Size = UDim2.new(1, -150, 0, 32), Position = UDim2.new(0, 10, 0, 44), PlaceholderText = "Paste candidate sound ID (number)", Text = "", ClearTextOnFocus = false,
 		BackgroundColor3 = Color3.fromRGB(40, 42, 62), TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamMedium, TextSize = 13, BorderSizePixel = 0, ZIndex = 81 }, panel)
