@@ -157,13 +157,13 @@ local matchText = label({ Size = UDim2.new(1, -12, 1, -6), Position = UDim2.new(
 -- 단계 점 6개: 1~3 은 골드로 강화 / 4~6 은 세트 장비 (지금 단계까지 색이 찬다)
 local pips = {}
 for step = 1, 6 do
-	local pip = make("Frame", { Size = UDim2.new(0, 22, 0, 22), Position = UDim2.new(0, 14 + (step - 1) * 28 + (step > 3 and 14 or 0), 0, 132), BackgroundColor3 = Color3.fromRGB(44, 40, 62), BorderSizePixel = 0, ZIndex = 3 }, box)
+	local pip = make("Frame", { Size = UDim2.new(0, 22, 0, 22), Position = UDim2.new(0, 14 + (step - 1) * 30, 0, 132), BackgroundColor3 = Color3.fromRGB(44, 40, 62), BorderSizePixel = 0, ZIndex = 3 }, box)
 	make("UICorner", { CornerRadius = UDim.new(1, 0) }, pip)
 	label({ Size = UDim2.new(1, 0, 1, 0), Text = tostring(step), TextSize = 11, Font = Enum.Font.GothamBlack, ZIndex = 4 }, pip)
 	pips[step] = pip
 end
-local legendGold = label({ Size = UDim2.new(0, 84, 0, 12), Position = UDim2.new(0, 14, 0, 156), Text = "Gold", TextSize = 9, TextColor3 = Color3.fromRGB(255, 215, 120), ZIndex = 3 }, box)
-local legendGear = label({ Size = UDim2.new(0, 84, 0, 12), Position = UDim2.new(0, 14 + 3 * 28 + 14, 0, 156), Text = "Set gear", TextSize = 9, TextColor3 = Color3.fromRGB(143, 224, 255), ZIndex = 3 }, box)
+local legendGold = label({ Size = UDim2.new(1, -28, 0, 14), Position = UDim2.new(0, 14, 0, 155), Text = "", RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 3 }, box) -- (한 줄 범례: 예전엔 1~3 아래 "골드", 4~6 아래 "세트 장비" 로 고정돼 있어서 장비로 켠 1~3칸이 골드처럼 보였다)
+local legendGear = label({ Size = UDim2.new(0, 1, 0, 1), Text = "", Visible = false }, box)
 -- 본문: 설명 + 지금 / 다음 단계 카드, 그 아래 조합 효과 카드 목록 (예전: 한 덩어리 글자 벽)
 local levelCard = make("Frame", { Size = UDim2.new(1, -20, 0, 74), Position = UDim2.new(0, 10, 0, 172), BackgroundColor3 = Color3.fromRGB(30, 42, 42), BorderSizePixel = 0, ZIndex = 3 }, box)
 make("UICorner", { CornerRadius = UDim.new(0, 10) }, levelCard)
@@ -317,8 +317,8 @@ function refresh()
 	boxStroke.Color = on and info.Color or Color3.fromRGB(255, 190, 110)
 	boxTitle.Text = string.format("<font size='16'><b>%s</b></font>\n%s<font size='11'>Zone %d</font>", info.Name, on and "<font color='#78ffb4' size='11'>● ON · </font>" or "", zone)
 	boxLevel.Text = level + gear > 0 and ("Lv." .. (level + gear)) or ""
-	legendGold.Text = string.format("● Gold %d", level)
-	legendGear.Text = gear > 0 and string.format("● Set gear +%d", gear) or "Set gear"
+	legendGold.Text = string.format("<font color='#ffd966'>● Gold %d</font>  +  <font color='#8fe0ff'>● Set gear %d</font>  =  <b>Lv.%d</b>", level, gear, math.min(6, level + gear))
+	legendGear.Text = ""
 	local lines = { "<font color='#aaf0c8'>" .. info.Desc .. "</font>" }
 	for _, child in ipairs(synList:GetChildren()) do if child:IsA("Frame") then child:Destroy() end end
 	local synCount = 0
