@@ -303,6 +303,7 @@ local function buildInventoryTab(state)
 			elseif item then
 				menuContent:SetAttribute("ShowWeapons", nil)
 				menuContent:SetAttribute("SelectedItem", item.Id)
+				menuContent:SetAttribute("ScrollToSwap", true) -- 아래 바꿔 끼기 줄이 보이게 내려 준다
 				refreshMenu()
 			end
 		end)
@@ -636,6 +637,19 @@ local function buildInventoryTab(state)
 		end)
 		local slotDef = Config.GetGearSlot(swapSlot)
 		local swapRow = newRow(#candidates > 0 and 112 or 40, Color3.fromRGB(30, 34, 54))
+		-- 칸을 누르면 후보 줄이 화면 아래에 가려져 스크롤해야 보였다: 새 부위를 고른 순간 그 줄이 보이게 메뉴를 부드럽게 내려 준다
+		if menuContent:GetAttribute("ScrollToSwap") then -- (장비 칸을 직접 눌렀을 때만. 탭을 처음 열 때 / 장착 후 다시 그릴 때는 그대로)
+			menuContent:SetAttribute("ScrollToSwap", nil)
+			task.delay(0.05, function()
+				if not swapRow.Parent then return end
+				local view = menuContent.AbsoluteWindowSize.Y
+				local top = swapRow.AbsolutePosition.Y - menuContent.AbsolutePosition.Y + menuContent.CanvasPosition.Y
+				local bottom = top + swapRow.AbsoluteSize.Y + 8
+				if bottom > menuContent.CanvasPosition.Y + view then
+					TweenService:Create(menuContent, TweenInfo.new(0.25, Enum.EasingStyle.Quad), { CanvasPosition = Vector2.new(0, math.max(0, bottom - view)) }):Play()
+				end
+			end)
+		end
 		makeLabel({ Size = UDim2.new(1, -20, 0, 24), Position = UDim2.new(0, 10, 0, 4), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left,
 			Text = #candidates > 0
 				and string.format("<font color='#9ad7ff'><b>🔁 %s %s</b></font>  <font color='#aab0cc'>%d in bag · tap one to compare and equip</font>", SLOT_ICONS[swapSlot] or "", slotDef and slotDef.Name or swapSlot, #candidates)
@@ -671,8 +685,10 @@ local function buildInventoryTab(state)
 				if item.Set and Config.Sets[item.Set] then
 					setDecor(tile, item.Set, setCounts[item.Set], UDim2.new(0, 4, 1, -15), UDim2.new(1, -8, 0, 12), 8)
 					if entry.SetGain >= 2 then -- 끼면 세트가 2 / 3부위가 된다: 초록 표시
-						local tag = makeLabel({ Size = UDim2.new(0, 30, 0, 13), Position = UDim2.new(1, -32, 0, 2), Text = string.format("%d/3", math.min(3, entry.SetGain)), TextSize = 9, Font = Enum.Font.GothamBlack,
-							TextColor3 = Color3.fromRGB(20, 30, 20), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(120, 255, 140), ZIndex = 5 }, tile)
+						-- 몇 구역 세트가 몇 부위가 되는지 같이 (예전: "3/3" 만 있어서 어느 세트인지 몰랐다)
+						local setZone = Config.Sets[item.Set].Zone
+						local tag = makeLabel({ Size = UDim2.new(1, -4, 0, 14), Position = UDim2.new(0, 2, 0, 2), Text = string.format("%s ▲%d/3", setZone and ("Z" .. setZone) or "Set", math.min(3, entry.SetGain)), TextSize = 10, Font = Enum.Font.GothamBlack,
+							TextWrapped = false, TextColor3 = Color3.fromRGB(20, 30, 20), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(120, 255, 140), ZIndex = 5 }, tile)
 						rounded(tag, 6)
 					end
 				end
