@@ -687,6 +687,13 @@
       "overwrite": true
     },
     {
+      "path": "MenuCardsUI.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "MenuCardsUI",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "InventoryTabUI.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "InventoryTabUI",

@@ -2424,73 +2424,10 @@ local function buildWeaponTab()
 	end
 end
 
-local function buildProgressRows(entries, remoteAction, showTitle)
-	if not entries then
-		local row = newRow(36)
-		rowText(row, "<font color='#888888'>Loading...</font>")
-		return
-	end
-	-- 받을 수 있는 것 -> 진행 중 -> 받은 것 순서 (업적이 많아도 받을 것부터 보인다) + 받을 게 있으면 맨 위에 "모두 받기"
-	local function rank(entry) return entry.Claimed and 3 or (entry.Progress >= entry.Goal and 1 or 2) end
-	local sorted = table.clone(entries)
-	for i, entry in ipairs(sorted) do entry._order = i end
-	table.sort(sorted, function(a, b)
-		if rank(a) ~= rank(b) then return rank(a) < rank(b) end
-		return a._order < b._order
-	end)
-	entries = sorted
-	local claimable = 0
-	for _, entry in ipairs(entries) do
-		if not entry.Claimed and entry.Progress >= entry.Goal then claimable += 1 end
-	end
-	if claimable > 0 then
-		local allRow = newRow(48, Color3.fromRGB(46, 70, 52))
-		makeButton({
-			Size = UDim2.new(0, 220, 0, 36), Position = UDim2.new(0.5, -110, 0.5, -18), Text = string.format("🎁 Claim All (%d)", claimable),
-			TextSize = 14, Font = Enum.Font.GothamBlack, BackgroundColor3 = GREEN,
-		}, allRow, function()
-			Remotes.Quest:FireServer("ClaimAll")
-		end)
-	end
-	for _, entry in ipairs(entries) do
-		local done = entry.Progress >= entry.Goal
-		local row = newRow(66, entry.Claimed and Color3.fromRGB(32, 38, 36) or Color3.fromRGB(40, 40, 58))
-		local titleText = showTitle and entry.Title and string.format("   <font color='#9ad7ff'>Title 『%s』</font>", entry.Title) or ""
-		rowText(row, string.format(
-			"<font size='14'><b>%s</b></font>%s\n<font color='#bbbbcc'>%s</font>\n<font color='#%s'>%d / %d</font>   <font color='#ffd966'>Reward: %s</font>",
-			entry.Name, titleText, entry.Desc, done and "78ff8c" or "ffffff", entry.Progress, entry.Goal, entry.Reward
-		), 14, 160)
-
-		local label, color, enabled
-		if entry.Claimed then
-			label, color = "Done", GRAY
-		elseif done then
-			label, color, enabled = "Claim", GREEN, true
-		else
-			label, color = "In progress", GRAY
-		end
-		makeButton({
-			Size = UDim2.new(0, 120, 0, 32), Position = UDim2.new(1, -132, 0.5, -16), Text = label, BackgroundColor3 = color,
-		}, row, function()
-			if enabled then
-				Remotes.Quest:FireServer(remoteAction, entry.Id)
-			end
-		end)
-	end
-end
-
-local function buildRankTab()
-	sectionTitle("🏆 Power Ranking TOP 10 (same as the small ranking on the right of the screen)")
-	if #rankList == 0 then
-		local row = newRow(36)
-		rowText(row, "<font color='#888888'>Tallying...</font>")
-	end
-	for index, entry in ipairs(rankList) do
-		local row = newRow(36, entry.Name == player.DisplayName and Color3.fromRGB(60, 52, 28) or nil)
-		local medal = index == 1 and "🥇" or index == 2 and "🥈" or index == 3 and "🥉" or string.format("%d.", index)
-		rowText(row, string.format("%s  <b>%s</b>   ⚡ %d", medal, entry.Name, entry.Power), 16)
-	end
-end
+-- 퀘스트 / 업적 / 랭킹 카드 그리기는 MenuCardsUI 로 뺐다 (파일 크기 한도)
+local MenuCards = require(script.Parent:WaitForChild("MenuCardsUI")).Init({ player = player, newRow = newRow, GREEN = GREEN, sectionTitle = sectionTitle })
+local buildProgressRows = MenuCards.Progress
+local function buildRankTab() MenuCards.Rank(rankList) end
 
 local refreshMenu
 local inventoryState = nil
