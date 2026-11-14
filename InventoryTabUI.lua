@@ -224,6 +224,11 @@ local function buildInventoryTab(state)
 	local left = panel(0, LEFT_W)
 	local middle = panel(LEFT_W + 8, -(LEFT_W + RIGHT_W + 16), 1)
 	local right = create("Frame", { Size = UDim2.new(0, RIGHT_W, 1, 0), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 0, 0, 0), BackgroundTransparency = 1 }, main)
+	if player:GetAttribute("BagSetPref") then -- 세트 효과 창의 "세트 장비 → 장비 창" 바로가기: 그 세트만 보이게
+		menuContent:SetAttribute("BagSet", player:GetAttribute("BagSetPref"))
+		menuContent:SetAttribute("BagSlot", nil)
+		player:SetAttribute("BagSetPref", nil)
+	end
 	local filterSlot = menuContent:GetAttribute("BagSlot")
 	local filterSet = menuContent:GetAttribute("BagSet")
 	local sortMode = menuContent:GetAttribute("BagSort") or "Score"
@@ -380,6 +385,13 @@ local function buildInventoryTab(state)
 			local setButton = makeButton({ Size = UDim2.new(1, 0, 0, 18), Text = "", BackgroundTransparency = 1, AutoButtonColor = false, LayoutOrder = 1 }, card, function()
 				setFilter(nil, key) -- 세트 이름을 누르면 가방이 이 세트만
 			end)
+			if def.Zone then -- ✨: 세트 효과 창에서 이 효과 보기 (메뉴를 닫고 연다)
+				local jump = makeButton({ Size = UDim2.new(0, 24, 0, 18), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 0, 0, 0), Text = "✨", TextSize = 11, BackgroundColor3 = Color3.fromRGB(70, 60, 110), ZIndex = 4 }, setButton, function()
+					player:SetAttribute("OpenMenuTab", "Character:Gear|" .. tostring(os.clock())) -- (같은 탭 신호 = 메뉴 닫기)
+					player:SetAttribute("AugFocusZone", def.Zone)
+				end)
+				rounded(jump, 9)
+			end
 			makeLabel({ Size = UDim2.new(1, 0, 1, 0), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBlack,
 				Text = string.format("%s %s  %s%s", def.Icon or "★", def.Name, table.concat(pips, ""), worn >= 2 and "  <font color='#78ff8c' size='10'>ON</font>" or "") }, setButton)
 			for _, tier in ipairs({ 2, 3 }) do

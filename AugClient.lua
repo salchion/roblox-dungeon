@@ -90,7 +90,11 @@ fitPanel()
 if workspace.CurrentCamera then workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fitPanel) end
 
 label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "🌟 Set Effects", TextSize = 20, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left }, panel)
-local slotLabel = label({ Size = UDim2.new(1, -32, 0, 20), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, panel)
+local slotLabel = label({ Size = UDim2.new(0, 300, 0, 20), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, panel)
+-- 켜진 칸: 켜진 효과 아이콘 + 빈 칸 (글자 "2/3" 만으로는 무엇이 켜졌는지 안 보였다)
+local slotIcons = make("Frame", { Size = UDim2.new(0, 200, 0, 26), Position = UDim2.new(0, 190, 0, 10), BackgroundTransparency = 1 }, panel)
+make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }, slotIcons)
+local waitHint = label({ Size = UDim2.new(0, 320, 0, 18), Position = UDim2.new(0, 320, 0, 41), Text = "", TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 200, 120), Visible = false }, panel)
 label({ Size = UDim2.new(1, -32, 0, 28), Position = UDim2.new(0, 16, 0, 60), Text = "Equip a zone's set gear and its effect turns on by itself (highest level first, up to your slots) · Gold: +Lv.1–3 · Set gear: +Lv.1–3 · 📌 Pin to keep one on", TextSize = 11, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
 button({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), BackgroundColor3 = Color3.fromRGB(54, 58, 82), Text = "Close", TextSize = 12 }, panel, function() panel.Visible = false end)
 
@@ -170,7 +174,7 @@ local boxBody = label({
 }, levelCard)
 make("UITextSizeConstraint", { MaxTextSize = 11, MinTextSize = 8 }, boxBody)
 local synHeader = label({ Size = UDim2.new(1, -20, 0, 16), Position = UDim2.new(0, 10, 0, 252), Text = "🔗 Combo effects", TextSize = 11, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 217, 102), ZIndex = 3 }, box)
-local synList = make("ScrollingFrame", { Size = UDim2.new(1, -16, 1, -326), Position = UDim2.new(0, 8, 0, 270), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 3,
+local synList = make("ScrollingFrame", { Size = UDim2.new(1, -16, 1, -356), Position = UDim2.new(0, 8, 0, 270), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 3,
 	CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y, ZIndex = 3 }, box)
 make("UIListLayout", { Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder }, synList)
 local selectedZone = 1
@@ -183,6 +187,16 @@ local buyButton = button({ Size = UDim2.new(0.5, -8, 0, 38), Position = UDim2.ne
 	Remotes.Aug:FireServer("Buy", selectedZone)
 end)
 buyButton.ZIndex = 3
+-- 세트 장비 바로가기: 장비 창을 이 구역 세트만 걸러서 연다
+local gearJump = button({ Size = UDim2.new(1, -16, 0, 28), Position = UDim2.new(0, 8, 1, -80), BackgroundColor3 = Color3.fromRGB(52, 70, 110), Text = "", TextSize = 11 }, box, function()
+	local key = Config.Sets.ZoneKeys[selectedZone]
+	if not key then return end
+	player:SetAttribute("BagSetPref", key)
+	panel.Visible = false
+	player:SetAttribute("OpenMenuTab", "Character:Gear|" .. tostring(os.clock()))
+end)
+gearJump.ZIndex = 3
+for _, c in ipairs(gearJump:GetChildren()) do if c:IsA("UICorner") then c.CornerRadius = UDim.new(1, 0) end end
 for _, c in ipairs(buyButton:GetChildren()) do if c:IsA("UICorner") then c.CornerRadius = UDim.new(1, 0) end end
 buyButton.TextWrapped = true
 
@@ -406,7 +420,7 @@ function refresh()
 		buyButton.Size = UDim2.new(0.5, -8, 0, 38)
 		buyButton.Position = UDim2.new(0.5, 0, 1, -46)
 		if level >= 3 then
-			buyButton.Text = "Max level"
+			buyButton.Text = "Gold max · gear adds +3" -- (골드 단계는 끝: 남은 성장은 세트 장비)
 			buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
 		elseif player:GetAttribute("Zone") ~= "Lobby" and player:GetAttribute("TutorialActive") ~= true then
 			buyButton.Text = "🏘 Upgrade in town"
@@ -418,6 +432,32 @@ function refresh()
 		end
 	end
 	slotLabel.Text = string.format("Active %d / %d slots   (💰 %s G)", used, slots, commas(gold))
+	do -- 켜진 칸 아이콘 줄 + 대기 중인 효과 안내 + 세트 장비 바로가기 글자
+		for _, child in ipairs(slotIcons:GetChildren()) do if child:IsA("GuiObject") then child:Destroy() end end
+		local shown, waiting = 0, 0
+		for z = 1, ZONES do
+			local zinfo = Config.AugInfo[Config.Sets.ZoneAug[z]]
+			if player:GetAttribute("AugOnZ_" .. z) == true then
+				shown += 1
+				local chip = label({ Size = UDim2.new(0, 34, 0, 24), BackgroundTransparency = 0, BackgroundColor3 = zinfo.Color:Lerp(Color3.fromRGB(20, 18, 30), 0.5), Text = zinfo.Icon, TextSize = 14, LayoutOrder = z }, slotIcons)
+				make("UICorner", { CornerRadius = UDim.new(1, 0) }, chip)
+				make("UIStroke", { Color = zinfo.Color, Thickness = 1.5 }, chip)
+			elseif (player:GetAttribute("AugLvZ_" .. z) or 0) + (player:GetAttribute("AugGearZ_" .. z) or 0) > 0 then
+				waiting += 1
+			end
+		end
+		for i = shown + 1, slots do
+			local empty = label({ Size = UDim2.new(0, 34, 0, 24), Text = "+", TextSize = 13, TextColor3 = Color3.fromRGB(120, 124, 150), LayoutOrder = 50 + i }, slotIcons)
+			make("UICorner", { CornerRadius = UDim.new(1, 0) }, empty)
+			make("UIStroke", { Color = Color3.fromRGB(90, 94, 120), Thickness = 1.2, Transparency = 0.3 }, empty)
+		end
+		waitHint.Visible = waiting > 0
+		waitHint.Text = string.format("⏸ %d waiting · 📌 Pin one to swap it in", waiting)
+		local key = Config.Sets.ZoneKeys[selectedZone]
+		local setDef = key and Config.Sets[key]
+		gearJump.Visible = setDef ~= nil
+		if setDef then gearJump.Text = string.format("%s %s set gear → open Gear", setDef.Icon or "★", setDef.Name) end
+	end
 	pill.Visible = false -- (왼쪽 메뉴 버튼 줄의 "세트" 버튼과 빨간 점이 대신한다: 창 위에 떠서 겹치던 버튼)
 	badge.Visible = affordable > 0 and used < slots
 end
@@ -472,6 +512,16 @@ UserInputService.InputBegan:Connect(function(input, processed)
 	if input.KeyCode == Enum.KeyCode.Y then panel.Visible = not panel.Visible end
 end)
 player:GetAttributeChangedSignal("OpenAug"):Connect(function() panel.Visible = not panel.Visible end) -- 왼쪽 메뉴 버튼(MenuDockClient)
+player:GetAttributeChangedSignal("AugFocusZone"):Connect(function() -- 장비 창 "내 세트" 카드의 ✨ 버튼: 그 구역 효과를 고른 채로 연다
+	local zone = player:GetAttribute("AugFocusZone")
+	if type(zone) ~= "number" then return end
+	player:SetAttribute("AugFocusZone", nil)
+	selectedZone = math.clamp(math.floor(zone), 1, ZONES)
+	task.delay(0.05, function() -- (메뉴가 닫힌 다음에 연다)
+		panel.Visible = true
+		refresh()
+	end)
+end)
 
 -- 큰 창은 한 번에 하나만: 세트 효과 창을 열면 메뉴 창을 닫고, 메뉴 창을 열면 세트 효과 창을 닫는다 (두 창이 겹쳐 떠 있었다)
 task.spawn(function()

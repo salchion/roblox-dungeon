@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "The party is full. (max {number1}", "队伍已满。(最多 {number1}" },
+		{ "Fall in the field {number1} times", "在野外倒下{number1}次" },
+		{ "Raise your pet to level {number1}", "将宠物提升到{number1}级" },
 		{ "Range x{number1} · allies heal +{number2}%", "范围x{number1} · 队友治疗量+{number2}%" },
 		{ "Recovers {number1}% HP per second", "每秒恢复{number1}%生命" },
 		{ "· {number1} point(s) in this path", "· 此路线已投入{number1}点" },
@@ -545,6 +548,7 @@ return {
 		{ "Open to earn the {text1} {text2} set!", "开启后即可获得 {text1} {text2} 套装!" },
 		{ "{text1}  ·  next weapon: {text2} at +{number3}", "{text1}  ·  下一把武器：{text2} (+{number3})" },
 		{ "{text1} Set effect ON: 『{text2}』 Lv.{number3}", "{text1} 套装效果开启：『{text2}』 Lv.{number3}" },
+		{ "{text1} {text2} set gear → open Gear", "{text1} {text2} 套装 → 打开装备" },
 		{ "{text1} training started! ({text2})", "{text1}训练已开始!({text2})" },
 		{ "⬆ Level Up  💰 {text1} G · ⏱ {text2}", "⬆ 升级  💰 {text1} G · ⏱ {text2}" },
 		{ "👹 Boss this run: {text1} — {text2}", "👹 本局首领:{text1} — {text2}" },

@@ -2817,5 +2817,8 @@
 "Equip its set gear",
 "🔒 Defeat the lord",
 "Zone {number1} · Gold {number2} + Set gear {number3}",
-"Unlocks when you defeat the Zone {number1} lord"
+"Unlocks when you defeat the Zone {number1} lord",
+"Gold max · gear adds +3",
+"⏸ {number1} waiting · 📌 Pin one to swap it in",
+"{text1} {text2} set gear → open Gear"
 ]

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 Spend {number1} points in the rows above first", "🔒 Gasta primero {number1} puntos en las filas de arriba" },
 		{ "Auto-equipped the best gear in {number1} slot(s)", "Mejor equipo equipado en {number1} ranura(s)" },
 		{ "Sniper Rifle  ·  keys {number1}-{number2} switch weapons", "Rifle de francotirador · teclas {number1}-{number2} para cambiar de arma" },
 		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>", "<font color='#{number1}fffb{number2}'><b>Ataque automático</b>" },
@@ -36,6 +37,7 @@ return {
 		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1} s · {number2} dagas cada {number3} s · daño x{number4} cada una" },
 		{ "defeat {number1} monsters here, then the Lord", "derrota {number1} monstruos aquí y luego al señor" },
 		{ "Mythic: unique {number1}% (dungeon chests {number2}%+)", "Mítico: único {number1}% (cofres de mazmorra {number2}%+)" },
+		{ "⏸ {number1} waiting · 📌 Pin one to swap it in", "⏸ {number1} en espera · 📌 Fija uno para cambiarlo" },
 		{ "Defeat {number1} bosses in one Boss Rush run", "Derrota a {number1} jefes en una partida de carrera de jefes" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "Monstruos encontrados: {number1} / {number2} (incluye señores de zona)" },
 		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 ¡Entrada gratis usada! (quedan {number1} / {number2} hoy)" },
@@ -717,6 +719,7 @@ return {
 		{ "Open to earn the {text1} {text2} set!", "¡Ábrelo para conseguir el set {text1} {text2}!" },
 		{ "{text1}  ·  next weapon: {text2} at +{number3}", "{text1}  ·  siguiente arma: {text2} en +{number3}" },
 		{ "{text1} Set effect ON: 『{text2}』 Lv.{number3}", "{text1} Efecto de set activado: 『{text2}』 Nv.{number3}" },
+		{ "{text1} {text2} set gear → open Gear", "{text1} Set {text2} → abrir equipo" },
 		{ "{text1} training started! ({text2})", "¡Entrenamiento de {text1} iniciado! ({text2})" },
 		{ "⬆ Level Up  💰 {text1} G · ⏱ {text2}", "⬆ Subir nivel  💰 {text1} G · ⏱ {text2}" },
 		{ "👹 Boss this run: {text1} — {text2}", "👹 Jefe de esta partida: {text1} — {text2}" },

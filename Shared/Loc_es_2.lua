@@ -839,6 +839,7 @@ return {
 		["Waiting (no free slot)"] = "En espera (sin ranura libre)",
 		["Equip its set gear"] = "Equipa su set",
 		["🔒 Defeat the lord"] = "🔒 Derrota al señor",
+		["Gold max · gear adds +3"] = "Oro máx · el equipo suma +3",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1036,6 +1037,5 @@ return {
 		{ "🛡 Knocked back! Power {number1} required (you: {number2})", "🛡 ¡Repelido! Se necesita poder {number1} (tú: {number2})" },
 		{ "💚 Emergency rescue! HP restored ({number1} left)", "💚 ¡Rescate de emergencia! Salud restaurada (quedan {number1})" },
 		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}", "¡{number1} segundos! Recompensas x{number2}, combo hasta x{number3}" },
-		{ "🔒 Spend {number1} points in the rows above first", "🔒 Gasta primero {number1} puntos en las filas de arriba" },
 	},
 }

@@ -810,6 +810,7 @@ return {
 		["Waiting (no free slot)"] = "Aguardando (sem espaço livre)",
 		["Equip its set gear"] = "Equipe o set",
 		["🔒 Defeat the lord"] = "🔒 Derrote o lorde",
+		["Gold max · gear adds +3"] = "Ouro máx · equipamento +3",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1026,6 +1027,5 @@ return {
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 Missão {number2}/{number3}</font>" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} melhorias: {number2} sucessos / {number3} falhas  (Ouro -{number4})" },
 		{ "Reach level {number1} to buy points with gold.", "Alcance o nível {number1} para comprar pontos com ouro." },
-		{ "🎫 A {number1}x pull needs {number2} tickets (you have {number3})", "🎫 Um sorteio x{number1} precisa de {number2} tickets (você tem {number3})" },
 	},
 }

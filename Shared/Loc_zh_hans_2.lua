@@ -721,6 +721,7 @@ return {
 		["Waiting (no free slot)"] = "等待（没有空栏位）",
 		["Equip its set gear"] = "穿上该套装",
 		["🔒 Defeat the lord"] = "🔒 击败领主",
+		["Gold max · gear adds +3"] = "金币已满 · 装备可+3",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -954,6 +955,7 @@ return {
 		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1} 秒 · 每 {number3} 秒 {number2} 把匕首 · 每把伤害 x{number4}" },
 		{ "defeat {number1} monsters here, then the Lord", "在这里击败{number1}只怪物，然后挑战领主" },
 		{ "Mythic: unique {number1}% (dungeon chests {number2}%+)", "神话: 独特{number1}% (地牢宝箱{number2}%以上)" },
+		{ "⏸ {number1} waiting · 📌 Pin one to swap it in", "⏸ {number1}个等待中 · 📌 固定即可换上" },
 		{ "Defeat {number1} bosses in one Boss Rush run", "在一次Boss冲刺中击败{number1}个Boss" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "已遭遇怪物 {number1} / {number2}（包括区域领主）" },
 		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 已使用免费入场!(今日剩余 {number1} / {number2})" },
@@ -1094,8 +1096,5 @@ return {
 		{ "Lord of Meadow  ·  Zone {number1}", "草地之王 · 区域 {number1}" },
 		{ "Idle Accrual Cap: {number1} Hours", "空闲累积上限：{number1} 小时" },
 		{ "🔫 Next era Steel Era (+{number1})", "🔫 下一个时代——钢铁时代（+{number1}）" },
-		{ "The party is full. (max {number1}", "队伍已满。(最多 {number1}" },
-		{ "Fall in the field {number1} times", "在野外倒下{number1}次" },
-		{ "Raise your pet to level {number1}", "将宠物提升到{number1}级" },
 	},
 }

@@ -968,6 +968,7 @@ return {
 		["Waiting (no free slot)"] = "待機 (空き枠なし)",
 		["Equip its set gear"] = "セット装備を着けるとオン",
 		["🔒 Defeat the lord"] = "🔒 ボスを倒す",
+		["Gold max · gear adds +3"] = "ゴールド最大 · 装備で+3",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },

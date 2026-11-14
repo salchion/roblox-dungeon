@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Enemies swarm in more often\nGold +{number1}% instead", "Les ennemis apparaissent plus fréquemment\nOr +{number1}% à la place" },
 		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 {number1} équipement(s) plus faible(s) nettoyé(s) automatiquement (Essence +{number2}, {number3} or)" },
 		{ "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped", "🎯 Prime remportée ! +{number1} G · 🎫 +{number2} · équipement lâché" },
 		{ "🎫 {number1} tickets!\nPull gear at the gacha machine", "🎫 {number1} billets !\nTirez sur l'équipement à la machine de gacha" },
@@ -59,6 +60,7 @@ return {
 		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1} s · {number2} dagues toutes les {number3} s · dégâts x{number4} chacune" },
 		{ "defeat {number1} monsters here, then the Lord", "vaincs {number1} monstres ici, puis le seigneur" },
 		{ "Mythic: unique {number1}% (dungeon chests {number2}%+)", "Mythique : unique {number1} % (coffres de donjon {number2} %+)" },
+		{ "⏸ {number1} waiting · 📌 Pin one to swap it in", "⏸ {number1} en attente · 📌 Épingle pour l'échanger" },
 		{ "Defeat {number1} bosses in one Boss Rush run", "Vainquez {number1} boss lors d'une course de boss" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "Monstres rencontrés : {number1} / {number2} (incluant les seigneurs de zone)" },
 		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 Entrée gratuite utilisée ! ({number1} / {number2} restantes aujourd'hui)" },
@@ -739,6 +741,7 @@ return {
 		{ "Open to earn the {text1} {text2} set!", "Ouvrez pour obtenir le set {text1} {text2} !" },
 		{ "{text1}  ·  next weapon: {text2} at +{number3}", "{text1}  ·  arme suivante : {text2} à +{number3}" },
 		{ "{text1} Set effect ON: 『{text2}』 Lv.{number3}", "{text1} Effet de set activé : 『{text2}』 Niv.{number3}" },
+		{ "{text1} {text2} set gear → open Gear", "{text1} Set {text2} → ouvrir l'équipement" },
 		{ "{text1} training started! ({text2})", "Entraînement {text1} commencé ! ({text2})" },
 		{ "⬆ Level Up  💰 {text1} G · ⏱ {text2}", "⬆ Niveau sup.  💰 {text1} G · ⏱ {text2}" },
 		{ "👹 Boss this run: {text1} — {text2}", "👹 Boss de cette partie : {text1} — {text2}" },
