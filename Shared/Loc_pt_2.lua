@@ -791,6 +791,7 @@ return {
 		["Highest grade"] = "Grau máximo",
 		["kills per item"] = "abates por item",
 		["Lord kills per item"] = "vitórias sobre o lorde por item",
+		["chance per kill"] = "chance por abate",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1019,6 +1020,5 @@ return {
 		{ "Gold x{number1} · Tickets {number2} · Boss chest gear {number3}", "Ouro x{number1} · Tickets {number2} · Equipamento do baú do chefe {number3}" },
 		{ "Bounces to {number1} nearby enemies (within {number2})", "Ricocheteia em {number1} inimigos próximos (em até {number2})" },
 		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 {number1} espíritos lutarão por você por {number2} s!" },
-		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1} s · {number2} adagas a cada {number3} s · dano x{number4} cada" },
 	},
 }

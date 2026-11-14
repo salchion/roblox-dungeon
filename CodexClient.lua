@@ -116,13 +116,13 @@ local function rebuild()
 			Kit.medal(card, { Size = 44, Position = UDim2.new(1, -62, 0, 39), Color = Color3.fromRGB(255, 196, 80), Icon = "👑", TextSize = 20, Tier = 4, Muted = locked })
 			makeLabel({ Size = UDim2.new(0, 74, 0, 22), Position = UDim2.new(1, -77, 0, 84), Text = Config.Codex.Bosses[z] or "Lord", TextSize = 9, TextWrapped = true, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(255, 220, 140) }, card)
 			-- 드롭: 확률 알약 + 등급 막대 (색 비율)
-			-- 장비 드랍: "몇 마리 잡으면 그 등급이 1개 나오나" 로 바로 보여 준다
-			--   (예전: "몬스터 9%" + 그 안의 등급 비율 막대 -> 두 번 곱해야 해서 알아보기 어려웠다). 숫자 = 1 / (드랍 확률 x 그 등급 비율), 지금 내 행운 반영
+			-- 장비 드랍: 한 마리 잡을 때 그 등급 장비가 나올 확률(%)을 바로 보여 준다
+			--   (예전: "몬스터 9%" + 그 안의 등급 비율 막대 -> 두 번 곱해야 해서 알아보기 어려웠다). 숫자 = 드랍 확률 x 그 등급 비율, 지금 내 행운 반영
 			do
 				local rowsDef = {
-					{ "👾 Monster", "Normal", "kills per item" },
-					{ "⭐ Elite", "Elite", "kills per item" },
-					{ "👑 Lord", "Boss", "Lord kills per item" },
+					{ "👾 Monster", "Normal", "chance per kill" },
+					{ "⭐ Elite", "Elite", "chance per kill" },
+					{ "👑 Lord", "Boss", "chance per kill" },
 				}
 				for i, def in ipairs(rowsDef) do
 					local y = 110 + (i - 1) * 22
@@ -133,13 +133,12 @@ local function rebuild()
 					for order, entry in ipairs(Odds.Field(z, def[2], luck)) do
 						local per = chance * entry.Pct / 100
 						if per > 0 then
-							local kills = 1 / per
 							local chip = create("Frame", { Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, BackgroundColor3 = entry.Color, BackgroundTransparency = 0.85, BorderSizePixel = 0, LayoutOrder = order }, strip)
 							rounded(chip, 10)
 							create("UIStroke", { Color = entry.Color, Thickness = 1.3, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, chip)
 							create("UIPadding", { PaddingLeft = UDim.new(0, 7), PaddingRight = UDim.new(0, 7) }, chip)
 							makeLabel({ Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, RichText = true, TextSize = 10, Font = Enum.Font.GothamBold, TextColor3 = entry.Color:Lerp(Color3.new(1, 1, 1), 0.35),
-								Text = string.format("%s <font size='12'><b>%s</b></font>", entry.Name, kills < 10 and string.format("%.1f", kills) or tostring(math.floor(kills + 0.5))) }, chip)
+								Text = string.format("%s <font size='12'><b>%s</b></font>", entry.Name, (per >= 0.1 and string.format("%d%%", math.floor(per * 100 + 0.5)) or (per >= 0.01 and string.format("%.1f%%", per * 100) or string.format("%.2f%%", per * 100)))) }, chip)
 						end
 					end
 					makeLabel({ Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = def[3], TextSize = 10, TextColor3 = Color3.fromRGB(170, 176, 200), LayoutOrder = 99 }, strip)

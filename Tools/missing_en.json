@@ -2790,5 +2790,6 @@
 "always",
 "Highest grade",
 "kills per item",
-"Lord kills per item"
+"Lord kills per item",
+"chance per kill"
 ]

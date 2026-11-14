@@ -758,3 +758,4 @@
 2789¦最高ランク¦Höchste Stufe¦Rang max¦Grado máximo¦Grau máximo¦最高品质¦최고 등급
 2790¦体倒すごとに1個¦Kills pro Item¦éliminations par objet¦bajas por objeto¦abates por item¦只击杀掉落1件¦마리당 1개
 2791¦回倒すごとに1個¦Lord-Kills pro Item¦victoires sur le seigneur par objet¦derrotas del señor por objeto¦vitórias sobre o lorde por item¦次击败掉落1件¦번 잡을 때마다 1개
+2792¦1体あたりの確率¦Chance pro Kill¦chance par élimination¦probabilidad por baja¦chance por abate¦每次击杀概率¦처치당 확률
