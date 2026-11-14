@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "ZONE {number1}  ·  Forest   ☠☠", "区域 {number1} · 森林 ☠☠" },
 		{ "{number1} upgrades! {number2} succeeded", "强化 {number1} 次!成功 {number2} 次" },
 		{ "Free entries {number1} · Keys {number2}", "免费进入 {number1} · 钥匙 {number2}" },
 		{ "Loading the land...  {number1}", "正在加载地形...  {number1}" },
@@ -455,6 +456,7 @@ return {
 		{ "Ruins {text1}", "遗迹 {text1}" },
 		{ "Rusty {text1}", "生锈的 {text1}" },
 		{ "Steel {text1}", "钢铁 {text1}" },
+		{ "{text1} +1 Lv", "{text1} +1 级" },
 		{ "Base {text1}", "基础 {text1}" },
 		{ "{text1} left", "剩余 {text1}" },
 		{ "Dark {text1}", "暗黑 {text1}" },

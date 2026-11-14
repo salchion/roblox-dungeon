@@ -69,9 +69,15 @@ function Aug.Apply(player)
 	local slots = slotCount(player, rift)
 	local list = equipped(rift, slots)
 	local levels, bestLevel, auraColor = {}, 0, nil
+	local boosts = {} -- 장비 옵션 "세트 효과 +1" (효과마다 최대 AugBoostCap)
+	do
+		local okInv, Inventory = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
+		if okInv then boosts = Inventory.GetTotals(player).AugBoost or {} end
+	end
+	local function boostOf(attr) return math.min(Config.Inventory.AugBoostCap or 3, boosts[attr] or 0) end
 	for _, z in ipairs(list) do
 		local attr = Config.Sets.ZoneAug[z]
-		local level = rift.AugLv[tostring(z)] + gearBonus(player, z)
+		local level = rift.AugLv[tostring(z)] + gearBonus(player, z) + boostOf(attr)
 		levels[attr] = level
 		if level > bestLevel then bestLevel, auraColor = level, Config.AugInfo[attr].Color end
 	end
@@ -95,7 +101,7 @@ function Aug.Apply(player)
 	player:SetAttribute("AugSlots", slots)
 	for z = 1, ZONES do
 		player:SetAttribute("AugLvZ_" .. z, rift.AugLv[tostring(z)] or 0)
-		player:SetAttribute("AugGearZ_" .. z, (rift.AugLv[tostring(z)] or 0) > 0 and gearBonus(player, z) or 0) -- 장비로 더해진 단계
+		player:SetAttribute("AugGearZ_" .. z, (rift.AugLv[tostring(z)] or 0) > 0 and (gearBonus(player, z) + boostOf(Config.Sets.ZoneAug[z])) or 0) -- 장비로 더해진 단계 (세트 부위 + "+1" 옵션)
 		player:SetAttribute("AugOnZ_" .. z, table.find(list, z) ~= nil)
 		player:SetAttribute("AugOpenZ_" .. z, isOpen(player, rift, z))
 	end

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👑 Lord of Forest (Zone {number1}) · Rec. ⚡{number2}", "👑 Herr des Waldes (Zone {number1}) · Empfehlung ⚡{number2}" },
 		{ "📍 Field Entrance  Right ahead!  {number1}m", "📍 Feld-Eingang direkt vor Ihnen! {number1}m" },
 		{ "Points left {number1}  /  total {number2}  (Level {number3})", "Verbleibende Punkte {number1}  /  gesamt {number2}  (Stufe {number3})" },
 		{ "🔥 Better gear dropped! ({number1} slot(s))", "🔥 Bessere Ausrüstung gedroppt! ({number1} Platz/Plätze)" },
@@ -606,6 +607,7 @@ return {
 		{ "Ruins {text1}", "Ruinen {text1}" },
 		{ "Rusty {text1}", "Rostig {text1}" },
 		{ "Steel {text1}", "Stahl {text1}" },
+		{ "{text1} +1 Lv", "{text1} +1 St." },
 		{ "Base {text1}", "Basis {text1}" },
 		{ "{text1} left", "noch {text1}" },
 		{ "Dark {text1}", "Dunkel {text1}" },

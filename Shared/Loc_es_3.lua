@@ -637,6 +637,7 @@ return {
 		{ "Ruins {text1}", "Ruinas {text1}" },
 		{ "Rusty {text1}", "Oxidado {text1}" },
 		{ "Steel {text1}", "Acero {text1}" },
+		{ "{text1} +1 Lv", "{text1} +1 Nv" },
 		{ "Base {text1}", "Base {text1}" },
 		{ "{text1} left", "faltan {text1}" },
 		{ "Dark {text1}", "Oscuro {text1}" },

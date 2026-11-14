@@ -686,6 +686,7 @@ return {
 		["If equipped:"] = "装备后:",
 		["(bonus ON)"] = "(加成开启)",
 		["(bonus OFF)"] = "(加成关闭)",
+		["(when that set effect is on)"] = "(该套装效果开启时)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1089,6 +1090,5 @@ return {
 		{ "Railgun · Rusty Era +{number1}", "电磁炮 · 锈蚀时代 +{number1}" },
 		{ "📍 Field (best: Zone {number11})", "📍 田地（最佳区域：{number11}）" },
 		{ "{number5} Snowfield · {number6} Volcano", "{number5} 雪原 · {number6} 火山" },
-		{ "ZONE {number1}  ·  Forest   ☠☠", "区域 {number1} · 森林 ☠☠" },
 	},
 }

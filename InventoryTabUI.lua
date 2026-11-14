@@ -446,6 +446,10 @@ local function buildInventoryTab(state)
 		if selected.Unique and Config.Uniques[selected.Unique] then
 			table.insert(lines, "<font size='12' color='#ffb84d'>★ " .. Config.Uniques[selected.Unique].Name .. "</font> <font size='10' color='#d9b878'>" .. Config.Uniques[selected.Unique].Desc .. "</font>")
 		end
+		if selected.AugBoost and Config.AugInfo[selected.AugBoost] then -- 세트 효과 +1 옵션
+			local info = Config.AugInfo[selected.AugBoost]
+			table.insert(lines, string.format("<font size='12' color='#9ad7ff'>%s %s +1 Lv</font> <font size='10' color='#8fb8d8'>(when that set effect is on)</font>", info.Icon, info.Name))
+		end
 		if selected.Set and Config.Sets[selected.Set] then
 			local setDef = Config.Sets[selected.Set]
 			local have = setCounts[selected.Set] or 0
@@ -463,7 +467,7 @@ local function buildInventoryTab(state)
 			table.insert(lines, diff >= 0 and string.format("<font color='#78ff8c'>vs. equipped ▲ +%d</font>", diff) or string.format("<font color='#ff8c8c'>vs. equipped ▼ %d</font>", diff))
 		end
 		-- 이걸 끼면 바뀌는 것 (셋팅 미리보기): 세트 부위 수와, 그 구역 세트 효과가 켜져 있으면 효과 단계 변화
-		if not selected.Equipped and (selected.Set or (current and current.Set)) then
+		if not selected.Equipped and (selected.Set or selected.AugBoost or (current and (current.Set or current.AugBoost))) then
 			local changes = {}
 			local function setChange(setKey, delta)
 				local def = setKey and Config.Sets[setKey]
@@ -486,6 +490,19 @@ local function buildInventoryTab(state)
 			if not (current and current.Set == selected.Set) then
 				setChange(selected.Set, 1)
 				if current and current.Set then setChange(current.Set, -1) end
+			end
+			-- "+1 단계" 옵션이 바뀌면: 켜 둔 세트 효과면 단계 변화
+			local gain, lose = selected.AugBoost, current and current.AugBoost
+			if gain ~= lose then
+				for _, pair in ipairs({ { gain, 1 }, { lose, -1 } }) do
+					local attr, delta = pair[1], pair[2]
+					local info = attr and Config.AugInfo[attr]
+					local zone = attr and table.find(Config.Sets.ZoneAug, attr)
+					if info and zone and player:GetAttribute("AugOnZ_" .. zone) == true then
+						local now = player:GetAttribute(attr) or 0
+						table.insert(changes, string.format("%s %s Lv.%d→%d", info.Icon, info.Name, now, math.max(0, now + delta)))
+					end
+				end
 			end
 			if #changes > 0 then table.insert(lines, "<font color='#9ad7ff'><b>If equipped:</b></font> " .. table.concat(changes, "  ·  ")) end
 		end
@@ -644,6 +661,9 @@ local function buildInventoryTab(state)
 				if item.Unique then
 					makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0, 2, 0, 3), Text = "★", TextSize = 10, TextColor3 = Color3.fromRGB(255, 184, 77) }, tile)
 				end
+				if item.AugBoost and Config.AugInfo[item.AugBoost] then
+					makeLabel({ Size = UDim2.new(0, 16, 0, 14), Position = UDim2.new(1, -17, 0, 30), Text = Config.AugInfo[item.AugBoost].Icon, TextSize = 10, ZIndex = 4 }, tile)
+				end
 				if item.Set and Config.Sets[item.Set] then
 					setDecor(tile, item.Set, setCounts[item.Set], UDim2.new(0, 4, 1, -15), UDim2.new(1, -8, 0, 12), 8)
 					if entry.SetGain >= 2 then -- 끼면 세트가 2 / 3부위가 된다: 초록 표시
@@ -718,6 +738,9 @@ local function buildInventoryTab(state)
 		end
 		if item.Unique then
 			makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0, 2, 0, 3), Text = "★", TextSize = 10, TextColor3 = Color3.fromRGB(255, 184, 77) }, tile)
+		end
+		if item.AugBoost and Config.AugInfo[item.AugBoost] then -- 세트 효과 +1 옵션: 오른쪽 아래 효과 아이콘
+			makeLabel({ Size = UDim2.new(0, 16, 0, 14), Position = UDim2.new(1, -17, 0, 30), Text = Config.AugInfo[item.AugBoost].Icon, TextSize = 10, ZIndex = 4 }, tile)
 		end
 		if item.Set then
 			setDecor(tile, item.Set, setCounts[item.Set], UDim2.new(0, 5, 1, -17), UDim2.new(1, -10, 0, 14), 8)

@@ -50,7 +50,7 @@ local function show(data)
 	local fast = #queue >= 1 -- 뒤에 기다리는 카드가 있으면 빠르게 지나간다 (처치가 빠를 때 카드 / 효과음이 쌓여 화면이 느려지던 것)
 	local pace = fast and 0.2 or 1
 	local color = Config.Gear.RarityColors[data.Rarity] or Color3.new(1, 1, 1)
-	local lines = 2 + #(data.Affixes or {}) + (data.Unique and 1 or 0) + (data.Set and 1 or 0) + 1
+	local lines = 2 + #(data.Affixes or {}) + (data.Unique and 1 or 0) + (data.Set and 1 or 0) + (data.AugBoost and 1 or 0) + 1
 	local height = 64 + lines * 22
 	local card = new("Frame", {
 		Size = UDim2.new(0, 300, 0, height), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, 340, 1, -118), -- (오른쪽 아래: 오른쪽 가운데의 대미지 미터기와 겹치던 것)
@@ -101,6 +101,12 @@ local function show(data)
 		task.wait(0.12)
 		local def = Config.Sets[data.Set]
 		line(card, y, (def.Icon or "★") .. " " .. def.Name, 13, def.Color)
+		y += 22
+	end
+	if data.AugBoost and Config.AugInfo[data.AugBoost] then -- 세트 효과 +1 옵션
+		task.wait(0.12)
+		local info = Config.AugInfo[data.AugBoost]
+		line(card, y, string.format("%s %s +1 Lv", info.Icon, info.Name), 13, Color3.fromRGB(154, 215, 255))
 		y += 22
 	end
 	task.wait(0.15)

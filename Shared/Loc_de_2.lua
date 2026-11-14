@@ -755,6 +755,7 @@ return {
 		["If equipped:"] = "Angelegt:",
 		["(bonus ON)"] = "(Bonus AN)",
 		["(bonus OFF)"] = "(Bonus AUS)",
+		["(when that set effect is on)"] = "(wenn dieser Set-Effekt aktiv ist)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1001,6 +1002,5 @@ return {
 		{ "Railgun  ·  keys {number1}-{number2} switch weapons", "Schienenwaffe · Tasten {number1}-{number2} wechseln Waffen" },
 		{ "📋 Daily Quests {number1}/{number2}  ✅ tap to claim!", "📋 Tägliche Missionen {number1}/{number2} ✅ Tippe, um sie zu beanspruchen!" },
 		{ "Weapon range +{number1}% per point  (max {number2})", "Waffenreichweite +{number1}% pro Punkt (maximal {number2})" },
-		{ "👑 Lord of Forest (Zone {number1}) · Rec. ⚡{number2}", "👑 Herr des Waldes (Zone {number1}) · Empfehlung ⚡{number2}" },
 	},
 }

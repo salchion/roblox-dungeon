@@ -818,6 +818,7 @@ return {
 		{ "Ruins {text1}", "폐허 {text1}" },
 		{ "Rusty {text1}", "녹슨 {text1}" },
 		{ "Steel {text1}", "강철 {text1}" },
+		{ "{text1} +1 Lv", "{text1} +1 단계" },
 		{ "Base {text1}", "기본 {text1}" },
 		{ "{text1} left", "{text1} 남음" },
 		{ "Dark {text1}", "어둠 {text1}" },

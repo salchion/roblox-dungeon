@@ -725,6 +725,7 @@ return {
 		{ "Ruins {text1}", "遺跡 {text1}" },
 		{ "Rusty {text1}", "錆びた {text1}" },
 		{ "Steel {text1}", "鋼鉄 {text1}" },
+		{ "{text1} +1 Lv", "{text1} +1 Lv" },
 		{ "Base {text1}", "基本 {text1}" },
 		{ "{text1} left", "残り{text1}" },
 		{ "Dark {text1}", "ダーク {text1}" },

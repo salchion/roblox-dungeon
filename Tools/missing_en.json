@@ -2755,5 +2755,7 @@
 "If equipped:",
 "(bonus ON)",
 "(bonus OFF)",
-"{text1} Lv.{number2}→{number3}"
+"{text1} Lv.{number2}→{number3}",
+"{text1} +1 Lv",
+"(when that set effect is on)"
 ]

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Clear {number1} dungeon(s)  ✅ tap to claim!", "Limpe {number1} masmorras ✅ toque para reivindicar!" },
 		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 Baú do chefe · {number1} equipamentos</b>" },
 		{ "· {number1} point(s) left (1 every {number2} levels)", "· Restam {number1} ponto(s) (1 a cada {number2} níveis)" },
 		{ "👑 Lord of Desert (Zone {number1}) · Rec. ⚡{number2}", "👑 Senhor do Deserto (Zona {number1}) · Rec. ⚡{number2}" },
@@ -618,6 +619,7 @@ return {
 		{ "Ruins {text1}", "Ruínas {text1}" },
 		{ "Rusty {text1}", "Enferrujado {text1}" },
 		{ "Steel {text1}", "Aço {text1}" },
+		{ "{text1} +1 Lv", "{text1} +1 Nv" },
 		{ "Base {text1}", "Base {text1}" },
 		{ "{text1} left", "faltam {text1}" },
 		{ "Dark {text1}", "Sombrio {text1}" },

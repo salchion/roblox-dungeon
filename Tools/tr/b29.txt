@@ -722,3 +722,5 @@
 2754¦(ボーナス発動)¦(Bonus AN)¦(bonus ACTIF)¦(bono ACTIVO)¦(bônus ATIVO)¦(加成开启)¦(보너스 켜짐)
 2755¦(ボーナス解除)¦(Bonus AUS)¦(bonus INACTIF)¦(bono INACTIVO)¦(bônus DESATIVADO)¦(加成关闭)¦(보너스 꺼짐)
 2756¦{text1} Lv.{number2}→{number3}¦{text1} Lv.{number2}→{number3}¦{text1} Nv.{number2}→{number3}¦{text1} Nv.{number2}→{number3}¦{text1} Nv.{number2}→{number3}¦{text1} Lv.{number2}→{number3}¦{text1} Lv.{number2}→{number3}
+2757¦{text1} +1 Lv¦{text1} +1 St.¦{text1} +1 Nv¦{text1} +1 Nv¦{text1} +1 Nv¦{text1} +1 级¦{text1} +1 단계
+2758¦(そのセット効果がオンの時)¦(wenn dieser Set-Effekt aktiv ist)¦(quand cet effet d'ensemble est actif)¦(cuando ese efecto de conjunto está activo)¦(quando esse efeito de conjunto está ativo)¦(该套装效果开启时)¦(그 세트 효과를 켜 두었을 때)

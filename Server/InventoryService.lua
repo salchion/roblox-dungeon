@@ -59,6 +59,9 @@ function Inventory.NewItem(slotKey, rarity, level, zoneIndex, uniqueChance)
 	if rarity == 5 and math.random() < (uniqueChance or Config.Uniques.Chance) then
 		item.Unique = Config.Uniques.Order[math.random(#Config.Uniques.Order)]
 	end
+	if math.random() < (I.AugBoostChance[rarity] or 0) then -- 세트 효과 +1 단계 옵션 (어느 효과인지는 무작위: 구역 세트와 엇갈리는 장비가 셋팅의 경우의 수를 늘린다)
+		item.AugBoost = Config.Sets.ZoneAug[math.random(#Config.Sets.ZoneAug)]
+	end
 	local zoneSet = zoneIndex and Config.Sets.ZoneKeys[zoneIndex]
 	if zoneSet and math.random() < Config.Sets.ZoneSetChance then
 		item.Set = zoneSet -- 그 필드 구역에서만 나오는 구역 전용 세트 (뽑기 장비에는 세트가 붙지 않는다: 세트는 필드 파밍 / 각인으로만)
@@ -111,7 +114,7 @@ end
 function Inventory.GetTotals(player)
 	local totals = { Health = 0, Crit = 0, Speed = 0, Damage = 0, Xp = 0, Luck = 0, Haste = 0, Shot = 0,
 		Bounce = 0, LifeOnKill = 0, BossDmg = 0, KillHaste = 0, Thunder = 0, Jackpot = 0, Bulwark = 0, CritDmg = 0, AtkSpeed = 0,
-		KillCdr = 0, Slaughter = 0, Star = 0, Sunder = 0, Shield = 0 } -- (아래 줄: 유니크 전용 효과)
+		KillCdr = 0, Slaughter = 0, Star = 0, Sunder = 0, Shield = 0, AugBoost = {} } -- (아래 줄: 유니크 전용 효과 / AugBoost = 세트 효과별 +단계)
 	local state = states[player]
 	if not state then return totals end
 	local setCounts = {}
@@ -121,6 +124,7 @@ function Inventory.GetTotals(player)
 			for _, affix in ipairs(item.Affixes) do
 				if totals[affix.Stat] then totals[affix.Stat] += affix.Value end
 			end
+			if item.AugBoost then totals.AugBoost[item.AugBoost] = (totals.AugBoost[item.AugBoost] or 0) + 1 end
 			if item.Unique and Config.Uniques[item.Unique] then
 				for _, effect in ipairs(Config.Uniques[item.Unique].Effects) do
 					totals[effect.Stat] += effect.Value
@@ -158,7 +162,7 @@ local function buildPayload(player, state)
 	local items = {}
 	for id, item in pairs(state.Items) do
 		table.insert(items, {
-			Id = id, Slot = item.Slot, Rarity = item.Rarity, Level = item.Level, Set = item.Set, Unique = item.Unique,
+			Id = id, Slot = item.Slot, Rarity = item.Rarity, Level = item.Level, Set = item.Set, Unique = item.Unique, AugBoost = item.AugBoost,
 			Affixes = item.Affixes, Score = Config.GetItemScore(item), Equipped = equippedIds[id] == true,
 		})
 	end
@@ -306,7 +310,7 @@ function Inventory.Add(player, item)
 	if item.Rarity >= 3 and not noCard then -- 영웅 이상: 화면에 "획득 카드" (기본 능력치 + 옵션 줄이 하나씩 튀어나온다, LootCardClient)
 		local worn = state.Equipped[item.Slot] and state.Items[state.Equipped[item.Slot]]
 		Remotes.Inventory:FireClient(player, "Got", {
-			Slot = item.Slot, Rarity = item.Rarity, Level = item.Level, Affixes = item.Affixes, Unique = item.Unique, Set = item.Set,
+			Slot = item.Slot, Rarity = item.Rarity, Level = item.Level, Affixes = item.Affixes, Unique = item.Unique, Set = item.Set, AugBoost = item.AugBoost,
 			Score = Config.GetItemScore(item), WornScore = worn and Config.GetItemScore(worn) or 0,
 		})
 	end
@@ -719,6 +723,7 @@ function Inventory.Load(player, saved, legacyGear)
 				end
 				if typeof(entry.Set) == "string" and entry.Set:sub(1, 4) == "Zone" and Config.Sets[entry.Set] and Config.Sets[entry.Set].Bonuses then item.Set = entry.Set end -- (옛 세트 4종은 없어졌다: 불러올 때 세트만 떼어 낸다)
 				if Config.Uniques[entry.Unique] and entry.Unique ~= "Order" and Config.Uniques[entry.Unique].Effects then item.Unique = entry.Unique end
+				if typeof(entry.AugBoost) == "string" and Config.AugInfo[entry.AugBoost] then item.AugBoost = entry.AugBoost end
 				if item.Id > 0 and not state.Items[item.Id] then
 					state.Items[item.Id] = item
 					state.NextId = math.max(state.NextId, item.Id)
@@ -790,7 +795,7 @@ function Inventory.Serialize(player)
 		for _, affix in ipairs(item.Affixes) do
 			table.insert(affixes, { S = affix.Stat, V = affix.Value })
 		end
-		table.insert(items, { Id = item.Id, Slot = item.Slot, Rarity = item.Rarity, Level = item.Level, Affixes = affixes, Set = item.Set, Unique = item.Unique })
+		table.insert(items, { Id = item.Id, Slot = item.Slot, Rarity = item.Rarity, Level = item.Level, Affixes = affixes, Set = item.Set, Unique = item.Unique, AugBoost = item.AugBoost })
 	end
 	local shards = {}
 	for zone = 1, Config.Field.ZoneCount do
