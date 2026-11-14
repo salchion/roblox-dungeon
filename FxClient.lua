@@ -1671,10 +1671,10 @@ local function makeDashes(n, color, thick, length, transparency)
 	for i = 1, n do
 		local part = table.remove(dashPool)
 		if not part then
-			part = neonPart(Vector3.one, color, 0)
+			part = neonPart(Vector3.one, color, 0, CYL) -- (둥근 원통 조각: 네모 조각이 이어진 고리는 각져 보였다)
 			part.CastShadow = false
 		end
-		part.Color, part.Size, part.Transparency = color, Vector3.new(thick, thick * 0.5, length), transparency or 0.2
+		part.Color, part.Size, part.Transparency = color, Vector3.new(length, thick * 0.6, thick * 0.6), transparency or 0.2
 		part.Parent = fxFolder
 		list[i] = part
 	end
@@ -1692,7 +1692,7 @@ local function placeDashes(list, center, radius, spin)
 		local a = spin + i * (2 * math.pi / n)
 		local c, s = math.cos(a), math.sin(a)
 		local p = center + Vector3.new(c * radius, 0, s * radius)
-		part.CFrame = CFrame.lookAt(p, p + Vector3.new(-s, 0, c))
+		part.CFrame = CFrame.lookAt(p, p + Vector3.new(-s, 0, c)) * CFrame.Angles(0, math.rad(90), 0) -- (원통 길이 X 를 고리 접선으로)
 	end
 end
 
@@ -1706,23 +1706,27 @@ local function ringWave(center, radius, color, dur, n, thick)
 end
 
 local activeRings = 0
-local function ring(event) -- { "R", 위치, 반지름, 색 }
+local function ring(event) -- { "R", 위치, 반지름, 색 }: 옅은 바닥 빛 + 바깥으로 퍼지는 빛 고리 (예전: 꽉 찬 원판이 커졌다)
 	if activeRings >= 36 then return end
 	activeRings += 1
 	task.delay(0.6, function() activeRings -= 1 end)
 	local position, radius, color = event[2], event[3], event[4]
-	local base = CFrame.new(position + Vector3.new(0, 0.5, 0)) * CFrame.Angles(0, 0, math.rad(90))
-	local part = neonPart(Vector3.new(0.6, 2, 2), color, 0.3, CYL)
-	part.CFrame = base
-	part.Parent = fxFolder
-	TweenService:Create(part, TweenInfo.new(0.55, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.6, radius * 2, radius * 2), Transparency = 1 }):Play()
-	Debris:AddItem(part, 0.6)
-	if radius >= 8 then -- 큰 고리는 안쪽에 더 밝고 빠른 속 고리가 하나 더
-		local core = neonPart(Vector3.new(0.5, 2, 2), color:Lerp(WHITE, 0.6), 0.35, CYL)
-		core.CFrame = base
-		core.Parent = fxFolder
-		TweenService:Create(core, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.5, radius * 1.3, radius * 1.3), Transparency = 1 }):Play()
-		Debris:AddItem(core, 0.35)
+	local base = CFrame.new(position + Vector3.new(0, 0.3, 0)) * CFrame.Angles(0, 0, math.rad(90))
+	local fill = neonPart(Vector3.new(0.1, 2, 2), color, 0.75, CYL)
+	fill.CastShadow = false
+	fill.CFrame = base
+	fill.Parent = fxFolder
+	TweenService:Create(fill, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.1, radius * 2, radius * 2), Transparency = 1 }):Play()
+	Debris:AddItem(fill, 0.5)
+	if #waves < 8 and not lowSpecOn() then
+		ringWave(position, radius, color:Lerp(WHITE, 0.2), 0.5, nil, math.clamp(0.5 + radius * 0.03, 0.5, 1.4))
+		if radius >= 8 then ringWave(position, radius * 0.6, WHITE, 0.32, 16, 0.4) end -- 안쪽의 얇은 흰 고리
+	else -- (고리가 이미 많으면 예전처럼 원판 하나만)
+		local part = neonPart(Vector3.new(0.4, 2, 2), color, 0.4, CYL)
+		part.CFrame = base
+		part.Parent = fxFolder
+		TweenService:Create(part, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(0.4, radius * 2, radius * 2), Transparency = 1 }):Play()
+		Debris:AddItem(part, 0.55)
 	end
 end
 
@@ -1737,29 +1741,34 @@ local function scorch(position, radius, seconds)
 	Debris:AddItem(part, seconds + 0.1)
 end
 
-local function bolt(event) -- { "Z", 위, 아래 }: 굵은 지그재그 번개 + 하얀 심지 + 바닥 그을음 / 고리 / 불꽃
+local function bolt(event) -- { "Z", 위, 아래 }: 지그재그 번개 (흰 심 + 노란 빛무리 원통, 5마디 + 갈래 2개) + 바닥 그을음 / 고리 / 불꽃
 	local top, bottom = event[2], event[3]
 	local yellow = Color3.fromRGB(255, 240, 110)
 	local points = { top }
-	for i = 1, 2 do
-		table.insert(points, top:Lerp(bottom, i / 3) + Vector3.new((math.random() - 0.5) * 10, 0, (math.random() - 0.5) * 10))
+	for i = 1, 4 do
+		table.insert(points, top:Lerp(bottom, i / 5) + Vector3.new((math.random() - 0.5) * 7, 0, (math.random() - 0.5) * 7))
 	end
 	table.insert(points, bottom)
-	for i = 1, #points - 1 do
-		local a, b = points[i], points[i + 1]
+	local ALONG = CFrame.Angles(0, math.rad(90), 0)
+	local function segment(a, b, core, glow)
 		local length = (b - a).Magnitude
-		local part = neonPart(Vector3.new(5, 5, length), yellow, 0.05)
-		part.CFrame = CFrame.lookAt((a + b) / 2, b)
-		part.Parent = fxFolder
-		TweenService:Create(part, TweenInfo.new(0.4), { Transparency = 1, Size = Vector3.new(0.4, 0.4, length) }):Play()
-		Debris:AddItem(part, 0.45)
+		local cf = CFrame.lookAt((a + b) / 2, b) * ALONG
+		local c = neonPart(Vector3.new(length, core, core), Color3.fromRGB(255, 255, 240), 0, CYL)
+		c.CFrame = cf
+		c.Parent = fxFolder
+		local g = neonPart(Vector3.new(length, glow, glow), yellow, 0.55, CYL)
+		g.CFrame = cf
+		g.Parent = fxFolder
+		TweenService:Create(c, TweenInfo.new(0.3), { Transparency = 1, Size = Vector3.new(length, 0.05, 0.05) }):Play()
+		TweenService:Create(g, TweenInfo.new(0.4), { Transparency = 1, Size = Vector3.new(length, 0.2, 0.2) }):Play()
+		Debris:AddItem(c, 0.35)
+		Debris:AddItem(g, 0.45)
 	end
-	local length = (top - bottom).Magnitude
-	local core = neonPart(Vector3.new(2, 2, length), Color3.fromRGB(255, 255, 240), 0)
-	core.CFrame = CFrame.lookAt((top + bottom) / 2, bottom)
-	core.Parent = fxFolder
-	TweenService:Create(core, TweenInfo.new(0.25), { Transparency = 1, Size = Vector3.new(0.15, 0.15, length) }):Play()
-	Debris:AddItem(core, 0.3)
+	for i = 1, #points - 1 do segment(points[i], points[i + 1], 0.9, 3.2) end
+	for _, k in ipairs({ 2, 4 }) do -- 갈래
+		local a = points[k]
+		segment(a, a + Vector3.new((math.random() - 0.5) * 12, -6, (math.random() - 0.5) * 12), 0.45, 1.5)
+	end
 	scorch(bottom, 9, 1.6)
 	ring({ "R", bottom, 16, yellow })
 	ring({ "R", bottom, 9, WHITE })
@@ -1800,6 +1809,30 @@ local function missile(event) -- { "M", 출발, 대상 부품, 중간점, 시간
 		ball = neonPart(Vector3.new(2.4, 2.4, 2.4) * scale, Color3.fromRGB(255, 190, 90), 0, Enum.PartType.Ball)
 	end
 	ball.Position = from
+	if long then -- 둥근 몸통 + 둥근 촉 + 꼬리 불빛 (운반 부품은 투명: 예전에는 네모 막대가 날아갔다)
+		local bodyColor = ball.Color
+		ball.Transparency = 1
+		local function weldTo(part)
+			part.Anchored = false
+			part.Massless = true
+			local w = Instance.new("WeldConstraint")
+			w.Part0, w.Part1 = ball, part
+			w.Parent = part
+			part.Parent = ball
+		end
+		local length = ball.Size.Z
+		local radius = ball.Size.X
+		local body = neonPart(Vector3.new(length * 0.85, radius, radius), Color3.fromRGB(222, 225, 232), 0, CYL)
+		body.Material = Enum.Material.SmoothPlastic
+		body.CFrame = ball.CFrame * CFrame.Angles(0, math.rad(90), 0)
+		weldTo(body)
+		local nose = neonPart(Vector3.new(radius * 1.1, radius * 1.1, radius * 1.1), tint or bodyColor, 0, Enum.PartType.Ball)
+		nose.CFrame = ball.CFrame * CFrame.new(0, 0, -length * 0.45)
+		weldTo(nose)
+		local exhaust = neonPart(Vector3.new(radius * 0.9, radius * 0.9, radius * 0.9), Color3.fromRGB(255, 225, 150), 0.1, Enum.PartType.Ball)
+		exhaust.CFrame = ball.CFrame * CFrame.new(0, 0, length * 0.45)
+		weldTo(exhaust)
+	end
 	local function pair(half)
 		local a0, a1 = Instance.new("Attachment"), Instance.new("Attachment")
 		if long then
@@ -1895,8 +1928,19 @@ local function meteor(event) -- { "E", 위치, 반지름, 낙하 시간 }: 큰 �
 	TweenService:Create(fill, TweenInfo.new(fall, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Size = Vector3.new(0.35, radius * 2, radius * 2), Transparency = 0.25 }):Play()
 	local rim = makeDashes(22, Color3.fromRGB(255, 120, 60), 1.2, 2 * math.pi * radius / 22 * 0.6, 0.1)
 	placeDashes(rim, position + Vector3.new(0, 0.6, 0), radius, 0)
-	local rock = neonPart(Vector3.new(16, 16, 16), Color3.fromRGB(255, 140, 50), 0, Enum.PartType.Ball)
+	local rock = neonPart(Vector3.new(13, 13, 13), Color3.fromRGB(72, 42, 34), 0, Enum.PartType.Ball) -- 어두운 바위 (예전: 주황으로 빛나는 공)
+	rock.Material = Enum.Material.Basalt
 	rock.Position = position + Vector3.new(18, 110, 14)
+	local lava = neonPart(Vector3.new(16.5, 16.5, 16.5), Color3.fromRGB(255, 120, 40), 0.6, Enum.PartType.Ball) -- 바위를 감싼 용암 빛
+	lava.Anchored = false
+	lava.Massless = true
+	lava.CFrame = rock.CFrame
+	do
+		local w = Instance.new("WeldConstraint")
+		w.Part0, w.Part1 = rock, lava
+		w.Parent = lava
+	end
+	lava.Parent = rock
 	local fire = Instance.new("Fire")
 	fire.Size = 34
 	fire.Parent = rock
@@ -1914,7 +1958,7 @@ local function meteor(event) -- { "E", 위치, 반지름, 낙하 시간 }: 큰 �
 	light.Color, light.Range, light.Brightness = Color3.fromRGB(255, 150, 70), 28, 3
 	light.Parent = rock
 	rock.Parent = fxFolder
-	TweenService:Create(rock, TweenInfo.new(fall, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Position = position + Vector3.new(0, 3, 0) }):Play()
+	TweenService:Create(rock, TweenInfo.new(fall, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { CFrame = CFrame.new(position + Vector3.new(0, 3, 0)) }):Play() -- (CFrame 으로 움직여야 감싼 빛이 같이 따라온다)
 	task.delay(fall, function()
 		warnDisk:Destroy()
 		fill:Destroy()
