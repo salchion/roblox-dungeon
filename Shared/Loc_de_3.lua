@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 Boss-Truhe · {number1} Ausrüstungsteile</b>" },
+		{ "· {number1} point(s) left (1 every {number2} levels)", "· Noch {number1} Punkt(e) (1 alle {number2} Stufen)" },
+		{ "👑 Lord of Desert (Zone {number1}) · Rec. ⚡{number2}", "👑 Herr der Wüste (Zone {number1}) · Rekord ⚡{number2}" },
 		{ "🏜 Desert Temple Entrance · Rec. ⚡{number2}", "🏜 Eingang des Wühentempels · Empfohlen ⚡{number2}" },
 		{ "<font color='#ffe{number1}e'>⚡ {number2}</font> Lv.{number3}", "<font color='#ffe{number1}e'>⚡ {number2}</font> Stufe {number3}" },
 		{ "Survive {number1} seconds in the Boss Rush", "Überlebe {number1} Sekunden im Boss-Angriff" },
@@ -454,6 +457,7 @@ return {
 		{ "ZONE {number1}", "Zone {number1}" },
 		{ "{number1} more", "noch {number1}" },
 		{ "+{number1} MAX", "+{number1} MAX" },
+		{ "1 in {number1}", "1 von {number1}" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "+{number1} XP", "+{number1} Erfahrungspunkte" },
 		{ "{number1} key", "{number1} Schlüssel" },

@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "★☆  Step {number1}/{number2} · Next step", "★☆ 步骤 {number1}/{number2} · 下一步" },
+		{ "🌋 {number1} Streak — Legendary!", "🌋 {number1}连胜 - 传奇级！" },
+		{ "Reach character level {number1}", "达到角色等级 {number1}" },
+		{ "▼ 👑 First Zone Lord  {number1}m", "▼ 👑 第一个区域领主 {number1}m" },
 		{ "Defeat {number1} elite monsters", "击败 {number1} 只精英怪物" },
 		{ "Defeat {number1} field monsters", "击败 {number1} 只野外怪物" },
 		{ "Pierces up to {number1} enemies", "最多穿透 {number1} 个敌人" },
@@ -303,6 +307,7 @@ return {
 		{ "ZONE {number1}", "区域 {number1}" },
 		{ "{number1} more", "还差 {number1}" },
 		{ "+{number1} MAX", "+{number1} 满级" },
+		{ "1 in {number1}", "每{number1}次1次" },
 		{ "{number1}K  {number2}%", "{number1}千 {number2}%" },
 		{ "{number1} DPS", "{number1} 每秒伤害量" },
 		{ "{number1}x XP", "{number1}倍经验值" },

@@ -1083,6 +1083,10 @@ return {
 		["Choose a path for"] = "갈래를 고르세요:",
 		["These stats shape your play style. Respec for free anytime."] = "플레이 방식을 바꾸는 스탯이에요. 언제든 무료로 다시 찍을 수 있어요.",
 		["Reset (Free)"] = "초기화 (무료)",
+		["Gear gacha Mythics"] = "장비 뽑기 신화",
+		["Gear drop per kill"] = "처치당 장비 드랍",
+		["always"] = "확정",
+		["Highest grade"] = "최고 등급",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1189,6 +1193,5 @@ return {
 		{ "The final blast also explodes around every target (attack x{number1})", "마지막 대폭발이 모든 대상 주변에서도 터져요 (공격 x{number1})" },
 		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [일반] 🌾 초원에서 닳은 신발 자동 회수 (에센스 +{number1} {number2} G)" },
 		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 {number1}레벨 돌파 완료! 이제 더 성장할 수 있어요." },
-		{ " With the max {number1} points, crits go from 2x to about {number2}x. Combine", " 최대 {number1}포인트일 때 치명타가 2배에서 약 {number2}배로. 조합" },
 	},
 }

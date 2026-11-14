@@ -765,6 +765,10 @@ return {
 		["Choose a path for"] = "Wähle einen Pfad für",
 		["These stats shape your play style. Respec for free anytime."] = "Diese Werte prägen deinen Spielstil. Jederzeit kostenlos neu verteilen.",
 		["Reset (Free)"] = "Zurücksetzen (gratis)",
+		["Gear gacha Mythics"] = "Mythische Gacha-Ausrüstung",
+		["Gear drop per kill"] = "Ausrüstungsdrop pro Kill",
+		["always"] = "immer",
+		["Highest grade"] = "Höchste Stufe",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -870,6 +874,7 @@ return {
 		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [Selten] 🌲 Wald-Silberring automatisch gesammelt (Essenz +{number1} {number2} G)" },
 		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "Gib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!" },
 		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "Mit den maximalen {number1} Punkten steigen Krits von 2x auf etwa {number2}x. Kombiniere" },
+		{ "Mythic gacha gear has a {number1}% chance to carry a Unique effect.", "Mythische Gacha-Ausrüstung hat eine {number1}% Chance auf einen Unique-Effekt." },
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "Erhalte sofort {number1} Minuten deines passiven Einkommens · maximal {number2} pro Tag" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISS hält {number1} s · behält mindestens {number2} Stapel, auch wenn die Serie reißt" },
 		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 Nicht genug Gold für das gewählte Set! ({number1} G nötig)" },
@@ -1004,8 +1009,5 @@ return {
 		{ "{number1} hours of idle gold ({number2} G) piled up!", "{number1} Stunden ungenutztes Gold ({number2} G) gesammelt!" },
 		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 Feld-Eingang Direkt dahinter! {number1}m" },
 		{ "Clear {number1} dungeon(s)  ✅ tap to claim!", "{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!" },
-		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 Boss-Truhe · {number1} Ausrüstungsteile</b>" },
-		{ "· {number1} point(s) left (1 every {number2} levels)", "· Noch {number1} Punkt(e) (1 alle {number2} Stufen)" },
-		{ "👑 Lord of Desert (Zone {number1}) · Rec. ⚡{number2}", "👑 Herr der Wüste (Zone {number1}) · Rekord ⚡{number2}" },
 	},
 }

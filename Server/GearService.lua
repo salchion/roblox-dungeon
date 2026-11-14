@@ -985,7 +985,7 @@ function Gear.Roll(player, forced)
 	end
 
 	local slot = G.Slots[math.random(#G.Slots)]
-	local item = Inventory.NewItem(slot.Key, rarity, 0, nil, 0) -- (뽑기 장비에는 유니크가 붙지 않는다: 유니크는 던전 쪽 보상)
+	local item = Inventory.NewItem(slot.Key, rarity, 0, nil, Config.Uniques.GachaChance or 0.3) -- 뽑기에서 나온 신화에도 30% 확률로 유니크
 	-- 뽑기만의 장점: 고른 구역 세트 조각으로 나온다 (필드에서는 그 구역에서 운으로만 나온다). 튜토리얼 뽑기는 제외
 	local reached = math.clamp(math.floor(player:GetAttribute("MaxZone") or 1), 1, Config.Field.ZoneCount)
 	local setZone = not mode and (player:GetAttribute("GachaSet") or 0) or 0

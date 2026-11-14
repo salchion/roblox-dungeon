@@ -77,7 +77,7 @@ function Odds.Gacha()
 	for index, slot in ipairs(Config.Gear.Slots) do
 		slots[index] = { Name = slot.Name, Pct = slotPct[index] }
 	end
-	return { Rarities = rarities, Slots = slots, UniqueChance = 0 } -- (뽑기 장비에는 유니크가 붙지 않는다)
+	return { Rarities = rarities, Slots = slots, UniqueChance = (Config.Uniques.GachaChance or 0) * 100 } -- 신화가 나오면 이 확률(%)로 유니크
 end
 
 -- 던전 보스 상자 한 개: 던전 종류 / 깊이("D12") 또는 옛 난이도("Normal") -> 등급 표의 줄(소수 가능)과 높은 등급 추가 배율

@@ -2782,5 +2782,11 @@
 "Points left · next +1 at Lv.{number1}",
 "Points left · total {number1}",
 "These stats shape your play style. Respec for free anytime.",
-"Reset (Free)"
+"Reset (Free)",
+"Mythic gacha gear has a {number1}% chance to carry a Unique effect.",
+"Gear gacha Mythics",
+"Gear drop per kill",
+"1 in {number1}",
+"always",
+"Highest grade"
 ]

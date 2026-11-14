@@ -814,6 +814,10 @@ return {
 		["Choose a path for"] = "Elige una rama para",
 		["These stats shape your play style. Respec for free anytime."] = "Estas estadísticas cambian tu estilo de juego. Reasigna gratis cuando quieras.",
 		["Reset (Free)"] = "Reiniciar (gratis)",
+		["Gear gacha Mythics"] = "Míticos del gacha",
+		["Gear drop per kill"] = "Botín de equipo por baja",
+		["always"] = "siempre",
+		["Highest grade"] = "Grado máximo",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -919,6 +923,7 @@ return {
 		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [Raro] 🌲 Anillo de plata del bosque recuperado automáticamente (Esencia +{number1} {number2} G)" },
 		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "Gasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!" },
 		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "Con el máximo de {number1} puntos, los críticos pasan de 2x a aproximadamente {number2}x. Combina" },
+		{ "Mythic gacha gear has a {number1}% chance to carry a Unique effect.", "El equipo mítico del gacha tiene un {number1}% de probabilidad de tener un efecto único." },
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "Obtén instantáneamente {number1} minutos de tus ingresos pasivos · máximo {number2} por día" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISS dura {number1} s · mantiene al menos {number2} acumulaciones aunque se rompa" },
 		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 ¡Oro insuficiente para el set elegido! (se necesitan {number1} G)" },
@@ -1023,8 +1028,5 @@ return {
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 ¡Subiste de nivel! Nivel {number1} (HP máximo +{number2} Ataque +{number3}%)" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 Misión {number2}/{number3}</font>" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} mejoras: {number2} éxitos / {number3} fallos  (Oro -{number4})" },
-		{ "Reach level {number1} to buy points with gold.", "Alcanza el nivel {number1} para comprar puntos con oro." },
-		{ "🎫 A {number1}x pull needs {number2} tickets (you have {number3})", "🎫 Una tirada x{number1} necesita {number2} boletos (tienes {number3})" },
-		{ "🗿 Colossus defeated! Gear + 🎫 +1 + {number1} G", "🗿 ¡Coloso derrotado! Equipo + 🎫 +1 + {number1} G" },
 	},
 }

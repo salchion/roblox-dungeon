@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Mythic: unique {number1}% (dungeon chests {number2}%+)", "Mítico: único {number1}% (baús de masmorra {number2}%+)" },
+		{ "Defeat {number1} bosses in one Boss Rush run", "Derrote {number1} chefes em uma partida de Corrida de Chefes" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "Monstros encontrados: {number1} / {number2} (incluindo senhores de zona)" },
 		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 Entrada grátis usada! (restam {number1} / {number2} hoje)" },
 		{ "A big blast when it ends (attack x{number1})", "Uma grande explosão ao terminar (ataque x{number1})" },
@@ -468,6 +470,7 @@ return {
 		{ "ZONE {number1}", "Zona {number1}" },
 		{ "{number1} more", "mais {number1}" },
 		{ "+{number1} MAX", "+{number1} MÁX" },
+		{ "1 in {number1}", "1 a cada {number1}" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1} key", "{number1} chave" },
 		{ "💰 {number1} G", "💰 {number1} G" },

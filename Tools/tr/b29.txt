@@ -749,3 +749,10 @@
 2781¦残りポイント · 合計{number1}¦Übrige Punkte · gesamt {number1}¦Points restants · total {number1}¦Puntos restantes · total {number1}¦Pontos restantes · total {number1}¦剩余点数 · 共{number1}¦남은 포인트 · 전체 {number1}
 2782¦プレイスタイルを変えるステータス。いつでも無料で振り直せます。¦Diese Werte prägen deinen Spielstil. Jederzeit kostenlos neu verteilen.¦Ces stats façonnent ton style de jeu. Réinitialise gratuitement à tout moment.¦Estas estadísticas cambian tu estilo de juego. Reasigna gratis cuando quieras.¦Esses atributos moldam seu estilo de jogo. Redistribua grátis a qualquer momento.¦这些属性决定你的玩法，随时可免费重置。¦플레이 방식을 바꾸는 스탯이에요. 언제든 무료로 다시 찍을 수 있어요.
 2783¦リセット (無料)¦Zurücksetzen (gratis)¦Réinitialiser (gratuit)¦Reiniciar (gratis)¦Redefinir (grátis)¦重置 (免费)¦초기화 (무료)
+
+2784¦神話ガチャ装備は{number1}%の確率でユニーク効果が付きます。¦Mythische Gacha-Ausrüstung hat eine {number1}% Chance auf einen Unique-Effekt.¦L'équipement mythique du gacha a {number1}% de chances d'avoir un effet unique.¦El equipo mítico del gacha tiene un {number1}% de probabilidad de tener un efecto único.¦Equipamento mítico do gacha tem {number1}% de chance de ter um efeito único.¦扭蛋获得的神话装备有{number1}%概率附带独特效果。¦뽑기에서 나온 신화 장비는 {number1}% 확률로 유니크 효과가 붙어요.
+2785¦ガチャの神話装備¦Mythische Gacha-Ausrüstung¦Mythiques du gacha¦Míticos del gacha¦Míticos do gacha¦扭蛋神话装备¦장비 뽑기 신화
+2786¦1体あたりの装備ドロップ¦Ausrüstungsdrop pro Kill¦Butin d'équipement par élimination¦Botín de equipo por baja¦Drop de equipamento por abate¦每次击杀掉落装备¦처치당 장비 드랍
+2787¦{number1}回に1回¦1 von {number1}¦1 sur {number1}¦1 de cada {number1}¦1 a cada {number1}¦每{number1}次1次¦{number1}번에 1번
+2788¦確定¦immer¦toujours¦siempre¦sempre¦必定¦확정
+2789¦最高ランク¦Höchste Stufe¦Rang max¦Grado máximo¦Grau máximo¦最高品质¦최고 등급

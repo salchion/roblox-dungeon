@@ -4,10 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ " With the max {number1} points, crits go from 2x to about {number2}x. Combine", " 최대 {number1}포인트일 때 치명타가 2배에서 약 {number2}배로. 조합" },
 		{ "🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})", "🏰 던전 보스 상자 — 장비 {number1}개, 깊이 {number2}마다 +1 (최대 {number3})" },
 		{ "Event_Elite  <font color='#{number1}aa{number2}c{number3}'>Elite squad appears</font>", "이벤트_엘리트 <font color='#{number1}aa{number2}c{number3}'>엘리트 스쿼드 등장</font>" },
 		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [희귀] 🌲 숲의 은 반지 자동 회수 (에센스 +{number1} {number2} G)" },
 		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!" },
+		{ "Mythic gacha gear has a {number1}% chance to carry a Unique effect.", "뽑기에서 나온 신화 장비는 {number1}% 확률로 유니크 효과가 붙어요." },
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "{number1}분 동안의 유휴 수입을 즉시 획득하세요 · 하루 최대 {number2}분" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISS {number1}초 지속 · 끊겨도 최소 {number2}단계 유지" },
 		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 고른 세트로 뽑을 골드가 부족해요! ({number1}G 필요)" },
@@ -618,6 +620,7 @@ return {
 		{ "ZONE {number1}", "구역 {number1}" },
 		{ "{number1} more", "{number1}" },
 		{ "+{number1} MAX", "+{number1} 최대" },
+		{ "1 in {number1}", "{number1}번에 1번" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1}x XP", "{number1}x 경험치" },
 		{ "+{number1} XP", "+{number1} 경험치" },

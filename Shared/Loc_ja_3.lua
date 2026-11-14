@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "<font color='#{number4}ad{number5}ff'>スペル・トーム · 神話時代 +{number6}</font>" },
+		{ "Shot_Shotgun  <font color='#{number1}aa{number2}c{number3}'>Shotgun shot</font>", "ショットガン<font color='#{number1}aa{number2}c{number3}'>ショットガンショット</font>" },
 		{ "🔒 Zone {number1} · Desert Sealed\nOpen the previous gate first", "🔒 ゾーン {number1} · 砂漠が封鎖されています\nまず前のゲートを開けてください" },
 		{ "One less dagger, but each hits +{number1}% harder: for bosses", "短剣が1本減る代わりに1本あたり+{number1}%：ボス向け" },
 		{ "Reduces training / breakthrough wait time by {number1} hours", "トレーニング/ブレークスルーの待機時間を{number1}時間短縮する" },
@@ -572,6 +574,7 @@ return {
 		{ "ZONE {number1}", "ゾーン {number1}" },
 		{ "{number1} more", "あと{number1}" },
 		{ "+{number1} MAX", "+{number1} 最大" },
+		{ "1 in {number1}", "{number1}回に1回" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1} key", "鍵{number1}個" },
 		{ "💰 {number1} G", "💰 {number1}G" },

@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "📅 {number1}-day login streak · Get stronger today!", "📅 Série de connexion de {number1} jours · Devenez plus fort aujourd'hui !" },
+		{ "Each NEAR MISS stack gives +{number1}% more attack", "Chaque cumul NEAR MISS donne +{number1} % d'attaque en plus" },
 		{ "🔒 Spend {number1} points higher up this path first", "🔒 Dépense d'abord {number1} points plus haut sur cette voie" },
 		{ "Auto-equipped the best gear in {number1} slot(s)!", "Meilleur équipement équipé automatiquement dans {number1} emplacement(s) !" },
 		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• Environ {number1} tirs/s · Puissance de feu {number2} · Portée {number3}" },
@@ -508,6 +510,7 @@ return {
 		{ "ZONE {number1}", "Zone {number1}" },
 		{ "{number1} more", "encore {number1}" },
 		{ "+{number1} MAX", "+{number1} MAX" },
+		{ "1 in {number1}", "1 sur {number1}" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1}x XP", "{number1}x d'EXP" },
 		{ "+{number1} XP", "+{number1} d'EXP" },

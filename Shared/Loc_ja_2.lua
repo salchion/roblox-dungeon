@@ -943,6 +943,10 @@ return {
 		["Choose a path for"] = "道を選ぼう:",
 		["These stats shape your play style. Respec for free anytime."] = "プレイスタイルを変えるステータス。いつでも無料で振り直せます。",
 		["Reset (Free)"] = "リセット (無料)",
+		["Gear gacha Mythics"] = "ガチャの神話装備",
+		["Gear drop per kill"] = "1体あたりの装備ドロップ",
+		["always"] = "確定",
+		["Highest grade"] = "最高ランク",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1048,6 +1052,7 @@ return {
 		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [レア] 🌲 森のシルバーリングが自動回収される（エッセンス +{number1} {number2} G）" },
 		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！" },
 		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "最大{number1}ポイントで、クリティカルは2倍から約{number2}倍になります。組み合わせて" },
+		{ "Mythic gacha gear has a {number1}% chance to carry a Unique effect.", "神話ガチャ装備は{number1}%の確率でユニーク効果が付きます。" },
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "{number1}分間のアイドル収入を即座に獲得（1日最大{number2}分）" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISSは{number1}秒持続 · 途切れても最低{number2}スタックは維持" },
 		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 選んだセットで引くゴールドが足りません！({number1}G必要)" },
@@ -1068,7 +1073,5 @@ return {
 		{ "🔒 Zone {number1} · Volcano Sealed\nOpen the previous gate first", "🔒 ゾーン {number1} · 火山が封鎖されています\nまず前のゲートを開けてください" },
 		{ "♻ [Common] Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] レザーアーマーを自動回収（エッセンス +{number1} {number2} G）" },
 		{ "Zone {number1} set effect · Trial Lv.3 — for this dungeon only", "ゾーン{number1}セット効果 · 試練 Lv.3 — このダンジョン限定" },
-		{ "<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "<font color='#{number4}ad{number5}ff'>スペル・トーム · 神話時代 +{number6}</font>" },
-		{ "Shot_Shotgun  <font color='#{number1}aa{number2}c{number3}'>Shotgun shot</font>", "ショットガン<font color='#{number1}aa{number2}c{number3}'>ショットガンショット</font>" },
 	},
 }

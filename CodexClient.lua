@@ -98,8 +98,8 @@ local function rebuild()
 				end
 			end
 			if best then -- 막대 끝: 가장 높은 등급과 그 확률 (나머지는 색 비율로 본다)
-				makeLabel({ Size = UDim2.new(0, 120, 0, 14), Position = UDim2.new(0, x + 64 + w, 0, y - 1), RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left,
-					Text = string.format("<font color='#%s'><b>%s</b></font> %s", hex(best.Color), best.Name, Odds.Format(best.Pct)) }, parent)
+				makeLabel({ Size = UDim2.new(0, 200, 0, 14), Position = UDim2.new(0, x + 64 + w, 0, y - 1), RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left,
+					Text = string.format("<font color='#9aa0c0'>Highest grade</font> <font color='#%s'><b>%s</b></font> %s", hex(best.Color), best.Name, Odds.Format(best.Pct)) }, parent)
 			end
 		end
 		for z = 1, F.ZoneCount do
@@ -134,18 +134,42 @@ local function rebuild()
 			Kit.medal(card, { Size = 44, Position = UDim2.new(1, -62, 0, 39), Color = Color3.fromRGB(255, 196, 80), Icon = "👑", TextSize = 20, Tier = 4, Muted = locked })
 			makeLabel({ Size = UDim2.new(0, 74, 0, 22), Position = UDim2.new(1, -77, 0, 84), Text = Config.Codex.Bosses[z] or "Lord", TextSize = 9, TextWrapped = true, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(255, 220, 140) }, card)
 			-- 드롭: 확률 알약 + 등급 막대 (색 비율)
-			pill(card, 10, 112, string.format("🎁 monster %d%% · elite %d%% · Lord %d%%", math.floor(L.DropChance.Normal * 100 + 0.5), math.floor(L.DropChance.Elite * 100 + 0.5), math.floor(L.DropChance.Boss * 100 + 0.5)), Color3.fromRGB(70, 80, 130))
-			local need = F.Gate and F.Gate.KillsNeeded and F.Gate.KillsNeeded[z]
-			if need then pill(card, 300, 112, string.format("🚪 %d kills → Lord", need), Color3.fromRGB(90, 70, 50)) end
+			-- 장비가 떨어지는 빈도: "9%" 대신 "11번에 1번" 처럼 (몇 마리 잡으면 하나 나오는지 바로 알 수 있게)
+			do
+				local strip = create("Frame", { Size = UDim2.new(1, -20, 0, 20), Position = UDim2.new(0, 10, 0, 112), BackgroundTransparency = 1 }, card)
+				create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }, strip)
+				makeLabel({ Size = UDim2.new(0, 0, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = "🎁 Gear drop per kill", TextSize = 10, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(200, 205, 230), LayoutOrder = 0 }, strip)
+				local function oneIn(chance)
+					if chance >= 1 then return "<b>always</b>" end
+					return string.format("<b>1 in %d</b>", math.max(1, math.floor(1 / math.max(chance, 0.0001) + 0.5)))
+				end
+				local chips = {
+					{ "👾 Monster", L.DropChance.Normal, Color3.fromRGB(70, 80, 130) },
+					{ "⭐ Elite", L.DropChance.Elite, Color3.fromRGB(90, 80, 150) },
+					{ "👑 Lord", L.DropChance.Boss, Color3.fromRGB(130, 100, 40) },
+				}
+				for i, chip in ipairs(chips) do
+					local f = pill(strip, 0, 0, "", chip[3])
+					f.LayoutOrder = i
+					local label = f:FindFirstChildOfClass("TextLabel")
+					label.RichText = true
+					label.Text = string.format("%s <font color='#ffe16e'>%s</font>", chip[1], oneIn(chip[2]))
+				end
+				local need = F.Gate and F.Gate.KillsNeeded and F.Gate.KillsNeeded[z]
+				if need then
+					local f = pill(strip, 0, 0, string.format("🚪 %d kills → Lord", need), Color3.fromRGB(90, 70, 50))
+					f.LayoutOrder = 9
+				end
+			end
 			rarityBar(card, 10, 140, 230, z, "Normal", "Monster")
 			rarityBar(card, 10, 158, 230, z, "Boss", "Lord")
 			-- 세트 문장 + 세트 효과 메달
 			if setDef then
 				Kit.medal(card, { Size = 30, Position = UDim2.new(0, 10, 0, 178), Color = setDef.Color, Icon = setDef.Icon or "★", TextSize = 14, Muted = locked })
 				local parts = {}
-				for _, bonus in ipairs(setDef.Bonuses[3] or {}) do table.insert(parts, Config.FormatBonus(bonus.Stat, bonus.Value)) end
+				for _, bonus in ipairs(setDef.Bonuses[3] or {}) do table.insert(parts, "<font color='#c8cce0'>" .. Config.FormatBonus(bonus.Stat, bonus.Value) .. "</font>") end -- (조각마다 태그로 감싸야 한 조각씩 번역된다)
 				makeLabel({ Size = UDim2.new(0, 190, 0, 30), Position = UDim2.new(0, 46, 0, 178), RichText = true, TextSize = 9, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
-					Text = string.format("<font color='#%s' size='11'><b>%s Set</b></font>\n<font color='#c8cce0'>%s</font>", hex(setDef.Color), setDef.Name, table.concat(parts, " · ")) }, card)
+					Text = string.format("<font color='#%s' size='11'><b>%s</b> <b>Set</b></font>\n%s", hex(setDef.Color), setDef.Name, table.concat(parts, " · ")) }, card)
 				local aug = setDef.Aug and Config.AugInfo[setDef.Aug]
 				if aug then
 					Kit.medal(card, { Size = 30, Position = UDim2.new(0, 244, 0, 178), Color = aug.Color, Icon = aug.Icon, TextSize = 14, Tier = 3, Muted = locked })
@@ -253,7 +277,7 @@ local function rebuild()
 					string.format("🏰 <b>Dungeon boss chests</b>  <font color='#ffd966'>%d%% → up to %d%% (deeper = higher)</font>", math.floor(U.Chance * 100 + 0.5), math.floor(U.MaxChance * 100 + 0.5)),
 					"👹 <b>Boss Rush rewards</b> · 👑 <b>Final Lord reward</b>  <font color='#78ff8c'>guaranteed</font>",
 					string.format("🌲 <b>Field Mythic drops</b> <font color='#c8cce0'>(Zone 5+)</font>  <font color='#ffd966'>%d%%</font>", math.floor((U.FieldChance or 0.08) * 100 + 0.5)),
-					"<font color='#8a90aa'>🎰 Gear gacha Mythics never carry a Unique</font>",
+					string.format("🎰 <b>Gear gacha Mythics</b>  <font color='#ffd966'>%d%%</font>", math.floor((U.GachaChance or 0) * 100 + 0.5)),
 				}, "\n") }, r)
 		end
 		for _, key in ipairs(Config.Uniques.Order) do

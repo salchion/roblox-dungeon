@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Reach level {number1} to buy points with gold.", "Alcanza el nivel {number1} para comprar puntos con oro." },
+		{ "🎫 A {number1}x pull needs {number2} tickets (you have {number3})", "🎫 Una tirada x{number1} necesita {number2} boletos (tienes {number3})" },
+		{ "🗿 Colossus defeated! Gear + 🎫 +1 + {number1} G", "🗿 ¡Coloso derrotado! Equipo + 🎫 +1 + {number1} G" },
 		{ "🔒 Unlocks at level {number1}  (you are level {number2})", "🔒 Se desbloquea en el nivel {number1}  (eres nivel {number2})" },
 		{ "Pierces up to {number1} more enemies in a line", "Atraviesa hasta {number1} enemigos más en línea" },
 		{ "Lasts +{number1}s · range +{number2}%: sweeps up swarms", "Dura +{number1} s · alcance +{number2} %: barre enjambres" },
@@ -483,6 +486,7 @@ return {
 		{ "ZONE {number1}", "Zona {number1}" },
 		{ "{number1} more", "{number1} más" },
 		{ "+{number1} MAX", "+{number1} MÁX" },
+		{ "1 in {number1}", "1 de cada {number1}" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1}x XP", "{number1}x EXP" },
 		{ "+{number1} XP", "+{number1} EXP" },

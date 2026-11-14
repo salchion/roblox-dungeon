@@ -77,7 +77,7 @@ local function gachaText()
 		"",
 		string.format("<b>Pity</b>: if no Legendary or better drops in %d pulls, the %dth pull is a guaranteed Legendary. If no Mythic drops in %d pulls, the %dth pull is a guaranteed Mythic. The counts are saved.", Config.Gacha.Pity.Legendary, Config.Gacha.Pity.Legendary, Config.Gacha.Pity.Mythic, Config.Gacha.Pity.Mythic),
 		"",
-		string.format("Gacha gear never carries a Unique effect. <b>Unique effects</b> (one of %d) come on Mythic gear: dungeon chests (see below), field drops (%s), the weekly Boss Rush chest and the weekly Final Lord reward.", #Config.Uniques.Order, Odds.Format((Config.Uniques.FieldChance or 0.08) * 100)),
+		string.format("Mythic gacha gear has a %d%% chance to carry a Unique effect. <b>Unique effects</b> (one of %d) come on Mythic gear: dungeon chests (see below), field drops (%s), the weekly Boss Rush chest and the weekly Final Lord reward.", math.floor((Config.Uniques.GachaChance or 0) * 100 + 0.5), #Config.Uniques.Order, Odds.Format((Config.Uniques.FieldChance or 0.08) * 100)),
 		"",
 		"Bonus stats on every piece roll randomly within a range that depends on its rarity (shown on the item).",
 		"Every result is useful: gear you can't improve on is converted into Gold and Essence.",

@@ -696,6 +696,10 @@ return {
 		["Choose a path for"] = "为其选择路线:",
 		["These stats shape your play style. Respec for free anytime."] = "这些属性决定你的玩法，随时可免费重置。",
 		["Reset (Free)"] = "重置 (免费)",
+		["Gear gacha Mythics"] = "扭蛋神话装备",
+		["Gear drop per kill"] = "每次击杀掉落装备",
+		["always"] = "必定",
+		["Highest grade"] = "最高品质",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -801,6 +805,7 @@ return {
 		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [稀有] 🌲 森林银戒指自动回收（精华 +{number1} {number2} 颗宝石）" },
 		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "花费{number3}属性点（T键/属性按钮）✅点击领取！" },
 		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "满 {number1} 点时,暴击从 2 倍提升到约 {number2} 倍。可搭配" },
+		{ "Mythic gacha gear has a {number1}% chance to carry a Unique effect.", "扭蛋获得的神话装备有{number1}%概率附带独特效果。" },
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "立即获得{number1}分钟的闲置收入 · 每日上限为{number2}" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISS 持续 {number1} 秒 · 即使中断也至少保留 {number2} 层" },
 		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 金币不足，无法抽取所选套装！(需要{number1}G)" },
@@ -1089,9 +1094,5 @@ return {
 		{ "💪 Zone {number1} Lord: power {number2} / {number3}", "💪 区域{number1}领主：战力 {number2} / {number3}" },
 		{ "Crit damage +{number1}%p  (max {number2})", "暴击伤害 +{number1}%p  (最多 {number2})" },
 		{ "▶ {number1} more to the next era", "▶ 距离下个时代还差{number1}" },
-		{ "★☆  Step {number1}/{number2} · Next step", "★☆ 步骤 {number1}/{number2} · 下一步" },
-		{ "🌋 {number1} Streak — Legendary!", "🌋 {number1}连胜 - 传奇级！" },
-		{ "Reach character level {number1}", "达到角色等级 {number1}" },
-		{ "▼ 👑 First Zone Lord  {number1}m", "▼ 👑 第一个区域领主 {number1}m" },
 	},
 }

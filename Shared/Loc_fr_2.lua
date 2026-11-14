@@ -821,6 +821,10 @@ return {
 		["Choose a path for"] = "Choisis une voie pour",
 		["These stats shape your play style. Respec for free anytime."] = "Ces stats façonnent ton style de jeu. Réinitialise gratuitement à tout moment.",
 		["Reset (Free)"] = "Réinitialiser (gratuit)",
+		["Gear gacha Mythics"] = "Mythiques du gacha",
+		["Gear drop per kill"] = "Butin d'équipement par élimination",
+		["always"] = "toujours",
+		["Highest grade"] = "Rang max",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -926,6 +930,7 @@ return {
 		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [Rare] 🌲 Anneau d'argent de la forêt récupéré automatiquement (Essence +{number1} {number2} G)" },
 		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "Utilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !" },
 		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "Avec le maximum de {number1} points, les critiques passent de 2x à environ {number2}x. Combinez" },
+		{ "Mythic gacha gear has a {number1}% chance to carry a Unique effect.", "L'équipement mythique du gacha a {number1}% de chances d'avoir un effet unique." },
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "Obtenez instantanément {number1} minutes de vos revenus passifs · maximum {number2} par jour" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISS dure {number1} s · conserve au moins {number2} cumuls même si la série s'interrompt" },
 		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 Pas assez d'or pour tirer le set choisi ! ({number1} G requis)" },
@@ -1007,7 +1012,5 @@ return {
 		{ "▶ Next feature: Lv.{number1} 💥 Power  ({number2} lvl · ~{number3} G)", "▶ Prochaine fonctionnalité : Niveau {number1} 💥 Puissance ({number2} niveau · ~{number3} G)" },
 		{ "✅ Mission complete! Reward: {number1} G + Tickets {number2}", "✅ Mission terminée ! Récompense : {number1} G + Tickets {number2}" },
 		{ "Rocket Launcher  ·  keys {number1}-{number2} switch weapons", "Lance-roquettes · les touches {number1}-{number2} permettent de changer d'arme" },
-		{ "📅 {number1}-day login streak · Get stronger today!", "📅 Série de connexion de {number1} jours · Devenez plus fort aujourd'hui !" },
-		{ "Each NEAR MISS stack gives +{number1}% more attack", "Chaque cumul NEAR MISS donne +{number1} % d'attaque en plus" },
 	},
 }

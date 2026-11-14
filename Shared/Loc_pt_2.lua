@@ -785,6 +785,10 @@ return {
 		["Choose a path for"] = "Escolha um caminho para",
 		["These stats shape your play style. Respec for free anytime."] = "Esses atributos moldam seu estilo de jogo. Redistribua grátis a qualquer momento.",
 		["Reset (Free)"] = "Redefinir (grátis)",
+		["Gear gacha Mythics"] = "Míticos do gacha",
+		["Gear drop per kill"] = "Drop de equipamento por abate",
+		["always"] = "sempre",
+		["Highest grade"] = "Grau máximo",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -890,6 +894,7 @@ return {
 		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [Raro] 🌲 Anel de Prata da Floresta recuperado automaticamente (Essência +{number1} {number2} G)" },
 		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "Gaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!" },
 		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "Com o máximo de {number1} pontos, os críticos passam de 2x para cerca de {number2}x. Combine" },
+		{ "Mythic gacha gear has a {number1}% chance to carry a Unique effect.", "Equipamento mítico do gacha tem {number1}% de chance de ter um efeito único." },
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "Ganhe instantaneamente {number1} minutos de sua renda passiva · máximo de {number2} por dia" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISS dura {number1} s · mantém pelo menos {number2} acúmulos mesmo se quebrar" },
 		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 Ouro insuficiente para o set escolhido! ({number1} G necessário)" },
@@ -1014,7 +1019,5 @@ return {
 		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 {number1} espíritos lutarão por você por {number2} s!" },
 		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1} s · {number2} adagas a cada {number3} s · dano x{number4} cada" },
 		{ "defeat {number1} monsters here, then the Lord", "derrote {number1} monstros aqui e depois o lorde" },
-		{ "Mythic: unique {number1}% (dungeon chests {number2}%+)", "Mítico: único {number1}% (baús de masmorra {number2}%+)" },
-		{ "Defeat {number1} bosses in one Boss Rush run", "Derrote {number1} chefes em uma partida de Corrida de Chefes" },
 	},
 }
