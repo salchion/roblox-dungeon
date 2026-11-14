@@ -15,7 +15,7 @@ local F = Config.Field
 
 local Q = {}
 
-local BUDGET = 600
+local BUDGET = 720 -- (600 + 아래 7번 바닥 얼룩 / 바위 무리 / 랜드마크 몫)
 local function rgb(r, g, b) return Color3.fromRGB(r, g, b) end
 local M = Enum.Material
 
@@ -337,6 +337,86 @@ function Q.Build(parentFolder, helpers)
 				local a = k / 4 * math.pi * 2 + 0.6
 				local p = fire + Vector3.new(math.cos(a) * 5, 0.6, math.sin(a) * 5)
 				cyl("LogSeat", p - Vector3.new(math.sin(a) * 2.2, 0, -math.cos(a) * 2.2), p + Vector3.new(math.sin(a) * 2.2, 0, -math.cos(a) * 2.2), 1.2, rgb(110, 80, 54), M.Wood)
+			end
+		end
+
+		-- 7) 바닥 얼룩 + 바위 무리 + 구역 랜드마크 (넓은 한 색 바닥이 밋밋해서: 진하고 연한 얼룩, 둥근 바위 무더기, 구역마다 눈에 띄는 큰 것 하나)
+		do
+			local groundColor = F.ZoneColors[zone] or T.Cap[1]
+			for _ = 1, 26 do -- 바닥 얼룩: 얇은 원판 (밟아도 걸리지 않게 아주 얇게)
+				local x, z = R(x0 + 30, x1 - 30), R(-half + 20, half - 20)
+				if not inBaffle(x, z, 6) then
+					local r = R(7, 18)
+					add("GroundPatch", Vector3.new(0.12, r * 2, r * R(1.1, 2)), CFrame.new(x, floorAt(x) + 0.07, z) * CFrame.Angles(0, R(0, 6.28), math.rad(90)),
+						tint(groundColor, R(-0.12, 0.1)), T.Cap[2], Enum.PartType.Cylinder)
+				end
+			end
+			for _ = 1, 12 do -- 바위 무리: 둥근 바위 2~3개 + 작은 돌
+				local x, z = R(x0 + 30, x1 - 30), R(-half + 25, half - 25)
+				if not inBaffle(x, z, 10) and math.abs(z) > 18 then
+					local y = floorAt(x)
+					for k = 1, 3 do
+						local s = k == 1 and R(3, 5) or R(1.2, 2.6)
+						ball("RockPile", Vector3.new(s, s, s), Vector3.new(x + R(-3, 3), y + s * 0.25, z + R(-3, 3)), tint(T.Rock, R(-0.12, 0.08)), M.Slate, k == 1)
+					end
+				end
+			end
+			-- 랜드마크: 구역 가운데 길 옆에 하나 (먼 곳에서도 "여기가 그 구역" 이 보이게)
+			local lx, lz = (x0 + x1) / 2 + R(-80, 80), -half * 0.55
+			if not inBaffle(lx, lz, 30) then
+				local ly = floorAt(lx)
+				local base = Vector3.new(lx, ly, lz)
+				local kind = ({ "stones", "log", "arch", "bones", "spires", "spikes", "crystals", "rings" })[zone] or "stones"
+				if kind == "stones" or kind == "crystals" then -- 돌 고리 (초원) / 결정 고리 (암흑)
+					for k = 1, 8 do
+						local a = k / 8 * math.pi * 2
+						local h = R(9, 14)
+						local mat, col = M.Slate, tint(T.Rock, R(-0.05, 0.1))
+						if kind == "crystals" then mat, col = M.Glass, T.Leaf end
+						add("LandmarkStone", Vector3.new(3, h, 2), CFrame.new(base + Vector3.new(math.cos(a) * 16, h / 2 - 0.5, math.sin(a) * 16)) * CFrame.Angles(math.rad(R(-6, 6)), -a, math.rad(R(-6, 6))), col, mat, nil, kind == "crystals" and 0.15 or nil, true)
+					end
+					add("LandmarkTop", Vector3.new(3, 2, 14), CFrame.new(base + Vector3.new(16, 14, 0)), tint(T.Rock, -0.05), M.Slate, nil, nil, true)
+				elseif kind == "log" then -- 쓰러진 거목 + 버섯
+					cyl("LandmarkLog", base + Vector3.new(-22, 3, 0), base + Vector3.new(22, 4, 4), 7, T.Bark, M.Wood, true)
+					for k = 1, 5 do
+						local p = base + Vector3.new(R(-18, 18), 0, R(5, 9))
+						cyl("LandmarkStem", p, p + Vector3.new(0, 2.5, 0), 0.8, rgb(232, 222, 200), M.SmoothPlastic)
+						ball("LandmarkCap", Vector3.new(3, 3, 3), p + Vector3.new(0, 2.7, 0), rgb(200, 80, 70), M.SmoothPlastic)
+					end
+				elseif kind == "arch" then -- 무너진 아치 (폐허)
+					for _, side in ipairs({ -1, 1 }) do
+						add("LandmarkPillar", Vector3.new(4, side < 0 and 22 or 13, 4), CFrame.new(base + Vector3.new(side * 10, (side < 0 and 22 or 13) / 2, 0)), tint(T.Rock, 0.05), M.Cobblestone, nil, nil, true)
+					end
+					add("LandmarkBeam", Vector3.new(14, 3.5, 4.5), CFrame.new(base + Vector3.new(-4, 22, 0)) * CFrame.Angles(0, 0, math.rad(-8)), tint(T.Rock, 0.08), M.Cobblestone, nil, nil, true)
+					add("LandmarkRubble", Vector3.new(6, 2.5, 5), CFrame.new(base + Vector3.new(6, 1.2, 4)) * CFrame.Angles(0, 0.5, 0.2), tint(T.Rock, -0.1), M.Cobblestone)
+				elseif kind == "bones" then -- 반쯤 묻힌 거대한 뼈 (사막)
+					local bone = rgb(236, 226, 204)
+					for k = 0, 5 do
+						local r = 9 - k * 0.6
+						local cx = base.X + k * 3.4
+						for seg = 0, 5 do -- 갈비뼈 한 대 = 원통 마디 6개로 반원
+							local a0, a1 = seg / 6 * math.pi, (seg + 1) / 6 * math.pi
+							cyl("LandmarkRib", Vector3.new(cx, base.Y + math.sin(a0) * r, base.Z + math.cos(a0) * r), Vector3.new(cx, base.Y + math.sin(a1) * r, base.Z + math.cos(a1) * r), 1.3, bone, M.SmoothPlastic, seg == 2)
+						end
+					end
+					ball("LandmarkSkull", Vector3.new(8, 8, 8), base + Vector3.new(-6, 2, 0), bone, M.SmoothPlastic, true)
+				elseif kind == "spires" or kind == "spikes" then -- 얼음 첨탑 (설원) / 흑요석 가시 + 용암 웅덩이 (화산)
+					local col, mat = rgb(200, 236, 255), M.Ice
+					if kind == "spikes" then col, mat = rgb(40, 32, 36), M.Basalt end
+					for k = 1, 6 do
+						local h = R(12, 26)
+						add("LandmarkSpire", Vector3.new(R(3, 5), h, R(3, 5)), CFrame.new(base + Vector3.new(R(-12, 12), h / 2 - 1, R(-8, 8))) * CFrame.Angles(math.rad(R(-12, 12)), R(0, 6.28), math.rad(R(-12, 12))), col, mat, nil, kind == "spires" and 0.1 or nil, true)
+					end
+					if kind == "spikes" then
+						add("LandmarkLava", Vector3.new(0.2, 18, 18), CFrame.new(base + Vector3.new(0, 0.1, 0)) * CFrame.Angles(0, 0, math.rad(90)), rgb(255, 110, 40), M.Neon, Enum.PartType.Cylinder, 0.35)
+					end
+				else -- rings: 떠 있는 돌 고리 (심연)
+					for k = 1, 10 do
+						local a = k / 10 * math.pi * 2
+						ball("LandmarkOrbit", Vector3.new(3, 3, 3), base + Vector3.new(math.cos(a) * 12, 16 + math.sin(a * 2) * 2, math.sin(a) * 12), tint(T.Rock, 0.1), M.Slate)
+					end
+					add("LandmarkCore", Vector3.new(5, 5, 5), CFrame.new(base + Vector3.new(0, 16, 0)), T.Leaf, M.Neon, Enum.PartType.Ball, 0.3)
+				end
 			end
 		end
 	end
