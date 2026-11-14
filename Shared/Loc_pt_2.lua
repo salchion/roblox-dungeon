@@ -753,6 +753,7 @@ return {
 		["Grandmaster"] = "Grão-mestre",
 		["Champion"] = "Campeão",
 		["Legend"] = "Lenda",
+		["No other gear for this slot in your bag"] = "Nenhum outro equipamento para este espaço na bolsa",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -958,6 +959,7 @@ return {
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ O portal ainda está se recuperando ({number1} s)." },
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} itens desmontados automaticamente (Essência +{number2}, {number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 Ouro insuficiente para o warp! ({number1} G necessário)" },
+		{ "{number1} in bag · tap one to compare and equip", "{number1} na bolsa · toque para comparar e equipar" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Giro Múltiplo!\nUsa todos os bilhetes (máximo {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Subiu de nível! Lv.{number1} (HP Máximo +{number2} Ataque +{number3}%)" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 Missão {number2}/{number3}</font>" },
@@ -999,6 +1001,5 @@ return {
 		{ "📋 Daily Quests {number1}/{number2}  ✅ tap to claim!", "📋 Missões Diárias {number1}/{number2} ✅ toque para reivindicar!" },
 		{ "Weapon range +{number1}% per point  (max {number2})", "Alcance de arma +{number1}% por ponto (máximo {number2})" },
 		{ "👑 Lord of Forest (Zone {number1}) · Rec. ⚡{number2}", "👑 Senhor da Floresta (Zona {number1}) · Rec. ⚡{number2}" },
-		{ "📍 Field Entrance  Right ahead!  {number1}m", "📍 Entrada do campo logo à frente! {number1}m" },
 	},
 }

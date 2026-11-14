@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Not enough power! (You {number1} / Rec. {number2})", "Nicht genug Stärke! (Du {number1} / Empf. {number2})" },
+		{ "Points left {number1}  /  earned {number2}  (max {number3})", "Verbleibende Punkte {number1}  /  verdient {number2}  (max. {number3})" },
 		{ "Crit chance +{number1}% per point  (max {number2})", "Krit-Chance +{number1}% pro Punkt  (max. {number2})" },
 		{ "🏚 Ruined Fortress Gate · Rec. ⚡{number1}", "🏚 Ruiniertes Festungstor · Rec. ⚡{number1}" },
 		{ "🏚 Ruined Fortress Gate · Rec. ⚡{number2}", "🏚 Ruiniertes Festungstor · Rec. ⚡{number2}" },

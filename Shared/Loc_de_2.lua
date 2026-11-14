@@ -733,6 +733,7 @@ return {
 		["That was your set effect! It fires on its own"] = "Das war dein Set-Effekt! Er löst von selbst aus",
 		["Grandmaster"] = "Großmeister",
 		["Legend"] = "Legende",
+		["No other gear for this slot in your bag"] = "Keine andere Ausrüstung für diesen Platz in der Tasche",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -938,6 +939,7 @@ return {
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ Das Portal erholt sich noch ({number1} s)." },
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} Gegenstände automatisch zerlegt (Essenz +{number2}, {number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 Nicht genug Gold für den Warp! ({number1} G nötig)" },
+		{ "{number1} in bag · tap one to compare and equip", "{number1} in der Tasche · antippen zum Vergleichen und Anlegen" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Mehrfache Rolle!\nVerwendet alle Tickets (max. {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Stufe aufsteigen! Lv.{number1} (Maximale HP +{number2} Angriff +{number3}%)" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} Verbesserungen: {number2} Erfolg / {number3} Fehlschlag  (Gold -{number4})" },
@@ -989,7 +991,5 @@ return {
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 Nächste Waffe freischalten: Schrotflinte (+{number1})" },
 		{ "⚠ Reach level {number1} to break through.", "⚠ Erreiche Stufe {number1}, um durchzubrechen." },
 		{ "💥 Weak Spot Hit! x3 damage for {number1}s", "💥 Schwachstellentreffer! {number1} s lang x3 Schaden" },
-		{ "Not enough power! (You {number1} / Rec. {number2})", "Nicht genug Stärke! (Du {number1} / Empf. {number2})" },
-		{ "Points left {number1}  /  earned {number2}  (max {number3})", "Verbleibende Punkte {number1}  /  verdient {number2}  (max. {number3})" },
 	},
 }

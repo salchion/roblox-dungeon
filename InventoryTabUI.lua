@@ -566,6 +566,69 @@ local function buildInventoryTab(state)
 		makeLabel({ Size = UDim2.new(1, -20, 1, -20), Position = UDim2.new(0, 10, 0, 10), Text = "No gear yet.\nDefeat monsters in the field or use the gacha!", TextSize = 13, TextColor3 = Color3.fromRGB(150, 150, 170) }, detail)
 	end
 
+	-- 바꿔 끼기 줄: 고른 부위에 낄 수 있는 가방 장비를 바로 아래 한 줄로 (세트를 맞추는 재미: 칸을 누르면 후보가 바로 보인다)
+	--   세트가 이어지는 것(끼면 그 세트 부위 수가 늘어나는 것)을 앞에, 그다음 점수 순. 누르면 위 상세 칸에서 비교 / 장착
+	local swapSlot = (not showWeapons) and selected and selected.Slot
+	if swapSlot and swapSlot ~= "Weapon" then
+		local current = equipped[swapSlot]
+		local candidates = {}
+		for _, item in ipairs(bag) do
+			if item.Slot == swapSlot then
+				local setGain = 0
+				if item.Set and Config.Sets[item.Set] and not (current and current.Set == item.Set) then
+					setGain = (setCounts[item.Set] or 0) + 1 -- 끼면 이 세트가 몇 부위가 되는가
+				end
+				table.insert(candidates, { Item = item, SetGain = setGain })
+			end
+		end
+		table.sort(candidates, function(x, y)
+			local xs, ys = x.SetGain >= 2 and 1 or 0, y.SetGain >= 2 and 1 or 0 -- (2부위 이상이 되어 세트 효과가 켜지거나 강해지는 것 먼저)
+			if xs ~= ys then return xs > ys end
+			return x.Item.Score > y.Item.Score
+		end)
+		local slotDef = Config.GetGearSlot(swapSlot)
+		local swapRow = newRow(#candidates > 0 and 112 or 40, Color3.fromRGB(30, 34, 54))
+		makeLabel({ Size = UDim2.new(1, -20, 0, 24), Position = UDim2.new(0, 10, 0, 4), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left,
+			Text = #candidates > 0
+				and string.format("<font color='#9ad7ff'><b>🔁 %s %s</b></font>  <font color='#aab0cc'>%d in bag · tap one to compare and equip</font>", SLOT_ICONS[swapSlot] or "", slotDef and slotDef.Name or swapSlot, #candidates)
+				or string.format("<font color='#9ad7ff'><b>🔁 %s %s</b></font>  <font color='#8f94b0'>No other gear for this slot in your bag</font>", SLOT_ICONS[swapSlot] or "", slotDef and slotDef.Name or swapSlot) }, swapRow)
+		if #candidates > 0 then
+			local strip = create("ScrollingFrame", { Size = UDim2.new(1, -20, 0, 80), Position = UDim2.new(0, 10, 0, 28), BackgroundTransparency = 1, BorderSizePixel = 0,
+				ScrollBarThickness = 4, ScrollingDirection = Enum.ScrollingDirection.X, CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.X }, swapRow)
+			create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }, strip)
+			for order, entry in ipairs(candidates) do
+				local item = entry.Item
+				local tile = makeButton({ Size = UDim2.new(0, 68, 0, 70), Text = "", LayoutOrder = order,
+					BackgroundColor3 = (selected and selected.Id == item.Id) and Color3.fromRGB(70, 74, 104) or Color3.fromRGB(42, 44, 62), AutoButtonColor = true,
+				}, strip, function()
+					menuContent:SetAttribute("ShowWeapons", nil)
+					menuContent:SetAttribute("SelectedItem", item.Id)
+					refreshMenu()
+				end)
+				rounded(tile, 8)
+				rarityOutline(tile, item.Rarity, (selected and selected.Id == item.Id) and 5 or nil)
+				makeLabel({ Size = UDim2.new(1, 0, 0, 28), Position = UDim2.new(0, 0, 0, 3), Text = SLOT_ICONS[item.Slot] or "?", TextSize = 20 }, tile)
+				makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 31), Text = string.format("+%d", item.Level), TextSize = 10, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, tile)
+				local diff = current and (item.Score - current.Score) or item.Score
+				if diff ~= 0 then -- 지금 낀 것보다 점수가 얼마나 높은 / 낮은가
+					makeLabel({ Size = UDim2.new(1, -4, 0, 12), Position = UDim2.new(0, 2, 0, 44), Text = (diff > 0 and "▲" or "▼") .. math.abs(diff), TextSize = 9, Font = Enum.Font.GothamBold,
+						TextColor3 = diff > 0 and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 130, 130) }, tile)
+				end
+				if item.Unique then
+					makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0, 2, 0, 3), Text = "★", TextSize = 10, TextColor3 = Color3.fromRGB(255, 184, 77) }, tile)
+				end
+				if item.Set and Config.Sets[item.Set] then
+					setDecor(tile, item.Set, setCounts[item.Set], UDim2.new(0, 4, 1, -15), UDim2.new(1, -8, 0, 12), 8)
+					if entry.SetGain >= 2 then -- 끼면 세트가 2 / 3부위가 된다: 초록 표시
+						local tag = makeLabel({ Size = UDim2.new(0, 30, 0, 13), Position = UDim2.new(1, -32, 0, 2), Text = string.format("%d/3", math.min(3, entry.SetGain)), TextSize = 9, Font = Enum.Font.GothamBlack,
+							TextColor3 = Color3.fromRGB(20, 30, 20), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(120, 255, 140), ZIndex = 5 }, tile)
+						rounded(tag, 6)
+					end
+				end
+			end
+		end
+	end
+
 	-- 가방 줄: 제목 (버튼 3개는 맨 위 버튼 줄로 옮겼다)
 	local bagHeader = newRow(34, Color3.fromRGB(26, 28, 42))
 	rowText(bagHeader, "<font color='#e1c476'><b>🎒 Bag — tap a slot to see details above</b></font>", 14)

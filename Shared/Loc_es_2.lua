@@ -782,6 +782,7 @@ return {
 		["Grandmaster"] = "Gran maestro",
 		["Champion"] = "Campeón",
 		["Legend"] = "Leyenda",
+		["No other gear for this slot in your bag"] = "No hay otro equipo para esta ranura en la bolsa",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -984,6 +985,7 @@ return {
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ El portal aún se está recuperando ({number1} s)." },
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} objetos desguazados automáticamente (Esencia +{number2}, {number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 ¡Oro insuficiente para el warp! (se necesitan {number1} G)" },
+		{ "{number1} in bag · tap one to compare and equip", "{number1} en la bolsa · toca para comparar y equipar" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 ¡Lanzamiento múltiple!\nUsa todos los boletos (máximo {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 ¡Subiste de nivel! Nivel {number1} (HP máximo +{number2} Ataque +{number3}%)" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 Misión {number2}/{number3}</font>" },
@@ -1007,7 +1009,5 @@ return {
 		{ "Defeat {number1} bosses in one Boss Rush run", "Derrota a {number1} jefes en una partida de carrera de jefes" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "Monstruos encontrados: {number1} / {number2} (incluye señores de zona)" },
 		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 ¡Entrada gratis usada! (quedan {number1} / {number2} hoy)" },
-		{ "A big blast when it ends (attack x{number1})", "Una gran explosión al terminar (ataque x{number1})" },
-		{ "{number1}s invincible, but healing is halved", "{number1} s de invencibilidad, pero la curación se reduce a la mitad" },
 	},
 }

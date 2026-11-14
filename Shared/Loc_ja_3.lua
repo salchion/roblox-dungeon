@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 {number1}区域を初クリア！ゴールド+{number2} · チケット+{number3} · 鍵+{number4}" },
 		{ "Shot_Cannon  <font color='#{number1}aa{number2}c{number3}'>Mortar shot</font>", "ショットキャノン <font color='#{number1}aa{number2}c{number3}'>迫撃砲射撃</font>" },
 		{ "🗿 Dungeon mutation: Giant — Monster HP x{number1} rewards x{number2}", "🗿 ダンジョンの突然変異：巨大モンスターのHPが{number1}倍、報酬が{number2}倍" },
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 履き古した靴を自動回収（エッセンス +{number1} {number2} G）" },
@@ -70,6 +71,7 @@ return {
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ ポータルはまだ回復中です({number1}秒)。" },
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1}個を自動分解 (エッセンス +{number2}、{number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 ワープのゴールドが足りません！({number1}G必要)" },
+		{ "{number1} in bag · tap one to compare and equip", "バッグに{number1}個 · タップして比較・装備" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 マルチロール！\nすべてのチケットを使用（最大{number1}枚）" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 レベルアップ！ Lv.{number1}（最大HP +{number2} 攻撃 +{number3}%）" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 ミッション {number2}/{number3}</font>" },

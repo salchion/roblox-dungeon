@@ -1051,6 +1051,7 @@ return {
 		["Grandmaster"] = "그랜드마스터",
 		["Champion"] = "챔피언",
 		["Legend"] = "레전드",
+		["No other gear for this slot in your bag"] = "가방에 이 부위 장비가 없어요",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1169,6 +1170,5 @@ return {
 		{ "You can run {number1} effects at once. Turn another one off first", "효과는 한 번에 {number1}개까지 쓸 수 있어요. 먼저 다른 하나를 끄세요" },
 		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "가챠_팝{number1} <font color='#{number2}aa{number3}c{number4}'>가챠 결과: 에픽</font>" },
 		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "{number1}시간의 유휴 수입을 즉시 획득하세요 · 하루 최대 {number2}" },
-		{ "🔒 Zone {number1} · Darklands Sealed\nOpen the previous gate first", "🔒 구역 {number1} · 다크랜드 봉쇄됨\n먼저 이전 게이트를 여세요" },
 	},
 }

@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "A big blast when it ends (attack x{number1})", "Una gran explosión al terminar (ataque x{number1})" },
+		{ "{number1}s invincible, but healing is halved", "{number1} s de invencibilidad, pero la curación se reduce a la mitad" },
 		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 Nueva arma: Tomo de hechizos - ¡presiona {number1}!" },
 		{ "Gacha_Pop{number1}  Gacha result: Legendary", "Gacha_Pop{number1} Resultado de Gacha: Legendario" },
 		{ "{number1} hours of idle gold ({number2} G) piled up!", "¡{number1} horas de oro inactivo ({number2} G) acumulado!" },

@@ -606,3 +606,5 @@
 2638¦グランドマスター¦Großmeister¦Grand maître¦Gran maestro¦Grão-mestre¦宗师¦그랜드마스터
 2639¦チャンピオン¦Champion¦Champion¦Campeón¦Campeão¦冠军¦챔피언
 2640¦レジェンド¦Legende¦Légende¦Leyenda¦Lenda¦传奇¦레전드
+2641¦バッグに{number1}個 · タップして比較・装備¦{number1} in der Tasche · antippen zum Vergleichen und Anlegen¦{number1} dans le sac · touche pour comparer et équiper¦{number1} en la bolsa · toca para comparar y equipar¦{number1} na bolsa · toque para comparar e equipar¦背包中{number1}件 · 点击比较并装备¦가방에 {number1}개 · 눌러서 비교하고 착용
+2642¦この部位の装備はバッグにありません¦Keine andere Ausrüstung für diesen Platz in der Tasche¦Aucun autre équipement pour cet emplacement dans le sac¦No hay otro equipo para esta ranura en la bolsa¦Nenhum outro equipamento para este espaço na bolsa¦背包里没有这个部位的其他装备¦가방에 이 부위 장비가 없어요

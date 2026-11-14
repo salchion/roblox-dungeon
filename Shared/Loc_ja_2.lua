@@ -911,6 +911,7 @@ return {
 		["Grandmaster"] = "グランドマスター",
 		["Champion"] = "チャンピオン",
 		["Legend"] = "レジェンド",
+		["No other gear for this slot in your bag"] = "この部位の装備はバッグにありません",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1049,6 +1050,5 @@ return {
 		{ "🗿 Colossus defeated! Gear + 🎫 +{number1} + {number2} G (time bonus x{number3})", "🗿 コロッサスを倒した！装備 + 🎫 +{number1} + {number2} G(タイムボーナス x{number3})" },
 		{ "Depth {number1} sweep: gold, tickets and boss chest received", "深度{number1}のスイープ：ゴールド、チケット、ボス箱を獲得しました" },
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "レベルが足りません。（このダンジョンはLv.{number1}以上）" },
-		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 {number1}区域を初クリア！ゴールド+{number2} · チケット+{number3} · 鍵+{number4}" },
 	},
 }

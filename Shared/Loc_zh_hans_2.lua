@@ -664,6 +664,7 @@ return {
 		["Grandmaster"] = "宗师",
 		["Champion"] = "冠军",
 		["Legend"] = "传奇",
+		["No other gear for this slot in your bag"] = "背包里没有这个部位的其他装备",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -869,6 +870,7 @@ return {
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ 传送门仍在恢复中({number1} 秒)。" },
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ 自动分解了 {number1} 件(精华 +{number2},{number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 传送金币不足！(需要{number1}G)" },
+		{ "{number1} in bag · tap one to compare and equip", "背包中{number1}件 · 点击比较并装备" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 多次滚动！\n使用所有门票（最多{number1}张）" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 升级！等级{number1}（最大生命值+{number2} 攻击力+{number3}%）" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 任务 {number2}/{number3}</font>" },
@@ -1083,7 +1085,5 @@ return {
 		{ "🔫 Gunshot Volume: {number1}%", "🔫 枪声音量:{number1}%" },
 		{ "🎁 Claimed {number1} rewards!", "🎁 领取了{number1}个奖励！" },
 		{ "Cooldown -{number1}%  (max {number2})", "冷却 -{number1}%  (最多 {number2})" },
-		{ "⚠ Zone {number1} · Forest ⚠", "⚠ 区域 {number1} · 森林 ⚠" },
-		{ "{number1} Gear Roll Tickets", "{number1} 装备抽取券" },
 	},
 }

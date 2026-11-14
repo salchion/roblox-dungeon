@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⚠ Zone {number1} · Forest ⚠", "⚠ 区域 {number1} · 森林 ⚠" },
+		{ "{number1} Gear Roll Tickets", "{number1} 装备抽取券" },
 		{ "👑 {number1} Kill Streak!!!!", "👑 {number1} 连续击杀!!!!" },
 		{ "XP Booster ({number1} hour)", "经验值提升器（{number1}小时）" },
 		{ "Recommended Power {number2}", "推荐力量 {number2}" },

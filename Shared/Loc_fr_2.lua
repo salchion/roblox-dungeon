@@ -791,6 +791,7 @@ return {
 		["That was your set effect! It fires on its own"] = "C'était ton effet d'ensemble ! Il se déclenche tout seul",
 		["Grandmaster"] = "Grand maître",
 		["Legend"] = "Légende",
+		["No other gear for this slot in your bag"] = "Aucun autre équipement pour cet emplacement dans le sac",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -993,6 +994,5 @@ return {
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 Niveau supérieur ! Niv.{number1}  (PV max +{number2}, attaque +{number3} %)" },
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ Les améliorations sont gratuites pour l'instant ! ({number1} restantes)" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ Le portail récupère encore ({number1} s)." },
-		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} objets recyclés automatiquement (Essence +{number2}, {number3} G)" },
 	},
 }

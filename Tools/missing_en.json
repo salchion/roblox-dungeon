@@ -2639,5 +2639,7 @@
 "Paragon {number1}",
 "Grandmaster",
 "Champion",
-"Legend"
+"Legend",
+"{number1} in bag · tap one to compare and equip",
+"No other gear for this slot in your bag"
 ]

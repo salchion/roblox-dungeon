@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 Zone {number1} · Darklands Sealed\nOpen the previous gate first", "🔒 구역 {number1} · 다크랜드 봉쇄됨\n먼저 이전 게이트를 여세요" },
 		{ "🔒 Zone {number1} · Snowfield Sealed\nOpen the previous gate first", "🔒 구역 {number1} · 설원 봉쇄됨\n먼저 이전 게이트를 여세요" },
 		{ "Accrues up to {number1} hours while you're away (default {number2} hours)", "부재 중 최대 {number1}시간 누적 (기본 {number2}시간)" },
 		{ "🌪 Mob hunter  ·  ✔ 🔫 Rocket Launcher / Spell Tome (+{number1}%)", "🌪 몬스터 사냥꾼 · ✔ 🔫 로켓 발사기 / 스펠 토메 (+{number1}%)" },
@@ -105,6 +106,7 @@ return {
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ 포탈이 아직 회복 중이에요 ({number1}초)." },
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ 장비 {number1}개 자동 분해 (정수 +{number2}, {number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 워프할 골드가 부족해요! ({number1}G 필요)" },
+		{ "{number1} in bag · tap one to compare and equip", "가방에 {number1}개 · 눌러서 비교하고 착용" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 멀티 롤!\n모든 티켓 사용 (최대 {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 레벨업! Lv.{number1} (최대 체력 +{number2} 공격 +{number3}%)" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 미션 {number2}/{number3}</font>" },
