@@ -66,11 +66,11 @@ make("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
 
 -- 창 모양: 왼쪽에 내 캐릭터가 서 있고 그 둘레에 구역 효과 8개가 원으로 둘러선다 (무협 RPG 장비창처럼).
 -- 오른쪽 패널에 고른 효과의 설명 + 버튼. 한 화면에 다 들어와서 스크롤이 없다.
-local PANEL_W, PANEL_H = 760, 548
+local PANEL_W, PANEL_H = 1000, 548
 local RING_CX, RING_CY = 250, 312 -- 원들이 둘러서는 중심 (= 캐릭터)
 local RING_RX, RING_RY = 172, 172
 local ORB = 66
-local BOX_X, BOX_W, BOX_H = 492, 252, 436
+local BOX_X, BOX_W, BOX_H = 652, 332, 436
 
 local panel = make("Frame", {
 	Size = UDim2.new(0, PANEL_W, 0, PANEL_H), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
@@ -94,31 +94,6 @@ local slotLabel = label({ Size = UDim2.new(1, -32, 0, 20), Position = UDim2.new(
 label({ Size = UDim2.new(1, -32, 0, 28), Position = UDim2.new(0, 16, 0, 60), Text = "Equip a zone's set gear and its effect turns on by itself (highest level first, up to your slots) · Gold: +Lv.1–3 · Set gear: +Lv.1–3 · 📌 Pin to keep one on", TextSize = 11, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
 button({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), BackgroundColor3 = Color3.fromRGB(54, 58, 82), Text = "Close", TextSize = 12 }, panel, function() panel.Visible = false end)
 
--- 원들을 잇는 길: 1 -> 2 -> ... -> 8 한 방향 (8 에서 1 로는 이어지지 않는다). 구간마다 화살표
-for k = 1, ZONES - 1 do
-	local a0 = -math.pi / 2 + (k - 1) / ZONES * math.pi * 2
-	local a1 = -math.pi / 2 + k / ZONES * math.pi * 2
-	for step = 1, 4 do
-		local t = 0.18 + (step - 1) * 0.2
-		local angle = a0 + (a1 - a0) * t
-		local px, py = RING_CX + math.cos(angle) * RING_RX, RING_CY + math.sin(angle) * RING_RY
-		if step == 3 then
-			local tx, ty = -RING_RX * math.sin(angle), RING_RY * math.cos(angle)
-			make("TextLabel", {
-				Size = UDim2.new(0, 16, 0, 16), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, px, 0, py), BackgroundTransparency = 1,
-				Text = "▶", TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = Color3.fromRGB(255, 210, 140), TextTransparency = 0.1,
-				Rotation = math.deg(math.atan2(ty, tx)),
-			}, panel)
-		else
-			local dot = make("Frame", {
-				Size = UDim2.new(0, 4, 0, 4), AnchorPoint = Vector2.new(0.5, 0.5), BorderSizePixel = 0, Position = UDim2.new(0, px, 0, py),
-				BackgroundColor3 = Color3.fromRGB(255, 210, 140), BackgroundTransparency = 0.4,
-			}, panel)
-			make("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
-		end
-	end
-end
-
 -- 가운데: 내 캐릭터 (천천히 돈다)
 local viewport = make("ViewportFrame", {
 	Size = UDim2.new(0, 200, 0, 270), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, RING_CX, 0, RING_CY), BackgroundTransparency = 1,
@@ -126,6 +101,7 @@ local viewport = make("ViewportFrame", {
 }, panel)
 local viewCam = make("Camera", { FieldOfView = 36 }, viewport)
 viewport.CurrentCamera = viewCam
+viewport.Visible = false -- (카드 배치로 바꾸면서 캐릭터는 뺐다: 장비 창에 있다)
 local viewClone, viewPivot
 local function rebuildCharacter()
 	if viewClone then viewClone:Destroy() viewClone = nil end
@@ -212,61 +188,45 @@ buyButton.TextWrapped = true
 
 local refresh -- (아래에서 정의)
 local rows = {}
+-- 효과 8개를 카드로 (3열): 아이콘 / 이름 / 상태 / 큰 단계 / 단계 점 6개(금 = 골드, 하늘 = 장비) / 한 줄 설명
+-- (예전: 캐릭터 둘레에 원으로 놓여 캐릭터 / 펫이 아이콘을 가리고 무엇이 켜졌는지 한눈에 안 보였다)
 for zone = 1, ZONES do
 	local attr = Config.Sets.ZoneAug[zone]
 	local info = Config.AugInfo[attr]
-	local angle = -math.pi / 2 + (zone - 1) / ZONES * math.pi * 2 -- 맨 위부터 시계 방향
-	local cx, cy = RING_CX + math.cos(angle) * RING_RX, RING_CY + math.sin(angle) * RING_RY
-	local orb = make("Frame", {
-		Size = UDim2.new(0, ORB, 0, ORB), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy),
-		BackgroundColor3 = Color3.fromRGB(36, 34, 52), BorderSizePixel = 0, ZIndex = 3,
-	}, panel)
+	local col, line = (zone - 1) % 3, (zone - 1) // 3
+	local card = make("Frame", { Size = UDim2.new(0, 196, 0, 136), Position = UDim2.new(0, 16 + col * 206, 0, 96 + line * 146), BackgroundColor3 = Color3.fromRGB(28, 30, 46), BorderSizePixel = 0, ZIndex = 2 }, panel)
+	make("UICorner", { CornerRadius = UDim.new(0, 14) }, card)
+	local cardGlow = make("UIGradient", { Rotation = 35, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 0) }) }, card)
+	local orb = make("Frame", { Size = UDim2.new(0, 50, 0, 50), Position = UDim2.new(0, 10, 0, 10), BackgroundColor3 = Color3.fromRGB(36, 34, 52), BorderSizePixel = 0, ZIndex = 3 }, card)
 	make("UICorner", { CornerRadius = UDim.new(1, 0) }, orb)
-	local icon = label({ Size = UDim2.new(1, 0, 1, 0), Text = info.Icon, TextSize = 28, ZIndex = 4 }, orb)
-	local zoneTag = label({
-		Size = UDim2.new(0, 22, 0, 22), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.15, 0, 0.15, 0), BackgroundTransparency = 0,
-		BackgroundColor3 = Color3.fromRGB(60, 50, 80), Text = tostring(zone), TextSize = 11, Font = Enum.Font.GothamBlack, ZIndex = 5,
-	}, orb)
-	make("UICorner", { CornerRadius = UDim.new(1, 0) }, zoneTag)
-	local lockTag = label({
-		Size = UDim2.new(0, 22, 0, 22), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.86, 0, 0.14, 0), BackgroundTransparency = 0,
-		BackgroundColor3 = Color3.fromRGB(20, 18, 30), Text = "🔒", TextSize = 12, ZIndex = 6,
-	}, orb)
+	make("UIStroke", { Color = Color3.fromRGB(22, 18, 44), Thickness = 2.4 }, orb)
+	local icon = label({ Size = UDim2.new(1, 0, 1, 0), Text = info.Icon, TextSize = 24, ZIndex = 4 }, orb)
+	local lockTag = label({ Size = UDim2.new(0, 20, 0, 20), Position = UDim2.new(1, -14, 1, -14), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(20, 18, 30), Text = "🔒", TextSize = 11, ZIndex = 6 }, orb)
 	make("UICorner", { CornerRadius = UDim.new(1, 0) }, lockTag)
-	local levelTag = label({
-		Size = UDim2.new(0, 34, 0, 16), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 1, 0), BackgroundTransparency = 0,
-		BackgroundColor3 = Color3.fromRGB(30, 26, 44), Text = "", TextSize = 10, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 120), ZIndex = 5,
-	}, orb)
-	make("UICorner", { CornerRadius = UDim.new(1, 0) }, levelTag)
-	local caption = label({
-		Size = UDim2.new(0, 120, 0, 14), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0, cx, 0, cy + ORB / 2 + 10),
-		Text = info.Name, TextSize = 11, ZIndex = 4, TextTruncate = Enum.TextTruncate.AtEnd,
-	}, panel)
-	-- 켜져 있으면 테두리가 효과 색으로 빛나며 천천히 도는 띠가 된다. 고른 원은 흰 고리
-	local rowStroke = make("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 3, ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Transparency = 1 }, orb)
-	local gradient = make("UIGradient", {
-		Color = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, info.Color),
-			ColorSequenceKeypoint.new(0.3, Color3.new(1, 1, 1)),
-			ColorSequenceKeypoint.new(0.6, info.Color:Lerp(Color3.new(0, 0, 0), 0.55)),
-			ColorSequenceKeypoint.new(1, info.Color),
-		}),
-	}, rowStroke)
-	local selRing = make("Frame", { Size = UDim2.new(0, ORB + 12, 0, ORB + 12), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy), BackgroundTransparency = 1, ZIndex = 2, Visible = false }, panel)
-	make("UICorner", { CornerRadius = UDim.new(1, 0) }, selRing)
-	make("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 2, Transparency = 0.15 }, selRing)
-	local hit = make("TextButton", { Size = UDim2.new(0, ORB + 30, 0, ORB + 34), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, cx, 0, cy + 10), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, panel)
+	local caption = label({ Size = UDim2.new(1, -120, 0, 18), Position = UDim2.new(0, 68, 0, 10), Text = info.Name, TextSize = 13, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4, TextTruncate = Enum.TextTruncate.AtEnd }, card)
+	local status = label({ Size = UDim2.new(1, -76, 0, 16), Position = UDim2.new(0, 68, 0, 30), Text = "", RichText = true, TextSize = 11, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4 }, card)
+	local levelTag = label({ Size = UDim2.new(0, 60, 0, 22), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 8), Text = "", TextSize = 18, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = Color3.fromRGB(150, 230, 255), ZIndex = 4 }, card)
+	local pinTag = label({ Size = UDim2.new(0, 20, 0, 18), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 32), Text = "📌", TextSize = 13, ZIndex = 4, Visible = false }, card)
+	local pipDots = {}
+	for i = 1, 6 do
+		local dot = make("Frame", { Size = UDim2.new(0, 13, 0, 13), Position = UDim2.new(0, 12 + (i - 1) * 18, 0, 72), BackgroundColor3 = Color3.fromRGB(58, 60, 82), BorderSizePixel = 0, ZIndex = 4 }, card)
+		make("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
+		pipDots[i] = dot
+	end
+	local sub = label({ Size = UDim2.new(1, -20, 0, 30), Position = UDim2.new(0, 10, 0, 94), Text = "", TextSize = 10, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(150, 156, 180), ZIndex = 4 }, card)
+	local rowStroke = make("UIStroke", { Color = Color3.fromRGB(60, 62, 88), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
+	local selRing = make("Frame", { Size = UDim2.new(1, 8, 1, 8), Position = UDim2.new(0, -4, 0, -4), BackgroundTransparency = 1, ZIndex = 1, Visible = false }, card)
+	make("UICorner", { CornerRadius = UDim.new(0, 17) }, selRing)
+	make("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 2.5 }, selRing)
+	local matchTag = label({ Size = UDim2.new(0, 20, 0, 20), Position = UDim2.new(0, -4, 1, -16), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(46, 160, 90), Text = "🔫", TextSize = 11, ZIndex = 6, Visible = false }, orb)
+	make("UICorner", { CornerRadius = UDim.new(1, 0) }, matchTag)
+	local hit = make("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, card)
 	hit.Activated:Connect(function()
 		selectedZone = zone
 		refresh()
 	end)
-	local matchTag = label({ -- 지금 무기와 잘 맞는 효과: 원 왼쪽 아래 초록 🔫
-		Size = UDim2.new(0, 24, 0, 24), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.12, 0, 0.88, 0), BackgroundTransparency = 0,
-		BackgroundColor3 = Color3.fromRGB(46, 160, 90), Text = "🔫", TextSize = 13, ZIndex = 6, Visible = false,
-	}, orb)
-	make("UICorner", { CornerRadius = UDim.new(1, 0) }, matchTag)
-	make("UIStroke", { Color = Color3.fromRGB(180, 255, 200), Thickness = 1.5 }, matchTag)
-	rows[zone] = { Lock = lockTag, Orb = orb, Icon = icon, Level = levelTag, Caption = caption, Stroke = rowStroke, Gradient = gradient, Sel = selRing, Match = matchTag }
+	rows[zone] = { Lock = lockTag, Orb = orb, Icon = icon, Level = levelTag, Caption = caption, Stroke = rowStroke, Sel = selRing, Match = matchTag,
+		Card = card, CardGlow = cardGlow, Status = status, Pin = pinTag, Pips = pipDots, Sub = sub, Color = info.Color }
 end
 
 local function roleLine(attrKey)
@@ -303,6 +263,29 @@ function refresh()
 		r.Caption.TextColor3 = on and Color3.fromRGB(150, 255, 190) or (open and Color3.fromRGB(255, 240, 200) or Color3.fromRGB(130, 134, 156))
 		r.Stroke.Transparency = on and 0.05 or (open and 0.6 or 0.85)
 		r.Sel.Visible = zone == selectedZone
+		do -- 카드: 상태 / 단계 점 / 설명 / 고정 / 켜진 카드는 효과 색으로 물든다
+			local pinned = player:GetAttribute("AugPinZ_" .. zone) == true
+			r.Pin.Visible = pinned
+			r.Card.BackgroundColor3 = on and info.Color:Lerp(Color3.fromRGB(28, 30, 46), 0.62) or Color3.fromRGB(28, 30, 46)
+			r.CardGlow.Transparency = on and NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 0.5) }) or NumberSequence.new(0)
+			r.Stroke.Color = on and info.Color or Color3.fromRGB(60, 62, 88)
+			r.Stroke.Transparency = 0
+			r.Card.BackgroundTransparency = (not open and level + gear == 0) and 0.35 or 0
+			r.Orb.BackgroundColor3 = info.Color:Lerp(Color3.fromRGB(20, 18, 30), (open or level + gear > 0) and 0.45 or 0.75)
+			for i, dot in ipairs(r.Pips) do
+				dot.BackgroundColor3 = i <= level and Color3.fromRGB(255, 217, 102) or (i <= level + gear and Color3.fromRGB(143, 224, 255) or Color3.fromRGB(58, 60, 82))
+			end
+			if on then
+				r.Status.Text = "<font color='#78ff8c'>● <b>ON</b></font>"
+			elseif level + gear > 0 then
+				r.Status.Text = "<font color='#aab0cc'>Waiting (no free slot)</font>"
+			elseif open then
+				r.Status.Text = "<font color='#aab0cc'>Equip its set gear</font>"
+			else
+				r.Status.Text = "<font color='#888899'>🔒 Defeat the lord</font>"
+			end
+			r.Sub.Text = (open or level + gear > 0) and string.format("Zone %d · Gold %d + Set gear %d", zone, level, gear) or string.format("Unlocks when you defeat the Zone %d lord", zone)
+		end
 		r.Match.Visible = open and Config.AugWeaponMatch(player, Config.Sets.ZoneAug[zone]) == true
 		if open and level == 0 and gold >= Config.Sets.AugCost(zone, 1) then affordable += 1 end
 	end
@@ -455,9 +438,10 @@ RunService.RenderStepped:Connect(function()
 	local t = os.clock()
 	for zone = 1, ZONES do
 		local r = rows[zone]
-		if r.Stroke.Transparency < 0.5 then -- (켜진 원만)
-			r.Gradient.Rotation = (t * 110 + zone * 40) % 360
-			r.Stroke.Thickness = 3 + 0.8 * math.sin(t * 3 + zone)
+		if player:GetAttribute("AugOnZ_" .. zone) == true then -- (켜진 카드만 테두리가 숨 쉬듯)
+			r.Stroke.Thickness = 2 + 0.8 * math.sin(t * 3 + zone)
+		else
+			r.Stroke.Thickness = 1.5
 		end
 	end
 end)

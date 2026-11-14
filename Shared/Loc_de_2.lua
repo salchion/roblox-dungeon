@@ -787,6 +787,9 @@ return {
 		["Sort: Set first"] = "Sortieren: Sets zuerst",
 		["Nothing matches this filter"] = "Nichts passt zu diesem Filter",
 		["✔ Max upgrade"] = "✔ Maximal verbessert",
+		["Waiting (no free slot)"] = "Wartet (kein freier Platz)",
+		["Equip its set gear"] = "Rüste sein Set aus",
+		["🔒 Defeat the lord"] = "🔒 Besiege den Lord",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -997,6 +1000,7 @@ return {
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} Gegenstände automatisch zerlegt (Essenz +{number2}, {number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 Nicht genug Gold für den Warp! ({number1} G nötig)" },
 		{ "{number1} in bag · tap one to compare and equip", "{number1} in der Tasche · antippen zum Vergleichen und Anlegen" },
+		{ "Unlocks when you defeat the Zone {number1} lord", "Wird freigeschaltet, wenn du den Lord von Zone {number1} besiegst" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Mehrfache Rolle!\nVerwendet alle Tickets (max. {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Stufe aufsteigen! Lv.{number1} (Maximale HP +{number2} Angriff +{number3}%)" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} Verbesserungen: {number2} Erfolg / {number3} Fehlschlag  (Gold -{number4})" },
@@ -1012,7 +1016,5 @@ return {
 		{ "Spell Tome  ·  keys {number1}-{number2} switch weapons", "Zauberbuch · Tasten {number1}-{number2} wechseln Waffen" },
 		{ "Defeat {number1} monsters (dungeons included)", "Besiege {number1} Monster (Dungeons eingeschlossen)" },
 		{ "🎯 Ready to challenge the Zone {number1} Lord!", "🎯 Bereit, den Lord von Zone {number1} herauszufordern!" },
-		{ "Gold x{number1} · Tickets {number2} · Boss chest gear {number3}", "Gold x{number1} · Tickets {number2} · Boss-Truhen-Ausrüstung {number3}" },
-		{ "Bounces to {number1} nearby enemies (within {number2})", "Prallt auf {number1} nahe Gegner ab (innerhalb von {number2})" },
 	},
 }

@@ -965,6 +965,9 @@ return {
 		["Sort: Set first"] = "並び: セット優先",
 		["Nothing matches this filter"] = "この条件の装備はありません",
 		["✔ Max upgrade"] = "✔ 最大強化",
+		["Waiting (no free slot)"] = "待機 (空き枠なし)",
+		["Equip its set gear"] = "セット装備を着けるとオン",
+		["🔒 Defeat the lord"] = "🔒 ボスを倒す",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1081,6 +1084,5 @@ return {
 		{ "🔒 Zone {number1} · Darklands Sealed\nOpen the previous gate first", "🔒 ゾーン {number1} · ダークランドが封鎖されました\nまず前のゲートを開けてください" },
 		{ "🔒 Zone {number1} · Snowfield Sealed\nOpen the previous gate first", "🔒 ゾーン {number1} · 雪原が封鎖されています\nまず前のゲートを開けてください" },
 		{ "Accrues up to {number1} hours while you're away (default {number2} hours)", "不在中に最大{number1}時間蓄積（デフォルトは{number2}時間）" },
-		{ "🌪 Mob hunter  ·  ✔ 🔫 Rocket Launcher / Spell Tome (+{number1}%)", "🌪 モブハンター  ·  ✔ 🔫 ロケットランチャー/スペルブック (+{number1}%)" },
 	},
 }

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ [Common] 🌾 Meadow Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [일반] 🌾 초원 가죽 방어구 자동 회수 (에센스 +{number1} {number2} G)" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})\nUpgrade cost {number2} G · You have {number3} G", "🔫 다음 무기 잠금 해제 산탄총 (+{number1})\n업그레이드 비용 {number2} G · 보유 중인 G: {number3}" },
 		{ "♻ [Rare] 🌾 Meadow Leather Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [희귀] 🌾 초원 가죽 장갑 자동 회수 (에센스 +{number1} {number2} G)" },
 		{ "♻ [Common] 🌾 Meadow Cloth Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [일반] 🌾 초원 천 장갑 자동 수집 (에센스 +{number1} {number2} G)" },
@@ -131,6 +132,7 @@ return {
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ 장비 {number1}개 자동 분해 (정수 +{number2}, {number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 워프할 골드가 부족해요! ({number1}G 필요)" },
 		{ "{number1} in bag · tap one to compare and equip", "가방에 {number1}개 · 눌러서 비교하고 착용" },
+		{ "Unlocks when you defeat the Zone {number1} lord", "{number1}구역 군주를 잡으면 열려요" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 멀티 롤!\n모든 티켓 사용 (최대 {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 레벨업! Lv.{number1} (최대 체력 +{number2} 공격 +{number3}%)" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 미션 {number2}/{number3}</font>" },
@@ -288,6 +290,7 @@ return {
 		{ "▲ Better than equipped  +{number1}", "▲ 끼고 있는 것보다 좋아요  +{number1}" },
 		{ "Damage Taken Reduction +{number1}%", "받는 피해 감소 +{number1}%" },
 		{ "Damage Taken Reduction -{number1}%", "받는 피해 감소 -{number1}%" },
+		{ "Zone {number1} · Gold {number2} + Set gear {number3}", "{number1}구역 · 골드 {number2} + 장비 {number3}" },
 		{ "Lord of Forest  ·  Zone {number1}", "숲의 군주 · 구역 {number1}" },
 		{ "Zone {number1} · Shockwave Shot  ", "존 {number1} · 충격파 샷" },
 		{ "Spell Tome · Rusty Era +{number1}", "스펠 토메 · 녹슨 시대 +{number1}" },

@@ -843,6 +843,9 @@ return {
 		["Sort: Set first"] = "Tri : sets d'abord",
 		["Nothing matches this filter"] = "Rien ne correspond à ce filtre",
 		["✔ Max upgrade"] = "✔ Amélioration max",
+		["Waiting (no free slot)"] = "En attente (pas d'emplacement libre)",
+		["Equip its set gear"] = "Équipe son set",
+		["🔒 Defeat the lord"] = "🔒 Bats le seigneur",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1019,6 +1022,5 @@ return {
 		{ "💰 Golden Goblin defeated! +{number1} G, 3 loot drops!", "💰 Gobelin doré vaincu ! +{number1} or, 3 butins lâchés !" },
 		{ "+1 set-effect option: Legendary {number1}% / Mythic {number2}%", "Option effet d'ensemble +1 : Légendaire {number1} % / Mythique {number2} %" },
 		{ "Enemies swarm in more often\nGold +{number1}% instead", "Les ennemis apparaissent plus fréquemment\nOr +{number1}% à la place" },
-		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 {number1} équipement(s) plus faible(s) nettoyé(s) automatiquement (Essence +{number2}, {number3} or)" },
 	},
 }

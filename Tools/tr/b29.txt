@@ -779,3 +779,9 @@
 2810¦✔ 最大強化¦✔ Maximal verbessert¦✔ Amélioration max¦✔ Mejora máxima¦✔ Melhoria máxima¦✔ 已满强化¦✔ 최대 강화
 2811¦オン Lv.{number1}¦AN Lv.{number1}¦ACTIVÉ Niv.{number1}¦ACTIVO Nv.{number1}¦LIGADO Nv.{number1}¦开启 Lv.{number1}¦켜짐 Lv.{number1}
 2812¦+ {text1}¦+ {text1}¦+ {text1}¦+ {text1}¦+ {text1}¦+ {text1}¦+ {text1}
+2813¦● オン¦● AN¦● ACTIVÉ¦● ACTIVO¦● LIGADO¦● 开启¦● 켜짐
+2814¦待機 (空き枠なし)¦Wartet (kein freier Platz)¦En attente (pas d'emplacement libre)¦En espera (sin ranura libre)¦Aguardando (sem espaço livre)¦等待（没有空栏位）¦대기 (빈 칸 없음)
+2815¦セット装備を着けるとオン¦Rüste sein Set aus¦Équipe son set¦Equipa su set¦Equipe o set¦穿上该套装¦세트 장비 끼면 켜짐
+2816¦🔒 ボスを倒す¦🔒 Besiege den Lord¦🔒 Bats le seigneur¦🔒 Derrota al señor¦🔒 Derrote o lorde¦🔒 击败领主¦🔒 군주 처치
+2817¦ゾーン{number1} · ゴールド {number2} + セット装備 {number3}¦Zone {number1} · Gold {number2} + Set {number3}¦Zone {number1} · Or {number2} + Set {number3}¦Zona {number1} · Oro {number2} + Set {number3}¦Zona {number1} · Ouro {number2} + Set {number3}¦区域{number1} · 金币 {number2} + 套装 {number3}¦{number1}구역 · 골드 {number2} + 장비 {number3}
+2818¦ゾーン{number1}のボスを倒すと解放¦Wird freigeschaltet, wenn du den Lord von Zone {number1} besiegst¦Se débloque en battant le seigneur de la zone {number1}¦Se desbloquea al derrotar al señor de la zona {number1}¦Desbloqueia ao derrotar o lorde da zona {number1}¦击败区域{number1}领主后解锁¦{number1}구역 군주를 잡으면 열려요

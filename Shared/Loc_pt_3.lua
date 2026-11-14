@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🗿 Colossus defeated! Gear + 🎫 +1 + {number1} G", "🗿 Colosso derrotado! Equipamento + 🎫 +1 + {number1} G" },
+		{ "🔒 Unlocks at level {number1}  (you are level {number2})", "🔒 Desbloqueia no nível {number1}  (você é nível {number2})" },
 		{ "Pierces up to {number1} more enemies in a line", "Perfura até {number1} inimigos a mais em linha" },
 		{ "Lasts +{number1}s · range +{number2}%: sweeps up swarms", "Dura +{number1}s · alcance +{number2}%: varre enxames" },
 		{ "👑 Lord of Snowfield (Zone {number1}) · Rec. ⚡{number2}", "👑 Senhor do Campo de Neve (Zona {number1}) · Rec. ⚡{number2}" },
@@ -149,6 +151,7 @@ return {
 		{ "▲ Better than equipped  +{number1}", "▲ Melhor que o equipado  +{number1}" },
 		{ "Damage Taken Reduction +{number1}%", "Redução de dano recebido +{number1}%" },
 		{ "Damage Taken Reduction -{number1}%", "Redução de dano recebido -{number1}%" },
+		{ "Zone {number1} · Gold {number2} + Set gear {number3}", "Zona {number1} · Ouro {number2} + Set {number3}" },
 		{ "Lord of Forest  ·  Zone {number1}", "Senhor da Floresta · Zona {number1}" },
 		{ "Zone {number1} · Shockwave Shot  ", "Zona {number1} · Tiro de Onda de Choque" },
 		{ "Spell Tome · Rusty Era +{number1}", "Livro de Feitiços · Era Enferrujada +{number1}" },

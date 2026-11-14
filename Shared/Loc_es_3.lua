@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Auto-equipped the best gear in {number1} slot(s)", "Mejor equipo equipado en {number1} ranura(s)" },
 		{ "Sniper Rifle  ·  keys {number1}-{number2} switch weapons", "Rifle de francotirador · teclas {number1}-{number2} para cambiar de arma" },
 		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>", "<font color='#{number1}fffb{number2}'><b>Ataque automático</b>" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 ¡Subida de nivel! Nv.{number1}  (Vida máx. +{number2}, ataque +{number3}%)" },
@@ -12,6 +13,7 @@ return {
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} objetos desguazados automáticamente (Esencia +{number2}, {number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 ¡Oro insuficiente para el warp! (se necesitan {number1} G)" },
 		{ "{number1} in bag · tap one to compare and equip", "{number1} en la bolsa · toca para comparar y equipar" },
+		{ "Unlocks when you defeat the Zone {number1} lord", "Se desbloquea al derrotar al señor de la zona {number1}" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 ¡Lanzamiento múltiple!\nUsa todos los boletos (máximo {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 ¡Subiste de nivel! Nivel {number1} (HP máximo +{number2} Ataque +{number3}%)" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 Misión {number2}/{number3}</font>" },
@@ -165,6 +167,7 @@ return {
 		{ "▲ Better than equipped  +{number1}", "▲ Mejor que lo equipado  +{number1}" },
 		{ "Damage Taken Reduction +{number1}%", "Reducción de daño recibido +{number1}%" },
 		{ "Damage Taken Reduction -{number1}%", "Reducción de daño recibido -{number1}%" },
+		{ "Zone {number1} · Gold {number2} + Set gear {number3}", "Zona {number1} · Oro {number2} + Set {number3}" },
 		{ "Lord of Forest  ·  Zone {number1}", "Señor del Bosque · Zona {number1}" },
 		{ "Zone {number1} · Shockwave Shot  ", "Zona {number1} · Disparo de onda de choque" },
 		{ "Spell Tome · Rusty Era +{number1}", "Tomo de hechizos · Era oxidada +{number1}" },

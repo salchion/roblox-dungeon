@@ -1105,6 +1105,9 @@ return {
 		["Sort: Set first"] = "정렬: 세트 먼저",
 		["Nothing matches this filter"] = "이 조건에 맞는 장비가 없어요",
 		["✔ Max upgrade"] = "✔ 최대 강화",
+		["Waiting (no free slot)"] = "대기 (빈 칸 없음)",
+		["Equip its set gear"] = "세트 장비 끼면 켜짐",
+		["🔒 Defeat the lord"] = "🔒 군주 처치",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1202,6 +1205,5 @@ return {
 		{ "🎫 You have {number1} gear ticket(s) left! Draw gear at the gacha machine", "🎫 장비 티켓이 {number1}장 남았어요! 뽑기 기계에서 장비를 뽑아 보세요" },
 		{ "♻ [Rare] 🌾 Meadow Silver Necklace auto-salvaged (Essence +{number1} {number2} G)", "♻ [희귀] 🌾 초원 실버 목걸이 자동 회수 (에센스 +{number1} {number2} G)" },
 		{ "Explorer   Title 『Explorer』\nClear field zone {number1}\n{number2} / {number3}   Reward: {number4} G", "탐험가 타이틀 『탐험가』\n필드 구역 {number1} 클리어\n{number2} / {number3}   보상: {number4} G" },
-		{ "♻ [Common] 🌾 Meadow Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [일반] 🌾 초원 가죽 방어구 자동 회수 (에센스 +{number1} {number2} G)" },
 	},
 }

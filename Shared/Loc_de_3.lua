@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Gold x{number1} · Tickets {number2} · Boss chest gear {number3}", "Gold x{number1} · Tickets {number2} · Boss-Truhen-Ausrüstung {number3}" },
+		{ "Bounces to {number1} nearby enemies (within {number2})", "Prallt auf {number1} nahe Gegner ab (innerhalb von {number2})" },
 		{ "🧚 {number1} spirits will fight for you for {number2}s!", "🧚 {number1} Geister kämpfen {number2} s lang für dich!" },
 		{ "{number1}s · {number2} daggers every {number3}s · Damage x{number4} each", "{number1} s · {number2} Dolche alle {number3} s · je Schaden x{number4}" },
 		{ "defeat {number1} monsters here, then the Lord", "hier {number1} Monster besiegen, dann den Fürsten" },
@@ -139,6 +141,7 @@ return {
 		{ "▲ Better than equipped  +{number1}", "▲ Besser als ausgerüstet  +{number1}" },
 		{ "Damage Taken Reduction +{number1}%", "Schadensreduktion +{number1}%" },
 		{ "Damage Taken Reduction -{number1}%", "Schadensreduktion -{number1}%" },
+		{ "Zone {number1} · Gold {number2} + Set gear {number3}", "Zone {number1} · Gold {number2} + Set {number3}" },
 		{ "Lord of Forest  ·  Zone {number1}", "Herr des Waldes · Zone {number1}" },
 		{ "Zone {number1} · Shockwave Shot  ", "Zone {number1} · Schockwellen-Schuss" },
 		{ "Spell Tome · Rusty Era +{number1}", "Zauberbuch · Rostige Ära +{number1}" },

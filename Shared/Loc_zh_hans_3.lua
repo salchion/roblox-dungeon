@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Range x{number1} · allies heal +{number2}%", "范围x{number1} · 队友治疗量+{number2}%" },
+		{ "Recovers {number1}% HP per second", "每秒恢复{number1}%生命" },
+		{ "· {number1} point(s) in this path", "· 此路线已投入{number1}点" },
+		{ "Damage Taken Reduction +{number1}", "受到伤害减免 +{number1}" },
 		{ "Uses all Tickets (max {number1})", "使用所有门票（最多{number1}张）" },
 		{ "📍 Field · Best Zone {number1}   ", "📍 田地 · 最佳区域 {number1}" },
 		{ "ZONE {number1}  ·  Desert   ☠☠☠☠", "区域 {number1} · 沙漠 ☠☠☠☠" },

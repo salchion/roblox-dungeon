@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 {number1} équipement(s) plus faible(s) nettoyé(s) automatiquement (Essence +{number2}, {number3} or)" },
 		{ "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped", "🎯 Prime remportée ! +{number1} G · 🎫 +{number2} · équipement lâché" },
 		{ "🎫 {number1} tickets!\nPull gear at the gacha machine", "🎫 {number1} billets !\nTirez sur l'équipement à la machine de gacha" },
 		{ "🐾 Pet Lv.{number1}! New ability 💥 Power — Attack +{number2}%", "🐾 Animal de compagnie niveau {number1} ! Nouvelle capacité 💥 Puissance - Attaque +{number2}%" },
@@ -36,6 +37,7 @@ return {
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} objets recyclés automatiquement (Essence +{number2}, {number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 Pas assez d'or pour se téléporter ! ({number1} G requis)" },
 		{ "{number1} in bag · tap one to compare and equip", "{number1} dans le sac · touche pour comparer et équiper" },
+		{ "Unlocks when you defeat the Zone {number1} lord", "Se débloque en battant le seigneur de la zone {number1}" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Lancer multiple !\nUtilise tous les tickets (maximum {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Niveau supérieur ! Lv.{number1} (PV max +{number2} Attaque +{number3}%)" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} améliorations : {number2} réussies / {number3} échouées  (Or -{number4})" },
@@ -188,6 +190,7 @@ return {
 		{ "▲ Better than equipped  +{number1}", "▲ Meilleur que l'équipé  +{number1}" },
 		{ "Damage Taken Reduction +{number1}%", "Réduction des dégâts subis +{number1}%" },
 		{ "Damage Taken Reduction -{number1}%", "Réduction des dégâts subis -{number1}%" },
+		{ "Zone {number1} · Gold {number2} + Set gear {number3}", "Zone {number1} · Or {number2} + Set {number3}" },
 		{ "Lord of Forest  ·  Zone {number1}", "Seigneur de la forêt · Zone {number1}" },
 		{ "Zone {number1} · Shockwave Shot  ", "Zone {number1} · Tir d'onde de choc" },
 		{ "Spell Tome · Rusty Era +{number1}", "Livre de sorts · Ère rouillée +{number1}" },

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🌪 Mob hunter  ·  ✔ 🔫 Rocket Launcher / Spell Tome (+{number1}%)", "🌪 モブハンター  ·  ✔ 🔫 ロケットランチャー/スペルブック (+{number1}%)" },
 		{ "Dungeon_Fail  <font color='#{number1}aa{number2}c{number3}'>Dungeon failed</font>", "ダンジョン失敗 <font color='#{number1}aa{number2}c{number3}'>ダンジョンが失敗しました</font>" },
 		{ "🔫 Next era Steel Era (+{number1})\nUpgrade cost {number2} G · You have {number3} G", "🔫 次の時代、スチール時代（+{number1}）\nアップグレードコスト {number2} G · 現在所持G数 {number3}" },
 		{ "Damage to bosses / lords / elites +{number1}% per point  (max {number2})", "ボス / ロード / エリートへのダメージ +{number1}% / 1ポイント  (最大 {number2})" },
@@ -97,6 +98,7 @@ return {
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1}個を自動分解 (エッセンス +{number2}、{number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 ワープのゴールドが足りません！({number1}G必要)" },
 		{ "{number1} in bag · tap one to compare and equip", "バッグに{number1}個 · タップして比較・装備" },
+		{ "Unlocks when you defeat the Zone {number1} lord", "ゾーン{number1}のボスを倒すと解放" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 マルチロール！\nすべてのチケットを使用（最大{number1}枚）" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 レベルアップ！ Lv.{number1}（最大HP +{number2} 攻撃 +{number3}%）" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 ミッション {number2}/{number3}</font>" },
@@ -250,6 +252,7 @@ return {
 		{ "▲ Better than equipped  +{number1}", "▲ 装備中より強い  +{number1}" },
 		{ "Damage Taken Reduction +{number1}%", "被ダメージ軽減 +{number1}%" },
 		{ "Damage Taken Reduction -{number1}%", "被ダメージ軽減 -{number1}%" },
+		{ "Zone {number1} · Gold {number2} + Set gear {number3}", "ゾーン{number1} · ゴールド {number2} + セット装備 {number3}" },
 		{ "Lord of Forest  ·  Zone {number1}", "森の支配者 · ゾーン {number1}" },
 		{ "Zone {number1} · Shockwave Shot  ", "ゾーン {number1} · ショックウェーブショット" },
 		{ "Spell Tome · Rusty Era +{number1}", "スペル・トーム · 錆の時代 +{number1}" },

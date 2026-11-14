@@ -2811,5 +2811,11 @@
 "Nothing matches this filter",
 "✔ Max upgrade",
 "ON Lv.{number1}",
-"+ {text1}"
+"+ {text1}",
+"● ON",
+"Waiting (no free slot)",
+"Equip its set gear",
+"🔒 Defeat the lord",
+"Zone {number1} · Gold {number2} + Set gear {number3}",
+"Unlocks when you defeat the Zone {number1} lord"
 ]
