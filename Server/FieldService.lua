@@ -21,6 +21,7 @@ local TweenService = game:GetService("TweenService")
 local Debris = game:GetService("Debris")
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Break = require(script.Parent:WaitForChild("BreakService"))
+local Evolve = require(script.Parent:WaitForChild("EvolveService"))
 local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
 local Keys = require(script.Parent:WaitForChild("KeyService"))
 local Aug = require(script.Parent:WaitForChild("AugService"))
@@ -1733,6 +1734,7 @@ function Field.Shoot(player, origin, direction)
 			isCrit = true
 		end
 		damage = math.floor(damage * Break.Mult(data)) -- (그로기 중 x1.3)
+		Evolve.ShotgunHit(player, result.Instance, data, function(pos) return walkableAt(pos.X, pos.Z, (data.Stats and data.Stats.Size or 3) / 2) and canHitZone(player, pos.X) end) -- (각성 샷건 밀치기)
 		-- 첫 구역 군주는 튜토리얼 중에는 훨씬 약하게 (군주를 쓰러뜨려야 다음 장면이 이어진다)
 		if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then
 			damage = damage * (player:GetAttribute("TutorialRetryBuff") and 10 or 5) -- 쓰러졌다 다시 도전하면 일회성 힘 (x10)

@@ -62,6 +62,58 @@ local function galeBurst(player, root)
 	if hit and #hit > 0 then Effects.Burst(center, color, 24) end
 end
 
+-- 2단계 각성: 스킬(힐 / 정령 / 궁극기)을 쓰면 AwakenSeconds 동안 피해 x AwakenMult (Dungeon.ComputeDamage 가 AwakenUntil 을 읽는다)
+--   캐릭터 Highlight 1개 (다시 쓰면 시간만 늘린다, 끝나면 지운다) + 시작할 때 떠오르는 글자
+local awakenFx = setmetatable({}, { __mode = "k" })
+function Evolve.Awaken(player)
+	local E = Config.Evolve
+	if not E.Enabled or (shownStage[player] or 0) < 2 then return end
+	if player:GetAttribute("IntroPlaying") then return end
+	local zone = player:GetAttribute("Zone")
+	if zone ~= "Field" and zone ~= "Dungeon" then return end
+	local untilAt = workspace:GetServerTimeNow() + E.AwakenSeconds
+	player:SetAttribute("AwakenUntil", untilAt)
+	local character = player.Character
+	if not character then return end
+	local hl = awakenFx[player]
+	if not (hl and hl.Parent == character) then
+		hl = Instance.new("Highlight")
+		hl.Name = "AwakenGlow"
+		hl.FillColor = Color3.fromRGB(255, 220, 120)
+		hl.FillTransparency = 0.75
+		hl.OutlineColor = Color3.fromRGB(255, 240, 170)
+		hl.DepthMode = Enum.HighlightDepthMode.Occluded
+		hl.Parent = character
+		awakenFx[player] = hl
+		local root = character:FindFirstChild("HumanoidRootPart")
+		if root then Effects.FloatText(root.Position + Vector3.new(0, 6, 0), "⚡ Evolved: Awakening", Color3.fromRGB(255, 220, 120)) end
+	end
+	task.delay(E.AwakenSeconds + 0.05, function()
+		if (player:GetAttribute("AwakenUntil") or 0) <= workspace:GetServerTimeNow() and awakenFx[player] == hl then
+			hl:Destroy()
+			awakenFx[player] = nil
+		end
+	end)
+end
+
+-- 각성 중 샷건 명중: 7칸 밀치기 + 0.5초 경직 (샷건만의 역할). canMove(위치) 가 true 일 때만 민다 (필드: 걸을 수 있는 땅 / 던전: 아레나 안)
+--   밀 때는 CFrame 으로 (Position 으로 옮기면 용접된 장식이 남는다)
+function Evolve.ShotgunHit(player, part, data, canMove)
+	if not part or not part.Parent or (shownStage[player] or 0) < 2 then return end
+	if (player:GetAttribute("AwakenUntil") or 0) <= workspace:GetServerTimeNow() then return end
+	if Config.GetPlayerWeapon(player).Form ~= "Shotgun" then return end
+	if data and (data.IsBoss or data.Kind == "Boss" or data.BossLike) then return end -- (보스는 밀리지 않는다)
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if not root then return end
+	part:SetAttribute("StaggerUntil", os.clock() + 0.5)
+	local away = Vector3.new(part.Position.X - root.Position.X, 0, part.Position.Z - root.Position.Z)
+	if away.Magnitude < 0.1 then return end
+	local pushed = part.Position + away.Unit * 7
+	if canMove and canMove(pushed) then
+		part.CFrame = CFrame.new(pushed) * part.CFrame.Rotation
+	end
+end
+
 function Evolve.Init(ctx)
 	Dungeon, Field = ctx.Dungeon, ctx.Field
 	local function hook(player)

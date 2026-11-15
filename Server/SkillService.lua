@@ -602,6 +602,7 @@ function Skill.Use(player, skillKey, aimPoint)
 	Quest.Add(player, "SkillUses", 1)
 	BL.Count(player, skillKey, 1) -- (밸런스 로그: Ult = 궁극기, 나머지 = 스킬)
 	Remotes.Skill:FireClient(player, "Cast", skillKey, cooldown)
+	pcall(function() require(script.Parent:WaitForChild("EvolveService")).Awaken(player) end) -- (전투 진화 2단계: 스킬을 쓰면 각성)
 end
 
 Remotes.Skill.OnServerEvent:Connect(function(player, action, skillKey, aimPoint)

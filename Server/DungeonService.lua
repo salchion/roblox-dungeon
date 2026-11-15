@@ -1548,6 +1548,9 @@ function Dungeon.ComputeDamage(player)
 	if (player:GetAttribute("FrenzyUntil") or 0) > workspace:GetServerTimeNow() then -- 특성 "피의 광란"
 		damage *= 1 + 0.02 * (player:GetAttribute("FrenzyStacks") or 0)
 	end
+	if (player:GetAttribute("AwakenUntil") or 0) > workspace:GetServerTimeNow() then -- 전투 진화 "각성": 스킬을 쓴 뒤 잠깐
+		damage *= Config.Evolve.AwakenMult
+	end
 	local isCrit = math.random() < chance
 	if isCrit then
 		damage *= P.CritMultiplier + (player:GetAttribute("LvCritDmg") or 0) + (player:GetAttribute("TrainCritDmg") or 0) + (player:GetAttribute("GearCritDmg") or 0) + (player:GetAttribute("ParCritDmg") or 0) + overflow
@@ -2481,6 +2484,7 @@ function Dungeon.Shoot(player, origin, direction)
 			end
 		end
 		damageMonster(run, player, part, data, damage, isCrit, hitPosition)
+		pcall(function() require(script.Parent:WaitForChild("EvolveService")).ShotgunHit(player, part, data, nil) end) -- (각성 샷건: 던전은 아레나 벽 판정이 없어 밀지 않고 경직만)
 		Meter.Add(player, "Gun", damage)
 		player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1) -- 궁극기 게이지는 실제로 맞혔을 때만 찬다
 
