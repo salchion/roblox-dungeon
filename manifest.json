@@ -8,6 +8,13 @@
       "overwrite": true
     },
     {
+      "path": "Shared/ConfigAchievements.lua",
+      "parent": "ReplicatedStorage",
+      "name": "ConfigAchievements",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Shared/SkillTreeData.lua",
       "parent": "ReplicatedStorage",
       "name": "SkillTreeData",
