@@ -64,7 +64,7 @@ function Inventory.NewItem(slotKey, rarity, level, zoneIndex, uniqueChance)
 	end
 	local zoneSet = zoneIndex and Config.Sets.ZoneKeys[zoneIndex]
 	if zoneSet and math.random() < Config.Sets.ZoneSetChance then
-		item.Set = zoneSet -- 그 필드 구역에서만 나오는 구역 전용 세트 (뽑기 장비에는 세트가 붙지 않는다: 세트는 필드 파밍 / 각인으로만)
+		item.Set = zoneSet -- 그 필드 구역에서만 나오는 구역 전용 세트 (뽑기 장비에는 세트가 붙지 않는다: 세트는 필드 파밍으로만)
 	end
 	return item
 end

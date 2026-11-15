@@ -42,6 +42,7 @@ M.Defs = {
 		Name = "Spike Bug", Shape = "Ball", Color = Color3.fromRGB(165, 80, 215), Material = Enum.Material.SmoothPlastic,
 		SizeMult = 0.95, SpeedMult = 1.1, HealthMult = 0.9, DamageMult = 0.85, IntervalMult = 1.3, ShotSpeedMult = 0.9, GoldMult = 1.1,
 		Attack = "Spit", Style = "Needle", Move = "Approach", Keep = 20, Range = 85, Spikes = true,
+		HitTail = 0.62, -- 뒤쪽 판정 구 (Build 에서 몸통 뒤에 하나 더 붙인다): 보이는 몸이 z = -0.86S ~ +1.3S 인데 판정은 앞쪽 구 하나뿐이라 뒤 58%가 안 맞았다
 	},
 	Bat = {
 		Name = "Bat", Shape = "Ball", Color = Color3.fromRGB(85, 60, 120), Material = Enum.Material.SmoothPlastic,
@@ -449,6 +450,22 @@ function M.Build(typeKey, size, color, position, parent, tier)
 		-- Wisp 처럼 몸체에 입자를 붙여야 하는 종류가 있어서 d.Body 로 몸체를 알려 준다 (함수 표처럼 쓴다)
 		local helper = setmetatable({ Body = body }, { __call = function(_, ...) return d(...) end })
 		build(size, color, helper)
+	end
+	-- 뒤로 긴 몬스터(스파이크 벌레 등): 꼬리 / 배까지 맞는 판정 구를 하나 더 붙인다.
+	--   판정 몸통이 구 1개라서 보이는 몸길이의 뒤쪽 절반이 판정 밖이었다: "맞히고 있는데 피해가 없다"의 원인.
+	--   약점 구슬(WeakPoint)과 같은 방식(자식 -> 부모 몸통 매핑)으로 처리한다 (FieldService.Shoot / DungeonService.Shoot).
+	if def.HitTail and def.HitTail > 0 then
+		local tail = Instance.new("Part")
+		tail.Name = "Hitbox"
+		tail.Anchored, tail.CanCollide, tail.CanTouch, tail.CastShadow, tail.Massless = false, false, false, false, true
+		tail.CanQuery = true -- 탄 판정(raycast)에 잡혀야 한다 (장식 부품은 CanQuery = false)
+		tail.Transparency = 1
+		tail.Shape, tail.Size = Enum.PartType.Ball, Vector3.new(size, size, size)
+		local weld = Instance.new("Weld")
+		weld.Part0, weld.Part1 = body, tail
+		weld.C0 = CFrame.new(0, 0, size * def.HitTail)
+		weld.Parent = tail
+		tail.Parent = body
 	end
 	-- 몸 색이 바뀌면(피격 번쩍임 / 예고) 눈에 보이는 몸 부품들도 같이 바뀐다. 원래 색으로 돌아오면 각자 원래 색으로 복원.
 	local baseColor = color

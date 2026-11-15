@@ -76,6 +76,25 @@ local frames, total, slow, worst = 0, 0, 0, 0
 local secFrames, secTime, worstSecFps = 0, 0, math.huge
 local lastSummary, lastQuiet, lastHitchLog = os.clock(), os.clock(), 0
 
+-- 자동 저사양: 1초 FPS 가 30 미만으로 3초 이어지면 설정(H)의 "저사양 모드"를 스스로 켠다.
+--   (존 8 처럼 무거운 곳에서 11 FPS 가 나도 게임이 스스로 가벼워지지 않던 문제: 예전엔 수동 토글만 있었다)
+--   * 사람이 직접 껐다 켜면 그 뜻을 존중한다: 내가 켠 게 아니면 건드리지 않고, 내가 켠 뒤에 사람이 끄면 다시 켜지 않는다.
+local AUTO_LOWSPEC_FPS = 30
+local AUTO_LOWSPEC_SECONDS = 3
+local autoLow = { slowSeconds = 0, muted = false }
+local settingLowSpec = false
+
+local function setLowSpec(on)
+	settingLowSpec = true
+	player:SetAttribute("LowSpec", on)
+	task.defer(function() settingLowSpec = false end)
+end
+
+player:GetAttributeChangedSignal("LowSpec"):Connect(function()
+	if settingLowSpec then return end
+	autoLow.muted = true -- 사람이 직접 바꿨다 (켠 사람은 그대로 두고, 끈 사람은 이번 접속에서는 자동으로 켜지 않는다)
+end)
+
 print("[FPS] 프레임 기록 시작 (끊김 0.2초 이상은 바로, 느릴 때 15초마다 요약)")
 
 RunService.Heartbeat:Connect(function(dt)
@@ -90,8 +109,22 @@ RunService.Heartbeat:Connect(function(dt)
 	secFrames += 1
 	secTime += dt
 	if secTime >= 1 then
-		worstSecFps = math.min(worstSecFps, secFrames / secTime)
+		local secFps = secFrames / secTime
+		worstSecFps = math.min(worstSecFps, secFps)
 		secFrames, secTime = 0, 0
+		-- (자동 저사양) 30 FPS 미만이 3초 이어지면 켠다. 이미 켜져 있거나 사람이 직접 만졌으면 건너뛴다
+		if not autoLow.muted and player:GetAttribute("LowSpec") ~= true then
+			if secFps < AUTO_LOWSPEC_FPS then
+				autoLow.slowSeconds += 1
+				if autoLow.slowSeconds >= AUTO_LOWSPEC_SECONDS then
+					autoLow.muted = true -- 한 번만 켠다 (사람이 나중에 끄면 그대로)
+					setLowSpec(true)
+					print(string.format("[FPS] %d초 연속 %.0f FPS → 저사양 모드를 자동으로 켰습니다 · %s", AUTO_LOWSPEC_SECONDS, secFps, context()))
+				end
+			else
+				autoLow.slowSeconds = 0
+			end
+		end
 	end
 
 	if dt >= HITCH and now - lastHitchLog > 1 then

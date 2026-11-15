@@ -606,7 +606,7 @@ Config.Boss = {
 Config.Economy = {
 	IncomeBase = 1500,        -- 공격력 배율 1.0(처음 무기)일 때 열심히 플레이한 분당 골드
 	StepMinutesEarly = 0.2,   -- (0.28 -> 0.2: 초반 골드 소모 커브를 더 완만하게) 초반 무기 강화 한 단계에 걸리길 바라는 분 (15단계 = 약 4분 -> 0.4 에서 30% 줄여 약 2.8분: 초반 소모 골드가 과하다는 의견. LateLevel 로 갈수록 StepMinutesLate 에 가까워진다)
-	StepMinutesLate = 1.4,    -- 강화 단계 LateLevel 이후 (0.9 -> 1.4: 무기만 올리면 점점 비싸져서 장비 / 다른 성장에도 골드를 나누게 된다. 무기 전체 약 900분 분량)
+	StepMinutesLate = 1.2,    -- 강화 단계 LateLevel 이후 (0.9 -> 1.4 -> 1.2: 1.4 는 600단계 한 단계에 4.76분(가격 배수 포함)이라 너무 느렸다. 1.2 로 내려 가장 느린 단계가 2.8분 안에 들어온다)
 	LateLevel = 600,
 	FieldGoldMult = 2.6,      -- 필드 몬스터 처치 골드 배율 (구역 보상표 x 이 값)
 	DungeonGoldMult = 0.6,    -- 던전 골드 배율 (던전은 처치 수가 많아서 낮춘다)
@@ -1712,17 +1712,8 @@ Config.Sets = {
 -- 구역 전용 세트: 필드 구역마다 그 구역에서만 떨어지는 장비 세트가 있다. 이름 앞에 구역 이름이 붙고 같은 세트 2 / 3부위를 끼면 보너스.
 -- (구역 N 의 일반 / 엘리트 / 보스 드랍 중 ZoneSetChance 확률로 그 구역 세트 장비가 나온다 -> 갖고 싶으면 그 구역으로 가야 한다)
 Config.Sets.ZoneSetChance = 0.5
--- 세트 각인: 뽑기로 얻은 장비는 세트가 안 붙는 게 보통이다. 필드에서 모은 "세트 조각"을 써서 아무 장비나 그 구역의 세트 장비로 바꿀 수 있다
---   (등급 / 강화 / 옵션은 그대로, 세트만 바뀐다). 조각은 구역마다 따로 쌓이고 그 구역 몬스터에게서만 나온다 -> 세트를 맞추려면 필드를 돌아야 한다.
-Config.Sets.Imprint = {
-	Cost = { 6, 12, 24, 48, 96 },          -- 등급별 필요 세트 조각 (그 구역 조각)
-	DropNormal = 0.55,                     -- 일반 몬스터가 조각 1개를 떨굴 확률
-	DropElite = { 3, 5 },                  -- 엘리트가 떨구는 조각 수 (최소, 최대)
-	DropBoss = 25,                         -- 구역 군주
-	DropGoblin = 10,                       -- 황금 고블린
-	DropEvent = 20,                        -- 공개 이벤트 보스
-}
--- 구역 세트마다 컨셉이 하나씩 있다: 그 구역 군주를 잡으면 열리고 골드로 활성화한다 (아래 AugCost / AugSlotZones). 던전 주사위의 세트 조각은 예전 방식 그대로 단계를 준다
+-- (세트 조각 / 세트 각인은 없어졌다: 세트 장비는 필드 드랍 / 던전 상자 / 보스 확정 보상으로만 얻는다)
+-- 구역 세트마다 컨셉이 하나씩 있다: 그 구역 군주를 잡으면 열리고 골드로 활성화한다 (아래 AugCost / AugSlotZones)
 Config.Sets.ZoneAug = { "AugPulse", "AugOrbit", "AugStorm", "AugMissile", "AugNova", "AugFlame", "AugExecute", "AugMeteor" }
 Config.Sets.AugLevelByPieces = { [2] = 1, [3] = 3 }
 -- 세트 효과는 장비가 아니라 "골드로 활성화"한다: 그 구역 군주를 잡으면 열리고, 골드로 1~3단계까지 올린다.
@@ -2082,9 +2073,13 @@ Config.Events = {
 --   Grant 키: Keys(열쇠) Tickets(뽑기 티켓) XpBoost / LuckBoost(초 단위) Bag(가방 칸) Aura(꾸미기 해금)
 ------------------------------------------------------------
 -- 방치 수입 (휴식 구역): 휴식 구역 원 안에 서 있으면 수입 + 접속을 끊어도 한도까지 적립. BM 은 "효율 / 한도"만 늘려 준다.
+--   기준 수입은 "내가 가장 멀리 간 구역의 필드 실수입"(아래 FieldIncomePerMin)이다. 예전에는 IncomeBase 기준표를 썼는데,
+--   실제 필드 수입은 그 기준표의 2~10배(FieldGoldMult x 구역 보상표)라서 존 4~8에서 오프라인이 필드의 1.3~6%밖에 안 됐다
+--   = "오프라인 보상을 받았는데 강화를 1~2번밖에 못 누른다"의 원인. 이제 어떤 구역에서든
+--   필드 100% · 접속 중 방치 22% · 오프라인 13.2% 비율이 그대로 유지된다 (구매 배율을 다 켜면 최대 70% / 42%: 아래 주석의 원래 의도).
 Config.Idle = {
-	Fraction = 0.22,          -- (0.34 -> 0.22: 영구 +100% / VIP / 부스터를 모두 켜도 접속 중 방치가 직접 플레이 수입의 약 70%를 넘지 않게. 오프라인은 효율 0.6 이라 약 42%)
-	PackFraction = 0.34,      -- 골드 팩("내 방치 수입 N분치")을 계산하는 비율: 기존 값 그대로라 팩 가치는 변하지 않는다          -- 방치 수입(분당) = 이 값 x Economy.IncomeBase x 공격력 배율(무기 단계) x (1 + 장비/훈련/펫 공격력 보너스) x 환생 x 방치 배율. 활동 수입의 약 1/3
+	Fraction = 0.22,          -- 내 최고 구역 필드 실수입의 22% (0.34 -> 0.22: 영구 +100% / VIP / 부스터를 모두 켜도 접속 중 방치가 직접 플레이 수입의 약 70%를 넘지 않게. 오프라인은 효율 0.6 이라 약 42%)
+	PackFraction = 0.34,      -- 골드 팩("내 방치 수입 N분치")을 계산하는 비율: 기존 값 그대로라 팩 가치는 변하지 않는다          -- 방치 수입(분당) = 이 값 x (내 최고 구역 필드 실수입) x 방치 배율. 필드 수입의 약 1/3
 	Radius = 18,              -- 훈련장 중심에서 이 거리 안에 있으면 방치 중
 	OfflineEfficiency = 0.6,  -- 오프라인 적립은 접속 중 방치의 60%
 	BaseCapHours = 4,         -- 오프라인 적립 한도 (기본). 하루 2~3번 접속하는 사람이 반나절 비워도 대부분 받도록 4시간
@@ -2092,7 +2087,17 @@ Config.Idle = {
 	MultTiers = { 0.25, 0.5, 1.0 }, -- 영구 방치 배율 상품 단계 (+25% / +50% / +100%, 단계는 덮어쓰는 방식이라 가장 높은 것 하나만 적용)
 	CapTiers = { 4, 20 },     -- 오프라인 적립 한도 상품 단계: 기본 4시간 + 4 = 8시간 / + 20 = 24시간
 	VipBonus = 0.2,           -- VIP 패스: 방치 배율 +20%
+	KillsPerMin = 100,        -- 필드 실수입 기준: 분당 100마리 처치 (경제 모델 / ECONOMY.md 와 같은 가정)
 }
+
+-- 그 구역에서 1분에 버는 필드 골드: 몬스터 골드 공식(FieldService 의 처치 보상)과 같은 식.
+--   (8 + 4 x 몬스터레벨) x 구역 보상표 x FieldGoldMult x 분당 처치 수  -- 방치 / 오프라인의 기준 수입
+--   (일반 몬스터는 한 마리당 Horde.Reward 0.72 가 더 붙고 엘리트 / 군주는 더 준다: 실제 평균은 이 값 근처. ECONOMY.md / economy_model.py 와 같은 기준)
+function Config.Idle.FieldIncomePerMin(zone)
+	zone = math.clamp(math.floor(zone or 1), 1, Config.Field.ZoneCount)
+	local level = Config.Field.GetZoneLevel(zone)
+	return (8 + 4 * level) * Config.Field.ZoneDanger.Reward[zone] * Config.Economy.FieldGoldMult * Config.Idle.KillsPerMin
+end
 
 Config.Shop = {
 	Passes = {
@@ -2398,14 +2403,19 @@ Config.SinkMinutes = 600 -- 한 성장을 끝까지 올리는 데 드는 시간 
 -- 그 성장에서 f(0~1) 만큼 진행했을 때의 기준 분당 수입
 -- 가격 곡선 보정: 실제 플레이 로그에서 중반에 골드가 남아서, 중반 구간의 값이 더 가파르게 오르게 한다 (보상은 그대로).
 --   원칙: 각 성장은 "자기 레벨(진행도)"만 본다. 무기 강화 = 무기 단계, 장비 / 스킬 / 펫 / 세트 / 훈련 = 각자의 진행도. 서로 연결하지 않는다.
---   진행도(최대의 비율 x 1089 로 환산)가 60 이하 = x1 (초반은 빠르게) -> 200 = x5 -> 700 = x3 -> 끝(1089) = x1 (후반은 기존 곡선)
+--   진행도(최대의 비율 x 1089 로 환산)가 175 이하 = x1 (1~3존은 빠르게) -> 215 = x5 (존 4 입구 첫 벽) -> 300 = x3 -> 400 = x2.5 -> 700 = x2.2 -> 끝 = x1.5
+--   (이 함수는 무기 강화비와 함께 장비 / 스킬 / 펫 / 세트 / 훈련 가격표의 기준 수입(RefIncome)에도 쓰인다: 곡선을 바꾸면 그 성장들의 가격도 같이 움직인다)
 function Config.PriceMult(level)
 	local maxLevel = Config.Weapon.MaxLevel
 	local function lerp(a, b, t) return a + (b - a) * math.clamp(t, 0, 1) end
-	if level <= 60 then return 1 end
-	if level <= 200 then return lerp(1, 5, (level - 60) / 140) end
-	if level <= 700 then return lerp(5, 3, (level - 200) / 500) end
-	return lerp(3, 1, (level - 700) / math.max(1, maxLevel - 700))
+	-- (보수안) 예전엔 60~200단계에서 x1 -> x5 로 4배 넘게 뛰었다. 그 구간(75~174단계)이 존 3 전체라
+	-- "존 3(44분) > 존 4(34분)" 역전이 생겼다. 이제 1~3존은 x1 로 두고, 첫 벽을 존 4 입구(175~215)로 옮긴다.
+	if level <= 175 then return 1 end                              -- 1~3존: 지금처럼 시원하게
+	if level <= 215 then return lerp(1, 5, (level - 175) / 40) end  -- 존 4 입구: 첫 체감 떡벽
+	if level <= 300 then return lerp(5, 3, (level - 215) / 85) end
+	if level <= 400 then return lerp(3, 2.5, (level - 300) / 100) end
+	if level <= 700 then return lerp(2.5, 2.2, (level - 400) / 300) end
+	return lerp(2.2, 1.5, (level - 700) / math.max(1, maxLevel - 700))
 end
 
 function Config.RefIncome(f)

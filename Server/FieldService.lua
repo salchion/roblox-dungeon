@@ -1343,6 +1343,7 @@ local augRun -- 세트 효과(미사일 / 번개 / 칼날 ...)용 "run 비슷한
 local combatLog = setmetatable({}, { __mode = "k" }) -- [player] = { [키] = { N, Ttk, Hp } }
 local function recordKill(player, data)
 	if not data.FirstHit or data.Kind == "Goblin" or data.Kind == "Event" then return end
+	if data.Filler then return end -- 채움 몬스터는 보상 / 콤보와 같이 [Combat Log] 에서도 뺀다 (체력 x2.5 라서 평균 처치 시간이 실제보다 길게 나왔다: 스파이크 벌레 5.9초의 오염 원인)
 	local ttk = os.clock() - data.FirstHit
 	local log = combatLog[player]
 	if not log then log = {} combatLog[player] = log end
@@ -1690,6 +1691,10 @@ function Field.Shoot(player, origin, direction)
 	if result and result.Instance.Name == "WeakPoint" and result.Instance.Parent and monsters[result.Instance.Parent] then
 		result = { Instance = result.Instance.Parent, Position = result.Position }
 		weakDirect = true
+	end
+	-- 뒤쪽 판정 구(꼬리 / 배)를 맞힌 경우: 몸통을 맞힌 것으로 바꾼다 (긴 몬스터: MonsterTypes.Build 의 HitTail)
+	if result and result.Instance.Name == "Hitbox" and result.Instance.Parent and monsters[result.Instance.Parent] then
+		result = { Instance = result.Instance.Parent, Position = result.Position }
 	end
 	local endPosition = result and result.Position or (origin + direction * range)
 	-- 도중에 벽이 있으면 거기서 멈추고 맞히지 못한다

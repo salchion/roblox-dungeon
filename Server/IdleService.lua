@@ -1,8 +1,12 @@
 -- IdleService (ServerScriptService > Modules 안의 ModuleScript, 이름: IdleService)
 -- 방치 수입: 휴식 구역 원 안에 서 있으면 골드가 쌓이고(접속 중), 접속을 끊어도 일정 시간까지 쌓인다(오프라인 적립).
---   방치 골드/분 = Config.Idle.Fraction x IncomeBase x 공격력 배율(무기 단계) x 장비/훈련 보너스 x 방치 배율
+--   기준 수입 = "내가 가장 멀리 간 구역(MaxZone)의 필드 실수입" (Config.Idle.FieldIncomePerMin: 분당 100마리 기준)
+--   방치 골드/분 = 기준 수입 x Config.Idle.Fraction x 방치 배율
 --   방치 배율 = 1 + 영구 보너스(IdleMultBonus: 상품 단계 + VIP) + 부스터 활성 시 BoostBonus
---   오프라인 적립 한도 = BaseCapHours + 상품(IdleCapHours) , 효율 = OfflineEfficiency
+--   오프라인 골드/분 = 기준 수입 x Fraction x OfflineEfficiency x 방치 배율
+--   오프라인 적립 한도 = BaseCapHours + 상품(IdleCapHours)
+-- 예전에는 IncomeBase 기준표를 기준으로 썼는데, 실제 필드 수입은 그 기준표의 2~10배라서
+--   존 4~8에서 오프라인이 필드의 1.3~6% 밖에 안 됐다 ("받았는데 강화를 1~2번밖에 못 누른다"). 지금은 필드 100% / 방치 22% / 오프라인 13.2% 비율이 모든 구역에서 같다.
 -- 원칙: 돈은 "방치 효율 / 쌓이는 시간"만 늘려 준다 (안 써도 도달 가능). 직접 쏘는 수입은 방치의 약 1/3 (DummyService).
 -- 속성: IdleActive(훈련장에서 방치 중) / IdleRate(초당 골드) / IdleMultTotal(현재 배율)
 
@@ -32,17 +36,23 @@ function Idle.Multiplier(player)
 	return mult
 end
 
--- 초당 방치 골드: 무기 단계(공격력 배율)에 비례. 탄 수 / 연사 속도 / 레벨은 따로 반영하지 않는다 (경제 기준표와 같은 기준: ECONOMY.md)
+-- 방치 기준 구역: 내가 가장 멀리 간 구역 (필드에서 x좌표로 기록되는 MaxZone). 아직 없으면 1구역
+function Idle.Zone(player)
+	return math.clamp(math.floor(player:GetAttribute("MaxZone") or 0), 1, Config.Field.ZoneCount)
+end
+
+-- 초당 방치 골드 = (내 최고 구역의 필드 실수입) x Fraction x 방치 배율. 구역 안에서 내 무기 단계가 올라가도 필드 수입은 그대로라서, 기준을 "내 레벨"이 아니라 "그 구역"에 둔다.
 function Idle.Rate(player)
-	local E = Config.Economy
-	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
-	local bonus = 1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0) + (player:GetAttribute("PetDamage") or 0)
-	local perMinute = I.Fraction * E.IncomeBase * Config.GetDamageMultiplier(weaponLevel) * bonus
-	return perMinute / 60 * Idle.Multiplier(player)
+	return Config.Idle.FieldIncomePerMin(Idle.Zone(player)) * I.Fraction / 60 * Idle.Multiplier(player)
 end
 
 local function capSeconds(player)
 	return ((I.BaseCapHours or 2) + (player:GetAttribute("IdleCapBonusHours") or 0)) * 3600
+end
+
+-- 초당 오프라인 골드 (방치 배율 제외, OfflineEfficiency 포함): 자리를 비운 동안 한 초에 쌓이는 값
+function Idle.OfflineRate(player)
+	return Config.Idle.FieldIncomePerMin(Idle.Zone(player)) * I.Fraction * I.OfflineEfficiency / 60
 end
 
 local function active(player)
@@ -73,7 +83,7 @@ function Idle.Init(center)
 				player:SetAttribute("IdleMultTotal", Idle.Multiplier(player))
 				local capHours = capSeconds(player) / 3600
 				player:SetAttribute("IdleCapHours", capHours) -- 자리를 비웠을 때 쌓이는 최대 시간
-				player:SetAttribute("IdleFullGold", math.floor(capHours * 3600 * rate * I.OfflineEfficiency)) -- 한도까지 가득 찼을 때 받는 골드
+				player:SetAttribute("IdleFullGold", math.floor(capSeconds(player) * Idle.OfflineRate(player) * Idle.Multiplier(player))) -- 한도까지 가득 찼을 때 받는 골드
 				if isActive then
 					player:SetAttribute("IdleSeconds", (player:GetAttribute("IdleSeconds") or 0) + 1) -- 게이지: 이번 접속에서 방치한 시간 / 받은 골드
 					local owed = (remainder[player] or 0) + rate
@@ -117,10 +127,10 @@ function Idle.OnJoin(player)
 		if not player.Parent then return end
 		-- 방치 부스터: 자리를 비운 시간 중 부스터가 켜져 있던 구간만 x2 (접속 순간에 이미 끝났어도 그 구간은 인정한다)
 		local baseMult = 1 + (player:GetAttribute("IdleMultBonus") or 0)
-		local perSecondBase = Idle.Rate(player) / Idle.Multiplier(player) -- 배율을 뺀 초당 골드
+		local perSecondBase = Idle.OfflineRate(player) -- 초당 오프라인 골드 (방치 배율 제외)
 		local windowEnd = last + seconds
 		local boosted = math.max(0, math.min(player:GetAttribute("IdleBoostUntil") or 0, windowEnd) - last)
-		local gold = math.floor(perSecondBase * (baseMult * (seconds - boosted) + (baseMult + I.BoostBonus) * boosted) * I.OfflineEfficiency)
+		local gold = math.floor(perSecondBase * (baseMult * (seconds - boosted) + (baseMult + I.BoostBonus) * boosted))
 		if gold < 1 then return end
 		player:SetAttribute("Gold", (player:GetAttribute("Gold") or 0) + gold)
 		local hours = seconds / 3600

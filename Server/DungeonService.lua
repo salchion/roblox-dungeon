@@ -2360,6 +2360,9 @@ function Dungeon.Shoot(player, origin, direction)
 			orbPart = result.Instance
 			result = { Instance = result.Instance.Parent, Position = result.Position }
 			weakDirect = true
+		elseif result.Instance.Name == "Hitbox" and result.Instance.Parent and run.Monsters[result.Instance.Parent] then
+			-- 뒤쪽 판정 구(꼬리 / 배)를 맞힌 경우: 몸통을 맞힌 것으로 바꾼다 (긴 몬스터: MonsterTypes.Build 의 HitTail)
+			result = { Instance = result.Instance.Parent, Position = result.Position }
 		end
 		endPosition = result.Position
 		local part = result.Instance
