@@ -52,6 +52,7 @@ return {
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 Pas assez d'or pour se téléporter ! ({number1} G requis)" },
 		{ "{number1} in bag · tap one to compare and equip", "{number1} dans le sac · touche pour comparer et équiper" },
 		{ "Unlocks when you defeat the Zone {number1} lord", "Se débloque en battant le seigneur de la zone {number1}" },
+		{ "💀 You fell! Revived at the Zone {number1} camp.", "💀 Vous êtes tombé ! Ranimé au camp de la zone {number1}." },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Lancer multiple !\nUtilise tous les tickets (maximum {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Niveau supérieur ! Lv.{number1} (PV max +{number2} Attaque +{number3}%)" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} améliorations : {number2} réussies / {number3} échouées  (Or -{number4})" },

@@ -2859,5 +2859,6 @@
 "Bag full",
 "▼ Dungeon Gate  {number1}m",
 "📍 Field Entrance  ahead (east)  {number1}m",
-"The dungeon couldn't open. Your key / free entry was returned. Please try again."
+"The dungeon couldn't open. Your key / free entry was returned. Please try again.",
+"💀 You fell! Revived at the Zone {number1} camp."
 ]

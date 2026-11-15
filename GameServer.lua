@@ -222,9 +222,16 @@ local function onCharacterAdded(player, character)
 	-- 필드에서 죽으면 로비(마을)로 귀환한다: 기본 스폰 위치에서 다시 시작 (진행한 구역 / 관문 / 아이템은 그대로)
 	if player:GetAttribute("DiedInField") then
 		player:SetAttribute("DiedInField", nil)
-		player:SetAttribute("Zone", "Lobby")
+		local diedZone = player:GetAttribute("DiedZone")
+		player:SetAttribute("DiedZone", nil) -- (한 번 쓰고 지운다: 다음 스폰에서 꼬이지 않게)
 		local doomed = player:GetAttribute("TutorialDoomed")
-		if doomed then
+		local campZone = (Config.Field.CampRespawn and not doomed and type(diedZone) == "number" and diedZone >= 1 and diedZone <= Config.Field.ZoneCount
+			and not player:GetAttribute("TutorialDoom") and not player:GetAttribute("TutorialDungeonDoom") and not player:GetAttribute("InDoomArena")) and diedZone or nil
+		player:SetAttribute("Zone", campZone and "Field" or "Lobby")
+		if campZone then -- 그 구역 캠프에서 부활 (몬스터 / 관문 / 수입은 그대로: 걸어오는 벌칙만 없앤다)
+			task.spawn(function() Field.RespawnAtCamp(player, character, campZone) end)
+			Remotes.Notify:FireClient(player, string.format("💀 You fell! Revived at the Zone %d camp.", campZone))
+		elseif doomed then
 			player:SetAttribute("TutorialDoomed", nil)
 			if doomed == "Retry" then
 				Remotes.Notify:FireClient(player, "💀 You fell! A one-time power surges within you (big damage boost vs. the lord + full ultimate) — challenge the lord again!")
@@ -239,6 +246,8 @@ local function onCharacterAdded(player, character)
 	humanoid.Died:Connect(function()
 		if player:GetAttribute("Zone") == "Field" then
 			player:SetAttribute("DiedInField", true)
+			local okZ, diedZone = pcall(Field.ZoneOf, player)
+			player:SetAttribute("DiedZone", okZ and tonumber(diedZone) or 0) -- (0 / 없음 = 예전처럼 마을)
 			if player:GetAttribute("TutorialDoom") and not player:GetAttribute("InDoomArena") then
 				-- 지역 군주에게 쓰러짐: 미션은 끝나지 않는다. 일회성 힘을 받아 다시 군주에게 도전 (군주를 잡아야 최후의 군주에게 끌려간다)
 				player:SetAttribute("TutorialDoomed", "Retry")

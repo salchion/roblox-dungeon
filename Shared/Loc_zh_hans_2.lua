@@ -965,6 +965,7 @@ return {
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 传送金币不足！(需要{number1}G)" },
 		{ "{number1} in bag · tap one to compare and equip", "背包中{number1}件 · 点击比较并装备" },
 		{ "Unlocks when you defeat the Zone {number1} lord", "击败区域{number1}领主后解锁" },
+		{ "💀 You fell! Revived at the Zone {number1} camp.", "💀 你倒下了！已在{number1}区营地复活。" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 多次滚动！\n使用所有门票（最多{number1}张）" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 升级！等级{number1}（最大生命值+{number2} 攻击力+{number3}%）" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 任务 {number2}/{number3}</font>" },
@@ -1107,6 +1108,5 @@ return {
 		{ "Skill Cooldown Reduction +{number1}", "技能冷却缩减 +{number1}" },
 		{ "★★★  Step {number1}/{number2} · Higher step", "★★★ 步骤 {number1}/{number2} · 更高步骤" },
 		{ "★★☆  Step {number1}/{number2} · Higher step", "★★☆ 步骤 {number1}/{number2} · 更高步骤" },
-		{ "Spell Tome · Mythic Era +{number3}", "法术书 · 神话时代 +{number3}" },
 	},
 }

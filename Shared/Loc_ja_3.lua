@@ -111,6 +111,7 @@ return {
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 ワープのゴールドが足りません！({number1}G必要)" },
 		{ "{number1} in bag · tap one to compare and equip", "バッグに{number1}個 · タップして比較・装備" },
 		{ "Unlocks when you defeat the Zone {number1} lord", "ゾーン{number1}のボスを倒すと解放" },
+		{ "💀 You fell! Revived at the Zone {number1} camp.", "💀 倒れた! ゾーン{number1}のキャンプで復活しました。" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 マルチロール！\nすべてのチケットを使用（最大{number1}枚）" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 レベルアップ！ Lv.{number1}（最大HP +{number2} 攻撃 +{number3}%）" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 ミッション {number2}/{number3}</font>" },

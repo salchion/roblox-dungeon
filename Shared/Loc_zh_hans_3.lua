@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Spell Tome · Mythic Era +{number3}", "法术书 · 神话时代 +{number3}" },
 		{ "ZONE {number1}  ·  Wasteland   ☠☠☠", "区域 {number1} · 荒地 ☠☠☠" },
 		{ "Active {number1} / {number2} slots   (💰 {number3} G)", "已激活 {number1} / {number2} 个栏位（💰 {number3} 金币）" },
 		{ "Dismantled! Essence +{number1}, {number2} G", "已分解!精华 +{number1},{number2} 金币" },

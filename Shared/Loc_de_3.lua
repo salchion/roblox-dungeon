@@ -5,6 +5,7 @@ return {
 	},
 	templates = {
 		{ "Unlocks when you defeat the Zone {number1} lord", "Wird freigeschaltet, wenn du den Lord von Zone {number1} besiegst" },
+		{ "💀 You fell! Revived at the Zone {number1} camp.", "💀 Du bist gefallen! Im Lager von Zone {number1} wiederbelebt." },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Mehrfache Rolle!\nVerwendet alle Tickets (max. {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Stufe aufsteigen! Lv.{number1} (Maximale HP +{number2} Angriff +{number3}%)" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} Verbesserungen: {number2} Erfolg / {number3} Fehlschlag  (Gold -{number4})" },
