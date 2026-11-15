@@ -375,3 +375,74 @@ base = (8 + 4 * 10) * ZONE_REWARD[3] * FIELD_GOLD_MULT  # 4구역 몬스터 기�
 for depth in (1, 5, 10, 25, 50):
     per_kill = base * DUNGEON_GOLD_MULT * DUNGEON_DEPTH_GOLD ** (depth - 1)
     print(f"깊이 {depth:>3}: {per_kill:>12,.0f} / 마리 · 분당(100마리) {per_kill * 100:>14,.0f}")
+
+# ---------------------------------------------------------------- 세트 효과 가격 (E1: 가격 기준 = max(세트 구역, MaxZone))
+#   Config.Sets.AugCost(zone, level, maxZone) 그대로: 기준 구역 = AugPriceZone(zone, maxZone) = max(세트 구역, 내 MaxZone)
+#   (11-15 E1 확정: 위력은 안 건드리고 "가격 기준"만 올린다 -> 1구역 세트를 1.6만 G 로 풀강해 끝까지 쓰는 길이 막힌다)
+ZONE_COUNT = 8                  # Config.Field.ZoneCount
+AUG_MULT = [1, 2.5, 6]          # Config.Sets.AugCostMult (1 / 2 / 3단계)
+
+
+def price_mult_ref(level):
+    """Config.PriceMultRef (장비 / 스킬 / 펫 / 세트 / 훈련 가격표의 기준 수입 곡선)."""
+    max_level = TOTAL_STEPS - 1
+
+    def lerp(a, b, t):
+        return a + (b - a) * min(1.0, max(0.0, t))
+
+    if level <= 60:
+        return 1.0
+    if level <= 200:
+        return lerp(1, 5, (level - 60) / 140)
+    if level <= 700:
+        return lerp(5, 3, (level - 200) / 500)
+    return lerp(3, 1, (level - 700) / max(1, max_level - 700))
+
+
+def ref_income(f):
+    """Config.RefIncome(f): 세트 효과 가격표의 기준 분당 수입 (Config.Weapon.MaxLevel = 마지막 단계 번호 1,054)."""
+    level = int(f * (TOTAL_STEPS - 1))
+    return INCOME_BASE * dm(level, era_for(level)) * price_mult_ref(level)
+
+
+def _progressive(f):
+    return 0.3 + 0.7 * f
+
+
+def _ease(f):
+    return 0.5 + 0.5 * min(1.0, max(0.0, f) / 0.5)
+
+
+_AUG_SUM = sum(_progressive((z - 1) / (ZONE_COUNT - 1)) * m for z in range(1, ZONE_COUNT + 1) for m in AUG_MULT)
+AUG_K = 600 / _AUG_SUM * 0.6    # Config.SinkMinutes 600 · 세트는 다른 성장보다 40% 싸게
+
+
+def aug_price_zone(zone, max_zone=0):
+    return max(min(max(zone, 1), ZONE_COUNT), min(max(max_zone, 0), ZONE_COUNT))
+
+
+def aug_cost(zone, level, max_zone=0):
+    f = (aug_price_zone(zone, max_zone) - 1) / (ZONE_COUNT - 1)
+    mult = AUG_MULT[level - 1] if 0 < level <= len(AUG_MULT) else 8
+    return max(1, int(ref_income(f) * AUG_K * _progressive(f) * _ease(f) * mult))
+
+
+AUG_OWN = {z: sum(aug_cost(z, lv) for lv in (1, 2, 3)) for z in range(1, ZONE_COUNT + 1)}
+
+print()
+print("== 세트 효과 가격 (E1: 가격 기준 구역 = max(세트 구역, 내 MaxZone)) ==")
+print(f"{'구역':>4} {'Lv1':>13} {'Lv2':>13} {'Lv3':>13} {'1~3단계 합':>15}")
+for zone in range(1, ZONE_COUNT + 1):
+    c = [aug_cost(zone, lv) for lv in (1, 2, 3)]
+    print(f"{zone:>4} {c[0]:>13,} {c[1]:>13,} {c[2]:>13,} {sum(c):>15,}")
+print(f"  (내 구역 그대로 올릴 때 8세트 전부 합계 {sum(AUG_OWN.values()):,} G · 같은 조건 3칸(AugSlotZones 0/4/7)만 쓰면 "
+      f"{sum(sorted(AUG_OWN.values())[-3:]):,} G)")
+print()
+print(f"{'내 MaxZone':>10} {'8세트 전부':>16} {'그 구역 수입/분':>15} {'필드 사냥 시간':>12} {'3칸(셋)만':>14}")
+for mz in range(1, ZONE_COUNT + 1):
+    total = sum(aug_cost(z, 1, mz) + aug_cost(z, 2, mz) + aug_cost(z, 3, mz) for z in range(1, ZONE_COUNT + 1))
+    cheapest3 = sum(sorted(aug_cost(z, 1, mz) + aug_cost(z, 2, mz) + aug_cost(z, 3, mz) for z in range(1, ZONE_COUNT + 1))[:3])
+    income = field_income(mz)
+    print(f"{mz:>10} {total:>16,} {income:>15,.0f} {total / income / 60:>10.2f}시간 {cheapest3:>14,}")
+print("      (자기 구역 이상의 세트 = 가격 그대로 -> 신규 유저가 자기 구역 세트를 올리는 값은 안 오른다.")
+print("       오르는 것은 이미 지나온 낮은 구역 세트를 더 올릴 때뿐이고, 그 값은 \"그 구역 가격\"과 같아진다 = \"1구역 세트 하나로 끝까지\"가 막힌다)")

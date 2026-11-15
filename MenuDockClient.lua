@@ -50,7 +50,7 @@ local function setsCost() -- 군주를 쓰러뜨려 열린 세트 효과 중 가
 		if attr("AugOpenZ_" .. zone) == true then
 			local level = attr("AugLvZ_" .. zone) or 0
 			if level < 3 then
-				local cost = Config.Sets.AugCost(zone, level + 1)
+				local cost = Config.Sets.AugCost(zone, level + 1, attr("MaxZone") or 0)
 				if not best or cost < best then best = cost end
 			end
 		end

@@ -15,6 +15,15 @@ local player = Players.LocalPlayer
 local ZONES = Config.Field.ZoneCount
 local TweenService = game:GetService("TweenService")
 
+-- 세트 효과 가격 기준 구역 (E1): 세트 구역과 내가 가장 멀리 간 구역(MaxZone) 중 높은 쪽 (Config.Sets.AugPriceZone)
+--   표시와 버튼이 서버와 같은 값을 보도록 서버(AugService)와 같이 MaxZone 을 넘긴다
+local function maxZone()
+	return player:GetAttribute("MaxZone") or 0
+end
+local function augCost(zone, level)
+	return Config.Sets.AugCost(zone, level, maxZone())
+end
+
 local gui = Instance.new("ScreenGui")
 gui.Name = "AugGui"
 gui.ResetOnSpawn = false
@@ -301,7 +310,7 @@ function refresh()
 			r.Sub.Text = (open or level + gear > 0) and string.format("Zone %d · Gold %d + Set gear %d", zone, level, gear) or string.format("Unlocks when you defeat the Zone %d lord", zone)
 		end
 		r.Match.Visible = open and Config.AugWeaponMatch(player, Config.Sets.ZoneAug[zone]) == true
-		if open and level == 0 and gold >= Config.Sets.AugCost(zone, 1) then affordable += 1 end
+		if open and level == 0 and gold >= augCost(zone, 1) then affordable += 1 end
 	end
 
 	-- 가운데 네모: 고른 효과
@@ -426,8 +435,10 @@ function refresh()
 			buyButton.Text = "🏘 Upgrade in town"
 			buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
 		else
-			local cost = Config.Sets.AugCost(zone, level + 1)
-			buyButton.Text = string.format("Upgrade %s G", commas(cost))
+			local cost = augCost(zone, level + 1)
+			local priceZone = Config.Sets.AugPriceZone(zone, maxZone())
+			-- 가격 기준 구역이 세트 구역보다 높으면 왜 비싼지 같이 적는다 (후반에 낮은 구역 세트를 올릴 때)
+			buyButton.Text = priceZone > zone and string.format("Upgrade %s G (Zone %d price)", commas(cost), priceZone) or string.format("Upgrade %s G", commas(cost))
 			buyButton.BackgroundColor3 = gold >= cost and Color3.fromRGB(150, 110, 40) or Color3.fromRGB(80, 74, 66)
 		end
 	end

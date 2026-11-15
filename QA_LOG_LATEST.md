@@ -127,3 +127,12 @@
 3. 가챠 50회 이상 돌린 뒤 **재접속해서** "Legendary guaranteed in N" 이 이어지는지.
 4. 상점 미리보기 5초 동안 창 닫기 / 사망 → 창이 저절로 다시 열리지 않는지.
 5. 파티 초대 만료 후 수락 → 실패 안내가 정상인지.
+
+## 종태 님 확정 반영 (피클, 11-15 밤) — E1 세트 효과 가격
+- **결정**: 세트 효과 가격의 기준 구역 = `max(세트 구역, 내 MaxZone)` (**후보 E1**). 위력(`AugHitMult`) · 몬스터 HP · 전투력은 **안 건드림**.
+- **코드**: `Config.Sets.AugPriceZone(zone, maxZone)` 추가 + `Config.Sets.AugCost(zone, level, maxZone)` (두 벌 정의 모두 같은 규칙). 호출부 4곳에 `MaxZone` 전달 — `Server/AugService.lua:201`, `AugClient.lua:24·439`, `MenuDockClient.lua:53`. `AugClient` 는 가격 기준이 세트 구역과 다를 때만 `Upgrade N G (Zone K price)` 로 이유를 표시.
+- **검증** (`python3 Tools/economy_model.py` 새 절 + `python3 Tools/check_repo.py` 통과):
+  - 가격표 자체는 그대로다 (1구역 15,576 G ~ 8구역 57,408,152 G, 8세트 전부 168,772,055 G = 설계 6시간).
+  - `MaxZone=8` 이면 8세트 전부 **459,265,216 G** (zone 8 필드 843,648/분 기준 **9.07시간**, 실측 180만~380만/분이면 2.0~4.2시간). 실제로 필요한 3칸(세트)만은 **172,224,456 G / 3.40시간**.
+  - 신규 유저: `MaxZone <= 세트 구역` 이면 가격 상승 **0**. 오르는 것은 이미 지나온 구역 세트를 더 올릴 때뿐.
+- **남은 확인(Studio)**: 세트 효과 창에서 4구역 이상 캐릭터로 1구역 세트를 열면 `(Zone 4 price)` 가 뜨고 실제 차감도 같은 값인지. (`AugService` 와 `AugClient` 가 같은 `MaxZone` 을 쓰므로 값은 일치해야 한다)

@@ -1728,8 +1728,16 @@ Config.FinalLord = {
 }
 Config.Sets.AugSlotZones = { 0, 4, 7 }
 Config.Sets.AugCostMult = { 1, 2.5, 6 } -- 1단계 / 2단계 / 3단계 비용 배수
-function Config.Sets.AugCost(zone, level)
-	local base = math.floor(1500 * 1.75 ^ (zone - 1) / 100 + 0.5) * 100
+-- 세트 효과 가격의 기준 구역 (E1, 11-15 확정): 세트 구역과 내가 가장 멀리 간 구역(MaxZone) 중 높은 쪽.
+--   위력(AugHitMult)은 그대로 두고 "가격 기준"만 올린다. 초반 플레이어는 자기 구역 가격 그대로라 진행이 안 막히고,
+--   후반 플레이어가 1구역 세트(가장 싼 세트)를 계속 올리면 자기가 간 만큼의 가격을 낸다 -> "1구역 세트를 1.6만 G 로 풀강해 끝까지 쓰는" 길이 막힌다.
+function Config.Sets.AugPriceZone(zone, maxZone)
+	local z = math.clamp(math.floor(zone or 1), 1, Config.Field.ZoneCount)
+	local reached = math.clamp(math.floor(maxZone or 0), 0, Config.Field.ZoneCount)
+	return math.max(z, reached)
+end
+function Config.Sets.AugCost(zone, level, maxZone)
+	local base = math.floor(1500 * 1.75 ^ (Config.Sets.AugPriceZone(zone, maxZone) - 1) / 100 + 0.5) * 100
 	return base * (Config.Sets.AugCostMult[level] or 8)
 end
 -- 던전 상자의 구역 세트 장비: 깊이가 깊을수록 확률이 오르고, 나오는 구역은 "내가 클리어한 구역" 중 깊이에 맞는 구역 이하로 정한다
@@ -2501,8 +2509,11 @@ do
 		end
 	end
 	local augK = T / augSum * 0.6 -- 세트 효과는 다른 성장보다 40% 싸게 (전부 올리는 데 기준 수입 약 6시간)
-	function Config.Sets.AugCost(zone, level)
-		local f = (math.clamp(zone, 1, zones) - 1) / (zones - 1)
+	-- (E1 11-15: 가격 기준 구역 = 세트 구역과 내 MaxZone 중 높은 쪽 · `Config.Sets.AugPriceZone`)
+	--   전부 올리는 6시간은 "그 세트의 구역까지 간 플레이어" 기준이다. 더 멀리 간 플레이어가 낮은 구역 세트를 올리면 그만큼 비싸진다.
+	function Config.Sets.AugCost(zone, level, maxZone)
+		local priceZone = Config.Sets.AugPriceZone(zone, maxZone)
+		local f = (math.clamp(priceZone, 1, zones) - 1) / (zones - 1)
 		return math.max(1, math.floor(RI(f) * augK * progressive(f) * ease(f) * (Config.Sets.AugCostMult[level] or 8)))
 	end
 
