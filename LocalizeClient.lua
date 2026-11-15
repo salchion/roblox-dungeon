@@ -158,7 +158,8 @@ end
 local missLogged, missCount = {}, 0
 local IS_STUDIO = game:GetService("RunService"):IsStudio()
 local function reportMiss(obj, piece)
-	if not IS_STUDIO or not dict or missLogged[piece] or missCount > 400 then return end -- (영어로 노는 중이면 번역할 게 없다)
+	local key = string.gsub(piece, "%d+", "#") -- (거리 숫자가 바뀔 때마다 같은 문장을 새 누락으로 찍어 로그가 넘쳤다: 숫자를 묶어서 한 번만)
+	if not IS_STUDIO or not dict or missLogged[key] or missCount > 400 then return end -- (영어로 노는 중이면 번역할 게 없다)
 	if not string.find(piece, "%a%a%a") then return end
 	local gui = obj:FindFirstAncestorWhichIsA("LayerCollector")
 	local guiName = gui and gui.Name or "?"
@@ -167,7 +168,7 @@ local function reportMiss(obj, piece)
 	for _, other in ipairs(game:GetService("Players"):GetPlayers()) do
 		if string.find(piece, other.Name, 1, true) or string.find(piece, other.DisplayName, 1, true) then return end -- (이름)
 	end
-	missLogged[piece] = true
+	missLogged[key] = true
 	missCount += 1
 	print(string.format("[번역 누락] %s  (%s)", (string.gsub(string.sub(piece, 1, 90), "[\r\n]+", " / ")), guiName))
 end

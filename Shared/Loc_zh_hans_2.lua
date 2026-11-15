@@ -1014,6 +1014,7 @@ return {
 		{ "Crit damage +{number1}%p per point  (max {number2})", "暴击伤害 +{number1}%p/点  (上限 {number2})" },
 		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 领取了{number1}个奖励！(新称号{number2}个)" },
 		{ "Keeps {number1} more stacks even if broken", "即使中断也多保留{number1}层" },
+		{ "📍 Field Entrance  ahead (east)  {number1}m", "📍 野外入口  前方（东）  {number1}m" },
 		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 深渊之王（区域 {number1}） · 推荐等级 ⚡{number2}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 今天有{number1}个免费入场机会 · 🗝 有{number2}把钥匙！" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 下一个武器解锁霰弹枪（+{number1}）" },
@@ -1107,6 +1108,5 @@ return {
 		{ "★★☆  Step {number1}/{number2} · Higher step", "★★☆ 步骤 {number1}/{number2} · 更高步骤" },
 		{ "Spell Tome · Mythic Era +{number3}", "法术书 · 神话时代 +{number3}" },
 		{ "ZONE {number1}  ·  Wasteland   ☠☠☠", "区域 {number1} · 荒地 ☠☠☠" },
-		{ "Active {number1} / {number2} slots   (💰 {number3} G)", "已激活 {number1} / {number2} 个栏位（💰 {number3} 金币）" },
 	},
 }

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Active {number1} / {number2} slots   (💰 {number3} G)", "已激活 {number1} / {number2} 个栏位（💰 {number3} 金币）" },
 		{ "Dismantled! Essence +{number1}, {number2} G", "已分解!精华 +{number1},{number2} 金币" },
 		{ "🎯 Goal: Defeat Zone {number1} Lord", "🎯 目标:击败区域{number1}的领主" },
 		{ "Explodes on hit (radius {number1})", "命中时爆炸(范围 {number1})" },
@@ -131,6 +132,7 @@ return {
 		{ "Finish {number1} trainings", "完成{number1}次训练" },
 		{ "◆ Attack Speed +{number1}%", "◆ 攻击速度 +{number1}%" },
 		{ "◆ Heal on Kill +{number1}%", "◆ 击杀回复 +{number1}%" },
+		{ "▼ Dungeon Gate  {number1}m", "▼ 地牢之门  {number1}m" },
 		{ "Training time -{number1}%", "训练时间减少{number1}%" },
 		{ "🔑{number6} (Free today {number7}/{number8})", "🔑{number6}（今天免费{number7}/{number8}）" },
 		{ "{number2} / {number3}   Reward: {number4} G", "{number2} / {number3} 奖励：{number4} 金币" },

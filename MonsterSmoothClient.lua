@@ -15,7 +15,7 @@ task.spawn(function()
 		if folder then
 			local now = os.clock()
 			for _, body in ipairs(folder:GetChildren()) do
-				if body:IsA("BasePart") and now - (reportedAt[body] or -10) > 5 then
+				if body:IsA("BasePart") and not reportedAt[body] then -- (같은 몬스터는 한 번만 찍는다: 5초마다 같은 줄이 계속 나와 로그를 덮었다)
 					local limit = body.Size.Magnitude * 2 + 6
 					for _, decor in ipairs(body:GetChildren()) do
 						if decor:IsA("BasePart") and decor.Size.Y < 60 and (decor.Position - body.Position).Magnitude > limit and Vector3.new(decor.Position.X - body.Position.X, 0, decor.Position.Z - body.Position.Z).Magnitude > 4 then -- (하늘까지 닿는 빛기둥은 일부러 위쪽으로 멀리 떨어져 있다: 진단에서 뺀다. 몸통 바로 위로만 떨어진 부품(옆으로 4 이하)도 같은 기둥이라 뺀다)
