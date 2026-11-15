@@ -867,6 +867,8 @@ return {
 		["All floors cleared!"] = "Todos os andares concluídos!",
 		["Solo · no key · fail = try the same floor again"] = "Solo · sem chave · falhou = mesmo andar de novo",
 		["Enter from town"] = "Entrar pela cidade",
+		["💨 Evolved: Gale Dash"] = "💨 Evoluiu: Investida Vendaval",
+		["⚡ Evolved: Awakening"] = "⚡ Evoluiu: Despertar",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1057,6 +1059,5 @@ return {
 		{ "✅ Mission complete! Reward: {number1} G + Tickets {number2}", "✅ Missão concluída! Recompensa: {number1} G + Bilhetes {number2}" },
 		{ "Rocket Launcher  ·  keys {number1}-{number2} switch weapons", "Lançador de Foguetes · teclas {number1}-{number2} para trocar de arma" },
 		{ "📅 {number1}-day login streak · Get stronger today!", "📅 Sequência de login de {number1} dias · Fique mais forte hoje!" },
-		{ "Each NEAR MISS stack gives +{number1}% more attack", "Cada acúmulo NEAR MISS dá +{number1}% a mais de ataque" },
 	},
 }

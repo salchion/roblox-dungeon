@@ -1040,6 +1040,7 @@ local function laser(ctx, part, data, stats, aimDir, range)
 end
 
 function M.Update(ctx, part, data, dt, now)
+	if (data.StaggerUntil or 0) > os.clock() or (part:GetAttribute("StaggerUntil") or 0) > os.clock() then return end -- 경직 / 그로기: 움직임 / 공격 정지 (전투 진화 질풍 대시 / 보스 그로기)
 	local def = data.Def
 	local stats = data.Stats
 	local target, distance = ctx.GetTarget(part.Position)

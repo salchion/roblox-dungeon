@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Each NEAR MISS stack gives +{number1}% more attack", "Cada acúmulo NEAR MISS dá +{number1}% a mais de ataque" },
 		{ "🔒 Spend {number1} points higher up this path first", "🔒 Gaste antes {number1} pontos mais acima neste caminho" },
 		{ "🗼 Floor {number1} cleared! Guaranteed Mythic gear!", "🗼 Andar {number1} concluído! Equipamento mítico garantido!" },
 		{ "Auto-equipped the best gear in {number1} slot(s)!", "Melhor equipamento equipado automaticamente em {number1} espaço(s)!" },

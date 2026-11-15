@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🛡 Knocked back! Power {number1} required (you: {number2})", "🛡 Zurückgeschleudert! Stärke {number1} nötig (du: {number2})" },
 		{ "💚 Emergency rescue! HP restored ({number1} left)", "💚 Notrettung! LP wiederhergestellt ({number1} übrig)" },
 		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}", "{number1} Sekunden! Belohnung x{number2}, Combo bis zu x{number3}" },
 		{ "🔒 Spend {number1} points in the rows above first", "🔒 Gib zuerst {number1} Punkte in den Reihen darüber aus" },

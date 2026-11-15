@@ -1025,6 +1025,8 @@ return {
 		["All floors cleared!"] = "全階クリア!",
 		["Solo · no key · fail = try the same floor again"] = "ソロ · 鍵不要 · 失敗したら同じ階に再挑戦",
 		["Enter from town"] = "町から入場",
+		["💨 Evolved: Gale Dash"] = "💨 進化: 疾風ダッシュ",
+		["⚡ Evolved: Awakening"] = "⚡ 進化: 覚醒",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },

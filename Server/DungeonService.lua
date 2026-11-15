@@ -2368,6 +2368,11 @@ function Dungeon.HitPart(player, part, damage)
 	return true
 end
 
+function Dungeon.MonstersFolder(player) -- (전투 진화가 경직을 걸 때 내 던전 몬스터 폴더를 찾는다)
+	local run = playerRun[player]
+	return run and not run.Destroyed and run.MonstersFolder or nil
+end
+
 function Dungeon.AreaDamage(player, center, radius, damage)
 	local run = playerRun[player]
 	if not run or run.Destroyed then return nil end

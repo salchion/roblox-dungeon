@@ -400,6 +400,17 @@ function Config.TowerConstraints(floor)
 	return list
 end
 -- 던전 3택: 보너스 때 강화 3장을 보여 주고 고르게 한다 (RunBuffs / RunTrees 그대로). 무응답 / 자동 선택이면 Seconds 뒤 첫 장
+-- 전투 진화: 무기 시대(Era)가 오르면 손끝이 바뀐다 (Era 2 = 질풍 대시, Era 3 = 각성). 게이트는 Config.GetWeaponTier(WeaponLevel).Era
+Config.Evolve = {
+	Enabled = true,
+	GaleEra = 2,        -- 질풍 대시: 대시를 시작하는 순간 주변에 충격파
+	GaleRadius = 16,
+	GaleDamage = 0.5,   -- 한 발 피해(ComputeDamage) 기준 배율 (0.8 은 대시 2회 / 3초 x 범위라 공짜 광역 화력이 너무 컸다)
+	GaleStagger = 0.45, -- 맞은 적 경직(초)
+	AwakenEra = 3,      -- 각성: 스킬을 쓰면 잠깐 강해진다 (③에서 구현)
+	AwakenSeconds = 4,
+	AwakenMult = 1.25,
+}
 -- 던전 드래프트 (하스스톤 투기장식): 입장 직후 Rounds 번 3택으로 내 덱을 만들고, 전투 중 보너스 때마다 덱 순서대로 자동 발동 (전투 중 팝업 없음)
 --   라운드마다 RoundSeconds 안에 안 고르면 첫 장, 전체 마감이 지나면 남은 칸은 자동으로 채우고 시작 (파티 AFK 가 판을 붙잡지 않게)
 Config.Dungeon.Draft = { Enabled = true, Rounds = 8, RoundSeconds = 4 } -- (전체 마감 = Rounds x RoundSeconds + 2초: 코드에서 계산)

@@ -871,3 +871,5 @@
 2902¦町から入場¦Aus der Stadt betreten¦Entrer depuis la ville¦Entrar desde el pueblo¦Entrar pela cidade¦在城镇进入¦마을에서 입장
 2903¦🗼 塔 {number1}¦🗼 Turm {number1}¦🗼 Tour {number1}¦🗼 Torre {number1}¦🗼 Torre {number1}¦🗼 塔 {number1}¦🗼 탑 {number1}
 2904¦🃏 ドラフト {number1}/{number2}¦🃏 Draft {number1}/{number2}¦🃏 Draft {number1}/{number2}¦🃏 Draft {number1}/{number2}¦🃏 Draft {number1}/{number2}¦🃏 选卡 {number1}/{number2}¦🃏 드래프트 {number1}/{number2}
+2905¦💨 進化: 疾風ダッシュ¦💨 Entwickelt: Sturmsprint¦💨 Évolution : Ruée tempête¦💨 Evolución: Embestida vendaval¦💨 Evoluiu: Investida Vendaval¦💨 进化：疾风冲刺¦💨 진화: 질풍 대시
+2906¦⚡ 進化: 覚醒¦⚡ Entwickelt: Erwachen¦⚡ Évolution : Éveil¦⚡ Evolución: Despertar¦⚡ Evoluiu: Despertar¦⚡ 进化：觉醒¦⚡ 진화: 각성

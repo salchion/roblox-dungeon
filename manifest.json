@@ -323,6 +323,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/EvolveService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "EvolveService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/FieldPartyShare.lua",
       "parent": "ServerScriptService/Modules",
       "name": "FieldPartyShare",
