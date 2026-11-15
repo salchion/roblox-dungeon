@@ -39,16 +39,44 @@ local function resolveParent(path)
 	return current
 end
 
+-- 받기 하나: Studio 의 HTTP 요청 한도(분당 약 500번)에 걸리면 기다렸다 다시 (파일이 160개가 넘어 버튼을 두 번 누르면 한도를 넘었다)
+local function fetch(path)
+	for attempt = 1, 6 do
+		local ok, result = pcall(function()
+			return HttpService:GetAsync(rawUrl(path), true)
+		end)
+		if ok then return true, result end
+		if string.find(tostring(result), "Number of requests exceeded", 1, true) and attempt < 6 then
+			print(string.format("[업데이트] 요청 한도에 걸려서 15초 기다렸다 다시 받아요 (%s, %d/5)", path, attempt))
+			task.wait(15)
+		else
+			return false, result
+		end
+	end
+	return false, "retry limit"
+end
+
+local updateInner -- (아래에서 정의)
+local busy = false
 local function update()
+	if busy then
+		warn("[업데이트] 이미 업데이트 중이에요. 끝날 때까지 기다려 주세요.")
+		return
+	end
+	busy = true
+	local okRun, err = pcall(function() updateInner() end)
+	busy = false
+	if not okRun then warn("[업데이트] 오류: " .. tostring(err)) end
+end
+
+updateInner = function()
 	if RunService:IsRunning() then
 		warn("[업데이트] Play 중에는 업데이트할 수 없어요. 정지(■)한 뒤 다시 눌러주세요.")
 		return
 	end
 
 	-- 1) 파일 목록(manifest.json) 먼저 받기
-	local okManifest, manifestText = pcall(function()
-		return HttpService:GetAsync(rawUrl("manifest.json"), true)
-	end)
+	local okManifest, manifestText = fetch("manifest.json")
 	if not okManifest then
 		warn("[업데이트] manifest.json 을 받지 못했어요: " .. tostring(manifestText))
 		return
@@ -58,9 +86,11 @@ local function update()
 	-- 2) 전부 먼저 내려받는다 (하나라도 실패하면 아무것도 바꾸지 않음)
 	local contents = {}
 	for _, file in ipairs(manifest.files) do
-		local ok, result = pcall(function()
-			return HttpService:GetAsync(rawUrl(file.path), true)
-		end)
+		local ok, result = fetch(file.path)
+		task.wait(0.13) -- (분당 약 460번: 한도 아래로)
+		if ok and #result >= 200000 then -- 스크립트 한 개 최대 크기: 넘는 파일이 있으면 아무것도 바꾸지 않는다 (예전엔 중간에 멈춰 일부만 바뀌었다)
+			ok, result = false, string.format("파일이 너무 커요 (%d자, 한도 200000자)", #result)
+		end
 		if not ok then
 			warn("[업데이트] 실패: " .. file.path .. " -> " .. tostring(result))
 			warn("[업데이트] 아무것도 바꾸지 않았어요. 인터넷/허용 창을 확인하고 다시 눌러주세요.")
@@ -104,3 +134,4 @@ end
 button.Click:Connect(function()
 	task.spawn(update)
 end)
+
