@@ -97,7 +97,7 @@ end
 Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
 	if action == "RunChoice" and type(data) == "table" and data.Options then
 		show(data)
-	elseif action == "Result" then
+	elseif action == "Result" or action == "DraftDone" then -- (드래프트 마감: 고르던 카드가 전투 위에 남지 않게)
 		close()
 	end
 end)

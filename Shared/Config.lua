@@ -401,8 +401,8 @@ function Config.TowerConstraints(floor)
 end
 -- 던전 3택: 보너스 때 강화 3장을 보여 주고 고르게 한다 (RunBuffs / RunTrees 그대로). 무응답 / 자동 선택이면 Seconds 뒤 첫 장
 -- 던전 드래프트 (하스스톤 투기장식): 입장 직후 Rounds 번 3택으로 내 덱을 만들고, 전투 중 보너스 때마다 덱 순서대로 자동 발동 (전투 중 팝업 없음)
---   라운드마다 RoundSeconds 안에 안 고르면 첫 장, 전체 MaxSeconds 가 지나면 남은 칸은 자동으로 채우고 시작 (파티 AFK 가 판을 붙잡지 않게)
-Config.Dungeon.Draft = { Enabled = true, Rounds = 8, RoundSeconds = 4, MaxSeconds = 24 }
+--   라운드마다 RoundSeconds 안에 안 고르면 첫 장, 전체 마감이 지나면 남은 칸은 자동으로 채우고 시작 (파티 AFK 가 판을 붙잡지 않게)
+Config.Dungeon.Draft = { Enabled = true, Rounds = 8, RoundSeconds = 4 } -- (전체 마감 = Rounds x RoundSeconds + 2초: 코드에서 계산)
 Config.Dungeon.Choice = { Enabled = true, Seconds = 6, Count = 3 } -- (Seconds = BonusInterval: 무응답이어도 보너스 간격 / 보스 체력이 그대로)
 Config.Dungeon.BonusInterval = 6     -- 이 간격(초)마다 랜덤 강화 / 랜덤 패널티가 터진다 (선택 없이 자동 적용)
 

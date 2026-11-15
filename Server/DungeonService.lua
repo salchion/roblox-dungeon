@@ -3148,7 +3148,6 @@ local function runDraft(run)
 	local DR = Config.Dungeon.Draft
 	if not (DR and DR.Enabled) or run.Tutorial or run.RiftMode or run.Fever then return true end
 	run.Deck = {}
-	local doneCount, total = 0, 0
 	local function draftOptions(member, deck)
 		local inDeck = {}
 		for _, b in ipairs(deck) do if b.Perk then inDeck[b.Perk] = (inDeck[b.Perk] or 0) + 1 end end
@@ -3181,17 +3180,23 @@ local function runDraft(run)
 		Dungeon.OfferChoice(run, member, options, function(buff)
 			if run.Deck[member] ~= deck or #deck >= DR.Rounds then return end
 			table.insert(deck, buff)
-			if #deck >= DR.Rounds then doneCount += 1 else task.defer(offer, member) end
+			if #deck < DR.Rounds then task.defer(offer, member) end
 		end, DR.RoundSeconds, { Round = #deck + 1, Rounds = DR.Rounds, Deck = icons })
 	end
 	for _, member in ipairs(run.Members) do
-		total += 1
 		run.Deck[member] = {}
 		offer(member)
 	end
-	local deadline = os.clock() + DR.MaxSeconds
+	local deadline = os.clock() + DR.Rounds * DR.RoundSeconds + 2 -- (라운드마다 시간을 다 써도 8장을 직접 고를 수 있게. 옵션이 없어 멈춘 경우의 안전장치이기도 하다)
 	run.PhaseEnd = deadline -- (화면 카운트다운: 드래프트 남은 시간)
-	waitFor(run, function() return doneCount >= total or os.clock() >= deadline end)
+	waitFor(run, function() -- (지금 남아 있는 멤버 기준: 한 명이 나가도 남은 사람이 마감까지 기다리지 않게)
+		if os.clock() >= deadline then return true end
+		for _, member in ipairs(run.Members) do
+			local deck = run.Deck[member]
+			if deck and #deck < DR.Rounds then return false end
+		end
+		return true
+	end)
 	if run.Destroyed or run.Phase == "Ended" then return false end
 	-- 마감: 고르는 중인 카드 정리 + 남은 칸 자동으로 채움
 	for _, member in ipairs(run.Members) do
