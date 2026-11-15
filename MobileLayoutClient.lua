@@ -679,8 +679,9 @@ local function layoutPhoneSkills(viewport)
 
 	-- 칸 목록: 스킬 바 안의 칸들을 원래 순서(Dash, 힐, 정령, 궁극기)대로 + 자동 공격
 	local slots = {}
+	local gauges = bar:FindFirstChild("AugChargeGauges") -- (세트 효과 게이지: 스킬 칸이 아니다. 칸으로 세면 호 배치가 한 칸씩 밀렸다)
 	for _, child in ipairs(bar:GetChildren()) do
-		if child:IsA("Frame") then
+		if child:IsA("Frame") and child ~= gauges then
 			if slotHome[child] == nil then slotHome[child] = child.Position.X.Offset end
 			table.insert(slots, child)
 		end
@@ -707,13 +708,24 @@ local function layoutPhoneSkills(viewport)
 	for _, slot in ipairs(slots) do table.insert(items, slot) end
 	table.insert(items, auto)
 	local angle = 195 -- 왼쪽 약간 아래에서 시작해 위쪽으로 (점프 버튼의 왼쪽 위를 감싼다)
+	local firstPx, firstPy
 	for _, item in ipairs(items) do
 		local rad = math.rad(angle)
 		local px = math.clamp(cx + radius * math.cos(rad), slotPx / 2 + 4, viewport.X - slotPx / 2 - 4)
 		local py = math.clamp(cy - radius * math.sin(rad), slotPx / 2 + 4, viewport.Y - slotPx / 2 - 4)
 		local pos = UDim2.new(0, (px - slotPx / 2 - origin.X) / ds, 0, (py - slotPx / 2 - origin.Y) / ds)
 		if item == auto then set(item, "Position", pos) else set(item, "Position", pos) end
+		if not firstPx then firstPx, firstPy = px, py end
 		angle -= step
+	end
+	-- 세트 효과 게이지: 호의 맨 왼쪽 칸(대시) 바로 왼쪽에 한 줄로. 화면 왼쪽 밖으로 나가지 않게 자른다
+	if gauges and firstPx then
+		local gw = gauges.AbsoluteSize.X > 0 and gauges.AbsoluteSize.X or 132 * ds
+		local gh = 44 * ds
+		local left = math.max(4, firstPx - slotPx / 2 - 8 - gw)
+		local top = math.clamp(firstPy - gh / 2, 4, viewport.Y - gh - 4)
+		set(gauges, "AnchorPoint", Vector2.new(0, 0))
+		set(gauges, "Position", UDim2.new(0, (left - origin.X) / ds, 0, (top - origin.Y) / ds))
 	end
 
 	-- 터치 화면에서 필요 없는 키 안내 줄은 숨긴다
