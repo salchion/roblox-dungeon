@@ -1721,10 +1721,14 @@ function Dungeon.NoteHit(player, isWeak)
 	local t = volleyT[player]
 	if not t then return end
 	local base = AC.PerHit * AC.RateAssumed * t
+	local got = volleyGain[player]
+	if not got then got = {} volleyGain[player] = got end
 	if isWeak then
-		addCharge(player, base * (AC.WeakMult - 1)) -- (약점: 그 사격 몫을 추가로 2배 더)
-	elseif not volleyGain[player] then
-		volleyGain[player] = true -- (산탄 / 관통 / 튕김으로 여러 번 맞아도 사격 1번 = 1번 적립)
+		if got.Weak then return end -- (약점 보너스도 사격 1번에 1번만: 산탄 펠릿마다 약점이 잡혀 보너스가 펠릿 수만큼 곱해지던 것)
+		got.Weak = true
+		addCharge(player, base * (AC.WeakMult - 1)) -- (약점: 그 사격 몫을 추가로 2배 더 -> 사격당 최대 3배)
+	elseif not got.Normal then
+		got.Normal = true -- (산탄 / 관통 / 튕김으로 여러 번 맞아도 사격 1번 = 1번 적립)
 		addCharge(player, base)
 	end
 end
