@@ -663,7 +663,7 @@ end
 -- 아래 함수들은 task.spawn 안에서 실행되므로 task.wait 를 쓸 수 있고, 보스가 죽거나 던전이 끝나면 중단한다.
 local function bossAlive(run, part, data)
 	-- (보스러쉬는 단계가 "Wave" 로 유지된다: 예전에는 여기서 걸려 보스러쉬 보스의 패턴이 시작하자마자 전부 멈췄다 = 체력만 많은 표적)
-	return run.Monsters[part] == data and (run.Phase == "Boss" or (run.RiftMode and run.Phase == "Wave"))
+	return run.Monsters[part] == data and (run.Phase == "Boss" or (run.RiftMode and run.Phase == "Wave")) and not Break.IsBroken(data) -- (그로기 중이면 하던 패턴도 끊긴다)
 end
 
 -- 패턴 시작 전 예고: 보스 색을 잠깐 바꿈
@@ -1393,7 +1393,7 @@ local function stepRun(run, dt)
 		if data.IsBoss then
 			-- 보스: 천천히 다가오면서, 패턴을 하나 골라 끝까지 실행한 뒤 잠깐 쉬고 다음 패턴
 			local target, distance = getNearestTarget(run, part.Position)
-			if target then
+			if target and not Break.IsBroken(data) then -- (그로기 중에는 다가오지도 않는다)
 				local keepDistance = data.Stats.Size + 12
 				if distance > keepDistance and not data.NoMove then
 					local flatTarget = Vector3.new(target.Position.X, part.Position.Y, target.Position.Z)
@@ -2373,9 +2373,19 @@ function Dungeon.HitPart(player, part, damage)
 	return true
 end
 
-function Dungeon.MonstersFolder(player) -- (전투 진화가 경직을 걸 때 내 던전 몬스터 폴더를 찾는다)
+-- 전투 진화: 반경 안 내 던전 몬스터에 경직 (MonsterTypes.Update 가 data.StaggerUntil 을 본다)
+function Dungeon.Stagger(player, center, radius, seconds)
 	local run = playerRun[player]
-	return run and not run.Destroyed and run.MonstersFolder or nil
+	if not run or run.Destroyed then return end
+	local untilAt = os.clock() + seconds
+	for part, data in pairs(run.Monsters) do
+		if part.Parent and (part.Position - center).Magnitude <= radius + part.Size.X / 2 then data.StaggerUntil = math.max(data.StaggerUntil or 0, untilAt) end
+	end
+end
+-- 밀칠 수 있는 자리인가 (아레나 안 / 걸을 수 있는 곳)
+function Dungeon.CanPushTo(player, pos)
+	local run = playerRun[player]
+	return run ~= nil and not run.Destroyed and walkable(run, pos.X, pos.Z)
 end
 
 function Dungeon.AreaDamage(player, center, radius, damage)
@@ -2484,7 +2494,7 @@ function Dungeon.Shoot(player, origin, direction)
 			end
 		end
 		damageMonster(run, player, part, data, damage, isCrit, hitPosition)
-		pcall(function() require(script.Parent:WaitForChild("EvolveService")).ShotgunHit(player, part, data, nil) end) -- (각성 샷건: 던전은 아레나 벽 판정이 없어 밀지 않고 경직만)
+		pcall(function() require(script.Parent:WaitForChild("EvolveService")).ShotgunHit(player, part, data, function(pos) return walkable(run, pos.X, pos.Z) end) end) -- (각성 샷건: 아레나 안으로만 민다)
 		Meter.Add(player, "Gun", damage)
 		player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1) -- 궁극기 게이지는 실제로 맞혔을 때만 찬다
 

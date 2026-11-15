@@ -1052,8 +1052,9 @@ local function spawnMonster(zone, kind, at, ambush, filler)
 		Level = level,
 		XpLevel = xpLevel,
 		TypeKey = typeKey,
-		Hazard = (zone <= 5 and kind == "Normal" and math.random() < 0.3) or (zone >= 6 and kind == "Normal" and math.random() < 0.25) or (zone >= 4 and kind == "Elite") or nil, -- (6~8구역 일반 25% / 4구역 이상 엘리트는 전부)
-		EliteHazard = (zone >= 4 and kind == "Elite") or nil, -- 초반 구역(1~5)의 일부 몬스터는 맵 분위기에 맞는 바닥 경고 공격(번개 / 가시 / 얼음 ...)을 가끔 쓴다
+		-- 바닥 경고 공격(구역 테마: 번개 / 가시 / 얼음 / 용암 ...): 1~5구역 일반 30%, 6~8구역 일반 25%, 4구역 이상 엘리트는 전부 (크게 / 2발)
+		Hazard = (zone <= 5 and kind == "Normal" and math.random() < 0.3) or (zone >= 6 and kind == "Normal" and math.random() < 0.25) or (zone >= 4 and kind == "Elite") or nil,
+		EliteHazard = (zone >= 4 and kind == "Elite") or nil,
 		Def = def,
 		Phase = math.random() * math.pi * 2,
 		Stats = stats,
@@ -1623,6 +1624,18 @@ function Field.HitPart(player, part, damage)
 	return true
 end
 
+-- 전투 진화: 반경 안 필드 몬스터에 경직 / 캠프 안전지대 판정 (EvolveService 가 쓴다)
+function Field.Stagger(player, center, radius, seconds)
+	if player:GetAttribute("Zone") ~= "Field" then return end
+	local untilAt = os.clock() + seconds
+	for part, data in pairs(monsters) do
+		if part.Parent and (part.Position - center).Magnitude <= radius + part.Size.X / 2 and canHitZone(player, part.Position.X) then
+			data.StaggerUntil = math.max(data.StaggerUntil or 0, untilAt)
+		end
+	end
+end
+function Field.InSafeZone(position) return isSafe(position) end
+
 function Field.AreaDamage(player, center, radius, damage)
 	if player:GetAttribute("Zone") ~= "Field" then return nil end
 	local targets = {}
@@ -1636,11 +1649,12 @@ function Field.AreaDamage(player, center, radius, damage)
 		local data = target.Data
 		if monsters[target.Part] == data then
 			table.insert(positions, target.Part.Position)
-			if data.Invincible then damage = 1 end
-			if data.ExposedUntil and os.clock() < data.ExposedUntil then damage = math.floor(damage * 3) end -- 약점 노출 중 x3
-			damage = math.floor(damage * Break.Mult(data))
-			if data.IntroUntil and os.clock() < data.IntroUntil then damage = 0 end -- 군주 등장 포효 중에는 피해 없음
-			local dealt = math.floor(damage * Dungeon.MarkMult(player, data)) -- 펫 사냥 표식
+			local hit = damage -- (대상마다 따로: 예전엔 공유 변수를 갈아서 반경 안 여러 마리면 x3 / 그로기 배율이 누적됐다)
+			if data.Invincible then hit = 1 end
+			if data.ExposedUntil and os.clock() < data.ExposedUntil then hit = math.floor(hit * 3) end -- 약점 노출 중 x3
+			hit = math.floor(hit * Break.Mult(data))
+			if data.IntroUntil and os.clock() < data.IntroUntil then hit = 0 end -- 군주 등장 포효 중에는 피해 없음
+			local dealt = math.floor(hit * Dungeon.MarkMult(player, data)) -- 펫 사냥 표식
 			data.Health -= dealt
 			BL.Dmg(player, dealt, false)
 			local Meter = require(script.Parent.DamageMeter)
@@ -2428,6 +2442,8 @@ local function stepMonsters(dt)
 				-- 일반 몬스터 / 엘리트: 종류별 움직임과 공격
 				MonsterTypes.Update(fieldCtx, part, data, dt, now)
 				if part.Parent and monsters[part] == data then unstick(part, data) end
+			elseif Break.IsBroken(data) then
+				-- 군주 그로기: 움직이지도 쏘지도 않는다 (사격 / 패턴 시각은 BreakService 가 그로기만큼 밀어 둔다)
 			else
 				local mv = F.BossMove and F.BossMove[data.Zone]
 				local keepDistance = data.Stats.Size / 2 + ((mv and mv.Keep) or 16)

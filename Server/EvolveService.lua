@@ -26,18 +26,9 @@ local function refreshStage(player, quiet)
 	local before = shownStage[player]
 	shownStage[player] = stage
 	player:SetAttribute("EvolveStage", stage)
+	if player:GetAttribute("DataReady") ~= true then quiet = true end -- (불러오는 중 WeaponLevel 이 들어오는 것은 "진화"가 아니다: 재접속마다 알림이 뜨던 것)
 	if not quiet and before ~= nil and stage > before then
 		Remotes.Notify:FireClient(player, stage >= 2 and "⚡ Evolved: Awakening" or "💨 Evolved: Gale Dash")
-	end
-end
-
-local function stagger(folder, center, radius, seconds)
-	if not folder then return end
-	local untilAt = os.clock() + seconds
-	for _, part in ipairs(folder:GetChildren()) do
-		if part:IsA("BasePart") and (part.Position - center).Magnitude <= radius + part.Size.X / 2 then
-			part:SetAttribute("StaggerUntil", untilAt)
-		end
 	end
 end
 
@@ -47,14 +38,15 @@ local function galeBurst(player, root)
 	if zone ~= "Field" and zone ~= "Dungeon" then return end
 	if player:GetAttribute("IntroPlaying") or player:GetAttribute("TutorialActive") then return end
 	local center = root.Position
+	if zone == "Field" and Field.InSafeZone and Field.InSafeZone(center) then return end -- (캠프 안전지대에서는 사격처럼 대시 충격파도 막는다)
 	local damage = math.max(1, math.floor(Dungeon.ComputeDamage(player) * E.GaleDamage))
 	local hit
 	if zone == "Dungeon" then
 		hit = Dungeon.AreaDamage(player, center, E.GaleRadius, damage)
-		stagger(Dungeon.MonstersFolder(player), center, E.GaleRadius, E.GaleStagger)
+		Dungeon.Stagger(player, center, E.GaleRadius, E.GaleStagger)
 	else
 		hit = Field.AreaDamage(player, center, E.GaleRadius, damage)
-		stagger(workspace:FindFirstChild("FieldMonsters"), center, E.GaleRadius, E.GaleStagger)
+		Field.Stagger(player, center, E.GaleRadius, E.GaleStagger)
 	end
 	-- 연출: 기존 효과 이벤트 재사용 (퍼지는 고리 + 파편)
 	local color = Color3.fromRGB(150, 230, 255)
@@ -101,7 +93,7 @@ end
 function Evolve.ShotgunHit(player, part, data, canMove)
 	if not part or not part.Parent or (shownStage[player] or 0) < 2 then return end
 	if (player:GetAttribute("AwakenUntil") or 0) <= workspace:GetServerTimeNow() then return end
-	if Config.GetPlayerWeapon(player).Form ~= "Shotgun" then return end
+	if Config.ResolveWeaponType(player:GetAttribute("WeaponLevel") or 0, player:GetAttribute("WeaponType")) ~= "Shotgun" then return end -- (Form 은 모델 모양 값이라 무기 종류 판정에 못 쓴다)
 	if data and (data.IsBoss or data.Kind == "Boss" or data.BossLike) then return end -- (보스는 밀리지 않는다)
 	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if not root then return end

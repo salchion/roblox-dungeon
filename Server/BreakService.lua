@@ -59,7 +59,12 @@ function Break.WeakHit(part, data)
 	if data.BreakPts >= B.Need then
 		data.BreakPts = 0
 		data.BrokenUntil = now + B.Seconds
+		data.StaggerUntil = math.max(data.StaggerUntil or 0, data.BrokenUntil)
 		part:SetAttribute("StaggerUntil", data.BrokenUntil)
+		-- 필드 군주는 MonsterTypes.Update 를 안 탄다: 사격 / 고리 / 패턴 / 바쁨 시각을 그로기만큼 민다
+		for _, key in ipairs({ "NextShot", "NextRing", "NextPattern", "BusyUntil" }) do
+			if data[key] then data[key] = math.max(data[key], data.BrokenUntil) end
+		end
 		local gui = board(part, data)
 		gui.Text.Text = "💥 BROKEN"
 		gui.Text.TextColor3 = Color3.fromRGB(255, 140, 90)
