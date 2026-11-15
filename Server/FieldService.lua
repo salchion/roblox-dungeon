@@ -1052,7 +1052,8 @@ local function spawnMonster(zone, kind, at, ambush, filler)
 		Level = level,
 		XpLevel = xpLevel,
 		TypeKey = typeKey,
-		Hazard = (zone <= 5 and kind == "Normal" and math.random() < 0.3) or nil, -- 초반 구역(1~5)의 일부 몬스터는 맵 분위기에 맞는 바닥 경고 공격(번개 / 가시 / 얼음 ...)을 가끔 쓴다
+		Hazard = (zone <= 5 and kind == "Normal" and math.random() < 0.3) or (zone >= 6 and kind == "Normal" and math.random() < 0.25) or (zone >= 4 and kind == "Elite") or nil, -- (6~8구역 일반 25% / 4구역 이상 엘리트는 전부)
+		EliteHazard = (zone >= 4 and kind == "Elite") or nil, -- 초반 구역(1~5)의 일부 몬스터는 맵 분위기에 맞는 바닥 경고 공격(번개 / 가시 / 얼음 ...)을 가끔 쓴다
 		Def = def,
 		Phase = math.random() * math.pi * 2,
 		Stats = stats,

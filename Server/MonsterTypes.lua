@@ -851,6 +851,9 @@ local HAZARD_THEMES = {
 	{ Kind = "bolt", Warn = Color3.fromRGB(255, 240, 100), Fill = Color3.fromRGB(255, 225, 60), Body = Color3.fromRGB(255, 250, 190), Count = 2, Delay = 1.3, Radius = 6, Damage = 1.0 },  -- 3 황무지: 번개
 	{ Kind = "spike", Warn = Color3.fromRGB(255, 205, 110), Fill = Color3.fromRGB(235, 170, 70), Body = Color3.fromRGB(225, 185, 105), Count = 2, Delay = 1.3, Radius = 8, Damage = 1.0 }, -- 4 사막: 모래 기둥
 	{ Kind = "ice", Warn = Color3.fromRGB(150, 230, 255), Fill = Color3.fromRGB(120, 200, 255), Body = Color3.fromRGB(205, 245, 255), Count = 2, Delay = 1.3, Radius = 7, Damage = 1.1 },   -- 5 설원: 고드름
+	{ Kind = "drop", Warn = Color3.fromRGB(255, 150, 80), Fill = Color3.fromRGB(235, 90, 40), Body = Color3.fromRGB(255, 130, 60), Count = 2, Delay = 1.2, Radius = 7, Damage = 1.1 },   -- 6 화산: 떨어지는 용암 덩어리
+	{ Kind = "spike", Warn = Color3.fromRGB(190, 130, 255), Fill = Color3.fromRGB(120, 70, 190), Body = Color3.fromRGB(80, 50, 120), Count = 2, Delay = 1.2, Radius = 7, Damage = 1.1 },  -- 7 어둠의 땅: 사신의 뼈 가시
+	{ Kind = "bolt", Warn = Color3.fromRGB(255, 120, 190), Fill = Color3.fromRGB(230, 70, 150), Body = Color3.fromRGB(255, 190, 230), Count = 2, Delay = 1.2, Radius = 6, Damage = 1.2 },  -- 8 심연: 심연의 번개
 }
 local hazardActive = 0 -- 동시에 떠 있는 경고 원이 너무 많아지지 않게
 
@@ -934,6 +937,11 @@ end
 local function hazardCast(ctx, part, data, stats)
 	local theme = HAZARD_THEMES[data.Zone or 1]
 	if not theme or hazardActive >= 4 then return end
+	if data.EliteHazard then -- 4구역 이상 엘리트: 원이 1.25배 크고 최소 2발
+		theme = table.clone(theme)
+		theme.Radius = theme.Radius * 1.25
+		theme.Count = math.max(2, theme.Count)
+	end
 	local target = ctx.GetTarget(part.Position)
 	if not target then return end
 	local center = target.Position
@@ -957,7 +965,7 @@ end
 --   heading: 플레이어가 바라보는 방향(수평). 원의 60%는 뒤쪽 반원에 나온다. 1~5구역은 구역 테마(번개 / 가시 / 얼음 ...), 6구역 이후는 운석.
 function M.Barrage(ctx, center, count, zone, stats, heading)
 	heading = (heading and heading.Magnitude > 0.1) and heading.Unit or Vector3.new(0, 0, -1)
-	local theme = HAZARD_THEMES[zone]
+	local theme = zone <= 5 and HAZARD_THEMES[zone] or nil -- (포격 이벤트는 6구역부터 예전처럼 운석: 6~8 테마는 몬스터 장판에만)
 	local behindAngle = math.atan2(-heading.Z, -heading.X)
 	for index = 1, count do
 		local angle
