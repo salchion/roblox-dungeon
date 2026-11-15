@@ -336,6 +336,7 @@ return {
 		{ "Attack -{number1}%", "攻击 -{number1}%" },
 		{ "XP Gain +{number1}", "经验获取 +{number1}" },
 		{ "monster {number1}%", "怪物 {number1}%" },
+		{ "🃏 Draft {number1}/{number2}", "🃏 选卡 {number1}/{number2}" },
 		{ "⚡ Power {number9}", "⚡ 能量 {number9}" },
 		{ "⚡ Power {number1}", "⚡ 能量 {number1}" },
 		{ "Remove #{number1}", "移除#{number1}" },

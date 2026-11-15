@@ -473,6 +473,7 @@ return {
 		{ "Attack -{number1}%", "Angriff -{number1}%" },
 		{ "XP Gain +{number1}", "EP-Gewinn +{number1}" },
 		{ "monster {number1}%", "Monster {number1}%" },
+		{ "🃏 Draft {number1}/{number2}", "🃏 Draft {number1}/{number2}" },
 		{ "⚡ Power {number9}", "⚡ Kraft {number9}" },
 		{ "⚡ Power {number1}", "⚡ Kraft {number1}" },
 		{ "Remove #{number1}", "#{number1} entfernen" },

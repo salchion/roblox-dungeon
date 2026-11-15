@@ -870,3 +870,4 @@
 2901¦{number1}階に入る¦Etage {number1} betreten¦Entrer à l'étage {number1}¦Entrar al piso {number1}¦Entrar no andar {number1}¦进入第{number1}层¦{number1}층 입장
 2902¦町から入場¦Aus der Stadt betreten¦Entrer depuis la ville¦Entrar desde el pueblo¦Entrar pela cidade¦在城镇进入¦마을에서 입장
 2903¦🗼 塔 {number1}¦🗼 Turm {number1}¦🗼 Tour {number1}¦🗼 Torre {number1}¦🗼 Torre {number1}¦🗼 塔 {number1}¦🗼 탑 {number1}
+2904¦🃏 ドラフト {number1}/{number2}¦🃏 Draft {number1}/{number2}¦🃏 Draft {number1}/{number2}¦🃏 Draft {number1}/{number2}¦🃏 Draft {number1}/{number2}¦🃏 选卡 {number1}/{number2}¦🃏 드래프트 {number1}/{number2}

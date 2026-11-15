@@ -517,6 +517,7 @@ return {
 		{ "Attack -{number1}%", "Attaque -{number1}%" },
 		{ "XP Gain +{number1}", "Gain d'XP +{number1}" },
 		{ "monster {number1}%", "monstre {number1} %" },
+		{ "🃏 Draft {number1}/{number2}", "🃏 Draft {number1}/{number2}" },
 		{ "⚡ Power {number9}", "⚡ Puissance {number9}" },
 		{ "⚡ Power {number1}", "⚡ Puissance {number1}" },
 		{ "Remove #{number1}", "Supprimer #{number1}" },

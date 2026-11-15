@@ -2902,5 +2902,6 @@
 "Solo · no key · fail = try the same floor again",
 "Enter floor {number1}",
 "Enter from town",
-"🗼 Tower {number1}"
+"🗼 Tower {number1}",
+"🃏 Draft {number1}/{number2}"
 ]

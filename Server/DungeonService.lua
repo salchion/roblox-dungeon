@@ -2995,13 +2995,13 @@ local function resolveChoice(run, member, id, index)
 	pcall(pending.Finish, buff)
 	return true
 end
-function Dungeon.OfferChoice(run, member, options, finish)
+function Dungeon.OfferChoice(run, member, options, finish, seconds, draftInfo)
 	run.Choice = run.Choice or {}
 	local old = run.Choice[member]
 	if old then resolveChoice(run, member, old.Id, 1) end -- (앞 카드를 아직 안 골랐으면 첫 장으로 정리하고 새 카드)
 	choiceSeq += 1
 	local id = choiceSeq
-	local seconds = Config.Dungeon.Choice.Seconds or 8
+	seconds = seconds or Config.Dungeon.Choice.Seconds or 8
 	run.Choice[member] = { Id = id, Options = options, Finish = finish, At = os.clock() }
 	if member:GetAttribute("RunChoiceAuto") == true then
 		resolveChoice(run, member, id, 1)
@@ -3012,7 +3012,7 @@ function Dungeon.OfferChoice(run, member, options, finish)
 		local tree = o.Tree and Config.RunTrees[o.Tree]
 		list[i] = { Icon = o.Icon, Name = o.Name, Desc = o.Desc, Special = o.Special == true, Color = tree and tree.Color or nil }
 	end
-	Remotes.Dungeon:FireClient(member, "RunChoice", { Id = id, Options = list, Seconds = seconds })
+	Remotes.Dungeon:FireClient(member, "RunChoice", { Id = id, Options = list, Seconds = seconds, Draft = draftInfo })
 	run.ChoiceDeadline = math.max(run.ChoiceDeadline or 0, os.clock() + seconds)
 	task.delay(seconds, function()
 		if not run.Destroyed then resolveChoice(run, member, id, 1) end
@@ -3050,7 +3050,7 @@ local function rollBonus(run, penaltyChance, forceSpecial)
 		-- 3택: 서로 다른 강화 최대 3장 (레어 확정이면 레어 위주로)
 		local options = {}
 		local function notChosen(entry) for _, o in ipairs(options) do if o == entry then return false end end return true end
-		local count = (Config.Dungeon.Choice and Config.Dungeon.Choice.Enabled and not run.Tutorial) and (Config.Dungeon.Choice.Count or 3) or 1
+		local count = (Config.Dungeon.Choice and Config.Dungeon.Choice.Enabled and not run.Tutorial and not run.Deck) and (Config.Dungeon.Choice.Count or 3) or 1 -- (드래프트 판: 전투 중 팝업 없이 1장)
 		for _ = 1, count do
 			local pick = pickWeighted(Config.RunBuffs, function(e) return allowed(e) and notChosen(e) end, weigh)
 			if not pick and forceSpecial then
@@ -3104,7 +3104,10 @@ local function rollBonus(run, penaltyChance, forceSpecial)
 				Penalty = pen and { Icon = pen.Icon, Name = pen.Name, Desc = pen.Desc, Gold = math.floor((pen.Gold or 0) * 100) } or nil,
 			})
 		end
-		if #options <= 1 then
+		local deckCard = run.Deck and run.Deck[member] and run.Deck[member][run.BonusIndex or 0]
+		if deckCard then
+			finish(deckCard) -- (드래프트로 고른 덱 순서대로)
+		elseif #options <= 1 then
 			finish(options[1])
 		else
 			Dungeon.OfferChoice(run, member, options, finish)
@@ -3139,6 +3142,74 @@ end
 
 -- 버티기 진행: 웨이브 없이 정해진 시간 동안 몬스터가 계속 몰려오고(점점 빨라진다), 중간중간 랜덤 강화 / 패널티가 터진다.
 -- 끝까지 버티면 보스가 나타난다. (심연 도전과 비슷하지만 점수제가 아니라 보스 / 보상이 있는 일반 던전)
+-- 드래프트: 멤버마다 Rounds 번 3택 -> run.Deck[member] (발동은 전투 중 보너스 때 순서대로). 고르는 즉시 다음 라운드
+--   후보는 rollBonus 와 같은 풀(RunBuffs / RunTrees) · 이미 덱에 넣은 퍼크는 덱에 쌓인 수까지 세어 최대치를 넘는 카드가 안 나오게
+local function runDraft(run)
+	local DR = Config.Dungeon.Draft
+	if not (DR and DR.Enabled) or run.Tutorial or run.RiftMode or run.Fever then return true end
+	run.Deck = {}
+	local doneCount, total = 0, 0
+	local function draftOptions(member, deck)
+		local inDeck = {}
+		for _, b in ipairs(deck) do if b.Perk then inDeck[b.Perk] = (inDeck[b.Perk] or 0) + 1 end end
+		local function allowed(entry)
+			if entry.Tree then return true end -- (갈래는 과충전까지 이어진다)
+			if entry.Perk then
+				local perk = Config.Perks[entry.Perk]
+				return perk and (perkStacks(member, entry.Perk) + (inDeck[entry.Perk] or 0)) < perk.Max
+			end
+			if entry.Attr then return (member:GetAttribute(entry.Attr) or 0) + (inDeck[entry.Attr] or 0) < (entry.Max or 3) end
+			return true
+		end
+		local options = {}
+		local function notChosen(e) for _, o in ipairs(options) do if o == e then return false end end return true end
+		for _ = 1, 3 do
+			local pick = pickWeighted(Config.RunBuffs, function(e) return allowed(e) and notChosen(e) end, function(e) return buffWeight(member, e) end)
+			if not pick then pick = pickWeighted(Config.RunBuffs, notChosen) end
+			if not pick then break end
+			table.insert(options, pick)
+		end
+		return options
+	end
+	local function offer(member)
+		local deck = run.Deck[member]
+		if run.Destroyed or not deck or #deck >= DR.Rounds then return end
+		local options = draftOptions(member, deck)
+		if #options == 0 then return end
+		local icons = {}
+		for i, b in ipairs(deck) do icons[i] = b.Icon end
+		Dungeon.OfferChoice(run, member, options, function(buff)
+			if run.Deck[member] ~= deck or #deck >= DR.Rounds then return end
+			table.insert(deck, buff)
+			if #deck >= DR.Rounds then doneCount += 1 else task.defer(offer, member) end
+		end, DR.RoundSeconds, { Round = #deck + 1, Rounds = DR.Rounds, Deck = icons })
+	end
+	for _, member in ipairs(run.Members) do
+		total += 1
+		run.Deck[member] = {}
+		offer(member)
+	end
+	local deadline = os.clock() + DR.MaxSeconds
+	run.PhaseEnd = deadline -- (화면 카운트다운: 드래프트 남은 시간)
+	waitFor(run, function() return doneCount >= total or os.clock() >= deadline end)
+	if run.Destroyed or run.Phase == "Ended" then return false end
+	-- 마감: 고르는 중인 카드 정리 + 남은 칸 자동으로 채움
+	for _, member in ipairs(run.Members) do
+		local deck = run.Deck[member]
+		if deck then
+			local pending = run.Choice and run.Choice[member]
+			if pending then run.Choice[member] = nil end
+			while #deck < DR.Rounds do
+				local options = draftOptions(member, deck)
+				if #options == 0 then break end
+				table.insert(deck, options[1])
+			end
+			Remotes.Dungeon:FireClient(member, "DraftDone", { Deck = (function() local t = {} for i, b in ipairs(deck) do t[i] = { Icon = b.Icon, Name = b.Name } end return t end)() })
+		end
+	end
+	return true
+end
+
 local function surviveLoop(run)
 	-- 던전 체험: 시작할 때 세트 효과 하나를 3단계로 무작위로 받는다 (이번 던전에서만). 필드에서 골드로 직접 열면 평소에도 쓴다.
 	run.RunAug = run.RunAug or {}
@@ -3164,6 +3235,7 @@ local function surviveLoop(run)
 		end
 	end
 	startAugLoop(run)
+	if not runDraft(run) then return end
 	run.PhaseEnd = os.clock() + D.StartCountdown
 	notifyAll(run, "🛡 Defeat the incoming monsters! If too many pile up you'll be overwhelmed and fail. Hold out to the end and the boss appears")
 	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
@@ -3248,6 +3320,7 @@ local function surviveLoop(run)
 				Quest.Add(member, "DungeonWaves", 1)
 			end
 			run.ChoiceDeadline = nil
+			run.BonusIndex = bonusCount
 			rollBonus(run, bonusCount >= 2 and 0.6 or 0.3, bonusCount % 3 == 0) -- 3번에 한 번은 레어 확정
 			if run.ChoiceDeadline and run.ChoiceDeadline > nextBonus then -- (고르는 동안 다음 보너스를 마감 시각까지 민다: 카운트다운은 계속 흐른다)
 				nextBonus = run.ChoiceDeadline

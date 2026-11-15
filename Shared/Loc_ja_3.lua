@@ -577,6 +577,7 @@ return {
 		{ "Attack -{number1}%", "攻撃力 -{number1}%" },
 		{ "XP Gain +{number1}", "経験値獲得 +{number1}" },
 		{ "monster {number1}%", "モンスター {number1}%" },
+		{ "🃏 Draft {number1}/{number2}", "🃏 ドラフト {number1}/{number2}" },
 		{ "⚡ Power {number9}", "⚡ パワー {number9}" },
 		{ "⚡ Power {number1}", "⚡ パワー {number1}" },
 		{ "Remove #{number1}", "#{number1}を削除" },

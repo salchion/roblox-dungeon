@@ -55,6 +55,15 @@ local function show(data)
 	if player:GetAttribute("IntroPlaying") or player:GetAttribute("ModalOpen") then return end -- (서버가 시간 뒤 첫 장을 준다)
 	close()
 	local buttons = {}
+	-- 드래프트(입장 직후 덱 만들기): 제목에 라운드, 위에 지금까지 고른 덱 아이콘
+	if data.Draft then
+		title.Text = string.format("🃏 Draft %d/%d", data.Draft.Round or 1, data.Draft.Rounds or 8)
+		local strip = make("TextLabel", { Size = UDim2.new(1, -120, 0, 20), Position = UDim2.new(0, 160, 0, 3), BackgroundTransparency = 1, TextSize = 16, TextXAlignment = Enum.TextXAlignment.Left,
+			Text = table.concat(data.Draft.Deck or {}, " ") .. string.rep(" ▫", math.max(0, (data.Draft.Rounds or 8) - #(data.Draft.Deck or {}))) }, panel)
+		table.insert(buttons, strip) -- (닫을 때 같이 지운다)
+	else
+		title.Text = "🎁 Pick a boon"
+	end
 	local n = #data.Options
 	local cw, gap = 190, 15
 	local startX = (W - (n * cw + (n - 1) * gap)) / 2

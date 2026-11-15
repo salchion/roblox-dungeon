@@ -617,6 +617,7 @@ return {
 		{ "Attack -{number1}%", "공격 -{number1}%" },
 		{ "XP Gain +{number1}", "경험치 획득 +{number1}" },
 		{ "monster {number1}%", "몬스터 {number1}%" },
+		{ "🃏 Draft {number1}/{number2}", "🃏 드래프트 {number1}/{number2}" },
 		{ "⚡ Power {number9}", "⚡ 파워 {number9}" },
 		{ "⚡ Power {number1}", "⚡ 파워 {number1}" },
 		{ "Remove #{number1}", "#{number1} 제거" },
