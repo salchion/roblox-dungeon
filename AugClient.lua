@@ -973,3 +973,78 @@ Remotes.Aug.OnClientEvent:Connect(function(action, pick, extra)
 	elseif action == "Proc" then showProc(pick, extra) end
 end)
 refreshCorner()
+
+------------------------------------------------------------
+-- 세트 효과 트리거 게이지 (스킬 바 옆 작은 원): 서버가 AugChargeZ_<구역> (0~100) 을 보낸다
+--   맞힐수록 원이 아래에서 위로 차오르고, 꽉 차서 발동하면(값이 크게 떨어지면) 한 번 톡 커졌다 돌아온다
+--   켜진 세트 효과 중 게이지형(Config.AugCharge.Interval: 충격파탄 / 낙뢰 / 유성우)만 그린다. 값이 바뀔 때 트윈 없이 바로 칠한다 (10Hz)
+--   스킬 바 오른쪽은 자동 공격 버튼 자리라 왼쪽에 붙인다
+------------------------------------------------------------
+do
+	local AC = Config.AugCharge
+	if AC and AC.Interval then
+		local holder = make("Frame", { Name = "AugChargeGauges", Size = UDim2.new(0, 0, 0, 44), AutomaticSize = Enum.AutomaticSize.X, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(0, -10, 0.5, 0), BackgroundTransparency = 1, Visible = false })
+		make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Right, VerticalAlignment = Enum.VerticalAlignment.Center, Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder }, holder)
+		local gauges = {} -- [zone] = { Frame, Fill(UIGradient), Scale, Last }
+		local function fillSeq(f)
+			if f <= 0 then return NumberSequence.new(1) end
+			if f >= 1 then return NumberSequence.new(0) end
+			return NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(f, 0), NumberSequenceKeypoint.new(math.min(1, f + 0.001), 1), NumberSequenceKeypoint.new(1, 1) })
+		end
+		for zone, attr in ipairs(Config.Sets.ZoneAug) do
+			local info = Config.AugInfo[attr]
+			if AC.Interval[attr] and info then
+				local frame = make("Frame", { Size = UDim2.new(0, 40, 0, 40), BackgroundColor3 = Color3.fromRGB(22, 22, 36), BackgroundTransparency = 0.15, BorderSizePixel = 0, LayoutOrder = zone, Visible = false }, holder)
+				make("UICorner", { CornerRadius = UDim.new(1, 0) }, frame)
+				make("UIStroke", { Color = info.Color, Thickness = 2, Transparency = 0.2 }, frame)
+				local fill = make("Frame", { Size = UDim2.new(1, -6, 1, -6), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundColor3 = info.Color, BackgroundTransparency = 0.25, BorderSizePixel = 0 }, frame)
+				make("UICorner", { CornerRadius = UDim.new(1, 0) }, fill)
+				local grad = make("UIGradient", { Rotation = -90, Transparency = fillSeq(0) }, fill) -- (아래 -> 위로 차오름)
+				label({ Size = UDim2.new(1, 0, 1, 0), Text = info.Icon, TextSize = 18, ZIndex = 3 }, frame)
+				local scale = make("UIScale", { Scale = 1 }, frame)
+				gauges[zone] = { Frame = frame, Grad = grad, Scale = scale, Last = 0 }
+			end
+		end
+		local function paint(zone)
+			local g = gauges[zone]
+			local pct = math.clamp(tonumber(player:GetAttribute("AugChargeZ_" .. zone)) or 0, 0, 100)
+			g.Grad.Transparency = fillSeq(pct / 100)
+			if g.Last >= 70 and pct <= 20 and holder.Visible and not player:GetAttribute("LowSpec") then -- 방금 발동: 한 번만 톡
+				g.Scale.Scale = 1.25
+				TweenService:Create(g.Scale, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+			end
+			g.Last = pct
+		end
+		local function refreshGauges()
+			local zone = player:GetAttribute("Zone")
+			local any = false
+			for z, g in pairs(gauges) do
+				local on = player:GetAttribute("AugOnZ_" .. z) == true
+				g.Frame.Visible = on
+				any = any or on
+			end
+			holder.Visible = any and (zone == "Field" or zone == "Dungeon") and not player:GetAttribute("TutorialActive")
+		end
+		-- 연결은 처음 한 번만 (플레이어 속성은 리스폰해도 그대로라 다시 걸 필요가 없다)
+		for z in pairs(gauges) do
+			player:GetAttributeChangedSignal("AugChargeZ_" .. z):Connect(function() paint(z) end)
+			player:GetAttributeChangedSignal("AugOnZ_" .. z):Connect(refreshGauges)
+			paint(z)
+		end
+		for _, name in ipairs({ "Zone", "TutorialActive" }) do player:GetAttributeChangedSignal(name):Connect(refreshGauges) end
+		refreshGauges()
+		-- 스킬 바(HUD/SkillBar) 에 붙인다: 스킬 바를 따라 움직이고, 스킬 바가 숨으면 같이 숨는다. 스킬 바가 새로 생기면 다시 붙인다
+		task.spawn(function()
+			local playerGui = player:WaitForChild("PlayerGui")
+			while true do
+				if not (holder.Parent and holder.Parent.Name == "SkillBar" and holder.Parent:IsDescendantOf(playerGui)) then
+					local bar
+					local hud = playerGui:FindFirstChild("HUD")
+					if hud then bar = hud:FindFirstChild("SkillBar", true) end
+					if bar then holder.Parent = bar end
+				end
+				task.wait(2)
+			end
+		end)
+	end
+end
