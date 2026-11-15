@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Dismantled! Essence +{number1}, {number2} G", "已分解!精华 +{number1},{number2} 金币" },
 		{ "🎯 Goal: Defeat Zone {number1} Lord", "🎯 目标:击败区域{number1}的领主" },
 		{ "Explodes on hit (radius {number1})", "命中时爆炸(范围 {number1})" },
 		{ "Not enough gold (need {number1} G)", "金币不足(需要 {number1} 金币)" },
@@ -397,6 +398,7 @@ return {
 		{ "Crit damage +{text1}%p per point (base 2x)  (max {number2})", "每点暴击伤害 +{text1}%p(基础 2 倍)(最多 {number2})" },
 		{ "{text1}  ▲ Better than your current gear! (I → Bag", "{text1}  ▲ 比当前装备更强！(I → 背包" },
 		{ "▲ A better <b>{text1}</b> is in your bag (Score +{number2})", "▲ 背包里有更好的<b>{text1}</b>（评分 +{number2}）" },
+		{ "🎒 Bag full: {text1} was dismantled. Essence +{number2}, {number3} G", "🎒 背包已满：{text1} 已分解。精华 +{number2}, {number3} G" },
 		{ "🛡 Your <b>{text1}</b> slot is empty — equip one", "🛡 <b>{text1}</b>栏位是空的——装备一件吧" },
 		{ "🎮 Welcome to the world of adventure, {text1}!", "🎮 欢迎来到冒险世界,{text1}!" },
 		{ "👑 Zone {number1} · The Lord of {text2} has reappeared!", "👑 区域{number1} · {text2}领主再次现身!" },

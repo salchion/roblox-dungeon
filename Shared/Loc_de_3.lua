@@ -536,6 +536,7 @@ return {
 		{ "Crit damage +{text1}%p per point (base 2x)  (max {number2})", "Krit-Schaden +{text1} %p pro Punkt (Basis 2x) (max. {number2})" },
 		{ "{text1}  ▲ Better than your current gear! (I → Bag", "{text1}  ▲ Besser als deine aktuelle Ausrüstung! (I → Tasche" },
 		{ "▲ A better <b>{text1}</b> is in your bag (Score +{number2})", "▲ Ein besseres <b>{text1}</b> ist in deiner Tasche (Wertung +{number2})" },
+		{ "🎒 Bag full: {text1} was dismantled. Essence +{number2}, {number3} G", "🎒 Tasche voll: {text1} wurde zerlegt. Essenz +{number2}, {number3} G" },
 		{ "🛡 Your <b>{text1}</b> slot is empty — equip one", "🛡 Dein Platz <b>{text1}</b> ist leer — rüste etwas aus" },
 		{ "🎮 Welcome to the world of adventure, {text1}!", "🎮 Willkommen in der Welt der Abenteuer, {text1}!" },
 		{ "👑 Zone {number1} · The Lord of {text2} has reappeared!", "👑 Zone {number1} · Der Lord von {text2} ist wieder erschienen!" },

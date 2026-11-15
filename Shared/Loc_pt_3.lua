@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>", "<font color='#{number1}fffb{number2}'><b>Ataque Automático</b>" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 Subiu de nível! Nv.{number1}  (Vida máx. +{number2}, ataque +{number3}%)" },
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ As melhorias estão grátis agora! (restam {number1})" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ O portal ainda está se recuperando ({number1} s)." },
@@ -545,6 +546,7 @@ return {
 		{ "Crit damage +{text1}%p per point (base 2x)  (max {number2})", "Dano crítico +{text1}%p por ponto (base 2x) (máx. {number2})" },
 		{ "{text1}  ▲ Better than your current gear! (I → Bag", "{text1}  ▲ Melhor que seu equipamento atual! (I → Bolsa" },
 		{ "▲ A better <b>{text1}</b> is in your bag (Score +{number2})", "▲ Há um <b>{text1}</b> melhor na bolsa (pontos +{number2})" },
+		{ "🎒 Bag full: {text1} was dismantled. Essence +{number2}, {number3} G", "🎒 Bolsa cheia: {text1} foi desmontado. Essência +{number2}, {number3} G" },
 		{ "🛡 Your <b>{text1}</b> slot is empty — equip one", "🛡 Seu espaço <b>{text1}</b> está vazio — equipe algo" },
 		{ "🎮 Welcome to the world of adventure, {text1}!", "🎮 Bem-vindo ao mundo da aventura, {text1}!" },
 		{ "👑 Zone {number1} · The Lord of {text2} has reappeared!", "👑 Zona {number1} · O senhor de {text2} reapareceu!" },

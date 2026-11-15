@@ -1139,6 +1139,7 @@ return {
 		["No other gear for this slot yet"] = "이 칸에 낄 다른 장비가 아직 없어요",
 		["✔ Best gear on. Tap a slot to swap"] = "✔ 최강 장비 착용 중. 칸을 눌러 바꿔 끼기",
 		["drops from field monsters and bosses"] = "필드 몬스터·보스에게서 나와요",
+		["Bag full"] = "가방 가득",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1226,6 +1227,5 @@ return {
 		{ "<b>🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})</b>", "<b>🏰 던전 보스 상자 — 장비 {number1}개, 깊이 {number2}마다 +1 (최대 {number3})</b>" },
 		{ "🔑 You got {number1} key(s)! (Lord drop) — Use them at the town Dungeon Gate", "🔑 열쇠 {number1}개를 얻었어요! (군주 드랍) — 마을 던전 문에서 사용하세요" },
 		{ "Transcendent   Title 『Transcendent』\nReach {number1} Power\n{number2} / {number3}   Reward: 🎫 {number4}", "초월자 타이틀 『초월자』\n{number1} 파워 달성\n{number2} / {number3} 보상: 🎫 {number4}" },
-		{ "each hit adds a burn stack (max {number1}, lasts 4s); every 0.5s per stack", "명중마다 화상 1중첩 (최대 {number1}, 4초 지속); 중첩마다 0.5초에 한 번" },
 	},
 }

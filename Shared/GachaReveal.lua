@@ -190,7 +190,9 @@ function M.Init(deps)
 				for index, r in ipairs(rolls) do
 					local col, row = (index - 1) % 5, (index - 1) // 5
 					local rc = Config.Gear.RarityColors[r.Rarity]
-					local pos = UDim2.new(0, col * (CW + GAP) + CW / 2, 0, 48 + row * (CH + GAP) + CH / 2)
+					local inRow = math.min(5, #rolls - row * 5) -- (마지막 줄 카드가 적으면 가운데로 모은다: 7장이면 아래 2장이 왼쪽에 붙어 있었다)
+					local shift = (cols - inRow) * (CW + GAP) / 2
+					local pos = UDim2.new(0, shift + col * (CW + GAP) + CW / 2, 0, 48 + row * (CH + GAP) + CH / 2)
 					local holder = create("Frame", {
 						Size = UDim2.new(0, CW * 0.4, 0, CH * 0.4), AnchorPoint = Vector2.new(0.5, 0.5), Position = center, Rotation = math.random(-25, 25),
 						BackgroundColor3 = Color3.fromRGB(46, 34, 84), BorderSizePixel = 0, ClipsDescendants = true, ZIndex = 63,
@@ -210,7 +212,7 @@ function M.Init(deps)
 				pause(#rolls * 0.05 + 0.4)
 
 				local counts = {}
-				local STATUS = { Equipped = "Equipped!", Bag = "Bag" }
+				local STATUS = { Equipped = "Equipped!", Bag = "Bag", Full = "Bag full" }
 				local function showFace(card)
 					local r, rc, holder = card.Roll, card.Color, card.Holder
 					card.Back:Destroy()

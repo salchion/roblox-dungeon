@@ -752,6 +752,7 @@ return {
 		["No other gear for this slot yet"] = "该部位暂无其他装备",
 		["✔ Best gear on. Tap a slot to swap"] = "✔ 已穿最强装备。点部位来更换",
 		["drops from field monsters and bosses"] = "野外怪物与首领掉落",
+		["Bag full"] = "背包已满",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1107,6 +1108,5 @@ return {
 		{ "Spell Tome · Mythic Era +{number3}", "法术书 · 神话时代 +{number3}" },
 		{ "ZONE {number1}  ·  Wasteland   ☠☠☠", "区域 {number1} · 荒地 ☠☠☠" },
 		{ "Active {number1} / {number2} slots   (💰 {number3} G)", "已激活 {number1} / {number2} 个栏位（💰 {number3} 金币）" },
-		{ "Dismantled! Essence +{number1}, {number2} G", "已分解!精华 +{number1},{number2} 金币" },
 	},
 }

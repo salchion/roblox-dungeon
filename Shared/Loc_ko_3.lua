@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "each hit adds a burn stack (max {number1}, lasts 4s); every 0.5s per stack", "명중마다 화상 1중첩 (최대 {number1}, 4초 지속); 중첩마다 0.5초에 한 번" },
 		{ "Aug_Synergy  <font color='#{number1}aa{number2}c{number3}'>Augment synergy triggered</font>", "8월 시너지 <font color='#{number1}aa{number2}c{number3}'> 시너지 발동됨</font>" },
 		{ "✅ Railgun equipped! (Bounces to {number1} nearby enemies · Longest range)", "✅ 레일건을 장착했습니다! (주변의 {number1}명의 적에게 반사 효과를 적용합니다 · 가장 긴 사거리)" },
 		{ "{number1} hours of idle gold ({number2} G) piled up!\n(Idle income bonus +{number3}% active)", "{number1}시간 동안 쌓인 골드 ({number2}G)가 누적되었습니다!\n(유휴 수입 보너스 +{number3}% 활성화됨)" },
@@ -723,6 +724,7 @@ return {
 		{ "{text1}  ▲ Better than your current gear! (I → Bag", "{text1}  ▲ 지금 장비보다 좋아요! (I → 가방" },
 		{ "▲ A better <b>{text1}</b> is in your bag (Score +{number2})", "▲ 가방에 더 좋은 <b>{text1}</b>이(가) 있어요 (점수 +{number2})" },
 		{ "📍 {text1}   <font color='#8fd8ff'>🎟 Free {number2}/{number3}</font>", "📍 {text1}   <font color='#8fd8ff'>🎟 무료 {number2}/{number3}</font>" },
+		{ "🎒 Bag full: {text1} was dismantled. Essence +{number2}, {number3} G", "🎒 가방이 가득 차서 {text1} 분해됨. 정수 +{number2}, {number3} G" },
 		{ "   <font color='#9ad7ff'>Title 『{text1}』</font>", "   <font color='#9ad7ff'>칭호 『{text1}』</font>" },
 		{ "🛡 Your <b>{text1}</b> slot is empty — equip one", "🛡 <b>{text1}</b> 칸이 비어 있어요 — 하나 끼세요" },
 		{ "🧩 Zone set gear: <b>{number1}%</b> per piece ({text2})", "🧩 구역 세트 장비: 부위당 <b>{number1}%</b> ({text2})" },

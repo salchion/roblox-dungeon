@@ -999,6 +999,7 @@ return {
 		["No other gear for this slot yet"] = "この部位の装備はまだありません",
 		["✔ Best gear on. Tap a slot to swap"] = "✔ 最強装備中。部位を押して交換",
 		["drops from field monsters and bosses"] = "フィールドのモンスターとボスから出る",
+		["Bag full"] = "バッグ満杯",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },

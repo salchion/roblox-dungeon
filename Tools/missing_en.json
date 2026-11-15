@@ -2854,5 +2854,7 @@
 "Hover to compare · ⚡ = power change (set bonus + set effect counted)",
 "No other gear for this slot yet",
 "✔ Best gear on. Tap a slot to swap",
-"drops from field monsters and bosses"
+"drops from field monsters and bosses",
+"🎒 Bag full: {text1} was dismantled. Essence +{number2}, {number3} G",
+"Bag full"
 ]

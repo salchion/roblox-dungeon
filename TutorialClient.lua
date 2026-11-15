@@ -65,7 +65,13 @@ local objective = create("Frame", {
 	BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.12, BorderSizePixel = 0, Visible = false,
 }, gui)
 rounded(objective)
-RunService.Heartbeat:Connect(function() objective.Position = missionPos(0) end)
+RunService.Heartbeat:Connect(function()
+	objective.Position = missionPos(0)
+	-- 장비 뽑기 / 합성 카드 연출 중에는 미션 안내를 숨긴다 (연출 위에 떠서 카드를 가렸다)
+	local reveal = gui.Parent and gui.Parent:FindFirstChild("GachaRevealGui")
+	local showing = reveal ~= nil and reveal:FindFirstChild("GachaReveal") ~= nil
+	if gui.Enabled == showing then gui.Enabled = not showing end
+end)
 local stroke = create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5 }, objective)
 local titleLabel = label({
 	Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 6), TextSize = 14, Font = Enum.Font.GothamBlack,

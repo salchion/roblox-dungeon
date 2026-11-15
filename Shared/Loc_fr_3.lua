@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 +{number1} G ({number2} min of your idle income) · {number3} left today", "💰 +{number1} or ({number2} min de votre revenu d'inactivité) · {number3} restant(s) aujourd'hui" },
 		{ "every {number1}s shock shots at {number2} enemies, burst radius {number3}", "toutes les {number1} s des tirs de choc sur {number2} ennemis, rayon d'explosion {number3}" },
 		{ "👑 Field Boss defeated! Tickets +{number1}, loot dropped", "👑 Boss du terrain vaincu ! Tickets +{number1}, butin lâché" },
 		{ "👑 Field Boss defeated! Tickets +{number1} loot dropped", "👑 Boss de champ vaincu ! +{number1} tickets de butin récupérés" },
@@ -585,6 +586,7 @@ return {
 		{ "Crit damage +{text1}%p per point (base 2x)  (max {number2})", "Dégâts critiques +{text1} %p par point (base x2) (max {number2})" },
 		{ "{text1}  ▲ Better than your current gear! (I → Bag", "{text1}  ▲ Meilleur que votre équipement actuel ! (I → Sac" },
 		{ "▲ A better <b>{text1}</b> is in your bag (Score +{number2})", "▲ Un meilleur <b>{text1}</b> est dans ton sac (score +{number2})" },
+		{ "🎒 Bag full: {text1} was dismantled. Essence +{number2}, {number3} G", "🎒 Sac plein : {text1} a été démonté. Essence +{number2}, {number3} G" },
 		{ "🛡 Your <b>{text1}</b> slot is empty — equip one", "🛡 L'emplacement <b>{text1}</b> est vide — équipe-en un" },
 		{ "🎮 Welcome to the world of adventure, {text1}!", "🎮 Bienvenue dans le monde de l'aventure, {text1} !" },
 		{ "👑 Zone {number1} · The Lord of {text2} has reappeared!", "👑 Zone {number1} · Le seigneur de {text2} est réapparu !" },

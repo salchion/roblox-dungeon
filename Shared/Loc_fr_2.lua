@@ -875,6 +875,7 @@ return {
 		["No other gear for this slot yet"] = "Aucun autre équipement pour cet emplacement",
 		["✔ Best gear on. Tap a slot to swap"] = "✔ Meilleur équipement porté. Touchez un emplacement pour changer",
 		["drops from field monsters and bosses"] = "tombe des monstres et boss du terrain",
+		["Bag full"] = "Sac plein",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1038,6 +1039,5 @@ return {
 		{ "🎯 Boss hunter  ·  ✔ 🔫 Spell Tome / Shotgun (+{number1}%)", "🎯 Chasseur de boss · ✔ 🔫 Tome de sorts / Fusil à pompe (+{number1}%)" },
 		{ "kill → explosion, radius {number1}, hits up to 8 enemies", "élimination → explosion, rayon {number1}, touche jusqu'à 8 ennemis" },
 		{ "🌟 Paragon point +{number1}! {number2} unspent (press T → Paragon)", "🌟 Point de parangon +{number1} ! {number2} non dépensés (touche T → Parangon)" },
-		{ "💰 +{number1} G ({number2} min of your idle income) · {number3} left today", "💰 +{number1} or ({number2} min de votre revenu d'inactivité) · {number3} restant(s) aujourd'hui" },
 	},
 }

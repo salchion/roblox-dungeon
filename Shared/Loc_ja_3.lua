@@ -643,6 +643,7 @@ return {
 		{ "Crit damage +{text1}%p per point (base 2x)  (max {number2})", "1ポイントごとにクリティカルダメージ+{text1}%p(基本は2倍)(最大{number2})" },
 		{ "{text1}  ▲ Better than your current gear! (I → Bag", "{text1}  ▲ 今の装備より強い！(I → バッグ" },
 		{ "▲ A better <b>{text1}</b> is in your bag (Score +{number2})", "▲ バッグにもっと良い<b>{text1}</b>があります (スコア +{number2})" },
+		{ "🎒 Bag full: {text1} was dismantled. Essence +{number2}, {number3} G", "🎒 バッグ満杯: {text1} は分解されました。エッセンス +{number2}, {number3} G" },
 		{ "🛡 Your <b>{text1}</b> slot is empty — equip one", "🛡 <b>{text1}</b>が空いています — 装備しましょう" },
 		{ "🎮 Welcome to the world of adventure, {text1}!", "🎮 冒険の世界へようこそ、{text1}！" },
 		{ "👑 Zone {number1} · The Lord of {text2} has reappeared!", "👑 ゾーン{number1} · {text2}のロードが再び現れた！" },

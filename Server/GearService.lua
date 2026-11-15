@@ -1011,6 +1011,8 @@ function Gear.Roll(player, forced)
 		end
 	elseif status == "Bag" then
 		message = name .. " obtained! Added to your bag. (I → equip from Bag)" .. (better and string.format("  ▲ +%d%% vs current", better) or "")
+	elseif status == "Full" then -- 가방이 가득 차서 분해됨: 이유를 알려 준다 (티켓을 썼는데 왜 에센스만 나오냐는 문의가 생길 구조였다)
+		message = string.format("🎒 Bag full: %s was dismantled. Essence +%d, %d G", name, essence or 0, gold or 0)
 	else
 		message = string.format("%s... auto-dismantled! Essence +%d, %d G", name, essence or 0, gold or 0)
 	end
