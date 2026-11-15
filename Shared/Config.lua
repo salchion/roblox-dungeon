@@ -511,6 +511,27 @@ Config.AugRoleMult = { Mob = { Boss = 0.5, Mob = 1 }, Boss = { Boss = 1, Mob = 0
 Config.AugRoleLabel = { Mob = "🌪 Mob hunter", Boss = "🎯 Boss hunter", All = "⚖ All-round" }
 Config.AugWeaponBonus = 1.4
 Config.AugZoneStep = 0.06
+-- 세트 효과 "트리거": 충격파탄 / 낙뢰 / 유성우는 고정 타이머가 아니라 내 명중이 게이지를 채우면 발동한다 (위력 / 대상 수 / 배율은 그대로)
+--   필요량 = 예전 발동 간격(초) x RateAssumed(초당 명중 가정) x PerHit -> 초당 4번 맞히면 예전과 같은 빈도 (총딜 1:1)
+Config.AugCharge = {
+	Enabled = true,
+	PerHit = 10,          -- 내 탄 명중 1번
+	WeakMult = 3,         -- 약점 명중은 3배 (추가 2배분)
+	NearMissMult = 2,     -- 대시 회피(NEAR MISS) 1번 = 명중 2번
+	ComboBonus = 0.3,     -- 콤보 최대 스택일 때 +30%
+	MaxGainPerVolley = 3, -- 한 번 쏠 때(산탄 등) 적립되는 명중 수 상한
+	RateAssumed = 4,      -- 초당 명중 가정 (발동 빈도를 예전과 맞추는 기준)
+	DecayPerSec = 0,      -- (이번엔 감쇠 없음)
+	Interval = { -- 예전 타이머 공식 (필요량 계산에만 쓴다)
+		AugPulse = function(lv) return math.max(2.2, 4.8 - 0.8 * lv) end,
+		AugStorm = function(lv) return math.max(1.2, 3.4 - 0.5 * lv) end,
+		AugMeteor = function(lv) return math.max(2.5, 7 - 1.5 * lv) end,
+	},
+}
+function Config.AugChargeNeed(attr, lv)
+	local f = Config.AugCharge.Interval[attr]
+	return f and f(math.max(1, lv)) * Config.AugCharge.RateAssumed * Config.AugCharge.PerHit or math.huge
+end
 function Config.AugWeaponMatch(player, attr)
 	local role = Config.AugRoles[attr]
 	if not role then return false end

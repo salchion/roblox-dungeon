@@ -1694,8 +1694,57 @@ local augDepth = 0
 -- 튕기는 표창: 시간이 아니라 "쏜 횟수"로 던진다 (연사가 빠른 무기가 더 자주). GameServer 가 공격 한 번마다 Dungeon.NoteShot 을 부른다.
 local shotCount = setmetatable({}, { __mode = "k" })
 Dungeon.AssistLeft = setmetatable({}, { __mode = "k" }) -- [플레이어] = 이번 사격에서 남은 조준 보정 횟수 (GameServer 가 사격마다 채운다)
+-- 세트 효과 트리거 게이지 (Config.AugCharge): [플레이어] = { AugPulse = n, AugStorm = n, AugMeteor = n }
+--   적립은 "내 탄이 실제로 맞은 순간"(HitTick 이 오르는 곳 전부: 일반 / 관통 / 튕김)과 약점 명중 / 대시 회피에서만. 세트 효과 피해는 HitTick 을 올리지 않아 자기 충전이 없다
+local augCharge = setmetatable({}, { __mode = "k" })
+local volleyGain = setmetatable({}, { __mode = "k" })
+local CHARGE_ATTRS = { "AugPulse", "AugStorm", "AugMeteor" }
+local function addCharge(player, amount)
+	local AC = Config.AugCharge
+	if not (AC and AC.Enabled) or amount <= 0 then return end
+	local combo = player:GetAttribute("Combo") or 0
+	if combo >= Config.Combo.MaxStacks then amount *= 1 + AC.ComboBonus end
+	local bucket = augCharge[player]
+	if not bucket then bucket = {} augCharge[player] = bucket end
+	for _, attr in ipairs(CHARGE_ATTRS) do
+		bucket[attr] = math.min(Config.AugChargeNeed(attr, 1) * 2, (bucket[attr] or 0) + amount) -- (쌓아 두기 상한: 1단계 필요량의 2배)
+	end
+end
+function Dungeon.NoteHit(player, isWeak)
+	local AC = Config.AugCharge
+	if not (AC and AC.Enabled) then return end
+	if not isWeak then
+		local used = volleyGain[player] or 0
+		if used >= AC.MaxGainPerVolley then return end
+		volleyGain[player] = used + 1
+	end
+	addCharge(player, AC.PerHit * (isWeak and (AC.WeakMult - 1) or 1))
+end
+function Dungeon.NoteNearMiss(player)
+	local AC = Config.AugCharge
+	if AC and AC.Enabled then addCharge(player, AC.PerHit * AC.NearMissMult) end
+end
+local function hookCharge(player)
+	player:GetAttributeChangedSignal("HitTick"):Connect(function() Dungeon.NoteHit(player, false) end)
+	player:GetAttributeChangedSignal("WeakHitTick"):Connect(function() Dungeon.NoteHit(player, true) end)
+	player:GetAttributeChangedSignal("NearMissTick"):Connect(function() Dungeon.NoteNearMiss(player) end)
+end
+Players.PlayerAdded:Connect(hookCharge)
+for _, p in ipairs(Players:GetPlayers()) do hookCharge(p) end
+-- 게이지가 다 찼으면 비우고 true (트리거를 끄면 예전처럼 타이머)
+local function chargeReady(player, attr, lv, now, nextAt)
+	local AC = Config.AugCharge
+	if not (AC and AC.Enabled) then return now >= (nextAt or 0) end
+	local bucket = augCharge[player]
+	if bucket and (bucket[attr] or 0) >= Config.AugChargeNeed(attr, lv) then
+		bucket[attr] = 0
+		return true
+	end
+	return false
+end
 function Dungeon.NoteShot(player)
 	shotCount[player] = (shotCount[player] or 0) + 1
+	volleyGain[player] = 0 -- (한 번 쏠 때 적립 상한을 새로 센다)
 end
 local BLADE_SHOTS = { 6, 6, 5, 5, 4, 4 } -- 표창 단계(1~6)별로 몇 번 쏠 때마다 한 번 던지는지
 -- 크리 미사일 폭주 방지: 한 사람이 1초에 낼 수 있는 미사일 수 상한 (샷건처럼 탄이 많은 무기가 서버를 짓누르지 않게)
@@ -2014,6 +2063,25 @@ local function syncAura(player, run)
 end
 
 -- 회전 칼날 / 낙뢰: 던전이 진행되는 동안 계속 도는 효과 루프
+-- 화면 게이지: AugChargeZ_<구역> = 0~100 (1 이상 바뀔 때만)
+local chargeShown = setmetatable({}, { __mode = "k" })
+local function syncChargeAttrs(player, run)
+	local bucket = augCharge[player] or {}
+	local shown = chargeShown[player]
+	if not shown then shown = {} chargeShown[player] = shown end
+	for zone, attr in ipairs(Config.Sets.ZoneAug) do
+		if Config.AugCharge.Interval[attr] then
+			local lv = augLv(run, player, attr)
+			local pct = lv > 0 and math.floor(math.clamp((bucket[attr] or 0) / Config.AugChargeNeed(attr, lv), 0, 1) * 100) or 0
+			if math.abs(pct - (shown[zone] or -10)) >= 1 then
+				shown[zone] = pct
+				player:SetAttribute("AugChargeZ_" .. zone, pct)
+			end
+		end
+	end
+end
+
+local nextChargeSync = setmetatable({}, { __mode = "k" })
 local function startAugLoop(run)
 	task.spawn(function()
 		local orbitCount, nextOrbitSend, nextTick, nextStorm, nextMeteor, nextPulse, nextPet = {}, {}, {}, {}, {}, {}, {}
@@ -2028,6 +2096,10 @@ local function startAugLoop(run)
 				for _, member in ipairs(members) do syncAura(member, run) end
 			end
 			for _, member in ipairs(members) do
+				if Config.AugCharge.Enabled and now >= (nextChargeSync[member] or 0) then -- 게이지 화면 표시 (10Hz 이하)
+					nextChargeSync[member] = now + 0.1
+					pcall(syncChargeAttrs, member, run)
+				end
 				-- 한 사람의 효과에서 오류가 나도 반복 전체(모든 사람의 세트 효과)가 멈추지 않게 보호한다
 				local okMember, errMember = pcall(function()
 					local root = getAliveParts(member)
@@ -2107,7 +2179,7 @@ local function startAugLoop(run)
 					end
 					-- 낙뢰
 					local storm = augLv(run, member, "AugStorm")
-					if root and storm > 0 and now >= (nextStorm[member] or 0) then
+					if root and storm > 0 and chargeReady(member, "AugStorm", storm, now, nextStorm[member]) then
 						nextStorm[member] = now + math.max(1.2, 3.4 - 0.5 * storm)
 						procAug(member, "AugStorm")
 						-- 4셋부터 번개가 근처 적에게 번져 튄다 (4 / 5셋 1마리, 6셋 2마리, 궁합 무기 +1) / 5셋: 번개 위력 x1.2
@@ -2124,7 +2196,7 @@ local function startAugLoop(run)
 					end
 					-- 유성우: 적이 가장 많이 모인 곳에
 					local meteor = augLv(run, member, "AugMeteor")
-					if root and meteor > 0 and now >= (nextMeteor[member] or 0) then
+					if root and meteor > 0 and chargeReady(member, "AugMeteor", meteor, now, nextMeteor[member]) then
 						nextMeteor[member] = now + math.max(2.5, 7 - 1.5 * meteor) -- (예전 8.5 - 1.5단계: 3단계 4초에 한 번이라 체감이 약했다)
 						local candidates = nearestMonsters(run, root.Position, 90, 18)
 						local best, bestCount = nil, 0
@@ -2199,7 +2271,7 @@ local function startAugLoop(run)
 					-- 충격파 -> 충격파탄: 가까운 적들에게 폭발 투사체를 동시에 쏜다 (몸에서 터지는 게 아니라 날아가 맞은 자리에서 터진다)
 					local pulse = augLv(run, member, "AugPulse")
 					local slip = root and pulse > 0 and now >= (nextSlip[member] or 0) and NearMiss.SinceDash(member) < 0.35 and synergy(member, "Slipstream", run) -- 조합 "슬립스트림": 대시하면 바로 한 번 더
-					if root and pulse > 0 and (slip or now >= (nextPulse[member] or 0)) then
+					if root and pulse > 0 and (slip or chargeReady(member, "AugPulse", pulse, now, nextPulse[member])) then
 						if slip then nextSlip[member] = now + 1.5 else nextPulse[member] = now + math.max(2.2, 4.8 - 0.8 * pulse) end
 						local origin = root.Position + Vector3.new(0, 3, 0)
 						local blastDamage = augDamage(member) * (0.9 + 0.4 * pulse)

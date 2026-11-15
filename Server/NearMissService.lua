@@ -61,6 +61,7 @@ function NearMiss.Award(player, root, scoreFn)
 	if now - st.LastAt < 0.7 then return end -- 한 번에 여러 번 인정되지 않게
 	st.LastAt = now
 	st.Stacks = math.min(Config.NearMiss.MaxStacks, st.Stacks + 1)
+	player:SetAttribute("NearMissTick", (player:GetAttribute("NearMissTick") or 0) + 1) -- (세트 효과 트리거 게이지 적립: DungeonService 가 듣는다)
 	pcall(function() require(script.Parent:WaitForChild("BalanceLog")).Count(player, "NearMiss", 1) end) -- (Studio 밸런스 로그)
 	st.NextDecay = now + Config.GetNearMissDuration(player)
 	apply(player, st)
