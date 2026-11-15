@@ -299,6 +299,7 @@ function Meta.Load(player, saved)
 		end
 	end
 	states[player] = state
+	player:SetAttribute("TowerBest", state.Tower or 0) -- (무한의 탑 최고 층: 입장 창 / 칭호가 읽는다)
 	player:SetAttribute("SweepDepth", state.Sweep.Depth)
 	player:SetAttribute("SweepGold", state.Sweep.Gold)
 	for typeKey, best in pairs(state.Depth) do player:SetAttribute("DepthBest_" .. typeKey, best) end
@@ -453,6 +454,21 @@ end
 -- 무한의 탑 기록
 ------------------------------------------------------------
 -- 심연 도전 기록 (RiftService 가 읽고 쓴다): { Best, Day, Used }
+-- 무한의 탑 최고 층 (저장: Tower). 더 높을 때만 바꾼다
+function Meta.GetTower(player)
+	local state = states[player]
+	return state and state.Tower or 0
+end
+function Meta.SetTower(player, floor)
+	local state = states[player]
+	if not state then return false end
+	floor = math.max(0, math.floor(tonumber(floor) or 0))
+	if floor <= (state.Tower or 0) then return false end
+	state.Tower = floor
+	player:SetAttribute("TowerBest", floor)
+	return true
+end
+
 function Meta.GetRift(player)
 	local state = states[player]
 	return state and state.Rift or nil

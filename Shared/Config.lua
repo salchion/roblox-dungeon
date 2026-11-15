@@ -381,7 +381,7 @@ Config.Dungeon.BossHealthPerBonus = 0.12 -- 버티는 동안 터진 랜덤 보�
 Config.Dungeon.MonsterLimit = 40     -- 버티기 중 동시에 살아 있는 몬스터가 이 수(파티면 인원에 비례해 늘어남)를 넘기면 위험, OverrunSeconds 동안 못 줄이면 실패
 Config.Dungeon.OverrunSeconds = 6
 -- 던전 3택: 보너스 때 강화 3장을 보여 주고 고르게 한다 (RunBuffs / RunTrees 그대로). 무응답 / 자동 선택이면 Seconds 뒤 첫 장
-Config.Dungeon.Choice = { Enabled = true, Seconds = 8, Count = 3 }
+Config.Dungeon.Choice = { Enabled = true, Seconds = 6, Count = 3 } -- (Seconds = BonusInterval: 무응답이어도 보너스 간격 / 보스 체력이 그대로)
 Config.Dungeon.BonusInterval = 6     -- 이 간격(초)마다 랜덤 강화 / 랜덤 패널티가 터진다 (선택 없이 자동 적용)
 
 -- 던전 세 갈래 나무 (룰렛 그대로): 같은 갈래가 또 나오면 겹치지 않고 다음 단계로 올라간다. 1~3단계 = 기존 특성(폭발 / 연쇄 / 관통),
