@@ -380,6 +380,25 @@ Config.Dungeon.BossHealthBase = 2.0      -- 버티기 던전 보스 체력 배�
 Config.Dungeon.BossHealthPerBonus = 0.12 -- 버티는 동안 터진 랜덤 보너스 1번당 보스 체력 +12% (패널티로 강해진 적 체력 배율도 같이 곱해진다)
 Config.Dungeon.MonsterLimit = 40     -- 버티기 중 동시에 살아 있는 몬스터가 이 수(파티면 인원에 비례해 늘어남)를 넘기면 위험, OverrunSeconds 동안 못 줄이면 실패
 Config.Dungeon.OverrunSeconds = 6
+-- 무한의 탑: 층 N = 던전 깊이 N 의 적 세기(깊이 배율이 이미 층마다 오른다: 따로 HealthGrowth 를 곱하면 두 번 오른다) + 층 제약
+--   제약은 기존 던전 패널티 배율(PenHealth / PenDamage / PenSpeed / PenCount)로만 건다. 층마다 1개, 5층마다 1개 더
+Config.Tower = {
+	MaxFloor = 100,
+	MythicEvery = 10, -- 10층마다 확정 신화
+	TitleEvery = 50,  -- 50층마다 칭호
+	Constraints = {
+		{ Key = "Tough",  Icon = "🛡", Name = "Tough Foes",  Desc = "Enemy HP x2",          Health = 2 },
+		{ Key = "Fierce", Icon = "🔥", Name = "Fierce Foes", Desc = "Enemy damage x1.5",    Damage = 1.5 },
+		{ Key = "Swift",  Icon = "💨", Name = "Swift Foes",  Desc = "Enemies 30% faster",   Speed = 1.3 },
+		{ Key = "Swarm",  Icon = "🐜", Name = "Swarm",       Desc = "40% more enemies",     Count = 1.4 },
+	},
+}
+function Config.TowerConstraints(floor)
+	local list, C = {}, Config.Tower.Constraints
+	local n = 1 + math.floor(floor / 5)
+	for i = 0, math.min(n, #C) - 1 do table.insert(list, C[((floor - 1 + i) % #C) + 1]) end
+	return list
+end
 -- 던전 3택: 보너스 때 강화 3장을 보여 주고 고르게 한다 (RunBuffs / RunTrees 그대로). 무응답 / 자동 선택이면 Seconds 뒤 첫 장
 Config.Dungeon.Choice = { Enabled = true, Seconds = 6, Count = 3 } -- (Seconds = BonusInterval: 무응답이어도 보너스 간격 / 보스 체력이 그대로)
 Config.Dungeon.BonusInterval = 6     -- 이 간격(초)마다 랜덤 강화 / 랜덤 패널티가 터진다 (선택 없이 자동 적용)

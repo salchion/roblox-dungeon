@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "on crit, {number1} missiles into the enemy you hit (50% of your attack each)", "치명타 시 맞힌 적에게 미사일 {number1}발 (각각 내 공격력의 50%)" },
 		{ "Gear found {number1} / {number2}  ·  Higher-rarity gear you have held shows its name", "장비 발견 {number1} / {number2}  ·  가진 적 있는 높은 등급 장비는 이름이 보여요" },
 		{ "🎒 Bag <b>{number1} / {number2}</b>    ✨ Essence <font color='#9ad7ff'><b>{number3}</b></font>", "🎒 가방 <b>{number1} / {number2}</b>    ✨ 정수 <font color='#9ad7ff'><b>{number3}</b></font>" },
 		{ "<b>🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})</b>", "<b>🏰 던전 보스 상자 — 장비 {number1}개, 깊이 {number2}마다 +1 (최대 {number3})</b>" },
@@ -126,6 +127,7 @@ return {
 		{ "📅 {number1}-day login streak · Get stronger today!", "📅 {number1}일 연속 로그인 · 오늘 더 강해지세요!" },
 		{ "Each NEAR MISS stack gives +{number1}% more attack", "NEAR MISS 스택마다 공격력이 +{number1}% 더 붙어요" },
 		{ "🔒 Spend {number1} points higher up this path first", "🔒 이 길 위쪽에 먼저 {number1}점을 써야 해요" },
+		{ "🗼 Floor {number1} cleared! Guaranteed Mythic gear!", "🗼 {number1}층 클리어! 신화 장비 확정!" },
 		{ "★ Unique effect on Mythic gear: <b>{number1}%</b>", "★ 신화 장비의 유니크 효과: <b>{number1}%</b>" },
 		{ "Auto-equipped the best gear in {number1} slot(s)!", "{number1}칸의 최고 장비를 자동 장착했어요!" },
 		{ "<font color='#d9bd78'>MISSION {number1} / {number2}</font>", "<font color='#d9bd78'>미션 {number1} / {number2}</font>" },
@@ -276,6 +278,7 @@ return {
 		{ "Skill Cooldown Reduction +{number1}%", "스킬 쿨타임 감소 +{number1}%" },
 		{ "Skill Cooldown Reduction -{number1}%", "스킬 쿨타임 감소 -{number1}%" },
 		{ "Lv.{number1} now · gold levels maxed", "지금 Lv.{number1} · 골드 단계 최대" },
+		{ "🗼 New tower record: floor {number1}!", "🗼 탑 신기록: {number1}층!" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ 스펠 토메 · 녹슨 시대 +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ 얼음 궁전 문 · 레크레이션 ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 구역 {number1} · 황무지 봉쇄됨" },
@@ -517,6 +520,7 @@ return {
 		{ "Boss Damage -{number1}%", "보스 피해 -{number1}%" },
 		{ "Heal on Kill +{number1}", "처치 시 회복 +{number1}" },
 		{ "{number1}% of gear here", "여기 장비의 {number1}%" },
+		{ "🗼 Tower floor {number1}", "🗼 탑 {number1}층" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 레벨 {number1} {number2} / {number3} 경험치" },
 		{ "DAMAGE · {number1}s · {number2}", "피해량 · {number1}초 · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} 던전 키" },
@@ -1026,7 +1030,5 @@ return {
 		{ "🎖 <font color='#8fd8ff'>Lv.{number1}</font>  <font size='10' color='#aaaacc'>{text2}</font>\n💰 <font color='#ffd966'>{number3} G</font>   🎫 <font color='#d9a6ff'>{number4}</font>\n🔑<font color='#ffe08a'>{number5}</font> <font size='10' color='#aaaacc'>({text6})</font>\n⚡ Power <font color='#ffe16e'>{number7}</font>\n⚔ <font color='#{text8}'>{text9}</font>\n📍 {text10}", "🎖 <font color='#8fd8ff'>Lv.{number1}</font>  <font size='10' color='#aaaacc'>{text2}</font>\n💰 <font color='#ffd966'>{number3} G</font>   🎫 <font color='#d9a6ff'>{number4}</font>\n🔑<font color='#ffe08a'>{number5}</font> <font size='10' color='#aaaacc'>({text6})</font>\n⚡ 전투력 <font color='#ffe16e'>{number7}</font>\n⚔ <font color='#{text8}'>{text9}</font>\n📍 {text10}" },
 		{ "<font size='14'><b>{text1}</b></font>{text2}\n<font color='#bbbbcc'>{text3}</font>\n<font color='#{text4}'>{number5} / {number6}</font>   <font color='#ffd966'>Reward: {text7}</font>", "<font size='14'><b>{text1}</b></font>{text2}\n<font color='#bbbbcc'>{text3}</font>\n<font color='#{text4}'>{number5} / {number6}</font>   <font color='#ffd966'>보상: {text7}</font>" },
 		{ "{text1}  <font color='#{text2}'><b>{text3}</b></font>   <font size='10' color='#8888aa'>{text4}{text5}</font>", "{text1}  <font color='#{text2}'><b>{text3}</b></font>   <font size='10' color='#8888aa'>{text4}{text5}</font>" },
-		{ "<font size='14'><b>{text1} {text2}</b></font>  Lv.{number3} / {number4}\n<font color='#ddddee'>{text5}{text6}</font>\n{text7}", "<font size='14'><b>{text1} {text2}</b></font>  Lv.{number3} / {number4}\n<font color='#ddddee'>{text5}{text6}</font>\n{text7}" },
-		{ "Zone {number1} · {text2}\n{text3} · Rec. ⚡{number4}\nDanger {text5}\n{text6} New set from here: {text7} Set", "{number1}구역 · {text2}\n{text3} · 권장 ⚡{number4}\n위험도 {text5}\n{text6} 여기서 얻는 새 세트: {text7} 세트" },
 	},
 }

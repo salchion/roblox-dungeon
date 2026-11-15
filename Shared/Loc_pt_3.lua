@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Auto-equipped the best gear in {number1} slot(s)!", "Melhor equipamento equipado automaticamente em {number1} espaço(s)!" },
+		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• Cerca de {number1} tiros/s · Poder de fogo {number2} · Alcance {number3}" },
+		{ "Damage +{number1}% on a single target: for bosses", "Dano +{number1}% em um único alvo: para chefes" },
+		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}!", "{number1} segundos! Recompensas x{number2}, o combo soma até x{number3}!" },
 		{ "🔓 You can now run {number1} set effects at once!", "🔓 Agora você pode ativar {number1} efeitos de conjunto ao mesmo tempo!" },
 		{ "🛡 Knocked back! Power {number1} required (you: {number2})", "🛡 Repelido! Poder {number1} necessário (você: {number2})" },
 		{ "💚 Emergency rescue! HP restored ({number1} left)", "💚 Resgate de emergência! Vida restaurada (restam {number1})" },
@@ -143,6 +147,7 @@ return {
 		{ "Skill Cooldown Reduction +{number1}%", "Redução de recarga de habilidades +{number1}%" },
 		{ "Skill Cooldown Reduction -{number1}%", "Redução de recarga de habilidades -{number1}%" },
 		{ "Lv.{number1} now · gold levels maxed", "Nv.{number1} agora · níveis de ouro no máximo" },
+		{ "🗼 New tower record: floor {number1}!", "🗼 Novo recorde da torre: andar {number1}!" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Tomo de Feitiços · Era Enferrujada +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Portão do Palácio de Gelo · Rec. ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zona {number1} · Terras Desoladas Seladas" },
@@ -382,6 +387,7 @@ return {
 		{ "Boss Damage -{number1}%", "Dano a chefes -{number1}%" },
 		{ "Heal on Kill +{number1}", "Cura ao abater +{number1}" },
 		{ "{number1}% of gear here", "{number1}% do equipamento aqui" },
+		{ "🗼 Tower floor {number1}", "🗼 Torre andar {number1}" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Nível {number1} {number2} / {number3} XP" },
 		{ "DAMAGE · {number1}s · {number2}", "DANO · {number1}s · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} Chaves de Masmorra" },

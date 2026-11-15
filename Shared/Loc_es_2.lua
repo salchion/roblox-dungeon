@@ -884,6 +884,13 @@ return {
 		["🎁 Pick a boon"] = "🎁 Elige una mejora",
 		["🤖 Auto-pick: ON"] = "🤖 Auto-elegir: SÍ",
 		["🤖 Auto-pick: OFF"] = "🤖 Auto-elegir: NO",
+		["Tough Foes"] = "Enemigos duros",
+		["Enemy HP x2"] = "Vida enemiga x2",
+		["Fierce Foes"] = "Enemigos feroces",
+		["Enemy damage x1.5"] = "Daño enemigo x1,5",
+		["Swift Foes"] = "Enemigos veloces",
+		["Enemies 30% faster"] = "Enemigos 30% más rápidos",
+		["40% more enemies"] = "40% más enemigos",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1059,7 +1066,5 @@ return {
 		{ "💰 Golden Goblin defeated! +{number1} G, 3 loot drops!", "💰 ¡Goblin dorado derrotado! +{number1} G, ¡3 botines soltados!" },
 		{ "+1 set-effect option: Legendary {number1}% / Mythic {number2}%", "Opción efecto de conjunto +1: Legendario {number1}% / Mítico {number2}%" },
 		{ "Enemies swarm in more often\nGold +{number1}% instead", "Los enemigos atacan con más frecuencia\nOro +{number1}% en su lugar" },
-		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 Se limpió automáticamente {number1} equipo más débil (Esencia +{number2}, {number3} G)" },
-		{ "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped", "🎯 ¡Recompensa cumplida! +{number1} G · 🎫 +{number2} · equipo soltado" },
 	},
 }

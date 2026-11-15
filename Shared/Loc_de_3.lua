@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Auto-equipped the best gear in {number1} slot(s)", "Beste Ausrüstung in {number1} Platz/Plätzen angelegt" },
+		{ "Sniper Rifle  ·  keys {number1}-{number2} switch weapons", "Scharfschützengewehr · Tasten {number1}-{number2} zum Wechseln von Waffen" },
 		{ "🥉 {number1}+   🥈 {number2}M+   🥇 {number3}M+   💠 {number4}M+   💎 {number5}M+   👑 {number6}M+", "🥉 {number1}+ 🥈 {number2}M+ 🥇 {number3}M+ 💠 {number4}M+ 💎 {number5}M+ 👑 {number6}M+" },
 		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>", "<font color='#{number1}fffb{number2}'><b>Automatischer Angriff</b>" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 Stufenaufstieg! Lv.{number1}  (Max. LP +{number2}, Angriff +{number3}%)" },
@@ -135,6 +137,7 @@ return {
 		{ "Skill Cooldown Reduction +{number1}%", "Abklingzeit-Reduktion für Fähigkeiten +{number1}%" },
 		{ "Skill Cooldown Reduction -{number1}%", "Abklingzeit-Reduktion für Fähigkeiten -{number1}%" },
 		{ "Lv.{number1} now · gold levels maxed", "Jetzt Lv.{number1} · Goldstufen maximal" },
+		{ "🗼 New tower record: floor {number1}!", "🗼 Neuer Turmrekord: Etage {number1}!" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Zauberbuch · Rostige Ära +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Eispalast-Tor · Rec. ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zone {number1} · Ödland versiegelt" },
@@ -374,6 +377,7 @@ return {
 		{ "Boss Damage -{number1}%", "Boss-Schaden -{number1}%" },
 		{ "Heal on Kill +{number1}", "Heilung bei Kill +{number1}" },
 		{ "{number1}% of gear here", "{number1}% der Ausrüstung hier" },
+		{ "🗼 Tower floor {number1}", "🗼 Turm Etage {number1}" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Stufe {number1} {number2} / {number3} Erfahrungspunkte" },
 		{ "DAMAGE · {number1}s · {number2}", "Schaden · {number1}s · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} Dungeon-Schlüssel" },

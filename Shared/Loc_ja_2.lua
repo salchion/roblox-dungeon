@@ -1013,6 +1013,13 @@ return {
 		["🎁 Pick a boon"] = "🎁 強化を選ぼう",
 		["🤖 Auto-pick: ON"] = "🤖 自動選択: ON",
 		["🤖 Auto-pick: OFF"] = "🤖 自動選択: OFF",
+		["Tough Foes"] = "強敵",
+		["Enemy HP x2"] = "敵の体力 x2",
+		["Fierce Foes"] = "猛攻",
+		["Enemy damage x1.5"] = "敵の攻撃 x1.5",
+		["Swift Foes"] = "俊敏な敵",
+		["Enemies 30% faster"] = "敵が30%速い",
+		["40% more enemies"] = "敵が40%増加",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1112,6 +1119,5 @@ return {
 		{ "♻ [Common] 🌲 Forest Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 🌲 森のレザーキャップが自動回収される（エッセンス +{number1} {number2} G）" },
 		{ "The final blast also explodes around every target (attack x{number1})", "最後の爆発が全ての標的の周囲でも起きる（攻撃力x{number1}）" },
 		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 🌾 草原で履かれた靴が自動回収される（エッセンス +{number1} {number2} G）" },
-		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 レベル{number1}の突破が完了しました！さらに成長できます。" },
 	},
 }

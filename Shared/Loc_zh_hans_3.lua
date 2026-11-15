@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "ZONE {number1}  ·  Volcano   ☠☠☠☠☠☠", "区域 {number1} · 火山 ☠☠☠☠☠☠" },
+		{ "⚔ Spell Tome · Rusty Era +{number10}", "⚔ 魔法书 · 生锈时代 +{number10}" },
+		{ "🔒 Zone {number1} · Darklands Sealed", "🔒 区域 {number1} · 黑暗之地已封锁" },
+		{ "Zone {number1} · Lightning Strike  ", "区域 {number1} · 闪电攻击" },
+		{ "🔒 Zone {number1} · Snowfield Sealed", "🔒 区域 {number1} · 雪场已封锁" },
 		{ "Sniper Rifle · Rusty Era +{number1}", "狙击步枪 · 锈蚀时代 +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number2}", "❄ 冰宫之门 · 推荐 ⚡{number2}" },
 		{ "ZONE {number1}  ·  Abyss   ☠☠☠☠☠☠☠☠", "区域 {number1} · 深渊 ☠☠☠☠☠☠☠☠" },
@@ -234,6 +239,7 @@ return {
 		{ "Boss Damage -{number1}%", "首领伤害 -{number1}%" },
 		{ "Heal on Kill +{number1}", "击杀回复 +{number1}" },
 		{ "{number1}% of gear here", "此处装备的{number1}%" },
+		{ "🗼 Tower floor {number1}", "🗼 塔 第{number1}层" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 等级 {number1} {number2} / {number3} 经验值" },
 		{ "DAMAGE · {number1}s · {number2}", "伤害 · {number1}秒 · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} 地下城钥匙" },

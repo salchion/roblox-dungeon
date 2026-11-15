@@ -2679,7 +2679,8 @@ local function finish(run, victory)
 		giveXp(run, Config.Xp.DungeonClear)
 		for _, member in ipairs(run.Members) do
 			Quest.Add(member, "DungeonClears", 1)
-			local clearedDepth = D.DepthOf(run.DiffKey)
+			local clearedDepth = (not run.Tower) and D.DepthOf(run.DiffKey) or nil -- (탑은 깊이 기록 / 소탕에 넣지 않는다)
+			if run.Tower then pcall(Dungeon.TowerCleared, member, run.Tower.Floor) end
 			if clearedDepth then
 				local okMeta, MetaD = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
 				if okMeta then
@@ -3571,6 +3572,44 @@ local function feverLoop(run)
 end
 
 -- 필드에서 부른다: 황금 균열에 들어간 플레이어 혼자 피버 투기장으로. returnCFrame = 끝나고 돌아올 자리
+-- 무한의 탑: floor 층 입장 (최고 층 + 1 까지만). 깊이 floor 의 적 + 층 제약
+function Dungeon.StartTower(player, floor)
+	local T = Config.Tower
+	local okMeta, Meta = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
+	local best = okMeta and Meta.GetTower(player) or 0
+	floor = math.floor(tonumber(floor) or 0)
+	if floor ~= best + 1 or floor > T.MaxFloor then return false end -- (다음 층만: 깬 층을 다시 돌면 열쇠 없이 던전 보상을 계속 받게 된다)
+	Dungeon.Start(player, "Cave", "D" .. floor, false, nil, false, nil, { Floor = floor })
+	local run = playerRun[player]
+	if not run or not run.Tower then return false end
+	for _, c in ipairs(Config.TowerConstraints(floor)) do
+		run.PenHealth = (run.PenHealth or 1) * (c.Health or 1)
+		run.PenDamage = (run.PenDamage or 1) * (c.Damage or 1)
+		run.PenSpeed = (run.PenSpeed or 1) * (c.Speed or 1)
+		run.PenCount = (run.PenCount or 1) * (c.Count or 1)
+	end
+	notify(player, string.format("🗼 Tower floor %d", floor))
+	return true
+end
+-- 탑 층 클리어: 최고 층 저장 + 10층마다 확정 신화
+function Dungeon.TowerCleared(player, floor)
+	local okMeta, Meta = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
+	if not okMeta then return end
+	local record = Meta.SetTower(player, floor)
+	if record and floor % Config.Tower.MythicEvery == 0 then
+		local okInv, Inventory = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
+		if okInv then
+			local slots = Config.Gear.Slots
+			local item = Inventory.NewItem(slots[math.random(#slots)].Key, 5, 0, nil, Config.Uniques.GachaChance or 0.3)
+			Inventory.Add(player, item)
+			Inventory.Push(player)
+			notify(player, string.format("🗼 Floor %d cleared! Guaranteed Mythic gear!", floor))
+		end
+	elseif record then
+		notify(player, string.format("🗼 New tower record: floor %d!", floor))
+	end
+end
+
 function Dungeon.StartFever(player, zone, returnCFrame)
 	local diffKey = (zone or 1) <= 2 and "Easy" or ((zone or 1) <= 5 and "Normal" or "Hard")
 	Dungeon.Start(player, "Cave", diffKey, false, nil, true, { Zone = zone or 1, Return = returnCFrame })
@@ -3608,7 +3647,8 @@ end
 ------------------------------------------------------------
 -- 입장 (던전 게이트에서 호출). 파티가 있으면 파티장만 가능, 없으면 혼자 입장.
 ------------------------------------------------------------
-function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField, fever)
+function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField, fever, tower)
+	if tower then fromField = true end -- (탑: 혼자, 열쇠 없음)
 	-- fromField: 튜토리얼에서 필드 군주가 떨어뜨린 열쇠로 필드에서 바로 던전으로 떨어질 때만 true (혼자, 열쇠 / 무료 입장 소모 없음)
 	-- fever: 피버 타임 { Zone, Return(CFrame) } — 필드의 황금 균열에서 혼자 들어간다 (열쇠 없음, 끝나면 그 자리로 돌아간다)
 	if fever then fromField = true end
@@ -3717,6 +3757,7 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField,
 		TypeKey = fever and "Fever" or typeKey,
 		DiffKey = diffKey,
 		Fever = fever and { Zone = fever.Zone, Return = fever.Return, Kills = 0, BestCombo = 0 } or nil,
+		Tower = tower and { Floor = tower.Floor } or nil,
 		LootLines = {},
 		Difficulty = difficulty,
 		Tutorial = tutorialRun, -- 튜토리얼 첫 던전: 쫄 구간이 짧고(30초), 보스를 쓰러뜨리면 최후의 군주로 이어진다
@@ -3985,6 +4026,8 @@ Remotes.Dungeon.OnServerEvent:Connect(function(player, action, typeKey, depth)
 		Dungeon.Sweep(player)
 	elseif action == "Leave" then
 		Dungeon.Leave(player)
+	elseif action == "TowerEnter" then
+		Dungeon.StartTower(player, typeKey)
 	elseif action == "ChooseRunBuff" then
 		Dungeon.ChooseRunBuff(player, typeKey, depth)
 	elseif action == "RunChoiceAuto" then -- (자동 고르기 켜기 / 끄기: 클라이언트가 바꾼 속성은 서버에 안 보이므로 서버가 단다)

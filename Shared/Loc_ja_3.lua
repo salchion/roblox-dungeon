@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 レベル{number1}の突破が完了しました！さらに成長できます。" },
 		{ "🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})", "🏰 ダンジョンボス宝箱 — 装備{number1}個、深度{number2}ごとに+1(最大{number3})" },
 		{ "Event_Elite  <font color='#{number1}aa{number2}c{number3}'>Elite squad appears</font>", "イベント・エリート<font color='#{number1}aa{number2}c{number3}'>エリート部隊登場</font>" },
 		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [レア] 🌲 森のシルバーリングが自動回収される（エッセンス +{number1} {number2} G）" },
@@ -96,6 +97,7 @@ return {
 		{ "📅 {number1}-day login streak · Get stronger today!", "📅 {number1}日連続ログイン · 今日もっと強くなろう！" },
 		{ "Each NEAR MISS stack gives +{number1}% more attack", "NEAR MISSのスタックごとに攻撃力がさらに+{number1}%" },
 		{ "🔒 Spend {number1} points higher up this path first", "🔒 この道の上に{number1}ポイント使うと開く" },
+		{ "🗼 Floor {number1} cleared! Guaranteed Mythic gear!", "🗼 {number1}階クリア! 神話装備確定!" },
 		{ "Auto-equipped the best gear in {number1} slot(s)!", "{number1}スロットの最良装備を自動装備しました！" },
 		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• 毎秒約{number1}発 · 火力 {number2} · 射程 {number3}" },
 		{ "Damage +{number1}% on a single target: for bosses", "単体へのダメージ+{number1}%：ボス向け" },
@@ -239,6 +241,7 @@ return {
 		{ "Skill Cooldown Reduction +{number1}%", "スキルクールダウン短縮 +{number1}%" },
 		{ "Skill Cooldown Reduction -{number1}%", "スキルクールダウン短縮 -{number1}%" },
 		{ "Lv.{number1} now · gold levels maxed", "現在 Lv.{number1} · ゴールド段階は最大" },
+		{ "🗼 New tower record: floor {number1}!", "🗼 塔の新記録: {number1}階!" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ スペル・トーム · 錆びた時代 +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ 氷の宮殿の門 · レコメンド ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 ゾーン {number1} · 荒地が封鎖されました" },
@@ -478,6 +481,7 @@ return {
 		{ "Boss Damage -{number1}%", "ボスダメージ -{number1}%" },
 		{ "Heal on Kill +{number1}", "撃破時回復 +{number1}" },
 		{ "{number1}% of gear here", "ここの装備の{number1}%" },
+		{ "🗼 Tower floor {number1}", "🗼 塔 {number1}階" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 レベル{number1} {number2} / {number3} XP" },
 		{ "DAMAGE · {number1}s · {number2}", "ダメージ · {number1}秒 · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} ダンジョンの鍵" },

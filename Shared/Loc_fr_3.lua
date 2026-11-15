@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🌪 Mob hunter  ·  ✔ 🔫 Railgun / Sniper Rifle (+{number1}%)", "🌪 Chasseur de monstres · ✔ 🔫 Canon ferroviaire / Fusil de sniper (+{number1}%)" },
+		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>\nON</font>", "<font color='#{number1}fffb{number2}'><b>Attaque automatique</b>\nACTIVÉ </font>" },
 		{ "🥈 LeeGoAll_TV\n⚡ {number1} Lv.{number2}\nSniper Rifle · Arcane Era +{number3}", "🥈 LeeGoAll_TV\n⚡ {number1} Niveau {number2}\nFusil de sniper · Ère arcanique +{number3}" },
 		{ "Upgrade all the way to the last weapon (level {number1})", "Améliorez jusqu'à la dernière arme (niveau {number1})" },
 		{ "♻ [Rare] Chainmail auto-salvaged (Essence +{number1} {number2} G)", "♻ [Rare] Armure enchaînée récupérée automatiquement (Essence +{number1} {number2} G)" },
@@ -39,6 +41,7 @@ return {
 		{ "📅 {number1}-day login streak · Get stronger today!", "📅 Série de connexion de {number1} jours · Devenez plus fort aujourd'hui !" },
 		{ "Each NEAR MISS stack gives +{number1}% more attack", "Chaque cumul NEAR MISS donne +{number1} % d'attaque en plus" },
 		{ "🔒 Spend {number1} points higher up this path first", "🔒 Dépense d'abord {number1} points plus haut sur cette voie" },
+		{ "🗼 Floor {number1} cleared! Guaranteed Mythic gear!", "🗼 Étage {number1} terminé ! Équipement mythique garanti !" },
 		{ "Auto-equipped the best gear in {number1} slot(s)!", "Meilleur équipement équipé automatiquement dans {number1} emplacement(s) !" },
 		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• Environ {number1} tirs/s · Puissance de feu {number2} · Portée {number3}" },
 		{ "Damage +{number1}% on a single target: for bosses", "Dégâts +{number1} % sur une seule cible : pour les boss" },
@@ -180,6 +183,7 @@ return {
 		{ "Skill Cooldown Reduction +{number1}%", "Réduction de récupération des compétences +{number1}%" },
 		{ "Skill Cooldown Reduction -{number1}%", "Réduction de récupération des compétences -{number1}%" },
 		{ "Lv.{number1} now · gold levels maxed", "Niv.{number1} · niveaux d'or au max" },
+		{ "🗼 New tower record: floor {number1}!", "🗼 Nouveau record de la tour : étage {number1} !" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Tome de sorts · Ère rouillée +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Porte du palais de glace · Rec. ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zone {number1} · Désert scellé" },
@@ -419,6 +423,7 @@ return {
 		{ "Boss Damage -{number1}%", "Dégâts aux boss -{number1}%" },
 		{ "Heal on Kill +{number1}", "Soin à l'élimination +{number1}" },
 		{ "{number1}% of gear here", "{number1} % de l'équipement ici" },
+		{ "🗼 Tower floor {number1}", "🗼 Tour étage {number1}" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Niveau {number1} {number2} / {number3} EXP" },
 		{ "DAMAGE · {number1}s · {number2}", "Dégâts · {number1} s · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} clés de donjon" },

@@ -1153,6 +1153,13 @@ return {
 		["🎁 Pick a boon"] = "🎁 강화를 골라요",
 		["🤖 Auto-pick: ON"] = "🤖 자동 고르기: 켬",
 		["🤖 Auto-pick: OFF"] = "🤖 자동 고르기: 끔",
+		["Tough Foes"] = "단단한 적",
+		["Enemy HP x2"] = "적 체력 x2",
+		["Fierce Foes"] = "사나운 적",
+		["Enemy damage x1.5"] = "적 피해 x1.5",
+		["Swift Foes"] = "빠른 적",
+		["Enemies 30% faster"] = "적 30% 더 빠름",
+		["40% more enemies"] = "적 40% 더 많음",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1234,6 +1241,5 @@ return {
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "치명타 시 맞은 적에게 미사일 {number1}발 (각각 치명타 피해의 25%)" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} boss(es)\n{number2} / {number3}   Reward: 🎫 {number4}", "보스 헌터 타이틀 『보스 헌터』\n{number1} 보스 처치\n{number2} / {number3} 보상: 🎫 {number4}" },
 		{ "🏆 Colossus defeated! Everyone worked together ({number1} player(s) rewarded)", "🏆 거신 처치! 모두가 힘을 합쳤어요 ({number1}명 보상)" },
-		{ "on crit, {number1} missiles into the enemy you hit (50% of your attack each)", "치명타 시 맞힌 적에게 미사일 {number1}발 (각각 내 공격력의 50%)" },
 	},
 }

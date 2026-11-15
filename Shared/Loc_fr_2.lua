@@ -889,6 +889,13 @@ return {
 		["🎁 Pick a boon"] = "🎁 Choisissez un bonus",
 		["🤖 Auto-pick: ON"] = "🤖 Choix auto : OUI",
 		["🤖 Auto-pick: OFF"] = "🤖 Choix auto : NON",
+		["Tough Foes"] = "Ennemis coriaces",
+		["Enemy HP x2"] = "PV ennemis x2",
+		["Fierce Foes"] = "Ennemis féroces",
+		["Enemy damage x1.5"] = "Dégâts ennemis x1,5",
+		["Swift Foes"] = "Ennemis rapides",
+		["Enemies 30% faster"] = "Ennemis 30% plus rapides",
+		["40% more enemies"] = "40% d'ennemis en plus",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1044,7 +1051,5 @@ return {
 		{ "🏆 You defeated the Final Lord!  +{number1} gold  +{number2} tickets", "🏆 Vous avez vaincu le Seigneur final !  +{number1} or  +{number2} tickets" },
 		{ "⭐ New record! Depth {number1} cleared. Depth {number2} is unlocked.", "⭐ Nouveau record ! Profondeur {number1} terminée. La profondeur {number2} est débloquée." },
 		{ "💢 Boss #{number1} is AWAKENED — it attacks twice in a row!", "💢 Le boss n°{number1} est ÉVEILLÉ — il attaque deux fois de suite !" },
-		{ "🌪 Mob hunter  ·  ✔ 🔫 Railgun / Sniper Rifle (+{number1}%)", "🌪 Chasseur de monstres · ✔ 🔫 Canon ferroviaire / Fusil de sniper (+{number1}%)" },
-		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>\nON</font>", "<font color='#{number1}fffb{number2}'><b>Attaque automatique</b>\nACTIVÉ </font>" },
 	},
 }

@@ -2880,5 +2880,16 @@
 "Party panel (town, top right) · +4% damage per nearby member (up to +12%)",
 "🎁 Pick a boon",
 "🤖 Auto-pick: ON",
-"🤖 Auto-pick: OFF"
+"🤖 Auto-pick: OFF",
+"🗼 Tower floor {number1}",
+"🗼 Floor {number1} cleared! Guaranteed Mythic gear!",
+"🗼 New tower record: floor {number1}!",
+"Tough Foes",
+"Enemy HP x2",
+"Fierce Foes",
+"Enemy damage x1.5",
+"Swift Foes",
+"Enemies 30% faster",
+"Swarm",
+"40% more enemies"
 ]

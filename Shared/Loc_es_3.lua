@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 Se limpió automáticamente {number1} equipo más débil (Esencia +{number2}, {number3} G)" },
+		{ "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped", "🎯 ¡Recompensa cumplida! +{number1} G · 🎫 +{number2} · equipo soltado" },
 		{ "🎫 {number1} tickets!\nPull gear at the gacha machine", "🎫 {number1} entradas!\nObtén equipamiento en la máquina de gacha" },
 		{ "🐾 Pet Lv.{number1}! New ability 💥 Power — Attack +{number2}%", "🐾 Mascota de nivel {number1}! Nueva habilidad 💥 Poder - Ataque +{number2}%" },
 		{ "Sniper Rifle  ·  next weapon: Shotgun at +{number1}", "Rifle de francotirador · siguiente arma: Escopeta en +{number1}" },
@@ -17,6 +19,7 @@ return {
 		{ "📅 {number1}-day login streak · Get stronger today!", "📅 Racha de inicio de sesión de {number1} días · ¡Hazte más fuerte hoy!" },
 		{ "Each NEAR MISS stack gives +{number1}% more attack", "Cada acumulación NEAR MISS da +{number1} % más de ataque" },
 		{ "🔒 Spend {number1} points higher up this path first", "🔒 Gasta primero {number1} puntos más arriba en esta rama" },
+		{ "🗼 Floor {number1} cleared! Guaranteed Mythic gear!", "🗼 ¡Piso {number1} superado! ¡Equipo mítico garantizado!" },
 		{ "Auto-equipped the best gear in {number1} slot(s)!", "¡Se equipó automáticamente el mejor equipo en {number1} ranura(s)!" },
 		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• Unos {number1} disparos/s · Potencia de fuego {number2} · Alcance {number3}" },
 		{ "Damage +{number1}% on a single target: for bosses", "Daño +{number1} % a un solo objetivo: para jefes" },
@@ -159,6 +162,7 @@ return {
 		{ "Skill Cooldown Reduction +{number1}%", "Reducción de enfriamiento de habilidades +{number1}%" },
 		{ "Skill Cooldown Reduction -{number1}%", "Reducción de enfriamiento de habilidades -{number1}%" },
 		{ "Lv.{number1} now · gold levels maxed", "Nv.{number1} ahora · niveles de oro al máximo" },
+		{ "🗼 New tower record: floor {number1}!", "🗼 ¡Nuevo récord de la torre: piso {number1}!" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ Tomo de Hechizos · Era Oxidada +{number1}" },
 		{ "❄ Ice Palace Gate · Rec. ⚡{number1}", "❄ Puerta del Palacio de Hielo · Rec. ⚡{number1}" },
 		{ "🔒 Zone {number1} · Wasteland Sealed", "🔒 Zona {number1} · Tierra baldía sellada" },
@@ -398,6 +402,7 @@ return {
 		{ "Boss Damage -{number1}%", "Daño a jefes -{number1}%" },
 		{ "Heal on Kill +{number1}", "Curación al matar +{number1}" },
 		{ "{number1}% of gear here", "{number1}% del equipo aquí" },
+		{ "🗼 Tower floor {number1}", "🗼 Torre piso {number1}" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Nivel {number1} {number2} / {number3} XP" },
 		{ "DAMAGE · {number1}s · {number2}", "Daño · {number1} segundos · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} llaves de mazmorra" },
