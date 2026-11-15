@@ -966,6 +966,7 @@ function Gear.Roll(player, forced)
 
 	-- 천장 (튜토리얼 뽑기가 아닐 때만): 전설 이상 / 신화가 오래 안 나오면 확정
 	local pity = Config.Gacha.Pity
+	local pityHit -- "L" / "M": 천장으로 확정된 뽑기 (결과 연출 / 전 서버 알림)
 	if pity and not mode then
 		local okMeta, Meta = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
 		local saved = okMeta and Meta.GetRift and Meta.GetRift(player)
@@ -973,9 +974,11 @@ function Gear.Roll(player, forced)
 			saved.PityL = (saved.PityL or 0) + 1
 			saved.PityM = (saved.PityM or 0) + 1
 			if saved.PityM >= pity.Mythic then
+				if rarity < 5 then pityHit = "M" end
 				rarity = 5
 			elseif saved.PityL >= pity.Legendary and rarity < 4 then
 				rarity = 4
+				pityHit = "L"
 			end
 			if rarity >= 4 then saved.PityL = 0 end
 			if rarity >= 5 then saved.PityM = 0 end
@@ -1016,7 +1019,10 @@ function Gear.Roll(player, forced)
 	else
 		message = string.format("%s... auto-dismantled! Essence +%d, %d G", name, essence or 0, gold or 0)
 	end
-	return true, message, { Slot = slot.Key, Rarity = rarity, Name = slot.Names[rarity], Equipped = status == "Equipped", Status = status, Gold = gold or 0, Better = better, Set = item.Set } -- (Set: 결과 카드에 세트 표시)
+	if pityHit == "M" then -- 신화 천장 확정: 서버 전체 알림 (확정 발동 때만이라 스팸이 아니다)
+		Remotes.Notify:FireAllClients(string.format("🌈 %s hit the Mythic pity: [Mythic] %s!", player.DisplayName, slot.Names[rarity]))
+	end
+	return true, message, { Slot = slot.Key, Rarity = rarity, Name = slot.Names[rarity], Equipped = status == "Equipped", Status = status, Gold = gold or 0, Better = better, Set = item.Set, Pity = pityHit } -- (Set: 결과 카드에 세트 표시 / Pity: 천장 확정 연출)
 end
 
 -- 접속하면 저장된 천장 횟수를 화면에 보여 줄 수 있게 Attribute 로 알려 준다

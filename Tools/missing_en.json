@@ -2860,5 +2860,22 @@
 "▼ Dungeon Gate  {number1}m",
 "📍 Field Entrance  ahead (east)  {number1}m",
 "The dungeon couldn't open. Your key / free entry was returned. Please try again.",
-"💀 You fell! Revived at the Zone {number1} camp."
+"💀 You fell! Revived at the Zone {number1} camp.",
+"🌈 {text1} hit the Mythic pity: [Mythic] {text2}!",
+"🌈 MYTHIC PITY!",
+"⭐ LEGENDARY PITY!",
+"⭐ Next roll: Legendary guaranteed!",
+"🌈 Next roll: Mythic guaranteed!",
+"🚪 Stuck at Zone {number1}? Try another door",
+"Dungeon",
+"Zone set",
+"Set effect",
+"Party",
+"Town north gate · boss chest gear + gold · Free {number1} · Keys {number2}",
+"{text1} {text2} 2 pieces: {text3}",
+"Collect this zone's set gear",
+"Lv.{number1} now · next gold level {text2} G",
+"Lv.{number1} now · gold levels maxed",
+"No set effect on yet — wear 2+ set pieces",
+"Party panel (town, top right) · +4% damage per nearby member (up to +12%)"
 ]

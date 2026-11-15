@@ -113,22 +113,35 @@ function M.Init(deps)
 		create("UIStroke", { Color = color, Thickness = 1, Transparency = 0.45 }, card)
 		local band = create("Frame", { Size = UDim2.new(1, 0, 0, 3), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 4 }, card) -- 위쪽 색 띠
 		create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.7), NumberSequenceKeypoint.new(0.5, 0), NumberSequenceKeypoint.new(1, 0.7) }) }, band)
-		local title = makeLabel({ Size = UDim2.new(1, -20, 0, 34), Position = UDim2.new(0, 10, 0, 8), Text = "", RichText = true, TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = color, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4 }, card)
+		local title = makeLabel({ Size = UDim2.new(1, -20, 0, 34), Position = UDim2.new(0, 10, 0, 8), Text = "", RichText = true, TextSize = 26, Font = Enum.Font.GothamBlack, TextColor3 = color, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4 }, card) -- (크게: 지금 몇 번째인지)
 		local back = create("Frame", { Size = UDim2.new(1, -20, 0, 8), Position = UDim2.new(0, 10, 0, 50), BackgroundColor3 = Color3.fromRGB(14, 12, 24), BorderSizePixel = 0, ZIndex = 4 }, card)
 		rounded(back, 4)
 		local fill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = color, BorderSizePixel = 0, ZIndex = 5 }, back)
 		rounded(fill, 4)
 		create("UIGradient", { Color = ColorSequence.new(color:Lerp(Color3.new(1, 1, 1), 0.35), color) }, fill)
-		local count = makeLabel({ Size = UDim2.new(1, -20, 0, 14), Position = UDim2.new(0, 10, 0, 64), Text = "", TextSize = 10, TextColor3 = Color3.fromRGB(200, 196, 225), TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 4 }, card)
-		return { Title = title, Fill = fill, Count = count, Total = total }
+		local count = makeLabel({ Size = UDim2.new(1, -20, 0, 14), Position = UDim2.new(0, 10, 0, 64), Text = "", RichText = true, TextSize = 11, TextColor3 = Color3.fromRGB(200, 196, 225), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4 }, card) -- (작게: 확정까지 남은 횟수)
+		local stroke = card:FindFirstChildOfClass("UIStroke")
+		return { Title = title, Fill = fill, Count = count, Total = total, Stroke = stroke, Color = color, Card = card }
 	end
 	local pityL = pityGauge(80, Color3.fromRGB(255, 217, 102), Config.Gacha.Pity.Legendary)
 	local pityM = pityGauge(182, Color3.fromRGB(255, 154, 216), Config.Gacha.Pity.Mythic)
-	local function paintPity(g, remain, fmt)
-		g.Title.Text = string.format(fmt, remain)
+	local function paintPity(g, remain, fmt, nextFmt)
 		local done = g.Total - remain
+		g.Title.Text = string.format("%d<font size='14' color='#a8a2c8'> / %d</font>", done, g.Total)
 		TweenService:Create(g.Fill, TweenInfo.new(0.4, Enum.EasingStyle.Quad), { Size = UDim2.new(math.clamp(done / g.Total, 0, 1), 0, 1, 0) }):Play()
-		g.Count.Text = string.format("%d / %d", done, g.Total)
+		local close = remain <= 5
+		g.Count.Text = remain <= 1 and nextFmt or string.format(fmt, remain) -- (다음 한 번이면 "다음 뽑기 확정!")
+		g.Count.TextColor3 = close and Color3.fromRGB(255, 240, 150) or Color3.fromRGB(200, 196, 225)
+		-- 남은 5번 이하: 카드 테두리가 환하게 (저사양이면 깜빡임 없이 굵기만)
+		if g.Stroke then
+			g.Stroke.Thickness = close and 2.5 or 1
+			g.Stroke.Transparency = close and 0 or 0.45
+			if close and not player:GetAttribute("LowSpec") and g.LastRemain ~= remain then
+				g.Stroke.Transparency = 0.6
+				TweenService:Create(g.Stroke, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, 1, true), { Transparency = 0 }):Play()
+			end
+		end
+		g.LastRemain = remain
 	end
 
 	------------------------------------------------------------
@@ -274,8 +287,8 @@ function M.Init(deps)
 		rollMany.TextTransparency = canMany and 0 or 0.45
 		rollMany.Text = canMany and (setCost > 0 and string.format("🎰 Roll x%d!\n%d Tickets\n💰 %d G", many, many, setCost * many) or string.format("🎰 Roll x%d!\n%d Tickets", many, many)) or "🎰 Multi Roll\nNeeds 2+ Tickets (max 10)"
 		local l, m = player:GetAttribute("GachaPityL"), player:GetAttribute("GachaPityM")
-		paintPity(pityL, l or Config.Gacha.Pity.Legendary, "⭐ Legendary guaranteed in %d")
-		paintPity(pityM, m or Config.Gacha.Pity.Mythic, "🌈 Mythic in %d")
+		paintPity(pityL, l or Config.Gacha.Pity.Legendary, "⭐ Legendary guaranteed in %d", "⭐ Next roll: Legendary guaranteed!")
+		paintPity(pityM, m or Config.Gacha.Pity.Mythic, "🌈 Mythic in %d", "🌈 Next roll: Mythic guaranteed!")
 	end
 	for _, name in ipairs({ "Tickets", "GachaPityL", "GachaPityM", "GachaSet", "Gold", "MaxZone" }) do
 		player:GetAttributeChangedSignal(name):Connect(function()

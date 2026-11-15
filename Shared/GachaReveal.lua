@@ -96,6 +96,21 @@ function M.Init(deps)
 			Text = "", AutoButtonColor = false, ZIndex = 60,
 		}, layer)
 		local skipped = false
+		-- 천장 확정 (서버가 Pity = "L" / "M" 을 실어 보낸다): 한 단계 큰 연출 = 화면 위 "PITY!" 띠 + 빛줄기 + 2초 동안 넘기기 잠금
+		local pityKind = roll.Pity
+		for _, r in ipairs(result.Rolls or {}) do if r.Pity == "M" or (r.Pity and not pityKind) then pityKind = r.Pity end end
+		if pityKind then
+			lockedUntil = math.max(lockedUntil, os.clock() + 2)
+			local pityColor = Config.Gear.RarityColors[pityKind == "M" and 5 or 4]
+			lightRays(root, pityColor, 5)
+			local banner = makeLabel({ Size = UDim2.new(0, 420, 0, 54), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 24), RichText = true, TextSize = 30, Font = Enum.Font.GothamBlack,
+				Text = pityKind == "M" and "🌈 MYTHIC PITY!" or "⭐ LEGENDARY PITY!", TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 0.2, TextStrokeColor3 = pityColor,
+				BackgroundTransparency = 0.15, BackgroundColor3 = pityColor:Lerp(Color3.fromRGB(20, 16, 36), 0.55), ZIndex = 75 }, root)
+			create("UICorner", { CornerRadius = UDim.new(0, 14) }, banner)
+			create("UIStroke", { Color = pityColor, Thickness = 2.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, banner)
+			local bannerScale = create("UIScale", { Scale = 0.6 }, banner)
+			TweenService:Create(bannerScale, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+		end
 		if result.Header then -- 첫 처치 보상 / 합성: 싸우다 쏘는 클릭에 바로 넘어가 버려서 못 보고 지나갔다 -> 처음 2초는 눌러도 넘어가지 않는다
 			lockedUntil = math.max(lockedUntil, os.clock() + 2)
 		end

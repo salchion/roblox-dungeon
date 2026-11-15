@@ -313,8 +313,53 @@ guideClose.ZIndex = 51
 guideClose.Parent = guide
 addCorner(guideClose, 8)
 guideClose.Activated:Connect(function() guide.Visible = false end)
+-- 막힘 돌파 카드 ("Wall"): 같은 구역에서 여러 번 쓰러지면 다른 문 4가지 + 바로 가는 버튼
+local wallButtons = {}
+local function showWall(data)
+	while player:GetAttribute("IntroPlaying") do task.wait(0.2) end -- (오프닝 중에는 절대 띄우지 않는다)
+	for _, b in ipairs(wallButtons) do b:Destroy() end
+	wallButtons = {}
+	local lines = { string.format("<font size='17' color='#ffd966'><b>🚪 Stuck at Zone %d? Try another door</b></font>", data.Zone), "" }
+	guideText.Text = table.concat(lines, "\n")
+	local ACTIONS = {
+		-- (던전은 마을 북쪽 관문, 파티는 마을 오른쪽 위 패널에서: 바로 여는 신호가 없어 안내만 한다)
+		Codex = function() player:SetAttribute("OpenCodex", os.clock()) end,
+		Aug = function() player:SetAttribute("OpenAug", os.clock()) end,
+	}
+	for i, route in ipairs(data.Routes or {}) do
+		local b = Instance.new("TextButton")
+		b.Size = UDim2.new(1, -28, 0, 48)
+		b.Position = UDim2.new(0, 14, 0, 40 + (i - 1) * 54)
+		b.BackgroundColor3 = Color3.fromRGB(40, 44, 66)
+		b.BorderSizePixel = 0
+		b.RichText = true
+		b.TextWrapped = true
+		b.TextXAlignment = Enum.TextXAlignment.Left
+		b.Font = Enum.Font.Gotham
+		b.TextSize = 11
+		b.TextColor3 = Color3.new(1, 1, 1)
+		b.Text = string.format("  %s <font size='14'><b>%s</b></font>%s\n  <font color='#c9c0e0'>%s</font>", route.Icon, route.Name, ACTIONS[route.Key] and "  ▶" or "", route.Info)
+		b.AutoButtonColor = ACTIONS[route.Key] ~= nil
+		b.ZIndex = 52
+		b.Parent = guide
+		addCorner(b, 8)
+		b.Activated:Connect(function()
+			guide.Visible = false
+			local fn = ACTIONS[route.Key]
+			if fn then fn() end
+		end)
+		table.insert(wallButtons, b)
+	end
+	guide.Visible = true
+	guideScale.Scale = 0.6
+	TweenService:Create(guideScale, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	task.delay(45, function() guide.Visible = false end)
+end
 Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
+	if action == "Wall" then task.spawn(showWall, data) return end
 	if action ~= "Growth" then return end
+	for _, b in ipairs(wallButtons) do b:Destroy() end -- (성장 카드는 버튼 없이 글자만)
+	wallButtons = {}
 	local lines = { data.Death and "<font size='17' color='#ff9a8a'><b>💀 You fell! Get stronger and try again</b></font>" or "<font size='17' color='#ffd966'><b>💪 How to Get Stronger</b></font>" }
 	local gap = data.Need - data.Power
 	if gap > 0 then

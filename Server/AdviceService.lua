@@ -68,7 +68,53 @@ local function deathSources(player)
 	return list
 end
 
+-- 막힘 돌파 카드: 같은 벽(아직 못 깬 다음 구역)에서 10분 안에 3번 쓰러지면, "다른 문" 4가지(던전 / 도감·세트 보너스 / 세트 효과 / 파티)를 한 장으로
+--   서버 메모리만 (저장 안 함) · 구역마다 세션 1번 · 최소 5분 간격 · 튜토리얼 중 제외. 벌칙이 아니라 안내다
+local wallDeaths = setmetatable({}, { __mode = "k" }) -- [player] = { [zone] = { t1, t2, ... } }
+local wallShown = setmetatable({}, { __mode = "k" }) -- [player] = { [zone] = true, Last = os.clock() }
+local function comma(n) local s = tostring(math.floor(n or 0)) local r repeat s, r = string.gsub(s, "^(-?%d+)(%d%d%d)", "%1,%2") until r == 0 return s end
+function Advice.WallCard(player)
+	if player:GetAttribute("TutorialActive") == true then return end
+	local zone = math.min(Config.Field.ZoneCount, (player:GetAttribute("ClearedZone") or 0) + 1)
+	local now = os.clock()
+	local byZone = wallDeaths[player] or {}
+	wallDeaths[player] = byZone
+	local list = byZone[zone] or {}
+	byZone[zone] = list
+	table.insert(list, now)
+	while #list > 0 and now - list[1] > 600 do table.remove(list, 1) end
+	local shown = wallShown[player] or {}
+	wallShown[player] = shown
+	if #list < 3 or shown[zone] or now - (shown.Last or -1e9) < 300 then return end
+	shown[zone], shown.Last = true, now
+	local setKey = Config.Sets.ZoneKeys[zone]
+	local setDef = setKey and Config.Sets[setKey]
+	local b2 = {}
+	for _, b in ipairs(setDef and setDef.Bonuses[2] or {}) do table.insert(b2, Config.FormatBonus(b.Stat, b.Value)) end
+	local augZone, augLv, augCost = nil, 0, nil -- 지금 켜진 세트 효과 중 가장 높은 것의 다음 골드 단계 비용
+	for z = 1, Config.Field.ZoneCount do
+		if player:GetAttribute("AugOnZ_" .. z) == true then
+			local lv = (player:GetAttribute("AugLvZ_" .. z) or 0) + (player:GetAttribute("AugGearZ_" .. z) or 0)
+			if lv >= augLv then augZone, augLv = z, lv end
+		end
+	end
+	if augZone then
+		local gold = player:GetAttribute("AugLvZ_" .. augZone) or 0
+		if gold < 3 then augCost = Config.Sets.AugCost(augZone, gold + 1, player:GetAttribute("MaxZone") or augZone) end
+	end
+	Remotes.Tutorial:FireClient(player, "Wall", {
+		Zone = zone, Deaths = #list,
+		Routes = {
+			{ Key = "Dungeon", Icon = "🏰", Name = "Dungeon", Info = string.format("Town north gate · boss chest gear + gold · Free %d · Keys %d", player:GetAttribute("DungeonFree") or 0, player:GetAttribute("Keys") or 0) },
+			{ Key = "Codex", Icon = "📖", Name = "Zone set", Info = setDef and string.format("%s %s 2 pieces: %s", setDef.Icon or "", setDef.Name, table.concat(b2, " · ")) or "Collect this zone's set gear" },
+			{ Key = "Aug", Icon = "✨", Name = "Set effect", Info = augZone and (augCost and string.format("Lv.%d now · next gold level %s G", augLv, comma(augCost)) or string.format("Lv.%d now · gold levels maxed", augLv)) or "No set effect on yet — wear 2+ set pieces" },
+			{ Key = "Party", Icon = "🤝", Name = "Party", Info = "Party panel (town, top right) · +4% damage per nearby member (up to +12%)" },
+		},
+	})
+end
+
 function Advice.AfterDefeat(player)
+	pcall(Advice.WallCard, player) -- (필드 / 던전 패배 모두 여기를 지난다)
 	if player:GetAttribute("TutorialActive") == true then return end -- (튜토리얼 중의 패배는 연출(최후의 군주)이라 조언 / 팁을 띄우지 않는다: 미션 안내와 겹쳐 복잡했다)
 	local index = (tipIndex[player] or 0) % #COMBAT_TIPS + 1
 	tipIndex[player] = index
