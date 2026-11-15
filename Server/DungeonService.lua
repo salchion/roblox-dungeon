@@ -1400,7 +1400,7 @@ local function stepRun(run, dt)
 						local step = move.Unit * data.Stats.Speed * dt
 						local nextPos = part.Position + step
 						if walkable(run, nextPos.X, nextPos.Z) then
-							part.Position += step
+							part.CFrame = CFrame.new(nextPos) * part.CFrame.Rotation -- (Position 대신 CFrame: 용접된 겉모양 조각이 뒤에 남지 않게)
 						end
 					end
 				end
@@ -1412,7 +1412,7 @@ local function stepRun(run, dt)
 				if (faceAt - bossAt).Magnitude > 1 then
 					part.CFrame = CFrame.lookAt(bossAt, faceAt) -- 항상 플레이어를 바라본다 (날개 / 뿔 / 꼬리가 같이 돈다)
 				else
-					part.Position = bossAt
+					part.CFrame = CFrame.new(bossAt) * part.CFrame.Rotation
 				end
 				end
 

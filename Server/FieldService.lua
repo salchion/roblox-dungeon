@@ -2035,7 +2035,7 @@ local function stepGoblin(part, data, dt, now)
 		end
 		position = chosen or part.Position
 	end
-	part.Position = position
+	part.CFrame = CFrame.new(position) * part.CFrame.Rotation -- (Position 대신 CFrame: 용접된 왕관 / 빛기둥이 뒤에 남지 않게)
 end
 
 -- 구역 군주 패턴 (기본 부채꼴 사격 + 전방위 탄막에 더해서 돌려 쓴다): 내려찍기 / 돌진 / 나선 탄막.
@@ -2596,9 +2596,11 @@ local function stepMonsters(dt)
 			if occupiedZones[data.Zone] and data.Health >= data.MaxHealth and not data.BossLike and not data.Ambush and data.Kind ~= "Event" and toHome.Magnitude < 14 then
 				wander(part, data, dt, now) -- 맞기 전에는 제자리 근처를 천천히 거닌다
 			elseif toHome.Magnitude > 1 then
-				part.Position += toHome.Unit * data.Stats.Speed * 1.5 * dt
+				-- (Position 이 아니라 CFrame 으로 옮긴다: Position 으로 옮기면 용접된 겉모양 조각이 뒤에 남아, 집으로 돌아온 몬스터의 장식이 본체에서 20칸쯤 떨어져 보였다 - [Monster desync] 로그. FieldEvents 의 낙하산 사례와 같은 원인)
+				local step = toHome.Unit * data.Stats.Speed * 1.5 * dt
+				local nx, nz = part.Position.X + step.X, part.Position.Z + step.Z
 				-- 돌아가는 길에도 층 높이를 따라간다 (경사를 오르내릴 때 땅에 파묻히거나 허공에 뜨지 않게)
-				part.Position = Vector3.new(part.Position.X, floorAt(part.Position.X) + data.Stats.Size / 2, part.Position.Z)
+				part.CFrame = CFrame.new(nx, floorAt(nx) + data.Stats.Size / 2, nz) * part.CFrame.Rotation
 			elseif data.Health < data.MaxHealth then
 				data.Health = data.MaxHealth
 				data.HealthFill.Size = UDim2.new(1, 0, 1, 0)

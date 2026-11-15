@@ -1,6 +1,6 @@
 -- FpsLogClient (StarterPlayer > StarterPlayerScripts 안의 LocalScript, 이름: FpsLogClient)
 -- 프레임 드랍을 출력 창(스튜디오) / F9 개발자 콘솔(게임)에 남긴다.
---   * 한 프레임이 0.2초 넘게 멈추면 바로: [FPS] ⚠ 끊김 0.31초 · 장소 · 방금 열린 창
+--   * 한 프레임이 0.2초 넘게 멈추면 바로: [FPS] ⚠ 끊김 0.31초 · 장소 · 방금 바뀐 화면(HudGui(켜짐) ...)
 --   * 15초마다 요약 (느렸을 때만): 평균 FPS / 가장 느린 1초 FPS / 끊김 수 / 최악 프레임 / 메모리
 --   * 문제가 없으면 1분에 한 번만 짧게 "정상" 을 남긴다
 -- 화면에는 아무것도 띄우지 않는다 (게임에 영향 없음).
@@ -18,42 +18,39 @@ local SUMMARY_EVERY = 15
 local QUIET_EVERY = 60
 local WARMUP = 10         -- 접속 직후 로딩 중 끊김은 무시
 
--- 최근에 열린 창 (ScreenGui 켜짐 / 창 Frame 보임) 을 시각과 함께 기억
-local recentOpen = {}
-local function noteOpen(name)
-	recentOpen[name] = os.clock()
+-- 최근에 켜지거나 꺼진 화면 (끊김 순간에 "무엇이 켜지고/꺼졌는지"를 함께 남긴다: 어느 토글이 렉을 만드는지 로그 한 줄로 갈리게)
+local recentOpen = {} -- [이름] = { At = 시각, On = true/false }
+local function noteChange(name, on)
+	recentOpen[name] = { At = os.clock(), On = on }
 end
 local function watchGuiObject(obj, label)
-	if obj:IsA("GuiObject") then
-		obj:GetPropertyChangedSignal("Visible"):Connect(function()
-			if obj.Visible then noteOpen(label .. "/" .. obj.Name) end
-		end)
-	end
+	if not obj:IsA("GuiObject") then return end
+	obj:GetPropertyChangedSignal("Visible"):Connect(function()
+		noteChange(label .. "/" .. obj.Name, obj.Visible)
+	end)
 end
 local function watchScreenGui(gui)
 	if not gui:IsA("ScreenGui") then return end
 	gui:GetPropertyChangedSignal("Enabled"):Connect(function()
-		if gui.Enabled then noteOpen(gui.Name) end
+		noteChange(gui.Name, gui.Enabled)
 	end)
 	for _, child in ipairs(gui:GetChildren()) do watchGuiObject(child, gui.Name) end
 	gui.ChildAdded:Connect(function(child)
-		noteOpen(gui.Name .. "/" .. child.Name)
 		watchGuiObject(child, gui.Name)
 	end)
 end
 for _, gui in ipairs(playerGui:GetChildren()) do watchScreenGui(gui) end
 playerGui.ChildAdded:Connect(function(gui)
-	noteOpen(gui.Name)
 	watchScreenGui(gui)
 end)
 
 local function context()
 	local now = os.clock()
 	local opened = {}
-	for name, at in pairs(recentOpen) do
-		if now - at < 3 then
-			table.insert(opened, name)
-		elseif now - at > 30 then
+	for name, entry in pairs(recentOpen) do
+		if now - entry.At < 3 then
+			table.insert(opened, name .. (entry.On and "(켜짐)" or "(꺼짐)"))
+		elseif now - entry.At > 30 then
 			recentOpen[name] = nil
 		end
 	end
@@ -61,7 +58,7 @@ local function context()
 	if player:GetAttribute("InDoomArena") then text ..= "(둠)" end
 	if #opened > 0 then
 		table.sort(opened)
-		text ..= " · 방금 열린 창: " .. table.concat(opened, ", ", 1, math.min(#opened, 4))
+		text ..= " · 방금 바뀐 화면: " .. table.concat(opened, ", ", 1, math.min(#opened, 4))
 	end
 	return text
 end
