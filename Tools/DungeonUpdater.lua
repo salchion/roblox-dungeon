@@ -11,9 +11,9 @@ local ChangeHistoryService = game:GetService("ChangeHistoryService")
 local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
 
--- 코드를 가져올 GitHub 저장소 / 브랜치 (main 에 합친 뒤에는 BRANCH 를 "main" 으로 바꾸면 됨)
+-- 코드를 가져올 GitHub 저장소 / 브랜치 (main 에 합쳤으므로 main 에서 받는다)
 local REPO = "salchion/roblox-dungeon"
-local BRANCH = "claude/brave-cannon-x4jyw0"
+local BRANCH = "main"
 
 local toolbar = plugin:CreateToolbar("Dungeon")
 local button = toolbar:CreateButton("던전 업데이트", "GitHub 최신 코드로 스크립트를 업데이트합니다", "")
