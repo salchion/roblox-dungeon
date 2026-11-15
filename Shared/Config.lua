@@ -519,8 +519,8 @@ Config.AugCharge = {
 	WeakMult = 3,         -- 약점 명중은 3배 (추가 2배분)
 	NearMissMult = 2,     -- 대시 회피(NEAR MISS) 1번 = 명중 2번
 	ComboBonus = 0.3,     -- 콤보 최대 스택일 때 +30%
-	MaxGainPerVolley = 3, -- 한 번 쏠 때(산탄 등) 적립되는 명중 수 상한
-	RateAssumed = 4,      -- 초당 명중 가정 (발동 빈도를 예전과 맞추는 기준)
+	MaxVolleyGap = 0.8,   -- 사격 간격 T 의 상한(초): 가장 느린 무기(화염 0.7초)보다 조금 길게. 쉬었다 쏜 첫 발이 한꺼번에 채우지 않게
+	RateAssumed = 4,      -- 기준 초당 적립 횟수: 맞히는 동안 초당 PerHit x RateAssumed = 40 (무기와 무관)
 	DecayPerSec = 0,      -- (이번엔 감쇠 없음)
 	Interval = { -- 예전 타이머 공식 (필요량 계산에만 쓴다)
 		AugPulse = function(lv) return math.max(2.2, 4.8 - 0.8 * lv) end,

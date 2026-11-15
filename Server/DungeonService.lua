@@ -1710,19 +1710,27 @@ local function addCharge(player, amount)
 		bucket[attr] = math.min(Config.AugChargeNeed(attr, 1) * 2, (bucket[attr] or 0) + amount) -- (쌓아 두기 상한: 1단계 필요량의 2배)
 	end
 end
+-- 적립은 "맞힌 사격(volley) 1번"마다, 그 사격의 실제 간격 T 만큼: gain = PerHit x RateAssumed x T
+--   (예전: 명중 1번 = +10 -> 느린 무기(화염 / 로켓 / 저격, 초당 1.4~1.8발)는 세트 효과가 1.5~2.8배 늦게 터졌다. 이제 맞히는 한 무기 / 가속과 무관하게 초당 40)
+--   T 는 직전 사격과의 시간 차이(가속 버프 반영). 오래 쉬었다 쏜 첫 발이 한꺼번에 채우지 않게 MaxVolleyGap 으로 자른다
+local volleyT = setmetatable({}, { __mode = "k" })
+local lastShotAt = setmetatable({}, { __mode = "k" })
 function Dungeon.NoteHit(player, isWeak)
 	local AC = Config.AugCharge
 	if not (AC and AC.Enabled) then return end
-	if not isWeak then
-		local used = volleyGain[player] or 0
-		if used >= AC.MaxGainPerVolley then return end
-		volleyGain[player] = used + 1
+	local t = volleyT[player]
+	if not t then return end
+	local base = AC.PerHit * AC.RateAssumed * t
+	if isWeak then
+		addCharge(player, base * (AC.WeakMult - 1)) -- (약점: 그 사격 몫을 추가로 2배 더)
+	elseif not volleyGain[player] then
+		volleyGain[player] = true -- (산탄 / 관통 / 튕김으로 여러 번 맞아도 사격 1번 = 1번 적립)
+		addCharge(player, base)
 	end
-	addCharge(player, AC.PerHit * (isWeak and (AC.WeakMult - 1) or 1))
 end
 function Dungeon.NoteNearMiss(player)
 	local AC = Config.AugCharge
-	if AC and AC.Enabled then addCharge(player, AC.PerHit * AC.NearMissMult) end
+	if AC and AC.Enabled then addCharge(player, AC.PerHit * AC.RateAssumed * 0.25 * AC.NearMissMult) end -- (= 명중 0.25초 x 2배 분량, 예전 값과 같은 20)
 end
 local function hookCharge(player)
 	player:GetAttributeChangedSignal("HitTick"):Connect(function() Dungeon.NoteHit(player, false) end)
@@ -1735,6 +1743,8 @@ for _, p in ipairs(Players:GetPlayers()) do hookCharge(p) end
 local function chargeReady(player, attr, lv, now, nextAt)
 	local AC = Config.AugCharge
 	if not (AC and AC.Enabled) then return now >= (nextAt or 0) end
+	-- (게이지를 켜면 nextAt(예전 간격) 은 보지 않는다: 꾸준히 맞히면 예전 간격과 같고, 약점 / 콤보 / 회피 보너스만큼 더 빨라지는 게 보상.
+	--  폭주 방지는 게이지 쌓아 두기 상한(1단계 필요량의 2배)이 맡는다)
 	local bucket = augCharge[player]
 	if bucket and (bucket[attr] or 0) >= Config.AugChargeNeed(attr, lv) then
 		bucket[attr] = 0
@@ -1744,7 +1754,11 @@ local function chargeReady(player, attr, lv, now, nextAt)
 end
 function Dungeon.NoteShot(player)
 	shotCount[player] = (shotCount[player] or 0) + 1
-	volleyGain[player] = 0 -- (한 번 쏠 때 적립 상한을 새로 센다)
+	local now = os.clock()
+	local AC = Config.AugCharge
+	volleyT[player] = math.clamp(now - (lastShotAt[player] or now - AC.MaxVolleyGap), 0.05, AC.MaxVolleyGap)
+	lastShotAt[player] = now
+	volleyGain[player] = nil -- (새 사격: 아직 적립 안 함)
 end
 local BLADE_SHOTS = { 6, 6, 5, 5, 4, 4 } -- 표창 단계(1~6)별로 몇 번 쏠 때마다 한 번 던지는지
 -- 크리 미사일 폭주 방지: 한 사람이 1초에 낼 수 있는 미사일 수 상한 (샷건처럼 탄이 많은 무기가 서버를 짓누르지 않게)
