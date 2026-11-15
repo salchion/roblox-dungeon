@@ -128,12 +128,13 @@ local function dailyLeft(state, key, def)
 end
 
 -- 골드 팩 지급량 = "구매하는 순간 내 방치 수입 N분치" (배율 제외: 부스터 / 방치 배율 상품과 겹쳐서 커지지 않게)
+--   기준은 옛 계산식(Config.Idle.PackRate)이다: PackFraction x IncomeBase x 공격력 배율(무기 단계) x (1 + 장비 + 훈련 + 펫).
+--   방치 / 오프라인은 이제 "내 최고 구역의 필드 실수입" 기준이지만, 그 값을 팩에 그대로 쓰면 같은 상품의 가치가
+--   구역에 따라 2~10배로 뛴다(필드 수입 = 기준표의 2~10배). 그래서 골드 팩만 옛 기준을 쓴다 -> 판매를 켜도 가치가 그대로다.
 local function idleGold(player, minutes)
-	local okIdle, Idle = pcall(function() return require(script.Parent:WaitForChild("IdleService")) end)
-	if not okIdle then return 0 end
-	local perSecond = Idle.Rate(player) / math.max(1, Idle.Multiplier(player))
-	perSecond = perSecond * ((Config.Idle.PackFraction or Config.Idle.Fraction) / Config.Idle.Fraction) -- 방치 비율을 낮춰도 골드 팩 가치는 그대로
-	return math.floor(perSecond * 60 * minutes)
+	local bonus = 1 + (player:GetAttribute("GearDamage") or 0) + (player:GetAttribute("TrainDamage") or 0) + (player:GetAttribute("PetDamage") or 0)
+	local perMinute = Config.Idle.PackRate(player:GetAttribute("WeaponLevel") or 0, bonus)
+	return math.floor(perMinute * minutes)
 end
 
 -- grant: Config.Shop 의 Grant 테이블 (Keys / Tickets / XpBoost / LuckBoost / Bag / Aura)

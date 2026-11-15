@@ -2079,7 +2079,7 @@ Config.Events = {
 --   필드 100% · 접속 중 방치 22% · 오프라인 13.2% 비율이 그대로 유지된다 (구매 배율을 다 켜면 최대 70% / 42%: 아래 주석의 원래 의도).
 Config.Idle = {
 	Fraction = 0.22,          -- 내 최고 구역 필드 실수입의 22% (0.34 -> 0.22: 영구 +100% / VIP / 부스터를 모두 켜도 접속 중 방치가 직접 플레이 수입의 약 70%를 넘지 않게. 오프라인은 효율 0.6 이라 약 42%)
-	PackFraction = 0.34,      -- 골드 팩("내 방치 수입 N분치")을 계산하는 비율: 기존 값 그대로라 팩 가치는 변하지 않는다          -- 방치 수입(분당) = 이 값 x (내 최고 구역 필드 실수입) x 방치 배율. 필드 수입의 약 1/3
+	PackFraction = 0.34,      -- 골드 팩("내 방치 수입 N분치")을 계산하는 비율: 기존 값 그대로라 팩 가치는 변하지 않는다          -- 골드 팩 수입(분당) = 이 값 x IncomeBase x 공격력 배율(무기 단계) x (1 + 장비 + 훈련 + 펫) (아래 PackRate: 옛 계산식 그대로)
 	Radius = 18,              -- 훈련장 중심에서 이 거리 안에 있으면 방치 중
 	OfflineEfficiency = 0.6,  -- 오프라인 적립은 접속 중 방치의 60%
 	BaseCapHours = 4,         -- 오프라인 적립 한도 (기본). 하루 2~3번 접속하는 사람이 반나절 비워도 대부분 받도록 4시간
@@ -2097,6 +2097,16 @@ function Config.Idle.FieldIncomePerMin(zone)
 	zone = math.clamp(math.floor(zone or 1), 1, Config.Field.ZoneCount)
 	local level = Config.Field.GetZoneLevel(zone)
 	return (8 + 4 * level) * Config.Field.ZoneDanger.Reward[zone] * Config.Economy.FieldGoldMult * Config.Idle.KillsPerMin
+end
+
+-- 골드 팩("내 방치 수입 N분치") 기준 수입(분당) = 옛 방치 계산식 그대로.
+--   PackFraction x IncomeBase x 공격력 배율(무기 단계) x (1 + 장비 + 훈련 + 펫)
+--   방치 / 오프라인은 이제 "내 최고 구역의 필드 실수입"을 기준으로 하지만, 그 값을 골드 팩에 그대로 쓰면
+--   같은 상품의 가치가 구역에 따라 2~10배로 뛴다(필드 수입 = 기준표의 2~10배). 그래서 골드 팩만 옛 기준을 쓴다.
+--   (판매를 켜기 전 이 값이 팩 가치의 기준이다. 방치 배율 상품 / 부스터는 곱하지 않는다: MonetizationService 가 배율 없이 지급)
+function Config.Idle.PackRate(weaponLevel, bonus)
+	return (Config.Idle.PackFraction or Config.Idle.Fraction) * Config.Economy.IncomeBase
+		* Config.GetDamageMultiplier(weaponLevel or 0) * (bonus or 1)
 end
 
 Config.Shop = {
@@ -2404,7 +2414,9 @@ Config.SinkMinutes = 600 -- 한 성장을 끝까지 올리는 데 드는 시간 
 -- 가격 곡선 보정: 실제 플레이 로그에서 중반에 골드가 남아서, 중반 구간의 값이 더 가파르게 오르게 한다 (보상은 그대로).
 --   원칙: 각 성장은 "자기 레벨(진행도)"만 본다. 무기 강화 = 무기 단계, 장비 / 스킬 / 펫 / 세트 / 훈련 = 각자의 진행도. 서로 연결하지 않는다.
 --   진행도(최대의 비율 x 1089 로 환산)가 175 이하 = x1 (1~3존은 빠르게) -> 215 = x5 (존 4 입구 첫 벽) -> 300 = x3 -> 400 = x2.5 -> 700 = x2.2 -> 끝 = x1.5
---   (이 함수는 무기 강화비와 함께 장비 / 스킬 / 펫 / 세트 / 훈련 가격표의 기준 수입(RefIncome)에도 쓰인다: 곡선을 바꾸면 그 성장들의 가격도 같이 움직인다)
+--   (11-15 분리) 이 함수는 이제 **무기 강화비 전용**이다. 장비 / 스킬 / 펫 / 세트 / 훈련 가격표의 기준 수입(RefIncome)은
+--   아래 PriceMultRef(옛 곡선)를 쓴다: 떡벽은 무기 강화 속도를 조절하는 장치이고, 다른 성장의 가격까지 같이 움직이면
+--   오프라인 상향과 겹쳐 중반 성장이 두 번 빨라진다. (곡선을 바꾸면 무기 강화비만 움직인다)
 function Config.PriceMult(level)
 	local maxLevel = Config.Weapon.MaxLevel
 	local function lerp(a, b, t) return a + (b - a) * math.clamp(t, 0, 1) end
@@ -2418,9 +2430,21 @@ function Config.PriceMult(level)
 	return lerp(2.2, 1.5, (level - 700) / math.max(1, maxLevel - 700))
 end
 
+-- 기준 수입(RefIncome) 전용 곡선: 11-15 이전의 옛 곡선 그대로 (진행도 60 이하 = x1 -> 200 = x5 -> 700 = x3 -> 끝 = x1)
+--   (장비 / 스킬 / 펫 / 세트 / 훈련 가격표가 이 곡선을 쓴다 -> 그 성장들의 가격은 11-15 이전 값 그대로 유지된다.
+--    무기 강화비만 위 PriceMult 보수안을 따라 첫 벽이 존 4 입구로 이동한다. 두 곡선을 섞지 않는다.)
+function Config.PriceMultRef(level)
+	local maxLevel = Config.Weapon.MaxLevel
+	local function lerp(a, b, t) return a + (b - a) * math.clamp(t, 0, 1) end
+	if level <= 60 then return 1 end
+	if level <= 200 then return lerp(1, 5, (level - 60) / 140) end
+	if level <= 700 then return lerp(5, 3, (level - 200) / 500) end
+	return lerp(3, 1, (level - 700) / math.max(1, maxLevel - 700))
+end
+
 function Config.RefIncome(f)
 	local level = math.floor(math.clamp(f, 0, 1) * Config.Weapon.MaxLevel)
-	return Config.Economy.IncomeBase * Config.GetDamageMultiplier(level) * Config.PriceMult(level) -- (장비 / 스킬 / 펫 / 세트 / 훈련 가격표가 이 값을 쓴다)
+	return Config.Economy.IncomeBase * Config.GetDamageMultiplier(level) * Config.PriceMultRef(level) -- (장비 / 스킬 / 펫 / 세트 / 훈련 가격표가 이 값을 쓴다: 무기 강화비 곡선과 분리)
 end
 
 local function progressive(f)
