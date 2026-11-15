@@ -68,9 +68,17 @@ rounded(objective)
 RunService.Heartbeat:Connect(function()
 	objective.Position = missionPos(0)
 	-- 장비 뽑기 / 합성 카드 연출 중에는 미션 안내를 숨긴다 (연출 위에 떠서 카드를 가렸다)
+	--   * 내가 꺼 둔 것만 되돌린다: 오프닝처럼 다른 스크립트가 끈 화면을 매 프레임 다시 켜면 안 된다
 	local reveal = gui.Parent and gui.Parent:FindFirstChild("GachaRevealGui")
 	local showing = reveal ~= nil and reveal:FindFirstChild("GachaReveal") ~= nil
-	if gui.Enabled == showing then gui.Enabled = not showing end
+	local hiddenHere = gui:GetAttribute("HiddenForReveal") == true
+	if showing and not hiddenHere then
+		gui:SetAttribute("HiddenForReveal", true)
+		gui.Enabled = false
+	elseif not showing and hiddenHere then
+		gui:SetAttribute("HiddenForReveal", nil)
+		gui.Enabled = true
+	end
 end)
 local stroke = create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5 }, objective)
 local titleLabel = label({
