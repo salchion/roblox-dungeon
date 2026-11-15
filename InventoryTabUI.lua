@@ -637,7 +637,9 @@ local function buildInventoryTab(state)
 				rounded(equipBtn, 17)
 				local function hover(on)
 					stroke.Color = on and Color3.new(1, 1, 1) or (best and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(58, 60, 86))
-					if on then
+					if not on then
+						head.Text = "Hover to compare · ⚡ = power change (set bonus + set effect counted)"
+					else
 						head.Text = string.format("⚡ %d → <font color='#%s'><b>%d</b></font>  ·  Now: <font color='#cfd6f0'>%s</font>", power, good and "78ff8c" or "ff8c8c", math.floor(power * (1 + r.Gain) + 0.5), nowText)
 					end
 				end
