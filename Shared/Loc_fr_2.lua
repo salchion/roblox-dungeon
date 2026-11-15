@@ -903,6 +903,7 @@ return {
 		["Enter from town"] = "Entrer depuis la ville",
 		["💨 Evolved: Gale Dash"] = "💨 Évolution : Ruée tempête",
 		["⚡ Evolved: Awakening"] = "⚡ Évolution : Éveil",
+		["💥 BROKEN"] = "💥 BRISÉ",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1055,6 +1056,5 @@ return {
 		{ "Shot_Pistol  <font color='#{number1}aa{number2}c{number3}'>Rifle shot</font>", "Tir au pistolet <font color='#{number1}aa{number2}c{number3}'> Tir de fusil </font>" },
 		{ "Reach weapon upgrade level {number1} (about the {number2}th weapon)", "Atteindre le niveau d'amélioration d'arme {number1} (environ la {number2}ème arme)" },
 		{ "⚠ Monster overrun! Thin them out within {number1}s!  ({number2} / {number3})", "⚠ Invasion de monstres ! Éclaircissez-les en {number1} s ! ({number2} / {number3})" },
-		{ "🏆 You defeated the Final Lord!  +{number1} gold  +{number2} tickets", "🏆 Vous avez vaincu le Seigneur final !  +{number1} or  +{number2} tickets" },
 	},
 }

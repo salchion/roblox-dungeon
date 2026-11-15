@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🏆 You defeated the Final Lord!  +{number1} gold  +{number2} tickets", "🏆 Vous avez vaincu le Seigneur final !  +{number1} or  +{number2} tickets" },
 		{ "⭐ New record! Depth {number1} cleared. Depth {number2} is unlocked.", "⭐ Nouveau record ! Profondeur {number1} terminée. La profondeur {number2} est débloquée." },
 		{ "💢 Boss #{number1} is AWAKENED — it attacks twice in a row!", "💢 Le boss n°{number1} est ÉVEILLÉ — il attaque deux fois de suite !" },
 		{ "🌪 Mob hunter  ·  ✔ 🔫 Railgun / Sniper Rifle (+{number1}%)", "🌪 Chasseur de monstres · ✔ 🔫 Canon ferroviaire / Fusil de sniper (+{number1}%)" },

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ [Common] 🌲 Forest Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 🌲 森のレザーキャップが自動回収される（エッセンス +{number1} {number2} G）" },
 		{ "The final blast also explodes around every target (attack x{number1})", "最後の爆発が全ての標的の周囲でも起きる（攻撃力x{number1}）" },
 		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 🌾 草原で履かれた靴が自動回収される（エッセンス +{number1} {number2} G）" },
 		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 レベル{number1}の突破が完了しました！さらに成長できます。" },

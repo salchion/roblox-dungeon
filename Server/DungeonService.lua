@@ -14,6 +14,7 @@ local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local BL = require(script.Parent:WaitForChild("BalanceLog")) -- Studio 전용 밸런스 로그
 local Meter = require(script.Parent:WaitForChild("DamageMeter")) -- 대미지 미터기 (총 / 세트 효과별)
 local Effects = require(script.Parent:WaitForChild("Effects"))
+local Break = require(script.Parent:WaitForChild("BreakService"))
 local Party = require(script.Parent:WaitForChild("PartyService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Advice = require(script.Parent:WaitForChild("AdviceService"))
@@ -1233,6 +1234,7 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 		amount = math.floor(amount * 3)
 		isCrit = true
 	end
+	amount = math.floor(amount * Break.Mult(data)) -- (그로기 중 x1.3)
 	if run.Dealt then -- 보스러쉬: 준 피해 합계 (남은 체력을 넘는 만큼은 세지 않는다)
 		run.Dealt[player] = (run.Dealt[player] or 0) + math.min(amount, math.max(data.Health, 0))
 	end
@@ -1417,7 +1419,7 @@ local function stepRun(run, dt)
 				end
 
 				-- 보스러쉬: 보스가 여러 마리 쌓여도 동시에 패턴을 쓰는 보스는 최대 3마리 (화면이 탄으로 덮이지 않게 + 서버 부담)
-				if not data.Casting and now >= data.NextPattern and (not run.RiftMode or (run.RushCasting or 0) < 3) then
+				if not data.Casting and now >= data.NextPattern and not Break.IsBroken(data) and (not run.RiftMode or (run.RushCasting or 0) < 3) then
 					data.Casting = true
 					if run.RiftMode then run.RushCasting = (run.RushCasting or 0) + 1 end
 					local name = pickBossPattern(run, data)
@@ -2475,6 +2477,7 @@ function Dungeon.Shoot(player, origin, direction)
 				player:SetAttribute("WeakHitTick", (player:GetAttribute("WeakHitTick") or 0) + 1)
 				Effects.Burst(data.WeakPart.Position, Color3.fromRGB(255, 235, 80), 24)
 				Effects.ExposeBoss(part, data, Config.WeakExposeSeconds)
+				Break.WeakHit(part, data) -- (보스 그로기 게이지)
 			end
 		end
 		damageMonster(run, player, part, data, damage, isCrit, hitPosition)

@@ -330,6 +330,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/BreakService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "BreakService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/FieldPartyShare.lua",
       "parent": "ServerScriptService/Modules",
       "name": "FieldPartyShare",

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Skill Cooldown Reduction -{number1}%", "技能冷却缩减 -{number1}%" },
 		{ "Lv.{number1} now · gold levels maxed", "当前 Lv.{number1} · 金币等级已满" },
 		{ "🗼 New tower record: floor {number1}!", "🗼 塔新纪录：第{number1}层！" },
 		{ "⚔ Spell Tome · Rusty Era +{number1}", "⚔ 魔法书 · 锈蚀时代 +{number1}" },

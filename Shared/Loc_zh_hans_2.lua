@@ -780,6 +780,7 @@ return {
 		["Enter from town"] = "在城镇进入",
 		["💨 Evolved: Gale Dash"] = "💨 进化：疾风冲刺",
 		["⚡ Evolved: Awakening"] = "⚡ 进化：觉醒",
+		["💥 BROKEN"] = "💥 破防",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1116,6 +1117,5 @@ return {
 		{ "Gives back {number1} gauge after use", "使用后返还{number1}点能量" },
 		{ "🏆 Zone {number1} First Clear Reward!", "🏆 {number1}区域 首通奖励！" },
 		{ "Skill Cooldown Reduction +{number1}%", "技能冷却缩减 +{number1}%" },
-		{ "Skill Cooldown Reduction -{number1}%", "技能冷却缩减 -{number1}%" },
 	},
 }

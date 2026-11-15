@@ -20,6 +20,7 @@ local CollectionService = game:GetService("CollectionService")
 local TweenService = game:GetService("TweenService")
 local Debris = game:GetService("Debris")
 local Effects = require(script.Parent:WaitForChild("Effects"))
+local Break = require(script.Parent:WaitForChild("BreakService"))
 local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
 local Keys = require(script.Parent:WaitForChild("KeyService"))
 local Aug = require(script.Parent:WaitForChild("AugService"))
@@ -1590,6 +1591,7 @@ function Field.HitPart(player, part, damage)
 	if not data or not part.Parent then return false end
 	if not canHitZone(player, part.Position.X) then return false end
 	if data.ExposedUntil and os.clock() < data.ExposedUntil then damage = math.floor(damage * 3) end -- 약점 노출 중 x3
+	damage = math.floor(damage * Break.Mult(data))
 	if data.Filler then damage = math.floor(damage * 2.6) end -- 스킬 / 데드아이 / 관통은 채움 몬스터에게 크게 박힌다 (체력 x2.5 를 넘는 보정: 스킬이 터질 때 몰려 있던 몬스터가 확 쓸려 나간다)
 	if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then damage = damage * (player:GetAttribute("TutorialRetryBuff") and 10 or 5) end
 	local shooterRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
@@ -1634,6 +1636,7 @@ function Field.AreaDamage(player, center, radius, damage)
 			table.insert(positions, target.Part.Position)
 			if data.Invincible then damage = 1 end
 			if data.ExposedUntil and os.clock() < data.ExposedUntil then damage = math.floor(damage * 3) end -- 약점 노출 중 x3
+			damage = math.floor(damage * Break.Mult(data))
 			if data.IntroUntil and os.clock() < data.IntroUntil then damage = 0 end -- 군주 등장 포효 중에는 피해 없음
 			local dealt = math.floor(damage * Dungeon.MarkMult(player, data)) -- 펫 사냥 표식
 			data.Health -= dealt
@@ -1722,12 +1725,14 @@ function Field.Shoot(player, origin, direction)
 				player:SetAttribute("WeakHitTick", (player:GetAttribute("WeakHitTick") or 0) + 1)
 				Effects.Burst(data.WeakPart.Position, Color3.fromRGB(255, 235, 80), 24)
 				Effects.ExposeBoss(result.Instance, data, Config.WeakExposeSeconds)
+				Break.WeakHit(result.Instance, data) -- (보스 그로기 게이지)
 			end
 		end
 		if data.ExposedUntil and os.clock() < data.ExposedUntil then
 			damage = math.floor(damage * 3)
 			isCrit = true
 		end
+		damage = math.floor(damage * Break.Mult(data)) -- (그로기 중 x1.3)
 		-- 첫 구역 군주는 튜토리얼 중에는 훨씬 약하게 (군주를 쓰러뜨려야 다음 장면이 이어진다)
 		if data.Kind == "Boss" and data.Zone == 1 and player:GetAttribute("TutorialDoom") then
 			damage = damage * (player:GetAttribute("TutorialRetryBuff") and 10 or 5) -- 쓰러졌다 다시 도전하면 일회성 힘 (x10)

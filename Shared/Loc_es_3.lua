@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 Golden Goblin defeated! +{number1} G, 3 loot drops!", "💰 ¡Goblin dorado derrotado! +{number1} G, ¡3 botines soltados!" },
 		{ "+1 set-effect option: Legendary {number1}% / Mythic {number2}%", "Opción efecto de conjunto +1: Legendario {number1}% / Mítico {number2}%" },
 		{ "Enemies swarm in more often\nGold +{number1}% instead", "Los enemigos atacan con más frecuencia\nOro +{number1}% en su lugar" },
 		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 Se limpió automáticamente {number1} equipo más débil (Esencia +{number2}, {number3} G)" },

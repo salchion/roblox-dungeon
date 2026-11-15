@@ -11,7 +11,7 @@ local P = {}
 local ctx
 local function worldFolder() return ctx.GetWorldFolder() end
 
-local function alive(part, data) return ctx.Monsters[part] == data end
+local function alive(part, data) return ctx.Monsters[part] == data and not (data.BrokenUntil and os.clock() < data.BrokenUntil) end -- (그로기 중이면 하던 패턴도 멈춘다)
 
 -- 맞았다는 걸 분명히: 머리 위에 💥 글자 + 화면 흔들림 (피해가 들어오는지 모르겠다는 의견)
 local function hitFeedback(entry, damage)

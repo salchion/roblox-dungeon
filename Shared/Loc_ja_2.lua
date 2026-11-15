@@ -1027,6 +1027,7 @@ return {
 		["Enter from town"] = "町から入場",
 		["💨 Evolved: Gale Dash"] = "💨 進化: 疾風ダッシュ",
 		["⚡ Evolved: Awakening"] = "⚡ 進化: 覚醒",
+		["💥 BROKEN"] = "💥 ブレイク",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1123,6 +1124,5 @@ return {
 		{ "♻ [Rare] 🌾 Meadow Leather Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [レア] 🌾 草原のレザーグローブが自動回収される（エッセンス +{number1} {number2} G）" },
 		{ "♻ [Common] 🌾 Meadow Cloth Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 🌾 草原の布の手袋が自動回収される（エッセンス +{number1} {number2} G）" },
 		{ "Powerhouse   Title 『Powerhouse』\nReach {number1} Power\n{number2} / {number3}   Reward: {number4} G", "パワハウス・タイトル『パワハウス』\n{number1}パワーに到達する\n{number2} / {number3}　報酬：{number4}G" },
-		{ "♻ [Common] 🌲 Forest Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 🌲 森のレザーキャップが自動回収される（エッセンス +{number1} {number2} G）" },
 	},
 }

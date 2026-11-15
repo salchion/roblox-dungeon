@@ -411,6 +411,8 @@ Config.Evolve = {
 	AwakenSeconds = 4,
 	AwakenMult = 1.25,
 }
+-- 보스 그로기(브레이크): 약점 명중 Need 점이면 Seconds 동안 정지 + 받는 피해 x DamageMult. 초당 RatePerSec 점까지만, 안 맞히면 Decay 점/초 감소
+Config.Break = { Enabled = true, Need = 4, Seconds = 3.5, DamageMult = 1.3, RatePerSec = 2, Decay = 0.2 }
 -- 던전 드래프트 (하스스톤 투기장식): 입장 직후 Rounds 번 3택으로 내 덱을 만들고, 전투 중 보너스 때마다 덱 순서대로 자동 발동 (전투 중 팝업 없음)
 --   라운드마다 RoundSeconds 안에 안 고르면 첫 장, 전체 마감이 지나면 남은 칸은 자동으로 채우고 시작 (파티 AFK 가 판을 붙잡지 않게)
 Config.Dungeon.Draft = { Enabled = true, Rounds = 8, RoundSeconds = 4 } -- (전체 마감 = Rounds x RoundSeconds + 2초: 코드에서 계산)
