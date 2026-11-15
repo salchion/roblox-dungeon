@@ -168,7 +168,7 @@ local function onCharacterAdded(player, character)
 		local regen = character:WaitForChild("Health", 5)
 		if regen and regen:IsA("Script") then regen:Destroy() end
 	end)
-	Tutorial.EarlyFreeze(player, character) -- 튜토리얼 상태가 로드되기 전까지 움직이지 못하게 (처음 접속 시)
+	-- (예전에는 Tutorial.EarlyFreeze 로 데이터를 불러오는 동안 몸을 잠갔다: 시작이 멈춘 것처럼 느껴져서 없앤다. 화면에는 "불러오는 중" 표시가 뜬다)
 	do -- 마을에서 시작할 때는 항상 시작 언덕(lobby.SpawnCFrame)에서: 로블록스가 스폰 패드가 만들어지기 전에 캐릭터를 월드 중앙(0,3,0)에 세워 버리는 경우가 있어서 직접 옮긴다 (다른 곳이 되돌리는 경우를 막으려고 1.5초 동안 몇 번 더 확인한다)
 		local isStudio = game:GetService("RunService"):IsStudio()
 		task.spawn(function()

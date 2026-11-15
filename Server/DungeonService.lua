@@ -3807,16 +3807,6 @@ function Dungeon.Sweep(player)
 	task.delay(1, function() sweepBusy[player] = nil end)
 end
 
-function Dungeon.OpenSelect(player)
-	if player:GetAttribute("Zone") ~= "Lobby" then return end
-	local party = Party.GetParty(player)
-	if party and party.Leader ~= player then
-		notify(player, "Only the party leader can start a dungeon.")
-		return
-	end
-	Remotes.Dungeon:FireClient(player, "OpenSelect")
-end
-
 Remotes.Dungeon.OnServerEvent:Connect(function(player, action, typeKey, depth)
 	if action == "StartDepth" then -- 깊이 창에서 입장 (옛 "Start" 는 입장구 레벨 검사를 건너뛸 수 있어서 없앴다)
 		Dungeon.StartDepth(player, typeKey, depth)

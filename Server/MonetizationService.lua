@@ -378,6 +378,11 @@ MarketplaceService.ProcessReceipt = function(info)
 
 	local receiptKey = tostring(info.PurchaseId)
 	if state.Receipts[receiptKey] then
+		-- 이미 지급한 영수증: 지급이 저장까지 끝났는지 한 번 더 확인한다.
+		--   (첫 시도에서 지급 후 저장이 실패해 NotProcessedYet 을 돌려줬다면, 이 재시도에서 저장 없이 "완료"만 찍혀 재접속 시 구매가 사라질 수 있었다)
+		if Monetization.SaveHook and not Monetization.SaveHook(player) then
+			return Enum.ProductPurchaseDecision.NotProcessedYet
+		end
 		return Enum.ProductPurchaseDecision.PurchaseGranted
 	end
 

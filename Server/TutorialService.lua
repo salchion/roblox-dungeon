@@ -210,24 +210,6 @@ function Tutorial.Load(player, saved)
 	end)
 end
 
--- 데이터를 불러오는 동안(튜토리얼 상태를 알기 전)에는 몸을 고정해 둔다. Load 가 끝나면 필요 없는 사람은 풀린다.
-function Tutorial.EarlyFreeze(player, character)
-	do return end -- 정보를 불러오는 동안 몸을 묶어 두면 시작이 멈춘 것처럼 느껴져서 더 이상 고정하지 않는다 (화면에는 "불러오는 중" 표시가 뜬다)
-	if states[player] then return end
-	local root = character:WaitForChild("HumanoidRootPart", 10)
-	if root and not states[player] then
-		root.Anchored = true
-		player:SetAttribute("TutorialFrozen", true)
-	end
-	task.delay(25, function() -- 안전장치: 끝내 못 불러오면 풀어준다
-		if player.Parent and not states[player] and player:GetAttribute("TutorialFrozen") then
-			local r = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-			if r then r.Anchored = false end
-			player:SetAttribute("TutorialFrozen", false)
-		end
-	end)
-end
-
 -- 운영자 테스트용: 튜토리얼 진행만 처음으로 되돌린다 (레벨 / 장비 / 골드는 그대로)
 function Tutorial.Restart(player)
 	local state = states[player]

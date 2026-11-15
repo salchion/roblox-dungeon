@@ -26,6 +26,16 @@ local playerGui = player:WaitForChild("PlayerGui")
 local INTRO_SOUND_ID = 132046898251409 -- 오프닝 음악 (로블록스 오디오 에셋 ID). 0 으로 바꾸면 이 음악은 끈다
 local shownThisSession = false
 local hiddenGuis = {} -- 오프닝 동안 잠깐 끈 화면들 (끝나거나 오류가 나면 이것만 다시 켠다)
+local hiddenSet = {} -- (같은 화면을 매 프레임 다시 넣지 않게: 예전에는 가드가 프레임마다 중복으로 쌓았다)
+
+-- 오프닝 동안 화면 하나를 끈다 (처음 끈 화면만 목록에 넣는다: 복구할 때 한 번씩만 켜면 된다)
+local function hideGui(other)
+	if not hiddenSet[other] then
+		hiddenSet[other] = true
+		hiddenGuis[#hiddenGuis + 1] = other
+	end
+	other.Enabled = false
+end
 
 local function isNewPlayer()
 	return (player:GetAttribute("Level") or 1) <= 1 and (player:GetAttribute("XP") or 0) == 0
@@ -304,8 +314,7 @@ local function play()
 	-- 다른 화면 잠깐 끄기 (끝나면 원래 켜져 있던 것만 복구)
 	for _, other in ipairs(playerGui:GetChildren()) do
 		if other:IsA("ScreenGui") and other ~= gui and other.Enabled then
-			hiddenGuis[#hiddenGuis + 1] = other
-			other.Enabled = false
+			hideGui(other)
 		end
 	end
 
@@ -313,8 +322,7 @@ local function play()
 	local guardConnection = RunService.Heartbeat:Connect(function()
 		for _, other in ipairs(playerGui:GetChildren()) do
 			if other:IsA("ScreenGui") and other ~= gui and other.Enabled then
-				hiddenGuis[#hiddenGuis + 1] = other
-				other.Enabled = false
+				hideGui(other)
 			end
 		end
 	end)
@@ -406,6 +414,7 @@ local function play()
 			if other.Parent then other.Enabled = true end
 		end
 		table.clear(hiddenGuis)
+		table.clear(hiddenSet)
 		player:SetAttribute("IntroPlaying", nil)
 		props:Destroy()
 		TweenService:Create(veil, TweenInfo.new(0.01), { BackgroundTransparency = 1 }):Play()
@@ -1085,5 +1094,6 @@ task.spawn(function()
 			if other.Parent then other.Enabled = true end
 		end
 		table.clear(hiddenGuis)
+		table.clear(hiddenSet)
 	end
 end)

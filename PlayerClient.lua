@@ -1143,7 +1143,6 @@ makeButton({
 end)
 
 local dungeonState = nil
-local openDungeonSelect
 
 local tracks = {}
 local playlists = {}
@@ -1481,8 +1480,6 @@ Remotes.Dungeon.OnClientEvent:Connect(function(action, data)
 		updateMusic()
 	elseif action == "Result" then
 		showResult(data)
-	elseif action == "OpenSelect" then
-		openDungeonSelect()
 	end
 end)
 
@@ -2939,120 +2936,13 @@ player.AttributeChanged:Connect(function(name)
 end)
 
 end -- (지역 변수 범위 블록 끝)
-local refreshSelect
-local selectedType = "Cave"
-local selectedDifficulty = "Normal"
-
-local selectPanel = makePanel({
-	Size = UDim2.new(0, 890, 0, 500),
-	AnchorPoint = Vector2.new(0.5, 0.5),
-	Position = UDim2.new(0.5, 0, 0.5, 0),
-	Visible = false,
-}, gui)
-
-makeLabel({
-	Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8),
-	Text = "⚔ Select Dungeon", Font = Enum.Font.GothamBlack, TextSize = 20,
-}, selectPanel)
-
-do -- (이 구역의 지역 변수는 아래에서 쓰지 않는다: 맨 바깥 지역 변수 200개 한도 여유를 만들려고 블록으로 감쌌다)
-local typeCards = {}
-for index, key in ipairs(Config.Dungeon.Types.Order) do
-	local info = Config.Dungeon.Types[key]
-	local card = makeButton({
-		Size = UDim2.new(0, 200, 0, 170), Position = UDim2.new(0, 14 + (index - 1) * 212, 0, 54),
-		Text = "", BackgroundColor3 = Color3.fromRGB(40, 40, 58), AutoButtonColor = true,
-	}, selectPanel, function()
-		selectedType = key
-		refreshSelect()
-	end)
-	create("UIStroke", { Color = info.Torch, Thickness = 0, Name = "Stroke" }, card)
-	makeLabel({
-		Size = UDim2.new(1, -16, 1, -12), Position = UDim2.new(0, 8, 0, 6), RichText = true,
-		Text = string.format("<font size='17'><b>%s</b></font>\n\n<font color='#bbbbcc' size='11'>%s</font>\n\n%s\nRecommended Power %d",
-			info.Name, info.Desc, string.format("Survive %ds + Boss", Config.Dungeon.GetSurviveSeconds(info.Waves)), info.RecommendedPower),
-		TextSize = 13, TextYAlignment = Enum.TextYAlignment.Top,
-	}, card)
-	typeCards[key] = card
-end
-
-makeLabel({
-	Size = UDim2.new(1, -28, 0, 22), Position = UDim2.new(0, 14, 0, 236),
-	Text = "Difficulty", Font = Enum.Font.GothamBold, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left,
-}, selectPanel)
-
-local difficultyButtons = {}
-for index, key in ipairs(Config.Dungeon.Difficulties.Order) do
-	local info = Config.Dungeon.Difficulties[key]
-	difficultyButtons[key] = makeButton({
-		Size = UDim2.new(0, 200, 0, 40), Position = UDim2.new(0, 14 + (index - 1) * 212, 0, 262),
-		Text = string.format("%s  %s", info.Name, Config.Keys.TierIcons[info.KeyTier or 1]), TextSize = 15, BackgroundColor3 = GRAY,
-	}, selectPanel, function()
-		selectedDifficulty = key
-		refreshSelect()
-	end)
-end
-
-makeButton({ Size = UDim2.new(0, 150, 0, 28), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 234), Text = "📊 Chest Odds", TextSize = 13, BackgroundColor3 = Color3.fromRGB(60, 72, 130) }, selectPanel, function()
-	player:SetAttribute("OddsKind", "Chest") -- 보스 상자 확률 (유료 랜덤 아이템 정책: 열쇠로 들어가는 던전의 상자)
-	player:SetAttribute("OddsOpen", os.clock())
-end)
-
-local summaryLabel = makeLabel({
-	Size = UDim2.new(1, -28, 0, 110), Position = UDim2.new(0, 14, 0, 314), RichText = true,
-	TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
-}, selectPanel)
-
-function refreshSelect()
-	for key, card in pairs(typeCards) do
-		card.Stroke.Thickness = key == selectedType and 3 or 0
-	end
-	for key, button in pairs(difficultyButtons) do
-		local info = Config.Dungeon.Difficulties[key]
-		button.BackgroundColor3 = key == selectedDifficulty and info.Color:Lerp(Color3.fromRGB(30, 30, 40), 0.35) or GRAY
-	end
-
-	local dungeonType = Config.Dungeon.Types[selectedType]
-	local difficulty = Config.Dungeon.Difficulties[selectedDifficulty]
-	summaryLabel.Text = string.format(
-		"<b>%s · %s</b>\n%s → Boss <font color='#ff9a9a'>%s</font>\nRecommended Power <font color='#ffe16e'>%d</font>  (Your Power %d)\nGold x%.1f · Tickets %d · Boss chest gear %d\n🎟 Free entries today <b>%d / %d</b> · After that you need <b>🔑 %d Key(s)</b> (you have %d)\n🔑 Keys are dropped by field zone lords (more and more often in later zones). Easy 1 · Normal 2 · Hard 3",
-		dungeonType.Name, difficulty.Name, string.format("Survive %ds", Config.Dungeon.GetSurviveSeconds(dungeonType.Waves)), dungeonType.Boss.Name,
-		Config.DungeonPower(dungeonType, difficulty), player:GetAttribute("Power") or 0,
-		dungeonType.GoldMult * difficulty.GoldMult, difficulty.Tickets, Config.Loot.DungeonChestCount,
-		player:GetAttribute("DungeonFree") or 0, Config.Keys.FreeDaily, difficulty.KeyCost,
-		player:GetAttribute("Keys") or 0
-	)
-end
-
-makeButton({
-	Size = UDim2.new(0, 280, 0, 46), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 14, 1, -14),
-	Text = "Enter", TextSize = 17, BackgroundColor3 = GREEN,
-}, selectPanel, function()
-	selectPanel.Visible = false
-	Remotes.Dungeon:FireServer("Start", selectedType, selectedDifficulty)
-end)
-
-makeButton({
-	Size = UDim2.new(0, 280, 0, 46), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -14, 1, -14),
-	Text = "Close", TextSize = 17, BackgroundColor3 = GRAY,
-}, selectPanel, function()
-	selectPanel.Visible = false
-end)
-
-openDungeonSelect = function()
-	refreshSelect()
-	selectPanel.Visible = true
-end
-
+-- (예전 "Select Dungeon" 패널은 없앴다: 던전 입장은 DungeonDepthClient 의 깊이 창이 맡고, 서버도 StartDepth 만 받는다.
+--  여기에는 그 패널이 남긴 동작 하나만 남긴다: 구역이 바뀌면 겨냥을 풀고 커서를 되살린다)
 player:GetAttributeChangedSignal("Zone"):Connect(function()
-	if currentZone() == "Dungeon" then
-		selectPanel.Visible = false
-	end
 	lockTarget = nil
 	updateLockVisual()
 end)
 
-end -- (지역 변수 범위 블록 끝)
 local warpPanel = makePanel({
 	Size = UDim2.new(0, 440, 0, 520),
 	AnchorPoint = Vector2.new(0.5, 0.5),
@@ -3524,7 +3414,7 @@ end
 local otherModalOpen, otherModalUntil = false, 0
 RunService.RenderStepped:Connect(function(dt)
 	local helpOpen = gui:FindFirstChild("HelpPanel")
-	local modalOpen = menuPanel.Visible or enhancePanel.Visible or gearPanel.Visible or selectPanel.Visible or warpPanel.Visible or (helpOpen ~= nil and helpOpen.Visible) -- (설정 창도 큰 창: 아래 HUD 가 비쳐 보이지 않게)
+	local modalOpen = menuPanel.Visible or enhancePanel.Visible or gearPanel.Visible or warpPanel.Visible or (helpOpen ~= nil and helpOpen.Visible) -- (설정 창도 큰 창: 아래 HUD 가 비쳐 보이지 않게)
 	if not modalOpen and os.clock() < otherModalUntil then
 		modalOpen = otherModalOpen -- (다른 창 훑기는 0.2초에 한 번: 매 프레임 창 9개의 자식을 훑던 것)
 	elseif not modalOpen then
