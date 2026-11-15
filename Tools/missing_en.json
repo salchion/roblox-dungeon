@@ -2858,5 +2858,6 @@
 "🎒 Bag full: {text1} was dismantled. Essence +{number2}, {number3} G",
 "Bag full",
 "▼ Dungeon Gate  {number1}m",
-"📍 Field Entrance  ahead (east)  {number1}m"
+"📍 Field Entrance  ahead (east)  {number1}m",
+"The dungeon couldn't open. Your key / free entry was returned. Please try again."
 ]

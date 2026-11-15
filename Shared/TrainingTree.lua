@@ -9,6 +9,23 @@
 -- PlayerClient 가 BuildAll(env) 을 부른다 (PlayerClient 가 용량 / 지역 변수 한도에 가까워서 따로 뺐다).
 
 local M = {}
+-- 남은 시간 글자만 매초 바꾼다 (예전: 메뉴가 열린 채 성장 탭이면 1초마다 탭 전체를 지우고 다시 그려 0.2~0.4초 끊김)
+--   M.Live = { { Object, Fn } }: Fn() -> 새 글자, 끝났으면 (글자, true)
+M.Live = {}
+function M.Tick()
+	local finished = false
+	for _, entry in ipairs(M.Live) do
+		local obj, fn = entry[1], entry[2]
+		if obj.Parent then
+			local ok, text, done = pcall(fn)
+			if ok and text then
+				if entry[3] ~= text then entry[3] = text obj.Text = text end -- (화면 글자는 번역돼 있어 원문과 비교하면 매초 다시 넣게 된다: 마지막으로 넣은 원문과 비교)
+				if done then finished = true end
+			end
+		end
+	end
+	return finished
+end
 
 local DARK = Color3.fromRGB(20, 18, 34)
 local DIM = Color3.fromRGB(70, 66, 96)
@@ -115,9 +132,12 @@ local function canvas(env)
 		label({ Size = UDim2.new(1, 0, 1, 0), Text = locked and "🔒" or icon, TextSize = locked and 10 or 13, ZIndex = 7 }, socket)
 		label({ Size = UDim2.new(width, -46, 0, 14), Position = UDim2.new(cx, 20, 0, y - 13), Text = caption, RichText = true, TextSize = 11, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBlack, ZIndex = 5,
 			TextColor3 = locked and Color3.fromRGB(135, 131, 160) or Color3.new(1, 1, 1), TextStrokeTransparency = 0.45, TextStrokeColor3 = Color3.fromRGB(10, 8, 20) }, row)
+		local subFn = type(sub) == "function" and sub or nil
+		if subFn then sub = subFn() end
 		if sub and sub ~= "" then
-			label({ Size = UDim2.new(width, -46, 0, 11), Position = UDim2.new(cx, 20, 0, y + 1), Text = sub, RichText = true, TextSize = 9, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5,
+			local subLabel = label({ Size = UDim2.new(width, -46, 0, 11), Position = UDim2.new(cx, 20, 0, y + 1), Text = sub, RichText = true, TextSize = 9, TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5,
 				TextColor3 = state == "active" and Color3.fromRGB(255, 225, 120) or Color3.fromRGB(180, 176, 205) }, row)
+			if subFn then table.insert(M.Live, { subLabel, subFn }) end
 		end
 		if not locked then -- 아주 가는 진행 막대 (글자 아래)
 			local bar = create("Frame", { Size = UDim2.new(width * 0.5, 0, 0, 2), Position = UDim2.new(cx, 20, 0, y + 13), BackgroundColor3 = Color3.fromRGB(20, 18, 32), BorderSizePixel = 0, ZIndex = 5 }, row)
@@ -146,8 +166,11 @@ local function canvas(env)
 				BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(14, 12, 24), TextColor3 = state == "done" and Color3.fromRGB(255, 214, 110) or (level > 0 and Color3.fromRGB(150, 255, 170) or Color3.fromRGB(170, 166, 195)) }, socket)
 			create("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
 		end
+		local belowFn = type(below) == "function" and below or nil
+		if belowFn then below = belowFn() end
 		if below then
-			label({ Size = UDim2.new(0, 70, 0, 11), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(x, 0, 0, y + size / 2 + 3), Text = below, TextSize = 9, Font = Enum.Font.GothamBold, ZIndex = 7, TextColor3 = Color3.fromRGB(255, 225, 120) }, row)
+			local belowLabel = label({ Size = UDim2.new(0, 70, 0, 11), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(x, 0, 0, y + size / 2 + 3), Text = below, TextSize = 9, Font = Enum.Font.GothamBold, ZIndex = 7, TextColor3 = Color3.fromRGB(255, 225, 120) }, row)
+			if belowFn then table.insert(M.Live, { belowLabel, belowFn }) end
 		end
 		if state == "active" then
 			game:GetService("TweenService"):Create(ring, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Thickness = 3.2 }):Play()
@@ -217,18 +240,22 @@ local function detailRow(env, color, text, button, skillKey, tall)
 		local scroller = create("ScrollingFrame", { Size = UDim2.new(0.44, -16, 1, -52), Position = UDim2.new(0, 12, 0, 4), BackgroundTransparency = 1, BorderSizePixel = 0,
 			ScrollBarThickness = 4, ScrollBarImageColor3 = Color3.fromRGB(200, 190, 230), ScrollBarImageTransparency = 0.3, ScrollingDirection = Enum.ScrollingDirection.Y,
 			CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.Y, ElasticBehavior = Enum.ElasticBehavior.Never }, detail)
-		label({ Size = UDim2.new(1, -8, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, RichText = true, TextSize = 12, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = text }, scroller)
+		local textLabel = label({ Size = UDim2.new(1, -8, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, RichText = true, TextSize = 12, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Text = text }, scroller)
+		local firstButton
 		if button then
-			env.MakeButton({ Size = UDim2.new(0.44, -24, 0, 38), Position = UDim2.new(0, 12, 1, -44), Text = button.Text, TextSize = 12, BackgroundColor3 = button.Color }, detail, button.OnClick)
+			firstButton = env.MakeButton({ Size = UDim2.new(0.44, -24, 0, 38), Position = UDim2.new(0, 12, 1, -44), Text = button.Text, TextSize = 12, BackgroundColor3 = button.Color }, detail, button.OnClick)
 		end
 		branchCards(env, skillKey, detail)
-		return
+		return textLabel, firstButton
 	end
 	local buttons = (button and button[1]) and button or (button and { button } or {}) -- (버튼 여러 개: 특성 선택 칸 / 초기화)
-	label({ Size = UDim2.new(1, -24 - 188 * math.max(1, #buttons), 1, -12), Position = UDim2.new(0, 14, 0, 6), RichText = true, TextSize = 12, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center, Text = text }, detail)
+	local textLabel = label({ Size = UDim2.new(1, -24 - 188 * math.max(1, #buttons), 1, -12), Position = UDim2.new(0, 14, 0, 6), RichText = true, TextSize = 12, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center, Text = text }, detail)
+	local firstButton
 	for index, b in ipairs(buttons) do
-		env.MakeButton({ Size = UDim2.new(0, 180, 0, 44), Position = UDim2.new(1, -192 - (#buttons - index) * 188, 0.5, -22), Text = b.Text, TextSize = 12, BackgroundColor3 = b.Color }, detail, b.OnClick)
+		local made = env.MakeButton({ Size = UDim2.new(0, 180, 0, 44), Position = UDim2.new(1, -192 - (#buttons - index) * 188, 0.5, -22), Text = b.Text, TextSize = 12, BackgroundColor3 = b.Color }, detail, b.OnClick)
+		firstButton = firstButton or made
 	end
+	return textLabel, firstButton
 end
 
 local function pick(env, kind, key)
@@ -255,7 +282,7 @@ local function drawSkills(env, C)
 		local remaining = env.UpgradeRemaining(key)
 		local state = level >= U.MaxLevel and "done" or (remaining and "active" or "open")
 		C.node(colX("Skill", 0.5), 52 + (index - 1) * 46, cfg.Icon, skillColor(key), state, level / U.MaxLevel, string.format("<b>%s</b>", cfg.Name),
-			remaining and ("⏳ " .. Config.FormatDuration(remaining)) or string.format("%sLv.%d / %d", (not cfg.Passive and cfg.Key) and ("[" .. cfg.Key .. "] ") or "", level, U.MaxLevel), isSel("Skill", key), COLS.Skill[2] - COLS.Skill[1], pick(env, "Skill", key))
+			remaining and function() local r = env.UpgradeRemaining(key) or 0 return "⏳ " .. Config.FormatDuration(r), r <= 0 end or string.format("%sLv.%d / %d", (not cfg.Passive and cfg.Key) and ("[" .. cfg.Key .. "] ") or "", level, U.MaxLevel), isSel("Skill", key), COLS.Skill[2] - COLS.Skill[1], pick(env, "Skill", key))
 	end
 end
 
@@ -334,7 +361,7 @@ local function drawTraining(env, C)
 			local max = Config.TrainMax(stat)
 			local unlocked = Config.TrainUnlocked(stat, levels)
 			local nodeState = not unlocked and "locked" or (jobs[stat] and "active" or (level >= max and "done" or "open"))
-			C.icon(spot.X, spot.Y, def.Icon, TRAIN_COLORS[stat] or GOLD, nodeState, level, max, isSel("Train", stat), jobs[stat] and ("⏳ " .. Config.FormatDuration(env.Remaining(jobs[stat].EndAt))) or nil, pick(env, "Train", stat))
+			C.icon(spot.X, spot.Y, def.Icon, TRAIN_COLORS[stat] or GOLD, nodeState, level, max, isSel("Train", stat), jobs[stat] and function() local r = env.Remaining(jobs[stat].EndAt) return "⏳ " .. Config.FormatDuration(math.max(0, r)), r <= 0 end or nil, pick(env, "Train", stat))
 		end
 	end
 end
@@ -557,6 +584,7 @@ local function talentDetail(env, key)
 end
 
 function M.BuildAll(env)
+	M.Live = {}
 	if not selected.Key then selected.Kind, selected.Key = "Skill", env.Config.Skills.UpgradeOrder[1] end
 	local okC, C = pcall(canvas, env)
 	if not okC then warn("[TrainingTree] " .. tostring(C)) return end
@@ -572,7 +600,23 @@ function M.BuildAll(env)
 	if not ok then
 		warn("[TrainingTree] " .. tostring(color))
 	elseif color then
-		detailRow(env, color, text, button, selected.Kind == "Skill" and selected.Key or nil, selected.Kind == "Talent")
+		local textLabel, firstButton = detailRow(env, color, text, button, selected.Kind == "Skill" and selected.Key or nil, selected.Kind == "Talent")
+		-- 상세 칸의 남은 시간: 같은 함수로 글자만 다시 만든다 (버튼 종류가 바뀌는 순간(끝남)은 전체 다시 그리기)
+		local kind, key = selected.Kind, selected.Key
+		local firstText = button and (button[1] and button[1].Text or button.Text)
+		local lastButtonText = firstText
+		if textLabel and kind ~= "Talent" then
+			table.insert(M.Live, { textLabel, function()
+				local okD, _, newText, newButton = pcall(detailFn, env, key)
+				if not okD or selected.Kind ~= kind or selected.Key ~= key then return nil end
+				local newFirst = newButton and (newButton[1] and newButton[1].Text or newButton.Text)
+				if firstButton and env.InTown ~= false and newFirst and firstButton.Parent then
+					if (string.find(newFirst, "left", 1, true) ~= nil) ~= (string.find(firstText or "", "left", 1, true) ~= nil) then return newText, true end
+					if lastButtonText ~= newFirst then lastButtonText = newFirst firstButton.Text = newFirst end
+				end
+				return newText
+			end })
+		end
 	end
 end
 

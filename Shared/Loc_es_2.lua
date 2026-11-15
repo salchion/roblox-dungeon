@@ -871,6 +871,7 @@ return {
 		["✔ Best gear on. Tap a slot to swap"] = "✔ Mejor equipo puesto. Toca una ranura para cambiar",
 		["drops from field monsters and bosses"] = "cae de monstruos y jefes del campo",
 		["Bag full"] = "Bolsa llena",
+		["The dungeon couldn't open. Your key / free entry was returned. Please try again."] = "No se pudo abrir la mazmorra. Se devolvió tu llave / entrada gratis. Inténtalo de nuevo.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1054,7 +1055,5 @@ return {
 		{ "every {number1}s a meteor, radius {number2} (x1.5 on bosses)", "cada {number1} s un meteorito, radio {number2} (x1,5 contra jefes)" },
 		{ "Heals over {number1}s instead of at once · total +{number2}%", "Cura durante {number1} s en vez de al instante · total +{number2} %" },
 		{ "Spend {number1} stat points (T key / Stats button)", "Gasta {number1} puntos de estadísticas (tecla T / botón de estadísticas)" },
-		{ "▶ Next feature: Lv.{number1} 💥 Power  ({number2} lvl · ~{number3} G)", "▶ Próxima característica: Nivel {number1} 💥 Poder ({number2} nivel · ~{number3} G)" },
-		{ "✅ Mission complete! Reward: {number1} G + Tickets {number2}", "✅ ¡Misión completada! Recompensa: {number1} G + Boletos {number2}" },
 	},
 }

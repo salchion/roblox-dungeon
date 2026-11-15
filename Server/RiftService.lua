@@ -65,24 +65,27 @@ local function boardStore(week)
 	return ok and store or nil
 end
 
+local nameCount = 0
 local function nameOf(userId)
 	if nameCache[userId] then return nameCache[userId] end
+	if nameCount > 500 then nameCache, nameCount = {}, 0 end -- (세션 내내 쌓이지 않게)
 	local online = Players:GetPlayerByUserId(userId)
+	local name
 	if online then
-		nameCache[userId] = online.DisplayName
-		return nameCache[userId]
+		name = online.DisplayName
+	else
+		local ok, fetched = pcall(function() return Players:GetNameFromUserIdAsync(userId) end)
+		name = ok and fetched or ("Player" .. userId)
 	end
-	local ok, name = pcall(function() return Players:GetNameFromUserIdAsync(userId) end)
-	nameCache[userId] = ok and name or ("Player" .. userId)
-	return nameCache[userId]
+	nameCache[userId] = name
+	nameCount += 1
+	return name
 end
 
-local function loadBoard()
-	local week = thisWeek()
-	if boardCache.Week == week and os.clock() - boardCache.At < BOARD_REFRESH then
-		return boardCache
-	end
-	boardCache.Week, boardCache.At = week, os.clock() -- (실패해도 60초 동안은 다시 부르지 않는다)
+-- 순위표 읽기 / 이름 조회(웹 호출)는 따로 도는 스레드에서만 한다: 예전엔 버튼 / 포탈 처리 안에서 바로 불러 응답이 늦으면 수 초 멈췄다
+-- loadBoard() 는 언제나 바로 지금 캐시를 돌려주고, 오래됐으면 뒤에서 새로 받아 둔다 (다음 요청부터 새 순위)
+local boardLoading = false
+local function refreshBoard(week)
 	local store = boardStore(week)
 	local list, okAll = {}, false
 	if store then
@@ -100,7 +103,25 @@ local function loadBoard()
 			end
 		end
 	end
-	boardCache.List, boardCache.Ok = list, okAll
+	if boardCache.Week == week then
+		boardCache.List, boardCache.Ok = list, okAll
+	end
+end
+
+local function loadBoard()
+	local week = thisWeek()
+	if boardCache.Week == week and os.clock() - boardCache.At < BOARD_REFRESH then
+		return boardCache
+	end
+	if boardCache.Week ~= week then boardCache.List, boardCache.Ok = {}, false end
+	boardCache.Week, boardCache.At = week, os.clock() -- (실패해도 60초 동안은 다시 부르지 않는다)
+	if not boardLoading then
+		boardLoading = true
+		task.spawn(function()
+			pcall(refreshBoard, week)
+			boardLoading = false
+		end)
+	end
 	return boardCache
 end
 

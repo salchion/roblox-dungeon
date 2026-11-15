@@ -2482,7 +2482,15 @@ local function buildGrowthTab() -- (돌파 칸만: 시간 건너뛰기 / 훈련 
 				gateLevel, myLevel, Config.FormatDuration(Config.Growth.GateTime[gateIndex]), Config.Growth.GateGold[gateIndex],
 				myLevel >= gateLevel and "You can break through now!" or string.format("Reach level %d to break through", gateLevel))
 		end
-		rowText(gateRow, text, 14, 190)
+		local gateLabel = rowText(gateRow, text, 14, 190)
+		local okTree, tree = pcall(function() return require(ReplicatedStorage:FindFirstChild("TrainingTree")) end)
+		if state.GateJob and gateLabel and okTree and tree and tree.Live then -- (남은 시간은 매초 글자만 바꾼다)
+			local job = state.GateJob
+			table.insert(tree.Live, { gateLabel, function()
+				local r = growthRemaining(job.EndAt)
+				return string.format("<font size='14'><b>Level %d Breakthrough in progress</b></font>\n<font color='#ffd966'>Time left %s</font>", job.Level, Config.FormatDuration(math.max(0, r))), r <= 0
+			end })
+		end
 
 		if state.GateJob then
 			makeButton({
@@ -2884,7 +2892,9 @@ task.spawn(function()
 	while true do
 		task.wait(1)
 		if menuPanel.Visible and currentTab == "Growth" and (MENU.Sub.Growth == "Passive" or anyUpgradePending()) then
-			refreshMenu()
+			-- 남은 시간 글자만 바꾼다. 무엇이 끝났을 때만 탭 전체를 다시 그린다 (매초 전체 다시 그리기 = 0.2~0.4초 끊김)
+			local okT, tree = pcall(function() return require(ReplicatedStorage:FindFirstChild("TrainingTree")) end)
+			if not (okT and tree and tree.Tick) or tree.Tick() then refreshMenu() end
 		end
 	end
 end)

@@ -822,6 +822,7 @@ return {
 		["✔ Best gear on. Tap a slot to swap"] = "✔ Beste Ausrüstung an. Platz antippen zum Tauschen",
 		["drops from field monsters and bosses"] = "droppt von Feldmonstern & Bossen",
 		["Bag full"] = "Tasche voll",
+		["The dungeon couldn't open. Your key / free entry was returned. Please try again."] = "Der Dungeon konnte nicht geöffnet werden. Dein Schlüssel / Gratiseintritt wurde zurückgegeben. Bitte versuch es erneut.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1032,7 +1033,5 @@ return {
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ {number1} Gegenstände automatisch zerlegt (Essenz +{number2}, {number3} G)" },
 		{ "💰 Not enough gold to warp! ({number1} G needed)", "💰 Nicht genug Gold für den Warp! ({number1} G nötig)" },
 		{ "{number1} in bag · tap one to compare and equip", "{number1} in der Tasche · antippen zum Vergleichen und Anlegen" },
-		{ "Unlocks when you defeat the Zone {number1} lord", "Wird freigeschaltet, wenn du den Lord von Zone {number1} besiegst" },
-		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Mehrfache Rolle!\nVerwendet alle Tickets (max. {number1})" },
 	},
 }

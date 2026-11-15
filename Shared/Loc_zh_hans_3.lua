@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "ZONE {number1}  ·  Wasteland   ☠☠☠", "区域 {number1} · 荒地 ☠☠☠" },
 		{ "Active {number1} / {number2} slots   (💰 {number3} G)", "已激活 {number1} / {number2} 个栏位（💰 {number3} 金币）" },
 		{ "Dismantled! Essence +{number1}, {number2} G", "已分解!精华 +{number1},{number2} 金币" },
 		{ "🎯 Goal: Defeat Zone {number1} Lord", "🎯 目标:击败区域{number1}的领主" },

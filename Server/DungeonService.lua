@@ -3632,7 +3632,26 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField,
 			end
 		end,
 	}
-	buildArena(run)
+	local builtOk, buildErr = pcall(buildArena, run)
+	if not builtOk then -- 아레나를 못 지으면: 자리 / 진행 기록을 풀고 쓴 열쇠 / 무료 입장을 돌려준다 (예전: 자리가 영구히 잠겨 쌓이면 서버 재시작까지 "가득 참")
+		warn("[Dungeon] arena build failed:", buildErr)
+		usedSlots[slot] = nil
+		runs[run.Id] = nil
+		if run.Folder then pcall(function() run.Folder:Destroy() end) end
+		for _, member in ipairs(members) do
+			if useFree[member] then
+				local state = freeState(member)
+				if state then
+					state.DungeonUsed = math.max(0, (state.DungeonUsed or 0) - 1)
+					member:SetAttribute("DungeonFree", Dungeon.FreeLeft(member))
+				end
+			elseif keyCost > 0 then
+				Keys.AddTier(member, difficulty.KeyTier or 1, keyCost)
+			end
+			notify(member, "The dungeon couldn't open. Your key / free entry was returned. Please try again.")
+		end
+		return
+	end
 
 	-- 도착지(아레나)를 순간이동 "전에" 미리 내 화면으로 보내 둔다: 예전엔 도착한 뒤 땅을 받는 동안 몸이 고정되거나
 	-- (Streaming 이 주변을 다 받기 전까지 캐릭터 물리를 멈춰) 한동안 못 움직였다. 기다리는 동안은 아직 마을이라 자유롭게 움직인다 (최대 1.5초).

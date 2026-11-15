@@ -842,6 +842,7 @@ return {
 		["✔ Best gear on. Tap a slot to swap"] = "✔ Melhor equipamento. Toque num espaço para trocar",
 		["drops from field monsters and bosses"] = "cai de monstros e chefes do campo",
 		["Bag full"] = "Bolsa cheia",
+		["The dungeon couldn't open. Your key / free entry was returned. Please try again."] = "Não foi possível abrir a masmorra. Sua chave / entrada grátis foi devolvida. Tente novamente.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1044,6 +1045,5 @@ return {
 		{ "🔒 Spend {number1} points in the rows above first", "🔒 Gaste primeiro {number1} pontos nas fileiras acima" },
 		{ "Auto-equipped the best gear in {number1} slot(s)", "Melhor equipamento equipado em {number1} espaço(s)" },
 		{ "Sniper Rifle  ·  keys {number1}-{number2} switch weapons", "Fuzil de Precisão · teclas {number1}-{number2} para trocar de arma" },
-		{ "🥉 {number1}+   🥈 {number2}M+   🥇 {number3}M+   💠 {number4}M+   💎 {number5}M+   👑 {number6}M+", "🥉 {number1}+ 🥈 {number2}M+ 🥇 {number3}M+ 💠 {number4}M+ 💎 {number5}M+ 👑 {number6}M+" },
 	},
 }

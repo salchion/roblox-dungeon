@@ -131,20 +131,29 @@ function SHOP.Preview(kind, key, name)
 	local Cosmetics = require(game:GetService("ReplicatedStorage"):WaitForChild("Cosmetics"))
 	SHOP.PreviewToken = SHOP.PreviewToken + 1
 	local token = SHOP.PreviewToken
+	local wasOpen = SHOP.Panel.Visible -- (열려 있었을 때만 다시 연다: 예전엔 그 사이 닫았든 죽었든 5초 뒤 무조건 다시 열었다)
+	local zone = player:GetAttribute("Zone")
 	SHOP.Panel.Visible = false
 	Cosmetics.Clear(character, kind)
 	Cosmetics.Build(kind, key, character, true)
 	toast(string.format("👀 [%s] 5-second preview!", name))
 	task.delay(5, function()
 		if SHOP.PreviewToken ~= token then return end
-		Cosmetics.Clear(character, kind, true)
-		local equipped = player:GetAttribute(kind) or ""
-		if equipped ~= "" and Config[kind == "Aura" and "Auras" or (kind == "Banner" and "Banners" or "Mounts")][equipped] then
-			Cosmetics.Build(kind, equipped, character)
+		local now = player.Character -- (5초 사이 죽어서 새 몸이면 옛 몸은 이미 없다: 새 몸은 원래 꾸밈이 붙어 있으니 건드리지 않는다)
+		if now == character and character.Parent then
+			Cosmetics.Clear(character, kind, true)
+			local equipped = player:GetAttribute(kind) or ""
+			if equipped ~= "" and Config[kind == "Aura" and "Auras" or (kind == "Banner" and "Banners" or "Mounts")][equipped] then
+				Cosmetics.Build(kind, equipped, character)
+			end
 		end
-		SHOP.Panel.Visible = true
+		if wasOpen and now == character and player:GetAttribute("Zone") == zone then
+			SHOP.Panel.Visible = true
+		end
 	end)
 end
+-- 죽으면 진행 중인 미리보기는 끝난 것으로 (옛 몸은 사라졌다). 장소가 바뀐 경우는 꾸밈만 되돌리고 창은 안 연다 (위의 Zone 비교)
+player.CharacterAdded:Connect(function() SHOP.PreviewToken = (SHOP.PreviewToken or 0) + 1 end)
 
 -- 상품 칸: 둥근 구슬 아이콘 + 이름 한 줄. 누르면 오른쪽 상세 패널에 나온다
 function SHOP.Card(parent, order, o)

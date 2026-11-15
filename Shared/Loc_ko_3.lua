@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Transcendent   Title 『Transcendent』\nReach {number1} Power\n{number2} / {number3}   Reward: 🎫 {number4}", "초월자 타이틀 『초월자』\n{number1} 파워 달성\n{number2} / {number3} 보상: 🎫 {number4}" },
 		{ "each hit adds a burn stack (max {number1}, lasts 4s); every 0.5s per stack", "명중마다 화상 1중첩 (최대 {number1}, 4초 지속); 중첩마다 0.5초에 한 번" },
 		{ "Aug_Synergy  <font color='#{number1}aa{number2}c{number3}'>Augment synergy triggered</font>", "8월 시너지 <font color='#{number1}aa{number2}c{number3}'> 시너지 발동됨</font>" },
 		{ "✅ Railgun equipped! (Bounces to {number1} nearby enemies · Longest range)", "✅ 레일건을 장착했습니다! (주변의 {number1}명의 적에게 반사 효과를 적용합니다 · 가장 긴 사거리)" },

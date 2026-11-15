@@ -1000,6 +1000,7 @@ return {
 		["✔ Best gear on. Tap a slot to swap"] = "✔ 最強装備中。部位を押して交換",
 		["drops from field monsters and bosses"] = "フィールドのモンスターとボスから出る",
 		["Bag full"] = "バッグ満杯",
+		["The dungeon couldn't open. Your key / free entry was returned. Please try again."] = "ダンジョンを開けませんでした。鍵 / 無料入場は返却されました。もう一度お試しください。",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1104,7 +1105,5 @@ return {
 		{ "Event_Elite  <font color='#{number1}aa{number2}c{number3}'>Elite squad appears</font>", "イベント・エリート<font color='#{number1}aa{number2}c{number3}'>エリート部隊登場</font>" },
 		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [レア] 🌲 森のシルバーリングが自動回収される（エッセンス +{number1} {number2} G）" },
 		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！" },
-		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "最大{number1}ポイントで、クリティカルは2倍から約{number2}倍になります。組み合わせて" },
-		{ "Mythic gacha gear has a {number1}% chance to carry a Unique effect.", "神話ガチャ装備は{number1}%の確率でユニーク効果が付きます。" },
 	},
 }

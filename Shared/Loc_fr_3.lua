@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🌟 Paragon point +{number1}! {number2} unspent (press T → Paragon)", "🌟 Point de parangon +{number1} ! {number2} non dépensés (touche T → Parangon)" },
 		{ "💰 +{number1} G ({number2} min of your idle income) · {number3} left today", "💰 +{number1} or ({number2} min de votre revenu d'inactivité) · {number3} restant(s) aujourd'hui" },
 		{ "every {number1}s shock shots at {number2} enemies, burst radius {number3}", "toutes les {number1} s des tirs de choc sur {number2} ennemis, rayon d'explosion {number3}" },
 		{ "👑 Field Boss defeated! Tickets +{number1}, loot dropped", "👑 Boss du terrain vaincu ! Tickets +{number1}, butin lâché" },

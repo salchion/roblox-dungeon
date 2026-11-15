@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "▶ Next feature: Lv.{number1} 💥 Power  ({number2} lvl · ~{number3} G)", "▶ Próxima característica: Nivel {number1} 💥 Poder ({number2} nivel · ~{number3} G)" },
+		{ "✅ Mission complete! Reward: {number1} G + Tickets {number2}", "✅ ¡Misión completada! Recompensa: {number1} G + Boletos {number2}" },
 		{ "Rocket Launcher  ·  keys {number1}-{number2} switch weapons", "Lanzacohetes · las teclas {number1}-{number2} cambian de arma" },
 		{ "📅 {number1}-day login streak · Get stronger today!", "📅 Racha de inicio de sesión de {number1} días · ¡Hazte más fuerte hoy!" },
 		{ "Each NEAR MISS stack gives +{number1}% more attack", "Cada acumulación NEAR MISS da +{number1} % más de ataque" },

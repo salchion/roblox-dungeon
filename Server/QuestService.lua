@@ -66,7 +66,12 @@ local function statValue(player, state, stat)
 end
 
 -- 오늘의 퀘스트: 날짜를 시드로 해서 모든 플레이어가 같은 퀘스트를 받는다
+local questCache = {} -- [day|riftOpen|firstDay] = list (같은 날 / 같은 조건이면 섞기를 다시 하지 않는다: 예전엔 처치마다 2번씩 섞었다)
+local questCacheDay = nil
 local function todaysQuests(day, player)
+	local cacheKey = string.format("%d|%s|%s", day, tostring(player == nil or player:GetAttribute("HintDone_FieldClear") == true), tostring(player ~= nil and player:GetAttribute("LoginStreak") == 1))
+	if questCacheDay ~= day then questCache, questCacheDay = {}, day end
+	if questCache[cacheKey] then return questCache[cacheKey] end
 	local rng = Random.new(day)
 	local indices = {}
 	for i = 1, #Config.Quests.Pool do
@@ -93,6 +98,7 @@ local function todaysQuests(day, player)
 		local quest = Config.Quests.Pool[indices[i]]
 		if not used[quest.Id] then table.insert(list, quest) end
 	end
+	questCache[cacheKey] = list
 	return list
 end
 
@@ -179,11 +185,11 @@ local function buildPayload(player, state)
 	}
 end
 
-function Quest.Push(player)
+function Quest.Push(player, delay)
 	local state = states[player]
 	if not state or pushQueued[player] then return end
 	pushQueued[player] = true
-	task.delay(0.4, function()
+	task.delay(delay or 0.4, function()
 		pushQueued[player] = nil
 		if player.Parent and states[player] then
 			Remotes.Quest:FireClient(player, "State", buildPayload(player, states[player]))
@@ -224,7 +230,7 @@ function Quest.Add(player, stat, amount)
 			state.Progress[quest.Id] = (state.Progress[quest.Id] or 0) + amount
 		end
 	end
-	Quest.Push(player)
+	Quest.Push(player, 1.5) -- (사냥 중 처치마다 오는 진행도: 1.5초에 한 번만 보낸다. 받기 / 칭호 같은 버튼 반응은 그대로 0.4초)
 	for _, listener in ipairs(Quest.Listeners) do
 		listener(player, stat, amount)
 	end

@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "最大{number1}ポイントで、クリティカルは2倍から約{number2}倍になります。組み合わせて" },
+		{ "Mythic gacha gear has a {number1}% chance to carry a Unique effect.", "神話ガチャ装備は{number1}%の確率でユニーク効果が付きます。" },
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "{number1}分間のアイドル収入を即座に獲得（1日最大{number2}分）" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISSは{number1}秒持続 · 途切れても最低{number2}スタックは維持" },
 		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 選んだセットで引くゴールドが足りません！({number1}G必要)" },
