@@ -23,7 +23,7 @@
          8구역 군주 격파 → 최후의 군주 → 보스 러시(심연)
 ```
 
-**성장 축 10개** (서로 값이 연결돼 있지 않다 — 각자 자기 레벨로만 값이 정해진다)
+**성장 축 10개 + 전투 진화 1개** (서로 값이 연결돼 있지 않다 — 각자 자기 레벨로만 값이 정해진다)
 
 | # | 성장 | 최대 | 올리는 방법 | 시간 병목 | 값 |
 |---|---|---|---|---|---|
@@ -37,6 +37,7 @@
 | 8 | 특성(탈렌트) 3길 | 20점 (레벨 5마다 1점) | 레벨 | — | 골드 초기화 |
 | 9 | 펫 | Lv.15 | 골드 + **시간** | 있음 | 골드 |
 | 10 | 레벨 스탯 / 패러건 | 200레벨까지 포인트, 400 이후 패러건 400점 | 레벨 / 경험치 | — | 무료 재배분 |
+| 11 | 전투 진화 (내 손끝) | 2단계 (질풍 대시 / 각성) | 무기 시대가 오르면 자동 | — | — |
 
 ---
 
@@ -128,6 +129,20 @@
 - 골드로 기능 해금 후 Lv.15까지 레벨업(골드 3,000 × 1.45^Lv). 기능: 동행(이동+1) / 경험치 +5% / 공격 +4% / 자동 줍기 50→100 / 치명 +4% / 수호(체력 25% 이하 3초 무적) / 공속 +10% / 사냥 표식(4초마다 +25%) / 대각성(골드 +10%, 쿨감 +10%).
 - 외형 9종은 꾸미기: 처음 / 구역 1·2·3·4·7 군주 / 업적 칭호(던전 10회 · 보스 10회 · 8구역).
 
+### 4.9 전투 진화 (무기 시대가 오르면 손끝이 바뀐다)
+- 게이트는 **무기 시대(Era)** 하나만 쓴다 (`Config.GetWeaponTier(WeaponLevel).Era`, 강화 단계 숫자를 코드에 박지 않는다). Era 2 = 강화 약 +75, Era 3 = +175 — Studio 로그 기준 Era 2는 1~2구역, Era 3은 **4구역 벽**에서 열린다.
+- `EvolveStage`(0/1/2) 속성으로 노출하고, 단계가 **오를 때만** 한 번 알린다(접속·데이터 로드 때는 조용히 기록만).
+
+| 단계 | 조건 | 효과 |
+|---|---|---|
+| 1 질풍 대시 | 무기 시대 ≥ 2 | 대시를 **시작하는 순간** 반경 16 충격파: 한 발 피해 ×0.5(`Dungeon.ComputeDamage` 기준) + 0.45초 경직. 대시 충전(2회/3초)이 그대로 쿨타임 |
+| 2 각성 | 무기 시대 ≥ 3 | 스킬(힐/블레이드 블룸/궁극기) 사용 뒤 4초 피해 ×1.25 (`Dungeon.ComputeDamage`) + 캐릭터 금빛 테두리. 그동안 **샷건** 명중은 7칸 밀치기 + 0.5초 경직 (필드 = 걸을 수 있는 땅, 던전 = 아레나 안쪽으로만. 보스는 안 밀림) |
+
+- 대시는 클라이언트 속도(`LinearVelocity`)로만 일어나서 **새 리모트를 만들지 않았다**: 서버가 0.1초마다 속도를 보고 "대시가 아니었다 → 대시"로 바뀌는 순간만 잡는다(클라 스팸으로 피해를 낼 수 없다). 판정 기준은 `NearMissService`의 NEAR MISS 대시 판정과 같다.
+- 경직은 `MonsterTypes.Update` 맨 앞에서 `data.StaggerUntil`(또는 부품 속성)을 보고 멈춘다 — 몬스터 이동 · 공격 · 예고가 함께 멈춘다.
+- 캠프 안전지대 안에서는 사격과 같이 **대시 충격파도 나가지 않는다**(`Field.InSafeZone`).
+- 수치: `Config.Evolve` (`GaleEra` / `GaleRadius` / `GaleDamage` / `GaleStagger` / `AwakenEra` / `AwakenSeconds` / `AwakenMult`). `Enabled = false` 한 줄로 끈다.
+
 ---
 
 ## 5. 콘텐츠와 드롭
@@ -200,6 +215,15 @@
 - 보상: 10층마다 **확정 신화 장비**, 50층 이상이면 머리 위 칭호가 `🗼 Tower N`(주간 1~3위 · 명예의 전당 다음, 던전 깊이보다 위). 최고 층은 `MetaService`의 `Tower` 키에 저장된다(+ `TowerBest` 속성).
 - 최대 100층. 탑에서 깬 층은 던전 깊이 기록 · 소탕에 넣지 않는다.
 - **아직 없음**: 전 서버 탑 랭킹(`TowerRank_v1` OrderedDataStore) — `RankService`의 `PowerRank_v1` 패턴을 복사하면 된다.
+
+### 5.7 보스 그로기(브레이크) · 예고 장판
+- **보스 그로기**: 약점 구슬 명중 4점이 차면 3.5초 **그로기** — 이동·사격·패턴이 전부 멈추고 받는 피해 ×1.3(약점 노출 ×3과 곱해진다).
+  - 게이지는 초당 2점까지만 차고(연사로 한꺼번에 차는 것 방지), 안 맞히면 0.2점/초로 줄어든다. 머리 위에 ◆◆◆◆ 게이지 → 차면 "💥 BROKEN", 끝나면 빌보드를 지운다.
+  - 필드 군주와 던전 보스가 같이 쓴다(`Server/BreakService.lua`). 진행 중이던 패턴도 끊긴다(필드 = `FieldBossPatterns.alive`, 던전 = `bossAlive`, 이동 = 각 서비스의 보스 분기).
+  - 수치: `Config.Break` (`Need` / `Seconds` / `DamageMult` / `RatePerSec` / `Decay`).
+- **예고 장판**: 몬스터가 1.2~1.5초 바닥 경고 원을 띄운 뒤 터진다. 맞으면 피해, 옆으로 대시로 피하면 NEAR MISS(공격력 누적).
+  - 1~5구역 일반 30% (원래 있던 것) + **6~8구역 일반 25%** (용암 / 사신의 뼈 가시 / 심연의 번개 테마 추가) + **4구역 이상 엘리트는 전부**(반경 ×1.25, 최소 2발).
+  - 6~8구역 포격 이벤트는 예전처럼 운석을 쓴다(테마 추가가 이벤트를 바꾸지 않게 `Barrage`는 5구역까지만 테마 사용).
 
 ---
 
@@ -339,14 +363,6 @@
 | 상점 | `Server/MonetizationService.lua`, `ShopClient.lua` |
 | 퀘스트 / 업적 | `Server/QuestService.lua`, `TitleService.lua` |
 | 튜토리얼 / 안내 | `Server/TutorialService.lua`, `JourneyService.lua`, `GoalClient.lua`, `CodexClient.lua`(도감 Guide 탭) |
+| 전투 진화 / 보스 그로기 | `Server/EvolveService.lua`, `Server/BreakService.lua` (`Config.Evolve` / `Config.Break`) |
 | 밸런스 로그(Studio) | `Server/BalanceLog.lua`, `IdleService.lua`(골드 장부) |
 | 번역 | `Tools/loc_table.csv` + `Tools/build_loc.py` → `Shared/Loc_*.lua` (7개 언어: ko · ja · de · fr · es · pt · zh-hans) · 한국어 문장 `Tools/ko_pairs.json` + `build_ko.py` → `Shared/KoData1·2.lua` · `LocalizeClient.lua` 가 로케일을 골라 적용 |
-
-## 전투 진화 (Server/EvolveService.lua · Server/BreakService.lua · Config.Evolve / Config.Break)
-| 단계 | 조건 | 효과 |
-|---|---|---|
-| 1 질풍 대시 | 무기 시대(Era) ≥ 2 | 대시 시작 순간 반경 16 충격파: 한 발 피해 x0.5 + 0.45초 경직 (서버가 0.1초마다 속도로 대시 시작을 감지, 새 리모트 없음) |
-| 2 각성 | 무기 시대 ≥ 3 | 스킬 사용 뒤 4초 피해 x1.25 (Dungeon.ComputeDamage) + Highlight. 각성 중 샷건: 7칸 밀치기(필드, 걸을 수 있는 땅만) + 0.5초 경직 |
-- EvolveStage(0/1/2) 속성, 단계가 오를 때만 알림.
-- 보스 그로기: 약점 명중 4점(초당 2점, 0.2점/초 감소) → 3.5초 정지(StaggerUntil + BrokenUntil, 패턴 취소) + 받는 피해 x1.3 (약점 노출 x3 과 곱). 머리 위 빌보드는 끝나면 Destroy.
-- 장판: HAZARD_THEMES 6~8구역 추가(일반 25%), 4구역 이상 엘리트는 반경 x1.25 / 2발. 1~5구역 일반 30% 그대로.
