@@ -288,6 +288,13 @@
       "overwrite": true
     },
     {
+      "path": "RunChoiceClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "RunChoiceClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "GoalClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "GoalClient",

@@ -852,6 +852,9 @@ return {
 		["Collect this zone's set gear"] = "Colete o equipamento de set desta zona",
 		["No set effect on yet — wear 2+ set pieces"] = "Nenhum efeito de set — use 2+ peças de set",
 		["Party panel (town, top right) · +4% damage per nearby member (up to +12%)"] = "Painel de grupo (cidade, canto superior direito) · +4% de dano por membro próximo (até +12%)",
+		["🎁 Pick a boon"] = "🎁 Escolha uma bênção",
+		["🤖 Auto-pick: ON"] = "🤖 Auto-escolha: LIGADO",
+		["🤖 Auto-pick: OFF"] = "🤖 Auto-escolha: DESLIGADO",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1048,6 +1051,5 @@ return {
 		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• Cerca de {number1} tiros/s · Poder de fogo {number2} · Alcance {number3}" },
 		{ "Damage +{number1}% on a single target: for bosses", "Dano +{number1}% em um único alvo: para chefes" },
 		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}!", "{number1} segundos! Recompensas x{number2}, o combo soma até x{number3}!" },
-		{ "🔓 You can now run {number1} set effects at once!", "🔓 Agora você pode ativar {number1} efeitos de conjunto ao mesmo tempo!" },
 	},
 }

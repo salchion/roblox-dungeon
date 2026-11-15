@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎫 {number1} tickets!\nPull gear at the gacha machine", "🎫 {number1} entradas!\nObtén equipamiento en la máquina de gacha" },
 		{ "🐾 Pet Lv.{number1}! New ability 💥 Power — Attack +{number2}%", "🐾 Mascota de nivel {number1}! Nueva habilidad 💥 Poder - Ataque +{number2}%" },
 		{ "Sniper Rifle  ·  next weapon: Shotgun at +{number1}", "Rifle de francotirador · siguiente arma: Escopeta en +{number1}" },
 		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2} {number3} G)", "🧹 Limpió automáticamente {number1} equipamientos más débiles (Esencia +{number2} {number3} G)" },

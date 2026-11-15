@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Sniper Rifle · Rusty Era +{number1}", "狙击步枪 · 锈蚀时代 +{number1}" },
+		{ "❄ Ice Palace Gate · Rec. ⚡{number2}", "❄ 冰宫之门 · 推荐 ⚡{number2}" },
 		{ "ZONE {number1}  ·  Abyss   ☠☠☠☠☠☠☠☠", "区域 {number1} · 深渊 ☠☠☠☠☠☠☠☠" },
 		{ "Dismantled {number1}! Essence +{number2}, {number3} G", "已分解 {number1} 件!精华 +{number2},{number3} 金币" },
 		{ "Enter the Boss Rush {number1} times", "挑战首领连战 {number1} 次" },

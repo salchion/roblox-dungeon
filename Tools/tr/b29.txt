@@ -845,3 +845,6 @@
 2876¦現在 Lv.{number1} · ゴールド段階は最大¦Jetzt Lv.{number1} · Goldstufen maximal¦Niv.{number1} · niveaux d'or au max¦Nv.{number1} ahora · niveles de oro al máximo¦Nv.{number1} agora · níveis de ouro no máximo¦当前 Lv.{number1} · 金币等级已满¦지금 Lv.{number1} · 골드 단계 최대
 2877¦セット効果はまだなし — セット装備を2部位以上¦Noch kein Set-Effekt — trage 2+ Set-Teile¦Aucun effet de set — portez 2+ pièces de set¦Aún sin efecto de set — usa 2+ piezas de set¦Nenhum efeito de set — use 2+ peças de set¦尚无套装效果 — 穿戴2件以上套装¦아직 켜진 세트 효과 없음 — 세트 장비 2부위 이상
 2878¦パーティーパネル (町の右上) · 近くの仲間1人につきダメージ +4% (最大 +12%)¦Gruppenfenster (Stadt, oben rechts) · +4% Schaden pro Mitglied in der Nähe (max. +12%)¦Panneau de groupe (ville, en haut à droite) · +4% de dégâts par membre proche (max +12%)¦Panel de grupo (pueblo, arriba a la derecha) · +4% de daño por miembro cercano (máx. +12%)¦Painel de grupo (cidade, canto superior direito) · +4% de dano por membro próximo (até +12%)¦队伍面板（城镇右上）· 附近每名队友伤害 +4%（最多 +12%）¦파티 창 (마을 오른쪽 위) · 가까운 파티원 1명당 피해 +4% (최대 +12%)
+2879¦🎁 強化を選ぼう¦🎁 Wähle eine Gabe¦🎁 Choisissez un bonus¦🎁 Elige una mejora¦🎁 Escolha uma bênção¦🎁 选择一个强化¦🎁 강화를 골라요
+2880¦🤖 自動選択: ON¦🤖 Auto-Wahl: AN¦🤖 Choix auto : OUI¦🤖 Auto-elegir: SÍ¦🤖 Auto-escolha: LIGADO¦🤖 自动选择：开¦🤖 자동 고르기: 켬
+2881¦🤖 自動選択: OFF¦🤖 Auto-Wahl: AUS¦🤖 Choix auto : NON¦🤖 Auto-elegir: NO¦🤖 Auto-escolha: DESLIGADO¦🤖 自动选择：关¦🤖 자동 고르기: 끔

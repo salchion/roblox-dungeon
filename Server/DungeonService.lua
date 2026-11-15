@@ -2984,6 +2984,48 @@ local function giveSetPiece(run, member, jackpot)
 	}
 end
 
+-- 던전 3택: 카드를 보내고 고르기를 기다린다. 응답은 id 로 확인 (두 번 / 늦은 / 다른 카드 응답은 무시). Seconds 안에 안 고르면 첫 장
+local choiceSeq = 0
+local function resolveChoice(run, member, id, index)
+	local pending = run.Choice and run.Choice[member]
+	if not pending or pending.Id ~= id then return false end
+	run.Choice[member] = nil
+	local buff = pending.Options[index] or pending.Options[1]
+	pcall(pending.Finish, buff)
+	return true
+end
+function Dungeon.OfferChoice(run, member, options, finish)
+	run.Choice = run.Choice or {}
+	local old = run.Choice[member]
+	if old then resolveChoice(run, member, old.Id, 1) end -- (앞 카드를 아직 안 골랐으면 첫 장으로 정리하고 새 카드)
+	choiceSeq += 1
+	local id = choiceSeq
+	local seconds = Config.Dungeon.Choice.Seconds or 8
+	run.Choice[member] = { Id = id, Options = options, Finish = finish, At = os.clock() }
+	if member:GetAttribute("RunChoiceAuto") == true then
+		resolveChoice(run, member, id, 1)
+		return
+	end
+	local list = {}
+	for i, o in ipairs(options) do
+		local tree = o.Tree and Config.RunTrees[o.Tree]
+		list[i] = { Icon = o.Icon, Name = o.Name, Desc = o.Desc, Special = o.Special == true, Color = tree and tree.Color or nil }
+	end
+	Remotes.Dungeon:FireClient(member, "RunChoice", { Id = id, Options = list, Seconds = seconds })
+	run.ChoiceDeadline = math.max(run.ChoiceDeadline or 0, os.clock() + seconds)
+	task.delay(seconds, function()
+		if not run.Destroyed then resolveChoice(run, member, id, 1) end
+	end)
+end
+function Dungeon.ChooseRunBuff(player, id, index)
+	local run = playerRun[player]
+	if not run or run.Destroyed then return end
+	if type(id) ~= "number" or type(index) ~= "number" then return end
+	index = math.floor(index)
+	if index < 1 or index > 3 then return end
+	resolveChoice(run, player, id, index)
+end
+
 local function rollBonus(run, penaltyChance, forceSpecial)
 	run.SetPieces = run.SetPieces or {}
 	run.RunAug = run.RunAug or {}
@@ -3004,53 +3046,68 @@ local function rollBonus(run, penaltyChance, forceSpecial)
 			return true
 		end
 		local function weigh(entry) return buffWeight(member, entry) end
-		local buff = pickWeighted(Config.RunBuffs, allowed, weigh)
-		if not buff and forceSpecial then
-			buff = pickWeighted(Config.RunBuffs, function(entry) return entry.Perk == nil or not perkMaxed(member, entry.Perk) end, weigh)
+		-- 3택: 서로 다른 강화 최대 3장 (레어 확정이면 레어 위주로)
+		local options = {}
+		local function notChosen(entry) for _, o in ipairs(options) do if o == entry then return false end end return true end
+		local count = (Config.Dungeon.Choice and Config.Dungeon.Choice.Enabled and not run.Tutorial) and (Config.Dungeon.Choice.Count or 3) or 1
+		for _ = 1, count do
+			local pick = pickWeighted(Config.RunBuffs, function(e) return allowed(e) and notChosen(e) end, weigh)
+			if not pick and forceSpecial then
+				pick = pickWeighted(Config.RunBuffs, function(e) return (e.Perk == nil or not perkMaxed(member, e.Perk)) and notChosen(e) end, weigh)
+			end
+			if not pick then break end
+			table.insert(options, pick)
 		end
-		local shown = buff and applyBuff(run, member, buff) -- (갈래 강화는 단계 / 최종 기술 이름을 돌려준다)
-		if shown then buff = shown end
-		local root = getAliveParts(member)
-		if root then
-			if setInfo then
-				local color = setInfo.Color
-				sfxAt(run, root.Position, "Aug_Get", nil, 0.3)
-				Effects.Burst(root.Position, color, 55)
-				Effects.FloatText(root.Position + Vector3.new(0, 7, 0), string.format("%s %s piece (%d/3)", setInfo.Icon, setInfo.Name, setInfo.Count), color)
-				if setInfo.Completed then
-					task.delay(0.5, function()
+		local function finish(buff)
+			local shown = buff and applyBuff(run, member, buff) -- (갈래 강화는 단계 / 최종 기술 이름을 돌려준다)
+			if shown then buff = shown end
+			local root = getAliveParts(member)
+			if root then
+				if setInfo then
+					local color = setInfo.Color
+					sfxAt(run, root.Position, "Aug_Get", nil, 0.3)
+					Effects.Burst(root.Position, color, 55)
+					Effects.FloatText(root.Position + Vector3.new(0, 7, 0), string.format("%s %s piece (%d/3)", setInfo.Icon, setInfo.Name, setInfo.Count), color)
+					if setInfo.Completed then
+						task.delay(0.5, function()
+							if run.Destroyed or run.Phase == "Ended" then return end
+							local r2 = getAliveParts(member)
+							if not r2 then return end
+							Effects.Burst(r2.Position, color, 110)
+							shockRing(run, r2.Position - Vector3.new(0, 2.5, 0), 18 + 4 * setInfo.Count, color)
+							Effects.Raw(r2.Position, { "V", r2.Position - Vector3.new(0, 2.3, 0), 20 + 4 * setInfo.Count, color, 0.8 })
+							sfxAt(run, r2.Position, "Gacha_Card", nil, 0.3)
+							Effects.FloatText(r2.Position + Vector3.new(0, 12, 0), string.format("✨ %d-piece set complete! %s %s Lv.%d", setInfo.Count, setInfo.EffectIcon or "", setInfo.EffectName or "", setInfo.Level), color, 340, 1.8)
+							syncAura(member, run)
+						end)
+					end
+				elseif note then
+					Effects.FloatText(root.Position + Vector3.new(0, 7, 0), "🏆 " .. note, Color3.fromRGB(255, 215, 90))
+				end
+				if buff then
+					local color = buff.Special and Color3.fromRGB(255, 190, 60) or Color3.fromRGB(120, 220, 255)
+					task.delay(0.25, function() -- 세트 글자와 겹치지 않게 조금 늦게, 더 높이
 						if run.Destroyed or run.Phase == "Ended" then return end
-						local r2 = getAliveParts(member)
-						if not r2 then return end
-						Effects.Burst(r2.Position, color, 110)
-						shockRing(run, r2.Position - Vector3.new(0, 2.5, 0), 18 + 4 * setInfo.Count, color)
-						Effects.Raw(r2.Position, { "V", r2.Position - Vector3.new(0, 2.3, 0), 20 + 4 * setInfo.Count, color, 0.8 })
-						sfxAt(run, r2.Position, "Gacha_Card", nil, 0.3)
-						Effects.FloatText(r2.Position + Vector3.new(0, 12, 0), string.format("✨ %d-piece set complete! %s %s Lv.%d", setInfo.Count, setInfo.EffectIcon or "", setInfo.EffectName or "", setInfo.Level), color, 340, 1.8)
-						syncAura(member, run)
+						local r3 = getAliveParts(member)
+						if not r3 then return end
+						Effects.Burst(r3.Position, color, buff.Special and 90 or 55)
+						Effects.FloatText(r3.Position + Vector3.new(0, 9.5, 0), string.format("%s %s!", buff.Icon, buff.Name), color)
 					end)
 				end
-			elseif note then
-				Effects.FloatText(root.Position + Vector3.new(0, 7, 0), "🏆 " .. note, Color3.fromRGB(255, 215, 90))
 			end
-			if buff then
-				local color = buff.Special and Color3.fromRGB(255, 190, 60) or Color3.fromRGB(120, 220, 255)
-				task.delay(0.25, function() -- 세트 글자와 겹치지 않게 조금 늦게, 더 높이
-					if run.Destroyed or run.Phase == "Ended" then return end
-					local r3 = getAliveParts(member)
-					if not r3 then return end
-					Effects.Burst(r3.Position, color, buff.Special and 90 or 55)
-					Effects.FloatText(r3.Position + Vector3.new(0, 9.5, 0), string.format("%s %s!", buff.Icon, buff.Name), color)
-				end)
-			end
+			Remotes.Dungeon:FireClient(member, "Roll", {
+				Buff = buff and { Icon = buff.Icon, Name = buff.Name, Desc = buff.Desc, Special = buff.Special == true } or nil,
+				Set = setInfo,
+				Note = note,
+				Jackpot = forceSpecial == true,
+				Penalty = pen and { Icon = pen.Icon, Name = pen.Name, Desc = pen.Desc, Gold = math.floor((pen.Gold or 0) * 100) } or nil,
+			})
 		end
-		Remotes.Dungeon:FireClient(member, "Roll", {
-			Buff = buff and { Icon = buff.Icon, Name = buff.Name, Desc = buff.Desc, Special = buff.Special == true } or nil,
-			Set = setInfo,
-			Note = note,
-			Jackpot = forceSpecial == true,
-			Penalty = pen and { Icon = pen.Icon, Name = pen.Name, Desc = pen.Desc, Gold = math.floor((pen.Gold or 0) * 100) } or nil,
-		})
+		if #options <= 1 then
+			finish(options[1])
+		else
+			Dungeon.OfferChoice(run, member, options, finish)
+		end
 	end
 end
 
@@ -3189,7 +3246,12 @@ local function surviveLoop(run)
 			for _, member in ipairs(run.Members) do
 				Quest.Add(member, "DungeonWaves", 1)
 			end
+			run.ChoiceDeadline = nil
 			rollBonus(run, bonusCount >= 2 and 0.6 or 0.3, bonusCount % 3 == 0) -- 3번에 한 번은 레어 확정
+			if run.ChoiceDeadline and run.ChoiceDeadline > nextBonus then -- (고르는 동안 다음 보너스를 마감 시각까지 민다: 카운트다운은 계속 흐른다)
+				nextBonus = run.ChoiceDeadline
+				run.NextBonusAt, run.BonusSpan = nextBonus, nextBonus - now
+			end
 		end
 		task.wait(0.25)
 	end
@@ -3923,6 +3985,10 @@ Remotes.Dungeon.OnServerEvent:Connect(function(player, action, typeKey, depth)
 		Dungeon.Sweep(player)
 	elseif action == "Leave" then
 		Dungeon.Leave(player)
+	elseif action == "ChooseRunBuff" then
+		Dungeon.ChooseRunBuff(player, typeKey, depth)
+	elseif action == "RunChoiceAuto" then -- (자동 고르기 켜기 / 끄기: 클라이언트가 바꾼 속성은 서버에 안 보이므로 서버가 단다)
+		player:SetAttribute("RunChoiceAuto", typeKey == true or nil)
 	end
 end)
 

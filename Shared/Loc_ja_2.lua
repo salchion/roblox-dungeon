@@ -1010,6 +1010,9 @@ return {
 		["Collect this zone's set gear"] = "このゾーンのセット装備を集めよう",
 		["No set effect on yet — wear 2+ set pieces"] = "セット効果はまだなし — セット装備を2部位以上",
 		["Party panel (town, top right) · +4% damage per nearby member (up to +12%)"] = "パーティーパネル (町の右上) · 近くの仲間1人につきダメージ +4% (最大 +12%)",
+		["🎁 Pick a boon"] = "🎁 強化を選ぼう",
+		["🤖 Auto-pick: ON"] = "🤖 自動選択: ON",
+		["🤖 Auto-pick: OFF"] = "🤖 自動選択: OFF",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1110,6 +1113,5 @@ return {
 		{ "The final blast also explodes around every target (attack x{number1})", "最後の爆発が全ての標的の周囲でも起きる（攻撃力x{number1}）" },
 		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 🌾 草原で履かれた靴が自動回収される（エッセンス +{number1} {number2} G）" },
 		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 レベル{number1}の突破が完了しました！さらに成長できます。" },
-		{ "🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})", "🏰 ダンジョンボス宝箱 — 装備{number1}個、深度{number2}ごとに+1(最大{number3})" },
 	},
 }

@@ -2877,5 +2877,8 @@
 "Lv.{number1} now · next gold level {text2} G",
 "Lv.{number1} now · gold levels maxed",
 "No set effect on yet — wear 2+ set pieces",
-"Party panel (town, top right) · +4% damage per nearby member (up to +12%)"
+"Party panel (town, top right) · +4% damage per nearby member (up to +12%)",
+"🎁 Pick a boon",
+"🤖 Auto-pick: ON",
+"🤖 Auto-pick: OFF"
 ]

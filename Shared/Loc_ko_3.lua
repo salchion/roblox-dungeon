@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Gear found {number1} / {number2}  ·  Higher-rarity gear you have held shows its name", "장비 발견 {number1} / {number2}  ·  가진 적 있는 높은 등급 장비는 이름이 보여요" },
 		{ "🎒 Bag <b>{number1} / {number2}</b>    ✨ Essence <font color='#9ad7ff'><b>{number3}</b></font>", "🎒 가방 <b>{number1} / {number2}</b>    ✨ 정수 <font color='#9ad7ff'><b>{number3}</b></font>" },
 		{ "<b>🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})</b>", "<b>🏰 던전 보스 상자 — 장비 {number1}개, 깊이 {number2}마다 +1 (최대 {number3})</b>" },
 		{ "🔑 You got {number1} key(s)! (Lord drop) — Use them at the town Dungeon Gate", "🔑 열쇠 {number1}개를 얻었어요! (군주 드랍) — 마을 던전 문에서 사용하세요" },
@@ -1027,6 +1028,5 @@ return {
 		{ "{text1}  <font color='#{text2}'><b>{text3}</b></font>   <font size='10' color='#8888aa'>{text4}{text5}</font>", "{text1}  <font color='#{text2}'><b>{text3}</b></font>   <font size='10' color='#8888aa'>{text4}{text5}</font>" },
 		{ "<font size='14'><b>{text1} {text2}</b></font>  Lv.{number3} / {number4}\n<font color='#ddddee'>{text5}{text6}</font>\n{text7}", "<font size='14'><b>{text1} {text2}</b></font>  Lv.{number3} / {number4}\n<font color='#ddddee'>{text5}{text6}</font>\n{text7}" },
 		{ "Zone {number1} · {text2}\n{text3} · Rec. ⚡{number4}\nDanger {text5}\n{text6} New set from here: {text7} Set", "{number1}구역 · {text2}\n{text3} · 권장 ⚡{number4}\n위험도 {text5}\n{text6} 여기서 얻는 새 세트: {text7} 세트" },
-		{ "🛡 {text1}   <font color='#{text2}'>[{text3}] {text4} +{number5}</font>   {text6}", "🛡 {text1}   <font color='#{text2}'>[{text3}] {text4} +{number5}</font>   {text6}" },
 	},
 }

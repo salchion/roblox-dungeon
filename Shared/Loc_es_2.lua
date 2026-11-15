@@ -881,6 +881,9 @@ return {
 		["Collect this zone's set gear"] = "Reúne el equipo de set de esta zona",
 		["No set effect on yet — wear 2+ set pieces"] = "Aún sin efecto de set — usa 2+ piezas de set",
 		["Party panel (town, top right) · +4% damage per nearby member (up to +12%)"] = "Panel de grupo (pueblo, arriba a la derecha) · +4% de daño por miembro cercano (máx. +12%)",
+		["🎁 Pick a boon"] = "🎁 Elige una mejora",
+		["🤖 Auto-pick: ON"] = "🤖 Auto-elegir: SÍ",
+		["🤖 Auto-pick: OFF"] = "🤖 Auto-elegir: NO",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1058,6 +1061,5 @@ return {
 		{ "Enemies swarm in more often\nGold +{number1}% instead", "Los enemigos atacan con más frecuencia\nOro +{number1}% en su lugar" },
 		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 Se limpió automáticamente {number1} equipo más débil (Esencia +{number2}, {number3} G)" },
 		{ "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped", "🎯 ¡Recompensa cumplida! +{number1} G · 🎫 +{number2} · equipo soltado" },
-		{ "🎫 {number1} tickets!\nPull gear at the gacha machine", "🎫 {number1} entradas!\nObtén equipamiento en la máquina de gacha" },
 	},
 }

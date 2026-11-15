@@ -886,6 +886,9 @@ return {
 		["Collect this zone's set gear"] = "Collectez l'équipement de set de cette zone",
 		["No set effect on yet — wear 2+ set pieces"] = "Aucun effet de set — portez 2+ pièces de set",
 		["Party panel (town, top right) · +4% damage per nearby member (up to +12%)"] = "Panneau de groupe (ville, en haut à droite) · +4% de dégâts par membre proche (max +12%)",
+		["🎁 Pick a boon"] = "🎁 Choisissez un bonus",
+		["🤖 Auto-pick: ON"] = "🤖 Choix auto : OUI",
+		["🤖 Auto-pick: OFF"] = "🤖 Choix auto : NON",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1043,6 +1046,5 @@ return {
 		{ "💢 Boss #{number1} is AWAKENED — it attacks twice in a row!", "💢 Le boss n°{number1} est ÉVEILLÉ — il attaque deux fois de suite !" },
 		{ "🌪 Mob hunter  ·  ✔ 🔫 Railgun / Sniper Rifle (+{number1}%)", "🌪 Chasseur de monstres · ✔ 🔫 Canon ferroviaire / Fusil de sniper (+{number1}%)" },
 		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>\nON</font>", "<font color='#{number1}fffb{number2}'><b>Attaque automatique</b>\nACTIVÉ </font>" },
-		{ "🥈 LeeGoAll_TV\n⚡ {number1} Lv.{number2}\nSniper Rifle · Arcane Era +{number3}", "🥈 LeeGoAll_TV\n⚡ {number1} Niveau {number2}\nFusil de sniper · Ère arcanique +{number3}" },
 	},
 }

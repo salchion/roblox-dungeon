@@ -832,6 +832,9 @@ return {
 		["Collect this zone's set gear"] = "Sammle die Set-Ausrüstung dieser Zone",
 		["No set effect on yet — wear 2+ set pieces"] = "Noch kein Set-Effekt — trage 2+ Set-Teile",
 		["Party panel (town, top right) · +4% damage per nearby member (up to +12%)"] = "Gruppenfenster (Stadt, oben rechts) · +4% Schaden pro Mitglied in der Nähe (max. +12%)",
+		["🎁 Pick a boon"] = "🎁 Wähle eine Gabe",
+		["🤖 Auto-pick: ON"] = "🤖 Auto-Wahl: AN",
+		["🤖 Auto-pick: OFF"] = "🤖 Auto-Wahl: AUS",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1035,6 +1038,5 @@ return {
 		{ "🔒 Spend {number1} points in the rows above first", "🔒 Gib zuerst {number1} Punkte in den Reihen darüber aus" },
 		{ "Auto-equipped the best gear in {number1} slot(s)", "Beste Ausrüstung in {number1} Platz/Plätzen angelegt" },
 		{ "Sniper Rifle  ·  keys {number1}-{number2} switch weapons", "Scharfschützengewehr · Tasten {number1}-{number2} zum Wechseln von Waffen" },
-		{ "🥉 {number1}+   🥈 {number2}M+   🥇 {number3}M+   💠 {number4}M+   💎 {number5}M+   👑 {number6}M+", "🥉 {number1}+ 🥈 {number2}M+ 🥇 {number3}M+ 💠 {number4}M+ 💎 {number5}M+ 👑 {number6}M+" },
 	},
 }

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔓 You can now run {number1} set effects at once!", "🔓 Agora você pode ativar {number1} efeitos de conjunto ao mesmo tempo!" },
 		{ "🛡 Knocked back! Power {number1} required (you: {number2})", "🛡 Repelido! Poder {number1} necessário (você: {number2})" },
 		{ "💚 Emergency rescue! HP restored ({number1} left)", "💚 Resgate de emergência! Vida restaurada (restam {number1})" },
 		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}", "{number1} segundos! Recompensas x{number2}, combo até x{number3}" },

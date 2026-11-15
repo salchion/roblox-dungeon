@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🥈 LeeGoAll_TV\n⚡ {number1} Lv.{number2}\nSniper Rifle · Arcane Era +{number3}", "🥈 LeeGoAll_TV\n⚡ {number1} Niveau {number2}\nFusil de sniper · Ère arcanique +{number3}" },
 		{ "Upgrade all the way to the last weapon (level {number1})", "Améliorez jusqu'à la dernière arme (niveau {number1})" },
 		{ "♻ [Rare] Chainmail auto-salvaged (Essence +{number1} {number2} G)", "♻ [Rare] Armure enchaînée récupérée automatiquement (Essence +{number1} {number2} G)" },
 		{ "📍 Dungeon   <font color='#{number1}fd{number2}ff'>🎟 Free {number3}/{number4}</font>", "📍 Donjon <font color='#{number1}fd{number2}ff'>🎟 Gratuit {number3}/{number4}</font>" },

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})", "🏰 ダンジョンボス宝箱 — 装備{number1}個、深度{number2}ごとに+1(最大{number3})" },
 		{ "Event_Elite  <font color='#{number1}aa{number2}c{number3}'>Elite squad appears</font>", "イベント・エリート<font color='#{number1}aa{number2}c{number3}'>エリート部隊登場</font>" },
 		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [レア] 🌲 森のシルバーリングが自動回収される（エッセンス +{number1} {number2} G）" },
 		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！" },

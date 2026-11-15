@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🥉 {number1}+   🥈 {number2}M+   🥇 {number3}M+   💠 {number4}M+   💎 {number5}M+   👑 {number6}M+", "🥉 {number1}+ 🥈 {number2}M+ 🥇 {number3}M+ 💠 {number4}M+ 💎 {number5}M+ 👑 {number6}M+" },
 		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>", "<font color='#{number1}fffb{number2}'><b>Automatischer Angriff</b>" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 Stufenaufstieg! Lv.{number1}  (Max. LP +{number2}, Angriff +{number3}%)" },
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ Verbesserungen sind gerade gratis! ({number1} übrig)" },

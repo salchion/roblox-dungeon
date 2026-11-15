@@ -763,6 +763,9 @@ return {
 		["Collect this zone's set gear"] = "收集本区域的套装装备",
 		["No set effect on yet — wear 2+ set pieces"] = "尚无套装效果 — 穿戴2件以上套装",
 		["Party panel (town, top right) · +4% damage per nearby member (up to +12%)"] = "队伍面板（城镇右上）· 附近每名队友伤害 +4%（最多 +12%）",
+		["🎁 Pick a boon"] = "🎁 选择一个强化",
+		["🤖 Auto-pick: ON"] = "🤖 自动选择：开",
+		["🤖 Auto-pick: OFF"] = "🤖 自动选择：关",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1107,7 +1110,5 @@ return {
 		{ "🔒 Zone {number1} · Darklands Sealed", "🔒 区域 {number1} · 黑暗之地已封锁" },
 		{ "Zone {number1} · Lightning Strike  ", "区域 {number1} · 闪电攻击" },
 		{ "🔒 Zone {number1} · Snowfield Sealed", "🔒 区域 {number1} · 雪场已封锁" },
-		{ "Sniper Rifle · Rusty Era +{number1}", "狙击步枪 · 锈蚀时代 +{number1}" },
-		{ "❄ Ice Palace Gate · Rec. ⚡{number2}", "❄ 冰宫之门 · 推荐 ⚡{number2}" },
 	},
 }
