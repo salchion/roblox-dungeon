@@ -341,3 +341,12 @@
 | 튜토리얼 / 안내 | `Server/TutorialService.lua`, `JourneyService.lua`, `GoalClient.lua`, `CodexClient.lua`(도감 Guide 탭) |
 | 밸런스 로그(Studio) | `Server/BalanceLog.lua`, `IdleService.lua`(골드 장부) |
 | 번역 | `Tools/loc_table.csv` + `Tools/build_loc.py` → `Shared/Loc_*.lua` (7개 언어: ko · ja · de · fr · es · pt · zh-hans) · 한국어 문장 `Tools/ko_pairs.json` + `build_ko.py` → `Shared/KoData1·2.lua` · `LocalizeClient.lua` 가 로케일을 골라 적용 |
+
+## 전투 진화 (Server/EvolveService.lua · Server/BreakService.lua · Config.Evolve / Config.Break)
+| 단계 | 조건 | 효과 |
+|---|---|---|
+| 1 질풍 대시 | 무기 시대(Era) ≥ 2 | 대시 시작 순간 반경 16 충격파: 한 발 피해 x0.5 + 0.45초 경직 (서버가 0.1초마다 속도로 대시 시작을 감지, 새 리모트 없음) |
+| 2 각성 | 무기 시대 ≥ 3 | 스킬 사용 뒤 4초 피해 x1.25 (Dungeon.ComputeDamage) + Highlight. 각성 중 샷건: 7칸 밀치기(필드, 걸을 수 있는 땅만) + 0.5초 경직 |
+- EvolveStage(0/1/2) 속성, 단계가 오를 때만 알림.
+- 보스 그로기: 약점 명중 4점(초당 2점, 0.2점/초 감소) → 3.5초 정지(StaggerUntil + BrokenUntil, 패턴 취소) + 받는 피해 x1.3 (약점 노출 x3 과 곱). 머리 위 빌보드는 끝나면 Destroy.
+- 장판: HAZARD_THEMES 6~8구역 추가(일반 25%), 4구역 이상 엘리트는 반경 x1.25 / 2발. 1~5구역 일반 30% 그대로.
