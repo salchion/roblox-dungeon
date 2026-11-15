@@ -37,6 +37,8 @@ local saved = {}      -- [객체] = { [속성] = { 원래 값 } }
 local cache = {}
 local driven = {}     -- 이미 감시 중인 UIScale
 local guarded = {}    -- 이미 감시 중인 객체 (보이면 안 되는 것)
+local watched = {}    -- (P-4) 이미 Visible 을 지켜보는 창/패널
+local watchedGuis = {} -- (P-4) 이미 Enabled 를 지켜보는 화면(ScreenGui)
 local fitScales = {}  -- 큰 창에 붙인 UIScale
 local open = nil      -- 펼쳐진 접이식 패널: "party" | "rank" | "stat" | nil
 local ui, scaleObj, pillRank, pillParty, pillStat, pillShop, zoomIn, zoomOut
@@ -740,7 +742,22 @@ local function layoutPhoneSkills(viewport)
 	if card then set(card, "Position", UDim2.new(0, 16, 0, math.max(60, math.ceil(54 / ds)))) end
 end
 
+local introGuardStart = nil
+local function introBusy()
+	-- 오프닝/로딩 화면(IntroClient)이 화면을 들고 있는 동안은 배치를 쉬어 둔다: 로딩 화면이 깨지지 않게.
+	-- (안전장치) 오류로 IntroPlaying 이 60초 넘게 붙잡혀 있으면 평소처럼 배치한다 (폰에서 배치가 영원히 안 되는 일 방지)
+	if player:GetAttribute("IntroPlaying") ~= true then
+		introGuardStart = nil
+		return false
+	end
+	introGuardStart = introGuardStart or os.clock()
+	return os.clock() - introGuardStart < 60
+end
+
+local lastRefresh = 0
 local function update()
+	if introBusy() then return end -- 오프닝(로딩 화면)이 화면을 잡고 있는 동안에는 아무것도 건드리지 않는다: 끝나면 아래 IntroPlaying 감시가 한 번에 맞춘다
+	lastRefresh = os.clock()
 	local camera = workspace.CurrentCamera
 	if not camera then return end
 	local viewport = camera.ViewportSize
@@ -757,6 +774,13 @@ local function update()
 	updateModalCover(compact)
 	if compact then
 		layoutCompact(viewport)
+		-- 점프 버튼은 없앤다 (예전에는 이 일만 하는 1초 루프가 따로 돌았다 → 여기로 합쳤다: 배치할 때 같이 확인)
+		local touchGui = playerGui:FindFirstChild("TouchGui")
+		local jump = touchGui and touchGui:FindFirstChild("JumpButton", true)
+		if jump then
+			guardHidden(jump)
+			if jump.Visible then jump.Visible = false end
+		end
 	else
 		if was then layoutDesktop() end
 		layoutCalm(viewport)
@@ -769,6 +793,36 @@ local function update()
 	end
 end
 
+local refreshAt = nil
+local REFRESH_GAP = 0.25 -- 이벤트가 쌓여도 다시 배치하는 최소 간격 (예전 0.3초 폴링보다 자주 돌지 않게)
+local function refresh() -- (P-4) 이벤트가 오면 잠깐 모아서 한 번만 다시 배치한다 (같은 순간에 여러 신호가 와도 배치는 1회)
+	if refreshAt then return end
+	local now = os.clock()
+	refreshAt = math.max(now + 0.08, lastRefresh + REFRESH_GAP)
+	task.delay(math.max(0, refreshAt - now), function()
+		refreshAt = nil
+		update()
+	end)
+end
+
+local function hookLayoutObject(obj) -- 창/패널이 열리고 닫힐 때 (Visible) 바로 따라간다
+	if not obj or watched[obj] then return end
+	watched[obj] = true
+	obj:GetPropertyChangedSignal("Visible"):Connect(refresh)
+end
+
+local function watchGui(gui) -- 화면(ScreenGui)이 켜지고 꺼질 때 + 그 안에 창이 새로 생길 때
+	if not gui or not gui:IsA("ScreenGui") or watchedGuis[gui] then return end
+	watchedGuis[gui] = true
+	gui:GetPropertyChangedSignal("Enabled"):Connect(refresh)
+	for _, child in ipairs(gui:GetChildren()) do
+		if child:IsA("GuiObject") then hookLayoutObject(child) end
+	end
+	gui.ChildAdded:Connect(function(child)
+		if child:IsA("GuiObject") then hookLayoutObject(child) end -- (새로 생긴 창은 Visible 이 켜질 때 잡힌다)
+	end)
+end
+
 local function hook()
 	local camera = workspace.CurrentCamera
 	if camera then camera:GetPropertyChangedSignal("ViewportSize"):Connect(update) end
@@ -778,32 +832,31 @@ workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
 	hook()
 	update()
 end)
-playerGui.ChildAdded:Connect(function() task.defer(update) end)
-
-update()
--- 다른 스크립트가 늦게 만든 위젯 / 다시 열린 패널도 따라가도록 가볍게 계속 맞춘다 (모두 값이 같으면 아무 일도 안 한다)
-task.spawn(function()
-	while true do
-		task.wait(0.3)
-		update()
-	end
+for _, gui in ipairs(playerGui:GetChildren()) do watchGui(gui) end
+playerGui.ChildAdded:Connect(function(child)
+	watchGui(child)
+	refresh()
 end)
 
+-- 오프닝이 끝난 순간: 로딩 화면이 사라지고 HUD 들이 한 번에 켜진다. 그 직후에 바로 한 번, 그리고 늦게 켜지는
+-- 창 / 위젯까지 잡도록 몇 번 더 맞춘다 (예전에는 0.3초 루프가 이 역할을 했다)
+player:GetAttributeChangedSignal("IntroPlaying"):Connect(function()
+	if introBusy() then return end
+	update()
+	task.delay(0.35, update)
+	task.delay(1.2, update)
+end)
 
--- 점프 버튼은 없애고(스킬 바를 5시 방향까지 옮겼다), 화면을 빠르게 두 번 터치하면 점프한다 (공중에서는 2단 점프). 실제 점프는 PlayerClient 가 "TapJump" 신호를 받아 처리한다.
+update()
+-- 다른 스크립트가 늦게 만든 위젯 / 다시 열린 패널도 따라가도록 가볍게 계속 맞춘다 (모두 값이 같으면 아무 일도 안 한다).
+-- (P-4) 예전에는 0.3초마다 전체 재배치였다 → 이벤트로 처리하고, 놓친 것을 줍는 폴링은 1초로 늘렸다
 task.spawn(function()
 	while true do
 		task.wait(1)
-		if st.compact then
-			local touchGui = playerGui:FindFirstChild("TouchGui")
-			local jump = touchGui and touchGui:FindFirstChild("JumpButton", true)
-			if jump then
-				guardHidden(jump)
-				if jump.Visible then jump.Visible = false end
-			end
-		end
+		if os.clock() - lastRefresh >= 0.9 then update() end -- 이벤트로 방금 맞췄으면 건너뛴다
 	end
 end)
+-- 점프 버튼은 없애고(스킬 바를 5시 방향까지 옮겼다), 화면을 빠르게 두 번 터치하면 점프한다 (공중에서는 2단 점프). 실제 점프는 PlayerClient 가 "TapJump" 신호를 받아 처리한다.
 local lastTapAt, lastTapPos = 0, Vector2.zero
 UserInputService.TouchTap:Connect(function(positions, processed)
 	if processed or not st.compact then return end

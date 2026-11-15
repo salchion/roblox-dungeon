@@ -1599,19 +1599,43 @@ player:GetAttributeChangedSignal("PetSpeed"):Connect(applySpeed)
 settings.DashCharges = Config.Player.DashCharges
 settings.DashRefillAt = 0
 
+-- 대시 애프터이미지: 예전에는 0.035초마다 캐릭터 부품마다 파트를 새로 만들어서 대시 1회에 75개씩 생겼다(여러 명이 같이 대시하면 폭발).
+--  (1) 만드는 간격을 넓히고 (2) 파트를 돌려 쓰고(풀) (3) 동시에 살아 있는 수에 상한을 두고 (4) 저사양 모드에서는 생략한다. 연출은 그대로(트레일 + 잔상).
+local GHOST_INTERVAL = 0.07 -- 이전 0.035 (대시 1회당 5번 -> 2~3번)
+local GHOST_MAX = 60        -- 동시에 살아 있는 유령 파트 상한 (넘으면 새로 만들지 않는다)
+local ghostPool, ghostTween, ghostLive = {}, {}, 0
 local function spawnAfterimage(character, color)
+	if player:GetAttribute("LowSpec") then return end
+	local budget = GHOST_MAX - ghostLive
+	if budget <= 0 then return end
 	for _, part in ipairs(character:GetChildren()) do
+		if budget <= 0 then break end
 		if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" and part.Transparency < 0.9 then
-			local ghost = Instance.new("Part")
-			ghost.Anchored, ghost.CanCollide, ghost.CanQuery, ghost.CanTouch = true, false, false, false
+			local ghost = table.remove(ghostPool)
+			if ghost then
+				local old = ghostTween[ghost]
+				if old then old:Cancel() end
+			else
+				ghost = Instance.new("Part")
+				ghost.Anchored, ghost.CanCollide, ghost.CanQuery, ghost.CanTouch, ghost.CastShadow = true, false, false, false, false
+				ghost.Material = Enum.Material.Neon
+			end
 			ghost.Size = part.Size * 1.05
 			ghost.CFrame = part.CFrame
-			ghost.Material = Enum.Material.Neon
 			ghost.Color = color
 			ghost.Transparency = 0.45
 			ghost.Parent = workspace
-			TweenService:Create(ghost, TweenInfo.new(0.35), { Transparency = 1, Size = part.Size * 0.6 }):Play()
-			game:GetService("Debris"):AddItem(ghost, 0.4)
+			local tween = TweenService:Create(ghost, TweenInfo.new(0.3), { Transparency = 1 })
+			ghostTween[ghost] = tween
+			tween:Play()
+			ghostLive += 1
+			budget -= 1
+			task.delay(0.32, function() -- (파트를 지우지 않고 풀로 돌려 둔다: 다음 대시에서 다시 쓴다)
+				ghostTween[ghost] = nil
+				ghostLive -= 1
+				ghost.Parent = nil
+				ghostPool[#ghostPool + 1] = ghost
+			end)
 		end
 	end
 end
@@ -1724,7 +1748,7 @@ local function slide()
 			return
 		end
 		velocity.VectorVelocity = direction * (P.DashSpeed * (1 - t * t * 0.7))
-		if os.clock() - lastGhost > 0.035 then
+		if os.clock() - lastGhost > GHOST_INTERVAL then
 			lastGhost = os.clock()
 			spawnAfterimage(character, airborne and Color3.fromRGB(255, 190, 120) or Color3.fromRGB(120, 210, 255))
 		end

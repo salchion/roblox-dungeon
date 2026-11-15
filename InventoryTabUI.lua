@@ -22,6 +22,60 @@ local settings, menuContent = env.settings, env.menuContent
 local newRow, rowText, hex = env.newRow, env.rowText, env.hex
 local function refreshMenu() env.refreshMenu() end
 
+-- ---------- 캐릭터 미리보기 모델 캐시 ----------
+-- (M-12) 장비 탭은 열려 있는 동안 1초마다 다시 그려진다. 그때마다 캐릭터를 통째로 복제하면(스크립트·장식·파티클까지)
+-- 탭이 열려 있는 내내 복제 비용이 반복된다. 그래서
+--   1) 캐릭터 복제는 외형(장비 등급/강화/세트·무기)이 실제로 바뀌었을 때만 한다.
+--   2) 그 결과는 화면 밖에 "실루엣 모델"로 한 번만 만들어 두고, 다시 그릴 때는 그것을 복제해 뷰포트에 넣는다(파트 몇 개라 아주 싸다).
+-- (오프닝/로딩 화면과는 무관하다: 미리보기는 메뉴 > 장비 탭을 그릴 때만 만들어지고, 로딩 중에는 메뉴 자체가 꺼져 있다.)
+local ghostTemplate, ghostSig
+local function appearanceSig(character)
+	local children = character:GetChildren()
+	local parts = { #children }
+	for _, child in ipairs(children) do parts[#parts + 1] = child.Name end
+	for _, slot in ipairs(Config.Gear.Slots) do
+		local rarity = player:GetAttribute("Gear_" .. slot.Key .. "_R") or 0
+		local level = player:GetAttribute("Gear_" .. slot.Key .. "_L") or 0
+		local setKey = player:GetAttribute("Gear_" .. slot.Key .. "_Set") or ""
+		if rarity ~= 0 or level ~= 0 or setKey ~= "" then
+			parts[#parts + 1] = slot.Key .. rarity .. level .. setKey
+		end
+	end
+	parts[#parts + 1] = tostring(player:GetAttribute("WeaponLevel") or 0) .. tostring(player:GetAttribute("WeaponType") or "")
+	return table.concat(parts, ",")
+end
+
+local function buildGhostTemplate(character)
+	character.Archivable = true
+	local clone = character:Clone()
+	for _, descendant in ipairs(clone:GetDescendants()) do
+		if descendant:IsA("Script") or descendant:IsA("LocalScript") or descendant:IsA("BillboardGui") or descendant:IsA("ForceField") then
+			descendant:Destroy()
+		elseif descendant:IsA("BasePart") then
+			descendant.Anchored = true
+		end
+	end
+	clone.Parent = nil -- (화면 밖에 둔다: 뷰포트에 넣을 때 복제해서 쓴다)
+	return clone
+end
+
+local function ghostModel()
+	local character = player.Character
+	if not character then return nil end
+	local sig = appearanceSig(character)
+	if not ghostTemplate or ghostSig ~= sig then -- 외형이 바뀐 때만 캐릭터를 복제한다
+		if ghostTemplate then ghostTemplate:Destroy() end
+		ghostTemplate = buildGhostTemplate(character)
+		ghostSig = sig
+	end
+	return ghostTemplate:Clone()
+end
+
+player.CharacterAdded:Connect(function() -- 캐릭터가 새로 생기면(사망/리스폰) 다음에 그릴 때 새로 만든다
+	if ghostTemplate then ghostTemplate:Destroy() end
+	ghostTemplate, ghostSig = nil, nil
+end)
+
 -- 장비 강화 결과 연출: 강화 블록 자리에 "SUCCESS! / FAILED" 가 크게 튀어나왔다 사라진다 (메뉴가 다시 그려져도 사라지지 않게 따로 띄운다)
 upgradeAnchor = nil
 local fxGui = Instance.new("ScreenGui")
@@ -341,19 +395,10 @@ local function buildInventoryTab(state)
 		}, left)
 		local cam = create("Camera", { FieldOfView = 38 }, viewport)
 		viewport.CurrentCamera = cam
-		local character = player.Character
-		if character then
-			character.Archivable = true
-			local clone = character:Clone()
-			for _, descendant in ipairs(clone:GetDescendants()) do
-				if descendant:IsA("Script") or descendant:IsA("LocalScript") or descendant:IsA("BillboardGui") or descendant:IsA("ForceField") then
-					descendant:Destroy()
-				elseif descendant:IsA("BasePart") then
-					descendant.Anchored = true
-				end
-			end
-			clone.Parent = viewport
-			local pivot = clone:GetPivot()
+		local model = ghostModel() -- (M-12) 캐시된 실루엣을 복제해서 넣는다 (캐릭터 통복제는 외형이 바뀔 때만)
+		if model then
+			model.Parent = viewport
+			local pivot = model:GetPivot()
 			local spin = settings.InvSpin or 0
 			local connection
 			connection = RunService.RenderStepped:Connect(function(dt)
@@ -363,7 +408,7 @@ local function buildInventoryTab(state)
 				end
 				spin += dt * 0.9
 				settings.InvSpin = spin
-				clone:PivotTo(CFrame.new(pivot.Position) * CFrame.Angles(0, spin, 0))
+				model:PivotTo(CFrame.new(pivot.Position) * CFrame.Angles(0, spin, 0))
 				cam.CFrame = CFrame.lookAt(pivot.Position + Vector3.new(0, 1.2, 12.5), pivot.Position + Vector3.new(0, 0.4, 0))
 			end)
 		end
