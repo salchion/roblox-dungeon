@@ -80,3 +80,12 @@
 역할 나눔 제안 (겹치지 않게):
 - 피클: 2번·3번 (Config 수치 + economy_model 검증)
 - 클로드: 1번 (4구역 피해 조정 + 사망 안내 UI·번역), UI 겹침 4건
+
+## 합의 (피클 ↔ 클로드)
+- 1번: ZoneDanger.Damage[4] = 5.6 유지. 사망 안내는 이미 있음 (AdviceService.AfterDefeat → 성장 카드 "추천 전투력 vs 내 전투력", 2분에 한 번; 이번 로그 19:23:39 GrowthGuide 로 확인). 추가 코드 없음.
+- 2번: 세트 효과 수치는 이번에 안 만짐 (세트 피해도 무기 단계에 1:1 로 오름). 피클이 AugLv별 근거 표 → 종태 님 결정 카드.
+- 3번: KillsPerMin 100 유지 (4구역 방치 = 4구역 필드 실수입의 약 15%). 다음 로그의 구역별 실측 킬/분으로만 캘리브레이션.
+- UI 겹침 (클로드):
+  - LootCard 카드 / 세계 보스 카드: 메뉴 · 강화 · 던전 입장 · 세트 효과 창이 열려 있으면 숨김 (LootCardClient / EventBossClient 의 bigWindowOpen).
+  - AugGui 버튼 ↔ RankMini, MenuPanel ↔ RankMini: 겹친 건 세트 효과 창의 Close 버튼 / 메뉴 창 = 큰 창이 HUD 위에 뜬 것이라 그대로 둠.
+  - DepthGui ↔ LootCard (19:12:49): 마을에서 던전 입장 창을 연 상태로 아이템 카드가 뜬 것 → 위 숨김으로 해결.

@@ -20,6 +20,33 @@ gui.DisplayOrder = 20
 gui.IgnoreGuiInset = true
 gui.Parent = player:WaitForChild("PlayerGui")
 
+-- 큰 창(메뉴 / 강화 / 던전 입장 / 세트 효과)이 떠 있는지: 떠 있으면 이 카드는 숨긴다 (창 위로 겹쳐 보였다: Studio UI 겹침 점검)
+local function bigWindowOpen()
+	if player:GetAttribute("ModalOpen") then return true end
+	local pg = player:FindFirstChild("PlayerGui")
+	local hud = pg and pg:FindFirstChild("HUD")
+	for _, name in ipairs({ "MenuPanel", "EnhancePanel" }) do
+		local f = hud and hud:FindFirstChild(name)
+		if f and f:IsA("GuiObject") and f.Visible then return true end
+	end
+	for _, guiName in ipairs({ "DepthGui", "AugGui" }) do
+		local g = pg and pg:FindFirstChild(guiName)
+		if g then
+			for _, child in ipairs(g:GetChildren()) do
+				if child:IsA("Frame") and child.Visible and child.AbsoluteSize.X > 300 then return true end
+			end
+		end
+	end
+	return false
+end
+task.spawn(function()
+	while gui.Parent do
+		local hide = bigWindowOpen()
+		if gui.Enabled == hide then gui.Enabled = not hide end
+		task.wait(0.25)
+	end
+end)
+
 local function new(className, props, parent)
 	local object = Instance.new(className)
 	for key, value in pairs(props) do object[key] = value end

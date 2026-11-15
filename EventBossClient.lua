@@ -72,13 +72,33 @@ if game:GetService("UserInputService").TouchEnabled and not game:GetService("Use
 	hpText.TextSize = 8
 end
 
+
+-- 큰 창(메뉴 / 강화 / 던전 입장 / 세트 효과)이 떠 있는지: 떠 있으면 이 카드는 숨긴다 (창 위로 겹쳐 보였다: Studio UI 겹침 점검)
+local function bigWindowOpen()
+	if player:GetAttribute("ModalOpen") then return true end
+	local pg = player:FindFirstChild("PlayerGui")
+	local hud = pg and pg:FindFirstChild("HUD")
+	for _, name in ipairs({ "MenuPanel", "EnhancePanel" }) do
+		local f = hud and hud:FindFirstChild(name)
+		if f and f:IsA("GuiObject") and f.Visible then return true end
+	end
+	for _, guiName in ipairs({ "DepthGui", "AugGui" }) do
+		local g = pg and pg:FindFirstChild(guiName)
+		if g then
+			for _, child in ipairs(g:GetChildren()) do
+				if child:IsA("Frame") and child.Visible and child.AbsoluteSize.X > 300 then return true end
+			end
+		end
+	end
+	return false
+end
 local lastWholeSecond = -1
 task.spawn(function()
 	while true do
 		local endAt = workspace:GetAttribute("BossEventEnd")
 		local soonAt = workspace:GetAttribute("BossEventSoon")
 		local zone = player:GetAttribute("Zone")
-		if type(soonAt) == "number" and type(endAt) ~= "number" and (zone == "Field" or zone == "Lobby") and not player:GetAttribute("ModalOpen") and not player:GetAttribute("IntroPlaying") then
+		if type(soonAt) == "number" and type(endAt) ~= "number" and (zone == "Field" or zone == "Lobby") and not bigWindowOpen() and not player:GetAttribute("IntroPlaying") then
 			-- 등장 예고: 작게 "곧 등장" + 남은 초 (체력 막대는 비운다)
 			gui.Enabled = true
 			local seconds = math.ceil(math.max(0, soonAt - workspace:GetServerTimeNow()))
@@ -88,7 +108,7 @@ task.spawn(function()
 			hpFill.Size = UDim2.new(0, 0, 1, 0)
 			hpText.Text = ""
 			stroke.Color = INK
-		elseif type(endAt) == "number" and (zone == "Field" or zone == "Lobby") and not player:GetAttribute("ModalOpen") and not player:GetAttribute("IntroPlaying") then
+		elseif type(endAt) == "number" and (zone == "Field" or zone == "Lobby") and not bigWindowOpen() and not player:GetAttribute("IntroPlaying") then
 			gui.Enabled = true
 			local left = math.max(0, endAt - workspace:GetServerTimeNow())
 			local hp = workspace:GetAttribute("BossEventHp") or 1
