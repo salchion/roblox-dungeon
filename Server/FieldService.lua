@@ -1589,10 +1589,11 @@ function Field.TargetsIn(player, center, radius, limit)
 	return list
 end
 
-function Field.HitPart(player, part, damage)
+function Field.HitPart(player, part, damage, kind)
 	local data = monsters[part]
 	if not data or not part.Parent then return false end
 	if not canHitZone(player, part.Position.X) then return false end
+	Break.Hit(part, data, kind or "Skill") -- (보스 / 군주: 스킬 · 데드아이 · 관통으로 맞혀도 그로기 게이지가 찬다)
 	if data.ExposedUntil and os.clock() < data.ExposedUntil then damage = math.floor(damage * 3) end -- 약점 노출 중 x3
 	damage = math.floor(damage * Break.Mult(data))
 	if data.Filler then damage = math.floor(damage * 2.6) end -- 스킬 / 데드아이 / 관통은 채움 몬스터에게 크게 박힌다 (체력 x2.5 를 넘는 보정: 스킬이 터질 때 몰려 있던 몬스터가 확 쓸려 나간다)
@@ -1649,6 +1650,7 @@ function Field.AreaDamage(player, center, radius, damage)
 		local data = target.Data
 		if monsters[target.Part] == data then
 			table.insert(positions, target.Part.Position)
+			Break.Hit(target.Part, data, "Skill") -- (보스 / 군주: 스킬 · 질풍 대시 충격파로도 그로기 게이지가 찬다)
 			local hit = damage -- (대상마다 따로: 예전엔 공유 변수를 갈아서 반경 안 여러 마리면 x3 / 그로기 배율이 누적됐다)
 			if data.Invincible then hit = 1 end
 			if data.ExposedUntil and os.clock() < data.ExposedUntil then hit = math.floor(hit * 3) end -- 약점 노출 중 x3
@@ -1728,6 +1730,7 @@ function Field.Shoot(player, origin, direction)
 	end
 	if data then
 		player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1) -- 궁극기 게이지는 실제로 맞혔을 때만 찬다
+		Break.Hit(result.Instance, data, "Gun") -- (보스 / 군주: 약점을 조준하지 않은 일반 사격도 그로기 게이지를 채운다)
 		local damage, isCrit = Dungeon.ComputeDamage(player)
 		if data.Invincible then damage, isCrit = 1, false end -- 최후의 군주: 맞는 느낌만 (피해는 1)
 		if data.Doom then data.DoomHits = (data.DoomHits or 0) + 1 end -- (몇 번 맞으면 군주가 "스쳤다"고 반응한다)
@@ -1847,7 +1850,7 @@ function Field.Shoot(player, origin, direction)
 			local pierceDamage = Dungeon.ComputeDamage(player)
 			local Meter = require(script.Parent.DamageMeter)
 			Meter.Source = "Gun" -- (관통탄도 총 피해로 센다)
-			Field.HitPart(player, nextResult.Instance, pierceDamage)
+			Field.HitPart(player, nextResult.Instance, pierceDamage, "Gun") -- (관통탄은 사격으로 센다)
 			Meter.Source = nil
 			player:SetAttribute("HitTick", (player:GetAttribute("HitTick") or 0) + 1)
 			endPosition = nextResult.Position

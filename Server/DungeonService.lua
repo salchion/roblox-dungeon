@@ -2364,10 +2364,11 @@ function Dungeon.TargetsIn(player, center, radius, limit)
 	return list
 end
 
-function Dungeon.HitPart(player, part, damage)
+function Dungeon.HitPart(player, part, damage, kind)
 	local run = playerRun[player]
 	local data = run and run.Monsters[part]
 	if not data or not part.Parent then return false end
+	Break.Hit(part, data, kind or "Skill") -- (보스: 스킬 · 데드아이로 맞혀도 그로기 게이지가 찬다)
 	damageMonster(run, player, part, data, damage, false, part.Position)
 	Meter.Add(player, Meter.Source or "Other", damage) -- 대미지 미터기 (데드아이 / 튕김 ...)
 	return true
@@ -2401,6 +2402,7 @@ function Dungeon.AreaDamage(player, center, radius, damage)
 	for _, target in ipairs(targets) do
 		if run.Monsters[target.Part] then
 			table.insert(positions, target.Part.Position)
+			Break.Hit(target.Part, target.Data, "Skill") -- (보스: 스킬 · 질풍 대시 충격파로도 그로기 게이지가 찬다)
 			damageMonster(run, player, target.Part, target.Data, damage, false, target.Part.Position)
 			Meter.Add(player, Meter.Source or "Other", damage) -- 대미지 미터기 (스킬 범위 피해)
 		end
@@ -2478,6 +2480,7 @@ function Dungeon.Shoot(player, origin, direction)
 		local part = result.Instance
 		local data = run.Monsters[part]
 		if not data then break end
+		Break.Hit(part, data, "Gun") -- (보스: 약점을 조준하지 않은 일반 사격도 그로기 게이지를 채운다)
 
 		local damage, isCrit = Dungeon.ComputeDamage(player)
 		local hitPosition = result.Position
