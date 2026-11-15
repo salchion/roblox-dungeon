@@ -842,6 +842,11 @@ return {
 		["Swift Foes"] = "Flinke Gegner",
 		["Enemies 30% faster"] = "Gegner 30% schneller",
 		["40% more enemies"] = "40% mehr Gegner",
+		["Tower"] = "Turm",
+		["🗼 Infinite Tower"] = "🗼 Endloser Turm",
+		["All floors cleared!"] = "Alle Etagen geschafft!",
+		["Solo · no key · fail = try the same floor again"] = "Solo · kein Schlüssel · bei Niederlage dieselbe Etage erneut",
+		["Enter from town"] = "Aus der Stadt betreten",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1041,8 +1046,5 @@ return {
 		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}!", "{number1} Sekunden! Belohnungen x{number2}, Combo bis zu x{number3}!" },
 		{ "🔓 You can now run {number1} set effects at once!", "🔓 Du kannst jetzt {number1} Set-Boni gleichzeitig nutzen!" },
 		{ "🛡 Knocked back! Power {number1} required (you: {number2})", "🛡 Zurückgeschleudert! Stärke {number1} nötig (du: {number2})" },
-		{ "💚 Emergency rescue! HP restored ({number1} left)", "💚 Notrettung! LP wiederhergestellt ({number1} übrig)" },
-		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}", "{number1} Sekunden! Belohnung x{number2}, Combo bis zu x{number3}" },
-		{ "🔒 Spend {number1} points in the rows above first", "🔒 Gib zuerst {number1} Punkte in den Reihen darüber aus" },
 	},
 }

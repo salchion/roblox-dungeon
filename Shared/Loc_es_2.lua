@@ -891,6 +891,11 @@ return {
 		["Swift Foes"] = "Enemigos veloces",
 		["Enemies 30% faster"] = "Enemigos 30% más rápidos",
 		["40% more enemies"] = "40% más enemigos",
+		["Tower"] = "Torre",
+		["🗼 Infinite Tower"] = "🗼 Torre infinita",
+		["All floors cleared!"] = "¡Todos los pisos superados!",
+		["Solo · no key · fail = try the same floor again"] = "Solo · sin llave · si fallas, repites el mismo piso",
+		["Enter from town"] = "Entrar desde el pueblo",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1064,7 +1069,5 @@ return {
 		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!" },
 		{ "every {number1} shots a blade bounces across {number2} enemies", "cada {number1} disparos una cuchilla rebota entre {number2} enemigos" },
 		{ "💰 Golden Goblin defeated! +{number1} G, 3 loot drops!", "💰 ¡Goblin dorado derrotado! +{number1} G, ¡3 botines soltados!" },
-		{ "+1 set-effect option: Legendary {number1}% / Mythic {number2}%", "Opción efecto de conjunto +1: Legendario {number1}% / Mítico {number2}%" },
-		{ "Enemies swarm in more often\nGold +{number1}% instead", "Los enemigos atacan con más frecuencia\nOro +{number1}% en su lugar" },
 	},
 }

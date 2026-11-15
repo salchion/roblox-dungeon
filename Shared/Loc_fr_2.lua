@@ -896,6 +896,11 @@ return {
 		["Swift Foes"] = "Ennemis rapides",
 		["Enemies 30% faster"] = "Ennemis 30% plus rapides",
 		["40% more enemies"] = "40% d'ennemis en plus",
+		["Tower"] = "Tour",
+		["🗼 Infinite Tower"] = "🗼 Tour infinie",
+		["All floors cleared!"] = "Tous les étages terminés !",
+		["Solo · no key · fail = try the same floor again"] = "Solo · sans clé · échec = même étage à nouveau",
+		["Enter from town"] = "Entrer depuis la ville",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1049,7 +1054,5 @@ return {
 		{ "Reach weapon upgrade level {number1} (about the {number2}th weapon)", "Atteindre le niveau d'amélioration d'arme {number1} (environ la {number2}ème arme)" },
 		{ "⚠ Monster overrun! Thin them out within {number1}s!  ({number2} / {number3})", "⚠ Invasion de monstres ! Éclaircissez-les en {number1} s ! ({number2} / {number3})" },
 		{ "🏆 You defeated the Final Lord!  +{number1} gold  +{number2} tickets", "🏆 Vous avez vaincu le Seigneur final !  +{number1} or  +{number2} tickets" },
-		{ "⭐ New record! Depth {number1} cleared. Depth {number2} is unlocked.", "⭐ Nouveau record ! Profondeur {number1} terminée. La profondeur {number2} est débloquée." },
-		{ "💢 Boss #{number1} is AWAKENED — it attacks twice in a row!", "💢 Le boss n°{number1} est ÉVEILLÉ — il attaque deux fois de suite !" },
 	},
 }

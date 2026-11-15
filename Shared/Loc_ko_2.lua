@@ -1160,6 +1160,11 @@ return {
 		["Swift Foes"] = "빠른 적",
 		["Enemies 30% faster"] = "적 30% 더 빠름",
 		["40% more enemies"] = "적 40% 더 많음",
+		["Tower"] = "탑",
+		["🗼 Infinite Tower"] = "🗼 무한의 탑",
+		["All floors cleared!"] = "모든 층 클리어!",
+		["Solo · no key · fail = try the same floor again"] = "혼자 · 열쇠 없음 · 실패하면 같은 층 다시",
+		["Enter from town"] = "마을에서 입장",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1239,7 +1244,5 @@ return {
 		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "{number1}층까지 클리어  ·  내 전투력에 맞는 깊이를 자유롭게 고르세요  (다음: {number2})" },
 		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "럭키 원 타이틀 『럭키 원』\n전설 장비 획득\n{number1} / {number2} 보상: 🎫 {number3}" },
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "치명타 시 맞은 적에게 미사일 {number1}발 (각각 치명타 피해의 25%)" },
-		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} boss(es)\n{number2} / {number3}   Reward: 🎫 {number4}", "보스 헌터 타이틀 『보스 헌터』\n{number1} 보스 처치\n{number2} / {number3} 보상: 🎫 {number4}" },
-		{ "🏆 Colossus defeated! Everyone worked together ({number1} player(s) rewarded)", "🏆 거신 처치! 모두가 힘을 합쳤어요 ({number1}명 보상)" },
 	},
 }

@@ -1020,6 +1020,11 @@ return {
 		["Swift Foes"] = "俊敏な敵",
 		["Enemies 30% faster"] = "敵が30%速い",
 		["40% more enemies"] = "敵が40%増加",
+		["Tower"] = "塔",
+		["🗼 Infinite Tower"] = "🗼 無限の塔",
+		["All floors cleared!"] = "全階クリア!",
+		["Solo · no key · fail = try the same floor again"] = "ソロ · 鍵不要 · 失敗したら同じ階に再挑戦",
+		["Enter from town"] = "町から入場",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1117,7 +1122,5 @@ return {
 		{ "♻ [Common] 🌾 Meadow Cloth Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 🌾 草原の布の手袋が自動回収される（エッセンス +{number1} {number2} G）" },
 		{ "Powerhouse   Title 『Powerhouse』\nReach {number1} Power\n{number2} / {number3}   Reward: {number4} G", "パワハウス・タイトル『パワハウス』\n{number1}パワーに到達する\n{number2} / {number3}　報酬：{number4}G" },
 		{ "♻ [Common] 🌲 Forest Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 🌲 森のレザーキャップが自動回収される（エッセンス +{number1} {number2} G）" },
-		{ "The final blast also explodes around every target (attack x{number1})", "最後の爆発が全ての標的の周囲でも起きる（攻撃力x{number1}）" },
-		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 🌾 草原で履かれた靴が自動回収される（エッセンス +{number1} {number2} G）" },
 	},
 }

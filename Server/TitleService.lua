@@ -1,12 +1,13 @@
 -- TitleService (ServerScriptService > Modules 안의 ModuleScript, 이름: TitleService)
 -- 캐릭터 머리 위에 짧은 칭호 한 줄을 띄운다 (다른 유저 눈에도 보인다).
---   우선순위 (높은 것 하나만): 보스 러쉬 이번 주 1~3위 > 명예의 전당(전투력 TOP 3) > 던전 최고 깊이(10 이상)
+--   우선순위 (높은 것 하나만): 보스 러쉬 이번 주 1~3위 > 명예의 전당(전투력 TOP 3) > 무한의 탑(50층 이상) > 던전 최고 깊이(10 이상)
 --   칭호 값은 서버가 정하고, 머리 위 글자(BillboardGui)도 서버가 붙인다. 10초마다 바뀐 것만 갱신한다 (부하가 작다).
 --   순위는 ShowcaseService 가 알고 있는 값(HallRank / WeeklyRank)을 읽는다. 운영자가 지운 기록은 거기서 같이 사라진다.
 
 local Players = game:GetService("Players")
 
 local Showcase = require(script.Parent:WaitForChild("ShowcaseService"))
+local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Config"))
 
 local Titles = {}
 
@@ -23,6 +24,12 @@ local function titleOf(player)
 	if week == 3 then return "🥉 Boss Rush #3", MEDAL_COLORS[3] end
 	local hall = Showcase.HallRank(player.UserId)
 	if hall then return "🏆 Hall of Fame #" .. hall, MEDAL_COLORS[hall] end
+	-- 무한의 탑 50층 이상: 깊이 칭호보다 위 (탑은 층마다 제약이 붙어 더 어렵다). 둘 다면 탑 하나만 단다
+	local tower = player:GetAttribute("TowerBest") or 0
+	local every = (Config and Config.Tower and Config.Tower.TitleEvery) or 50
+	if tower >= every then
+		return "🗼 Tower " .. tower, Color3.fromRGB(190, 150, 255)
+	end
 	local depth = player:GetAttribute("DepthBest_All") or 0
 	if depth >= MIN_DEPTH then
 		return "⛏ Depth " .. depth, Color3.fromRGB(255, 220, 110):Lerp(Color3.fromRGB(255, 120, 110), math.clamp(depth / 40, 0, 1))

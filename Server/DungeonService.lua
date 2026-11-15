@@ -3582,12 +3582,6 @@ function Dungeon.StartTower(player, floor)
 	Dungeon.Start(player, "Cave", "D" .. floor, false, nil, false, nil, { Floor = floor })
 	local run = playerRun[player]
 	if not run or not run.Tower then return false end
-	for _, c in ipairs(Config.TowerConstraints(floor)) do
-		run.PenHealth = (run.PenHealth or 1) * (c.Health or 1)
-		run.PenDamage = (run.PenDamage or 1) * (c.Damage or 1)
-		run.PenSpeed = (run.PenSpeed or 1) * (c.Speed or 1)
-		run.PenCount = (run.PenCount or 1) * (c.Count or 1)
-	end
 	notify(player, string.format("🗼 Tower floor %d", floor))
 	return true
 end
@@ -3776,6 +3770,14 @@ function Dungeon.Start(player, typeKey, diffKey, riftMode, riftDepth, fromField,
 		run.GoldMult *= run.Mutator.GoldMult or 1
 	end
 	nextRunId += 1
+	if run.Tower then -- 탑 층 제약: 루프가 첫 웨이브를 뽑기 전에 건다 (예전엔 시작 뒤에 걸어서 첫 웨이브만 빠졌다)
+		for _, c in ipairs(Config.TowerConstraints(run.Tower.Floor)) do
+			run.PenHealth = (run.PenHealth or 1) * (c.Health or 1)
+			run.PenDamage = (run.PenDamage or 1) * (c.Damage or 1)
+			run.PenSpeed = (run.PenSpeed or 1) * (c.Speed or 1)
+			run.PenCount = (run.PenCount or 1) * (c.Count or 1)
+		end
+	end
 	runs[run.Id] = run
 
 	-- 몬스터 AI(MonsterTypes)가 던전 환경을 다루는 데 쓰는 함수들

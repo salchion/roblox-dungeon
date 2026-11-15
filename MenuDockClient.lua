@@ -107,6 +107,7 @@ local UNLOCK = {
 	Sets = function() return anySetOpen() end,
 	Codex = function() return cleared() >= 2 or lv() >= 15 end,
 	Ranking = function() return lv() >= 10 or cleared() >= 2 end,
+	Tower = function() return cleared() >= 2 or lv() >= 15 end,
 }
 
 local closeOtherWindows
@@ -122,6 +123,7 @@ local BUTTONS = {
 	{ Icon = "📖", Text = "Codex",    Color = Color3.fromRGB(110, 100, 170), Signal = "OpenCodex", Window = "CodexGui" },
 	{ Icon = "🎁", Text = "Shop",     Color = Color3.fromRGB(185, 75, 105), Signal = "OpenShop", Window = "ShopGui" },
 	{ Icon = "🏆", Text = "Ranking",  Color = Color3.fromRGB(170, 150, 60), Tab = "Rank", Window = "HUD" },
+	{ Icon = "🗼", Text = "Tower",    Color = Color3.fromRGB(120, 90, 160), Signal = "OpenTower", Window = "TowerGui" },
 	{ Icon = "⚙", Text = "Settings", Color = Color3.fromRGB(95, 105, 130), Signal = "OpenHelp" },
 }
 
@@ -139,7 +141,7 @@ local entries = {} -- { Button, Icon, Label } (위치 / 글자 크기는 layout(
 local menuOpen = false -- 폰: 접힌 메뉴(☰)가 열려 있나
 
 -- 큰 창은 한 번에 하나: 어떤 버튼을 누르면 지금 열려 있는 다른 큰 창(펫 / 스탯 / 세트 / 도감 / 상점 / 메뉴)을 먼저 닫는다 (창끼리 겹쳐 보이지 않게). def.Window = 이 버튼이 여는 창이 들어 있는 화면 이름 (그 창은 그대로 둔다: 같은 버튼을 한 번 더 누르면 닫히는 토글이 유지된다)
-local WINDOW_GUIS = { "PetGui", "ShopGui", "LevelStatGui", "CodexGui", "AugGui", "OddsGui" }
+local WINDOW_GUIS = { "PetGui", "ShopGui", "LevelStatGui", "CodexGui", "AugGui", "OddsGui", "TowerGui" }
 function closeOtherWindows(keep)
 	for _, name in ipairs(WINDOW_GUIS) do
 		local g = playerGui:FindFirstChild(name)

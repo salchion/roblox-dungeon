@@ -288,6 +288,13 @@
       "overwrite": true
     },
     {
+      "path": "TowerClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "TowerClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "RunChoiceClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "RunChoiceClient",

@@ -859,3 +859,14 @@
 2890¦敵が30%速い¦Gegner 30% schneller¦Ennemis 30% plus rapides¦Enemigos 30% más rápidos¦Inimigos 30% mais rápidos¦敌人速度 +30%¦적 30% 더 빠름
 2891¦大群¦Schwarm¦Nuée¦Enjambre¦Enxame¦虫群¦떼거리
 2892¦敵が40%増加¦40% mehr Gegner¦40% d'ennemis en plus¦40% más enemigos¦40% mais inimigos¦敌人数量 +40%¦적 40% 더 많음
+2893¦塔¦Turm¦Tour¦Torre¦Torre¦塔¦탑
+2894¦🗼 無限の塔¦🗼 Endloser Turm¦🗼 Tour infinie¦🗼 Torre infinita¦🗼 Torre infinita¦🗼 无限之塔¦🗼 무한의 탑
+2895¦最高 {number1}階¦Beste Etage {number1}¦Meilleur étage {number1}¦Mejor piso {number1}¦Melhor andar {number1}¦最高 第{number1}层¦최고 {number1}층
+2896¦全階クリア!¦Alle Etagen geschafft!¦Tous les étages terminés !¦¡Todos los pisos superados!¦Todos os andares concluídos!¦全部楼层通关！¦모든 층 클리어!
+2897¦次: {number1}階¦Nächste: Etage {number1}¦Suivant : étage {number1}¦Siguiente: piso {number1}¦Próximo: andar {number1}¦下一层：第{number1}层¦다음: {number1}층
+2898¦🌈 {number1}階ごと: 神話装備確定¦🌈 Alle {number1} Etagen: garantierte mythische Ausrüstung¦🌈 Tous les {number1} étages : équipement mythique garanti¦🌈 Cada {number1} pisos: equipo mítico garantizado¦🌈 A cada {number1} andares: equipamento mítico garantido¦🌈 每{number1}层：必得神话装备¦🌈 {number1}층마다: 신화 장비 확정
+2899¦🗼 {number1}階以上: 頭上に塔の称号¦🗼 Ab Etage {number1}: Turmtitel über deinem Kopf¦🗼 Étage {number1}+ : titre de la tour au-dessus de la tête¦🗼 Piso {number1}+: título de la torre sobre tu cabeza¦🗼 Andar {number1}+: título da torre sobre a cabeça¦🗼 第{number1}层以上：头顶显示塔称号¦🗼 {number1}층 이상: 머리 위에 탑 칭호
+2900¦ソロ · 鍵不要 · 失敗したら同じ階に再挑戦¦Solo · kein Schlüssel · bei Niederlage dieselbe Etage erneut¦Solo · sans clé · échec = même étage à nouveau¦Solo · sin llave · si fallas, repites el mismo piso¦Solo · sem chave · falhou = mesmo andar de novo¦单人 · 无需钥匙 · 失败则重试同一层¦혼자 · 열쇠 없음 · 실패하면 같은 층 다시
+2901¦{number1}階に入る¦Etage {number1} betreten¦Entrer à l'étage {number1}¦Entrar al piso {number1}¦Entrar no andar {number1}¦进入第{number1}层¦{number1}층 입장
+2902¦町から入場¦Aus der Stadt betreten¦Entrer depuis la ville¦Entrar desde el pueblo¦Entrar pela cidade¦在城镇进入¦마을에서 입장
+2903¦🗼 塔 {number1}¦🗼 Turm {number1}¦🗼 Tour {number1}¦🗼 Torre {number1}¦🗼 Torre {number1}¦🗼 塔 {number1}¦🗼 탑 {number1}
