@@ -2906,5 +2906,11 @@
 "🃏 Draft {number1}/{number2}",
 "💨 Evolved: Gale Dash",
 "⚡ Evolved: Awakening",
-"💥 BROKEN"
+"💥 BROKEN",
+"Weapon upgrade",
+"Weapon maxed",
+"+{number1} · next {text2} G · you have {text3} G",
+"Set you're wearing Lv.{number1} · next gold level {text2} G",
+"Best depth {number1} · Free {number2} · Keys {number3}",
+"Need {text1} G more"
 ]

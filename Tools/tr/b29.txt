@@ -874,3 +874,9 @@
 2905¦💨 進化: 疾風ダッシュ¦💨 Entwickelt: Sturmsprint¦💨 Évolution : Ruée tempête¦💨 Evolución: Embestida vendaval¦💨 Evoluiu: Investida Vendaval¦💨 进化：疾风冲刺¦💨 진화: 질풍 대시
 2906¦⚡ 進化: 覚醒¦⚡ Entwickelt: Erwachen¦⚡ Évolution : Éveil¦⚡ Evolución: Despertar¦⚡ Evoluiu: Despertar¦⚡ 进化：觉醒¦⚡ 진화: 각성
 2907¦💥 ブレイク¦💥 GEBROCHEN¦💥 BRISÉ¦💥 ¡ROTO!¦💥 QUEBRADO¦💥 破防¦💥 그로기
+2908¦武器強化¦Waffenaufwertung¦Amélioration d'arme¦Mejora de arma¦Melhoria de arma¦武器强化¦무기 강화
+2909¦武器は最大¦Waffe maximal¦Arme au max¦Arma al máximo¦Arma no máximo¦武器已满级¦무기 최대
+2910¦+{number1} · 次 {text2} G · 所持 {text3} G¦+{number1} · nächste {text2} G · du hast {text3} G¦+{number1} · prochain {text2} G · vous avez {text3} G¦+{number1} · siguiente {text2} G · tienes {text3} G¦+{number1} · próximo {text2} G · você tem {text3} G¦+{number1} · 下次 {text2} G · 持有 {text3} G¦+{number1} · 다음 {text2} G · 보유 {text3} G
+2911¦装着中のセット Lv.{number1} · 次のゴールド段階 {text2} G¦Getragenes Set Lv.{number1} · nächste Goldstufe {text2} G¦Set porté Niv.{number1} · prochain niveau d'or {text2} G¦Set equipado Nv.{number1} · siguiente nivel de oro {text2} G¦Set equipado Nv.{number1} · próximo nível de ouro {text2} G¦穿戴的套装 Lv.{number1} · 下一金币等级 {text2} G¦끼고 있는 세트 Lv.{number1} · 다음 골드 단계 {text2} G
+2912¦最高深度 {number1} · 無料 {number2} · 鍵 {number3}¦Beste Tiefe {number1} · Gratis {number2} · Schlüssel {number3}¦Meilleure profondeur {number1} · Gratuit {number2} · Clés {number3}¦Mejor profundidad {number1} · Gratis {number2} · Llaves {number3}¦Melhor profundidade {number1} · Grátis {number2} · Chaves {number3}¦最深 {number1} · 免费 {number2} · 钥匙 {number3}¦최고 깊이 {number1} · 무료 {number2} · 열쇠 {number3}
+2913¦あと {text1} G 必要¦Noch {text1} G nötig¦Il manque {text1} G¦Faltan {text1} G¦Faltam {text1} G¦还差 {text1} G¦{text1} G 더 필요

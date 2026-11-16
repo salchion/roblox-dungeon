@@ -1718,7 +1718,7 @@ Config.FinalLord = {
 	RewardTickets = 40,
 	Phase2 = 0.7, Phase3 = 0.35, -- 체력이 이 비율 아래로 내려가면 다음 단계 (패턴이 늘고 빨라진다)
 }
-Config.Sets.AugSlotZones = { 0, 4, 7 }
+Config.Sets.AugSlotZones = { 0, 3, 7 } -- (두 번째 칸을 3구역 클리어로 앞당겼다: 4구역 벽 앞에 잡을 성장 수단이 없었다)
 Config.Sets.AugCostMult = { 1, 2.5, 6 } -- 1단계 / 2단계 / 3단계 비용 배수
 -- 세트 효과 가격의 기준 구역 (E1, 11-15 확정): 세트 구역과 내가 가장 멀리 간 구역(MaxZone) 중 높은 쪽.
 --   위력(AugHitMult)은 그대로 두고 "가격 기준"만 올린다. 초반 플레이어는 자기 구역 가격 그대로라 진행이 안 막히고,

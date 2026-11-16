@@ -1168,6 +1168,8 @@ return {
 		["💨 Evolved: Gale Dash"] = "💨 진화: 질풍 대시",
 		["⚡ Evolved: Awakening"] = "⚡ 진화: 각성",
 		["💥 BROKEN"] = "💥 그로기",
+		["Weapon upgrade"] = "무기 강화",
+		["Weapon maxed"] = "무기 최대",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1246,6 +1248,5 @@ return {
 		{ "Each depth up: monster HP +{number1}% · damage +{number2}% · gold +{number3}% · better chest odds", "깊이 한 칸마다: 몬스터 체력 +{number1}% · 피해 +{number2}% · 골드 +{number3}% · 상자 확률 상승" },
 		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "{number1}층까지 클리어  ·  내 전투력에 맞는 깊이를 자유롭게 고르세요  (다음: {number2})" },
 		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "럭키 원 타이틀 『럭키 원』\n전설 장비 획득\n{number1} / {number2} 보상: 🎫 {number3}" },
-		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "치명타 시 맞은 적에게 미사일 {number1}발 (각각 치명타 피해의 25%)" },
 	},
 }

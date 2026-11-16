@@ -322,9 +322,10 @@ local function showWall(data)
 	local lines = { string.format("<font size='17' color='#ffd966'><b>🚪 Stuck at Zone %d? Try another door</b></font>", data.Zone), "" }
 	guideText.Text = table.concat(lines, "\n")
 	local ACTIONS = {
-		-- (던전은 마을 북쪽 관문, 파티는 마을 오른쪽 위 패널에서: 바로 여는 신호가 없어 안내만 한다)
-		Codex = function() player:SetAttribute("OpenCodex", os.clock()) end,
+		-- (무기 강화 창은 마을에서만 열리고 던전은 북쪽 관문이라: 그 둘은 글자 안내만. 필드 / 던전 어디서나 열리는 것만 버튼으로)
 		Aug = function() player:SetAttribute("OpenAug", os.clock()) end,
+		Stats = function() player:SetAttribute("OpenStats", os.clock()) end,
+		Train = function() player:SetAttribute("OpenMenuTab", "Growth|" .. os.clock()) end,
 	}
 	for i, route in ipairs(data.Routes or {}) do
 		local b = Instance.new("TextButton")

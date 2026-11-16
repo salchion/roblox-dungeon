@@ -1,7 +1,7 @@
 -- AugService (ServerScriptService > Modules 안의 ModuleScript, 이름: AugService)
 -- 세트 효과(미사일 / 낙뢰 / 유성 ...): 장비가 아니라 "골드로 활성화"하는 능력.
 --   * 구역 군주를 잡으면 그 구역 효과가 열리고, 골드로 1~3단계까지 올린다 (Config.Sets.AugCost)
---   * 동시에 켤 수 있는 개수(슬롯)는 처음 1개, 4구역 / 7구역을 클리어하면 늘어난다 (Config.Sets.AugSlotZones)
+--   * 동시에 켤 수 있는 개수(슬롯)는 처음 1개, 3구역 / 7구역을 클리어하면 늘어난다 (Config.Sets.AugSlotZones)
 --   * 저장: MetaService 의 Rift 표 안 AugBoss(군주를 잡은 구역) / AugLv(단계) / AugOn(켠 효과). 키는 문자열 구역 번호.
 --   * 던전 / 필드의 효과 코드는 예전 그대로 Attribute(AugMissile 등 = 단계)를 읽는다. 이 모듈이 그 Attribute 를 채운다.
 --   * 화면용 Attribute: AugSlots, AugLvZ_<구역>(단계), AugOnZ_<구역>(켬), AugOpenZ_<구역>(군주를 잡아 열림)

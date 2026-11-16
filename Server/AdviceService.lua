@@ -27,14 +27,15 @@ local tipIndex = setmetatable({}, { __mode = "k" })
 
 -- 쓰러졌을 때 "지금 바로 할 수 있는 강해지는 방법" 요약 카드 (모바일 게임의 패배 화면처럼). 가능한 것만, 할 수 있는 순서대로 최대 4개
 local lastGuide = setmetatable({}, { __mode = "k" })
+local function comma(n) local s = tostring(math.floor(n or 0)) local r repeat s, r = string.gsub(s, "^(-?%d+)(%d%d%d)", "%1,%2") until r == 0 return s end
 local function deathSources(player)
 	local list = {}
 	local gold = player:GetAttribute("Gold") or 0
 	local weaponLevel = player:GetAttribute("WeaponLevel") or 0
 	if weaponLevel < Config.Weapon.MaxLevel then
 		local okCost, cost = pcall(Config.GetEnhanceCost, weaponLevel)
-		if okCost and cost and gold >= cost then
-			table.insert(list, { Icon = "🔨", Name = "Upgrade your weapon", Desc = "The biggest power boost", Status = string.format("You can afford it now (%d G)", cost) })
+		if okCost and cost then -- (돈이 모자라도 보여 준다: 벽에서 "할 게 없는 화면"이 됐다. 모자라는 만큼을 숫자로)
+			table.insert(list, { Icon = "🔨", Name = "Upgrade your weapon", Desc = "The biggest power boost", Status = gold >= cost and string.format("You can afford it now (%d G)", cost) or string.format("Need %s G more", comma(cost - gold)) })
 		end
 	end
 	local cheapest
@@ -46,8 +47,8 @@ local function deathSources(player)
 			if okCost and cost and (not cheapest or cost < cheapest) then cheapest = cost end
 		end
 	end
-	if cheapest and gold >= cheapest then
-		table.insert(list, { Icon = "🛡", Name = "Upgrade your gear", Desc = "More HP and damage", Status = string.format("From %d G", cheapest) })
+	if cheapest then
+		table.insert(list, { Icon = "🛡", Name = "Upgrade your gear", Desc = "More HP and damage", Status = gold >= cheapest and string.format("From %d G", cheapest) or string.format("Need %s G more", comma(cheapest - gold)) })
 	end
 	local points = player:GetAttribute("LvPointsLeft") or 0
 	if points > 0 then
@@ -72,7 +73,6 @@ end
 --   서버 메모리만 (저장 안 함) · 구역마다 세션 1번 · 최소 5분 간격 · 튜토리얼 중 제외. 벌칙이 아니라 안내다
 local wallDeaths = setmetatable({}, { __mode = "k" }) -- [player] = { [zone] = { t1, t2, ... } }
 local wallShown = setmetatable({}, { __mode = "k" }) -- [player] = { [zone] = true, Last = os.clock() }
-local function comma(n) local s = tostring(math.floor(n or 0)) local r repeat s, r = string.gsub(s, "^(-?%d+)(%d%d%d)", "%1,%2") until r == 0 return s end
 function Advice.WallCard(player)
 	if player:GetAttribute("TutorialActive") == true then return end
 	local zone = math.min(Config.Field.ZoneCount, (player:GetAttribute("ClearedZone") or 0) + 1)
@@ -87,10 +87,6 @@ function Advice.WallCard(player)
 	wallShown[player] = shown
 	if #list < 3 or shown[zone] or now - (shown.Last or -1e9) < 300 then return end
 	shown[zone], shown.Last = true, now
-	local setKey = Config.Sets.ZoneKeys[zone]
-	local setDef = setKey and Config.Sets[setKey]
-	local b2 = {}
-	for _, b in ipairs(setDef and setDef.Bonuses[2] or {}) do table.insert(b2, Config.FormatBonus(b.Stat, b.Value)) end
 	local augZone, augLv, augCost = nil, 0, nil -- 지금 켜진 세트 효과 중 가장 높은 것의 다음 골드 단계 비용
 	for z = 1, Config.Field.ZoneCount do
 		if player:GetAttribute("AugOnZ_" .. z) == true then
@@ -102,13 +98,36 @@ function Advice.WallCard(player)
 		local gold = player:GetAttribute("AugLvZ_" .. augZone) or 0
 		if gold < 3 then augCost = Config.Sets.AugCost(augZone, gold + 1, player:GetAttribute("MaxZone") or augZone) end
 	end
+	-- 4루트 = 세로 성장 (구역 세트 모으기는 뺐다: 세트는 일부러 수평이라 4구역 세트 2부위는 치명 +6% 뿐, 옆으로 새는 안내였다)
+	local gold = player:GetAttribute("Gold") or 0
+	local wl = player:GetAttribute("WeaponLevel") or 0
+	local upInfo
+	if wl >= Config.Weapon.MaxLevel then
+		upInfo = "Weapon maxed"
+	else
+		local okC, cost = pcall(Config.GetEnhanceCost, wl)
+		local okM, mile = pcall(Config.GetNextMilestone, wl)
+		cost = okC and cost or 0
+		upInfo = string.format("<font>+%d · next %s G · you have %s G</font>", wl, comma(cost), comma(gold)) -- (조각마다 <font>: 번역이 조각 단위라)
+		if okM and mile and mile.Level then upInfo ..= string.format(" → <font>%s</font> +%d", mile.Name or "", mile.Level) end -- 다음 진화(새 무기 형 / 시대)
+	end
+	local points = player:GetAttribute("LvPointsLeft") or 0
+	local okIdle, idle = pcall(Growth.IdleSlots, player)
+	local statsRoute
+	if points > 0 then
+		statsRoute = { Key = "Stats", Icon = "📊", Name = "Stats", Info = string.format("<font>%d unspent</font> · <font>Lv %d</font>", points, player:GetAttribute("LvTotal") or 0) }
+	elseif okIdle and idle and idle > 0 and player:GetAttribute("GrowthUnlocked") == true then
+		statsRoute = { Key = "Train", Icon = "🏋", Name = "Training", Info = string.format("<font>%d empty slot(s)</font> · <font>Grows even while you're away</font>", idle) }
+	else
+		statsRoute = { Key = "Train", Icon = "🏋", Name = "Training", Info = "<font>Grows even while you're away</font>" }
+	end
 	Remotes.Tutorial:FireClient(player, "Wall", {
 		Zone = zone, Deaths = #list,
 		Routes = {
-			{ Key = "Dungeon", Icon = "🏰", Name = "Dungeon", Info = string.format("Town north gate · boss chest gear + gold · Free %d · Keys %d", player:GetAttribute("DungeonFree") or 0, player:GetAttribute("Keys") or 0) },
-			{ Key = "Codex", Icon = "📖", Name = "Zone set", Info = setDef and string.format("%s %s 2 pieces: %s", setDef.Icon or "", setDef.Name, table.concat(b2, " · ")) or "Collect this zone's set gear" },
-			{ Key = "Aug", Icon = "✨", Name = "Set effect", Info = augZone and (augCost and string.format("Lv.%d now · next gold level %s G", augLv, comma(augCost)) or string.format("Lv.%d now · gold levels maxed", augLv)) or "No set effect on yet — wear 2+ set pieces" },
-			{ Key = "Party", Icon = "🤝", Name = "Party", Info = "Party panel (town, top right) · +4% damage per nearby member (up to +12%)" },
+			{ Key = "Upgrade", Icon = "🔨", Name = "Weapon upgrade", Info = upInfo },
+			{ Key = "Aug", Icon = "✨", Name = "Set effect", Info = augZone and (augCost and string.format("Set you're wearing Lv.%d · next gold level %s G", augLv, comma(augCost)) or string.format("Set you're wearing Lv.%d · gold levels maxed", augLv)) or "No set effect on yet — wear 2+ set pieces" },
+			{ Key = "Dungeon", Icon = "🏰", Name = "Dungeon", Info = string.format("Best depth %d · Free %d · Keys %d", player:GetAttribute("DepthBest_All") or 0, player:GetAttribute("DungeonFree") or 0, player:GetAttribute("Keys") or 0) },
+			statsRoute,
 		},
 	})
 end
