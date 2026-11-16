@@ -13,7 +13,8 @@ local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local Meta = require(script.Parent:WaitForChild("MetaService"))
 
 local Aug = {}
-local ZONES = Config.Field.ZoneCount
+local ZONES = #Config.Sets.ZoneAug -- (9번째 폭풍의 방벽 포함)
+local function homeZone(z) return (Config.Sets.AugHomeZone and Config.Sets.AugHomeZone[z]) or z end -- (구역 세트가 없는 효과의 해금 / 가격 기준 구역)
 
 local function notify(player, text)
 	Remotes.Notify:FireClient(player, text)
@@ -29,7 +30,8 @@ local function stateOf(player)
 end
 
 local function isOpen(player, rift, zone)
-	return rift.AugBoss[tostring(zone)] == true or (player:GetAttribute("ClearedZone") or 0) >= zone -- 예전에 클리어한 구역도 열려 있다
+	local hz = homeZone(zone)
+	return rift.AugBoss[tostring(hz)] == true or (player:GetAttribute("ClearedZone") or 0) >= hz -- 예전에 클리어한 구역도 열려 있다
 end
 
 local function slotCount(player, rift)
@@ -168,6 +170,12 @@ function Aug.NoteBoss(player, zone)
 		local attr = Config.Sets.ZoneAug[zone]
 		local info = Config.AugInfo[attr]
 		notify(player, string.format("%s Set effect 『%s』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", info.Icon, info.Name))
+		for extra, hz in pairs(Config.Sets.AugHomeZone or {}) do -- (같은 군주로 열리는 구역 세트 없는 효과도 알린다)
+			if hz == zone then
+				local xi = Config.AugInfo[Config.Sets.ZoneAug[extra]]
+				if xi then notify(player, string.format("%s %s also unlocked", xi.Icon, xi.Name)) end
+			end
+		end
 	end
 	local after = slotCount(player, rift)
 	if after > before then
@@ -198,7 +206,7 @@ Remotes.Aug.OnServerEvent:Connect(function(player, action, zone)
 		end
 		local level = rift.AugLv[key] or 0
 		if level >= 3 then return end
-		local cost = Config.Sets.AugCost(zone, level + 1, player:GetAttribute("MaxZone") or 0)
+		local cost = Config.Sets.AugCost(homeZone(zone), level + 1, player:GetAttribute("MaxZone") or 0)
 		local gold = player:GetAttribute("Gold") or 0
 		if gold < cost then
 			notify(player, string.format("Not enough gold (need %d G)", cost))

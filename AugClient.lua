@@ -12,7 +12,8 @@ local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local SoundBank = require(ReplicatedStorage:WaitForChild("SoundBank"))
 
 local player = Players.LocalPlayer
-local ZONES = Config.Field.ZoneCount
+local ZONES = #Config.Sets.ZoneAug -- (9번째 폭풍의 방벽 포함)
+local function homeZone(z) return (Config.Sets.AugHomeZone and Config.Sets.AugHomeZone[z]) or z end -- (구역 세트가 없는 효과: 해금 / 가격 / "Zone N" 표시 기준 구역)
 local TweenService = game:GetService("TweenService")
 
 -- 세트 효과 가격 기준 구역 (E1): 세트 구역과 내가 가장 멀리 간 구역(MaxZone) 중 높은 쪽 (Config.Sets.AugPriceZone)
@@ -21,7 +22,7 @@ local function maxZone()
 	return player:GetAttribute("MaxZone") or 0
 end
 local function augCost(zone, level)
-	return Config.Sets.AugCost(zone, level, maxZone())
+	return Config.Sets.AugCost(homeZone(zone), level, maxZone())
 end
 
 local gui = Instance.new("ScreenGui")
@@ -307,7 +308,8 @@ function refresh()
 			else
 				r.Status.Text = "<font color='#888899'>🔒 Defeat the lord</font>"
 			end
-			r.Sub.Text = (open or level + gear > 0) and string.format("Zone %d · Gold %d + Set gear %d", zone, level, gear) or string.format("Unlocks when you defeat the Zone %d lord", zone)
+			local hz = homeZone(zone)
+			r.Sub.Text = (open or level + gear > 0) and (Config.Sets.ZoneKeys[zone] and string.format("Zone %d · Gold %d + Set gear %d", hz, level, gear) or string.format("Zone %d · Gold %d + Gear option %d", hz, level, gear)) or string.format("Unlocks when you defeat the Zone %d lord", hz) -- (방벽은 세트 장비가 없고 장비 "+1" 옵션만)
 		end
 		r.Match.Visible = open and Config.AugWeaponMatch(player, Config.Sets.ZoneAug[zone]) == true
 		if open and level == 0 and gold >= augCost(zone, 1) then affordable += 1 end
@@ -324,7 +326,7 @@ function refresh()
 	boxIcon.Text = info.Icon
 	boxIconStroke.Color = info.Color
 	boxStroke.Color = on and info.Color or Color3.fromRGB(255, 190, 110)
-	boxTitle.Text = string.format("<font size='16'><b>%s</b></font>\n%s<font size='11'>Zone %d</font>", info.Name, on and "<font color='#78ffb4' size='11'>● ON · </font>" or "", zone)
+	boxTitle.Text = string.format("<font size='16'><b>%s</b></font>\n%s<font size='11'>Zone %d</font>", info.Name, on and "<font color='#78ffb4' size='11'>● ON · </font>" or "", homeZone(zone))
 	boxLevel.Text = level + gear > 0 and ("Lv." .. (level + gear)) or ""
 	legendGold.Text = string.format("<font color='#ffd966'>● Gold %d</font>  +  <font color='#8fe0ff'>● Set gear %d</font>  =  <b>Lv.%d</b>", level, gear, math.min(6, level + gear))
 	legendGear.Text = ""
@@ -416,7 +418,7 @@ function refresh()
 	toggleButton.TextColor3 = pinned and Color3.fromRGB(255, 236, 190) or Color3.fromRGB(170, 174, 200)
 	toggleButton.Visible = open or (level + gear) > 0
 	if not open then
-		buyButton.Text = string.format("🔒 Defeat the Zone %d lord", zone)
+		buyButton.Text = string.format("🔒 Defeat the Zone %d lord", homeZone(zone))
 		buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
 		if (level + gear) > 0 then -- (세트 장비로 이미 켜질 수 있는 효과: 왼쪽에 📌 버튼이 있으니 반만)
 			buyButton.Size = UDim2.new(0.5, -8, 0, 38)
@@ -436,9 +438,9 @@ function refresh()
 			buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
 		else
 			local cost = augCost(zone, level + 1)
-			local priceZone = Config.Sets.AugPriceZone(zone, maxZone())
+			local priceZone = Config.Sets.AugPriceZone(homeZone(zone), maxZone())
 			-- 가격 기준 구역이 세트 구역보다 높으면 왜 비싼지 같이 적는다 (후반에 낮은 구역 세트를 올릴 때)
-			buyButton.Text = priceZone > zone and string.format("Upgrade %s G (Zone %d price)", commas(cost), priceZone) or string.format("Upgrade %s G", commas(cost))
+			buyButton.Text = priceZone > homeZone(zone) and string.format("Upgrade %s G (Zone %d price)", commas(cost), priceZone) or string.format("Upgrade %s G", commas(cost))
 			buyButton.BackgroundColor3 = gold >= cost and Color3.fromRGB(150, 110, 40) or Color3.fromRGB(80, 74, 66)
 		end
 	end

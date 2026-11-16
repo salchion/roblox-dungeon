@@ -4,6 +4,15 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "ZONE {number1}  ·  Snowfield   ☠☠☠☠☠", "区域 {number1} · 雪原 ☠☠☠☠☠" },
+		{ "🎁 Boss chest · {number1} gear pieces", "🎁 首领宝箱 · {number1}件装备" },
+		{ "Succeed at upgrading {number1} times", "成功强化 {number1} 次" },
+		{ "Attack +{number1}% per point  (max {number2})", "攻击 +{number1}%/点  (上限 {number2})" },
+		{ "Returning to the field in {number1}s", "{number1}秒后返回野外" },
+		{ "Zone {number1} monsters {number2} / {number3} defeated", "{number1}区怪物 {number2} / {number3} 已击败" },
+		{ "◆ Damage Taken Reduction +{number1}%", "◆ 受到伤害减少 +{number1}%" },
+		{ "Gives back {number1} gauge after use", "使用后返还{number1}点能量" },
+		{ "🏆 Zone {number1} First Clear Reward!", "🏆 {number1}区域 首通奖励！" },
 		{ "Skill Cooldown Reduction +{number1}%", "技能冷却缩减 +{number1}%" },
 		{ "Skill Cooldown Reduction -{number1}%", "技能冷却缩减 -{number1}%" },
 		{ "Lv.{number1} now · gold levels maxed", "当前 Lv.{number1} · 金币等级已满" },
@@ -624,6 +633,7 @@ return {
 		{ "Next point: {text1} / {text2} XP", "下一点:{text1} / {text2} 经验" },
 		{ "★ New unique: {text1} — {text2}", "★ 新独特效果:{text1} — {text2}" },
 		{ "Your best tier: {text1} {text2}", "你的最高阶位:{text1} {text2}" },
+		{ "{text1} {text2} also unlocked", "{text1} {text2} 也已解锁" },
 		{ "· New era 『{text1} {text2}』!", "· 新时代『{text1} {text2}』!" },
 		{ "{text1} equipped! ({text2})", "已装备 {text1}!({text2})" },
 		{ "ZONE {number1}  ·  {text2}   {text3}", "区域 {number1}  ·  {text2}   {text3}" },

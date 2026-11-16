@@ -33,8 +33,31 @@ function Guard.Take(humanoid, amount)
 			local okN, NearMiss = pcall(function() return require(script.Parent:WaitForChild("NearMissService")) end)
 			if okN and NearMiss.SinceDash and NearMiss.SinceDash(player) < 2 then amount *= 1 - rushGuard end
 		end
+		local ward = player:GetAttribute("AugWard") or 0 -- 세트 효과 "폭풍의 방벽": 한 방 상한을 낮춘다
+		if player:GetAttribute("TutorialDoom") == true then ward = 0 end -- (튜토리얼 최후의 군주는 지게 되어 있는 장면)
 		if (player:GetAttribute("RiftLeft") or 0) <= 0 then -- (보스러쉬 중에는 상한이 없다: 체력이 낮은 사람이 상한 덕에 유리해지면 순위가 불공정해진다)
-			amount = math.min(amount, humanoid.MaxHealth * Config.Defense.HitCap)
+			amount = math.min(amount, humanoid.MaxHealth * Config.WardHitCap(ward))
+		end
+		if amount > 0 and ward >= 4 then -- 4단계부터: 맞으면 번개로 되받아친다 (3초에 한 번)
+			local now = workspace:GetServerTimeNow()
+			if now >= (player:GetAttribute("WardBackAt") or 0) then
+				player:SetAttribute("WardBackAt", now + 3)
+				task.spawn(function()
+					local okD, Dungeon = pcall(function() return require(script.Parent:WaitForChild("DungeonService")) end)
+					local okF, Field = pcall(function() return require(script.Parent:WaitForChild("FieldService")) end)
+					if not okD then return end
+					local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+					if not root then return end
+					local tier = math.min(6, ward)
+					local damage = math.max(1, math.floor(Dungeon.ComputeSetBase(player) * ({ [4] = 0.6, [5] = 0.8, [6] = 1.0 })[tier]))
+					local okE, Effects = pcall(function() return require(script.Parent:WaitForChild("Effects")) end)
+					if okE then Effects.Burst(root.Position, Color3.fromRGB(170, 190, 255), 30) end
+					-- (대상 수 4/5/6: AreaDamage 가 마리 수를 못 받아서, 반경을 단계별로 줄여 비슷하게 맞춘다 = 반경 16 기준 x0.8 / 0.9 / 1.0)
+					local radius = 16 * ({ [4] = 0.8, [5] = 0.9, [6] = 1.0 })[tier]
+					local hit = Dungeon.AreaDamage(player, root.Position, radius, damage)
+					if not hit and okF then Field.AreaDamage(player, root.Position, radius, damage) end
+				end)
+			end
 		end
 	end
 	if amount > 0 then

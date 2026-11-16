@@ -3247,11 +3247,12 @@ local function surviveLoop(run)
 		-- 이미 켜 둔 세트(Y)와 겹치지 않게: 아직 안 켠 세트 중에서 뽑는다 (겹치면 단계만 조금 오르고 새 효과가 없어 손해였다).
 		-- 8개를 모두 켰으면 3단계 미만인 것 중에서 (이번 던전 동안 3단계로)
 		local picks = {}
-		for _, attr in ipairs(Config.Sets.ZoneAug) do
+		local Z = Config.Field.ZoneCount -- (체험은 구역 세트 8개만: 9번째 방벽은 공격이 없고 뽑기 화면 칸도 8개)
+		for i = 1, Z do local attr = Config.Sets.ZoneAug[i]
 			if (member:GetAttribute(attr) or 0) <= 0 then table.insert(picks, attr) end
 		end
 		if #picks == 0 then
-			for _, attr in ipairs(Config.Sets.ZoneAug) do
+			for i = 1, Z do local attr = Config.Sets.ZoneAug[i]
 				if (member:GetAttribute(attr) or 0) < 3 then table.insert(picks, attr) end
 			end
 		end

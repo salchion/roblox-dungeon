@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ [Common] 🌾 Meadow Cloth Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 🌾 草原の布の手袋が自動回収される（エッセンス +{number1} {number2} G）" },
+		{ "Powerhouse   Title 『Powerhouse』\nReach {number1} Power\n{number2} / {number3}   Reward: {number4} G", "パワハウス・タイトル『パワハウス』\n{number1}パワーに到達する\n{number2} / {number3}　報酬：{number4}G" },
 		{ "♻ [Common] 🌲 Forest Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 🌲 森のレザーキャップが自動回収される（エッセンス +{number1} {number2} G）" },
 		{ "The final blast also explodes around every target (attack x{number1})", "最後の爆発が全ての標的の周囲でも起きる（攻撃力x{number1}）" },
 		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 🌾 草原で履かれた靴が自動回収される（エッセンス +{number1} {number2} G）" },
@@ -63,6 +65,7 @@ return {
 		{ "🏆 You defeated the Final Lord!  +{number1} gold  +{number2} tickets", "🏆 ファイナルロードを倒した！  +{number1}ゴールド  +{number2}チケット" },
 		{ "⭐ New record! Depth {number1} cleared. Depth {number2} is unlocked.", "⭐ 新記録！深度{number1}クリア。深度{number2}が解放されました。" },
 		{ "💢 Boss #{number1} is AWAKENED — it attacks twice in a row!", "💢 ボス#{number1}が覚醒した — 2回連続で攻撃してくる！" },
+		{ "one hit can take at most {number1}% of your max HP (was {number2}%)", "一撃で最大HPの{number1}%まで (元は{number2}%)" },
 		{ "🌪 Mob hunter  ·  ✔ 🔫 Railgun / Sniper Rifle (+{number1}%)", "🌪 モブハンター  ·  ✔ 🔫 レールガン/スナイパーライフル (+{number1}%)" },
 		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>\nON</font>", "<font color='#{number1}fffb{number2}'><b>自動攻撃</b>\nオン</font>" },
 		{ "🥈 LeeGoAll_TV\n⚡ {number1} Lv.{number2}\nSniper Rifle · Arcane Era +{number3}", "🥈 LeeGoAll_TV\n⚡ {number1} レベル{number2}\nスナイパーライフル・神秘の時代 +{number3}" },
@@ -228,6 +231,7 @@ return {
 		{ "Survive {number1} dungeon bonus waves", "ダンジョンのボーナスウェーブを{number1}回耐える" },
 		{ "Double Shot chance {number1}%  (max {number2})", "ダブルショット確率 {number1}%  (最大 {number2})" },
 		{ "Points left · next +1 at Lv.{number1}", "残りポイント · 次の+1はLv.{number1}" },
+		{ "Zone {number1} · Gold {number2} + Gear option {number3}", "{number1}区域 · ゴールド {number2} + 装備オプション {number3}" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "敵のHP +{number1}%\nゴールド +{number2}%" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 ダークキャッスルゲート · 推奨レベル ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "スナイパーライフル・神秘の時代 +{number1}" },
@@ -859,6 +863,7 @@ return {
 		{ "Next point: {text1} / {text2} XP", "次のポイント: {text1} / {text2} XP" },
 		{ "★ New unique: {text1} — {text2}", "★ 新しいユニーク: {text1} — {text2}" },
 		{ "Your best tier: {text1} {text2}", "あなたの最高ティア: {text1} {text2}" },
+		{ "{text1} {text2} also unlocked", "{text1} {text2} も解放" },
 		{ "· New era 『{text1} {text2}』!", "· 新時代 『{text1} {text2}』！" },
 		{ "{text1} equipped! ({text2})", "{text1}を装備しました！({text2})" },
 		{ "ZONE {number1}  ·  {text2}   {text3}", "ゾーン{number1}  ·  {text2}   {text3}" },

@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔓 Zone {number1} gate opened! Reward 💰{number2} G · 🎫{number3}  — {text4} · {text5}-only drops: {text6} {text7} Set", "🔓 {number1}구역 문이 열렸어요! 보상 💰{number2} G · 🎫{number3}  — {text4} · {text5} 전용 드랍: {text6} {text7} 세트" },
+		{ "{text1} <b>{text2}</b> — {text3}\n      <font size='10' color='#ffd966'>{text4}</font>", "{text1} <b>{text2}</b> — {text3}\n      <font size='10' color='#ffd966'>{text4}</font>" },
+		{ "{text1}{text2} {text3}  <font color='#8fe0ff'><b>Lv.{number4}</b></font>{text5}", "{text1}{text2} {text3}  <font color='#8fe0ff'><b>Lv.{number4}</b></font>{text5}" },
+		{ "{text1} <b>{text2}</b>  <font color='#{text3}'>{text4}</font> {number5}/3", "{text1} <b>{text2}</b>  <font color='#{text3}'>{text4}</font> {number5}/3" },
+		{ "  {text1} Zone {number2} · {text3}   (Rec. ⚡{number4})  {text5} {text6} Set", "  {text1} {number2}구역 · {text3}   (권장 ⚡{number4})  {text5} {text6} 세트" },
+		{ "<b>{text1}</b>  ·  {text2}🔫 {text3}{text4}</font>", "<b>{text1}</b>  ·  {text2}🔫 {text3}{text4}</font>" },
 		{ "🎖 <font color='#8fd8ff'>Lv.{number1}</font>  <font size='10' color='#aaaacc'>{text2}</font>\n💰 <font color='#ffd966'>{number3} G</font>   🎫 <font color='#d9a6ff'>{number4}</font>\n🔑<font color='#ffe08a'>{number5}</font> <font size='10' color='#aaaacc'>({text6})</font>\n⚡ Power <font color='#ffe16e'>{number7}</font>\n⚔ <font color='#{text8}'>{text9}</font>\n📍 {text10}", "🎖 <font color='#8fd8ff'>Lv.{number1}</font>  <font size='10' color='#aaaacc'>{text2}</font>\n💰 <font color='#ffd966'>{number3} G</font>   🎫 <font color='#d9a6ff'>{number4}</font>\n🔑<font color='#ffe08a'>{number5}</font> <font size='10' color='#aaaacc'>({text6})</font>\n⚡ 전투력 <font color='#ffe16e'>{number7}</font>\n⚔ <font color='#{text8}'>{text9}</font>\n📍 {text10}" },
 		{ "<font size='14'><b>{text1}</b></font>{text2}\n<font color='#bbbbcc'>{text3}</font>\n<font color='#{text4}'>{number5} / {number6}</font>   <font color='#ffd966'>Reward: {text7}</font>", "<font size='14'><b>{text1}</b></font>{text2}\n<font color='#bbbbcc'>{text3}</font>\n<font color='#{text4}'>{number5} / {number6}</font>   <font color='#ffd966'>보상: {text7}</font>" },
 		{ "{text1}  <font color='#{text2}'><b>{text3}</b></font>   <font size='10' color='#8888aa'>{text4}{text5}</font>", "{text1}  <font color='#{text2}'><b>{text3}</b></font>   <font size='10' color='#8888aa'>{text4}{text5}</font>" },

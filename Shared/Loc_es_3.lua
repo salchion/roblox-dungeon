@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3}", "🔒 ¡La puerta está cerrada! Derrota monstruos de la zona {number1}: {number2}/{number3}" },
+		{ "▲ +{number1}% better than your current gear! (I → Bag)", "▲ ¡+{number1}% mejor que tu equipo! (I → Bolsa)" },
+		{ "🥇 {player1}\n⚡ {number1} Lv.{number2}\nSpell Tome · Mythic Era +{number3}", "🥇 {player1}\n⚡ {number1} Nivel {number2}\nTomo de Hechizos · Era Mítica +{number3}" },
+		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!" },
+		{ "every {number1} shots a blade bounces across {number2} enemies", "cada {number1} disparos una cuchilla rebota entre {number2} enemigos" },
 		{ "💰 Golden Goblin defeated! +{number1} G, 3 loot drops!", "💰 ¡Goblin dorado derrotado! +{number1} G, ¡3 botines soltados!" },
 		{ "+1 set-effect option: Legendary {number1}% / Mythic {number2}%", "Opción efecto de conjunto +1: Legendario {number1}% / Mítico {number2}%" },
 		{ "Enemies swarm in more often\nGold +{number1}% instead", "Los enemigos atacan con más frecuencia\nOro +{number1}% en su lugar" },
@@ -149,6 +154,7 @@ return {
 		{ "Survive {number1} dungeon bonus waves", "Sobrevive {number1} oleadas extra de mazmorra" },
 		{ "Double Shot chance {number1}%  (max {number2})", "Probabilidad de doble disparo {number1} %  (máx. {number2})" },
 		{ "Points left · next +1 at Lv.{number1}", "Puntos restantes · próximo +1 en Nv.{number1}" },
+		{ "Zone {number1} · Gold {number2} + Gear option {number3}", "Zona {number1} · Oro {number2} + opción de equipo {number3}" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "Enemy HP +{number1}%\nOro +{number2}% en su lugar" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 Puerta del castillo oscuro · Recomendado ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "Rifle de francotirador · Era Arcana +{number1}" },
@@ -781,6 +787,7 @@ return {
 		{ "Next point: {text1} / {text2} XP", "Siguiente punto: {text1} / {text2} EXP" },
 		{ "★ New unique: {text1} — {text2}", "★ Nuevo único: {text1} — {text2}" },
 		{ "Your best tier: {text1} {text2}", "Tu mejor nivel: {text1} {text2}" },
+		{ "{text1} {text2} also unlocked", "{text1} {text2} también desbloqueado" },
 		{ "· New era 『{text1} {text2}』!", "· ¡Nueva era 『{text1} {text2}』!" },
 		{ "{text1} equipped! ({text2})", "¡{text1} equipado! ({text2})" },
 		{ "ZONE {number1}  ·  {text2}   {text3}", "ZONA {number1}  ·  {text2}   {text3}" },

@@ -906,6 +906,11 @@ return {
 		["💥 BROKEN"] = "💥 BRISÉ",
 		["Weapon upgrade"] = "Amélioration d'arme",
 		["Weapon maxed"] = "Arme au max",
+		["Stormward"] = "Rempart d'orage",
+		["Lowers the most one hit can take from you (25% → 18% of max HP at Lv.6) · does not raise Power"] = "Réduit les dégâts max d'un coup (25% → 18% des PV max au Niv.6) · n'augmente pas la puissance",
+		["when a hit lands, lightning strikes back (60% of your attack, up to 4 enemies, once every 3s)"] = "quand vous êtes touché, la foudre riposte (60% de votre attaque, jusqu'à 4 ennemis, toutes les 3 s)",
+		["strike-back 80%, up to 5"] = "riposte 80%, jusqu'à 5",
+		["strike-back 100%, up to 6"] = "riposte 100%, jusqu'à 6",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1054,9 +1059,5 @@ return {
 		{ "Reduces training / breakthrough wait time by {number1} hour", "Réduit le temps d'attente d'entraînement/de percée de {number1} heures" },
 		{ "Clear depth {number1} once more to record its Sweep reward.", "Termine la profondeur {number1} une fois de plus pour enregistrer sa récompense de balayage." },
 		{ "🎯 Boss hunter  ·  ✔ 🔫 Sniper Rifle / Railgun (+{number1}%)", "🎯 Chasseur de boss · ✔ 🔫 Fusil de sniper / Canon à rails (+{number1}%)" },
-		{ "Zone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated", "Zone {number2} : monstres {number3} / {number4} vaincus · Seigneur 👑 non vaincu" },
-		{ "Shot_Pistol  <font color='#{number1}aa{number2}c{number3}'>Rifle shot</font>", "Tir au pistolet <font color='#{number1}aa{number2}c{number3}'> Tir de fusil </font>" },
-		{ "Reach weapon upgrade level {number1} (about the {number2}th weapon)", "Atteindre le niveau d'amélioration d'arme {number1} (environ la {number2}ème arme)" },
-		{ "⚠ Monster overrun! Thin them out within {number1}s!  ({number2} / {number3})", "⚠ Invasion de monstres ! Éclaircissez-les en {number1} s ! ({number2} / {number3})" },
 	},
 }

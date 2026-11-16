@@ -1170,6 +1170,11 @@ return {
 		["💥 BROKEN"] = "💥 그로기",
 		["Weapon upgrade"] = "무기 강화",
 		["Weapon maxed"] = "무기 최대",
+		["Stormward"] = "폭풍의 방벽",
+		["Lowers the most one hit can take from you (25% → 18% of max HP at Lv.6) · does not raise Power"] = "한 방에 받는 최대 피해를 낮춰요 (Lv.6에서 최대 체력의 25% → 18%) · 전투력은 오르지 않아요",
+		["when a hit lands, lightning strikes back (60% of your attack, up to 4 enemies, once every 3s)"] = "맞으면 번개로 되받아쳐요 (공격력의 60%, 최대 4마리, 3초에 한 번)",
+		["strike-back 80%, up to 5"] = "반격 80%, 최대 5마리",
+		["strike-back 100%, up to 6"] = "반격 100%, 최대 6마리",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1245,8 +1250,5 @@ return {
 		{ "🎒 Bag full: dismantled {number1} gear that your other gear beats (Essence +{number2}, {number3} G)", "🎒 가방이 가득 차서, 다른 장비보다 약한 장비 {number1}개를 분해했어요 (에센스 +{number2}, {number3} G)" },
 		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "스킬 마스터 타이틀 『스킬 마스터』\n스킬을 {number1}번 사용하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
 		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(내 기록: 깊이 {number1} · 던전 테마는 무작위, 확률은 같아요)" },
-		{ "Each depth up: monster HP +{number1}% · damage +{number2}% · gold +{number3}% · better chest odds", "깊이 한 칸마다: 몬스터 체력 +{number1}% · 피해 +{number2}% · 골드 +{number3}% · 상자 확률 상승" },
-		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "{number1}층까지 클리어  ·  내 전투력에 맞는 깊이를 자유롭게 고르세요  (다음: {number2})" },
-		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "럭키 원 타이틀 『럭키 원』\n전설 장비 획득\n{number1} / {number2} 보상: 🎫 {number3}" },
 	},
 }

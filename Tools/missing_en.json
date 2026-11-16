@@ -2912,5 +2912,13 @@
 "+{number1} · next {text2} G · you have {text3} G",
 "Set you're wearing Lv.{number1} · next gold level {text2} G",
 "Best depth {number1} · Free {number2} · Keys {number3}",
-"Need {text1} G more"
+"Need {text1} G more",
+"Stormward",
+"Lowers the most one hit can take from you (25% → 18% of max HP at Lv.6) · does not raise Power",
+"one hit can take at most {number1}% of your max HP (was {number2}%)",
+"when a hit lands, lightning strikes back (60% of your attack, up to 4 enemies, once every 3s)",
+"strike-back 80%, up to 5",
+"strike-back 100%, up to 6",
+"Zone {number1} · Gold {number2} + Gear option {number3}",
+"{text1} {text2} also unlocked"
 ]

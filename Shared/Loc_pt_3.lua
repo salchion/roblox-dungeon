@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Spend {number1} stat points (T key / Stats button)", "Gaste {number1} pontos de estatística (tecla T / botão de estatísticas)" },
+		{ "▶ Next feature: Lv.{number1} 💥 Power  ({number2} lvl · ~{number3} G)", "▶ Próxima funcionalidade: Nível {number1} 💥 Poder ({number2} nível · ~{number3} G)" },
+		{ "✅ Mission complete! Reward: {number1} G + Tickets {number2}", "✅ Missão concluída! Recompensa: {number1} G + Bilhetes {number2}" },
+		{ "Rocket Launcher  ·  keys {number1}-{number2} switch weapons", "Lançador de Foguetes · teclas {number1}-{number2} para trocar de arma" },
 		{ "📅 {number1}-day login streak · Get stronger today!", "📅 Sequência de login de {number1} dias · Fique mais forte hoje!" },
 		{ "Each NEAR MISS stack gives +{number1}% more attack", "Cada acúmulo NEAR MISS dá +{number1}% a mais de ataque" },
 		{ "🔒 Spend {number1} points higher up this path first", "🔒 Gaste antes {number1} pontos mais acima neste caminho" },
@@ -135,6 +139,7 @@ return {
 		{ "Survive {number1} dungeon bonus waves", "Sobreviva a {number1} ondas bônus de masmorra" },
 		{ "Double Shot chance {number1}%  (max {number2})", "Chance de tiro duplo {number1}%  (máx. {number2})" },
 		{ "Points left · next +1 at Lv.{number1}", "Pontos restantes · próximo +1 no Nv.{number1}" },
+		{ "Zone {number1} · Gold {number2} + Gear option {number3}", "Zona {number1} · Ouro {number2} + opção de equipamento {number3}" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "HP do inimigo +{number1}%\nOuro +{number2}% em vez disso" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 Portão do Castelo Sombrio · Rec. ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "Fuzil de Precisão · Era Arcana +{number1}" },
@@ -766,6 +771,7 @@ return {
 		{ "Next point: {text1} / {text2} XP", "Próximo ponto: {text1} / {text2} XP" },
 		{ "★ New unique: {text1} — {text2}", "★ Novo único: {text1} — {text2}" },
 		{ "Your best tier: {text1} {text2}", "Seu melhor nível: {text1} {text2}" },
+		{ "{text1} {text2} also unlocked", "{text1} {text2} também desbloqueado" },
 		{ "· New era 『{text1} {text2}』!", "· Nova era 『{text1} {text2}』!" },
 		{ "{text1} equipped! ({text2})", "{text1} equipado! ({text2})" },
 		{ "ZONE {number1}  ·  {text2}   {text3}", "ZONA {number1}  ·  {text2}   {text3}" },

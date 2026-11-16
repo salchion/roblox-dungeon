@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🗼 Floor {number1} cleared! Guaranteed Mythic gear!", "🗼 Etage {number1} geschafft! Garantierte mythische Ausrüstung!" },
+		{ "Auto-equipped the best gear in {number1} slot(s)!", "Die beste Ausrüstung in {number1} Platz/Plätzen automatisch angelegt!" },
+		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• Etwa {number1} Schüsse/Sek. · Feuerkraft {number2} · Reichweite {number3}" },
+		{ "Damage +{number1}% on a single target: for bosses", "Schaden +{number1} % auf ein einzelnes Ziel: für Bosse" },
+		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}!", "{number1} Sekunden! Belohnungen x{number2}, Combo bis zu x{number3}!" },
+		{ "🔓 You can now run {number1} set effects at once!", "🔓 Du kannst jetzt {number1} Set-Boni gleichzeitig nutzen!" },
 		{ "🛡 Knocked back! Power {number1} required (you: {number2})", "🛡 Zurückgeschleudert! Stärke {number1} nötig (du: {number2})" },
 		{ "💚 Emergency rescue! HP restored ({number1} left)", "💚 Notrettung! LP wiederhergestellt ({number1} übrig)" },
 		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}", "{number1} Sekunden! Belohnung x{number2}, Combo bis zu x{number3}" },
@@ -125,6 +131,7 @@ return {
 		{ "Survive {number1} dungeon bonus waves", "Überstehe {number1} Dungeon-Bonuswellen" },
 		{ "Double Shot chance {number1}%  (max {number2})", "Doppelschuss-Chance {number1} %  (max. {number2})" },
 		{ "Points left · next +1 at Lv.{number1}", "Übrige Punkte · nächster +1 bei St. {number1}" },
+		{ "Zone {number1} · Gold {number2} + Gear option {number3}", "Zone {number1} · Gold {number2} + Ausrüstungsoption {number3}" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "Gegner-HP +{number1}%\nGold +{number2}% stattdessen" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 Dunkles Schloss-Tor · Empfohlen ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "Scharfschützengewehr · Arkanische Ära +{number1}" },
@@ -755,6 +762,7 @@ return {
 		{ "Next point: {text1} / {text2} XP", "Nächster Punkt: {text1} / {text2} EP" },
 		{ "★ New unique: {text1} — {text2}", "★ Neues Unikat: {text1} — {text2}" },
 		{ "Your best tier: {text1} {text2}", "Deine beste Stufe: {text1} {text2}" },
+		{ "{text1} {text2} also unlocked", "{text1} {text2} ebenfalls freigeschaltet" },
 		{ "· New era 『{text1} {text2}』!", "· Neue Ära 『{text1} {text2}』!" },
 		{ "{text1} equipped! ({text2})", "{text1} ausgerüstet! ({text2})" },
 		{ "ZONE {number1}  ·  {text2}   {text3}", "ZONE {number1}  ·  {text2}   {text3}" },
