@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ [Rare] 🌾 Meadow Leather Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [レア] 🌾 草原のレザーグローブが自動回収される（エッセンス +{number1} {number2} G）" },
 		{ "♻ [Common] 🌾 Meadow Cloth Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 🌾 草原の布の手袋が自動回収される（エッセンス +{number1} {number2} G）" },
 		{ "Powerhouse   Title 『Powerhouse』\nReach {number1} Power\n{number2} / {number3}   Reward: {number4} G", "パワハウス・タイトル『パワハウス』\n{number1}パワーに到達する\n{number2} / {number3}　報酬：{number4}G" },
 		{ "♻ [Common] 🌲 Forest Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 🌲 森のレザーキャップが自動回収される（エッセンス +{number1} {number2} G）" },
@@ -179,6 +180,7 @@ return {
 		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 報酬を{number1}個受け取った！(新しい称号 {number2}個)" },
 		{ "Keeps {number1} more stacks even if broken", "途切れても{number1}スタック多く残る" },
 		{ "📍 Field Entrance  ahead (east)  {number1}m", "📍 フィールド入口  前方 (東)  {number1}m" },
+		{ "take {number1}% less damage from every hit", "受けるダメージ {number1}% 減少" },
 		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 深淵の支配者（ゾーン {number1}） · レコメンド ⚡{number2}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 今日は無料入場券{number1}枚 · 🗝 キー{number2}個！" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 次の武器のロック解除：ショットガン（+{number1}）" },

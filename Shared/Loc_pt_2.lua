@@ -877,6 +877,7 @@ return {
 		["when a hit lands, lightning strikes back (60% of your attack, up to 4 enemies, once every 3s)"] = "ao ser atingido, um raio revida (60% do seu ataque, até 4 inimigos, a cada 3 s)",
 		["strike-back 80%, up to 5"] = "revide 80%, até 5",
 		["strike-back 100%, up to 6"] = "revide 100%, até 6",
+		["Every hit you take is reduced (10% at Lv.1 → 45% at Lv.6) · does not raise Power"] = "Todo golpe recebido é reduzido (10% no Nv.1 → 45% no Nv.6) · não aumenta o poder",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1061,7 +1062,5 @@ return {
 		{ "🐾 Pet Lv.{number1}! New ability 💥 Power — Attack +{number2}%", "🐾 Pet Nível {number1}! Nova habilidade 💥 Poder - Ataque +{number2}%" },
 		{ "Sniper Rifle  ·  next weapon: Shotgun at +{number1}", "Fuzil de Precisão · próxima arma: Espingarda em +{number1}" },
 		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2} {number3} G)", "🧹 Limpou automaticamente {number1} equipamentos mais fracos (Essência +{number2} {number3} G)" },
-		{ "every {number1}s a meteor, radius {number2} (x1.5 on bosses)", "a cada {number1} s um meteoro, raio {number2} (x1,5 em chefes)" },
-		{ "Heals over {number1}s instead of at once · total +{number2}%", "Cura ao longo de {number1}s em vez de uma vez · total +{number2}%" },
 	},
 }

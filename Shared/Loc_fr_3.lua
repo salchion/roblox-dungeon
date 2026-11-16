@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎯 Boss hunter  ·  ✔ 🔫 Sniper Rifle / Railgun (+{number1}%)", "🎯 Chasseur de boss · ✔ 🔫 Fusil de sniper / Canon à rails (+{number1}%)" },
 		{ "Zone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated", "Zone {number2} : monstres {number3} / {number4} vaincus · Seigneur 👑 non vaincu" },
 		{ "Shot_Pistol  <font color='#{number1}aa{number2}c{number3}'>Rifle shot</font>", "Tir au pistolet <font color='#{number1}aa{number2}c{number3}'> Tir de fusil </font>" },
 		{ "Reach weapon upgrade level {number1} (about the {number2}th weapon)", "Atteindre le niveau d'amélioration d'arme {number1} (environ la {number2}ème arme)" },
@@ -123,6 +124,7 @@ return {
 		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 {number1} récompenses récupérées ! ({number2} nouveaux titres)" },
 		{ "Keeps {number1} more stacks even if broken", "Garde {number1} cumuls de plus même en cas de rupture" },
 		{ "📍 Field Entrance  ahead (east)  {number1}m", "📍 Entrée du terrain  devant (est)  {number1}m" },
+		{ "take {number1}% less damage from every hit", "{number1}% de dégâts en moins à chaque coup" },
 		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 Seigneur des abysses (Zone {number1}) · Rec. ⚡{number2}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 {number1} entrées gratuites aujourd'hui · 🗝 {number2} clés !" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 Prochaine arme à débloquer : Fusil à pompe (+{number1})" },

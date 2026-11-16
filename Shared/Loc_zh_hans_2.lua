@@ -788,6 +788,7 @@ return {
 		["when a hit lands, lightning strikes back (60% of your attack, up to 4 enemies, once every 3s)"] = "受击时闪电反击（攻击力 60%，最多 4 个敌人，每 3 秒一次）",
 		["strike-back 80%, up to 5"] = "反击 80%，最多 5 个",
 		["strike-back 100%, up to 6"] = "反击 100%，最多 6 个",
+		["Every hit you take is reduced (10% at Lv.1 → 45% at Lv.6) · does not raise Power"] = "每次受到的伤害都会减少（Lv.1 10% → Lv.6 45%）· 不提升战力",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1057,6 +1058,7 @@ return {
 		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 领取了{number1}个奖励！(新称号{number2}个)" },
 		{ "Keeps {number1} more stacks even if broken", "即使中断也多保留{number1}层" },
 		{ "📍 Field Entrance  ahead (east)  {number1}m", "📍 野外入口  前方（东）  {number1}m" },
+		{ "take {number1}% less damage from every hit", "每次受到的伤害减少 {number1}%" },
 		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 深渊之王（区域 {number1}） · 推荐等级 ⚡{number2}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 今天有{number1}个免费入场机会 · 🗝 有{number2}把钥匙！" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 下一个武器解锁霰弹枪（+{number1}）" },
@@ -1113,8 +1115,5 @@ return {
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "敌人生命值+{number1}%\n黄金 +{number2}%" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 黑暗城堡之门 · 推荐 ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "狙击步枪 · 秘法时代 +{number1}" },
-		{ "Preparing the field...  {number1} / {number2}", "正在准备田地... {number1} / {number2}" },
-		{ "🌾 Adventure Begins · Rec. ⚡{number2}", "🌾 冒险开始 · 推荐 ⚡{number2}" },
-		{ "Sniper Rifle · Arcane Era +{number3}", "狙击步枪 · 秘法时代 +{number3}" },
 	},
 }

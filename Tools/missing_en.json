@@ -2921,5 +2921,7 @@
 "strike-back 100%, up to 6",
 "Zone {number1} · Gold {number2} + Gear option {number3}",
 "{text1} {text2} also unlocked",
-"● Gear option {number1}"
+"● Gear option {number1}",
+"Every hit you take is reduced (10% at Lv.1 → 45% at Lv.6) · does not raise Power",
+"take {number1}% less damage from every hit"
 ]

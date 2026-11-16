@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "every {number1}s a meteor, radius {number2} (x1.5 on bosses)", "a cada {number1} s um meteoro, raio {number2} (x1,5 em chefes)" },
+		{ "Heals over {number1}s instead of at once · total +{number2}%", "Cura ao longo de {number1}s em vez de uma vez · total +{number2}%" },
 		{ "Spend {number1} stat points (T key / Stats button)", "Gaste {number1} pontos de estatística (tecla T / botão de estatísticas)" },
 		{ "▶ Next feature: Lv.{number1} 💥 Power  ({number2} lvl · ~{number3} G)", "▶ Próxima funcionalidade: Nível {number1} 💥 Poder ({number2} nível · ~{number3} G)" },
 		{ "✅ Mission complete! Reward: {number1} G + Tickets {number2}", "✅ Missão concluída! Recompensa: {number1} G + Bilhetes {number2}" },
@@ -87,6 +89,7 @@ return {
 		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 {number1} recompensas resgatadas! ({number2} novos títulos)" },
 		{ "Keeps {number1} more stacks even if broken", "Mantém {number1} acúmulos a mais mesmo se quebrar" },
 		{ "📍 Field Entrance  ahead (east)  {number1}m", "📍 Entrada do campo  à frente (leste)  {number1}m" },
+		{ "take {number1}% less damage from every hit", "recebe {number1}% menos dano de cada golpe" },
 		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 Senhor do Abismo (Zona {number1}) · Rec. ⚡{number2}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 {number1} entradas grátis hoje · 🗝 {number2} chaves!" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 Próxima arma a ser desbloqueada: Espingarda (+{number1})" },

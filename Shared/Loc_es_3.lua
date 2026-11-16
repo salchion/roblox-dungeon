@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👑 Field Boss defeated! Tickets +{number1} loot dropped", "👑 ¡Jefe de campo derrotado! Se han soltado +{number1} entradas de botín" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3}", "🔒 ¡La puerta está cerrada! Derrota monstruos de la zona {number1}: {number2}/{number3}" },
 		{ "▲ +{number1}% better than your current gear! (I → Bag)", "▲ ¡+{number1}% mejor que tu equipo! (I → Bolsa)" },
 		{ "🥇 {player1}\n⚡ {number1} Lv.{number2}\nSpell Tome · Mythic Era +{number3}", "🥇 {player1}\n⚡ {number1} Nivel {number2}\nTomo de Hechizos · Era Mítica +{number3}" },
@@ -102,6 +103,7 @@ return {
 		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 ¡{number1} recompensas reclamadas! ({number2} títulos nuevos)" },
 		{ "Keeps {number1} more stacks even if broken", "Conserva {number1} acumulaciones más aunque se rompa" },
 		{ "📍 Field Entrance  ahead (east)  {number1}m", "📍 Entrada del campo  adelante (este)  {number1}m" },
+		{ "take {number1}% less damage from every hit", "recibes {number1}% menos daño de cada golpe" },
 		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 Señor del Abismo (Zona {number1}) · Rec. ⚡{number2}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 {number1} entradas gratuitas hoy · 🗝 {number2} llaves!" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 Próxima arma para desbloquear: Escopeta (+{number1})" },

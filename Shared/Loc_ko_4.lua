@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔫 Next {text1} <font color='#ffd966'>{text2}</font> (+{number3})\nUpgrade cost {text4} G · You have {text5} G", "🔫 다음 {text1} <font color='#ffd966'>{text2}</font> (+{number3})\n강화 비용 {text4} G · 보유 {text5} G" },
 		{ "🔓 Zone {number1} gate opened! Reward 💰{number2} G · 🎫{number3}  — {text4} · {text5}-only drops: {text6} {text7} Set", "🔓 {number1}구역 문이 열렸어요! 보상 💰{number2} G · 🎫{number3}  — {text4} · {text5} 전용 드랍: {text6} {text7} 세트" },
 		{ "{text1} <b>{text2}</b> — {text3}\n      <font size='10' color='#ffd966'>{text4}</font>", "{text1} <b>{text2}</b> — {text3}\n      <font size='10' color='#ffd966'>{text4}</font>" },
 		{ "{text1}{text2} {text3}  <font color='#8fe0ff'><b>Lv.{number4}</b></font>{text5}", "{text1}{text2} {text3}  <font color='#8fe0ff'><b>Lv.{number4}</b></font>{text5}" },

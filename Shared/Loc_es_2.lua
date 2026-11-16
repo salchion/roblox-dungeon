@@ -906,6 +906,7 @@ return {
 		["when a hit lands, lightning strikes back (60% of your attack, up to 4 enemies, once every 3s)"] = "al recibir un golpe, un rayo devuelve el golpe (60% de tu ataque, hasta 4 enemigos, cada 3 s)",
 		["strike-back 80%, up to 5"] = "contraataque 80%, hasta 5",
 		["strike-back 100%, up to 6"] = "contraataque 100%, hasta 6",
+		["Every hit you take is reduced (10% at Lv.1 → 45% at Lv.6) · does not raise Power"] = "Cada golpe recibido se reduce (10% en Nv.1 → 45% en Nv.6) · no sube el poder",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1073,6 +1074,5 @@ return {
 		{ "💰 +{number1} G ({number2} min of your idle income) · {number3} left today", "💰 +{number1} G ({number2} min de tus ingresos inactivos) · quedan {number3} hoy" },
 		{ "every {number1}s shock shots at {number2} enemies, burst radius {number3}", "cada {number1} s disparos de choque a {number2} enemigos, radio de explosión {number3}" },
 		{ "👑 Field Boss defeated! Tickets +{number1}, loot dropped", "👑 ¡Jefe del campo derrotado! Boletos +{number1}, botín soltado" },
-		{ "👑 Field Boss defeated! Tickets +{number1} loot dropped", "👑 ¡Jefe de campo derrotado! Se han soltado +{number1} entradas de botín" },
 	},
 }

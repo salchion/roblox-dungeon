@@ -1035,6 +1035,7 @@ return {
 		["when a hit lands, lightning strikes back (60% of your attack, up to 4 enemies, once every 3s)"] = "被弾時に雷で反撃 (攻撃力の60%、最大4体、3秒に1回)",
 		["strike-back 80%, up to 5"] = "反撃 80%、最大5体",
 		["strike-back 100%, up to 6"] = "反撃 100%、最大6体",
+		["Every hit you take is reduced (10% at Lv.1 → 45% at Lv.6) · does not raise Power"] = "受けるダメージをすべて軽減 (Lv.1 10% → Lv.6 45%) · 戦闘力は上がらない",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1128,6 +1129,5 @@ return {
 		{ "Explorer   Title 『Explorer』\nClear field zone {number1}\n{number2} / {number3}   Reward: {number4} G", "探検家　タイトル『探検家』\nフィールドゾーン{number1}をクリアする\n{number2} / {number3}　報酬：{number4}G" },
 		{ "♻ [Common] 🌾 Meadow Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [コモン] 🌾 草原のレザーアーマーが自動回収される（エッセンス +{number1} {number2} G）" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})\nUpgrade cost {number2} G · You have {number3} G", "🔫 次の武器のロック解除：ショットガン（+{number1}）\nアップグレードコスト {number2} G · 現在所持G数 {number3}" },
-		{ "♻ [Rare] 🌾 Meadow Leather Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [レア] 🌾 草原のレザーグローブが自動回収される（エッセンス +{number1} {number2} G）" },
 	},
 }

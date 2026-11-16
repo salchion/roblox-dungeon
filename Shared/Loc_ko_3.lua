@@ -214,6 +214,7 @@ return {
 		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 보상 {number1}개를 받았어요! (새 칭호 {number2}개)" },
 		{ "Keeps {number1} more stacks even if broken", "끊겨도 스택이 {number1}개 더 남아요" },
 		{ "📍 Field Entrance  ahead (east)  {number1}m", "📍 들판 입구  앞쪽 (동쪽)  {number1}m" },
+		{ "take {number1}% less damage from every hit", "받는 피해 {number1}% 감소" },
 		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 심연의 군주 (구역 {number1}) · 레코드 ⚡{number2}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 오늘 무료 입장권 {number1}장 · 🗝 키 {number2}개!" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 다음 무기 잠금 해제 산탄총 (+{number1})" },
@@ -1041,6 +1042,5 @@ return {
 		{ "<b>{text1} · {text2}</b>\n{text3} → Boss <font color='#ff9a9a'>{text4}</font>\nRecommended Power <font color='#ffe16e'>{number5}</font>  (Your Power {number6})\nGold x{number7} · Tickets {number8} · Boss chest gear {number9}\n🎟 Free entries today <b>{number10} / {number11}</b> · After that you need <b>🔑 {number12} Key(s)</b> (you have {number13})\n🔑 Keys are dropped by field zone lords (more and more often in later zones). Easy 1 · Normal 2 · Hard 3", "<b>{text1} · {text2}</b>\n{text3} → 보스 <font color='#ff9a9a'>{text4}</font>\n권장 전투력 <font color='#ffe16e'>{number5}</font>  (내 전투력 {number6})\n골드 x{number7} · 티켓 {number8} · 보스 상자 장비 {number9}\n🎟 오늘 무료 입장 <b>{number10} / {number11}</b> · 그 뒤에는 <b>🔑 열쇠 {number12}개</b>가 필요해요 (보유 {number13})\n🔑 열쇠는 필드 구역 군주가 떨어뜨려요 (뒤 구역일수록 자주). 쉬움 1 · 보통 2 · 어려움 3" },
 		{ "💤 Idle income  +{text1} G/sec   <font color='#9ad7ff'>x{number2}</font>  ·  Earned <font color='#ffe16e'>{text3} G</font>\n{text4}  ·  When full: +{text5} G", "💤 방치 수입  +{text1} G/초   <font color='#9ad7ff'>x{number2}</font>  ·  획득 <font color='#ffe16e'>{text3} G</font>\n{text4}  ·  가득 차면: +{text5} G" },
 		{ "🔒 Zone {number1} · {text2} Sealed\nZone {number3} monsters {number4} / {number5} defeated · Lord {text6}\nOpen to earn the {text7} {text8} set!", "🔒 {number1}구역 · {text2} 봉인\n{number3}구역 몬스터 {number4} / {number5} 처치 · 군주 {text6}\n열면 {text7} {text8} 세트를 얻어요!" },
-		{ "🔫 Next {text1} <font color='#ffd966'>{text2}</font> (+{number3})\nUpgrade cost {text4} G · You have {text5} G", "🔫 다음 {text1} <font color='#ffd966'>{text2}</font> (+{number3})\n강화 비용 {text4} G · 보유 {text5} G" },
 	},
 }

@@ -857,6 +857,7 @@ return {
 		["when a hit lands, lightning strikes back (60% of your attack, up to 4 enemies, once every 3s)"] = "bei Treffer schlägt ein Blitz zurück (60% deines Angriffs, bis zu 4 Gegner, alle 3 s)",
 		["strike-back 80%, up to 5"] = "Rückschlag 80%, bis zu 5",
 		["strike-back 100%, up to 6"] = "Rückschlag 100%, bis zu 6",
+		["Every hit you take is reduced (10% at Lv.1 → 45% at Lv.6) · does not raise Power"] = "Jeder Treffer wird verringert (10% auf Lv.1 → 45% auf Lv.6) · erhöht die Kraft nicht",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1049,6 +1050,5 @@ return {
 		{ "Rocket Launcher  ·  keys {number1}-{number2} switch weapons", "Raketenwerfer · Tasten {number1}-{number2} zum Wechseln von Waffen" },
 		{ "📅 {number1}-day login streak · Get stronger today!", "📅 {number1}-tägige Login-Serie · Werde heute stärker!" },
 		{ "Each NEAR MISS stack gives +{number1}% more attack", "Jeder NEAR-MISS-Stapel gibt +{number1} % mehr Angriff" },
-		{ "🔒 Spend {number1} points higher up this path first", "🔒 Gib zuerst {number1} Punkte weiter oben auf diesem Pfad aus" },
 	},
 }

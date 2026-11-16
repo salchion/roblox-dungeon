@@ -911,6 +911,7 @@ return {
 		["when a hit lands, lightning strikes back (60% of your attack, up to 4 enemies, once every 3s)"] = "quand vous êtes touché, la foudre riposte (60% de votre attaque, jusqu'à 4 ennemis, toutes les 3 s)",
 		["strike-back 80%, up to 5"] = "riposte 80%, jusqu'à 5",
 		["strike-back 100%, up to 6"] = "riposte 100%, jusqu'à 6",
+		["Every hit you take is reduced (10% at Lv.1 → 45% at Lv.6) · does not raise Power"] = "Chaque coup reçu est réduit (10% au Niv.1 → 45% au Niv.6) · n'augmente pas la puissance",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1058,6 +1059,5 @@ return {
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Commun] Chaussures usées récupérées automatiquement (Essence +{number1} {number2} G)" },
 		{ "Reduces training / breakthrough wait time by {number1} hour", "Réduit le temps d'attente d'entraînement/de percée de {number1} heures" },
 		{ "Clear depth {number1} once more to record its Sweep reward.", "Termine la profondeur {number1} une fois de plus pour enregistrer sa récompense de balayage." },
-		{ "🎯 Boss hunter  ·  ✔ 🔫 Sniper Rifle / Railgun (+{number1}%)", "🎯 Chasseur de boss · ✔ 🔫 Fusil de sniper / Canon à rails (+{number1}%)" },
 	},
 }

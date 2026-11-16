@@ -1,7 +1,7 @@
 -- DamageGuard (ServerScriptService > Modules 안의 ModuleScript, 이름: DamageGuard)
--- 플레이어가 받는 모든 피해가 지나가는 곳: 방어력(피해 감소) + 한 번에 맞는 피해 상한.
+-- 플레이어가 받는 모든 피해가 지나가는 곳: 방어력(피해 감소) + 세트 효과 "폭풍의 방벽" 반감.
 --   * 방어력 = 레벨 x LevelDef + 장비 최대 체력 x GearDef  ->  피해 감소 = 방어력 / (방어력 + K)  (최대 MaxReduction)
---   * 한 방은 최대 체력의 HitCap 을 넘지 못한다 (공격력만 오르고 체력은 안 오르는 후반에 한두 방에 죽는 것을 막는다)
+--   * 한 방 상한은 없다 (2026-11-16 종태 님 결정: 상한 대신 폭풍의 방벽 반감으로 버틴다)
 -- 몬스터 / 보스가 플레이어에게 주는 피해는 humanoid:TakeDamage 대신 Guard.Take(humanoid, amount) 를 쓴다.
 
 local Players = game:GetService("Players")
@@ -33,11 +33,9 @@ function Guard.Take(humanoid, amount)
 			local okN, NearMiss = pcall(function() return require(script.Parent:WaitForChild("NearMissService")) end)
 			if okN and NearMiss.SinceDash and NearMiss.SinceDash(player) < 2 then amount *= 1 - rushGuard end
 		end
-		local ward = player:GetAttribute("AugWard") or 0 -- 세트 효과 "폭풍의 방벽": 한 방 상한을 낮춘다
+		local ward = player:GetAttribute("AugWard") or 0 -- 세트 효과 "폭풍의 방벽": 받는 피해를 % 로 줄인다 (모든 감소가 끝난 뒤 곱한다)
 		if player:GetAttribute("TutorialDoom") == true then ward = 0 end -- (튜토리얼 최후의 군주는 지게 되어 있는 장면)
-		if (player:GetAttribute("RiftLeft") or 0) <= 0 then -- (보스러쉬 중에는 상한이 없다: 체력이 낮은 사람이 상한 덕에 유리해지면 순위가 불공정해진다)
-			amount = math.min(amount, humanoid.MaxHealth * Config.WardHitCap(ward))
-		end
+		amount *= 1 - Config.WardReduce(ward)
 		if amount > 0 and ward >= 4 then -- 4단계부터: 맞으면 번개로 되받아친다 (3초에 한 번)
 			local now = workspace:GetServerTimeNow()
 			if now >= (player:GetAttribute("WardBackAt") or 0) then

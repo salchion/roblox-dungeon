@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Preparing the field...  {number1} / {number2}", "正在准备田地... {number1} / {number2}" },
+		{ "🌾 Adventure Begins · Rec. ⚡{number2}", "🌾 冒险开始 · 推荐 ⚡{number2}" },
+		{ "Sniper Rifle · Arcane Era +{number3}", "狙击步枪 · 秘法时代 +{number3}" },
 		{ "ZONE {number1}  ·  Snowfield   ☠☠☠☠☠", "区域 {number1} · 雪原 ☠☠☠☠☠" },
 		{ "🎁 Boss chest · {number1} gear pieces", "🎁 首领宝箱 · {number1}件装备" },
 		{ "Succeed at upgrading {number1} times", "成功强化 {number1} 次" },

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 Spend {number1} points higher up this path first", "🔒 Gib zuerst {number1} Punkte weiter oben auf diesem Pfad aus" },
 		{ "🗼 Floor {number1} cleared! Guaranteed Mythic gear!", "🗼 Etage {number1} geschafft! Garantierte mythische Ausrüstung!" },
 		{ "Auto-equipped the best gear in {number1} slot(s)!", "Die beste Ausrüstung in {number1} Platz/Plätzen automatisch angelegt!" },
 		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• Etwa {number1} Schüsse/Sek. · Feuerkraft {number2} · Reichweite {number3}" },
@@ -79,6 +80,7 @@ return {
 		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 {number1} Belohnungen abgeholt! ({number2} neue Titel)" },
 		{ "Keeps {number1} more stacks even if broken", "Behält {number1} Stapel mehr, auch wenn die Serie abreißt" },
 		{ "📍 Field Entrance  ahead (east)  {number1}m", "📍 Feldeingang  voraus (Osten)  {number1}m" },
+		{ "take {number1}% less damage from every hit", "{number1}% weniger Schaden durch jeden Treffer" },
 		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 Herr des Abgrunds (Zone {number1}) · Empfehlung ⚡{number2}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 {number1} kostenlose Einträge heute · 🗝 {number2} Schlüssel!" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 Nächste Waffe freischalten: Schrotflinte (+{number1})" },
