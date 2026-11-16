@@ -69,7 +69,8 @@ local function deathSources(player)
 	return list
 end
 
--- 막힘 돌파 카드: 같은 벽(아직 못 깬 다음 구역)에서 10분 안에 3번 쓰러지면, "다른 문" 4가지(던전 / 도감·세트 보너스 / 세트 효과 / 파티)를 한 장으로
+-- 막힘 돌파 카드: 같은 벽(아직 못 깬 다음 구역)에서 10분 안에 3번 쓰러지면, 세로 성장 4갈래(무기 강화 / 끼고 있는 세트 효과 / 던전 / 스탯·훈련)를 한 장으로
+--   (구역 세트 모으기 안내는 뺐다: 세트는 일부러 수평이라 4구역 세트 2부위는 치명 +6% 뿐 — 벽 앞에서 옆으로 새는 안내였다)
 --   서버 메모리만 (저장 안 함) · 구역마다 세션 1번 · 최소 5분 간격 · 튜토리얼 중 제외. 벌칙이 아니라 안내다
 local wallDeaths = setmetatable({}, { __mode = "k" }) -- [player] = { [zone] = { t1, t2, ... } }
 local wallShown = setmetatable({}, { __mode = "k" }) -- [player] = { [zone] = true, Last = os.clock() }
