@@ -492,6 +492,7 @@ return {
 		{ "Heal on Kill +{number1}", "撃破時回復 +{number1}" },
 		{ "{number1}% of gear here", "ここの装備の{number1}%" },
 		{ "🗼 Tower floor {number1}", "🗼 塔 {number1}階" },
+		{ "● Gear option {number1}", "● 装備オプション {number1}" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 レベル{number1} {number2} / {number3} XP" },
 		{ "DAMAGE · {number1}s · {number2}", "ダメージ · {number1}秒 · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} ダンジョンの鍵" },

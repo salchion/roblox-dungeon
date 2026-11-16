@@ -258,6 +258,7 @@ return {
 		{ "Heal on Kill +{number1}", "击杀回复 +{number1}" },
 		{ "{number1}% of gear here", "此处装备的{number1}%" },
 		{ "🗼 Tower floor {number1}", "🗼 塔 第{number1}层" },
+		{ "● Gear option {number1}", "● 装备词条 {number1}" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 等级 {number1} {number2} / {number3} 经验值" },
 		{ "DAMAGE · {number1}s · {number2}", "伤害 · {number1}秒 · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} 地下城钥匙" },

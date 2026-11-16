@@ -415,6 +415,7 @@ return {
 		{ "Heal on Kill +{number1}", "Curación al matar +{number1}" },
 		{ "{number1}% of gear here", "{number1}% del equipo aquí" },
 		{ "🗼 Tower floor {number1}", "🗼 Torre piso {number1}" },
+		{ "● Gear option {number1}", "● Opción de equipo {number1}" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Nivel {number1} {number2} / {number3} XP" },
 		{ "DAMAGE · {number1}s · {number2}", "Daño · {number1} segundos · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} llaves de mazmorra" },

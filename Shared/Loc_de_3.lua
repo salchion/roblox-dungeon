@@ -392,6 +392,7 @@ return {
 		{ "Heal on Kill +{number1}", "Heilung bei Kill +{number1}" },
 		{ "{number1}% of gear here", "{number1}% der Ausrüstung hier" },
 		{ "🗼 Tower floor {number1}", "🗼 Turm Etage {number1}" },
+		{ "● Gear option {number1}", "● Ausrüstungsoption {number1}" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Stufe {number1} {number2} / {number3} Erfahrungspunkte" },
 		{ "DAMAGE · {number1}s · {number2}", "Schaden · {number1}s · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} Dungeon-Schlüssel" },

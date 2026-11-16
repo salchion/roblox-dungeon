@@ -2920,5 +2920,6 @@
 "strike-back 80%, up to 5",
 "strike-back 100%, up to 6",
 "Zone {number1} · Gold {number2} + Gear option {number3}",
-"{text1} {text2} also unlocked"
+"{text1} {text2} also unlocked",
+"● Gear option {number1}"
 ]

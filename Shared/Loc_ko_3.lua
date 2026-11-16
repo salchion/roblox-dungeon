@@ -532,6 +532,7 @@ return {
 		{ "Heal on Kill +{number1}", "처치 시 회복 +{number1}" },
 		{ "{number1}% of gear here", "여기 장비의 {number1}%" },
 		{ "🗼 Tower floor {number1}", "🗼 탑 {number1}층" },
+		{ "● Gear option {number1}", "● 장비 옵션 {number1}" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 레벨 {number1} {number2} / {number3} 경험치" },
 		{ "DAMAGE · {number1}s · {number2}", "피해량 · {number1}초 · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} 던전 키" },

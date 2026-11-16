@@ -436,6 +436,7 @@ return {
 		{ "Heal on Kill +{number1}", "Soin à l'élimination +{number1}" },
 		{ "{number1}% of gear here", "{number1} % de l'équipement ici" },
 		{ "🗼 Tower floor {number1}", "🗼 Tour étage {number1}" },
+		{ "● Gear option {number1}", "● Option d'équipement {number1}" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Niveau {number1} {number2} / {number3} EXP" },
 		{ "DAMAGE · {number1}s · {number2}", "Dégâts · {number1} s · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} clés de donjon" },

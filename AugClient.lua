@@ -328,7 +328,7 @@ function refresh()
 	boxStroke.Color = on and info.Color or Color3.fromRGB(255, 190, 110)
 	boxTitle.Text = string.format("<font size='16'><b>%s</b></font>\n%s<font size='11'>Zone %d</font>", info.Name, on and "<font color='#78ffb4' size='11'>● ON · </font>" or "", homeZone(zone))
 	boxLevel.Text = level + gear > 0 and ("Lv." .. (level + gear)) or ""
-	legendGold.Text = string.format("<font color='#ffd966'>● Gold %d</font>  +  <font color='#8fe0ff'>● Set gear %d</font>  =  <b>Lv.%d</b>", level, gear, math.min(6, level + gear))
+	legendGold.Text = string.format(Config.Sets.ZoneKeys[zone] and "<font color='#ffd966'>● Gold %d</font>  +  <font color='#8fe0ff'>● Set gear %d</font>  =  <b>Lv.%d</b>" or "<font color='#ffd966'>● Gold %d</font>  +  <font color='#8fe0ff'>● Gear option %d</font>  =  <b>Lv.%d</b>", level, gear, math.min(6, level + gear)) -- (방벽은 세트 장비 없이 장비 "+1" 옵션만)
 	legendGear.Text = ""
 	local lines = { "<font color='#aaf0c8'>" .. info.Desc .. "</font>" }
 	for _, child in ipairs(synList:GetChildren()) do if child:IsA("Frame") then child:Destroy() end end

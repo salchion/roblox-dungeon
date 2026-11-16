@@ -888,3 +888,4 @@
 2919¦反撃 100%、最大6体¦Rückschlag 100%, bis zu 6¦riposte 100%, jusqu'à 6¦contraataque 100%, hasta 6¦revide 100%, até 6¦反击 100%，最多 6 个¦반격 100%, 최대 6마리
 2920¦{number1}区域 · ゴールド {number2} + 装備オプション {number3}¦Zone {number1} · Gold {number2} + Ausrüstungsoption {number3}¦Zone {number1} · Or {number2} + option d'équipement {number3}¦Zona {number1} · Oro {number2} + opción de equipo {number3}¦Zona {number1} · Ouro {number2} + opção de equipamento {number3}¦{number1}区 · 金币 {number2} + 装备词条 {number3}¦{number1}구역 · 골드 {number2} + 장비 옵션 {number3}
 2921¦{text1} {text2} も解放¦{text1} {text2} ebenfalls freigeschaltet¦{text1} {text2} également débloqué¦{text1} {text2} también desbloqueado¦{text1} {text2} também desbloqueado¦{text1} {text2} 也已解锁¦{text1} {text2}도 열렸어요
+2922¦● 装備オプション {number1}¦● Ausrüstungsoption {number1}¦● Option d'équipement {number1}¦● Opción de equipo {number1}¦● Opção de equipamento {number1}¦● 装备词条 {number1}¦● 장비 옵션 {number1}

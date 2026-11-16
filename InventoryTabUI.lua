@@ -911,7 +911,7 @@ local function buildInventoryTab(state)
 			local cap = Config.Inventory.AugMaxLevel or 6
 			local function augChange(zone, delta)
 				local def = Config.Sets.ZoneKeys[zone] and Config.Sets[Config.Sets.ZoneKeys[zone]]
-				local info = def and def.Aug and Config.AugInfo[def.Aug]
+				local info = (def and def.Aug and Config.AugInfo[def.Aug]) or Config.AugInfo[Config.Sets.ZoneAug[zone] or ""] -- (구역 세트가 없는 효과(폭풍의 방벽)는 효과 이름에서)
 				if not info then return nil end
 				local raw = (player:GetAttribute("AugLvZ_" .. zone) or 0) + (player:GetAttribute("AugGearZ_" .. zone) or 0)
 				local before, after = math.min(cap, raw), math.clamp(raw + delta, 0, cap)

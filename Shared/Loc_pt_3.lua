@@ -400,6 +400,7 @@ return {
 		{ "Heal on Kill +{number1}", "Cura ao abater +{number1}" },
 		{ "{number1}% of gear here", "{number1}% do equipamento aqui" },
 		{ "🗼 Tower floor {number1}", "🗼 Torre andar {number1}" },
+		{ "● Gear option {number1}", "● Opção de equipamento {number1}" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP", "🎖 Nível {number1} {number2} / {number3} XP" },
 		{ "DAMAGE · {number1}s · {number2}", "DANO · {number1}s · {number2}" },
 		{ "{number1} Dungeon Keys", "{number1} Chaves de Masmorra" },
