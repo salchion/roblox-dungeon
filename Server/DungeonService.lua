@@ -3390,7 +3390,7 @@ local function spawnRushBoss(run, index)
 	local name = variant.Prefix .. " " .. bossType.Name
 	spawnBoss(run, {
 		BossType = bossType, Variant = variant, Name = name, MaxHealth = hp,
-		ShotDamage = math.floor(R.DamageBase * math.min(R.DamageGrowCap, R.DamageGrow ^ (index - 1))), -- 모두에게 같은 고정 피해 (한 발 상한은 DamageGuard 가 최대 체력의 25%로 막는다)
+		ShotDamage = math.floor(R.DamageBase * math.min(R.DamageGrowCap, R.DamageGrow ^ (index - 1))), -- 모두에게 같은 고정 피해 (한 방 상한은 없다: DamageGuard 는 방어 / 방벽 반감만 곱한다)
 		Pos = spots and #spots > 0 and spots[math.random(#spots)] or nil,
 	})
 	run.RushSpawned = index
