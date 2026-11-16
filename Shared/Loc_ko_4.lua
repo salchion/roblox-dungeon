@@ -4,6 +4,18 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "▶ Next feature: Lv.{number1} {text2} {text3}{text4}", "▶ 다음 기능: Lv.{number1} {text2} {text3}{text4}" },
+		{ "{text1} {text2} complete! Lv.{number3} ({text4})", "{text1} {text2} 완료! Lv.{number3} ({text4})" },
+		{ "{text1} 『{text2}』 {text3} done! (Lv.{number4})", "{text1} 『{text2}』 {text3} 완료! (Lv.{number4})" },
+		{ "⚗ Fused {number1} {text2} → {text3} {text4}!", "⚗ {text2} {number1}개 합성 → {text3} {text4}!" },
+		{ "{text1} {text2} 2 pieces: {text3}", "{text1} {text2} 2부위: {text3}" },
+		{ "{text1}Zone {number2} · {text3}  {text4}", "{text1}{number2}구역 · {text3}  {text4}" },
+		{ "{text1} {text2} got {text3}!", "{text1} {text2}이(가) {text3}을(를) 얻었어요!" },
+		{ "·  {text1}🔫 {text2}{text3}", "·  {text1}🔫 {text2}{text3}" },
+		{ "[{text1}] {text2} {text3}", "[{text1}] {text2} {text3}" },
+		{ "<b>{text1} · {text2}</b>\n{text3} → Boss <font color='#ff9a9a'>{text4}</font>\nRecommended Power <font color='#ffe16e'>{number5}</font>  (Your Power {number6})\nGold x{number7} · Tickets {number8} · Boss chest gear {number9}\n🎟 Free entries today <b>{number10} / {number11}</b> · After that you need <b>🔑 {number12} Key(s)</b> (you have {number13})\n🔑 Keys are dropped by field zone lords (more and more often in later zones). Easy 1 · Normal 2 · Hard 3", "<b>{text1} · {text2}</b>\n{text3} → 보스 <font color='#ff9a9a'>{text4}</font>\n권장 전투력 <font color='#ffe16e'>{number5}</font>  (내 전투력 {number6})\n골드 x{number7} · 티켓 {number8} · 보스 상자 장비 {number9}\n🎟 오늘 무료 입장 <b>{number10} / {number11}</b> · 그 뒤에는 <b>🔑 열쇠 {number12}개</b>가 필요해요 (보유 {number13})\n🔑 열쇠는 필드 구역 군주가 떨어뜨려요 (뒤 구역일수록 자주). 쉬움 1 · 보통 2 · 어려움 3" },
+		{ "💤 Idle income  +{text1} G/sec   <font color='#9ad7ff'>x{number2}</font>  ·  Earned <font color='#ffe16e'>{text3} G</font>\n{text4}  ·  When full: +{text5} G", "💤 방치 수입  +{text1} G/초   <font color='#9ad7ff'>x{number2}</font>  ·  획득 <font color='#ffe16e'>{text3} G</font>\n{text4}  ·  가득 차면: +{text5} G" },
+		{ "🔒 Zone {number1} · {text2} Sealed\nZone {number3} monsters {number4} / {number5} defeated · Lord {text6}\nOpen to earn the {text7} {text8} set!", "🔒 {number1}구역 · {text2} 봉인\n{number3}구역 몬스터 {number4} / {number5} 처치 · 군주 {text6}\n열면 {text7} {text8} 세트를 얻어요!" },
 		{ "🔫 Next {text1} <font color='#ffd966'>{text2}</font> (+{number3})\nUpgrade cost {text4} G · You have {text5} G", "🔫 다음 {text1} <font color='#ffd966'>{text2}</font> (+{number3})\n강화 비용 {text4} G · 보유 {text5} G" },
 		{ "🔓 Zone {number1} gate opened! Reward 💰{number2} G · 🎫{number3}  — {text4} · {text5}-only drops: {text6} {text7} Set", "🔓 {number1}구역 문이 열렸어요! 보상 💰{number2} G · 🎫{number3}  — {text4} · {text5} 전용 드랍: {text6} {text7} 세트" },
 		{ "{text1} <b>{text2}</b> — {text3}\n      <font size='10' color='#ffd966'>{text4}</font>", "{text1} <b>{text2}</b> — {text3}\n      <font size='10' color='#ffd966'>{text4}</font>" },

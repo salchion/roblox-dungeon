@@ -1,5 +1,5 @@
 -- DamageGuard (ServerScriptService > Modules 안의 ModuleScript, 이름: DamageGuard)
--- 플레이어가 받는 모든 피해가 지나가는 곳: 방어력(피해 감소) + 세트 효과 "폭풍의 방벽" 반감.
+-- 플레이어가 받는 모든 피해가 지나가는 곳: 방어력(피해 감소) + 방어 기재(방벽 / 회피 / 불굴 / 완충, 재생은 아래 루프).
 --   * 방어력 = 레벨 x LevelDef + 장비 최대 체력 x GearDef  ->  피해 감소 = 방어력 / (방어력 + K)  (최대 MaxReduction)
 --   * 한 방 상한은 없다 (2026-11-16 종태 님 결정: 상한 대신 폭풍의 방벽 반감으로 버틴다)
 -- 몬스터 / 보스가 플레이어에게 주는 피해는 humanoid:TakeDamage 대신 Guard.Take(humanoid, amount) 를 쓴다.
@@ -33,35 +33,56 @@ function Guard.Take(humanoid, amount)
 			local okN, NearMiss = pcall(function() return require(script.Parent:WaitForChild("NearMissService")) end)
 			if okN and NearMiss.SinceDash and NearMiss.SinceDash(player) < 2 then amount *= 1 - rushGuard end
 		end
-		local ward = player:GetAttribute("AugWard") or 0 -- 세트 효과 "폭풍의 방벽": 받는 피해를 % 로 줄인다 (모든 감소가 끝난 뒤 곱한다)
-		if player:GetAttribute("TutorialDoom") == true then ward = 0 end -- (튜토리얼 최후의 군주는 지게 되어 있는 장면)
-		amount *= 1 - Config.WardReduce(ward)
-		if amount > 0 and ward >= 4 then -- 4단계부터: 맞으면 번개로 되받아친다 (3초에 한 번)
-			local now = workspace:GetServerTimeNow()
-			if now >= (player:GetAttribute("WardBackAt") or 0) then
-				player:SetAttribute("WardBackAt", now + 3)
-				task.spawn(function()
-					local okD, Dungeon = pcall(function() return require(script.Parent:WaitForChild("DungeonService")) end)
-					local okF, Field = pcall(function() return require(script.Parent:WaitForChild("FieldService")) end)
-					if not okD then return end
-					local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-					if not root then return end
-					local tier = math.min(6, ward)
-					local damage = math.max(1, math.floor(Dungeon.ComputeSetBase(player) * ({ [4] = 0.6, [5] = 0.8, [6] = 1.0 })[tier]))
-					local okE, Effects = pcall(function() return require(script.Parent:WaitForChild("Effects")) end)
-					if okE then Effects.Burst(root.Position, Color3.fromRGB(170, 190, 255), 30) end
-					-- (대상 수 4/5/6: AreaDamage 가 마리 수를 못 받아서, 반경을 단계별로 줄여 비슷하게 맞춘다 = 반경 16 기준 x0.8 / 0.9 / 1.0)
-					local radius = 16 * ({ [4] = 0.8, [5] = 0.9, [6] = 1.0 })[tier]
-					local hit = Dungeon.AreaDamage(player, root.Position, radius, damage)
-					if not hit and okF then Field.AreaDamage(player, root.Position, radius, damage) end
-				end)
+		-- 방어 기재 (세트 효과 칸을 같이 쓴다: Config.Guard). 튜토리얼 최후의 군주는 지게 되어 있는 장면이라 끈다
+		local G = Config.Guard
+		local off = player:GetAttribute("TutorialDoom") == true
+		local function lv(attr) return off and 0 or (player:GetAttribute(attr) or 0) end
+		if math.random() < G.Evade(lv("AugEvade")) then -- 🌀 회피: 이번 공격을 통째로 피한다
+			local root = humanoid.Parent and humanoid.Parent:FindFirstChild("HumanoidRootPart")
+			if root then
+				local okE, Effects = pcall(function() return require(script.Parent:WaitForChild("Effects")) end)
+				if okE then Effects.FloatText(root.Position + Vector3.new(0, 4, 0), "MISS!", Color3.fromRGB(140, 240, 220)) end
 			end
+			return
+		end
+		amount *= 1 - G.Ward(lv("AugWard")) -- 🛡 방벽: 받는 피해 % 감소
+		local lo, hi = G.Grit(lv("AugGrit")) -- 🔥 불굴: 체력이 낮을수록 덜 받는다
+		local ratio = humanoid.MaxHealth > 0 and humanoid.Health / humanoid.MaxHealth or 1
+		if ratio < 0.25 then amount *= 1 - hi elseif ratio < 0.5 then amount *= 1 - lo end
+		player:SetAttribute("LastHurtAt", workspace:GetServerTimeNow()) -- (💚 재생은 맞은 뒤 2초 쉰다)
+		local buffer = G.Buffer(lv("AugBuffer")) -- ⏳ 완충: 일부를 3초(0.5초 x 6번)에 나눠 받는다
+		if buffer > 0 and amount > 0 then
+			local later = amount * buffer
+			amount -= later
+			task.spawn(function()
+				for _ = 1, 6 do
+					task.wait(0.5)
+					if humanoid.Parent and humanoid.Health > 0 then humanoid:TakeDamage(later / 6) end
+				end
+			end)
 		end
 	end
 	if amount > 0 then
 		humanoid:TakeDamage(amount)
 	end
 end
+
+-- 💚 재생: 필드 / 던전에서 1초마다 최대 체력의 % 회복 (맞은 뒤 2초는 쉰다)
+task.spawn(function()
+	while true do
+		task.wait(1)
+		for _, player in ipairs(Players:GetPlayers()) do
+			local level = player:GetAttribute("AugRegen") or 0
+			local zone = player:GetAttribute("Zone")
+			if level > 0 and (zone == "Field" or zone == "Dungeon") and workspace:GetServerTimeNow() - (player:GetAttribute("LastHurtAt") or 0) >= 2 then
+				local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+				if humanoid and humanoid.Health > 0 and humanoid.Health < humanoid.MaxHealth then
+					humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * Config.Guard.Regen(level))
+				end
+			end
+		end
+	end
+end)
 
 -- 화면 표시용: 피해 감소 % 를 Attribute 로 둔다 (스탯 / 메뉴에서 읽을 수 있다)
 local function publish(player)

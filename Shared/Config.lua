@@ -473,7 +473,13 @@ Config.AugInfo = {
 	AugFlame = { Icon = "🔥", Name = "Ignite", Desc = "Your hits stack burning on the target; the longer you hit it, the hotter it burns", Color = Color3.fromRGB(255, 130, 40) },
 	AugExecute = { Icon = "💀", Name = "Execute", Desc = "Low-HP enemies are executed on hit; bosses take more damage the lower their HP", Color = Color3.fromRGB(210, 90, 255) },
 	AugMeteor = { Icon = "🌠", Name = "Meteor Shower", Desc = "Meteors fall on the biggest crowd (or on a nearby boss) and hit hard", Color = Color3.fromRGB(255, 190, 90) },
-	AugWard = { Icon = "🌩", Name = "Stormward", Desc = "Every hit you take is reduced (10% at Lv.1 → 45% at Lv.6) · does not raise Power", Color = Color3.fromRGB(170, 190, 255) }, -- 방어 세트 효과 (받는 피해 % 감소: DamageGuard)
+	-- 방어 기재 6종 (세트 효과와 같은 칸을 쓴다. 구역 세트가 없어 4~6단계는 🔷 수호석. 효과는 DamageGuard / GetMaxHealth)
+	AugWard = { Icon = "🛡", Name = "Ward", Desc = "Every hit you take is reduced", Color = Color3.fromRGB(120, 180, 255), Defense = true },
+	AugBody = { Icon = "❤️", Name = "Iron Body", Desc = "Raises your max HP", Color = Color3.fromRGB(255, 120, 140), Defense = true },
+	AugBuffer = { Icon = "⏳", Name = "Cushion", Desc = "Part of each hit is taken over 3s instead of at once — time to dodge or heal", Color = Color3.fromRGB(150, 210, 255), Defense = true },
+	AugEvade = { Icon = "🌀", Name = "Evasion", Desc = "A chance to dodge a hit completely", Color = Color3.fromRGB(140, 240, 220), Defense = true },
+	AugGrit = { Icon = "🔥", Name = "Grit", Desc = "Take less damage when your HP is low", Color = Color3.fromRGB(255, 160, 90), Defense = true },
+	AugRegen = { Icon = "💚", Name = "Regeneration", Desc = "Recover HP every second in combat (pauses 2s after a hit)", Color = Color3.fromRGB(120, 230, 140), Defense = true },
 	AugPulse = { Icon = "💥", Name = "Shockwave Shot", Desc = "Explosive shots fly at nearby enemies and burst big on impact", Color = Color3.fromRGB(110, 255, 190) },
 }
 
@@ -486,7 +492,12 @@ local AUG_LEVEL = {
 	AugFlame = function(l) return string.format("each hit adds a burn stack (max %d, lasts 4s); every 0.5s per stack", 4 + l + (l >= 5 and 3 or 0)), 0.05 + 0.025 * l end,
 	AugExecute = function(l) return string.format("enemies below %d%% HP are executed · bosses take up to +%d%% damage (all your damage) as their HP drops", math.floor(Config.AugExecuteThreshold(l) * 100 + 0.5), math.floor(0.15 * l * 100 + 0.5)), nil end,
 	AugMeteor = function(l) return string.format("every %.1fs a meteor, radius %d (x1.5 on bosses)", math.max(2.5, 7 - 1.5 * l), 14 + 2 * l), 2.6 + 1.0 * l end,
-	AugWard = function(l) return string.format("take %d%% less damage from every hit", math.floor(Config.WardReduce(l) * 100 + 0.5)), nil end,
+	AugWard = function(l) return string.format("take %d%% less damage from every hit", math.floor(Config.Guard.Ward(l) * 100 + 0.5)), nil end,
+	AugBody = function(l) return string.format("max HP +%d%%", math.floor(Config.Guard.Body(l) * 100 + 0.5)), nil end,
+	AugBuffer = function(l) return string.format("%d%% of each hit is taken over 3s", math.floor(Config.Guard.Buffer(l) * 100 + 0.5)), nil end,
+	AugEvade = function(l) return string.format("%.1f%% chance to dodge a hit", Config.Guard.Evade(l) * 100), nil end,
+	AugGrit = function(l) local lo, hi = Config.Guard.Grit(l) return string.format("below 50%% HP take %d%% less · below 25%% take %d%% less", math.floor(lo * 100 + 0.5), math.floor(hi * 100 + 0.5)), nil end,
+	AugRegen = function(l) return string.format("recover %.1f%% of max HP per second in combat", Config.Guard.Regen(l) * 100), nil end,
 	AugPulse = function(l) return string.format("every %.1fs shock shots at %d enemies, burst radius %d", math.max(2.2, 4.8 - 0.8 * l), 2 + math.floor(l / 2) + (l >= 6 and 1 or 0), 10 + 2 * l), 0.9 + 0.4 * l end,
 }
 -- 지금 내 공격력으로 한 번 맞힐 때의 대략적인 피해 (치명타 / 콤보 제외, 클라이언트에서 계산)
@@ -506,7 +517,6 @@ local AUG_EXTRA = {
 	AugFlame = { [4] = "burning enemies spread 3 stacks when they die", [5] = "+3 max stacks", [6] = "at max stacks: fire blast every 3s (300%)" },
 	AugExecute = { [4] = "executed enemies explode", [5] = "bigger explosion", [6] = "+ heal 4% HP per execution" },
 	AugMeteor = { [4] = "2 meteors per cast", [5] = "3 meteors", [6] = "4 meteors, bigger" },
-	AugWard = { [4] = "when a hit lands, lightning strikes back (60% of your attack, up to 4 enemies, once every 3s)", [5] = "strike-back 80%, up to 5", [6] = "strike-back 100%, up to 6" },
 	AugPulse = { [4] = "fires twice (0.45s apart)", [5] = "bursts 25% wider", [6] = "+1 target" },
 }
 function Config.AugLevelLine(attr, level)
@@ -1709,10 +1719,22 @@ Config.Sets = {
 Config.Sets.ZoneSetChance = 0.5
 -- (세트 조각 / 세트 각인은 없어졌다: 세트 장비는 필드 드랍 / 던전 상자 / 보스 확정 보상으로만 얻는다)
 -- 구역 세트마다 컨셉이 하나씩 있다: 그 구역 군주를 잡으면 열리고 골드로 활성화한다 (아래 AugCost / AugSlotZones)
-Config.Sets.ZoneAug = { "AugPulse", "AugOrbit", "AugStorm", "AugMissile", "AugNova", "AugFlame", "AugExecute", "AugMeteor", "AugWard" } -- (9번째 폭풍의 방벽: 구역 세트가 없는 효과. 해금 / 가격은 AugHomeZone)
-Config.Sets.AugHomeZone = { [9] = 3 } -- 9번째 효과는 3구역 군주 클리어로 열리고 3구역 가격 (4구역 벽 직전에 잡을 방어 수단)
--- 폭풍의 방벽 단계별 받는 피해 감소 (곱연산): 10 / 17 / 24 / 31 / 38 / 45% (Lv1 부터 체감, Lv6 도 절반 넘게는 안 막는다)
-function Config.WardReduce(level) level = math.clamp(math.floor(level or 0), 0, 6) return level > 0 and (0.03 + 0.07 * level) or 0 end
+Config.Sets.ZoneAug = { "AugPulse", "AugOrbit", "AugStorm", "AugMissile", "AugNova", "AugFlame", "AugExecute", "AugMeteor", "AugWard", "AugBody", "AugBuffer", "AugEvade", "AugGrit", "AugRegen" } -- (1~8 공격 세트 효과 / 9~14 방어 기재)
+Config.Sets.AugHomeZone = { [9] = 3, [10] = 4, [11] = 5, [12] = 6, [13] = 7, [14] = 8 } -- 방어 기재: 3~8구역 군주를 잡을 때 하나씩 열리고, 골드 가격도 그 구역 기준
+-- 🔷 수호석: 방어 기재 4~6단계 재료 (골드 1~3단계를 다 올린 뒤). 4구역부터 엘리트 / 군주 / 던전 보스에서
+Config.Guard = {
+	StoneCost = { 4, 8, 12 },    -- 4 / 5 / 6단계에 드는 수호석
+	EliteChance = 0.1,           -- 4구역 이상 엘리트 처치마다 1개 확률
+	BossStones = 3,              -- 4구역 이상 군주 / 던전 보스 처치마다
+	FromCleared = 3,             -- (3구역을 깬 뒤 = 4구역부터)
+	Ward = function(l) l = math.clamp(math.floor(l or 0), 0, 6) return l > 0 and (0.03 + 0.07 * l) or 0 end,           -- 받는 피해 10 → 45%
+	Body = function(l) l = math.clamp(math.floor(l or 0), 0, 6) return l > 0 and (0.08 + 0.064 * (l - 1)) or 0 end,    -- 최대 체력 +8 → +40%
+	Buffer = function(l) l = math.clamp(math.floor(l or 0), 0, 6) return l > 0 and (0.2 + 0.08 * (l - 1)) or 0 end,    -- 나눠 받기 20 → 60%
+	Evade = function(l) l = math.clamp(math.floor(l or 0), 0, 6) return l > 0 and (0.03 + 0.024 * (l - 1)) or 0 end,   -- 회피 3 → 15%
+	Grit = function(l) l = math.clamp(math.floor(l or 0), 0, 6) if l == 0 then return 0, 0 end return 0.04 + 0.04 * l, 0.08 + 0.07 * l end, -- 50% 아래 8 → 28% / 25% 아래 15 → 50%
+	Regen = function(l) l = math.clamp(math.floor(l or 0), 0, 6) return 0.004 * l end,                                   -- 초당 0.4 → 2.4%
+}
+function Config.WardReduce(level) return Config.Guard.Ward(level) end -- (예전 이름)
 Config.Sets.AugLevelByPieces = { [2] = 1, [3] = 3 }
 -- 세트 효과는 장비가 아니라 "골드로 활성화"한다: 그 구역 군주를 잡으면 열리고, 골드로 1~3단계까지 올린다.
 -- 동시에 켤 수 있는 개수(슬롯)는 처음 1개이고 구역을 클리어할수록 늘어난다 (AugSlotZones[n] = n번째 슬롯이 열리는 클리어 구역).

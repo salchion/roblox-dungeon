@@ -26,6 +26,9 @@ local function stateOf(player)
 	rift.AugBoss = rift.AugBoss or {}
 	rift.AugLv = rift.AugLv or {}
 	rift.AugOn = rift.AugOn or {}
+	rift.AugStone = rift.AugStone or {} -- [구역 번호 문자열] = 수호석으로 올린 단계 (방어 기재 4~6단계)
+	rift.Stones = rift.Stones or 0 -- 🔷 수호석
+	rift.AugLoad = rift.AugLoad or 1 -- 지금 쓰는 세팅 (1 = 사냥용, 2 = 보스용)
 	return rift
 end
 
@@ -62,28 +65,34 @@ local function levelsOf(player, rift, boosts)
 	local list = {}
 	for z = 1, ZONES do
 		local attr = Config.Sets.ZoneAug[z]
-		local level = (rift.AugLv[tostring(z)] or 0) + gearBonus(player, z) + math.min(Config.Inventory.AugBoostCap or 3, boosts[attr] or 0)
+		local level = (rift.AugLv[tostring(z)] or 0) + gearBonus(player, z) + (rift.AugStone[tostring(z)] or 0) + math.min(Config.Inventory.AugBoostCap or 3, boosts[attr] or 0)
 		list[z] = math.min(Config.Inventory.AugMaxLevel or 6, level)
 	end
 	return list
 end
+-- 켜지는 효과 = 내가 칸에 끼운 것만 (지금 세팅 rift.AugEquip[AugLoad]). 단계가 높다고 저절로 바뀌지 않는다
+--   딱 한 가지 자동: 한 번도 세팅을 만든 적이 없으면(신규 / 업데이트 직후) 칸을 한 번 채워 준다
 local function equipped(player, rift, slots, levels)
-	local pinned, others = {}, {}
-	for z = 1, ZONES do
-		if (levels[z] or 0) > 0 then
-			table.insert(rift.AugOn[tostring(z)] and pinned or others, z)
-		end
+	rift.AugEquip = rift.AugEquip or {}
+	local load = rift.AugEquip[rift.AugLoad]
+	if load == nil then -- (처음 한 번: 예전 자동 규칙 그대로 채워 둔다 = 📌 고정했던 것 먼저, 그다음 단계 높은 순. 기존 유저가 업데이트 뒤 효과가 꺼지지 않게)
+		load = {}
+		local order = {}
+		for z = 1, ZONES do if (levels[z] or 0) > 0 then table.insert(order, z) end end
+		table.sort(order, function(a, b)
+			local pa, pb = rift.AugOn[tostring(a)] and 1 or 0, rift.AugOn[tostring(b)] and 1 or 0
+			if pa ~= pb then return pa > pb end
+			if levels[a] ~= levels[b] then return levels[a] > levels[b] end
+			return a > b
+		end)
+		for i = 1, math.min(slots, #order) do table.insert(load, order[i]) end
+		if #load > 0 then rift.AugEquip[rift.AugLoad] = load end
 	end
-	local function byLevel(a, b)
-		if levels[a] ~= levels[b] then return levels[a] > levels[b] end
-		return a > b -- (같으면 뒤 구역 = 더 강한 효과 먼저)
-	end
-	table.sort(pinned, byLevel)
-	table.sort(others, byLevel)
-	local list = {}
-	for _, group in ipairs({ pinned, others }) do
-		for _, z in ipairs(group) do
-			if #list < slots then table.insert(list, z) end
+	local list, seen = {}, {}
+	for _, z in ipairs(load) do
+		if #list < slots and not seen[z] and (levels[z] or 0) > 0 then
+			table.insert(list, z)
+			seen[z] = true
 		end
 	end
 	return list
@@ -134,12 +143,22 @@ function Aug.Apply(player)
 		end
 	end
 	player:SetAttribute("AugAuraColor", auraColor)
+	player:SetAttribute("GuardStones", rift.Stones or 0)
+	player:SetAttribute("AugLoad", rift.AugLoad)
+	if player:GetAttribute("AugBodyShown") ~= (levels.AugBody or 0) then -- ❤️ 강체가 바뀌면 최대 체력을 다시 잰다
+		player:SetAttribute("AugBodyShown", levels.AugBody or 0)
+		task.defer(function()
+			local okD, Dungeon = pcall(function() return require(script.Parent:WaitForChild("DungeonService")) end)
+			if okD and Dungeon.RefreshMaxHealth then pcall(Dungeon.RefreshMaxHealth, player) end
+		end)
+	end
 	player:SetAttribute("AugSlots", slots)
 	for z = 1, ZONES do
 		player:SetAttribute("AugLvZ_" .. z, rift.AugLv[tostring(z)] or 0)
-		player:SetAttribute("AugGearZ_" .. z, gearBonus(player, z) + boostOf(Config.Sets.ZoneAug[z])) -- 장비로 더해진 단계 (세트 부위 + "+1" 옵션: 골드 단계가 0 이어도 센다)
+		player:SetAttribute("AugGearZ_" .. z, gearBonus(player, z) + (rift.AugStone[tostring(z)] or 0) + boostOf(Config.Sets.ZoneAug[z])) -- 장비 / 수호석으로 더해진 단계 (세트 부위 / 수호석 + "+1" 옵션: 골드 단계가 0 이어도 센다)
+		player:SetAttribute("AugStoneZ_" .. z, rift.AugStone[tostring(z)] or 0)
 		player:SetAttribute("AugOnZ_" .. z, table.find(list, z) ~= nil)
-		player:SetAttribute("AugPinZ_" .. z, rift.AugOn[tostring(z)] == true) -- 📌 고정
+		player:SetAttribute("AugSlotOf_" .. z, (function() local load = rift.AugEquip and rift.AugEquip[rift.AugLoad] or {} return table.find(load, z) or 0 end)()) -- (몇 번 칸에 끼웠나: 0 = 안 끼움)
 		player:SetAttribute("AugOpenZ_" .. z, isOpen(player, rift, z))
 	end
 end
@@ -190,9 +209,19 @@ local function townOnly(player)
 	return false
 end
 
-Remotes.Aug.OnServerEvent:Connect(function(player, action, zone)
+Remotes.Aug.OnServerEvent:Connect(function(player, action, zone, slotIndex)
 	local rift = stateOf(player)
-	if not rift or typeof(zone) ~= "number" then return end
+	if not rift then return end
+	if action == "Loadout" then -- 🗡 사냥용 / 👑 보스용 세팅 바꾸기 (어디서나)
+		if zone == 1 or zone == 2 then
+			rift.AugLoad = zone
+			rift.AugEquip = rift.AugEquip or {}
+			rift.AugEquip[zone] = rift.AugEquip[zone] or {}
+			Aug.Apply(player)
+		end
+		return
+	end
+	if typeof(zone) ~= "number" then return end
 	zone = math.floor(zone)
 	if zone < 1 or zone > ZONES then return end
 	local key = tostring(zone)
@@ -215,21 +244,64 @@ Remotes.Aug.OnServerEvent:Connect(function(player, action, zone)
 		player:SetAttribute("Gold", gold - cost)
 		rift.AugLv[key] = level + 1
 		notify(player, string.format("%s 『%s』 %s done! (Lv.%d)", info.Icon, info.Name, level == 0 and "Activation" or "Upgrade", level + 1))
-	elseif action == "Toggle" then -- 📌 고정 / 해제: 고정한 효과는 단계가 낮아도 먼저 켜진다 (칸 수까지)
-		if rift.AugOn[key] then
-			rift.AugOn[key] = nil
-		else
-			local slots = slotCount(player, rift)
-			local pinned = 0
-			for z = 1, ZONES do if rift.AugOn[tostring(z)] then pinned += 1 end end
-			if pinned >= slots then
-				notify(player, string.format("You can pin up to %d effects. Unpin another one first", slots))
-				return
-			end
-			rift.AugOn[key] = true
+	elseif action == "Stone" then -- 🔷 수호석으로 방어 기재 4~6단계 (골드 3단계를 다 올린 뒤, 마을에서)
+		if not townOnly(player) then return end
+		if not info.Defense or (rift.AugLv[key] or 0) < 3 then return end
+		local stone = rift.AugStone[key] or 0
+		if stone >= 3 then return end
+		local cost = Config.Guard.StoneCost[stone + 1]
+		if (rift.Stones or 0) < cost then
+			notify(player, string.format("Not enough Guard Stones (need %d)", cost))
+			return
 		end
+		rift.Stones -= cost
+		rift.AugStone[key] = stone + 1
+		notify(player, string.format("%s 『%s』 Lv.%d", info.Icon, info.Name, 3 + stone + 1))
+	elseif action == "Equip" then -- 칸에 끼우기 (어디서나). slotIndex 가 있으면 그 칸과 바꾼다
+		if not isOpen(player, rift, zone) then return end
+		rift.AugEquip = rift.AugEquip or {}
+		local load = rift.AugEquip[rift.AugLoad] or {}
+		rift.AugEquip[rift.AugLoad] = load
+		if table.find(load, zone) then return end
+		local slots = slotCount(player, rift)
+		while #load > slots do table.remove(load) end
+		if typeof(slotIndex) == "number" and slotIndex >= 1 and slotIndex <= #load then
+			load[math.floor(slotIndex)] = zone
+		elseif #load < slots then
+			table.insert(load, zone)
+		else
+			notify(player, "All slots are full — choose a slot to swap")
+			return
+		end
+	elseif action == "Unequip" then
+		local load = rift.AugEquip and rift.AugEquip[rift.AugLoad]
+		local at = load and table.find(load, zone)
+		if at then table.remove(load, at) end
 	end
 	Aug.Apply(player)
+end)
+
+-- 🔷 수호석 얻기: 4구역부터 엘리트(확률) / 군주 · 던전 보스(확정). 퀘스트 카운터를 듣는다 (필드 / 던전 코드를 고치지 않는다)
+task.spawn(function()
+	local okQ, Quest = pcall(function() return require(script.Parent:WaitForChild("QuestService")) end)
+	if not okQ or not Quest.Listeners then return end
+	table.insert(Quest.Listeners, function(player, stat, amount)
+		if stat ~= "EliteKills" and stat ~= "BossKills" then return end
+		if (player:GetAttribute("ClearedZone") or 0) < Config.Guard.FromCleared then return end
+		local rift = stateOf(player)
+		if not rift then return end
+		local gain = 0
+		if stat == "BossKills" then
+			gain = Config.Guard.BossStones * (amount or 1)
+		else
+			for _ = 1, (amount or 1) do if math.random() < Config.Guard.EliteChance then gain += 1 end end
+		end
+		if gain > 0 then
+			rift.Stones = (rift.Stones or 0) + gain
+			player:SetAttribute("GuardStones", rift.Stones)
+			notify(player, string.format("🔷 Guard Stone +%d", gain))
+		end
+	end)
 end)
 
 return Aug

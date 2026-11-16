@@ -76,7 +76,7 @@ make("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
 
 -- 창 모양: 왼쪽에 내 캐릭터가 서 있고 그 둘레에 구역 효과 8개가 원으로 둘러선다 (무협 RPG 장비창처럼).
 -- 오른쪽 패널에 고른 효과의 설명 + 버튼. 한 화면에 다 들어와서 스크롤이 없다.
-local PANEL_W, PANEL_H = 1000, 548
+local PANEL_W, PANEL_H = 1000, 724 -- (공격 8 + 방어 6 = 카드 14장: 5줄)
 local RING_CX, RING_CY = 250, 312 -- 원들이 둘러서는 중심 (= 캐릭터)
 local RING_RX, RING_RY = 172, 172
 local ORB = 66
@@ -104,8 +104,17 @@ local slotLabel = label({ Size = UDim2.new(0, 300, 0, 20), Position = UDim2.new(
 -- 켜진 칸: 켜진 효과 아이콘 + 빈 칸 (글자 "2/3" 만으로는 무엇이 켜졌는지 안 보였다)
 local slotIcons = make("Frame", { Size = UDim2.new(0, 200, 0, 26), Position = UDim2.new(0, 190, 0, 10), BackgroundTransparency = 1 }, panel)
 make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }, slotIcons)
+slotIcons.Size = UDim2.new(0, 360, 0, 30)
+-- 세팅 2개 (🗡 사냥용 / 👑 보스용): 누르면 그 세팅의 칸으로 바뀐다
+local loadTabs = {}
+for i, text in ipairs({ "🗡 Hunt", "👑 Boss" }) do
+	loadTabs[i] = button({ Size = UDim2.new(0, 84, 0, 26), Position = UDim2.new(0, 560 + (i - 1) * 90, 0, 12), BackgroundColor3 = Color3.fromRGB(44, 46, 66), Text = text, TextSize = 12 }, panel, function()
+		Remotes.Aug:FireServer("Loadout", i)
+	end)
+end
 local waitHint = label({ Size = UDim2.new(0, 320, 0, 18), Position = UDim2.new(0, 320, 0, 41), Text = "", TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 200, 120), Visible = false }, panel)
-label({ Size = UDim2.new(1, -32, 0, 28), Position = UDim2.new(0, 16, 0, 60), Text = "Equip a zone's set gear and its effect turns on by itself (highest level first, up to your slots) · Gold: +Lv.1–3 · Set gear: +Lv.1–3 · 📌 Pin to keep one on", TextSize = 11, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
+label({ Size = UDim2.new(1, -32, 0, 28), Position = UDim2.new(0, 16, 0, 60), Text = "⚔ Attack (set gear: Lv.4–6) · 🛡 Defense (🔷 Guard Stone: Lv.4–6) · Only what you put in a slot is on · ✕ to take it out", TextSize = 11, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
+label({ Size = UDim2.new(0, 300, 0, 18), Position = UDim2.new(0, 16, 0, 456), Text = "🛡 Defense · unlocked by Zone 3–8 lords", TextSize = 13, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(120, 190, 255) }, panel)
 button({ Size = UDim2.new(0, 72, 0, 30), Position = UDim2.new(1, -84, 0, 12), BackgroundColor3 = Color3.fromRGB(54, 58, 82), Text = "Close", TextSize = 12 }, panel, function() panel.Visible = false end)
 
 -- 가운데: 내 캐릭터 (천천히 돈다)
@@ -188,13 +197,47 @@ local synList = make("ScrollingFrame", { Size = UDim2.new(1, -16, 1, -356), Posi
 	CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y, ZIndex = 3 }, box)
 make("UIListLayout", { Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder }, synList)
 local selectedZone = 1
+-- 칸이 꽉 찼을 때: 어느 칸과 바꿀지 고르는 작은 창
+local swapPick = make("Frame", { Size = UDim2.new(1, -16, 0, 96), Position = UDim2.new(0, 8, 1, -150), BackgroundColor3 = Color3.fromRGB(20, 18, 32), BorderSizePixel = 0, ZIndex = 9, Visible = false }, box)
+make("UICorner", { CornerRadius = UDim.new(0, 12) }, swapPick)
+make("UIStroke", { Color = Color3.new(1, 1, 1), Thickness = 2 }, swapPick)
+local swapTitle = label({ Size = UDim2.new(1, -12, 0, 22), Position = UDim2.new(0, 6, 0, 4), Text = "Slots are full — swap with which one?", TextSize = 12, Font = Enum.Font.GothamBlack, ZIndex = 10 }, swapPick)
+local swapRow = make("Frame", { Size = UDim2.new(1, -12, 0, 56), Position = UDim2.new(0, 6, 0, 32), BackgroundTransparency = 1, ZIndex = 10 }, swapPick)
+make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), HorizontalAlignment = Enum.HorizontalAlignment.Center }, swapRow)
+local function openSwap()
+	for _, c in ipairs(swapRow:GetChildren()) do if c:IsA("GuiObject") then c:Destroy() end end
+	local slots = player:GetAttribute("AugSlots") or 1
+	for slotNo = 1, slots do
+		local inSlot
+		for z = 1, ZONES do if (player:GetAttribute("AugSlotOf_" .. z) or 0) == slotNo then inSlot = z end end
+		local zinfo = inSlot and Config.AugInfo[Config.Sets.ZoneAug[inSlot]]
+		local b = button({ Size = UDim2.new(0, 84, 0, 52), BackgroundColor3 = zinfo and zinfo.Color:Lerp(Color3.fromRGB(20, 18, 30), 0.6) or Color3.fromRGB(44, 46, 66), RichText = true,
+			Text = string.format("<b>%d</b>\n%s", slotNo, zinfo and (zinfo.Icon .. " " .. zinfo.Name) or "—"), TextSize = 10, TextWrapped = true }, swapRow, function()
+			Remotes.Aug:FireServer("Equip", selectedZone, slotNo)
+			swapPick.Visible = false
+		end)
+		b.ZIndex = 11
+	end
+	swapPick.Visible = true
+end
 local toggleButton = button({ Size = UDim2.new(0.5, -12, 0, 38), Position = UDim2.new(0, 8, 1, -46), BackgroundColor3 = Color3.fromRGB(62, 64, 84), Text = "", TextSize = 12 }, box, function()
-	Remotes.Aug:FireServer("Toggle", selectedZone)
+	if (player:GetAttribute("AugSlotOf_" .. selectedZone) or 0) > 0 then
+		Remotes.Aug:FireServer("Unequip", selectedZone)
+		return
+	end
+	local used = 0
+	for z = 1, ZONES do if (player:GetAttribute("AugSlotOf_" .. z) or 0) > 0 then used += 1 end end
+	if used >= (player:GetAttribute("AugSlots") or 1) then openSwap() else Remotes.Aug:FireServer("Equip", selectedZone) end
 end)
 toggleButton.ZIndex = 3
 for _, c in ipairs(toggleButton:GetChildren()) do if c:IsA("UICorner") then c.CornerRadius = UDim.new(1, 0) end end
 local buyButton = button({ Size = UDim2.new(0.5, -8, 0, 38), Position = UDim2.new(0.5, 0, 1, -46), BackgroundColor3 = Color3.fromRGB(140, 104, 40), Text = "", TextSize = 10 }, box, function()
-	Remotes.Aug:FireServer("Buy", selectedZone)
+	local info = Config.AugInfo[Config.Sets.ZoneAug[selectedZone]]
+	if info and info.Defense and (player:GetAttribute("AugLvZ_" .. selectedZone) or 0) >= 3 then
+		Remotes.Aug:FireServer("Stone", selectedZone) -- (방어 기재 4~6단계: 🔷 수호석)
+	else
+		Remotes.Aug:FireServer("Buy", selectedZone)
+	end
 end)
 buyButton.ZIndex = 3
 -- 세트 장비 바로가기: 장비 창을 이 구역 세트만 걸러서 연다
@@ -217,8 +260,10 @@ local rows = {}
 for zone = 1, ZONES do
 	local attr = Config.Sets.ZoneAug[zone]
 	local info = Config.AugInfo[attr]
-	local col, line = (zone - 1) % 3, (zone - 1) // 3
-	local card = make("Frame", { Size = UDim2.new(0, 196, 0, 136), Position = UDim2.new(0, 16 + col * 206, 0, 96 + line * 146), BackgroundColor3 = Color3.fromRGB(28, 30, 46), BorderSizePixel = 0, ZIndex = 2 }, panel)
+	local defense = zone > Config.Field.ZoneCount -- (9~14: 방어 기재, 아래 두 줄)
+	local index = defense and (zone - Config.Field.ZoneCount - 1) or (zone - 1)
+	local col, line = index % 3, index // 3 + (defense and 3 or 0)
+	local card = make("Frame", { Size = UDim2.new(0, 196, 0, 112), Position = UDim2.new(0, 16 + col * 206, 0, 96 + line * 120 + (defense and 22 or 0)), BackgroundColor3 = Color3.fromRGB(28, 30, 46), BorderSizePixel = 0, ZIndex = 2 }, panel)
 	make("UICorner", { CornerRadius = UDim.new(0, 14) }, card)
 	local cardGlow = make("UIGradient", { Rotation = 35, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 0) }) }, card)
 	local orb = make("Frame", { Size = UDim2.new(0, 50, 0, 50), Position = UDim2.new(0, 10, 0, 10), BackgroundColor3 = Color3.fromRGB(36, 34, 52), BorderSizePixel = 0, ZIndex = 3 }, card)
@@ -230,14 +275,14 @@ for zone = 1, ZONES do
 	local caption = label({ Size = UDim2.new(1, -120, 0, 18), Position = UDim2.new(0, 68, 0, 10), Text = info.Name, TextSize = 13, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4, TextTruncate = Enum.TextTruncate.AtEnd }, card)
 	local status = label({ Size = UDim2.new(1, -76, 0, 16), Position = UDim2.new(0, 68, 0, 30), Text = "", RichText = true, TextSize = 11, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4 }, card)
 	local levelTag = label({ Size = UDim2.new(0, 60, 0, 22), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 8), Text = "", TextSize = 18, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = Color3.fromRGB(150, 230, 255), ZIndex = 4 }, card)
-	local pinTag = label({ Size = UDim2.new(0, 20, 0, 18), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 32), Text = "📌", TextSize = 13, ZIndex = 4, Visible = false }, card)
+	local pinTag = label({ Size = UDim2.new(0, 20, 0, 18), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 32), Text = "", TextSize = 11, Font = Enum.Font.GothamBlack, ZIndex = 4, Visible = false, BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(40, 150, 90) }, card) -- (몇 번 칸에 끼웠나)
 	local pipDots = {}
 	for i = 1, 6 do
-		local dot = make("Frame", { Size = UDim2.new(0, 13, 0, 13), Position = UDim2.new(0, 12 + (i - 1) * 18, 0, 72), BackgroundColor3 = Color3.fromRGB(58, 60, 82), BorderSizePixel = 0, ZIndex = 4 }, card)
+		local dot = make("Frame", { Size = UDim2.new(0, 13, 0, 13), Position = UDim2.new(0, 12 + (i - 1) * 18, 0, 64), BackgroundColor3 = Color3.fromRGB(58, 60, 82), BorderSizePixel = 0, ZIndex = 4 }, card)
 		make("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
 		pipDots[i] = dot
 	end
-	local sub = label({ Size = UDim2.new(1, -20, 0, 30), Position = UDim2.new(0, 10, 0, 94), Text = "", TextSize = 10, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(150, 156, 180), ZIndex = 4 }, card)
+	local sub = label({ Size = UDim2.new(1, -20, 0, 26), Position = UDim2.new(0, 10, 0, 82), Text = "", TextSize = 10, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextColor3 = Color3.fromRGB(150, 156, 180), ZIndex = 4 }, card)
 	local rowStroke = make("UIStroke", { Color = Color3.fromRGB(60, 62, 88), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
 	local selRing = make("Frame", { Size = UDim2.new(1, 8, 1, 8), Position = UDim2.new(0, -4, 0, -4), BackgroundTransparency = 1, ZIndex = 1, Visible = false }, card)
 	make("UICorner", { CornerRadius = UDim.new(0, 17) }, selRing)
@@ -288,8 +333,9 @@ function refresh()
 		r.Stroke.Transparency = on and 0.05 or (open and 0.6 or 0.85)
 		r.Sel.Visible = zone == selectedZone
 		do -- 카드: 상태 / 단계 점 / 설명 / 고정 / 켜진 카드는 효과 색으로 물든다
-			local pinned = player:GetAttribute("AugPinZ_" .. zone) == true
-			r.Pin.Visible = pinned
+			local slotNo = player:GetAttribute("AugSlotOf_" .. zone) or 0
+			r.Pin.Visible = slotNo > 0
+			r.Pin.Text = tostring(slotNo)
 			r.Card.BackgroundColor3 = on and info.Color:Lerp(Color3.fromRGB(28, 30, 46), 0.62) or Color3.fromRGB(28, 30, 46)
 			r.CardGlow.Transparency = on and NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 0.5) }) or NumberSequence.new(0)
 			r.Stroke.Color = on and info.Color or Color3.fromRGB(60, 62, 88)
@@ -309,7 +355,7 @@ function refresh()
 				r.Status.Text = "<font color='#888899'>🔒 Defeat the lord</font>"
 			end
 			local hz = homeZone(zone)
-			r.Sub.Text = (open or level + gear > 0) and (Config.Sets.ZoneKeys[zone] and string.format("Zone %d · Gold %d + Set gear %d", hz, level, gear) or string.format("Zone %d · Gold %d + Gear option %d", hz, level, gear)) or string.format("Unlocks when you defeat the Zone %d lord", hz) -- (방벽은 세트 장비가 없고 장비 "+1" 옵션만)
+			r.Sub.Text = (open or level + gear > 0) and (Config.Sets.ZoneKeys[zone] and string.format("Zone %d · Gold %d + Set gear %d", hz, level, gear) or string.format("Zone %d · Gold %d + Guard Stone %d", hz, level, gear)) or string.format("Unlocks when you defeat the Zone %d lord", hz) -- (방벽은 세트 장비가 없고 장비 "+1" 옵션만)
 		end
 		r.Match.Visible = open and Config.AugWeaponMatch(player, Config.Sets.ZoneAug[zone]) == true
 		if open and level == 0 and gold >= augCost(zone, 1) then affordable += 1 end
@@ -328,7 +374,7 @@ function refresh()
 	boxStroke.Color = on and info.Color or Color3.fromRGB(255, 190, 110)
 	boxTitle.Text = string.format("<font size='16'><b>%s</b></font>\n%s<font size='11'>Zone %d</font>", info.Name, on and "<font color='#78ffb4' size='11'>● ON · </font>" or "", homeZone(zone))
 	boxLevel.Text = level + gear > 0 and ("Lv." .. (level + gear)) or ""
-	legendGold.Text = string.format(Config.Sets.ZoneKeys[zone] and "<font color='#ffd966'>● Gold %d</font>  +  <font color='#8fe0ff'>● Set gear %d</font>  =  <b>Lv.%d</b>" or "<font color='#ffd966'>● Gold %d</font>  +  <font color='#8fe0ff'>● Gear option %d</font>  =  <b>Lv.%d</b>", level, gear, math.min(6, level + gear)) -- (방벽은 세트 장비 없이 장비 "+1" 옵션만)
+	legendGold.Text = info.Defense and string.format("<font color='#ffd966'>● Gold %d</font>  +  <font color='#8fe0ff'>● Guard Stone / option %d</font>  =  <b>Lv.%d</b>", level, gear, math.min(6, level + gear)) or string.format(Config.Sets.ZoneKeys[zone] and "<font color='#ffd966'>● Gold %d</font>  +  <font color='#8fe0ff'>● Set gear %d</font>  =  <b>Lv.%d</b>" or "<font color='#ffd966'>● Gold %d</font>  +  <font color='#8fe0ff'>● Gear option %d</font>  =  <b>Lv.%d</b>", level, gear, math.min(6, level + gear)) -- (방벽은 세트 장비 없이 장비 "+1" 옵션만)
 	legendGear.Text = ""
 	local lines = { "<font color='#aaf0c8'>" .. info.Desc .. "</font>" }
 	for _, child in ipairs(synList:GetChildren()) do if child:IsA("Frame") then child:Destroy() end end
@@ -412,11 +458,12 @@ function refresh()
 	synHeader.Visible = synCount > 0
 	synList.Visible = synCount > 0
 	-- (켜짐 / 꺼짐은 이제 저절로 정해진다: 이 버튼은 "📌 고정". 고정한 효과는 단계가 낮아도 먼저 켜진다)
-	local pinned = player:GetAttribute("AugPinZ_" .. zone) == true
-	toggleButton.Text = pinned and "📌 Pinned" or "📌 Pin"
-	toggleButton.BackgroundColor3 = pinned and Color3.fromRGB(150, 110, 40) or Color3.fromRGB(62, 64, 84)
-	toggleButton.TextColor3 = pinned and Color3.fromRGB(255, 236, 190) or Color3.fromRGB(170, 174, 200)
-	toggleButton.Visible = open or (level + gear) > 0
+	local inSlot = (player:GetAttribute("AugSlotOf_" .. zone) or 0) > 0
+	toggleButton.Text = inSlot and "✕ Take out of slot" or "⬆ Put in a slot"
+	toggleButton.BackgroundColor3 = inSlot and Color3.fromRGB(110, 60, 70) or Color3.fromRGB(46, 150, 90)
+	toggleButton.TextColor3 = Color3.new(1, 1, 1)
+	toggleButton.Visible = open and (level + gear) > 0
+	if swapPick.Visible and inSlot then swapPick.Visible = false end
 	if not open then
 		buyButton.Text = string.format("🔒 Defeat the Zone %d lord", homeZone(zone))
 		buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
@@ -430,7 +477,21 @@ function refresh()
 	else
 		buyButton.Size = UDim2.new(0.5, -8, 0, 38)
 		buyButton.Position = UDim2.new(0.5, 0, 1, -46)
-		if level >= 3 then
+		local stoneLv = player:GetAttribute("AugStoneZ_" .. zone) or 0
+		if level >= 3 and info.Defense then -- 방어 기재 4~6단계: 🔷 수호석
+			local stones = player:GetAttribute("GuardStones") or 0
+			local need = Config.Guard.StoneCost[stoneLv + 1]
+			if not need then
+				buyButton.Text = "Max level"
+				buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
+			elseif player:GetAttribute("Zone") ~= "Lobby" and player:GetAttribute("TutorialActive") ~= true then
+				buyButton.Text = "🏘 Upgrade in town"
+				buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
+			else
+				buyButton.Text = string.format("🔷 %d / %d Guard Stones → Lv.%d", stones, need, 3 + stoneLv + 1)
+				buyButton.BackgroundColor3 = stones >= need and Color3.fromRGB(50, 120, 190) or Color3.fromRGB(60, 70, 90)
+			end
+		elseif level >= 3 then
 			buyButton.Text = "Gold max · gear adds +3" -- (골드 단계는 끝: 남은 성장은 세트 장비)
 			buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
 		elseif player:GetAttribute("Zone") ~= "Lobby" and player:GetAttribute("TutorialActive") ~= true then
@@ -444,7 +505,7 @@ function refresh()
 			buyButton.BackgroundColor3 = gold >= cost and Color3.fromRGB(150, 110, 40) or Color3.fromRGB(80, 74, 66)
 		end
 	end
-	slotLabel.Text = string.format("Active %d / %d slots   (💰 %s G)", used, slots, commas(gold))
+	slotLabel.Text = string.format("Slots %d / %d   (💰 %s G · 🔷 %d)", used, slots, commas(gold), player:GetAttribute("GuardStones") or 0)
 	do -- 켜진 칸 아이콘 줄 + 대기 중인 효과 안내 + 세트 장비 바로가기 글자
 		for _, child in ipairs(slotIcons:GetChildren()) do if child:IsA("GuiObject") then child:Destroy() end end
 		local shown, waiting = 0, 0
@@ -452,7 +513,10 @@ function refresh()
 			local zinfo = Config.AugInfo[Config.Sets.ZoneAug[z]]
 			if player:GetAttribute("AugOnZ_" .. z) == true then
 				shown += 1
-				local chip = label({ Size = UDim2.new(0, 34, 0, 24), BackgroundTransparency = 0, BackgroundColor3 = zinfo.Color:Lerp(Color3.fromRGB(20, 18, 30), 0.5), Text = zinfo.Icon, TextSize = 14, LayoutOrder = z }, slotIcons)
+				local chip = label({ Size = UDim2.new(0, 64, 0, 26), BackgroundTransparency = 0, BackgroundColor3 = zinfo.Color:Lerp(Color3.fromRGB(20, 18, 30), 0.5), Text = zinfo.Icon .. " ✕", TextSize = 13, LayoutOrder = player:GetAttribute("AugSlotOf_" .. z) or z }, slotIcons)
+				local zz = z
+				local hitX = make("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "" }, chip) -- (칸 줄에서 바로 빼기)
+				hitX.Activated:Connect(function() Remotes.Aug:FireServer("Unequip", zz) end)
 				make("UICorner", { CornerRadius = UDim.new(1, 0) }, chip)
 				make("UIStroke", { Color = zinfo.Color, Thickness = 1.5 }, chip)
 			elseif (player:GetAttribute("AugLvZ_" .. z) or 0) + (player:GetAttribute("AugGearZ_" .. z) or 0) > 0 then
@@ -460,12 +524,16 @@ function refresh()
 			end
 		end
 		for i = shown + 1, slots do
-			local empty = label({ Size = UDim2.new(0, 34, 0, 24), Text = "+", TextSize = 13, TextColor3 = Color3.fromRGB(120, 124, 150), LayoutOrder = 50 + i }, slotIcons)
+			local empty = label({ Size = UDim2.new(0, 64, 0, 26), Text = "+", TextSize = 13, TextColor3 = Color3.fromRGB(120, 124, 150), LayoutOrder = 50 + i }, slotIcons)
 			make("UICorner", { CornerRadius = UDim.new(1, 0) }, empty)
 			make("UIStroke", { Color = Color3.fromRGB(90, 94, 120), Thickness = 1.2, Transparency = 0.3 }, empty)
 		end
 		waitHint.Visible = waiting > 0
-		waitHint.Text = string.format("⏸ %d waiting · 📌 Pin one to swap it in", waiting)
+		waitHint.Visible = false -- (이제 자동으로 바뀌지 않는다: 대기 안내 대신 직접 끼운다)
+		for i, tab in ipairs(loadTabs) do
+			local active = (player:GetAttribute("AugLoad") or 1) == i
+			tab.BackgroundColor3 = active and Color3.fromRGB(150, 110, 40) or Color3.fromRGB(44, 46, 66)
+		end
 		local key = Config.Sets.ZoneKeys[selectedZone]
 		local setDef = key and Config.Sets[key]
 		gearJump.Visible = setDef ~= nil
@@ -475,11 +543,11 @@ function refresh()
 	badge.Visible = affordable > 0 and used < slots
 end
 
-for _, name in ipairs({ "Gold", "AugSlots", "TutorialActive", "WeaponType", "WeaponLevel", "Zone" }) do
+for _, name in ipairs({ "Gold", "AugSlots", "TutorialActive", "WeaponType", "WeaponLevel", "Zone", "GuardStones", "AugLoad" }) do
 	player:GetAttributeChangedSignal(name):Connect(refresh)
 end
 for zone = 1, ZONES do
-	for _, prefix in ipairs({ "AugOpenZ_", "AugLvZ_", "AugOnZ_", "AugGearZ_", "AugPinZ_" }) do
+	for _, prefix in ipairs({ "AugOpenZ_", "AugLvZ_", "AugOnZ_", "AugGearZ_", "AugSlotOf_", "AugStoneZ_" }) do
 		player:GetAttributeChangedSignal(prefix .. zone):Connect(refresh)
 	end
 end
@@ -718,7 +786,7 @@ local function playRollCompact(pick)
 	local detail = label({ Size = UDim2.new(1, -24, 0, 40), Position = UDim2.new(0, 12, 0, 80), Text = "", TextSize = 10, TextWrapped = true, TextColor3 = Color3.fromRGB(200, 208, 232), Font = Enum.Font.GothamMedium, ZIndex = 61 }, box)
 	local startedAt = os.clock()
 	while os.clock() - startedAt < 1.3 do
-		local info = Config.AugInfo[Config.Sets.ZoneAug[math.random(#Config.Sets.ZoneAug)]]
+		local info = Config.AugInfo[Config.Sets.ZoneAug[math.random(Config.Field.ZoneCount)]] -- (체험 뽑기는 공격 8개만)
 		icon.Text, name.Text = info.Icon, info.Name
 		name.TextColor3 = Color3.fromRGB(170, 175, 205)
 		task.wait(0.07)

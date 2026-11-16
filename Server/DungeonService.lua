@@ -89,9 +89,9 @@ local function getAliveParts(player)
 end
 
 function Dungeon.GetMaxHealth(player)
-	return P.BaseHealth + (player:GetAttribute("HealthPoints") or 0) * P.HealthPerPoint + (player:GetAttribute("GearHealth") or 0)
+	return (P.BaseHealth + (player:GetAttribute("HealthPoints") or 0) * P.HealthPerPoint + (player:GetAttribute("GearHealth") or 0)
 		+ Config.GetLevelHealth(player:GetAttribute("Level") or 1)
-		+ (player:GetAttribute("TrainHealth") or 0)
+		+ (player:GetAttribute("TrainHealth") or 0)) * (1 + Config.Guard.Body(player:GetAttribute("AugBody") or 0)) -- (방어 기재 ❤️ 강체)
 end
 
 -- 최대 체력을 스탯에 맞게 갱신하고 heal 만큼 회복 (math.huge면 완전 회복)
