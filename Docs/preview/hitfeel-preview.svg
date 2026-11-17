@@ -1,0 +1,250 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1800" viewBox="0 0 1200 1800">
+<rect width="1200" height="1800" fill="#14112B"/>
+<text x="40" y="62" font-family="Noto Sans CJK KR, sans-serif" font-size="36" font-weight="bold" fill="#FFFFFF" text-anchor="start" >타격감 패스 시안 (미리보기 · 코드 미반영)</text>
+<text x="40" y="96" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="normal" fill="#A9A2D0" text-anchor="start" >근거 코드: FxClient · PlayerFX · IntensityClient · PlayerClient(흔들림/적중음) · SoundBank · Effects</text>
+<rect x="40" y="113" width="50" height="23" rx="11" fill="#30805C"/>
+<text x="65" y="131" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >기존</text>
+<text x="100" y="131" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="normal" fill="#F2EEFF" text-anchor="start" >지금 이미 있는 연출 (값 그대로)</text>
+<rect x="380" y="113" width="50" height="23" rx="11" fill="#C9A227"/>
+<text x="405" y="131" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#100C22" text-anchor="middle" >변경</text>
+<text x="440" y="131" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="normal" fill="#F2EEFF" text-anchor="start" >이미 있는데 값만 바꿈</text>
+<rect x="720" y="113" width="50" height="23" rx="11" fill="#E8742A"/>
+<text x="745" y="131" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >신규</text>
+<text x="780" y="131" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="normal" fill="#F2EEFF" text-anchor="start" >새로 넣을 연출</text>
+<text x="1160" y="131" font-family="Noto Sans CJK KR, sans-serif" font-size="15" font-weight="normal" fill="#A9A2D0" text-anchor="end" >흔들림 단위 = 코드 값 (초당 2.5 감소)</text>
+<rect x="30" y="160" width="1140" height="400" rx="22" fill="#1E1A40" stroke="#100C22" stroke-width="4"/>
+<rect x="30" y="160" width="1140" height="56" rx="22" fill="#6248AC"/>
+<rect x="30" y="194" width="1140" height="22" fill="#6248AC"/>
+<circle cx="68" cy="188" r="19" fill="#100C22"/>
+<text x="68" y="196" font-family="Noto Sans CJK KR, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >1</text>
+<text x="100" y="197" font-family="Noto Sans CJK KR, sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="start" >일반 명중</text>
+<text x="1150" y="196" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="normal" fill="#E6DEFF" text-anchor="end" >기본 공격 0.35초 간격 · 자동 공격 연사</text>
+<rect x="50" y="232" width="530" height="312" rx="14" fill="#262052" stroke="#30805C" stroke-width="2"/>
+<text x="66" y="262" font-family="Noto Sans CJK KR, sans-serif" font-size="20" font-weight="bold" fill="#30805C" text-anchor="start" >지금</text>
+<ellipse cx="130" cy="376" rx="34" ry="27.200000000000003" fill="#62C070" stroke="#100C22" stroke-width="3"/>
+<circle cx="119" cy="370" r="5" fill="#100C22"/><circle cx="141" cy="370" r="5" fill="#100C22"/>
+<g transform="translate(250 335) scale(1.55 1.15)" opacity="1.0"><text x="0" y="0" font-family="Noto Sans CJK KR, sans-serif" font-size="30" font-weight="900" fill="#FFFFFF" stroke="#100C22" stroke-width="3.0" paint-order="stroke" text-anchor="middle">128</text></g>
+<text x="250" y="369" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >0초</text>
+<g transform="translate(385 335) scale(1.15 1.0)" opacity="1.0"><text x="0" y="0" font-family="Noto Sans CJK KR, sans-serif" font-size="30" font-weight="900" fill="#FFFFFF" stroke="#100C22" stroke-width="3.0" paint-order="stroke" text-anchor="middle">128</text></g>
+<text x="385" y="369" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >0.07초</text>
+<g transform="translate(520 335) scale(1.0 1.0)" opacity="1.0"><text x="0" y="0" font-family="Noto Sans CJK KR, sans-serif" font-size="30" font-weight="900" fill="#FFFFFF" stroke="#100C22" stroke-width="3.0" paint-order="stroke" text-anchor="middle">128</text></g>
+<text x="520" y="369" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >0.14초</text>
+<text x="320" y="327" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#A9A2D0" text-anchor="middle" >-></text>
+<text x="455" y="327" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#A9A2D0" text-anchor="middle" >-></text>
+<rect x="70" y="421" width="50" height="23" rx="11" fill="#30805C"/>
+<text x="95" y="439" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >기존</text>
+<text x="130" y="438" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >숫자 흰색 · 팝 1.35배(가로로 납작) -> 1.0, 0.14초</text>
+<rect x="70" y="451" width="50" height="23" rx="11" fill="#30805C"/>
+<text x="95" y="469" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >기존</text>
+<text x="130" y="468" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >히트스톱 없음 · 화면 흔들림 없음 · 수명 0.5초(제자리)</text>
+<rect x="70" y="481" width="50" height="23" rx="11" fill="#30805C"/>
+<text x="95" y="499" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >기존</text>
+<text x="130" y="498" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >적중음 Hit (음높이 0.9~1.15, 0.14초에 한 번)</text>
+<rect x="70" y="511" width="50" height="23" rx="11" fill="#30805C"/>
+<text x="95" y="529" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >기존</text>
+<text x="130" y="528" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >조준점 적중 표시 0.18초 · 0.25초/4스터드 겹침 생략</text>
+<rect x="620" y="232" width="530" height="312" rx="14" fill="#262052" stroke="#E8742A" stroke-width="2"/>
+<text x="636" y="262" font-family="Noto Sans CJK KR, sans-serif" font-size="20" font-weight="bold" fill="#E8742A" text-anchor="start" >적용 후</text>
+<ellipse cx="700" cy="376" rx="34" ry="27.200000000000003" fill="#FFFFFF" stroke="#100C22" stroke-width="3"/>
+<circle cx="689" cy="370" r="5" fill="#100C22"/><circle cx="711" cy="370" r="5" fill="#100C22"/>
+<text x="700" y="310" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#E8742A" text-anchor="middle" >흰 번쩍 0.06초</text>
+<g transform="translate(820 335) scale(1.25 1.25)" opacity="1.0"><text x="0" y="0" font-family="Noto Sans CJK KR, sans-serif" font-size="30" font-weight="900" fill="#FFF5E1" stroke="#100C22" stroke-width="3.0" paint-order="stroke" text-anchor="middle">128</text></g>
+<text x="820" y="369" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >0초</text>
+<g transform="translate(955 335) scale(1.0 1.0)" opacity="1.0"><text x="0" y="0" font-family="Noto Sans CJK KR, sans-serif" font-size="30" font-weight="900" fill="#FFF5E1" stroke="#100C22" stroke-width="3.0" paint-order="stroke" text-anchor="middle">128</text></g>
+<text x="955" y="369" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >0.10초</text>
+<g transform="translate(1090 335) scale(1.0 1.0)" opacity="1.0"><text x="0" y="0" font-family="Noto Sans CJK KR, sans-serif" font-size="30" font-weight="900" fill="#FFF5E1" stroke="#100C22" stroke-width="3.0" paint-order="stroke" text-anchor="middle">128</text></g>
+<text x="1090" y="369" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >0.50초</text>
+<text x="890" y="327" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#A9A2D0" text-anchor="middle" >-></text>
+<text x="1025" y="327" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#A9A2D0" text-anchor="middle" >-></text>
+<rect x="640" y="421" width="50" height="23" rx="11" fill="#C9A227"/>
+<text x="665" y="439" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#100C22" text-anchor="middle" >변경</text>
+<text x="700" y="438" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >숫자 팝 1.0->1.25->1.0 (0.10초, 가로세로 같게)</text>
+<rect x="640" y="451" width="50" height="23" rx="11" fill="#E8742A"/>
+<text x="665" y="469" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >신규</text>
+<text x="700" y="468" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >숫자 1.5스터드 떠오르며 사라짐 (0.5초)</text>
+<rect x="640" y="481" width="50" height="23" rx="11" fill="#E8742A"/>
+<text x="665" y="499" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >신규</text>
+<text x="700" y="498" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >적 몸 흰 번쩍 0.06초 · 히트스톱은 계속 없음</text>
+<rect x="640" y="511" width="50" height="23" rx="11" fill="#30805C"/>
+<text x="665" y="529" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >기존</text>
+<text x="700" y="528" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >적중음 · 흔들림 없음은 그대로 (연사 피로 방지)</text>
+<rect x="30" y="580" width="1140" height="400" rx="22" fill="#1E1A40" stroke="#100C22" stroke-width="4"/>
+<rect x="30" y="580" width="1140" height="56" rx="22" fill="#6248AC"/>
+<rect x="30" y="614" width="1140" height="22" fill="#6248AC"/>
+<circle cx="68" cy="608" r="19" fill="#100C22"/>
+<text x="68" y="616" font-family="Noto Sans CJK KR, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >2</text>
+<text x="100" y="617" font-family="Noto Sans CJK KR, sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="start" >치명타</text>
+<text x="1150" y="616" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="normal" fill="#E6DEFF" text-anchor="end" >치명타 확률은 장비/훈련/펫으로 오른다</text>
+<rect x="50" y="652" width="530" height="312" rx="14" fill="#262052" stroke="#30805C" stroke-width="2"/>
+<text x="66" y="682" font-family="Noto Sans CJK KR, sans-serif" font-size="20" font-weight="bold" fill="#30805C" text-anchor="start" >지금</text>
+<ellipse cx="130" cy="796" rx="34" ry="27.200000000000003" fill="#62C070" stroke="#100C22" stroke-width="3"/>
+<circle cx="119" cy="790" r="5" fill="#100C22"/><circle cx="141" cy="790" r="5" fill="#100C22"/>
+<g transform="translate(250 755) scale(1.7 1.3)" opacity="1.0"><text x="0" y="0" font-family="Noto Sans CJK KR, sans-serif" font-size="30" font-weight="900" fill="#FFC828" stroke="#100C22" stroke-width="3.0" paint-order="stroke" text-anchor="middle">512!</text></g>
+<text x="250" y="789" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >0초</text>
+<g transform="translate(385 755) scale(1.2 1.0)" opacity="1.0"><text x="0" y="0" font-family="Noto Sans CJK KR, sans-serif" font-size="30" font-weight="900" fill="#FFC828" stroke="#100C22" stroke-width="3.0" paint-order="stroke" text-anchor="middle">512!</text></g>
+<text x="385" y="789" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >0.07초</text>
+<g transform="translate(520 755) scale(1.0 1.0)" opacity="1.0"><text x="0" y="0" font-family="Noto Sans CJK KR, sans-serif" font-size="30" font-weight="900" fill="#FFC828" stroke="#100C22" stroke-width="3.0" paint-order="stroke" text-anchor="middle">512!</text></g>
+<text x="520" y="789" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >0.14초</text>
+<text x="320" y="747" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#A9A2D0" text-anchor="middle" >-></text>
+<text x="455" y="747" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#A9A2D0" text-anchor="middle" >-></text>
+<rect x="70" y="841" width="50" height="23" rx="11" fill="#30805C"/>
+<text x="95" y="859" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >기존</text>
+<text x="130" y="858" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >숫자 노랑 + '!' · 팝 1.7배 -> 1.0, 0.14초</text>
+<rect x="70" y="871" width="50" height="23" rx="11" fill="#30805C"/>
+<text x="95" y="889" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >기존</text>
+<text x="130" y="888" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >화면 흔들림 0.25 (약 0.10초) · 히트스톱 없음</text>
+<rect x="70" y="901" width="50" height="23" rx="11" fill="#30805C"/>
+<text x="95" y="919" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >기존</text>
+<text x="130" y="918" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >소리: 적중음 Hit 를 높게 (1.1~1.25)</text>
+<rect x="70" y="931" width="50" height="23" rx="11" fill="#30805C"/>
+<text x="95" y="949" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >기존</text>
+<text x="130" y="948" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >Crit 소리는 콤보 이정표에서만 울림</text>
+<rect x="620" y="652" width="530" height="312" rx="14" fill="#262052" stroke="#E8742A" stroke-width="2"/>
+<text x="636" y="682" font-family="Noto Sans CJK KR, sans-serif" font-size="20" font-weight="bold" fill="#E8742A" text-anchor="start" >적용 후</text>
+<ellipse cx="700" cy="796" rx="34" ry="27.200000000000003" fill="#FFFFFF" stroke="#100C22" stroke-width="3"/>
+<circle cx="689" cy="790" r="5" fill="#100C22"/><circle cx="711" cy="790" r="5" fill="#100C22"/>
+<path d="M671.4 774.0 L648 756" stroke="#FFC828" stroke-width="4" stroke-linecap="round"/>
+<path d="M729.7 776.2 L754 760" stroke="#FFC828" stroke-width="4" stroke-linecap="round"/>
+<path d="M668.1 818.0 L642 836" stroke="#FFC828" stroke-width="4" stroke-linecap="round"/>
+<path d="M733.0 820.2 L760 840" stroke="#FFC828" stroke-width="4" stroke-linecap="round"/>
+<g transform="translate(820 755) scale(1.6 1.6)" opacity="1.0"><text x="0" y="0" font-family="Noto Sans CJK KR, sans-serif" font-size="32" font-weight="900" fill="#FFC828" stroke="#B4231E" stroke-width="3.2" paint-order="stroke" text-anchor="middle">512!</text></g>
+<text x="820" y="789" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >0초</text>
+<g transform="translate(955 755) scale(1.15 1.15)" opacity="1.0"><text x="0" y="0" font-family="Noto Sans CJK KR, sans-serif" font-size="32" font-weight="900" fill="#FFC828" stroke="#B4231E" stroke-width="3.2" paint-order="stroke" text-anchor="middle">512!</text></g>
+<text x="955" y="789" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >0.08초</text>
+<g transform="translate(1090 755) scale(1.0 1.0)" opacity="1.0"><text x="0" y="0" font-family="Noto Sans CJK KR, sans-serif" font-size="32" font-weight="900" fill="#FFC828" stroke="#B4231E" stroke-width="3.2" paint-order="stroke" text-anchor="middle">512!</text></g>
+<text x="1090" y="789" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >0.18초</text>
+<text x="890" y="747" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#A9A2D0" text-anchor="middle" >-></text>
+<text x="1025" y="747" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#A9A2D0" text-anchor="middle" >-></text>
+<rect x="640" y="841" width="50" height="23" rx="11" fill="#C9A227"/>
+<text x="665" y="859" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#100C22" text-anchor="middle" >변경</text>
+<text x="700" y="858" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >숫자 팝 1.0->1.6->1.15->1.0 (0.18초) · 빨간 외곽선</text>
+<rect x="640" y="871" width="50" height="23" rx="11" fill="#C9A227"/>
+<text x="665" y="889" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#100C22" text-anchor="middle" >변경</text>
+<text x="700" y="888" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >흔들림 0.25 -> 0.35 (0.14초)</text>
+<rect x="640" y="901" width="50" height="23" rx="11" fill="#E8742A"/>
+<text x="665" y="919" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >신규</text>
+<text x="700" y="918" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >히트스톱 0.03초 (치명타만, 0.25초에 한 번)</text>
+<rect x="640" y="931" width="50" height="23" rx="11" fill="#C9A227"/>
+<text x="665" y="949" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#100C22" text-anchor="middle" >변경</text>
+<text x="700" y="948" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >소리: 치명타 Crit(차임) 사용, 0.38초에 한 번</text>
+<rect x="30" y="1000" width="1140" height="400" rx="22" fill="#1E1A40" stroke="#100C22" stroke-width="4"/>
+<rect x="30" y="1000" width="1140" height="56" rx="22" fill="#6248AC"/>
+<rect x="30" y="1034" width="1140" height="22" fill="#6248AC"/>
+<circle cx="68" cy="1028" r="19" fill="#100C22"/>
+<text x="68" y="1036" font-family="Noto Sans CJK KR, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >3</text>
+<text x="100" y="1037" font-family="Noto Sans CJK KR, sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="start" >처치</text>
+<text x="1150" y="1036" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="normal" fill="#E6DEFF" text-anchor="end" >콤보: 4초 안에 다음 처치 · 최대 +50% 공격력</text>
+<rect x="50" y="1072" width="530" height="312" rx="14" fill="#262052" stroke="#30805C" stroke-width="2"/>
+<text x="66" y="1102" font-family="Noto Sans CJK KR, sans-serif" font-size="20" font-weight="bold" fill="#30805C" text-anchor="start" >지금</text>
+<rect x="77.0" y="1173.0" width="14" height="14" fill="#7CD88A" transform="rotate(0 84 1180)"/>
+<rect x="164.0" y="1164.0" width="12" height="12" fill="#7CD88A" transform="rotate(23 170 1170)"/>
+<rect x="95.0" y="1225.0" width="10" height="10" fill="#7CD88A" transform="rotate(46 100 1230)"/>
+<rect x="171.5" y="1217.5" width="13" height="13" fill="#7CD88A" transform="rotate(69 178 1224)"/>
+<rect x="125.5" y="1145.5" width="9" height="9" fill="#7CD88A" transform="rotate(92 130 1150)"/>
+<rect x="66.0" y="1202.0" width="8" height="8" fill="#7CD88A" transform="rotate(115 70 1206)"/>
+<rect x="145.5" y="1239.5" width="9" height="9" fill="#7CD88A" transform="rotate(138 150 1244)"/>
+<circle cx="130" cy="1200" r="30.6" fill="none" stroke="#FFFFFF" stroke-width="4" opacity="0.8"/>
+<circle cx="130" cy="1200" r="51.0" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<rect x="250" y="1120" width="300" height="56" rx="12" fill="#100C22" stroke="#3A3172" stroke-width="2"/>
+<text x="400" y="1145" font-family="Noto Sans CJK KR, sans-serif" font-size="22" font-weight="bold" fill="#FFB060" text-anchor="middle" >Combo x24</text>
+<text x="400" y="1168" font-family="Noto Sans CJK KR, sans-serif" font-size="15" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >Damage +24%</text>
+<text x="400" y="1210" font-family="Noto Sans CJK KR, sans-serif" font-size="15" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >콤보 글자: 바뀌기만 하고 팝 없음</text>
+<rect x="70" y="1261" width="50" height="23" rx="11" fill="#30805C"/>
+<text x="95" y="1279" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >기존</text>
+<text x="130" y="1278" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >조각 튐 + 영혼 연기 (종류별 색) · 동시 조각 90개</text>
+<rect x="70" y="1291" width="50" height="23" rx="11" fill="#30805C"/>
+<text x="95" y="1309" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >기존</text>
+<text x="130" y="1308" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >흔들림 0.5 (0.20초) · 카메라 밀림 0.18</text>
+<rect x="70" y="1321" width="50" height="23" rx="11" fill="#30805C"/>
+<text x="95" y="1339" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >기존</text>
+<text x="130" y="1338" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >치명 처치: 히트스톱 0.045초 + 밀림 0.45</text>
+<rect x="70" y="1351" width="50" height="23" rx="11" fill="#30805C"/>
+<text x="95" y="1369" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >기존</text>
+<text x="130" y="1368" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >처치음 꺼짐 · 콤보 10/25/50/100: 멈칫 + Crit 소리</text>
+<rect x="620" y="1072" width="530" height="312" rx="14" fill="#262052" stroke="#E8742A" stroke-width="2"/>
+<text x="636" y="1102" font-family="Noto Sans CJK KR, sans-serif" font-size="20" font-weight="bold" fill="#E8742A" text-anchor="start" >적용 후</text>
+<rect x="647.0" y="1173.0" width="14" height="14" fill="#7CD88A" transform="rotate(0 654 1180)"/>
+<rect x="734.0" y="1164.0" width="12" height="12" fill="#7CD88A" transform="rotate(23 740 1170)"/>
+<rect x="665.0" y="1225.0" width="10" height="10" fill="#7CD88A" transform="rotate(46 670 1230)"/>
+<rect x="741.5" y="1217.5" width="13" height="13" fill="#7CD88A" transform="rotate(69 748 1224)"/>
+<rect x="695.5" y="1145.5" width="9" height="9" fill="#7CD88A" transform="rotate(92 700 1150)"/>
+<rect x="636.0" y="1202.0" width="8" height="8" fill="#7CD88A" transform="rotate(115 640 1206)"/>
+<rect x="715.5" y="1239.5" width="9" height="9" fill="#7CD88A" transform="rotate(138 720 1244)"/>
+<circle cx="700" cy="1200" r="30.6" fill="none" stroke="#FFFFFF" stroke-width="4" opacity="0.8"/>
+<circle cx="700" cy="1200" r="51.0" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.35"/>
+<circle cx="700" cy="1200" r="54" fill="none" stroke="#E8742A" stroke-width="3" stroke-dasharray="6 6"/>
+<text x="700" y="1128" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#E8742A" text-anchor="middle" >흰 고리 0.12초</text>
+<g transform="translate(900 1150) scale(1.2)"><rect x="-65" y="-26" width="130" height="52" rx="12" fill="#100C22" stroke="#E8742A" stroke-width="2"/><text x="0" y="8" font-family="Noto Sans CJK KR, sans-serif" font-size="20" font-weight="900" fill="#FFB060" text-anchor="middle">Combo x25</text></g>
+<text x="900" y="1208" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >0초</text>
+<g transform="translate(1060 1150) scale(1.0)"><rect x="-65" y="-26" width="130" height="52" rx="12" fill="#100C22" stroke="#E8742A" stroke-width="2"/><text x="0" y="8" font-family="Noto Sans CJK KR, sans-serif" font-size="20" font-weight="900" fill="#FFB060" text-anchor="middle">Combo x25</text></g>
+<text x="1060" y="1208" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >0.15초</text>
+<text x="986" y="1156" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#A9A2D0" text-anchor="middle" >-></text>
+<rect x="640" y="1261" width="50" height="23" rx="11" fill="#E8742A"/>
+<text x="665" y="1279" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >신규</text>
+<text x="700" y="1278" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >콤보 글자 팝 1.0->1.3->1.0 (0.15초, 처치마다)</text>
+<rect x="640" y="1291" width="50" height="23" rx="11" fill="#E8742A"/>
+<text x="665" y="1309" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >신규</text>
+<text x="700" y="1308" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >처치음 다시 켬: 음량 0.3->0.18, 0.18초에 한 번</text>
+<rect x="640" y="1321" width="50" height="23" rx="11" fill="#E8742A"/>
+<text x="665" y="1339" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >신규</text>
+<text x="700" y="1338" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >처치음 높이 콤보 따라 1.0 -> 1.3 (25콤보에서 최대)</text>
+<rect x="640" y="1351" width="50" height="23" rx="11" fill="#30805C"/>
+<text x="665" y="1369" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >기존</text>
+<text x="700" y="1368" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start" >조각 · 흔들림 0.5/0.20초 · 치명 처치 멈칫은 그대로</text>
+<rect x="30" y="1420" width="1140" height="350" rx="22" fill="#1E1A40" stroke="#100C22" stroke-width="4"/>
+<rect x="30" y="1420" width="1140" height="56" rx="22" fill="#6248AC"/>
+<rect x="30" y="1454" width="1140" height="22" fill="#6248AC"/>
+<circle cx="68" cy="1448" r="19" fill="#100C22"/>
+<text x="68" y="1456" font-family="Noto Sans CJK KR, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle" >4</text>
+<text x="100" y="1457" font-family="Noto Sans CJK KR, sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="start" >연사 리듬 0~2초 (적용 후)</text>
+<text x="1150" y="1456" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="normal" fill="#E6DEFF" text-anchor="end" >기본 공격 0.35초 간격: 6발 · 3번째 치명타 · 5번째 처치</text>
+<text x="50" y="1532" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="normal" fill="#A9A2D0" text-anchor="start" >발사</text>
+<text x="50" y="1600" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="normal" fill="#A9A2D0" text-anchor="start" >숫자</text>
+<text x="50" y="1670" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="normal" fill="#A9A2D0" text-anchor="start" >흔들림</text>
+<text x="50" y="1730" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="normal" fill="#A9A2D0" text-anchor="start" >멈칫</text>
+<line x1="120.0" y1="1506" x2="120.0" y2="1742" stroke="#3A3172" stroke-width="1"/>
+<text x="120.0" y="1762" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >0.0초</text>
+<line x1="372.5" y1="1506" x2="372.5" y2="1742" stroke="#3A3172" stroke-width="1"/>
+<text x="372.5" y="1762" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >0.5초</text>
+<line x1="625.0" y1="1506" x2="625.0" y2="1742" stroke="#3A3172" stroke-width="1"/>
+<text x="625.0" y="1762" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >1.0초</text>
+<line x1="877.5" y1="1506" x2="877.5" y2="1742" stroke="#3A3172" stroke-width="1"/>
+<text x="877.5" y="1762" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >1.5초</text>
+<line x1="1130.0" y1="1506" x2="1130.0" y2="1742" stroke="#3A3172" stroke-width="1"/>
+<text x="1130.0" y="1762" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="middle" >2.0초</text>
+<path d="M120.0 1516 l9 16 l-18 0 z" fill="#FFFFFF"/>
+<text x="134.0" y="1532" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="start" >명중</text>
+<path d="M120.0 1620.0 L122.0 1605.0 L170.5 1620.0" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+<text x="126.0" y="1599.0" font-family="Noto Sans CJK KR, sans-serif" font-size="13" font-weight="normal" fill="#FFFFFF" text-anchor="start" >x1.25</text>
+<path d="M296.75 1516 l9 16 l-18 0 z" fill="#FFFFFF"/>
+<text x="310.75" y="1532" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="start" >명중</text>
+<path d="M296.75 1620.0 L298.75 1605.0 L347.25 1620.0" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+<text x="302.75" y="1599.0" font-family="Noto Sans CJK KR, sans-serif" font-size="13" font-weight="normal" fill="#FFFFFF" text-anchor="start" >x1.25</text>
+<path d="M473.5 1516 l9 16 l-18 0 z" fill="#FFC828"/>
+<text x="487.5" y="1532" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFC828" text-anchor="start" >치명!</text>
+<path d="M473.5 1620.0 L475.5 1584.0 L564.3999999999999 1620.0" fill="none" stroke="#FFC828" stroke-width="3"/>
+<text x="479.5" y="1578.0" font-family="Noto Sans CJK KR, sans-serif" font-size="13" font-weight="normal" fill="#FFC828" text-anchor="start" >x1.6</text>
+<path d="M650.25 1516 l9 16 l-18 0 z" fill="#FFFFFF"/>
+<text x="664.25" y="1532" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="start" >명중</text>
+<path d="M650.25 1620.0 L652.25 1605.0 L700.7500000000001 1620.0" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+<text x="656.25" y="1599.0" font-family="Noto Sans CJK KR, sans-serif" font-size="13" font-weight="normal" fill="#FFFFFF" text-anchor="start" >x1.25</text>
+<path d="M827.0 1516 l9 16 l-18 0 z" fill="#E8742A"/>
+<text x="841.0" y="1532" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#E8742A" text-anchor="start" >처치</text>
+<path d="M827.0 1620.0 L829.0 1605.0 L877.5 1620.0" fill="none" stroke="#E8742A" stroke-width="3"/>
+<text x="833.0" y="1599.0" font-family="Noto Sans CJK KR, sans-serif" font-size="13" font-weight="normal" fill="#E8742A" text-anchor="start" >x1.25</text>
+<path d="M1003.75 1516 l9 16 l-18 0 z" fill="#FFFFFF"/>
+<text x="1017.75" y="1532" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="start" >명중</text>
+<path d="M1003.75 1620.0 L1005.75 1605.0 L1054.25 1620.0" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+<text x="1009.75" y="1599.0" font-family="Noto Sans CJK KR, sans-serif" font-size="13" font-weight="normal" fill="#FFFFFF" text-anchor="start" >x1.25</text>
+<line x1="120" y1="1620" x2="1130" y2="1620" stroke="#A9A2D0" stroke-width="1" stroke-dasharray="3 4"/>
+<text x="1130" y="1636" font-family="Noto Sans CJK KR, sans-serif" font-size="12" font-weight="normal" fill="#A9A2D0" text-anchor="end" >1.0</text>
+<line x1="120" y1="1688" x2="1130" y2="1688" stroke="#A9A2D0" stroke-width="1"/>
+<path d="M473.5 1688 L473.5 1663.5 L544.2 1688" fill="#FFC828" fill-opacity="0.35" stroke="#FFC828" stroke-width="2"/>
+<text x="503.5" y="1661.5" font-family="Noto Sans CJK KR, sans-serif" font-size="13" font-weight="normal" fill="#FFC828" text-anchor="start" >0.35 / 0.14초</text>
+<path d="M827.0 1688 L827.0 1653.0 L927.9999999999999 1688" fill="#E8742A" fill-opacity="0.35" stroke="#E8742A" stroke-width="2"/>
+<text x="873.0" y="1663.0" font-family="Noto Sans CJK KR, sans-serif" font-size="13" font-weight="normal" fill="#E8742A" text-anchor="start" >0.5 / 0.20초</text>
+<text x="134.0" y="1682" font-family="Noto Sans CJK KR, sans-serif" font-size="13" font-weight="normal" fill="#A9A2D0" text-anchor="start" >일반 명중: 흔들림 0</text>
+<rect x="473.5" y="1716" width="15.149999999999977" height="20" fill="#FFC828"/>
+<text x="495.5" y="1732" font-family="Noto Sans CJK KR, sans-serif" font-size="13" font-weight="normal" fill="#FFC828" text-anchor="start" >0.03초</text>
+<text x="841.0" y="1732" font-family="Noto Sans CJK KR, sans-serif" font-size="13" font-weight="normal" fill="#A9A2D0" text-anchor="start" >일반 처치는 멈칫 없음 (치명 처치만 0.045초)</text>
+</svg>
