@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1000" viewBox="0 0 1200 1000"><rect width="1200" height="1000" fill="#14112B"/>
+<text x="40" y="60" font-family="Noto Sans CJK KR, sans-serif" font-size="32" font-weight="bold" fill="#FFFFFF" text-anchor="start">던전 드래프트: 이미 고른 강화 표시 (시안 · 코드 미반영)</text>
+<text x="40" y="94" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#A9A2D0" text-anchor="start">같은 갈래 / 같은 강화를 또 고르면 단계가 오른다 -> 카드에서 바로 보이게 (롤 증강 세트 표시 참고)</text>
+<rect x="40" y="120" width="1120" height="70" rx="14" fill="#1E1A40" stroke="#100C22" stroke-width="3"/>
+<text x="60" y="163" font-family="Noto Sans CJK KR, sans-serif" font-size="22" font-weight="bold" fill="#FFE182" text-anchor="start">Draft 4/8</text>
+<rect x="230" y="132" width="48" height="48" rx="10" fill="#262052" stroke="#FF8A3C" stroke-width="3"/>
+<text x="254" y="164" font-family="Noto Sans CJK KR, sans-serif" font-size="20" font-weight="bold" fill="#FF8A3C" text-anchor="middle">폭</text>
+<rect x="292" y="132" width="48" height="48" rx="10" fill="#262052" stroke="#7FD0FF" stroke-width="3"/>
+<text x="316" y="164" font-family="Noto Sans CJK KR, sans-serif" font-size="20" font-weight="bold" fill="#7FD0FF" text-anchor="middle">연</text>
+<rect x="354" y="132" width="48" height="48" rx="10" fill="#262052" stroke="#FF8A3C" stroke-width="3"/>
+<text x="378" y="164" font-family="Noto Sans CJK KR, sans-serif" font-size="20" font-weight="bold" fill="#FF8A3C" text-anchor="middle">폭</text>
+<rect x="416" y="132" width="48" height="48" rx="10" fill="#262052" stroke="#B79CFF" stroke-width="3"/>
+<text x="440" y="164" font-family="Noto Sans CJK KR, sans-serif" font-size="20" font-weight="bold" fill="#B79CFF" text-anchor="middle">공</text>
+<rect x="478" y="132" width="48" height="48" rx="10" fill="none" stroke="#3A3172" stroke-width="2" stroke-dasharray="5 4"/>
+<rect x="540" y="132" width="48" height="48" rx="10" fill="none" stroke="#3A3172" stroke-width="2" stroke-dasharray="5 4"/>
+<rect x="602" y="132" width="48" height="48" rx="10" fill="none" stroke="#3A3172" stroke-width="2" stroke-dasharray="5 4"/>
+<rect x="664" y="132" width="48" height="48" rx="10" fill="none" stroke="#3A3172" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="745" y="154" font-family="Noto Sans CJK KR, sans-serif" font-size="15" font-weight="normal" fill="#A9A2D0" text-anchor="start">덱 칸: 지금 카드와 같은 갈래는 테두리가 깜빡인다</text>
+<text x="745" y="176" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="start">(예: 폭발 카드를 가리키면 덱의 폭 2칸이 반짝)</text>
+<rect x="60" y="230" width="340" height="460" rx="24" fill="#1A1830" stroke="#7FD0FF" stroke-width="3"/>
+<rect x="60" y="230" width="340" height="10" rx="5" fill="#7FD0FF"/>
+<circle cx="230" cy="335" r="54" fill="#262052" stroke="#7FD0FF" stroke-width="3"/>
+<text x="230" y="352" font-family="Noto Sans CJK KR, sans-serif" font-size="46" font-weight="bold" fill="#7FD0FF" text-anchor="middle">+</text>
+<text x="230" y="435" font-family="Noto Sans CJK KR, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">공격력 +12%</text>
+<text x="230" y="480" font-family="Noto Sans CJK KR, sans-serif" font-size="19" font-weight="normal" fill="#CDC8E6" text-anchor="middle">새 강화</text>
+<text x="230" y="508" font-family="Noto Sans CJK KR, sans-serif" font-size="19" font-weight="normal" fill="#CDC8E6" text-anchor="middle">(아직 안 고름)</text>
+<rect x="430" y="230" width="340" height="460" rx="24" fill="#1A1830" stroke="#B79CFF" stroke-width="3"/>
+<rect x="430" y="230" width="340" height="10" rx="5" fill="#B79CFF"/>
+<circle cx="600" cy="335" r="54" fill="#262052" stroke="#B79CFF" stroke-width="3"/>
+<text x="600" y="352" font-family="Noto Sans CJK KR, sans-serif" font-size="46" font-weight="bold" fill="#B79CFF" text-anchor="middle">★</text>
+<text x="600" y="435" font-family="Noto Sans CJK KR, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">관통탄</text>
+<text x="600" y="480" font-family="Noto Sans CJK KR, sans-serif" font-size="19" font-weight="normal" fill="#CDC8E6" text-anchor="middle">탄이 적 1마리를 더 관통</text>
+<text x="600" y="508" font-family="Noto Sans CJK KR, sans-serif" font-size="19" font-weight="normal" fill="#CDC8E6" text-anchor="middle">(이미 1장 -> 이번에 x2)</text>
+<path d="M424 256 h150 l-14 22 l14 22 h-150 z" fill="#B79CFF"/>
+<text x="438" y="286" font-family="Noto Sans CJK KR, sans-serif" font-size="19" font-weight="bold" fill="#100C22" text-anchor="start">보유 x1</text>
+<rect x="460" y="600" width="280" height="66" rx="14" fill="#100C22" stroke="#B79CFF" stroke-width="2"/>
+<circle cx="490" cy="622" r="11" fill="#B79CFF" stroke="#B79CFF" stroke-width="2"/>
+<circle cx="534" cy="622" r="11" fill="#B79CFF" opacity="0.45" stroke="#B79CFF" stroke-width="2"/>
+<circle cx="578" cy="622" r="11" fill="none" stroke="#B79CFF" stroke-width="2"/>
+<text x="600" y="656" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#B79CFF" text-anchor="middle">x1 -> x2 (최대 x3)</text>
+<text x="748" y="278" font-family="Noto Sans CJK KR, sans-serif" font-size="24" font-weight="bold" fill="#B79CFF" text-anchor="end">x2</text>
+<rect x="792" y="222" width="356" height="476" rx="30" fill="none" stroke="#FF8A3C" stroke-width="6" opacity="0.35"/>
+<rect x="800" y="230" width="340" height="460" rx="24" fill="#1A1830" stroke="#FF8A3C" stroke-width="4"/>
+<rect x="800" y="230" width="340" height="10" rx="5" fill="#FF8A3C"/>
+<circle cx="970" cy="335" r="54" fill="#262052" stroke="#FF8A3C" stroke-width="3"/>
+<text x="970" y="352" font-family="Noto Sans CJK KR, sans-serif" font-size="46" font-weight="bold" fill="#FF8A3C" text-anchor="middle">!</text>
+<text x="970" y="435" font-family="Noto Sans CJK KR, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">폭발 갈래</text>
+<text x="970" y="480" font-family="Noto Sans CJK KR, sans-serif" font-size="19" font-weight="normal" fill="#CDC8E6" text-anchor="middle">처치하면 주변 폭발</text>
+<text x="970" y="508" font-family="Noto Sans CJK KR, sans-serif" font-size="19" font-weight="normal" fill="#CDC8E6" text-anchor="middle">다음 단계: 폭발 반경 +30%</text>
+<path d="M794 256 h150 l-14 22 l14 22 h-150 z" fill="#FF8A3C"/>
+<text x="808" y="286" font-family="Noto Sans CJK KR, sans-serif" font-size="19" font-weight="bold" fill="#100C22" text-anchor="start">2단계 보유</text>
+<rect x="830" y="600" width="280" height="66" rx="14" fill="#100C22" stroke="#FF8A3C" stroke-width="2"/>
+<circle cx="860" cy="622" r="11" fill="#FF8A3C" stroke="#FF8A3C" stroke-width="2"/>
+<circle cx="904" cy="622" r="11" fill="#FF8A3C" stroke="#FF8A3C" stroke-width="2"/>
+<circle cx="948" cy="622" r="11" fill="#FF8A3C" opacity="0.45" stroke="#FF8A3C" stroke-width="2"/>
+<circle cx="992" cy="622" r="11" fill="none" stroke="#FF8A3C" stroke-width="2"/>
+<text x="970" y="656" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#FF8A3C" text-anchor="middle">2단계 -> 3단계 · 4번째 = 최종 기술</text>
+<rect x="40" y="720" width="1120" height="250" rx="18" fill="#1E1A40" stroke="#100C22" stroke-width="3"/>
+<text x="70" y="765" font-family="Noto Sans CJK KR, sans-serif" font-size="19" font-weight="normal" fill="#F2EEFF" text-anchor="start">- 왼쪽 위 리본: 이미 가진 수 ("보유 x1" / "2단계 보유") — 처음 보는 카드는 리본 없음</text>
+<text x="70" y="807" font-family="Noto Sans CJK KR, sans-serif" font-size="19" font-weight="normal" fill="#F2EEFF" text-anchor="start">- 아래 단계 점: 채운 점 = 이미 가진 단계, 흐린 점 = 이번에 고르면 오를 단계</text>
+<text x="70" y="849" font-family="Noto Sans CJK KR, sans-serif" font-size="19" font-weight="normal" fill="#F2EEFF" text-anchor="start">- 갈래 카드는 바깥 빛 테두리 + 갈래 색: 덱에서 같은 갈래 칸이 반짝</text>
+<text x="70" y="891" font-family="Noto Sans CJK KR, sans-serif" font-size="19" font-weight="normal" fill="#F2EEFF" text-anchor="start">- 서버가 카드에 '이미 가진 수 / 최대 / 다음 단계 이름'을 같이 보낸다 (지금은 이름 / 설명만 보냄)</text>
+<text x="70" y="933" font-family="Noto Sans CJK KR, sans-serif" font-size="19" font-weight="normal" fill="#F2EEFF" text-anchor="start">- 필드 세트 효과 카드에도 같은 리본을 쓸 수 있다 (선택)</text>
+</svg>
