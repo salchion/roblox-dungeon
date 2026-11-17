@@ -3073,6 +3073,9 @@ local comboLabel = makeLabel({
 	Font = Enum.Font.GothamBlack, TextSize = 26, TextXAlignment = Enum.TextXAlignment.Right, Visible = false,
 	TextColor3 = Color3.fromRGB(255, 190, 60), TextStrokeTransparency = 0.2,
 }, gui)
+local comboScale = Instance.new("UIScale") -- 처치마다 콤보 글자 팝 1.0 -> 1.3 -> 1.0 (0.15초, 아래 루프에서 값만 바꾼다)
+comboScale.Parent = comboLabel
+local comboSeen, comboPopAt = 0, -1
 
 local function watchHealth(character)
 	local humanoid = character:WaitForChild("Humanoid", 10)
@@ -3100,6 +3103,10 @@ RunService.RenderStepped:Connect(function(dt)
 	hurtFlash.BackgroundTransparency = 1 - math.max(flashStrength, pulse)
 
 	local combo = player:GetAttribute("Combo") or 0
+	if combo > comboSeen then comboPopAt = os.clock() end
+	comboSeen = combo
+	local popT = os.clock() - comboPopAt
+	comboScale.Scale = popT < 0.15 and (popT < 0.04 and 1 + 0.3 * popT / 0.04 or 1.3 - 0.3 * (popT - 0.04) / 0.11) or 1
 	comboLabel.Visible = combo >= 2
 	if combo >= 2 then
 		local bonus = math.min(Config.Combo.MaxStacks, combo) * Config.Combo.DamagePerStack
@@ -3514,10 +3521,10 @@ Remotes.Hit.OnClientEvent:Connect(function(isCrit, killed)
 	hitMarkerCrit = isCrit or killed
 	if killed then
 		shake = math.max(shake, 0.5)
-		-- (처치음은 뺐다: 연달아 잡을 때 거슬린다는 의견. 다시 켜려면 SoundBank.Play(sfxParent, "Kill") 를 부르면 된다)
+		-- 처치음(Kill)은 다시 켜지 않기로 결정 (연달아 잡을 때 거슬린다는 의견 + 11-17 종태 님 결정: 타격감 패스에서도 제외). 처치는 흔들림 / 조각 / 흰 고리로만 알린다
 	elseif isCrit then
-		shake = math.max(shake, 0.25)
-		SoundBank.Play(sfxParent, "Hit", { Pitch = 1.1 + math.random() * 0.15 })
+		shake = math.max(shake, 0.35) -- (0.25 -> 0.35: 초당 2.5 감소라 약 0.14초. 설정에서 흔들림을 끄면 아래 HitShake 가 무시한다)
+		SoundBank.Play(sfxParent, "Crit") -- 치명타 전용 소리 (SoundBank 의 Crit 간격 0.38초 · 반응 소리 0.06초 간격 · 총소리 덕킹 그대로)
 	elseif os.clock() - lastHitSfx >= 0.14 then -- 자동 공격은 초당 수십 번 맞혀서 "찡찡" 소리가 이어졌다: 일반 적중음은 0.14초에 한 번만
 		lastHitSfx = os.clock()
 		SoundBank.Play(sfxParent, "Hit", { Pitch = 0.9 + math.random() * 0.25 })

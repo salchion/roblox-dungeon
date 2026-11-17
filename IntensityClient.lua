@@ -28,14 +28,16 @@ end
 -- 1) 히트스톱 + 카메라 밀림
 ------------------------------------------------------------
 local stopUntil, frozenCF = 0, nil
+local stopFrames = 0 -- (프레임이 느린 기기에서도 최소 한 프레임은 멈칫이 보이게)
 local punch = 0
-local lastStop = 0
+local lastStop, lastCritStop = 0, 0
 
 local function hitStop(seconds, push)
 	if not shakeOn() then return end
 	local now = os.clock()
 	if seconds > 0 and now >= stopUntil then
 		stopUntil = now + seconds
+		stopFrames = 1
 		frozenCF = nil
 	end
 	punch = math.max(punch, push or 0)
@@ -47,7 +49,8 @@ RunService:BindToRenderStep("IntensityHitStop", Enum.RenderPriority.Camera.Value
 		return
 	end
 	local now = os.clock()
-	if now < stopUntil then
+	if now < stopUntil or stopFrames > 0 then
+		stopFrames -= 1
 		frozenCF = frozenCF or camera.CFrame
 		camera.CFrame = frozenCF -- 아주 잠깐 화면을 그 자리에 붙잡는다 (멈칫)
 		return
@@ -64,6 +67,9 @@ Remotes.Hit.OnClientEvent:Connect(function(isCrit, killed)
 	if killed and isCrit and now - lastStop > 0.5 then -- 치명타로 잡았을 때만 (자동 공격으로 계속 잡을 때 화면이 덜컥거리지 않게)
 		lastStop = now
 		hitStop(0.045, 0.45)
+	elseif isCrit and not killed and now - lastCritStop > 0.25 and now - lastStop > 0.25 then -- 치명타 명중: 아주 짧게 멈칫 (0.25초에 한 번, 처치 멈칫 직후는 건너뛴다)
+		lastCritStop = now
+		hitStop(0.03, 0)
 	elseif killed then
 		punch = math.max(punch, shakeOn() and 0.18 or 0)
 	end
@@ -114,7 +120,7 @@ player:GetAttributeChangedSignal("Combo"):Connect(function()
 	if tier then
 		hitStop(0.05 + tier * 0.012, 0.5 + tier * 0.15)
 		flash = 1
-		playSound("Crit", { Pitch = 0.8 + tier * 0.08, Volume = 1.6 })
+		playSound("Crit", { Pitch = 0.8 + tier * 0.08, Volume = 1.6, Force = true }) -- (치명타 소리와 같은 "Crit" 간격을 쓴다: 이정표는 간격을 무시하고 울리고, 그 뒤 0.38초 동안 치명타 소리는 쉰다 -> 겹치지 않는다)
 	end
 	lastCombo = combo
 end)

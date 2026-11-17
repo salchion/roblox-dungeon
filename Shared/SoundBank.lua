@@ -265,14 +265,15 @@ function SoundBank.Play(parent, key, opts)
 	local spec = SPECS[key]
 	if not spec or not parent then return end
 	local gap = MIN_GAP[key]
+	local force = opts and opts.Force -- (꼭 울려야 하는 소리: 간격 검사를 건너뛰되, 울린 시각은 남겨 뒤따르는 같은 소리를 쉬게 한다)
 	if gap then
 		local now = os.clock()
-		if now - (lastPlayed[key] or 0) < gap then return end
+		if not force and now - (lastPlayed[key] or 0) < gap then return end
 		lastPlayed[key] = now
 	end
 	local id, custom = idFor(key, spec)
 	if not id then return end
-	if FEEDBACK[key] then
+	if FEEDBACK[key] and not force then
 		local nowFeedback = os.clock()
 		if nowFeedback - lastFeedback < 0.06 then return end
 		lastFeedback = nowFeedback

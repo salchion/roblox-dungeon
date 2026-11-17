@@ -105,22 +105,54 @@ end
 
 local lootTicker
 local DEFAULT_STROKE = 0
-local function showText(position, text, color, size, lifetime, rise, transparency, pop)
+-- 피해 숫자 팝 / 떠오름: 숫자마다 Tween 을 만들지 않고 아래 한 루프가 풀의 글자 크기 / 위치만 바꾼다 (연사 0.35초 간격에도 할당 없음)
+--   "N" 일반: 1.0 -> 1.25 (0.03초) -> 1.0 (0.10초) / "C" 치명타: 1.0 -> 1.6 (0.04초) -> 1.15 (0.10초) -> 1.0 (0.18초)
+local POP_CURVE = { N = { { 0, 1 }, { 0.03, 1.25 }, { 0.10, 1 } }, C = { { 0, 1 }, { 0.04, 1.6 }, { 0.10, 1.15 }, { 0.18, 1 } } }
+local popping = {}
+local function popScale(curve, t)
+	for i = 2, #curve do
+		local a, b = curve[i - 1], curve[i]
+		if t <= b[1] then local k = (t - a[1]) / (b[1] - a[1]) return a[2] + (b[2] - a[2]) * (1 - (1 - k) * (1 - k)) end
+	end
+	return 1
+end
+RunService.RenderStepped:Connect(function()
+	if #popping == 0 then return end
+	local now = os.clock()
+	for i = #popping, 1, -1 do
+		local item = popping[i]
+		local entry, t = item.Entry, now - item.T0
+		if entry.Anim ~= item or t >= item.Life then
+			table.remove(popping, i)
+		else
+			local sc = popScale(item.Curve, t)
+			entry.Gui.Size = UDim2.fromOffset(item.W * sc, item.H * sc)
+			if item.Rise > 0 then
+				local k = t / item.Life
+				entry.Part.Position = item.From + Vector3.new(0, item.Rise * (1 - (1 - k) * (1 - k)), 0)
+				if k > 0.6 then local f = (k - 0.6) / 0.4 entry.Label.TextTransparency, entry.Label.TextStrokeTransparency = f, f end -- 끝 40% 동안 흐려진다
+			end
+		end
+	end
+end)
+local function showText(position, text, color, size, lifetime, rise, transparency, pop, stroke)
 	if activeTexts >= MAX_ACTIVE_TEXTS then return end
 	activeTexts += 1
 	local entry = getText()
+	entry.Anim = nil -- (풀에서 다시 쓰는 글자: 앞 숫자의 팝 애니메이션은 끊는다)
 	entry.Gui.Size = size
-	if pop then -- 피해 숫자: 크게 튀어나왔다가 제 크기로 (스쿼시 & 스트레치: 가로로 넓게 -> 원래대로). 치명타는 더 크게
-		entry.Gui.Size = UDim2.new(size.X.Scale, size.X.Offset * pop * 1.15, size.Y.Scale, size.Y.Offset * pop * 0.85)
-		TweenService:Create(entry.Gui, TweenInfo.new(0.14, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = size }):Play()
-	end
 	entry.Label.Text = text
 	entry.Label.TextColor3 = color
+	entry.Label.TextStrokeColor3 = stroke or Color3.new(0, 0, 0) -- (치명타는 빨간 외곽선. 다른 글자는 검정으로 되돌린다)
 	entry.Label.TextTransparency = transparency or 0 -- (획득 글자는 흐리게)
 	entry.Label.TextStrokeTransparency = transparency and math.min(1, transparency + 0.3) or DEFAULT_STROKE
 	entry.Part.Position = position
 	entry.Part.Parent = fxFolder
-	if rise then
+	if POP_CURVE[pop] then -- 피해 숫자: 팝 + 떠오름은 위 루프가 맡는다
+		local item = { Entry = entry, T0 = os.clock(), Life = lifetime, Curve = POP_CURVE[pop], W = size.X.Offset, H = size.Y.Offset, From = position, Rise = rise or 0 }
+		entry.Anim = item
+		table.insert(popping, item)
+	elseif rise then
 		TweenService:Create(entry.Part, TweenInfo.new(lifetime), { Position = position + Vector3.new(0, rise, 0) }):Play()
 	end
 	task.delay(lifetime, function()
@@ -2488,7 +2520,11 @@ local HANDLERS = {
 		if event[5] then
 			showText(event[2], tostring(event[3]), event[5]:Lerp(WHITE, 0.25), UDim2.new(0, 120, 0, 48), 0.75, 3)
 		else
-			showText(event[2], event[4] and (tostring(event[3]) .. "!") or tostring(event[3]), event[4] and Color3.fromRGB(255, 220, 60) or WHITE, DAMAGE_SIZE, 0.5, nil, nil, event[4] and 1.7 or 1.35)
+			if event[4] then -- 치명타: 크게 팝 + 빨간 외곽선 (제자리)
+				showText(event[2], tostring(event[3]) .. "!", Color3.fromRGB(255, 200, 40), DAMAGE_SIZE, 0.5, nil, nil, "C", Color3.fromRGB(180, 35, 30))
+			else -- 일반: 작게 팝 + 1.5 스터드 떠오르며 사라진다
+				showText(event[2], tostring(event[3]), Color3.fromRGB(255, 245, 225), DAMAGE_SIZE, 0.5, 1.5, nil, "N")
+			end
 		end
 	end,
 	H = function(event) flash(event[2]) end,
@@ -2548,6 +2584,7 @@ local function getShard()
 	return part
 end
 
+local killRings, killRingPool = {}, {} -- 처치 흰 고리 (deathBurst)
 local function deathBurst(event) -- { "K", position, color, size, typeKey }
 	local position, color, size = event[2], event[3], math.clamp(event[4] or 4, 1, 40)
 	local look = DEATH_LOOK[event[5]] or {}
@@ -2583,12 +2620,34 @@ local function deathBurst(event) -- { "K", position, color, size, typeKey }
 	pop.Parent = fxFolder
 	TweenService:Create(pop, TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = Vector3.new(size * 1.4, size * 1.4, size * 1.4), Transparency = 1 }):Play()
 	Debris:AddItem(pop, 0.15)
+	-- 처치 흰 고리 (0.12초 동안 바닥과 나란히 퍼지며 사라지는 얇은 원판). 부품은 풀에서 재사용, 동시 10개까지
+	if #killRings < 10 then
+		local disc = table.remove(killRingPool) or neonPart(Vector3.new(0.1, 1, 1), WHITE, 0.3, CYL)
+		disc.CastShadow = false
+		disc.Size, disc.Transparency = Vector3.new(0.1, 1, 1), 0.3 -- (풀에서 꺼낸 원판은 지난번 크기 / 투명도가 남아 있다)
+		disc.CFrame = CFrame.new(position + Vector3.new(0, 0.3, 0)) * CFrame.Angles(0, 0, math.rad(90))
+		disc.Parent = fxFolder
+		table.insert(killRings, { Part = disc, Born = fxNow(), Max = math.max(6, size * 2.4) })
+	end
 end
 
 game:GetService("RunService").RenderStepped:Connect(function(dt)
 	if workspace:GetAttribute("PhotoFreeze") then fxNow() return end -- (사진 모드 멈추기)
-	if #shards == 0 then return end
+	if #shards == 0 and #killRings == 0 then return end
 	local now = fxNow()
+	for i = #killRings, 1, -1 do
+		local r = killRings[i]
+		local k = (now - r.Born) / 0.12
+		if k >= 1 then
+			r.Part.Parent = nil
+			if #killRingPool < 10 then table.insert(killRingPool, r.Part) else r.Part:Destroy() end
+			table.remove(killRings, i)
+		else
+			local d = r.Max * (0.3 + 0.7 * (1 - (1 - k) * (1 - k)))
+			r.Part.Size = Vector3.new(0.1, d, d)
+			r.Part.Transparency = 0.3 + 0.7 * k
+		end
+	end
 	for i = #shards, 1, -1 do
 		local shard = shards[i]
 		local age = now - shard.Born
