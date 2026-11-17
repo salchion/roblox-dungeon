@@ -984,7 +984,8 @@ local function doomWaveInner(player, zone, center, real)
 			if r2 and h2.Health > 0 and data.Health > 0 and alive() then -- (군주가 쓰러진 뒤 남은 폭격에 맞아 승리가 패배로 바뀌지 않게)
 				local gap = (Vector3.new(r2.Position.X, center.Y, r2.Position.Z) - at).Magnitude
 				if gap <= radius then
-					local dmg = lethal and (h2.MaxHealth * percent) or math.min(h2.MaxHealth * percent, h2.Health - 1) -- (진짜 결전에서는 죽을 수 있다)
+					local base = Guard.BaseMaxHealth(h2) -- (강체를 뺀 기본 최대 체력 기준: 강체가 실제로 더 버티게)
+					local dmg = lethal and (base * percent) or math.min(base * percent, h2.Health - 1) -- (진짜 결전에서는 죽을 수 있다)
 					if dmg > 0 then Guard.Take(h2, dmg) end
 				elseif gap <= radius + 16 and isDashing(r2, player) then
 					awardNearMiss(player, r2) -- 경고 원 바로 밖으로 대시로 빠져나갔다

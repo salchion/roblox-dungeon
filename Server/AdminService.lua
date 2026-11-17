@@ -153,6 +153,7 @@ local function maxOut(player)
 		local rift = module("MetaService").GetRift(player)
 		if not rift then return false end
 		rift.AugStone = rift.AugStone or {}
+		rift.AugLv = rift.AugLv or {}
 		for z = Config.Field.ZoneCount + 1, #Config.Sets.ZoneAug do
 			rift.AugLv[tostring(z)] = 3
 			rift.AugStone[tostring(z)] = 3
