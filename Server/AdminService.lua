@@ -71,7 +71,7 @@ local armedUser = setmetatable({}, { __mode = "k" }) -- [admin] = { UserId, At }
 local armedOther = setmetatable({}, { __mode = "k" }) -- [admin] = { UserId, At }
 local lastAction = setmetatable({}, { __mode = "k" })
 
-local GRANT_MAX = { Gold = 1000000000, Tickets = 10000, Keys = 30 }
+local GRANT_MAX = { Gold = 1000000000, Tickets = 10000, Keys = 30, GuardStones = 100000 }
 
 local function note(player, text)
 	Remotes.Notify:FireClient(player, text)
@@ -97,6 +97,13 @@ local function grant(admin, targetUserId, kind, amount)
 		local keys = module("KeyService")
 		if not keys then return end
 		keys.Add(target, amount)
+	elseif kind == "GuardStones" then -- (🔷 수호석: 저장되는 값은 rift.Stones)
+		local meta = module("MetaService")
+		local rift = meta and meta.GetRift(target)
+		if not rift then return end
+		rift.Stones = (rift.Stones or 0) + amount
+		local aug = module("AugService")
+		if aug then aug.Apply(target) end
 	else
 		target:SetAttribute(kind, (target:GetAttribute(kind) or 0) + amount)
 	end
@@ -142,6 +149,16 @@ local function maxOut(player)
 	run("Growth", function() return module("GrowthService").AdminMax(player) end)
 	run("Level stats", function() return module("LevelStatService").AdminMax(player) end)
 	run("Gear", function() return module("InventoryService").AdminMax(player) end)
+	run("Defense gear / Guard Stones", function() -- 방어 기재 6종 Lv6 (골드 3 + 수호석 3) + 수호석 넉넉히
+		local rift = module("MetaService").GetRift(player)
+		if not rift then return false end
+		rift.AugStone = rift.AugStone or {}
+		for z = Config.Field.ZoneCount + 1, #Config.Sets.ZoneAug do
+			rift.AugLv[tostring(z)] = 3
+			rift.AugStone[tostring(z)] = 3
+		end
+		rift.Stones = math.max(rift.Stones or 0, 1000)
+	end)
 	run("Set effects", function() module("AugService").Refresh(player) end)
 	run("Tutorial", function() return module("TutorialService").Finish(player) end)
 	run("Currency", function()
@@ -177,6 +194,29 @@ Remotes.Admin.OnServerEvent:Connect(function(player, action, a, b, c)
 		end
 	elseif action == "Grant" then
 		grant(player, a, b, c)
+	elseif action == "SetEra" then -- (테스트) 내 무기를 그 시대(1~10) 첫 무기 단계로
+		local Config = require(ReplicatedStorage:WaitForChild("Config"))
+		if typeof(a) ~= "number" then return end
+		local era = math.clamp(math.floor(a), 1, 10)
+		local tier = Config.Weapon.Tiers[(era - 1) * #Config.WeaponTypes.Order + 1]
+		if not tier then return end
+		player:SetAttribute("WeaponLevel", tier.MinLevel)
+		log(player, string.format("SET ERA %d (+%d)", era, tier.MinLevel))
+		note(player, string.format("Weapon set to era %d (+%d).", era, tier.MinLevel))
+	elseif action == "SetGuard" then -- (테스트) 방어 기재 단계 지정: a = 효과 번호(9~14), b = 수호석 단계(0~3). 골드 단계는 3 으로
+		local Config = require(ReplicatedStorage:WaitForChild("Config"))
+		if typeof(a) ~= "number" or typeof(b) ~= "number" then return end
+		local z = math.floor(a)
+		if z <= Config.Field.ZoneCount or z > #Config.Sets.ZoneAug then return end
+		local rift = module("MetaService").GetRift(player)
+		if not rift then return end
+		rift.AugStone = rift.AugStone or {}
+		rift.AugBoss[tostring(Config.Sets.AugHomeZone[z] or z)] = true
+		rift.AugLv[tostring(z)] = 3
+		rift.AugStone[tostring(z)] = math.clamp(math.floor(b), 0, 3)
+		module("AugService").Apply(player)
+		log(player, string.format("SET GUARD %d stone %d", z, rift.AugStone[tostring(z)]))
+		note(player, string.format("%s Lv.%d", Config.Sets.ZoneAug[z], 3 + rift.AugStone[tostring(z)]))
 	elseif action == "Announce" then
 		announce(player, a)
 	elseif action == "HallRemove" then -- 명예의 전당 a 번째 기록을 지우고 그 유저가 다시 올라오지 못하게 막는다 (이상한 점수 대응)

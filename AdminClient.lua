@@ -15,7 +15,7 @@ local player = Players.LocalPlayer
 local function start()
 	local gui = create("ScreenGui", { Name = "AdminGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 90 }, player:WaitForChild("PlayerGui"))
 	local panel = makePanel({
-		Size = UDim2.new(0, 640, 0, 708), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
+		Size = UDim2.new(0, 640, 0, 756), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
 		BackgroundColor3 = Color3.fromRGB(22, 24, 38), BackgroundTransparency = 0.02, Visible = false, ZIndex = 10,
 	}, gui)
 	local function text(props) props.ZIndex = 11 props.TextXAlignment = props.TextXAlignment or Enum.TextXAlignment.Left return makeLabel(props, panel) end
@@ -87,7 +87,17 @@ local function start()
 	giveButton("+ Gold", "Gold", 16)
 	giveButton("+ Tickets", "Tickets", 146)
 	giveButton("+ Keys", "Keys", 276)
-	text({ Size = UDim2.new(0, 230, 0, 34), Position = UDim2.new(0, 406, 0, 278), Text = "max: Gold 1B · Tickets 10,000 · Keys 30", TextSize = 12, TextColor3 = Color3.fromRGB(160, 166, 195) })
+	giveButton("+ 🔷 Stones", "GuardStones", 406)
+	-- (테스트) 무기 시대 / 방어 기재 단계 지정 (내 계정)
+	local testBox = box({ Size = UDim2.new(0, 140, 0, 32), Position = UDim2.new(0, 16, 0, 712), PlaceholderText = "era  or  9 3", Text = "" })
+	button({ Size = UDim2.new(0, 150, 0, 32), Position = UDim2.new(0, 166, 0, 712), Text = "Set weapon era", TextSize = 12, BackgroundColor3 = Color3.fromRGB(70, 90, 140) }, function()
+		local era = tonumber(testBox.Text)
+		if era then Remotes.Admin:FireServer("SetEra", era) end
+	end)
+	button({ Size = UDim2.new(0, 170, 0, 32), Position = UDim2.new(0, 326, 0, 712), Text = "Set defense (no. lv)", TextSize = 12, BackgroundColor3 = Color3.fromRGB(70, 110, 160) }, function()
+		local z, lv = string.match(testBox.Text, "^%s*(%d+)%s+(%d+)%s*$")
+		if z then Remotes.Admin:FireServer("SetGuard", tonumber(z), tonumber(lv)) end
+	end)
 
 	-- 3) 서버 공지
 	text({ Size = UDim2.new(1, -32, 0, 22), Position = UDim2.new(0, 16, 0, 332), Text = "<b>Announce</b>  (shown to everyone in this server)", RichText = true, TextSize = 14, TextColor3 = Color3.fromRGB(255, 225, 130) })

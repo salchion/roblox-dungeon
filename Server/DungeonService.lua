@@ -3466,7 +3466,7 @@ local function rushGimmicks(run)
 				local root, humanoid = getAliveParts(member)
 				if root and humanoid then
 					local flat = Vector3.new(root.Position.X - center.X, 0, root.Position.Z - center.Z)
-					if flat.Magnitude > safeR then Guard.Take(humanoid, humanoid.MaxHealth * 0.05) end
+					if flat.Magnitude > safeR then Guard.TakeRatio(humanoid, 0.05) end
 				end
 			end
 		end

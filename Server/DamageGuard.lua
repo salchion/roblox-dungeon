@@ -84,6 +84,18 @@ task.spawn(function()
 	end
 end)
 
+-- 최대 체력 "비율" 피해 (최종 군주 / 던전 안전 원 밖 ...): 강체(❤️)를 빼기 전 기본 최대 체력에 곱한다
+--   (내 최대 체력에 곱하면 강체로 체력을 늘린 만큼 맞는 피해도 같이 커져 강체가 쓸모없었다). 방어 / 방벽 / 회피 / 불굴 / 완충은 Take 가 그대로 적용
+function Guard.BaseMaxHealth(humanoid)
+	local player = humanoid and humanoid.Parent and Players:GetPlayerFromCharacter(humanoid.Parent)
+	local body = player and Config.Guard.Body(player:GetAttribute("AugBody") or 0) or 0
+	return humanoid.MaxHealth / (1 + body)
+end
+function Guard.TakeRatio(humanoid, ratio)
+	if not humanoid then return end
+	Guard.Take(humanoid, Guard.BaseMaxHealth(humanoid) * ratio)
+end
+
 -- 화면 표시용: 피해 감소 % 를 Attribute 로 둔다 (스탯 / 메뉴에서 읽을 수 있다)
 local function publish(player)
 	player:SetAttribute("DamageReduction", math.floor(Guard.Reduction(player) * 1000 + 0.5) / 10)

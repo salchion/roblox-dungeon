@@ -1071,7 +1071,7 @@ local function doomWaveInner(player, zone, center, real)
 			if not bossAlive() then return end -- (군주가 쓰러진 뒤에는 남은 패턴이 피해를 주지 않는다)
 			local r2, h2 = getAliveParts(player)
 			if r2 and h2.Health > 0 and alive() then
-				Guard.Take(h2, h2.MaxHealth * percent * dmgMult)
+				Guard.TakeRatio(h2, percent * dmgMult) -- (강체를 뺀 기본 최대 체력 기준)
 				if text then notify(player, text) end
 			end
 		end
