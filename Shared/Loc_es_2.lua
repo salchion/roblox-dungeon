@@ -939,7 +939,7 @@ return {
 		["🌟 Equip gear for this setup"] = "🌟 Equipar para esta configuración",
 		["🌟 Match set effects (Y)"] = "🌟 Según efectos de set (Y)",
 		["🌟 Your bag has a better combo for your set effects — press 🌟 Match set effects (Y)"] = "🌟 Hay una combinación mejor para tus efectos de set en la mochila — pulsa 🌟 Según efectos de set (Y)",
-		["🌟 Gear matches your set effects (Y). Power can be lower, but set effects are maxed"] = "🌟 El equipo sigue tus efectos de set (Y). El poder puede ser menor, pero los efectos de set están al máximo",
+		["🌟 Gear matches your set effects (Y) — set effect levels are maxed"] = "🌟 El equipo sigue tus efectos de set (Y) — efectos de set al máximo",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },

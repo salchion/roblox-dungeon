@@ -284,7 +284,9 @@ local function updatePower(player)
 		(player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0),
 		"Neutral", -- 기본 전투력: 무기 종류와 상관없이 (종류를 바꿔도 전투력이 흔들리지 않는다)
 		player:GetAttribute("Level") or 1,
-		Config.BonusDamageMult(player) - 1 -- (장비 / 훈련 / 펫 공격력은 서로 곱한다: 실제 전투 계산과 같게)
+		Config.BonusDamageMult(player) - 1, -- (장비 / 훈련 / 펫 공격력은 서로 곱한다: 실제 전투 계산과 같게)
+		player:GetAttribute("AugAtkLv") or 0, -- 켜진 세트 효과 단계 합 (Config.PowerAug)
+		player:GetAttribute("AugDefLv") or 0
 	))
 end
 
@@ -389,7 +391,7 @@ local function setupPlayer(player)
 		Weapon.Refresh(player)
 		updatePower(player)
 	end)
-	for _, attribute in ipairs({ "CritPoints", "SpeedPoints", "GearHealth", "GearCrit", "GearDamage", "TrainHealth", "TrainCrit", "TrainDamage", "PetDamage" }) do
+	for _, attribute in ipairs({ "CritPoints", "SpeedPoints", "GearHealth", "GearCrit", "GearDamage", "TrainHealth", "TrainCrit", "TrainDamage", "PetDamage", "AugAtkLv", "AugDefLv" }) do
 		player:GetAttributeChangedSignal(attribute):Connect(function()
 			updatePower(player)
 		end)

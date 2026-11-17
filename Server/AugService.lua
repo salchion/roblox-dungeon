@@ -153,6 +153,14 @@ function Aug.Apply(player)
 		end)
 	end
 	player:SetAttribute("AugSlots", slots)
+	do -- 전투력용: 켜진 공격 / 방어 효과 단계 합 (Config.GetPower 의 PowerAug)
+		local atk, def = 0, 0
+		for attr, lv in pairs(levels) do
+			if Config.AugInfo[attr] and Config.AugInfo[attr].Defense then def += lv else atk += lv end
+		end
+		player:SetAttribute("AugAtkLv", atk)
+		player:SetAttribute("AugDefLv", def)
+	end
 	for z = 1, ZONES do
 		player:SetAttribute("AugLvZ_" .. z, rift.AugLv[tostring(z)] or 0)
 		player:SetAttribute("AugGearZ_" .. z, gearBonus(player, z) + (rift.AugStone[tostring(z)] or 0) + boostOf(Config.Sets.ZoneAug[z])) -- 장비 / 수호석으로 더해진 단계 (세트 부위 / 수호석 + "+1" 옵션: 골드 단계가 0 이어도 센다)

@@ -889,7 +889,7 @@ return {
 		["🌟 Equip gear for this setup"] = "🌟 Ausrüstung für dieses Setup",
 		["🌟 Match set effects (Y)"] = "🌟 An Set-Effekte anpassen (Y)",
 		["🌟 Your bag has a better combo for your set effects — press 🌟 Match set effects (Y)"] = "🌟 In deiner Tasche ist eine bessere Kombi für deine Set-Effekte — drücke 🌟 An Set-Effekte anpassen (Y)",
-		["🌟 Gear matches your set effects (Y). Power can be lower, but set effects are maxed"] = "🌟 Ausrüstung passt zu deinen Set-Effekten (Y). Die Kampfkraft kann niedriger sein, aber die Set-Effekte sind maximal",
+		["🌟 Gear matches your set effects (Y) — set effect levels are maxed"] = "🌟 Ausrüstung passt zu deinen Set-Effekten (Y) — Set-Effekte sind maximal",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },

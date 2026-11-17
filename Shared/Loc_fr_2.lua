@@ -943,7 +943,7 @@ return {
 		["🌟 Equip gear for this setup"] = "🌟 Équiper pour cette config",
 		["🌟 Match set effects (Y)"] = "🌟 Selon les effets de set (Y)",
 		["🌟 Your bag has a better combo for your set effects — press 🌟 Match set effects (Y)"] = "🌟 Ton sac contient une meilleure combinaison pour tes effets de set — appuie sur 🌟 Selon les effets de set (Y)",
-		["🌟 Gear matches your set effects (Y). Power can be lower, but set effects are maxed"] = "🌟 L'équipement suit tes effets de set (Y). La puissance peut être plus basse, mais les effets de set sont au maximum",
+		["🌟 Gear matches your set effects (Y) — set effect levels are maxed"] = "🌟 L'équipement suit tes effets de set (Y) — effets de set au maximum",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },

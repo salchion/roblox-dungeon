@@ -1067,7 +1067,7 @@ return {
 		["🌟 Equip gear for this setup"] = "🌟 この設定に合わせて装備",
 		["🌟 Match set effects (Y)"] = "🌟 セット効果に合わせる (Y)",
 		["🌟 Your bag has a better combo for your set effects — press 🌟 Match set effects (Y)"] = "🌟 セット効果により良い組み合わせがバッグにあります — 🌟 セット効果に合わせる (Y) を押そう",
-		["🌟 Gear matches your set effects (Y). Power can be lower, but set effects are maxed"] = "🌟 装備はセット効果(Y)に合っています。戦闘力は少し低く見えても、セット効果は最大です",
+		["🌟 Gear matches your set effects (Y) — set effect levels are maxed"] = "🌟 装備はセット効果(Y)に合っています — セット効果は最大です",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },

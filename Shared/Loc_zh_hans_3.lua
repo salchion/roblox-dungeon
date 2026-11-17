@@ -4,7 +4,6 @@ return {
 	exact = {
 	},
 	templates = {
-		{ "⚠ Not enough gold. ({number1} G needed)", "⚠ 金币不足。(需要 {number1} 金币)" },
 		{ "With the max {number1} points, about {number2}%.", "满 {number1} 点时约为 {number2}%。" },
 		{ "Gold earned  +{number1} G   🎫 Tickets +{number2}", "获得金币  +{number1}   🎫 门票 +{number2}" },
 		{ "{number1}% of each hit is taken over 3s", "每次受击的{number1}%分3秒承受" },

@@ -315,7 +315,7 @@ local function buildInventoryTab(state)
 		end
 		local augMode = state.EquipMode == "Augs"
 		if not tip and augMode then -- 세트 효과 맞춤: 점수만 높은 장비 / 세트 맞추기 안내는 효과 단계를 깰 수 있어 띄우지 않는다 (서버가 계산한 Better 로만)
-			tip = state.Better and "🌟 Your bag has a better combo for your set effects — press 🌟 Match set effects (Y)" or "🌟 Gear matches your set effects (Y). Power can be lower, but set effects are maxed"
+			tip = state.Better and "🌟 Your bag has a better combo for your set effects — press 🌟 Match set effects (Y)" or "🌟 Gear matches your set effects (Y) — set effect levels are maxed"
 		elseif not tip and setPick then
 			local def = Config.Sets[setPick.Set]
 			tip = string.format("🧩 Equip this %s → <b>%s %d/3</b>: set bonus ON (and its set effect)", Config.GetGearSlot(setPick.Slot) and Config.GetGearSlot(setPick.Slot).Name or setPick.Slot, def.Name, setTier)

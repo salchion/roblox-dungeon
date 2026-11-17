@@ -1016,6 +1016,9 @@ Config.Field = {
 	--   몬스터 체력 곡선(ZoneDanger.Health)과 연동되지 않는다: 체력 / 보상을 바꿔도 이 표는 따라가지 않으니, 표시 목표로 쓸 때만 손대면 된다.
 	RecommendPower = { 350, 750, 1700, 5500, 12000, 33000, 84000, 310000 }, -- 4~8구역: 관문 도달 시 실제 전투력의 1.10배 (A1). 1~3구역은 예전 값 (화면 목표 / 안내용 표시값만: 몬스터 체력 / 보상과는 무관)
 	-- (BossPower 는 심연 도전의 보상 배율 계산에만 쓰이는 옛 값이다. 화면에 보이는 권장 전투력은 위 RecommendPower)
+	-- 전투력에 세트 효과가 들어가면서(Config.PowerAug) 같은 사람의 숫자가 커졌다 -> 위 표에 "그 구역 관문에 도달할 때 보통 켜 둔 공격 효과 단계 합"만큼 곱한다 (아래 do 블록).
+	--   (임시 가정, 11-17: 칸 1 → 2구역 클리어 2칸 → 4구역 클리어 3칸, 효과마다 2~4단계. wall_sim 으로 다시 재서 RecommendAugLv 만 고치면 된다)
+	RecommendAugLv = { 0, 1, 3, 5, 7, 9, 11, 12 },
 	BossPower = { 350, 800, 1600, 3000, 5200, 8500, 13000, 20000 },
 	BossTickets = 2,           -- 필드 보스 처치 시 주변 플레이어에게 지급
 	-- 구역 관문: 다음 구역으로 가려면 "지금 구역"에서 몬스터를 정해진 수만큼 처치해야 열린다 (엘리트 x3, 보스 x10)
@@ -1131,6 +1134,17 @@ function Config.Field.ZoneOfX(x)
 	return Config.Field.ZoneCount
 end
 
+-- 전투력에 켜진 세트 효과 단계를 넣는다 (11-17 B안): 효과 단계를 맞추면 실제로 세지는데 전투력은 내려가 보이던 것.
+--   로그에서 세트 / 펫 피해가 전체의 60~80% (기본의 약 2~3배)라 공격 효과 1단계 = 기본 전투력 +12%. 방어 효과는 버티는 힘이라 +5%
+Config.PowerAug = { Attack = 0.12, Defense = 0.05 }
+do -- 권장 전투력 x 세트 효과 배율 (RecommendPowerBase = 세트 효과를 넣기 전 값)
+	local F = Config.Field
+	F.RecommendPowerBase = table.clone(F.RecommendPower)
+	for z, base in ipairs(F.RecommendPowerBase) do
+		F.RecommendPower[z] = math.floor(base * (1 + Config.PowerAug.Attack * (F.RecommendAugLv[z] or 0)) / 50 + 0.5) * 50
+	end
+end
+
 function Config.Field.GetZoneLevel(zone)
 	return 1 + (zone - 1) * 3
 end
@@ -1138,7 +1152,7 @@ end
 ------------------------------------------------------------
 -- 전투력: 머리 위 이름표 / 리더보드에 표시되어 강함을 과시할 수 있다
 ------------------------------------------------------------
-function Config.GetPower(weaponLevel, critPoints, speedPoints, gearHealth, gearCrit, typeKey, level, gearDamage)
+function Config.GetPower(weaponLevel, critPoints, speedPoints, gearHealth, gearCrit, typeKey, level, gearDamage, augAttack, augDefense)
 	local P = Config.Player
 	level = level or 1
 	-- typeKey == "Neutral": 무기 종류와 상관없는 "기본 전투력" (종류 계수 1, 종류 치명타 보너스 0). 무기 종류를 바꿔도 숫자가 흔들리지 않는다 (종류마다 범위 / 연쇄 / 관통 강점이 달라서 단일 대상 계수만으로 비교하면 불공정하다)
@@ -1152,7 +1166,8 @@ function Config.GetPower(weaponLevel, critPoints, speedPoints, gearHealth, gearC
 	local critMult = P.CritMultiplier + math.max(0, rawCrit - 0.9) -- 넘친 치명타 -> 치명타 피해
 	local rate = 1 / (P.BaseCooldown / (1 + (speedPoints or 0) * P.SpeedPerPoint))
 	local dps = damage * (1 + crit * (critMult - 1)) * rate * typeFactor
-	return math.floor(dps * 10 + ((gearHealth or 0) + Config.GetLevelHealth(level)) * 0.5)
+	local augMult = 1 + Config.PowerAug.Attack * (augAttack or 0) + Config.PowerAug.Defense * (augDefense or 0) -- (켜진 세트 효과 단계 합: AugService 가 AugAtkLv / AugDefLv 로 둔다)
+	return math.floor((dps * 10 + ((gearHealth or 0) + Config.GetLevelHealth(level)) * 0.5) * augMult)
 end
 
 ------------------------------------------------------------

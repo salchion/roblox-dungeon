@@ -821,7 +821,7 @@ return {
 		["🌟 Equip gear for this setup"] = "🌟 按此配置装备",
 		["🌟 Match set effects (Y)"] = "🌟 匹配套装效果 (Y)",
 		["🌟 Your bag has a better combo for your set effects — press 🌟 Match set effects (Y)"] = "🌟 背包里有更适合套装效果的组合 — 点 🌟 匹配套装效果 (Y)",
-		["🌟 Gear matches your set effects (Y). Power can be lower, but set effects are maxed"] = "🌟 装备已匹配套装效果(Y)。战斗力可能略低，但套装效果已最大",
+		["🌟 Gear matches your set effects (Y) — set effect levels are maxed"] = "🌟 装备已匹配套装效果(Y) — 套装效果已最大",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1120,5 +1120,6 @@ return {
 		{ "Not enough Guard Stones (need {number1})", "守护石不足（需要 {number1}）" },
 		{ "Move speed +{number1} per point  (max {number2})", "移动速度每点增加{number1}（最高{number2}）" },
 		{ "🎯 Deadeye! Barrage on {number1} enemies", "🎯 狙击手！对{number1}名敌人进行连环射击" },
+		{ "⚠ Not enough gold. ({number1} G needed)", "⚠ 金币不足。(需要 {number1} 金币)" },
 	},
 }
