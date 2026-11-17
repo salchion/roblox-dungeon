@@ -925,3 +925,4 @@
 2956¦🔷 守護石 +{number1}¦🔷 Schutzstein +{number1}¦🔷 Pierre de garde +{number1}¦🔷 Piedra guardiana +{number1}¦🔷 Pedra guardiã +{number1}¦🔷 守护石 +{number1}¦🔷 수호석 +{number1}
 2957¦MISS!¦VERFEHLT!¦RATÉ !¦¡FALLO!¦ERROU!¦闪避！¦회피!
 2958¦強体¦Eiserner Körper¦Corps de fer¦Cuerpo de hierro¦Corpo de ferro¦强体¦강체
+2959¦ゴールドで強化するとオン¦Mit Gold aufwerten¦Améliore avec de l'or¦Mejora con oro¦Melhore com ouro¦用金币强化后开启¦골드로 강화하면 켜짐

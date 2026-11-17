@@ -1196,6 +1196,7 @@ return {
 		["All slots are full — choose a slot to swap"] = "칸이 꽉 찼어요 — 바꿀 칸을 고르세요",
 		["MISS!"] = "회피!",
 		["Iron Body"] = "강체",
+		["Upgrade with gold"] = "골드로 강화하면 켜짐",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1263,6 +1264,5 @@ return {
 		{ "Allocate Stats\nSpend {number1} stat points (T key / Stats button)\n{number2} / {number3}   Reward: {number4} G", "스탯 할당\n{number1} 스탯 포인트 사용 (T 키 / 스탯 버튼)\n{number2} / {number3}   보상: {number4} G" },
 		{ "Skilled Warrior   Title 『Veteran』\nReach character level {number1}\n{number2} / {number3}   Reward: 🎫 {number4}", "숙련된 전사 타이틀 『베테랑』\n캐릭터 레벨 {number1} 달성\n{number2} / {number3} 보상: 🎫 {number4}" },
 		{ "Mythic Master   Title 『Mythic Master』\nObtain Mythic gear\n{number1} / {number2}   Reward: 🎫 {number3}", "신화 마스터 타이틀 『신화 마스터』\n신화 장비 획득\n{number1} / {number2} 보상: 🎫 {number3}" },
-		{ "Dummy Slayer   Title 『Dummy Slayer』\nHit the dummy {number1} times\n{number2} / {number3}   Reward: {number4} G", "더미 슬레이어 타이틀 『더미 슬레이어』\n더미를 {number1}번 때리세요\n{number2} / {number3}   보상: {number4} G" },
 	},
 }

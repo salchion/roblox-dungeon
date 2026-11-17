@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🗿 Colossus defeated! Gear + 🎫 +{number1} + {number2} G (time bonus x{number3})", "🗿 Colosse vaincu ! Équipement + 🎫 +{number1} + {number2} or (bonus de temps x{number3})" },
 		{ "Depth {number1} sweep: gold, tickets and boss chest received", "Profondeur {number1} balayée : or, tickets et coffre du boss reçus" },
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "Ton niveau est trop bas. (Ce donjon requiert Nv.{number1}+)" },
 		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 Zone {number1} vaincue pour la première fois ! Or +{number2} · Tickets +{number3} · Clés +{number4}" },

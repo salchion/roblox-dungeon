@@ -1055,6 +1055,7 @@ return {
 		["✕ Take out of slot"] = "✕ スロットから外す",
 		["All slots are full — choose a slot to swap"] = "スロットが満杯 — 交換するスロットを選んでください",
 		["Iron Body"] = "強体",
+		["Upgrade with gold"] = "ゴールドで強化するとオン",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1140,6 +1141,5 @@ return {
 		{ "Aug_Synergy  <font color='#{number1}aa{number2}c{number3}'>Augment synergy triggered</font>", "8月のシナジー <font color='#{number1}aa{number2}c{number3}'> 8月のシナジーが発動しました</font>" },
 		{ "✅ Railgun equipped! (Bounces to {number1} nearby enemies · Longest range)", "✅ レールガンを装備しました！（近くの{number1}人の敵に跳ね返り、最大射程距離を実現）" },
 		{ "{number1} hours of idle gold ({number2} G) piled up!\n(Idle income bonus +{number3}% active)", "{number1}時間のアイドルゴールド（{number2}G）が積み上がりました！\n（アイドル収入ボーナス +{number3}% アクティブ）" },
-		{ "Weapons reached {number1} / {number2}  ·  Enhance your weapon to meet the next one", "到達した武器 {number1} / {number2}  ·  武器を強化して次の武器に出会おう" },
 	},
 }

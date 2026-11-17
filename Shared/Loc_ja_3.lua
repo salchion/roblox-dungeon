@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Weapons reached {number1} / {number2}  ·  Enhance your weapon to meet the next one", "到達した武器 {number1} / {number2}  ·  武器を強化して次の武器に出会おう" },
 		{ "👑 Kill goal reached! Defeat the Lord of Zone {number1} to open the gate!", "👑 撃破目標達成！ゾーン{number1}のロードを倒してゲートを開こう！" },
 		{ "🏰 {number1} free dungeon entries left! Earn gear and tickets in dungeons", "🏰 無料のダンジョン入場があと{number1}回あります！ダンジョンで装備とチケットを手に入れよう" },
 		{ "🎫 You have {number1} gear ticket(s) left! Draw gear at the gacha machine", "🎫 装備チケットが{number1}枚残っています！ガチャ機械で装備を引こう" },

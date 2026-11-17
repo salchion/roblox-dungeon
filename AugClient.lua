@@ -349,8 +349,8 @@ function refresh()
 				r.Status.Text = "<font color='#78ff8c'>● <b>ON</b></font>"
 			elseif level + gear > 0 then
 				r.Status.Text = "<font color='#aab0cc'>Waiting (no free slot)</font>"
-			elseif open then
-				r.Status.Text = "<font color='#aab0cc'>Equip its set gear</font>"
+			elseif open then -- (방어 기재는 세트 장비가 없다: 골드로 1단계를 올려야 켤 수 있다)
+				r.Status.Text = Config.Sets.ZoneKeys[zone] and "<font color='#aab0cc'>Equip its set gear</font>" or "<font color='#aab0cc'>Upgrade with gold</font>"
 			else
 				r.Status.Text = "<font color='#888899'>🔒 Defeat the lord</font>"
 			end

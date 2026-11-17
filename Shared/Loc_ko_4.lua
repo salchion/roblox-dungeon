@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} Set synergy activated! 『{text2}』 - {text3}", "{text1} 세트 시너지 발동! 『{text2}』 - {text3}" },
+		{ "🐾 Pet Lv.{number1}! New ability {text2} {text3} — {text4}", "🐾 펫 Lv.{number1}! 새 능력 {text2} {text3} — {text4}" },
+		{ "{text1} Dungeon mutation: {text2} — {text3}", "{text1} 던전 변이: {text2} — {text3}" },
 		{ "▶ Next feature: Lv.{number1} {text2} {text3}{text4}", "▶ 다음 기능: Lv.{number1} {text2} {text3}{text4}" },
 		{ "{text1} {text2} complete! Lv.{number3} ({text4})", "{text1} {text2} 완료! Lv.{number3} ({text4})" },
 		{ "{text1} 『{text2}』 {text3} done! (Lv.{number4})", "{text1} 『{text2}』 {text3} 완료! (Lv.{number4})" },

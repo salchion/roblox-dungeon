@@ -931,6 +931,7 @@ return {
 		["All slots are full — choose a slot to swap"] = "Tous les emplacements sont pleins — choisissez-en un à échanger",
 		["MISS!"] = "RATÉ !",
 		["Iron Body"] = "Corps de fer",
+		["Upgrade with gold"] = "Améliore avec de l'or",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1068,6 +1069,5 @@ return {
 		{ "Reach weapon upgrade level {number1} (about the 10th weapon)", "Atteignez le niveau d'amélioration d'arme {number1} (environ la 10e arme)" },
 		{ "Reach weapon upgrade level {number1} (about the 50th weapon)", "Atteignez le niveau d'amélioration d'arme {number1} (environ la 50e arme)" },
 		{ "Era {number1}  ·  Your weapon look and bullet color changed!", "Ère {number1}  ·  L'apparence de votre arme et la couleur des balles ont changé !" },
-		{ "🗿 Colossus defeated! Gear + 🎫 +{number1} + {number2} G (time bonus x{number3})", "🗿 Colosse vaincu ! Équipement + 🎫 +{number1} + {number2} or (bonus de temps x{number3})" },
 	},
 }

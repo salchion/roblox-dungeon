@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Dummy Slayer   Title 『Dummy Slayer』\nHit the dummy {number1} times\n{number2} / {number3}   Reward: {number4} G", "더미 슬레이어 타이틀 『더미 슬레이어』\n더미를 {number1}번 때리세요\n{number2} / {number3}   보상: {number4} G" },
 		{ "A golden FEVER portal opened where the Lord fell! Step in within {number1} seconds", "군주가 쓰러진 자리에 황금 피버 포탈이 열렸어요! {number1}초 안에 들어가세요" },
 		{ "Points left {number1}  /  total {number2}  (Level {number3})  ·  +1 point every {number4} levels, next at Lv.{number5}", "남은 포인트 {number1}  /  전체 {number2}  (레벨 {number3})  ·  {number4}레벨마다 +1, 다음은 Lv.{number5}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!\nChallenge the dungeon at the north gate", "🎟 오늘 무료 입장권 {number1}장 · 🗝 키 {number2}개!\n북문에서 던전에 도전하세요" },
@@ -1045,8 +1046,5 @@ return {
 		{ "Your Luck right now: <b>{text1}</b>  (gear {text2}{text3})", "지금 내 행운: <b>{text1}</b>  (장비 {text2}{text3})" },
 		{ "Depth {number1} (total {text2}, Unique {text3}, keys {number4}): {text5}", "깊이 {number1} (합계 {text2}, 유니크 {text3}, 열쇠 {number4}): {text5}" },
 		{ "<font color='#{text1}'><b>{text2}</b></font> {text3}", "<font color='#{text1}'><b>{text2}</b></font> {text3}" },
-		{ "{text1} Set synergy activated! 『{text2}』 - {text3}", "{text1} 세트 시너지 발동! 『{text2}』 - {text3}" },
-		{ "🐾 Pet Lv.{number1}! New ability {text2} {text3} — {text4}", "🐾 펫 Lv.{number1}! 새 능력 {text2} {text3} — {text4}" },
-		{ "{text1} Dungeon mutation: {text2} — {text3}", "{text1} 던전 변이: {text2} — {text3}" },
 	},
 }
