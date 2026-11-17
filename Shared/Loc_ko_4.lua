@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} {text2}\n<font color='#ffe16e'>⚔ {text3}</font>\n<font color='#9ad7ff'>Boss Rush score</font>", "{text1} {text2}\n<font color='#ffe16e'>⚔ {text3}</font>\n<font color='#9ad7ff'>보스 러시 점수</font>" },
+		{ "<font color='#9affc0'>Next era → {text1} <b>{text2}</b></font> <font color='#aeb4cc'>{text3}</font>", "<font color='#9affc0'>다음 시대 → {text1} <b>{text2}</b></font> <font color='#aeb4cc'>{text3}</font>" },
+		{ "{text1} {text2}\n<font color='#ffe16e'>⚡ {number3}</font> Lv.{number4}\n<font color='#9ad7ff'>{text5}</font>", "{text1} {text2}\n<font color='#ffe16e'>⚡ {number3}</font> Lv.{number4}\n<font color='#9ad7ff'>{text5}</font>" },
+		{ "Your Luck without the booster: <b>{text1}</b> · with the booster: <b>{text2}</b>{text3}", "부스터 없이 내 행운: <b>{text1}</b> · 부스터 사용 시: <b>{text2}</b>{text3}" },
+		{ "Your best tier: {text1} {text2}  <font color='#aab0d0'>({text3} damage)</font>", "내 최고 등급: {text1} {text2}  <font color='#aab0d0'>(피해 {text3})</font>" },
+		{ "{text1} <font color='#{text2}'>{text3}</font>  <font color='#ffe16e'>⚡{number4}</font>", "{text1} <font color='#{text2}'>{text3}</font>  <font color='#ffe16e'>⚡{number4}</font>" },
 		{ "<font color='{text1}'>{number2}. {text3}</font>  <font color='#ffe16e'>{text4}</font>", "<font color='{text1}'>{number2}. {text3}</font>  <font color='#ffe16e'>{text4}</font>" },
 		{ "<font size='10' color='{text1}'>{text2} <b>{number3} pieces</b>  {text4}</font>", "<font size='10' color='{text1}'>{text2} <b>{number3}부위</b>  {text4}</font>" },
 		{ "👑 Weekly Final Lord reward: Mythic {text1} · {text2} Set · ★ {text3}!", "👑 주간 최후의 군주 보상: 신화 {text1} · {text2} 세트 · ★ {text3}!" },

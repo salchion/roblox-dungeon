@@ -257,7 +257,7 @@ local function buildInventoryTab(state)
 				BackgroundColor3 = active and color:Lerp(Color3.fromRGB(26, 28, 42), 0.45) or Color3.fromRGB(34, 37, 54),
 			}, strip, function()
 				if disabled then return end
-				Remotes.Inventory:FireServer(key == "Best" and "AutoEquip" or "EquipSet", key)
+				Remotes.Inventory:FireServer(key == "Best" and "AutoEquip" or (key == "Augs" and "AutoAugs") or "EquipSet", key)
 			end)
 			rounded(chip, 16)
 			create("UIPadding", { PaddingLeft = UDim.new(0, 14), PaddingRight = UDim.new(0, 14) }, chip)
@@ -269,16 +269,17 @@ local function buildInventoryTab(state)
 		for i, key in ipairs(Config.Sets.ZoneKeys) do
 			if owned[key] and (owned[key] * 100 + i) > bestScore then bestSet, bestScore = key, owned[key] * 100 + i end
 		end
-		modeChip(0, "Best", "⚡ Strongest (sets counted)", Color3.fromRGB(80, 200, 130), not inSetMode)
-		modeChip(1, bestSet or "Best", bestSet and "🛡 Set gear" or "🛡 Set gear <font size='10'>(no set yet)</font>", Color3.fromRGB(120, 150, 255), inSetMode, not bestSet)
+		modeChip(0, "Best", "⚡ Strongest (sets counted)", Color3.fromRGB(80, 200, 130), mode == "Best")
+		modeChip(1, "Augs", "🌟 Match set effects (Y)", Color3.fromRGB(255, 200, 90), mode == "Augs") -- (Y 창에서 칸에 끼운 효과 단계가 가장 높아지게: AugService.AutoGear)
+		modeChip(2, bestSet or "Best", bestSet and "🛡 Set gear" or "🛡 Set gear <font size='10'>(no set yet)</font>", Color3.fromRGB(120, 150, 255), inSetMode, not bestSet)
 		if inSetMode then
-			makeLabel({ Size = UDim2.new(0, 14, 0, 32), LayoutOrder = 2, Text = "›", TextSize = 20, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(150, 156, 190) }, strip)
+			makeLabel({ Size = UDim2.new(0, 14, 0, 32), LayoutOrder = 3, Text = "›", TextSize = 20, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(150, 156, 190) }, strip)
 			for i, key in ipairs(Config.Sets.ZoneKeys) do
 				if owned[key] then
 					local def = Config.Sets[key]
 					local worn = setCounts[key] or 0
 					local effectOn = def.Zone and player:GetAttribute("AugOnZ_" .. def.Zone) == true
-					modeChip(2 + i, key, string.format("%s %s  <font color='#ffe9a0'>%s</font>%s", def.Icon or "★", def.Name, setPips(math.min(worn, 3)), effectOn and "  <font color='#78ff8c'>● ON</font>" or ""), def.Color, mode == key)
+					modeChip(3 + i, key, string.format("%s %s  <font color='#ffe9a0'>%s</font>%s", def.Icon or "★", def.Name, setPips(math.min(worn, 3)), effectOn and "  <font color='#78ff8c'>● ON</font>" or ""), def.Color, mode == key)
 				end
 			end
 		end
@@ -312,7 +313,10 @@ local function buildInventoryTab(state)
 				if diff > bestDiff then bestUp, bestDiff = item, diff end
 			end
 		end
-		if not tip and setPick then
+		local augMode = state.EquipMode == "Augs"
+		if not tip and augMode then -- 세트 효과 맞춤: 점수만 높은 장비 / 세트 맞추기 안내는 효과 단계를 깰 수 있어 띄우지 않는다 (서버가 계산한 Better 로만)
+			tip = state.Better and "🌟 Your bag has a better combo for your set effects — press 🌟 Match set effects (Y)" or "🌟 Gear matches your set effects (Y). Power can be lower, but set effects are maxed"
+		elseif not tip and setPick then
 			local def = Config.Sets[setPick.Set]
 			tip = string.format("🧩 Equip this %s → <b>%s %d/3</b>: set bonus ON (and its set effect)", Config.GetGearSlot(setPick.Slot) and Config.GetGearSlot(setPick.Slot).Name or setPick.Slot, def.Name, setTier)
 			tipItem = setPick

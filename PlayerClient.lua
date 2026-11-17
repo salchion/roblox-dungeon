@@ -2883,6 +2883,7 @@ Remotes.Inventory.OnClientEvent:Connect(function(action, data)
 		for _, item in ipairs(data and data.Items or {}) do
 			if not item.Equipped and (not worn[item.Slot] or item.Score > worn[item.Slot].Score) then better = true break end
 		end
+		if data and data.Better ~= nil then better = data.Better == true end -- (서버가 지금 장착 방식 기준으로 계산: 세트 효과 맞춤이면 효과 단계를 깨는 "점수만 높은" 장비에는 점이 안 뜬다)
 		player:SetAttribute("DotGear", better)
 		if menuPanel.Visible and currentTab == "Character" and MENU.Sub.Character == "Gear" then
 			-- 싸우는 중 장비를 주울 때마다 메뉴가 다시 그려져 버튼이 움직이는 것처럼 보였다: 메뉴를 직접 누른 게 아니면 8초에 한 번으로 모은다

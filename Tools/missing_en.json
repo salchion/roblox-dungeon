@@ -2971,5 +2971,15 @@
 "Clear one run to see an estimate",
 "★ Recommended: Depth {number1} (deepest you can clear in {number2}s)",
 "★ Recommended: Depth {number1}",
-"★ Recommended depth: clear one run first"
+"★ Recommended depth: clear one run first",
+"No set effects in this setup's slots. Put effects in slots in the Set Effects window (Y) first.",
+"Try again in a moment.",
+"🌟 Already the best gear for this setup's set effects.",
+"🌟 Set-effect gear equipped: {number1} slot(s) swapped",
+"{text1} 『{text2}』 Lv.{number1} → Lv.{number2}",
+"⚡ Power {number1} → {number2}",
+"🌟 Equip gear for this setup",
+"🌟 Match set effects (Y)",
+"🌟 Your bag has a better combo for your set effects — press 🌟 Match set effects (Y)",
+"🌟 Gear matches your set effects (Y). Power can be lower, but set effects are maxed"
 ]

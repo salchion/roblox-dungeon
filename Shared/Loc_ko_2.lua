@@ -1202,6 +1202,13 @@ return {
 		["⏱ Est. boss kill: —"] = "⏱ 예상 보스 처치: —",
 		["Clear one run to see an estimate"] = "한 판 깨면 예상 시간이 나와요",
 		["★ Recommended depth: clear one run first"] = "★ 추천 깊이: 먼저 한 판 깨 주세요",
+		["No set effects in this setup's slots. Put effects in slots in the Set Effects window (Y) first."] = "이 세팅의 칸에 세트 효과가 없어요. 세트 효과 창(Y)에서 먼저 칸에 끼워 주세요.",
+		["Try again in a moment."] = "잠시 후 다시 해 주세요.",
+		["🌟 Already the best gear for this setup's set effects."] = "🌟 이미 이 세팅의 세트 효과에 가장 맞는 장비예요.",
+		["🌟 Equip gear for this setup"] = "🌟 이 세팅에 맞게 장비 끼우기",
+		["🌟 Match set effects (Y)"] = "🌟 세트 효과 맞춤 (Y)",
+		["🌟 Your bag has a better combo for your set effects — press 🌟 Match set effects (Y)"] = "🌟 가방에 세트 효과에 더 맞는 조합이 있어요 — 🌟 세트 효과 맞춤 (Y) 을 누르세요",
+		["🌟 Gear matches your set effects (Y). Power can be lower, but set effects are maxed"] = "🌟 세트 효과(Y)에 맞춘 장비예요. 전투력은 조금 낮아 보여도 세트 효과는 최대예요",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1263,9 +1270,5 @@ return {
 		{ "Golden Thief   Title 『Golden Thief』\nDefeat {number1} Golden Goblin(s)\n{number2} / {number3}   Reward: 🎫 {number4}", "황금 도둑 타이틀 『황금 도둑』\n황금 고블린 {number1}마리를 물리치세요\n{number2} / {number3} 보상: 🎫 {number4}" },
 		{ "✨ Stat points +{number1}! {number2} unspent (press T to raise move speed / range / double shot)", "✨ 스탯 포인트 +{number1}! 미사용 {number2} (T를 눌러 이동 속도 / 사거리 / 더블샷을 올리세요)" },
 		{ "Abyss Conqueror   Title 『Abyss Conqueror』\nClear field zone {number1}\n{number2} / {number3}   Reward: 🎫 {number4}", "심연 정복자 타이틀 『심연 정복자』\n필드 구역 {number1} 클리어\n{number2} / {number3} 보상: 🎫 {number4}" },
-		{ "Sets obtained {number1} / {number2}  ·  Monsters / lord of that zone drop them at a set rate", "획득한 세트 {number1} / {number2}  ·  그 구역의 몬스터 / 군주가 일정 확률로 떨어뜨려요" },
-		{ "🔒 Defeat the Lord of Zone {number1} first — only then will the portal open for you.", "🔒 먼저 {number1}구역 군주를 쓰러뜨리세요 — 그래야 포탈이 열려요." },
-		{ "💰 A Golden Goblin appeared in Zone {number1} · Meadow! Catch it for a jackpot! ({number2}s)", "💰 골든 고블린이 구역 {number1} · 초원에 나타났습니다! 잡으면 대박을 얻을 수 있습니다! ({number2}초)" },
-		{ "Allocate Stats\nSpend {number1} stat points (T key / Stats button)\n{number2} / {number3}   Reward: {number4} G", "스탯 할당\n{number1} 스탯 포인트 사용 (T 키 / 스탯 버튼)\n{number2} / {number3}   보상: {number4} G" },
 	},
 }

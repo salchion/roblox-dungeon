@@ -112,6 +112,11 @@ for i, text in ipairs({ "🗡 Hunt", "👑 Boss" }) do
 		Remotes.Aug:FireServer("Loadout", i)
 	end)
 end
+-- 세트 효과 맞춤 장착: 지금 세팅 칸에 끼운 효과 단계가 가장 높아지게 장비를 바꿔 낀다 (시안 Docs/preview/aug-autoequip-preview.svg)
+local autoGear = button({ Size = UDim2.new(0, 166, 0, 26), Position = UDim2.new(0, 742, 0, 12), BackgroundColor3 = Color3.fromRGB(40, 120, 76), Text = "🌟 Equip gear for this setup", TextSize = 11, TextWrapped = true }, panel, function()
+	Remotes.Aug:FireServer("AutoGear")
+end)
+make("UIStroke", { Color = Color3.fromRGB(91, 217, 138), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, autoGear)
 local waitHint = label({ Size = UDim2.new(0, 320, 0, 18), Position = UDim2.new(0, 320, 0, 41), Text = "", TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 200, 120), Visible = false }, panel)
 label({ Size = UDim2.new(1, -32, 0, 28), Position = UDim2.new(0, 16, 0, 60), Text = "⚔ Attack (set gear: Lv.4–6) · 🛡 Defense (🔷 Guard Stone: Lv.4–6) · Only what you put in a slot is on · ✕ to take it out", TextSize = 11, TextColor3 = Color3.fromRGB(170, 175, 205), TextXAlignment = Enum.TextXAlignment.Left, TextWrapped = true }, panel)
 label({ Size = UDim2.new(0, 300, 0, 18), Position = UDim2.new(0, 16, 0, 456), Text = "🛡 Defense · unlocked by Zone 3–8 lords", TextSize = 13, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(120, 190, 255) }, panel)

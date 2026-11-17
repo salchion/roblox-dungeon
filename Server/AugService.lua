@@ -304,4 +304,54 @@ task.spawn(function()
 	end)
 end)
 
+-- 세트 효과 맞춤 장착 (Y 창 버튼 / 장비 창 칩): 지금 세팅(사냥용 / 보스용)의 칸에 끼운 효과들의 단계 합이 가장 높아지도록 장비를 바꿔 낀다
+--   계산은 Inventory.EquipForAugs. 효과마다 Base = 골드 단계 + 수호석 단계 (세트 부위 / "+1" 옵션은 장비 조합에 따라 바뀐다)
+local function augTargets(player)
+	local rift = stateOf(player)
+	if not rift then return nil end
+	local load = rift.AugEquip and rift.AugEquip[rift.AugLoad] or {}
+	local list = {}
+	for _, z in ipairs(load) do
+		if typeof(z) == "number" and z >= 1 and z <= ZONES and isOpen(player, rift, z) then
+			table.insert(list, { Zone = z, Set = Config.Sets.ZoneKeys[z], Attr = Config.Sets.ZoneAug[z], Base = (rift.AugLv[tostring(z)] or 0) + (rift.AugStone[tostring(z)] or 0) })
+		end
+	end
+	return list
+end
+local function levelOf(player, z)
+	return math.min(Config.Inventory.AugMaxLevel or 6, (player:GetAttribute("AugLvZ_" .. z) or 0) + (player:GetAttribute("AugGearZ_" .. z) or 0))
+end
+function Aug.AutoGear(player)
+	local targets = augTargets(player)
+	if not targets or #targets == 0 then return false, "No set effects in this setup's slots. Put effects in slots in the Set Effects window (Y) first." end
+	local okInv, Inventory = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
+	if not okInv then return false, "Try again in a moment." end
+	local before, powerBefore = {}, player:GetAttribute("Power") or 0
+	for _, t in ipairs(targets) do before[t.Zone] = levelOf(player, t.Zone) end
+	local changed, reason = Inventory.EquipForAugs(player, targets)
+	if reason then return false, reason end
+	Aug.Apply(player)
+	if changed == 0 then return true, "🌟 Already the best gear for this setup's set effects." end
+	task.delay(0.5, function() -- (장비 Attribute / 전투력이 다시 계산된 뒤에 알린다)
+		if not player.Parent then return end
+		for _, t in ipairs(targets) do
+			local info = Config.AugInfo[t.Attr]
+			local now = levelOf(player, t.Zone)
+			if info and now ~= before[t.Zone] then notify(player, string.format("%s 『%s』 Lv.%d → Lv.%d", info.Icon, info.Name, before[t.Zone], now)) end
+		end
+		local powerNow = player:GetAttribute("Power") or 0
+		if powerNow ~= powerBefore then notify(player, string.format("⚡ Power %d → %d", powerBefore, powerNow)) end
+	end)
+	return true, string.format("🌟 Set-effect gear equipped: %d slot(s) swapped", changed)
+end
+task.spawn(function() -- 장비 "!" 표시가 세트 효과 맞춤 기준으로 볼 수 있게 (서로 require 하지 않으려고 나중에 넣는다)
+	local okInv, Inventory = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
+	if okInv and Inventory.SetAugTargets then Inventory.SetAugTargets(augTargets) end
+end)
+Remotes.Aug.OnServerEvent:Connect(function(player, action)
+	if action ~= "AutoGear" then return end
+	local ok, message = Aug.AutoGear(player)
+	if message then notify(player, (ok == false and "⚠ " or "") .. message) end
+end)
+
 return Aug
