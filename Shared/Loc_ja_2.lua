@@ -1057,6 +1057,7 @@ return {
 		["Iron Body"] = "強体",
 		["Upgrade with gold"] = "ゴールドで強化するとオン",
 		["Warp to the camp of any zone you've reached. If you die in the field, you return to town."] = "到達したゾーンのキャンプへワープ。フィールドで倒れると町に戻ります。",
+		["⏰ Time's up! The boss escaped"] = "⏰ 時間切れ！ボスが逃げた",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },

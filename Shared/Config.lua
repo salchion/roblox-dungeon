@@ -421,7 +421,8 @@ Config.Break = { Enabled = true, Need = 16, Seconds = 3.5, DamageMult = 1.3, Rat
 --   라운드마다 RoundSeconds 안에 안 고르면 첫 장, 전체 마감이 지나면 남은 칸은 자동으로 채우고 시작 (파티 AFK 가 판을 붙잡지 않게)
 Config.Dungeon.Draft = { Enabled = true, Rounds = 8, RoundSeconds = 4 } -- (전체 마감 = Rounds x RoundSeconds + 2초: 코드에서 계산)
 Config.Dungeon.Choice = { Enabled = true, Seconds = 6, Count = 3 } -- (Seconds = BonusInterval: 무응답이어도 보너스 간격 / 보스 체력이 그대로)
-Config.Dungeon.BonusInterval = 6     -- 이 간격(초)마다 랜덤 강화 / 랜덤 패널티가 터진다 (선택 없이 자동 적용)
+Config.Dungeon.BonusInterval = 6     -- 이 간격(초)마다 보상(골드 / 경험치)이 터진다. 드래프트 판: 덱은 전투 시작에 한 번에 켜지고, 슬롯은 2번에 1번(12초) 패널티만
+Config.Dungeon.BossTimeLimit = 60    -- 버티기 던전 보스: 나타나고 이 시간(초) 안에 못 잡으면 실패 (튜토리얼 제외)
 
 -- 던전 세 갈래 나무 (룰렛 그대로): 같은 갈래가 또 나오면 겹치지 않고 다음 단계로 올라간다. 1~3단계 = 기존 특성(폭발 / 연쇄 / 관통),
 -- 3단계 뒤에 또 나오면 "최종 기술"이 열리고, 그 뒤로는 과충전(★, 최대 3) = 더 자주 / 더 크게. 이미 들어간 갈래는 더 잘 나온다 (한 판 안에 빌드가 완성되게)
@@ -656,12 +657,13 @@ Config.Boss = {
 	Size = 30,
 	MaxHealth = 2500,        -- 1인 기준 (파티 인원 배율 추가)
 	Speed = 6,
-	ShotDamage = 22,
+	ShotDamage = 28,         -- (22 -> 28: 던전 보스가 위협이 없다는 의견)
 	ShotInterval = 1.9,      -- 조준 3연발 간격 (2.2 -> 1.9)
 	ShotSpeed = 55,
 	RingInterval = 5,        -- 전방위 탄막 간격 (6 -> 5)
 	RingCount = 16,
-	EnrageRatio = 0.5,       -- 체력이 이 비율 이하가 되면 광폭화 (발사 간격 x0.6, 쫄병 소환)
+	EnrageRatio = 0.6,       -- 체력이 이 비율 이하가 되면 광폭화 (쫄병 소환 + 패턴 연달아 두 개) (0.5 -> 0.6)
+	PatternGap = 1.1, PatternGapEnraged = 0.6, -- 패턴 사이 쉬는 시간(초) (2.0 / 1.25 -> 1.1 / 0.6: 시간만 있으면 잡는 지루한 보스라는 의견)
 	MinionCount = 3,
 	MinionLevel = 5,
 	Gold = 500,

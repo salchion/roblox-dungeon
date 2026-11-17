@@ -900,6 +900,7 @@ return {
 		["Iron Body"] = "Corpo de ferro",
 		["Upgrade with gold"] = "Melhore com ouro",
 		["Warp to the camp of any zone you've reached. If you die in the field, you return to town."] = "Teleporte para o acampamento de qualquer zona alcançada. Se morrer no campo, você volta para a cidade.",
+		["⏰ Time's up! The boss escaped"] = "⏰ O tempo acabou! O chefe fugiu",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1066,12 +1067,12 @@ return {
 		{ "🎯 Boss hunter  ·  ✔ 🔫 Spell Tome / Shotgun (+{number1}%)", "🎯 Caçador de chefes · ✔ 🔫 Livro de feitiços / Espingarda (+{number1}%)" },
 		{ "kill → explosion, radius {number1}, hits up to 8 enemies", "abate → explosão, raio {number1}, atinge até 8 inimigos" },
 		{ "🌟 Paragon point +{number1}! {number2} unspent (press T → Paragon)", "🌟 Ponto de paragon +{number1}! {number2} não gastos (tecla T → Paragon)" },
+		{ "Defeat it before time runs out! Monsters left: {number1}", "Derrote-o antes que o tempo acabe! Monstros restantes: {number1}" },
 		{ "💰 +{number1} G ({number2} min of your idle income) · {number3} left today", "💰 +{number1} G ({number2} min da sua renda ociosa) · restam {number3} hoje" },
 		{ "every {number1}s shock shots at {number2} enemies, burst radius {number3}", "a cada {number1} s tiros de choque em {number2} inimigos, raio de explosão {number3}" },
 		{ "👑 Field Boss defeated! Tickets +{number1}, loot dropped", "👑 Chefe do campo derrotado! Tickets +{number1}, saque solto" },
 		{ "👑 Field Boss defeated! Tickets +{number1} loot dropped", "👑 Chefe de Campo derrotado! Bilhetes +{number1} de saque foram liberados" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3}", "🔒 O portão está fechado! Derrote monstros da zona {number1}: {number2}/{number3}" },
 		{ "▲ +{number1}% better than your current gear! (I → Bag)", "▲ +{number1}% melhor que seu equipamento! (I → Bolsa)" },
-		{ "Monster HP x{number1} · ATK x{number2}   |   Reward x{number3}   (Lv.{number4}~)", "HP do Monstro x{number1} · ATQ x{number2}   |   Recompensa x{number3}   (Lv.{number4}~)" },
 	},
 }

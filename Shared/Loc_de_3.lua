@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 {number1} schwächere Ausrüstungsteile automatisch aufgeräumt (Essenz +{number2}, {number3} G)" },
 		{ "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped", "🎯 Kopfgeld erledigt! +{number1} G · 🎫 +{number2} · Ausrüstung fallen gelassen" },
 		{ "🎫 {number1} tickets!\nPull gear at the gacha machine", "🎫 {number1} Tickets!\nAusrüstung an der Gacha-Maschine abholen" },
 		{ "🐾 Pet Lv.{number1}! New ability 💥 Power — Attack +{number2}%", "🐾 Haustier-Stufe {number1}! Neue Fähigkeit 💥 Kraft – Angriff +{number2}%" },
@@ -508,6 +509,7 @@ return {
 		{ "monster {number1}%", "Monster {number1}%" },
 		{ "🃏 Draft {number1}/{number2}", "🃏 Draft {number1}/{number2}" },
 		{ "max HP +{number1}%", "max. LP +{number1}%" },
+		{ "BOSS  ⏰ {number1}s", "BOSS  ⏰ {number1}s" },
 		{ "⚡ Power {number9}", "⚡ Kraft {number9}" },
 		{ "⚡ Power {number1}", "⚡ Kraft {number1}" },
 		{ "Remove #{number1}", "#{number1} entfernen" },

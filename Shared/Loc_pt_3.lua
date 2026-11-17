@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Monster HP x{number1} · ATK x{number2}   |   Reward x{number3}   (Lv.{number4}~)", "HP do Monstro x{number1} · ATQ x{number2}   |   Recompensa x{number3}   (Lv.{number4}~)" },
 		{ "🥇 {player1}\n⚡ {number1} Lv.{number2}\nSpell Tome · Mythic Era +{number3}", "🥇 {player1}\n⚡ {number1} Nível {number2}\nLivro de Feitiços · Era Mítica +{number3}" },
 		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "Tenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!" },
 		{ "every {number1} shots a blade bounces across {number2} enemies", "a cada {number1} tiros uma lâmina quica entre {number2} inimigos" },
@@ -516,6 +517,7 @@ return {
 		{ "monster {number1}%", "monstro {number1}%" },
 		{ "🃏 Draft {number1}/{number2}", "🃏 Draft {number1}/{number2}" },
 		{ "max HP +{number1}%", "vida máx. +{number1}%" },
+		{ "BOSS  ⏰ {number1}s", "CHEFE  ⏰ {number1}s" },
 		{ "⚡ Power {number9}", "⚡ Poder {number9}" },
 		{ "⚡ Power {number1}", "⚡ Poder {number1}" },
 		{ "Remove #{number1}", "Remover #{number1}" },

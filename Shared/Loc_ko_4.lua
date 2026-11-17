@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Your Luck right now: <b>{text1}</b>  (gear {text2}{text3})", "지금 내 행운: <b>{text1}</b>  (장비 {text2}{text3})" },
+		{ "Depth {number1} (total {text2}, Unique {text3}, keys {number4}): {text5}", "깊이 {number1} (합계 {text2}, 유니크 {text3}, 열쇠 {number4}): {text5}" },
+		{ "<font color='#{text1}'><b>{text2}</b></font> {text3}", "<font color='#{text1}'><b>{text2}</b></font> {text3}" },
 		{ "{text1} Set synergy activated! 『{text2}』 - {text3}", "{text1} 세트 시너지 발동! 『{text2}』 - {text3}" },
 		{ "🐾 Pet Lv.{number1}! New ability {text2} {text3} — {text4}", "🐾 펫 Lv.{number1}! 새 능력 {text2} {text3} — {text4}" },
 		{ "{text1} Dungeon mutation: {text2} — {text3}", "{text1} 던전 변이: {text2} — {text3}" },

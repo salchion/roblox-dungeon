@@ -1056,7 +1056,8 @@ function M.Update(ctx, part, data, dt, now)
 
 	local toTarget = flat(target.Position - part.Position)
 	local direction = toTarget.Magnitude > 0.1 and toTarget.Unit or Vector3.new(0, 0, -1)
-	local position = part.Position
+	local position = part.Position - (data.TiltOffset or Vector3.zero) -- (피격 반동 / 몸짓은 겉모양만: 지난 프레임에 얹은 만큼 빼고 계산한다. 예전에는 매 프레임 쌓여 연사로 맞는 몬스터가 뒤로 밀려 벽 너머까지 갔다)
+	data.TiltOffset = nil
 	-- 벽 때문에 플레이어가 안 보이면 곧장 가지 않고 길(방 사이 통로 / 벽의 틈)을 따라 돌아서 간다
 	if ctx.NextStep and ctx.LineOfSight and not sightClear(ctx, data, position, target.Position, now) then
 		local waypoint = ctx.NextStep(data, position, target.Position)
@@ -1101,6 +1102,7 @@ function M.Update(ctx, part, data, dt, now)
 	-- 돌진 준비 동작 중에는 제자리에서 대상을 노려본다
 	if data.WindupUntil and now < data.WindupUntil then
 		part.CFrame = slopeTilt(ctx, position, stats.Size) * CFrame.lookAt(position, position + direction) * bodyTilt(data, def, now, dt, false, part)
+		data.TiltOffset = part.Position - position
 		return
 	end
 
@@ -1194,6 +1196,7 @@ function M.Update(ctx, part, data, dt, now)
 		lookDirection = facing
 	end
 	part.CFrame = ((def.Move == "Hover") and CFrame.identity or slopeTilt(ctx, position, stats.Size)) * CFrame.lookAt(position, position + lookDirection) * bodyTilt(data, def, now, dt, moving, part)
+	data.TiltOffset = part.Position - position
 
 	-- 치유 사제: 일정 간격마다 주변 아군(보스 제외)의 체력을 채운다. 먼저 잡아야 하는 몬스터.
 	if def.Attack == "Heal" then

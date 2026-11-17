@@ -1198,6 +1198,7 @@ return {
 		["Iron Body"] = "강체",
 		["Upgrade with gold"] = "골드로 강화하면 켜짐",
 		["Warp to the camp of any zone you've reached. If you die in the field, you return to town."] = "도달한 구역의 캠프로 이동해요. 필드에서 쓰러지면 마을로 돌아가요.",
+		["⏰ Time's up! The boss escaped"] = "⏰ 시간 초과! 보스가 도망쳤어요",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1264,6 +1265,5 @@ return {
 		{ "💰 A Golden Goblin appeared in Zone {number1} · Meadow! Catch it for a jackpot! ({number2}s)", "💰 골든 고블린이 구역 {number1} · 초원에 나타났습니다! 잡으면 대박을 얻을 수 있습니다! ({number2}초)" },
 		{ "Allocate Stats\nSpend {number1} stat points (T key / Stats button)\n{number2} / {number3}   Reward: {number4} G", "스탯 할당\n{number1} 스탯 포인트 사용 (T 키 / 스탯 버튼)\n{number2} / {number3}   보상: {number4} G" },
 		{ "Skilled Warrior   Title 『Veteran』\nReach character level {number1}\n{number2} / {number3}   Reward: 🎫 {number4}", "숙련된 전사 타이틀 『베테랑』\n캐릭터 레벨 {number1} 달성\n{number2} / {number3} 보상: 🎫 {number4}" },
-		{ "Mythic Master   Title 『Mythic Master』\nObtain Mythic gear\n{number1} / {number2}   Reward: 🎫 {number3}", "신화 마스터 타이틀 『신화 마스터』\n신화 장비 획득\n{number1} / {number2} 보상: 🎫 {number3}" },
 	},
 }

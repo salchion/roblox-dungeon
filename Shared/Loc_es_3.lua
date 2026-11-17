@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🌪 Mob hunter  ·  ✔ 🔫 Railgun / Sniper Rifle (+{number1}%)", "🌪 Cazador de monstruos · ✔ 🔫 Arma de riel / Rifle de francotirador (+{number1}%)" },
 		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>\nON</font>", "<font color='#{number1}fffb{number2}'><b>Ataque automático</b>\nACTIVADO </font>" },
 		{ "🥈 LeeGoAll_TV\n⚡ {number1} Lv.{number2}\nSniper Rifle · Arcane Era +{number3}", "🥈 LeeGoAll_TV\n⚡ {number1} Nivel {number2}\nRifle de francotirador · Era Arcana +{number3}" },
 		{ "below 50% HP take {number1}% less · below 25% take {number2}% less", "bajo 50% de vida -{number1}% · bajo 25% -{number2}%" },
@@ -13,6 +14,7 @@ return {
 		{ "🎯 Boss hunter  ·  ✔ 🔫 Spell Tome / Shotgun (+{number1}%)", "🎯 Cazador de jefes · ✔ 🔫 Tomo de hechizos / Escopeta (+{number1}%)" },
 		{ "kill → explosion, radius {number1}, hits up to 8 enemies", "baja → explosión, radio {number1}, alcanza hasta 8 enemigos" },
 		{ "🌟 Paragon point +{number1}! {number2} unspent (press T → Paragon)", "🌟 ¡Punto de paragón +{number1}! {number2} sin gastar (tecla T → Paragón)" },
+		{ "Defeat it before time runs out! Monsters left: {number1}", "¡Derrótalo antes de que se acabe el tiempo! Monstruos restantes: {number1}" },
 		{ "💰 +{number1} G ({number2} min of your idle income) · {number3} left today", "💰 +{number1} G ({number2} min de tus ingresos inactivos) · quedan {number3} hoy" },
 		{ "every {number1}s shock shots at {number2} enemies, burst radius {number3}", "cada {number1} s disparos de choque a {number2} enemigos, radio de explosión {number3}" },
 		{ "👑 Field Boss defeated! Tickets +{number1}, loot dropped", "👑 ¡Jefe del campo derrotado! Boletos +{number1}, botín soltado" },
@@ -529,6 +531,7 @@ return {
 		{ "monster {number1}%", "monstruo {number1}%" },
 		{ "🃏 Draft {number1}/{number2}", "🃏 Draft {number1}/{number2}" },
 		{ "max HP +{number1}%", "vida máx. +{number1}%" },
+		{ "BOSS  ⏰ {number1}s", "JEFE  ⏰ {number1}s" },
 		{ "⚡ Power {number9}", "⚡ Poder {number9}" },
 		{ "⚡ Power {number1}", "⚡ Poder {number1}" },
 		{ "Remove #{number1}", "Eliminar #{number1}" },

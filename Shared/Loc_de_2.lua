@@ -879,6 +879,7 @@ return {
 		["Iron Body"] = "Eiserner Körper",
 		["Upgrade with gold"] = "Mit Gold aufwerten",
 		["Warp to the camp of any zone you've reached. If you die in the field, you return to town."] = "Teleportiere zum Lager jeder erreichten Zone. Wenn du im Feld stirbst, kehrst du in die Stadt zurück.",
+		["⏰ Time's up! The boss escaped"] = "⏰ Zeit abgelaufen! Der Boss ist entkommen",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1045,6 +1046,7 @@ return {
 		{ "🎯 Boss hunter  ·  ✔ 🔫 Spell Tome / Shotgun (+{number1}%)", "🎯 Bossjäger · ✔ 🔫 Zauberbuch / Schrotflinte (+{number1}%)" },
 		{ "kill → explosion, radius {number1}, hits up to 8 enemies", "Kill → Explosion, Radius {number1}, trifft bis zu 8 Gegner" },
 		{ "🌟 Paragon point +{number1}! {number2} unspent (press T → Paragon)", "🌟 Paragon-Punkt +{number1}! {number2} unverteilt (Taste T → Paragon)" },
+		{ "Defeat it before time runs out! Monsters left: {number1}", "Besiege ihn, bevor die Zeit abläuft! Übrige Monster: {number1}" },
 		{ "💰 +{number1} G ({number2} min of your idle income) · {number3} left today", "💰 +{number1} G ({number2} Min. deines Leerlauf-Einkommens) · heute noch {number3} übrig" },
 		{ "every {number1}s shock shots at {number2} enemies, burst radius {number3}", "alle {number1} s Schockschüsse auf {number2} Gegner, Explosionsradius {number3}" },
 		{ "👑 Field Boss defeated! Tickets +{number1}, loot dropped", "👑 Feld-Boss besiegt! Tickets +{number1}, Beute gedroppt" },
@@ -1058,6 +1060,5 @@ return {
 		{ "💰 Golden Goblin defeated! +{number1} G, 3 loot drops!", "💰 Goldener Goblin besiegt! +{number1} G, 3 Beutestücke!" },
 		{ "+1 set-effect option: Legendary {number1}% / Mythic {number2}%", "+1-Set-Effekt-Option: Legendär {number1}% / Mythisch {number2}%" },
 		{ "Enemies swarm in more often\nGold +{number1}% instead", "Feinde kommen häufiger in Schwärmen\nGold +{number1}% stattdessen" },
-		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 {number1} schwächere Ausrüstungsteile automatisch aufgeräumt (Essenz +{number2}, {number3} G)" },
 	},
 }

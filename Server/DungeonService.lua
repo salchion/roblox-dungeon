@@ -1426,13 +1426,13 @@ local function stepRun(run, dt)
 					data.LastPattern = name
 					task.spawn(function()
 						pcall(BOSS_PATTERNS[name], run, part, data)
-						if data.Awakened and bossAlive(run, part, data) then -- 보스러쉬 각성 보스: 같은 패턴을 연달아 한 번 더
+						if (data.Awakened or (data.Enraged and not run.RiftMode)) and bossAlive(run, part, data) then -- 각성(보스러쉬) / 광폭화(던전): 패턴을 연달아 한 번 더
 							task.wait(0.4)
 							pcall(BOSS_PATTERNS[pickBossPattern(run, data)], run, part, data)
 						end
 						data.Casting = false
 						if run.RiftMode then run.RushCasting = math.max(0, (run.RushCasting or 1) - 1) end
-						data.NextPattern = os.clock() + (data.Enraged and 1.25 or 2.0) -- (패턴 사이 2.6 -> 2.0초: 보스가 느리다는 의견. 경고 시간은 그대로)
+						data.NextPattern = os.clock() + (data.Enraged and Config.Boss.PatternGapEnraged or Config.Boss.PatternGap)
 					end)
 				end
 			end
@@ -3267,6 +3267,9 @@ local function surviveLoop(run)
 	end
 	startAugLoop(run)
 	if not runDraft(run) then return end
+	for m, deck in pairs(run.Deck or {}) do -- 드래프트 덱은 한 번에 켠다
+		if m.Parent then for _, b in ipairs(deck) do applyBuff(run, m, b) end end
+	end
 	run.PhaseEnd = os.clock() + D.StartCountdown
 	notifyAll(run, "🛡 Defeat the incoming monsters! If too many pile up you'll be overwhelmed and fail. Hold out to the end and the boss appears")
 	if not waitFor(run, function() return os.clock() >= run.PhaseEnd end) then return end
@@ -3352,7 +3355,18 @@ local function surviveLoop(run)
 			end
 			run.ChoiceDeadline = nil
 			run.BonusIndex = bonusCount
-			rollBonus(run, bonusCount >= 2 and 0.6 or 0.3, bonusCount % 3 == 0) -- 3번에 한 번은 레어 확정
+			if not run.Deck then
+				rollBonus(run, bonusCount >= 2 and 0.6 or 0.3, bonusCount % 3 == 0) -- 3번에 한 번은 레어 확정
+			elseif bonusCount % 2 == 0 then -- 드래프트 판: 슬롯은 패널티만, 12초에 한 번
+				run.NextBonusAt, run.BonusSpan = nextBonus + D.BonusInterval, D.BonusInterval * 2
+				local pen = pickWeighted(Config.RunPenalties)
+				if pen then
+					applyPenalty(run, pen)
+					for _, m in ipairs(run.Members) do Remotes.Dungeon:FireClient(m, "Roll", { PenaltyOnly = true, Penalty = { Icon = pen.Icon, Name = pen.Name, Desc = pen.Desc, Gold = math.floor((pen.Gold or 0) * 100) } }) end
+				end
+			else
+				run.BonusSpan = D.BonusInterval * 2
+			end
 			if run.ChoiceDeadline and run.ChoiceDeadline > nextBonus then -- (고르는 동안 다음 보너스를 마감 시각까지 민다: 카운트다운은 계속 흐른다)
 				nextBonus = run.ChoiceDeadline
 				run.NextBonusAt, run.BonusSpan = nextBonus, nextBonus - now
@@ -3372,7 +3386,15 @@ local function surviveLoop(run)
 	if spots and #spots > 0 then run.BossPos = spots[math.random(#spots)] end
 	notifyAll(run, "⚠ " .. run.BossName .. " has appeared! Dodge its attacks and take it down!")
 	spawnBoss(run)
-	if not waitFor(run, function() return run.BossDead == true end) then return end
+	local limitAt = D.BossTimeLimit and not run.Tutorial and os.clock() + D.BossTimeLimit or nil
+	run.PhaseEnd = limitAt -- (화면: 보스 남은 시간)
+	if not waitFor(run, function() return run.BossDead == true or (limitAt and os.clock() >= limitAt) end) then return end
+	run.PhaseEnd = nil
+	if not run.BossDead then
+		notifyAll(run, "⏰ Time's up! The boss escaped")
+		finish(run, false)
+		return
+	end
 	finish(run, true)
 end
 

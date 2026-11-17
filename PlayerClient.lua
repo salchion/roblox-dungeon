@@ -787,6 +787,11 @@ do
 		if action ~= "Roll" then return end
 		token += 1
 		local mine = token
+		local penOnly = data.PenaltyOnly == true -- (드래프트 판: 강화는 덱으로 이미 받았고 슬롯은 패널티만)
+		card.Frame.Visible = not penOnly
+		popup.Size = UDim2.new(0, penOnly and 266 or 520, 0, 80)
+		penCard.Frame.Size = UDim2.new(penOnly and 1 or 0.5, penOnly and -12 or -9, 1, -12)
+		penCard.Frame.Position = UDim2.new(penOnly and 0 or 0.5, penOnly and 6 or 3, 0, 6)
 		popup.Visible = true
 		popScale.Scale = 0.6
 		TweenService:Create(popScale, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
@@ -833,7 +838,7 @@ do
 				paint(card, "💤", "No buff (already maxed)", setLine, color)
 			end
 			if setInfo and setInfo.Icon then card.Icon.Text = buff and buff.Icon or setInfo.Icon end
-			enhSound("Enh_Success")
+			if not penOnly then enhSound("Enh_Success") end
 			if data.Penalty then
 				paint(penCard, data.Penalty.Icon, "⚠ " .. data.Penalty.Name, string.format("%s\nGold +%d%% instead", data.Penalty.Desc, data.Penalty.Gold), Color3.fromRGB(255, 130, 120))
 				task.delay(0.12, function() enhSound("Enh_Fail") end)
@@ -1396,8 +1401,8 @@ local function refreshBanner()
 		bannerTitle.Text = state.StageText or "Event Room"
 		bannerSub.Text = "A special room!"
 	elseif state.Phase == "Boss" then
-		bannerTitle.Text = "BOSS"
-		bannerSub.Text = string.format("Monsters left: %d", state.MonstersLeft)
+		bannerTitle.Text = (state.TimeLeft or 0) > 0 and string.format("BOSS  ⏰ %ds", state.TimeLeft) or "BOSS" -- (보스 제한 시간: Config.Dungeon.BossTimeLimit)
+		bannerSub.Text = (state.TimeLeft or 0) > 0 and string.format("Defeat it before time runs out! Monsters left: %d", state.MonstersLeft) or string.format("Monsters left: %d", state.MonstersLeft)
 	end
 end
 

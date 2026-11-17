@@ -2959,5 +2959,8 @@
 "MISS!",
 "Iron Body",
 "Upgrade with gold",
-"Warp to the camp of any zone you've reached. If you die in the field, you return to town."
+"Warp to the camp of any zone you've reached. If you die in the field, you return to town.",
+"BOSS  ⏰ {number1}s",
+"Defeat it before time runs out! Monsters left: {number1}",
+"⏰ Time's up! The boss escaped"
 ]

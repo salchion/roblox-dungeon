@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Mythic Master   Title 『Mythic Master』\nObtain Mythic gear\n{number1} / {number2}   Reward: 🎫 {number3}", "신화 마스터 타이틀 『신화 마스터』\n신화 장비 획득\n{number1} / {number2} 보상: 🎫 {number3}" },
 		{ "Dummy Slayer   Title 『Dummy Slayer』\nHit the dummy {number1} times\n{number2} / {number3}   Reward: {number4} G", "더미 슬레이어 타이틀 『더미 슬레이어』\n더미를 {number1}번 때리세요\n{number2} / {number3}   보상: {number4} G" },
 		{ "A golden FEVER portal opened where the Lord fell! Step in within {number1} seconds", "군주가 쓰러진 자리에 황금 피버 포탈이 열렸어요! {number1}초 안에 들어가세요" },
 		{ "Points left {number1}  /  total {number2}  (Level {number3})  ·  +1 point every {number4} levels, next at Lv.{number5}", "남은 포인트 {number1}  /  전체 {number2}  (레벨 {number3})  ·  {number4}레벨마다 +1, 다음은 Lv.{number5}" },
@@ -112,6 +113,7 @@ return {
 		{ "🎫 Tickets for the boss: <b>{number1}</b>  ·  Gold / XP x{number2}", "🎫 보스 티켓: <b>{number1}</b>  ·  골드 / 경험치 x{number2}" },
 		{ "kill → explosion, radius {number1}, hits up to 8 enemies", "처치 → 폭발, 반경 {number1}, 최대 8명 타격" },
 		{ "🌟 Paragon point +{number1}! {number2} unspent (press T → Paragon)", "🌟 초월 포인트 +{number1}! 미사용 {number2} (T → 초월)" },
+		{ "Defeat it before time runs out! Monsters left: {number1}", "시간 안에 잡으세요! 남은 몬스터: {number1}" },
 		{ "💰 +{number1} G ({number2} min of your idle income) · {number3} left today", "💰 +{number1} G (방치 수입 {number2}분 분량) · 오늘 {number3}회 남음" },
 		{ "every {number1}s shock shots at {number2} enemies, burst radius {number3}", "{number1}초마다 충격탄이 {number2}명에게 날아가 반경 {number3}로 터져요" },
 		{ "👑 Field Boss defeated! Tickets +{number1}, loot dropped", "👑 필드 보스 처치! 티켓 +{number1}, 전리품 드랍" },
@@ -645,6 +647,7 @@ return {
 		{ "monster {number1}%", "몬스터 {number1}%" },
 		{ "🃏 Draft {number1}/{number2}", "🃏 드래프트 {number1}/{number2}" },
 		{ "max HP +{number1}%", "최대 체력 +{number1}%" },
+		{ "BOSS  ⏰ {number1}s", "보스  ⏰ {number1}초" },
 		{ "⚡ Power {number9}", "⚡ 파워 {number9}" },
 		{ "⚡ Power {number1}", "⚡ 파워 {number1}" },
 		{ "Remove #{number1}", "#{number1} 제거" },
@@ -1043,8 +1046,5 @@ return {
 		{ "👑 Weekly Final Lord reward: Mythic {text1} · {text2} Set · ★ {text3}!", "👑 주간 최후의 군주 보상: 신화 {text1} · {text2} 세트 · ★ {text3}!" },
 		{ "{text1} <b>{text2} Set</b>   {text3} {number4}/3 <font size='9'>worn</font>", "{text1} <b>{text2} 세트</b>   {text3} {number4}/3 <font size='9'>착용</font>" },
 		{ "{text1} Trial effect for this dungeon: [{text2}] (Lv.3) — {text3}", "{text1} 이번 던전 체험 효과: [{text2}] (Lv.3) — {text3}" },
-		{ "Your Luck right now: <b>{text1}</b>  (gear {text2}{text3})", "지금 내 행운: <b>{text1}</b>  (장비 {text2}{text3})" },
-		{ "Depth {number1} (total {text2}, Unique {text3}, keys {number4}): {text5}", "깊이 {number1} (합계 {text2}, 유니크 {text3}, 열쇠 {number4}): {text5}" },
-		{ "<font color='#{text1}'><b>{text2}</b></font> {text3}", "<font color='#{text1}'><b>{text2}</b></font> {text3}" },
 	},
 }

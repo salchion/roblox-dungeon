@@ -927,3 +927,6 @@
 2958¦強体¦Eiserner Körper¦Corps de fer¦Cuerpo de hierro¦Corpo de ferro¦强体¦강체
 2959¦ゴールドで強化するとオン¦Mit Gold aufwerten¦Améliore avec de l'or¦Mejora con oro¦Melhore com ouro¦用金币强化后开启¦골드로 강화하면 켜짐
 2960¦到達したゾーンのキャンプへワープ。フィールドで倒れると町に戻ります。¦Teleportiere zum Lager jeder erreichten Zone. Wenn du im Feld stirbst, kehrst du in die Stadt zurück.¦Téléporte-toi au camp de toute zone atteinte. Si tu meurs sur le terrain, tu retournes en ville.¦Viaja al campamento de cualquier zona alcanzada. Si mueres en el campo, vuelves al pueblo.¦Teleporte para o acampamento de qualquer zona alcançada. Se morrer no campo, você volta para a cidade.¦传送到已到达区域的营地。在野外倒下会回到城镇。¦도달한 구역의 캠프로 이동해요. 필드에서 쓰러지면 마을로 돌아가요.
+2961¦ボス  ⏰ {number1}秒¦BOSS  ⏰ {number1}s¦BOSS  ⏰ {number1}s¦JEFE  ⏰ {number1}s¦CHEFE  ⏰ {number1}s¦首领  ⏰ {number1}秒¦보스  ⏰ {number1}초
+2962¦時間内に倒そう！ 残りモンスター: {number1}¦Besiege ihn, bevor die Zeit abläuft! Übrige Monster: {number1}¦Bats-le avant la fin du temps ! Monstres restants : {number1}¦¡Derrótalo antes de que se acabe el tiempo! Monstruos restantes: {number1}¦Derrote-o antes que o tempo acabe! Monstros restantes: {number1}¦在时间结束前击败它！剩余怪物：{number1}¦시간 안에 잡으세요! 남은 몬스터: {number1}
+2963¦⏰ 時間切れ！ボスが逃げた¦⏰ Zeit abgelaufen! Der Boss ist entkommen¦⏰ Temps écoulé ! Le boss s'est enfui¦⏰ ¡Se acabó el tiempo! El jefe escapó¦⏰ O tempo acabou! O chefe fugiu¦⏰ 时间到！首领逃走了¦⏰ 시간 초과! 보스가 도망쳤어요

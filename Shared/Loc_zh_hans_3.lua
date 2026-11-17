@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 Bought +1 stat point! ({number1} / {number2})", "💰 购买了 +1 属性点!({number1} / {number2})" },
+		{ "💰 {number1} G Slot Upgrade ({number2}% success)", "💰 {number1} 金币 栏位强化(成功率 {number2}%)" },
 		{ "Reach level {number1} to break through", "达到 {number1} 级即可突破" },
 		{ "{number1}% → up to {number2}% (deeper = higher)", "{number1}% → 最高{number2}%（越深越高）" },
 		{ "◆ Skill Cooldown Reduction +{number1}%", "◆ 技能冷却缩减 +{number1}%" },
@@ -379,6 +381,7 @@ return {
 		{ "monster {number1}%", "怪物 {number1}%" },
 		{ "🃏 Draft {number1}/{number2}", "🃏 选卡 {number1}/{number2}" },
 		{ "max HP +{number1}%", "最大生命 +{number1}%" },
+		{ "BOSS  ⏰ {number1}s", "首领  ⏰ {number1}秒" },
 		{ "⚡ Power {number9}", "⚡ 能量 {number9}" },
 		{ "⚡ Power {number1}", "⚡ 能量 {number1}" },
 		{ "Remove #{number1}", "移除#{number1}" },

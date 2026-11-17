@@ -811,6 +811,7 @@ return {
 		["Iron Body"] = "强体",
 		["Upgrade with gold"] = "用金币强化后开启",
 		["Warp to the camp of any zone you've reached. If you die in the field, you return to town."] = "传送到已到达区域的营地。在野外倒下会回到城镇。",
+		["⏰ Time's up! The boss escaped"] = "⏰ 时间到！首领逃走了",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -977,6 +978,7 @@ return {
 		{ "🎯 Boss hunter  ·  ✔ 🔫 Spell Tome / Shotgun (+{number1}%)", "🎯 魔王猎手 · ✔ 🔫 魔法书/霰弹枪（+{number1}%）" },
 		{ "kill → explosion, radius {number1}, hits up to 8 enemies", "击杀 → 爆炸,范围 {number1},最多命中 8 个敌人" },
 		{ "🌟 Paragon point +{number1}! {number2} unspent (press T → Paragon)", "🌟 巅峰点数 +{number1}!还有 {number2} 点未使用(按 T → 巅峰)" },
+		{ "Defeat it before time runs out! Monsters left: {number1}", "在时间结束前击败它！剩余怪物：{number1}" },
 		{ "💰 +{number1} G ({number2} min of your idle income) · {number3} left today", "💰 +{number1} 金币(相当于 {number2} 分钟挂机收益)· 今日剩余 {number3} 次" },
 		{ "every {number1}s shock shots at {number2} enemies, burst radius {number3}", "每 {number1} 秒向 {number2} 个敌人发射电击弹,爆炸范围 {number3}" },
 		{ "👑 Field Boss defeated! Tickets +{number1}, loot dropped", "👑 野外首领已击败!门票 +{number1},战利品已掉落" },
@@ -1120,7 +1122,5 @@ return {
 		{ "(Idle income bonus +{number1}% active)", "(挂机收益加成 +{number1}% 已生效)" },
 		{ "Not enough Essence. ({number1} needed)", "精华不足。(需要 {number1})" },
 		{ "Not enough tickets. ({number1} needed)", "门票不足。(需要 {number1})" },
-		{ "💰 Bought +1 stat point! ({number1} / {number2})", "💰 购买了 +1 属性点!({number1} / {number2})" },
-		{ "💰 {number1} G Slot Upgrade ({number2}% success)", "💰 {number1} 金币 栏位强化(成功率 {number2}%)" },
 	},
 }
