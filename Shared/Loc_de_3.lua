@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped", "🎯 Kopfgeld erledigt! +{number1} G · 🎫 +{number2} · Ausrüstung fallen gelassen" },
 		{ "🎫 {number1} tickets!\nPull gear at the gacha machine", "🎫 {number1} Tickets!\nAusrüstung an der Gacha-Maschine abholen" },
 		{ "🐾 Pet Lv.{number1}! New ability 💥 Power — Attack +{number2}%", "🐾 Haustier-Stufe {number1}! Neue Fähigkeit 💥 Kraft – Angriff +{number2}%" },
 		{ "Sniper Rifle  ·  next weapon: Shotgun at +{number1}", "Scharfschützengewehr · nächste Waffe: Schrotflinte bei +{number1}" },

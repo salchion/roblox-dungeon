@@ -928,6 +928,7 @@ return {
 		["MISS!"] = "¡FALLO!",
 		["Iron Body"] = "Cuerpo de hierro",
 		["Upgrade with gold"] = "Mejora con oro",
+		["Warp to the camp of any zone you've reached. If you die in the field, you return to town."] = "Viaja al campamento de cualquier zona alcanzada. Si mueres en el campo, vuelves al pueblo.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1084,6 +1085,5 @@ return {
 		{ "💢 Boss #{number1} is AWAKENED — it attacks twice in a row!", "💢 ¡El jefe #{number1} ha DESPERTADO: ataca dos veces seguidas!" },
 		{ "one hit can take at most {number1}% of your max HP (was {number2}%)", "un golpe quita como máximo {number1}% de tu vida máx. (antes {number2}%)" },
 		{ "🌪 Mob hunter  ·  ✔ 🔫 Railgun / Sniper Rifle (+{number1}%)", "🌪 Cazador de monstruos · ✔ 🔫 Arma de riel / Rifle de francotirador (+{number1}%)" },
-		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>\nON</font>", "<font color='#{number1}fffb{number2}'><b>Ataque automático</b>\nACTIVADO </font>" },
 	},
 }

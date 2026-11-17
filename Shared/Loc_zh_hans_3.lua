@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Reach level {number1} to break through", "达到 {number1} 级即可突破" },
+		{ "{number1}% → up to {number2}% (deeper = higher)", "{number1}% → 最高{number2}%（越深越高）" },
 		{ "◆ Skill Cooldown Reduction +{number1}%", "◆ 技能冷却缩减 +{number1}%" },
 		{ "{number1}  <font color='#{number2}c{number3}b{number4}'>{number5}%</font>", "{number1} <font color='#{number2}c{number3}b{number4}'>{number5}%</font>" },
 		{ "⚔ Sniper Rifle · Rusty Era +{number10}", "⚔ 狙击步枪 · 生锈时代 +{number10}" },

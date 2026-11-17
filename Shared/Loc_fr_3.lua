@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Era {number1}  ·  Your weapon look and bullet color changed!", "Ère {number1}  ·  L'apparence de votre arme et la couleur des balles ont changé !" },
 		{ "🗿 Colossus defeated! Gear + 🎫 +{number1} + {number2} G (time bonus x{number3})", "🗿 Colosse vaincu ! Équipement + 🎫 +{number1} + {number2} or (bonus de temps x{number3})" },
 		{ "Depth {number1} sweep: gold, tickets and boss chest received", "Profondeur {number1} balayée : or, tickets et coffre du boss reçus" },
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "Ton niveau est trop bas. (Ce donjon requiert Nv.{number1}+)" },

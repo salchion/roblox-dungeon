@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>\nON</font>", "<font color='#{number1}fffb{number2}'><b>Ataque automático</b>\nACTIVADO </font>" },
 		{ "🥈 LeeGoAll_TV\n⚡ {number1} Lv.{number2}\nSniper Rifle · Arcane Era +{number3}", "🥈 LeeGoAll_TV\n⚡ {number1} Nivel {number2}\nRifle de francotirador · Era Arcana +{number3}" },
 		{ "below 50% HP take {number1}% less · below 25% take {number2}% less", "bajo 50% de vida -{number1}% · bajo 25% -{number2}%" },
 		{ "Upgrade all the way to the last weapon (level {number1})", "Mejora hasta la última arma (nivel {number1})" },

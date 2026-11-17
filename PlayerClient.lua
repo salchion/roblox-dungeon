@@ -2990,7 +2990,7 @@ makeLabel({
 }, warpPanel)
 makeLabel({
 	Size = UDim2.new(1, -28, 0, 36), Position = UDim2.new(0, 14, 0, 44),
-	Text = "Warp to the camp of any zone you've reached. If you die in the field, you respawn at the nearest camp.",
+	Text = Config.Field.CampRespawn and "Warp to the camp of any zone you've reached. If you die in the field, you respawn at the nearest camp." or "Warp to the camp of any zone you've reached. If you die in the field, you return to town.",
 	TextSize = 11, TextColor3 = Color3.fromRGB(190, 190, 210),
 }, warpPanel)
 

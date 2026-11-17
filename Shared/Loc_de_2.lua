@@ -878,6 +878,7 @@ return {
 		["MISS!"] = "VERFEHLT!",
 		["Iron Body"] = "Eiserner Körper",
 		["Upgrade with gold"] = "Mit Gold aufwerten",
+		["Warp to the camp of any zone you've reached. If you die in the field, you return to town."] = "Teleportiere zum Lager jeder erreichten Zone. Wenn du im Feld stirbst, kehrst du in die Stadt zurück.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1058,6 +1059,5 @@ return {
 		{ "+1 set-effect option: Legendary {number1}% / Mythic {number2}%", "+1-Set-Effekt-Option: Legendär {number1}% / Mythisch {number2}%" },
 		{ "Enemies swarm in more often\nGold +{number1}% instead", "Feinde kommen häufiger in Schwärmen\nGold +{number1}% stattdessen" },
 		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 {number1} schwächere Ausrüstungsteile automatisch aufgeräumt (Essenz +{number2}, {number3} G)" },
-		{ "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped", "🎯 Kopfgeld erledigt! +{number1} G · 🎫 +{number2} · Ausrüstung fallen gelassen" },
 	},
 }

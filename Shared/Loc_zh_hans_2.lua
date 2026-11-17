@@ -810,6 +810,7 @@ return {
 		["MISS!"] = "闪避！",
 		["Iron Body"] = "强体",
 		["Upgrade with gold"] = "用金币强化后开启",
+		["Warp to the camp of any zone you've reached. If you die in the field, you return to town."] = "传送到已到达区域的营地。在野外倒下会回到城镇。",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1121,7 +1122,5 @@ return {
 		{ "Not enough tickets. ({number1} needed)", "门票不足。(需要 {number1})" },
 		{ "💰 Bought +1 stat point! ({number1} / {number2})", "💰 购买了 +1 属性点!({number1} / {number2})" },
 		{ "💰 {number1} G Slot Upgrade ({number2}% success)", "💰 {number1} 金币 栏位强化(成功率 {number2}%)" },
-		{ "Reach level {number1} to break through", "达到 {number1} 级即可突破" },
-		{ "{number1}% → up to {number2}% (deeper = higher)", "{number1}% → 最高{number2}%（越深越高）" },
 	},
 }

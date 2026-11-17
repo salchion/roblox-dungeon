@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🥇 {player1}\n⚡ {number1} Lv.{number2}\nSpell Tome · Mythic Era +{number3}", "🥇 {player1}\n⚡ {number1} Nível {number2}\nLivro de Feitiços · Era Mítica +{number3}" },
 		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "Tenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!" },
 		{ "every {number1} shots a blade bounces across {number2} enemies", "a cada {number1} tiros uma lâmina quica entre {number2} inimigos" },
 		{ "💰 Golden Goblin defeated! +{number1} G, 3 loot drops!", "💰 Goblin dourado derrotado! +{number1} G, 3 drops de saque!" },

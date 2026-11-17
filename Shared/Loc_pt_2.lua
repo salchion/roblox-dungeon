@@ -899,6 +899,7 @@ return {
 		["MISS!"] = "ERROU!",
 		["Iron Body"] = "Corpo de ferro",
 		["Upgrade with gold"] = "Melhore com ouro",
+		["Warp to the camp of any zone you've reached. If you die in the field, you return to town."] = "Teleporte para o acampamento de qualquer zona alcançada. Se morrer no campo, você volta para a cidade.",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1072,6 +1073,5 @@ return {
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3}", "🔒 O portão está fechado! Derrote monstros da zona {number1}: {number2}/{number3}" },
 		{ "▲ +{number1}% better than your current gear! (I → Bag)", "▲ +{number1}% melhor que seu equipamento! (I → Bolsa)" },
 		{ "Monster HP x{number1} · ATK x{number2}   |   Reward x{number3}   (Lv.{number4}~)", "HP do Monstro x{number1} · ATQ x{number2}   |   Recompensa x{number3}   (Lv.{number4}~)" },
-		{ "🥇 {player1}\n⚡ {number1} Lv.{number2}\nSpell Tome · Mythic Era +{number3}", "🥇 {player1}\n⚡ {number1} Nível {number2}\nLivro de Feitiços · Era Mítica +{number3}" },
 	},
 }

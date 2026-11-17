@@ -926,3 +926,4 @@
 2957¦MISS!¦VERFEHLT!¦RATÉ !¦¡FALLO!¦ERROU!¦闪避！¦회피!
 2958¦強体¦Eiserner Körper¦Corps de fer¦Cuerpo de hierro¦Corpo de ferro¦强体¦강체
 2959¦ゴールドで強化するとオン¦Mit Gold aufwerten¦Améliore avec de l'or¦Mejora con oro¦Melhore com ouro¦用金币强化后开启¦골드로 강화하면 켜짐
+2960¦到達したゾーンのキャンプへワープ。フィールドで倒れると町に戻ります。¦Teleportiere zum Lager jeder erreichten Zone. Wenn du im Feld stirbst, kehrst du in die Stadt zurück.¦Téléporte-toi au camp de toute zone atteinte. Si tu meurs sur le terrain, tu retournes en ville.¦Viaja al campamento de cualquier zona alcanzada. Si mueres en el campo, vuelves al pueblo.¦Teleporte para o acampamento de qualquer zona alcançada. Se morrer no campo, você volta para a cidade.¦传送到已到达区域的营地。在野外倒下会回到城镇。¦도달한 구역의 캠프로 이동해요. 필드에서 쓰러지면 마을로 돌아가요.
