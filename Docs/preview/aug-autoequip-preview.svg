@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1300" viewBox="0 0 1200 1300"><rect width="1200" height="1300" fill="#14112B"/>
+<text x="40" y="60" font-family="Noto Sans CJK KR, sans-serif" font-size="30" font-weight="bold" fill="#FFFFFF" text-anchor="start">세트 효과 창(Y): 이 세팅에 맞게 장비 자동 장착 (시안 · 코드 미반영)</text>
+<text x="40" y="94" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="normal" fill="#A9A2D0" text-anchor="start">칸에 끼운 효과(지금 세팅)의 단계 합이 가장 높아지도록 6부위 장비를 골라 끼운다 · 세트 부위(최대 3) + '+1' 옵션(최대 3)</text>
+<rect x="40" y="120" width="1120" height="560" rx="22" fill="#151330" stroke="#D6AA5A" stroke-width="3"/>
+<text x="70" y="170" font-family="Noto Sans CJK KR, sans-serif" font-size="26" font-weight="bold" fill="#FFFFFF" text-anchor="start">세트 효과</text>
+<rect x="760" y="140" width="150" height="44" rx="12" fill="#B07A2A"/>
+<text x="835" y="169" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">사냥용</text>
+<rect x="925" y="140" width="150" height="44" rx="12" fill="#2C2850" stroke="#3A3172"/>
+<text x="1000" y="169" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#C9C2E6" text-anchor="middle">보스용</text>
+<rect x="70" y="190" width="58" height="24" rx="12" fill="#30805C"/>
+<text x="99" y="207" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">기존</text>
+<text x="70" y="250" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#C9C2E6" text-anchor="start">지금 세팅(사냥용)에 끼운 효과</text>
+<rect x="70" y="265" width="245" height="90" rx="14" fill="#1E2A30" stroke="#6EFFBE" stroke-width="3"/>
+<circle cx="110" cy="310" r="24" fill="#262052" stroke="#6EFFBE" stroke-width="3"/>
+<text x="110" y="318" font-family="Noto Sans CJK KR, sans-serif" font-size="20" font-weight="bold" fill="#6EFFBE" text-anchor="middle">1</text>
+<text x="148" y="302" font-family="Noto Sans CJK KR, sans-serif" font-size="19" font-weight="bold" fill="#FFFFFF" text-anchor="start">충격파 샷</text>
+<text x="148" y="330" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="normal" fill="#6EFFBE" text-anchor="start">1구역 · Lv.3</text>
+<rect x="335" y="265" width="245" height="90" rx="14" fill="#1E2A30" stroke="#FFD24A" stroke-width="3"/>
+<circle cx="375" cy="310" r="24" fill="#262052" stroke="#FFD24A" stroke-width="3"/>
+<text x="375" y="318" font-family="Noto Sans CJK KR, sans-serif" font-size="20" font-weight="bold" fill="#FFD24A" text-anchor="middle">2</text>
+<text x="413" y="302" font-family="Noto Sans CJK KR, sans-serif" font-size="19" font-weight="bold" fill="#FFFFFF" text-anchor="start">번개 공격</text>
+<text x="413" y="330" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="normal" fill="#FFD24A" text-anchor="start">3구역 · Lv.2</text>
+<rect x="600" y="265" width="245" height="90" rx="14" fill="#1E2A30" stroke="#78B4FF" stroke-width="3"/>
+<circle cx="640" cy="310" r="24" fill="#262052" stroke="#78B4FF" stroke-width="3"/>
+<text x="640" y="318" font-family="Noto Sans CJK KR, sans-serif" font-size="20" font-weight="bold" fill="#78B4FF" text-anchor="middle">3</text>
+<text x="678" y="302" font-family="Noto Sans CJK KR, sans-serif" font-size="19" font-weight="bold" fill="#FFFFFF" text-anchor="start">방벽</text>
+<text x="678" y="330" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="normal" fill="#78B4FF" text-anchor="start">방어 · Lv.0</text>
+<rect x="865" y="265" width="245" height="90" rx="14" fill="none" stroke="#3A3172" stroke-width="2" stroke-dasharray="6 5"/>
+<text x="987" y="316" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="normal" fill="#6E68A0" text-anchor="middle">빈 칸</text>
+<rect x="70" y="385" width="1060" height="96" rx="18" fill="#1F5A3A" stroke="#5BD98A" stroke-width="3"/>
+<rect x="80" y="373" width="58" height="24" rx="12" fill="#E8742A"/>
+<text x="109" y="390" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">신규</text>
+<text x="600" y="428" font-family="Noto Sans CJK KR, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF" text-anchor="middle">이 세팅에 맞게 장비 끼우기</text>
+<text x="600" y="462" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="normal" fill="#CDEFD8" text-anchor="middle">가방에서 칸에 끼운 효과 단계가 가장 높아지는 조합을 찾아 6부위를 바꿔 낀다 (단계가 같으면 더 센 장비)</text>
+<rect x="70" y="505" width="1060" height="155" rx="16" fill="#100C22" stroke="#5BD98A" stroke-width="2"/>
+<rect x="80" y="493" width="58" height="24" rx="12" fill="#E8742A"/>
+<text x="109" y="510" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">신규</text>
+<text x="100" y="545" font-family="Noto Sans CJK KR, sans-serif" font-size="22" font-weight="bold" fill="#5BD98A" text-anchor="start">장착 완료 · 장비 4부위 교체</text>
+<text x="100" y="580" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="bold" fill="#6EFFBE" text-anchor="start">충격파 샷</text>
+<text x="260" y="580" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="bold" fill="#FFFFFF" text-anchor="start">Lv.3 -> 6</text>
+<text x="400" y="580" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="normal" fill="#A9A2D0" text-anchor="start">세트 3부위 + '+1' 옵션 0</text>
+<text x="100" y="608" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="bold" fill="#FFD24A" text-anchor="start">번개 공격</text>
+<text x="260" y="608" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="bold" fill="#FFFFFF" text-anchor="start">Lv.2 -> 4</text>
+<text x="400" y="608" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="normal" fill="#A9A2D0" text-anchor="start">세트 2부위 (3부위째는 충격파와 겹쳐 양보)</text>
+<text x="100" y="636" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="bold" fill="#78B4FF" text-anchor="start">방벽</text>
+<text x="260" y="636" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="bold" fill="#FFFFFF" text-anchor="start">Lv.0 -> 1</text>
+<text x="400" y="636" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="normal" fill="#A9A2D0" text-anchor="start">'+1 방벽' 옵션 반지 1개</text>
+<text x="1110" y="545" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="bold" fill="#F2C94C" text-anchor="end">전투력 8,658 -> 8,421</text>
+<text x="1110" y="572" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#A9A2D0" text-anchor="end">(효과 단계 우선이라 조금 낮아질 수 있음)</text>
+<rect x="40" y="710" width="1120" height="560" rx="18" fill="#1E1A40" stroke="#100C22" stroke-width="3"/>
+<rect x="64" y="743" width="120" height="30" rx="8" fill="#6248AC"/>
+<text x="124" y="764" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">대상</text>
+<text x="200" y="765" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="normal" fill="#F2EEFF" text-anchor="start">지금 세팅(사냥용 / 보스용 중 고른 쪽)의 칸에 끼운 효과만. 빈 칸 / 안 끼운 효과는 계산에 넣지 않는다</text>
+<rect x="64" y="803" width="120" height="30" rx="8" fill="#6248AC"/>
+<text x="124" y="824" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">점수</text>
+<text x="200" y="825" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="normal" fill="#F2EEFF" text-anchor="start">1순위 = 끼운 효과 단계 합 (효과마다 골드 + 수호석 + 세트 부위 최대 3 + '+1' 옵션 최대 3, 합쳐서 최대 6)</text>
+<text x="200" y="885" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="normal" fill="#F2EEFF" text-anchor="start">2순위 = 세트 2 / 3부위 능력치 보너스 · 3순위 = 장비 점수 합 (같은 단계면 더 센 장비)</text>
+<rect x="64" y="923" width="120" height="30" rx="8" fill="#6248AC"/>
+<text x="124" y="944" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">방어 효과</text>
+<text x="200" y="945" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="normal" fill="#F2EEFF" text-anchor="start">방벽 / 강체 등은 세트 장비가 없다 -> '+1 방벽' 같은 옵션 장비만 센다 (수호석 단계는 그대로)</text>
+<rect x="64" y="983" width="120" height="30" rx="8" fill="#6248AC"/>
+<text x="124" y="1004" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">계산</text>
+<text x="200" y="1005" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="normal" fill="#F2EEFF" text-anchor="start">부위마다 후보를 추려(세트별 / 옵션별 최고 1개 + 그냥 최고 1개) 모든 조합을 비교 -> 6부위라 수만 가지, 순식간</text>
+<rect x="64" y="1043" width="120" height="30" rx="8" fill="#6248AC"/>
+<text x="124" y="1064" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">제한</text>
+<text x="200" y="1065" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="normal" fill="#F2EEFF" text-anchor="start">던전 안에서는 못 바꾼다 (기존 규칙) · 보스용으로 바꿔도 장비는 자동으로 안 바뀐다 (기존 결정): 바꾼 뒤 버튼을 한 번 더</text>
+<rect x="64" y="1103" width="120" height="30" rx="8" fill="#6248AC"/>
+<text x="124" y="1124" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">장비 창</text>
+<text x="200" y="1125" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="normal" fill="#F2EEFF" text-anchor="start">장비 창의 '최강 장비' / 세트 버튼은 그대로 (그건 효과 칸을 모르고 '+1' 옵션도 안 센다)</text>
+<rect x="64" y="1163" width="120" height="30" rx="8" fill="#6248AC"/>
+<text x="124" y="1184" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">이미 맞음</text>
+<text x="200" y="1185" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="normal" fill="#F2EEFF" text-anchor="start">더 나은 조합이 없으면 '이미 최고 조합이에요' 만 띄우고 바꾸지 않는다</text>
+</svg>
