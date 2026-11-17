@@ -530,6 +530,11 @@ local function wornPick(state)
 	for slotKey, id in pairs(state.Equipped) do if state.Items[id] then pick[slotKey] = state.Items[id] end end
 	return pick
 end
+-- 장착 방식: "Best" (최강 장비) / "Augs" (세트 효과 맞춤) / 구역 세트 키 (AugService 가 세팅을 바꿀 때 읽는다)
+function Inventory.GetEquipMode(player)
+	local state = states[player]
+	return state and (state.EquipMode or "Best") or nil
+end
 function Inventory.EquipForAugs(player, targets)
 	local state = states[player]
 	if not state then return 0 end

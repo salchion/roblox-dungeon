@@ -226,6 +226,14 @@ Remotes.Aug.OnServerEvent:Connect(function(player, action, zone, slotIndex)
 			rift.AugEquip = rift.AugEquip or {}
 			rift.AugEquip[zone] = rift.AugEquip[zone] or {}
 			Aug.Apply(player)
+			-- 장착 방식이 "세트 효과 맞춤"이면 장비도 새 세팅 칸에 맞춘다 (최강 장비 / 세트 방식은 그대로). 던전 안 / 빈 칸 / 바꿀 게 없으면 조용히 넘어가고, 실제로 바꿨을 때만 알린다
+			if player:GetAttribute("Zone") ~= "Dungeon" and Aug.AutoGear then
+				local okInv, Inventory = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
+				if okInv and Inventory.GetEquipMode and Inventory.GetEquipMode(player) == "Augs" then
+					local ok, message, changed = Aug.AutoGear(player)
+					if ok and (changed or 0) > 0 and message then notify(player, message) end
+				end
+			end
 		end
 		return
 	end
@@ -339,7 +347,7 @@ function Aug.AutoGear(player)
 	local changed, reason = Inventory.EquipForAugs(player, targets)
 	if reason then return false, reason end
 	Aug.Apply(player)
-	if changed == 0 then return true, "🌟 Already the best gear for this setup's set effects." end
+	if changed == 0 then return true, "🌟 Already the best gear for this setup's set effects.", 0 end
 	task.delay(0.5, function() -- (장비 Attribute / 전투력이 다시 계산된 뒤에 알린다)
 		if not player.Parent then return end
 		for _, t in ipairs(targets) do
@@ -350,7 +358,7 @@ function Aug.AutoGear(player)
 		local powerNow = player:GetAttribute("Power") or 0
 		if powerNow ~= powerBefore then notify(player, string.format("⚡ Power %d → %d", powerBefore, powerNow)) end
 	end)
-	return true, string.format("🌟 Set-effect gear equipped: %d slot(s) swapped", changed)
+	return true, string.format("🌟 Set-effect gear equipped: %d slot(s) swapped", changed), changed
 end
 task.spawn(function() -- 장비 "!" 표시가 세트 효과 맞춤 기준으로 볼 수 있게 (서로 require 하지 않으려고 나중에 넣는다)
 	local okInv, Inventory = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
