@@ -2558,7 +2558,8 @@ local function stepMonsters(dt)
 								Effects.Raw(sRoot.Position, { "R", sRoot.Position - Vector3.new(0, 2.5, 0), 24, Color3.fromRGB(255, 70, 70) })
 								sniper:SetAttribute("ShakeStrength", 0.8)
 								sniper:SetAttribute("ShakeTick", (sniper:GetAttribute("ShakeTick") or 0) + 1)
-								sHum:TakeDamage(sHum.MaxHealth * 0.4) -- (방어 / 방벽 반감을 무시한다: "피할 수 없는 강공". 가득 찬 체력에서는 죽지 않는다)
+								local jd = F.JudgeDamage or { 250 }
+								sHum:TakeDamage(jd[math.clamp(data.Zone or 1, 1, #jd)]) -- 방어 / 방벽 무시 고정 피해 ("피할 수 없는 강공"). 적정 체력이면 2~3번 버티고, 체력이 모자라면 죽을 수 있다 (의도된 떡벽)
 							end
 						end
 					elseif data.SnipeFor and data.SnipeFor > 0 or data.SnipeWarnAt then
