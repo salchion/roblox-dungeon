@@ -11,7 +11,6 @@ local player = Players.LocalPlayer
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 
-local WEAPON_ICONS = { Pistol = "🔫", Smg = "🔭", Revolver = "💣", Rifle = "🏹", Shotgun = "✴", Flamer = "📖", Cannon = "🧨", Sniper = "🎯", Rocket = "🚀", Rail = "⚡" }
 local GOLD = Color3.fromRGB(230, 196, 120)
 local GREEN = Color3.fromRGB(120, 255, 150)
 local RED = Color3.fromRGB(255, 120, 120)
@@ -95,7 +94,22 @@ local function show(ok, summary)
 	new("UICorner", { CornerRadius = UDim.new(0, 10) }, tile)
 	new("UIStroke", { Color = success and color or Color3.fromRGB(150, 150, 170), Thickness = 3 }, tile)
 	new("UIGradient", { Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(120, 120, 150)), Rotation = 90 }, tile)
-	label({ Size = UDim2.new(1, 0, 1, -10), Text = WEAPON_ICONS[typeKey] or "🔫", TextSize = 38, ZIndex = 24, TextStrokeTransparency = 1 }, tile)
+	do -- 칸 안 무기: 강화 창 구슬과 같은 실제 3D 무기 모형 (예전 🔫 이모지는 장난감 물총처럼 보였다). 모형이 아직 없으면 칸만 둔다
+		local previews = ReplicatedStorage:FindFirstChild("WeaponPreviews")
+		local source = previews and previews:FindFirstChild("W" .. Config.GetLookTier(level, typeKey).Index)
+		if source then
+			local view = new("ViewportFrame", { Size = UDim2.new(1, -8, 1, -8), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 24,
+				Ambient = Color3.fromRGB(190, 185, 205), LightColor = Color3.new(1, 1, 1), LightDirection = Vector3.new(-0.4, -1, -0.6) }, tile)
+			local camera = new("Camera", { FieldOfView = 30 }, view)
+			view.CurrentCamera = camera
+			local model = source:Clone()
+			local cf, size = model:GetBoundingBox()
+			model:PivotTo(CFrame.Angles(0, 0.6, 0) * CFrame.Angles(0, 0, math.rad(-8)) * cf:Inverse() * model:GetPivot()) -- (가운데를 원점으로, 구슬과 같은 비스듬한 옆모습)
+			model.Parent = view
+			local radius = math.max(size.X, size.Y, size.Z) * 0.5
+			camera.CFrame = CFrame.lookAt(Vector3.new(0, radius * 0.9, radius * 3.6), Vector3.zero)
+		end
+	end
 	label({ Size = UDim2.new(1, -6, 0, 18), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 0, 1, 0), Text = "+" .. level, TextSize = 14, TextColor3 = success and GREEN or Color3.new(1, 1, 1), TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 24 }, tile)
 	if success then -- 빛줄기가 칸을 한 번 쓸고 지나간다
 		tile.ClipsDescendants = true
