@@ -901,6 +901,9 @@ return {
 		["Upgrade with gold"] = "Melhore com ouro",
 		["Warp to the camp of any zone you've reached. If you die in the field, you return to town."] = "Teleporte para o acampamento de qualquer zona alcançada. Se morrer no campo, você volta para a cidade.",
 		["⏰ Time's up! The boss escaped"] = "⏰ O tempo acabou! O chefe fugiu",
+		["⏱ Est. boss kill: —"] = "⏱ Chefe derrotado em: —",
+		["Clear one run to see an estimate"] = "Conclua uma partida para ver uma estimativa",
+		["★ Recommended depth: clear one run first"] = "★ Profundidade recomendada: conclua uma partida primeiro",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1048,6 +1051,7 @@ return {
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] Sapatos desgastados salvos automaticamente (Essência +{number1} {number2} G)" },
 		{ "Reduces training / breakthrough wait time by {number1} hour", "Reduz o tempo de espera de treinamento/avanço em {number1} horas" },
 		{ "Clear depth {number1} once more to record its Sweep reward.", "Conclua a profundidade {number1} mais uma vez para registrar a recompensa da varredura." },
+		{ "★ Recommended: Depth {number1} (deepest you can clear in {number2}s)", "★ Recomendado: profundidade {number1} (a mais funda em {number2}s)" },
 		{ "🎯 Boss hunter  ·  ✔ 🔫 Sniper Rifle / Railgun (+{number1}%)", "🎯 Caçador de chefes · ✔ 🔫 Fuzil de precisão / Arma de trilhos (+{number1}%)" },
 		{ "Zone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated", "Zona {number2} monstros {number3} / {number4} derrotados · Lorde 👑 Não derrotado" },
 		{ "Shot_Pistol  <font color='#{number1}aa{number2}c{number3}'>Rifle shot</font>", "Tiro de Pistola <font color='#{number1}aa{number2}c{number3}'> Tiro de Fuzil </font>" },
@@ -1071,8 +1075,5 @@ return {
 		{ "💰 +{number1} G ({number2} min of your idle income) · {number3} left today", "💰 +{number1} G ({number2} min da sua renda ociosa) · restam {number3} hoje" },
 		{ "every {number1}s shock shots at {number2} enemies, burst radius {number3}", "a cada {number1} s tiros de choque em {number2} inimigos, raio de explosão {number3}" },
 		{ "👑 Field Boss defeated! Tickets +{number1}, loot dropped", "👑 Chefe do campo derrotado! Tickets +{number1}, saque solto" },
-		{ "👑 Field Boss defeated! Tickets +{number1} loot dropped", "👑 Chefe de Campo derrotado! Bilhetes +{number1} de saque foram liberados" },
-		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3}", "🔒 O portão está fechado! Derrote monstros da zona {number1}: {number2}/{number3}" },
-		{ "▲ +{number1}% better than your current gear! (I → Bag)", "▲ +{number1}% melhor que seu equipamento! (I → Bolsa)" },
 	},
 }

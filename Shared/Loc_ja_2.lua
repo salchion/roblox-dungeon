@@ -1058,6 +1058,9 @@ return {
 		["Upgrade with gold"] = "ゴールドで強化するとオン",
 		["Warp to the camp of any zone you've reached. If you die in the field, you return to town."] = "到達したゾーンのキャンプへワープ。フィールドで倒れると町に戻ります。",
 		["⏰ Time's up! The boss escaped"] = "⏰ 時間切れ！ボスが逃げた",
+		["⏱ Est. boss kill: —"] = "⏱ ボス討伐予想: —",
+		["Clear one run to see an estimate"] = "1回クリアすると予想が出ます",
+		["★ Recommended depth: clear one run first"] = "★ おすすめの深さ: まず1回クリア",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1141,6 +1144,5 @@ return {
 		{ "Transcendent   Title 『Transcendent』\nReach {number1} Power\n{number2} / {number3}   Reward: 🎫 {number4}", "超越者　タイトル『超越者』\n{number1}パワーに到達する\n{number2} / {number3}　報酬：🎫 {number4}" },
 		{ "each hit adds a burn stack (max {number1}, lasts 4s); every 0.5s per stack", "命中ごとに燃焼スタックが1増加(最大{number1}、4秒持続)、スタックごとに0.5秒ごとにダメージ" },
 		{ "Aug_Synergy  <font color='#{number1}aa{number2}c{number3}'>Augment synergy triggered</font>", "8月のシナジー <font color='#{number1}aa{number2}c{number3}'> 8月のシナジーが発動しました</font>" },
-		{ "✅ Railgun equipped! (Bounces to {number1} nearby enemies · Longest range)", "✅ レールガンを装備しました！（近くの{number1}人の敵に跳ね返り、最大射程距離を実現）" },
 	},
 }

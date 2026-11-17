@@ -812,6 +812,9 @@ return {
 		["Upgrade with gold"] = "用金币强化后开启",
 		["Warp to the camp of any zone you've reached. If you die in the field, you return to town."] = "传送到已到达区域的营地。在野外倒下会回到城镇。",
 		["⏰ Time's up! The boss escaped"] = "⏰ 时间到！首领逃走了",
+		["⏱ Est. boss kill: —"] = "⏱ 预计击败首领：—",
+		["Clear one run to see an estimate"] = "通关一次即可看到预估",
+		["★ Recommended depth: clear one run first"] = "★ 推荐深度：请先通关一次",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -959,6 +962,7 @@ return {
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [普通] 磨损的鞋子自动回收（精华 +{number1} {number2} G）" },
 		{ "Reduces training / breakthrough wait time by {number1} hour", "将训练/突破等待时间减少{number1}小时" },
 		{ "Clear depth {number1} once more to record its Sweep reward.", "请再通关一次深度{number1}以记录扫荡奖励。" },
+		{ "★ Recommended: Depth {number1} (deepest you can clear in {number2}s)", "★ 推荐：深度 {number1}（{number2}秒内能通关的最深处）" },
 		{ "🎯 Boss hunter  ·  ✔ 🔫 Sniper Rifle / Railgun (+{number1}%)", "🎯 头目猎手 · ✔ 🔫 狙击步枪/电磁炮（+{number1}%）" },
 		{ "Zone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated", "区域 {number2} 的怪物 {number3} / {number4} 已被击败 · 领主 👑 未被击败" },
 		{ "Shot_Pistol  <font color='#{number1}aa{number2}c{number3}'>Rifle shot</font>", "射击手枪 <font color='#{number1}aa{number2}c{number3}'> 步枪射击 </font>" },
@@ -1118,9 +1122,5 @@ return {
 		{ "Rocket Launcher · Rusty Era +{number1}", "火箭发射器 · 生锈时代 +{number1}" },
 		{ "🌋 Lava Fortress Gate · Rec. ⚡{number2}", "🌋 熔岩要塞之门 · 推荐等级 ⚡{number2}" },
 		{ "ZONE {number1}  ·  Darklands   ☠☠☠☠☠☠☠", "区域 {number1} · 黑暗之地 ☠☠☠☠☠☠☠" },
-		{ "Zone {number1} set effect · Trial Lv.3", "区域{number1}套装效果 · 试炼 Lv.3" },
-		{ "(Idle income bonus +{number1}% active)", "(挂机收益加成 +{number1}% 已生效)" },
-		{ "Not enough Essence. ({number1} needed)", "精华不足。(需要 {number1})" },
-		{ "Not enough tickets. ({number1} needed)", "门票不足。(需要 {number1})" },
 	},
 }

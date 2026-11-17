@@ -18,7 +18,7 @@ local player = Players.LocalPlayer
 local gui = create("ScreenGui", { Name = "DepthGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 9 }, player:WaitForChild("PlayerGui"))
 -- 게임 느낌의 입장 화면 (표처럼 보이던 것을 바꿨다):
 --   왼쪽 큰 그림판(던전 이름 / 보스 / 소개 + 깊이 고르기) · 오른쪽 보상(상자 등급 막대) · 아래 정보 줄 + 큰 [입장] 버튼
-local W, H = 780, 460
+local W, H = 780, 520 -- (460 -> 520: 깊이별 예상 시간 줄을 넣었다)
 local panel = makePanel({
 	Size = UDim2.new(0, W, 0, H), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
 	BackgroundColor3 = Color3.fromRGB(16, 16, 26), BackgroundTransparency = 0.02, Visible = false, ZIndex = 10, ClipsDescendants = true,
@@ -142,6 +142,102 @@ local stepInfo = makeLabel({ Size = UDim2.new(1, -28, 0, 14), AnchorPoint = Vect
 local typeKey, depth = nil, 1
 local function bestOf(key) return player:GetAttribute("DepthBest_" .. tostring(key)) or 0 end
 
+-- ===== 예상 보스 처치 시간 (시안 Docs/preview/depth-pace-preview.svg) =====
+--   마지막 클리어 기록(PaceDepth / PaceSecs / PacePower, 서버 DepthPace)과 지금 전투력으로 Config.Dungeon.PaceEstimate 를 계산해 보스 제한 시간과 비교한다
+--   초록 = 제한의 절반 이하(여유) · 노랑 = 제한 안(빠듯) · 빨강 = 제한 초과
+local PACE_GREEN, PACE_YELLOW, PACE_RED, PACE_GRAY = Color3.fromRGB(91, 217, 138), Color3.fromRGB(242, 201, 76), Color3.fromRGB(255, 107, 107), Color3.fromRGB(140, 140, 160)
+local function paceLimit() return Config.Dungeon.BossTimeLimit or 60 end
+local function paceOf(d) -- 예상 초 (기록 없으면 nil)
+	return Config.Dungeon.PaceEstimate(d, player:GetAttribute("PaceDepth"), player:GetAttribute("PaceSecs"), player:GetAttribute("PacePower"), player:GetAttribute("Power"))
+end
+local function paceColor(secs)
+	if not secs then return PACE_GRAY end
+	secs = math.floor(secs + 0.5)
+	return secs <= paceLimit() * 0.5 and PACE_GREEN or (secs <= paceLimit() and PACE_YELLOW or PACE_RED)
+end
+local paceBox = create("Frame", { Size = UDim2.new(0, 250, 0, 70), Position = UDim2.new(0, 16, 0, 166), BackgroundColor3 = Color3.fromRGB(12, 16, 14), BackgroundTransparency = 0.15, BorderSizePixel = 0, ZIndex = 14 }, hero)
+rounded(paceBox, 12)
+local paceStroke = create("UIStroke", { Thickness = 2, Color = PACE_GRAY }, paceBox)
+local paceTitle = makeLabel({ Size = UDim2.new(1, -16, 0, 24), Position = UDim2.new(0, 10, 0, 6), Text = "", TextSize = 17, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 15 }, paceBox)
+local paceSub = makeLabel({ Size = UDim2.new(1, -16, 0, 16), Position = UDim2.new(0, 10, 0, 30), Text = "", TextSize = 11, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(225, 220, 240), ZIndex = 15 }, paceBox)
+local paceBack = create("Frame", { Size = UDim2.new(1, -20, 0, 8), Position = UDim2.new(0, 10, 1, -16), BackgroundColor3 = Color3.fromRGB(44, 40, 80), BorderSizePixel = 0, ZIndex = 15 }, paceBox)
+rounded(paceBack, 4)
+local paceFill = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BorderSizePixel = 0, ZIndex = 16 }, paceBack)
+rounded(paceFill, 4)
+local PACE_SCALE = 1.5 -- 막대 끝 = 제한 시간 x 1.5
+create("Frame", { Size = UDim2.new(0, 2, 1, 6), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5 / PACE_SCALE, 0, 0.5, 0), BackgroundColor3 = PACE_GREEN, BorderSizePixel = 0, ZIndex = 17 }, paceBack)
+create("Frame", { Size = UDim2.new(0, 3, 1, 8), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1 / PACE_SCALE, 0, 0.5, 0), BackgroundColor3 = PACE_RED, BorderSizePixel = 0, ZIndex = 17 }, paceBack)
+-- 깊이별 띠 (지금 깊이 앞뒤 4칸) + 추천 깊이 버튼: 그림판 / 보상 칸 아래
+local paceChips = {}
+local refresh -- (아래에서 정의)
+for k = 1, 9 do
+	local chip = create("TextButton", { Size = UDim2.new(0, 48, 0, 50), Position = UDim2.new(0, 14 + (k - 1) * 52.5, 0, 362), BackgroundColor3 = Color3.fromRGB(20, 18, 32), Text = "", AutoButtonColor = true, ZIndex = 12 }, panel)
+	rounded(chip, 9)
+	local stroke = create("UIStroke", { Thickness = 1.5, Color = Color3.fromRGB(58, 49, 114), ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, chip)
+	local num = makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 3), Text = "", TextSize = 14, Font = Enum.Font.GothamBlack, ZIndex = 13 }, chip)
+	local dot = create("Frame", { Size = UDim2.new(0, 10, 0, 10), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 22), BorderSizePixel = 0, ZIndex = 13 }, chip)
+	rounded(dot, 5)
+	local secs = makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 34), Text = "", TextSize = 11, Font = Enum.Font.GothamBold, ZIndex = 13 }, chip)
+	local entry = { Button = chip, Stroke = stroke, Num = num, Dot = dot, Secs = secs, Depth = 1 }
+	chip.Activated:Connect(function() depth = entry.Depth if refresh then refresh() end end)
+	paceChips[k] = entry
+end
+local bestPick
+local bestButton = makeButton({ Size = UDim2.new(0, W - 470 - 42, 0, 50), Position = UDim2.new(0, 470 + 28, 0, 362), Text = "", TextSize = 13, TextWrapped = true, BackgroundColor3 = Color3.fromRGB(30, 60, 42), ZIndex = 12 }, panel, function()
+	if bestPick then depth = bestPick if refresh then refresh() end end
+end)
+local bestStroke = create("UIStroke", { Color = PACE_GREEN, Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, bestButton)
+local function paintPace()
+	local limit = paceLimit()
+	local est = paceOf(depth)
+	local color = paceColor(est)
+	paceStroke.Color = color
+	if est then
+		local s = math.floor(est + 0.5)
+		paceTitle.Text = string.format("⏱ Est. boss kill %ds", math.min(s, 999))
+		paceTitle.TextColor3 = color
+		paceSub.Text = s <= limit * 0.5 and string.format("Limit %ds · Comfortable", limit) or (s <= limit and string.format("Limit %ds · Tight", limit) or string.format("Over the %ds limit!", limit))
+		paceFill.Size = UDim2.new(math.clamp(est / (limit * PACE_SCALE), 0, 1), 0, 1, 0)
+		paceFill.BackgroundColor3 = color
+	else
+		paceTitle.Text = "⏱ Est. boss kill: —"
+		paceTitle.TextColor3 = PACE_GRAY
+		paceSub.Text = "Clear one run to see an estimate"
+		paceFill.Size = UDim2.new(0, 0, 1, 0)
+	end
+	local first = math.max(1, depth - 4)
+	for k, chip in ipairs(paceChips) do
+		local d = first + k - 1
+		local e = paceOf(d)
+		local c = paceColor(e)
+		chip.Depth = d
+		chip.Num.Text = tostring(d)
+		chip.Dot.BackgroundColor3 = c
+		chip.Secs.Text = e and string.format("%ds", math.min(math.floor(e + 0.5), 999)) or "—"
+		chip.Secs.TextColor3 = c
+		chip.Stroke.Color = d == depth and c or Color3.fromRGB(58, 49, 114)
+		chip.Stroke.Thickness = d == depth and 3 or 1.5
+	end
+	-- 추천 깊이: 제한 시간 안에 깰 수 있는 가장 깊은 곳 (예상 시간은 깊이마다 늘어나므로 한 번 넘으면 멈춘다)
+	bestPick = nil
+	if paceOf(1) then
+		for d = 1, Config.Dungeon.Depth.MaxDepth do
+			local e = paceOf(d)
+			if not e or math.floor(e + 0.5) > limit then break end
+			bestPick = d
+		end
+	end
+	if bestPick then
+		bestButton.Text = string.format("★ Recommended: Depth %d (deepest you can clear in %ds)", bestPick, limit)
+		bestButton.BackgroundColor3 = Color3.fromRGB(30, 70, 46)
+		bestStroke.Color = PACE_GREEN
+	else
+		bestButton.Text = paceOf(1) and "★ Recommended: Depth 1" or "★ Recommended depth: clear one run first"
+		bestButton.BackgroundColor3 = Color3.fromRGB(46, 44, 60)
+		bestStroke.Color = PACE_GRAY
+	end
+end
+
 -- ===== 오른쪽 보상 =====
 local side = create("Frame", { Size = UDim2.new(0, W - 470 - 42, 0, 340), Position = UDim2.new(0, 470 + 28, 0, 14), BackgroundColor3 = Color3.fromRGB(26, 24, 38), BorderSizePixel = 0, ZIndex = 11 }, panel)
 rounded(side, 14)
@@ -199,7 +295,7 @@ local enterButton = makeButton({ Size = UDim2.new(0, 150, 0, 50), AnchorPoint = 
 end)
 create("UIStroke", { Color = Color3.fromRGB(255, 226, 150), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, enterButton)
 
-local function refresh()
+function refresh()
 	if not typeKey then return end
 	local frontier = bestOf(typeKey) + 1
 	depth = math.clamp(depth, 1, Config.Dungeon.Depth.MaxDepth) -- 아무 깊이나 고를 수 있다
@@ -285,6 +381,7 @@ local function refresh()
 	uniqueChip.Text = string.format("★ Unique %.1f%%", Odds.ChestUnique(key))
 	local chance, zones = Odds.ChestSet(key, player:GetAttribute("ClearedZone") or 0)
 	setChip.Text = #zones == 0 and "🧩 Set: clear a zone lord" or string.format("🧩 Set %.0f%%", chance)
+	paintPace()
 end
 
 local function stepper(text, delta, x)
@@ -330,6 +427,9 @@ end)
 player:GetAttributeChangedSignal("SweepGold"):Connect(function()
 	if panel.Visible then refresh() end
 end)
+for _, attr in ipairs({ "PaceSecs", "Power" }) do -- (기록 / 전투력이 바뀌면 예상 시간도 다시)
+	player:GetAttributeChangedSignal(attr):Connect(function() if panel.Visible then refresh() end end)
+end
 player:GetAttributeChangedSignal("Zone"):Connect(function()
 	if player:GetAttribute("Zone") ~= "Lobby" then panel.Visible = false end
 end)

@@ -880,6 +880,9 @@ return {
 		["Upgrade with gold"] = "Mit Gold aufwerten",
 		["Warp to the camp of any zone you've reached. If you die in the field, you return to town."] = "Teleportiere zum Lager jeder erreichten Zone. Wenn du im Feld stirbst, kehrst du in die Stadt zurück.",
 		["⏰ Time's up! The boss escaped"] = "⏰ Zeit abgelaufen! Der Boss ist entkommen",
+		["⏱ Est. boss kill: —"] = "⏱ Geschätzter Boss-Kill: —",
+		["Clear one run to see an estimate"] = "Schaffe einen Lauf, um eine Schätzung zu sehen",
+		["★ Recommended depth: clear one run first"] = "★ Empfohlene Tiefe: erst einen Lauf schaffen",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1027,6 +1030,7 @@ return {
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Gewöhnlich] Abgenutzte Schuhe werden automatisch gesammelt (Essenz +{number1} {number2} G)" },
 		{ "Reduces training / breakthrough wait time by {number1} hour", "Verkürzt die Wartezeit für Training/Durchbruch um {number1} Stunden" },
 		{ "Clear depth {number1} once more to record its Sweep reward.", "Schaffe Tiefe {number1} noch einmal, um die Blitz-Belohnung zu speichern." },
+		{ "★ Recommended: Depth {number1} (deepest you can clear in {number2}s)", "★ Empfohlen: Tiefe {number1} (tiefste, die du in {number2}s schaffst)" },
 		{ "🎯 Boss hunter  ·  ✔ 🔫 Sniper Rifle / Railgun (+{number1}%)", "🎯 Bossjäger · ✔ 🔫 Scharfschützengewehr / Schienenwaffe (+{number1}%)" },
 		{ "Zone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated", "Zone {number2} Monster {number3} / {number4} besiegt · Lord 👑 nicht besiegt" },
 		{ "Shot_Pistol  <font color='#{number1}aa{number2}c{number3}'>Rifle shot</font>", "Schuss_Pistole <font color='#{number1}aa{number2}c{number3}'>Gewehrschuss</font>" },
@@ -1057,8 +1061,5 @@ return {
 		{ "🥇 {player1}\n⚡ {number1} Lv.{number2}\nSpell Tome · Mythic Era +{number3}", "🥇 {player1}\n⚡ {number1} Stufe {number2}\nZauberbuch · Mythische Ära +{number3}" },
 		{ "Succeed at upgrading {number2} times  ✅ tap to claim!", "Erfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!" },
 		{ "every {number1} shots a blade bounces across {number2} enemies", "alle {number1} Schüsse springt eine Klinge über {number2} Gegner" },
-		{ "💰 Golden Goblin defeated! +{number1} G, 3 loot drops!", "💰 Goldener Goblin besiegt! +{number1} G, 3 Beutestücke!" },
-		{ "+1 set-effect option: Legendary {number1}% / Mythic {number2}%", "+1-Set-Effekt-Option: Legendär {number1}% / Mythisch {number2}%" },
-		{ "Enemies swarm in more often\nGold +{number1}% instead", "Feinde kommen häufiger in Schwärmen\nGold +{number1}% stattdessen" },
 	},
 }

@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<font color='{text1}'>{number2}. {text3}</font>  <font color='#ffe16e'>{text4}</font>", "<font color='{text1}'>{number2}. {text3}</font>  <font color='#ffe16e'>{text4}</font>" },
+		{ "<font size='10' color='{text1}'>{text2} <b>{number3} pieces</b>  {text4}</font>", "<font size='10' color='{text1}'>{text2} <b>{number3}부위</b>  {text4}</font>" },
+		{ "👑 Weekly Final Lord reward: Mythic {text1} · {text2} Set · ★ {text3}!", "👑 주간 최후의 군주 보상: 신화 {text1} · {text2} 세트 · ★ {text3}!" },
+		{ "{text1} <b>{text2} Set</b>   {text3} {number4}/3 <font size='9'>worn</font>", "{text1} <b>{text2} 세트</b>   {text3} {number4}/3 <font size='9'>착용</font>" },
+		{ "{text1} Trial effect for this dungeon: [{text2}] (Lv.3) — {text3}", "{text1} 이번 던전 체험 효과: [{text2}] (Lv.3) — {text3}" },
 		{ "Your Luck right now: <b>{text1}</b>  (gear {text2}{text3})", "지금 내 행운: <b>{text1}</b>  (장비 {text2}{text3})" },
 		{ "Depth {number1} (total {text2}, Unique {text3}, keys {number4}): {text5}", "깊이 {number1} (합계 {text2}, 유니크 {text3}, 열쇠 {number4}): {text5}" },
 		{ "<font color='#{text1}'><b>{text2}</b></font> {text3}", "<font color='#{text1}'><b>{text2}</b></font> {text3}" },

@@ -2962,5 +2962,14 @@
 "Warp to the camp of any zone you've reached. If you die in the field, you return to town.",
 "BOSS  ⏰ {number1}s",
 "Defeat it before time runs out! Monsters left: {number1}",
-"⏰ Time's up! The boss escaped"
+"⏰ Time's up! The boss escaped",
+"⏱ Est. boss kill {number1}s",
+"Limit {number1}s · Comfortable",
+"Limit {number1}s · Tight",
+"Over the {number1}s limit!",
+"⏱ Est. boss kill: —",
+"Clear one run to see an estimate",
+"★ Recommended: Depth {number1} (deepest you can clear in {number2}s)",
+"★ Recommended: Depth {number1}",
+"★ Recommended depth: clear one run first"
 ]
