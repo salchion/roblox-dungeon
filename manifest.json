@@ -442,6 +442,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/DepthPace.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "DepthPace",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/BalanceLog.lua",
       "parent": "ServerScriptService/Modules",
       "name": "BalanceLog",

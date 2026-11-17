@@ -423,6 +423,12 @@ Config.Dungeon.Draft = { Enabled = true, Rounds = 8, RoundSeconds = 4 } -- (전�
 Config.Dungeon.Choice = { Enabled = true, Seconds = 6, Count = 3 } -- (Seconds = BonusInterval: 무응답이어도 보너스 간격 / 보스 체력이 그대로)
 Config.Dungeon.BonusInterval = 6     -- 이 간격(초)마다 보상(골드 / 경험치)이 터진다. 드래프트 판: 덱은 전투 시작에 한 번에 켜지고, 슬롯은 2번에 1번(12초) 패널티만
 Config.Dungeon.BossTimeLimit = 60    -- 버티기 던전 보스: 나타나고 이 시간(초) 안에 못 잡으면 실패 (튜토리얼 제외)
+-- 깊이 depth 보스 예상 처치 시간(초, 혼자 기준): 마지막 클리어 기록(깊이 / 초 / 그때 전투력)에서 깊이마다 체력 x HealthGrowth, 지금 전투력만큼 빨라진다고 본다. 기록이 없으면 nil
+function Config.Dungeon.PaceEstimate(depth, paceDepth, paceSecs, pacePower, power)
+	if not (paceSecs and paceSecs > 0 and paceDepth and paceDepth > 0) then return nil end
+	local ratio = (pacePower and pacePower > 0 and power and power > 0) and pacePower / power or 1
+	return paceSecs * Config.Dungeon.Depth.HealthGrowth ^ (depth - paceDepth) * ratio
+end
 
 -- 던전 세 갈래 나무 (룰렛 그대로): 같은 갈래가 또 나오면 겹치지 않고 다음 단계로 올라간다. 1~3단계 = 기존 특성(폭발 / 연쇄 / 관통),
 -- 3단계 뒤에 또 나오면 "최종 기술"이 열리고, 그 뒤로는 과충전(★, 최대 3) = 더 자주 / 더 크게. 이미 들어간 갈래는 더 잘 나온다 (한 판 안에 빌드가 완성되게)

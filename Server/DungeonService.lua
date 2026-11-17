@@ -12,6 +12,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Guard = require(script.Parent:WaitForChild("DamageGuard"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local BL = require(script.Parent:WaitForChild("BalanceLog")) -- Studio 전용 밸런스 로그
+local Pace = require(script.Parent:WaitForChild("DepthPace")) -- 보스 처치 속도 기록
 local Meter = require(script.Parent:WaitForChild("DamageMeter")) -- 대미지 미터기 (총 / 세트 효과별)
 local Effects = require(script.Parent:WaitForChild("Effects"))
 local Break = require(script.Parent:WaitForChild("BreakService"))
@@ -3387,7 +3388,7 @@ local function surviveLoop(run)
 	notifyAll(run, "⚠ " .. run.BossName .. " has appeared! Dodge its attacks and take it down!")
 	spawnBoss(run)
 	local limitAt = D.BossTimeLimit and not run.Tutorial and os.clock() + D.BossTimeLimit or nil
-	run.PhaseEnd = limitAt -- (화면: 보스 남은 시간)
+	run.PhaseEnd, run.BossAt = limitAt, os.clock() -- (화면: 보스 남은 시간)
 	if not waitFor(run, function() return run.BossDead == true or (limitAt and os.clock() >= limitAt) end) then return end
 	run.PhaseEnd = nil
 	if not run.BossDead then
@@ -3395,6 +3396,7 @@ local function surviveLoop(run)
 		finish(run, false)
 		return
 	end
+	pcall(Pace.Record, run)
 	finish(run, true)
 end
 

@@ -239,7 +239,7 @@ local function syncSkillAttributes(player, state)
 end
 
 function Meta.Load(player, saved)
-	local state = { Sweep = { Depth = 0, Gold = 0 }, Skills = {}, Branch = {}, Pet = { Unlocked = false, Level = 1, Look = "Orb", Color = 1 }, Tower = 0, Codex = { Kills = {}, Boss = {}, Sets = {}, Items = {} }, Depth = { All = 0 }, Rift = { BestScore = 0, BestBoss = 0, BestTime = 0, Week = 0, WeekBest = 0, Day = 0, Used = 0, Hints = {}, LvStats = {}, Paragon = { Xp = 0, Earned = 0, Stats = {} } } }
+	local state = { Sweep = { Depth = 0, Gold = 0 }, Pace = { Depth = 0, Secs = 0, Power = 0 }, Skills = {}, Branch = {}, Pet = { Unlocked = false, Level = 1, Look = "Orb", Color = 1 }, Tower = 0, Codex = { Kills = {}, Boss = {}, Sets = {}, Items = {} }, Depth = { All = 0 }, Rift = { BestScore = 0, BestBoss = 0, BestTime = 0, Week = 0, WeekBest = 0, Day = 0, Used = 0, Hints = {}, LvStats = {}, Paragon = { Xp = 0, Earned = 0, Stats = {} } } }
 	for _, key in ipairs(Config.Skills.UpgradeOrder) do
 		local level = typeof(saved) == "table" and typeof(saved.Skills) == "table" and tonumber(saved.Skills[key]) or 1
 		state.Skills[key] = math.clamp(math.floor(level), 1, Config.SkillUpgrade.MaxLevel)
@@ -289,6 +289,9 @@ function Meta.Load(player, saved)
 		if typeof(saved.Sweep) == "table" then -- 소탕: 최고 깊이를 마지막으로 깼을 때 번 골드
 			state.Sweep = { Depth = math.clamp(math.floor(tonumber(saved.Sweep.Depth) or 0), 0, Config.Dungeon.Depth.MaxDepth), Gold = math.max(0, math.floor(tonumber(saved.Sweep.Gold) or 0)) }
 		end
+		if typeof(saved.Pace) == "table" then -- 마지막으로 깬 던전의 보스 처치 속도 (깊이 창의 예상 시간: DepthPace)
+			state.Pace = { Depth = math.clamp(math.floor(tonumber(saved.Pace.Depth) or 0), 0, Config.Dungeon.Depth.MaxDepth), Secs = math.max(0, tonumber(saved.Pace.Secs) or 0), Power = math.max(0, math.floor(tonumber(saved.Pace.Power) or 0)) }
+		end
 		if typeof(saved.Rift) == "table" then
 			state.Rift = { BestScore = math.max(0, math.floor(tonumber(saved.Rift.BestScore) or 0)), Day = math.floor(tonumber(saved.Rift.Day) or 0), Used = math.max(0, math.floor(tonumber(saved.Rift.Used) or 0)), Tip = saved.Rift.Tip == true, DungeonTip = saved.Rift.DungeonTip == true, DungeonDay = math.floor(tonumber(saved.Rift.DungeonDay) or 0), DungeonUsed = math.max(0, math.floor(tonumber(saved.Rift.DungeonUsed) or 0)), KeyDay = math.floor(tonumber(saved.Rift.KeyDay) or 0), KeyDropsTier = typeof(saved.Rift.KeyDropsTier) == "table" and { tonumber(saved.Rift.KeyDropsTier[1]) or 0, tonumber(saved.Rift.KeyDropsTier[2]) or 0, tonumber(saved.Rift.KeyDropsTier[3]) or 0 } or { 0, 0, 0 }, Hints = (function() local list = {} if typeof(saved.Rift.Hints) == "table" then for key, value in pairs(saved.Rift.Hints) do if typeof(key) == "string" and #key <= 24 and value == true then list[key] = true end end end return list end)(), GrowthTip = saved.Rift.GrowthTip == true, BestBoss = math.max(0, math.floor(tonumber(saved.Rift.BestBoss) or 0)), BestDealt = math.max(0, tonumber(saved.Rift.BestDealt) or 0), BestTime = math.max(0, math.floor(tonumber(saved.Rift.BestTime) or 0)), Week = math.floor(tonumber(saved.Rift.Week) or 0), WeekBest = math.max(0, tonumber(saved.Rift.WeekBest) or 0), IdleSeen = math.max(0, math.floor(tonumber(saved.Rift.IdleSeen) or 0)), LvStats = (function() local list = {} for _, key in ipairs(Config.LevelStats.Order) do list[key] = typeof(saved.Rift.LvStats) == "table" and math.clamp(math.floor(tonumber(saved.Rift.LvStats[key]) or 0), 0, 99) or 0 end return list end)(), LvGold = math.clamp(math.floor(tonumber(saved.Rift.LvGold) or 0), 0, Config.LevelStats.MaxGoldPoints), Paragon = (function() local p = typeof(saved.Rift.Paragon) == "table" and saved.Rift.Paragon or {} local stats = {} for _, key in ipairs(Config.Paragon.Order) do stats[key] = typeof(p.Stats) == "table" and math.clamp(math.floor(tonumber(p.Stats[key]) or 0), 0, Config.Paragon.Cap[key]) or 0 end return { Xp = math.max(0, math.floor(tonumber(p.Xp) or 0)), Earned = math.clamp(math.floor(tonumber(p.Earned) or 0), 0, Config.ParagonMaxPoints), Stats = stats } end)(), AugBoss = (function() local list = {} if typeof(saved.Rift.AugBoss) == "table" then for z = 1, Config.Field.ZoneCount do if saved.Rift.AugBoss[tostring(z)] == true then list[tostring(z)] = true end end end return list end)(), AugLv = (function() local list = {} if typeof(saved.Rift.AugLv) == "table" then for z = 1, #Config.Sets.ZoneAug do local lv = math.clamp(math.floor(tonumber(saved.Rift.AugLv[tostring(z)]) or 0), 0, 3) if lv > 0 then list[tostring(z)] = lv end end end return list end)(), AugOn = (function() local list = {} if typeof(saved.Rift.AugOn) == "table" then for z = 1, #Config.Sets.ZoneAug do if saved.Rift.AugOn[tostring(z)] == true then list[tostring(z)] = true end end end return list end)(), AugStone = (function() local list = {} if typeof(saved.Rift.AugStone) == "table" then for z = 1, #Config.Sets.ZoneAug do local v = math.clamp(math.floor(tonumber(saved.Rift.AugStone[tostring(z)]) or 0), 0, 3) if v > 0 then list[tostring(z)] = v end end end return list end)(), Stones = math.max(0, math.floor(tonumber(saved.Rift.Stones) or 0)), AugLoad = (saved.Rift.AugLoad == 2) and 2 or 1, AugEquip = (function() if typeof(saved.Rift.AugEquip) ~= "table" then return nil end local out = {} for i = 1, 2 do local src = saved.Rift.AugEquip[i] or saved.Rift.AugEquip[tostring(i)] if typeof(src) == "table" then local list = {} for _, z in ipairs(src) do z = math.floor(tonumber(z) or 0) if z >= 1 and z <= #Config.Sets.ZoneAug and #list < 4 and not table.find(list, z) then table.insert(list, z) end end out[i] = list end end return out end)(), PityL = math.max(0, math.floor(tonumber(saved.Rift.PityL) or 0)), PityM = math.max(0, math.floor(tonumber(saved.Rift.PityM) or 0)), BoxWeek = math.floor(tonumber(saved.Rift.BoxWeek) or 0), LordWeek = math.floor(tonumber(saved.Rift.LordWeek) or 0), FeverDay = math.floor(tonumber(saved.Rift.FeverDay) or 0), FeverUsed = math.max(0, math.floor(tonumber(saved.Rift.FeverUsed) or 0)), FirstClear = (function() -- 구역 군주 첫 처치 보상을 받은 구역 (없던 예전 저장: 이미 잡은 군주(AugBoss)는 받은 것으로)
 				local src = typeof(saved.Rift.FirstClear) == "table" and saved.Rift.FirstClear or (typeof(saved.Rift.AugBoss) == "table" and saved.Rift.AugBoss or {})
@@ -302,6 +305,9 @@ function Meta.Load(player, saved)
 	player:SetAttribute("TowerBest", state.Tower or 0) -- (무한의 탑 최고 층: 입장 창 / 칭호가 읽는다)
 	player:SetAttribute("SweepDepth", state.Sweep.Depth)
 	player:SetAttribute("SweepGold", state.Sweep.Gold)
+	player:SetAttribute("PaceDepth", state.Pace.Depth)
+	player:SetAttribute("PaceSecs", state.Pace.Secs)
+	player:SetAttribute("PacePower", state.Pace.Power)
 	for typeKey, best in pairs(state.Depth) do player:SetAttribute("DepthBest_" .. typeKey, best) end
 	syncSkillAttributes(player, state)
 	syncTalents(player, state)
@@ -345,7 +351,7 @@ end
 function Meta.Serialize(player)
 	local state = states[player]
 	if not state then return nil end
-	return { Skills = state.Skills, Branch = state.Branch, Pet = state.Pet, Tower = state.Tower, Rift = state.Rift, Codex = state.Codex, Depth = state.Depth, Sweep = state.Sweep, Talents = state.Talents }
+	return { Skills = state.Skills, Branch = state.Branch, Pet = state.Pet, Tower = state.Tower, Rift = state.Rift, Codex = state.Codex, Depth = state.Depth, Sweep = state.Sweep, Pace = state.Pace, Talents = state.Talents }
 end
 
 function Meta.Forget(player)
@@ -423,6 +429,16 @@ function Meta.SweepRecord(player, depth, gold)
 	state.Sweep = { Depth = depth, Gold = math.max(0, math.floor(gold)) }
 	player:SetAttribute("SweepDepth", state.Sweep.Depth)
 	player:SetAttribute("SweepGold", state.Sweep.Gold)
+end
+
+-- 던전 보스 처치 속도 기록 (가장 최근 클리어로 덮어쓴다: 지금 빌드의 실력을 보여 준다). secs = 혼자 기준으로 환산한 초
+function Meta.PaceRecord(player, depth, secs, power)
+	local state = states[player]
+	if not state or typeof(depth) ~= "number" or typeof(secs) ~= "number" or secs <= 0 then return end
+	state.Pace = { Depth = math.floor(depth), Secs = math.floor(secs * 10 + 0.5) / 10, Power = math.max(0, math.floor(tonumber(power) or 0)) }
+	player:SetAttribute("PaceDepth", state.Pace.Depth)
+	player:SetAttribute("PaceSecs", state.Pace.Secs)
+	player:SetAttribute("PacePower", state.Pace.Power)
 end
 
 -- 소탕으로 받을 골드 (기록이 최고 깊이와 맞을 때만). 없으면 nil
