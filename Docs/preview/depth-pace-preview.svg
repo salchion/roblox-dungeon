@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1240" viewBox="0 0 1200 1240"><rect width="1200" height="1240" fill="#14112B"/>
+<text x="40" y="60" font-family="Noto Sans CJK KR, sans-serif" font-size="32" font-weight="bold" fill="#FFFFFF" text-anchor="start">던전 깊이 창: 예상 보스 처치 시간 (시안 · 코드 미반영)</text>
+<text x="40" y="94" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#A9A2D0" text-anchor="start">마지막 클리어 기록(깊이 20 · 30.0초 · 전투력 8,658)과 지금 전투력 10,493 으로 계산 · 보스 제한 60초</text>
+<rect x="40" y="120" width="1120" height="640" rx="22" fill="#10101A" stroke="#D6AA5A" stroke-width="3"/>
+<rect x="60" y="140" width="560" height="600" rx="16" fill="#2A1E40"/>
+<text x="90" y="190" font-family="Noto Sans CJK KR, sans-serif" font-size="34" font-weight="bold" fill="#96DCFF" text-anchor="start">얼음 요새</text>
+<text x="90" y="222" font-family="Noto Sans CJK KR, sans-serif" font-size="17" font-weight="normal" fill="#C9C2E6" text-anchor="start">보스: 서리 거인 · 패턴이 빠르다</text>
+<rect x="90" y="250" width="500" height="110" rx="16" fill="#14112B" stroke="#3A3172" stroke-width="2"/>
+<path d="M120 305 l26 -22 v44 z" fill="#D6AA5A"/><path d="M560 305 l-26 -22 v44 z" fill="#D6AA5A"/>
+<text x="340" y="300" font-family="Noto Sans CJK KR, sans-serif" font-size="40" font-weight="bold" fill="#FFFFFF" text-anchor="middle">깊이 22</text>
+<text x="340" y="334" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="normal" fill="#A9A2D0" text-anchor="middle">최고 기록 20 · 21까지 열림</text>
+<rect x="90" y="380" width="500" height="150" rx="16" fill="#1E2A22" stroke="#F2C94C" stroke-width="3"/>
+<rect x="100" y="370" width="64" height="24" rx="12" fill="#E8742A"/>
+<text x="132" y="388" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">신규</text>
+<circle cx="140" cy="455" r="26" fill="#F2C94C"/>
+<text x="140" y="465" font-family="Noto Sans CJK KR, sans-serif" font-size="28" font-weight="bold" fill="#100C22" text-anchor="middle">!</text>
+<text x="185" y="440" font-family="Noto Sans CJK KR, sans-serif" font-size="28" font-weight="bold" fill="#F2C94C" text-anchor="start">예상 보스 처치 37초</text>
+<text x="185" y="474" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#E6E0F5" text-anchor="start">제한 60초 안 · 빠듯해요</text>
+<rect x="120" y="490" width="440" height="14" rx="7" fill="#2C2850"/>
+<rect x="120" y="490" width="180.8888888888889" height="14" rx="7" fill="#F2C94C"/>
+<line x1="266.66666666666663" y1="484" x2="266.66666666666663" y2="510" stroke="#5BD98A" stroke-width="2"/>
+<line x1="413.3333333333333" y1="482" x2="413.3333333333333" y2="512" stroke="#FF6B6B" stroke-width="3"/>
+<text x="266.66666666666663" y="522" font-family="Noto Sans CJK KR, sans-serif" font-size="13" font-weight="normal" fill="#5BD98A" text-anchor="middle">30초</text>
+<text x="413.3333333333333" y="522" font-family="Noto Sans CJK KR, sans-serif" font-size="13" font-weight="bold" fill="#FF6B6B" text-anchor="middle">제한 60초</text>
+<text x="90" y="575" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#C9C2E6" text-anchor="start">깊이별 예상 (클리어 기록 기준)</text>
+<rect x="95" y="590" width="54" height="80" rx="10" fill="#14112B" stroke="#3A3172" stroke-width="1.5"/>
+<text x="122" y="614" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">18</text>
+<circle cx="122" cy="634" r="8" fill="#5BD98A"/>
+<text x="122" y="661" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#5BD98A" text-anchor="middle">17초</text>
+<rect x="157" y="590" width="54" height="80" rx="10" fill="#14112B" stroke="#3A3172" stroke-width="1.5"/>
+<text x="184" y="614" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">19</text>
+<circle cx="184" cy="634" r="8" fill="#5BD98A"/>
+<text x="184" y="661" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#5BD98A" text-anchor="middle">20초</text>
+<rect x="219" y="590" width="54" height="80" rx="10" fill="#14112B" stroke="#3A3172" stroke-width="1.5"/>
+<text x="246" y="614" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">20</text>
+<circle cx="246" cy="634" r="8" fill="#5BD98A"/>
+<text x="246" y="661" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#5BD98A" text-anchor="middle">25초</text>
+<rect x="281" y="590" width="54" height="80" rx="10" fill="#14112B" stroke="#3A3172" stroke-width="1.5"/>
+<text x="308" y="614" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">21</text>
+<circle cx="308" cy="634" r="8" fill="#5BD98A"/>
+<text x="308" y="661" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#5BD98A" text-anchor="middle">30초</text>
+<rect x="343" y="590" width="54" height="80" rx="10" fill="#14112B" stroke="#F2C94C" stroke-width="3"/>
+<text x="370" y="614" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">22</text>
+<circle cx="370" cy="634" r="8" fill="#F2C94C"/>
+<text x="370" y="661" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#F2C94C" text-anchor="middle">37초</text>
+<rect x="405" y="590" width="54" height="80" rx="10" fill="#14112B" stroke="#3A3172" stroke-width="1.5"/>
+<text x="432" y="614" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">23</text>
+<circle cx="432" cy="634" r="8" fill="#F2C94C"/>
+<text x="432" y="661" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#F2C94C" text-anchor="middle">45초</text>
+<rect x="467" y="590" width="54" height="80" rx="10" fill="#14112B" stroke="#3A3172" stroke-width="1.5"/>
+<text x="494" y="614" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">24</text>
+<circle cx="494" cy="634" r="8" fill="#F2C94C"/>
+<text x="494" y="661" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#F2C94C" text-anchor="middle">55초</text>
+<rect x="529" y="590" width="54" height="80" rx="10" fill="#14112B" stroke="#3A3172" stroke-width="1.5"/>
+<text x="556" y="614" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">25</text>
+<circle cx="556" cy="634" r="8" fill="#FF6B6B"/>
+<text x="556" y="661" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="normal" fill="#FF6B6B" text-anchor="middle">67초</text>
+<text x="90" y="700" font-family="Noto Sans CJK KR, sans-serif" font-size="15" font-weight="normal" fill="#A9A2D0" text-anchor="start">초록 = 여유(30초 이하) · 노랑 = 빠듯(60초 이하) · 빨강 = 제한 초과</text>
+<text x="90" y="724" font-family="Noto Sans CJK KR, sans-serif" font-size="15" font-weight="normal" fill="#A9A2D0" text-anchor="start">21 위는 아직 잠김 (최고 기록 + 1 까지): 예상만 보여 준다</text>
+<rect x="640" y="140" width="500" height="460" rx="16" fill="#1A1830"/>
+<rect x="656" y="150" width="64" height="24" rx="12" fill="#30805C"/>
+<text x="688" y="168" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">기존</text>
+<text x="670" y="210" font-family="Noto Sans CJK KR, sans-serif" font-size="20" font-weight="bold" fill="#C9C2E6" text-anchor="start">보스 상자 확률 · 유니크 · 열쇠 · 보상</text>
+<text x="670" y="262" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#9AA0B8" text-anchor="start">일반</text>
+<rect x="740" y="246" width="300" height="20" rx="10" fill="#9AA0B8" opacity="0.8"/>
+<text x="670" y="310" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#5AA0FF" text-anchor="start">희귀</text>
+<rect x="740" y="294" width="240" height="20" rx="10" fill="#5AA0FF" opacity="0.8"/>
+<text x="670" y="358" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#B56BFF" text-anchor="start">영웅</text>
+<rect x="740" y="342" width="170" height="20" rx="10" fill="#B56BFF" opacity="0.8"/>
+<text x="670" y="406" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#FFB040" text-anchor="start">전설</text>
+<rect x="740" y="390" width="90" height="20" rx="10" fill="#FFB040" opacity="0.8"/>
+<text x="670" y="454" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="bold" fill="#FF5A6E" text-anchor="start">신화</text>
+<rect x="740" y="438" width="40" height="20" rx="10" fill="#FF5A6E" opacity="0.8"/>
+<text x="670" y="520" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#E6E0F5" text-anchor="start">열쇠 1개 · 무료 2/3</text>
+<rect x="640" y="620" width="240" height="120" rx="16" fill="#1E2A22" stroke="#5BD98A" stroke-width="3"/>
+<rect x="650" y="610" width="64" height="24" rx="12" fill="#E8742A"/>
+<text x="682" y="628" font-family="Noto Sans CJK KR, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle">신규</text>
+<text x="760" y="672" font-family="Noto Sans CJK KR, sans-serif" font-size="24" font-weight="bold" fill="#5BD98A" text-anchor="middle">추천 깊이 21</text>
+<text x="760" y="704" font-family="Noto Sans CJK KR, sans-serif" font-size="15" font-weight="normal" fill="#C9C2E6" text-anchor="middle">열린 곳 중 60초 안에</text>
+<text x="760" y="724" font-family="Noto Sans CJK KR, sans-serif" font-size="15" font-weight="normal" fill="#C9C2E6" text-anchor="middle">깰 수 있는 가장 깊은 곳</text>
+<rect x="900" y="620" width="240" height="120" rx="16" fill="#2E7D4F" stroke="#100C22" stroke-width="3"/>
+<text x="1020" y="692" font-family="Noto Sans CJK KR, sans-serif" font-size="34" font-weight="bold" fill="#FFFFFF" text-anchor="middle">입장</text>
+<rect x="40" y="790" width="1120" height="420" rx="18" fill="#1E1A40" stroke="#100C22" stroke-width="3"/>
+<rect x="64" y="818" width="110" height="30" rx="8" fill="#6248AC"/>
+<text x="119" y="839" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">계산</text>
+<text x="190" y="840" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start">예상 초 = 기록 초 x 1.22^(깊이 - 기록 깊이) x (기록 때 전투력 / 지금 전투력)</text>
+<text x="190" y="890" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start">예: 깊이 22 = 30.0 x 1.22^2 x 8,658 / 10,493 = 36.8초 -> 노랑</text>
+<rect x="64" y="918" width="110" height="30" rx="8" fill="#6248AC"/>
+<text x="119" y="939" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">기록</text>
+<text x="190" y="940" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start">버티기 던전 보스를 잡을 때마다 가장 최근 기록으로 덮어쓴다 (지금 빌드 그대로)</text>
+<text x="190" y="990" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start">파티로 깨면 혼자 기준으로 환산 · 튜토리얼 / 피버 / 심연 / 탑은 기록 안 함</text>
+<rect x="64" y="1018" width="110" height="30" rx="8" fill="#6248AC"/>
+<text x="119" y="1039" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">기록 없음</text>
+<text x="190" y="1040" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start">"한 판 깨면 예상 시간이 나와요" + 권장 전투력만 표시</text>
+<rect x="64" y="1068" width="110" height="30" rx="8" fill="#6248AC"/>
+<text x="119" y="1089" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">한계</text>
+<text x="190" y="1090" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start">세트 / 스킬 구성이 바뀌면 전투력과 실제 화력이 어긋날 수 있다 -> 한 판 더 깨면 바로 맞춰진다</text>
+<rect x="64" y="1118" width="110" height="30" rx="8" fill="#6248AC"/>
+<text x="119" y="1139" font-family="Noto Sans CJK KR, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">이미 반영</text>
+<text x="190" y="1140" font-family="Noto Sans CJK KR, sans-serif" font-size="18" font-weight="normal" fill="#F2EEFF" text-anchor="start">DepthPace 모듈이 기록을 저장 / Studio 에 [던전 기록] 로그 (이번 커밋) · 깊이 창 화면은 이 시안 확인 후</text>
+</svg>
