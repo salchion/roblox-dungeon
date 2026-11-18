@@ -189,7 +189,11 @@ do
 		local y = cy or -(base + 138)
 		local tx = cy and pg:GetAttribute("UiToastX") or 14
 		toastLabel.Text = text
+		toastLabel.Position = UDim2.new(0, -2000, 0, -2000) -- (높이를 재는 한 프레임 동안은 화면 밖에)
 		toastLabel.Visible = true
+		task.spawn(function() -- (자동 높이는 글을 넣은 첫 프레임에 AbsoluteSize.Y 가 아직 0 일 수 있다: 한 프레임 뒤에 자리를 잡아 메뉴 윗부분을 덮지 않게)
+		RunService.RenderStepped:Wait()
+		if token ~= toastToken then return end
 		if pg:GetAttribute("UiCompact") ~= true then
 			-- 큰 화면: 알림은 위쪽 가운데(접속자 표시 / 보스 시간 표시 아래)에서 내려온다: 왼쪽 메뉴 버튼 줄 / 미션 카드와 겹치지 않는다
 			-- (메뉴가 열려 있으면 메뉴 윗부분을 가리지 않게 메뉴 바로 위에 띄운다)
@@ -206,6 +210,7 @@ do
 			toastLabel.Position = UDim2.new(0, -430, 1, y)
 			TweenService:Create(toastLabel, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, tx, 1, y) }):Play()
 		end
+		end)
 		local hold = string.sub(text, 1, 3) == "⚠" and 7 or math.clamp(#text / 14, 4, 7) -- 경고 / 긴 안내는 더 오래 보여 준다
 		task.delay(hold, function()
 			if token == toastToken then
@@ -2107,6 +2112,24 @@ do
 	local mini = makePanel({
 		Name = "RankMini", Size = UDim2.new(0, 270, 0, 138), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0, 444),
 	}, lobbyFrame)
+	task.spawn(function() -- 큰 창(메뉴 / 강화 / 세트 효과 / 깊이)이 떠 있으면 숨기고, 닫히면 원래 상태로 (11-18 UI 겹침: 세트 효과 창 위를 덮었다)
+		local hidden, was = false, true
+		while mini.Parent do
+			local pg = player:FindFirstChild("PlayerGui")
+			local big = player:GetAttribute("ModalOpen") == true
+			for _, name in ipairs({ "MenuPanel", "EnhancePanel" }) do
+				local f = gui:FindFirstChild(name)
+				if f and f:IsA("GuiObject") and f.Visible then big = true end
+			end
+			for _, guiName in ipairs({ "DepthGui", "AugGui" }) do
+				local g = pg and pg:FindFirstChild(guiName)
+				if g then for _, child in ipairs(g:GetChildren()) do if child:IsA("Frame") and child.Visible and child.AbsoluteSize.X > 300 then big = true end end end
+			end
+			if big and not hidden then hidden, was = true, mini.Visible mini.Visible = false
+			elseif not big and hidden then hidden = false mini.Visible = was end
+			task.wait(0.25)
+		end
+	end)
 	makeLabel({
 		Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 6), Text = "🏆 Power Ranking",
 		Font = Enum.Font.GothamBlack, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 120),

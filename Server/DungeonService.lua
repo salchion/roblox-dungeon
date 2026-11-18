@@ -3392,7 +3392,7 @@ local function surviveLoop(run)
 	if not waitFor(run, function() return run.BossDead == true or (limitAt and os.clock() >= limitAt) end) then return end
 	run.PhaseEnd = nil
 	if not run.BossDead then
-		notifyAll(run, "⏰ Time's up! The boss escaped")
+		pcall(Pace.Timeout, run, giveGold)
 		finish(run, false)
 		return
 	end

@@ -2559,7 +2559,7 @@ local function stepMonsters(dt)
 								sniper:SetAttribute("ShakeStrength", 0.8)
 								sniper:SetAttribute("ShakeTick", (sniper:GetAttribute("ShakeTick") or 0) + 1)
 								local jd = F.JudgeDamage or { 250 }
-								sHum:TakeDamage(jd[math.clamp(data.Zone or 1, 1, #jd)]) -- 방어 / 방벽 무시 고정 피해 ("피할 수 없는 강공"). 적정 체력이면 2~3번 버티고, 체력이 모자라면 죽을 수 있다 (의도된 떡벽)
+								local jv = jd[math.clamp(data.Zone or 1, 1, #jd)] Guard.Note(sHum, "judge", jv) sHum:TakeDamage(jv) -- 방어 / 방벽 무시 고정 피해 ("피할 수 없는 강공"). 적정 체력이면 2~3번 버티고, 체력이 모자라면 죽을 수 있다 (의도된 떡벽)
 							end
 						end
 					elseif data.SnipeFor and data.SnipeFor > 0 or data.SnipeWarnAt then

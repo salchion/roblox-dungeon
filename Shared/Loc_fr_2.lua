@@ -991,7 +991,9 @@ return {
 		{ "Zone {number1} · Darklands\n🦇 Dark Castle Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠☠\n🦇 New set from here: Dark Pact Set", "Zone {number1} · Terres sombres\n🦇 Porte du château sombre · Recommandé ⚡{number2}\nDanger ☠☠☠☠☠☠☠\n🦇 Nouveau ensemble à partir d'ici : Ensemble du pacte des ténèbres" },
 		{ "Zone {number1} · Volcano\n🌋 Lava Fortress Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠\n🌋 New set from here: Lava Heart Set", "Zone {number1} · Volcan\n🌋 Porte de la forteresse de lave · Recommandé ⚡{number2}\nDanger ☠☠☠☠☠☠\n🌋 Nouveau set à partir d'ici : Ensemble cœur de lave" },
 		{ "🚧 Stuck at level {number1}! Go to Menu (B) → Skills & Growth tab (Passives · Training) to break through.", "🚧 Bloqué au niveau {number1} ! Allez dans le menu (B) → onglet Compétences et croissance (passif · entraînement) pour percer." },
+		{ "⏰ Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "⏰ Temps écoulé ! Le boss s'est enfui — tu reçois {number1}% de l'or de victoire (pas de coffre, tickets ni record de profondeur)" },
 		{ "💰 Not enough Gold. ({number1} needed) Earn Gold from field hunting / dungeons / Boss Rush / idle income", "💰 Pas assez d'or. ({number1} requis) Or via chasse / donjons / Boss Rush / revenus passifs" },
+		{ "Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "Temps écoulé ! Le boss s'est enfui — tu reçois {number1}% de l'or de victoire (pas de coffre, tickets ni record de profondeur)" },
 		{ "Zone {number1} · Meadow\n🌾 Adventure Begins · Rec. ⚡{number2}\nDanger ☠\n🌾 New set from here: Meadow's Guard Set", "Zone {number1} · Prairie\n🌾 L'aventure commence · Rec. ⚡{number2}\nDanger ☠\n🌾 Nouveau ensemble à partir d'ici : Ensemble de garde des prés" },
 		{ "Limit Breaker   Title 『Limit Breaker』\nDefeat {number1} bosses in one Boss Rush run\n{number2} / {number3}   Reward: 🎫 {number4}", "Titre « Briseur de limites »\nVainquez {number1} boss lors d'une course de boss\n{number2} / {number3} Récompense : 🎫 {number4}" },
 		{ "Deadeye: an enemy must be within {number1} range to lock on! (Camps are safe zones with no enemies", "Œil de mort : un ennemi doit être à portée {number1} pour le verrouiller ! (Les camps sont des zones sûres sans ennemis" },
@@ -1073,8 +1075,5 @@ return {
 		{ "🌪 Mob hunter  ·  ✔ 🔫 Rocket Launcher / Spell Tome (+{number1}%)", "🌪 Chasseur de monstres · ✔ 🔫 Lance-roquettes / Tome de sorts (+{number1}%)" },
 		{ "Dungeon_Fail  <font color='#{number1}aa{number2}c{number3}'>Dungeon failed</font>", "Échec du donjon <font color='#{number1}aa{number2}c{number3}'>Le donjon a échoué</font>" },
 		{ "🔫 Next era Steel Era (+{number1})\nUpgrade cost {number2} G · You have {number3} G", "🔫 Prochaine ère : l'ère de l'acier (+{number1})\nCoût de mise à niveau : {number2} G · Vous avez {number3} G" },
-		{ "Damage to bosses / lords / elites +{number1}% per point  (max {number2})", "Dégâts aux boss / seigneurs / élites +{number1}% par point  (max {number2})" },
-		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one", "Effets uniques trouvés {number1} / {number2}  ·  l'équipement mythique peut en porter un" },
-		{ "Locks onto up to {number1} enemies, total damage -{number2}%: for crowds", "Verrouille jusqu'à {number1} ennemis, dégâts totaux -{number2} % : pour les groupes" },
 	},
 }

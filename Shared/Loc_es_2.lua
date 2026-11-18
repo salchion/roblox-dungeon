@@ -987,7 +987,9 @@ return {
 		{ "Zone {number1} · Darklands\n🦇 Dark Castle Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠☠\n🦇 New set from here: Dark Pact Set", "Zona {number1} · Tierras oscuras\n🦇 Puerta del castillo oscuro · Recomendado ⚡{number2}\nPeligro ☠☠☠☠☠☠☠\n🦇 Nuevo conjunto desde aquí: Conjunto de pacto oscuro" },
 		{ "Zone {number1} · Volcano\n🌋 Lava Fortress Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠\n🌋 New set from here: Lava Heart Set", "Zona {number1} · Volcán\n🌋 Puerta de la fortaleza de lava · Rec. ⚡{number2}\nPeligro ☠☠☠☠☠☠\n🌋 Nuevo conjunto a partir de aquí: Conjunto de corazón de lava" },
 		{ "🚧 Stuck at level {number1}! Go to Menu (B) → Skills & Growth tab (Passives · Training) to break through.", "🚧 ¡Estancado en el nivel {number1}! Ve al menú (B) → pestaña Habilidades y crecimiento (pasivas · entrenamiento) para superarlo." },
+		{ "⏰ Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "⏰ ¡Se acabó el tiempo! El jefe escapó — recibes el {number1}% del oro de victoria (sin cofre, tickets ni récord de profundidad)" },
 		{ "💰 Not enough Gold. ({number1} needed) Earn Gold from field hunting / dungeons / Boss Rush / idle income", "💰 Oro insuficiente. (se necesitan {number1}) Oro de caza / mazmorras / Boss Rush / ingresos pasivos" },
+		{ "Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "¡Se acabó el tiempo! El jefe escapó — recibes el {number1}% del oro de victoria (sin cofre, tickets ni récord de profundidad)" },
 		{ "Zone {number1} · Meadow\n🌾 Adventure Begins · Rec. ⚡{number2}\nDanger ☠\n🌾 New set from here: Meadow's Guard Set", "Zona {number1} · Pradera\n🌾 La aventura comienza · Rec. ⚡{number2}\nPeligro ☠\n🌾 Nuevo conjunto desde aquí: Conjunto de guardia del prado" },
 		{ "Limit Breaker   Title 『Limit Breaker』\nDefeat {number1} bosses in one Boss Rush run\n{number2} / {number3}   Reward: 🎫 {number4}", "Título \"Rompedor de límites\"\nDerrota a {number1} jefes en una partida de carrera de jefes\n{number2} / {number3} Recompensa: 🎫 {number4}" },
 		{ "Deadeye: an enemy must be within {number1} range to lock on! (Camps are safe zones with no enemies", "Ojo muerto: ¡debe haber un enemigo a {number1} de distancia para fijarlo! (Los campamentos son zonas seguras sin enemigos" },
@@ -1089,7 +1091,5 @@ return {
 		{ "🗿 Colossus defeated! Gear + 🎫 +{number1} + {number2} G (time bonus x{number3})", "🗿 ¡Coloso derrotado! Equipo + 🎫 +{number1} + {number2} G (bono de tiempo x{number3})" },
 		{ "Depth {number1} sweep: gold, tickets and boss chest received", "Profundidad {number1} barrida: oro, boletos y cofre del jefe recibidos" },
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "Tu nivel es muy bajo. (Esta mazmorra requiere Nv.{number1}+)" },
-		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 ¡Primera victoria en la zona {number1}! Oro +{number2} · Tickets +{number3} · Llaves +{number4}" },
-		{ "You can pin up to {number1} effects. Unpin another one first", "Puedes fijar hasta {number1} efectos. Quita otro primero" },
 	},
 }

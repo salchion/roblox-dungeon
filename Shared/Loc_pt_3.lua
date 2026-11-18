@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "one hit can take at most {number1}% of your max HP (was {number2}%)", "um golpe tira no máximo {number1}% da sua vida máx. (antes {number2}%)" },
+		{ "🌪 Mob hunter  ·  ✔ 🔫 Railgun / Sniper Rifle (+{number1}%)", "🌪 Caçador de monstros · ✔ 🔫 Arma de trilho / Fuzil de precisão (+{number1}%)" },
+		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>\nON</font>", "<font color='#{number1}fffb{number2}'><b>Ataque Automático</b>\nLIGADO</font>" },
 		{ "🥈 LeeGoAll_TV\n⚡ {number1} Lv.{number2}\nSniper Rifle · Arcane Era +{number3}", "🥈 LeeGoAll_TV\n⚡ {number1} Nível {number2}\nFuzil de Precisão · Era Arcana +{number3}" },
 		{ "below 50% HP take {number1}% less · below 25% take {number2}% less", "abaixo de 50% de vida -{number1}% · abaixo de 25% -{number2}%" },
 		{ "Recommended: Depth {number1} (deepest you can clear in {number2}s)", "Recomendado: profundidade {number1} (a mais funda em {number2}s)" },
@@ -69,6 +72,7 @@ return {
 		{ "Unlocks when you defeat the Zone {number1} lord", "Desbloqueia ao derrotar o lorde da zona {number1}" },
 		{ "💀 You fell! Revived at the Zone {number1} camp.", "💀 Você caiu! Reviveu no acampamento da zona {number1}." },
 		{ "🗼 Floor {number1}+: tower title above your head", "🗼 Andar {number1}+: título da torre sobre a cabeça" },
+		{ "💥 One lord hit here = {number1}% of your max HP", "💥 Um golpe do lorde aqui = {number1}% da sua vida máx." },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Giro Múltiplo!\nUsa todos os bilhetes (máximo {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Subiu de nível! Lv.{number1} (HP Máximo +{number2} Ataque +{number3}%)" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 Missão {number2}/{number3}</font>" },
@@ -92,6 +96,7 @@ return {
 		{ "defeat {number1} monsters here, then the Lord", "derrote {number1} monstros aqui e depois o lorde" },
 		{ "Mythic: unique {number1}% (dungeon chests {number2}%+)", "Mítico: único {number1}% (baús de masmorra {number2}%+)" },
 		{ "⏸ {number1} waiting · 📌 Pin one to swap it in", "⏸ {number1} aguardando · 📌 Fixe um para trocar" },
+		{ "One lord hit here = {number1}% of your max HP", "Um golpe do lorde aqui = {number1}% da sua vida máx." },
 		{ "Defeat {number1} bosses in one Boss Rush run", "Derrote {number1} chefes em uma partida de Corrida de Chefes" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "Monstros encontrados: {number1} / {number2} (incluindo senhores de zona)" },
 		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 Entrada grátis usada! (restam {number1} / {number2} hoje)" },

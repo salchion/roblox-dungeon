@@ -43,11 +43,11 @@ end
 
 -- 미리보기 알림 (HUD 의 토스트와 같은 모양)
 local toastLabel = makeLabel({
-	Name = "ToastLabel", Size = UDim2.new(0, 400, 0, 74), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, -430, 1, -250),
-	BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.08, Font = Enum.Font.GothamBold, TextSize = 14,
+	Name = "ToastLabel", Size = UDim2.new(0, 330, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, -430, 1, -250), -- (PlayerClient 알림과 같게: 폭 330 + 글 길이만큼 높이 / 모바일 300)
+	BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.08, Font = Enum.Font.GothamBold, TextSize = 13, TextWrapped = true,
 	TextXAlignment = Enum.TextXAlignment.Left, Visible = false,
 }, gui)
-create("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 10) }, toastLabel)
+create("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10), PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8) }, toastLabel)
 create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, toastLabel)
 rounded(toastLabel, 12)
 local toastToken = 0
@@ -58,6 +58,7 @@ local function toast(text)
 	local cy = pg:GetAttribute("UiToastY")
 	local y = cy or -250
 	local tx = cy and pg:GetAttribute("UiToastX") or 14
+	toastLabel.Size = UDim2.new(0, pg:GetAttribute("UiCompact") == true and 300 or 330, 0, 0)
 	toastLabel.Text = text
 	toastLabel.Position = UDim2.new(0, -430, 1, y)
 	toastLabel.Visible = true

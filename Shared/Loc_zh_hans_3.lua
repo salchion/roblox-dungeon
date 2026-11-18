@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🏚 Ruined Fortress Gate · Rec. ⚡{number1}", "🏚 废墟要塞之门 · 推荐 ⚡{number1}" },
+		{ "🏚 Ruined Fortress Gate · Rec. ⚡{number2}", "🏚 废墟要塞之门 · 推荐 ⚡{number2}" },
+		{ "📍 Field · Best Zone {number1}   🎟 Free {number2}/{number3}", "📍 田地 · 最佳区域 {number1}   🎟 免费 {number2}/{number3}" },
+		{ "⚔ Rocket Launcher · Rusty Era +{number10}", "⚔ 火箭发射器 · 生锈时代 +{number10}" },
+		{ "⚔ Rocket Launcher · Rusty Era +{number1}", "⚔ 火箭发射器 · 生锈时代 +{number1}" },
+		{ "👹 Monster health x{number1}  ·  damage x{number2}", "👹 怪物生命 x{number1}  ·  伤害 x{number2}" },
 		{ "(Idle Booster applied for {number1} min)", "(已应用挂机加速 {number1} 分钟)" },
 		{ "every {number1}s lightning hits {number2} enemies", "每 {number1} 秒闪电击中 {number2} 个敌人" },
 		{ "Level {number1} Breakthrough in progress", "{number1} 级突破进行中" },

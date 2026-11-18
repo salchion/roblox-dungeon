@@ -423,6 +423,9 @@ Config.Dungeon.Draft = { Enabled = true, Rounds = 8, RoundSeconds = 4 } -- (전�
 Config.Dungeon.Choice = { Enabled = true, Seconds = 6, Count = 3 } -- (Seconds = BonusInterval: 무응답이어도 보너스 간격 / 보스 체력이 그대로)
 Config.Dungeon.BonusInterval = 6     -- 이 간격(초)마다 보상(골드 / 경험치)이 터진다. 드래프트 판: 덱은 전투 시작에 한 번에 켜지고, 슬롯은 2번에 1번(12초) 패널티만
 Config.Dungeon.BossTimeLimit = 60    -- 버티기 던전 보스: 나타나고 이 시간(초) 안에 못 잡으면 실패 (튜토리얼 제외)
+Config.Dungeon.TimeoutGoldRatio = 0.5 -- 시간 초과: 보스 처치 골드(VictoryGold, 깊이 골드 배율 그대로)의 이 비율만. 상자 / 티켓 / 경험치 / 깊이 · 소탕 기록은 없다 (11-18 A안)
+Config.Dungeon.PaceScaleRef = 3.2    -- 예상 시간 기준 보스 체력 배율 (BossHealthBase 2.0 + 0.12 x 보너스 약 10번). 기록은 그 판의 실제 배율(BossHealthScale)을 이 값으로 환산해 저장한다
+Config.Dungeon.PaceVer = 2           -- 기록 형식 (1 = 세트 효과가 전투력에 들어가기 전 · 배율 환산 없음 -> 무시)
 -- 깊이 depth 보스 예상 처치 시간(초, 혼자 기준): 마지막 클리어 기록(깊이 / 초 / 그때 전투력)에서 깊이마다 체력 x HealthGrowth, 지금 전투력만큼 빨라진다고 본다. 기록이 없으면 nil
 function Config.Dungeon.PaceEstimate(depth, paceDepth, paceSecs, pacePower, power)
 	if not (paceSecs and paceSecs > 0 and paceDepth and paceDepth > 0) then return nil end

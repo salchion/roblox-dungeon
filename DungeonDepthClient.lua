@@ -147,7 +147,8 @@ local function bestOf(key) return player:GetAttribute("DepthBest_" .. tostring(k
 --   초록 = 제한의 절반 이하(여유) · 노랑 = 제한 안(빠듯) · 빨강 = 제한 초과
 local PACE_GREEN, PACE_YELLOW, PACE_RED, PACE_GRAY = Color3.fromRGB(91, 217, 138), Color3.fromRGB(242, 201, 76), Color3.fromRGB(255, 107, 107), Color3.fromRGB(140, 140, 160)
 local function paceLimit() return Config.Dungeon.BossTimeLimit or 60 end
-local function paceOf(d) -- 예상 초 (기록 없으면 nil)
+local function paceOf(d) -- 예상 초 (기록 없으면 nil · 옛 형식 기록도 없음으로)
+	if player:GetAttribute("PaceVer") ~= Config.Dungeon.PaceVer then return nil end
 	return Config.Dungeon.PaceEstimate(d, player:GetAttribute("PaceDepth"), player:GetAttribute("PaceSecs"), player:GetAttribute("PacePower"), player:GetAttribute("Power"))
 end
 local function paceColor(secs)

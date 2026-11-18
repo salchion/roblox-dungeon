@@ -17,6 +17,28 @@ function Guard.Reduction(player)
 	return Config.SoftCap(defense / (defense + C.K), C.MaxReduction) -- (상한에서 잘리지 않고 점점 다가간다: 장비 체력을 더 모아도 방어가 계속 조금씩 오른다)
 end
 
+-- 사망 원인 기록 (DeathLog 가 읽는다): 플레이어마다 최근 피해 5건 = { 출처("스크립트:줄" / "judge" ...), 양, 남은 체력 %, 시각 }
+local recent = setmetatable({}, { __mode = "k" })
+function Guard.Note(humanoid, source, amount)
+	local player = humanoid and humanoid.Parent and Players:GetPlayerFromCharacter(humanoid.Parent)
+	if not player or not amount or amount <= 0 then return end
+	local list = recent[player] or {}
+	recent[player] = list
+	local left = humanoid.MaxHealth > 0 and math.max(0, humanoid.Health - amount) / humanoid.MaxHealth or 0
+	table.insert(list, { Source = source or "?", Amount = math.floor(amount + 0.5), Left = math.floor(left * 100 + 0.5), At = os.clock() })
+	while #list > 5 do table.remove(list, 1) end
+end
+function Guard.RecentOf(player) return recent[player] or {} end
+local function callerOf() -- Take 를 부른 곳 ("FieldBossPatterns:812"). TakeRatio 를 거쳐 왔으면 그 바깥
+	for level = 3, 5 do
+		local src, line = debug.info(level, "sl")
+		if not src then break end
+		local name = string.match(src, "([^%.]+)$") or src
+		if name ~= "DamageGuard" then return string.format("%s:%d", name, line or 0) end
+	end
+	return "?"
+end
+
 function Guard.Take(humanoid, amount)
 	if not humanoid or humanoid.Health <= 0 then return end
 	local player = humanoid.Parent and Players:GetPlayerFromCharacter(humanoid.Parent)
@@ -50,6 +72,7 @@ function Guard.Take(humanoid, amount)
 		local ratio = humanoid.MaxHealth > 0 and humanoid.Health / humanoid.MaxHealth or 1
 		if ratio < 0.25 then amount *= 1 - hi elseif ratio < 0.5 then amount *= 1 - lo end
 		player:SetAttribute("LastHurtAt", workspace:GetServerTimeNow()) -- (💚 재생은 맞은 뒤 2초 쉰다)
+		Guard.Note(humanoid, callerOf(), amount)
 		local buffer = G.Buffer(lv("AugBuffer")) -- ⏳ 완충: 일부를 3초(0.5초 x 6번)에 나눠 받는다
 		if buffer > 0 and amount > 0 then
 			local later = amount * buffer

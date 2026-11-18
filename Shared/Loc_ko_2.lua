@@ -1258,7 +1258,9 @@ return {
 		{ "Zone {number1} · Darklands\n🦇 Dark Castle Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠☠\n🦇 New set from here: Dark Pact Set", "구역 {number1} · 다크랜드\n🦇 다크 캐슬 게이트 · 추천 수 {number2}\n위험 ☠☠☠☠☠☠☠\n🦇 여기서 새로운 세트: 다크 팩트 세트" },
 		{ "Zone {number1} · Volcano\n🌋 Lava Fortress Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠\n🌋 New set from here: Lava Heart Set", "구역 {number1} · 화산\n🌋 용암 요새 문 · 추천 ⚡{number2}\n위험 ☠☠☠☠☠☠\n🌋 여기서 새로운 세트: 용암 하트 세트" },
 		{ "🚧 Stuck at level {number1}! Go to Menu (B) → Skills & Growth tab (Passives · Training) to break through.", "🚧 레벨 {number1}에서 막혔어요! 메뉴 (B) → 스킬·성장 탭 (패시브 · 훈련)에서 돌파하세요." },
+		{ "⏰ Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "⏰ 시간 초과! 보스가 도망쳤어요 — 클리어 골드 {number1}%만 받았어요 (상자 · 티켓 · 깊이 기록 없음)" },
 		{ "💰 Not enough Gold. ({number1} needed) Earn Gold from field hunting / dungeons / Boss Rush / idle income", "💰 골드가 부족해요. ({number1} 필요) 필드 사냥 / 던전 / 보스 러시 / 방치 수입에서 얻어요" },
+		{ "Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "시간 초과! 보스가 도망쳤어요 — 클리어 골드 {number1}%만 받았어요 (상자 · 티켓 · 깊이 기록 없음)" },
 		{ "<b>Dungeon depth</b>  (your record: depth {number1} · the dungeon theme is random, odds are the same)", "<b>던전 깊이</b>  (내 기록: 깊이 {number1} · 던전 테마는 무작위, 확률은 같아요)" },
 		{ "Zone {number1} · Meadow\n🌾 Adventure Begins · Rec. ⚡{number2}\nDanger ☠\n🌾 New set from here: Meadow's Guard Set", "구역 {number1} · 초원\n🌾 모험의 시작 · 레코 ⚡{number2}\n위험 ☠\n🌾 여기서 새로운 세트: 초원의 경비대 세트" },
 		{ "Limit Breaker   Title 『Limit Breaker』\nDefeat {number1} bosses in one Boss Rush run\n{number2} / {number3}   Reward: 🎫 {number4}", "리미트 브레이커 타이틀 『리미트 브레이커』\n보스 러시에서 {number1}명의 보스를 처치하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
@@ -1273,8 +1275,5 @@ return {
 		{ "🌟 A golden FEVER portal opened where the Colossus fell! Step in within {number1} seconds!", "🌟 거신이 쓰러진 자리에 황금 피버 포탈이 열렸어요! {number1}초 안에 들어가세요!" },
 		{ "Survivor   Title 『Survivor』\nSurvive {number1} seconds in the Boss Rush\n{number2} / {number3}   Reward: 🎫 {number4}", "생존자 타이틀 『생존자』\n보스 러쉬에서 {number1}초 동안 생존하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
 		{ "First Dungeon   Title 『Dungeon Newbie』\nClear {number1} dungeon(s)\n{number2} / {number3}   Reward: {number4} G + 🎫 {number5}", "첫 번째 던전 타이틀 『던전 초보자』\n{number1}개의 던전을 클리어하세요\n{number2} / {number3}   보상: {number4} G + 🎫 {number5}" },
-		{ "Golden Hunter   Title 『Lucky Hunter』\nDefeat {number1} Golden Goblin(s)\n{number2} / {number3}   Reward: {number4} G", "골든 헌터 타이틀 『럭키 헌터』\n황금 고블린 {number1}마리를 물리치세요\n{number2} / {number3}   보상: {number4} G" },
-		{ "💰 You have {number1} G left! Upgrade your weapon at the town anvil to get much stronger", "💰 골드가 {number1} G 남았어요! 마을 모루에서 무기를 강화하면 훨씬 강해져요" },
-		{ "Zone {number1} set effect · Trial Lv.3 — for this dungeon only. Watch for it in combat!", "{number1}구역 세트 효과 · 체험 Lv.3 — 이번 던전에서만. 싸우면서 지켜보세요!" },
 	},
 }

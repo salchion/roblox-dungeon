@@ -958,7 +958,9 @@ return {
 		{ "Zone {number1} · Darklands\n🦇 Dark Castle Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠☠\n🦇 New set from here: Dark Pact Set", "Zona {number1} · Terras Sombrias\n🦇 Portão do Castelo Sombrio · Rec. ⚡{number2}\nPerigo ☠☠☠☠☠☠☠\n🦇 Novo conjunto a partir daqui: Conjunto de Pacto Sombrio" },
 		{ "Zone {number1} · Volcano\n🌋 Lava Fortress Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠\n🌋 New set from here: Lava Heart Set", "Zona {number1} · Vulcão\n🌋 Portão da Fortaleza de Lava · Rec. ⚡{number2}\nPerigo ☠☠☠☠☠☠\n🌋 Novo conjunto a partir daqui: Conjunto de Coração de Lava" },
 		{ "🚧 Stuck at level {number1}! Go to Menu (B) → Skills & Growth tab (Passives · Training) to break through.", "🚧 Preso no nível {number1}! Vá ao menu (B) → aba Habilidades e crescimento (passivas · treino) para avançar." },
+		{ "⏰ Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "⏰ O tempo acabou! O chefe fugiu — você recebe {number1}% do ouro de vitória (sem baú, tickets ou recorde de profundidade)" },
 		{ "💰 Not enough Gold. ({number1} needed) Earn Gold from field hunting / dungeons / Boss Rush / idle income", "💰 Ouro insuficiente. ({number1} necessário) Ouro de caça / masmorras / Boss Rush / renda ociosa" },
+		{ "Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "O tempo acabou! O chefe fugiu — você recebe {number1}% do ouro de vitória (sem baú, tickets ou recorde de profundidade)" },
 		{ "Zone {number1} · Meadow\n🌾 Adventure Begins · Rec. ⚡{number2}\nDanger ☠\n🌾 New set from here: Meadow's Guard Set", "Zona {number1} · Prado\n🌾 A aventura começa · Rec. ⚡{number2}\nPerigo ☠\n🌾 Novo conjunto a partir daqui: Conjunto de Guarda do Prado" },
 		{ "Limit Breaker   Title 『Limit Breaker』\nDefeat {number1} bosses in one Boss Rush run\n{number2} / {number3}   Reward: 🎫 {number4}", "Título \"Quebrador de Limites\"\nDerrote {number1} chefes em uma partida de Corrida de Chefes\n{number2} / {number3} Recompensa: 🎫 {number4}" },
 		{ "Deadeye: an enemy must be within {number1} range to lock on! (Camps are safe zones with no enemies", "Olho Mortal: um inimigo precisa estar a até {number1} de distância para travar! (Acampamentos são zonas seguras sem inimigos" },
@@ -1076,8 +1078,5 @@ return {
 		{ "🏆 You defeated the Final Lord!  +{number1} gold  +{number2} tickets", "🏆 Você derrotou o Senhor Final!  +{number1} de ouro  +{number2} tickets" },
 		{ "⭐ New record! Depth {number1} cleared. Depth {number2} is unlocked.", "⭐ Novo recorde! Profundidade {number1} concluída. A profundidade {number2} foi desbloqueada." },
 		{ "💢 Boss #{number1} is AWAKENED — it attacks twice in a row!", "💢 O chefe #{number1} DESPERTOU — ele ataca duas vezes seguidas!" },
-		{ "one hit can take at most {number1}% of your max HP (was {number2}%)", "um golpe tira no máximo {number1}% da sua vida máx. (antes {number2}%)" },
-		{ "🌪 Mob hunter  ·  ✔ 🔫 Railgun / Sniper Rifle (+{number1}%)", "🌪 Caçador de monstros · ✔ 🔫 Arma de trilho / Fuzil de precisão (+{number1}%)" },
-		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>\nON</font>", "<font color='#{number1}fffb{number2}'><b>Ataque Automático</b>\nLIGADO</font>" },
 	},
 }

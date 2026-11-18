@@ -319,7 +319,8 @@ local function showWall(data)
 	while player:GetAttribute("IntroPlaying") do task.wait(0.2) end -- (오프닝 중에는 절대 띄우지 않는다)
 	for _, b in ipairs(wallButtons) do b:Destroy() end
 	wallButtons = {}
-	local lines = { string.format("<font size='17' color='#ffd966'><b>🚪 Stuck at Zone %d? Try another door</b></font>", data.Zone), "" }
+	local lines = { string.format("<font size='17' color='#ffd966'><b>🚪 Stuck at Zone %d? Try another door</b></font>", data.Zone),
+		data.HitPct and string.format("<font size='12' color='#ff9a8a'>💥 One lord hit here = %d%% of your max HP</font>", data.HitPct) or "" } -- (11-18: 화력이 아니라 체력이 모자란지 한눈에)
 	guideText.Text = table.concat(lines, "\n")
 	local ACTIONS = {
 		-- (무기 강화 창은 마을에서만 열리고 던전은 북쪽 관문이라: 그 둘은 글자 안내만. 필드 / 던전 어디서나 열리는 것만 버튼으로)

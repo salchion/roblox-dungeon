@@ -442,6 +442,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/DeathLog.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "DeathLog",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/DepthPace.lua",
       "parent": "ServerScriptService/Modules",
       "name": "DepthPace",

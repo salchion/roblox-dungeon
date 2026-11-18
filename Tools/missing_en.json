@@ -2997,5 +2997,9 @@
 "Recommended depth: clear one run first",
 "A better",
 "is in your bag (Score +{number1})",
-"Upgrade {number1} G (Zone {number2} price)"
+"Upgrade {number1} G (Zone {number2} price)",
+"⏰ Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)",
+"Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)",
+"💥 One lord hit here = {number1}% of your max HP",
+"One lord hit here = {number1}% of your max HP"
 ]

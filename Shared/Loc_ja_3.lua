@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "クリア済み: 深さ{number1}まで  ·  自分の強さに合う深さを自由に選べます  (次: {number2})" },
+		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "ラッキーワンの称号『ラッキーワン』\nレジェンダリーギアを入手する\n{number1} / {number2}　報酬：🎫 {number3}" },
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "クリティカル時、命中した敵に{number1}発のミサイル(それぞれクリティカル攻撃の25%)" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} boss(es)\n{number2} / {number3}   Reward: 🎫 {number4}", "ボスハンター タイトル『ボスハンター』\n{number1} 個のボスを倒す\n{number2} / {number3}　報酬：🎫 {number4}" },
 		{ "🏆 Colossus defeated! Everyone worked together ({number1} player(s) rewarded)", "🏆 コロッサスを倒した！みんなで力を合わせた({number1}人に報酬)" },
@@ -154,6 +156,7 @@ return {
 		{ "Unlocks when you defeat the Zone {number1} lord", "ゾーン{number1}のボスを倒すと解放" },
 		{ "💀 You fell! Revived at the Zone {number1} camp.", "💀 倒れた! ゾーン{number1}のキャンプで復活しました。" },
 		{ "🗼 Floor {number1}+: tower title above your head", "🗼 {number1}階以上: 頭上に塔の称号" },
+		{ "💥 One lord hit here = {number1}% of your max HP", "💥 ここの領主の一撃 = 最大HPの{number1}%" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 マルチロール！\nすべてのチケットを使用（最大{number1}枚）" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 レベルアップ！ Lv.{number1}（最大HP +{number2} 攻撃 +{number3}%）" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 ミッション {number2}/{number3}</font>" },
@@ -177,6 +180,7 @@ return {
 		{ "defeat {number1} monsters here, then the Lord", "ここで{number1}体倒してから領主へ" },
 		{ "Mythic: unique {number1}% (dungeon chests {number2}%+)", "神話: ユニーク{number1}% (ダンジョン宝箱{number2}%以上)" },
 		{ "⏸ {number1} waiting · 📌 Pin one to swap it in", "⏸ {number1}個待機中 · 📌 固定すると入れ替え" },
+		{ "One lord hit here = {number1}% of your max HP", "ここの領主の一撃 = 最大HPの{number1}%" },
 		{ "Defeat {number1} bosses in one Boss Rush run", "1回のボスラッシュで{number1}人のボスを倒す" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "モンスターとの遭遇数 {number1} / {number2}（ゾーンの領主を含む）" },
 		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 無料入場を使用！(本日残り {number1} / {number2})" },

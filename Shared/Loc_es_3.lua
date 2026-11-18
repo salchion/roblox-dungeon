@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 ¡Primera victoria en la zona {number1}! Oro +{number2} · Tickets +{number3} · Llaves +{number4}" },
+		{ "You can pin up to {number1} effects. Unpin another one first", "Puedes fijar hasta {number1} efectos. Quita otro primero" },
 		{ "Shot_Cannon  <font color='#{number1}aa{number2}c{number3}'>Mortar shot</font>", "Cañón de disparo <font color='#{number1}aa{number2}c{number3}'>Disparo de mortero </font>" },
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Común] Zapatos desgastados recuperados automáticamente (Esencia +{number1} {number2} G)" },
 		{ "Reduces training / breakthrough wait time by {number1} hour", "Reduce el tiempo de espera de entrenamiento/avance en {number1} horas" },
@@ -83,6 +85,7 @@ return {
 		{ "Unlocks when you defeat the Zone {number1} lord", "Se desbloquea al derrotar al señor de la zona {number1}" },
 		{ "💀 You fell! Revived at the Zone {number1} camp.", "💀 ¡Caíste! Reviviste en el campamento de la zona {number1}." },
 		{ "🗼 Floor {number1}+: tower title above your head", "🗼 Piso {number1}+: título de la torre sobre tu cabeza" },
+		{ "💥 One lord hit here = {number1}% of your max HP", "💥 Un golpe del señor aquí = {number1}% de tu vida máx." },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 ¡Lanzamiento múltiple!\nUsa todos los boletos (máximo {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 ¡Subiste de nivel! Nivel {number1} (HP máximo +{number2} Ataque +{number3}%)" },
 		{ "<font color='#ffd{number1}'>🎯 Mission {number2}/{number3}</font>", "<font color='#ffd{number1}'>🎯 Misión {number2}/{number3}</font>" },
@@ -106,6 +109,7 @@ return {
 		{ "defeat {number1} monsters here, then the Lord", "derrota {number1} monstruos aquí y luego al señor" },
 		{ "Mythic: unique {number1}% (dungeon chests {number2}%+)", "Mítico: único {number1}% (cofres de mazmorra {number2}%+)" },
 		{ "⏸ {number1} waiting · 📌 Pin one to swap it in", "⏸ {number1} en espera · 📌 Fija uno para cambiarlo" },
+		{ "One lord hit here = {number1}% of your max HP", "Un golpe del señor aquí = {number1}% de tu vida máx." },
 		{ "Defeat {number1} bosses in one Boss Rush run", "Derrota a {number1} jefes en una partida de carrera de jefes" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "Monstruos encontrados: {number1} / {number2} (incluye señores de zona)" },
 		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 ¡Entrada gratis usada! (quedan {number1} / {number2} hoy)" },

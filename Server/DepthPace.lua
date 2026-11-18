@@ -23,6 +23,7 @@ function DepthPace.Record(run)
 	end
 	local n = math.max(1, #run.Members)
 	local solo = secs * n / D.GetHealthScale(n) -- (혼자였다면 걸렸을 시간)
+	solo = solo * (D.PaceScaleRef or 1) / math.max(0.1, run.BossHealthScale or D.PaceScaleRef or 1) -- (그 판의 보스 체력 배율(보너스 횟수 / 패널티)을 기준 배율로 환산)
 	local hp = run.Boss and run.Boss.MaxHealth or 0
 	local okMeta, Meta = pcall(function() return require(script.Parent:WaitForChild("MetaService")) end)
 	for _, member in ipairs(members) do
@@ -32,6 +33,27 @@ function DepthPace.Record(run)
 			print(string.format("[던전 기록] %s · 깊이 %d · 전투력 %d · 파티 %d명 · 보스 처치 %.1f초 (혼자 기준 %.1f초 / 제한 %s초) · 보스 체력 %d · 보스 DPS %d · 다음 깊이 예상 %.1f초",
 				member.Name, depth, power, n, secs, solo, tostring(D.BossTimeLimit or "-"), hp, secs > 0 and math.floor(hp / secs) or 0,
 				D.PaceEstimate(depth + 1, depth, solo, power, power) or 0))
+		end
+	end
+end
+
+-- 보스 시간 초과 (DungeonService 가 한 줄로 부른다): 보스 처치 골드의 TimeoutGoldRatio 만 주고 알린다 + 진단 한 줄 (B안 판단용)
+function DepthPace.Timeout(run, giveGold)
+	local D = Config.Dungeon
+	local ratio = D.TimeoutGoldRatio or 0
+	if ratio > 0 and giveGold then giveGold(run, (D.VictoryGold or 0) * ratio) end
+	local text = string.format("⏰ Time's up! The boss escaped — you got %d%% of the clear gold (no chest, tickets or depth record)", math.floor(ratio * 100 + 0.5))
+	local okR, Remotes = pcall(function() return require(ReplicatedStorage:WaitForChild("Remotes")) end)
+	for _, member in ipairs(run.Members or {}) do
+		if okR then Remotes.Notify:FireClient(member, text) end
+		if RunService:IsStudio() then
+			local depth = D.DepthOf(run.DiffKey) or 0
+			local boss = run.Boss
+			local power = member:GetAttribute("Power") or 0
+			local est = D.PaceEstimate(depth, member:GetAttribute("PaceDepth"), member:GetAttribute("PaceSecs"), member:GetAttribute("PacePower"), power)
+			print(string.format("[던전 시간초과] %s · 깊이 %d · 전투력 %d · 보스 최대 체력 %d · 보스 남은 체력 %d%% · 경과 %.1f초 · 예상 %s초",
+				member.Name, depth, power, boss and boss.MaxHealth or 0, boss and boss.MaxHealth > 0 and math.floor(math.max(0, boss.Health) / boss.MaxHealth * 100 + 0.5) or 0,
+				run.BossAt and os.clock() - run.BossAt or 0, est and string.format("%.1f", est) or "-"))
 		end
 	end
 end

@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Damage to bosses / lords / elites +{number1}% per point  (max {number2})", "Dégâts aux boss / seigneurs / élites +{number1}% par point  (max {number2})" },
+		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one", "Effets uniques trouvés {number1} / {number2}  ·  l'équipement mythique peut en porter un" },
+		{ "Locks onto up to {number1} enemies, total damage -{number2}%: for crowds", "Verrouille jusqu'à {number1} ennemis, dégâts totaux -{number2} % : pour les groupes" },
 		{ "⚖ All-round  ·  ✔ 🔫 Spell Tome / Rocket Launcher (+{number1}%)", "⚖ Polyvalent · ✔ 🔫 Tome de sorts / Lance-roquettes (+{number1}%)" },
 		{ "🔒 Zone {number1} · Volcano Sealed\nOpen the previous gate first", "🔒 Zone {number1} · Volcan scellé\nOuvrez d'abord la porte précédente" },
 		{ "♻ [Common] Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [Commun] Armure en cuir récupérée automatiquement (Essence +{number1} {number2} G)" },
@@ -104,6 +107,7 @@ return {
 		{ "Unlocks when you defeat the Zone {number1} lord", "Se débloque en battant le seigneur de la zone {number1}" },
 		{ "💀 You fell! Revived at the Zone {number1} camp.", "💀 Vous êtes tombé ! Ranimé au camp de la zone {number1}." },
 		{ "🗼 Floor {number1}+: tower title above your head", "🗼 Étage {number1}+ : titre de la tour au-dessus de la tête" },
+		{ "💥 One lord hit here = {number1}% of your max HP", "💥 Un coup du seigneur ici = {number1}% de tes PV max" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Lancer multiple !\nUtilise tous les tickets (maximum {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Niveau supérieur ! Lv.{number1} (PV max +{number2} Attaque +{number3}%)" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} améliorations : {number2} réussies / {number3} échouées  (Or -{number4})" },
@@ -126,6 +130,7 @@ return {
 		{ "defeat {number1} monsters here, then the Lord", "vaincs {number1} monstres ici, puis le seigneur" },
 		{ "Mythic: unique {number1}% (dungeon chests {number2}%+)", "Mythique : unique {number1} % (coffres de donjon {number2} %+)" },
 		{ "⏸ {number1} waiting · 📌 Pin one to swap it in", "⏸ {number1} en attente · 📌 Épingle pour l'échanger" },
+		{ "One lord hit here = {number1}% of your max HP", "Un coup du seigneur ici = {number1}% de tes PV max" },
 		{ "Defeat {number1} bosses in one Boss Rush run", "Vainquez {number1} boss lors d'une course de boss" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "Monstres rencontrés : {number1} / {number2} (incluant les seigneurs de zone)" },
 		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 Entrée gratuite utilisée ! ({number1} / {number2} restantes aujourd'hui)" },

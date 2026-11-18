@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ [Rare] Chainmail auto-salvaged (Essence +{number1} {number2} G)", "♻ [Selten] Kettenrüstung automatisch gesammelt (Essenz +{number1} {number2} G)" },
+		{ "📍 Dungeon   <font color='#{number1}fd{number2}ff'>🎟 Free {number3}/{number4}</font>", "📍 Dungeon <font color='#{number1}fd{number2}ff'>🎟 Kostenlos {number3}/{number4}</font>" },
+		{ "🎯 Boss hunter  ·  ✔ 🔫 Spell Tome / Shotgun (+{number1}%)", "🎯 Bossjäger · ✔ 🔫 Zauberbuch / Schrotflinte (+{number1}%)" },
 		{ "kill → explosion, radius {number1}, hits up to 8 enemies", "Kill → Explosion, Radius {number1}, trifft bis zu 8 Gegner" },
 		{ "🌟 Paragon point +{number1}! {number2} unspent (press T → Paragon)", "🌟 Paragon-Punkt +{number1}! {number2} unverteilt (Taste T → Paragon)" },
 		{ "Defeat it before time runs out! Monsters left: {number1}", "Besiege ihn, bevor die Zeit abläuft! Übrige Monster: {number1}" },
@@ -62,6 +65,7 @@ return {
 		{ "Unlocks when you defeat the Zone {number1} lord", "Wird freigeschaltet, wenn du den Lord von Zone {number1} besiegst" },
 		{ "💀 You fell! Revived at the Zone {number1} camp.", "💀 Du bist gefallen! Im Lager von Zone {number1} wiederbelebt." },
 		{ "🗼 Floor {number1}+: tower title above your head", "🗼 Ab Etage {number1}: Turmtitel über deinem Kopf" },
+		{ "💥 One lord hit here = {number1}% of your max HP", "💥 Ein Herrscher-Treffer hier = {number1}% deiner max. LP" },
 		{ "🎰 Multi Roll!\nUses all Tickets (max {number1})", "🎰 Mehrfache Rolle!\nVerwendet alle Tickets (max. {number1})" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2} Attack +{number3}%)", "🎉 Stufe aufsteigen! Lv.{number1} (Maximale HP +{number2} Angriff +{number3}%)" },
 		{ "{number1} upgrades: {number2} success / {number3} fail  (Gold -{number4})", "{number1} Verbesserungen: {number2} Erfolg / {number3} Fehlschlag  (Gold -{number4})" },
@@ -84,6 +88,7 @@ return {
 		{ "defeat {number1} monsters here, then the Lord", "hier {number1} Monster besiegen, dann den Fürsten" },
 		{ "Mythic: unique {number1}% (dungeon chests {number2}%+)", "Mythisch: Einzigartig {number1}% (Dungeontruhen {number2}%+)" },
 		{ "⏸ {number1} waiting · 📌 Pin one to swap it in", "⏸ {number1} warten · 📌 Anheften zum Tauschen" },
+		{ "One lord hit here = {number1}% of your max HP", "Ein Herrscher-Treffer hier = {number1}% deiner max. LP" },
 		{ "Defeat {number1} bosses in one Boss Rush run", "Besiege {number1} Bosse in einem Boss-Rush-Lauf" },
 		{ "Monsters met {number1} / {number2} (incl. zone lords)", "Monster getroffen {number1} / {number2} (einschließlich Zonenherren)" },
 		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 Gratis-Eintritt genutzt! (heute noch {number1} / {number2})" },

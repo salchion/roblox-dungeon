@@ -78,10 +78,8 @@ function Advice.WallCard(player)
 	if player:GetAttribute("TutorialActive") == true then return end
 	local zone = math.min(Config.Field.ZoneCount, (player:GetAttribute("ClearedZone") or 0) + 1)
 	local now = os.clock()
-	local byZone = wallDeaths[player] or {}
-	wallDeaths[player] = byZone
-	local list = byZone[zone] or {}
-	byZone[zone] = list
+	local list = wallDeaths[player] or {} -- (11-18: 10분 창은 구역과 상관없이 하나로 센다: 창 도중 ClearedZone 이 바뀌어도 목록이 갈라지지 않게)
+	wallDeaths[player] = list
 	table.insert(list, now)
 	while #list > 0 and now - list[1] > 600 do table.remove(list, 1) end
 	local shown = wallShown[player] or {}
@@ -122,8 +120,17 @@ function Advice.WallCard(player)
 	else
 		statsRoute = { Key = "Train", Icon = "🏋", Name = "Training", Info = "<font>Grows even while you're away</font>" }
 	end
+	-- 이 구역 한 방 = 그 구역 군주 탄 한 발(3갈래 1.2배, 방어 전) ÷ 내 최대 체력 (FieldService 군주 ShotDamage 와 같은 식)
+	local hitPct
+	do
+		local F = Config.Field
+		local shot = math.max(10, math.floor(Config.Monster.GetStats(F.GetZoneLevel(zone) + 3).ShotDamage * (zone >= 7 and 1.3 or 1.5) * F.ZoneDanger.Damage[zone]))
+		local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+		local maxHp = humanoid and humanoid.MaxHealth or 0
+		if maxHp > 0 then hitPct = math.floor(shot * 1.2 / maxHp * 100 + 0.5) end
+	end
 	Remotes.Tutorial:FireClient(player, "Wall", {
-		Zone = zone, Deaths = #list,
+		Zone = zone, Deaths = #list, HitPct = hitPct,
 		Routes = {
 			{ Key = "Upgrade", Icon = "🔨", Name = "Weapon upgrade", Info = upInfo },
 			{ Key = "Aug", Icon = "✨", Name = "Set effect", Info = augZone and (augCost and string.format("Set you're wearing Lv.%d · next gold level %s G", augLv, comma(augCost)) or string.format("Set you're wearing Lv.%d · gold levels maxed", augLv)) or "No set effect on yet — wear 2+ set pieces" },

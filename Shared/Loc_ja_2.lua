@@ -1115,7 +1115,9 @@ return {
 		{ "Zone {number1} · Darklands\n🦇 Dark Castle Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠☠\n🦇 New set from here: Dark Pact Set", "ゾーン {number1} ・ダークランド\n🦇 ダークキャッスルゲート · 推奨レベル ⚡{number2}\n危険 ☠☠☠☠☠☠☠\n🦇 ここから新しいセット：ダークパクトセット" },
 		{ "Zone {number1} · Volcano\n🌋 Lava Fortress Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠\n🌋 New set from here: Lava Heart Set", "ゾーン {number1} · 火山\n🌋 溶岩の要塞の門 · レコメンド ⚡{number2}\n危険 ☠☠☠☠☠☠\n🌋 ここから新しいセット：溶岩ハートセット" },
 		{ "🚧 Stuck at level {number1}! Go to Menu (B) → Skills & Growth tab (Passives · Training) to break through.", "🚧 レベル{number1}で停滞中！メニュー(B)→スキル・成長タブ(パッシブ · 訓練)で突破しよう。" },
+		{ "⏰ Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "⏰ 時間切れ！ボスが逃げた — クリアゴールドの{number1}%だけ獲得（宝箱・チケット・深さ記録なし）" },
 		{ "💰 Not enough Gold. ({number1} needed) Earn Gold from field hunting / dungeons / Boss Rush / idle income", "💰 ゴールドが足りません。({number1}必要) フィールド狩り / ダンジョン / ボスラッシュ / 放置収入で入手" },
+		{ "Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "時間切れ！ボスが逃げた — クリアゴールドの{number1}%だけ獲得（宝箱・チケット・深さ記録なし）" },
 		{ "Zone {number1} · Meadow\n🌾 Adventure Begins · Rec. ⚡{number2}\nDanger ☠\n🌾 New set from here: Meadow's Guard Set", "ゾーン {number1} ・草原\n🌾 冒険の始まり · レコード ⚡{number2}\n危険 ☠\n🌾 ここから新しいセット：草原のガードセット" },
 		{ "Limit Breaker   Title 『Limit Breaker』\nDefeat {number1} bosses in one Boss Rush run\n{number2} / {number3}   Reward: 🎫 {number4}", "リミットブレイカー タイトル『リミットブレイカー』\n1回のボスラッシュで{number1}人のボスを倒す\n{number2} / {number3}　報酬：🎫 {number4}" },
 		{ "Deadeye: an enemy must be within {number1} range to lock on! (Camps are safe zones with no enemies", "デッドアイ：ロックオンするには射程 {number1} 内に敵が必要です！(キャンプは敵のいない安全地帯です" },
@@ -1149,7 +1151,5 @@ return {
 		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "スキルマスター　タイトル『スキルマスター』\nスキルを{number1}回使用する\n{number2} / {number3}　報酬：🎫 {number4}" },
 		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(あなたの記録: 深度{number1} · ダンジョンのテーマはランダム、確率は同じ)" },
 		{ "Each depth up: monster HP +{number1}% · damage +{number2}% · gold +{number3}% · better chest odds", "深さが1つ上がるごとに：モンスターHP+{number1}%・ダメージ+{number2}%・ゴールド+{number3}%・宝箱の確率アップ" },
-		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "クリア済み: 深さ{number1}まで  ·  自分の強さに合う深さを自由に選べます  (次: {number2})" },
-		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "ラッキーワンの称号『ラッキーワン』\nレジェンダリーギアを入手する\n{number1} / {number2}　報酬：🎫 {number3}" },
 	},
 }

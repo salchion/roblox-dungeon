@@ -4,6 +4,18 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Your best tier: {text1} {text2}", "내 최고 등급: {text1} {text2}" },
+		{ " · New era 『{text1} {text2}』!", " · 새 시대 『{text1} {text2}』!" },
+		{ "{text1} {text2} also unlocked", "{text1} {text2}도 열렸어요" },
+		{ "{text1} equipped! ({text2})", "{text1} 장착! ({text2})" },
+		{ "ZONE {number1}  ·  {text2}   {text3}", "{number1}구역  ·  {text2}   {text3}" },
+		{ "[{text1}] {text2} equipped!", "[{text1}] {text2} 장착!" },
+		{ "{text1} 『{text2}』 Lv.{number1} → Lv.{number2}", "{text1} 『{text2}』 Lv.{number1} → Lv.{number2}" },
+		{ "{text1} {text2} piece ({number3}/3)", "{text1} {text2} 부위 ({number3}/3)" },
+		{ "{text1} (Lord of {text2})", "{text1} ({text2}의 군주)" },
+		{ "🗿 {text1} · Zone {text2}", "🗿 {text1} · {text2}구역" },
+		{ "{text1} New set: {text2}", "{text1} 새 세트: {text2}" },
+		{ "{text1} {number2} pieces  {text3}", "{text1} {number2}부위  {text3}" },
 		{ "{text1} · Score {number2}{text3}", "{text1} · 점수 {number2}{text3}" },
 		{ "⚡ Power {text1}{number2} {text3}", "⚡ 전투력 {text1}{number2} {text3}" },
 		{ "+ {text1} piece {text2}", "+ {text1} 조각 {text2}" },

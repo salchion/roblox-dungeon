@@ -937,7 +937,9 @@ return {
 		{ "Zone {number1} · Darklands\n🦇 Dark Castle Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠☠\n🦇 New set from here: Dark Pact Set", "Zone {number1} · Dunkle Länder\n🦇 Dunkles Schloss-Tor · Empfohlen ⚡{number2}\nGefahr ☠☠☠☠☠☠☠\n🦇 Neues Set von hier: Dunkles Pakt-Set" },
 		{ "Zone {number1} · Volcano\n🌋 Lava Fortress Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠\n🌋 New set from here: Lava Heart Set", "Zone {number1} · Vulkan\n🌋 Lava-Festungstor · Rec. ⚡{number2}\nGefahr ☠☠☠☠☠☠\n🌋 Neues Set von hier: Lava-Herz-Set" },
 		{ "🚧 Stuck at level {number1}! Go to Menu (B) → Skills & Growth tab (Passives · Training) to break through.", "🚧 Du steckst bei Stufe {number1} fest! Gehe zu Menü (B) → Tab Fähigkeiten & Wachstum (Passiv · Training), um durchzubrechen." },
+		{ "⏰ Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "⏰ Zeit abgelaufen! Der Boss ist entkommen — du bekommst {number1}% des Abschlussgolds (keine Truhe, Tickets oder Tiefenrekord)" },
 		{ "💰 Not enough Gold. ({number1} needed) Earn Gold from field hunting / dungeons / Boss Rush / idle income", "💰 Nicht genug Gold. ({number1} nötig) Gold gibt es durch Feldjagd / Dungeons / Boss Rush / Leerlauf-Einkommen" },
+		{ "Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "Zeit abgelaufen! Der Boss ist entkommen — du bekommst {number1}% des Abschlussgolds (keine Truhe, Tickets oder Tiefenrekord)" },
 		{ "Zone {number1} · Meadow\n🌾 Adventure Begins · Rec. ⚡{number2}\nDanger ☠\n🌾 New set from here: Meadow's Guard Set", "Zone {number1} · Wiese\n🌾 Das Abenteuer beginnt · Rec. ⚡{number2}\nGefahr ☠\n🌾 Neues Set von hier: Wiesen-Wächter-Set" },
 		{ "Limit Breaker   Title 『Limit Breaker』\nDefeat {number1} bosses in one Boss Rush run\n{number2} / {number3}   Reward: 🎫 {number4}", "Limitbrecher-Titel 『Limit Breaker』\nBesiege {number1} Bosse in einem Boss-Rush-Lauf\n{number2} / {number3} Belohnung: 🎫 {number4}" },
 		{ "Deadeye: an enemy must be within {number1} range to lock on! (Camps are safe zones with no enemies", "Totes Auge: Ein Gegner muss in Reichweite {number1} sein, um ihn zu erfassen! (Lager sind sichere Zonen ohne Gegner" },
@@ -1062,8 +1064,5 @@ return {
 		{ "below 50% HP take {number1}% less · below 25% take {number2}% less", "unter 50% LP {number1}% weniger · unter 25% {number2}% weniger" },
 		{ "Recommended: Depth {number1} (deepest you can clear in {number2}s)", "Empfohlen: Tiefe {number1} (tiefste, die du in {number2}s schaffst)" },
 		{ "Upgrade all the way to the last weapon (level {number1})", "Verbessere alle bis zur letzten Waffe (Stufe {number1})" },
-		{ "♻ [Rare] Chainmail auto-salvaged (Essence +{number1} {number2} G)", "♻ [Selten] Kettenrüstung automatisch gesammelt (Essenz +{number1} {number2} G)" },
-		{ "📍 Dungeon   <font color='#{number1}fd{number2}ff'>🎟 Free {number3}/{number4}</font>", "📍 Dungeon <font color='#{number1}fd{number2}ff'>🎟 Kostenlos {number3}/{number4}</font>" },
-		{ "🎯 Boss hunter  ·  ✔ 🔫 Spell Tome / Shotgun (+{number1}%)", "🎯 Bossjäger · ✔ 🔫 Zauberbuch / Schrotflinte (+{number1}%)" },
 	},
 }
