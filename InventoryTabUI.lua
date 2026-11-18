@@ -208,13 +208,14 @@ local function buildInventoryTab(state)
 		local def = setKey and Config.Sets[setKey]
 		if not def then return end
 		local active = (pieces or 0) >= 2
-		local badge = create("Frame", { Size = UDim2.new(0, 20, 0, 20), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -3, 0, 3), BackgroundColor3 = def.Color, BorderSizePixel = 0, ZIndex = 6, Active = false }, tile)
+		local z = math.max(6, (tile.ZIndex or 1) + 5) -- (칸보다 위에: 장착 칸은 ZIndex 9 + 메달 10~13 이라 예전 고정값 6 이면 배지가 칸 뒤로 숨어 초록 귀퉁이만 보였다)
+		local badge = create("Frame", { Size = UDim2.new(0, 20, 0, 20), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -3, 0, 3), BackgroundColor3 = def.Color, BorderSizePixel = 0, ZIndex = z, Active = false }, tile)
 		create("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
 		local stroke = create("UIStroke", { Color = active and Color3.new(1, 1, 1) or Color3.fromRGB(22, 18, 44), Thickness = active and 2 or 1.8, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, badge)
 		if active then
 			TweenService:Create(stroke, TweenInfo.new(0.9, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.5 }):Play()
 		end
-		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = def.Icon or "★", TextSize = 12, TextWrapped = false, AutoLocalize = false, ZIndex = 7 }, badge)
+		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = def.Icon or "★", TextSize = 12, TextWrapped = false, AutoLocalize = false, ZIndex = z + 1 }, badge)
 	end
 
 	local SLOT_ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Weapon = "🔫", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
