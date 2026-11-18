@@ -226,6 +226,10 @@ local function openSwap()
 	swapPick.Visible = true
 end
 local toggleButton = button({ Size = UDim2.new(0.5, -12, 0, 38), Position = UDim2.new(0, 8, 1, -46), BackgroundColor3 = Color3.fromRGB(62, 64, 84), Text = "", TextSize = 12 }, box, function()
+	if swapPick.Visible then -- 고르는 창이 떠 있을 때 한 번 더 누르면 그냥 닫는다 (꼭 끼우지 않아도 된다)
+		swapPick.Visible = false
+		return
+	end
 	if (player:GetAttribute("AugSlotOf_" .. selectedZone) or 0) > 0 then
 		Remotes.Aug:FireServer("Unequip", selectedZone)
 		return
@@ -296,6 +300,7 @@ for zone = 1, ZONES do
 	make("UICorner", { CornerRadius = UDim.new(1, 0) }, matchTag)
 	local hit = make("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, card)
 	hit.Activated:Connect(function()
+		if selectedZone ~= zone then swapPick.Visible = false end -- (다른 효과를 고르면 바꿀 칸 고르기 창은 닫는다)
 		selectedZone = zone
 		refresh()
 	end)
@@ -603,6 +608,7 @@ player:GetAttributeChangedSignal("AugFocusZone"):Connect(function() -- 장비 �
 	if type(zone) ~= "number" then return end
 	player:SetAttribute("AugFocusZone", nil)
 	selectedZone = math.clamp(math.floor(zone), 1, ZONES)
+	swapPick.Visible = false
 	task.delay(0.05, function() -- (메뉴가 닫힌 다음에 연다)
 		panel.Visible = true
 		refresh()
