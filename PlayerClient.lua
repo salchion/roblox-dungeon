@@ -146,19 +146,19 @@ local xpFill = create("Frame", {
 rounded(xpFill, 4)
 
 local toastLabel = makeLabel({
-	Name = "ToastLabel", Size = UDim2.new(0, 400, 0, 74),
+	Name = "ToastLabel", Size = UDim2.new(0, 330, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, -- (400 x 74 고정 -> 폭 330, 높이는 글 길이만큼: 한 줄 알림이 화면 가운데를 크게 가렸다)
 	AnchorPoint = Vector2.new(0, 1),
 	Position = UDim2.new(0, -430, 1, -250),
 	BackgroundColor3 = Color3.fromRGB(16, 18, 30),
 	BackgroundTransparency = 0.08,
 	Font = Enum.Font.GothamBold,
-	TextSize = 14,
+	TextSize = 13,
 	TextWrapped = true,
 	TextXAlignment = Enum.TextXAlignment.Left,
 	Visible = false,
 	ZIndex = 60, -- 큰 창(메뉴 등) 위에 보이게
 }, gui)
-create("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 10) }, toastLabel)
+create("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10), PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8) }, toastLabel)
 create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, toastLabel)
 rounded(toastLabel, 12)
 
@@ -196,7 +196,7 @@ do
 			local targetY = 160
 			for _, name in ipairs({ "MenuPanel", "EnhancePanel" }) do -- (메뉴 / 강화 창이 열려 있으면 그 창 윗부분을 가리지 않게 창 바로 위에)
 				local window = gui:FindFirstChild(name)
-				if window and window.Visible then targetY = math.max(4, math.min(targetY, window.AbsolutePosition.Y - 82)) end
+				if window and window.Visible then targetY = math.max(4, math.min(targetY, window.AbsolutePosition.Y - toastLabel.AbsoluteSize.Y - 8)) end
 			end
 			toastLabel.AnchorPoint = Vector2.new(0.5, 0)
 			toastLabel.Position = UDim2.new(0.5, 0, 0, -90)

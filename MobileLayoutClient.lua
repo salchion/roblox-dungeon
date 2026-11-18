@@ -446,7 +446,7 @@ function layoutCompact(viewport)
 	end
 
 	-- 토스트: 아래 가운데 (스킬 바 위)
-	set(find(hud, "ToastLabel"), "Size", UDim2.new(0, 320, 0, 74))
+	set(find(hud, "ToastLabel"), "Size", UDim2.new(0, 300, 0, 0)) -- (높이는 글 길이만큼: PlayerClient 가 AutomaticSize Y)
 
 	-- 던전 위쪽 가운데: 배너 / 막대 (왼쪽 카드와 오른쪽 버튼 사이)
 	local bw = narrow and math.min(360, vw - 24) or 360

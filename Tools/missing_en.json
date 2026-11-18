@@ -2981,5 +2981,21 @@
 "🌟 Equip gear for this setup",
 "🌟 Match set effects (Y)",
 "🌟 Your bag has a better combo for your set effects — press 🌟 Match set effects (Y)",
-"🌟 Gear matches your set effects (Y) — set effect levels are maxed"
+"🌟 Gear matches your set effects (Y) — set effect levels are maxed",
+"Match set effects (Y)",
+"Already the best gear for this setup's set effects.",
+"Set-effect gear equipped: {number1} slot(s) swapped",
+"Equip gear for this setup",
+"Your bag has a better combo for your set effects — press 🌟 Match set effects (Y)",
+"Gear matches your set effects (Y) — set effect levels are maxed",
+"Time's up! The boss escaped",
+"Power {number1} → {number2}",
+"Est. boss kill {number1}s",
+"Est. boss kill:",
+"Recommended: Depth {number1} (deepest you can clear in {number2}s)",
+"Recommended: Depth {number1}",
+"Recommended depth: clear one run first",
+"A better",
+"is in your bag (Score +{number1})",
+"Upgrade {number1} G (Zone {number2} price)"
 ]

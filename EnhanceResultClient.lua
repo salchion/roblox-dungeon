@@ -41,6 +41,31 @@ end
 
 local panel
 local token = 0
+-- 결과 카드의 3D 무기: 카드마다 모형을 새로 복제하면 연속 강화(x10 / 최대 강화) 때 0.2~0.3초씩 끊겼다 -> 한 번 만들어 두고 카드에 옮겨 붙인다 (무기 모양이 바뀔 때만 다시 복제)
+local resultView -- { Frame, Camera, Model, Index }
+local function weaponView(index)
+	local previews = ReplicatedStorage:FindFirstChild("WeaponPreviews")
+	local source = previews and previews:FindFirstChild("W" .. index)
+	if not source then return nil end
+	if not resultView then
+		local frame = new("ViewportFrame", { Size = UDim2.new(1, -8, 1, -8), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 24,
+			Ambient = Color3.fromRGB(190, 185, 205), LightColor = Color3.new(1, 1, 1), LightDirection = Vector3.new(-0.4, -1, -0.6) }, nil)
+		local camera = new("Camera", { FieldOfView = 30 }, frame)
+		frame.CurrentCamera = camera
+		resultView = { Frame = frame, Camera = camera }
+	end
+	if resultView.Index ~= index then
+		if resultView.Model then resultView.Model:Destroy() end
+		local model = source:Clone()
+		local cf, size = model:GetBoundingBox()
+		model:PivotTo(CFrame.Angles(0, 0.6, 0) * CFrame.Angles(0, 0, math.rad(-8)) * cf:Inverse() * model:GetPivot()) -- (가운데를 원점으로, 구슬과 같은 비스듬한 옆모습)
+		model.Parent = resultView.Frame
+		local radius = math.max(size.X, size.Y, size.Z) * 0.5
+		resultView.Camera.CFrame = CFrame.lookAt(Vector3.new(0, radius * 0.9, radius * 3.6), Vector3.zero)
+		resultView.Model, resultView.Index = model, index
+	end
+	return resultView.Frame
+end
 
 local function show(ok, summary)
 	panel = panel or (player.PlayerGui:FindFirstChild("HUD") and player.PlayerGui.HUD:FindFirstChild("EnhancePanel"))
@@ -48,6 +73,7 @@ local function show(ok, summary)
 	token += 1
 	local mine = token
 	local old = panel:FindFirstChild("EnhanceResultCard")
+	if resultView then resultView.Frame.Parent = nil end -- (지우는 카드와 같이 없어지지 않게 먼저 떼어 둔다)
 	if old then old:Destroy() end
 
 	local level = player:GetAttribute("WeaponLevel") or 0
@@ -95,20 +121,8 @@ local function show(ok, summary)
 	new("UIStroke", { Color = success and color or Color3.fromRGB(150, 150, 170), Thickness = 3 }, tile)
 	new("UIGradient", { Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(120, 120, 150)), Rotation = 90 }, tile)
 	do -- 칸 안 무기: 강화 창 구슬과 같은 실제 3D 무기 모형 (예전 🔫 이모지는 장난감 물총처럼 보였다). 모형이 아직 없으면 칸만 둔다
-		local previews = ReplicatedStorage:FindFirstChild("WeaponPreviews")
-		local source = previews and previews:FindFirstChild("W" .. Config.GetLookTier(level, typeKey).Index)
-		if source then
-			local view = new("ViewportFrame", { Size = UDim2.new(1, -8, 1, -8), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 1, ZIndex = 24,
-				Ambient = Color3.fromRGB(190, 185, 205), LightColor = Color3.new(1, 1, 1), LightDirection = Vector3.new(-0.4, -1, -0.6) }, tile)
-			local camera = new("Camera", { FieldOfView = 30 }, view)
-			view.CurrentCamera = camera
-			local model = source:Clone()
-			local cf, size = model:GetBoundingBox()
-			model:PivotTo(CFrame.Angles(0, 0.6, 0) * CFrame.Angles(0, 0, math.rad(-8)) * cf:Inverse() * model:GetPivot()) -- (가운데를 원점으로, 구슬과 같은 비스듬한 옆모습)
-			model.Parent = view
-			local radius = math.max(size.X, size.Y, size.Z) * 0.5
-			camera.CFrame = CFrame.lookAt(Vector3.new(0, radius * 0.9, radius * 3.6), Vector3.zero)
-		end
+		local view = weaponView(Config.GetLookTier(level, typeKey).Index)
+		if view then view.Parent = tile end
 	end
 	label({ Size = UDim2.new(1, -6, 0, 18), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 0, 1, 0), Text = "+" .. level, TextSize = 14, TextColor3 = success and GREEN or Color3.new(1, 1, 1), TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 24 }, tile)
 	if success then -- 빛줄기가 칸을 한 번 쓸고 지나간다
@@ -163,7 +177,10 @@ local function show(ok, summary)
 			elseif child:IsA("UIStroke") then tween(child, 0.25, { Transparency = 1 }) end
 		end
 		tween(card, 0.25, { BackgroundTransparency = 1 })
-		game:GetService("Debris"):AddItem(card, 0.3)
+		task.delay(0.3, function()
+			if resultView and resultView.Frame:IsDescendantOf(card) then resultView.Frame.Parent = nil end -- (모형은 다음 카드에서 다시 쓴다)
+			card:Destroy()
+		end)
 	end)
 end
 
