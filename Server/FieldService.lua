@@ -2894,6 +2894,8 @@ function Field.RespawnAtCamp(player, character, zone)
 	local root = character:WaitForChild("HumanoidRootPart", 5)
 	prestream(player, camp.Position, 0.8)
 	if root then
+		root.AssemblyLinearVelocity = Vector3.zero -- (대시 / 달리기 잔여 속도로 캠프 밖으로 미끄러지지 않게)
+		root.AssemblyAngularVelocity = Vector3.zero
 		character:PivotTo(camp)
 		player:SetAttribute("Zone", "Field")
 	end
@@ -2959,6 +2961,11 @@ local function warp(player, zone)
 	game:GetService("Debris"):AddItem(shield, 1.6)
 	task.delay(1, function()
 		if not player.Parent or not getAliveParts(player) or player:GetAttribute("Zone") == "Dungeon" then return end
+		local before = getAliveParts(player) -- (워프 직전의 대시 잔여 속도를 지우다: 새 위치에서 그 방향으로 계속 밀린다)
+		if before then
+			before.AssemblyLinearVelocity = Vector3.zero
+			before.AssemblyAngularVelocity = Vector3.zero
+		end
 		if zone == 0 then
 			player.Character:PivotTo(lobbySpawn)
 			player:SetAttribute("Zone", "Lobby")

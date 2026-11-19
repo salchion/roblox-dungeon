@@ -66,13 +66,15 @@ local function showBanner(text1, text2, text3, color, seconds)
 	end)
 end
 
+local fovToken = 0
 local function punchFov(amount)
-	local camera = workspace.CurrentCamera
-	if not camera then return end
-	local base = camera.FieldOfView
-	TweenService:Create(camera, TweenInfo.new(0.12), { FieldOfView = base + amount }):Play()
+	-- 카메라 FOV 는 PlayerClient 가 소유한다(매 프레임 70 근처로 당긴다). 여기서 카메라를 직접 트윈하면 밀어 올린 값이
+	-- 곧바로 깎여서 화면이 거의 안 밀렸다 -> 연출은 "FovOffset" 가산값만 올리고, PlayerClient 가 70 + offset 을 따라간다.
+	fovToken += 1
+	local token = fovToken
+	player:SetAttribute("FovOffset", amount)
 	task.delay(0.15, function()
-		TweenService:Create(camera, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { FieldOfView = base }):Play()
+		if token == fovToken then player:SetAttribute("FovOffset", 0) end
 	end)
 end
 

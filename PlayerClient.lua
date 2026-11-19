@@ -1592,6 +1592,7 @@ local nextAttack = 0
 
 local sprinting = false
 local sliding = false
+local cancelDash = nil -- 진행 중인 대시를 즉시 끝내는 함수 (워프 직전: 새 위치로 잔여 속도가 이어지지 않게)
 
 local function applySpeed()
 	local character = player.Character
@@ -1731,7 +1732,7 @@ local function slide()
 	local started = os.clock()
 	local lastGhost = 0
 	local connection
-	local function finish()
+	local function finish(cancel)
 		connection:Disconnect()
 		velocity:Destroy()
 		attachment:Destroy()
@@ -1741,15 +1742,19 @@ local function slide()
 		end
 		if root.Parent then
 			local vertical = root.AssemblyLinearVelocity.Y
-			root.AssemblyLinearVelocity = direction * P.RunSpeed * 1.1 + Vector3.new(0, vertical, 0)
+			root.AssemblyLinearVelocity = cancel and Vector3.zero or (direction * P.RunSpeed * 1.1 + Vector3.new(0, vertical, 0))
 		end
 		sliding = false
+		cancelDash = nil
 		task.delay(0.6, function()
 			puff:Destroy()
 			trail:Destroy()
 			trailTop:Destroy()
 			trailBottom:Destroy()
 		end)
+	end
+	cancelDash = function()
+		if sliding then finish(true) end
 	end
 	connection = RunService.Heartbeat:Connect(function()
 		local t = (os.clock() - started) / P.DashTime
@@ -1778,7 +1783,8 @@ task.spawn(function() -- 이동 속도를 0.5초마다 다시 맞춘다 (스크�
 end)
 
 RunService.RenderStepped:Connect(function(dt)
-	local target = player:GetAttribute("DeadeyeActive") and 62 or (sliding and 108 or sprinting and 80 or 70) -- 데드아이: 줌인
+	local base = player:GetAttribute("DeadeyeActive") and 62 or (sliding and 108 or sprinting and 80 or 70) -- 데드아이: 줌인
+	local target = base + (player:GetAttribute("FovOffset") or 0) -- 연출(군주 등장 펀치 등)은 이 가산값만 올린다: 카메라 FOV 를 직접 만지면 여기서 지워진다
 	camera.FieldOfView += (target - camera.FieldOfView) * math.min(1, dt * 8)
 end)
 
@@ -1992,7 +1998,10 @@ local function fireAt(worldPoint, manual)
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	if not root then return end
 
-	if not sliding then
+	-- 서 있을 때만 조준점 쪽을 본다. 걸어다니면서 돌리면 Humanoid.AutoRotate 가 다음 물리 스텝에 이동 방향으로
+	-- 되돌려서, 자동 공격을 켜고 이동할 때 몸이 매 발사마다 홱홱 떨린다 (탄은 서버가 좌표로 쏘므로 명중 판정과 무관)
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	if not sliding and (not humanoid or humanoid.MoveDirection.Magnitude < 0.05) then
 		local flat = Vector3.new(worldPoint.X - root.Position.X, 0, worldPoint.Z - root.Position.Z)
 		if flat.Magnitude > 1 then
 			root.CFrame = CFrame.lookAt(root.Position, root.Position + flat)
@@ -3083,6 +3092,7 @@ Remotes.Warp.OnClientEvent:Connect(function(action, seconds)
 		refreshWarp()
 		warpPanel.Visible = true
 	elseif action == "Cast" then -- 이동 연출: 화면이 연한 푸른빛으로 밝아졌다가 이동 직후 걷힌다
+		if cancelDash then cancelDash() end -- 워프 전에 남은 대시를 끝낸다 (새 위치에서 그 방향으로 계속 밀리던 것)
 		local fade = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(150, 190, 245), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 95, Active = false }, gui)
 		TweenService:Create(fade, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.In), { BackgroundTransparency = 0.35 }):Play()
 		task.delay(seconds or 1, function()
@@ -3378,6 +3388,7 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
+local touchTaps = {} -- 터치 시작점: 손을 뗄 때 짧은 탭이었는지 보고 나서 사격한다 (드래그로 시점을 돌리거나 조이스틱을 만지면 사격이 아니다)
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	if gameProcessed then return end
 
@@ -3396,14 +3407,24 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	elseif input.KeyCode == Enum.KeyCode.M then
 		toggleMusic()
 	elseif input.UserInputType == Enum.UserInputType.Touch then
-		local inset = GuiService:GetGuiInset()
-		attack(Vector2.new(input.Position.X, input.Position.Y) + inset)
+		touchTaps[input] = { at = os.clock(), pos = input.Position, jumps = player:GetAttribute("TapJump") or 0 }
 	end
 end)
 
 UserInputService.InputEnded:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		holding = false
+	elseif input.UserInputType == Enum.UserInputType.Touch then
+		local start = touchTaps[input]
+		touchTaps[input] = nil
+		if not start then return end
+		-- 짧게 톡 친 탭만 사격 (12px 넘게 끌었거나 0.18초 넘게 누르고 있었으면 시점 돌리기 / 스틱 조작이다)
+		if (input.Position - start.pos).Magnitude >= 12 or os.clock() - start.at >= 0.18 then return end
+		local point = Vector2.new(input.Position.X, input.Position.Y) + GuiService:GetGuiInset()
+		task.defer(function() -- 두 번 탭 점프로 처리된 탭은 사격하지 않는다 (MobileLayoutClient 가 TapJump 를 올린다)
+			if (player:GetAttribute("TapJump") or 0) ~= start.jumps then return end
+			attack(point)
+		end)
 	end
 end)
 
