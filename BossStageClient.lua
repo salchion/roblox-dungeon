@@ -82,11 +82,11 @@ Remotes.BossStage.OnClientEvent:Connect(function(kind, data)
 	if kind == "Intro" then
 		doFlash(Color3.fromRGB(255, 170, 90), 0.35)
 		punchFov(10)
-		local power = tonumber(data.Power) or 0
+		local sec, pct = require(ReplicatedStorage:WaitForChild("FieldSignal")).Pair(zone, "Lord", Players.LocalPlayer) -- (11-19 2축: 권장 전투력 대신 내 예상 처치 시간 / 한 방 %)
 		showBanner(
 			"👑 " .. tostring(data.Name or "Lord"),
 			string.format("Lord of %s  ·  Zone %d", tostring(data.ZoneName or ""), zone),
-			string.format("Recommended ⚡%s  ·  Aim at the yellow orb for 3x damage!", tostring(power)),
+			sec and string.format("⏱ ~%ds · 💥 %d%% HP", sec, pct) or "",
 			Color3.fromRGB(255, 120, 100), 4)
 	elseif kind == "Enrage" then
 		doFlash(Color3.fromRGB(255, 40, 30), 0.45)

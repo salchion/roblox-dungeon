@@ -8,6 +8,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
+local Signal = require(ReplicatedStorage:WaitForChild("FieldSignal")) -- 필드 2축 신호 (군주 예상 처치 시간 / 한 방 %)
 
 local player = Players.LocalPlayer
 
@@ -321,6 +322,8 @@ local function showWall(data)
 	wallButtons = {}
 	local lines = { string.format("<font size='17' color='#ffd966'><b>🚪 Stuck at Zone %d? Try another door</b></font>", data.Zone),
 		data.HitPct and string.format("<font size='12' color='#ff9a8a'>💥 One lord hit here = %d%% of your max HP</font>", data.HitPct) or "" } -- (11-18: 화력이 아니라 체력이 모자란지 한눈에)
+	if data.LordSec then table.insert(lines, string.format("<font size='12' color='#9ad7ff'>⏱ You'd beat this lord in ~%ds (aim for under 60s)</font>", data.LordSec)) end -- (11-19 2축: 화력)
+	local top = data.LordSec and 58 or 40 -- (줄이 하나 늘면 버튼을 아래로)
 	guideText.Text = table.concat(lines, "\n")
 	local ACTIONS = {
 		-- (무기 강화 창은 마을에서만 열리고 던전은 북쪽 관문이라: 그 둘은 글자 안내만. 필드 / 던전 어디서나 열리는 것만 버튼으로)
@@ -331,7 +334,7 @@ local function showWall(data)
 	for i, route in ipairs(data.Routes or {}) do
 		local b = Instance.new("TextButton")
 		b.Size = UDim2.new(1, -28, 0, 48)
-		b.Position = UDim2.new(0, 14, 0, 40 + (i - 1) * 54)
+		b.Position = UDim2.new(0, 14, 0, top + (i - 1) * 54)
 		b.BackgroundColor3 = Color3.fromRGB(40, 44, 66)
 		b.BorderSizePixel = 0
 		b.RichText = true
@@ -363,11 +366,13 @@ Remotes.Tutorial.OnClientEvent:Connect(function(action, data)
 	for _, b in ipairs(wallButtons) do b:Destroy() end -- (성장 카드는 버튼 없이 글자만)
 	wallButtons = {}
 	local lines = { data.Death and "<font size='17' color='#ff9a8a'><b>💀 You fell! Get stronger and try again</b></font>" or "<font size='17' color='#ffd966'><b>💪 How to Get Stronger</b></font>" }
-	local gap = data.Need - data.Power
-	if gap > 0 then
-		table.insert(lines, string.format("<font color='#9ad7ff'>🎯 Goal: Defeat Zone %d Lord</font>  <font size='10' color='#c9c0e0'>(Recommended power %s · Your power %s)</font>", data.Zone, comma(data.Need), comma(data.Power)))
+	-- (11-19 2축) 권장 전투력 대신 군주 예상 처치 시간 / 한 방 % (60초 이하 + 35% 이하면 준비됨)
+	local sec, pct = Signal.Pair(data.Zone, "Lord", player)
+	local pair = sec and string.format("  <font size='10' color='#c9c0e0'>⏱ ~%ds · 💥 %d%% HP</font>", sec, pct) or ""
+	if not sec or sec > Signal.Times.Lord[3] or pct > Signal.HitTiers[2] then
+		table.insert(lines, string.format("<font color='#9ad7ff'>🎯 Goal: Defeat Zone %d Lord</font>", data.Zone) .. pair)
 	else
-		table.insert(lines, string.format("<font color='#78ff8c'>🎯 Ready to challenge the Zone %d Lord!</font>  <font size='10' color='#c9c0e0'>(Recommended %s · Yours %s)</font>", data.Zone, comma(data.Need), comma(data.Power)))
+		table.insert(lines, string.format("<font color='#78ff8c'>🎯 Ready to challenge the Zone %d Lord!</font>", data.Zone) .. pair)
 	end
 	table.insert(lines, "")
 	for _, source in ipairs(data.Sources) do
@@ -489,13 +494,17 @@ local function pickGoal()
 		end
 	end
 
-	-- 다음 구역 군주 권장 전투력 (막혔을 때 무엇이 모자란지)
+	-- 다음 구역 군주 (11-19 2축): 예상 처치 시간 / 한 방 %. 진행 바 = 60초 대비 처치 시간. 60초 이하 + 한 방 35% 이하면 "준비됨"
 	if not player:GetAttribute("TutorialActive") then
 		local nextZone = math.min(Config.Field.ZoneCount, (player:GetAttribute("ClearedZone") or 0) + 1)
-		local need = Config.Field.RecommendPower[nextZone]
-		local power = player:GetAttribute("Power") or 0
-		if need and power < need then
-			table.insert(candidates, { Text = string.format("💪 Zone %d Lord: power %s / %s\nTrain, upgrade gear, or enhance your weapon", nextZone, comma(power), comma(need)), Ratio = math.min(0.85, 0.85 * power / need), Priority = 3, Id = "pow:" .. nextZone })
+		local sec, pct = Signal.Pair(nextZone, "Lord", player)
+		if sec then
+			local limit = Signal.Times.Lord[3]
+			if sec <= limit and pct <= Signal.HitTiers[2] then
+				table.insert(candidates, { Text = string.format("✔ Ready for the Zone %d Lord", nextZone), Ratio = 1, Priority = 3, Id = "lord:ready:" .. nextZone })
+			else
+				table.insert(candidates, { Text = string.format("🎯 Zone %d Lord · ⏱ ~%ds · 💥 %d%% HP", nextZone, sec, pct), Ratio = math.min(0.85, 0.85 * limit / sec), Priority = 3, Id = "lord:" .. nextZone })
+			end
 		end
 	end
 

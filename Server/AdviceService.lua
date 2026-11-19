@@ -120,23 +120,24 @@ function Advice.WallCard(player)
 	else
 		statsRoute = { Key = "Train", Icon = "🏋", Name = "Training", Info = "<font>Grows even while you're away</font>" }
 	end
-	-- 이 구역 한 방 = 그 구역 군주 탄 한 발(3갈래 1.2배, 방어 전) ÷ 내 최대 체력 (FieldService 군주 ShotDamage 와 같은 식)
-	local hitPct
+	-- 필드 2축 신호 (11-19, FieldSignalService): 이 구역 군주 한 방 % (받는 피해 배율 TakenMult 반영) / 내 예상 처치 시간
+	local hitPct, lordSec
 	do
-		local F = Config.Field
-		local shot = math.max(10, math.floor(Config.Monster.GetStats(F.GetZoneLevel(zone) + 3).ShotDamage * (zone >= 7 and 1.3 or 1.5) * F.ZoneDanger.Damage[zone]))
-		local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
-		local maxHp = humanoid and humanoid.MaxHealth or 0
-		if maxHp > 0 then hitPct = math.floor(shot * 1.2 / maxHp * 100 + 0.5) end
+		local okS, SignalService = pcall(function() return require(script.Parent:WaitForChild("FieldSignalService")) end)
+		if okS then
+			local pct, sec = SignalService.HitPct(player, zone, "Lord"), SignalService.LordSec(player, zone)
+			hitPct = pct and math.floor(pct + 0.5) or nil
+			lordSec = sec and math.max(1, math.floor(sec + 0.5)) or nil
+		end
 	end
+	local routeUpgrade = { Key = "Upgrade", Icon = "🔨", Name = "Weapon upgrade", Info = upInfo }
+	local routeAug = { Key = "Aug", Icon = "✨", Name = "Set effect", Info = augZone and (augCost and string.format("Set you're wearing Lv.%d · next gold level %s G", augLv, comma(augCost)) or string.format("Set you're wearing Lv.%d · gold levels maxed", augLv)) or "No set effect on yet — wear 2+ set pieces" }
+	local routeDungeon = { Key = "Dungeon", Icon = "🏰", Name = "Dungeon", Info = string.format("Best depth %d · Free %d · Keys %d", player:GetAttribute("DepthBest_All") or 0, player:GetAttribute("DungeonFree") or 0, player:GetAttribute("Keys") or 0) }
+	-- 돌파 경로: 생존이 막혔으면(한 방 35% 이상) 세트 효과(방어 효과) · 훈련(체력)을 먼저, 아니면 화력(무기 강화 · 세트 효과)을 먼저
+	local survival = hitPct and hitPct >= 35
 	Remotes.Tutorial:FireClient(player, "Wall", {
-		Zone = zone, Deaths = #list, HitPct = hitPct,
-		Routes = {
-			{ Key = "Upgrade", Icon = "🔨", Name = "Weapon upgrade", Info = upInfo },
-			{ Key = "Aug", Icon = "✨", Name = "Set effect", Info = augZone and (augCost and string.format("Set you're wearing Lv.%d · next gold level %s G", augLv, comma(augCost)) or string.format("Set you're wearing Lv.%d · gold levels maxed", augLv)) or "No set effect on yet — wear 2+ set pieces" },
-			{ Key = "Dungeon", Icon = "🏰", Name = "Dungeon", Info = string.format("Best depth %d · Free %d · Keys %d", player:GetAttribute("DepthBest_All") or 0, player:GetAttribute("DungeonFree") or 0, player:GetAttribute("Keys") or 0) },
-			statsRoute,
-		},
+		Zone = zone, Deaths = #list, HitPct = hitPct, LordSec = lordSec,
+		Routes = survival and { routeAug, statsRoute, routeUpgrade, routeDungeon } or { routeUpgrade, routeAug, routeDungeon, statsRoute },
 	})
 end
 

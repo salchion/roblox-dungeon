@@ -15,6 +15,7 @@ local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Guard = require(script.Parent:WaitForChild("DamageGuard"))
+local SignalService = require(script.Parent:WaitForChild("FieldSignalService")) -- 필드 2축 신호 (군주 경고)
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 local CollectionService = game:GetService("CollectionService")
 local TweenService = game:GetService("TweenService")
@@ -3304,13 +3305,11 @@ local function updateBossFight()
 				eventTipShown[player] = true -- (예전에는 player .. "_event" 로 Instance 와 글자를 이어 붙여 오류가 났다)
 				Remotes.Tutorial:FireClient(player, "Prompt", { Key = "⚔", Title = "Colossus!", Text = "Everyone who fought gets loot. Keep shooting from afar while dodging shots!", Duration = 7 })
 			elseif fighting and bossKind == "Boss" and bossZone and not player:GetAttribute("TutorialActive") then
-				-- 지역 군주를 만나면: 전투력이 모자라면 무기 강화를 권하고(골드 사용처), 처음이면 약점 구슬 사용법을 알려준다
-				local recommended = F.RecommendPower[bossZone] or 0
-				local power = player:GetAttribute("Power") or 0
-				if power < recommended * 0.85 and os.clock() - (powerWarnedAt[player] or -999) > 90 then
+				-- 지역 군주를 만나면 (11-19 2축, FieldSignalService.LordWarn): 한 방 35%+ 면 방어 · 체력, 아니고 60초+ 면 무기 · 세트. 처음이면 약점 구슬 사용법
+				local warnTitle, warnKey = SignalService.LordWarn(player, bossZone)
+				if warnTitle and os.clock() - (powerWarnedAt[player] or -999) > 90 then
 					powerWarnedAt[player] = os.clock()
-					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "⚒", Title = string.format("Not enough power! (You %d / Rec. %d)", power, recommended),
-						Text = "Upgrade your weapon with gold at the town blacksmith to raise your power. Upgrade and try again — it'll be much easier!", Duration = 9 })
+					Remotes.Tutorial:FireClient(player, "Prompt", { Key = warnKey, Title = warnTitle, Text = "", Duration = 9 })
 				elseif not weakTipShown[player] then
 					weakTipShown[player] = true
 					Remotes.Tutorial:FireClient(player, "Prompt", { Key = "🎯", Title = "Target the weak spot!",

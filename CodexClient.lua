@@ -99,7 +99,10 @@ local function rebuild()
 			makeLabel({ Size = UDim2.new(0.6, 0, 1, 0), Position = UDim2.new(0, 12, 0, 0), RichText = true, TextSize = 15, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left,
 				TextStrokeTransparency = 0.4, Text = string.format("%s ZONE %d  <font size='12'>%s</font>", setDef and setDef.Icon or "📍", z, F.ZoneNames[z]) }, band)
 			makeLabel({ Size = UDim2.new(0, 150, 1, 0), Position = UDim2.new(1, -160, 0, 0), RichText = true, TextSize = 11, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Right,
-				Text = locked and "<font color='#b8bcd4'>🔒 not reached yet</font>" or string.format("<font color='#ffe16e'>⚡ Recommended %s</font>  <font color='#ff8a8a'>%s</font>", tostring(F.RecommendPower[z] or 0), string.rep("☠", math.min(z, 5))) }, band)
+				Text = locked and "<font color='#b8bcd4'>🔒 not reached yet</font>" or (function() -- (11-19 2축: 권장 전투력 대신 그 구역 일반 몹 처치 시간 / 한 방 %)
+					local sec, pct = require(ReplicatedStorage:WaitForChild("FieldSignal")).Pair(z, "Mob", Players.LocalPlayer)
+					return (sec and string.format("<font color='#ffe16e'>⏱ ~%ds · 💥 %d%% HP</font>  ", sec, pct) or "") .. string.format("<font color='#ff8a8a'>%s</font>", string.rep("☠", math.min(z, 5)))
+				end)() }, band)
 			-- 몬스터 메달 줄 + 군주(왕관)
 			local keys = {}
 			for key in pairs(F.ZonePools[z] or {}) do table.insert(keys, key) end

@@ -813,6 +813,13 @@
       "overwrite": true
     },
     {
+      "path": "FieldSignalClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "FieldSignalClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "MonsterLabelClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "MonsterLabelClient",

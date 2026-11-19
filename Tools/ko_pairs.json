@@ -8366,5 +8366,23 @@
 [
 "Spell Tome chain lightning",
 "마법책 연쇄 번개"
-]
+],
+["⏱ Kill ~%ds · 💥 Hit %d%% HP", "⏱ 처치 ~%d초 · 💥 한 방 체력 %d%%"],
+["👑 Lord of %s (Zone %d) · ⏱ ~%ds · 💥 %d%% HP", "👑 %s의 군주 (%d구역) · ⏱ ~%d초 · 💥 체력 %d%%"],
+["🎯 Zone %d Lord · ⏱ ~%ds · 💥 %d%% HP", "🎯 %d구역 군주 · ⏱ ~%d초 · 💥 체력 %d%%"],
+["✔ Ready for the Zone %d Lord", "✔ %d구역 군주에게 도전할 준비 완료"],
+["⏱ You'd beat this lord in ~%ds (aim for under 60s)", "⏱ 이 군주는 약 %d초면 잡아요 (60초 안이 목표)"],
+["⚠ This lord hits for %d%% of your HP — add a defense effect (Y) or HP training", "⚠ 이 군주는 한 방에 체력의 %d%% — 방어 효과(Y)나 체력 훈련을 더하세요"],
+["⚠ This lord would take ~%ds — upgrade your weapon or set effect", "⚠ 이 군주는 약 %d초 걸려요 — 무기나 세트 효과를 강화하세요"],
+["  %s Zone %d · %s   (⏱ ~%ds · 💥 %d%% HP)  %s %s Set", "  %s %d구역 · %s   (⏱ ~%d초 · 💥 체력 %d%%)  %s %s 세트"],
+["  %s Zone %d · %s   %s %s Set", "  %s %d구역 · %s   %s %s 세트"],
+["⏱ ~%ds · 💥 %d%% HP", "⏱ ~%d초 · 💥 체력 %d%%"],
+["Kill ~%ds · 💥 Hit %d%% HP", "처치 ~%d초 · 💥 한 방 체력 %d%%"],
+["Lord of %s (Zone %d) · ⏱ ~%ds · 💥 %d%% HP", "%s의 군주 (%d구역) · ⏱ ~%d초 · 💥 체력 %d%%"],
+["Zone %d Lord · ⏱ ~%ds · 💥 %d%% HP", "%d구역 군주 · ⏱ ~%d초 · 💥 체력 %d%%"],
+["Ready for the Zone %d Lord", "%d구역 군주에게 도전할 준비 완료"],
+["You'd beat this lord in ~%ds (aim for under 60s)", "이 군주는 약 %d초면 잡아요 (60초 안이 목표)"],
+["This lord hits for %d%% of your HP — add a defense effect (Y) or HP training", "이 군주는 한 방에 체력의 %d%% — 방어 효과(Y)나 체력 훈련을 더하세요"],
+["This lord would take ~%ds — upgrade your weapon or set effect", "이 군주는 약 %d초 걸려요 — 무기나 세트 효과를 강화하세요"],
+["%ds · 💥 %d%% HP", "%d초 · 💥 체력 %d%%"]
 ]

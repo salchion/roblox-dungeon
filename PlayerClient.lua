@@ -3061,10 +3061,13 @@ local function refreshWarp()
 	end
 
 	addRow(0, "  🏠 Town (Lobby)", true, 0)
+	local Signal = require(ReplicatedStorage:WaitForChild("FieldSignal")) -- (11-19 2축: 권장 전투력 대신 그 구역 일반 몹 처치 시간 / 한 방 %)
 	for zone = 1, Config.Field.ZoneCount do
 		local unlocked = zone <= reached
 		local zoneSet = Config.Sets[Config.Sets.ZoneKeys[zone]]
-		addRow(zone, string.format("  %s Zone %d · %s   (Rec. ⚡%d)  %s %s Set", unlocked and "⛺" or "🔒", zone, Config.Field.ZoneNames[zone], Config.Field.RecommendPower[zone] or 0, zoneSet.Icon, zoneSet.Name), unlocked, zone)
+		local sec, pct = Signal.Pair(zone, "Mob", player)
+		addRow(zone, sec and string.format("  %s Zone %d · %s   (⏱ ~%ds · 💥 %d%% HP)  %s %s Set", unlocked and "⛺" or "🔒", zone, Config.Field.ZoneNames[zone], sec, pct, zoneSet.Icon, zoneSet.Name)
+			or string.format("  %s Zone %d · %s   %s %s Set", unlocked and "⛺" or "🔒", zone, Config.Field.ZoneNames[zone], zoneSet.Icon, zoneSet.Name), unlocked, zone)
 	end
 end
 

@@ -78,7 +78,6 @@ function Stage.Intro(part, data, player)
 		Zone = zone,
 		Name = Config.Codex.Bosses[zone] or "Lord",
 		ZoneName = F.ZoneNames[zone] or "",
-		Power = F.RecommendPower[zone] or 0,
 	})
 end
 
