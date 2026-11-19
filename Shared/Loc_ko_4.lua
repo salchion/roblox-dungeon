@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔫 Weapon   <font color='#{text1}'>{text2}</font>", "🔫 무기   <font color='#{text1}'>{text2}</font>" },
+		{ "🌈 {text1} hit the Mythic pity: [Mythic] {text2}!", "🌈 {text1} 님이 신화 천장 달성: [신화] {text2}!" },
+		{ "🏅 Achievement unlocked! Reward: {text1}{text2}", "🏅 업적 달성! 보상: {text1}{text2}" },
+		{ "{text1}  <font color='#9aa0c8'>{text2}</font>", "{text1}  <font color='#9aa0c8'>{text2}</font>" },
 		{ "Upgrade cost {text1} G · You have {text2} G", "강화 비용 {text1} G · 보유 {text2} G" },
 		{ "📢 {text1}'s weapon evolved into [{text2}]!", "📢 {text1}님의 무기가 [{text2}](으)로 진화했어요!" },
 		{ "✨ {number1}-piece set complete! {text2} {text3} Lv.{number4}", "✨ {number1}부위 세트 완성! {text2} {text3} Lv.{number4}" },

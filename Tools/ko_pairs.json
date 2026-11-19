@@ -8384,5 +8384,8 @@
 ["You'd beat this lord in ~%ds (aim for under 60s)", "이 군주는 약 %d초면 잡아요 (60초 안이 목표)"],
 ["This lord hits for %d%% of your HP — add a defense effect (Y) or HP training", "이 군주는 한 방에 체력의 %d%% — 방어 효과(Y)나 체력 훈련을 더하세요"],
 ["This lord would take ~%ds — upgrade your weapon or set effect", "이 군주는 약 %d초 걸려요 — 무기나 세트 효과를 강화하세요"],
-["%ds · 💥 %d%% HP", "%d초 · 💥 체력 %d%%"]
+["%ds · 💥 %d%% HP", "%d초 · 💥 체력 %d%%"],
+["<font size='12' color='#9ad7ff'>⏱ You'd beat this lord in ~%ds (aim for under 60s)</font>", "<font size='12' color='#9ad7ff'>⏱ 이 군주는 약 %d초면 잡아요 (60초 안이 목표)</font>"],
+["  <font size='10' color='#c9c0e0'>⏱ ~%ds · 💥 %d%% HP</font>", "  <font size='10' color='#c9c0e0'>⏱ ~%d초 · 💥 체력 %d%%</font>"],
+["<font color='#ffe16e'>⏱ ~%ds · 💥 %d%% HP</font>  <font color='#ff8a8a'>%s</font>", "<font color='#ffe16e'>⏱ ~%d초 · 💥 체력 %d%%</font>  <font color='#ff8a8a'>%s</font>"]
 ]

@@ -600,7 +600,8 @@ local function buildGateway(zone, x0)
 		line.Parent = sign
 	end
 	signLine(0, 44, string.format("Zone %d · %s", zone, F.ZoneNames[zone]), 32, Color3.fromRGB(255, 240, 190), Enum.Font.GothamBlack)
-	signLine(46, 24, string.format("Recommended ⚡ %d   Danger %s", F.RecommendPower[zone] or 0, string.rep("☠", zone)), 16, Color3.fromRGB(255, 255, 255))
+	-- (11-19 2축 신호: 권장 전투력 숫자는 빼고 위험도만 남긴다. 이 줄은 클라이언트(FieldSignalClient)가 내 예상 처치 시간 / 한 방 % 로 덮어쓴다)
+	signLine(46, 24, string.format("Danger %s", string.rep("☠", zone)), 16, Color3.fromRGB(255, 255, 255))
 	signLine(72, 22, string.format("%s New set: %s", zoneSet.Icon, zoneSet.Name), 15, Color3.fromRGB(190, 235, 255))
 end
 
@@ -883,7 +884,8 @@ local function spawnMonster(zone, kind, at, ambush, filler)
 			Gold = math.floor(boss.Gold * danger.Reward[zone]),
 		}
 		xpLevel = bossLevel
-		text, color, barWidth = string.format("👑 Lord of %s (Zone %d) · Rec. ⚡%d", F.ZoneNames[zone], zone, F.RecommendPower[zone] or 0), Color3.fromRGB(255, 120, 120), 360
+		-- (11-19 2축 신호: 권장 전투력은 빼고 이름만. 예상 처치 시간 / 한 방 % 는 클라이언트가 이 이름표에 덧붙인다)
+		text, color, barWidth = string.format("👑 Lord of %s (Zone %d)", F.ZoneNames[zone], zone), Color3.fromRGB(255, 120, 120), 360
 	else
 		-- 구역마다 나오는 몬스터 종류가 다르다 (Config.Field.ZonePools)
 		if at then
