@@ -15,6 +15,55 @@
       "overwrite": true
     },
     {
+      "path": "Shared/ConfigWeaponTypes.lua",
+      "parent": "ReplicatedStorage",
+      "name": "ConfigWeaponTypes",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/ConfigField.lua",
+      "parent": "ReplicatedStorage",
+      "name": "ConfigField",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/ConfigGrowth.lua",
+      "parent": "ReplicatedStorage",
+      "name": "ConfigGrowth",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/ConfigAugInfo.lua",
+      "parent": "ReplicatedStorage",
+      "name": "ConfigAugInfo",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/ConfigShop.lua",
+      "parent": "ReplicatedStorage",
+      "name": "ConfigShop",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/ConfigSkills.lua",
+      "parent": "ReplicatedStorage",
+      "name": "ConfigSkills",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/ConfigCodex.lua",
+      "parent": "ReplicatedStorage",
+      "name": "ConfigCodex",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Shared/SkillTreeData.lua",
       "parent": "ReplicatedStorage",
       "name": "SkillTreeData",
@@ -445,6 +494,27 @@
       "path": "Server/DeathLog.lua",
       "parent": "ServerScriptService/Modules",
       "name": "DeathLog",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Server/DungeonBossUnique.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "DungeonBossUnique",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Server/DungeonFever.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "DungeonFever",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Server/DungeonRushGimmicks.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "DungeonRushGimmicks",
       "class": "ModuleScript",
       "overwrite": true
     },
