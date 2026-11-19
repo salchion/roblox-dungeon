@@ -19,6 +19,16 @@ end
 
 -- 사망 원인 기록 (DeathLog 가 읽는다): 플레이어마다 최근 피해 5건 = { 출처("스크립트:줄" / "judge" ...), 양, 남은 체력 %, 시각 }
 local recent = setmetatable({}, { __mode = "k" })
+-- 받는 피해 배율 (필드 2축 신호의 "한 방 %"용): 항상 걸리는 감소만 곱한다 = 방어력 · 유니크 Bulwark · 훈련 질긴 피부 · 초보자 가호 · 특성 강철 위장 · 🛡 방벽
+--   (회피 / 불굴 / 완충 / 돌격 방어처럼 확률 · 체력 · 시간에 따라 바뀌는 것은 뺀다). Take 와 같은 순서 / 같은 식
+function Guard.TakenMult(player)
+	local mult = (1 - Guard.Reduction(player)) * (1 - (player:GetAttribute("GearBulwark") or 0)) * (1 - (player:GetAttribute("TrainBulwark") or 0))
+	mult *= 1 - Config.Newbie.Defense * Config.NewbieStrength(player)
+	mult *= 1 - math.min(0.5, Config.TalentMod(player, "DmgReduce"))
+	if player:GetAttribute("TutorialDoom") ~= true then mult *= 1 - Config.Guard.Ward(player:GetAttribute("AugWard") or 0) end
+	return mult
+end
+
 function Guard.Note(humanoid, source, amount)
 	local player = humanoid and humanoid.Parent and Players:GetPlayerFromCharacter(humanoid.Parent)
 	if not player or not amount or amount <= 0 then return end
@@ -95,6 +105,11 @@ task.spawn(function()
 	while true do
 		task.wait(1)
 		for _, player in ipairs(Players:GetPlayers()) do
+			local okT, taken = pcall(Guard.TakenMult, player) -- 받는 피해 배율 (FieldSignal 이 읽는다)
+			if okT and taken then
+				taken = math.floor(taken * 1000 + 0.5) / 1000
+				if player:GetAttribute("TakenMult") ~= taken then player:SetAttribute("TakenMult", taken) end
+			end
 			local level = player:GetAttribute("AugRegen") or 0
 			local zone = player:GetAttribute("Zone")
 			if level > 0 and (zone == "Field" or zone == "Dungeon") and workspace:GetServerTimeNow() - (player:GetAttribute("LastHurtAt") or 0) >= 2 then

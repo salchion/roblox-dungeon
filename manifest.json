@@ -8,6 +8,13 @@
       "overwrite": true
     },
     {
+      "path": "Shared/FieldSignal.lua",
+      "parent": "ReplicatedStorage",
+      "name": "FieldSignal",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Shared/ConfigAchievements.lua",
       "parent": "ReplicatedStorage",
       "name": "ConfigAchievements",
@@ -515,6 +522,13 @@
       "path": "Server/DungeonRushGimmicks.lua",
       "parent": "ServerScriptService/Modules",
       "name": "DungeonRushGimmicks",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Server/FieldSignalService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "FieldSignalService",
       "class": "ModuleScript",
       "overwrite": true
     },

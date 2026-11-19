@@ -1045,6 +1045,8 @@ local function spawnMonster(zone, kind, at, ambush, filler)
 	part:SetAttribute("MobZone", zone) -- 클라이언트가 내 전투력과 비교해서 이름 색을 칠한다 (MonsterLabelClient)
 	part:SetAttribute("MobKind", kind)
 	if filler then stats.MaxHealth = math.floor(stats.MaxHealth * 2.5) end -- 채움 몬스터는 튼튼하다: 평타만으로는 쌓이고, 스킬을 쓰면 한 번에 쓸려 나간다 (Field.HitPart 의 스킬 보정과 짝)
+	part:SetAttribute("MobShot", stats.ShotDamage) -- (필드 2축 신호: MonsterLabelClient 가 한 방 % 를 잰다)
+	part:SetAttribute("MobHp", stats.MaxHealth) -- (필드 2축 신호: 처치 시간)
 	local newData = {
 		BossLike = kind == "Boss",
 		Zone = zone,

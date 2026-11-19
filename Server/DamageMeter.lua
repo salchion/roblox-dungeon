@@ -50,6 +50,19 @@ local function publish(player, state, now)
 	player:SetAttribute("DmgMeter", HttpService:JSONEncode({ Dps = math.floor(windowTotal / span), Total = math.floor(total), Time = math.floor(now - state.Start), Src = list }))
 end
 
+-- 최근 DPS (10초 창, 지금 시각 기준): 필드 2축 신호를 서버에서 계산할 때 쓴다 (FieldSignalService). 기록이 없으면 0
+function Meter.RecentDps(player)
+	local state = states[player]
+	if not state then return 0 end
+	local now = os.clock()
+	local windowTotal = 0
+	for _, entry in ipairs(state.Recent) do
+		if now - entry[1] <= WINDOW then windowTotal += entry[2] end
+	end
+	local span = math.clamp(now - math.max(state.Start, now - WINDOW), 1, WINDOW)
+	return windowTotal / span
+end
+
 -- 미터기 리셋 (머리줄의 ↺ 버튼): 지금까지 센 것을 지우고 0 부터 다시 센다. 0.5초에 한 번만 받는다
 local resetAt = setmetatable({}, { __mode = "k" })
 local function clear(player)
