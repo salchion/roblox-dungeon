@@ -51,7 +51,9 @@ local function lordStats(zone)
 	local base = Config.Monster.GetStats(F.GetZoneLevel(zone) + 3)
 	local danger = F.ZoneDanger
 	local hp = math.floor(base.MaxHealth * 60 * ((danger.LordHealth and danger.LordHealth[zone]) or danger.Health[zone]))
-	local hit = math.max(10, math.floor(base.ShotDamage * (zone >= 7 and 1.3 or 1.5) * danger.Damage[zone]))
+	local shot = math.max(10, math.floor(base.ShotDamage * (zone >= 7 and 1.3 or 1.5) * danger.Damage[zone]))
+	-- 군주 탄은 3갈래로 나가는데 한 발당 피해가 1.2배다 (FieldService 의 fireProjectile 호출과 같은 식. 1구역 튜토리얼 군주는 1배)
+	local hit = math.floor(shot * (zone == 1 and 1 or 1.2))
 	return hp, hit
 end
 
