@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🏆 You defeated the Final Lord!  +{number1} gold  +{number2} tickets", "🏆 Você derrotou o Senhor Final!  +{number1} de ouro  +{number2} tickets" },
 		{ "⭐ New record! Depth {number1} cleared. Depth {number2} is unlocked.", "⭐ Novo recorde! Profundidade {number1} concluída. A profundidade {number2} foi desbloqueada." },
 		{ "💢 Boss #{number1} is AWAKENED — it attacks twice in a row!", "💢 O chefe #{number1} DESPERTOU — ele ataca duas vezes seguidas!" },
 		{ "one hit can take at most {number1}% of your max HP (was {number2}%)", "um golpe tira no máximo {number1}% da sua vida máx. (antes {number2}%)" },

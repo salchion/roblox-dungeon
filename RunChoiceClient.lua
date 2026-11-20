@@ -59,7 +59,7 @@ local function show(data)
 	if data.Draft then
 		title.Text = string.format("🃏 Draft %d/%d", data.Draft.Round or 1, data.Draft.Rounds or 8)
 		local strip = make("TextLabel", { Size = UDim2.new(1, -120, 0, 20), Position = UDim2.new(0, 160, 0, 3), BackgroundTransparency = 1, TextSize = 16, TextXAlignment = Enum.TextXAlignment.Left,
-			Text = table.concat(data.Draft.Deck or {}, " ") .. string.rep(" ▫", math.max(0, (data.Draft.Rounds or 8) - #(data.Draft.Deck or {}))) }, panel)
+			Text = table.concat(data.Draft.Deck or {}, " ") .. string.rep(" ◽", math.max(0, (data.Draft.Rounds or 8) - #(data.Draft.Deck or {}))) }, panel)
 		table.insert(buttons, strip) -- (닫을 때 같이 지운다)
 	else
 		title.Text = "🎁 Pick a boon"

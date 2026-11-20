@@ -256,7 +256,7 @@ Config.Dungeon.Mutators = {
 	Furious = { Name = "Frenzy", Icon = "😡", Desc = "Monster attack x1.5, rewards x1.5", DamageMult = 1.5, GoldMult = 1.5, Visual = "Blood" },
 	Dark = { Name = "Pitch Black", Icon = "🌑", Desc = "The screen goes dark (fight by the glow of monster eyes), monster HP x1.15, rewards x1.6", HealthMult = 1.15, GoldMult = 1.6, Visual = "Dark" },
 	Fog = { Name = "Thick Fog", Icon = "🌫", Desc = "You can't see far, monsters pop out suddenly (speed x1.2), rewards x1.4", SpeedMult = 1.2, GoldMult = 1.4, Visual = "Fog" },
-	Blood = { Name = "Blood Moon", Icon = "🩸", Desc = "A red moon rises: monster speed x1.25 · attack x1.25, rewards x1.5", SpeedMult = 1.25, DamageMult = 1.25, GoldMult = 1.5, Visual = "Blood" },
+	Blood = { Name = "Blood Moon", Icon = "🌕", Desc = "A red moon rises: monster speed x1.25 · attack x1.25, rewards x1.5", SpeedMult = 1.25, DamageMult = 1.25, GoldMult = 1.5, Visual = "Blood" },
 	Elite = { Name = "Elite Day", Icon = "👑", Desc = "Monster count x0.6, HP x2.0 · attack x1.2, rewards x1.7", CountMult = 0.6, HealthMult = 2.0, DamageMult = 1.2, GoldMult = 1.7, Visual = "Elite" },
 }
 
@@ -294,13 +294,13 @@ Config.Dungeon.Events = {
 ------------------------------------------------------------
 Config.Perks = {
 	Order = { "Pierce", "Boom", "Chain", "Vamp", "Power", "Rapid", "Crit", "Vital" },
-	Pierce = { Name = "Piercing Shot", Icon = "➳", Attr = "PerkPierce", Max = 3, Special = true,
+	Pierce = { Name = "Piercing Shot", Icon = "🏹", Attr = "PerkPierce", Max = 3, Special = true,
 		Desc = "Shots pierce +1 more enemy" },
 	Boom   = { Name = "Explosive Shot", Icon = "💥", Attr = "PerkBoom", Max = 3, Special = true,
 		Desc = "Explodes around the enemy hit (40% of damage, radius grows per level)" },
 	Chain  = { Name = "Chain Lightning", Icon = "⚡", Attr = "PerkChain", Max = 3, Special = true,
 		Desc = "Lightning jumps from the enemy hit to +1 nearby enemy (60% of damage)" },
-	Vamp   = { Name = "Lifesteal", Icon = "🩸", Attr = "PerkVamp", Max = 3, Special = true,
+	Vamp   = { Name = "Lifesteal", Icon = "🦇", Attr = "PerkVamp", Max = 3, Special = true,
 		Desc = "Restore +1 HP each time a shot hits" },
 	Power  = { Name = "Heavy Hit", Icon = "🔥", Attr = "PerkPower", Max = 6,
 		Desc = "Attack +18%" },
@@ -396,7 +396,7 @@ Config.Break = { Enabled = true, Need = 16, Seconds = 3.5, DamageMult = 1.3, Rat
 	SkillBonus = 2, SkillCooldown = 1.0, Cells = 4 }
 -- 던전 드래프트 (하스스톤 투기장식): 입장 직후 Rounds 번 3택으로 내 덱을 만들고, 전투 중 보너스 때마다 덱 순서대로 자동 발동 (전투 중 팝업 없음)
 --   라운드마다 RoundSeconds 안에 안 고르면 첫 장, 전체 마감이 지나면 남은 칸은 자동으로 채우고 시작 (파티 AFK 가 판을 붙잡지 않게)
-Config.Dungeon.Draft = { Enabled = true, Rounds = 8, RoundSeconds = 4 } -- (전체 마감 = Rounds x RoundSeconds + 2초: 코드에서 계산)
+Config.Dungeon.Draft = { Enabled = true, Rounds = 8, RoundSeconds = 7 } -- (전체 마감 = Rounds x RoundSeconds + 2초: 코드에서 계산)
 Config.Dungeon.Choice = { Enabled = true, Seconds = 6, Count = 3 } -- (Seconds = BonusInterval: 무응답이어도 보너스 간격 / 보스 체력이 그대로)
 Config.Dungeon.BonusInterval = 6     -- 이 간격(초)마다 보상(골드 / 경험치)이 터진다. 드래프트 판: 덱은 전투 시작에 한 번에 켜지고, 슬롯은 2번에 1번(12초) 패널티만
 Config.Dungeon.BossTimeLimit = 60    -- 버티기 던전 보스: 나타나고 이 시간(초) 안에 못 잡으면 실패 (튜토리얼 제외)
@@ -422,7 +422,7 @@ Config.RunTrees = {
 		Tiers = { { "⚡", "Chain Lightning I", "Lightning jumps to 1 more enemy" }, { "⚡", "Chain Lightning II", "Jumps to 2 more enemies" }, { "⚡", "Chain Lightning III", "Jumps to 3 more · one more: THUNDER GOD" } },
 		Cap = { "🌩", "THUNDER GOD", "Lightning strikes every enemy around you" } },
 	Barrage = { Perk = "Pierce", Color = Color3.fromRGB(150, 220, 255),
-		Tiers = { { "➳", "Piercing Shot I", "Shots pierce +1 enemy" }, { "➳", "Piercing Shot II", "Shots pierce +2 enemies" }, { "➳", "Piercing Shot III", "Shots pierce +3 · one more: BULLET HELL" } },
+		Tiers = { { "🏹", "Piercing Shot I", "Shots pierce +1 enemy" }, { "🏹", "Piercing Shot II", "Shots pierce +2 enemies" }, { "🏹", "Piercing Shot III", "Shots pierce +3 · one more: BULLET HELL" } },
 		Cap = { "🗡", "BULLET HELL", "A ring of blades slashes every enemy around you" } },
 	CapMax = 3,
 	Overcharge = "Overcharged! Faster and bigger",
@@ -430,10 +430,10 @@ Config.RunTrees = {
 
 -- 랜덤 강화 (고르지 않고 무작위로 하나 걸린다. Perk = 기존 특성을 Stacks 단계만큼 올림 / Weight = 나올 확률 가중치)
 Config.RunBuffs = {
-	{ Icon = "➳",  Name = "Piercing Shot",       Desc = "Shots pierce +1 more enemy",           Perk = "Pierce", Special = true, Tree = "Barrage" },
+	{ Icon = "🏹",  Name = "Piercing Shot",       Desc = "Shots pierce +1 more enemy",           Perk = "Pierce", Special = true, Tree = "Barrage" },
 	{ Icon = "💥", Name = "Explosive Shot",       Desc = "Explodes around the enemy hit",                Perk = "Boom",   Special = true, Tree = "Boom" },
 	{ Icon = "⚡", Name = "Chain Lightning",    Desc = "Lightning jumps from the enemy hit",          Perk = "Chain",  Special = true, Tree = "Chain" },
-	{ Icon = "🩸", Name = "Lifesteal",         Desc = "Restore HP on every hit",              Perk = "Vamp",   Special = true },
+	{ Icon = "🦇", Name = "Lifesteal",         Desc = "Restore HP on every hit",              Perk = "Vamp",   Special = true },
 	{ Icon = "🔥", Name = "Heavy Hit",         Desc = "Attack +18%",                        Perk = "Power" },
 	{ Icon = "⏩", Name = "Rapid Fire",         Desc = "Attack speed +8%",                      Perk = "Rapid" },
 	{ Icon = "🎯", Name = "Weak Spot",         Desc = "Crit chance +4%",                    Perk = "Crit" },

@@ -839,6 +839,8 @@ return {
 		["After gold Lv.3"] = "金币Lv.3之后",
 		["Gear option"] = "装备词条",
 		["Sometimes on Legendary+ gear"] = "传说以上装备偶尔带有",
+		["Tight"] = "紧张",
+		["Too hard"] = "太难",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1124,6 +1126,5 @@ return {
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 今天有{number1}个免费入场机会 · 🗝 有{number2}把钥匙！" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 下一个武器解锁霰弹枪（+{number1}）" },
 		{ "⚠ Reach level {number1} to break through.", "⚠ 达到 {number1} 级即可突破。" },
-		{ "💥 Weak Spot Hit! x3 damage for {number1}s", "💥 命中弱点!{number1} 秒内伤害 x3" },
 	},
 }

@@ -2303,7 +2303,7 @@ local function buildCharacterTab()
 		{ "🛡 Defense", Color3.fromRGB(110, 170, 255), {
 			{ "❤", "Max HP", groupDigits(health) },
 			{ "🛡", "Damage Taken", "-" .. pct(reduction, true) },
-			{ "🩸", "Heal on Kill", pct(player:GetAttribute("GearLifeOnKill") or 0, true) },
+			{ "🦇", "Heal on Kill", pct(player:GetAttribute("GearLifeOnKill") or 0, true) },
 		} },
 		{ "🧭 Utility", Color3.fromRGB(110, 220, 150), {
 			{ "💨", "Move Speed", string.format("%.1f", moveSpeed) },

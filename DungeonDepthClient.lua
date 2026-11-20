@@ -176,9 +176,12 @@ for k = 1, 9 do
 	rounded(chip, 9)
 	local stroke = create("UIStroke", { Thickness = 1.5, Color = Color3.fromRGB(58, 49, 114), ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, chip)
 	local num = makeLabel({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, 3), Text = "", TextSize = 14, Font = Enum.Font.GothamBlack, ZIndex = 13 }, chip)
-	local dot = create("Frame", { Size = UDim2.new(0, 10, 0, 10), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 22), BorderSizePixel = 0, ZIndex = 13 }, chip)
-	rounded(dot, 5)
-	local secs = makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 34), Text = "", TextSize = 11, Font = Enum.Font.GothamBold, ZIndex = 13 }, chip)
+	-- (예상 초 숫자 대신: 작은 막대(제한 시간까지 얼마나 찼나) + 한 단어 "쉬움 / 빠듯 / 무리")
+	local barBack = create("Frame", { Size = UDim2.new(1, -14, 0, 5), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 24), BackgroundColor3 = Color3.fromRGB(44, 40, 80), BorderSizePixel = 0, ZIndex = 13 }, chip)
+	rounded(barBack, 3)
+	local dot = create("Frame", { Size = UDim2.new(0, 0, 1, 0), BorderSizePixel = 0, ZIndex = 14 }, barBack)
+	rounded(dot, 3)
+	local secs = makeLabel({ Size = UDim2.new(1, -2, 0, 14), Position = UDim2.new(0, 1, 0, 33), Text = "", TextSize = 10, Font = Enum.Font.GothamBlack, TextScaled = false, ZIndex = 13 }, chip)
 	local entry = { Button = chip, Stroke = stroke, Num = num, Dot = dot, Secs = secs, Depth = 1 }
 	chip.Activated:Connect(function() depth = entry.Depth if refresh then refresh() end end)
 	paceChips[k] = entry
@@ -214,7 +217,10 @@ local function paintPace()
 		chip.Depth = d
 		chip.Num.Text = tostring(d)
 		chip.Dot.BackgroundColor3 = c
-		chip.Secs.Text = e and string.format("%ds", math.min(math.floor(e + 0.5), 999)) or "—"
+		local lim = paceLimit()
+		chip.Dot.Size = UDim2.new(e and math.clamp(e / lim, 0.06, 1) or 0, 0, 1, 0)
+		local r = e and math.floor(e + 0.5)
+		chip.Secs.Text = not e and "—" or (r <= lim * 0.5 and "Easy" or (r <= lim and "Tight" or "Too hard"))
 		chip.Secs.TextColor3 = c
 		chip.Stroke.Color = d == depth and c or Color3.fromRGB(58, 49, 114)
 		chip.Stroke.Thickness = d == depth and 3 or 1.5

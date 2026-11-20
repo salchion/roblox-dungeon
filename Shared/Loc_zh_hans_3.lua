@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💥 Weak Spot Hit! x3 damage for {number1}s", "💥 命中弱点!{number1} 秒内伤害 x3" },
 		{ "Not enough power! (You {number1} / Rec. {number2})", "战力不足!(你 {number1} / 推荐 {number2})" },
 		{ "Points left {number1}  /  earned {number2}  (max {number3})", "剩余点数 {number1}  /  已获得 {number2}  (最多 {number3})" },
 		{ "Crit chance +{number1}% per point  (max {number2})", "暴击率 +{number1}%/点  (上限 {number2})" },

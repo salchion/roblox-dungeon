@@ -56,13 +56,13 @@ return function(Config)
 		PointsPerLevels = 5, MaxPoints = 20, -- (30 -> 20: 세 길 중 두 길만 끝까지 갈 수 있다 = 무엇을 포기할지 고른다)
 		-- 세 갈래 길 (와우 전문화처럼): 아래 줄은 "그 길에" 점수를 일정 이상 써야 열린다. 길마다 맨 아래에 최종 특성
 		Paths = {
-			{ Key = "Blood", Icon = "🩸", Name = "Blood", Color = Color3.fromRGB(255, 110, 120) },
+			{ Key = "Blood", Icon = "🦇", Name = "Blood", Color = Color3.fromRGB(255, 110, 120) },
 			{ Key = "Exec", Icon = "🪓", Name = "Execute", Color = Color3.fromRGB(255, 190, 90) },
 			{ Key = "Swift", Icon = "💨", Name = "Swift", Color = Color3.fromRGB(120, 210, 255) },
 		},
 		RowNeed = { 0, 3, 6, 8 }, -- 이 줄을 찍으려면 같은 길 위쪽에 이만큼
 		Order = { "Bloodthirst", "Finisher", "Rush", "Hide", "BossBreaker", "Fortune", "SurviveChoice", "ExecChoice", "SwiftChoice", "BloodCap", "ExecCap", "SwiftCap" },
-		Bloodthirst = { Path = 1, Row = 1, Icon = "🩸", Name = "Bloodthirst", Max = 5, Per = 0.004, Desc = "Every kill restores 0.4% max HP per point" },
+		Bloodthirst = { Path = 1, Row = 1, Icon = "🦇", Name = "Bloodthirst", Max = 5, Per = 0.004, Desc = "Every kill restores 0.4% max HP per point" },
 		Finisher = { Path = 2, Row = 1, Icon = "🎯", Name = "Finisher", Max = 5, Per = 0.06, Desc = "+6% damage per point to enemies under 30% HP" },
 		Rush = { Path = 3, Row = 1, Icon = "💨", Name = "Rush", Max = 5, Per = 0.06, Desc = "+6% attack per point for 2s after a dash (Q)" },
 		Hide = { Path = 1, Row = 2, Icon = "🛡", Name = "Iron Stomach", Max = 3, Mods = { DmgReduce = 0.04 }, Desc = "Take 4% less damage per point" },

@@ -981,3 +981,5 @@
 3012¦装備オプション¦Ausrüstungsoption¦Option d'équipement¦Opción de equipo¦Opção de equipamento¦装备词条¦장비 옵션
 3013¦伝説以上の装備にたまに付く¦Manchmal auf Legendär+ Ausrüstung¦Parfois sur l'équipement Légendaire+¦A veces en equipo Legendario+¦Às vezes em equipamento Lendário+¦传说以上装备偶尔带有¦전설 이상 장비에 가끔 붙음
 3014¦⬆ 今{number1}個の効果を強化できる¦⬆ {number1} Effekte können jetzt aufsteigen¦⬆ {number1} effets peuvent monter maintenant¦⬆ {number1} efectos pueden subir ahora¦⬆ {number1} efeitos podem subir agora¦⬆ 现在有{number1}个效果可升级¦⬆ 지금 올릴 수 있는 효과 {number1}개
+3015¦ギリギリ¦Knapp¦Serré¦Justo¦Apertado¦紧张¦빠듯
+3016¦無理¦Zu schwer¦Trop dur¦Muy difícil¦Difícil demais¦太难¦무리

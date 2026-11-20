@@ -928,6 +928,8 @@ return {
 		["After gold Lv.3"] = "Após ouro Nv.3",
 		["Gear option"] = "Opção de equipamento",
 		["Sometimes on Legendary+ gear"] = "Às vezes em equipamento Lendário+",
+		["Tight"] = "Apertado",
+		["Too hard"] = "Difícil demais",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1083,6 +1085,5 @@ return {
 		{ "Shot_Pistol  <font color='#{number1}aa{number2}c{number3}'>Rifle shot</font>", "Tiro de Pistola <font color='#{number1}aa{number2}c{number3}'> Tiro de Fuzil </font>" },
 		{ "Reach weapon upgrade level {number1} (about the {number2}th weapon)", "Alcance o nível de aprimoramento de arma {number1} (sobre a {number2}ª arma)" },
 		{ "⚠ Monster overrun! Thin them out within {number1}s!  ({number2} / {number3})", "⚠ Invasão de monstros! Reduza-os em {number1} s! ({number2} / {number3})" },
-		{ "🏆 You defeated the Final Lord!  +{number1} gold  +{number2} tickets", "🏆 Você derrotou o Senhor Final!  +{number1} de ouro  +{number2} tickets" },
 	},
 }
