@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "All-time best {text1} pts · most bosses {number2} · longest {text3}", "역대 최고 {text1}점 · 최다 보스 {number2} · 최장 {text3}" },
+		{ "🎁 Weekly Boss Rush chest: Mythic {text1} with ★ {text2}!", "🎁 주간 보스 러시 상자: 신화 {text1}, ★ {text2} 포함!" },
 		{ "🔓 {text1} unlocked! ({text2}) Pick it in the Weapons tab", "🔓 {text1} 해금! ({text2}) 무기 탭에서 고르세요" },
 		{ "📢 {text1} took down {number2} bosses in the Boss Rush! ({text3})", "📢 {text1}님이 보스 러시에서 보스 {number2}마리를 쓰러뜨렸어요! ({text3})" },
 		{ "<b>{text1}</b>\n<font color='#78ff8c'>▶ {text2}</font>", "<b>{text1}</b>\n<font color='#78ff8c'>▶ {text2}</font>" },

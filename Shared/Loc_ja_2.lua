@@ -1087,6 +1087,9 @@ return {
 		["Sometimes on Legendary+ gear"] = "伝説以上の装備にたまに付く",
 		["Tight"] = "ギリギリ",
 		["Too hard"] = "無理",
+		["Last Stand"] = "踏ん張り",
+		["Ult Accelerator"] = "必殺加速",
+		["LAST STAND!"] = "踏ん張り！",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1158,6 +1161,5 @@ return {
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!\nChallenge the dungeon at the north gate", "🎟 今日は無料入場券{number1}枚 · 🗝 キー{number2}個！\n北の門にあるダンジョンに挑戦しよう" },
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "発見したユニーク効果 {number1} / {number2}  ·  ミシック装備に1つ付くことがあります(確率約{number3}%)" },
 		{ "🎒 Bag full: dismantled {number1} gear that your other gear beats (Essence +{number2}, {number3} G)", "🎒 バッグが満杯：他の装備に劣る装備{number1}個を分解（エッセンス+{number2}、{number3} G）" },
-		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "スキルマスター　タイトル『スキルマスター』\nスキルを{number1}回使用する\n{number2} / {number3}　報酬：🎫 {number4}" },
 	},
 }

@@ -95,6 +95,21 @@ function Guard.Take(humanoid, amount)
 			end)
 		end
 	end
+	if amount > 0 and player and amount >= humanoid.Health and (player:GetAttribute("RunLastStand") or 0) > 0 then
+		-- 🔰 버티기 (던전 드래프트): 죽을 만큼의 한 방을 체력 1로 버티고 2초 무적
+		player:SetAttribute("RunLastStand", player:GetAttribute("RunLastStand") - 1)
+		humanoid.Health = 1
+		local ff = Instance.new("ForceField")
+		ff.Visible = true
+		ff.Parent = humanoid.Parent
+		game:GetService("Debris"):AddItem(ff, 2)
+		local root = humanoid.Parent:FindFirstChild("HumanoidRootPart")
+		if root then
+			local okE, Effects = pcall(function() return require(script.Parent:WaitForChild("Effects")) end)
+			if okE then Effects.FloatText(root.Position + Vector3.new(0, 4, 0), "LAST STAND!", Color3.fromRGB(255, 220, 120)) end
+		end
+		return
+	end
 	if amount > 0 then
 		humanoid:TakeDamage(amount)
 	end
@@ -112,10 +127,13 @@ task.spawn(function()
 			end
 			local level = player:GetAttribute("AugRegen") or 0
 			local zone = player:GetAttribute("Zone")
-			if level > 0 and (zone == "Field" or zone == "Dungeon") and workspace:GetServerTimeNow() - (player:GetAttribute("LastHurtAt") or 0) >= 2 then
+			local runRegen = zone == "Dungeon" and (player:GetAttribute("RunRegen") or 0) or 0 -- (🌿 드래프트 재생: 던전 안에서만, 맞은 뒤에도 쉬지 않는다)
+			local rested = workspace:GetServerTimeNow() - (player:GetAttribute("LastHurtAt") or 0) >= 2
+			local rate = ((level > 0 and rested) and Config.Guard.Regen(level) or 0) + runRegen
+			if rate > 0 and (zone == "Field" or zone == "Dungeon") then
 				local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 				if humanoid and humanoid.Health > 0 and humanoid.Health < humanoid.MaxHealth then
-					humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * Config.Guard.Regen(level))
+					humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * rate)
 				end
 			end
 		end

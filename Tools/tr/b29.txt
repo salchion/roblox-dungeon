@@ -983,3 +983,9 @@
 3014¦⬆ 今{number1}個の効果を強化できる¦⬆ {number1} Effekte können jetzt aufsteigen¦⬆ {number1} effets peuvent monter maintenant¦⬆ {number1} efectos pueden subir ahora¦⬆ {number1} efeitos podem subir agora¦⬆ 现在有{number1}个效果可升级¦⬆ 지금 올릴 수 있는 효과 {number1}개
 3015¦ギリギリ¦Knapp¦Serré¦Justo¦Apertado¦紧张¦빠듯
 3016¦無理¦Zu schwer¦Trop dur¦Muy difícil¦Difícil demais¦太难¦무리
+3017¦毎秒最大HPの{number1}%回復¦Stellt jede Sekunde {number1}% der max. LP wieder her¦Rend {number1}% des PV max chaque seconde¦Recupera {number1}% de la vida máx. cada segundo¦Recupera {number1}% da vida máx. por segundo¦每秒恢复{number1}%最大生命¦매초 최대 체력 {number1}% 회복
+3018¦踏ん張り¦Letztes Aufbäumen¦Dernier rempart¦Último aliento¦Último fôlego¦绝境坚守¦버티기
+3019¦致命傷を一度だけHP{number1}で耐える¦Überlebe einen tödlichen Treffer mit {number1} LP¦Survis à un coup fatal avec {number1} PV¦Sobrevive a un golpe mortal con {number1} de vida¦Sobreviva a um golpe fatal com {number1} de vida¦以{number1}点生命扛住一次致命攻击¦죽을 한 방을 한 번 체력 {number1}로 버팀
+3020¦必殺加速¦Ult-Beschleuniger¦Accélérateur d'ult¦Acelerador de definitiva¦Acelerador de ult¦终极技加速¦궁극기 가속
+3021¦必殺ゲージが{number1}%速くたまる¦Ult-Leiste lädt {number1}% schneller¦La jauge d'ult se charge {number1}% plus vite¦La barra de definitiva carga un {number1}% más rápido¦A barra de ult carrega {number1}% mais rápido¦终极技能量充能加快{number1}%¦궁극기 게이지 충전 {number1}% 빨라짐
+3022¦踏ん張り！¦LETZTES AUFBÄUMEN!¦DERNIER REMPART !¦¡ÚLTIMO ALIENTO!¦ÚLTIMO FÔLEGO!¦绝境坚守！¦버티기!

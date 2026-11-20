@@ -963,6 +963,9 @@ return {
 		["Sometimes on Legendary+ gear"] = "Parfois sur l'équipement Légendaire+",
 		["Tight"] = "Serré",
 		["Too hard"] = "Trop dur",
+		["Last Stand"] = "Dernier rempart",
+		["Ult Accelerator"] = "Accélérateur d'ult",
+		["LAST STAND!"] = "DERNIER REMPART !",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1082,6 +1085,5 @@ return {
 		{ "🔒 Zone {number1} · Darklands Sealed\nOpen the previous gate first", "🔒 Zone {number1} · Terres sombres scellées\nOuvrez d'abord la porte précédente" },
 		{ "🔒 Zone {number1} · Snowfield Sealed\nOpen the previous gate first", "🔒 Zone {number1} · Champ de neige scellé\nOuvrez d'abord la porte précédente" },
 		{ "Accrues up to {number1} hours while you're away (default {number2} hours)", "Accumule jusqu'à {number1} heures pendant votre absence (par défaut {number2} heures)" },
-		{ "🌪 Mob hunter  ·  ✔ 🔫 Rocket Launcher / Spell Tome (+{number1}%)", "🌪 Chasseur de monstres · ✔ 🔫 Lance-roquettes / Tome de sorts (+{number1}%)" },
 	},
 }

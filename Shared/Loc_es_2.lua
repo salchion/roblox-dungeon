@@ -959,6 +959,9 @@ return {
 		["Sometimes on Legendary+ gear"] = "A veces en equipo Legendario+",
 		["Tight"] = "Justo",
 		["Too hard"] = "Muy difícil",
+		["Last Stand"] = "Último aliento",
+		["Ult Accelerator"] = "Acelerador de definitiva",
+		["LAST STAND!"] = "¡ÚLTIMO ALIENTO!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1097,6 +1100,5 @@ return {
 		{ "Cleared up to depth {number1}  ·  You can enter up to depth {number2}", "Completado hasta la profundidad {number1}  ·  Puedes entrar hasta la profundidad {number2}" },
 		{ "Reach weapon upgrade level {number1} (about the 10th weapon)", "Alcanza el nivel de mejora de arma {number1} (aprox. la 10.ª arma)" },
 		{ "Reach weapon upgrade level {number1} (about the 50th weapon)", "Alcanza el nivel de mejora de arma {number1} (aprox. la 50.ª arma)" },
-		{ "Era {number1}  ·  Your weapon look and bullet color changed!", "Era {number1}  ·  ¡Cambiaron el aspecto de tu arma y el color de las balas!" },
 	},
 }

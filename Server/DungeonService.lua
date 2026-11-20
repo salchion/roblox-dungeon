@@ -43,7 +43,7 @@ local usedSlots = {}     -- [slot] = true
 local nextRunId = 1
 local lobbySpawn = CFrame.new(0, 4, 25)
 
-local STAT_ATTRIBUTES = { "StatPoints" } -- (어그먼트 효과는 이제 세트 장비에서 오므로 던전 시작 / 끝에 초기화하지 않는다)
+local STAT_ATTRIBUTES = { "StatPoints", "RunRegen", "RunLastStand", "RunUltRate" } -- (어그먼트 효과는 이제 세트 장비에서 오므로 던전 시작 / 끝에 초기화하지 않는다)
 for _, perkKey in ipairs(Config.Perks.Order) do
 	table.insert(STAT_ATTRIBUTES, Config.Perks[perkKey].Attr)
 end
@@ -2338,7 +2338,7 @@ function Dungeon.Shoot(player, origin, direction)
 			local t = math.clamp((data.WeakPart.Position - origin):Dot(ab) / math.max(ab:Dot(ab), 0.001), 0, 1)
 			if weakDirect or (origin + ab * t - data.WeakPart.Position).Magnitude <= data.WeakPart.Size.X * 0.8 then
 				-- 이 공격만 세지는 게 아니라 약점이 노출되어 4초간 보스가 받는 모든 피해가 x3 (damageMonster 가 적용)
-				player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 6))
+				player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + 6 * (1 + (player:GetAttribute("RunUltRate") or 0))))
 				player:SetAttribute("WeakHitTick", (player:GetAttribute("WeakHitTick") or 0) + 1)
 				Effects.Burst(data.WeakPart.Position, Color3.fromRGB(255, 235, 80), 24)
 				Effects.ExposeBoss(part, data, Config.WeakExposeSeconds)
@@ -2759,16 +2759,12 @@ local function applyBuff(run, member, buff)
 		for _, key in ipairs(buff.Combo) do
 			if not perkMaxed(member, key) then applyPerk(member, key) end
 		end
-	elseif buff.Effect == "Heal" then
-		applyMaxHealth(member, math.huge)
-	elseif buff.Effect == "Shield" then
-		if member.Character then
-			local shield = Instance.new("ForceField")
-			shield.Parent = member.Character
-			game:GetService("Debris"):AddItem(shield, 10)
-		end
-	elseif buff.Effect == "Ult" then
-		member:SetAttribute("UltCharge", Config.Skills.Ult.Cost)
+	elseif buff.Effect == "Regen" then -- 🌿 재생: 던전 내내 초당 최대 체력 % 회복 (DamageGuard 재생 루프)
+		member:SetAttribute("RunRegen", (member:GetAttribute("RunRegen") or 0) + 0.01)
+	elseif buff.Effect == "LastStand" then -- 🔰 버티기: 죽을 만큼 맞으면 한 번 체력 1로 버틴다 (DamageGuard.Take)
+		member:SetAttribute("RunLastStand", (member:GetAttribute("RunLastStand") or 0) + 1)
+	elseif buff.Effect == "UltRate" then -- ⭐ 궁극기 가속: 게이지 충전 +25% (ComboService / 약점 적중)
+		member:SetAttribute("RunUltRate", (member:GetAttribute("RunUltRate") or 0) + 0.25)
 	elseif buff.Effect == "Gold" then
 		run.GoldMult *= 1.2
 	elseif buff.Effect == "Xp" then

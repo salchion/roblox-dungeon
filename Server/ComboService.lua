@@ -18,7 +18,7 @@ function Combo.Kill(player, noUlt)
 	player:SetAttribute("Combo", count)
 	player:SetAttribute("ComboUntil", now + C.Window)
 	if not noUlt and player:GetAttribute("Zone") ~= "Lobby" then
-		player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + C.UltPerKill))
+		player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + C.UltPerKill * (1 + (player:GetAttribute("RunUltRate") or 0))))
 	end
 	-- 유니크 능력 (처치 시: Time Warp / Slaughterer / Lucky Star)
 	local okU, Unique = pcall(function() return require(script.Parent:WaitForChild("UniqueService")) end)

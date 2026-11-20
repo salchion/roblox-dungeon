@@ -909,6 +909,9 @@ return {
 		["Sometimes on Legendary+ gear"] = "Manchmal auf Legendär+ Ausrüstung",
 		["Tight"] = "Knapp",
 		["Too hard"] = "Zu schwer",
+		["Last Stand"] = "Letztes Aufbäumen",
+		["Ult Accelerator"] = "Ult-Beschleuniger",
+		["LAST STAND!"] = "LETZTES AUFBÄUMEN!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1070,6 +1073,5 @@ return {
 		{ "one hit can take at most {number1}% of your max HP (was {number2}%)", "ein Treffer nimmt höchstens {number1}% deiner max. LP (vorher {number2}%)" },
 		{ "🌪 Mob hunter  ·  ✔ 🔫 Railgun / Sniper Rifle (+{number1}%)", "🌪 Mob-Jäger · ✔ 🔫 Schienenwaffe / Scharfschützengewehr (+{number1}%)" },
 		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>\nON</font>", "<font color='#{number1}fffb{number2}'><b>Automatischer Angriff</b>\nAN </font>" },
-		{ "🥈 LeeGoAll_TV\n⚡ {number1} Lv.{number2}\nSniper Rifle · Arcane Era +{number3}", "🥈 LeeGoAll_TV\n⚡ {number1} Stufe {number2}\nScharfschützengewehr · Arkanische Ära +{number3}" },
 	},
 }
