@@ -355,7 +355,7 @@ local function play()
 		music = Instance.new("Sound")
 		music.Name = "IntroMusic"
 		music.SoundId = "rbxassetid://" .. INTRO_SOUND_ID
-		music.Volume = 0.7
+		music.Volume = 0.56 -- (0.7에서 20% 낮춤)
 		music.Parent = SoundService
 	end
 
