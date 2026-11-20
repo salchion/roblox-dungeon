@@ -949,6 +949,14 @@ return {
 		["Est. boss kill:"] = "Jefe derrotado en:",
 		["Recommended depth: clear one run first"] = "Profundidad recomendada: completa una partida primero",
 		["A better"] = "Un mejor",
+		["🧭 Ways to get stronger"] = "🧭 Cómo hacerte más fuerte",
+		["Gold level"] = "Nivel de oro",
+		["Ready now"] = "Listo ahora",
+		["Not enough gold"] = "Oro insuficiente",
+		["Guard Stone"] = "Piedra guardiana",
+		["After gold Lv.3"] = "Tras oro Nv.3",
+		["Gear option"] = "Opción de equipo",
+		["Sometimes on Legendary+ gear"] = "A veces en equipo Legendario+",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1088,8 +1096,5 @@ return {
 		{ "Reach weapon upgrade level {number1} (about the 10th weapon)", "Alcanza el nivel de mejora de arma {number1} (aprox. la 10.ª arma)" },
 		{ "Reach weapon upgrade level {number1} (about the 50th weapon)", "Alcanza el nivel de mejora de arma {number1} (aprox. la 50.ª arma)" },
 		{ "Era {number1}  ·  Your weapon look and bullet color changed!", "Era {number1}  ·  ¡Cambiaron el aspecto de tu arma y el color de las balas!" },
-		{ "🗿 Colossus defeated! Gear + 🎫 +{number1} + {number2} G (time bonus x{number3})", "🗿 ¡Coloso derrotado! Equipo + 🎫 +{number1} + {number2} G (bono de tiempo x{number3})" },
-		{ "Depth {number1} sweep: gold, tickets and boss chest received", "Profundidad {number1} barrida: oro, boletos y cofre del jefe recibidos" },
-		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "Tu nivel es muy bajo. (Esta mazmorra requiere Nv.{number1}+)" },
 	},
 }

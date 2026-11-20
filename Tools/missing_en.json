@@ -3001,5 +3001,17 @@
 "⏰ Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)",
 "Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)",
 "💥 One lord hit here = {number1}% of your max HP",
-"One lord hit here = {number1}% of your max HP"
+"One lord hit here = {number1}% of your max HP",
+"🧭 Ways to get stronger",
+"Defeat the Zone {number1} lord",
+"Gold level",
+"Ready now",
+"Not enough gold",
+"Guard Stone",
+"After gold Lv.3",
+"{number1} / {number2} · elites & lords from Zone {number3}",
+"📍 Zone {number1} field",
+"Gear option",
+"Sometimes on Legendary+ gear",
+"⬆ {number1} effects can level up now"
 ]

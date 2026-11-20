@@ -1077,6 +1077,14 @@ return {
 		["Est. boss kill:"] = "ボス討伐予想:",
 		["Recommended depth: clear one run first"] = "おすすめの深さ: まず1回クリア",
 		["A better"] = "より良い",
+		["🧭 Ways to get stronger"] = "🧭 もっと強くなる道",
+		["Gold level"] = "ゴールド段階",
+		["Ready now"] = "今すぐ可能",
+		["Not enough gold"] = "ゴールド不足",
+		["Guard Stone"] = "守護石",
+		["After gold Lv.3"] = "ゴールドLv.3の後",
+		["Gear option"] = "装備オプション",
+		["Sometimes on Legendary+ gear"] = "伝説以上の装備にたまに付く",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1149,7 +1157,5 @@ return {
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "発見したユニーク効果 {number1} / {number2}  ·  ミシック装備に1つ付くことがあります(確率約{number3}%)" },
 		{ "🎒 Bag full: dismantled {number1} gear that your other gear beats (Essence +{number2}, {number3} G)", "🎒 バッグが満杯：他の装備に劣る装備{number1}個を分解（エッセンス+{number2}、{number3} G）" },
 		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "スキルマスター　タイトル『スキルマスター』\nスキルを{number1}回使用する\n{number2} / {number3}　報酬：🎫 {number4}" },
-		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(あなたの記録: 深度{number1} · ダンジョンのテーマはランダム、確率は同じ)" },
-		{ "Each depth up: monster HP +{number1}% · damage +{number2}% · gold +{number3}% · better chest odds", "深さが1つ上がるごとに：モンスターHP+{number1}%・ダメージ+{number2}%・ゴールド+{number3}%・宝箱の確率アップ" },
 	},
 }

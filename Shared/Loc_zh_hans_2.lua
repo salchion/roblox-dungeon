@@ -831,6 +831,14 @@ return {
 		["Est. boss kill:"] = "预计击败首领：",
 		["Recommended depth: clear one run first"] = "推荐深度：请先通关一次",
 		["A better"] = "更好的",
+		["🧭 Ways to get stronger"] = "🧭 变强之路",
+		["Gold level"] = "金币阶段",
+		["Ready now"] = "现在可以",
+		["Not enough gold"] = "金币不足",
+		["Guard Stone"] = "守护石",
+		["After gold Lv.3"] = "金币Lv.3之后",
+		["Gear option"] = "装备词条",
+		["Sometimes on Legendary+ gear"] = "传说以上装备偶尔带有",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1117,8 +1125,5 @@ return {
 		{ "🔫 Next weapon unlock Shotgun (+{number1})", "🔫 下一个武器解锁霰弹枪（+{number1}）" },
 		{ "⚠ Reach level {number1} to break through.", "⚠ 达到 {number1} 级即可突破。" },
 		{ "💥 Weak Spot Hit! x3 damage for {number1}s", "💥 命中弱点!{number1} 秒内伤害 x3" },
-		{ "Not enough power! (You {number1} / Rec. {number2})", "战力不足!(你 {number1} / 推荐 {number2})" },
-		{ "Points left {number1}  /  earned {number2}  (max {number3})", "剩余点数 {number1}  /  已获得 {number2}  (最多 {number3})" },
-		{ "Crit chance +{number1}% per point  (max {number2})", "暴击率 +{number1}%/点  (上限 {number2})" },
 	},
 }

@@ -1218,6 +1218,14 @@ return {
 		["Est. boss kill:"] = "예상 보스 처치:",
 		["Recommended depth: clear one run first"] = "추천 깊이: 먼저 한 판 깨 주세요",
 		["A better"] = "더 좋은",
+		["🧭 Ways to get stronger"] = "🧭 더 세지는 길",
+		["Gold level"] = "골드 단계",
+		["Ready now"] = "지금 가능",
+		["Not enough gold"] = "골드 부족",
+		["Guard Stone"] = "수호석",
+		["After gold Lv.3"] = "골드 Lv.3 이후",
+		["Gear option"] = "장비 옵션",
+		["Sometimes on Legendary+ gear"] = "전설 이상 장비에 가끔 붙음",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1274,7 +1282,5 @@ return {
 		{ "Unbreakable   Title 『Unbreakable』\nSurvive {number1} seconds in the Boss Rush\n{number2} / {number3}   Reward: 🎫 {number4}", "깨지지 않는 타이틀 『Unbreakable』\n보스 러쉬에서 {number1}초 동안 생존하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
 		{ "Reduces training / breakthrough wait time by {number1} min (the skip bar fills instantly)", "훈련/돌파 대기 시간을 {number1}분 단축합니다 (스킵 바가 즉시 채워집니다)" },
 		{ "🌟 A golden FEVER portal opened where the Colossus fell! Step in within {number1} seconds!", "🌟 거신이 쓰러진 자리에 황금 피버 포탈이 열렸어요! {number1}초 안에 들어가세요!" },
-		{ "Survivor   Title 『Survivor』\nSurvive {number1} seconds in the Boss Rush\n{number2} / {number3}   Reward: 🎫 {number4}", "생존자 타이틀 『생존자』\n보스 러쉬에서 {number1}초 동안 생존하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
-		{ "First Dungeon   Title 『Dungeon Newbie』\nClear {number1} dungeon(s)\n{number2} / {number3}   Reward: {number4} G + 🎫 {number5}", "첫 번째 던전 타이틀 『던전 초보자』\n{number1}개의 던전을 클리어하세요\n{number2} / {number3}   보상: {number4} G + 🎫 {number5}" },
 	},
 }

@@ -969,3 +969,15 @@
 3000¦時間切れ！ボスが逃げた — クリアゴールドの{number1}%だけ獲得（宝箱・チケット・深さ記録なし）¦Zeit abgelaufen! Der Boss ist entkommen — du bekommst {number1}% des Abschlussgolds (keine Truhe, Tickets oder Tiefenrekord)¦Temps écoulé ! Le boss s'est enfui — tu reçois {number1}% de l'or de victoire (pas de coffre, tickets ni record de profondeur)¦¡Se acabó el tiempo! El jefe escapó — recibes el {number1}% del oro de victoria (sin cofre, tickets ni récord de profundidad)¦O tempo acabou! O chefe fugiu — você recebe {number1}% do ouro de vitória (sem baú, tickets ou recorde de profundidade)¦时间到！首领逃走了 — 只获得通关金币的{number1}%（没有宝箱、门票和深度记录）¦시간 초과! 보스가 도망쳤어요 — 클리어 골드 {number1}%만 받았어요 (상자 · 티켓 · 깊이 기록 없음)
 3001¦💥 ここの領主の一撃 = 最大HPの{number1}%¦💥 Ein Herrscher-Treffer hier = {number1}% deiner max. LP¦💥 Un coup du seigneur ici = {number1}% de tes PV max¦💥 Un golpe del señor aquí = {number1}% de tu vida máx.¦💥 Um golpe do lorde aqui = {number1}% da sua vida máx.¦💥 这里首领一击 = 你最大生命的{number1}%¦💥 이 구역 군주 한 방 = 내 최대 체력의 {number1}%
 3002¦ここの領主の一撃 = 最大HPの{number1}%¦Ein Herrscher-Treffer hier = {number1}% deiner max. LP¦Un coup du seigneur ici = {number1}% de tes PV max¦Un golpe del señor aquí = {number1}% de tu vida máx.¦Um golpe do lorde aqui = {number1}% da sua vida máx.¦这里首领一击 = 你最大生命的{number1}%¦이 구역 군주 한 방 = 내 최대 체력의 {number1}%
+3003¦🧭 もっと強くなる道¦🧭 Wege zu mehr Stärke¦🧭 Devenir plus fort¦🧭 Cómo hacerte más fuerte¦🧭 Como ficar mais forte¦🧭 变强之路¦🧭 더 세지는 길
+3004¦ゾーン{number1}の領主を倒す¦Besiege den Herrscher von Zone {number1}¦Bats le seigneur de la zone {number1}¦Derrota al señor de la zona {number1}¦Derrote o lorde da zona {number1}¦击败区域{number1}的首领¦{number1}구역 군주 처치
+3005¦ゴールド段階¦Gold-Stufe¦Niveau or¦Nivel de oro¦Nível de ouro¦金币阶段¦골드 단계
+3006¦今すぐ可能¦Jetzt möglich¦Prêt maintenant¦Listo ahora¦Pronto agora¦现在可以¦지금 가능
+3007¦ゴールド不足¦Nicht genug Gold¦Pas assez d'or¦Oro insuficiente¦Ouro insuficiente¦金币不足¦골드 부족
+3008¦守護石¦Schutzstein¦Pierre de garde¦Piedra guardiana¦Pedra guardiã¦守护石¦수호석
+3009¦ゴールドLv.3の後¦Nach Gold-Lv.3¦Après or Nv.3¦Tras oro Nv.3¦Após ouro Nv.3¦金币Lv.3之后¦골드 Lv.3 이후
+3010¦{number1} / {number2} · ゾーン{number3}以降のエリート・領主¦{number1} / {number2} · Elite & Herrscher ab Zone {number3}¦{number1} / {number2} · élites et seigneurs dès la zone {number3}¦{number1} / {number2} · élites y señores desde la zona {number3}¦{number1} / {number2} · elites e lordes a partir da zona {number3}¦{number1} / {number2} · 区域{number3}起的精英和首领¦{number1} / {number2} · {number3}구역부터 정예·군주
+3011¦📍 ゾーン{number1}フィールド¦📍 Feld Zone {number1}¦📍 Terrain zone {number1}¦📍 Campo zona {number1}¦📍 Campo zona {number1}¦📍 区域{number1}野外¦📍 {number1}구역 필드
+3012¦装備オプション¦Ausrüstungsoption¦Option d'équipement¦Opción de equipo¦Opção de equipamento¦装备词条¦장비 옵션
+3013¦伝説以上の装備にたまに付く¦Manchmal auf Legendär+ Ausrüstung¦Parfois sur l'équipement Légendaire+¦A veces en equipo Legendario+¦Às vezes em equipamento Lendário+¦传说以上装备偶尔带有¦전설 이상 장비에 가끔 붙음
+3014¦⬆ 今{number1}個の効果を強化できる¦⬆ {number1} Effekte können jetzt aufsteigen¦⬆ {number1} effets peuvent monter maintenant¦⬆ {number1} efectos pueden subir ahora¦⬆ {number1} efeitos podem subir agora¦⬆ 现在有{number1}个效果可升级¦⬆ 지금 올릴 수 있는 효과 {number1}개

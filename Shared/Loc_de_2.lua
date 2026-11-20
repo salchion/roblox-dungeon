@@ -899,6 +899,14 @@ return {
 		["Est. boss kill:"] = "Geschätzter Boss-Kill:",
 		["Recommended depth: clear one run first"] = "Empfohlene Tiefe: erst einen Lauf schaffen",
 		["A better"] = "Ein besseres",
+		["🧭 Ways to get stronger"] = "🧭 Wege zu mehr Stärke",
+		["Gold level"] = "Gold-Stufe",
+		["Ready now"] = "Jetzt möglich",
+		["Not enough gold"] = "Nicht genug Gold",
+		["Guard Stone"] = "Schutzstein",
+		["After gold Lv.3"] = "Nach Gold-Lv.3",
+		["Gear option"] = "Ausrüstungsoption",
+		["Sometimes on Legendary+ gear"] = "Manchmal auf Legendär+ Ausrüstung",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1061,8 +1069,5 @@ return {
 		{ "🌪 Mob hunter  ·  ✔ 🔫 Railgun / Sniper Rifle (+{number1}%)", "🌪 Mob-Jäger · ✔ 🔫 Schienenwaffe / Scharfschützengewehr (+{number1}%)" },
 		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>\nON</font>", "<font color='#{number1}fffb{number2}'><b>Automatischer Angriff</b>\nAN </font>" },
 		{ "🥈 LeeGoAll_TV\n⚡ {number1} Lv.{number2}\nSniper Rifle · Arcane Era +{number3}", "🥈 LeeGoAll_TV\n⚡ {number1} Stufe {number2}\nScharfschützengewehr · Arkanische Ära +{number3}" },
-		{ "below 50% HP take {number1}% less · below 25% take {number2}% less", "unter 50% LP {number1}% weniger · unter 25% {number2}% weniger" },
-		{ "Recommended: Depth {number1} (deepest you can clear in {number2}s)", "Empfohlen: Tiefe {number1} (tiefste, die du in {number2}s schaffst)" },
-		{ "Upgrade all the way to the last weapon (level {number1})", "Verbessere alle bis zur letzten Waffe (Stufe {number1})" },
 	},
 }

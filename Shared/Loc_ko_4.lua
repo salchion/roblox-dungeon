@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔓 {text1} unlocked! ({text2}) Pick it in the Weapons tab", "🔓 {text1} 해금! ({text2}) 무기 탭에서 고르세요" },
+		{ "📢 {text1} took down {number2} bosses in the Boss Rush! ({text3})", "📢 {text1}님이 보스 러시에서 보스 {number2}마리를 쓰러뜨렸어요! ({text3})" },
+		{ "<b>{text1}</b>\n<font color='#78ff8c'>▶ {text2}</font>", "<b>{text1}</b>\n<font color='#78ff8c'>▶ {text2}</font>" },
+		{ "<b>{text1}</b>  <font color='#bbbbcc'>{text2}</font>", "<b>{text1}</b>  <font color='#bbbbcc'>{text2}</font>" },
+		{ "🔫 Best with {text1}: set damage +40% and {text2}", "🔫 {text1}와 함께라면: 세트 피해 +40% 그리고 {text2}" },
+		{ "(Recommended power {text1} · Your power {text2})", "(권장 전투력 {text1} · 내 전투력 {text2})" },
+		{ "{text1} · {text2} · Monsters left {number3} · Keep going!", "{text1} · {text2} · 남은 몬스터 {number3} · 계속 가요!" },
 		{ "🔫 Weapon   <font color='#{text1}'>{text2}</font>", "🔫 무기   <font color='#{text1}'>{text2}</font>" },
 		{ "🌈 {text1} hit the Mythic pity: [Mythic] {text2}!", "🌈 {text1} 님이 신화 천장 달성: [신화] {text2}!" },
 		{ "🏅 Achievement unlocked! Reward: {text1}{text2}", "🏅 업적 달성! 보상: {text1}{text2}" },
