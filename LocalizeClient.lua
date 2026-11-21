@@ -75,7 +75,7 @@ if dict and dict.templates then
 			table.insert(pattern, (string.gsub(plain, "[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%0")))
 			if not a then break end
 			table.insert(pattern, kind == "text" and TEXT_CAPTURE or NUMBER_CAPTURE)
-			table.insert(names, number)
+			table.insert(names, kind .. number) -- (이름 = "text1" / "number1": 번호만 쓰면 {text1} 과 {number1} 이 서로 덮어썼다)
 			position = b + 1
 		end
 		local literal = string.gsub(source, "{%a+%d+}", "")
@@ -147,7 +147,7 @@ function lookupCore(piece, nested)
 				end
 				byName[name] = captured
 			end
-			local out = string.gsub(entry.To, "{%a+(%d+)}", function(name) return byName[name] end)
+			local out = string.gsub(entry.To, "{(%a+%d+)}", function(name) return byName[name] end)
 			if out ~= piece then return out end -- (아무것도 바뀌지 않았으면 다른 틀을 더 찾아본다: 구조만 맞추는 틀이 번역을 가로막지 않게)
 		end
 	end

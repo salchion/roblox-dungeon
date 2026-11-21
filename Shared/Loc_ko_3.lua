@@ -942,7 +942,7 @@ return {
 		{ "Shop item: {text1}", "상점 상품: {text1}" },
 		{ "Skip gauge {text1}", "스킵 게이지 {text1}" },
 		{ "Max level +{text1}", "최대 강화 +{text1}" },
-		{ "Equip this {text1}", "이 {text1}을(를) 끼면" },
+		{ "Equip this {text1}", "{text1} 장착" },
 		{ "Time left {text1}", "남은 시간 {text1}" },
 		{ "Entering {text1}!", "{text1} 입장!" },
 		{ "Next Lv.{number1}  {text2}", "다음 Lv.{number1}  {text2}" },
@@ -1034,6 +1034,6 @@ return {
 		{ "<font color='#aab0d0'>All-time best {text1} pts · most bosses {number2} · longest {text3}</font>", "<font color='#aab0d0'>역대 최고 {text1}점 · 최다 보스 {number2} · 최장 {text3}</font>" },
 		{ "{text1} · {text2} · Fail if monsters pile up! Survive to the end and the boss appears", "{text1} · {text2} · 몬스터가 쌓이면 실패! 끝까지 버티면 보스가 나와요" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Activate it with gold (Y key / ✨ Set button)", "{text1} 세트 효과 『{text2}』 해금! 골드로 활성화하세요 (Y 키 / ✨ 세트 버튼)" },
-		{ "🧩 Equip this {text1} → <b>{text2} {number3}/3</b>: set bonus ON (and its set effect)", "🧩 이 {text1}을(를) 끼면 → <b>{text2} {number3}/3</b>: 세트 보너스 켜짐 (세트 효과도)" },
+		{ "🧩 Equip this {text1} → <b>{text2} {number3}/3</b>: set bonus ON (and its set effect)", "🧩 {text1} 장착 → <b>{text2} {number3}/3</b>: 세트 보너스 켜짐 (세트 효과도)" },
 	},
 }

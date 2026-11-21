@@ -13,6 +13,7 @@
 
 문제가 있으면 어떤 파일을 어떻게 고쳐야 하는지 알려 주고 종료 코드 1 로 끝난다.
 """
+import glob
 import json
 import os
 import re
@@ -185,9 +186,30 @@ def check_loc():
         shutil.rmtree(temp, ignore_errors=True)
 
 
+def check_placeholders():
+    """번역 틀의 자리표시자: 번역문이 원문에 없는 이름({text2} 등)을 쓰거나, 원문에 같은 이름이 두 번 나오면 실패.
+    (LocalizeClient 는 "text1" / "number1" 처럼 종류 + 번호로 값을 끼운다. 예전엔 번호만 써서 {text1} 과 {number1} 이 서로 덮어썼다)"""
+    count = 0
+    for path in sorted(glob.glob(os.path.join(ROOT, "Shared", "Loc_*.lua"))):
+        with open(path, encoding="utf-8") as handle:
+            text = handle.read()
+        for source, target in re.findall(r'\{\s*"((?:[^"\\]|\\.)*)",\s*"((?:[^"\\]|\\.)*)"\s*\}', text):
+            names = re.findall(r"\{((?:text|number)\d+)\}", source)
+            if not names:
+                continue
+            count += 1
+            if len(names) != len(set(names)):
+                fail("%s: 원문에 같은 자리표시자가 두 번 있습니다: %s" % (os.path.basename(path), source[:80]))
+            extra = set(re.findall(r"\{((?:text|number)\d+)\}", target)) - set(names)
+            if extra:
+                fail("%s: 번역문이 원문에 없는 자리표시자 %s 를 씁니다: %s" % (os.path.basename(path), sorted(extra), source[:80]))
+    print("      번역 틀 자리표시자 검사: %d개" % count)
+
+
 def main():
     check_manifest()
     check_loc()
+    check_placeholders()
     print("[3/3] 이름 중복 / 누락 검사 완료")
     if problems:
         print()

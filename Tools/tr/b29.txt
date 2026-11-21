@@ -789,7 +789,7 @@
 2820¦⏸ {number1}個待機中 · 📌 固定すると入れ替え¦⏸ {number1} warten · 📌 Anheften zum Tauschen¦⏸ {number1} en attente · 📌 Épingle pour l'échanger¦⏸ {number1} en espera · 📌 Fija uno para cambiarlo¦⏸ {number1} aguardando · 📌 Fixe um para trocar¦⏸ {number1}个等待中 · 📌 固定即可换上¦⏸ {number1}개 대기 중 · 📌 고정하면 바꿔 켜져요
 2821¦{text1} {text2} セット装備 → 装備画面へ¦{text1} {text2} Set → Ausrüstung öffnen¦{text1} Set {text2} → ouvrir l'équipement¦{text1} Set {text2} → abrir equipo¦{text1} Set {text2} → abrir equipamento¦{text1} {text2} 套装 → 打开装备¦{text1} {text2} 세트 장비 → 장비 창 열기
 2822¦🛡 <b>{text1}</b>が空いています — 装備しましょう¦🛡 Dein Platz <b>{text1}</b> ist leer — rüste etwas aus¦🛡 L'emplacement <b>{text1}</b> est vide — équipe-en un¦🛡 Tu ranura <b>{text1}</b> está vacía — equipa algo¦🛡 Seu espaço <b>{text1}</b> está vazio — equipe algo¦🛡 <b>{text1}</b>栏位是空的——装备一件吧¦🛡 <b>{text1}</b> 칸이 비어 있어요 — 하나 끼세요
-2823¦🧩 この{text1}を装備 → <b>{text2} {number3}/3</b>: セットボーナスON (セット効果も)¦🧩 Diese {text1} ausrüsten → <b>{text2} {number3}/3</b>: Set-Bonus AN (und Set-Effekt)¦🧩 Équipe ce {text1} → <b>{text2} {number3}/3</b> : bonus de set activé (et son effet)¦🧩 Equipa este {text1} → <b>{text2} {number3}/3</b>: bono de set activo (y su efecto)¦🧩 Equipe este {text1} → <b>{text2} {number3}/3</b>: bônus de set ligado (e o efeito)¦🧩 装备这件{text1} → <b>{text2} {number3}/3</b>：套装加成开启（含套装效果）¦🧩 이 {text1}을(를) 끼면 → <b>{text2} {number3}/3</b>: 세트 보너스 켜짐 (세트 효과도)
+2823¦🧩 この{text1}を装備 → <b>{text2} {number3}/3</b>: セットボーナスON (セット効果も)¦🧩 Diese {text1} ausrüsten → <b>{text2} {number3}/3</b>: Set-Bonus AN (und Set-Effekt)¦🧩 Équipe ce {text1} → <b>{text2} {number3}/3</b> : bonus de set activé (et son effet)¦🧩 Equipa este {text1} → <b>{text2} {number3}/3</b>: bono de set activo (y su efecto)¦🧩 Equipe este {text1} → <b>{text2} {number3}/3</b>: bônus de set ligado (e o efeito)¦🧩 装备这件{text1} → <b>{text2} {number3}/3</b>：套装加成开启（含套装效果）¦🧩 {text1} 장착 → <b>{text2} {number3}/3</b>: 세트 보너스 켜짐 (세트 효과도)
 2824¦▲ バッグにもっと良い<b>{text1}</b>があります (スコア +{number2})¦▲ Ein besseres <b>{text1}</b> ist in deiner Tasche (Wertung +{number2})¦▲ Un meilleur <b>{text1}</b> est dans ton sac (score +{number2})¦▲ Hay un mejor <b>{text1}</b> en tu bolsa (puntos +{number2})¦▲ Há um <b>{text1}</b> melhor na bolsa (pontos +{number2})¦▲ 背包里有更好的<b>{text1}</b>（评分 +{number2}）¦▲ 가방에 더 좋은 <b>{text1}</b>이(가) 있어요 (점수 +{number2})
 2825¦✔ 今が一番良い装備です。枠をタップで比較、セット装備はフィールドで集めましょう¦✔ Du trägst deine beste Ausrüstung. Tippe auf einen Platz zum Vergleichen oder sammle Set-Ausrüstung im Feld¦✔ Tu portes ton meilleur équipement. Touche un emplacement pour comparer, ou récolte des sets sur le terrain¦✔ Llevas tu mejor equipo. Toca una ranura para comparar o junta sets en el campo¦✔ Você está com o melhor equipamento. Toque num espaço para comparar ou junte sets no campo¦✔ 你已穿着最好的装备。点栏位可比较，套装可在野外收集¦✔ 지금이 가장 좋은 장비예요. 칸을 눌러 비교하거나, 필드에서 세트 장비를 모아 보세요
 2826¦装備する¦Ausrüsten¦Équiper¦Equipar¦Equipar¦装备¦바로 끼기
@@ -999,18 +999,18 @@
 3030¦後方（{text1}）¦hinter dir ({text1})¦derrière ({text1})¦detrás ({text1})¦atrás ({text1})¦后方（{text1}）¦뒤쪽 ({text1})
 3031¦右（{text1}）¦rechts ({text1})¦à droite ({text1})¦a la derecha ({text1})¦à direita ({text1})¦右边（{text1}）¦오른쪽 ({text1})
 3032¦左（{text1}）¦links ({text1})¦à gauche ({text1})¦a la izquierda ({text1})¦à esquerda ({text1})¦左边（{text1}）¦왼쪽 ({text1})
-3033¦東¦Osten¦est¦este¦leste¦东¦동
-3034¦南東¦Südosten¦sud-est¦sureste¦sudeste¦东南¦남동
-3035¦南¦Süden¦sud¦sur¦sul¦南¦남
-3036¦南西¦Südwesten¦sud-ouest¦suroeste¦sudoeste¦西南¦남서
-3037¦西¦Westen¦ouest¦oeste¦oeste¦西¦서
-3038¦北西¦Nordwesten¦nord-ouest¦noroeste¦noroeste¦西北¦북서
-3039¦北¦Norden¦nord¦norte¦norte¦北¦북
-3040¦北東¦Nordosten¦nord-est¦noreste¦nordeste¦东北¦북동
+3033¦東¦Ost¦est¦este¦leste¦东¦동
+3034¦南東¦Südost¦sud-est¦sureste¦sudeste¦东南¦남동
+3035¦南¦Süd¦sud¦sur¦sul¦南¦남
+3036¦南西¦Südwest¦sud-ouest¦suroeste¦sudoeste¦西南¦남서
+3037¦西¦West¦ouest¦oeste¦oeste¦西¦서
+3038¦北西¦Nordwest¦nord-ouest¦noroeste¦noroeste¦西北¦북서
+3039¦北¦Nord¦nord¦norte¦norte¦北¦북
+3040¦北東¦Nordost¦nord-est¦noreste¦nordeste¦东北¦북동
 3041¦すぐ前！¦Direkt vor dir!¦Juste devant !¦¡Justo delante!¦Logo à frente!¦就在前面！¦바로 앞이에요!
 3042¦すぐ後ろ！¦Direkt hinter dir!¦Juste derrière !¦¡Justo detrás!¦Logo atrás!¦就在后面！¦바로 뒤예요!
 3043¦すぐ右！¦Direkt rechts!¦Juste à droite !¦¡Justo a la derecha!¦Logo à direita!¦就在右边！¦바로 오른쪽이에요!
 3044¦すぐ左！¦Direkt links!¦Juste à gauche !¦¡Justo a la izquierda!¦Logo à esquerda!¦就在左边！¦바로 왼쪽이에요!
 3045¦目標¦Ziel¦Objectif¦Objetivo¦Objetivo¦目标¦목표
 3046¦余った装備を合成 → 一つ上の等級¦Übrige Ausrüstung zu höherer Seltenheit verschmelzen¦Fusionner l'équipement en trop vers une rareté supérieure¦Fusiona equipo sobrante a una rareza mayor¦Funda equipamento extra em uma raridade maior¦合成多余装备 → 更高品质¦남는 장비 합성 → 한 단계 위 등급
-3047¦この{text1}を装備すると¦Rüste diese(n) {text1} aus¦Équipe ce {text1}¦Equipa este {text1}¦Equipe este {text1}¦装备这件{text1}¦이 {text1}을(를) 끼면
+3047¦この{text1}を装備すると¦Rüste diese(n) {text1} aus¦Équipe ce {text1}¦Equipa este {text1}¦Equipe este {text1}¦装备这件{text1}¦{text1} 장착
