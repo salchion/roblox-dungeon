@@ -135,7 +135,7 @@ def check_manifest():
             fail("같은 위치에 같은 이름의 스크립트가 두 개입니다: %s / %s (%s, %s)"
                  % (key[0], key[1], seen[key], entry.get("path")))
         seen[key] = entry.get("path")
-    print("[1/3] manifest.json 검사: Lua 파일 %d개 · manifest 항목 %d개" % (len(files), len(entries)))
+    print("[1/4] manifest.json 검사: Lua 파일 %d개 · manifest 항목 %d개" % (len(files), len(entries)))
 
 
 def check_loc():
@@ -181,7 +181,7 @@ def check_loc():
                                    key=lambda e: e.get("path"))
         if pick(repo_manifest) != pick(new_manifest):
             fail("manifest.json 의 Shared/Loc_* 항목이 build_loc.py 결과와 다릅니다: python3 Tools/build_loc.py 를 다시 돌리세요")
-        print("[2/3] 번역 모듈 검사: Shared/Loc_*.lua %d개 (7언어)" % len(repo_loc))
+        print("[2/4] 번역 모듈 검사: Shared/Loc_*.lua %d개 (7언어)" % len(repo_loc))
     finally:
         shutil.rmtree(temp, ignore_errors=True)
 
@@ -203,14 +203,14 @@ def check_placeholders():
             extra = set(re.findall(r"\{((?:text|number)\d+)\}", target)) - set(names)
             if extra:
                 fail("%s: 번역문이 원문에 없는 자리표시자 %s 를 씁니다: %s" % (os.path.basename(path), sorted(extra), source[:80]))
-    print("      번역 틀 자리표시자 검사: %d개" % count)
+    print("[3/4] 번역 틀 자리표시자 검사: %d개" % count)
 
 
 def main():
     check_manifest()
     check_loc()
     check_placeholders()
-    print("[3/3] 이름 중복 / 누락 검사 완료")
+    print("[4/4] 이름 중복 / 누락 검사 완료")
     if problems:
         print()
         print("문제 %d개:" % len(problems))
