@@ -396,7 +396,8 @@ Config.Break = { Enabled = true, Need = 16, Seconds = 3.5, DamageMult = 1.3, Rat
 	SkillBonus = 2, SkillCooldown = 1.0, Cells = 4 }
 -- 던전 드래프트 (하스스톤 투기장식): 입장 직후 Rounds 번 3택으로 내 덱을 만들고, 전투 중 보너스 때마다 덱 순서대로 자동 발동 (전투 중 팝업 없음)
 --   라운드마다 RoundSeconds 안에 안 고르면 첫 장, 전체 마감이 지나면 남은 칸은 자동으로 채우고 시작 (파티 AFK 가 판을 붙잡지 않게)
-Config.Dungeon.Draft = { Enabled = true, Rounds = 8, RoundSeconds = 7 } -- (전체 마감 = Rounds x RoundSeconds + 2초: 코드에서 계산)
+Config.Dungeon.Draft = { Enabled = true, Rounds = 8, RoundSeconds = 7,
+	EffectCaps = { Regen = 2, LastStand = 1, UltRate = 2, Gold = 2, Xp = 2 } } -- (효과형 카드는 한 판에 이 장수까지: 드래프트 덱 + 이미 적용된 것 합산. Ticket 은 Weight 0.35 로만 조절) -- (전체 마감 = Rounds x RoundSeconds + 2초: 코드에서 계산)
 Config.Dungeon.Choice = { Enabled = true, Seconds = 6, Count = 3 } -- (Seconds = BonusInterval: 무응답이어도 보너스 간격 / 보스 체력이 그대로)
 Config.Dungeon.BonusInterval = 6     -- 이 간격(초)마다 보상(골드 / 경험치)이 터진다. 드래프트 판: 덱은 전투 시작에 한 번에 켜지고, 슬롯은 2번에 1번(12초) 패널티만
 Config.Dungeon.BossTimeLimit = 60    -- 버티기 던전 보스: 나타나고 이 시간(초) 안에 못 잡으면 실패 (튜토리얼 제외)

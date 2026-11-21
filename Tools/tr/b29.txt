@@ -989,3 +989,28 @@
 3020¦必殺加速¦Ult-Beschleuniger¦Accélérateur d'ult¦Acelerador de definitiva¦Acelerador de ult¦终极技加速¦궁극기 가속
 3021¦必殺ゲージが{number1}%速くたまる¦Ult-Leiste lädt {number1}% schneller¦La jauge d'ult se charge {number1}% plus vite¦La barra de definitiva carga un {number1}% más rápido¦A barra de ult carrega {number1}% mais rápido¦终极技能量充能加快{number1}%¦궁극기 게이지 충전 {number1}% 빨라짐
 3022¦踏ん張り！¦LETZTES AUFBÄUMEN!¦DERNIER REMPART !¦¡ÚLTIMO ALIENTO!¦ÚLTIMO FÔLEGO!¦绝境坚守！¦버티기!
+3023¦👑 {text1}の領主（ゾーン{number1}）¦👑 Herrscher von {text1} (Zone {number1})¦👑 Seigneur de {text1} (zone {number1})¦👑 Señor de {text1} (zona {number1})¦👑 Lorde de {text1} (zona {number1})¦👑 {text1}的首领（区域{number1}）¦👑 {text1}의 군주 ({number1}구역)
+3024¦👑 {text1}の領主（ゾーン{number1}）· ⏱ 約{number2}秒 · 💥 HP{number3}%¦👑 Herrscher von {text1} (Zone {number1}) · ⏱ ~{number2}s · 💥 {number3}% LP¦👑 Seigneur de {text1} (zone {number1}) · ⏱ ~{number2}s · 💥 {number3}% PV¦👑 Señor de {text1} (zona {number1}) · ⏱ ~{number2}s · 💥 {number3}% vida¦👑 Lorde de {text1} (zona {number1}) · ⏱ ~{number2}s · 💥 {number3}% vida¦👑 {text1}的首领（区域{number1}）· ⏱ 约{number2}秒 · 💥 生命{number3}%¦👑 {text1}의 군주 ({number1}구역) · ⏱ ~{number2}초 · 💥 체력 {number3}%
+3025¦⏱ 撃破 約{number1}秒 · 💥 一撃 HP{number2}%¦⏱ Kill ~{number1}s · 💥 Treffer {number2}% LP¦⏱ Élim. ~{number1}s · 💥 Coup {number2}% PV¦⏱ Derribo ~{number1}s · 💥 Golpe {number2}% vida¦⏱ Abate ~{number1}s · 💥 Golpe {number2}% vida¦⏱ 击杀 约{number1}秒 · 💥 一击 生命{number2}%¦⏱ 처치 ~{number1}초 · 💥 한 방 체력 {number2}%
+3026¦📍 {text1}  {text2}  {number1}m¦📍 {text1}  {text2}  {number1} m¦📍 {text1}  {text2}  {number1} m¦📍 {text1}  {text2}  {number1} m¦📍 {text1}  {text2}  {number1} m¦📍 {text1}  {text2}  {number1}米¦📍 {text1}  {text2}  {number1}m
+3027¦▼ {text1}  {number1}m¦▼ {text1}  {number1} m¦▼ {text1}  {number1} m¦▼ {text1}  {number1} m¦▼ {text1}  {number1} m¦▼ {text1}  {number1}米¦▼ {text1}  {number1}m
+3028¦{text1}  {number1}m¦{text1}  {number1} m¦{text1}  {number1} m¦{text1}  {number1} m¦{text1}  {number1} m¦{text1}  {number1}米¦{text1}  {number1}m
+3029¦前方（{text1}）¦vorne ({text1})¦devant ({text1})¦delante ({text1})¦à frente ({text1})¦前方（{text1}）¦앞쪽 ({text1})
+3030¦後方（{text1}）¦hinter dir ({text1})¦derrière ({text1})¦detrás ({text1})¦atrás ({text1})¦后方（{text1}）¦뒤쪽 ({text1})
+3031¦右（{text1}）¦rechts ({text1})¦à droite ({text1})¦a la derecha ({text1})¦à direita ({text1})¦右边（{text1}）¦오른쪽 ({text1})
+3032¦左（{text1}）¦links ({text1})¦à gauche ({text1})¦a la izquierda ({text1})¦à esquerda ({text1})¦左边（{text1}）¦왼쪽 ({text1})
+3033¦東¦Osten¦est¦este¦leste¦东¦동
+3034¦南東¦Südosten¦sud-est¦sureste¦sudeste¦东南¦남동
+3035¦南¦Süden¦sud¦sur¦sul¦南¦남
+3036¦南西¦Südwesten¦sud-ouest¦suroeste¦sudoeste¦西南¦남서
+3037¦西¦Westen¦ouest¦oeste¦oeste¦西¦서
+3038¦北西¦Nordwesten¦nord-ouest¦noroeste¦noroeste¦西北¦북서
+3039¦北¦Norden¦nord¦norte¦norte¦北¦북
+3040¦北東¦Nordosten¦nord-est¦noreste¦nordeste¦东北¦북동
+3041¦すぐ前！¦Direkt vor dir!¦Juste devant !¦¡Justo delante!¦Logo à frente!¦就在前面！¦바로 앞이에요!
+3042¦すぐ後ろ！¦Direkt hinter dir!¦Juste derrière !¦¡Justo detrás!¦Logo atrás!¦就在后面！¦바로 뒤예요!
+3043¦すぐ右！¦Direkt rechts!¦Juste à droite !¦¡Justo a la derecha!¦Logo à direita!¦就在右边！¦바로 오른쪽이에요!
+3044¦すぐ左！¦Direkt links!¦Juste à gauche !¦¡Justo a la izquierda!¦Logo à esquerda!¦就在左边！¦바로 왼쪽이에요!
+3045¦目標¦Ziel¦Objectif¦Objetivo¦Objetivo¦目标¦목표
+3046¦余った装備を合成 → 一つ上の等級¦Übrige Ausrüstung zu höherer Seltenheit verschmelzen¦Fusionner l'équipement en trop vers une rareté supérieure¦Fusiona equipo sobrante a una rareza mayor¦Funda equipamento extra em uma raridade maior¦合成多余装备 → 更高品质¦남는 장비 합성 → 한 단계 위 등급
+3047¦この{text1}を装備すると¦Rüste diese(n) {text1} aus¦Équipe ce {text1}¦Equipa este {text1}¦Equipe este {text1}¦装备这件{text1}¦이 {text1}을(를) 끼면

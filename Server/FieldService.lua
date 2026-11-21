@@ -27,6 +27,7 @@ local Dungeon = require(script.Parent:WaitForChild("DungeonService"))
 local Keys = require(script.Parent:WaitForChild("KeyService"))
 local Aug = require(script.Parent:WaitForChild("AugService"))
 local BL = require(script.Parent:WaitForChild("BalanceLog")) -- Studio 전용 밸런스 로그
+local MOB_DIAG = false -- Studio 몬스터 진단 출력 ([MobDiag], 4초마다). 로그를 덮어서 기본은 끈다: 필요할 때만 true
 local Meta = require(script.Parent:WaitForChild("MetaService"))
 local Quest = require(script.Parent:WaitForChild("QuestService"))
 local Level = require(script.Parent:WaitForChild("LevelService"))
@@ -3856,7 +3857,7 @@ function Field.Init(lobbySpawnCFrame)
 	end)
 	task.spawn(runAmbush)
 	task.spawn(runBushAmbush)
-	if RunService:IsStudio() then
+	if MOB_DIAG and RunService:IsStudio() then
 		-- Studio 진단: 내 주변 40 안의 몬스터 상태를 4초마다 출력한다 ("맞지도 않고 반응도 없는 몬스터" 원인 추적용. 게임 서버에서는 안 돈다)
 		task.spawn(function()
 			while true do

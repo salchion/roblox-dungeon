@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎉 Evolved to {text1}! Your weapon look and bullet color changed{text2}", "🎉 {text1}(으)로 진화! 무기 외형과 탄 색이 바뀌었어요{text2}" },
+		{ "{text1}\nGold earned  +{number2} G   🎫 Tickets +{number3}\n{text4}\nReturning to lobby in {number5}s", "{text1}\n획득 골드  +{number2} G   🎫 티켓 +{number3}\n{text4}\n{number5}초 후 로비로 돌아가요" },
+		{ "⏳ {text1} upgrade started! ({text2}) — use Time Skip to finish sooner", "⏳ {text1} 강화 시작! ({text2}) — 시간 단축으로 더 빨리 끝낼 수 있어요" },
+		{ "<font color='#aaaacc' size='10'>{text1} · Score {number2}{text3}</font>", "<font color='#aaaacc' size='10'>{text1} · 점수 {number2}{text3}</font>" },
+		{ "{text1}  <font size='10' color='#aab0c8'>Zone {number2} {text3}</font>", "{text1}  <font size='10' color='#aab0c8'>{number2}구역 {text3}</font>" },
+		{ "{text1}<b>{text2}</b>  <font color='#9aa0c0'>Lv {number3} · ⚡{number4}</font>", "{text1}<b>{text2}</b>  <font color='#9aa0c0'>Lv {number3} · ⚡{number4}</font>" },
 		{ "All-time best {text1} pts · most bosses {number2} · longest {text3}", "역대 최고 {text1}점 · 최다 보스 {number2} · 최장 {text3}" },
 		{ "🎁 Weekly Boss Rush chest: Mythic {text1} with ★ {text2}!", "🎁 주간 보스 러시 상자: 신화 {text1}, ★ {text2} 포함!" },
 		{ "🔓 {text1} unlocked! ({text2}) Pick it in the Weapons tab", "🔓 {text1} 해금! ({text2}) 무기 탭에서 고르세요" },
@@ -56,6 +62,7 @@ return {
 		{ "+ {text1} piece {text2}", "+ {text1} 조각 {text2}" },
 		{ "Depth {number1}: {text2}{text3}", "깊이 {number1}: {text2}{text3}" },
 		{ "(gear {text1}{text2})", "(장비 {text1}{text2})" },
+		{ "📍 {text1}  {text2}  {number1}m", "📍 {text1}  {text2}  {number1}m" },
 		{ "Zone {number1} {text2}{text3}", "{number1}구역 {text2}{text3}" },
 		{ "[{text1}] {text2} +{number3}", "[{text1}] {text2} +{number3}" },
 		{ "{text1} x{number2} → {text3}", "{text1} x{number2} → {text3}" },

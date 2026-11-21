@@ -2725,7 +2725,25 @@ local function pickWeighted(list, allowed, weightOf)
 	end
 end
 
+-- 효과형 카드 상한 (Config.Dungeon.Draft.EffectCaps): 이 판에 이미 적용된 장수 + 아직 안 켠 드래프트 덱(deck) 장수
+local EFFECT_ATTR = { Regen = { "RunRegen", 0.01 }, LastStand = { "RunLastStand", 1 }, UltRate = { "RunUltRate", 0.25 } }
+local function effectRoom(run, member, entry, deck)
+	local caps = Config.Dungeon.Draft and Config.Dungeon.Draft.EffectCaps
+	local cap = entry.Effect and caps and caps[entry.Effect]
+	if not cap then return true end
+	local n = (run.EffectCount and run.EffectCount[member] and run.EffectCount[member][entry.Effect]) or 0
+	local attr = EFFECT_ATTR[entry.Effect]
+	if attr then n = math.max(n, math.floor((member:GetAttribute(attr[1]) or 0) / attr[2] + 0.5)) end
+	if deck then for _, b in ipairs(deck) do if b.Effect == entry.Effect then n += 1 end end end
+	return n < cap
+end
+
 local function applyBuff(run, member, buff)
+	if buff.Effect and buff.Name then -- (상한 세기: 카드로 받은 것만. 세트 완성 위로금 같은 내부 호출은 이름이 없다)
+		run.EffectCount = run.EffectCount or {}
+		run.EffectCount[member] = run.EffectCount[member] or {}
+		run.EffectCount[member][buff.Effect] = (run.EffectCount[member][buff.Effect] or 0) + 1
+	end
 	do -- 얻는 순간의 소리: 어그먼트는 따로, 나머지 강화는 Buff_Get
 		local buffRoot = member.Character and member.Character:FindFirstChild("HumanoidRootPart")
 		if buffRoot then sfxAt(run, buffRoot.Position, buff.Effect == "Aug" and "Aug_Get" or "Buff_Get", nil, 0.3) end
@@ -2914,7 +2932,7 @@ local function rollBonus(run, penaltyChance, forceSpecial)
 			end
 			if entry.Perk then return not perkMaxed(member, entry.Perk) end
 			if entry.Attr then return (member:GetAttribute(entry.Attr) or 0) < (entry.Max or 3) end
-			return true
+			return effectRoom(run, member, entry)
 		end
 		local function weigh(entry) return buffWeight(member, entry) end
 		-- 3택: 서로 다른 강화 최대 3장 (레어 확정이면 레어 위주로)
@@ -2924,7 +2942,7 @@ local function rollBonus(run, penaltyChance, forceSpecial)
 		for _ = 1, count do
 			local pick = pickWeighted(Config.RunBuffs, function(e) return allowed(e) and notChosen(e) end, weigh)
 			if not pick and forceSpecial then
-				pick = pickWeighted(Config.RunBuffs, function(e) return (e.Perk == nil or not perkMaxed(member, e.Perk)) and notChosen(e) end, weigh)
+				pick = pickWeighted(Config.RunBuffs, function(e) return (e.Perk == nil or not perkMaxed(member, e.Perk)) and notChosen(e) and effectRoom(run, member, e) end, weigh)
 			end
 			if not pick then break end
 			table.insert(options, pick)
@@ -3028,13 +3046,13 @@ local function runDraft(run)
 				return perk and (perkStacks(member, entry.Perk) + (inDeck[entry.Perk] or 0)) < perk.Max
 			end
 			if entry.Attr then return (member:GetAttribute(entry.Attr) or 0) + (inDeck[entry.Attr] or 0) < (entry.Max or 3) end
-			return true
+			return effectRoom(run, member, entry, deck)
 		end
 		local options = {}
 		local function notChosen(e) for _, o in ipairs(options) do if o == e then return false end end return true end
 		for _ = 1, 3 do
 			local pick = pickWeighted(Config.RunBuffs, function(e) return allowed(e) and notChosen(e) end, function(e) return buffWeight(member, e) end)
-			if not pick then pick = pickWeighted(Config.RunBuffs, notChosen) end
+			if not pick then pick = pickWeighted(Config.RunBuffs, function(e) return notChosen(e) and effectRoom(run, member, e, deck) end) end -- (예비 뽑기도 효과형 상한은 지킨다)
 			if not pick then break end
 			table.insert(options, pick)
 		end
