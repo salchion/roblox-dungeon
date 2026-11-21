@@ -2033,6 +2033,7 @@ end
 local function toggleAuto()
 	autoMode = not autoMode
 	lockTarget = nil
+	if not autoMode then AimShare.Point = nil end -- (자동 공격을 끄면 상체 조준도 바로 푼다)
 	nextSearch = 0
 	updateLockVisual()
 	toast(autoMode and "🔒 Auto-Attack ON — click a dummy/monster to lock onto it (R to turn off)" or "Auto-Attack OFF")
@@ -3074,8 +3075,18 @@ Remotes.Tutorial.OnClientEvent:Connect(function(action, data) -- 연출(던전�
 	settings.CinemaUntil = data == "End" and 0 or os.clock() + 20 -- (End 를 못 받아도 20초 뒤에는 풀린다)
 end)
 
+local nextAimShare = 0
 RunService.Heartbeat:Connect(function()
 	local now = os.clock()
+	-- 상체 조준 유지: 발사 간격(0.6~2초)과 상관없이 0.2초마다 조준점을 새로 적는다 (발사 때만 적으면 사이사이 상체가 정면으로 돌아왔다가 다시 휙 돌았다)
+	if now >= nextAimShare then
+		nextAimShare = now + 0.2
+		if autoMode and lockTarget and lockTarget.Part and lockTarget.Part.Parent then
+			AimShare.Point, AimShare.At = lockTarget.Part.Position, now
+		elseif holding and AimShare.Point then
+			AimShare.At = now -- (누르고 있는 동안 마지막 조준점 유지. 놓으면 0.6초 뒤 정면)
+		end
+	end
 	if now < nextAttack then return end
 	if now < (settings.CinemaUntil or 0) or player:GetAttribute("CombatLocked") then return end
 

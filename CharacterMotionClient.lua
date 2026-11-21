@@ -92,8 +92,10 @@ RunService.RenderStepped:Connect(function(dt)
 		end
 	end
 	yaw += (targetYaw - yaw) * math.min(1, dt * 14)
-	-- (R6 RootJoint 는 관절 좌표의 Z 축이 위쪽이라 Z 로 돌린다. R15 Waist 는 Y 축이 위쪽)
-	local turn = isR6 and CFrame.Angles(0, 0, yaw) or CFrame.Angles(0, yaw, 0)
+	-- Transform 은 C0 좌표 기준이라, 몸의 위쪽 축을 C0 좌표로 옮겨 그 축으로 돌린다 (R15 Waist / R6 RootJoint 같은 식)
+	--   오른손 법칙: 위쪽 축으로 + 회전 = 앞(-Z)이 왼쪽으로. 오른쪽 조준이면 atan2(-x, -z) < 0 이라 오른쪽으로 돈다
+	local upLocal = joint.C0:VectorToObjectSpace(Vector3.new(0, 1, 0))
+	local turn = CFrame.fromAxisAngle(upLocal, yaw)
 	local ok = pcall(function() joint.Transform = CFrame.Angles(pitch, 0, roll) * turn end)
 	if not ok then joint = nil end -- 쓸 수 없는 관절이면 한 번만 실패하고 멈춘다 (출력창에 오류가 반복되지 않게)
 end)
