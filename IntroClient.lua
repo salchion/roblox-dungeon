@@ -368,6 +368,7 @@ local function play()
 	TweenService:Create(Lighting, TweenInfo.new(0.8), { ExposureCompensation = saved.Exposure + 0.45 }):Play()
 	if atmosphere then TweenService:Create(atmosphere, TweenInfo.new(0.8), { Density = 0.05, Haze = 0 }):Play() end
 
+	local focusHome = false -- (마을로 떨어지기 시작하면 true: 불러오기 기준점을 미리 내 캐릭터로 돌려 마을을 먼저 받아 둔다)
 	local introRemote -- 서버와 주고받는 통신 (필드 불러오기 / 카메라 위치 알림)
 	local finished = false
 	local connection
@@ -407,16 +408,21 @@ local function play()
 		for baffle in pairs(hiddenBaffles) do
 			if baffle.Parent then baffle.LocalTransparencyModifier = 0 end
 		end
-		for _, board in ipairs(billboards) do
-			if board.Parent then board.Enabled = true end
-		end
-		for _, other in ipairs(hiddenGuis) do
-			if other.Parent then other.Enabled = true end
-		end
+		-- 숨겼던 이름표 / 화면을 여러 프레임에 나눠 켠다 (한 프레임에 다 켜면 돌아오는 순간 끊겼다)
+		local toEnable = {}
+		for _, board in ipairs(billboards) do table.insert(toEnable, board) end
+		for _, other in ipairs(hiddenGuis) do table.insert(toEnable, other) end
 		table.clear(hiddenGuis)
 		table.clear(hiddenSet)
 		player:SetAttribute("IntroPlaying", nil)
-		props:Destroy()
+		task.spawn(function()
+			for i, obj in ipairs(toEnable) do
+				if obj.Parent then obj.Enabled = true end
+				if i % 6 == 0 then RunService.Heartbeat:Wait() end
+			end
+		end)
+		props.Parent = nil -- (화면에서 바로 빼고, 지우기는 잠시 뒤에)
+		task.delay(1.5, function() props:Destroy() end)
 		TweenService:Create(veil, TweenInfo.new(0.01), { BackgroundTransparency = 1 }):Play()
 		task.delay(0.1, function() gui:Destroy() end)
 	end
@@ -642,12 +648,13 @@ local function play()
 		task.spawn(function()
 			local lastX = camera.CFrame.Position.X
 			local lastAt = os.clock()
-			while not finished do
+			while not finished and not focusHome do
 				task.wait(0.2)
 				local now = os.clock()
 				local x = camera.CFrame.Position.X
 				local velocity = (x - lastX) / math.max(now - lastAt, 0.05)
 				lastX, lastAt = x, now
+				if focusHome then break end
 				introRemote:FireServer("Focus", x + math.clamp(velocity * 0.8, -700, 700)) -- 가는 방향 앞쪽을 미리 불러 준다
 			end
 		end)
@@ -956,6 +963,9 @@ local function play()
 	streak.Parent = props
 
 	TweenService:Create(camera, TweenInfo.new(1.4, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { CFrame = CFrame.lookAt(skyPos - Vector3.new(40, 60, 0), spawnPos + Vector3.new(0, FALL_HEIGHT * 0.5, 0)) }):Play() -- 하늘 정점에서 떨어질 자리를 향해 자세를 잡는다
+	-- 마을 착지 1~2초 전에 불러오기 기준점을 내 캐릭터로 되돌린다 (끝나는 순간에 돌리면 마을이 한꺼번에 들어오며 "착" 하고 끊겼다)
+	focusHome = true
+	if introRemote then pcall(function() introRemote:FireServer("End") end) end
 	task.delay(0.7, function()
 		if finished then return end
 		TweenService:Create(title, TweenInfo.new(0.8), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
