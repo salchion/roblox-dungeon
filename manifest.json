@@ -841,6 +841,13 @@
       "overwrite": true
     },
     {
+      "path": "MenuTabsUI.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "MenuTabsUI",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Shared/GachaReveal.lua",
       "parent": "ReplicatedStorage",
       "name": "GachaReveal",
