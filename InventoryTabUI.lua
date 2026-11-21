@@ -219,6 +219,10 @@ local function buildInventoryTab(state)
 	end
 
 	local SLOT_ICONS = { Armor = "🛡", Gloves = "🧤", Boots = "👢", Weapon = "🔫", Helmet = "⛑", Ring = "💍", Necklace = "📿" }
+	-- 가방 묶기 기준: 부위 / 등급 / 강화 / 세트 / 유니크 / "+1" 옵션이 같으면 같은 칸 (랜덤 옵션 값은 묶음 안에서 다를 수 있다)
+	local function gearGroupKey(it)
+		return table.concat({ tostring(it.Slot), tostring(it.Rarity), tostring(it.Level), tostring(it.Set), tostring(it.Unique), tostring(it.AugBoost) }, "|")
+	end
 
 	-- 장착 방식 줄: "최강 장비"와 가진 세트가 한 줄에 칩으로 나란히 있고, 지금 쓰는 방식에 ✔ 가 붙는다. 칩을 누르면 그 방식으로 바로 갈아 끼운다 (이미 쓰는 칩을 다시 누르면 새로 얻은 장비까지 다시 맞춘다).
 	-- (예전엔 "최고 장비 자동 장착" 버튼과 "세트 장착" 칩이 따로 있어서, 어느 쪽으로 껴졌는지 오락가락했다)
@@ -452,7 +456,7 @@ local function buildInventoryTab(state)
 			iconDisc(Config.Gear.RarityColors[rarity], SLOT_ICONS[slotKey], rarity)
 			local canUp = item.Level < Config.Gear.MaxLevel and (player:GetAttribute("Gold") or 0) >= Config.GetGearCost(item.Slot, item.Rarity, item.Level)
 			makeLabel({ Size = UDim2.new(1, -6, 0, 14), Position = UDim2.new(0, 3, 1, -17), RichText = true, TextSize = 11, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 220, 120), ZIndex = 10,
-				Text = canUp and string.format("+%d <font color='#78ff8c'>▲</font>", item.Level) or string.format("+%d", item.Level) }, box)
+				Text = canUp and string.format("+%d <font color='#78ff8c'>▲</font>", item.Level) or (item.Level > 0 and string.format("+%d", item.Level) or "") }, box) -- (+0 은 강화할 수 있을 때만 적는다)
 			if item.Set then setDecor(box, item.Set, setCounts[item.Set]) end
 			if item.Unique then
 				makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0, 3, 0, 3), Text = "★", TextSize = 11, TextColor3 = Color3.fromRGB(255, 184, 77), ZIndex = 11 }, box)
@@ -663,7 +667,7 @@ local function buildInventoryTab(state)
 				rounded(tile, 10)
 				create("UIStroke", { Color = Config.Gear.RarityColors[item.Rarity], Thickness = 1.5 }, tile)
 				makeLabel({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 2), Text = SLOT_ICONS[item.Slot] or "?", TextSize = 18 }, tile)
-				makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 1, -16), Text = string.format("+%d", item.Level), TextSize = 10, Font = Enum.Font.GothamBlack }, tile)
+				if item.Level > 0 then makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 1, -16), Text = string.format("+%d", item.Level), TextSize = 10, Font = Enum.Font.GothamBlack }, tile) end
 				if item.Set and Config.Sets[item.Set] then
 					local dot = create("Frame", { Size = UDim2.new(0, 9, 0, 9), Position = UDim2.new(1, -12, 0, 3), BackgroundColor3 = Config.Sets[item.Set].Color, BorderSizePixel = 0 }, tile)
 					create("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
@@ -708,17 +712,23 @@ local function buildInventoryTab(state)
 			makeLabel({ Size = UDim2.new(1, -20, 0, 40), Position = UDim2.new(0, 10, 0, 110), Text = #bag == 0 and "Your bag is empty" or "Nothing matches this filter", TextSize = 12, TextColor3 = Color3.fromRGB(130, 130, 150) }, middle)
 		end
 		-- 같은 장비 묶기: 부위 / 등급 / 강화 / 세트 / 유니크 / "+1" 옵션이 같으면 한 칸 + "x개수" (정렬상 앞선 것 = 대표)
-		local shownList, groupCount, groupOf = {}, {}, {}
+		local shownList, groupCount, groupOf, groupSel = {}, {}, {}, {}
 		for _, entry in ipairs(swapMode and {} or filtered) do
 			local it = entry.Item
-			local key = table.concat({ tostring(it.Slot), tostring(it.Rarity), tostring(it.Level), tostring(it.Set), tostring(it.Unique), tostring(it.AugBoost) }, "|")
+			local key = gearGroupKey(it)
 			if groupOf[key] then
-				groupCount[groupOf[key]] += 1
-				if selected and selected.Id == it.Id then shownList[groupOf[key]] = entry end -- (고른 장비가 묶음 안이면 그걸 대표로)
+				local idx = groupOf[key]
+				groupCount[idx] += 1
+				if selected and selected.Id == it.Id then -- (고른 장비가 묶음 안이면 그걸 대표로)
+					shownList[idx], groupSel[idx] = entry, true
+				elseif not groupSel[idx] and it.Score > shownList[idx].Item.Score then -- (정렬과 상관없이 대표 = 묶음에서 점수가 제일 높은 것)
+					shownList[idx] = entry
+				end
 			else
 				table.insert(shownList, entry)
 				groupOf[key] = #shownList
 				groupCount[#shownList] = 1
+				if selected and selected.Id == it.Id then groupSel[#shownList] = true end
 			end
 		end
 		for order, entry in ipairs(shownList) do
@@ -736,7 +746,7 @@ local function buildInventoryTab(state)
 				makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 1, -17), Text = string.format("+%d", item.Level), TextSize = 10, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, tile)
 			end
 			if groupCount[order] > 1 then
-				local cnt = makeLabel({ Size = UDim2.new(0, 26, 0, 15), AnchorPoint = Vector2.new(0, 0), Position = UDim2.new(0, -4, 0, -4), Text = "x" .. groupCount[order], TextSize = 10, Font = Enum.Font.GothamBlack,
+				local cnt = makeLabel({ Size = UDim2.new(0, 26, 0, 15), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, -6), Text = "x" .. groupCount[order], TextSize = 10, Font = Enum.Font.GothamBlack,
 					TextColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(70, 66, 110), ZIndex = 8 }, tile)
 				rounded(cnt, 7)
 			end
@@ -907,7 +917,12 @@ local function buildInventoryTab(state)
 			end)
 			rounded(equipButton, 20)
 			local scrapButton = makeButton({ Size = UDim2.new(0.38, -6, 0, 40), Position = UDim2.new(0.62, 0, 0, y), Text = "Dismantle", TextSize = 11, Font = Enum.Font.GothamBold, BackgroundColor3 = RED }, detail, function()
-				Remotes.Inventory:FireServer("Scrap", selected.Id)
+				-- 묶인 장비면 묶음에서 점수가 제일 낮은 것을 분해한다 (대표 = 제일 좋은 것이라 그대로 분해하면 약한 복사본이 남았다)
+				local target, key = selected, gearGroupKey(selected)
+				for _, it in ipairs(bag) do
+					if not it.Equipped and it.Id ~= selected.Id and gearGroupKey(it) == key and it.Score < target.Score then target = it end
+				end
+				Remotes.Inventory:FireServer("Scrap", target.Id)
 			end)
 			rounded(scrapButton, 20)
 			y += 46
