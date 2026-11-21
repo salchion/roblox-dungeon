@@ -848,6 +848,13 @@
       "overwrite": true
     },
     {
+      "path": "AimShare.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "AimShare",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Shared/GachaReveal.lua",
       "parent": "ReplicatedStorage",
       "name": "GachaReveal",

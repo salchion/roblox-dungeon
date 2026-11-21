@@ -1993,6 +1993,7 @@ local hitMarkerCrit = false
 local shake = 0
 local crosshairKick = 0
 
+local AimShare = require(script.Parent:WaitForChild("AimShare"))
 local function fireAt(worldPoint, manual)
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
@@ -2008,6 +2009,7 @@ local function fireAt(worldPoint, manual)
 		end
 	end
 	crosshairKick = 10
+	AimShare.Point, AimShare.At = worldPoint, os.clock() -- (이동 중 사격: CharacterMotionClient 가 상체를 조준점 쪽으로 돌린다)
 	Remotes.Attack:FireServer(worldPoint, manual == true)
 end
 

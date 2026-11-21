@@ -7,7 +7,14 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
+local AimShare = require(script.Parent:WaitForChild("AimShare"))
 local player = Players.LocalPlayer
+
+-- 이동 중 사격: 몸은 이동 방향(AutoRotate), 상체만 조준점 쪽으로 돈다. 마지막 사격 뒤 AIM_HOLD 초가 지나면 0 으로 돌아온다
+--   R15: Waist(상체만) ±70° / R6: RootJoint 가 다리까지 돌려서 ±35° 로 작게 (어색하면 스트레이프 방식으로 바꿀 후보)
+local AIM_HOLD = 0.6
+local isR6, rigLogged = false, false
+local yaw = 0
 
 local joint, humanoid, root
 local pitch, roll = 0, 0 -- 지금 적용 중인 기울임 (부드럽게 따라간다)
@@ -17,6 +24,7 @@ local function release()
 	if joint and joint.Parent then pcall(function() joint.Transform = CFrame.identity end) end
 	joint, humanoid, root = nil, nil, nil
 	pitch, roll, recoil, landing, dashUntil = 0, 0, 0, 0, 0
+	yaw = 0
 end
 
 local function bind(character)
@@ -25,6 +33,7 @@ local function bind(character)
 	root = character:WaitForChild("HumanoidRootPart", 10)
 	local upper = character:WaitForChild("UpperTorso", 3)
 	joint = upper and upper:FindFirstChild("Waist")
+	isR6 = joint == nil
 	if not joint then
 		joint = root and root:FindFirstChild("RootJoint") -- R6
 		if not joint then
@@ -35,6 +44,10 @@ local function bind(character)
 	if not (humanoid and root and joint and joint:IsA("Motor6D")) then
 		release()
 		return
+	end
+	if RunService:IsStudio() and not rigLogged then
+		rigLogged = true
+		print("[Rig] " .. (isR6 and "R6" or "R15") .. " · 이동 중 사격 상체 회전 ±" .. (isR6 and "35" or "70") .. "°")
 	end
 	humanoid.StateChanged:Connect(function(_, new)
 		if new == Enum.HumanoidStateType.Landed then landing = 0.35 end
@@ -65,8 +78,23 @@ RunService.RenderStepped:Connect(function(dt)
 	local k = math.min(1, dt * 12)
 	pitch += (targetPitch - pitch) * k
 	roll += (targetRoll - roll) * k
-	if humanoid:GetState() == Enum.HumanoidStateType.Seated then return end
-	local ok = pcall(function() joint.Transform = CFrame.Angles(pitch, 0, roll) end)
+	local state = humanoid:GetState()
+	if state == Enum.HumanoidStateType.Seated then return end
+	-- 조준 회전 (정지 중에는 PlayerClient.fireAt 이 몸 전체를 돌리므로 여기 각도는 거의 0 이 된다)
+	local targetYaw = 0
+	local point = AimShare.Point
+	if point and os.clock() - AimShare.At < AIM_HOLD and os.clock() >= dashUntil
+		and state ~= Enum.HumanoidStateType.PlatformStanding and state ~= Enum.HumanoidStateType.Physics then
+		local rel = root.CFrame:VectorToObjectSpace(Vector3.new(point.X - root.Position.X, 0, point.Z - root.Position.Z))
+		if rel.Magnitude > 1 then
+			local limit = math.rad(isR6 and 35 or 70)
+			targetYaw = math.clamp(math.atan2(-rel.X, -rel.Z), -limit, limit)
+		end
+	end
+	yaw += (targetYaw - yaw) * math.min(1, dt * 14)
+	-- (R6 RootJoint 는 관절 좌표의 Z 축이 위쪽이라 Z 로 돌린다. R15 Waist 는 Y 축이 위쪽)
+	local turn = isR6 and CFrame.Angles(0, 0, yaw) or CFrame.Angles(0, yaw, 0)
+	local ok = pcall(function() joint.Transform = CFrame.Angles(pitch, 0, roll) * turn end)
 	if not ok then joint = nil end -- 쓸 수 없는 관절이면 한 번만 실패하고 멈춘다 (출력창에 오류가 반복되지 않게)
 end)
 
