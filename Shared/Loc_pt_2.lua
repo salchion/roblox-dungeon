@@ -947,6 +947,13 @@ return {
 		["Right to the left!"] = "Logo à esquerda!",
 		["Goal"] = "Objetivo",
 		["Fuse spare gear into a higher rarity"] = "Funda equipamento extra em uma raridade maior",
+		["♻ Rarity ▾"] = "♻ Raridade ▾",
+		["Dismantle by rarity"] = "Desmontar por raridade",
+		["Equipped, set, and unique gear is kept."] = "Equipamentos equipados, de conjunto e únicos são mantidos.",
+		["★ Uniques only"] = "★ Só únicos",
+		["🚀 Set +1 only"] = "🚀 Só efeito de conjunto +1",
+		["▲ Low first"] = "▲ Mais fraco primeiro",
+		["▼ High first"] = "▼ Mais forte primeiro",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1096,7 +1103,5 @@ return {
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] Sapatos desgastados salvos automaticamente (Essência +{number1} {number2} G)" },
 		{ "Reduces training / breakthrough wait time by {number1} hour", "Reduz o tempo de espera de treinamento/avanço em {number1} horas" },
 		{ "Clear depth {number1} once more to record its Sweep reward.", "Conclua a profundidade {number1} mais uma vez para registrar a recompensa da varredura." },
-		{ "★ Recommended: Depth {number1} (deepest you can clear in {number2}s)", "★ Recomendado: profundidade {number1} (a mais funda em {number2}s)" },
-		{ "🎯 Boss hunter  ·  ✔ 🔫 Sniper Rifle / Railgun (+{number1}%)", "🎯 Caçador de chefes · ✔ 🔫 Fuzil de precisão / Arma de trilhos (+{number1}%)" },
 	},
 }

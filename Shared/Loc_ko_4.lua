@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<font color='#aab0d0'>All-time best {text1} pts · most bosses {number2} · longest {text3}</font>", "<font color='#aab0d0'>역대 최고 {text1}점 · 최다 보스 {number2} · 최장 {text3}</font>" },
+		{ "{text1} · {text2} · Fail if monsters pile up! Survive to the end and the boss appears", "{text1} · {text2} · 몬스터가 쌓이면 실패! 끝까지 버티면 보스가 나와요" },
+		{ "{text1} Set effect 『{text2}』 unlocked! Activate it with gold (Y key / ✨ Set button)", "{text1} 세트 효과 『{text2}』 해금! 골드로 활성화하세요 (Y 키 / ✨ 세트 버튼)" },
+		{ "🧩 Equip this {text1} → <b>{text2} {number3}/3</b>: set bonus ON (and its set effect)", "🧩 {text1} 장착 → <b>{text2} {number3}/3</b>: 세트 보너스 켜짐 (세트 효과도)" },
 		{ "🎉 Evolved to {text1}! Your weapon look and bullet color changed{text2}", "🎉 {text1}(으)로 진화! 무기 외형과 탄 색이 바뀌었어요{text2}" },
 		{ "{text1}\nGold earned  +{number2} G   🎫 Tickets +{number3}\n{text4}\nReturning to lobby in {number5}s", "{text1}\n획득 골드  +{number2} G   🎫 티켓 +{number3}\n{text4}\n{number5}초 후 로비로 돌아가요" },
 		{ "⏳ {text1} upgrade started! ({text2}) — use Time Skip to finish sooner", "⏳ {text1} 강화 시작! ({text2}) — 시간 단축으로 더 빨리 끝낼 수 있어요" },

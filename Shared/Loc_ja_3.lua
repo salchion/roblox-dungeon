@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎟 {number1} free entries today · 🗝 {number2} keys!\nChallenge the dungeon at the north gate", "🎟 今日は無料入場券{number1}枚 · 🗝 キー{number2}個！\n北の門にあるダンジョンに挑戦しよう" },
+		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "発見したユニーク効果 {number1} / {number2}  ·  ミシック装備に1つ付くことがあります(確率約{number3}%)" },
 		{ "🎒 Bag full: dismantled {number1} gear that your other gear beats (Essence +{number2}, {number3} G)", "🎒 バッグが満杯：他の装備に劣る装備{number1}個を分解（エッセンス+{number2}、{number3} G）" },
 		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "スキルマスター　タイトル『スキルマスター』\nスキルを{number1}回使用する\n{number2} / {number3}　報酬：🎫 {number4}" },
 		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(あなたの記録: 深度{number1} · ダンジョンのテーマはランダム、確率は同じ)" },
@@ -616,6 +618,7 @@ return {
 		{ "Steel Era +{number1}", "鋼鉄時代 +{number1}" },
 		{ "Best floor {number1}", "最高 {number1}階" },
 		{ "⚡ Power {number1} → {number2}", "⚡ 戦闘力 {number1} → {number2}" },
+		{ "x{number1} · weakest", "x{number1} · 最弱" },
 		{ "Zone {number1} Camp", "ゾーン{number1}キャンプ" },
 		{ "🐾 Pet Lv.{number1}!", "🐾 ペット Lv.{number1}！" },
 		{ "Upgrade {number1} G", "強化 {number1} G" },
@@ -627,6 +630,7 @@ return {
 		{ "Dark Era +{number1}", "ダーク時代 +{number1}" },
 		{ "XP Gain +{number1}%", "経験値獲得 +{number1}%" },
 		{ "XP Gain -{number1}%", "経験値獲得 -{number1}%" },
+		{ "Dismantle {number1}", "{number1}個分解" },
 		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
 		{ "🔥 Combo x{number1}", "🔥 コンボ x{number1}" },
 		{ "Damage +{number2}%", "ダメージ +{number2}%" },
@@ -859,6 +863,7 @@ return {
 		{ "{text1} applied", "{text1} 適用！" },
 		{ "Berserk {text1}", "バーサーク {text1}" },
 		{ "ahead ({text1})", "前方（{text1}）" },
+		{ "{text1} & below", "{text1}以下" },
 		{ "🔫 Next {text1}", "🔫 次の{text1}" },
 		{ "Zone {number1}: {text2}", "ゾーン{number1}: {text2}" },
 		{ "{text1} → Boss", "{text1} → ボス" },

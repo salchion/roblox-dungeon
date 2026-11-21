@@ -1,0 +1,10 @@
+3048¦♻ レア度 ▾¦♻ Seltenheit ▾¦♻ Rareté ▾¦♻ Rareza ▾¦♻ Raridade ▾¦♻ 品质 ▾¦♻ 등급 ▾
+3049¦レア度で一括分解¦Nach Seltenheit zerlegen¦Démanteler par rareté¦Desmantelar por rareza¦Desmontar por raridade¦按品质分解¦등급별 일괄 분해
+3050¦装備中・セット・ユニーク装備は残ります。¦Angelegte, Set- und Unique-Ausrüstung bleibt erhalten.¦L'équipement porté, de set et unique est conservé.¦El equipo equipado, de conjunto y único se conserva.¦Equipamentos equipados, de conjunto e únicos são mantidos.¦已装备、套装和独特装备会保留。¦착용 중·세트·유니크 장비는 남겨둡니다.
+3051¦{text1}以下¦{text1} und darunter¦{text1} et en dessous¦{text1} y por debajo¦{text1} e abaixo¦{text1}及以下¦{text1} 이하
+3052¦{number1}個分解¦{number1} zerlegen¦Démanteler {number1}¦Desmantelar {number1}¦Desmontar {number1}¦分解 {number1} 件¦{number1}개 분해
+3053¦★ ユニークのみ¦★ Nur Unique¦★ Uniques seulement¦★ Solo únicos¦★ Só únicos¦★ 仅独特¦★ 유니크만
+3054¦🚀 セット効果 +1のみ¦🚀 Nur Set-Effekt +1¦🚀 Effet de set +1 seulement¦🚀 Solo efecto de conjunto +1¦🚀 Só efeito de conjunto +1¦🚀 仅套装效果+1¦🚀 세트 효과 +1만
+3055¦x{number1} · 最弱¦x{number1} · schwächstes¦x{number1} · le plus faible¦x{number1} · el más débil¦x{number1} · o mais fraco¦x{number1} · 最弱¦x{number1} · 약한 것
+3056¦▲ 弱い順¦▲ Schwächste zuerst¦▲ Plus faible d'abord¦▲ Más débil primero¦▲ Mais fraco primeiro¦▲ 最弱优先¦▲ 약한 것부터
+3057¦▼ 強い順¦▼ Stärkste zuerst¦▼ Plus fort d'abord¦▼ Más fuerte primero¦▼ Mais forte primeiro¦▼ 最强优先¦▼ 강한 것부터

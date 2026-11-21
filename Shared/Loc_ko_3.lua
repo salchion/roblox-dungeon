@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Ranking resets in <font color='#ffe16e'>{number1}d {number2}h</font> · rewards: tier by bosses defeated", "랭킹 초기화까지 <font color='#ffe16e'>{number1}일 {number2}시간</font> · 보상: 처치한 보스 수에 따른 등급" },
+		{ "Unbreakable   Title 『Unbreakable』\nSurvive {number1} seconds in the Boss Rush\n{number2} / {number3}   Reward: 🎫 {number4}", "깨지지 않는 타이틀 『Unbreakable』\n보스 러쉬에서 {number1}초 동안 생존하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
 		{ "Reduces training / breakthrough wait time by {number1} min (the skip bar fills instantly)", "훈련/돌파 대기 시간을 {number1}분 단축합니다 (스킵 바가 즉시 채워집니다)" },
 		{ "🌟 A golden FEVER portal opened where the Colossus fell! Step in within {number1} seconds!", "🌟 거신이 쓰러진 자리에 황금 피버 포탈이 열렸어요! {number1}초 안에 들어가세요!" },
 		{ "Survivor   Title 『Survivor』\nSurvive {number1} seconds in the Boss Rush\n{number2} / {number3}   Reward: 🎫 {number4}", "생존자 타이틀 『생존자』\n보스 러쉬에서 {number1}초 동안 생존하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
@@ -668,6 +670,7 @@ return {
 		{ "Steel Era +{number1}", "강철 시대 +{number1}" },
 		{ "Best floor {number1}", "최고 {number1}층" },
 		{ "⚡ Power {number1} → {number2}", "⚡ 전투력 {number1} → {number2}" },
+		{ "x{number1} · weakest", "x{number1} · 약한 것" },
 		{ "Zone {number1} Camp", "존 {number1} 캠프" },
 		{ "🐾 Pet Lv.{number1}!", "🐾 펫 Lv.{number1}!" },
 		{ "Upgrade {number1} G", "강화 {number1} G" },
@@ -680,6 +683,7 @@ return {
 		{ "Dark Era +{number1}", "어둠 시대 +{number1}" },
 		{ "XP Gain +{number1}%", "경험치 획득 +{number1}%" },
 		{ "XP Gain -{number1}%", "경험치 획득 -{number1}%" },
+		{ "Dismantle {number1}", "{number1}개 분해" },
 		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
 		{ "🔥 Combo x{number1}", "🔥 콤보 x{number1}" },
 		{ "Damage +{number2}%", "피해량 +{number2}%" },
@@ -965,6 +969,7 @@ return {
 		{ "{text1} applied", "{text1} 적용!" },
 		{ "Berserk {text1}", "광폭 {text1}" },
 		{ "ahead ({text1})", "앞쪽 ({text1})" },
+		{ "{text1} & below", "{text1} 이하" },
 		{ "🔫 Next {text1}", "🔫 다음 {text1}" },
 		{ "Zone {number1}: {text2}", "{number1}구역: {text2}" },
 		{ "{text1} → Boss", "{text1} → 보스" },
@@ -1031,9 +1036,5 @@ return {
 		{ " <font size='9' color='#8a8aa8'>Range {text1}</font> <font size='9' color='{text2}'><b>({number3}%)</b></font>", " <font size='9' color='#8a8aa8'>범위 {text1}</font> <font size='9' color='{text2}'><b>({number3}%)</b></font>" },
 		{ "<font color='#9affc0'>Next weapon → <b>{text1}</b></font> <font color='#aeb4cc'>{text2}</font>", "<font color='#9affc0'>다음 무기 → <b>{text1}</b></font> <font color='#aeb4cc'>{text2}</font>" },
 		{ "🔫 Next {text1} <font color='#ffd966'>{text2}</font>\n✨ Upgrades are free right now! ({number3} left)", "🔫 다음 {text1} <font color='#ffd966'>{text2}</font>\n✨ 지금은 강화가 무료예요! ({number3}회 남음)" },
-		{ "<font color='#aab0d0'>All-time best {text1} pts · most bosses {number2} · longest {text3}</font>", "<font color='#aab0d0'>역대 최고 {text1}점 · 최다 보스 {number2} · 최장 {text3}</font>" },
-		{ "{text1} · {text2} · Fail if monsters pile up! Survive to the end and the boss appears", "{text1} · {text2} · 몬스터가 쌓이면 실패! 끝까지 버티면 보스가 나와요" },
-		{ "{text1} Set effect 『{text2}』 unlocked! Activate it with gold (Y key / ✨ Set button)", "{text1} 세트 효과 『{text2}』 해금! 골드로 활성화하세요 (Y 키 / ✨ 세트 버튼)" },
-		{ "🧩 Equip this {text1} → <b>{text2} {number3}/3</b>: set bonus ON (and its set effect)", "🧩 {text1} 장착 → <b>{text2} {number3}/3</b>: 세트 보너스 켜짐 (세트 효과도)" },
 	},
 }

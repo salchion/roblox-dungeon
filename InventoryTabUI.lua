@@ -128,6 +128,80 @@ player:GetAttributeChangedSignal("Gold"):Connect(function()
 	if info and info.Text ~= "" and infoState then info.Text = infoText(infoState) end -- (다른 탭에서는 비어 있으니 건드리지 않는다)
 end)
 
+-- ---------- 등급 이하 일괄 분해 (서버 InventoryService.ScrapBelow) ----------
+-- 가방 화면은 1초마다 통째로 다시 그려지므로(menuContent 를 비운다) 확인 창은 메뉴 패널에 따로 붙인다.
+-- 실수 방지: 등급을 고르고 "무엇이 몇 개 지워지는지"를 본 뒤에야 분해 버튼이 켜진다. 착용 / 세트 / 유니크 장비는 서버가 지킨다.
+local bulkRoot, bulkHooked, bulkPick = nil, false, 1
+local function scrapBelowCount(rarity)
+	local n = 0
+	for _, item in ipairs(infoState and infoState.Items or {}) do
+		if not item.Equipped and (item.Rarity or 0) <= rarity and not item.Set and not item.Unique then n += 1 end
+	end
+	return n
+end
+local function closeBulk()
+	if bulkRoot and bulkRoot.Parent then bulkRoot:Destroy() end
+	bulkRoot = nil
+end
+local function openBulk()
+	local host = menuContent.Parent
+	if not host then return end
+	closeBulk()
+	bulkRoot = create("Frame", { Name = "BagBulkScrap", Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, BorderSizePixel = 0, Active = true, ZIndex = 60 }, host)
+	local scrim = makeButton({ Size = UDim2.new(1, 0, 1, 0), Text = "", TextSize = 1, BackgroundColor3 = Color3.fromRGB(6, 7, 12), BackgroundTransparency = 0.42, AutoButtonColor = false, ZIndex = 60 }, bulkRoot, function() closeBulk() end)
+	scrim.Text = "" -- (창 밖을 누르면 닫힌다)
+	local card = create("Frame", { Size = UDim2.new(0, 420, 0, 200), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundColor3 = Color3.fromRGB(28, 26, 44), BorderSizePixel = 0, Active = true, ZIndex = 61 }, bulkRoot)
+	rounded(card, 16)
+	create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
+	makeLabel({ Size = UDim2.new(1, -32, 0, 26), Position = UDim2.new(0, 16, 0, 12), Text = "Dismantle by rarity", TextSize = 17, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 62 }, card)
+	makeLabel({ Size = UDim2.new(1, -32, 0, 18), Position = UDim2.new(0, 16, 0, 40), Text = "Equipped, set, and unique gear is kept.", TextSize = 11, TextColor3 = Color3.fromRGB(170, 176, 204), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 62 }, card)
+	local optionButtons, optionCounts = {}, {}
+	local confirm
+	local function refreshBulk()
+		local picked = scrapBelowCount(bulkPick)
+		for r, button in ipairs(optionButtons) do
+			button.BackgroundColor3 = r == bulkPick and Color3.fromRGB(96, 74, 30) or Color3.fromRGB(36, 38, 58)
+			local stroke = button:FindFirstChildOfClass("UIStroke")
+			if stroke then
+				stroke.Color = r == bulkPick and Color3.fromRGB(255, 217, 102) or Color3.fromRGB(90, 96, 130)
+				stroke.Thickness = r == bulkPick and 2 or 1
+				stroke.Transparency = r == bulkPick and 0 or 0.45
+			end
+			local count = scrapBelowCount(r)
+			optionCounts[r].Text = "x" .. count
+			optionCounts[r].TextColor3 = count > 0 and Color3.fromRGB(255, 236, 180) or Color3.fromRGB(130, 134, 158)
+		end
+		confirm.Text = string.format("Dismantle %d", picked)
+		confirm.BackgroundColor3 = picked > 0 and RED or Color3.fromRGB(70, 62, 72)
+	end
+	for r = 1, math.min(3, #Config.Gear.RarityNames) do
+		local button = makeButton({ Size = UDim2.new(0, 120, 0, 48), Position = UDim2.new(0, 16 + (r - 1) * 126, 0, 66), Text = "", BackgroundColor3 = Color3.fromRGB(36, 38, 58), ZIndex = 62 }, card, function()
+			bulkPick = r
+			refreshBulk()
+		end)
+		rounded(button, 12)
+		create("UIStroke", { Color = Color3.fromRGB(90, 96, 130), Thickness = 1, Transparency = 0.45, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, button)
+		makeLabel({ Size = UDim2.new(1, -12, 0, 18), Position = UDim2.new(0, 8, 0, 6), TextSize = 12, Font = Enum.Font.GothamBold, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 63,
+			Text = Config.Gear.RarityNames[r] .. " & below", TextColor3 = Config.Gear.RarityColors[r] or Color3.new(1, 1, 1) }, button)
+		optionCounts[r] = makeLabel({ Size = UDim2.new(1, -12, 0, 16), Position = UDim2.new(0, 8, 0, 25), TextSize = 11, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left, Text = "x0", ZIndex = 63 }, button)
+		optionButtons[r] = button
+	end
+	confirm = makeButton({ Size = UDim2.new(0, 240, 0, 40), Position = UDim2.new(0, 16, 0, 136), Text = "Dismantle", TextSize = 14, Font = Enum.Font.GothamBlack, BackgroundColor3 = RED, ZIndex = 62 }, card, function()
+		if scrapBelowCount(bulkPick) == 0 then return end
+		Remotes.Inventory:FireServer("ScrapBelow", bulkPick)
+		closeBulk()
+	end)
+	rounded(confirm, 20)
+	makeButton({ Size = UDim2.new(0, 148, 0, 40), Position = UDim2.new(0, 264, 0, 136), Text = "Cancel", TextSize = 13, BackgroundColor3 = Color3.fromRGB(54, 58, 82), ZIndex = 62 }, card, function() closeBulk() end)
+	refreshBulk()
+	if not bulkHooked then -- 메뉴가 닫히면 같이 닫는다 (남아 있으면 다음에 메뉴를 열 때 창이 겹친다)
+		bulkHooked = true
+		host:GetPropertyChangedSignal("Visible"):Connect(function()
+			if not host.Visible then closeBulk() end
+		end)
+	end
+end
+
 -- 장비 묶음 가치 (서버 "최강 장비"와 같은 계산: 점수 + 세트 2부위 150 + 3부위 220 + 세트 효과 부위마다 60)
 local function loadoutValue(map)
 	local total, counts = 0, {}
@@ -242,16 +316,21 @@ local function buildInventoryTab(state)
 		local setRow = newRow(44, Color3.fromRGB(24, 26, 40))
 		makeLabel({ Size = UDim2.new(0, 84, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = "Equip mode", TextSize = 12, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(225, 196, 118), TextXAlignment = Enum.TextXAlignment.Left }, setRow)
 		-- 오른쪽 끝: 자동 분해 / 정리 (한 줄로 합쳐서 장비 칸이 한 화면에 들어오게)
-		local scrapButton = makeButton({ Size = UDim2.new(0, 196, 0, 30), Position = UDim2.new(1, -314, 0.5, -15), RichText = true, TextWrapped = true, Text = "♻ <font size='9' color='#cfe0ff'>Auto-salvage</font>\n" .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 10, BackgroundColor3 = Color3.fromRGB(70, 110, 220) }, setRow, function() -- (자동 분해 규칙이 버튼에 바로 보인다. 누르면 다음 규칙)
+		-- (오른쪽 세 칸: 자동 분해 규칙 / 등급 이하 일괄 분해 / 스마트 정리. 148+116+108 + 간격으로 예전 310 보다 72 넓어져 가운데 칩 줄이 그만큼 좁아졌다)
+		local scrapButton = makeButton({ Size = UDim2.new(0, 148, 0, 30), Position = UDim2.new(1, -382, 0.5, -15), RichText = true, TextWrapped = true, Text = "♻ <font size='9' color='#cfe0ff'>Auto-salvage</font>\n" .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 10, BackgroundColor3 = Color3.fromRGB(70, 110, 220) }, setRow, function() -- (자동 분해 규칙이 버튼에 바로 보인다. 누르면 다음 규칙)
 			Remotes.Inventory:FireServer("AutoScrap", (state.AutoScrap + 1) % 5)
 		end)
 		rounded(scrapButton, 14)
+		local belowButton = makeButton({ Size = UDim2.new(0, 116, 0, 28), Position = UDim2.new(1, -226, 0.5, -14), Text = "♻ Rarity ▾", TextSize = 11, BackgroundColor3 = Color3.fromRGB(86, 74, 160) }, setRow, function() -- (누르면 등급 선택 + 확인 창: 실수로 지우지 않게 한 번 더 본다)
+			openBulk()
+		end)
+		rounded(belowButton, 14)
 		local cleanButton = makeButton({ Size = UDim2.new(0, 108, 0, 28), Position = UDim2.new(1, -112, 0.5, -14), Text = "🧹 Smart Clean", TextSize = 11, BackgroundColor3 = Color3.fromRGB(176, 76, 84) }, setRow, function()
 			Remotes.Inventory:FireServer("SmartClean")
 		end)
 		rounded(cleanButton, 14)
 		local strip = create("ScrollingFrame", {
-			Size = UDim2.new(1, -92 - 328, 1, -4), Position = UDim2.new(0, 92, 0, 2), BackgroundTransparency = 1, BorderSizePixel = 0,
+			Size = UDim2.new(1, -92 - 396, 1, -4), Position = UDim2.new(0, 92, 0, 2), BackgroundTransparency = 1, BorderSizePixel = 0,
 			ScrollBarThickness = 3, ScrollingDirection = Enum.ScrollingDirection.X, CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.X,
 		}, setRow)
 		create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Center }, strip)
@@ -383,6 +462,9 @@ local function buildInventoryTab(state)
 	local filterSlot = menuContent:GetAttribute("BagSlot")
 	local filterSet = menuContent:GetAttribute("BagSet")
 	local sortMode = menuContent:GetAttribute("BagSort") or "Score"
+	local sortDir = menuContent:GetAttribute("BagSortDir") or "Desc" -- (▼ 높은 것부터 / ▲ 낮은 것부터)
+	local onlyUnique = menuContent:GetAttribute("BagUnique") == true
+	local onlyAug = menuContent:GetAttribute("BagAug") == true
 	local function setFilter(slotKey, setKey)
 		menuContent:SetAttribute("BagSlot", slotKey)
 		menuContent:SetAttribute("BagSet", setKey)
@@ -575,20 +657,27 @@ local function buildInventoryTab(state)
 	do
 		local filtered = {}
 		for _, item in ipairs(bag) do
-			if (not filterSlot or item.Slot == filterSlot) and (not filterSet or item.Set == filterSet) then
+			if (not filterSlot or item.Slot == filterSlot) and (not filterSet or item.Set == filterSet)
+				and (not onlyUnique or item.Unique == true) and (not onlyAug or (item.AugBoost or 0) >= 1) then
 				local current = equipped[item.Slot]
 				local setGain = 0
 				if item.Set and Config.Sets[item.Set] and not (current and current.Set == item.Set) then setGain = (setCounts[item.Set] or 0) + 1 end
 				table.insert(filtered, { Item = item, SetGain = setGain, Diff = current and (item.Score - current.Score) or item.Score })
 			end
 		end
-		table.sort(filtered, function(x, y)
+		local function sortBefore(x, y) -- (x 가 앞에 오는가)
 			if sortMode == "Rarity" and x.Item.Rarity ~= y.Item.Rarity then return x.Item.Rarity > y.Item.Rarity end
 			if sortMode == "Set" then
 				local xs, ys = x.SetGain >= 2 and 1 or 0, y.SetGain >= 2 and 1 or 0
 				if xs ~= ys then return xs > ys end
 			end
-			return x.Item.Score > y.Item.Score
+			if x.Item.Score ~= y.Item.Score then return x.Item.Score > y.Item.Score end
+			return (x.Item.Id or 0) < (y.Item.Id or 0) -- (같은 점수는 항상 같은 순서: 뒤집어도 목록이 흔들리지 않게)
+		end
+		local ascending = sortDir == "Asc"
+		table.sort(filtered, function(x, y)
+			if ascending then return sortBefore(y, x) end
+			return sortBefore(x, y)
 		end)
 		makeLabel({ Size = UDim2.new(1, -16, 0, 18), Position = UDim2.new(0, 10, 0, 6), RichText = true, TextSize = 12, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left,
 			Text = string.format("🎒 Bag <font color='#aab0cc'>%d / %d</font>", state.BagCount, state.Capacity) }, middle)
@@ -619,10 +708,24 @@ local function buildInventoryTab(state)
 			for _, item in ipairs(bag) do if item.Set == key then has = true break end end
 			if has then chip(setRow, i, def.Icon or "★", filterSet == key, function() setFilter(filterSlot, filterSet == key and nil or key) end, def.Color) end
 		end
+		-- 필터 칩: 유니크만 / 세트 효과 +1만 (둘 다 켜면 두 조건 모두). 다시 누르면 풀린다.
+		chip(setRow, 90, "★ Uniques only", onlyUnique, function()
+			menuContent:SetAttribute("BagUnique", not onlyUnique)
+			refreshMenu()
+		end, Color3.fromRGB(255, 184, 77))
+		chip(setRow, 91, "🚀 Set +1 only", onlyAug, function()
+			menuContent:SetAttribute("BagAug", not onlyAug)
+			refreshMenu()
+		end, Color3.fromRGB(255, 140, 90))
 		local SORTS = { Score = "Sort: Score", Rarity = "Sort: Rarity", Set = "Sort: Set first" }
 		local NEXT_SORT = { Score = "Set", Set = "Rarity", Rarity = "Score" }
-		chip(setRow, 99, "⇅ " .. SORTS[sortMode], false, function()
+		chip(setRow, 99, ("⇅ " .. SORTS[sortMode]) .. (ascending and "  ▲" or "  ▼"), false, function()
 			menuContent:SetAttribute("BagSort", NEXT_SORT[sortMode])
+			refreshMenu()
+		end)
+		-- 정렬 방향만 뒤집는 칩 (누를 때마다 ▲ 약한 것부터 / ▼ 강한 것부터)
+		chip(setRow, 100, ascending and "▲ Low first" or "▼ High first", false, function()
+			menuContent:SetAttribute("BagSortDir", ascending and "Desc" or "Asc")
 			refreshMenu()
 		end)
 		if (filterSlot or filterSet) and not (filterSlot and not filterSet and menuContent:GetAttribute("FuseOpen") ~= true) then
@@ -721,7 +824,7 @@ local function buildInventoryTab(state)
 				groupCount[idx] += 1
 				if selected and selected.Id == it.Id then -- (고른 장비가 묶음 안이면 그걸 대표로)
 					shownList[idx], groupSel[idx] = entry, true
-				elseif not groupSel[idx] and it.Score > shownList[idx].Item.Score then -- (정렬과 상관없이 대표 = 묶음에서 점수가 제일 높은 것)
+				elseif not groupSel[idx] and (ascending and it.Score < shownList[idx].Item.Score or (not ascending and it.Score > shownList[idx].Item.Score)) then -- (대표 = 정렬 방향 끝의 것: ▼는 제일 강한 것, ▲는 제일 약한 것)
 					shownList[idx] = entry
 				end
 			else
@@ -916,7 +1019,12 @@ local function buildInventoryTab(state)
 				Remotes.Inventory:FireServer("Equip", selected.Id)
 			end)
 			rounded(equipButton, 20)
-			local scrapButton = makeButton({ Size = UDim2.new(0.38, -6, 0, 40), Position = UDim2.new(0.62, 0, 0, y), Text = "Dismantle", TextSize = 11, Font = Enum.Font.GothamBold, BackgroundColor3 = RED }, detail, function()
+			-- 묶인 장비면 몇 개 중 제일 약한 것을 지우는지 버튼에 적는다 (예전엔 대표만 지워 약한 복사본이 남았다)
+			local groupN, groupKey = 0, gearGroupKey(selected)
+			for _, it in ipairs(bag) do
+				if not it.Equipped and gearGroupKey(it) == groupKey then groupN += 1 end
+			end
+			local scrapButton = makeButton({ Size = UDim2.new(0.38, -6, 0, 40), Position = UDim2.new(0.62, 0, 0, y), Text = groupN > 1 and "" or "Dismantle", TextSize = 11, Font = Enum.Font.GothamBold, BackgroundColor3 = RED }, detail, function()
 				-- 묶인 장비면 묶음에서 점수가 제일 낮은 것을 분해한다 (대표 = 제일 좋은 것이라 그대로 분해하면 약한 복사본이 남았다)
 				local target, key = selected, gearGroupKey(selected)
 				for _, it in ipairs(bag) do
@@ -925,6 +1033,10 @@ local function buildInventoryTab(state)
 				Remotes.Inventory:FireServer("Scrap", target.Id)
 			end)
 			rounded(scrapButton, 20)
+			if groupN > 1 then -- (버튼 글자를 비우고 두 줄 라벨: 줄마다 번역표 문장으로 찾을 수 있게)
+				makeLabel({ Size = UDim2.new(1, 0, 0, 15), Position = UDim2.new(0, 0, 0, 5), Text = "Dismantle", TextSize = 11, Font = Enum.Font.GothamBold }, scrapButton)
+				makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 21), Text = string.format("x%d · weakest", groupN), TextSize = 9, TextColor3 = Color3.fromRGB(255, 226, 226) }, scrapButton)
+			end
 			y += 46
 		end
 		if selected.Unique or #selected.Affixes > 0 then -- 재굴림 줄

@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "One less dagger, but each hits +{number1}% harder: for bosses", "Una daga menos, pero cada una pega +{number1} % más: para jefes" },
+		{ "Reduces training / breakthrough wait time by {number1} hours", "Reduce el tiempo de espera de entrenamiento/avance en {number1} horas" },
+		{ "♻ [Common] Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [Común] Gorra de cuero recuperada automáticamente (Esencia +{number1} {number2} G)" },
 		{ "Cleared up to depth {number1}  ·  You can enter up to depth {number2}", "Completado hasta la profundidad {number1}  ·  Puedes entrar hasta la profundidad {number2}" },
 		{ "Reach weapon upgrade level {number1} (about the 10th weapon)", "Alcanza el nivel de mejora de arma {number1} (aprox. la 10.ª arma)" },
 		{ "Reach weapon upgrade level {number1} (about the 50th weapon)", "Alcanza el nivel de mejora de arma {number1} (aprox. la 50.ª arma)" },
@@ -547,6 +550,7 @@ return {
 		{ "Steel Era +{number1}", "Era Acero +{number1}" },
 		{ "Best floor {number1}", "Mejor piso {number1}" },
 		{ "⚡ Power {number1} → {number2}", "⚡ Poder {number1} → {number2}" },
+		{ "x{number1} · weakest", "x{number1} · el más débil" },
 		{ "Zone {number1} Camp", "Campamento de la Zona {number1}" },
 		{ "🐾 Pet Lv.{number1}!", "🐾 ¡Mascota Nv.{number1}!" },
 		{ "Upgrade {number1} G", "Mejorar {number1} G" },
@@ -558,6 +562,7 @@ return {
 		{ "Dark Era +{number1}", "Era Oscuro +{number1}" },
 		{ "XP Gain +{number1}%", "Ganancia de EXP +{number1}%" },
 		{ "XP Gain -{number1}%", "Ganancia de EXP -{number1}%" },
+		{ "Dismantle {number1}", "Desmantelar {number1}" },
 		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
 		{ "Damage +{number2}%", "Daño +{number2}%" },
 		{ "x{number1}\nUpgrade", "x{number1}\nMejorar" },
@@ -792,6 +797,7 @@ return {
 		{ "{text1} applied", "{text1} aplicado" },
 		{ "Berserk {text1}", "Berserker {text1}" },
 		{ "ahead ({text1})", "delante ({text1})" },
+		{ "{text1} & below", "{text1} y por debajo" },
 		{ "🔫 Next {text1}", "🔫 Siguiente {text1}" },
 		{ "Zone {number1}: {text2}", "Zona {number1}: {text2}" },
 		{ "{text1} → Boss", "{text1} → Jefe" },

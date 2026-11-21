@@ -1104,6 +1104,13 @@ return {
 		["Right to the left!"] = "すぐ左！",
 		["Goal"] = "目標",
 		["Fuse spare gear into a higher rarity"] = "余った装備を合成 → 一つ上の等級",
+		["♻ Rarity ▾"] = "♻ レア度 ▾",
+		["Dismantle by rarity"] = "レア度で一括分解",
+		["Equipped, set, and unique gear is kept."] = "装備中・セット・ユニーク装備は残ります。",
+		["★ Uniques only"] = "★ ユニークのみ",
+		["🚀 Set +1 only"] = "🚀 セット効果 +1のみ",
+		["▲ Low first"] = "▲ 弱い順",
+		["▼ High first"] = "▼ 強い順",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1172,7 +1179,5 @@ return {
 		{ "Dummy Slayer   Title 『Dummy Slayer』\nHit the dummy {number1} times\n{number2} / {number3}   Reward: {number4} G", "ダミー・スレイヤー　タイトル『ダミー・スレイヤー』\nダミーを{number1}回攻撃する\n{number2} / {number3}　報酬：{number4}G" },
 		{ "A golden FEVER portal opened where the Lord fell! Step in within {number1} seconds", "領主が倒れた場所に黄金のフィーバーポータルが開いた！{number1}秒以内に入ろう" },
 		{ "Points left {number1}  /  total {number2}  (Level {number3})  ·  +1 point every {number4} levels, next at Lv.{number5}", "残りポイント {number1}  /  合計 {number2}  (レベル {number3})  ·  {number4}レベルごとに+1、次は Lv.{number5}" },
-		{ "🎟 {number1} free entries today · 🗝 {number2} keys!\nChallenge the dungeon at the north gate", "🎟 今日は無料入場券{number1}枚 · 🗝 キー{number2}個！\n北の門にあるダンジョンに挑戦しよう" },
-		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "発見したユニーク効果 {number1} / {number2}  ·  ミシック装備に1つ付くことがあります(確率約{number3}%)" },
 	},
 }

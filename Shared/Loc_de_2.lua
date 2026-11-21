@@ -926,6 +926,13 @@ return {
 		["Right to the left!"] = "Direkt links!",
 		["Goal"] = "Ziel",
 		["Fuse spare gear into a higher rarity"] = "Übrige Ausrüstung zu höherer Seltenheit verschmelzen",
+		["♻ Rarity ▾"] = "♻ Seltenheit ▾",
+		["Dismantle by rarity"] = "Nach Seltenheit zerlegen",
+		["Equipped, set, and unique gear is kept."] = "Angelegte, Set- und Unique-Ausrüstung bleibt erhalten.",
+		["★ Uniques only"] = "★ Nur Unique",
+		["🚀 Set +1 only"] = "🚀 Nur Set-Effekt +1",
+		["▲ Low first"] = "▲ Schwächste zuerst",
+		["▼ High first"] = "▼ Stärkste zuerst",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1081,8 +1088,5 @@ return {
 		{ "Shot_Pistol  <font color='#{number1}aa{number2}c{number3}'>Rifle shot</font>", "Schuss_Pistole <font color='#{number1}aa{number2}c{number3}'>Gewehrschuss</font>" },
 		{ "Reach weapon upgrade level {number1} (about the {number2}th weapon)", "Erreiche das Waffen-Upgrade-Level {number1} (etwa die {number2}. Waffe)" },
 		{ "⚠ Monster overrun! Thin them out within {number1}s!  ({number2} / {number3})", "⚠ Monster überrennen dich! Dünne sie innerhalb von {number1} s aus! ({number2} / {number3})" },
-		{ "🏆 You defeated the Final Lord!  +{number1} gold  +{number2} tickets", "🏆 Du hast den Letzten Lord besiegt!  +{number1} Gold  +{number2} Tickets" },
-		{ "⭐ New record! Depth {number1} cleared. Depth {number2} is unlocked.", "⭐ Neuer Rekord! Tiefe {number1} abgeschlossen. Tiefe {number2} ist freigeschaltet." },
-		{ "💢 Boss #{number1} is AWAKENED — it attacks twice in a row!", "💢 Boss #{number1} ist ERWACHT – er greift zweimal hintereinander an!" },
 	},
 }

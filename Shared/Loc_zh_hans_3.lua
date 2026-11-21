@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 领取了{number1}个奖励！(新称号{number2}个)" },
+		{ "Keeps {number1} more stacks even if broken", "即使中断也多保留{number1}层" },
+		{ "📍 Field Entrance  ahead (east)  {number1}m", "📍 野外入口  前方（东）  {number1}m" },
 		{ "take {number1}% less damage from every hit", "每次受到的伤害减少 {number1}%" },
 		{ "👑 Lord of Abyss (Zone {number1}) · Rec. ⚡{number2}", "👑 深渊之王（区域 {number1}） · 推荐等级 ⚡{number2}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!", "🎟 今天有{number1}个免费入场机会 · 🗝 有{number2}把钥匙！" },
@@ -406,6 +409,7 @@ return {
 		{ "Steel Era +{number1}", "钢铁 时代 +{number1}" },
 		{ "Best floor {number1}", "最高 第{number1}层" },
 		{ "⚡ Power {number1} → {number2}", "⚡ 战斗力 {number1} → {number2}" },
+		{ "x{number1} · weakest", "x{number1} · 最弱" },
 		{ "Zone {number1} Camp", "区域 {number1} 营地" },
 		{ "🐾 Pet Lv.{number1}!", "🐾 宠物 Lv.{number1}!" },
 		{ "Upgrade {number1} G", "强化 {number1} 金币" },
@@ -417,6 +421,7 @@ return {
 		{ "Dark Era +{number1}", "暗黑 时代 +{number1}" },
 		{ "XP Gain +{number1}%", "经验获取 +{number1}%" },
 		{ "XP Gain -{number1}%", "经验获取 -{number1}%" },
+		{ "Dismantle {number1}", "分解 {number1} 件" },
 		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} 金币 🎫 {number5}" },
 		{ "🔥 Combo x{number1}", "🔥 连击 x{number1}" },
 		{ "Damage +{number2}%", "伤害+{number2}%" },
@@ -653,6 +658,7 @@ return {
 		{ "{text1} applied", "{text1} 已生效" },
 		{ "Berserk {text1}", "狂战 {text1}" },
 		{ "ahead ({text1})", "前方（{text1}）" },
+		{ "{text1} & below", "{text1}及以下" },
 		{ "🔫 Next {text1}", "🔫 下一把 {text1}" },
 		{ "Zone {number1}: {text2}", "区域{number1}:{text2}" },
 		{ "{text1} → Boss", "{text1} → 首领" },

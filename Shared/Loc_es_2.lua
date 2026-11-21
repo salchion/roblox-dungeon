@@ -976,6 +976,13 @@ return {
 		["Right to the left!"] = "¡Justo a la izquierda!",
 		["Goal"] = "Objetivo",
 		["Fuse spare gear into a higher rarity"] = "Fusiona equipo sobrante a una rareza mayor",
+		["♻ Rarity ▾"] = "♻ Rareza ▾",
+		["Dismantle by rarity"] = "Desmantelar por rareza",
+		["Equipped, set, and unique gear is kept."] = "El equipo equipado, de conjunto y único se conserva.",
+		["★ Uniques only"] = "★ Solo únicos",
+		["🚀 Set +1 only"] = "🚀 Solo efecto de conjunto +1",
+		["▲ Low first"] = "▲ Más débil primero",
+		["▼ High first"] = "▼ Más fuerte primero",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1108,8 +1115,5 @@ return {
 		{ "<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "<font color='#{number4}ad{number5}ff'>Tomo de hechizos · Era mítica +{number6}</font>" },
 		{ "Shot_Shotgun  <font color='#{number1}aa{number2}c{number3}'>Shotgun shot</font>", "Disparo de escopeta <font color='#{number1}aa{number2}c{number3}'> Disparo de escopeta </font>" },
 		{ "🔒 Zone {number1} · Desert Sealed\nOpen the previous gate first", "🔒 Zona {number1} · Desierto sellado\nAbre la puerta anterior primero" },
-		{ "One less dagger, but each hits +{number1}% harder: for bosses", "Una daga menos, pero cada una pega +{number1} % más: para jefes" },
-		{ "Reduces training / breakthrough wait time by {number1} hours", "Reduce el tiempo de espera de entrenamiento/avance en {number1} horas" },
-		{ "♻ [Common] Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [Común] Gorra de cuero recuperada automáticamente (Esencia +{number1} {number2} G)" },
 	},
 }

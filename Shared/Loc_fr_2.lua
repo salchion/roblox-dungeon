@@ -980,6 +980,13 @@ return {
 		["Right to the left!"] = "Juste à gauche !",
 		["Goal"] = "Objectif",
 		["Fuse spare gear into a higher rarity"] = "Fusionner l'équipement en trop vers une rareté supérieure",
+		["♻ Rarity ▾"] = "♻ Rareté ▾",
+		["Dismantle by rarity"] = "Démanteler par rareté",
+		["Equipped, set, and unique gear is kept."] = "L'équipement porté, de set et unique est conservé.",
+		["★ Uniques only"] = "★ Uniques seulement",
+		["🚀 Set +1 only"] = "🚀 Effet de set +1 seulement",
+		["▲ Low first"] = "▲ Plus faible d'abord",
+		["▼ High first"] = "▼ Plus fort d'abord",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1094,7 +1101,5 @@ return {
 		{ "Sweep needs {number1} key(s). Defeat a field zone lord to get keys", "Le balayage nécessite {number1} clé(s). Bats un seigneur de zone du terrain pour en obtenir" },
 		{ "You can run {number1} effects at once. Turn another one off first", "Vous pouvez activer {number1} effets à la fois. Désactivez-en d'abord un autre" },
 		{ "Town north gate · boss chest gear + gold · Free {number1} · Keys {number2}", "Porte nord de la ville · équipement + or du coffre du boss · Gratuit {number1} · Clés {number2}" },
-		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "Résultat de Gacha_Pop{number1} <font color='#{number2}aa{number3}c{number4}'> : Épique</font>" },
-		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "Obtenez instantanément {number1} heures de revenus passifs · maximum {number2} par jour" },
 	},
 }

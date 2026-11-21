@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🏆 You defeated the Final Lord!  +{number1} gold  +{number2} tickets", "🏆 Du hast den Letzten Lord besiegt!  +{number1} Gold  +{number2} Tickets" },
+		{ "⭐ New record! Depth {number1} cleared. Depth {number2} is unlocked.", "⭐ Neuer Rekord! Tiefe {number1} abgeschlossen. Tiefe {number2} ist freigeschaltet." },
+		{ "💢 Boss #{number1} is AWAKENED — it attacks twice in a row!", "💢 Boss #{number1} ist ERWACHT – er greift zweimal hintereinander an!" },
 		{ "one hit can take at most {number1}% of your max HP (was {number2}%)", "ein Treffer nimmt höchstens {number1}% deiner max. LP (vorher {number2}%)" },
 		{ "🌪 Mob hunter  ·  ✔ 🔫 Railgun / Sniper Rifle (+{number1}%)", "🌪 Mob-Jäger · ✔ 🔫 Schienenwaffe / Scharfschützengewehr (+{number1}%)" },
 		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>\nON</font>", "<font color='#{number1}fffb{number2}'><b>Automatischer Angriff</b>\nAN </font>" },
@@ -526,6 +529,7 @@ return {
 		{ "Steel Era +{number1}", "Stahl-Ära +{number1}" },
 		{ "Best floor {number1}", "Beste Etage {number1}" },
 		{ "⚡ Power {number1} → {number2}", "⚡ Kampfkraft {number1} → {number2}" },
+		{ "x{number1} · weakest", "x{number1} · schwächstes" },
 		{ "Zone {number1} Camp", "Zone {number1} Lager" },
 		{ "🐾 Pet Lv.{number1}!", "🐾 Begleiter Lv.{number1}!" },
 		{ "Upgrade {number1} G", "Verbessern {number1} G" },
@@ -537,6 +541,7 @@ return {
 		{ "Dark Era +{number1}", "Dunkel-Ära +{number1}" },
 		{ "XP Gain +{number1}%", "EP-Gewinn +{number1}%" },
 		{ "XP Gain -{number1}%", "EP-Gewinn -{number1}%" },
+		{ "Dismantle {number1}", "{number1} zerlegen" },
 		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
 		{ "🔥 Combo x{number1}", "🔥 Kombination x{number1}" },
 		{ "Damage +{number2}%", "Schaden +{number2}%" },
@@ -770,6 +775,7 @@ return {
 		{ "{text1} applied", "{text1} aktiviert" },
 		{ "Berserk {text1}", "Berserker {text1}" },
 		{ "ahead ({text1})", "vorne ({text1})" },
+		{ "{text1} & below", "{text1} und darunter" },
 		{ "🔫 Next {text1}", "🔫 Nächste {text1}" },
 		{ "Zone {number1}: {text2}", "Zone {number1}: {text2}" },
 		{ "{text1} → Boss", "{text1} → Boss" },

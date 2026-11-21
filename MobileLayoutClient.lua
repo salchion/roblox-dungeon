@@ -596,6 +596,26 @@ UserInputService.InputBegan:Connect(function(input, processed)
 	if not processed and input.KeyCode == Enum.KeyCode.H then calm.hintReq = os.clock() + 8 end
 end)
 
+-- 큰 창(메뉴 / 장화 / 세트 효과 / 깊이 / 모달)이 떠 있는가 — 그동안 오른쪽 위 래킹 카드는 숨긴다.
+-- (PlayerClient 는 0.25초마다 점검해서 숨기는데, 이 배치는 1초마다 다시 돌아 래킹 카드를 다시 켰다 -> 메뉴 옆에서 깜박이며 겹쳤다)
+local function bigWindowOpen()
+	if player:GetAttribute("ModalOpen") == true then return true end
+	local hud = playerGui:FindFirstChild("HUD")
+	for _, name in ipairs({ "MenuPanel", "EnhancePanel" }) do
+		local panel = hud and hud:FindFirstChild(name)
+		if panel and panel:IsA("GuiObject") and panel.Visible then return true end
+	end
+	for _, name in ipairs({ "DepthGui", "AugGui" }) do
+		local holder = playerGui:FindFirstChild(name)
+		if holder then
+			for _, child in ipairs(holder:GetChildren()) do
+				if child:IsA("Frame") and child.Visible and child.AbsoluteSize.X > 300 then return true end
+			end
+		end
+	end
+	return false
+end
+
 -- 데스크톱: 파티가 없으면 작은 버튼, 랭킹은 3줄짜리 작은 상자
 function layoutCalm(viewport)
 	local hud = playerGui:FindFirstChild("HUD")
@@ -643,7 +663,7 @@ function layoutCalm(viewport)
 	local rankY = partyShown and (panelY + partyPanel.Size.Y.Offset + 8) or panelY
 	set(rankMini, "Size", UDim2.new(0, 220, 0, 36 + 16 * rows))
 	set(rankMini, "Position", UDim2.new(1, -16, 0, rankY))
-	rankMini.Visible = lobbyOn
+	rankMini.Visible = lobbyOn and not bigWindowOpen() -- (메뉴 등 큰 창이 떠 있으면 겹치지 않게 숨김: 창을 닫으면 다음 배치에 다시 나온다)
 
 	-- 🎁 상점 버튼: 랭킹 카드 바로 아래 (DPS 패널과 겹칠 것 같으면 랭킹 카드 왼쪽)
 	local rankH = 36 + 16 * rows

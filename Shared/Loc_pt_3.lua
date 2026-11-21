@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "★ Recommended: Depth {number1} (deepest you can clear in {number2}s)", "★ Recomendado: profundidade {number1} (a mais funda em {number2}s)" },
+		{ "🎯 Boss hunter  ·  ✔ 🔫 Sniper Rifle / Railgun (+{number1}%)", "🎯 Caçador de chefes · ✔ 🔫 Fuzil de precisão / Arma de trilhos (+{number1}%)" },
 		{ "Zone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated", "Zona {number2} monstros {number3} / {number4} derrotados · Lorde 👑 Não derrotado" },
 		{ "Shot_Pistol  <font color='#{number1}aa{number2}c{number3}'>Rifle shot</font>", "Tiro de Pistola <font color='#{number1}aa{number2}c{number3}'> Tiro de Fuzil </font>" },
 		{ "Reach weapon upgrade level {number1} (about the {number2}th weapon)", "Alcance o nível de aprimoramento de arma {number1} (sobre a {number2}ª arma)" },
@@ -535,6 +537,7 @@ return {
 		{ "Steel Era +{number1}", "Era Aço +{number1}" },
 		{ "Best floor {number1}", "Melhor andar {number1}" },
 		{ "⚡ Power {number1} → {number2}", "⚡ Poder {number1} → {number2}" },
+		{ "x{number1} · weakest", "x{number1} · o mais fraco" },
 		{ "Zone {number1} Camp", "Acampamento da Zona {number1}" },
 		{ "🐾 Pet Lv.{number1}!", "🐾 Pet Nv.{number1}!" },
 		{ "Upgrade {number1} G", "Melhorar {number1} G" },
@@ -546,6 +549,7 @@ return {
 		{ "Dark Era +{number1}", "Era Sombrio +{number1}" },
 		{ "XP Gain +{number1}%", "Ganho de XP +{number1}%" },
 		{ "XP Gain -{number1}%", "Ganho de XP -{number1}%" },
+		{ "Dismantle {number1}", "Desmontar {number1}" },
 		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
 		{ "Damage +{number2}%", "Dano +{number2}%" },
 		{ "x{number1}\nUpgrade", "x{number1}\nMelhorar" },
@@ -778,6 +782,7 @@ return {
 		{ "{text1} applied", "{text1} aplicado" },
 		{ "Berserk {text1}", "Berserker {text1}" },
 		{ "ahead ({text1})", "à frente ({text1})" },
+		{ "{text1} & below", "{text1} e abaixo" },
 		{ "🔫 Next {text1}", "🔫 Próxima {text1}" },
 		{ "Zone {number1}: {text2}", "Zona {number1}: {text2}" },
 		{ "{text1} → Boss", "{text1} → Chefe" },

@@ -1245,6 +1245,13 @@ return {
 		["Right to the left!"] = "바로 왼쪽이에요!",
 		["Goal"] = "목표",
 		["Fuse spare gear into a higher rarity"] = "남는 장비 합성 → 한 단계 위 등급",
+		["♻ Rarity ▾"] = "♻ 등급 ▾",
+		["Dismantle by rarity"] = "등급별 일괄 분해",
+		["Equipped, set, and unique gear is kept."] = "착용 중·세트·유니크 장비는 남겨둡니다.",
+		["★ Uniques only"] = "★ 유니크만",
+		["🚀 Set +1 only"] = "🚀 세트 효과 +1만",
+		["▲ Low first"] = "▲ 약한 것부터",
+		["▼ High first"] = "▼ 강한 것부터",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1297,7 +1304,5 @@ return {
 		{ "🐾 Pet Lv.{number1}! New ability 🧲 Auto-Loot — Loot within a {number2} radius gets pulled in automatically", "🐾 펫 레벨 {number1}! 새로운 능력 🧲 자동 약탈 - {number2} 반경 내의 아이템을 자동으로 수집합니다" },
 		{ "<font size='12' color='#9ad7ff'>⏱ You'd beat this lord in ~{number1}s (aim for under 60s)</font>", "<font size='12' color='#9ad7ff'>⏱ 이 군주는 약 {number1}초면 잡아요 (60초 안이 목표)</font>" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} bosses in one Boss Rush run\n{number2} / {number3}   Reward: 🎫 {number4}", "보스 헌터 타이틀 『보스 헌터』\n보스 러시에서 {number1}명의 보스를 처치하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
-		{ "Ranking resets in <font color='#ffe16e'>{number1}d {number2}h</font> · rewards: tier by bosses defeated", "랭킹 초기화까지 <font color='#ffe16e'>{number1}일 {number2}시간</font> · 보상: 처치한 보스 수에 따른 등급" },
-		{ "Unbreakable   Title 『Unbreakable』\nSurvive {number1} seconds in the Boss Rush\n{number2} / {number3}   Reward: 🎫 {number4}", "깨지지 않는 타이틀 『Unbreakable』\n보스 러쉬에서 {number1}초 동안 생존하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
 	},
 }

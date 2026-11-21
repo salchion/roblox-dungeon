@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "Résultat de Gacha_Pop{number1} <font color='#{number2}aa{number3}c{number4}'> : Épique</font>" },
+		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "Obtenez instantanément {number1} heures de revenus passifs · maximum {number2} par jour" },
 		{ "🔒 Zone {number1} · Darklands Sealed\nOpen the previous gate first", "🔒 Zone {number1} · Terres sombres scellées\nOuvrez d'abord la porte précédente" },
 		{ "🔒 Zone {number1} · Snowfield Sealed\nOpen the previous gate first", "🔒 Zone {number1} · Champ de neige scellé\nOuvrez d'abord la porte précédente" },
 		{ "Accrues up to {number1} hours while you're away (default {number2} hours)", "Accumule jusqu'à {number1} heures pendant votre absence (par défaut {number2} heures)" },
@@ -567,6 +569,7 @@ return {
 		{ "Steel Era +{number1}", "Ère Acier +{number1}" },
 		{ "Best floor {number1}", "Meilleur étage {number1}" },
 		{ "⚡ Power {number1} → {number2}", "⚡ Puissance {number1} → {number2}" },
+		{ "x{number1} · weakest", "x{number1} · le plus faible" },
 		{ "Zone {number1} Camp", "Camp de la zone {number1}" },
 		{ "🐾 Pet Lv.{number1}!", "🐾 Familier niv.{number1} !" },
 		{ "Upgrade {number1} G", "Améliorer {number1} or" },
@@ -578,6 +581,7 @@ return {
 		{ "Dark Era +{number1}", "Ère Ténèbres +{number1}" },
 		{ "XP Gain +{number1}%", "Gain d'XP +{number1}%" },
 		{ "XP Gain -{number1}%", "Gain d'XP -{number1}%" },
+		{ "Dismantle {number1}", "Démanteler {number1}" },
 		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
 		{ "Damage +{number2}%", "Dégâts +{number2}%" },
 		{ "x{number1}\nUpgrade", "x {number1}\nAmélioration" },
@@ -813,6 +817,7 @@ return {
 		{ "{text1} applied", "{text1} appliqué" },
 		{ "Berserk {text1}", "Berserker {text1}" },
 		{ "ahead ({text1})", "devant ({text1})" },
+		{ "{text1} & below", "{text1} et en dessous" },
 		{ "🔫 Next {text1}", "🔫 Prochaine {text1}" },
 		{ "Zone {number1}: {text2}", "Zone {number1} : {text2}" },
 		{ "{text1} → Boss", "{text1} → Boss" },

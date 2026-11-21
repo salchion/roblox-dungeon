@@ -3046,5 +3046,15 @@
 "Right to the left!",
 "Goal",
 "Fuse spare gear into a higher rarity",
-"Equip this {text1}"
+"Equip this {text1}",
+"♻ Rarity ▾",
+"Dismantle by rarity",
+"Equipped, set, and unique gear is kept.",
+"{text1} & below",
+"Dismantle {number1}",
+"★ Uniques only",
+"🚀 Set +1 only",
+"x{number1} · weakest",
+"▲ Low first",
+"▼ High first"
 ]
