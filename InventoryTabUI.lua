@@ -707,7 +707,21 @@ local function buildInventoryTab(state)
 		if #filtered == 0 and not swapMode then
 			makeLabel({ Size = UDim2.new(1, -20, 0, 40), Position = UDim2.new(0, 10, 0, 110), Text = #bag == 0 and "Your bag is empty" or "Nothing matches this filter", TextSize = 12, TextColor3 = Color3.fromRGB(130, 130, 150) }, middle)
 		end
-		for order, entry in ipairs(swapMode and {} or filtered) do
+		-- 같은 장비 묶기: 부위 / 등급 / 강화 / 세트 / 유니크 / "+1" 옵션이 같으면 한 칸 + "x개수" (정렬상 앞선 것 = 대표)
+		local shownList, groupCount, groupOf = {}, {}, {}
+		for _, entry in ipairs(swapMode and {} or filtered) do
+			local it = entry.Item
+			local key = table.concat({ tostring(it.Slot), tostring(it.Rarity), tostring(it.Level), tostring(it.Set), tostring(it.Unique), tostring(it.AugBoost) }, "|")
+			if groupOf[key] then
+				groupCount[groupOf[key]] += 1
+				if selected and selected.Id == it.Id then shownList[groupOf[key]] = entry end -- (고른 장비가 묶음 안이면 그걸 대표로)
+			else
+				table.insert(shownList, entry)
+				groupOf[key] = #shownList
+				groupCount[#shownList] = 1
+			end
+		end
+		for order, entry in ipairs(shownList) do
 			local item = entry.Item
 			local isSel = selected and selected.Id == item.Id
 			local tile = makeButton({ Text = "", LayoutOrder = order, BackgroundColor3 = isSel and Color3.fromRGB(70, 74, 104) or Color3.fromRGB(34, 36, 54), AutoButtonColor = true }, grid, function()
@@ -718,7 +732,14 @@ local function buildInventoryTab(state)
 			rounded(tile, 10)
 			create("UIStroke", { Color = Config.Gear.RarityColors[item.Rarity], Thickness = isSel and 3 or 1.5, Transparency = isSel and 0 or 0.15, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, tile) -- (가방은 깜빡이지 않는 얇은 등급 테두리: 칸이 많아 번쩍임이 지저분했다)
 			makeLabel({ Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0, 0, 0, 3), Text = SLOT_ICONS[item.Slot], TextSize = 18 }, tile)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 1, -17), Text = string.format("+%d", item.Level), TextSize = 10, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, tile)
+			if (item.Level or 0) > 0 then -- (+0 은 안 적는다: 모든 칸에 "+0" 이 찍혀 빽빽해 보였다)
+				makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 1, -17), Text = string.format("+%d", item.Level), TextSize = 10, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, tile)
+			end
+			if groupCount[order] > 1 then
+				local cnt = makeLabel({ Size = UDim2.new(0, 26, 0, 15), AnchorPoint = Vector2.new(0, 0), Position = UDim2.new(0, -4, 0, -4), Text = "x" .. groupCount[order], TextSize = 10, Font = Enum.Font.GothamBlack,
+					TextColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(70, 66, 110), ZIndex = 8 }, tile)
+				rounded(cnt, 7)
+			end
 			if entry.Diff ~= 0 then
 				makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(1, -15, 1, -16), Text = entry.Diff > 0 and "▲" or "▼", TextSize = 10, Font = Enum.Font.GothamBlack,
 					TextColor3 = entry.Diff > 0 and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 120, 120) }, tile)
