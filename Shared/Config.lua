@@ -1905,7 +1905,9 @@ Config.Idle = {
 	MultTiers = { 0.25, 0.5, 1.0 }, -- 영구 방치 배율 상품 단계 (+25% / +50% / +100%, 단계는 덮어쓰는 방식이라 가장 높은 것 하나만 적용)
 	CapTiers = { 4, 20 },     -- 오프라인 적립 한도 상품 단계: 기본 4시간 + 4 = 8시간 / + 20 = 24시간
 	VipBonus = 0.2,           -- VIP 패스: 방치 배율 +20%
-	KillsPerMin = 100,        -- 필드 실수입 기준: 분당 100마리 처치 (경제 모델 / ECONOMY.md 와 같은 가정)
+	-- 필드 실수입 기준 분당 처치 수 (구역 1~8). 1~4구역은 11-15 실측 기반, 5~8구역은 잠정값(27):
+	--   4~6구역 Balance 로그가 나오면 그 구역 값만 갈아 끼운다. 목표: 모든 구역에서 방치 = 필드 실수입의 22% (Tools/economy_model.py 와 같은 표)
+	KillsPerMin = { 120, 100, 70, 27, 27, 27, 27, 27 },
 }
 
 -- 그 구역에서 1분에 버는 필드 골드: 몬스터 골드 공식(FieldService 의 처치 보상)과 같은 식.
@@ -1914,7 +1916,7 @@ Config.Idle = {
 function Config.Idle.FieldIncomePerMin(zone)
 	zone = math.clamp(math.floor(zone or 1), 1, Config.Field.ZoneCount)
 	local level = Config.Field.GetZoneLevel(zone)
-	return (8 + 4 * level) * Config.Field.ZoneDanger.Reward[zone] * Config.Economy.FieldGoldMult * Config.Idle.KillsPerMin
+	return (8 + 4 * level) * Config.Field.ZoneDanger.Reward[zone] * Config.Economy.FieldGoldMult * Config.Idle.KillsPerMin[zone]
 end
 
 -- 골드 팩("내 방치 수입 N분치") 기준 수입(분당) = 옛 방치 계산식 그대로.

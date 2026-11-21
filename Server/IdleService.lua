@@ -1,6 +1,6 @@
 -- IdleService (ServerScriptService > Modules 안의 ModuleScript, 이름: IdleService)
 -- 방치 수입: 휴식 구역 원 안에 서 있으면 골드가 쌓이고(접속 중), 접속을 끊어도 일정 시간까지 쌓인다(오프라인 적립).
---   기준 수입 = "내가 가장 멀리 간 구역(MaxZone)의 필드 실수입" (Config.Idle.FieldIncomePerMin: 분당 100마리 기준)
+--   기준 수입 = "내가 가장 멀리 간 구역(MaxZone)의 필드 실수입" (Config.Idle.FieldIncomePerMin: 구역별 분당 처치 수 Config.Idle.KillsPerMin 기준)
 --   방치 골드/분 = 기준 수입 x Config.Idle.Fraction x 방치 배율
 --   방치 배율 = 1 + 영구 보너스(IdleMultBonus: 상품 단계 + VIP) + 부스터 활성 시 BoostBonus
 --   오프라인 골드/분 = 기준 수입 x Fraction x OfflineEfficiency x 방치 배율

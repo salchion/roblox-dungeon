@@ -19,7 +19,7 @@ LS = 326 / 1055                 # Config.Weapon.LevelScale
 WEAPON_COUNT = 50               # Config.Weapon.WeaponCount
 INCOME_BASE, EARLY, LATE, LATE_LEVEL = 1500, 0.2, 1.2, 600
 IDLE_FRACTION, OFFLINE_EFF = 0.22, 0.6
-KILLS_PER_MIN = 100             # Config.Idle.KillsPerMin (필드 수입 기준)
+KILLS_PER_MIN = [120, 100, 70, 27, 27, 27, 27, 27]   # Config.Idle.KillsPerMin (구역 1~8, 필드 수입 기준 · 5~8구역은 잠정)
 ERAS_PER_LEVEL = 1.4
 
 ZONE_REWARD = [1, 1.5, 2.2, 7.2, 9.2, 14.3, 21.6, 33.8]   # Config.Field.ZoneDanger.Reward
@@ -30,8 +30,10 @@ DUNGEON_DEPTH_GOLD = 1.15                                 # Config.Dungeon.Depth
 ZONE_TIER = {1: 1, 2: 2, 3: 6, 4: 11, 5: 14, 6: 18, 7: 24, 8: 34}
 
 
-def field_income(zone, kills=KILLS_PER_MIN):
-    """그 구역에서 1분에 버는 필드 골드 (Config.Idle.FieldIncomePerMin 과 같은 식)."""
+def field_income(zone, kills=None):
+    """그 구역에서 1분에 버는 필드 골드 (Config.Idle.FieldIncomePerMin 과 같은 식). kills 를 안 주면 그 구역의 분당 처치 수."""
+    if kills is None:
+        kills = KILLS_PER_MIN[zone - 1]
     level = 1 + 3 * (zone - 1)
     return (8 + 4 * level) * ZONE_REWARD[zone - 1] * FIELD_GOLD_MULT * kills
 
