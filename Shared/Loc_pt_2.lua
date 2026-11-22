@@ -947,6 +947,9 @@ return {
 		["Right to the left!"] = "Logo à esquerda!",
 		["Goal"] = "Objetivo",
 		["Fuse spare gear into a higher rarity"] = "Funda equipamento extra em uma raridade maior",
+		["Strongest"] = "Mais forte",
+		["Set effects"] = "Efeitos de set",
+		["Clean"] = "Organizar",
 		["♻ Rarity ▾"] = "♻ Raridade ▾",
 		["Dismantle by rarity"] = "Desmontar por raridade",
 		["Equipped, set, and unique gear is kept."] = "Equipamentos equipados, de conjunto e únicos são mantidos.",
@@ -1102,6 +1105,5 @@ return {
 		{ "🗿 Dungeon mutation: Giant — Monster HP x{number1} rewards x{number2}", "🗿 Mutação de masmorra: Gigante - HP do monstro x{number1} recompensas x{number2}" },
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] Sapatos desgastados salvos automaticamente (Essência +{number1} {number2} G)" },
 		{ "Reduces training / breakthrough wait time by {number1} hour", "Reduz o tempo de espera de treinamento/avanço em {number1} horas" },
-		{ "Clear depth {number1} once more to record its Sweep reward.", "Conclua a profundidade {number1} mais uma vez para registrar a recompensa da varredura." },
 	},
 }

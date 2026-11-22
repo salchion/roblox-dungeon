@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Crit damage +{number1}%p per point  (max {number2})", "暴击伤害 +{number1}%p/点  (上限 {number2})" },
 		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 领取了{number1}个奖励！(新称号{number2}个)" },
 		{ "Keeps {number1} more stacks even if broken", "即使中断也多保留{number1}层" },
 		{ "📍 Field Entrance  ahead (east)  {number1}m", "📍 野外入口  前方（东）  {number1}m" },
@@ -689,6 +690,7 @@ return {
 		{ "{text1} Lv.{number2}→{number3}", "{text1} Lv.{number2}→{number3}" },
 		{ "{number1} pc: {text2}", "{number1}件: {text2}" },
 		{ "▼ {text1}  {number1}m", "▼ {text1}  {number1}米" },
+		{ "{text1} Lv.{number1}!", "{text1} Lv.{number1}！" },
 		{ "{text1} Set", "{text1} 套装" },
 		{ "{text1} pts", "{text1} 分" },
 		{ "{text1} Era", "{text1} 时代" },
@@ -699,6 +701,7 @@ return {
 		{ "{text1} +{number2}", "{text1} +{number2}" },
 		{ "{text1} {number2}%", "{text1} {number2}%" },
 		{ "+ {text1}", "+ {text1}" },
+		{ "+{number1} {text1}", "+{number1} {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [世界首领] 区域{number1} · {text2}:{text3} 出现了!跟随橙色光柱,一起击败它来获得装备和门票!" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} 套装效果『{text2}』已解锁！穿上该套装即可自动开启，也可用金币强化（Y键）" },

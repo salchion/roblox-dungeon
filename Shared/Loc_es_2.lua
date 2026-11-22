@@ -976,6 +976,9 @@ return {
 		["Right to the left!"] = "¡Justo a la izquierda!",
 		["Goal"] = "Objetivo",
 		["Fuse spare gear into a higher rarity"] = "Fusiona equipo sobrante a una rareza mayor",
+		["Strongest"] = "Lo más fuerte",
+		["Set effects"] = "Efectos de set",
+		["Clean"] = "Ordenar",
 		["♻ Rarity ▾"] = "♻ Rareza ▾",
 		["Dismantle by rarity"] = "Desmantelar por rareza",
 		["Equipped, set, and unique gear is kept."] = "El equipo equipado, de conjunto y único se conserva.",
@@ -1114,6 +1117,5 @@ return {
 		{ "Zone {number1} set effect · Trial Lv.3 — for this dungeon only", "Efecto de set de la zona {number1} · Prueba nv.3 — solo en esta mazmorra" },
 		{ "<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "<font color='#{number4}ad{number5}ff'>Tomo de hechizos · Era mítica +{number6}</font>" },
 		{ "Shot_Shotgun  <font color='#{number1}aa{number2}c{number3}'>Shotgun shot</font>", "Disparo de escopeta <font color='#{number1}aa{number2}c{number3}'> Disparo de escopeta </font>" },
-		{ "🔒 Zone {number1} · Desert Sealed\nOpen the previous gate first", "🔒 Zona {number1} · Desierto sellado\nAbre la puerta anterior primero" },
 	},
 }

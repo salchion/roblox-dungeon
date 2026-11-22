@@ -1104,6 +1104,9 @@ return {
 		["Right to the left!"] = "すぐ左！",
 		["Goal"] = "目標",
 		["Fuse spare gear into a higher rarity"] = "余った装備を合成 → 一つ上の等級",
+		["Strongest"] = "最強",
+		["Set effects"] = "セット効果",
+		["Clean"] = "整理",
 		["♻ Rarity ▾"] = "♻ レア度 ▾",
 		["Dismantle by rarity"] = "レア度で一括分解",
 		["Equipped, set, and unique gear is kept."] = "装備中・セット・ユニーク装備は残ります。",
@@ -1178,6 +1181,5 @@ return {
 		{ "Mythic Master   Title 『Mythic Master』\nObtain Mythic gear\n{number1} / {number2}   Reward: 🎫 {number3}", "神話のマスター　タイトル『神話のマスター』\n神話のギアを入手する\n{number1} / {number2}　報酬：🎫 {number3}" },
 		{ "Dummy Slayer   Title 『Dummy Slayer』\nHit the dummy {number1} times\n{number2} / {number3}   Reward: {number4} G", "ダミー・スレイヤー　タイトル『ダミー・スレイヤー』\nダミーを{number1}回攻撃する\n{number2} / {number3}　報酬：{number4}G" },
 		{ "A golden FEVER portal opened where the Lord fell! Step in within {number1} seconds", "領主が倒れた場所に黄金のフィーバーポータルが開いた！{number1}秒以内に入ろう" },
-		{ "Points left {number1}  /  total {number2}  (Level {number3})  ·  +1 point every {number4} levels, next at Lv.{number5}", "残りポイント {number1}  /  合計 {number2}  (レベル {number3})  ·  {number4}レベルごとに+1、次は Lv.{number5}" },
 	},
 }

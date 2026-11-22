@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Points left {number1}  /  total {number2}  (Level {number3})  ·  +1 point every {number4} levels, next at Lv.{number5}", "残りポイント {number1}  /  合計 {number2}  (レベル {number3})  ·  {number4}レベルごとに+1、次は Lv.{number5}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!\nChallenge the dungeon at the north gate", "🎟 今日は無料入場券{number1}枚 · 🗝 キー{number2}個！\n北の門にあるダンジョンに挑戦しよう" },
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "発見したユニーク効果 {number1} / {number2}  ·  ミシック装備に1つ付くことがあります(確率約{number3}%)" },
 		{ "🎒 Bag full: dismantled {number1} gear that your other gear beats (Essence +{number2}, {number3} G)", "🎒 バッグが満杯：他の装備に劣る装備{number1}個を分解（エッセンス+{number2}、{number3} G）" },
@@ -894,6 +895,7 @@ return {
 		{ "{text1} Lv.{number2}→{number3}", "{text1} Lv.{number2}→{number3}" },
 		{ "{number1} pc: {text2}", "{number1}部位: {text2}" },
 		{ "▼ {text1}  {number1}m", "▼ {text1}  {number1}m" },
+		{ "{text1} Lv.{number1}!", "{text1} Lv.{number1}！" },
 		{ "{text1} Set", "{text1}セット" },
 		{ "{text1} pts", "{text1}点" },
 		{ "{text1} Era", "{text1}時代" },
@@ -904,6 +906,7 @@ return {
 		{ "{text1} +{number2}", "{text1} +{number2}" },
 		{ "{text1} {number2}%", "{text1} {number2}%" },
 		{ "+ {text1}", "+ {text1}" },
+		{ "+{number1} {text1}", "+{number1} {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [ワールドボス] ゾーン{number1} · {text2}: {text3}が出現！オレンジの光の柱を追って、みんなで倒して装備とチケットを手に入れよう！" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} セット効果『{text2}』解放! セット装備を着ければ自動でオン、ゴールドで強化もできます (Yキー)" },

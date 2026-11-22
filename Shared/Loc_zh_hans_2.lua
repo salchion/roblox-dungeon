@@ -858,6 +858,9 @@ return {
 		["Right to the left!"] = "就在左边！",
 		["Goal"] = "目标",
 		["Fuse spare gear into a higher rarity"] = "合成多余装备 → 更高品质",
+		["Strongest"] = "最强",
+		["Set effects"] = "套装效果",
+		["Clean"] = "整理",
 		["♻ Rarity ▾"] = "♻ 品质 ▾",
 		["Dismantle by rarity"] = "按品质分解",
 		["Equipped, set, and unique gear is kept."] = "已装备、套装和独特装备会保留。",
@@ -1141,6 +1144,5 @@ return {
 		{ "📍 Field Entrance  Right ahead!  {number1}m", "📍 田地入口就在前方！{number1}米" },
 		{ "Points left {number1}  /  total {number2}  (Level {number3})", "剩余点数 {number1}  /  共 {number2}  (等级 {number3})" },
 		{ "🔥 Better gear dropped! ({number1} slot(s))", "🔥 掉落了更好的装备!({number1} 个栏位)" },
-		{ "Crit damage +{number1}%p per point  (max {number2})", "暴击伤害 +{number1}%p/点  (上限 {number2})" },
 	},
 }

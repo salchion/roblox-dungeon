@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 Zone {number1} · Desert Sealed\nOpen the previous gate first", "🔒 Zona {number1} · Desierto sellado\nAbre la puerta anterior primero" },
 		{ "One less dagger, but each hits +{number1}% harder: for bosses", "Una daga menos, pero cada una pega +{number1} % más: para jefes" },
 		{ "Reduces training / breakthrough wait time by {number1} hours", "Reduce el tiempo de espera de entrenamiento/avance en {number1} horas" },
 		{ "♻ [Common] Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [Común] Gorra de cuero recuperada automáticamente (Esencia +{number1} {number2} G)" },
@@ -828,6 +829,7 @@ return {
 		{ "{text1} Lv.{number2}→{number3}", "{text1} Nv.{number2}→{number3}" },
 		{ "{number1} pc: {text2}", "{number1} piezas: {text2}" },
 		{ "▼ {text1}  {number1}m", "▼ {text1}  {number1} m" },
+		{ "{text1} Lv.{number1}!", "¡{text1} Nv.{number1}!" },
 		{ "{text1} Set", "Set de {text1}" },
 		{ "{text1} pts", "{text1} pts" },
 		{ "{text1} Era", "Era {text1}" },
@@ -838,6 +840,7 @@ return {
 		{ "{text1} +{number2}", "{text1} +{number2}" },
 		{ "{text1} {number2}%", "{text1} {number2}%" },
 		{ "+ {text1}", "+ {text1}" },
+		{ "+{number1} {text1}", "+{number1} {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [Jefe mundial] Zona {number1} · {text2}: ¡{text3} ha aparecido! Sigue el pilar de luz naranja y derrótenlo juntos para conseguir equipo + boletos." },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} ¡Efecto de set 『{text2}』 desbloqueado! Equipa su set para activarlo o mejóralo con oro (tecla Y)" },

@@ -1014,3 +1014,8 @@
 3045¦目標¦Ziel¦Objectif¦Objetivo¦Objetivo¦目标¦목표
 3046¦余った装備を合成 → 一つ上の等級¦Übrige Ausrüstung zu höherer Seltenheit verschmelzen¦Fusionner l'équipement en trop vers une rareté supérieure¦Fusiona equipo sobrante a una rareza mayor¦Funda equipamento extra em uma raridade maior¦合成多余装备 → 更高品质¦남는 장비 합성 → 한 단계 위 등급
 3047¦この{text1}を装備すると¦Rüste diese(n) {text1} aus¦Équipe ce {text1}¦Equipa este {text1}¦Equipe este {text1}¦装备这件{text1}¦{text1} 장착
+3058¦最強¦Stärkste¦Le plus fort¦Lo más fuerte¦Mais forte¦最强¦최강
+3059¦セット効果¦Set-Effekte¦Effets de set¦Efectos de set¦Efeitos de set¦套装效果¦세트 효과
+3060¦整理¦Aufräumen¦Ranger¦Ordenar¦Organizar¦整理¦정리
+3061¦{text1} Lv.{number1}！¦{text1} Lv.{number1}!¦{text1} Nv.{number1} !¦¡{text1} Nv.{number1}!¦{text1} Nv.{number1}!¦{text1} Lv.{number1}！¦{text1} Lv.{number1}!
+3062¦+{number1} {text1}¦+{number1} {text1}¦+{number1} {text1}¦+{number1} {text1}¦+{number1} {text1}¦+{number1} {text1}¦+{number1} {text1}

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Clear depth {number1} once more to record its Sweep reward.", "Conclua a profundidade {number1} mais uma vez para registrar a recompensa da varredura." },
 		{ "★ Recommended: Depth {number1} (deepest you can clear in {number2}s)", "★ Recomendado: profundidade {number1} (a mais funda em {number2}s)" },
 		{ "🎯 Boss hunter  ·  ✔ 🔫 Sniper Rifle / Railgun (+{number1}%)", "🎯 Caçador de chefes · ✔ 🔫 Fuzil de precisão / Arma de trilhos (+{number1}%)" },
 		{ "Zone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated", "Zona {number2} monstros {number3} / {number4} derrotados · Lorde 👑 Não derrotado" },
@@ -813,6 +814,7 @@ return {
 		{ "{text1} Lv.{number2}→{number3}", "{text1} Nv.{number2}→{number3}" },
 		{ "{number1} pc: {text2}", "{number1} peças: {text2}" },
 		{ "▼ {text1}  {number1}m", "▼ {text1}  {number1} m" },
+		{ "{text1} Lv.{number1}!", "{text1} Nv.{number1}!" },
 		{ "{text1} Set", "Conjunto {text1}" },
 		{ "{text1} pts", "{text1} pts" },
 		{ "{text1} Era", "Era {text1}" },
@@ -823,6 +825,7 @@ return {
 		{ "{text1} +{number2}", "{text1} +{number2}" },
 		{ "{text1} {number2}%", "{text1} {number2}%" },
 		{ "+ {text1}", "+ {text1}" },
+		{ "+{number1} {text1}", "+{number1} {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [Chefe mundial] Zona {number1} · {text2}: {text3} apareceu! Siga o pilar de luz laranja e derrotem juntos para ganhar equipamento + tickets!" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} Efeito de set 『{text2}』 desbloqueado! Equipe o set para ativá-lo ou melhore com ouro (tecla Y)" },

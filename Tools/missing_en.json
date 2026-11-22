@@ -3056,5 +3056,10 @@
 "🚀 Set +1 only",
 "x{number1} · weakest",
 "▲ Low first",
-"▼ High first"
+"▼ High first",
+"Strongest",
+"Set effects",
+"Clean",
+"{text1} Lv.{number1}!",
+"+{number1} {text1}"
 ]
