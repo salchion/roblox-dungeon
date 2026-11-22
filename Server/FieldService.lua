@@ -2465,6 +2465,17 @@ local function rescueOutOfBounds()
 					notify(player, "You were knocked out of the Field and returned to town.")
 				end
 			end
+		elseif player:GetAttribute("Zone") == "Lobby" and not player:GetAttribute("InDoomArena") and not player:GetAttribute("TutorialDoom") and not player:GetAttribute("TutorialDungeonDoom") then
+			-- 마을(가로세로 -130 ~ +130) 밖으로 벗어난 경우: 담 너머 / 허공 / 필드 끝을 지나 "마을" 로 바뀐 경우까지 (예전엔 Zone 이 Field 일 때만 되돌려서 빠져 있었다)
+			local root = getAliveParts(player)
+			if root then
+				local p = root.Position
+				if p.X < -155 or p.X > 155 or math.abs(p.Z) > 155 or p.Y < TOP - 40 then
+					root.AssemblyLinearVelocity = Vector3.zero
+					player.Character:PivotTo(lobbySpawn)
+					notify(player, "You wandered out of town and were returned.")
+				end
+			end
 		end
 	end
 end

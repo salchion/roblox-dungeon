@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} bosses in one Boss Rush run\n{number2} / {number3}   Reward: 🎫 {number4}", "보스 헌터 타이틀 『보스 헌터』\n보스 러시에서 {number1}명의 보스를 처치하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
 		{ "Ranking resets in <font color='#ffe16e'>{number1}d {number2}h</font> · rewards: tier by bosses defeated", "랭킹 초기화까지 <font color='#ffe16e'>{number1}일 {number2}시간</font> · 보상: 처치한 보스 수에 따른 등급" },
 		{ "Unbreakable   Title 『Unbreakable』\nSurvive {number1} seconds in the Boss Rush\n{number2} / {number3}   Reward: 🎫 {number4}", "깨지지 않는 타이틀 『Unbreakable』\n보스 러쉬에서 {number1}초 동안 생존하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
 		{ "Reduces training / breakthrough wait time by {number1} min (the skip bar fills instantly)", "훈련/돌파 대기 시간을 {number1}분 단축합니다 (스킵 바가 즉시 채워집니다)" },
@@ -1037,6 +1038,5 @@ return {
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} 세트 효과 『{text2}』 해금! 그 세트 장비를 끼면 저절로 켜지고, 골드로 강화할 수도 있어요 (Y 키)" },
 		{ " <font size='9' color='#8a8aa8'>Range {text1}</font> <font size='9' color='{text2}'><b>({number3}%)</b></font>", " <font size='9' color='#8a8aa8'>범위 {text1}</font> <font size='9' color='{text2}'><b>({number3}%)</b></font>" },
 		{ "<font color='#9affc0'>Next weapon → <b>{text1}</b></font> <font color='#aeb4cc'>{text2}</font>", "<font color='#9affc0'>다음 무기 → <b>{text1}</b></font> <font color='#aeb4cc'>{text2}</font>" },
-		{ "🔫 Next {text1} <font color='#ffd966'>{text2}</font>\n✨ Upgrades are free right now! ({number3} left)", "🔫 다음 {text1} <font color='#ffd966'>{text2}</font>\n✨ 지금은 강화가 무료예요! ({number3}회 남음)" },
 	},
 }

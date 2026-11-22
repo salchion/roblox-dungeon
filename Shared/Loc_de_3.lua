@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⚠ Monster overrun! Thin them out within {number1}s!  ({number2} / {number3})", "⚠ Monster überrennen dich! Dünne sie innerhalb von {number1} s aus! ({number2} / {number3})" },
 		{ "🏆 You defeated the Final Lord!  +{number1} gold  +{number2} tickets", "🏆 Du hast den Letzten Lord besiegt!  +{number1} Gold  +{number2} Tickets" },
 		{ "⭐ New record! Depth {number1} cleared. Depth {number2} is unlocked.", "⭐ Neuer Rekord! Tiefe {number1} abgeschlossen. Tiefe {number2} ist freigeschaltet." },
 		{ "💢 Boss #{number1} is AWAKENED — it attacks twice in a row!", "💢 Boss #{number1} ist ERWACHT – er greift zweimal hintereinander an!" },

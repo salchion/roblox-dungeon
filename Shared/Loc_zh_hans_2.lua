@@ -864,6 +864,7 @@ return {
 		["Sort"] = "排序",
 		["Details"] = "详情",
 		["Less"] = "收起",
+		["You wandered out of town and were returned."] = "你走出了城镇，已被送回。",
 		["♻ Rarity ▾"] = "♻ 品质 ▾",
 		["Dismantle by rarity"] = "按品质分解",
 		["Equipped, set, and unique gear is kept."] = "已装备、套装和独特装备会保留。",

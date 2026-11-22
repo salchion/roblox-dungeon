@@ -1022,3 +1022,4 @@
 3063¦並べ替え¦Sortieren¦Trier¦Ordenar¦Ordenar¦排序¦정렬
 3064¦詳しく¦Details¦Détails¦Detalles¦Detalhes¦详情¦자세히
 3065¦閉じる¦Weniger¦Moins¦Menos¦Menos¦收起¦접기
+3066¦町の外に出たので町に戻しました。¦Du hast die Stadt verlassen und wurdest zurückgebracht.¦Tu es sorti de la ville et as été ramené.¦Saliste del pueblo y te trajimos de vuelta.¦Você saiu da cidade e foi trazido de volta.¦你走出了城镇，已被送回。¦마을 밖으로 나가서 마을로 돌려보냈어요.

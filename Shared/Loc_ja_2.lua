@@ -1110,6 +1110,7 @@ return {
 		["Sort"] = "並べ替え",
 		["Details"] = "詳しく",
 		["Less"] = "閉じる",
+		["You wandered out of town and were returned."] = "町の外に出たので町に戻しました。",
 		["♻ Rarity ▾"] = "♻ レア度 ▾",
 		["Dismantle by rarity"] = "レア度で一括分解",
 		["Equipped, set, and unique gear is kept."] = "装備中・セット・ユニーク装備は残ります。",

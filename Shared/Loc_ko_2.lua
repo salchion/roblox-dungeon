@@ -1251,6 +1251,7 @@ return {
 		["Sort"] = "정렬",
 		["Details"] = "자세히",
 		["Less"] = "접기",
+		["You wandered out of town and were returned."] = "마을 밖으로 나가서 마을로 돌려보냈어요.",
 		["♻ Rarity ▾"] = "♻ 등급 ▾",
 		["Dismantle by rarity"] = "등급별 일괄 분해",
 		["Equipped, set, and unique gear is kept."] = "착용 중·세트·유니크 장비는 남겨둡니다.",
@@ -1309,6 +1310,5 @@ return {
 		{ "🌱 Beginner's Boon: +{number1}% damage and -{number2}% damage taken until you clear Zone {number3} (it fades by Lv {number4})", "🌱 초보자의 축복: 구역 {number3}을 클리어할 때까지 피해량 +{number1}% 및 받는 피해량 -{number2}% (레벨 {number4}에 따라 감소)" },
 		{ "🐾 Pet Lv.{number1}! New ability 🧲 Auto-Loot — Loot within a {number2} radius gets pulled in automatically", "🐾 펫 레벨 {number1}! 새로운 능력 🧲 자동 약탈 - {number2} 반경 내의 아이템을 자동으로 수집합니다" },
 		{ "<font size='12' color='#9ad7ff'>⏱ You'd beat this lord in ~{number1}s (aim for under 60s)</font>", "<font size='12' color='#9ad7ff'>⏱ 이 군주는 약 {number1}초면 잡아요 (60초 안이 목표)</font>" },
-		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} bosses in one Boss Rush run\n{number2} / {number3}   Reward: 🎫 {number4}", "보스 헌터 타이틀 『보스 헌터』\n보스 러시에서 {number1}명의 보스를 처치하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
 	},
 }

@@ -931,6 +931,7 @@ return {
 		["Clean"] = "Aufräumen",
 		["Sort"] = "Sortieren",
 		["Less"] = "Weniger",
+		["You wandered out of town and were returned."] = "Du hast die Stadt verlassen und wurdest zurückgebracht.",
 		["♻ Rarity ▾"] = "♻ Seltenheit ▾",
 		["Dismantle by rarity"] = "Nach Seltenheit zerlegen",
 		["Equipped, set, and unique gear is kept."] = "Angelegte, Set- und Unique-Ausrüstung bleibt erhalten.",
@@ -1092,6 +1093,5 @@ return {
 		{ "Zone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated", "Zone {number2} Monster {number3} / {number4} besiegt · Lord 👑 nicht besiegt" },
 		{ "Shot_Pistol  <font color='#{number1}aa{number2}c{number3}'>Rifle shot</font>", "Schuss_Pistole <font color='#{number1}aa{number2}c{number3}'>Gewehrschuss</font>" },
 		{ "Reach weapon upgrade level {number1} (about the {number2}th weapon)", "Erreiche das Waffen-Upgrade-Level {number1} (etwa die {number2}. Waffe)" },
-		{ "⚠ Monster overrun! Thin them out within {number1}s!  ({number2} / {number3})", "⚠ Monster überrennen dich! Dünne sie innerhalb von {number1} s aus! ({number2} / {number3})" },
 	},
 }

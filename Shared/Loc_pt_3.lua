@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Reduces training / breakthrough wait time by {number1} hour", "Reduz o tempo de espera de treinamento/avanço em {number1} horas" },
 		{ "Clear depth {number1} once more to record its Sweep reward.", "Conclua a profundidade {number1} mais uma vez para registrar a recompensa da varredura." },
 		{ "★ Recommended: Depth {number1} (deepest you can clear in {number2}s)", "★ Recomendado: profundidade {number1} (a mais funda em {number2}s)" },
 		{ "🎯 Boss hunter  ·  ✔ 🔫 Sniper Rifle / Railgun (+{number1}%)", "🎯 Caçador de chefes · ✔ 🔫 Fuzil de precisão / Arma de trilhos (+{number1}%)" },

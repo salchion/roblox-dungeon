@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Shot_Shotgun  <font color='#{number1}aa{number2}c{number3}'>Shotgun shot</font>", "Disparo de escopeta <font color='#{number1}aa{number2}c{number3}'> Disparo de escopeta </font>" },
 		{ "🔒 Zone {number1} · Desert Sealed\nOpen the previous gate first", "🔒 Zona {number1} · Desierto sellado\nAbre la puerta anterior primero" },
 		{ "One less dagger, but each hits +{number1}% harder: for bosses", "Una daga menos, pero cada una pega +{number1} % más: para jefes" },
 		{ "Reduces training / breakthrough wait time by {number1} hours", "Reduce el tiempo de espera de entrenamiento/avance en {number1} horas" },

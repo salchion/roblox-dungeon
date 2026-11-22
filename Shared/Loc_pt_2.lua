@@ -953,6 +953,7 @@ return {
 		["Sort"] = "Ordenar",
 		["Details"] = "Detalhes",
 		["Less"] = "Menos",
+		["You wandered out of town and were returned."] = "Você saiu da cidade e foi trazido de volta.",
 		["♻ Rarity ▾"] = "♻ Raridade ▾",
 		["Dismantle by rarity"] = "Desmontar por raridade",
 		["Equipped, set, and unique gear is kept."] = "Equipamentos equipados, de conjunto e únicos são mantidos.",
@@ -1107,6 +1108,5 @@ return {
 		{ "Shot_Cannon  <font color='#{number1}aa{number2}c{number3}'>Mortar shot</font>", "Canhão de Disparos <font color='#{number1}aa{number2}c{number3}'> Tiro de Mortar </font>" },
 		{ "🗿 Dungeon mutation: Giant — Monster HP x{number1} rewards x{number2}", "🗿 Mutação de masmorra: Gigante - HP do monstro x{number1} recompensas x{number2}" },
 		{ "♻ [Common] Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] Sapatos desgastados salvos automaticamente (Essência +{number1} {number2} G)" },
-		{ "Reduces training / breakthrough wait time by {number1} hour", "Reduz o tempo de espera de treinamento/avanço em {number1} horas" },
 	},
 }

@@ -986,6 +986,7 @@ return {
 		["Sort"] = "Trier",
 		["Details"] = "Détails",
 		["Less"] = "Moins",
+		["You wandered out of town and were returned."] = "Tu es sorti de la ville et as été ramené.",
 		["♻ Rarity ▾"] = "♻ Rareté ▾",
 		["Dismantle by rarity"] = "Démanteler par rareté",
 		["Equipped, set, and unique gear is kept."] = "L'équipement porté, de set et unique est conservé.",
