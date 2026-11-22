@@ -273,6 +273,10 @@ local function buildInventoryTab(state)
 		local parts = {}
 		for _, item in ipairs(state.Items) do table.insert(parts, (item.Equipped and "E" or "") .. item.Id .. ":" .. item.Level) end
 		table.sort(parts)
+		-- 장비가 그대로여도 전투력 입력(세트 효과 단계 / 레벨 / 스탯 / 훈련 / 펫 / 무기)이 바뀌면 다시 묻는다 (낡은 값을 "정확한 값"으로 보여 주지 않게)
+		for _, name in ipairs({ "Power", "Level", "CritPoints", "SpeedPoints", "WeaponLevel", "GearHealth", "GearCrit", "GearDamage", "TrainHealth", "TrainCrit", "TrainDamage", "PetDamage", "AugAtkLv", "AugDefLv" }) do
+			table.insert(parts, tostring(player:GetAttribute(name) or 0))
+		end
 		previewKey = table.concat(parts, ",")
 		local sorted = table.clone(bag)
 		table.sort(sorted, function(a, b) return (a.Score or 0) > (b.Score or 0) end)
@@ -281,7 +285,8 @@ local function buildInventoryTab(state)
 	end
 	local function powerIf(item) -- 끼면 전투력, 정확한 값이면 true 도 함께 (아니면 점수 비율 근사)
 		local now = player:GetAttribute("Power") or 0
-		if preview.Key == previewKey and preview.Of[tostring(item.Id)] then return preview.Of[tostring(item.Id)], preview.Base or now, true end
+		-- "현재" 는 언제나 지금 ⚡ 전투력. 서버 Base 와 다르면(입력이 막 바뀌어 다시 묻는 중) 정확한 값으로 치지 않는다
+		if preview.Key == previewKey and preview.Of[tostring(item.Id)] and preview.Base == now then return preview.Of[tostring(item.Id)], now, true end
 		local cur = equipped[item.Slot]
 		local function value(map)
 			local total, counts = 0, {}
