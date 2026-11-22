@@ -197,6 +197,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/FieldWorld.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "FieldWorld",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/DungeonService.lua",
       "parent": "ServerScriptService/Modules",
       "name": "DungeonService",
