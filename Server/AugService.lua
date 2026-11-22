@@ -50,10 +50,13 @@ local function slotCount(player, rift)
 end
 
 -- 같은 구역 세트 장비를 끼면 단계가 오른다: 골드 단계(최대 3) + 장착 부위 수(최대 3) = 최대 6단계
-local function gearBonus(player, zone)
-	local okInv, Inventory = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
-	if not okInv then return 0 end
-	local counts = Inventory.GetTotals(player).SetCounts or {}
+local function gearBonus(player, zone, setCounts) -- (setCounts 를 주면 그 조합으로: 전투력 미리보기)
+	local counts = setCounts
+	if not counts then
+		local okInv, Inventory = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
+		if not okInv then return 0 end
+		counts = Inventory.GetTotals(player).SetCounts or {}
+	end
 	return math.clamp(counts["Zone" .. zone] or 0, 0, 3)
 end
 
@@ -61,20 +64,20 @@ end
 --   📌 고정한 것 먼저, 그다음 단계가 높은 것부터 칸(1~3) 수만큼 켠다.
 --   (예전: 골드로 1단계 이상 올리고 Y 창에서 직접 ON 을 눌러야 켜졌다 -> 세트 장비를 다 맞춰도 효과가 안 켜져서 헷갈렸다.
 --    이제는 그 구역 세트 장비를 1부위만 껴도 효과가 저절로 켜진다. rift.AugOn 은 이제 "📌 고정" 표시로 쓴다)
-local function levelsOf(player, rift, boosts)
+local function levelsOf(player, rift, boosts, setCounts)
 	local list = {}
 	for z = 1, ZONES do
 		local attr = Config.Sets.ZoneAug[z]
-		local level = (rift.AugLv[tostring(z)] or 0) + gearBonus(player, z) + (rift.AugStone[tostring(z)] or 0) + math.min(Config.Inventory.AugBoostCap or 3, boosts[attr] or 0)
+		local level = (rift.AugLv[tostring(z)] or 0) + gearBonus(player, z, setCounts) + (rift.AugStone[tostring(z)] or 0) + math.min(Config.Inventory.AugBoostCap or 3, boosts[attr] or 0)
 		list[z] = math.min(Config.Inventory.AugMaxLevel or 6, level)
 	end
 	return list
 end
 -- 켜지는 효과 = 내가 칸에 끼운 것만 (지금 세팅 rift.AugEquip[AugLoad]). 단계가 높다고 저절로 바뀌지 않는다
 --   딱 한 가지 자동: 한 번도 세팅을 만든 적이 없으면(신규 / 업데이트 직후) 칸을 한 번 채워 준다
-local function equipped(player, rift, slots, levels)
-	rift.AugEquip = rift.AugEquip or {}
-	local load = rift.AugEquip[rift.AugLoad]
+local function equipped(player, rift, slots, levels, dryRun) -- (dryRun: 계산만, 저장된 세팅을 만들지 않는다)
+	if not dryRun then rift.AugEquip = rift.AugEquip or {} end
+	local load = rift.AugEquip and rift.AugEquip[rift.AugLoad]
 	if load == nil then -- (처음 한 번: 예전 자동 규칙 그대로 채워 둔다 = 📌 고정했던 것 먼저, 그다음 단계 높은 순. 기존 유저가 업데이트 뒤 효과가 꺼지지 않게)
 		load = {}
 		local order = {}
@@ -86,7 +89,7 @@ local function equipped(player, rift, slots, levels)
 			return a > b
 		end)
 		for i = 1, math.min(slots, #order) do table.insert(load, order[i]) end
-		if #load > 0 then rift.AugEquip[rift.AugLoad] = load end
+		if #load > 0 and not dryRun then rift.AugEquip[rift.AugLoad] = load end
 	end
 	local list, seen = {}, {}
 	for _, z in ipairs(load) do
@@ -98,6 +101,20 @@ local function equipped(player, rift, slots, levels)
 	return list
 end
 local lastActive = setmetatable({}, { __mode = "k" }) -- [player] = { [구역] = true } (새로 켜진 효과 알림용)
+
+-- ⚡ 전투력 미리보기: 이 장비 합계(totals: SetCounts / AugBoost)라면 켜지는 공격 / 방어 효과 단계 합 (Apply 와 같은 계산, 아무것도 저장하지 않는다)
+function Aug.PowerLevelsFor(player, totals)
+	local rift = stateOf(player)
+	if not rift then return player:GetAttribute("AugAtkLv") or 0, player:GetAttribute("AugDefLv") or 0 end
+	local zoneLevels = levelsOf(player, rift, totals.AugBoost or {}, totals.SetCounts or {})
+	local list = equipped(player, rift, slotCount(player, rift), zoneLevels, true)
+	local atk, def = 0, 0
+	for _, z in ipairs(list) do
+		local attr = Config.Sets.ZoneAug[z]
+		if Config.AugInfo[attr] and Config.AugInfo[attr].Defense then def += zoneLevels[z] else atk += zoneLevels[z] end
+	end
+	return atk, def
+end
 
 -- Attribute 채우기 (효과 코드가 읽는 값 + 화면용 값)
 function Aug.Apply(player)

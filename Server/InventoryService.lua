@@ -110,16 +110,15 @@ function Inventory.GetEquipped(player, slotKey)
 	return state and state.Items[state.Equipped[slotKey]] or nil
 end
 
--- 장착 중인 아이템들의 랜덤 옵션 합계
-function Inventory.GetTotals(player)
+-- 장착 중인 아이템들의 랜덤 옵션 합계 (equippedMap 을 주면 그 조합으로 계산만 한다: 전투력 미리보기)
+local function totalsOf(state, equippedMap)
 	local totals = { Health = 0, Crit = 0, Speed = 0, Damage = 0, Xp = 0, Luck = 0, Haste = 0, Shot = 0,
 		Bounce = 0, LifeOnKill = 0, BossDmg = 0, KillHaste = 0, Thunder = 0, Jackpot = 0, Bulwark = 0, CritDmg = 0, AtkSpeed = 0,
 		KillCdr = 0, Slaughter = 0, Star = 0, Sunder = 0, Shield = 0, AugBoost = {} } -- (아래 줄: 유니크 전용 효과 / AugBoost = 세트 효과별 +단계)
-	local state = states[player]
 	if not state then return totals end
 	local setCounts = {}
 	for _, slot in ipairs(G.Slots) do
-		local item = state.Items[state.Equipped[slot.Key]]
+		local item = state.Items[equippedMap[slot.Key]]
 		if item then
 			for _, affix in ipairs(item.Affixes) do
 				if totals[affix.Stat] then totals[affix.Stat] += affix.Value end
@@ -148,6 +147,53 @@ function Inventory.GetTotals(player)
 	end
 	totals.SetCounts = setCounts -- 세트별 장착 부위 수 (세트 효과 계산용)
 	return totals
+end
+function Inventory.GetTotals(player)
+	local state = states[player]
+	return totalsOf(state, state and state.Equipped or {})
+end
+
+-- ⚡ 전투력 미리보기: "이 장비를 그 부위에 끼면" 전투력 (실제로는 아무것도 바꾸지 않는다)
+--   GearService.recompute(장비 수치) / AugService.Apply(세트 효과 단계) / GameServer.updatePower 와 같은 식을 계산만 한다
+local function previewPower(player, state, equippedMap)
+	local totals = totalsOf(state, equippedMap)
+	local base = { Health = 0, Crit = 0, Damage = 0 }
+	for _, slot in ipairs(G.Slots) do
+		local item = state.Items[equippedMap[slot.Key]]
+		if item and base[slot.Stat] then base[slot.Stat] += Config.GetGearStat(slot.Key, item.Rarity, item.Level) end
+	end
+	local atk, def = nil, nil
+	local okA, Aug = pcall(function() return require(script.Parent:WaitForChild("AugService")) end)
+	if okA and Aug.PowerLevelsFor then atk, def = Aug.PowerLevelsFor(player, totals) end
+	return Config.PowerFor(player, {
+		GearHealth = math.floor(base.Health + totals.Health + 0.5), GearCrit = base.Crit + totals.Crit, GearDamage = totals.Damage + base.Damage,
+		AugAtkLv = atk, AugDefLv = def,
+	})
+end
+local lastPreview = setmetatable({}, { __mode = "k" })
+local function handlePowerPreview(player, ids)
+	local now = os.clock()
+	if now - (lastPreview[player] or 0) < 0.5 then return end -- (1인당 0.5초에 1번)
+	lastPreview[player] = now
+	local state = states[player]
+	if not state or typeof(ids) ~= "table" then return end
+	local base = previewPower(player, state, state.Equipped)
+	local out, n = {}, 0
+	for _, id in ipairs(ids) do
+		n += 1
+		if n > 50 then break end
+		local item = typeof(id) == "number" and state.Items[id]
+		if item and state.Equipped[item.Slot] ~= id then
+			local trial = table.clone(state.Equipped)
+			trial[item.Slot] = id
+			out[tostring(id)] = previewPower(player, state, trial)
+		end
+	end
+	if game:GetService("RunService"):IsStudio() then -- 검증: 계산만 하는 경로(지금 장비 그대로)가 실제 전투력과 같은지
+		local real = player:GetAttribute("Power") or 0
+		print(string.format("[전투력 미리보기 검증] 실제 %d · 미리보기 %d · %s · 후보 %d개", real, base, real == base and "일치" or "불일치", n))
+	end
+	Remotes.Inventory:FireClient(player, "PowerPreview", { Base = base, Of = out, Rev = state.Rev })
 end
 
 ------------------------------------------------------------
@@ -997,6 +1043,10 @@ local lastRequest = setmetatable({}, { __mode = "k" })
 Remotes.Inventory.OnServerEvent:Connect(function(player, action, arg, arg2)
 	if action == "Request" then
 		Inventory.Push(player)
+		return
+	end
+	if action == "PowerPreview" then -- (자체 0.5초 제한: 아래 공통 0.15초 제한과 따로)
+		handlePowerPreview(player, arg)
 		return
 	end
 

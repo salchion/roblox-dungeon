@@ -2133,6 +2133,26 @@ function Config.BonusDamageMult(player)
 	return (1 + (player:GetAttribute("GearDamage") or 0)) * (1 + (player:GetAttribute("TrainDamage") or 0)) * (1 + (player:GetAttribute("PetDamage") or 0))
 end
 
+-- 전투력 (이름표 / 랭킹 / 장비 비교 공용): over 에 GearHealth / GearCrit / GearDamage / AugAtkLv / AugDefLv 를 주면 그 값으로 바꿔 계산만 한다
+--   (GameServer.updatePower 와 장비 창 "이걸 끼면 ⚡ +N" 서버 미리보기가 같은 식을 쓴다)
+function Config.PowerFor(player, over)
+	over = over or {}
+	local function a(name) local v = over[name] if v == nil then v = player:GetAttribute(name) end return v or 0 end
+	local gearDamage = a("GearDamage")
+	return Config.GetPower(
+		player:GetAttribute("WeaponLevel") or 0,
+		player:GetAttribute("CritPoints") or 0,
+		player:GetAttribute("SpeedPoints") or 0,
+		a("GearHealth") + (player:GetAttribute("TrainHealth") or 0),
+		a("GearCrit") + (player:GetAttribute("TrainCrit") or 0),
+		"Neutral", -- 기본 전투력: 무기 종류와 상관없이 (종류를 바꿔도 전투력이 흔들리지 않는다)
+		player:GetAttribute("Level") or 1,
+		(1 + gearDamage) * (1 + (player:GetAttribute("TrainDamage") or 0)) * (1 + (player:GetAttribute("PetDamage") or 0)) - 1, -- (= BonusDamageMult - 1)
+		a("AugAtkLv"),
+		a("AugDefLv")
+	)
+end
+
 -- 무기 모형 크기 배율 (너무 커지지 않게 완만하게)
 function Config.GetWeaponScale(level)
 	return 1 + 0.22 * math.log(1 + level * Config.Weapon.LevelScale)

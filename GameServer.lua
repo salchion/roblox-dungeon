@@ -278,18 +278,7 @@ end
 
 -- 전투력 = 무기(종류+강화) + 스탯 + 장비 (이름표 / 리더보드 / 랭킹에 표시)
 local function updatePower(player)
-	player:SetAttribute("Power", Config.GetPower(
-		player:GetAttribute("WeaponLevel") or 0,
-		player:GetAttribute("CritPoints") or 0,
-		player:GetAttribute("SpeedPoints") or 0,
-		(player:GetAttribute("GearHealth") or 0) + (player:GetAttribute("TrainHealth") or 0),
-		(player:GetAttribute("GearCrit") or 0) + (player:GetAttribute("TrainCrit") or 0),
-		"Neutral", -- 기본 전투력: 무기 종류와 상관없이 (종류를 바꿔도 전투력이 흔들리지 않는다)
-		player:GetAttribute("Level") or 1,
-		Config.BonusDamageMult(player) - 1, -- (장비 / 훈련 / 펫 공격력은 서로 곱한다: 실제 전투 계산과 같게)
-		player:GetAttribute("AugAtkLv") or 0, -- 켜진 세트 효과 단계 합 (Config.PowerAug)
-		player:GetAttribute("AugDefLv") or 0
-	))
+	player:SetAttribute("Power", Config.PowerFor(player)) -- (입력 묶음은 Config.PowerFor: 장비 창 전투력 미리보기와 같은 식)
 end
 
 -- 무기 형(권총 / 기관단총 ...)은 강화 단계로 해금되고, 어떤 형으로 싸울지는 플레이어가 고른다 (WeaponType). 잠긴 형이면 권총.
