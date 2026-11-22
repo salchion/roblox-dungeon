@@ -775,7 +775,14 @@ local function introBusy()
 end
 
 local lastRefresh = 0
+local update0
 local function update()
+	local t0 = os.clock()
+	update0()
+	local ms = (os.clock() - t0) * 1000 -- (창 열 때 끊김 측정: 창이 열리고 닫힐 때마다 도는 화면 배치. Studio 에서 30ms 넘을 때만)
+	if ms > 30 and game:GetService("RunService"):IsStudio() then print(string.format("[창 측정] 화면 배치(MobileLayout) %.0fms", ms)) end
+end
+function update0()
 	if introBusy() then return end -- 오프닝(로딩 화면)이 화면을 잡고 있는 동안에는 아무것도 건드리지 않는다: 끝나면 아래 IntroPlaying 감시가 한 번에 맞춘다
 	lastRefresh = os.clock()
 	local camera = workspace.CurrentCamera

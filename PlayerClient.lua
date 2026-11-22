@@ -2504,8 +2504,11 @@ local function toggleMenu()
 		local shopGui = player.PlayerGui:FindFirstChild("ShopGui") -- 큰 창은 한 번에 하나 (상점은 ShopClient)
 		local shopPanel = shopGui and shopGui:FindFirstChild("ShopPanel")
 		if shopPanel then shopPanel.Visible = false end
+		local t0 = os.clock()
 		local ok, err = pcall(selectTab, currentTab)
 		if not ok then warn("[Menu] " .. tostring(err)) end
+		local ms = (os.clock() - t0) * 1000 -- (창 열 때 끊김 측정: 탭 화면 다시 그리기 + 새 글자 번역이 여기 다 들어간다. Studio 에서 30ms 넘을 때만)
+		if ms > 30 and RunService:IsStudio() then print(string.format("[창 측정] 메뉴 열기 · 탭 다시 그리기 %.0fms · %s/%s · 칸 %d개", ms, tostring(currentTab), tostring(MENU.Sub[currentTab]), #menuContent:GetDescendants())) end
 	end
 end
 
