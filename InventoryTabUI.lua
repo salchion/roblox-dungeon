@@ -356,7 +356,7 @@ local function buildInventoryTab(state)
 			local def = Config.Sets[r[1]]
 			table.insert(setsLine, string.format("%s <font color='#%s'><b>%d/3</b></font>", def.Icon or "★", r[2] >= 2 and "78ff8c" or "aab0cc", math.min(3, r[2])))
 		end
-		-- 한 줄로 합친 위 띠: 빌드 이름 + 세트 + 추천 한 가지 | ⚡ 전투력 · [장착 방식 ▾] · [🧹 정리 ▾]
+		-- 한 줄로 합친 위 띠: 빌드 이름 + 세트 + 추천 한 가지 | ⚡ 전투력 · [장착 방식 ▼] · [🧹 정리 ▼]
 		--   (예전: "장착 방식" 줄(칩 3개 + 분해 버튼 3개)과 이 띠가 두 줄로 따로 있어 글자가 작고 눈이 갈 곳이 많았다)
 		local guide = newRow(56, Color3.fromRGB(30, 32, 48))
 		create("UIGradient", { Color = ColorSequence.new(buildColor:Lerp(Color3.new(1, 1, 1), 0.1), Color3.fromRGB(255, 255, 255)), Transparency = NumberSequence.new(0.55, 0.95) }, guide)
@@ -380,7 +380,7 @@ local function buildInventoryTab(state)
 		local function dropButton(key, text, x, width)
 			local open = drop == key
 			local b = makeButton({ Size = UDim2.new(0, width, 0, 34), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, x, 0.5, 0), RichText = true, TextSize = 12, Font = Enum.Font.GothamBlack,
-				Text = text .. (open and " ▴" or " ▾"), BackgroundColor3 = open and Color3.fromRGB(70, 64, 110) or Color3.fromRGB(44, 46, 68) }, guide, function()
+				Text = text .. (open and " ▲" or " ▼"), BackgroundColor3 = open and Color3.fromRGB(70, 64, 110) or Color3.fromRGB(44, 46, 68) }, guide, function()
 				menuContent:SetAttribute("GearDrop", open and nil or key)
 				refreshMenu()
 			end)
@@ -404,7 +404,7 @@ local function buildInventoryTab(state)
 			end
 		end
 		local mode = state.EquipMode or "Best"
-		local drop = menuContent:GetAttribute("GearDrop") -- (위 한 줄의 [장착 ▾] / [🧹 ▾] 를 누르면 그 아래에 이 줄이 펼쳐진다)
+		local drop = menuContent:GetAttribute("GearDrop") -- (위 한 줄의 [장착 ▼] / [🧹 ▼] 를 누르면 그 아래에 이 줄이 펼쳐진다)
 		local setRow = drop and newRow(44, Color3.fromRGB(24, 26, 40)) or create("Frame", { Visible = false })
 		makeLabel({ Size = UDim2.new(0, 84, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = drop == "Clean" and "🧹 Clean" or "Equip mode", TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(225, 196, 118), TextXAlignment = Enum.TextXAlignment.Left }, setRow)
 		-- 오른쪽 끝: 자동 분해 / 정리 (한 줄로 합쳐서 장비 칸이 한 화면에 들어오게)
@@ -414,7 +414,7 @@ local function buildInventoryTab(state)
 			Remotes.Inventory:FireServer("AutoScrap", (state.AutoScrap + 1) % 5)
 		end)
 		rounded(scrapButton, 14)
-		local belowButton = makeButton({ Size = UDim2.new(0, 130, 0, 32), Position = UDim2.new(0, 276, 0.5, -16), Visible = cleanOpen, Text = "♻ Rarity ▾", TextSize = 12, BackgroundColor3 = Color3.fromRGB(86, 74, 160) }, setRow, function() -- (누르면 등급 선택 + 확인 창: 실수로 지우지 않게 한 번 더 본다)
+		local belowButton = makeButton({ Size = UDim2.new(0, 130, 0, 32), Position = UDim2.new(0, 276, 0.5, -16), Visible = cleanOpen, Text = "♻ Rarity ▼", TextSize = 12, BackgroundColor3 = Color3.fromRGB(86, 74, 160) }, setRow, function() -- (누르면 등급 선택 + 확인 창: 실수로 지우지 않게 한 번 더 본다)
 			openBulk()
 		end)
 		rounded(belowButton, 14)
@@ -435,6 +435,7 @@ local function buildInventoryTab(state)
 			}, strip, function()
 				if disabled then return end
 				Remotes.Inventory:FireServer(key == "Best" and "AutoEquip" or (key == "Augs" and "AutoAugs") or "EquipSet", key)
+				if key == "Best" or key == "Augs" then menuContent:SetAttribute("GearDrop", nil) end -- (방식을 고르면 펼친 줄을 접는다. 세트 장비는 아래 세트 칩을 더 고를 수 있게 열어 둔다)
 			end)
 			rounded(chip, 16)
 			create("UIPadding", { PaddingLeft = UDim.new(0, 14), PaddingRight = UDim.new(0, 14) }, chip)
@@ -719,10 +720,10 @@ local function buildInventoryTab(state)
 		for i, slot in ipairs(Config.Gear.Slots) do
 			chip(slotRow, i, SLOT_ICONS[slot.Key] or slot.Name, filterSlot == slot.Key, function() setFilter(filterSlot == slot.Key and nil or slot.Key, filterSet) end)
 		end
-		-- 정렬 / 필터는 [⇅ 정렬 ▾] 하나로: 누르면 둘째 줄(세트 칩) 자리에 정렬 · 방향 · 유니크만 · 세트 +1만이 펼쳐진다 (칩이 넘쳐 오른쪽이 잘렸다)
+		-- 정렬 / 필터는 [⇅ 정렬 ▼] 하나로: 누르면 둘째 줄(세트 칩) 자리에 정렬 · 방향 · 유니크만 · 세트 +1만이 펼쳐진다 (칩이 넘쳐 오른쪽이 잘렸다)
 		local sortOpen = menuContent:GetAttribute("BagSortOpen") == true
 		local filtering = onlyUnique or onlyAug
-		chip(slotRow, 99, "⇅ Sort" .. (filtering and " ●" or "") .. (sortOpen and " ▴" or " ▾"), sortOpen, function()
+		chip(slotRow, 99, "⇅ Sort" .. (filtering and " ●" or "") .. (sortOpen and " ▲" or " ▼"), sortOpen, function()
 			menuContent:SetAttribute("BagSortOpen", not sortOpen)
 			refreshMenu()
 		end)
@@ -1147,7 +1148,7 @@ local function buildInventoryTab(state)
 			local info = Config.AugInfo[selected.AugBoost]
 			table.insert(lines, string.format("<font color='#9ad7ff'>%s %s +1 Lv</font>", info.Icon, info.Name))
 		end
-		local more = {} -- (긴 설명 줄은 [▾ 자세히] 안으로: 강화 블록과 핵심 능력치가 먼저 보이게)
+		local more = {} -- (긴 설명 줄은 [▼ 자세히] 안으로: 강화 블록과 핵심 능력치가 먼저 보이게)
 		if selected.Set and Config.Sets[selected.Set] then
 			local setDef = Config.Sets[selected.Set]
 			local have = setCounts[selected.Set] or 0
@@ -1165,7 +1166,7 @@ local function buildInventoryTab(state)
 		makeLabel({ Size = UDim2.new(1, -8, 0, 0), LayoutOrder = 1, AutomaticSize = Enum.AutomaticSize.Y, Text = table.concat(lines, "\n"), TextSize = 12, RichText = true, TextWrapped = true,
 			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top }, body)
 		if #more > 0 then
-			local toggle = makeButton({ Size = UDim2.new(0, 120, 0, 24), LayoutOrder = 2, Text = showMore and "▴ Less" or "▾ Details", TextSize = 12, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(44, 46, 68) }, body, function()
+			local toggle = makeButton({ Size = UDim2.new(0, 120, 0, 24), LayoutOrder = 2, Text = showMore and "▲ Less" or "▼ Details", TextSize = 12, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(44, 46, 68) }, body, function()
 				menuContent:SetAttribute("DetailMore", not showMore)
 				refreshMenu()
 			end)
