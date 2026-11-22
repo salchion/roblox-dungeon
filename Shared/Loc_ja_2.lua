@@ -1111,6 +1111,11 @@ return {
 		["Details"] = "詳しく",
 		["Less"] = "閉じる",
 		["You wandered out of town and were returned."] = "町の外に出たので町に戻しました。",
+		["Better combo"] = "もっと良い組み合わせ",
+		["Equipped vs this"] = "装備中と比較",
+		["Down"] = "低下",
+		["Gain"] = "上昇",
+		["Loss"] = "低下",
 		["♻ Rarity ▾"] = "♻ レア度 ▾",
 		["Dismantle by rarity"] = "レア度で一括分解",
 		["Equipped, set, and unique gear is kept."] = "装備中・セット・ユニーク装備は残ります。",
@@ -1184,6 +1189,5 @@ return {
 		{ "Skilled Warrior   Title 『Veteran』\nReach character level {number1}\n{number2} / {number3}   Reward: 🎫 {number4}", "熟練の戦士　称号『ベテラン』\nキャラクターレベル{number1}に到達する\n{number2} / {number3}　報酬：🎫 {number4}" },
 		{ "Mythic Master   Title 『Mythic Master』\nObtain Mythic gear\n{number1} / {number2}   Reward: 🎫 {number3}", "神話のマスター　タイトル『神話のマスター』\n神話のギアを入手する\n{number1} / {number2}　報酬：🎫 {number3}" },
 		{ "Dummy Slayer   Title 『Dummy Slayer』\nHit the dummy {number1} times\n{number2} / {number3}   Reward: {number4} G", "ダミー・スレイヤー　タイトル『ダミー・スレイヤー』\nダミーを{number1}回攻撃する\n{number2} / {number3}　報酬：{number4}G" },
-		{ "A golden FEVER portal opened where the Lord fell! Step in within {number1} seconds", "領主が倒れた場所に黄金のフィーバーポータルが開いた！{number1}秒以内に入ろう" },
 	},
 }

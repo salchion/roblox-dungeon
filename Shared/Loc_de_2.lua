@@ -932,6 +932,11 @@ return {
 		["Sort"] = "Sortieren",
 		["Less"] = "Weniger",
 		["You wandered out of town and were returned."] = "Du hast die Stadt verlassen und wurdest zurückgebracht.",
+		["Better combo"] = "Bessere Kombi",
+		["Equipped vs this"] = "Ausgerüstet vs. dies",
+		["Down"] = "Schlechter",
+		["Gain"] = "Besser",
+		["Loss"] = "Schlechter",
 		["♻ Rarity ▾"] = "♻ Seltenheit ▾",
 		["Dismantle by rarity"] = "Nach Seltenheit zerlegen",
 		["Equipped, set, and unique gear is kept."] = "Angelegte, Set- und Unique-Ausrüstung bleibt erhalten.",
@@ -1092,6 +1097,5 @@ return {
 		{ "🎯 Boss hunter  ·  ✔ 🔫 Sniper Rifle / Railgun (+{number1}%)", "🎯 Bossjäger · ✔ 🔫 Scharfschützengewehr / Schienenwaffe (+{number1}%)" },
 		{ "Zone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated", "Zone {number2} Monster {number3} / {number4} besiegt · Lord 👑 nicht besiegt" },
 		{ "Shot_Pistol  <font color='#{number1}aa{number2}c{number3}'>Rifle shot</font>", "Schuss_Pistole <font color='#{number1}aa{number2}c{number3}'>Gewehrschuss</font>" },
-		{ "Reach weapon upgrade level {number1} (about the {number2}th weapon)", "Erreiche das Waffen-Upgrade-Level {number1} (etwa die {number2}. Waffe)" },
 	},
 }

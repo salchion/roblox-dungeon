@@ -117,6 +117,23 @@ Remotes.Gear.OnClientEvent:Connect(function(action, result)
 	game:GetService("Debris"):AddItem(label, 1.1)
 end)
 
+-- ⚡ 전투력 미리보기 (서버 InventoryService PowerPreview): "이걸 끼면 전투력" 을 가방 장비 묶음으로 한 번에 받아 둔다
+--   preview = { Key = 이 값을 받을 때의 장비 조합, Base = 지금 전투력, Of = { [id 문자열] = 끼면 전투력 } }. 응답 전에는 점수 비율 근사("≈")
+local preview = { Key = nil, Base = nil, Of = {} }
+local previewAsked, previewAskedAt = nil, 0
+local function requestPreview(key, ids)
+	if previewAsked == key and os.clock() - previewAskedAt < 2 then return end -- (같은 조합은 2초에 한 번만: 서버 제한 0.5초에 막혀 응답이 없으면 다시 묻는다)
+	previewAsked, previewAskedAt = key, os.clock()
+	Remotes.Inventory:FireServer("PowerPreview", ids)
+end
+Remotes.Inventory.OnClientEvent:Connect(function(action, data)
+	if action ~= "PowerPreview" or type(data) ~= "table" then return end
+	preview = { Key = previewAsked, Base = data.Base, Of = data.Of or {} }
+	if menuContent.Parent and menuContent:IsDescendantOf(game) and menuContent:FindFirstAncestorWhichIsA("GuiObject") and menuContent:FindFirstAncestorWhichIsA("GuiObject").Visible then
+		refreshMenu() -- (근사 "≈" 를 정확한 숫자로 바꾼다. 조합이 같으니 다시 묻지 않는다)
+	end
+end)
+
 -- 위쪽 정보 줄: 가방 / 정수 / 골드 (장비 강화에 골드를 쓰는데 골드가 안 보였다). 골드가 바뀌면 장비 탭이 열려 있는 동안 바로 따라간다
 local infoState
 local function infoText(state)
@@ -219,6 +236,10 @@ end
 -- 빌드 이름: 가장 많이 낀 세트 = 이름(직업), 두 번째 세트 = 꾸밈말
 local BUILD_ADJ = { "Galeborn", "Wildwood", "Ancient", "Scorching", "Frostbound", "Molten", "Shadowed", "Abyssal" }
 local BUILD_NOUN = { "Guardian", "Hunter", "Warrior", "Marksman", "Mage", "Destroyer", "Rogue", "Lord" }
+local function commas(n)
+	local s = tostring(math.floor(n or 0))
+	return (s:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
+end
 local function itemStatText(item)
 	local parts = { Config.FormatGearStat(item.Slot, Config.GetGearStat(item.Slot, item.Rarity, item.Level)) }
 	for _, affix in ipairs(item.Affixes or {}) do table.insert(parts, Config.FormatAffix(affix.Stat, affix.Value)) end
@@ -247,6 +268,35 @@ local function buildInventoryTab(state)
 			table.insert(bag, item)
 		end
 	end
+	local previewKey, previewIds = nil, {}
+	do -- 조합 키 = 장착 id + 가방 id (바뀌면 다시 묻는다)
+		local parts = {}
+		for _, item in ipairs(state.Items) do table.insert(parts, (item.Equipped and "E" or "") .. item.Id .. ":" .. item.Level) end
+		table.sort(parts)
+		previewKey = table.concat(parts, ",")
+		local sorted = table.clone(bag)
+		table.sort(sorted, function(a, b) return (a.Score or 0) > (b.Score or 0) end)
+		for i = 1, math.min(50, #sorted) do previewIds[i] = sorted[i].Id end
+		if preview.Key ~= previewKey and #previewIds > 0 then requestPreview(previewKey, previewIds) end
+	end
+	local function powerIf(item) -- 끼면 전투력, 정확한 값이면 true 도 함께 (아니면 점수 비율 근사)
+		local now = player:GetAttribute("Power") or 0
+		if preview.Key == previewKey and preview.Of[tostring(item.Id)] then return preview.Of[tostring(item.Id)], preview.Base or now, true end
+		local cur = equipped[item.Slot]
+		local function value(map)
+			local total, counts = 0, {}
+			for _, it in pairs(map) do
+				total += it.Score or 0
+				if it.Set then counts[it.Set] = (counts[it.Set] or 0) + 1 end
+			end
+			for _, n in pairs(counts) do total += (n >= 2 and 150 or 0) + (n >= 3 and 220 or 0) + 60 * math.min(3, n) end
+			return total
+		end
+		local trial = table.clone(equipped)
+		trial[item.Slot] = item
+		local before = math.max(1, value(equipped))
+		return math.floor(now * value(trial) / before + 0.5), now, false
+	end
 	local selectedId = menuContent:GetAttribute("SelectedItem")
 	local selected = selectedId and byId[selectedId]
 	if not selected then
@@ -255,20 +305,8 @@ local function buildInventoryTab(state)
 
 	local function rarityOutline(frame, rarity, thick)
 		local color = Config.Gear.RarityColors[rarity]
-		local stroke = create("UIStroke", { Color = color, Thickness = thick or ({ 2, 2, 3, 3.5, 4.5 })[rarity], ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame)
-		if rarity >= 3 then
-			TweenService:Create(stroke, TweenInfo.new(rarity >= 4 and 0.9 or 1.4, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = rarity >= 4 and 0.55 or 0.4 }):Play()
-		end
-		if rarity >= 5 then
-			local gradient = create("UIGradient", {
-				Color = ColorSequence.new({
-					ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 80, 80)), ColorSequenceKeypoint.new(0.2, Color3.fromRGB(255, 220, 80)),
-					ColorSequenceKeypoint.new(0.4, Color3.fromRGB(90, 255, 120)), ColorSequenceKeypoint.new(0.6, Color3.fromRGB(80, 220, 255)),
-					ColorSequenceKeypoint.new(0.8, Color3.fromRGB(150, 100, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 80, 80)),
-				}),
-			}, stroke)
-			TweenService:Create(gradient, TweenInfo.new(2.5, Enum.EasingStyle.Linear, Enum.EasingDirection.In, -1), { Rotation = 360 }):Play()
-		end
+		-- (다크 포지: 움직이지 않는 테두리. 일반~에픽 2px / 전설 · 신화 3px. 예전의 깜빡임 / 무지개 회전은 칸마다 Tween 이 붙어 뺐다)
+		local stroke = create("UIStroke", { Color = color, Thickness = thick or (rarity >= 4 and 3 or 2), ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, frame)
 		return stroke
 	end
 
@@ -286,9 +324,6 @@ local function buildInventoryTab(state)
 		local badge = create("Frame", { Size = UDim2.new(0, 20, 0, 20), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -3, 0, 3), BackgroundColor3 = def.Color, BorderSizePixel = 0, ZIndex = z, Active = false }, tile)
 		create("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
 		local stroke = create("UIStroke", { Color = active and Color3.new(1, 1, 1) or Color3.fromRGB(22, 18, 44), Thickness = active and 2 or 1.8, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, badge)
-		if active then
-			TweenService:Create(stroke, TweenInfo.new(0.9, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.5 }):Play()
-		end
 		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = def.Icon or "★", TextSize = 12, TextWrapped = false, AutoLocalize = false, ZIndex = z + 1 }, badge)
 	end
 
@@ -303,18 +338,19 @@ local function buildInventoryTab(state)
 	--   가운데: 가방 (부위 / 세트 칩으로 거르기 + 정렬, 안에서만 스크롤) + 합성
 	--   오른쪽: 고른 장비의 상세 / 비교 / 강화 / 장착
 	-- (예전: 장비 칸 -> 바꿔 끼기 줄 -> 가방이 위아래로 길게 이어져서 계속 스크롤해야 했다)
-	local MAIN_H, LEFT_W, RIGHT_W = 420, 248, 286 -- (왼쪽 / 오른쪽을 줄이고 가방을 넓혔다: 한 줄에 타일 5개)
+	local MAIN_H, LEFT_W, RIGHT_W = 424, 208, 294 -- (다크 포지 시안 A: 208 + 308 + 294 + 간격 16 = 826. 가방 타일 52px 5열)
 	-- 다음에 할 일 한 줄: 무엇을 하면 좋은지 바로 알려 주고 버튼 하나로 한다 (화면이 복잡해서 뭘 해야 할지 몰랐다)
 	do
-		local tip, tipItem
+		local tip, tipItem, tipColor -- (긴 문장 대신 짧은 배지 + [끼기] 하나)
+		local function slotName(key) return Config.GetGearSlot(key) and Config.GetGearSlot(key).Name or key end
 		local bestUp, bestDiff = nil, 0
 		local setPick, setTier = nil, 0
 		for _, item in ipairs(bag) do
 			local current = equipped[item.Slot]
 			if not current then
 				if not tip then
-					tip = string.format("🛡 Your <b>%s</b> slot is empty — equip one", Config.GetGearSlot(item.Slot) and Config.GetGearSlot(item.Slot).Name or item.Slot)
-					tipItem = item
+					tip = string.format("Empty %s slot", slotName(item.Slot))
+					tipItem, tipColor = item, Color3.fromRGB(255, 196, 90)
 				end
 			else
 				local diff = item.Score - current.Score
@@ -328,14 +364,15 @@ local function buildInventoryTab(state)
 		end
 		local augMode = state.EquipMode == "Augs"
 		if not tip and augMode then -- 세트 효과 맞춤: 점수만 높은 장비 / 세트 맞추기 안내는 효과 단계를 깰 수 있어 띄우지 않는다 (서버가 계산한 Better 로만)
-			tip = state.Better and "🌟 Your bag has a better combo for your set effects — press 🌟 Match set effects (Y)" or "🌟 Gear matches your set effects (Y) — set effect levels are maxed"
+			tip = state.Better and "🌟 Better combo" or "✔ Best gear"
+			tipColor = state.Better and Color3.fromRGB(255, 210, 100) or nil
 		elseif not tip and setPick then
 			local def = Config.Sets[setPick.Set]
-			tip = string.format("🧩 Equip this %s → <b>%s %d/3</b>: set bonus ON (and its set effect)", Config.GetGearSlot(setPick.Slot) and Config.GetGearSlot(setPick.Slot).Name or setPick.Slot, def.Name, setTier)
-			tipItem = setPick
+			tip = string.format("🧩 %s %d/3", def.Name, setTier)
+			tipItem, tipColor = setPick, def.Color
 		elseif not tip and bestUp then
-			tip = string.format("▲ A better <b>%s</b> is in your bag (Score +%d)", Config.GetGearSlot(bestUp.Slot) and Config.GetGearSlot(bestUp.Slot).Name or bestUp.Slot, bestDiff)
-			tipItem = bestUp
+			tip = string.format("▲ Stronger %s", slotName(bestUp.Slot))
+			tipItem, tipColor = bestUp, Color3.fromRGB(120, 255, 140)
 		end
 		-- 지금 빌드 띠: 세트 조합 이름 + 켜진 세트 + 전투력 + 추천 한 가지 (버튼 하나)
 		local ranked = {}
@@ -358,36 +395,53 @@ local function buildInventoryTab(state)
 		end
 		-- 한 줄로 합친 위 띠: 빌드 이름 + 세트 + 추천 한 가지 | ⚡ 전투력 · [장착 방식 ▼] · [🧹 정리 ▼]
 		--   (예전: "장착 방식" 줄(칩 3개 + 분해 버튼 3개)과 이 띠가 두 줄로 따로 있어 글자가 작고 눈이 갈 곳이 많았다)
-		local guide = newRow(56, Color3.fromRGB(30, 32, 48))
-		create("UIGradient", { Color = ColorSequence.new(buildColor:Lerp(Color3.new(1, 1, 1), 0.1), Color3.fromRGB(255, 255, 255)), Transparency = NumberSequence.new(0.55, 0.95) }, guide)
-		create("UIStroke", { Color = buildColor, Thickness = 1.6, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, guide)
-		makeLabel({ Size = UDim2.new(0, 36, 1, 0), Position = UDim2.new(0, 8, 0, 0), Text = buildIcon, TextSize = 26 }, guide)
-		makeLabel({ Size = UDim2.new(0, 210, 0, 22), Position = UDim2.new(0, 48, 0, 7), RichText = true, Text = buildName, TextSize = 17, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left }, guide)
-		makeLabel({ Size = UDim2.new(0, 210, 0, 18), Position = UDim2.new(0, 48, 0, 31), RichText = true, Text = #setsLine > 0 and table.concat(setsLine, " · ") or "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(205, 225, 240) }, guide)
-		local RIGHT_BLOCK = 300
-		makeLabel({ Size = UDim2.new(1, -262 - RIGHT_BLOCK - (tipItem and 86 or 0), 1, -6), Position = UDim2.new(0, 262, 0, 3), RichText = true, TextWrapped = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(225, 232, 245),
-			Text = tip or "✔ Best gear on. Tap a slot to swap" }, guide)
-		if tipItem then
-			local go = makeButton({ Size = UDim2.new(0, 80, 0, 30), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -RIGHT_BLOCK - 4, 0.5, 0), Text = "Equip it", TextSize = 12, Font = Enum.Font.GothamBlack, BackgroundColor3 = GREEN }, guide, function()
-				Remotes.Inventory:FireServer("Equip", tipItem.Id)
-			end)
-			rounded(go, 15)
+		-- 다크 포지 띠 (높이 54): 빌드 이름 + 세트 | [배지] [끼기] | ⚡ 전투력 상자 · [⚡ 최강 ▼] · [🧹 정리 ▼]
+		local guide = newRow(54, Color3.fromRGB(22, 24, 38))
+		create("UIGradient", { Rotation = 0, Color = ColorSequence.new(buildColor:Lerp(Color3.fromRGB(22, 24, 38), 0.55), Color3.fromRGB(22, 24, 38)) }, guide)
+		create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, guide)
+		local disc = create("Frame", { Size = UDim2.new(0, 38, 0, 38), Position = UDim2.new(0, 10, 0.5, -19), BackgroundColor3 = buildColor:Lerp(Color3.fromRGB(16, 18, 30), 0.55), BorderSizePixel = 0 }, guide)
+		create("UICorner", { CornerRadius = UDim.new(1, 0) }, disc)
+		create("UIStroke", { Color = buildColor, Thickness = 2 }, disc)
+		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = buildIcon, TextSize = 20 }, disc)
+		makeLabel({ Size = UDim2.new(0, 200, 0, 22), Position = UDim2.new(0, 56, 0, 6), RichText = true, Text = buildName, TextSize = 17, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left }, guide)
+		makeLabel({ Size = UDim2.new(0, 200, 0, 18), Position = UDim2.new(0, 56, 0, 29), RichText = true, Text = #setsLine > 0 and table.concat(setsLine, " · ") or "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(205, 225, 240) }, guide)
+		do -- 배지 + [끼기]
+			local holder = create("Frame", { Size = UDim2.new(0, 220, 0, 30), Position = UDim2.new(0, 262, 0.5, -15), BackgroundTransparency = 1 }, guide)
+			create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }, holder)
+			local color = tipColor or Color3.fromRGB(150, 210, 160)
+			local badge = makeLabel({ Size = UDim2.new(0, 0, 0, 26), AutomaticSize = Enum.AutomaticSize.X, LayoutOrder = 1, RichText = true, Text = tip or "✔ Best gear", TextSize = 13, Font = Enum.Font.GothamBlack,
+				TextColor3 = color, BackgroundTransparency = 0, BackgroundColor3 = color:Lerp(Color3.fromRGB(16, 18, 30), 0.8) }, holder)
+			rounded(badge, 13)
+			create("UIStroke", { Color = color, Thickness = 1.5, Transparency = 0.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, badge)
+			create("UIPadding", { PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 12) }, badge)
+			if tipItem then
+				local go = makeButton({ Size = UDim2.new(0, 60, 0, 26), LayoutOrder = 2, Text = "Equip it", TextSize = 13, Font = Enum.Font.GothamBlack, BackgroundColor3 = GREEN }, holder, function()
+					Remotes.Inventory:FireServer("Equip", tipItem.Id)
+				end)
+				rounded(go, 13)
+			end
 		end
-		makeLabel({ Size = UDim2.new(0, 86, 1, 0), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -212, 0, 0), Text = string.format("⚡ %d", player:GetAttribute("Power") or 0), TextSize = 16, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = Color3.fromRGB(255, 217, 102) }, guide)
+		do -- ⚡ 전투력 상자 (금테)
+			local box = create("Frame", { Size = UDim2.new(0, 150, 0, 40), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -216, 0.5, 0), BackgroundColor3 = Color3.fromRGB(34, 30, 22), BorderSizePixel = 0 }, guide)
+			rounded(box, 10)
+			create("UIStroke", { Color = Color3.fromRGB(225, 180, 80), Thickness = 1.5 }, box)
+			makeLabel({ Size = UDim2.new(1, -54, 1, 0), Position = UDim2.new(0, 8, 0, 0), Text = "⚡ " .. commas(player:GetAttribute("Power") or 0), TextSize = 20, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 217, 102) }, box)
+			makeLabel({ Size = UDim2.new(0, 46, 1, 0), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -6, 0, 0), Text = "Power", TextSize = 11, TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = Color3.fromRGB(210, 190, 150) }, box)
+		end
 		local drop = menuContent:GetAttribute("GearDrop")
 		local modeNow = state.EquipMode or "Best"
 		local modeText = modeNow == "Best" and "⚡ Strongest" or (modeNow == "Augs" and "🌟 Set effects" or "🛡 Set gear")
 		local function dropButton(key, text, x, width)
 			local open = drop == key
-			local b = makeButton({ Size = UDim2.new(0, width, 0, 34), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, x, 0.5, 0), RichText = true, TextSize = 12, Font = Enum.Font.GothamBlack,
-				Text = text .. (open and " ▲" or " ▼"), BackgroundColor3 = open and Color3.fromRGB(70, 64, 110) or Color3.fromRGB(44, 46, 68) }, guide, function()
+			local b = makeButton({ Size = UDim2.new(0, width, 0, 34), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, x, 0.5, 0), RichText = true, TextSize = 13, Font = Enum.Font.GothamBlack,
+				Text = text .. (open and " ▲" or " ▼"), BackgroundColor3 = key == "Equip" and Color3.fromRGB(56, 110, 220) or (open and Color3.fromRGB(70, 64, 110) or Color3.fromRGB(44, 46, 68)) }, guide, function()
 				menuContent:SetAttribute("GearDrop", open and nil or key)
 				refreshMenu()
 			end)
 			rounded(b, 12)
 		end
-		dropButton("Equip", modeText, -92, 116)
-		dropButton("Clean", "🧹 Clean", -8, 80)
+		dropButton("Equip", modeText, -98, 110)
+		dropButton("Clean", "🧹 Clean", -8, 84)
 	end
 	-- 장착 방식 줄: "최강 장비"와 가진 세트가 한 줄에 칩으로 나란히 있고, 지금 쓰는 방식에 ✔ 가 붙는다. 칩을 누르면 그 방식으로 바로 갈아 끼운다 (이미 쓰는 칩을 다시 누르면 새로 얻은 장비까지 다시 맞춘다).
 	-- (예전엔 "최고 장비 자동 장착" 버튼과 "세트 장착" 칩이 따로 있어서, 어느 쪽으로 껴졌는지 오락가락했다)
@@ -496,12 +550,12 @@ local function buildInventoryTab(state)
 		local best = 0
 		for _, item in pairs(equipped) do best = math.max(best, item.Rarity or 0) end
 		local glow = best > 0 and Config.Gear.RarityColors[best] or Color3.fromRGB(255, 205, 110)
-		for index, spec in ipairs({ { 150, 0.88 }, { 100, 0.78 } }) do
-			local halo = create("Frame", { Size = UDim2.new(0, spec[1], 0, spec[1]), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, LEFT_W / 2, 0, 112), BackgroundColor3 = glow, BackgroundTransparency = spec[2], BorderSizePixel = 0, ZIndex = 1 + index }, left)
+		for index, spec in ipairs({ { 88, 0.88 }, { 64, 0.78 } }) do
+			local halo = create("Frame", { Size = UDim2.new(0, spec[1], 0, spec[1]), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, LEFT_W / 2, 0, 118), BackgroundColor3 = glow, BackgroundTransparency = spec[2], BorderSizePixel = 0, ZIndex = 1 + index }, left)
 			create("UICorner", { CornerRadius = UDim.new(1, 0) }, halo)
 		end
 		local viewport = create("ViewportFrame", {
-			Size = UDim2.new(0, 104, 0, 176), Position = UDim2.new(0, LEFT_W / 2 - 52, 0, 26), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 4,
+			Size = UDim2.new(0, 84, 0, 132), Position = UDim2.new(0, LEFT_W / 2 - 42, 0, 50), BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 4,
 			Ambient = Color3.fromRGB(190, 190, 200), LightColor = Color3.new(1, 1, 1),
 		}, left)
 		local cam = create("Camera", { FieldOfView = 38 }, viewport)
@@ -523,13 +577,13 @@ local function buildInventoryTab(state)
 				cam.CFrame = CFrame.lookAt(pivot.Position + Vector3.new(0, 1.2, 12.5), pivot.Position + Vector3.new(0, 0.4, 0))
 			end)
 		end
-		makeLabel({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 0, 4), Text = string.format("⚡ Power %d", player:GetAttribute("Power") or 0), TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110), ZIndex = 5 }, left)
+		makeLabel({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 0, 4), Text = "⚡ " .. commas(player:GetAttribute("Power") or 0), TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110), ZIndex = 5 }, left)
 	end
 	local function slotBox(slotKey, x, y)
 		local item = equipped[slotKey]
 		local rarity = item and item.Rarity or 0
 		local box = makeButton({
-			Size = UDim2.new(0, 58, 0, 54), Position = UDim2.new(0, x, 0, y), Text = "",
+			Size = UDim2.new(0, 52, 0, 54), Position = UDim2.new(0, x, 0, y), Text = "",
 			BackgroundColor3 = item and Config.Gear.RarityColors[rarity]:Lerp(Color3.fromRGB(20, 22, 36), 0.78) or Color3.fromRGB(26, 27, 42), AutoButtonColor = true, ZIndex = 9,
 		}, left, function()
 			if slotKey == "Weapon" then
@@ -570,23 +624,23 @@ local function buildInventoryTab(state)
 		end
 		return box
 	end
-	slotBox("Helmet", 8, 28)
-	slotBox("Armor", 8, 86)
-	slotBox("Gloves", 8, 144)
-	slotBox("Necklace", LEFT_W - 66, 28)
-	slotBox("Ring", LEFT_W - 66, 86)
-	slotBox("Boots", LEFT_W - 66, 144)
-	slotBox("Weapon", LEFT_W - 66, 202)
+	slotBox("Helmet", 6, 28) -- (칸 52px 두 줄: 6~58 / 150~202, 가운데 92px 에 미리보기 84px)
+	slotBox("Armor", 6, 86)
+	slotBox("Gloves", 6, 144)
+	slotBox("Necklace", LEFT_W - 58, 28)
+	slotBox("Ring", LEFT_W - 58, 86)
+	slotBox("Boots", LEFT_W - 58, 144)
+	slotBox("Weapon", LEFT_W - 58, 202)
 	do -- 펫 칸 (왼쪽 아래)
 		local petLevel = player:GetAttribute("PetLevel") or 0
 		local look = Config.Pet.Looks[player:GetAttribute("PetLook") or "Orb"] or Config.Pet.Looks.Orb
-		local box = makeButton({ Size = UDim2.new(0, 58, 0, 54), Position = UDim2.new(0, 8, 0, 202), Text = "", BackgroundColor3 = petLevel > 0 and Color3.fromRGB(46, 48, 68) or Color3.fromRGB(34, 34, 48), AutoButtonColor = true, ZIndex = 9 }, left, function()
+		local box = makeButton({ Size = UDim2.new(0, 52, 0, 54), Position = UDim2.new(0, 6, 0, 202), Text = "", BackgroundColor3 = petLevel > 0 and Color3.fromRGB(46, 48, 68) or Color3.fromRGB(34, 34, 48), AutoButtonColor = true, ZIndex = 9 }, left, function()
 			player:SetAttribute("OpenPet", os.clock())
 		end)
 		rounded(box, 12)
 		create("UIStroke", { Color = petLevel > 0 and Color3.fromRGB(255, 200, 90) or Color3.fromRGB(70, 70, 90), Thickness = petLevel > 0 and 2 or 1.5 }, box)
 		makeLabel({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 2), Text = petLevel > 0 and look.Icon or "🐾", TextSize = 18, TextTransparency = petLevel > 0 and 0 or 0.6, ZIndex = 10 }, box)
-		makeLabel({ Size = UDim2.new(1, -4, 0, 22), Position = UDim2.new(0, 2, 0, 30), Text = petLevel > 0 and string.format("Lv.%d", petLevel) or "Unlock\nPet (P)", TextSize = petLevel > 0 and 11 or 9, TextWrapped = true, Font = Enum.Font.GothamBlack,
+		makeLabel({ Size = UDim2.new(1, -4, 0, 22), Position = UDim2.new(0, 2, 0, 30), Text = petLevel > 0 and string.format("Lv.%d", petLevel) or "Unlock\nPet (P)", TextSize = 11, TextWrapped = true, Font = Enum.Font.GothamBlack,
 			TextColor3 = petLevel > 0 and Color3.fromRGB(255, 225, 110) or Color3.fromRGB(150, 150, 175), ZIndex = 10 }, box)
 	end
 
@@ -840,8 +894,8 @@ local function buildInventoryTab(state)
 		end
 		local grid = create("ScrollingFrame", { Size = UDim2.new(1, -8, 1, -156), Position = UDim2.new(0, 4, 0, 102), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 4,
 			CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y }, middle)
-		create("UIGridLayout", { CellSize = UDim2.new(0, 54, 0, 54), CellPadding = UDim2.new(0, 8, 0, 10), SortOrder = Enum.SortOrder.LayoutOrder }, grid)
-		create("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8) }, grid)
+		create("UIGridLayout", { CellSize = UDim2.new(0, 52, 0, 52), CellPadding = UDim2.new(0, 6, 0, 8), SortOrder = Enum.SortOrder.LayoutOrder }, grid)
+		create("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6) }, grid) -- (가운데 308 - 8 - 12 = 288 >= 52 x 5 + 6 x 4 = 284)
 		if #filtered == 0 and not swapMode then
 			makeLabel({ Size = UDim2.new(1, -20, 0, 40), Position = UDim2.new(0, 10, 0, 110), Text = #bag == 0 and "Your bag is empty" or "Nothing matches this filter", TextSize = 12, TextColor3 = Color3.fromRGB(130, 130, 150) }, middle)
 		end
@@ -865,43 +919,55 @@ local function buildInventoryTab(state)
 				if selected and selected.Id == it.Id then groupSel[#shownList] = true end
 			end
 		end
+		-- 가방 타일 (다크 포지): 등급 테두리 2~3px + 위 3px 등급색 띠 + 등급색 12% 배경 + 전설 이상 뒤쪽 광채(정적)
+		--   배지 6자리 고정: ★ 유니크 좌상 / x개수 상단 가운데 / 세트 점 우상 / "+1" 효과 아이콘 좌하 / +N 하단 가운데 / ▲▼ 우하
+		local BASE = Color3.fromRGB(24, 26, 40)
 		for order, entry in ipairs(shownList) do
 			local item = entry.Item
 			local isSel = selected and selected.Id == item.Id
-			local tile = makeButton({ Text = "", LayoutOrder = order, BackgroundColor3 = isSel and Color3.fromRGB(70, 74, 104) or Color3.fromRGB(34, 36, 54), AutoButtonColor = true }, grid, function()
+			local rarityColor = Config.Gear.RarityColors[item.Rarity] or Color3.fromRGB(190, 190, 190)
+			local cell = create("Frame", { BackgroundTransparency = 1, LayoutOrder = order }, grid)
+			if item.Rarity >= 4 then
+				local glow = create("Frame", { Size = UDim2.new(1, 6, 1, 6), Position = UDim2.new(0, -3, 0, -3), BackgroundColor3 = rarityColor, BackgroundTransparency = 0.72, BorderSizePixel = 0 }, cell)
+				rounded(glow, 12)
+			end
+			local tile = create("TextButton", { Size = UDim2.new(1, 0, 1, 0), Text = "", BackgroundColor3 = Color3.new(1, 1, 1), AutoButtonColor = true, BorderSizePixel = 0 }, cell) -- (makeButton 의 광택 / 검은 테두리 없이: 등급 그라데이션이 그대로 보이게)
+			tile.Activated:Connect(function()
 				menuContent:SetAttribute("ShowWeapons", nil)
 				menuContent:SetAttribute("SelectedItem", item.Id)
 				refreshMenu()
 			end)
 			rounded(tile, 10)
-			create("UIStroke", { Color = Config.Gear.RarityColors[item.Rarity], Thickness = isSel and 3 or 1.5, Transparency = isSel and 0 or 0.15, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, tile) -- (가방은 깜빡이지 않는 얇은 등급 테두리: 칸이 많아 번쩍임이 지저분했다)
-			makeLabel({ Size = UDim2.new(1, 0, 0, 24), Position = UDim2.new(0, 0, 0, 3), Text = SLOT_ICONS[item.Slot], TextSize = 18 }, tile)
-			if (item.Level or 0) > 0 then -- (+0 은 안 적는다: 모든 칸에 "+0" 이 찍혀 빽빽해 보였다)
-				makeLabel({ Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 1, -17), Text = string.format("+%d", item.Level), TextSize = 12, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack }, tile)
+			create("UIGradient", { Rotation = 90, Color = ColorSequence.new(BASE:Lerp(rarityColor, isSel and 0.22 or 0.12), BASE) }, tile)
+			local stroke = create("UIStroke", { Color = isSel and Color3.new(1, 1, 1) or rarityColor, Thickness = (isSel or item.Rarity >= 4) and 3 or 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, tile)
+			if isSel then -- (반짝임은 고른 칸 하나에만)
+				TweenService:Create(stroke, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.45 }):Play()
 			end
-			if groupCount[order] > 1 then
-				local cnt = makeLabel({ Size = UDim2.new(0, 30, 0, 16), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, -6), Text = "x" .. groupCount[order], TextSize = 12, Font = Enum.Font.GothamBlack,
+			local band = create("Frame", { Size = UDim2.new(1, -14, 0, 3), Position = UDim2.new(0, 7, 0, 2), BackgroundColor3 = rarityColor, BorderSizePixel = 0, ZIndex = 3 }, tile)
+			rounded(band, 2)
+			makeLabel({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 9), Text = SLOT_ICONS[item.Slot], TextSize = 20, ZIndex = 3 }, tile)
+			if (item.Level or 0) > 0 then -- 하단 가운데: +N (+0 은 안 적는다)
+				makeLabel({ Size = UDim2.new(0, 30, 0, 14), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -2), Text = string.format("+%d", item.Level), TextSize = 11, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamBlack, ZIndex = 4 }, tile)
+			end
+			if groupCount[order] > 1 then -- 상단 가운데: x개수
+				local cnt = makeLabel({ Size = UDim2.new(0, 26, 0, 15), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 0), Text = "x" .. groupCount[order], TextSize = 11, Font = Enum.Font.GothamBlack,
 					TextColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(70, 66, 110), ZIndex = 8 }, tile)
 				rounded(cnt, 7)
 			end
-			if entry.Diff ~= 0 then
-				makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(1, -15, 1, -16), Text = entry.Diff > 0 and "▲" or "▼", TextSize = 12, Font = Enum.Font.GothamBlack,
+			if entry.Diff ~= 0 then -- 우하: ▲▼
+				makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(1, -15, 1, -15), Text = entry.Diff > 0 and "▲" or "▼", TextSize = 11, Font = Enum.Font.GothamBlack, ZIndex = 4,
 					TextColor3 = entry.Diff > 0 and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 120, 120) }, tile)
 			end
-			if item.Unique then
-				makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0, 2, 0, 2), Text = "★", TextSize = 12, TextColor3 = Color3.fromRGB(255, 184, 77) }, tile)
+			if item.Unique then -- 좌상: ★
+				makeLabel({ Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0, 2, 0, 3), Text = "★", TextSize = 11, TextColor3 = Color3.fromRGB(255, 184, 77), ZIndex = 4 }, tile)
 			end
-			if item.AugBoost and Config.AugInfo[item.AugBoost] then
-				makeLabel({ Size = UDim2.new(0, 16, 0, 14), Position = UDim2.new(0, 2, 1, -16), Text = Config.AugInfo[item.AugBoost].Icon, TextSize = 12, ZIndex = 4 }, tile)
+			if item.AugBoost and Config.AugInfo[item.AugBoost] then -- 좌하: "+1" 효과 아이콘
+				makeLabel({ Size = UDim2.new(0, 16, 0, 14), Position = UDim2.new(0, 2, 1, -15), Text = Config.AugInfo[item.AugBoost].Icon, TextSize = 11, ZIndex = 4 }, tile)
 			end
-			if item.Set and Config.Sets[item.Set] then
-				local dot = create("Frame", { Size = UDim2.new(0, 10, 0, 10), Position = UDim2.new(1, -13, 0, 3), BackgroundColor3 = Config.Sets[item.Set].Color, BorderSizePixel = 0, ZIndex = 5, Active = false }, tile) -- 세트: 칸 안쪽 오른쪽 위 작은 세트색 점 (큰 아이콘 동그라미가 칸마다 튀어나와 지저분했다)
+			if item.Set and Config.Sets[item.Set] then -- 우상: 세트 점 (끼면 세트가 이어지면 초록 테두리. 예전 "▲n/3" 띠는 뺐다)
+				local dot = create("Frame", { Size = UDim2.new(0, 10, 0, 10), Position = UDim2.new(1, -13, 0, 4), BackgroundColor3 = Config.Sets[item.Set].Color, BorderSizePixel = 0, ZIndex = 5, Active = false }, tile)
 				create("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
-				if entry.SetGain >= 2 and filterSlot then -- (끼면 세트가 이어지는 표시는 부위를 골라 비교할 때만)
-					local tag = makeLabel({ Size = UDim2.new(0, 40, 0, 15), Position = UDim2.new(0, -4, 0, 30), Text = string.format("▲%d/3", math.min(3, entry.SetGain)), TextSize = 12, Font = Enum.Font.GothamBlack,
-						TextWrapped = false, TextColor3 = Color3.fromRGB(20, 30, 20), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(120, 255, 140), ZIndex = 7 }, tile)
-					rounded(tag, 6)
-				end
+				if entry.SetGain >= 2 then create("UIStroke", { Color = Color3.fromRGB(120, 255, 140), Thickness = 2 }, dot) end
 			end
 		end
 		-- 합성: 가방 아래 버튼 하나 -> 누르면 가방 자리에 합성 화면이 크게 열린다 (예전: 좁은 칸에 버튼 4개가 쪼그라들어 무엇인지 몰랐다)
@@ -994,16 +1060,47 @@ local function buildInventoryTab(state)
 		rarityOutline(detail, selected.Rarity, 2)
 		local slot = Config.GetGearSlot(selected.Slot)
 		local current = equipped[selected.Slot]
-		local y = 8
+		local y = 6
+		if not selected.Equipped then -- 비교 배너 (가방 장비를 골랐을 때): 장착 중 → 이 장비, 큰 "▲ +N 전투력", "지금 → 끼면"
+			local after, base, exact = powerIf(selected)
+			local delta = after - base
+			local up = delta >= 0
+			local tone = up and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 120, 120)
+			local banner = create("Frame", { Size = UDim2.new(1, -12, 0, 100), Position = UDim2.new(0, 6, 0, y), BackgroundColor3 = Color3.fromRGB(20, 30, 26):Lerp(Color3.fromRGB(36, 20, 24), up and 0 or 1), BorderSizePixel = 0 }, detail)
+			rounded(banner, 12)
+			create("UIStroke", { Color = tone, Thickness = 1.5, Transparency = 0.35 }, banner)
+			makeLabel({ Size = UDim2.new(1, -90, 0, 16), Position = UDim2.new(0, 10, 0, 5), Text = "Equipped vs this", TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(200, 205, 225) }, banner)
+			local pill = makeLabel({ Size = UDim2.new(0, 64, 0, 18), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 4), Text = up and "▲ Gain" or "▼ Loss", TextSize = 11, Font = Enum.Font.GothamBlack,
+				TextColor3 = tone, BackgroundTransparency = 0, BackgroundColor3 = tone:Lerp(Color3.fromRGB(16, 18, 30), 0.8) }, banner)
+			rounded(pill, 9)
+			local function mini(item, x, w)
+				local card = create("Frame", { Size = UDim2.new(0, w, 0, 30), Position = UDim2.new(0, x, 0, 24), BackgroundColor3 = Color3.fromRGB(26, 28, 42), BorderSizePixel = 0 }, banner)
+				rounded(card, 8)
+				local c = item and Config.Gear.RarityColors[item.Rarity] or Color3.fromRGB(90, 94, 120)
+				create("UIStroke", { Color = c, Thickness = item and item.Rarity >= 4 and 2 or 1.5 }, card)
+				makeLabel({ Size = UDim2.new(1, -8, 0, 15), Position = UDim2.new(0, 6, 0, 1), Text = item and (Config.ItemDisplayName(item) .. (item.Level > 0 and (" +" .. item.Level) or "")) or "Empty", TextSize = 11, Font = Enum.Font.GothamBold,
+					TextTruncate = Enum.TextTruncate.AtEnd, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = c }, card)
+				makeLabel({ Size = UDim2.new(1, -8, 0, 13), Position = UDim2.new(0, 6, 0, 15), Text = item and string.format("Score %d", item.Score or 0) or "", TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(160, 165, 190) }, card)
+			end
+			mini(current, 8, 124)
+			makeLabel({ Size = UDim2.new(0, 18, 0, 30), Position = UDim2.new(0, 134, 0, 24), Text = "▶", TextSize = 12, TextColor3 = Color3.fromRGB(225, 196, 118) }, banner)
+			mini(selected, 154, 124)
+			makeLabel({ Size = UDim2.new(0, 150, 0, 34), Position = UDim2.new(0, 10, 0, 58), RichText = true, TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBlack, TextSize = 21, TextColor3 = tone,
+				TextTransparency = exact and 0 or 0.35,
+				Text = string.format("%s%s%s <font size='11' color='#d8dcef'>Power</font>", exact and "" or "≈ ", up and "+" or "-", commas(math.abs(delta))) }, banner)
+			makeLabel({ Size = UDim2.new(0, 120, 0, 34), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 58), TextSize = 12, TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = Color3.fromRGB(225, 230, 245),
+				TextTransparency = exact and 0 or 0.35, Text = string.format("%s → %s", commas(base), commas(after)) }, banner)
+			y += 106
+		end
 		if selected.Set and Config.Sets[selected.Set] then -- 세트 띠
 			local setDef = Config.Sets[selected.Set]
 			local have = setCounts[selected.Set] or 0
-			local band = create("Frame", { Size = UDim2.new(1, -12, 0, 24), Position = UDim2.new(0, 6, 0, 6), BackgroundColor3 = setDef.Color, BorderSizePixel = 0 }, detail)
+			local band = create("Frame", { Size = UDim2.new(1, -12, 0, 24), Position = UDim2.new(0, 6, 0, y), BackgroundColor3 = setDef.Color, BorderSizePixel = 0 }, detail)
 			rounded(band, 8)
 			create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 0.85) }) }, band)
 			makeLabel({ Size = UDim2.new(1, -12, 1, 0), Position = UDim2.new(0, 8, 0, 0), RichText = true, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left,
 				Text = string.format("%s <b>%s</b> <b>Set</b>   %s %d/3", setDef.Icon or "★", setDef.Name, setPips(have), have) }, band)
-			y = 34
+			y += 28
 		end
 		makeLabel({ Size = UDim2.new(1, -16, 0, 36), Position = UDim2.new(0, 8, 0, y), RichText = true, TextSize = 13, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
 			Text = string.format("<font color='#%s'><b>[%s] %s</b></font> +%d\n<font color='#aaaacc' size='11'>%s · Score %d%s</font>", hex(color), Config.Gear.RarityNames[selected.Rarity], Config.ItemDisplayName(selected), selected.Level, slot.Name, selected.Score, selected.Equipped and " · Equipped" or "") }, detail)
@@ -1026,7 +1123,7 @@ local function buildInventoryTab(state)
 				rounded(barFill, 8)
 				TweenService:Create(barFill, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = UDim2.new(chanceRaw, 0, 1, 0) }):Play()
 				makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = string.format("Success %d%%", math.floor(chanceRaw * 100 + 0.5)), TextSize = 12, Font = Enum.Font.GothamBlack, TextStrokeTransparency = 0.4, ZIndex = 3 }, barBack)
-				local upgradeButton = makeButton({ Size = UDim2.new(0.62, -10, 0, 40), Position = UDim2.new(0, 8, 0, 70), Text = string.format("🔨 Upgrade\n💰 %d G", cost), TextSize = 11, Font = Enum.Font.GothamBlack,
+				local upgradeButton = makeButton({ Size = UDim2.new(0.62, -10, 0, 40), Position = UDim2.new(0, 8, 0, 70), Text = string.format("🔨 Upgrade\n💰 %s G", commas(cost)), TextSize = 13, Font = Enum.Font.GothamBlack,
 					BackgroundColor3 = gold >= cost and GREEN or Color3.fromRGB(95, 60, 62) }, block, function()
 					Remotes.Gear:FireServer("Enhance", selected.Slot)
 				end)
@@ -1055,7 +1152,7 @@ local function buildInventoryTab(state)
 			for _, it in ipairs(bag) do
 				if not it.Equipped and gearGroupKey(it) == groupKey then groupN += 1 end
 			end
-			local scrapButton = makeButton({ Size = UDim2.new(0.38, -6, 0, 40), Position = UDim2.new(0.62, 0, 0, y), Text = groupN > 1 and "" or "Dismantle", TextSize = 11, Font = Enum.Font.GothamBold, BackgroundColor3 = RED }, detail, function()
+			local scrapButton = makeButton({ Size = UDim2.new(0.38, -6, 0, 40), Position = UDim2.new(0.62, 0, 0, y), Text = groupN > 1 and "" or "Dismantle", TextSize = 13, Font = Enum.Font.GothamBold, BackgroundColor3 = RED }, detail, function()
 				-- 묶인 장비면 묶음에서 점수가 제일 낮은 것을 분해한다 (대표 = 제일 좋은 것이라 그대로 분해하면 약한 복사본이 남았다)
 				local target, key = selected, gearGroupKey(selected)
 				for _, it in ipairs(bag) do
@@ -1072,12 +1169,12 @@ local function buildInventoryTab(state)
 		end
 		if selected.Unique or #selected.Affixes > 0 then -- 재굴림 줄
 			if #selected.Affixes > 0 then
-				makeButton({ Size = UDim2.new(0.5, -10, 0, 28), Position = UDim2.new(0, 8, 0, y), Text = string.format("Reroll ✨%d", Config.Inventory.RerollEssence[selected.Rarity]), TextSize = 12, BackgroundColor3 = Color3.fromRGB(58, 60, 84) }, detail, function()
+				makeButton({ Size = UDim2.new(0.5, -10, 0, 28), Position = UDim2.new(0, 8, 0, y), Text = string.format("Reroll ✨%d", Config.Inventory.RerollEssence[selected.Rarity]), TextSize = 13, BackgroundColor3 = Color3.fromRGB(58, 60, 84) }, detail, function()
 					Remotes.Inventory:FireServer("Reroll", selected.Id)
 				end)
 			end
 			if selected.Unique then
-				makeButton({ Size = UDim2.new(0.5, -10, 0, 28), Position = UDim2.new(0.5, 2, 0, y), Text = string.format("★ 🎫%d", Config.Uniques.RerollTickets or 30), TextSize = 12, BackgroundColor3 = Color3.fromRGB(58, 60, 84) }, detail, function()
+				makeButton({ Size = UDim2.new(0.5, -10, 0, 28), Position = UDim2.new(0.5, 2, 0, y), Text = string.format("★ 🎫%d", Config.Uniques.RerollTickets or 30), TextSize = 13, BackgroundColor3 = Color3.fromRGB(58, 60, 84) }, detail, function()
 					Remotes.Inventory:FireServer("RerollUnique", selected.Id)
 				end)
 			end
@@ -1085,10 +1182,6 @@ local function buildInventoryTab(state)
 		end
 		-- 본문: 비교 / 끼면 바뀌는 것 / 능력치 (아래는 스크롤)
 		local lines = {}
-		if current and current.Id ~= selected.Id then
-			local diff = selected.Score - current.Score
-			table.insert(lines, diff >= 0 and string.format("<font color='#78ff8c'><b>vs. equipped ▲ +%d</b></font>", diff) or string.format("<font color='#ff8c8c'><b>vs. equipped ▼ %d</b></font>", diff))
-		end
 		-- 이걸 끼면 바뀌는 것: 세트 부위 수와 세트 효과 단계 (세트 효과는 세트 장비를 끼면 저절로 켜진다)
 		if not selected.Equipped and (selected.Set or selected.AugBoost or (current and (current.Set or current.AugBoost))) then
 			local changes = {}
@@ -1139,7 +1232,18 @@ local function buildInventoryTab(state)
 			local lo, hi = Config.AffixRange(affix.Stat, selected.Rarity)
 			local pos = hi > lo and math.clamp((affix.Value - lo) / (hi - lo), 0, 1) or 1
 			local posColor = pos >= 0.75 and "#78ff8c" or (pos >= 0.4 and "#ffd966" or "#ff9a6e")
-			table.insert(lines, string.format("<font color='#9ad7ff'>◆ %s</font> <font size='11' color='%s'><b>%d%%</b></font>", Config.FormatAffix(affix.Stat, affix.Value), posColor, math.floor(pos * 100 + 0.5)))
+			local diffText = "" -- 장착 중 장비 대비 (가방 장비를 골랐을 때): 같은 옵션 수치 차이
+			if not selected.Equipped and current then
+				local cv = 0
+				for _, ca in ipairs(current.Affixes or {}) do if ca.Stat == affix.Stat then cv += ca.Value end end
+				local d = affix.Value - cv
+				local def = Config.Inventory.Affixes[affix.Stat]
+				if math.abs(d) > 1e-6 and def then
+					local num = def.Percent and string.format("%.1f%%", math.abs(d) * 100) or (affix.Stat == "Health" and tostring(math.floor(math.abs(d) + 0.5)) or string.format("%.1f", math.abs(d)))
+					diffText = string.format("  <font color='%s'>%s %s</font>", d > 0 and "#78ff8c" or "#ff8c8c", d > 0 and "▲ +" or "▼ -", num)
+				end
+			end
+			table.insert(lines, string.format("<font color='#9ad7ff'>◆ %s</font> <font size='11' color='%s'><b>%d%%</b></font>%s", Config.FormatAffix(affix.Stat, affix.Value), posColor, math.floor(pos * 100 + 0.5), diffText))
 		end
 		if selected.Unique and Config.Uniques[selected.Unique] then
 			table.insert(lines, "<font color='#ffb84d'>★ " .. Config.Uniques[selected.Unique].Name .. "</font> <font size='11' color='#d9b878'>" .. Config.Uniques[selected.Unique].Desc .. "</font>")
@@ -1159,7 +1263,26 @@ local function buildInventoryTab(state)
 				table.insert(more, string.format("<font size='11' color='%s'>%s %d pieces  %s</font>", on and ("#" .. hex(setDef.Color)) or "#6c7088", on and "✔" or "○", tier, table.concat(parts, ", ")))
 			end
 		end
-		local body = create("ScrollingFrame", { Size = UDim2.new(1, -12, 1, -(y + 6)), Position = UDim2.new(0, 6, 0, y), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 3,
+		local alertH = 0
+		if selected.Equipped then -- 장착 중 장비를 골랐을 때: 맨 아래 "가방에 더 좋은 장갑 +N ⚡" (누르면 그 장비를 고른다)
+			local bestItem, bestGain = nil, 0
+			for _, it in ipairs(bag) do
+				if it.Slot == selected.Slot then
+					local after, base = powerIf(it)
+					if after - base > bestGain then bestItem, bestGain = it, after - base end
+				end
+			end
+			if bestItem then
+				alertH = 36
+				local alert = makeButton({ Size = UDim2.new(1, -12, 0, 30), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 6, 1, -6), RichText = true, TextSize = 12, Font = Enum.Font.GothamBlack,
+					BackgroundColor3 = Color3.fromRGB(34, 70, 46), Text = string.format("▲ Better %s in bag  <font color='#ffd966'>+%s ⚡</font>", slot.Name, commas(bestGain)) }, detail, function()
+					menuContent:SetAttribute("SelectedItem", bestItem.Id)
+					refreshMenu()
+				end)
+				rounded(alert, 12)
+			end
+		end
+		local body = create("ScrollingFrame", { Size = UDim2.new(1, -12, 1, -(y + 6 + alertH)), Position = UDim2.new(0, 6, 0, y), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 3,
 			CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y }, detail)
 		create("UIListLayout", { Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder }, body)
 		local showMore = menuContent:GetAttribute("DetailMore") == true

@@ -3065,5 +3065,16 @@
 "Sort",
 "Details",
 "Less",
-"You wandered out of town and were returned."
+"You wandered out of town and were returned.",
+"Empty {text1} slot",
+"Better combo",
+"Stronger {text1}",
+"Equipped vs this",
+"Up",
+"Down",
+"Better {text1} in bag",
+"Score {number1}",
+"▲ Up",
+"Gain",
+"Loss"
 ]

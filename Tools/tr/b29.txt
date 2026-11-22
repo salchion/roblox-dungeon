@@ -1023,3 +1023,14 @@
 3064¦詳しく¦Details¦Détails¦Detalles¦Detalhes¦详情¦자세히
 3065¦閉じる¦Weniger¦Moins¦Menos¦Menos¦收起¦접기
 3066¦町の外に出たので町に戻しました。¦Du hast die Stadt verlassen und wurdest zurückgebracht.¦Tu es sorti de la ville et as été ramené.¦Saliste del pueblo y te trajimos de vuelta.¦Você saiu da cidade e foi trazido de volta.¦你走出了城镇，已被送回。¦마을 밖으로 나가서 마을로 돌려보냈어요.
+3067¦{text1}が空き¦{text1}-Platz leer¦Emplacement {text1} vide¦Hueco de {text1} vacío¦Espaço de {text1} vazio¦{text1}空着¦빈 {text1} 칸
+3068¦もっと良い組み合わせ¦Bessere Kombi¦Meilleur combo¦Mejor combinación¦Combinação melhor¦更好的搭配¦더 맞는 조합
+3069¦もっと強い{text1}¦Stärkere {text1}¦{text1} plus fort¦{text1} más fuerte¦{text1} mais forte¦更强的{text1}¦더 강한 {text1}
+3070¦装備中と比較¦Ausgerüstet vs. dies¦Équipé vs celui-ci¦Equipado vs este¦Equipado vs este¦已装备 vs 此件¦장착 중과 비교
+3071¦上昇¦Besser¦Hausse¦Sube¦Sobe¦提升¦상승
+3072¦低下¦Schlechter¦Baisse¦Baja¦Desce¦下降¦하락
+3073¦バッグにもっと良い{text1}¦Bessere {text1} in der Tasche¦{text1} meilleur dans le sac¦{text1} mejor en la mochila¦{text1} melhor na mochila¦背包里有更好的{text1}¦가방에 더 좋은 {text1}
+3074¦スコア {number1}¦Wert {number1}¦Score {number1}¦Puntos {number1}¦Pontos {number1}¦评分 {number1}¦점수 {number1}
+3075¦▲ 上昇¦▲ Besser¦▲ Hausse¦▲ Sube¦▲ Sobe¦▲ 提升¦▲ 상승
+3076¦上昇¦Besser¦Hausse¦Sube¦Sobe¦提升¦상승
+3077¦低下¦Schlechter¦Baisse¦Baja¦Desce¦下降¦하락

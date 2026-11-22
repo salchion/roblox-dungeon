@@ -2340,12 +2340,14 @@ function MENU.StyleTab(button, active, radius)
 	button.TextStrokeColor3 = active and Color3.fromRGB(20, 40, 110) or Color3.fromRGB(8, 10, 20)
 end
 
-function MENU.seg(options, current, onPick)
-	local row = newRow(44, Color3.fromRGB(26, 28, 42))
+function MENU.seg(options, current, onPick, height) -- (height: 장비 탭만 32, 나머지는 44)
+	height = height or 44
+	local row = newRow(height, Color3.fromRGB(26, 28, 42))
+	local bh = math.min(32, height - 4)
 	for index, option in ipairs(options) do
 		local active = option[1] == current
 		local button = makeButton({
-			Size = UDim2.new(0, 150, 0, 32), Position = UDim2.new(0, 10 + (index - 1) * 158, 0.5, -16), Text = option[2], TextSize = 13,
+			Size = UDim2.new(0, 150, 0, bh), Position = UDim2.new(0, 10 + (index - 1) * 158, 0.5, -bh / 2), Text = option[2], TextSize = 13,
 		}, row, function()
 			onPick(option[1])
 		end)
@@ -2411,7 +2413,7 @@ function refreshMenu()
 	if MENU.Subs[currentTab] then
 		MENU.seg(MENU.Subs[currentTab], sub, function(key)
 			selectTab(currentTab, key)
-		end)
+		end, (currentTab == "Character" and sub == "Gear") and 32 or nil)
 	end
 	if currentTab == "Character" then
 		if sub == "Gear" then
@@ -2505,7 +2507,11 @@ local function toggleMenu()
 		local shopPanel = shopGui and shopGui:FindFirstChild("ShopPanel")
 		if shopPanel then shopPanel.Visible = false end
 		local t0 = os.clock()
+		-- 다시 열 때 바뀐 것이 없으면 다시 그리지 않고 보여 주기만 한다 (창 열 때 끊김): 탭 / 데이터 표(서버가 보낼 때마다 새 표) / 속성 변화 횟수가 그대로면
+		local sig = table.concat({ tostring(currentTab), tostring(MENU.Sub[currentTab]), tostring(inventoryState), tostring(growthState), tostring(questState), tostring(metaState), tostring(MENU.AttrTick or 0) }, "|")
+		if MENU.BuiltSig == sig and #menuContent:GetChildren() > 1 then return end
 		local ok, err = pcall(selectTab, currentTab)
+		MENU.BuiltSig = sig
 		if not ok then warn("[Menu] " .. tostring(err)) end
 		local ms = (os.clock() - t0) * 1000 -- (창 열 때 끊김 측정: 탭 화면 다시 그리기 + 새 글자 번역이 여기 다 들어간다. Studio 에서 30ms 넘을 때만)
 		if ms > 30 and RunService:IsStudio() then print(string.format("[창 측정] 메뉴 열기 · 탭 다시 그리기 %.0fms · %s/%s · 칸 %d개", ms, tostring(currentTab), tostring(MENU.Sub[currentTab]), #menuContent:GetDescendants())) end
@@ -2634,6 +2640,7 @@ UserInputService.InputBegan:Connect(function(input)
 	end
 end)
 player.AttributeChanged:Connect(function(name)
+	if not MENU_IGNORE[name] then MENU.AttrTick = (MENU.AttrTick or 0) + 1 end -- (메뉴를 다시 열 때 다시 그릴지 판단: 숨어 있는 동안의 변화도 센다)
 	if not menuPanel.Visible or menuRefreshQueued or MENU_IGNORE[name] then return end
 	local recentClick = os.clock() - lastMenuClick < 1.5
 	-- 자동 공격으로 싸우는 중 메뉴를 열어 두면 처치할 때마다 골드 / 경험치가 바뀌어 메뉴 전체가 2.5초마다 다시 그려졌다

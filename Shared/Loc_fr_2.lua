@@ -987,6 +987,11 @@ return {
 		["Details"] = "Détails",
 		["Less"] = "Moins",
 		["You wandered out of town and were returned."] = "Tu es sorti de la ville et as été ramené.",
+		["Better combo"] = "Meilleur combo",
+		["Equipped vs this"] = "Équipé vs celui-ci",
+		["Down"] = "Baisse",
+		["Gain"] = "Hausse",
+		["Loss"] = "Baisse",
 		["♻ Rarity ▾"] = "♻ Rareté ▾",
 		["Dismantle by rarity"] = "Démanteler par rareté",
 		["Equipped, set, and unique gear is kept."] = "L'équipement porté, de set et unique est conservé.",
@@ -1106,6 +1111,5 @@ return {
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISS dure {number1} s · conserve au moins {number2} cumuls même si la série s'interrompt" },
 		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 Pas assez d'or pour tirer le set choisi ! ({number1} G requis)" },
 		{ "Sweep needs {number1} key(s). Defeat a field zone lord to get keys", "Le balayage nécessite {number1} clé(s). Bats un seigneur de zone du terrain pour en obtenir" },
-		{ "You can run {number1} effects at once. Turn another one off first", "Vous pouvez activer {number1} effets à la fois. Désactivez-en d'abord un autre" },
 	},
 }
