@@ -116,7 +116,7 @@ local upSummary = label({ Size = UDim2.new(0, 620, 0, 22), Position = UDim2.new(
 -- 켜진 칸: 켜진 효과 아이콘 + 빈 칸 (글자 "2/3" 만으로는 무엇이 켜졌는지 안 보였다)
 local slotIcons = make("Frame", { Size = UDim2.new(0, 200, 0, 26), Position = UDim2.new(0, 190, 0, 10), BackgroundTransparency = 1 }, panel)
 make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }, slotIcons)
-slotIcons.Size = UDim2.new(0, 320, 0, 58)
+slotIcons.Size = UDim2.new(0, 320, 0, 62)
 slotIcons.Position = UDim2.new(0, 236, 0, 38) -- (장착 소켓: 큰 원 3개)
 slotIcons:FindFirstChildOfClass("UIListLayout").Padding = UDim.new(0, 26)
 -- 세팅 2개 (🗡 사냥용 / 👑 보스용): 누르면 그 세팅의 칸으로 바뀐다
@@ -625,17 +625,20 @@ function refresh()
 			if player:GetAttribute("AugOnZ_" .. z) == true then
 				shown += 1
 				local slotNo = player:GetAttribute("AugSlotOf_" .. z) or z
-				local chip = label({ Size = UDim2.new(0, 50, 0, 50), BackgroundTransparency = 0, BackgroundColor3 = zinfo.Color:Lerp(Color3.fromRGB(20, 18, 30), 0.45), Text = zinfo.Icon, TextSize = 24, LayoutOrder = slotNo }, slotIcons)
+				local chip = label({ Size = UDim2.new(0, 54, 0, 54), BackgroundColor3 = zinfo.Color:Lerp(Color3.fromRGB(20, 18, 30), 0.45), Text = zinfo.Icon, TextSize = 28, LayoutOrder = slotNo }, slotIcons)
+				chip.BackgroundTransparency = 0 -- (label() 이 배경을 투명으로 덮어써서 칸이 안 보이고 작은 아이콘만 떠 있었다)
 				make("UICorner", { CornerRadius = UDim.new(1, 0) }, chip)
 				make("UIStroke", { Color = zinfo.Color, Thickness = 3 }, chip)
-				local num = label({ Size = UDim2.new(0, 18, 0, 18), Position = UDim2.new(0, -6, 0, -4), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(225, 196, 118), TextColor3 = Color3.fromRGB(42, 26, 0), Text = tostring(slotNo), TextSize = 11, Font = Enum.Font.GothamBlack, ZIndex = 3 }, chip)
+				local num = label({ Size = UDim2.new(0, 20, 0, 20), Position = UDim2.new(0, -6, 0, -4), BackgroundColor3 = Color3.fromRGB(225, 196, 118), TextColor3 = Color3.fromRGB(42, 26, 0), Text = tostring(slotNo), TextSize = 12, Font = Enum.Font.GothamBlack, ZIndex = 3 }, chip)
+				num.BackgroundTransparency = 0
 				make("UICorner", { CornerRadius = UDim.new(1, 0) }, num)
 				local zz = z
-				local x = button({ Size = UDim2.new(0, 18, 0, 18), Position = UDim2.new(1, -12, 0, -4), BackgroundColor3 = Color3.fromRGB(110, 40, 56), Text = "✕", TextSize = 10 }, chip, function() Remotes.Aug:FireServer("Unequip", zz) end) -- (소켓에서 바로 빼기)
+				local x = button({ Size = UDim2.new(0, 22, 0, 22), Position = UDim2.new(1, -14, 0, -6), BackgroundColor3 = Color3.fromRGB(170, 50, 70), Text = "✕", TextSize = 12 }, chip, function() Remotes.Aug:FireServer("Unequip", zz) end) -- (소켓에서 바로 빼기)
 				x.ZIndex = 4
 				for _, c in ipairs(x:GetChildren()) do if c:IsA("UICorner") then c.CornerRadius = UDim.new(1, 0) end end
 				if canUpgrade(z) then
-					local up = label({ Size = UDim2.new(0, 18, 0, 18), Position = UDim2.new(1, -12, 1, -14), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(46, 170, 90), Text = "⬆", TextSize = 11, Font = Enum.Font.GothamBlack, ZIndex = 4 }, chip)
+					local up = label({ Size = UDim2.new(0, 20, 0, 20), Position = UDim2.new(1, -14, 1, -16), BackgroundColor3 = Color3.fromRGB(46, 170, 90), Text = "⬆", TextSize = 12, Font = Enum.Font.GothamBlack, ZIndex = 4 }, chip)
+					up.BackgroundTransparency = 0
 					make("UICorner", { CornerRadius = UDim.new(1, 0) }, up)
 				end
 				local pick = make("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", ZIndex = 2 }, chip) -- (소켓을 누르면 그 효과를 고른다)
@@ -645,7 +648,8 @@ function refresh()
 			end
 		end
 		for i = shown + 1, slots do
-			local empty = label({ Size = UDim2.new(0, 50, 0, 50), Text = "+", TextSize = 22, TextColor3 = Color3.fromRGB(120, 124, 150), LayoutOrder = 50 + i }, slotIcons)
+			local empty = label({ Size = UDim2.new(0, 54, 0, 54), Text = "+", TextSize = 24, TextColor3 = Color3.fromRGB(150, 154, 180), BackgroundColor3 = Color3.fromRGB(30, 32, 48), LayoutOrder = 50 + i }, slotIcons)
+			empty.BackgroundTransparency = 0
 			make("UICorner", { CornerRadius = UDim.new(1, 0) }, empty)
 			make("UIStroke", { Color = Color3.fromRGB(90, 94, 120), Thickness = 1.2, Transparency = 0.3 }, empty)
 		end
