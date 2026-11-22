@@ -719,34 +719,45 @@ local function buildInventoryTab(state)
 		for i, slot in ipairs(Config.Gear.Slots) do
 			chip(slotRow, i, SLOT_ICONS[slot.Key] or slot.Name, filterSlot == slot.Key, function() setFilter(filterSlot == slot.Key and nil or slot.Key, filterSet) end)
 		end
+		-- 정렬 / 필터는 [⇅ 정렬 ▾] 하나로: 누르면 둘째 줄(세트 칩) 자리에 정렬 · 방향 · 유니크만 · 세트 +1만이 펼쳐진다 (칩이 넘쳐 오른쪽이 잘렸다)
+		local sortOpen = menuContent:GetAttribute("BagSortOpen") == true
+		local filtering = onlyUnique or onlyAug
+		chip(slotRow, 99, "⇅ Sort" .. (filtering and " ●" or "") .. (sortOpen and " ▴" or " ▾"), sortOpen, function()
+			menuContent:SetAttribute("BagSortOpen", not sortOpen)
+			refreshMenu()
+		end)
 		local setRow = chipRow(56)
-		chip(setRow, 0, "All sets", filterSet == nil, function() setFilter(filterSlot, nil) end)
-		for i, key in ipairs(Config.Sets.ZoneKeys) do
-			local def = Config.Sets[key]
-			local has = false
-			for _, item in ipairs(bag) do if item.Set == key then has = true break end end
-			if has then chip(setRow, i, def.Icon or "★", filterSet == key, function() setFilter(filterSlot, filterSet == key and nil or key) end, def.Color) end
+		if not sortOpen then
+			chip(setRow, 0, "All sets", filterSet == nil, function() setFilter(filterSlot, nil) end)
+			for i, key in ipairs(Config.Sets.ZoneKeys) do
+				local def = Config.Sets[key]
+				local has = false
+				for _, item in ipairs(bag) do if item.Set == key then has = true break end end
+				if has then chip(setRow, i, def.Icon or "★", filterSet == key, function() setFilter(filterSlot, filterSet == key and nil or key) end, def.Color) end
+			end
+		else
+			local SORTS = { Score = "Sort: Score", Rarity = "Sort: Rarity", Set = "Sort: Set first" }
+			for i, key in ipairs({ "Score", "Set", "Rarity" }) do
+				chip(setRow, i, SORTS[key], sortMode == key, function()
+					menuContent:SetAttribute("BagSort", key)
+					refreshMenu()
+				end)
+			end
+			-- 정렬 방향 (누를 때마다 ▲ 약한 것부터 / ▼ 강한 것부터)
+			chip(setRow, 10, ascending and "▲ Low first" or "▼ High first", false, function()
+				menuContent:SetAttribute("BagSortDir", ascending and "Desc" or "Asc")
+				refreshMenu()
+			end)
+			-- 필터 칩: 유니크만 / 세트 효과 +1만 (둘 다 켜면 두 조건 모두). 다시 누르면 풀린다.
+			chip(setRow, 20, "★ Uniques only", onlyUnique, function()
+				menuContent:SetAttribute("BagUnique", not onlyUnique)
+				refreshMenu()
+			end, Color3.fromRGB(255, 184, 77))
+			chip(setRow, 21, "🚀 Set +1 only", onlyAug, function()
+				menuContent:SetAttribute("BagAug", not onlyAug)
+				refreshMenu()
+			end, Color3.fromRGB(255, 140, 90))
 		end
-		-- 필터 칩: 유니크만 / 세트 효과 +1만 (둘 다 켜면 두 조건 모두). 다시 누르면 풀린다.
-		chip(setRow, 90, "★ Uniques only", onlyUnique, function()
-			menuContent:SetAttribute("BagUnique", not onlyUnique)
-			refreshMenu()
-		end, Color3.fromRGB(255, 184, 77))
-		chip(setRow, 91, "🚀 Set +1 only", onlyAug, function()
-			menuContent:SetAttribute("BagAug", not onlyAug)
-			refreshMenu()
-		end, Color3.fromRGB(255, 140, 90))
-		local SORTS = { Score = "Sort: Score", Rarity = "Sort: Rarity", Set = "Sort: Set first" }
-		local NEXT_SORT = { Score = "Set", Set = "Rarity", Rarity = "Score" }
-		chip(setRow, 99, ("⇅ " .. SORTS[sortMode]) .. (ascending and "  ▲" or "  ▼"), false, function()
-			menuContent:SetAttribute("BagSort", NEXT_SORT[sortMode])
-			refreshMenu()
-		end)
-		-- 정렬 방향만 뒤집는 칩 (누를 때마다 ▲ 약한 것부터 / ▼ 강한 것부터)
-		chip(setRow, 100, ascending and "▲ Low first" or "▼ High first", false, function()
-			menuContent:SetAttribute("BagSortDir", ascending and "Desc" or "Asc")
-			refreshMenu()
-		end)
 		if (filterSlot or filterSet) and not (filterSlot and not filterSet and menuContent:GetAttribute("FuseOpen") ~= true) then
 			local caption = {}
 			if filterSlot then table.insert(caption, (SLOT_ICONS[filterSlot] or "") .. " " .. (Config.GetGearSlot(filterSlot) and Config.GetGearSlot(filterSlot).Name or filterSlot)) end
@@ -1136,6 +1147,7 @@ local function buildInventoryTab(state)
 			local info = Config.AugInfo[selected.AugBoost]
 			table.insert(lines, string.format("<font color='#9ad7ff'>%s %s +1 Lv</font>", info.Icon, info.Name))
 		end
+		local more = {} -- (긴 설명 줄은 [▾ 자세히] 안으로: 강화 블록과 핵심 능력치가 먼저 보이게)
 		if selected.Set and Config.Sets[selected.Set] then
 			local setDef = Config.Sets[selected.Set]
 			local have = setCounts[selected.Set] or 0
@@ -1143,13 +1155,26 @@ local function buildInventoryTab(state)
 				local parts = {}
 				for _, b in ipairs(setDef.Bonuses[tier]) do table.insert(parts, "<font>" .. Config.FormatBonus(b.Stat, b.Value) .. "</font>") end
 				local on = have >= tier
-				table.insert(lines, string.format("<font size='11' color='%s'>%s %d pieces  %s</font>", on and ("#" .. hex(setDef.Color)) or "#6c7088", on and "✔" or "○", tier, table.concat(parts, ", ")))
+				table.insert(more, string.format("<font size='11' color='%s'>%s %d pieces  %s</font>", on and ("#" .. hex(setDef.Color)) or "#6c7088", on and "✔" or "○", tier, table.concat(parts, ", ")))
 			end
 		end
 		local body = create("ScrollingFrame", { Size = UDim2.new(1, -12, 1, -(y + 6)), Position = UDim2.new(0, 6, 0, y), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 3,
 			CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y }, detail)
-		makeLabel({ Size = UDim2.new(1, -8, 0, 0), Position = UDim2.new(0, 4, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = table.concat(lines, "\n"), TextSize = 12, RichText = true, TextWrapped = true,
+		create("UIListLayout", { Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder }, body)
+		local showMore = menuContent:GetAttribute("DetailMore") == true
+		makeLabel({ Size = UDim2.new(1, -8, 0, 0), LayoutOrder = 1, AutomaticSize = Enum.AutomaticSize.Y, Text = table.concat(lines, "\n"), TextSize = 12, RichText = true, TextWrapped = true,
 			TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top }, body)
+		if #more > 0 then
+			local toggle = makeButton({ Size = UDim2.new(0, 120, 0, 24), LayoutOrder = 2, Text = showMore and "▴ Less" or "▾ Details", TextSize = 12, Font = Enum.Font.GothamBold, BackgroundColor3 = Color3.fromRGB(44, 46, 68) }, body, function()
+				menuContent:SetAttribute("DetailMore", not showMore)
+				refreshMenu()
+			end)
+			rounded(toggle, 12)
+			if showMore then
+				makeLabel({ Size = UDim2.new(1, -8, 0, 0), LayoutOrder = 3, AutomaticSize = Enum.AutomaticSize.Y, Text = table.concat(more, "\n"), TextSize = 12, RichText = true, TextWrapped = true,
+					TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top }, body)
+			end
+		end
 	elseif not showWeapons then
 		makeLabel({ Size = UDim2.new(1, -20, 1, -20), Position = UDim2.new(0, 10, 0, 10), Text = "No gear yet.\nDefeat monsters in the field or use the gacha!", TextSize = 13, TextColor3 = Color3.fromRGB(150, 150, 170) }, detail)
 	end

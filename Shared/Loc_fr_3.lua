@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Town north gate · boss chest gear + gold · Free {number1} · Keys {number2}", "Porte nord de la ville · équipement + or du coffre du boss · Gratuit {number1} · Clés {number2}" },
 		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "Résultat de Gacha_Pop{number1} <font color='#{number2}aa{number3}c{number4}'> : Épique</font>" },
 		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "Obtenez instantanément {number1} heures de revenus passifs · maximum {number2} par jour" },
 		{ "🔒 Zone {number1} · Darklands Sealed\nOpen the previous gate first", "🔒 Zone {number1} · Terres sombres scellées\nOuvrez d'abord la porte précédente" },

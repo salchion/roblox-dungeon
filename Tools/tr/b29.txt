@@ -1019,3 +1019,6 @@
 3060¦整理¦Aufräumen¦Ranger¦Ordenar¦Organizar¦整理¦정리
 3061¦{text1} Lv.{number1}！¦{text1} Lv.{number1}!¦{text1} Nv.{number1} !¦¡{text1} Nv.{number1}!¦{text1} Nv.{number1}!¦{text1} Lv.{number1}！¦{text1} Lv.{number1}!
 3062¦+{number1} {text1}¦+{number1} {text1}¦+{number1} {text1}¦+{number1} {text1}¦+{number1} {text1}¦+{number1} {text1}¦+{number1} {text1}
+3063¦並べ替え¦Sortieren¦Trier¦Ordenar¦Ordenar¦排序¦정렬
+3064¦詳しく¦Details¦Détails¦Detalles¦Detalhes¦详情¦자세히
+3065¦閉じる¦Weniger¦Moins¦Menos¦Menos¦收起¦접기

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔥 Better gear dropped! ({number1} slot(s))", "🔥 掉落了更好的装备!({number1} 个栏位)" },
 		{ "Crit damage +{number1}%p per point  (max {number2})", "暴击伤害 +{number1}%p/点  (上限 {number2})" },
 		{ "🎁 Claimed {number1} rewards! ({number2} new titles)", "🎁 领取了{number1}个奖励！(新称号{number2}个)" },
 		{ "Keeps {number1} more stacks even if broken", "即使中断也多保留{number1}层" },

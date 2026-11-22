@@ -929,6 +929,8 @@ return {
 		["Strongest"] = "Stärkste",
 		["Set effects"] = "Set-Effekte",
 		["Clean"] = "Aufräumen",
+		["Sort"] = "Sortieren",
+		["Less"] = "Weniger",
 		["♻ Rarity ▾"] = "♻ Seltenheit ▾",
 		["Dismantle by rarity"] = "Nach Seltenheit zerlegen",
 		["Equipped, set, and unique gear is kept."] = "Angelegte, Set- und Unique-Ausrüstung bleibt erhalten.",

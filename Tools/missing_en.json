@@ -3061,5 +3061,8 @@
 "Set effects",
 "Clean",
 "{text1} Lv.{number1}!",
-"+{number1} {text1}"
+"+{number1} {text1}",
+"Sort",
+"Details",
+"Less"
 ]

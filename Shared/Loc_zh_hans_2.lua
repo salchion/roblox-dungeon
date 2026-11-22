@@ -861,6 +861,9 @@ return {
 		["Strongest"] = "最强",
 		["Set effects"] = "套装效果",
 		["Clean"] = "整理",
+		["Sort"] = "排序",
+		["Details"] = "详情",
+		["Less"] = "收起",
 		["♻ Rarity ▾"] = "♻ 品质 ▾",
 		["Dismantle by rarity"] = "按品质分解",
 		["Equipped, set, and unique gear is kept."] = "已装备、套装和独特装备会保留。",
@@ -1143,6 +1146,5 @@ return {
 		{ "👑 Lord of Forest (Zone {number1}) · Rec. ⚡{number2}", "👑森林之王（区域 {number1}） · 推荐等级 ⚡{number2}" },
 		{ "📍 Field Entrance  Right ahead!  {number1}m", "📍 田地入口就在前方！{number1}米" },
 		{ "Points left {number1}  /  total {number2}  (Level {number3})", "剩余点数 {number1}  /  共 {number2}  (等级 {number3})" },
-		{ "🔥 Better gear dropped! ({number1} slot(s))", "🔥 掉落了更好的装备!({number1} 个栏位)" },
 	},
 }

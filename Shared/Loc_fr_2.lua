@@ -983,6 +983,9 @@ return {
 		["Strongest"] = "Le plus fort",
 		["Set effects"] = "Effets de set",
 		["Clean"] = "Ranger",
+		["Sort"] = "Trier",
+		["Details"] = "Détails",
+		["Less"] = "Moins",
 		["♻ Rarity ▾"] = "♻ Rareté ▾",
 		["Dismantle by rarity"] = "Démanteler par rareté",
 		["Equipped, set, and unique gear is kept."] = "L'équipement porté, de set et unique est conservé.",
@@ -1103,6 +1106,5 @@ return {
 		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 Pas assez d'or pour tirer le set choisi ! ({number1} G requis)" },
 		{ "Sweep needs {number1} key(s). Defeat a field zone lord to get keys", "Le balayage nécessite {number1} clé(s). Bats un seigneur de zone du terrain pour en obtenir" },
 		{ "You can run {number1} effects at once. Turn another one off first", "Vous pouvez activer {number1} effets à la fois. Désactivez-en d'abord un autre" },
-		{ "Town north gate · boss chest gear + gold · Free {number1} · Keys {number2}", "Porte nord de la ville · équipement + or du coffre du boss · Gratuit {number1} · Clés {number2}" },
 	},
 }
