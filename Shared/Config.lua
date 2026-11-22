@@ -120,9 +120,6 @@ Config.SkillUpgrade = {
 	UltTargets = 2 / 3,         -- 데드아이 대상 수: 레벨당 +0.67마리 (1레벨 6마리 -> 10레벨 12마리)
 	UltMult = 0.15,             -- 궁극기 피해 +15%
 }
-function Config.GetSkillUpgradeCost(level)
-	return math.floor(Config.SkillUpgrade.BaseCost * Config.SkillUpgrade.CostGrowth ^ (level - 1))
-end
 
 -- 펫: 골드를 한 번 내서 "펫 기능"을 열면 따라다니는 동료가 생긴다. 골드로 레벨을 올릴 때마다 기능이 하나씩 늘어난다 (자동 루팅 / 공격 속도 / 보조 사격 ...).
 -- 외형은 능력과 상관없는 꾸미기: 필드 군주를 쓰러뜨리거나 칭호(업적)를 따면 새 외형이 열리고, 열린 외형 중에서 마음대로 고른다.
@@ -164,9 +161,6 @@ Config.Pet = {
 		Color3.fromRGB(255, 110, 150), Color3.fromRGB(255, 225, 110), Color3.fromRGB(235, 235, 245), Color3.fromRGB(100, 140, 255),
 	},
 }
-function Config.GetPetLevelCost(level)
-	return math.floor(Config.Pet.LevelCostBase * Config.Pet.LevelCostGrowth ^ (level - 1))
-end
 -- 이 레벨에서 켜지는 기능들의 능력치 합 { PetSpeed = ..., PetLoot = ... }
 function Config.GetPetStats(level)
 	local totals = {}
@@ -923,12 +917,6 @@ end
 -- StepMinutes: 6부위를 +30까지 올리는 데 드는 기대 비용이 수입 약 125분 분량이 되도록 맞춘 값 (열심히 하는 사람이 일주일 안팎). 증가율 CostGrowth 1.15 로 단계마다 고르게 오른다.
 Config.Gear.StepMinutes = 0.017
 Config.Gear.CostGrowth = 1.15
-function Config.GetGearCost(slotKey, _rarity, level, weaponLevel)
-	local slot = Config.GetGearSlot(slotKey)
-	local weight = slot.BaseCost / 121.67 -- 부위마다 조금씩 다르게 (여섯 부위 평균 1)
-	local income = Config.Economy.IncomeBase * Config.GetDamageMultiplier(weaponLevel or 0)
-	return math.max(1, math.floor(income * Config.Gear.StepMinutes * Config.Gear.CostGrowth ^ level * weight))
-end
 
 function Config.GetGearEnhanceChance(level)
 	return math.max(0.35, 1 - 0.045 * level)
@@ -1375,9 +1363,6 @@ do
 	for _, key in ipairs(Config.LevelStats.Order) do capTotal += Config.LevelStats.Cap[key] end
 	Config.LevelStats.MaxGoldPoints = math.max(0, capTotal - Config.GetLevelStatPoints(Config.Level.StatCap))
 end
-function Config.GetLevelGoldPointCost(bought)
-	return math.floor(Config.LevelStats.GoldPoint.Base * Config.LevelStats.GoldPoint.Growth ^ bought)
-end
 -- 포인트 -> 실제 효과 문자열 / 값
 function Config.LevelStatValue(key, points)
 	local def = Config.LevelStats[key]
@@ -1562,10 +1547,6 @@ function Config.Sets.AugPriceZone(zone, maxZone)
 	local z = math.clamp(math.floor(zone or 1), 1, Config.Field.ZoneCount)
 	local reached = math.clamp(math.floor(maxZone or 0), 0, Config.Field.ZoneCount)
 	return math.max(z, reached)
-end
-function Config.Sets.AugCost(zone, level, maxZone)
-	local base = math.floor(1500 * 1.75 ^ (Config.Sets.AugPriceZone(zone, maxZone) - 1) / 100 + 0.5) * 100
-	return base * (Config.Sets.AugCostMult[level] or 8)
 end
 -- 던전 상자의 구역 세트 장비: 깊이가 깊을수록 확률이 오르고, 나오는 구역은 "내가 클리어한 구역" 중 깊이에 맞는 구역 이하로 정한다
 --   (필드가 세트의 첫 입구로 남는다: 7구역 군주를 잡기 전에는 던전에서도 7구역 세트가 나오지 않는다)
@@ -2017,9 +1998,6 @@ function Config.GetPetLevelTime(level)
 	return math.floor(120 * 1.35 ^ (level - 1))
 end
 
-function Config.GetTrainGold(level)
-	return math.floor(Config.Growth.GoldBase * Config.Growth.GoldGrowth ^ level)
-end
 
 function Config.FormatTrainEffect(stat, level)
 	local def = Config.Growth.Stats[stat]
@@ -2291,6 +2269,7 @@ do
 end
 
 
+-- (아래 do 블록은 바로 위 SinkMinutes 블록의 GetGearCost / GetPetLevelCost 와 그 위 GetEnhanceCost 정의를 원본으로 받아 단조 표를 만든다 — 위 정의를 지우면 안 된다)
 -- 비용은 단계가 오를수록 절대 내려가지 않는다 (가격 곡선 보정 PriceMult 가 후반에 내려가면서 다음 단계가 이전보다 싸지던 구간을 막는다)
 do
 	local rawWeapon = Config.GetEnhanceCost
