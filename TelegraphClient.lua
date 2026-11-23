@@ -145,10 +145,10 @@ end)
 ------------------------------------------------------------
 -- 내 한 방 % (받는 피해 배율 반영) -> 구 색 / 도형 여부
 ------------------------------------------------------------
-local function hitPct(part, mult)
+local function hitPct(part, mult, pierce)
 	local shot = part:GetAttribute("MobShot")
 	if not shot then return nil end
-	return Signal.HitPctFor(shot * (mult or 1))
+	return Signal.HitPctFor(shot * (mult or 1), nil, pierce)
 end
 local function tierOfPct(pct)
 	if not pct then return nil end
@@ -177,11 +177,11 @@ end
 ------------------------------------------------------------
 local camera = workspace.CurrentCamera
 local pctCache = setmetatable({}, { __mode = "k" }) -- [part] = { At, Value } (한 프레임에 한 번만 잰다)
-local function cachedPct(part, mult)
+local function cachedPct(part, mult, pierce)
 	local hit = pctCache[part]
 	local now = os.clock()
 	if hit and now - hit.At < 0.25 then return hit.Value end
-	local value = hitPct(part, mult)
+	local value = hitPct(part, mult, pierce)
 	pctCache[part] = { At = now, Value = value }
 	return value
 end
@@ -212,7 +212,7 @@ RunService.RenderStepped:Connect(function()
 		local part, entry = item.Part, item.Entry
 		local span = math.max(0.05, entry.Until - entry.From)
 		local p = math.clamp((now - entry.From) / span, 0, 1)
-		local pct = cachedPct(part, entry.Mult)
+		local pct = cachedPct(part, entry.Mult, entry.Tier >= 3 and T.Pierce or nil) -- (T3 는 방어 감소의 20% 를 무시한다: 실제 피해와 같은 % 로)
 		local visual = tierOfPct(pct) or entry.Tier -- 구 색: 내 체력 기준 (던전처럼 한 방 % 를 모르면 패턴 티어)
 		local color = COLORS[visual]
 

@@ -80,12 +80,20 @@ function FieldSignal.KillSecFor(hp, player)
 	return hp / dps
 end
 
-function FieldSignal.HitPctFor(hit, player)
+-- pierce: 강공격(T3)이 방어 피해 감소의 일부를 무시하는 만큼 표시도 올린다 (DamageGuard.Take 와 같은 식).
+--   TakenMult 에는 그 감소가 이미 곱해져 있어서, 방어 감소(DamageReduction %)만 되돌려 다시 곱한다.
+--   (11-24: 상한이 없어진 뒤로 이 % 가 곧 경고 색 기준이라, 실제 들어오는 피해와 어긋나면 안 된다)
+function FieldSignal.HitPctFor(hit, player, pierce)
 	player = player or Players.LocalPlayer
 	local humanoid = player and player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 	local maxHp = humanoid and humanoid.MaxHealth or 0
 	if not hit or maxHp <= 0 then return nil end
-	return hit * (player:GetAttribute("TakenMult") or 1) / maxHp * 100
+	local taken = player:GetAttribute("TakenMult") or 1
+	if pierce and pierce > 0 then
+		local reduction = math.clamp((player:GetAttribute("DamageReduction") or 0) / 100, 0, 0.95)
+		if reduction > 0 then taken *= (1 - reduction * (1 - pierce)) / (1 - reduction) end
+	end
+	return hit * taken / maxHp * 100
 end
 
 function FieldSignal.KillSec(zone, kind, player)
