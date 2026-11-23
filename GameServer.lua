@@ -907,12 +907,22 @@ end)
 -- 첫 접속 때 한 번만 필드 곳곳을 미리 불러 달라는 요청을 받아 RequestStreamAroundAsync 로 불러 주고, 끝나면 Ready 를 보낸다.
 local introStreamed = setmetatable({}, { __mode = "k" })
 local introFocus = setmetatable({}, { __mode = "k" })
-local introKeep = setmetatable({}, { __mode = "k" }) -- [player] = 마을 주변을 마지막으로 다시 요청한 시각 -- [player] = 오프닝 카메라를 따라다니는 투명한 점 (Player.ReplicationFocus)
+local introAdded = setmetatable({}, { __mode = "k" }) -- [player] = true: AddReplicationFocus 로 붙였다 (false: 옛 방식 ReplicationFocus 로 옮겼다)
+-- (11-23) 오프닝 카메라 지점은 "추가 초점"(Player:AddReplicationFocus)으로만 붙인다: 캐릭터 기본 초점(마을)은 그대로라 마을 주변이 스트리밍 밖으로
+--   밀려나지 않는다. 예전에는 ReplicationFocus 를 카메라 쪽으로 옮겨서 마을이 빠져나갔다가 돌아올 때 [일시정지] 1.4~2.8초가 났다
+--   (1초마다 마을을 다시 요청해도 RequestStreamAroundAsync 는 일시적 선반입이라 카메라 쪽 요청과 경쟁해 밀렸다. 두 번째 인자는 반경이 아니라 타임아웃 초)
 local function endIntroFocus(player)
 	local part = introFocus[player]
 	introFocus[player] = nil
 	if part then
-		if player.Parent then pcall(function() player.ReplicationFocus = nil end) end -- 다시 내 캐릭터 주변을 불러온다
+		if player.Parent then
+			if introAdded[player] then
+				pcall(function() player:RemoveReplicationFocus(part) end)
+			else
+				pcall(function() player.ReplicationFocus = nil end)
+			end
+		end
+		introAdded[player] = nil
 		part:Destroy()
 	end
 end
@@ -934,23 +944,21 @@ Remotes.Intro.OnServerEvent:Connect(function(player, action, x)
 			part.Position = Vector3.new(x, 60, 0)
 			part.Parent = workspace
 			introFocus[player] = part
-			player.ReplicationFocus = part
+			local okAdd = pcall(function() player:AddReplicationFocus(part) end)
+			introAdded[player] = okAdd
+			if not okAdd then player.ReplicationFocus = part end -- (추가 초점 API 가 없는 환경이면 옛 방식)
 			task.delay(45, function() if introFocus[player] == part then endIntroFocus(player) end end) -- 안전장치: 오래 남지 않는다
 		end
 		part.Position = Vector3.new(x, 60, 0)
-		-- 기준점이 카메라를 따라가는 동안 내 캐릭터(마을) 주변도 1초마다 다시 붙잡아 둔다
-		--   (로그: 오프닝 끝 무렵 마을 주변이 빠져나가 "Gameplay Paused" 2.2초. 이미 받아 둔 곳이면 요청은 가볍다)
-		local now = os.clock()
-		if now - (introKeep[player] or 0) >= 1 then
-			introKeep[player] = now
+		if not introAdded[player] then -- (옛 방식일 때만: 캐릭터 주변을 가끔 다시 받는다)
 			local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-			if root then task.spawn(function() pcall(function() player:RequestStreamAroundAsync(root.Position, 2) end) end) end
+			if root and math.random() < 0.2 then task.spawn(function() pcall(function() player:RequestStreamAroundAsync(root.Position, 3) end) end) end
 		end
 		return
 	elseif action == "End" then
 		endIntroFocus(player)
-		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart") -- 착지 전에 내 캐릭터 주변을 먼저 다시 받아 둔다 (멈춤 방지)
-		if root then task.spawn(function() pcall(function() player:RequestStreamAroundAsync(root.Position, 5) end) end) end
+		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart") -- 착지 전에 내 캐릭터 주변을 한 번 더 받아 둔다 (이 연결 안에서 끝까지 기다린다)
+		if root then pcall(function() player:RequestStreamAroundAsync(root.Position, 5) end) end
 		return
 	elseif action == "Place" then -- 새 유저: 오프닝 착지 장면이 1구역 캠프에서 나오도록 미리 옮긴다 (해당 없으면 아무것도 안 함)
 		local placed = false
@@ -989,7 +997,7 @@ Remotes.Intro.OnServerEvent:Connect(function(player, action, x)
 			if not player.Parent then break end
 			running += 1
 			task.spawn(function()
-				local okStream, errStream = pcall(function() player:RequestStreamAroundAsync(Vector3.new(px, 60, 0), 10) end)
+				local okStream, errStream = pcall(function() player:RequestStreamAroundAsync(Vector3.new(px, 60, 0), 4) end) -- (타임아웃 4초: 한 곳이 늦어도 오래 붙잡지 않는다)
 				if not okStream then warn("[오프닝] 필드 미리 불러오기 실패 (x=" .. tostring(px) .. "): " .. tostring(errStream)) end
 				running -= 1
 				pending -= 1

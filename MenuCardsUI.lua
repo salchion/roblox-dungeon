@@ -94,13 +94,13 @@ function MenuCards.Init(env)
 		makeLabel({ Size = UDim2.new(1, 0, 1, 0), Text = text, TextColor3 = Color3.fromRGB(136, 136, 136), TextSize = 14 }, row)
 	end
 
-	local function questCard(entry, remoteAction, showTitle)
+	local function questCard(entry, remoteAction, showTitle, reuseRow) -- (reuseRow: 미리 잡아 둔 빈 줄을 채운다. 보이는 만큼만 그리기)
 		local done = entry.Progress >= entry.Goal
 		local claimable = done and not entry.Claimed
 		local look = STAT_LOOK[statById[entry.Id] or ""] or DEFAULT_LOOK
 		local color = look[2]
 		local muted = entry.Claimed
-		local row = bareRow(64)
+		local row = reuseRow or bareRow(64)
 
 		-- 퀘스트 색 알약 띠 (왼쪽이 진하고 오른쪽으로 사라진다)
 		local strip = create("Frame", { Size = UDim2.new(1, -4, 0, 56), Position = UDim2.new(0, 2, 0, 4), BackgroundColor3 = color, BackgroundTransparency = muted and 0.88 or 0.78, BorderSizePixel = 0 }, row)
@@ -194,8 +194,37 @@ function MenuCards.Init(env)
 				Remotes.Quest:FireServer("ClaimAll")
 			end)
 		end
-		for _, entry in ipairs(sorted) do
-			questCard(entry, remoteAction, showTitle)
+		-- 보이는 만큼만 그리기: 처음 8장만 바로 그리고, 나머지는 같은 높이의 빈 줄만 잡아 두었다가 스크롤해서 보일 때 채운다
+		--   (업적이 많으면 카드 요소 2,500개 가까이를 한 번에 만들어 [창 측정] 171ms 였다)
+		local FIRST = 8
+		local pending = {}
+		for i, entry in ipairs(sorted) do
+			if i <= FIRST then
+				questCard(entry, remoteAction, showTitle)
+			else
+				table.insert(pending, { bareRow(64), entry })
+			end
+		end
+		if #pending > 0 then
+			local scroller = pending[1][1]:FindFirstAncestorWhichIsA("ScrollingFrame")
+			if not scroller then -- (스크롤 틀이 없으면 그냥 다 그린다)
+				for _, p in ipairs(pending) do questCard(p[2], remoteAction, showTitle, p[1]) end
+				return
+			end
+			local function fillVisible()
+				local bottom = scroller.AbsolutePosition.Y + scroller.AbsoluteSize.Y + 140 -- (두 줄 미리)
+				local n = 0
+				while pending[1] and pending[1][1].Parent and pending[1][1].AbsolutePosition.Y < bottom and n < 40 do
+					local p = table.remove(pending, 1)
+					questCard(p[2], remoteAction, showTitle, p[1])
+					n += 1
+				end
+			end
+			local conn
+			conn = scroller:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
+				if not pending[1] or not pending[1][1].Parent then conn:Disconnect() return end
+				fillVisible()
+			end)
 		end
 	end
 

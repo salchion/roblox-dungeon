@@ -877,11 +877,13 @@ local function buildInventoryTab(state)
 		-- 가방 타일 (다크 포지): 등급 테두리 2~3px + 위 3px 등급색 띠 + 등급색 12% 배경 + 전설 이상 뒤쪽 광채(정적)
 		--   배지 6자리 고정: ★ 유니크 좌상 / x개수 상단 가운데 / 세트 점 우상 / "+1" 효과 아이콘 좌하 / +N 하단 가운데 / ▲▼ 우하
 		local BASE = Color3.fromRGB(24, 26, 40)
-		for order, entry in ipairs(shownList) do
+		-- 보이는 만큼만 그리기: 처음 25칸(약 5줄 = 한 화면)만 바로 그리고, 나머지는 빈 자리(Frame 1개)만 잡아 두었다가 스크롤해서 보일 때 채운다
+		--   (가방 40~50개면 창을 열 때마다 타일 요소 600개 가까이를 만들어 [창 측정] 69~96ms 였다)
+		local FIRST = 25
+		local function fillCell(cell, order, entry)
 			local item = entry.Item
 			local isSel = selected and selected.Id == item.Id
 			local rarityColor = Config.Gear.RarityColors[item.Rarity] or Color3.fromRGB(190, 190, 190)
-			local cell = create("Frame", { BackgroundTransparency = 1, LayoutOrder = order }, grid)
 			if item.Rarity >= 4 then
 				local glow = create("Frame", { Size = UDim2.new(1, 6, 1, 6), Position = UDim2.new(0, -3, 0, -3), BackgroundColor3 = rarityColor, BackgroundTransparency = 0.72, BorderSizePixel = 0 }, cell)
 				rounded(glow, 12)
@@ -924,6 +926,33 @@ local function buildInventoryTab(state)
 				create("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
 				if entry.SetGain >= 2 then create("UIStroke", { Color = Color3.fromRGB(120, 255, 140), Thickness = 2 }, dot) end
 			end
+		end
+		local pending = {}
+		for order, entry in ipairs(shownList) do
+			local cell = create("Frame", { BackgroundTransparency = 1, LayoutOrder = order }, grid)
+			if order <= FIRST or (selected and selected.Id == entry.Item.Id) then
+				fillCell(cell, order, entry)
+			else
+				table.insert(pending, { cell, order, entry })
+			end
+		end
+		if #pending > 0 then
+			local function fillVisible()
+				local bottom = grid.AbsolutePosition.Y + grid.AbsoluteSize.Y + 80 -- (한 줄 미리)
+				for i = #pending, 1, -1 do
+					local p = pending[i]
+					if p[1].Parent and p[1].AbsolutePosition.Y < bottom then
+						fillCell(p[1], p[2], p[3])
+						table.remove(pending, i)
+					end
+				end
+			end
+			local conn
+			conn = grid:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
+				if not grid.Parent then conn:Disconnect() return end
+				fillVisible()
+				if #pending == 0 then conn:Disconnect() end
+			end)
 		end
 		-- 합성: 가방 아래 버튼 하나 -> 누르면 가방 자리에 합성 화면이 크게 열린다 (예전: 좁은 칸에 버튼 4개가 쪼그라들어 무엇인지 몰랐다)
 		local I = Config.Inventory
