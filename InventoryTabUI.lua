@@ -219,20 +219,6 @@ local function openBulk()
 	end
 end
 
--- 장비 묶음 가치 (서버 "최강 장비"와 같은 계산: 점수 + 세트 2부위 150 + 3부위 220 + 세트 효과 부위마다 60)
-local function loadoutValue(map)
-	local total, counts = 0, {}
-	for _, item in pairs(map) do
-		total += item.Score or 0
-		if item.Set then counts[item.Set] = (counts[item.Set] or 0) + 1 end
-	end
-	for _, n in pairs(counts) do
-		if n >= 2 then total += 150 end
-		if n >= 3 then total += 220 end
-		total += 60 * math.min(3, n)
-	end
-	return total, counts
-end
 -- 빌드 이름: 가장 많이 낀 세트 = 이름(직업), 두 번째 세트 = 꾸밈말
 local BUILD_ADJ = { "Galeborn", "Wildwood", "Ancient", "Scorching", "Frostbound", "Molten", "Shadowed", "Abyssal" }
 local BUILD_NOUN = { "Guardian", "Hunter", "Warrior", "Marksman", "Mage", "Destroyer", "Rogue", "Lord" }
@@ -348,7 +334,9 @@ local function buildInventoryTab(state)
 	do
 		local tip, tipItem, tipColor -- (긴 문장 대신 짧은 배지 + [끼기] 하나)
 		local function slotName(key) return Config.GetGearSlot(key) and Config.GetGearSlot(key).Name or key end
-		local bestUp, bestDiff = nil, 0
+		-- (11-23) 배지도 상세 창 · [⚡ 최강 장착] 과 같은 기준 하나: 점수 비교가 아니라 그 장비를 끼면 실제로 오르는 ⚡ 전투력(서버 PowerPreview).
+		--   정확한 미리보기가 아직 없으면(로딩 중 · 상위 50 밖) 점수로 어림해 "더 강하다" 고 말하지 않는다. 그때는 서버가 계산한 state.Better 만 말한다.
+		local bestUp, bestGain = nil, 0
 		local setPick, setTier = nil, 0
 		for _, item in ipairs(bag) do
 			local current = equipped[item.Slot]
@@ -358,26 +346,26 @@ local function buildInventoryTab(state)
 					tipItem, tipColor = item, Color3.fromRGB(255, 196, 90)
 				end
 			else
-				local diff = item.Score - current.Score
-				if item.Set and Config.Sets[item.Set] and current.Set ~= item.Set then
-					local after = (setCounts[item.Set] or 0) + 1
-					local tierNow = (after >= 3 and 3) or (after >= 2 and 2) or 0
-					if tierNow > 0 and tierNow > setTier and diff > -current.Score * 0.25 then setPick, setTier = item, tierNow end
+				local after, base, exact = powerIf(item)
+				local gain = after - base
+				if exact and gain > bestGain then bestUp, bestGain = item, gain end
+				if item.Set and Config.Sets[item.Set] and current.Set ~= item.Set and gain >= 0 then -- (세트 안내도 ⚡ 가 떨어지지 않을 때만: [⚡ 최강 장착] 과 모순 없이)
+					local afterPieces = (setCounts[item.Set] or 0) + 1
+					local tierNow = (afterPieces >= 3 and 3) or (afterPieces >= 2 and 2) or 0
+					if tierNow > 0 and tierNow > setTier then setPick, setTier = item, tierNow end
 				end
-				if diff > bestDiff then bestUp, bestDiff = item, diff end
 			end
 		end
-		local augMode = state.EquipMode == "Augs"
-		if not tip and augMode then -- 세트 효과 맞춤: 점수만 높은 장비 / 세트 맞추기 안내는 효과 단계를 깰 수 있어 띄우지 않는다 (서버가 계산한 Better 로만)
-			tip = state.Better and "🌟 Better combo" or "✔ Best gear"
-			tipColor = state.Better and Color3.fromRGB(255, 210, 100) or nil
+		if not tip and bestUp then
+			tip = string.format("▲ Stronger %s", slotName(bestUp.Slot))
+			tipItem, tipColor = bestUp, Color3.fromRGB(120, 255, 140)
 		elseif not tip and setPick then
 			local def = Config.Sets[setPick.Set]
 			tip = string.format("🧩 %s %d/3", def.Name, setTier)
 			tipItem, tipColor = setPick, def.Color
-		elseif not tip and bestUp then
-			tip = string.format("▲ Stronger %s", slotName(bestUp.Slot))
-			tipItem, tipColor = bestUp, Color3.fromRGB(120, 255, 140)
+		elseif not tip then -- 한 부위 교체로는 안 오르지만 서버가 더 좋은 조합을 찾았을 때: [⚡ 최강 장착] 이 초록이면 이 배지도 같이 말한다
+			tip = state.Better and "🌟 Better combo" or "✔ Best gear"
+			tipColor = state.Better and Color3.fromRGB(255, 210, 100) or nil
 		end
 		-- 지금 빌드 띠: 세트 조합 이름 + 켜진 세트 + 전투력 + 추천 한 가지 (버튼 하나)
 		local ranked = {}
@@ -398,9 +386,9 @@ local function buildInventoryTab(state)
 			local def = Config.Sets[r[1]]
 			table.insert(setsLine, string.format("%s <font color='#%s'><b>%d/3</b></font>", def.Icon or "★", r[2] >= 2 and "78ff8c" or "aab0cc", math.min(3, r[2])))
 		end
-		-- 한 줄로 합친 위 띠: 빌드 이름 + 세트 + 추천 한 가지 | ⚡ 전투력 · [장착 방식 ▼] · [🧹 정리 ▼]
+		-- 한 줄로 합친 위 띠: 빌드 이름 + 세트 + 추천 한 가지 | ⚡ 전투력 · [⚡ 최강 장착] · [🧹 정리 ▼]
 		--   (예전: "장착 방식" 줄(칩 3개 + 분해 버튼 3개)과 이 띠가 두 줄로 따로 있어 글자가 작고 눈이 갈 곳이 많았다)
-		-- 다크 포지 띠 (높이 54): 빌드 이름 + 세트 | [배지] [끼기] | ⚡ 전투력 상자 · [⚡ 최강 ▼] · [🧹 정리 ▼]
+		-- 다크 포지 띠 (높이 54): 빌드 이름 + 세트 | [배지] [끼기] | ⚡ 전투력 상자 · [⚡ 최강 장착] · [🧹 정리 ▼]
 		local guide = newRow(54, Color3.fromRGB(22, 24, 38))
 		create("UIGradient", { Rotation = 0, Color = ColorSequence.new(buildColor:Lerp(Color3.fromRGB(22, 24, 38), 0.55), Color3.fromRGB(22, 24, 38)) }, guide)
 		create("UIStroke", { Color = Color3.fromRGB(225, 196, 118), Thickness = 1.5, Transparency = 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, guide)
@@ -433,20 +421,17 @@ local function buildInventoryTab(state)
 			makeLabel({ Size = UDim2.new(1, -54, 1, 0), Position = UDim2.new(0, 8, 0, 0), Text = "⚡ " .. commas(player:GetAttribute("Power") or 0), TextSize = 20, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 217, 102) }, box)
 			makeLabel({ Size = UDim2.new(0, 46, 1, 0), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -6, 0, 0), Text = "Power", TextSize = 11, TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = Color3.fromRGB(210, 190, 150) }, box)
 		end
-		local drop = menuContent:GetAttribute("GearDrop")
-		local modeNow = state.EquipMode or "Best"
-		local modeText = modeNow == "Best" and "⚡ Strongest" or (modeNow == "Augs" and "🌟 Set effects" or "🛡 Set gear")
+		local drop = menuContent:GetAttribute("GearDrop") -- (펼칠 수 있는 줄은 [🧹 정리] 하나뿐이다)
 		local function dropButton(key, text, x, width)
 			local open = drop == key
 			local b = makeButton({ Size = UDim2.new(0, width, 0, 34), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, x, 0.5, 0), RichText = true, TextSize = 13, Font = Enum.Font.GothamBlack,
-				Text = text .. (open and " ▲" or " ▼"), BackgroundColor3 = key == "Equip" and Color3.fromRGB(56, 110, 220) or (open and Color3.fromRGB(70, 64, 110) or Color3.fromRGB(44, 46, 68)) }, guide, function()
+				Text = text .. (open and " ▲" or " ▼"), BackgroundColor3 = open and Color3.fromRGB(70, 64, 110) or Color3.fromRGB(44, 46, 68) }, guide, function()
 				menuContent:SetAttribute("GearDrop", open and nil or key)
 				refreshMenu()
 			end)
 			rounded(b, 12)
 		end
-		do -- [⚡ 최강 장착] 하나: 실제 ⚡ 전투력이 가장 높은 조합 (세트 효과 단계 포함). 더 좋은 장비가 있으면("!") 초록으로 빛난다
-			if drop == "Equip" then menuContent:SetAttribute("GearDrop", nil) drop = nil end -- (예전 "장착 방식" 펼침 줄은 없앴다)
+		do -- [⚡ 최강 장착] 하나: 실제 ⚡ 전투력이 가장 높은 조합 (세트 효과 단계 포함). 끼면 ⚡ 가 오르는 장비가 가방에 있으면("!") 초록으로 빛난다
 			local better = state.Better == true
 			local b = makeButton({ Size = UDim2.new(0, 110, 0, 34), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -98, 0.5, 0), Text = "⚡ Best gear", TextSize = 13, Font = Enum.Font.GothamBlack,
 				BackgroundColor3 = better and GREEN or Color3.fromRGB(56, 110, 220) }, guide, function()
@@ -460,78 +445,25 @@ local function buildInventoryTab(state)
 		end
 		dropButton("Clean", "🧹 Clean", -8, 84)
 	end
-	-- 장착 방식 줄: "최강 장비"와 가진 세트가 한 줄에 칩으로 나란히 있고, 지금 쓰는 방식에 ✔ 가 붙는다. 칩을 누르면 그 방식으로 바로 갈아 끼운다 (이미 쓰는 칩을 다시 누르면 새로 얻은 장비까지 다시 맞춘다).
-	-- (예전엔 "최고 장비 자동 장착" 버튼과 "세트 장착" 칩이 따로 있어서, 어느 쪽으로 껴졌는지 오락가락했다)
+	-- 정리 줄: 위 띠의 [🧹 정리 ▼] 를 누르면 그 아래에 자동 분해 규칙 · 등급 이하 일괄 분해 · 스마트 정리가 펼쳐진다
+	-- (예전 "장착 방식" 칩 줄은 11-23 에 없앴다: 장착은 [⚡ 최강 장착] 하나, 세트 맞추기는 왼쪽 내 세트 카드 [장착])
 	do
-		local owned = {} -- [세트] = 가진 부위 수 (가방 + 착용)
-		local slotsSeen = {}
-		for _, item in ipairs(state.Items) do
-			if item.Set and Config.Sets[item.Set] then
-				slotsSeen[item.Set] = slotsSeen[item.Set] or {}
-				if not slotsSeen[item.Set][item.Slot] then
-					slotsSeen[item.Set][item.Slot] = true
-					owned[item.Set] = (owned[item.Set] or 0) + 1
-				end
-			end
-		end
-		local mode = state.EquipMode or "Best"
-		local drop = menuContent:GetAttribute("GearDrop") -- (위 한 줄의 [장착 ▼] / [🧹 ▼] 를 누르면 그 아래에 이 줄이 펼쳐진다)
+		local drop = menuContent:GetAttribute("GearDrop") -- ([🧹 정리 ▼] 를 누르면 그 아래에 이 줄이 펼쳐진다)
 		local setRow = drop and newRow(44, Color3.fromRGB(24, 26, 40)) or create("Frame", { Visible = false })
-		makeLabel({ Size = UDim2.new(0, 84, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = drop == "Clean" and "🧹 Clean" or "Equip mode", TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(225, 196, 118), TextXAlignment = Enum.TextXAlignment.Left }, setRow)
-		-- 오른쪽 끝: 자동 분해 / 정리 (한 줄로 합쳐서 장비 칸이 한 화면에 들어오게)
-		-- (오른쪽 세 칸: 자동 분해 규칙 / 등급 이하 일괄 분해 / 스마트 정리. 148+116+108 + 간격으로 예전 310 보다 72 넓어져 가운데 칩 줄이 그만큼 좁아졌다)
-		local cleanOpen = drop == "Clean"
-		local scrapButton = makeButton({ Size = UDim2.new(0, 170, 0, 32), Position = UDim2.new(0, 96, 0.5, -16), Visible = cleanOpen, RichText = true, TextWrapped = true, Text = "♻ <font size='11' color='#cfe0ff'>Auto-salvage</font>\n" .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 11, BackgroundColor3 = Color3.fromRGB(70, 110, 220) }, setRow, function() -- (자동 분해 규칙이 버튼에 바로 보인다. 누르면 다음 규칙)
+		makeLabel({ Size = UDim2.new(0, 84, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = "🧹 Clean", TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(225, 196, 118), TextXAlignment = Enum.TextXAlignment.Left }, setRow)
+		-- 오른쪽 세 칸: 자동 분해 규칙 / 등급 이하 일괄 분해 / 스마트 정리
+		local scrapButton = makeButton({ Size = UDim2.new(0, 170, 0, 32), Position = UDim2.new(0, 96, 0.5, -16), RichText = true, TextWrapped = true, Text = "♻ <font size='11' color='#cfe0ff'>Auto-salvage</font>\n" .. Config.Inventory.AutoScrapNames[state.AutoScrap], TextSize = 11, BackgroundColor3 = Color3.fromRGB(70, 110, 220) }, setRow, function() -- (자동 분해 규칙이 버튼에 바로 보인다. 누르면 다음 규칙)
 			Remotes.Inventory:FireServer("AutoScrap", (state.AutoScrap + 1) % 5)
 		end)
 		rounded(scrapButton, 14)
-		local belowButton = makeButton({ Size = UDim2.new(0, 130, 0, 32), Position = UDim2.new(0, 276, 0.5, -16), Visible = cleanOpen, Text = "♻ Rarity ▼", TextSize = 12, BackgroundColor3 = Color3.fromRGB(86, 74, 160) }, setRow, function() -- (누르면 등급 선택 + 확인 창: 실수로 지우지 않게 한 번 더 본다)
+		local belowButton = makeButton({ Size = UDim2.new(0, 130, 0, 32), Position = UDim2.new(0, 276, 0.5, -16), Text = "♻ Rarity ▼", TextSize = 12, BackgroundColor3 = Color3.fromRGB(86, 74, 160) }, setRow, function() -- (누르면 등급 선택 + 확인 창: 실수로 지우지 않게 한 번 더 본다)
 			openBulk()
 		end)
 		rounded(belowButton, 14)
-		local cleanButton = makeButton({ Size = UDim2.new(0, 130, 0, 32), Position = UDim2.new(0, 416, 0.5, -16), Visible = cleanOpen, Text = "🧹 Smart Clean", TextSize = 12, BackgroundColor3 = Color3.fromRGB(176, 76, 84) }, setRow, function()
+		local cleanButton = makeButton({ Size = UDim2.new(0, 130, 0, 32), Position = UDim2.new(0, 416, 0.5, -16), Text = "🧹 Smart Clean", TextSize = 12, BackgroundColor3 = Color3.fromRGB(176, 76, 84) }, setRow, function()
 			Remotes.Inventory:FireServer("SmartClean")
 		end)
 		rounded(cleanButton, 14)
-		local strip = create("ScrollingFrame", {
-			Size = UDim2.new(1, -96, 1, -4), Position = UDim2.new(0, 92, 0, 2), Visible = drop == "Equip", BackgroundTransparency = 1, BorderSizePixel = 0,
-			ScrollBarThickness = 3, ScrollingDirection = Enum.ScrollingDirection.X, CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.X,
-		}, setRow)
-		create("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Center }, strip)
-		local function modeChip(order, key, text, color, active, disabled)
-			local chip = makeButton({
-				Size = UDim2.new(0, 0, 0, 32), AutomaticSize = Enum.AutomaticSize.X, LayoutOrder = order, RichText = true, TextSize = 12,
-				Text = (active and "<font color='#78ff8c'>✔</font> " or "") .. text,
-				BackgroundColor3 = active and color:Lerp(Color3.fromRGB(26, 28, 42), 0.45) or Color3.fromRGB(34, 37, 54),
-			}, strip, function()
-				if disabled then return end
-				Remotes.Inventory:FireServer(key == "Best" and "AutoEquip" or (key == "Augs" and "AutoAugs") or "EquipSet", key)
-				if key == "Best" or key == "Augs" then menuContent:SetAttribute("GearDrop", nil) end -- (방식을 고르면 펼친 줄을 접는다. 세트 장비는 아래 세트 칩을 더 고를 수 있게 열어 둔다)
-			end)
-			rounded(chip, 16)
-			create("UIPadding", { PaddingLeft = UDim.new(0, 14), PaddingRight = UDim.new(0, 14) }, chip)
-			create("UIStroke", { Color = active and Color3.fromRGB(255, 255, 255) or color, Thickness = active and 2 or 1, Transparency = active and 0.1 or 0.55, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, chip)
-		end
-		-- 두 갈래로 나눈다: [⚡ 최강 장비] [🛡 세트 장비]. 세트 장비를 고른 때만 오른쪽에 가진 세트 칩이 나타난다 (세트 효과가 최강 장비 옆에 섞여 보이지 않게)
-		local inSetMode = mode ~= "Best" and Config.Sets[mode] ~= nil
-		local bestSet, bestScore = nil, -1
-		for i, key in ipairs(Config.Sets.ZoneKeys) do
-			if owned[key] and (owned[key] * 100 + i) > bestScore then bestSet, bestScore = key, owned[key] * 100 + i end
-		end
-		modeChip(0, "Best", "⚡ Strongest (sets counted)", Color3.fromRGB(80, 200, 130), mode == "Best")
-		modeChip(1, "Augs", "🌟 Match set effects (Y)", Color3.fromRGB(255, 200, 90), mode == "Augs") -- (Y 창에서 칸에 끼운 효과 단계가 가장 높아지게: AugService.AutoGear)
-		modeChip(2, bestSet or "Best", bestSet and "🛡 Set gear" or "🛡 Set gear <font size='11'>(no set yet)</font>", Color3.fromRGB(120, 150, 255), inSetMode, not bestSet)
-		if inSetMode then
-			makeLabel({ Size = UDim2.new(0, 14, 0, 32), LayoutOrder = 3, Text = "›", TextSize = 20, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(150, 156, 190) }, strip)
-			for i, key in ipairs(Config.Sets.ZoneKeys) do
-				if owned[key] then
-					local def = Config.Sets[key]
-					local worn = setCounts[key] or 0
-					local effectOn = def.Zone and player:GetAttribute("AugOnZ_" .. def.Zone) == true
-					modeChip(3 + i, key, string.format("%s %s  <font color='#ffe9a0'>%s</font>%s", def.Icon or "★", def.Name, setPips(math.min(worn, 3)), effectOn and "  <font color='#78ff8c'>● ON</font>" or ""), def.Color, mode == key)
-				end
-			end
-		end
 	end
 
 	local main = newRow(MAIN_H, Color3.fromRGB(20, 22, 34))
@@ -843,20 +775,21 @@ local function buildInventoryTab(state)
 			makeLabel({ Size = UDim2.new(1, -16, 0, 16), Position = UDim2.new(0, 10, 0, 84), RichText = true, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(154, 215, 255),
 				Text = string.format("%s · %d", table.concat(caption, " · "), #filtered) }, middle)
 		end
-		-- 칸을 고르면: 가방 자리에 "그 칸 바꿔 끼기" 목록 (전투력 변화 큰 순 · 추천 · 세트 변화 · 끼기 버튼 · 마우스 올리면 비교)
+		-- 칸을 고르면: 가방 자리에 "그 칸 바꿔 끼기" 목록 (실제 ⚡ 전투력 변화 큰 순 · 추천 · 세트 변화 · 끼기 버튼 · 마우스 올리면 비교)
 		local swapMode = filterSlot ~= nil and not filterSet and menuContent:GetAttribute("FuseOpen") ~= true
 		if swapMode then
 			local current = equipped[filterSlot]
-			local baseValue = loadoutValue(equipped)
-			local power = player:GetAttribute("Power") or 0
 			local rows = {}
-			for _, entry in ipairs(filtered) do
-				local trial = table.clone(equipped)
-				trial[filterSlot] = entry.Item
-				local v, counts = loadoutValue(trial)
-				table.insert(rows, { Item = entry.Item, Gain = baseValue > 0 and (v - baseValue) / baseValue or 1, After = counts[entry.Item.Set] })
+			for _, entry in ipairs(filtered) do -- (11-23) 점수 비율이 아니라 상세 창 · [⚡ 최강 장착] 과 같은 powerIf(서버 PowerPreview): 끼면 실제 ⚡ 가 얼마나 오르는가
+				local item = entry.Item
+				local after, base, exact = powerIf(item)
+				local pieces = item.Set and ((setCounts[item.Set] or 0) + ((current and current.Set == item.Set) and 0 or 1)) or 0
+				table.insert(rows, { Item = item, Gain = after - base, Base = base, AfterPower = after, Exact = exact, After = pieces })
 			end
-			table.sort(rows, function(a, b) return a.Gain > b.Gain end)
+			table.sort(rows, function(a, b)
+				if a.Gain ~= b.Gain then return a.Gain > b.Gain end
+				return (a.Item.Score or 0) > (b.Item.Score or 0) -- (변화량이 같으면 점수 높은 것부터: 순서가 흔들리지 않게)
+			end)
 			local head = makeLabel({ Size = UDim2.new(1, -16, 0, 16), Position = UDim2.new(0, 10, 0, 84), RichText = true, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(154, 215, 255),
 				Text = "Hover to compare · ⚡ = power change (set bonus + set effect counted)" }, middle)
 			local list = create("ScrollingFrame", { Size = UDim2.new(1, -8, 1, -156), Position = UDim2.new(0, 4, 0, 102), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 4,
@@ -869,7 +802,6 @@ local function buildInventoryTab(state)
 			local nowText = current and table.concat(itemStatText(current), " · ") or "—"
 			for order, r in ipairs(rows) do
 				local item, best = r.Item, order == 1 and r.Gain > 0
-				local pct = math.floor(r.Gain * 100 + 0.5)
 				local good = r.Gain >= 0
 				local row = create("Frame", { Size = UDim2.new(1, 0, 0, 62), LayoutOrder = order, BackgroundColor3 = best and Color3.fromRGB(30, 58, 38) or Color3.fromRGB(34, 36, 56), BorderSizePixel = 0, Active = true }, list)
 				rounded(row, 12)
@@ -883,7 +815,7 @@ local function buildInventoryTab(state)
 					local dot = create("Frame", { Size = UDim2.new(0, 9, 0, 9), Position = UDim2.new(1, -12, 0, 3), BackgroundColor3 = Config.Sets[item.Set].Color, BorderSizePixel = 0 }, tile)
 					create("UICorner", { CornerRadius = UDim.new(1, 0) }, dot)
 				end
-				local lines = { string.format("<font size='15' color='#%s'><b>⚡ %s%d%%</b></font>%s", good and "78ff8c" or "ff8c8c", pct >= 0 and "+" or "", pct, best and "  <font size='11' color='#78ff8c'><b>★ Best pick</b></font>" or "") }
+				local lines = { string.format("<font size='15' color='#%s'><b>⚡ %s%s%s</b></font>%s", good and "78ff8c" or "ff8c8c", r.Exact and "" or "≈ ", r.Gain >= 0 and "+" or "-", commas(math.abs(r.Gain)), best and "  <font size='11' color='#78ff8c'><b>★ Best pick</b></font>" or "") }
 				if item.Set and Config.Sets[item.Set] and not (current and current.Set == item.Set) then
 					local def, after = Config.Sets[item.Set], math.min(3, r.After or 1)
 					table.insert(lines, string.format("<font color='#cfeeff'>%s %d→%d/3</font>%s", def.Icon or "★", after - 1, after, after >= 2 and " <font color='#78ff8c'>· Set ON!</font>" or ""))
@@ -905,7 +837,7 @@ local function buildInventoryTab(state)
 					if not on then
 						head.Text = "Hover to compare · ⚡ = power change (set bonus + set effect counted)"
 					else
-						head.Text = string.format("⚡ %d → <font color='#%s'><b>%d</b></font>  ·  Now: <font color='#cfd6f0'>%s</font>", power, good and "78ff8c" or "ff8c8c", math.floor(power * (1 + r.Gain) + 0.5), nowText)
+						head.Text = string.format("⚡ %s%s → <b>%s</b>  ·  Now: <font color='#cfd6f0'>%s</font>", r.Exact and "" or "≈ ", commas(r.Base), commas(r.AfterPower), nowText)
 					end
 				end
 				row.MouseEnter:Connect(function() hover(true) end)

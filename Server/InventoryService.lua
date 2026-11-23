@@ -467,10 +467,9 @@ function Inventory.AutoEquipBest(player, emptyOnly)
 		return 0, "You can't change gear in the dungeon."
 	end
 	if not emptyOnly then state.EquipMode = "Best" end -- 장착 방식: "최강 장비" (세트 보너스 / 세트 효과까지 따져서 가장 센 조합)
-	-- 조합 비교: 부위마다 점수 최고(세트 무시) / 세트 하나 3부위 + 나머지 최고 / 세트 둘(3+3) 을 모두 계산해 "점수 + 세트 가치" 가 가장 높은 것.
+	-- 조합 비교: 부위마다 점수 최고(세트 무시) / 세트 하나 3부위 + 나머지 최고 / 세트 둘(3+3) 을 모두 만들어 실제 ⚡ 전투력이 가장 높은 것을 쓴다.
 	--   (예전: 부위마다 점수만 봐서, 세트 장비로 맞추는 쪽이 실제 전투력이 더 높은데도 세트를 깨 버렸다)
-	--   세트 가치(점수 단위): 2부위 보너스 SET2, 3부위 보너스 SET3 추가, 세트 효과 단계는 부위마다 AUG (최대 3)
-	local SET2, SET3, AUG = 150, 220, 60
+	--   후보를 몇 개만 남기려고 점수는 쓰지만, 순위는 previewPower(실제 ⚡) 로만 매긴다 (11-23: 점수 + 세트 가치 어림값 제거)
 	local function scoreOf(item) return Config.GetItemScore(item) end
 	local bySlot = {} -- [slot] = { {Id, Score, Set}... } 점수 높은 순
 	for id, item in pairs(state.Items) do
@@ -481,19 +480,6 @@ function Inventory.AutoEquipBest(player, emptyOnly)
 	local function bestOfSet(slotKey, setKey)
 		for _, c in ipairs(bySlot[slotKey] or {}) do if c.Set == setKey then return c end end
 		return nil
-	end
-	local function value(pick)
-		local total, counts = 0, {}
-		for _, c in pairs(pick) do
-			total += c.Score
-			if c.Set then counts[c.Set] = (counts[c.Set] or 0) + 1 end
-		end
-		for _, n in pairs(counts) do
-			if n >= 2 then total += SET2 end
-			if n >= 3 then total += SET3 end
-			total += AUG * math.min(3, n)
-		end
-		return total
 	end
 	local function build(setList) -- 세트들을 차례로 (세트마다 점수 높은 3부위까지) 넣고 나머지 부위는 점수 최고
 		local pick, used = {}, {}
