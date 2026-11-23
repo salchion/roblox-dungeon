@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<font size='12' color='#9ad7ff'>⏱ You'd beat this lord in ~{number1}s (aim for under 60s)</font>", "<font size='12' color='#9ad7ff'>⏱ 이 군주는 약 {number1}초면 잡아요 (60초 안이 목표)</font>" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} bosses in one Boss Rush run\n{number2} / {number3}   Reward: 🎫 {number4}", "보스 헌터 타이틀 『보스 헌터』\n보스 러시에서 {number1}명의 보스를 처치하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
 		{ "Ranking resets in <font color='#ffe16e'>{number1}d {number2}h</font> · rewards: tier by bosses defeated", "랭킹 초기화까지 <font color='#ffe16e'>{number1}일 {number2}시간</font> · 보상: 처치한 보스 수에 따른 등급" },
 		{ "Unbreakable   Title 『Unbreakable』\nSurvive {number1} seconds in the Boss Rush\n{number2} / {number3}   Reward: 🎫 {number4}", "깨지지 않는 타이틀 『Unbreakable』\n보스 러쉬에서 {number1}초 동안 생존하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
@@ -1040,6 +1041,5 @@ return {
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [월드 보스] {number1}구역 · {text2}: {text3} 등장! 주황색 빛기둥을 따라가 함께 쓰러뜨리면 장비 + 티켓!" },
 		{ "<font size='10' color='{text1}'>📍 Zone {number2} {text3} · Drops in that zone · Dungeon chests (deeper = better odds)</font>", "<font size='10' color='{text1}'>📍 {number2}구역 {text3} · 그 구역에서 드랍 · 던전 상자 (깊을수록 확률 높음)</font>" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} 세트 효과 『{text2}』 해금! 그 세트 장비를 끼면 저절로 켜지고, 골드로 강화할 수도 있어요 (Y 키)" },
-		{ " <font size='9' color='#8a8aa8'>Range {text1}</font> <font size='9' color='{text2}'><b>({number3}%)</b></font>", " <font size='9' color='#8a8aa8'>범위 {text1}</font> <font size='9' color='{text2}'><b>({number3}%)</b></font>" },
 	},
 }

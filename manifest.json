@@ -673,6 +673,13 @@
       "overwrite": true
     },
     {
+      "path": "TelegraphClient.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "TelegraphClient",
+      "class": "LocalScript",
+      "overwrite": true
+    },
+    {
       "path": "SetAuraClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "SetAuraClient",
@@ -802,6 +809,20 @@
       "path": "Server/NearMissService.lua",
       "parent": "ServerScriptService/Modules",
       "name": "NearMissService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Server/StatusService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "StatusService",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Server/ThreatService.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "ThreatService",
       "class": "ModuleScript",
       "overwrite": true
     },

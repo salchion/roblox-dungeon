@@ -7,6 +7,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 local Debris = game:GetService("Debris")
+local CollectionService = game:GetService("CollectionService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
@@ -217,8 +218,11 @@ handlers.Spirit = function(player, root, _, character)
 						if chargingUntil and os.clock() < chargingUntil and (part:GetAttribute("InterruptedAt") or 0) < chargingUntil - 5 then
 							part:SetAttribute("InterruptedAt", os.clock())
 							damage *= 2
-							local charge = part:FindFirstChild("ShotCharge")
-							if charge then charge:Destroy() end
+							-- 끊기 확장 (11-24): 일반·정예는 0.4초 경직(MonsterTypes.Update 가 이동·공격을 멈춘다).
+							-- 군주는 경직을 안 준다: 쿨마다 걸리면 군주 압박이 사라진다 (피해 ×2 만)
+							if not CollectionService:HasTag(part, "RadarBoss") then
+								part:SetAttribute("StaggerUntil", os.clock() + 0.4)
+							end
 							Effects.Burst(part.Position, Color3.fromRGB(255, 170, 210), 24)
 							if part:GetAttribute("Elite") or part:FindFirstChild("EliteOutline") or part.Size.X > 9 then
 								Effects.FloatText(part.Position + Vector3.new(0, part.Size.Y / 2 + 3, 0), "✂ Attack canceled! x2 damage", Color3.fromRGB(255, 170, 210))

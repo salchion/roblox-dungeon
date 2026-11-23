@@ -38,6 +38,7 @@ local Loot = require(script.Parent:WaitForChild("LootService"))
 local PartyShare = require(script.Parent:WaitForChild("FieldPartyShare")) -- 파티 경험치 나눔 / 파티원별 드랍
 local Inventory = require(script.Parent:WaitForChild("InventoryService"))
 local Journey = require(script.Parent:WaitForChild("JourneyService"))
+local Status = require(script.Parent:WaitForChild("StatusService")) -- 공격 중 상태이상 (강공격: 둔화 / 화상 / 감전)
 
 local F = Config.Field
 local TOP = 0.05
@@ -1708,6 +1709,8 @@ local function bossSlam(part, data)
 			Effects.Burst(Vector3.new(spot.X, floorAt(spot.X) + 2, spot.Z), Color3.fromRGB(255, 140, 70), 60)
 			for _, entry in ipairs(playersNear(spot, radius)) do
 				Guard.Take(entry.Humanoid, math.floor(data.Stats.ShotDamage * 1.4))
+				local owner = entry.Humanoid.Parent and Players:GetPlayerFromCharacter(entry.Humanoid.Parent)
+				if owner then Status.Apply(owner, "Slow") end -- 군주 내려찍기: 잠시 느려진다 (강공격에 맞은 대가)
 			end
 		end)
 	end

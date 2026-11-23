@@ -1228,6 +1228,36 @@ Config.Defense = {
 	MaxReduction = 0.6,  -- 최대 60%
 }
 
+-- 위협 3단 티어 (11-24 종태 님: "뭐가 강력한 공격인지 가시적으로 모른다" + 클로드 합의):
+--   * 패턴 고정 티어(Tier): 같은 몹은 항상 같은 경고라 배울 수 있다. T3만 바닥 도형 + 낮은 경고음 + 0.15초 늦은 탄.
+--   * 몸 앞 구의 색은 "내 한 방 %"(받는 피해 배율 반영) 로 칠한다: 노랑(주의 15%+) / 빨강(위험 35%+).
+--   * 바닥 도형은 T3 패턴이면서 내 한 방 %가 Demote 이상일 때만 그린다 (약한 구역에서 화면이 시끄러워지지 않게).
+Config.Threat = {
+	Tier = { -- 1 일반 / 2 주의 / 3 위험 (MonsterTypes.Defs[].Attack 이름)
+		Single = 1, Spit = 1, Crescent = 1, Burst = 1, Heal = 1,
+		Seeker = 2, Halo = 2, Fan = 2, Ring = 2, Sword = 2, Heavy = 2,
+		Slam = 3, Explode = 3, Charge = 3, Split = 3, Beam = 3,
+	},
+	-- 바닥 도형: Disc(원) / Strip(직선) / None(그 공격이 이미 자기 경고선을 그린다: 레이저·유성)
+	Shape = { Slam = "Disc", Explode = "Disc", Charge = "Strip", Split = "Strip" },
+	Size = { Slam = 24, Explode = 16, Charge = 60 }, -- Disc = 반지름 / Strip = 길이 (0/nil 이면 몹 사거리로 계산)
+	-- 공격마다 한 발 배율 (한 방 % 를 실제 피해로 재기 위해: 피해 = ShotDamage x 이 값)
+	DamageMult = { Slam = 1.1, Explode = 1.0, Charge = 1.5, Beam = 1.6, Split = 0.8 },
+	Grace = 0.15,     -- T3: 예고가 끝난 뒤 이만큼 더 기다렸다 쏜다 (한 박자)
+	Demote = 15,      -- 내 한 방 % 가 이보다 낮으면 바닥 도형을 그리지 않는다
+	HitTiers = { 15, 35 }, -- 몸 앞 구 색 단계 (FieldSignal.HitTiers 와 같은 기준)
+	Pierce = 0.2,     -- T3 피해는 방어 피해 감소의 20% 를 무시한다 ("강공격이면 아프다")
+	MaxShare = 0.45,  -- T3 한 방은 최대 체력의 45% 를 넘지 않는다 (도트·잔타와 겹쳐 즉사하지 않게)
+	Perfect = { Window = 0.25, MobileWindow = 0.35, Extra = 0.1, Stacks = 2, Ult = 10 }, -- 완벽 회피 판정 창(예고 마지막 구간 비율) / 보상
+	Status = { -- 공격 중 상태이상 (T3에만): 화상 / 둔화 / 감전
+		Burn = { Duration = 4, PerSec = 0.012 },   -- 초당 최대 체력 1.2% (받는 피해 감소 적용)
+		Slow = { Duration = 2.5, Amount = 0.35 },  -- 이동 속도 -35% (대시 속도는 그대로: 빠져나가는 맛을 살린다)
+		Shock = { Duration = 1, Amount = 0.25 },   -- 공격 속도 -25%
+		Immune = 1.5,                              -- 같은 상태이상은 이 시간 안에 다시 안 걸린다
+		Kind = { Slam = "Slow", Charge = "Slow", Explode = "Burn", Beam = "Shock" },
+	},
+}
+
 Config.Rift = {
 	Duration = 600,       -- 최대 버티는 시간(초): 이 시간이 지나면 끝난다
 	FreeAttempts = 2,     -- 하루 입장 횟수 (UTC 날짜 기준 초기화)

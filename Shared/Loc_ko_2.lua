@@ -1264,6 +1264,7 @@ return {
 		["🚀 Set +1 only"] = "🚀 세트 효과 +1만",
 		["▲ Low first"] = "▲ 약한 것부터",
 		["▼ High first"] = "▼ 강한 것부터",
+		["🌟 PERFECT DODGE!"] = "완벽 회피!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1314,6 +1315,5 @@ return {
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Sniper Rifle · Rusty Era +{number10}\n📍 Dungeon", "🎖 레벨 {number1} {number2} / {number3} 경험치\n💰 {number4} G 🎫 {number5}\n🔑{number6} (오늘 무료 {number7}/{number8})\n⚡ 파워 {number9}\n⚔ 저격 소총 · 녹슨 시대 +{number10}\n📍 던전" },
 		{ "🌱 Beginner's Boon: +{number1}% damage and -{number2}% damage taken until you clear Zone {number3} (it fades by Lv {number4})", "🌱 초보자의 축복: 구역 {number3}을 클리어할 때까지 피해량 +{number1}% 및 받는 피해량 -{number2}% (레벨 {number4}에 따라 감소)" },
 		{ "🐾 Pet Lv.{number1}! New ability 🧲 Auto-Loot — Loot within a {number2} radius gets pulled in automatically", "🐾 펫 레벨 {number1}! 새로운 능력 🧲 자동 약탈 - {number2} 반경 내의 아이템을 자동으로 수집합니다" },
-		{ "<font size='12' color='#9ad7ff'>⏱ You'd beat this lord in ~{number1}s (aim for under 60s)</font>", "<font size='12' color='#9ad7ff'>⏱ 이 군주는 약 {number1}초면 잡아요 (60초 안이 목표)</font>" },
 	},
 }

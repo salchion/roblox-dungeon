@@ -49,7 +49,7 @@ local function callerOf() -- Take 를 부른 곳 ("FieldBossPatterns:812"). Take
 	return "?"
 end
 
-function Guard.Take(humanoid, amount)
+function Guard.Take(humanoid, amount, pierce, maxShare)
 	if not humanoid or humanoid.Health <= 0 then return end
 	local player = humanoid.Parent and Players:GetPlayerFromCharacter(humanoid.Parent)
 	if player then
@@ -57,7 +57,9 @@ function Guard.Take(humanoid, amount)
 			local okU, Unique = pcall(function() return require(script.Parent:WaitForChild("UniqueService")) end)
 			if okU and Unique.TryShield(player) then return end
 		end
-		amount = amount * (1 - Guard.Reduction(player)) * (1 - (player:GetAttribute("GearBulwark") or 0)) * (1 - (player:GetAttribute("TrainBulwark") or 0)) -- (유니크 "Bulwark" / 훈련 "질긴 피부")
+		local reduce = Guard.Reduction(player)
+		if pierce and pierce > 0 then reduce *= 1 - pierce end -- (강공격 T3: 피해 감소의 일부를 무시한다 — Config.Threat.Pierce)
+		amount = amount * (1 - reduce) * (1 - (player:GetAttribute("GearBulwark") or 0)) * (1 - (player:GetAttribute("TrainBulwark") or 0)) -- (유니크 "Bulwark" / 훈련 "질긴 피부")
 		amount *= 1 - Config.Newbie.Defense * Config.NewbieStrength(player) -- 초보자 가호: 초반에는 받는 피해가 줄어든다
 		amount *= 1 - math.min(0.5, Config.TalentMod(player, "DmgReduce")) -- 특성 "강철 위장"
 		local rushGuard = Config.TalentMod(player, "RushGuard")
@@ -81,6 +83,7 @@ function Guard.Take(humanoid, amount)
 		local lo, hi = G.Grit(lv("AugGrit")) -- 🔥 불굴: 체력이 낮을수록 덜 받는다
 		local ratio = humanoid.MaxHealth > 0 and humanoid.Health / humanoid.MaxHealth or 1
 		if ratio < 0.25 then amount *= 1 - hi elseif ratio < 0.5 then amount *= 1 - lo end
+		if maxShare and maxShare > 0 and amount > humanoid.MaxHealth * maxShare then amount = humanoid.MaxHealth * maxShare end -- (T3 한 방 상한: 도트·잔타와 겹쳐 한 번에 죽지 않게)
 		player:SetAttribute("LastHurtAt", workspace:GetServerTimeNow()) -- (💚 재생은 맞은 뒤 2초 쉰다)
 		Guard.Note(humanoid, callerOf(), amount)
 		local buffer = G.Buffer(lv("AugBuffer")) -- ⏳ 완충: 일부를 3초(0.5초 x 6번)에 나눠 받는다

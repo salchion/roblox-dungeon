@@ -1707,6 +1707,33 @@ end
 -- 점화(6구역 "Ignite", 저장 이름은 예전 그대로 AugFlame): 맞힌 적에게 불 중첩이 쌓이고 0.5초마다 탄다 (보스형: 오래 맞는 적일수록 강하다)
 local IGNITE_LIFE = 4 -- 중첩 하나가 유지되는 시간 (맞힐 때마다 새로 4초)
 local function igniteMax(level) return 4 + level + (level >= 5 and 3 or 0) end
+-- 불붙은 몬스터의 체력바 위에 "🔥x3" 배지 (스택이 바뀔 때만 글자를 다시 쓴다: 화면에 도배되지 않게)
+local function burnBadge(part)
+	local gui = part:FindFirstChildOfClass("BillboardGui")
+	if not gui then return nil end
+	local label = gui:FindFirstChild("BurnBadge")
+	if not label then
+		label = Instance.new("TextLabel")
+		label.Name = "BurnBadge"
+		label.AnchorPoint = Vector2.new(0.5, 1)
+		label.Size = UDim2.new(0, 72, 0, 16)
+		label.Position = UDim2.new(0.5, 0, 0, -1)
+		label.BackgroundTransparency = 1
+		label.Font = Enum.Font.GothamBlack
+		label.TextScaled = true
+		label.TextColor3 = Color3.fromRGB(255, 168, 64)
+		label.TextStrokeTransparency = 0.15
+		label.Text = ""
+		label.Parent = gui
+	end
+	return label
+end
+local function setBurnBadge(part, stacks)
+	local label = burnBadge(part)
+	if not label then return end
+	local text = stacks and stacks > 0 and string.format("🔥x%d", stacks) or ""
+	if label.Text ~= text then label.Text = text end
+end
 local function addIgnite(run, player, part, data, stacks)
 	local level = augLv(run, player, "AugFlame")
 	if level <= 0 or not part.Parent then return end
@@ -1722,25 +1749,40 @@ local function addIgnite(run, player, part, data, stacks)
 		local fx = Instance.new("ParticleEmitter")
 		fx.Name = "IgniteFx"
 		fx.Texture = "rbxasset://textures/particles/fire_main.dds"
-		fx.Color = ColorSequence.new(Color3.fromRGB(255, 210, 110), Color3.fromRGB(255, 80, 30))
-		fx.LightEmission = 0.6
-		fx.Rate = 6
-		fx.Lifetime = NumberRange.new(0.4, 0.7)
-		fx.Speed = NumberRange.new(2, 4)
-		fx.SpreadAngle = Vector2.new(20, 20)
+		fx.Color = ColorSequence.new(Color3.fromRGB(255, 220, 130), Color3.fromRGB(255, 70, 20))
+		fx.LightEmission = 0.8
+		fx.Rate = 10
+		fx.Lifetime = NumberRange.new(0.5, 0.9)
+		fx.Speed = NumberRange.new(3, 6)
+		fx.SpreadAngle = Vector2.new(26, 26)
 		fx.EmissionDirection = Enum.NormalId.Top
-		fx.Acceleration = Vector3.new(0, 6, 0)
-		fx.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, math.clamp(part.Size.X * 0.25, 0.8, 3)), NumberSequenceKeypoint.new(1, 0) })
-		fx.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) })
+		fx.Acceleration = Vector3.new(0, 7, 0)
+		fx.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, math.clamp(part.Size.X * 0.3, 1.2, 4.5)), NumberSequenceKeypoint.new(1, 0) })
+		fx.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.15), NumberSequenceKeypoint.new(1, 1) })
 		fx.Parent = part
 		entry.Fx = fx
+		-- 불이 붙는 순간: 몸이 잠깐 밝게 빛난다 (작은 불티만으로는 100마리 필드에서 안 보였다)
+		local glow = Instance.new("PointLight")
+		glow.Color = Color3.fromRGB(255, 150, 60)
+		glow.Range = math.clamp(part.Size.X * 1.6, 10, 26)
+		glow.Brightness = 2.2
+		glow.Parent = part
+		game:GetService("TweenService"):Create(glow, TweenInfo.new(0.6), { Brightness = 0 }):Play()
+		game:GetService("Debris"):AddItem(glow, 0.7)
+		entry.ShowAt = now -- 틱 피해를 숫자로 보여 주는 시점 (몹당 1초에 한 번 합산)
+		entry.Shown = 0
 	end
 	if now < entry.NextAdd then return end -- (연사 / 산탄이 한 번에 중첩을 몰아 쌓지 않게: 0.12초에 한 번)
 	entry.NextAdd = now + 0.12
 	entry.Owner = player
+	local before = entry.Stacks
 	entry.Stacks = math.min(igniteMax(level), entry.Stacks + stacks)
 	entry.Expire = now + IGNITE_LIFE
-	if entry.Fx then entry.Fx.Rate = math.min(22, 4 + entry.Stacks * 3) end
+	if entry.Fx then entry.Fx.Rate = math.min(30, 8 + entry.Stacks * 3) end
+	setBurnBadge(part, entry.Stacks)
+	if before < igniteMax(level) and entry.Stacks >= igniteMax(level) then -- 처음 최대 중첩에 닿았다: 세트 효과가 일했다고 한 번 알려 준다
+		procAug(player, "AugFlame", part.Position)
+	end
 	if run.IgniteLoop then return end
 	run.IgniteLoop = true
 	task.spawn(function()
@@ -1751,13 +1793,22 @@ local function addIgnite(run, player, part, data, stacks)
 				if tickNow > burn.Expire or not burnPart.Parent or burn.Data.Health <= 0 or not burn.Owner.Parent then
 					run.Ignite[burnPart] = nil
 					if burn.Fx then burn.Fx:Destroy() end
+					setBurnBadge(burnPart, 0)
 				else
 					local lv = augLv(run, burn.Owner, "AugFlame")
 					local tick = augDamage(burn.Owner) * (0.05 + 0.025 * lv) * burn.Stacks
 					hitMonster(run, burn.Owner, { Part = burnPart, Data = burn.Data }, tick, true, nil, "AugFlame")
+					-- 타는 피해는 0.5초마다 조용히 들어간다 -> 눈에 보이게: 몹당 1초에 한 번, 그동안 들어간 피해를 합쳐 불꽃 숫자 하나로 띄운다
+					burn.Shown = (burn.Shown or 0) + tick * Config.AugHitMult(burn.Owner, "AugFlame", isBossData(burn.Data))
+					if tickNow >= (burn.ShowAt or 0) + 1 then
+						burn.ShowAt = tickNow
+						local total = math.floor(burn.Shown + 0.5)
+						burn.Shown = 0
+						if total > 0 then Effects.FloatText(burnPart.Position + Vector3.new(0, burnPart.Size.Y / 2 + 1.5, 0), "🔥 " .. total, Color3.fromRGB(255, 158, 70)) end
+					end
 					if lv >= 6 and burn.Stacks >= igniteMax(lv) and tickNow >= burn.NextBurst then -- 6셋: 최대 중첩이면 3초마다 불꽃 폭발
 						burn.NextBurst = tickNow + 3
-						Effects.Raw(burnPart.Position, { "N", burnPart.Position, 9, Color3.fromRGB(255, 130, 50) })
+						Effects.Raw(burnPart.Position, { "N", burnPart.Position, 6, Color3.fromRGB(255, 130, 50) })
 						hitMonster(run, burn.Owner, { Part = burnPart, Data = burn.Data }, augDamage(burn.Owner) * 3, nil, Color3.fromRGB(255, 150, 60), "AugFlame")
 					end
 				end

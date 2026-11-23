@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "<font color='#{number4}ad{number5}ff'>Tomo de hechizos · Era mítica +{number6}</font>" },
 		{ "Shot_Shotgun  <font color='#{number1}aa{number2}c{number3}'>Shotgun shot</font>", "Disparo de escopeta <font color='#{number1}aa{number2}c{number3}'> Disparo de escopeta </font>" },
 		{ "🔒 Zone {number1} · Desert Sealed\nOpen the previous gate first", "🔒 Zona {number1} · Desierto sellado\nAbre la puerta anterior primero" },
 		{ "One less dagger, but each hits +{number1}% harder: for bosses", "Una daga menos, pero cada una pega +{number1} % más: para jefes" },

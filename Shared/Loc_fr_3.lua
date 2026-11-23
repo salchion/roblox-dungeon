@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Sweep needs {number1} key(s). Defeat a field zone lord to get keys", "Le balayage nécessite {number1} clé(s). Bats un seigneur de zone du terrain pour en obtenir" },
 		{ "You can run {number1} effects at once. Turn another one off first", "Vous pouvez activer {number1} effets à la fois. Désactivez-en d'abord un autre" },
 		{ "Town north gate · boss chest gear + gold · Free {number1} · Keys {number2}", "Porte nord de la ville · équipement + or du coffre du boss · Gratuit {number1} · Clés {number2}" },
 		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "Résultat de Gacha_Pop{number1} <font color='#{number2}aa{number3}c{number4}'> : Épique</font>" },

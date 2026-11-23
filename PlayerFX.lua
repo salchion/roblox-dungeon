@@ -323,27 +323,61 @@ do
 	end)
 end
 
--- 내 체력바: 캐릭터 발밑에만 표시
+-- 내 체력바: 캐릭터 발밑에만 표시 (위에 상태이상 칩 + 불꽃 입자도 붙는다)
 do
 	local fill = { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(70, 220, 100) }
 	local text = { Text = "" }
 	local feet
+	local statusChips
 	local lastHealth
 	local lastLowSound
+	local STATUS_ICON = { Burn = "🔥", Slow = "🐌", Shock = "⚡" }
+	-- 맞은 피해 단계 (11-24): 내 최대 체력의 15% / 35% 를 기준으로 연출을 가른다.
+	--   지금은 608 피해도 20 피해와 똑같은 번쩍임 + 같은 소리여서 "강한 공격에 맞았다"는 느낌이 없었다.
+	local function hurtFeedback(lost, maxHealth)
+		local pct = lost / math.max(1, maxHealth)
+		local tier = pct >= 0.35 and 3 or (pct >= 0.15 and 2 or 1)
+		-- ① 화면 가장자리: 단계가 높을수록 진하고 오래 남는다
+		local flash = tier == 3 and 0.55 or (tier == 2 and 0.7 or 0.78)
+		local span = tier == 3 and 0.55 or 0.35
+		local edge = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = tier >= 2 and Color3.fromRGB(255, 8, 8) or Color3.fromRGB(255, 20, 20), BackgroundTransparency = flash, BorderSizePixel = 0, ZIndex = 45, Active = false }, gui)
+		TweenService:Create(edge, TweenInfo.new(span), { BackgroundTransparency = 1 }):Play()
+		task.delay(span + 0.05, function() edge:Destroy() end)
+		-- ② 소리: 큰 피해는 더 낮고 무겁게 (같은 파일의 피치만 내린다)
+		if tier == 3 then
+			SoundBank.Play(game:GetService("SoundService"), "Player_Hurt", { Pitch = 0.62, Volume = 1.1 })
+		elseif tier == 2 then
+			SoundBank.Play(game:GetService("SoundService"), "Player_Hurt", { Pitch = 0.8, Volume = 1 })
+		else
+			SoundBank.Play(game:GetService("SoundService"), "Player_Hurt", { Pitch = 0.92 + math.random() * 0.16 })
+		end
+		-- ③ 숫자: 단계가 높을수록 크게 + 큰 피해는 체력 변화도 같이 보여 준다
+		local size = tier == 3 and 46 or (tier == 2 and 34 or 29)
+		local color = tier == 3 and Color3.fromRGB(255, 40, 40) or Color3.fromRGB(255, 80, 80)
+		local drop = makeLabel({ Size = UDim2.new(0, 320, 0, size + 14), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, tier == 3 and 0.52 or 0.55, 0), Text = string.format("-%d", math.ceil(lost)), Font = Enum.Font.GothamBlack, TextSize = size, TextColor3 = color, TextStrokeTransparency = 0, ZIndex = 46 }, gui)
+		TweenService:Create(drop, TweenInfo.new(tier == 3 and 0.85 or 0.7), { Position = UDim2.new(0.5, 0, tier == 3 and 0.44 or 0.47, 0), TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+		task.delay(0.9, function() drop:Destroy() end)
+		if tier == 3 then
+			local humanoidNow = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+			local left = humanoidNow and humanoidNow.Health or 0
+			local hp = makeLabel({ Size = UDim2.new(0, 320, 0, 20), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.52, size * 0.5 + 8), Text = string.format("HP %d → %d", math.ceil(maxHealth), math.ceil(left)), Font = Enum.Font.GothamBold, TextSize = 15, TextColor3 = Color3.fromRGB(255, 210, 200), TextStrokeTransparency = 0.1, ZIndex = 46 }, gui)
+			TweenService:Create(hp, TweenInfo.new(0.8), { Position = UDim2.new(0.5, 0, 0.46, size * 0.5 + 8), TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
+			task.delay(0.85, function() hp:Destroy() end)
+		end
+		-- ④ 화면 흔들림 (설정에서 끌 수 있는 기존 흔들림을 그대로 쓴다)
+		if tier >= 2 then
+			player:SetAttribute("ShakeStrength", tier == 3 and 0.75 or 0.4)
+			player:SetAttribute("ShakeTick", (player:GetAttribute("ShakeTick") or 0) + 1)
+		end
+	end
 	local function update()
 		local character = player.Character
 		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 		if not humanoid then return end
 		local ratio = math.clamp(humanoid.Health / math.max(1, humanoid.MaxHealth), 0, 1)
-		-- 맞으면 화면 가장자리가 붉게 번쩍이고 -피해량이 뜬다 (맞고 있는지 한눈에)
+		-- 맞으면 화면 가장자리가 붉게 번쩍이고 -피해량이 뜬다 (맞고 있는지 한눈에). 피해 크기에 따라 연출 단계가 다르다
 		if lastHealth and humanoid.Health < lastHealth - 0.5 then
-			SoundBank.Play(game:GetService("SoundService"), "Player_Hurt", { Pitch = 0.92 + math.random() * 0.16 })
-			local hurt = create("Frame", { Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.fromRGB(255, 20, 20), BackgroundTransparency = 0.78, BorderSizePixel = 0, ZIndex = 45, Active = false }, gui)
-			TweenService:Create(hurt, TweenInfo.new(0.35), { BackgroundTransparency = 1 }):Play()
-			task.delay(0.4, function() hurt:Destroy() end)
-			local lost = makeLabel({ Size = UDim2.new(0, 200, 0, 40), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.55, 0), Text = string.format("-%d", math.ceil(lastHealth - humanoid.Health)), Font = Enum.Font.GothamBlack, TextSize = 29, TextColor3 = Color3.fromRGB(255, 80, 80), TextStrokeTransparency = 0, ZIndex = 46 }, gui)
-			TweenService:Create(lost, TweenInfo.new(0.7), { Position = UDim2.new(0.5, 0, 0.47, 0), TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
-			task.delay(0.8, function() lost:Destroy() end)
+			hurtFeedback(lastHealth - humanoid.Health, humanoid.MaxHealth)
 		end
 		lastHealth = humanoid.Health
 		LowHpFx.Ratio = humanoid.Health > 0 and ratio or 1 -- 체력이 낮으면 화면 가장자리가 붉게 맥박친다 (심장 소리 대신 화면 연출)
@@ -366,12 +400,52 @@ do
 			create("UICorner", { CornerRadius = UDim.new(0.5, 0) }, inner)
 			create("UIGradient", { Rotation = 90, Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(170, 170, 170)) }, inner)
 			makeLabel({ Name = "HP", Size = UDim2.fromScale(1, 1), Text = "", Font = Enum.Font.GothamBold, TextSize = 10, TextColor3 = Color3.new(1, 1, 1), TextStrokeTransparency = 0.35, ZIndex = 3 }, back)
+			-- 상태이상 칩 (화상 / 둔화 / 감전): 머리 위가 아니라 발밑 체력바 바로 위 — 전투 중에 눈이 가는 곳
+			statusChips = {}
+			local order = { "Burn", "Slow", "Shock" }
+			for index = 1, #order do
+				local kind = order[index]
+				statusChips[kind] = makeLabel({ Name = "Chip" .. kind, Size = UDim2.new(0, 62, 0, 15), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, (index - 2) * 66, 0, -1), Text = "", Font = Enum.Font.GothamBlack, TextSize = 12, TextColor3 = Color3.fromRGB(255, 220, 160), TextStrokeTransparency = 0.15, ZIndex = 4, Visible = false }, feet)
+			end
 		end
 		local f = feet and feet:FindFirstChild("Fill", true)
 		if f then
 			f.Size = UDim2.fromScale(ratio, 1)
 			f.BackgroundColor3 = fill.BackgroundColor3
 			feet:FindFirstChild("HP", true).Text = text.Text
+		end
+		-- 상태이상 칩 + 몸에 붙는 불꽃 (남은 시간을 같이 보여 준다)
+		if statusChips then
+			local now = workspace:GetServerTimeNow()
+			for kind, label in pairs(statusChips) do
+				local untilAt = player:GetAttribute("Status" .. kind .. "Until") or 0
+				local left = untilAt - now
+				if left > 0 then
+					label.Visible = true
+					label.Text = string.format("%s %.1f", STATUS_ICON[kind] or "", left)
+				elseif label.Visible then
+					label.Visible = false
+				end
+			end
+		end
+		if root then
+			local burnFx = root:FindFirstChild("BurnFx")
+			if not burnFx then
+				burnFx = Instance.new("ParticleEmitter")
+				burnFx.Name = "BurnFx"
+				burnFx.Texture = "rbxasset://textures/particles/fire_main.dds"
+				burnFx.Color = ColorSequence.new(Color3.fromRGB(255, 210, 120), Color3.fromRGB(255, 90, 30))
+				burnFx.LightEmission = 0.7
+				burnFx.Rate = 14
+				burnFx.Lifetime = NumberRange.new(0.3, 0.6)
+				burnFx.Speed = NumberRange.new(1.5, 3)
+				burnFx.SpreadAngle = Vector2.new(35, 35)
+				burnFx.Acceleration = Vector3.new(0, 8, 0)
+				burnFx.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.4), NumberSequenceKeypoint.new(1, 0) })
+				burnFx.Enabled = false
+				burnFx.Parent = root
+			end
+			burnFx.Enabled = (player:GetAttribute("StatusBurnUntil") or 0) > workspace:GetServerTimeNow()
 		end
 	end
 	RunService.Heartbeat:Connect(update)
@@ -387,6 +461,32 @@ do
 	pulse.Enabled = false
 	pulse.Parent = Lighting
 	Remotes.Banner.OnClientEvent:Connect(function(action, info)
+		if action == "Perfect" then
+			-- 완벽 회피 (11-24): 강공격의 마지막 순간에 대시로 범위를 빠져나왔다. NEAR MISS 보다 한 단계 위라 금색으로 띄운다
+			pulse.Enabled = true
+			pulse.Saturation, pulse.Contrast, pulse.TintColor = -0.25, 0.3, Color3.fromRGB(255, 226, 140)
+			TweenService:Create(pulse, TweenInfo.new(0.5, Enum.EasingStyle.Quad), { Saturation = 0, Contrast = 0, TintColor = Color3.new(1, 1, 1) }):Play()
+			task.delay(0.55, function() pulse.Enabled = false end)
+			local fovNow = camera.FieldOfView
+			camera.FieldOfView = fovNow - 12
+			TweenService:Create(camera, TweenInfo.new(0.45, Enum.EasingStyle.Quad), { FieldOfView = fovNow }):Play()
+			for _, old in ipairs(NearMissBanner) do if old.Parent then old:Destroy() end end
+			table.clear(NearMissBanner)
+			local gold = makeLabel({
+				Size = UDim2.new(0, 360, 0, 46), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.35, 0),
+				Text = "🌟 PERFECT DODGE!", TextSize = 40, Font = Enum.Font.GothamBlack,
+				TextColor3 = Color3.fromRGB(255, 226, 120), TextStrokeTransparency = 0, TextStrokeColor3 = Color3.fromRGB(80, 40, 0), ZIndex = 60,
+			}, gui)
+			NearMissBanner[1] = gold
+			TweenService:Create(gold, TweenInfo.new(0.24, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Size = UDim2.new(0, 560, 0, 62) }):Play()
+			task.delay(1.1, function()
+				if not gold.Parent then return end
+				TweenService:Create(gold, TweenInfo.new(0.35), { TextTransparency = 1, TextStrokeTransparency = 1, Position = UDim2.new(0.5, 0, 0.32, 0) }):Play()
+				task.wait(0.4)
+				if gold.Parent then gold:Destroy() end
+			end)
+			return
+		end
 		if action ~= "NearMiss" then return end
 		pulse.Enabled = true
 		pulse.Saturation, pulse.Contrast, pulse.TintColor = -0.55, 0.25, Color3.fromRGB(190, 255, 255)

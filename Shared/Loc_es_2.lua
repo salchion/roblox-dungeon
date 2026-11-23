@@ -995,6 +995,7 @@ return {
 		["🚀 Set +1 only"] = "🚀 Solo efecto de conjunto +1",
 		["▲ Low first"] = "▲ Más débil primero",
 		["▼ High first"] = "▼ Más fuerte primero",
+		["🌟 PERFECT DODGE!"] = "¡ESQUIVA PERFECTA!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1124,6 +1125,5 @@ return {
 		{ "🔒 Zone {number1} · Volcano Sealed\nOpen the previous gate first", "🔒 Zona {number1} · Volcán sellado\nAbre la puerta anterior primero" },
 		{ "♻ [Common] Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [Común] Armadura de cuero recuperada automáticamente (Esencia +{number1} {number2} G)" },
 		{ "Zone {number1} set effect · Trial Lv.3 — for this dungeon only", "Efecto de set de la zona {number1} · Prueba nv.3 — solo en esta mazmorra" },
-		{ "<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "<font color='#{number4}ad{number5}ff'>Tomo de hechizos · Era mítica +{number6}</font>" },
 	},
 }

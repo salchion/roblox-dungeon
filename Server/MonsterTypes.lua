@@ -23,6 +23,7 @@ local Effects = require(script.Parent:WaitForChild("Effects"))
 local SoundBank = require(game:GetService("ReplicatedStorage"):WaitForChild("SoundBank"))
 local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Config"))
 local Guard = require(script.Parent:WaitForChild("DamageGuard"))
+local Threat = require(script.Parent:WaitForChild("ThreatService")) -- (강공격 T3: 완벽 회피 / 상태이상 / 피해 감소 일부 무시)
 local okLooks, NewLooks = pcall(function() return require(script.Parent:WaitForChild("MonsterLooks")) end)
 if not okLooks then
 	warn("[MonsterLooks] 불러오지 못해 예전 모양을 씁니다: " .. tostring(NewLooks))
@@ -668,33 +669,50 @@ local function sightClear(ctx, data, from, to, now)
 	return data.SightClear
 end
 
-local function telegraph(ctx, part, data, color, delay, action)
+local function threatArea(ctx, part, shape, size)
+	if shape == "Disc" then
+		return { Shape = "Disc", Center = part.Position, Radius = size or 12 }
+	elseif shape == "Strip" then
+		local target = ctx.GetTarget(part.Position)
+		if not target then return nil end
+		local toTarget = flat(target.Position - part.Position)
+		if toTarget.Magnitude < 0.5 then return nil end
+		local length = size
+		if not length or length <= 0 then length = math.clamp(toTarget.Magnitude, 40, 160) end
+		return { Shape = "Strip", Origin = part.Position, Dir = toTarget.Unit, Length = length, Width = math.max(8, part.Size.X * 0.9) }
+	end
+	return nil
+end
+
+local function telegraph(ctx, part, data, color, delay, action, override)
 	part.Color = color
 	local startedAt = os.clock()
+	-- 위협 3단 티어 (Config.Threat): 종류·패턴은 고정, 몸 앞 구 색은 클라이언트가 내 한 방 % 로 칠한다.
+	-- 예고 부품(ShotCharge)은 서버가 만들지 않는다: 클라이언트(TelegraphClient)가 내 화면에만 그린다.
+	local T = Config.Threat
+	local attack = data.Def and data.Def.Attack or ""
+	local tier = (override and override.Tier) or T.Tier[attack] or 1
+	local shape = (override and override.Shape) or T.Shape[attack] or "None"
+	local size = (override and override.Size) or T.Size[attack]
+	local total = delay + (tier >= 3 and T.Grace or 0) -- (위험한 공격은 한 박자 더 기다린다)
 	if delay >= 0.25 then part:SetAttribute("ChargingUntil", startedAt + delay) end -- 기 모으는 중: 블레이드 블룸(F)으로 끊을 수 있다 (SkillService)
 	data.RearUntil = os.clock() + delay -- 공격 직전: 몸을 뒤로 젖힌다 (Update 의 기울임이 읽는다)
-	-- 발사 예고가 눈에 보이게: 몸 앞에 공격 색 빛 구슬이 차오른다 (판정용 몸체는 투명이라 색만 바꾸면 아무것도 안 보였다)
-	local charge
-	if part.Parent and delay >= 0.25 then
-		local s = math.clamp(part.Size.X * 0.32, 0.8, 5)
-		charge = Instance.new("Part")
-		charge.Name = "ShotCharge"
-		charge.Shape = Enum.PartType.Ball
-		charge.Material = Enum.Material.Neon
-		charge.Color = color
-		charge.Transparency = 0.25
-		charge.Anchored, charge.CanCollide, charge.CanQuery, charge.CanTouch, charge.Massless, charge.CastShadow = false, false, false, false, true, false
-		charge.Size = Vector3.new(s * 0.3, s * 0.3, s * 0.3)
-		local weld = Instance.new("Weld")
-		weld.Part0, weld.Part1 = part, charge
-		weld.C0 = CFrame.new(0, part.Size.Y * 0.15, -part.Size.Z * 0.55)
-		weld.Parent = charge
-		charge.Parent = part
-		game:GetService("TweenService"):Create(charge, TweenInfo.new(delay, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Size = Vector3.new(s, s, s), Transparency = 0.05 }):Play()
-		game:GetService("Debris"):AddItem(charge, delay + 0.1)
+	local nowS = workspace:GetServerTimeNow()
+	part:SetAttribute("TeleTier", tier)
+	part:SetAttribute("TeleShape", shape)
+	part:SetAttribute("TeleSize", size or 0)
+	part:SetAttribute("TeleMult", T.DamageMult[attack] or 1)
+	part:SetAttribute("TeleFrom", nowS)
+	part:SetAttribute("TeleUntil", nowS + total)
+	local area = (tier >= 3 and shape ~= "None") and threatArea(ctx, part, shape, size) or nil
+	if area then
+		part:SetAttribute("TeleDir", area.Dir)
+		part:SetAttribute("TeleLen", area.Length or 0)
+		part:SetAttribute("TeleWidth", area.Width or 0)
+		Threat.Arm(part, area, total) -- 마지막 구간에 범위 안에 있던 사람 = 완벽 회피 후보
 	end
-	task.delay(delay, function()
-		if charge and charge.Parent then charge:Destroy() end
+	task.delay(total, function()
+		part:SetAttribute("TeleUntil", 0)
 		if (part:GetAttribute("InterruptedAt") or 0) >= startedAt then -- 끊겼다: 이번 공격은 나가지 않는다
 			if ctx.Alive(part, data) then part.Color = data.BaseColor end
 			return
@@ -723,9 +741,9 @@ local function explode(ctx, part, data)
 		-- 벽 너머에서는 폭발 피해를 주지 않는다
 		local dist = (entry.Root.Position - center).Magnitude
 		if dist <= 16 and (not ctx.LineOfSight or ctx.LineOfSight(center, entry.Root.Position)) then
-			Guard.Take(entry.Humanoid, damage)
+			Threat.Hit(part, entry, damage, "Explode") -- 자폭: 강공격(상태이상 화상 + 피해 감소 일부 무시)
 		else
-			nearMiss(ctx, entry, dist, 16, 24) -- 폭발 반경 바로 밖
+			if not Threat.Escaped(part, entry) then nearMiss(ctx, entry, dist, 16, 24) end -- 마지막 순간에 대시로 빠져나왔으면 완벽 회피
 		end
 	end
 	Effects.Burst(center, Color3.fromRGB(255, 130, 50), 55)
@@ -1003,11 +1021,11 @@ local function shockwave(ctx, part, stats)
 			local p = entry.Root.Position
 			local flatDist = Vector3.new(p.X - origin.X, 0, p.Z - origin.Z).Magnitude
 			if flatDist <= radius and p.Y - groundOf(ctx, p) < 5 then
-				Guard.Take(entry.Humanoid, math.floor(stats.ShotDamage * 1.1))
+				Threat.Hit(part, entry, math.floor(stats.ShotDamage * 1.1), "Slam") -- 내려찍기: 강공격(둔화)
 			elseif flatDist <= radius and ctx.NearMiss then
 				ctx.NearMiss(entry.Root) -- 점프로 충격파를 넘었다 (대시 중이면 인정)
 			else
-				nearMiss(ctx, entry, flatDist, radius, radius + 8)
+				if not Threat.Escaped(part, entry) then nearMiss(ctx, entry, flatDist, radius, radius + 8) end
 			end
 		end
 	end)
@@ -1030,7 +1048,15 @@ local function laser(ctx, part, data, stats, aimDir, range)
 		return line
 	end
 	local warn = lineAt(0.5, Color3.fromRGB(255, 60, 60), 0.35)
+	-- 예고: 클라이언트가 몸 앞 구를 빨갛게 칠하고 짧은 경고음을 울린다 (선은 위에서 서버가 그린 그대로)
+	part:SetAttribute("TeleTier", 3)
+	part:SetAttribute("TeleShape", "None")
+	part:SetAttribute("TeleMult", Config.Threat.DamageMult.Beam or 1)
+	part:SetAttribute("TeleFrom", workspace:GetServerTimeNow())
+	part:SetAttribute("TeleUntil", workspace:GetServerTimeNow() + 0.9)
+	Threat.Arm(part, { Shape = "Strip", Origin = origin, Dir = aimDir, Length = range, Width = 7 }, 0.9)
 	task.delay(0.9, function()
+		part:SetAttribute("TeleUntil", 0)
 		warn:Destroy()
 		if not ctx.Alive(part, data) then return end
 		local beam = lineAt(5, Color3.fromRGB(255, 240, 200), 0.1)
@@ -1039,9 +1065,9 @@ local function laser(ctx, part, data, stats, aimDir, range)
 		for _, entry in ipairs(ctx.Players()) do
 			local lineGap = distToSegment(entry.Root.Position, origin, target)
 			if lineGap <= 3.5 then
-				Guard.Take(entry.Humanoid, math.floor(stats.ShotDamage * 1.6))
+				Threat.Hit(part, entry, math.floor(stats.ShotDamage * 1.6), "Beam") -- 레이저: 강공격(감전)
 			else
-				nearMiss(ctx, entry, lineGap, 3.5, 9) -- 빛줄기 바로 옆
+				if not Threat.Escaped(part, entry) then nearMiss(ctx, entry, lineGap, 3.5, 9) end -- 빛줄기 바로 옆
 			end
 		end
 	end)
@@ -1083,11 +1109,11 @@ function M.Update(ctx, part, data, dt, now)
 			for _, entry in ipairs(ctx.Players()) do
 				local gap = (flat(entry.Root.Position - position)).Magnitude
 				if gap <= stats.Size / 2 + 3 then
-					Guard.Take(entry.Humanoid, math.floor(stats.ShotDamage * 1.5))
+					Threat.Hit(part, entry, math.floor(stats.ShotDamage * 1.5), "Charge") -- 돌진: 강공격(둔화)
 					data.ChargeHit = true
 					break
 				elseif not data.ChargeMissed and gap <= stats.Size / 2 + 10 then
-					nearMiss(ctx, entry, gap, 0, 99) -- 돌진 길 옆으로 아슬아슬하게 비켜났다 (한 번의 돌진에 한 번만)
+					if not Threat.Escaped(part, entry) then nearMiss(ctx, entry, gap, 0, 99) end -- 돌진 길에서 마지막 순간에 빠져나왔다
 					data.ChargeMissed = true
 				end
 			end
@@ -1239,6 +1265,14 @@ function M.Update(ctx, part, data, dt, now)
 	if def.Attack == "Explode" then
 		if distance <= 9 then
 			data.FuseAt = now + 0.7
+			-- 자폭 예고: 지금은 도화선 깜밍임만 있어서 반경을 몰랐다 -> 클라이언트가 반경 16 원을 그린다
+			part:SetAttribute("TeleTier", 3)
+			part:SetAttribute("TeleShape", "Disc")
+			part:SetAttribute("TeleSize", Config.Threat.Size.Explode or 16)
+			part:SetAttribute("TeleMult", 1)
+			part:SetAttribute("TeleFrom", workspace:GetServerTimeNow())
+			part:SetAttribute("TeleUntil", workspace:GetServerTimeNow() + 0.7)
+			Threat.Arm(part, { Shape = "Disc", Center = part.Position, Radius = Config.Threat.Size.Explode or 16 }, 0.7)
 		end
 		return
 	end
@@ -1516,7 +1550,7 @@ function M.Update(ctx, part, data, dt, now)
 							{ Kind = "lob", Target = landing, Dur = dur, Height = 9 + reach * 0.22, AoE = aoe })
 					end)
 				end
-			end)
+			end, { Shape = "None" }) -- (착지 지점 경고는 Effects.Warn 이 이미 그린다: 도형을 또 그리지 않는다)
 		else
 			telegraph(ctx, part, data, Color3.fromRGB(255, 190, 70), 0.8, function()
 				shockwave(ctx, part, stats)

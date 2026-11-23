@@ -74,6 +74,27 @@ function NearMiss.Award(player, root, scoreFn)
 	Remotes.Banner:FireClient(player, "NearMiss", { Streak = st.Stacks, First = firstTime })
 end
 
+-- 완벽 회피 (11-24): 강공격(티어3)의 마지막 구간에 범위 안에 있다가 대시로 빠져나왔다 (판정은 ThreatService).
+--   NEAR MISS 보다 한 단계 위: 스택 +2 (상한은 그대로) / 궁 게이지 +10 / **대시 1회 즉시 충전** / 금색 배너
+--   대시를 돌려주는 게 핵심: 연속으로 오는 강공격을 보고 피하는 리듬이 생간다.
+function NearMiss.Perfect(player, root)
+	if not player or not player.Parent then return end
+	if root then sampleDash(player, root) end
+	local now = os.clock()
+	local st = states[player]
+	if not st then st = { Stacks = 0, LastAt = 0, NextDecay = 0 } states[player] = st end
+	local P = Config.Threat.Perfect
+	st.Stacks = math.min(Config.NearMiss.MaxStacks, st.Stacks + P.Stacks)
+	st.LastAt = now
+	st.NextDecay = now + Config.GetNearMissDuration(player)
+	apply(player, st)
+	player:SetAttribute("NearMissTick", (player:GetAttribute("NearMissTick") or 0) + 1)
+	pcall(function() require(script.Parent:WaitForChild("BalanceLog")).Count(player, "PerfectDodge", 1) end)
+	player:SetAttribute("UltCharge", math.min(Config.Skills.Ult.Cost, (player:GetAttribute("UltCharge") or 0) + P.Ult))
+	player:SetAttribute("DashRefund", (player:GetAttribute("DashRefund") or 0) + 1) -- (PlayerClient 가 받아 대시 1회를 즉시 채운다)
+	Remotes.Banner:FireClient(player, "Perfect", { Streak = st.Stacks })
+end
+
 -- 캐릭터 몸(root)만 아는 곳(몬스터 AI)에서 부르는 입구. 대시 중일 때만 인정한다.
 function NearMiss.AwardRoot(root, scoreFn)
 	local player = root and root.Parent and Players:GetPlayerFromCharacter(root.Parent)

@@ -1599,16 +1599,26 @@ local function applySpeed()
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 	if humanoid then
 		local bonus = (player:GetAttribute("GearSpeed") or 0) + (player:GetAttribute("TrainSpeed") or 0) + (player:GetAttribute("PetSpeed") or 0) + (player:GetAttribute("LvMove") or 0)
-		humanoid.WalkSpeed = (sprinting and Config.Player.RunSpeed or Config.Player.WalkSpeed) + bonus
+		local slow = 0 -- 둔화 (강공격에 맞으면 잠시 느려진다: StatusService)
+		if workspace:GetServerTimeNow() < (player:GetAttribute("StatusSlowUntil") or 0) then slow = player:GetAttribute("StatusSlowPct") or 0 end
+		humanoid.WalkSpeed = ((sprinting and Config.Player.RunSpeed or Config.Player.WalkSpeed) + bonus) * (1 - slow) -- (대시는 LinearVelocity 라 둔화가 안 걸린다: 빠져나가는 맛 유지)
 	end
 end
 
 player:GetAttributeChangedSignal("GearSpeed"):Connect(applySpeed)
 player:GetAttributeChangedSignal("TrainSpeed"):Connect(applySpeed)
+player:GetAttributeChangedSignal("StatusSlowUntil"):Connect(applySpeed)
+player:GetAttributeChangedSignal("StatusSlowPct"):Connect(applySpeed)
 player:GetAttributeChangedSignal("PetSpeed"):Connect(applySpeed)
 
 settings.DashCharges = Config.Player.DashCharges
 settings.DashRefillAt = 0
+-- 완벽 회피 보상 (서버 NearMissService.Perfect -> DashRefund 속성 틱): 대시 1회를 즉시 채운다
+player:GetAttributeChangedSignal("DashRefund"):Connect(function()
+	if settings.DashCharges >= Config.Player.DashCharges then return end
+	settings.DashCharges += 1
+	if settings.DashCharges >= Config.Player.DashCharges then settings.DashRefillAt = 0 end
+end)
 
 -- 대시 애프터이미지: 예전에는 0.035초마다 캐릭터 부품마다 파트를 새로 만들어서 대시 1회에 75개씩 생겼다(여러 명이 같이 대시하면 폭발).
 --  (1) 만드는 간격을 넓히고 (2) 파트를 돌려 쓰고(풀) (3) 동시에 살아 있는 수에 상한을 두고 (4) 저사양 모드에서는 생략한다. 연출은 그대로(트레일 + 잔상).
@@ -2114,7 +2124,11 @@ end
 
 local function attackCooldown()
 	local speedPoints = player:GetAttribute("SpeedPoints") or 0
-	return Config.Player.BaseCooldown * Config.GetPlayerWeapon(player).Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0) + (player:GetAttribute("TrainAtkSpeed") or 0) + (player:GetAttribute("GearAtkSpeed") or 0)) * (1 + (workspace:GetServerTimeNow() < (player:GetAttribute("AdrenalineUntil") or 0) and (player:GetAttribute("GearKillHaste") or 0) or 0))) -- (유니크 "아드레날린": 서버와 같은 공식) 펫 / 훈련 / 장비 가속 포함
+	local cooldown = Config.Player.BaseCooldown * Config.GetPlayerWeapon(player).Cooldown / ((1 + speedPoints * Config.Player.SpeedPerPoint) * (1 + (player:GetAttribute("PetAtkSpeed") or 0) + (player:GetAttribute("TrainAtkSpeed") or 0) + (player:GetAttribute("GearAtkSpeed") or 0)) * (1 + (workspace:GetServerTimeNow() < (player:GetAttribute("AdrenalineUntil") or 0) and (player:GetAttribute("GearKillHaste") or 0) or 0))) -- (유니크 "아드레날린": 서버와 같은 공식) 펫 / 훈련 / 장비 가속 포함
+	if workspace:GetServerTimeNow() < (player:GetAttribute("StatusShockUntil") or 0) then -- 감전 ⚡: 잠시 공격이 느려진다 (이동이 아니라 공격 쪽)
+		cooldown *= 1 + (player:GetAttribute("StatusShockPct") or 0)
+	end
+	return cooldown
 end
 
 local questState = nil

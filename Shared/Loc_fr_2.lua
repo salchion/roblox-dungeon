@@ -999,6 +999,7 @@ return {
 		["🚀 Set +1 only"] = "🚀 Effet de set +1 seulement",
 		["▲ Low first"] = "▲ Plus faible d'abord",
 		["▼ High first"] = "▼ Plus fort d'abord",
+		["🌟 PERFECT DODGE!"] = "ESQUIVE PARFAITE !",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1110,6 +1111,5 @@ return {
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "Obtenez instantanément {number1} minutes de vos revenus passifs · maximum {number2} par jour" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISS dure {number1} s · conserve au moins {number2} cumuls même si la série s'interrompt" },
 		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 Pas assez d'or pour tirer le set choisi ! ({number1} G requis)" },
-		{ "Sweep needs {number1} key(s). Defeat a field zone lord to get keys", "Le balayage nécessite {number1} clé(s). Bats un seigneur de zone du terrain pour en obtenir" },
 	},
 }

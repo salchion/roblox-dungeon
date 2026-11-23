@@ -8,3 +8,4 @@
 3055¦x{number1} · 最弱¦x{number1} · schwächstes¦x{number1} · le plus faible¦x{number1} · el más débil¦x{number1} · o mais fraco¦x{number1} · 最弱¦x{number1} · 약한 것
 3056¦▲ 弱い順¦▲ Schwächste zuerst¦▲ Plus faible d'abord¦▲ Más débil primero¦▲ Mais fraco primeiro¦▲ 最弱优先¦▲ 약한 것부터
 3057¦▼ 強い順¦▼ Stärkste zuerst¦▼ Plus fort d'abord¦▼ Más fuerte primero¦▼ Mais forte primeiro¦▼ 最强优先¦▼ 강한 것부터
+3078¦パーフェクト回避！¦PERFEKTER AUSWEICHER!¦ESQUIVE PARFAITE !¦¡ESQUIVA PERFECTA!¦ESQUIVA PERFEITA!¦完美闪避！¦완벽 회피!
