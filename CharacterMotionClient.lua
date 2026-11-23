@@ -13,7 +13,7 @@ local player = Players.LocalPlayer
 -- 이동 중 사격: 몸은 이동 방향(AutoRotate), 상체만 조준점 쪽으로 돈다. 마지막 사격 뒤 AIM_HOLD 초가 지나면 0 으로 돌아온다
 --   R15: Waist(상체만) ±70° / R6: RootJoint 가 다리까지 돌려서 ±35° 로 작게 (어색하면 스트레이프 방식으로 바꿀 후보)
 local AIM_HOLD = 0.6
-local isR6, rigLogged = false, false
+local isR6, rigLogged, rigFailLogged = false, false, false
 local yaw = 0
 
 local joint, humanoid, root
@@ -42,12 +42,27 @@ local function bind(character)
 		end
 	end
 	if not (humanoid and root and joint and joint:IsA("Motor6D")) then
+		-- 조용히 꺼지면 "상체 회전이 실제로 켜졌는지"를 알 수 없어서, 왜 못 켰는지 한 줄 남긴다 (Studio 진단)
+		if RunService:IsStudio() and not rigFailLogged then
+			rigFailLogged = true
+			local rigType = humanoid and (humanoid.RigType == Enum.HumanoidRigType.R6 and "R6" or "R15") or "리그 판별 불가"
+			local why = {}
+			if not humanoid then table.insert(why, "Humanoid 없음(10초)") end
+			if not root then table.insert(why, "HumanoidRootPart 없음(10초)") end
+			if not joint then
+				local upper, torso = character:FindFirstChild("UpperTorso"), character:FindFirstChild("Torso")
+				table.insert(why, string.format("Waist/RootJoint 없음 (UpperTorso %s · Torso %s)", upper and "있음" or "없음", torso and "있음" or "없음"))
+			elseif not joint:IsA("Motor6D") then
+				table.insert(why, string.format("관절 %s 가 Motor6D 가 아님 (%s)", joint.Name, joint.ClassName))
+			end
+			print("[Rig] 이동 중 사격 상체 회전 꺼짐 · " .. rigType .. " · " .. table.concat(why, " · "))
+		end
 		release()
 		return
 	end
 	if RunService:IsStudio() and not rigLogged then
 		rigLogged = true
-		print("[Rig] " .. (isR6 and "R6" or "R15") .. " · 이동 중 사격 상체 회전 ±" .. (isR6 and "35" or "70") .. "°")
+		print("[Rig] " .. (isR6 and "R6" or "R15") .. " · 이동 중 사격 상체 회전 ±" .. (isR6 and "35" or "70") .. "° · 관절 " .. joint.Name)
 	end
 	humanoid.StateChanged:Connect(function(_, new)
 		if new == Enum.HumanoidStateType.Landed then landing = 0.35 end

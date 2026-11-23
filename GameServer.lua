@@ -277,8 +277,57 @@ local function onCharacterAdded(player, character)
 end
 
 -- 전투력 = 무기(종류+강화) + 스탯 + 장비 (이름표 / 리더보드 / 랭킹에 표시)
-local function updatePower(player)
-	player:SetAttribute("Power", Config.PowerFor(player)) -- (입력 묶음은 Config.PowerFor: 장비 창 전투력 미리보기와 같은 식)
+-- 진단: 전투력이 바뀔 때마다 "무엇 때문에" 바뀌었는지 한 줄 (Studio 출력)
+--   같은 동작이 여러 Attribute 를 한꺼번에 바꾸면(프리셋 전환 = AugLoad + 세트 단계, 장비 교체 = 체력/치명/공격) 한 줄로 모아 찍는다.
+--   InventoryService / AugService 가 큰 동작 직전에 player:SetAttribute("PowerCause", "장비 교체") 처럼 이름을 붙이면 그 이름을 쓴다.
+local POWER_CAUSES = {
+	Level = "레벨", WeaponLevel = "무기 강화", WeaponType = "무기 형",
+	CritPoints = "레벨 스탯", SpeedPoints = "레벨 스탯",
+	GearHealth = "장비", GearCrit = "장비", GearDamage = "장비",
+	TrainHealth = "훈련", TrainCrit = "훈련", TrainDamage = "훈련",
+	PetDamage = "펫", AugAtkLv = "세트 효과", AugDefLv = "세트 효과", AugLoad = "프리셋 전환",
+}
+local powerLog = setmetatable({}, { __mode = "k" })
+local function comma(n)
+	return (tostring(math.floor(n)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
+end
+local function updatePower(player, cause)
+	local before = player:GetAttribute("Power") or 0
+	local after = Config.PowerFor(player) -- (입력 묶음은 Config.PowerFor: 장비 창 전투력 미리보기와 같은 식)
+	player:SetAttribute("Power", after)
+	if after == before then return end
+	local pending = powerLog[player]
+	if not pending then
+		pending = { From = before, Causes = {}, Seen = {} }
+		powerLog[player] = pending
+		task.defer(function()
+			powerLog[player] = nil
+			local hint = player:GetAttribute("PowerCause")
+			if type(hint) == "string" and hint ~= "" then player:SetAttribute("PowerCause", nil) end
+			if not player.Parent then return end
+			local to = player:GetAttribute("Power") or pending.From -- (같은 틱 안에서 더 바뀌었으면 마지막 값)
+			local labels, seen = {}, pending.Seen
+			local function add(label) if not table.find(labels, label) then table.insert(labels, label) end end
+			if seen["프리셋 전환"] then -- (프리셋이 원인: 세트 단계도 같이 바뀌었지만 한 줄로는 프리셋만)
+				add("프리셋 전환")
+			elseif seen["장비 교체"] or seen["최강 장착"] or seen["세트 장착"] or seen["세트 맞춤 장착"] then -- (장비 동작이 원인: "장비" 세부 원인은 빼고 한 줄로)
+				for _, label in ipairs(pending.Causes) do if label ~= "장비" then add(label) end end
+			else
+				for _, label in ipairs(pending.Causes) do add(label) end
+			end
+			if #labels > 2 then labels = { labels[1], labels[2] .. " 외" } end
+			local text = #labels > 0 and table.concat(labels, " + ") or "원인 미상"
+			if RunService:IsStudio() then
+				print(string.format("[전투력] %s · %s → %s (%s%s)", text, comma(pending.From), comma(to), to >= pending.From and "+" or "-", comma(math.abs(to - pending.From))))
+			end
+		end)
+	end
+	local hint = player:GetAttribute("PowerCause") -- (큰 동작이 붙여 둔 이름: 장비 교체 / 세트 장착 / 최강 장착 ...)
+	local label = (type(hint) == "string" and hint ~= "" and hint) or cause or "변경"
+	if not pending.Seen[label] then
+		pending.Seen[label] = true
+		table.insert(pending.Causes, label)
+	end
 end
 
 -- 무기 형(권총 / 기관단총 ...)은 강화 단계로 해금되고, 어떤 형으로 싸울지는 플레이어가 고른다 (WeaponType). 잠긴 형이면 권총.
@@ -376,15 +425,15 @@ local function setupPlayer(player)
 		syncWeaponLevel(player) -- 단계가 오르면 무기(종류)가 바뀔 수 있다
 		Quest.Refresh(player)
 		Weapon.Refresh(player) -- 강화 즉시 무기 외형 변경 (모든 플레이어에게 보임)
-		updatePower(player)
+		updatePower(player, "무기 강화")
 	end)
 	player:GetAttributeChangedSignal("WeaponType"):Connect(function() -- 무기 형을 바꿔 들었다
 		Weapon.Refresh(player)
-		updatePower(player)
+		updatePower(player, "무기 형")
 	end)
-	for _, attribute in ipairs({ "CritPoints", "SpeedPoints", "GearHealth", "GearCrit", "GearDamage", "TrainHealth", "TrainCrit", "TrainDamage", "PetDamage", "AugAtkLv", "AugDefLv" }) do
+	for _, attribute in ipairs({ "CritPoints", "SpeedPoints", "GearHealth", "GearCrit", "GearDamage", "TrainHealth", "TrainCrit", "TrainDamage", "PetDamage", "AugAtkLv", "AugDefLv", "AugLoad" }) do
 		player:GetAttributeChangedSignal(attribute):Connect(function()
-			updatePower(player)
+			updatePower(player, POWER_CAUSES[attribute])
 		end)
 	end
 	-- 장비로 최대 체력이 바뀌면 바로 반영
@@ -412,7 +461,7 @@ local function setupPlayer(player)
 	-- 레벨이 오르면 최대 체력(완전 회복) / 전투력 / 이름표 / 업적 갱신
 	player:GetAttributeChangedSignal("Level"):Connect(function()
 		Dungeon.RefreshMaxHealth(player, true)
-		updatePower(player)
+		updatePower(player, "레벨")
 		Quest.Refresh(player)
 	end)
 	for _, slot in ipairs(Config.Gear.Slots) do
@@ -455,7 +504,7 @@ local function setupPlayer(player)
 		Tutorial.Load(player, saved.Tutorial) -- 처음 1~5분 가이드 미션
 		Idle.OnJoin(player) -- 자리를 비운 동안 쌓인 방치 골드
 		Journey.OnJoin(player) -- 이미 본 안내 기록
-		updatePower(player)
+		updatePower(player, "접속 불러오기")
 		player:SetAttribute("DataReady", true) -- 저장된 정보를 다 불러왔다 (화면의 "불러오는 중" 표시를 끈다)
 		-- 진행 기록(Studio 출력창): 접속 후 몇 분 몇 초에 어디까지 왔는지 찍는다. 신규 플레이어가 5분 / 30분에 어디까지 오는지 재는 용도.
 		task.spawn(function()

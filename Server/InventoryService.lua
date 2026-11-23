@@ -92,6 +92,17 @@ local function bagCount(state)
 end
 
 ------------------------------------------------------------
+-- 전투력 진단 로그(GameServer.updatePower)용 원인 이름: 동작 직전에 붙이고, 그 변화가 없었으면 0.5초 뒤 스스로 지운다
+--   (동작 뒤에도 남아 있으면 나중의 엉뚱한 전투력 변화에 이 이름이 붙어 버린다)
+------------------------------------------------------------
+local function powerCause(player, label)
+	player:SetAttribute("PowerCause", label)
+	task.delay(0.5, function()
+		if player.Parent and player:GetAttribute("PowerCause") == label then player:SetAttribute("PowerCause", nil) end
+	end)
+end
+
+------------------------------------------------------------
 -- 장착 상태를 Attribute 로 반영 (GearService 가 이걸 보고 능력치/외형 갱신)
 ------------------------------------------------------------
 local function applyEquipAttributes(player, state)
@@ -435,6 +446,7 @@ function Inventory.Equip(player, id)
 	if isEquipped(state, id) then return false, "Already equipped." end
 
 	state.Equipped[item.Slot] = id
+	powerCause(player, "장비 교체") -- (전투력 진단 로그: GameServer.updatePower)
 	applyEquipAttributes(player, state)
 	Inventory.Push(player)
 	return true, string.format("[%s] %s equipped!", G.RarityNames[item.Rarity], Inventory.ItemName(item))
@@ -571,6 +583,7 @@ function Inventory.AutoEquipBest(player, emptyOnly)
 		end
 	end
 	if changed > 0 then
+		powerCause(player, "최강 장착")
 		applyEquipAttributes(player, state)
 		Inventory.Push(player)
 	end
@@ -647,6 +660,7 @@ function Inventory.EquipForAugs(player, targets)
 			changed += 1
 		end
 	end
+	powerCause(player, "세트 맞춤 장착")
 	applyEquipAttributes(player, state)
 	Inventory.Push(player)
 	return changed
@@ -762,6 +776,7 @@ function Inventory.EquipSet(player, setKey)
 		end
 	end
 	if changed > 0 then
+		powerCause(player, "세트 장착")
 		applyEquipAttributes(player, state)
 		Inventory.Push(player)
 	end
