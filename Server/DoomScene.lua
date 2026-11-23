@@ -965,8 +965,8 @@ local function doomWaveInner(player, zone, center, real)
 		task.delay(2.1, function() scorch:Destroy() end)
 	end
 
-	-- 한 번의 폭격: 바닥에 붉은 경고 원 -> 시간이 지나면 군주의 광선이 내리꽂힌다 (맞으면 최대 체력의 일부, 죽지는 않는다)
-	local function strike(at, radius, telegraph, percent, lethal)
+	-- 한 번의 폭격: 바닥에 붉은 경고 원 -> 시간이 지나면 군주의 광선이 내리꽂힌다 (damage = Config.FinalLord.Damage 의 고정 피해)
+	local function strike(at, radius, telegraph, damage, lethal)
 		-- 경고는 클라이언트가 그린다 (Effects.Warn): 가장자리 원 + 안쪽에서 차오르는 원. 다 차는 순간 광선이 내리꽂힌다
 		Effects.Warn(Vector3.new(at.X, center.Y + 1.3, at.Z), radius, telegraph, rgb(255, 60, 50))
 		lordSfx("Lord_Charge")
@@ -984,8 +984,7 @@ local function doomWaveInner(player, zone, center, real)
 			if r2 and h2.Health > 0 and data.Health > 0 and alive() then -- (군주가 쓰러진 뒤 남은 폭격에 맞아 승리가 패배로 바뀌지 않게)
 				local gap = (Vector3.new(r2.Position.X, center.Y, r2.Position.Z) - at).Magnitude
 				if gap <= radius then
-					local base = Guard.BaseMaxHealth(h2) -- (강체를 뺀 기본 최대 체력 기준: 강체가 실제로 더 버티게)
-					local dmg = lethal and (base * percent) or math.min(base * percent, h2.Health - 1) -- (진짜 결전에서는 죽을 수 있다)
+					local dmg = lethal and damage or math.min(damage, h2.Health - 1) -- (죽지 않는 장면은 체력 1 은 남는다)
 					if dmg > 0 then Guard.Take(h2, dmg) end
 				elseif gap <= radius + 16 and isDashing(r2, player) then
 					awardNearMiss(player, r2) -- 경고 원 바로 밖으로 대시로 빠져나갔다
@@ -1002,7 +1001,7 @@ local function doomWaveInner(player, zone, center, real)
 		return body.Parent and Vector3.new(body.Position.X, center.Y, body.Position.Z) or center
 	end
 	-- 대검 휘두르기: 군주 앞쪽 부채꼴을 따라 폭격이 한쪽 끝에서 반대쪽 끝으로 차례로 내리꽂힌다 (한 칸은 비어 있다: 그 틈으로 피한다)
-	local function swordSweep(percent, lethal)
+	local function swordSweep(damage, lethal)
 		local origin = lordGround()
 		local toPlayer = playerAt() - origin
 		local baseAngle = math.atan2(toPlayer.Z, toPlayer.X)
@@ -1014,42 +1013,42 @@ local function doomWaveInner(player, zone, center, real)
 		for k = 1, count do
 			if k ~= gap then
 				local angle = baseAngle + dirSign * (k - (count + 1) / 2) * math.rad(15)
-				strike(origin + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius), 11, 0.8 + k * 0.09, percent, lethal)
+				strike(origin + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius), 11, 0.8 + k * 0.09, damage, lethal)
 			end
 		end
 		task.wait(0.3 + count * 0.04) -- (다음 공격이 바로 이어진다: 연타 느낌)
 	end
 	-- 추적 낙인: 내가 서 있는 곳에 연달아 5번 (계속 움직여야 한다)
-	local function huntingMarks(percent, lethal)
+	local function huntingMarks(damage, lethal)
 		for _ = 1, 5 do
 			if not alive() then return end
-			strike(playerAt(), 10, 0.6, percent, lethal)
+			strike(playerAt(), 10, 0.6, damage, lethal)
 			task.wait(0.21)
 		end
 		task.wait(0.15)
 	end
 	-- 나선 개화: 군주 발밑에서 바깥으로 소용돌이치며 폭격이 번진다 (나선 사이의 빈 곳으로 걸어 나간다)
-	local function spiralBloom(percent, lethal)
+	local function spiralBloom(damage, lethal)
 		local origin = lordGround()
 		local turn = math.random() * math.pi * 2
 		lordSfx("Lord_Charge")
 		for k = 1, 16 do
 			local angle = turn + k * 0.62
 			local dist = 6 + k * 3.6
-			strike(origin + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist), 8, 0.7 + k * 0.06, percent, lethal)
+			strike(origin + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist), 8, 0.7 + k * 0.06, damage, lethal)
 		end
 		task.wait(0.3 + 16 * 0.02)
 	end
 
 	-- 연타 폭격 "파파밥바바": 내 주변 곳곳에 작은 경고 원이 0.08초 간격으로 쏟아지고 바로바로 터진다 (멈추면 여러 대 맞는다)
-	local function flurry(percent, lethal, count)
+	local function flurry(damage, lethal, count)
 		count = count or 16
 		lordSfx("Lord_Voice")
 		for k = 1, count do
 			if not alive() then return end
 			local angle, dist = math.random() * math.pi * 2, math.random() * 16
 			local at = playerAt() + Vector3.new(math.cos(angle) * dist, 0, math.sin(angle) * dist)
-			strike(at, 7, 0.5, percent, lethal)
+			strike(at, 7, 0.5, damage, lethal)
 			if k % 4 == 0 then shake(0.35) end
 			task.wait(0.07)
 		end
@@ -1068,11 +1067,12 @@ local function doomWaveInner(player, zone, center, real)
 		local function fraction() return math.max(0, data.Health) / maxHealth end
 		local function flat(v) return Vector3.new(v.X, 0, v.Z) end
 		local dmgMult = 1 -- 3단계 / 격노(4분 경과)에서 커진다
-		local function hurt(percent, text)
+		local D = FL.Damage or {} -- 최후의 군주 피해 = 8구역 적정 체력 2,881 기준 고정값 (Config.FinalLord.Damage)
+		local function hurt(damage, text) -- damage = 고정 피해 (3단계 / 격노에는 dmgMult 가 곱해진다)
 			if not bossAlive() then return end -- (군주가 쓰러진 뒤에는 남은 패턴이 피해를 주지 않는다)
 			local r2, h2 = getAliveParts(player)
 			if r2 and h2.Health > 0 and alive() then
-				Guard.TakeRatio(h2, percent * dmgMult) -- (강체를 뺀 기본 최대 체력 기준)
+				Guard.Take(h2, damage * dmgMult)
 				if text then notify(player, text) end
 			end
 		end
@@ -1099,7 +1099,7 @@ local function doomWaveInner(player, zone, center, real)
 		local function tripleStrike()
 			for k = 1, 3 do
 				if not alive() then return end
-				strike(playerAt() + Vector3.new((k - 2) * 20, 0, 0), 13, 1.1, 0.2, true)
+				strike(playerAt() + Vector3.new((k - 2) * 20, 0, 0), 13, 1.1, D.Triple, true)
 				task.wait(0.26)
 			end
 			task.wait(0.77)
@@ -1113,12 +1113,12 @@ local function doomWaveInner(player, zone, center, real)
 			for k = 1, 7 do
 				if k ~= gap then
 					local angle = k / 7 * math.pi * 2
-					strike(around + Vector3.new(math.cos(angle) * 34, 0, math.sin(angle) * 34), 13, 1.1, 0.17, true)
+					strike(around + Vector3.new(math.cos(angle) * 34, 0, math.sin(angle) * 34), 13, 1.1, D.Ring, true)
 				end
 				task.wait(0.1)
 			end
 			task.wait(0.4)
-			if alive() then strike(around, 21, 1.0, 0.28, true) end
+			if alive() then strike(around, 21, 1.0, D.Wall, true) end
 			task.wait(0.88)
 		end
 
@@ -1153,7 +1153,7 @@ local function doomWaveInner(player, zone, center, real)
 						local dir = Vector3.new(math.cos(angle + (index - 1) * math.pi), 0, math.sin(angle + (index - 1) * math.pi))
 						if distToSegment(r2.Position, pivot, pivot + dir * length) <= width / 2 + 1.5 then
 							hitAt = os.clock()
-							hurt(0.3, "💥 Caught by the beam!")
+							hurt(D.Beam, "💥 Caught by the beam!")
 							shake(0.6)
 							break
 						end
@@ -1177,7 +1177,7 @@ local function doomWaveInner(player, zone, center, real)
 				local angle, distance = math.random() * math.pi * 2, math.random() * 58
 				local at = center + Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
 				if math.random() < 0.4 then at = playerAt() + Vector3.new(math.random(-8, 8), 0, math.random(-8, 8)) end -- 일부는 내 쪽으로
-				strike(at, 10, 1.35, 0.14, true)
+				strike(at, 10, 1.35, D.Meteor, true)
 				task.wait(0.18)
 			end
 			task.wait(0.99)
@@ -1218,7 +1218,7 @@ local function doomWaveInner(player, zone, center, real)
 				if r2 then
 					local local1 = vertical and (r2.Position.X - center.X) or (r2.Position.Z - center.Z)
 					if math.abs(local1 - band.Offset) <= 8 then
-						hurt(0.28, "💥 Burned by the wall of fire!")
+						hurt(D.Wall, "💥 Burned by the wall of fire!")
 						r2 = nil -- (한 번에 한 줄만 맞는다)
 					end
 				end
@@ -1250,7 +1250,7 @@ local function doomWaveInner(player, zone, center, real)
 						local speed = 24 + (now - started) * 2.5
 						if to.Magnitude < 4 then
 							Effects.Burst(orb.Position, rgb(255, 90, 60), 40)
-							hurt(0.14, "💥 A fireball hit you!")
+							hurt(D.Meteor, "💥 A fireball hit you!")
 							orb:Destroy()
 							table.remove(orbs, index)
 						elseif now - started > 0.6 then
@@ -1309,7 +1309,7 @@ local function doomWaveInner(player, zone, center, real)
 			for _, at in ipairs(safes) do ring(at, 22, rgb(110, 255, 170), 0.8) end
 			ring(center, 80, rgb(255, 90, 60), 1.0)
 			Effects.Burst(center + Vector3.new(0, 10, 0), rgb(255, 120, 80), 140)
-			if r2 and not safeNow then hurt(0.75, "💥 Judgement struck you down!") elseif r2 then notify(player, "✅ Survived the judgement!") end
+			if r2 and not safeNow then hurt(D.Judgement, "💥 Judgement struck you down!") elseif r2 then notify(player, "✅ Survived the judgement!") end
 			TweenService:Create(flood, TweenInfo.new(0.5), { Transparency = 1 }):Play()
 			task.delay(0.6, function() flood:Destroy() end)
 			task.wait(1.4)
@@ -1342,7 +1342,7 @@ local function doomWaveInner(player, zone, center, real)
 								awardNearMiss(player, r2)
 							else
 								hit = true
-								hurt(0.22, "💥 The shockwave knocked you down! (Dash through it)")
+								hurt(D.Shockwave, "💥 The shockwave knocked you down! (Dash through it)")
 								shake(0.7)
 							end
 						end
@@ -1390,7 +1390,7 @@ local function doomWaveInner(player, zone, center, real)
 						local dir = Vector3.new(math.cos(a), 0, math.sin(a))
 						if distToSegment(r2.Position, pivot, pivot + dir * length) <= width / 2 + 1.5 then
 							hitAt = os.clock()
-							hurt(0.24, "💥 Caught by the cross beams!")
+							hurt(D.Cross, "💥 Caught by the cross beams!")
 							shake(0.6)
 							break
 						end
@@ -1453,8 +1453,8 @@ local function doomWaveInner(player, zone, center, real)
 				dmgMult = 1.35
 				phaseBanner("💢 ENRAGED — The Lord grows impatient!", "Enough games.")
 			end
-			local pool = { tripleStrike, ringOfRuin, sweepBeam, shockwaves, function() swordSweep(0.16 * dmgMult, true) end, function() huntingMarks(0.12 * dmgMult, true) end, function() flurry(0.06 * dmgMult, true, 18) end }
-			if phaseNow >= 2 then table.insert(pool, function() spiralBloom(0.14 * dmgMult, true) end) end
+			local pool = { tripleStrike, ringOfRuin, sweepBeam, shockwaves, function() swordSweep(D.Sword * dmgMult, true) end, function() huntingMarks(D.Mark * dmgMult, true) end, function() flurry(D.Flurry * dmgMult, true, 18) end }
+			if phaseNow >= 2 then table.insert(pool, function() spiralBloom(D.Meteor * dmgMult, true) end) end
 			if phaseNow >= 2 then table.insert(pool, meteorStorm) table.insert(pool, lanes) table.insert(pool, crossBeams) end
 			if phaseNow >= 3 then table.insert(pool, orbBarrage) table.insert(pool, judgement) end
 			order += 1
@@ -1555,11 +1555,13 @@ local function doomWaveInner(player, zone, center, real)
 	end
 
 	task.wait(0.5)
+	-- (튜토리얼 결투의 피해 = 1구역 적정 체력 286 기준 고정값. 내 최대 체력 비례가 아니다)
+	local T = Config.FinalLord.TutorialDamage or {}
 	-- 1) 좁은 간격의 3연 폭격 (플레이어 주변)
 	if alive() then
 		for k = 1, 3 do
 			local offset = Vector3.new((k - 2) * 20, 0, 0)
-			strike(playerAt() + offset, 13, 1.0, 0.15)
+			strike(playerAt() + offset, 13, 1.0, T.Triple)
 			task.wait(0.18)
 		end
 		task.wait(0.2)
@@ -1572,28 +1574,28 @@ local function doomWaveInner(player, zone, center, real)
 		for k = 1, 6 do
 			if k ~= gap then
 				local angle = k / 6 * math.pi * 2
-				strike(around + Vector3.new(math.cos(angle) * 34, 0, math.sin(angle) * 34), 14, 1.1, 0.12)
+				strike(around + Vector3.new(math.cos(angle) * 34, 0, math.sin(angle) * 34), 14, 1.1, T.Ring)
 			end
 			task.wait(0.1)
 		end
 		task.wait(0.15)
 		if alive() then
-			strike(around, 22, 0.9, 0.2)
+			strike(around, 22, 0.9, T.Wall)
 		end
 		task.wait(0.25)
 	end
 	-- 3) 대검 휘두르기 -> 4) 추적 낙인 -> 5) 나선 개화 (튜토리얼은 죽지 않는다: 체력 1 은 남는다)
 	if alive() then
-		swordSweep(0.12, false)
+		swordSweep(T.Sword, false)
 	end
 	if alive() then
-		huntingMarks(0.08, false)
+		huntingMarks(T.Mark, false)
 	end
 	if alive() then
-		spiralBloom(0.1, false)
+		spiralBloom(T.Meteor, false)
 	end
 	if alive() then
-		flurry(0.05, false, 18)
+		flurry(T.Flurry, false, 18)
 	end
 	-- 마지막: 아레나 전체가 붉게 물든다 — 어디에도 안전한 곳이 없다
 	if alive() then

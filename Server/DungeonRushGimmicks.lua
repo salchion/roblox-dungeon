@@ -1,6 +1,6 @@
 -- DungeonRushGimmicks (ServerScriptService > Modules 안의 ModuleScript, 이름: DungeonRushGimmicks)
 -- 보스러쉬 전용 기믹 (보스가 쌓일수록 경기장이 험해진다)
---   * 경기장 축소: 5번째 보스부터 바깥 고리가 붉게 물들며 조금씩 좁아진다 (밖에 서 있으면 0.5초마다 최대 체력 5%)
+--   * 경기장 축소: 5번째 보스부터 바깥 고리가 붉게 물들며 조금씩 좁아진다 (밖에 서 있으면 0.5초마다 Config.Rift.RingDamage = 45 고정 피해)
 --   * 합동 공격: 보스가 둘 이상이면 22초마다 두 보스가 동시에 (바닥 줄 + 메테오)
 --   * 거울 탄막: 12초마다 내 주변 원에서 탄이 한꺼번에 안쪽으로 몰려온다 (보스 3마리 이상)
 --   * 시간 압박: 30초 넘게 살아 있는 보스는 격노한다 (빨리 잡으라는 신호)
@@ -66,7 +66,7 @@ local function rushGimmicks(run)
 				local root, humanoid = getAliveParts(member)
 				if root and humanoid then
 					local flat = Vector3.new(root.Position.X - center.X, 0, root.Position.Z - center.Z)
-					if flat.Magnitude > safeR then Guard.TakeRatio(humanoid, 0.05) end
+					if flat.Magnitude > safeR then Guard.Take(humanoid, R.RingDamage or 45) end -- (5구역 적정 체력 866의 약 5%: 내 최대 체력 비례가 아니라 고정값)
 				end
 			end
 		end

@@ -1796,8 +1796,15 @@ local function addIgnite(run, player, part, data, stacks)
 					setBurnBadge(burnPart, 0)
 				else
 					local lv = augLv(run, burn.Owner, "AugFlame")
-					local tick = augDamage(burn.Owner) * (0.05 + 0.025 * lv) * burn.Stacks
-					hitMonster(run, burn.Owner, { Part = burnPart, Data = burn.Data }, tick, true, nil, "AugFlame")
+					-- (한 틱이 1 미만이면 버려져 설명보다 약해지던 것: 남은 소수를 다음 틱으로 넘긴다. 저구역에서 최대 -33% 였다)
+					burn.Carry = (burn.Carry or 0) + augDamage(burn.Owner) * (0.05 + 0.025 * lv) * burn.Stacks
+					local tick = math.floor(burn.Carry)
+					burn.Carry -= tick
+					if tick >= 1 then
+						hitMonster(run, burn.Owner, { Part = burnPart, Data = burn.Data }, tick, true, nil, "AugFlame")
+					else
+						tick = 0
+					end
 					-- 타는 피해는 0.5초마다 조용히 들어간다 -> 눈에 보이게: 몹당 1초에 한 번, 그동안 들어간 피해를 합쳐 불꽃 숫자 하나로 띄운다
 					burn.Shown = (burn.Shown or 0) + tick * Config.AugHitMult(burn.Owner, "AugFlame", isBossData(burn.Data))
 					if tickNow >= (burn.ShowAt or 0) + 1 then

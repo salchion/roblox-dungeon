@@ -2,6 +2,7 @@
 -- 플레이어가 받는 모든 피해가 지나가는 곳: 방어력(피해 감소) + 방어 기재(방벽 / 회피 / 불굴 / 완충, 재생은 아래 루프).
 --   * 방어력 = 레벨 x LevelDef + 장비 최대 체력 x GearDef  ->  피해 감소 = 방어력 / (방어력 + K)  (최대 MaxReduction)
 --   * 한 방 상한은 없다 (2026-11-16 종태 님 결정: 상한 대신 폭풍의 방벽 반감으로 버틴다)
+--   * 피해는 전부 적 공격력 / 구역 고정 절대값이다 — 내 최대 체력에 비례하는 피해는 11-24 에 모두 없앴다
 -- 몬스터 / 보스가 플레이어에게 주는 피해는 humanoid:TakeDamage 대신 Guard.Take(humanoid, amount) 를 쓴다.
 
 local Players = game:GetService("Players")
@@ -39,7 +40,7 @@ function Guard.Note(humanoid, source, amount)
 	while #list > 5 do table.remove(list, 1) end
 end
 function Guard.RecentOf(player) return recent[player] or {} end
-local function callerOf() -- Take 를 부른 곳 ("FieldBossPatterns:812"). TakeRatio 를 거쳐 왔으면 그 바깥
+local function callerOf() -- Take 를 부른 곳 ("FieldBossPatterns:812"). DamageGuard 안에서 한 번 더 감싸 부르면 그 바깥 칸의 이름을 쓴다
 	for level = 3, 5 do
 		local src, line = debug.info(level, "sl")
 		if not src then break end
@@ -49,7 +50,7 @@ local function callerOf() -- Take 를 부른 곳 ("FieldBossPatterns:812"). Take
 	return "?"
 end
 
-function Guard.Take(humanoid, amount, pierce, maxShare)
+function Guard.Take(humanoid, amount, pierce)
 	if not humanoid or humanoid.Health <= 0 then return end
 	local player = humanoid.Parent and Players:GetPlayerFromCharacter(humanoid.Parent)
 	if player then
@@ -83,7 +84,6 @@ function Guard.Take(humanoid, amount, pierce, maxShare)
 		local lo, hi = G.Grit(lv("AugGrit")) -- 🔥 불굴: 체력이 낮을수록 덜 받는다
 		local ratio = humanoid.MaxHealth > 0 and humanoid.Health / humanoid.MaxHealth or 1
 		if ratio < 0.25 then amount *= 1 - hi elseif ratio < 0.5 then amount *= 1 - lo end
-		if maxShare and maxShare > 0 and amount > humanoid.MaxHealth * maxShare then amount = humanoid.MaxHealth * maxShare end -- (T3 한 방 상한: 도트·잔타와 겹쳐 한 번에 죽지 않게)
 		player:SetAttribute("LastHurtAt", workspace:GetServerTimeNow()) -- (💚 재생은 맞은 뒤 2초 쉰다)
 		Guard.Note(humanoid, callerOf(), amount)
 		local buffer = G.Buffer(lv("AugBuffer")) -- ⏳ 완충: 일부를 3초(0.5초 x 6번)에 나눠 받는다
@@ -143,17 +143,8 @@ task.spawn(function()
 	end
 end)
 
--- 최대 체력 "비율" 피해 (최종 군주 / 던전 안전 원 밖 ...): 강체(❤️)를 빼기 전 기본 최대 체력에 곱한다
---   (내 최대 체력에 곱하면 강체로 체력을 늘린 만큼 맞는 피해도 같이 커져 강체가 쓸모없었다). 방어 / 방벽 / 회피 / 불굴 / 완충은 Take 가 그대로 적용
-function Guard.BaseMaxHealth(humanoid)
-	local player = humanoid and humanoid.Parent and Players:GetPlayerFromCharacter(humanoid.Parent)
-	local body = player and Config.Guard.Body(player:GetAttribute("AugBody") or 0) or 0
-	return humanoid.MaxHealth / (1 + body)
-end
-function Guard.TakeRatio(humanoid, ratio)
-	if not humanoid then return end
-	Guard.Take(humanoid, Guard.BaseMaxHealth(humanoid) * ratio)
-end
+-- (11-24 종태 님: "대미지에 퍼센트 개념은 없었으면 좋겠어") 내 최대 체력 비율로 주는 피해는 모두 없앴다.
+--   예전 Guard.TakeRatio / BaseMaxHealth (최후의 군주 · 보스러쉬 링)는 각자 고정 절대값으로 바뀌었고, 함수도 지웠다.
 
 -- 화면 표시용: 피해 감소 % 를 Attribute 로 둔다 (스탯 / 메뉴에서 읽을 수 있다)
 local function publish(player)
