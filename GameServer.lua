@@ -296,6 +296,7 @@ local function updatePower(player, cause)
 	local after = Config.PowerFor(player) -- (입력 묶음은 Config.PowerFor: 장비 창 전투력 미리보기와 같은 식)
 	player:SetAttribute("Power", after)
 	if after == before then return end
+	if player:GetAttribute("DataReady") ~= true then return end -- (불러오는 중에는 덧채워지는 값이라 로그를 남기지 않는다: 접속할 때만 나오는 줄을 없앤다)
 	local pending = powerLog[player]
 	if not pending then
 		pending = { From = before, Causes = {}, Seen = {} }
