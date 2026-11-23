@@ -225,6 +225,7 @@ function MenuCards.Init(env)
 				if not pending[1] or not pending[1][1].Parent then conn:Disconnect() return end
 				fillVisible()
 			end)
+			task.defer(fillVisible) -- (깊은 위치로 다시 열었는데 스크롤 값이 그대로면 신호가 안 와서 빈 줄이 보인다: 배치가 끝난 다음 한 번 채운다)
 		end
 	end
 

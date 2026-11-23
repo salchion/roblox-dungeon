@@ -953,6 +953,7 @@ local function buildInventoryTab(state)
 				fillVisible()
 				if #pending == 0 then conn:Disconnect() end
 			end)
+			task.defer(fillVisible) -- (배치가 끝난 다음 한 번: 가방 칸이 화면에 걸쳐 있는데 스크롤 값이 그대로일 때도 채운다)
 		end
 		-- 합성: 가방 아래 버튼 하나 -> 누르면 가방 자리에 합성 화면이 크게 열린다 (예전: 좁은 칸에 버튼 4개가 쪼그라들어 무엇인지 몰랐다)
 		local I = Config.Inventory
