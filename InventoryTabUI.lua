@@ -445,7 +445,19 @@ local function buildInventoryTab(state)
 			end)
 			rounded(b, 12)
 		end
-		dropButton("Equip", modeText, -98, 110)
+		do -- [⚡ 최강 장착] 하나: 실제 ⚡ 전투력이 가장 높은 조합 (세트 효과 단계 포함). 더 좋은 장비가 있으면("!") 초록으로 빛난다
+			if drop == "Equip" then menuContent:SetAttribute("GearDrop", nil) drop = nil end -- (예전 "장착 방식" 펼침 줄은 없앴다)
+			local better = state.Better == true
+			local b = makeButton({ Size = UDim2.new(0, 110, 0, 34), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -98, 0.5, 0), Text = "⚡ Best gear", TextSize = 13, Font = Enum.Font.GothamBlack,
+				BackgroundColor3 = better and GREEN or Color3.fromRGB(56, 110, 220) }, guide, function()
+				Remotes.Inventory:FireServer("AutoEquip")
+			end)
+			rounded(b, 12)
+			if better then
+				local glow = create("UIStroke", { Color = Color3.fromRGB(200, 255, 215), Thickness = 2.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, b)
+				TweenService:Create(glow, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.7 }):Play()
+			end
+		end
 		dropButton("Clean", "🧹 Clean", -8, 84)
 	end
 	-- 장착 방식 줄: "최강 장비"와 가진 세트가 한 줄에 칩으로 나란히 있고, 지금 쓰는 방식에 ✔ 가 붙는다. 칩을 누르면 그 방식으로 바로 갈아 끼운다 (이미 쓰는 칩을 다시 누르면 새로 얻은 장비까지 다시 맞춘다).
@@ -688,6 +700,12 @@ local function buildInventoryTab(state)
 			local setButton = makeButton({ Size = UDim2.new(1, 0, 0, 18), Text = "", BackgroundTransparency = 1, AutoButtonColor = false, LayoutOrder = 1 }, card, function()
 				setFilter(nil, key) -- 세트 이름을 누르면 가방이 이 세트만
 			end)
+			do -- [끼기]: 이 세트로 맞추기 (예전 "장착 방식 > 세트 장비" 를 여기로 옮겼다)
+				local wear = makeButton({ Size = UDim2.new(0, 40, 0, 18), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, def.Zone and -28 or 0, 0, 0), Text = "Equip", TextSize = 11, BackgroundColor3 = Color3.fromRGB(56, 110, 220), ZIndex = 4 }, setButton, function()
+					Remotes.Inventory:FireServer("EquipSet", key)
+				end)
+				rounded(wear, 9)
+			end
 			if def.Zone then -- ✨: 세트 효과 창에서 이 효과 보기 (메뉴를 닫고 연다)
 				local jump = makeButton({ Size = UDim2.new(0, 24, 0, 18), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 0, 0, 0), Text = "✨", TextSize = 11, BackgroundColor3 = Color3.fromRGB(70, 60, 110), ZIndex = 4 }, setButton, function()
 					player:SetAttribute("OpenMenuTab", "Character:Gear|" .. tostring(os.clock())) -- (같은 탭 신호 = 메뉴 닫기)
@@ -695,7 +713,7 @@ local function buildInventoryTab(state)
 				end)
 				rounded(jump, 9)
 			end
-			makeLabel({ Size = UDim2.new(1, 0, 1, 0), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBlack,
+			makeLabel({ Size = UDim2.new(1, -72, 1, 0), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, Font = Enum.Font.GothamBlack, TextTruncate = Enum.TextTruncate.AtEnd,
 				Text = string.format("%s %s  %s%s", def.Icon or "★", def.Name, table.concat(pips, ""), worn >= 2 and "  <font color='#78ff8c' size='11'>ON</font>" or "") }, setButton)
 			for _, tier in ipairs({ 2, 3 }) do
 				local parts = {}
