@@ -426,7 +426,7 @@ local function buildInventoryTab(state)
 			local open = drop == key
 			local b = makeButton({ Size = UDim2.new(0, width, 0, 34), AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, x, 0.5, 0), RichText = true, TextSize = 13, Font = Enum.Font.GothamBlack,
 				Text = text .. (open and " ▲" or " ▼"), BackgroundColor3 = open and Color3.fromRGB(70, 64, 110) or Color3.fromRGB(44, 46, 68) }, guide, function()
-				menuContent:SetAttribute("GearDrop", open and nil or key)
+				if open then menuContent:SetAttribute("GearDrop", nil) else menuContent:SetAttribute("GearDrop", key) end -- (예전 "open and nil or key" 는 Lua 에서 항상 key 가 돼서 다시 눌러도 안 접혔다)
 				refreshMenu()
 			end)
 			rounded(b, 12)
@@ -727,7 +727,7 @@ local function buildInventoryTab(state)
 		local slotRow = chipRow(28)
 		chip(slotRow, 0, "All", filterSlot == nil, function() setFilter(nil, filterSet) end)
 		for i, slot in ipairs(Config.Gear.Slots) do
-			chip(slotRow, i, SLOT_ICONS[slot.Key] or slot.Name, filterSlot == slot.Key, function() setFilter(filterSlot == slot.Key and nil or slot.Key, filterSet) end)
+			chip(slotRow, i, SLOT_ICONS[slot.Key] or slot.Name, filterSlot == slot.Key, function() if filterSlot == slot.Key then setFilter(nil, filterSet) else setFilter(slot.Key, filterSet) end end)
 		end
 		-- 정렬 / 필터는 [⇅ 정렬 ▼] 하나로: 누르면 둘째 줄(세트 칩) 자리에 정렬 · 방향 · 유니크만 · 세트 +1만이 펼쳐진다 (칩이 넘쳐 오른쪽이 잘렸다)
 		local sortOpen = menuContent:GetAttribute("BagSortOpen") == true
@@ -743,7 +743,7 @@ local function buildInventoryTab(state)
 				local def = Config.Sets[key]
 				local has = false
 				for _, item in ipairs(bag) do if item.Set == key then has = true break end end
-				if has then chip(setRow, i, def.Icon or "★", filterSet == key, function() setFilter(filterSlot, filterSet == key and nil or key) end, def.Color) end
+				if has then chip(setRow, i, def.Icon or "★", filterSet == key, function() if filterSet == key then setFilter(filterSlot, nil) else setFilter(filterSlot, key) end end, def.Color) end
 			end
 		else
 			local SORTS = { Score = "Sort: Score", Rarity = "Sort: Rarity", Set = "Sort: Set first" }
