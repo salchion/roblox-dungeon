@@ -21,7 +21,7 @@ local TweenService = game:GetService("TweenService")
 local function maxZone()
 	return player:GetAttribute("MaxZone") or 0
 end
-local function augCost(zone, level)
+local function augCost(zone, level) -- (11-24 골드 제거 뒤로는 부르는 곳이 없다: 옛 가격 표시용, 정리 후보)
 	return Config.Sets.AugCost(homeZone(zone), level, maxZone())
 end
 -- 지금 바로 올릴 수 있나 (⬆ 표시): (11-24 골드 제거) 방어 효과가 열려 있고 다음 단계 수호석이 있다. 공격 효과는 세트 장비로만 오른다

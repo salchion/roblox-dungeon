@@ -1,6 +1,6 @@
 -- AugService (ServerScriptService > Modules 안의 ModuleScript, 이름: AugService)
--- 세트 효과(미사일 / 낙뢰 / 유성 ...): 장비가 아니라 "골드로 활성화"하는 능력.
---   * 구역 군주를 잡으면 그 구역 효과가 열리고, 골드로 1~3단계까지 올린다 (Config.Sets.AugCost)
+-- 세트 효과(미사일 / 낙뢰 / 유성 ...). (11-24) 골드로 올리는 길은 없앴다:
+--   * 공격 효과 = 그 구역 세트 장비 부위 수로 단계 (Config.Sets.AugLevelByPieces), 방어 효과 = 구역 군주를 잡아 연 뒤 수호석으로 1~6단계 (Config.Guard.StoneCost)
 --   * 동시에 켤 수 있는 개수(슬롯)는 처음 1개, 2구역 / 4구역을 클리어하면 늘어난다 (Config.Sets.AugSlotZones)
 --   * 저장: MetaService 의 Rift 표 안 AugBoss(군주를 잡은 구역) / AugLv(단계) / AugOn(켠 효과). 키는 문자열 구역 번호.
 --   * 던전 / 필드의 효과 코드는 예전 그대로 Attribute(AugMissile 등 = 단계)를 읽는다. 이 모듈이 그 Attribute 를 채운다.
@@ -26,7 +26,7 @@ local function stateOf(player)
 	rift.AugBoss = rift.AugBoss or {}
 	rift.AugLv = rift.AugLv or {}
 	rift.AugOn = rift.AugOn or {}
-	rift.AugStone = rift.AugStone or {} -- [구역 번호 문자열] = 수호석으로 올린 단계 (방어 기재 4~6단계)
+	rift.AugStone = rift.AugStone or {} -- [구역 번호 문자열] = 수호석으로 올린 단계 (방어 효과 1~6단계)
 	rift.Stones = rift.Stones or 0 -- 🔷 수호석
 	rift.AugLoad = rift.AugLoad or 1 -- 지금 쓰는 세팅 (1 = 사냥용, 2 = 보스용)
 	return rift
@@ -330,7 +330,7 @@ task.spawn(function()
 end)
 
 -- 세트 효과 맞춤 장착 (Y 창 버튼 / 장비 창 칩): 지금 세팅(사냥용 / 보스용)의 칸에 끼운 효과들의 단계 합이 가장 높아지도록 장비를 바꿔 낀다
---   계산은 Inventory.EquipForAugs. 효과마다 Base = 골드 단계 + 수호석 단계 (세트 부위 / "+1" 옵션은 장비 조합에 따라 바뀐다)
+--   계산은 Inventory.EquipForAugs. 효과마다 Base = 수호석 단계 (세트 부위 / "+1" 옵션은 장비 조합에 따라 바뀐다. 골드 단계는 11-24 에 없앴다)
 local function augTargets(player)
 	local rift = stateOf(player)
 	if not rift then return nil end

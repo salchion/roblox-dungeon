@@ -1544,9 +1544,9 @@ Config.Sets = {
 -- (구역 N 의 일반 / 엘리트 / 보스 드랍 중 ZoneSetChance 확률로 그 구역 세트 장비가 나온다 -> 갖고 싶으면 그 구역으로 가야 한다)
 Config.Sets.ZoneSetChance = 0.5
 -- (세트 조각 / 세트 각인은 없어졌다: 세트 장비는 필드 드랍 / 던전 상자 / 보스 확정 보상으로만 얻는다)
--- 구역 세트마다 컨셉이 하나씩 있다: 그 구역 군주를 잡으면 열리고 골드로 활성화한다 (아래 AugCost / AugSlotZones)
+-- 구역 세트마다 컨셉이 하나씩 있다: 그 구역 세트 장비로 단계가 오른다 (11-24 골드 제거. 아래 AugLevelByPieces / AugSlotZones. AugCost 는 쓰지 않는 옛 가격표)
 Config.Sets.ZoneAug = { "AugPulse", "AugOrbit", "AugStorm", "AugMissile", "AugNova", "AugFlame", "AugExecute", "AugMeteor", "AugWard", "AugBody", "AugBuffer", "AugEvade", "AugGrit", "AugRegen" } -- (1~8 공격 세트 효과 / 9~14 방어 기재)
-Config.Sets.AugHomeZone = { [9] = 3, [10] = 4, [11] = 5, [12] = 6, [13] = 7, [14] = 8 } -- 방어 기재: 3~8구역 군주를 잡을 때 하나씩 열리고, 골드 가격도 그 구역 기준
+Config.Sets.AugHomeZone = { [9] = 3, [10] = 4, [11] = 5, [12] = 6, [13] = 7, [14] = 8 } -- 방어 효과: 3~8구역 군주를 잡을 때 하나씩 열리고, 수호석으로 1~6단계 (Config.Guard.StoneCost)
 -- 🔷 수호석: 방어 기재 4~6단계 재료 (골드 1~3단계를 다 올린 뒤). 4구역부터 엘리트 / 군주 / 던전 보스에서
 Config.Guard = {
 	StoneCost = { 4, 6, 10, 14, 20, 30 }, -- (11-24 골드 제거) 방어 효과 1~6단계를 수호석으로만 올린다. Lv6 = 84개 (예전 골드 3단계 + 수호석 12/24/48 의 꼭대기 비용과 같다)
