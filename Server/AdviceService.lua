@@ -93,10 +93,7 @@ function Advice.WallCard(player)
 			if lv >= augLv then augZone, augLv = z, lv end
 		end
 	end
-	if augZone then
-		local gold = player:GetAttribute("AugLvZ_" .. augZone) or 0
-		if gold < 3 then augCost = Config.Sets.AugCost(augZone, gold + 1, player:GetAttribute("MaxZone") or augZone) end
-	end
+	-- (11-24: 세트 효과는 골드로 올리지 않는다 -> 골드 비용 안내 없음. augCost 는 nil 로 둔다)
 	-- 4루트 = 세로 성장 (구역 세트 모으기는 뺐다: 세트는 일부러 수평이라 4구역 세트 2부위는 치명 +6% 뿐, 옆으로 새는 안내였다)
 	local gold = player:GetAttribute("Gold") or 0
 	local wl = player:GetAttribute("WeaponLevel") or 0
@@ -131,7 +128,7 @@ function Advice.WallCard(player)
 		end
 	end
 	local routeUpgrade = { Key = "Upgrade", Icon = "🔨", Name = "Weapon upgrade", Info = upInfo }
-	local routeAug = { Key = "Aug", Icon = "✨", Name = "Set effect", Info = augZone and (augCost and string.format("Set you're wearing Lv.%d · next gold level %s G", augLv, comma(augCost)) or string.format("Set you're wearing Lv.%d · gold levels maxed", augLv)) or "No set effect on yet — wear 2+ set pieces" }
+	local routeAug = { Key = "Aug", Icon = "✨", Name = "Set effect", Info = augZone and string.format("Set you're wearing Lv.%d · 3 pieces = Lv.6, Guard Stones for defense", augLv) or "No set effect on yet — wear set pieces" } -- (11-24: 골드 단계 안내 없음)
 	local routeDungeon = { Key = "Dungeon", Icon = "🏰", Name = "Dungeon", Info = string.format("Best depth %d · Free %d · Keys %d", player:GetAttribute("DepthBest_All") or 0, player:GetAttribute("DungeonFree") or 0, player:GetAttribute("Keys") or 0) }
 	-- 돌파 경로: 생존이 막혔으면(한 방 35% 이상) 세트 효과(방어 효과) · 훈련(체력)을 먼저, 아니면 화력(무기 강화 · 세트 효과)을 먼저
 	local survival = hitPct and hitPct >= 35

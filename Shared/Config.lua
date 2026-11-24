@@ -1549,10 +1549,10 @@ Config.Sets.ZoneAug = { "AugPulse", "AugOrbit", "AugStorm", "AugMissile", "AugNo
 Config.Sets.AugHomeZone = { [9] = 3, [10] = 4, [11] = 5, [12] = 6, [13] = 7, [14] = 8 } -- 방어 기재: 3~8구역 군주를 잡을 때 하나씩 열리고, 골드 가격도 그 구역 기준
 -- 🔷 수호석: 방어 기재 4~6단계 재료 (골드 1~3단계를 다 올린 뒤). 4구역부터 엘리트 / 군주 / 던전 보스에서
 Config.Guard = {
-	StoneCost = { 12, 24, 48 },  -- 4 / 5 / 6단계에 드는 수호석 (군주가 30초마다 다시 나와 4/8/12 는 하루 안에 끝났다: 1종 Lv6 = 84개)
+	StoneCost = { 4, 6, 10, 14, 20, 30 }, -- (11-24 골드 제거) 방어 효과 1~6단계를 수호석으로만 올린다. Lv6 = 84개 (예전 골드 3단계 + 수호석 12/24/48 의 꼭대기 비용과 같다)
 	EliteChance = 0.1,           -- 4구역 이상 엘리트 처치마다 1개 확률
 	BossStones = 3,              -- 4구역 이상 군주 / 던전 보스 처치마다
-	FromCleared = 3,             -- (3구역을 깬 뒤 = 4구역부터)
+	FromCleared = 2,             -- (2구역을 깬 뒤 = 3구역 엘리트 / 군주부터: 3구역 군주를 잡으면 열리는 🛡 방벽을 바로 올릴 수 있게)
 	Ward = function(l) l = math.clamp(math.floor(l or 0), 0, 6) return l > 0 and (0.03 + 0.07 * l) or 0 end,           -- 받는 피해 10 → 45%
 	Body = function(l) l = math.clamp(math.floor(l or 0), 0, 6) return l > 0 and (0.08 + 0.064 * (l - 1)) or 0 end,    -- 최대 체력 +8 → +40%
 	Buffer = function(l) l = math.clamp(math.floor(l or 0), 0, 6) return l > 0 and (0.2 + 0.08 * (l - 1)) or 0 end,    -- 나눠 받기 20 → 60%
@@ -1561,7 +1561,9 @@ Config.Guard = {
 	Regen = function(l) l = math.clamp(math.floor(l or 0), 0, 6) return 0.004 * l end,                                   -- 초당 0.4 → 2.4%
 }
 function Config.WardReduce(level) return Config.Guard.Ward(level) end -- (예전 이름)
-Config.Sets.AugLevelByPieces = { [2] = 1, [3] = 3 }
+-- (11-24 세트 골드 제거) 세트 효과 단계 = 그 구역 세트 장비 부위 수로만: 1부위 Lv1 / 2부위 Lv3 / 3부위 Lv6 (필드 · 던전 공통).
+--   세트 2 / 3부위 스탯 보너스와 같은 박자라 "3부위 = 완성". "+1" 옵션은 그 위에 +1단계씩 (상한 6). 방어 효과(장비 없음)는 수호석으로만 (Config.Guard.StoneCost)
+Config.Sets.AugLevelByPieces = { [1] = 1, [2] = 3, [3] = 6 }
 -- 세트 효과는 장비가 아니라 "골드로 활성화"한다: 그 구역 군주를 잡으면 열리고, 골드로 1~3단계까지 올린다.
 -- 동시에 켤 수 있는 개수(슬롯)는 처음 1개이고 구역을 클리어할수록 늘어난다 (AugSlotZones[n] = n번째 슬롯이 열리는 클리어 구역).
 -- 최후의 군주 결전 (8구역 군주를 쓰러뜨리면 8구역 끝에 포탈이 열린다): 튜토리얼에서 만났던 군주와 이번에는 진짜로 싸운다

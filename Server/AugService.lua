@@ -57,7 +57,7 @@ local function gearBonus(player, zone, setCounts) -- (setCounts 를 주면 그 �
 		if not okInv then return 0 end
 		counts = Inventory.GetTotals(player).SetCounts or {}
 	end
-	return math.clamp(counts["Zone" .. zone] or 0, 0, 3)
+	return Config.Sets.AugLevelByPieces[math.clamp(counts["Zone" .. zone] or 0, 0, 3)] or 0 -- (1부위 Lv1 / 2부위 Lv3 / 3부위 Lv6)
 end
 
 -- 켜지는 세트 효과 고르기 (자동): 단계(골드 단계 + 낀 세트 부위 + "+1" 옵션)가 1 이상인 효과 중에서
@@ -68,7 +68,7 @@ local function levelsOf(player, rift, boosts, setCounts)
 	local list = {}
 	for z = 1, ZONES do
 		local attr = Config.Sets.ZoneAug[z]
-		local level = (rift.AugLv[tostring(z)] or 0) + gearBonus(player, z, setCounts) + (rift.AugStone[tostring(z)] or 0) + math.min(Config.Inventory.AugBoostCap or 3, boosts[attr] or 0)
+		local level = gearBonus(player, z, setCounts) + (rift.AugStone[tostring(z)] or 0) + math.min(Config.Inventory.AugBoostCap or 3, boosts[attr] or 0) -- (11-24: 골드 단계 rift.AugLv 는 더 이상 쓰지 않는다)
 		list[z] = math.min(Config.Inventory.AugMaxLevel or 6, level)
 	end
 	return list
@@ -178,11 +178,16 @@ function Aug.Apply(player)
 		player:SetAttribute("AugAtkLv", atk)
 		player:SetAttribute("AugDefLv", def)
 	end
+	local setPieces = {}
+	do
+		local okInv, Inventory = pcall(function() return require(script.Parent:WaitForChild("InventoryService")) end)
+		if okInv then setPieces = Inventory.GetTotals(player).SetCounts or {} end
+	end
 	for z = 1, ZONES do
-		player:SetAttribute("AugLvZ_" .. z, rift.AugLv[tostring(z)] or 0)
+		player:SetAttribute("AugLvZ_" .. z, 0) -- (골드 단계는 없어졌다: 화면은 AugLvZ_ + AugGearZ_ 를 단계로 읽으므로 0 으로 둔다)
 		player:SetAttribute("AugGearZ_" .. z, gearBonus(player, z) + (rift.AugStone[tostring(z)] or 0) + boostOf(Config.Sets.ZoneAug[z])) -- 장비 / 수호석으로 더해진 단계 (세트 부위 / 수호석 + "+1" 옵션: 골드 단계가 0 이어도 센다)
 		player:SetAttribute("AugStoneZ_" .. z, rift.AugStone[tostring(z)] or 0)
-		player:SetAttribute("AugSetZ_" .. z, gearBonus(player, z)) -- (세트 장비 부위로 오른 단계: 창의 "더 세지는 길")
+		player:SetAttribute("AugSetZ_" .. z, setPieces[Config.Sets.ZoneKeys[z] or ""] and math.min(3, setPieces[Config.Sets.ZoneKeys[z]]) or 0) -- (그 구역 세트 장비를 몇 부위 끼었나 0~3: 창의 "더 세지는 길". 단계는 1 / 3 / 6)
 		player:SetAttribute("AugOptZ_" .. z, boostOf(Config.Sets.ZoneAug[z])) -- ("+1" 장비 옵션으로 오른 단계)
 		player:SetAttribute("AugOnZ_" .. z, table.find(list, z) ~= nil)
 		player:SetAttribute("AugSlotOf_" .. z, (function() local load = rift.AugEquip and rift.AugEquip[rift.AugLoad] or {} return table.find(load, z) or 0 end)()) -- (몇 번 칸에 끼웠나: 0 = 안 끼움)
@@ -262,28 +267,13 @@ Remotes.Aug.OnServerEvent:Connect(function(player, action, zone, slotIndex)
 	local key = tostring(zone)
 	local attr = Config.Sets.ZoneAug[zone]
 	local info = Config.AugInfo[attr]
-	if action == "Buy" then
-		if not townOnly(player) then return end
-		if not isOpen(player, rift, zone) then
-			notify(player, string.format("Defeat the Zone %d lord to unlock", zone))
-			return
-		end
-		local level = rift.AugLv[key] or 0
-		if level >= 3 then return end
-		local cost = Config.Sets.AugCost(homeZone(zone), level + 1, player:GetAttribute("MaxZone") or 0)
-		local gold = player:GetAttribute("Gold") or 0
-		if gold < cost then
-			notify(player, string.format("Not enough gold (need %d G)", cost))
-			return
-		end
-		player:SetAttribute("Gold", gold - cost)
-		rift.AugLv[key] = level + 1
-		notify(player, string.format("%s 『%s』 %s done! (Lv.%d)", info.Icon, info.Name, level == 0 and "Activation" or "Upgrade", level + 1))
+	if action == "Buy" then -- (11-24: 세트 효과를 골드로 올리는 길은 없앴다. 공격은 세트 장비 부위, 방어는 수호석)
+		return
 	elseif action == "Stone" then -- 🔷 수호석으로 방어 기재 4~6단계 (골드 3단계를 다 올린 뒤, 마을에서)
 		if not townOnly(player) then return end
-		if not info.Defense or (rift.AugLv[key] or 0) < 3 then return end
+		if not info.Defense or not isOpen(player, rift, zone) then return end -- (방어 효과: 그 구역 군주를 잡아 열린 뒤 1~6단계를 수호석으로)
 		local stone = rift.AugStone[key] or 0
-		if stone >= 3 then return end
+		if stone >= #Config.Guard.StoneCost then return end
 		local cost = Config.Guard.StoneCost[stone + 1]
 		if (rift.Stones or 0) < cost then
 			notify(player, string.format("Not enough Guard Stones (need %d)", cost))
@@ -291,7 +281,7 @@ Remotes.Aug.OnServerEvent:Connect(function(player, action, zone, slotIndex)
 		end
 		rift.Stones -= cost
 		rift.AugStone[key] = stone + 1
-		notify(player, string.format("%s 『%s』 Lv.%d", info.Icon, info.Name, 3 + stone + 1))
+		notify(player, string.format("%s 『%s』 Lv.%d", info.Icon, info.Name, stone + 1))
 	elseif action == "Equip" then -- 칸에 끼우기 (어디서나). slotIndex 가 있으면 그 칸과 바꾼다
 		if not isOpen(player, rift, zone) then return end
 		rift.AugEquip = rift.AugEquip or {}
@@ -348,7 +338,7 @@ local function augTargets(player)
 	local list = {}
 	for _, z in ipairs(load) do
 		if typeof(z) == "number" and z >= 1 and z <= ZONES and isOpen(player, rift, z) then
-			table.insert(list, { Zone = z, Set = Config.Sets.ZoneKeys[z], Attr = Config.Sets.ZoneAug[z], Base = (rift.AugLv[tostring(z)] or 0) + (rift.AugStone[tostring(z)] or 0) })
+			table.insert(list, { Zone = z, Set = Config.Sets.ZoneKeys[z], Attr = Config.Sets.ZoneAug[z], Base = (rift.AugStone[tostring(z)] or 0) })
 		end
 	end
 	return list

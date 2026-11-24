@@ -44,18 +44,8 @@ local function skillCost()
 	end
 	return best
 end
-local function setsCost() -- 군주를 쓰러뜨려 열린 세트 효과 중 가장 싼 강화
-	local best
-	for zone = 1, #Config.Sets.ZoneAug do
-		if attr("AugOpenZ_" .. zone) == true then
-			local level = attr("AugLvZ_" .. zone) or 0
-			if level < 3 then
-				local cost = Config.Sets.AugCost((Config.Sets.AugHomeZone and Config.Sets.AugHomeZone[zone]) or zone, level + 1, attr("MaxZone") or 0)
-				if not best or cost < best then best = cost end
-			end
-		end
-	end
-	return best
+local function setsCost() -- (11-24: 세트 효과는 골드로 올리지 않는다 -> 골드로 살 수 있는 세트 강화는 없다)
+	return nil
 end
 local function petCost()
 	if attr("DataReady") ~= true then return nil end

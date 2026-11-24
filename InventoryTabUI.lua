@@ -1191,7 +1191,8 @@ local function buildInventoryTab(state)
 				if (before >= 2 and after < 2) or (before >= 3 and after < 3) then text ..= " <font color='#ff8c8c'>(bonus OFF)</font>" end
 				table.insert(changes, text)
 				if def.Zone and math.clamp(before, 0, 3) ~= math.clamp(after, 0, 3) then
-					local a = augChange(def.Zone, math.clamp(after, 0, 3) - math.clamp(before, 0, 3))
+					local L = Config.Sets.AugLevelByPieces -- (부위 수 -> 단계: 1 / 3 / 6)
+					local a = augChange(def.Zone, (L[math.clamp(after, 0, 3)] or 0) - (L[math.clamp(before, 0, 3)] or 0))
 					if a then table.insert(changes, a) end
 				end
 			end

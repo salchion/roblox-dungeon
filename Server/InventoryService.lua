@@ -603,7 +603,7 @@ local function augValue(targets, pick)
 	end
 	local levels, bonus = 0, 0
 	for _, t in ipairs(targets) do
-		levels += math.min(I.AugMaxLevel or 6, t.Base + (t.Set and math.min(3, sets[t.Set] or 0) or 0) + math.min(I.AugBoostCap or 3, boosts[t.Attr] or 0))
+		levels += math.min(I.AugMaxLevel or 6, t.Base + (t.Set and (Config.Sets.AugLevelByPieces[math.min(3, sets[t.Set] or 0)] or 0) or 0) + math.min(I.AugBoostCap or 3, boosts[t.Attr] or 0))
 	end
 	for _, n in pairs(sets) do bonus += (n >= 2 and 1 or 0) + (n >= 3 and 1 or 0) end
 	return levels, bonus, score

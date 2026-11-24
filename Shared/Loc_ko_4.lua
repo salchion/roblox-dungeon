@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<font color='#9ad7ff'>🎯 Goal: Defeat Zone {number1} Lord</font>  <font size='10' color='#c9c0e0'>(Recommended power {text2} · Your power {text3})</font>", "<font color='#9ad7ff'>🎯 목표: {number1}구역 군주 처치</font>  <font size='10' color='#c9c0e0'>(권장 전투력 {text2} · 내 전투력 {text3})</font>" },
+		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [월드 보스] {number1}구역 · {text2}: {text3} 등장! 주황색 빛기둥을 따라가 함께 쓰러뜨리면 장비 + 티켓!" },
+		{ "<font size='10' color='{text1}'>📍 Zone {number2} {text3} · Drops in that zone · Dungeon chests (deeper = better odds)</font>", "<font size='10' color='{text1}'>📍 {number2}구역 {text3} · 그 구역에서 드랍 · 던전 상자 (깊을수록 확률 높음)</font>" },
+		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} 세트 효과 『{text2}』 해금! 그 세트 장비를 끼면 저절로 켜지고, 골드로 강화할 수도 있어요 (Y 키)" },
 		{ " <font size='9' color='#8a8aa8'>Range {text1}</font> <font size='9' color='{text2}'><b>({number3}%)</b></font>", " <font size='9' color='#8a8aa8'>범위 {text1}</font> <font size='9' color='{text2}'><b>({number3}%)</b></font>" },
 		{ "<font color='#9affc0'>Next weapon → <b>{text1}</b></font> <font color='#aeb4cc'>{text2}</font>", "<font color='#9affc0'>다음 무기 → <b>{text1}</b></font> <font color='#aeb4cc'>{text2}</font>" },
 		{ "🔫 Next {text1} <font color='#ffd966'>{text2}</font>\n✨ Upgrades are free right now! ({number3} left)", "🔫 다음 {text1} <font color='#ffd966'>{text2}</font>\n✨ 지금은 강화가 무료예요! ({number3}회 남음)" },

@@ -1034,3 +1034,12 @@
 3075¦▲ 上昇¦▲ Besser¦▲ Hausse¦▲ Sube¦▲ Sobe¦▲ 提升¦▲ 상승
 3076¦上昇¦Besser¦Hausse¦Sube¦Sobe¦提升¦상승
 3077¦低下¦Schlechter¦Baisse¦Baja¦Desce¦下降¦하락
+3079¦守護石を集める¦Schutzsteine sammeln¦Récolte des pierres de garde¦Junta piedras guardianas¦Colete pedras guardiãs¦收集守护石¦수호석 모으기
+3080¦ゾーン{number1} · セット装備 Lv.{number2}¦Zone {number1} · Set-Ausrüstung Lv.{number2}¦Zone {number1} · Équip. de set Nv.{number2}¦Zona {number1} · Equipo de set Nv.{number2}¦Zona {number1} · Equip. de set Nv.{number2}¦区域{number1} · 套装 Lv.{number2}¦{number1}구역 · 세트 장비 Lv.{number2}
+3081¦ゾーン{number1} · 守護石 Lv.{number2}¦Zone {number1} · Schutzstein Lv.{number2}¦Zone {number1} · Pierre de garde Nv.{number2}¦Zona {number1} · Piedra guardiana Nv.{number2}¦Zona {number1} · Pedra guardiã Nv.{number2}¦区域{number1} · 守护石 Lv.{number2}¦{number1}구역 · 수호석 Lv.{number2}
+3082¦● 守護石 Lv.{number1}¦● Schutzstein Lv.{number1}¦● Pierre de garde Nv.{number1}¦● Piedra guardiana Nv.{number1}¦● Pedra guardiã Nv.{number1}¦● 守护石 Lv.{number1}¦● 수호석 Lv.{number1}
+3083¦● オプション {number1}¦● Option {number1}¦● Option {number1}¦● Opción {number1}¦● Opção {number1}¦● 词条 {number1}¦● 옵션 {number1}
+3084¦📍 ゾーン{number1}フィールド · {number2}部位 = Lv.{number3}¦📍 Feld Zone {number1} · {number2} Teile = Lv.{number3}¦📍 Terrain zone {number1} · {number2} pièces = Nv.{number3}¦📍 Campo zona {number1} · {number2} piezas = Nv.{number3}¦📍 Campo zona {number1} · {number2} peças = Nv.{number3}¦📍 区域{number1}野外 · {number2}件 = Lv.{number3}¦📍 {number1}구역 필드 · {number2}부위 = Lv.{number3}
+3085¦🛡 セット装備を探す¦🛡 Set-Ausrüstung suchen¦🛡 Trouver l'équipement de set¦🛡 Buscar equipo de set¦🛡 Procurar equipamento de set¦🛡 寻找套装¦🛡 세트 장비 찾기
+3086¦装着中のセット Lv.{number1} · {number2}部位 = Lv.{number3}、防御は守護石¦Getragenes Set Lv.{number1} · {number2} Teile = Lv.{number3}, Verteidigung mit Schutzsteinen¦Set porté Nv.{number1} · {number2} pièces = Nv.{number3}, défense avec pierres de garde¦Set equipado Nv.{number1} · {number2} piezas = Nv.{number3}, defensa con piedras guardianas¦Set equipado Nv.{number1} · {number2} peças = Nv.{number3}, defesa com pedras guardiãs¦已穿套装 Lv.{number1} · {number2}件 = Lv.{number3}，防御靠守护石¦착용 중인 세트 Lv.{number1} · {number2}부위 = Lv.{number3}, 방어는 수호석
+3087¦まだセット効果がありません — セット装備を着けよう¦Noch kein Set-Effekt — trag Set-Teile¦Aucun effet de set — équipe des pièces de set¦Aún sin efecto de set — equipa piezas de set¦Nenhum efeito de set ainda — equipe peças de set¦还没有套装效果 — 穿上套装部件¦아직 세트 효과가 없어요 — 세트 장비를 끼세요

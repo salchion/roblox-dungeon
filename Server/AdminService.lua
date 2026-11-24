@@ -149,14 +149,13 @@ local function maxOut(player)
 	run("Growth", function() return module("GrowthService").AdminMax(player) end)
 	run("Level stats", function() return module("LevelStatService").AdminMax(player) end)
 	run("Gear", function() return module("InventoryService").AdminMax(player) end)
-	run("Defense gear / Guard Stones", function() -- 방어 기재 6종 Lv6 (골드 3 + 수호석 3) + 수호석 넉넉히
+	run("Defense gear / Guard Stones", function() -- 방어 기재 6종 Lv6 (11-24: 수호석 6단계) + 수호석 넉넉히
 		local rift = module("MetaService").GetRift(player)
 		if not rift then return false end
 		rift.AugStone = rift.AugStone or {}
 		rift.AugLv = rift.AugLv or {}
 		for z = Config.Field.ZoneCount + 1, #Config.Sets.ZoneAug do
-			rift.AugLv[tostring(z)] = 3
-			rift.AugStone[tostring(z)] = 3
+			rift.AugStone[tostring(z)] = #Config.Guard.StoneCost
 		end
 		rift.Stones = math.max(rift.Stones or 0, 1000)
 	end)
@@ -213,11 +212,10 @@ Remotes.Admin.OnServerEvent:Connect(function(player, action, a, b, c)
 		if not rift then return end
 		rift.AugStone = rift.AugStone or {}
 		rift.AugBoss[tostring(Config.Sets.AugHomeZone[z] or z)] = true
-		rift.AugLv[tostring(z)] = 3
-		rift.AugStone[tostring(z)] = math.clamp(math.floor(b), 0, 3)
+		rift.AugStone[tostring(z)] = math.clamp(math.floor(b), 0, #Config.Guard.StoneCost) -- (11-24: b = 방어 단계 0~6, 수호석으로만 오른다)
 		module("AugService").Apply(player)
 		log(player, string.format("SET GUARD %d stone %d", z, rift.AugStone[tostring(z)]))
-		note(player, string.format("%s Lv.%d", Config.Sets.ZoneAug[z], 3 + rift.AugStone[tostring(z)]))
+		note(player, string.format("%s Lv.%d", Config.Sets.ZoneAug[z], rift.AugStone[tostring(z)]))
 	elseif action == "Announce" then
 		announce(player, a)
 	elseif action == "HallRemove" then -- 명예의 전당 a 번째 기록을 지우고 그 유저가 다시 올라오지 못하게 막는다 (이상한 점수 대응)

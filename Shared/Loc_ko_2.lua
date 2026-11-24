@@ -1257,6 +1257,9 @@ return {
 		["Down"] = "하락",
 		["Gain"] = "상승",
 		["Loss"] = "하락",
+		["Collect Guard Stones"] = "수호석 모으기",
+		["🛡 Find set gear"] = "🛡 세트 장비 찾기",
+		["No set effect on yet — wear set pieces"] = "아직 세트 효과가 없어요 — 세트 장비를 끼세요",
 		["♻ Rarity ▾"] = "♻ 등급 ▾",
 		["Dismantle by rarity"] = "등급별 일괄 분해",
 		["Equipped, set, and unique gear is kept."] = "착용 중·세트·유니크 장비는 남겨둡니다.",
@@ -1314,6 +1317,5 @@ return {
 		{ "Deadeye: an enemy must be within {number1} range to lock on! (Camps are safe zones with no enemies", "데드아이: 반경 {number1} 안에 적이 있어야 조준할 수 있어요! (캠프는 적이 없는 안전지대예요" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Sniper Rifle · Rusty Era +{number10}\n📍 Dungeon", "🎖 레벨 {number1} {number2} / {number3} 경험치\n💰 {number4} G 🎫 {number5}\n🔑{number6} (오늘 무료 {number7}/{number8})\n⚡ 파워 {number9}\n⚔ 저격 소총 · 녹슨 시대 +{number10}\n📍 던전" },
 		{ "🌱 Beginner's Boon: +{number1}% damage and -{number2}% damage taken until you clear Zone {number3} (it fades by Lv {number4})", "🌱 초보자의 축복: 구역 {number3}을 클리어할 때까지 피해량 +{number1}% 및 받는 피해량 -{number2}% (레벨 {number4}에 따라 감소)" },
-		{ "🐾 Pet Lv.{number1}! New ability 🧲 Auto-Loot — Loot within a {number2} radius gets pulled in automatically", "🐾 펫 레벨 {number1}! 새로운 능력 🧲 자동 약탈 - {number2} 반경 내의 아이템을 자동으로 수집합니다" },
 	},
 }

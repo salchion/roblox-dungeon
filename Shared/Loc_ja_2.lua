@@ -1116,6 +1116,9 @@ return {
 		["Down"] = "低下",
 		["Gain"] = "上昇",
 		["Loss"] = "低下",
+		["Collect Guard Stones"] = "守護石を集める",
+		["🛡 Find set gear"] = "🛡 セット装備を探す",
+		["No set effect on yet — wear set pieces"] = "まだセット効果がありません — セット装備を着けよう",
 		["♻ Rarity ▾"] = "♻ レア度 ▾",
 		["Dismantle by rarity"] = "レア度で一括分解",
 		["Equipped, set, and unique gear is kept."] = "装備中・セット・ユニーク装備は残ります。",
@@ -1189,6 +1192,5 @@ return {
 		{ "Allocate Stats\nSpend {number1} stat points (T key / Stats button)\n{number2} / {number3}   Reward: {number4} G", "ステータスの割り当て\nステータスポイント{number1}を消費（Tキー/ステータスボタン）\n{number2} / {number3}　報酬：{number4}G" },
 		{ "Skilled Warrior   Title 『Veteran』\nReach character level {number1}\n{number2} / {number3}   Reward: 🎫 {number4}", "熟練の戦士　称号『ベテラン』\nキャラクターレベル{number1}に到達する\n{number2} / {number3}　報酬：🎫 {number4}" },
 		{ "Mythic Master   Title 『Mythic Master』\nObtain Mythic gear\n{number1} / {number2}   Reward: 🎫 {number3}", "神話のマスター　タイトル『神話のマスター』\n神話のギアを入手する\n{number1} / {number2}　報酬：🎫 {number3}" },
-		{ "Dummy Slayer   Title 『Dummy Slayer』\nHit the dummy {number1} times\n{number2} / {number3}   Reward: {number4} G", "ダミー・スレイヤー　タイトル『ダミー・スレイヤー』\nダミーを{number1}回攻撃する\n{number2} / {number3}　報酬：{number4}G" },
 	},
 }

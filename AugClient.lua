@@ -24,11 +24,9 @@ end
 local function augCost(zone, level)
 	return Config.Sets.AugCost(homeZone(zone), level, maxZone())
 end
--- 지금 바로 올릴 수 있나 (⬆ 표시): 열려 있고, 골드 단계(1~3)를 살 돈이 있거나 방어 기재 수호석 단계(4~6)를 살 수호석이 있다
+-- 지금 바로 올릴 수 있나 (⬆ 표시): (11-24 골드 제거) 방어 효과가 열려 있고 다음 단계 수호석이 있다. 공격 효과는 세트 장비로만 오른다
 local function canUpgrade(zone)
 	if player:GetAttribute("AugOpenZ_" .. zone) ~= true then return false end
-	local level = player:GetAttribute("AugLvZ_" .. zone) or 0
-	if level < 3 then return (player:GetAttribute("Gold") or 0) >= augCost(zone, level + 1) end
 	local info = Config.AugInfo[Config.Sets.ZoneAug[zone]]
 	if not (info and info.Defense) then return false end
 	local stone = player:GetAttribute("AugStoneZ_" .. zone) or 0
@@ -255,29 +253,21 @@ local function updatePath(zone)
 		setPath(2, nil) setPath(3, nil)
 		return
 	end
-	-- 1) 골드 단계 (1~3)
-	if level < 3 then
-		local cost = augCost(zone, level + 1)
-		local ready = gold >= cost and inTown
-		setPath(1, "💰", string.format("<b>Gold level</b> <font color='#ffd966'>%s %d/3</font>\n<font color='#9aa'>%s</font>", dots(level), level, inTown and (gold >= cost and "Ready now" or "Not enough gold") or "Upgrade in town"),
-			ready, string.format("%s G", commas(cost)), Color3.fromRGB(150, 110, 40), function() Remotes.Aug:FireServer("Buy", zone) end)
-	else
-		setPath(1, "💰", string.format("<b>Gold level</b> <font color='#ffd966'>%s 3/3 ✔</font>", dots(3)), false)
-	end
-	-- 2) 세트 장비 (공격) / 🔷 수호석 (방어)
+	-- (11-24 골드 제거) 1) 공격 = 세트 장비 부위 (1부위 Lv1 / 2부위 Lv3 / 3부위 Lv6), 방어 = 🔷 수호석 (1~6단계)
+	local L = Config.Sets.AugLevelByPieces
 	if info.Defense then
 		local stone = player:GetAttribute("AugStoneZ_" .. zone) or 0
 		local need = Config.Guard.StoneCost[stone + 1]
 		local have = player:GetAttribute("GuardStones") or 0
-		local ready = need ~= nil and level >= 3 and have >= need and inTown
-		setPath(2, "🔷", string.format("<b>Guard Stone</b> <font color='#8fe0ff'>%s %d/3</font>\n<font color='#9aa'>%s</font>", dots(stone), stone,
-			not need and "Done" or (level < 3 and "After gold Lv.3" or string.format("%d / %d · elites & lords from Zone %d", have, need, 4))),
-			ready, need and level >= 3 and string.format("🔷 %d", need) or nil, Color3.fromRGB(50, 120, 190), function() Remotes.Aug:FireServer("Stone", zone) end)
+		local ready = need ~= nil and have >= need and inTown
+		setPath(1, "🔷", string.format("<b>Guard Stone</b> <font color='#8fe0ff'>Lv.%d/6</font>\n<font color='#9aa'>%s</font>", stone,
+			not need and "Done" or string.format("%d / %d · elites & lords from Zone %d", have, need, (Config.Guard.FromCleared or 2) + 1)),
+			ready, need and string.format("🔷 %d", need) or nil, Color3.fromRGB(50, 120, 190), function() Remotes.Aug:FireServer("Stone", zone) end)
 	else
 		local key = Config.Sets.ZoneKeys[zone]
 		local def = key and Config.Sets[key]
 		local pieces = player:GetAttribute("AugSetZ_" .. zone) or 0
-		setPath(2, def and def.Icon or "🛡", string.format("<b>%s</b> <b>Set gear</b> <font color='#8fe0ff'>%s %d/3</font>\n<font color='#9aa'>📍 Zone %d field</font>", def and def.Name or "", dots(pieces), pieces, zone),
+		setPath(1, def and def.Icon or "🛡", string.format("<b>%s</b> <b>Set gear</b> <font color='#8fe0ff'>%s %d/3 → Lv.%d</font>\n<font color='#9aa'>📍 Zone %d field · 3 pieces = Lv.6</font>", def and def.Name or "", dots(pieces), pieces, L[pieces] or 0, zone),
 			false, pieces < 3 and "Gear" or nil, Color3.fromRGB(58, 110, 170), function()
 				if not key then return end
 				player:SetAttribute("BagSetPref", key)
@@ -285,9 +275,11 @@ local function updatePath(zone)
 				player:SetAttribute("OpenMenuTab", "Character:Gear|" .. tostring(os.clock()))
 			end)
 	end
+	setPath(2, nil)
 	-- 3) "+1" 장비 옵션
 	local opt = player:GetAttribute("AugOptZ_" .. zone) or 0
-	setPath(3, "🎲", string.format("<b>Gear option</b> <font color='#ffd966'>+1 %s</font> <font color='#8fe0ff'>%d/3</font>\n<font color='#9aa'>Sometimes on Legendary+ gear</font>", info.Name, opt), false)
+	setPath(2, "🎲", string.format("<b>Gear option</b> <font color='#ffd966'>+1 %s</font> <font color='#8fe0ff'>%d/3</font>\n<font color='#9aa'>Sometimes on Legendary+ gear</font>", info.Name, opt), false)
+	setPath(3, nil)
 end
 local selectedZone = 1
 -- 칸이 꽉 찼을 때: 어느 칸과 바꿀지 고르는 작은 창
@@ -330,10 +322,14 @@ toggleButton.ZIndex = 3
 for _, c in ipairs(toggleButton:GetChildren()) do if c:IsA("UICorner") then c.CornerRadius = UDim.new(1, 0) end end
 local buyButton = button({ Size = UDim2.new(0.5, -8, 0, 38), Position = UDim2.new(0.5, 0, 1, -46), BackgroundColor3 = Color3.fromRGB(140, 104, 40), Text = "", TextSize = 10 }, box, function()
 	local info = Config.AugInfo[Config.Sets.ZoneAug[selectedZone]]
-	if info and info.Defense and (player:GetAttribute("AugLvZ_" .. selectedZone) or 0) >= 3 then
-		Remotes.Aug:FireServer("Stone", selectedZone) -- (방어 기재 4~6단계: 🔷 수호석)
-	else
-		Remotes.Aug:FireServer("Buy", selectedZone)
+	if info and info.Defense then
+		Remotes.Aug:FireServer("Stone", selectedZone) -- (방어 효과 1~6단계: 🔷 수호석)
+	else -- (공격 효과는 세트 장비로만 오른다: 장비 창을 그 세트로 걸러서 연다)
+		local key = Config.Sets.ZoneKeys[selectedZone]
+		if not key then return end
+		player:SetAttribute("BagSetPref", key)
+		panel.Visible = false
+		player:SetAttribute("OpenMenuTab", "Character:Gear|" .. tostring(os.clock()))
 	end
 end)
 buyButton.ZIndex = 3
@@ -453,16 +449,16 @@ function refresh()
 			elseif level + gear > 0 then
 				r.Status.Text = string.format("<font color='#ffd966'><b>Lv.%d</b></font>", math.min(6, level + gear))
 			elseif open then -- (방어 기재는 세트 장비가 없다: 골드로 1단계를 올려야 켤 수 있다)
-				r.Status.Text = Config.Sets.ZoneKeys[zone] and "<font color='#aab0cc'>Equip its set gear</font>" or "<font color='#aab0cc'>Upgrade with gold</font>"
+				r.Status.Text = Config.Sets.ZoneKeys[zone] and "<font color='#aab0cc'>Equip its set gear</font>" or "<font color='#aab0cc'>Collect Guard Stones</font>"
 			else
 				r.Status.Text = "<font color='#888899'>🔒 Defeat the lord</font>"
 			end
 			local hz = homeZone(zone)
-			r.Sub.Text = (open or level + gear > 0) and (Config.Sets.ZoneKeys[zone] and string.format("Zone %d · Gold %d + Set gear %d", hz, level, gear) or string.format("Zone %d · Gold %d + Guard Stone %d", hz, level, gear)) or string.format("Unlocks when you defeat the Zone %d lord", hz) -- (방벽은 세트 장비가 없고 장비 "+1" 옵션만)
+			r.Sub.Text = (open or level + gear > 0) and (Config.Sets.ZoneKeys[zone] and string.format("Zone %d · Set gear Lv.%d", hz, gear) or string.format("Zone %d · Guard Stone Lv.%d", hz, gear)) or string.format("Unlocks when you defeat the Zone %d lord", hz) -- (방벽은 세트 장비가 없고 장비 "+1" 옵션만)
 		end
 		r.Match.Visible = open and Config.AugWeaponMatch(player, Config.Sets.ZoneAug[zone]) == true
 		r.Up.Visible = canUpgrade(zone)
-		if open and level == 0 and gold >= augCost(zone, 1) then affordable += 1 end
+		if canUpgrade(zone) then affordable += 1 end
 	end
 
 	-- 가운데 네모: 고른 효과
@@ -478,7 +474,13 @@ function refresh()
 	boxStroke.Color = on and info.Color or Color3.fromRGB(255, 190, 110)
 	boxTitle.Text = string.format("<font size='16'><b>%s</b></font>\n%s<font size='11'>Zone %d</font>", info.Name, on and "<font color='#78ffb4' size='11'>● ON · </font>" or "", homeZone(zone))
 	boxLevel.Text = level + gear > 0 and ("Lv." .. (level + gear)) or ""
-	legendGold.Text = info.Defense and string.format("<font color='#ffd966'>● Gold %d</font>  +  <font color='#8fe0ff'>● Guard Stone / option %d</font>  =  <b>Lv.%d</b>", level, gear, math.min(6, level + gear)) or string.format(Config.Sets.ZoneKeys[zone] and "<font color='#ffd966'>● Gold %d</font>  +  <font color='#8fe0ff'>● Set gear %d</font>  =  <b>Lv.%d</b>" or "<font color='#ffd966'>● Gold %d</font>  +  <font color='#8fe0ff'>● Gear option %d</font>  =  <b>Lv.%d</b>", level, gear, math.min(6, level + gear)) -- (방벽은 세트 장비 없이 장비 "+1" 옵션만)
+	do -- (11-24) 단계 = 세트 장비 부위(1 / 3 / 6) 또는 수호석 + "+1" 옵션
+		local pieces = player:GetAttribute("AugSetZ_" .. zone) or 0
+		local opt = player:GetAttribute("AugOptZ_" .. zone) or 0
+		local stone = player:GetAttribute("AugStoneZ_" .. zone) or 0
+		legendGold.Text = info.Defense and string.format("<font color='#8fe0ff'>● Guard Stone Lv.%d</font>  +  <font color='#ffd966'>● Option %d</font>  =  <b>Lv.%d</b>", stone, opt, math.min(6, level + gear))
+			or string.format("<font color='#8fe0ff'>● Set gear %d/3</font> <font color='#9aa'>(1→3→6)</font>  +  <font color='#ffd966'>● Option %d</font>  =  <b>Lv.%d</b>", pieces, opt, math.min(6, level + gear))
+	end
 	legendGear.Text = ""
 	local lines = { "<font color='#aaf0c8'>" .. info.Desc .. "</font>" }
 	for _, child in ipairs(synList:GetChildren()) do if child:IsA("Frame") then child:Destroy() end end
@@ -582,7 +584,7 @@ function refresh()
 		buyButton.Size = UDim2.new(0.5, -8, 0, 38)
 		buyButton.Position = UDim2.new(0.5, 0, 1, -46)
 		local stoneLv = player:GetAttribute("AugStoneZ_" .. zone) or 0
-		if level >= 3 and info.Defense then -- 방어 기재 4~6단계: 🔷 수호석
+		if info.Defense then -- 방어 효과 1~6단계: 🔷 수호석 (11-24 골드 제거)
 			local stones = player:GetAttribute("GuardStones") or 0
 			local need = Config.Guard.StoneCost[stoneLv + 1]
 			if not need then
@@ -592,21 +594,15 @@ function refresh()
 				buyButton.Text = "🏘 Upgrade in town"
 				buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
 			else
-				buyButton.Text = string.format("🔷 %d / %d Guard Stones → Lv.%d", stones, need, 3 + stoneLv + 1)
+				buyButton.Text = string.format("🔷 %d / %d Guard Stones → Lv.%d", stones, need, stoneLv + 1)
 				buyButton.BackgroundColor3 = stones >= need and Color3.fromRGB(50, 120, 190) or Color3.fromRGB(60, 70, 90)
 			end
-		elseif level >= 3 then
-			buyButton.Text = "Gold max · gear adds +3" -- (골드 단계는 끝: 남은 성장은 세트 장비)
-			buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
-		elseif player:GetAttribute("Zone") ~= "Lobby" and player:GetAttribute("TutorialActive") ~= true then
-			buyButton.Text = "🏘 Upgrade in town"
+		elseif (player:GetAttribute("AugSetZ_" .. zone) or 0) >= 3 then
+			buyButton.Text = "✔ Set gear 3/3"
 			buyButton.BackgroundColor3 = Color3.fromRGB(60, 62, 80)
 		else
-			local cost = augCost(zone, level + 1)
-			local priceZone = Config.Sets.AugPriceZone(homeZone(zone), maxZone())
-			-- 가격 기준 구역이 세트 구역보다 높으면 왜 비싼지 같이 적는다 (후반에 낮은 구역 세트를 올릴 때)
-			buyButton.Text = priceZone > homeZone(zone) and string.format("Upgrade %s G (Zone %d price)", commas(cost), priceZone) or string.format("Upgrade %s G", commas(cost))
-			buyButton.BackgroundColor3 = gold >= cost and Color3.fromRGB(150, 110, 40) or Color3.fromRGB(80, 74, 66)
+			buyButton.Text = "🛡 Find set gear"
+			buyButton.BackgroundColor3 = Color3.fromRGB(58, 110, 170)
 		end
 	end
 	slotLabel.Text = string.format("Slots %d / %d   (💰 %s G · 🔷 %d)", used, slots, commas(gold), player:GetAttribute("GuardStones") or 0)
