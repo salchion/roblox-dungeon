@@ -615,7 +615,7 @@ local function buildInventoryTab(state)
 			return (Config.Sets[a].Zone or 0) > (Config.Sets[b].Zone or 0)
 		end)
 		if #keys == 0 then
-			makeLabel({ Size = UDim2.new(1, -8, 0, 54), Text = "Set gear drops in the field (each zone has its own set). Wear 2–3 pieces of one set for bonuses — and its set effect turns on.", TextSize = 12, TextWrapped = true, TextColor3 = Color3.fromRGB(140, 144, 170) }, list)
+			makeLabel({ Size = UDim2.new(1, -8, 0, 54), Text = "Set gear drops in the field (each zone has its own set). 2 pieces = set effect Lv.3 · 3 pieces = Lv.6 · a +1 gear option boosts an effect that's already on.", TextSize = 12, TextWrapped = true, TextColor3 = Color3.fromRGB(140, 144, 170) }, list)
 		end
 		for order, key in ipairs(keys) do
 			local def = Config.Sets[key]
@@ -656,7 +656,7 @@ local function buildInventoryTab(state)
 			end
 			if aug then
 				makeLabel({ Size = UDim2.new(1, 0, 0, 14), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, LayoutOrder = 5, TextColor3 = effectOn and Color3.fromRGB(150, 230, 255) or Color3.fromRGB(130, 134, 160),
-					Text = string.format("%s %s %s", aug.Icon, aug.Name, effectOn and string.format("<font color='#78ff8c'>Lv.%d ON</font>", player:GetAttribute(def.Aug) or 0) or "") }, card)
+					Text = string.format("%s %s %s", aug.Icon, aug.Name, effectOn and string.format("<font color='#78ff8c'>Lv.%d ON</font>", player:GetAttribute(def.Aug) or 0) or "<font color='#9aa'>2 pieces Lv.3 / 3 pieces Lv.6</font>") }, card)
 			end
 			-- 빠진 부위: 가방에 그 세트 부위가 있으면 눌러서 바로 찾는다
 			local missing = create("Frame", { Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, LayoutOrder = 6 }, card)
@@ -1171,7 +1171,8 @@ local function buildInventoryTab(state)
 		if not selected.Equipped and (selected.Set or selected.AugBoost or (current and (current.Set or current.AugBoost))) then
 			local changes = {}
 			local cap = Config.Inventory.AugMaxLevel or 6
-			local function augChange(zone, delta)
+			local function augChange(zone, delta, fromOption) -- (fromOption: "+1" 옵션은 이미 켜진 효과에만 더해진다)
+				if fromOption and (player:GetAttribute("AugGearZ_" .. zone) or 0) - (player:GetAttribute("AugOptZ_" .. zone) or 0) <= 0 then return nil end
 				local def = Config.Sets.ZoneKeys[zone] and Config.Sets[Config.Sets.ZoneKeys[zone]]
 				local info = (def and def.Aug and Config.AugInfo[def.Aug]) or Config.AugInfo[Config.Sets.ZoneAug[zone] or ""] -- (구역 세트가 없는 효과(폭풍의 방벽)는 효과 이름에서)
 				if not info then return nil end
@@ -1191,7 +1192,7 @@ local function buildInventoryTab(state)
 				if (before >= 2 and after < 2) or (before >= 3 and after < 3) then text ..= " <font color='#ff8c8c'>(bonus OFF)</font>" end
 				table.insert(changes, text)
 				if def.Zone and math.clamp(before, 0, 3) ~= math.clamp(after, 0, 3) then
-					local L = Config.Sets.AugLevelByPieces -- (부위 수 -> 단계: 1 / 3 / 6)
+					local L = Config.Sets.AugLevelByPieces -- (부위 수 -> 단계: 0 / 3 / 6)
 					local a = augChange(def.Zone, (L[math.clamp(after, 0, 3)] or 0) - (L[math.clamp(before, 0, 3)] or 0))
 					if a then table.insert(changes, a) end
 				end
@@ -1204,7 +1205,7 @@ local function buildInventoryTab(state)
 			if gain ~= lose then
 				for _, pair in ipairs({ { gain, 1 }, { lose, -1 } }) do
 					local zone = pair[1] and table.find(Config.Sets.ZoneAug, pair[1])
-					local a = zone and augChange(zone, pair[2])
+					local a = zone and augChange(zone, pair[2], true)
 					if a then table.insert(changes, a) end
 				end
 			end

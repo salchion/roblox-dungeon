@@ -72,7 +72,6 @@ local function applyAttributes(player, state)
 	player:SetAttribute("KeyCapBonus", vip and S.Vip.KeyCap or 0)
 	player:SetAttribute("KeyRegenBonus", vip and S.Vip.KeyRegen or 0)
 	player:SetAttribute("TrainSlotBonus", state.TrainSlot + (vip and S.Vip.TrainSlots or 0))
-	player:SetAttribute("AugSlotBonus", state.AugSlot + (vip and S.Vip.AugSlots or 0)) -- 세트 효과를 동시에 켜는 칸
 	player:SetAttribute("XpBoostUntil", state.XpBoostUntil)
 	player:SetAttribute("LuckBoostUntil", state.LuckBoostUntil)
 	player:SetAttribute("IdleBoostUntil", state.IdleBoostUntil)
@@ -178,9 +177,6 @@ function Monetization.Grant(player, grant, productKey)
 	end
 	if grant.Bag then
 		state.Bag += grant.Bag
-	end
-	if grant.AugSlot then
-		state.AugSlot = math.min(2, state.AugSlot + grant.AugSlot)
 	end
 	if grant.TrainSlot then
 		state.TrainSlot += grant.TrainSlot

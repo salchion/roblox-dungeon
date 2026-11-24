@@ -278,14 +278,14 @@ end
 
 -- 전투력 = 무기(종류+강화) + 스탯 + 장비 (이름표 / 리더보드 / 랭킹에 표시)
 -- 진단: 전투력이 바뀔 때마다 "무엇 때문에" 바뀌었는지 한 줄 (Studio 출력)
---   같은 동작이 여러 Attribute 를 한꺼번에 바꾸면(프리셋 전환 = AugLoad + 세트 단계, 장비 교체 = 체력/치명/공격) 한 줄로 모아 찍는다.
+--   같은 동작이 여러 Attribute 를 한꺼번에 바꾸면(장비 교체 = 체력/치명/공격) 한 줄로 모아 찍는다.
 --   InventoryService / AugService 가 큰 동작 직전에 player:SetAttribute("PowerCause", "장비 교체") 처럼 이름을 붙이면 그 이름을 쓴다.
 local POWER_CAUSES = {
 	Level = "레벨", WeaponLevel = "무기 강화", WeaponType = "무기 형",
 	CritPoints = "레벨 스탯", SpeedPoints = "레벨 스탯",
 	GearHealth = "장비", GearCrit = "장비", GearDamage = "장비",
 	TrainHealth = "훈련", TrainCrit = "훈련", TrainDamage = "훈련",
-	PetDamage = "펫", AugAtkLv = "세트 효과", AugDefLv = "세트 효과", AugLoad = "프리셋 전환",
+	PetDamage = "펫", AugAtkLv = "세트 효과", AugDefLv = "세트 효과",
 }
 local powerLog = setmetatable({}, { __mode = "k" })
 local function comma(n)
@@ -432,7 +432,7 @@ local function setupPlayer(player)
 		Weapon.Refresh(player)
 		updatePower(player, "무기 형")
 	end)
-	for _, attribute in ipairs({ "CritPoints", "SpeedPoints", "GearHealth", "GearCrit", "GearDamage", "TrainHealth", "TrainCrit", "TrainDamage", "PetDamage", "AugAtkLv", "AugDefLv", "AugLoad" }) do
+	for _, attribute in ipairs({ "CritPoints", "SpeedPoints", "GearHealth", "GearCrit", "GearDamage", "TrainHealth", "TrainCrit", "TrainDamage", "PetDamage", "AugAtkLv", "AugDefLv" }) do
 		player:GetAttributeChangedSignal(attribute):Connect(function()
 			updatePower(player, POWER_CAUSES[attribute])
 		end)

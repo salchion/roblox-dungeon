@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Limit Breaker   Title 『Limit Breaker』\nDefeat {number1} bosses in one Boss Rush run\n{number2} / {number3}   Reward: 🎫 {number4}", "리미트 브레이커 타이틀 『리미트 브레이커』\n보스 러시에서 {number1}명의 보스를 처치하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
+		{ "Deadeye: an enemy must be within {number1} range to lock on! (Camps are safe zones with no enemies", "데드아이: 반경 {number1} 안에 적이 있어야 조준할 수 있어요! (캠프는 적이 없는 안전지대예요" },
+		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Sniper Rifle · Rusty Era +{number10}\n📍 Dungeon", "🎖 레벨 {number1} {number2} / {number3} 경험치\n💰 {number4} G 🎫 {number5}\n🔑{number6} (오늘 무료 {number7}/{number8})\n⚡ 파워 {number9}\n⚔ 저격 소총 · 녹슨 시대 +{number10}\n📍 던전" },
+		{ "🌱 Beginner's Boon: +{number1}% damage and -{number2}% damage taken until you clear Zone {number3} (it fades by Lv {number4})", "🌱 초보자의 축복: 구역 {number3}을 클리어할 때까지 피해량 +{number1}% 및 받는 피해량 -{number2}% (레벨 {number4}에 따라 감소)" },
 		{ "🐾 Pet Lv.{number1}! New ability 🧲 Auto-Loot — Loot within a {number2} radius gets pulled in automatically", "🐾 펫 레벨 {number1}! 새로운 능력 🧲 자동 약탈 - {number2} 반경 내의 아이템을 자동으로 수집합니다" },
 		{ "<font size='12' color='#9ad7ff'>⏱ You'd beat this lord in ~{number1}s (aim for under 60s)</font>", "<font size='12' color='#9ad7ff'>⏱ 이 군주는 약 {number1}초면 잡아요 (60초 안이 목표)</font>" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} bosses in one Boss Rush run\n{number2} / {number3}   Reward: 🎫 {number4}", "보스 헌터 타이틀 『보스 헌터』\n보스 러시에서 {number1}명의 보스를 처치하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
@@ -785,6 +789,7 @@ return {
 		{ "+{number1} G", "+{number1}G" },
 		{ "{number1}h {number2}m", "{number1}시간 {number2}분" },
 		{ "{number1}m {number2}s", "{number1}분 {number2}초" },
+		{ "{number1} on", "{number1}개 켜짐" },
 		{ "⚡ {number1}", "⚡ {number1}" },
 		{ "{number1}/3", "{number1}/3" },
 		{ "{number1} G", "{number1} G" },
@@ -1041,8 +1046,5 @@ return {
 		{ "+{number1} {text1}", "+{number1} {text1}" },
 		{ "{number1}/{number2}{text3}", "{number1}/{number2}{text3}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
-		{ "<font size='15'><b>{text1}</b></font>\n<font color='#9a9ab5'>Empty</font>\n\n{text2} effect\n<font color='#c9c0e0'>Get gear with the gacha below, or equip gear dropped in the field from your Bag (B).</font>", "<font size='15'><b>{text1}</b></font>\n<font color='#9a9ab5'>비어 있음</font>\n\n{text2} 효과\n<font color='#c9c0e0'>아래 뽑기로 장비를 얻거나, 필드에서 얻은 장비를 가방 (B)에서 장착하세요.</font>" },
-		{ "<font size='14'><b>Level {number1} Breakthrough</b></font>   (Current Lv.{number2})\n<font color='#bbbbcc'>Time needed {text3} · 💰 {number4} G</font>\n<font size='11' color='#bbbbcc'>{text5}</font>", "<font size='14'><b>{number1}레벨 돌파</b></font>   (현재 Lv.{number2})\n<font color='#bbbbcc'>필요 시간 {text3} · 💰 {number4} G</font>\n<font size='11' color='#bbbbcc'>{text5}</font>" },
-		{ "<font color='#78ff8c'>🎯 Ready to challenge the Zone {number1} Lord!</font>  <font size='10' color='#c9c0e0'>(Recommended {text2} · Yours {text3})</font>", "<font color='#78ff8c'>🎯 {number1}구역 군주에게 도전할 준비 완료!</font>  <font size='10' color='#c9c0e0'>(권장 {text2} · 내 전투력 {text3})</font>" },
 	},
 }

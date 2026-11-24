@@ -181,7 +181,6 @@ local function previewPower(player, state, equippedMap)
 		AugAtkLv = atk, AugDefLv = def,
 	})
 end
-local augTargetsOf -- (AugService 가 넣어 준다: player -> 칸에 끼운 세트 효과 targets. 최강 장비 후보 / 세트 효과 맞춤이 쓴다)
 local lastPreview = setmetatable({}, { __mode = "k" })
 local function handlePowerPreview(player, ids)
 	local now = os.clock()
@@ -211,7 +210,7 @@ end
 ------------------------------------------------------------
 -- 클라이언트로 상태 보내기
 ------------------------------------------------------------
-local hasBetter -- (장비 "!" 표시 계산: 아래 세트 효과 맞춤 장착 옆에서 정의)
+local hasBetter -- (장비 "!" 표시 계산: 아래에서 정의)
 local function buildPayload(player, state)
 	local equippedIds = {}
 	for _, id in pairs(state.Equipped) do
@@ -537,15 +536,6 @@ function Inventory.AutoEquipBest(player, emptyOnly)
 		local v = powerOf(worn)
 		if v > bestValue then bestPick, bestValue = worn, v end
 	end
-	if augTargetsOf and Inventory.AugPick then -- 세트 효과를 여러 개 켰을 때: 효과 단계 합이 가장 높은 조합도 후보로 (전투력에 효과 단계가 들어 있다)
-		local okT, targets = pcall(augTargetsOf, player)
-		if okT and targets and #targets > 0 then
-			local aug = {}
-			for slotKey, item in pairs(Inventory.AugPick(state, targets)) do aug[slotKey] = { Id = item.Id, Score = scoreOf(item), Set = item.Set } end
-			local v = powerOf(aug)
-			if v > bestValue then bestPick, bestValue = aug, v end
-		end
-	end
 	for i, a in ipairs(sets) do
 		try({ a })
 		for j, b in ipairs(sets) do
@@ -590,133 +580,6 @@ function Inventory.AutoEquipBest(player, emptyOnly)
 	return changed
 end
 
--- 세트 효과 맞춤 장착 (Y 창 / 장비 창 "세트 효과 맞춤"): 칸에 끼운 효과들의 단계 합이 가장 높아지는 6부위 조합을 찾는다
---   targets = { { Set = 구역 세트 키 또는 nil(방어 효과), Attr = 효과 Attribute, Base = 골드 + 수호석 단계 }, ... } (AugService.AutoGear 가 만든다)
---   비교 순서: 1) 효과 단계 합 (효과마다 Base + 세트 부위(최대 3) + "+1" 옵션(최대 3), 최대 AugMaxLevel) 2) 세트 2 / 3부위 보너스 수 3) 장비 점수 합
---   후보: 부위마다 "그냥 최고 / 효과 세트 최고 / 효과 +1 옵션 최고 / 둘 다" 만 남긴다 (부위당 최대 7개 -> 6부위 전체 조합도 금방)
-local function augValue(targets, pick)
-	local sets, boosts, score = {}, {}, 0
-	for _, item in pairs(pick) do
-		score += Config.GetItemScore(item)
-		if item.Set then sets[item.Set] = (sets[item.Set] or 0) + 1 end
-		if item.AugBoost then boosts[item.AugBoost] = (boosts[item.AugBoost] or 0) + 1 end
-	end
-	local levels, bonus = 0, 0
-	for _, t in ipairs(targets) do
-		levels += math.min(I.AugMaxLevel or 6, t.Base + (t.Set and (Config.Sets.AugLevelByPieces[math.min(3, sets[t.Set] or 0)] or 0) or 0) + math.min(I.AugBoostCap or 3, boosts[t.Attr] or 0))
-	end
-	for _, n in pairs(sets) do bonus += (n >= 2 and 1 or 0) + (n >= 3 and 1 or 0) end
-	return levels, bonus, score
-end
-local function augBetter(a, b) -- a = { levels, bonus, score }
-	if a[1] ~= b[1] then return a[1] > b[1] end
-	if a[2] ~= b[2] then return a[2] > b[2] end
-	return a[3] > b[3] + 0.001
-end
-local function wornPick(state)
-	local pick = {}
-	for slotKey, id in pairs(state.Equipped) do if state.Items[id] then pick[slotKey] = state.Items[id] end end
-	return pick
-end
--- 장착 방식: "Best" (최강 장비) / "Augs" (세트 효과 맞춤) / 구역 세트 키 (AugService 가 세팅을 바꿀 때 읽는다)
-function Inventory.GetEquipMode(player)
-	local state = states[player]
-	return state and (state.EquipMode or "Best") or nil
-end
-function Inventory.EquipForAugs(player, targets)
-	local state = states[player]
-	if not state then return 0 end
-	if player:GetAttribute("Zone") == "Dungeon" then return 0, "You can't change gear in the dungeon." end
-	local bySlot = {}
-	for _, item in pairs(state.Items) do
-		bySlot[item.Slot] = bySlot[item.Slot] or {}
-		table.insert(bySlot[item.Slot], item)
-	end
-	local slotKeys, cands = {}, {}
-	for slotKey, list in pairs(bySlot) do
-		local keep, seen = {}, {}
-		local function bestWhere(test)
-			local best
-			for _, item in ipairs(list) do
-				if test(item) and (not best or Config.GetItemScore(item) > Config.GetItemScore(best)) then best = item end
-			end
-			if best and not seen[best] and #keep < 7 then seen[best] = true table.insert(keep, best) end
-		end
-		for _, t in ipairs(targets) do -- (효과 단계에 도움 되는 것 먼저)
-			if t.Set then bestWhere(function(it) return it.Set == t.Set and it.AugBoost == t.Attr end) end
-			if t.Set then bestWhere(function(it) return it.Set == t.Set end) end
-			bestWhere(function(it) return it.AugBoost == t.Attr end)
-		end
-		bestWhere(function() return true end)
-		table.insert(slotKeys, slotKey)
-		cands[slotKey] = keep
-	end
-	local bestPick = Inventory.AugPick(state, targets, slotKeys, cands)
-	state.EquipMode = "Augs" -- 장착 방식: 세트 효과 맞춤 (Y 창 "이 세팅에 맞게 장비 끼우기")
-	local changed = 0
-	for slotKey, item in pairs(bestPick) do
-		if state.Equipped[slotKey] ~= item.Id then
-			state.Equipped[slotKey] = item.Id
-			changed += 1
-		end
-	end
-	powerCause(player, "세트 맞춤 장착")
-	applyEquipAttributes(player, state)
-	Inventory.Push(player)
-	return changed
-end
--- 효과 단계 합이 가장 높은 6부위 조합 (계산만: 장착하지 않는다). slotKeys / cands 를 안 주면 여기서 후보를 만든다
-function Inventory.AugPick(state, targets, slotKeys, cands)
-	if not slotKeys then
-		local bySlot = {}
-		for _, item in pairs(state.Items) do
-			bySlot[item.Slot] = bySlot[item.Slot] or {}
-			table.insert(bySlot[item.Slot], item)
-		end
-		slotKeys, cands = {}, {}
-		for slotKey, list in pairs(bySlot) do
-			local keep, seen = {}, {}
-			local function bestWhere(test)
-				local best
-				for _, item in ipairs(list) do
-					if test(item) and (not best or Config.GetItemScore(item) > Config.GetItemScore(best)) then best = item end
-				end
-				if best and not seen[best] and #keep < 7 then seen[best] = true table.insert(keep, best) end
-			end
-			for _, t in ipairs(targets) do
-				if t.Set then bestWhere(function(it) return it.Set == t.Set and it.AugBoost == t.Attr end) end
-				if t.Set then bestWhere(function(it) return it.Set == t.Set end) end
-				bestWhere(function(it) return it.AugBoost == t.Attr end)
-			end
-			bestWhere(function() return true end)
-			table.insert(slotKeys, slotKey)
-			cands[slotKey] = keep
-		end
-	end
-	local bestPick, best = wornPick(state), nil
-	best = { augValue(targets, bestPick) }
-	local pick = {}
-	local function dfs(i)
-		if i > #slotKeys then
-			local v = { augValue(targets, pick) }
-			if augBetter(v, best) then
-				best = v
-				bestPick = table.clone(pick)
-			end
-			return
-		end
-		for _, item in ipairs(cands[slotKeys[i]]) do
-			pick[slotKeys[i]] = item
-			dfs(i + 1)
-		end
-		pick[slotKeys[i]] = nil
-	end
-	dfs(1)
-	return bestPick
-end
--- 장비 "!" 표시용: 지금 장착 방식 기준으로 가방의 장비 한 개를 바꿔 끼우면 실제로 더 좋아지는가
---   (세트 효과 맞춤이면 효과 단계 → 세트 보너스 → 점수 순으로 비교: 점수만 높고 효과 단계를 깨는 장비에는 "!" 가 안 뜬다)
-function Inventory.SetAugTargets(fn) augTargetsOf = fn end
 function hasBetter(player, state)
 	-- (11-23) "!" = 가방 장비 하나를 바꿔 끼면 실제 ⚡ 전투력이 오르는가 (최강 장착과 같은 기준: 최강을 누른 직후엔 "!" 가 남지 않는다)
 	local base = previewPower(player, state, state.Equipped)
@@ -1033,7 +896,7 @@ function Inventory.Load(player, saved, legacyGear)
 			end
 		end
 		state.Essence = math.max(0, math.floor(tonumber(saved.Essence) or 0))
-		if typeof(saved.EquipMode) == "string" and (saved.EquipMode == "Best" or saved.EquipMode == "Augs" or Config.Sets[saved.EquipMode]) then state.EquipMode = saved.EquipMode end -- 장착 방식: 최강 장비 / 세트(구역 세트 키)
+		if typeof(saved.EquipMode) == "string" and (saved.EquipMode == "Best" or Config.Sets[saved.EquipMode]) then state.EquipMode = saved.EquipMode end -- 장착 방식: 최강 장비 / 세트(구역 세트 키)
 		local savedScrap = math.clamp(math.floor(tonumber(saved.AutoScrap) or 1), 0, SMART)
 		state.AutoScrap = savedScrap == 1 and SMART or savedScrap -- (옛 기본값 "일반 이하" 는 새 기본값 "스마트"로)
 		if typeof(saved.Shards) == "table" then
@@ -1136,9 +999,6 @@ Remotes.Inventory.OnServerEvent:Connect(function(player, action, arg, arg2)
 		ok, message = Inventory.Fuse(player, arg)
 	elseif action == "ScrapBelow" and typeof(arg) == "number" then
 		ok, message = Inventory.ScrapBelow(player, arg)
-	elseif action == "AutoAugs" then -- 세트 효과 맞춤 (AugService 가 칸에 끼운 효과를 모아 EquipForAugs 를 부르고 결과를 알린다)
-		local okA, Aug = pcall(function() return require(script.Parent:WaitForChild("AugService")) end)
-		if okA and Aug.AutoGear then ok, message = Aug.AutoGear(player) end
 	elseif action == "AutoEquip" then
 		local changed, reason = Inventory.AutoEquipBest(player)
 		if reason then

@@ -4,12 +4,16 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<font size='15'><b>{text1}</b></font>\n<font color='#9a9ab5'>Empty</font>\n\n{text2} effect\n<font color='#c9c0e0'>Get gear with the gacha below, or equip gear dropped in the field from your Bag (B).</font>", "<font size='15'><b>{text1}</b></font>\n<font color='#9a9ab5'>비어 있음</font>\n\n{text2} 효과\n<font color='#c9c0e0'>아래 뽑기로 장비를 얻거나, 필드에서 얻은 장비를 가방 (B)에서 장착하세요.</font>" },
+		{ "<font size='14'><b>Level {number1} Breakthrough</b></font>   (Current Lv.{number2})\n<font color='#bbbbcc'>Time needed {text3} · 💰 {number4} G</font>\n<font size='11' color='#bbbbcc'>{text5}</font>", "<font size='14'><b>{number1}레벨 돌파</b></font>   (현재 Lv.{number2})\n<font color='#bbbbcc'>필요 시간 {text3} · 💰 {number4} G</font>\n<font size='11' color='#bbbbcc'>{text5}</font>" },
+		{ "<font color='#78ff8c'>🎯 Ready to challenge the Zone {number1} Lord!</font>  <font size='10' color='#c9c0e0'>(Recommended {text2} · Yours {text3})</font>", "<font color='#78ff8c'>🎯 {number1}구역 군주에게 도전할 준비 완료!</font>  <font size='10' color='#c9c0e0'>(권장 {text2} · 내 전투력 {text3})</font>" },
 		{ "<font color='#9ad7ff'>🎯 Goal: Defeat Zone {number1} Lord</font>  <font size='10' color='#c9c0e0'>(Recommended power {text2} · Your power {text3})</font>", "<font color='#9ad7ff'>🎯 목표: {number1}구역 군주 처치</font>  <font size='10' color='#c9c0e0'>(권장 전투력 {text2} · 내 전투력 {text3})</font>" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [월드 보스] {number1}구역 · {text2}: {text3} 등장! 주황색 빛기둥을 따라가 함께 쓰러뜨리면 장비 + 티켓!" },
 		{ "<font size='10' color='{text1}'>📍 Zone {number2} {text3} · Drops in that zone · Dungeon chests (deeper = better odds)</font>", "<font size='10' color='{text1}'>📍 {number2}구역 {text3} · 그 구역에서 드랍 · 던전 상자 (깊을수록 확률 높음)</font>" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} 세트 효과 『{text2}』 해금! 그 세트 장비를 끼면 저절로 켜지고, 골드로 강화할 수도 있어요 (Y 키)" },
 		{ " <font size='9' color='#8a8aa8'>Range {text1}</font> <font size='9' color='{text2}'><b>({number3}%)</b></font>", " <font size='9' color='#8a8aa8'>범위 {text1}</font> <font size='9' color='{text2}'><b>({number3}%)</b></font>" },
 		{ "<font color='#9affc0'>Next weapon → <b>{text1}</b></font> <font color='#aeb4cc'>{text2}</font>", "<font color='#9affc0'>다음 무기 → <b>{text1}</b></font> <font color='#aeb4cc'>{text2}</font>" },
+		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear to turn it on (Y key)", "{text1} 세트 효과 『{text2}』 열림! 그 세트 장비를 2부위 이상 끼면 켜져요 (Y 키)" },
 		{ "🔫 Next {text1} <font color='#ffd966'>{text2}</font>\n✨ Upgrades are free right now! ({number3} left)", "🔫 다음 {text1} <font color='#ffd966'>{text2}</font>\n✨ 지금은 강화가 무료예요! ({number3}회 남음)" },
 		{ "<font color='#aab0d0'>All-time best {text1} pts · most bosses {number2} · longest {text3}</font>", "<font color='#aab0d0'>역대 최고 {text1}점 · 최다 보스 {number2} · 최장 {text3}</font>" },
 		{ "{text1} · {text2} · Fail if monsters pile up! Survive to the end and the boss appears", "{text1} · {text2} · 몬스터가 쌓이면 실패! 끝까지 버티면 보스가 나와요" },

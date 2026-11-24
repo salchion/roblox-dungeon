@@ -3086,5 +3086,17 @@
 "📍 Zone {number1} field · {number2} pieces = Lv.{number3}",
 "🛡 Find set gear",
 "Set you're wearing Lv.{number1} · {number2} pieces = Lv.{number3}, Guard Stones for defense",
-"No set effect on yet — wear set pieces"
+"No set effect on yet — wear set pieces",
+"Attack: turns on by itself from 2 set pieces (2 = Lv.3 · 3 = Lv.6) · 🛡 Defense: pick 1 · Gear option +1 only boosts effects already on",
+"Defense · pick 1 · unlocked by Zone 3–8 lords",
+"ON (tap to turn off)",
+"Turn on",
+"off",
+"Wear 2 set pieces",
+"{number1} on",
+"① Defeat a zone's Lord → its effect unlocks   ② Wear 2+ pieces of its set gear and it turns on by itself   ③ It fires on its own in combat",
+"Set gear drops in the field (each zone has its own set). 2 pieces = set effect Lv.3 · 3 pieces = Lv.6 · a +1 gear option boosts an effect that's already on.",
+"2 pieces Lv.3 / 3 pieces Lv.6",
+"{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear to turn it on (Y key)",
+"🛡 Defense · pick 1 · unlocked by Zone 3–8 lords"
 ]

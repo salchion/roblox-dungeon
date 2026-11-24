@@ -1544,12 +1544,12 @@ Config.Sets = {
 -- (구역 N 의 일반 / 엘리트 / 보스 드랍 중 ZoneSetChance 확률로 그 구역 세트 장비가 나온다 -> 갖고 싶으면 그 구역으로 가야 한다)
 Config.Sets.ZoneSetChance = 0.5
 -- (세트 조각 / 세트 각인은 없어졌다: 세트 장비는 필드 드랍 / 던전 상자 / 보스 확정 보상으로만 얻는다)
--- 구역 세트마다 컨셉이 하나씩 있다: 그 구역 세트 장비로 단계가 오른다 (11-24 골드 제거. 아래 AugLevelByPieces / AugSlotZones. AugCost 는 쓰지 않는 옛 가격표)
+-- 구역 세트마다 컨셉이 하나씩 있다: 그 구역 세트 장비로 단계가 오른다 (골드 / 효과 칸 없음: 공격 = 세트 2부위부터 자동으로 켜짐, 방어 = 수호석 + 1개 선택. 아래 AugLevelByPieces / Config.Guard)
 Config.Sets.ZoneAug = { "AugPulse", "AugOrbit", "AugStorm", "AugMissile", "AugNova", "AugFlame", "AugExecute", "AugMeteor", "AugWard", "AugBody", "AugBuffer", "AugEvade", "AugGrit", "AugRegen" } -- (1~8 공격 세트 효과 / 9~14 방어 기재)
 Config.Sets.AugHomeZone = { [9] = 3, [10] = 4, [11] = 5, [12] = 6, [13] = 7, [14] = 8 } -- 방어 효과: 3~8구역 군주를 잡을 때 하나씩 열리고, 수호석으로 1~6단계 (Config.Guard.StoneCost)
--- 🔷 수호석: 방어 기재 4~6단계 재료 (골드 1~3단계를 다 올린 뒤). 4구역부터 엘리트 / 군주 / 던전 보스에서
+-- 🔷 수호석: 방어 기재 1~6단계 재료. 3구역 이상(잡은 몬스터 구역 기준) 엘리트 / 군주 / 월드 보스, 던전 보스는 3구역 도달 뒤 (AugService.GrantStones)
 Config.Guard = {
-	StoneCost = { 3, 6, 10, 14, 20, 30 }, -- (1단계 3개 = 군주 1마리: 3구역 군주를 잡아 방벽이 열리는 순간 Lv1 을 바로 올릴 수 있다. Lv6 = 83개) -- (11-24 골드 제거) 방어 효과 1~6단계를 수호석으로만 올린다. Lv6 = 84개 (예전 골드 3단계 + 수호석 12/24/48 의 꼭대기 비용과 같다)
+	StoneCost = { 3, 6, 10, 14, 20, 30 }, -- (1단계 3개 = 군주 1마리: 3구역 군주를 잡아 방벽이 열리는 순간 Lv1 을 바로 올릴 수 있다. Lv6 = 83개) -- 방어 효과 1~6단계를 수호석으로만 올린다
 	EliteChance = 0.1,           -- 3구역 이상(잡은 몬스터 구역 기준) 엘리트 처치마다 1개 확률
 	BossStones = 3,              -- 3구역 이상(잡은 몬스터 구역 기준) 군주 / 월드 보스 처치마다, 던전 보스는 3구역에 도달한 뒤부터
 	FromZone = 3,                -- 수호석은 이 구역 이상의 몬스터에게서만 (AugService.GrantStones). 예전엔 "내가 깬 구역"으로 판정해 1~2구역 정예 / 군주 반복 사냥으로도 모였다
@@ -1561,11 +1561,9 @@ Config.Guard = {
 	Regen = function(l) l = math.clamp(math.floor(l or 0), 0, 6) return 0.004 * l end,                                   -- 초당 0.4 → 2.4%
 }
 function Config.WardReduce(level) return Config.Guard.Ward(level) end -- (예전 이름)
--- (11-24 세트 골드 제거) 세트 효과 단계 = 그 구역 세트 장비 부위 수로만: 1부위 Lv1 / 2부위 Lv3 / 3부위 Lv6 (필드 · 던전 공통).
---   세트 2 / 3부위 스탯 보너스와 같은 박자라 "3부위 = 완성". "+1" 옵션은 그 위에 +1단계씩 (상한 6). 방어 효과(장비 없음)는 수호석으로만 (Config.Guard.StoneCost)
-Config.Sets.AugLevelByPieces = { [1] = 1, [2] = 3, [3] = 6 }
--- 세트 효과는 장비가 아니라 "골드로 활성화"한다: 그 구역 군주를 잡으면 열리고, 골드로 1~3단계까지 올린다.
--- 동시에 켤 수 있는 개수(슬롯)는 처음 1개이고 구역을 클리어할수록 늘어난다 (AugSlotZones[n] = n번째 슬롯이 열리는 클리어 구역).
+-- 세트 효과 단계 = 그 구역 세트 장비 부위 수: 1부위 꺼짐 / 2부위 Lv3 / 3부위 Lv6 (필드 · 던전 공통). 세트 2 / 3부위 스탯 보너스와 같은 박자.
+--   "+1" 옵션은 이미 켜진 효과에만 +1단계씩 (상한 6): 옵션만으로는 켜지지 않는다. 방어 효과(장비 없음)는 수호석으로만 (Config.Guard.StoneCost)
+Config.Sets.AugLevelByPieces = { [1] = 0, [2] = 3, [3] = 6 }
 -- 최후의 군주 결전 (8구역 군주를 쓰러뜨리면 8구역 끝에 포탈이 열린다): 튜토리얼에서 만났던 군주와 이번에는 진짜로 싸운다
 Config.FinalLord = {
 	Health = 22320000,        -- 확정(11-18, 사용자 + 클로드): 체력 값은 그대로 두고 문서만 현실 수치로 맞춘다. 옛 산식 = 8구역 권장 310,000 x 0.4(초당 피해) x 180초 = 3분이었고, 세트 효과가 전투력에 들어가 권장이 756,400 이 된 지금 값이면 0.4 기준 약 74초 / 실측 앵커(전투력 x 0.26) 기준 약 114초 = 약 1분 15초~1분 55초 (3분을 살리려면 54,460,800 = 756,400 x 0.4 x 180 이지만 난이도는 그대로 두기로 했다)
@@ -1594,16 +1592,6 @@ Config.FinalLord = {
 		Flurry = 15, Mark = 25, Meteor = 30, Sword = 35, Ring = 35, Triple = 45, Wall = 55, Beam = 55, Cross = 55, Shockwave = 55,
 	},
 }
-Config.Sets.AugSlotZones = { 0, 2, 4 } -- (2구역 클리어 2칸, 4구역 클리어 3칸: 중반 대부분을 2칸으로 보내면 방어를 끼는 순간 공격이 반토막이라 조합 고민이 안 생겼다. 최대 3칸은 그대로)
-Config.Sets.AugCostMult = { 1, 2.5, 6 } -- 1단계 / 2단계 / 3단계 비용 배수
--- 세트 효과 가격의 기준 구역 (E1, 11-15 확정): 세트 구역과 내가 가장 멀리 간 구역(MaxZone) 중 높은 쪽.
---   위력(AugHitMult)은 그대로 두고 "가격 기준"만 올린다. 초반 플레이어는 자기 구역 가격 그대로라 진행이 안 막히고,
---   후반 플레이어가 1구역 세트(가장 싼 세트)를 계속 올리면 자기가 간 만큼의 가격을 낸다 -> "1구역 세트를 1.6만 G 로 풀강해 끝까지 쓰는" 길이 막힌다.
-function Config.Sets.AugPriceZone(zone, maxZone)
-	local z = math.clamp(math.floor(zone or 1), 1, Config.Field.ZoneCount)
-	local reached = math.clamp(math.floor(maxZone or 0), 0, Config.Field.ZoneCount)
-	return math.max(z, reached)
-end
 -- 던전 상자의 구역 세트 장비: 깊이가 깊을수록 확률이 오르고, 나오는 구역은 "내가 클리어한 구역" 중 깊이에 맞는 구역 이하로 정한다
 --   (필드가 세트의 첫 입구로 남는다: 7구역 군주를 잡기 전에는 던전에서도 7구역 세트가 나오지 않는다)
 Config.Sets.Dungeon = { Base = 0.10, PerDepth = 0.01, Max = 0.50, ZoneEvery = 4, Spread = 3 }
@@ -2304,23 +2292,6 @@ do
 		return math.max(1, math.floor(RI(f) * petK * progressive(f) * ease(f)))
 	end
 	Config.Pet.UnlockCost = math.max(1, math.floor(RI(0) * petK * progressive(0) * ease(0)))
-
-	-- 세트 효과: 8구역 x 1 / 2 / 3 단계 (단계 비용 배수 AugCostMult)
-	local zones = Config.Field.ZoneCount
-	local augSum = 0
-	for zone = 1, zones do
-		for _, mult in ipairs(Config.Sets.AugCostMult) do
-			augSum += progressive((zone - 1) / (zones - 1)) * mult
-		end
-	end
-	local augK = T / augSum * 0.6 -- 세트 효과는 다른 성장보다 40% 싸게 (전부 올리는 데 기준 수입 약 6시간)
-	-- (E1 11-15: 가격 기준 구역 = 세트 구역과 내 MaxZone 중 높은 쪽 · `Config.Sets.AugPriceZone`)
-	--   전부 올리는 6시간은 "그 세트의 구역까지 간 플레이어" 기준이다. 더 멀리 간 플레이어가 낮은 구역 세트를 올리면 그만큼 비싸진다.
-	function Config.Sets.AugCost(zone, level, maxZone)
-		local priceZone = Config.Sets.AugPriceZone(zone, maxZone)
-		local f = (math.clamp(priceZone, 1, zones) - 1) / (zones - 1)
-		return math.max(1, math.floor(RI(f) * augK * progressive(f) * ease(f) * (Config.Sets.AugCostMult[level] or 8)))
-	end
 
 	-- 훈련소 (골드 부분; 시간은 따로 걸린다): 4종 x 레벨 0 -> 29
 	local trainSteps = Config.Growth.MaxLevel

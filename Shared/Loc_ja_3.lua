@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Sets obtained {number1} / {number2}  ·  Monsters / lord of that zone drop them at a set rate", "入手したセット {number1} / {number2}  ·  そのゾーンのモンスター/ロードが一定確率でドロップします" },
+		{ "🔒 Defeat the Lord of Zone {number1} first — only then will the portal open for you.", "🔒 まずゾーン{number1}のロードを倒そう — そうして初めてポータルが開きます。" },
+		{ "💰 A Golden Goblin appeared in Zone {number1} · Meadow! Catch it for a jackpot! ({number2}s)", "💰 金色のゴブリンがゾーン{number1}・草原に現れました！捕まえてジャックポットをゲットしよう！（{number2}秒）" },
+		{ "Allocate Stats\nSpend {number1} stat points (T key / Stats button)\n{number2} / {number3}   Reward: {number4} G", "ステータスの割り当て\nステータスポイント{number1}を消費（Tキー/ステータスボタン）\n{number2} / {number3}　報酬：{number4}G" },
+		{ "Skilled Warrior   Title 『Veteran』\nReach character level {number1}\n{number2} / {number3}   Reward: 🎫 {number4}", "熟練の戦士　称号『ベテラン』\nキャラクターレベル{number1}に到達する\n{number2} / {number3}　報酬：🎫 {number4}" },
+		{ "Mythic Master   Title 『Mythic Master』\nObtain Mythic gear\n{number1} / {number2}   Reward: 🎫 {number3}", "神話のマスター　タイトル『神話のマスター』\n神話のギアを入手する\n{number1} / {number2}　報酬：🎫 {number3}" },
 		{ "Dummy Slayer   Title 『Dummy Slayer』\nHit the dummy {number1} times\n{number2} / {number3}   Reward: {number4} G", "ダミー・スレイヤー　タイトル『ダミー・スレイヤー』\nダミーを{number1}回攻撃する\n{number2} / {number3}　報酬：{number4}G" },
 		{ "A golden FEVER portal opened where the Lord fell! Step in within {number1} seconds", "領主が倒れた場所に黄金のフィーバーポータルが開いた！{number1}秒以内に入ろう" },
 		{ "Points left {number1}  /  total {number2}  (Level {number3})  ·  +1 point every {number4} levels, next at Lv.{number5}", "残りポイント {number1}  /  合計 {number2}  (レベル {number3})  ·  {number4}レベルごとに+1、次は Lv.{number5}" },
@@ -720,6 +726,7 @@ return {
 		{ "{number1}d {number2}h", "{number1}日 {number2}時間" },
 		{ "{number1}h {number2}m", "{number1}時間{number2}分" },
 		{ "{number1}m {number2}s", "{number1}分{number2}秒" },
+		{ "{number1} on", "{number1}個ON" },
 		{ "{number1}s", "{number1}秒" },
 		{ "A new dungeon theme can now appear ({text1}, Level {number2}+). Pick a depth: deeper means better drop odds and tougher bosses. A marker now points to the gate.", "新しいダンジョンテーマが登場するようになりました({text1}、レベル{number2}以上)。深度を選びましょう: 深いほどドロップ確率が上がり、ボスも強くなります。ゲートにマーカーが表示されます。" },
 		{ "(one of {number1}) come on Mythic gear: dungeon chests (see below), field drops ({text2}), the weekly Boss Rush chest and the weekly Final Lord reward.", "({number1}種類のうち1つ)はミシック装備に付きます: ダンジョン宝箱(下記参照)、フィールドドロップ({text2})、週間ボスラッシュ宝箱、週間ファイナルロード報酬。" },
@@ -922,6 +929,7 @@ return {
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [ワールドボス] ゾーン{number1} · {text2}: {text3}が出現！オレンジの光の柱を追って、みんなで倒して装備とチケットを手に入れよう！" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} セット効果『{text2}』解放! セット装備を着ければ自動でオン、ゴールドで強化もできます (Yキー)" },
+		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear to turn it on (Y key)", "{text1} セット効果『{text2}』解放！そのセット装備を2部位以上つけるとON（Yキー）" },
 		{ "{text1} · {text2} · Fail if monsters pile up! Survive to the end and the boss appears", "{text1} · {text2} · モンスターが溜まると失敗！最後まで生き残るとボスが登場します" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Activate it with gold (Y key / ✨ Set button)", "{text1} セット効果『{text2}』を解放しました！ゴールドで有効化しよう(Yキー / ✨セットボタン)" },
 		{ "🧩 Equip this {text1} → <b>{text2} {number3}/3</b>: set bonus ON (and its set effect)", "🧩 この{text1}を装備 → <b>{text2} {number3}/3</b>: セットボーナスON (セット効果も)" },
