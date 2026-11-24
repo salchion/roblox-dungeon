@@ -1549,10 +1549,10 @@ Config.Sets.ZoneAug = { "AugPulse", "AugOrbit", "AugStorm", "AugMissile", "AugNo
 Config.Sets.AugHomeZone = { [9] = 3, [10] = 4, [11] = 5, [12] = 6, [13] = 7, [14] = 8 } -- 방어 효과: 3~8구역 군주를 잡을 때 하나씩 열리고, 수호석으로 1~6단계 (Config.Guard.StoneCost)
 -- 🔷 수호석: 방어 기재 4~6단계 재료 (골드 1~3단계를 다 올린 뒤). 4구역부터 엘리트 / 군주 / 던전 보스에서
 Config.Guard = {
-	StoneCost = { 4, 6, 10, 14, 20, 30 }, -- (11-24 골드 제거) 방어 효과 1~6단계를 수호석으로만 올린다. Lv6 = 84개 (예전 골드 3단계 + 수호석 12/24/48 의 꼭대기 비용과 같다)
-	EliteChance = 0.1,           -- 4구역 이상 엘리트 처치마다 1개 확률
-	BossStones = 3,              -- 4구역 이상 군주 / 던전 보스 처치마다
-	FromCleared = 2,             -- (2구역을 깬 뒤 = 3구역 엘리트 / 군주부터: 3구역 군주를 잡으면 열리는 🛡 방벽을 바로 올릴 수 있게)
+	StoneCost = { 3, 6, 10, 14, 20, 30 }, -- (1단계 3개 = 군주 1마리: 3구역 군주를 잡아 방벽이 열리는 순간 Lv1 을 바로 올릴 수 있다. Lv6 = 83개) -- (11-24 골드 제거) 방어 효과 1~6단계를 수호석으로만 올린다. Lv6 = 84개 (예전 골드 3단계 + 수호석 12/24/48 의 꼭대기 비용과 같다)
+	EliteChance = 0.1,           -- 3구역 이상(잡은 몬스터 구역 기준) 엘리트 처치마다 1개 확률
+	BossStones = 3,              -- 3구역 이상(잡은 몬스터 구역 기준) 군주 / 월드 보스 처치마다, 던전 보스는 3구역에 도달한 뒤부터
+	FromZone = 3,                -- 수호석은 이 구역 이상의 몬스터에게서만 (AugService.GrantStones). 예전엔 "내가 깬 구역"으로 판정해 1~2구역 정예 / 군주 반복 사냥으로도 모였다
 	Ward = function(l) l = math.clamp(math.floor(l or 0), 0, 6) return l > 0 and (0.03 + 0.07 * l) or 0 end,           -- 받는 피해 10 → 45%
 	Body = function(l) l = math.clamp(math.floor(l or 0), 0, 6) return l > 0 and (0.08 + 0.064 * (l - 1)) or 0 end,    -- 최대 체력 +8 → +40%
 	Buffer = function(l) l = math.clamp(math.floor(l or 0), 0, 6) return l > 0 and (0.2 + 0.08 * (l - 1)) or 0 end,    -- 나눠 받기 20 → 60%

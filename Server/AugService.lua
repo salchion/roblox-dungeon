@@ -307,27 +307,25 @@ Remotes.Aug.OnServerEvent:Connect(function(player, action, zone, slotIndex)
 end)
 
 -- 🔷 수호석 얻기: 4구역부터 엘리트(확률) / 군주 · 던전 보스(확정). 퀘스트 카운터를 듣는다 (필드 / 던전 코드를 고치지 않는다)
-task.spawn(function()
-	local okQ, Quest = pcall(function() return require(script.Parent:WaitForChild("QuestService")) end)
-	if not okQ or not Quest.Listeners then return end
-	table.insert(Quest.Listeners, function(player, stat, amount)
-		if stat ~= "EliteKills" and stat ~= "BossKills" then return end
-		if (player:GetAttribute("ClearedZone") or 0) < Config.Guard.FromCleared then return end
-		local rift = stateOf(player)
-		if not rift then return end
-		local gain = 0
-		if stat == "BossKills" then
-			gain = Config.Guard.BossStones * (amount or 1)
-		else
-			for _ = 1, (amount or 1) do if math.random() < Config.Guard.EliteChance then gain += 1 end end
-		end
-		if gain > 0 then
-			rift.Stones = (rift.Stones or 0) + gain
-			player:SetAttribute("GuardStones", rift.Stones)
-			notify(player, string.format("🔷 Guard Stone +%d", gain))
-		end
-	end)
-end)
+-- 🔷 수호석 드롭: 처치한 그 순간에 직접 부른다 (FieldService / DungeonService). zone = 잡은 몬스터의 구역, kind = "Elite" / "Boss"
+--   (예전: QuestService 의 처치 수 신호를 듣고 "내가 깬 구역"으로 판정 -> 깬 뒤에는 1~2구역 정예 / 군주로도 모여 약한 군주 반복 사냥이 됐다)
+function Aug.GrantStones(player, zone, kind)
+	local G = Config.Guard
+	if not player or not player.Parent or (tonumber(zone) or 0) < (G.FromZone or 3) then return end
+	local rift = stateOf(player)
+	if not rift then return end
+	local gain = 0
+	if kind == "Boss" then
+		gain = G.BossStones
+	elseif kind == "Elite" and math.random() < G.EliteChance then
+		gain = 1
+	end
+	if gain > 0 then
+		rift.Stones = (rift.Stones or 0) + gain
+		player:SetAttribute("GuardStones", rift.Stones)
+		notify(player, string.format("🔷 Guard Stone +%d", gain))
+	end
+end
 
 -- 세트 효과 맞춤 장착 (Y 창 버튼 / 장비 창 칩): 지금 세팅(사냥용 / 보스용)의 칸에 끼운 효과들의 단계 합이 가장 높아지도록 장비를 바꿔 낀다
 --   계산은 Inventory.EquipForAugs. 효과마다 Base = 수호석 단계 (세트 부위 / "+1" 옵션은 장비 조합에 따라 바뀐다. 골드 단계는 11-24 에 없앴다)

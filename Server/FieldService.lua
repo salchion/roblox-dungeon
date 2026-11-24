@@ -697,6 +697,7 @@ local function rewardEvent(data, part)
 			player:SetAttribute("Tickets", (player:GetAttribute("Tickets") or 0) + tickets)
 			Level.AddXP(player, Config.Xp.FieldBoss * 1.5)
 			Quest.Add(player, "BossKills", 1)
+			Aug.GrantStones(player, data.Zone, "Boss") -- (월드 보스: 그 구역 기준)
 			Quest.Add(player, "Kills", 1)
 			for _ = 1, (E.DropsByZone and E.DropsByZone[data.Zone]) or 2 do -- 월드 보스: 장비 여러 개 (높은 구역일수록 많다)
 				Loot.DropFor(player, position, "Event", data.Zone)
@@ -807,8 +808,10 @@ local function reward(player, data, part)
 	end
 	if data.Kind == "Elite" then
 		Quest.Add(player, "EliteKills", 1)
+		Aug.GrantStones(player, data.Zone, "Elite") -- 🔷 수호석 (잡은 몬스터 구역 3 이상)
 	elseif data.Kind == "Boss" then
 		Quest.Add(player, "BossKills", 1)
+		Aug.GrantStones(player, data.Zone, "Boss")
 		player:SetAttribute("BossKillTick", os.clock()) -- (IntensityClient: 군주를 쓰러뜨린 순간 화면이 크게 멈칫)
 		pcall(Stage.Victory, player, part, data, firstBoss) -- 승리 연출
 	else
@@ -852,6 +855,7 @@ local function reward(player, data, part)
 				Aug.NoteBoss(other, data.Zone) -- 이 구역 세트 효과가 열린다 (골드로 활성화)
 				if other ~= player then
 					Quest.Add(other, "BossKills", 1)
+					Aug.GrantStones(other, data.Zone, "Boss") -- (같이 싸운 사람: 잡은 사람은 reward 에서 받는다)
 					Level.AddXP(other, Config.Xp.FieldBoss)
 				end
 				notify(other, string.format("👑 Field Boss defeated! Tickets +%d, loot dropped", F.BossTickets))

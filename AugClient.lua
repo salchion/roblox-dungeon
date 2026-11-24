@@ -261,7 +261,7 @@ local function updatePath(zone)
 		local have = player:GetAttribute("GuardStones") or 0
 		local ready = need ~= nil and have >= need and inTown
 		setPath(1, "🔷", string.format("<b>Guard Stone</b> <font color='#8fe0ff'>Lv.%d/6</font>\n<font color='#9aa'>%s</font>", stone,
-			not need and "Done" or string.format("%d / %d · elites & lords from Zone %d", have, need, (Config.Guard.FromCleared or 2) + 1)),
+			not need and "Done" or string.format("%d / %d · elites & lords from Zone %d", have, need, Config.Guard.FromZone or 3)),
 			ready, need and string.format("🔷 %d", need) or nil, Color3.fromRGB(50, 120, 190), function() Remotes.Aug:FireServer("Stone", zone) end)
 	else
 		local key = Config.Sets.ZoneKeys[zone]

@@ -1151,6 +1151,9 @@ local function damageMonster(run, player, part, data, amount, isCrit, hitPositio
 			member:SetAttribute("Tickets", (member:GetAttribute("Tickets") or 0) + tickets)
 			run.TicketsEarned[member] = (run.TicketsEarned[member] or 0) + tickets
 			Quest.Add(member, "BossKills", 1)
+			pcall(function() -- 🔷 수호석: 던전 보스는 3구역에 도달한 뒤부터 (구역이 없으므로 "다음 갈 구역" = 깬 구역 + 1 로 본다)
+				require(script.Parent:WaitForChild("AugService")).GrantStones(member, (member:GetAttribute("ClearedZone") or 0) + 1, "Boss")
+			end)
 		end
 	end
 end
