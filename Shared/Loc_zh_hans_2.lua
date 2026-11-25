@@ -939,6 +939,12 @@ return {
 		["Set Effects · 3 slots"] = "套装效果 · 3个槽位",
 		["Press Y: put effects in your 3 slots · attack needs 2+ set pieces · defense levels up with Guard Stones in town"] = "按Y：把效果放入3个槽位 · 攻击需要套装2件以上 · 防御在城镇用守护石提升",
 		["① Defeat a zone's Lord → its effect unlocks   ② Wear 2+ set pieces and put it in a slot (Y)   ③ It fires on its own in combat"] = "① 击败区域领主 → 解锁其效果   ② 穿戴套装2件以上并放入槽位（Y）   ③ 战斗中自动触发",
+		["one more nova (40%)"] = "再来一次新星（40%）",
+		["max burn stacks x2"] = "灼烧最大层数x2",
+		["execute threshold x1.5"] = "处决阈值x1.5",
+		["0.5s invincible after a dodge"] = "闪避后无敌0.5秒",
+		["ENDURE!"] = "撑住了！",
+		["WARD!"] = "防壁！",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1156,7 +1162,5 @@ return {
 		{ "🌈 Every {number1} floors: guaranteed Mythic gear", "🌈 每{number1}层：必得神话装备" },
 		{ "Sniper Rifle  ·  keys {number1}-{number2} switch weapons", "狙击步枪 · 键位 {number1}-{number2} 用于切换武器" },
 		{ "🥉 {number1}+   🥈 {number2}M+   🥇 {number3}M+   💠 {number4}M+   💎 {number5}M+   👑 {number6}M+", "🥉 {number1}+   🥈 {number2}百万+   🥇 {number3}百万+   💠 {number4}百万+   💎 {number5}百万+   👑 {number6}百万+" },
-		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>", "<font color='#{number1}fffb{number2}'><b>自动攻击</b>" },
-		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 升级了!Lv.{number1}  (最大生命 +{number2},攻击 +{number3}%)" },
 	},
 }

@@ -1185,6 +1185,12 @@ return {
 		["Set Effects · 3 slots"] = "セット効果 · 3枠",
 		["Press Y: put effects in your 3 slots · attack needs 2+ set pieces · defense levels up with Guard Stones in town"] = "Yキー：3つの枠に効果を入れよう · 攻撃はセット2部位以上 · 防御は町で守護石で強化",
 		["① Defeat a zone's Lord → its effect unlocks   ② Wear 2+ set pieces and put it in a slot (Y)   ③ It fires on its own in combat"] = "① エリアの君主を倒す → 効果が解放   ② セット2部位以上をつけて枠に入れる（Y）   ③ 戦闘中に自動で発動",
+		["one more nova (40%)"] = "ノヴァがもう1回（40%）",
+		["max burn stacks x2"] = "炎上の最大スタック2倍",
+		["execute threshold x1.5"] = "処刑の基準 x1.5",
+		["0.5s invincible after a dodge"] = "回避後0.5秒無敵",
+		["ENDURE!"] = "耐えた！",
+		["WARD!"] = "防壁！",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1224,6 +1230,5 @@ return {
 		{ "Zone {number1} · Volcano\n🌋 Lava Fortress Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠\n🌋 New set from here: Lava Heart Set", "ゾーン {number1} · 火山\n🌋 溶岩の要塞の門 · レコメンド ⚡{number2}\n危険 ☠☠☠☠☠☠\n🌋 ここから新しいセット：溶岩ハートセット" },
 		{ "🚧 Stuck at level {number1}! Go to Menu (B) → Skills & Growth tab (Passives · Training) to break through.", "🚧 レベル{number1}で停滞中！メニュー(B)→スキル・成長タブ(パッシブ · 訓練)で突破しよう。" },
 		{ "⏰ Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "⏰ 時間切れ！ボスが逃げた — クリアゴールドの{number1}%だけ獲得（宝箱・チケット・深さ記録なし）" },
-		{ "💰 Not enough Gold. ({number1} needed) Earn Gold from field hunting / dungeons / Boss Rush / idle income", "💰 ゴールドが足りません。({number1}必要) フィールド狩り / ダンジョン / ボスラッシュ / 放置収入で入手" },
 	},
 }

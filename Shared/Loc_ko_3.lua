@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🥇 {player1}\n<font color='#ffe{number1}e'>⚡ {number2}</font> Lv.{number3}\n<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "🥇 {player1}\n<font color='#ffe{number1}e'>⚡ {number2}</font> 레벨.{number3}\n<font color='#{number4}ad{number5}ff'>스펠 토메 · 신화 시대 +{number6}</font>" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Spell Tome · Rusty Era +{number10}\n📍 Field (best: Zone {number11})", "🎖 레벨 {number1} {number2} / {number3} 경험치\n💰 {number4} G 🎫 {number5}\n🔑{number6} (오늘 무료 {number7}/{number8})\n⚡ 파워 {number9}\n⚔ 스펠 토메 · 녹슨 시대 +{number10}\n📍 필드 (최적: 구역 {number11})" },
 		{ "Zone {number1} · Abyss\n🌀 Gate of the Abyss · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠☠☠\n🌀 New set from here: Abyss Dominion Set", "구역 {number1} · 심연\n🌀 심연의 문 · 기록 ⚡{number2}\n위험 ☠☠☠☠☠☠☠☠\n🌀 여기서 새로운 세트: 심연의 지배 세트" },
 		{ "⚠ The {number1}-hour cap was reached, so {number2} hours' worth couldn't be saved. You can raise the cap in the Shop", "⚠ {number1}시간 상한에 도달해서 {number2}시간 분량은 저장하지 못했어요. 상한은 상점에서 올릴 수 있어요" },
@@ -806,6 +807,7 @@ return {
 		{ "+{number1} MAX", "+{number1} 최대" },
 		{ "1 in {number1}", "{number1}번에 1번" },
 		{ "Slot {number1}", "칸 {number1}" },
+		{ "★ Lv.{number1}", "★ Lv.{number1}" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1}x XP", "{number1}x 경험치" },
 		{ "+{number1} XP", "+{number1} 경험치" },
@@ -958,10 +960,5 @@ return {
 		{ "Time needed {text1} · 💰 {number2} G", "필요 시간 {text1} · 💰 {number2} G" },
 		{ "🏔 Zone {number1} · {text2} cleared!", "🏔 {number1}구역 · {text2} 클리어!" },
 		{ "{text1} upgrade success! +{number2}", "{text1} 강화 성공! +{number2}" },
-		{ "⏱ Time Skip · {text1} left", "⏱ 시간 단축 · {text1} 남음" },
-		{ "Purchase complete: {text1}", "구매 완료: {text1}" },
-		{ "{text1} obtained! Equipped", "{text1} 획득! 장착했어요" },
-		{ "New gear equipped! {text1}", "새 장비 장착! {text1}" },
-		{ "🎯 Bounty · {number1} left · {text2}", "🎯 현상금 · {number1}마리 남음 · {text2}" },
 	},
 }

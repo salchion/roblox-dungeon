@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Each depth up: monster HP +{number1}% · damage +{number2}% · gold +{number3}% · better chest odds", "Par profondeur : PV des monstres +{number1} % · dégâts +{number2} % · or +{number3} % · meilleures chances de coffre" },
+		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "Profondeur {number1} terminée  ·  Choisissez la profondeur qui vous convient  (prochaine : {number2})" },
 		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "Titre « Le chanceux »\nObtenez de l'équipement légendaire\n{number1} / {number2} Récompense : 🎫 {number3}" },
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "sur critique, {number1} missiles dans l'ennemi touché (25 % du coup critique chacun)" },
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} boss(es)\n{number2} / {number3}   Reward: 🎫 {number4}", "Titre du chasseur de boss\nVaincre {number1} boss\n{number2} / {number3} Récompense : 🎫 {number4}" },
@@ -713,6 +715,7 @@ return {
 		{ "+{number1} MAX", "+{number1} MAX" },
 		{ "1 in {number1}", "1 sur {number1}" },
 		{ "Slot {number1}", "Emplacement {number1}" },
+		{ "★ Lv.{number1}", "★ Lv.{number1}" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1}x XP", "{number1}x d'EXP" },
 		{ "+{number1} XP", "+{number1} d'EXP" },
@@ -929,6 +932,7 @@ return {
 		{ "+{number1} {text1}", "+{number1} {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [Boss mondial] Zone {number1} · {text2} : {text3} est apparu ! Suivez le pilier de lumière orange et vainquez-le ensemble pour de l'équipement + des tickets !" },
+		{ "{text1} {text2} (defense) also unlocked! Level it up with 🔷 Guard Stones in town, then put it in a slot (Y key)", "{text1} {text2} (défense) débloqué aussi ! Améliore-le en ville avec des 🔷 Pierres de garde, puis place-le dans un emplacement (touche Y)" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} Effet de set 『{text2}』 débloqué ! Équipe son set pour l'activer, ou améliore-le avec de l'or (touche Y)" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear, then put it in a slot (Y key)", "{text1} Effet de set 『{text2}』 débloqué ! Porte 2+ pièces de son set puis place-le dans un emplacement (touche Y)" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear to turn it on (Y key)", "{text1} Effet de set 『{text2}』 débloqué ! Porte 2+ pièces de son set pour l'activer (touche Y)" },

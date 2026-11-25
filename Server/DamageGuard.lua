@@ -53,7 +53,10 @@ end
 function Guard.Take(humanoid, amount, pierce)
 	if not humanoid or humanoid.Health <= 0 then return end
 	local player = humanoid.Parent and Players:GetPlayerFromCharacter(humanoid.Parent)
+	local okFx, AugFx = pcall(function() return require(script.Parent:WaitForChild("AugFx")) end) -- 👑 / 🔨 칸 +10 방어 동작
+	if not okFx then AugFx = nil end
 	if player then
+		if AugFx and AugFx.Invulnerable(player) then return end -- (🛡 방벽 / ❤️ 강체 / 🌀 회피 +10 무적 중)
 		if (player:GetAttribute("GearShield") or 0) > 0 then -- 유니크 "Bulwark": 보호막이 있으면 이번 공격을 완전히 막는다
 			local okU, Unique = pcall(function() return require(script.Parent:WaitForChild("UniqueService")) end)
 			if okU and Unique.TryShield(player) then return end
@@ -79,6 +82,7 @@ function Guard.Take(humanoid, amount, pierce)
 				local okE, Effects = pcall(function() return require(script.Parent:WaitForChild("Effects")) end)
 				if okE then Effects.FloatText(root.Position + Vector3.new(0, 4, 0), "MISS!", Color3.fromRGB(140, 240, 220)) end
 			end
+			if AugFx then AugFx.OnDodge(player, humanoid) end
 			return
 		end
 		local keep = 1 - G.Ward(lv("AugWard")) * mul("AugWard") -- 🛡 방벽: 받는 피해 % 감소
@@ -90,7 +94,7 @@ function Guard.Take(humanoid, amount, pierce)
 		Guard.Note(humanoid, callerOf(), amount)
 		local buffer = math.min(0.9, G.Buffer(lv("AugBuffer")) * mul("AugBuffer")) -- ⏳ 완충: 일부를 3초(0.5초 x 6번)에 나눠 받는다
 		if buffer > 0 and amount > 0 then
-			local later = amount * buffer
+			local later = amount * buffer * (AugFx and AugFx.BufferKeep(player) or 1) -- (+10: 30% 소멸)
 			amount -= later
 			task.spawn(function()
 				for _ = 1, 6 do
@@ -100,6 +104,7 @@ function Guard.Take(humanoid, amount, pierce)
 			end)
 		end
 	end
+	if player and AugFx then amount = AugFx.Absorb(player, humanoid, amount) end -- (💚 보호막 · ❤️ 치명상 버팀 · 🛡 30% 아래 무적)
 	if amount > 0 and player and amount >= humanoid.Health and (player:GetAttribute("RunLastStand") or 0) > 0 then
 		-- 🔰 버티기 (던전 드래프트): 죽을 만큼의 한 방을 체력 1로 버티고 2초 무적
 		player:SetAttribute("RunLastStand", player:GetAttribute("RunLastStand") - 1)
@@ -135,6 +140,10 @@ task.spawn(function()
 			local runRegen = zone == "Dungeon" and (player:GetAttribute("RunRegen") or 0) or 0 -- (🌿 드래프트 재생: 던전 안에서만, 맞은 뒤에도 쉬지 않는다)
 			local rested = workspace:GetServerTimeNow() - (player:GetAttribute("LastHurtAt") or 0) >= 2
 			local rate = ((level > 0 and rested) and Config.Guard.Regen(level) * (player:GetAttribute("AugMul_AugRegen") or 1) or 0) + runRegen
+			if zone == "Field" or zone == "Dungeon" then -- (🔥 불굴 / 💚 재생 +10: AugFx)
+				local okFx, AugFx = pcall(function() return require(script.Parent:WaitForChild("AugFx")) end)
+				if okFx then pcall(AugFx.Tick, player, player.Character and player.Character:FindFirstChildOfClass("Humanoid"), (level > 0 and Config.Guard.Regen(level) * (player:GetAttribute("AugMul_AugRegen") or 1)) or 0) end
+			end
 			if rate > 0 and (zone == "Field" or zone == "Dungeon") then
 				local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 				if humanoid and humanoid.Health > 0 and humanoid.Health < humanoid.MaxHealth then

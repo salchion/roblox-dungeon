@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Mythic gacha gear has a {number1}% chance to carry a Unique effect.", "Mythische Gacha-Ausrüstung hat eine {number1}% Chance auf einen Unique-Effekt." },
+		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "Erhalte sofort {number1} Minuten deines passiven Einkommens · maximal {number2} pro Tag" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISS hält {number1} s · behält mindestens {number2} Stapel, auch wenn die Serie reißt" },
 		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 Nicht genug Gold für das gewählte Set! ({number1} G nötig)" },
 		{ "Sweep needs {number1} key(s). Defeat a field zone lord to get keys", "Der Blitz braucht {number1} Schlüssel. Besiege einen Gebietslord, um Schlüssel zu bekommen" },
@@ -678,6 +680,7 @@ return {
 		{ "+{number1} MAX", "+{number1} MAX" },
 		{ "1 in {number1}", "1 von {number1}" },
 		{ "Slot {number1}", "Slot {number1}" },
+		{ "★ Lv.{number1}", "★ Lv.{number1}" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "+{number1} XP", "+{number1} Erfahrungspunkte" },
 		{ "{number1} key", "{number1} Schlüssel" },
@@ -894,6 +897,7 @@ return {
 		{ "+{number1} {text1}", "+{number1} {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [Weltboss] Zone {number1} · {text2}: {text3} ist erschienen! Folge der orangefarbenen Lichtsäule und besiegt ihn gemeinsam für Ausrüstung + Tickets!" },
+		{ "{text1} {text2} (defense) also unlocked! Level it up with 🔷 Guard Stones in town, then put it in a slot (Y key)", "{text1} {text2} (Verteidigung) ebenfalls freigeschaltet! Im Dorf mit 🔷 Wächtersteinen verbessern und in einen Slot legen (Taste Y)" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} Set-Effekt 『{text2}』 freigeschaltet! Rüste sein Set aus, um ihn zu aktivieren, oder verbessere ihn mit Gold (Taste Y)" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear, then put it in a slot (Y key)", "{text1} Set-Effekt 『{text2}』 freigeschaltet! Trage 2+ Teile seines Sets und lege ihn in einen Slot (Taste Y)" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear to turn it on (Y key)", "{text1} Set-Effekt 『{text2}』 freigeschaltet! Trage 2+ Teile seines Sets, um ihn einzuschalten (Taste Y)" },

@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "👑 Kill goal reached! Defeat the Lord of Zone {number1} to open the gate!", "👑 ¡Meta de bajas alcanzada! ¡Derrota al señor de la zona {number1} para abrir la puerta!" },
+		{ "🏰 {number1} free dungeon entries left! Earn gear and tickets in dungeons", "🏰 ¡Quedan {number1} entradas gratis a mazmorras! Consigue equipo y boletos en las mazmorras" },
 		{ "🎫 You have {number1} gear ticket(s) left! Draw gear at the gacha machine", "🎫 ¡Te quedan {number1} boleto(s) de equipo! Saca equipo en la máquina de gacha" },
 		{ "♻ [Rare] 🌾 Meadow Silver Necklace auto-salvaged (Essence +{number1} {number2} G)", "♻ [Raro] 🌾 Collar de plata del prado recuperado automáticamente (Esencia +{number1} {number2} G)" },
 		{ "Explorer   Title 『Explorer』\nClear field zone {number1}\n{number2} / {number3}   Reward: {number4} G", "Título de Explorador\nLimpiar la zona de campo {number1}\n{number2} / {number3} Recompensa: {number4} G" },
@@ -696,6 +698,7 @@ return {
 		{ "+{number1} MAX", "+{number1} MÁX" },
 		{ "1 in {number1}", "1 de cada {number1}" },
 		{ "Slot {number1}", "Ranura {number1}" },
+		{ "★ Lv.{number1}", "★ Lv.{number1}" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1}x XP", "{number1}x EXP" },
 		{ "+{number1} XP", "+{number1} EXP" },
@@ -913,6 +916,7 @@ return {
 		{ "+{number1} {text1}", "+{number1} {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [Jefe mundial] Zona {number1} · {text2}: ¡{text3} ha aparecido! Sigue el pilar de luz naranja y derrótenlo juntos para conseguir equipo + boletos." },
+		{ "{text1} {text2} (defense) also unlocked! Level it up with 🔷 Guard Stones in town, then put it in a slot (Y key)", "¡{text1} {text2} (defensa) también desbloqueado! Mejóralo en el pueblo con 🔷 Piedras guardianas y ponlo en una ranura (tecla Y)" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} ¡Efecto de set 『{text2}』 desbloqueado! Equipa su set para activarlo o mejóralo con oro (tecla Y)" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear, then put it in a slot (Y key)", "{text1} ¡Efecto de set 『{text2}』 desbloqueado! Equipa 2+ piezas de su set y ponlo en una ranura (tecla Y)" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear to turn it on (Y key)", "{text1} ¡Efecto de set 『{text2}』 desbloqueado! Equipa 2+ piezas de su set para activarlo (tecla Y)" },

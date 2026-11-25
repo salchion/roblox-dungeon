@@ -1710,7 +1710,8 @@ end
 
 -- 점화(6구역 "Ignite", 저장 이름은 예전 그대로 AugFlame): 맞힌 적에게 불 중첩이 쌓이고 0.5초마다 탄다 (보스형: 오래 맞는 적일수록 강하다)
 local IGNITE_LIFE = 4 -- 중첩 하나가 유지되는 시간 (맞힐 때마다 새로 4초)
-local function igniteMax(level) return 4 + level + (level >= 5 and 3 or 0) end
+local AugFx = require(script.Parent:WaitForChild("AugFx")) -- 👑 각성 / 🔨 칸 +10 동작 (11-25)
+local function igniteMax(level, owner) return (4 + level + (level >= 5 and 3 or 0)) * AugFx.StackMult(owner) end
 -- 불붙은 몬스터의 체력바 위에 "🔥x3" 배지 (스택이 바뀔 때만 글자를 다시 쓴다: 화면에 도배되지 않게)
 local function burnBadge(part)
 	local gui = part:FindFirstChildOfClass("BillboardGui")
@@ -1780,11 +1781,11 @@ local function addIgnite(run, player, part, data, stacks)
 	entry.NextAdd = now + 0.12
 	entry.Owner = player
 	local before = entry.Stacks
-	entry.Stacks = math.min(igniteMax(level), entry.Stacks + stacks)
+	entry.Stacks = math.min(igniteMax(level, player), entry.Stacks + stacks)
 	entry.Expire = now + IGNITE_LIFE
 	if entry.Fx then entry.Fx.Rate = math.min(30, 8 + entry.Stacks * 3) end
 	setBurnBadge(part, entry.Stacks)
-	if before < igniteMax(level) and entry.Stacks >= igniteMax(level) then -- 처음 최대 중첩에 닿았다: 세트 효과가 일했다고 한 번 알려 준다
+	if before < igniteMax(level, player) and entry.Stacks >= igniteMax(level, player) then -- 처음 최대 중첩에 닿았다: 세트 효과가 일했다고 한 번 알려 준다
 		procAug(player, "AugFlame", part.Position)
 	end
 	if run.IgniteLoop then return end
@@ -1796,6 +1797,7 @@ local function addIgnite(run, player, part, data, stacks)
 			for burnPart, burn in pairs(run.Ignite) do
 				if tickNow > burn.Expire or not burnPart.Parent or burn.Data.Health <= 0 or not burn.Owner.Parent then
 					run.Ignite[burnPart] = nil
+					if burn.Data.Health <= 0 and burnPart.Parent and burn.Owner.Parent then AugFx.FlameDeath(run, burn, burnPart) end
 					if burn.Fx then burn.Fx:Destroy() end
 					setBurnBadge(burnPart, 0)
 				else
@@ -1805,6 +1807,7 @@ local function addIgnite(run, player, part, data, stacks)
 					local tick = math.floor(burn.Carry)
 					burn.Carry -= tick
 					if tick >= 1 then
+						burn.Dealt = (burn.Dealt or 0) + tick
 						hitMonster(run, burn.Owner, { Part = burnPart, Data = burn.Data }, tick, true, nil, "AugFlame")
 					else
 						tick = 0
@@ -1817,7 +1820,7 @@ local function addIgnite(run, player, part, data, stacks)
 						burn.Shown = 0
 						if total > 0 then Effects.FloatText(burnPart.Position + Vector3.new(0, burnPart.Size.Y / 2 + 1.5, 0), "🔥 " .. total, Color3.fromRGB(255, 158, 70)) end
 					end
-					if lv >= 6 and burn.Stacks >= igniteMax(lv) and tickNow >= burn.NextBurst then -- 6셋: 최대 중첩이면 3초마다 불꽃 폭발
+					if lv >= 6 and burn.Stacks >= igniteMax(lv, burn.Owner) and tickNow >= burn.NextBurst then -- 6셋: 최대 중첩이면 3초마다 불꽃 폭발
 						burn.NextBurst = tickNow + 3
 						Effects.Raw(burnPart.Position, { "N", burnPart.Position, 6, Color3.fromRGB(255, 130, 50) })
 						hitMonster(run, burn.Owner, { Part = burnPart, Data = burn.Data }, augDamage(burn.Owner) * 3, nil, Color3.fromRGB(255, 150, 60), "AugFlame")
@@ -1830,6 +1833,7 @@ local function addIgnite(run, player, part, data, stacks)
 	end)
 end
 
+AugFx.Init({ hitMonster = hitMonster, strikeBolt = strikeBolt, launchMissile = launchMissile, launchBlast = launchBlast, dropMeteor = dropMeteor, nearestMonsters = nearestMonsters, augDamage = augDamage, addIgnite = addIgnite, Effects = Effects })
 local uniqueHits = setmetatable({}, { __mode = "k" })
 augOnHit = function(run, player, part, data, amount, isCrit)
 	local targetIsBoss = isBossData(data)
@@ -1845,8 +1849,10 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 			augDepth -= 1
 		end
 	end
-	if execLevel > 0 and data.Health > 0 and not targetIsBoss and not data.Invincible and data.Health / data.MaxHealth <= Config.AugExecuteThreshold(execLevel) then
+	if execLevel > 0 and data.Health > 0 and not targetIsBoss and not data.Invincible and data.Health / data.MaxHealth <= Config.AugExecuteThreshold(execLevel) * AugFx.ExecMult(player) then
+		local executedHp = data.Health
 		data.Health = 0
+		AugFx.Execute(run, player, part, executedHp)
 		procAug(player, "AugExecute", part.Position)
 		Effects.Raw(part.Position, { "U", part.Position + Vector3.new(0, part.Size.Y / 2 + 1.5, 0), part.Size.Y }) -- 해골 + 보라 폭발 + 베기 (각자 화면에서)
 		sfxAt(run, part.Position, "Aug_Execute", nil, 0.1)
@@ -1922,6 +1928,7 @@ augOnHit = function(run, player, part, data, amount, isCrit)
 	if level >= 6 then
 		launchMissile(run, player, from + Vector3.new(0, 2, 0), target, augDamage(player) * 3, "rocket", Color3.fromRGB(255, 80, 40), 3, 14, "AugMissile")
 	end
+	AugFx.Missile(run, player, from, target, level, count)
 end
 
 augOnKill = function(run, player, position)
@@ -1931,7 +1938,8 @@ augOnKill = function(run, player, position)
 		local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 		if humanoid and humanoid.Health > 0 then humanoid.Health = math.min(humanoid.MaxHealth, humanoid.Health + humanoid.MaxHealth * heal) end
 	end
-	if (player:GetAttribute("GearKillHaste") or 0) > 0 then player:SetAttribute("AdrenalineUntil", workspace:GetServerTimeNow() + 3) end -- (서버 / 클라이언트가 같이 읽는 시계: 클라이언트 자동 사격도 빨라진다)
+	if (player:GetAttribute("GearKillHaste") or 0) > 0 then player:SetAttribute("AdrenalineUntil", workspace:GetServerTimeNow() + 3) end
+	if augDepth == 0 then AugFx.OnKill(run, player, position) end -- (서버 / 클라이언트가 같이 읽는 시계: 클라이언트 자동 사격도 빨라진다)
 	local flame = augLv(run, player, "AugFlame")
 	if flame >= 4 and augDepth == 0 then -- 점화 4셋: 불타던 적이 쓰러지면 근처 적 3마리에게 불이 옮겨 붙는다
 		for _, entry in ipairs(nearestMonsters(run, position, 22, 3)) do
@@ -1966,6 +1974,7 @@ augOnKill = function(run, player, position)
 		end)
 	end
 	if level >= 6 then makeFlame(run, player, position, 11, 6, augDamage(player) * 0.5, false, "AugNova") end
+	AugFx.Nova(run, player, blast, sizeMult, delays)
 end
 
 -- 세트 효과 오라: 세트를 맞춘 동안 몸에 색이 다른 빛 / 입자가 감돈다 (AugAuraColor Attribute 를 따라간다)
@@ -2109,6 +2118,7 @@ local function startAugLoop(run)
 								end)
 								fromPos = entry.Part.Position + Vector3.new(0, 3, 0)
 							end
+							AugFx.Orbit(run, member, chain, damage)
 						end
 					end
 					-- 낙뢰
@@ -2127,6 +2137,7 @@ local function startAugLoop(run)
 								end
 							end
 						end
+						AugFx.Storm(run, member, root.Position, boltDamage, 2 + storm, arcs)
 					end
 					-- 유성우: 적이 가장 많이 모인 곳에
 					local meteor = augLv(run, member, "AugMeteor")
@@ -2152,6 +2163,7 @@ local function startAugLoop(run)
 							dropMeteor(run, member, Vector3.new(p.X, p.Y - best.Part.Size.Y / 2, p.Z), meteorRadius, meteorDamage, meteor) -- (예전: 내 발 높이에 떨어져서, 높낮이가 다른 필드에서는 적에게 안 닿았다)
 							-- 4셋부터 유성이 연달아 더 떨어진다 (4셋 2발 / 5셋 3발 / 6셋 4발, 서로 다른 곳에)
 							local extra = (meteor >= 6 and 3 or (meteor >= 5 and 2 or (meteor >= 4 and 1 or 0))) + (Config.AugWeaponMatch(member, "AugMeteor") and 1 or 0) -- 궁합 무기 +1
+							AugFx.Meteor(run, member, Vector3.new(p.X, p.Y - best.Part.Size.Y / 2, p.Z), meteorRadius, meteorDamage, meteor, 1 + extra)
 							local spots = { p }
 							for _, other in ipairs(candidates) do
 								if extra <= 0 then break end
@@ -2228,6 +2240,7 @@ local function startAugLoop(run)
 								end
 							end)
 						end
+						AugFx.Pulse(run, member, blastDamage, blastRadius, targetCount, volleys)
 					end
 				end)
 				if not okMember and RunService:IsStudio() then warn("[Aug] " .. tostring(errMember)) end

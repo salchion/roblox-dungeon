@@ -1584,7 +1584,7 @@ Config.AugSlots = {
 	PowerPerStep = 0.1,     -- ⚡ 칸 강화 1단계 = 효과 0.1단계
 	PowerMilestone = 0.5,   -- ⚡ +5 / +10 도달 시 각각 효과 0.5단계 (칸 하나 +10 = 효과 2단계어치)
 	AwakenPower = 4,        -- ⚡ 6부위 각성 = 효과 4단계어치 (0.12 x 4 = 0.48)
-	AwakenMult = 0.75,      -- 각성 딜 = 그 세트 Lv6 효과의 0.75배 (각성 동작은 AugFx 다음 커밋)
+	AwakenMult = 0.75,      -- 각성 딜 = 그 효과가 방금 낸 피해의 0.75배 (동작: Server/AugFx)
 }
 Config.AugAwaken = { -- 👑 6부위 각성 (이름 / 설명)
 	AugPulse = { Name = "Aftershock", Desc = "1s later, a 75% shockwave hits the same spot" },
@@ -1598,10 +1598,10 @@ Config.AugAwaken = { -- 👑 6부위 각성 (이름 / 설명)
 }
 Config.AugSlotTen = { -- 칸 +10 전용 추가 효과 (효과마다 1개)
 	AugPulse = "a second shockwave (60%)", AugOrbit = "last bounce explodes (80%)", AugStorm = "bolts fork 3 ways",
-	AugMissile = "a giant missile on kill", AugNova = "nova knocks enemies back · power +20%", AugFlame = "burn stacks up to 2",
-	AugExecute = "can execute elites (half threshold)", AugMeteor = "every 3rd meteor is giant",
+	AugMissile = "a giant missile on kill", AugNova = "one more nova (40%)", AugFlame = "max burn stacks x2",
+	AugExecute = "execute threshold x1.5", AugMeteor = "every 3rd meteor is giant",
 	AugWard = "3s invincible below 30% HP (60s cd)", AugBody = "survive a fatal hit once (90s cd)", AugBuffer = "30% of delayed damage vanishes",
-	AugEvade = "0.5s invincible + counter on dodge", AugGrit = "below 25% HP, heal 2%/s", AugRegen = "overheal becomes a shield (max 15%)",
+	AugEvade = "0.5s invincible after a dodge", AugGrit = "below 25% HP, heal 2%/s", AugRegen = "overheal becomes a shield (max 15%)",
 }
 -- 최후의 군주 결전 (8구역 군주를 쓰러뜨리면 8구역 끝에 포탈이 열린다): 튜토리얼에서 만났던 군주와 이번에는 진짜로 싸운다
 Config.FinalLord = {

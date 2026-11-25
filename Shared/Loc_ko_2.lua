@@ -1324,6 +1324,12 @@ return {
 		["Set Effects · 3 slots"] = "세트 효과 · 칸 3개",
 		["Press Y: put effects in your 3 slots · attack needs 2+ set pieces · defense levels up with Guard Stones in town"] = "Y 키: 칸 3개에 효과를 넣으세요 · 공격은 세트 2부위 이상 · 방어는 마을에서 수호석으로",
 		["① Defeat a zone's Lord → its effect unlocks   ② Wear 2+ set pieces and put it in a slot (Y)   ③ It fires on its own in combat"] = "① 구역 군주를 잡으면 → 효과가 열림   ② 세트 2부위 이상 끼고 칸에 넣기 (Y)   ③ 전투 중 알아서 발동",
+		["one more nova (40%)"] = "노바 한 번 더 (40%)",
+		["max burn stacks x2"] = "화상 최대 중첩 2배",
+		["execute threshold x1.5"] = "처형 기준 1.5배",
+		["0.5s invincible after a dodge"] = "회피 뒤 0.5초 무적",
+		["ENDURE!"] = "버텼다!",
+		["WARD!"] = "방벽!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1351,6 +1357,5 @@ return {
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Sniper Rifle · Rusty Era +{number10}\n📍 Field (best: Zone {number11})", "🎖 레벨 {number1} {number2} / {number3} 경험치\n💰 {number4} G 🎫 {number5}\n🔑{number6} (오늘 무료 {number7}/{number8})\n⚡ 파워 {number9}\n⚔ 저격 소총 · 녹슨 시대 +{number10}\n📍 필드 (최적: 구역 {number11})" },
 		{ "\n⚠ The {number1}-hour cap was reached, so {number2} hours' worth couldn't be saved. You can raise the cap in the Shop", "\n⚠ {number1}시간 상한에 도달해서 {number2}시간 분량은 저장하지 못했어요. 상한은 상점에서 올릴 수 있어요" },
 		{ "💰 Not enough gold. ({number1} needed) Earn gold at the dummy yard, field hunting, dungeons, or the Boss Rush", "💰 골드가 부족해요. ({number1} 필요) 허수아비 훈련장 / 필드 사냥 / 던전 / 보스 러시에서 골드를 얻으세요" },
-		{ "🥇 {player1}\n<font color='#ffe{number1}e'>⚡ {number2}</font> Lv.{number3}\n<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "🥇 {player1}\n<font color='#ffe{number1}e'>⚡ {number2}</font> 레벨.{number3}\n<font color='#{number4}ad{number5}ff'>스펠 토메 · 신화 시대 +{number6}</font>" },
 	},
 }

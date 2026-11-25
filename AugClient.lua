@@ -1,6 +1,6 @@
 -- AugClient (StarterPlayer > StarterPlayerScripts 안의 LocalScript, 이름: AugClient)
--- ✨ 세트 효과 창 (Y 키 또는 "세트" 버튼): 공격 = 그 구역 세트 2부위부터 자동으로 켜짐 (2부위 Lv3 / 3부위 Lv6), 방어 = 수호석으로 올리고 1개만 골라 켠다.
--- "+1" 장비 옵션은 이미 켜진 효과에만 +1. 효과 칸(소켓)은 없다. 값은 서버(AugService)가 정하는 Attribute 에서 읽는다.
+-- ✨ 세트 효과 창 (Y 키 또는 "세트" 버튼): 칸 3개에 공격 / 방어 효과를 자유롭게 넣고, 칸에 넣은 효과만 켜진다 (방어 최대 2칸).
+-- 공격 단계 = 세트 부위(2부위 Lv3 / 3~5부위 Lv6 / 6부위 Lv6 + 👑 각성), 방어 = 수호석 단계. 창 안쪽은 AugSlotsUI 모듈, 값은 서버(AugService)가 정하는 Attribute 에서 읽는다.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")

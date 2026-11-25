@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⏱ Time Skip · {text1} left", "⏱ 시간 단축 · {text1} 남음" },
+		{ "Purchase complete: {text1}", "구매 완료: {text1}" },
+		{ "{text1} obtained! Equipped", "{text1} 획득! 장착했어요" },
+		{ "New gear equipped! {text1}", "새 장비 장착! {text1}" },
+		{ "🎯 Bounty · {number1} left · {text2}", "🎯 현상금 · {number1}마리 남음 · {text2}" },
 		{ "Preferred set: {text1} ({number1}%)", "선호 세트: {text1} ({number1}%)" },
 		{ "Lord of {text1}  ·  Zone {number2}", "{text1}의 군주  ·  {number2}구역" },
 		{ "⏱ Used {text1} Time Skip!", "⏱ 시간 건너뛰기 {text1} 사용!" },
@@ -132,6 +137,7 @@ return {
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [월드 보스] {number1}구역 · {text2}: {text3} 등장! 주황색 빛기둥을 따라가 함께 쓰러뜨리면 장비 + 티켓!" },
 		{ "<font size='10' color='{text1}'>📍 Zone {number2} {text3} · Drops in that zone · Dungeon chests (deeper = better odds)</font>", "<font size='10' color='{text1}'>📍 {number2}구역 {text3} · 그 구역에서 드랍 · 던전 상자 (깊을수록 확률 높음)</font>" },
 		{ "{text1} {text2} (defense) also unlocked! Level it up with 🔷 Guard Stones in town, then pick 1 to keep on (Y key)", "{text1} {text2}(방어)도 해금! 마을에서 🔷 수호석으로 단계를 올리고, 1개만 골라 켜 두세요 (Y 키)" },
+		{ "{text1} {text2} (defense) also unlocked! Level it up with 🔷 Guard Stones in town, then put it in a slot (Y key)", "{text1} {text2} (방어)도 열림! 마을에서 🔷 수호석으로 올리고 칸에 넣으세요 (Y 키)" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} 세트 효과 『{text2}』 해금! 그 세트 장비를 끼면 저절로 켜지고, 골드로 강화할 수도 있어요 (Y 키)" },
 		{ " <font size='9' color='#8a8aa8'>Range {text1}</font> <font size='9' color='{text2}'><b>({number3}%)</b></font>", " <font size='9' color='#8a8aa8'>범위 {text1}</font> <font size='9' color='{text2}'><b>({number3}%)</b></font>" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear, then put it in a slot (Y key)", "{text1} 세트 효과 『{text2}』 열림! 그 세트 장비를 2부위 이상 끼고 칸에 넣으세요 (Y 키)" },

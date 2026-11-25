@@ -1060,6 +1060,12 @@ return {
 		["Set Effects · 3 slots"] = "Effets de set · 3 emplacements",
 		["Press Y: put effects in your 3 slots · attack needs 2+ set pieces · defense levels up with Guard Stones in town"] = "Appuie sur Y : place des effets dans tes 3 emplacements · l'attaque demande 2+ pièces de set · la défense monte en ville avec des Pierres de garde",
 		["① Defeat a zone's Lord → its effect unlocks   ② Wear 2+ set pieces and put it in a slot (Y)   ③ It fires on its own in combat"] = "① Bats le seigneur d'une zone → son effet se débloque   ② Porte 2+ pièces de set et place-le dans un emplacement (Y)   ③ Il se déclenche seul en combat",
+		["one more nova (40%)"] = "une nova de plus (40 %)",
+		["max burn stacks x2"] = "cumul de brûlure max x2",
+		["execute threshold x1.5"] = "seuil d'exécution x1,5",
+		["0.5s invincible after a dodge"] = "invincible 0,5 s après une esquive",
+		["ENDURE!"] = "TENACE !",
+		["WARD!"] = "REMPART !",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1133,7 +1139,5 @@ return {
 		{ "🎒 Bag full: dismantled {number1} gear that your other gear beats (Essence +{number2}, {number3} G)", "🎒 Sac plein : {number1} équipement(s) moins bon(s) recyclé(s) (Essence +{number2}, {number3} G)" },
 		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "Titre de maître des compétences\nUtiliser les compétences {number1} fois\n{number2} / {number3} Récompense : 🎫 {number4}" },
 		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(votre record : profondeur {number1} · le thème du donjon est aléatoire, les probabilités sont les mêmes)" },
-		{ "Each depth up: monster HP +{number1}% · damage +{number2}% · gold +{number3}% · better chest odds", "Par profondeur : PV des monstres +{number1} % · dégâts +{number2} % · or +{number3} % · meilleures chances de coffre" },
-		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "Profondeur {number1} terminée  ·  Choisissez la profondeur qui vous convient  (prochaine : {number2})" },
 	},
 }

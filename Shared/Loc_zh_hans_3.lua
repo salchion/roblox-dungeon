@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>", "<font color='#{number1}fffb{number2}'><b>自动攻击</b>" },
+		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 升级了!Lv.{number1}  (最大生命 +{number2},攻击 +{number3}%)" },
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ 现在强化免费!(剩余 {number1} 次)" },
 		{ "⏳ The portal is still recovering ({number1} s).", "⏳ 传送门仍在恢复中({number1} 秒)。" },
 		{ "♻ Auto-salvaged {number1} items (Essence +{number2}, {number3} G)", "♻ 自动分解了 {number1} 件(精华 +{number2},{number3} G)" },
@@ -573,6 +575,7 @@ return {
 		{ "+{number1} MAX", "+{number1} 满级" },
 		{ "1 in {number1}", "每{number1}次1次" },
 		{ "Slot {number1}", "槽位{number1}" },
+		{ "★ Lv.{number1}", "★ Lv.{number1}" },
 		{ "{number1}K  {number2}%", "{number1}千 {number2}%" },
 		{ "{number1} DPS", "{number1} 每秒伤害量" },
 		{ "{number1}x XP", "{number1}倍经验值" },
@@ -791,6 +794,7 @@ return {
 		{ "+{number1} {text1}", "+{number1} {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [世界首领] 区域{number1} · {text2}:{text3} 出现了!跟随橙色光柱,一起击败它来获得装备和门票!" },
+		{ "{text1} {text2} (defense) also unlocked! Level it up with 🔷 Guard Stones in town, then put it in a slot (Y key)", "{text1} {text2}（防御）也已解锁！在城镇用🔷守护石强化后放入槽位（Y键）" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} 套装效果『{text2}』已解锁！穿上该套装即可自动开启，也可用金币强化（Y键）" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear, then put it in a slot (Y key)", "{text1} 套装效果『{text2}』已解锁！穿戴该套装2件以上并放入槽位（Y键）" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear to turn it on (Y key)", "{text1} 套装效果『{text2}』已解锁！穿戴该套装2件以上即可开启（Y键）" },

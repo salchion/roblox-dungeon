@@ -505,6 +505,13 @@
       "overwrite": true
     },
     {
+      "path": "Server/AugFx.lua",
+      "parent": "ServerScriptService/Modules",
+      "name": "AugFx",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "Server/DeathLog.lua",
       "parent": "ServerScriptService/Modules",
       "name": "DeathLog",

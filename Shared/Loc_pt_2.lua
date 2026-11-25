@@ -1028,6 +1028,12 @@ return {
 		["Set Effects · 3 slots"] = "Efeitos de set · 3 espaços",
 		["Press Y: put effects in your 3 slots · attack needs 2+ set pieces · defense levels up with Guard Stones in town"] = "Aperte Y: coloque efeitos nos 3 espaços · o ataque precisa de 2+ peças de set · a defesa sobe na cidade com Pedras guardiãs",
 		["① Defeat a zone's Lord → its effect unlocks   ② Wear 2+ set pieces and put it in a slot (Y)   ③ It fires on its own in combat"] = "① Derrote o senhor de uma zona → o efeito é desbloqueado   ② Equipe 2+ peças e coloque num espaço (Y)   ③ Ele dispara sozinho em combate",
+		["one more nova (40%)"] = "mais uma nova (40%)",
+		["max burn stacks x2"] = "acúmulo máx. de queimadura x2",
+		["execute threshold x1.5"] = "limite de execução x1,5",
+		["0.5s invincible after a dodge"] = "invencível 0,5 s após esquivar",
+		["ENDURE!"] = "AGUENTEI!",
+		["WARD!"] = "BARREIRA!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1131,6 +1137,5 @@ return {
 		{ "The final blast also explodes around every target (attack x{number1})", "A explosão final também detona ao redor de cada alvo (ataque x{number1})" },
 		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] 🌾 Sapatos desgastados do prado são salvos automaticamente (Essência +{number1} {number2} G)" },
 		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 Avanço do nível {number1} concluído! Agora você pode crescer ainda mais." },
-		{ "🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})", "🏰 Baú do chefe da masmorra — {number1} peças de equipamento, +1 a cada {number2} de profundidade (máx. {number3})" },
 	},
 }

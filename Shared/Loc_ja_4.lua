@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} training started! ({text2})", "{text1}の訓練を開始しました！({text2})" },
+		{ "⬆ Level Up  💰 {text1} G · ⏱ {text2}", "⬆ レベルアップ  💰 {text1} G · ⏱ {text2}" },
+		{ "👹 Boss this run: {text1} — {text2}", "👹 今回のボス: {text1} — {text2}" },
+		{ "{text1}  ·  When full: +{text2} G", "{text1}  ·  満杯時: +{text2} G" },
+		{ "Time needed {text1} · 💰 {text2} G", "必要時間 {text1} · 💰 {text2} G" },
+		{ "Best {text1}  ·  Max hit {text2}", "最高 {text1}  ·  最大ヒット {text2}" },
 		{ "Next point: {text1} / {text2} XP", "次のポイント: {text1} / {text2} XP" },
 		{ "★ New unique: {text1} — {text2}", "★ 新しいユニーク: {text1} — {text2}" },
 		{ "Your best tier: {text1} {text2}", "あなたの最高ティア: {text1} {text2}" },

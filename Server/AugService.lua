@@ -239,7 +239,11 @@ function Aug.NoteBoss(player, zone)
 		for extra, hz in pairs(Config.Sets.AugHomeZone or {}) do -- (같은 군주로 열리는 방어 효과도 알린다)
 			if hz == zone then
 				local xi = Config.AugInfo[Config.Sets.ZoneAug[extra]]
-				if xi then notify(player, string.format("%s %s also unlocked", xi.Icon, xi.Name)) end
+				if xi and xi.Defense then -- (방어 효과: 어디서 어떻게 켜는지까지 알려 준다 · 11-25 A-8)
+					notify(player, string.format("%s %s (defense) also unlocked! Level it up with 🔷 Guard Stones in town, then put it in a slot (Y key)", xi.Icon, xi.Name))
+				elseif xi then
+					notify(player, string.format("%s %s also unlocked", xi.Icon, xi.Name))
+				end
 			end
 		end
 	end

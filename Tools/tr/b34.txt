@@ -1,0 +1,8 @@
+3169¦ノヴァがもう1回（40%）¦eine weitere Nova (40 %)¦une nova de plus (40 %)¦una nova más (40 %)¦mais uma nova (40%)¦再来一次新星（40%）¦노바 한 번 더 (40%)
+3170¦炎上の最大スタック2倍¦max. Brandstapel x2¦cumul de brûlure max x2¦acumulación máx. de quemadura x2¦acúmulo máx. de queimadura x2¦灼烧最大层数x2¦화상 최대 중첩 2배
+3171¦処刑の基準 x1.5¦Hinrichtungsschwelle x1,5¦seuil d'exécution x1,5¦umbral de ejecución x1,5¦limite de execução x1,5¦处决阈值x1.5¦처형 기준 1.5배
+3172¦回避後0.5秒無敵¦nach dem Ausweichen 0,5 s unverwundbar¦invincible 0,5 s après une esquive¦invencible 0,5 s tras esquivar¦invencível 0,5 s após esquivar¦闪避后无敌0.5秒¦회피 뒤 0.5초 무적
+3173¦{text1} {text2}（防御）も解放！町で🔷守護石で強化して枠に入れよう（Yキー）¦{text1} {text2} (Verteidigung) ebenfalls freigeschaltet! Im Dorf mit 🔷 Wächtersteinen verbessern und in einen Slot legen (Taste Y)¦{text1} {text2} (défense) débloqué aussi ! Améliore-le en ville avec des 🔷 Pierres de garde, puis place-le dans un emplacement (touche Y)¦¡{text1} {text2} (defensa) también desbloqueado! Mejóralo en el pueblo con 🔷 Piedras guardianas y ponlo en una ranura (tecla Y)¦{text1} {text2} (defesa) também desbloqueado! Melhore na cidade com 🔷 Pedras guardiãs e coloque num espaço (tecla Y)¦{text1} {text2}（防御）也已解锁！在城镇用🔷守护石强化后放入槽位（Y键）¦{text1} {text2} (방어)도 열림! 마을에서 🔷 수호석으로 올리고 칸에 넣으세요 (Y 키)
+3174¦★ Lv.{number1}¦★ Lv.{number1}¦★ Lv.{number1}¦★ Lv.{number1}¦★ Lv.{number1}¦★ Lv.{number1}¦★ Lv.{number1}
+3175¦耐えた！¦DURCHGEHALTEN!¦TENACE !¦¡AGUANTÉ!¦AGUENTEI!¦撑住了！¦버텼다!
+3176¦防壁！¦SCHUTZWALL!¦REMPART !¦¡BARRERA!¦BARREIRA!¦防壁！¦방벽!

@@ -1057,6 +1057,12 @@ return {
 		["Set Effects · 3 slots"] = "Efectos de set · 3 ranuras",
 		["Press Y: put effects in your 3 slots · attack needs 2+ set pieces · defense levels up with Guard Stones in town"] = "Pulsa Y: pon efectos en tus 3 ranuras · el ataque necesita 2+ piezas de set · la defensa sube en el pueblo con Piedras guardianas",
 		["① Defeat a zone's Lord → its effect unlocks   ② Wear 2+ set pieces and put it in a slot (Y)   ③ It fires on its own in combat"] = "① Derrota al señor de una zona → se desbloquea su efecto   ② Equipa 2+ piezas y ponlo en una ranura (Y)   ③ Se dispara solo en combate",
+		["one more nova (40%)"] = "una nova más (40 %)",
+		["max burn stacks x2"] = "acumulación máx. de quemadura x2",
+		["execute threshold x1.5"] = "umbral de ejecución x1,5",
+		["0.5s invincible after a dodge"] = "invencible 0,5 s tras esquivar",
+		["ENDURE!"] = "¡AGUANTÉ!",
+		["WARD!"] = "¡BARRERA!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1146,7 +1152,5 @@ return {
 		{ "{number1} hours of idle gold ({number2} G) piled up!\n(Idle income bonus +{number3}% active)", "¡{number1} horas de oro inactivo ({number2} G) acumulado!\n(Bonificación de ingresos inactivos +{number3}% activa)" },
 		{ "Weapons reached {number1} / {number2}  ·  Enhance your weapon to meet the next one", "Armas alcanzadas {number1} / {number2}  ·  Mejora tu arma para conocer la siguiente" },
 		{ "Set you're wearing Lv.{number1} · {number2} pieces = Lv.{number3}, Guard Stones for defense", "Set equipado Nv.{number1} · {number2} piezas = Nv.{number3}, defensa con piedras guardianas" },
-		{ "👑 Kill goal reached! Defeat the Lord of Zone {number1} to open the gate!", "👑 ¡Meta de bajas alcanzada! ¡Derrota al señor de la zona {number1} para abrir la puerta!" },
-		{ "🏰 {number1} free dungeon entries left! Earn gear and tickets in dungeons", "🏰 ¡Quedan {number1} entradas gratis a mazmorras! Consigue equipo y boletos en las mazmorras" },
 	},
 }

@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 Not enough Gold. ({number1} needed) Earn Gold from field hunting / dungeons / Boss Rush / idle income", "💰 ゴールドが足りません。({number1}必要) フィールド狩り / ダンジョン / ボスラッシュ / 放置収入で入手" },
 		{ "Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "時間切れ！ボスが逃げた — クリアゴールドの{number1}%だけ獲得（宝箱・チケット・深さ記録なし）" },
 		{ "Zone {number1} · Meadow\n🌾 Adventure Begins · Rec. ⚡{number2}\nDanger ☠\n🌾 New set from here: Meadow's Guard Set", "ゾーン {number1} ・草原\n🌾 冒険の始まり · レコード ⚡{number2}\n危険 ☠\n🌾 ここから新しいセット：草原のガードセット" },
 		{ "Limit Breaker   Title 『Limit Breaker』\nDefeat {number1} bosses in one Boss Rush run\n{number2} / {number3}   Reward: 🎫 {number4}", "リミットブレイカー タイトル『リミットブレイカー』\n1回のボスラッシュで{number1}人のボスを倒す\n{number2} / {number3}　報酬：🎫 {number4}" },
@@ -751,6 +752,7 @@ return {
 		{ "+{number1} MAX", "+{number1} 最大" },
 		{ "1 in {number1}", "{number1}回に1回" },
 		{ "Slot {number1}", "枠{number1}" },
+		{ "★ Lv.{number1}", "★ Lv.{number1}" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1} key", "鍵{number1}個" },
 		{ "💰 {number1} G", "💰 {number1}G" },
@@ -966,6 +968,7 @@ return {
 		{ "+{number1} {text1}", "+{number1} {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [ワールドボス] ゾーン{number1} · {text2}: {text3}が出現！オレンジの光の柱を追って、みんなで倒して装備とチケットを手に入れよう！" },
+		{ "{text1} {text2} (defense) also unlocked! Level it up with 🔷 Guard Stones in town, then put it in a slot (Y key)", "{text1} {text2}（防御）も解放！町で🔷守護石で強化して枠に入れよう（Yキー）" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} セット効果『{text2}』解放! セット装備を着ければ自動でオン、ゴールドで強化もできます (Yキー)" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear, then put it in a slot (Y key)", "{text1} セット効果『{text2}』解放！そのセット装備を2部位以上つけて枠に入れよう（Yキー）" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear to turn it on (Y key)", "{text1} セット効果『{text2}』解放！そのセット装備を2部位以上つけるとON（Yキー）" },
@@ -996,11 +999,5 @@ return {
 		{ "{text1}  ·  next weapon: {text2} at +{number3}", "{text1}  ·  次の武器: {text2} (+{number3})" },
 		{ "{text1} Set effect ON: 『{text2}』 Lv.{number3}", "{text1} セット効果オン: 『{text2}』 Lv.{number3}" },
 		{ "{text1} {text2} set gear → open Gear", "{text1} {text2} セット装備 → 装備画面へ" },
-		{ "{text1} training started! ({text2})", "{text1}の訓練を開始しました！({text2})" },
-		{ "⬆ Level Up  💰 {text1} G · ⏱ {text2}", "⬆ レベルアップ  💰 {text1} G · ⏱ {text2}" },
-		{ "👹 Boss this run: {text1} — {text2}", "👹 今回のボス: {text1} — {text2}" },
-		{ "{text1}  ·  When full: +{text2} G", "{text1}  ·  満杯時: +{text2} G" },
-		{ "Time needed {text1} · 💰 {text2} G", "必要時間 {text1} · 💰 {text2} G" },
-		{ "Best {text1}  ·  Max hit {text2}", "最高 {text1}  ·  最大ヒット {text2}" },
 	},
 }

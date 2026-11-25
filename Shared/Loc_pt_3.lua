@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})", "🏰 Baú do chefe da masmorra — {number1} peças de equipamento, +1 a cada {number2} de profundidade (máx. {number3})" },
 		{ "Event_Elite  <font color='#{number1}aa{number2}c{number3}'>Elite squad appears</font>", "Evento_Elite <font color='#{number1}aa{number2}c{number3}'>Esquadrão Elite aparece</font>" },
 		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [Raro] 🌲 Anel de Prata da Floresta recuperado automaticamente (Essência +{number1} {number2} G)" },
 		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "Gaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!" },
@@ -687,6 +688,7 @@ return {
 		{ "+{number1} MAX", "+{number1} MÁX" },
 		{ "1 in {number1}", "1 a cada {number1}" },
 		{ "Slot {number1}", "Espaço {number1}" },
+		{ "★ Lv.{number1}", "★ Lv.{number1}" },
 		{ "{number1}K  {number2}%", "{number1}K {number2}%" },
 		{ "{number1} key", "{number1} chave" },
 		{ "💰 {number1} G", "💰 {number1} G" },
@@ -902,6 +904,7 @@ return {
 		{ "+{number1} {text1}", "+{number1} {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
 		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [Chefe mundial] Zona {number1} · {text2}: {text3} apareceu! Siga o pilar de luz laranja e derrotem juntos para ganhar equipamento + tickets!" },
+		{ "{text1} {text2} (defense) also unlocked! Level it up with 🔷 Guard Stones in town, then put it in a slot (Y key)", "{text1} {text2} (defesa) também desbloqueado! Melhore na cidade com 🔷 Pedras guardiãs e coloque num espaço (tecla Y)" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} Efeito de set 『{text2}』 desbloqueado! Equipe o set para ativá-lo ou melhore com ouro (tecla Y)" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear, then put it in a slot (Y key)", "{text1} Efeito de set 『{text2}』 desbloqueado! Equipe 2+ peças do set e coloque-o num espaço (tecla Y)" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear to turn it on (Y key)", "{text1} Efeito de set 『{text2}』 desbloqueado! Equipe 2+ peças do set para ligá-lo (tecla Y)" },

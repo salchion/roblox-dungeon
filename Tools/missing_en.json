@@ -3167,5 +3167,13 @@
 "2 pieces Lv.3 / 3 pieces Lv.6 / 6 pieces 👑 · put it in a slot (Y)",
 "Set Effects · 3 slots",
 "Press Y: put effects in your 3 slots · attack needs 2+ set pieces · defense levels up with Guard Stones in town",
-"① Defeat a zone's Lord → its effect unlocks   ② Wear 2+ set pieces and put it in a slot (Y)   ③ It fires on its own in combat"
+"① Defeat a zone's Lord → its effect unlocks   ② Wear 2+ set pieces and put it in a slot (Y)   ③ It fires on its own in combat",
+"one more nova (40%)",
+"max burn stacks x2",
+"execute threshold x1.5",
+"0.5s invincible after a dodge",
+"{text1} {text2} (defense) also unlocked! Level it up with 🔷 Guard Stones in town, then put it in a slot (Y key)",
+"★ Lv.{number1}",
+"ENDURE!",
+"WARD!"
 ]

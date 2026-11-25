@@ -1005,6 +1005,12 @@ return {
 		["Set Effects · 3 slots"] = "Set-Effekte · 3 Slots",
 		["Press Y: put effects in your 3 slots · attack needs 2+ set pieces · defense levels up with Guard Stones in town"] = "Drücke Y: Lege Effekte in deine 3 Slots · Angriff braucht 2+ Set-Teile · Verteidigung steigt im Dorf mit Wächtersteinen",
 		["① Defeat a zone's Lord → its effect unlocks   ② Wear 2+ set pieces and put it in a slot (Y)   ③ It fires on its own in combat"] = "① Besiege den Herrscher einer Zone → Effekt freigeschaltet   ② Trage 2+ Set-Teile und lege ihn in einen Slot (Y)   ③ Er löst im Kampf von selbst aus",
+		["one more nova (40%)"] = "eine weitere Nova (40 %)",
+		["max burn stacks x2"] = "max. Brandstapel x2",
+		["execute threshold x1.5"] = "Hinrichtungsschwelle x1,5",
+		["0.5s invincible after a dodge"] = "nach dem Ausweichen 0,5 s unverwundbar",
+		["ENDURE!"] = "DURCHGEHALTEN!",
+		["WARD!"] = "SCHUTZWALL!",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1113,7 +1119,5 @@ return {
 		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [Selten] 🌲 Wald-Silberring automatisch gesammelt (Essenz +{number1} {number2} G)" },
 		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "Gib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!" },
 		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "Mit den maximalen {number1} Punkten steigen Krits von 2x auf etwa {number2}x. Kombiniere" },
-		{ "Mythic gacha gear has a {number1}% chance to carry a Unique effect.", "Mythische Gacha-Ausrüstung hat eine {number1}% Chance auf einen Unique-Effekt." },
-		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "Erhalte sofort {number1} Minuten deines passiven Einkommens · maximal {number2} pro Tag" },
 	},
 }
