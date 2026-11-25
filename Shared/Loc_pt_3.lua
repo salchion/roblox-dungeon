@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "<font color='#{number4}ad{number5}ff'>Livro de Feitiços · Era Mítica +{number6}</font>" },
+		{ "Shot_Shotgun  <font color='#{number1}aa{number2}c{number3}'>Shotgun shot</font>", "Tiro_Espingarda <font color='#{number1}aa{number2}c{number3}'>Tiro de espingarda</font>" },
+		{ "🔒 Zone {number1} · Desert Sealed\nOpen the previous gate first", "🔒 Zona {number1} · Deserto Selado\nAbra o portão anterior primeiro" },
+		{ "One less dagger, but each hits +{number1}% harder: for bosses", "Uma adaga a menos, mas cada uma bate +{number1}% mais forte: para chefes" },
+		{ "Reduces training / breakthrough wait time by {number1} hours", "Reduz o tempo de espera de treinamento/avanço em {number1} horas" },
+		{ "♻ [Common] Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] Boné de Couro recuperado automaticamente (Essência +{number1} {number2} G)" },
 		{ "Cleared up to depth {number1}  ·  You can enter up to depth {number2}", "Concluído até a profundidade {number1}  ·  Você pode entrar até a profundidade {number2}" },
 		{ "Reach weapon upgrade level {number1} (about the 10th weapon)", "Alcance o nível de melhoria de arma {number1} (cerca da 10ª arma)" },
 		{ "Reach weapon upgrade level {number1} (about the 50th weapon)", "Alcance o nível de melhoria de arma {number1} (cerca da 50ª arma)" },

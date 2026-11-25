@@ -215,7 +215,10 @@ handlers.Spirit = function(player, root, _, character)
 						local damage = math.max(1, math.floor(Dungeon.ComputeDamage(player) / weaponType.DamageMult * Config.WeaponDpsFactor(weaponType) * scale))
 						-- 기 모으는 적을 베면 공격을 끊는다: 그 공격은 나가지 않고, 이번 한 칼은 2배 (엘리트 / 보스면 머리 위에 "끊었다!")
 						local chargingUntil = part:GetAttribute("ChargingUntil")
-						if chargingUntil and os.clock() < chargingUntil and (part:GetAttribute("InterruptedAt") or 0) < chargingUntil - 5 then
+						-- (11-25 B-1) 한 번 끊은 기 모으기는 다시 안 끊긴다: 이번 기 모으기 시작(ChargingFrom)보다 나중에 끊었으면 이미 끊은 것.
+						-- (예전엔 "chargingUntil - 5" 로 비교해서, 서버를 켠 지 5초 안에는 끊기가 아예 안 먹혔다)
+						local chargingFrom = part:GetAttribute("ChargingFrom") or 0
+						if chargingUntil and os.clock() < chargingUntil and (part:GetAttribute("InterruptedAt") or 0) < chargingFrom then
 							part:SetAttribute("InterruptedAt", os.clock())
 							damage *= 2
 							-- 끊기 확장 (11-24): 일반·정예는 0.4초 경직(MonsterTypes.Update 가 이동·공격을 멈춘다).

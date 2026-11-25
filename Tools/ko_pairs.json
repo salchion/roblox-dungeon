@@ -4528,20 +4528,12 @@
 "R을 눌러 가장 가까운 적을 자동 조준하세요"
 ],
 [
-"Set gear drops in field zones at a set rate. Wear 1-3 pieces of the same zone's set and effects you unlocked with gold get boosted to Lv.4-6. Preview effects in the J key Codex",
-"세트 장비는 필드 구역에서 일정 확률로 떨어져요. 같은 구역 세트를 1~3부위 입으면 골드로 해금한 효과가 Lv.4~6으로 강해져요. 효과 미리보기는 J 키 도감에서"
-],
-[
 "Stand in the rest area to earn gold (even while you're offline)",
 "쉼터에 서 있으면 골드가 쌓여요 (오프라인에서도)"
 ],
 [
 "Start by shooting the dummy. Click to fire",
 "먼저 허수아비를 쏘세요. 클릭하면 발사해요"
-],
-[
-"Starting a dungeon lets you try one random set effect. Defeat a zone lord to unlock it yourself with gold (Y key)",
-"던전을 시작하면 무작위 세트 효과 하나를 체험할 수 있어요. 구역 군주를 쓰러뜨리면 골드로 직접 해금할 수 있어요 (Y 키)"
 ],
 [
 "When you level up, press T to spend stat points (respec for free anytime)",
@@ -8387,5 +8379,77 @@
 ["%ds · 💥 %d%% HP", "%d초 · 💥 체력 %d%%"],
 ["<font size='12' color='#9ad7ff'>⏱ You'd beat this lord in ~%ds (aim for under 60s)</font>", "<font size='12' color='#9ad7ff'>⏱ 이 군주는 약 %d초면 잡아요 (60초 안이 목표)</font>"],
 ["  <font size='10' color='#c9c0e0'>⏱ ~%ds · 💥 %d%% HP</font>", "  <font size='10' color='#c9c0e0'>⏱ ~%d초 · 💥 체력 %d%%</font>"],
-["<font color='#ffe16e'>⏱ ~%ds · 💥 %d%% HP</font>  <font color='#ff8a8a'>%s</font>", "<font color='#ffe16e'>⏱ ~%d초 · 💥 체력 %d%%</font>  <font color='#ff8a8a'>%s</font>"]
+["<font color='#ffe16e'>⏱ ~%ds · 💥 %d%% HP</font>  <font color='#ff8a8a'>%s</font>", "<font color='#ffe16e'>⏱ ~%d초 · 💥 체력 %d%%</font>  <font color='#ff8a8a'>%s</font>"],
+[
+"⬆ %d effects can level up now",
+"⬆ 지금 %d개 효과를 올릴 수 있어요"
+],
+[
+"🏘 %d effects ready to level up · upgrade in town",
+"🏘 %d개 효과를 올릴 수 있어요 · 마을에서 올려요"
+],
+[
+"✔ Set gear 3/3",
+"✔ 세트 장비 3/3"
+],
+[
+"🛡 Find set gear",
+"🛡 세트 장비 찾기"
+],
+[
+"🏘 Upgrade in town",
+"🏘 마을에서 올리기"
+],
+[
+"🛡 Turn on",
+"🛡 켜기"
+],
+[
+"🛡 ON (tap to turn off)",
+"🛡 켜짐 (눌러서 끄기)"
+],
+[
+"🔷 %d / %d Guard Stones → Lv.%d",
+"🔷 수호석 %d / %d → Lv.%d"
+],
+[
+"Collect Guard Stones",
+"수호석 모으기"
+],
+[
+"Wear 2 set pieces",
+"세트 장비 2부위 착용"
+],
+[
+"Set gear %d/3",
+"세트 장비 %d/3"
+],
+[
+"Unlocks when you defeat the Zone %d lord",
+"%d구역 군주를 쓰러뜨리면 열려요"
+],
+[
+"%s Set effect 『%s』 unlocked! Wear 2+ pieces of its set gear to turn it on (Y key)",
+"%s 세트 효과 『%s』 해금! 그 세트 장비를 2부위 이상 입으면 저절로 켜져요 (Y 키)"
+],
+[
+"%s %s (defense) also unlocked! Level it up with 🔷 Guard Stones in town, then pick 1 to keep on (Y key)",
+"%s %s(방어)도 해금! 마을에서 🔷 수호석으로 단계를 올리고, 1개만 골라 켜 두세요 (Y 키)"
+],
+[
+"%s %s also unlocked",
+"%s %s도 해금"
+],
+[
+"Press Y to see it: attack turns on with 2 set pieces (3 = Lv.6) · defense levels up with Guard Stones in town",
+"Y를 눌러 확인하세요: 공격은 세트 2부위부터 켜지고(3부위 = Lv.6) · 방어는 마을에서 수호석으로 올려요"
+],
+[
+"Starting a dungeon lets you try one random set effect. Defeat a zone lord to unlock that zone's effect (Y key)",
+"던전에 들어가면 세트 효과 하나를 무작위로 써 볼 수 있어요. 그 구역 군주를 쓰러뜨리면 그 구역 효과가 열려요 (Y 키)"
+],
+[
+"Set gear drops in field zones at a set rate. Wear 2 pieces of the same zone's set and its effect turns on at Lv.3 (3 pieces = Lv.6). Defense effects are leveled up with Guard Stones in town. Preview effects in the J key Codex",
+"세트 장비는 필드 구역에서 일정 확률로 떨어져요. 같은 구역 세트를 2부위 입으면 그 효과가 Lv.3으로 켜져요 (3부위 = Lv.6). 방어 효과는 마을에서 수호석으로 올려요. 효과 미리보기는 J 키 도감에서"
+]
 ]

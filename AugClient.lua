@@ -16,14 +16,24 @@ local ZONES = #Config.Sets.ZoneAug -- (9번째 폭풍의 방벽 포함)
 local function homeZone(z) return (Config.Sets.AugHomeZone and Config.Sets.AugHomeZone[z]) or z end -- (구역 세트가 없는 효과: 해금 / 가격 / "Zone N" 표시 기준 구역)
 local TweenService = game:GetService("TweenService")
 
--- 지금 바로 올릴 수 있나 (⬆ 표시): (11-24 골드 제거) 방어 효과가 열려 있고 다음 단계 수호석이 있다. 공격 효과는 세트 장비로만 오른다
-local function canUpgrade(zone)
+-- 수호석 강화는 마을(로비)에서만 된다: 서버 AugService.townOnly 와 같은 규칙 (튜토리얼 중에는 필드에서도 된다)
+local function atTown()
+	return player:GetAttribute("Zone") == "Lobby" or player:GetAttribute("TutorialActive") == true
+end
+
+-- 다음 단계 수호석이 모였나 (마을 여부와 상관없이): 방어 효과가 열려 있고 필요한 수호석이 있다. 공격 효과는 세트 장비로만 오른다
+local function stoneReady(zone)
 	if player:GetAttribute("AugOpenZ_" .. zone) ~= true then return false end
 	local info = Config.AugInfo[Config.Sets.ZoneAug[zone]]
 	if not (info and info.Defense) then return false end
 	local stone = player:GetAttribute("AugStoneZ_" .. zone) or 0
 	local need = Config.Guard.StoneCost[stone + 1]
 	return need ~= nil and (player:GetAttribute("GuardStones") or 0) >= need
+end
+
+-- 지금 바로 올릴 수 있나 (⬆ 표시): (11-25 A-4) 수호석이 모였고 + 마을에 있을 때만. 필드에서 ⬆ 가 떠도 눌러서는 못 올린다
+local function canUpgrade(zone)
+	return atTown() and stoneReady(zone)
 end
 
 local gui = Instance.new("ScreenGui")
@@ -63,17 +73,9 @@ local function commas(n)
 	return (tostring(math.floor(n)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
 end
 
--- 왼쪽 상태 카드 아래, "스탯" 버튼 옆
-local pill = button({
-	Name = "SetsPill", Size = UDim2.new(0, 78, 0, 32), Position = UDim2.new(0, 264, 0, 244),
-	BackgroundColor3 = Color3.fromRGB(34, 38, 60), Text = "🌟 Sets (Y)", TextSize = 10, Visible = false,
-}, gui, function() end)
-make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, pill)
-local badge = label({
-	Size = UDim2.new(0, 24, 0, 24), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -4, 0, 2),
-	BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(255, 80, 80), Text = "!", TextSize = 11, Visible = false, ZIndex = 5,
-}, pill)
-make("UICorner", { CornerRadius = UDim.new(1, 0) }, badge)
+-- (11-25 A-3 / B-3) 예전에 창 위에 떠 있던 "🌟 Sets" 버튼(pill)과 그 빨간 점(badge), "Press Y!" 말풍선은 지웠다:
+--   버튼을 항상 숨겨 둔(pill.Visible = false) 뒤라 화면에 한 번도 나오지 않는 죽은 코드였고,
+--   지금은 왼쪽 메뉴의 "🌟 Sets" 버튼이 빨간 점까지 맡는다 (MenuDockClient).
 
 -- 창 모양: 왼쪽에 내 캐릭터가 서 있고 그 둘레에 구역 효과 8개가 원으로 둘러선다 (무협 RPG 장비창처럼).
 -- 오른쪽 패널에 고른 효과의 설명 + 버튼. 한 화면에 다 들어와서 스크롤이 없다.
@@ -91,14 +93,31 @@ make("UICorner", { CornerRadius = UDim.new(0, 14) }, panel)
 make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 2, Transparency = 0.25 }, panel)
 make("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(150, 130, 180)), Rotation = 90 }, panel)
 local panelScale = make("UIScale", { Scale = 1 }, panel) -- 작은 화면에서는 통째로 줄인다
+-- (11-25 A-1) 폰은 MobileLayoutClient 가 AugGui 화면 전체에 MobileScale(가로 폰이면 0.55)을 한 번 더 건다.
+-- 그 위에서 창이 또 줄면 두 번 곱해져 0.3배까지 내려가 글씨를 못 읽었다: 화면 배율로 나눠서 "화면에 맞춘 크기"가 그대로 나오게 한다.
+local screenScale = 1
+local function readScreenScale()
+	local scale = gui:FindFirstChild("MobileScale")
+	screenScale = (scale and scale:IsA("UIScale") and scale.Scale > 0) and scale.Scale or 1
+end
 local function fitPanel()
 	local camera = workspace.CurrentCamera
 	if not camera then return end
+	readScreenScale()
 	local view = camera.ViewportSize
-	panelScale.Scale = math.clamp(math.min((view.X - 20) / PANEL_W, (view.Y - 20) / PANEL_H), 0.45, 1)
+	local fit = math.clamp(math.min((view.X - 20) / PANEL_W, (view.Y - 20) / PANEL_H), 0.45, 1)
+	local mul = math.max(1, screenScale) -- (PC: 화면 배율만큼 크게 = 예전과 같다 / 폰: 화면 배율로 나눈다)
+	panelScale.Scale = fit * mul / screenScale
 end
 fitPanel()
 if workspace.CurrentCamera then workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(fitPanel) end
+gui.DescendantAdded:Connect(function(child) -- MobileLayoutClient 가 MobileScale 을 나중에 붙인다: 붙는 순간 / 값이 바뀔 때 다시 맞춘다
+	if child:IsA("UIScale") then
+		child:GetPropertyChangedSignal("Scale"):Connect(fitPanel)
+		fitPanel()
+	end
+end)
+task.defer(fitPanel) -- (그 스크립트가 먼저 돌아 이미 붙어 있었어도 한 번 더: 부딪히는 순서에 기대지 않는다)
 
 label({ Size = UDim2.new(1, -90, 0, 30), Position = UDim2.new(0, 16, 0, 10), Text = "🌟 Set Effects", TextSize = 20, Font = Enum.Font.GothamBlack, TextXAlignment = Enum.TextXAlignment.Left }, panel)
 local slotLabel = label({ Size = UDim2.new(0, 210, 0, 20), Position = UDim2.new(0, 16, 0, 40), Text = "", TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Color3.fromRGB(255, 225, 110) }, panel)
@@ -136,7 +155,10 @@ local function rebuildCharacter()
 	viewPivot = viewClone:GetPivot()
 end
 panel:GetPropertyChangedSignal("Visible"):Connect(function()
-	if panel.Visible then rebuildCharacter() end
+	if panel.Visible then
+		fitPanel()
+		rebuildCharacter()
+	end
 end)
 RunService.RenderStepped:Connect(function()
 	if not panel.Visible or not viewClone or not viewPivot then return end
@@ -351,8 +373,7 @@ local function roleLine(attrKey)
 end
 
 function refresh()
-	local gold = player:GetAttribute("Gold") or 0
-	local used, affordable = 0, 0
+	local used = 0
 	for zone = 1, ZONES do
 		local open = player:GetAttribute("AugOpenZ_" .. zone) == true
 		local level = player:GetAttribute("AugLvZ_" .. zone) or 0
@@ -394,7 +415,6 @@ function refresh()
 		end
 		r.Match.Visible = open and Config.AugWeaponMatch(player, Config.Sets.ZoneAug[zone]) == true
 		r.Up.Visible = canUpgrade(zone)
-		if canUpgrade(zone) then affordable += 1 end
 	end
 
 	-- 가운데 네모: 고른 효과
@@ -544,11 +564,17 @@ function refresh()
 		slotLabel.Text = string.format("⚔ %d on · 🛡 %s · 🔷 %d", used - (dinfo and 1 or 0), dinfo and (dinfo.Icon .. " " .. dinfo.Name) or "—", player:GetAttribute("GuardStones") or 0)
 	end
 	updatePath(zone)
-	do -- ⬆ 지금 올릴 수 있는 효과 수
-		local ups = 0
-		for z = 1, ZONES do if canUpgrade(z) then ups += 1 end end
-		upSummary.Visible = ups > 0
-		upSummary.Text = string.format("⬆ %d effects can level up now", ups)
+	do -- ⬆ 지금 올릴 수 있는 효과 수 (마을 밖이면: 수호석은 모였지만 마을에서 올려야 한다고 알린다)
+		local ups, ready = 0, 0
+		for z = 1, ZONES do
+			if stoneReady(z) then
+				ready += 1
+				if atTown() then ups += 1 end
+			end
+		end
+		upSummary.Visible = ready > 0
+		upSummary.TextColor3 = ups > 0 and Color3.fromRGB(120, 255, 140) or Color3.fromRGB(255, 210, 130)
+		upSummary.Text = ups > 0 and string.format("⬆ %d effects can level up now", ups) or string.format("🏘 %d effects ready to level up · upgrade in town", ready)
 	end
 	do -- 세트 장비 바로가기 글자
 		local key = Config.Sets.ZoneKeys[selectedZone]
@@ -556,8 +582,6 @@ function refresh()
 		gearJump.Visible = false -- (세트 장비 바로가기는 "더 세지는 길" 줄의 [Gear] 버튼으로 옮겼다)
 		if setDef then gearJump.Text = string.format("%s %s set gear → open Gear", setDef.Icon or "★", setDef.Name) end
 	end
-	pill.Visible = false -- (왼쪽 메뉴 버튼 줄의 "세트" 버튼과 빨간 점이 대신한다: 창 위에 떠서 겹치던 버튼)
-	badge.Visible = affordable > 0
 end
 
 for _, name in ipairs({ "Gold", "TutorialActive", "WeaponType", "WeaponLevel", "Zone", "GuardStones", "AugDef" }) do
@@ -584,21 +608,6 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
-pill.Activated:Connect(function() panel.Visible = not panel.Visible end)
-
--- 처음 세트 효과가 열리면 버튼이 빛나고 "Press Y!" 말풍선이 뜬다. 한 번 열어 보면 서버에 기록되어 다시 안 뜬다 (HintDone_SetsOpened)
-local callout = label({
-	Size = UDim2.new(0, 96, 0, 18), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 0, -3),
-	BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(255, 190, 110), TextColor3 = Color3.fromRGB(40, 28, 10),
-	Text = "▼ Press Y!", TextSize = 11, Visible = false, ZIndex = 6,
-}, pill)
-make("UICorner", { CornerRadius = UDim.new(0, 6) }, callout)
-local pillStroke = pill:FindFirstChildOfClass("UIStroke")
-RunService.Heartbeat:Connect(function()
-	local hinting = pill.Visible and not player:GetAttribute("HintDone_SetsOpened")
-	callout.Visible = hinting
-	if pillStroke then pillStroke.Thickness = hinting and (2 + 1.6 * (0.5 + 0.5 * math.sin(os.clock() * 4))) or 1.5 end
-end)
 panel:GetPropertyChangedSignal("Visible"):Connect(function()
 	if panel.Visible and not player:GetAttribute("HintDone_SetsOpened") then
 		player:SetAttribute("HintDone_SetsOpened", true) -- 바로 멈추게 여기서도 켠다 (서버가 저장한다)

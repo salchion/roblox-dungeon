@@ -11,8 +11,8 @@ local TIPS = {
 	"Press R to auto-aim at the nearest enemy",
 	"When you level up, press T to spend stat points (respec for free anytime)",
 	"Stand in the rest area to earn gold (even while you're offline)",
-	"Starting a dungeon lets you try one random set effect. Defeat a zone lord to unlock it yourself with gold (Y key)",
-	"Set gear drops in field zones at a set rate. Wear 1-3 pieces of the same zone's set and effects you unlocked with gold get boosted to Lv.4-6. Preview effects in the J key Codex",
+	"Starting a dungeon lets you try one random set effect. Defeat a zone lord to unlock that zone's effect (Y key)",
+	"Set gear drops in field zones at a set rate. Wear 2 pieces of the same zone's set and its effect turns on at Lv.3 (3 pieces = Lv.6). Defense effects are leveled up with Guard Stones in town. Preview effects in the J key Codex",
 	"Aim directly at a boss's weak-point orb to deal x3 damage",
 }
 

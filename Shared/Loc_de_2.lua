@@ -958,6 +958,9 @@ return {
 		["Set gear drops in the field (each zone has its own set). 2 pieces = set effect Lv.3 · 3 pieces = Lv.6 · a +1 gear option boosts an effect that's already on."] = "Set-Ausrüstung droppt im Feld (jede Zone hat ihr eigenes Set). 2 Teile = Set-Effekt Lv.3 · 3 Teile = Lv.6 · eine +1-Option verstärkt einen bereits aktiven Effekt.",
 		["2 pieces Lv.3 / 3 pieces Lv.6"] = "2 Teile Lv.3 / 3 Teile Lv.6",
 		["🛡 Defense · pick 1 · unlocked by Zone 3–8 lords"] = "🛡 Verteidigung · wähle 1 · freigeschaltet durch Zonenherrscher 3–8",
+		["Starting a dungeon lets you try one random set effect. Defeat a zone lord to unlock that zone's effect (Y key)"] = "Beim Start eines Dungeons kannst du einen zufälligen Set-Effekt ausprobieren. Besiege einen Zonen-Lord, um den Effekt dieser Zone freizuschalten (Taste Y)",
+		["Set gear drops in field zones at a set rate. Wear 2 pieces of the same zone's set and its effect turns on at Lv.3 (3 pieces = Lv.6). Defense effects are leveled up with Guard Stones in town. Preview effects in the J key Codex"] = "Set-Ausrüstung fällt in Feldzonen mit fester Chance. Trage 2 Teile des Sets derselben Zone, und sein Effekt aktiviert sich auf Lv.3 (3 Teile = Lv.6). Verteidigungseffekte werden in der Stadt mit Wächtersteinen erhöht. Vorschau im Kodex (Taste J)",
+		["Press Y to see it: attack turns on with 2 set pieces (3 = Lv.6) · defense levels up with Guard Stones in town"] = "Taste Y zum Ansehen: Angriff aktiviert sich ab 2 Set-Teilen (3 = Lv.6) · Verteidigung wird in der Stadt mit Wächtersteinen erhöht",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1093,12 +1096,5 @@ return {
 		{ "🔒 Zone {number1} · Desert Sealed\nOpen the previous gate first", "🔒 Zone {number1} · Wüste versiegelt\nÖffne zuerst das vorherige Tor" },
 		{ "One less dagger, but each hits +{number1}% harder: for bosses", "Ein Dolch weniger, aber jeder trifft +{number1} % härter: für Bosse" },
 		{ "Reduces training / breakthrough wait time by {number1} hours", "Verkürzt die Wartezeit für Training/Durchbruch um {number1} Stunden" },
-		{ "♻ [Common] Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [Gewöhnlich] Lederkappe automatisch gesammelt (Essenz +{number1} {number2} G)" },
-		{ "Cleared up to depth {number1}  ·  You can enter up to depth {number2}", "Bis Tiefe {number1} abgeschlossen  ·  Du kannst bis Tiefe {number2} eintreten" },
-		{ "Reach weapon upgrade level {number1} (about the 10th weapon)", "Erreiche Waffenverbesserungsstufe {number1} (etwa die 10. Waffe)" },
-		{ "Reach weapon upgrade level {number1} (about the 50th weapon)", "Erreiche Waffenverbesserungsstufe {number1} (etwa die 50. Waffe)" },
-		{ "Era {number1}  ·  Your weapon look and bullet color changed!", "Ära {number1}  ·  Aussehen und Kugelfarbe deiner Waffe haben sich geändert!" },
-		{ "🗿 Colossus defeated! Gear + 🎫 +{number1} + {number2} G (time bonus x{number3})", "🗿 Koloss besiegt! Ausrüstung + 🎫 +{number1} + {number2} G (Zeitbonus x{number3})" },
-		{ "Depth {number1} sweep: gold, tickets and boss chest received", "Tiefe {number1} geblitzt: Gold, Tickets und Boss-Truhe erhalten" },
 	},
 }

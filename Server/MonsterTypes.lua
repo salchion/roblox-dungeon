@@ -695,7 +695,10 @@ local function telegraph(ctx, part, data, color, delay, action, override)
 	local shape = (override and override.Shape) or T.Shape[attack] or "None"
 	local size = (override and override.Size) or T.Size[attack]
 	local total = delay + (tier >= 3 and T.Grace or 0) -- (위험한 공격은 한 박자 더 기다린다)
-	if delay >= 0.25 then part:SetAttribute("ChargingUntil", startedAt + delay) end -- 기 모으는 중: 블레이드 블룸(F)으로 끊을 수 있다 (SkillService)
+	if delay >= 0.25 then
+		part:SetAttribute("ChargingUntil", startedAt + delay) -- 기 모으는 중: 블레이드 블룸(F)으로 끊을 수 있다 (SkillService)
+		part:SetAttribute("ChargingFrom", startedAt) -- (11-25 B-1) 이번 기 모으기가 시작된 시각: 한 번 끊은 공격을 또 끊지 않게 (예전의 "-5" 트릭은 서버 켠 지 5초 안에 끊기가 안 먹혔다)
+	end
 	data.RearUntil = os.clock() + delay -- 공격 직전: 몸을 뒤로 젖힌다 (Update 의 기울임이 읽는다)
 	local nowS = workspace:GetServerTimeNow()
 	part:SetAttribute("TeleTier", tier)

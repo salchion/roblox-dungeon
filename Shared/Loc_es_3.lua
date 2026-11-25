@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Town north gate · boss chest gear + gold · Free {number1} · Keys {number2}", "Puerta norte del pueblo · equipo + oro del cofre del jefe · Gratis {number1} · Llaves {number2}" },
+		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "Resultado de Gacha_Pop{number1} <font color='#{number2}aa{number3}c{number4}'>Gacha: Épico</font>" },
+		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "Obtén instantáneamente {number1} horas de tus ingresos pasivos · máximo {number2} por día" },
+		{ "🔒 Zone {number1} · Darklands Sealed\nOpen the previous gate first", "🔒 Zona {number1} · Tierras Oscuras selladas\nAbre la puerta anterior primero" },
+		{ "🔒 Zone {number1} · Snowfield Sealed\nOpen the previous gate first", "🔒 Zona {number1} · Campo de nieve sellado\nAbre la puerta anterior primero" },
 		{ "Accrues up to {number1} hours while you're away (default {number2} hours)", "Acumula hasta {number1} horas mientras estás fuera (por defecto {number2} horas)" },
 		{ "🌪 Mob hunter  ·  ✔ 🔫 Rocket Launcher / Spell Tome (+{number1}%)", "🌪 Cazador de monstruos · ✔ 🔫 Lanzacohetes / Tomo de hechizos (+{number1}%)" },
 		{ "Dungeon_Fail  <font color='#{number1}aa{number2}c{number3}'>Dungeon failed</font>", "Fallo en la mazmorra <font color='#{number1}aa{number2}c{number3}'>La mazmorra falló</font>" },

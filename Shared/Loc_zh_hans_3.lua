@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "One lord hit here = {number1}% of your max HP", "这里首领一击 = 你最大生命的{number1}%" },
+		{ "Defeat {number1} bosses in one Boss Rush run", "在一次Boss冲刺中击败{number1}个Boss" },
+		{ "Monsters met {number1} / {number2} (incl. zone lords)", "已遭遇怪物 {number1} / {number2}（包括区域领主）" },
+		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 已使用免费入场!(今日剩余 {number1} / {number2})" },
+		{ "A big blast when it ends (attack x{number1})", "结束时大爆炸（攻击x{number1}）" },
+		{ "{number1}s invincible, but healing is halved", "无敌{number1}秒，但治疗量减半" },
+		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 新武器：法术书 - 按下{number1}键！" },
+		{ "Gacha_Pop{number1}  Gacha result: Legendary", "抽卡{number1} 结果：传奇级" },
 		{ "{number1} hours of idle gold ({number2} G) piled up!", "{number1} 小时闲置金币（{number2} G）已积累！" },
 		{ "📍 Field Entrance  Right behind!  {number1}m", "📍 田地入口就在后面！{number1}米" },
 		{ "Clear {number1} dungeon(s)  ✅ tap to claim!", "通关{number1}个地下城 ✅ 点击领取！" },

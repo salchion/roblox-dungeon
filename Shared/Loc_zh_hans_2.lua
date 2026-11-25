@@ -891,6 +891,9 @@ return {
 		["Set gear drops in the field (each zone has its own set). 2 pieces = set effect Lv.3 · 3 pieces = Lv.6 · a +1 gear option boosts an effect that's already on."] = "套装装备在野外掉落（每个区域各有一套）。2件 = 套装效果Lv.3 · 3件 = Lv.6 · 装备+1词条强化已开启的效果。",
 		["2 pieces Lv.3 / 3 pieces Lv.6"] = "2件 Lv.3 / 3件 Lv.6",
 		["🛡 Defense · pick 1 · unlocked by Zone 3–8 lords"] = "🛡 防御 · 选择1个 · 击败3–8区域领主解锁",
+		["Starting a dungeon lets you try one random set effect. Defeat a zone lord to unlock that zone's effect (Y key)"] = "开始地下城时可以试用一个随机套装效果。击败区域领主后即可解锁该区域的效果(Y 键)",
+		["Set gear drops in field zones at a set rate. Wear 2 pieces of the same zone's set and its effect turns on at Lv.3 (3 pieces = Lv.6). Defense effects are leveled up with Guard Stones in town. Preview effects in the J key Codex"] = "套装装备会在野外区域按固定概率掉落。穿上同区域套装 2 件时该效果以 Lv.3 启用(3 件 = Lv.6)。防御效果要在城里用守护石升级。效果预览在 J 键图鉴",
+		["Press Y to see it: attack turns on with 2 set pieces (3 = Lv.6) · defense levels up with Guard Stones in town"] = "按 Y 查看:攻击在套装 2 件时启用(3 件 = Lv.6)・防御要在城里用守护石升级",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1142,13 +1145,5 @@ return {
 		{ "defeat {number1} monsters here, then the Lord", "在这里击败{number1}只怪物，然后挑战领主" },
 		{ "Mythic: unique {number1}% (dungeon chests {number2}%+)", "神话: 独特{number1}% (地牢宝箱{number2}%以上)" },
 		{ "⏸ {number1} waiting · 📌 Pin one to swap it in", "⏸ {number1}个等待中 · 📌 固定即可换上" },
-		{ "One lord hit here = {number1}% of your max HP", "这里首领一击 = 你最大生命的{number1}%" },
-		{ "Defeat {number1} bosses in one Boss Rush run", "在一次Boss冲刺中击败{number1}个Boss" },
-		{ "Monsters met {number1} / {number2} (incl. zone lords)", "已遭遇怪物 {number1} / {number2}（包括区域领主）" },
-		{ "🎟 Free entry used! ({number1} / {number2} left today)", "🎟 已使用免费入场!(今日剩余 {number1} / {number2})" },
-		{ "A big blast when it ends (attack x{number1})", "结束时大爆炸（攻击x{number1}）" },
-		{ "{number1}s invincible, but healing is halved", "无敌{number1}秒，但治疗量减半" },
-		{ "🆕 New weapon: Spell Tome - press {number1}!", "🆕 新武器：法术书 - 按下{number1}键！" },
-		{ "Gacha_Pop{number1}  Gacha result: Legendary", "抽卡{number1} 结果：传奇级" },
 	},
 }

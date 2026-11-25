@@ -1013,6 +1013,9 @@ return {
 		["Set gear drops in the field (each zone has its own set). 2 pieces = set effect Lv.3 · 3 pieces = Lv.6 · a +1 gear option boosts an effect that's already on."] = "L'équipement de set tombe sur le terrain (chaque zone a son set). 2 pièces = effet de set Lv.3 · 3 pièces = Lv.6 · une option +1 renforce un effet déjà actif.",
 		["2 pieces Lv.3 / 3 pieces Lv.6"] = "2 pièces Lv.3 / 3 pièces Lv.6",
 		["🛡 Defense · pick 1 · unlocked by Zone 3–8 lords"] = "🛡 Défense · choisis-en 1 · débloquée par les seigneurs des zones 3–8",
+		["Starting a dungeon lets you try one random set effect. Defeat a zone lord to unlock that zone's effect (Y key)"] = "Au début d'un donjon, vous pouvez essayer un effet de set aléatoire. Vainquez un seigneur de zone pour débloquer l'effet de cette zone (touche Y)",
+		["Set gear drops in field zones at a set rate. Wear 2 pieces of the same zone's set and its effect turns on at Lv.3 (3 pieces = Lv.6). Defense effects are leveled up with Guard Stones in town. Preview effects in the J key Codex"] = "L'équipement de set tombe dans les zones du terrain à un taux fixe. Portez 2 pièces du set d'une même zone et son effet s'active au NIV.3 (3 pièces = NIV.6). Les effets de défense se montent en ville avec des pierres de garde. Aperçu dans le codex (touche J)",
+		["Press Y to see it: attack turns on with 2 set pieces (3 = Lv.6) · defense levels up with Guard Stones in town"] = "Touche Y pour voir : l'attaque s'active à 2 pièces de set (3 = NIV.6) · la défense se monte en ville avec des pierres de garde",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1110,10 +1113,5 @@ return {
 		{ "♻ [Common] 🌾 Meadow Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [Commun] 🌾 Armure en cuir de prairie récupérée automatiquement (Essence +{number1} {number2} G)" },
 		{ "🔫 Next weapon unlock Shotgun (+{number1})\nUpgrade cost {number2} G · You have {number3} G", "🔫 Prochaine arme à débloquer : Fusil à pompe (+{number1})\nCoût de mise à niveau : {number2} G · Vous avez {number3} G" },
 		{ "♻ [Rare] 🌾 Meadow Leather Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [Rare] 🌾 Gants en cuir de prairie récupérés automatiquement (Essence +{number1} {number2} G)" },
-		{ "♻ [Common] 🌾 Meadow Cloth Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [Commun] 🌾 Gants en tissu de prairie récupérés automatiquement (Essence +{number1} {number2} G)" },
-		{ "Powerhouse   Title 『Powerhouse』\nReach {number1} Power\n{number2} / {number3}   Reward: {number4} G", "Titre « Puissance »\nAtteindre {number1} puissance\n{number2} / {number3} Récompense : {number4} G" },
-		{ "♻ [Common] 🌲 Forest Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [Commun] 🌲 Casquette en cuir de forêt récupérée automatiquement (Essence +{number1} {number2} G)" },
-		{ "The final blast also explodes around every target (attack x{number1})", "L'explosion finale éclate aussi autour de chaque cible (attaque x{number1})" },
-		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Commun] 🌾 Chaussures usées dans la prairie récupérées automatiquement (Essence +{number1} {number2} G)" },
 	},
 }

@@ -1171,16 +1171,31 @@ local function buildInventoryTab(state)
 		if not selected.Equipped and (selected.Set or selected.AugBoost or (current and (current.Set or current.AugBoost))) then
 			local changes = {}
 			local cap = Config.Inventory.AugMaxLevel or 6
-			local function augChange(zone, delta, fromOption) -- (fromOption: "+1" 옵션은 이미 켜진 효과에만 더해진다)
-				if fromOption and (player:GetAttribute("AugGearZ_" .. zone) or 0) - (player:GetAttribute("AugOptZ_" .. zone) or 0) <= 0 then return nil end
-				local def = Config.Sets.ZoneKeys[zone] and Config.Sets[Config.Sets.ZoneKeys[zone]]
-				local info = (def and def.Aug and Config.AugInfo[def.Aug]) or Config.AugInfo[Config.Sets.ZoneAug[zone] or ""] -- (구역 세트가 없는 효과(폭풍의 방벽)는 효과 이름에서)
-				if not info then return nil end
-				local raw = (player:GetAttribute("AugLvZ_" .. zone) or 0) + (player:GetAttribute("AugGearZ_" .. zone) or 0)
-				local before, after = math.min(cap, raw), math.clamp(raw + delta, 0, cap)
-				if before == after then return nil end
-				if before == 0 then return string.format("%s %s <font color='#78ff8c'>ON Lv.%d</font>", info.Icon, info.Name, after) end
-				return string.format("%s %s Lv.%d→%d", info.Icon, info.Name, before, after)
+			local optCap = Config.Inventory.AugBoostCap or 3
+			-- (11-25 A-5) 효과 단계 = 자기 경로(세트 부위 0/3/6 · 수호석 단계) + 이미 켜져 있을 때만 붙는 "+1" 옵션.
+			--   미리보기도 그 둘을 같이 더한다 (예전엔 부위 단계만 봐서 2부위 + 옵션 2개 = 실제 Lv.5 인데 "ON Lv.3" 으로 낮게 말했다).
+			local equippedOpts = {} -- [효과 이름] = 지금 낀 장비의 "+1" 옵션 수
+			for _, item in pairs(equipped) do
+				if item.AugBoost and Config.AugInfo[item.AugBoost] then
+					equippedOpts[item.AugBoost] = (equippedOpts[item.AugBoost] or 0) + 1
+				end
+			end
+			local pathDelta, optDelta, order, noted = {}, {}, {}, {}
+			local function note(zone)
+				if zone and not noted[zone] then
+					noted[zone] = true
+					table.insert(order, zone)
+				end
+			end
+			local function addPath(zone, delta)
+				if not zone then return end
+				pathDelta[zone] = (pathDelta[zone] or 0) + delta
+				note(zone)
+			end
+			local function addOption(attr, delta)
+				if not attr then return end
+				optDelta[attr] = (optDelta[attr] or 0) + delta
+				note(table.find(Config.Sets.ZoneAug, attr))
 			end
 			local function setChange(setKey, delta)
 				local def = setKey and Config.Sets[setKey]
@@ -1193,8 +1208,7 @@ local function buildInventoryTab(state)
 				table.insert(changes, text)
 				if def.Zone and math.clamp(before, 0, 3) ~= math.clamp(after, 0, 3) then
 					local L = Config.Sets.AugLevelByPieces -- (부위 수 -> 단계: 0 / 3 / 6)
-					local a = augChange(def.Zone, (L[math.clamp(after, 0, 3)] or 0) - (L[math.clamp(before, 0, 3)] or 0))
-					if a then table.insert(changes, a) end
+					addPath(def.Zone, (L[math.clamp(after, 0, 3)] or 0) - (L[math.clamp(before, 0, 3)] or 0))
 				end
 			end
 			if not (current and current.Set == selected.Set) then
@@ -1203,10 +1217,29 @@ local function buildInventoryTab(state)
 			end
 			local gain, lose = selected.AugBoost, current and current.AugBoost
 			if gain ~= lose then
-				for _, pair in ipairs({ { gain, 1 }, { lose, -1 } }) do
-					local zone = pair[1] and table.find(Config.Sets.ZoneAug, pair[1])
-					local a = zone and augChange(zone, pair[2], true)
-					if a then table.insert(changes, a) end
+				addOption(gain, 1)
+				addOption(lose, -1)
+			end
+			for _, zone in ipairs(order) do -- 효과마다 한 줄: 부위(또는 수호석) 변화 + 옵션 변화를 합친 단계
+				local def = Config.Sets.ZoneKeys[zone] and Config.Sets[Config.Sets.ZoneKeys[zone]]
+				local info = (def and def.Aug and Config.AugInfo[def.Aug]) or Config.AugInfo[Config.Sets.ZoneAug[zone] or ""] -- (구역 세트가 없는 효과(폭풍의 방벽)는 효과 이름에서)
+				local attr = Config.Sets.ZoneAug[zone]
+				if info and attr then
+					local raw = (player:GetAttribute("AugLvZ_" .. zone) or 0) + (player:GetAttribute("AugGearZ_" .. zone) or 0)
+					local own = math.max(0, raw - (player:GetAttribute("AugOptZ_" .. zone) or 0)) -- 자기 경로만 (지금 붙어 있는 "+1" 옵션은 뺀다)
+					local function level(path, opt)
+						if path <= 0 then return 0 end -- 효과가 꺼져 있으면 "+1" 옵션만으로는 켜지지 않는다
+						return math.min(cap, path + math.clamp(opt, 0, optCap))
+					end
+					local before = level(own, equippedOpts[attr] or 0)
+					local after = level(math.max(0, own + (pathDelta[zone] or 0)), (equippedOpts[attr] or 0) + (optDelta[attr] or 0))
+					if before ~= after then
+						if before == 0 then
+							table.insert(changes, string.format("%s %s <font color='#78ff8c'>ON Lv.%d</font>", info.Icon, info.Name, after))
+						else
+							table.insert(changes, string.format("%s %s Lv.%d→%d", info.Icon, info.Name, before, after))
+						end
+					end
 				end
 			end
 			if #changes > 0 then

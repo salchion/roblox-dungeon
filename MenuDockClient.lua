@@ -23,9 +23,9 @@ local function attr(name) return player:GetAttribute(name) end
 local function gold() return attr("Gold") or 0 end
 
 -- 빨간 점 조건 (전부 내 Attribute 로만 계산: 서버 호출 없음). 할 일이 생기면 true
--- 골드로 하는 일(무기 강화 / 스킬 / 세트 / 펫)은 재화가 하나라서, 하나를 쓰면 다른 점이 한꺼번에 사라지면 어색하다.
--- 그래서 "우선순위대로 골드를 차례로 나눠 보고, 모두 함께 살 수 있는 것에만" 점을 켠다: 무기 -> 세트 -> 스킬 -> 펫.
--- (하나를 사면 그 점만 꺼지고, 나머지는 남은 골드로도 살 수 있을 때만 남는다)
+-- 골드로 하는 일(무기 강화 / 스킬 / 펫)은 재화가 하나라서, 하나를 쓰면 다른 점이 한꺼번에 사라지면 어색하다.
+-- 그래서 "우선순위대로 골드를 차례로 나눠 보고, 모두 함께 살 수 있는 것에만" 점을 켠다: 무기 -> 스킬 -> 펫.
+-- (하나를 사면 그 점만 꺼지고, 나머지는 남은 골드로도 살 수 있을 때만 남는다. 세트는 골드가 아니라 수호석 -> 따로 setsReady)
 local function weaponCost()
 	local level = attr("WeaponLevel") or 0
 	if attr("DataReady") ~= true or level >= Config.Weapon.MaxLevel then return nil end
@@ -44,16 +44,28 @@ local function skillCost()
 	end
 	return best
 end
-local function setsCost() -- (11-24: 세트 효과는 골드로 올리지 않는다 -> 골드로 살 수 있는 세트 강화는 없다)
-	return nil
-end
 local function petCost()
 	if attr("DataReady") ~= true then return nil end
 	local level = attr("PetLevel") or 0
 	if level <= 0 then return Config.Pet.UnlockCost end
 	return level < Config.Pet.MaxLevel and Config.GetPetLevelCost(level) or nil
 end
-local GOLD_ORDER = { { "Weapon", weaponCost }, { "Sets", setsCost }, { "Growth", skillCost }, { "Pets", petCost } }
+-- (11-25 A-3) "🌟 Sets" 빨간 점: 세트 효과는 골드로 안 올린다. 방어 효과의 다음 단계 수호석이 모였고 + 마을(로비)에 있을 때만 점이 켜진다 (서버 AugService.townOnly 와 같은 규칙)
+local function setsReady()
+	if attr("DataReady") ~= true or attr("TutorialActive") == true then return false end
+	if attr("Zone") ~= "Lobby" then return false end -- 수호석 강화는 마을에서만: 필드 / 던전에서는 눌러도 할 일이 없으니 점을 켜지 않는다
+	local stones = attr("GuardStones") or 0
+	for zone = 1, #Config.Sets.ZoneAug do
+		local info = Config.AugInfo[Config.Sets.ZoneAug[zone]]
+		if info and info.Defense and attr("AugOpenZ_" .. zone) == true then
+			local need = Config.Guard.StoneCost[(attr("AugStoneZ_" .. zone) or 0) + 1]
+			if need and stones >= need then return true end
+		end
+	end
+	return false
+end
+-- (세트는 골드로 사는 것이 아니라서 골드 배분(GOLD_ORDER)에서 뺐다: 남은 골드로 스킬 / 펫 점이 더 정확해진다)
+local GOLD_ORDER = { { "Weapon", weaponCost }, { "Growth", skillCost }, { "Pets", petCost } }
 local goldDots = {}
 local function computeGoldDots()
 	if attr("TutorialActive") == true then -- 튜토리얼 중에는 골드 빨간 점을 켜지 않는다 (막 시작했는데 "강화하세요" 점이 먼저 뜨면 어색하다)
@@ -76,7 +88,7 @@ local function dotQuest() return attr("DotQuest") == true end
 local function dotWeapon() return goldDots.Weapon == true end
 local function dotGrowth() return attr("GrowthNew") == true or goldDots.Growth == true end
 local function dotPet() return goldDots.Pets == true end
-local function dotSets() return goldDots.Sets == true end
+local function dotSets() return setsReady() end
 local function dotStats() return (attr("LvPointsLeft") or 0) > 0 and attr("TutorialActive") ~= true end -- 안 쓴 스탯 포인트가 있으면 (골드와 상관없다)
 
 -- 새 유저에게 버튼이 한꺼번에 쏟아지지 않게: 진행도에 맞춰 하나씩 열린다 (한 번 열리면 계속 보인다). Unlock 이 없으면 처음부터 보인다.

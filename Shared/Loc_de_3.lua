@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ [Common] Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [Gewöhnlich] Lederkappe automatisch gesammelt (Essenz +{number1} {number2} G)" },
+		{ "Cleared up to depth {number1}  ·  You can enter up to depth {number2}", "Bis Tiefe {number1} abgeschlossen  ·  Du kannst bis Tiefe {number2} eintreten" },
+		{ "Reach weapon upgrade level {number1} (about the 10th weapon)", "Erreiche Waffenverbesserungsstufe {number1} (etwa die 10. Waffe)" },
+		{ "Reach weapon upgrade level {number1} (about the 50th weapon)", "Erreiche Waffenverbesserungsstufe {number1} (etwa die 50. Waffe)" },
+		{ "Era {number1}  ·  Your weapon look and bullet color changed!", "Ära {number1}  ·  Aussehen und Kugelfarbe deiner Waffe haben sich geändert!" },
+		{ "🗿 Colossus defeated! Gear + 🎫 +{number1} + {number2} G (time bonus x{number3})", "🗿 Koloss besiegt! Ausrüstung + 🎫 +{number1} + {number2} G (Zeitbonus x{number3})" },
+		{ "Depth {number1} sweep: gold, tickets and boss chest received", "Tiefe {number1} geblitzt: Gold, Tickets und Boss-Truhe erhalten" },
 		{ "Your level is too low. (This dungeon requires Lv.{number1}+)", "Dein Level ist zu niedrig. (Dieser Dungeon braucht Lv.{number1}+)" },
 		{ "🏆 First clear of Zone {number1}! Gold +{number2} · Tickets +{number3} · Keys +{number4}", "🏆 Zone {number1} zum ersten Mal geschafft! Gold +{number2} · Tickets +{number3} · Schlüssel +{number4}" },
 		{ "You can pin up to {number1} effects. Unpin another one first", "Du kannst bis zu {number1} Effekte anheften. Löse zuerst einen anderen" },

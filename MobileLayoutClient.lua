@@ -357,9 +357,7 @@ function layoutCompact(viewport)
 		end
 	end
 
-	-- 세트 효과 버튼: 메뉴 / 설정 / 스탯 버튼 줄 맨 끝에 (예전에는 화면 가운데쯤에 혼자 떠 있었다)
-	local augGui = playerGui:FindFirstChild("AugGui")
-	set(find(augGui, "SetsPill"), "Position", UDim2.new(0, 258, 0, btnY))
+	-- 세트 효과 버튼: 왼쪽 메뉴 버튼 줄(MenuDockClient)에 있다 (창 위에 따로 떠 있던 SetsPill 은 11-25 A-3 에서 지웠다)
 
 	-- 오른쪽 위: 접이식 패널 + 레이더
 	local lobbyFrame, dungeonFrame = find(hud, "LobbyFrame"), find(hud, "DungeonFrame")

@@ -3098,5 +3098,8 @@
 "Set gear drops in the field (each zone has its own set). 2 pieces = set effect Lv.3 · 3 pieces = Lv.6 · a +1 gear option boosts an effect that's already on.",
 "2 pieces Lv.3 / 3 pieces Lv.6",
 "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear to turn it on (Y key)",
-"🛡 Defense · pick 1 · unlocked by Zone 3–8 lords"
+"🛡 Defense · pick 1 · unlocked by Zone 3–8 lords",
+"Starting a dungeon lets you try one random set effect. Defeat a zone lord to unlock that zone's effect (Y key)",
+"Set gear drops in field zones at a set rate. Wear 2 pieces of the same zone's set and its effect turns on at Lv.3 (3 pieces = Lv.6). Defense effects are leveled up with Guard Stones in town. Preview effects in the J key Codex",
+"Press Y to see it: attack turns on with 2 set pieces (3 = Lv.6) · defense levels up with Guard Stones in town"
 ]

@@ -1084,9 +1084,9 @@ end)
 
 
 makeLabel({
-	Name = "ControlsHint", Size = UDim2.new(0, 560, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -78),
-	Text = "North: Dungeon Gate · West: Training Dummy · Far East: Hunting Field   |   Q Dash · R Auto-Attack · I Menu · M Music",
-	TextSize = 12, TextColor3 = Color3.fromRGB(220, 220, 235), TextStrokeTransparency = 0.5,
+	Name = "ControlsHint", Size = UDim2.new(0, 760, 0, 40), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -78),
+	Text = "North: Dungeon Gate · West: Training Dummy · Far East: Hunting Field   |   Q Dash · F Blade Bloom · C First Aid · V Deadeye · R Auto-Attack · Y Sets · T Stats · P Pets · I Menu · M Music · H Help",
+	TextSize = 12, TextColor3 = Color3.fromRGB(220, 220, 235), TextStrokeTransparency = 0.5, TextWrapped = true,
 }, lobbyFrame)
 
 end -- (지역 변수 범위 블록 끝)
@@ -3277,14 +3277,16 @@ end
 
 do
 local helpPanel = makePanel({
-	Name = "HelpPanel", Size = UDim2.new(0, 560, 0, 748), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
+	Name = "HelpPanel", Size = UDim2.new(0, 560, 0, 640), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Visible = false,
 }, gui)
 makeLabel({ Size = UDim2.new(1, 0, 0, 36), Position = UDim2.new(0, 0, 0, 8), Text = "⚙ Settings / ❓ Help", Font = Enum.Font.GothamBlack, TextSize = 19 }, helpPanel)
 do -- 도움말 글: 한 줄을 글자 하나(라벨 하나)로 나눈다 (한 덩어리로 길게 두면 로블록스 번역용 글자 캡처가 "too long" 으로 거부해서 번역이 안 된다)
 	local helpLines = {
-		"<b>Move/Attack</b>  WASD move · Q dash · Mouse click (hold for rapid fire) to attack",
+		"<b>Move/Attack</b>  WASD move · Q dash · Mouse click (hold for rapid fire) to attack · Space jump",
 		"<b>Auto-Attack</b>  R — auto-aims at the nearest enemy (click an enemy to lock onto it)",
-		"<b>Skills</b>  C Emergency Heal · V Ultimate (usable when the gauge is 100% from attacking enemies)  — field/dungeons only",
+		"<b>Skills</b>  F Blade Bloom (main skill: 4 daggers spin and fly at nearby enemies) · C First Aid · V Deadeye (gauge 100% from hitting enemies)  — field/dungeons only",
+		"<b>Cancel attacks</b>  Hit an enemy charging up with F (Blade Bloom): that attack is canceled and your hit deals x2 damage",
+		"<b>Windows</b>  Y Set effects · T Stat points · P Pets · J Codex · H Settings / Help (this window) · B Menu",
 		"<b>Menu</b>  I — Character (Gear·Weapon·Info) · Growth (Training·Skills·Pets) · Quests (Achievements) · Ranking   |   🎁 Shop button is on the right of the screen",
 		"<b>Music</b>  M — on/off",
 		"",
@@ -3295,7 +3297,10 @@ do -- 도움말 글: 한 줄을 글자 하나(라벨 하나)로 나눈다 (한 �
 		"4. Growth (training) is open from the start. Queue up training, and collect gear sets/uniques to boost your Power",
 		"5. Once the field is conquered, challenge the Final Lord, then the weekly <b>Boss Rush</b> ranking",
 		}
-	local helpList = create("Frame", { Size = UDim2.new(1, -40, 0, 280), Position = UDim2.new(0, 20, 0, 50), BackgroundTransparency = 1 }, helpPanel)
+	-- (11-25 A-2) 1366x768 / 1280x720 PC 에서 창(예전 높이 748)이 화면을 넘어 [Close] 가 잘렸다: 창을 640 으로 줄이고,
+	-- 도움말 글은 스크롤 영역에 넣었다(글이 길어도 설정 버튼을 덮지 않는다. PC 는 마우스 휠 / 폰은 끌어서).
+	local helpList = create("ScrollingFrame", { Size = UDim2.new(1, -40, 0, 244), Position = UDim2.new(0, 20, 0, 48), BackgroundTransparency = 1, BorderSizePixel = 0,
+		CanvasSize = UDim2.new(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.Y, ScrollingDirection = Enum.ScrollingDirection.Y, ScrollBarThickness = 4 }, helpPanel)
 	create("UIListLayout", { Padding = UDim.new(0, 3), SortOrder = Enum.SortOrder.LayoutOrder }, helpList)
 	for index, line in ipairs(helpLines) do
 		if line == "" then
@@ -3367,7 +3372,7 @@ local function settingSlider(y, title, getValue, setValue)
 	refresh()
 end
 
-settingSlider(334, "🔊 Music Volume", function() return musicScale end, function(value)
+settingSlider(302, "🔊 Music Volume", function() return musicScale end, function(value)
 	musicScale = value
 	for name, sound in pairs(tracks) do
 		if name == currentMusic then
@@ -3375,13 +3380,13 @@ settingSlider(334, "🔊 Music Volume", function() return musicScale end, functi
 		end
 	end
 end)
-settingSlider(380, "🔫 Gunshot Volume", function() return settings.ShotVolume end, function(value)
+settingSlider(346, "🔫 Gunshot Volume", function() return settings.ShotVolume end, function(value)
 	settings.ShotVolume = value
 end)
-settingButton(428, function() return "📳 Screen Shake: " .. (settings.Shake and "ON" or "OFF") end, function() settings.Shake = not settings.Shake player:SetAttribute("SettingShake", settings.Shake) end) -- (IntensityClient 의 히트스톱도 같이 끈다)
-settingButton(468, function() return "✨ Set effect name above head: " .. (player:GetAttribute("SetPopShow") and "ON" or "OFF") end, function() player:SetAttribute("SetPopShow", not player:GetAttribute("SetPopShow")) end) -- (기본 꺼짐: 각 효과를 처음 한 번만 알려 준다)
-settingButton(508, function() return "🖥 Low-spec mode (less lag): " .. (player:GetAttribute("LowSpec") and "ON" or "OFF") end, function() player:SetAttribute("LowSpec", not player:GetAttribute("LowSpec")) end)
-settingButton(548, function() return "👕 Hide gear look (weapon stays): " .. (player:GetAttribute("HideGear") and "ON" or "OFF") end, function() player:SetAttribute("HideGear", not player:GetAttribute("HideGear")) end)
+settingButton(390, function() return "📳 Screen Shake: " .. (settings.Shake and "ON" or "OFF") end, function() settings.Shake = not settings.Shake player:SetAttribute("SettingShake", settings.Shake) end) -- (IntensityClient 의 히트스톱도 같이 끈다)
+settingButton(430, function() return "✨ Set effect name above head: " .. (player:GetAttribute("SetPopShow") and "ON" or "OFF") end, function() player:SetAttribute("SetPopShow", not player:GetAttribute("SetPopShow")) end) -- (기본 꺼짐: 각 효과를 처음 한 번만 알려 준다)
+settingButton(470, function() return "🖥 Low-spec mode (less lag): " .. (player:GetAttribute("LowSpec") and "ON" or "OFF") end, function() player:SetAttribute("LowSpec", not player:GetAttribute("LowSpec")) end)
+settingButton(510, function() return "👕 Hide gear look (weapon stays): " .. (player:GetAttribute("HideGear") and "ON" or "OFF") end, function() player:SetAttribute("HideGear", not player:GetAttribute("HideGear")) end)
 do
 	local sizes = { { 0.85, "Small" }, { 1, "Normal" }, { 1.25, "Large" }, { 1.5, "X-Large" } }
 	local function sizeIndex()
@@ -3392,7 +3397,7 @@ do
 		return 2
 	end
 	-- (언어는 접속할 때 정해진다: 나라가 한국이거나 로블록스 언어가 한국어면 한국어. 전환 버튼은 뺐다)
-	settingButton(588, function() return "🔍 UI Size: " .. sizes[sizeIndex()][2] .. " (PC)" end, function()
+	settingButton(550, function() return "🔍 UI Size: " .. sizes[sizeIndex()][2] .. " (PC)" end, function()
 		player:SetAttribute("UiPref", sizes[sizeIndex() % #sizes + 1][1])
 	end)
 end

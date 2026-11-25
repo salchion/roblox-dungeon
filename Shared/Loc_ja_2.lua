@@ -1137,6 +1137,9 @@ return {
 		["Set gear drops in the field (each zone has its own set). 2 pieces = set effect Lv.3 · 3 pieces = Lv.6 · a +1 gear option boosts an effect that's already on."] = "セット装備はフィールドでドロップ（エリアごとに別セット）。2部位 = セット効果Lv.3 · 3部位 = Lv.6 · 装備オプション+1はONの効果を強化。",
 		["2 pieces Lv.3 / 3 pieces Lv.6"] = "2部位 Lv.3 / 3部位 Lv.6",
 		["🛡 Defense · pick 1 · unlocked by Zone 3–8 lords"] = "🛡 防御 · 1つ選択 · 3〜8エリアの君主で解放",
+		["Starting a dungeon lets you try one random set effect. Defeat a zone lord to unlock that zone's effect (Y key)"] = "ダンジョンを始めるとランダムなセット効果を1つ試せます。ゾーンロードを倒すとそのゾーンの効果が解放されます(Yキー)",
+		["Set gear drops in field zones at a set rate. Wear 2 pieces of the same zone's set and its effect turns on at Lv.3 (3 pieces = Lv.6). Defense effects are leveled up with Guard Stones in town. Preview effects in the J key Codex"] = "セット装備はフィールドのゾーンで一定確率でドロップします。同じゾーンのセットを2部位装備するとその効果がLv.3で発動します(3部位 = Lv.6)。防御効果は町で守護石で強化します。効果のプレビューはJキーの図鑑で",
+		["Press Y to see it: attack turns on with 2 set pieces (3 = Lv.6) · defense levels up with Guard Stones in town"] = "Yを押して確認: 攻撃はセット2部位から発動(3部位 = Lv.6)・防御は町で守護石で強化",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1192,9 +1195,5 @@ return {
 		{ "First Dungeon   Title 『Dungeon Newbie』\nClear {number1} dungeon(s)\n{number2} / {number3}   Reward: {number4} G + 🎫 {number5}", "最初のダンジョン タイトル『ダンジョン初心者』\n{number1}のダンジョンをクリアする\n{number2} / {number3}　報酬：{number4}G + 🎫 {number5}" },
 		{ "Golden Hunter   Title 『Lucky Hunter』\nDefeat {number1} Golden Goblin(s)\n{number2} / {number3}   Reward: {number4} G", "ゴールデンハンター　タイトル『ラッキーハンター』\n{number1} ゴールデングオブジェクトを倒す\n{number2} / {number3}　報酬：{number4}G" },
 		{ "💰 You have {number1} G left! Upgrade your weapon at the town anvil to get much stronger", "💰 {number1} Gが残っています！町の金床で武器を強化して、ずっと強くなろう" },
-		{ "Zone {number1} set effect · Trial Lv.3 — for this dungeon only. Watch for it in combat!", "{number1}区域のセット効果 · お試しLv.3 — このダンジョン限定。戦闘中に注目！" },
-		{ "Golden Thief   Title 『Golden Thief』\nDefeat {number1} Golden Goblin(s)\n{number2} / {number3}   Reward: 🎫 {number4}", "黄金の盗賊　タイトル『黄金の盗賊』\n{number1} ゴールデングオブジェクトを倒す\n{number2} / {number3}　報酬：🎫 {number4}" },
-		{ "✨ Stat points +{number1}! {number2} unspent (press T to raise move speed / range / double shot)", "✨ ステータスポイント +{number1}！未使用 {number2}(Tキーで移動速度/射程/ダブルショットを上げられます)" },
-		{ "Abyss Conqueror   Title 『Abyss Conqueror』\nClear field zone {number1}\n{number2} / {number3}   Reward: 🎫 {number4}", "深淵の征服者　タイトル『深淵の征服者』\nフィールドゾーン{number1}をクリアする\n{number2} / {number3}　報酬：🎫 {number4}" },
 	},
 }

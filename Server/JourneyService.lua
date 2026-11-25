@@ -120,7 +120,7 @@ local function tipBeat(player, now)
 	if not Journey.IsDone(player, "SetsHint") and anyAugOpen(player) then
 		Journey.Mark(player, "SetsHint")
 		lastBeat[player] = now
-		prompt(player, "🌟", "Set effect unlocked!", "Press Y to turn it on with gold.", 10)
+		prompt(player, "🌟", "Set effect unlocked!", "Press Y to see it: attack turns on with 2 set pieces (3 = Lv.6) · defense levels up with Guard Stones in town", 10)
 		return
 	end
 	if not Journey.IsDone(player, "WeaponBar") and player:GetAttribute("Zone") == "Lobby" then

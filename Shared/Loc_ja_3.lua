@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Zone {number1} set effect · Trial Lv.3 — for this dungeon only. Watch for it in combat!", "{number1}区域のセット効果 · お試しLv.3 — このダンジョン限定。戦闘中に注目！" },
+		{ "Golden Thief   Title 『Golden Thief』\nDefeat {number1} Golden Goblin(s)\n{number2} / {number3}   Reward: 🎫 {number4}", "黄金の盗賊　タイトル『黄金の盗賊』\n{number1} ゴールデングオブジェクトを倒す\n{number2} / {number3}　報酬：🎫 {number4}" },
+		{ "✨ Stat points +{number1}! {number2} unspent (press T to raise move speed / range / double shot)", "✨ ステータスポイント +{number1}！未使用 {number2}(Tキーで移動速度/射程/ダブルショットを上げられます)" },
+		{ "Abyss Conqueror   Title 『Abyss Conqueror』\nClear field zone {number1}\n{number2} / {number3}   Reward: 🎫 {number4}", "深淵の征服者　タイトル『深淵の征服者』\nフィールドゾーン{number1}をクリアする\n{number2} / {number3}　報酬：🎫 {number4}" },
 		{ "Sets obtained {number1} / {number2}  ·  Monsters / lord of that zone drop them at a set rate", "入手したセット {number1} / {number2}  ·  そのゾーンのモンスター/ロードが一定確率でドロップします" },
 		{ "🔒 Defeat the Lord of Zone {number1} first — only then will the portal open for you.", "🔒 まずゾーン{number1}のロードを倒そう — そうして初めてポータルが開きます。" },
 		{ "💰 A Golden Goblin appeared in Zone {number1} · Meadow! Catch it for a jackpot! ({number2}s)", "💰 金色のゴブリンがゾーン{number1}・草原に現れました！捕まえてジャックポットをゲットしよう！（{number2}秒）" },

@@ -1009,6 +1009,9 @@ return {
 		["Set gear drops in the field (each zone has its own set). 2 pieces = set effect Lv.3 · 3 pieces = Lv.6 · a +1 gear option boosts an effect that's already on."] = "El equipo de set cae en el campo (cada zona tiene su set). 2 piezas = efecto de set Lv.3 · 3 piezas = Lv.6 · una opción +1 mejora un efecto ya activo.",
 		["2 pieces Lv.3 / 3 pieces Lv.6"] = "2 piezas Lv.3 / 3 piezas Lv.6",
 		["🛡 Defense · pick 1 · unlocked by Zone 3–8 lords"] = "🛡 Defensa · elige 1 · se desbloquea con los señores de las zonas 3–8",
+		["Starting a dungeon lets you try one random set effect. Defeat a zone lord to unlock that zone's effect (Y key)"] = "Al empezar una mazmorra puedes probar un efecto de conjunto aleatorio. Derrota a un señor de zona para desbloquear el efecto de esa zona (tecla Y)",
+		["Set gear drops in field zones at a set rate. Wear 2 pieces of the same zone's set and its effect turns on at Lv.3 (3 pieces = Lv.6). Defense effects are leveled up with Guard Stones in town. Preview effects in the J key Codex"] = "El equipo de conjunto cae en las zonas del campo con una probabilidad fija. Lleva 2 piezas del conjunto de la misma zona y su efecto se activa en NV.3 (3 piezas = NV.6). Los efectos de defensa se suben en el pueblo con piedras guardián. Vista previa en el códice (tecla J)",
+		["Press Y to see it: attack turns on with 2 set pieces (3 = Lv.6) · defense levels up with Guard Stones in town"] = "Tecla Y para verlo: el ataque se activa con 2 piezas de conjunto (3 = NV.6) · la defensa se sube en el pueblo con piedras guardián",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1123,10 +1126,5 @@ return {
 		{ "💰 Not enough gold to roll for the chosen set! ({number1} G needed)", "💰 ¡Oro insuficiente para el set elegido! (se necesitan {number1} G)" },
 		{ "Sweep needs {number1} key(s). Defeat a field zone lord to get keys", "El barrido necesita {number1} llave(s). Derrota a un señor de zona del campo para conseguirlas" },
 		{ "You can run {number1} effects at once. Turn another one off first", "Puedes tener {number1} efectos activos a la vez. Desactiva otro primero" },
-		{ "Town north gate · boss chest gear + gold · Free {number1} · Keys {number2}", "Puerta norte del pueblo · equipo + oro del cofre del jefe · Gratis {number1} · Llaves {number2}" },
-		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "Resultado de Gacha_Pop{number1} <font color='#{number2}aa{number3}c{number4}'>Gacha: Épico</font>" },
-		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "Obtén instantáneamente {number1} horas de tus ingresos pasivos · máximo {number2} por día" },
-		{ "🔒 Zone {number1} · Darklands Sealed\nOpen the previous gate first", "🔒 Zona {number1} · Tierras Oscuras selladas\nAbre la puerta anterior primero" },
-		{ "🔒 Zone {number1} · Snowfield Sealed\nOpen the previous gate first", "🔒 Zona {number1} · Campo de nieve sellado\nAbre la puerta anterior primero" },
 	},
 }

@@ -980,6 +980,9 @@ return {
 		["Set gear drops in the field (each zone has its own set). 2 pieces = set effect Lv.3 · 3 pieces = Lv.6 · a +1 gear option boosts an effect that's already on."] = "Equipamento de set cai no campo (cada zona tem seu set). 2 peças = efeito de set Lv.3 · 3 peças = Lv.6 · uma opção +1 reforça um efeito já ativo.",
 		["2 pieces Lv.3 / 3 pieces Lv.6"] = "2 peças Lv.3 / 3 peças Lv.6",
 		["🛡 Defense · pick 1 · unlocked by Zone 3–8 lords"] = "🛡 Defesa · escolha 1 · desbloqueada pelos senhores das zonas 3–8",
+		["Starting a dungeon lets you try one random set effect. Defeat a zone lord to unlock that zone's effect (Y key)"] = "Ao iniciar uma masmorra você pode experimentar um efeito de conjunto aleatório. Derrote um senhor de zona para desbloquear o efeito daquela zona (tecla Y)",
+		["Set gear drops in field zones at a set rate. Wear 2 pieces of the same zone's set and its effect turns on at Lv.3 (3 pieces = Lv.6). Defense effects are leveled up with Guard Stones in town. Preview effects in the J key Codex"] = "Equipamento de conjunto cai nas zonas do campo com uma taxa fixa. Use 2 peças do conjunto da mesma zona e o efeito ativa no NV.3 (3 peças = NV.6). Efeitos de defesa sobem na cidade com pedras guardiãs. Prévia no códice (tecla J)",
+		["Press Y to see it: attack turns on with 2 set pieces (3 = Lv.6) · defense levels up with Guard Stones in town"] = "Tecla Y para ver: o ataque ativa com 2 peças de conjunto (3 = NV.6) · a defesa sobe na cidade com pedras guardiãs",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1110,11 +1113,5 @@ return {
 		{ "🔒 Zone {number1} · Volcano Sealed\nOpen the previous gate first", "🔒 Zona {number1} · Vulcão Selado\nAbra o portão anterior primeiro" },
 		{ "♻ [Common] Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] Armadura de Couro recuperada automaticamente (Essência +{number1} {number2} G)" },
 		{ "Zone {number1} set effect · Trial Lv.3 — for this dungeon only", "Efeito de conjunto da zona {number1} · Provação nv.3 — apenas nesta masmorra" },
-		{ "<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "<font color='#{number4}ad{number5}ff'>Livro de Feitiços · Era Mítica +{number6}</font>" },
-		{ "Shot_Shotgun  <font color='#{number1}aa{number2}c{number3}'>Shotgun shot</font>", "Tiro_Espingarda <font color='#{number1}aa{number2}c{number3}'>Tiro de espingarda</font>" },
-		{ "🔒 Zone {number1} · Desert Sealed\nOpen the previous gate first", "🔒 Zona {number1} · Deserto Selado\nAbra o portão anterior primeiro" },
-		{ "One less dagger, but each hits +{number1}% harder: for bosses", "Uma adaga a menos, mas cada uma bate +{number1}% mais forte: para chefes" },
-		{ "Reduces training / breakthrough wait time by {number1} hours", "Reduz o tempo de espera de treinamento/avanço em {number1} horas" },
-		{ "♻ [Common] Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] Boné de Couro recuperado automaticamente (Essência +{number1} {number2} G)" },
 	},
 }

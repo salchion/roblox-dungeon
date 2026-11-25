@@ -38,7 +38,7 @@ Config.StatAttributes = {   -- Upgrade 리모트가 받는 이름 -> 플레이�
 -- NEAR MISS(대시로 아슬아슬하게 피하기): 연속으로 성공할수록 공격력이 누적해서 올라간다 (마지막 성공 후 Duration 초가 지나면 사라진다)
 Config.WeakExposeSeconds = 6.5 -- 보스 약점을 맞혔을 때 약점이 노출되어 피해 x3 가 유지되는 시간(초)
 -- (DamagePerStack 0.03 -> 0.05: 대시로 피했을 때만 쌓이게 바꾸면서 한 번의 값어치를 키웠다. 최대 +50%)
-Config.NearMiss = { DamagePerStack = 0.05, MaxStacks = 10, Duration = 8, DecayStep = 4 } -- 최대 +30% (자동 공격만 써도 기본 DPS 에서 손해 보지 않게 낮춤). Duration 뒤에는 DecayStep(4)초마다 1스택씩 줄어든다
+Config.NearMiss = { DamagePerStack = 0.05, MaxStacks = 10, Duration = 8, DecayStep = 4 } -- 최대 +50% (0.05 x 10칸: 대시로 피했을 때만 쌓이게 바꾸면서 한 번의 값어치를 키웠다). Duration 뒤에는 DecayStep(4)초마다 1스택씩 줄어든다
 function Config.GetNearMissDuration(player) -- 기운 집중 스킬 레벨 + 갈래(5A 지속 / 10B 장기전) 반영
 	local bonus = (Config.GetSkillBranch(player, "Focus", 5) == "A" and 3 or 0) + (Config.GetSkillBranch(player, "Focus", 10) == "B" and 6 or 0)
 	return Config.NearMiss.Duration + bonus + Config.SkillUpgrade.FocusDuration * math.max(0, (player:GetAttribute("SkillLv_Focus") or 1) - 1) + Config.SkillMod(player, "Focus", "NearMissTime")
@@ -446,7 +446,7 @@ Config.RunBuffs = {
 	{ Icon = "🎫", Name = "Lucky Ticket",  Desc = "Gear ticket +1",                       Effect = "Ticket", Weight = 0.35, Special = true },
 }
 
--- 세트 효과 (구역 세트 2부위 = 1단계 / 3부위 = 3단계): 수치가 아니라 "플레이 방식"이 바뀌는 효과. 필드 / 던전 / 심연 어디서나 작동한다.
+-- 세트 효과 (구역 세트 0 / 3 / 6단계 = 1 / 2 / 3부위): 수치가 아니라 "플레이 방식"이 바뀌는 효과. 필드 / 던전 / 심연 어디서나 작동한다.
 Config.AugInfo = require(game:GetService("ReplicatedStorage"):WaitForChild("ConfigAugInfo")) -- (표는 Shared/ConfigAugInfo.lua: Config.lua 크기 한도 200,000자)
 
 -- 세트 효과 단계별 수치 (서버 DungeonService 의 공식과 같다. 바꿀 때는 같이 바꾼다). 돌려주는 값: 설명 글자, 한 번 맞을 때 "내 공격력의 몇 배"

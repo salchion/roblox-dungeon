@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ [Common] 🌾 Meadow Cloth Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [Commun] 🌾 Gants en tissu de prairie récupérés automatiquement (Essence +{number1} {number2} G)" },
+		{ "Powerhouse   Title 『Powerhouse』\nReach {number1} Power\n{number2} / {number3}   Reward: {number4} G", "Titre « Puissance »\nAtteindre {number1} puissance\n{number2} / {number3} Récompense : {number4} G" },
+		{ "♻ [Common] 🌲 Forest Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [Commun] 🌲 Casquette en cuir de forêt récupérée automatiquement (Essence +{number1} {number2} G)" },
+		{ "The final blast also explodes around every target (attack x{number1})", "L'explosion finale éclate aussi autour de chaque cible (attaque x{number1})" },
+		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Commun] 🌾 Chaussures usées dans la prairie récupérées automatiquement (Essence +{number1} {number2} G)" },
 		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 Percée du niveau {number1} terminée ! Vous pouvez encore progresser." },
 		{ "🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})", "🏰 Coffre de boss de donjon — {number1} pièces d'équipement, +1 toutes les {number2} profondeurs (max {number3})" },
 		{ "Event_Elite  <font color='#{number1}aa{number2}c{number3}'>Elite squad appears</font>", "Événement_Élite : L'équipe d'élite <font color='#{number1}aa{number2}c{number3}'> apparaît</font>" },
