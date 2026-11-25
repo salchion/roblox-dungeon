@@ -159,6 +159,7 @@ local function totalsOf(state, equippedMap)
 	totals.SetCounts = setCounts -- 세트별 장착 부위 수 (세트 효과 계산용)
 	return totals
 end
+function Inventory.Loaded(player) return states[player] ~= nil end -- (AugService: 칸 처음 채우기는 장비를 불러온 뒤에만)
 function Inventory.GetTotals(player)
 	local state = states[player]
 	return totalsOf(state, state and state.Equipped or {})
@@ -786,6 +787,38 @@ function Inventory.RerollUnique(player, id)
 	return true, string.format("★ New unique: %s — %s", def.Name, def.Desc)
 end
 
+-- 🎰 세트 지정 상자 (Config.Sets.SetBox): 클리어한 구역의 세트 하나를 골라 티켓으로 뽑는다.
+--   부위 = 그 세트로 아직 없는 부위 중 무작위 (다 있으면 6부위 중 무작위) · 등급 = 영웅 이상 가중치. 확률 검증용으로 한 줄씩 남긴다 ("[SetBox]")
+function Inventory.SetBox(player, zone)
+	local state = states[player]
+	if not state then return false, "Try again in a moment." end
+	zone = math.floor(tonumber(zone) or 0)
+	if zone < 1 or zone > Config.Field.ZoneCount or zone > (player:GetAttribute("ClearedZone") or 0) then return false, "Defeat that zone's lord first." end
+	local B = Config.Sets.SetBox
+	local tickets = player:GetAttribute("Tickets") or 0
+	if tickets < B.Tickets then return false, string.format("Not enough tickets. (%d needed)", B.Tickets) end
+	local setKey = Config.Sets.ZoneKeys[zone]
+	local owned = {}
+	for _, item in pairs(state.Items) do if item.Set == setKey then owned[item.Slot] = true end end
+	local missing = {}
+	for _, slot in ipairs(G.Slots) do if not owned[slot.Key] then table.insert(missing, slot.Key) end end
+	local slotKey = #missing > 0 and missing[math.random(#missing)] or G.Slots[math.random(#G.Slots)].Key
+	local total, roll, rarity = 0, nil, 3
+	for _, w in pairs(B.RarityWeights) do total += w end
+	roll = math.random() * total
+	for r = 3, #G.RarityNames do
+		roll -= B.RarityWeights[r] or 0
+		if roll <= 0 then rarity = r break end
+	end
+	local item = Inventory.NewItem(slotKey, rarity, 0, nil, nil)
+	item.Set = setKey
+	player:SetAttribute("Tickets", tickets - B.Tickets)
+	local status = Inventory.Add(player, item)
+	print(string.format("[SetBox] user=%d zone=%d slot=%s rarity=%d missingBefore=%d fromMissing=%s status=%s", player.UserId, zone, slotKey, rarity, #missing, tostring(#missing > 0), tostring(status)))
+	local def = Config.Sets[setKey]
+	return true, string.format("%s %s %s (%s)", def.Icon or "★", def.Name, Config.GetGearSlot(slotKey).Name, G.RarityNames[rarity])
+end
+
 -- 확정 보상: 신화 장비 한 개를 바로 가방에 (보스러쉬 주간 상자 / 최후의 군주 주간 보상)
 --   opts.Unique: 유니크 확정 / opts.Set: 1 ~ 클리어한 구역 세트 중 하나 확정
 function Inventory.GrantMythic(player, opts)
@@ -991,6 +1024,8 @@ Remotes.Inventory.OnServerEvent:Connect(function(player, action, arg, arg2)
 		ok, message = Inventory.Scrap(player, arg)
 	elseif action == "Reroll" and typeof(arg) == "number" then
 		ok, message = Inventory.Reroll(player, arg)
+	elseif action == "SetBox" and typeof(arg) == "number" then
+		ok, message = Inventory.SetBox(player, arg)
 	elseif action == "RerollUnique" and typeof(arg) == "number" then
 		ok, message = Inventory.RerollUnique(player, arg)
 	elseif action == "SmartClean" then

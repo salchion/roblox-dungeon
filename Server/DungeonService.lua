@@ -92,7 +92,7 @@ end
 function Dungeon.GetMaxHealth(player)
 	return (P.BaseHealth + (player:GetAttribute("HealthPoints") or 0) * P.HealthPerPoint + (player:GetAttribute("GearHealth") or 0)
 		+ Config.GetLevelHealth(player:GetAttribute("Level") or 1)
-		+ (player:GetAttribute("TrainHealth") or 0)) * (1 + Config.Guard.Body(player:GetAttribute("AugBody") or 0)) -- (방어 기재 ❤️ 강체)
+		+ (player:GetAttribute("TrainHealth") or 0)) * (1 + Config.Guard.Body(player:GetAttribute("AugBody") or 0) * (player:GetAttribute("AugMul_AugBody") or 1)) -- (방어 기재 ❤️ 강체 · 칸 배율)
 end
 
 -- 최대 체력을 스탯에 맞게 갱신하고 heal 만큼 회복 (math.huge면 완전 회복)
@@ -1462,6 +1462,7 @@ local inSetHit = false
 local function hitMonster(run, player, entry, amount, quiet, tint, attr)
 	if attr then
 		amount *= Config.AugHitMult(player, attr, isBossData(entry.Data))
+		if player:GetAttribute("AugEcho_" .. attr) == true and math.random() < Config.AugSlots.EchoChance then amount *= 2 end -- (칸 +5 공통: 10% 확률로 한 번 더)
 		Meter.Add(player, attr, amount)
 		BL.Effect(player, attr, amount) -- (밸런스 로그: 효과별 피해)
 	end

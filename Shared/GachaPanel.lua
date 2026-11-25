@@ -200,6 +200,22 @@ function M.Init(deps)
 			setTitle.TextColor3 = Color3.fromRGB(230, 210, 255)
 		end
 	end
+	-- 🎯 세트 지정 상자 (Config.Sets.SetBox): 위에서 고른 세트로, 아직 없는 부위가 먼저 (티켓 30, 영웅 이상). 고른 세트가 없으면 잠김
+	local boxButton = makeButton({ Size = UDim2.new(0, 190, 0, 26), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(0, CX + rowW / 2, 0, CY + 152), Text = "", TextSize = 11, Font = Enum.Font.GothamBold,
+		BackgroundColor3 = Color3.fromRGB(150, 110, 40), TextColor3 = Color3.new(1, 1, 1), ZIndex = 6 }, panel, function()
+		local zone = player:GetAttribute("GachaSet") or 0
+		if zone > 0 then Remotes.Inventory:FireServer("SetBox", zone) end
+	end)
+	rounded(boxButton, 10)
+	local function paintBox()
+		local zone = player:GetAttribute("GachaSet") or 0
+		local ok = zone > 0 and (player:GetAttribute("Tickets") or 0) >= Config.Sets.SetBox.Tickets
+		boxButton.Text = zone > 0 and string.format("🎯 Set Box · missing piece first · 🎫%d", Config.Sets.SetBox.Tickets) or "🎯 Set Box: pick a set first"
+		boxButton.BackgroundColor3 = ok and Color3.fromRGB(150, 110, 40) or Color3.fromRGB(60, 62, 80)
+	end
+	player:GetAttributeChangedSignal("GachaSet"):Connect(paintBox)
+	player:GetAttributeChangedSignal("Tickets"):Connect(paintBox)
+	paintBox()
 	player:GetAttributeChangedSignal("GachaSet"):Connect(paintSets)
 	player:GetAttributeChangedSignal("MaxZone"):Connect(paintSets)
 	paintSets()

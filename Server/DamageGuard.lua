@@ -26,7 +26,7 @@ function Guard.TakenMult(player)
 	local mult = (1 - Guard.Reduction(player)) * (1 - (player:GetAttribute("GearBulwark") or 0)) * (1 - (player:GetAttribute("TrainBulwark") or 0))
 	mult *= 1 - Config.Newbie.Defense * Config.NewbieStrength(player)
 	mult *= 1 - math.min(0.5, Config.TalentMod(player, "DmgReduce"))
-	if player:GetAttribute("TutorialDoom") ~= true then mult *= 1 - Config.Guard.Ward(player:GetAttribute("AugWard") or 0) end
+	if player:GetAttribute("TutorialDoom") ~= true then mult *= math.max(1 - Config.AugSlots.DefenseCap, 1 - Config.Guard.Ward(player:GetAttribute("AugWard") or 0) * (player:GetAttribute("AugMul_AugWard") or 1)) end
 	return mult
 end
 
@@ -72,7 +72,8 @@ function Guard.Take(humanoid, amount, pierce)
 		local G = Config.Guard
 		local off = player:GetAttribute("TutorialDoom") == true
 		local function lv(attr) return off and 0 or (player:GetAttribute(attr) or 0) end
-		if math.random() < G.Evade(lv("AugEvade")) then -- 🌀 회피: 이번 공격을 통째로 피한다
+		local function mul(attr) return player:GetAttribute("AugMul_" .. attr) or 1 end -- (칸 강화 +3%/단계 · +5 방어 +20% · 방어 2번째 60%: AugService)
+		if math.random() < G.Evade(lv("AugEvade")) * mul("AugEvade") then -- 🌀 회피: 이번 공격을 통째로 피한다
 			local root = humanoid.Parent and humanoid.Parent:FindFirstChild("HumanoidRootPart")
 			if root then
 				local okE, Effects = pcall(function() return require(script.Parent:WaitForChild("Effects")) end)
@@ -80,13 +81,14 @@ function Guard.Take(humanoid, amount, pierce)
 			end
 			return
 		end
-		amount *= 1 - G.Ward(lv("AugWard")) -- 🛡 방벽: 받는 피해 % 감소
+		local keep = 1 - G.Ward(lv("AugWard")) * mul("AugWard") -- 🛡 방벽: 받는 피해 % 감소
 		local lo, hi = G.Grit(lv("AugGrit")) -- 🔥 불굴: 체력이 낮을수록 덜 받는다
 		local ratio = humanoid.MaxHealth > 0 and humanoid.Health / humanoid.MaxHealth or 1
-		if ratio < 0.25 then amount *= 1 - hi elseif ratio < 0.5 then amount *= 1 - lo end
+		if ratio < 0.25 then keep *= 1 - hi * mul("AugGrit") elseif ratio < 0.5 then keep *= 1 - lo * mul("AugGrit") end
+		amount *= math.max(1 - Config.AugSlots.DefenseCap, keep) -- (세트 방어 효과 감소 총합 상한 55%)
 		player:SetAttribute("LastHurtAt", workspace:GetServerTimeNow()) -- (💚 재생은 맞은 뒤 2초 쉰다)
 		Guard.Note(humanoid, callerOf(), amount)
-		local buffer = G.Buffer(lv("AugBuffer")) -- ⏳ 완충: 일부를 3초(0.5초 x 6번)에 나눠 받는다
+		local buffer = math.min(0.9, G.Buffer(lv("AugBuffer")) * mul("AugBuffer")) -- ⏳ 완충: 일부를 3초(0.5초 x 6번)에 나눠 받는다
 		if buffer > 0 and amount > 0 then
 			local later = amount * buffer
 			amount -= later
@@ -132,7 +134,7 @@ task.spawn(function()
 			local zone = player:GetAttribute("Zone")
 			local runRegen = zone == "Dungeon" and (player:GetAttribute("RunRegen") or 0) or 0 -- (🌿 드래프트 재생: 던전 안에서만, 맞은 뒤에도 쉬지 않는다)
 			local rested = workspace:GetServerTimeNow() - (player:GetAttribute("LastHurtAt") or 0) >= 2
-			local rate = ((level > 0 and rested) and Config.Guard.Regen(level) or 0) + runRegen
+			local rate = ((level > 0 and rested) and Config.Guard.Regen(level) * (player:GetAttribute("AugMul_AugRegen") or 1) or 0) + runRegen
 			if rate > 0 and (zone == "Field" or zone == "Dungeon") then
 				local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 				if humanoid and humanoid.Health > 0 and humanoid.Health < humanoid.MaxHealth then

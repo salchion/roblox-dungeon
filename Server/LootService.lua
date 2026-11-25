@@ -186,7 +186,14 @@ function Loot.DungeonChest(player, typeKey, difficultyKey, count)
 		if depth then -- 구역 세트 장비 (확률 / 구역은 Odds.ChestSet 과 같은 규칙)
 			local chance, zones = Odds.ChestSet(difficultyKey, player:GetAttribute("ClearedZone") or 0)
 			if #zones > 0 and math.random() * 100 < chance then
-				item.Set = Config.Sets.ZoneKeys[zones[math.random(#zones)]]
+				local pref = 0 -- 🎯 입장 전 고른 선호 세트: 그 세트가 50% (고르지 않았으면 지금처럼 무작위)
+				local okA, Aug = pcall(function() return require(script.Parent:WaitForChild("AugService")) end)
+				if okA and Aug.PrefSet then pref = Aug.PrefSet(player) end
+				if pref > 0 and table.find(zones, pref) and math.random() < Config.Sets.DungeonPrefChance then
+					item.Set = Config.Sets.ZoneKeys[pref]
+				else
+					item.Set = Config.Sets.ZoneKeys[zones[math.random(#zones)]]
+				end
 			end
 		end
 		local status, _, essence, gold = Inventory.Add(player, item)

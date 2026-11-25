@@ -302,7 +302,7 @@ local function buildInventoryTab(state)
 	end
 
 	local function setPips(count)
-		return string.rep("●", math.min(count, 3)) .. string.rep("○", math.max(0, 3 - count))
+		return string.rep("●", math.min(count, 6)) .. string.rep("○", math.max(0, 6 - math.min(count, 6))) -- (11-25: 6부위 세트 · 6 = 👑 각성)
 	end
 	-- 세트 장비 표시: 세트색 배경 틴트 + 안쪽 테두리 + 구역 리본 (2부위 이상 맞추면 더 밝고 숨 쉬듯 빛남)
 	-- 세트 표시: 칸 오른쪽 위에 그 구역 아이콘이 든 세트색 동그라미 하나 (예전: 세트색 바탕 물들이기 + 아래 "Z3" 글자 띠 -> 지저분했다)
@@ -384,7 +384,7 @@ local function buildInventoryTab(state)
 		local setsLine = {}
 		for _, r in ipairs(ranked) do
 			local def = Config.Sets[r[1]]
-			table.insert(setsLine, string.format("%s <font color='#%s'><b>%d/3</b></font>", def.Icon or "★", r[2] >= 2 and "78ff8c" or "aab0cc", math.min(3, r[2])))
+			table.insert(setsLine, string.format("%s <font color='#%s'><b>%d/6</b></font>", def.Icon or "★", r[2] >= 2 and "78ff8c" or "aab0cc", math.min(6, r[2])))
 		end
 		-- 한 줄로 합친 위 띠: 빌드 이름 + 세트 + 추천 한 가지 | ⚡ 전투력 · [⚡ 최강 장착] · [🧹 정리 ▼]
 		--   (예전: "장착 방식" 줄(칩 3개 + 분해 버튼 3개)과 이 띠가 두 줄로 따로 있어 글자가 작고 눈이 갈 곳이 많았다)
@@ -619,14 +619,15 @@ local function buildInventoryTab(state)
 		end
 		for order, key in ipairs(keys) do
 			local def = Config.Sets[key]
-			local worn = math.min(3, setCounts[key] or 0)
+			local worn = math.min(3, setCounts[key] or 0) -- (세트 스탯 보너스는 2 / 3부위 그대로)
+			local wornAll = math.min(6, setCounts[key] or 0) -- (부위 수 0~6: 6 = 👑 각성)
 			local card = create("Frame", { Size = UDim2.new(1, -4, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = Color3.fromRGB(32, 34, 52), BorderSizePixel = 0, LayoutOrder = order }, list)
 			rounded(card, 10)
 			create("UIStroke", { Color = def.Color, Thickness = worn >= 2 and 1.8 or 1, Transparency = worn >= 2 and 0.1 or 0.55 }, card)
 			create("UIPadding", { PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 6), PaddingTop = UDim.new(0, 5), PaddingBottom = UDim.new(0, 6) }, card)
 			create("UIListLayout", { Padding = UDim.new(0, 3), SortOrder = Enum.SortOrder.LayoutOrder }, card)
 			local pips = {}
-			for i = 1, 3 do pips[i] = string.format("<font color='#%s'>●</font>", i <= worn and hex(def.Color) or "3a3c52") end
+			for i = 1, 6 do pips[i] = string.format("<font color='#%s'>●</font>", i <= wornAll and hex(def.Color) or "3a3c52") end
 			local aug = def.Aug and Config.AugInfo[def.Aug]
 			local effectOn = def.Zone and player:GetAttribute("AugOnZ_" .. def.Zone) == true
 			local setButton = makeButton({ Size = UDim2.new(1, 0, 0, 18), Text = "", BackgroundTransparency = 1, AutoButtonColor = false, LayoutOrder = 1 }, card, function()
@@ -656,7 +657,7 @@ local function buildInventoryTab(state)
 			end
 			if aug then
 				makeLabel({ Size = UDim2.new(1, 0, 0, 14), RichText = true, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, LayoutOrder = 5, TextColor3 = effectOn and Color3.fromRGB(150, 230, 255) or Color3.fromRGB(130, 134, 160),
-					Text = string.format("%s %s %s", aug.Icon, aug.Name, effectOn and string.format("<font color='#78ff8c'>Lv.%d ON</font>", player:GetAttribute(def.Aug) or 0) or "<font color='#9aa'>2 pieces Lv.3 / 3 pieces Lv.6</font>") }, card)
+					Text = string.format("%s %s %s", aug.Icon, aug.Name, effectOn and string.format("<font color='#78ff8c'>Lv.%d ON</font>", player:GetAttribute(def.Aug) or 0) or "<font color='#9aa'>2 pieces Lv.3 / 3 pieces Lv.6 / 6 pieces 👑 · put it in a slot (Y)</font>") }, card)
 			end
 			-- 빠진 부위: 가방에 그 세트 부위가 있으면 눌러서 바로 찾는다
 			local missing = create("Frame", { Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1, LayoutOrder = 6 }, card)
@@ -1084,7 +1085,7 @@ local function buildInventoryTab(state)
 			rounded(band, 8)
 			create("UIGradient", { Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 0.85) }) }, band)
 			makeLabel({ Size = UDim2.new(1, -12, 1, 0), Position = UDim2.new(0, 8, 0, 0), RichText = true, TextSize = 11, TextXAlignment = Enum.TextXAlignment.Left,
-				Text = string.format("%s <b>%s</b> <b>Set</b>   %s %d/3", setDef.Icon or "★", setDef.Name, setPips(have), have) }, band)
+				Text = string.format("%s <b>%s</b> <b>Set</b>   %s %d/6", setDef.Icon or "★", setDef.Name, setPips(have), math.min(6, have)) }, band)
 			y += 28
 		end
 		makeLabel({ Size = UDim2.new(1, -16, 0, 36), Position = UDim2.new(0, 8, 0, y), RichText = true, TextSize = 13, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top,
@@ -1202,7 +1203,8 @@ local function buildInventoryTab(state)
 				if not def then return end
 				local before = setCounts[setKey] or 0
 				local after = math.max(0, before + delta)
-				local text = string.format("%s %s %d→%d/3", def.Icon or "★", def.Prefix or def.Name, math.min(3, before), math.min(3, after))
+				local text = string.format("%s %s %d→%d/6", def.Icon or "★", def.Prefix or def.Name, math.min(6, before), math.min(6, after))
+				if before < 6 and after >= 6 then text ..= " <font color='#ff9be6'>👑</font>" end
 				if (before < 2 and after >= 2) or (before < 3 and after >= 3) then text ..= " <font color='#78ff8c'>(bonus ON)</font>" end
 				if (before >= 2 and after < 2) or (before >= 3 and after < 3) then text ..= " <font color='#ff8c8c'>(bonus OFF)</font>" end
 				table.insert(changes, text)

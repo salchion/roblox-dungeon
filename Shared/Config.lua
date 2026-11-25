@@ -565,7 +565,7 @@ function Config.AugHitMult(player, attr, targetIsBoss)
 	local roleMult = Config.AugRoleMult[role.Role][targetIsBoss and "Boss" or "Mob"]
 	local zone = table.find(Config.Sets.ZoneAug, attr) or 1
 	local weapon = attr ~= "AugExecute" and Config.AugWeaponMatch(player, attr) and Config.AugWeaponBonus or 1 -- (처형의 궁합은 보스 추가 피해 상한으로 따로)
-	return roleMult * weapon * (1 + Config.AugZoneStep * (zone - 1))
+	return roleMult * weapon * (1 + Config.AugZoneStep * (zone - 1)) * (player and player:GetAttribute("AugMul_" .. attr) or 1) -- (칸 강화 +3%/단계: AugService)
 end
 function Config.AugExecuteThreshold(level)
 	return math.min(0.4, 0.08 + 0.04 * level)
@@ -1561,9 +1561,48 @@ Config.Guard = {
 	Regen = function(l) l = math.clamp(math.floor(l or 0), 0, 6) return 0.004 * l end,                                   -- 초당 0.4 → 2.4%
 }
 function Config.WardReduce(level) return Config.Guard.Ward(level) end -- (예전 이름)
--- 세트 효과 단계 = 그 구역 세트 장비 부위 수: 1부위 꺼짐 / 2부위 Lv3 / 3부위 Lv6 (필드 · 던전 공통). 세트 2 / 3부위 스탯 보너스와 같은 박자.
+-- 세트 효과 단계 = 그 구역 세트 장비 부위 수: 1부위 꺼짐 / 2부위 Lv3 / 3~5부위 Lv6 / 6부위 Lv6 + 👑 각성 (필드 · 던전 공통). 세트 스탯 보너스는 2 / 3부위 그대로.
 --   "+1" 옵션은 이미 켜진 효과에만 +1단계씩 (상한 6): 옵션만으로는 켜지지 않는다. 방어 효과(장비 없음)는 수호석으로만 (Config.Guard.StoneCost)
-Config.Sets.AugLevelByPieces = { [1] = 0, [2] = 3, [3] = 6 }
+--   (11-25) 효과는 "칸에 넣은 것만" 켜진다 (Config.AugSlots). 부위 수 / 수호석은 칸에 넣을 자격과 단계만 정한다
+Config.Sets.AugLevelByPieces = { [1] = 0, [2] = 3, [3] = 6, [4] = 6, [5] = 6, [6] = 6 }
+Config.Sets.AwakenPieces = 6 -- 같은 세트 6부위(갑옷 · 장갑 · 신발 · 투구 · 반지 · 목걸이) = 👑 각성
+-- 🎰 세트 지정 상자: 클리어한 구역의 세트 하나를 골라 티켓으로 뽑는다. 아직 없는 부위가 먼저 나온다 (6번이면 6부위). 등급은 영웅 이상 (가중치)
+Config.Sets.SetBox = { Tickets = 30, RarityWeights = { [3] = 70, [4] = 25, [5] = 5 } }
+Config.Sets.DungeonPrefChance = 0.5 -- 던전 상자 세트 장비: 입장 전 고른 "선호 세트"가 나올 확률 (고르지 않으면 지금처럼 무작위)
+-- 🌟 세트 효과 칸 3개 (11-25 확정): 공격 / 방어를 자유롭게 넣는다. 칸에 넣은 효과만 켜진다. 방어는 최대 2칸.
+--   칸 강화(+1~+10)는 넣은 효과와 무관하게 칸에 남는다: 단계마다 그 칸 효과 +3%, +5 공통 추가 효과, +10 효과 전용 추가 효과
+Config.AugSlots = {
+	Count = 3,
+	MaxDefense = 2,
+	SecondDefense = 0.6,    -- 방어 2개를 넣으면 단계가 낮은 쪽은 60% 효율 (같으면 뒤 칸)
+	DefenseCap = 0.55,      -- 세트 방어 효과(방벽 + 불굴)로 줄이는 받는 피해 총합 상한
+	Cost = { 150000, 300000, 500000, 850000, 1400000, 2800000, 4900000, 8400000, 14000000, 24000000 }, -- 칸 자체 고정 골드표 (칸당 5,730만 · 3칸 1억 7,190만)
+	MaxLevel = 10,
+	StepMult = 0.03,        -- 칸 강화 1단계마다 그 칸 효과 +3% (+10 = +30%)
+	EchoChance = 0.1,       -- +5 공통 (공격): 세트 효과 피해가 10% 확률로 한 번 더
+	DefBoost = 0.2,         -- +5 공통 (방어): 효과 수치 +20%
+	PowerPerStep = 0.1,     -- ⚡ 칸 강화 1단계 = 효과 0.1단계
+	PowerMilestone = 0.5,   -- ⚡ +5 / +10 도달 시 각각 효과 0.5단계 (칸 하나 +10 = 효과 2단계어치)
+	AwakenPower = 4,        -- ⚡ 6부위 각성 = 효과 4단계어치 (0.12 x 4 = 0.48)
+	AwakenMult = 0.75,      -- 각성 딜 = 그 세트 Lv6 효과의 0.75배 (각성 동작은 AugFx 다음 커밋)
+}
+Config.AugAwaken = { -- 👑 6부위 각성 (이름 / 설명)
+	AugPulse = { Name = "Aftershock", Desc = "1s later, a 75% shockwave hits the same spot" },
+	AugOrbit = { Name = "Blade Storm", Desc = "each bounce scatters shards (75% total)" },
+	AugStorm = { Name = "Thundercloud", Desc = "every 3s, bolts strike 3 enemies (75% total)" },
+	AugMissile = { Name = "Focused Barrage", Desc = "missiles split into 3 mini missiles (75% total)" },
+	AugNova = { Name = "Double Nova", Desc = "a second 75% nova right after" },
+	AugFlame = { Name = "Sea of Fire", Desc = "burning kills explode for 75% and spread the burn" },
+	AugExecute = { Name = "Guillotine", Desc = "executions deal 75% to nearby enemies" },
+	AugMeteor = { Name = "Meteor Shower", Desc = "4 small meteors fall after impact (75% total)" },
+}
+Config.AugSlotTen = { -- 칸 +10 전용 추가 효과 (효과마다 1개)
+	AugPulse = "a second shockwave (60%)", AugOrbit = "last bounce explodes (80%)", AugStorm = "bolts fork 3 ways",
+	AugMissile = "a giant missile on kill", AugNova = "nova knocks enemies back · power +20%", AugFlame = "burn stacks up to 2",
+	AugExecute = "can execute elites (half threshold)", AugMeteor = "every 3rd meteor is giant",
+	AugWard = "3s invincible below 30% HP (60s cd)", AugBody = "survive a fatal hit once (90s cd)", AugBuffer = "30% of delayed damage vanishes",
+	AugEvade = "0.5s invincible + counter on dodge", AugGrit = "below 25% HP, heal 2%/s", AugRegen = "overheal becomes a shield (max 15%)",
+}
 -- 최후의 군주 결전 (8구역 군주를 쓰러뜨리면 8구역 끝에 포탈이 열린다): 튜토리얼에서 만났던 군주와 이번에는 진짜로 싸운다
 Config.FinalLord = {
 	Health = 22320000,        -- 확정(11-18, 사용자 + 클로드): 체력 값은 그대로 두고 문서만 현실 수치로 맞춘다. 옛 산식 = 8구역 권장 310,000 x 0.4(초당 피해) x 180초 = 3분이었고, 세트 효과가 전투력에 들어가 권장이 756,400 이 된 지금 값이면 0.4 기준 약 74초 / 실측 앵커(전투력 x 0.26) 기준 약 114초 = 약 1분 15초~1분 55초 (3분을 살리려면 54,460,800 = 756,400 x 0.4 x 180 이지만 난이도는 그대로 두기로 했다)

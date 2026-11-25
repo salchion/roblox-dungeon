@@ -269,6 +269,20 @@ local uniqueChip = makeLabel({ Size = UDim2.new(0.5, -18, 0, 28), Position = UDi
 rounded(uniqueChip, 14)
 local setChip = makeLabel({ Size = UDim2.new(0.5, -18, 0, 28), Position = UDim2.new(0.5, 4, 1, -74), Text = "", TextSize = 11, Font = Enum.Font.GothamBold, BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(32, 48, 40), TextColor3 = Color3.fromRGB(150, 235, 170), ZIndex = 12 }, side)
 rounded(setChip, 14)
+-- 🎯 선호 세트 (AugService "PrefSet"): 누를 때마다 다음 세트로 (없음 -> 1구역 -> ... -> 깬 구역 -> 없음). 상자의 세트 장비가 그 세트 50%. 저장된다
+local prefButton = makeButton({ Size = UDim2.new(1, -28, 0, 26), Position = UDim2.new(0, 14, 1, -104), Text = "", TextSize = 11, BackgroundColor3 = Color3.fromRGB(70, 56, 30), ZIndex = 13 }, side, function()
+	local cleared = math.min(Config.Field.ZoneCount, player:GetAttribute("ClearedZone") or 0)
+	if cleared <= 0 then return end
+	local now = player:GetAttribute("AugPrefSet") or 0
+	Remotes.Aug:FireServer("PrefSet", now >= cleared and 0 or now + 1)
+end)
+local function paintPref()
+	local z = player:GetAttribute("AugPrefSet") or 0
+	local def = z > 0 and Config.Sets[Config.Sets.ZoneKeys[z]]
+	prefButton.Text = def and string.format("🎯 Preferred set: %s %s (%d%%) ▸", def.Icon or "★", def.Name, math.floor(Config.Sets.DungeonPrefChance * 100 + 0.5)) or "🎯 Preferred set: none (random) ▸"
+end
+player:GetAttributeChangedSignal("AugPrefSet"):Connect(paintPref)
+paintPref()
 makeButton({ Size = UDim2.new(1, -28, 0, 30), AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -10), Text = "📊 Odds", TextSize = 12, BackgroundColor3 = Color3.fromRGB(60, 72, 130), ZIndex = 13 }, side, function()
 	player:SetAttribute("OddsKind", "Chest") -- OddsClient 가 확률 창을 연다
 	player:SetAttribute("OddsOpen", os.clock())

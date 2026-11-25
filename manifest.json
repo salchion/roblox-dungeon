@@ -708,6 +708,13 @@
       "overwrite": true
     },
     {
+      "path": "AugSlotsUI.lua",
+      "parent": "StarterPlayer/StarterPlayerScripts",
+      "name": "AugSlotsUI",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
       "path": "AugClient.lua",
       "parent": "StarterPlayer/StarterPlayerScripts",
       "name": "AugClient",
@@ -1180,6 +1187,13 @@
       "path": "Shared/Loc_ja_3.lua",
       "parent": "ReplicatedStorage",
       "name": "Loc_ja_3",
+      "class": "ModuleScript",
+      "overwrite": true
+    },
+    {
+      "path": "Shared/Loc_ja_4.lua",
+      "parent": "ReplicatedStorage",
+      "name": "Loc_ja_4",
       "class": "ModuleScript",
       "overwrite": true
     },
