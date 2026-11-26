@@ -3175,5 +3175,11 @@
 "{text1} {text2} (defense) also unlocked! Level it up with 🔷 Guard Stones in town, then put it in a slot (Y key)",
 "★ Lv.{number1}",
 "ENDURE!",
-"WARD!"
+"WARD!",
+"Only effects in a slot are on · pick a slot, then tap a gem below",
+"Empty slot",
+"Pick one below",
+"{number1}/6 · from 2 pieces",
+"Locked effects",
+"defeat zone lords to unlock"
 ]

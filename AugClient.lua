@@ -79,7 +79,7 @@ end
 
 -- 창 모양: 왼쪽에 내 캐릭터가 서 있고 그 둘레에 구역 효과 8개가 원으로 둘러선다 (무협 RPG 장비창처럼).
 -- 오른쪽 패널에 고른 효과의 설명 + 버튼. 한 화면에 다 들어와서 스크롤이 없다.
-local PANEL_W, PANEL_H = 1000, 644 -- (둥근 문장: 공격 4 x 2줄 + 방어 6 x 1줄)
+local PANEL_W, PANEL_H = 1000, 600 -- (11-26: 소켓 3개 + 보석 후보 두 줄)
 local RING_CX, RING_CY = 250, 312 -- 원들이 둘러서는 중심 (= 캐릭터)
 local RING_RX, RING_RY = 172, 172
 local ORB = 66
@@ -87,11 +87,11 @@ local BOX_X, BOX_W, BOX_H = 652, 332, 532
 
 local panel = make("Frame", {
 	Size = UDim2.new(0, PANEL_W, 0, PANEL_H), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
-	BackgroundColor3 = Color3.fromRGB(22, 20, 34), BorderSizePixel = 0, Visible = false,
+	BackgroundColor3 = Color3.fromRGB(30, 22, 40), BorderSizePixel = 0, Visible = false,
 }, gui)
 make("UICorner", { CornerRadius = UDim.new(0, 14) }, panel)
-make("UIStroke", { Color = Color3.fromRGB(255, 190, 110), Thickness = 2, Transparency = 0.25 }, panel)
-make("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(150, 130, 180)), Rotation = 90 }, panel)
+make("UIStroke", { Color = Color3.fromRGB(201, 162, 74), Thickness = 3 }, panel) -- (다크 포지 금테)
+make("UIGradient", { Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(110, 96, 130)), Rotation = 90 }, panel)
 local panelScale = make("UIScale", { Scale = 1 }, panel) -- 작은 화면에서는 통째로 줄인다
 -- (11-25 A-1) 폰은 MobileLayoutClient 가 AugGui 화면 전체에 MobileScale(가로 폰이면 0.55)을 한 번 더 건다.
 -- 그 위에서 창이 또 줄면 두 번 곱해져 0.3배까지 내려가 글씨를 못 읽었다: 화면 배율로 나눠서 "화면에 맞춘 크기"가 그대로 나오게 한다.

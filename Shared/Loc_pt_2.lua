@@ -1034,6 +1034,11 @@ return {
 		["0.5s invincible after a dodge"] = "invencível 0,5 s após esquivar",
 		["ENDURE!"] = "AGUENTEI!",
 		["WARD!"] = "BARREIRA!",
+		["Only effects in a slot are on · pick a slot, then tap a gem below"] = "Só os efeitos em um espaço ficam ativos · escolha um espaço e toque numa gema abaixo",
+		["Empty slot"] = "Espaço vazio",
+		["Pick one below"] = "Escolha um abaixo",
+		["Locked effects"] = "Efeitos bloqueados",
+		["defeat zone lords to unlock"] = "derrote os senhores das zonas para desbloquear",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1135,7 +1140,5 @@ return {
 		{ "Powerhouse   Title 『Powerhouse』\nReach {number1} Power\n{number2} / {number3}   Reward: {number4} G", "Título de Poderoso\nAlcance {number1} de Poder\n{number2} / {number3} Recompensa: {number4} G" },
 		{ "♻ [Common] 🌲 Forest Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] 🌲 Chapéu de Couro da Floresta recuperado automaticamente (Essência +{number1} {number2} G)" },
 		{ "The final blast also explodes around every target (attack x{number1})", "A explosão final também detona ao redor de cada alvo (ataque x{number1})" },
-		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] 🌾 Sapatos desgastados do prado são salvos automaticamente (Essência +{number1} {number2} G)" },
-		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 Avanço do nível {number1} concluído! Agora você pode crescer ainda mais." },
 	},
 }

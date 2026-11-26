@@ -1,0 +1,6 @@
+3177¦枠に入れた効果だけON · 枠を選んで下の宝石をタップ¦Nur Effekte in einem Slot sind aktiv · wähle einen Slot und tippe unten auf ein Juwel¦Seuls les effets placés sont actifs · choisis un emplacement puis touche une gemme¦Solo se activan los efectos en ranura · elige una ranura y toca una gema abajo¦Só os efeitos em um espaço ficam ativos · escolha um espaço e toque numa gema abaixo¦只有放入槽位的效果才开启 · 选择槽位后点击下方宝石¦칸에 넣은 효과만 켜져요 · 칸을 고르고 아래 보석을 누르세요
+3178¦空き枠¦Leerer Slot¦Emplacement vide¦Ranura vacía¦Espaço vazio¦空槽位¦빈 칸
+3179¦下から選んでください¦Wähle unten einen aus¦Choisis-en un ci-dessous¦Elige uno abajo¦Escolha um abaixo¦从下方选择¦아래에서 고르세요
+3180¦{number1}/6 · 2部位から¦{number1}/6 · ab 2 Teilen¦{number1}/6 · dès 2 pièces¦{number1}/6 · desde 2 piezas¦{number1}/6 · a partir de 2 peças¦{number1}/6 · 2件起¦{number1}/6 · 2부위부터
+3181¦ロック中の効果¦Gesperrte Effekte¦Effets verrouillés¦Efectos bloqueados¦Efeitos bloqueados¦未解锁效果¦잠긴 효과
+3182¦エリアの君主を倒すと解放¦besiege Zonenherrscher zum Freischalten¦bats les seigneurs de zone pour débloquer¦derrota a los señores de zona para desbloquear¦derrote os senhores das zonas para desbloquear¦击败区域领主即可解锁¦구역 군주를 잡으면 열려요

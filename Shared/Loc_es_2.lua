@@ -1063,6 +1063,11 @@ return {
 		["0.5s invincible after a dodge"] = "invencible 0,5 s tras esquivar",
 		["ENDURE!"] = "¡AGUANTÉ!",
 		["WARD!"] = "¡BARRERA!",
+		["Only effects in a slot are on · pick a slot, then tap a gem below"] = "Solo se activan los efectos en ranura · elige una ranura y toca una gema abajo",
+		["Empty slot"] = "Ranura vacía",
+		["Pick one below"] = "Elige uno abajo",
+		["Locked effects"] = "Efectos bloqueados",
+		["defeat zone lords to unlock"] = "derrota a los señores de zona para desbloquear",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1150,7 +1155,5 @@ return {
 		{ "Aug_Synergy  <font color='#{number1}aa{number2}c{number3}'>Augment synergy triggered</font>", "Sinergia de agosto <font color='#{number1}aa{number2}c{number3}'>Sinergia de aumento activada</font>" },
 		{ "✅ Railgun equipped! (Bounces to {number1} nearby enemies · Longest range)", "✅ ¡Arma de riel equipada! (Rebota contra {number1} enemigos cercanos · Mayor alcance)" },
 		{ "{number1} hours of idle gold ({number2} G) piled up!\n(Idle income bonus +{number3}% active)", "¡{number1} horas de oro inactivo ({number2} G) acumulado!\n(Bonificación de ingresos inactivos +{number3}% activa)" },
-		{ "Weapons reached {number1} / {number2}  ·  Enhance your weapon to meet the next one", "Armas alcanzadas {number1} / {number2}  ·  Mejora tu arma para conocer la siguiente" },
-		{ "Set you're wearing Lv.{number1} · {number2} pieces = Lv.{number3}, Guard Stones for defense", "Set equipado Nv.{number1} · {number2} piezas = Nv.{number3}, defensa con piedras guardianas" },
 	},
 }

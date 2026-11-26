@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Sniper Rifle  ·  keys {number1}-{number2} switch weapons", "狙击步枪 · 键位 {number1}-{number2} 用于切换武器" },
+		{ "🥉 {number1}+   🥈 {number2}M+   🥇 {number3}M+   💠 {number4}M+   💎 {number5}M+   👑 {number6}M+", "🥉 {number1}+   🥈 {number2}百万+   🥇 {number3}百万+   💠 {number4}百万+   💎 {number5}百万+   👑 {number6}百万+" },
 		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>", "<font color='#{number1}fffb{number2}'><b>自动攻击</b>" },
 		{ "🎉 Level up! Lv.{number1}  (Max HP +{number2}, Attack +{number3}%)", "🎉 升级了!Lv.{number1}  (最大生命 +{number2},攻击 +{number3}%)" },
 		{ "✨ Upgrades are free right now! ({number1} left)", "✨ 现在强化免费!(剩余 {number1} 次)" },
@@ -301,6 +303,7 @@ return {
 		{ "Training slots {number1} / {number2}", "训练栏位 {number1} / {number2}" },
 		{ "NEAR MISS lasts +{number1}s", "NEAR MISS持续时间+{number1}秒" },
 		{ "⏱ Est. boss kill {number1}s", "⏱ 预计击败首领 {number1}秒" },
+		{ "{number1}/6 · from 2 pieces", "{number1}/6 · 2件起" },
 		{ "Zone {number1} · Darklands", "区域 {number1} · 黑暗之地" },
 		{ "Clear field zone {number1}", "清理区域{number1}" },
 		{ "🌙 Idle reward +{number1} G", "🌙 闲置奖励 +{number1} 金币" },

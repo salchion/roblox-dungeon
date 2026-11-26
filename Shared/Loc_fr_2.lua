@@ -1066,6 +1066,11 @@ return {
 		["0.5s invincible after a dodge"] = "invincible 0,5 s après une esquive",
 		["ENDURE!"] = "TENACE !",
 		["WARD!"] = "REMPART !",
+		["Only effects in a slot are on · pick a slot, then tap a gem below"] = "Seuls les effets placés sont actifs · choisis un emplacement puis touche une gemme",
+		["Empty slot"] = "Emplacement vide",
+		["Pick one below"] = "Choisis-en un ci-dessous",
+		["Locked effects"] = "Effets verrouillés",
+		["defeat zone lords to unlock"] = "bats les seigneurs de zone pour débloquer",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1138,6 +1143,5 @@ return {
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "Effets uniques trouvés {number1} / {number2}  ·  L'équipement mythique peut en porter un (environ {number3} % de chance)" },
 		{ "🎒 Bag full: dismantled {number1} gear that your other gear beats (Essence +{number2}, {number3} G)", "🎒 Sac plein : {number1} équipement(s) moins bon(s) recyclé(s) (Essence +{number2}, {number3} G)" },
 		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "Titre de maître des compétences\nUtiliser les compétences {number1} fois\n{number2} / {number3} Récompense : 🎫 {number4}" },
-		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(votre record : profondeur {number1} · le thème du donjon est aléatoire, les probabilités sont les mêmes)" },
 	},
 }

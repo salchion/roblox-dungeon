@@ -1191,6 +1191,11 @@ return {
 		["0.5s invincible after a dodge"] = "回避後0.5秒無敵",
 		["ENDURE!"] = "耐えた！",
 		["WARD!"] = "防壁！",
+		["Only effects in a slot are on · pick a slot, then tap a gem below"] = "枠に入れた効果だけON · 枠を選んで下の宝石をタップ",
+		["Empty slot"] = "空き枠",
+		["Pick one below"] = "下から選んでください",
+		["Locked effects"] = "ロック中の効果",
+		["defeat zone lords to unlock"] = "エリアの君主を倒すと解放",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1229,6 +1234,5 @@ return {
 		{ "Zone {number1} · Darklands\n🦇 Dark Castle Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠☠\n🦇 New set from here: Dark Pact Set", "ゾーン {number1} ・ダークランド\n🦇 ダークキャッスルゲート · 推奨レベル ⚡{number2}\n危険 ☠☠☠☠☠☠☠\n🦇 ここから新しいセット：ダークパクトセット" },
 		{ "Zone {number1} · Volcano\n🌋 Lava Fortress Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠\n🌋 New set from here: Lava Heart Set", "ゾーン {number1} · 火山\n🌋 溶岩の要塞の門 · レコメンド ⚡{number2}\n危険 ☠☠☠☠☠☠\n🌋 ここから新しいセット：溶岩ハートセット" },
 		{ "🚧 Stuck at level {number1}! Go to Menu (B) → Skills & Growth tab (Passives · Training) to break through.", "🚧 レベル{number1}で停滞中！メニュー(B)→スキル・成長タブ(パッシブ · 訓練)で突破しよう。" },
-		{ "⏰ Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "⏰ 時間切れ！ボスが逃げた — クリアゴールドの{number1}%だけ獲得（宝箱・チケット・深さ記録なし）" },
 	},
 }

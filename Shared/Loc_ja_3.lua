@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⏰ Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "⏰ 時間切れ！ボスが逃げた — クリアゴールドの{number1}%だけ獲得（宝箱・チケット・深さ記録なし）" },
 		{ "💰 Not enough Gold. ({number1} needed) Earn Gold from field hunting / dungeons / Boss Rush / idle income", "💰 ゴールドが足りません。({number1}必要) フィールド狩り / ダンジョン / ボスラッシュ / 放置収入で入手" },
 		{ "Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "時間切れ！ボスが逃げた — クリアゴールドの{number1}%だけ獲得（宝箱・チケット・深さ記録なし）" },
 		{ "Zone {number1} · Meadow\n🌾 Adventure Begins · Rec. ⚡{number2}\nDanger ☠\n🌾 New set from here: Meadow's Guard Set", "ゾーン {number1} ・草原\n🌾 冒険の始まり · レコード ⚡{number2}\n危険 ☠\n🌾 ここから新しいセット：草原のガードセット" },
@@ -479,6 +480,7 @@ return {
 		{ "Training slots {number1} / {number2}", "訓練枠 {number1} / {number2}" },
 		{ "NEAR MISS lasts +{number1}s", "NEAR MISSの持続+{number1}秒" },
 		{ "⏱ Est. boss kill {number1}s", "⏱ ボス討伐予想 {number1}秒" },
+		{ "{number1}/6 · from 2 pieces", "{number1}/6 · 2部位から" },
 		{ "Zone {number1} · Darklands", "ゾーン {number1} ・ダークランド" },
 		{ "Clear field zone {number1}", "フィールドゾーン{number1}をクリアする" },
 		{ "🌙 Idle reward +{number1} G", "🌙 アイドル報酬 +{number1} G" },
@@ -996,8 +998,5 @@ return {
 		{ "{text1} New set from here: {text2} Set", "{text1} ここからの新セット: {text2}セット" },
 		{ "(Recommended {text1} · Yours {text2})", "(推奨 {text1} · あなた {text2})" },
 		{ "Open to earn the {text1} {text2} set!", "開放して{text1} {text2}セットを手に入れよう！" },
-		{ "{text1}  ·  next weapon: {text2} at +{number3}", "{text1}  ·  次の武器: {text2} (+{number3})" },
-		{ "{text1} Set effect ON: 『{text2}』 Lv.{number3}", "{text1} セット効果オン: 『{text2}』 Lv.{number3}" },
-		{ "{text1} {text2} set gear → open Gear", "{text1} {text2} セット装備 → 装備画面へ" },
 	},
 }

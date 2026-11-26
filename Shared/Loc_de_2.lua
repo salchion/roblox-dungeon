@@ -1011,6 +1011,11 @@ return {
 		["0.5s invincible after a dodge"] = "nach dem Ausweichen 0,5 s unverwundbar",
 		["ENDURE!"] = "DURCHGEHALTEN!",
 		["WARD!"] = "SCHUTZWALL!",
+		["Only effects in a slot are on · pick a slot, then tap a gem below"] = "Nur Effekte in einem Slot sind aktiv · wähle einen Slot und tippe unten auf ein Juwel",
+		["Empty slot"] = "Leerer Slot",
+		["Pick one below"] = "Wähle unten einen aus",
+		["Locked effects"] = "Gesperrte Effekte",
+		["defeat zone lords to unlock"] = "besiege Zonenherrscher zum Freischalten",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1117,7 +1122,5 @@ return {
 		{ "🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})", "🏰 Dungeon-Boss-Truhe – {number1} Ausrüstungsteile, +1 alle {number2} Tiefen (max. {number3})" },
 		{ "Event_Elite  <font color='#{number1}aa{number2}c{number3}'>Elite squad appears</font>", "Event_Elite <font color='#{number1}aa{number2}c{number3}'>Elite-Trupp erscheint </font>" },
 		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [Selten] 🌲 Wald-Silberring automatisch gesammelt (Essenz +{number1} {number2} G)" },
-		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "Gib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!" },
-		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "Mit den maximalen {number1} Punkten steigen Krits von 2x auf etwa {number2}x. Kombiniere" },
 	},
 }

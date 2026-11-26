@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(votre record : profondeur {number1} · le thème du donjon est aléatoire, les probabilités sont les mêmes)" },
 		{ "Each depth up: monster HP +{number1}% · damage +{number2}% · gold +{number3}% · better chest odds", "Par profondeur : PV des monstres +{number1} % · dégâts +{number2} % · or +{number3} % · meilleures chances de coffre" },
 		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "Profondeur {number1} terminée  ·  Choisissez la profondeur qui vous convient  (prochaine : {number2})" },
 		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "Titre « Le chanceux »\nObtenez de l'équipement légendaire\n{number1} / {number2} Récompense : 🎫 {number3}" },
@@ -443,6 +444,7 @@ return {
 		{ "Training slots {number1} / {number2}", "Emplacements d'entraînement {number1} / {number2}" },
 		{ "NEAR MISS lasts +{number1}s", "NEAR MISS dure +{number1} s de plus" },
 		{ "⏱ Est. boss kill {number1}s", "⏱ Boss vaincu en ~{number1}s" },
+		{ "{number1}/6 · from 2 pieces", "{number1}/6 · dès 2 pièces" },
 		{ "Zone {number1} · Darklands", "Zone {number1} · Terres sombres" },
 		{ "Clear field zone {number1}", "Nettoyer la zone de champ {number1}" },
 		{ "🌙 Idle reward +{number1} G", "🌙 Récompense d'inactivité +{number1} G" },

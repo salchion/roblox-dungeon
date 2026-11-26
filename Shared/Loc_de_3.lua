@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "Gib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!" },
+		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "Mit den maximalen {number1} Punkten steigen Krits von 2x auf etwa {number2}x. Kombiniere" },
 		{ "Mythic gacha gear has a {number1}% chance to carry a Unique effect.", "Mythische Gacha-Ausrüstung hat eine {number1}% Chance auf einen Unique-Effekt." },
 		{ "Instantly get {number1} minutes of YOUR idle income · max {number2} per day", "Erhalte sofort {number1} Minuten deines passiven Einkommens · maximal {number2} pro Tag" },
 		{ "NEAR MISS lasts {number1}s · keeps at least {number2} stacks even if broken", "NEAR MISS hält {number1} s · behält mindestens {number2} Stapel, auch wenn die Serie reißt" },
@@ -409,6 +411,7 @@ return {
 		{ "Training slots {number1} / {number2}", "Trainingsplätze {number1} / {number2}" },
 		{ "NEAR MISS lasts +{number1}s", "NEAR MISS hält +{number1} s länger" },
 		{ "⏱ Est. boss kill {number1}s", "⏱ Geschätzter Boss-Kill {number1}s" },
+		{ "{number1}/6 · from 2 pieces", "{number1}/6 · ab 2 Teilen" },
 		{ "Zone {number1} · Darklands", "Zone {number1} · Dunkle Länder" },
 		{ "Clear field zone {number1}", "Feldzone {number1} löschen" },
 		{ "🌙 Idle reward +{number1} G", "🌙 Inaktive Belohnung +{number1} G" },

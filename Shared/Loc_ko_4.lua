@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Idle income  +{text1} G/sec", "방치 수입  +{text1} G/초" },
+		{ "Time needed {text1} · 💰 {number2} G", "필요 시간 {text1} · 💰 {number2} G" },
+		{ "🏔 Zone {number1} · {text2} cleared!", "🏔 {number1}구역 · {text2} 클리어!" },
+		{ "{text1} upgrade success! +{number2}", "{text1} 강화 성공! +{number2}" },
 		{ "⏱ Time Skip · {text1} left", "⏱ 시간 단축 · {text1} 남음" },
 		{ "Purchase complete: {text1}", "구매 완료: {text1}" },
 		{ "{text1} obtained! Equipped", "{text1} 획득! 장착했어요" },

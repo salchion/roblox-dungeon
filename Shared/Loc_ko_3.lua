@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 Not enough gold. ({number1} needed) Earn gold at the dummy yard, field hunting, dungeons, or the Boss Rush", "💰 골드가 부족해요. ({number1} 필요) 허수아비 훈련장 / 필드 사냥 / 던전 / 보스 러시에서 골드를 얻으세요" },
 		{ "🥇 {player1}\n<font color='#ffe{number1}e'>⚡ {number2}</font> Lv.{number3}\n<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "🥇 {player1}\n<font color='#ffe{number1}e'>⚡ {number2}</font> 레벨.{number3}\n<font color='#{number4}ad{number5}ff'>스펠 토메 · 신화 시대 +{number6}</font>" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Spell Tome · Rusty Era +{number10}\n📍 Field (best: Zone {number11})", "🎖 레벨 {number1} {number2} / {number3} 경험치\n💰 {number4} G 🎫 {number5}\n🔑{number6} (오늘 무료 {number7}/{number8})\n⚡ 파워 {number9}\n⚔ 스펠 토메 · 녹슨 시대 +{number10}\n📍 필드 (최적: 구역 {number11})" },
 		{ "Zone {number1} · Abyss\n🌀 Gate of the Abyss · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠☠☠\n🌀 New set from here: Abyss Dominion Set", "구역 {number1} · 심연\n🌀 심연의 문 · 기록 ⚡{number2}\n위험 ☠☠☠☠☠☠☠☠\n🌀 여기서 새로운 세트: 심연의 지배 세트" },
@@ -526,6 +527,7 @@ return {
 		{ "Training slots {number1} / {number2}", "훈련 칸 {number1} / {number2}" },
 		{ "NEAR MISS lasts +{number1}s", "NEAR MISS 유지 시간 +{number1}초" },
 		{ "⏱ Est. boss kill {number1}s", "⏱ 예상 보스 처치 {number1}초" },
+		{ "{number1}/6 · from 2 pieces", "{number1}/6 · 2부위부터" },
 		{ "Zone {number1} · Darklands", "구역 {number1} · 다크랜드" },
 		{ "Clear field zone {number1}", "필드 구역 {number1} 클리어" },
 		{ "🌙 Idle reward +{number1} G", "🌙 유휴 보상 +{number1} G" },
@@ -956,9 +958,5 @@ return {
 		{ "{text1} declined your invite", "{text1} 님이 초대를 거절했어요" },
 		{ "{text1} {number1}/6 · 2 pieces needed", "{text1} {number1}/6 · 2부위 필요" },
 		{ "👹 Boss #{number1}: {text2} appeared!", "👹 보스 #{number1}: {text2} 등장!" },
-		{ "Idle income  +{text1} G/sec", "방치 수입  +{text1} G/초" },
-		{ "Time needed {text1} · 💰 {number2} G", "필요 시간 {text1} · 💰 {number2} G" },
-		{ "🏔 Zone {number1} · {text2} cleared!", "🏔 {number1}구역 · {text2} 클리어!" },
-		{ "{text1} upgrade success! +{number2}", "{text1} 강화 성공! +{number2}" },
 	},
 }

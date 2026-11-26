@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] 🌾 Sapatos desgastados do prado são salvos automaticamente (Essência +{number1} {number2} G)" },
+		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 Avanço do nível {number1} concluído! Agora você pode crescer ainda mais." },
 		{ "🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})", "🏰 Baú do chefe da masmorra — {number1} peças de equipamento, +1 a cada {number2} de profundidade (máx. {number3})" },
 		{ "Event_Elite  <font color='#{number1}aa{number2}c{number3}'>Elite squad appears</font>", "Evento_Elite <font color='#{number1}aa{number2}c{number3}'>Esquadrão Elite aparece</font>" },
 		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [Raro] 🌲 Anel de Prata da Floresta recuperado automaticamente (Essência +{number1} {number2} G)" },
@@ -415,6 +417,7 @@ return {
 		{ "Training slots {number1} / {number2}", "Vagas de treino {number1} / {number2}" },
 		{ "NEAR MISS lasts +{number1}s", "NEAR MISS dura +{number1}s a mais" },
 		{ "⏱ Est. boss kill {number1}s", "⏱ Chefe derrotado em ~{number1}s" },
+		{ "{number1}/6 · from 2 pieces", "{number1}/6 · a partir de 2 peças" },
 		{ "Zone {number1} · Darklands", "Zona {number1} · Terras Sombrias" },
 		{ "Clear field zone {number1}", "Limpar zona de campo {number1}" },
 		{ "🌙 Idle reward +{number1} G", "🌙 Recompensa de inatividade +{number1} G" },

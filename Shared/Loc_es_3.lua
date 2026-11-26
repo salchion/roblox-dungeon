@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Weapons reached {number1} / {number2}  ·  Enhance your weapon to meet the next one", "Armas alcanzadas {number1} / {number2}  ·  Mejora tu arma para conocer la siguiente" },
+		{ "Set you're wearing Lv.{number1} · {number2} pieces = Lv.{number3}, Guard Stones for defense", "Set equipado Nv.{number1} · {number2} piezas = Nv.{number3}, defensa con piedras guardianas" },
 		{ "👑 Kill goal reached! Defeat the Lord of Zone {number1} to open the gate!", "👑 ¡Meta de bajas alcanzada! ¡Derrota al señor de la zona {number1} para abrir la puerta!" },
 		{ "🏰 {number1} free dungeon entries left! Earn gear and tickets in dungeons", "🏰 ¡Quedan {number1} entradas gratis a mazmorras! Consigue equipo y boletos en las mazmorras" },
 		{ "🎫 You have {number1} gear ticket(s) left! Draw gear at the gacha machine", "🎫 ¡Te quedan {number1} boleto(s) de equipo! Saca equipo en la máquina de gacha" },
@@ -426,6 +428,7 @@ return {
 		{ "Training slots {number1} / {number2}", "Espacios de entrenamiento {number1} / {number2}" },
 		{ "NEAR MISS lasts +{number1}s", "NEAR MISS dura +{number1} s más" },
 		{ "⏱ Est. boss kill {number1}s", "⏱ Jefe derrotado en ~{number1}s" },
+		{ "{number1}/6 · from 2 pieces", "{number1}/6 · desde 2 piezas" },
 		{ "Zone {number1} · Darklands", "Zona {number1} · Tierras oscuras" },
 		{ "Clear field zone {number1}", "Limpiar la zona de campo {number1}" },
 		{ "🌙 Idle reward +{number1} G", "🌙 Recompensa de inactividad +{number1} G" },

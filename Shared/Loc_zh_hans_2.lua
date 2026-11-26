@@ -945,6 +945,11 @@ return {
 		["0.5s invincible after a dodge"] = "闪避后无敌0.5秒",
 		["ENDURE!"] = "撑住了！",
 		["WARD!"] = "防壁！",
+		["Only effects in a slot are on · pick a slot, then tap a gem below"] = "只有放入槽位的效果才开启 · 选择槽位后点击下方宝石",
+		["Empty slot"] = "空槽位",
+		["Pick one below"] = "从下方选择",
+		["Locked effects"] = "未解锁效果",
+		["defeat zone lords to unlock"] = "击败区域领主即可解锁",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1160,7 +1165,5 @@ return {
 		{ "🔒 Spend {number1} points in the rows above first", "🔒 先在上面几行投入{number1}点" },
 		{ "Auto-equipped the best gear in {number1} slot(s)", "已为{number1}个部位自动装备最强装备" },
 		{ "🌈 Every {number1} floors: guaranteed Mythic gear", "🌈 每{number1}层：必得神话装备" },
-		{ "Sniper Rifle  ·  keys {number1}-{number2} switch weapons", "狙击步枪 · 键位 {number1}-{number2} 用于切换武器" },
-		{ "🥉 {number1}+   🥈 {number2}M+   🥇 {number3}M+   💠 {number4}M+   💎 {number5}M+   👑 {number6}M+", "🥉 {number1}+   🥈 {number2}百万+   🥇 {number3}百万+   💠 {number4}百万+   💎 {number5}百万+   👑 {number6}百万+" },
 	},
 }

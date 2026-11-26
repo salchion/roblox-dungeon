@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1}  ·  next weapon: {text2} at +{number3}", "{text1}  ·  次の武器: {text2} (+{number3})" },
+		{ "{text1} Set effect ON: 『{text2}』 Lv.{number3}", "{text1} セット効果オン: 『{text2}』 Lv.{number3}" },
+		{ "{text1} {text2} set gear → open Gear", "{text1} {text2} セット装備 → 装備画面へ" },
 		{ "{text1} training started! ({text2})", "{text1}の訓練を開始しました！({text2})" },
 		{ "⬆ Level Up  💰 {text1} G · ⏱ {text2}", "⬆ レベルアップ  💰 {text1} G · ⏱ {text2}" },
 		{ "👹 Boss this run: {text1} — {text2}", "👹 今回のボス: {text1} — {text2}" },

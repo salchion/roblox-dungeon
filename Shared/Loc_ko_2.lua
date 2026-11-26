@@ -1330,6 +1330,11 @@ return {
 		["0.5s invincible after a dodge"] = "회피 뒤 0.5초 무적",
 		["ENDURE!"] = "버텼다!",
 		["WARD!"] = "방벽!",
+		["Only effects in a slot are on · pick a slot, then tap a gem below"] = "칸에 넣은 효과만 켜져요 · 칸을 고르고 아래 보석을 누르세요",
+		["Empty slot"] = "빈 칸",
+		["Pick one below"] = "아래에서 고르세요",
+		["Locked effects"] = "잠긴 효과",
+		["defeat zone lords to unlock"] = "구역 군주를 잡으면 열려요",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1356,6 +1361,5 @@ return {
 		{ "Defeat as many monsters as you can in {number1} seconds. Rewards x{number2}, and keep your combo going for up to x{number3} more", "{number1}초 동안 몬스터를 최대한 많이 처치하세요. 보상 x{number2}, 콤보를 이어 가면 최대 x{number3} 더" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Sniper Rifle · Rusty Era +{number10}\n📍 Field (best: Zone {number11})", "🎖 레벨 {number1} {number2} / {number3} 경험치\n💰 {number4} G 🎫 {number5}\n🔑{number6} (오늘 무료 {number7}/{number8})\n⚡ 파워 {number9}\n⚔ 저격 소총 · 녹슨 시대 +{number10}\n📍 필드 (최적: 구역 {number11})" },
 		{ "\n⚠ The {number1}-hour cap was reached, so {number2} hours' worth couldn't be saved. You can raise the cap in the Shop", "\n⚠ {number1}시간 상한에 도달해서 {number2}시간 분량은 저장하지 못했어요. 상한은 상점에서 올릴 수 있어요" },
-		{ "💰 Not enough gold. ({number1} needed) Earn gold at the dummy yard, field hunting, dungeons, or the Boss Rush", "💰 골드가 부족해요. ({number1} 필요) 허수아비 훈련장 / 필드 사냥 / 던전 / 보스 러시에서 골드를 얻으세요" },
 	},
 }
