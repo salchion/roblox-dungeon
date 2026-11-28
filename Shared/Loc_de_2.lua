@@ -1028,6 +1028,9 @@ return {
 		["6 pieces 👑 awakening"] = "6 Teile 👑 Erwachen",
 		["max 2 slots"] = "max. 2 Slots",
 		["[AugSlotsUI] failed — see Output"] = "[AugSlotsUI] fehlgeschlagen — siehe Ausgabe",
+		["1. Defeat a zone's Lord → its effect unlocks   2. Wear 2+ set pieces and put it in a slot (Y)   3. It fires on its own in combat"] = "1. Besiege den Herrscher einer Zone → Effekt freigeschaltet   2. Trage 2+ Set-Teile und lege ihn in einen Slot (Y)   3. Er löst im Kampf von selbst aus",
+		["🎯 DEADEYE 🎯"] = "🎯 TODESAUGE 🎯",
+		["🌙 Night has fallen - watch your sight"] = "🌙 Die Nacht ist eingetreten – achte auf deine Sicht",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1126,7 +1129,5 @@ return {
 		{ "🔫 Next weapon unlock Shotgun (+{number1})\nUpgrade cost {number2} G · You have {number3} G", "🔫 Nächste Waffe freischalten: Schrotflinte (+{number1})\nUpgrade-Kosten: {number2} G · Du hast {number3} G" },
 		{ "♻ [Rare] 🌾 Meadow Leather Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [Selten] 🌾 Wiesen-Lederhandschuhe automatisch gesammelt (Essenz +{number1} {number2} G)" },
 		{ "♻ [Common] 🌾 Meadow Cloth Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [Gewöhnlich] 🌾 Wiesenstoffhandschuhe automatisch gesammelt (Essenz +{number1} {number2} G)" },
-		{ "Powerhouse   Title 『Powerhouse』\nReach {number1} Power\n{number2} / {number3}   Reward: {number4} G", "Kraftzentrum-Titel 『Powerhouse』\nErreiche {number1} Kraft\n{number2} / {number3} Belohnung: {number4} G" },
-		{ "♻ [Common] 🌲 Forest Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [Gewöhnlich] 🌲 Wald-Lederkappe automatisch gesammelt (Essenz +{number1} {number2} G)" },
 	},
 }

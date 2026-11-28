@@ -125,7 +125,7 @@ local function show(data)
 	y += 22
 	for i, affix in ipairs(data.Affixes or {}) do -- 옵션 줄: 하나씩 "착"
 		task.wait(0.16 * pace)
-		line(card, y, "◆ " .. Config.FormatAffix(affix.Stat, affix.Value), 14, Color3.fromRGB(150, 215, 255))
+		line(card, y, "● " .. Config.FormatAffix(affix.Stat, affix.Value), 14, Color3.fromRGB(150, 215, 255))
 		sound("UI_Click", { Pitch = 1 + i * 0.12, Volume = 0.8 })
 		y += 22
 	end

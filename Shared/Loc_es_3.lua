@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Gear found {number1} / {number2}  ·  Higher-rarity gear you have held shows its name", "Equipo encontrado {number1} / {number2}  ·  El equipo de mayor rareza que has tenido muestra su nombre" },
+		{ "🔑 You got {number1} key(s)! (Lord drop) — Use them at the town Dungeon Gate", "🔑 ¡Conseguiste {number1} llave(s)! (botín del señor): úsalas en la puerta de la mazmorra de la ciudad" },
 		{ "Transcendent   Title 『Transcendent』\nReach {number1} Power\n{number2} / {number3}   Reward: 🎫 {number4}", "Título trascendente 『Trascendente』\nAlcanza el poder {number1}\n{number2} / {number3} Recompensa: 🎫 {number4}" },
 		{ "each hit adds a burn stack (max {number1}, lasts 4s); every 0.5s per stack", "cada golpe añade una acumulación de quemadura (máx. {number1}, dura 4 s); cada 0,5 s por acumulación" },
 		{ "Aug_Synergy  <font color='#{number1}aa{number2}c{number3}'>Augment synergy triggered</font>", "Sinergia de agosto <font color='#{number1}aa{number2}c{number3}'>Sinergia de aumento activada</font>" },

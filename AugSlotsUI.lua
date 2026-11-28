@@ -108,7 +108,7 @@ function UI.Build(panel)
 		up.Activated:Connect(function() Remotes.Aug:FireServer("SlotUp", i) end)
 		local pick = make("TextButton", { Size = UDim2.new(0, RING, 0, RING), Position = UDim2.new(0.5, -RING / 2, 0, 0), BackgroundTransparency = 1, Text = "", ZIndex = 7 }, holder)
 		pick.Activated:Connect(function() selectedSlot = i preview = nil UI.Refresh() end)
-		local clear = make("TextButton", { Size = UDim2.new(0, 26, 0, 26), Position = UDim2.new(0.5, -RING / 2 - 4, 0, -2), BackgroundColor3 = Color3.fromRGB(122, 32, 48), Text = "✕", TextSize = 12,
+		local clear = make("TextButton", { Size = UDim2.new(0, 26, 0, 26), Position = UDim2.new(0.5, -RING / 2 - 4, 0, -2), BackgroundColor3 = Color3.fromRGB(122, 32, 48), Text = "X", TextSize = 12,
 			Font = Enum.Font.GothamBlack, TextColor3 = Color3.new(1, 1, 1), ZIndex = 9 }, holder)
 		round(clear)
 		make("UIStroke", { Color = Color3.fromRGB(255, 154, 168), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, clear)

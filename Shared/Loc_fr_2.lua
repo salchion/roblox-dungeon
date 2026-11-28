@@ -1083,6 +1083,9 @@ return {
 		["6 pieces 👑 awakening"] = "6 pièces 👑 éveil",
 		["max 2 slots"] = "2 emplacements max",
 		["[AugSlotsUI] failed — see Output"] = "[AugSlotsUI] échec — voir la sortie",
+		["1. Defeat a zone's Lord → its effect unlocks   2. Wear 2+ set pieces and put it in a slot (Y)   3. It fires on its own in combat"] = "1. Bats le seigneur d'une zone → son effet se débloque   2. Porte 2+ pièces de set et place-le dans un emplacement (Y)   3. Il se déclenche seul en combat",
+		["🎯 DEADEYE 🎯"] = "🎯 ŒIL DE LYNX 🎯",
+		["🌙 Night has fallen - watch your sight"] = "🌙 La nuit est tombée - surveillez votre vision",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1148,7 +1151,5 @@ return {
 		{ "Allocate Stats\nSpend {number1} stat points (T key / Stats button)\n{number2} / {number3}   Reward: {number4} G", "Allouer les statistiques\nUtiliser {number1} points de statistiques (touche T / bouton Statistiques)\n{number2} / {number3} Récompense : {number4} G" },
 		{ "Skilled Warrior   Title 『Veteran』\nReach character level {number1}\n{number2} / {number3}   Reward: 🎫 {number4}", "Guerrier habile - Titre \"Vétéran\"\nAtteindre le niveau de personnage {number1}\n{number2} / {number3} Récompense : 🎫 {number4}" },
 		{ "Mythic Master   Title 『Mythic Master』\nObtain Mythic gear\n{number1} / {number2}   Reward: 🎫 {number3}", "Titre de maître mythique\nObtenez de l'équipement mythique\n{number1} / {number2} Récompense : 🎫 {number3}" },
-		{ "Dummy Slayer   Title 『Dummy Slayer』\nHit the dummy {number1} times\n{number2} / {number3}   Reward: {number4} G", "Titre du tueur de mannequins : 『Tueur de mannequins』\nFrappez le mannequin {number1} fois\n{number2} / {number3} Récompense : {number4} G" },
-		{ "A golden FEVER portal opened where the Lord fell! Step in within {number1} seconds", "Un portail FIÈVRE doré s'est ouvert là où le Seigneur est tombé ! Entrez dans les {number1} secondes" },
 	},
 }

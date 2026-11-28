@@ -733,7 +733,7 @@ local function buildInventoryTab(state)
 		-- 정렬 / 필터는 [⇅ 정렬 ▼] 하나로: 누르면 둘째 줄(세트 칩) 자리에 정렬 · 방향 · 유니크만 · 세트 +1만이 펼쳐진다 (칩이 넘쳐 오른쪽이 잘렸다)
 		local sortOpen = menuContent:GetAttribute("BagSortOpen") == true
 		local filtering = onlyUnique or onlyAug
-		chip(slotRow, 99, "⇅ Sort" .. (filtering and " ●" or "") .. (sortOpen and " ▲" or " ▼"), sortOpen, function()
+		chip(slotRow, 99, "↕ Sort" .. (filtering and " ●" or "") .. (sortOpen and " ▲" or " ▼"), sortOpen, function()
 			menuContent:SetAttribute("BagSortOpen", not sortOpen)
 			refreshMenu()
 		end)
@@ -1265,7 +1265,7 @@ local function buildInventoryTab(state)
 					diffText = string.format("  <font color='%s'>%s %s</font>", d > 0 and "#78ff8c" or "#ff8c8c", d > 0 and "▲ +" or "▼ -", num)
 				end
 			end
-			table.insert(lines, string.format("<font color='#9ad7ff'>◆ %s</font> <font size='11' color='%s'><b>%d%%</b></font>%s", Config.FormatAffix(affix.Stat, affix.Value), posColor, math.floor(pos * 100 + 0.5), diffText))
+			table.insert(lines, string.format("<font color='#9ad7ff'>● %s</font> <font size='11' color='%s'><b>%d%%</b></font>%s", Config.FormatAffix(affix.Stat, affix.Value), posColor, math.floor(pos * 100 + 0.5), diffText))
 		end
 		if selected.Unique and Config.Uniques[selected.Unique] then
 			table.insert(lines, "<font color='#ffb84d'>★ " .. Config.Uniques[selected.Unique].Name .. "</font> <font size='11' color='#d9b878'>" .. Config.Uniques[selected.Unique].Desc .. "</font>")

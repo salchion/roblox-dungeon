@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎯 Bounty! An elite pack appeared off the main road in Zone {number1}. Defeat all {number2} within {number3} seconds for a reward!", "🎯 현상금! {number1}구역 큰길에서 벗어난 곳에 엘리트 무리가 나타났어요. {number3}초 안에 {number2}마리를 모두 잡으면 보상!" },
 		{ "Defeat as many monsters as you can in {number1} seconds. Rewards x{number2}, and keep your combo going for up to x{number3} more", "{number1}초 동안 몬스터를 최대한 많이 처치하세요. 보상 x{number2}, 콤보를 이어 가면 최대 x{number3} 더" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Sniper Rifle · Rusty Era +{number10}\n📍 Field (best: Zone {number11})", "🎖 레벨 {number1} {number2} / {number3} 경험치\n💰 {number4} G 🎫 {number5}\n🔑{number6} (오늘 무료 {number7}/{number8})\n⚡ 파워 {number9}\n⚔ 저격 소총 · 녹슨 시대 +{number10}\n📍 필드 (최적: 구역 {number11})" },
 		{ "\n⚠ The {number1}-hour cap was reached, so {number2} hours' worth couldn't be saved. You can raise the cap in the Shop", "\n⚠ {number1}시간 상한에 도달해서 {number2}시간 분량은 저장하지 못했어요. 상한은 상점에서 올릴 수 있어요" },
@@ -946,8 +947,5 @@ return {
 		{ "Active {number1} / {number2} slots   (💰 {text3} G)", "활성 {number1} / {number2} 칸   (💰 {text3} G)" },
 		{ "You are already holding {text1}.", "이미 {text1}을(를) 들고 있어요." },
 		{ "⛺ Moved to Zone {number1} · {text2} Camp!", "⛺ {number1}구역 · {text2} 캠프로 이동했어요!" },
-		{ "Loading the world...  ·  {text1}", "세계를 불러오는 중...  ·  {text1}" },
-		{ "{number1}-piece set complete! {text2} Lv.{number3}", "{number1}세트 완성! {text2} Lv.{number3}" },
-		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 새 무기: {text1} - {number2}를 누르세요!" },
 	},
 }

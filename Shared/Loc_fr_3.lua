@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Dummy Slayer   Title 『Dummy Slayer』\nHit the dummy {number1} times\n{number2} / {number3}   Reward: {number4} G", "Titre du tueur de mannequins : 『Tueur de mannequins』\nFrappez le mannequin {number1} fois\n{number2} / {number3} Récompense : {number4} G" },
+		{ "A golden FEVER portal opened where the Lord fell! Step in within {number1} seconds", "Un portail FIÈVRE doré s'est ouvert là où le Seigneur est tombé ! Entrez dans les {number1} secondes" },
 		{ "Points left {number1}  /  total {number2}  (Level {number3})  ·  +1 point every {number4} levels, next at Lv.{number5}", "Points restants {number1}  /  total {number2}  (Niveau {number3})  ·  +1 point tous les {number4} niveaux, prochain au Niv.{number5}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!\nChallenge the dungeon at the north gate", "🎟 {number1} entrées gratuites aujourd'hui · 🗝 {number2} clés !\nDéfiez le donjon à la porte du nord" },
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "Effets uniques trouvés {number1} / {number2}  ·  L'équipement mythique peut en porter un (environ {number3} % de chance)" },

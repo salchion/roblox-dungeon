@@ -1208,6 +1208,9 @@ return {
 		["6 pieces 👑 awakening"] = "6部位で👑覚醒",
 		["max 2 slots"] = "最大2枠",
 		["[AugSlotsUI] failed — see Output"] = "[AugSlotsUI] 読み込み失敗 — 出力を確認",
+		["1. Defeat a zone's Lord → its effect unlocks   2. Wear 2+ set pieces and put it in a slot (Y)   3. It fires on its own in combat"] = "1. エリアの君主を倒す → 効果が解放   2. セット2部位以上をつけて枠に入れる（Y）   3. 戦闘中に自動で発動",
+		["🎯 DEADEYE 🎯"] = "🎯 デッドアイ 🎯",
+		["🌙 Night has fallen - watch your sight"] = "🌙 夜が降ってきました - 視界に注意してください",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1241,7 +1244,5 @@ return {
 		{ "Zone {number1} · Forest\n🏰 Forest Castle Gate · Rec. ⚡{number2}\nDanger ☠☠\n🌲 New set from here: Forest's Blessing Set", "ゾーン {number1} ・森\n🏰 森の城の門 · 推奨レベル ⚡{number2}\n危険 ☠☠\n🌲 ここから新しいセット：森の祝福セット" },
 		{ "Zone {number1} · Snowfield\n❄ Ice Palace Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠\n❄ New set from here: Frost's Breath Set", "ゾーン {number1} ・雪原\n❄ アイスパレスの門 · レコメンド ⚡{number2}\n危険 ☠☠☠☠☠\n❄ ここから新しいセット：フロストの呼吸セット" },
 		{ "enemies below {number1}% HP are executed · bosses take up to +{number2}% damage (all your damage) as their HP drops", "HPが{number1}%未満の敵は処刑され、ボスはHPが減るほど最大+{number2}%のダメージ(あなたの全ダメージ)を受けます" },
-		{ "Zone {number1} · Desert\n🏜 Desert Temple Entrance · Rec. ⚡{number2}\nDanger ☠☠☠☠\n🏜 New set from here: Desert Sun Set", "ゾーン {number1} ・砂漠\n🏜 砂漠の神殿の入り口 · 推奨レベル ⚡{number2}\n危険 ☠☠☠☠\n🏜 ここから新しいセット：砂漠の太陽セット" },
-		{ "🏔 Hunting Field\n{number1} Meadow · {number2} Forest\n{number3} Wasteland · {number4} Desert\n{number5} Snowfield · {number6} Volcano\n{number7} Darklands · {number8} Abyss", "🏔 狩猟フィールド\n{number1} 牧草地 · {number2} 森\n{number3} 荒地 · {number4} 砂漠\n{number5} 雪原 · {number6} 火山\n{number7} ダークランド · {number8} アビス" },
 	},
 }

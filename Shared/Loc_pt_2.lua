@@ -1051,6 +1051,9 @@ return {
 		["6 pieces 👑 awakening"] = "6 peças 👑 despertar",
 		["max 2 slots"] = "máx. 2 espaços",
 		["[AugSlotsUI] failed — see Output"] = "[AugSlotsUI] falhou — veja a saída",
+		["1. Defeat a zone's Lord → its effect unlocks   2. Wear 2+ set pieces and put it in a slot (Y)   3. It fires on its own in combat"] = "1. Derrote o senhor de uma zona → o efeito é desbloqueado   2. Equipe 2+ peças e coloque num espaço (Y)   3. Ele dispara sozinho em combate",
+		["🎯 DEADEYE 🎯"] = "🎯 OLHO MORTAL 🎯",
+		["🌙 Night has fallen - watch your sight"] = "🌙 A noite chegou - cuidado com sua visão",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Missões Diárias\nLimpe {number1} masmorras ✅ toque para reivindicar!\nTenha sucesso em atualizar {number2} vezes ✅ toque para reivindicar!\nGaste {number3} pontos de estatística (tecla T / botão de estatísticas) ✅ toque para reivindicar!\nAbra a janela de animais de estimação (tecla P / Crescimento > Animal de estimação) ✅ toque para reivindicar!" },
@@ -1145,7 +1148,5 @@ return {
 		{ "🎫 You have {number1} gear ticket(s) left! Draw gear at the gacha machine", "🎫 Restam {number1} ticket(s) de equipamento! Sorteie equipamento na máquina de gacha" },
 		{ "♻ [Rare] 🌾 Meadow Silver Necklace auto-salvaged (Essence +{number1} {number2} G)", "♻ [Raro] 🌾 Colar de Prata do Prado recuperado automaticamente (Essência +{number1} {number2} G)" },
 		{ "Explorer   Title 『Explorer』\nClear field zone {number1}\n{number2} / {number3}   Reward: {number4} G", "Título do Explorador 『Explorador』\nLimpar zona de campo {number1}\n{number2} / {number3} Recompensa: {number4} G" },
-		{ "♻ [Common] 🌾 Meadow Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] 🌾 Armadura de Couro do Prado recuperada automaticamente (Essência +{number1} {number2} G)" },
-		{ "🔫 Next weapon unlock Shotgun (+{number1})\nUpgrade cost {number2} G · You have {number3} G", "🔫 Próxima arma a ser desbloqueada: Espingarda (+{number1})\nCusto de atualização: {number2} G · Você tem {number3} G" },
 	},
 }

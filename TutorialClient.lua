@@ -832,7 +832,7 @@ do
 		}, gui)
 		local arrow = label({
 			Size = UDim2.new(0, 56, 0, 56), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 0),
-			Text = "➤", TextSize = 46, Font = Enum.Font.GothamBlack, TextColor3 = color, TextStrokeTransparency = 0, ZIndex = 50,
+			Text = "▶", TextSize = 46, Font = Enum.Font.GothamBlack, TextColor3 = color, TextStrokeTransparency = 0, ZIndex = 50,
 		}, frame)
 		local text = label({
 			Size = UDim2.new(1, 0, 0, 20), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 52),

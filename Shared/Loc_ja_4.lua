@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎁 Weekly Boss Rush chest: Mythic {text1} with ★ {text2}!", "🎁 週間ボスラッシュ宝箱: ミシック{text1}(★ {text2}付き)！" },
+		{ "🔓 {text1} unlocked! ({text2}) Pick it in the Weapons tab", "🔓 {text1}を解放しました！({text2})武器タブで選べます" },
+		{ "📢 {text1} took down {number2} bosses in the Boss Rush! ({text3})", "📢 {text1}がボスラッシュでボスを{number2}体倒しました！({text3})" },
+		{ "🔫 Best with {text1}: set damage +40% and {text2}", "🔫 {text1}と好相性: セットダメージ+40%、さらに{text2}" },
+		{ "(Recommended power {text1} · Your power {text2})", "(推奨戦闘力 {text1} · あなたの戦闘力 {text2})" },
 		{ "{text1} · {text2} · Monsters left {number3} · Keep going!", "{text1} · {text2} · 残りモンスター {number3} · 頑張れ！" },
 		{ "🌈 {text1} hit the Mythic pity: [Mythic] {text2}!", "🌈 {text1} が神話の天井に到達: [神話] {text2}!" },
 		{ "🏅 Achievement unlocked! Reward: {text1}{text2}", "🏅 実績解除！報酬: {text1}{text2}" },

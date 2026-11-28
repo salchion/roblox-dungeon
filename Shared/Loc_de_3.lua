@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Powerhouse   Title 『Powerhouse』\nReach {number1} Power\n{number2} / {number3}   Reward: {number4} G", "Kraftzentrum-Titel 『Powerhouse』\nErreiche {number1} Kraft\n{number2} / {number3} Belohnung: {number4} G" },
+		{ "♻ [Common] 🌲 Forest Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [Gewöhnlich] 🌲 Wald-Lederkappe automatisch gesammelt (Essenz +{number1} {number2} G)" },
 		{ "The final blast also explodes around every target (attack x{number1})", "Die Schlussexplosion detoniert auch um jedes Ziel (Angriff x{number1})" },
 		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Gewöhnlich] 🌾 Wiesen-Abgenutzte Schuhe automatisch eingesammelt (Essenz +{number1} {number2} G)" },
 		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 Durchbruch auf Stufe {number1} abgeschlossen! Du kannst jetzt noch weiter wachsen." },

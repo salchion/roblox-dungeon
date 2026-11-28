@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ [Common] 🌾 Meadow Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] 🌾 Armadura de Couro do Prado recuperada automaticamente (Essência +{number1} {number2} G)" },
+		{ "🔫 Next weapon unlock Shotgun (+{number1})\nUpgrade cost {number2} G · You have {number3} G", "🔫 Próxima arma a ser desbloqueada: Espingarda (+{number1})\nCusto de atualização: {number2} G · Você tem {number3} G" },
 		{ "♻ [Rare] 🌾 Meadow Leather Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [Raro] 🌾 Luvas de Couro do Prado são recuperadas automaticamente (Essência +{number1} {number2} G)" },
 		{ "♻ [Common] 🌾 Meadow Cloth Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] 🌾 Luvas de tecido de campo recuperadas automaticamente (Essência +{number1} {number2} G)" },
 		{ "Powerhouse   Title 『Powerhouse』\nReach {number1} Power\n{number2} / {number3}   Reward: {number4} G", "Título de Poderoso\nAlcance {number1} de Poder\n{number2} / {number3} Recompensa: {number4} G" },

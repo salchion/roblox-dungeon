@@ -169,7 +169,7 @@ do
 				label.TextColor3 = Color3.fromRGB(235, 232, 220)
 				label.TextStrokeTransparency = 0.5
 				label.TextTransparency = 1
-				label.Text = name == "Day" and "☀ Morning has come" or (name == "Night" and "☾ Night has fallen - watch your sight" or "The sun is setting")
+				label.Text = name == "Day" and "☀ Morning has come" or (name == "Night" and "🌙 Night has fallen - watch your sight" or "The sun is setting")
 				label.Parent = sg
 				TweenService:Create(label, TweenInfo.new(0.6), { TextTransparency = 0 }):Play()
 				task.delay(3, function()
@@ -561,7 +561,7 @@ do
 		}, band)
 		TweenService:Create(title, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { TextSize = 42, TextTransparency = 0 }):Play()
 		local stars = {}
-		for i = 1, 8 do table.insert(stars, i <= info.Stars and "★" or "☆") end
+		for i = 1, 8 do table.insert(stars, i <= info.Stars and "★" or "○") end
 		makeLabel({
 			Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 80), Text = "Danger " .. table.concat(stars), TextSize = 17, Font = Enum.Font.GothamBold,
 			TextColor3 = Color3.fromRGB(255, 200, 90), ZIndex = 57,

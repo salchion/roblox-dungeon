@@ -142,7 +142,7 @@ local function sourceName(source)
 	end
 	local skill = Config.Skills[source]
 	if typeof(skill) == "table" and skill.Name then return (skill.Icon or "★") .. " " .. skill.Name end
-	local fixed = { Bounce = "🔁 Ricochet", Pierce = "➳ Piercing Beam", PerkBoom = "💥 Explosive Shot", PerkChain = "⚡ Chain Lightning", Other = "❔ Other" }
+	local fixed = { Bounce = "🔁 Ricochet", Pierce = "🏹 Piercing Beam", PerkBoom = "💥 Explosive Shot", PerkChain = "⚡ Chain Lightning", Other = "❔ Other" }
 	if fixed[source] then return fixed[source] end
 	if typeof(source) == "string" and string.sub(source, 1, 2) == "U_" then
 		local unique = Config.Uniques[string.sub(source, 3)]

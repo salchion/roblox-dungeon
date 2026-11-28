@@ -1347,6 +1347,9 @@ return {
 		["6 pieces 👑 awakening"] = "6부위면 👑 각성",
 		["max 2 slots"] = "최대 2칸",
 		["[AugSlotsUI] failed — see Output"] = "[AugSlotsUI] 불러오기 실패 — 출력 창을 보세요",
+		["1. Defeat a zone's Lord → its effect unlocks   2. Wear 2+ set pieces and put it in a slot (Y)   3. It fires on its own in combat"] = "1. 구역 군주를 잡으면 → 효과가 열림   2. 세트 2부위 이상 끼고 칸에 넣기 (Y)   3. 전투 중 알아서 발동",
+		["🎯 DEADEYE 🎯"] = "🎯 데드아이 🎯",
+		["🌙 Night has fallen - watch your sight"] = "🌙 밤이 찾아왔습니다 - 시야를 조심하세요",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1369,6 +1372,5 @@ return {
 		{ "Tier rewards by total damage dealt (gold · tickets · time skip):\n🥉 {number1}+   🥈 {number2}M+   🥇 {number3}M+   💠 {number4}M+   💎 {number5}M+   👑 {number6}M+", "총 피해량에 따른 티어 보상 (골드 · 티켓 · 시간 건너뛰기):\n🥉 {number1}+   🥈 {number2}M+   🥇 {number3}M+   💠 {number4}M+   💎 {number5}M+   👑 {number6}M+" },
 		{ "Zone {number1} · Wasteland\n🏚 Ruined Fortress Gate · Rec. ⚡{number2}\nDanger ☠☠☠\n🏚 New set from here: Will of the Ruins Set", "구역 {number1} · 황무지\n🏚 파괴된 요새 문 · 레벨 {number2}\n위험 ☠☠☠\n🏚 여기서 새로운 세트: 폐허의 의지 세트" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Rocket Launcher · Rusty Era +{number10}\n📍 Field (best: Zone {number11})", "🎖 레벨 {number1} {number2} / {number3} 경험치\n💰 {number4} G 🎫 {number5}\n🔑{number6} (오늘 무료 {number7}/{number8})\n⚡ 파워 {number9}\n⚔ 로켓 발사기 · 녹슨 시대 +{number10}\n📍 필드 (최적: 구역 {number11})" },
-		{ "🎯 Bounty! An elite pack appeared off the main road in Zone {number1}. Defeat all {number2} within {number3} seconds for a reward!", "🎯 현상금! {number1}구역 큰길에서 벗어난 곳에 엘리트 무리가 나타났어요. {number3}초 안에 {number2}마리를 모두 잡으면 보상!" },
 	},
 }

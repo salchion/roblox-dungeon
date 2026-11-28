@@ -2174,7 +2174,7 @@ end
 function Config.StageBar(level)
 	local tier = Config.GetWeaponTier(level)
 	local stage = Config.GetWeaponStage(level)
-	return string.rep("▰", stage) .. string.rep("▱", tier.Steps - stage)
+	return string.rep("●", stage) .. string.rep("○", tier.Steps - stage)
 end
 
 -- 화면에 보이는 무기 표시: "권총 · 녹슨 시대 +3강"

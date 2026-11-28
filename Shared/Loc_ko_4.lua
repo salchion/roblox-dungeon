@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Loading the world...  ·  {text1}", "세계를 불러오는 중...  ·  {text1}" },
+		{ "{number1}-piece set complete! {text2} Lv.{number3}", "{number1}세트 완성! {text2} Lv.{number3}" },
+		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 새 무기: {text1} - {number2}를 누르세요!" },
 		{ "{text1} invited you to a party!", "{text1}님이 파티에 초대했어요!" },
 		{ "Recommended ⚡ {number1}   Danger {text2}", "권장 ⚡ {number1}   위험 {text2}" },
 		{ "  ·  next weapon: {text1} at +{number2}", "  ·  다음 무기: {text1} (+{number2}에서)" },

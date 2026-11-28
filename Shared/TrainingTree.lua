@@ -554,7 +554,7 @@ local function talentDetail(env, key)
 		for _, side in ipairs({ "A", "B" }) do
 			local c = node.Choice[side]
 			local mine = talents[key .. "_S"] == side
-			table.insert(lines, string.format("%s %s <b>%s</b> — <font color='#c8cce0'>%s</font>", mine and "<font color='#78ff8c'>✔</font>" or "◇", c.Icon, c.Name, c.Desc))
+			table.insert(lines, string.format("%s %s <b>%s</b> — <font color='#c8cce0'>%s</font>", mine and "<font color='#78ff8c'>✔</font>" or "○", c.Icon, c.Name, c.Desc))
 		end
 		table.insert(lines, "<font color='#9aa0b8'>Pick one of the two</font>")
 	else

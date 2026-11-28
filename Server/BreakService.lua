@@ -43,7 +43,7 @@ local function paint(part, data)
 	local pts = math.max(0, data.BreakPts or 0)
 	local filled = math.min(cells, math.floor(pts / math.max(0.01, B.Need) * cells))
 	if pts > 0 and filled < 1 then filled = 1 end
-	gui.Text.Text = string.rep("◆", filled) .. string.rep("◇", cells - filled)
+	gui.Text.Text = string.rep("●", filled) .. string.rep("○", cells - filled)
 	gui.Text.TextColor3 = Color3.fromRGB(255, 225, 120) -- (그로기가 끝난 직후 다시 찰 때 주황색이 남지 않게 매번 되돌린다)
 end
 

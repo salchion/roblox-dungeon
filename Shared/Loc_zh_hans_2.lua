@@ -962,6 +962,9 @@ return {
 		["6 pieces 👑 awakening"] = "6件 👑觉醒",
 		["max 2 slots"] = "最多2格",
 		["[AugSlotsUI] failed — see Output"] = "[AugSlotsUI] 加载失败 — 请查看输出",
+		["1. Defeat a zone's Lord → its effect unlocks   2. Wear 2+ set pieces and put it in a slot (Y)   3. It fires on its own in combat"] = "1. 击败区域领主 → 解锁其效果   2. 穿戴套装2件以上并放入槽位（Y）   3. 战斗中自动触发",
+		["🎯 DEADEYE 🎯"] = "🎯 死亡之眼 🎯",
+		["🌙 Night has fallen - watch your sight"] = "🌙 夜幕降临了——请注意你的视力",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1166,8 +1169,5 @@ return {
 		{ "Each NEAR MISS stack gives +{number1}% more attack", "每层NEAR MISS额外提供+{number1}%攻击" },
 		{ "🔒 Spend {number1} points higher up this path first", "🔒 先在这条路线上方投入{number1}点" },
 		{ "🗼 Floor {number1} cleared! Guaranteed Mythic gear!", "🗼 第{number1}层通关！必得神话装备！" },
-		{ "Auto-equipped the best gear in {number1} slot(s)!", "已为 {number1} 个栏位自动装备最佳装备!" },
-		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• 约每秒 {number1} 发 · 火力 {number2} · 射程 {number3}" },
-		{ "Damage +{number1}% on a single target: for bosses", "单体伤害+{number1}%：适合首领" },
 	},
 }

@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Zone {number1} · Desert\n🏜 Desert Temple Entrance · Rec. ⚡{number2}\nDanger ☠☠☠☠\n🏜 New set from here: Desert Sun Set", "ゾーン {number1} ・砂漠\n🏜 砂漠の神殿の入り口 · 推奨レベル ⚡{number2}\n危険 ☠☠☠☠\n🏜 ここから新しいセット：砂漠の太陽セット" },
+		{ "🏔 Hunting Field\n{number1} Meadow · {number2} Forest\n{number3} Wasteland · {number4} Desert\n{number5} Snowfield · {number6} Volcano\n{number7} Darklands · {number8} Abyss", "🏔 狩猟フィールド\n{number1} 牧草地 · {number2} 森\n{number3} 荒地 · {number4} 砂漠\n{number5} 雪原 · {number6} 火山\n{number7} ダークランド · {number8} アビス" },
 		{ "Zone {number1} · Darklands\n🦇 Dark Castle Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠☠\n🦇 New set from here: Dark Pact Set", "ゾーン {number1} ・ダークランド\n🦇 ダークキャッスルゲート · 推奨レベル ⚡{number2}\n危険 ☠☠☠☠☠☠☠\n🦇 ここから新しいセット：ダークパクトセット" },
 		{ "Zone {number1} · Volcano\n🌋 Lava Fortress Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠\n🌋 New set from here: Lava Heart Set", "ゾーン {number1} · 火山\n🌋 溶岩の要塞の門 · レコメンド ⚡{number2}\n危険 ☠☠☠☠☠☠\n🌋 ここから新しいセット：溶岩ハートセット" },
 		{ "🚧 Stuck at level {number1}! Go to Menu (B) → Skills & Growth tab (Passives · Training) to break through.", "🚧 レベル{number1}で停滞中！メニュー(B)→スキル・成長タブ(パッシブ · 訓練)で突破しよう。" },
@@ -987,10 +989,5 @@ return {
 		{ "🎉 Evolved to {text1}! Your weapon look and bullet color changed{text2}", "🎉 {text1}に進化しました！武器の見た目と弾の色が変わりました{text2}" },
 		{ "⏳ {text1} upgrade started! ({text2}) — use Time Skip to finish sooner", "⏳ {text1}の強化を開始！({text2}) — 時間短縮で早く終わらせられます" },
 		{ "All-time best {text1} pts · most bosses {number2} · longest {text3}", "歴代最高 {text1}点 · 最多ボス{number2}体 · 最長 {text3}" },
-		{ "🎁 Weekly Boss Rush chest: Mythic {text1} with ★ {text2}!", "🎁 週間ボスラッシュ宝箱: ミシック{text1}(★ {text2}付き)！" },
-		{ "🔓 {text1} unlocked! ({text2}) Pick it in the Weapons tab", "🔓 {text1}を解放しました！({text2})武器タブで選べます" },
-		{ "📢 {text1} took down {number2} bosses in the Boss Rush! ({text3})", "📢 {text1}がボスラッシュでボスを{number2}体倒しました！({text3})" },
-		{ "🔫 Best with {text1}: set damage +40% and {text2}", "🔫 {text1}と好相性: セットダメージ+40%、さらに{text2}" },
-		{ "(Recommended power {text1} · Your power {text2})", "(推奨戦闘力 {text1} · あなたの戦闘力 {text2})" },
 	},
 }

@@ -234,7 +234,7 @@ function SHOP.ProdCard(parent, order, key)
 	if tier then
 		local lv, pips = SHOP.Level(tier.Group), {}
 		for i = 1, tier.Steps do
-			pips[i] = string.format("<font color='%s'>%s</font>", i <= lv and "#ffd24a" or (i <= tier.Step and "#e8ecff" or "#5c627e"), i <= tier.Step and "★" or "☆")
+			pips[i] = string.format("<font color='%s'>%s</font>", i <= lv and "#ffd24a" or (i <= tier.Step and "#e8ecff" or "#5c627e"), i <= tier.Step and "★" or "○")
 		end
 		o.Owned = tier.Step <= lv
 		o.Pips = table.concat(pips) .. string.format("  <font color='#8a90aa' size='10'>Step %d/%d · %s</font>", tier.Step, tier.Steps, o.Owned and "Owned" or (tier.Step == lv + 1 and "Next step" or "Higher step"))

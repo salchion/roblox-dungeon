@@ -128,7 +128,7 @@ local function pointsGem(parent) -- 가운데 보석: 남은 포인트를 크게
 	local gem = make("Frame", { Size = UDim2.new(0, 210, 0, 46), AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 48), BackgroundColor3 = Color3.fromRGB(255, 217, 106), BackgroundTransparency = 0.82, BorderSizePixel = 0 }, parent)
 	make("UICorner", { CornerRadius = UDim.new(1, 0) }, gem)
 	make("UIStroke", { Color = Color3.fromRGB(255, 217, 106), Thickness = 1.5, Transparency = 0.45 }, gem)
-	local big = label({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 2), Text = "✦ 0", TextSize = 22, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, gem)
+	local big = label({ Size = UDim2.new(1, 0, 0, 26), Position = UDim2.new(0, 0, 0, 2), Text = "★ 0", TextSize = 22, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 225, 110) }, gem)
 	local small = label({ Size = UDim2.new(1, -10, 0, 14), Position = UDim2.new(0, 5, 0, 28), Text = "", TextSize = 9, TextColor3 = Color3.fromRGB(216, 207, 168) }, gem)
 	return big, small
 end
@@ -152,7 +152,7 @@ make("UISizeConstraint", { MaxSize = Vector2.new(460, 452) }, panel)
 
 titleRibbon(panel, "✨ Level Stats")
 local pointsBig, pointsSmall = pointsGem(panel)
-button({ Size = UDim2.new(0, 26, 0, 22), Position = UDim2.new(1, -46, 0, 14), BackgroundColor3 = Color3.fromRGB(54, 58, 82), Text = "✕", TextSize = 12 }, panel, function() panel.Visible = false end)
+button({ Size = UDim2.new(0, 26, 0, 22), Position = UDim2.new(1, -46, 0, 14), BackgroundColor3 = Color3.fromRGB(54, 58, 82), Text = "X", TextSize = 12 }, panel, function() panel.Visible = false end)
 local paragonButton = button({ Size = UDim2.new(0, 96, 0, 22), Position = UDim2.new(0, 20, 0, 14), BackgroundColor3 = Color3.fromRGB(120, 86, 30), Text = "🌟 Paragon", TextSize = 11 }, panel, function() end)
 
 local rows = {}
@@ -183,7 +183,7 @@ local function refresh()
 	for candidate = level + 1, Config.Level.StatCap do
 		if Config.GetLevelStatPoints(candidate) > Config.GetLevelStatPoints(level) then nextLevel = candidate break end
 	end
-	pointsBig.Text = "✦ " .. left
+	pointsBig.Text = "★ " .. left
 	pointsSmall.Text = nextLevel and string.format("Points left · next +1 at Lv.%d", nextLevel) or string.format("Points left · total %d", total)
 	local bought, cost = player:GetAttribute("LvGoldBought") or 0, player:GetAttribute("LvGoldCost") or 0
 	buyButton.Visible = level >= Config.Level.Max
@@ -226,7 +226,7 @@ make("UIStroke", { Color = Color3.fromRGB(255, 205, 100), Thickness = 2, Transpa
 make("UISizeConstraint", { MaxSize = Vector2.new(460, 398) }, ppanel)
 titleRibbon(ppanel, "🌟 Paragon", Color3.fromRGB(255, 205, 100))
 local ppoints, pprogress = pointsGem(ppanel)
-button({ Size = UDim2.new(0, 26, 0, 22), Position = UDim2.new(1, -46, 0, 14), BackgroundColor3 = Color3.fromRGB(54, 58, 82), Text = "✕", TextSize = 12 }, ppanel, function() ppanel.Visible = false end)
+button({ Size = UDim2.new(0, 26, 0, 22), Position = UDim2.new(1, -46, 0, 14), BackgroundColor3 = Color3.fromRGB(54, 58, 82), Text = "X", TextSize = 12 }, ppanel, function() ppanel.Visible = false end)
 button({ Size = UDim2.new(0, 96, 0, 22), Position = UDim2.new(0, 20, 0, 14), BackgroundColor3 = Color3.fromRGB(60, 64, 120), Text = "✨ Level Stats", TextSize = 11 }, ppanel, function()
 	ppanel.Visible = false
 	panel.Visible = true
@@ -257,7 +257,7 @@ local function refreshParagon()
 	local left = player:GetAttribute("ParagonLeft") or 0
 	local earned = player:GetAttribute("ParagonEarned") or 0
 	if unlocked then
-		ppoints.Text = "✦ " .. left
+		ppoints.Text = "★ " .. left
 		pprogress.Text = earned >= Config.ParagonMaxPoints and "All Paragon points earned!" or string.format("Next point: %s / %s XP", commas(player:GetAttribute("ParagonXp") or 0), commas(player:GetAttribute("ParagonXpNeeded") or Config.ParagonXpPerPoint()))
 	else
 		ppoints.Text = "🔒"

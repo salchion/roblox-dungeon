@@ -346,7 +346,7 @@ local function playRollFull(pick)
 	-- 돌아가는 동안 아래 빈칸에 "어떻게 얻나" 3단계를 보여 준다 (예전엔 멈출 때까지 아래 절반이 텅 비어 있었다)
 	nameLine.Text = "<font color='#ffd966'>How to get them</font>"
 	nameLine.TextColor3 = Color3.fromRGB(235, 215, 160)
-	descLine.Text = "① Defeat a zone's Lord → its effect unlocks   ② Wear 2+ set pieces and put it in a slot (Y)   ③ It fires on its own in combat"
+	descLine.Text = "1. Defeat a zone's Lord → its effect unlocks   2. Wear 2+ set pieces and put it in a slot (Y)   3. It fires on its own in combat"
 	TweenService:Create(box, TweenInfo.new(0.35), { GroupTransparency = 0 }):Play()
 	task.wait(0.9) -- 8개를 먼저 훑어볼 시간
 

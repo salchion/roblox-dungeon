@@ -41,6 +41,7 @@ return {
 		["▶ Now"] = "▶ 지금",
 		["☀ Morning has come"] = "☀ 아침이 밝았어요",
 		["☾ Night has fallen - watch your sight"] = "☾ 밤이 되었어요 - 시야에 주의하세요",
+		["🌙 Night has fallen - watch your sight"] = "🌙 밤이 되었어요 - 시야에 주의하세요",
 		["⚡ 25 Kill Streak!!"] = "⚡ 25연속 처치!!",
 		["⚡ What is NEAR MISS?"] = "⚡ NEAR MISS가 뭐예요?",
 		["✨ New Era! ✨"] = "✨ 새 시대! ✨",

@@ -1080,6 +1080,9 @@ return {
 		["6 pieces 👑 awakening"] = "6 piezas 👑 despertar",
 		["max 2 slots"] = "máx. 2 ranuras",
 		["[AugSlotsUI] failed — see Output"] = "[AugSlotsUI] falló — mira la salida",
+		["1. Defeat a zone's Lord → its effect unlocks   2. Wear 2+ set pieces and put it in a slot (Y)   3. It fires on its own in combat"] = "1. Derrota al señor de una zona → se desbloquea su efecto   2. Equipa 2+ piezas y ponlo en una ranura (Y)   3. Se dispara solo en combate",
+		["🎯 DEADEYE 🎯"] = "🎯 OJO MORTAL 🎯",
+		["🌙 Night has fallen - watch your sight"] = "🌙 La noche ha caído - cuida tu vista",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },
@@ -1160,7 +1163,5 @@ return {
 		{ "Boss Hunter   Title 『Boss Hunter』\nDefeat {number1} boss(es)\n{number2} / {number3}   Reward: 🎫 {number4}", "Título de cazador de jefes\nDerrota a {number1} jefes\n{number2} / {number3} Recompensa: 🎫 {number4}" },
 		{ "🏆 Colossus defeated! Everyone worked together ({number1} player(s) rewarded)", "🏆 ¡Coloso derrotado! Todos colaboraron ({number1} jugador(es) recompensado(s))" },
 		{ "on crit, {number1} missiles into the enemy you hit (50% of your attack each)", "Con crítico: {number1} misiles al enemigo golpeado (50% de tu ataque cada uno)" },
-		{ "Gear found {number1} / {number2}  ·  Higher-rarity gear you have held shows its name", "Equipo encontrado {number1} / {number2}  ·  El equipo de mayor rareza que has tenido muestra su nombre" },
-		{ "🔑 You got {number1} key(s)! (Lord drop) — Use them at the town Dungeon Gate", "🔑 ¡Conseguiste {number1} llave(s)! (botín del señor): úsalas en la puerta de la mazmorra de la ciudad" },
 	},
 }

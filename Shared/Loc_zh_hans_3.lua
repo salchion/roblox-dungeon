@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Auto-equipped the best gear in {number1} slot(s)!", "已为 {number1} 个栏位自动装备最佳装备!" },
+		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• 约每秒 {number1} 发 · 火力 {number2} · 射程 {number3}" },
+		{ "Damage +{number1}% on a single target: for bosses", "单体伤害+{number1}%：适合首领" },
 		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}!", "{number1}秒！奖励x{number2}，连击最高x{number3}！" },
 		{ "recover {number1}% of max HP per second in combat", "战斗中每秒回复最大生命的{number1}%" },
 		{ "🔓 You can now run {number1} set effects at once!", "🔓 现在可以同时启用 {number1} 个套装效果了!" },
