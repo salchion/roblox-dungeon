@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} · {text2} · Monsters left {number3} · Keep going!", "{text1} · {text2} · 残りモンスター {number3} · 頑張れ！" },
+		{ "🌈 {text1} hit the Mythic pity: [Mythic] {text2}!", "🌈 {text1} が神話の天井に到達: [神話] {text2}!" },
 		{ "🏅 Achievement unlocked! Reward: {text1}{text2}", "🏅 実績解除！報酬: {text1}{text2}" },
 		{ "Upgrade cost {text1} G · You have {text2} G", "強化費用 {text1} G · 所持 {text2} G" },
 		{ "📢 {text1}'s weapon evolved into [{text2}]!", "📢 {text1}の武器が[{text2}]に進化しました！" },

@@ -272,6 +272,7 @@ return {
 		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 보스 상자 · 장비 {number1}개</b>" },
 		{ "· {number1} point(s) left (1 every {number2} levels)", "· 남은 점수 {number1} ({number2}레벨마다 1점)" },
 		{ "🚪 Stuck at Zone {number1}? Try another door", "🚪 {number1}구역에서 막혔나요? 다른 문을 열어 보세요" },
+		{ "Tap a gem below to put it in Slot {number1}", "아래 보석을 누르면 칸 {number1}에 바로 들어가요" },
 		{ "👑 Lord of Desert (Zone {number1}) · Rec. ⚡{number2}", "👑 사막의 군주 (구역 {number1}) · 레코 ⚡{number2}" },
 		{ "🏜 Desert Temple Entrance · Rec. ⚡{number2}", "🏜 사막 신전 입구 · 레크레이션 ⚡{number2}" },
 		{ "<font color='#ffe{number1}e'>⚡ {number2}</font> Lv.{number3}", "<font color='#ffe{number1}e'>⚡ {number2}</font> 레벨.{number3}" },
@@ -317,6 +318,7 @@ return {
 		{ "Not enough Guard Stones (need {number1})", "수호석이 부족해요 ({number1}개 필요)" },
 		{ "{number1} / {number2} · elites & lords from Zone {number3}", "{number1} / {number2} · {number3}구역부터 정예·군주" },
 		{ "Ultimate gauge charges {number1}% faster", "궁극기 게이지 충전 {number1}% 빨라짐" },
+		{ "Tap or click to put it in Slot {number1}", "누르면 칸 {number1}에 들어가요" },
 		{ "Move speed +{number1} per point  (max {number2})", "이동 속도 +{number1} 포인트 (최대 {number2})" },
 		{ "🎯 Deadeye! Barrage on {number1} enemies", "🎯 데드아이! {number1}명의 적에게 난사 공격" },
 		{ "⚠ Not enough gold. ({number1} G needed)", "⚠ 골드가 부족해요. ({number1} G 필요)" },
@@ -947,7 +949,5 @@ return {
 		{ "Loading the world...  ·  {text1}", "세계를 불러오는 중...  ·  {text1}" },
 		{ "{number1}-piece set complete! {text2} Lv.{number3}", "{number1}세트 완성! {text2} Lv.{number3}" },
 		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 새 무기: {text1} - {number2}를 누르세요!" },
-		{ "{text1} invited you to a party!", "{text1}님이 파티에 초대했어요!" },
-		{ "Recommended ⚡ {number1}   Danger {text2}", "권장 ⚡ {number1}   위험 {text2}" },
 	},
 }

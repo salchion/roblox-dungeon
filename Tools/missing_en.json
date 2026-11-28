@@ -3196,5 +3196,7 @@
 "Tap again to put it in Slot {number1}",
 "6 pieces 👑 awakening",
 "max 2 slots",
-"[AugSlotsUI] failed — see Output"
+"[AugSlotsUI] failed — see Output",
+"Tap a gem below to put it in Slot {number1}",
+"Tap or click to put it in Slot {number1}"
 ]

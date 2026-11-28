@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} invited you to a party!", "{text1}님이 파티에 초대했어요!" },
+		{ "Recommended ⚡ {number1}   Danger {text2}", "권장 ⚡ {number1}   위험 {text2}" },
 		{ "  ·  next weapon: {text1} at +{number2}", "  ·  다음 무기: {text1} (+{number2}에서)" },
 		{ "🗿 {text1} · World Boss (Zone {number2})", "🗿 {text1} · 월드 보스 ({number2}구역)" },
 		{ "🐾 Unlock your pet! ({text1} G)", "🐾 펫을 열어 보세요! ({text1} G)" },

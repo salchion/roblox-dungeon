@@ -235,6 +235,7 @@ return {
 		{ "<b>🎁 Boss chest · {number1} gear pieces</b>", "<b>🎁 ボス宝箱・装備{number1}個</b>" },
 		{ "· {number1} point(s) left (1 every {number2} levels)", "· 残り{number1}ポイント（{number2}レベルごとに1）" },
 		{ "🚪 Stuck at Zone {number1}? Try another door", "🚪 ゾーン{number1}で詰まった? 別の道を試そう" },
+		{ "Tap a gem below to put it in Slot {number1}", "下の宝石をタップすると枠{number1}に入ります" },
 		{ "👑 Lord of Desert (Zone {number1}) · Rec. ⚡{number2}", "👑 砂漠の支配者（ゾーン {number1}） · レコメンド ⚡{number2}" },
 		{ "🏜 Desert Temple Entrance · Rec. ⚡{number2}", "🏜 砂漠の神殿の入り口 · 推奨レベル ⚡{number2}" },
 		{ "<font color='#ffe{number1}e'>⚡ {number2}</font> Lv.{number3}", "<font color='#ffe{number1}e'>⚡ {number2}</font> レベル{number3}" },
@@ -277,6 +278,7 @@ return {
 		{ "Not enough Guard Stones (need {number1})", "守護石が足りない (必要 {number1})" },
 		{ "{number1} / {number2} · elites & lords from Zone {number3}", "{number1} / {number2} · ゾーン{number3}以降のエリート・領主" },
 		{ "Ultimate gauge charges {number1}% faster", "必殺ゲージが{number1}%速くたまる" },
+		{ "Tap or click to put it in Slot {number1}", "タップ／クリックで枠{number1}に入れる" },
 		{ "Move speed +{number1} per point  (max {number2})", "移動速度が1ポイントにつき+{number1}（最大{number2}）" },
 		{ "🎯 Deadeye! Barrage on {number1} enemies", "🎯 デイリー！{number1}人の敵に弾幕を放つ" },
 		{ "⚠ Not enough gold. ({number1} G needed)", "⚠ ゴールドが足りません。({number1} G必要)" },
@@ -990,7 +992,5 @@ return {
 		{ "📢 {text1} took down {number2} bosses in the Boss Rush! ({text3})", "📢 {text1}がボスラッシュでボスを{number2}体倒しました！({text3})" },
 		{ "🔫 Best with {text1}: set damage +40% and {text2}", "🔫 {text1}と好相性: セットダメージ+40%、さらに{text2}" },
 		{ "(Recommended power {text1} · Your power {text2})", "(推奨戦闘力 {text1} · あなたの戦闘力 {text2})" },
-		{ "{text1} · {text2} · Monsters left {number3} · Keep going!", "{text1} · {text2} · 残りモンスター {number3} · 頑張れ！" },
-		{ "🌈 {text1} hit the Mythic pity: [Mythic] {text2}!", "🌈 {text1} が神話の天井に到達: [神話] {text2}!" },
 	},
 }
