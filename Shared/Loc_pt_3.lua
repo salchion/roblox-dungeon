@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Transcendent   Title 『Transcendent』\nReach {number1} Power\n{number2} / {number3}   Reward: 🎫 {number4}", "Título Transcendente 『Transcendente』\nAlcance {number1} de Poder\n{number2} / {number3} Recompensa: 🎫 {number4}" },
+		{ "each hit adds a burn stack (max {number1}, lasts 4s); every 0.5s per stack", "cada golpe adiciona um acúmulo de queimadura (máx. {number1}, dura 4 s); a cada 0,5 s por acúmulo" },
+		{ "Aug_Synergy  <font color='#{number1}aa{number2}c{number3}'>Augment synergy triggered</font>", "Sinergia de Agosto <font color='#{number1}aa{number2}c{number3}'>Sinergia de aprimoramento ativada</font>" },
+		{ "✅ Railgun equipped! (Bounces to {number1} nearby enemies · Longest range)", "✅ Arma de trilhos equipada! (Salta em {number1} inimigos próximos · Maior alcance)" },
+		{ "{number1} hours of idle gold ({number2} G) piled up!\n(Idle income bonus +{number3}% active)", "{number1} horas de ouro parado ({number2} G) acumulado!\n(Bônus de renda inativa +{number3}% ativo)" },
+		{ "Weapons reached {number1} / {number2}  ·  Enhance your weapon to meet the next one", "Armas alcançadas {number1} / {number2}  ·  Melhore sua arma para conhecer a próxima" },
 		{ "Set you're wearing Lv.{number1} · {number2} pieces = Lv.{number3}, Guard Stones for defense", "Set equipado Nv.{number1} · {number2} peças = Nv.{number3}, defesa com pedras guardiãs" },
 		{ "👑 Kill goal reached! Defeat the Lord of Zone {number1} to open the gate!", "👑 Meta de abates atingida! Derrote o senhor da zona {number1} para abrir o portão!" },
 		{ "🏰 {number1} free dungeon entries left! Earn gear and tickets in dungeons", "🏰 Restam {number1} entradas grátis em masmorras! Ganhe equipamento e tickets nas masmorras" },
@@ -832,6 +838,7 @@ return {
 		{ "🔒 Zone {number1} · {text2} Sealed", "🔒 Zona {number1} · {text2} selada" },
 		{ "Weekly best: {text1} pts", "Melhor da semana: {text1} pts" },
 		{ "⬆ Level Up  💰 {text1} G", "⬆ Subir de nível  💰 {text1} G" },
+		{ "{text1} will be removed", "{text1} será removido" },
 		{ "Invite sent to {text1}", "Convite enviado para {text1}" },
 		{ "Switch path: {text1} G", "Trocar caminho: {text1} G" },
 		{ "to the right ({text1})", "à direita ({text1})" },

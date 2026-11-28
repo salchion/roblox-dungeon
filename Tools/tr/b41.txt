@@ -1,0 +1,14 @@
+3214¦枠に入れた効果だけON · 下の宝石をタップしてから上の枠をタップ¦Nur Effekte in einem Slot sind aktiv · unten ein Juwel antippen, dann oben einen Slot¦Seuls les effets placés sont actifs · touche une gemme en bas, puis un emplacement en haut¦Solo se activan los efectos en ranura · toca una gema abajo y luego una ranura arriba¦Só os efeitos em um espaço ficam ativos · toque numa gema abaixo e depois num espaço acima¦只有放入槽位的效果才开启 · 先点下方宝石，再点上方槽位¦칸에 넣은 효과만 켜져요 · 아래 보석을 누르고 위 칸을 누르세요
+3215¦下の宝石をタップしてから上の枠をタップ¦Unten ein Juwel antippen, dann oben einen Slot¦Touche une gemme en bas, puis un emplacement en haut¦Toca una gema abajo y luego una ranura arriba¦Toque numa gema abaixo e depois num espaço acima¦先点下方宝石，再点上方槽位¦아래 보석을 누르고 위 칸을 누르세요
+3216¦枠を選ぶと、このセットの装備をつけて入れます¦Wähle einen Slot: das Set wird angelegt und eingesetzt¦Choisis un emplacement : l'équipement de ce set est mis et l'effet placé¦Elige una ranura: se equipa este set y se coloca¦Escolha um espaço: o equipamento deste set é colocado e o efeito entra¦选择槽位：穿上此套装装备并放入¦칸을 고르면 이 세트 장비를 끼우고 넣어요
+3217¦上の枠を選んで入れてください¦Wähle oben einen Slot zum Einsetzen¦Choisis un emplacement en haut pour le placer¦Elige una ranura arriba para ponerlo¦Escolha um espaço acima para colocar¦选择上方槽位放入¦위에서 넣을 칸을 고르세요
+3218¦ダンジョンでは装備を変更できません¦Im Dungeon kannst du keine Ausrüstung wechseln¦Impossible de changer d'équipement dans le donjon¦No puedes cambiar equipo en la mazmorra¦Não dá para trocar equipamento na masmorra¦地下城中无法更换装备¦던전에서는 장비를 바꿀 수 없어요
+3219¦同じ宝石か空いている所をタップでキャンセル¦Gleiches Juwel oder freie Stelle antippen zum Abbrechen¦Touche la même gemme ou un endroit vide pour annuler¦Toca la misma gema o un espacio vacío para cancelar¦Toque na mesma gema ou num espaço vazio para cancelar¦点同一颗宝石或空白处取消¦같은 보석이나 빈 곳을 누르면 취소
+3220¦タップして枠を選ぶと、このセットの装備をつけて入れます¦Antippen, dann Slot: das Set wird angelegt und eingesetzt¦Touche-la puis un emplacement : l'équipement du set est mis et l'effet placé¦Tócala y luego una ranura: se equipa el set y se coloca¦Toque e depois num espaço: o set é equipado e o efeito entra¦点击后选择槽位：穿上此套装并放入¦누르고 칸을 고르면 이 세트 장비를 끼우고 넣어요
+3221¦タップしてから上の枠をタップ¦Antippen, dann oben einen Slot¦Touche-la, puis un emplacement en haut¦Tócala y luego una ranura arriba¦Toque e depois num espaço acima¦点击后再点上方槽位¦누르고 위 칸을 누르세요
+3222¦キャンセル¦Abbrechen¦Annuler¦Cancelar¦Cancelar¦取消¦취소
+3223¦{text1}が外れます¦{text1} wird entfernt¦{text1} sera retiré¦{text1} se quitará¦{text1} será removido¦{text1}将被移除¦{text1} 효과가 빠져요
+3224¦入れ替え¦Austauschen¦Échanger¦Cambiar¦Trocar¦替换¦바꿔 넣기
+3225¦防御は最大2つ¦Verteidigung max. 2¦Défense 2 max¦Defensa máx. 2¦Defesa máx. 2¦防御最多2个¦방어 2칸 제한
+3226¦ダンジョンでは不可¦Nicht im Dungeon¦Pas dans le donjon¦No en la mazmorra¦Não na masmorra¦地下城中不可¦던전에서는 안 돼요
+3227¦ここに入れる¦Hier einsetzen¦Placer ici¦Poner aquí¦Colocar aqui¦放这里¦여기에 넣기

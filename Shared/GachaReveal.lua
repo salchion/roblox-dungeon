@@ -95,6 +95,18 @@ function M.Init(deps)
 			Name = "GachaReveal", Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 1,
 			Text = "", AutoButtonColor = false, ZIndex = 60,
 		}, layer)
+		do -- (11-30 UI 겹침) 결과 화면이 떠 있는 동안 뒤의 큰 창(메뉴 / 뽑기 창 등 400x300 이상)은 잠깐 숨겼다가, 결과 화면이 닫히면 그대로 되살린다
+			local hidden = {}
+			for _, child in ipairs(gui:GetChildren()) do
+				if child:IsA("GuiObject") and child.Visible and child.AbsoluteSize.X >= 400 and child.AbsoluteSize.Y >= 300 then
+					child.Visible = false
+					table.insert(hidden, child)
+				end
+			end
+			root.Destroying:Connect(function()
+				for _, child in ipairs(hidden) do if child.Parent then child.Visible = true end end
+			end)
+		end
 		local skipped = false
 		-- 천장 확정 (서버가 Pity = "L" / "M" 을 실어 보낸다): 한 단계 큰 연출 = 화면 위 "PITY!" 띠 + 빛줄기 + 2초 동안 넘기기 잠금
 		local pityKind = roll.Pity

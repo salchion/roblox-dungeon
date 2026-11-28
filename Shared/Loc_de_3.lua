@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Weapons reached {number1} / {number2}  ·  Enhance your weapon to meet the next one", "Erreichte Waffen {number1} / {number2}  ·  Verbessere deine Waffe, um die nächste zu treffen" },
+		{ "Set you're wearing Lv.{number1} · {number2} pieces = Lv.{number3}, Guard Stones for defense", "Getragenes Set Lv.{number1} · {number2} Teile = Lv.{number3}, Verteidigung mit Schutzsteinen" },
+		{ "👑 Kill goal reached! Defeat the Lord of Zone {number1} to open the gate!", "👑 Kill-Ziel erreicht! Besiege den Lord von Zone {number1}, um das Tor zu öffnen!" },
+		{ "🏰 {number1} free dungeon entries left! Earn gear and tickets in dungeons", "🏰 Noch {number1} Gratis-Dungeon-Eintritte! Verdiene Ausrüstung und Tickets in Dungeons" },
+		{ "🎫 You have {number1} gear ticket(s) left! Draw gear at the gacha machine", "🎫 Du hast noch {number1} Ausrüstungs-Ticket(s)! Zieh Ausrüstung am Gacha-Automaten" },
 		{ "♻ [Rare] 🌾 Meadow Silver Necklace auto-salvaged (Essence +{number1} {number2} G)", "♻ [Selten] 🌾 Wiesen-Silber-Halskette automatisch gesammelt (Essenz +{number1} {number2} G)" },
 		{ "Explorer   Title 『Explorer』\nClear field zone {number1}\n{number2} / {number3}   Reward: {number4} G", "Entdecker-Titel 『Explorer』\nFeldzone {number1} löschen\n{number2} / {number3} Belohnung: {number4} G" },
 		{ "♻ [Common] 🌾 Meadow Leather Armor auto-salvaged (Essence +{number1} {number2} G)", "♻ [Gewöhnlich] 🌾 Wiesen-Lederrüstung automatisch gesammelt (Essenz +{number1} {number2} G)" },
@@ -827,6 +832,7 @@ return {
 		{ "🔒 Zone {number1} · {text2} Sealed", "🔒 Zone {number1} · {text2} versiegelt" },
 		{ "Weekly best: {text1} pts", "Wochenbestwert: {text1} Pkt." },
 		{ "⬆ Level Up  💰 {text1} G", "⬆ Aufwerten  💰 {text1} G" },
+		{ "{text1} will be removed", "{text1} wird entfernt" },
 		{ "Invite sent to {text1}", "Einladung an {text1} gesendet" },
 		{ "Switch path: {text1} G", "Pfad wechseln: {text1} G" },
 		{ "to the right ({text1})", "rechts ({text1})" },

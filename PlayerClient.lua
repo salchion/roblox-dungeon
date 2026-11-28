@@ -2074,7 +2074,7 @@ do
 	}, autoButton)
 
 	local hint = create("Frame", {
-		Size = UDim2.new(0, 400, 0, 120), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0.5, 150, 1, -84), -- (화면 가운데 -> 자동 공격 버튼 바로 위: 캐릭터와 체력바를 가리던 것)
+		Size = UDim2.new(0, 400, 0, 120), AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0.5, 150, 1, -150), -- (화면 가운데 -> 자동 공격 버튼 바로 위: 캐릭터와 체력바를 가리던 것 · 11-30: 가운데 아래 레벨 / 경험치 띠(BigHud, 아래 86 + 높이 52) 위로 올려 겹치지 않게)
 		BackgroundColor3 = Color3.fromRGB(16, 18, 30), BackgroundTransparency = 0.15, BorderSizePixel = 0, Visible = false, ZIndex = 30,
 	}, gui)
 	rounded(hint, 16)

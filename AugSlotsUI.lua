@@ -73,7 +73,8 @@ local function badge(parent, props)
 end
 
 function UI.Build(panel)
-	local selectedSlot, showLocked, preview = 1, false, nil -- (preview: PC 마우스를 올린 보석 / 레벨 0 이라 못 넣는 보석의 설명을 설명 줄에. 누르면 바로 고른 칸에 들어간다)
+	local selectedSlot, showLocked, preview, picked = 1, false, nil, nil -- (picked: 눌러서 고른 보석 = 위 소켓 중 넣을 칸을 고르는 중. 칸을 누를 때만 서버에 보낸다)
+	local refreshTargets, refreshInfo -- (아래에서 정의: 소켓 / 보석 / 빈 곳 버튼이 부른다) -- (preview: PC 마우스를 올린 보석 / 레벨 0 이라 못 넣는 보석의 설명을 설명 줄에. 누르면 바로 고른 칸에 들어간다)
 	local W = panel.Size.X.Offset > 0 and panel.Size.X.Offset or 1000
 
 	text({ Size = UDim2.new(0, 260, 0, 34), Position = UDim2.new(0, 20, 0, 10), Text = "🌟 Set Effects", TextSize = 22, Font = Enum.Font.GothamBlack, TextColor3 = CREAM, TextXAlignment = Enum.TextXAlignment.Left }, panel)
@@ -82,7 +83,11 @@ function UI.Build(panel)
 	round(close, 12)
 	make("UIStroke", { Color = GOLD, Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, close)
 	close.Activated:Connect(function() panel.Visible = false end)
-	text({ Size = UDim2.new(1, -40, 0, 16), Position = UDim2.new(0, 20, 0, 46), Text = "Only effects in a slot are on · pick a slot, then tap a gem below", TextSize = 12, TextColor3 = Color3.fromRGB(201, 184, 138) }, panel)
+	local subtitle = text({ Size = UDim2.new(1, -40, 0, 16), Position = UDim2.new(0, 20, 0, 46), Text = "Only effects in a slot are on · tap a gem below, then tap a slot above", TextSize = 12, TextColor3 = Color3.fromRGB(201, 184, 138) }, panel)
+
+	-- 빈 곳을 누르면 고르기 취소 (다른 버튼들보다 아래 ZIndex: 버튼이 먼저 받는다)
+	local catcher = make("TextButton", { Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Text = "", AutoButtonColor = false, ZIndex = 1 }, panel)
+	catcher.Activated:Connect(function() if picked then picked = nil refreshTargets() refreshInfo() end end)
 
 	-- 소켓 3개
 	local sockets = {}
@@ -107,13 +112,33 @@ function UI.Build(panel)
 		local upStroke = make("UIStroke", { Color = Color3.fromRGB(184, 255, 191), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, up)
 		up.Activated:Connect(function() Remotes.Aug:FireServer("SlotUp", i) end)
 		local pick = make("TextButton", { Size = UDim2.new(0, RING, 0, RING), Position = UDim2.new(0.5, -RING / 2, 0, 0), BackgroundTransparency = 1, Text = "", ZIndex = 7 }, holder)
-		pick.Activated:Connect(function() selectedSlot = i preview = nil UI.Refresh() end)
+		-- 고르는 중 표시: 초록 고리 + 위쪽 꼬리표 ("⬇ 여기에 넣기" / "⚠ … 빠져요" / "🔒 방어 2칸 제한" / "바꿔 넣기")
+		local target = make("Frame", { Size = UDim2.new(0, RING + 24, 0, RING + 24), Position = UDim2.new(0.5, -(RING + 24) / 2, 0, -12), BackgroundTransparency = 1, Visible = false, ZIndex = 6 }, holder)
+		round(target)
+		local targetStroke = make("UIStroke", { Color = Color3.fromRGB(120, 255, 140), Thickness = 4, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, target)
+		local tag = badge(holder, { Size = UDim2.new(0, 190, 0, 22), Position = UDim2.new(0.5, -95, 0, -30), Text = "", TextSize = 12, Font = Enum.Font.GothamBlack,
+			TextColor3 = Color3.new(1, 1, 1), BackgroundColor3 = Color3.fromRGB(31, 90, 42), Stroke = Color3.fromRGB(120, 255, 140), ZIndex = 10 })
+		tag.Visible = false
+		pick.Activated:Connect(function()
+			if picked then -- 칸 확정: 이때만 보낸다
+				local allowed, _, wear = UI.TargetState(i)
+				if not allowed then return end
+				local z = picked
+				picked = nil
+				Remotes.Aug:FireServer(wear and "Wear" or "Slot", i, z)
+				selectedSlot = i
+				refreshTargets()
+				refreshInfo()
+				return
+			end
+			selectedSlot = i preview = nil UI.Refresh()
+		end)
 		local clear = make("TextButton", { Size = UDim2.new(0, 26, 0, 26), Position = UDim2.new(0.5, -RING / 2 - 4, 0, -2), BackgroundColor3 = Color3.fromRGB(122, 32, 48), Text = "X", TextSize = 12,
 			Font = Enum.Font.GothamBlack, TextColor3 = Color3.new(1, 1, 1), ZIndex = 9 }, holder)
 		round(clear)
 		make("UIStroke", { Color = Color3.fromRGB(255, 154, 168), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, clear)
 		clear.Activated:Connect(function() Remotes.Aug:FireServer("Slot", i, 0) end)
-		sockets[i] = { Ring = ring, Stroke = ringStroke, Icon = ringIcon, Glow = glow, Plus = plus, Lv = lv, Pips = pips, Name = name, Src = src, Goal = goal, Up = up, UpStroke = upStroke, Clear = clear }
+		sockets[i] = { Ring = ring, Stroke = ringStroke, Icon = ringIcon, Glow = glow, Plus = plus, Lv = lv, Pips = pips, Name = name, Src = src, Goal = goal, Target = target, TargetStroke = targetStroke, Tag = tag, Up = up, UpStroke = upStroke, Clear = clear }
 	end
 
 	-- 설명 줄: 고른 소켓(또는 미리 보는 보석)의 효과 설명 + 👑 각성 설명
@@ -122,6 +147,11 @@ function UI.Build(panel)
 	make("UIStroke", { Color = GOLD, Thickness = 1, Transparency = 0.5 }, info)
 	local infoIcon = text({ Size = UDim2.new(0, 40, 1, 0), Position = UDim2.new(0, 4, 0, 0), Text = "", TextSize = 24, TextXAlignment = Enum.TextXAlignment.Center }, info)
 	local infoLine1 = text({ Size = UDim2.new(1, -60, 0, 20), Position = UDim2.new(0, 48, 0, 3), Text = "", TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, info)
+	local cancelBtn = make("TextButton", { Size = UDim2.new(0, 96, 0, 30), Position = UDim2.new(1, -104, 0.5, -15), BackgroundColor3 = Color3.fromRGB(90, 32, 48), Text = "✖ Cancel", TextSize = 13,
+		Font = Enum.Font.GothamBlack, TextColor3 = Color3.new(1, 1, 1), Visible = false, ZIndex = 6 }, info)
+	round(cancelBtn, 15)
+	cancelBtn.Activated:Connect(function() picked = nil refreshTargets() refreshInfo() end)
+	local infoStroke = info:FindFirstChildOfClass("UIStroke")
 	local infoLine2 = text({ Size = UDim2.new(1, -60, 0, 18), Position = UDim2.new(0, 48, 0, 23), Text = "", TextSize = 12, TextColor3 = MUTED, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, info)
 
 	make("Frame", { Size = UDim2.new(1, -40, 0, 2), Position = UDim2.new(0, 20, 0, 376), BackgroundColor3 = GOLD, BackgroundTransparency = 0.6, BorderSizePixel = 0, ZIndex = 3 }, panel)
@@ -146,7 +176,6 @@ function UI.Build(panel)
 	local function slotZone(i) return attr("AugSlotZ_" .. i) or 0 end
 	local function inSlot(z) for i = 1, S.Count do if slotZone(i) == z then return i end end return nil end
 
-	local refreshInfo -- (아래에서 정의: 보석 버튼이 부른다)
 	local gemStrokes = {} -- [구역] = { Stroke, Base } (미리 보는 보석 금테: 보석을 다시 만들지 않고 테두리만 바꾼다)
 	local GEM_THICK = math.max(2, 52 / 18) -- (orb 기본 두께와 같게)
 	local function gem(parent, z, order)
@@ -179,13 +208,16 @@ function UI.Build(panel)
 		text({ Size = UDim2.new(1, 10, 0, 12), Position = UDim2.new(0, -5, 0, 75), Text = sub, TextSize = 9, TextColor3 = MUTED, TextTruncate = Enum.TextTruncate.AtEnd }, cell)
 		local hit = make("TextButton", { Size = UDim2.new(0, 52, 0, 52), Position = UDim2.new(0.5, -26, 0, 2), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, cell)
 		gemStrokes[z] = { Stroke = stroke, Base = stroke.Color }
-		hit.Activated:Connect(function() -- (11-28) 폰 / PC 모두 한 번 누르면 바로 고른 칸에. 못 넣는 효과(레벨 0)는 설명만 보여 준다
+		hit.Activated:Connect(function() -- (11-30 B안) 보석 = 고르기만 (아무것도 안 보낸다) → 위 소켓을 눌러 칸 확정. 같은 보석을 다시 누르면 취소
 			preview = z
-			if level > 0 then
-				Remotes.Aug:FireServer("Slot", selectedSlot, z)
-			elseif not def and attr("AugOpenZ_" .. z) == true then -- (아직 못 넣는 공격 효과: 그 세트 가장 좋은 조각을 끼우고 바로 칸에. 조각이 2개 안 되면 서버가 알려 준다)
-				Remotes.Aug:FireServer("Wear", selectedSlot, z)
-			end -- (들어가면 서버 속성이 바뀌어 전체 Refresh 가 따로 돈다: 그때 설명 줄은 칸에 든 그 효과)
+			if picked == z then
+				picked = nil
+			elseif level > 0 or (not def and attr("AugOpenZ_" .. z) == true) then -- (레벨 0 공격 = 칸을 고르면 그 세트 장비를 끼우고 넣는다)
+				picked = z
+			else
+				picked = nil -- (레벨 0 방어: 수호석이 있어야 넣을 수 있다 → 설명만)
+			end
+			refreshTargets()
 			refreshInfo()
 		end)
 		if hoverPreview then -- (PC 만: 폰은 탭 시작 때 MouseEnter 가 먼저 와서, 여기서 다시 그리면 누르고 있는 버튼이 지워져 Activated 가 안 왔다)
@@ -209,11 +241,24 @@ function UI.Build(panel)
 	-- 설명 줄만 다시 쓴다 (보석 / 소켓 버튼은 그대로 둔다: 누르고 있는 버튼을 지우지 않게)
 	refreshInfo = function()
 		if preview and inSlot(preview) then preview = nil end
+		if picked and inSlot(picked) then picked = nil end
+		cancelBtn.Visible = picked ~= nil
+		info.BackgroundColor3 = picked and Color3.fromRGB(20, 44, 26) or Color3.fromRGB(16, 12, 22)
+		if infoStroke then infoStroke.Color = picked and Color3.fromRGB(120, 255, 140) or GOLD end
+		infoLine1.Size = UDim2.new(1, picked and -160 or -60, 0, 20)
+		infoLine2.Size = UDim2.new(1, picked and -160 or -60, 0, 18)
+		subtitle.Visible = picked == nil -- (소켓 위 꼬리표와 겹치지 않게)
 		local z = preview or slotZone(selectedSlot)
 		local zi = z > 0 and infoOf(z)
-		if not zi then
+		if picked then -- 고르는 중: 안내 막대
+			local pz = infoOf(picked)
+			local wear = (attr("AugGearZ_" .. picked) or 0) <= 0
+			infoIcon.Text = pz.Icon
+			infoLine1.Text = string.format("<b>%s</b>  ", pz.Name) .. "<font color='#ffd966'>" .. (wear and "Pick a slot: this set's gear goes on and it goes in" or "Pick a slot above to put it in") .. "</font>"
+			infoLine2.Text = (wear and attr("Zone") == "Dungeon") and "<font color='#ff9a8a'>You can't change gear in the dungeon</font>" or "<font color='#9a8ab8'>Tap the same gem or an empty spot to cancel</font>"
+		elseif not zi then
 			infoIcon.Text = "💡"
-			infoLine1.Text = string.format("Tap a gem below to put it in Slot %d", selectedSlot)
+			infoLine1.Text = "Tap a gem below, then tap a slot above"
 			infoLine2.Text = ""
 		else
 			local level = attr("AugGearZ_" .. z) or 0
@@ -223,9 +268,9 @@ function UI.Build(panel)
 			if aw then
 				infoLine2.Text = "<font color='#ff9be6'>" .. string.format("👑 Awakening: %s", aw.Name) .. "</font>  " .. aw.Desc
 			elseif level <= 0 then
-				infoLine2.Text = isDefense(z) and "Collect Guard Stones" or "Tap: wear your best pieces of this set and put it in the slot"
+				infoLine2.Text = isDefense(z) and "Collect Guard Stones" or "Tap it, then a slot: this set's gear goes on and it goes in"
 			elseif preview then
-				infoLine2.Text = string.format("Tap or click to put it in Slot %d", selectedSlot)
+				infoLine2.Text = "Tap it, then tap a slot above"
 			elseif not isDefense(z) then
 				infoLine2.Text = "<font color='#9a8ab8'>" .. "6 pieces 👑 awakening" .. "</font>"
 			else
@@ -234,8 +279,62 @@ function UI.Build(panel)
 		end
 		for gz, g in pairs(gemStrokes) do -- 미리 보는 보석만 금테, 나머지는 원래 색으로
 			if g.Stroke.Parent then
-				g.Stroke.Color = preview == gz and GOLD_HI or g.Base
-				g.Stroke.Thickness = preview == gz and 4 or GEM_THICK
+				local on = (picked or preview) == gz
+				g.Stroke.Color = on and GOLD_HI or g.Base
+				g.Stroke.Thickness = on and 4 or GEM_THICK
+			end
+		end
+	end
+
+	-- 고른 보석을 칸 i 에 넣을 수 있나: allowed, 꼬리표 종류, wear(레벨 0 공격 = 장비를 끼우고 넣기)
+	function UI.TargetState(i)
+		local z = picked
+		if not z then return false, nil, false end
+		local cur = slotZone(i)
+		local wear = not isDefense(z) and (attr("AugGearZ_" .. z) or 0) <= 0
+		if wear and attr("Zone") == "Dungeon" then return false, "dungeon", wear end -- (서버 EquipSetKeep 과 같은 규칙: 던전 안 장비 교체 불가)
+		if cur == z then return false, "same", wear end
+		if isDefense(z) then
+			if cur > 0 and isDefense(cur) then return true, "swap", wear end
+			local defs = 0 -- (서버 AugService "Slot" 과 같은 규칙: 이 칸을 빼고 방어가 이미 MaxDefense 개면 막는다)
+			for k = 1, S.Count do
+				local other = slotZone(k)
+				if k ~= i and other ~= z and other > 0 and isDefense(other) then defs += 1 end
+			end
+			if defs >= S.MaxDefense then return false, "defmax", wear end
+			return true, "put", wear
+		end
+		if cur > 0 and isDefense(cur) then return true, "warn", wear end
+		return true, "put", wear
+	end
+	refreshTargets = function()
+		for i, s in ipairs(sockets) do
+			local allowed, kind = UI.TargetState(i)
+			local show = picked ~= nil and kind ~= "same"
+			s.Target.Visible = show
+			s.Tag.Visible = show
+			if show then
+				local cur = slotZone(i)
+				local curInfo = cur > 0 and infoOf(cur)
+				if kind == "warn" then
+					s.Tag.Text = string.format("⚠ %s will be removed", curInfo and curInfo.Name or "")
+					s.Tag.BackgroundColor3, s.TargetStroke.Color = Color3.fromRGB(90, 58, 16), Color3.fromRGB(255, 184, 77)
+				elseif kind == "swap" then
+					s.Tag.Text = "🔄 Swap in"
+					s.Tag.BackgroundColor3, s.TargetStroke.Color = Color3.fromRGB(31, 90, 42), Color3.fromRGB(120, 255, 140)
+				elseif kind == "defmax" then
+					s.Tag.Text = "🔒 Defense max 2"
+					s.Tag.BackgroundColor3, s.TargetStroke.Color = Color3.fromRGB(51, 51, 58), Color3.fromRGB(110, 110, 120)
+				elseif kind == "dungeon" then
+					s.Tag.Text = "🔒 Not in the dungeon"
+					s.Tag.BackgroundColor3, s.TargetStroke.Color = Color3.fromRGB(51, 51, 58), Color3.fromRGB(110, 110, 120)
+				else
+					s.Tag.Text = "⬇ Put here"
+					s.Tag.BackgroundColor3, s.TargetStroke.Color = Color3.fromRGB(31, 90, 42), Color3.fromRGB(120, 255, 140)
+				end
+				s.Ring.BackgroundTransparency = allowed and 0 or 0.5
+			else
+				s.Ring.BackgroundTransparency = 0
 			end
 		end
 	end
@@ -333,6 +432,8 @@ function UI.Build(panel)
 			end
 			text({ Size = UDim2.new(0, 200, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = "defeat zone lords to unlock", TextSize = 12, TextColor3 = DIM, LayoutOrder = 100 }, lockRow)
 		end
+		if picked and (inSlot(picked) or attr("AugOpenZ_" .. picked) ~= true) then picked = nil end
+		refreshTargets()
 		refreshInfo() -- (보석을 다 만든 뒤: 설명 줄 + 미리 보는 보석 금테)
 	end
 

@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Zone {number1} set effect · Trial Lv.3 — for this dungeon only. Watch for it in combat!", "Effet de set de la zone {number1} · Essai Niv.3 — pour ce donjon uniquement. Guette-le en combat !" },
+		{ "Golden Thief   Title 『Golden Thief』\nDefeat {number1} Golden Goblin(s)\n{number2} / {number3}   Reward: 🎫 {number4}", "Titre du voleur doré\nÉliminer {number1} gobelins dorés\n{number2} / {number3} Récompense : 🎫 {number4}" },
+		{ "✨ Stat points +{number1}! {number2} unspent (press T to raise move speed / range / double shot)", "✨ Points de stats +{number1} ! {number2} non dépensés (appuyez sur T pour augmenter la vitesse / portée / tir double)" },
+		{ "Abyss Conqueror   Title 『Abyss Conqueror』\nClear field zone {number1}\n{number2} / {number3}   Reward: 🎫 {number4}", "Titre du conquérant de l'abysse\nNettoyer la zone de champ {number1}\n{number2} / {number3} Récompense : 🎫 {number4}" },
+		{ "Sets obtained {number1} / {number2}  ·  Monsters / lord of that zone drop them at a set rate", "Sets obtenus {number1} / {number2}  ·  Les monstres / le seigneur de cette zone les lâchent selon un certain taux" },
 		{ "🔒 Defeat the Lord of Zone {number1} first — only then will the portal open for you.", "🔒 Vainquez d'abord le seigneur de la zone {number1} — c'est seulement alors que le portail s'ouvrira pour vous." },
 		{ "💰 A Golden Goblin appeared in Zone {number1} · Meadow! Catch it for a jackpot! ({number2}s)", "💰 Un gobelin doré est apparu dans la zone {number1} · Prairie ! Attrapez-le pour un jackpot ! ({number2} s)" },
 		{ "Allocate Stats\nSpend {number1} stat points (T key / Stats button)\n{number2} / {number3}   Reward: {number4} G", "Allouer les statistiques\nUtiliser {number1} points de statistiques (touche T / bouton Statistiques)\n{number2} / {number3} Récompense : {number4} G" },
@@ -860,6 +865,7 @@ return {
 		{ "🔒 Zone {number1} · {text2} Sealed", "🔒 Zone {number1} · {text2} scellée" },
 		{ "Weekly best: {text1} pts", "Meilleur de la semaine : {text1} pts" },
 		{ "⬆ Level Up  💰 {text1} G", "⬆ Monter de niveau  💰 {text1} or" },
+		{ "{text1} will be removed", "{text1} sera retiré" },
 		{ "Invite sent to {text1}", "Invitation envoyée à {text1}" },
 		{ "Switch path: {text1} G", "Changer de voie : {text1} G" },
 		{ "to the right ({text1})", "à droite ({text1})" },

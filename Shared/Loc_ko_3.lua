@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🔒 Zone {number1} · Desert Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏜 Desert Sun set!", "🔒 구역 {number1} · 사막 봉쇄됨\n구역 {number2} 몬스터 {number3} / {number4} 처치 · 군주 👑 미처치\n열고 사막 태양 세트를 획득하세요!" },
+		{ "💰 Not enough Gold. ({number1} needed) Earn Gold at the Training Dummy / field hunting / dungeons / Boss Rush rewards", "💰 골드가 부족해요. ({number1} 필요) 훈련 허수아비 / 필드 사냥 / 던전 / 보스 러시 보상으로 골드를 얻으세요" },
+		{ "Legend Wielder   Title 『Legend Wielder』\nReach weapon upgrade level {number1} (about the {number2}th weapon)\n{number3} / {number4}   Reward: 🎫 {number5}", "전설의 보유자 타이틀 『전설의 보유자』\n무기 업그레이드 레벨 {number1} 달성 ({number2}번째 무기)\n{number3} / {number4}   보상: 🎫 {number5}" },
 		{ "Tier rewards by total damage dealt (gold · tickets · time skip):\n🥉 {number1}+   🥈 {number2}M+   🥇 {number3}M+   💠 {number4}M+   💎 {number5}M+   👑 {number6}M+", "총 피해량에 따른 티어 보상 (골드 · 티켓 · 시간 건너뛰기):\n🥉 {number1}+   🥈 {number2}M+   🥇 {number3}M+   💠 {number4}M+   💎 {number5}M+   👑 {number6}M+" },
 		{ "Zone {number1} · Wasteland\n🏚 Ruined Fortress Gate · Rec. ⚡{number2}\nDanger ☠☠☠\n🏚 New set from here: Will of the Ruins Set", "구역 {number1} · 황무지\n🏚 파괴된 요새 문 · 레벨 {number2}\n위험 ☠☠☠\n🏚 여기서 새로운 세트: 폐허의 의지 세트" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Rocket Launcher · Rusty Era +{number10}\n📍 Field (best: Zone {number11})", "🎖 레벨 {number1} {number2} / {number3} 경험치\n💰 {number4} G 🎫 {number5}\n🔑{number6} (오늘 무료 {number7}/{number8})\n⚡ 파워 {number9}\n⚔ 로켓 발사기 · 녹슨 시대 +{number10}\n📍 필드 (최적: 구역 {number11})" },
@@ -930,13 +933,5 @@ return {
 		{ "Lord of {text1} (Zone {number2}) · ⏱ ~{number3}s · 💥 {number4}% HP", "{text1}의 군주 ({number2}구역) · ⏱ ~{number3}초 · 💥 체력 {number4}%" },
 		{ "🌟 This Fever portal belongs to {text1}.", "🌟 이 피버 포탈은 {text1}님의 것이에요." },
 		{ "Need {number1} {text2} items to fuse (you have {number3})", "합성하려면 {text2} 장비 {number1}개가 필요해요 (보유 {number3})" },
-		{ "⚙ Rule: {text1} (change in Menu → Gear)", "⚙ 규칙: {text1} (메뉴 → 장비에서 변경)" },
-		{ "<font color='#7a7f95'>✔ {text1}</font>", "<font color='#7a7f95'>✔ {text1}</font>" },
-		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "보스 {number1} · 피해 {text2} · 다음 보스 {number3}초" },
-		{ "⚔ A skill upgrade is ready ({text1} G)", "⚔ 스킬 강화를 할 수 있어요 ({text1} G)" },
-		{ "   ✨ {number1}-piece set complete! {text2} Lv.{number3}", "   ✨ {number1}부위 세트 완성! {text2} Lv.{number3}" },
-		{ "Move speed +{text1} per point  (max {number2})", "이동 속도 포인트당 +{text1}  (최대 {number2})" },
-		{ "Need 2+ pieces of {text1} (you have {number1})", "{text1} 2부위 이상 필요해요 (가진 것 {number1})" },
-		{ "{text1}: vs bosses {number2}% · vs monsters {number3}%", "{text1}: 보스 상대 {number2}% · 몬스터 상대 {number3}%" },
 	},
 }

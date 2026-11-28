@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Spell Tome · Rusty Era +{number10}\n📍 Field (best: Zone {number11})", "🎖 レベル{number1} {number2} / {number3} XP\n💰 {number4} G 🎫 {number5}\n🔑{number6}（本日無料 {number7}/{number8}）\n⚡ パワー {number9}\n⚔ スペル・トーム · 錆の時代 +{number10}\n📍 フィールド（ベスト：ゾーン{number11}）" },
+		{ "Zone {number1} · Abyss\n🌀 Gate of the Abyss · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠☠☠\n🌀 New set from here: Abyss Dominion Set", "ゾーン {number1} · 深淵\n🌀 深淵の門 · レコード ⚡{number2}\n危険 ☠☠☠☠☠☠☠☠\n🌀 ここからの新しいセット：アビスドミニオンセット" },
+		{ "⚠ The {number1}-hour cap was reached, so {number2} hours' worth couldn't be saved. You can raise the cap in the Shop", "⚠ {number1}時間の上限に達したため、{number2}時間分は保存できませんでした。上限はショップで増やせます" },
 		{ "💰 Not enough gold. ({number1} needed) Earn gold from field hunting, dungeons, the Boss Rush, or idle income", "💰 ゴールドが足りません。({number1}必要) フィールド狩り・ダンジョン・ボスラッシュ・放置収入でゴールドを集めよう" },
 		{ "Zone {number1} · Forest\n🏰 Forest Castle Gate · Rec. ⚡{number2}\nDanger ☠☠\n🌲 New set from here: Forest's Blessing Set", "ゾーン {number1} ・森\n🏰 森の城の門 · 推奨レベル ⚡{number2}\n危険 ☠☠\n🌲 ここから新しいセット：森の祝福セット" },
 		{ "Zone {number1} · Snowfield\n❄ Ice Palace Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠\n❄ New set from here: Frost's Breath Set", "ゾーン {number1} ・雪原\n❄ アイスパレスの門 · レコメンド ⚡{number2}\n危険 ☠☠☠☠☠\n❄ ここから新しいセット：フロストの呼吸セット" },
@@ -891,6 +894,7 @@ return {
 		{ "🔒 Zone {number1} · {text2} Sealed", "🔒 ゾーン{number1} · {text2} 封印中" },
 		{ "Weekly best: {text1} pts", "週間最高: {text1}点" },
 		{ "⬆ Level Up  💰 {text1} G", "⬆ レベルアップ  💰 {text1} G" },
+		{ "{text1} will be removed", "{text1}が外れます" },
 		{ "Invite sent to {text1}", "{text1}に招待を送りました" },
 		{ "Switch path: {text1} G", "道を変更：{text1} G" },
 		{ "to the right ({text1})", "右（{text1}）" },
@@ -983,9 +987,5 @@ return {
 		{ "+ {text1}", "+ {text1}" },
 		{ "+{number1} {text1}", "+{number1} {text1}" },
 		{ "{text1} {number2}", "{text1} {number2}" },
-		{ "🗿 [World Boss] Zone {number1} · {text2}: {text3} appeared! Follow the orange light pillar and defeat it together for gear + tickets!", "🗿 [ワールドボス] ゾーン{number1} · {text2}: {text3}が出現！オレンジの光の柱を追って、みんなで倒して装備とチケットを手に入れよう！" },
-		{ "{text1} {text2} (defense) also unlocked! Level it up with 🔷 Guard Stones in town, then put it in a slot (Y key)", "{text1} {text2}（防御）も解放！町で🔷守護石で強化して枠に入れよう（Yキー）" },
-		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} セット効果『{text2}』解放! セット装備を着ければ自動でオン、ゴールドで強化もできます (Yキー)" },
-		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear, then put it in a slot (Y key)", "{text1} セット効果『{text2}』解放！そのセット装備を2部位以上つけて枠に入れよう（Yキー）" },
 	},
 }

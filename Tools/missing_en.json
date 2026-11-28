@@ -3212,5 +3212,19 @@
 "Hit an enemy charging up with F (Blade Bloom): that attack is canceled and your hit deals x2 damage",
 "Y Set effects · T Stat points · P Pets · J Codex · H Settings / Help (this window) · B Menu",
 "F Blade Bloom (main skill: 4 daggers spin and fly at nearby enemies) · C First Aid · V Deadeye (gauge 100% from hitting enemies)  — field/dungeons only",
-"Fused {number1} {text1} → {text2} {text3}!"
+"Fused {number1} {text1} → {text2} {text3}!",
+"Only effects in a slot are on · tap a gem below, then tap a slot above",
+"Tap a gem below, then tap a slot above",
+"Pick a slot: this set's gear goes on and it goes in",
+"Pick a slot above to put it in",
+"You can't change gear in the dungeon",
+"Tap the same gem or an empty spot to cancel",
+"Tap it, then a slot: this set's gear goes on and it goes in",
+"Tap it, then tap a slot above",
+"Cancel",
+"{text1} will be removed",
+"Swap in",
+"Defense max 2",
+"Not in the dungeon",
+"Put here"
 ]

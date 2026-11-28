@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "⚙ Rule: {text1} (change in Menu → Gear)", "⚙ 규칙: {text1} (메뉴 → 장비에서 변경)" },
+		{ "<font color='#7a7f95'>✔ {text1}</font>", "<font color='#7a7f95'>✔ {text1}</font>" },
+		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "보스 {number1} · 피해 {text2} · 다음 보스 {number3}초" },
+		{ "⚔ A skill upgrade is ready ({text1} G)", "⚔ 스킬 강화를 할 수 있어요 ({text1} G)" },
+		{ "   ✨ {number1}-piece set complete! {text2} Lv.{number3}", "   ✨ {number1}부위 세트 완성! {text2} Lv.{number3}" },
+		{ "Move speed +{text1} per point  (max {number2})", "이동 속도 포인트당 +{text1}  (최대 {number2})" },
+		{ "Need 2+ pieces of {text1} (you have {number1})", "{text1} 2부위 이상 필요해요 (가진 것 {number1})" },
+		{ "{text1}: vs bosses {number2}% · vs monsters {number3}%", "{text1}: 보스 상대 {number2}% · 몬스터 상대 {number3}%" },
 		{ "📅 {number1}-day login streak! Reward: {text2}", "📅 {number1}일 연속 접속! 보상: {text2}" },
 		{ "✅ Mission complete! Reward: {text1}", "✅ 미션 완료! 보상: {text1}" },
 		{ "{text1}  ·  keys 1-5 switch weapons", "{text1}  ·  1-5 키로 무기 바꾸기" },
@@ -58,6 +66,7 @@ return {
 		{ "Weekly best: {text1} pts", "주간 최고: {text1}점" },
 		{ "⬆ Level Up  💰 {text1} G", "⬆ 레벨 업  💰 {text1} G" },
 		{ "{text1}\nGold +{number2}% instead", "{text1}\n대신 골드 +{number2}%" },
+		{ "{text1} will be removed", "{text1} 효과가 빠져요" },
 		{ "Invite sent to {text1}", "{text1} 님에게 초대를 보냈어요" },
 		{ "Switch path: {text1} G", "갈래 바꾸기: {text1} G" },
 		{ "to the right ({text1})", "오른쪽 ({text1})" },

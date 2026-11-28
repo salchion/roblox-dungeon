@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎫 {number1} tickets!\nPull gear at the gacha machine", "🎫 {number1} 张票券！\n在抽卡机处抽取装备" },
+		{ "🐾 Pet Lv.{number1}! New ability 💥 Power — Attack +{number2}%", "🐾 宠物等级 {number1}！新技能 💥 力量 - 攻击力 +{number2}%" },
+		{ "Sniper Rifle  ·  next weapon: Shotgun at +{number1}", "狙击步枪 · 下一个武器：霰弹枪，+{number1}" },
+		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2} {number3} G)", "🧹 自动清理了{number1}件较弱装备（精华+{number2}{number3}G）" },
+		{ "every {number1}s a meteor, radius {number2} (x1.5 on bosses)", "每 {number1} 秒一颗流星,范围 {number2}(对首领 x1.5)" },
+		{ "Heals over {number1}s instead of at once · total +{number2}%", "在{number1}秒内逐步回复，而非瞬间回复 · 总量+{number2}%" },
 		{ "Set-effect gear equipped: {number1} slot(s) swapped", "已按套装效果换装：更换 {number1} 个部位" },
 		{ "Spend {number1} stat points (T key / Stats button)", "花费{number1}属性点（T键/属性按钮）" },
 		{ "▶ Next feature: Lv.{number1} 💥 Power  ({number2} lvl · ~{number3} G)", "▶ 下一个功能：等级 {number1} 💥 力量（{number2} 级 · ~{number3} G）" },
@@ -729,6 +735,7 @@ return {
 		{ "🔒 Zone {number1} · {text2} Sealed", "🔒 区域{number1} · {text2} 已封印" },
 		{ "Weekly best: {text1} pts", "每周最佳:{text1} 分" },
 		{ "⬆ Level Up  💰 {text1} G", "⬆ 升级  💰 {text1} 金币" },
+		{ "{text1} will be removed", "{text1}将被移除" },
 		{ "Invite sent to {text1}", "已向{text1}发送邀请" },
 		{ "Switch path: {text1} G", "更换路线：{text1} G" },
 		{ "to the right ({text1})", "右边（{text1}）" },

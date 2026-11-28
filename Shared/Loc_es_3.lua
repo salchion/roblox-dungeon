@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "Efectos únicos encontrados {number1} / {number2}  ·  El equipo mítico puede llevar uno (aprox. {number3}% de probabilidad)" },
+		{ "🎒 Bag full: dismantled {number1} gear that your other gear beats (Essence +{number2}, {number3} G)", "🎒 Bolsa llena: se desguazaron {number1} equipos peores (Esencia +{number2}, {number3} G)" },
+		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "Título de Maestro de Habilidades\nUsa habilidades {number1} veces\n{number2} / {number3} Recompensa: 🎫 {number4}" },
+		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(tu récord: profundidad {number1} · el tema de la mazmorra es aleatorio, las probabilidades son las mismas)" },
+		{ "Each depth up: monster HP +{number1}% · damage +{number2}% · gold +{number3}% · better chest odds", "Por cada profundidad: PV de monstruos +{number1} % · daño +{number2} % · oro +{number3} % · mejores probabilidades de cofre" },
 		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "Profundidad {number1} superada  ·  Elige cualquier profundidad según tu poder  (siguiente: {number2})" },
 		{ "Lucky One   Title 『Lucky One』\nObtain Legendary gear\n{number1} / {number2}   Reward: 🎫 {number3}", "Título de la persona afortunada\nObtén equipo legendario\n{number1} / {number2} Recompensa: 🎫 {number3}" },
 		{ "on crit, {number1} missiles into the enemy you hit (25% of the crit hit each)", "al crítico, {number1} misiles al enemigo golpeado (25% del golpe crítico cada uno)" },
@@ -844,6 +849,7 @@ return {
 		{ "🔒 Zone {number1} · {text2} Sealed", "🔒 Zona {number1} · {text2} sellada" },
 		{ "Weekly best: {text1} pts", "Mejor semanal: {text1} pts" },
 		{ "⬆ Level Up  💰 {text1} G", "⬆ Subir de nivel  💰 {text1} G" },
+		{ "{text1} will be removed", "{text1} se quitará" },
 		{ "Invite sent to {text1}", "Invitación enviada a {text1}" },
 		{ "Switch path: {text1} G", "Cambiar camino: {text1} G" },
 		{ "to the right ({text1})", "a la derecha ({text1})" },
